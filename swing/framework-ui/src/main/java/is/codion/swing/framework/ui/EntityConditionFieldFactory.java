@@ -157,8 +157,7 @@ public final class EntityConditionFieldFactory implements FieldFactory {
 	}
 
 	private static EntitySearchField configureSearchField(EntitySearchModel searchModel, EntitySearchField searchField) {
-		boolean searchable = !searchModel.connectionProvider().entities()
-						.definition(searchModel.entityType()).columns().searchable().isEmpty();
+		boolean searchable = !searchModel.entityDefinition().columns().searchable().isEmpty();
 		if (!searchable) {
 			searchField.setEditable(false);
 			searchField.hint().set("");

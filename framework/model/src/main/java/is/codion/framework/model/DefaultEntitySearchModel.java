@@ -59,7 +59,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private final State searchStringModified = State.state();
 	private final State selectionEmpty = State.state(true);
 
-	private final EntityType entityType;
+	private final EntityDefinition entityDefinition;
 	private final Collection<Column<String>> columns;
 	private final Collection<Attribute<?>> attributes;
 	private final OrderBy orderBy;
@@ -82,7 +82,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private final String description;
 
 	private DefaultEntitySearchModel(DefaultBuilder builder) {
-		this.entityType = builder.entityType;
+		this.entityDefinition = builder.entityDefinition;
 		this.connectionProvider = builder.connectionProvider;
 		this.separator.set(builder.separator);
 		this.columns = unmodifiableCollection(builder.columns);
@@ -97,8 +97,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	}
 
 	@Override
-	public EntityType entityType() {
-		return entityType;
+	public EntityDefinition entityDefinition() {
+		return entityDefinition;
 	}
 
 	@Override
@@ -149,7 +149,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	@Override
 	public List<Entity> search() {
 		List<Entity> result = connectionProvider.connection().select(select());
-		result.sort(connectionProvider.entities().definition(entityType).comparator());
+		result.sort(entityDefinition.comparator());
 
 		return result;
 	}
@@ -180,7 +180,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	 */
 	private Select select() {
 		if (columns.isEmpty()) {
-			throw new IllegalStateException("No search columns provided for search model: " + entityType);
+			throw new IllegalStateException("No search columns provided for search model: " + entityDefinition.entityType());
 		}
 		Collection<Condition> conditions = new ArrayList<>();
 		String[] searchStrings = singleSelection ? new String[] {searchString.get()} : searchString.getOrThrow().split(separator.getOrThrow());
@@ -222,16 +222,14 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	}
 
 	private String createDescription() {
-		EntityDefinition definition = connectionProvider.entities().definition(entityType);
-
 		return columns.stream()
-						.map(column -> definition.columns().definition(column).caption())
+						.map(column -> entityDefinition.columns().definition(column).caption())
 						.collect(joining(", "));
 	}
 
 	private void validateType(Entity entity) {
-		if (!entity.entityType().equals(entityType)) {
-			throw new IllegalArgumentException("Entities of type " + entityType + " exptected, got " + entity.entityType());
+		if (!entity.entityType().equals(entityDefinition.entityType())) {
+			throw new IllegalArgumentException("Entities of type " + entityDefinition.entityType() + " exptected, got " + entity.entityType());
 		}
 	}
 
@@ -323,7 +321,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 	static final class DefaultBuilder implements Builder {
 
-		private final EntityType entityType;
+		private final EntityDefinition entityDefinition;
 		private final EntityConnectionProvider connectionProvider;
 		private Collection<Column<String>> columns;
 		private Collection<Attribute<?>> attributes = emptyList();
@@ -335,11 +333,10 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		private OrderBy orderBy;
 
 		DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
-			this.entityType = requireNonNull(entityType);
 			this.connectionProvider = requireNonNull(connectionProvider);
-			EntityDefinition definition = connectionProvider.entities().definition(entityType);
-			this.columns = definition.columns().searchable();
-			this.orderBy = definition.orderBy().orElse(null);
+			this.entityDefinition = connectionProvider.entities().definition(entityType);
+			this.columns = entityDefinition.columns().searchable();
+			this.orderBy = entityDefinition.orderBy().orElse(null);
 		}
 
 		@Override
@@ -405,8 +402,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 		private void validateAttributes(Collection<? extends Attribute<?>> attributes) {
 			for (Attribute<?> attribute : attributes) {
-				if (!entityType.equals(attribute.entityType())) {
-					throw new IllegalArgumentException("Attribute '" + attribute + "' is not part of entity " + entityType);
+				if (!entityDefinition.entityType().equals(attribute.entityType())) {
+					throw new IllegalArgumentException("Attribute '" + attribute + "' is not part of entity " + entityDefinition.entityType());
 				}
 			}
 		}

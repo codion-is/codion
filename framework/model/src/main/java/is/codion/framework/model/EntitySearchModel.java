@@ -55,9 +55,9 @@ public interface EntitySearchModel {
 	PropertyValue<Integer> DEFAULT_LIMIT = Configuration.integerValue(EntitySearchModel.class.getName() + ".defaultLimit");
 
 	/**
-	 * @return the type of the entity this search model is based on
+	 * @return the underlying {@link EntityDefinition}
 	 */
-	EntityType entityType();
+	EntityDefinition entityDefinition();
 
 	/**
 	 * @return the connection provider used by this search model

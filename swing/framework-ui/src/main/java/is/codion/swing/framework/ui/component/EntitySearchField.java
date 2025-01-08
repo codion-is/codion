@@ -142,7 +142,7 @@ import static javax.swing.BorderFactory.createEmptyBorder;
  * @see #builder(EntitySearchModel)
  * @see #singleSelectionValue()
  * @see #multiSelectionValue()
- * @see #selectorFactory()
+ * @see Builder#selectorFactory(Function)
  */
 public final class EntitySearchField extends HintTextField {
 
@@ -199,7 +199,7 @@ public final class EntitySearchField extends HintTextField {
 	private final Action transferFocusBackwardAction = TransferFocusOnEnter.backwardAction();
 	private final State searchOnFocusLost = State.state(true);
 	private final State searching = State.state();
-	private final Value<Function<EntitySearchModel, Selector>> selectorFactory;
+	private final Function<EntitySearchModel, Selector> selectorFactory;
 	private final Value<SearchIndicator> searchIndicator;
 	private final ControlMap controlMap;
 
@@ -236,7 +236,7 @@ public final class EntitySearchField extends HintTextField {
 						.listener(this::updateSearchIndicator)
 						.build();
 		updateSearchIndicator();
-		selectorFactory = Value.nonNull(builder.selectorFactory);
+		selectorFactory = builder.selectorFactory;
 		if (builder.selectAllOnFocusGained) {
 			addFocusListener(new SelectAllFocusListener());
 		}
@@ -330,15 +330,6 @@ public final class EntitySearchField extends HintTextField {
 	 */
 	public Value<SearchIndicator> searchIndicator() {
 		return searchIndicator;
-	}
-
-	/**
-	 * Controls the factory for the {@link Selector} responsible for selecting items from the search result.
-	 * @return the {@link Value} controlling the factory for the {@link Selector} implementation to use when presenting
-	 * a selection dialog to the user
-	 */
-	public Value<Function<EntitySearchModel, Selector>> selectorFactory() {
-		return selectorFactory;
 	}
 
 	/**
@@ -563,7 +554,7 @@ public final class EntitySearchField extends HintTextField {
 							SwingMessages.get("OptionPane.messageDialogTitle"), JOptionPane.INFORMATION_MESSAGE);
 		}
 		else {
-			selectorFactory.getOrThrow().apply(model).select(this, searchResult);
+			selectorFactory.apply(model).select(this, searchResult);
 		}
 	}
 
@@ -645,7 +636,7 @@ public final class EntitySearchField extends HintTextField {
 			CardLayout cardLayout = new CardLayout(5, 5);
 			PanelBuilder columnBasePanelBuilder = panel(cardLayout);
 			List<Item<Column<String>>> items = new ArrayList<>();
-			EntityDefinition definition = searchModel.connectionProvider().entities().definition(searchModel.entityType());
+			EntityDefinition definition = searchModel.entityDefinition();
 			for (Map.Entry<Column<String>, EntitySearchModel.Settings> entry : searchModel.settings().entrySet()) {
 				items.add(Item.item(entry.getKey(), definition.columns().definition(entry.getKey()).caption()));
 				columnBasePanelBuilder.add(createSettingsPanel(entry.getValue()), entry.getKey().name());
@@ -909,7 +900,8 @@ public final class EntitySearchField extends HintTextField {
 
 		private FilterTable<Entity, Attribute<?>> createTable() {
 			SwingEntityTableModel tableModel =
-							new SwingEntityTableModel(searchModel.entityType(), emptyList(), searchModel.connectionProvider());
+							new SwingEntityTableModel(searchModel.entityDefinition().entityType(),
+											emptyList(), searchModel.connectionProvider());
 
 			FilterTable<Entity, Attribute<?>> filterTable = FilterTable.builder(tableModel,
 											entityTableColumns(tableModel.entityDefinition()))

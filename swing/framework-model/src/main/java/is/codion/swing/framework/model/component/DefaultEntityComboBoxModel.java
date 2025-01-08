@@ -22,8 +22,8 @@ import is.codion.common.proxy.ProxyBuilder;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -54,10 +54,9 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 	private final FilterComboBoxModel<Entity> comboBoxModel;
 
-	private final EntityType entityType;
+	private final EntityDefinition entityDefinition;
 	private final EntityConnectionProvider connectionProvider;
 
-	private final Entities entities;
 	private final DefaultFilter filter;
 	private final Value<Supplier<Condition>> condition;
 	private final OrderBy orderBy;
@@ -69,10 +68,9 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	private final Consumer<Collection<Entity>> deleteListener = new DeleteListener();
 
 	DefaultEntityComboBoxModel(DefaultBuilder builder) {
-		this.entityType = builder.entityType;
 		this.connectionProvider = builder.connectionProvider;
+		this.entityDefinition = builder.entityDefinition;
 		this.attributes = builder.attributes;
-		this.entities = connectionProvider.entities();
 		this.comboBoxModel = FilterComboBoxModel.builder(this::performQuery)
 						.nullItem(createNullItem(builder.nullCaption))
 						// otherwise the sorting overrides the order by
@@ -95,7 +93,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + " [entityType: " + entityType + "]";
+		return getClass().getSimpleName() + " [entityType: " + entityDefinition.entityType() + "]";
 	}
 
 	@Override
@@ -104,8 +102,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	}
 
 	@Override
-	public EntityType entityType() {
-		return entityType;
+	public EntityDefinition entityDefinition() {
+		return entityDefinition;
 	}
 
 	@Override
@@ -145,8 +143,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 	@Override
 	public <T> Value<T> createSelectorValue(Attribute<T> attribute) {
-		if (!entities.definition(entityType()).attributes().contains(attribute)) {
-			throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityType());
+		if (!entityDefinition.attributes().contains(attribute)) {
+			throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityDefinition.entityType());
 		}
 
 		return createSelectorValue(new EntityFinder<>(attribute));
@@ -212,7 +210,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 	private Entity createNullItem(String nullCaption) {
 		return nullCaption == null ? null : ProxyBuilder.builder(Entity.class)
-						.delegate(entities.entity(entityType))
+						.delegate(entityDefinition.entity())
 						.method("toString", parameters -> nullCaption)
 						.build();
 	}
@@ -242,9 +240,9 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	}
 
 	private void addEditListeners() {
-		EntityEditEvents.insertObserver(entityType).addWeakConsumer(insertListener);
-		EntityEditEvents.updateObserver(entityType).addWeakConsumer(updateListener);
-		EntityEditEvents.deleteObserver(entityType).addWeakConsumer(deleteListener);
+		EntityEditEvents.insertObserver(entityDefinition.entityType()).addWeakConsumer(insertListener);
+		EntityEditEvents.updateObserver(entityDefinition.entityType()).addWeakConsumer(updateListener);
+		EntityEditEvents.deleteObserver(entityDefinition.entityType()).addWeakConsumer(deleteListener);
 	}
 
 	private final class DefaultFilter implements Filter, Predicate<Entity> {
@@ -263,7 +261,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 		@Override
 		public ForeignKeyFilter get(ForeignKey foreignKey) {
-			entities.definition(entityType).foreignKeys().definition(foreignKey);
+			entityDefinition.foreignKeys().definition(foreignKey);
 
 			return foreignKeyFilters.computeIfAbsent(foreignKey, DefaultForeignKeyFilter::new);
 		}
@@ -346,9 +344,9 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 		@Override
 		public void link(EntityComboBoxModel filterModel) {
-			entities.definition(entityType).foreignKeys().definition(foreignKey);
-			if (!foreignKey.referencedType().equals(filterModel.entityType())) {
-				throw new IllegalArgumentException("EntityComboBoxModel is of type: " + filterModel.entityType()
+			entityDefinition.foreignKeys().definition(foreignKey);
+			if (!foreignKey.referencedType().equals(filterModel.entityDefinition().entityType())) {
+				throw new IllegalArgumentException("EntityComboBoxModel is of type: " + filterModel.entityDefinition().entityType()
 								+ ", should be: " + foreignKey.referencedType());
 			}
 			//if foreign key filter keys have been set previously, initialize with one of those
@@ -429,7 +427,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 	static class DefaultBuilder implements Builder {
 
-		private final EntityType entityType;
+		private final EntityDefinition entityDefinition;
 		private final EntityConnectionProvider connectionProvider;
 		private final EntityComboBoxModel filterModel;
 		private final ForeignKey filterForeignKey;
@@ -447,8 +445,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 
 		DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider, EntityComboBoxModel filterModel, ForeignKey filterForeignKey) {
-			this.entityType = requireNonNull(entityType);
 			this.connectionProvider = requireNonNull(connectionProvider);
+			this.entityDefinition = connectionProvider.entities().definition(entityType);
 			this.condition = new DefaultConditionSupplier(entityType);
 			this.comparator = connectionProvider.entities().definition(entityType).comparator();
 			this.filterModel = filterModel;
@@ -476,8 +474,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		@Override
 		public Builder attributes(Collection<Attribute<?>> attributes) {
 			for (Attribute<?> attribute : requireNonNull(attributes)) {
-				if (!attribute.entityType().equals(entityType)) {
-					throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityType);
+				if (!attribute.entityType().equals(entityDefinition.entityType())) {
+					throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityDefinition.entityType());
 				}
 			}
 			this.attributes = attributes;

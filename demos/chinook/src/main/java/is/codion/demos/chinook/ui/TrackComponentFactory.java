@@ -19,9 +19,9 @@
 package is.codion.demos.chinook.ui;
 
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.swing.common.ui.component.value.ComponentValue;
-import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.framework.ui.component.DefaultEntityComponentFactory;
 import is.codion.swing.framework.ui.component.EntitySearchField;
 
@@ -35,12 +35,10 @@ final class TrackComponentFactory extends DefaultEntityComponentFactory<Entity, 
 	}
 
 	@Override
-	public ComponentValue<Entity, EntitySearchField> componentValue(SwingEntityEditModel editModel,
-																																	Entity value) {
-		ComponentValue<Entity, EntitySearchField> componentValue = super.componentValue(editModel, value);
-		EntitySearchField trackSearchField = componentValue.component();
-		trackSearchField.selectorFactory().set(new TrackSelectorFactory());
-
-		return componentValue;
+	protected EntitySearchField.Builder searchField(ForeignKey foreignKey,
+																									EntityDefinition entityDefinition,
+																									EntitySearchModel searchModel) {
+		return super.searchField(foreignKey, entityDefinition, searchModel)
+						.selectorFactory(new TrackSelectorFactory());
 	}
 }

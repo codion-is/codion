@@ -165,8 +165,7 @@ public final class SwingForeignKeyConditionModel implements ConditionModel<Entit
 			return Operator.EQUAL;
 		}
 
-		boolean searchable = !builder.inSearchModel.connectionProvider().entities()
-						.definition(builder.inSearchModel.entityType()).columns().searchable().isEmpty();
+		boolean searchable = !builder.inSearchModel.entityDefinition().columns().searchable().isEmpty();
 
 		return searchable ? Operator.IN : Operator.EQUAL;
 	}

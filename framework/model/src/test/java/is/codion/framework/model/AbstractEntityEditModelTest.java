@@ -129,7 +129,7 @@ public final class AbstractEntityEditModelTest {
 	void createSearchModel() {
 		EntitySearchModel model = employeeEditModel.createSearchModel(Employee.DEPARTMENT_FK);
 		assertNotNull(model);
-		assertEquals(Department.TYPE, model.entityType());
+		assertEquals(Department.TYPE, model.entityDefinition().entityType());
 	}
 
 	@Test

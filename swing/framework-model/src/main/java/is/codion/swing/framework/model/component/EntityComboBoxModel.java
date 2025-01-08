@@ -24,6 +24,7 @@ import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -63,9 +64,9 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	EntityConnectionProvider connectionProvider();
 
 	/**
-	 * @return the type of the entity this combo box model is based on
+	 * @return the underlying {@link EntityDefinition}
 	 */
-	EntityType entityType();
+	EntityDefinition entityDefinition();
 
 	/**
 	 * @param primaryKey the primary key of the entity to fetch from this model
