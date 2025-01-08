@@ -39,6 +39,15 @@ import java.util.List;
 public interface AttributeDefinition<T> {
 
 	/**
+	 * The suffix used for the mnemonic resource key.
+	 * <ul>
+ 	 * <li>name=Name
+ 	 * <li>name.mnemonic=N
+ 	 * </ul>
+	 */
+	String MNEMONIC_RESOURCE_SUFFIX = ".mnemonic";
+
+	/**
 	 * The default maximum fraction digits for floating point numbers
 	 */
 	int DEFAULT_MAXIMUM_FRACTION_DIGITS = 10;
@@ -314,7 +323,7 @@ public interface AttributeDefinition<T> {
 
 		/**
 		 * Specifies the key to use when retrieving the caption for this attribute from the entity resource bundle,
-		 * in case it differes from the attribute name ({@link Attribute#name()}), which is the default value.
+		 * in case it differs from the attribute name ({@link Attribute#name()}), which is the default value.
 		 * Note that this configures the attribute to not be hidden.
 		 * @param captionResourceKey the caption resource bundle key
 		 * @return this builder instance
@@ -324,6 +333,18 @@ public interface AttributeDefinition<T> {
 		 * @see EntityType#resourceBundleName()
 		 */
 		B captionResourceKey(String captionResourceKey);
+
+		/**
+		 * Specifies the key to use when retrieving the mnemonic for this attribute from the entity resource bundle,
+		 * in case it differs from {@link Attribute#name()} + {@link #MNEMONIC_RESOURCE_SUFFIX}, which is the default value.
+		 * @param mnemonicResourceKey the mnemonic resource bundle key
+		 * @return this builder instance
+		 * @throws IllegalStateException in case the mnemonic has already been set
+		 * @throws IllegalStateException in case no resource bundle is specified for the entity
+		 * @throws IllegalStateException in case the mnemonic resource is not found in the entity resource bundle
+		 * @see EntityType#resourceBundleName()
+		 */
+		B mnemonicResourceKey(String mnemonicResourceKey);
 
 		/**
 		 * Sets the default value for this attribute, overrides the underlying column default value, if any

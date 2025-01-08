@@ -79,6 +79,11 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 	private final String captionResourceKey;
 
 	/**
+	 * The resource bundle key specifying the mnemonic
+	 */
+	private final String mnemonicResourceKey;
+
+	/**
 	 * The default value supplier for this property
 	 */
 	private final ValueSupplier<T> defaultValueSupplier;
@@ -157,6 +162,11 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 	private transient String resourceCaption;
 
 	/**
+	 * The mnemonic from the resource bundle, if any
+	 */
+	private transient Character resourceMnemonic;
+
+	/**
 	 * The date/time format pattern
 	 */
 	private transient String dateTimePattern;
@@ -171,6 +181,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 		this.attribute = builder.attribute;
 		this.caption = builder.caption;
 		this.captionResourceKey = builder.captionResourceKey;
+		this.mnemonicResourceKey = builder.mnemonicResourceKey;
 		this.defaultValueSupplier = builder.defaultValueSupplier;
 		this.nullable = builder.nullable;
 		this.hidden = builder.hidden;
@@ -251,11 +262,6 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 	}
 
 	@Override
-	public final char mnemonic() {
-		return mnemonic;
-	}
-
-	@Override
 	public final Format format() {
 		return format;
 	}
@@ -323,6 +329,29 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 		}
 
 		return caption == null ? attribute.name() : caption;
+	}
+
+	@Override
+	public final char mnemonic() {
+		String resourceBundleName = attribute.entityType().resourceBundleName();
+		if (resourceBundleName != null) {
+			if (resourceMnemonic == null) {
+				ResourceBundle bundle = getBundle(resourceBundleName);
+				String mnemonicResource = bundle.containsKey(mnemonicResourceKey) ? bundle.getString(mnemonicResourceKey) : "";
+				if (!mnemonicResource.isEmpty()) {
+					resourceMnemonic = mnemonicResource.charAt(0);
+				}
+				else {
+					resourceMnemonic = 0;
+				}
+			}
+
+			if (resourceMnemonic.charValue() != 0) {
+				return resourceMnemonic;
+			}
+		}
+
+		return mnemonic;
 	}
 
 	@Override
@@ -467,6 +496,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 		private String caption;
 		private ValueSupplier<T> defaultValueSupplier;
 		private String captionResourceKey;
+		private String mnemonicResourceKey;
 		private boolean nullable;
 		private boolean hidden;
 		private int maximumLength;
@@ -487,6 +517,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 			format = defaultFormat(attribute);
 			comparator = defaultComparator(attribute);
 			captionResourceKey = attribute.name();
+			mnemonicResourceKey = captionResourceKey + MNEMONIC_RESOURCE_SUFFIX;
 			hidden = resourceNotFound(attribute.entityType().resourceBundleName(), captionResourceKey);
 			nullable = true;
 			maximumLength = attribute.type().isCharacter() ? 1 : -1;
@@ -522,6 +553,22 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 			}
 			this.captionResourceKey = captionResourceKey;
 			this.hidden = false;
+			return self();
+		}
+
+		@Override
+		public final B mnemonicResourceKey(String mnemonicResourceKey) {
+			if (mnemonic != 0) {
+				throw new IllegalStateException("Mnemonic has already been set for attribute: " + attribute);
+			}
+			String resourceBundleName = attribute.entityType().resourceBundleName();
+			if (resourceBundleName == null) {
+				throw new IllegalStateException("No resource bundle specified for entity: " + attribute.entityType());
+			}
+			if (resourceNotFound(resourceBundleName, requireNonNull(mnemonicResourceKey))) {
+				throw new IllegalArgumentException("Resource " + mnemonicResourceKey + " not found in bundle: " + resourceBundleName);
+			}
+			this.mnemonicResourceKey = mnemonicResourceKey;
 			return self();
 		}
 

@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.25
 ### is.codion.framework.domain
 - DefaultEntityValidator.valid() now final.
+- AttributeDefinition.Builder.mnemonicResourceKey() added.
 ## is.codion.framework.model
 - EntitySearchModel.Builder.attributes() added.
 - EntitySearchModel.Builder.orderBy() added.

@@ -247,21 +247,29 @@ public final class AttributeDefinitionTest {
 	void i18n() throws IOException, ClassNotFoundException {
 		AttributeDefinition<Integer> attributeDefinition =
 						ENTITY_TYPE.integerColumn("i18n").define().column()
-										.captionResourceKey("test").build();
+										.captionResourceKey("test")
+										.mnemonicResourceKey("test.mnemonic")
+										.build();
 
 		Locale.setDefault(new Locale("en", "EN"));
 		assertEquals("Test", attributeDefinition.caption());
+		assertEquals('T', attributeDefinition.mnemonic());
 
 		attributeDefinition = Serializer.deserialize(Serializer.serialize(attributeDefinition));
 
 		Locale.setDefault(new Locale("is", "IS"));
 		assertEquals("Prufa", attributeDefinition.caption());
+		assertEquals('P', attributeDefinition.mnemonic());
 
 		assertThrows(IllegalStateException.class, () -> ENTITY_TYPE2.integerColumn("i18n").define().column()
 						.captionResourceKey("key"));
+		assertThrows(IllegalStateException.class, () -> ENTITY_TYPE2.integerColumn("i18n").define().column()
+						.mnemonicResourceKey("key.mnemonic"));
 
 		assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.integerColumn("i18n").define().column()
 						.captionResourceKey("invalid_key"));
+		assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.integerColumn("i18n").define().column()
+						.mnemonicResourceKey("invalid_key.mnemonic"));
 	}
 
 	@Test
