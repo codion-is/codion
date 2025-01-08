@@ -150,9 +150,9 @@ public final class EntityComponentsTest {
 	@Test
 	void itemComboBox() {
 		ComponentValue<Integer, JComboBox<Item<Integer>>> componentValue =
-						entityComponents.itemComboBox(Detail.INT_VALUE_LIST)
+						entityComponents.itemComboBox(Detail.INT_ITEMS)
 										.transferFocusOnEnter(true)
-										.link(editModel.value(Detail.INT_VALUE_LIST))
+										.link(editModel.value(Detail.INT_ITEMS))
 										.buildValue();
 		JComboBox<Item<Integer>> comboBox = componentValue.component();
 
@@ -160,21 +160,21 @@ public final class EntityComponentsTest {
 		assertEquals(0, model.items().visible().indexOf(null));
 		assertTrue(model.items().contains(null));
 
-		assertNull(editModel.value(Detail.INT_VALUE_LIST).get());
+		assertNull(editModel.value(Detail.INT_ITEMS).get());
 		comboBox.setSelectedItem(1);
-		assertEquals(1, editModel.value(Detail.INT_VALUE_LIST).get());
+		assertEquals(1, editModel.value(Detail.INT_ITEMS).get());
 		comboBox.setSelectedItem(2);
-		assertEquals(2, editModel.value(Detail.INT_VALUE_LIST).get());
+		assertEquals(2, editModel.value(Detail.INT_ITEMS).get());
 		comboBox.setSelectedItem(3);
-		assertEquals(3, editModel.value(Detail.INT_VALUE_LIST).get());
+		assertEquals(3, editModel.value(Detail.INT_ITEMS).get());
 		comboBox.setSelectedItem(4);//does not exist
-		assertNull(editModel.value(Detail.INT_VALUE_LIST).get());
+		assertNull(editModel.value(Detail.INT_ITEMS).get());
 	}
 
 	@Test
 	void nullableUnsortedItemComboBox() {
 		ComponentValue<Integer, JComboBox<Item<Integer>>> componentValue =
-						entityComponents.itemComboBox(Detail.INT_VALUE_LIST)
+						entityComponents.itemComboBox(Detail.INT_ITEMS)
 										.sorted(false)
 										.buildValue();
 		FilterComboBoxModel<Item<Integer>> model = (FilterComboBoxModel<Item<Integer>>) componentValue.component().getModel();
@@ -241,6 +241,19 @@ public final class EntityComponentsTest {
 		entityComponents.textField(Detail.OFFSET)
 						.link(editModel.value(Detail.OFFSET))
 						.buildValue();
+	}
+
+	@Test
+	void itemTextField() {
+		ComponentValue<Integer, JTextField> componentValue = entityComponents.textField(Detail.INT_ITEMS).buildValue();
+		assertFalse(componentValue.component().isEditable());
+		assertFalse(componentValue.component().isFocusable());
+		componentValue.set(1);
+		assertEquals("One", componentValue.component().getText());
+		componentValue.set(2);
+		assertEquals("Two", componentValue.component().getText());
+		componentValue.set(null);
+		assertEquals("", componentValue.component().getText());
 	}
 
 	@Test

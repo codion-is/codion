@@ -399,6 +399,13 @@ public final class EntityComponents {
 	public <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Attribute<T> attribute) {
 		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
+		if (!attributeDefinition.items().isEmpty()) {
+			return (TextFieldBuilder<T, C, B>) Components.textField(attribute.type().valueClass())
+						.format(new ItemReadOnlyFormat(attributeDefinition))
+						.toolTipText(attributeDefinition.description())
+						.editable(false)
+						.focusable(false);
+		}
 		if (attribute.type().isTemporal()) {
 			return (TextFieldBuilder<T, C, B>) temporalField((Attribute<Temporal>) attribute);
 		}
@@ -628,6 +635,32 @@ public final class EntityComponents {
 						.build();
 	}
 
+	private static final class ItemReadOnlyFormat extends Format {
+
+		@Serial
+		private static final long serialVersionUID = 1;
+
+		private final AttributeDefinition<Object> attributeDefinition;
+
+		private ItemReadOnlyFormat(AttributeDefinition<?> attributeDefinition) {
+			this.attributeDefinition = (AttributeDefinition<Object>) attributeDefinition;
+		}
+
+		@Override
+		public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+			toAppendTo.append(attributeDefinition.string(obj));
+
+			return toAppendTo;
+		}
+
+		@Override
+		public Object parseObject(String source, ParsePosition pos) {
+			pos.setErrorIndex(0);
+
+			return null;
+		}
+	}
+
 	private static final class EntityReadOnlyFormat extends Format {
 
 		@Serial
@@ -636,11 +669,14 @@ public final class EntityComponents {
 		@Override
 		public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
 			toAppendTo.append(obj == null ? "" : obj.toString());
+
 			return toAppendTo;
 		}
 
 		@Override
 		public Object parseObject(String source, ParsePosition pos) {
+			pos.setErrorIndex(0);
+
 			return null;
 		}
 	}

@@ -99,7 +99,7 @@ public class EntityTablePanelTest {
 		assertEquals(11, tablePanel.table().columnModel().getColumnIndex(Detail.DETAIL_FK));
 		assertEquals(12, tablePanel.table().columnModel().getColumnIndex(Detail.MASTER_NAME));
 		assertEquals(13, tablePanel.table().columnModel().getColumnIndex(Detail.MASTER_CODE));
-		assertEquals(14, tablePanel.table().columnModel().getColumnIndex(Detail.INT_VALUE_LIST));
+		assertEquals(14, tablePanel.table().columnModel().getColumnIndex(Detail.INT_ITEMS));
 		assertEquals(15, tablePanel.table().columnModel().getColumnIndex(Detail.INT_DERIVED));
 	}
 

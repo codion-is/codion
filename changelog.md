@@ -16,6 +16,7 @@ Codion Change Log
 - Components.textField() no longer forwards call to NumberField in case of numerical values.
 ### is.codion.swing.framework.ui
 - EntityComponents.textField() now forwards call to NumberField in case of numerical attributes.
+- EntityComponents.textField() now creates an non-focusable, read only text field for item based attributes.
 
 ## 0.18.24
 ## is.codion.common.core

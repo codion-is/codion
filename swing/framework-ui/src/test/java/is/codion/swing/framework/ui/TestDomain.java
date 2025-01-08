@@ -93,7 +93,7 @@ public final class TestDomain extends DomainModel {
 		ForeignKey DETAIL_FK = TYPE.foreignKey("detail_fk", DETAIL_ID, ID);
 		Column<String> MASTER_NAME = TYPE.stringColumn("master_name");
 		Column<Integer> MASTER_CODE = TYPE.integerColumn("master_code");
-		Column<Integer> INT_VALUE_LIST = TYPE.integerColumn("int_value_list");
+		Column<Integer> INT_ITEMS = TYPE.integerColumn("int_items");
 		Attribute<Integer> INT_DERIVED = TYPE.integerAttribute("int_derived");
 		Column<EnumType> ENUM_TYPE = TYPE.column("enum_type", EnumType.class);
 
@@ -104,8 +104,9 @@ public final class TestDomain extends DomainModel {
 
 	private static final String DETAIL_SELECT_TABLE_NAME = "test.entity_test_select";
 
-	private static final List<Item<Integer>> ITEMS = asList(item(0, "0"), item(1, "1"),
-					item(2, "2"), item(3, "3"));
+	private static final List<Item<Integer>> ITEMS = asList(
+					item(0, "Zero"), item(1, "One"),
+					item(2, "Two"), item(3, "Three"));
 
 	void detail() {
 		add(Detail.TYPE.define(
@@ -163,10 +164,10 @@ public final class TestDomain extends DomainModel {
 										Detail.MASTER_CODE.define()
 														.denormalized(Detail.MASTER_FK, Master.CODE)
 														.caption(Detail.MASTER_CODE.name()),
-										Detail.INT_VALUE_LIST.define()
+										Detail.INT_ITEMS.define()
 														.column()
 														.items(ITEMS)
-														.caption(Detail.INT_VALUE_LIST.name()),
+														.caption(Detail.INT_ITEMS.name()),
 										Detail.INT_DERIVED.define()
 														.derived(linkedValues -> {
 															Integer intValue = linkedValues.get(Detail.INT);
