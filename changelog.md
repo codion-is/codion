@@ -22,6 +22,7 @@ Codion Change Log
 - EntityComponents.textField() now forwards call to NumberField in case of numerical attributes.
 - EntityComponents.textField() now creates an non-focusable, read only text field for item based attributes.
 - EntitySearchField.selectorFactory now final, selectorFactory() removed.
+- EntitySearchField.searchIndicator now final, searchIndicator() removed.
 
 ## 0.18.24
 ## is.codion.common.core

@@ -26,7 +26,6 @@ import is.codion.common.property.PropertyValue;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.value.AbstractValue;
-import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -199,15 +198,14 @@ public final class EntitySearchField extends HintTextField {
 	private final Action transferFocusBackwardAction = TransferFocusOnEnter.backwardAction();
 	private final State searchOnFocusLost = State.state(true);
 	private final State searching = State.state();
+	private final Consumer<Boolean> searchingConsumer;
 	private final Function<EntitySearchModel, Selector> selectorFactory;
-	private final Value<SearchIndicator> searchIndicator;
 	private final ControlMap controlMap;
 
 	private SettingsPanel settingsPanel;
 	private SingleSelectionValue singleSelectionValue;
 	private MultiSelectionValue multiSelectionValue;
 	private ProgressWorker<List<Entity>, ?> searchWorker;
-	private Consumer<Boolean> searchIndicatorConsumer;
 	private Control searchControl;
 
 	private Color backgroundColor;
@@ -231,11 +229,8 @@ public final class EntitySearchField extends HintTextField {
 			TextComponents.lowerCase(getDocument());
 		}
 		searchOnFocusLost.set(builder.searchOnFocusLost);
-		searchIndicator = Value.builder()
-						.nonNull(builder.searchIndicator)
-						.listener(this::updateSearchIndicator)
-						.build();
-		updateSearchIndicator();
+		searchingConsumer = createSearchingConsumer(builder.searchIndicator);
+		searching.addConsumer(searchingConsumer);
 		selectorFactory = builder.selectorFactory;
 		if (builder.selectAllOnFocusGained) {
 			addFocusListener(new SelectAllFocusListener());
@@ -260,8 +255,8 @@ public final class EntitySearchField extends HintTextField {
 		if (model != null) {
 			configureColors();
 		}
-		if (searchIndicatorConsumer instanceof ProgressBarWhileSearching) {
-			((ProgressBarWhileSearching) searchIndicatorConsumer).progressBar.updateUI();
+		if (searchingConsumer instanceof ProgressBarWhileSearching) {
+			((ProgressBarWhileSearching) searchingConsumer).progressBar.updateUI();
 		}
 	}
 
@@ -322,14 +317,6 @@ public final class EntitySearchField extends HintTextField {
 	 */
 	public Optional<CommandControl> editControl() {
 		return controlMap.control(EDIT).optional();
-	}
-
-	/**
-	 * @return the {@link Value} controlling the search indicator type
-	 * @see #SEARCH_INDICATOR
-	 */
-	public Value<SearchIndicator> searchIndicator() {
-		return searchIndicator;
 	}
 
 	/**
@@ -479,16 +466,8 @@ public final class EntitySearchField extends HintTextField {
 		linkToEnabledState(model.searchStringModified().not(), transferFocusAction, transferFocusBackwardAction);
 	}
 
-	private void updateSearchIndicator() {
-		if (searchIndicatorConsumer != null) {
-			searching.removeConsumer(searchIndicatorConsumer);
-		}
-		searchIndicatorConsumer = createSearchIndicatorConsumer();
-		searching.addConsumer(searchIndicatorConsumer);
-	}
-
-	private Consumer<Boolean> createSearchIndicatorConsumer() {
-		switch (searchIndicator.getOrThrow()) {
+	private Consumer<Boolean> createSearchingConsumer(SearchIndicator searchIndicator) {
+		switch (searchIndicator) {
 			case WAIT_CURSOR:
 				return new WaitCursorWhileSearching();
 			case PROGRESS_BAR:

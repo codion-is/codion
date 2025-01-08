@@ -377,7 +377,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		 */
 		default <T> Optional<JComponent> createLowerField(ConditionModel<T> condition) {
 			return Optional.empty();
-		};
+		}
 
 		/**
 		 * Creates the field representing the {@link Operator#IN} operands, linked to {@link Operands#in()}
