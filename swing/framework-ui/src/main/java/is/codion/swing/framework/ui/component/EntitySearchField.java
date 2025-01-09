@@ -44,7 +44,6 @@ import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.list.ListBuilder;
-import is.codion.swing.common.ui.component.panel.BorderLayoutPanelBuilder;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.text.HintTextField;
@@ -66,7 +65,6 @@ import is.codion.swing.framework.ui.EntityTableCellRenderer;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import javax.swing.Action;
-import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -126,6 +124,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static javax.swing.BorderFactory.createEmptyBorder;
+import static javax.swing.BorderFactory.createTitledBorder;
 
 /**
  * A UI component based on the EntitySearchModel.
@@ -629,29 +628,15 @@ public final class EntitySearchField extends HintTextField {
 			}
 
 			return borderLayoutPanel()
-							.border(BorderFactory.createTitledBorder(MESSAGES.getString("search_columns")))
+							.border(createTitledBorder(MESSAGES.getString("search_columns")))
 							.northComponent(comboBox(columnComboBoxModel).build())
 							.centerComponent(columnBasePanel)
 							.build();
 		}
 
 		private static JPanel createSouthPanel(EntitySearchModel searchModel) {
-			BorderLayoutPanelBuilder panelBuilder = borderLayoutPanel();
-			if (!searchModel.singleSelection()) {
-				panelBuilder.centerComponent(createSeparatorPanel(searchModel));
-			}
-			panelBuilder.eastComponent(createLimitPanel(searchModel));
-
-			return panelBuilder.build();
-		}
-
-		private static JPanel createSeparatorPanel(EntitySearchModel searchModel) {
 			return borderLayoutPanel()
-							.westComponent(new JLabel(MESSAGES.getString("multiple_item_separator")))
-							.centerComponent(stringField(searchModel.separator())
-											.columns(1)
-											.maximumLength(1)
-											.build())
+							.eastComponent(createLimitPanel(searchModel))
 							.build();
 		}
 

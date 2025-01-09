@@ -52,7 +52,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 	private static final Supplier<Condition> NULL_CONDITION = () -> null;
 	private static final Function<Entity, String> DEFAULT_TO_STRING = Object::toString;
-	private static final String DEFAULT_SEPARATOR = ",";
+	private static final String DEFAULT_SEPARATOR = ", ";
 	private static final String WILDCARD_MULTIPLE = "%";
 	private static final String WILDCARD_SINGLE = "_";
 
@@ -71,10 +71,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 					.notify(Notify.WHEN_SET)
 					.listener(() -> searchStringModified.set(!selection.searchStringRepresentsSelection()))
 					.build();
-	private final Value<String> separator = Value.builder()
-					.nonNull(DEFAULT_SEPARATOR)
-					.listener(this::reset)
-					.build();
+	private final String separator;
 	private final boolean singleSelection;
 	private final Value<Supplier<Condition>> condition = Value.nonNull(NULL_CONDITION);
 	private final Function<Entity, String> stringFactory;
@@ -84,7 +81,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private DefaultEntitySearchModel(DefaultBuilder builder) {
 		this.entityDefinition = builder.entityDefinition;
 		this.connectionProvider = builder.connectionProvider;
-		this.separator.set(builder.separator);
+		this.separator = builder.separator;
 		this.columns = unmodifiableCollection(builder.columns);
 		this.attributes = builder.attributes;
 		this.orderBy = builder.orderBy;
@@ -160,7 +157,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	}
 
 	@Override
-	public Value<String> separator() {
+	public String separator() {
 		return separator;
 	}
 
@@ -183,7 +180,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 			throw new IllegalStateException("No search columns provided for search model: " + entityDefinition.entityType());
 		}
 		Collection<Condition> conditions = new ArrayList<>();
-		String[] searchStrings = singleSelection ? new String[] {searchString.get()} : searchString.getOrThrow().split(separator.getOrThrow());
+		String[] searchStrings = singleSelection ? new String[] {searchString.get()} : searchString.getOrThrow().split(separator);
 		for (Column<String> column : columns) {
 			Settings columnSettings = settings.get(column);
 			for (String rawSearchString : searchStrings) {
@@ -270,7 +267,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		private String entitiesToString() {
 			return entities.get().stream()
 							.map(stringFactory)
-							.collect(joining(separator.getOrThrow()));
+							.collect(joining(separator));
 		}
 	}
 
@@ -385,7 +382,10 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 		@Override
 		public Builder separator(String separator) {
-			this.separator = requireNonNull(separator);
+			if (requireNonNull(separator).isEmpty()) {
+				throw new IllegalArgumentException("Separator must not be empty");
+			}
+			this.separator = separator;
 			return this;
 		}
 

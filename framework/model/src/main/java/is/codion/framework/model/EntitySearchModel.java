@@ -128,9 +128,9 @@ public interface EntitySearchModel {
 	Value<String> searchString();
 
 	/**
-	 * @return the Value representing the text used to separate multiple entities
+	 * @return the String used to separate multiple items
 	 */
-	Value<String> separator();
+	String separator();
 
 	/**
 	 * @return true if single selection is enabled
@@ -236,11 +236,11 @@ public interface EntitySearchModel {
 		Builder singleSelection(boolean singleSelection);
 
 		/**
-		 * Default ','
-		 * @param multipleItemSeparator the text used to separate multiple selected items
+		 * Default ", "
+		 * @param separator the String used to separate multiple items
 		 * @return this builder
 		 */
-		Builder separator(String multipleItemSeparator);
+		Builder separator(String separator);
 
 		/**
 		 * @param limit the search result limit

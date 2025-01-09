@@ -12,6 +12,7 @@ Codion Change Log
 - EntitySearchModel.entityType() replaced with entityDefinition().
 - EntitySearchModel.stringFunction() now final and no longer Value based.
 - EntitySearchModel.stringFunction() renamed stringFactory().
+- EntitySearchModel.separator() now final and no longer Value based.
 ### is.codion.swing.common.ui
 - FilterTableCellRenderer.UISettings.selectionForeground() added.
 - DefaultFilterTableCellRenderer uses UISettings.selectionForeground().

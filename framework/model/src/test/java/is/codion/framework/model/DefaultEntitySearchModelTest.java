@@ -131,7 +131,7 @@ public final class DefaultEntitySearchModelTest {
 		assertEquals("joh", searchModel.searchString().get());
 		searchModel.selection().entities().set(result);
 		assertFalse(searchModel.selection().empty().get());
-		assertEquals("John" + searchModel.separator().get() + "johnson", searchModel.searchString().get());
+		assertEquals("John;johnson", searchModel.searchString().get());
 
 		searchModel.searchString().set("jo");
 		result = searchModel.search();
@@ -149,7 +149,7 @@ public final class DefaultEntitySearchModelTest {
 
 		searchModel.settings().get(Employee.NAME).wildcardPrefix().set(false);
 		searchModel.settings().get(Employee.JOB).wildcardPrefix().set(false);
-		searchModel.searchString().set("jo,cl");
+		searchModel.searchString().set("jo;cl");
 		result = searchModel.search();
 		assertTrue(contains(result, "John"));
 		assertTrue(contains(result, "johnson"));
@@ -173,7 +173,6 @@ public final class DefaultEntitySearchModelTest {
 		assertFalse(contains(result, "Andy"));
 		assertFalse(contains(result, "Andrew"));
 
-		searchModel.separator().set(";");
 		searchModel.searchString().set("andy ; Andrew ");//spaces should be trimmed away
 		result = searchModel.search();
 		assertEquals(2, result.size());
@@ -277,6 +276,7 @@ public final class DefaultEntitySearchModelTest {
 		searchable = asList(Employee.NAME, Employee.JOB);
 		searchModel = new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
 						.columns(searchable)
+						.separator(";")
 						.build();
 
 		CONNECTION_PROVIDER.connection().startTransaction();
