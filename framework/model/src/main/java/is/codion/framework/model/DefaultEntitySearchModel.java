@@ -77,7 +77,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 					.build();
 	private final boolean singleSelection;
 	private final Value<Supplier<Condition>> condition = Value.nonNull(NULL_CONDITION);
-	private final Function<Entity, String> stringFunction;
+	private final Function<Entity, String> stringFactory;
 	private final Value<Integer> limit;
 	private final String description;
 
@@ -90,7 +90,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		this.orderBy = builder.orderBy;
 		this.settings = unmodifiableMap(columns.stream()
 						.collect(toMap(Function.identity(), column -> new DefaultSettings())));
-		this.stringFunction = builder.stringFunction;
+		this.stringFactory = builder.stringFactory;
 		this.description = builder.description == null ? createDescription() : builder.description;
 		this.singleSelection = builder.singleSelection;
 		this.limit = Value.nullable(builder.limit);
@@ -137,8 +137,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	}
 
 	@Override
-	public Function<Entity, String> stringFunction() {
-		return stringFunction;
+	public Function<Entity, String> stringFactory() {
+		return stringFactory;
 	}
 
 	@Override
@@ -269,7 +269,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 		private String entitiesToString() {
 			return entities.get().stream()
-							.map(stringFunction)
+							.map(stringFactory)
 							.collect(joining(separator.getOrThrow()));
 		}
 	}
@@ -325,7 +325,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		private final EntityConnectionProvider connectionProvider;
 		private Collection<Column<String>> columns;
 		private Collection<Attribute<?>> attributes = emptyList();
-		private Function<Entity, String> stringFunction = DEFAULT_TO_STRING;
+		private Function<Entity, String> stringFactory = DEFAULT_TO_STRING;
 		private String description;
 		private boolean singleSelection = false;
 		private String separator = DEFAULT_SEPARATOR;
@@ -366,8 +366,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		}
 
 		@Override
-		public Builder stringFunction(Function<Entity, String> stringFunction) {
-			this.stringFunction = requireNonNull(stringFunction);
+		public Builder stringFactory(Function<Entity, String> stringFactory) {
+			this.stringFactory = requireNonNull(stringFactory);
 			return this;
 		}
 

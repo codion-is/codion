@@ -105,9 +105,9 @@ public final class DefaultEntitySearchModelTest {
 	}
 
 	@Test
-	void stringFunction() {
+	void stringFactory() {
 		EntitySearchModel model = new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
-						.stringFunction(entity -> entity.string(Employee.JOB))
+						.stringFactory(entity -> entity.string(Employee.JOB))
 						.build();
 		Entity employee = ENTITIES.builder(Employee.TYPE)
 						.with(Employee.NAME, "Darri")

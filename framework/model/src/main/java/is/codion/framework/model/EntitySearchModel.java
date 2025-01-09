@@ -110,7 +110,7 @@ public interface EntitySearchModel {
 	 * @return the function providing the {@code toString()} implementation for the entities displayed by this model
 	 * @see #reset()
 	 */
-	Function<Entity, String> stringFunction();
+	Function<Entity, String> stringFactory();
 
 	/**
 	 * @return an {@link ObservableState} indicating whether the search string represents the selected entities
@@ -216,11 +216,11 @@ public interface EntitySearchModel {
 		Builder orderBy(OrderBy orderBy);
 
 		/**
-		 * Override the default toString() for search elements when displayed in a field based on this model
-		 * @param stringFunction the function providing the toString() functionality
+		 * Overrides the default toString() for search elements when displayed in a field based on this model
+		 * @param stringFactory the function providing the toString() functionality
 		 * @return this builder
 		 */
-		Builder stringFunction(Function<Entity, String> stringFunction);
+		Builder stringFactory(Function<Entity, String> stringFactory);
 
 		/**
 		 * @param description the description
