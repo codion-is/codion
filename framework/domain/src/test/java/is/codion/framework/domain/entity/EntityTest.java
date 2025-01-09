@@ -305,6 +305,6 @@ public final class EntityTest {
 						.build();
 		Collection<Key> keys = Entity.primaryKeys(singletonList(noPk));
 		assertFalse(keys.iterator().next().isNull());
-		assertFalse(keys.iterator().next().primaryKey());
+		assertFalse(keys.iterator().next().primary());
 	}
 }

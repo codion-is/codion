@@ -377,10 +377,10 @@ public class DefaultEntityTest {
 						.build();
 		Entity.Key key = noPk.primaryKey();
 		assertFalse(key.isNull());
-		assertFalse(key.primaryKey());
+		assertFalse(key.primary());
 		Entity.Key originalKey = noPk.originalPrimaryKey();
 		assertFalse(originalKey.isNull());
-		assertFalse(originalKey.primaryKey());
+		assertFalse(originalKey.primary());
 	}
 
 	@Test

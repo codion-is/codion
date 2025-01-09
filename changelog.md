@@ -7,6 +7,8 @@ Codion Change Log
 - AttributeDefinition.Builder.mnemonicResourceKey() added.
 - ForeignKeyDefiner.softForeignKey() replaced with ForeignKeyDefinition.Builder.soft().
 - EntityDefinition.cacheToString() added, redundant comment cleanup.
+- Entity.Key.entityDefinition() renamed definition().
+- Entity.Key.primaryKey() renamed primary().
 ### is.codion.framework.model
 - EntitySearchModel.Builder.attributes() added.
 - EntitySearchModel.Builder.orderBy() added.

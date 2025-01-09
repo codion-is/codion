@@ -77,8 +77,8 @@ class DefaultEntity implements Entity, Serializable {
 	 * @param key the key
 	 */
 	DefaultEntity(Key key) {
-		this(requireNonNull(key).entityDefinition(), createValueMap(key), null);
-		if (key.primaryKey()) {
+		this(requireNonNull(key).definition(), createValueMap(key), null);
+		if (key.primary()) {
 			this.primaryKey = key;
 		}
 	}

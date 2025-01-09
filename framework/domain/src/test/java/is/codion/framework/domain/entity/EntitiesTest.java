@@ -198,7 +198,7 @@ public final class EntitiesTest {
 		assertFalse(entities.keyBuilder(NoPk.TYPE)
 						.with(NoPk.COL1, 1)
 						.build()
-						.primaryKey());
+						.primary());
 		Entity.Key noPk = entities.keyBuilder(NoPk.TYPE).build();
 		assertThrows(IllegalArgumentException.class, () -> noPk.get(NoPk.COL1));
 	}

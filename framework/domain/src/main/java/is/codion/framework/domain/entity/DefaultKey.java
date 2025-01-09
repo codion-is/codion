@@ -50,7 +50,7 @@ class DefaultKey implements Entity.Key, Serializable {
 	private static final Map<String, EntitySerializer> SERIALIZERS = new ConcurrentHashMap<>();
 
 	List<Column<?>> columns;
-	boolean primaryKey;
+	boolean primary;
 	Map<Column<?>, Object> values;
 	boolean singleIntegerKey;
 	private Integer cachedHashCode = null;
@@ -62,24 +62,24 @@ class DefaultKey implements Entity.Key, Serializable {
 	 * @param definition the entity definition
 	 * @param column the column
 	 * @param value the value
-	 * @param primaryKey true if this key represents a primary key
+	 * @param primary true if this key represents a primary key
 	 */
-	DefaultKey(EntityDefinition definition, Column<?> column, Object value, boolean primaryKey) {
-		this(definition, singletonMap(column, value), primaryKey);
+	DefaultKey(EntityDefinition definition, Column<?> column, Object value, boolean primary) {
+		this(definition, singletonMap(column, value), primary);
 	}
 
 	/**
 	 * Instantiates a new DefaultKey with the given values
 	 * @param definition the entity definition
 	 * @param values the values associated with their respective attributes
-	 * @param primaryKey true if this key represents a primary key
+	 * @param primary true if this key represents a primary key
 	 */
-	DefaultKey(EntityDefinition definition, Map<Column<?>, Object> values, boolean primaryKey) {
+	DefaultKey(EntityDefinition definition, Map<Column<?>, Object> values, boolean primary) {
 		values.forEach((column, value) -> ((Column<Object>) column).type().validateType(value));
 		this.values = unmodifiableMap(values);
 		this.columns = unmodifiableList(new ArrayList<>(values.keySet()));
 		this.definition = definition;
-		this.primaryKey = primaryKey;
+		this.primary = primary;
 		if (!this.columns.isEmpty()) {
 			this.singleIntegerKey = columns.size() == 1 && columns.get(0).type().isInteger();
 		}
@@ -91,7 +91,7 @@ class DefaultKey implements Entity.Key, Serializable {
 	}
 
 	@Override
-	public EntityDefinition entityDefinition() {
+	public EntityDefinition definition() {
 		return definition;
 	}
 
@@ -101,8 +101,8 @@ class DefaultKey implements Entity.Key, Serializable {
 	}
 
 	@Override
-	public boolean primaryKey() {
-		return primaryKey;
+	public boolean primary() {
+		return primary;
 	}
 
 	@Override

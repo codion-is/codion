@@ -84,7 +84,7 @@ final class EntitySerializer {
 	}
 
 	private void deserializeValues(DefaultKey key, ObjectInputStream stream) throws IOException, ClassNotFoundException {
-		key.primaryKey = stream.readBoolean();
+		key.primary = stream.readBoolean();
 		int valueCount = stream.readInt();
 		key.columns = new ArrayList<>(valueCount);
 		key.values = new HashMap<>(valueCount);
@@ -129,7 +129,7 @@ final class EntitySerializer {
 	}
 
 	private static void serializeValues(DefaultKey key, ObjectOutputStream stream) throws IOException {
-		stream.writeBoolean(key.primaryKey);
+		stream.writeBoolean(key.primary);
 		stream.writeInt(key.columns.size());
 		for (int i = 0; i < key.columns.size(); i++) {
 			Attribute<?> attribute = key.columns.get(i);

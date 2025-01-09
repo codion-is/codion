@@ -269,7 +269,7 @@ public class DefaultLocalEntityConnectionTest {
 
 		Entity.Key key = connection.insert(noPk);
 		assertFalse(key.isNull());
-		assertFalse(key.primaryKey());
+		assertFalse(key.primary());
 	}
 
 	@Test

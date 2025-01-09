@@ -268,9 +268,9 @@ public interface Entity extends Comparable<Entity> {
 	/**
 	 * Returns the primary key of this entity.
 	 * If the entity has no defined primary key, this key contains
-	 * all column values and {@link Key#primaryKey()} returns false.
+	 * all column values and {@link Key#primary()} returns false.
 	 * @return the primary key of this entity
-	 * @see Key#primaryKey()
+	 * @see Key#primary()
 	 */
 	Key primaryKey();
 
@@ -504,7 +504,7 @@ public interface Entity extends Comparable<Entity> {
 		/**
 		 * @return the entity definition
 		 */
-		EntityDefinition entityDefinition();
+		EntityDefinition definition();
 
 		/**
 		 * Returns the columns comprising this key, in an unspecified order.
@@ -515,10 +515,10 @@ public interface Entity extends Comparable<Entity> {
 		Collection<Column<?>> columns();
 
 		/**
-		 * @return true if this key represents a primary key for an entity, note that this is true
-		 * for empty keys representing entities without a defined primary key
+		 * Note that this method returns true for empty keys representing entities without a defined primary key
+		 * @return true if this key represents a primary key
 		 */
-		boolean primaryKey();
+		boolean primary();
 
 		/**
 		 * @return true if this key contains no values or if it contains a null value for a non-nullable key attribute

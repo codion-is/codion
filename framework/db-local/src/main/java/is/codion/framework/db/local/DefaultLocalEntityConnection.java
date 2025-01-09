@@ -985,7 +985,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 							.collect(toList()));
 		}
 
-		if (referencedKey.primaryKey()) {
+		if (referencedKey.primary()) {
 			return primaryKeyMap(referencedEntities);
 		}
 
