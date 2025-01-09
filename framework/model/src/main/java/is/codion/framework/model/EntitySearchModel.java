@@ -65,6 +65,11 @@ public interface EntitySearchModel {
 	EntityConnectionProvider connectionProvider();
 
 	/**
+	 * @return the {@link Search}
+	 */
+	Search search();
+
+	/**
 	 * @return the selection
 	 */
 	Selection selection();
@@ -80,15 +85,6 @@ public interface EntitySearchModel {
 	Value<Integer> limit();
 
 	/**
-	 * Performs a query based on the current search configuration and returns the result.
-	 * Note that the number of search results may be limited via {@link #limit()}.
-	 * @return a list containing the entities fulfilling the current condition
-	 * @throws IllegalStateException in case no search columns are specified
-	 * @see #limit()
-	 */
-	List<Entity> search();
-
-	/**
 	 * Sets the additional search condition supplier to use when performing the next search.
 	 * This condition is AND'ed to the actual search condition.
 	 * NOTE, this does not affect the currently selected value(s), if any.
@@ -102,14 +98,29 @@ public interface EntitySearchModel {
 	Map<Column<String>, Settings> settings();
 
 	/**
-	 * @return the Value representing the search string
-	 */
-	Value<String> searchString();
-
-	/**
 	 * @return true if single selection is enabled
 	 */
 	boolean singleSelection();
+
+	/**
+	 * Manages the search text and provides search results.
+	 */
+	interface Search {
+
+		/**
+		 * @return the {@link Value} representing the search text
+		 */
+		Value<String> text();
+
+		/**
+		 * Performs a query based on the current search configuration and returns the result.
+		 * Note that the number of search results may be limited via {@link #limit()}.
+		 * @return a list containing the entities fulfilling the current condition
+		 * @throws IllegalStateException in case no search columns are specified
+		 * @see #limit()
+		 */
+		List<Entity> result();
+	}
 
 	/**
 	 * Controls the selection
@@ -205,12 +216,6 @@ public interface EntitySearchModel {
 		 * @return this builder
 		 */
 		Builder stringFactory(Function<Entity, String> stringFactory);
-
-		/**
-		 * @param description the description
-		 * @return this builder
-		 */
-		Builder description(String description);
 
 		/**
 		 * Default false

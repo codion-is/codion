@@ -458,8 +458,8 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	private void bindEvents() {
-		new SearchStringValue().link(model.searchString());
-		model.searchString().addListener(this::onSearchStringChanged);
+		new SearchStringValue().link(model.search().text());
+		model.search().text().addListener(this::onSearchStringChanged);
 		model.selection().entities().addListener(this::onSelectionChanged);
 		addFocusListener(new SearchFocusListener());
 		addKeyListener(new EnterEscapeListener());
@@ -509,13 +509,13 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	private void performSearch(boolean promptUser) {
-		if (nullOrEmpty(model.searchString().get())) {
+		if (nullOrEmpty(model.search().text().get())) {
 			model.selection().clear();
 		}
 		else if (searchStringSpecified.get()) {
 			cancelCurrentSearch();
 			searching.set(true);
-			searchWorker = ProgressWorker.builder(model::search)
+			searchWorker = ProgressWorker.builder(model.search()::result)
 							.onResult(searchResult -> handleResult(searchResult, promptUser))
 							.onException(this::handleException)
 							.onCancelled(this::handleCancel)

@@ -62,13 +62,10 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private final Collection<Column<String>> columns;
 	private final Collection<Attribute<?>> attributes;
 	private final OrderBy orderBy;
+	private final DefaultSearch search = new DefaultSearch();
 	private final DefaultSelection selection = new DefaultSelection();
 	private final EntityConnectionProvider connectionProvider;
 	private final Map<Column<String>, Settings> settings;
-	private final Value<String> searchString = Value.builder()
-					.nonNull("")
-					.notify(Notify.WHEN_SET)
-					.build();
 	private final String separator;
 	private final boolean singleSelection;
 	private final Value<Supplier<Condition>> condition = Value.nonNull(NULL_CONDITION);
@@ -105,6 +102,11 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	}
 
 	@Override
+	public Search search() {
+		return search;
+	}
+
+	@Override
 	public Selection selection() {
 		return selection;
 	}
@@ -125,73 +127,81 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	}
 
 	@Override
-	public List<Entity> search() {
-		List<Entity> result = connectionProvider.connection().select(select());
-		result.sort(entityDefinition.comparator());
-
-		return result;
-	}
-
-	@Override
-	public Value<String> searchString() {
-		return searchString;
-	}
-
-	@Override
 	public boolean singleSelection() {
 		return singleSelection;
-	}
-
-	/**
-	 * @return a select instance based on this search model including any additional search condition
-	 * @throws IllegalStateException in case no search columns are specified
-	 */
-	private Select select() {
-		if (columns.isEmpty()) {
-			throw new IllegalStateException("No search columns provided for search model: " + entityDefinition.entityType());
-		}
-		Collection<Condition> conditions = new ArrayList<>();
-		String[] searchStrings = singleSelection ? new String[] {searchString.get()} : searchString.getOrThrow().split(separator);
-		for (Column<String> column : columns) {
-			Settings columnSettings = settings.get(column);
-			for (String rawSearchString : searchStrings) {
-				String preparedSearchString = prepareSearchString(rawSearchString, columnSettings);
-				boolean containsWildcards = containsWildcards(preparedSearchString);
-				if (columnSettings.caseSensitive().get()) {
-					conditions.add(containsWildcards ? column.like(preparedSearchString) : column.equalTo(preparedSearchString));
-				}
-				else {
-					conditions.add(containsWildcards ? column.likeIgnoreCase(preparedSearchString) : column.equalToIgnoreCase(preparedSearchString));
-				}
-			}
-		}
-
-		return Select.where(createCombinedCondition(conditions))
-						.attributes(attributes)
-						.limit(limit.get())
-						.orderBy(orderBy)
-						.build();
-	}
-
-	private Condition createCombinedCondition(Collection<Condition> conditions) {
-		Condition conditionCombination = or(conditions);
-		Condition additionalCondition = condition.getOrThrow().get();
-
-		return additionalCondition == null ? conditionCombination : and(additionalCondition, conditionCombination);
-	}
-
-	private static String prepareSearchString(String rawSearchString, Settings settings) {
-		boolean wildcardPrefix = settings.wildcardPrefix().get();
-		boolean wildcardPostfix = settings.wildcardPostfix().get();
-		rawSearchString = settings.spaceAsWildcard().get() ? rawSearchString.replace(' ', '%') : rawSearchString;
-
-		return rawSearchString.equals(WILDCARD_MULTIPLE) ? WILDCARD_MULTIPLE :
-						((wildcardPrefix ? WILDCARD_MULTIPLE : "") + rawSearchString.trim() + (wildcardPostfix ? WILDCARD_MULTIPLE : ""));
 	}
 
 	private void validateType(Entity entity) {
 		if (!entity.entityType().equals(entityDefinition.entityType())) {
 			throw new IllegalArgumentException("Entities of type " + entityDefinition.entityType() + " exptected, got " + entity.entityType());
+		}
+	}
+
+	private final class DefaultSearch implements Search {
+
+		private final Value<String> text = Value.builder()
+						.nonNull("")
+						.notify(Notify.WHEN_SET)
+						.build();
+
+		@Override
+		public Value<String> text() {
+			return text;
+		}
+
+		@Override
+		public List<Entity> result() {
+			List<Entity> result = connectionProvider.connection().select(select());
+			result.sort(entityDefinition.comparator());
+
+			return result;
+		}
+
+		private Select select() {
+			if (columns.isEmpty()) {
+				throw new IllegalStateException("No search columns provided for search model: " + entityDefinition.entityType());
+			}
+			Collection<Condition> conditions = new ArrayList<>();
+			String[] searchStrings = strings();
+			for (Column<String> column : columns) {
+				Settings columnSettings = settings.get(column);
+				for (String rawSearchString : searchStrings) {
+					String preparedSearchString = prepareSearchString(rawSearchString, columnSettings);
+					boolean containsWildcards = containsWildcards(preparedSearchString);
+					if (columnSettings.caseSensitive().get()) {
+						conditions.add(containsWildcards ? column.like(preparedSearchString) : column.equalTo(preparedSearchString));
+					}
+					else {
+						conditions.add(containsWildcards ? column.likeIgnoreCase(preparedSearchString) : column.equalToIgnoreCase(preparedSearchString));
+					}
+				}
+			}
+
+			return Select.where(createCombinedCondition(conditions))
+							.attributes(attributes)
+							.limit(limit.get())
+							.orderBy(orderBy)
+							.build();
+		}
+
+		private String[] strings() {
+			return singleSelection ? new String[] {search.text.get()} : search.text.getOrThrow().split(separator);
+		}
+
+		private String prepareSearchString(String rawSearchString, Settings settings) {
+			boolean wildcardPrefix = settings.wildcardPrefix().get();
+			boolean wildcardPostfix = settings.wildcardPostfix().get();
+			rawSearchString = settings.spaceAsWildcard().get() ? rawSearchString.replace(' ', '%') : rawSearchString;
+
+			return rawSearchString.equals(WILDCARD_MULTIPLE) ? WILDCARD_MULTIPLE :
+							((wildcardPrefix ? WILDCARD_MULTIPLE : "") + rawSearchString.trim() + (wildcardPostfix ? WILDCARD_MULTIPLE : ""));
+		}
+
+		private Condition createCombinedCondition(Collection<Condition> conditions) {
+			Condition conditionCombination = or(conditions);
+			Condition additionalCondition = condition.getOrThrow().get();
+
+			return additionalCondition == null ? conditionCombination : and(additionalCondition, conditionCombination);
 		}
 	}
 
@@ -292,7 +302,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		private Collection<Column<String>> columns;
 		private Collection<Attribute<?>> attributes = emptyList();
 		private Function<Entity, String> stringFactory = DEFAULT_TO_STRING;
-		private String description;
 		private boolean singleSelection = false;
 		private String separator = DEFAULT_SEPARATOR;
 		private Integer limit = DEFAULT_LIMIT.get();
@@ -334,12 +343,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		@Override
 		public Builder stringFactory(Function<Entity, String> stringFactory) {
 			this.stringFactory = requireNonNull(stringFactory);
-			return this;
-		}
-
-		@Override
-		public Builder description(String description) {
-			this.description = requireNonNull(description);
 			return this;
 		}
 

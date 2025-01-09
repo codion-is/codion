@@ -6,7 +6,7 @@ Codion Change Log
 - DefaultEntityValidator.valid() now final.
 - AttributeDefinition.Builder.mnemonicResourceKey() added.
 - ForeignKeyDefiner.softForeignKey() replaced with ForeignKeyDefinition.Builder.soft().
-## is.codion.framework.model
+### is.codion.framework.model
 - EntitySearchModel.Builder.attributes() added.
 - EntitySearchModel.Builder.orderBy() added.
 - EntitySearchModel.entityType() replaced with entityDefinition().
@@ -17,6 +17,7 @@ Codion Change Log
 - EntitySearchModel.reset(), searchStringModified(), stringFactory() and separator() removed.
 - EntitySearchModel.Selection.string() and strings() added.
 - EntitySearchModel.Selection.string() and strings() now sorted.
+- EntitySearchModel.Search added, related refactoring and renaming.
 ### is.codion.swing.common.ui
 - FilterTableCellRenderer.UISettings.selectionForeground() added.
 - DefaultFilterTableCellRenderer uses UISettings.selectionForeground().
@@ -37,7 +38,7 @@ Codion Change Log
 - EntitySearchField refactored.
 
 ## 0.18.24
-## is.codion.common.core
+### is.codion.common.core
 - DefaultObserver bug fixed, did not work correctly when a consumer implemented both Runnable and Consumer, such as Event, then it was notified only as Runnable.
 ### is.codion.swing.common.model
 - ItemComboBoxModel.builder() moved to FilterComboBoxModel.
