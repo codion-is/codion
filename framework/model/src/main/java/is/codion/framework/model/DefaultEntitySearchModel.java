@@ -56,7 +56,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private static final String WILDCARD_MULTIPLE = "%";
 	private static final String WILDCARD_SINGLE = "_";
 
-	private final State searchStringModified = State.state();
 	private final State selectionEmpty = State.state(true);
 
 	private final EntityDefinition entityDefinition;
@@ -69,7 +68,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private final Value<String> searchString = Value.builder()
 					.nonNull("")
 					.notify(Notify.WHEN_SET)
-					.listener(() -> searchStringModified.set(!selection.searchStringRepresentsSelection()))
 					.build();
 	private final String separator;
 	private final boolean singleSelection;
@@ -127,16 +125,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	}
 
 	@Override
-	public Function<Entity, String> stringFactory() {
-		return stringFactory;
-	}
-
-	@Override
-	public void reset() {
-		searchString.set(selection.entitiesToString());
-	}
-
-	@Override
 	public List<Entity> search() {
 		List<Entity> result = connectionProvider.connection().select(select());
 		result.sort(entityDefinition.comparator());
@@ -150,18 +138,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	}
 
 	@Override
-	public String separator() {
-		return separator;
-	}
-
-	@Override
 	public boolean singleSelection() {
 		return singleSelection;
-	}
-
-	@Override
-	public ObservableState searchStringModified() {
-		return searchStringModified.observable();
 	}
 
 	/**
@@ -222,7 +200,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		private final ValueSet<Entity> entities = ValueSet.<Entity>builder()
 						.notify(Notify.WHEN_SET)
 						.validator(new EntityValidator())
-						.listener(DefaultEntitySearchModel.this::reset)
 						.consumer(selectedEntities -> selectionEmpty.set(selectedEntities.isEmpty()))
 						.build();
 
@@ -246,15 +223,18 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 			entities.clear();
 		}
 
-		private boolean searchStringRepresentsSelection() {
-			return (entities.get().isEmpty() && searchString.getOrThrow().isEmpty()) ||
-							(!entities.get().isEmpty() && entitiesToString().equals(searchString.get()));
-		}
-
-		private String entitiesToString() {
+		@Override
+		public String string() {
 			return entities.get().stream()
 							.map(stringFactory)
 							.collect(joining(separator));
+		}
+
+		@Override
+		public Collection<String> strings() {
+			return entities.get().stream()
+							.map(stringFactory)
+							.collect(toList());
 		}
 	}
 

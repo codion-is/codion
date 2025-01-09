@@ -74,7 +74,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
@@ -194,6 +193,7 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	private final EntitySearchModel model;
+	private final State searchStringSpecified = State.state();
 	private final Action transferFocusAction = TransferFocusOnEnter.forwardAction();
 	private final Action transferFocusBackwardAction = TransferFocusOnEnter.backwardAction();
 	private final State searchOnFocusLost = State.state(true);
@@ -236,7 +236,7 @@ public final class EntitySearchField extends HintTextField {
 			addFocusListener(new SelectAllFocusListener());
 		}
 		setComponentPopupMenu(createPopupMenu());
-		setToolTipText(createSelectionToolTip());
+		setToolTipText(selectionToolTip());
 		configureColors();
 		bindEvents();
 	}
@@ -296,7 +296,7 @@ public final class EntitySearchField extends HintTextField {
 			searchControl = Control.builder()
 							.command(this::performSearch)
 							.smallIcon(ICONS.search())
-							.enabled(model.searchStringModified())
+							.enabled(searchStringSpecified)
 							.build();
 		}
 
@@ -458,12 +458,12 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	private void bindEvents() {
-		new SearchStringValue(this).link(model.searchString());
-		model.searchString().addListener(this::updateColors);
-		model.selection().entities().addListener(this::selectionChanged);
+		new SearchStringValue().link(model.searchString());
+		model.searchString().addListener(this::onSearchStringChanged);
+		model.selection().entities().addListener(this::onSelectionChanged);
 		addFocusListener(new SearchFocusListener());
 		addKeyListener(new EnterEscapeListener());
-		linkToEnabledState(model.searchStringModified().not(), transferFocusAction, transferFocusBackwardAction);
+		linkToEnabledState(searchStringSpecified.not(), transferFocusAction, transferFocusBackwardAction);
 	}
 
 	private Consumer<Boolean> createSearchingConsumer(SearchIndicator searchIndicator) {
@@ -484,18 +484,23 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	private void updateColors() {
-		boolean validBackground = !model.searchStringModified().get();
+		boolean validBackground = !searchStringSpecified.get();
 		setBackground(validBackground ? backgroundColor : invalidBackgroundColor);
 	}
 
-	private void selectionChanged() {
-		setToolTipText(createSelectionToolTip());
+	private void onSearchStringChanged() {
+		searchStringSpecified.set(!getText().isEmpty() && !getText().equals(model.selection().string()));
+		updateColors();
+	}
+
+	private void onSelectionChanged() {
+		setToolTipText(selectionToolTip());
+		setText(model.selection().string());
 		setCaretPosition(0);
 	}
 
-	private String createSelectionToolTip() {
-		return model.selection().entities().get().stream()
-						.map(entity -> model.stringFactory().apply(entity))
+	private String selectionToolTip() {
+		return model.selection().strings().stream()
 						.collect(joining("<br>", "<html>", "</html"));
 	}
 
@@ -507,7 +512,7 @@ public final class EntitySearchField extends HintTextField {
 		if (nullOrEmpty(model.searchString().get())) {
 			model.selection().clear();
 		}
-		else if (model.searchStringModified().get()) {
+		else if (searchStringSpecified.get()) {
 			cancelCurrentSearch();
 			searching.set(true);
 			searchWorker = ProgressWorker.builder(model::search)
@@ -589,23 +594,20 @@ public final class EntitySearchField extends HintTextField {
 		return settingsPanel;
 	}
 
-	private static final class SearchStringValue extends AbstractValue<String> {
+	private final class SearchStringValue extends AbstractValue<String> {
 
-		private final JTextField searchField;
-
-		private SearchStringValue(JTextField searchField) {
-			this.searchField = searchField;
-			this.searchField.getDocument().addDocumentListener((DocumentAdapter) e -> notifyListeners());
+		private SearchStringValue() {
+			getDocument().addDocumentListener((DocumentAdapter) e -> notifyListeners());
 		}
 
 		@Override
 		protected String getValue() {
-			return searchField.getText();
+			return getText();
 		}
 
 		@Override
 		protected void setValue(String value) {
-			searchField.setText(value);
+			setText(value);
 		}
 	}
 
@@ -985,21 +987,21 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		private boolean shouldPerformSearch() {
-			return searchOnFocusLost.get() && !searching.get() && model.searchStringModified().get();
+			return searchOnFocusLost.get() && !searching.get() && searchStringSpecified.get();
 		}
 	}
 
 	private final class EnterEscapeListener extends KeyAdapter {
 		@Override
 		public void keyPressed(KeyEvent e) {
-			if (model.searchStringModified().get()) {
+			if (searchStringSpecified.get()) {
 				if (e.getKeyCode() == VK_ENTER) {
 					e.consume();
 					performSearch(true);
 				}
 				else if (e.getKeyCode() == VK_ESCAPE) {
 					e.consume();
-					model.reset();
+					setText(model.selection().string());
 					selectAll();
 				}
 			}

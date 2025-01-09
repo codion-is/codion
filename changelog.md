@@ -14,6 +14,8 @@ Codion Change Log
 - EntitySearchModel.stringFunction() renamed stringFactory().
 - EntitySearchModel.separator() now final and no longer Value based.
 - EntitySearchModel.description() removed.
+- EntitySearchModel.reset(), searchStringModified(), stringFactory() and separator() removed.
+- EntitySearchModel.Selection.string() and strings() added.
 ### is.codion.swing.common.ui
 - FilterTableCellRenderer.UISettings.selectionForeground() added.
 - DefaultFilterTableCellRenderer uses UISettings.selectionForeground().
@@ -31,6 +33,7 @@ Codion Change Log
 - EntitySearchField.searchIndicator now final, searchIndicator() removed.
 - EntityComponents.supports() removed, unused.
 - EntitySearchField now displays the selected entities in a multiline tooltip instead of the model description.
+- EntitySearchField refactored.
 
 ## 0.18.24
 ## is.codion.common.core

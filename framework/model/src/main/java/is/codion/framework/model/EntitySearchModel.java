@@ -75,11 +75,6 @@ public interface EntitySearchModel {
 	Collection<Column<String>> columns();
 
 	/**
-	 * Resets the search string so that is represents the selected entities
-	 */
-	void reset();
-
-	/**
 	 * @return the {@link Value} controlling the search result limit
 	 */
 	Value<Integer> limit();
@@ -102,17 +97,6 @@ public interface EntitySearchModel {
 	Value<Supplier<Condition>> condition();
 
 	/**
-	 * @return the function providing the {@code toString()} implementation for the entities displayed by this model
-	 * @see #reset()
-	 */
-	Function<Entity, String> stringFactory();
-
-	/**
-	 * @return an {@link ObservableState} indicating whether the search string represents the selected entities
-	 */
-	ObservableState searchStringModified();
-
-	/**
 	 * @return the settings associated with each search column
 	 */
 	Map<Column<String>, Settings> settings();
@@ -121,11 +105,6 @@ public interface EntitySearchModel {
 	 * @return the Value representing the search string
 	 */
 	Value<String> searchString();
-
-	/**
-	 * @return the String used to separate multiple items
-	 */
-	String separator();
 
 	/**
 	 * @return true if single selection is enabled
@@ -146,6 +125,16 @@ public interface EntitySearchModel {
 		 * @return a {@link Value} controlling the selected entities
 		 */
 		ValueSet<Entity> entities();
+
+		/**
+		 * @return a String representation of the selected entities
+		 */
+		String string();
+
+		/**
+		 * @return String representations of the selected entities
+		 */
+		Collection<String> strings();
 
 		/**
 		 * @return an {@link ObservableState} indicating whether the selection is empty
