@@ -220,17 +220,7 @@ final class DefaultForeignKey implements ForeignKey, Serializable {
 
 		@Override
 		public ForeignKeyDefinition.Builder foreignKey(int fetchDepth) {
-			return new DefaultForeignKeyDefinition.DefaultForeignKeyDefinitionBuilder(foreignKey, fetchDepth, false);
-		}
-
-		@Override
-		public ForeignKeyDefinition.Builder softForeignKey() {
-			return softForeignKey(ForeignKeyDefinition.FOREIGN_KEY_FETCH_DEPTH.getOrThrow());
-		}
-
-		@Override
-		public ForeignKeyDefinition.Builder softForeignKey(int fetchDepth) {
-			return new DefaultForeignKeyDefinition.DefaultForeignKeyDefinitionBuilder(foreignKey, fetchDepth, true);
+			return new DefaultForeignKeyDefinition.DefaultForeignKeyDefinitionBuilder(foreignKey, fetchDepth);
 		}
 	}
 }

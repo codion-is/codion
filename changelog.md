@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.framework.domain
 - DefaultEntityValidator.valid() now final.
 - AttributeDefinition.Builder.mnemonicResourceKey() added.
+- ForeignKeyDefiner.softForeignKey() replaced with ForeignKeyDefinition.Builder.soft().
 ## is.codion.framework.model
 - EntitySearchModel.Builder.attributes() added.
 - EntitySearchModel.Builder.orderBy() added.

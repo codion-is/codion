@@ -203,8 +203,9 @@ public final class TestDomain extends DomainModel {
 										Employee.MGR.define()
 														.column(),
 										Employee.MGR_FK.define()
+														.foreignKey()
 														//not really soft, just for testing purposes
-														.softForeignKey()
+														.soft(true)
 														.caption(Employee.MGR_FK.name()),
 										Employee.HIREDATE.define()
 														.column()
@@ -299,7 +300,8 @@ public final class TestDomain extends DomainModel {
 										EmployeeFk.MGR.define()
 														.column(),
 										EmployeeFk.MGR_FK.define()
-														.softForeignKey()
+														.foreignKey()
+														.soft(true)
 														.caption(EmployeeFk.MGR_FK.name())
 														.attributes(EmployeeFk.NAME, EmployeeFk.JOB, EmployeeFk.DEPARTMENT_FK),
 										EmployeeFk.HIREDATE.define()

@@ -82,6 +82,13 @@ public interface ForeignKeyDefinition extends AttributeDefinition<Entity> {
 	interface Builder extends AttributeDefinition.Builder<Entity, Builder> {
 
 		/**
+		 * Marks this foreign key as being soft, that is, not based on a physical (table) foreign key and should not prevent deletion
+		 * @param soft if true then this foreign key is marked as a non-physical soft key
+		 * @return this instance
+		 */
+		Builder soft(boolean soft);
+
+		/**
 		 * Marks the given foreign key reference column as read-only, as in, not updated when the foreign key value is set.
 		 * @param column the reference column
 		 * @return this instance
