@@ -16,6 +16,7 @@ Codion Change Log
 - EntitySearchModel.description() removed.
 - EntitySearchModel.reset(), searchStringModified(), stringFactory() and separator() removed.
 - EntitySearchModel.Selection.string() and strings() added.
+- EntitySearchModel.Selection.string() and strings() now sorted.
 ### is.codion.swing.common.ui
 - FilterTableCellRenderer.UISettings.selectionForeground() added.
 - DefaultFilterTableCellRenderer uses UISettings.selectionForeground().

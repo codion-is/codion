@@ -35,7 +35,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -131,6 +133,18 @@ public final class DefaultEntitySearchModelTest {
 		searchModel.selection().entities().set(result);
 		assertFalse(searchModel.selection().empty().get());
 		assertEquals("John;johnson", searchModel.selection().string());
+
+		searchModel.searchString().set("joh;and");
+		result = searchModel.search();
+		assertFalse(result.isEmpty());
+		assertTrue(contains(result, "John"));
+		assertTrue(contains(result, "johnson"));
+		assertTrue(contains(result, "Andy"));
+		assertTrue(contains(result, "Andrew"));
+		result = new ArrayList<>(result);
+		Collections.reverse(result);
+		searchModel.selection().entities().set(result);
+		assertEquals("Andrew;Andy;John;johnson", searchModel.selection().string());
 
 		searchModel.searchString().set("jo");
 		result = searchModel.search();

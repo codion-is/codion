@@ -226,6 +226,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		@Override
 		public String string() {
 			return entities.get().stream()
+							.sorted()
 							.map(stringFactory)
 							.collect(joining(separator));
 		}
@@ -233,6 +234,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		@Override
 		public Collection<String> strings() {
 			return entities.get().stream()
+							.sorted()
 							.map(stringFactory)
 							.collect(toList());
 		}

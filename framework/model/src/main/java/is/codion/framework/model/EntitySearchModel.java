@@ -127,12 +127,12 @@ public interface EntitySearchModel {
 		ValueSet<Entity> entities();
 
 		/**
-		 * @return a String representation of the selected entities
+		 * @return a sorted String representation of the selected entities
 		 */
 		String string();
 
 		/**
-		 * @return String representations of the selected entities
+		 * @return sorted String representations of the selected entities
 		 */
 		Collection<String> strings();
 
