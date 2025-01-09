@@ -68,6 +68,7 @@ public final class TestDomain extends DomainModel {
 		nullString();
 		invalidDerived();
 		foreignKeyLazyColumn();
+		nonCachedToString();
 	}
 
 	public interface CompositeMaster {
@@ -671,6 +672,24 @@ public final class TestDomain extends DomainModel {
 														.lazy(true),
 										ForeignKeyLazyColumn.DEPARTMENT_FK.define()
 														.foreignKey())
+						.build());
+	}
+
+	public interface NonCachedToString {
+		EntityType TYPE = DOMAIN.entityType("non_cached_to_string");
+
+		Column<Integer> ID = TYPE.integerColumn("id");
+		Column<String> STRING = TYPE.stringColumn("string");
+	}
+
+	void nonCachedToString() {
+		add(NonCachedToString.TYPE.define(
+						NonCachedToString.ID.define()
+										.primaryKey(),
+						NonCachedToString.STRING.define()
+										.column())
+						.stringFactory(entity -> entity.string(NonCachedToString.ID) + "." + entity.get(NonCachedToString.STRING))
+						.cacheToString(false)
 						.build());
 	}
 }

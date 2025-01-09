@@ -49,39 +49,12 @@ class DefaultKey implements Entity.Key, Serializable {
 
 	private static final Map<String, EntitySerializer> SERIALIZERS = new ConcurrentHashMap<>();
 
-	/**
-	 * The columns comprising this key
-	 */
 	List<Column<?>> columns;
-
-	/**
-	 * True if this key represents a primary key
-	 */
 	boolean primaryKey;
-
-	/**
-	 * Holds the values contained in this key.
-	 */
 	Map<Column<?>, Object> values;
-
-	/**
-	 * true if this key consists of a single integer value
-	 */
 	boolean singleIntegerKey;
-
-	/**
-	 * Caching the hash code
-	 */
 	private Integer cachedHashCode = null;
-
-	/**
-	 * True until cachedHashCode has been computed
-	 */
 	boolean hashCodeDirty = true;
-
-	/**
-	 * Caching this extremely frequently referenced object
-	 */
 	EntityDefinition definition;
 
 	/**

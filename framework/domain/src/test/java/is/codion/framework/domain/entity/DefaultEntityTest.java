@@ -31,6 +31,7 @@ import is.codion.framework.domain.TestDomain.ForeignKeyLazyColumn;
 import is.codion.framework.domain.TestDomain.InvalidDerived;
 import is.codion.framework.domain.TestDomain.Master;
 import is.codion.framework.domain.TestDomain.NoPk;
+import is.codion.framework.domain.TestDomain.NonCachedToString;
 import is.codion.framework.domain.TestDomain.NullString;
 import is.codion.framework.domain.TestDomain.TransModifies;
 import is.codion.framework.domain.TestDomain.TransModifiesNot;
@@ -892,6 +893,23 @@ public class DefaultEntityTest {
 						.with(NullString.ATTR, null)
 						.build();
 		assertEquals("null_string: id: 42, attr: null", entity.toString());
+	}
+
+	@Test
+	void cacheToString() {
+		Entity employee = ENTITIES.builder(Employee.TYPE)
+						.with(Employee.ID, 1)
+						.with(Employee.NAME, "Name")
+						.build();
+		String toString = employee.toString();
+		assertSame(toString, employee.toString());
+		Entity entity = ENTITIES.builder(NonCachedToString.TYPE)
+						.with(NonCachedToString.ID, 1)
+						.with(NonCachedToString.STRING, "value")
+						.build();
+		toString = entity.toString();
+		assertEquals(toString, entity.toString());
+		assertNotSame(toString, entity.toString());
 	}
 
 	@Test

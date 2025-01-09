@@ -68,113 +68,28 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 	private static final String ATTRIBUTE = "attribute";
 	private static final String COLUMN = "column";
 
-	/**
-	 * The entity type
-	 */
 	private final EntityType entityType;
-
-	/**
-	 * The caption to use for the entity type
-	 */
 	private final String caption;
-
-	/**
-	 * The resource bundle key specifying the caption
-	 */
 	private final String captionResourceKey;
-
-	/**
-	 * The caption from the resource bundle, if any
-	 */
 	private transient String resourceCaption;
-
-	/**
-	 * The entity description, if any
-	 */
 	private final String description;
-
-	/**
-	 * Holds the order by clause
-	 */
 	private final OrderBy orderBy;
-
-	/**
-	 * If true then it should not be possible to insert, update or delete entities of this type
-	 */
 	private final boolean readOnly;
-
-	/**
-	 * A somewhat subjective indicator, useful in deciding if all entities of this type
-	 * would fit in, say, a combo box
-	 */
 	private final boolean smallDataset;
-
-	/**
-	 * True if a key generator has been set for this entity type
-	 */
 	private final boolean keyGenerated;
-
-	/**
-	 * The {@link Function} to use when toString() is called for this entity type
-	 */
 	private final Function<Entity, String> stringFactory;
-
-	/**
-	 * The comparator
-	 */
+	private final boolean cacheToString;
 	private final Comparator<Entity> comparator;
-
-	/**
-	 * The validator
-	 */
 	private final EntityValidator validator;
-
-	/**
-	 * The exists predicate
-	 */
 	private final Predicate<Entity> exists;
-
-	/**
-	 * The name of the underlying table
-	 */
 	private final transient String tableName;
-
-	/**
-	 * The table (view, query) from which to select the entity
-	 * Used if it differs from the one used for inserts, updates and deletes
-	 */
 	private final transient String selectTableName;
-
-	/**
-	 * The primary key value generator
-	 */
 	private final transient KeyGenerator keyGenerator;
-
-	/**
-	 * True if optimistic locking should be used during updates
-	 */
 	private final transient boolean optimisticLocking;
-
-	/**
-	 * Provides a custom sql query used when selecting entities of this type
-	 */
 	private final transient SelectQuery selectQuery;
-
-	/**
-	 * The {@link ConditionProvider}s mapped to their respective conditionType
-	 */
 	private final transient Map<ConditionType, ConditionProvider> conditionProviders;
-
-	/**
-	 * Maps the definition of a referenced entity to its foreign key attribute.
-	 */
 	private final Map<ForeignKey, EntityDefinition> referencedEntities = new HashMap<>();
-
-	/**
-	 * The attributes associated with this entity.
-	 */
 	private final EntityAttributes entityAttributes;
-
 	private final PrimaryKey primaryKey = new DefaultPrimaryKey();
 	private final Attributes attributes = new DefaultAttributes();
 	private final Columns columns = new DefaultColumns();
@@ -192,6 +107,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		this.keyGenerated = builder.keyGenerated;
 		this.optimisticLocking = builder.optimisticLocking;
 		this.stringFactory = builder.stringFactory;
+		this.cacheToString = builder.cacheToString;
 		this.comparator = builder.comparator;
 		this.validator = builder.validator;
 		this.exists = builder.exists;
@@ -280,6 +196,11 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 	@Override
 	public Function<Entity, String> stringFactory() {
 		return stringFactory;
+	}
+
+	@Override
+	public boolean cacheToString() {
+		return cacheToString;
 	}
 
 	@Override
@@ -862,6 +783,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		private String selectTableName;
 		private SelectQuery selectQuery;
 		private Function<Entity, String> stringFactory = DefaultEntity.DEFAULT_STRING_FACTORY;
+		private boolean cacheToString = true;
 		private Comparator<Entity> comparator = Text.collator();
 		private EntityValidator validator = DefaultEntity.DEFAULT_VALIDATOR;
 		private Predicate<Entity> exists = DefaultEntity.DEFAULT_EXISTS;
@@ -978,6 +900,12 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		@Override
 		public Builder stringFactory(Function<Entity, String> stringFactory) {
 			this.stringFactory = requireNonNull(stringFactory);
+			return this;
+		}
+
+		@Override
+		public Builder cacheToString(boolean cacheToString) {
+			this.cacheToString = cacheToString;
 			return this;
 		}
 

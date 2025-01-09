@@ -129,6 +129,11 @@ public interface EntityDefinition {
 	Function<Entity, String> stringFactory();
 
 	/**
+	 * @return true if the result of toString() is cached
+	 */
+	boolean cacheToString();
+
+	/**
 	 * @return the comparator used when comparing this entity type to other entities
 	 */
 	Comparator<Entity> comparator();
@@ -312,8 +317,15 @@ public interface EntityDefinition {
 		 * which simply returns the entity type name and primary key value.
 		 * @param stringFactory the string factory function
 		 * @return this {@link Builder} instance
+		 * @see #cacheToString(boolean)
 		 */
 		Builder stringFactory(Function<Entity, String> stringFactory);
+
+		/**
+		 * @param cacheToString true if the result of toString() should be cached
+		 * @return this {@link Builder} instance
+		 */
+		Builder cacheToString(boolean cacheToString);
 
 		/**
 		 * Sets the comparator to use when comparing entities of this type

@@ -62,118 +62,27 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 	private static final Comparator<Object> TO_STRING_COMPARATOR = new ToStringComparator();
 	private static final ValueSupplier<Object> DEFAULT_VALUE_SUPPLIER = new NullDefaultValueSupplier();
 
-	/**
-	 * The attribute this definition is based on, should be unique within an Entity.
-	 * The name of this attribute serves as column name for column attributes by default.
-	 */
 	private final Attribute<T> attribute;
-
-	/**
-	 * The caption to use when this attribute is presented
-	 */
 	private final String caption;
-
-	/**
-	 * The resource bundle key specifying the caption
-	 */
 	private final String captionResourceKey;
-
-	/**
-	 * The resource bundle key specifying the mnemonic
-	 */
 	private final String mnemonicResourceKey;
-
-	/**
-	 * The default value supplier for this property
-	 */
 	private final ValueSupplier<T> defaultValueSupplier;
-
-	/**
-	 * True if the value of this attribute is allowed to be null
-	 */
 	private final boolean nullable;
-
-	/**
-	 * True if this attribute should be hidden in table views
-	 */
 	private final boolean hidden;
-
-	/**
-	 * The maximum length of the data.
-	 * Only applicable to string based attributes.
-	 */
 	private final int maximumLength;
-
-	/**
-	 * The maximum value for this attribute.
-	 * Only applicable to numerical attributes
-	 */
 	private final Number maximumValue;
-
-	/**
-	 * The minimum value for this attribute.
-	 * Only applicable to numerical attributes
-	 */
 	private final Number minimumValue;
-
-	/**
-	 * A string describing this attribute
-	 */
 	private final String description;
-
-	/**
-	 * A mnemonic to use when creating a label for this attribute, 0 meaning no mnemonic
-	 */
 	private final char mnemonic;
-
-	/**
-	 * The Format used when presenting the value of this propertattribute
-	 */
 	private final Format format;
-
-	/**
-	 * A locale sensitive numerical date/time pattern
-	 */
 	private final LocaleDateTimePattern localeDateTimePattern;
-
-	/**
-	 * The rounding mode to use when working with decimal numbers
-	 */
 	private final RoundingMode decimalRoundingMode;
-
-	/**
-	 * The comparator for this attribute
-	 */
 	private final Comparator<T> comparator;
-
-	/**
-	 * The valid items for this attribute, may be null
-	 */
 	private final List<Item<T>> items;
-
-	/**
-	 * The valid items for this attribute mapped to their respective values
-	 */
 	private final Map<T, Item<T>> itemMap;
-
-	/**
-	 * The caption from the resource bundle, if any
-	 */
 	private transient String resourceCaption;
-
-	/**
-	 * The mnemonic from the resource bundle, if any
-	 */
 	private transient Character resourceMnemonic;
-
-	/**
-	 * The date/time format pattern
-	 */
 	private transient String dateTimePattern;
-
-	/**
-	 * The DateTimeFormatter to use, based on dateTimePattern
-	 */
 	private transient DateTimeFormatter dateTimeFormatter;
 
 	protected AbstractAttributeDefinition(AbstractAttributeDefinitionBuilder<T, ?> builder) {

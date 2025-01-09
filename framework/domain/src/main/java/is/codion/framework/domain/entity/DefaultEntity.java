@@ -60,35 +60,12 @@ class DefaultEntity implements Entity, Serializable {
 	static final EntityValidator DEFAULT_VALIDATOR = new DefaultEntityValidator();
 	static final Predicate<Entity> DEFAULT_EXISTS = new DefaultEntityExists();
 
-	/**
-	 * Keep a reference to this frequently referenced object
-	 */
 	protected EntityDefinition definition;
-
-	/**
-	 * Holds the values contained in this entity.
-	 */
 	protected Map<Attribute<?>, Object> values;
-
-	/**
-	 * Holds the original value for attributes which values have changed since they were first set.
-	 */
 	protected Map<Attribute<?>, Object> originalValues;
 
-	/**
-	 * Used to cache the return value of the frequently called toString(),
-	 * invalidated each time an attribute value changes
-	 */
-	private String toString;
-
-	/**
-	 * Caches the result of {@link #key} method
-	 */
-	private Map<ForeignKey, Key> keyCache;
-
-	/**
-	 * The primary key of this entity
-	 */
+	private String toStringCache;
+	private Map<ForeignKey, Key> foreignKeyCache;
 	private Key primaryKey;
 
 	protected DefaultEntity(EntityDefinition definition) {
@@ -358,20 +335,26 @@ class DefaultEntity implements Entity, Serializable {
 	}
 
 	/**
-	 * Returns a String representation of this entity
-	 * Note that if the this entitys {@link StringFactory} returns null for some reason,
-	 * the default String factory is used instead.
+	 * <p>Returns a String representation of this entity.
+	 * <p>Note that if the this entitys {@link StringFactory} returns null for some reason, the default String factory is used instead.
+	 * <p>The result of this method call is cached by default.
 	 * @return a string representation of this entity
 	 * @see EntityDefinition.Builder#stringFactory(java.util.function.Function)
+	 * @see EntityDefinition.Builder#cacheToString(boolean)
 	 * @see EntityDefinition#stringFactory()
+	 * @see EntityDefinition#cacheToString()
 	 */
 	@Override
 	public final String toString() {
-		if (toString == null) {
-			toString = createToString();
+		if (definition.cacheToString()) {
+			if (toStringCache == null) {
+				toStringCache = createToString();
+			}
+
+			return toStringCache;
 		}
 
-		return toString;
+		return createToString();
 	}
 
 	@Override
@@ -417,8 +400,8 @@ class DefaultEntity implements Entity, Serializable {
 		values.clear();
 		originalValues = null;
 		primaryKey = null;
-		keyCache = null;
-		toString = null;
+		foreignKeyCache = null;
+		toStringCache = null;
 	}
 
 	private Map<Attribute<?>, Object> populateValues(Entity entity) {
@@ -493,7 +476,7 @@ class DefaultEntity implements Entity, Serializable {
 			updateReferencedColumns((ForeignKeyDefinition) attributeDefinition, (Entity) newValue);
 		}
 		clearDerivedCache(attribute);
-		toString = null;
+		toStringCache = null;
 
 		return previousValue;
 	}
@@ -674,27 +657,27 @@ class DefaultEntity implements Entity, Serializable {
 	}
 
 	private Key cacheKey(ForeignKey foreignKey, Key key) {
-		if (keyCache == null) {
-			keyCache = new HashMap<>();
+		if (foreignKeyCache == null) {
+			foreignKeyCache = new HashMap<>();
 		}
-		keyCache.put(foreignKey, key);
+		foreignKeyCache.put(foreignKey, key);
 
 		return key;
 	}
 
 	private Key cachedKey(ForeignKey foreignKey) {
-		if (keyCache == null) {
+		if (foreignKeyCache == null) {
 			return null;
 		}
 
-		return keyCache.get(foreignKey);
+		return foreignKeyCache.get(foreignKey);
 	}
 
 	private void removeCachedKey(ForeignKey foreignKey) {
-		if (keyCache != null) {
-			keyCache.remove(foreignKey);
-			if (keyCache.isEmpty()) {
-				keyCache = null;
+		if (foreignKeyCache != null) {
+			foreignKeyCache.remove(foreignKey);
+			if (foreignKeyCache.isEmpty()) {
+				foreignKeyCache = null;
 			}
 		}
 	}
@@ -871,10 +854,13 @@ class DefaultEntity implements Entity, Serializable {
 
 	private static <T> T adjustDecimalFractionDigits(AttributeDefinition<T> attributeDefinition, T value) {
 		if (value instanceof Double) {
-			return (T) round((Double) value, attributeDefinition.maximumFractionDigits(), attributeDefinition.decimalRoundingMode());
+			return (T) round((Double) value, attributeDefinition.maximumFractionDigits(),
+							attributeDefinition.decimalRoundingMode());
 		}
 		if (value instanceof BigDecimal) {
-			return (T) ((BigDecimal) value).setScale(attributeDefinition.maximumFractionDigits(), attributeDefinition.decimalRoundingMode()).stripTrailingZeros();
+			return (T) ((BigDecimal) value).setScale(attributeDefinition.maximumFractionDigits(),
+											attributeDefinition.decimalRoundingMode())
+							.stripTrailingZeros();
 		}
 
 		return value;
