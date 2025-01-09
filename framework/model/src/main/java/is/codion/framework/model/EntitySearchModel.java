@@ -70,11 +70,6 @@ public interface EntitySearchModel {
 	Selection selection();
 
 	/**
-	 * @return a string describing this search model, by default a comma separated list of search column names
-	 */
-	String description();
-
-	/**
 	 * @return the columns used when performing a search
 	 */
 	Collection<Column<String>> columns();

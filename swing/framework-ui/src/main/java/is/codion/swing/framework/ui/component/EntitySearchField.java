@@ -123,6 +123,7 @@ import static java.text.MessageFormat.format;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
+import static java.util.stream.Collectors.joining;
 import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.BorderFactory.createTitledBorder;
 
@@ -234,8 +235,8 @@ public final class EntitySearchField extends HintTextField {
 		if (builder.selectAllOnFocusGained) {
 			addFocusListener(new SelectAllFocusListener());
 		}
-		setToolTipText(model.description());
 		setComponentPopupMenu(createPopupMenu());
+		setToolTipText(createSelectionToolTip());
 		configureColors();
 		bindEvents();
 	}
@@ -459,7 +460,7 @@ public final class EntitySearchField extends HintTextField {
 	private void bindEvents() {
 		new SearchStringValue(this).link(model.searchString());
 		model.searchString().addListener(this::updateColors);
-		model.selection().entities().addListener(() -> setCaretPosition(0));
+		model.selection().entities().addListener(this::selectionChanged);
 		addFocusListener(new SearchFocusListener());
 		addKeyListener(new EnterEscapeListener());
 		linkToEnabledState(model.searchStringModified().not(), transferFocusAction, transferFocusBackwardAction);
@@ -485,6 +486,17 @@ public final class EntitySearchField extends HintTextField {
 	private void updateColors() {
 		boolean validBackground = !model.searchStringModified().get();
 		setBackground(validBackground ? backgroundColor : invalidBackgroundColor);
+	}
+
+	private void selectionChanged() {
+		setToolTipText(createSelectionToolTip());
+		setCaretPosition(0);
+	}
+
+	private String createSelectionToolTip() {
+		return model.selection().entities().get().stream()
+						.map(entity -> model.stringFactory().apply(entity))
+						.collect(joining("<br>", "<html>", "</html"));
 	}
 
 	private void performSearch() {

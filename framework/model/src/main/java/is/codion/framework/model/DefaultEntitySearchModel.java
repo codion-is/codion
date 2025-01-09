@@ -76,7 +76,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private final Value<Supplier<Condition>> condition = Value.nonNull(NULL_CONDITION);
 	private final Function<Entity, String> stringFactory;
 	private final Value<Integer> limit;
-	private final String description;
 
 	private DefaultEntitySearchModel(DefaultBuilder builder) {
 		this.entityDefinition = builder.entityDefinition;
@@ -88,7 +87,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		this.settings = unmodifiableMap(columns.stream()
 						.collect(toMap(Function.identity(), column -> new DefaultSettings())));
 		this.stringFactory = builder.stringFactory;
-		this.description = builder.description == null ? createDescription() : builder.description;
 		this.singleSelection = builder.singleSelection;
 		this.limit = Value.nullable(builder.limit);
 	}
@@ -106,11 +104,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	@Override
 	public Collection<Column<String>> columns() {
 		return columns;
-	}
-
-	@Override
-	public String description() {
-		return description;
 	}
 
 	@Override
@@ -216,12 +209,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 		return rawSearchString.equals(WILDCARD_MULTIPLE) ? WILDCARD_MULTIPLE :
 						((wildcardPrefix ? WILDCARD_MULTIPLE : "") + rawSearchString.trim() + (wildcardPostfix ? WILDCARD_MULTIPLE : ""));
-	}
-
-	private String createDescription() {
-		return columns.stream()
-						.map(column -> entityDefinition.columns().definition(column).caption())
-						.collect(joining(", "));
 	}
 
 	private void validateType(Entity entity) {
