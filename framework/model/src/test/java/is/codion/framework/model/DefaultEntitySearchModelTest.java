@@ -25,7 +25,6 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Column;
-import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.model.DefaultEntitySearchModel.DefaultBuilder;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
@@ -107,18 +106,15 @@ public final class DefaultEntitySearchModelTest {
 
 	@Test
 	void stringFunction() {
-		ColumnDefinition<?> job = ENTITIES.definition(Employee.TYPE).columns().definition(Employee.JOB);
-		searchModel.stringFunction().set(entity -> entity.string(job.attribute()));
+		EntitySearchModel model = new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
+						.stringFunction(entity -> entity.string(Employee.JOB))
+						.build();
 		Entity employee = ENTITIES.builder(Employee.TYPE)
 						.with(Employee.NAME, "Darri")
 						.with(Employee.JOB, "CLERK")
 						.build();
-		searchModel.selection().entity().set(employee);
-		assertEquals("CLERK", searchModel.searchString().get());
-		searchModel.stringFunction().clear();
-		searchModel.selection().entity().clear();
-		searchModel.selection().entity().set(employee);
-		assertEquals("Darri", searchModel.searchString().get());
+		model.selection().entity().set(employee);
+		assertEquals("CLERK", model.searchString().get());
 	}
 
 	@Test

@@ -107,12 +107,10 @@ public interface EntitySearchModel {
 	Value<Supplier<Condition>> condition();
 
 	/**
-	 * Note that changing this value does not change the search string accordingly.
-	 * @return the {@link Value} controlling the function providing the {@code toString()} implementation
-	 * for the entities displayed by this model
+	 * @return the function providing the {@code toString()} implementation for the entities displayed by this model
 	 * @see #reset()
 	 */
-	Value<Function<Entity, String>> stringFunction();
+	Function<Entity, String> stringFunction();
 
 	/**
 	 * @return an {@link ObservableState} indicating whether the search string represents the selected entities

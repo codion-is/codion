@@ -10,6 +10,7 @@ Codion Change Log
 - EntitySearchModel.Builder.attributes() added.
 - EntitySearchModel.Builder.orderBy() added.
 - EntitySearchModel.entityType() replaced with entityDefinition().
+- EntitySearchModel.stringFunction() now final and no longer Value based.
 ### is.codion.swing.common.ui
 - FilterTableCellRenderer.UISettings.selectionForeground() added.
 - DefaultFilterTableCellRenderer uses UISettings.selectionForeground().

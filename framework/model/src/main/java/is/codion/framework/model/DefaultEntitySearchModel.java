@@ -77,7 +77,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 					.build();
 	private final boolean singleSelection;
 	private final Value<Supplier<Condition>> condition = Value.nonNull(NULL_CONDITION);
-	private final Value<Function<Entity, String>> stringFunction = Value.nonNull(DEFAULT_TO_STRING);
+	private final Function<Entity, String> stringFunction;
 	private final Value<Integer> limit;
 	private final String description;
 
@@ -90,7 +90,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		this.orderBy = builder.orderBy;
 		this.settings = unmodifiableMap(columns.stream()
 						.collect(toMap(Function.identity(), column -> new DefaultSettings())));
-		this.stringFunction.set(builder.stringFunction);
+		this.stringFunction = builder.stringFunction;
 		this.description = builder.description == null ? createDescription() : builder.description;
 		this.singleSelection = builder.singleSelection;
 		this.limit = Value.nullable(builder.limit);
@@ -137,7 +137,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	}
 
 	@Override
-	public Value<Function<Entity, String>> stringFunction() {
+	public Function<Entity, String> stringFunction() {
 		return stringFunction;
 	}
 
@@ -269,7 +269,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 		private String entitiesToString() {
 			return entities.get().stream()
-							.map(stringFunction.getOrThrow())
+							.map(stringFunction)
 							.collect(joining(separator.getOrThrow()));
 		}
 	}
