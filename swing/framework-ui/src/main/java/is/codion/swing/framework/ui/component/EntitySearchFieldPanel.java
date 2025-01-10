@@ -194,12 +194,6 @@ public final class EntitySearchFieldPanel extends JPanel {
 		Builder searchOnFocusLost(boolean searchOnFocusLost);
 
 		/**
-		 * @param selectAllOnFocusGained true if the contents should be selected when the field gains focus
-		 * @return this builder instance
-		 */
-		Builder selectAllOnFocusGained(boolean selectAllOnFocusGained);
-
-		/**
 		 * @param searchIndicator the search indicator
 		 * @return this builder instance
 		 */
@@ -336,12 +330,6 @@ public final class EntitySearchFieldPanel extends JPanel {
 		@Override
 		public Builder searchOnFocusLost(boolean searchOnFocusLost) {
 			searchFieldBuilder.searchOnFocusLost(searchOnFocusLost);
-			return this;
-		}
-
-		@Override
-		public Builder selectAllOnFocusGained(boolean selectAllOnFocusGained) {
-			searchFieldBuilder.selectAllOnFocusGained(selectAllOnFocusGained);
 			return this;
 		}
 

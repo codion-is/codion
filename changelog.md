@@ -44,6 +44,7 @@ Codion Change Log
 - EntitySearchField now displays the selected entities in a multiline tooltip instead of the model description.
 - EntitySearchField refactored.
 - EntitySearchField.Build.separator() and stringFactory() added, related refactoring.
+- EntitySearchField.Builder.selectAllOnFocusGained() removed, related refactoring.
 
 ## 0.18.24
 ### is.codion.common.core

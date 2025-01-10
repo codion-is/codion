@@ -247,9 +247,6 @@ public final class EntitySearchField extends HintTextField {
 		selectorFactory = builder.selectorFactory;
 		stringFactory = builder.stringFactory;
 		separator = builder.separator;
-		if (builder.selectAllOnFocusGained) {
-			addFocusListener(new SelectAllFocusListener());
-		}
 		setComponentPopupMenu(createPopupMenu());
 		setToolTipText(selectionToolTip());
 		configureColors();
@@ -434,12 +431,6 @@ public final class EntitySearchField extends HintTextField {
 		Builder searchOnFocusLost(boolean searchOnFocusLost);
 
 		/**
-		 * @param selectAllOnFocusGained true if the contents should be selected when the field gains focus
-		 * @return this builder instance
-		 */
-		Builder selectAllOnFocusGained(boolean selectAllOnFocusGained);
-
-		/**
 		 * @param searchIndicator the search indicator
 		 * @return this builder instance
 		 */
@@ -490,7 +481,7 @@ public final class EntitySearchField extends HintTextField {
 		getDocument().addDocumentListener((DocumentAdapter) e -> updateSearchStrings());
 		model.search().strings().addListener(this::updateSearchEnabled);
 		model.selection().entities().addListener(this::onSelectionChanged);
-		addFocusListener(new SearchFocusListener());
+		addFocusListener(new FocusListener());
 		addKeyListener(new EnterEscapeListener());
 	}
 
@@ -510,8 +501,10 @@ public final class EntitySearchField extends HintTextField {
 
 	private void onSelectionChanged() {
 		setToolTipText(selectionToolTip());
-		setText(selectionString());
-		setCaretPosition(0);
+		String text = selectionString();
+		setText(text);
+		setCaretPosition(text.length());
+		moveCaretPosition(0);
 		searchEnabled.set(false);
 	}
 
@@ -586,7 +579,6 @@ public final class EntitySearchField extends HintTextField {
 		else if (promptUser) {
 			promptUser(searchResult);
 		}
-		selectAll();
 	}
 
 	private void promptUser(List<Entity> searchResult) {
@@ -994,7 +986,13 @@ public final class EntitySearchField extends HintTextField {
 		}
 	}
 
-	private final class SearchFocusListener extends FocusAdapter {
+	private final class FocusListener extends FocusAdapter {
+
+		@Override
+		public void focusGained(FocusEvent e) {
+			setCaretPosition(getText().length());
+			moveCaretPosition(0);
+		}
 
 		@Override
 		public void focusLost(FocusEvent e) {
@@ -1023,8 +1021,7 @@ public final class EntitySearchField extends HintTextField {
 				}
 				else if (e.getKeyCode() == VK_ESCAPE) {
 					e.consume();
-					setText(selectionString());
-					selectAll();
+					onSelectionChanged();
 				}
 			}
 		}
@@ -1088,19 +1085,6 @@ public final class EntitySearchField extends HintTextField {
 		}
 	}
 
-	private final class SelectAllFocusListener extends FocusAdapter {
-
-		@Override
-		public void focusGained(FocusEvent e) {
-			selectAll();
-		}
-
-		@Override
-		public void focusLost(FocusEvent e) {
-			select(0, 0);
-		}
-	}
-
 	private static final class DefaultEntitySearchFieldBuilder extends AbstractComponentBuilder<Entity, EntitySearchField, Builder> implements Builder {
 
 		private final EntitySearchModel searchModel;
@@ -1111,7 +1095,6 @@ public final class EntitySearchField extends HintTextField {
 		private boolean lowerCase;
 		private boolean searchHintEnabled = true;
 		private boolean searchOnFocusLost = true;
-		private boolean selectAllOnFocusGained = true;
 		private SearchIndicator searchIndicator = SEARCH_INDICATOR.get();
 		private Function<EntitySearchModel, Selector> selectorFactory = new ListSelectorFactory();
 		private Function<Entity, String> stringFactory = DEFAULT_TO_STRING;
@@ -1172,12 +1155,6 @@ public final class EntitySearchField extends HintTextField {
 		@Override
 		public Builder searchOnFocusLost(boolean searchOnFocusLost) {
 			this.searchOnFocusLost = searchOnFocusLost;
-			return this;
-		}
-
-		@Override
-		public Builder selectAllOnFocusGained(boolean selectAllOnFocusGained) {
-			this.selectAllOnFocusGained = selectAllOnFocusGained;
 			return this;
 		}
 
