@@ -556,7 +556,7 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	private void performSearch(boolean promptUser) {
-		if (model.search().strings().empty()) {
+		if (model.search().strings().isEmpty()) {
 			model.selection().clear();
 		}
 		else if (searchEnabled.get()) {

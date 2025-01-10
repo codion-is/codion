@@ -9,6 +9,7 @@ Codion Change Log
 - EntityDefinition.cacheToString() added, redundant comment cleanup.
 - Entity.Key.entityDefinition() renamed definition().
 - Entity.Key.primaryKey() renamed primary().
+- ObservableValues.empty() renamed isEmpty(), notEmpty() removed.
 ### is.codion.framework.model
 - EntitySearchModel.Builder.attributes() added.
 - EntitySearchModel.Builder.orderBy() added.

@@ -1444,7 +1444,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private boolean includeEditAttributeControls() {
-		return !configuration.editable.empty() && updatable() &&
+		return !configuration.editable.isEmpty() && updatable() &&
 						configuration.includeEditAttributeControl;
 	}
 

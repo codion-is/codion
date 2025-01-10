@@ -35,8 +35,7 @@ public class ValueSetTest {
 	void valueSet() {
 		ValueSet<Integer> valueSet = ValueSet.valueSet();
 		ObservableValueSet<Integer> observer = valueSet.observable();
-		assertTrue(observer.empty());
-		assertFalse(observer.notEmpty());
+		assertTrue(observer.isEmpty());
 		assertUnmodifiable(observer);
 
 		assertFalse(observer.isNullable());
@@ -54,8 +53,7 @@ public class ValueSetTest {
 
 		valueSet = ValueSet.valueSet(initialValues);
 		observer = valueSet.observable();
-		assertFalse(observer.empty());
-		assertTrue(observer.notEmpty());
+		assertFalse(observer.isEmpty());
 		assertEquals(initialValues, observer.get());
 		assertUnmodifiable(observer);
 		assertTrue(observer.isEqualTo(initialValues));
@@ -72,8 +70,7 @@ public class ValueSetTest {
 		assertTrue(valueSet.add(3));
 
 		valueSet.clear();
-		assertTrue(observer.empty());
-		assertFalse(observer.notEmpty());
+		assertTrue(observer.isEmpty());
 		assertTrue(valueSet.add(3));
 		assertFalse(valueSet.removeAll(1, 2));
 
@@ -96,7 +93,7 @@ public class ValueSetTest {
 		value.set(1);
 		assertTrue(observer.contains(1));
 		value.clear();
-		assertTrue(observer.empty());
+		assertTrue(observer.isEmpty());
 
 		valueSet.set(Collections.singleton(2));
 		assertEquals(2, value.get());

@@ -36,8 +36,7 @@ public class ValueListTest {
 	void list() {
 		ValueList<Integer> values = ValueList.valueList();
 		ObservableValues<Integer, List<Integer>> observer = values.observable();
-		assertTrue(observer.empty());
-		assertFalse(observer.notEmpty());
+		assertTrue(observer.isEmpty());
 		assertUnmodifiable(observer);
 
 		assertFalse(observer.isNullable());
@@ -55,8 +54,7 @@ public class ValueListTest {
 
 		values = ValueList.valueList(initialValues);
 		observer = values.observable();
-		assertFalse(observer.empty());
-		assertTrue(observer.notEmpty());
+		assertFalse(observer.isEmpty());
 		assertEquals(initialValues, observer.get());
 		assertUnmodifiable(observer);
 		assertTrue(observer.isEqualTo(initialValues));
@@ -73,8 +71,7 @@ public class ValueListTest {
 		assertTrue(values.add(3));
 
 		values.clear();
-		assertTrue(observer.empty());
-		assertFalse(observer.notEmpty());
+		assertTrue(observer.isEmpty());
 		assertTrue(values.add(3));
 		assertFalse(values.removeAll(1, 2));
 
@@ -97,7 +94,7 @@ public class ValueListTest {
 		value.set(1);
 		assertTrue(observer.contains(1));
 		value.clear();
-		assertTrue(observer.empty());
+		assertTrue(observer.isEmpty());
 
 		values.set(Collections.singleton(2));
 		assertEquals(2, value.get());

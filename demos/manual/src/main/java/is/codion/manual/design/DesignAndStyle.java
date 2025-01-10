@@ -23,6 +23,7 @@ import is.codion.common.observable.Observer;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueList;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
@@ -103,11 +104,15 @@ public final class DesignAndStyle {
 		//end::mutable[]
 
 		//tag::exceptions[]
-		Value<Integer> integerValue = Value.nullable();
+		Value<Integer> integer = Value.nullable();
 
-		boolean isNull = integerValue.isNull();
-		boolean isNotNull = integerValue.isNotNull();
-		boolean isNullable = integerValue.isNullable();
+		boolean isNull = integer.isNull();
+		boolean isNotNull = integer.isNotNull();
+		boolean isNullable = integer.isNullable();
+
+		ValueList<Integer> integers = ValueList.valueList();
+
+		boolean isEmpty = integers.isEmpty();
 		//end::exceptions[]
 	}
 }

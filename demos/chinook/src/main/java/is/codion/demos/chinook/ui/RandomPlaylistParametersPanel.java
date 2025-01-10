@@ -144,7 +144,7 @@ final class RandomPlaylistParametersPanel extends JPanel {
 			if (noOfTracks.isNull()) {
 				return false;
 			}
-			if (genres.empty()) {
+			if (genres.isEmpty()) {
 				return false;
 			}
 

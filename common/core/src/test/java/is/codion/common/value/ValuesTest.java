@@ -39,8 +39,7 @@ public class ValuesTest {
 	void set() {
 		Values<Integer, Set<Integer>> set = ValueSet.valueSet();
 		ObservableValues<Integer, Set<Integer>> observer = set.observable();
-		assertTrue(observer.empty());
-		assertFalse(observer.notEmpty());
+		assertTrue(observer.isEmpty());
 		assertUnmodifiable(observer);
 
 		assertFalse(observer.isNullable());
@@ -60,8 +59,7 @@ public class ValuesTest {
 						.value(initialValues)
 						.build();
 		observer = set.observable();
-		assertFalse(observer.empty());
-		assertTrue(observer.notEmpty());
+		assertFalse(observer.isEmpty());
 		assertEquals(initialValues, observer.get());
 		assertUnmodifiable(observer);
 		assertTrue(observer.isEqualTo(initialValues));
@@ -78,8 +76,7 @@ public class ValuesTest {
 		assertTrue(set.add(3));
 
 		set.clear();
-		assertTrue(observer.empty());
-		assertFalse(observer.notEmpty());
+		assertTrue(observer.isEmpty());
 		assertTrue(set.add(3));
 		assertFalse(set.removeAll(1, 2));
 
@@ -102,7 +99,7 @@ public class ValuesTest {
 		value.set(1);
 		assertTrue(observer.contains(1));
 		value.clear();
-		assertTrue(observer.empty());
+		assertTrue(observer.isEmpty());
 
 		set.set(Collections.singleton(2));
 		assertEquals(2, value.get());
@@ -159,8 +156,7 @@ public class ValuesTest {
 	void list() {
 		Values<Integer, List<Integer>> list = ValueList.valueList();
 		ObservableValues<Integer, List<Integer>> observable = list.observable();
-		assertTrue(observable.empty());
-		assertFalse(observable.notEmpty());
+		assertTrue(observable.isEmpty());
 		assertUnmodifiable(observable);
 
 		assertFalse(observable.isNullable());
@@ -180,8 +176,7 @@ public class ValuesTest {
 						.value(initialValues)
 						.build();
 		observable = list.observable();
-		assertFalse(observable.empty());
-		assertTrue(observable.notEmpty());
+		assertFalse(observable.isEmpty());
 		assertEquals(initialValues, observable.get());
 		assertUnmodifiable(observable);
 		assertTrue(observable.isEqualTo(initialValues));
@@ -198,8 +193,7 @@ public class ValuesTest {
 		assertTrue(list.add(3));
 
 		list.clear();
-		assertTrue(observable.empty());
-		assertFalse(observable.notEmpty());
+		assertTrue(observable.isEmpty());
 		assertTrue(list.add(3));
 		assertFalse(list.removeAll(1, 2));
 
@@ -222,7 +216,7 @@ public class ValuesTest {
 		value.set(1);
 		assertTrue(observable.contains(1));
 		value.clear();
-		assertTrue(observable.empty());
+		assertTrue(observable.isEmpty());
 
 		list.set(Collections.singleton(2));
 		assertEquals(2, value.get());

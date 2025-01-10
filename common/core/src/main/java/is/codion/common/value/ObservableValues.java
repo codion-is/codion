@@ -52,12 +52,7 @@ public interface ObservableValues<T, C extends Collection<T>> extends Observable
 	/**
 	 * @return true if this {@link Values} instance is empty
 	 */
-	boolean empty();
-
-	/**
-	 * @return true if this {@link Values} instance is not empty
-	 */
-	boolean notEmpty();
+	boolean isEmpty();
 
 	/**
 	 * @return the number of elements in this {@link Values} instance

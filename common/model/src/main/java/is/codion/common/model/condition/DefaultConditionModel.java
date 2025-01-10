@@ -455,7 +455,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 						break;
 					case IN:
 					case NOT_IN:
-						enabled.set(operands.in.notEmpty());
+						enabled.set(!operands.in.isEmpty());
 						break;
 					default:
 						throw new IllegalStateException("Unknown operator: " + operator.get());

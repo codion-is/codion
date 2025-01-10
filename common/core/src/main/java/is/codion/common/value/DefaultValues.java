@@ -136,17 +136,11 @@ class DefaultValues<T, C extends Collection<T>> extends DefaultValue<C> implemen
 	}
 
 	@Override
-	public final boolean empty() {
+	public final boolean isEmpty() {
 		synchronized (lock) {
 			return getOrThrow().isEmpty();
 		}
 	}
-
-	@Override
-	public final boolean notEmpty() {
-		return !empty();
-	}
-
 	@Override
 	public final int size() {
 		synchronized (lock) {
@@ -246,13 +240,8 @@ class DefaultValues<T, C extends Collection<T>> extends DefaultValue<C> implemen
 		}
 
 		@Override
-		public final boolean empty() {
-			return super.value().empty();
-		}
-
-		@Override
-		public final boolean notEmpty() {
-			return super.value().notEmpty();
+		public final boolean isEmpty() {
+			return super.value().isEmpty();
 		}
 
 		@Override

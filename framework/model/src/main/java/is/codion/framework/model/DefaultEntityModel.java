@@ -130,7 +130,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 	}
 
 	private void onMasterSelectionChanged() {
-		if (!detailModels.linked.empty()) {
+		if (!detailModels.linked.isEmpty()) {
 			List<Entity> activeEntities = activeEntities();
 			for (M detailModel : detailModels.linked) {
 				detailModels.models.get(detailModel).onSelection(activeEntities);
