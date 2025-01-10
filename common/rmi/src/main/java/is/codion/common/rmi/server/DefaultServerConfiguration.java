@@ -228,7 +228,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 				LOG.warn("No classpath key store specified via {}", CLASSPATH_KEYSTORE.propertyName());
 				return;
 			}
-			if (KEYSTORE.isNotNull()) {
+			if (!KEYSTORE.isNull()) {
 				throw new IllegalStateException("Classpath keystore (" + keystore + ") can not be specified when "
 								+ JAVAX_NET_KEYSTORE + " is already set to " + KEYSTORE.get());
 			}

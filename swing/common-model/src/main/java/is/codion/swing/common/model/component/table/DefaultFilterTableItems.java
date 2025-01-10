@@ -396,7 +396,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 
 		@Override
 		public boolean test(R item) {
-			if (predicate.isNotNull() && !predicate.getOrThrow().test(item)) {
+			if (!predicate.isNull() && !predicate.getOrThrow().test(item)) {
 				return false;
 			}
 

@@ -107,7 +107,6 @@ public final class DesignAndStyle {
 		Value<Integer> integer = Value.nullable();
 
 		boolean isNull = integer.isNull();
-		boolean isNotNull = integer.isNotNull();
 		boolean isNullable = integer.isNullable();
 
 		ValueList<Integer> integers = ValueList.valueList();

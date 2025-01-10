@@ -437,21 +437,21 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 				switch (operator.getOrThrow()) {
 					case EQUAL:
 					case NOT_EQUAL:
-						enabled.set(operands.equal.isNotNull());
+						enabled.set(!operands.equal.isNull());
 						break;
 					case LESS_THAN:
 					case LESS_THAN_OR_EQUAL:
-						enabled.set(operands.upper.isNotNull());
+						enabled.set(!operands.upper.isNull());
 						break;
 					case GREATER_THAN:
 					case GREATER_THAN_OR_EQUAL:
-						enabled.set(operands.lower.isNotNull());
+						enabled.set(!operands.lower.isNull());
 						break;
 					case BETWEEN:
 					case BETWEEN_EXCLUSIVE:
 					case NOT_BETWEEN:
 					case NOT_BETWEEN_EXCLUSIVE:
-						enabled.set(operands.lower.isNotNull() && operands.upper.isNotNull());
+						enabled.set(!operands.lower.isNull() && !operands.upper.isNull());
 						break;
 					case IN:
 					case NOT_IN:

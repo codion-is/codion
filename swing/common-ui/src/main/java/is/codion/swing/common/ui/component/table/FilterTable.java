@@ -941,7 +941,7 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			if (e.getClickCount() == 2) {
-				if (doubleClickAction.isNotNull()) {
+				if (!doubleClickAction.isNull()) {
 					doubleClickAction.getOrThrow().actionPerformed(new ActionEvent(e, ActionEvent.ACTION_PERFORMED, "doubleClick"));
 				}
 				doubleClick.accept(e);

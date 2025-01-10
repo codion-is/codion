@@ -39,14 +39,6 @@ public interface ObservableState extends Observable<Boolean> {
 	}
 
 	/**
-	 * @return true
-	 */
-	@Override
-	default boolean isNotNull() {
-		return true;
-	}
-
-	/**
 	 * @return false
 	 */
 	@Override

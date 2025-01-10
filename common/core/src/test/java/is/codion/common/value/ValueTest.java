@@ -96,7 +96,6 @@ public class ValueTest {
 		intValue.clear();
 		assertTrue(intValue.isEqualTo(-1));
 		assertFalse(intValue.isNull());
-		assertTrue(intValue.isNotNull());
 		assertTrue(intValue.optional().isPresent());
 		assertEquals(-1, intValue.get());
 		assertEquals(-1, observable.get());
@@ -162,7 +161,6 @@ public class ValueTest {
 		uiValue.clear();
 		assertNull(modelValue.get());
 		assertTrue(modelValue.isNull());
-		assertFalse(modelValue.isNotNull());
 		assertTrue(modelValue.isEqualTo(null));
 		assertNull(uiValue.get());
 		assertTrue(uiValue.isNull());
@@ -371,6 +369,6 @@ public class ValueTest {
 		value.map(currentValue -> null);
 		assertTrue(value.isNull());
 		value.map(currentValue -> 42);
-		assertTrue(value.isNotNull());
+		assertFalse(value.isNull());
 	}
 }

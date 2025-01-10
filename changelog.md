@@ -10,6 +10,7 @@ Codion Change Log
 - Entity.Key.entityDefinition() renamed definition().
 - Entity.Key.primaryKey() renamed primary().
 - ObservableValues.empty() renamed isEmpty(), notEmpty() removed.
+- Observable.isNotNull() removed.
 ### is.codion.framework.model
 - EntitySearchModel.Builder.attributes() added.
 - EntitySearchModel.Builder.orderBy() added.

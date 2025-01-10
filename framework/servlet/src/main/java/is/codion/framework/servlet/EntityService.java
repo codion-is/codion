@@ -1010,7 +1010,7 @@ public final class EntityService implements AuxiliaryServer {
 			LOG.debug("No classpath key store specified via {}", HTTP_SERVER_CLASSPATH_KEYSTORE.propertyName());
 			return;
 		}
-		if (HTTP_SERVER_KEYSTORE_PATH.isNotNull()) {
+		if (!HTTP_SERVER_KEYSTORE_PATH.isNull()) {
 			throw new IllegalStateException("Classpath keystore (" + keystore + ") can not be specified when "
 							+ HTTP_SERVER_KEYSTORE_PATH.propertyName() + " is already set to " + HTTP_SERVER_KEYSTORE_PATH.get());
 		}

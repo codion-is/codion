@@ -95,7 +95,6 @@ public class StateTest {
 		State state = State.state();
 		assertFalse(state.get(), "State should be inactive when initialized");
 		assertFalse(state.isNull());
-		assertTrue(state.isNotNull());
 		assertFalse(state.isNullable());
 		assertFalse(state.isEqualTo(true));
 		assertTrue(state.optional().isPresent());
@@ -273,7 +272,6 @@ public class StateTest {
 		assertTrue(orState.get(), "Or state should be active when one component state is active");
 
 		assertFalse(orState.isNull());
-		assertTrue(orState.isNotNull());
 		assertFalse(orState.isNullable());
 	}
 

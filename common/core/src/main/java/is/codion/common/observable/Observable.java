@@ -119,13 +119,6 @@ public interface Observable<T> extends Observer<T> {
 	}
 
 	/**
-	 * @return true if the underlying value is not null.
-	 */
-	default boolean isNotNull() {
-		return !isNull();
-	}
-
-	/**
 	 * If false then get() is guaranteed to never return null.
 	 * @return true if this observable can be null
 	 */

@@ -204,7 +204,7 @@ final class LoginPanel extends JPanel {
 	}
 
 	private static State usernameSpecifiedState(Value<String> usernameValue) {
-		State usernameSpecified = State.state(usernameValue.isNotNull());
+		State usernameSpecified = State.state(!usernameValue.isNull());
 		usernameValue.addConsumer(username -> usernameSpecified.set(username != null));
 
 		return usernameSpecified;

@@ -78,7 +78,7 @@ final class CoverArtPanel extends JPanel {
 	CoverArtPanel(Value<byte[]> imageBytes) {
 		super(borderLayout());
 		this.imageBytes = imageBytes;
-		this.imageSelected = State.state(imageBytes.isNotNull());
+		this.imageSelected = State.state(!imageBytes.isNull());
 		this.imagePanel = createImagePanel();
 		this.centerPanel = createCenterPanel();
 		add(centerPanel, BorderLayout.CENTER);

@@ -616,7 +616,7 @@ public final class DefaultFilterTableModelTest {
 		assertTrue(tableModel.items().filtered().contains(D));
 
 		tableModel.items().visible().predicate().set(strings -> !strings.equals(A));
-		assertTrue(tableModel.items().visible().predicate().isNotNull());
+		assertFalse(tableModel.items().visible().predicate().isNull());
 		assertFalse(tableModel.items().visible().contains(A));
 		tableModel.items().visible().predicate().clear();
 		assertTrue(tableModel.items().visible().contains(A));

@@ -729,7 +729,7 @@ public class EntityEditComponentPanel extends JPanel {
 	private <T, B extends ComponentBuilder<T, ?, ?>> B setComponentBuilder(Attribute<T> attribute, B componentBuilder) {
 		requireNonNull(attribute);
 		requireNonNull(componentBuilder);
-		if (componentBuilders.containsKey(attribute) || component(attribute).isNotNull()) {
+		if (componentBuilders.containsKey(attribute) || !component(attribute).isNull()) {
 			throw new IllegalStateException("Component has already been created for attribute: " + attribute);
 		}
 		componentBuilders.put(attribute, componentBuilder
@@ -752,8 +752,8 @@ public class EntityEditComponentPanel extends JPanel {
 
 	private boolean isInputComponent(JComponent component) {
 		return components.values().stream()
-						.filter(Value::isNotNull)
 						.map(Value::get)
+						.filter(Objects::nonNull)
 						.anyMatch(comp -> sameOrParentOf(comp, component));
 	}
 

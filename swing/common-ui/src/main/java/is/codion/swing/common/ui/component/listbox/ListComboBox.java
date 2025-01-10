@@ -80,7 +80,7 @@ final class ListComboBox<T> extends JComboBox<T> {
 
 	private void addItem() {
 		FilterComboBoxModel<T> comboBoxModel = getModel();
-		if (itemValue.isNotNull() && !comboBoxModel.items().contains(itemValue.getOrThrow())) {
+		if (!itemValue.isNull() && !comboBoxModel.items().contains(itemValue.getOrThrow())) {
 			comboBoxModel.items().add(itemValue.getOrThrow());
 			itemValue.clear();
 			if (isPopupVisible()) {
