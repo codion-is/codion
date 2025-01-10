@@ -19,7 +19,6 @@
 package is.codion.swing.common.ui.key;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JTextArea;
 import java.awt.event.ActionEvent;
@@ -33,6 +32,9 @@ import static javax.swing.JComponent.WHEN_FOCUSED;
  * A utility class for adding focus traversal events based on the Enter key.
  */
 public final class TransferFocusOnEnter {
+
+	private static final TransferFocusAction FORWARD = new TransferFocusAction(false);
+	private static final TransferFocusAction BACKWARD = new TransferFocusAction(true);
 
 	private TransferFocusOnEnter() {}
 
@@ -64,34 +66,18 @@ public final class TransferFocusOnEnter {
 		return component;
 	}
 
-	/**
-	 * Instantiates an Action for transferring keyboard focus forward.
-	 * @return an Action for transferring focus
-	 */
-	public static Action forwardAction() {
-		return new TransferFocusAction(false);
-	}
-
-	/**
-	 * Instantiates an Action for transferring keyboard focus backward.
-	 * @return an Action for transferring focus
-	 */
-	public static Action backwardAction() {
-		return new TransferFocusAction(true);
-	}
-
 	private static KeyEvents.Builder backwardsBuilder() {
 		return KeyEvents.builder(VK_ENTER)
 						.modifiers(SHIFT_DOWN_MASK)
 						.condition(WHEN_FOCUSED)
-						.action(backwardAction());
+						.action(BACKWARD);
 	}
 
 	private static <T extends JComponent> KeyEvents.Builder forwardBuilder(T component) {
 		return KeyEvents.builder(VK_ENTER)
 						.modifiers(component instanceof JTextArea ? CTRL_DOWN_MASK : 0)
 						.condition(WHEN_FOCUSED)
-						.action(forwardAction());
+						.action(FORWARD);
 	}
 
 	/**

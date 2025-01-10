@@ -30,6 +30,7 @@ Codion Change Log
 - LookAndFeelSelectionDialogBuilder.includePlatformLookAndFeels() added along with INCLUDE_PLATFORM_LOOK_AND_FEELS, for excluding platform look and feels from the selection if auxiliary ones are available.
 - Components.textField() no longer forwards call to NumberField in case of numerical values.
 - ColumnConditionPanel.FieldFactory.createLowerField() and createUpperField() now with default implementations.
+- TransferFocusOnEnter.forwardAction() and backwardAction() removed, transfer focus actions now singletons.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.entityType() replaced with entityDefinition().
 ### is.codion.swing.framework.ui
