@@ -21,6 +21,7 @@ Codion Change Log
 - EntitySearchModel.Selection.string() and strings() added.
 - EntitySearchModel.Selection.string() and strings() now sorted.
 - EntitySearchModel.Search added, related refactoring and renaming.
+- EntitySearchModel.Search.text() replaced with strings(), Builder.separator() and stringFactory() removed.
 ### is.codion.swing.common.ui
 - FilterTableCellRenderer.UISettings.selectionForeground() added.
 - DefaultFilterTableCellRenderer uses UISettings.selectionForeground().
@@ -39,6 +40,7 @@ Codion Change Log
 - EntityComponents.supports() removed, unused.
 - EntitySearchField now displays the selected entities in a multiline tooltip instead of the model description.
 - EntitySearchField refactored.
+- EntitySearchField.Build.separator() and stringFactory() added, related refactoring.
 
 ## 0.18.24
 ### is.codion.common.core

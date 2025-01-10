@@ -26,12 +26,17 @@ import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.ui.TestDomain;
 import is.codion.swing.framework.ui.TestDomain.Department;
+import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -81,5 +86,39 @@ public class EntitySearchFieldTest {
 
 		assertTrue(searchModel.selection().empty().get());
 		assertNull(singleSelectionValue.get());
+	}
+
+	@Test
+	void text() {
+		EntitySearchModel searchModel = EntitySearchModel.builder(Employee.TYPE, CONNECTION_PROVIDER).build();
+		EntitySearchField searchField = EntitySearchField.builder(searchModel)
+						.separator(";")
+						.build();
+
+		Entity jones = CONNECTION_PROVIDER.connection().selectSingle(Employee.NAME.equalTo("JONES"));
+		Entity blake = CONNECTION_PROVIDER.connection().selectSingle(Employee.NAME.equalTo("BLAKE"));
+		Entity allen = CONNECTION_PROVIDER.connection().selectSingle(Employee.NAME.equalTo("ALLEN"));
+
+		searchModel.selection().entities().set(asList(jones, blake, allen));
+		assertEquals("ALLEN;BLAKE;JONES", searchField.getText());
+
+		List<Entity> result = new ArrayList<>(asList(jones, blake, allen));
+		Collections.reverse(result);
+		searchModel.selection().entities().set(result);
+		assertEquals("ALLEN;BLAKE;JONES", searchField.getText());
+	}
+
+	@Test
+	void stringFactory() {
+		EntitySearchModel model = EntitySearchModel.builder(Employee.TYPE, CONNECTION_PROVIDER).build();
+		EntitySearchField field = EntitySearchField.builder(model)
+						.stringFactory(entity -> entity.string(Employee.JOB))
+						.build();
+		Entity employee = CONNECTION_PROVIDER.entities().builder(Employee.TYPE)
+						.with(Employee.NAME, "Darri")
+						.with(Employee.JOB, "CLERK")
+						.build();
+		model.selection().entity().set(employee);
+		assertEquals("CLERK", field.getText());
 	}
 }

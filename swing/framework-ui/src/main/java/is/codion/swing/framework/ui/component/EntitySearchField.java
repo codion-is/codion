@@ -25,7 +25,6 @@ import is.codion.common.model.FilterModel.VisibleItems;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
-import is.codion.common.value.AbstractValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -57,14 +56,12 @@ import is.codion.swing.common.ui.control.ControlMap;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
-import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityTableCellRenderer;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
-import javax.swing.Action;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -83,9 +80,9 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -98,12 +95,11 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
-import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Colors.darker;
 import static is.codion.swing.common.ui.Utilities.disposeParentWindow;
-import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
@@ -119,7 +115,9 @@ import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.text.MessageFormat.format;
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.joining;
@@ -192,10 +190,25 @@ public final class EntitySearchField extends HintTextField {
 		private ControlKeys() {}
 	}
 
+	private static final TransferFocusCommand FORWARD = new TransferFocusCommand(true);
+	private static final TransferFocusCommand BACKWARD = new TransferFocusCommand(false);
+	private static final Function<Entity, String> DEFAULT_TO_STRING = Object::toString;
+	private static final String DEFAULT_SEPARATOR = ", ";
+
 	private final EntitySearchModel model;
-	private final State searchStringSpecified = State.state();
-	private final Action transferFocusAction = TransferFocusOnEnter.forwardAction();
-	private final Action transferFocusBackwardAction = TransferFocusOnEnter.backwardAction();
+	private final State searchEnabled = State.builder()
+					.listener(this::updateColors)
+					.build();
+	private final Control transferFocusForward = Control.builder()
+					.action(FORWARD)
+					.enabled(searchEnabled.not())
+					.build();
+	private final Control transferFocusBackward = Control.builder()
+					.action(BACKWARD)
+					.enabled(searchEnabled.not())
+					.build();
+	private final Function<Entity, String> stringFactory;
+	private final String separator;
 	private final State searchOnFocusLost = State.state(true);
 	private final State searching = State.state();
 	private final Consumer<Boolean> searchingConsumer;
@@ -209,7 +222,7 @@ public final class EntitySearchField extends HintTextField {
 	private Control searchControl;
 
 	private Color backgroundColor;
-	private Color invalidBackgroundColor;
+	private Color searchBackgroundColor;
 
 	private EntitySearchField(DefaultEntitySearchFieldBuilder builder) {
 		super(builder.searchHintEnabled ? Messages.search() + "..." : null);
@@ -232,6 +245,8 @@ public final class EntitySearchField extends HintTextField {
 		searchingConsumer = createSearchingConsumer(builder.searchIndicator);
 		searching.addConsumer(searchingConsumer);
 		selectorFactory = builder.selectorFactory;
+		stringFactory = builder.stringFactory;
+		separator = builder.separator;
 		if (builder.selectAllOnFocusGained) {
 			addFocusListener(new SelectAllFocusListener());
 		}
@@ -273,11 +288,11 @@ public final class EntitySearchField extends HintTextField {
 	public void transferFocusOnEnter(boolean transferFocusOnEnter) {
 		KeyEvents.Builder transferForward = KeyEvents.builder(VK_ENTER)
 						.condition(WHEN_FOCUSED)
-						.action(transferFocusAction);
+						.action(transferFocusForward);
 		KeyEvents.Builder transferBackward = KeyEvents.builder(VK_ENTER)
 						.condition(WHEN_FOCUSED)
 						.modifiers(SHIFT_DOWN_MASK)
-						.action(transferFocusBackwardAction);
+						.action(transferFocusBackward);
 		if (transferFocusOnEnter) {
 			transferForward.enable(this);
 			transferBackward.enable(this);
@@ -296,7 +311,7 @@ public final class EntitySearchField extends HintTextField {
 			searchControl = Control.builder()
 							.command(this::performSearch)
 							.smallIcon(ICONS.search())
-							.enabled(searchStringSpecified)
+							.enabled(searchEnabled)
 							.build();
 		}
 
@@ -393,6 +408,20 @@ public final class EntitySearchField extends HintTextField {
 		Builder lowerCase(boolean lowerCase);
 
 		/**
+		 * Overrides the default toString() for search elements when displayed in a field based on this model
+		 * @param stringFactory the function providing the toString() functionality
+		 * @return this builder
+		 */
+		Builder stringFactory(Function<Entity, String> stringFactory);
+
+		/**
+		 * Default ", "
+		 * @param separator the String used to separate multiple items
+		 * @return this builder
+		 */
+		Builder separator(String separator);
+
+		/**
 		 * @param searchHintEnabled true if a search hint text should be visible when the field is empty and not focused
 		 * @return this builder instance
 		 */
@@ -458,12 +487,32 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	private void bindEvents() {
-		new SearchStringValue().link(model.search().text());
-		model.search().text().addListener(this::onSearchStringChanged);
+		getDocument().addDocumentListener((DocumentAdapter) e -> updateSearchStrings());
+		model.search().strings().addListener(this::updateSearchEnabled);
 		model.selection().entities().addListener(this::onSelectionChanged);
 		addFocusListener(new SearchFocusListener());
 		addKeyListener(new EnterEscapeListener());
-		linkToEnabledState(searchStringSpecified.not(), transferFocusAction, transferFocusBackwardAction);
+	}
+
+	private void updateSearchStrings() {
+		String text = getText();
+		if (text.isEmpty() || text.equals(selectionString())) {
+			model.search().strings().clear();
+		}
+		else {
+			model.search().strings().set(model.singleSelection() ? singleton(text) : asList(text.split(separator)));
+		}
+	}
+
+	private void updateSearchEnabled() {
+		searchEnabled.set(getText().isEmpty() && model.selection().empty().not().get() || !getText().equals(selectionString()));
+	}
+
+	private void onSelectionChanged() {
+		setToolTipText(selectionToolTip());
+		setText(selectionString());
+		setCaretPosition(0);
+		searchEnabled.set(false);
 	}
 
 	private Consumer<Boolean> createSearchingConsumer(SearchIndicator searchIndicator) {
@@ -479,29 +528,27 @@ public final class EntitySearchField extends HintTextField {
 
 	private void configureColors() {
 		this.backgroundColor = UIManager.getColor("TextField.background");
-		this.invalidBackgroundColor = darker(backgroundColor);
+		this.searchBackgroundColor = darker(backgroundColor);
 		updateColors();
 	}
 
 	private void updateColors() {
-		boolean validBackground = !searchStringSpecified.get();
-		setBackground(validBackground ? backgroundColor : invalidBackgroundColor);
-	}
-
-	private void onSearchStringChanged() {
-		searchStringSpecified.set(!getText().isEmpty() && !getText().equals(model.selection().string()));
-		updateColors();
-	}
-
-	private void onSelectionChanged() {
-		setToolTipText(selectionToolTip());
-		setText(model.selection().string());
-		setCaretPosition(0);
+		setBackground(searchEnabled.get() ? searchBackgroundColor : backgroundColor);
 	}
 
 	private String selectionToolTip() {
-		return model.selection().strings().stream()
-						.collect(joining("<br>", "<html>", "</html"));
+		return model.selection().empty().get() ? null :
+						strings().collect(joining("<br>", "<html>", "</html"));
+	}
+
+	private String selectionString() {
+		return strings().collect(joining(separator));
+	}
+
+	private Stream<String> strings() {
+		return model.selection().entities().get().stream()
+						.sorted()
+						.map(stringFactory);
 	}
 
 	private void performSearch() {
@@ -509,10 +556,10 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	private void performSearch(boolean promptUser) {
-		if (nullOrEmpty(model.search().text().get())) {
+		if (model.search().strings().empty()) {
 			model.selection().clear();
 		}
-		else if (searchStringSpecified.get()) {
+		else if (searchEnabled.get()) {
 			cancelCurrentSearch();
 			searching.set(true);
 			searchWorker = ProgressWorker.builder(model.search()::result)
@@ -540,7 +587,6 @@ public final class EntitySearchField extends HintTextField {
 			promptUser(searchResult);
 		}
 		selectAll();
-		updateColors();
 	}
 
 	private void promptUser(List<Entity> searchResult) {
@@ -555,7 +601,6 @@ public final class EntitySearchField extends HintTextField {
 
 	private void handleException(Exception exception) {
 		endSearch();
-		updateColors();
 		Dialogs.displayExceptionDialog(exception, Utilities.parentWindow(this));
 	}
 
@@ -592,23 +637,6 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		return settingsPanel;
-	}
-
-	private final class SearchStringValue extends AbstractValue<String> {
-
-		private SearchStringValue() {
-			getDocument().addDocumentListener((DocumentAdapter) e -> notifyListeners());
-		}
-
-		@Override
-		protected String getValue() {
-			return getText();
-		}
-
-		@Override
-		protected void setValue(String value) {
-			setText(value);
-		}
 	}
 
 	private static final class SettingsPanel extends JPanel {
@@ -966,12 +994,7 @@ public final class EntitySearchField extends HintTextField {
 		}
 	}
 
-	private final class SearchFocusListener implements FocusListener {
-
-		@Override
-		public void focusGained(FocusEvent e) {
-			updateColors();
-		}
+	private final class SearchFocusListener extends FocusAdapter {
 
 		@Override
 		public void focusLost(FocusEvent e) {
@@ -983,25 +1006,24 @@ public final class EntitySearchField extends HintTextField {
 					performSearch(false);
 				}
 			}
-			updateColors();
 		}
 
 		private boolean shouldPerformSearch() {
-			return searchOnFocusLost.get() && !searching.get() && searchStringSpecified.get();
+			return searchOnFocusLost.get() && !searching.get() && searchEnabled.get();
 		}
 	}
 
 	private final class EnterEscapeListener extends KeyAdapter {
 		@Override
 		public void keyPressed(KeyEvent e) {
-			if (searchStringSpecified.get()) {
+			if (searchEnabled.get()) {
 				if (e.getKeyCode() == VK_ENTER) {
 					e.consume();
 					performSearch(true);
 				}
 				else if (e.getKeyCode() == VK_ESCAPE) {
 					e.consume();
-					setText(model.selection().string());
+					setText(selectionString());
 					selectAll();
 				}
 			}
@@ -1046,6 +1068,26 @@ public final class EntitySearchField extends HintTextField {
 		}
 	}
 
+	private static final class TransferFocusCommand implements Control.ActionCommand {
+
+		private final boolean forward;
+
+		private TransferFocusCommand(boolean forward) {
+			this.forward = forward;
+		}
+
+		@Override
+		public void execute(ActionEvent event) throws Exception {
+			JComponent component = (JComponent) event.getSource();
+			if (forward) {
+				component.transferFocus();
+			}
+			else {
+				component.transferFocusBackward();
+			}
+		}
+	}
+
 	private final class SelectAllFocusListener extends FocusAdapter {
 
 		@Override
@@ -1072,6 +1114,8 @@ public final class EntitySearchField extends HintTextField {
 		private boolean selectAllOnFocusGained = true;
 		private SearchIndicator searchIndicator = SEARCH_INDICATOR.get();
 		private Function<EntitySearchModel, Selector> selectorFactory = new ListSelectorFactory();
+		private Function<Entity, String> stringFactory = DEFAULT_TO_STRING;
+		private String separator = DEFAULT_SEPARATOR;
 		private Supplier<EntityEditPanel> editPanel;
 		private boolean confirmAdd;
 		private boolean confirmEdit;
@@ -1101,6 +1145,21 @@ public final class EntitySearchField extends HintTextField {
 				throw new IllegalArgumentException("Field is already uppercase");
 			}
 			this.lowerCase = lowerCase;
+			return this;
+		}
+
+		@Override
+		public Builder stringFactory(Function<Entity, String> stringFactory) {
+			this.stringFactory = requireNonNull(stringFactory);
+			return this;
+		}
+
+		@Override
+		public Builder separator(String separator) {
+			if (requireNonNull(separator).isEmpty()) {
+				throw new IllegalArgumentException("Separator must not be empty");
+			}
+			this.separator = separator;
 			return this;
 		}
 

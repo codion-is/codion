@@ -87,11 +87,11 @@ public class ForeignKeyConditionModelTest {
 		assertNull(searchEntity);
 
 		condition.operands().equal().set(sales);
-		assertEquals("SALES", equalSearchModel.selection().string());
+		assertEquals(sales, equalSearchModel.selection().entity().get());
 		sales.put(Department.NAME, "sales");
 		equalSearchModel.selection().entity().set(sales);
 		sales.put(Department.NAME, "SAles");
 		condition.operands().equal().set(sales);
-		assertEquals("SAles", equalSearchModel.selection().string());
+		assertEquals("SAles", equalSearchModel.selection().entity().get().get(Department.NAME));
 	}
 }

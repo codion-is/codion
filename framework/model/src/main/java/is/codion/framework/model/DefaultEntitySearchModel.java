@@ -46,13 +46,12 @@ import static is.codion.framework.domain.entity.condition.Condition.and;
 import static is.codion.framework.domain.entity.condition.Condition.or;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 final class DefaultEntitySearchModel implements EntitySearchModel {
 
 	private static final Supplier<Condition> NULL_CONDITION = () -> null;
-	private static final Function<Entity, String> DEFAULT_TO_STRING = Object::toString;
-	private static final String DEFAULT_SEPARATOR = ", ";
 	private static final String WILDCARD_MULTIPLE = "%";
 	private static final String WILDCARD_SINGLE = "_";
 
@@ -66,22 +65,18 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private final DefaultSelection selection = new DefaultSelection();
 	private final EntityConnectionProvider connectionProvider;
 	private final Map<Column<String>, Settings> settings;
-	private final String separator;
 	private final boolean singleSelection;
 	private final Value<Supplier<Condition>> condition = Value.nonNull(NULL_CONDITION);
-	private final Function<Entity, String> stringFactory;
 	private final Value<Integer> limit;
 
 	private DefaultEntitySearchModel(DefaultBuilder builder) {
 		this.entityDefinition = builder.entityDefinition;
 		this.connectionProvider = builder.connectionProvider;
-		this.separator = builder.separator;
 		this.columns = unmodifiableCollection(builder.columns);
 		this.attributes = builder.attributes;
 		this.orderBy = builder.orderBy;
 		this.settings = unmodifiableMap(columns.stream()
 						.collect(toMap(Function.identity(), column -> new DefaultSettings())));
-		this.stringFactory = builder.stringFactory;
 		this.singleSelection = builder.singleSelection;
 		this.limit = Value.nullable(builder.limit);
 	}
@@ -139,14 +134,13 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 	private final class DefaultSearch implements Search {
 
-		private final Value<String> text = Value.builder()
-						.nonNull("")
+		private final ValueSet<String> strings = ValueSet.<String>builder()
 						.notify(Notify.WHEN_SET)
 						.build();
 
 		@Override
-		public Value<String> text() {
-			return text;
+		public ValueSet<String> strings() {
+			return strings;
 		}
 
 		@Override
@@ -162,10 +156,9 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 				throw new IllegalStateException("No search columns provided for search model: " + entityDefinition.entityType());
 			}
 			Collection<Condition> conditions = new ArrayList<>();
-			String[] searchStrings = strings();
 			for (Column<String> column : columns) {
 				Settings columnSettings = settings.get(column);
-				for (String rawSearchString : searchStrings) {
+				for (String rawSearchString : strings.get()) {
 					String preparedSearchString = prepareSearchString(rawSearchString, columnSettings);
 					boolean containsWildcards = containsWildcards(preparedSearchString);
 					if (columnSettings.caseSensitive().get()) {
@@ -182,10 +175,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 							.limit(limit.get())
 							.orderBy(orderBy)
 							.build();
-		}
-
-		private String[] strings() {
-			return singleSelection ? new String[] {search.text.get()} : search.text.getOrThrow().split(separator);
 		}
 
 		private String prepareSearchString(String rawSearchString, Settings settings) {
@@ -231,22 +220,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		@Override
 		public void clear() {
 			entities.clear();
-		}
-
-		@Override
-		public String string() {
-			return entities.get().stream()
-							.sorted()
-							.map(stringFactory)
-							.collect(joining(separator));
-		}
-
-		@Override
-		public Collection<String> strings() {
-			return entities.get().stream()
-							.sorted()
-							.map(stringFactory)
-							.collect(toList());
 		}
 	}
 
@@ -301,9 +274,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		private final EntityConnectionProvider connectionProvider;
 		private Collection<Column<String>> columns;
 		private Collection<Attribute<?>> attributes = emptyList();
-		private Function<Entity, String> stringFactory = DEFAULT_TO_STRING;
 		private boolean singleSelection = false;
-		private String separator = DEFAULT_SEPARATOR;
 		private Integer limit = DEFAULT_LIMIT.get();
 		private OrderBy orderBy;
 
@@ -341,23 +312,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		}
 
 		@Override
-		public Builder stringFactory(Function<Entity, String> stringFactory) {
-			this.stringFactory = requireNonNull(stringFactory);
-			return this;
-		}
-
-		@Override
 		public Builder singleSelection(boolean singleSelection) {
 			this.singleSelection = singleSelection;
-			return this;
-		}
-
-		@Override
-		public Builder separator(String separator) {
-			if (requireNonNull(separator).isEmpty()) {
-				throw new IllegalArgumentException("Separator must not be empty");
-			}
-			this.separator = separator;
 			return this;
 		}
 

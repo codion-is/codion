@@ -36,7 +36,6 @@ import is.codion.framework.domain.entity.condition.Condition;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -103,14 +102,14 @@ public interface EntitySearchModel {
 	boolean singleSelection();
 
 	/**
-	 * Manages the search text and provides search results.
+	 * Manages the search strings and provides search results.
 	 */
 	interface Search {
 
 		/**
-		 * @return the {@link Value} representing the search text
+		 * @return the {@link ValueSet} representing the search strings
 		 */
-		Value<String> text();
+		ValueSet<String> strings();
 
 		/**
 		 * Performs a query based on the current search configuration and returns the result.
@@ -136,16 +135,6 @@ public interface EntitySearchModel {
 		 * @return a {@link Value} controlling the selected entities
 		 */
 		ValueSet<Entity> entities();
-
-		/**
-		 * @return a sorted String representation of the selected entities
-		 */
-		String string();
-
-		/**
-		 * @return sorted String representations of the selected entities
-		 */
-		Collection<String> strings();
 
 		/**
 		 * @return an {@link ObservableState} indicating whether the selection is empty
@@ -211,25 +200,11 @@ public interface EntitySearchModel {
 		Builder orderBy(OrderBy orderBy);
 
 		/**
-		 * Overrides the default toString() for search elements when displayed in a field based on this model
-		 * @param stringFactory the function providing the toString() functionality
-		 * @return this builder
-		 */
-		Builder stringFactory(Function<Entity, String> stringFactory);
-
-		/**
 		 * Default false
 		 * @param singleSelection true if single selection should be enabled
 		 * @return this builder
 		 */
 		Builder singleSelection(boolean singleSelection);
-
-		/**
-		 * Default ", "
-		 * @param separator the String used to separate multiple items
-		 * @return this builder
-		 */
-		Builder separator(String separator);
 
 		/**
 		 * @param limit the search result limit
