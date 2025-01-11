@@ -92,6 +92,21 @@ public abstract class AbstractDatabase implements Database {
 	}
 
 	@Override
+	public final Connection createConnection() {
+		try {
+			Connection connection = connectionProvider.connection(url);
+			if (transactionIsolation != null) {
+				connection.setTransactionIsolation(transactionIsolation);
+			}
+
+			return connection;
+		}
+		catch (SQLException e) {
+			throw new DatabaseException(e, errorMessage(e, Operation.OTHER));
+		}
+	}
+
+	@Override
 	public final Connection createConnection(User user) {
 		try {
 			Connection connection = connectionProvider.connection(user, url);

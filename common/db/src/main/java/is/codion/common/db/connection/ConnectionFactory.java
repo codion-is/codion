@@ -35,6 +35,13 @@ public interface ConnectionFactory {
 	String url();
 
 	/**
+	 * Creates a connection.
+	 * @return a new JDBC connection
+	 * @throws DatabaseException in case of a connection error
+	 */
+	Connection createConnection();
+
+	/**
 	 * Creates a connection for the given user.
 	 * @param user the user for which to create a connection
 	 * @return a new JDBC connection

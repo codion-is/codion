@@ -36,6 +36,17 @@ import static java.util.Objects.requireNonNull;
 public interface ConnectionProvider {
 
 	/**
+	 * Returns a JDBC {@link Connection} instance based on the given database.
+	 * @param url the jdbc url
+	 * @return a JDBC {@link Connection} instance
+	 * @throws SQLException in case of an exception
+	 * @throws NullPointerException in case url is null
+	 */
+	default Connection connection(String url) throws SQLException {
+		return DriverManager.getConnection(requireNonNull(url));
+	}
+
+	/**
 	 * Returns a JDBC {@link Connection} instance based on the given database and user.
 	 * @param user the user
 	 * @param url the jdbc url

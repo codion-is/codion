@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.25
+### is.codion.common.db
+- ConnectionFactory.createConnection() and ConnectionProvider.connection() overload without User parameter added.
 ### is.codion.framework.domain
 - DefaultEntityValidator.valid() now final.
 - AttributeDefinition.Builder.mnemonicResourceKey() added.
