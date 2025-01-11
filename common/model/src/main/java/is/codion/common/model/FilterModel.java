@@ -110,36 +110,32 @@ public interface FilterModel<T> {
 		 * <p>If the item passes the {@link VisibleItems#predicate()} it is appended
 		 * to the visible items, which are then sorted if sorting is enabled.
 		 * <p>If the item does not pass the {@link VisibleItems#predicate()},
-		 * it will be filtered right away and the method will return false.
+		 * it will be filtered right away.
 		 * @param item the item to add
-		 * @return true if the item was added to the visible items
 		 */
-		boolean add(T item);
+		void add(T item);
 
 		/**
 		 * <p>Adds the given items to this model.
 		 * <p>Items that pass the {@link VisibleItems#predicate()} are is appended
 		 * to the visible items, which are then sorted if sorting is enabled.
 		 * <p>If no items pass the {@link VisibleItems#predicate()}, they will
-		 * be filtered right away and the method will return false.
+		 * be filtered right away.
 		 * @param items the items to add
-		 * @return true if one or more of the items was added to the visible items
 		 */
-		boolean add(Collection<T> items);
+		void add(Collection<T> items);
 
 		/**
 		 * <p>Removes the given item from this model.
 		 * @param item the item to remove from the model
-		 * @return true if the item was removed from the visible items
 		 */
-		boolean remove(T item);
+		void remove(T item);
 
 		/**
 		 * <p>Removes the given items from this table model.
 		 * @param items the items to remove from the model
-		 * @return true if one or more of the items were removed from the visible items
 		 */
-		boolean remove(Collection<T> items);
+		void remove(Collection<T> items);
 
 		/**
 		 * Clears the items

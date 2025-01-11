@@ -7,6 +7,7 @@ Codion Change Log
 ### is.codion.common.model
 - FilterModel.Refresher.success() and failure() renamed result() and exception() respectively, related renaming.
 - FilterModel.Items no longer extends Observable.
+- FilterModel.Items.add() and remove() now void.
 ### is.codion.framework.domain
 - DefaultEntityValidator.valid() now final.
 - AttributeDefinition.Builder.mnemonicResourceKey() added.

@@ -251,15 +251,15 @@ public final class DefaultFilterTableModelTest {
 		assertTrue(items.visible().add(0, C));
 		assertEquals(0, items.visible().indexOf(C));
 
-		assertTrue(items.remove(C));
+		items.remove(C);
 		// sorts
-		assertTrue(items.add(C));
+		items.add(C);
 		assertEquals(2, items.visible().indexOf(C));
 		items.visible().predicate().set(item -> !item.equals(C));
 		// not visible when removed
-		assertFalse(items.remove(C));
+		items.remove(C);
 
-		assertFalse(items.add(C));
+		items.add(C);
 		items.visible().predicate().clear();
 		assertEquals(2, items.visible().indexOf(C));
 
@@ -273,7 +273,7 @@ public final class DefaultFilterTableModelTest {
 		assertEquals(-1, items.visible().indexOf(E));
 
 		// not visible when removed
-		assertFalse(items.remove(E));
+		items.remove(E);
 
 		items.visible().predicate().clear();
 		assertEquals(asList(A, B, C, D), items.visible().get());
@@ -290,14 +290,14 @@ public final class DefaultFilterTableModelTest {
 		tableModel.items().refresh();
 		assertEquals(1, events.get());
 		tableModel.filters().get(0).operands().equal().set("a");
-		assertFalse(tableModel.items().remove(B));
+		tableModel.items().remove(B);
 		assertEquals(3, events.get());
 		assertFalse(tableModel.items().visible().contains(B));
 		assertTrue(tableModel.items().contains(A));
-		assertTrue(tableModel.items().remove(A));
+		tableModel.items().remove(A);
 		assertEquals(4, events.get());
 		assertFalse(tableModel.items().contains(A));
-		assertFalse(tableModel.items().remove(asList(D, E)));
+		tableModel.items().remove(asList(D, E));
 		assertEquals(4, events.get());//no change event when removing filtered items
 		assertFalse(tableModel.items().visible().contains(D));
 		assertFalse(tableModel.items().visible().contains(E));
@@ -595,9 +595,9 @@ public final class DefaultFilterTableModelTest {
 		tableModel.items().refresh();
 		tableModel.filters().get(0).operands().equal().set("a");
 		assertTrue(tableModel.items().contains(B));
-		assertFalse(tableModel.items().remove(B));
+		tableModel.items().remove(B);
 		assertFalse(tableModel.items().contains(B));
-		assertTrue(tableModel.items().remove(A));
+		tableModel.items().remove(A);
 		assertFalse(tableModel.items().contains(A));
 	}
 

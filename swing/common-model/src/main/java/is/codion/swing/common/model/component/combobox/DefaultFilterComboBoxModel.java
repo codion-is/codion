@@ -306,7 +306,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public boolean add(T item) {
+		public void add(T item) {
 			requireNonNull(item);
 			synchronized (lock) {
 				if (visible.predicate.isNull() || visible.predicate.getOrThrow().test(item)) {
@@ -314,33 +314,26 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 						visible.items.add(item);
 						visible.sortInternal();
 						visible.notifyChanges();
-
-						return true;
 					}
 				}
 				else if (!filtered.items.contains(item)) {
 					filtered.items.add(item);
 					filtered.notifyChanges();
 				}
-
-				return false;
 			}
 		}
 
 		@Override
-		public boolean add(Collection<T> items) {
+		public void add(Collection<T> items) {
 			synchronized (lock) {
-				boolean added = false;
 				for (T item : requireNonNull(items)) {
-					added = add(item) || added;
+					add(item);
 				}
-
-				return added;
 			}
 		}
 
 		@Override
-		public boolean remove(T item) {
+		public void remove(T item) {
 			requireNonNull(item);
 			synchronized (lock) {
 				if (filtered.items.remove(item)) {
@@ -349,23 +342,16 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 				else if (visible.items.remove(item)) {
 					visible.notifyChanges();
 					updateSelectedItem(item);
-
-					return true;
 				}
-
-				return false;
 			}
 		}
 
 		@Override
-		public boolean remove(Collection<T> items) {
+		public void remove(Collection<T> items) {
 			synchronized (lock) {
-				boolean removed = false;
 				for (T item : requireNonNull(items)) {
-					removed = remove(item) || removed;
+					remove(item);
 				}
-
-				return removed;
 			}
 		}
 

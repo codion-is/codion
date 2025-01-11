@@ -136,27 +136,23 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 	}
 
 	@Override
-	public boolean add(Collection<R> items) {
+	public void add(Collection<R> items) {
 		synchronized (lock) {
 			if (addInternal(visible.items.size(), rejectNulls(items))) {
 				visible.sort();
-
-				return true;
 			}
-
-			return false;
 		}
 	}
 
 	@Override
-	public boolean remove(R item) {
+	public void remove(R item) {
 		synchronized (lock) {
-			return removeInternal(requireNonNull(item), true);
+			removeInternal(requireNonNull(item), true);
 		}
 	}
 
 	@Override
-	public boolean remove(Collection<R> items) {
+	public void remove(Collection<R> items) {
 		rejectNulls(items);
 		synchronized (lock) {
 			selection.setValueIsAdjusting(true);
@@ -168,21 +164,15 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 			if (visibleRemoved) {
 				visible.notifyChanges();
 			}
-
-			return visibleRemoved;
 		}
 	}
 
 	@Override
-	public boolean add(R item) {
+	public void add(R item) {
 		synchronized (lock) {
 			if (addInternal(requireNonNull(item))) {
 				visible.sort();
-
-				return true;
 			}
-
-			return false;
 		}
 	}
 
