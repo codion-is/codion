@@ -71,8 +71,10 @@ import java.util.function.Consumer;
 
 import static is.codion.common.Configuration.stringValue;
 import static is.codion.common.model.UserPreferences.setUserPreference;
+import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
+import static is.codion.swing.common.ui.dialog.Dialogs.displayExceptionDialog;
 import static is.codion.swing.common.ui.dialog.Dialogs.lookAndFeelSelectionDialog;
 import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.enableLookAndFeel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
@@ -421,6 +423,8 @@ public final class DomainGeneratorPanel extends JPanel {
 		model.apiSearchValue().addConsumer(apiHighlighter.searchString()::set);
 		model.implSearchValue().addConsumer(implementationHighlighter.searchString()::set);
 		model.implSearchValue().addConsumer(combinedHighlighter.searchString()::set);
+		model.schemaModel().items().refresher().failure().addConsumer(this::displayException);
+		model.entityModel().items().refresher().failure().addConsumer(this::displayException);
 	}
 
 	private void setupKeyEvents() {
@@ -442,6 +446,10 @@ public final class DomainGeneratorPanel extends JPanel {
 						.keyCode(KeyEvent.VK_5)
 						.action(command(combinedTextArea::requestFocusInWindow))
 						.enable(this);
+	}
+
+	private void displayException(Exception e) {
+		displayExceptionDialog(e, parentWindow(this));
 	}
 
 	private static List<FilterTableColumn<SchemaColumns.Id>> createSchemaColumns() {
@@ -500,7 +508,7 @@ public final class DomainGeneratorPanel extends JPanel {
 			System.exit(0);
 		}
 		catch (Exception e) {
-			Dialogs.displayExceptionDialog(e, null);
+			displayExceptionDialog(e, null);
 			System.exit(1);
 		}
 	}

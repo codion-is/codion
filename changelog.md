@@ -47,6 +47,8 @@ Codion Change Log
 - EntitySearchField refactored.
 - EntitySearchField.Build.separator() and stringFactory() added, related refactoring.
 - EntitySearchField.Builder.selectAllOnFocusGained() removed, related refactoring.
+### is.codion.tools.generator.ui
+- DomainGeneratorPanel bug fixed, did not display exceptions happening during async table model refresh.
 
 ## 0.18.24
 ### is.codion.common.core
