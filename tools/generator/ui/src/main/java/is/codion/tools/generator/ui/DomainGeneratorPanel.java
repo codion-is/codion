@@ -423,8 +423,8 @@ public final class DomainGeneratorPanel extends JPanel {
 		model.apiSearchValue().addConsumer(apiHighlighter.searchString()::set);
 		model.implSearchValue().addConsumer(implementationHighlighter.searchString()::set);
 		model.implSearchValue().addConsumer(combinedHighlighter.searchString()::set);
-		model.schemaModel().items().refresher().failure().addConsumer(this::displayException);
-		model.entityModel().items().refresher().failure().addConsumer(this::displayException);
+		model.schemaModel().items().refresher().exception().addConsumer(this::displayException);
+		model.entityModel().items().refresher().exception().addConsumer(this::displayException);
 	}
 
 	private void setupKeyEvents() {

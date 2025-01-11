@@ -111,7 +111,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	private LoadTestPanel(LoadTestModel<T> loadTestModel) {
 		this.loadTestModel = requireNonNull(loadTestModel);
 		this.loadTest = loadTestModel.loadTest();
-		this.loadTestModel.applicationTableModel().items().refresher().failure().addConsumer(this::displayException);
+		this.loadTestModel.applicationTableModel().items().refresher().exception().addConsumer(this::displayException);
 		initializeUI();
 	}
 

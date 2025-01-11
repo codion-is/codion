@@ -357,9 +357,9 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 			set(selection().item().get());
 			filterModel.selection().item().addConsumer(this::set);
 			selection().item().addConsumer(selected -> select(filterModel, selected));
-			items().refresher().success().addListener(filterModel.items()::refresh);
+			items().refresher().result().addListener(filterModel.items()::refresh);
 			// Select the correct foreign key item according to the selected item after refresh
-			filterModel.items().refresher().success().addListener(() -> select(filterModel, getSelectedItem()));
+			filterModel.items().refresher().result().addListener(() -> select(filterModel, getSelectedItem()));
 		}
 
 		private void select(EntityComboBoxModel filterModel, Entity selected) {

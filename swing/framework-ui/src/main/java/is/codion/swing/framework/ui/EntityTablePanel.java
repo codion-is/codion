@@ -1558,7 +1558,7 @@ public class EntityTablePanel extends JPanel {
 		summaryPanelVisibleState.addConsumer(this::setSummaryPanelVisible);
 		tableModel.queryModel().conditions().changed().addListener(this::onConditionChanged);
 		tableModel.items().refresher().active().addConsumer(this::refresherActive);
-		tableModel.items().refresher().failure().addConsumer(this::onException);
+		tableModel.items().refresher().exception().addConsumer(this::onException);
 		tableModel.editModel().afterInsertUpdateOrDelete().addListener(table::repaint);
 	}
 

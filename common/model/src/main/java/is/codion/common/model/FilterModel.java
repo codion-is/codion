@@ -85,14 +85,14 @@ public interface FilterModel<T> {
 		/**
 		 * <p>Refreshes the data in this model using its {@link Refresher}.
 		 * <p>Note that this method only throws exceptions when run synchronously off the user interface thread.
-		 * Use {@link Refresher#failure()} to listen for exceptions that happen during asynchronous refresh.
-		 * @param onRefresh called after a successful refresh
+		 * Use {@link Refresher#exception()} to listen for exceptions that happen during asynchronous refresh.
+		 * @param onResult called after a successful refresh
 		 * @see Refresher#active()
-		 * @see Refresher#success()
-		 * @see Refresher#failure()
+		 * @see Refresher#result()
+		 * @see Refresher#exception()
 		 * @see Refresher#async()
 		 */
-		void refresh(Consumer<Collection<T>> onRefresh);
+		void refresh(Consumer<Collection<T>> onResult);
 
 		/**
 		 * @return the items or an empty list in case of no items
@@ -330,15 +330,15 @@ public interface FilterModel<T> {
 
 		/**
 		 * <p>This event is always triggered on the UI thread.
-		 * @return an observer notified each time a successful refresh has been performed
+		 * @return an observer notified with the result after a successful refresh
 		 */
-		Observer<Collection<T>> success();
+		Observer<Collection<T>> result();
 
 		/**
 		 * <p>This event is always triggered on the UI thread.
-		 * @return an observer notified each time an asynchronous refresh has failed
+		 * @return an observer notified with the exception when an asynchronous refresh has failed
 		 */
-		Observer<Exception> failure();
+		Observer<Exception> exception();
 	}
 
 	/**
@@ -347,8 +347,8 @@ public interface FilterModel<T> {
 	 */
 	abstract class AbstractRefresher<T> implements Refresher<T> {
 
-		private final Event<Collection<T>> success = Event.event();
-		private final Event<Exception> failure = Event.event();
+		private final Event<Collection<T>> onResult = Event.event();
+		private final Event<Exception> onException = Event.event();
 		private final State active = State.state();
 		private final Supplier<Collection<T>> supplier;
 		private final State async = State.state(ASYNC_REFRESH.getOrThrow());
@@ -371,13 +371,13 @@ public interface FilterModel<T> {
 		}
 
 		@Override
-		public final Observer<Collection<T>> success() {
-			return success.observer();
+		public final Observer<Collection<T>> result() {
+			return onResult.observer();
 		}
 
 		@Override
-		public final Observer<Exception> failure() {
-			return failure.observer();
+		public final Observer<Exception> exception() {
+			return onException.observer();
 		}
 
 		/**
@@ -389,21 +389,21 @@ public interface FilterModel<T> {
 
 		/**
 		 * <p>Refreshes the data. Note that this method only throws exceptions when run synchronously.
-		 * <p>Use {@link #failure()} to listen for exceptions that happen during asynchronous refresh.
+		 * <p>Use {@link #exception()} to listen for exceptions that happen during asynchronous refresh.
 		 * <p>Async refresh is performed when it is enabled ({@link #async()}) and this method is called on the UI thread.
-		 * @param onRefresh called after a successful refresh, may be null
+		 * @param onResult called with the result after a successful refresh, may be null
 		 * @throws RuntimeException in case of an exception when running synchronously.
 		 * @see #active()
-		 * @see #success()
-		 * @see #failure()
+		 * @see #result()
+		 * @see #exception()
 		 * @see #async()
 		 */
-		protected final void refresh(@Nullable Consumer<Collection<T>> onRefresh) {
+		protected final void refresh(@Nullable Consumer<Collection<T>> onResult) {
 			if (async.get() && isUserInterfaceThread()) {
-				refreshAsync(onRefresh);
+				refreshAsync(onResult);
 			}
 			else {
-				refreshSync(onRefresh);
+				refreshSync(onResult);
 			}
 		}
 
@@ -417,23 +417,23 @@ public interface FilterModel<T> {
 		}
 
 		/**
-		 * <p>Triggers the successful refresh event with the given items
+		 * <p>Triggers the successful refresh event with the given result items
 		 * <p>This method must be called on the UI thread.
-		 * @param items the refresh result
-		 * @see #success()
+		 * @param result the refresh result
+		 * @see #result()
 		 */
-		protected final void notifySuccess(Collection<T> items) {
-			success.accept(items);
+		protected final void notifyResult(Collection<T> result) {
+			onResult.accept(result);
 		}
 
 		/**
-		 * <p>Triggers the refresh failed event
+		 * <p>Triggers the refresh exception event
 		 * <p>This method must be called on the UI thread.
 		 * @param exception the refresh exception
-		 * @see #failure()
+		 * @see #exception()
 		 */
-		protected final void notifyFailure(Exception exception) {
-			failure.accept(exception);
+		protected final void notifyException(Exception exception) {
+			onException.accept(exception);
 		}
 
 		/**
@@ -444,22 +444,22 @@ public interface FilterModel<T> {
 		/**
 		 * <p>Performes an async refresh
 		 * <p>This method must be called on the UI thread.
-		 * @param onRefresh if specified will be called after a successful refresh
+		 * @param onResult if specified will be called with the result after a successful refresh
 		 */
-		protected abstract void refreshAsync(@Nullable Consumer<Collection<T>> onRefresh);
+		protected abstract void refreshAsync(@Nullable Consumer<Collection<T>> onResult);
 
 		/**
 		 * <p>Performs a sync refresh
 		 * <p>This method must be called on the UI thread.
-		 * @param onRefresh if specified will be called after a successful refresh
+		 * @param onResult if specified will be called with the result after a successful refresh
 		 */
-		protected abstract void refreshSync(@Nullable Consumer<Collection<T>> onRefresh);
+		protected abstract void refreshSync(@Nullable Consumer<Collection<T>> onResult);
 
 		/**
 		 * <p>Processes the refresh result, by replacing the current model items by the result items.
 		 * <p>This method must be called on UI thread.
-		 * @param items the items resulting from the refresh operation
+		 * @param result the items resulting from the refresh operation
 		 */
-		protected abstract void processResult(Collection<T> items);
+		protected abstract void processResult(Collection<T> result);
 	}
 }

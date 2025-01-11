@@ -158,7 +158,7 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		 * @see RefreshStrategy
 		 */
 		@Override
-		void refresh(Consumer<Collection<R>> onRefresh);
+		void refresh(Consumer<Collection<R>> onResult);
 
 		/**
 		 * Default {@link RefreshStrategy#CLEAR}

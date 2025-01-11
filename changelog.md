@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.25
 ### is.codion.common.db
 - ConnectionFactory.createConnection() and ConnectionProvider.connection() overload without User parameter added.
+### is.codion.common.model
+- FilterModel.Refresher.success() and failure() renamed result() and exception() respectively, related renaming.
 ### is.codion.framework.domain
 - DefaultEntityValidator.valid() now final.
 - AttributeDefinition.Builder.mnemonicResourceKey() added.

@@ -46,19 +46,19 @@ public abstract class AbstractFilterModelRefresher<T> extends FilterModel.Abstra
 		return SwingUtilities.isEventDispatchThread();
 	}
 
-	protected final void refreshAsync(Consumer<Collection<T>> onRefresh) {
+	protected final void refreshAsync(Consumer<Collection<T>> onResult) {
 		cancelCurrentRefresh();
 		refreshWorker = ProgressWorker.builder(supplier()::get)
 						.onStarted(this::onRefreshStarted)
-						.onResult(items -> onRefreshResult(items, onRefresh))
+						.onResult(items -> onRefreshResult(items, onResult))
 						.onException(this::onRefreshFailedAsync)
 						.execute();
 	}
 
-	protected final void refreshSync(Consumer<Collection<T>> onRefresh) {
+	protected final void refreshSync(Consumer<Collection<T>> onResult) {
 		onRefreshStarted();
 		try {
-			onRefreshResult(supplier().get(), onRefresh);
+			onRefreshResult(supplier().get(), onResult);
 		}
 		catch (Exception e) {
 			onRefreshFailedSync(e);
@@ -72,7 +72,7 @@ public abstract class AbstractFilterModelRefresher<T> extends FilterModel.Abstra
 	private void onRefreshFailedAsync(Exception exception) {
 		refreshWorker = null;
 		setActive(false);
-		notifyFailure(exception);
+		notifyException(exception);
 	}
 
 	private void onRefreshFailedSync(Exception exception) {
@@ -84,14 +84,14 @@ public abstract class AbstractFilterModelRefresher<T> extends FilterModel.Abstra
 		throw new RuntimeException(exception);
 	}
 
-	private void onRefreshResult(Collection<T> items, Consumer<Collection<T>> onRefresh) {
+	private void onRefreshResult(Collection<T> result, Consumer<Collection<T>> onResult) {
 		refreshWorker = null;
 		setActive(false);
-		processResult(items);
-		if (onRefresh != null) {
-			onRefresh.accept(items);
+		processResult(result);
+		if (onResult != null) {
+			onResult.accept(result);
 		}
-		notifySuccess(items);
+		notifyResult(result);
 	}
 
 	private void cancelCurrentRefresh() {

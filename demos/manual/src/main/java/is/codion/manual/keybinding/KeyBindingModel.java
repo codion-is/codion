@@ -74,7 +74,7 @@ final class KeyBindingModel {
 		// Refresh the component combo box when a look and feel is selected
 		lookAndFeelModel.selection().item().addListener(componentModel.items()::refresh);
 		// Refresh the table model when the component combo box has been refreshed
-		componentModel.items().refresher().success().addListener(tableModel.items()::refresh);
+		componentModel.items().refresher().result().addListener(tableModel.items()::refresh);
 		// And when a component is selected
 		componentModel.selection().item().addListener(tableModel.items()::refresh);
 	}

@@ -99,8 +99,8 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 	}
 
 	@Override
-	public void refresh(Consumer<Collection<R>> onRefresh) {
-		refresher.doRefresh(requireNonNull(onRefresh));
+	public void refresh(Consumer<Collection<R>> onResult) {
+		refresher.doRefresh(requireNonNull(onResult));
 	}
 
 	@Override
@@ -188,7 +188,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 
 	@Override
 	public Observer<Collection<R>> observer() {
-		return refresher.event.observer();
+		return refresher.onResult.observer();
 	}
 
 	@Override
@@ -363,7 +363,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 
 	final class DefaultRefresher extends AbstractFilterModelRefresher<R> {
 
-		private final Event<Collection<R>> event = Event.event();
+		private final Event<Collection<R>> onResult = Event.event();
 
 		private DefaultRefresher(Supplier<? extends Collection<R>> supplier, boolean asyncRefresh) {
 			super((Supplier<Collection<R>>) supplier);
@@ -371,13 +371,13 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		}
 
 		@Override
-		protected void processResult(Collection<R> items) {
-			set(items);
-			event.accept(unmodifiableCollection(items));
+		protected void processResult(Collection<R> result) {
+			set(result);
+			onResult.accept(unmodifiableCollection(result));
 		}
 
-		void doRefresh(Consumer<Collection<R>> onRefresh) {
-			super.refresh(onRefresh);
+		void doRefresh(Consumer<Collection<R>> onResult) {
+			super.refresh(onResult);
 		}
 	}
 

@@ -267,8 +267,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public void refresh(Consumer<Collection<T>> onRefresh) {
-			refresher.doRefresh(requireNonNull(onRefresh));
+		public void refresh(Consumer<Collection<T>> onResult) {
+			refresher.doRefresh(requireNonNull(onResult));
 		}
 
 		@Override
@@ -775,8 +775,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		protected void processResult(Collection<T> items) {
-			modelItems.set(items);
+		protected void processResult(Collection<T> result) {
+			modelItems.set(result);
 		}
 
 		private void doRefresh(Consumer<Collection<T>> onRefresh) {

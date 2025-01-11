@@ -299,7 +299,7 @@ public final class DefaultEntityComboBoxModelTest {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, CONNECTION_PROVIDER).build();
 		AtomicInteger refreshed = new AtomicInteger();
 		Runnable refreshListener = refreshed::incrementAndGet;
-		comboBoxModel.items().refresher().success().addListener(refreshListener);
+		comboBoxModel.items().refresher().result().addListener(refreshListener);
 		assertEquals(Employee.TYPE, comboBoxModel.entityDefinition().entityType());
 		comboBoxModel.toString();
 		assertEquals(0, comboBoxModel.getSize());
@@ -326,7 +326,7 @@ public final class DefaultEntityComboBoxModelTest {
 		comboBoxModel.items().refresh();
 		assertEquals(7, comboBoxModel.getSize());// 7 in acounting
 		assertEquals(3, refreshed.get());
-		comboBoxModel.items().refresher().success().removeListener(refreshListener);
+		comboBoxModel.items().refresher().result().removeListener(refreshListener);
 	}
 
 	@Test

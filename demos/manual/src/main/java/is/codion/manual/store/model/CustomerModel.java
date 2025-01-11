@@ -38,7 +38,7 @@ public class CustomerModel extends SwingEntityModel {
 						.addConsumer(selected ->
 										System.out.println("Items selected: " + selected));
 
-		tableModel.items().refresher().success()
+		tableModel.items().refresher().result()
 						.addListener(() -> System.out.println("Refresh successful"));
 
 		CustomerEditModel editModel = editModel();
