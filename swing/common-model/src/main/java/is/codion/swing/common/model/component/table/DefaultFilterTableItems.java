@@ -187,11 +187,6 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 	}
 
 	@Override
-	public Observer<Collection<R>> observer() {
-		return refresher.onResult.observer();
-	}
-
-	@Override
 	public FilterModel.VisibleItems<R> visible() {
 		return visible;
 	}

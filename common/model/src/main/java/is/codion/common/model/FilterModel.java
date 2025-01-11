@@ -66,10 +66,10 @@ public interface FilterModel<T> {
 	SingleSelection<T> selection();
 
 	/**
-	 * The {@link FilterModel.Items}.
+	 * Manages the items in {@link FilterModel}.
 	 * @param <T> the item type
 	 */
-	interface Items<T> extends Observable<Collection<T>> {
+	interface Items<T> {
 
 		/**
 		 * @return this models {@link Refresher} instance
@@ -95,9 +95,8 @@ public interface FilterModel<T> {
 		void refresh(Consumer<Collection<T>> onResult);
 
 		/**
-		 * @return the items or an empty list in case of no items
+		 * @return all items, visible and filtered, in no particular order
 		 */
-		@Override
 		Collection<T> get();
 
 		/**

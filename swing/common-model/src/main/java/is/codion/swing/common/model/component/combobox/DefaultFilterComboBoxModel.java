@@ -229,7 +229,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		private final DefaultRefresher refresher;
 		private final DefaultVisibleItems visible;
 		private final DefaultFilteredItems filtered = new DefaultFilteredItems();
-		private final Event<Collection<T>> event = Event.event();
 
 		private final boolean includeNull;
 		private final T nullItem;
@@ -303,7 +302,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 				visible.sortInternal();
 				filtered.notifyChanges();
 				visible.notifyChanges();
-				notifyChanges();
 			}
 		}
 
@@ -316,7 +314,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 						visible.items.add(item);
 						visible.sortInternal();
 						visible.notifyChanges();
-						notifyChanges();
 
 						return true;
 					}
@@ -324,7 +321,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 				else if (!filtered.items.contains(item)) {
 					filtered.items.add(item);
 					filtered.notifyChanges();
-					notifyChanges();
 				}
 
 				return false;
@@ -349,11 +345,9 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			synchronized (lock) {
 				if (filtered.items.remove(item)) {
 					filtered.notifyChanges();
-					notifyChanges();
 				}
 				else if (visible.items.remove(item)) {
 					visible.notifyChanges();
-					notifyChanges();
 					updateSelectedItem(item);
 
 					return true;
@@ -373,11 +367,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 				return removed;
 			}
-		}
-
-		@Override
-		public Observer<Collection<T>> observer() {
-			return event.observer();
 		}
 
 		@Override
@@ -451,7 +440,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			}
 			filtered.notifyChanges();
 			visible.notifyChanges();
-			notifyChanges();
 		}
 
 		private void filterInternal() {
@@ -486,10 +474,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 					selection.selected.item = visible.items.get(index);
 				}
 			}
-		}
-
-		private void notifyChanges() {
-			event.accept(get());
 		}
 
 		private final class DefaultVisibleItems implements VisibleItems<T> {

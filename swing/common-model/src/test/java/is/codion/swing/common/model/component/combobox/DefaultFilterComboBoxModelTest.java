@@ -212,56 +212,46 @@ public class DefaultFilterComboBoxModelTest {
 	void events() {
 		AtomicInteger filteredCounter = new AtomicInteger();
 		AtomicInteger visibleCounter = new AtomicInteger();
-		AtomicInteger itemsCounter = new AtomicInteger();
 
 		FilterComboBoxModel<String> model = FilterComboBoxModel.<String>builder()
 						.nullItem(NULL)
 						.build();
 		model.items().filtered().addListener(filteredCounter::incrementAndGet);
 		model.items().visible().addListener(visibleCounter::incrementAndGet);
-		model.items().addListener(itemsCounter::incrementAndGet);
 		model.items().visible().predicate().set(item -> !item.equals(BJORN));
 
 		List<String> names = asList(ANNA, KALLI, SIGGI, TOMAS, BJORN);
 		model.items().set(names);
 		assertEquals(1, filteredCounter.get());
 		assertEquals(1, visibleCounter.get());
-		assertEquals(1, itemsCounter.get());
 
 		model.items().clear();
 		assertEquals(2, filteredCounter.get());
 		assertEquals(2, visibleCounter.get());
-		assertEquals(2, itemsCounter.get());
 
 		model.items().add(BJORN);//filtered
 		assertEquals(3, filteredCounter.get());
 		assertEquals(2, visibleCounter.get());
-		assertEquals(3, itemsCounter.get());
 
 		model.items().add(ANNA);//visible
 		assertEquals(3, filteredCounter.get());
 		assertEquals(3, visibleCounter.get());
-		assertEquals(4, itemsCounter.get());
 
 		model.items().add(asList(KALLI, SIGGI));//visible
 		assertEquals(3, filteredCounter.get());
 		assertEquals(5, visibleCounter.get());
-		assertEquals(6, itemsCounter.get());
 
 		model.items().remove(BJORN);//filtered
 		assertEquals(4, filteredCounter.get());
 		assertEquals(5, visibleCounter.get());
-		assertEquals(7, itemsCounter.get());
 
 		model.items().add(asList(BJORN, TOMAS));//filtered and visible
 		assertEquals(5, filteredCounter.get());
 		assertEquals(6, visibleCounter.get());
-		assertEquals(9, itemsCounter.get());
 
 		model.items().visible().predicate().clear();
 		assertEquals(6, filteredCounter.get());
 		assertEquals(7, visibleCounter.get());
-		assertEquals(10, itemsCounter.get());
 	}
 
 	@Test
