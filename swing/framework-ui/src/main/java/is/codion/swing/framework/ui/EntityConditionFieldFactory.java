@@ -124,7 +124,9 @@ public final class EntityConditionFieldFactory implements FieldFactory {
 		if (model instanceof ForeignKeyConditionModel) {
 			EntitySearchModel searchModel = ((ForeignKeyConditionModel) model).equalSearchModel();
 
-			return inputComponents.searchField((ForeignKey) attribute, searchModel).build();
+			return inputComponents.searchField((ForeignKey) attribute, searchModel)
+							.singleSelection()
+							.build();
 		}
 		if (model instanceof SwingForeignKeyConditionModel) {
 			EntityComboBoxModel comboBoxModel = ((SwingForeignKeyConditionModel) model).equalComboBoxModel();
@@ -144,13 +146,17 @@ public final class EntityConditionFieldFactory implements FieldFactory {
 			EntitySearchModel searchModel = ((ForeignKeyConditionModel) model).inSearchModel();
 
 			return configureSearchField(searchModel, inputComponents
-							.searchField(foreignKey, searchModel).build());
+							.searchField(foreignKey, searchModel)
+							.multiSelection()
+							.build());
 		}
 		if (model instanceof SwingForeignKeyConditionModel) {
 			EntitySearchModel searchModel = ((SwingForeignKeyConditionModel) model).inSearchModel();
 
 			return configureSearchField(searchModel, inputComponents
-							.searchField(foreignKey, searchModel).build());
+							.searchField(foreignKey, searchModel)
+							.multiSelection()
+							.build());
 		}
 
 		throw new IllegalArgumentException("Unknown foreign key condition model type: " + model);

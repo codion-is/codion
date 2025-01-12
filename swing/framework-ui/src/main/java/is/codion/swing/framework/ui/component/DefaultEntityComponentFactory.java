@@ -78,7 +78,8 @@ public class DefaultEntityComponentFactory<T, C extends JComponent> implements E
 	 * @param comboBoxModel the {@link EntityComboBoxModel} to base the combo box on
 	 * @return a {@link EntityComboBox.Builder} instance
 	 */
-	protected EntityComboBox.Builder comboBox(ForeignKey foreignKey, EntityDefinition entityDefinition, EntityComboBoxModel comboBoxModel) {
+	protected EntityComboBox.Builder comboBox(ForeignKey foreignKey,EntityDefinition entityDefinition,
+																						EntityComboBoxModel comboBoxModel) {
 		return EntityComponents.entityComponents(entityDefinition).comboBox(foreignKey, comboBoxModel);
 	}
 
@@ -86,10 +87,12 @@ public class DefaultEntityComponentFactory<T, C extends JComponent> implements E
 	 * @param foreignKey the foreign key
 	 * @param entityDefinition the entity definition
 	 * @param searchModel the {@link EntitySearchModel} to base the search field on
-	 * @return a {@link EntitySearchField.Builder} instance
+	 * @return a {@link EntitySearchField.SingleSelectionBuilder} instance
+	 * @throws IllegalArgumentException in case {@code searchModel} is not configured for single selection
 	 */
-	protected EntitySearchField.Builder searchField(ForeignKey foreignKey, EntityDefinition entityDefinition, EntitySearchModel searchModel) {
-		return entityComponents(entityDefinition).searchField(foreignKey, searchModel);
+	protected EntitySearchField.SingleSelectionBuilder searchField(ForeignKey foreignKey, EntityDefinition entityDefinition,
+																																 EntitySearchModel searchModel) {
+		return entityComponents(entityDefinition).searchField(foreignKey, searchModel).singleSelection();
 	}
 
 	private ComponentValue<T, C> createForeignKeyComponentValue(ForeignKey foreignKey, SwingEntityEditModel editModel, Entity value) {

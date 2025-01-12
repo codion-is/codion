@@ -318,6 +318,7 @@ public final class EntityComponentsTest {
 	@Test
 	void searchField() {
 		entityComponents.searchField(Detail.MASTER_FK, editModel.searchModel(Detail.MASTER_FK))
+						.singleSelection()
 						.columns(20)
 						.upperCase(true)
 						.lowerCase(false)

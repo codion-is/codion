@@ -35,10 +35,10 @@ final class TrackComponentFactory extends DefaultEntityComponentFactory<Entity, 
 	}
 
 	@Override
-	protected EntitySearchField.Builder searchField(ForeignKey foreignKey,
-																									EntityDefinition entityDefinition,
-																									EntitySearchModel searchModel) {
-		return super.searchField(foreignKey, entityDefinition, searchModel)
+	protected EntitySearchField.SingleSelectionBuilder searchField(ForeignKey foreignKey,
+																																 EntityDefinition entityDefinition,
+																																 EntitySearchModel searchModel) {
+		return (EntitySearchField.SingleSelectionBuilder) super.searchField(foreignKey, entityDefinition, searchModel)
 						.selectorFactory(new TrackSelectorFactory());
 	}
 }

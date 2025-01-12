@@ -220,47 +220,26 @@ public final class EntityComponents {
 	}
 
 	/**
-	 * Creates a {@link EntitySearchField.Builder} based on the given foreign key.
+	 * Creates a {@link EntitySearchField.Builder.Factory}.
 	 * @param foreignKey the foreign key
 	 * @param searchModel the search model
 	 * @return a foreign key {@link EntitySearchField} builder
 	 */
-	public EntitySearchField.Builder searchField(ForeignKey foreignKey, EntitySearchModel searchModel) {
-		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
-
-		return EntitySearchField.builder(searchModel)
-						.toolTipText(foreignKeyDefinition.description());
+	public EntitySearchField.Builder.Factory searchField(ForeignKey foreignKey, EntitySearchModel searchModel) {
+		return new SearchFieldBuilderFactory(foreignKey, searchModel);
 	}
 
 	/**
-	 * Creates a {@link EntitySearchFieldPanel.Builder} with an optional button for performing a search.
-	 * @param foreignKey the foreign key
-	 * @param searchModel the search model
-	 * @return a foreign key search field panel builder
-	 */
-	public EntitySearchFieldPanel.Builder searchFieldPanel(ForeignKey foreignKey,
-																												 EntitySearchModel searchModel) {
-		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
-
-		return EntitySearchFieldPanel.builder(searchModel)
-						.toolTipText(foreignKeyDefinition.description());
-
-	}
-
-	/**
-	 * Creates a {@link EntitySearchFieldPanel.Builder} with optional buttons for adding and editing items.
+	 * Creates a {@link EntitySearchFieldPanel.Builder.Factory}.
 	 * @param foreignKey the foreign key
 	 * @param searchModel the search model
 	 * @param editPanel supplies the edit panel to use for the add and/or edit buttons
 	 * @return a foreign key search field panel builder
 	 */
-	public EntitySearchFieldPanel.Builder searchFieldPanel(ForeignKey foreignKey,
-																												 EntitySearchModel searchModel,
-																												 Supplier<EntityEditPanel> editPanel) {
-		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
-
-		return EntitySearchFieldPanel.builder(searchModel, editPanel)
-						.toolTipText(foreignKeyDefinition.description());
+	public EntitySearchFieldPanel.Builder.Factory searchFieldPanel(ForeignKey foreignKey,
+																																 EntitySearchModel searchModel,
+																																 Supplier<EntityEditPanel> editPanel) {
+		return new SearchFieldPanelBuilderFactory(foreignKey, searchModel, editPanel);
 	}
 
 	/**
@@ -373,10 +352,10 @@ public final class EntityComponents {
 
 		if (!attributeDefinition.items().isEmpty()) {
 			return (TextFieldBuilder<T, C, B>) Components.textField(attribute.type().valueClass())
-						.format(new ItemReadOnlyFormat(attributeDefinition))
-						.toolTipText(attributeDefinition.description())
-						.editable(false)
-						.focusable(false);
+							.format(new ItemReadOnlyFormat(attributeDefinition))
+							.toolTipText(attributeDefinition.description())
+							.editable(false)
+							.focusable(false);
 		}
 		if (attribute.type().isTemporal()) {
 			return (TextFieldBuilder<T, C, B>) temporalField((Attribute<Temporal>) attribute);
@@ -605,6 +584,58 @@ public final class EntityComponents {
 		return FilterComboBoxModel.builder(asList(attribute.type().valueClass().getEnumConstants()))
 						.includeNull(nullable)
 						.build();
+	}
+
+	private final class SearchFieldBuilderFactory implements EntitySearchField.Builder.Factory {
+
+		private final EntitySearchModel searchModel;
+		private final ForeignKeyDefinition foreignKeyDefinition;
+
+		private SearchFieldBuilderFactory(ForeignKey foreignKey, EntitySearchModel searchModel) {
+			this.searchModel = requireNonNull(searchModel);
+			this.foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
+		}
+
+		@Override
+		public EntitySearchField.MultiSelectionBuilder multiSelection() {
+			return EntitySearchField.builder(searchModel)
+							.multiSelection()
+							.toolTipText(foreignKeyDefinition.description());
+		}
+
+		@Override
+		public EntitySearchField.SingleSelectionBuilder singleSelection() {
+			return EntitySearchField.builder(searchModel)
+							.singleSelection()
+							.toolTipText(foreignKeyDefinition.description());
+		}
+	}
+
+	private final class SearchFieldPanelBuilderFactory implements EntitySearchFieldPanel.Builder.Factory {
+
+		private final EntitySearchModel searchModel;
+		private final ForeignKeyDefinition foreignKeyDefinition;
+		private final Supplier<EntityEditPanel> editPanel;
+
+		private SearchFieldPanelBuilderFactory(ForeignKey foreignKey, EntitySearchModel searchModel, Supplier<EntityEditPanel> editPanel) {
+			this.searchModel = requireNonNull(searchModel);
+			this.foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
+			this.editPanel = requireNonNull(editPanel);
+		}
+
+		@Override
+		public EntitySearchFieldPanel.MultiSelectionBuilder multiSelection() {
+			return EntitySearchFieldPanel.builder(searchModel, editPanel)
+							.multiSelection()
+							.toolTipText(foreignKeyDefinition.description());
+		}
+
+		@Override
+		public EntitySearchFieldPanel.SingleSelectionBuilder singleSelection() {
+			return EntitySearchFieldPanel.builder(searchModel, editPanel)
+							.singleSelection()
+							.toolTipText(foreignKeyDefinition.description());
+		}
 	}
 
 	private static final class ItemReadOnlyFormat extends Format {

@@ -637,20 +637,10 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @param foreignKey the foreign key for which to build a search field
 	 * @return a foreign key search field builder
 	 */
-	protected final EntitySearchField.Builder createSearchField(ForeignKey foreignKey) {
-		return setComponentBuilder(foreignKey, entityComponents.searchField(foreignKey,
+	protected final EntitySearchField.SingleSelectionBuilder createSearchField(ForeignKey foreignKey) {
+		return (EntitySearchField.SingleSelectionBuilder) setComponentBuilder(foreignKey, entityComponents.searchField(foreignKey,
 										editModel().searchModel(foreignKey))
-						.columns(defaults.searchFieldColumns.getOrThrow()));
-	}
-
-	/**
-	 * Creates a builder for a foreign key search field panel with an optional button for performing a search.
-	 * @param foreignKey the foreign key
-	 * @return a foreign key combo box panel builder
-	 */
-	protected final EntitySearchFieldPanel.Builder createSearchFieldPanel(ForeignKey foreignKey) {
-		return setComponentBuilder(foreignKey, entityComponents.searchFieldPanel(foreignKey,
-										editModel().searchModel(foreignKey))
+						.singleSelection()
 						.columns(defaults.searchFieldColumns.getOrThrow()));
 	}
 
@@ -660,10 +650,11 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @param editPanel the edit panel supplier to use for the add and/or edit buttons
 	 * @return a foreign key combo box panel builder
 	 */
-	protected final EntitySearchFieldPanel.Builder createSearchFieldPanel(ForeignKey foreignKey,
-																																				Supplier<EntityEditPanel> editPanel) {
-		return setComponentBuilder(foreignKey, entityComponents.searchFieldPanel(foreignKey,
+	protected final EntitySearchFieldPanel.SingleSelectionBuilder createSearchFieldPanel(ForeignKey foreignKey,
+																																											 Supplier<EntityEditPanel> editPanel) {
+		return (EntitySearchFieldPanel.SingleSelectionBuilder) setComponentBuilder(foreignKey, entityComponents.searchFieldPanel(foreignKey,
 										editModel().searchModel(foreignKey), editPanel)
+						.singleSelection()
 						.columns(defaults.searchFieldColumns.getOrThrow()));
 	}
 

@@ -29,7 +29,8 @@ import is.codion.swing.framework.ui.TestDomain.Department;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public final class EntitySearchFieldPanelTest {
 
@@ -43,8 +44,11 @@ public final class EntitySearchFieldPanelTest {
 
 	@Test
 	void test() {
-		EntitySearchModel model = EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build();
+		EntitySearchModel model = EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER)
+						.singleSelection(true)
+						.build();
 		ComponentValue<Entity, EntitySearchFieldPanel> value = EntitySearchFieldPanel.builder(model, () -> null)
+						.singleSelection()
 						.buildValue();
 		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(
 						Department.NAME.equalTo("SALES"));
@@ -55,10 +59,5 @@ public final class EntitySearchFieldPanelTest {
 		assertNull(entity);
 		value.set(sales);
 		assertEquals(sales, model.selection().entity().get());
-
-		assertThrows(IllegalStateException.class, () -> EntitySearchFieldPanel.builder(model)
-						.includeAddButton(true));
-		assertThrows(IllegalStateException.class, () -> EntitySearchFieldPanel.builder(model)
-						.includeEditButton(true));
 	}
 }

@@ -32,9 +32,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -56,42 +56,49 @@ public class EntitySearchFieldTest {
 
 	@Test
 	void componentValue() {
-		EntitySearchModel searchModel = EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build();
-		ComponentValue<Entity, EntitySearchField> value = EntitySearchField.builder(searchModel)
+		EntitySearchModel singleSelectionSearchModel = EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER)
+						.singleSelection(true)
+						.build();
+		ComponentValue<Entity, EntitySearchField> singleSelectionValue = EntitySearchField.builder(singleSelectionSearchModel)
+						.singleSelection()
 						.buildValue();
 
-		assertNull(value.get());
+		assertNull(singleSelectionValue.get());
 
 		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
 
-		searchModel.selection().entity().set(sales);
-		assertEquals(sales, value.get());
-		searchModel.selection().entity().clear();
-		assertNull(value.get());
+		singleSelectionSearchModel.selection().entity().set(sales);
+		assertEquals(sales, singleSelectionValue.get());
+		singleSelectionSearchModel.selection().entity().clear();
+		assertNull(singleSelectionValue.get());
 
-		ComponentValue<Collection<Entity>, EntitySearchField> multiSelectionValue = value.component().multiSelectionValue();
-		assertTrue(multiSelectionValue.getOrThrow().isEmpty());
-
-		ComponentValue<Entity, EntitySearchField> singleSelectionValue = value.component().singleSelectionValue();
 		assertNull(singleSelectionValue.get());
 
 		Entity research = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("RESEARCH"));
 
-		searchModel.selection().entities().set(Arrays.asList(sales, research));
-
-		assertTrue(multiSelectionValue.getOrThrow().containsAll(Arrays.asList(sales, research)));
-		assertEquals(singleSelectionValue.get(), sales);
+		assertThrows(IllegalArgumentException.class, () -> singleSelectionSearchModel.selection().entities().set(Arrays.asList(sales, research)));
 
 		singleSelectionValue.clear();
-
-		assertTrue(searchModel.selection().empty().get());
+		assertTrue(singleSelectionSearchModel.selection().empty().get());
 		assertNull(singleSelectionValue.get());
+
+		EntitySearchModel multiSelectionSearchModel = EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build();
+		ComponentValue<Set<Entity>, EntitySearchField> multiSelectionValue = EntitySearchField.builder(multiSelectionSearchModel)
+						.multiSelection()
+						.buildValue();
+
+		assertTrue(multiSelectionValue.getOrThrow().isEmpty());
+
+		multiSelectionSearchModel.selection().entities().set(Arrays.asList(sales, research));
+
+		assertTrue(multiSelectionValue.getOrThrow().containsAll(Arrays.asList(sales, research)));
 	}
 
 	@Test
 	void text() {
 		EntitySearchModel searchModel = EntitySearchModel.builder(Employee.TYPE, CONNECTION_PROVIDER).build();
 		EntitySearchField searchField = EntitySearchField.builder(searchModel)
+						.multiSelection()
 						.separator(";")
 						.build();
 
@@ -112,6 +119,7 @@ public class EntitySearchFieldTest {
 	void stringFactory() {
 		EntitySearchModel model = EntitySearchModel.builder(Employee.TYPE, CONNECTION_PROVIDER).build();
 		EntitySearchField field = EntitySearchField.builder(model)
+						.multiSelection()
 						.stringFactory(entity -> entity.string(Employee.JOB))
 						.build();
 		Entity employee = CONNECTION_PROVIDER.entities().builder(Employee.TYPE)

@@ -206,6 +206,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 				ForeignKeyConditionModel foreignKeyCondition = (ForeignKeyConditionModel) condition;
 				foreignKeyCondition.operands().in().value().link(foreignKeyCondition.operands().equal());
 				searchField = EntitySearchField.builder(foreignKeyCondition.inSearchModel())
+								.multiSelection()
 								.columns(25)
 								.build();
 				add(searchField, BorderLayout.CENTER);
