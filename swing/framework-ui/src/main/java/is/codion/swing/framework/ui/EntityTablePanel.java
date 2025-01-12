@@ -80,6 +80,7 @@ import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityEditComponentPanel.AttributeDefinitionComparator;
 import is.codion.swing.framework.ui.EntityEditPanel.Confirmer;
+import is.codion.swing.framework.ui.component.DefaultEditComponentFactory;
 import is.codion.swing.framework.ui.component.EditComponentFactory;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
@@ -1035,7 +1036,8 @@ public class EntityTablePanel extends JPanel {
 	protected <T> EntityDialogs.EditAttributeDialogBuilder<T> editDialogBuilder(Attribute<T> attribute) {
 		return EntityDialogs.editAttributeDialog(tableModel.editModel(), attribute)
 						.owner(this)
-						.editComponentFactory((EditComponentFactory<T, ?>) configuration.editComponentFactories.get(attribute));
+						.editComponentFactory((EditComponentFactory<T, ?>) configuration.editComponentFactories
+										.getOrDefault(attribute, new DefaultEditComponentFactory<>(attribute)));
 	}
 
 	/**

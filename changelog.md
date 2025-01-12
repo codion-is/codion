@@ -54,6 +54,7 @@ Codion Change Log
 - EntitySearchField.Builder.selectAllOnFocusGained() removed, related refactoring.
 - EntitySearchField, EntitySearchFieldPanel.MultiSelectionBuilder and SingleSelectionBuilder added along with Factory, related refactoring.
 - EntityComponentFactory renamed EditComponentFactory.
+- EntityComponents.MAXIMUM_TEXT_FIELD_LENGTH configuration value added.
 ### is.codion.tools.generator.ui
 - DomainGeneratorPanel bug fixed, did not display exceptions happening during async table model refresh.
 

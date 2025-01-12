@@ -1125,7 +1125,7 @@ public final class EntitySearchField extends HintTextField {
 		}
 	}
 
-	private static abstract class AbstractBuilder<T, B extends Builder<T, B>>
+	private abstract static class AbstractBuilder<T, B extends Builder<T, B>>
 					extends AbstractComponentBuilder<T, EntitySearchField, B> implements Builder<T, B> {
 
 		private final EntitySearchModel searchModel;

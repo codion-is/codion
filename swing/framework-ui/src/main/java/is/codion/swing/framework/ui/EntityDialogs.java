@@ -26,7 +26,6 @@ import is.codion.framework.domain.entity.Entity.Copy;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.ui.border.Borders;
@@ -43,7 +42,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
@@ -67,7 +65,6 @@ import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.dialog.Dialogs.*;
-import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
@@ -134,7 +131,7 @@ public final class EntityDialogs {
 	public interface EditAttributeDialogBuilder<T> extends DialogBuilder<EditAttributeDialogBuilder<T>> {
 
 		/**
-		 * @param editComponentFactory the component factory, if null then the default is used
+		 * @param editComponentFactory the component factory
 		 * @return this builder
 		 */
 		EditAttributeDialogBuilder<T> editComponentFactory(EditComponentFactory<T, ?> editComponentFactory);
@@ -267,12 +264,12 @@ public final class EntityDialogs {
 		private DefaultEditAttributeDialogBuilder(SwingEntityEditModel editModel, Attribute<T> attribute) {
 			this.editModel = requireNonNull(editModel);
 			this.attribute = requireNonNull(attribute);
-			this.editComponentFactory = new EntityEditComponentFactory<>(attribute);
+			this.editComponentFactory = new DefaultEditComponentFactory<>(attribute);
 		}
 
 		@Override
 		public EditAttributeDialogBuilder<T> editComponentFactory(EditComponentFactory<T, ?> editComponentFactory) {
-			this.editComponentFactory = editComponentFactory == null ? new EntityEditComponentFactory<>(attribute) : editComponentFactory;
+			this.editComponentFactory = requireNonNull(editComponentFactory);
 			return this;
 		}
 
@@ -423,31 +420,6 @@ public final class EntityDialogs {
 					return false;
 				}
 			}
-		}
-	}
-
-	private static final class EntityEditComponentFactory<T, C extends JComponent> extends DefaultEditComponentFactory<T, C> {
-
-		private static final int TEXT_INPUT_PANEL_COLUMNS = 20;
-
-		private EntityEditComponentFactory(Attribute<T> attribute) {
-			super(attribute);
-		}
-
-		@Override
-		public ComponentValue<T, C> componentValue(SwingEntityEditModel editModel, T value) {
-			AttributeDefinition<T> attributeDefinition = editModel.entityDefinition()
-							.attributes().definition(attribute());
-			if (attributeDefinition.items().isEmpty() && attribute().type().isString()) {
-				//special handling for non-item based String attributes, text field panel instead of a text field
-				return (ComponentValue<T, C>) entityComponents(editModel.entityDefinition())
-								.textFieldPanel((Attribute<String>) attribute())
-								.value((String) value)
-								.columns(TEXT_INPUT_PANEL_COLUMNS)
-								.buildValue();
-			}
-
-			return super.componentValue(editModel, value);
 		}
 	}
 

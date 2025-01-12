@@ -320,7 +320,7 @@ public final class EntitySearchFieldPanel extends JPanel {
 		}
 	}
 
-	private static abstract class AbstractBuilder<T, B extends Builder<T, B>>
+	private abstract static class AbstractBuilder<T, B extends Builder<T, B>>
 					extends AbstractComponentBuilder<T, EntitySearchFieldPanel, B> implements Builder<T, B> {
 
 		private final EntitySearchField.Builder<?, ?> searchFieldBuilder;

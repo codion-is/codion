@@ -20,6 +20,7 @@
  * Package configuration values:
  * <ul>
  * <li>{@link is.codion.swing.framework.ui.component.EntitySearchField#SEARCH_INDICATOR}
+ * <li>{@link is.codion.swing.framework.ui.component.EntityComponents#MAXIMUM_TEXT_FIELD_LENGTH}
  * </ul>
  */
 package is.codion.swing.framework.ui.component;
