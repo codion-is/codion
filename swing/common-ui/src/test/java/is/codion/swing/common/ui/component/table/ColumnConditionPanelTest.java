@@ -31,9 +31,9 @@ public class ColumnConditionPanelTest {
 		ConditionModel<String> model = ConditionModel.builder(String.class).build();
 		ColumnConditionPanel<String> panel = ColumnConditionPanel.builder(model).build();
 		assertEquals(model, panel.condition());
-		assertNotNull(panel.fields().equal());
-		assertNotNull(panel.fields().upper());
-		assertNotNull(panel.fields().lower());
+		assertNotNull(panel.operands().equal());
+		assertNotNull(panel.operands().upper());
+		assertNotNull(panel.operands().lower());
 		assertThrows(NullPointerException.class, () -> ColumnConditionPanel.<String>builder(null));
 	}
 

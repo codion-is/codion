@@ -22,11 +22,12 @@ import is.codion.common.Operator;
 import is.codion.common.event.Event;
 import is.codion.common.item.Item;
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.model.condition.ConditionModel.Operands;
 import is.codion.common.model.condition.ConditionModel.Wildcard;
 import is.codion.common.observable.Observer;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
+import is.codion.common.value.Value;
+import is.codion.common.value.ValueSet;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.combobox.Completion;
@@ -124,18 +125,18 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 					LESS_THAN, LESS_THAN_OR_EQUAL, BETWEEN_EXCLUSIVE, BETWEEN, NOT_BETWEEN_EXCLUSIVE, NOT_BETWEEN);
 	private static final DefaultOperatorCaptions DEFAULT_OPERATOR_CAPTIONS = new DefaultOperatorCaptions();
 
-	private final FieldFactory fieldFactory;
+	private final ComponentFactory componentFactory;
 	private final Event<?> focusGainedEvent = Event.event();
 	private final TableColumn tableColumn;
 	private final Function<Operator, String> operatorCaptions;
-	private final Fields fields = new Fields();
+	private final OperandComponents operandComponents = new OperandComponents();
 
 	private JToggleButton toggleEnabledButton;
 	private JComboBox<Item<Operator>> operatorCombo;
-	private JComponent equalField;
-	private JComponent upperField;
-	private JComponent lowerField;
-	private JComponent inField;
+	private JComponent equalComponent;
+	private JComponent upperComponent;
+	private JComponent lowerComponent;
+	private JComponent inComponent;
 	private JPanel controlPanel;
 	private JPanel inputPanel;
 	private JPanel rangePanel;
@@ -144,7 +145,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
 	private ColumnConditionPanel(DefaultBuilder<T> builder) {
 		super(builder.condition);
-		this.fieldFactory = builder.fieldFactory;
+		this.componentFactory = builder.componentFactory;
 		this.operatorCaptions = builder.operatorCaptions;
 		this.tableColumn = builder.tableColumn;
 	}
@@ -152,13 +153,13 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	@Override
 	public void updateUI() {
 		super.updateUI();
-		Utilities.updateUI(toggleEnabledButton, operatorCombo, equalField,
-						lowerField, upperField, inField, controlPanel, inputPanel, rangePanel);
+		Utilities.updateUI(toggleEnabledButton, operatorCombo, equalComponent,
+						lowerComponent, upperComponent, inComponent, controlPanel, inputPanel, rangePanel);
 	}
 
 	@Override
 	public Collection<JComponent> components() {
-		return Stream.of(toggleEnabledButton, operatorCombo, equalField, lowerField, upperField, inField)
+		return Stream.of(toggleEnabledButton, operatorCombo, equalComponent, lowerComponent, upperComponent, inComponent)
 						.filter(Objects::nonNull)
 						.collect(toList());
 	}
@@ -168,7 +169,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		switch (condition().operator().getOrThrow()) {
 			case EQUAL:
 			case NOT_EQUAL:
-				fields.equal().ifPresent(JComponent::requestFocusInWindow);
+				operandComponents.equal().ifPresent(JComponent::requestFocusInWindow);
 				break;
 			case GREATER_THAN:
 			case GREATER_THAN_OR_EQUAL:
@@ -176,15 +177,15 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 			case BETWEEN:
 			case NOT_BETWEEN_EXCLUSIVE:
 			case NOT_BETWEEN:
-				fields.lower().ifPresent(JComponent::requestFocusInWindow);
+				operandComponents.lower().ifPresent(JComponent::requestFocusInWindow);
 				break;
 			case LESS_THAN:
 			case LESS_THAN_OR_EQUAL:
-				fields.upper().ifPresent(JComponent::requestFocusInWindow);
+				operandComponents.upper().ifPresent(JComponent::requestFocusInWindow);
 				break;
 			case IN:
 			case NOT_IN:
-				fields.in().ifPresent(JComponent::requestFocusInWindow);
+				operandComponents.in().ifPresent(JComponent::requestFocusInWindow);
 				break;
 			default:
 				throw new IllegalArgumentException(UNKNOWN_OPERATOR + condition().operator().get());
@@ -197,27 +198,18 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	}
 
 	/**
-	 * @return the Fields used by this condition panel
+	 * @return the operand components used by this condition panel
 	 */
-	public Fields fields() {
-		return fields;
+	public OperandComponents operands() {
+		return operandComponents;
 	}
 
 	/**
-	 * Provides the fields.
+	 * Provides the operand components.
 	 */
-	public final class Fields {
+	public final class OperandComponents {
 
-		private Fields() {}
-
-		/**
-		 * @return the condition operator combo box
-		 */
-		public JComboBox<Item<Operator>> operator() {
-			initialize();
-
-			return operatorCombo;
-		}
+		private OperandComponents() {}
 
 		/**
 		 * @return the JComponent used to specify the equal value
@@ -225,7 +217,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		public Optional<JComponent> equal() {
 			initialize();
 
-			return Optional.ofNullable(equalField);
+			return Optional.ofNullable(equalComponent);
 		}
 
 		/**
@@ -234,7 +226,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		public Optional<JComponent> upper() {
 			initialize();
 
-			return Optional.ofNullable(upperField);
+			return Optional.ofNullable(upperComponent);
 		}
 
 		/**
@@ -243,7 +235,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		public Optional<JComponent> lower() {
 			initialize();
 
-			return Optional.ofNullable(lowerField);
+			return Optional.ofNullable(lowerComponent);
 		}
 
 		/**
@@ -252,7 +244,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		public Optional<JComponent> in() {
 			initialize();
 
-			return Optional.ofNullable(inField);
+			return Optional.ofNullable(inComponent);
 		}
 	}
 
@@ -272,11 +264,11 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	public interface Builder<T> {
 
 		/**
-		 * @param fieldFactory the input field factory
+		 * @param componentFactory the input component factory
 		 * @return this builder
-		 * @throws IllegalArgumentException in case the given field factory does not support the column value type
+		 * @throws IllegalArgumentException in case the given component factory does not support the column value type
 		 */
-		Builder<T> fieldFactory(FieldFactory fieldFactory);
+		Builder<T> componentFactory(ComponentFactory componentFactory);
 
 		/**
 		 * Provides captions for operators, displayed in the operator combo box
@@ -301,7 +293,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
 		private final ConditionModel<T> condition;
 
-		private FieldFactory fieldFactory = new DefaultFilterFieldFactory();
+		private ComponentFactory componentFactory = new FilterComponentFactory();
 		private Function<Operator, String> operatorCaptions = DEFAULT_OPERATOR_CAPTIONS;
 		private TableColumn tableColumn;
 
@@ -310,12 +302,12 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		}
 
 		@Override
-		public Builder<T> fieldFactory(FieldFactory fieldFactory) {
-			if (!requireNonNull(fieldFactory).supportsType(condition.valueClass())) {
-				throw new IllegalArgumentException("Field factory does not support the value type: " + condition.valueClass());
+		public Builder<T> componentFactory(ComponentFactory componentFactory) {
+			if (!requireNonNull(componentFactory).supportsType(condition.valueClass())) {
+				throw new IllegalArgumentException("ComponentFactory does not support the value type: " + condition.valueClass());
 			}
 
-			this.fieldFactory = requireNonNull(fieldFactory);
+			this.componentFactory = requireNonNull(componentFactory);
 			return this;
 		}
 
@@ -338,89 +330,51 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	}
 
 	/**
-	 * Provides equal, in, upper and lower bound input fields for a {@link ColumnConditionPanel}
+	 * Provides equal, in, upper and lower bound input components for a {@link ColumnConditionPanel}
 	 */
-	public interface FieldFactory {
+	public interface ComponentFactory {
 
 		/**
 		 * @param valueClass the value class
 		 * @return true if the type is supported
 		 */
-		boolean supportsType(Class<?> valueClass);
-
-		/**
-		 * Creates the field representing the {@link Operator#EQUAL} and {@link Operator#NOT_EQUAL} operand, linked to {@link Operands#equal()}
-		 * @param <T> the value type
-		 * @param condition the condition model
-		 * @return the equal value field
-		 * @throws IllegalArgumentException in case the bound type is not supported
-		 */
-		<T> JComponent createEqualField(ConditionModel<T> condition);
-
-		/**
-		 * Creates the field representing the upper bound operand, linked to {@link Operands#upper()}
-		 * @param <T> the value type
-		 * @param condition the condition model
-		 * @return an upper bound input field, or an empty Optional if it does not apply to the bound type
-		 * @throws IllegalArgumentException in case the bound type is not supported
-		 */
-		default <T> Optional<JComponent> createUpperField(ConditionModel<T> condition) {
-			return Optional.empty();
+		default boolean supportsType(Class<?> valueClass) {
+			return true;
 		}
 
 		/**
-		 * Creates the field representing the lower bound operand, linked to {@link Operands#lower()}
-		 * @param <T> the value type
-		 * @param condition the condition model
-		 * @return a lower bound input field, or an empty Optional if it does not apply to the bound type
-		 * @throws IllegalArgumentException in case the bound type is not supported
+		 * @param conditionModel the condition model
+		 * @param operand the operand value to link to the component
+		 * @param <T> the operand type
+		 * @return a component linked to the given operand value
 		 */
-		default <T> Optional<JComponent> createLowerField(ConditionModel<T> condition) {
-			return Optional.empty();
-		}
+		<T> JComponent component(ConditionModel<T> conditionModel, Value<T> operand);
 
 		/**
-		 * Creates the field representing the {@link Operator#IN} operands, linked to {@link Operands#in()}
-		 * @param <T> the value type
-		 * @param condition the condition model
-		 * @return the in value field
-		 * @throws IllegalArgumentException in case the bound type is not supported
+		 * @param conditionModel the condition model
+		 * @param operands the operands value to link to the component
+		 * @param <T> the operand type
+		 * @return a component linked to the given operands value
 		 */
-		<T> JComponent createInField(ConditionModel<T> condition);
+		<T> JComponent component(ConditionModel<T> conditionModel, ValueSet<T> operands);
 	}
 
-	private JComponent createEqualField(FieldFactory fieldFactory) {
-		return equalFieldRequired() ? fieldFactory.createEqualField(condition()) : null;
-	}
-
-	private JComponent createUpperField(FieldFactory fieldFactory) {
-		return upperFieldRequired() ? fieldFactory.createUpperField(condition()).orElse(null) : null;
-	}
-
-	private JComponent createLowerField(FieldFactory fieldFactory) {
-		return lowerFieldRequired() ? fieldFactory.createLowerField(condition()).orElse(null) : null;
-	}
-
-	private JComponent createInField(FieldFactory fieldFactory) {
-		return inFieldRequired() ? fieldFactory.createInField(condition()) : null;
-	}
-
-	private boolean equalFieldRequired() {
+	private boolean equalIncluded() {
 		return condition().operators().contains(EQUAL) ||
 						condition().operators().contains(NOT_EQUAL);
 	}
 
-	private boolean upperFieldRequired() {
+	private boolean upperIncluded() {
 		return condition().operators().stream()
 						.anyMatch(UPPER_BOUND_OPERATORS::contains);
 	}
 
-	private boolean lowerFieldRequired() {
+	private boolean lowerIncluded() {
 		return condition().operators().stream()
 						.anyMatch(LOWER_BOUND_OPERATORS::contains);
 	}
 
-	private boolean inFieldRequired() {
+	private boolean inIncluded() {
 		return condition().operators().contains(IN) ||
 						condition().operators().contains(NOT_IN);
 	}
@@ -451,10 +405,18 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 						.build();
 		boolean modelLocked = condition().locked().get();
 		condition().locked().set(false);//otherwise, the validator checking the locked state kicks in during value linking
-		equalField = createEqualField(fieldFactory);
-		upperField = createUpperField(fieldFactory);
-		lowerField = createLowerField(fieldFactory);
-		inField = createInField(fieldFactory);
+		if (equalIncluded()) {
+			equalComponent = componentFactory.component(condition(), condition().operands().equal());
+		}
+		if (upperIncluded()) {
+			upperComponent = componentFactory.component(condition(), condition().operands().upper());
+		}
+		if (lowerIncluded()) {
+			lowerComponent = componentFactory.component(condition(), condition().operands().lower());
+		}
+		if (inIncluded()) {
+			inComponent = componentFactory.component(condition(), condition().operands().in());
+		}
 		operatorCombo = createOperatorComboBox(condition().operators());
 		condition().locked().set(modelLocked);
 		components().forEach(this::configureHorizontalAlignment);
@@ -505,15 +467,15 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		switch (operator) {
 			case EQUAL:
 			case NOT_EQUAL:
-				singleValuePanel(equalField);
+				singleValuePanel(equalComponent);
 				break;
 			case GREATER_THAN:
 			case GREATER_THAN_OR_EQUAL:
-				singleValuePanel(lowerField);
+				singleValuePanel(lowerComponent);
 				break;
 			case LESS_THAN:
 			case LESS_THAN_OR_EQUAL:
-				singleValuePanel(upperField);
+				singleValuePanel(upperComponent);
 				break;
 			case BETWEEN_EXCLUSIVE:
 			case BETWEEN:
@@ -523,7 +485,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 				break;
 			case IN:
 			case NOT_IN:
-				singleValuePanel(inField);
+				singleValuePanel(inComponent);
 				break;
 			default:
 				throw new IllegalArgumentException(UNKNOWN_OPERATOR + condition().operator().get());
@@ -591,8 +553,8 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
 	private JComboBox<Item<Operator>> createOperatorComboBox(List<Operator> operators) {
 		FilterComboBoxModel<Item<Operator>> operatorComboBoxModel = FilterComboBoxModel.builder(operators.stream()
-						.map(operator -> Item.item(operator, operatorCaptions.apply(operator)))
-						.collect(toList()))
+										.map(operator -> Item.item(operator, operatorCaptions.apply(operator)))
+										.collect(toList()))
 						.build();
 
 		return itemComboBox(operatorComboBoxModel, condition().operator())
@@ -634,32 +596,32 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		}
 	}
 
-	private void singleValuePanel(JComponent operandField) {
-		if (!asList(inputPanel.getComponents()).contains(operandField)) {
-			boolean operandFieldHasFocus = operandFieldHasFocus();
-			clearInputPanel(operandFieldHasFocus);
-			inputPanel.add(operandField, BorderLayout.CENTER);
+	private void singleValuePanel(JComponent component) {
+		if (!asList(inputPanel.getComponents()).contains(component)) {
+			boolean operandHasFocus = operandHasFocus();
+			clearInputPanel(operandHasFocus);
+			inputPanel.add(component, BorderLayout.CENTER);
 			if (view().isEqualTo(ConditionView.SIMPLE)) {
 				inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
 			}
-			if (operandFieldHasFocus) {
-				operandField.requestFocusInWindow();
+			if (operandHasFocus) {
+				component.requestFocusInWindow();
 			}
 		}
 	}
 
 	private void rangePanel() {
 		if (!asList(inputPanel.getComponents()).contains(rangePanel)) {
-			boolean operandFieldHasFocus = operandFieldHasFocus();
-			clearInputPanel(operandFieldHasFocus);
-			rangePanel.add(lowerField);
-			rangePanel.add(upperField);
+			boolean operandHasFocus = operandHasFocus();
+			clearInputPanel(operandHasFocus);
+			rangePanel.add(lowerComponent);
+			rangePanel.add(upperComponent);
 			inputPanel.add(rangePanel, BorderLayout.CENTER);
 			if (view().isEqualTo(ConditionView.SIMPLE)) {
 				inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
 			}
-			if (operandFieldHasFocus) {
-				lowerField.requestFocusInWindow();
+			if (operandHasFocus) {
+				lowerComponent.requestFocusInWindow();
 			}
 		}
 	}
@@ -673,11 +635,11 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		inputPanel.removeAll();
 	}
 
-	private boolean operandFieldHasFocus() {
-		return operandFieldHasFocus(equalField) ||
-						operandFieldHasFocus(lowerField) ||
-						operandFieldHasFocus(upperField) ||
-						operandFieldHasFocus(inField);
+	private boolean operandHasFocus() {
+		return operandHasFocus(equalComponent) ||
+						operandHasFocus(lowerComponent) ||
+						operandHasFocus(upperComponent) ||
+						operandHasFocus(inComponent);
 	}
 
 	private void addStringConfigurationPopupMenu() {
@@ -690,9 +652,9 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 				controlsBuilder.control(createWildcardControls());
 			}
 			JPopupMenu popupMenu = menu(controlsBuilder).buildPopupMenu();
-			Stream.of(equalField, lowerField, upperField, inField)
+			Stream.of(equalComponent, lowerComponent, upperComponent, inComponent)
 							.filter(Objects::nonNull)
-							.forEach(field -> field.setComponentPopupMenu(popupMenu));
+							.forEach(component -> component.setComponentPopupMenu(popupMenu));
 		}
 	}
 
@@ -748,15 +710,15 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 						.build();
 	}
 
-	private static boolean operandFieldHasFocus(JComponent field) {
-		if (field == null) {
+	private static boolean operandHasFocus(JComponent component) {
+		if (component == null) {
 			return false;
 		}
-		if (field.hasFocus()) {
+		if (component.hasFocus()) {
 			return true;
 		}
-		if (field instanceof JComboBox) {
-			return ((JComboBox<?>) field).getEditor().getEditorComponent().hasFocus();
+		if (component instanceof JComboBox) {
+			return ((JComboBox<?>) component).getEditor().getEditorComponent().hasFocus();
 		}
 
 		return false;

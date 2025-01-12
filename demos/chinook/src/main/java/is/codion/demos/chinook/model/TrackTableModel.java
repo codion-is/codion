@@ -85,7 +85,7 @@ public final class TrackTableModel extends SwingEntityTableModel {
 		public Optional<ConditionModel<?>> create(Attribute<?> attribute) {
 			if (attribute.equals(Track.MEDIATYPE_FK)) {
 				return Optional.of(SwingForeignKeyConditionModel.builder()
-								.includeEqualOperators(createEqualComboBoxModel(Track.MEDIATYPE_FK))
+								.equalComboBoxModel(createEqualComboBoxModel(Track.MEDIATYPE_FK))
 								.build());
 			}
 

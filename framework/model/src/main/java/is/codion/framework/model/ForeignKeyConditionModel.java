@@ -28,8 +28,6 @@ import is.codion.framework.domain.entity.Entity;
 import java.text.Format;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
@@ -45,8 +43,6 @@ public final class ForeignKeyConditionModel implements ConditionModel<Entity> {
 	private final EntitySearchModel equalSearchModel;
 	private final EntitySearchModel inSearchModel;
 
-	private boolean updatingModel = false;
-
 	private ForeignKeyConditionModel(DefaultBuilder builder) {
 		this.condition = ConditionModel.builder(Entity.class)
 						.operators(builder.operators())
@@ -54,7 +50,6 @@ public final class ForeignKeyConditionModel implements ConditionModel<Entity> {
 						.build();
 		this.equalSearchModel = builder.equalSearchModel;
 		this.inSearchModel = builder.inSearchModel;
-		bindEvents();
 	}
 
 	/**
@@ -164,80 +159,21 @@ public final class ForeignKeyConditionModel implements ConditionModel<Entity> {
 	public interface Builder {
 
 		/**
-		 * @param equalSearchModel the search model to use for the EQUAl condition
+		 * @param equalSearchModel the search model to use for the EQUAl operator
 		 * @return this builder
 		 */
-		Builder includeEqualOperators(EntitySearchModel equalSearchModel);
+		Builder equalSearchModel(EntitySearchModel equalSearchModel);
 
 		/**
-		 * @param inSearchModel the search model to use for the IN condition
+		 * @param inSearchModel the search model to use for the IN operator
 		 * @return this builder
 		 */
-		Builder includeInOperators(EntitySearchModel inSearchModel);
+		Builder inSearchModel(EntitySearchModel inSearchModel);
 
 		/**
 		 * @return a new {@link ForeignKeyConditionModel} instance
 		 */
 		ForeignKeyConditionModel build();
-	}
-
-	private void bindEvents() {
-		if (equalSearchModel != null) {
-			equalSearchModel.selection().entity().addConsumer(new SetEqualOperand());
-			operands().equal().addConsumer(new SelectEqualOperand());
-		}
-		if (inSearchModel != null) {
-			inSearchModel.selection().entities().addConsumer(new SetInOperands());
-			operands().in().addConsumer(new SelectInOperands());
-		}
-	}
-
-	private final class SetEqualOperand implements Consumer<Entity> {
-
-		@Override
-		public void accept(Entity selectedEntity) {
-			if (!updatingModel) {
-				operands().equal().set(selectedEntity);
-			}
-		}
-	}
-
-	private final class SetInOperands implements Consumer<Set<Entity>> {
-
-		@Override
-		public void accept(Set<Entity> selectedEntities) {
-			if (!updatingModel) {
-				operands().in().set(selectedEntities);
-			}
-		}
-	}
-
-	private final class SelectEqualOperand implements Consumer<Entity> {
-
-		@Override
-		public void accept(Entity equalOperand) {
-			updatingModel = true;
-			try {
-				equalSearchModel.selection().entity().set(equalOperand);
-			}
-			finally {
-				updatingModel = false;
-			}
-		}
-	}
-
-	private final class SelectInOperands implements Consumer<Set<Entity>> {
-
-		@Override
-		public void accept(Set<Entity> inOperands) {
-			updatingModel = true;
-			try {
-				inSearchModel.selection().entities().set(inOperands);
-			}
-			finally {
-				updatingModel = false;
-			}
-		}
 	}
 
 	private static final class DefaultBuilder implements Builder {
@@ -246,13 +182,13 @@ public final class ForeignKeyConditionModel implements ConditionModel<Entity> {
 		private EntitySearchModel inSearchModel;
 
 		@Override
-		public Builder includeEqualOperators(EntitySearchModel equalSearchModel) {
+		public Builder equalSearchModel(EntitySearchModel equalSearchModel) {
 			this.equalSearchModel = requireNonNull(equalSearchModel);
 			return this;
 		}
 
 		@Override
-		public Builder includeInOperators(EntitySearchModel inSearchModel) {
+		public Builder inSearchModel(EntitySearchModel inSearchModel) {
 			this.inSearchModel = requireNonNull(inSearchModel);
 			return this;
 		}

@@ -47,8 +47,8 @@ public class SwingAttributeConditionModelFactory extends AttributeConditionModel
 			ForeignKey foreignKey = (ForeignKey) attribute;
 			if (definition(foreignKey.referencedType()).smallDataset()) {
 				return Optional.of(SwingForeignKeyConditionModel.builder()
-								.includeEqualOperators(createEqualComboBoxModel(foreignKey))
-								.includeInOperators(createInSearchModel(foreignKey))
+								.equalComboBoxModel(createEqualComboBoxModel(foreignKey))
+								.inSearchModel(createInSearchModel(foreignKey))
 								.build());
 			}
 		}

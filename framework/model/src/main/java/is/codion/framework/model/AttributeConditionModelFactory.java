@@ -52,8 +52,8 @@ public class AttributeConditionModelFactory implements ConditionModelFactory<Att
 		if (attribute instanceof ForeignKey) {
 			ForeignKey foreignKey = (ForeignKey) attribute;
 			return Optional.of(ForeignKeyConditionModel.builder()
-							.includeEqualOperators(createEqualSearchModel(foreignKey))
-							.includeInOperators(createInSearchModel(foreignKey))
+							.equalSearchModel(createEqualSearchModel(foreignKey))
+							.inSearchModel(createInSearchModel(foreignKey))
 							.build());
 		}
 

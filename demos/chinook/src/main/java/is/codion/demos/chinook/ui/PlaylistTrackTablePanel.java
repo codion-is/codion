@@ -19,10 +19,12 @@
 package is.codion.demos.chinook.ui;
 
 import is.codion.common.model.condition.ConditionModel;
+import is.codion.common.value.Value;
+import is.codion.common.value.ValueSet;
 import is.codion.demos.chinook.domain.api.Chinook.PlaylistTrack;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.ForeignKeyConditionModel;
-import is.codion.swing.common.ui.component.table.ColumnConditionPanel.FieldFactory;
+import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ComponentFactory;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityEditPanel.Confirmer;
 import is.codion.swing.framework.ui.EntityTablePanel;
@@ -38,8 +40,8 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 		super(tableModel, new PlaylistTrackEditPanel(tableModel.editModel()), config -> config
 						// Custom component for editing tracks
 						.editComponentFactory(PlaylistTrack.TRACK_FK, new TrackComponentFactory(PlaylistTrack.TRACK_FK))
-						// Custom condition field factory for the track condition panel
-						.conditionFieldFactory(PlaylistTrack.TRACK_FK, new TrackConditionFieldFactory())
+						// Custom condition component factory for the track condition panel
+						.conditionComponentFactory(PlaylistTrack.TRACK_FK, new TrackConditionComponentFactory())
 						// Skip confirmation when deleting
 						.deleteConfirmer(Confirmer.NONE)
 						// No need for the edit toolbar control
@@ -48,27 +50,24 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 						.visible().set(PlaylistTrack.TRACK_FK, PlaylistTrack.ARTIST, PlaylistTrack.ALBUM);
 	}
 
-	// A FieldFactory, which uses the TrackSelectorFactory, displaying
+	// A ComponentFactory, which uses the TrackSelectorFactory, displaying
 	// a table instead of the default list when selecting tracks
-	private static final class TrackConditionFieldFactory implements FieldFactory {
+	private static final class TrackConditionComponentFactory implements ComponentFactory {
 
 		@Override
-		public boolean supportsType(Class<?> valueClass) {
-			return valueClass.equals(Entity.class);
-		}
-
-		@Override
-		public <T> JComponent createEqualField(ConditionModel<T> conditionModel) {
+		public <T> JComponent component(ConditionModel<T> conditionModel, Value<T> operand) {
 			return EntitySearchField.builder(((ForeignKeyConditionModel) conditionModel).equalSearchModel())
 							.singleSelection()
+							.link((Value<Entity>) operand)
 							.selectorFactory(new TrackSelectorFactory())
 							.build();
 		}
 
 		@Override
-		public <T> JComponent createInField(ConditionModel<T> conditionModel) {
+		public <T> JComponent component(ConditionModel<T> conditionModel, ValueSet<T> operands) {
 			return EntitySearchField.builder(((ForeignKeyConditionModel) conditionModel).inSearchModel())
 							.multiSelection()
+							.link((ValueSet<Entity>) operands)
 							.selectorFactory(new TrackSelectorFactory())
 							.build();
 		}

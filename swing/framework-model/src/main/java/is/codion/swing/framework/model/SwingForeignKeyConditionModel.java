@@ -30,8 +30,6 @@ import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import java.text.Format;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
@@ -47,8 +45,6 @@ public final class SwingForeignKeyConditionModel implements ConditionModel<Entit
 	private final EntityComboBoxModel equalComboBoxModel;
 	private final EntitySearchModel inSearchModel;
 
-	private boolean updatingModel = false;
-
 	private SwingForeignKeyConditionModel(DefaultBuilder builder) {
 		this.condition = ConditionModel.builder(Entity.class)
 						.operators(builder.operators())
@@ -56,7 +52,6 @@ public final class SwingForeignKeyConditionModel implements ConditionModel<Entit
 						.build();
 		this.inSearchModel = builder.inSearchModel;
 		this.equalComboBoxModel = builder.equalComboBoxModel;
-		bindEvents();
 	}
 
 	/**
@@ -176,81 +171,21 @@ public final class SwingForeignKeyConditionModel implements ConditionModel<Entit
 	public interface Builder {
 
 		/**
-		 * @param equalComboBoxModel the combo box model to use for the EQUAl condition
+		 * @param equalComboBoxModel the combo box model to use for the EQUAl operator
 		 * @return this builder
 		 */
-		Builder includeEqualOperators(EntityComboBoxModel equalComboBoxModel);
+		Builder equalComboBoxModel(EntityComboBoxModel equalComboBoxModel);
 
 		/**
-		 * @param inSearchModel the search model to use for the IN condition
+		 * @param inSearchModel the search model to use for the IN operator
 		 * @return this builder
 		 */
-		Builder includeInOperators(EntitySearchModel inSearchModel);
+		Builder inSearchModel(EntitySearchModel inSearchModel);
 
 		/**
 		 * @return a new {@link SwingForeignKeyConditionModel} instance
 		 */
 		SwingForeignKeyConditionModel build();
-	}
-
-	private void bindEvents() {
-		if (equalComboBoxModel != null) {
-			equalComboBoxModel.selection().item().addConsumer(new SetEqualValue());
-			operands().equal().addConsumer(new SelectEqualValue());
-			equalComboBoxModel.items().refresher().result().addListener(() -> equalComboBoxModel.setSelectedItem(operands().equal().get()));
-		}
-		if (inSearchModel != null) {
-			inSearchModel.selection().entities().addConsumer(new SetInValues());
-			operands().in().addConsumer(new SelectInValues());
-		}
-	}
-
-	private final class SetEqualValue implements Consumer<Entity> {
-
-		@Override
-		public void accept(Entity selectedEntity) {
-			if (!updatingModel) {
-				operands().equal().set(selectedEntity);
-			}
-		}
-	}
-
-	private final class SelectEqualValue implements Consumer<Entity> {
-
-		@Override
-		public void accept(Entity equalValue) {
-			updatingModel = true;
-			try {
-				equalComboBoxModel.setSelectedItem(equalValue);
-			}
-			finally {
-				updatingModel = false;
-			}
-		}
-	}
-
-	private final class SetInValues implements Consumer<Set<Entity>> {
-
-		@Override
-		public void accept(Set<Entity> selectedEntities) {
-			if (!updatingModel) {
-				operands().in().set(selectedEntities);
-			}
-		}
-	}
-
-	private final class SelectInValues implements Consumer<Set<Entity>> {
-
-		@Override
-		public void accept(Set<Entity> inValues) {
-			updatingModel = true;
-			try {
-				inSearchModel.selection().entities().set(inValues);
-			}
-			finally {
-				updatingModel = false;
-			}
-		}
 	}
 
 	private static final class DefaultBuilder implements Builder {
@@ -259,13 +194,13 @@ public final class SwingForeignKeyConditionModel implements ConditionModel<Entit
 		private EntitySearchModel inSearchModel;
 
 		@Override
-		public Builder includeEqualOperators(EntityComboBoxModel equalComboBoxModel) {
+		public Builder equalComboBoxModel(EntityComboBoxModel equalComboBoxModel) {
 			this.equalComboBoxModel = requireNonNull(equalComboBoxModel);
 			return this;
 		}
 
 		@Override
-		public Builder includeInOperators(EntitySearchModel inSearchModel) {
+		public Builder inSearchModel(EntitySearchModel inSearchModel) {
 			this.inSearchModel = requireNonNull(inSearchModel);
 			return this;
 		}

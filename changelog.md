@@ -39,6 +39,7 @@ Codion Change Log
 - Components.textField() no longer forwards call to NumberField in case of numerical values.
 - ColumnConditionPanel.FieldFactory.createLowerField() and createUpperField() now with default implementations.
 - TransferFocusOnEnter.forwardAction() and backwardAction() removed, transfer focus actions now singletons.
+- ColumnConditionPanel.FieldFactory refactored and renamed ComponentFactory, related renaming and refactoring.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.entityType() replaced with entityDefinition().
 ### is.codion.swing.framework.ui

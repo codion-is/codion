@@ -19,8 +19,10 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.model.condition.ConditionModel;
+import is.codion.common.value.Value;
+import is.codion.common.value.ValueSet;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
-import is.codion.swing.common.ui.component.table.ColumnConditionPanel.FieldFactory;
+import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ComponentFactory;
 
 import javax.swing.JComponent;
 import java.math.BigDecimal;
@@ -30,56 +32,30 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static is.codion.swing.common.ui.component.Components.*;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.SwingConstants.CENTER;
 
-final class DefaultFilterFieldFactory implements FieldFactory {
+final class FilterComponentFactory implements ComponentFactory {
 
 	private static final List<Class<?>> SUPPORTED_TYPES = Arrays.asList(
 					Character.class, String.class, Boolean.class, Short.class, Integer.class, Double.class,
 					BigDecimal.class, Long.class, LocalTime.class, LocalDate.class,
 					LocalDateTime.class, OffsetDateTime.class);
 
-	@Override
 	public boolean supportsType(Class<?> valueClass) {
 		return SUPPORTED_TYPES.contains(requireNonNull(valueClass));
 	}
 
 	@Override
-	public <T> JComponent createEqualField(ConditionModel<T> condition) {
-		return createField(condition)
-						.link(condition.operands().equal())
-						.build();
+	public <T> JComponent component(ConditionModel<T> conditionModel, Value<T> operand) {
+		return createField(conditionModel).link(operand).build();
 	}
 
 	@Override
-	public <T> Optional<JComponent> createUpperField(ConditionModel<T> condition) {
-		if (condition.valueClass().equals(Boolean.class)) {
-			return Optional.empty();//no upper bound field required for boolean values
-		}
-
-		return Optional.of(createField(condition)
-						.link(condition.operands().upper())
-						.build());
-	}
-
-	@Override
-	public <T> Optional<JComponent> createLowerField(ConditionModel<T> condition) {
-		if (condition.valueClass().equals(Boolean.class)) {
-			return Optional.empty();//no lower bound field required for boolean values
-		}
-
-		return Optional.of(createField(condition)
-						.link(condition.operands().lower())
-						.build());
-	}
-
-	@Override
-	public <T> JComponent createInField(ConditionModel<T> condition) {
-		return listBox(createField(condition).buildValue(), condition.operands().in()).build();
+	public <T> JComponent component(ConditionModel<T> conditionModel, ValueSet<T>	operands) {
+		return listBox(createField(conditionModel).buildValue(), operands).build();
 	}
 
 	private static <T> ComponentBuilder<T, ? extends JComponent, ?> createField(ConditionModel<T> conditionModel) {
