@@ -127,7 +127,7 @@ public final class EntityConditionComponentFactory implements ComponentFactory {
 		return inputComponents.searchField(foreignKey, searchModel)
 						.multiSelection()
 						.link(operands)
-						//.editable(searchable) todo
+						.editable(searchable)
 						.searchHintEnabled(searchable)
 						.build();
 

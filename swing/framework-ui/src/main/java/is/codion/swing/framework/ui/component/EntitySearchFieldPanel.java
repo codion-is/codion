@@ -160,6 +160,12 @@ public final class EntitySearchFieldPanel extends JPanel {
 		Builder<T, B> lowerCase(boolean lowerCase);
 
 		/**
+		 * @param editable false if the field should not be editable
+		 * @return this builder instance
+		 */
+		Builder<T, B> editable(boolean editable);
+
+		/**
 		 * @param searchHintEnabled true if a search hint text should be visible when the field is empty and not focused
 		 * @return this builder instance
 		 */
@@ -393,6 +399,12 @@ public final class EntitySearchFieldPanel extends JPanel {
 		@Override
 		public Builder<T, B> lowerCase(boolean lowerCase) {
 			searchFieldBuilder.lowerCase(lowerCase);
+			return this;
+		}
+
+		@Override
+		public Builder<T, B> editable(boolean editable) {
+			searchFieldBuilder.editable(editable);
 			return this;
 		}
 

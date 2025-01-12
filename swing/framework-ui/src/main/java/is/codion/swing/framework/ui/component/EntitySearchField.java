@@ -234,6 +234,9 @@ public final class EntitySearchField extends HintTextField {
 		if (builder.lowerCase) {
 			TextComponents.lowerCase(getDocument());
 		}
+		if (!builder.editable) {
+			setEditable(false);
+		}
 		searchOnFocusLost.set(builder.searchOnFocusLost);
 		searchingConsumer = createSearchingConsumer(builder.searchIndicator);
 		searching.addConsumer(searchingConsumer);
@@ -364,6 +367,12 @@ public final class EntitySearchField extends HintTextField {
 		 * @return this builder instance
 		 */
 		Builder<T, B> lowerCase(boolean lowerCase);
+
+		/**
+		 * @param editable false if the field should not be editable
+		 * @return this builder instance
+		 */
+		Builder<T, B> editable(boolean editable);
 
 		/**
 		 * Overrides the default toString() for search elements when displayed in a field based on this model
@@ -1134,6 +1143,7 @@ public final class EntitySearchField extends HintTextField {
 		private int columns = -1;
 		private boolean upperCase;
 		private boolean lowerCase;
+		private boolean editable = true;
 		private boolean searchHintEnabled = true;
 		private boolean searchOnFocusLost = true;
 		private SearchIndicator searchIndicator = SEARCH_INDICATOR.get();
@@ -1169,6 +1179,12 @@ public final class EntitySearchField extends HintTextField {
 				throw new IllegalArgumentException("Field is already uppercase");
 			}
 			this.lowerCase = lowerCase;
+			return this;
+		}
+
+		@Override
+		public Builder<T, B> editable(boolean editable) {
+			this.editable = editable;
 			return this;
 		}
 
