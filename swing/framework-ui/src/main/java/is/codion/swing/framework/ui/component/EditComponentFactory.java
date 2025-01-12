@@ -29,7 +29,7 @@ import java.util.Optional;
  * @param <T> the value type
  * @param <C> the component type
  */
-public interface EntityComponentFactory<T, C extends JComponent> {
+public interface EditComponentFactory<T, C extends JComponent> {
 
 	/**
 	 * Provides an input {@link ComponentValue} for editing a single attribute value for one or more entities.

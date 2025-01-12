@@ -80,7 +80,7 @@ import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityEditComponentPanel.AttributeDefinitionComparator;
 import is.codion.swing.framework.ui.EntityEditPanel.Confirmer;
-import is.codion.swing.framework.ui.component.EntityComponentFactory;
+import is.codion.swing.framework.ui.component.EditComponentFactory;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.slf4j.Logger;
@@ -654,7 +654,7 @@ public class EntityTablePanel extends JPanel {
 	 * Displays a selection dialog for selecting an attribute to edit and
 	 * retrieves a new value via input dialog and performs an update on the selected entities
 	 * assigning the value to the attribute
-	 * @see Config#editComponentFactory(Attribute, EntityComponentFactory)
+	 * @see Config#editComponentFactory(Attribute, EditComponentFactory)
 	 */
 	public final void editSelected() {
 		List<AttributeDefinition<?>> sortedDefinitions = configuration.editable.get().stream()
@@ -672,7 +672,7 @@ public class EntityTablePanel extends JPanel {
 	 * Retrieves a new value via input dialog and performs an update on the selected entities
 	 * assigning the value to the attribute
 	 * @param attributeToEdit the attribute which value to edit
-	 * @see Config#editComponentFactory(Attribute, EntityComponentFactory)
+	 * @see Config#editComponentFactory(Attribute, EditComponentFactory)
 	 */
 	public final void editSelected(Attribute<?> attributeToEdit) {
 		requireNonNull(attributeToEdit);
@@ -1035,7 +1035,7 @@ public class EntityTablePanel extends JPanel {
 	protected <T> EntityDialogs.EditAttributeDialogBuilder<T> editDialogBuilder(Attribute<T> attribute) {
 		return EntityDialogs.editAttributeDialog(tableModel.editModel(), attribute)
 						.owner(this)
-						.componentFactory((EntityComponentFactory<T, ?>) configuration.editComponentFactories.get(attribute));
+						.editComponentFactory((EditComponentFactory<T, ?>) configuration.editComponentFactories.get(attribute));
 	}
 
 	/**
@@ -2300,7 +2300,7 @@ public class EntityTablePanel extends JPanel {
 		private final EntityTablePanel tablePanel;
 		private final EntityDefinition entityDefinition;
 		private final ValueSet<Attribute<?>> editable;
-		private final Map<Attribute<?>, EntityComponentFactory<?, ?>> editComponentFactories;
+		private final Map<Attribute<?>, EditComponentFactory<?, ?>> editComponentFactories;
 		private final FilterTable.Builder<Entity, Attribute<?>> tableBuilder;
 		private final Map<Attribute<?>, ComponentFactory> conditionComponentFactories;
 
@@ -2619,16 +2619,16 @@ public class EntityTablePanel extends JPanel {
 		/**
 		 * Sets the component factory for the given attribute, used when editing entities via {@link EntityTablePanel#editSelected(Attribute)}.
 		 * @param attribute the attribute
-		 * @param componentFactory the component factory
+		 * @param editComponentFactory the edit component factory
 		 * @param <T> the value type
 		 * @param <A> the attribute type
 		 * @param <C> the component type
 		 * @return this Config instance
 		 */
 		public <T, A extends Attribute<T>, C extends JComponent> Config editComponentFactory(A attribute,
-																																												 EntityComponentFactory<T, C> componentFactory) {
+																																												 EditComponentFactory<T, C> editComponentFactory) {
 			entityDefinition.attributes().definition(attribute);
-			editComponentFactories.put(attribute, requireNonNull(componentFactory));
+			editComponentFactories.put(attribute, requireNonNull(editComponentFactory));
 			return this;
 		}
 

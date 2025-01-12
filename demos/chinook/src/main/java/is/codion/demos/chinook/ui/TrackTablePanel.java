@@ -33,7 +33,7 @@ import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTableCellRenderer;
 import is.codion.swing.framework.ui.EntityTablePanel;
-import is.codion.swing.framework.ui.component.EntityComponentFactory;
+import is.codion.swing.framework.ui.component.EditComponentFactory;
 
 import javax.swing.JSpinner;
 import java.math.BigDecimal;
@@ -63,9 +63,9 @@ public final class TrackTablePanel extends EntityTablePanel {
 	public TrackTablePanel(TrackTableModel tableModel) {
 		super(tableModel, config -> config
 						// Custom component for editing track ratings
-						.editComponentFactory(Track.RATING, new RatingComponentFactory())
+						.editComponentFactory(Track.RATING, new RatingEditComponentFactory())
 						// Custom component for editing track durations
-						.editComponentFactory(Track.MILLISECONDS, new DurationComponentFactory(tableModel))
+						.editComponentFactory(Track.MILLISECONDS, new DurationEditComponentFactory(tableModel))
 						// Custom cell renderer for ratings
 						.cellRenderer(Track.RATING, ratingRenderer(tableModel))
 						// Custom cell renderer for track duration (min:sec)
@@ -134,8 +134,8 @@ public final class TrackTablePanel extends EntityTablePanel {
 		return entityComponents(entityDefinition).integerSpinner(Track.RATING);
 	}
 
-	private static final class RatingComponentFactory
-					implements EntityComponentFactory<Integer, JSpinner> {
+	private static final class RatingEditComponentFactory
+					implements EditComponentFactory<Integer, JSpinner> {
 
 		@Override
 		public ComponentValue<Integer, JSpinner> componentValue(SwingEntityEditModel editModel,
@@ -146,12 +146,12 @@ public final class TrackTablePanel extends EntityTablePanel {
 		}
 	}
 
-	private static final class DurationComponentFactory
-					implements EntityComponentFactory<Integer, DurationPanel> {
+	private static final class DurationEditComponentFactory
+					implements EditComponentFactory<Integer, DurationPanel> {
 
 		private final String caption;
 
-		private DurationComponentFactory(TrackTableModel tableModel) {
+		private DurationEditComponentFactory(TrackTableModel tableModel) {
 			this.caption = tableModel.entityDefinition().attributes().definition(Track.MILLISECONDS).caption();
 		}
 

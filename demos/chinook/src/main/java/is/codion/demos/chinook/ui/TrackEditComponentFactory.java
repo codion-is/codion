@@ -22,15 +22,15 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntitySearchModel;
-import is.codion.swing.framework.ui.component.DefaultEntityComponentFactory;
+import is.codion.swing.framework.ui.component.DefaultEditComponentFactory;
 import is.codion.swing.framework.ui.component.EntitySearchField;
 
 /**
  * Provides a {@link EntitySearchField} using the {@link TrackSelectorFactory}.
  */
-final class TrackComponentFactory extends DefaultEntityComponentFactory<Entity, EntitySearchField> {
+final class TrackEditComponentFactory extends DefaultEditComponentFactory<Entity, EntitySearchField> {
 
-	TrackComponentFactory(ForeignKey trackForeignKey) {
+	TrackEditComponentFactory(ForeignKey trackForeignKey) {
 		super(trackForeignKey);
 	}
 

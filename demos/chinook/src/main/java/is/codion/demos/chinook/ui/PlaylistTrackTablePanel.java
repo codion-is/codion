@@ -39,7 +39,7 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 		// double click and keyboard shortcuts, instead of embedding it
 		super(tableModel, new PlaylistTrackEditPanel(tableModel.editModel()), config -> config
 						// Custom component for editing tracks
-						.editComponentFactory(PlaylistTrack.TRACK_FK, new TrackComponentFactory(PlaylistTrack.TRACK_FK))
+						.editComponentFactory(PlaylistTrack.TRACK_FK, new TrackEditComponentFactory(PlaylistTrack.TRACK_FK))
 						// Custom condition component factory for the track condition panel
 						.conditionComponentFactory(PlaylistTrack.TRACK_FK, new TrackConditionComponentFactory())
 						// Skip confirmation when deleting

@@ -27,7 +27,7 @@ import is.codion.swing.framework.ui.TestDomain.Detail;
 
 import org.junit.jupiter.api.Test;
 
-public final class DefaultEntityComponentFactoryTest {
+public final class DefaultEditComponentFactoryTest {
 
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -41,10 +41,10 @@ public final class DefaultEntityComponentFactoryTest {
 
 	@Test
 	void test() {
-		new DefaultEntityComponentFactory<>(Detail.MASTER_FK).componentValue(editModel, null);
-		new DefaultEntityComponentFactory<>(Detail.DETAIL_FK).componentValue(editModel, null);
+		new DefaultEditComponentFactory<>(Detail.MASTER_FK).componentValue(editModel, null);
+		new DefaultEditComponentFactory<>(Detail.DETAIL_FK).componentValue(editModel, null);
 
-		new DefaultEntityComponentFactory<>(Detail.INT).componentValue(editModel, null);
-		new DefaultEntityComponentFactory<>(Detail.INT_DERIVED).componentValue(editModel, null);
+		new DefaultEditComponentFactory<>(Detail.INT).componentValue(editModel, null);
+		new DefaultEditComponentFactory<>(Detail.INT_DERIVED).componentValue(editModel, null);
 	}
 }

@@ -31,7 +31,7 @@ import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTableCellRenderer;
 import is.codion.swing.framework.ui.EntityTablePanel;
-import is.codion.swing.framework.ui.component.EntityComponentFactory;
+import is.codion.swing.framework.ui.component.EditComponentFactory;
 
 import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
@@ -102,7 +102,7 @@ public final class AlbumTablePanel extends EntityTablePanel {
 	}
 
 	private static final class TagEditComponentFactory
-					implements EntityComponentFactory<List<String>, AlbumTagPanel> {
+					implements EditComponentFactory<List<String>, AlbumTagPanel> {
 
 		@Override
 		public ComponentValue<List<String>, AlbumTagPanel> componentValue(SwingEntityEditModel editModel,

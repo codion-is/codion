@@ -36,8 +36,8 @@ import is.codion.swing.common.ui.dialog.AbstractDialogBuilder;
 import is.codion.swing.common.ui.dialog.DialogBuilder;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.component.DefaultEntityComponentFactory;
-import is.codion.swing.framework.ui.component.EntityComponentFactory;
+import is.codion.swing.framework.ui.component.DefaultEditComponentFactory;
+import is.codion.swing.framework.ui.component.EditComponentFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,10 +134,10 @@ public final class EntityDialogs {
 	public interface EditAttributeDialogBuilder<T> extends DialogBuilder<EditAttributeDialogBuilder<T>> {
 
 		/**
-		 * @param componentFactory the component factory, if null then the default is used
+		 * @param editComponentFactory the component factory, if null then the default is used
 		 * @return this builder
 		 */
-		EditAttributeDialogBuilder<T> componentFactory(EntityComponentFactory<T, ?> componentFactory);
+		EditAttributeDialogBuilder<T> editComponentFactory(EditComponentFactory<T, ?> editComponentFactory);
 
 		/**
 		 * @param onValidationException called on validation exception
@@ -260,19 +260,19 @@ public final class EntityDialogs {
 		private final SwingEntityEditModel editModel;
 		private final Attribute<T> attribute;
 
-		private EntityComponentFactory<T, ?> componentFactory;
+		private EditComponentFactory<T, ?> editComponentFactory;
 		private Consumer<ValidationException> onValidationException = new DefaultValidationExceptionHandler();
 		private Consumer<Exception> onException = new DefaultExceptionHandler();
 
 		private DefaultEditAttributeDialogBuilder(SwingEntityEditModel editModel, Attribute<T> attribute) {
 			this.editModel = requireNonNull(editModel);
 			this.attribute = requireNonNull(attribute);
-			this.componentFactory = new EditEntityComponentFactory<>(attribute);
+			this.editComponentFactory = new EntityEditComponentFactory<>(attribute);
 		}
 
 		@Override
-		public EditAttributeDialogBuilder<T> componentFactory(EntityComponentFactory<T, ?> componentFactory) {
-			this.componentFactory = componentFactory == null ? new EditEntityComponentFactory<>(attribute) : componentFactory;
+		public EditAttributeDialogBuilder<T> editComponentFactory(EditComponentFactory<T, ?> editComponentFactory) {
+			this.editComponentFactory = editComponentFactory == null ? new EntityEditComponentFactory<>(attribute) : editComponentFactory;
 			return this;
 		}
 
@@ -305,13 +305,13 @@ public final class EntityDialogs {
 				throw new IllegalArgumentException("All entities must be of the same type when editing");
 			}
 
-			ComponentValue<T, ?> componentValue = componentFactory.componentValue(editModel, initialValue(entities));
+			ComponentValue<T, ?> componentValue = editComponentFactory.componentValue(editModel, initialValue(entities));
 			inputDialog(componentValue)
 							.owner(owner)
 							.location(location)
 							.locationRelativeTo(locationRelativeTo)
 							.title(FrameworkMessages.edit())
-							.caption(componentFactory.caption().orElse(editModel.entityDefinition().attributes().definition(attribute).caption()))
+							.caption(editComponentFactory.caption().orElse(editModel.entityDefinition().attributes().definition(attribute).caption()))
 							.validator(new InputValidator(componentValue))
 							.show(new PerformUpdate(entities));
 		}
@@ -426,11 +426,11 @@ public final class EntityDialogs {
 		}
 	}
 
-	private static final class EditEntityComponentFactory<T, C extends JComponent> extends DefaultEntityComponentFactory<T, C> {
+	private static final class EntityEditComponentFactory<T, C extends JComponent> extends DefaultEditComponentFactory<T, C> {
 
 		private static final int TEXT_INPUT_PANEL_COLUMNS = 20;
 
-		private EditEntityComponentFactory(Attribute<T> attribute) {
+		private EntityEditComponentFactory(Attribute<T> attribute) {
 			super(attribute);
 		}
 

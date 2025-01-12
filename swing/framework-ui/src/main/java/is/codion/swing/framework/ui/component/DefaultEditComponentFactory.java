@@ -35,18 +35,18 @@ import static is.codion.swing.framework.ui.component.EntityComponents.entityComp
 import static java.util.Objects.requireNonNull;
 
 /**
- * A default {@link EntityComponentFactory} implementation.
+ * A default {@link EditComponentFactory} implementation.
  * @param <T> the attribute type
  * @param <C> the component type
  */
-public class DefaultEntityComponentFactory<T, C extends JComponent> implements EntityComponentFactory<T, C> {
+public class DefaultEditComponentFactory<T, C extends JComponent> implements EditComponentFactory<T, C> {
 
 	private final Attribute<T> attribute;
 
 	/**
 	 * @param attribute the attribute for which this factory creates a {@link ComponentValue}
 	 */
-	public DefaultEntityComponentFactory(Attribute<T> attribute) {
+	public DefaultEditComponentFactory(Attribute<T> attribute) {
 		this.attribute = requireNonNull(attribute);
 	}
 
@@ -60,7 +60,8 @@ public class DefaultEntityComponentFactory<T, C extends JComponent> implements E
 			return createTemporalComponentValue(attribute, (Temporal) value, entityComponents(editModel.entityDefinition()));
 		}
 
-		return (ComponentValue<T, C>) entityComponents(editModel.entityDefinition()).component(attribute)
+		return (ComponentValue<T, C>) entityComponents(editModel.entityDefinition())
+						.component(attribute)
 						.value(value)
 						.buildValue();
 	}

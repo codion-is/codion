@@ -23,8 +23,8 @@ import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
 import is.codion.swing.framework.model.SwingEntityEditModel;
-import is.codion.swing.framework.ui.component.DefaultEntityComponentFactory;
-import is.codion.swing.framework.ui.component.EntityComponentFactory;
+import is.codion.swing.framework.ui.component.DefaultEditComponentFactory;
+import is.codion.swing.framework.ui.component.EditComponentFactory;
 
 import javax.swing.JComponent;
 import javax.swing.table.TableCellEditor;
@@ -53,8 +53,8 @@ final class EntityTableCellEditorFactory implements FilterTableCellEditor.Factor
 			return Optional.empty();
 		}
 
-		EntityComponentFactory<Object, JComponent> componentFactory =
-						new DefaultEntityComponentFactory<>((Attribute<Object>) attribute);
+		EditComponentFactory<Object, JComponent> componentFactory =
+						new DefaultEditComponentFactory<>((Attribute<Object>) attribute);
 
 		return Optional.of(filterTableCellEditor(() ->
 						componentFactory.componentValue(editModel, null)));
