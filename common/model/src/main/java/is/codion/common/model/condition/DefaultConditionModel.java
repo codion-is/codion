@@ -34,12 +34,13 @@ import org.jspecify.annotations.Nullable;
 import java.text.Format;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
-import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
@@ -77,7 +78,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 						.listener(autoEnableListener)
 						.listener(conditionChanged)
 						.build();
-		this.operands = new DefaultOperands<>(builder.wildcard, operator);
+		this.operands = new DefaultOperands<>(builder.wildcard, operator, builder.operands);
 		this.operands.equal.addValidator(lockValidator);
 		this.operands.equal.addListener(autoEnableListener);
 		this.operands.equal.addListener(conditionChanged);
@@ -479,8 +480,12 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 						.notify(Notify.WHEN_SET)
 						.build();
 
-		private DefaultOperands(Wildcard wildcard, Observable<Operator> operatorObserver) {
+		private DefaultOperands(Wildcard wildcard, Observable<Operator> operatorObserver, DefaultInitialOperands<T> initial) {
 			equal = new EqualOperand<>(wildcard, operatorObserver);
+			equal.set(initial.equal);
+			in.set(initial.in);
+			upper.set(initial.upper);
+			lower.set(initial.lower);
 		}
 
 		@Override
@@ -590,6 +595,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		private static final List<Operator> DEFAULT_OPERATORS = asList(Operator.values());
 
 		private final Class<T> valueClass;
+		private final DefaultInitialOperands<T> operands = new DefaultInitialOperands<>();
 
 		private List<Operator> operators;
 		private Operator operator = Operator.EQUAL;
@@ -657,6 +663,12 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		}
 
 		@Override
+		public Builder<T> operands(Consumer<InitialOperands<T>> operands) {
+			requireNonNull(operands).accept(this.operands);
+			return this;
+		}
+
+		@Override
 		public ConditionModel<T> build() {
 			return new DefaultConditionModel<>(this);
 		}
@@ -665,6 +677,38 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 			if (!operators.contains(operator)) {
 				throw new IllegalArgumentException("Available operators do no not contain the selected operator: " + operator);
 			}
+		}
+	}
+
+	private static final class DefaultInitialOperands<T> implements InitialOperands<T> {
+
+		private Set<T> in = emptySet();
+		private @Nullable T equal;
+		private @Nullable T upper;
+		private @Nullable T lower;
+
+		@Override
+		public InitialOperands<T> equal(T equal) {
+			this.equal = requireNonNull(equal);
+			return this;
+		}
+
+		@Override
+		public InitialOperands<T> in(Set<T> in) {
+			this.in = requireNonNull(in);
+			return this;
+		}
+
+		@Override
+		public InitialOperands<T> upper(T upper) {
+			this.upper = requireNonNull(upper);
+			return this;
+		}
+
+		@Override
+		public InitialOperands<T> lower(T lower) {
+			this.lower = requireNonNull(lower);
+			return this;
 		}
 	}
 }

@@ -8,6 +8,7 @@ Codion Change Log
 - FilterModel.Refresher.success() and failure() renamed result() and exception() respectively, related renaming.
 - FilterModel.Items no longer extends Observable.
 - FilterModel.Items.add() and remove() now void.
+- ConditionModel.Builder.operands() added along with InitialOperands.
 ### is.codion.framework.domain
 - DefaultEntityValidator.valid() now final.
 - AttributeDefinition.Builder.mnemonicResourceKey() added.
@@ -30,6 +31,7 @@ Codion Change Log
 - EntitySearchModel.Selection.string() and strings() now sorted.
 - EntitySearchModel.Search added, related refactoring and renaming.
 - EntitySearchModel.Search.text() replaced with strings(), Builder.separator() and stringFactory() removed.
+- AttributeConditionModelFactory bug fixed, now initializes the equal operand of non-null boolean condition models.
 ### is.codion.swing.common.model
 - FilterComboBoxModel.ItemComboBoxModelBuilder.selected() added.
 ### is.codion.swing.common.ui

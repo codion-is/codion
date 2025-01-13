@@ -31,6 +31,8 @@ import org.jspecify.annotations.Nullable;
 import java.text.Format;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Consumer;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static java.util.ResourceBundle.getBundle;
@@ -213,6 +215,36 @@ public interface ConditionModel<T> {
 	}
 
 	/**
+	 * @param <T> the operand type
+	 */
+	interface InitialOperands<T> {
+
+		/**
+		 * @param equal the initial EQUAL operand
+		 * @return this {@link InitialOperands} instance
+		 */
+		InitialOperands<T> equal(T equal);
+
+		/**
+		 * @param in the initial IN operand
+		 * @return this {@link InitialOperands} instance
+		 */
+		InitialOperands<T> in(Set<T> in);
+
+		/**
+		 * @param upper the initial UPPER operand
+		 * @return this {@link InitialOperands} instance
+		 */
+		InitialOperands<T> upper(T upper);
+
+		/**
+		 * @param lower the initial LOWER operand
+		 * @return this {@link InitialOperands} instance
+		 */
+		InitialOperands<T> lower(T lower);
+	}
+
+	/**
 	 * Builds a {@link ConditionModel} instance.
 	 */
 	interface Builder<T> {
@@ -262,6 +294,13 @@ public interface ConditionModel<T> {
 		 * @return this builder instance
 		 */
 		Builder<T> autoEnable(boolean autoEnable);
+
+		/**
+		 * Provides a way to initialize one or more operands
+		 * @param operands the operands
+		 * @return this builder instance
+		 */
+		Builder<T> operands(Consumer<InitialOperands<T>> operands);
 
 		/**
 		 * @return a new {@link ConditionModel} instance based on this builder

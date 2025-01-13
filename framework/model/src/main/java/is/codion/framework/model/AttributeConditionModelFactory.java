@@ -61,6 +61,11 @@ public class AttributeConditionModelFactory implements ConditionModelFactory<Att
 		return Optional.of(ConditionModel.builder(attribute.type().valueClass())
 						.format(column.format())
 						.dateTimePattern(column.dateTimePattern())
+						.operands(operands -> {
+							if (column.attribute().type().isBoolean() && !column.nullable()) {
+								((ConditionModel.InitialOperands<Boolean>) operands).equal(false);
+							}
+						})
 						.build());
 	}
 
