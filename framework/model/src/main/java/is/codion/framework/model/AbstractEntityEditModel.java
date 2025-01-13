@@ -228,7 +228,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		return EntitySearchModel.builder(foreignKey.referencedType(), connectionProvider())
-						.columns(searchable)
 						.singleSelection(true)
 						.build();
 	}

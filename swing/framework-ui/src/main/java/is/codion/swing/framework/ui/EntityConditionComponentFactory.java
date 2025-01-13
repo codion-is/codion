@@ -96,17 +96,17 @@ public final class EntityConditionComponentFactory implements ComponentFactory {
 										.buildValue(), conditionModel.operands().in()).build();
 	}
 
-	private JComponent createEqualForeignKeyField(ConditionModel<Entity> model, Value<Entity> operand) {
-		if (model instanceof ForeignKeyConditionModel) {
-			EntitySearchModel searchModel = ((ForeignKeyConditionModel) model).equalSearchModel();
+	private JComponent createEqualForeignKeyField(ConditionModel<Entity> conditionModel, Value<Entity> operand) {
+		if (conditionModel instanceof ForeignKeyConditionModel) {
+			EntitySearchModel searchModel = ((ForeignKeyConditionModel) conditionModel).equalSearchModel();
 
 			return inputComponents.searchField((ForeignKey) attribute, searchModel)
 							.singleSelection()
 							.link(operand)
 							.build();
 		}
-		if (model instanceof SwingForeignKeyConditionModel) {
-			EntityComboBoxModel comboBoxModel = ((SwingForeignKeyConditionModel) model).equalComboBoxModel();
+		if (conditionModel instanceof SwingForeignKeyConditionModel) {
+			EntityComboBoxModel comboBoxModel = ((SwingForeignKeyConditionModel) conditionModel).equalComboBoxModel();
 
 			return inputComponents.comboBox((ForeignKey) attribute, comboBoxModel)
 							.link(operand)
@@ -115,12 +115,12 @@ public final class EntityConditionComponentFactory implements ComponentFactory {
 							.build();
 		}
 
-		throw new IllegalArgumentException("Unknown foreign key condition model type: " + model);
+		throw new IllegalArgumentException("Unknown foreign key condition model type: " + conditionModel);
 	}
 
-	private JComponent createInForeignKeyField(ConditionModel<Entity> model, ValueSet<Entity> operands) {
+	private JComponent createInForeignKeyField(ConditionModel<Entity> conditionModel, ValueSet<Entity> operands) {
 		ForeignKey foreignKey = (ForeignKey) attribute;
-		EntitySearchModel searchModel = getEntitySearchModel(model);
+		EntitySearchModel searchModel = searchModel(conditionModel);
 
 		boolean searchable = !searchModel.entityDefinition().columns().searchable().isEmpty();
 
@@ -133,14 +133,14 @@ public final class EntityConditionComponentFactory implements ComponentFactory {
 
 	}
 
-	private static EntitySearchModel getEntitySearchModel(ConditionModel<Entity> model) {
-		if (model instanceof ForeignKeyConditionModel) {
-			return ((ForeignKeyConditionModel) model).inSearchModel();
+	private static EntitySearchModel searchModel(ConditionModel<Entity> conditionModel) {
+		if (conditionModel instanceof ForeignKeyConditionModel) {
+			return ((ForeignKeyConditionModel) conditionModel).inSearchModel();
 		}
-		else if (model instanceof SwingForeignKeyConditionModel) {
-			return ((SwingForeignKeyConditionModel) model).inSearchModel();
+		else if (conditionModel instanceof SwingForeignKeyConditionModel) {
+			return ((SwingForeignKeyConditionModel) conditionModel).inSearchModel();
 		}
 
-		throw new IllegalArgumentException("Unknown foreign key condition model type: " + model);
+		throw new IllegalArgumentException("Unknown foreign key condition model type: " + conditionModel);
 	}
 }

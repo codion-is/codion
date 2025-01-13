@@ -144,7 +144,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	private boolean initialized = false;
 
 	private ColumnConditionPanel(DefaultBuilder<T> builder) {
-		super(builder.condition);
+		super(builder.conditionModel);
 		this.componentFactory = builder.componentFactory;
 		this.operatorCaptions = builder.operatorCaptions;
 		this.tableColumn = builder.tableColumn;
@@ -166,7 +166,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
 	@Override
 	public void requestInputFocus() {
-		switch (condition().operator().getOrThrow()) {
+		switch (model().operator().getOrThrow()) {
 			case EQUAL:
 			case NOT_EQUAL:
 				operandComponents.equal().ifPresent(JComponent::requestFocusInWindow);
@@ -188,7 +188,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 				operandComponents.in().ifPresent(JComponent::requestFocusInWindow);
 				break;
 			default:
-				throw new IllegalArgumentException(UNKNOWN_OPERATOR + condition().operator().get());
+				throw new IllegalArgumentException(UNKNOWN_OPERATOR + model().operator().get());
 		}
 	}
 
@@ -249,12 +249,12 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	}
 
 	/**
-	 * @param condition the condition model
+	 * @param conditionModel the condition model
 	 * @param <T> the condition value type
 	 * @return a new {@link Builder}
 	 */
-	public static <T> Builder<T> builder(ConditionModel<T> condition) {
-		return new DefaultBuilder<>(condition);
+	public static <T> Builder<T> builder(ConditionModel<T> conditionModel) {
+		return new DefaultBuilder<>(conditionModel);
 	}
 
 	/**
@@ -291,20 +291,20 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
 	private static final class DefaultBuilder<T> implements Builder<T> {
 
-		private final ConditionModel<T> condition;
+		private final ConditionModel<T> conditionModel;
 
 		private ComponentFactory componentFactory = new FilterComponentFactory();
 		private Function<Operator, String> operatorCaptions = DEFAULT_OPERATOR_CAPTIONS;
 		private TableColumn tableColumn;
 
-		private DefaultBuilder(ConditionModel<T> condition) {
-			this.condition = requireNonNull(condition);
+		private DefaultBuilder(ConditionModel<T> conditionModel) {
+			this.conditionModel = requireNonNull(conditionModel);
 		}
 
 		@Override
 		public Builder<T> componentFactory(ComponentFactory componentFactory) {
-			if (!requireNonNull(componentFactory).supportsType(condition.valueClass())) {
-				throw new IllegalArgumentException("ComponentFactory does not support the value type: " + condition.valueClass());
+			if (!requireNonNull(componentFactory).supportsType(conditionModel.valueClass())) {
+				throw new IllegalArgumentException("ComponentFactory does not support the value type: " + conditionModel.valueClass());
 			}
 
 			this.componentFactory = requireNonNull(componentFactory);
@@ -360,23 +360,23 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	}
 
 	private boolean equalIncluded() {
-		return condition().operators().contains(EQUAL) ||
-						condition().operators().contains(NOT_EQUAL);
+		return model().operators().contains(EQUAL) ||
+						model().operators().contains(NOT_EQUAL);
 	}
 
 	private boolean upperIncluded() {
-		return condition().operators().stream()
+		return model().operators().stream()
 						.anyMatch(UPPER_BOUND_OPERATORS::contains);
 	}
 
 	private boolean lowerIncluded() {
-		return condition().operators().stream()
+		return model().operators().stream()
 						.anyMatch(LOWER_BOUND_OPERATORS::contains);
 	}
 
 	private boolean inIncluded() {
-		return condition().operators().contains(IN) ||
-						condition().operators().contains(NOT_IN);
+		return model().operators().contains(IN) ||
+						model().operators().contains(NOT_IN);
 	}
 
 	private void initialize() {
@@ -386,7 +386,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 			bindEvents();
 			controlPanel.add(operatorCombo, BorderLayout.CENTER);
 			addStringConfigurationPopupMenu();
-			onOperatorChanged(condition().operator().getOrThrow());
+			onOperatorChanged(model().operator().getOrThrow());
 			initialized = true;
 		}
 	}
@@ -395,30 +395,30 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		controlPanel = new JPanel(new BorderLayout());
 		inputPanel = new JPanel(new BorderLayout());
 		rangePanel = new JPanel(new GridLayout(1, 2));
-		toggleEnabledButton = radioButton(condition().enabled())
+		toggleEnabledButton = radioButton(model().enabled())
 						.horizontalAlignment(CENTER)
 						.popupMenu(radioButton -> menu(Controls.builder()
 										.control(Control.builder()
-														.toggle(condition().autoEnable())
+														.toggle(model().autoEnable())
 														.name(MESSAGES.getString("auto_enable"))).build())
 										.buildPopupMenu())
 						.build();
-		boolean modelLocked = condition().locked().get();
-		condition().locked().set(false);//otherwise, the validator checking the locked state kicks in during value linking
+		boolean modelLocked = model().locked().get();
+		model().locked().set(false);//otherwise, the validator checking the locked state kicks in during value linking
 		if (equalIncluded()) {
-			equalComponent = componentFactory.component(condition(), condition().operands().equal());
+			equalComponent = componentFactory.component(model(), model().operands().equal());
 		}
 		if (upperIncluded()) {
-			upperComponent = componentFactory.component(condition(), condition().operands().upper());
+			upperComponent = componentFactory.component(model(), model().operands().upper());
 		}
 		if (lowerIncluded()) {
-			lowerComponent = componentFactory.component(condition(), condition().operands().lower());
+			lowerComponent = componentFactory.component(model(), model().operands().lower());
 		}
 		if (inIncluded()) {
-			inComponent = componentFactory.component(condition(), condition().operands().in());
+			inComponent = componentFactory.component(model(), model().operands().in());
 		}
-		operatorCombo = createOperatorComboBox(condition().operators());
-		condition().locked().set(modelLocked);
+		operatorCombo = createOperatorComboBox(model().operators());
+		model().locked().set(modelLocked);
 		components().forEach(this::configureHorizontalAlignment);
 	}
 
@@ -444,9 +444,9 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	}
 
 	private void bindEvents() {
-		condition().operator().addConsumer(this::onOperatorChanged);
+		model().operator().addConsumer(this::onOperatorChanged);
 		Collection<JComponent> components = components();
-		linkToEnabledState(condition().locked().not(), components.toArray(new JComponent[0]));
+		linkToEnabledState(model().locked().not(), components.toArray(new JComponent[0]));
 		FocusGained focusGained = new FocusGained();
 		components.forEach(component -> component.addFocusListener(focusGained));
 		TOGGLE_ENABLED.defaultKeystroke().optional().ifPresent(keyStroke ->
@@ -488,7 +488,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 				singleValuePanel(inComponent);
 				break;
 			default:
-				throw new IllegalArgumentException(UNKNOWN_OPERATOR + condition().operator().get());
+				throw new IllegalArgumentException(UNKNOWN_OPERATOR + model().operator().get());
 		}
 		revalidate();
 		repaint();
@@ -557,12 +557,12 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 										.collect(toList()))
 						.build();
 
-		return itemComboBox(operatorComboBoxModel, condition().operator())
+		return itemComboBox(operatorComboBoxModel, model().operator())
 						.completionMode(Completion.Mode.NONE)
 						.renderer(new OperatorComboBoxRenderer())
 						.maximumRowCount(operators.size())
 						.mouseWheelScrollingWithWrapAround(true)
-						.toolTipText(condition().operator().getOrThrow().description())
+						.toolTipText(model().operator().getOrThrow().description())
 						.onBuild(comboBox -> operatorComboBoxModel.selection().item().addConsumer(selectedOperator ->
 										comboBox.setToolTipText(selectedOperator.value().description())))
 						.build();
@@ -581,7 +581,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	}
 
 	private void toggleEnabled() {
-		condition().enabled().set(!condition().enabled().get());
+		model().enabled().set(!model().enabled().get());
 	}
 
 	private void selectPreviousOperator() {
@@ -646,9 +646,9 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		if (isStringOrCharacter()) {
 			ControlsBuilder controlsBuilder = Controls.builder();
 			controlsBuilder.control(Control.builder()
-							.toggle(condition().caseSensitive())
+							.toggle(model().caseSensitive())
 							.name(MESSAGES.getString("case_sensitive")));
-			if (condition().valueClass().equals(String.class)) {
+			if (model().valueClass().equals(String.class)) {
 				controlsBuilder.control(createWildcardControls());
 			}
 			JPopupMenu popupMenu = menu(controlsBuilder).buildPopupMenu();
@@ -659,11 +659,11 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	}
 
 	private boolean isStringOrCharacter() {
-		return condition().valueClass().equals(String.class) || condition().valueClass().equals(Character.class);
+		return model().valueClass().equals(String.class) || model().valueClass().equals(Character.class);
 	}
 
 	private Controls createWildcardControls() {
-		Wildcard wildcard = condition().wildcard().getOrThrow();
+		Wildcard wildcard = model().wildcard().getOrThrow();
 
 		State wildcardNoneState = State.state(wildcard.equals(Wildcard.NONE));
 		State wildcardPostfixState = State.state(wildcard.equals(Wildcard.POSTFIX));
@@ -674,22 +674,22 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
 		wildcardNoneState.addConsumer(enabled -> {
 			if (enabled) {
-				condition().wildcard().set(Wildcard.NONE);
+				model().wildcard().set(Wildcard.NONE);
 			}
 		});
 		wildcardPostfixState.addConsumer(enabled -> {
 			if (enabled) {
-				condition().wildcard().set(Wildcard.POSTFIX);
+				model().wildcard().set(Wildcard.POSTFIX);
 			}
 		});
 		wildcardPrefixState.addConsumer(enabled -> {
 			if (enabled) {
-				condition().wildcard().set(Wildcard.PREFIX);
+				model().wildcard().set(Wildcard.PREFIX);
 			}
 		});
 		wildcardPrefixAndPostfixState.addConsumer(enabled -> {
 			if (enabled) {
-				condition().wildcard().set(Wildcard.PREFIX_AND_POSTFIX);
+				model().wildcard().set(Wildcard.PREFIX_AND_POSTFIX);
 			}
 		});
 

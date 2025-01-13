@@ -30,7 +30,7 @@ public class ColumnConditionPanelTest {
 	void test() {
 		ConditionModel<String> model = ConditionModel.builder(String.class).build();
 		ColumnConditionPanel<String> panel = ColumnConditionPanel.builder(model).build();
-		assertEquals(model, panel.condition());
+		assertSame(model, panel.model());
 		assertNotNull(panel.operands().equal());
 		assertNotNull(panel.operands().upper());
 		assertNotNull(panel.operands().lower());

@@ -44,6 +44,7 @@ Codion Change Log
 - ColumnConditionPanel.FieldFactory.createLowerField() and createUpperField() now with default implementations.
 - TransferFocusOnEnter.forwardAction() and backwardAction() removed, transfer focus actions now singletons.
 - ColumnConditionPanel.FieldFactory refactored and renamed ComponentFactory, related renaming and refactoring.
+- ConditionPanel.condition() renamed model(), related renaming.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.entityType() replaced with entityDefinition().
 ### is.codion.swing.framework.ui

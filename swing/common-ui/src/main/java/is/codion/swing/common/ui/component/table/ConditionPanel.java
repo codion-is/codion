@@ -38,7 +38,7 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class ConditionPanel<T> extends JPanel {
 
-	private final ConditionModel<T> condition;
+	private final ConditionModel<T> conditionModel;
 	private final Value<ConditionView> view = Value.builder()
 					.nonNull(HIDDEN)
 					.consumer(this::onViewChanged)
@@ -67,18 +67,18 @@ public abstract class ConditionPanel<T> extends JPanel {
 
 	/**
 	 * Instantiates a new {@link ConditionPanel}.
-	 * @param condition the condition model
+	 * @param conditionModel the condition model
 	 */
-	protected ConditionPanel(ConditionModel<T> condition) {
-		this.condition = requireNonNull(condition);
+	protected ConditionPanel(ConditionModel<T> conditionModel) {
+		this.conditionModel = requireNonNull(conditionModel);
 		configureStates();
 	}
 
 	/**
 	 * @return the condition model this panel is based on
 	 */
-	public final ConditionModel<T> condition() {
-		return condition;
+	public final ConditionModel<T> model() {
+		return conditionModel;
 	}
 
 	/**
