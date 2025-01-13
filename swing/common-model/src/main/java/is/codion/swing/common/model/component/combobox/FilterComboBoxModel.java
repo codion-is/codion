@@ -209,6 +209,22 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 		ItemComboBoxModelBuilder<T> sorted(Comparator<Item<T>> comparator);
 
 		/**
+		 * Sets the initally selected item
+		 * @param selected the item to select initially
+		 * @return this builder
+		 * @throws IllegalArgumentException in case the model does not contain the given item
+		 */
+		ItemComboBoxModelBuilder<T> selected(T selected);
+
+		/**
+		 * Sets the initally selected item
+		 * @param selected the item to select initially
+		 * @return this builder
+		 * @throws IllegalArgumentException in case the model does not contain the given item
+		 */
+		ItemComboBoxModelBuilder<T> selected(Item<T> selected);
+
+		/**
 		 * @return a new {@link FilterComboBoxModel}
 		 */
 		FilterComboBoxModel<Item<T>> build();

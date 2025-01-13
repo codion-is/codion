@@ -365,8 +365,12 @@ public class DefaultFilterComboBoxModelTest {
 		Item<Integer> dFour = item(4, "DFour");
 
 		List<Item<Integer>> items = asList(nullItem, cThree, bTwo, aOne, dFour);
+
+		assertThrows(IllegalArgumentException.class, () -> FilterComboBoxModel.builder(items).selected(5));
+
 		FilterComboBoxModel<Item<Integer>> model = FilterComboBoxModel.builder(items)
 						.sorted(true)
+						.selected(3)
 						.build();
 
 		assertEquals(0, model.items().visible().indexOf(null));
@@ -374,6 +378,7 @@ public class DefaultFilterComboBoxModelTest {
 		assertEquals(2, model.items().visible().indexOf(bTwo));
 		assertEquals(3, model.items().visible().indexOf(cThree));
 		assertEquals(4, model.items().visible().indexOf(dFour));
+		assertEquals(3, model.selection().item().get().value());
 
 		model.setSelectedItem(1);
 		assertEquals(model.getSelectedItem(), aOne);
