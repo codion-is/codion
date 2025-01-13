@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.18.26
+
 ## 0.18.25
 ### is.codion.common.db
 - ConnectionFactory.createConnection() and ConnectionProvider.connection() overload without User parameter added.
