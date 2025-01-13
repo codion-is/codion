@@ -40,7 +40,6 @@ import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
-import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
@@ -1784,31 +1783,27 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private OrderBy orderByFromSortModel() {
-		List<ColumnSortOrder<Attribute<?>>> columnSortOrder = table.model().sort().columns().get();
+		List<ColumnSortOrder<Attribute<?>>> columnSortOrder = table.model().sort().columns().get().stream()
+						.filter(sortOrder -> sortOrder.identifier() instanceof Column)
+						.collect(toList());
 		if (columnSortOrder.isEmpty()) {
 			return null;
 		}
 		OrderBy.Builder builder = OrderBy.builder();
-		columnSortOrder.stream()
-						.filter(sortOrder -> isColumn(sortOrder.identifier()))
-						.forEach(sortOrder -> {
-							switch (sortOrder.sortOrder()) {
-								case ASCENDING:
-									builder.ascending((Column<?>) sortOrder.identifier());
-									break;
-								case DESCENDING:
-									builder.descending((Column<?>) sortOrder.identifier());
-									break;
-								default:
-									break;
-							}
-						});
+		columnSortOrder.forEach(sortOrder -> {
+			switch (sortOrder.sortOrder()) {
+				case ASCENDING:
+					builder.ascending((Column<?>) sortOrder.identifier());
+					break;
+				case DESCENDING:
+					builder.descending((Column<?>) sortOrder.identifier());
+					break;
+				default:
+					break;
+			}
+		});
 
 		return builder.build();
-	}
-
-	private boolean isColumn(Attribute<?> attribute) {
-		return tableModel.entityDefinition().attributes().definition(attribute) instanceof ColumnDefinition;
 	}
 
 	private void onColumnHidden(Attribute<?> attribute) {
@@ -2083,7 +2078,7 @@ public class EntityTablePanel extends JPanel {
 
 		/**
 		 * Specifies whether the table model sort order is used as a basis for the query order by clause.
-		 * Note that this only applies to column attributes.
+		 * Note that this only applies to {@link Column} based attributes.
 		 * <ul>
 		 * <li>Value type: Boolean
 		 * <li>Default value: false

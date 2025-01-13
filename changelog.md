@@ -59,6 +59,7 @@ Codion Change Log
 - EntityComponents.MAXIMUM_TEXT_FIELD_LENGTH configuration value added.
 - EntitySearchField.Builder.editable() added.
 - EntityComponents.MAXIMUM_TEXT_FIELD_LENGTH moved to DefaultEditComponentFactory.
+- EntityTablePanel.orderByFromSortModel() empty order by clause bug fixed, now excludes non-column based attributes correctly.
 ### is.codion.tools.generator.ui
 - DomainGeneratorPanel bug fixed, did not display exceptions happening during async table model refresh.
 
