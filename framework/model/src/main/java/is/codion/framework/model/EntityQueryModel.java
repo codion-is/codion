@@ -110,14 +110,8 @@ public interface EntityQueryModel extends Supplier<List<Entity>> {
 	/**
 	 * When using the default query mechanism, the {@link #conditionChanged()} state is reset after each successful query.
 	 * @return an {@link ObservableState} indicating if the search condition has changed since last reset
-	 * @see #resetConditionChanged()
 	 */
 	ObservableState conditionChanged();
-
-	/**
-	 * Resets the {@link #conditionChanged()} state, using the current condition.
-	 */
-	void resetConditionChanged();
 
 	/**
 	 * Returns the {@link ValueSet} controlling which attributes are included when querying entities.

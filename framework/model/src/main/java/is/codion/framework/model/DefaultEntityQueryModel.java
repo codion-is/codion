@@ -122,11 +122,6 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	}
 
 	@Override
-	public void resetConditionChanged() {
-		resetConditionChanged(refreshConditions());
-	}
-
-	@Override
 	public Value<ObservableState> conditionEnabled() {
 		return conditionEnabled;
 	}
