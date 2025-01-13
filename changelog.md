@@ -58,6 +58,7 @@ Codion Change Log
 - EntityComponentFactory renamed EditComponentFactory.
 - EntityComponents.MAXIMUM_TEXT_FIELD_LENGTH configuration value added.
 - EntitySearchField.Builder.editable() added.
+- EntityComponents.MAXIMUM_TEXT_FIELD_LENGTH moved to DefaultEditComponentFactory.
 ### is.codion.tools.generator.ui
 - DomainGeneratorPanel bug fixed, did not display exceptions happening during async table model refresh.
 

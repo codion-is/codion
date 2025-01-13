@@ -18,8 +18,6 @@
  */
 package is.codion.swing.framework.ui.component;
 
-import is.codion.common.Configuration;
-import is.codion.common.property.PropertyValue;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -80,16 +78,6 @@ public final class EntityComponents {
 
 	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
 
-	/**
-	 * The maximum length a String attribute must exceed in order for a {@link TextFieldPanel} to be returned instead of a {@link JTextField}.
-	 * <ul>
-	 * <li>Value type: Integer
-	 * <li>Default value: 30
-	 * </ul>
-	 */
-	public static final PropertyValue<Integer> MAXIMUM_TEXT_FIELD_LENGTH =
-					Configuration.integerValue(EntityComponents.class.getName() + ".maximumTextFieldLength", 30);
-
 	private final EntityDefinition entityDefinition;
 
 	private EntityComponents(EntityDefinition entityDefinition) {
@@ -128,14 +116,7 @@ public final class EntityComponents {
 		if (type.isTemporal()) {
 			return (ComponentBuilder<T, C, B>) temporalField((Attribute<Temporal>) attribute);
 		}
-		if (type.isString()) {
-			if (attributeDefinition.maximumLength() > MAXIMUM_TEXT_FIELD_LENGTH.getOrThrow()) {
-				return (ComponentBuilder<T, C, B>) textFieldPanel((Attribute<String>) attribute);
-			}
-
-			return (ComponentBuilder<T, C, B>) textField(attribute);
-		}
-		if (type.isCharacter()) {
+		if (type.isString() || type.isCharacter()) {
 			return (ComponentBuilder<T, C, B>) textField(attribute);
 		}
 		if (type.isBoolean()) {

@@ -18,17 +18,22 @@
  */
 package is.codion.swing.framework.ui.component;
 
+import is.codion.common.Configuration;
+import is.codion.common.property.PropertyValue;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
+import is.codion.swing.common.ui.component.text.TextFieldPanel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import javax.swing.JComponent;
+import javax.swing.JTextField;
 import java.time.temporal.Temporal;
 
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
@@ -40,6 +45,16 @@ import static java.util.Objects.requireNonNull;
  * @param <C> the component type
  */
 public class DefaultEditComponentFactory<T, C extends JComponent> implements EditComponentFactory<T, C> {
+
+	/**
+	 * The maximum length a String attribute must exceed in order for a {@link TextFieldPanel} to be returned instead of a {@link JTextField}.
+	 * <ul>
+	 * <li>Value type: Integer
+	 * <li>Default value: 30
+	 * </ul>
+	 */
+	public static final PropertyValue<Integer> MAXIMUM_TEXT_FIELD_LENGTH =
+					Configuration.integerValue(DefaultEditComponentFactory.class.getName() + ".maximumTextFieldLength", 30);
 
 	private final Attribute<T> attribute;
 
@@ -59,9 +74,15 @@ public class DefaultEditComponentFactory<T, C extends JComponent> implements Edi
 		if (attribute.type().isTemporal()) {
 			return createTemporalComponentValue(attribute, (Temporal) value, entityComponents(editModel.entityDefinition()));
 		}
+		EntityComponents components = entityComponents(editModel.entityDefinition());
+		if (attribute.type().isString()) {
+			AttributeDefinition<T> definition = editModel.entityDefinition().attributes().definition(attribute);
+			if (definition.items().isEmpty() && definition.maximumLength() > MAXIMUM_TEXT_FIELD_LENGTH.getOrThrow()) {
+				return (ComponentValue<T, C>) components.textFieldPanel((Attribute<String>) attribute).buildValue();
+			}
+		}
 
-		return (ComponentValue<T, C>) entityComponents(editModel.entityDefinition())
-						.component(attribute)
+		return (ComponentValue<T, C>) components.component(attribute)
 						.value(value)
 						.buildValue();
 	}
