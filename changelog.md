@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.26
+### is.codion.framework.model
+- DefaultEntityQueryModel.conditionChanged() bug fixed, no longer active when limit, orderBy or attributes have changed.
 
 ## 0.18.25
 ### is.codion.common.db

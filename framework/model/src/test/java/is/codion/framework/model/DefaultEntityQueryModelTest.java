@@ -19,9 +19,11 @@
 package is.codion.framework.model;
 
 import is.codion.common.Conjunction;
+import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.framework.domain.entity.condition.Condition.Combination;
 import is.codion.framework.model.test.TestDomain;
@@ -69,7 +71,30 @@ public final class DefaultEntityQueryModelTest {
 	void conditionChanged() {
 		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(new DefaultEntityConditionModel(Employee.TYPE,
 					CONNECTION_PROVIDER, new AttributeConditionModelFactory(CONNECTION_PROVIDER)));
+
+		ConditionModel<Object> nameCondition = queryModel.conditions().get(Employee.NAME);
+
+		queryModel.limit().set(10);
+		nameCondition.operands().equal().set(null);
 		assertFalse(queryModel.conditionChanged().get());
+		queryModel.limit().clear();
+
+		queryModel.orderBy().set(OrderBy.descending(Employee.NAME));
+		nameCondition.operands().equal().set(null);
+		assertFalse(queryModel.conditionChanged().get());
+		queryModel.orderBy().clear();
+
+		queryModel.attributes().set(asList(Employee.NAME, Employee.JOB));
+		nameCondition.operands().equal().set(null);
+		assertFalse(queryModel.conditionChanged().get());
+		queryModel.attributes().clear();
+
+		nameCondition.operands().equal().set("Scott");
+		assertTrue(queryModel.conditionChanged().get());
+
+		nameCondition.clear();
+		assertFalse(queryModel.conditionChanged().get());
+
 		queryModel.where().set(Employee.CONDITION_2_TYPE::get);
 		assertTrue(queryModel.conditionChanged().get());
 		queryModel.get();

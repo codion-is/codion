@@ -33,6 +33,7 @@ import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.condition.Condition;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -40,6 +41,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static is.codion.framework.domain.entity.condition.Condition.combination;
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
@@ -59,20 +61,19 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	private final Value<OrderBy> orderBy;
 	private final Value<Integer> limit = Value.nullable();
 	private final Value<Function<EntityQueryModel, List<Entity>>> query = Value.nonNull(new DefaultQuery());
-
-	private Select refreshCondition;
+	private final List<Condition> refreshConditions = new ArrayList<>(2);
 
 	DefaultEntityQueryModel(EntityConditionModel entityConditionModel) {
 		this.entityConditionModel = requireNonNull(entityConditionModel);
 		this.conditionEnabled = Value.nonNull(entityConditionModel.enabled());
 		this.orderBy = createOrderBy();
-		this.refreshCondition = createSelect();
-		Runnable onConditionChanged = this::onConditionChanged;
-		entityConditionModel.changed().addListener(onConditionChanged);
-		additionalWhere.addListener(onConditionChanged);
-		additionalWhere.conjunction().addListener(onConditionChanged);
-		additionalHaving.addListener(onConditionChanged);
-		additionalHaving.conjunction().addListener(onConditionChanged);
+		resetConditionChanged(refreshConditions());
+		Runnable conditionListener = this::onConditionChanged;
+		entityConditionModel.changed().addListener(conditionListener);
+		additionalWhere.addListener(conditionListener);
+		additionalWhere.conjunction().addListener(conditionListener);
+		additionalHaving.addListener(conditionListener);
+		additionalHaving.conjunction().addListener(conditionListener);
 	}
 
 	@Override
@@ -122,7 +123,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 
 	@Override
 	public void resetConditionChanged() {
-		resetConditionChanged(createSelect());
+		resetConditionChanged(refreshConditions());
 	}
 
 	@Override
@@ -169,13 +170,20 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 						.orElse(Value.nullable());
 	}
 
-	private void resetConditionChanged(Select select) {
-		refreshCondition = select;
+	private void resetConditionChanged(List<Condition> conditions) {
+		refreshConditions.clear();
+		refreshConditions.addAll(conditions);
 		conditionChanged.set(false);
 	}
 
 	private void onConditionChanged() {
-		conditionChanged.set(!Objects.equals(refreshCondition, createSelect()));
+		conditionChanged.set(!Objects.equals(refreshConditions, refreshConditions()));
+	}
+
+	private List<Condition> refreshConditions() {
+		return asList(
+						createCondition(entityConditionModel.where(Conjunction.AND), additionalWhere),
+						createCondition(entityConditionModel.having(Conjunction.AND), additionalHaving));
 	}
 
 	private class AttributeValidator implements Value.Validator<Set<Attribute<?>>> {
@@ -196,12 +204,12 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 		public List<Entity> apply(EntityQueryModel queryModel) {
 			Select select = createSelect();
 			if (conditionRequired.get() && !conditionEnabled.getOrThrow().get()) {
-				resetConditionChanged(select);
+				resetConditionChanged(refreshConditions());
 
 				return emptyList();
 			}
 			List<Entity> items = entityConditionModel.connectionProvider().connection().select(select);
-			resetConditionChanged(select);
+			resetConditionChanged(refreshConditions());
 
 			return items;
 		}
