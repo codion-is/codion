@@ -204,7 +204,7 @@ public final class EntitySearchField extends HintTextField {
 					.build();
 	private final Function<Entity, String> stringFactory;
 	private final String separator;
-	private final State searchOnFocusLost = State.state(true);
+	private final boolean searchOnFocusLost;
 	private final State searching = State.state();
 	private final Consumer<Boolean> searchingConsumer;
 	private final Function<EntitySearchModel, Selector> selectorFactory;
@@ -325,13 +325,6 @@ public final class EntitySearchField extends HintTextField {
 	 */
 	public Optional<CommandControl> editControl() {
 		return controlMap.control(EDIT).optional();
-	}
-
-	/**
-	 * @return the {@link State} controlling whether this field should trigger a search when it loses focus
-	 */
-	public State searchOnFocusLost() {
-		return searchOnFocusLost;
 	}
 
 	/**
@@ -1007,7 +1000,7 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		private boolean shouldPerformSearch() {
-			return searchOnFocusLost.get() && !searching.get() && searchEnabled.get();
+			return searchOnFocusLost && !searching.get() && searchEnabled.get();
 		}
 	}
 
