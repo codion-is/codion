@@ -66,7 +66,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	private DefaultFilterComboBoxModel(DefaultBuilder<T> builder) {
 		selection = new DefaultComboBoxSelection(builder.translator);
-		modelItems = new DefaultComboBoxItems(builder.includeNull, builder.nullItem, builder.comparator, builder.supplier, builder.items);
+		modelItems = new DefaultComboBoxItems(builder);
 	}
 
 	@Override
@@ -75,7 +75,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public ComboBoxSelection<T> selection() {
+	public SingleSelection<T> selection() {
 		return selection;
 	}
 
@@ -137,6 +137,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private Comparator<T> comparator = (Comparator<T>) DEFAULT_COMPARATOR;
 		private Function<Object, T> translator = (Function<Object, T>) DEFAULT_SELECTED_ITEM_TRANSLATOR;
+		private boolean filterSelected;
 		private boolean includeNull;
 		private T nullItem;
 
@@ -167,6 +168,12 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public Builder<T> translator(Function<Object, T> translator) {
 			this.translator = requireNonNull(translator);
+			return this;
+		}
+
+		@Override
+		public Builder<T> filterSelected(boolean filterSelected) {
+			this.filterSelected = filterSelected;
 			return this;
 		}
 
@@ -249,28 +256,29 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		private final DefaultVisibleItems visible;
 		private final DefaultFilteredItems filtered = new DefaultFilteredItems();
 
+		private final boolean filterSelected;
 		private final boolean includeNull;
 		private final T nullItem;
 
 		private boolean cleared = true;
 
-		private DefaultComboBoxItems(boolean includeNull, T nullItem, Comparator<T> comparator,
-																 Supplier<Collection<T>> supplier, Collection<T> items) {
-			this.includeNull = includeNull;
-			this.nullItem = nullItem;
-			this.visible = new DefaultVisibleItems(comparator);
+		private DefaultComboBoxItems(DefaultBuilder<T> builder) {
+			this.includeNull = builder.includeNull;
+			this.nullItem = builder.nullItem;
+			this.filterSelected = builder.filterSelected;
+			this.visible = new DefaultVisibleItems(builder.comparator);
 			if (includeNull) {
 				visible.items.add(null);
 			}
 			visible.predicate.addListener(this::filter);
-			if (supplier == null) {
+			if (builder.supplier == null) {
 				refresher = new DefaultRefresher(this::get);
-				if (items != null) {
-					set(items);
+				if (builder.items != null) {
+					set(builder.items);
 				}
 			}
 			else {
-				refresher = new DefaultRefresher(supplier);
+				refresher = new DefaultRefresher(builder.supplier);
 			}
 		}
 
@@ -402,7 +410,17 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		public void filter() {
 			synchronized (lock) {
 				if (count() > 0) {
-					filter(selection.filterSelected.get());
+					visible.items.addAll(filtered.items);
+					filtered.items.clear();
+					filterInternal();
+					visible.sortInternal();
+					if (filterSelected
+									&& selection.selected.item != null
+									&& !visible.items.contains(selection.selected.item)) {
+						selection.selected.setSelectedItem(null);
+					}
+					filtered.notifyChanges();
+					visible.notifyChanges();
 				}
 			}
 		}
@@ -431,20 +449,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public boolean cleared() {
 			return cleared;
-		}
-
-		private void filter(boolean filterSelectedItem) {
-			visible.items.addAll(filtered.items);
-			filtered.items.clear();
-			filterInternal();
-			visible.sortInternal();
-			if (filterSelectedItem
-							&& selection.selected.item != null
-							&& !visible.items.contains(selection.selected.item)) {
-				selection.selected.setSelectedItem(null);
-			}
-			filtered.notifyChanges();
-			visible.notifyChanges();
 		}
 
 		private void filterInternal() {
@@ -648,10 +652,9 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 	}
 
-	private final class DefaultComboBoxSelection implements ComboBoxSelection<T> {
+	private final class DefaultComboBoxSelection implements SingleSelection<T> {
 
 		private final SelectedItem selected;
-		private final State filterSelected = State.state(false);
 
 		private DefaultComboBoxSelection(Function<Object, T> translator) {
 			selected = new SelectedItem(translator);
@@ -675,11 +678,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public void clear() {
 			selected.clear();
-		}
-
-		@Override
-		public State filterSelected() {
-			return filterSelected;
 		}
 	}
 

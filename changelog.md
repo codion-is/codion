@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.26
+### is.codion.swing.common.model
+- FilterComboBoxModel.Builder.filterSelected() added, now final, ComboBoxSelection removed.
 ### is.codion.framework.model
 - DefaultEntityQueryModel.conditionChanged() bug fixed, no longer active when limit, orderBy or attributes have changed.
 - EntityQueryModel.resetConditionChanged() removed.

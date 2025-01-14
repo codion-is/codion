@@ -28,7 +28,6 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -49,6 +48,8 @@ public class DefaultFilterComboBoxModelTest {
 	private static final String SIGGI = "siggi";
 	private static final String TOMAS = "tomas";
 	private static final String BJORN = "björn";
+
+	private static final List<String> ITEMS = asList(ANNA, KALLI, SIGGI, TOMAS, BJORN);
 
 	private final ListDataListener listDataListener = new ListDataListener() {
 		@Override
@@ -130,19 +131,25 @@ public class DefaultFilterComboBoxModelTest {
 
 	@Test
 	void filterWithSelection() {
-		testModel.selection().filterSelected().set(true);
-		testModel.setSelectedItem(BJORN);
-		testModel.items().visible().predicate().set(item -> !item.equals(BJORN));
-		assertEquals(NULL, testModel.getSelectedItem());
-		assertNull(testModel.selection().item().get());
+		Predicate<String> hideBjorn = item -> !item.equals(BJORN);
 
-		testModel.items().visible().predicate().clear();
-		testModel.selection().filterSelected().set(false);
-		assertFalse(testModel.selection().filterSelected().get());
-		testModel.setSelectedItem(BJORN);
-		testModel.items().visible().predicate().set(item -> !item.equals(BJORN));
-		assertNotNull(testModel.getSelectedItem());
-		assertEquals(BJORN, testModel.selection().item().get());
+		FilterComboBoxModel<String> model = FilterComboBoxModel.builder(ITEMS)
+						.nullItem(NULL)
+						.filterSelected(true)
+						.build();
+		model.setSelectedItem(BJORN);
+		model.items().visible().predicate().set(hideBjorn);
+		assertEquals(NULL, model.getSelectedItem());
+		assertNull(model.selection().item().get());
+
+		model = FilterComboBoxModel.builder(ITEMS)
+						.nullItem(NULL)
+						.filterSelected(false)
+						.build();
+		model.setSelectedItem(BJORN);
+		model.items().visible().predicate().set(hideBjorn);
+		assertNotNull(model.getSelectedItem());
+		assertEquals(BJORN, model.selection().item().get());
 	}
 
 	@Test
@@ -213,15 +220,13 @@ public class DefaultFilterComboBoxModelTest {
 		AtomicInteger filteredCounter = new AtomicInteger();
 		AtomicInteger visibleCounter = new AtomicInteger();
 
-		FilterComboBoxModel<String> model = FilterComboBoxModel.<String>builder()
+		FilterComboBoxModel<String> model = FilterComboBoxModel.builder(ITEMS)
 						.nullItem(NULL)
 						.build();
 		model.items().filtered().addListener(filteredCounter::incrementAndGet);
 		model.items().visible().addListener(visibleCounter::incrementAndGet);
 		model.items().visible().predicate().set(item -> !item.equals(BJORN));
 
-		List<String> names = asList(ANNA, KALLI, SIGGI, TOMAS, BJORN);
-		model.items().set(names);
 		assertEquals(1, filteredCounter.get());
 		assertEquals(1, visibleCounter.get());
 
@@ -336,8 +341,7 @@ public class DefaultFilterComboBoxModelTest {
 		}
 		List<Data> items = asList(new Data(1, "1"), new Data(2, "2"), new Data(3, "3"));
 
-		FilterComboBoxModel<Data> model = FilterComboBoxModel.<Data>builder().build();
-		model.items().set(items);
+		FilterComboBoxModel<Data> model = FilterComboBoxModel.builder(items).build();
 		model.setSelectedItem(items.get(1));
 		assertEquals("2", model.selection().item().getOrThrow().data);
 
@@ -427,16 +431,9 @@ public class DefaultFilterComboBoxModelTest {
 
 	@BeforeEach
 	void setUp() {
-		testModel = FilterComboBoxModel.<String>builder()
+		testModel = FilterComboBoxModel.builder(ITEMS)
 						.nullItem(NULL)
 						.build();
-		List<String> names = new ArrayList<>();
-		names.add(ANNA);
-		names.add(KALLI);
-		names.add(SIGGI);
-		names.add(TOMAS);
-		names.add(BJORN);
-		testModel.items().set(names);
 	}
 
 	@AfterEach

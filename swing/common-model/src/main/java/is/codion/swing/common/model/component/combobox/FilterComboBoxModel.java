@@ -24,7 +24,6 @@ import is.codion.common.item.Item;
 import is.codion.common.model.FilterModel;
 import is.codion.common.model.selection.SingleSelection;
 import is.codion.common.property.PropertyValue;
-import is.codion.common.state.State;
 import is.codion.common.value.Value;
 
 import javax.swing.ComboBoxModel;
@@ -61,12 +60,9 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	@Override
 	ComboBoxItems<T> items();
 
-	@Override
-	ComboBoxSelection<T> selection();
-
 	/**
 	 * @return the selected item, N.B. this can include the {@code nullItem} in case it has been set
-	 * via {@link Builder#nullItem(Object)}, {@link ComboBoxSelection.Item#get()} is usually what you want
+	 * via {@link Builder#nullItem(Object)}, {@link SingleSelection.Item#get()} is usually what you want
 	 */
 	T getSelectedItem();
 
@@ -174,12 +170,23 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 		Builder<T> nullItem(T nullItem);
 
 		/**
-		 * Provides a way for a combo box model to translate an item received via {@link ComboBoxSelection#item()} to an actual item to select,
+		 * Provides a way for a combo box model to translate an item received via {@link SingleSelection#item()} to an actual item to select,
 		 * such as as selecting the String "1" in a String based model when selected item is set to the Integer 1.
 		 * @param translator the selected item translator
 		 * @return this builder
 		 */
 		Builder<T> translator(Function<Object, T> translator);
+
+		/**
+		 * <p>Specifies whether filtering the model affects the currently selected item.
+		 * If true, the selection is cleared when the selected item is filtered from
+		 * the model, otherwise the selected item can potentially represent a value
+		 * which is not currently visible in the model
+		 * <p>This is false by default.
+		 * @param filterSelected true if the select item should be filtered
+		 * @see VisibleItems#predicate()
+		 */
+		Builder<T> filterSelected(boolean filterSelected);
 
 		/**
 		 * @return a new {@link FilterComboBoxModel} instance
@@ -247,23 +254,6 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 		 * @return true if the items have been cleared and need to be refreshed
 		 */
 		boolean cleared();
-	}
-
-	/**
-	 * @param <T> the item type
-	 */
-	interface ComboBoxSelection<T> extends SingleSelection<T> {
-
-		/**
-		 * <p>Specifies whether filtering the model affects the currently selected item.
-		 * If true, the selection is cleared when the selected item is filtered from
-		 * the model, otherwise the selected item can potentially represent a value
-		 * which is not currently visible in the model
-		 * <p>This is false by default.
-		 * @return the {@link State} controlling whether filtering affects the selected item
-		 * @see VisibleItems#predicate()
-		 */
-		State filterSelected();
 	}
 
 	/**

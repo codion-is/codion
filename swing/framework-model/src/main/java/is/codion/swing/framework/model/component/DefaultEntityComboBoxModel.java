@@ -18,6 +18,7 @@
  */
 package is.codion.swing.framework.model.component;
 
+import is.codion.common.model.selection.SingleSelection;
 import is.codion.common.proxy.ProxyBuilder;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -75,6 +76,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 						.nullItem(createNullItem(builder.nullCaption))
 						// otherwise the sorting overrides the order by
 						.comparator(builder.orderBy == null ? builder.comparator : null)
+						.filterSelected(builder.filterSelected)
 						.build();
 		this.filter = new DefaultFilter();
 		this.comboBoxModel.items().visible().predicate().set(filter);
@@ -85,7 +87,6 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		});
 		this.condition = Value.nonNull(builder.condition);
 		this.orderBy = builder.orderBy;
-		comboBoxModel.selection().filterSelected().set(builder.filterSelected);
 		if (builder.handleEditEvents) {
 			addEditListeners();
 		}
@@ -151,7 +152,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	}
 
 	@Override
-	public ComboBoxSelection<Entity> selection() {
+	public SingleSelection<Entity> selection() {
 		return comboBoxModel.selection();
 	}
 
