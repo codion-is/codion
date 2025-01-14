@@ -206,7 +206,7 @@ public final class EntitySearchField extends HintTextField {
 	private final String separator;
 	private final boolean searchOnFocusLost;
 	private final State searching = State.state();
-	private final Consumer<Boolean> searchingConsumer;
+	private final Consumer<Boolean> searchIndicator;
 	private final Function<EntitySearchModel, Selector> selectorFactory;
 	private final ControlMap controlMap;
 
@@ -237,9 +237,9 @@ public final class EntitySearchField extends HintTextField {
 		if (!builder.editable) {
 			setEditable(false);
 		}
-		searchOnFocusLost.set(builder.searchOnFocusLost);
-		searchingConsumer = createSearchingConsumer(builder.searchIndicator);
-		searching.addConsumer(searchingConsumer);
+		searchOnFocusLost = builder.searchOnFocusLost;
+		searchIndicator = createSearchIndicator(builder.searchIndicator);
+		searching.addConsumer(searchIndicator);
 		selectorFactory = builder.selectorFactory;
 		stringFactory = builder.stringFactory;
 		separator = builder.separator;
@@ -263,8 +263,8 @@ public final class EntitySearchField extends HintTextField {
 		if (model != null) {
 			configureColors();
 		}
-		if (searchingConsumer instanceof ProgressBarWhileSearching) {
-			((ProgressBarWhileSearching) searchingConsumer).progressBar.updateUI();
+		if (searchIndicator instanceof SearchProgressBar) {
+			((SearchProgressBar) searchIndicator).progressBar.updateUI();
 		}
 	}
 
@@ -499,14 +499,14 @@ public final class EntitySearchField extends HintTextField {
 		searchEnabled.set(false);
 	}
 
-	private Consumer<Boolean> createSearchingConsumer(SearchIndicator searchIndicator) {
-		switch (searchIndicator) {
+	private Consumer<Boolean> createSearchIndicator(SearchIndicator indicator) {
+		switch (indicator) {
 			case WAIT_CURSOR:
-				return new WaitCursorWhileSearching();
+				return new SearchWaitCursor();
 			case PROGRESS_BAR:
-				return new ProgressBarWhileSearching();
+				return new SearchProgressBar();
 			default:
-				throw new IllegalArgumentException("Unknown search indicator: " + searchIndicator);
+				throw new IllegalArgumentException("Unknown search indicator: " + indicator);
 		}
 	}
 
@@ -1020,7 +1020,7 @@ public final class EntitySearchField extends HintTextField {
 		}
 	}
 
-	private final class WaitCursorWhileSearching implements Consumer<Boolean> {
+	private final class SearchWaitCursor implements Consumer<Boolean> {
 
 		private final Cursor defaultCursor = getCursor();
 
@@ -1035,7 +1035,7 @@ public final class EntitySearchField extends HintTextField {
 		}
 	}
 
-	private final class ProgressBarWhileSearching implements Consumer<Boolean> {
+	private final class SearchProgressBar implements Consumer<Boolean> {
 
 		private final JProgressBar progressBar = progressBar()
 						.indeterminate(true)
