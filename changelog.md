@@ -7,6 +7,7 @@ Codion Change Log
 - EntityQueryModel.resetConditionChanged() removed.
 ### is.codion.swing.framework.ui
 - EntityTablePanel.SHOW_REFRESH_PROGRESS_BAR renamed REFRESH_PROGRESS_BAR, now true by default.
+- EntitySearchField bug fixed, no longer updates the background color when disabled.
 
 ## 0.18.25
 ### is.codion.common.db

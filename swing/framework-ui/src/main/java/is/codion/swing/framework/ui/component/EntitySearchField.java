@@ -524,7 +524,9 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	private void updateColors() {
-		setBackground(searchEnabled.get() ? searchBackgroundColor : backgroundColor);
+		if (isEnabled()) {
+			setBackground(searchEnabled.get() ? searchBackgroundColor : backgroundColor);
+		}
 	}
 
 	private String selectionToolTip() {
