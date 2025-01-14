@@ -105,7 +105,6 @@ final class LookupTablePanel extends EntityTablePanel {
 
 	LookupTablePanel(SwingEntityTableModel lookupModel) {
 		super(lookupModel, config -> config
-						.showRefreshProgressBar(true)
 						.conditionView(SIMPLE));
 		columnSelectionPanelVisible.addConsumer(this::setColumnSelectionPanelVisible);
 		objectMapper = new WorldObjectMapperFactory().entityObjectMapper(lookupModel.entities());

@@ -5,6 +5,8 @@ Codion Change Log
 ### is.codion.framework.model
 - DefaultEntityQueryModel.conditionChanged() bug fixed, no longer active when limit, orderBy or attributes have changed.
 - EntityQueryModel.resetConditionChanged() removed.
+### is.codion.swing.framework.ui
+- EntityTablePanel.SHOW_REFRESH_PROGRESS_BAR renamed REFRESH_PROGRESS_BAR, now true by default.
 
 ## 0.18.25
 ### is.codion.common.db

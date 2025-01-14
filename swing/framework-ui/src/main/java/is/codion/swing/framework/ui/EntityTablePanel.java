@@ -2192,11 +2192,11 @@ public class EntityTablePanel extends JPanel {
 		 * Specifies whether to show an indeterminate progress bar while the model is refreshing.
 		 * <ul>
 		 * <li>Value type: Boolean
-		 * <li>Default value: false
+		 * <li>Default value: true
 		 * </ul>
 		 */
-		public static final PropertyValue<Boolean> SHOW_REFRESH_PROGRESS_BAR =
-						Configuration.booleanValue(EntityTablePanel.class.getName() + ".showRefreshProgressBar", false);
+		public static final PropertyValue<Boolean> REFRESH_PROGRESS_BAR =
+						Configuration.booleanValue(EntityTablePanel.class.getName() + ".refreshProgressBar", true);
 
 		/**
 		 * Specifies whether the refresh button should always be visible or only when the condition panel is visible
@@ -2323,7 +2323,7 @@ public class EntityTablePanel extends JPanel {
 		private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling = REFERENTIAL_INTEGRITY_ERROR_HANDLING.get();
 		private RefreshButtonVisible refreshButtonVisible = REFRESH_BUTTON_VISIBLE.get();
 		private Function<SwingEntityTableModel, String> statusMessage = DEFAULT_STATUS_MESSAGE;
-		private boolean showRefreshProgressBar = SHOW_REFRESH_PROGRESS_BAR.getOrThrow();
+		private boolean refreshProgressBar = REFRESH_PROGRESS_BAR.getOrThrow();
 		private Confirmer deleteConfirmer;
 
 		final ControlMap controlMap;
@@ -2374,7 +2374,7 @@ public class EntityTablePanel extends JPanel {
 			this.referentialIntegrityErrorHandling = config.referentialIntegrityErrorHandling;
 			this.refreshButtonVisible = config.refreshButtonVisible;
 			this.statusMessage = config.statusMessage;
-			this.showRefreshProgressBar = config.showRefreshProgressBar;
+			this.refreshProgressBar = config.refreshProgressBar;
 			this.deleteConfirmer = config.deleteConfirmer;
 			this.includeToolBar = config.includeToolBar;
 			this.conditionPanelFactory = config.conditionPanelFactory;
@@ -2709,12 +2709,12 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * @param showRefreshProgressBar controls whether an indeterminate progress bar should be shown while the model is refreshing
+		 * @param refreshProgressBar controls whether an indeterminate progress bar should be shown while the model is refreshing
 		 * @return this Config instance
-		 * @see #SHOW_REFRESH_PROGRESS_BAR
+		 * @see #REFRESH_PROGRESS_BAR
 		 */
-		public Config showRefreshProgressBar(boolean showRefreshProgressBar) {
-			this.showRefreshProgressBar = showRefreshProgressBar;
+		public Config refreshProgressBar(boolean refreshProgressBar) {
+			this.refreshProgressBar = refreshProgressBar;
 			return this;
 		}
 
@@ -3036,7 +3036,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		private void refresherActive(boolean refresherActive) {
-			if (configuration.showRefreshProgressBar) {
+			if (configuration.refreshProgressBar) {
 				removeAll();
 				add(refresherActive ? progressPanel : label, BorderLayout.CENTER);
 				revalidate();
