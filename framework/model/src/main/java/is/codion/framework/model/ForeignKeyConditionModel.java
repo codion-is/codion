@@ -14,186 +14,54 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2023 - 2025, Björn Darri Sigurðsson.
+ * Copyright (c) 2025, Björn Darri Sigurðsson.
  */
 package is.codion.framework.model;
 
 import is.codion.common.Operator;
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.observable.Observer;
-import is.codion.common.state.State;
-import is.codion.common.value.Value;
-import is.codion.common.value.ValueSet;
 import is.codion.framework.domain.entity.Entity;
-
-import java.text.Format;
-import java.util.List;
-import java.util.Optional;
-
-import static java.util.Arrays.asList;
-import static java.util.Objects.requireNonNull;
+import is.codion.framework.model.DefaultForeignKeyConditionModel.DefaultBuilder;
 
 /**
  * A default foreign key condition model using {@link EntitySearchModel} for
  * both the {@link Operator#EQUAL} and {@link Operator#IN} operands.
- * @see #builder()
+ * @see ForeignKeyConditionModel#builder()
  */
-public final class ForeignKeyConditionModel implements ConditionModel<Entity> {
-
-	private final ConditionModel<Entity> condition;
-	private final ForeignKeyOperands operands;
-
-	private ForeignKeyConditionModel(DefaultBuilder builder) {
-		this.condition = ConditionModel.builder(Entity.class)
-						.operators(builder.operators())
-						.operator(builder.inSearchModel == null ? Operator.EQUAL : Operator.IN)
-						.build();
-		this.operands = new ForeignKeyOperands(condition, builder.equalSearchModel, builder.inSearchModel);
-	}
+public interface ForeignKeyConditionModel extends ConditionModel<Entity> {
 
 	@Override
-	public State caseSensitive() {
-		return condition.caseSensitive();
-	}
-
-	@Override
-	public Optional<Format> format() {
-		return condition.format();
-	}
-
-	@Override
-	public Optional<String> dateTimePattern() {
-		return condition.dateTimePattern();
-	}
-
-	@Override
-	public Value<Wildcard> wildcard() {
-		return condition.wildcard();
-	}
-
-	@Override
-	public State autoEnable() {
-		return condition.autoEnable();
-	}
-
-	@Override
-	public State locked() {
-		return condition.locked();
-	}
-
-	@Override
-	public Class<Entity> valueClass() {
-		return condition.valueClass();
-	}
-
-	@Override
-	public List<Operator> operators() {
-		return condition.operators();
-	}
-
-	@Override
-	public State enabled() {
-		return condition.enabled();
-	}
-
-	@Override
-	public void clear() {
-		condition.clear();
-	}
-
-	@Override
-	public Value<Operator> operator() {
-		return condition.operator();
-	}
-
-	@Override
-	public ForeignKeyOperands operands() {
-		return operands;
-	}
-
-	@Override
-	public boolean accepts(Comparable<Entity> value) {
-		return condition.accepts(value);
-	}
-
-	@Override
-	public Observer<?> changed() {
-		return condition.changed();
-	}
+	ForeignKeyOperands operands();
 
 	/**
-	 * @return a new {@link ForeignKeyConditionModel.Builder}
+	 * @return a new {@link Builder}
 	 */
-	public static Builder builder() {
+	static Builder builder() {
 		return new DefaultBuilder();
 	}
 
 	/**
 	 * Provides access to the operands and related data models
 	 */
-	public static final class ForeignKeyOperands implements Operands<Entity> {
-
-		private final ConditionModel<Entity> condition;
-		private final EntitySearchModel equalSearchModel;
-		private final EntitySearchModel inSearchModel;
-
-		private ForeignKeyOperands(ConditionModel<Entity> condition,
-															 EntitySearchModel equalSearchModel,
-															 EntitySearchModel inSearchModel) {
-			this.condition = requireNonNull(condition);
-			this.equalSearchModel = equalSearchModel;
-			this.inSearchModel = inSearchModel;
-		}
+	interface ForeignKeyOperands extends Operands<Entity> {
 
 		/**
 		 * @return a {@link EntitySearchModel} to use for the EQUAL operand
 		 * @throws IllegalStateException in case no such model is available
 		 */
-		public EntitySearchModel equalSearchModel() {
-			if (equalSearchModel == null) {
-				throw new IllegalStateException("No EntitySearchModel available for the EQUAL operand");
-			}
-
-			return equalSearchModel;
-		}
+		EntitySearchModel equalSearchModel();
 
 		/**
 		 * @return a {@link EntitySearchModel} to use for the IN operand
 		 * @throws IllegalStateException in case no such model is available
 		 */
-		public EntitySearchModel inSearchModel() {
-			if (inSearchModel == null) {
-				throw new IllegalStateException("No EntitySearchModel available for the IN operand");
-			}
-
-			return inSearchModel;
-		}
-
-		@Override
-		public Value<Entity> equal() {
-			return condition.operands().equal();
-		}
-
-		@Override
-		public ValueSet<Entity> in() {
-			return condition.operands().in();
-		}
-
-		@Override
-		public Value<Entity> upper() {
-			return condition.operands().upper();
-		}
-
-		@Override
-		public Value<Entity> lower() {
-			return condition.operands().lower();
-		}
+		EntitySearchModel inSearchModel();
 	}
 
 	/**
 	 * A builder for a {@link ForeignKeyConditionModel}
 	 */
-	public interface Builder {
+	interface Builder {
 
 		/**
 		 * @param equalSearchModel the search model to use for the EQUAl operator
@@ -211,42 +79,5 @@ public final class ForeignKeyConditionModel implements ConditionModel<Entity> {
 		 * @return a new {@link ForeignKeyConditionModel} instance
 		 */
 		ForeignKeyConditionModel build();
-	}
-
-	private static final class DefaultBuilder implements Builder {
-
-		private EntitySearchModel equalSearchModel;
-		private EntitySearchModel inSearchModel;
-
-		@Override
-		public Builder equalSearchModel(EntitySearchModel equalSearchModel) {
-			this.equalSearchModel = requireNonNull(equalSearchModel);
-			return this;
-		}
-
-		@Override
-		public Builder inSearchModel(EntitySearchModel inSearchModel) {
-			this.inSearchModel = requireNonNull(inSearchModel);
-			return this;
-		}
-
-		@Override
-		public ForeignKeyConditionModel build() {
-			return new ForeignKeyConditionModel(this);
-		}
-
-		private List<Operator> operators() {
-			if (equalSearchModel == null && inSearchModel == null) {
-				throw new IllegalStateException("Neither EQUAL nor IN operator specified");
-			}
-			if (equalSearchModel != null && inSearchModel != null) {
-				return asList(Operator.EQUAL, Operator.NOT_EQUAL, Operator.IN, Operator.NOT_IN);
-			}
-			if (equalSearchModel != null) {
-				return asList(Operator.EQUAL, Operator.NOT_EQUAL);
-			}
-
-			return asList(Operator.IN, Operator.NOT_IN);
-		}
 	}
 }

@@ -14,6 +14,7 @@ Codion Change Log
 - EntitySearchModel.Builder.condition() added.
 - ForeignKeyConditionModel.equalSearchModel() and inSearchModel() moved to ForeignKeyOperands.
 - EntityConditionModel.attribute() replaced with column() and foreignKey().
+- ForeignKeyConditionModel now an interface.
 ### is.codion.swing.framework.model
 - SwingForeignKeyConditionModel.equalComboBoxModel() and inSearchModel() moved to SwingForeignKeyOperands.
 ### is.codion.swing.framework.ui
@@ -22,6 +23,7 @@ Codion Change Log
 - EntitySearchField.searchOnFocusLost now final, searchOnFocusLost() removed.
 - EntityEditComponentPanel.InputFocus.transferOnEnter() removed.
 - SwingEntityTableModel.EntityColumnFilterFactory bug fixed, did not include foreign key filters.
+- SwingForeignKeyConditionModel now an interface, extends ForeignKeyConditionModel.
 
 ## 0.18.25
 ### is.codion.common.db
