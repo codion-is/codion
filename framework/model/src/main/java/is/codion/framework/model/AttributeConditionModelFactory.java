@@ -19,8 +19,8 @@
 package is.codion.framework.model;
 
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.model.condition.TableConditionModel.ConditionModelFactory;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -28,45 +28,92 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
+import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toMap;
 
 /**
- * A default {@link ConditionModelFactory} implementation for creating Entity based column condition models.
+ * A default {@link ConditionModel} supplier for creating Entity based column condition models.
  */
-public class AttributeConditionModelFactory implements ConditionModelFactory<Attribute<?>> {
+public class AttributeConditionModelFactory implements Supplier<Map<Attribute<?>, ConditionModel<?>>> {
 
+	private final EntityType entityType;
 	private final EntityConnectionProvider connectionProvider;
 
 	/**
 	 * Instantiates a new {@link AttributeConditionModelFactory}.
+	 * @param entityType the entity type
 	 * @param connectionProvider the connection provider
 	 */
-	public AttributeConditionModelFactory(EntityConnectionProvider connectionProvider) {
+	public AttributeConditionModelFactory(EntityType entityType, EntityConnectionProvider connectionProvider) {
 		this.connectionProvider = requireNonNull(connectionProvider);
+		this.entityType = requireNonNull(entityType);
 	}
 
 	@Override
-	public Optional<ConditionModel<?>> create(Attribute<?> attribute) {
-		if (attribute instanceof ForeignKey) {
-			ForeignKey foreignKey = (ForeignKey) attribute;
-			return Optional.of(ForeignKeyConditionModel.builder()
-							.equalSearchModel(createEqualSearchModel(foreignKey))
-							.inSearchModel(createInSearchModel(foreignKey))
-							.build());
-		}
+	public final Map<Attribute<?>, ConditionModel<?>> get() {
+		Map<Attribute<?>, ConditionModel<?>> models = new HashMap<>();
+		models.putAll(definition().columns().get().stream()
+						.filter(this::include)
+						.collect(toMap(Function.identity(), this::conditionModel)));
+		models.putAll(definition().foreignKeys().get().stream()
+						.filter(this::include)
+						.collect(toMap(Function.identity(), this::conditionModel)));
 
-		ColumnDefinition<?> column = definition(attribute.entityType()).columns().definition((Column<?>) attribute);
-		return Optional.of(ConditionModel.builder(attribute.type().valueClass())
-						.format(column.format())
-						.dateTimePattern(column.dateTimePattern())
+		return unmodifiableMap(models);
+	}
+
+	/**
+	 * @param column the column
+	 * @return true if a condition model should be included for the given column
+	 */
+	protected boolean include(Column<?> column) {
+		return true;
+	}
+
+	/**
+	 * @param foreignKey the foreign key
+	 * @return true if a condition model should be included for the given foreign key
+	 */
+	protected boolean include(ForeignKey foreignKey) {
+		return true;
+	}
+
+	/**
+	 * Only called if {@link #include(Column)} returns true
+	 * @param column the column
+	 * @param <T> the column type
+	 * @return a {@link ConditionModel} based on the given column
+	 */
+	protected <T> ConditionModel<T> conditionModel(Column<T> column) {
+		ColumnDefinition<T> definition = definition().columns().definition(column);
+
+		return ConditionModel.builder(column.type().valueClass())
+						.format(definition.format())
+						.dateTimePattern(definition.dateTimePattern())
 						.operands(operands -> {
-							if (column.attribute().type().isBoolean() && !column.nullable()) {
+							if (definition.attribute().type().isBoolean() && !definition.nullable()) {
 								((ConditionModel.InitialOperands<Boolean>) operands).equal(false);
 							}
 						})
-						.build());
+						.build();
+	}
+
+	/**
+	 * Only called if {@link #include(ForeignKey)} returns true
+	 * @param foreignKey the foreign key
+	 * @return a {@link ConditionModel} based on the given foreign key
+	 */
+	protected ConditionModel<Entity> conditionModel(ForeignKey foreignKey) {
+		return ForeignKeyConditionModel.builder()
+						.equalSearchModel(createEqualSearchModel(foreignKey))
+						.inSearchModel(createInSearchModel(foreignKey))
+						.build();
 	}
 
 	/**
@@ -95,8 +142,15 @@ public class AttributeConditionModelFactory implements ConditionModelFactory<Att
 	}
 
 	/**
+	 * @return the underlying {@link EntityDefinition}
+	 */
+	protected final EntityDefinition definition() {
+		return definition(entityType);
+	}
+
+	/**
 	 * @param entityType the entity type
-	 * @return the entity definition
+	 * @return the definition of the given type
 	 */
 	protected final EntityDefinition definition(EntityType entityType) {
 		return connectionProvider.entities().definition(entityType);

@@ -19,41 +19,37 @@
 package is.codion.swing.framework.model;
 
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.model.condition.TableConditionModel.ConditionModelFactory;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.AttributeConditionModelFactory;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
-import java.util.Optional;
-
 /**
- * A Swing {@link ConditionModelFactory} implementation using {@link EntityComboBoxModel} for foreign keys based on small datasets
+ * A Swing {@link ConditionModel} supplier using {@link EntityComboBoxModel} for foreign keys based on small datasets
  */
 public class SwingAttributeConditionModelFactory extends AttributeConditionModelFactory {
 
 	/**
 	 * Instantiates a new {@link SwingAttributeConditionModelFactory}.
+	 * @param entityType the entity type
 	 * @param connectionProvider the connection provider
 	 */
-	public SwingAttributeConditionModelFactory(EntityConnectionProvider connectionProvider) {
-		super(connectionProvider);
+	public SwingAttributeConditionModelFactory(EntityType entityType, EntityConnectionProvider connectionProvider) {
+		super(entityType, connectionProvider);
 	}
 
 	@Override
-	public Optional<ConditionModel<?>> create(Attribute<?> attribute) {
-		if (attribute instanceof ForeignKey) {
-			ForeignKey foreignKey = (ForeignKey) attribute;
-			if (definition(foreignKey.referencedType()).smallDataset()) {
-				return Optional.of(SwingForeignKeyConditionModel.builder()
-								.equalComboBoxModel(createEqualComboBoxModel(foreignKey))
-								.inSearchModel(createInSearchModel(foreignKey))
-								.build());
-			}
+	protected ConditionModel<Entity> conditionModel(ForeignKey foreignKey) {
+		if (definition(foreignKey.referencedType()).smallDataset()) {
+			return SwingForeignKeyConditionModel.builder()
+							.equalComboBoxModel(createEqualComboBoxModel(foreignKey))
+							.inSearchModel(createInSearchModel(foreignKey))
+							.build();
 		}
 
-		return super.create(attribute);
+		return super.conditionModel(foreignKey);
 	}
 
 	/**

@@ -20,7 +20,6 @@ package is.codion.swing.framework.model;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
-import is.codion.common.model.condition.TableConditionModel.ConditionModelFactory;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -41,8 +40,9 @@ import javax.swing.event.TableModelListener;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static is.codion.framework.model.EntityConditionModel.entityConditionModel;
 import static is.codion.framework.model.EntityQueryModel.entityQueryModel;
@@ -50,6 +50,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * A TableModel implementation for displaying and working with entities.
@@ -110,7 +111,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	 */
 	public SwingEntityTableModel(SwingEntityEditModel editModel) {
 		this(editModel, entityQueryModel(entityConditionModel(editModel.entityType(), editModel.connectionProvider(),
-						new SwingAttributeConditionModelFactory(editModel.connectionProvider()))));
+						new SwingAttributeConditionModelFactory(editModel.entityType(), editModel.connectionProvider()))));
 	}
 
 	/**
@@ -332,7 +333,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 		}
 	}
 
-	private static final class EntityColumnFilterFactory implements ConditionModelFactory<Attribute<?>> {
+	private static final class EntityColumnFilterFactory implements Supplier<Map<Attribute<?>, ConditionModel<?>>> {
 
 		private final EntityDefinition entityDefinition;
 
@@ -341,32 +342,31 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 		}
 
 		@Override
-		public Optional<ConditionModel<?>> create(Attribute<?> attribute) {
-			if (!include(attribute)) {
-				return Optional.empty();
-			}
-
-			AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(attribute);
-			if (useStringCondition(attribute, attributeDefinition)) {
-				return Optional.of(ConditionModel.builder(String.class).build());
-			}
-
-			return Optional.of(ConditionModel.builder(attribute.type().valueClass())
-							.format(attributeDefinition.format())
-							.dateTimePattern(attributeDefinition.dateTimePattern())
-							.build());
+		public Map<Attribute<?>, ConditionModel<?>> get() {
+			return entityDefinition.attributes().definitions().stream()
+							.filter(EntityColumnFilterFactory::include)
+							.collect(toMap(AttributeDefinition::attribute, EntityColumnFilterFactory::conditionModel));
 		}
 
-		private boolean include(Attribute<?> attribute) {
-			AttributeDefinition<?> definition = entityDefinition.attributes().definition(attribute);
+		private static ConditionModel<?> conditionModel(AttributeDefinition<?> definition) {
+			if (useStringCondition(definition)) {
+				return ConditionModel.builder(String.class).build();
+			}
 
+			return ConditionModel.builder(definition.attribute().type().valueClass())
+							.format(definition.format())
+							.dateTimePattern(definition.dateTimePattern())
+							.build();
+		}
+
+		private static boolean include(AttributeDefinition<?> definition) {
 			return !definition.hidden();
 		}
 
-		private static boolean useStringCondition(Attribute<?> attribute, AttributeDefinition<?> attributeDefinition) {
-			return attribute.type().isEntity() || // entities
+		private static boolean useStringCondition(AttributeDefinition<?> attributeDefinition) {
+			return attributeDefinition.attribute().type().isEntity() || // entities
 							!attributeDefinition.items().isEmpty() || // items
-							!Comparable.class.isAssignableFrom(attribute.type().valueClass()); // non-comparables
+							!Comparable.class.isAssignableFrom(attributeDefinition.attribute().type().valueClass()); // non-comparables
 		}
 	}
 

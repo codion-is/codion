@@ -23,14 +23,13 @@ import is.codion.common.value.Value.Validator;
 import is.codion.demos.chinook.domain.api.Chinook.Track.RaisePriceParameters;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.framework.model.SwingAttributeConditionModelFactory;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.model.SwingForeignKeyConditionModel;
 
 import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.Optional;
 
 import static is.codion.demos.chinook.domain.api.Chinook.Track;
 import static is.codion.framework.model.EntityConditionModel.entityConditionModel;
@@ -78,18 +77,18 @@ public final class TrackTableModel extends SwingEntityTableModel {
 	private static class TrackColumnConditionFactory extends SwingAttributeConditionModelFactory {
 
 		private TrackColumnConditionFactory(EntityConnectionProvider connectionProvider) {
-			super(connectionProvider);
+			super(Track.TYPE, connectionProvider);
 		}
 
 		@Override
-		public Optional<ConditionModel<?>> create(Attribute<?> attribute) {
-			if (attribute.equals(Track.MEDIATYPE_FK)) {
-				return Optional.of(SwingForeignKeyConditionModel.builder()
+		protected ConditionModel<Entity> conditionModel(ForeignKey foreignKey) {
+			if (foreignKey.equals(Track.MEDIATYPE_FK)) {
+				return SwingForeignKeyConditionModel.builder()
 								.equalComboBoxModel(createEqualComboBoxModel(Track.MEDIATYPE_FK))
-								.build());
+								.build();
 			}
 
-			return super.create(attribute);
+			return super.conditionModel(foreignKey);
 		}
 	}
 }

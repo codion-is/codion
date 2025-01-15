@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.26
+### is.codion.common.model
+- TableConditionModel.ConditionModelFactory removed, related refactoring.
 ### is.codion.swing.common.model
 - FilterComboBoxModel.Builder.filterSelected() added, now final, ComboBoxSelection removed.
 ### is.codion.framework.model

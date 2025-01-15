@@ -36,7 +36,7 @@ public final class DefaultTableConditionModelTest {
 		conditions.put("two", two);
 		ConditionModel<String> three = new DefaultConditionModel.DefaultBuilder<>(String.class).build();
 		conditions.put("three", three);
-		DefaultTableConditionModel<String> model = new DefaultTableConditionModel<>(conditions);
+		DefaultTableConditionModel<String> model = new DefaultTableConditionModel<>(() -> conditions);
 		one.enabled().set(true);
 		two.enabled().set(true);
 		three.enabled().set(true);

@@ -22,7 +22,6 @@ import is.codion.common.event.Event;
 import is.codion.common.model.FilterModel;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
-import is.codion.common.model.condition.TableConditionModel.ConditionModelFactory;
 import is.codion.common.observable.Observer;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.AbstractFilterModelRefresher;
@@ -35,7 +34,6 @@ import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
@@ -70,7 +68,8 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 	final Value<RefreshStrategy> refreshStrategy;
 
 	DefaultFilterTableItems(AbstractTableModel tableModel, Predicate<R> validator, Supplier<? extends Collection<R>> supplier,
-													RefreshStrategy refreshStrategy, boolean asyncRefresh, TableColumns<R, C> columns, ConditionModelFactory<C> filterModelFactory) {
+													RefreshStrategy refreshStrategy, boolean asyncRefresh, TableColumns<R, C> columns,
+													Supplier<Map<C, ConditionModel<?>>> filterModelFactory) {
 		this.tableModel = requireNonNull(tableModel);
 		this.columns = requireNonNull(columns);
 		this.validator = validator;
@@ -81,7 +80,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 						.build();
 		this.visible = new DefaultVisibleItems();
 		this.filtered = new DefaultFilteredItems();
-		this.filters = tableConditionModel(createFilterConditionModels(filterModelFactory));
+		this.filters = tableConditionModel(filterModelFactory);
 		this.visiblePredicate = new VisiblePredicate();
 		this.selection = new DefaultFilterTableSelection<>(this);
 		this.sorter = new DefaultFilterTableSortModel<>(columns);
@@ -326,16 +325,6 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		if (!validator.test(item)) {
 			throw new IllegalArgumentException("Invalid item: " + item);
 		}
-	}
-
-	private Map<C, ConditionModel<?>> createFilterConditionModels(ConditionModelFactory<C> filterModelFactory) {
-		Map<C, ConditionModel<?>> columnFilterModels = new HashMap<>();
-		for (C identifier : columns.identifiers()) {
-			filterModelFactory.create(identifier)
-							.ifPresent(condition -> columnFilterModels.put(identifier, condition));
-		}
-
-		return columnFilterModels;
 	}
 
 	private static <T> Collection<T> rejectNulls(Collection<T> items) {

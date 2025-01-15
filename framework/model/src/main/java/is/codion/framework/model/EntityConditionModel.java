@@ -27,6 +27,8 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.condition.Condition;
 
 import java.util.Collection;
+import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * Factory for {@link EntityConditionModel} instances via
@@ -94,18 +96,18 @@ public interface EntityConditionModel extends TableConditionModel<Attribute<?>> 
 	 * @return a new {@link EntityConditionModel} instance
 	 */
 	static EntityConditionModel entityConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		return entityConditionModel(entityType, connectionProvider, new AttributeConditionModelFactory(connectionProvider));
+		return entityConditionModel(entityType, connectionProvider, new AttributeConditionModelFactory(entityType, connectionProvider));
 	}
 
 	/**
 	 * Creates a new {@link EntityConditionModel}
 	 * @param entityType the underlying entity type
 	 * @param connectionProvider a EntityConnectionProvider instance
-	 * @param conditionModelFactory provides the column condition models for this table condition model
+	 * @param conditionModelFactory supplies the column condition models for this table condition model
 	 * @return a new {@link EntityConditionModel} instance
 	 */
 	static EntityConditionModel entityConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-																									 ConditionModelFactory<Attribute<?>> conditionModelFactory) {
+																									 Supplier<Map<Attribute<?>, ConditionModel<?>>> conditionModelFactory) {
 		return new DefaultEntityConditionModel(entityType, connectionProvider, conditionModelFactory);
 	}
 }

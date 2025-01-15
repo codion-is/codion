@@ -19,8 +19,8 @@
 package is.codion.swing.common.model.component.table;
 
 import is.codion.common.model.FilterModel;
+import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
-import is.codion.common.model.condition.TableConditionModel.ConditionModelFactory;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.value.Value;
 
@@ -29,6 +29,7 @@ import javax.swing.table.TableModel;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -219,7 +220,7 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		 * @param filterModelFactory the column filter model factory
 		 * @return this builder instance
 		 */
-		Builder<R, C> filterModelFactory(ConditionModelFactory<C> filterModelFactory);
+		Builder<R, C> filterModelFactory(Supplier<Map<C, ConditionModel<?>>> filterModelFactory);
 
 		/**
 		 * @param supplier supplies the items

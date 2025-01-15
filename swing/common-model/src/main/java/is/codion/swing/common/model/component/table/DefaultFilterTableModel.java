@@ -21,7 +21,6 @@ package is.codion.swing.common.model.component.table;
 import is.codion.common.model.FilterModel;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
-import is.codion.common.model.condition.TableConditionModel.ConditionModelFactory;
 
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
@@ -29,9 +28,10 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
@@ -186,7 +186,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 	}
 
-	private static final class DefaultColumnFilterFactory<C> implements ConditionModelFactory<C> {
+	private static final class DefaultColumnFilterFactory<C> implements Supplier<Map<C, ConditionModel<?>>> {
 
 		private final TableColumns<?, C> columns;
 
@@ -195,13 +195,16 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
-		public Optional<ConditionModel<?>> create(C identifier) {
-			Class<?> columnClass = columns.columnClass(requireNonNull(identifier));
-			if (Comparable.class.isAssignableFrom(columnClass)) {
-				return Optional.of(ConditionModel.builder(columnClass).build());
+		public Map<C, ConditionModel<?>> get() {
+			Map<C, ConditionModel<?>> columnFilterModels = new HashMap<>();
+			for (C identifier : columns.identifiers()) {
+				Class<?> columnClass = columns.columnClass(requireNonNull(identifier));
+				if (Comparable.class.isAssignableFrom(columnClass)) {
+					columnFilterModels.put(identifier, ConditionModel.builder(columnClass).build());
+				}
 			}
 
-			return Optional.empty();
+			return columnFilterModels;
 		}
 	}
 
@@ -211,7 +214,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		private Supplier<? extends Collection<R>> supplier;
 		private Predicate<R> validator = new ValidPredicate<>();
-		private ConditionModelFactory<C> filterModelFactory;
+		private Supplier<Map<C, ConditionModel<?>>> filterModelFactory;
 		private RefreshStrategy refreshStrategy = RefreshStrategy.CLEAR;
 		private boolean asyncRefresh = FilterModel.ASYNC_REFRESH.getOrThrow();
 
@@ -224,7 +227,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
-		public Builder<R, C> filterModelFactory(ConditionModelFactory<C> filterModelFactory) {
+		public Builder<R, C> filterModelFactory(Supplier<Map<C, ConditionModel<?>>> filterModelFactory) {
 			this.filterModelFactory = requireNonNull(filterModelFactory);
 			return this;
 		}

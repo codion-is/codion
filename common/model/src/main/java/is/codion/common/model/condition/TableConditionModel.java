@@ -24,13 +24,14 @@ import is.codion.common.value.ValueSet;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
 /**
  * Manages a set of {@link ConditionModel}s for table columns.
  * @param <C> the condition identifier type
- * @see #tableConditionModel(Map)
+ * @see #tableConditionModel(Supplier)
  */
 public interface TableConditionModel<C> {
 
@@ -81,24 +82,11 @@ public interface TableConditionModel<C> {
 
 	/**
 	 * Instantiates a new {@link TableConditionModel}
-	 * @param conditions the condition models mapped to their respective column identifiers
+	 * @param conditionModelFactory supplies the condition models mapped to their respective column identifiers
 	 * @param <C> the condition identifier type
 	 * @return a new {@link TableConditionModel}
 	 */
-	static <C> TableConditionModel<C> tableConditionModel(Map<C, ConditionModel<?>> conditions) {
-		return new DefaultTableConditionModel<>(requireNonNull(conditions));
-	}
-
-	/**
-	 * Responsible for creating {@link ConditionModel} instances.
-	 */
-	interface ConditionModelFactory<C> {
-
-		/**
-		 * Creates a {@link ConditionModel} for a given column identifier
-		 * @param identifier the column identifier for which to create a {@link ConditionModel}
-		 * @return a {@link ConditionModel} for the given identifier or an empty optional if none is provided
-		 */
-		Optional<ConditionModel<?>> create(C identifier);
+	static <C> TableConditionModel<C> tableConditionModel(Supplier<Map<C, ConditionModel<?>>> conditionModelFactory) {
+		return new DefaultTableConditionModel<>(requireNonNull(conditionModelFactory));
 	}
 }
