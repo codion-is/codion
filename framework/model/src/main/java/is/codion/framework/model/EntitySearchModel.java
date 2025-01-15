@@ -186,6 +186,12 @@ public interface EntitySearchModel {
 		Builder columns(Collection<Column<String>> columns);
 
 		/**
+		 * @param condition the additional condition supplier to use when performing the search
+		 * @return this builder instance
+		 */
+		Builder condition(Supplier<Condition> condition);
+
+		/**
 		 * @param attributes the attributes to include when querying entities from the database, an empty Collection means all
 		 * @return this builder
 		 * @throws IllegalArgumentException in case an attribute is not associated with the underlying entity

@@ -66,13 +66,14 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private final EntityConnectionProvider connectionProvider;
 	private final Map<Column<String>, Settings> settings;
 	private final boolean singleSelection;
-	private final Value<Supplier<Condition>> condition = Value.nonNull(NULL_CONDITION);
+	private final Value<Supplier<Condition>> condition;
 	private final Value<Integer> limit;
 
 	private DefaultEntitySearchModel(DefaultBuilder builder) {
 		this.entityDefinition = builder.entityDefinition;
 		this.connectionProvider = builder.connectionProvider;
 		this.columns = unmodifiableCollection(builder.columns);
+		this.condition = Value.nonNull(builder.condition);
 		this.attributes = builder.attributes;
 		this.orderBy = builder.orderBy;
 		this.settings = unmodifiableMap(columns.stream()
@@ -273,6 +274,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		private final EntityDefinition entityDefinition;
 		private final EntityConnectionProvider connectionProvider;
 		private Collection<Column<String>> columns;
+		private Supplier<Condition> condition = NULL_CONDITION;
 		private Collection<Attribute<?>> attributes = emptyList();
 		private boolean singleSelection = false;
 		private Integer limit = DEFAULT_LIMIT.get();
@@ -292,6 +294,12 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 			}
 			validateAttributes(columns);
 			this.columns = columns;
+			return this;
+		}
+
+		@Override
+		public Builder condition(Supplier<Condition> condition) {
+			this.condition = requireNonNull(condition);
 			return this;
 		}
 
