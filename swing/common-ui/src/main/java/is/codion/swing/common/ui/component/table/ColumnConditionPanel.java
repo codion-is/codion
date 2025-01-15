@@ -105,6 +105,11 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		 */
 		public static final ControlKey<ToggleControl> TOGGLE_ENABLED = ToggleControl.key("toggleEnabled", keyStroke(VK_ENTER, CTRL_DOWN_MASK));
 		/**
+		 * Clears the model.<br>
+		 * Default key stroke: CTRL-SHIFT-ENTER
+		 */
+		public static final ControlKey<ToggleControl> CLEAR = ToggleControl.key("clear", keyStroke(VK_ENTER, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
+		/**
 		 * Select the previous condition operator.<br>
 		 * Default key stroke: CTRL-UP ARROW
 		 */
@@ -452,6 +457,10 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		TOGGLE_ENABLED.defaultKeystroke().optional().ifPresent(keyStroke ->
 						KeyEvents.builder(keyStroke)
 										.action(command(this::toggleEnabled))
+										.enable(components));
+		CLEAR.defaultKeystroke().optional().ifPresent(keyStroke ->
+						KeyEvents.builder(keyStroke)
+										.action(command(model()::clear))
 										.enable(components));
 		PREVIOUS_OPERATOR.defaultKeystroke().optional().ifPresent(keyStroke ->
 						KeyEvents.builder(keyStroke)

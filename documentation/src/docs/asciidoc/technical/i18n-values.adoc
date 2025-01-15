@@ -849,6 +849,7 @@ is/codion/swing/framework/ui/KeyboardShortcutsPanel_is_IS.properties
 |add|Add|Ný færsla
 |add_new_item|Add new item|Bæta við nýrri færslu
 |calendar|Calendar|Dagatal
+|clear_condition|Clear condition|Hreinsa leitarreit dálks
 |condition_panel|Table condition panel|Leitarflötur
 |copy_selected_cell|Copy selected cell to clipboard|Afrita valinn reit á klippiborð
 |copy_selected_rows|Copy selected rows to clipboard|Afrita valdar línur á klippiborð

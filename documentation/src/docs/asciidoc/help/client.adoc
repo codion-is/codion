@@ -160,6 +160,7 @@ This clears all values and resets all operators to *EQUAL*.
 
 |kbd:[Ctrl + &#x2193;/&#x2191;]|Previous/next search operator
 |kbd:[Ctrol + Enter]|Enable/disable column condition
+|kbd:[Ctrol + Shift + Enter]|Clear column condition
 |kbd:[Enter]|Refresh table data
 |===
 
