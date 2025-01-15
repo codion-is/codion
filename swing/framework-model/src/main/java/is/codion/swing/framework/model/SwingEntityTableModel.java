@@ -359,11 +359,8 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 
 		private boolean include(Attribute<?> attribute) {
 			AttributeDefinition<?> definition = entityDefinition.attributes().definition(attribute);
-			if (definition.hidden()) {
-				return false;
-			}
 
-			return !(attribute instanceof ForeignKey);
+			return !definition.hidden();
 		}
 
 		private static boolean useStringCondition(Attribute<?> attribute, AttributeDefinition<?> attributeDefinition) {

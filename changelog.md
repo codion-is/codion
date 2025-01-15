@@ -16,6 +16,7 @@ Codion Change Log
 - EntitySearchField bug fixed, no longer updates the background color when disabled.
 - EntitySearchField.searchOnFocusLost now final, searchOnFocusLost() removed.
 - EntityEditComponentPanel.InputFocus.transferOnEnter() removed.
+- SwingEntityTableModel.EntityColumnFilterFactory bug fixed, did not include foreign key filters.
 
 ## 0.18.25
 ### is.codion.common.db

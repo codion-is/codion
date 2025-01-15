@@ -90,6 +90,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		filterModel.operands().equal().set("a");
 		testModel.items().filter();
 		assertEquals(4, testModel.items().filtered().count());
+		testModel.filters().get(Detail.MASTER_FK);
 	}
 
 	@Test
