@@ -205,7 +205,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 				setBorder(createTitledBorder(createEmptyBorder(), definition.attributes().definition(Invoice.CUSTOMER_FK).caption()));
 				ForeignKeyConditionModel foreignKeyCondition = (ForeignKeyConditionModel) condition;
 				foreignKeyCondition.operands().in().value().link(foreignKeyCondition.operands().equal());
-				searchField = EntitySearchField.builder(foreignKeyCondition.inSearchModel())
+				searchField = EntitySearchField.builder(foreignKeyCondition.operands().inSearchModel())
 								.multiSelection()
 								.columns(25)
 								.build();

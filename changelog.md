@@ -8,6 +8,9 @@ Codion Change Log
 - DefaultEntityQueryModel.conditionChanged() bug fixed, no longer active when limit, orderBy or attributes have changed.
 - EntityQueryModel.resetConditionChanged() removed.
 - EntitySearchModel.Builder.condition() added.
+- ForeignKeyConditionModel.equalSearchModel() and inSearchModel() moved to ForeignKeyOperands.
+### is.codion.swing.framework.model
+- SwingForeignKeyConditionModel.equalComboBoxModel() and inSearchModel() moved to SwingForeignKeyOperands.
 ### is.codion.swing.framework.ui
 - EntityTablePanel.SHOW_REFRESH_PROGRESS_BAR renamed REFRESH_PROGRESS_BAR, now true by default.
 - EntitySearchField bug fixed, no longer updates the background color when disabled.
