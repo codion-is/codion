@@ -65,7 +65,7 @@ public class DefaultEntityConditionModelTest {
 						CONNECTION_PROVIDER, new AttributeConditionModelFactory(Detail.TYPE, CONNECTION_PROVIDER));
 		//no search columns defined for master entity
 		ConditionModel<Entity> masterModel =
-						model.attribute(Detail.MASTER_FK);
+						model.foreignKey(Detail.MASTER_FK);
 		assertThrows(IllegalStateException.class, () ->
 						((ForeignKeyConditionModel) masterModel).operands().equalSearchModel().search().result());
 	}
@@ -88,7 +88,7 @@ public class DefaultEntityConditionModelTest {
 		assertTrue(searchStateChanged);
 		assertTrue(conditionModel.get(Employee.DEPARTMENT_FK).enabled().get());
 		ConditionModel<Entity> deptModel =
-						conditionModel.attribute(Employee.DEPARTMENT_FK);
+						conditionModel.foreignKey(Employee.DEPARTMENT_FK);
 		assertSame(deptModel.operands().equal().get(), sales);
 		assertThrows(NullPointerException.class, () -> conditionModel.setEqualOperand(null, sales));
 		searchStateChanged = conditionModel.setEqualOperand(Employee.DEPARTMENT_FK, null);
@@ -105,7 +105,7 @@ public class DefaultEntityConditionModelTest {
 		assertTrue(searchStateChanged);
 		assertTrue(conditionModel.get(Employee.DEPARTMENT_FK).enabled().get());
 		ConditionModel<Entity> deptModel =
-						conditionModel.attribute(Employee.DEPARTMENT_FK);
+						conditionModel.foreignKey(Employee.DEPARTMENT_FK);
 		assertTrue(deptModel.operands().in().get().contains(sales));
 		assertTrue(deptModel.operands().in().get().contains(accounting));
 		assertThrows(NullPointerException.class, () -> conditionModel.setInOperands(Employee.DEPARTMENT_FK, null));

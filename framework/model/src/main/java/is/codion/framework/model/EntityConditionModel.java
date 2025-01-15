@@ -22,8 +22,11 @@ import is.codion.common.Conjunction;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.Condition;
 
 import java.util.Collection;
@@ -81,13 +84,21 @@ public interface EntityConditionModel extends TableConditionModel<Attribute<?>> 
 	Condition having(Conjunction conjunction);
 
 	/**
-	 * Returns the {@link ConditionModel} associated with the given attribute.
+	 * Returns the {@link ConditionModel} associated with the given column.
 	 * @param <T> the column value type
-	 * @param attribute the attribute for which to retrieve the {@link ConditionModel}
-	 * @return the {@link ConditionModel} associated with {@code attribute}
-	 * @throws IllegalArgumentException in case no condition model exists for the given attribute
+	 * @param column the column for which to retrieve the {@link ConditionModel}
+	 * @return the {@link ConditionModel} associated with {@code column}
+	 * @throws IllegalArgumentException in case no condition model exists for the given column
 	 */
-	<T> ConditionModel<T> attribute(Attribute<T> attribute);
+	<T> ConditionModel<T> column(Column<T> column);
+
+	/**
+	 * Returns the {@link ConditionModel} associated with the given foreignKey.
+	 * @param foreignKey the foreignKey for which to retrieve the {@link ConditionModel}
+	 * @return the {@link ConditionModel} associated with {@code foreignKey}
+	 * @throws IllegalArgumentException in case no condition model exists for the given foreignKey
+	 */
+	ConditionModel<Entity> foreignKey(ForeignKey foreignKey);
 
 	/**
 	 * Creates a new {@link EntityConditionModel}
