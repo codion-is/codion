@@ -8,6 +8,7 @@ Codion Change Log
 - FilterComboBoxModel.Builder.filterSelected() added, now final, ComboBoxSelection removed.
 ### is.codion.swing.common.ui
 - ColumnConditionPanel.ControlKeys.CLEAR added.
+- ComponentBuilder.TRANSFER_FOCUS_ON_ENTER removed.
 ### is.codion.framework.model
 - DefaultEntityQueryModel.conditionChanged() bug fixed, no longer active when limit, orderBy or attributes have changed.
 - EntityQueryModel.resetConditionChanged() removed.
@@ -32,6 +33,7 @@ Codion Change Log
 - SwingForeignKeyConditionModel.SwingForeignKeyOperands removed.
 - EntitySearchField.selectionToolTip() now performs some basic html escaping.
 - EntitySearchField bug fixed, no longer selects all and moves the cursor when returning from the selection dialog.
+- EntityEditComponentPanel.InputFocus.transferOnEnter() reintroduced.
 
 ## 0.18.25
 ### is.codion.common.db

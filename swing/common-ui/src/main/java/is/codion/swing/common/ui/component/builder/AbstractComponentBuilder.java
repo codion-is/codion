@@ -91,7 +91,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	private boolean opaque = false;
 	private boolean visible = true;
 	private Border border;
-	private boolean transferFocusOnEnter = TRANSFER_FOCUS_ON_ENTER.getOrThrow();
+	private boolean transferFocusOnEnter = false;
 	private String toolTipText;
 	private Font font;
 	private Color foreground;

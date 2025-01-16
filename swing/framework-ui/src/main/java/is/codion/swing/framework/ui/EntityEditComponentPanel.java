@@ -725,7 +725,7 @@ public class EntityEditComponentPanel extends JPanel {
 		}
 		componentBuilders.put(attribute, componentBuilder
 						.name(attribute.toString())
-						.transferFocusOnEnter(ComponentBuilder.TRANSFER_FOCUS_ON_ENTER.getOrThrow())
+						.transferFocusOnEnter(inputFocus.transferOnEnter.get())
 						.link(editModel().value(attribute))
 						.onBuild(new SetComponent<>(attribute)));
 
@@ -790,6 +790,7 @@ public class EntityEditComponentPanel extends JPanel {
 
 		private final EntityEditComponentPanel editComponentPanel;
 
+		private final State transferOnEnter = State.state(true);
 		private final Initial initial = new Initial();
 		private final AfterInsert afterInsert = new AfterInsert();
 		private final AfterUpdate afterUpdate = new AfterUpdate();
@@ -806,6 +807,15 @@ public class EntityEditComponentPanel extends JPanel {
 		 */
 		public void request(Attribute<?> attribute) {
 			editComponentPanel.component(attribute).optional().ifPresent(component -> focusableComponent(component).requestFocusInWindow());
+		}
+
+		/**
+		 * If set to true then components created subsequently will transfer focus on enter, otherwise not.
+		 * Note that changing this has no effect on components that have already been created.
+		 * @return the {@link State} controlling whether components transfer focus on enter
+		 */
+		public State transferOnEnter() {
+			return transferOnEnter;
 		}
 
 		/**

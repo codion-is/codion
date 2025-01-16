@@ -18,9 +18,7 @@
  */
 package is.codion.swing.common.ui.component.builder;
 
-import is.codion.common.Configuration;
 import is.codion.common.observable.Observable;
-import is.codion.common.property.PropertyValue;
 import is.codion.common.state.ObservableState;
 import is.codion.common.value.Value;
 import is.codion.common.value.Value.Validator;
@@ -76,17 +74,6 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 * @see JComponent#getClientProperty(Object)
 	 */
 	String COMPONENT_VALUE = "componentValue";
-
-	/**
-	 * Specifies whether focus should be transferred from components on enter.<br>
-	 * Note that for JTextArea CTRL is added to move focus forward
-	 * <ul>
-	 * <li>Value type: Boolean
-	 * <li>Default value: false
-	 * </ul>
-	 */
-	PropertyValue<Boolean> TRANSFER_FOCUS_ON_ENTER =
-					Configuration.booleanValue(ComponentBuilder.class.getName() + ".transferFocusOnEnter", false);
 
 	/**
 	 * @param name the name to assign to the component
@@ -177,7 +164,6 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 * Note that for JTextArea CTRL is added to move focus forward and CTRL + SHIFT to move it backwards
 	 * @param transferFocusOnEnter if true then the text field transfer focus on enter (shift-enter for backwards)
 	 * @return this builder instance
-	 * @see ComponentBuilder#TRANSFER_FOCUS_ON_ENTER
 	 */
 	B transferFocusOnEnter(boolean transferFocusOnEnter);
 
