@@ -30,6 +30,7 @@ Codion Change Log
 - SwingForeignKeyConditionModel now an interface, extends ForeignKeyConditionModel.
 - SwingAttributeConditionModelFactory renamed SwingEntityConditionModelFactory.
 - SwingForeignKeyConditionModel.SwingForeignKeyOperands removed.
+- EntitySearchField.selectionToolTip() now performs some basic html escaping.
 
 ## 0.18.25
 ### is.codion.common.db

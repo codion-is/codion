@@ -523,8 +523,9 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	private String selectionToolTip() {
-		return model.selection().empty().get() ? null :
-						strings().collect(joining("<br>", "<html>", "</html"));
+		return model.selection().empty().get() ? null : strings()
+						.map(EntitySearchField::escape)
+						.collect(joining("<br>", "<html>", "</html"));
 	}
 
 	private String selectionString() {
@@ -622,6 +623,10 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		return settingsPanel;
+	}
+
+	private static String escape(String string) {
+		return string.replace("<", "&lt;").replace(">", "&gt;");
 	}
 
 	private static final class SettingsPanel extends JPanel {
