@@ -40,7 +40,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static is.codion.framework.model.EntityConditionModel.entityConditionModel;
+import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
@@ -69,7 +69,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	 * @param filterModel the filter model
 	 */
 	protected AbstractEntityTableModel(E editModel, FilterModel<Entity> filterModel) {
-		this(editModel, filterModel, new DefaultEntityQueryModel(entityConditionModel(editModel.entityType(), editModel.connectionProvider())));
+		this(editModel, filterModel, new DefaultEntityQueryModel(entityTableConditionModel(editModel.entityType(), editModel.connectionProvider())));
 	}
 
 	/**

@@ -51,9 +51,9 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
- * A default {@link EntityConditionModel} implementation
+ * A default {@link EntityTableConditionModel} implementation
  */
-final class DefaultEntityConditionModel implements EntityConditionModel {
+final class DefaultEntityTableConditionModel implements EntityTableConditionModel {
 
 	private final EntityDefinition entityDefinition;
 	private final EntityConnectionProvider connectionProvider;
@@ -62,8 +62,8 @@ final class DefaultEntityConditionModel implements EntityConditionModel {
 	private final NoneAggregateColumn noneAggregateColumn = new NoneAggregateColumn();
 	private final AggregateColumn aggregateColumn = new AggregateColumn();
 
-	DefaultEntityConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-															Supplier<Map<Attribute<?>, ConditionModel<?>>> conditionModels) {
+	DefaultEntityTableConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
+																	 Supplier<Map<Attribute<?>, ConditionModel<?>>> conditionModels) {
 		this.entityDefinition = connectionProvider.entities().definition(requireNonNull(entityType));
 		this.connectionProvider = requireNonNull(connectionProvider);
 		this.tableConditionModel = tableConditionModel(conditionModels);

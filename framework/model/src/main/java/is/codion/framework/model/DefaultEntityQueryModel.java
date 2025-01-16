@@ -49,7 +49,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 
 	private static final Supplier<Condition> NULL_CONDITION_SUPPLIER = () -> null;
 
-	private final EntityConditionModel entityConditionModel;
+	private final EntityTableConditionModel conditionModel;
 	private final AdditionalCondition additionalWhere = new DefaultAdditionalCondition();
 	private final AdditionalCondition additionalHaving = new DefaultAdditionalCondition();
 	private final Value<ObservableState> conditionEnabled;
@@ -63,13 +63,13 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	private final Value<Function<EntityQueryModel, List<Entity>>> query = Value.nonNull(new DefaultQuery());
 	private final List<Condition> refreshConditions = new ArrayList<>(2);
 
-	DefaultEntityQueryModel(EntityConditionModel entityConditionModel) {
-		this.entityConditionModel = requireNonNull(entityConditionModel);
-		this.conditionEnabled = Value.nonNull(entityConditionModel.enabled());
+	DefaultEntityQueryModel(EntityTableConditionModel conditionModel) {
+		this.conditionModel = requireNonNull(conditionModel);
+		this.conditionEnabled = Value.nonNull(conditionModel.enabled());
 		this.orderBy = createOrderBy();
 		resetConditionChanged(refreshConditions());
 		Runnable conditionListener = this::onConditionChanged;
-		entityConditionModel.changed().addListener(conditionListener);
+		conditionModel.changed().addListener(conditionListener);
 		additionalWhere.addListener(conditionListener);
 		additionalWhere.conjunction().addListener(conditionListener);
 		additionalHaving.addListener(conditionListener);
@@ -78,12 +78,12 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 
 	@Override
 	public EntityType entityType() {
-		return entityConditionModel.entityType();
+		return conditionModel.entityType();
 	}
 
 	@Override
 	public EntityConnectionProvider connectionProvider() {
-		return entityConditionModel.connectionProvider();
+		return conditionModel.connectionProvider();
 	}
 
 	@Override
@@ -92,8 +92,8 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	}
 
 	@Override
-	public EntityConditionModel conditions() {
-		return entityConditionModel;
+	public EntityTableConditionModel conditions() {
+		return conditionModel;
 	}
 
 	@Override
@@ -142,8 +142,8 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	}
 
 	Select createSelect() {
-		return Select.where(createCondition(entityConditionModel.where(Conjunction.AND), additionalWhere))
-						.having(createCondition(entityConditionModel.having(Conjunction.AND), additionalHaving))
+		return Select.where(createCondition(conditionModel.where(Conjunction.AND), additionalWhere))
+						.having(createCondition(conditionModel.having(Conjunction.AND), additionalHaving))
 						.attributes(attributes.get())
 						.limit(limit.get())
 						.orderBy(orderBy.get())
@@ -159,7 +159,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	}
 
 	private Value<OrderBy> createOrderBy() {
-		EntityDefinition definition = entityConditionModel.connectionProvider().entities().definition(entityConditionModel.entityType());
+		EntityDefinition definition = conditionModel.connectionProvider().entities().definition(conditionModel.entityType());
 		return definition.orderBy()
 						.map(Value::nonNull)
 						.orElse(Value.nullable());
@@ -177,8 +177,8 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 
 	private List<Condition> refreshConditions() {
 		return asList(
-						createCondition(entityConditionModel.where(Conjunction.AND), additionalWhere),
-						createCondition(entityConditionModel.having(Conjunction.AND), additionalHaving));
+						createCondition(conditionModel.where(Conjunction.AND), additionalWhere),
+						createCondition(conditionModel.having(Conjunction.AND), additionalHaving));
 	}
 
 	private class AttributeValidator implements Value.Validator<Set<Attribute<?>>> {
@@ -186,8 +186,8 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 		@Override
 		public void validate(Set<Attribute<?>> attributes) {
 			for (Attribute<?> attribute : attributes) {
-				if (!attribute.entityType().equals(entityConditionModel.entityType())) {
-					throw new IllegalArgumentException(attribute + " is not part of entity:  " + entityConditionModel.entityType());
+				if (!attribute.entityType().equals(conditionModel.entityType())) {
+					throw new IllegalArgumentException(attribute + " is not part of entity:  " + conditionModel.entityType());
 				}
 			}
 		}
@@ -203,7 +203,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 
 				return emptyList();
 			}
-			List<Entity> items = entityConditionModel.connectionProvider().connection().select(select);
+			List<Entity> items = conditionModel.connectionProvider().connection().select(select);
 			resetConditionChanged(refreshConditions());
 
 			return items;

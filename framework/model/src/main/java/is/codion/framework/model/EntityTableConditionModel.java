@@ -34,10 +34,10 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 /**
- * Factory for {@link EntityConditionModel} instances via
- * {@link EntityConditionModel#entityConditionModel(EntityType, EntityConnectionProvider)}
+ * Factory for {@link EntityTableConditionModel} instances via
+ * {@link EntityTableConditionModel#entityTableConditionModel(EntityType, EntityConnectionProvider)}
  */
-public interface EntityConditionModel extends TableConditionModel<Attribute<?>> {
+public interface EntityTableConditionModel extends TableConditionModel<Attribute<?>> {
 
 	/**
 	 * @return the type of the entity this table condition model is based on
@@ -101,24 +101,24 @@ public interface EntityConditionModel extends TableConditionModel<Attribute<?>> 
 	ConditionModel<Entity> foreignKey(ForeignKey foreignKey);
 
 	/**
-	 * Creates a new {@link EntityConditionModel}
+	 * Creates a new {@link EntityTableConditionModel}
 	 * @param entityType the underlying entity type
 	 * @param connectionProvider a EntityConnectionProvider instance
-	 * @return a new {@link EntityConditionModel} instance
+	 * @return a new {@link EntityTableConditionModel} instance
 	 */
-	static EntityConditionModel entityConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		return entityConditionModel(entityType, connectionProvider, new AttributeConditionModelFactory(entityType, connectionProvider));
+	static EntityTableConditionModel entityTableConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
+		return entityTableConditionModel(entityType, connectionProvider, new AttributeConditionModelFactory(entityType, connectionProvider));
 	}
 
 	/**
-	 * Creates a new {@link EntityConditionModel}
+	 * Creates a new {@link EntityTableConditionModel}
 	 * @param entityType the underlying entity type
 	 * @param connectionProvider a EntityConnectionProvider instance
 	 * @param conditionModelFactory supplies the column condition models for this table condition model
-	 * @return a new {@link EntityConditionModel} instance
+	 * @return a new {@link EntityTableConditionModel} instance
 	 */
-	static EntityConditionModel entityConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-																									 Supplier<Map<Attribute<?>, ConditionModel<?>>> conditionModelFactory) {
-		return new DefaultEntityConditionModel(entityType, connectionProvider, conditionModelFactory);
+	static EntityTableConditionModel entityTableConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
+																														 Supplier<Map<Attribute<?>, ConditionModel<?>>> conditionModelFactory) {
+		return new DefaultEntityTableConditionModel(entityType, connectionProvider, conditionModelFactory);
 	}
 }

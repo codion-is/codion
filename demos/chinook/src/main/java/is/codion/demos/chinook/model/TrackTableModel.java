@@ -32,8 +32,8 @@ import java.math.BigDecimal;
 import java.util.Collection;
 
 import static is.codion.demos.chinook.domain.api.Chinook.Track;
-import static is.codion.framework.model.EntityConditionModel.entityConditionModel;
 import static is.codion.framework.model.EntityQueryModel.entityQueryModel;
+import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 
 public final class TrackTableModel extends SwingEntityTableModel {
 
@@ -42,7 +42,7 @@ public final class TrackTableModel extends SwingEntityTableModel {
 
 	public TrackTableModel(EntityConnectionProvider connectionProvider) {
 		super(new TrackEditModel(connectionProvider),
-						entityQueryModel(entityConditionModel(Track.TYPE, connectionProvider,
+						entityQueryModel(entityTableConditionModel(Track.TYPE, connectionProvider,
 										new TrackColumnConditionFactory(connectionProvider))));
 		editable().set(true);
 		configureLimit();

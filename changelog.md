@@ -15,6 +15,7 @@ Codion Change Log
 - ForeignKeyConditionModel.equalSearchModel() and inSearchModel() moved to ForeignKeyOperands.
 - EntityConditionModel.attribute() replaced with column() and foreignKey().
 - ForeignKeyConditionModel now an interface.
+- EntityConditionModel renamed EntityTableConditionModel.
 ### is.codion.swing.framework.model
 - SwingForeignKeyConditionModel.equalComboBoxModel() and inSearchModel() moved to SwingForeignKeyOperands.
 ### is.codion.swing.framework.ui
