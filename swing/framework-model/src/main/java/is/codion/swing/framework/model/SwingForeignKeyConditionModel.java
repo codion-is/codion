@@ -31,31 +31,17 @@ import is.codion.swing.framework.model.component.EntityComboBoxModel;
  */
 public interface SwingForeignKeyConditionModel extends ForeignKeyConditionModel {
 
-	@Override
-	SwingForeignKeyOperands operands();
+	/**
+	 * @return an {@link EntityComboBoxModel} to use for the EQUAL operand
+	 * @throws IllegalStateException in case no such model is available
+	 */
+	EntityComboBoxModel equalComboBoxModel();
 
 	/**
 	 * @return a new {@link Builder}
 	 */
 	static Builder builder() {
 		return new DefaultBuilder();
-	}
-
-	/**
-	 * Provides access to the operands and related data models
-	 */
-	interface SwingForeignKeyOperands extends ForeignKeyOperands {
-
-		/**
-		 * @throws UnsupportedOperationException
-		 */
-		EntitySearchModel equalSearchModel();
-
-		/**
-		 * @return an {@link EntityComboBoxModel} to use for the EQUAL operand
-		 * @throws IllegalStateException in case no such model is available
-		 */
-		EntityComboBoxModel equalComboBoxModel();
 	}
 
 	/**

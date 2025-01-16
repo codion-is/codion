@@ -17,6 +17,7 @@ Codion Change Log
 - ForeignKeyConditionModel now an interface.
 - EntityConditionModel renamed EntityTableConditionModel.
 - AttributeConditionModelFactory renamed EntityConditionModelFactory.
+- ForeignKeyConditionModel.ForeignKeyOperands removed.
 ### is.codion.swing.framework.model
 - SwingForeignKeyConditionModel.equalComboBoxModel() and inSearchModel() moved to SwingForeignKeyOperands.
 ### is.codion.swing.framework.ui
@@ -27,6 +28,7 @@ Codion Change Log
 - SwingEntityTableModel.EntityColumnFilterFactory bug fixed, did not include foreign key filters.
 - SwingForeignKeyConditionModel now an interface, extends ForeignKeyConditionModel.
 - SwingAttributeConditionModelFactory renamed SwingEntityConditionModelFactory.
+- SwingForeignKeyConditionModel.SwingForeignKeyOperands removed.
 
 ## 0.18.25
 ### is.codion.common.db

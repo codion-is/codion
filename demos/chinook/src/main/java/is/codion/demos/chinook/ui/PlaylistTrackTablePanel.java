@@ -56,7 +56,7 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 
 		@Override
 		public <T> JComponent component(ConditionModel<T> conditionModel, Value<T> operand) {
-			return EntitySearchField.builder(((ForeignKeyConditionModel) conditionModel).operands().equalSearchModel())
+			return EntitySearchField.builder(((ForeignKeyConditionModel) conditionModel).equalSearchModel())
 							.singleSelection()
 							.link((Value<Entity>) operand)
 							.selectorFactory(new TrackSelectorFactory())
@@ -65,7 +65,7 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 
 		@Override
 		public <T> JComponent component(ConditionModel<T> conditionModel, ValueSet<T> operands) {
-			return EntitySearchField.builder(((ForeignKeyConditionModel) conditionModel).operands().inSearchModel())
+			return EntitySearchField.builder(((ForeignKeyConditionModel) conditionModel).inSearchModel())
 							.multiSelection()
 							.link((ValueSet<Entity>) operands)
 							.selectorFactory(new TrackSelectorFactory())

@@ -30,32 +30,23 @@ import is.codion.framework.model.DefaultForeignKeyConditionModel.DefaultBuilder;
  */
 public interface ForeignKeyConditionModel extends ConditionModel<Entity> {
 
-	@Override
-	ForeignKeyOperands operands();
+	/**
+	 * @return a {@link EntitySearchModel} to use for the EQUAL operand
+	 * @throws IllegalStateException in case no such model is available
+	 */
+	EntitySearchModel equalSearchModel();
+
+	/**
+	 * @return a {@link EntitySearchModel} to use for the IN operand
+	 * @throws IllegalStateException in case no such model is available
+	 */
+	EntitySearchModel inSearchModel();
 
 	/**
 	 * @return a new {@link Builder}
 	 */
 	static Builder builder() {
 		return new DefaultBuilder();
-	}
-
-	/**
-	 * Provides access to the operands and related data models
-	 */
-	interface ForeignKeyOperands extends Operands<Entity> {
-
-		/**
-		 * @return a {@link EntitySearchModel} to use for the EQUAL operand
-		 * @throws IllegalStateException in case no such model is available
-		 */
-		EntitySearchModel equalSearchModel();
-
-		/**
-		 * @return a {@link EntitySearchModel} to use for the IN operand
-		 * @throws IllegalStateException in case no such model is available
-		 */
-		EntitySearchModel inSearchModel();
 	}
 
 	/**

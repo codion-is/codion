@@ -23,7 +23,6 @@ import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.observable.Observer;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueSet;
 import is.codion.framework.domain.entity.Entity;
 
 import java.text.Format;
@@ -36,14 +35,16 @@ import static java.util.Objects.requireNonNull;
 final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel {
 
 	private final ConditionModel<Entity> condition;
-	private final ForeignKeyOperands operands;
+	private final EntitySearchModel equalSearchModel;
+	private final EntitySearchModel inSearchModel;
 
 	private DefaultForeignKeyConditionModel(DefaultBuilder builder) {
 		this.condition = ConditionModel.builder(Entity.class)
 						.operators(builder.operators())
 						.operator(builder.inSearchModel == null ? Operator.EQUAL : Operator.IN)
 						.build();
-		this.operands = new DefaultForeignKeyOperands(condition, builder.equalSearchModel, builder.inSearchModel);
+		this.equalSearchModel = builder.equalSearchModel;
+		this.inSearchModel = builder.inSearchModel;
 	}
 
 	@Override
@@ -102,8 +103,8 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 	}
 
 	@Override
-	public ForeignKeyOperands operands() {
-		return operands;
+	public Operands<Entity> operands() {
+		return condition.operands();
 	}
 
 	@Override
@@ -116,57 +117,22 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 		return condition.changed();
 	}
 
-	private static final class DefaultForeignKeyOperands implements ForeignKeyOperands {
-
-		private final ConditionModel<Entity> condition;
-		private final EntitySearchModel equalSearchModel;
-		private final EntitySearchModel inSearchModel;
-
-		private DefaultForeignKeyOperands(ConditionModel<Entity> condition,
-																			EntitySearchModel equalSearchModel,
-																			EntitySearchModel inSearchModel) {
-			this.condition = requireNonNull(condition);
-			this.equalSearchModel = equalSearchModel;
-			this.inSearchModel = inSearchModel;
+	@Override
+	public EntitySearchModel equalSearchModel() {
+		if (equalSearchModel == null) {
+			throw new IllegalStateException("No EntitySearchModel available for the EQUAL operand");
 		}
 
-		@Override
-		public EntitySearchModel equalSearchModel() {
-			if (equalSearchModel == null) {
-				throw new IllegalStateException("No EntitySearchModel available for the EQUAL operand");
-			}
+		return equalSearchModel;
+	}
 
-			return equalSearchModel;
+	@Override
+	public EntitySearchModel inSearchModel() {
+		if (inSearchModel == null) {
+			throw new IllegalStateException("No EntitySearchModel available for the IN operand");
 		}
 
-		@Override
-		public EntitySearchModel inSearchModel() {
-			if (inSearchModel == null) {
-				throw new IllegalStateException("No EntitySearchModel available for the IN operand");
-			}
-
-			return inSearchModel;
-		}
-
-		@Override
-		public Value<Entity> equal() {
-			return condition.operands().equal();
-		}
-
-		@Override
-		public ValueSet<Entity> in() {
-			return condition.operands().in();
-		}
-
-		@Override
-		public Value<Entity> upper() {
-			return condition.operands().upper();
-		}
-
-		@Override
-		public Value<Entity> lower() {
-			return condition.operands().lower();
-		}
+		return inSearchModel;
 	}
 
 	static final class DefaultBuilder implements Builder {

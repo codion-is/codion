@@ -98,7 +98,7 @@ public final class EntityConditionComponentFactory implements ComponentFactory {
 
 	private JComponent createEqualForeignKeyField(ConditionModel<Entity> conditionModel, Value<Entity> operand) {
 		if (conditionModel instanceof SwingForeignKeyConditionModel) {
-			EntityComboBoxModel comboBoxModel = ((SwingForeignKeyConditionModel) conditionModel).operands().equalComboBoxModel();
+			EntityComboBoxModel comboBoxModel = ((SwingForeignKeyConditionModel) conditionModel).equalComboBoxModel();
 
 			return inputComponents.comboBox((ForeignKey) attribute, comboBoxModel)
 							.link(operand)
@@ -107,7 +107,7 @@ public final class EntityConditionComponentFactory implements ComponentFactory {
 							.build();
 		}
 		if (conditionModel instanceof ForeignKeyConditionModel) {
-			EntitySearchModel searchModel = ((ForeignKeyConditionModel) conditionModel).operands().equalSearchModel();
+			EntitySearchModel searchModel = ((ForeignKeyConditionModel) conditionModel).equalSearchModel();
 
 			return inputComponents.searchField((ForeignKey) attribute, searchModel)
 							.singleSelection()
@@ -135,7 +135,7 @@ public final class EntityConditionComponentFactory implements ComponentFactory {
 
 	private static EntitySearchModel searchModel(ConditionModel<Entity> conditionModel) {
 		if (conditionModel instanceof ForeignKeyConditionModel) {
-			return ((ForeignKeyConditionModel) conditionModel).operands().inSearchModel();
+			return ((ForeignKeyConditionModel) conditionModel).inSearchModel();
 		}
 
 		throw new IllegalArgumentException("Unknown foreign key condition model type: " + conditionModel);

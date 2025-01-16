@@ -23,7 +23,6 @@ import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.observable.Observer;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueSet;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
@@ -40,14 +39,16 @@ final class DefaultSwingForeignKeyConditionModel implements SwingForeignKeyCondi
 	private static final String EQUAL_SEARCH_MODEL_MESSAGE = "SwingForeignKeyCondition uses a EntityComboBoxModel for the EQUAL operand";
 
 	private final ConditionModel<Entity> condition;
-	private final SwingForeignKeyOperands operands;
+	private final EntityComboBoxModel equalComboBoxModel;
+	private final EntitySearchModel inSearchModel;
 
 	private DefaultSwingForeignKeyConditionModel(DefaultBuilder builder) {
 		this.condition = ConditionModel.builder(Entity.class)
 						.operators(builder.operators())
 						.operator(defaultOperator(builder))
 						.build();
-		this.operands = new DefaultSwingForeignKeyOperands(condition, builder.equalComboBoxModel, builder.inSearchModel);
+		this.equalComboBoxModel = builder.equalComboBoxModel;
+		this.inSearchModel = builder.inSearchModel;
 	}
 
 	@Override
@@ -106,8 +107,8 @@ final class DefaultSwingForeignKeyConditionModel implements SwingForeignKeyCondi
 	}
 
 	@Override
-	public SwingForeignKeyOperands operands() {
-		return operands;
+	public Operands<Entity> operands() {
+		return condition.operands();
 	}
 
 	@Override
@@ -120,6 +121,29 @@ final class DefaultSwingForeignKeyConditionModel implements SwingForeignKeyCondi
 		return condition.changed();
 	}
 
+	@Override
+	public EntityComboBoxModel equalComboBoxModel() {
+		if (equalComboBoxModel == null) {
+			throw new IllegalStateException("No EntityComboBoxModel is available for the EQUAL operand");
+		}
+
+		return equalComboBoxModel;
+	}
+
+	@Override
+	public EntitySearchModel equalSearchModel() {
+		throw new UnsupportedOperationException(EQUAL_SEARCH_MODEL_MESSAGE);
+	}
+
+	@Override
+	public EntitySearchModel inSearchModel() {
+		if (inSearchModel == null) {
+			throw new IllegalStateException("No EntitySearchModel available for the IN operand");
+		}
+
+		return inSearchModel;
+	}
+
 	private static Operator defaultOperator(DefaultBuilder builder) {
 		if (builder.inSearchModel == null) {
 			return Operator.EQUAL;
@@ -128,64 +152,6 @@ final class DefaultSwingForeignKeyConditionModel implements SwingForeignKeyCondi
 		boolean searchable = !builder.inSearchModel.entityDefinition().columns().searchable().isEmpty();
 
 		return searchable ? Operator.IN : Operator.EQUAL;
-	}
-
-	private static final class DefaultSwingForeignKeyOperands implements SwingForeignKeyOperands {
-
-		private final ConditionModel<Entity> condition;
-		private final EntityComboBoxModel equalComboBoxModel;
-		private final EntitySearchModel inSearchModel;
-
-		private DefaultSwingForeignKeyOperands(ConditionModel<Entity> condition,
-																					 EntityComboBoxModel equalComboBoxModel,
-																					 EntitySearchModel inSearchModel) {
-			this.condition = requireNonNull(condition);
-			this.equalComboBoxModel = equalComboBoxModel;
-			this.inSearchModel = inSearchModel;
-		}
-
-		@Override
-		public EntityComboBoxModel equalComboBoxModel() {
-			if (equalComboBoxModel == null) {
-				throw new IllegalStateException("No EntityComboBoxModel is available for the EQUAL operand");
-			}
-
-			return equalComboBoxModel;
-		}
-
-		@Override
-		public EntitySearchModel equalSearchModel() {
-			throw new UnsupportedOperationException(EQUAL_SEARCH_MODEL_MESSAGE);
-		}
-
-		@Override
-		public EntitySearchModel inSearchModel() {
-			if (inSearchModel == null) {
-				throw new IllegalStateException("No EntitySearchModel available for the IN operand");
-			}
-
-			return inSearchModel;
-		}
-
-		@Override
-		public Value<Entity> equal() {
-			return condition.operands().equal();
-		}
-
-		@Override
-		public ValueSet<Entity> in() {
-			return condition.operands().in();
-		}
-
-		@Override
-		public Value<Entity> upper() {
-			return condition.operands().upper();
-		}
-
-		@Override
-		public Value<Entity> lower() {
-			return condition.operands().lower();
-		}
 	}
 
 	static final class DefaultBuilder implements Builder {
