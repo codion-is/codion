@@ -18,12 +18,12 @@
  */
 package is.codion.demos.chinook.model;
 
-import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.value.Value.Validator;
 import is.codion.demos.chinook.domain.api.Chinook.Track.RaisePriceParameters;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.framework.model.SwingEntityConditionModelFactory;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.model.SwingForeignKeyConditionModel;
@@ -81,7 +81,7 @@ public final class TrackTableModel extends SwingEntityTableModel {
 		}
 
 		@Override
-		protected ConditionModel<Entity> conditionModel(ForeignKey foreignKey) {
+		protected ForeignKeyConditionModel conditionModel(ForeignKey foreignKey) {
 			if (foreignKey.equals(Track.MEDIATYPE_FK)) {
 				return SwingForeignKeyConditionModel.builder()
 								.equalComboBoxModel(createEqualComboBoxModel(Track.MEDIATYPE_FK))

@@ -20,7 +20,6 @@ package is.codion.framework.model;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -107,9 +106,9 @@ public class EntityConditionModelFactory implements Supplier<Map<Attribute<?>, C
 	/**
 	 * Only called if {@link #include(ForeignKey)} returns true
 	 * @param foreignKey the foreign key
-	 * @return a {@link ConditionModel} based on the given foreign key
+	 * @return a {@link ForeignKeyConditionModel} based on the given foreign key
 	 */
-	protected ConditionModel<Entity> conditionModel(ForeignKey foreignKey) {
+	protected ForeignKeyConditionModel conditionModel(ForeignKey foreignKey) {
 		return ForeignKeyConditionModel.builder()
 						.equalSearchModel(createEqualSearchModel(foreignKey))
 						.inSearchModel(createInSearchModel(foreignKey))
@@ -121,7 +120,7 @@ public class EntityConditionModelFactory implements Supplier<Map<Attribute<?>, C
 	 * @return a search model to use for the equal value
 	 */
 	protected EntitySearchModel createEqualSearchModel(ForeignKey foreignKey) {
-		return EntitySearchModel.builder(foreignKey.referencedType(), connectionProvider)
+		return EntitySearchModel.builder(requireNonNull(foreignKey).referencedType(), connectionProvider)
 						.singleSelection(true)
 						.build();
 	}
@@ -131,7 +130,7 @@ public class EntityConditionModelFactory implements Supplier<Map<Attribute<?>, C
 	 * @return a search model to use for the in values
 	 */
 	protected EntitySearchModel createInSearchModel(ForeignKey foreignKey) {
-		return EntitySearchModel.builder(foreignKey.referencedType(), connectionProvider).build();
+		return EntitySearchModel.builder(requireNonNull(foreignKey).referencedType(), connectionProvider).build();
 	}
 
 	/**

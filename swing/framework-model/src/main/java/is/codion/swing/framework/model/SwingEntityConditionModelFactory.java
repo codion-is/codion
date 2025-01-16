@@ -20,11 +20,13 @@ package is.codion.swing.framework.model;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntityConditionModelFactory;
+import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A Swing {@link ConditionModel} supplier using {@link EntityComboBoxModel} for foreign keys based on small datasets
@@ -41,8 +43,8 @@ public class SwingEntityConditionModelFactory extends EntityConditionModelFactor
 	}
 
 	@Override
-	protected ConditionModel<Entity> conditionModel(ForeignKey foreignKey) {
-		if (definition(foreignKey.referencedType()).smallDataset()) {
+	protected ForeignKeyConditionModel conditionModel(ForeignKey foreignKey) {
+		if (definition(requireNonNull(foreignKey).referencedType()).smallDataset()) {
 			return SwingForeignKeyConditionModel.builder()
 							.equalComboBoxModel(createEqualComboBoxModel(foreignKey))
 							.inSearchModel(createInSearchModel(foreignKey))
@@ -57,7 +59,7 @@ public class SwingEntityConditionModelFactory extends EntityConditionModelFactor
 	 * @return a combo box model to use for the equal value
 	 */
 	protected EntityComboBoxModel createEqualComboBoxModel(ForeignKey foreignKey) {
-		return EntityComboBoxModel.builder(foreignKey.referencedType(), connectionProvider())
+		return EntityComboBoxModel.builder(requireNonNull(foreignKey).referencedType(), connectionProvider())
 						.includeNull(true)
 						.build();
 	}
