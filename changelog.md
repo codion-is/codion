@@ -31,6 +31,7 @@ Codion Change Log
 - SwingAttributeConditionModelFactory renamed SwingEntityConditionModelFactory.
 - SwingForeignKeyConditionModel.SwingForeignKeyOperands removed.
 - EntitySearchField.selectionToolTip() now performs some basic html escaping.
+- EntitySearchField bug fixed, no longer selects all and moves the cursor when returning from the selection dialog.
 
 ## 0.18.25
 ### is.codion.common.db

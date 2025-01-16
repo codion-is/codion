@@ -109,6 +109,7 @@ import static is.codion.swing.framework.ui.EntityTableColumns.entityTableColumns
 import static is.codion.swing.framework.ui.component.EntitySearchField.ControlKeys.ADD;
 import static is.codion.swing.framework.ui.component.EntitySearchField.ControlKeys.EDIT;
 import static is.codion.swing.framework.ui.component.EntitySearchField.SearchIndicator.WAIT_CURSOR;
+import static java.awt.event.FocusEvent.Cause.ACTIVATION;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
@@ -988,8 +989,10 @@ public final class EntitySearchField extends HintTextField {
 
 		@Override
 		public void focusGained(FocusEvent e) {
-			setCaretPosition(getText().length());
-			moveCaretPosition(0);
+			if (!e.getCause().equals(ACTIVATION)) {
+				setCaretPosition(getText().length());
+				moveCaretPosition(0);
+			}
 		}
 
 		@Override
