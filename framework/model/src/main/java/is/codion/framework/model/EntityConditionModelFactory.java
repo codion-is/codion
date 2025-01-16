@@ -38,21 +38,21 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toMap;
 
 /**
- * A default {@link ConditionModel} supplier for creating Entity based column condition models.
+ * A default {@link ConditionModel} factory for Entity based condition models.
  */
-public class AttributeConditionModelFactory implements Supplier<Map<Attribute<?>, ConditionModel<?>>> {
+public class EntityConditionModelFactory implements Supplier<Map<Attribute<?>, ConditionModel<?>>> {
 
 	private final EntityType entityType;
 	private final EntityConnectionProvider connectionProvider;
 
 	/**
-	 * Instantiates a new {@link AttributeConditionModelFactory}.
+	 * Instantiates a new {@link EntityConditionModelFactory}.
 	 * @param entityType the entity type
 	 * @param connectionProvider the connection provider
 	 */
-	public AttributeConditionModelFactory(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		this.connectionProvider = requireNonNull(connectionProvider);
+	public EntityConditionModelFactory(EntityType entityType, EntityConnectionProvider connectionProvider) {
 		this.entityType = requireNonNull(entityType);
+		this.connectionProvider = requireNonNull(connectionProvider);
 	}
 
 	@Override

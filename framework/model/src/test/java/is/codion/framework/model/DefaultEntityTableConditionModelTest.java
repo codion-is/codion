@@ -45,7 +45,7 @@ public class DefaultEntityTableConditionModelTest {
 					.build();
 
 	private final EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(Employee.TYPE,
-					CONNECTION_PROVIDER, new AttributeConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER));
+					CONNECTION_PROVIDER, new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER));
 
 	@Test
 	void test() {
@@ -62,7 +62,7 @@ public class DefaultEntityTableConditionModelTest {
 	@Test
 	void noSearchColumnsDefined() {
 		EntityTableConditionModel model = new DefaultEntityTableConditionModel(Detail.TYPE,
-						CONNECTION_PROVIDER, new AttributeConditionModelFactory(Detail.TYPE, CONNECTION_PROVIDER));
+						CONNECTION_PROVIDER, new EntityConditionModelFactory(Detail.TYPE, CONNECTION_PROVIDER));
 		//no search columns defined for master entity
 		ConditionModel<Entity> masterModel =
 						model.foreignKey(Detail.MASTER_FK);

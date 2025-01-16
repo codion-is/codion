@@ -107,7 +107,7 @@ public interface EntityTableConditionModel extends TableConditionModel<Attribute
 	 * @return a new {@link EntityTableConditionModel} instance
 	 */
 	static EntityTableConditionModel entityTableConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		return entityTableConditionModel(entityType, connectionProvider, new AttributeConditionModelFactory(entityType, connectionProvider));
+		return entityTableConditionModel(entityType, connectionProvider, new EntityConditionModelFactory(entityType, connectionProvider));
 	}
 
 	/**

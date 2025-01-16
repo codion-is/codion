@@ -111,7 +111,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	 */
 	public SwingEntityTableModel(SwingEntityEditModel editModel) {
 		this(editModel, entityQueryModel(entityTableConditionModel(editModel.entityType(), editModel.connectionProvider(),
-						new SwingAttributeConditionModelFactory(editModel.entityType(), editModel.connectionProvider()))));
+						new SwingEntityConditionModelFactory(editModel.entityType(), editModel.connectionProvider()))));
 	}
 
 	/**

@@ -48,7 +48,7 @@ public final class DefaultEntityQueryModelTest {
 	@Test
 	void condition() {
 		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(new DefaultEntityTableConditionModel(Employee.TYPE,
-					CONNECTION_PROVIDER, new AttributeConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER)));
+					CONNECTION_PROVIDER, new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER)));
 		EntityTableConditionModel conditionModel = queryModel.conditions();
 		assertFalse(conditionModel.get(Employee.DEPARTMENT_FK).enabled().get());
 		conditionModel.setInOperands(Employee.NAME, asList("Scott", "John"));
@@ -70,7 +70,7 @@ public final class DefaultEntityQueryModelTest {
 	@Test
 	void conditionChanged() {
 		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(new DefaultEntityTableConditionModel(Employee.TYPE,
-					CONNECTION_PROVIDER, new AttributeConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER)));
+					CONNECTION_PROVIDER, new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER)));
 
 		ConditionModel<Object> nameCondition = queryModel.conditions().get(Employee.NAME);
 
@@ -105,7 +105,7 @@ public final class DefaultEntityQueryModelTest {
 		assertFalse(queryModel.conditionChanged().get());
 
 		queryModel = new DefaultEntityQueryModel(new DefaultEntityTableConditionModel(Job.TYPE,
-					CONNECTION_PROVIDER, new AttributeConditionModelFactory(Job.TYPE, CONNECTION_PROVIDER)));
+					CONNECTION_PROVIDER, new EntityConditionModelFactory(Job.TYPE, CONNECTION_PROVIDER)));
 		assertFalse(queryModel.conditionChanged().get());
 		queryModel.having().set(Job.ADDITIONAL_HAVING::get);
 		assertTrue(queryModel.conditionChanged().get());

@@ -23,20 +23,20 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.model.AttributeConditionModelFactory;
+import is.codion.framework.model.EntityConditionModelFactory;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 /**
  * A Swing {@link ConditionModel} supplier using {@link EntityComboBoxModel} for foreign keys based on small datasets
  */
-public class SwingAttributeConditionModelFactory extends AttributeConditionModelFactory {
+public class SwingEntityConditionModelFactory extends EntityConditionModelFactory {
 
 	/**
-	 * Instantiates a new {@link SwingAttributeConditionModelFactory}.
+	 * Instantiates a new {@link SwingEntityConditionModelFactory}.
 	 * @param entityType the entity type
 	 * @param connectionProvider the connection provider
 	 */
-	public SwingAttributeConditionModelFactory(EntityType entityType, EntityConnectionProvider connectionProvider) {
+	public SwingEntityConditionModelFactory(EntityType entityType, EntityConnectionProvider connectionProvider) {
 		super(entityType, connectionProvider);
 	}
 
