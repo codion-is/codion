@@ -38,7 +38,7 @@ final class TrackEditComponentFactory extends DefaultEditComponentFactory<Entity
 	protected EntitySearchField.SingleSelectionBuilder searchField(ForeignKey foreignKey,
 																																 EntityDefinition entityDefinition,
 																																 EntitySearchModel searchModel) {
-		return (EntitySearchField.SingleSelectionBuilder) super.searchField(foreignKey, entityDefinition, searchModel)
+		return super.searchField(foreignKey, entityDefinition, searchModel)
 						.selectorFactory(new TrackSelectorFactory());
 	}
 }

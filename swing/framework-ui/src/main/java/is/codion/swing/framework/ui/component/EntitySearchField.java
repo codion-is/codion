@@ -346,99 +346,99 @@ public final class EntitySearchField extends HintTextField {
 		 * @param columns the number of colums in the text field
 		 * @return this builder instance
 		 */
-		Builder<T, B> columns(int columns);
+		B columns(int columns);
 
 		/**
 		 * Makes the field convert all lower case input to upper case
 		 * @param upperCase if true the text component convert all lower case input to upper case
 		 * @return this builder instance
 		 */
-		Builder<T, B> upperCase(boolean upperCase);
+		B upperCase(boolean upperCase);
 
 		/**
 		 * Makes the field convert all upper case input to lower case
 		 * @param lowerCase if true the text component convert all upper case input to lower case
 		 * @return this builder instance
 		 */
-		Builder<T, B> lowerCase(boolean lowerCase);
+		B lowerCase(boolean lowerCase);
 
 		/**
 		 * @param editable false if the field should not be editable
 		 * @return this builder instance
 		 */
-		Builder<T, B> editable(boolean editable);
+		B editable(boolean editable);
 
 		/**
 		 * Overrides the default toString() for search elements when displayed in a field based on this model
 		 * @param stringFactory the function providing the toString() functionality
 		 * @return this builder
 		 */
-		Builder<T, B> stringFactory(Function<Entity, String> stringFactory);
+		B stringFactory(Function<Entity, String> stringFactory);
 
 		/**
 		 * Default ", "
 		 * @param separator the String used to separate multiple items
 		 * @return this builder
 		 */
-		Builder<T, B> separator(String separator);
+		B separator(String separator);
 
 		/**
 		 * @param searchHintEnabled true if a search hint text should be visible when the field is empty and not focused
 		 * @return this builder instance
 		 */
-		Builder<T, B> searchHintEnabled(boolean searchHintEnabled);
+		B searchHintEnabled(boolean searchHintEnabled);
 
 		/**
 		 * @param searchOnFocusLost true if search should be performed on focus lost
 		 * @return this builder instance
 		 */
-		Builder<T, B> searchOnFocusLost(boolean searchOnFocusLost);
+		B searchOnFocusLost(boolean searchOnFocusLost);
 
 		/**
 		 * @param searchIndicator the search indicator
 		 * @return this builder instance
 		 */
-		Builder<T, B> searchIndicator(SearchIndicator searchIndicator);
+		B searchIndicator(SearchIndicator searchIndicator);
 
 		/**
 		 * @param selectorFactory the selector factory to use
 		 * @return this builder instance
 		 */
-		Builder<T, B> selectorFactory(Function<EntitySearchModel, Selector> selectorFactory);
+		B selectorFactory(Function<EntitySearchModel, Selector> selectorFactory);
 
 		/**
 		 * A edit panel is required for the add and edit controls.
 		 * @param editPanel the edit panel supplier
 		 * @return this builder instance
 		 */
-		Builder<T, B> editPanel(Supplier<EntityEditPanel> editPanel);
+		B editPanel(Supplier<EntityEditPanel> editPanel);
 
 		/**
 		 * @param controlKey the control key
 		 * @param keyStroke the keyStroke to assign to the given control
 		 * @return this builder instance
 		 */
-		Builder<T, B> keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke);
+		B keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke);
 
 		/**
 		 * @param limit the search result limit
 		 * @return this builder instance
 		 */
-		Builder<T, B> limit(int limit);
+		B limit(int limit);
 
 		/**
 		 * @param confirmAdd true if adding an item should be confirmed
 		 * @return this builder instance
 		 * @see #editPanel(Supplier)
 		 */
-		Builder<T, B> confirmAdd(boolean confirmAdd);
+		B confirmAdd(boolean confirmAdd);
 
 		/**
 		 * @param confirmEdit true if editing an item should be confirmed
 		 * @return this builder instance
 		 * @see #editPanel(Supplier)
 		 */
-		Builder<T, B> confirmEdit(boolean confirmEdit);
+		B confirmEdit(boolean confirmEdit);
 
 		/**
 		 * Provides multi or single selection {@link Builder.Factory} instances
@@ -1162,102 +1162,102 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		@Override
-		public Builder<T, B> columns(int columns) {
+		public B columns(int columns) {
 			this.columns = columns;
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> upperCase(boolean upperCase) {
+		public B upperCase(boolean upperCase) {
 			if (upperCase && lowerCase) {
 				throw new IllegalArgumentException("Field is already lowercase");
 			}
 			this.upperCase = upperCase;
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> lowerCase(boolean lowerCase) {
+		public B lowerCase(boolean lowerCase) {
 			if (lowerCase && upperCase) {
 				throw new IllegalArgumentException("Field is already uppercase");
 			}
 			this.lowerCase = lowerCase;
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> editable(boolean editable) {
+		public B editable(boolean editable) {
 			this.editable = editable;
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> stringFactory(Function<Entity, String> stringFactory) {
+		public B stringFactory(Function<Entity, String> stringFactory) {
 			this.stringFactory = requireNonNull(stringFactory);
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> separator(String separator) {
+		public B separator(String separator) {
 			if (requireNonNull(separator).isEmpty()) {
 				throw new IllegalArgumentException("Separator must not be empty");
 			}
 			this.separator = separator;
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> searchHintEnabled(boolean searchHintEnabled) {
+		public B searchHintEnabled(boolean searchHintEnabled) {
 			this.searchHintEnabled = searchHintEnabled;
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> searchOnFocusLost(boolean searchOnFocusLost) {
+		public B searchOnFocusLost(boolean searchOnFocusLost) {
 			this.searchOnFocusLost = searchOnFocusLost;
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> searchIndicator(SearchIndicator searchIndicator) {
+		public B searchIndicator(SearchIndicator searchIndicator) {
 			this.searchIndicator = requireNonNull(searchIndicator);
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> selectorFactory(Function<EntitySearchModel, Selector> selectorFactory) {
+		public B selectorFactory(Function<EntitySearchModel, Selector> selectorFactory) {
 			this.selectorFactory = requireNonNull(selectorFactory);
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> editPanel(Supplier<EntityEditPanel> editPanel) {
+		public B editPanel(Supplier<EntityEditPanel> editPanel) {
 			this.editPanel = requireNonNull(editPanel);
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke) {
+		public B keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke) {
 			controlMap.keyStroke(controlKey).set(keyStroke);
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> limit(int limit) {
+		public B limit(int limit) {
 			this.searchModel.limit().set(limit);
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> confirmAdd(boolean confirmAdd) {
+		public B confirmAdd(boolean confirmAdd) {
 			this.confirmAdd = confirmAdd;
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder<T, B> confirmEdit(boolean confirmEdit) {
+		public B confirmEdit(boolean confirmEdit) {
 			this.confirmEdit = confirmEdit;
-			return this;
+			return (B) this;
 		}
 
 		@Override

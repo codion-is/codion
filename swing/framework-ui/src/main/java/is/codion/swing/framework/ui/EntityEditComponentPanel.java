@@ -638,7 +638,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a foreign key search field builder
 	 */
 	protected final EntitySearchField.SingleSelectionBuilder createSearchField(ForeignKey foreignKey) {
-		return (EntitySearchField.SingleSelectionBuilder) setComponentBuilder(foreignKey, entityComponents.searchField(foreignKey,
+		return setComponentBuilder(foreignKey, entityComponents.searchField(foreignKey,
 										editModel().searchModel(foreignKey))
 						.singleSelection()
 						.columns(defaults.searchFieldColumns.getOrThrow()));

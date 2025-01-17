@@ -38,6 +38,7 @@ Codion Change Log
 - EntitySearchField bug fixed, no longer selects all and moves the cursor when returning from the selection dialog.
 - EntityEditComponentPanel.InputFocus.transferOnEnter() reintroduced.
 - DefaultEditComponentFactory, EntitySearchField no longer performs search on focus lost.
+- EntitySearchField.Builder, method return type fixed.
 
 ## 0.18.25
 ### is.codion.common.db
