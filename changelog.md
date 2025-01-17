@@ -10,6 +10,7 @@ Codion Change Log
 - ColumnConditionPanel.ControlKeys.CLEAR added.
 - ComponentBuilder.TRANSFER_FOCUS_ON_ENTER removed.
 - DefaultControlsBuilder.separatorAt() bug fixed, appended instead of inserting at index.
+- DefaultControlsBuilder, now prevents multiple consecutive separators from being added via actions().
 ### is.codion.framework.model
 - DefaultEntityQueryModel.conditionChanged() bug fixed, no longer active when limit, orderBy or attributes have changed.
 - EntityQueryModel.resetConditionChanged() removed.

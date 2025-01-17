@@ -32,6 +32,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
@@ -356,30 +357,28 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 		@Override
 		public ControlsBuilder controlAt(int index, Control control) {
-			actions.add(index, requireNonNull(control));
-			return this;
+			return actionAt(index, requireNonNull(control));
 		}
 
 		@Override
 		public ControlsBuilder controlAt(int index, Control.Builder<?, ?> controlBuilder) {
-			actions.add(index, requireNonNull(controlBuilder).build());
-			return this;
+			return actionAt(index, requireNonNull(controlBuilder).build());
 		}
 
 		@Override
 		public ControlsBuilder controls(Control... controls) {
-			return controls(Arrays.asList(requireNonNull(controls)));
+			return controls(asList(requireNonNull(controls)));
 		}
 
 		@Override
 		public ControlsBuilder controls(Collection<? extends Control> controls) {
-			this.actions.addAll(requireNonNull(controls));
+			actions.addAll(requireNonNull(controls));
 			return this;
 		}
 
 		@Override
 		public ControlsBuilder controls(Control.Builder<?, ?>... controlBuilders) {
-			this.actions.addAll(Arrays.stream(controlBuilders)
+			actions.addAll(Arrays.stream(controlBuilders)
 							.map(Builder::build)
 							.collect(Collectors.toList()));
 			return this;
@@ -392,18 +391,21 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 		@Override
 		public ControlsBuilder actionAt(int index, Action action) {
-			this.actions.add(index, requireNonNull(action));
+			if (requireNonNull(action) == SEPARATOR) {
+				return separatorAt(index);
+			}
+			actions.add(index, action);
 			return this;
 		}
 
 		@Override
 		public ControlsBuilder actions(Action... actions) {
-			return actions(Arrays.asList(requireNonNull(actions)));
+			return actions(asList(requireNonNull(actions)));
 		}
 
 		@Override
 		public ControlsBuilder actions(Collection<Action> actions) {
-			this.actions.addAll(requireNonNull(actions));
+			requireNonNull(actions).forEach(this::action);
 			return this;
 		}
 
@@ -415,20 +417,20 @@ final class DefaultControls extends AbstractControl implements Controls {
 		@Override
 		public ControlsBuilder separatorAt(int index) {
 			if (actions.isEmpty() || actions.get(index - 1) != Controls.SEPARATOR) {
-				this.actions.add(index, SEPARATOR);
+				actions.add(index, SEPARATOR);
 			}
 			return this;
 		}
 
 		@Override
 		public ControlsBuilder remove(Action action) {
-			this.actions.remove(requireNonNull(action));
+			actions.remove(requireNonNull(action));
 			return this;
 		}
 
 		@Override
 		public ControlsBuilder removeAll() {
-			this.actions.clear();
+			actions.clear();
 			return this;
 		}
 

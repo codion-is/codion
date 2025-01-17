@@ -47,11 +47,15 @@ public class DefaultControlsTest {
 						.name("controls")
 						.control(one)
 						.separator()
+						.separator()
+						.action(Controls.SEPARATOR)
+						.actions(Controls.SEPARATOR, Controls.SEPARATOR)
 						.control(two)
 						.build();
 		assertTrue(controls1.name().isPresent());
 		assertEquals("controls", controls1.name().orElse(null));
 
+		assertEquals(3, controls1.size());// only one separator
 		assertEquals(one, controls1.get(0));
 		assertSame(Controls.SEPARATOR, controls1.get(1));
 		assertEquals(two, controls1.get(2));
