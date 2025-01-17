@@ -415,7 +415,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 		@Override
 		public ControlsBuilder separatorAt(int index) {
 			if (actions.isEmpty() || actions.get(index - 1) != Controls.SEPARATOR) {
-				this.actions.add(SEPARATOR);
+				this.actions.add(index, SEPARATOR);
 			}
 			return this;
 		}

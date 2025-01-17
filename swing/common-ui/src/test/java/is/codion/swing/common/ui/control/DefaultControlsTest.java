@@ -74,15 +74,22 @@ public class DefaultControlsTest {
 		Control one = Control.command(() -> {});
 		Control two = Control.command(() -> {});
 		Action action = Control.command(() -> {});
-		DefaultControls controls = (DefaultControls) Controls.builder()
+		Controls controls = Controls.builder()
 						.name("controls")
 						.control(one)
 						.separator()
 						.control(two)
 						.action(action)
 						.build();
-		DefaultControls copy = (DefaultControls) controls.copy().build();
+		Controls copy = controls.copy().build();
 		controls.keys().forEach(key -> assertEquals(controls.getValue(key), copy.getValue(key)));
 		assertSame(controls.enabled(), copy.enabled());
+		Action action2 = Control.command(() -> {});
+		Controls copy2 = copy.copy()
+						.separatorAt(3)
+						.actionAt(4, action2)
+						.build();
+		assertSame(Controls.SEPARATOR, copy2.get(3));
+		assertSame(action2, copy2.get(4));
 	}
 }
