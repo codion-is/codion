@@ -58,7 +58,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private final State selectionEmpty = State.state(true);
 
 	private final EntityDefinition entityDefinition;
-	private final Collection<Column<String>> columns;
+	private final Collection<Column<String>> searchColumns;
 	private final Collection<Attribute<?>> attributes;
 	private final OrderBy orderBy;
 	private final DefaultSearch search = new DefaultSearch();
@@ -72,11 +72,11 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private DefaultEntitySearchModel(DefaultBuilder builder) {
 		this.entityDefinition = builder.entityDefinition;
 		this.connectionProvider = builder.connectionProvider;
-		this.columns = unmodifiableCollection(builder.columns);
+		this.searchColumns = unmodifiableCollection(builder.searchColumns);
 		this.condition = Value.nonNull(builder.condition);
 		this.attributes = builder.attributes;
 		this.orderBy = builder.orderBy;
-		this.settings = unmodifiableMap(columns.stream()
+		this.settings = unmodifiableMap(searchColumns.stream()
 						.collect(toMap(Function.identity(), column -> new DefaultSettings())));
 		this.singleSelection = builder.singleSelection;
 		this.limit = Value.nullable(builder.limit);
@@ -94,7 +94,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 	@Override
 	public Collection<Column<String>> columns() {
-		return columns;
+		return searchColumns;
 	}
 
 	@Override
@@ -153,11 +153,11 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		}
 
 		private Select select() {
-			if (columns.isEmpty()) {
+			if (searchColumns.isEmpty()) {
 				throw new IllegalStateException("No search columns provided for search model: " + entityDefinition.entityType());
 			}
 			Collection<Condition> conditions = new ArrayList<>();
-			for (Column<String> column : columns) {
+			for (Column<String> column : searchColumns) {
 				Settings columnSettings = settings.get(column);
 				for (String rawSearchString : strings.get()) {
 					String preparedSearchString = prepareSearchString(rawSearchString, columnSettings);
@@ -273,7 +273,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 		private final EntityDefinition entityDefinition;
 		private final EntityConnectionProvider connectionProvider;
-		private Collection<Column<String>> columns;
+		private Collection<Column<String>> searchColumns;
 		private Supplier<Condition> condition = NULL_CONDITION;
 		private Collection<Attribute<?>> attributes = emptyList();
 		private boolean singleSelection = false;
@@ -283,17 +283,17 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
 			this.connectionProvider = requireNonNull(connectionProvider);
 			this.entityDefinition = connectionProvider.entities().definition(entityType);
-			this.columns = entityDefinition.columns().searchable();
+			this.searchColumns = entityDefinition.columns().searchable();
 			this.orderBy = entityDefinition.orderBy().orElse(null);
 		}
 
 		@Override
-		public Builder columns(Collection<Column<String>> columns) {
-			if (requireNonNull(columns).isEmpty()) {
+		public Builder searchColumns(Collection<Column<String>> searchColumns) {
+			if (requireNonNull(searchColumns).isEmpty()) {
 				throw new IllegalArgumentException("One or more search column is required");
 			}
-			validateAttributes(columns);
-			this.columns = columns;
+			validateAttributes(searchColumns);
+			this.searchColumns = searchColumns;
 			return this;
 		}
 
