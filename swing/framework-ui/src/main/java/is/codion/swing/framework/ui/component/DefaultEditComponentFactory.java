@@ -114,7 +114,9 @@ public class DefaultEditComponentFactory<T, C extends JComponent> implements Edi
 	 */
 	protected EntitySearchField.SingleSelectionBuilder searchField(ForeignKey foreignKey, EntityDefinition entityDefinition,
 																																 EntitySearchModel searchModel) {
-		return entityComponents(entityDefinition).searchField(foreignKey, searchModel).singleSelection();
+		return (EntitySearchField.SingleSelectionBuilder) entityComponents(entityDefinition).searchField(foreignKey, searchModel)
+						.singleSelection()
+						.searchOnFocusLost(false);
 	}
 
 	private ComponentValue<T, C> createForeignKeyComponentValue(ForeignKey foreignKey, SwingEntityEditModel editModel, Entity value) {
