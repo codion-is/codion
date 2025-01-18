@@ -32,6 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultConditionModelTest {
@@ -54,11 +55,12 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void testOperands() {
-		ConditionModel<String> model = ConditionModel.builder(String.class).build();
+		ConditionModel<String> model = ConditionModel.builder(String.class)
+						.autoEnable(false)
+						.build();
 		model.caseSensitive().set(false);
 		model.wildcard().set(Wildcard.NONE);
 
-		model.autoEnable().set(false);
 		Operands<String> operands = model.operands();
 		operands.equal().addConsumer(equalConsumer);
 		operands.in().addConsumer(inConsumer);
@@ -104,11 +106,12 @@ public class DefaultConditionModelTest {
 	@Test
 	void testMisc() {
 		ConditionModel<String> model = ConditionModel.builder(String.class).build();
-
-		model.operator().set(Operator.EQUAL);
 		model.wildcard().set(Wildcard.PREFIX_AND_POSTFIX);
-		model.operands().equal().set("upper");
+		model.set().equalTo("upper");
 		assertEquals("%upper%", model.operands().equal().get());
+
+		assertThrows(NullPointerException.class, () -> model.set().in((Collection<String>) null));
+		assertThrows(NullPointerException.class, () -> model.set().in("test", null));
 	}
 
 	@Test
@@ -204,7 +207,6 @@ public class DefaultConditionModelTest {
 	void setOperatorLocked() {
 		ConditionModel<String> model = ConditionModel.builder(String.class).build();
 		model.locked().set(true);
-		assertThrows(IllegalStateException.class, () -> model.operator().set(Operator.NOT_EQUAL));
 		assertThrows(IllegalStateException.class, () -> model.operator().set(Operator.NOT_EQUAL));
 	}
 
@@ -359,15 +361,16 @@ public class DefaultConditionModelTest {
 	@Test
 	void noOperators() {
 		assertThrows(IllegalArgumentException.class, () -> ConditionModel.builder(String.class)
-						.operators(Collections.emptyList()));
+						.operators(emptyList()));
 	}
 
 	@Test
 	void includeInteger() {
-		ConditionModel<Integer> condition = ConditionModel.builder(Integer.class).build();
-		condition.autoEnable().set(false);
+		ConditionModel<Integer> condition = ConditionModel.builder(Integer.class)
+						.autoEnable(false)
+						.operator(Operator.EQUAL)
+						.build();
 		condition.enabled().set(true);
-		condition.operator().set(Operator.EQUAL);
 
 		Operands<Integer> operands = condition.operands();
 		operands.equal().set(null);
@@ -490,8 +493,9 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void acceptsString() {
-		ConditionModel<String> condition = ConditionModel.builder(String.class).build();
-		condition.autoEnable().set(false);
+		ConditionModel<String> condition = ConditionModel.builder(String.class)
+						.autoEnable(false)
+						.build();
 		condition.enabled().set(true);
 
 		condition.operator().set(Operator.EQUAL);
@@ -558,5 +562,162 @@ public class DefaultConditionModelTest {
 
 		condition.caseSensitive().set(false);
 		assertTrue(condition.accepts('H'));
+	}
+
+	@Test
+	void set() {
+		ConditionModel<Integer> condition = ConditionModel.builder(Integer.class)
+						.autoEnable(false)
+						.build();
+
+		//is null
+		boolean changed = condition.set().isNull();
+		assertFalse(changed);
+		assertTrue(condition.enabled().get());
+
+		//is not null
+		changed = condition.set().isNotNull();
+		assertTrue(changed);
+		assertTrue(condition.enabled().get());
+
+		//equal
+		changed = condition.set().equalTo(5);
+		assertTrue(changed);
+		assertTrue(condition.enabled().get());
+
+		changed = condition.set().equalTo(null);
+		assertTrue(changed);
+		assertFalse(condition.enabled().get());
+
+		// not equal
+		changed = condition.set().notEqualTo(5);
+		assertTrue(changed);
+		assertTrue(condition.enabled().get());
+
+		changed = condition.set().notEqualTo(null);
+		assertTrue(changed);
+		assertFalse(condition.enabled().get());
+
+		//greater than
+		changed = condition.set().greaterThan(5);
+		assertTrue(changed);
+		assertTrue(condition.enabled().get());
+
+		changed = condition.set().greaterThan(null);
+		assertTrue(changed);
+		assertFalse(condition.enabled().get());
+
+		//greater than or equal
+		changed = condition.set().greaterThanOrEqualTo(5);
+		assertTrue(changed);
+		assertTrue(condition.enabled().get());
+
+		changed = condition.set().greaterThanOrEqualTo(null);
+		assertTrue(changed);
+		assertFalse(condition.enabled().get());
+
+		//less than
+		changed = condition.set().lessThan(5);
+		assertTrue(changed);
+		assertTrue(condition.enabled().get());
+
+		changed = condition.set().lessThan(null);
+		assertTrue(changed);
+		assertFalse(condition.enabled().get());
+
+		//less than or equal
+		changed = condition.set().lessThanOrEqualTo(5);
+		assertTrue(changed);
+		assertTrue(condition.enabled().get());
+
+		changed = condition.set().lessThanOrEqualTo(null);
+		assertTrue(changed);
+		assertFalse(condition.enabled().get());
+
+		//in
+		changed = condition.set().in(5, 6);
+		assertTrue(changed);
+		assertTrue(condition.enabled().get());
+
+		changed = condition.set().in(emptyList());
+		assertTrue(changed);
+		assertFalse(condition.enabled().get());
+
+		//not in
+		changed = condition.set().notIn(5, 6);
+		assertTrue(changed);
+		assertTrue(condition.enabled().get());
+
+		changed = condition.set().notIn(emptyList());
+		assertTrue(changed);
+		assertFalse(condition.enabled().get());
+
+		//between exclusive
+		changed = condition.set().betweenExclusive(5, 6);
+		assertTrue(changed);
+		assertTrue(condition.enabled().get());
+
+		changed = condition.set().betweenExclusive(5, null);
+		assertTrue(changed);
+		assertFalse(condition.enabled().get());
+
+		changed = condition.set().betweenExclusive(null, 6);
+		assertTrue(changed);
+		assertFalse(condition.enabled().get());
+
+		changed = condition.set().betweenExclusive(null, null);
+		assertTrue(changed);
+		assertFalse(condition.enabled().get());
+
+		//not between exclusive
+		changed = condition.set().notBetweenExclusive(5, 6);
+		assertTrue(changed);
+		assertTrue(condition.enabled().get());
+
+		changed = condition.set().notBetweenExclusive(5, null);
+		assertTrue(changed);
+		assertFalse(condition.enabled().get());
+
+		changed = condition.set().notBetweenExclusive(null, 6);
+		assertTrue(changed);
+		assertFalse(condition.enabled().get());
+
+		changed = condition.set().notBetweenExclusive(null, null);
+		assertTrue(changed);
+		assertFalse(condition.enabled().get());
+
+		//between
+		changed = condition.set().between(5, 6);
+		assertTrue(changed);
+		assertTrue(condition.enabled().get());
+
+		changed = condition.set().between(5, null);
+		assertTrue(changed);
+		assertFalse(condition.enabled().get());
+
+		changed = condition.set().between(null, 6);
+		assertTrue(changed);
+		assertFalse(condition.enabled().get());
+
+		changed = condition.set().between(null, null);
+		assertTrue(changed);
+		assertFalse(condition.enabled().get());
+
+		//not between
+		changed = condition.set().notBetween(5, 6);
+		assertTrue(changed);
+		assertTrue(condition.enabled().get());
+
+		changed = condition.set().notBetween(5, null);
+		assertTrue(changed);
+		assertFalse(condition.enabled().get());
+
+		changed = condition.set().notBetween(null, 6);
+		assertTrue(changed);
+		assertFalse(condition.enabled().get());
+
+		changed = condition.set().notBetween(null, null);
+		assertTrue(changed);
+		assertFalse(condition.enabled().get());
 	}
 }

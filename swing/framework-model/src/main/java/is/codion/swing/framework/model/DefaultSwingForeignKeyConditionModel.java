@@ -112,6 +112,11 @@ final class DefaultSwingForeignKeyConditionModel implements SwingForeignKeyCondi
 	}
 
 	@Override
+	public SetCondition<Entity> set() {
+		return condition.set();
+	}
+
+	@Override
 	public boolean accepts(Comparable<Entity> value) {
 		return condition.accepts(value);
 	}

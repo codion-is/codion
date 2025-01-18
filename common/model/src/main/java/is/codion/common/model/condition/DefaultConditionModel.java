@@ -32,6 +32,7 @@ import is.codion.common.value.ValueSet;
 import org.jspecify.annotations.Nullable;
 
 import java.text.Format;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -53,9 +54,11 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 	private final Event<?> conditionChanged = Event.event();
 	private final State locked = State.state();
 	private final Value.Validator<Object> lockValidator = value -> checkLock();
+	private final Value.Validator<Set<T>> inOperandsValidator = new InOperandsValidator();
 
 	private final Value<Operator> operator;
 	private final DefaultOperands<T> operands;
+	private final SetCondition<T> setCondition = new DefaultSetCondition();
 	private final State caseSensitive;
 
 	private final State autoEnable;
@@ -84,6 +87,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		this.operands.equal.addListener(conditionChanged);
 		this.operands.equal.wildcard.addListener(conditionChanged);
 		this.operands.in.addValidator(lockValidator);
+		this.operands.in.addValidator(inOperandsValidator);
 		this.operands.in.addListener(autoEnableListener);
 		this.operands.in.addListener(conditionChanged);
 		this.operands.upper.addValidator(lockValidator);
@@ -141,6 +145,11 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 	@Override
 	public Operands<T> operands() {
 		return operands;
+	}
+
+	@Override
+	public SetCondition<T> set() {
+		return setCondition;
 	}
 
 	@Override
@@ -465,6 +474,16 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		}
 	}
 
+	private final class InOperandsValidator implements Value.Validator<Set<T>> {
+
+		@Override
+		public void validate(@Nullable Set<T> values) {
+			for (T value : values) {
+				requireNonNull(value, "In operands must not be null");
+			}
+		}
+	}
+
 	private static final class DefaultOperands<T> implements Operands<T> {
 
 		private final EqualOperand<T> equal;
@@ -709,6 +728,149 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		public InitialOperands<T> lower(T lower) {
 			this.lower = requireNonNull(lower);
 			return this;
+		}
+	}
+
+	private final class DefaultSetCondition implements SetCondition<T> {
+
+		@Override
+		public boolean isNull() {
+			boolean changed = operands.equal.set(null);
+			changed = operator.set(Operator.EQUAL) || changed;
+			enabled.set(true);
+
+			return changed;
+		}
+
+		@Override
+		public boolean isNotNull() {
+			boolean changed = operands.equal.set(null);
+			changed = operator.set(Operator.NOT_EQUAL) || changed;
+			enabled.set(true);
+
+			return changed;
+		}
+
+		@Override
+		public boolean equalTo(@Nullable T value) {
+			boolean changed = operands.equal.set(value);
+			changed = operator.set(Operator.EQUAL) || changed;
+			enabled.set(value != null);
+
+			return changed;
+		}
+
+		@Override
+		public boolean notEqualTo(@Nullable T value) {
+			boolean changed = operands.equal.set(value);
+			changed = operator.set(Operator.NOT_EQUAL) || changed;
+			enabled.set(value != null);
+
+			return changed;
+		}
+
+		@Override
+		public boolean greaterThan(@Nullable T value) {
+			boolean changed = operands.lower.set(value);
+			changed = operator.set(Operator.GREATER_THAN) || changed;
+			enabled.set(value != null);
+
+			return changed;
+		}
+
+		@Override
+		public boolean greaterThanOrEqualTo(@Nullable T value) {
+			boolean changed = operands.lower.set(value);
+			changed = operator.set(Operator.GREATER_THAN_OR_EQUAL) || changed;
+			enabled.set(value != null);
+
+			return changed;
+		}
+
+		@Override
+		public boolean lessThan(@Nullable T value) {
+			boolean changed = operands.upper.set(value);
+			changed = operator.set(Operator.LESS_THAN) || changed;
+			enabled.set(value != null);
+
+			return changed;
+		}
+
+		@Override
+		public boolean lessThanOrEqualTo(@Nullable T value) {
+			boolean changed = operands.upper.set(value);
+			changed = operator.set(Operator.LESS_THAN_OR_EQUAL) || changed;
+			enabled.set(value != null);
+
+			return changed;
+		}
+
+		@Override
+		public boolean in(T... values) {
+			return in(asList(requireNonNull(values)));
+		}
+
+		@Override
+		public boolean in(Collection<T> values) {
+			boolean changed = operands.in.set(requireNonNull(values));
+			changed = operator.set(Operator.IN) || changed;
+			enabled.set(!values.isEmpty());
+
+			return changed;
+		}
+
+		@Override
+		public boolean notIn(T... values) {
+			return notIn(asList(requireNonNull(values)));
+		}
+
+		@Override
+		public boolean notIn(Collection<T> values) {
+			boolean changed = operands.in.set(requireNonNull(values));
+			changed = operator.set(Operator.NOT_IN) || changed;
+			enabled.set(!values.isEmpty());
+
+			return changed;
+		}
+
+		@Override
+		public boolean betweenExclusive(@Nullable T lower, @Nullable T upper) {
+			boolean changed = operands.lower.set(lower);
+			changed = operands.upper.set(upper) || changed;
+			changed = operator.set(Operator.BETWEEN_EXCLUSIVE) || changed;
+			enabled.set(lower != null && upper != null);
+
+			return changed;
+		}
+
+		@Override
+		public boolean notBetweenExclusive(@Nullable T lower, @Nullable T upper) {
+			boolean changed = operands.lower.set(lower);
+			changed = operands.upper.set(upper) || changed;
+			changed = operator.set(Operator.NOT_BETWEEN_EXCLUSIVE) || changed;
+			enabled.set(lower != null && upper != null);
+
+			return changed;
+		}
+
+		@Override
+		public boolean between(@Nullable T lower, @Nullable T upper) {
+			boolean changed = operands.lower.set(lower);
+			changed = operands.upper.set(upper) || changed;
+			changed = operator.set(Operator.BETWEEN) || changed;
+			enabled.set(lower != null && upper != null);
+
+			return changed;
+		}
+
+		@Override
+		public boolean notBetween(@Nullable T lower, @Nullable T upper) {
+			boolean changed = operands.lower.set(lower);
+			changed = operands.upper.set(upper) || changed;
+			changed = operator.set(Operator.NOT_BETWEEN) || changed;
+			enabled.set(lower != null && upper != null);
+
+			return changed;
 		}
 	}
 }

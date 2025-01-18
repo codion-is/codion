@@ -51,7 +51,7 @@ public final class DefaultEntityQueryModelTest {
 					CONNECTION_PROVIDER, new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER)));
 		EntityTableConditionModel conditionModel = queryModel.conditions();
 		assertFalse(conditionModel.get(Employee.DEPARTMENT_FK).enabled().get());
-		conditionModel.setInOperands(Employee.NAME, asList("Scott", "John"));
+		conditionModel.get(Employee.NAME).set().in("Scott", "John");
 		Condition condition = queryModel.createSelect().where();
 		assertFalse(condition instanceof Combination);
 		queryModel.where().set(Employee.CONDITION_2_TYPE::get);

@@ -25,7 +25,6 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import java.util.Collection;
 import java.util.Map;
 
-import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -150,7 +149,7 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
 	private boolean setForeignKeyConditionOnSelection(Collection<Entity> selectedEntities) {
 		if (!selectedEntities.isEmpty() || clearForeignKeyConditionOnEmptySelection.get()) {
 			return detailModel().tableModel().queryModel().conditions()
-							.setInOperands(foreignKey, selectedEntities);
+							.get(foreignKey).set().in(selectedEntities);
 		}
 
 		return false;
@@ -159,7 +158,7 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
 	private boolean setForeignKeyConditionOnInsert(Entity insertedEntity) {
 		if (setForeignKeyConditionOnInsert.get()) {
 			return detailModel().tableModel().queryModel().conditions()
-							.setInOperands(foreignKey, singletonList(insertedEntity));
+							.get(foreignKey).set().in(insertedEntity);
 		}
 
 		return false;

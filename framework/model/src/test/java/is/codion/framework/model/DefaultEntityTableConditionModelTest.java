@@ -29,7 +29,6 @@ import is.codion.framework.model.test.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -82,14 +81,13 @@ public class DefaultEntityTableConditionModelTest {
 	void setEqualOperand() {
 		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
 		assertFalse(conditionModel.get(Employee.DEPARTMENT_FK).enabled().get());
-		boolean searchStateChanged = conditionModel.setEqualOperand(Employee.DEPARTMENT_FK, sales);
+		boolean searchStateChanged = conditionModel.get(Employee.DEPARTMENT_FK).set().equalTo(sales);
 		assertTrue(searchStateChanged);
 		assertTrue(conditionModel.get(Employee.DEPARTMENT_FK).enabled().get());
 		ForeignKeyConditionModel deptModel =
 						conditionModel.get(Employee.DEPARTMENT_FK);
 		assertSame(deptModel.operands().equal().get(), sales);
-		assertThrows(NullPointerException.class, () -> conditionModel.setEqualOperand(null, sales));
-		searchStateChanged = conditionModel.setEqualOperand(Employee.DEPARTMENT_FK, null);
+		searchStateChanged = conditionModel.get(Employee.DEPARTMENT_FK).set().equalTo(null);
 		assertTrue(searchStateChanged);
 		assertFalse(conditionModel.get(Employee.DEPARTMENT_FK).enabled().get());
 	}
@@ -99,15 +97,13 @@ public class DefaultEntityTableConditionModelTest {
 		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
 		Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("ACCOUNTING"));
 		assertFalse(conditionModel.get(Employee.DEPARTMENT_FK).enabled().get());
-		boolean searchStateChanged = conditionModel.setInOperands(Employee.DEPARTMENT_FK, asList(sales, accounting));
+		boolean searchStateChanged = conditionModel.get(Employee.DEPARTMENT_FK).set().in(sales, accounting);
 		assertTrue(searchStateChanged);
 		assertTrue(conditionModel.get(Employee.DEPARTMENT_FK).enabled().get());
 		ForeignKeyConditionModel deptModel = conditionModel.get(Employee.DEPARTMENT_FK);
 		assertTrue(deptModel.operands().in().get().contains(sales));
 		assertTrue(deptModel.operands().in().get().contains(accounting));
-		assertThrows(NullPointerException.class, () -> conditionModel.setInOperands(Employee.DEPARTMENT_FK, null));
-		assertThrows(NullPointerException.class, () -> conditionModel.setInOperands(null, emptyList()));
-		searchStateChanged = conditionModel.setInOperands(Employee.DEPARTMENT_FK, emptyList());
+		searchStateChanged = conditionModel.get(Employee.DEPARTMENT_FK).set().in(emptyList());
 		assertTrue(searchStateChanged);
 		assertFalse(conditionModel.get(Employee.DEPARTMENT_FK).enabled().get());
 	}
@@ -117,7 +113,7 @@ public class DefaultEntityTableConditionModelTest {
 		Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("SALES"));
 		Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("ACCOUNTING"));
 		assertFalse(conditionModel.get(Employee.DEPARTMENT_FK).enabled().get());
-		conditionModel.setInOperands(Employee.DEPARTMENT_FK, asList(sales, accounting));
+		conditionModel.get(Employee.DEPARTMENT_FK).set().in(sales, accounting);
 		assertTrue(conditionModel.get(Employee.DEPARTMENT_FK).enabled().get());
 		conditionModel.clear();
 		assertFalse(conditionModel.get(Employee.DEPARTMENT_FK).enabled().get());

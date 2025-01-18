@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.26
 ### is.codion.common.model
 - TableConditionModel.ConditionModelFactory removed, related refactoring.
+- ConditionModel.SetCondition added along with set().
 ### is.codion.swing.common.model
 - FilterComboBoxModel.Builder.filterSelected() added, now final, ComboBoxSelection removed.
 ### is.codion.swing.common.ui
@@ -24,6 +25,7 @@ Codion Change Log
 - EntityConditionModelFactory.conditionModel(ForeignKey) now returns ForeignKeyConditionModel.
 - EntitySearchModel.Builder.columns() renamed searchColumns().
 - EntityTableConditionModel no longer extends TableConditionModel.
+- EntityTableConditionModel.setEqualOperand() and setInOperands() removed.
 ### is.codion.swing.framework.model
 - SwingForeignKeyConditionModel.equalComboBoxModel() and inSearchModel() moved to SwingForeignKeyOperands.
 ### is.codion.swing.framework.ui

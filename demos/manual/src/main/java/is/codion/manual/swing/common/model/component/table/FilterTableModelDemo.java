@@ -29,8 +29,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static is.codion.common.Operator.EQUAL;
-import static is.codion.common.Operator.GREATER_THAN_OR_EQUAL;
 import static is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.Person.AGE;
 import static is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.Person.NAME;
 import static javax.swing.SortOrder.ASCENDING;
@@ -112,8 +110,7 @@ public final class FilterTableModelDemo {
 		// Filter out people under 40 years old
 		ConditionModel<Integer> ageFilter = filters.get(Person.AGE);
 
-		ageFilter.operator().set(GREATER_THAN_OR_EQUAL);
-		ageFilter.operands().upper().set(40);
+		ageFilter.set().greaterThanOrEqualTo(40);
 		// Not necessary since filters auto-enable by default
 		// when operators and operands are specified
 		ageFilter.enabled().set(true);
@@ -125,9 +122,7 @@ public final class FilterTableModelDemo {
 		ConditionModel<String> nameFilter = filters.get(NAME);
 
 		nameFilter.caseSensitive().set(false);
-		// Not necessary, since EQUAL is the default
-		nameFilter.operator().set(EQUAL);
-		nameFilter.operands().equal().set("jo%");
+		nameFilter.set().equalTo("jo%");
 
 		// Clear all filters
 		filters.clear();

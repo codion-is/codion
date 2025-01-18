@@ -29,6 +29,7 @@ import is.codion.common.value.ValueSet;
 import org.jspecify.annotations.Nullable;
 
 import java.text.Format;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -166,6 +167,11 @@ public interface ConditionModel<T> {
 	Operands<T> operands();
 
 	/**
+	 * @return the {@link SetCondition} instance
+	 */
+	SetCondition<T> set();
+
+	/**
 	 * Returns true if the given value is accepted by this models condition.
 	 * @param value the value
 	 * @return true if the given value is accepted by this models condition
@@ -242,6 +248,141 @@ public interface ConditionModel<T> {
 		 * @return this {@link InitialOperands} instance
 		 */
 		InitialOperands<T> lower(T lower);
+	}
+
+	/**
+	 * Provides a way to set the condition.
+	 * @param <T> the value type
+	 */
+	interface SetCondition<T> {
+
+		/**
+		 * <p>Sets the operator to {@link Operator#EQUAL}, the operand to {@code null} and enables this condition.
+		 * @return true if the condition state changed
+		 */
+		boolean isNull();
+
+		/**
+		 * <p>Sets the operator to {@link Operator#NOT_EQUAL}, the operand to {@code null} and enables this condition.
+		 * @return true if the condition state changed
+		 */
+		boolean isNotNull();
+
+		/**
+		 * <p>Sets the operator to {@link Operator#EQUAL} and the operand to {@code value}.
+		 * <p>Enables the condition if {@code value} is non-null, otherwise disables it.
+		 * @param value the operand
+		 * @return true if the condition state changed
+		 */
+		boolean equalTo(@Nullable T value);
+
+		/**
+		 * <p>Sets the operator to {@link Operator#NOT_EQUAL} and the operand to {@code value}.
+		 * <p>Enables the condition if {@code value} is non-null, otherwise disables it.
+		 * @param value the operand
+		 * @return true if the condition state changed
+		 */
+		boolean notEqualTo(@Nullable T value);
+
+		/**
+		 * <p>Sets the operator to {@link Operator#GREATER_THAN} and the operand to {@code value}.
+		 * <p>Enables the condition if {@code value} is non-null, otherwise disables it.
+		 * @param value the operand
+		 * @return true if the condition state changed
+		 */
+		boolean greaterThan(@Nullable T value);
+
+		/**
+		 * <p>Sets the operator to {@link Operator#GREATER_THAN_OR_EQUAL} and the operand to {@code value}.
+		 * <p>Enables the condition if {@code value} is non-null, otherwise disables it.
+		 * @param value the operand
+		 * @return true if the condition state changed
+		 */
+		boolean greaterThanOrEqualTo(@Nullable T value);
+
+		/**
+		 * <p>Sets the operator to {@link Operator#LESS_THAN} and the operand to {@code value}.
+		 * <p>Enables the condition if {@code value} is non-null, otherwise disables it.
+		 * @param value the operand
+		 * @return true if the condition state changed
+		 */
+		boolean lessThan(@Nullable T value);
+
+		/**
+		 * <p>Sets the operator to {@link Operator#LESS_THAN_OR_EQUAL} and the operand to {@code value}.
+		 * <p>Enables the condition if {@code value} is non-null, otherwise disables it.
+		 * @param value the operand
+		 * @return true if the condition state changed
+		 */
+		boolean lessThanOrEqualTo(@Nullable T value);
+
+		/**
+		 * <p>Sets the operator to {@link Operator#IN} and the operands to {@code values}.
+		 * <p>Enables the condition if {@code values} is not empty, otherwise disables it.
+		 * @param values the operands
+		 * @return true if the condition state changed
+		 */
+		boolean in(T... values);
+
+		/**
+		 * <p>Sets the operator to {@link Operator#IN} and the operands to {@code values}.
+		 * <p>Enables the condition if {@code values} is not empty, otherwise disables it.
+		 * @param values the operands
+		 * @return true if the condition state changed
+		 */
+		boolean in(Collection<T> values);
+
+		/**
+		 * <p>Sets the operator to {@link Operator#IN} and the operands to {@code values}.
+		 * <p>Enables the condition if {@code values} is not empty, otherwise disables it.
+		 * @param values the operands
+		 * @return true if the condition state changed
+		 */
+		boolean notIn(T... values);
+
+		/**
+		 * <p>Sets the operator to {@link Operator#NOT_IN} and the operands to {@code values}.
+		 * <p>Enables the condition if {@code values} is not empty, otherwise disables it.
+		 * @param values the operands
+		 * @return true if the condition state changed
+		 */
+		boolean notIn(Collection<T> values);
+
+		/**
+		 * <p>Sets the operator to {@link Operator#BETWEEN_EXCLUSIVE} and the operands to {@code lower} and {@code upper}.
+		 * <p>Enables the condition if both operands are non-null, otherwise disables it.
+		 * @param lower the lower bound
+		 * @param upper the upper bound
+		 * @return true if the condition state changed
+		 */
+		boolean betweenExclusive(@Nullable T lower, @Nullable T upper);
+
+		/**
+		 * <p>Sets the operator to {@link Operator#NOT_BETWEEN_EXCLUSIVE} and the operands to {@code lower} and {@code upper}.
+		 * <p>Enables the condition if both operands are non-null, otherwise disables it.
+		 * @param lower the lower bound
+		 * @param upper the upper bound
+		 * @return true if the condition state changed
+		 */
+		boolean notBetweenExclusive(@Nullable T lower, @Nullable T upper);
+
+		/**
+		 * <p>Sets the operator to {@link Operator#BETWEEN} and the operands to {@code lower} and {@code upper}.
+		 * <p>Enables the condition if both operands are non-null, otherwise disables it.
+		 * @param lower the lower bound
+		 * @param upper the upper bound
+		 * @return true if the condition state changed
+		 */
+		boolean between(@Nullable T lower, @Nullable T upper);
+
+		/**
+		 * <p>Sets the operator to {@link Operator#NOT_BETWEEN} and the operands to {@code lower} and {@code upper}.
+		 * <p>Enables the condition if both operands are non-null, otherwise disables it.
+		 * @param lower the lower bound
+		 * @param upper the upper bound
+		 * @return true if the condition state changed
+		 */
+		boolean notBetween(@Nullable T lower, @Nullable T upper);
 	}
 
 	/**

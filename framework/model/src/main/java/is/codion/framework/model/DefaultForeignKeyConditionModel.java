@@ -108,6 +108,11 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 	}
 
 	@Override
+	public SetCondition<Entity> set() {
+		return condition.set();
+	}
+
+	@Override
 	public boolean accepts(Comparable<Entity> value) {
 		return condition.accepts(value);
 	}

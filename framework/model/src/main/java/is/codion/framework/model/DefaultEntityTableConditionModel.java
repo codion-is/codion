@@ -19,7 +19,6 @@
 package is.codion.framework.model;
 
 import is.codion.common.Conjunction;
-import is.codion.common.Operator;
 import is.codion.common.event.Event;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.ConditionModel.Operands;
@@ -78,38 +77,6 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	@Override
 	public EntityConnectionProvider connectionProvider() {
 		return connectionProvider;
-	}
-
-	@Override
-	public <T> boolean setEqualOperand(Attribute<T> attribute, T operand) {
-		requireNonNull(attribute);
-		boolean aggregate = attribute instanceof Column && entityDefinition.columns().definition((Column<?>) attribute).aggregate();
-		Condition condition = aggregate ? having(Conjunction.AND) : where(Conjunction.AND);
-		tableConditionModel.optional(attribute)
-						.ifPresent(conditionModel -> {
-							conditionModel.operator().set(Operator.EQUAL);
-							conditionModel.operands().equal().set(operand);
-							conditionModel.enabled().set(operand != null);
-						});
-
-		return !condition.equals(aggregate ? having(Conjunction.AND) : where(Conjunction.AND));
-	}
-
-	@Override
-	public <T> boolean setInOperands(Attribute<T> attribute, Collection<T> operands) {
-		requireNonNull(attribute);
-		requireNonNull(operands);
-		boolean aggregate = attribute instanceof Column && entityDefinition.columns().definition((Column<?>) attribute).aggregate();
-		Condition condition = aggregate ? having(Conjunction.AND) : where(Conjunction.AND);
-		tableConditionModel.optional(attribute)
-						.map(conditionModel -> (ConditionModel<T>) conditionModel)
-						.ifPresent(conditionModel -> {
-							conditionModel.operator().set(Operator.IN);
-							conditionModel.operands().in().set(operands);
-							conditionModel.enabled().set(!operands.isEmpty());
-						});
-
-		return !condition.equals(aggregate ? having(Conjunction.AND) : where(Conjunction.AND));
 	}
 
 	@Override
