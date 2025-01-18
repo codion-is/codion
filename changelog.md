@@ -12,6 +12,7 @@ Codion Change Log
 - ComponentBuilder.TRANSFER_FOCUS_ON_ENTER removed.
 - DefaultControlsBuilder.separatorAt() bug fixed, appended instead of inserting at index.
 - DefaultControlsBuilder, now prevents multiple consecutive separators from being added via actions().
+- DefaultFilterTableSearchModel optimized, searchResults no longer ValueList based.
 ### is.codion.framework.model
 - DefaultEntityQueryModel.conditionChanged() bug fixed, no longer active when limit, orderBy or attributes have changed.
 - EntityQueryModel.resetConditionChanged() removed.

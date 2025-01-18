@@ -18,23 +18,26 @@
  */
 package is.codion.swing.common.ui.component.table;
 
+import is.codion.common.event.Event;
 import is.codion.common.observable.Observable;
 import is.codion.common.observable.Observer;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueList;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
@@ -101,7 +104,7 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 			for (int columnIndex = 0; columnIndex < visibleColumns.size(); columnIndex++) {
 				FilterTableColumn<C> column = visibleColumns.get(columnIndex);
 				if (searchPredicate.test(tableModel.values().string(row, column.identifier()))) {
-					results.searchResults.add(new DefaultRowColumn(row, columnIndex));
+					results.add(new DefaultRowColumn(row, columnIndex));
 				}
 			}
 		}
@@ -130,7 +133,8 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 
 	private final class DefaultResults implements Results {
 
-		private final ValueList<RowColumn> searchResults = ValueList.valueList();
+		private final List<RowColumn> searchResults = new ArrayList<>();
+		private final Event<List<RowColumn>> resultsChanged = Event.event();
 		private final Value<RowColumn> searchResult = Value.nonNull(NULL_COORDINATE);
 
 		private int searchResultIndex = -1;
@@ -162,32 +166,32 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 
 		@Override
 		public List<RowColumn> get() {
-			return searchResults.get();
+			return unmodifiableList(searchResults);
 		}
 
 		@Override
 		public Observer<List<RowColumn>> observer() {
-			return searchResults.observer();
+			return resultsChanged.observer();
 		}
 
 		private Optional<RowColumn> next(boolean addToSelection) {
-			if (searchResults.size() == 0) {
+			if (searchResults.isEmpty()) {
 				return empty(addToSelection);
 			}
 
 			searchResultIndex = incrementSearchResultIndex();
-			searchResult.set(searchResults.get().get(searchResultIndex));
+			searchResult.set(searchResults.get(searchResultIndex));
 
 			return select(addToSelection);
 		}
 
 		private Optional<RowColumn> previous(boolean addToSelection) {
-			if (searchResults.size() == 0) {
+			if (searchResults.isEmpty()) {
 				return empty(addToSelection);
 			}
 
 			searchResultIndex = decrementSearchResultIndex();
-			searchResult.set(searchResults.get().get(searchResultIndex));
+			searchResult.set(searchResults.get(searchResultIndex));
 
 			return select(addToSelection);
 		}
@@ -223,6 +227,12 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 			searchResults.clear();
 			searchResultIndex = -1;
 			searchResult.clear();
+			resultsChanged.accept(emptyList());
+		}
+
+		private void add(DefaultRowColumn rowColumn) {
+			searchResults.add(rowColumn);
+			resultsChanged.accept(get());
 		}
 	}
 
