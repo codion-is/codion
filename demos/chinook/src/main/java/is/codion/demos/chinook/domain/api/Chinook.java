@@ -46,6 +46,7 @@ import java.text.ParsePosition;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.function.Function;
 import java.util.regex.Pattern;
@@ -250,22 +251,32 @@ public interface Chinook {
 		}
 	}
 
-	final class CustomerStringProvider
+	final class CustomerStringFactory
 					implements Function<Entity, String>, Serializable {
 
 		@Serial
 		private static final long serialVersionUID = 1;
 
+		private static final String LANGUAGE = Locale.getDefault().getLanguage();
+
 		@Override
 		public String apply(Entity customer) {
-			return new StringBuilder()
-							.append(customer.get(Customer.LASTNAME))
-							.append(", ")
-							.append(customer.get(Customer.FIRSTNAME))
-							.append(customer.optional(Customer.EMAIL)
-											.map(email -> " <" + email + ">")
-											.orElse(""))
-							.toString();
+			switch (LANGUAGE) {
+				case "en":
+					return new StringBuilder()
+									.append(customer.get(Customer.LASTNAME))
+									.append(", ")
+									.append(customer.get(Customer.FIRSTNAME))
+									.toString();
+				case "is":
+					return new StringBuilder()
+									.append(customer.get(Customer.FIRSTNAME))
+									.append(" ")
+									.append(customer.get(Customer.LASTNAME))
+									.toString();
+				default:
+					throw new IllegalArgumentException("Unsupported language: " + LANGUAGE);
+			}
 		}
 	}
 

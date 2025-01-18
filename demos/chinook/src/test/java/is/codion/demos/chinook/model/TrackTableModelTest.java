@@ -36,23 +36,23 @@ public final class TrackTableModelTest {
 
 	@Test
 	void raisePriceOfSelected() {
-		EntityConnectionProvider connectionProvider = createConnectionProvider();
+		try (EntityConnectionProvider connectionProvider = createConnectionProvider()) {
+			Entity masterOfPuppets = connectionProvider.connection()
+							.selectSingle(Album.TITLE.equalTo("Master Of Puppets"));
 
-		Entity masterOfPuppets = connectionProvider.connection()
-						.selectSingle(Album.TITLE.equalTo("Master Of Puppets"));
-
-		TrackTableModel trackTableModel = new TrackTableModel(connectionProvider);
-		trackTableModel.queryModel().conditions()
+			TrackTableModel trackTableModel = new TrackTableModel(connectionProvider);
+			trackTableModel.queryModel().conditions()
 						.get(Track.ALBUM_FK).set().equalTo(masterOfPuppets);
 
-		trackTableModel.items().refresh();
-		assertEquals(8, trackTableModel.items().visible().count());
+			trackTableModel.items().refresh();
+			assertEquals(8, trackTableModel.items().visible().count());
 
-		trackTableModel.selection().selectAll();
-		trackTableModel.raisePriceOfSelected(BigDecimal.ONE);
+			trackTableModel.selection().selectAll();
+			trackTableModel.raisePriceOfSelected(BigDecimal.ONE);
 
-		trackTableModel.items().get().forEach(track ->
-						assertEquals(BigDecimal.valueOf(1.99), track.get(Track.UNITPRICE)));
+			trackTableModel.items().get().forEach(track ->
+							assertEquals(BigDecimal.valueOf(1.99), track.get(Track.UNITPRICE)));
+		}
 	}
 
 	private static EntityConnectionProvider createConnectionProvider() {

@@ -243,7 +243,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 						.keyGenerator(identity())
 						.validator(new EmailValidator(Customer.EMAIL))
 						.orderBy(ascending(Customer.LASTNAME, Customer.FIRSTNAME))
-						.stringFactory(new CustomerStringProvider())
+						.stringFactory(new CustomerStringFactory())
 						.build();
 	}
 
