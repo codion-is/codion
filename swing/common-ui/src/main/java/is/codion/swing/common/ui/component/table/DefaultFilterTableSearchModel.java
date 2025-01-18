@@ -240,17 +240,17 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 
 		@Override
 		public void columnAdded(TableColumnModelEvent e) {
-			results.clear();
+			searchString.clear();
 		}
 
 		@Override
 		public void columnRemoved(TableColumnModelEvent e) {
-			results.clear();
+			searchString.clear();
 		}
 
 		@Override
 		public void columnMoved(TableColumnModelEvent e) {
-			results.clear();
+			searchString.clear();
 		}
 
 		@Override
