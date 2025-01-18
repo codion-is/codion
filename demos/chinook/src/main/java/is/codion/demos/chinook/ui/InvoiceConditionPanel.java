@@ -21,11 +21,11 @@ package is.codion.demos.chinook.ui;
 import is.codion.common.Operator;
 import is.codion.common.item.Item;
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.model.condition.TableConditionModel;
 import is.codion.demos.chinook.domain.api.Chinook.Invoice;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.ConditionPanel;
@@ -87,11 +87,12 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 												Map<Attribute<?>, ConditionPanel<?>> conditionPanels,
 												FilterTableColumnModel<Attribute<?>> columnModel,
 												Consumer<TableConditionPanel<Attribute<?>>> onPanelInitialized) {
-		super(tableModel.queryModel().conditions(), attribute -> columnModel.column(attribute).getHeaderValue().toString());
+		super(tableModel.queryModel().conditions().conditionModel(),
+						attribute -> columnModel.column(attribute).getHeaderValue().toString());
 		setLayout(new BorderLayout());
 		tableModel.queryModel().conditions().persist().add(Invoice.DATE);
-		this.simpleConditionPanel = new SimpleConditionPanel(tableModel.queryModel().conditions(), tableModel);
-		this.advancedConditionPanel = filterTableConditionPanel(tableModel.queryModel().conditions(),
+		this.simpleConditionPanel = new SimpleConditionPanel(tableModel);
+		this.advancedConditionPanel = filterTableConditionPanel(tableModel.queryModel().conditions().conditionModel(),
 						conditionPanels, columnModel, onPanelInitialized);
 		view().link(advancedConditionPanel.view());
 	}
@@ -153,12 +154,13 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 		private final CustomerConditionPanel customerConditionPanel;
 		private final DateConditionPanel dateConditionPanel;
 
-		private SimpleConditionPanel(TableConditionModel<Attribute<?>> tableConditionModel,
-																 SwingEntityTableModel tableModel) {
+		private SimpleConditionPanel(SwingEntityTableModel tableModel) {
 			super(new BorderLayout());
 			setBorder(createEmptyBorder(5, 5, 5, 5));
-			customerConditionPanel = new CustomerConditionPanel(tableConditionModel.get(Invoice.CUSTOMER_FK), tableModel.entityDefinition());
-			dateConditionPanel = new DateConditionPanel(tableConditionModel.get(Invoice.DATE));
+			EntityTableConditionModel entityConditionModel = tableModel.queryModel().conditions();
+			ForeignKeyConditionModel customerConditionModel = entityConditionModel.get(Invoice.CUSTOMER_FK);
+			customerConditionPanel = new CustomerConditionPanel(customerConditionModel, tableModel.entityDefinition());
+			dateConditionPanel = new DateConditionPanel(entityConditionModel.get(Invoice.DATE));
 			dateConditionPanel.yearValue.addListener(tableModel.items()::refresh);
 			dateConditionPanel.monthValue.addListener(tableModel.items()::refresh);
 			conditionPanels.put(Invoice.CUSTOMER_FK, customerConditionPanel);
@@ -199,13 +201,12 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 
 			private final EntitySearchField searchField;
 
-			private CustomerConditionPanel(ConditionModel<Entity> condition, EntityDefinition definition) {
-				super(condition);
+			private CustomerConditionPanel(ForeignKeyConditionModel conditionModel, EntityDefinition definition) {
+				super(conditionModel);
 				setLayout(new BorderLayout());
 				setBorder(createTitledBorder(createEmptyBorder(), definition.attributes().definition(Invoice.CUSTOMER_FK).caption()));
-				ForeignKeyConditionModel foreignKeyCondition = (ForeignKeyConditionModel) condition;
-				foreignKeyCondition.operands().in().value().link(foreignKeyCondition.operands().equal());
-				searchField = EntitySearchField.builder(foreignKeyCondition.inSearchModel())
+				conditionModel.operands().in().value().link(conditionModel.operands().equal());
+				searchField = EntitySearchField.builder(conditionModel.inSearchModel())
 								.multiSelection()
 								.columns(25)
 								.build();

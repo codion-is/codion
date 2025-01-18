@@ -18,7 +18,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -64,10 +63,9 @@ public class DefaultEntityTableConditionModelTest {
 		EntityTableConditionModel model = new DefaultEntityTableConditionModel(Detail.TYPE,
 						CONNECTION_PROVIDER, new EntityConditionModelFactory(Detail.TYPE, CONNECTION_PROVIDER));
 		//no search columns defined for master entity
-		ConditionModel<Entity> masterModel =
-						model.foreignKey(Detail.MASTER_FK);
+		ForeignKeyConditionModel masterModel = model.get(Detail.MASTER_FK);
 		assertThrows(IllegalStateException.class, () ->
-						((ForeignKeyConditionModel) masterModel).equalSearchModel().search().result());
+						masterModel.equalSearchModel().search().result());
 	}
 
 	@Test
@@ -87,8 +85,8 @@ public class DefaultEntityTableConditionModelTest {
 		boolean searchStateChanged = conditionModel.setEqualOperand(Employee.DEPARTMENT_FK, sales);
 		assertTrue(searchStateChanged);
 		assertTrue(conditionModel.get(Employee.DEPARTMENT_FK).enabled().get());
-		ConditionModel<Entity> deptModel =
-						conditionModel.foreignKey(Employee.DEPARTMENT_FK);
+		ForeignKeyConditionModel deptModel =
+						conditionModel.get(Employee.DEPARTMENT_FK);
 		assertSame(deptModel.operands().equal().get(), sales);
 		assertThrows(NullPointerException.class, () -> conditionModel.setEqualOperand(null, sales));
 		searchStateChanged = conditionModel.setEqualOperand(Employee.DEPARTMENT_FK, null);
@@ -104,8 +102,7 @@ public class DefaultEntityTableConditionModelTest {
 		boolean searchStateChanged = conditionModel.setInOperands(Employee.DEPARTMENT_FK, asList(sales, accounting));
 		assertTrue(searchStateChanged);
 		assertTrue(conditionModel.get(Employee.DEPARTMENT_FK).enabled().get());
-		ConditionModel<Entity> deptModel =
-						conditionModel.foreignKey(Employee.DEPARTMENT_FK);
+		ForeignKeyConditionModel deptModel = conditionModel.get(Employee.DEPARTMENT_FK);
 		assertTrue(deptModel.operands().in().get().contains(sales));
 		assertTrue(deptModel.operands().in().get().contains(accounting));
 		assertThrows(NullPointerException.class, () -> conditionModel.setInOperands(Employee.DEPARTMENT_FK, null));

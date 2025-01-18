@@ -123,28 +123,30 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	}
 
 	@Override
+	public TableConditionModel<Attribute<?>> conditionModel() {
+		return tableConditionModel;
+	}
+
+	@Override
 	public Map<Attribute<?>, ConditionModel<?>> get() {
 		return tableConditionModel.get();
 	}
 
 	@Override
-	public <T> ConditionModel<T> get(Attribute<?> identifier) {
-		return tableConditionModel.get(requireNonNull(identifier));
+	public <T> Optional<ConditionModel<T>> optional(Attribute<T> attribute) {
+		return tableConditionModel.optional(requireNonNull(attribute));
 	}
 
 	@Override
-	public <T> Optional<ConditionModel<T>> optional(Attribute<?> identifier) {
-		return tableConditionModel.optional(requireNonNull(identifier));
+	public <T> ConditionModel<T> get(Column<T> column) {
+		return tableConditionModel.get(column);
 	}
 
 	@Override
-	public <T> ConditionModel<T> column(Column<T> column) {
-		return get(column);
-	}
+	public ForeignKeyConditionModel get(ForeignKey foreignKey) {
+		ConditionModel<Entity> model = tableConditionModel.get(foreignKey);
 
-	@Override
-	public ConditionModel<Entity> foreignKey(ForeignKey foreignKey) {
-		return get(foreignKey);
+		return (ForeignKeyConditionModel) model;
 	}
 
 	@Override

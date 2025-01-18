@@ -1495,7 +1495,7 @@ public class EntityTablePanel extends JPanel {
 	private TableConditionPanel<Attribute<?>> createTableConditionPanel() {
 		if (configuration.includeConditions) {
 			TableConditionPanel<Attribute<?>> conditionPanel = configuration.conditionPanelFactory
-							.create(tableModel.queryModel().conditions(), createConditionPanels(),
+							.create(tableModel.queryModel().conditions().conditionModel(), createConditionPanels(),
 											table.columnModel(), this::configureTableConditionPanel);
 			KeyEvents.builder(VK_ENTER)
 							.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)

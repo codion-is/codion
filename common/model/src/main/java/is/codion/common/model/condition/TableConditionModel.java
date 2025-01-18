@@ -49,7 +49,7 @@ public interface TableConditionModel<C> {
 	 */
 	<T> ConditionModel<T> get(C identifier);
 
-		/**
+	/**
 	 * The condition model associated with {@code identifier}
 	 * @param <T> the condition value type
 	 * @param identifier the identifier for which to retrieve the {@link ConditionModel}

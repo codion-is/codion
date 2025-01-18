@@ -23,6 +23,7 @@ Codion Change Log
 - ForeignKeyConditionModel.ForeignKeyOperands removed.
 - EntityConditionModelFactory.conditionModel(ForeignKey) now returns ForeignKeyConditionModel.
 - EntitySearchModel.Builder.columns() renamed searchColumns().
+- EntityTableConditionModel no longer extends TableConditionModel.
 ### is.codion.swing.framework.model
 - SwingForeignKeyConditionModel.equalComboBoxModel() and inSearchModel() moved to SwingForeignKeyOperands.
 ### is.codion.swing.framework.ui

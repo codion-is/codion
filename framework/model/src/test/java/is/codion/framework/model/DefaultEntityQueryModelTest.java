@@ -72,7 +72,7 @@ public final class DefaultEntityQueryModelTest {
 		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(new DefaultEntityTableConditionModel(Employee.TYPE,
 					CONNECTION_PROVIDER, new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER)));
 
-		ConditionModel<Object> nameCondition = queryModel.conditions().get(Employee.NAME);
+		ConditionModel<String> nameCondition = queryModel.conditions().get(Employee.NAME);
 
 		queryModel.limit().set(10);
 		nameCondition.operands().equal().set(null);

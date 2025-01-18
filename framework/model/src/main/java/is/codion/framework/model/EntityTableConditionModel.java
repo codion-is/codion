@@ -21,8 +21,10 @@ package is.codion.framework.model;
 import is.codion.common.Conjunction;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.observable.Observer;
+import is.codion.common.state.ObservableState;
+import is.codion.common.value.ValueSet;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -31,13 +33,14 @@ import is.codion.framework.domain.entity.condition.Condition;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
  * Factory for {@link EntityTableConditionModel} instances via
  * {@link EntityTableConditionModel#entityTableConditionModel(EntityType, EntityConnectionProvider)}
  */
-public interface EntityTableConditionModel extends TableConditionModel<Attribute<?>> {
+public interface EntityTableConditionModel {
 
 	/**
 	 * @return the type of the entity this table condition model is based on
@@ -84,13 +87,18 @@ public interface EntityTableConditionModel extends TableConditionModel<Attribute
 	Condition having(Conjunction conjunction);
 
 	/**
+	 * @return an unmodifiable view of the available condition models
+	 */
+	Map<Attribute<?>, ConditionModel<?>> get();
+
+	/**
 	 * Returns the {@link ConditionModel} associated with the given column.
 	 * @param <T> the column value type
 	 * @param column the column for which to retrieve the {@link ConditionModel}
 	 * @return the {@link ConditionModel} associated with {@code column}
 	 * @throws IllegalArgumentException in case no condition model exists for the given column
 	 */
-	<T> ConditionModel<T> column(Column<T> column);
+	<T> ConditionModel<T> get(Column<T> column);
 
 	/**
 	 * Returns the {@link ConditionModel} associated with the given foreignKey.
@@ -98,7 +106,43 @@ public interface EntityTableConditionModel extends TableConditionModel<Attribute
 	 * @return the {@link ConditionModel} associated with {@code foreignKey}
 	 * @throws IllegalArgumentException in case no condition model exists for the given foreignKey
 	 */
-	ConditionModel<Entity> foreignKey(ForeignKey foreignKey);
+	ForeignKeyConditionModel get(ForeignKey foreignKey);
+
+	/**
+	 * The condition model associated with {@code attribute}
+	 * @param <T> the condition value type
+	 * @param attribute the attribute for which to retrieve the {@link ConditionModel}
+	 * @return the {@link ConditionModel} for the {@code attribute} or an empty Optional in case one is not available
+	 */
+	<T> Optional<ConditionModel<T>> optional(Attribute<T> attribute);
+
+	/**
+	 * Clears the search state of all non-persistant condition models, disables them and
+	 * resets the operator to the inital one.
+	 * @see #persist()
+	 */
+	void clear();
+
+	/**
+	 * @return an {@link ObservableState} enabled when any of the underlying condition models are enabled
+	 */
+	ObservableState enabled();
+
+	/**
+	 * @return an observer notified each time the condition changes
+	 */
+	Observer<?> changed();
+
+	/**
+	 * @return a {@link ValueSet} controlling the identifiers of conditions which should persist when this condition model is cleared
+	 * @see #clear()
+	 */
+	ValueSet<Attribute<?>> persist();
+
+	/**
+	 * @return the underlying {@link TableConditionModel}
+	 */
+	TableConditionModel<Attribute<?>> conditionModel();
 
 	/**
 	 * Creates a new {@link EntityTableConditionModel}
