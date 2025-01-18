@@ -28,6 +28,7 @@ Codion Change Log
 - EntitySearchModel.Builder.columns() renamed searchColumns().
 - EntityTableConditionModel no longer extends TableConditionModel.
 - EntityTableConditionModel.setEqualOperand() and setInOperands() removed.
+- DefaultEntityQueryModel bug fixed, refactored in order to prevent ConcurrentModificationException, no longer List based.
 ### is.codion.swing.framework.model
 - SwingForeignKeyConditionModel.equalComboBoxModel() and inSearchModel() moved to SwingForeignKeyOperands.
 ### is.codion.swing.framework.ui

@@ -29,7 +29,6 @@ public final class DefaultEntityApplicationPanelBuilderTest {
 		for (Map.Entry<String, String> entry : DefaultEntityApplicationPanelBuilder.INTELLIJ_THEMES.entrySet()) {
 			Class.forName(entry.getKey());
 			Class.forName(entry.getValue());
-			System.out.println(entry);
 		}
 	}
 }
