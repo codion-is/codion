@@ -45,6 +45,7 @@ Codion Change Log
 - EntityEditComponentPanel.InputFocus.transferOnEnter() reintroduced.
 - DefaultEditComponentFactory, EntitySearchField no longer performs search on focus lost.
 - EntitySearchField.Builder, method return type fixed.
+- EntityComponents.textField() bug fixed, did not set the format and tooltip text for numerical and temporal fields.
 
 ## 0.18.25
 ### is.codion.common.db

@@ -302,9 +302,11 @@ public final class EntityComponents {
 	 * @return a {@link TemporalFieldPanel} builder
 	 */
 	public <T extends Temporal> TemporalFieldPanel.Builder<T> temporalFieldPanel(Attribute<T> attribute) {
+		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
+
 		return Components.temporalFieldPanel(attribute.type().valueClass())
-						.dateTimePattern(entityDefinition.attributes().definition(attribute).dateTimePattern())
-						.toolTipText(entityDefinition.attributes().definition(attribute).description())
+						.dateTimePattern(attributeDefinition.dateTimePattern())
+						.toolTipText(attributeDefinition.description())
 						.calendarIcon(ICONS.calendar());
 	}
 
@@ -358,10 +360,15 @@ public final class EntityComponents {
 							.focusable(false);
 		}
 		if (attribute.type().isTemporal()) {
-			return (TextFieldBuilder<T, C, B>) temporalField((Attribute<Temporal>) attribute);
+			return (TextFieldBuilder<T, C, B>) temporalField((Attribute<Temporal>) attribute)
+							.dateTimePattern(attributeDefinition.dateTimePattern())
+							.toolTipText(attributeDefinition.description())
+							.calendarIcon(ICONS.calendar());
 		}
 		if (attribute.type().isNumerical()) {
-			return (TextFieldBuilder<T, C, B>) NumberField.builder((Class<Number>) attribute.type().valueClass());
+			return (TextFieldBuilder<T, C, B>) NumberField.builder((Class<Number>) attribute.type().valueClass())
+							.format(attributeDefinition.format())
+							.toolTipText(attributeDefinition.description());
 		}
 
 		return (TextFieldBuilder<T, C, B>) Components.textField(attribute.type().valueClass())
@@ -380,7 +387,7 @@ public final class EntityComponents {
 		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.temporalField(attributeDefinition.attribute().type().valueClass())
-						.dateTimePattern(entityDefinition.attributes().definition(attribute).dateTimePattern())
+						.dateTimePattern(attributeDefinition.dateTimePattern())
 						.toolTipText(attributeDefinition.description())
 						.calendarIcon(ICONS.calendar());
 	}
