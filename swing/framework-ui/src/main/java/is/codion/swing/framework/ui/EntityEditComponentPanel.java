@@ -910,7 +910,7 @@ public class EntityEditComponentPanel extends JPanel {
 		 */
 		public final class AfterInsert {
 
-			private Supplier<JComponent> component = initial.component;
+			private Supplier<JComponent> component = () -> initial.component.get();
 
 			private AfterInsert() {}
 
