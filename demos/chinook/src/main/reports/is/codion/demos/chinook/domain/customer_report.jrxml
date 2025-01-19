@@ -8,15 +8,15 @@
 	<import>java.util.*</import>
 	<import>net.sf.jasperreports.engine.data.*</import>
 	<parameter name="CUSTOMER_IDS" forPrompting="false" class="java.util.Collection"/>
-	<query language="sql"><![CDATA[select c.customerid,
+	<query language="sql"><![CDATA[select c.id,
 	 max(c.lastname) last_name, max(c.firstname) as first_name,
 	 i.invoicedate invoice_date,
     sum(il.quantity * il.unitprice) as total
 from chinook.customer c, chinook.invoice i, chinook.invoiceline il
-where i.customerid = c.customerid
-and il.invoiceid = i.invoiceid
-and $X{IN, c.customerid, CUSTOMER_IDS}
-group by c.customerid, i.invoicedate]]></query>
+where i.customer_id = c.id
+and il.invoice_id = i.id
+and $X{IN, c.id, CUSTOMER_IDS}
+group by c.id, i.invoicedate]]></query>
 	<field name="LAST_NAME" class="java.lang.String"/>
 	<field name="FIRST_NAME" class="java.lang.String"/>
 	<field name="INVOICE_DATE" class="java.util.Date"/>

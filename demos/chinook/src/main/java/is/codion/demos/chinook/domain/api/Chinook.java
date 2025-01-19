@@ -63,7 +63,7 @@ public interface Chinook {
 	interface Artist {
 		EntityType TYPE = DOMAIN.entityType("chinook.artist", Artist.class.getName());
 
-		Column<Long> ID = TYPE.longColumn("artistid");
+		Column<Long> ID = TYPE.longColumn("id");
 		Column<String> NAME = TYPE.stringColumn("name");
 		Column<Integer> NUMBER_OF_ALBUMS = TYPE.integerColumn("number_of_albums");
 		Column<Integer> NUMBER_OF_TRACKS = TYPE.integerColumn("number_of_tracks");
@@ -72,9 +72,9 @@ public interface Chinook {
 	interface Album {
 		EntityType TYPE = DOMAIN.entityType("chinook.album", Album.class.getName());
 
-		Column<Long> ID = TYPE.longColumn("albumid");
+		Column<Long> ID = TYPE.longColumn("id");
 		Column<String> TITLE = TYPE.stringColumn("title");
-		Column<Long> ARTIST_ID = TYPE.longColumn("artistid");
+		Column<Long> ARTIST_ID = TYPE.longColumn("artist_id");
 		Column<byte[]> COVER = TYPE.byteArrayColumn("cover");
 		Column<Integer> NUMBER_OF_TRACKS = TYPE.integerColumn("number_of_tracks");
 		Column<List<String>> TAGS = TYPE.column("tags", new TypeReference<>() {});
@@ -86,11 +86,11 @@ public interface Chinook {
 	interface Employee {
 		EntityType TYPE = DOMAIN.entityType("chinook.employee", Employee.class.getName());
 
-		Column<Long> ID = TYPE.longColumn("employeeid");
+		Column<Long> ID = TYPE.longColumn("id");
 		Column<String> LASTNAME = TYPE.stringColumn("lastname");
 		Column<String> FIRSTNAME = TYPE.stringColumn("firstname");
 		Column<String> TITLE = TYPE.stringColumn("title");
-		Column<Long> REPORTSTO = TYPE.longColumn("reportsto");
+		Column<Long> REPORTSTO = TYPE.longColumn("reportsto_id");
 		Column<LocalDate> BIRTHDATE = TYPE.localDateColumn("birthdate");
 		Column<LocalDate> HIREDATE = TYPE.localDateColumn("hiredate");
 		Column<String> ADDRESS = TYPE.stringColumn("address");
@@ -108,7 +108,7 @@ public interface Chinook {
 	interface Customer {
 		EntityType TYPE = DOMAIN.entityType("chinook.customer", Customer.class.getName());
 
-		Column<Long> ID = TYPE.longColumn("customerid");
+		Column<Long> ID = TYPE.longColumn("id");
 		Column<String> FIRSTNAME = TYPE.stringColumn("firstname");
 		Column<String> LASTNAME = TYPE.stringColumn("lastname");
 		Column<String> COMPANY = TYPE.stringColumn("company");
@@ -120,7 +120,7 @@ public interface Chinook {
 		Column<String> PHONE = TYPE.stringColumn("phone");
 		Column<String> FAX = TYPE.stringColumn("fax");
 		Column<String> EMAIL = TYPE.stringColumn("email");
-		Column<Long> SUPPORTREP_ID = TYPE.longColumn("supportrepid");
+		Column<Long> SUPPORTREP_ID = TYPE.longColumn("supportrep_id");
 
 		ForeignKey SUPPORTREP_FK = TYPE.foreignKey("supportrep_fk", SUPPORTREP_ID, Employee.ID);
 
@@ -130,26 +130,26 @@ public interface Chinook {
 	interface Genre {
 		EntityType TYPE = DOMAIN.entityType("chinook.genre", Genre.class.getName());
 
-		Column<Long> ID = TYPE.longColumn("genreid");
+		Column<Long> ID = TYPE.longColumn("id");
 		Column<String> NAME = TYPE.stringColumn("name");
 	}
 
 	interface MediaType {
 		EntityType TYPE = DOMAIN.entityType("chinook.mediatype", MediaType.class.getName());
 
-		Column<Long> ID = TYPE.longColumn("mediatypeid");
+		Column<Long> ID = TYPE.longColumn("id");
 		Column<String> NAME = TYPE.stringColumn("name");
 	}
 
 	interface Track {
 		EntityType TYPE = DOMAIN.entityType("chinook.track", Track.class.getName());
 
-		Column<Long> ID = TYPE.longColumn("trackid");
+		Column<Long> ID = TYPE.longColumn("id");
 		Column<String> NAME = TYPE.stringColumn("name");
-		Attribute<Entity> ARTIST = TYPE.entityAttribute("artist");
-		Column<Long> ALBUM_ID = TYPE.longColumn("albumid");
-		Column<Long> MEDIATYPE_ID = TYPE.longColumn("mediatypeid");
-		Column<Long> GENRE_ID = TYPE.longColumn("genreid");
+		Column<Long> ALBUM_ID = TYPE.longColumn("album_id");
+		Column<String> ARTIST_NAME = TYPE.stringColumn("artist_name");
+		Column<Long> MEDIATYPE_ID = TYPE.longColumn("mediatype_id");
+		Column<Long> GENRE_ID = TYPE.longColumn("genre_id");
 		Column<String> COMPOSER = TYPE.stringColumn("composer");
 		Column<Integer> MILLISECONDS = TYPE.integerColumn("milliseconds");
 		Column<Integer> BYTES = TYPE.integerColumn("bytes");
@@ -177,8 +177,8 @@ public interface Chinook {
 	interface Invoice {
 		EntityType TYPE = DOMAIN.entityType("chinook.invoice", Invoice.class.getName());
 
-		Column<Long> ID = TYPE.longColumn("invoiceid");
-		Column<Long> CUSTOMER_ID = TYPE.longColumn("customerid");
+		Column<Long> ID = TYPE.longColumn("id");
+		Column<Long> CUSTOMER_ID = TYPE.longColumn("customer_id");
 		Column<LocalDate> DATE = TYPE.localDateColumn("invoicedate");
 		Column<String> BILLINGADDRESS = TYPE.stringColumn("billingaddress");
 		Column<String> BILLINGCITY = TYPE.stringColumn("billingcity");
@@ -198,9 +198,9 @@ public interface Chinook {
 	interface InvoiceLine {
 		EntityType TYPE = DOMAIN.entityType("chinook.invoiceline", InvoiceLine.class.getName());
 
-		Column<Long> ID = TYPE.longColumn("invoicelineid");
-		Column<Long> INVOICE_ID = TYPE.longColumn("invoiceid");
-		Column<Long> TRACK_ID = TYPE.longColumn("trackid");
+		Column<Long> ID = TYPE.longColumn("id");
+		Column<Long> INVOICE_ID = TYPE.longColumn("invoice_id");
+		Column<Long> TRACK_ID = TYPE.longColumn("track_id");
 		Column<BigDecimal> UNITPRICE = TYPE.bigDecimalColumn("unitprice");
 		Column<Integer> QUANTITY = TYPE.integerColumn("quantity");
 		Attribute<BigDecimal> TOTAL = TYPE.bigDecimalAttribute("total");
@@ -212,7 +212,7 @@ public interface Chinook {
 	interface Playlist {
 		EntityType TYPE = DOMAIN.entityType("chinook.playlist", Playlist.class.getName());
 
-		Column<Long> ID = TYPE.longColumn("playlistid");
+		Column<Long> ID = TYPE.longColumn("id");
 		Column<String> NAME = TYPE.stringColumn("name");
 
 		FunctionType<EntityConnection, RandomPlaylistParameters, Entity> RANDOM_PLAYLIST = functionType("chinook.random_playlist");
@@ -223,9 +223,9 @@ public interface Chinook {
 	interface PlaylistTrack {
 		EntityType TYPE = DOMAIN.entityType("chinook.playlisttrack", PlaylistTrack.class.getName());
 
-		Column<Long> ID = TYPE.longColumn("playlisttrackid");
-		Column<Long> PLAYLIST_ID = TYPE.longColumn("playlistid");
-		Column<Long> TRACK_ID = TYPE.longColumn("trackid");
+		Column<Long> ID = TYPE.longColumn("id");
+		Column<Long> PLAYLIST_ID = TYPE.longColumn("playlist_id");
+		Column<Long> TRACK_ID = TYPE.longColumn("track_id");
 		Attribute<Entity> ALBUM = TYPE.entityAttribute("album");
 		Attribute<Entity> ARTIST = TYPE.entityAttribute("artist");
 

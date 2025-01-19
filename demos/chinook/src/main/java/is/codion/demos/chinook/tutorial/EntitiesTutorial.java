@@ -61,7 +61,7 @@ public final class EntitiesTutorial {
 		public interface Artist {
 			EntityType TYPE = DOMAIN.entityType("chinook.artist");
 
-			Column<Long> ID = TYPE.longColumn("artistid");
+			Column<Long> ID = TYPE.longColumn("id");
 			Column<String> NAME = TYPE.stringColumn("name");
 		}
 
@@ -70,9 +70,9 @@ public final class EntitiesTutorial {
 		public interface Album {
 			EntityType TYPE = DOMAIN.entityType("chinook.album");
 
-			Column<Long> ID = TYPE.longColumn("albumid");
+			Column<Long> ID = TYPE.longColumn("id");
 			Column<String> TITLE = TYPE.stringColumn("title");
-			Column<Long> ARTIST_ID = TYPE.longColumn("artistid");
+			Column<Long> ARTIST_ID = TYPE.longColumn("artist_id");
 
 			// create a foreign key attribute referencing the Artist.TYPE, via the Album.ARTIST_ID attribute
 			ForeignKey ARTIST_FK = TYPE.foreignKey("artist_fk", ARTIST_ID, Artist.ID);

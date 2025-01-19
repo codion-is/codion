@@ -121,7 +121,7 @@ public final class ChinookAuthenticator implements Authenticator {
 
 		interface User {
 			EntityType TYPE = DOMAIN.entityType("chinook.users");
-			Column<Integer> ID = TYPE.integerColumn("userid");
+			Column<Integer> ID = TYPE.integerColumn("id");
 			Column<String> USERNAME = TYPE.stringColumn("username");
 			Column<Integer> PASSWORD_HASH = TYPE.integerColumn("passwordhash");
 		}

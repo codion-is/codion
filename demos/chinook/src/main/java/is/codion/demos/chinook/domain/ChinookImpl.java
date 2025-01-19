@@ -35,6 +35,7 @@ import is.codion.framework.domain.entity.StringFactory;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.Column.Converter;
 import is.codion.framework.domain.entity.condition.ConditionProvider;
+import is.codion.framework.domain.entity.query.SelectQuery;
 
 import java.math.BigDecimal;
 import java.sql.Array;
@@ -77,13 +78,13 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.subquery("""
 																		SELECT COUNT(*)
 																		FROM chinook.album
-																		WHERE album.artistid = artist.artistid"""),
+																		WHERE album.artist_id = artist.id"""),
 										Artist.NUMBER_OF_TRACKS.define()
 														.subquery("""
 																		SELECT count(*)
 																		FROM chinook.track
-																		JOIN chinook.album ON track.albumid = album.albumid
-																		WHERE album.artistid = artist.artistid"""))
+																		JOIN chinook.album ON track.album_id = album.id
+																		WHERE album.artist_id = artist.id"""))
 						.keyGenerator(identity())
 						.orderBy(ascending(Artist.NAME))
 						.stringFactory(Artist.NAME)
@@ -111,14 +112,14 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 										Album.NUMBER_OF_TRACKS.define()
 														.subquery("""
 																		SELECT COUNT(*) FROM chinook.track
-																		WHERE track.albumid = album.albumid"""),
+																		WHERE track.album_id = album.id"""),
 										Album.TAGS.define()
 														.column()
 														.columnClass(Array.class, new TagsConverter(), ResultSet::getArray),
 										Album.RATING.define()
 														.subquery("""
 																		SELECT AVG(rating) FROM chinook.track
-																		WHERE track.albumid = album.albumid"""))
+																		WHERE track.album_id = album.id"""))
 						.keyGenerator(identity())
 						.orderBy(ascending(Album.ARTIST_ID, Album.TITLE))
 						.stringFactory(Album.TITLE)
@@ -280,7 +281,8 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 	EntityDefinition track() {
 		return Track.TYPE.define(
 										Track.ID.define()
-														.primaryKey(),
+														.primaryKey()
+														.expression("track.id"),
 										Track.ALBUM_ID.define()
 														.column()
 														.nullable(false),
@@ -289,10 +291,13 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.foreignKey(2)
 														.attributes(Album.ARTIST_FK, Album.TITLE),
 										// end::fetchDepth2[]
-										Track.ARTIST.define()
-														.denormalized(Track.ALBUM_FK, Album.ARTIST_FK),
+										Track.ARTIST_NAME.define()
+														.column()
+														.expression("artist.name")
+														.readOnly(true),
 										Track.NAME.define()
 														.column()
+														.expression("track.name")
 														.searchable(true)
 														.nullable(false)
 														.maximumLength(200),
@@ -330,6 +335,11 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.readOnly(true)
 														.selectable(false))
 						.keyGenerator(identity())
+						.selectQuery(SelectQuery.builder()
+										.from("chinook.track " +
+														"JOIN chinook.album ON track.album_id = album.id " +
+														"JOIN chinook.artist ON album.artist_id = artist.id")
+										.build())
 						.orderBy(ascending(Track.NAME))
 						.condition(Track.NOT_IN_PLAYLIST, new NotInPlaylistConditionProvider())
 						.stringFactory(Track.NAME)
@@ -376,7 +386,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.subquery("""
 																		SELECT SUM(unitprice * quantity)
 																		FROM chinook.invoiceline
-																		WHERE invoiceid = invoice.invoiceid""")
+																		WHERE invoice_id = invoice.id""")
 														.maximumFractionDigits(2))
 						// tag::identity[]
 						.keyGenerator(identity())
@@ -489,10 +499,10 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 		@Override
 		public String toString(List<Column<?>> columns, List<?> values) {
 			return new StringBuilder("""
-							trackid NOT IN (
-							    SELECT trackid
+							track.id NOT IN (
+							    SELECT track_id
 							    FROM chinook.playlisttrack
-							    WHERE playlistid IN (""")
+							    WHERE playlist_id IN (""")
 							.append(join(", ", nCopies(values.size(), "?"))).append(")\n")
 							.append(")")
 							.toString();
