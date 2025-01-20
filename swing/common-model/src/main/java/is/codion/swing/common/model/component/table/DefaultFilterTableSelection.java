@@ -170,7 +170,7 @@ final class DefaultFilterTableSelection<R> extends DefaultListSelectionModel imp
 			selectedIndex.onChanged();
 			selectedItem.notifyListeners();
 			selectedIndexes.onChanged();
-			selectedItems.notifyListeners();
+			selectedItems.onChanged();
 		}
 	}
 
@@ -326,7 +326,7 @@ final class DefaultFilterTableSelection<R> extends DefaultListSelectionModel imp
 
 		@Override
 		public R get() {
-			int index = selectedIndex.get();
+			int index = selectedIndex.getOrThrow();
 			if (index >= 0 && index < items.visible().count()) {
 				return items.visible().get(index);
 			}
@@ -353,13 +353,15 @@ final class DefaultFilterTableSelection<R> extends DefaultListSelectionModel imp
 		}
 	}
 
-	private final class DefaultItems implements Items<R> {
+	private final class DefaultItems extends AbstractValue<List<R>> implements Items<R> {
 
-		private final Event<List<R>> event = Event.event();
+		private DefaultItems() {
+			super(emptyList());
+		}
 
 		@Override
-		public List<R> get() {
-			return unmodifiableList(selectedIndexes.get().stream()
+		protected List<R> getValue() {
+			return unmodifiableList(selectedIndexes.getOrThrow().stream()
 							.mapToInt(Integer::intValue)
 							.mapToObj(items.visible()::get)
 							.collect(toList()));
@@ -367,13 +369,11 @@ final class DefaultFilterTableSelection<R> extends DefaultListSelectionModel imp
 
 		@Override
 		public void set(Collection<R> items) {
-			rejectNulls(items);
-			clearSelection();
-			addInternal(items);
+			setValue(new ArrayList<>(requireNonNull(items)));
 		}
 
 		@Override
-		public void set(List<R> items) {
+		protected void setValue(List<R> items) {
 			rejectNulls(items);
 			clearSelection();
 			addInternal(items);
@@ -411,18 +411,8 @@ final class DefaultFilterTableSelection<R> extends DefaultListSelectionModel imp
 		}
 
 		@Override
-		public void clear() {
-			clearSelection();
-		}
-
-		@Override
 		public boolean contains(R item) {
 			return isSelectedIndex(items.visible().indexOf(requireNonNull(item)));
-		}
-
-		@Override
-		public Observer<List<R>> observer() {
-			return event.observer();
 		}
 
 		private void addInternal(Collection<R> itemsToAdd) {
@@ -446,8 +436,8 @@ final class DefaultFilterTableSelection<R> extends DefaultListSelectionModel imp
 			return indexes;
 		}
 
-		private void notifyListeners() {
-			event.accept(get());
+		private void onChanged() {
+			notifyListeners();
 		}
 
 		private <T> Collection<T> rejectNulls(Collection<T> items) {

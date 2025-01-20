@@ -18,7 +18,6 @@
  */
 package is.codion.common.model.selection;
 
-import is.codion.common.observable.Observable;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -131,18 +130,7 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 	 * Manages the the selected items.
 	 * @param <R> the item type
 	 */
-	interface Items<R> extends Observable<List<R>> {
-
-		/**
-		 * @return the selected items or an empty list if the selection is empty
-		 */
-		@Override
-		List<R> get();
-
-		/**
-		 * @param items the items to select
-		 */
-		void set(List<R> items);
+	interface Items<R> extends Value<List<R>> {
 
 		/**
 		 * @param items the items to select
@@ -184,11 +172,6 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 		 * @param items the items to remove from the selection
 		 */
 		void remove(Collection<R> items);
-
-		/**
-		 * Clears the selection
-		 */
-		void clear();
 
 		/**
 		 * @param item the item
