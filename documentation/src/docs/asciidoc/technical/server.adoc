@@ -1,6 +1,6 @@
 = Server
 :dir-tutorials: ../tutorials
-:dir-source: ../../../../../framework/server
+:dir-source: ../../../../../demos/server
 :dir-manual-source: ../../../../../demos/manual/src/main/java
 :url-javadoc: link:../api
 
@@ -27,7 +27,7 @@ An authentication layer can be added by implementing a {url-javadoc}{common-rmi}
 
 ==== Authenticator examples
 
-<<{dir-tutorials}/chinook/chinook.adoc#_authenticator, ChinookAuthenticator>>
+<<{dir-tutorials}/chinook/chinook.adoc#_chinookauthenticator, ChinookAuthenticator>>
 
 === RMI SSL encryption
 

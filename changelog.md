@@ -14,6 +14,8 @@ Codion Change Log
 - DefaultControlsBuilder, now prevents multiple consecutive separators from being added via actions().
 - DefaultFilterTableSearchModel optimized, searchResults no longer ValueList based.
 - DefaultFilterTableSearchModel now clears the search text when columns are modified, which also clears the result.
+### is.codion.framework.server
+- Demo server split into separate demo-server module.
 ### is.codion.framework.model
 - DefaultEntityQueryModel.conditionChanged() bug fixed, no longer active when limit, orderBy or attributes have changed.
 - EntityQueryModel.resetConditionChanged() removed.

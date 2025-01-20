@@ -1,7 +1,3 @@
-plugins {
-    id("org.gradlex.extra-java-module-info")
-}
-
 dependencies {
     implementation(project(":codion-framework-db-rmi"))
     implementation(project(":codion-framework-json-domain"))
@@ -23,5 +19,3 @@ dependencies {
     testRuntimeOnly(project(":codion-dbms-h2"))
     testRuntimeOnly(libs.h2)
 }
-
-apply(from = "../../plugins/jasperreports/extra-module-info-jasperreports.gradle")

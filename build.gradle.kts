@@ -145,45 +145,6 @@ configure(frameworkModules()) {
         }
     }
 
-    tasks.register("createServerKeystore") {
-        group = "other"
-        description = "Creates a key and truststore pair to use when running server unit tests and demos with remote connection"
-
-        val keystoreDir = "${rootDir}/framework/server/src/main/config/"
-        val keystore = keystoreDir + "keystore.jks"
-        val truststore = keystoreDir + "truststore.jks"
-        val certificate = keystoreDir + "certificate.cer"
-        val keyToolExecutable = System.getProperty("java.home") + "/bin/keytool"
-
-        onlyIf { !file(keystore).exists() }
-
-        doLast {
-            providers.exec {
-                executable = keyToolExecutable
-                args = listOf(
-                    "-genkeypair", "-keyalg", "RSA", "-keystore", keystore, "-storepass", "crappypass",
-                    "-keypass", "crappypass", "-dname", "CN=Dummy, OU=dummy, O=dummy.org, C=DU", "-alias", "Alias",
-                    "-storetype", "pkcs12", "-ext", "SAN=dns:localhost"
-                )
-            }.result.get()
-            providers.exec {
-                executable = keyToolExecutable
-                args = listOf(
-                    "-exportcert", "-keystore", keystore, "-storepass", "crappypass",
-                    "-alias", "Alias", "-rfc", "-file", certificate
-                )
-            }.result.get()
-            providers.exec {
-                executable = keyToolExecutable
-                args = listOf(
-                    "-import", "-alias", "Alias", "-storepass", "changeit", "-file", certificate,
-                    "-keystore", truststore, "-noprompt", "-storetype", "pkcs12"
-                )
-            }.result.get()
-            delete(certificate)
-        }
-    }
-
     tasks.named("test") {
         dependsOn(tasks.named("createServerKeystore"))
         finalizedBy(tasks.named("jacocoTestReport"))
@@ -240,6 +201,45 @@ configure(subprojects) {
             csv.required = true
         }
         dependsOn(tasks.test)
+    }
+
+    tasks.register("createServerKeystore") {
+        group = "other"
+        description = "Creates a key and truststore pair to use when running server unit tests and demos with remote connection"
+
+        val keystoreDir = "${rootDir}/framework/server/src/main/config/"
+        val keystore = keystoreDir + "keystore.jks"
+        val truststore = keystoreDir + "truststore.jks"
+        val certificate = keystoreDir + "certificate.cer"
+        val keyToolExecutable = System.getProperty("java.home") + "/bin/keytool"
+
+        onlyIf { !file(keystore).exists() }
+
+        doLast {
+            providers.exec {
+                executable = keyToolExecutable
+                args = listOf(
+                    "-genkeypair", "-keyalg", "RSA", "-keystore", keystore, "-storepass", "crappypass",
+                    "-keypass", "crappypass", "-dname", "CN=Dummy, OU=dummy, O=dummy.org, C=DU", "-alias", "Alias",
+                    "-storetype", "pkcs12", "-ext", "SAN=dns:localhost"
+                )
+            }.result.get()
+            providers.exec {
+                executable = keyToolExecutable
+                args = listOf(
+                    "-exportcert", "-keystore", keystore, "-storepass", "crappypass",
+                    "-alias", "Alias", "-rfc", "-file", certificate
+                )
+            }.result.get()
+            providers.exec {
+                executable = keyToolExecutable
+                args = listOf(
+                    "-import", "-alias", "Alias", "-storepass", "changeit", "-file", certificate,
+                    "-keystore", truststore, "-noprompt", "-storetype", "pkcs12"
+                )
+            }.result.get()
+            delete(certificate)
+        }
     }
 }
 

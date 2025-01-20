@@ -181,10 +181,12 @@ project(":demo-schemabrowser").projectDir = file("demos/schemabrowser")
 include "demo-world"
 project(":demo-world").projectDir = file("demos/world")
 
+include "demo-server"
+project(":demo-server").projectDir = file("demos/server")
+
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
-        mavenLocal()
     }
     versionCatalogs {
         libs {

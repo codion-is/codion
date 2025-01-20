@@ -107,12 +107,12 @@ public interface ConditionModel<T> {
 	State caseSensitive();
 
 	/**
-	 * @return the Format object to use when formatting input, an empty Optional in case none is available
+	 * @return the {@link Format} to use when presenting a value, an empty {@link Optional} in case none is available
 	 */
 	Optional<Format> format();
 
 	/**
-	 * @return the date/time format pattern, if any
+	 * @return the date/time format pattern to use when presenting a temporal value, an empty {@link Optional} in case none is available
 	 */
 	Optional<String> dateTimePattern();
 
