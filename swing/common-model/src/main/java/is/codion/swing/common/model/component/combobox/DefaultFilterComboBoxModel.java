@@ -671,7 +671,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public Item<T> item() {
+		public Value<T> item() {
 			return selected;
 		}
 
@@ -681,10 +681,9 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 	}
 
-	private final class SelectedItem implements SingleSelection.Item<T> {
+	private final class SelectedItem extends AbstractValue<T> {
 
 		private final Event<T> changing = Event.event();
-		private final Event<T> event = Event.event();
 		private final State empty = State.state(true);
 		private final Function<Object, T> translator;
 
@@ -692,27 +691,17 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private SelectedItem(Function<Object, T> translator) {
 			this.translator = translator;
-			event.addListener(DefaultFilterComboBoxModel.this::fireContentsChanged);
+			addListener(DefaultFilterComboBoxModel.this::fireContentsChanged);
 		}
 
 		@Override
-		public T get() {
+		protected T getValue() {
 			return item;
 		}
 
 		@Override
-		public void set(T item) {
-			setSelectedItem(item);
-		}
-
-		@Override
-		public void clear() {
-			setSelectedItem(null);
-		}
-
-		@Override
-		public Observer<T> observer() {
-			return event.observer();
+		protected void setValue(T value) {
+			setSelectedItem(value);
 		}
 
 		private void setSelectedItem(Object item) {
@@ -721,7 +710,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 				changing.accept(toSelect);
 				this.item = toSelect;
 				empty.set(toSelect == null);
-				event.accept(toSelect);
+				notifyListeners();
 			}
 		}
 
@@ -737,7 +726,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private SelectorValue(ItemFinder<T, V> itemFinder) {
 			this.itemFinder = requireNonNull(itemFinder);
-			selection.selected.event.addListener(this::notifyListeners);
+			selection.selected.addListener(this::notifyListeners);
 		}
 
 		@Override

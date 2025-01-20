@@ -712,7 +712,6 @@ public final class DefaultFilterTableModelTest {
 		assertThrows(NullPointerException.class, () -> tableModel.items().filtered().contains(null));
 
 		TableSelection<TestRow> selection = tableModel.selection();
-		assertThrows(NullPointerException.class, () -> selection.item().set(null));
 		assertThrows(NullPointerException.class, () -> selection.items().remove((TestRow) null));
 		assertThrows(NullPointerException.class, () -> selection.items().remove((Collection<TestRow>) null));
 		assertThrows(NullPointerException.class, () -> selection.items().remove(singleNull));

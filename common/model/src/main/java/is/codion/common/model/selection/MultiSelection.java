@@ -43,12 +43,12 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 	ObservableState single();
 
 	/**
-	 * @return a State controlling whether single selection mode is enabled
+	 * @return the {@link State} controlling whether single selection mode is enabled
 	 */
 	State singleSelection();
 
 	/**
-	 * @return the selected {@link Index}, -1 if selection is empty
+	 * @return the {@link Value} controlling the selected index, -1 if selection is empty
 	 */
 	Value<Integer> index();
 

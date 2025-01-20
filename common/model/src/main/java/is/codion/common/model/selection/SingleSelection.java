@@ -19,9 +19,9 @@
 package is.codion.common.model.selection;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.observable.Observable;
 import is.codion.common.observable.Observer;
 import is.codion.common.state.ObservableState;
+import is.codion.common.value.Value;
 
 /**
  * A selection model managing a single selected item.
@@ -43,26 +43,10 @@ public interface SingleSelection<T> {
 	/**
 	 * @return the selected item
 	 */
-	Item<T> item();
+	Value<T> item();
 
 	/**
 	 * Clears the selection
 	 */
 	void clear();
-
-	/**
-	 * @param <T> the item type
-	 */
-	interface Item<T> extends Observable<T> {
-
-		/**
-		 * @param item the item to select
-		 */
-		void set(T item);
-
-		/**
-		 * Clears the selection
-		 */
-		void clear();
-	}
 }

@@ -62,7 +62,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 
 	/**
 	 * @return the selected item, N.B. this can include the {@code nullItem} in case it has been set
-	 * via {@link Builder#nullItem(Object)}, {@link SingleSelection.Item#get()} is usually what you want
+	 * via {@link Builder#nullItem(Object)}, {@link SingleSelection#item()} is usually what you want
 	 */
 	T getSelectedItem();
 

@@ -97,7 +97,7 @@ final class DefaultFilterTableSelection<R> extends DefaultListSelectionModel imp
 	}
 
 	@Override
-	public Item<R> item() {
+	public Value<R> item() {
 		return selectedItem;
 	}
 
@@ -168,7 +168,7 @@ final class DefaultFilterTableSelection<R> extends DefaultListSelectionModel imp
 			empty.set(super.isSelectionEmpty());
 			single.set(count() == 1);
 			selectedIndex.onChanged();
-			selectedItem.notifyListeners();
+			selectedItem.onChanged();
 			selectedIndexes.onChanged();
 			selectedItems.onChanged();
 		}
@@ -320,12 +320,10 @@ final class DefaultFilterTableSelection<R> extends DefaultListSelectionModel imp
 		}
 	}
 
-	private final class DefaultItem implements Item<R> {
-
-		private final Event<R> event = Event.event();
+	private final class DefaultItem extends AbstractValue<R> {
 
 		@Override
-		public R get() {
+		protected R getValue() {
 			int index = selectedIndex.getOrThrow();
 			if (index >= 0 && index < items.visible().count()) {
 				return items.visible().get(index);
@@ -334,22 +332,18 @@ final class DefaultFilterTableSelection<R> extends DefaultListSelectionModel imp
 			return null;
 		}
 
-		public void set(R item) {
-			selectedItems.set(singletonList(requireNonNull(item)));
-		}
-
 		@Override
-		public void clear() {
-			clearSelection();
+		protected void setValue(R item) {
+			if (item == null) {
+				clearSelection();
+			}
+			else {
+				selectedItems.set(singletonList(item));
+			}
 		}
 
-		@Override
-		public Observer<R> observer() {
-			return event.observer();
-		}
-
-		private void notifyListeners() {
-			event.accept(get());
+		private void onChanged() {
+			notifyListeners();
 		}
 	}
 
