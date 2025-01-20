@@ -49,9 +49,9 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 	State singleSelection();
 
 	/**
-	 * @return the selected {@link Index}
+	 * @return the selected {@link Index}, -1 if selection is empty
 	 */
-	Index index();
+	Value<Integer> index();
 
 	/**
 	 * @return the seleted {@link Indexes}
@@ -73,23 +73,6 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 	 * @return the number of selected items.
 	 */
 	int count();
-
-	/**
-	 * Manages the selected index.
-	 */
-	interface Index extends Observable<Integer> {
-
-		/**
-		 * @return the selected index or -1 in case the selection is empty
-		 */
-		@Override
-		Integer get();
-
-		/**
-		 * @param index the index to select
-		 */
-		void set(int index);
-	}
 
 	/**
 	 * Manages the selected indexes.

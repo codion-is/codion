@@ -24,6 +24,7 @@ import is.codion.common.observable.Observer;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 import is.codion.common.value.AbstractValue;
+import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
 
 import javax.swing.DefaultListSelectionModel;
@@ -86,7 +87,7 @@ final class DefaultFilterTableSelection<R> extends DefaultListSelectionModel imp
 	}
 
 	@Override
-	public Index index() {
+	public Value<Integer> index() {
 		return selectedIndex;
 	}
 
@@ -166,7 +167,7 @@ final class DefaultFilterTableSelection<R> extends DefaultListSelectionModel imp
 		if (!isAdjusting) {
 			empty.set(super.isSelectionEmpty());
 			single.set(count() == 1);
-			selectedIndex.notifyListeners();
+			selectedIndex.onChanged();
 			selectedItem.notifyListeners();
 			selectedIndexes.onChanged();
 			selectedItems.notifyListeners();
@@ -184,28 +185,25 @@ final class DefaultFilterTableSelection<R> extends DefaultListSelectionModel imp
 		}
 	}
 
-	private final class SelectedIndex implements Index {
+	private final class SelectedIndex extends AbstractValue<Integer> {
 
-		private final Event<Integer> event = Event.event();
+		private SelectedIndex() {
+			super(-1);
+		}
 
 		@Override
-		public Integer get() {
+		protected Integer getValue() {
 			return getMinSelectionIndex();
 		}
 
 		@Override
-		public void set(int index) {
+		protected void setValue(Integer index) {
 			checkIndex(index, items.visible().count());
 			setSelectionInterval(index, index);
 		}
 
-		@Override
-		public Observer<Integer> observer() {
-			return event.observer();
-		}
-
-		private void notifyListeners() {
-			event.accept(get());
+		private void onChanged() {
+			notifyListeners();
 		}
 	}
 

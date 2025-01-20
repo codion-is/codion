@@ -8,6 +8,7 @@ Codion Change Log
 ### is.codion.common.model
 - DefaultConditionModel.DefaultSetCondition refactored.
 - MultiSelection.Indexes now extends Value.
+- MultiSelection.Index removed, Value used instead.
 
 ## 0.18.26
 ### is.codion.common.model
