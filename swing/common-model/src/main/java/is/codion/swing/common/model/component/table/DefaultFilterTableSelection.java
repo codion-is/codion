@@ -23,6 +23,7 @@ import is.codion.common.model.FilterModel;
 import is.codion.common.observable.Observer;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
+import is.codion.common.value.AbstractValue;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
 
 import javax.swing.DefaultListSelectionModel;
@@ -167,7 +168,7 @@ final class DefaultFilterTableSelection<R> extends DefaultListSelectionModel imp
 			single.set(count() == 1);
 			selectedIndex.notifyListeners();
 			selectedItem.notifyListeners();
-			selectedIndexes.notifyListeners();
+			selectedIndexes.onChanged();
 			selectedItems.notifyListeners();
 		}
 	}
@@ -208,12 +209,14 @@ final class DefaultFilterTableSelection<R> extends DefaultListSelectionModel imp
 		}
 	}
 
-	private final class SelectedIndexes implements Indexes {
+	private final class SelectedIndexes extends AbstractValue<List<Integer>> implements Indexes {
 
-		private final Event<List<Integer>> event = Event.event();
+		private SelectedIndexes() {
+			super(emptyList());
+		}
 
 		@Override
-		public List<Integer> get() {
+		protected List<Integer> getValue() {
 			if (isSelectionEmpty()) {
 				return emptyList();
 			}
@@ -230,11 +233,10 @@ final class DefaultFilterTableSelection<R> extends DefaultListSelectionModel imp
 		}
 
 		@Override
-		public void set(List<Integer> indexes) {
-			requireNonNull(indexes);
+		protected void setValue(List<Integer> indexes) {
 			checkIndexes(indexes);
 			setValueIsAdjusting(true);
-			DefaultFilterTableSelection.this.clear();
+			clearSelection();
 			add(indexes);
 			setValueIsAdjusting(false);
 		}
@@ -273,11 +275,6 @@ final class DefaultFilterTableSelection<R> extends DefaultListSelectionModel imp
 		}
 
 		@Override
-		public void clear() {
-			clearSelection();
-		}
-
-		@Override
 		public boolean contains(int index) {
 			return isSelectedIndex(index);
 		}
@@ -313,11 +310,6 @@ final class DefaultFilterTableSelection<R> extends DefaultListSelectionModel imp
 			}
 		}
 
-		@Override
-		public Observer<List<Integer>> observer() {
-			return event.observer();
-		}
-
 		private void checkIndexes(Collection<Integer> indexes) {
 			int size = items.visible().count();
 			for (Integer index : indexes) {
@@ -325,8 +317,8 @@ final class DefaultFilterTableSelection<R> extends DefaultListSelectionModel imp
 			}
 		}
 
-		private void notifyListeners() {
-			event.accept(get());
+		void onChanged() {
+			notifyListeners();
 		}
 	}
 

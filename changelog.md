@@ -7,6 +7,7 @@ Codion Change Log
 - AbstractValue now only compares the values when set if the notification policy requires it.
 ### is.codion.common.model
 - DefaultConditionModel.DefaultSetCondition refactored.
+- MultiSelection.Indexes now extends Value.
 
 ## 0.18.26
 ### is.codion.common.model

@@ -21,6 +21,7 @@ package is.codion.common.model.selection;
 import is.codion.common.observable.Observable;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
+import is.codion.common.value.Value;
 
 import java.util.Collection;
 import java.util.List;
@@ -93,18 +94,7 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 	/**
 	 * Manages the selected indexes.
 	 */
-	interface Indexes extends Observable<List<Integer>> {
-
-		/**
-		 * @return the selected indexes or an empty list if the selection is empty
-		 */
-		@Override
-		List<Integer> get();
-
-		/**
-		 * @param indexes the indexes to select
-		 */
-		void set(List<Integer> indexes);
+	interface Indexes extends Value<List<Integer>> {
 
 		/**
 		 * @param indexes the indexes to select
@@ -134,11 +124,6 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 		 * @param indexes the indexes
 		 */
 		void remove(Collection<Integer> indexes);
-
-		/**
-		 * Clears the selection
-		 */
-		void clear();
 
 		/**
 		 * @param index the index
