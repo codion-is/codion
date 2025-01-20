@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -120,7 +119,6 @@ public class ValuesTest {
 
 		set.clear();
 		set.addAll(1, 2);
-		assertFalse(set.set(asList(1, 2)));
 	}
 
 	@Test
@@ -237,8 +235,6 @@ public class ValuesTest {
 
 		list.clear();
 		list.addAll(1, 2);
-		assertFalse(list.set(new LinkedHashSet<>(asList(1, 2))));
-		assertTrue(list.set(new LinkedHashSet<>(asList(2, 1))));
 	}
 
 	@Test

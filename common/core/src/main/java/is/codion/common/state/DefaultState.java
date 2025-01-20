@@ -50,9 +50,9 @@ final class DefaultState implements State {
 	}
 
 	@Override
-	public boolean set(@Nullable Boolean value) {
+	public void set(@Nullable Boolean value) {
 		synchronized (this.value) {
-			return this.value.set(value);
+			this.value.set(value);
 		}
 	}
 
@@ -62,9 +62,9 @@ final class DefaultState implements State {
 	}
 
 	@Override
-	public boolean map(Function<Boolean, Boolean> mapper) {
+	public void map(Function<Boolean, Boolean> mapper) {
 		synchronized (this.value) {
-			return this.value.map(mapper);
+			this.value.map(mapper);
 		}
 	}
 

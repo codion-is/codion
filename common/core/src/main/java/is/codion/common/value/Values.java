@@ -43,9 +43,8 @@ public interface Values<T, C extends Collection<T>> extends Value<C>, Observable
 	/**
 	 * Sets the values.
 	 * @param values the values to set
-	 * @return true if this {@link Values} instance changed
 	 */
-	boolean set(@Nullable Collection<T> values);
+	void set(@Nullable Collection<T> values);
 
 	/**
 	 * Adds a value to this Values instance.

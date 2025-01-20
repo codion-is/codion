@@ -33,6 +33,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.text.Format;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -735,8 +736,8 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 		@Override
 		public boolean isNull() {
-			boolean changed = operands.equal.set(null);
-			changed = operator.set(Operator.EQUAL) || changed;
+			boolean changed = set(null, operands.equal);
+			changed = set(Operator.EQUAL, operator) || changed;
 			enabled.set(true);
 
 			return changed;
@@ -744,8 +745,8 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 		@Override
 		public boolean isNotNull() {
-			boolean changed = operands.equal.set(null);
-			changed = operator.set(Operator.NOT_EQUAL) || changed;
+			boolean changed = set(null, operands.equal);
+			changed = set(Operator.NOT_IN, operator) || changed;
 			enabled.set(true);
 
 			return changed;
@@ -753,8 +754,8 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 		@Override
 		public boolean equalTo(@Nullable T value) {
-			boolean changed = operands.equal.set(value);
-			changed = operator.set(Operator.EQUAL) || changed;
+			boolean changed = set(value, operands.equal);
+			changed = set(Operator.EQUAL, operator) || changed;
 			enabled.set(value != null);
 
 			return changed;
@@ -762,8 +763,8 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 		@Override
 		public boolean notEqualTo(@Nullable T value) {
-			boolean changed = operands.equal.set(value);
-			changed = operator.set(Operator.NOT_EQUAL) || changed;
+			boolean changed = set(value, operands.equal);
+			changed = set(Operator.NOT_EQUAL, operator) || changed;
 			enabled.set(value != null);
 
 			return changed;
@@ -771,8 +772,8 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 		@Override
 		public boolean greaterThan(@Nullable T value) {
-			boolean changed = operands.lower.set(value);
-			changed = operator.set(Operator.GREATER_THAN) || changed;
+			boolean changed = set(value, operands.lower);
+			changed = set(Operator.GREATER_THAN, operator) || changed;
 			enabled.set(value != null);
 
 			return changed;
@@ -780,8 +781,8 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 		@Override
 		public boolean greaterThanOrEqualTo(@Nullable T value) {
-			boolean changed = operands.lower.set(value);
-			changed = operator.set(Operator.GREATER_THAN_OR_EQUAL) || changed;
+			boolean changed = set(value, operands.lower);
+			changed = set(Operator.GREATER_THAN_OR_EQUAL, operator) || changed;
 			enabled.set(value != null);
 
 			return changed;
@@ -789,8 +790,8 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 		@Override
 		public boolean lessThan(@Nullable T value) {
-			boolean changed = operands.upper.set(value);
-			changed = operator.set(Operator.LESS_THAN) || changed;
+			boolean changed = set(value, operands.upper);
+			changed = set(Operator.LESS_THAN, operator) || changed;
 			enabled.set(value != null);
 
 			return changed;
@@ -798,8 +799,8 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 		@Override
 		public boolean lessThanOrEqualTo(@Nullable T value) {
-			boolean changed = operands.upper.set(value);
-			changed = operator.set(Operator.LESS_THAN_OR_EQUAL) || changed;
+			boolean changed = set(value, operands.upper);
+			changed = set(Operator.LESS_THAN_OR_EQUAL, operator) || changed;
 			enabled.set(value != null);
 
 			return changed;
@@ -812,8 +813,8 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 		@Override
 		public boolean in(Collection<T> values) {
-			boolean changed = operands.in.set(requireNonNull(values));
-			changed = operator.set(Operator.IN) || changed;
+			boolean changed = set(values, operands.in);
+			changed = set(Operator.IN, operator) || changed;
 			enabled.set(!values.isEmpty());
 
 			return changed;
@@ -826,8 +827,8 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 		@Override
 		public boolean notIn(Collection<T> values) {
-			boolean changed = operands.in.set(requireNonNull(values));
-			changed = operator.set(Operator.NOT_IN) || changed;
+			boolean changed = set(values, operands.in);
+			changed = set(Operator.NOT_IN, operator) || changed;
 			enabled.set(!values.isEmpty());
 
 			return changed;
@@ -835,9 +836,9 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 		@Override
 		public boolean betweenExclusive(@Nullable T lower, @Nullable T upper) {
-			boolean changed = operands.lower.set(lower);
-			changed = operands.upper.set(upper) || changed;
-			changed = operator.set(Operator.BETWEEN_EXCLUSIVE) || changed;
+			boolean changed = set(lower, operands.lower);
+			changed = set(upper, operands.upper) || changed;
+			changed = set(Operator.BETWEEN_EXCLUSIVE, operator) || changed;
 			enabled.set(lower != null && upper != null);
 
 			return changed;
@@ -845,9 +846,9 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 		@Override
 		public boolean notBetweenExclusive(@Nullable T lower, @Nullable T upper) {
-			boolean changed = operands.lower.set(lower);
-			changed = operands.upper.set(upper) || changed;
-			changed = operator.set(Operator.NOT_BETWEEN_EXCLUSIVE) || changed;
+			boolean changed = set(lower, operands.lower);
+			changed = set(upper, operands.upper) || changed;
+			changed = set(Operator.NOT_BETWEEN_EXCLUSIVE, operator) || changed;
 			enabled.set(lower != null && upper != null);
 
 			return changed;
@@ -855,9 +856,9 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 		@Override
 		public boolean between(@Nullable T lower, @Nullable T upper) {
-			boolean changed = operands.lower.set(lower);
-			changed = operands.upper.set(upper) || changed;
-			changed = operator.set(Operator.BETWEEN) || changed;
+			boolean changed = set(lower, operands.lower);
+			changed = set(upper, operands.upper) || changed;
+			changed = set(Operator.BETWEEN, operator) || changed;
 			enabled.set(lower != null && upper != null);
 
 			return changed;
@@ -865,10 +866,31 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 		@Override
 		public boolean notBetween(@Nullable T lower, @Nullable T upper) {
-			boolean changed = operands.lower.set(lower);
-			changed = operands.upper.set(upper) || changed;
-			changed = operator.set(Operator.NOT_BETWEEN) || changed;
+			boolean changed = set(lower, operands.lower);
+			changed = set(upper, operands.upper) || changed;
+			changed = set(Operator.NOT_BETWEEN, operator) || changed;
 			enabled.set(lower != null && upper != null);
+
+			return changed;
+		}
+
+		private static boolean set(Operator operator, Value<Operator> value) {
+			boolean changed = value.isNotEqualTo(operator);
+			value.set(operator);
+
+			return changed;
+		}
+
+		private static <T> boolean set(Collection<T> value, ValueSet<T> operand) {
+			boolean changed = operand.isNotEqualTo(new HashSet<>(requireNonNull(value)));
+			operand.set(value);
+
+			return changed;
+		}
+
+		private static <T> boolean set(@Nullable T value, Value<T> operand) {
+			boolean changed = operand.isNotEqualTo(value);
+			operand.set(value);
 
 			return changed;
 		}

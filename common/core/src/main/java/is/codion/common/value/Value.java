@@ -91,11 +91,10 @@ public interface Value<T> extends Observable<T> {
 	/**
 	 * Sets the value. Note that change listener notifications depend on the {@link Notify} policy associated with this value.
 	 * @param value the value
-	 * @return true if the underlying value changed
 	 * @throws IllegalArgumentException in case the given value is invalid
 	 * @see #addValidator(Validator)
 	 */
-	boolean set(@Nullable T value);
+	void set(@Nullable T value);
 
 	/**
 	 * Clears this value, by setting it to null or the null value in case this is a non-null value.
@@ -113,11 +112,10 @@ public interface Value<T> extends Observable<T> {
 	 * }
 	 * </pre>
 	 * @param mapper maps from the current value to a new value
-	 * @return true if the underlying value changed
 	 * @throws NullPointerException in case {@code mapper} is null
 	 */
-	default boolean map(Function<T, T> mapper) {
-		return set(requireNonNull(mapper).apply(get()));
+	default void map(Function<T, T> mapper) {
+		set(requireNonNull(mapper).apply(get()));
 	}
 
 	/**

@@ -49,14 +49,14 @@ class DefaultValues<T, C extends Collection<T>> extends DefaultValue<C> implemen
 	}
 
 	@Override
-	public final boolean set(@Nullable Collection<T> values) {
+	public final void set(@Nullable Collection<T> values) {
 		synchronized (lock) {
 			C newValues = create.get();
 			if (values != null) {
 				newValues.addAll(values);
 			}
 
-			return set(unmodifiable.apply(newValues));
+			set(unmodifiable.apply(newValues));
 		}
 	}
 

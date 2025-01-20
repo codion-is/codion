@@ -33,8 +33,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static is.codion.common.value.Value.Notify.WHEN_CHANGED;
-import static is.codion.common.value.Value.Notify.WHEN_SET;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
 import static java.util.Objects.requireNonNull;
@@ -109,15 +107,12 @@ public abstract class AbstractValue<T> implements Value<T> {
 	}
 
 	@Override
-	public final boolean set(@Nullable T value) {
+	public final void set(@Nullable T value) {
 		T newValue = value == null ? nullValue : value;
 		for (Validator<? super T> validator : validators()) {
 			validator.validate(newValue);
 		}
-		T previousValue = get();
-		setValue(newValue);
-
-		return notifyListeners(!Objects.equals(previousValue, newValue));
+		setAndNotify(newValue);
 	}
 
 	@Override
@@ -126,8 +121,8 @@ public abstract class AbstractValue<T> implements Value<T> {
 	}
 
 	@Override
-	public final boolean map(Function<T, T> mapper) {
-		return Value.super.map(mapper);
+	public final void map(Function<T, T> mapper) {
+		Value.super.map(mapper);
 	}
 
 	@Override
@@ -260,12 +255,21 @@ public abstract class AbstractValue<T> implements Value<T> {
 		return validators == null ? emptyList() : validators;
 	}
 
-	private boolean notifyListeners(boolean changed) {
-		if (notify == WHEN_SET || (notify == WHEN_CHANGED && changed)) {
+	private void setAndNotify(@Nullable T newValue) {
+		if (notify == Notify.WHEN_CHANGED) {
+			T previousValue = getValue();
+			setValue(newValue);
+			if (!Objects.equals(previousValue, newValue)) {
+				notifyListeners();
+			}
+		}
+		else if (notify == Notify.WHEN_SET) {
+			setValue(newValue);
 			notifyListeners();
 		}
-
-		return changed;
+		else {
+			setValue(newValue);
+		}
 	}
 
 	private final class ObservableLink implements Consumer<T> {

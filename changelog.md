@@ -2,6 +2,11 @@ Codion Change Log
 ==================
 
 ## 0.18.27
+### is.codion.common.core
+- Value.set() and map() return value removed.
+- AbstractValue now only compares the values when set if the notification policy requires it.
+### is.codion.common.model
+- DefaultConditionModel.DefaultSetCondition refactored.
 
 ## 0.18.26
 ### is.codion.common.model
