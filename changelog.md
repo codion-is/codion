@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.18.27
+
 ## 0.18.26
 ### is.codion.common.model
 - TableConditionModel.ConditionModelFactory removed, related refactoring.
