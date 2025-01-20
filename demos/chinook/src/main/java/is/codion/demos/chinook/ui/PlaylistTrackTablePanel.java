@@ -22,7 +22,6 @@ import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 import is.codion.demos.chinook.domain.api.Chinook.PlaylistTrack;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ComponentFactory;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -58,7 +57,6 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 		public <T> JComponent component(ConditionModel<T> conditionModel, Value<T> operand) {
 			return EntitySearchField.builder(((ForeignKeyConditionModel) conditionModel).equalSearchModel())
 							.singleSelection()
-							.link((Value<Entity>) operand)
 							.selectorFactory(new TrackSelectorFactory())
 							.build();
 		}
@@ -67,7 +65,6 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 		public <T> JComponent component(ConditionModel<T> conditionModel, ValueSet<T> operands) {
 			return EntitySearchField.builder(((ForeignKeyConditionModel) conditionModel).inSearchModel())
 							.multiSelection()
-							.link((ValueSet<Entity>) operands)
 							.selectorFactory(new TrackSelectorFactory())
 							.build();
 		}

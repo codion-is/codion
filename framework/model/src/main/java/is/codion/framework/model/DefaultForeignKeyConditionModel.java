@@ -39,12 +39,18 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 	private final EntitySearchModel inSearchModel;
 
 	private DefaultForeignKeyConditionModel(DefaultBuilder builder) {
-		this.condition = ConditionModel.builder(Entity.class)
+		condition = ConditionModel.builder(Entity.class)
 						.operators(builder.operators())
 						.operator(builder.inSearchModel == null ? Operator.EQUAL : Operator.IN)
 						.build();
-		this.equalSearchModel = builder.equalSearchModel;
-		this.inSearchModel = builder.inSearchModel;
+		equalSearchModel = builder.equalSearchModel;
+		if (equalSearchModel != null) {
+			equalSearchModel.selection().entity().link(operands().equal());
+		}
+		inSearchModel = builder.inSearchModel;
+		if (inSearchModel != null) {
+			inSearchModel.selection().entities().link(operands().in());
+		}
 	}
 
 	@Override

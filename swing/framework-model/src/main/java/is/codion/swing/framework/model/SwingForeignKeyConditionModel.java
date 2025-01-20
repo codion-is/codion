@@ -50,6 +50,8 @@ public interface SwingForeignKeyConditionModel extends ForeignKeyConditionModel 
 	interface Builder {
 
 		/**
+		 * Note that this combo box model is linked to the EQUAL operand, so no
+		 * linking is required when constructing a UI component.
 		 * @param equalComboBoxModel the combo box model to use for the EQUAl operator
 		 * @return this builder
 		 */
@@ -61,6 +63,8 @@ public interface SwingForeignKeyConditionModel extends ForeignKeyConditionModel 
 		Builder equalSearchModel(EntitySearchModel equalSearchModel);
 
 		/**
+		 * Note that this search model is linked to the IN operand, so no
+		 * linking is required when constructing a UI component.
 		 * @param inSearchModel the search model to use for the IN operator
 		 * @return this builder
 		 */

@@ -10,6 +10,12 @@ Codion Change Log
 - MultiSelection.Indexes now extends Value.
 - MultiSelection.Items now extends Value.
 - SingleSelection.Item replaced with Value.
+### is.codion.framework.model
+- DefaultForeignKeyConditionModel now links search models to their respective operands.
+### is.codion.swing.framework.model
+- DefaultSwingForeignKeyConditionModel now links search and combo box models to their respective operands.
+### is.codion.swing.framework.ui
+- EntityConditionComponentFactory no longer links foreign key components to operands.
 
 ## 0.18.26
 ### is.codion.common.model

@@ -77,7 +77,7 @@ public final class EntityConditionComponentFactory implements ComponentFactory {
 	@Override
 	public <T> JComponent component(ConditionModel<T> conditionModel, Value<T> operand) {
 		if (attribute instanceof ForeignKey) {
-			return createEqualForeignKeyField((ConditionModel<Entity>) conditionModel, (Value<Entity>) operand);
+			return createEqualForeignKeyField((ConditionModel<Entity>) conditionModel);
 		}
 
 		return inputComponents.component((Attribute<T>) attribute)
@@ -88,7 +88,7 @@ public final class EntityConditionComponentFactory implements ComponentFactory {
 	@Override
 	public <T> JComponent component(ConditionModel<T> conditionModel, ValueSet<T> operands) {
 		if (attribute instanceof ForeignKey) {
-			return createInForeignKeyField((ConditionModel<Entity>) conditionModel, (ValueSet<Entity>) operands);
+			return createInForeignKeyField((ConditionModel<Entity>) conditionModel);
 		}
 
 		return listBox((ComponentValue<T, JComponent>)
@@ -96,12 +96,11 @@ public final class EntityConditionComponentFactory implements ComponentFactory {
 										.buildValue(), conditionModel.operands().in()).build();
 	}
 
-	private JComponent createEqualForeignKeyField(ConditionModel<Entity> conditionModel, Value<Entity> operand) {
+	private JComponent createEqualForeignKeyField(ConditionModel<Entity> conditionModel) {
 		if (conditionModel instanceof SwingForeignKeyConditionModel) {
 			EntityComboBoxModel comboBoxModel = ((SwingForeignKeyConditionModel) conditionModel).equalComboBoxModel();
 
 			return inputComponents.comboBox((ForeignKey) attribute, comboBoxModel)
-							.link(operand)
 							.completionMode(Completion.Mode.MAXIMUM_MATCH)
 							.onSetVisible(comboBox -> comboBoxModel.items().refresh())
 							.build();
@@ -111,14 +110,13 @@ public final class EntityConditionComponentFactory implements ComponentFactory {
 
 			return inputComponents.searchField((ForeignKey) attribute, searchModel)
 							.singleSelection()
-							.link(operand)
 							.build();
 		}
 
 		throw new IllegalArgumentException("Unknown foreign key condition model type: " + conditionModel);
 	}
 
-	private JComponent createInForeignKeyField(ConditionModel<Entity> conditionModel, ValueSet<Entity> operands) {
+	private JComponent createInForeignKeyField(ConditionModel<Entity> conditionModel) {
 		ForeignKey foreignKey = (ForeignKey) attribute;
 		EntitySearchModel searchModel = searchModel(conditionModel);
 
@@ -126,7 +124,6 @@ public final class EntityConditionComponentFactory implements ComponentFactory {
 
 		return inputComponents.searchField(foreignKey, searchModel)
 						.multiSelection()
-						.link(operands)
 						.editable(searchable)
 						.searchHintEnabled(searchable)
 						.build();

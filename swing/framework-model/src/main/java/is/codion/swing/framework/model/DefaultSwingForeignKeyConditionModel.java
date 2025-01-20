@@ -43,12 +43,18 @@ final class DefaultSwingForeignKeyConditionModel implements SwingForeignKeyCondi
 	private final EntitySearchModel inSearchModel;
 
 	private DefaultSwingForeignKeyConditionModel(DefaultBuilder builder) {
-		this.condition = ConditionModel.builder(Entity.class)
+		condition = ConditionModel.builder(Entity.class)
 						.operators(builder.operators())
 						.operator(defaultOperator(builder))
 						.build();
-		this.equalComboBoxModel = builder.equalComboBoxModel;
-		this.inSearchModel = builder.inSearchModel;
+		equalComboBoxModel = builder.equalComboBoxModel;
+		if (equalComboBoxModel != null) {
+			equalComboBoxModel.selection().item().link(operands().equal());
+		}
+		inSearchModel = builder.inSearchModel;
+		if (inSearchModel != null) {
+			inSearchModel.selection().entities().link(operands().in());
+		}
 	}
 
 	@Override
