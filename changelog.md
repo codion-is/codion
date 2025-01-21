@@ -10,6 +10,7 @@ Codion Change Log
 - MultiSelection.Indexes now extends Value.
 - MultiSelection.Items now extends Value.
 - SingleSelection.Item replaced with Value.
+- ConditionModel.Builder.operands() added, InitialOperands removed.
 ### is.codion.swing.common.ui
 - ColumnConditionPanel.ComponentFactory, component() methods replaced with equal(), upper(), lower() and in().
 ### is.codion.framework.model

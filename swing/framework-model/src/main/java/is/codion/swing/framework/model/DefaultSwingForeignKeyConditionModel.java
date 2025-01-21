@@ -23,6 +23,7 @@ import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.observable.Observer;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueSet;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
@@ -43,18 +44,13 @@ final class DefaultSwingForeignKeyConditionModel implements SwingForeignKeyCondi
 	private final EntitySearchModel inSearchModel;
 
 	private DefaultSwingForeignKeyConditionModel(DefaultBuilder builder) {
+		equalComboBoxModel = builder.equalComboBoxModel;
+		inSearchModel = builder.inSearchModel;
 		condition = ConditionModel.builder(Entity.class)
 						.operators(builder.operators())
 						.operator(defaultOperator(builder))
+						.operands(new ForeignKeyOperands())
 						.build();
-		equalComboBoxModel = builder.equalComboBoxModel;
-		if (equalComboBoxModel != null) {
-			equalComboBoxModel.selection().item().link(operands().equal());
-		}
-		inSearchModel = builder.inSearchModel;
-		if (inSearchModel != null) {
-			inSearchModel.selection().entities().link(operands().in());
-		}
 	}
 
 	@Override
@@ -204,6 +200,19 @@ final class DefaultSwingForeignKeyConditionModel implements SwingForeignKeyCondi
 			}
 
 			return asList(Operator.IN, Operator.NOT_IN);
+		}
+	}
+
+	private final class ForeignKeyOperands implements Operands<Entity> {
+
+		@Override
+		public Value<Entity> equal() {
+			return equalComboBoxModel == null ? Operands.super.equal() : equalComboBoxModel.selection().item();
+		}
+
+		@Override
+		public ValueSet<Entity> in() {
+			return inSearchModel == null ? Operands.super.in() : inSearchModel.selection().entities();
 		}
 	}
 }

@@ -19,6 +19,9 @@
 package is.codion.framework.model;
 
 import is.codion.common.model.condition.ConditionModel;
+import is.codion.common.model.condition.ConditionModel.Operands;
+import is.codion.common.value.Value;
+import is.codion.common.value.Value.Notify;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -95,11 +98,7 @@ public class EntityConditionModelFactory implements Supplier<Map<Attribute<?>, C
 		return ConditionModel.builder(column.type().valueClass())
 						.format(definition.format())
 						.dateTimePattern(definition.dateTimePattern())
-						.operands(operands -> {
-							if (definition.attribute().type().isBoolean() && !definition.nullable()) {
-								((ConditionModel.InitialOperands<Boolean>) operands).equal(false);
-							}
-						})
+						.operands(new ColumnOperands<>(definition))
 						.build();
 	}
 
@@ -153,5 +152,26 @@ public class EntityConditionModelFactory implements Supplier<Map<Attribute<?>, C
 	 */
 	protected final EntityDefinition definition(EntityType entityType) {
 		return connectionProvider.entities().definition(entityType);
+	}
+
+	private static final class ColumnOperands<T> implements Operands<T> {
+
+		private final ColumnDefinition<T> definition;
+
+		private ColumnOperands(ColumnDefinition<T> definition) {
+			this.definition = definition;
+		}
+
+		@Override
+		public Value<T> equal() {
+			if (definition.attribute().type().isBoolean() && !definition.nullable()) {
+				return (Value<T>) Value.builder()
+								.nonNull(false)
+								.notify(Notify.WHEN_SET)
+								.build();
+			}
+
+			return Operands.super.equal();
+		}
 	}
 }

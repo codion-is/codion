@@ -24,9 +24,7 @@ import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.observable.Observable;
 import is.codion.common.observable.Observer;
 import is.codion.common.state.State;
-import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
-import is.codion.common.value.Value.Notify;
 import is.codion.common.value.ValueSet;
 
 import org.jspecify.annotations.Nullable;
@@ -37,12 +35,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.*;
+import static java.util.Collections.singletonList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
@@ -82,7 +80,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 						.listener(autoEnableListener)
 						.listener(conditionChanged)
 						.build();
-		this.operands = new DefaultOperands<>(builder.wildcard, operator, builder.operands);
+		this.operands = new DefaultOperands<>(builder.operands, builder.wildcard, operator);
 		this.operands.equal.addValidator(lockValidator);
 		this.operands.equal.addListener(autoEnableListener);
 		this.operands.equal.addListener(conditionChanged);
@@ -488,24 +486,15 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 	private static final class DefaultOperands<T> implements Operands<T> {
 
 		private final EqualOperand<T> equal;
-		private final ValueSet<T> in = ValueSet.<T>builder()
-						.notify(Notify.WHEN_SET)
-						.build();
-		private final Value<T> upper = Value.builder()
-						.<T>nullable()
-						.notify(Notify.WHEN_SET)
-						.build();
-		private final Value<T> lower = Value.builder()
-						.<T>nullable()
-						.notify(Notify.WHEN_SET)
-						.build();
+		private final ValueSet<T> in;
+		private final Value<T> upper;
+		private final Value<T> lower;
 
-		private DefaultOperands(Wildcard wildcard, Observable<Operator> operatorObserver, DefaultInitialOperands<T> initial) {
-			equal = new EqualOperand<>(wildcard, operatorObserver);
-			equal.set(initial.equal);
-			in.set(initial.in);
-			upper.set(initial.upper);
-			lower.set(initial.lower);
+		private DefaultOperands(Operands<T> operands, Wildcard wildcard, Observable<Operator> operator) {
+			equal = new EqualOperand<>(operands.equal(), wildcard, operator);
+			in = operands.in();
+			upper = operands.upper();
+			lower = operands.lower();
 		}
 
 		@Override
@@ -535,34 +524,83 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 			lower.clear();
 		}
 
-		private static final class EqualOperand<T> extends AbstractValue<T> {
+		private static final class EqualOperand<T> implements Value<T> {
 
+			private final Value<T> equal;
 			private final Value<Wildcard> wildcard;
-			private final Observable<Operator> operatorObserver;
+			private final Observable<Operator> operator;
 
-			private @Nullable T value;
-
-			private EqualOperand(Wildcard wildcard, Observable<Operator> operatorObserver) {
-				super(null, Notify.WHEN_SET);
+			private EqualOperand(Value<T> equal, Wildcard wildcard, Observable<Operator> operator) {
+				this.equal = requireNonNull(equal);
 				this.wildcard = Value.nonNull(wildcard);
-				this.operatorObserver = operatorObserver;
+				this.operator = operator;
 			}
 
 			@Override
-			protected @Nullable T getValue() {
-				return addWildcard(value);
+			public @Nullable T get() {
+				return addWildcard(equal.get());
 			}
 
 			@Override
-			protected void setValue(@Nullable T value) {
-				this.value = value;
+			public void set(@Nullable T value) {
+				equal.set(value);
+			}
+
+			@Override
+			public void clear() {
+				equal.clear();
+			}
+
+			@Override
+			public Observable<T> observable() {
+				return equal.observable();
+			}
+
+			@Override
+			public Observer<T> observer() {
+				return equal.observer();
+			}
+
+			@Override
+			public void link(Value<T> originalValue) {
+				equal.link(originalValue);
+			}
+
+			@Override
+			public void unlink(Value<T> originalValue) {
+				equal.unlink(originalValue);
+			}
+
+			@Override
+			public void link(Observable<T> observable) {
+				equal.link(observable);
+			}
+
+			@Override
+			public void unlink(Observable<T> observable) {
+				equal.unlink(observable);
+			}
+
+			@Override
+			public boolean addValidator(Validator<? super T> validator) {
+				return equal.addValidator(validator);
+			}
+
+			@Override
+			public boolean removeValidator(Validator<? super T> validator) {
+				return equal.removeValidator(validator);
+			}
+
+			@Override
+			public void validate(T value) {
+				equal.validate(value);
 			}
 
 			private @Nullable T addWildcard(@Nullable T operand) {
 				if (!(operand instanceof String)) {
 					return operand;
 				}
-				switch (operatorObserver.getOrThrow()) {
+				switch (operator.getOrThrow()) {
 					//wildcard only used for EQUAL and NOT_EQUAL
 					case EQUAL:
 					case NOT_EQUAL:
@@ -615,10 +653,10 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		private static final List<Operator> DEFAULT_OPERATORS = asList(Operator.values());
 
 		private final Class<T> valueClass;
-		private final DefaultInitialOperands<T> operands = new DefaultInitialOperands<>();
 
 		private List<Operator> operators;
 		private Operator operator = Operator.EQUAL;
+		private Operands<T> operands = new Operands<T>() {};
 		private @Nullable Format format;
 		private @Nullable String dateTimePattern = LocaleDateTimePattern.builder()
 						.delimiterDash()
@@ -653,6 +691,12 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		}
 
 		@Override
+		public Builder<T> operands(Operands<T> operands) {
+			this.operands = requireNonNull(operands);
+			return this;
+		}
+
+		@Override
 		public Builder<T> format(@Nullable Format format) {
 			this.format = format;
 			return this;
@@ -683,12 +727,6 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		}
 
 		@Override
-		public Builder<T> operands(Consumer<InitialOperands<T>> operands) {
-			requireNonNull(operands).accept(this.operands);
-			return this;
-		}
-
-		@Override
 		public ConditionModel<T> build() {
 			return new DefaultConditionModel<>(this);
 		}
@@ -697,38 +735,6 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 			if (!operators.contains(operator)) {
 				throw new IllegalArgumentException("Available operators do no not contain the selected operator: " + operator);
 			}
-		}
-	}
-
-	private static final class DefaultInitialOperands<T> implements InitialOperands<T> {
-
-		private Set<T> in = emptySet();
-		private @Nullable T equal;
-		private @Nullable T upper;
-		private @Nullable T lower;
-
-		@Override
-		public InitialOperands<T> equal(T equal) {
-			this.equal = requireNonNull(equal);
-			return this;
-		}
-
-		@Override
-		public InitialOperands<T> in(Set<T> in) {
-			this.in = requireNonNull(in);
-			return this;
-		}
-
-		@Override
-		public InitialOperands<T> upper(T upper) {
-			this.upper = requireNonNull(upper);
-			return this;
-		}
-
-		@Override
-		public InitialOperands<T> lower(T lower) {
-			this.lower = requireNonNull(lower);
-			return this;
 		}
 	}
 

@@ -23,6 +23,7 @@ import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.observable.Observer;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueSet;
 import is.codion.framework.domain.entity.Entity;
 
 import java.text.Format;
@@ -39,18 +40,13 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 	private final EntitySearchModel inSearchModel;
 
 	private DefaultForeignKeyConditionModel(DefaultBuilder builder) {
+		equalSearchModel = builder.equalSearchModel;
+		inSearchModel = builder.inSearchModel;
 		condition = ConditionModel.builder(Entity.class)
 						.operators(builder.operators())
 						.operator(builder.inSearchModel == null ? Operator.EQUAL : Operator.IN)
+						.operands(new ForeignKeyOperands())
 						.build();
-		equalSearchModel = builder.equalSearchModel;
-		if (equalSearchModel != null) {
-			equalSearchModel.selection().entity().link(operands().equal());
-		}
-		inSearchModel = builder.inSearchModel;
-		if (inSearchModel != null) {
-			inSearchModel.selection().entities().link(operands().in());
-		}
 	}
 
 	@Override
@@ -180,6 +176,19 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 			}
 
 			return asList(Operator.IN, Operator.NOT_IN);
+		}
+	}
+
+	private final class ForeignKeyOperands implements Operands<Entity> {
+
+		@Override
+		public Value<Entity> equal() {
+			return equalSearchModel == null ? Operands.super.equal() : equalSearchModel.selection().entity();
+		}
+
+		@Override
+		public ValueSet<Entity> in() {
+			return inSearchModel == null ? Operands.super.in() : inSearchModel.selection().entities();
 		}
 	}
 }

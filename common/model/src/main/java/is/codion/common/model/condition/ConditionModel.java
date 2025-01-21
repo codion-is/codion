@@ -24,6 +24,7 @@ import is.codion.common.observable.Observer;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
+import is.codion.common.value.Value.Notify;
 import is.codion.common.value.ValueSet;
 
 import org.jspecify.annotations.Nullable;
@@ -32,8 +33,6 @@ import java.text.Format;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.function.Consumer;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static java.util.ResourceBundle.getBundle;
@@ -194,7 +193,7 @@ public interface ConditionModel<T> {
 	}
 
 	/**
-	 * Provides access to the operands.
+	 * Provides condition operands.
 	 * @param <T> the value type
 	 */
 	interface Operands<T> {
@@ -202,52 +201,41 @@ public interface ConditionModel<T> {
 		/**
 		 * @return a {@link Value} controlling the operand used for the {@link Operator#EQUAL} and {@link Operator#NOT_EQUAL} operators
 		 */
-		Value<T> equal();
-
-		/**
-		 * @return a {@link Value} controlling the operands used for the {@link Operator#IN} and {@link Operator#NOT_IN} operator
-		 */
-		ValueSet<T> in();
+		default Value<T> equal() {
+			return Value.builder()
+							.<T>nullable()
+							.notify(Notify.WHEN_SET)
+							.build();
+		}
 
 		/**
 		 * @return a {@link Value} controlling the upper bound operand used for range based operators
 		 */
-		Value<T> upper();
+		default Value<T> upper() {
+			return Value.builder()
+							.<T>nullable()
+							.notify(Notify.WHEN_SET)
+							.build();
+		}
 
 		/**
 		 * @return a {@link Value} controlling the lower bound operand used for range based operators
 		 */
-		Value<T> lower();
-	}
-
-	/**
-	 * @param <T> the operand type
-	 */
-	interface InitialOperands<T> {
-
-		/**
-		 * @param equal the initial EQUAL operand
-		 * @return this {@link InitialOperands} instance
-		 */
-		InitialOperands<T> equal(T equal);
+		default Value<T> lower() {
+			return Value.builder()
+							.<T>nullable()
+							.notify(Notify.WHEN_SET)
+							.build();
+		}
 
 		/**
-		 * @param in the initial IN operand
-		 * @return this {@link InitialOperands} instance
+		 * @return a {@link Value} controlling the operands used for the {@link Operator#IN} and {@link Operator#NOT_IN} operator
 		 */
-		InitialOperands<T> in(Set<T> in);
-
-		/**
-		 * @param upper the initial UPPER operand
-		 * @return this {@link InitialOperands} instance
-		 */
-		InitialOperands<T> upper(T upper);
-
-		/**
-		 * @param lower the initial LOWER operand
-		 * @return this {@link InitialOperands} instance
-		 */
-		InitialOperands<T> lower(T lower);
+		default ValueSet<T> in() {
+			return ValueSet.<T>builder()
+							.notify(Notify.WHEN_SET)
+							.build();
+		}
 	}
 
 	/**
@@ -407,6 +395,12 @@ public interface ConditionModel<T> {
 		Builder<T> operator(Operator operator);
 
 		/**
+		 * @param operands provides the operands
+		 * @return this builder instance
+		 */
+		Builder<T> operands(Operands<T> operands);
+
+		/**
 		 * @param format the format to use when presenting the values, numbers for example
 		 * @return this builder instance
 		 */
@@ -435,13 +429,6 @@ public interface ConditionModel<T> {
 		 * @return this builder instance
 		 */
 		Builder<T> autoEnable(boolean autoEnable);
-
-		/**
-		 * Provides a way to initialize one or more operands
-		 * @param operands the operands
-		 * @return this builder instance
-		 */
-		Builder<T> operands(Consumer<InitialOperands<T>> operands);
 
 		/**
 		 * @return a new {@link ConditionModel} instance based on this builder
