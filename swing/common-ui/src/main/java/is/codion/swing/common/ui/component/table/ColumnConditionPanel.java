@@ -26,8 +26,6 @@ import is.codion.common.model.condition.ConditionModel.Wildcard;
 import is.codion.common.observable.Observer;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
-import is.codion.common.value.Value;
-import is.codion.common.value.ValueSet;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.combobox.Completion;
@@ -349,19 +347,31 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
 		/**
 		 * @param conditionModel the condition model
-		 * @param operand the operand value to link to the component
 		 * @param <T> the operand type
-		 * @return a component linked to the given operand value
+		 * @return a component linked to the equal operand
 		 */
-		<T> JComponent component(ConditionModel<T> conditionModel, Value<T> operand);
+		<T> JComponent equal(ConditionModel<T> conditionModel);
 
 		/**
 		 * @param conditionModel the condition model
-		 * @param operands the operands value to link to the component
 		 * @param <T> the operand type
-		 * @return a component linked to the given operands value
+		 * @return a component linked to the lower bound operand
 		 */
-		<T> JComponent component(ConditionModel<T> conditionModel, ValueSet<T> operands);
+		<T> JComponent lower(ConditionModel<T> conditionModel);
+
+		/**
+		 * @param conditionModel the condition model
+		 * @param <T> the operand type
+		 * @return a component linked to the upper bound operand
+		 */
+		<T> JComponent upper(ConditionModel<T> conditionModel);
+
+		/**
+		 * @param conditionModel the condition model
+		 * @param <T> the operand type
+		 * @return a component linked to the in operands
+		 */
+		<T> JComponent in(ConditionModel<T> conditionModel);
 	}
 
 	private boolean equalIncluded() {
@@ -411,16 +421,16 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		boolean modelLocked = model().locked().get();
 		model().locked().set(false);//otherwise, the validator checking the locked state kicks in during value linking
 		if (equalIncluded()) {
-			equalComponent = componentFactory.component(model(), model().operands().equal());
+			equalComponent = componentFactory.equal(model());
 		}
 		if (upperIncluded()) {
-			upperComponent = componentFactory.component(model(), model().operands().upper());
+			upperComponent = componentFactory.upper(model());
 		}
 		if (lowerIncluded()) {
-			lowerComponent = componentFactory.component(model(), model().operands().lower());
+			lowerComponent = componentFactory.lower(model());
 		}
 		if (inIncluded()) {
-			inComponent = componentFactory.component(model(), model().operands().in());
+			inComponent = componentFactory.in(model());
 		}
 		operatorCombo = createOperatorComboBox(model().operators());
 		model().locked().set(modelLocked);

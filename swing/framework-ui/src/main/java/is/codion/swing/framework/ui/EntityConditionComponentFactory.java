@@ -19,8 +19,6 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.value.Value;
-import is.codion.common.value.ValueSet;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -50,7 +48,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A default component factory implementation for attributes.
  */
-public final class EntityConditionComponentFactory implements ComponentFactory {
+public class EntityConditionComponentFactory implements ComponentFactory {
 
 	private static final List<Class<?>> SUPPORTED_TYPES = Arrays.asList(
 					Character.class, String.class, Boolean.class, Short.class, Integer.class, Double.class,
@@ -75,18 +73,40 @@ public final class EntityConditionComponentFactory implements ComponentFactory {
 	}
 
 	@Override
-	public <T> JComponent component(ConditionModel<T> conditionModel, Value<T> operand) {
+	public <T> JComponent equal(ConditionModel<T> conditionModel) {
 		if (attribute instanceof ForeignKey) {
 			return createEqualForeignKeyField((ConditionModel<Entity>) conditionModel);
 		}
 
 		return inputComponents.component((Attribute<T>) attribute)
-						.link(operand)
+						.link(conditionModel.operands().equal())
 						.build();
 	}
 
 	@Override
-	public <T> JComponent component(ConditionModel<T> conditionModel, ValueSet<T> operands) {
+	public <T> JComponent lower(ConditionModel<T> conditionModel) {
+		if (attribute instanceof ForeignKey) {
+			throw new IllegalArgumentException("Lower bound not supported for foreign key conditions");
+		}
+
+		return inputComponents.component((Attribute<T>) attribute)
+						.link(conditionModel.operands().lower())
+						.build();
+	}
+
+	@Override
+	public <T> JComponent upper(ConditionModel<T> conditionModel) {
+		if (attribute instanceof ForeignKey) {
+			throw new IllegalArgumentException("Upper bound not supported for foreign key conditions");
+		}
+
+		return inputComponents.component((Attribute<T>) attribute)
+						.link(conditionModel.operands().upper())
+						.build();
+	}
+
+	@Override
+	public <T> JComponent in(ConditionModel<T> conditionModel) {
 		if (attribute instanceof ForeignKey) {
 			return createInForeignKeyField((ConditionModel<Entity>) conditionModel);
 		}

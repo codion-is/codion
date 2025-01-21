@@ -19,8 +19,6 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.value.Value;
-import is.codion.common.value.ValueSet;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ComponentFactory;
 
@@ -49,13 +47,29 @@ final class FilterComponentFactory implements ComponentFactory {
 	}
 
 	@Override
-	public <T> JComponent component(ConditionModel<T> conditionModel, Value<T> operand) {
-		return createField(conditionModel).link(operand).build();
+	public <T> JComponent equal(ConditionModel<T> conditionModel) {
+		return createField(conditionModel)
+						.link(conditionModel.operands().equal())
+						.build();
 	}
 
 	@Override
-	public <T> JComponent component(ConditionModel<T> conditionModel, ValueSet<T>	operands) {
-		return listBox(createField(conditionModel).buildValue(), operands).build();
+	public <T> JComponent lower(ConditionModel<T> conditionModel) {
+		return createField(conditionModel)
+						.link(conditionModel.operands().lower())
+						.build();
+	}
+
+	@Override
+	public <T> JComponent upper(ConditionModel<T> conditionModel) {
+		return createField(conditionModel)
+						.link(conditionModel.operands().upper())
+						.build();
+	}
+
+	@Override
+	public <T> JComponent in(ConditionModel<T> conditionModel) {
+		return listBox(createField(conditionModel).buildValue(), conditionModel.operands().in()).build();
 	}
 
 	private static <T> ComponentBuilder<T, ? extends JComponent, ?> createField(ConditionModel<T> conditionModel) {

@@ -19,12 +19,11 @@
 package is.codion.demos.chinook.ui;
 
 import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.value.Value;
-import is.codion.common.value.ValueSet;
 import is.codion.demos.chinook.domain.api.Chinook.PlaylistTrack;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.model.ForeignKeyConditionModel;
-import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ComponentFactory;
 import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.ui.EntityConditionComponentFactory;
 import is.codion.swing.framework.ui.EntityEditPanel.Confirmer;
 import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.component.EntitySearchField;
@@ -40,7 +39,7 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 						// Custom component for editing tracks
 						.editComponentFactory(PlaylistTrack.TRACK_FK, new TrackEditComponentFactory(PlaylistTrack.TRACK_FK))
 						// Custom condition component factory for the track condition panel
-						.conditionComponentFactory(PlaylistTrack.TRACK_FK, new TrackConditionComponentFactory())
+						.conditionComponentFactory(PlaylistTrack.TRACK_FK, new TrackConditionComponentFactory(tableModel.entityDefinition()))
 						// Skip confirmation when deleting
 						.deleteConfirmer(Confirmer.NONE)
 						// No need for the edit toolbar control
@@ -51,10 +50,14 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 
 	// A ComponentFactory, which uses the TrackSelectorFactory, displaying
 	// a table instead of the default list when selecting tracks
-	private static final class TrackConditionComponentFactory implements ComponentFactory {
+	private static final class TrackConditionComponentFactory extends EntityConditionComponentFactory {
+
+		private TrackConditionComponentFactory(EntityDefinition entityDefinition) {
+			super(entityDefinition, PlaylistTrack.TRACK_FK);
+		}
 
 		@Override
-		public <T> JComponent component(ConditionModel<T> conditionModel, Value<T> operand) {
+		public <T> JComponent equal(ConditionModel<T> conditionModel) {
 			return EntitySearchField.builder(((ForeignKeyConditionModel) conditionModel).equalSearchModel())
 							.singleSelection()
 							.selectorFactory(new TrackSelectorFactory())
@@ -62,7 +65,7 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 		}
 
 		@Override
-		public <T> JComponent component(ConditionModel<T> conditionModel, ValueSet<T> operands) {
+		public <T> JComponent in(ConditionModel<T> conditionModel) {
 			return EntitySearchField.builder(((ForeignKeyConditionModel) conditionModel).inSearchModel())
 							.multiSelection()
 							.selectorFactory(new TrackSelectorFactory())
