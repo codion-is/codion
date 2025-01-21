@@ -242,7 +242,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		sharedAuthenticators.forEach(AbstractServer::closeAuthenticator);
 		authenticators.values().forEach(AbstractServer::closeAuthenticator);
 		auxiliaryServers.forEach(AbstractServer::stopAuxiliaryServer);
-		SerializationWhitelist.handleDryRun();
+		SerializationFilter.handleDryRun();
 		shutdownEvent.run();
 	}
 

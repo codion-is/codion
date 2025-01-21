@@ -1,5 +1,0 @@
-is.codion.common.value.Value
-is.codion.common.state.State*
-is.codion.common.state.Observable*
-#comment
-is.codion.common.i18n.*

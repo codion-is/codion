@@ -24,28 +24,32 @@ import is.codion.common.property.PropertyValue;
 import java.io.ObjectInputFilter;
 
 /**
- * A {@link ObjectInputFilterFactory} implementation based on a whitelist file.
+ * A {@link ObjectInputFilterFactory} implementation based on a pattern file.
  */
-public final class WhitelistInputFilterFactory implements ObjectInputFilterFactory {
+public final class SerializationFilterFactory implements ObjectInputFilterFactory {
 
 	/**
 	 * The serialization whitelist file to use if any
 	 */
-	public static final PropertyValue<String> SERIALIZATION_FILTER_WHITELIST = Configuration.stringValue("codion.server.serializationFilterWhitelist");
+	public static final PropertyValue<String> SERIALIZATION_FILTER_PATTERN_FILE = Configuration.stringValue("codion.server.serializationFilterPatternFile");
 
 	/**
-	 * If true then the serialization whitelist specified by {@link #SERIALIZATION_FILTER_WHITELIST} is populated
+	 * The serialization dryrun output file
+	 */
+	public static final PropertyValue<String> SERIALIZATION_FILTER_DRYRUN_OUTPUT = Configuration.stringValue("codion.server.serializationFilterDryRunOutput");
+
+	/**
+	 * If true then the serialization whitelist specified by {@link #SERIALIZATION_FILTER_DRYRUN_OUTPUT} is populated
 	 * with the names of all deserialized classes on server shutdown. Note this overwrites the file if it already exists.
 	 */
 	public static final PropertyValue<Boolean> SERIALIZATION_FILTER_DRYRUN = Configuration.booleanValue("codion.server.serializationFilterDryRun", false);
 
 	@Override
 	public ObjectInputFilter createObjectInputFilter() {
-		String whitelist = SERIALIZATION_FILTER_WHITELIST.getOrThrow();
 		if (SERIALIZATION_FILTER_DRYRUN.getOrThrow()) {
-			return SerializationWhitelist.whitelistDryRun(whitelist);
+			return SerializationFilter.whitelistDryRun(SERIALIZATION_FILTER_DRYRUN_OUTPUT.getOrThrow());
 		}
 
-		return SerializationWhitelist.whitelistFilter(whitelist);
+		return SerializationFilter.patternFilter(SERIALIZATION_FILTER_PATTERN_FILE.getOrThrow());
 	}
 }

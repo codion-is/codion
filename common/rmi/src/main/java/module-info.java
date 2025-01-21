@@ -49,5 +49,5 @@ module is.codion.common.rmi {
 	uses is.codion.common.rmi.server.ObjectInputFilterFactory;
 
 	provides is.codion.common.rmi.server.ObjectInputFilterFactory
-					with is.codion.common.rmi.server.WhitelistInputFilterFactory;
+					with is.codion.common.rmi.server.SerializationFilterFactory;
 }

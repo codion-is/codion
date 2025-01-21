@@ -1,1 +1,1 @@
-is.codion.common.rmi.server.WhitelistInputFilterFactory
+is.codion.common.rmi.server.SerializationFilterFactory

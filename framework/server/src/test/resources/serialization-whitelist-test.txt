@@ -1,13 +1,5 @@
-[C
-[Ljava.util.concurrent.ConcurrentHashMap$Segment;
-[Lis.codion.framework.domain.entity.attribute.Attribute;
-[Ljava.lang.Object;
-[Ljava.lang.StackTraceElement;
-[Ljava.lang.String;
-[Ljava.util.Map$Entry;
-[Lis.codion.common.item.Item;
-com.sun.proxy.$Proxy*
 jdk.proxy3.$Proxy*
 javax.rmi.ssl.SslRMIClientSocketFactory
-java.*
-is.codion.*
+java.**
+is.codion.**
+!*

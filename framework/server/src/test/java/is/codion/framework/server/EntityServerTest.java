@@ -24,9 +24,9 @@ import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.ClientLog;
 import is.codion.common.rmi.server.RemoteClient;
+import is.codion.common.rmi.server.SerializationFilterFactory;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerConfiguration;
-import is.codion.common.rmi.server.WhitelistInputFilterFactory;
 import is.codion.common.rmi.server.exception.ConnectionNotAvailableException;
 import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
@@ -329,7 +329,7 @@ public class EntityServerTest {
 		ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
 		ServerConfiguration.KEYSTORE.set("src/main/config/keystore.jks");
 		ServerConfiguration.KEYSTORE_PASSWORD.set("crappypass");
-		WhitelistInputFilterFactory.SERIALIZATION_FILTER_WHITELIST.set("classpath:serialization-whitelist-test.txt");
+		SerializationFilterFactory.SERIALIZATION_FILTER_PATTERN_FILE.set("classpath:serialization-whitelist-test.txt");
 
 		return EntityServerConfiguration.builder(3223, 3221)
 						.adminPort(3223)
@@ -340,7 +340,7 @@ public class EntityServerTest {
 						.domainClassNames(asList("is.codion.framework.server.TestDomain", "is.codion.framework.server.ConfigureDb"))
 						.clientLogging(true)
 						.sslEnabled(true)
-						.objectInputFilterFactoryClassName(WhitelistInputFilterFactory.class.getName())
+						.objectInputFilterFactoryClassName(SerializationFilterFactory.class.getName())
 						.build();
 	}
 

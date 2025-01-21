@@ -12,6 +12,8 @@ Codion Change Log
 - SingleSelection.Item replaced with Value.
 - ConditionModel.Builder.operands() added, InitialOperands removed.
 - MultiSelection.Indexes.set(Collection) removed.
+### is.codion.common.rmi
+- SerializationWhitelist renamed SerializationFilter, whitelist implementation removed, now based on the built in pattern based filter.
 ### is.codion.swing.common.ui
 - ColumnConditionPanel.ComponentFactory, component() methods replaced with equal(), upper(), lower() and in().
 - LookAndFeelEnabler.enableLookAndFeel() now fallbacks to the defaultLookAndFeel, if the user preference one is not available.
