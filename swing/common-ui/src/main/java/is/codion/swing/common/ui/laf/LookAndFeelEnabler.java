@@ -28,6 +28,7 @@ import java.util.function.Consumer;
 
 import static is.codion.common.model.UserPreferences.getUserPreference;
 import static is.codion.swing.common.ui.Utilities.systemLookAndFeelClassName;
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeel;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -91,21 +92,28 @@ public interface LookAndFeelEnabler {
 	 * Enables the look and feel specified by the given user preference or the default one if no preference value is found.
 	 * @param userPreferencePropertyName the name of the user preference look and feel property
 	 * @param defaultLookAndFeel the default look and feel class to use if none is found in user preferences
+	 * @return true if a look and feel was enabled, false if the neither the user preference or default look and feels were available
 	 */
-	static void enableLookAndFeel(String userPreferencePropertyName, Class<? extends LookAndFeel> defaultLookAndFeel) {
-		enableLookAndFeel(userPreferencePropertyName, requireNonNull(defaultLookAndFeel).getName());
+	static boolean enableLookAndFeel(String userPreferencePropertyName, Class<? extends LookAndFeel> defaultLookAndFeel) {
+		return enableLookAndFeel(userPreferencePropertyName, requireNonNull(defaultLookAndFeel).getName());
 	}
 
 	/**
 	 * Enables the look and feel specified by the given user preference or the default one if no preference value is found.
 	 * @param userPreferencePropertyName the name of the user preference look and feel property
 	 * @param defaultLookAndFeel the classname of the default look and feel to use if none is found in user preferences
+	 * @return true if a look and feel was enabled, false if the neither the user preference or default look and feels were available
 	 */
-	static void enableLookAndFeel(String userPreferencePropertyName, String defaultLookAndFeel) {
-		Optional.ofNullable(getUserPreference(userPreferencePropertyName, defaultLookAndFeel))
-						.map(LookAndFeelProvider::findLookAndFeel)
-						.filter(Optional::isPresent)
-						.map(Optional::get)
-						.ifPresent(LookAndFeelEnabler::enable);
+	static boolean enableLookAndFeel(String userPreferencePropertyName, String defaultLookAndFeel) {
+		Optional<LookAndFeelEnabler> lookAndFeel = findLookAndFeel(getUserPreference(userPreferencePropertyName, requireNonNull(defaultLookAndFeel)));
+		if (!lookAndFeel.isPresent()) {
+			lookAndFeel = findLookAndFeel(defaultLookAndFeel);
+		}
+		if (lookAndFeel.isPresent()) {
+			lookAndFeel.get().enable();
+			return true;
+		}
+
+		return false;
 	}
 }
