@@ -226,11 +226,6 @@ final class DefaultFilterTableSelection<R> extends DefaultListSelectionModel imp
 		}
 
 		@Override
-		public void set(Collection<Integer> indexes) {
-			set(new ArrayList<>(requireNonNull(indexes)));
-		}
-
-		@Override
 		protected void setValue(List<Integer> indexes) {
 			checkIndexes(indexes);
 			setValueIsAdjusting(true);

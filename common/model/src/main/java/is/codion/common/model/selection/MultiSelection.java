@@ -53,12 +53,12 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 	Value<Integer> index();
 
 	/**
-	 * @return the seleted {@link Indexes}
+	 * @return the {@link Indexes} controlling the selected indexes
 	 */
 	Indexes indexes();
 
 	/**
-	 * @return the selected {@link Items}
+	 * @return the {@link Items} controlling the selected items
 	 */
 	Items<T> items();
 
@@ -79,11 +79,6 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 	interface Indexes extends Value<List<Integer>> {
 
 		/**
-		 * @param indexes the indexes to select
-		 */
-		void set(Collection<Integer> indexes);
-
-		/**
 		 * Adds the given index to the selected indexes
 		 * @param index the index
 		 */
@@ -96,7 +91,7 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 		void remove(int index);
 
 		/**
-		 * Adds these indexes to the selection
+		 * Adds the given indexes to the selection
 		 * @param indexes the indexes to add to the selection
 		 */
 		void add(Collection<Integer> indexes);
@@ -115,13 +110,13 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 
 		/**
 		 * Increments all selected indexes by one, with wrap-around.
-		 * If the selection is empty the lowest index is selected.
+		 * If the selection is empty the lowest available index is selected.
 		 */
 		void increment();
 
 		/**
 		 * Decrements all selected indexes by one, with wrap-around.
-		 * If the selection is empty the highest index is selected.
+		 * If the selection is empty the highest available index is selected.
 		 */
 		void decrement();
 	}
