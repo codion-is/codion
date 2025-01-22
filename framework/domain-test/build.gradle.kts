@@ -1,5 +1,6 @@
 dependencies {
     api(project(":codion-framework-db-core"))
+
     implementation(project(":codion-framework-db-local"))
 
     api(libs.junit.api)

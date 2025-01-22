@@ -4,9 +4,7 @@ dependencies {
     api(project(":codion-swing-framework-model"))
 
     implementation(libs.ikonli.swing)
-
     implementation(libs.json)
-
     implementation(libs.slf4j.api)
 
     testImplementation(project(":codion-framework-db-local"))

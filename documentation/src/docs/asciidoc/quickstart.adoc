@@ -73,19 +73,19 @@ If you use Logback, Log4J or Java Util Logging you can use one of the logging-pr
 
 A minimal Gradle dependencies configuration for a Swing based client application, using the H2 database.
 
-[source,groovy,subs=attributes]
+[source,kotlin,subs=attributes]
 ----
 dependencies {
-    implementation "is.codion:codion-swing-framework-ui:{codion-version}"
+    implementation("is.codion:codion-swing-framework-ui:{codion-version}")
 
-    runtimeOnly "is.codion:codion-framework-db-local:{codion-version}"
-    runtimeOnly "is.codion:codion-dbms-h2:{codion-version}"
-    runtimeOnly "com.h2database:h2:2.3.230"
-    runtimeOnly "is.codion:codion-plugin-logback-proxy:{codion-version}"
+    runtimeOnly("is.codion:codion-framework-db-local:{codion-version}")
+    runtimeOnly("is.codion:codion-dbms-h2:{codion-version}")
+    runtimeOnly("com.h2database:h2:2.3.230")
+    runtimeOnly("is.codion:codion-plugin-logback-proxy:{codion-version}")
 
-    testImplementation "is.codion:codion-framework-domain-test:{codion-version}"
-    testImplementation "org.junit.jupiter:junit-jupiter-api:5.10.3"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.10.3"
+    testImplementation("is.codion:codion-framework-domain-test:{codion-version}")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.3")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.3")
 }
 ----
 
