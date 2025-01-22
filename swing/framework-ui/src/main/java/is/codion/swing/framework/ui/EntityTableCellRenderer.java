@@ -132,13 +132,13 @@ public final class EntityTableCellRenderer {
 		public Color background(boolean filterEnabled, boolean alternateRow, Color cellBackgroundColor) {
 			boolean conditionEnabled = queryCondition != null && queryCondition.enabled().get();
 			if (conditionEnabled || filterEnabled) {
-				return filtererdConditionBackground(alternateRow, conditionEnabled && filterEnabled, cellBackgroundColor);
+				return filteredConditionBackground(alternateRow, conditionEnabled && filterEnabled, cellBackgroundColor);
 			}
 
 			return cellBackgroundColor;
 		}
 
-		private Color filtererdConditionBackground(boolean alternateRow, boolean filterAndConditionEnabled, Color cellBackgroundColor) {
+		private Color filteredConditionBackground(boolean alternateRow, boolean filterAndConditionEnabled, Color cellBackgroundColor) {
 			if (cellBackgroundColor != null) {
 				return darker(cellBackgroundColor, DARKENING_FACTOR);
 			}
