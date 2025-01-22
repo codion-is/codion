@@ -24,6 +24,7 @@ Codion Change Log
 - FilterTable.Export.replaceNewline(String) added, defaults to a single space, DefaultExport now automatically trims strings.
 ### is.codion.framework.db.rmi
 - LocalConnectionHandler, method logging improved, fetch/return connection no longer logged during an open transaction.
+- LocalConnectionHandler, local connection creation logged.
 ### is.codion.framework.model
 - DefaultForeignKeyConditionModel now links search models to their respective operands.
 ### is.codion.swing.framework.model

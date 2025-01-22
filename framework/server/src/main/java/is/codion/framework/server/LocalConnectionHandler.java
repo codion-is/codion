@@ -55,6 +55,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 	private static final String LOG_IDENTIFIER_PROPERTY = "logIdentifier";
 	private static final String FETCH_CONNECTION = "fetchConnection";
 	private static final String RETURN_CONNECTION = "returnConnection";
+	private static final String CREATE_CONNECTION = "createConnection";
 	private static final String ENTITIES = "entities";
 
 	static final RequestCounter REQUEST_COUNTER = new RequestCounter();
@@ -239,8 +240,23 @@ final class LocalConnectionHandler implements InvocationHandler {
 	private EntityConnection localEntityConnection() {
 		if (!localEntityConnection.connected()) {
 			localEntityConnection.close();//just in case
-			localEntityConnection = LocalEntityConnection.localEntityConnection(database, domain, remoteClient.databaseUser());
-			localEntityConnection.databaseConnection().setMethodLogger(methodLogger);
+			DatabaseException exception = null;
+			try {
+				if (methodLogger.isEnabled()) {
+					methodLogger.enter(CREATE_CONNECTION, userDescription);
+				}
+				localEntityConnection = LocalEntityConnection.localEntityConnection(database, domain, remoteClient.databaseUser());
+				localEntityConnection.databaseConnection().setMethodLogger(methodLogger);
+			}
+			catch (DatabaseException ex) {
+				exception = ex;
+				throw ex;
+			}
+			finally {
+				if (methodLogger.isEnabled()) {
+					methodLogger.exit(CREATE_CONNECTION, exception);
+				}
+			}
 		}
 
 		return localEntityConnection;
