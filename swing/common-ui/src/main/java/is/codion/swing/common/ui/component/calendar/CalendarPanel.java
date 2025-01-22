@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.ui.component.calendar;
 
+import is.codion.common.event.Event;
 import is.codion.common.item.Item;
 import is.codion.common.observable.Observable;
 import is.codion.common.observable.Observer;
@@ -216,6 +217,7 @@ public final class CalendarPanel extends JPanel {
 	private final boolean includeTime;
 	private final boolean includeTodayButton;
 	private final ObservableState enabledState;
+	private final Event<Integer> doubleClicked = Event.event();
 
 	CalendarPanel(DefaultBuilder builder) {
 		this.includeTime = builder.includeTime;
@@ -288,6 +290,13 @@ public final class CalendarPanel extends JPanel {
 	 */
 	public CalendarDateTime dateTime() {
 		return dateTime;
+	}
+
+	/**
+	 * @return an {@link Observer} notified when the day selection panel is double clicked
+	 */
+	public Observer<Integer> doubleClicked() {
+		return doubleClicked.observer();
 	}
 
 	/**
@@ -916,14 +925,7 @@ public final class CalendarPanel extends JPanel {
 			setHorizontalAlignment(CENTER);
 			setFocusable(true);
 			setEnabled(enabledState.get());
-			addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					if (enabledState.get()) {
-						dayValue.set(day);
-					}
-				}
-			});
+			addMouseListener(new DayMouseAdapter());
 		}
 
 		@Override
@@ -943,6 +945,19 @@ public final class CalendarPanel extends JPanel {
 		private void updateBorder() {
 			Color foreground = isEnabled() ? getForeground() : UIManager.getColor("Label.disabledForeground");
 			setBorder(dayValue.isEqualTo(day) ? createEtchedBorder(foreground, foreground) : createEtchedBorder());
+		}
+
+		private final class DayMouseAdapter extends MouseAdapter {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (enabledState.get()) {
+					dayValue.set(day);
+					if (e.getClickCount() == 2) {
+						doubleClicked.accept(day);
+					}
+				}
+			}
 		}
 	}
 

@@ -76,13 +76,20 @@ final class DefaultCalendarDialogBuilder extends AbstractDialogBuilder<CalendarD
 	}
 
 	private CalendarPanel showCalendarDialog(CalendarPanel calendarPanel, String title, State okPressed) {
-		new DefaultOkCancelDialogBuilder(calendarPanel)
+		OkCancelDialogBuilder dialogBuilder = new DefaultOkCancelDialogBuilder(calendarPanel)
 						.owner(owner)
 						.locationRelativeTo(locationRelativeTo)
 						.title(title)
+						.onBuild(dialog ->
+							calendarPanel.doubleClicked().addListener(() -> {
+								okPressed.set(true);
+								dialog.dispose();
+							}))
 						.onShown(dialog -> calendarPanel.requestInputFocus())
-						.onOk(() -> okPressed.set(true))
-						.show();
+						.onOk(() -> okPressed.set(true));
+		onBuildConsumers.forEach(dialogBuilder::onBuild);
+
+		dialogBuilder.show();
 
 		return calendarPanel;
 	}

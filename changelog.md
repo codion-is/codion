@@ -19,6 +19,8 @@ Codion Change Log
 - ColumnConditionPanel.ComponentFactory, component() methods replaced with equal(), upper(), lower() and in().
 - LookAndFeelEnabler.enableLookAndFeel() now fallbacks to the defaultLookAndFeel, if the user preference one is not available.
 - DialogBuilder.onBuild() added.
+- CalendarPanel.doubleClicked() added.
+- DefaultCalendarDialogBuilder now accepts the selected date when the day selection panel is double clicked.
 ### is.codion.framework.model
 - DefaultForeignKeyConditionModel now links search models to their respective operands.
 ### is.codion.swing.framework.model
