@@ -24,32 +24,42 @@ import is.codion.common.property.PropertyValue;
 import java.io.ObjectInputFilter;
 
 /**
- * A {@link ObjectInputFilterFactory} implementation based on a pattern file.
+ * A {@link ObjectInputFilterFactory} implementation based on patterns, specified as a string via {@link #SERIALIZATION_FILTER_PATTERNS}
+ * or from a file via {@link #SERIALIZATION_FILTER_PATTERN_FILE}.
+ * <p>See <a href="https://docs.oracle.com/en/java/javase/23/core/java-serialization-filters.html">Java Serialization Filters</a> and
+ * <a href="https://openjdk.org/jeps/290">JEP 290: Filter Incoming Serialization Data</a>
  */
 public final class SerializationFilterFactory implements ObjectInputFilterFactory {
 
 	/**
-	 * The serialization whitelist file to use if any
+	 * <p>The serialization patterns to use.
+	 * <p>Is overridden by {@link #SERIALIZATION_FILTER_PATTERNS}.
 	 */
-	public static final PropertyValue<String> SERIALIZATION_FILTER_PATTERN_FILE = Configuration.stringValue("codion.server.serializationFilterPatternFile");
+	public static final PropertyValue<String> SERIALIZATION_FILTER_PATTERNS = Configuration.stringValue("codion.server.serialization.filter.patterns");
 
 	/**
-	 * The serialization dryrun output file
+	 * <p>The path to the serialization pattern file to use.
+	 * <p>Supports 'classpath:' prefix for a pattern file in the classpath root.
 	 */
-	public static final PropertyValue<String> SERIALIZATION_FILTER_DRYRUN_OUTPUT = Configuration.stringValue("codion.server.serializationFilterDryRunOutput");
+	public static final PropertyValue<String> SERIALIZATION_FILTER_PATTERN_FILE = Configuration.stringValue("codion.server.serialization.filter.patternFile");
 
 	/**
-	 * If true then the serialization whitelist specified by {@link #SERIALIZATION_FILTER_DRYRUN_OUTPUT} is populated
-	 * with the names of all deserialized classes on server shutdown. Note this overwrites the file if it already exists.
+	 * If specified then a list of all deserialized classes is written to the given file on server shutdown. Note this overwrites the file if it already exists.
 	 */
-	public static final PropertyValue<Boolean> SERIALIZATION_FILTER_DRYRUN = Configuration.booleanValue("codion.server.serializationFilterDryRun", false);
+	public static final PropertyValue<String> SERIALIZATION_FILTER_DRYRUN_FILE = Configuration.stringValue("codion.server.serialization.filter.dryRunFile");
 
 	@Override
 	public ObjectInputFilter createObjectInputFilter() {
-		if (SERIALIZATION_FILTER_DRYRUN.getOrThrow()) {
-			return SerializationFilter.whitelistDryRun(SERIALIZATION_FILTER_DRYRUN_OUTPUT.getOrThrow());
+		if (!SERIALIZATION_FILTER_PATTERN_FILE.isNull()) {
+			return SerializationFilter.fromFile(SERIALIZATION_FILTER_PATTERN_FILE.getOrThrow());
+		}
+		if (!SERIALIZATION_FILTER_PATTERNS.isNull()) {
+			return SerializationFilter.fromPatterns(SERIALIZATION_FILTER_PATTERNS.getOrThrow());
+		}
+		if (!SERIALIZATION_FILTER_DRYRUN_FILE.isNull()) {
+			return SerializationFilter.whitelistDryRun(SERIALIZATION_FILTER_DRYRUN_FILE.getOrThrow());
 		}
 
-		return SerializationFilter.patternFilter(SERIALIZATION_FILTER_PATTERN_FILE.getOrThrow());
+		throw new IllegalStateException("No serialization filter pattern configuration available");
 	}
 }

@@ -50,12 +50,25 @@ final class SerializationFilter {
 	private SerializationFilter() {}
 
 	/**
-	 * Creates a serialization filter based on a pattern file.
-	 * Supports 'classpath:' prefix for a pattern file in the classpath root.
+	 * Creates a serialization filter based on a pattern.
+	 * @param pattern the serilization filter patterns
+	 */
+	static ObjectInputFilter fromPatterns(String patterns) {
+		ObjectInputFilter filter = ObjectInputFilter.Config.createFilter(patterns);
+		LOG.info("Serialization filter created from patterns: {}", patterns);
+
+		return filter;
+	}
+
+	/**
+	 * Creates a serialization filter based on a file containing patterns.
 	 * @param patternFile the path to the file containing the serilization filter patterns
 	 */
-	static ObjectInputFilter patternFilter(String patternFile) {
-		return ObjectInputFilter.Config.createFilter(readPattern(patternFile));
+	static ObjectInputFilter fromFile(String patternFile) {
+		ObjectInputFilter filter = ObjectInputFilter.Config.createFilter(readPattern(patternFile));
+		LOG.info("Serialization filter created from pattern file: {}", patternFile);
+
+		return filter;
 	}
 
 	/**
@@ -108,10 +121,10 @@ final class SerializationFilter {
 								.map(Class::getName)
 								.sorted()
 								.collect(toList()), StandardOpenOption.CREATE);
-				LOG.info("Serialization whitelist written: {}", patternFile);
+				LOG.info("Serialization dryrun result written to file: {}", patternFile);
 			}
 			catch (Exception e) {
-				LOG.error("Error while writing serialization filter dry run results: {}", patternFile, e);
+				LOG.error("Error while writing dryrun results to file: {}", patternFile, e);
 			}
 		}
 	}

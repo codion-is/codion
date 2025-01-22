@@ -58,6 +58,8 @@ No dynamic class loading is required.
 
 === Serialization filtering
 
+See https://docs.oracle.com/en/java/javase/23/core/java-serialization-filters.html[Java Serialization Filters] and https://openjdk.org/jeps/290[JEP 290: Filter Incoming Serialization Data].
+
 The framework provides a way to configure a https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/ObjectInputFilter.html[ObjectInputFilter] for deserialization, by specifying a {url-javadoc}{common-rmi}/is/codion/common/rmi/server/ObjectInputFilterFactory.html[ObjectInputFilterFactory] implementation class with the following system property.
 
 [source]
@@ -68,11 +70,7 @@ codion.server.objectInputFilterFactoryClassName=\
 
 ==== Pattern filter
 
-To use the serialization pattern filter based on patterns in a file, set the following system property.
-
-See https://openjdk.org/jeps/290[JEP 290: Filter Incoming Serialization Data] for the pattern specification.
-
-The file may contain all the patterns in a single line, using the ; delimiter or one pattern per line, without a delimiter.
+To use the built-in pattern based serialization filter, set the following system property.
 
 [source]
 ----
@@ -80,24 +78,39 @@ codion.server.objectInputFilterFactoryClassName=\
     is.codion.common.rmi.server.SerializationFilterFactory
 ----
 
-The whitelist is configured via the following system property.
+To use serialization filter patterns specified in a string, set the following system property.
 
 [source]
 ----
-codion.server.codion.server.serializationFilterPatternFile=config/pattern.txt
+codion.server.codion.server.serialization.filter.pattern=pattern1;pattern2
+----
+
+This is equivalent to setting the following:
+
+[source]
+----
+jdk.serialFilter=pattern1;pattern2
+----
+
+To use the serialization pattern filter based on patterns in a file, set the following system property.
+
+The file may contain all the patterns in a single line, using the ; delimiter or one pattern per line, without a delimiter. Lines starting with '#' are skipped as comments.
+
+[source]
+----
+codion.server.codion.server.serialization.filter.patternFile=config/patterns.txt
 ----
 
 ----
-codion.server.serializationFilterPatternFile=classpath:pattern.txt
+codion.server.serialization.filter.patternFile=classpath:patterns.txt
 ----
 
-A list of deserialized classes can be created during a server dry-run by adding the following system properties.
+A list of deserialized classes can be created during a server dry-run by adding the following system property.
 The file containing all classes deserialized during the run is written to disk on server shutdown.
 
 [source]
 ----
-codion.server.serializationFilterDryRun=true
-codion.server.serializationFilterDryRunOutput=deserialized.txt
+codion.server.serialization.filter.dryRunFile=deserialized.txt
 ----
 
 .Example whitelist
