@@ -111,7 +111,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 		try {
 			logEntry(methodName, args);
 
-			return method.invoke(fetchConnection(), args);
+			return method.invoke(connection(), args);
 		}
 		catch (InvocationTargetException e) {
 			//Wrapped exception has already been logged during the actual method call
@@ -203,17 +203,25 @@ final class LocalConnectionHandler implements InvocationHandler {
 		return closed;
 	}
 
-	private EntityConnection fetchConnection() {
+	private EntityConnection connection() {
+		if (connectionPool != null) {
+			return pooledEntityConnection();
+		}
+
+		return localEntityConnection();
+	}
+
+	private EntityConnection pooledEntityConnection() {
+		if (poolEntityConnection.transactionOpen()) {
+			return poolEntityConnection;
+		}
 		DatabaseException exception = null;
 		try {
 			if (methodLogger.isEnabled()) {
 				methodLogger.enter(FETCH_CONNECTION, userDescription);
 			}
-			if (connectionPool != null) {
-				return pooledEntityConnection();
-			}
-
-			return localEntityConnection();
+			poolEntityConnection.databaseConnection().setConnection(connectionPool.connection(remoteClient.databaseUser()));
+			poolEntityConnection.databaseConnection().setMethodLogger(methodLogger);
 		}
 		catch (DatabaseException ex) {
 			exception = ex;
@@ -224,14 +232,6 @@ final class LocalConnectionHandler implements InvocationHandler {
 				methodLogger.exit(FETCH_CONNECTION, exception);
 			}
 		}
-	}
-
-	private EntityConnection pooledEntityConnection() {
-		if (poolEntityConnection.transactionOpen()) {
-			return poolEntityConnection;
-		}
-		poolEntityConnection.databaseConnection().setConnection(connectionPool.connection(remoteClient.databaseUser()));
-		poolEntityConnection.databaseConnection().setMethodLogger(methodLogger);
 
 		return poolEntityConnection;
 	}
