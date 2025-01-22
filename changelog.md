@@ -32,6 +32,8 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityConditionComponentFactory no longer links foreign key components to operands.
 - DefaultEntityApplicationPanelBuilder now adds the framework version to system properties along with the application version.
+### is.codion.tools.monitor.ui
+- Demo server monitor split into separate demo-server-monitor module.
 
 ## 0.18.26
 ### is.codion.common.model

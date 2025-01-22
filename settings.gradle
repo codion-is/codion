@@ -184,6 +184,9 @@ project(":demo-world").projectDir = file("demos/world")
 include "demo-server"
 project(":demo-server").projectDir = file("demos/server")
 
+include "demo-server-monitor"
+project(":demo-server-monitor").projectDir = file("demos/server-monitor")
+
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
