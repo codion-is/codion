@@ -34,6 +34,8 @@ Codion Change Log
 - DefaultEntityApplicationPanelBuilder now adds the framework version to system properties along with the application version.
 ### is.codion.tools.monitor.ui
 - Demo server monitor split into separate demo-server-monitor module.
+### is.codion.tools.generator.ui
+- Demo domain generator split into separate demo-domain-generator module.
 
 ## 0.18.26
 ### is.codion.common.model
