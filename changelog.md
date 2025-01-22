@@ -24,6 +24,7 @@ Codion Change Log
 - DefaultSwingForeignKeyConditionModel now links search and combo box models to their respective operands.
 ### is.codion.swing.framework.ui
 - EntityConditionComponentFactory no longer links foreign key components to operands.
+- DefaultEntityApplicationPanelBuilder now adds the framework version to system properties along with the application version.
 
 ## 0.18.26
 ### is.codion.common.model

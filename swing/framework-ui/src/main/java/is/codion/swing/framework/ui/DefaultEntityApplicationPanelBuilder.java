@@ -92,6 +92,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	static final Map<String, String> INTELLIJ_THEMES = new LinkedHashMap<>();
 
 	private static final String CODION_APPLICATION_VERSION = "codion.application.version";
+	private static final String CODION_VERSION = "codion.version";
 	private static final int DEFAULT_LOGO_SIZE = 68;
 	private static final String DASH = " - ";
 
@@ -399,12 +400,13 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	}
 
 	/**
-	 * Sets the application version as a system property, so that it appears automatically in exception dialogs.
+	 * Sets the application and framework versions as a system properties, so that they appear automatically in exception dialogs.
 	 */
 	private void setVersionProperty() {
 		if (applicationVersion != null) {
 			System.setProperty(CODION_APPLICATION_VERSION, applicationVersion.toString());
 		}
+		System.setProperty(CODION_VERSION, Version.versionAndMetadataString());
 	}
 
 	private void startApplication(M applicationModel, long initializationStarted) {
