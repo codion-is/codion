@@ -18,6 +18,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - ColumnConditionPanel.ComponentFactory, component() methods replaced with equal(), upper(), lower() and in().
 - LookAndFeelEnabler.enableLookAndFeel() now fallbacks to the defaultLookAndFeel, if the user preference one is not available.
+- DialogBuilder.onBuild() added.
 ### is.codion.framework.model
 - DefaultForeignKeyConditionModel now links search models to their respective operands.
 ### is.codion.swing.framework.model

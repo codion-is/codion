@@ -22,9 +22,11 @@ import is.codion.common.observable.Observable;
 import is.codion.swing.common.ui.key.KeyEvents;
 
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.Window;
+import java.util.function.Consumer;
 
 /**
  * A base interface for JDialog builders
@@ -85,4 +87,10 @@ public interface DialogBuilder<B extends DialogBuilder<B>> {
 	 * @return this builder instance
 	 */
 	B keyEvent(KeyEvents.Builder keyEventBuilder);
+
+	/**
+	 * @param onBuild called when the dialog has been built, before it is shown
+	 * @return this builder instance
+	 */
+	B onBuild(Consumer<JDialog> onBuild);
 }

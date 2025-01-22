@@ -24,11 +24,13 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.key.KeyEvents;
 
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.Window;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -36,9 +38,10 @@ import static java.util.Objects.requireNonNull;
  * A base class for Dialog builders.
  * @param <B> the builder type
  */
-public class AbstractDialogBuilder<B extends DialogBuilder<B>> implements DialogBuilder<B> {
+public abstract class AbstractDialogBuilder<B extends DialogBuilder<B>> implements DialogBuilder<B> {
 
 	protected final List<KeyEvents.Builder> keyEventBuilders = new ArrayList<>(1);
+	protected final List<Consumer<JDialog>> onBuildConsumers = new ArrayList<>();
 
 	protected Window owner;
 	protected Component locationRelativeTo;
@@ -96,6 +99,12 @@ public class AbstractDialogBuilder<B extends DialogBuilder<B>> implements Dialog
 	@Override
 	public final B keyEvent(KeyEvents.Builder keyEventBuilder) {
 		this.keyEventBuilders.add(requireNonNull(keyEventBuilder));
+		return self();
+	}
+
+	@Override
+	public final B onBuild(Consumer<JDialog> onBuild) {
+		this.onBuildConsumers.add(requireNonNull(onBuild));
 		return self();
 	}
 

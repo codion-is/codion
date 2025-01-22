@@ -282,7 +282,10 @@ public final class ProgressDialog extends JDialog {
 
 		@Override
 		public ProgressDialog build() {
-			return new ProgressDialog(this);
+			ProgressDialog progressDialog = new ProgressDialog(this);
+			onBuildConsumers.forEach(consumer -> consumer.accept(progressDialog));
+
+			return progressDialog;
 		}
 	}
 }

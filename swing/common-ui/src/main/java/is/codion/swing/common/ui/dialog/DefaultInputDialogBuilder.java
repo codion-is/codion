@@ -28,12 +28,14 @@ import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.Window;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static is.codion.swing.common.ui.Utilities.disposeParentWindow;
@@ -118,6 +120,12 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 	@Override
 	public InputDialogBuilder<T> keyEvent(KeyEvents.Builder keyEventBuilder) {
 		okCancelDialogBuilder.keyEvent(keyEventBuilder);
+		return this;
+	}
+
+	@Override
+	public InputDialogBuilder<T> onBuild(Consumer<JDialog> onBuild) {
+		okCancelDialogBuilder.onBuild(onBuild);
 		return this;
 	}
 

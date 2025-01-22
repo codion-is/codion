@@ -160,6 +160,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 		else {
 			closeObserver.addListener(new CloseListener(disposeAction));
 		}
+		onBuildConsumers.forEach(consumer -> consumer.accept(dialog));
 
 		return dialog;
 	}

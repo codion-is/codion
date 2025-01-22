@@ -94,16 +94,16 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
 
 	@Override
 	public Optional<T> selectSingle() {
-		return selectSingle(this, dialogSize);
+		return selectSingle(dialogSize);
 	}
 
 	@Override
 	public Collection<T> select() {
-		return select(this, false, dialogSize);
+		return select(false, dialogSize);
 	}
 
-	private static <T> Optional<T> selectSingle(DefaultSelectionDialogBuilder<T> builder, Dimension dialogSize) {
-		List<T> selected = select(builder, true, dialogSize);
+	private Optional<T> selectSingle(Dimension dialogSize) {
+		List<T> selected = select(true, dialogSize);
 		if (selected.isEmpty()) {
 			return Optional.empty();
 		}
@@ -111,11 +111,11 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
 		return Optional.of(selected.get(0));
 	}
 
-	private static <T> List<T> select(DefaultSelectionDialogBuilder<T> builder, boolean singleSelection, Dimension dialogSize) {
-		JList<T> list = createList(builder, singleSelection);
+	private List<T> select(boolean singleSelection, Dimension dialogSize) {
+		JList<T> list = createList(singleSelection);
 		Control okControl = Control.builder()
 						.command(() -> disposeParentWindow(list))
-						.enabled(builder.allowEmptySelection ? null : createSelectionNonEmptyState(list))
+						.enabled(allowEmptySelection ? null : createSelectionNonEmptyState(list))
 						.build();
 		list.addMouseListener(new MouseAdapter() {
 			@Override
@@ -130,14 +130,16 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
 			list.clearSelection();
 			cancelledState.set(true);
 		};
-		JDialog dialog = new DefaultOkCancelDialogBuilder(new JScrollPane(list))
-						.owner(builder.owner)
-						.locationRelativeTo(builder.locationRelativeTo)
-						.title(createTitle(builder, singleSelection))
+		OkCancelDialogBuilder dialogBuilder = new DefaultOkCancelDialogBuilder(new JScrollPane(list))
+						.owner(owner)
+						.locationRelativeTo(locationRelativeTo)
+						.title(createTitle(singleSelection))
 						.size(dialogSize)
 						.okAction(okControl)
-						.onCancel(onCancel)
-						.build();
+						.onCancel(onCancel);
+		onBuildConsumers.forEach(dialogBuilder::onBuild);
+
+		JDialog dialog = dialogBuilder.build();
 		if (dialog.getSize().width > MAX_SELECT_VALUE_DIALOG_WIDTH) {
 			dialog.setSize(new Dimension(MAX_SELECT_VALUE_DIALOG_WIDTH, dialog.getSize().height));
 		}
@@ -149,16 +151,16 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
 		return list.getSelectedValuesList();
 	}
 
-	private static <T> JList<T> createList(DefaultSelectionDialogBuilder<T> builder, boolean singleSelection) {
+	private JList<T> createList(boolean singleSelection) {
 		DefaultListModel<T> listModel = new DefaultListModel<>();
-		builder.values.forEach(listModel::addElement);
+		values.forEach(listModel::addElement);
 		JList<T> list = new JList<>(listModel);
 		if (singleSelection) {
 			list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		}
 		list.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(VK_ENTER, 0), "none");
 
-		List<Integer> sortedDefaultSelectedIndexes = builder.defaultSelection.stream()
+		List<Integer> sortedDefaultSelectedIndexes = defaultSelection.stream()
 						.mapToInt(listModel::indexOf)
 						.boxed()
 						.sorted(reverseOrder())//reverse order so that topmost item is selected last
@@ -172,18 +174,18 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
 		return list;
 	}
 
+	private String createTitle(boolean singleSelection) {
+		if (singleSelection) {
+			return title == null ? MESSAGES.getString("select_value") : title.get();
+		}
+
+		return title == null ? MESSAGES.getString("select_values") : title.get();
+	}
+
 	private static State createSelectionNonEmptyState(JList<?> list) {
 		State selectionNonEmptyState = State.state(!list.getSelectionModel().isSelectionEmpty());
 		list.addListSelectionListener(e -> selectionNonEmptyState.set(!list.getSelectionModel().isSelectionEmpty()));
 
 		return selectionNonEmptyState;
-	}
-
-	private static <T> String createTitle(DefaultSelectionDialogBuilder<T> builder, boolean singleSelection) {
-		if (singleSelection) {
-			return builder.title == null ? MESSAGES.getString("select_value") : builder.title.get();
-		}
-
-		return builder.title == null ? MESSAGES.getString("select_values") : builder.title.get();
 	}
 }

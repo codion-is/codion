@@ -148,6 +148,8 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 
 	@Override
 	public ProgressWorker<T, V> build() {
+		onBuildConsumers.forEach(progressDialogBuilder::onBuild);
+
 		ProgressDialog progressDialog = progressDialogBuilder
 						.owner(owner)
 						.locationRelativeTo(locationRelativeTo)

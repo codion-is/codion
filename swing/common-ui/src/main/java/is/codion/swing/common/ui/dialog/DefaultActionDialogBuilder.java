@@ -172,6 +172,7 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 							.action(escapeAction)
 							.enable(dialog.getRootPane());
 		}
+		onBuildConsumers.forEach(consumer -> consumer.accept(dialog));
 
 		return dialog;
 	}
