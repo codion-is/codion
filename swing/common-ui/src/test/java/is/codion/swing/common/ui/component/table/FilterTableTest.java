@@ -457,6 +457,29 @@ public class FilterTableTest {
 						.header(false)
 						.selected(true)
 						.get());
+
+		table.model().items().clear();
+
+		table.model().items().add(asList(
+						new TestRow("\nf\ng"),
+						new TestRow("g\r\nh\n"),
+						new TestRow("\ni\rj k")));
+
+		String result = "f g" + LINE_SEPARATOR +
+						"g h" + LINE_SEPARATOR +
+						"i j k";
+
+		assertEquals(result, table.export()
+						.header(false)
+						.get());
+
+		result = "f\ng" + LINE_SEPARATOR +
+						"g\r\nh" + LINE_SEPARATOR +
+						"i\rj k";
+		assertEquals(result, table.export()
+						.header(false)
+						.replaceNewline(null)
+						.get());
 	}
 
 	@Test
@@ -510,13 +533,13 @@ public class FilterTableTest {
 						filterTableColumn(3, 3)
 		)));
 		assertThrows(IllegalArgumentException.class, () -> FilterTable.builder(model, asList(
-						filterTableColumn(0,-1),
+						filterTableColumn(0, -1),
 						filterTableColumn(3, 0),
 						filterTableColumn(2, 1),
 						filterTableColumn(1, 2)
 		)));
 		assertThrows(IllegalArgumentException.class, () -> FilterTable.builder(model, asList(
-						filterTableColumn(0,42),
+						filterTableColumn(0, 42),
 						filterTableColumn(1, 0),
 						filterTableColumn(2, 1),
 						filterTableColumn(3, 2)

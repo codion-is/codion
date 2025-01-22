@@ -1169,6 +1169,17 @@ public final class FilterTable<R, C> extends JTable {
 		Export selected(boolean selected);
 
 		/**
+		 * <p>Replaces newlines inside strings.
+		 * <p>Note that strings are always trimmed so newlines at the
+		 * beginning and end of strings are trimmed before replacement is performed.
+		 * <p>Default replacement is a single whitespace (" ").
+		 * <p>Set to null to keep newlines in place.
+		 * @param replacement the string to use when replacing newlines
+		 * @return this Export instance
+		 */
+		Export replaceNewline(String replacement);
+
+		/**
 		 * @return the table data exported to a String
 		 */
 		String get();
@@ -1426,6 +1437,7 @@ public final class FilterTable<R, C> extends JTable {
 		private boolean header = true;
 		private boolean hidden = false;
 		private boolean selected = false;
+		private String newlineReplacement = " ";
 
 		@Override
 		public Export delimiter(char delimiter) {
@@ -1448,6 +1460,12 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public Export selected(boolean selected) {
 			this.selected = selected;
+			return this;
+		}
+
+		@Override
+		public Export replaceNewline(String replacement) {
+			this.newlineReplacement = replacement;
 			return this;
 		}
 
@@ -1482,7 +1500,17 @@ public final class FilterTable<R, C> extends JTable {
 		private List<String> stringValues(int row, List<FilterTableColumn<C>> columns) {
 			return columns.stream()
 							.map(column -> tableModel.values().string(row, column.identifier()))
+							.map(String::trim)
+							.map(this::replaceNewlines)
 							.collect(toList());
+		}
+
+		private String replaceNewlines(String string) {
+			if (newlineReplacement != null) {
+				return string.replace("\r\n", newlineReplacement).replace("\n", newlineReplacement).replace("\r", newlineReplacement);
+			}
+
+			return string;
 		}
 	}
 
