@@ -193,7 +193,7 @@ public class DomainTest {
 			return insertedEntity;
 		}
 		catch (RecordNotFoundException e) {
-			fail("Inserted entity of type " + entity.entityType() + " not returned by select after insert");
+			fail("Inserted entity of type " + entity.type() + " not returned by select after insert");
 			throw e;
 		}
 	}
@@ -206,7 +206,7 @@ public class DomainTest {
 	 */
 	private static void testSelect(Entity entity, EntityConnection connection) {
 		assertEquals(entity, connection.select(entity.primaryKey()),
-						"Entity of type " + entity.entityType() + " failed equals comparison");
+						"Entity of type " + entity.type() + " failed equals comparison");
 	}
 
 	/**
@@ -255,7 +255,7 @@ public class DomainTest {
 		catch (RecordNotFoundException e) {
 			caught = true;
 		}
-		assertTrue(caught, "Entity of type " + entity.entityType() + " failed delete test");
+		assertTrue(caught, "Entity of type " + entity.type() + " failed delete test");
 	}
 
 	private static void assertValueEqual(ColumnDefinition<?> columnDefinition, Entity original, Entity updated) {

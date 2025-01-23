@@ -547,7 +547,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	@Override
 	public Map<EntityType, Collection<Entity>> dependencies(Collection<Entity> entities) {
 		Set<EntityType> entityTypes = requireNonNull(entities, ENTITIES).stream()
-						.map(Entity::entityType)
+						.map(Entity::type)
 						.collect(toSet());
 		if (entityTypes.isEmpty()) {
 			return emptyMap();//no entities
@@ -718,14 +718,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		synchronized (connection) {
 			try {
 				for (Entity entity : entities) {
-					EntityDefinition entityDefinition = definition(entity.entityType());
+					EntityDefinition entityDefinition = definition(entity.type());
 					KeyGenerator keyGenerator = entityDefinition.primaryKey().generator();
 					keyGenerator.beforeInsert(entity, connection);
 
 					populateColumnsAndValues(entity, insertableColumns(entityDefinition, keyGenerator.inserted()),
 									statementColumns, statementValues, columnDefinition -> entity.contains(columnDefinition.attribute()));
 					if (keyGenerator.inserted() && statementColumns.isEmpty()) {
-						throw new SQLException("Unable to insert entity " + entity.entityType() + ", no values to insert");
+						throw new SQLException("Unable to insert entity " + entity.type() + ", no values to insert");
 					}
 
 					insertQuery = insertQuery(entityDefinition.tableName(), statementColumns);
@@ -783,7 +783,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 						populateColumnsAndValues(entity, updatableColumns, statementColumns, statementValues,
 										columnDefinition -> entity.modified(columnDefinition.attribute()));
 						if (statementColumns.isEmpty()) {
-							throw new UpdateException("Unable to update entity " + entity.entityType() + ", no modified values found");
+							throw new UpdateException("Unable to update entity " + entity.type() + ", no modified values found");
 						}
 
 						Condition condition = key(entity.originalPrimaryKey());
@@ -923,7 +923,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	private void populateForeignKeys(List<Entity> entities, Select select,
 																	 int currentForeignKeyFetchDepth) throws SQLException {
 		Collection<ForeignKeyDefinition> foreignKeysToSet =
-						foreignKeysToPopulate(entities.get(0).entityType(), select.attributes());
+						foreignKeysToPopulate(entities.get(0).type(), select.attributes());
 		for (ForeignKeyDefinition foreignKeyDefinition : foreignKeysToSet) {
 			ForeignKey foreignKey = foreignKeyDefinition.attribute();
 			int conditionOrForeignKeyFetchDepthLimit = select.fetchDepth(foreignKey)
@@ -1002,7 +1002,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	private Key createKey(Entity entity, Collection<Column<?>> keyColumns) {
-		Key.Builder keyBuilder = entities().keyBuilder(entity.entityType());
+		Key.Builder keyBuilder = entities().keyBuilder(entity.type());
 		keyColumns.forEach(column -> keyBuilder.with((Column<Object>) column, entity.get(column)));
 
 		return keyBuilder.build();
@@ -1306,7 +1306,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
 	private void throwIfReadOnly(Collection<Entity> entities) {
 		for (Entity entity : entities) {
-			throwIfReadOnly(entity.entityType());
+			throwIfReadOnly(entity.type());
 		}
 	}
 
@@ -1497,7 +1497,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
 	private static String createModifiedExceptionMessage(Entity entity, Entity modified,
 																											 Collection<Column<?>> modifiedColumns) {
-		StringBuilder builder = new StringBuilder(MESSAGES.getString(RECORD_MODIFIED)).append(": ").append(entity.entityType());
+		StringBuilder builder = new StringBuilder(MESSAGES.getString(RECORD_MODIFIED)).append(": ").append(entity.type());
 		for (Column<?> column : modifiedColumns) {
 			builder.append("\n").append(column)
 							.append(": ").append(entity.original(column))

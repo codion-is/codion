@@ -82,10 +82,10 @@ public final class WorldImplTest extends DomainTest {
 		@Override
 		public void modify(Entity entity) {
 			super.modify(entity);
-			if (entity.entityType().equals(Country.TYPE)) {
+			if (entity.type().equals(Country.TYPE)) {
 				entity.put(Country.CONTINENT, "Europe");
 			}
-			else if (entity.entityType().equals(City.TYPE)) {
+			else if (entity.type().equals(City.TYPE)) {
 				entity.put(City.LOCATION, null);
 			}
 		}

@@ -215,7 +215,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 
 	private void onInsert(Collection<Entity> insertedEntities) {
 		Collection<Entity> entitiesToAdd = insertedEntities.stream()
-						.filter(entity -> entity.entityType().equals(entityType()))
+						.filter(entity -> entity.type().equals(entityType()))
 						.collect(toList());
 		if (!onInsert.isEqualTo(OnInsert.DO_NOTHING) && !entitiesToAdd.isEmpty()) {
 			if (!selection().empty().get()) {
@@ -311,7 +311,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 		@Override
 		public void accept(Map<Entity.Key, Entity> updated) {
 			updated.values().stream()
-							.collect(groupingBy(Entity::entityType, HashMap::new, toList()))
+							.collect(groupingBy(Entity::type, HashMap::new, toList()))
 							.forEach(this::handleUpdate);
 		}
 

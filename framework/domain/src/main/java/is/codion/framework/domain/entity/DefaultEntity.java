@@ -98,7 +98,7 @@ class DefaultEntity implements Entity, Serializable {
 	}
 
 	@Override
-	public final EntityType entityType() {
+	public final EntityType type() {
 		return definition.entityType();
 	}
 
@@ -266,8 +266,8 @@ class DefaultEntity implements Entity, Serializable {
 		if (entity == this) {
 			return emptyMap();
 		}
-		if (entity != null && !definition.entityType().equals(entity.entityType())) {
-			throw new IllegalArgumentException("Entity of type: " + definition.entityType() + " expected, got: " + entity.entityType());
+		if (entity != null && !definition.entityType().equals(entity.type())) {
+			throw new IllegalArgumentException("Entity of type: " + definition.entityType() + " expected, got: " + entity.type());
 		}
 
 		return populateValues(entity);
@@ -299,8 +299,8 @@ class DefaultEntity implements Entity, Serializable {
 
 	@Override
 	public final boolean equalValues(Entity entity, Collection<? extends Attribute<?>> attributes) {
-		if (!definition.entityType().equals(requireNonNull(entity).entityType())) {
-			throw new IllegalArgumentException("Entity of type: " + definition.entityType() + " expected, got: " + entity.entityType());
+		if (!definition.entityType().equals(requireNonNull(entity).type())) {
+			throw new IllegalArgumentException("Entity of type: " + definition.entityType() + " expected, got: " + entity.type());
 		}
 
 		return requireNonNull(attributes).stream()
@@ -534,9 +534,9 @@ class DefaultEntity implements Entity, Serializable {
 
 	private Entity validateForeignKeyValue(ForeignKeyDefinition foreignKeyDefinition, Entity foreignKeyValue) {
 		EntityType referencedType = foreignKeyDefinition.attribute().referencedType();
-		if (!Objects.equals(referencedType, foreignKeyValue.entityType())) {
+		if (!Objects.equals(referencedType, foreignKeyValue.type())) {
 			throw new IllegalArgumentException("Entity of type " + referencedType +
-							" expected for foreign key " + foreignKeyDefinition + ", got: " + foreignKeyValue.entityType());
+							" expected for foreign key " + foreignKeyDefinition + ", got: " + foreignKeyValue.type());
 		}
 		for (ForeignKey.Reference<?> reference : foreignKeyDefinition.references()) {
 			throwIfModifiesReadOnlyReference(foreignKeyDefinition, foreignKeyValue, reference);

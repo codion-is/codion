@@ -421,7 +421,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 		}
 
 		private static String entityToString(Entity entity) {
-			StringBuilder builder = new StringBuilder(entity.entityType().name()).append(" {");
+			StringBuilder builder = new StringBuilder(entity.type().name()).append(" {");
 			for (ColumnDefinition<?> columnDefinition : entity.definition().columns().definitions()) {
 				boolean modified = entity.modified(columnDefinition.attribute());
 				if (columnDefinition.primaryKey() || modified) {

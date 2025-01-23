@@ -25,6 +25,8 @@ Codion Change Log
 ### is.codion.framework.db.rmi
 - LocalConnectionHandler, method logging improved, fetch/return connection no longer logged during an open transaction.
 - LocalConnectionHandler, local connection creation logged.
+### is.codion.framework.domain
+- Entity.entityType() renamed type().
 ### is.codion.framework.model
 - DefaultForeignKeyConditionModel now links search models to their respective operands.
 ### is.codion.swing.framework.model

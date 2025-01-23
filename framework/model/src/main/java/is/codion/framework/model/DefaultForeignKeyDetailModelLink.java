@@ -128,7 +128,7 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
 
 	private Collection<Entity> ofReferencedType(Collection<Entity> entities) {
 		return entities.stream()
-						.filter(entity -> entity.entityType().equals(foreignKey.referencedType()))
+						.filter(entity -> entity.type().equals(foreignKey.referencedType()))
 						.collect(toList());
 	}
 

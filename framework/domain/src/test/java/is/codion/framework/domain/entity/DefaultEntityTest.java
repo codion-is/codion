@@ -118,7 +118,7 @@ public class DefaultEntityTest {
 		List<Object> fromFile = Serializer.deserialize(Serializer.serialize(singletonList(entity)));
 		assertEquals(1, fromFile.size());
 		Entity entityFromFile = (Entity) fromFile.get(0);
-		assertEquals(Detail.TYPE, entity.entityType());
+		assertEquals(Detail.TYPE, entity.type());
 		assertTrue(entity.equalValues(entityFromFile));
 		assertTrue(entityFromFile.modified());
 		assertTrue(entityFromFile.modified(Detail.STRING));

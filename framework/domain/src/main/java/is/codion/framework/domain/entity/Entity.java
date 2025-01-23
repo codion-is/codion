@@ -54,7 +54,7 @@ public interface Entity extends Comparable<Entity> {
 	/**
 	 * @return the entity type
 	 */
-	EntityType entityType();
+	EntityType type();
 
 	/**
 	 * @return the entity definition
@@ -488,7 +488,7 @@ public interface Entity extends Comparable<Entity> {
 	 */
 	static LinkedHashMap<EntityType, List<Entity>> groupByType(Collection<Entity> entities) {
 		return requireNonNull(entities).stream()
-						.collect(groupingBy(Entity::entityType, LinkedHashMap::new, toList()));
+						.collect(groupingBy(Entity::type, LinkedHashMap::new, toList()));
 	}
 
 	/**

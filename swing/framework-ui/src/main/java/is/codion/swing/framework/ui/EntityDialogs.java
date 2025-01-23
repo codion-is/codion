@@ -293,7 +293,7 @@ public final class EntityDialogs {
 		@Override
 		public void edit(Collection<Entity> entities) {
 			Set<EntityType> entityTypes = requireNonNull(entities).stream()
-							.map(Entity::entityType)
+							.map(Entity::type)
 							.collect(toSet());
 			if (entityTypes.isEmpty()) {
 				return;//no entities

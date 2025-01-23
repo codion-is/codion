@@ -287,7 +287,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 			throw new IllegalArgumentException("One or more entities is required to base a table model on");
 		}
 
-		return entities.iterator().next().entityType();
+		return entities.iterator().next().type();
 	}
 
 	private static final class EntityTableColumns implements TableColumns<Entity, Attribute<?>> {
@@ -380,7 +380,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 
 		@Override
 		public boolean test(Entity entity) {
-			return entity.entityType().equals(entityType);
+			return entity.type().equals(entityType);
 		}
 	}
 }

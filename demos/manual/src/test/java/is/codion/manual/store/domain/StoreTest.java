@@ -111,11 +111,11 @@ public class StoreTest extends DomainTest {
 
 		@Override
 		public void modify(Entity entity) {
-			if (entity.entityType().equals(Address.TYPE)) {
+			if (entity.type().equals(Address.TYPE)) {
 				entity.put(Address.STREET, "New Street");
 				entity.put(Address.CITY, "New City");
 			}
-			else if (entity.entityType().equals(Customer.TYPE)) {
+			else if (entity.type().equals(Customer.TYPE)) {
 				// It is sufficient to change the value of a
 				// single property, but the more, the merrier
 				entity.put(Customer.FIRST_NAME, "Jesse");

@@ -183,7 +183,7 @@ final class DefaultEntityEditor implements EntityEditModel.EntityEditor {
 
 	@Override
 	public void validate(Entity entity) {
-		if (entity.entityType().equals(entityDefinition.entityType())) {
+		if (entity.type().equals(entityDefinition.entityType())) {
 			validator.getOrThrow().validate(entity);
 		}
 		else {
