@@ -289,7 +289,7 @@ public final class EntityTest {
 
 		Collection<Key> referencedKeys = Entity.keys(Employee.DEPARTMENT_FK, asList(emp1, emp2, emp3, emp4));
 		assertEquals(2, referencedKeys.size());
-		referencedKeys.forEach(key -> assertEquals(Department.TYPE, key.entityType()));
+		referencedKeys.forEach(key -> assertEquals(Department.TYPE, key.type()));
 		Collection<Integer> values = Entity.values(new ArrayList<>(referencedKeys));
 		assertTrue(values.contains(1));
 		assertTrue(values.contains(2));

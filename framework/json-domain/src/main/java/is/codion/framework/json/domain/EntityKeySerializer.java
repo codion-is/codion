@@ -46,7 +46,7 @@ final class EntityKeySerializer extends StdSerializer<Entity.Key> {
 	public void serialize(Entity.Key key, JsonGenerator generator, SerializerProvider provider) throws IOException {
 		requireNonNull(key);
 		generator.writeStartObject();
-		generator.writeStringField("entityType", key.entityType().name());
+		generator.writeStringField("entityType", key.type().name());
 		generator.writeFieldName("values");
 		writeValues(key, generator);
 		generator.writeEndObject();

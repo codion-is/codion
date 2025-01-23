@@ -439,7 +439,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 		}
 
 		private static String entityKeyToString(Entity.Key key) {
-			return key.entityType() + " {" + key + "}";
+			return key.type() + " {" + key + "}";
 		}
 	}
 }

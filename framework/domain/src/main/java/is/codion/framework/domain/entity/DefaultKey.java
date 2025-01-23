@@ -86,7 +86,7 @@ class DefaultKey implements Entity.Key, Serializable {
 	}
 
 	@Override
-	public EntityType entityType() {
+	public EntityType type() {
 		return definition.type();
 	}
 

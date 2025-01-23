@@ -28,6 +28,7 @@ Codion Change Log
 ### is.codion.framework.domain
 - Entity.entityType() renamed type().
 - EntityDefinition.entityType() renamed type().
+- Entity.Key.entityType() renamed type().
 ### is.codion.framework.model
 - DefaultForeignKeyConditionModel now links search models to their respective operands.
 ### is.codion.swing.framework.model

@@ -384,7 +384,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		private Collection<Entity.Key> validateKeys(Collection<Entity.Key> keys) {
 			requireNonNull(keys);
 			for (Entity.Key key : keys) {
-				if (!key.entityType().equals(foreignKey.referencedType())) {
+				if (!key.type().equals(foreignKey.referencedType())) {
 					throw new IllegalArgumentException("Key " + key + " is not of the correct type (" + foreignKey.referencedType() + ")");
 				}
 			}

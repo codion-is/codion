@@ -129,7 +129,7 @@ public final class EntityEditEvents {
 		private void notifyUpdated(Map<Entity.Key, Entity> updated) {
 			updated.entrySet()
 							.stream()
-							.collect(groupingBy(entry -> entry.getKey().entityType(), LinkedHashMap::new, toList()))
+							.collect(groupingBy(entry -> entry.getKey().type(), LinkedHashMap::new, toList()))
 							.forEach(this::notifyUpdated);
 		}
 

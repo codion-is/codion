@@ -138,7 +138,7 @@ public interface Condition {
 			throw new IllegalArgumentException("No keys specified for key condition");
 		}
 		Set<EntityType> entityTypes = keys.stream()
-						.map(Entity.Key::entityType)
+						.map(Entity.Key::type)
 						.collect(Collectors.toSet());
 		if (entityTypes.size() > 1) {
 			throw new IllegalArgumentException("Multiple entity types found among keys");
