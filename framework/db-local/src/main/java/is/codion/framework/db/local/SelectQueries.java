@@ -272,7 +272,7 @@ final class SelectQueries {
 		}
 
 		private List<ColumnDefinition<?>> defaultSelectColumns() {
-			return defaultSelectColumnsCache.computeIfAbsent(definition.entityType(), entityType ->
+			return defaultSelectColumnsCache.computeIfAbsent(definition.type(), entityType ->
 							definition.columns().definitions().stream()
 											.filter(ColumnDefinition::selectable)
 											.filter(columnDefinition -> !columnDefinition.lazy())
@@ -280,11 +280,11 @@ final class SelectQueries {
 		}
 
 		private String defaultColumnsClause() {
-			return defaultColumnsClauseCache.computeIfAbsent(definition.entityType(), type -> columnsClause(defaultSelectColumns()));
+			return defaultColumnsClauseCache.computeIfAbsent(definition.type(), type -> columnsClause(defaultSelectColumns()));
 		}
 
 		private String groupByClause() {
-			return groupByClauseCache.computeIfAbsent(definition.entityType(), type ->
+			return groupByClauseCache.computeIfAbsent(definition.type(), type ->
 							definition.columns().definitions().stream()
 											.filter(ColumnDefinition::groupBy)
 											.map(ColumnDefinition::expression)

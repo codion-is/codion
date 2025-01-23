@@ -87,7 +87,7 @@ class DefaultKey implements Entity.Key, Serializable {
 
 	@Override
 	public EntityType entityType() {
-		return definition.entityType();
+		return definition.type();
 	}
 
 	@Override
@@ -127,7 +127,7 @@ class DefaultKey implements Entity.Key, Serializable {
 	@Override
 	public <T> T get(Column<T> column) {
 		if (!values.containsKey(requireNonNull(column))) {
-			throw new IllegalArgumentException("Column " + column + " is not part of key: " + definition.entityType());
+			throw new IllegalArgumentException("Column " + column + " is not part of key: " + definition.type());
 		}
 
 		return (T) values.get(definition.columns().definition(column).attribute());
@@ -271,7 +271,7 @@ class DefaultKey implements Entity.Key, Serializable {
 
 	@Serial
 	private void writeObject(ObjectOutputStream stream) throws IOException {
-		stream.writeObject(definition.entityType().domainType().name());
+		stream.writeObject(definition.type().domainType().name());
 		EntitySerializer.serialize(this, stream);
 	}
 

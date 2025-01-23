@@ -119,7 +119,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 	}
 
 	@Override
-	public EntityType entityType() {
+	public EntityType type() {
 		return entityType;
 	}
 
@@ -292,7 +292,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		if (referencedEntities.containsKey(foreignKey)) {
 			throw new IllegalStateException("Foreign definition has already been set for " + foreignKey);
 		}
-		if (!foreignKey.referencedType().equals(definition.entityType())) {
+		if (!foreignKey.referencedType().equals(definition.type())) {
 			throw new IllegalArgumentException("Definition for entity " + foreignKey.referencedType() +
 							" expected for " + foreignKey);
 		}

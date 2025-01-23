@@ -191,7 +191,7 @@ public abstract class DomainModel implements Domain {
 	 */
 	protected final void addEntities(Domain domain) {
 		requireNonNull(domain).entities().definitions().forEach(definition -> {
-			if (!entities.contains(definition.entityType())) {
+			if (!entities.contains(definition.type())) {
 				entities.addEntityDefinition(definition);
 			}
 		});
@@ -234,9 +234,9 @@ public abstract class DomainModel implements Domain {
 	}
 
 	private EntityDefinition validate(EntityDefinition definition) {
-		if (!domainType.contains(requireNonNull(definition).entityType())) {
+		if (!domainType.contains(requireNonNull(definition).type())) {
 			throw new IllegalArgumentException("Entity type '" +
-							definition.entityType() + "' is not part of domain: " + domainType);
+							definition.type() + "' is not part of domain: " + domainType);
 		}
 
 		return definition;

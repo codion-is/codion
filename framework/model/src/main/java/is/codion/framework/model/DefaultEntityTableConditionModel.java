@@ -71,7 +71,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 
 	@Override
 	public EntityType entityType() {
-		return entityDefinition.entityType();
+		return entityDefinition.type();
 	}
 
 	@Override
@@ -144,7 +144,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 						.collect(toList());
 		switch (conditions.size()) {
 			case 0:
-				return all(entityDefinition.entityType());
+				return all(entityDefinition.type());
 			case 1:
 				return conditions.get(0);
 			default:

@@ -317,7 +317,7 @@ public final class DomainSource {
 		}
 		else if (attribute instanceof ForeignKey) {
 			EntityDefinition referenced = sortedDefinitions.stream()
-							.filter(definition -> definition.entityType().equals(((ForeignKey) attribute).referencedType()))
+							.filter(definition -> definition.type().equals(((ForeignKey) attribute).referencedType()))
 							.findFirst()
 							.orElseThrow();
 			constructorBuilder.addParameter(ParameterSpec.builder(dtoName(referenced),
@@ -374,7 +374,7 @@ public final class DomainSource {
 			}
 			else if (attribute instanceof ForeignKey) {
 				EntityDefinition referenced = sortedDefinitions.stream()
-								.filter(definition -> definition.entityType().equals(((ForeignKey) attribute).referencedType()))
+								.filter(definition -> definition.type().equals(((ForeignKey) attribute).referencedType()))
 								.findFirst()
 								.orElseThrow();
 				arguments.add(interfaceName(referenced.tableName(), true)
@@ -672,10 +672,10 @@ public final class DomainSource {
 		Collection<EntityDefinition> definitions = domain.entities().definitions();
 
 		return concat(definitions.stream()
-										.filter(definition -> dependencies.get(definition.entityType()).isEmpty())
+										.filter(definition -> dependencies.get(definition.type()).isEmpty())
 										.sorted(comparing(EntityDefinition::tableName)),
 						definitions.stream()
-										.filter(definition -> !dependencies.get(definition.entityType()).isEmpty())
+										.filter(definition -> !dependencies.get(definition.type()).isEmpty())
 										.sorted(comparing(EntityDefinition::tableName))
 										.sorted(new DependencyOrder(dependencies)))
 						.collect(toList());
@@ -683,10 +683,10 @@ public final class DomainSource {
 
 	private static boolean cyclicalDependencies(Collection<EntityDefinition> definitions) {
 		Map<EntityType, EntityDefinition> definitionMap = definitions.stream()
-						.collect(toMap(EntityDefinition::entityType, identity()));
+						.collect(toMap(EntityDefinition::type, identity()));
 		for (EntityDefinition definition : definitions) {
 			Set<EntityType> dependencies = dependencies(definition.foreignKeys().get(), new HashSet<>(), definitionMap);
-			if (dependencies.contains(definition.entityType())) {
+			if (dependencies.contains(definition.type())) {
 				return true;
 			}
 		}
@@ -696,10 +696,10 @@ public final class DomainSource {
 
 	private static Map<EntityType, Set<EntityType>> dependencies(Domain domain) {
 		Map<EntityType, EntityDefinition> definitions = domain.entities().definitions().stream()
-						.collect(toMap(EntityDefinition::entityType, identity()));
+						.collect(toMap(EntityDefinition::type, identity()));
 
 		return domain.entities().definitions().stream()
-						.collect(toMap(EntityDefinition::entityType,
+						.collect(toMap(EntityDefinition::type,
 										definition -> dependencies(definition, definitions)));
 	}
 
@@ -767,10 +767,10 @@ public final class DomainSource {
 
 		@Override
 		public int compare(EntityDefinition definition1, EntityDefinition definition2) {
-			if (dependencies.get(definition1.entityType()).contains(definition2.entityType())) {
+			if (dependencies.get(definition1.type()).contains(definition2.type())) {
 				return 1;
 			}
-			else if (dependencies.get(definition2.entityType()).contains(definition1.entityType())) {
+			else if (dependencies.get(definition2.type()).contains(definition1.type())) {
 				return -1;
 			}
 

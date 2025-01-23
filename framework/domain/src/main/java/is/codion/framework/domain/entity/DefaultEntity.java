@@ -99,7 +99,7 @@ class DefaultEntity implements Entity, Serializable {
 
 	@Override
 	public final EntityType type() {
-		return definition.entityType();
+		return definition.type();
 	}
 
 	@Override
@@ -266,8 +266,8 @@ class DefaultEntity implements Entity, Serializable {
 		if (entity == this) {
 			return emptyMap();
 		}
-		if (entity != null && !definition.entityType().equals(entity.type())) {
-			throw new IllegalArgumentException("Entity of type: " + definition.entityType() + " expected, got: " + entity.type());
+		if (entity != null && !definition.type().equals(entity.type())) {
+			throw new IllegalArgumentException("Entity of type: " + definition.type() + " expected, got: " + entity.type());
 		}
 
 		return populateValues(entity);
@@ -299,8 +299,8 @@ class DefaultEntity implements Entity, Serializable {
 
 	@Override
 	public final boolean equalValues(Entity entity, Collection<? extends Attribute<?>> attributes) {
-		if (!definition.entityType().equals(requireNonNull(entity).type())) {
-			throw new IllegalArgumentException("Entity of type: " + definition.entityType() + " expected, got: " + entity.type());
+		if (!definition.type().equals(requireNonNull(entity).type())) {
+			throw new IllegalArgumentException("Entity of type: " + definition.type() + " expected, got: " + entity.type());
 		}
 
 		return requireNonNull(attributes).stream()
@@ -817,7 +817,7 @@ class DefaultEntity implements Entity, Serializable {
 
 	@Serial
 	private void writeObject(ObjectOutputStream stream) throws IOException {
-		stream.writeObject(definition.entityType().domainType().name());
+		stream.writeObject(definition.type().domainType().name());
 		EntitySerializer.serialize(this, stream);
 	}
 

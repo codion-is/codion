@@ -76,7 +76,7 @@ final class ConditionDeserializer extends StdDeserializer<Condition> {
 			return customConditionDeserializer.deserialize(definition, conditionNode);
 		}
 		else if ("all".equals(typeString)) {
-			return Condition.all(definition.entityType());
+			return Condition.all(definition.type());
 		}
 
 		throw new IllegalArgumentException("Unknown condition type: " + type);

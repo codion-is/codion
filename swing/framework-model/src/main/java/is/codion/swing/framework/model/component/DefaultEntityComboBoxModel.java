@@ -94,7 +94,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + " [entityType: " + entityDefinition.entityType() + "]";
+		return getClass().getSimpleName() + " [entityType: " + entityDefinition.type() + "]";
 	}
 
 	@Override
@@ -145,7 +145,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	@Override
 	public <T> Value<T> createSelectorValue(Attribute<T> attribute) {
 		if (!entityDefinition.attributes().contains(attribute)) {
-			throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityDefinition.entityType());
+			throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityDefinition.type());
 		}
 
 		return createSelectorValue(new EntityFinder<>(attribute));
@@ -241,9 +241,9 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	}
 
 	private void addEditListeners() {
-		EntityEditEvents.insertObserver(entityDefinition.entityType()).addWeakConsumer(insertListener);
-		EntityEditEvents.updateObserver(entityDefinition.entityType()).addWeakConsumer(updateListener);
-		EntityEditEvents.deleteObserver(entityDefinition.entityType()).addWeakConsumer(deleteListener);
+		EntityEditEvents.insertObserver(entityDefinition.type()).addWeakConsumer(insertListener);
+		EntityEditEvents.updateObserver(entityDefinition.type()).addWeakConsumer(updateListener);
+		EntityEditEvents.deleteObserver(entityDefinition.type()).addWeakConsumer(deleteListener);
 	}
 
 	private final class DefaultFilter implements Filter, Predicate<Entity> {
@@ -346,8 +346,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		@Override
 		public void link(EntityComboBoxModel filterModel) {
 			entityDefinition.foreignKeys().definition(foreignKey);
-			if (!foreignKey.referencedType().equals(filterModel.entityDefinition().entityType())) {
-				throw new IllegalArgumentException("EntityComboBoxModel is of type: " + filterModel.entityDefinition().entityType()
+			if (!foreignKey.referencedType().equals(filterModel.entityDefinition().type())) {
+				throw new IllegalArgumentException("EntityComboBoxModel is of type: " + filterModel.entityDefinition().type()
 								+ ", should be: " + foreignKey.referencedType());
 			}
 			//if foreign key filter keys have been set previously, initialize with one of those
@@ -475,8 +475,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		@Override
 		public Builder attributes(Collection<Attribute<?>> attributes) {
 			for (Attribute<?> attribute : requireNonNull(attributes)) {
-				if (!attribute.entityType().equals(entityDefinition.entityType())) {
-					throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityDefinition.entityType());
+				if (!attribute.entityType().equals(entityDefinition.type())) {
+					throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityDefinition.type());
 				}
 			}
 			this.attributes = attributes;

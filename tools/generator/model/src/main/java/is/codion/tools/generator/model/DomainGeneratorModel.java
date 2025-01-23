@@ -320,7 +320,7 @@ public final class DomainGeneratorModel {
 							.map(SchemaRow::domain)
 							.flatMap(Optional::stream)
 							.flatMap(domain -> domain.entities().definitions().stream()
-											.map(definition -> new EntityRow(definition, domain.tableType(definition.entityType()))))
+											.map(definition -> new EntityRow(definition, domain.tableType(definition.type()))))
 							.collect(toList());
 		}
 	}
@@ -387,7 +387,7 @@ public final class DomainGeneratorModel {
 		public Object value(EntityRow row, Id identifier) {
 			switch (identifier) {
 				case ENTITY:
-					return row.definition.entityType().name();
+					return row.definition.type().name();
 				case TABLE_TYPE:
 					return row.tableType;
 				default:

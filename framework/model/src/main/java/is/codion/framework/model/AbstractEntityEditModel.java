@@ -124,7 +124,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 	@Override
 	public final EntityType entityType() {
-		return entityDefinition.entityType();
+		return entityDefinition.type();
 	}
 
 	@Override

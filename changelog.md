@@ -27,6 +27,7 @@ Codion Change Log
 - LocalConnectionHandler, local connection creation logged.
 ### is.codion.framework.domain
 - Entity.entityType() renamed type().
+- EntityDefinition.entityType() renamed type().
 ### is.codion.framework.model
 - DefaultForeignKeyConditionModel now links search models to their respective operands.
 ### is.codion.swing.framework.model

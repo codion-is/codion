@@ -128,8 +128,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	}
 
 	private void validateType(Entity entity) {
-		if (!entity.type().equals(entityDefinition.entityType())) {
-			throw new IllegalArgumentException("Entities of type " + entityDefinition.entityType() + " exptected, got " + entity.type());
+		if (!entity.type().equals(entityDefinition.type())) {
+			throw new IllegalArgumentException("Entities of type " + entityDefinition.type() + " exptected, got " + entity.type());
 		}
 	}
 
@@ -154,7 +154,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 		private Select select() {
 			if (searchColumns.isEmpty()) {
-				throw new IllegalStateException("No search columns provided for search model: " + entityDefinition.entityType());
+				throw new IllegalStateException("No search columns provided for search model: " + entityDefinition.type());
 			}
 			Collection<Condition> conditions = new ArrayList<>();
 			for (Column<String> column : searchColumns) {
@@ -338,8 +338,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 		private void validateAttributes(Collection<? extends Attribute<?>> attributes) {
 			for (Attribute<?> attribute : attributes) {
-				if (!entityDefinition.entityType().equals(attribute.entityType())) {
-					throw new IllegalArgumentException("Attribute '" + attribute + "' is not part of entity " + entityDefinition.entityType());
+				if (!entityDefinition.type().equals(attribute.entityType())) {
+					throw new IllegalArgumentException("Attribute '" + attribute + "' is not part of entity " + entityDefinition.type());
 				}
 			}
 		}

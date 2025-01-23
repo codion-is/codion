@@ -300,7 +300,7 @@ public final class DefaultEntityComboBoxModelTest {
 		AtomicInteger refreshed = new AtomicInteger();
 		Runnable refreshListener = refreshed::incrementAndGet;
 		comboBoxModel.items().refresher().result().addListener(refreshListener);
-		assertEquals(Employee.TYPE, comboBoxModel.entityDefinition().entityType());
+		assertEquals(Employee.TYPE, comboBoxModel.entityDefinition().type());
 		comboBoxModel.toString();
 		assertEquals(0, comboBoxModel.getSize());
 		assertNull(comboBoxModel.getSelectedItem());

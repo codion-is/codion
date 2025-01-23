@@ -1188,12 +1188,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
 	private List<ColumnDefinition<?>> insertableColumns(EntityDefinition entityDefinition,
 																											boolean includePrimaryKeyColumns) {
-		return insertableColumnsCache.computeIfAbsent(entityDefinition.entityType(), k ->
+		return insertableColumnsCache.computeIfAbsent(entityDefinition.type(), k ->
 						writableColumnDefinitions(entityDefinition, includePrimaryKeyColumns, true));
 	}
 
 	private List<ColumnDefinition<?>> updatableColumns(EntityDefinition entityDefinition) {
-		return updatableColumnsCache.computeIfAbsent(entityDefinition.entityType(), k ->
+		return updatableColumnsCache.computeIfAbsent(entityDefinition.type(), k ->
 						writableColumnDefinitions(entityDefinition, true, false));
 	}
 

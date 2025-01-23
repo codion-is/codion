@@ -240,7 +240,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 		for (Domain domain : domainModels.values()) {
 			domainEntities.put(domain.type(), domain.entities().definitions().stream()
 							.map(definition -> new DefaultDomainEntityDefinition(domain.type().name(),
-											definition.entityType().name(), definition.tableName()))
+											definition.type().name(), definition.tableName()))
 							.collect(Collectors.toList()));
 		}
 
