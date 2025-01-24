@@ -35,7 +35,7 @@ public final class InvoiceModel extends SwingEntityModel {
 		ForeignKeyDetailModelLink<?, ?, ?> detailModelLink = detailModels().add(invoiceLineModel);
 		// Prevents accidentally adding a new invoice line to the previously selected invoice,
 		// since the selected foreign key value persists when the master selection is cleared by default.
-		detailModelLink.clearForeignKeyValueOnEmptySelection().set(true);
+		detailModelLink.clearValueOnEmptySelection().set(true);
 		// Usually the UI is responsible for activating the detail model link for the currently
 		// active (or visible) detail panel, but since the InvoiceLine panel is embedded in the
 		// InvoiceEditPanel, we simply activate the link here.

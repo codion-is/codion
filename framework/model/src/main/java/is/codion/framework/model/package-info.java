@@ -26,11 +26,11 @@
  * <li>{@link is.codion.framework.model.EntityEditModel#POST_EDIT_EVENTS}
  * <li>{@link is.codion.framework.model.EntityTableModel#ON_INSERT}
  * <li>{@link is.codion.framework.model.EntityTableModel#HANDLE_EDIT_EVENTS}
- * <li>{@link is.codion.framework.model.ForeignKeyDetailModelLink#SET_FOREIGN_KEY_CONDITION_ON_INSERT}
- * <li>{@link is.codion.framework.model.ForeignKeyDetailModelLink#SET_FOREIGN_KEY_VALUE_ON_INSERT}
+ * <li>{@link is.codion.framework.model.ForeignKeyDetailModelLink#SET_CONDITION_ON_INSERT}
+ * <li>{@link is.codion.framework.model.ForeignKeyDetailModelLink#SET_VALUE_ON_INSERT}
  * <li>{@link is.codion.framework.model.ForeignKeyDetailModelLink#REFRESH_ON_SELECTION}
- * <li>{@link is.codion.framework.model.ForeignKeyDetailModelLink#CLEAR_FOREIGN_KEY_CONDITION_ON_EMPTY_SELECTION}
- * <li>{@link is.codion.framework.model.ForeignKeyDetailModelLink#CLEAR_FOREIGN_KEY_VALUE_ON_EMPTY_SELECTION}
+ * <li>{@link is.codion.framework.model.ForeignKeyDetailModelLink#CLEAR_CONDITION_ON_EMPTY_SELECTION}
+ * <li>{@link is.codion.framework.model.ForeignKeyDetailModelLink#CLEAR_VALUE_ON_EMPTY_SELECTION}
  * <li>{@link is.codion.framework.model.EntitySearchModel#DEFAULT_LIMIT}
  * </ul>
  */

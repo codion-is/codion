@@ -49,7 +49,7 @@ public final class ChinookAppModel extends SwingEntityApplicationModel {
 
 		ForeignKeyDetailModelLink<?, ?, ?> playlistTrackLink =
 						playlistModel.detailModels().add(playlistTrackModel);
-		playlistTrackLink.clearForeignKeyValueOnEmptySelection().set(true);
+		playlistTrackLink.clearValueOnEmptySelection().set(true);
 		playlistTrackLink.active().set(true);
 
 		playlistModel.tableModel().items().refresh();

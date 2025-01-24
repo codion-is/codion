@@ -31,6 +31,7 @@ Codion Change Log
 - Entity.Key.entityType() renamed type().
 ### is.codion.framework.model
 - DefaultForeignKeyConditionModel now links search models to their respective operands.
+- ForeignKeyDetailModelLink, configuration methods renamed along with associated properties.
 ### is.codion.swing.framework.model
 - DefaultSwingForeignKeyConditionModel now links search and combo box models to their respective operands.
 ### is.codion.swing.framework.ui

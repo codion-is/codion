@@ -38,10 +38,10 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
 				T extends EntityTableModel<E>> extends DefaultDetailModelLink<M, E, T> implements ForeignKeyDetailModelLink<M, E, T> {
 
 	private final ForeignKey foreignKey;
-	private final State clearForeignKeyValueOnEmptySelection = State.state(CLEAR_FOREIGN_KEY_VALUE_ON_EMPTY_SELECTION.getOrThrow());
-	private final State clearForeignKeyConditionOnEmptySelection = State.state(CLEAR_FOREIGN_KEY_CONDITION_ON_EMPTY_SELECTION.getOrThrow());
-	private final State setForeignKeyValueOnInsert = State.state(SET_FOREIGN_KEY_VALUE_ON_INSERT.getOrThrow());
-	private final State setForeignKeyConditionOnInsert = State.state(SET_FOREIGN_KEY_CONDITION_ON_INSERT.getOrThrow());
+	private final State clearValueOnEmptySelection = State.state(CLEAR_VALUE_ON_EMPTY_SELECTION.getOrThrow());
+	private final State clearConditionOnEmptySelection = State.state(CLEAR_CONDITION_ON_EMPTY_SELECTION.getOrThrow());
+	private final State setValueOnInsert = State.state(SET_VALUE_ON_INSERT.getOrThrow());
+	private final State setConditionOnInsert = State.state(SET_CONDITION_ON_INSERT.getOrThrow());
 	private final State refreshOnSelection = State.state(REFRESH_ON_SELECTION.getOrThrow());
 
 	/**
@@ -62,13 +62,13 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
 	}
 
 	@Override
-	public final State setForeignKeyConditionOnInsert() {
-		return setForeignKeyConditionOnInsert;
+	public final State setConditionOnInsert() {
+		return setConditionOnInsert;
 	}
 
 	@Override
-	public final State setForeignKeyValueOnInsert() {
-		return setForeignKeyValueOnInsert;
+	public final State setValueOnInsert() {
+		return setValueOnInsert;
 	}
 
 	@Override
@@ -77,23 +77,23 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
 	}
 
 	@Override
-	public final State clearForeignKeyValueOnEmptySelection() {
-		return clearForeignKeyValueOnEmptySelection;
+	public final State clearValueOnEmptySelection() {
+		return clearValueOnEmptySelection;
 	}
 
 	@Override
-	public final State clearForeignKeyConditionOnEmptySelection() {
-		return clearForeignKeyConditionOnEmptySelection;
+	public final State clearConditionOnEmptySelection() {
+		return clearConditionOnEmptySelection;
 	}
 
 	@Override
 	public void onSelection(Collection<Entity> selectedEntities) {
 		if (detailModel().containsTableModel() &&
-						setForeignKeyConditionOnSelection(selectedEntities) && refreshOnSelection.get()) {
-			detailModel().tableModel().items().refresh(items -> setForeignKeyValueOnSelection(selectedEntities));
+						setConditionOnSelection(selectedEntities) && refreshOnSelection.get()) {
+			detailModel().tableModel().items().refresh(result -> setValueOnSelection(selectedEntities));
 		}
 		else {
-			setForeignKeyValueOnSelection(selectedEntities);
+			setValueOnSelection(selectedEntities);
 		}
 	}
 
@@ -103,8 +103,8 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
 		if (!entities.isEmpty()) {
 			detailModel().editModel().add(foreignKey, entities);
 			Entity insertedEntity = entities.iterator().next();
-			setForeignKeyValueOnInsert(insertedEntity);
-			if (detailModel().containsTableModel() && setForeignKeyConditionOnInsert(insertedEntity)) {
+			setValueOnInsert(insertedEntity);
+			if (detailModel().containsTableModel() && setConditionOnInsert(insertedEntity)) {
 				detailModel().tableModel().items().refresh();
 			}
 		}
@@ -132,22 +132,22 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
 						.collect(toList());
 	}
 
-	private void setForeignKeyValueOnSelection(Collection<Entity> entities) {
+	private void setValueOnSelection(Collection<Entity> entities) {
 		Entity foreignKeyValue = entities.isEmpty() ? null : entities.iterator().next();
 		if (detailModel().editModel().editor().exists().not().get()
-						&& (foreignKeyValue != null || clearForeignKeyValueOnEmptySelection.get())) {
+						&& (foreignKeyValue != null || clearValueOnEmptySelection.get())) {
 			detailModel().editModel().value(foreignKey).set(foreignKeyValue);
 		}
 	}
 
-	private void setForeignKeyValueOnInsert(Entity foreignKeyValue) {
-		if (detailModel().editModel().editor().exists().not().get() && setForeignKeyValueOnInsert.get()) {
+	private void setValueOnInsert(Entity foreignKeyValue) {
+		if (detailModel().editModel().editor().exists().not().get() && setValueOnInsert.get()) {
 			detailModel().editModel().value(foreignKey).set(foreignKeyValue);
 		}
 	}
 
-	private boolean setForeignKeyConditionOnSelection(Collection<Entity> selectedEntities) {
-		if (!selectedEntities.isEmpty() || clearForeignKeyConditionOnEmptySelection.get()) {
+	private boolean setConditionOnSelection(Collection<Entity> selectedEntities) {
+		if (!selectedEntities.isEmpty() || clearConditionOnEmptySelection.get()) {
 			return detailModel().tableModel().queryModel().conditions()
 							.get(foreignKey).set().in(selectedEntities);
 		}
@@ -155,8 +155,8 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
 		return false;
 	}
 
-	private boolean setForeignKeyConditionOnInsert(Entity insertedEntity) {
-		if (setForeignKeyConditionOnInsert.get()) {
+	private boolean setConditionOnInsert(Entity insertedEntity) {
+		if (setConditionOnInsert.get()) {
 			return detailModel().tableModel().queryModel().conditions()
 							.get(foreignKey).set().in(insertedEntity);
 		}

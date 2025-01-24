@@ -235,10 +235,10 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 						.conditions()
 						.get(Employee.DEPARTMENT_FK);
 
-		// setForeignKeyConditionOnInsert()
+		// setConditionOnInsert()
 		connection.startTransaction();
 		try {
-			detailModelLink.setForeignKeyConditionOnInsert().set(true);
+			detailModelLink.setConditionOnInsert().set(true);
 
 			deptEditModel.value(Department.ID).set(-10);
 			deptEditModel.value(Department.NAME).set("New dept");
@@ -246,7 +246,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
 			assertEquals(deptCondition.operands().in().get(), singleton(inserted));
 
-			detailModelLink.setForeignKeyConditionOnInsert().set(false);
+			detailModelLink.setConditionOnInsert().set(false);
 			deptCondition.clear();
 
 			deptEditModel.value(Department.ID).set(-11);
@@ -259,10 +259,10 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 			connection.rollbackTransaction();
 		}
 
-		// setForeignKeyValueOnInsert()
+		// setValueOnInsert()
 		connection.startTransaction();
 		try {
-			detailModelLink.setForeignKeyValueOnInsert().set(true);
+			detailModelLink.setValueOnInsert().set(true);
 			deptEditModel.value(Department.ID).set(-10);
 			deptEditModel.value(Department.NAME).set("New dept");
 			Entity inserted = deptEditModel.insert();
@@ -282,7 +282,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
 			assertSame(currentDept, departmentEditModelValue.get());
 
-			detailModelLink.setForeignKeyValueOnInsert().set(false);
+			detailModelLink.setValueOnInsert().set(false);
 			empTableModel.selection().clear();
 			departmentEditModelValue.clear();
 
@@ -293,15 +293,15 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 			assertTrue(departmentEditModelValue.isNull());
 
 
-			detailModelLink.setForeignKeyValueOnInsert().set(true);
+			detailModelLink.setValueOnInsert().set(true);
 
 		}
 		finally {
 			connection.rollbackTransaction();
 		}
 
-		// clearForeignKeyValueOnEmptySelection()
-		detailModelLink.clearForeignKeyValueOnEmptySelection().set(false);
+		// clearValueOnEmptySelection()
+		detailModelLink.clearValueOnEmptySelection().set(false);
 		deptTableModel.items().refresh();
 		deptTableModel.selection().index().set(0);
 		Entity selected = deptTableModel.selection().item().get();
@@ -309,7 +309,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 		deptTableModel.selection().clear();
 		assertSame(selected, departmentEditModelValue.get());
 
-		detailModelLink.clearForeignKeyValueOnEmptySelection().set(true);
+		detailModelLink.clearValueOnEmptySelection().set(true);
 		deptTableModel.selection().index().set(0);
 		deptTableModel.selection().clear();
 		assertTrue(departmentEditModelValue.isNull());
@@ -323,8 +323,8 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 		deptTableModel.selection().clear();
 		assertFalse(departmentEditModelValue.isNull());
 
-		// clearForeignKeyConditionOnEmptySelection()
-		detailModelLink.clearForeignKeyConditionOnEmptySelection().set(false);
+		// clearConditionOnEmptySelection()
+		detailModelLink.clearConditionOnEmptySelection().set(false);
 		deptTableModel.items().refresh();
 		deptTableModel.selection().indexes().set(asList(0, 1));
 		List<Entity> selectedEntities = deptTableModel.selection().items().get();
@@ -332,7 +332,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 		deptTableModel.selection().clear();
 		assertEquals(new HashSet<>(selectedEntities), deptCondition.operands().in().get());
 
-		detailModelLink.clearForeignKeyConditionOnEmptySelection().set(true);
+		detailModelLink.clearConditionOnEmptySelection().set(true);
 		deptTableModel.selection().indexes().set(asList(2, 3));
 		selectedEntities = deptTableModel.selection().items().get();
 		assertEquals(new HashSet<>(selectedEntities), deptCondition.operands().in().get());
@@ -347,8 +347,8 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 		}
 		Model employeeModel = departmentModel.detailModels().get(Employee.TYPE);
 		ForeignKeyDetailModelLink<Model, EditModel, TableModel> link = departmentModel.detailModels().link(employeeModel);
-		link.setForeignKeyConditionOnInsert().set(true);
-		assertTrue(link.setForeignKeyConditionOnInsert().get());
+		link.setConditionOnInsert().set(true);
+		assertTrue(link.setConditionOnInsert().get());
 		EntityEditModel editModel = departmentModel.editModel();
 		editModel.value(Department.ID).set(100);
 		editModel.value(Department.NAME).set("Name");
@@ -370,7 +370,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 		EditModel employeeEditModel = employeeModel.editModel();
 
 		ForeignKeyDetailModelLink<Model, EditModel, TableModel> link = departmentModel.detailModels().link(employeeModel);
-		link.clearForeignKeyValueOnEmptySelection().set(false);
+		link.clearValueOnEmptySelection().set(false);
 
 		Entity dept = employeeModel.connection().selectSingle(Department.ID.equalTo(10));
 
@@ -381,7 +381,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 		departmentModel.tableModel().selection().clear();
 		assertEquals(dept, employeeEditModel.value(Employee.DEPARTMENT_FK).get());
 
-		link.clearForeignKeyValueOnEmptySelection().set(true);
+		link.clearValueOnEmptySelection().set(true);
 
 		departmentModel.tableModel().selection().item().set(dept);
 		assertEquals(dept, employeeEditModel.value(Employee.DEPARTMENT_FK).get());
@@ -389,7 +389,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 		departmentModel.tableModel().selection().clear();
 		assertTrue(employeeEditModel.editor().isNull(Employee.DEPARTMENT_FK).get());
 
-		link.clearForeignKeyValueOnEmptySelection().set(false);
+		link.clearValueOnEmptySelection().set(false);
 
 		departmentModel.tableModel().selection().item().set(dept);
 		assertEquals(dept, employeeEditModel.value(Employee.DEPARTMENT_FK).get());
