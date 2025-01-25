@@ -86,7 +86,7 @@ public final class SwingEntityModelTest
 		assertFalse(departmentModel.detailModels().contains(EmpModel.class));
 		SwingEntityModel employeeModel = departmentModel.detailModels().get(Employee.TYPE);
 		assertNotNull(employeeModel);
-		assertTrue(departmentModel.detailModels().linked().contains(employeeModel));
+		assertTrue(departmentModel.detailModels().active().contains(employeeModel));
 		departmentModel.tableModel().items().refresh();
 		SwingEntityEditModel employeeEditModel = employeeModel.editModel();
 		EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.comboBoxModel(Employee.DEPARTMENT_FK);

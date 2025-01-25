@@ -1083,7 +1083,7 @@ public class EntityPanel extends JPanel {
 		}
 
 		private void navigateDown() {
-			detailPanels.linked().stream()
+			detailPanels.active().stream()
 							.findFirst()
 							.orElse(detailPanels.panels.get(0))
 							.activate();
@@ -1140,9 +1140,9 @@ public class EntityPanel extends JPanel {
 		 * @return the currently linked detail EntityPanels, if any
 		 * @see ModelLink#active()
 		 */
-		public Collection<EntityPanel> linked() {
+		public Collection<EntityPanel> active() {
 			return panels.stream()
-							.filter(detailPanel -> entityModel.detailModels().linked().contains(detailPanel.entityModel))
+							.filter(detailPanel -> entityModel.detailModels().active().contains(detailPanel.entityModel))
 							.collect(toList());
 		}
 

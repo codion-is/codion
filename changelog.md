@@ -36,11 +36,13 @@ Codion Change Log
 - DefaultEntityModel now abstract, renamed AbstractEntityModel.
 - DetailModelLink and ForeignKeyDetailModelLink now Builder based, implementations package private and final.
 - DetailModelLink and ForeignKeyDetailModelLink renamed ModelLink and ForeignKeyModelLink.
+- EntityModel.DetailModels.linked() renamed active().
 ### is.codion.swing.framework.model
 - DefaultSwingForeignKeyConditionModel now links search and combo box models to their respective operands.
 ### is.codion.swing.framework.ui
 - EntityConditionComponentFactory no longer links foreign key components to operands.
 - DefaultEntityApplicationPanelBuilder now adds the framework version to system properties along with the application version.
+- EntityPanel.DetailPanels.linked() renamed active().
 ### is.codion.tools.monitor.ui
 - Demo server monitor split into separate demo-server-monitor module.
 ### is.codion.tools.generator.ui

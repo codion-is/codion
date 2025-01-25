@@ -99,9 +99,9 @@ public abstract class AbstractEntityModelTest<Model extends AbstractEntityModel<
 	@Test
 	public void testDetailModels() {
 		Model departmentModel = createDepartmentModel();
-		assertEquals(1, departmentModel.detailModels().linked().size());
+		assertEquals(1, departmentModel.detailModels().active().size());
 		departmentModel.detailModels().link(departmentModel.detailModels().get(Employee.TYPE)).active().set(false);
-		assertTrue(departmentModel.detailModels().linked().isEmpty());
+		assertTrue(departmentModel.detailModels().active().isEmpty());
 		departmentModel.detailModels().link(departmentModel.detailModels().get(Employee.TYPE)).active().set(true);
 	}
 
@@ -160,11 +160,11 @@ public abstract class AbstractEntityModelTest<Model extends AbstractEntityModel<
 		assertTrue(departmentModel.detailModels().contains(detailModel));
 		assertTrue(departmentModel.detailModels().contains((Class<? extends Model>) departmentModel.detailModels().get(Employee.TYPE).getClass()));
 		assertEquals(1, departmentModel.detailModels().get().size(), "Only one detail model should be in DepartmentModel");
-		assertEquals(1, departmentModel.detailModels().linked().size());
+		assertEquals(1, departmentModel.detailModels().active().size());
 
 		departmentModel.detailModels().get(Employee.TYPE);
 
-		assertTrue(departmentModel.detailModels().linked().contains(departmentModel.detailModels().get(Employee.TYPE)));
+		assertTrue(departmentModel.detailModels().active().contains(departmentModel.detailModels().get(Employee.TYPE)));
 		assertNotNull(departmentModel.detailModels().get(Employee.TYPE));
 		if (!departmentModel.containsTableModel()) {
 			return;
@@ -204,10 +204,10 @@ public abstract class AbstractEntityModelTest<Model extends AbstractEntityModel<
 	public void activateDeactivateDetailModel() {
 		Model departmentModel = createDepartmentModel();
 		departmentModel.detailModels().link(departmentModel.detailModels().get(Employee.TYPE)).active().set(false);
-		assertTrue(departmentModel.detailModels().linked().get().isEmpty());
+		assertTrue(departmentModel.detailModels().active().get().isEmpty());
 		departmentModel.detailModels().link(departmentModel.detailModels().get(Employee.TYPE)).active().set(true);
-		assertFalse(departmentModel.detailModels().linked().isEmpty());
-		assertTrue(departmentModel.detailModels().linked().contains(departmentModel.detailModels().get(Employee.TYPE)));
+		assertFalse(departmentModel.detailModels().active().isEmpty());
+		assertTrue(departmentModel.detailModels().active().contains(departmentModel.detailModels().get(Employee.TYPE)));
 	}
 
 	@Test

@@ -130,9 +130,9 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 	}
 
 	private void onMasterSelectionChanged() {
-		if (!detailModels.linked.isEmpty()) {
+		if (!detailModels.active.isEmpty()) {
 			List<Entity> activeEntities = activeEntities();
-			for (M detailModel : detailModels.linked) {
+			for (M detailModel : detailModels.active) {
 				detailModels.models.get(detailModel).onSelection(activeEntities);
 			}
 		}
@@ -183,7 +183,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 
 		@Override
 		public void accept(Boolean active) {
-			detailModels.linked.set(detailModels.models.values().stream()
+			detailModels.active.set(detailModels.models.values().stream()
 							.filter(link -> link.active().get())
 							.map(ModelLink::model)
 							.collect(Collectors.toList()));
@@ -197,7 +197,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 					T extends EntityTableModel<E>> implements DetailModels<M, E, T> {
 
 		private final Map<M, ModelLink<M, E, T>> models = new HashMap<>();
-		private final ValueSet<M> linked = ValueSet.valueSet();
+		private final ValueSet<M> active = ValueSet.valueSet();
 
 		@Override
 		public void add(M... detailModels) {
@@ -233,7 +233,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 			}
 			models.put(modelLink.model(), modelLink);
 			if (modelLink.active().get()) {
-				linked.add(modelLink.model());
+				active.add(modelLink.model());
 			}
 			modelLink.active().addConsumer(new ActiveDetailModelConsumer(modelLink));
 		}
@@ -272,8 +272,8 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 		}
 
 		@Override
-		public ObservableValueSet<M> linked() {
-			return linked.observable();
+		public ObservableValueSet<M> active() {
+			return active.observable();
 		}
 
 		@Override
