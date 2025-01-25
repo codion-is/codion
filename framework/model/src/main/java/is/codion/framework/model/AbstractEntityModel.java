@@ -175,9 +175,9 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 
 	private final class ActiveDetailModelConsumer implements Consumer<Boolean> {
 
-		private final DetailModelLink<?, ?, ?> detailModelLink;
+		private final ModelLink<?, ?, ?> detailModelLink;
 
-		private ActiveDetailModelConsumer(DetailModelLink<?, ?, ?> detailModelLink) {
+		private ActiveDetailModelConsumer(ModelLink<?, ?, ?> detailModelLink) {
 			this.detailModelLink = detailModelLink;
 		}
 
@@ -185,7 +185,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 		public void accept(Boolean active) {
 			detailModels.linked.set(detailModels.models.values().stream()
 							.filter(link -> link.active().get())
-							.map(DetailModelLink::detailModel)
+							.map(ModelLink::model)
 							.collect(Collectors.toList()));
 			if (active) {
 				detailModelLink.onSelection(activeEntities());
@@ -196,7 +196,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 	private final class DefaultDetailModels<M extends EntityModel<M, E, T>, E extends EntityEditModel,
 					T extends EntityTableModel<E>> implements DetailModels<M, E, T> {
 
-		private final Map<M, DetailModelLink<M, E, T>> models = new HashMap<>();
+		private final Map<M, ModelLink<M, E, T>> models = new HashMap<>();
 		private final ValueSet<M> linked = ValueSet.valueSet();
 
 		@Override
@@ -220,22 +220,22 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 
 		@Override
 		public void add(M detailModel, ForeignKey foreignKey) {
-			add(ForeignKeyDetailModelLink.builder(requireNonNull(detailModel), requireNonNull(foreignKey)).build());
+			add(ForeignKeyModelLink.builder(requireNonNull(detailModel), requireNonNull(foreignKey)).build());
 		}
 
 		@Override
-		public void add(DetailModelLink<M, E, T> detailModelLink) {
-			if (AbstractEntityModel.this == requireNonNull(detailModelLink).detailModel()) {
+		public void add(ModelLink<M, E, T> modelLink) {
+			if (AbstractEntityModel.this == requireNonNull(modelLink).model()) {
 				throw new IllegalArgumentException("A model can not be its own detail model");
 			}
-			if (models.containsKey(detailModelLink.detailModel())) {
-				throw new IllegalArgumentException("Detail model " + detailModelLink.detailModel() + " has already been added");
+			if (models.containsKey(modelLink.model())) {
+				throw new IllegalArgumentException("Detail model " + modelLink.model() + " has already been added");
 			}
-			models.put(detailModelLink.detailModel(), detailModelLink);
-			if (detailModelLink.active().get()) {
-				linked.add(detailModelLink.detailModel());
+			models.put(modelLink.model(), modelLink);
+			if (modelLink.active().get()) {
+				linked.add(modelLink.model());
 			}
-			detailModelLink.active().addConsumer(new ActiveDetailModelConsumer(detailModelLink));
+			modelLink.active().addConsumer(new ActiveDetailModelConsumer(modelLink));
 		}
 
 		@Override
@@ -263,7 +263,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 		}
 
 		@Override
-		public <L extends DetailModelLink<M, E, T>> L link(M detailModel) {
+		public <L extends ModelLink<M, E, T>> L link(M detailModel) {
 			if (!models.containsKey(requireNonNull(detailModel))) {
 				throw new IllegalStateException("Detail model not found: " + detailModel);
 			}

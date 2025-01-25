@@ -30,7 +30,7 @@ import is.codion.framework.model.AbstractEntityModel;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityModel;
 import is.codion.framework.model.EntityTableModel;
-import is.codion.framework.model.ForeignKeyDetailModelLink;
+import is.codion.framework.model.ForeignKeyModelLink;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
 
@@ -217,7 +217,7 @@ public abstract class AbstractEntityModelTest<Model extends AbstractEntityModel<
 			return;
 		}
 		Model employeeModel = createEmployeeModel();
-		departmentModel.detailModels().add(ForeignKeyDetailModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
+		departmentModel.detailModels().add(ForeignKeyModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
 						.active(true)
 						.clearValueOnEmptySelection(false)
 						.clearConditionOnEmptySelection(false)
@@ -245,7 +245,7 @@ public abstract class AbstractEntityModelTest<Model extends AbstractEntityModel<
 
 		departmentModel = createDepartmentModelWithoutDetailModel();
 		employeeModel = createEmployeeModel();
-		departmentModel.detailModels().add(ForeignKeyDetailModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
+		departmentModel.detailModels().add(ForeignKeyModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
 						.active(true)
 						.clearValueOnEmptySelection(false)
 						.clearConditionOnEmptySelection(false)
@@ -280,7 +280,7 @@ public abstract class AbstractEntityModelTest<Model extends AbstractEntityModel<
 			return;
 		}
 		Model employeeModel = createEmployeeModel();
-		departmentModel.detailModels().add(ForeignKeyDetailModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
+		departmentModel.detailModels().add(ForeignKeyModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
 						.active(true)
 						.clearValueOnEmptySelection(false)
 						.clearConditionOnEmptySelection(false)
@@ -318,7 +318,7 @@ public abstract class AbstractEntityModelTest<Model extends AbstractEntityModel<
 
 		departmentModel = createDepartmentModelWithoutDetailModel();
 		employeeModel = createEmployeeModel();
-		departmentModel.detailModels().add(ForeignKeyDetailModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
+		departmentModel.detailModels().add(ForeignKeyModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
 						.active(true)
 						.clearValueOnEmptySelection(false)
 						.clearConditionOnEmptySelection(false)
@@ -351,7 +351,7 @@ public abstract class AbstractEntityModelTest<Model extends AbstractEntityModel<
 			return;
 		}
 		Model employeeModel = createEmployeeModel();
-		departmentModel.detailModels().add(ForeignKeyDetailModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
+		departmentModel.detailModels().add(ForeignKeyModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
 						.active(true)
 						.clearValueOnEmptySelection(true)
 						.clearConditionOnEmptySelection(false)
@@ -377,7 +377,7 @@ public abstract class AbstractEntityModelTest<Model extends AbstractEntityModel<
 
 		departmentModel = createDepartmentModelWithoutDetailModel();
 		employeeModel = createEmployeeModel();
-		departmentModel.detailModels().add(ForeignKeyDetailModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
+		departmentModel.detailModels().add(ForeignKeyModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
 						.active(true)
 						.clearValueOnEmptySelection(false)
 						.clearConditionOnEmptySelection(false)
@@ -402,7 +402,7 @@ public abstract class AbstractEntityModelTest<Model extends AbstractEntityModel<
 			return;
 		}
 		Model employeeModel = createEmployeeModel();
-		departmentModel.detailModels().add(ForeignKeyDetailModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
+		departmentModel.detailModels().add(ForeignKeyModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
 						.active(true)
 						.clearValueOnEmptySelection(false)
 						.clearConditionOnEmptySelection(true)
@@ -423,7 +423,7 @@ public abstract class AbstractEntityModelTest<Model extends AbstractEntityModel<
 
 		departmentModel = createDepartmentModelWithoutDetailModel();
 		employeeModel = createEmployeeModel();
-		departmentModel.detailModels().add(ForeignKeyDetailModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
+		departmentModel.detailModels().add(ForeignKeyModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
 						.active(true)
 						.clearValueOnEmptySelection(false)
 						.clearConditionOnEmptySelection(false)

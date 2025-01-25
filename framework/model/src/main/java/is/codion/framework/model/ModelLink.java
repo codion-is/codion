@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 /**
- * Represents a link between a master and detail model.
+ * Represents a link between two entity models.
  * @param <M> the {@link EntityModel} type
  * @param <E> the {@link EntityEditModel} type
  * @param <T> the {@link EntityTableModel} type
@@ -35,56 +35,56 @@ import java.util.function.Consumer;
  * @see #onUpdate(Map)
  * @see #onDelete(Collection)
  */
-public interface DetailModelLink<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
+public interface ModelLink<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
 
 	/**
-	 * @return the detail model
+	 * @return the linked model
 	 */
-	M detailModel();
+	M model();
 
 	/**
-	 * Controls the active status of this link. Active detail model links update and filter
-	 * the detail model according to the entity/entities selected in the master model.
-	 * @return the {@link State} controlling the active status of this detail model link
+	 * Controls the active status of this link. Active model links update and filter
+	 * the linked model according to the entity/entities selected in the parent model.
+	 * @return the {@link State} controlling the active status of this model link
 	 */
 	State active();
 
 	/**
-	 * Called when the selection changes in the master model
-	 * @param selectedEntities the selected master entities
+	 * Called when the selection changes in the parent model
+	 * @param selectedEntities the selected entities
 	 */
 	void onSelection(Collection<Entity> selectedEntities);
 
 	/**
-	 * Called when a insert is performed in the master model, regardless of entity type.
+	 * Called when a insert is performed in the parent model, regardless of entity type.
 	 * @param insertedEntities the inserted entities
 	 */
 	void onInsert(Collection<Entity> insertedEntities);
 
 	/**
-	 * Called when an update is performed in the master model, regardless of entity type.
+	 * Called when an update is performed in the parent model, regardless of entity type.
 	 * @param updatedEntities the updated entities, mapped to their original primary keys
 	 */
 	void onUpdate(Map<Entity.Key, Entity> updatedEntities);
 
 	/**
-	 * Called when delete is performed in the master model, regardless of entity type.
+	 * Called when delete is performed in the parent model, regardless of entity type.
 	 * @param deletedEntities the deleted entities
 	 */
 	void onDelete(Collection<Entity> deletedEntities);
 
 	/**
 	 * <p>Returns a new {@link Builder} instance.
-	 * <p>Note that if the detail model contains a table model it is configured so that a query condition is required for it to show
+	 * <p>Note that if the linked model contains a table model it is configured so that a query condition is required for it to show
 	 * any data, via {@link EntityQueryModel#conditionRequired()}
-	 * @param detailModel the detail model
+	 * @param model the model to link
 	 * @param <M> the {@link EntityModel} type
 	 * @param <E> the {@link EntityEditModel} type
 	 * @param <T> the {@link EntityTableModel} type
 	 * @return a {@link Builder} instance
 	 */
-	static <M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> Builder<M, E, T> builder(M detailModel) {
-		return new DefaultDetailModelLink.DefaultBuilder<>(detailModel);
+	static <M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> Builder<M, E, T> builder(M model) {
+		return new DefaultModelLink.DefaultBuilder<>(model);
 	}
 
 	/**
@@ -95,25 +95,25 @@ public interface DetailModelLink<M extends EntityModel<M, E, T>, E extends Entit
 	interface Builder<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
 
 		/**
-		 * @param onSelection called when the selection changes in the master model
+		 * @param onSelection called when the selection changes in the parent model
 		 * @return this builder
 		 */
 		Builder<M, E, T> onSelection(Consumer<Collection<Entity>> onSelection);
 
 		/**
-		 * @param onInsert called when an insert is performed in the master model
+		 * @param onInsert called when an insert is performed in the parent model
 		 * @return this builder
 		 */
 		Builder<M, E, T> onInsert(Consumer<Collection<Entity>> onInsert);
 
 		/**
-		 * @param onUpdate called when an update is performed in the master model
+		 * @param onUpdate called when an update is performed in the parent model
 		 * @return this builder
 		 */
 		Builder<M, E, T> onUpdate(Consumer<Map<Entity.Key, Entity>> onUpdate);
 
 		/**
-		 * @param onDelete called when a delete is performed in the master model
+		 * @param onDelete called when a delete is performed in the parent model
 		 * @return this builder
 		 */
 		Builder<M, E, T> onDelete(Consumer<Collection<Entity>> onDelete);
@@ -125,8 +125,8 @@ public interface DetailModelLink<M extends EntityModel<M, E, T>, E extends Entit
 		Builder<M, E, T> active(boolean active);
 
 		/**
-		 * @return a {@link DetailModelLink}
+		 * @return a {@link ModelLink}
 		 */
-		DetailModelLink<M, E, T> build();
+		ModelLink<M, E, T> build();
 	}
 }

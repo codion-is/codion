@@ -27,7 +27,7 @@ import is.codion.common.resource.MessageBundle;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.model.DetailModelLink;
+import is.codion.framework.model.ModelLink;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.border.Borders;
@@ -1138,7 +1138,7 @@ public class EntityPanel extends JPanel {
 		/**
 		 * Returns the detail panels which models have an active link to this panels model.
 		 * @return the currently linked detail EntityPanels, if any
-		 * @see DetailModelLink#active()
+		 * @see ModelLink#active()
 		 */
 		public Collection<EntityPanel> linked() {
 			return panels.stream()

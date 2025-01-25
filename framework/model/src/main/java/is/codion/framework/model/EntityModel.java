@@ -101,7 +101,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 
 		/**
 		 * @return detail models with an active link to this model, that is, those that should respond to master model events
-		 * @see DetailModelLink#active()
+		 * @see ModelLink#active()
 		 */
 		ObservableValueSet<M> linked();
 
@@ -136,10 +136,10 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 
 		/**
 		 * Adds the given detail model to this model.
-		 * @param detailModelLink the {@link DetailModelLink} to add
+		 * @param modelLink the {@link ModelLink} to add
 		 * @throws IllegalArgumentException in case the model has already been added
 		 */
-		void add(DetailModelLink<M, E, T> detailModelLink);
+		void add(ModelLink<M, E, T> modelLink);
 
 		/**
 		 * @param modelClass the detail model class
@@ -179,10 +179,10 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 
 		/**
 		 * @param detailModel the detail model
-		 * @param <L> the {@link DetailModelLink} type
+		 * @param <L> the {@link ModelLink} type
 		 * @return the link for the given detail model
 		 * @throws IllegalArgumentException in case this model does not contain the given detail model
 		 */
-		<L extends DetailModelLink<M, E, T>> L link(M detailModel);
+		<L extends ModelLink<M, E, T>> L link(M detailModel);
 	}
 }

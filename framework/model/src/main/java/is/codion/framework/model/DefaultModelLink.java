@@ -27,10 +27,10 @@ import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultDetailModelLink<M extends EntityModel<M, E, T>, E extends EntityEditModel,
-				T extends EntityTableModel<E>> implements DetailModelLink<M, E, T> {
+final class DefaultModelLink<M extends EntityModel<M, E, T>, E extends EntityEditModel,
+				T extends EntityTableModel<E>> implements ModelLink<M, E, T> {
 
-	private final M detailModel;
+	private final M model;
 	private final State active;
 
 	private final Consumer<Collection<Entity>> onSelection;
@@ -38,21 +38,21 @@ final class DefaultDetailModelLink<M extends EntityModel<M, E, T>, E extends Ent
 	private final Consumer<Map<Entity.Key, Entity>> onUpdate;
 	private final Consumer<Collection<Entity>> onDelete;
 
-	private DefaultDetailModelLink(DefaultBuilder<M, E, T> builder) {
-		this.detailModel = builder.detailModel;
+	private DefaultModelLink(DefaultBuilder<M, E, T> builder) {
+		this.model = builder.model;
 		this.active = State.state(builder.active);
 		this.onSelection = builder.onSelection;
 		this.onInsert = builder.onInsert;
 		this.onUpdate = builder.onUpdate;
 		this.onDelete = builder.onDelete;
-		if (detailModel.containsTableModel()) {
-			detailModel.tableModel().queryModel().conditionRequired().set(true);
+		if (model.containsTableModel()) {
+			model.tableModel().queryModel().conditionRequired().set(true);
 		}
 	}
 
 	@Override
-	public M detailModel() {
-		return detailModel;
+	public M model() {
+		return model;
 	}
 
 	@Override
@@ -81,11 +81,11 @@ final class DefaultDetailModelLink<M extends EntityModel<M, E, T>, E extends Ent
 	}
 
 	static class DefaultBuilder<M extends EntityModel<M, E, T>, E extends EntityEditModel,
-				T extends EntityTableModel<E>> implements DetailModelLink.Builder<M, E, T> {
+				T extends EntityTableModel<E>> implements ModelLink.Builder<M, E, T> {
 
 		private static final Consumer<?> EMPTY_CONSUMER = new EmptyConsumer<>();
 
-		private final M detailModel;
+		private final M model;
 
 		private Consumer<Collection<Entity>> onSelection = (Consumer<Collection<Entity>>) EMPTY_CONSUMER;
 		private Consumer<Collection<Entity>> onInsert = (Consumer<Collection<Entity>>) EMPTY_CONSUMER;
@@ -93,8 +93,8 @@ final class DefaultDetailModelLink<M extends EntityModel<M, E, T>, E extends Ent
 		private Consumer<Collection<Entity>> onDelete = (Consumer<Collection<Entity>>) EMPTY_CONSUMER;
 		private boolean active = false;
 
-		DefaultBuilder(M detailModel) {
-			this.detailModel = requireNonNull(detailModel);
+		DefaultBuilder(M model) {
+			this.model = requireNonNull(model);
 		}
 
 		@Override
@@ -128,8 +128,8 @@ final class DefaultDetailModelLink<M extends EntityModel<M, E, T>, E extends Ent
 		}
 
 		@Override
-		public DetailModelLink<M, E, T> build() {
-			return new DefaultDetailModelLink<>(this);
+		public ModelLink<M, E, T> build() {
+			return new DefaultModelLink<>(this);
 		}
 	}
 

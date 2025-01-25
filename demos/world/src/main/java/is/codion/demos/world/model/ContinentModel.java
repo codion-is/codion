@@ -24,7 +24,7 @@ import is.codion.demos.world.domain.api.World.Continent;
 import is.codion.demos.world.domain.api.World.Country;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.model.DetailModelLink;
+import is.codion.framework.model.ModelLink;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
@@ -46,7 +46,7 @@ public final class ContinentModel extends SwingEntityModel {
 	ContinentModel(EntityConnectionProvider connectionProvider) {
 		super(Continent.TYPE, connectionProvider);
 		tableModel().items().refresher().result().addConsumer(this::refreshChartDatasets);
-		detailModels().add(DetailModelLink.builder(new CountryModel(connectionProvider))
+		detailModels().add(ModelLink.builder(new CountryModel(connectionProvider))
 						.onSelection(new OnContinentsSelected())
 						.active(true)
 						.build());

@@ -35,7 +35,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
 	protected TestEntityModel createDepartmentModel() {
 		TestEntityModel deptModel = new TestEntityModel(new TestEntityEditModel(Department.TYPE, connectionProvider()));
 		TestEntityModel empModel = new TestEntityModel(new TestEntityEditModel(Employee.TYPE, connectionProvider()));
-		deptModel.detailModels().add(DetailModelLink.builder(empModel)
+		deptModel.detailModels().add(ModelLink.builder(empModel)
 						.active(true)
 						.build());
 

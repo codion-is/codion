@@ -31,7 +31,7 @@ public final class DefaultEntityApplicationModelTest extends AbstractEntityAppli
 						new DefaultEntityModelTest.TestEntityEditModel(Department.TYPE, connectionProvider()));
 		DefaultEntityModelTest.TestEntityModel empModel = new DefaultEntityModelTest.TestEntityModel(
 						new DefaultEntityModelTest.TestEntityEditModel(Employee.TYPE, connectionProvider()));
-		deptModel.detailModels().add(DetailModelLink.builder(empModel)
+		deptModel.detailModels().add(ModelLink.builder(empModel)
 						.active(true)
 						.build());
 
