@@ -20,9 +20,7 @@ package is.codion.demos.chinook.model;
 
 import is.codion.common.version.Version;
 import is.codion.demos.chinook.domain.api.Chinook.Customer;
-import is.codion.demos.chinook.domain.api.Chinook.PlaylistTrack;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.model.ForeignKeyModelLink;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 
@@ -48,7 +46,7 @@ public final class ChinookAppModel extends SwingEntityApplicationModel {
 		SwingEntityModel playlistModel = new SwingEntityModel(new PlaylistTableModel(connectionProvider));
 		SwingEntityModel playlistTrackModel = new SwingEntityModel(new PlaylistTrackEditModel(connectionProvider));
 
-		playlistModel.detailModels().add(ForeignKeyModelLink.builder(playlistTrackModel, PlaylistTrack.PLAYLIST_FK)
+		playlistModel.detailModels().add(playlistModel.link(playlistTrackModel)
 						.clearValueOnEmptySelection(true)
 						.active(true)
 						.build());

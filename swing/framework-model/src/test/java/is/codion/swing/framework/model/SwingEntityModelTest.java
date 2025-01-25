@@ -21,7 +21,6 @@ package is.codion.swing.framework.model;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.model.ForeignKeyModelLink;
 import is.codion.framework.model.test.AbstractEntityModelTest;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
@@ -41,7 +40,7 @@ public final class SwingEntityModelTest
 		SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connectionProvider());
 		SwingEntityModel employeeModel = new SwingEntityModel(Employee.TYPE, departmentModel.connectionProvider());
 		employeeModel.editModel().refreshComboBoxModels();
-		departmentModel.detailModels().add(ForeignKeyModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
+		departmentModel.detailModels().add(departmentModel.link(employeeModel)
 						.active(true)
 						.build());
 		employeeModel.tableModel().queryModel().conditionRequired().set(false);

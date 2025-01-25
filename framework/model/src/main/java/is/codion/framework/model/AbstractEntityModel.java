@@ -124,6 +124,22 @@ public abstract class AbstractEntityModel<E extends EntityEditModel, T extends E
 	}
 
 	@Override
+	public final ForeignKeyModelLink.Builder link(EntityModel<E, T> model) {
+		Collection<ForeignKey> foreignKeys = requireNonNull(model).editModel()
+						.entityDefinition().foreignKeys().get(editModel.entityType());
+		if (foreignKeys.isEmpty()) {
+			throw new IllegalArgumentException("Entity " + model.editModel().entityType() +
+							" does not reference " + editModel.entityType() + " via a foreign key");
+		}
+		if (foreignKeys.size() > 1) {
+			throw new IllegalArgumentException("Entity " + model.editModel().entityType() +
+							" references " + editModel.entityType() + " via multiple foreign keys");
+		}
+
+		return ForeignKeyModelLink.builder(model, foreignKeys.iterator().next());
+	}
+
+	@Override
 	public final DetailModels<E, T> detailModels() {
 		return detailModels;
 	}
@@ -206,14 +222,7 @@ public abstract class AbstractEntityModel<E extends EntityEditModel, T extends E
 
 		@Override
 		public void add(EntityModel<E, T> detailModel) {
-			Collection<ForeignKey> foreignKeys = requireNonNull(detailModel).editModel()
-							.entityDefinition().foreignKeys().get(editModel.entityType());
-			if (foreignKeys.isEmpty()) {
-				throw new IllegalArgumentException("Entity " + detailModel.editModel().entityType() +
-								" does not reference " + editModel.entityType() + " via a foreign key");
-			}
-
-			add(detailModel, foreignKeys.iterator().next());
+			add(link(detailModel).build());
 		}
 
 		@Override

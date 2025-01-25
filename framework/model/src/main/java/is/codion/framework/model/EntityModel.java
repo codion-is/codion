@@ -82,6 +82,13 @@ public interface EntityModel<E extends EntityEditModel, T extends EntityTableMod
 	boolean containsTableModel();
 
 	/**
+	 * @param model the model to link to
+	 * @return a {@link ForeignKeyModelLink.Builder}, based on a fitting foreign key
+	 * @throws IllegalArgumentException in case zero or multiple fitting foreign keys are found
+	 */
+	ForeignKeyModelLink.Builder link(EntityModel<E, T> model);
+
+	/**
 	 * @return the detail models
 	 */
 	DetailModels<E, T> detailModels();
@@ -105,25 +112,27 @@ public interface EntityModel<E extends EntityEditModel, T extends EntityTableMod
 		ObservableValueSet<EntityModel<E, T>> active();
 
 		/**
-		 * <p>Adds the given detail models to this model, based on the first fitting foreign key.
-		 * <p>A side effect if a detail model contains a table model is that it is configured so that a query condition is required for it to show
-		 * any data, via {@link EntityQueryModel#conditionRequired()}.
+		 * <p>Adds the given detail models to this model, based on a fitting foreign key.
+		 * <p>Note that if a detail model contains a table model it is configured so that a query condition is required for it to show
+		 * any data, via {@link EntityQueryModel#conditionRequired()}
 		 * @param detailModels the detail models to add
-		 * @throws IllegalArgumentException in case no foreign key exists between the entities involved
+		 * @throws IllegalArgumentException in case zero or multiple fitting foreign keys are found
 		 */
 		void add(EntityModel<E, T>... detailModels);
 
 		/**
-		 * <p>Adds the given detail model to this model, based on the first fitting foreign key.
-		 * <p>A side effect if the detail model contains a table model is that it is configured so that a query condition is required for it to show
-		 * any data, via {@link EntityQueryModel#conditionRequired()}.
+		 * <p>Adds the given detail model to this model, based on the a fitting foreign key.
+		 * <p>Note that if the detail model contains a table model it is configured so that a query condition is required for it to show
+		 * any data, via {@link EntityQueryModel#conditionRequired()}
 		 * @param detailModel the detail model
-		 * @throws IllegalArgumentException in case no foreign key exists between the entities involved
+		 * @throws IllegalArgumentException in case zero or multiple fitting foreign keys are found
 		 */
 		void add(EntityModel<E, T> detailModel);
 
 		/**
 		 * Adds the given detail model to this model, based on the given foreign key.
+		 * <p>Note that if the detail model contains a table model it is configured so that a query condition is required for it to show
+		 * any data, via {@link EntityQueryModel#conditionRequired()}
 		 * @param detailModel the detail model
 		 * @param foreignKey the foreign key to base the detail model link on
 		 */
