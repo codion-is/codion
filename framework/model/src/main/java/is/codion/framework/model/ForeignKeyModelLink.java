@@ -24,11 +24,8 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 /**
  * Represents a link between two entity models based on a foreign key.
- * @param <M> the {@link EntityModel} type
- * @param <E> the {@link EntityEditModel} type
- * @param <T> the {@link EntityTableModel} type
  */
-public interface ForeignKeyModelLink<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> extends ModelLink<M, E, T> {
+public interface ForeignKeyModelLink extends ModelLink {
 
 	/**
 	 * Specifies whether a linked model should automatically set the foreign key value to the entity inserted by the parent model.
@@ -91,22 +88,16 @@ public interface ForeignKeyModelLink<M extends EntityModel<M, E, T>, E extends E
 	 * any data, via {@link EntityQueryModel#conditionRequired()}
 	 * @param model the model to link
 	 * @param foreignKey the foreign key
-	 * @param <M> the {@link EntityModel} type
-	 * @param <E> the {@link EntityEditModel} type
-	 * @param <T> the {@link EntityTableModel} type
 	 * @return a {@link Builder} instance
 	 */
-	static <M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> Builder<M, E, T> builder(M model, ForeignKey foreignKey) {
-		return new DefaultForeignKeyModelLink.DefaultBuilder<>(model, foreignKey);
+	static Builder builder(EntityModel<?, ?, ?> model, ForeignKey foreignKey) {
+		return new DefaultForeignKeyModelLink.DefaultBuilder(model, foreignKey);
 	}
 
 	/**
 	 * Builds a {@link ForeignKeyModelLink}
-	 * @param <M> the {@link EntityModel} type
-	 * @param <E> the {@link EntityEditModel} type
-	 * @param <T> the {@link EntityTableModel} type
 	 */
-	interface Builder<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
+	interface Builder {
 
 		/**
 		 * @param setConditionOnInsert specifies whether the linked table model should automatically search by the inserted entity
@@ -114,14 +105,14 @@ public interface ForeignKeyModelLink<M extends EntityModel<M, E, T>, E extends E
 		 * @return this builder
 		 * @see ForeignKeyModelLink#SET_CONDITION_ON_INSERT
 		 */
-		Builder<M, E, T> setConditionOnInsert(boolean setConditionOnInsert);
+		Builder setConditionOnInsert(boolean setConditionOnInsert);
 
 		/**
 		 * @param setValueOnInsert specifies whether the linked edit model should automatically set the foreign key value to the inserted entity
 		 * @return this builder
 		 * @see ForeignKeyModelLink#SET_VALUE_ON_INSERT
 		 */
-		Builder<M, E, T> setValueOnInsert(boolean setValueOnInsert);
+		Builder setValueOnInsert(boolean setValueOnInsert);
 
 		/**
 		 * @param refreshOnSelection specifies whether the linked table model should be automatically refreshed
@@ -129,31 +120,31 @@ public interface ForeignKeyModelLink<M extends EntityModel<M, E, T>, E extends E
 		 * @return this builder
 		 * @see ForeignKeyModelLink#REFRESH_ON_SELECTION
 		 */
-		Builder<M, E, T> refreshOnSelection(boolean refreshOnSelection);
+		Builder refreshOnSelection(boolean refreshOnSelection);
 
 		/**
 		 * @param clearValueOnEmptySelection specifies whether the linked model should set the foreign key to null when null or no value is selected in the parent model.
 		 * @return this builder
 		 * @see ForeignKeyModelLink#CLEAR_VALUE_ON_EMPTY_SELECTION
 		 */
-		Builder<M, E, T> clearValueOnEmptySelection(boolean clearValueOnEmptySelection);
+		Builder clearValueOnEmptySelection(boolean clearValueOnEmptySelection);
 
 		/**
 		 * @param clearConditionOnEmptySelection specifies whether the linked table model should clear the foreign key search condition when no value is selected in the parent model
 		 * @return this builder
 		 * @see ForeignKeyModelLink#CLEAR_CONDITION_ON_EMPTY_SELECTION
 		 */
-		Builder<M, E, T> clearConditionOnEmptySelection(boolean clearConditionOnEmptySelection);
+		Builder clearConditionOnEmptySelection(boolean clearConditionOnEmptySelection);
 
 		/**
 		 * @param active the initial active state of this link
 		 * @return this builder
 		 */
-		Builder<M, E, T> active(boolean active);
+		Builder active(boolean active);
 
 		/**
 		 * @return a {@link ForeignKeyModelLink}
 		 */
-		ForeignKeyModelLink<M, E, T> build();
+		ForeignKeyModelLink build();
 	}
 }

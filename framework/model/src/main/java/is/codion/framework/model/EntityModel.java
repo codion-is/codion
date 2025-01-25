@@ -136,7 +136,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 		 * @param modelLink the {@link ModelLink} to add
 		 * @throws IllegalArgumentException in case the model has already been added
 		 */
-		void add(ModelLink<M, E, T> modelLink);
+		void add(ModelLink modelLink);
 
 		/**
 		 * @param modelClass the detail model class

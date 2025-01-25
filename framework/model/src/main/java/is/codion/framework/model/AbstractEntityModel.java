@@ -176,9 +176,9 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 
 	private final class ActiveDetailModelConsumer implements Consumer<Boolean> {
 
-		private final ModelLink<?, ?, ?> detailModelLink;
+		private final ModelLink detailModelLink;
 
-		private ActiveDetailModelConsumer(ModelLink<?, ?, ?> detailModelLink) {
+		private ActiveDetailModelConsumer(ModelLink detailModelLink) {
 			this.detailModelLink = detailModelLink;
 		}
 
@@ -186,7 +186,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 		public void accept(Boolean active) {
 			detailModels.active.set(detailModels.models.values().stream()
 							.filter(link -> link.active().get())
-							.map(ModelLink::model)
+							.map(modelLink -> (M) modelLink.model())
 							.collect(Collectors.toList()));
 			if (active) {
 				detailModelLink.onSelection(activeEntities());
@@ -197,7 +197,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 	private final class DefaultDetailModels<M extends EntityModel<M, E, T>, E extends EntityEditModel,
 					T extends EntityTableModel<E>> implements DetailModels<M, E, T> {
 
-		private final Map<M, ModelLink<M, E, T>> models = new HashMap<>();
+		private final Map<M, ModelLink> models = new HashMap<>();
 		private final ValueSet<M> active = ValueSet.valueSet();
 
 		@Override
@@ -225,7 +225,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 		}
 
 		@Override
-		public void add(ModelLink<M, E, T> modelLink) {
+		public void add(ModelLink modelLink) {
 			if (AbstractEntityModel.this == requireNonNull(modelLink).model()) {
 				throw new IllegalArgumentException("A model can not be its own detail model");
 			}

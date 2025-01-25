@@ -27,20 +27,20 @@ import java.util.function.Consumer;
 
 /**
  * Represents a link between two entity models.
- * @param <M> the {@link EntityModel} type
- * @param <E> the {@link EntityEditModel} type
- * @param <T> the {@link EntityTableModel} type
  * @see #onSelection(Collection)
  * @see #onInsert(Collection)
  * @see #onUpdate(Map)
  * @see #onDelete(Collection)
  */
-public interface ModelLink<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
+public interface ModelLink {
 
 	/**
+	 * @param <M> the {@link EntityModel} type
+	 * @param <E> the {@link EntityEditModel} type
+	 * @param <T> the {@link EntityTableModel} type
 	 * @return the linked model
 	 */
-	M model();
+	<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> M model();
 
 	/**
 	 * Controls the active status of this link. Active model links update and filter
@@ -78,55 +78,50 @@ public interface ModelLink<M extends EntityModel<M, E, T>, E extends EntityEditM
 	 * <p>Note that if the linked model contains a table model it is configured so that a query condition is required for it to show
 	 * any data, via {@link EntityQueryModel#conditionRequired()}
 	 * @param model the model to link
-	 * @param <M> the {@link EntityModel} type
-	 * @param <E> the {@link EntityEditModel} type
-	 * @param <T> the {@link EntityTableModel} type
 	 * @return a {@link Builder} instance
 	 */
-	static <M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> Builder<M, E, T> builder(M model) {
-		return new DefaultModelLink.DefaultBuilder<>(model);
+	static Builder builder(EntityModel<?, ?, ?> model) {
+		return new DefaultModelLink.DefaultBuilder(model);
 	}
 
 	/**
-	 * @param <M> the {@link EntityModel} type
-	 * @param <E> the {@link EntityEditModel} type
-	 * @param <T> the {@link EntityTableModel} type
+	 * Builds a {@link ModelLink}
 	 */
-	interface Builder<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
+	interface Builder {
 
 		/**
 		 * @param onSelection called when the selection changes in the parent model
 		 * @return this builder
 		 */
-		Builder<M, E, T> onSelection(Consumer<Collection<Entity>> onSelection);
+		Builder onSelection(Consumer<Collection<Entity>> onSelection);
 
 		/**
 		 * @param onInsert called when an insert is performed in the parent model
 		 * @return this builder
 		 */
-		Builder<M, E, T> onInsert(Consumer<Collection<Entity>> onInsert);
+		Builder onInsert(Consumer<Collection<Entity>> onInsert);
 
 		/**
 		 * @param onUpdate called when an update is performed in the parent model
 		 * @return this builder
 		 */
-		Builder<M, E, T> onUpdate(Consumer<Map<Entity.Key, Entity>> onUpdate);
+		Builder onUpdate(Consumer<Map<Entity.Key, Entity>> onUpdate);
 
 		/**
 		 * @param onDelete called when a delete is performed in the parent model
 		 * @return this builder
 		 */
-		Builder<M, E, T> onDelete(Consumer<Collection<Entity>> onDelete);
+		Builder onDelete(Consumer<Collection<Entity>> onDelete);
 
 		/**
 		 * @param active the initial active state of this link
 		 * @return this builder
 		 */
-		Builder<M, E, T> active(boolean active);
+		Builder active(boolean active);
 
 		/**
 		 * @return a {@link ModelLink}
 		 */
-		ModelLink<M, E, T> build();
+		ModelLink build();
 	}
 }
