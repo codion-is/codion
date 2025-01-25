@@ -63,7 +63,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
 		public void remove(ForeignKey foreignKey, Collection<Entity> entities) {}
 	}
 
-	public static final class TestEntityModel extends DefaultEntityModel<TestEntityModel, TestEntityEditModel, TestEntityTableModel> {
+	public static final class TestEntityModel extends AbstractEntityModel<TestEntityModel, TestEntityEditModel, TestEntityTableModel> {
 		public TestEntityModel(TestEntityEditModel editModel) {
 			super(editModel);
 		}

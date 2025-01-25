@@ -33,6 +33,7 @@ Codion Change Log
 - DefaultForeignKeyConditionModel now links search models to their respective operands.
 - ForeignKeyDetailModelLink, configuration methods renamed along with associated properties.
 - DefaultEntityModel, type parameters now refer to EntityModel and EntityEditModel instead of DefaultEntityModel and AbstractEntityEditModel.
+- DefaultEntityModel now abstract, renamed AbstractEntityModel.
 ### is.codion.swing.framework.model
 - DefaultSwingForeignKeyConditionModel now links search and combo box models to their respective operands.
 ### is.codion.swing.framework.ui

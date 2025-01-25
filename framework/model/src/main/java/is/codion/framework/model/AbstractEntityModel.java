@@ -39,12 +39,12 @@ import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A default {@link EntityModel} implementation.
+ * An abstract {@link EntityModel} implementation.
  * @param <M> the type of {@link EntityModel} used for detail models
  * @param <E> the type of {@link EntityEditModel} used by this {@link EntityModel}
  * @param <T> the type of {@link EntityTableModel} used by this {@link EntityModel}
  */
-public class DefaultEntityModel<M extends EntityModel<M, E, T>, E extends EntityEditModel,
+public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E extends EntityEditModel,
 				T extends EntityTableModel<E>> implements EntityModel<M, E, T> {
 
 	private final E editModel;
@@ -52,20 +52,20 @@ public class DefaultEntityModel<M extends EntityModel<M, E, T>, E extends Entity
 	private final DefaultDetailModels<M, E, T> detailModels = new DefaultDetailModels<>();
 
 	/**
-	 * Instantiates a new DefaultEntityModel, without a table model
+	 * Instantiates a new {@link AbstractEntityModel}, without a table model
 	 * @param editModel the edit model
 	 */
-	public DefaultEntityModel(E editModel) {
+	protected AbstractEntityModel(E editModel) {
 		this.editModel = requireNonNull(editModel);
 		this.tableModel = null;
 		bindEventsInternal();
 	}
 
 	/**
-	 * Instantiates a new DefaultEntityModel
+	 * Instantiates a new {@link AbstractEntityModel}
 	 * @param tableModel the table model
 	 */
-	public DefaultEntityModel(T tableModel) {
+	protected AbstractEntityModel(T tableModel) {
 		this.editModel = requireNonNull(tableModel).editModel();
 		this.tableModel = tableModel;
 		bindEventsInternal();
@@ -225,7 +225,7 @@ public class DefaultEntityModel<M extends EntityModel<M, E, T>, E extends Entity
 
 		@Override
 		public <L extends DetailModelLink<M, E, T>> L add(L detailModelLink) {
-			if (DefaultEntityModel.this == requireNonNull(detailModelLink).detailModel()) {
+			if (AbstractEntityModel.this == requireNonNull(detailModelLink).detailModel()) {
 				throw new IllegalArgumentException("A model can not be its own detail model");
 			}
 			if (models.containsKey(detailModelLink.detailModel())) {

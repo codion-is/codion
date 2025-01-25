@@ -26,7 +26,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.AbstractEntityEditModel;
-import is.codion.framework.model.DefaultEntityModel;
+import is.codion.framework.model.AbstractEntityModel;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityModel;
 import is.codion.framework.model.EntityTableModel;
@@ -52,7 +52,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @param <EditModel> the {@link EntityEditModel} type
  * @param <TableModel> the {@link EntityTableModel} type
  */
-public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<Model, EditModel, TableModel>,
+public abstract class AbstractEntityModelTest<Model extends AbstractEntityModel<Model, EditModel, TableModel>,
 				EditModel extends AbstractEntityEditModel, TableModel extends EntityTableModel<EditModel>> {
 
 	private static final User UNIT_TEST_USER =
@@ -134,11 +134,6 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
 		departmentModel.tableModel().items().clear();
 		assertEquals(0, departmentModel.tableModel().items().visible().count());
-	}
-
-	@Test
-	public void constructorNullTableModel() {
-		assertThrows(NullPointerException.class, () -> new DefaultEntityModel<>((EntityTableModel) null));
 	}
 
 	@Test

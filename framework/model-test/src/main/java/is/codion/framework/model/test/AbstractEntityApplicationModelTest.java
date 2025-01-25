@@ -22,8 +22,8 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.model.AbstractEntityEditModel;
+import is.codion.framework.model.AbstractEntityModel;
 import is.codion.framework.model.DefaultEntityApplicationModel;
-import is.codion.framework.model.DefaultEntityModel;
 import is.codion.framework.model.EntityApplicationModel;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityModel;
@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @param <EditModel> the {@link EntityEditModel} type
  * @param <TableModel> the {@link EntityTableModel} type
  */
-public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEntityModel<Model, EditModel, TableModel>,
+public abstract class AbstractEntityApplicationModelTest<Model extends AbstractEntityModel<Model, EditModel, TableModel>,
 				EditModel extends AbstractEntityEditModel, TableModel extends EntityTableModel<EditModel>> {
 
 	private static final User UNIT_TEST_USER =

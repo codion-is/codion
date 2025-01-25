@@ -20,7 +20,7 @@ package is.codion.swing.framework.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.model.DefaultEntityModel;
+import is.codion.framework.model.AbstractEntityModel;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -30,7 +30,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A Swing implementation of {@link is.codion.framework.model.EntityModel}
  */
-public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
+public class SwingEntityModel extends AbstractEntityModel<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
 
 	/**
 	 * Instantiates a new SwingEntityModel with default SwingEntityEditModel and SwingEntityTableModel implementations.
