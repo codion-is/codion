@@ -146,18 +146,6 @@ public interface EntityModel<E extends EntityEditModel, T extends EntityTableMod
 		void add(ModelLink modelLink);
 
 		/**
-		 * @param modelClass the detail model class
-		 * @return true if this model contains a detail model of the given class
-		 */
-		boolean contains(Class<? extends EntityModel<E, T>> modelClass);
-
-		/**
-		 * @param entityType the entityType
-		 * @return true if this model contains a detail model for the given entityType
-		 */
-		boolean contains(EntityType entityType);
-
-		/**
 		 * @param detailModel the detail model
 		 * @return true if this model contains the given detail model
 		 */
@@ -183,7 +171,7 @@ public interface EntityModel<E extends EntityEditModel, T extends EntityTableMod
 
 		/**
 		 * @param detailModel the detail model
-		 * @return the active State for the given detail model
+		 * @return the active {@link State} for the given detail model
 		 * @throws IllegalArgumentException in case this model does not contain the given detail model
 		 */
 		State active(EntityModel<E, T> detailModel);

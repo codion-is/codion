@@ -246,20 +246,6 @@ public abstract class AbstractEntityModel<E extends EntityEditModel, T extends E
 		}
 
 		@Override
-		public boolean contains(Class<? extends EntityModel<E, T>> modelClass) {
-			requireNonNull(modelClass);
-			return models.keySet().stream()
-							.anyMatch(detailModel -> detailModel.getClass().equals(modelClass));
-		}
-
-		@Override
-		public boolean contains(EntityType entityType) {
-			requireNonNull(entityType);
-			return models.keySet().stream()
-							.anyMatch(detailModel -> detailModel.entityType().equals(entityType));
-		}
-
-		@Override
 		public boolean contains(EntityModel<E, T> detailModel) {
 			return models.containsKey(requireNonNull(detailModel));
 		}

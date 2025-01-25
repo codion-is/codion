@@ -152,10 +152,8 @@ public abstract class AbstractEntityModelTest<EditModel extends AbstractEntityEd
 	public void detailModel() {
 		EntityModel<EditModel, TableModel>departmentModel = createDepartmentModel();
 		departmentModel.detailModels().get((Class<? extends EntityModel<EditModel, TableModel>>) departmentModel.detailModels().get(Employee.TYPE).getClass());
-		assertTrue(departmentModel.detailModels().contains(Employee.TYPE));
 		EntityModel<EditModel, TableModel>detailModel = departmentModel.detailModels().get(Employee.TYPE);
 		assertTrue(departmentModel.detailModels().contains(detailModel));
-		assertTrue(departmentModel.detailModels().contains((Class<? extends EntityModel<EditModel, TableModel>>) departmentModel.detailModels().get(Employee.TYPE).getClass()));
 		assertEquals(1, departmentModel.detailModels().get().size(), "Only one detail EntityModel<EditModel, TableModel>should be in DepartmentModel");
 		assertEquals(1, departmentModel.detailModels().active().size());
 

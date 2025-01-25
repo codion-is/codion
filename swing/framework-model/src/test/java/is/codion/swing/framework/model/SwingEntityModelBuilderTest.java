@@ -68,7 +68,6 @@ public final class SwingEntityModelBuilderTest {
 		SwingEntityModel departmentModel = departmentModelBuilder.build(CONNECTION_PROVIDER);
 		assertInstanceOf(DepartmentEditModel.class, departmentModel.editModel());
 		assertInstanceOf(DepartmentTableModel.class, departmentModel.tableModel());
-		assertTrue(departmentModel.detailModels().contains(Employee.TYPE));
 	}
 
 	@Test

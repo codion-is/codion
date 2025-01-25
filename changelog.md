@@ -41,6 +41,7 @@ Codion Change Log
 - ModelLink, type parameters removed.
 - EntityModel, M type parameter removed.
 - EntityModel.link() added, now throws exception in case multiple fitting foreign keys are found.
+- EntityModel.DetailModels.contains(EntityType) and contains(Class) removed.
 ### is.codion.swing.framework.model
 - DefaultSwingForeignKeyConditionModel now links search and combo box models to their respective operands.
 ### is.codion.swing.framework.ui

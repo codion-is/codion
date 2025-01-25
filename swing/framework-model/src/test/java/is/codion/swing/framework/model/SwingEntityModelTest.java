@@ -80,9 +80,6 @@ public final class SwingEntityModelTest
 	@Test
 	public void testDetailModels() {
 		SwingEntityModel departmentModel = createDepartmentModel();
-		assertTrue(departmentModel.detailModels().contains(Employee.TYPE));
-		assertFalse(departmentModel.detailModels().contains(Department.TYPE));
-		assertFalse(departmentModel.detailModels().contains(EmpModel.class));
 		SwingEntityModel employeeModel = departmentModel.detailModels().get(Employee.TYPE);
 		assertNotNull(employeeModel);
 		assertTrue(departmentModel.detailModels().active().contains(employeeModel));
