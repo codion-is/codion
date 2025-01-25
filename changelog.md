@@ -42,6 +42,9 @@ Codion Change Log
 - EntityModel, M type parameter removed.
 - EntityModel.link() added, now throws exception in case multiple fitting foreign keys are found.
 - EntityModel.DetailModels.contains(EntityType) and contains(Class) removed.
+- AbstractEntityModel bug fixed, now initializes a detail model link if active when added.
+- AbstractEntityModel now calls onSelection() for all detail model links, not just active ones.
+- DefaultModelLink.onSelection() does nothing unless link is active.
 ### is.codion.swing.framework.model
 - DefaultSwingForeignKeyConditionModel now links search and combo box models to their respective operands.
 ### is.codion.swing.framework.ui

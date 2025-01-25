@@ -34,10 +34,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * An abstract {@link EntityModel} implementation.
@@ -144,13 +144,9 @@ public abstract class AbstractEntityModel<E extends EntityEditModel, T extends E
 		return detailModels;
 	}
 
-	private void onMasterSelectionChanged() {
-		if (!detailModels.active.isEmpty()) {
-			List<Entity> activeEntities = activeEntities();
-			for (EntityModel<E, T> detailModel : detailModels.active) {
-				detailModels.models.get(detailModel).onSelection(activeEntities);
-			}
-		}
+	private void selectionChanged() {
+		List<Entity> activeEntities = activeEntities();
+		detailModels.models.values().forEach(link -> link.onSelection(activeEntities));
 	}
 
 	private List<Entity> activeEntities() {
@@ -169,23 +165,23 @@ public abstract class AbstractEntityModel<E extends EntityEditModel, T extends E
 		editModel.afterUpdate().addConsumer(this::onUpdate);
 		editModel.afterDelete().addConsumer(this::onDelete);
 		if (containsTableModel()) {
-			tableModel.selection().indexes().addListener(this::onMasterSelectionChanged);
+			tableModel.selection().indexes().addListener(this::selectionChanged);
 		}
 		else {
-			editModel.editor().addListener(this::onMasterSelectionChanged);
+			editModel.editor().addListener(this::selectionChanged);
 		}
 	}
 
 	private void onInsert(Collection<Entity> insertedEntities) {
-		detailModels.models.keySet().forEach(detailModel -> detailModels.models.get(detailModel).onInsert(insertedEntities));
+		detailModels.models.values().forEach(link -> link.onInsert(insertedEntities));
 	}
 
 	private void onUpdate(Map<Entity.Key, Entity> updatedEntities) {
-		detailModels.models.keySet().forEach(detailModel -> detailModels.models.get(detailModel).onUpdate(updatedEntities));
+		detailModels.models.values().forEach(link -> link.onUpdate(updatedEntities));
 	}
 
 	private void onDelete(Collection<Entity> deletedEntities) {
-		detailModels.models.keySet().forEach(detailModel -> detailModels.models.get(detailModel).onDelete(deletedEntities));
+		detailModels.models.values().forEach(link -> link.onDelete(deletedEntities));
 	}
 
 	private final class ActiveDetailModelConsumer implements Consumer<Boolean> {
@@ -201,7 +197,7 @@ public abstract class AbstractEntityModel<E extends EntityEditModel, T extends E
 			detailModels.active.set(detailModels.models.values().stream()
 							.filter(link -> link.active().get())
 							.map(modelLink -> (EntityModel<E, T>) modelLink.model())
-							.collect(Collectors.toList()));
+							.collect(toList()));
 			if (active) {
 				detailModelLink.onSelection(activeEntities());
 			}
@@ -241,6 +237,7 @@ public abstract class AbstractEntityModel<E extends EntityEditModel, T extends E
 			models.put(modelLink.model(), modelLink);
 			if (modelLink.active().get()) {
 				active.add(modelLink.model());
+				modelLink.onSelection(activeEntities());
 			}
 			modelLink.active().addConsumer(new ActiveDetailModelConsumer(modelLink));
 		}
@@ -275,7 +272,7 @@ public abstract class AbstractEntityModel<E extends EntityEditModel, T extends E
 			return (C) models.keySet().stream()
 							.filter(detailModel -> detailModel.getClass().equals(modelClass))
 							.findFirst()
-							.orElseThrow(() -> new IllegalArgumentException("Detail model of type " + modelClass.getName() + " not found in model: " + this));
+							.orElseThrow(() -> new IllegalArgumentException("Detail model of type " + modelClass.getName() + " not found in model: " + AbstractEntityModel.this));
 		}
 
 		@Override
@@ -284,7 +281,7 @@ public abstract class AbstractEntityModel<E extends EntityEditModel, T extends E
 			return (C) models.keySet().stream()
 							.filter(detailModel -> detailModel.entityType().equals(entityType))
 							.findFirst()
-							.orElseThrow(() -> new IllegalArgumentException("No detail model for entity " + entityType + " found in model: " + this));
+							.orElseThrow(() -> new IllegalArgumentException("No detail model for entity " + entityType + " found in model: " + AbstractEntityModel.this));
 		}
 	}
 }

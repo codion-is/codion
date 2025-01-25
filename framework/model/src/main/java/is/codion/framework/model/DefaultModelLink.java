@@ -61,7 +61,9 @@ final class DefaultModelLink implements ModelLink {
 
 	@Override
 	public void onSelection(Collection<Entity> selectedEntities) {
-		onSelection.accept(selectedEntities);
+		if (active.get()) {
+			onSelection.accept(selectedEntities);
+		}
 	}
 
 	@Override

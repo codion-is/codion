@@ -42,15 +42,18 @@ public interface ModelLink {
 	<E extends EntityEditModel, T extends EntityTableModel<E>> EntityModel<E, T> model();
 
 	/**
-	 * Controls the active status of this link. Active model links update and filter
-	 * the linked model according to the entity/entities selected in the parent model.
+	 * <p>Controls the active status of this link.
+	 * <p>Active model links respond to the parent model selection via {@link #onSelection(Collection)}.
 	 * @return the {@link State} controlling the active status of this model link
+	 * @see #onSelection(Collection)
 	 */
 	State active();
 
 	/**
-	 * Called when the selection changes in the parent model
+	 * <p>Called when the selection changes in the parent model or when this link is activated.
+	 * <p>Note that only active links are required to handle parent model selection.
 	 * @param selectedEntities the selected entities
+	 * @see #active()
 	 */
 	void onSelection(Collection<Entity> selectedEntities);
 
@@ -89,8 +92,10 @@ public interface ModelLink {
 	interface Builder {
 
 		/**
+		 * Note that only active model links respond to parent model selection by default.
 		 * @param onSelection called when the selection changes in the parent model
 		 * @return this builder
+		 * @see #active()
 		 */
 		Builder onSelection(Consumer<Collection<Entity>> onSelection);
 

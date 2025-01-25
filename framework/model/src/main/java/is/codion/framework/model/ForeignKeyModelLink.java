@@ -115,10 +115,12 @@ public interface ForeignKeyModelLink extends ModelLink {
 		Builder setValueOnInsert(boolean setValueOnInsert);
 
 		/**
+		 * Note that only active model links respond to parent model selection by default.
 		 * @param refreshOnSelection specifies whether the linked table model should be automatically refreshed
 		 * when the foreign key condition is set according to the parent model selection
 		 * @return this builder
 		 * @see ForeignKeyModelLink#REFRESH_ON_SELECTION
+		 * @see #active()
 		 */
 		Builder refreshOnSelection(boolean refreshOnSelection);
 
