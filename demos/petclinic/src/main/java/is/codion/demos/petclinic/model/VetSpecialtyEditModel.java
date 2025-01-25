@@ -33,8 +33,8 @@ public final class VetSpecialtyEditModel extends SwingEntityEditModel {
 	public VetSpecialtyEditModel(EntityConnectionProvider connectionProvider) {
 		super(VetSpecialty.TYPE, connectionProvider);
 		initializeComboBoxModels(VetSpecialty.VET_FK, VetSpecialty.SPECIALTY_FK);
-		value(VetSpecialty.VET_FK).persist().set(false);
-		value(VetSpecialty.SPECIALTY_FK).persist().set(false);
+		editor().value(VetSpecialty.VET_FK).persist().set(false);
+		editor().value(VetSpecialty.SPECIALTY_FK).persist().set(false);
 		editor().validator().set(new VetSpecialtyValidator());
 	}
 

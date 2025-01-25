@@ -41,7 +41,7 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 	public InvoiceLineEditModel(EntityConnectionProvider connectionProvider) {
 		super(InvoiceLine.TYPE, connectionProvider);
 		// We populate the unit price when the track is edited
-		value(InvoiceLine.TRACK_FK).edited().addConsumer(this::setUnitPrice);
+		editor().value(InvoiceLine.TRACK_FK).edited().addConsumer(this::setUnitPrice);
 	}
 
 	void addTotalsUpdatedConsumer(Consumer<Collection<Entity>> consumer) {
@@ -70,7 +70,7 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 	}
 
 	private void setUnitPrice(Entity track) {
-		value(InvoiceLine.UNITPRICE).set(track == null ? null : track.get(Track.UNITPRICE));
+		editor().value(InvoiceLine.UNITPRICE).set(track == null ? null : track.get(Track.UNITPRICE));
 	}
 
 	private Collection<Entity> updateTotals(Collection<Entity> invoiceLines, EntityConnection connection) {

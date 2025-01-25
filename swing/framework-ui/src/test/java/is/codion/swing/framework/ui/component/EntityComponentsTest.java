@@ -25,6 +25,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.model.EntityEditModel.EntityEditor;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.combobox.Completion;
@@ -63,87 +64,88 @@ public final class EntityComponentsTest {
 					.build();
 
 	private final SwingEntityEditModel editModel = new SwingEntityEditModel(Detail.TYPE, CONNECTION_PROVIDER);
+	private final EntityEditor editor = editModel.editor();
 	private final EntityComponents entityComponents = entityComponents(editModel.entityDefinition());
 
 	@Test
 	void checkBox() {
-		editModel.editor().defaults();
+		editor.defaults();
 		ComponentValue<Boolean, JCheckBox> componentValue =
 						entityComponents.checkBox(Detail.BOOLEAN)
 										.transferFocusOnEnter(true)
-										.link(editModel.value(Detail.BOOLEAN))
+										.link(editor.value(Detail.BOOLEAN))
 										.buildValue();
 		JCheckBox box = componentValue.component();
 		assertTrue(box.isSelected());//default value is true
-		assertTrue(editModel.value(Detail.BOOLEAN).getOrThrow());
+		assertTrue(editor.value(Detail.BOOLEAN).getOrThrow());
 
 		box.doClick();
 
 		assertFalse(box.isSelected());
-		assertFalse(editModel.value(Detail.BOOLEAN).getOrThrow());
+		assertFalse(editor.value(Detail.BOOLEAN).getOrThrow());
 
-		editModel.value(Detail.BOOLEAN).set(true);
+		editor.value(Detail.BOOLEAN).set(true);
 		assertTrue(box.isSelected());
 	}
 
 	@Test
 	void toggleButton() {
-		editModel.editor().defaults();
+		editor.defaults();
 		ComponentValue<Boolean, JToggleButton> componentValue =
 						entityComponents.toggleButton(Detail.BOOLEAN)
 										.transferFocusOnEnter(true)
-										.link(editModel.value(Detail.BOOLEAN))
+										.link(editor.value(Detail.BOOLEAN))
 										.buildValue();
 		JToggleButton box = componentValue.component();
 		assertTrue(box.isSelected());//default value is true
-		assertTrue(editModel.value(Detail.BOOLEAN).getOrThrow());
+		assertTrue(editor.value(Detail.BOOLEAN).getOrThrow());
 
 		box.doClick();
 
 		assertFalse(box.isSelected());
-		assertFalse(editModel.value(Detail.BOOLEAN).getOrThrow());
+		assertFalse(editor.value(Detail.BOOLEAN).getOrThrow());
 
-		editModel.value(Detail.BOOLEAN).set(true);
+		editor.value(Detail.BOOLEAN).set(true);
 		assertTrue(box.isSelected());
 	}
 
 	@Test
 	void nullableCheckBox() {
-		editModel.editor().defaults();
+		editor.defaults();
 		ComponentValue<Boolean, JCheckBox> componentValue =
 						entityComponents.checkBox(Detail.BOOLEAN_NULLABLE)
 										.transferFocusOnEnter(true)
 										.nullable(true)
-										.link(editModel.value(Detail.BOOLEAN_NULLABLE))
+										.link(editor.value(Detail.BOOLEAN_NULLABLE))
 										.buildValue();
 		NullableCheckBox box = (NullableCheckBox) componentValue.component();
 		assertTrue(box.isSelected());//default value is true
-		assertTrue(editModel.value(Detail.BOOLEAN_NULLABLE).getOrThrow());
+		assertTrue(editor.value(Detail.BOOLEAN_NULLABLE).getOrThrow());
 
 		box.getMouseListeners()[1].mouseClicked(null);
 
 		assertNull(box.model().toggleState().get());
-		assertNull(editModel.value(Detail.BOOLEAN_NULLABLE).get());
+		assertNull(editor.value(Detail.BOOLEAN_NULLABLE).get());
 
-		editModel.value(Detail.BOOLEAN_NULLABLE).set(false);
+		editor.value(Detail.BOOLEAN_NULLABLE).set(false);
 		assertFalse(box.isSelected());
 	}
 
 	@Test
 	void booleanComboBox() {
-		editModel.editor().defaults();
-		editModel.value(Detail.BOOLEAN).set(true);
+		editor.defaults();
+		editor.value(Detail.BOOLEAN).set(true);
 		ComponentValue<Boolean, JComboBox<Item<Boolean>>> componentValue =
 						entityComponents.booleanComboBox(Detail.BOOLEAN)
 										.transferFocusOnEnter(true)
-										.link(editModel.value(Detail.BOOLEAN))
+										.link(editor.value(Detail.BOOLEAN))
 										.buildValue();
 		FilterComboBoxModel<Item<Boolean>> boxModel = (FilterComboBoxModel<Item<Boolean>>) componentValue.component().getModel();
 		assertTrue(boxModel.selection().item().getOrThrow().value());
 		boxModel.setSelectedItem(null);
-		assertNull(editModel.value(Detail.BOOLEAN).get());
+		assertNull(editor.value(Detail.BOOLEAN).get());
 
-		editModel.value(Detail.BOOLEAN).set(false);
+		editor.value(Detail.BOOLEAN).set(false);
 		assertFalse(boxModel.selection().item().getOrThrow().value());
 	}
 
@@ -152,7 +154,7 @@ public final class EntityComponentsTest {
 		ComponentValue<Integer, JComboBox<Item<Integer>>> componentValue =
 						entityComponents.itemComboBox(Detail.INT_ITEMS)
 										.transferFocusOnEnter(true)
-										.link(editModel.value(Detail.INT_ITEMS))
+										.link(editor.value(Detail.INT_ITEMS))
 										.buildValue();
 		JComboBox<Item<Integer>> comboBox = componentValue.component();
 
@@ -160,15 +162,15 @@ public final class EntityComponentsTest {
 		assertEquals(0, model.items().visible().indexOf(null));
 		assertTrue(model.items().contains(null));
 
-		assertNull(editModel.value(Detail.INT_ITEMS).get());
+		assertNull(editor.value(Detail.INT_ITEMS).get());
 		comboBox.setSelectedItem(1);
-		assertEquals(1, editModel.value(Detail.INT_ITEMS).get());
+		assertEquals(1, editor.value(Detail.INT_ITEMS).get());
 		comboBox.setSelectedItem(2);
-		assertEquals(2, editModel.value(Detail.INT_ITEMS).get());
+		assertEquals(2, editor.value(Detail.INT_ITEMS).get());
 		comboBox.setSelectedItem(3);
-		assertEquals(3, editModel.value(Detail.INT_ITEMS).get());
+		assertEquals(3, editor.value(Detail.INT_ITEMS).get());
 		comboBox.setSelectedItem(4);//does not exist
-		assertNull(editModel.value(Detail.INT_ITEMS).get());
+		assertNull(editor.value(Detail.INT_ITEMS).get());
 	}
 
 	@Test
@@ -190,19 +192,19 @@ public final class EntityComponentsTest {
 						entityComponents.comboBox(Detail.INT, boxModel)
 										.completionMode(Completion.Mode.NONE)//otherwise a non-existing element can be selected, last test fails
 										.transferFocusOnEnter(true)
-										.link(editModel.value(Detail.INT))
+										.link(editor.value(Detail.INT))
 										.buildValue();
 		JComboBox<Integer> box = componentValue.component();
 
-		assertNull(editModel.value(Detail.INT).get());
+		assertNull(editor.value(Detail.INT).get());
 		box.setSelectedItem(1);
-		assertEquals(1, editModel.value(Detail.INT).get());
+		assertEquals(1, editor.value(Detail.INT).get());
 		box.setSelectedItem(2);
-		assertEquals(2, editModel.value(Detail.INT).get());
+		assertEquals(2, editor.value(Detail.INT).get());
 		box.setSelectedItem(3);
-		assertEquals(3, editModel.value(Detail.INT).get());
+		assertEquals(3, editor.value(Detail.INT).get());
 		box.setSelectedItem(4);//does not exist
-		assertEquals(3, editModel.value(Detail.INT).get());
+		assertEquals(3, editor.value(Detail.INT).get());
 	}
 
 	@Test
@@ -223,23 +225,23 @@ public final class EntityComponentsTest {
 										.columns(10)
 										.upperCase(true)
 										.selectAllOnFocusGained(true)
-										.link(editModel.value(Detail.STRING))
+										.link(editor.value(Detail.STRING))
 										.buildValue();
 		JTextField field = componentValue.component();
 		field.setText("hello");
-		assertEquals("HELLO", editModel.value(Detail.STRING).get());
+		assertEquals("HELLO", editor.value(Detail.STRING).get());
 
 		entityComponents.textField(Detail.DATE)
-						.link(editModel.value(Detail.DATE))
+						.link(editor.value(Detail.DATE))
 						.buildValue();
 		entityComponents.textField(Detail.TIME)
-						.link(editModel.value(Detail.TIME))
+						.link(editor.value(Detail.TIME))
 						.buildValue();
 		entityComponents.textField(Detail.TIMESTAMP)
-						.link(editModel.value(Detail.TIMESTAMP))
+						.link(editor.value(Detail.TIMESTAMP))
 						.buildValue();
 		entityComponents.textField(Detail.OFFSET)
-						.link(editModel.value(Detail.OFFSET))
+						.link(editor.value(Detail.OFFSET))
 						.buildValue();
 	}
 
@@ -265,11 +267,11 @@ public final class EntityComponentsTest {
 										.updateOn(UpdateOn.VALUE_CHANGE)
 										.lineWrap(true)
 										.wrapStyleWord(true)
-										.link(editModel.value(Detail.STRING))
+										.link(editor.value(Detail.STRING))
 										.buildValue();
 		JTextArea textArea = componentValue.component();
 		textArea.setText("hello");
-		assertEquals("hello", editModel.value(Detail.STRING).get());
+		assertEquals("hello", editor.value(Detail.STRING).get());
 	}
 
 	@Test
@@ -280,11 +282,11 @@ public final class EntityComponentsTest {
 										.columns(10)
 										.buttonFocusable(true)
 										.updateOn(UpdateOn.VALUE_CHANGE)
-										.link(editModel.value(Detail.STRING))
+										.link(editor.value(Detail.STRING))
 										.buildValue();
 		TextFieldPanel inputPanel = componentValue.component();
 		inputPanel.setText("hello");
-		assertEquals("hello", editModel.value(Detail.STRING).get());
+		assertEquals("hello", editor.value(Detail.STRING).get());
 	}
 
 	@Test
@@ -296,22 +298,22 @@ public final class EntityComponentsTest {
 										.columns(6)
 										.commitsOnValidEdit(true)
 										.focusLostBehaviour(JFormattedTextField.COMMIT)
-										.link(editModel.value(Detail.STRING))
+										.link(editor.value(Detail.STRING))
 										.buildValue();
 		JFormattedTextField field = componentValue.component();
 		field.setText("1234");
-		assertEquals("12:34", editModel.value(Detail.STRING).get());
+		assertEquals("12:34", editor.value(Detail.STRING).get());
 	}
 
 	@Test
 	void entityTextField() {
 		ComponentValue<Entity, JTextField> componentValue =
 						entityComponents.textField(Detail.MASTER_FK)
-										.link(editModel.value(Detail.MASTER_FK))
+										.link(editor.value(Detail.MASTER_FK))
 										.buildValue();
 		JTextField field = componentValue.component();
 		Entity entity = editModel.entities().builder(Master.TYPE).with(Master.NAME, "name").build();
-		editModel.value(Detail.MASTER_FK).set(entity);
+		editor.value(Detail.MASTER_FK).set(entity);
 		assertEquals("name", field.getText());
 	}
 
@@ -329,7 +331,7 @@ public final class EntityComponentsTest {
 	@Test
 	void entityComboBox() {
 		entityComponents.comboBox(Detail.MASTER_FK, editModel.comboBoxModel(Detail.MASTER_FK))
-						.link(editModel.value(Detail.MASTER_FK))
+						.link(editor.value(Detail.MASTER_FK))
 						.buildValue();
 	}
 

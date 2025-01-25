@@ -29,7 +29,6 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
@@ -145,11 +144,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	@Override
 	public final EntityEditor editor() {
 		return editor;
-	}
-
-	@Override
-	public final <T> ValueEditor<T> value(Attribute<T> attribute) {
-		return editor.value(attribute);
 	}
 
 	@Override
@@ -326,8 +320,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		if (currentForeignKeyValue != null) {
 			for (Entity replacementValue : values) {
 				if (currentForeignKeyValue.equals(replacementValue)) {
-					value(foreignKey).clear();
-					value(foreignKey).set(replacementValue);
+					editor.value(foreignKey).clear();
+					editor.value(foreignKey).set(replacementValue);
 				}
 			}
 		}

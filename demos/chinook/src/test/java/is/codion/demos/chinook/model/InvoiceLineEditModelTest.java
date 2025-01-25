@@ -29,6 +29,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.model.EntityEditModel.EntityEditor;
 
 import org.junit.jupiter.api.Test;
 
@@ -52,17 +53,18 @@ public final class InvoiceLineEditModelTest {
 			Entity battery = connection.selectSingle(Track.NAME.equalToIgnoreCase("battery"));
 
 			InvoiceLineEditModel editModel = new InvoiceLineEditModel(connectionProvider);
-			editModel.value(InvoiceLine.INVOICE_FK).set(invoice);
-			editModel.value(InvoiceLine.TRACK_FK).set(battery);
+			EntityEditor editor = editModel.editor();
+			editor.value(InvoiceLine.INVOICE_FK).set(invoice);
+			editor.value(InvoiceLine.TRACK_FK).set(battery);
 			Entity invoiceLineBattery = editModel.insert();
 
 			invoice = connection.selectSingle(key(invoice.primaryKey()));
 			assertEquals(battery.get(Track.UNITPRICE), invoice.get(Invoice.TOTAL));
 
 			Entity orion = connection.selectSingle(Track.NAME.equalToIgnoreCase("orion"));
-			editModel.editor().defaults();
-			editModel.value(InvoiceLine.INVOICE_FK).set(invoice);
-			editModel.value(InvoiceLine.TRACK_FK).set(orion);
+			editor.defaults();
+			editor.value(InvoiceLine.INVOICE_FK).set(invoice);
+			editor.value(InvoiceLine.TRACK_FK).set(orion);
 			editModel.insert();
 
 			invoice = connection.selectSingle(key(invoice.primaryKey()));
@@ -72,8 +74,8 @@ public final class InvoiceLineEditModelTest {
 			theCallOfKtulu.put(Track.UNITPRICE, BigDecimal.valueOf(2));
 			theCallOfKtulu = connection.updateSelect(theCallOfKtulu);
 
-			editModel.editor().set(invoiceLineBattery);
-			editModel.value(InvoiceLine.TRACK_FK).set(theCallOfKtulu);
+			editor.set(invoiceLineBattery);
+			editor.value(InvoiceLine.TRACK_FK).set(theCallOfKtulu);
 			editModel.update();
 
 			invoice = connection.selectSingle(key(invoice.primaryKey()));

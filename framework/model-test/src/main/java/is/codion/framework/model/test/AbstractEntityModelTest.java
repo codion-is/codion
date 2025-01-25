@@ -72,7 +72,7 @@ public abstract class AbstractEntityModelTest<E extends AbstractEntityEditModel,
 		deptTableModel.select(singletonList(operationsKey));
 
 		assertTrue(deptTableModel.selection().empty().not().get());
-		deptEditModel.value(Department.ID).set(80);
+		deptEditModel.editor().value(Department.ID).set(80);
 		assertFalse(deptTableModel.selection().empty().get());
 		deptEditModel.update();
 
@@ -84,7 +84,7 @@ public abstract class AbstractEntityModelTest<E extends AbstractEntityEditModel,
 						!Objects.equals(80, item.get(Department.ID)));
 
 		deptEditModel.editor().set(operations);
-		deptEditModel.value(Department.ID).set(40);
+		deptEditModel.editor().value(Department.ID).set(40);
 		deptEditModel.update();
 
 		deptTableModel.items().filter();
@@ -243,8 +243,8 @@ public abstract class AbstractEntityModelTest<E extends AbstractEntityEditModel,
 							.conditions()
 							.get(Employee.DEPARTMENT_FK);
 
-			departmentModel.editModel().value(Department.ID).set(-10);
-			departmentModel.editModel().value(Department.NAME).set("New dept");
+			departmentModel.editModel().editor().value(Department.ID).set(-10);
+			departmentModel.editModel().editor().value(Department.NAME).set("New dept");
 			Entity inserted = departmentModel.editModel().insert();
 
 			assertEquals(deptCondition.operands().in().get(), singleton(inserted));
@@ -272,8 +272,8 @@ public abstract class AbstractEntityModelTest<E extends AbstractEntityEditModel,
 
 			deptCondition.clear();
 
-			departmentModel.editModel().value(Department.ID).set(-11);
-			departmentModel.editModel().value(Department.NAME).set("New dept2");
+			departmentModel.editModel().editor().value(Department.ID).set(-11);
+			departmentModel.editModel().editor().value(Department.NAME).set("New dept2");
 
 			departmentModel.editModel().insert();
 			assertTrue(deptCondition.operands().in().get().isEmpty());
@@ -298,13 +298,13 @@ public abstract class AbstractEntityModelTest<E extends AbstractEntityEditModel,
 						.setConditionOnInsert(false)
 						.setValueOnInsert(true)
 						.build());
-		Value<Entity> departmentEditModelValue = employeeModel.editModel().value(Employee.DEPARTMENT_FK);
+		Value<Entity> departmentEditModelValue = employeeModel.editModel().editor().value(Employee.DEPARTMENT_FK);
 
 		EntityConnection connection = departmentModel.connection();
 		connection.startTransaction();
 		try {
-			departmentModel.editModel().value(Department.ID).set(-10);
-			departmentModel.editModel().value(Department.NAME).set("New dept");
+			departmentModel.editModel().editor().value(Department.ID).set(-10);
+			departmentModel.editModel().editor().value(Department.NAME).set("New dept");
 			Entity inserted = departmentModel.editModel().insert();
 
 			assertEquals(departmentEditModelValue.get(), inserted);
@@ -316,8 +316,8 @@ public abstract class AbstractEntityModelTest<E extends AbstractEntityEditModel,
 
 			Entity currentDept = departmentEditModelValue.get();
 
-			departmentModel.editModel().value(Department.ID).set(-12);
-			departmentModel.editModel().value(Department.NAME).set("New dept3");
+			departmentModel.editModel().editor().value(Department.ID).set(-12);
+			departmentModel.editModel().editor().value(Department.NAME).set("New dept3");
 			departmentModel.editModel().insert();
 
 			assertSame(currentDept, departmentEditModelValue.get());
@@ -336,15 +336,15 @@ public abstract class AbstractEntityModelTest<E extends AbstractEntityEditModel,
 						.setConditionOnInsert(false)
 						.setValueOnInsert(false)
 						.build());
-		departmentEditModelValue = employeeModel.editModel().value(Employee.DEPARTMENT_FK);
+		departmentEditModelValue = employeeModel.editModel().editor().value(Employee.DEPARTMENT_FK);
 
 		connection.startTransaction();
 		try {
 			employeeModel.tableModel().selection().clear();
 			departmentEditModelValue.clear();
 
-			departmentModel.editModel().value(Department.ID).set(-11);
-			departmentModel.editModel().value(Department.NAME).set("New dept2");
+			departmentModel.editModel().editor().value(Department.ID).set(-11);
+			departmentModel.editModel().editor().value(Department.NAME).set("New dept2");
 
 			departmentModel.editModel().insert();
 			assertTrue(departmentEditModelValue.isNull());
@@ -369,7 +369,7 @@ public abstract class AbstractEntityModelTest<E extends AbstractEntityEditModel,
 						.setConditionOnInsert(false)
 						.setValueOnInsert(false)
 						.build());
-		Value<Entity> departmentEditModelValue = employeeModel.editModel().value(Employee.DEPARTMENT_FK);
+		Value<Entity> departmentEditModelValue = employeeModel.editModel().editor().value(Employee.DEPARTMENT_FK);
 
 		departmentModel.tableModel().items().refresh();
 		departmentModel.tableModel().selection().index().set(0);
@@ -395,7 +395,7 @@ public abstract class AbstractEntityModelTest<E extends AbstractEntityEditModel,
 						.setConditionOnInsert(false)
 						.setValueOnInsert(false)
 						.build());
-		departmentEditModelValue = employeeModel.editModel().value(Employee.DEPARTMENT_FK);
+		departmentEditModelValue = employeeModel.editModel().editor().value(Employee.DEPARTMENT_FK);
 
 		departmentModel.tableModel().items().refresh();
 		departmentModel.tableModel().selection().index().set(0);

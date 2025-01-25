@@ -55,7 +55,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 							managerComboBoxModel.filter().predicate().set(manager ->
 											!Objects.equals(manager, employee)));
 			//and only show managers from the currently selected department
-			value(Employee.DEPARTMENT_FK).addConsumer(department ->
+			editor().value(Employee.DEPARTMENT_FK).addConsumer(department ->
 							managerComboBoxModel.filter()
 											.get(Employee.DEPARTMENT_FK).set(department.primaryKey()));
 

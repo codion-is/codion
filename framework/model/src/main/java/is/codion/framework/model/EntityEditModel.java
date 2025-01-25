@@ -45,8 +45,8 @@ import java.util.function.Supplier;
 
 /**
  * Specifies a class for editing {@link Entity} instances.
- * The underlying attribute values are available via {@link #value(Attribute)}.
- * @see EntityEditor
+ * The underlying attribute values are available via {@link EntityEditor#value(Attribute)}.
+ * @see #editor()
  */
 public interface EntityEditModel {
 
@@ -92,19 +92,11 @@ public interface EntityEditModel {
 	 * Returns a {@link EntityEditor} wrapping the entity being edited. {@link EntityEditor#get()} returns
 	 * an immutable copy of the {@link Entity} instance being edited, while {@link EntityEditor#set(Entity)}
 	 * copies the values from the given {@link Entity} into the underlying {@link Entity}.
-	 * Note that value changes must go through the {@link ValueEditor} accessible via {@link #value(Attribute)}.
+	 * Note that value changes must go through the {@link ValueEditor} accessible via {@link EntityEditor#value(Attribute)}.
 	 * @return the {@link EntityEditor} wrapping the {@link Entity} instance being edited
 	 * @see Entity#immutable()
 	 */
 	EntityEditor editor();
-
-	/**
-	 * Returns the {@link ValueEditor} instance representing {@code attribute} in this edit model.
-	 * @param attribute the attribute
-	 * @param <T> the value type
-	 * @return the {@link ValueEditor} representing the given attribute
-	 */
-	<T> ValueEditor<T> value(Attribute<T> attribute);
 
 	/**
 	 * @return the underlying domain entities
@@ -600,7 +592,7 @@ public interface EntityEditModel {
 		/**
 		 * <p>Returns an observer notified each time this value is modified via {@link ValueEditor#set(Object)}.
 		 * <p>This event is NOT triggered when the value changes due to the entity being set
-		 * via {@link ValueEditor#set(Object)} or {@link EntityEditor#defaults()}.
+		 * via {@link EntityEditor#set(Entity)} or {@link EntityEditor#defaults()}.
 		 * <p>Note that this event is only triggered if the value actually changes.
 		 * @return an observer notified when the given attribute value is edited
 		 */

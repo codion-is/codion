@@ -95,8 +95,8 @@ public final class Misc {
 		Entity customer = editModel.insert();
 
 		//modify some values
-		editModel.value(Customer.FIRST_NAME).set("John");
-		editModel.value(Customer.LAST_NAME).set("Doe");
+		editor.value(Customer.FIRST_NAME).set("John");
+		editor.value(Customer.LAST_NAME).set("Doe");
 
 		//updates and returns the updated entity
 		customer = editModel.update();

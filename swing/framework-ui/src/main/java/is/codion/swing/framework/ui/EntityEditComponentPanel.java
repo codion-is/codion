@@ -726,7 +726,7 @@ public class EntityEditComponentPanel extends JPanel {
 		componentBuilders.put(attribute, componentBuilder
 						.name(attribute.toString())
 						.transferFocusOnEnter(inputFocus.transferOnEnter.get())
-						.link(editModel().value(attribute))
+						.link(editModel().editor().value(attribute))
 						.onBuild(new SetComponent<>(attribute)));
 
 		return componentBuilder;
@@ -1116,7 +1116,7 @@ public class EntityEditComponentPanel extends JPanel {
 		@Override
 		public void accept(JComponent component) {
 			if (modifiedIndicator.get() && attribute.entityType().equals(editModel.entityType())) {
-				editModel.value(attribute).modified().addConsumer(new ModifiedIndicator(component));
+				editModel.editor().value(attribute).modified().addConsumer(new ModifiedIndicator(component));
 			}
 		}
 	}
@@ -1242,7 +1242,7 @@ public class EntityEditComponentPanel extends JPanel {
 															 String defaultToolTip, String uiComponentKey) {
 			super(attribute, component, editModel, defaultToolTip);
 			this.uiComponentKey = uiComponentKey;
-			editModel.value(attribute).addListener(this::validate);
+			editModel.editor().value(attribute).addListener(this::validate);
 			configureColors();
 			component.addPropertyChangeListener("UI", event -> configureColors());
 		}

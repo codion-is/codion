@@ -43,7 +43,7 @@ public final class InvoiceLineEditPanel extends EntityEditPanel {
 		super(editModel);
 		this.tableSearchField = tableSearchField;
 		// We do not want the track to persist when the model is cleared.
-		editModel.value(InvoiceLine.TRACK_FK).persist().set(false);
+		editModel.editor().value(InvoiceLine.TRACK_FK).persist().set(false);
 	}
 
 	@Override

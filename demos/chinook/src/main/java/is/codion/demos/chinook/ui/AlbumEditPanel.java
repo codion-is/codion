@@ -58,7 +58,7 @@ public final class AlbumEditPanel extends EntityEditPanel {
 										.items(Album.TAGS)
 										.buildValue();
 		// We set the Album.COVER component to the custom CoverArtPanel component.
-		component(Album.COVER).set(new CoverArtPanel(editModel().value(Album.COVER)));
+		component(Album.COVER).set(new CoverArtPanel(editModel().editor().value(Album.COVER)));
 
 		JPanel centerPanel = flexibleGridLayoutPanel(2, 2)
 						.add(createInputPanel(Album.ARTIST_FK))

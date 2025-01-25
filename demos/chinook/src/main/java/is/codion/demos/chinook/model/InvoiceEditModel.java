@@ -31,10 +31,10 @@ public final class InvoiceEditModel extends SwingEntityEditModel {
 		super(Invoice.TYPE, connectionProvider);
 		// By default foreign key values persist when the model
 		// is cleared, here we disable that for CUSTOMER_FK
-		value(Invoice.CUSTOMER_FK).persist().set(false);
+		editor().value(Invoice.CUSTOMER_FK).persist().set(false);
 		// We populate the invoice address fields with
 		// the customer address when the customer is edited
-		value(Invoice.CUSTOMER_FK).edited().addConsumer(this::setAddress);
+		editor().value(Invoice.CUSTOMER_FK).edited().addConsumer(this::setAddress);
 	}
 
 	private void setAddress(Entity customer) {
@@ -42,18 +42,18 @@ public final class InvoiceEditModel extends SwingEntityEditModel {
 		// when we are editing a new invoice
 		if (editor().exists().not().get()) {
 			if (customer == null) {
-				value(Invoice.BILLINGADDRESS).clear();
-				value(Invoice.BILLINGCITY).clear();
-				value(Invoice.BILLINGPOSTALCODE).clear();
-				value(Invoice.BILLINGSTATE).clear();
-				value(Invoice.BILLINGCOUNTRY).clear();
+				editor().value(Invoice.BILLINGADDRESS).clear();
+				editor().value(Invoice.BILLINGCITY).clear();
+				editor().value(Invoice.BILLINGPOSTALCODE).clear();
+				editor().value(Invoice.BILLINGSTATE).clear();
+				editor().value(Invoice.BILLINGCOUNTRY).clear();
 			}
 			else {
-				value(Invoice.BILLINGADDRESS).set(customer.get(Customer.ADDRESS));
-				value(Invoice.BILLINGCITY).set(customer.get(Customer.CITY));
-				value(Invoice.BILLINGPOSTALCODE).set(customer.get(Customer.POSTALCODE));
-				value(Invoice.BILLINGSTATE).set(customer.get(Customer.STATE));
-				value(Invoice.BILLINGCOUNTRY).set(customer.get(Customer.COUNTRY));
+				editor().value(Invoice.BILLINGADDRESS).set(customer.get(Customer.ADDRESS));
+				editor().value(Invoice.BILLINGCITY).set(customer.get(Customer.CITY));
+				editor().value(Invoice.BILLINGPOSTALCODE).set(customer.get(Customer.POSTALCODE));
+				editor().value(Invoice.BILLINGSTATE).set(customer.get(Customer.STATE));
+				editor().value(Invoice.BILLINGCOUNTRY).set(customer.get(Customer.COUNTRY));
 			}
 		}
 	}

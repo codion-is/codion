@@ -45,6 +45,7 @@ Codion Change Log
 - AbstractEntityModel bug fixed, now initializes a detail model link if active when added.
 - AbstractEntityModel now calls onSelection() for all detail model links, not just active ones.
 - DefaultModelLink.onSelection() does nothing unless link is active.
+- EntityEditModel.value() removed.
 ### is.codion.swing.framework.model
 - DefaultSwingForeignKeyConditionModel now links search and combo box models to their respective operands.
 ### is.codion.swing.framework.ui

@@ -109,7 +109,7 @@ public final class TrackEditPanel extends EntityEditPanel {
 		addValidator(Track.MILLISECONDS, durationValue.component().minutesField);
 		addValidator(Track.MILLISECONDS, durationValue.component().secondsField);
 		addValidator(Track.MILLISECONDS, durationValue.component().millisecondsField);
-		durationValue.link(editModel().value(Track.MILLISECONDS));
+		durationValue.link(editModel().editor().value(Track.MILLISECONDS));
 
 		return durationValue;
 	}

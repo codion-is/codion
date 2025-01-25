@@ -29,10 +29,10 @@ public final class PlaylistTrackEditModel extends SwingEntityEditModel {
 
 	public PlaylistTrackEditModel(EntityConnectionProvider connectionProvider) {
 		super(PlaylistTrack.TYPE, connectionProvider);
-		value(PlaylistTrack.TRACK_FK).persist().set(false);
+		editor().value(PlaylistTrack.TRACK_FK).persist().set(false);
 		// Set the search model condition, so the search results
 		// won't contain tracks already in the currently selected playlist
-		value(PlaylistTrack.PLAYLIST_FK).addConsumer(this::excludePlaylistTracks);
+		editor().value(PlaylistTrack.PLAYLIST_FK).addConsumer(this::excludePlaylistTracks);
 	}
 
 	private void excludePlaylistTracks(Entity playlist) {

@@ -120,7 +120,7 @@ final class DefaultForeignKeyModelLink implements ForeignKeyModelLink {
 			Entity foreignKeyValue = entities.isEmpty() ? null : entities.iterator().next();
 			if (model().editModel().editor().exists().not().get()
 							&& (foreignKeyValue != null || clearValueOnEmptySelection)) {
-				model().editModel().value(foreignKey).set(foreignKeyValue);
+				model().editModel().editor().value(foreignKey).set(foreignKeyValue);
 			}
 		}
 	}
@@ -142,7 +142,7 @@ final class DefaultForeignKeyModelLink implements ForeignKeyModelLink {
 
 		private void setValueOnInsert(Entity foreignKeyValue) {
 			if (model().editModel().editor().exists().not().get() && setValueOnInsert) {
-				model().editModel().value(foreignKey).set(foreignKeyValue);
+				model().editModel().editor().value(foreignKey).set(foreignKeyValue);
 			}
 		}
 

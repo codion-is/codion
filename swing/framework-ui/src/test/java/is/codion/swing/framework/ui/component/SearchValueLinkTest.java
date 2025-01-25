@@ -56,15 +56,15 @@ public class SearchValueLinkTest {
 														model.searchModel(Employee.DEPARTMENT_FK))
 										.singleSelection()
 										.buildValue();
-		componentValue.link(model.value(Employee.DEPARTMENT_FK));
+		componentValue.link(model.editor().value(Employee.DEPARTMENT_FK));
 		EntitySearchModel searchModel = componentValue.component().model();
 		assertTrue(searchModel.selection().empty().get());
 		Entity department = model.connection().selectSingle(Department.NAME.equalTo("SALES"));
-		model.value(Employee.DEPARTMENT_FK).set(department);
+		model.editor().value(Employee.DEPARTMENT_FK).set(department);
 		assertEquals(1, searchModel.selection().entities().get().size());
 		assertEquals(department, searchModel.selection().entities().get().iterator().next());
 		department = model.connection().selectSingle(Department.NAME.equalTo("OPERATIONS"));
 		searchModel.selection().entity().set(department);
-		assertEquals(department, model.value(Employee.DEPARTMENT_FK).get());
+		assertEquals(department, model.editor().value(Employee.DEPARTMENT_FK).get());
 	}
 }

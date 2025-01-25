@@ -80,8 +80,8 @@ final class EditPanelDemo extends EntityEditPanel {
 							}
 						};
 
-		//link the component value to the attribute value in the edit model
-		firstNameFieldValue.link(editModel().value(Customer.FIRST_NAME));
+		//link the component value to the attribute value in the editor
+		firstNameFieldValue.link(editModel().editor().value(Customer.FIRST_NAME));
 
 		//create the first name label
 		JLabel firstNameLabel = new JLabel(firstNameDefinition.caption());

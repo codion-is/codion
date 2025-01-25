@@ -52,8 +52,8 @@ public final class ClientUI {
 		// create a EditModel based on the artist entity
 		SwingEntityEditModel editModel = new SwingEntityEditModel(Artist.TYPE, connectionProvider);
 
-		// fetch a Value based on the artist name from the edit model
-		Value<String> artistNameEditModelValue = editModel.value(Artist.NAME);
+		// fetch the Value representing the artist name from the editor
+		Value<String> artistNameEditModelValue = editModel.editor().value(Artist.NAME);
 
 		// create a Control for inserting a new Artist
 		Control insertControl = Control.action(actionEvent -> {
@@ -98,8 +98,8 @@ public final class ClientUI {
 		// create a EditModel based on the album entity
 		SwingEntityEditModel editModel = new SwingEntityEditModel(Album.TYPE, connectionProvider);
 
-		// fetch Value based on the album artist in the edit model
-		Value<Entity> editModelArtistValue = editModel.value(Album.ARTIST_FK);
+		// fetch the Value representing the album artist from the editor
+		Value<Entity> editModelArtistValue = editModel.editor().value(Album.ARTIST_FK);
 
 		EntityComboBoxModel artistComboBoxModel = editModel.comboBoxModel(Album.ARTIST_FK);
 
@@ -116,8 +116,8 @@ public final class ClientUI {
 										.onSetVisible(comboBox -> comboBox.getModel().items().refresh())
 										.build();
 
-		// fetch a String Value based on the album title from the edit model
-		Value<String> editModelTitleValue = editModel.value(Album.TITLE);
+		// fetch the Value representing the album title from the editor
+		Value<String> editModelTitleValue = editModel.editor().value(Album.TITLE);
 
 		// create a Control for inserting a new Album row
 		Control insertControl = Control.action(actionEvent -> {
