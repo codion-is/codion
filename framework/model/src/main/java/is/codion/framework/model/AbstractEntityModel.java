@@ -18,6 +18,7 @@
  */
 package is.codion.framework.model;
 
+import is.codion.common.state.State;
 import is.codion.common.value.ObservableValueSet;
 import is.codion.common.value.ValueSet;
 import is.codion.framework.db.EntityConnection;
@@ -263,12 +264,12 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 		}
 
 		@Override
-		public <L extends ModelLink<M, E, T>> L link(M detailModel) {
+		public State active(M detailModel) {
 			if (!models.containsKey(requireNonNull(detailModel))) {
 				throw new IllegalStateException("Detail model not found: " + detailModel);
 			}
 
-			return (L) models.get(detailModel);
+			return models.get(detailModel).active();
 		}
 
 		@Override

@@ -202,7 +202,7 @@ public final class WindowDetailLayout implements DetailLayout {
 			}
 			SwingEntityModel detailModel = detailPanel.model();
 			if (entityPanel.model().detailModels().contains(detailModel)) {
-				entityPanel.model().detailModels().link(detailModel).active().set(panelState == WINDOW);
+				entityPanel.model().detailModels().active(detailModel).set(panelState == WINDOW);
 			}
 		}
 

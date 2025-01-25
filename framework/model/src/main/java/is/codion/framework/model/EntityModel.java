@@ -18,6 +18,7 @@
  */
 package is.codion.framework.model;
 
+import is.codion.common.state.State;
 import is.codion.common.value.ObservableValueSet;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -106,31 +107,27 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 		ObservableValueSet<M> active();
 
 		/**
-		 * Adds the given detail model to this model, a side effect if the detail model contains
-		 * a table model is that it is configured so that a query condition is required for it to show
+		 * <p>Adds the given detail models to this model, based on the first fitting foreign key.
+		 * <p>A side effect if a detail model contains a table model is that it is configured so that a query condition is required for it to show
 		 * any data, via {@link EntityQueryModel#conditionRequired()}.
-		 * Note that each detail model is associated with the first foreign key found referencing this models entity.
 		 * @param detailModels the detail models to add
 		 * @throws IllegalArgumentException in case no foreign key exists between the entities involved
 		 */
 		void add(M... detailModels);
 
 		/**
-		 * Adds the given detail model to this model, a side effect if the detail model contains
-		 * a table model is that it is configured so that a query condition is required for it to show
+		 * <p>Adds the given detail model to this model, based on the first fitting foreign key.
+		 * <p>A side effect if the detail model contains a table model is that it is configured so that a query condition is required for it to show
 		 * any data, via {@link EntityQueryModel#conditionRequired()}.
-		 * Note that the detail model is associated with the first foreign key found referencing this models entity.
 		 * @param detailModel the detail model
 		 * @throws IllegalArgumentException in case no foreign key exists between the entities involved
 		 */
 		void add(M detailModel);
 
 		/**
-		 * Adds the given detail model to this model.
-		 * Specify the foreign key in case the detail model is based on an entity which contains multiple foreign keys to the
-		 * same master entity.
+		 * Adds the given detail model to this model, based on the given foreign key.
 		 * @param detailModel the detail model
-		 * @param foreignKey the foreign key to base the detail model on
+		 * @param foreignKey the foreign key to base the detail model link on
 		 */
 		void add(M detailModel, ForeignKey foreignKey);
 
@@ -179,10 +176,9 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 
 		/**
 		 * @param detailModel the detail model
-		 * @param <L> the {@link ModelLink} type
-		 * @return the link for the given detail model
+		 * @return the active State for the given detail model
 		 * @throws IllegalArgumentException in case this model does not contain the given detail model
 		 */
-		<L extends ModelLink<M, E, T>> L link(M detailModel);
+		State active(M detailModel);
 	}
 }

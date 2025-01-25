@@ -89,7 +89,7 @@ public final class EntityPanelTest {
 		assertThrows(IllegalStateException.class, () -> deptPanel.detailPanels().add(empPanel));
 		assertEquals(1, deptPanel.detailPanels().active().size());
 
-		deptModel.detailModels().link(empModel).active().set(false);
+		deptModel.detailModels().active(empModel).set(false);
 		assertEquals(0, deptPanel.detailPanels().active().size());
 	}
 }

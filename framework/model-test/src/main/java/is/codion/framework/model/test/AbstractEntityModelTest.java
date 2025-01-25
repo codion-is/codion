@@ -100,9 +100,9 @@ public abstract class AbstractEntityModelTest<Model extends AbstractEntityModel<
 	public void testDetailModels() {
 		Model departmentModel = createDepartmentModel();
 		assertEquals(1, departmentModel.detailModels().active().size());
-		departmentModel.detailModels().link(departmentModel.detailModels().get(Employee.TYPE)).active().set(false);
+		departmentModel.detailModels().active(departmentModel.detailModels().get(Employee.TYPE)).set(false);
 		assertTrue(departmentModel.detailModels().active().isEmpty());
-		departmentModel.detailModels().link(departmentModel.detailModels().get(Employee.TYPE)).active().set(true);
+		departmentModel.detailModels().active(departmentModel.detailModels().get(Employee.TYPE)).set(true);
 	}
 
 	@Test
@@ -203,9 +203,9 @@ public abstract class AbstractEntityModelTest<Model extends AbstractEntityModel<
 	@Test
 	public void activateDeactivateDetailModel() {
 		Model departmentModel = createDepartmentModel();
-		departmentModel.detailModels().link(departmentModel.detailModels().get(Employee.TYPE)).active().set(false);
+		departmentModel.detailModels().active(departmentModel.detailModels().get(Employee.TYPE)).set(false);
 		assertTrue(departmentModel.detailModels().active().get().isEmpty());
-		departmentModel.detailModels().link(departmentModel.detailModels().get(Employee.TYPE)).active().set(true);
+		departmentModel.detailModels().active(departmentModel.detailModels().get(Employee.TYPE)).set(true);
 		assertFalse(departmentModel.detailModels().active().isEmpty());
 		assertTrue(departmentModel.detailModels().active().contains(departmentModel.detailModels().get(Employee.TYPE)));
 	}

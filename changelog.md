@@ -37,6 +37,7 @@ Codion Change Log
 - DetailModelLink and ForeignKeyDetailModelLink now Builder based, implementations package private and final.
 - DetailModelLink and ForeignKeyDetailModelLink renamed ModelLink and ForeignKeyModelLink.
 - EntityModel.DetailModels.linked() renamed active().
+- EntityModel.DetailModels.link() replaced with active().
 ### is.codion.swing.framework.model
 - DefaultSwingForeignKeyConditionModel now links search and combo box models to their respective operands.
 ### is.codion.swing.framework.ui

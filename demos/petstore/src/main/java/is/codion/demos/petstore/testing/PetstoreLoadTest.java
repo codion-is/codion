@@ -52,11 +52,11 @@ public final class PetstoreLoadTest {
 											.user(user)
 											.build());
 			SwingEntityModel categoryModel = applicationModel.entityModels().get().iterator().next();
-			categoryModel.detailModels().link(categoryModel.detailModels().get().iterator().next()).active().set(true);
+			categoryModel.detailModels().active(categoryModel.detailModels().get().iterator().next()).set(true);
 			SwingEntityModel productModel = categoryModel.detailModels().get().iterator().next();
-			productModel.detailModels().link(productModel.detailModels().get().iterator().next()).active().set(true);
+			productModel.detailModels().active(productModel.detailModels().get().iterator().next()).set(true);
 			SwingEntityModel itemModel = productModel.detailModels().get().iterator().next();
-			itemModel.detailModels().link(itemModel.detailModels().get().iterator().next()).active().set(true);
+			itemModel.detailModels().active(itemModel.detailModels().get().iterator().next()).set(true);
 
 			return applicationModel;
 		}
