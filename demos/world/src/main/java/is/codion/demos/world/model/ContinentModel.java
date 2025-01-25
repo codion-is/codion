@@ -24,8 +24,9 @@ import is.codion.demos.world.domain.api.World.Continent;
 import is.codion.demos.world.domain.api.World.Country;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.swing.framework.model.SwingDetailModelLink;
+import is.codion.framework.model.DetailModelLink;
 import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
@@ -33,6 +34,7 @@ import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 
 import java.util.Collection;
+import java.util.function.Consumer;
 
 public final class ContinentModel extends SwingEntityModel {
 
@@ -44,8 +46,10 @@ public final class ContinentModel extends SwingEntityModel {
 	ContinentModel(EntityConnectionProvider connectionProvider) {
 		super(Continent.TYPE, connectionProvider);
 		tableModel().items().refresher().result().addConsumer(this::refreshChartDatasets);
-		CountryModel countryModel = new CountryModel(connectionProvider);
-		detailModels().add(new CountryModelLink(countryModel)).active().set(true);
+		detailModels().add(DetailModelLink.builder(new CountryModel(connectionProvider))
+						.onSelection(new OnContinentsSelected())
+						.active(true)
+						.build());
 	}
 
 	public PieDataset<String> populationDataset() {
@@ -91,17 +95,14 @@ public final class ContinentModel extends SwingEntityModel {
 		}
 	}
 
-	private static final class CountryModelLink extends SwingDetailModelLink {
-
-		private CountryModelLink(SwingEntityModel detailModel) {
-			super(detailModel);
-		}
+	private final class OnContinentsSelected implements Consumer<Collection<Entity>> {
 
 		@Override
-		public void onSelection(Collection<Entity> selectedEntities) {
-			Collection<String> continentNames = Entity.values(Continent.NAME, selectedEntities);
-			if (detailModel().tableModel().queryModel().conditions().get(Country.CONTINENT).set().in(continentNames)) {
-				detailModel().tableModel().items().refresh();
+		public void accept(Collection<Entity> continents) {
+			SwingEntityTableModel countryTableModel = detailModels().get(Country.TYPE).tableModel();
+			Collection<String> continentNames = Entity.values(Continent.NAME, continents);
+			if (countryTableModel.queryModel().conditions().get(Country.CONTINENT).set().in(continentNames)) {
+				countryTableModel.items().refresh();
 			}
 		}
 	}

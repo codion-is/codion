@@ -207,7 +207,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 		}
 
 		@Override
-		public ForeignKeyDetailModelLink<M, E, T> add(M detailModel) {
+		public void add(M detailModel) {
 			Collection<ForeignKey> foreignKeys = requireNonNull(detailModel).editModel()
 							.entityDefinition().foreignKeys().get(editModel.entityType());
 			if (foreignKeys.isEmpty()) {
@@ -215,16 +215,16 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 								" does not reference " + editModel.entityType() + " via a foreign key");
 			}
 
-			return add(detailModel, foreignKeys.iterator().next());
+			add(detailModel, foreignKeys.iterator().next());
 		}
 
 		@Override
-		public ForeignKeyDetailModelLink<M, E, T> add(M detailModel, ForeignKey foreignKey) {
-			return add(new DefaultForeignKeyDetailModelLink<>(requireNonNull(detailModel), requireNonNull(foreignKey)));
+		public void add(M detailModel, ForeignKey foreignKey) {
+			add(ForeignKeyDetailModelLink.builder(requireNonNull(detailModel), requireNonNull(foreignKey)).build());
 		}
 
 		@Override
-		public <L extends DetailModelLink<M, E, T>> L add(L detailModelLink) {
+		public void add(DetailModelLink<M, E, T> detailModelLink) {
 			if (AbstractEntityModel.this == requireNonNull(detailModelLink).detailModel()) {
 				throw new IllegalArgumentException("A model can not be its own detail model");
 			}
@@ -232,9 +232,10 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 				throw new IllegalArgumentException("Detail model " + detailModelLink.detailModel() + " has already been added");
 			}
 			models.put(detailModelLink.detailModel(), detailModelLink);
+			if (detailModelLink.active().get()) {
+				linked.add(detailModelLink.detailModel());
+			}
 			detailModelLink.active().addConsumer(new ActiveDetailModelConsumer(detailModelLink));
-
-			return detailModelLink;
 		}
 
 		@Override

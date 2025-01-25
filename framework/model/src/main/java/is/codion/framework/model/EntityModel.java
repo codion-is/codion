@@ -121,33 +121,25 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 		 * any data, via {@link EntityQueryModel#conditionRequired()}.
 		 * Note that the detail model is associated with the first foreign key found referencing this models entity.
 		 * @param detailModel the detail model
-		 * @return the resulting {@link ForeignKeyDetailModelLink}
 		 * @throws IllegalArgumentException in case no foreign key exists between the entities involved
 		 */
-		ForeignKeyDetailModelLink<M, E, T> add(M detailModel);
+		void add(M detailModel);
 
 		/**
-		 * Adds the given detail model to this model, a side effect if the detail model contains
-		 * a table model is that it is configured so that a query condition is required for it to show
-		 * any data, via {@link EntityQueryModel#conditionRequired()}
+		 * Adds the given detail model to this model.
 		 * Specify the foreign key in case the detail model is based on an entity which contains multiple foreign keys to the
 		 * same master entity.
 		 * @param detailModel the detail model
 		 * @param foreignKey the foreign key to base the detail model on
-		 * @return the resulting {@link ForeignKeyDetailModelLink}
 		 */
-		ForeignKeyDetailModelLink<M, E, T> add(M detailModel, ForeignKey foreignKey);
+		void add(M detailModel, ForeignKey foreignKey);
 
 		/**
-		 * Adds the given detail model to this model, a side effect if the detail model contains
-		 * a table model is that it is configured so that a query condition is required for it to show
-		 * any data, via {@link EntityQueryModel#conditionRequired()}
+		 * Adds the given detail model to this model.
 		 * @param detailModelLink the {@link DetailModelLink} to add
-		 * @param <L> the {@link DetailModelLink} type
-		 * @return the {@link DetailModelLink}
 		 * @throws IllegalArgumentException in case the model has already been added
 		 */
-		<L extends DetailModelLink<M, E, T>> L add(L detailModelLink);
+		void add(DetailModelLink<M, E, T> detailModelLink);
 
 		/**
 		 * @param modelClass the detail model class

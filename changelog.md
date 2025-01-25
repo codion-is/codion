@@ -34,6 +34,7 @@ Codion Change Log
 - ForeignKeyDetailModelLink, configuration methods renamed along with associated properties.
 - DefaultEntityModel, type parameters now refer to EntityModel and EntityEditModel instead of DefaultEntityModel and AbstractEntityEditModel.
 - DefaultEntityModel now abstract, renamed AbstractEntityModel.
+- DetailModelLink and ForeignKeyDetailModelLink now Builder based, implementations package private and final.
 ### is.codion.swing.framework.model
 - DefaultSwingForeignKeyConditionModel now links search and combo box models to their respective operands.
 ### is.codion.swing.framework.ui

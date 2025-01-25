@@ -24,106 +24,159 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-/**
- * A default {@link ForeignKeyDetailModelLink} implementation.
- * @param <M> the {@link EntityModel} type
- * @param <E> the {@link EntityEditModel} type
- * @param <T> the {@link EntityTableModel} type
- */
-public class DefaultForeignKeyDetailModelLink<M extends EntityModel<M, E, T>, E extends EntityEditModel,
-				T extends EntityTableModel<E>> extends DefaultDetailModelLink<M, E, T> implements ForeignKeyDetailModelLink<M, E, T> {
+final class DefaultForeignKeyDetailModelLink<M extends EntityModel<M, E, T>, E extends EntityEditModel,
+				T extends EntityTableModel<E>> implements ForeignKeyDetailModelLink<M, E, T> {
 
 	private final ForeignKey foreignKey;
-	private final State clearValueOnEmptySelection = State.state(CLEAR_VALUE_ON_EMPTY_SELECTION.getOrThrow());
-	private final State clearConditionOnEmptySelection = State.state(CLEAR_CONDITION_ON_EMPTY_SELECTION.getOrThrow());
-	private final State setValueOnInsert = State.state(SET_VALUE_ON_INSERT.getOrThrow());
-	private final State setConditionOnInsert = State.state(SET_CONDITION_ON_INSERT.getOrThrow());
-	private final State refreshOnSelection = State.state(REFRESH_ON_SELECTION.getOrThrow());
+	private final DetailModelLink<M, E, T> detailModelLink;
 
-	/**
-	 * @param detailModel the detail model
-	 * @param foreignKey the foreign key to base this link on
-	 */
-	public DefaultForeignKeyDetailModelLink(M detailModel, ForeignKey foreignKey) {
-		super(detailModel);
-		this.foreignKey = requireNonNull(foreignKey);
-		if (detailModel.containsTableModel()) {
-			detailModel.tableModel().queryModel().conditions().persist().add(foreignKey);
+	private final boolean clearValueOnEmptySelection;
+	private final boolean clearConditionOnEmptySelection;
+	private final boolean setValueOnInsert;
+	private final boolean setConditionOnInsert;
+	private final boolean refreshOnSelection;
+
+	private DefaultForeignKeyDetailModelLink(DefaultBuilder<M, E, T> builder) {
+		this.detailModelLink = DetailModelLink.builder(builder.detailModel)
+						.onSelection(new OnSelection())
+						.onInsert(new OnInsert())
+						.onUpdate(new OnUpdate())
+						.onDelete(new OnDelete())
+						.active(builder.active)
+						.build();
+		this.foreignKey = builder.foreignKey;
+		this.clearValueOnEmptySelection = builder.clearValueOnEmptySelection;
+		this.clearConditionOnEmptySelection = builder.clearConditionOnEmptySelection;
+		this.setValueOnInsert = builder.setValueOnInsert;
+		this.setConditionOnInsert = builder.setConditionOnInsert;
+		this.refreshOnSelection = builder.refreshOnSelection;
+		if (detailModelLink.detailModel().containsTableModel()) {
+			detailModelLink.detailModel().tableModel().queryModel().conditions().persist().add(foreignKey);
 		}
 	}
 
 	@Override
-	public final ForeignKey foreignKey() {
+	public ForeignKey foreignKey() {
 		return foreignKey;
 	}
 
 	@Override
-	public final State setConditionOnInsert() {
-		return setConditionOnInsert;
+	public M detailModel() {
+		return detailModelLink.detailModel();
 	}
 
 	@Override
-	public final State setValueOnInsert() {
-		return setValueOnInsert;
-	}
-
-	@Override
-	public final State refreshOnSelection() {
-		return refreshOnSelection;
-	}
-
-	@Override
-	public final State clearValueOnEmptySelection() {
-		return clearValueOnEmptySelection;
-	}
-
-	@Override
-	public final State clearConditionOnEmptySelection() {
-		return clearConditionOnEmptySelection;
+	public State active() {
+		return detailModelLink.active();
 	}
 
 	@Override
 	public void onSelection(Collection<Entity> selectedEntities) {
-		if (detailModel().containsTableModel() &&
-						setConditionOnSelection(selectedEntities) && refreshOnSelection.get()) {
-			detailModel().tableModel().items().refresh(result -> setValueOnSelection(selectedEntities));
-		}
-		else {
-			setValueOnSelection(selectedEntities);
-		}
+		detailModelLink.onSelection(selectedEntities);
 	}
 
 	@Override
 	public void onInsert(Collection<Entity> insertedEntities) {
-		Collection<Entity> entities = ofReferencedType(insertedEntities);
-		if (!entities.isEmpty()) {
-			detailModel().editModel().add(foreignKey, entities);
-			Entity insertedEntity = entities.iterator().next();
-			setValueOnInsert(insertedEntity);
-			if (detailModel().containsTableModel() && setConditionOnInsert(insertedEntity)) {
-				detailModel().tableModel().items().refresh();
-			}
-		}
+		detailModelLink.onInsert(insertedEntities);
 	}
 
 	@Override
 	public void onUpdate(Map<Entity.Key, Entity> updatedEntities) {
-		Collection<Entity> entities = ofReferencedType(updatedEntities.values());
-		detailModel().editModel().replace(foreignKey, entities);
-		if (detailModel().containsTableModel() &&
-						// These will be replaced by the table model if it handles edit events
-						detailModel().tableModel().handleEditEvents().not().get()) {
-			detailModel().tableModel().replace(foreignKey, entities);
-		}
+		detailModelLink.onUpdate(updatedEntities);
 	}
 
 	@Override
 	public void onDelete(Collection<Entity> deletedEntities) {
-		detailModel().editModel().remove(foreignKey, ofReferencedType(deletedEntities));
+		detailModelLink.onDelete(deletedEntities);
+	}
+
+	private final class OnSelection implements Consumer<Collection<Entity>> {
+
+		@Override
+		public void accept(Collection<Entity> selectedEntities) {
+			if (detailModel().containsTableModel() &&
+							setConditionOnSelection(selectedEntities) && refreshOnSelection) {
+				detailModel().tableModel().items().refresh(result -> setValueOnSelection(selectedEntities));
+			}
+			else {
+				setValueOnSelection(selectedEntities);
+			}
+		}
+
+		private boolean setConditionOnSelection(Collection<Entity> selectedEntities) {
+			if (!selectedEntities.isEmpty() || clearConditionOnEmptySelection) {
+				return detailModel().tableModel().queryModel().conditions()
+								.get(foreignKey).set().in(selectedEntities);
+			}
+
+			return false;
+		}
+
+		private void setValueOnSelection(Collection<Entity> entities) {
+			Entity foreignKeyValue = entities.isEmpty() ? null : entities.iterator().next();
+			if (detailModel().editModel().editor().exists().not().get()
+							&& (foreignKeyValue != null || clearValueOnEmptySelection)) {
+				detailModel().editModel().value(foreignKey).set(foreignKeyValue);
+			}
+		}
+	}
+
+	private final class OnInsert implements Consumer<Collection<Entity>> {
+
+		@Override
+		public void accept(Collection<Entity> insertedEntities) {
+			Collection<Entity> entities = ofReferencedType(insertedEntities);
+			if (!entities.isEmpty()) {
+				detailModel().editModel().add(foreignKey, entities);
+				Entity insertedEntity = entities.iterator().next();
+				setValueOnInsert(insertedEntity);
+				if (detailModel().containsTableModel() && setConditionOnInsert(insertedEntity)) {
+					detailModel().tableModel().items().refresh();
+				}
+			}
+		}
+
+		private void setValueOnInsert(Entity foreignKeyValue) {
+			if (detailModel().editModel().editor().exists().not().get() && setValueOnInsert) {
+				detailModel().editModel().value(foreignKey).set(foreignKeyValue);
+			}
+		}
+
+		private boolean setConditionOnInsert(Entity insertedEntity) {
+			if (setConditionOnInsert) {
+				return detailModel().tableModel().queryModel().conditions()
+								.get(foreignKey).set().in(insertedEntity);
+			}
+
+			return false;
+		}
+	}
+
+	private final class OnUpdate implements Consumer<Map<Entity.Key, Entity>> {
+
+		@Override
+		public void accept(Map<Entity.Key, Entity> updatedEntities) {
+			Collection<Entity> entities = ofReferencedType(updatedEntities.values());
+			detailModel().editModel().replace(foreignKey, entities);
+			if (detailModel().containsTableModel() &&
+							// These will be replaced by the table model if it handles edit events
+							detailModel().tableModel().handleEditEvents().not().get()) {
+				detailModel().tableModel().replace(foreignKey, entities);
+			}
+		}
+	}
+
+	private final class OnDelete implements Consumer<Collection<Entity>> {
+
+		@Override
+		public void accept(Collection<Entity> deletedEntities) {
+			detailModel().editModel().remove(foreignKey, ofReferencedType(deletedEntities));
+		}
 	}
 
 	private Collection<Entity> ofReferencedType(Collection<Entity> entities) {
@@ -132,35 +185,62 @@ public class DefaultForeignKeyDetailModelLink<M extends EntityModel<M, E, T>, E 
 						.collect(toList());
 	}
 
-	private void setValueOnSelection(Collection<Entity> entities) {
-		Entity foreignKeyValue = entities.isEmpty() ? null : entities.iterator().next();
-		if (detailModel().editModel().editor().exists().not().get()
-						&& (foreignKeyValue != null || clearValueOnEmptySelection.get())) {
-			detailModel().editModel().value(foreignKey).set(foreignKeyValue);
-		}
-	}
+	static final class DefaultBuilder<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> implements Builder<M, E, T> {
 
-	private void setValueOnInsert(Entity foreignKeyValue) {
-		if (detailModel().editModel().editor().exists().not().get() && setValueOnInsert.get()) {
-			detailModel().editModel().value(foreignKey).set(foreignKeyValue);
-		}
-	}
+		private final M detailModel;
+		private final ForeignKey foreignKey;
 
-	private boolean setConditionOnSelection(Collection<Entity> selectedEntities) {
-		if (!selectedEntities.isEmpty() || clearConditionOnEmptySelection.get()) {
-			return detailModel().tableModel().queryModel().conditions()
-							.get(foreignKey).set().in(selectedEntities);
+		private boolean clearValueOnEmptySelection = CLEAR_VALUE_ON_EMPTY_SELECTION.getOrThrow();
+		private boolean clearConditionOnEmptySelection = CLEAR_CONDITION_ON_EMPTY_SELECTION.getOrThrow();
+		private boolean setValueOnInsert = SET_VALUE_ON_INSERT.getOrThrow();
+		private boolean setConditionOnInsert = SET_CONDITION_ON_INSERT.getOrThrow();
+		private boolean refreshOnSelection = REFRESH_ON_SELECTION.getOrThrow();
+		private boolean active = false;
+
+		DefaultBuilder(M detailModel, ForeignKey foreignKey) {
+			this.detailModel = requireNonNull(detailModel);
+			this.foreignKey = requireNonNull(foreignKey);
 		}
 
-		return false;
-	}
-
-	private boolean setConditionOnInsert(Entity insertedEntity) {
-		if (setConditionOnInsert.get()) {
-			return detailModel().tableModel().queryModel().conditions()
-							.get(foreignKey).set().in(insertedEntity);
+		@Override
+		public Builder<M, E, T> setConditionOnInsert(boolean setConditionOnInsert) {
+			this.setConditionOnInsert = setConditionOnInsert;
+			return this;
 		}
 
-		return false;
+		@Override
+		public Builder<M, E, T> setValueOnInsert(boolean setValueOnInsert) {
+			this.setValueOnInsert = setValueOnInsert;
+			return this;
+		}
+
+		@Override
+		public Builder<M, E, T> refreshOnSelection(boolean refreshOnSelection) {
+			this.refreshOnSelection = refreshOnSelection;
+			return this;
+		}
+
+		@Override
+		public Builder<M, E, T> clearValueOnEmptySelection(boolean clearValueOnEmptySelection) {
+			this.clearValueOnEmptySelection = clearValueOnEmptySelection;
+			return this;
+		}
+
+		@Override
+		public Builder<M, E, T> clearConditionOnEmptySelection(boolean clearConditionOnEmptySelection) {
+			this.clearConditionOnEmptySelection = clearConditionOnEmptySelection;
+			return this;
+		}
+
+		@Override
+		public Builder<M, E, T> active(boolean active) {
+			this.active = active;
+			return this;
+		}
+
+		@Override
+		public ForeignKeyDetailModelLink<M, E, T> build() {
+			return new DefaultForeignKeyDetailModelLink<>(this);
+		}
 	}
 }

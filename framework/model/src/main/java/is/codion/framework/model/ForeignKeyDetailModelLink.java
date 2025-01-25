@@ -20,7 +20,6 @@ package is.codion.framework.model;
 
 import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
-import is.codion.common.state.State;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 /**
@@ -87,36 +86,74 @@ public interface ForeignKeyDetailModelLink<M extends EntityModel<M, E, T>, E ext
 	ForeignKey foreignKey();
 
 	/**
-	 * @return the {@link State} controlling whether the detail table model should automatically search by the inserted entity
-	 * when an insert is performed in a master model
-	 * @see ForeignKeyDetailModelLink#SET_CONDITION_ON_INSERT
+	 * <p>Returns a new {@link Builder} instance.
+	 * <p>Note that if the detail model contains a table model it is configured so that a query condition is required for it to show
+	 * any data, via {@link EntityQueryModel#conditionRequired()}
+	 * @param detailModel the detail model
+	 * @param foreignKey the foreign key
+	 * @param <M> the {@link EntityModel} type
+	 * @param <E> the {@link EntityEditModel} type
+	 * @param <T> the {@link EntityTableModel} type
+	 * @return a {@link Builder} instance
 	 */
-	State setConditionOnInsert();
+	static <M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> Builder<M, E, T> builder(M detailModel, ForeignKey foreignKey) {
+		return new DefaultForeignKeyDetailModelLink.DefaultBuilder<>(detailModel, foreignKey);
+	}
 
 	/**
-	 * @return the {@link State} controlling whether the detail edit model should automatically set the foreign key value to the inserted entity
-	 * @see ForeignKeyDetailModelLink#SET_VALUE_ON_INSERT
+	 * Builds a {@link ForeignKeyDetailModelLink}
+	 * @param <M> the {@link EntityModel} type
+	 * @param <E> the {@link EntityEditModel} type
+	 * @param <T> the {@link EntityTableModel} type
 	 */
-	State setValueOnInsert();
+	interface Builder<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
 
-	/**
-	 * @return the {@link State} controlling whether the detail table model should be automatically refreshed
-	 * when the foreign key condition is set according to the master model selection
-	 * @see ForeignKeyDetailModelLink#REFRESH_ON_SELECTION
-	 */
-	State refreshOnSelection();
+		/**
+		 * @param setConditionOnInsert specifies whether the detail table model should automatically search by the inserted entity
+		 * when an insert is performed in a master model
+		 * @return this builder
+		 * @see ForeignKeyDetailModelLink#SET_CONDITION_ON_INSERT
+		 */
+		Builder<M, E, T> setConditionOnInsert(boolean setConditionOnInsert);
 
-	/**
-	 * Returns the {@link State} controlling whether the detail model should set the foreign key to null when null or no value is selected in the master model.
-	 * @return the {@link State} controlling whether a null selection should result in the foreign key being set to null
-	 * @see ForeignKeyDetailModelLink#CLEAR_VALUE_ON_EMPTY_SELECTION
-	 */
-	State clearValueOnEmptySelection();
+		/**
+		 * @param setValueOnInsert specifies whether the detail edit model should automatically set the foreign key value to the inserted entity
+		 * @return this builder
+		 * @see ForeignKeyDetailModelLink#SET_VALUE_ON_INSERT
+		 */
+		Builder<M, E, T> setValueOnInsert(boolean setValueOnInsert);
 
-	/**
-	 * Returns the {@link State} controlling whether the detail table model should clear the foreign key search condition when no value is selected in the master model
-	 * @return the {@link State} controlling whether an empty selection should result in the foreign key search condition being cleared
-	 * @see ForeignKeyDetailModelLink#CLEAR_CONDITION_ON_EMPTY_SELECTION
-	 */
-	State clearConditionOnEmptySelection();
+		/**
+		 * @param refreshOnSelection specifies whether the detail table model should be automatically refreshed
+		 * when the foreign key condition is set according to the master model selection
+		 * @return this builder
+		 * @see ForeignKeyDetailModelLink#REFRESH_ON_SELECTION
+		 */
+		Builder<M, E, T> refreshOnSelection(boolean refreshOnSelection);
+
+		/**
+		 * @param clearValueOnEmptySelection specifies whether the detail model should set the foreign key to null when null or no value is selected in the master model.
+		 * @return this builder
+		 * @see ForeignKeyDetailModelLink#CLEAR_VALUE_ON_EMPTY_SELECTION
+		 */
+		Builder<M, E, T> clearValueOnEmptySelection(boolean clearValueOnEmptySelection);
+
+		/**
+		 * @param clearConditionOnEmptySelection specifies whether the detail table model should clear the foreign key search condition when no value is selected in the master model
+		 * @return this builder
+		 * @see ForeignKeyDetailModelLink#CLEAR_CONDITION_ON_EMPTY_SELECTION
+		 */
+		Builder<M, E, T> clearConditionOnEmptySelection(boolean clearConditionOnEmptySelection);
+
+		/**
+		 * @param active the initial active state of this link
+		 * @return this builder
+		 */
+		Builder<M, E, T> active(boolean active);
+
+		/**
+		 * @return a {@link ForeignKeyDetailModelLink}
+		 */
+		ForeignKeyDetailModelLink<M, E, T> build();
+	}
 }

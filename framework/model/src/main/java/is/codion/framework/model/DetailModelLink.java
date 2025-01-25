@@ -23,12 +23,17 @@ import is.codion.framework.domain.entity.Entity;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * Represents a link between a master and detail model.
  * @param <M> the {@link EntityModel} type
  * @param <E> the {@link EntityEditModel} type
  * @param <T> the {@link EntityTableModel} type
+ * @see #onSelection(Collection)
+ * @see #onInsert(Collection)
+ * @see #onUpdate(Map)
+ * @see #onDelete(Collection)
  */
 public interface DetailModelLink<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
 
@@ -48,23 +53,80 @@ public interface DetailModelLink<M extends EntityModel<M, E, T>, E extends Entit
 	 * Called when the selection changes in the master model
 	 * @param selectedEntities the selected master entities
 	 */
-	default void onSelection(Collection<Entity> selectedEntities) {}
+	void onSelection(Collection<Entity> selectedEntities);
 
 	/**
 	 * Called when a insert is performed in the master model, regardless of entity type.
 	 * @param insertedEntities the inserted entities
 	 */
-	default void onInsert(Collection<Entity> insertedEntities) {}
+	void onInsert(Collection<Entity> insertedEntities);
 
 	/**
 	 * Called when an update is performed in the master model, regardless of entity type.
 	 * @param updatedEntities the updated entities, mapped to their original primary keys
 	 */
-	default void onUpdate(Map<Entity.Key, Entity> updatedEntities) {}
+	void onUpdate(Map<Entity.Key, Entity> updatedEntities);
 
 	/**
 	 * Called when delete is performed in the master model, regardless of entity type.
 	 * @param deletedEntities the deleted entities
 	 */
-	default void onDelete(Collection<Entity> deletedEntities) {}
+	void onDelete(Collection<Entity> deletedEntities);
+
+	/**
+	 * <p>Returns a new {@link Builder} instance.
+	 * <p>Note that if the detail model contains a table model it is configured so that a query condition is required for it to show
+	 * any data, via {@link EntityQueryModel#conditionRequired()}
+	 * @param detailModel the detail model
+	 * @param <M> the {@link EntityModel} type
+	 * @param <E> the {@link EntityEditModel} type
+	 * @param <T> the {@link EntityTableModel} type
+	 * @return a {@link Builder} instance
+	 */
+	static <M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> Builder<M, E, T> builder(M detailModel) {
+		return new DefaultDetailModelLink.DefaultBuilder<>(detailModel);
+	}
+
+	/**
+	 * @param <M> the {@link EntityModel} type
+	 * @param <E> the {@link EntityEditModel} type
+	 * @param <T> the {@link EntityTableModel} type
+	 */
+	interface Builder<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
+
+		/**
+		 * @param onSelection called when the selection changes in the master model
+		 * @return this builder
+		 */
+		Builder<M, E, T> onSelection(Consumer<Collection<Entity>> onSelection);
+
+		/**
+		 * @param onInsert called when an insert is performed in the master model
+		 * @return this builder
+		 */
+		Builder<M, E, T> onInsert(Consumer<Collection<Entity>> onInsert);
+
+		/**
+		 * @param onUpdate called when an update is performed in the master model
+		 * @return this builder
+		 */
+		Builder<M, E, T> onUpdate(Consumer<Map<Entity.Key, Entity>> onUpdate);
+
+		/**
+		 * @param onDelete called when a delete is performed in the master model
+		 * @return this builder
+		 */
+		Builder<M, E, T> onDelete(Consumer<Collection<Entity>> onDelete);
+
+		/**
+		 * @param active the initial active state of this link
+		 * @return this builder
+		 */
+		Builder<M, E, T> active(boolean active);
+
+		/**
+		 * @return a {@link DetailModelLink}
+		 */
+		DetailModelLink<M, E, T> build();
+	}
 }

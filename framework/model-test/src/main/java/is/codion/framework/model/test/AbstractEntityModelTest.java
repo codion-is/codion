@@ -63,17 +63,9 @@ public abstract class AbstractEntityModelTest<Model extends AbstractEntityModel<
 					.domain(new TestDomain())
 					.build();
 
-	private final EntityConnectionProvider connectionProvider;
-
-	protected final Model departmentModel;
-
-	protected AbstractEntityModelTest() {
-		connectionProvider = CONNECTION_PROVIDER;
-		departmentModel = createDepartmentModel();
-	}
-
 	@Test
 	public void testUpdatePrimaryKey() {
+		Model departmentModel = createDepartmentModel();
 		if (!departmentModel.containsTableModel()) {
 			return;
 		}
@@ -106,6 +98,7 @@ public abstract class AbstractEntityModelTest<Model extends AbstractEntityModel<
 
 	@Test
 	public void testDetailModels() {
+		Model departmentModel = createDepartmentModel();
 		assertEquals(1, departmentModel.detailModels().linked().size());
 		departmentModel.detailModels().link(departmentModel.detailModels().get(Employee.TYPE)).active().set(false);
 		assertTrue(departmentModel.detailModels().linked().isEmpty());
@@ -114,11 +107,13 @@ public abstract class AbstractEntityModelTest<Model extends AbstractEntityModel<
 
 	@Test
 	public void detailModelNotFound() {
+		Model departmentModel = createDepartmentModel();
 		assertThrows(IllegalArgumentException.class, () -> departmentModel.detailModels().get(Department.TYPE));
 	}
 
 	@Test
 	public void clear() {
+		Model departmentModel = createDepartmentModel();
 		if (!departmentModel.containsTableModel()) {
 			return;
 		}
@@ -138,6 +133,7 @@ public abstract class AbstractEntityModelTest<Model extends AbstractEntityModel<
 
 	@Test
 	public void clearEditModelClearTableSelection() {
+		Model departmentModel = createDepartmentModel();
 		if (!departmentModel.containsTableModel()) {
 			return;
 		}
@@ -151,11 +147,13 @@ public abstract class AbstractEntityModelTest<Model extends AbstractEntityModel<
 
 	@Test
 	public void test() {
+		Model departmentModel = createDepartmentModel();
 		assertNotNull(departmentModel.editModel());
 	}
 
 	@Test
 	public void detailModel() {
+		Model departmentModel = createDepartmentModel();
 		departmentModel.detailModels().get((Class<? extends Model>) departmentModel.detailModels().get(Employee.TYPE).getClass());
 		assertTrue(departmentModel.detailModels().contains(Employee.TYPE));
 		Model detailModel = departmentModel.detailModels().get(Employee.TYPE);
@@ -204,6 +202,7 @@ public abstract class AbstractEntityModelTest<Model extends AbstractEntityModel<
 
 	@Test
 	public void activateDeactivateDetailModel() {
+		Model departmentModel = createDepartmentModel();
 		departmentModel.detailModels().link(departmentModel.detailModels().get(Employee.TYPE)).active().set(false);
 		assertTrue(departmentModel.detailModels().linked().get().isEmpty());
 		departmentModel.detailModels().link(departmentModel.detailModels().get(Employee.TYPE)).active().set(true);
@@ -212,208 +211,241 @@ public abstract class AbstractEntityModelTest<Model extends AbstractEntityModel<
 	}
 
 	@Test
-	public void foreignKeyDetailModelLink() {
+	public void setConditionOnInsert() {
+		Model departmentModel = createDepartmentModelWithoutDetailModel();
 		if (!departmentModel.containsTableModel()) {
 			return;
 		}
-		EntityConnection connection = connectionProvider.connection();
-		Model employeeModel = departmentModel.detailModels().get(Employee.TYPE);
-		ForeignKeyDetailModelLink<Model, EditModel, TableModel> detailModelLink = departmentModel.detailModels().link(employeeModel);
+		Model employeeModel = createEmployeeModel();
+		departmentModel.detailModels().add(ForeignKeyDetailModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
+						.active(true)
+						.clearValueOnEmptySelection(false)
+						.clearConditionOnEmptySelection(false)
+						.refreshOnSelection(false)
+						.setConditionOnInsert(true)
+						.setValueOnInsert(false)
+						.build());
 
-		TableModel deptTableModel = departmentModel.tableModel();
-		EditModel deptEditModel = departmentModel.editModel();
-
-		TableModel empTableModel = employeeModel.tableModel();
-		EditModel empEditModel = employeeModel.editModel();
-		Value<Entity> departmentEditModelValue = empEditModel.value(Employee.DEPARTMENT_FK);
-		ConditionModel<Entity> deptCondition = empTableModel.queryModel()
-						.conditions()
-						.get(Employee.DEPARTMENT_FK);
-
-		// setConditionOnInsert()
+		EntityConnection connection = departmentModel.connection();
 		connection.startTransaction();
 		try {
-			detailModelLink.setConditionOnInsert().set(true);
+			ConditionModel<Entity> deptCondition = employeeModel.tableModel().queryModel()
+							.conditions()
+							.get(Employee.DEPARTMENT_FK);
 
-			deptEditModel.value(Department.ID).set(-10);
-			deptEditModel.value(Department.NAME).set("New dept");
-			Entity inserted = deptEditModel.insert();
+			departmentModel.editModel().value(Department.ID).set(-10);
+			departmentModel.editModel().value(Department.NAME).set("New dept");
+			Entity inserted = departmentModel.editModel().insert();
 
 			assertEquals(deptCondition.operands().in().get(), singleton(inserted));
+		}
+		finally {
+			connection.rollbackTransaction();
+		}
 
-			detailModelLink.setConditionOnInsert().set(false);
+		departmentModel = createDepartmentModelWithoutDetailModel();
+		employeeModel = createEmployeeModel();
+		departmentModel.detailModels().add(ForeignKeyDetailModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
+						.active(true)
+						.clearValueOnEmptySelection(false)
+						.clearConditionOnEmptySelection(false)
+						.refreshOnSelection(false)
+						.setConditionOnInsert(false)
+						.setValueOnInsert(false)
+						.build());
+
+		connection.startTransaction();
+		try {
+			ConditionModel<Entity> deptCondition = employeeModel.tableModel().queryModel()
+							.conditions()
+							.get(Employee.DEPARTMENT_FK);
+
 			deptCondition.clear();
 
-			deptEditModel.value(Department.ID).set(-11);
-			deptEditModel.value(Department.NAME).set("New dept2");
+			departmentModel.editModel().value(Department.ID).set(-11);
+			departmentModel.editModel().value(Department.NAME).set("New dept2");
 
-			deptEditModel.insert();
+			departmentModel.editModel().insert();
 			assertTrue(deptCondition.operands().in().get().isEmpty());
 		}
 		finally {
 			connection.rollbackTransaction();
 		}
+	}
 
-		// setValueOnInsert()
+	@Test
+	public void setValueOnInsert() {
+		Model departmentModel = createDepartmentModelWithoutDetailModel();
+		if (!departmentModel.containsTableModel()) {
+			return;
+		}
+		Model employeeModel = createEmployeeModel();
+		departmentModel.detailModels().add(ForeignKeyDetailModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
+						.active(true)
+						.clearValueOnEmptySelection(false)
+						.clearConditionOnEmptySelection(false)
+						.refreshOnSelection(false)
+						.setConditionOnInsert(false)
+						.setValueOnInsert(true)
+						.build());
+		Value<Entity> departmentEditModelValue = employeeModel.editModel().value(Employee.DEPARTMENT_FK);
+
+		EntityConnection connection = departmentModel.connection();
 		connection.startTransaction();
 		try {
-			detailModelLink.setValueOnInsert().set(true);
-			deptEditModel.value(Department.ID).set(-10);
-			deptEditModel.value(Department.NAME).set("New dept");
-			Entity inserted = deptEditModel.insert();
+			departmentModel.editModel().value(Department.ID).set(-10);
+			departmentModel.editModel().value(Department.NAME).set("New dept");
+			Entity inserted = departmentModel.editModel().insert();
 
 			assertEquals(departmentEditModelValue.get(), inserted);
 
 			// but not when an existing entity is active
-			empTableModel.queryModel().conditionRequired().set(false);
-			empTableModel.items().refresh();
-			empTableModel.selection().index().set(0);// select existing
+			employeeModel.tableModel().queryModel().conditionRequired().set(false);
+			employeeModel.tableModel().items().refresh();
+			employeeModel.tableModel().selection().index().set(0);// select existing
 
 			Entity currentDept = departmentEditModelValue.get();
 
-			deptEditModel.value(Department.ID).set(-12);
-			deptEditModel.value(Department.NAME).set("New dept3");
-			deptEditModel.insert();
+			departmentModel.editModel().value(Department.ID).set(-12);
+			departmentModel.editModel().value(Department.NAME).set("New dept3");
+			departmentModel.editModel().insert();
 
 			assertSame(currentDept, departmentEditModelValue.get());
-
-			detailModelLink.setValueOnInsert().set(false);
-			empTableModel.selection().clear();
-			departmentEditModelValue.clear();
-
-			deptEditModel.value(Department.ID).set(-11);
-			deptEditModel.value(Department.NAME).set("New dept2");
-
-			deptEditModel.insert();
-			assertTrue(departmentEditModelValue.isNull());
-
-
-			detailModelLink.setValueOnInsert().set(true);
-
 		}
 		finally {
 			connection.rollbackTransaction();
 		}
 
-		// clearValueOnEmptySelection()
-		detailModelLink.clearValueOnEmptySelection().set(false);
-		deptTableModel.items().refresh();
-		deptTableModel.selection().index().set(0);
-		Entity selected = deptTableModel.selection().item().get();
-		assertSame(selected, departmentEditModelValue.get());
-		deptTableModel.selection().clear();
-		assertSame(selected, departmentEditModelValue.get());
+		departmentModel = createDepartmentModelWithoutDetailModel();
+		employeeModel = createEmployeeModel();
+		departmentModel.detailModels().add(ForeignKeyDetailModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
+						.active(true)
+						.clearValueOnEmptySelection(false)
+						.clearConditionOnEmptySelection(false)
+						.refreshOnSelection(false)
+						.setConditionOnInsert(false)
+						.setValueOnInsert(false)
+						.build());
+		departmentEditModelValue = employeeModel.editModel().value(Employee.DEPARTMENT_FK);
 
-		detailModelLink.clearValueOnEmptySelection().set(true);
-		deptTableModel.selection().index().set(0);
-		deptTableModel.selection().clear();
+		connection.startTransaction();
+		try {
+			employeeModel.tableModel().selection().clear();
+			departmentEditModelValue.clear();
+
+			departmentModel.editModel().value(Department.ID).set(-11);
+			departmentModel.editModel().value(Department.NAME).set("New dept2");
+
+			departmentModel.editModel().insert();
+			assertTrue(departmentEditModelValue.isNull());
+		}
+		finally {
+			connection.rollbackTransaction();
+		}
+	}
+
+	@Test
+	void clearValueOnEmptySelection() {
+		Model departmentModel = createDepartmentModelWithoutDetailModel();
+		if (!departmentModel.containsTableModel()) {
+			return;
+		}
+		Model employeeModel = createEmployeeModel();
+		departmentModel.detailModels().add(ForeignKeyDetailModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
+						.active(true)
+						.clearValueOnEmptySelection(true)
+						.clearConditionOnEmptySelection(false)
+						.refreshOnSelection(false)
+						.setConditionOnInsert(false)
+						.setValueOnInsert(false)
+						.build());
+		Value<Entity> departmentEditModelValue = employeeModel.editModel().value(Employee.DEPARTMENT_FK);
+
+		departmentModel.tableModel().items().refresh();
+		departmentModel.tableModel().selection().index().set(0);
+		departmentModel.tableModel().selection().clear();
 		assertTrue(departmentEditModelValue.isNull());
 
 		// but not when an existing entity is active
-		deptTableModel.selection().index().set(0);
+		departmentModel.tableModel().selection().index().set(0);
 
-		empTableModel.items().refresh();
-		empTableModel.selection().index().set(0);// select existing
+		employeeModel.tableModel().items().refresh();
+		employeeModel.tableModel().selection().index().set(0);// select existing
 
-		deptTableModel.selection().clear();
+		departmentModel.tableModel().selection().clear();
 		assertFalse(departmentEditModelValue.isNull());
 
-		// clearConditionOnEmptySelection()
-		detailModelLink.clearConditionOnEmptySelection().set(false);
-		deptTableModel.items().refresh();
-		deptTableModel.selection().indexes().set(asList(0, 1));
-		List<Entity> selectedEntities = deptTableModel.selection().items().get();
-		assertEquals(new HashSet<>(selectedEntities), deptCondition.operands().in().get());
-		deptTableModel.selection().clear();
-		assertEquals(new HashSet<>(selectedEntities), deptCondition.operands().in().get());
+		departmentModel = createDepartmentModelWithoutDetailModel();
+		employeeModel = createEmployeeModel();
+		departmentModel.detailModels().add(ForeignKeyDetailModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
+						.active(true)
+						.clearValueOnEmptySelection(false)
+						.clearConditionOnEmptySelection(false)
+						.refreshOnSelection(false)
+						.setConditionOnInsert(false)
+						.setValueOnInsert(false)
+						.build());
+		departmentEditModelValue = employeeModel.editModel().value(Employee.DEPARTMENT_FK);
 
-		detailModelLink.clearConditionOnEmptySelection().set(true);
-		deptTableModel.selection().indexes().set(asList(2, 3));
-		selectedEntities = deptTableModel.selection().items().get();
+		departmentModel.tableModel().items().refresh();
+		departmentModel.tableModel().selection().index().set(0);
+		Entity selected = departmentModel.tableModel().selection().item().get();
+		assertSame(selected, departmentEditModelValue.get());
+		departmentModel.tableModel().selection().clear();
+		assertSame(selected, departmentEditModelValue.get());
+	}
+
+	@Test
+	void clearConditionOnEmptySelection() {
+		Model departmentModel = createDepartmentModelWithoutDetailModel();
+		if (!departmentModel.containsTableModel()) {
+			return;
+		}
+		Model employeeModel = createEmployeeModel();
+		departmentModel.detailModels().add(ForeignKeyDetailModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
+						.active(true)
+						.clearValueOnEmptySelection(false)
+						.clearConditionOnEmptySelection(true)
+						.refreshOnSelection(false)
+						.setConditionOnInsert(false)
+						.setValueOnInsert(false)
+						.build());
+		ConditionModel<Entity> deptCondition = employeeModel.tableModel().queryModel()
+							.conditions()
+							.get(Employee.DEPARTMENT_FK);
+
+		departmentModel.tableModel().items().refresh();
+		departmentModel.tableModel().selection().indexes().set(asList(2, 3));
+		Collection<Entity> selectedEntities = departmentModel.tableModel().selection().items().get();
 		assertEquals(new HashSet<>(selectedEntities), deptCondition.operands().in().get());
-		deptTableModel.selection().clear();
+		departmentModel.tableModel().selection().clear();
 		assertTrue(deptCondition.operands().in().get().isEmpty());
-	}
 
-	@Test
-	public void searchByInsertedEntity() {
-		if (!departmentModel.containsTableModel()) {
-			return;
-		}
-		Model employeeModel = departmentModel.detailModels().get(Employee.TYPE);
-		ForeignKeyDetailModelLink<Model, EditModel, TableModel> link = departmentModel.detailModels().link(employeeModel);
-		link.setConditionOnInsert().set(true);
-		assertTrue(link.setConditionOnInsert().get());
-		EntityEditModel editModel = departmentModel.editModel();
-		editModel.value(Department.ID).set(100);
-		editModel.value(Department.NAME).set("Name");
-		editModel.value(Department.LOCATION).set("Loc");
-		Entity inserted = editModel.insert();
-		Entity inValue = employeeModel.tableModel().queryModel().conditions()
-						.get(Employee.DEPARTMENT_FK)
-						.operands().in().iterator().next();
-		assertEquals(inserted, inValue);
-		editModel.delete();
-	}
-
-	@Test
-	public void clearForeignKeyOnEmptySelection() {
-		if (!departmentModel.containsTableModel()) {
-			return;
-		}
-		Model employeeModel = departmentModel.detailModels().get(Employee.TYPE);
-		EditModel employeeEditModel = employeeModel.editModel();
-
-		ForeignKeyDetailModelLink<Model, EditModel, TableModel> link = departmentModel.detailModels().link(employeeModel);
-		link.clearValueOnEmptySelection().set(false);
-
-		Entity dept = employeeModel.connection().selectSingle(Department.ID.equalTo(10));
+		departmentModel = createDepartmentModelWithoutDetailModel();
+		employeeModel = createEmployeeModel();
+		departmentModel.detailModels().add(ForeignKeyDetailModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
+						.active(true)
+						.clearValueOnEmptySelection(false)
+						.clearConditionOnEmptySelection(false)
+						.refreshOnSelection(false)
+						.setConditionOnInsert(false)
+						.setValueOnInsert(false)
+						.build());
+		deptCondition = employeeModel.tableModel().queryModel()
+							.conditions()
+							.get(Employee.DEPARTMENT_FK);
 
 		departmentModel.tableModel().items().refresh();
-		departmentModel.tableModel().selection().item().set(dept);
-		assertEquals(dept, employeeEditModel.value(Employee.DEPARTMENT_FK).get());
-
+		departmentModel.tableModel().selection().indexes().set(asList(0, 1));
+		selectedEntities = departmentModel.tableModel().selection().items().get();
+		assertEquals(new HashSet<>(selectedEntities), deptCondition.operands().in().get());
 		departmentModel.tableModel().selection().clear();
-		assertEquals(dept, employeeEditModel.value(Employee.DEPARTMENT_FK).get());
-
-		link.clearValueOnEmptySelection().set(true);
-
-		departmentModel.tableModel().selection().item().set(dept);
-		assertEquals(dept, employeeEditModel.value(Employee.DEPARTMENT_FK).get());
-
-		departmentModel.tableModel().selection().clear();
-		assertTrue(employeeEditModel.editor().isNull(Employee.DEPARTMENT_FK).get());
-
-		link.clearValueOnEmptySelection().set(false);
-
-		departmentModel.tableModel().selection().item().set(dept);
-		assertEquals(dept, employeeEditModel.value(Employee.DEPARTMENT_FK).get());
-	}
-
-	@Test
-	public void refreshOnSelection() {
-		if (!departmentModel.containsTableModel()) {
-			return;
-		}
-		Model employeeModel = departmentModel.detailModels().get(Employee.TYPE);
-		TableModel employeeTableModel = employeeModel.tableModel();
-
-		ForeignKeyDetailModelLink<Model, EditModel, TableModel> link = departmentModel.detailModels().link(employeeModel);
-		link.refreshOnSelection().set(false);
-
-		Entity dept = employeeModel.connection().selectSingle(Department.ID.equalTo(10));
-
-		departmentModel.tableModel().items().refresh();
-		departmentModel.tableModel().selection().item().set(dept);
-		assertEquals(0, employeeTableModel.items().visible().count());
-
-		link.refreshOnSelection().set(true);
-		departmentModel.tableModel().selection().item().set(dept);
-		assertNotEquals(0, employeeTableModel.items().visible().count());
+		assertEquals(new HashSet<>(selectedEntities), deptCondition.operands().in().get());
 	}
 
 	@Test
 	public void insertDifferentTypes() {
+		Model departmentModel = createDepartmentModel();
 		if (!departmentModel.containsTableModel()) {
 			return;
 		}
@@ -423,7 +455,7 @@ public abstract class AbstractEntityModelTest<Model extends AbstractEntityModel<
 						.with(Department.LOCATION, "Loc")
 						.build();
 
-		Entity emp = connectionProvider.connection().selectSingle(Employee.ID.equalTo(8)).clearPrimaryKey();
+		Entity emp = connectionProvider().connection().selectSingle(Employee.ID.equalTo(8)).clearPrimaryKey();
 		emp.put(Employee.NAME, "NewName");
 
 		Model model = createDepartmentModelWithoutDetailModel();
@@ -437,7 +469,7 @@ public abstract class AbstractEntityModelTest<Model extends AbstractEntityModel<
 	}
 
 	protected final EntityConnectionProvider connectionProvider() {
-		return connectionProvider;
+		return CONNECTION_PROVIDER;
 	}
 
 	/**

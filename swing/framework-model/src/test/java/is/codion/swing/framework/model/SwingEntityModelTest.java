@@ -18,10 +18,10 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.common.value.AbstractValue;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.model.ForeignKeyDetailModelLink;
 import is.codion.framework.model.test.AbstractEntityModelTest;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
@@ -41,7 +41,9 @@ public final class SwingEntityModelTest
 		SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connectionProvider());
 		SwingEntityModel employeeModel = new SwingEntityModel(Employee.TYPE, departmentModel.connectionProvider());
 		employeeModel.editModel().refreshComboBoxModels();
-		departmentModel.detailModels().add(employeeModel, Employee.DEPARTMENT_FK).active().set(true);
+		departmentModel.detailModels().add(ForeignKeyDetailModelLink.builder(employeeModel, Employee.DEPARTMENT_FK)
+						.active(true)
+						.build());
 		employeeModel.tableModel().queryModel().conditionRequired().set(false);
 
 		return departmentModel;
@@ -62,12 +64,13 @@ public final class SwingEntityModelTest
 		//here we're basically testing for the entity in the edit model being modified after
 		//being set when selected in the table model, this usually happens when combo box models
 		//are being filtered on attribute value change, see EmployeeEditModel.bindEvents()
+		SwingEntityModel departmentModel = createDepartmentModel();
 		SwingEntityModel employeeModel = departmentModel.detailModels().get(Employee.TYPE);
 		SwingEntityEditModel employeeEditModel = employeeModel.editModel();
 		SwingEntityTableModel employeeTableModel = employeeModel.tableModel();
 
 		EntityComboBoxModel comboBoxModel = employeeEditModel.comboBoxModel(Employee.MGR_FK);
-		new EntityComboBoxModelValue(comboBoxModel).link(employeeEditModel.value(Employee.MGR_FK));
+		comboBoxModel.selection().item().link(employeeEditModel.value(Employee.MGR_FK));
 		employeeTableModel.items().refresh();
 		for (Entity employee : employeeTableModel.items().get()) {
 			employeeTableModel.selection().item().set(employee);
@@ -77,6 +80,7 @@ public final class SwingEntityModelTest
 
 	@Test
 	public void testDetailModels() {
+		SwingEntityModel departmentModel = createDepartmentModel();
 		assertTrue(departmentModel.detailModels().contains(Employee.TYPE));
 		assertFalse(departmentModel.detailModels().contains(Department.TYPE));
 		assertFalse(departmentModel.detailModels().contains(EmpModel.class));
@@ -116,12 +120,13 @@ public final class SwingEntityModelTest
 
 	@Test
 	void getDetailModelNonExisting() {
+		SwingEntityModel departmentModel = createDepartmentModel();
 		assertThrows(IllegalArgumentException.class, () -> departmentModel.detailModels().get(EmpModel.class));
 	}
 
 	@Test
 	public void test() {
-		super.test();
+		SwingEntityModel departmentModel = createDepartmentModel();
 		EntityConnection connection = departmentModel.connection();
 		connection.startTransaction();
 		try {
@@ -170,26 +175,6 @@ public final class SwingEntityModelTest
 	public static class EmpModel extends SwingEntityModel {
 		public EmpModel(EntityConnectionProvider connectionProvider) {
 			super(Employee.TYPE, connectionProvider);
-		}
-	}
-
-	private static final class EntityComboBoxModelValue extends AbstractValue<Entity> {
-
-		private final EntityComboBoxModel comboBoxModel;
-
-		public EntityComboBoxModelValue(EntityComboBoxModel comboBoxModel) {
-			this.comboBoxModel = comboBoxModel;
-			comboBoxModel.selection().item().addListener(this::notifyListeners);
-		}
-
-		@Override
-		protected void setValue(Entity value) {
-			comboBoxModel.selection().item().set(value);
-		}
-
-		@Override
-		protected Entity getValue() {
-			return comboBoxModel.selection().item().get();
 		}
 	}
 }

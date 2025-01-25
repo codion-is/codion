@@ -19,47 +19,123 @@
 package is.codion.framework.model;
 
 import is.codion.common.state.State;
+import is.codion.framework.domain.entity.Entity;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
-/**
- * A default {@link DetailModelLink} implementation which does nothing.
- * Override one or more methods that define the detail model behaviour.
- * @param <M> the {@link EntityModel} type
- * @param <E> the {@link EntityEditModel} type
- * @param <T> the {@link EntityTableModel} type
- * @see #onSelection(Collection)
- * @see #onInsert(Collection)
- * @see #onUpdate(Map)
- * @see #onDelete(Collection)
- */
-public class DefaultDetailModelLink<M extends EntityModel<M, E, T>, E extends EntityEditModel,
+final class DefaultDetailModelLink<M extends EntityModel<M, E, T>, E extends EntityEditModel,
 				T extends EntityTableModel<E>> implements DetailModelLink<M, E, T> {
 
 	private final M detailModel;
-	private final State active = State.state();
+	private final State active;
 
-	/**
-	 * Instantiates a {@link DefaultDetailModelLink} for the given detail model
-	 * @param detailModel the detail model to link
-	 */
-	public DefaultDetailModelLink(M detailModel) {
-		this.detailModel = requireNonNull(detailModel);
+	private final Consumer<Collection<Entity>> onSelection;
+	private final Consumer<Collection<Entity>> onInsert;
+	private final Consumer<Map<Entity.Key, Entity>> onUpdate;
+	private final Consumer<Collection<Entity>> onDelete;
+
+	private DefaultDetailModelLink(DefaultBuilder<M, E, T> builder) {
+		this.detailModel = builder.detailModel;
+		this.active = State.state(builder.active);
+		this.onSelection = builder.onSelection;
+		this.onInsert = builder.onInsert;
+		this.onUpdate = builder.onUpdate;
+		this.onDelete = builder.onDelete;
 		if (detailModel.containsTableModel()) {
 			detailModel.tableModel().queryModel().conditionRequired().set(true);
 		}
 	}
 
 	@Override
-	public final M detailModel() {
+	public M detailModel() {
 		return detailModel;
 	}
 
 	@Override
-	public final State active() {
+	public State active() {
 		return active;
+	}
+
+	@Override
+	public void onSelection(Collection<Entity> selectedEntities) {
+		onSelection.accept(selectedEntities);
+	}
+
+	@Override
+	public void onInsert(Collection<Entity> insertedEntities) {
+		onInsert.accept(insertedEntities);
+	}
+
+	@Override
+	public void onUpdate(Map<Entity.Key, Entity> updatedEntities) {
+		onUpdate.accept(updatedEntities);
+	}
+
+	@Override
+	public void onDelete(Collection<Entity> deletedEntities) {
+		onDelete.accept(deletedEntities);
+	}
+
+	static class DefaultBuilder<M extends EntityModel<M, E, T>, E extends EntityEditModel,
+				T extends EntityTableModel<E>> implements DetailModelLink.Builder<M, E, T> {
+
+		private static final Consumer<?> EMPTY_CONSUMER = new EmptyConsumer<>();
+
+		private final M detailModel;
+
+		private Consumer<Collection<Entity>> onSelection = (Consumer<Collection<Entity>>) EMPTY_CONSUMER;
+		private Consumer<Collection<Entity>> onInsert = (Consumer<Collection<Entity>>) EMPTY_CONSUMER;
+		private Consumer<Map<Entity.Key, Entity>> onUpdate = (Consumer<Map<Entity.Key, Entity>>) EMPTY_CONSUMER;
+		private Consumer<Collection<Entity>> onDelete = (Consumer<Collection<Entity>>) EMPTY_CONSUMER;
+		private boolean active = false;
+
+		DefaultBuilder(M detailModel) {
+			this.detailModel = requireNonNull(detailModel);
+		}
+
+		@Override
+		public Builder<M, E, T> onSelection(Consumer<Collection<Entity>> onSelection) {
+			this.onSelection = requireNonNull(onSelection);
+			return this;
+		}
+
+		@Override
+		public Builder<M, E, T> onInsert(Consumer<Collection<Entity>> onInsert) {
+			this.onInsert = requireNonNull(onInsert);
+			return this;
+		}
+
+		@Override
+		public Builder<M, E, T> onUpdate(Consumer<Map<Entity.Key, Entity>> onUpdate) {
+			this.onUpdate = requireNonNull(onUpdate);
+			return this;
+		}
+
+		@Override
+		public Builder<M, E, T> onDelete(Consumer<Collection<Entity>> onDelete) {
+			this.onDelete = requireNonNull(onDelete);
+			return this;
+		}
+
+		@Override
+		public Builder<M, E, T> active(boolean active) {
+			this.active = active;
+			return this;
+		}
+
+		@Override
+		public DetailModelLink<M, E, T> build() {
+			return new DefaultDetailModelLink<>(this);
+		}
+	}
+
+	private static final class EmptyConsumer<T> implements Consumer<T> {
+
+		@Override
+		public void accept(T result) {}
 	}
 }
