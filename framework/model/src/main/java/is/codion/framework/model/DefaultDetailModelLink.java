@@ -36,7 +36,7 @@ import static java.util.Objects.requireNonNull;
  * @see #onUpdate(Map)
  * @see #onDelete(Collection)
  */
-public class DefaultDetailModelLink<M extends DefaultEntityModel<M, E, T>, E extends AbstractEntityEditModel,
+public class DefaultDetailModelLink<M extends EntityModel<M, E, T>, E extends EntityEditModel,
 				T extends EntityTableModel<E>> implements DetailModelLink<M, E, T> {
 
 	private final M detailModel;

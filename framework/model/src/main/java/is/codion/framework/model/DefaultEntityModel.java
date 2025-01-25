@@ -39,12 +39,12 @@ import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A default EntityModel implementation.
- * @param <M> the type of {@link DefaultEntityModel} used for detail models
- * @param <E> the type of {@link AbstractEntityEditModel} used by this {@link EntityModel}
+ * A default {@link EntityModel} implementation.
+ * @param <M> the type of {@link EntityModel} used for detail models
+ * @param <E> the type of {@link EntityEditModel} used by this {@link EntityModel}
  * @param <T> the type of {@link EntityTableModel} used by this {@link EntityModel}
  */
-public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends AbstractEntityEditModel,
+public class DefaultEntityModel<M extends EntityModel<M, E, T>, E extends EntityEditModel,
 				T extends EntityTableModel<E>> implements EntityModel<M, E, T> {
 
 	private final E editModel;
@@ -193,7 +193,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 		}
 	}
 
-	private final class DefaultDetailModels<M extends DefaultEntityModel<M, E, T>, E extends AbstractEntityEditModel,
+	private final class DefaultDetailModels<M extends EntityModel<M, E, T>, E extends EntityEditModel,
 					T extends EntityTableModel<E>> implements DetailModels<M, E, T> {
 
 		private final Map<M, DetailModelLink<M, E, T>> models = new HashMap<>();
