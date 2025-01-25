@@ -20,6 +20,9 @@ package is.codion.demos.petstore.testing;
 
 import is.codion.common.user.User;
 import is.codion.demos.petstore.domain.Petstore;
+import is.codion.demos.petstore.domain.Petstore.Category;
+import is.codion.demos.petstore.domain.Petstore.Item;
+import is.codion.demos.petstore.domain.Petstore.Product;
 import is.codion.demos.petstore.model.PetstoreAppModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.model.EntityTableModel;
@@ -51,11 +54,11 @@ public final class PetstoreLoadTest {
 											.clientType(getClass().getSimpleName())
 											.user(user)
 											.build());
-			SwingEntityModel categoryModel = applicationModel.entityModels().get().iterator().next();
+			SwingEntityModel categoryModel = applicationModel.entityModels().get(Category.TYPE);
 			categoryModel.detailModels().active(categoryModel.detailModels().get().iterator().next()).set(true);
-			SwingEntityModel productModel = categoryModel.detailModels().get().iterator().next();
+			SwingEntityModel productModel = categoryModel.detailModels().get(Product.TYPE);
 			productModel.detailModels().active(productModel.detailModels().get().iterator().next()).set(true);
-			SwingEntityModel itemModel = productModel.detailModels().get().iterator().next();
+			SwingEntityModel itemModel = productModel.detailModels().get(Item.TYPE);
 			itemModel.detailModels().active(itemModel.detailModels().get().iterator().next()).set(true);
 
 			return applicationModel;
@@ -69,7 +72,7 @@ public final class PetstoreLoadTest {
 
 		@Override
 		public void perform(PetstoreAppModel application) {
-			SwingEntityModel categoryModel = application.entityModels().get().iterator().next();
+			SwingEntityModel categoryModel = application.entityModels().get(Category.TYPE);
 			categoryModel.tableModel().selection().clear();
 			categoryModel.tableModel().items().refresh();
 			selectRandomRow(categoryModel.tableModel());

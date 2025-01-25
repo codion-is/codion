@@ -32,11 +32,10 @@ import java.util.Optional;
 
 /**
  * A central application model class.
- * @param <M> the type of {@link EntityModel} this application model is based on
- * @param <E> the type of {@link EntityEditModel} used by this {@link EntityModel}
- * @param <T> the type of {@link EntityTableModel} used by this {@link EntityModel}
+ * @param <E> the type of {@link EntityEditModel}
+ * @param <T> the type of {@link EntityTableModel}
  */
-public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
+public interface EntityApplicationModel<E extends EntityEditModel, T extends EntityTableModel<E>> {
 
 	/**
 	 * Specifies a string to prepend to the username field in the login dialog
@@ -96,7 +95,7 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
 	/**
 	 * @return the {@link EntityModels}
 	 */
-	EntityModels<M, E, T> entityModels();
+	EntityModels<E, T> entityModels();
 
 	/**
 	 * Refreshes all data models contained in this application model
@@ -105,31 +104,30 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
 
 	/**
 	 * Manages the {@link EntityModel}s for a {@link EntityApplicationModel}
-	 * @param <M> the type of {@link EntityModel} this application model is based on
-	 * @param <E> the type of {@link EntityEditModel} used by this {@link EntityModel}
-	 * @param <T> the type of {@link EntityTableModel} used by this {@link EntityModel}
+	 * @param <E> the type of {@link EntityEditModel}
+	 * @param <T> the type of {@link EntityTableModel}
 	 */
-	interface EntityModels<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
+	interface EntityModels<E extends EntityEditModel, T extends EntityTableModel<E>> {
 
 		/**
 		 * Adds the given entity models to this model.
 		 * @param entityModels the entity models to add
 		 * @throws IllegalArgumentException in case any of the models has already been added
 		 */
-		void add(M... entityModels);
+		void add(EntityModel<E, T>... entityModels);
 
 		/**
 		 * Adds the given entity model to this model
 		 * @param entityModel the detail model
 		 * @throws IllegalArgumentException in case the model has already been added
 		 */
-		void add(M entityModel);
+		void add(EntityModel<E, T> entityModel);
 
 		/**
 		 * @param modelClass the application model class
 		 * @return true if this model contains a EntityModel instance of the given class
 		 */
-		boolean contains(Class<? extends M> modelClass);
+		boolean contains(Class<? extends EntityModel<E, T>> modelClass);
 
 		/**
 		 * @param entityType the entityType
@@ -141,26 +139,26 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
 		 * @param entityModel the entity model
 		 * @return true if this model contains the given EntityModel
 		 */
-		boolean contains(M entityModel);
+		boolean contains(EntityModel<E, T> entityModel);
 
 		/**
 		 * @return an unmodifiable List containing the EntityModel instances contained
 		 * in this EntityApplicationModel
 		 */
-		List<M> get();
+		List<EntityModel<E, T>> get();
 
 		/**
 		 * @param <C> the model type
 		 * @param modelClass the model class
 		 * @return the EntityModel of the given type
 		 */
-		<C extends M> C get(Class<C> modelClass);
+		<C extends EntityModel<E, T>> C get(Class<C> modelClass);
 
 		/**
 		 * @param <C> the model type
 		 * @param entityType the entityType
 		 * @return the EntityModel based on the given entityType
 		 */
-		<C extends M> C get(EntityType entityType);
+		<C extends EntityModel<E, T>> C get(EntityType entityType);
 	}
 }

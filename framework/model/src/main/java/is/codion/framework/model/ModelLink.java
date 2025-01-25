@@ -35,12 +35,11 @@ import java.util.function.Consumer;
 public interface ModelLink {
 
 	/**
-	 * @param <M> the {@link EntityModel} type
 	 * @param <E> the {@link EntityEditModel} type
 	 * @param <T> the {@link EntityTableModel} type
 	 * @return the linked model
 	 */
-	<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> M model();
+	<E extends EntityEditModel, T extends EntityTableModel<E>> EntityModel<E, T> model();
 
 	/**
 	 * Controls the active status of this link. Active model links update and filter
@@ -80,7 +79,7 @@ public interface ModelLink {
 	 * @param model the model to link
 	 * @return a {@link Builder} instance
 	 */
-	static Builder builder(EntityModel<?, ?, ?> model) {
+	static Builder builder(EntityModel<?, ?> model) {
 		return new DefaultModelLink.DefaultBuilder(model);
 	}
 

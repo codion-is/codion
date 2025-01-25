@@ -31,11 +31,10 @@ import java.util.Collection;
 
 /**
  * Specifies a class responsible for, among other things, coordinating a {@link EntityEditModel} and an {@link EntityTableModel}.
- * @param <M> the type of {@link EntityModel} used for detail models
  * @param <E> the type of {@link EntityEditModel} used by this {@link EntityModel}
  * @param <T> the type of {@link EntityTableModel} used by this {@link EntityModel}
  */
-public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
+public interface EntityModel<E extends EntityEditModel, T extends EntityTableModel<E>> {
 
 	/**
 	 * @return the type of the entity this entity model is based on
@@ -85,26 +84,25 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 	/**
 	 * @return the detail models
 	 */
-	DetailModels<M, E, T> detailModels();
+	DetailModels<E, T> detailModels();
 
 	/**
 	 * Manages the detail models for a {@link EntityModel}
-	 * @param <M> the type of {@link EntityModel} used for detail models
-	 * @param <E> the type of {@link EntityEditModel} used by this {@link EntityModel}
-	 * @param <T> the type of {@link EntityTableModel} used by this {@link EntityModel}
+	 * @param <E> the type of {@link EntityEditModel}
+	 * @param <T> the type of {@link EntityTableModel}
 	 */
-	interface DetailModels<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
+	interface DetailModels<E extends EntityEditModel, T extends EntityTableModel<E>> {
 
 		/**
 		 * @return an unmodifiable collection containing the detail models this model contains
 		 */
-		Collection<M> get();
+		Collection<EntityModel<E, T>> get();
 
 		/**
 		 * @return detail models with an active link to this model, that is, those that should respond to master model events
 		 * @see ModelLink#active()
 		 */
-		ObservableValueSet<M> active();
+		ObservableValueSet<EntityModel<E, T>> active();
 
 		/**
 		 * <p>Adds the given detail models to this model, based on the first fitting foreign key.
@@ -113,7 +111,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 		 * @param detailModels the detail models to add
 		 * @throws IllegalArgumentException in case no foreign key exists between the entities involved
 		 */
-		void add(M... detailModels);
+		void add(EntityModel<E, T>... detailModels);
 
 		/**
 		 * <p>Adds the given detail model to this model, based on the first fitting foreign key.
@@ -122,14 +120,14 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 		 * @param detailModel the detail model
 		 * @throws IllegalArgumentException in case no foreign key exists between the entities involved
 		 */
-		void add(M detailModel);
+		void add(EntityModel<E, T> detailModel);
 
 		/**
 		 * Adds the given detail model to this model, based on the given foreign key.
 		 * @param detailModel the detail model
 		 * @param foreignKey the foreign key to base the detail model link on
 		 */
-		void add(M detailModel, ForeignKey foreignKey);
+		void add(EntityModel<E, T> detailModel, ForeignKey foreignKey);
 
 		/**
 		 * Adds the given detail model to this model.
@@ -142,7 +140,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 		 * @param modelClass the detail model class
 		 * @return true if this model contains a detail model of the given class
 		 */
-		boolean contains(Class<? extends M> modelClass);
+		boolean contains(Class<? extends EntityModel<E, T>> modelClass);
 
 		/**
 		 * @param entityType the entityType
@@ -154,7 +152,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 		 * @param detailModel the detail model
 		 * @return true if this model contains the given detail model
 		 */
-		boolean contains(M detailModel);
+		boolean contains(EntityModel<E, T> detailModel);
 
 		/**
 		 * Returns the first detail model of the given type
@@ -163,7 +161,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 		 * @return the detail model of type {@code entityModelClass}
 		 * @throws IllegalArgumentException in case this model does not contain a detail model of the given type
 		 */
-		<C extends M> C get(Class<C> modelClass);
+		<C extends EntityModel<E, T>> C get(Class<C> modelClass);
 
 		/**
 		 * Returns a detail model of the given type
@@ -172,13 +170,13 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 		 * @return the detail model of type {@code entityModelClass}
 		 * @throws IllegalArgumentException in case this model does not contain a detail model for the entityType
 		 */
-		<C extends M> C get(EntityType entityType);
+		<C extends EntityModel<E, T>> C get(EntityType entityType);
 
 		/**
 		 * @param detailModel the detail model
 		 * @return the active State for the given detail model
 		 * @throws IllegalArgumentException in case this model does not contain the given detail model
 		 */
-		State active(M detailModel);
+		State active(EntityModel<E, T> detailModel);
 	}
 }

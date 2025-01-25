@@ -22,7 +22,6 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.model.AbstractEntityEditModel;
-import is.codion.framework.model.AbstractEntityModel;
 import is.codion.framework.model.DefaultEntityApplicationModel;
 import is.codion.framework.model.EntityApplicationModel;
 import is.codion.framework.model.EntityEditModel;
@@ -37,12 +36,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * A base class for testing {@link EntityApplicationModel} subclasses.
- * @param <Model> the {@link EntityModel} type
  * @param <EditModel> the {@link EntityEditModel} type
  * @param <TableModel> the {@link EntityTableModel} type
  */
-public abstract class AbstractEntityApplicationModelTest<Model extends AbstractEntityModel<Model, EditModel, TableModel>,
-				EditModel extends AbstractEntityEditModel, TableModel extends EntityTableModel<EditModel>> {
+public abstract class AbstractEntityApplicationModelTest<EditModel extends AbstractEntityEditModel, TableModel extends EntityTableModel<EditModel>> {
 
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -60,8 +57,8 @@ public abstract class AbstractEntityApplicationModelTest<Model extends AbstractE
 
 	@Test
 	public void test() {
-		EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
-		Model deptModel = createDepartmentModel();
+		EntityApplicationModel<EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
+		EntityModel<EditModel, TableModel> deptModel = createDepartmentModel();
 		model.entityModels().add(deptModel);
 		assertThrows(IllegalArgumentException.class, () -> model.entityModels().add(deptModel));
 		assertNotNull(model.entityModels().get(Department.TYPE));
@@ -84,39 +81,39 @@ public abstract class AbstractEntityApplicationModelTest<Model extends AbstractE
 
 	@Test
 	public void entityModelByEntityTypeNotFound() {
-		EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
+		EntityApplicationModel<EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
 		assertThrows(IllegalArgumentException.class, () -> model.entityModels().get(Department.TYPE));
 	}
 
 	@Test
 	public void entityModelByEntityType() {
-		EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
-		Model departmentModel = createDepartmentModel();
+		EntityApplicationModel<EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
+		EntityModel<EditModel, TableModel> departmentModel = createDepartmentModel();
 		model.entityModels().add(departmentModel);
 		assertEquals(departmentModel, model.entityModels().get(Department.TYPE));
 	}
 
 	@Test
 	public void entityModelByClass() {
-		EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
-		Model departmentModel = createDepartmentModel();
-		assertThrows(IllegalArgumentException.class, () -> model.entityModels().get((Class<? extends Model>) departmentModel.getClass()));
+		EntityApplicationModel<EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
+		EntityModel<EditModel, TableModel> departmentModel = createDepartmentModel();
+		assertThrows(IllegalArgumentException.class, () -> model.entityModels().get((Class<? extends EntityModel<EditModel, TableModel>>) departmentModel.getClass()));
 		model.entityModels().add(departmentModel);
-		assertEquals(departmentModel, model.entityModels().get((Class<? extends Model>) departmentModel.getClass()));
+		assertEquals(departmentModel, model.entityModels().get((Class<? extends EntityModel<EditModel, TableModel>>) departmentModel.getClass()));
 	}
 
 	@Test
 	public void containsEntityModel() {
-		EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
-		Model departmentModel = createDepartmentModel();
+		EntityApplicationModel<EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
+		EntityModel<EditModel, TableModel> departmentModel = createDepartmentModel();
 		model.entityModels().add(departmentModel);
 
 		assertTrue(model.entityModels().contains(Department.TYPE));
-		assertTrue(model.entityModels().contains((Class<? extends Model>) departmentModel.getClass()));
+		assertTrue(model.entityModels().contains((Class<? extends EntityModel<EditModel, TableModel>>) departmentModel.getClass()));
 		assertTrue(model.entityModels().contains(departmentModel));
 
 		assertFalse(model.entityModels().contains(Employee.TYPE));
-		Model detailModel = departmentModel.detailModels().get(Employee.TYPE);
+		EntityModel<EditModel, TableModel> detailModel = departmentModel.detailModels().get(Employee.TYPE);
 		assertFalse(model.entityModels().contains(detailModel));
 	}
 
@@ -128,5 +125,5 @@ public abstract class AbstractEntityApplicationModelTest<Model extends AbstractE
 	 * @return a EntityModel based on the department entity
 	 * @see Department#TYPE
 	 */
-	protected abstract Model createDepartmentModel();
+	protected abstract EntityModel<EditModel, TableModel> createDepartmentModel();
 }

@@ -29,7 +29,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultModelLink implements ModelLink {
 
-	private final EntityModel<?, ?, ?> model;
+	private final EntityModel<?, ?> model;
 	private final State active;
 
 	private final Consumer<Collection<Entity>> onSelection;
@@ -50,8 +50,8 @@ final class DefaultModelLink implements ModelLink {
 	}
 
 	@Override
-	public <M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> M model() {
-		return (M) model;
+	public <E extends EntityEditModel, T extends EntityTableModel<E>> EntityModel<E, T> model() {
+		return (EntityModel<E, T>) model;
 	}
 
 	@Override
@@ -83,7 +83,7 @@ final class DefaultModelLink implements ModelLink {
 
 		private static final Consumer<?> EMPTY_CONSUMER = new EmptyConsumer<>();
 
-		private final EntityModel<?, ?, ?> model;
+		private final EntityModel<?, ?> model;
 
 		private Consumer<Collection<Entity>> onSelection = (Consumer<Collection<Entity>>) EMPTY_CONSUMER;
 		private Consumer<Collection<Entity>> onInsert = (Consumer<Collection<Entity>>) EMPTY_CONSUMER;
@@ -91,7 +91,7 @@ final class DefaultModelLink implements ModelLink {
 		private Consumer<Collection<Entity>> onDelete = (Consumer<Collection<Entity>>) EMPTY_CONSUMER;
 		private boolean active = false;
 
-		DefaultBuilder(EntityModel<?, ?, ?> model) {
+		DefaultBuilder(EntityModel<?, ?> model) {
 			this.model = requireNonNull(model);
 		}
 
