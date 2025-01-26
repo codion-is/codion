@@ -323,6 +323,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 			this.type = sqlType(columnClass);
 			this.converter = (Converter<T, Object>) requireNonNull(converter);
 			this.getter = getter(this.type, (Column<Object>) super.attribute());
+			this.setter = new DefaultSetter(this.type);
 			return self();
 		}
 
@@ -332,6 +333,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 			this.type = sqlType(columnClass);
 			this.converter = (Converter<T, Object>) requireNonNull(converter);
 			this.getter = (Getter<Object>) requireNonNull(getter);
+			this.setter = new DefaultSetter(this.type);
 			return self();
 		}
 
