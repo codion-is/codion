@@ -19,7 +19,7 @@
 package is.codion.framework.domain.entity.attribute;
 
 import is.codion.framework.domain.entity.attribute.Column.Converter;
-import is.codion.framework.domain.entity.attribute.Column.Fetcher;
+import is.codion.framework.domain.entity.attribute.Column.Getter;
 import is.codion.framework.domain.entity.attribute.Column.Setter;
 
 import java.sql.PreparedStatement;
@@ -155,10 +155,10 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
 		 * @param <C> the column type
 		 * @param columnClass the underlying column type class
 		 * @param converter the converter to use when converting to and from column values
-		 * @param fetcher the fetcher to use to retrieve the value from a {@link ResultSet}
+		 * @param getter the getter to use to retrieve the value from a {@link ResultSet}
 		 * @return this instance
 		 */
-		<C> B columnClass(Class<C> columnClass, Converter<T, C> converter, Fetcher<C> fetcher);
+		<C> B columnClass(Class<C> columnClass, Converter<T, C> converter, Getter<C> getter);
 
 		/**
 		 * Sets the actual column type, and the required {@link Converter}.
@@ -175,11 +175,11 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
 		 * @param <C> the column type
 		 * @param columnClass the underlying column type class
 		 * @param converter the converter to use when converting to and from column values
-		 * @param fetcher the fetcher to use to retrieve the value from a {@link ResultSet}
+		 * @param getter the getter to use to retrieve the value from a {@link ResultSet}
 		 * @param setter the setter to use when setting parameters in a {@link PreparedStatement}
 		 * @return this instance
 		 */
-		<C> B columnClass(Class<C> columnClass, Converter<T, C> converter, Fetcher<C> fetcher, Setter<C> setter);
+		<C> B columnClass(Class<C> columnClass, Converter<T, C> converter, Getter<C> getter, Setter<C> setter);
 
 		/**
 		 * Sets the actual string used as column name when inserting and updating.

@@ -194,10 +194,10 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
 	}
 
 	/**
-	 * Fetches a single value from a {@link ResultSet}.
-	 * @param <C> the type of the column value being fetched
+	 * Gets a single value from a {@link ResultSet}.
+	 * @param <C> the column value type
 	 */
-	interface Fetcher<C> {
+	interface Getter<C> {
 
 		/**
 		 * Fetches a single value from a ResultSet

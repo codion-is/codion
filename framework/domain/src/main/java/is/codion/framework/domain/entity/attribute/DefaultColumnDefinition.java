@@ -19,7 +19,7 @@
 package is.codion.framework.domain.entity.attribute;
 
 import is.codion.framework.domain.entity.attribute.Column.Converter;
-import is.codion.framework.domain.entity.attribute.Column.Fetcher;
+import is.codion.framework.domain.entity.attribute.Column.Getter;
 import is.codion.framework.domain.entity.attribute.Column.Setter;
 
 import java.io.Serial;
@@ -49,7 +49,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 
 	private static final Converter<Object, Object> DEFAULT_CONVERTER = new DefaultConverter();
 	private static final Map<Class<?>, Integer> TYPE_MAP = createTypeMap();
-	private static final Map<Integer, Fetcher<?>> FETCHERS = createFetchers();
+	private static final Map<Integer, Getter<?>> GETTERS = createGetters();
 
 	private final int type;
 	private final int primaryKeyIndex;
@@ -64,7 +64,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 
 	private final transient String name;
 	private final transient String expression;
-	private final transient Fetcher<Object> fetcher;
+	private final transient Getter<Object> getter;
 	private final transient Setter<Object> setter;
 	private final transient Converter<T, Object> converter;
 
@@ -78,7 +78,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		this.searchable = builder.searchable;
 		this.name = builder.name;
 		this.expression = builder.expression == null ? builder.name : builder.expression;
-		this.fetcher = builder.fetcher;
+		this.getter = builder.getter;
 		this.setter = builder.setter;
 		this.converter = builder.converter;
 		this.groupBy = builder.groupBy;
@@ -169,7 +169,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 
 	@Override
 	public final T get(ResultSet resultSet, int index) throws SQLException {
-		Object columnValue = fetcher.get(resultSet, index);
+		Object columnValue = getter.get(resultSet, index);
 		if (columnValue != null || converter.handlesNull()) {
 			return converter.fromColumnValue(columnValue);
 		}
@@ -245,24 +245,24 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		return typeMap;
 	}
 
-	private static Map<Integer, Fetcher<?>> createFetchers() {
-		Map<Integer, Fetcher<?>> fetchers = new HashMap<>();
-		fetchers.put(Types.SMALLINT, new ShortFetcher());
-		fetchers.put(Types.INTEGER, new IntegerFetcher());
-		fetchers.put(Types.BIGINT, new LongFetcher());
-		fetchers.put(Types.DOUBLE, new DoubleFetcher());
-		fetchers.put(Types.DECIMAL, new BigDecimalFetcher());
-		fetchers.put(Types.DATE, new LocalDateFetcher());
-		fetchers.put(Types.TIMESTAMP, new LocalDateTimeFetcher());
-		fetchers.put(Types.TIME, new LocalTimeFetcher());
-		fetchers.put(Types.TIMESTAMP_WITH_TIMEZONE, new OffsetDateTimeFetcher());
-		fetchers.put(Types.TIME_WITH_TIMEZONE, new OffsetTimeFetcher());
-		fetchers.put(Types.VARCHAR, new StringFetcher());
-		fetchers.put(Types.BOOLEAN, new BooleanFetcher());
-		fetchers.put(Types.CHAR, new CharacterFetcher());
-		fetchers.put(Types.BLOB, new ByteArrayFetcher());
+	private static Map<Integer, Getter<?>> createGetters() {
+		Map<Integer, Getter<?>> getters = new HashMap<>();
+		getters.put(Types.SMALLINT, new ShortGetter());
+		getters.put(Types.INTEGER, new IntegerGetter());
+		getters.put(Types.BIGINT, new LongGetter());
+		getters.put(Types.DOUBLE, new DoubleGetter());
+		getters.put(Types.DECIMAL, new BigDecimalGetter());
+		getters.put(Types.DATE, new LocalDateGetter());
+		getters.put(Types.TIMESTAMP, new LocalDateTimeGetter());
+		getters.put(Types.TIME, new LocalTimeGetter());
+		getters.put(Types.TIMESTAMP_WITH_TIMEZONE, new OffsetDateTimeGetter());
+		getters.put(Types.TIME_WITH_TIMEZONE, new OffsetTimeGetter());
+		getters.put(Types.VARCHAR, new StringGetter());
+		getters.put(Types.BOOLEAN, new BooleanGetter());
+		getters.put(Types.CHAR, new CharacterGetter());
+		getters.put(Types.BLOB, new ByteArrayGetter());
 
-		return fetchers;
+		return getters;
 	}
 
 	static class DefaultColumnDefinitionBuilder<T, B extends ColumnDefinition.Builder<T, B>>
@@ -277,7 +277,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		private boolean searchable;
 		private String name;
 		private String expression;
-		private Fetcher<Object> fetcher;
+		private Getter<Object> getter;
 		private Setter<Object> setter;
 		private Converter<T, Object> converter;
 		private boolean groupBy;
@@ -299,7 +299,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 			this.updatable = primaryKeyIndex < 0;
 			this.searchable = false;
 			this.name = column.name();
-			this.fetcher = (Fetcher<Object>) fetcher(this.type, column);
+			this.getter = (Getter<Object>) getter(this.type, column);
 			this.setter = new DefaultSetter(this.type);
 			this.converter = (Converter<T, Object>) DEFAULT_CONVERTER;
 			this.groupBy = false;
@@ -322,16 +322,16 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		public final <C> B columnClass(Class<C> columnClass, Converter<T, C> converter) {
 			this.type = sqlType(columnClass);
 			this.converter = (Converter<T, Object>) requireNonNull(converter);
-			this.fetcher = fetcher(this.type, (Column<Object>) super.attribute());
+			this.getter = getter(this.type, (Column<Object>) super.attribute());
 			return self();
 		}
 
 		@Override
 		public final <C> B columnClass(Class<C> columnClass, Converter<T, C> converter,
-																	 Fetcher<C> fetcher) {
+																	 Getter<C> getter) {
 			this.type = sqlType(columnClass);
 			this.converter = (Converter<T, Object>) requireNonNull(converter);
-			this.fetcher = (Fetcher<Object>) requireNonNull(fetcher);
+			this.getter = (Getter<Object>) requireNonNull(getter);
 			return self();
 		}
 
@@ -340,17 +340,17 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 														 Setter<C> setter) {
 			this.type = sqlType(columnClass);
 			this.converter = (Converter<T, Object>) requireNonNull(converter);
-			this.fetcher = fetcher(this.type, (Column<Object>) super.attribute());
+			this.getter = getter(this.type, (Column<Object>) super.attribute());
 			this.setter = (Setter<Object>) requireNonNull(setter);
 			return self();
 		}
 
 		@Override
 		public <C> B columnClass(Class<C> columnClass, Converter<T, C> converter,
-														 Fetcher<C> fetcher, Setter<C> setter) {
+														 Getter<C> getter, Setter<C> setter) {
 			this.type = sqlType(columnClass);
 			this.converter = (Converter<T, Object>) requireNonNull(converter);
-			this.fetcher = (Fetcher<Object>) requireNonNull(fetcher);
+			this.getter = (Getter<Object>) requireNonNull(getter);
 			this.setter = (Setter<Object>) requireNonNull(setter);
 			return self();
 		}
@@ -436,16 +436,16 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 			return TYPE_MAP.getOrDefault(requireNonNull(clazz), Types.OTHER);
 		}
 
-		private static <T> Fetcher<T> fetcher(int columnType, Column<T> column) {
+		private static <T> Getter<T> getter(int columnType, Column<T> column) {
 			if (columnType == Types.OTHER) {
-				return (Fetcher<T>) new ObjectFetcher(column.type().valueClass());
+				return (Getter<T>) new ObjectGetter(column.type().valueClass());
 			}
-			if (!FETCHERS.containsKey(columnType)) {
+			if (!GETTERS.containsKey(columnType)) {
 				throw new IllegalArgumentException("Unsupported SQL value type: " + columnType +
 								", column: " + column + ", valueClass: " + column.type().valueClass());
 			}
 
-			return (Fetcher<T>) FETCHERS.get(columnType);
+			return (Getter<T>) GETTERS.get(columnType);
 		}
 	}
 
@@ -487,7 +487,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		}
 	}
 
-	private static final class ShortFetcher implements Fetcher<Short> {
+	private static final class ShortGetter implements Getter<Short> {
 
 		@Override
 		public Short get(ResultSet resultSet, int index) throws SQLException {
@@ -497,7 +497,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		}
 	}
 
-	private static final class IntegerFetcher implements Fetcher<Integer> {
+	private static final class IntegerGetter implements Getter<Integer> {
 
 		@Override
 		public Integer get(ResultSet resultSet, int index) throws SQLException {
@@ -507,7 +507,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		}
 	}
 
-	private static final class LongFetcher implements Fetcher<Long> {
+	private static final class LongGetter implements Getter<Long> {
 
 		@Override
 		public Long get(ResultSet resultSet, int index) throws SQLException {
@@ -517,7 +517,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		}
 	}
 
-	private static final class DoubleFetcher implements Fetcher<Double> {
+	private static final class DoubleGetter implements Getter<Double> {
 
 		@Override
 		public Double get(ResultSet resultSet, int index) throws SQLException {
@@ -527,7 +527,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		}
 	}
 
-	private static final class BigDecimalFetcher implements Fetcher<BigDecimal> {
+	private static final class BigDecimalGetter implements Getter<BigDecimal> {
 
 		@Override
 		public BigDecimal get(ResultSet resultSet, int index) throws SQLException {
@@ -537,7 +537,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		}
 	}
 
-	private static final class LocalDateFetcher implements Fetcher<LocalDate> {
+	private static final class LocalDateGetter implements Getter<LocalDate> {
 
 		@Override
 		public LocalDate get(ResultSet resultSet, int index) throws SQLException {
@@ -545,7 +545,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		}
 	}
 
-	private static final class LocalDateTimeFetcher implements Fetcher<LocalDateTime> {
+	private static final class LocalDateTimeGetter implements Getter<LocalDateTime> {
 
 		@Override
 		public LocalDateTime get(ResultSet resultSet, int index) throws SQLException {
@@ -553,7 +553,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		}
 	}
 
-	private static final class OffsetDateTimeFetcher implements Fetcher<OffsetDateTime> {
+	private static final class OffsetDateTimeGetter implements Getter<OffsetDateTime> {
 
 		@Override
 		public OffsetDateTime get(ResultSet resultSet, int index) throws SQLException {
@@ -561,7 +561,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		}
 	}
 
-	private static final class LocalTimeFetcher implements Fetcher<LocalTime> {
+	private static final class LocalTimeGetter implements Getter<LocalTime> {
 
 		@Override
 		public LocalTime get(ResultSet resultSet, int index) throws SQLException {
@@ -569,7 +569,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		}
 	}
 
-	private static final class OffsetTimeFetcher implements Fetcher<OffsetTime> {
+	private static final class OffsetTimeGetter implements Getter<OffsetTime> {
 
 		@Override
 		public OffsetTime get(ResultSet resultSet, int index) throws SQLException {
@@ -577,7 +577,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		}
 	}
 
-	private static final class StringFetcher implements Fetcher<String> {
+	private static final class StringGetter implements Getter<String> {
 
 		@Override
 		public String get(ResultSet resultSet, int index) throws SQLException {
@@ -585,7 +585,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		}
 	}
 
-	private static final class BooleanFetcher implements Fetcher<Boolean> {
+	private static final class BooleanGetter implements Getter<Boolean> {
 
 		@Override
 		public Boolean get(ResultSet resultSet, int index) throws SQLException {
@@ -595,7 +595,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		}
 	}
 
-	private static final class CharacterFetcher implements Fetcher<Character> {
+	private static final class CharacterGetter implements Getter<Character> {
 
 		@Override
 		public Character get(ResultSet resultSet, int index) throws SQLException {
@@ -608,7 +608,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		}
 	}
 
-	private static final class ByteArrayFetcher implements Fetcher<byte[]> {
+	private static final class ByteArrayGetter implements Getter<byte[]> {
 
 		@Override
 		public byte[] get(ResultSet resultSet, int index) throws SQLException {
@@ -616,11 +616,11 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		}
 	}
 
-	private static final class ObjectFetcher implements Fetcher<Object> {
+	private static final class ObjectGetter implements Getter<Object> {
 
 		private final Class<?> valueClass;
 
-		private ObjectFetcher(Class<?> valueClass) {
+		private ObjectGetter(Class<?> valueClass) {
 			this.valueClass = valueClass;
 		}
 
