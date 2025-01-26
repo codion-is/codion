@@ -18,8 +18,9 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
+
+import static is.codion.common.Configuration.enumValue;
 
 /**
  * The possible actions to take on a referential integrity error.
@@ -42,6 +43,6 @@ public enum ReferentialIntegrityErrorHandling {
 	 * </ul>
 	 */
 	public static final PropertyValue<ReferentialIntegrityErrorHandling> REFERENTIAL_INTEGRITY_ERROR_HANDLING =
-					Configuration.enumValue(ReferentialIntegrityErrorHandling.class.getName() + ".referentialIntegrityErrorHandling",
+					enumValue(ReferentialIntegrityErrorHandling.class.getName() + ".referentialIntegrityErrorHandling",
 									ReferentialIntegrityErrorHandling.class, ReferentialIntegrityErrorHandling.DISPLAY_ERROR);
 }

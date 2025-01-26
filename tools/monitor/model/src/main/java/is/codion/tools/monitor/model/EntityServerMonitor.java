@@ -18,7 +18,6 @@
  */
 package is.codion.tools.monitor.model;
 
-import is.codion.common.Configuration;
 import is.codion.common.event.Event;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
@@ -27,6 +26,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static is.codion.common.Configuration.integerValue;
 import static is.codion.common.Text.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
@@ -45,7 +45,7 @@ public final class EntityServerMonitor {
 	 * </ul>
 	 */
 	public static final PropertyValue<Integer> SERVER_MONITOR_UPDATE_RATE =
-					Configuration.integerValue("codion.server.monitor.updateRate", DEFAULT_SERVER_MONITOR_UPDATE_RATE);
+					integerValue("codion.server.monitor.updateRate", DEFAULT_SERVER_MONITOR_UPDATE_RATE);
 
 	private final Event<String> hostAddedEvent = Event.event();
 

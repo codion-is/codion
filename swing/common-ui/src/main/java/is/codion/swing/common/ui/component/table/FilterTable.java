@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.Configuration;
 import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.i18n.Messages;
@@ -89,6 +88,8 @@ import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static is.codion.common.Configuration.booleanValue;
+import static is.codion.common.Configuration.integerValue;
 import static is.codion.common.item.Item.item;
 import static is.codion.common.model.summary.TableSummaryModel.tableSummaryModel;
 import static is.codion.common.resource.MessageBundle.messageBundle;
@@ -130,7 +131,7 @@ public final class FilterTable<R, C> extends JTable {
 	 * </ul>
 	 */
 	public static final PropertyValue<Integer> AUTO_RESIZE_MODE =
-					Configuration.integerValue(FilterTable.class.getName() + ".autoResizeMode", AUTO_RESIZE_OFF);
+					integerValue(FilterTable.class.getName() + ".autoResizeMode", AUTO_RESIZE_OFF);
 
 	/**
 	 * Specifies whether columns can be rearranged in tables
@@ -140,7 +141,7 @@ public final class FilterTable<R, C> extends JTable {
 	 * </ul>
 	 */
 	public static final PropertyValue<Boolean> ALLOW_COLUMN_REORDERING =
-					Configuration.booleanValue(FilterTable.class.getName() + ".allowColumnReordering", true);
+					booleanValue(FilterTable.class.getName() + ".allowColumnReordering", true);
 
 	/**
 	 * Specifies whether the table resizes the row being edited to fit the editor component. Only applicable to {@link FilterTableCellEditor}.
@@ -150,7 +151,7 @@ public final class FilterTable<R, C> extends JTable {
 	 * </ul>
 	 */
 	public static final PropertyValue<Boolean> RESIZE_ROW_TO_FIT_EDITOR =
-					Configuration.booleanValue(FilterTable.class.getName() + ".resizeRowToFitEditor", true);
+					booleanValue(FilterTable.class.getName() + ".resizeRowToFitEditor", true);
 
 	/**
 	 * The controls.

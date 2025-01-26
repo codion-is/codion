@@ -18,12 +18,13 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 import is.codion.framework.domain.DomainType;
 
 import java.util.Collection;
 import java.util.List;
+
+import static is.codion.common.Configuration.booleanValue;
 
 /**
  * A repository containing the {@link EntityDefinition}s for a given domain.
@@ -44,7 +45,8 @@ public interface Entities {
 	 * <li>Default value: true
 	 * </ul>
 	 */
-	PropertyValue<Boolean> VALIDATE_FOREIGN_KEYS = Configuration.booleanValue("codion.domain.validateForeignKeys", true);
+	PropertyValue<Boolean> VALIDATE_FOREIGN_KEYS =
+					booleanValue("codion.domain.validateForeignKeys", true);
 
 	/**
 	 * Specifies whether strict deserialization should be used. This means that when an unknown attribute<br>
@@ -55,7 +57,7 @@ public interface Entities {
 	 * </ul>
 	 */
 	PropertyValue<Boolean> STRICT_DESERIALIZATION =
-					Configuration.booleanValue("codion.domain.strictDeserialization", true);
+					booleanValue("codion.domain.strictDeserialization", true);
 
 	/**
 	 * @return the {@link DomainType} this {@link Entities} instance is associated with

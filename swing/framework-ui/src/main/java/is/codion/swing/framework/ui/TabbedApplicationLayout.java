@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -30,6 +29,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.BorderLayout;
 
+import static is.codion.common.Configuration.integerValue;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createEmptyBorder;
@@ -47,7 +47,7 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
 	 * </ul>
 	 */
 	public static final PropertyValue<Integer> TAB_PLACEMENT =
-					Configuration.integerValue(TabbedApplicationLayout.class.getName() + ".tabPlacement", SwingConstants.TOP);
+					integerValue(TabbedApplicationLayout.class.getName() + ".tabPlacement", SwingConstants.TOP);
 
 	private final EntityApplicationPanel<?> applicationPanel;
 

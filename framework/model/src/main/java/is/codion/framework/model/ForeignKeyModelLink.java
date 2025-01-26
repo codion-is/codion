@@ -18,9 +18,10 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+
+import static is.codion.common.Configuration.booleanValue;
 
 /**
  * Represents a link between two entity models based on a foreign key.
@@ -35,7 +36,7 @@ public interface ForeignKeyModelLink extends ModelLink {
 	 * </ul>
 	 */
 	PropertyValue<Boolean> SET_VALUE_ON_INSERT =
-					Configuration.booleanValue(ForeignKeyModelLink.class.getName() + ".setValueOnInsert", true);
+					booleanValue(ForeignKeyModelLink.class.getName() + ".setValueOnInsert", true);
 
 	/**
 	 * Specifies whether a linked model should automatically search by the entity inserted by the parent model.
@@ -45,7 +46,7 @@ public interface ForeignKeyModelLink extends ModelLink {
 	 * </ul>
 	 */
 	PropertyValue<Boolean> SET_CONDITION_ON_INSERT =
-					Configuration.booleanValue(ForeignKeyModelLink.class.getName() + ".setConditionOnInsert", false);
+					booleanValue(ForeignKeyModelLink.class.getName() + ".setConditionOnInsert", false);
 
 	/**
 	 * Specifies whether a linked model should be automatically refreshed when the selection in the parent model changes.
@@ -55,7 +56,7 @@ public interface ForeignKeyModelLink extends ModelLink {
 	 * </ul>
 	 */
 	PropertyValue<Boolean> REFRESH_ON_SELECTION =
-					Configuration.booleanValue(ForeignKeyModelLink.class.getName() + ".refreshOnSelection", true);
+					booleanValue(ForeignKeyModelLink.class.getName() + ".refreshOnSelection", true);
 
 	/**
 	 * Specifies whether a linked model sets the parent foreign key value to null when null or no value is selected in a parent model<br>
@@ -65,7 +66,7 @@ public interface ForeignKeyModelLink extends ModelLink {
 	 * </ul>
 	 */
 	PropertyValue<Boolean> CLEAR_VALUE_ON_EMPTY_SELECTION =
-					Configuration.booleanValue(ForeignKeyModelLink.class.getName() + ".clearValueOnEmptySelection", false);
+					booleanValue(ForeignKeyModelLink.class.getName() + ".clearValueOnEmptySelection", false);
 
 	/**
 	 * Specifies whether a linked model clears the foreign key search condition when null or no value is selected in a parent model<br>
@@ -75,7 +76,7 @@ public interface ForeignKeyModelLink extends ModelLink {
 	 * </ul>
 	 */
 	PropertyValue<Boolean> CLEAR_CONDITION_ON_EMPTY_SELECTION =
-					Configuration.booleanValue(ForeignKeyModelLink.class.getName() + ".clearConditionOnEmptySelection", true);
+					booleanValue(ForeignKeyModelLink.class.getName() + ".clearConditionOnEmptySelection", true);
 
 	/**
 	 * @return the foreign key this model link is based on

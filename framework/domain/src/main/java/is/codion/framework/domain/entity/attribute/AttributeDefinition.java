@@ -18,7 +18,6 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
-import is.codion.common.Configuration;
 import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.common.property.PropertyValue;
@@ -31,6 +30,8 @@ import java.text.Format;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
+
+import static is.codion.common.Configuration.*;
 
 /**
  * Defines an Attribute. Factory for {@link AttributeDefinition} instances.
@@ -60,7 +61,7 @@ public interface AttributeDefinition<T> {
 	 * <li>Default value: 10
 	 * </ul>
 	 */
-	PropertyValue<Integer> MAXIMUM_FRACTION_DIGITS = Configuration.integerValue("codion.domain.maximumFractionDigits", DEFAULT_MAXIMUM_FRACTION_DIGITS);
+	PropertyValue<Integer> MAXIMUM_FRACTION_DIGITS = integerValue("codion.domain.maximumFractionDigits", DEFAULT_MAXIMUM_FRACTION_DIGITS);
 
 	/**
 	 * Specifies the default rounding mode used for decimal property values
@@ -71,7 +72,7 @@ public interface AttributeDefinition<T> {
 	 * @see #MAXIMUM_FRACTION_DIGITS
 	 * @see Builder#decimalRoundingMode(RoundingMode)
 	 */
-	PropertyValue<RoundingMode> DECIMAL_ROUNDING_MODE = Configuration.enumValue("codion.domain.decimalRoundingMode", RoundingMode.class, RoundingMode.HALF_EVEN);
+	PropertyValue<RoundingMode> DECIMAL_ROUNDING_MODE = enumValue("codion.domain.decimalRoundingMode", RoundingMode.class, RoundingMode.HALF_EVEN);
 
 	/**
 	 * The default date format pattern to use when showing time values in tables and when creating default time input fields
@@ -80,7 +81,7 @@ public interface AttributeDefinition<T> {
 	 * <li>Default value: HH:mm
 	 * </ul>
 	 */
-	PropertyValue<String> TIME_FORMAT = Configuration.stringValue("codion.domain.timeFormat", LocaleDateTimePattern.builder()
+	PropertyValue<String> TIME_FORMAT = stringValue("codion.domain.timeFormat", LocaleDateTimePattern.builder()
 					.hoursMinutes()
 					.build()
 					.timePattern()
@@ -93,7 +94,7 @@ public interface AttributeDefinition<T> {
 	 * <li>Default value: dd-MM-yyyy HH:mm [month/day order is locale specific]
 	 * </ul>
 	 */
-	PropertyValue<String> DATE_TIME_FORMAT = Configuration.stringValue("codion.domain.dateTimeFormat", LocaleDateTimePattern.builder()
+	PropertyValue<String> DATE_TIME_FORMAT = stringValue("codion.domain.dateTimeFormat", LocaleDateTimePattern.builder()
 					.delimiterDash()
 					.yearFourDigits()
 					.hoursMinutes()
@@ -107,7 +108,7 @@ public interface AttributeDefinition<T> {
 	 * <li>Default value: dd-MM-yyyy [month/day order is locale specific]
 	 * </ul>
 	 */
-	PropertyValue<String> DATE_FORMAT = Configuration.stringValue("codion.domain.dateFormat", LocaleDateTimePattern.builder()
+	PropertyValue<String> DATE_FORMAT = stringValue("codion.domain.dateFormat", LocaleDateTimePattern.builder()
 					.delimiterDash()
 					.yearFourDigits()
 					.build()
@@ -120,7 +121,7 @@ public interface AttributeDefinition<T> {
 	 * <li>Default value: false
 	 * </ul>
 	 */
-	PropertyValue<Boolean> NUMBER_FORMAT_GROUPING = Configuration.booleanValue("codion.domain.numberFormatGrouping", false);
+	PropertyValue<Boolean> NUMBER_FORMAT_GROUPING = booleanValue("codion.domain.numberFormatGrouping", false);
 
 	/**
 	 * Specifies the default number grouping separator
@@ -129,7 +130,7 @@ public interface AttributeDefinition<T> {
 	 * <li>Default value: The grouping separator for the default locale
 	 * </ul>
 	 */
-	PropertyValue<Character> GROUPING_SEPARATOR = Configuration.characterValue("codion.domain.groupingSeparator",
+	PropertyValue<Character> GROUPING_SEPARATOR = characterValue("codion.domain.groupingSeparator",
 					DecimalFormatSymbols.getInstance().getGroupingSeparator());
 
 	/**
@@ -139,7 +140,7 @@ public interface AttributeDefinition<T> {
 	 * <li>Default value: The decimal separator for the default locale
 	 * </ul>
 	 */
-	PropertyValue<Character> DECIMAL_SEPARATOR = Configuration.characterValue("codion.domain.decimalSeparator",
+	PropertyValue<Character> DECIMAL_SEPARATOR = characterValue("codion.domain.decimalSeparator",
 					DecimalFormatSymbols.getInstance().getDecimalSeparator());
 
 	/**
@@ -149,7 +150,7 @@ public interface AttributeDefinition<T> {
 	 * <li>Default value: true
 	 * </ul>
 	 */
-	PropertyValue<Boolean> USE_LEXICAL_STRING_COMPARATOR = Configuration.booleanValue("codion.domain.useLexicalStringComparator", true);
+	PropertyValue<Boolean> USE_LEXICAL_STRING_COMPARATOR = booleanValue("codion.domain.useLexicalStringComparator", true);
 
 	/**
 	 * The {@link Attribute} this definition is based on, should be unique within an Entity.

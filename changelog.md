@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.common.core
 - Value.set() and map() return value removed.
 - AbstractValue now only compares the values when set if the notification policy requires it.
+- Configuration property value methods now statically imported.
 ### is.codion.common.db
 - Database.subqueryRequiresAlias() removed, related refactoring.
 ### is.codion.common.model

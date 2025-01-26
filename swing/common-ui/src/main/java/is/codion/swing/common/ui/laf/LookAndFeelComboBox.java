@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.laf;
 
-import is.codion.common.Configuration;
 import is.codion.common.item.Item;
 import is.codion.common.property.PropertyValue;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
@@ -32,6 +31,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.basic.BasicComboBoxEditor;
 import java.awt.Component;
 
+import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.item.Item.item;
 import static is.codion.swing.common.ui.component.combobox.ComboBoxBuilder.enableMouseWheelSelection;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.lookAndFeels;
@@ -56,7 +56,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 	 * </ul>
 	 */
 	public static final PropertyValue<Boolean> ENABLE_ON_SELECTION =
-					Configuration.booleanValue(LookAndFeelComboBox.class.getName() + ".enableOnSelection", true);
+					booleanValue(LookAndFeelComboBox.class.getName() + ".enableOnSelection", true);
 
 	private final LookAndFeelEnabler originalLookAndFeel = createOriginalLookAndFeel();
 

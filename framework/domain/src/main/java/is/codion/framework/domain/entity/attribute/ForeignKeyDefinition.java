@@ -18,11 +18,12 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
-import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 import is.codion.framework.domain.entity.Entity;
 
 import java.util.List;
+
+import static is.codion.common.Configuration.integerValue;
 
 /**
  * Represents a reference to another entity, typically but not necessarily based on a foreign key.
@@ -41,7 +42,7 @@ public interface ForeignKeyDefinition extends AttributeDefinition<Entity> {
 	 * <li>Default value: 1
 	 * </ul>
 	 */
-	PropertyValue<Integer> FOREIGN_KEY_FETCH_DEPTH = Configuration.integerValue("codion.domain.foreignKeyFetchDepth", DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
+	PropertyValue<Integer> FOREIGN_KEY_FETCH_DEPTH = integerValue("codion.domain.foreignKeyFetchDepth", DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
 
 	/**
 	 * @return the foreign key attribute this foreign key is based on.

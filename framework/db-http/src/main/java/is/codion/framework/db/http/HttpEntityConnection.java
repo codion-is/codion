@@ -18,7 +18,6 @@
  */
 package is.codion.framework.db.http;
 
-import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
@@ -26,6 +25,8 @@ import is.codion.framework.domain.DomainType;
 
 import java.util.UUID;
 import java.util.concurrent.Executor;
+
+import static is.codion.common.Configuration.*;
 
 /**
  * A factory for http based EntityConnection builder.
@@ -45,7 +46,7 @@ public interface HttpEntityConnection extends EntityConnection {
 	 * <li>Default value: localhost
 	 * </ul>
 	 */
-	PropertyValue<String> HOSTNAME = Configuration.stringValue("codion.client.http.hostname", "localhost");
+	PropertyValue<String> HOSTNAME = stringValue("codion.client.http.hostname", "localhost");
 
 	/**
 	 * The port which the http client should use.<br>
@@ -54,7 +55,7 @@ public interface HttpEntityConnection extends EntityConnection {
 	 * <li>Default value: 8080
 	 * </ul>
 	 */
-	PropertyValue<Integer> PORT = Configuration.integerValue("codion.client.http.port", 8080);
+	PropertyValue<Integer> PORT = integerValue("codion.client.http.port", 8080);
 
 	/**
 	 * The port which the https client should use
@@ -63,7 +64,7 @@ public interface HttpEntityConnection extends EntityConnection {
 	 * <li>Default value: 4443
 	 * </ul>
 	 */
-	PropertyValue<Integer> SECURE_PORT = Configuration.integerValue("codion.client.http.securePort", 4443);
+	PropertyValue<Integer> SECURE_PORT = integerValue("codion.client.http.securePort", 4443);
 
 	/**
 	 * Specifies whether https should be used
@@ -72,7 +73,7 @@ public interface HttpEntityConnection extends EntityConnection {
 	 * <li>Default value: true
 	 * </ul>
 	 */
-	PropertyValue<Boolean> SECURE = Configuration.booleanValue("codion.client.http.secure", true);
+	PropertyValue<Boolean> SECURE = booleanValue("codion.client.http.secure", true);
 
 	/**
 	 * Specifies whether json serialization should be used
@@ -81,7 +82,7 @@ public interface HttpEntityConnection extends EntityConnection {
 	 * <li>Default value: true
 	 * </ul>
 	 */
-	PropertyValue<Boolean> JSON = Configuration.booleanValue("codion.client.http.json", true);
+	PropertyValue<Boolean> JSON = booleanValue("codion.client.http.json", true);
 
 	/**
 	 * The socket timeout in milliseconds
@@ -90,7 +91,7 @@ public interface HttpEntityConnection extends EntityConnection {
 	 * <li>Default value: 2000 ms
 	 * </ul>
 	 */
-	PropertyValue<Integer> SOCKET_TIMEOUT = Configuration.integerValue("codion.client.http.socketTimeout", 2000);
+	PropertyValue<Integer> SOCKET_TIMEOUT = integerValue("codion.client.http.socketTimeout", 2000);
 
 	/**
 	 * The connect timeout in milliseconds
@@ -99,7 +100,7 @@ public interface HttpEntityConnection extends EntityConnection {
 	 * <li>Default value: 2000 ms
 	 * </ul>
 	 */
-	PropertyValue<Integer> CONNECT_TIMEOUT = Configuration.integerValue("codion.client.http.connectTimeout", 2000);
+	PropertyValue<Integer> CONNECT_TIMEOUT = integerValue("codion.client.http.connectTimeout", 2000);
 
 	/**
 	 * @return a new builder instance

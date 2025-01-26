@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.model.component;
 
-import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -39,6 +38,8 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static is.codion.common.Configuration.booleanValue;
+
 /**
  * <p>A ComboBoxModel based on an Entity, showing by default all the entities in the underlying table.</p>
  * <p>To filter a {@link EntityComboBoxModel} use {@link #filter()} to set a {@link Predicate} or configure {@link ForeignKey} based filtering.</p>
@@ -56,7 +57,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	 * @see is.codion.framework.model.EntityEditModel#POST_EDIT_EVENTS
 	 */
 	PropertyValue<Boolean> HANDLE_EDIT_EVENTS =
-					Configuration.booleanValue(EntityComboBoxModel.class.getName() + ".handleEditEvents", true);
+					booleanValue(EntityComboBoxModel.class.getName() + ".handleEditEvents", true);
 
 	/**
 	 * @return the connection provider used by this combo box model

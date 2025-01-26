@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.Configuration;
 import is.codion.common.event.Event;
 import is.codion.common.i18n.Messages;
 import is.codion.common.observable.Observer;
@@ -69,6 +68,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static is.codion.common.Configuration.*;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.*;
@@ -1224,7 +1224,7 @@ public class EntityPanel extends JPanel {
 		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> USE_KEYBOARD_NAVIGATION =
-						Configuration.booleanValue(EntityPanel.class.getName() + ".useKeyboardNavigation", true);
+						booleanValue(EntityPanel.class.getName() + ".useKeyboardNavigation", true);
 
 		/**
 		 * Indicates whether entity edit panel dialogs should be closed on escape
@@ -1234,7 +1234,7 @@ public class EntityPanel extends JPanel {
 		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> DISPOSE_EDIT_DIALOG_ON_ESCAPE =
-						Configuration.booleanValue(EntityPanel.class.getName() + ".disposeEditDialogOnEscape", true);
+						booleanValue(EntityPanel.class.getName() + ".disposeEditDialogOnEscape", true);
 
 		/**
 		 * Specifies whether a control for toggling the edit panel is available to the user
@@ -1244,7 +1244,7 @@ public class EntityPanel extends JPanel {
 		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_TOGGLE_EDIT_PANEL_CONTROL =
-						Configuration.booleanValue(EntityPanel.class.getName() + ".includeToggleEditPanelControl", true);
+						booleanValue(EntityPanel.class.getName() + ".includeToggleEditPanelControl", true);
 
 		/**
 		 * Specifies whether the edit controls (Save, update, delete, clear, refresh) should be on a toolbar instead of a button panel
@@ -1254,7 +1254,7 @@ public class EntityPanel extends JPanel {
 		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> TOOLBAR_CONTROLS =
-						Configuration.booleanValue(EntityPanel.class.getName() + ".toolbarControls", false);
+						booleanValue(EntityPanel.class.getName() + ".toolbarControls", false);
 
 		/**
 		 * Specifies how detail and edit panels should be displayed.
@@ -1264,7 +1264,7 @@ public class EntityPanel extends JPanel {
 		 * </ul>
 		 */
 		public static final PropertyValue<WindowType> WINDOW_TYPE =
-						Configuration.enumValue(EntityPanel.class.getName() + ".windowType", WindowType.class, DIALOG);
+						enumValue(EntityPanel.class.getName() + ".windowType", WindowType.class, DIALOG);
 
 		/**
 		 * Specifies where the control panel should be placed in a BorderLayout
@@ -1275,7 +1275,7 @@ public class EntityPanel extends JPanel {
 		 * @see #TOOLBAR_CONTROLS
 		 */
 		public static final PropertyValue<String> CONTROL_PANEL_CONSTRAINTS =
-						Configuration.stringValue(EntityPanel.class.getName() + ".controlPanelConstraints", BorderLayout.EAST);
+						stringValue(EntityPanel.class.getName() + ".controlPanelConstraints", BorderLayout.EAST);
 
 		/**
 		 * Specifies where the control toolbar should be placed in a BorderLayout
@@ -1286,7 +1286,7 @@ public class EntityPanel extends JPanel {
 		 * @see #TOOLBAR_CONTROLS
 		 */
 		public static final PropertyValue<String> CONTROL_TOOLBAR_CONSTRAINTS =
-						Configuration.stringValue(EntityPanel.class.getName() + ".controlToolBarConstraints", BorderLayout.WEST);
+						stringValue(EntityPanel.class.getName() + ".controlToolBarConstraints", BorderLayout.WEST);
 
 		/**
 		 * Specifies where the edit panel should be placed in a BorderLayout
@@ -1296,7 +1296,7 @@ public class EntityPanel extends JPanel {
 		 * </ul>
 		 */
 		public static final PropertyValue<String> EDIT_PANEL_CONSTRAINTS =
-						Configuration.stringValue(EntityPanel.class.getName() + ".editPanelConstraints", BorderLayout.NORTH);
+						stringValue(EntityPanel.class.getName() + ".editPanelConstraints", BorderLayout.NORTH);
 
 		/**
 		 * Specifies whether entity panels should include controls by default
@@ -1306,7 +1306,7 @@ public class EntityPanel extends JPanel {
 		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_CONTROLS =
-						Configuration.booleanValue(EntityPanel.class.getName() + ".includeControls", true);
+						booleanValue(EntityPanel.class.getName() + ".includeControls", true);
 
 		private final EntityPanel entityPanel;
 		private final ControlMap controlMap;

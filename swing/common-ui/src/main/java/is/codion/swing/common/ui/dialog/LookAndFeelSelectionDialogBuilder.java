@@ -18,13 +18,14 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 
 import javax.swing.JComponent;
 import java.util.function.Consumer;
+
+import static is.codion.common.Configuration.booleanValue;
 
 /**
  * Builds a dialog for selecting a look and feel.
@@ -41,7 +42,7 @@ public interface LookAndFeelSelectionDialogBuilder {
 	 * @see is.codion.swing.common.ui.laf.LookAndFeelProvider
 	 */
 	PropertyValue<Boolean> INCLUDE_PLATFORM_LOOK_AND_FEELS =
-					Configuration.booleanValue(LookAndFeelSelectionDialogBuilder.class.getName() + ".includePlatformLookAndFeels", false);
+					booleanValue(LookAndFeelSelectionDialogBuilder.class.getName() + ".includePlatformLookAndFeels", false);
 
 	/**
 	 * @param owner the dialog owner

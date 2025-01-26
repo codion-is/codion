@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.Configuration;
 import is.codion.common.db.database.Database.Operation;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
@@ -72,6 +71,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.control.Control.command;
@@ -774,7 +774,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> USE_SAVE_CAPTION =
-						Configuration.booleanValue(EntityEditPanel.class.getName() + ".useSaveCaption", false);
+						booleanValue(EntityEditPanel.class.getName() + ".useSaveCaption", false);
 
 		/**
 		 * Specifies whether to include a {@link EntityPopupMenu} on this edit panel, triggered with CTRL-ALT-V by default.
@@ -784,7 +784,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_ENTITY_MENU =
-						Configuration.booleanValue(EntityEditPanel.class.getName() + ".includeEntityMenu", true);
+						booleanValue(EntityEditPanel.class.getName() + ".includeEntityMenu", true);
 
 		/**
 		 * Specifies whether edit panels should be activated when the panel (or its parent EntityPanel) receives focus
@@ -794,7 +794,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> USE_FOCUS_ACTIVATION =
-						Configuration.booleanValue(EntityEditPanel.class.getName() + ".useFocusActivation", true);
+						booleanValue(EntityEditPanel.class.getName() + ".useFocusActivation", true);
 
 		/**
 		 * Indicates whether the panel should ask for confirmation before discarding unsaved modifications
@@ -804,7 +804,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> MODIFIED_WARNING =
-						Configuration.booleanValue(EntityEditPanel.class.getName() + ".modifiedWarning", false);
+						booleanValue(EntityEditPanel.class.getName() + ".modifiedWarning", false);
 
 		private static final Confirmer DEFAULT_INSERT_CONFIRMER = Confirmer.NONE;
 		private static final Confirmer DEFAULT_UPDATE_CONFIRMER = new UpdateConfirmer();

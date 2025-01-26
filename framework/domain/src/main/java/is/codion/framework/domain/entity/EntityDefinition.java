@@ -18,7 +18,6 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
@@ -38,6 +37,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static is.codion.common.Configuration.booleanValue;
+
 /**
  * Specifies an entity definition.
  */
@@ -50,7 +51,7 @@ public interface EntityDefinition {
 	 * <li>Default value: true
 	 * </ul>
 	 */
-	PropertyValue<Boolean> OPTIMISTIC_LOCKING = Configuration.booleanValue("codion.domain.optimisticLocking", true);
+	PropertyValue<Boolean> OPTIMISTIC_LOCKING = booleanValue("codion.domain.optimisticLocking", true);
 
 	/**
 	 * @return the entity type

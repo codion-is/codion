@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+import static is.codion.common.Configuration.stringValue;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -50,7 +51,7 @@ public final class Text {
 	 * @see Locale#toLanguageTag()
 	 */
 	public static final PropertyValue<String> DEFAULT_COLLATOR_LANGUAGE =
-					Configuration.stringValue("codion.defaultCollatorLanguage", Locale.getDefault().getLanguage());
+					stringValue("codion.defaultCollatorLanguage", Locale.getDefault().getLanguage());
 
 	private Text() {}
 

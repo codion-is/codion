@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.Configuration;
 import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.i18n.Messages;
@@ -106,6 +105,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static is.codion.common.Configuration.booleanValue;
+import static is.codion.common.Configuration.stringValue;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
@@ -136,7 +137,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @see #savePreferences()
 	 */
 	public static final PropertyValue<Boolean> USER_PREFERENCES_ENABLED =
-					Configuration.booleanValue(EntityApplicationPanel.class.getName() + ".userPreferencesEnabled", true);
+					booleanValue(EntityApplicationPanel.class.getName() + ".userPreferencesEnabled", true);
 
 	/**
 	 * Specifies whether the application should restore default preferences, that is, not load any saved user preferences.
@@ -147,7 +148,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @see EntityPanel#applyPreferences()
 	 */
 	public static final PropertyValue<Boolean> RESTORE_DEFAULT_PREFERENCES =
-					Configuration.booleanValue(EntityApplicationPanel.class.getName() + ".restoreDefaultPreferences", false);
+					booleanValue(EntityApplicationPanel.class.getName() + ".restoreDefaultPreferences", false);
 
 	/**
 	 * Specifies whether the application should call {@link System#exit(int)} when exiting.
@@ -158,7 +159,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @see #exit()
 	 */
 	public static final PropertyValue<Boolean> CALL_SYSTEM_EXIT =
-					Configuration.booleanValue(EntityApplicationPanel.class.getName() + ".callSystemExit", false);
+					booleanValue(EntityApplicationPanel.class.getName() + ".callSystemExit", false);
 
 	/**
 	 * Specifies whether a button for displaying system properties is included on the about panel.
@@ -169,7 +170,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @see #displayAbout()
 	 */
 	public static final PropertyValue<Boolean> DISPLAY_SYSTEM_PROPERTIES =
-					Configuration.booleanValue(EntityApplicationPanel.class.getName() + ".displaySystemProperties", true);
+					booleanValue(EntityApplicationPanel.class.getName() + ".displaySystemProperties", true);
 
 	private static final String LOG_LEVEL = "log_level";
 	private static final String LOG_LEVEL_DESC = "log_level_desc";
@@ -192,7 +193,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * <li>Default value: https://codion.is/doc/{version}/help/client.html
 	 * </ul>
 	 */
-	public static final PropertyValue<String> HELP_URL = Configuration.stringValue(EntityApplicationPanel.class.getName() + ".helpUrl",
+	public static final PropertyValue<String> HELP_URL = stringValue(EntityApplicationPanel.class.getName() + ".helpUrl",
 					"https://codion.is/doc/" + Version.versionString() + "/help/client.html");
 
 	/**
@@ -202,7 +203,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * <li>Default value: false
 	 * </ul>
 	 */
-	public static final PropertyValue<Boolean> CONFIRM_EXIT = Configuration.booleanValue(EntityApplicationPanel.class.getName() + ".confirmExit", false);
+	public static final PropertyValue<Boolean> CONFIRM_EXIT = booleanValue(EntityApplicationPanel.class.getName() + ".confirmExit", false);
 
 	/**
 	 * Specifies whether a startup dialog should be shown
@@ -211,7 +212,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * <li>Default value: true
 	 * </ul>
 	 */
-	public static final PropertyValue<Boolean> SHOW_STARTUP_DIALOG = Configuration.booleanValue(EntityApplicationPanel.class.getName() + ".showStartupDialog", true);
+	public static final PropertyValue<Boolean> SHOW_STARTUP_DIALOG = booleanValue(EntityApplicationPanel.class.getName() + ".showStartupDialog", true);
 
 	/**
 	 * Specifies whether EntityPanels displayed via {@link EntityApplicationPanel#displayEntityPanelDialog(EntityPanel)}
@@ -224,7 +225,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @see EntityApplicationPanel#displayEntityPanelDialog(EntityPanel)
 	 * @see EntityApplicationPanel#displayEntityPanelFrame(EntityPanel)
 	 */
-	public static final PropertyValue<Boolean> CACHE_ENTITY_PANELS = Configuration.booleanValue(EntityApplicationPanel.class.getName() + ".cacheEntityPanels", false);
+	public static final PropertyValue<Boolean> CACHE_ENTITY_PANELS = booleanValue(EntityApplicationPanel.class.getName() + ".cacheEntityPanels", false);
 
 	private static final int DEFAULT_LOGO_SIZE = 68;
 

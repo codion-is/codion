@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.component.combobox;
 
-import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 import is.codion.swing.common.ui.component.combobox.CompletionDocument.AutoCompletionDocument;
 import is.codion.swing.common.ui.component.combobox.CompletionDocument.CompletionFocusListener;
@@ -27,6 +26,8 @@ import is.codion.swing.common.ui.component.combobox.CompletionDocument.MaximumMa
 import javax.swing.JComboBox;
 import javax.swing.text.JTextComponent;
 
+import static is.codion.common.Configuration.booleanValue;
+import static is.codion.common.Configuration.enumValue;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -76,7 +77,7 @@ public final class Completion {
 	 * </ul>
 	 */
 	public static final PropertyValue<Mode> COMPLETION_MODE =
-					Configuration.enumValue(Completion.class.getName() + ".completionMode", Mode.class, Mode.MAXIMUM_MATCH);
+					enumValue(Completion.class.getName() + ".completionMode", Mode.class, Mode.MAXIMUM_MATCH);
 
 	/**
 	 * Specifies whether strings are normalized during completion by default.
@@ -86,7 +87,7 @@ public final class Completion {
 	 * </ul>
 	 */
 	public static final PropertyValue<Boolean> NORMALIZE =
-					Configuration.booleanValue(Completion.class.getName() + ".normalize", true);
+					booleanValue(Completion.class.getName() + ".normalize", true);
 
 	private Completion() {}
 

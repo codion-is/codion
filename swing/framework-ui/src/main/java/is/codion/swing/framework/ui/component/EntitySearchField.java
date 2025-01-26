@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.ui.component;
 
-import is.codion.common.Configuration;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
 import is.codion.common.model.FilterModel.VisibleItems;
@@ -95,6 +94,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static is.codion.common.Configuration.enumValue;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Colors.darker;
 import static is.codion.swing.common.ui.Utilities.disposeParentWindow;
@@ -150,7 +150,7 @@ public final class EntitySearchField extends HintTextField {
 	 * </ul>
 	 */
 	public static final PropertyValue<SearchIndicator> SEARCH_INDICATOR =
-					Configuration.enumValue(EntitySearchField.class.getName() + ".searchIndicator", SearchIndicator.class, WAIT_CURSOR);
+					enumValue(EntitySearchField.class.getName() + ".searchIndicator", SearchIndicator.class, WAIT_CURSOR);
 
 	/**
 	 * The ways which a search field can indicate that a search is in progress.

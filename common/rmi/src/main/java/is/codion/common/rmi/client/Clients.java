@@ -18,7 +18,6 @@
  */
 package is.codion.common.rmi.client;
 
-import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 
 import nl.altindag.ssl.SSLFactory;
@@ -31,6 +30,8 @@ import java.io.File;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.security.KeyStore;
+
+import static is.codion.common.Configuration.stringValue;
 
 /**
  * Utility methods for remote clients
@@ -56,7 +57,7 @@ public final class Clients {
 	 * <li>Default value: null
 	 * </ul>
 	 */
-	public static final PropertyValue<String> TRUSTSTORE = Configuration.stringValue("codion.client.trustStore");
+	public static final PropertyValue<String> TRUSTSTORE = stringValue("codion.client.trustStore");
 
 	/**
 	 * The rmi ssl truststore password to use
@@ -65,7 +66,7 @@ public final class Clients {
 	 * <li>Default value: null
 	 * </ul>
 	 */
-	public static final PropertyValue<String> TRUSTSTORE_PASSWORD = Configuration.stringValue("codion.client.trustStorePassword");
+	public static final PropertyValue<String> TRUSTSTORE_PASSWORD = stringValue("codion.client.trustStorePassword");
 
 	/**
 	 * The host on which to locate the server
@@ -74,7 +75,7 @@ public final class Clients {
 	 * <li>Default value: localhost
 	 * </ul>
 	 */
-	public static final PropertyValue<String> SERVER_HOSTNAME = Configuration.stringValue("codion.server.hostname", "localhost");
+	public static final PropertyValue<String> SERVER_HOSTNAME = stringValue("codion.server.hostname", "localhost");
 
 	private static final String DEFAULT_TRUSTSTORE_PASSWORD = "changeit";
 

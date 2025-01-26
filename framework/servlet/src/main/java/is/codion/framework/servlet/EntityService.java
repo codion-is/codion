@@ -18,7 +18,6 @@
  */
 package is.codion.framework.servlet;
 
-import is.codion.common.Configuration;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.ReportType;
@@ -75,6 +74,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
+import static is.codion.common.Configuration.*;
 import static is.codion.common.Serializer.serialize;
 import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.framework.json.domain.EntityObjectMapper.ENTITY_LIST_REFERENCE;
@@ -95,7 +95,7 @@ public final class EntityService implements AuxiliaryServer {
 	 * <li>Default value: 8080
 	 * </ul>
 	 */
-	public static final PropertyValue<Integer> HTTP_SERVER_PORT = Configuration.integerValue("codion.server.http.port", 8080);
+	public static final PropertyValue<Integer> HTTP_SERVER_PORT = integerValue("codion.server.http.port", 8080);
 
 	/**
 	 * The port on which the http server is made available to clients.
@@ -104,7 +104,7 @@ public final class EntityService implements AuxiliaryServer {
 	 * <li>Default value: 4443
 	 * </ul>
 	 */
-	public static final PropertyValue<Integer> HTTP_SERVER_SECURE_PORT = Configuration.integerValue("codion.server.http.securePort", 4443);
+	public static final PropertyValue<Integer> HTTP_SERVER_SECURE_PORT = integerValue("codion.server.http.securePort", 4443);
 
 	/**
 	 * Specifies whether https should be used.
@@ -113,7 +113,7 @@ public final class EntityService implements AuxiliaryServer {
 	 * <li>Default value: true
 	 * </ul>
 	 */
-	public static final PropertyValue<Boolean> HTTP_SERVER_SECURE = Configuration.booleanValue("codion.server.http.secure", true);
+	public static final PropertyValue<Boolean> HTTP_SERVER_SECURE = booleanValue("codion.server.http.secure", true);
 
 	/**
 	 * The https keystore to use on the classpath, this will be resolved to a temporary file and set
@@ -123,7 +123,7 @@ public final class EntityService implements AuxiliaryServer {
 	 * <li>Default value: null
 	 * </ul>
 	 */
-	public static final PropertyValue<String> HTTP_SERVER_CLASSPATH_KEYSTORE = Configuration.stringValue("codion.server.http.classpathKeyStore");
+	public static final PropertyValue<String> HTTP_SERVER_CLASSPATH_KEYSTORE = stringValue("codion.server.http.classpathKeyStore");
 
 	/**
 	 * Specifies the keystore to use for securing http connections.
@@ -133,7 +133,7 @@ public final class EntityService implements AuxiliaryServer {
 	 * </ul>
 	 * @see #HTTP_SERVER_CLASSPATH_KEYSTORE
 	 */
-	public static final PropertyValue<String> HTTP_SERVER_KEYSTORE_PATH = Configuration.stringValue("codion.server.http.keyStore");
+	public static final PropertyValue<String> HTTP_SERVER_KEYSTORE_PATH = stringValue("codion.server.http.keyStore");
 
 	/**
 	 * Specifies the password for the keystore used for securing http connections.
@@ -143,7 +143,7 @@ public final class EntityService implements AuxiliaryServer {
 	 * </ul>
 	 */
 	public static final PropertyValue<String> HTTP_SERVER_KEYSTORE_PASSWORD =
-					Configuration.stringValue("codion.server.http.keyStorePassword");
+					stringValue("codion.server.http.keyStorePassword");
 
 	static final String DOMAIN_TYPE_NAME = "domainTypeName";
 	static final String CLIENT_TYPE = "clientType";

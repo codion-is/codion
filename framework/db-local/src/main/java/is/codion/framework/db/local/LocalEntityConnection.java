@@ -18,7 +18,6 @@
  */
 package is.codion.framework.db.local;
 
-import is.codion.common.Configuration;
 import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
@@ -31,6 +30,9 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.condition.Condition;
 
 import java.sql.Connection;
+
+import static is.codion.common.Configuration.booleanValue;
+import static is.codion.common.Configuration.integerValue;
 
 /**
  * EntityConnection implementation based on a local JDBC connection.
@@ -61,7 +63,7 @@ public interface LocalEntityConnection extends EntityConnection {
 	 * <li>Default value: 40
 	 * </ul>
 	 */
-	PropertyValue<Integer> CONNECTION_LOG_SIZE = Configuration.integerValue("codion.db.connectionLogSize", DEFAULT_CONNECTION_LOG_SIZE);
+	PropertyValue<Integer> CONNECTION_LOG_SIZE = integerValue("codion.db.connectionLogSize", DEFAULT_CONNECTION_LOG_SIZE);
 
 	/**
 	 * Specifies the query timeout in seconds
@@ -70,7 +72,7 @@ public interface LocalEntityConnection extends EntityConnection {
 	 * <li>Default value: 120
 	 * </ul>
 	 */
-	PropertyValue<Integer> QUERY_TIMEOUT_SECONDS = Configuration.integerValue("codion.db.queryTimeoutSeconds", DEFAULT_QUERY_TIMEOUT_SECONDS);
+	PropertyValue<Integer> QUERY_TIMEOUT_SECONDS = integerValue("codion.db.queryTimeoutSeconds", DEFAULT_QUERY_TIMEOUT_SECONDS);
 
 	/**
 	 * Specifies whether optimistic locking should be performed, that is, if entities should
@@ -80,7 +82,7 @@ public interface LocalEntityConnection extends EntityConnection {
 	 * <li>Default value: true
 	 * </ul>
 	 */
-	PropertyValue<Boolean> OPTIMISTIC_LOCKING = Configuration.booleanValue("codion.db.optimisticLocking", true);
+	PropertyValue<Boolean> OPTIMISTIC_LOCKING = booleanValue("codion.db.optimisticLocking", true);
 
 	/**
 	 * Specifies whether the foreign key value graph should be fully populated instead of
@@ -90,7 +92,7 @@ public interface LocalEntityConnection extends EntityConnection {
 	 * <li>Default value: true
 	 * </ul>
 	 */
-	PropertyValue<Boolean> LIMIT_FOREIGN_KEY_FETCH_DEPTH = Configuration.booleanValue("codion.db.limitForeignKeyFetchDepth", true);
+	PropertyValue<Boolean> LIMIT_FOREIGN_KEY_FETCH_DEPTH = booleanValue("codion.db.limitForeignKeyFetchDepth", true);
 
 	/**
 	 * @return the underlying connection

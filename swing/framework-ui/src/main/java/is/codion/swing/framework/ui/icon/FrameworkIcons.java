@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.ui.icon;
 
-import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 import is.codion.swing.common.ui.icon.Icons;
 import is.codion.swing.common.ui.icon.Logos;
@@ -26,6 +25,8 @@ import is.codion.swing.common.ui.icon.Logos;
 import org.kordamp.ikonli.Ikon;
 
 import javax.swing.ImageIcon;
+
+import static is.codion.common.Configuration.stringValue;
 
 /**
  * Provides icons for framework ui components.
@@ -38,7 +39,7 @@ public interface FrameworkIcons extends Icons, Logos {
 	/**
 	 * Specifies the name of the {@link FrameworkIcons} implementation class to use.
 	 */
-	PropertyValue<String> FRAMEWORK_ICONS_CLASSNAME = Configuration.stringValue(FrameworkIcons.class.getName() + ".frameworkIconsClassName", DefaultFrameworkIcons.class.getName());
+	PropertyValue<String> FRAMEWORK_ICONS_CLASSNAME = stringValue(FrameworkIcons.class.getName() + ".frameworkIconsClassName", DefaultFrameworkIcons.class.getName());
 
 	/**
 	 * @return icon for the 'filter' action.

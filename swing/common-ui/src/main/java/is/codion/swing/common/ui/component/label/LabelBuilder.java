@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.component.label;
 
-import is.codion.common.Configuration;
 import is.codion.common.observable.Observable;
 import is.codion.common.property.PropertyValue;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
@@ -28,6 +27,8 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import java.awt.Component;
+
+import static is.codion.common.Configuration.integerValue;
 
 /**
  * A builder for JLabel.
@@ -43,7 +44,7 @@ public interface LabelBuilder<T> extends ComponentBuilder<T, JLabel, LabelBuilde
 	 * </ul>
 	 */
 	PropertyValue<Integer> HORIZONTAL_ALIGNMENT =
-					Configuration.integerValue(LabelBuilder.class.getName() + ".horizontalAlignment", SwingConstants.LEADING);
+					integerValue(LabelBuilder.class.getName() + ".horizontalAlignment", SwingConstants.LEADING);
 
 	/**
 	 * @param horizontalAlignment the horizontal text alignment

@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.common.Configuration;
 import is.codion.common.model.CancelException;
 import is.codion.common.property.PropertyValue;
 
@@ -27,6 +26,8 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Collection;
 import java.util.List;
 
+import static is.codion.common.Configuration.booleanValue;
+import static is.codion.common.Configuration.listValue;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
@@ -43,7 +44,7 @@ public interface ExceptionDialogBuilder extends DialogBuilder<ExceptionDialogBui
 	 * </ul>
 	 */
 	PropertyValue<Boolean> SYSTEM_PROPERTIES =
-					Configuration.booleanValue(ExceptionDialogBuilder.class.getName() + ".systemProperties", true);
+					booleanValue(ExceptionDialogBuilder.class.getName() + ".systemProperties", true);
 
 	/**
 	 * Specifies a list of exception types, which are considered wrapping exceptions, that is, exceptions that wrap a root cause.<br>
@@ -54,7 +55,7 @@ public interface ExceptionDialogBuilder extends DialogBuilder<ExceptionDialogBui
 	 * <li>Default value: RuntimeException, InvocationTargetException, ExceptionInInitializerError, UndeclaredThrowableException
 	 * </ul>
 	 */
-	PropertyValue<List<Class<? extends Throwable>>> WRAPPER_EXCEPTIONS = Configuration.listValue(ExceptionDialogBuilder.class.getName() + ".wrapperExceptions",
+	PropertyValue<List<Class<? extends Throwable>>> WRAPPER_EXCEPTIONS = listValue(ExceptionDialogBuilder.class.getName() + ".wrapperExceptions",
 					exceptionClassName -> {
 						try {
 							return (Class<? extends Throwable>) Class.forName(exceptionClassName);

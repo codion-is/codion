@@ -18,7 +18,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
@@ -38,6 +37,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import static is.codion.common.Configuration.integerValue;
+
 /**
  * Searches for entities based on a search text and set of String based condition columns.
  * Factory for {@link EntitySearchModel.Builder} instances via {@link EntitySearchModel#builder(EntityType, EntityConnectionProvider)}.
@@ -51,7 +52,7 @@ public interface EntitySearchModel {
 	 * <li>Default value: null
 	 * </ul>
 	 */
-	PropertyValue<Integer> DEFAULT_LIMIT = Configuration.integerValue(EntitySearchModel.class.getName() + ".defaultLimit");
+	PropertyValue<Integer> DEFAULT_LIMIT = integerValue(EntitySearchModel.class.getName() + ".defaultLimit");
 
 	/**
 	 * @return the underlying {@link EntityDefinition}

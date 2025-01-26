@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.Configuration;
 import is.codion.common.model.CancelException;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
@@ -93,6 +92,8 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static is.codion.common.Configuration.booleanValue;
+import static is.codion.common.Configuration.integerValue;
 import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.swing.common.ui.Colors.darker;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
@@ -115,7 +116,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @see #MODIFIED_INDICATOR_UNDERLINE_STYLE
 	 */
 	public static final PropertyValue<Boolean> MODIFIED_INDICATOR =
-					Configuration.booleanValue(EntityEditComponentPanel.class.getName() + ".modifiedIndicator", true);
+					booleanValue(EntityEditComponentPanel.class.getName() + ".modifiedIndicator", true);
 
 	/**
 	 * The type of underline to use to indicate a modified value
@@ -127,7 +128,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @see #MODIFIED_INDICATOR
 	 */
 	public static final PropertyValue<Integer> MODIFIED_INDICATOR_UNDERLINE_STYLE =
-					Configuration.integerValue(EntityEditComponentPanel.class.getName() + ".modifiedIndicatorUnderlineStyle", TextAttribute.UNDERLINE_LOW_DOTTED);
+					integerValue(EntityEditComponentPanel.class.getName() + ".modifiedIndicatorUnderlineStyle", TextAttribute.UNDERLINE_LOW_DOTTED);
 
 	/**
 	 * Specifies the default number of text field columns
@@ -137,7 +138,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * </ul>
 	 */
 	public static final PropertyValue<Integer> DEFAULT_TEXT_FIELD_COLUMNS =
-					Configuration.integerValue(EntityEditComponentPanel.class.getName() + ".defaultTextFieldColumns", 12);
+					integerValue(EntityEditComponentPanel.class.getName() + ".defaultTextFieldColumns", 12);
 
 	static {
 		KeyboardFocusManager.getCurrentKeyboardFocusManager()

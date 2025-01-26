@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.icon;
 
-import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 
 import org.kordamp.ikonli.Ikon;
@@ -26,6 +25,9 @@ import org.kordamp.ikonli.Ikon;
 import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 import java.awt.Color;
+
+import static is.codion.common.Configuration.integerValue;
+import static is.codion.common.Configuration.value;
 
 /**
  * Provides icons for ui components.
@@ -44,7 +46,7 @@ public interface Icons {
 	 * <li>Default value: 16
 	 * </ul>
 	 */
-	PropertyValue<Integer> ICON_SIZE = Configuration.integerValue(Icons.class.getName() + ".iconSize", DEFAULT_ICON_SIZE);
+	PropertyValue<Integer> ICON_SIZE = integerValue(Icons.class.getName() + ".iconSize", DEFAULT_ICON_SIZE);
 
 	/**
 	 * The icon color
@@ -53,7 +55,7 @@ public interface Icons {
 	 * <li>Default value: UIManager.getColor("Button.foreground")
 	 * </ul>
 	 */
-	PropertyValue<Color> ICON_COLOR = Configuration.value(Icons.class.getName() + ".iconColor", Color::decode, UIManager.getColor("Button.foreground"));
+	PropertyValue<Color> ICON_COLOR = value(Icons.class.getName() + ".iconColor", Color::decode, UIManager.getColor("Button.foreground"));
 
 	/**
 	 * Adds the given ikons to this FrameworkIcons instance. Retrieve an icon via {@link #icon(Ikon)}.

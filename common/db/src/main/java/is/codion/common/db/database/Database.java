@@ -18,7 +18,6 @@
  */
 package is.codion.common.db.database;
 
-import is.codion.common.Configuration;
 import is.codion.common.db.connection.ConnectionFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionPoolFactory;
@@ -30,6 +29,8 @@ import org.jspecify.annotations.Nullable;
 
 import java.sql.SQLException;
 import java.util.Collection;
+
+import static is.codion.common.Configuration.*;
 
 /**
  * Defines DBMS specific functionality as well as basic database configuration settings.
@@ -69,12 +70,12 @@ public interface Database extends ConnectionFactory {
 	/**
 	 * Specifies the jdbc url of the database.
 	 */
-	PropertyValue<String> DATABASE_URL = Configuration.stringValue("codion.db.url");
+	PropertyValue<String> DATABASE_URL = stringValue("codion.db.url");
 
 	/**
 	 * A comma separated list of paths to scripts to run when initializing the database, implementation specific
 	 */
-	PropertyValue<String> DATABASE_INIT_SCRIPTS = Configuration.stringValue("codion.db.initScripts");
+	PropertyValue<String> DATABASE_INIT_SCRIPTS = stringValue("codion.db.initScripts");
 
 	/**
 	 * Specifies the timeout (in seconds) to use when checking if database connections are valid.
@@ -83,7 +84,7 @@ public interface Database extends ConnectionFactory {
 	 * <li>Default value: 2
 	 * </ul>
 	 */
-	PropertyValue<Integer> CONNECTION_VALIDITY_CHECK_TIMEOUT = Configuration.integerValue("codion.db.validityCheckTimeout", 2);
+	PropertyValue<Integer> CONNECTION_VALIDITY_CHECK_TIMEOUT = integerValue("codion.db.validityCheckTimeout", 2);
 
 	/**
 	 * Specifies whether database queries should be counted for collecting statistics.
@@ -92,7 +93,7 @@ public interface Database extends ConnectionFactory {
 	 * <li>Default value: false
 	 * </ul>
 	 */
-	PropertyValue<Boolean> COUNT_QUERIES = Configuration.booleanValue("codion.db.countQueries", false);
+	PropertyValue<Boolean> COUNT_QUERIES = booleanValue("codion.db.countQueries", false);
 
 	/**
 	 * Specifies whether 'select for update' should be NOWAIT, if supported by the database.<br>
@@ -102,7 +103,7 @@ public interface Database extends ConnectionFactory {
 	 * <li>Default value: true
 	 * </ul>
 	 */
-	PropertyValue<Boolean> SELECT_FOR_UPDATE_NOWAIT = Configuration.booleanValue("codion.db.selectForUpdateNowait", true);
+	PropertyValue<Boolean> SELECT_FOR_UPDATE_NOWAIT = booleanValue("codion.db.selectForUpdateNowait", true);
 
 	/**
 	 * Specifies the default login timeout (in seconds).
@@ -111,7 +112,7 @@ public interface Database extends ConnectionFactory {
 	 * <li>Default value: 2
 	 * </ul>
 	 */
-	PropertyValue<Integer> LOGIN_TIMEOUT = Configuration.integerValue("codion.db.loginTimeout", 2);
+	PropertyValue<Integer> LOGIN_TIMEOUT = integerValue("codion.db.loginTimeout", 2);
 
 	/**
 	 * Specifies the transaction isolation to set for created connections
@@ -121,7 +122,7 @@ public interface Database extends ConnectionFactory {
 	 * </ul>
 	 * @see java.sql.Connection#setTransactionIsolation(int)
 	 */
-	PropertyValue<Integer> TRANSACTION_ISOLATION = Configuration.integerValue("codion.db.transactionIsolation");
+	PropertyValue<Integer> TRANSACTION_ISOLATION = integerValue("codion.db.transactionIsolation");
 
 	/**
 	 * The constant used to denote the username value in the connection properties

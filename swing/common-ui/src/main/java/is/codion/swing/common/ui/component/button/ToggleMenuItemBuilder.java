@@ -18,12 +18,13 @@
  */
 package is.codion.swing.common.ui.component.button;
 
-import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.JMenuItem;
+
+import static is.codion.common.Configuration.enumValue;
 
 /**
  * Builds a toggle menu item.
@@ -56,7 +57,7 @@ public interface ToggleMenuItemBuilder<C extends JMenuItem, B extends ToggleMenu
 	 * </ul>
 	 */
 	PropertyValue<PersistMenu> PERSIST_MENU =
-					Configuration.enumValue(ToggleMenuItemBuilder.class.getName() + ".ToggleMenuItemBuilder.persistMenu",
+					enumValue(ToggleMenuItemBuilder.class.getName() + ".ToggleMenuItemBuilder.persistMenu",
 									PersistMenu.class, PersistMenu.ALWAYS);
 
 	/**

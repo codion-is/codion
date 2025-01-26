@@ -18,10 +18,11 @@
  */
 package is.codion.common.rmi.server;
 
-import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 
 import java.io.ObjectInputFilter;
+
+import static is.codion.common.Configuration.stringValue;
 
 /**
  * A {@link ObjectInputFilterFactory} implementation based on patterns, specified as a string via {@link #SERIALIZATION_FILTER_PATTERNS}
@@ -35,18 +36,18 @@ public final class SerializationFilterFactory implements ObjectInputFilterFactor
 	 * <p>The serialization patterns to use.
 	 * <p>Is overridden by {@link #SERIALIZATION_FILTER_PATTERNS}.
 	 */
-	public static final PropertyValue<String> SERIALIZATION_FILTER_PATTERNS = Configuration.stringValue("codion.server.serialization.filter.patterns");
+	public static final PropertyValue<String> SERIALIZATION_FILTER_PATTERNS = stringValue("codion.server.serialization.filter.patterns");
 
 	/**
 	 * <p>The path to the serialization pattern file to use.
 	 * <p>Supports 'classpath:' prefix for a pattern file in the classpath root.
 	 */
-	public static final PropertyValue<String> SERIALIZATION_FILTER_PATTERN_FILE = Configuration.stringValue("codion.server.serialization.filter.patternFile");
+	public static final PropertyValue<String> SERIALIZATION_FILTER_PATTERN_FILE = stringValue("codion.server.serialization.filter.patternFile");
 
 	/**
 	 * If specified then a list of all deserialized classes is written to the given file on server shutdown. Note this overwrites the file if it already exists.
 	 */
-	public static final PropertyValue<String> SERIALIZATION_FILTER_DRYRUN_FILE = Configuration.stringValue("codion.server.serialization.filter.dryRunFile");
+	public static final PropertyValue<String> SERIALIZATION_FILTER_DRYRUN_FILE = stringValue("codion.server.serialization.filter.dryRunFile");
 
 	@Override
 	public ObjectInputFilter createObjectInputFilter() {

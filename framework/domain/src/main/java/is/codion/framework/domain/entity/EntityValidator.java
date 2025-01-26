@@ -18,10 +18,11 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.exception.ValidationException;
+
+import static is.codion.common.Configuration.booleanValue;
 
 /**
  * Responsible for providing validation for entities.
@@ -40,7 +41,7 @@ public interface EntityValidator {
 	 * <li>Default value: false
 	 * </ul>
 	 */
-	PropertyValue<Boolean> STRICT_VALIDATION = Configuration.booleanValue("codion.domain.strictValidation", false);
+	PropertyValue<Boolean> STRICT_VALIDATION = booleanValue("codion.domain.strictValidation", false);
 
 	/**
 	 * Returns true if the value based on the given attribute accepts a null value for the given entity,

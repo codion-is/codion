@@ -18,7 +18,6 @@
  */
 package is.codion.common.model;
 
-import is.codion.common.Configuration;
 import is.codion.common.event.Event;
 import is.codion.common.model.selection.SingleSelection;
 import is.codion.common.observable.Observable;
@@ -37,6 +36,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static is.codion.common.Configuration.booleanValue;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -53,7 +53,7 @@ public interface FilterModel<T> {
 	 * </ul>
 	 * @see Refresher#async()
 	 */
-	PropertyValue<Boolean> ASYNC_REFRESH = Configuration.booleanValue(FilterModel.class.getName() + ".asyncRefresh", true);
+	PropertyValue<Boolean> ASYNC_REFRESH = booleanValue(FilterModel.class.getName() + ".asyncRefresh", true);
 
 	/**
 	 * @return the model items

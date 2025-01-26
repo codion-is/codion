@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.common.Configuration;
 import is.codion.common.observable.Observable;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.value.Value;
@@ -35,6 +34,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Optional;
 
+import static is.codion.common.Configuration.booleanValue;
 import static java.awt.event.KeyEvent.VK_BACK_SPACE;
 import static java.awt.event.KeyEvent.VK_DELETE;
 import static java.util.Objects.requireNonNull;
@@ -56,7 +56,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 	 * </ul>
 	 */
 	public static final PropertyValue<Boolean> CONVERT_GROUPING_TO_DECIMAL_SEPARATOR =
-					Configuration.booleanValue(NumberField.class.getName() + ".convertGroupingToDecimalSeparator", true);
+					booleanValue(NumberField.class.getName() + ".convertGroupingToDecimalSeparator", true);
 
 	private NumberField(AbstractNumberFieldBuilder<T> builder) {
 		super(builder.createDocument());

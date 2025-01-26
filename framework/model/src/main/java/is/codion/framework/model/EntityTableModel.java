@@ -18,7 +18,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.FilterModel;
 import is.codion.common.model.selection.MultiSelection;
@@ -35,6 +34,9 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.util.Collection;
 
+import static is.codion.common.Configuration.booleanValue;
+import static is.codion.common.Configuration.enumValue;
+
 /**
  * Specifies a table model containing {@link Entity} instances.
  * @param <E> the type of {@link EntityEditModel} used by this {@link EntityTableModel}
@@ -48,7 +50,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	 * <li>Default value: {@link OnInsert#ADD_TOP}
 	 * </ul>
 	 */
-	PropertyValue<OnInsert> ON_INSERT = Configuration.enumValue(EntityTableModel.class.getName() + ".onInsert", OnInsert.class, OnInsert.ADD_TOP);
+	PropertyValue<OnInsert> ON_INSERT = enumValue(EntityTableModel.class.getName() + ".onInsert", OnInsert.class, OnInsert.ADD_TOP);
 
 	/**
 	 * Specifies whether table models handle entity edit events, by replacing updated entities
@@ -59,7 +61,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	 * @see #handleEditEvents()
 	 * @see EntityEditModel#POST_EDIT_EVENTS
 	 */
-	PropertyValue<Boolean> HANDLE_EDIT_EVENTS = Configuration.booleanValue(EntityTableModel.class.getName() + ".handleEditEvents", true);
+	PropertyValue<Boolean> HANDLE_EDIT_EVENTS = booleanValue(EntityTableModel.class.getName() + ".handleEditEvents", true);
 
 	/**
 	 * Defines the actions a table model can perform when entities are inserted via the associated edit model

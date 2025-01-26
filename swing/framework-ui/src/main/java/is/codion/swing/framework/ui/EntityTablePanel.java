@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.i18n.Messages;
@@ -129,6 +128,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static is.codion.common.Configuration.*;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.common.value.ValueSet.valueSet;
 import static is.codion.swing.common.ui.Utilities.*;
@@ -867,7 +867,7 @@ public class EntityTablePanel extends JPanel {
 	 * <pre>
 	 * {@code
 	 *   configureToolBar(layout -> layout.clear()
-	 *           .standard(ControlKeys.REFRESH)
+	 *           .control(ControlKeys.REFRESH)
 	 *           .separator()
 	 *           .control(createCustomControl())
 	 *           .separator()
@@ -905,7 +905,7 @@ public class EntityTablePanel extends JPanel {
 	 * <pre>
 	 * {@code
 	 *   configurePopupMenu(layout -> layout.clear()
-	 *           .standard(ControlKeys.REFRESH)
+	 *           .control(ControlKeys.REFRESH)
 	 *           .separator()
 	 *           .control(createCustomControl())
 	 *           .separator()
@@ -2074,7 +2074,7 @@ public class EntityTablePanel extends JPanel {
 		 * <li>Default value: true
 		 * </ul>
 		 */
-		public static final PropertyValue<Boolean> QUERY_HIDDEN_COLUMNS = Configuration.booleanValue(EntityTablePanel.class.getName() + ".queryHiddenColumns", true);
+		public static final PropertyValue<Boolean> QUERY_HIDDEN_COLUMNS = booleanValue(EntityTablePanel.class.getName() + ".queryHiddenColumns", true);
 
 		/**
 		 * Specifies whether the table model sort order is used as a basis for the query order by clause.
@@ -2084,7 +2084,7 @@ public class EntityTablePanel extends JPanel {
 		 * <li>Default value: false
 		 * </ul>
 		 */
-		public static final PropertyValue<Boolean> ORDER_QUERY_BY_SORT_ORDER = Configuration.booleanValue(EntityTablePanel.class.getName() + ".orderQueryBySortOrder", false);
+		public static final PropertyValue<Boolean> ORDER_QUERY_BY_SORT_ORDER = booleanValue(EntityTablePanel.class.getName() + ".orderQueryBySortOrder", false);
 
 		/**
 		 * Specifies the default initial table condition panel view
@@ -2094,7 +2094,7 @@ public class EntityTablePanel extends JPanel {
 		 * </ul>
 		 */
 		public static final PropertyValue<ConditionView> CONDITION_VIEW =
-						Configuration.enumValue(EntityTablePanel.class.getName() + ".conditionView",
+						enumValue(EntityTablePanel.class.getName() + ".conditionView",
 										ConditionView.class, HIDDEN);
 
 		/**
@@ -2105,7 +2105,7 @@ public class EntityTablePanel extends JPanel {
 		 * </ul>
 		 */
 		public static final PropertyValue<ConditionView> FILTER_VIEW =
-						Configuration.enumValue(EntityTablePanel.class.getName() + ".filterView",
+						enumValue(EntityTablePanel.class.getName() + ".filterView",
 										ConditionView.class, HIDDEN);
 
 		/**
@@ -2116,7 +2116,7 @@ public class EntityTablePanel extends JPanel {
 		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> SUMMARY_PANEL_VISIBLE =
-						Configuration.booleanValue(EntityTablePanel.class.getName() + ".summaryPanelVisible", false);
+						booleanValue(EntityTablePanel.class.getName() + ".summaryPanelVisible", false);
 
 		/**
 		 * Specifies whether to include the default popup menu on entity tables
@@ -2126,7 +2126,7 @@ public class EntityTablePanel extends JPanel {
 		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_POPUP_MENU =
-						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includePopupMenu", true);
+						booleanValue(EntityTablePanel.class.getName() + ".includePopupMenu", true);
 
 		/**
 		 * Specifies whether to include a {@link EntityPopupMenu} on this table, triggered with CTRL-ALT-V.
@@ -2136,7 +2136,7 @@ public class EntityTablePanel extends JPanel {
 		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_ENTITY_MENU =
-						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeEntityMenu", true);
+						booleanValue(EntityTablePanel.class.getName() + ".includeEntityMenu", true);
 
 		/**
 		 * Specifies whether to include a 'Clear' control in the popup menu.
@@ -2146,7 +2146,7 @@ public class EntityTablePanel extends JPanel {
 		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_CLEAR_CONTROL =
-						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeClearControl", false);
+						booleanValue(EntityTablePanel.class.getName() + ".includeClearControl", false);
 
 		/**
 		 * Specifies whether to include a condition panel.
@@ -2156,7 +2156,7 @@ public class EntityTablePanel extends JPanel {
 		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_CONDITIONS =
-						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeConditions", true);
+						booleanValue(EntityTablePanel.class.getName() + ".includeConditions", true);
 
 		/**
 		 * Specifies whether to include a filter panel.
@@ -2166,7 +2166,7 @@ public class EntityTablePanel extends JPanel {
 		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_FILTERS =
-						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeFilters", false);
+						booleanValue(EntityTablePanel.class.getName() + ".includeFilters", false);
 
 		/**
 		 * Specifies whether to include a summary panel.
@@ -2176,7 +2176,7 @@ public class EntityTablePanel extends JPanel {
 		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_SUMMARY =
-						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeSummary", true);
+						booleanValue(EntityTablePanel.class.getName() + ".includeSummary", true);
 
 		/**
 		 * Specifies whether to include a popup menu for configuring the table model limit.
@@ -2186,7 +2186,7 @@ public class EntityTablePanel extends JPanel {
 		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> INCLUDE_LIMIT_MENU =
-						Configuration.booleanValue(EntityTablePanel.class.getName() + ".includeLimitMenu", false);
+						booleanValue(EntityTablePanel.class.getName() + ".includeLimitMenu", false);
 
 		/**
 		 * Specifies whether to show an indeterminate progress bar while the model is refreshing.
@@ -2196,7 +2196,7 @@ public class EntityTablePanel extends JPanel {
 		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> REFRESH_PROGRESS_BAR =
-						Configuration.booleanValue(EntityTablePanel.class.getName() + ".refreshProgressBar", true);
+						booleanValue(EntityTablePanel.class.getName() + ".refreshProgressBar", true);
 
 		/**
 		 * Specifies whether the refresh button should always be visible or only when the condition panel is visible
@@ -2206,7 +2206,7 @@ public class EntityTablePanel extends JPanel {
 		 * </ul>
 		 */
 		public static final PropertyValue<RefreshButtonVisible> REFRESH_BUTTON_VISIBLE =
-						Configuration.enumValue(EntityTablePanel.class.getName() + ".refreshButtonVisible",
+						enumValue(EntityTablePanel.class.getName() + ".refreshButtonVisible",
 										RefreshButtonVisible.class, RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE);
 
 		/**
@@ -2217,7 +2217,7 @@ public class EntityTablePanel extends JPanel {
 		 * </ul>
 		 */
 		public static final PropertyValue<ColumnSelection> COLUMN_SELECTION =
-						Configuration.enumValue(EntityTablePanel.class.getName() + ".columnSelection", ColumnSelection.class, ColumnSelection.DIALOG);
+						enumValue(EntityTablePanel.class.getName() + ".columnSelection", ColumnSelection.class, ColumnSelection.DIALOG);
 
 		/**
 		 * Specifies how column selection is presented to the user.
@@ -2227,7 +2227,7 @@ public class EntityTablePanel extends JPanel {
 		 * </ul>
 		 */
 		public static final PropertyValue<AutoResizeModeSelection> AUTO_RESIZE_MODE_SELECTION =
-						Configuration.enumValue(EntityTablePanel.class.getName() + ".autoResizeModeSelection", AutoResizeModeSelection.class, AutoResizeModeSelection.DIALOG);
+						enumValue(EntityTablePanel.class.getName() + ".autoResizeModeSelection", AutoResizeModeSelection.class, AutoResizeModeSelection.DIALOG);
 
 		/**
 		 * Specifies how the edit an attribute action is presented to the user.
@@ -2237,7 +2237,7 @@ public class EntityTablePanel extends JPanel {
 		 * </ul>
 		 */
 		public static final PropertyValue<EditAttributeSelection> EDIT_ATTRIBUTE_SELECTION =
-						Configuration.enumValue(EntityTablePanel.class.getName() + ".editAttributeSelection", EditAttributeSelection.class, EditAttributeSelection.MENU);
+						enumValue(EntityTablePanel.class.getName() + ".editAttributeSelection", EditAttributeSelection.class, EditAttributeSelection.MENU);
 
 		/**
 		 * Specifies the default popup menu layout.
@@ -2261,7 +2261,7 @@ public class EntityTablePanel extends JPanel {
 		 * @see EntityTablePanel#configurePopupMenu(Consumer)
 		 */
 		public static final PropertyValue<Controls.Layout> POPUP_MENU_LAYOUT =
-						Configuration.value(EntityTablePanel.class.getName() + ".popupMenuLayout", string -> {
+						value(EntityTablePanel.class.getName() + ".popupMenuLayout", string -> {
 							throw new UnsupportedOperationException("Parsing the popup menu layout from a system property is not supported");
 						});
 
@@ -2288,7 +2288,7 @@ public class EntityTablePanel extends JPanel {
 		 * @see EntityTablePanel#configureToolBar(Consumer)
 		 */
 		public static final PropertyValue<Controls.Layout> TOOLBAR_LAYOUT =
-						Configuration.value(EntityTablePanel.class.getName() + ".toolBarLayout", string -> {
+						value(EntityTablePanel.class.getName() + ".toolBarLayout", string -> {
 							throw new UnsupportedOperationException("Parsing the toolbar layout from a system property is not supported");
 						});
 

@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.value.Value;
@@ -64,6 +63,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
+import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.splitPane;
@@ -111,7 +111,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 	 * </ul>
 	 */
 	public static final PropertyValue<Boolean> INCLUDE_CONTROLS =
-					Configuration.booleanValue(TabbedDetailLayout.class.getName() + ".includeControls", true);
+					booleanValue(TabbedDetailLayout.class.getName() + ".includeControls", true);
 
 	private static final MessageBundle MESSAGES =
 					messageBundle(TabbedDetailLayout.class, getBundle(TabbedDetailLayout.class.getName()));

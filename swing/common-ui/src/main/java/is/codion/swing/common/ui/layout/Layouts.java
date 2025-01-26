@@ -18,12 +18,13 @@
  */
 package is.codion.swing.common.ui.layout;
 
-import is.codion.common.Configuration;
 import is.codion.common.value.Value;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+
+import static is.codion.common.Configuration.integerValue;
 
 /**
  * A utility class for layouts. All layouts created use the centrally configured hgap and vgap.
@@ -40,7 +41,7 @@ public final class Layouts {
 	 * @see #gridLayout(int, int)
 	 * @see #flexibleGridLayout(int, int)
 	 */
-	public static final Value<Integer> GAP = Configuration.integerValue(Layouts.class.getName() + ".gap", DEFAULT_GAP);
+	public static final Value<Integer> GAP = integerValue(Layouts.class.getName() + ".gap", DEFAULT_GAP);
 
 	private Layouts() {}
 

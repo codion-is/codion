@@ -18,7 +18,6 @@
  */
 package is.codion.common.model.condition;
 
-import is.codion.common.Configuration;
 import is.codion.common.Operator;
 import is.codion.common.observable.Observer;
 import is.codion.common.property.PropertyValue;
@@ -34,6 +33,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import static is.codion.common.Configuration.booleanValue;
+import static is.codion.common.Configuration.enumValue;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static java.util.ResourceBundle.getBundle;
 
@@ -52,7 +53,7 @@ public interface ConditionModel<T> {
 	 * </ul>
 	 */
 	PropertyValue<Wildcard> WILDCARD =
-					Configuration.enumValue(ConditionModel.class.getName() + ".wildard",
+					enumValue(ConditionModel.class.getName() + ".wildard",
 									Wildcard.class, Wildcard.PREFIX_AND_POSTFIX);
 
 	/**
@@ -63,7 +64,7 @@ public interface ConditionModel<T> {
 	 * </ul>
 	 */
 	PropertyValue<Boolean> CASE_SENSITIVE =
-					Configuration.booleanValue(ConditionModel.class.getName() + ".caseSensitive", false);
+					booleanValue(ConditionModel.class.getName() + ".caseSensitive", false);
 
 	/**
 	 * The possible wildcard types

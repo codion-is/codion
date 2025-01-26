@@ -18,7 +18,6 @@
  */
 package is.codion.framework.db;
 
-import is.codion.common.Configuration;
 import is.codion.common.observable.Observer;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
@@ -32,6 +31,8 @@ import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+import static is.codion.common.Configuration.stringValue;
+import static is.codion.common.Configuration.value;
 import static java.util.stream.StreamSupport.stream;
 
 /**
@@ -67,7 +68,7 @@ public interface EntityConnectionProvider extends AutoCloseable {
 	 * <li>Default value: null
 	 * </ul>
 	 */
-	PropertyValue<DomainType> CLIENT_DOMAIN_TYPE = Configuration.value("codion.client.domainType", DomainType::domainType);
+	PropertyValue<DomainType> CLIENT_DOMAIN_TYPE = value("codion.client.domainType", DomainType::domainType);
 
 	/**
 	 * Specifies whether the client should connect locally, via rmi or http,
@@ -80,7 +81,7 @@ public interface EntityConnectionProvider extends AutoCloseable {
 	 * @see #CONNECTION_TYPE_REMOTE
 	 * @see #CONNECTION_TYPE_HTTP
 	 */
-	PropertyValue<String> CLIENT_CONNECTION_TYPE = Configuration.stringValue("codion.client.connectionType", CONNECTION_TYPE_LOCAL);
+	PropertyValue<String> CLIENT_CONNECTION_TYPE = stringValue("codion.client.connectionType", CONNECTION_TYPE_LOCAL);
 
 	/**
 	 * Returns the domain entities this connection is based on

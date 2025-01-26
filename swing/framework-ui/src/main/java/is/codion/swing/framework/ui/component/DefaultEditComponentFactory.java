@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.ui.component;
 
-import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -36,6 +35,7 @@ import javax.swing.JComponent;
 import javax.swing.JTextField;
 import java.time.temporal.Temporal;
 
+import static is.codion.common.Configuration.integerValue;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.util.Objects.requireNonNull;
 
@@ -54,7 +54,7 @@ public class DefaultEditComponentFactory<T, C extends JComponent> implements Edi
 	 * </ul>
 	 */
 	public static final PropertyValue<Integer> MAXIMUM_TEXT_FIELD_LENGTH =
-					Configuration.integerValue(DefaultEditComponentFactory.class.getName() + ".maximumTextFieldLength", 30);
+					integerValue(DefaultEditComponentFactory.class.getName() + ".maximumTextFieldLength", 30);
 
 	private final Attribute<T> attribute;
 

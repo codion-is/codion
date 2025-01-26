@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.model.component.combobox;
 
-import is.codion.common.Configuration;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
 import is.codion.common.model.FilterModel;
@@ -35,6 +34,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static is.codion.common.Configuration.stringValue;
 import static is.codion.common.item.Item.item;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
@@ -55,7 +55,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	 * </ul>
 	 * @see Builder#includeNull(boolean)
 	 */
-	PropertyValue<String> NULL_CAPTION = Configuration.stringValue(FilterComboBoxModel.class.getName() + ".nullCaption", "-");
+	PropertyValue<String> NULL_CAPTION = stringValue(FilterComboBoxModel.class.getName() + ".nullCaption", "-");
 
 	@Override
 	ComboBoxItems<T> items();

@@ -18,7 +18,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
@@ -29,6 +28,9 @@ import is.codion.framework.domain.entity.EntityType;
 
 import java.util.List;
 import java.util.Optional;
+
+import static is.codion.common.Configuration.booleanValue;
+import static is.codion.common.Configuration.stringValue;
 
 /**
  * A central application model class.
@@ -44,7 +46,7 @@ public interface EntityApplicationModel<E extends EntityEditModel, T extends Ent
 	 * <li>Default value: [empty string]
 	 * </ul>
 	 */
-	PropertyValue<String> USERNAME_PREFIX = Configuration.stringValue("codion.client.usernamePrefix", "");
+	PropertyValue<String> USERNAME_PREFIX = stringValue("codion.client.usernamePrefix", "");
 
 	/**
 	 * Specifies whether user authentication is required
@@ -53,7 +55,7 @@ public interface EntityApplicationModel<E extends EntityEditModel, T extends Ent
 	 * <li>Default value: true
 	 * </ul>
 	 */
-	PropertyValue<Boolean> AUTHENTICATION_REQUIRED = Configuration.booleanValue("codion.client.authenticationRequired", true);
+	PropertyValue<Boolean> AUTHENTICATION_REQUIRED = booleanValue("codion.client.authenticationRequired", true);
 
 	/**
 	 * Specifies whether the client saves the last successful login username,
@@ -63,7 +65,7 @@ public interface EntityApplicationModel<E extends EntityEditModel, T extends Ent
 	 * <li>Default value: true
 	 * </ul>
 	 */
-	PropertyValue<Boolean> SAVE_DEFAULT_USERNAME = Configuration.booleanValue("codion.client.saveDefaultUsername", true);
+	PropertyValue<Boolean> SAVE_DEFAULT_USERNAME = booleanValue("codion.client.saveDefaultUsername", true);
 
 	/**
 	 * @return the current user
