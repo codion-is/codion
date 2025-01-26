@@ -21,6 +21,7 @@ package is.codion.framework.domain.entity.attribute;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.condition.ColumnCondition;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -193,7 +194,7 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
 	}
 
 	/**
-	 * Fetches a single value from a result set.
+	 * Fetches a single value from a {@link ResultSet}.
 	 * @param <C> the type of the column value being fetched
 	 */
 	interface Fetcher<C> {
@@ -206,6 +207,22 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
 		 * @throws java.sql.SQLException in case of an exception
 		 */
 		C get(ResultSet resultSet, int index) throws SQLException;
+	}
+
+	/**
+	 * Sets a parameter value in a {@link PreparedStatement}
+	 * @param <C> the column value type
+	 */
+	interface Setter<C> {
+
+		/**
+		 * Sets a parameter value in a {@link PreparedStatement}
+		 * @param statement the statement
+		 * @param index the parameter index
+		 * @param value the value to set, may be null
+		 * @throws SQLException in case of an exception
+		 */
+		void set(PreparedStatement statement, int index, C value) throws SQLException;
 	}
 
 	/**

@@ -33,6 +33,7 @@ Codion Change Log
 - Entity.entityType() renamed type().
 - EntityDefinition.entityType() renamed type().
 - Entity.Key.entityType() renamed type().
+- Column.Setter added.
 ### is.codion.framework.model
 - DefaultForeignKeyConditionModel now links search models to their respective operands.
 - ForeignKeyDetailModelLink, configuration methods renamed along with associated properties.

@@ -1399,30 +1399,15 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		return statement;
 	}
 
-	private static void setParameterValue(PreparedStatement statement, ColumnDefinition<Object> columnDefinition,
-																				Object value, int parameterIndex) throws SQLException {
-		Object columnValue = columnValue(value, statement, columnDefinition.converter());
+	private static <T> void setParameterValue(PreparedStatement statement, ColumnDefinition<T> columnDefinition,
+																						T value, int parameterIndex) throws SQLException {
 		try {
-			if (columnValue == null) {
-				statement.setNull(parameterIndex, columnDefinition.type());
-			}
-			else {
-				statement.setObject(parameterIndex, columnValue, columnDefinition.type());
-			}
+			columnDefinition.set(statement, parameterIndex, value);
 		}
 		catch (SQLException e) {
 			LOG.error("Unable to set parameter: {}, value: {}, value class: {}", columnDefinition, value, value == null ? "null" : value.getClass(), e);
 			throw e;
 		}
-	}
-
-	private static Object columnValue(Object value, PreparedStatement statement,
-																		Column.Converter<Object, Object> converter) throws SQLException {
-		if (value != null || converter.handlesNull()) {
-			return converter.toColumnValue(value, statement);
-		}
-
-		return null;
 	}
 
 	/**

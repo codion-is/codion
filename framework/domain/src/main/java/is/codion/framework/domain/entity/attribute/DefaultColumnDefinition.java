@@ -20,9 +20,11 @@ package is.codion.framework.domain.entity.attribute;
 
 import is.codion.framework.domain.entity.attribute.Column.Converter;
 import is.codion.framework.domain.entity.attribute.Column.Fetcher;
+import is.codion.framework.domain.entity.attribute.Column.Setter;
 
 import java.io.Serial;
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -63,6 +65,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 	private final transient String name;
 	private final transient String expression;
 	private final transient Fetcher<Object> fetcher;
+	private final transient Setter<Object> setter;
 	private final transient Converter<T, Object> converter;
 
 	protected DefaultColumnDefinition(DefaultColumnDefinitionBuilder<T, ?> builder) {
@@ -76,6 +79,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		this.name = builder.name;
 		this.expression = builder.expression == null ? builder.name : builder.expression;
 		this.fetcher = builder.fetcher;
+		this.setter = builder.setter;
 		this.converter = builder.converter;
 		this.groupBy = builder.groupBy;
 		this.aggregate = builder.aggregate;
@@ -173,6 +177,38 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		return null;
 	}
 
+	@Override
+	public final void set(PreparedStatement statement, int index, T value) throws SQLException {
+		setter.set(statement, index, columnValue(statement, value));
+	}
+
+	private Object columnValue(PreparedStatement statement, T value) throws SQLException {
+		if (value != null || converter.handlesNull()) {
+			return converter.toColumnValue(value, statement);
+		}
+
+		return null;
+	}
+
+	private static final class DefaultSetter implements Setter<Object> {
+
+		private final int type;
+
+		private DefaultSetter(int type) {
+			this.type = type;
+		}
+
+		@Override
+		public void set(PreparedStatement statement, int index, Object value) throws SQLException {
+			if (value == null) {
+				statement.setNull(index, type);
+			}
+			else {
+				statement.setObject(index, value, type);
+			}
+		}
+	}
+
 	private static final class DefaultConverter implements Converter<Object, Object> {
 		@Override
 		public Object toColumnValue(Object value, Statement statement) {
@@ -242,6 +278,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		private String name;
 		private String expression;
 		private Fetcher<Object> fetcher;
+		private Setter<Object> setter;
 		private Converter<T, Object> converter;
 		private boolean groupBy;
 		private boolean aggregate;
@@ -263,6 +300,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 			this.searchable = false;
 			this.name = column.name();
 			this.fetcher = (Fetcher<Object>) fetcher(this.type, column);
+			this.setter = new DefaultSetter(this.type);
 			this.converter = (Converter<T, Object>) DEFAULT_CONVERTER;
 			this.groupBy = false;
 			this.aggregate = false;
@@ -294,6 +332,26 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 			this.type = sqlType(columnClass);
 			this.converter = (Converter<T, Object>) requireNonNull(converter);
 			this.fetcher = (Fetcher<Object>) requireNonNull(fetcher);
+			return self();
+		}
+
+		@Override
+		public <C> B columnClass(Class<C> columnClass, Converter<T, C> converter,
+														 Setter<C> setter) {
+			this.type = sqlType(columnClass);
+			this.converter = (Converter<T, Object>) requireNonNull(converter);
+			this.fetcher = fetcher(this.type, (Column<Object>) super.attribute());
+			this.setter = (Setter<Object>) requireNonNull(setter);
+			return self();
+		}
+
+		@Override
+		public <C> B columnClass(Class<C> columnClass, Converter<T, C> converter,
+														 Fetcher<C> fetcher, Setter<C> setter) {
+			this.type = sqlType(columnClass);
+			this.converter = (Converter<T, Object>) requireNonNull(converter);
+			this.fetcher = (Fetcher<Object>) requireNonNull(fetcher);
+			this.setter = (Setter<Object>) requireNonNull(setter);
 			return self();
 		}
 

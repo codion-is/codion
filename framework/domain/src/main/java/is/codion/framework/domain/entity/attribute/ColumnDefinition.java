@@ -20,7 +20,9 @@ package is.codion.framework.domain.entity.attribute;
 
 import is.codion.framework.domain.entity.attribute.Column.Converter;
 import is.codion.framework.domain.entity.attribute.Column.Fetcher;
+import is.codion.framework.domain.entity.attribute.Column.Setter;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -115,13 +117,22 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
 	boolean searchable();
 
 	/**
-	 * Fetches a value for this column from a ResultSet
-	 * @param resultSet the ResultSet
+	 * Fetches a value for this column from a {@link ResultSet}
+	 * @param resultSet the {@link ResultSet}
 	 * @param index this columns index in the result
-	 * @return a single value fetched from the given ResultSet
+	 * @return a single value fetched from the given {@link ResultSet}
 	 * @throws SQLException in case of an exception
 	 */
 	T get(ResultSet resultSet, int index) throws SQLException;
+
+	/**
+	 * Sets a parameter for this column in a {@link PreparedStatement}
+	 * @param statement the statement
+	 * @param index the parameter index
+	 * @param value the value to set, may be null
+	 * @throws SQLException in case of an exception
+	 */
+	void set(PreparedStatement statement, int index, T value) throws SQLException;
 
 	/**
 	 * Builds a {@link ColumnDefinition}
@@ -144,10 +155,31 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
 		 * @param <C> the column type
 		 * @param columnClass the underlying column type class
 		 * @param converter the converter to use when converting to and from column values
-		 * @param fetcher the fetcher to use to retrieve the value from a ResultSet
+		 * @param fetcher the fetcher to use to retrieve the value from a {@link ResultSet}
 		 * @return this instance
 		 */
 		<C> B columnClass(Class<C> columnClass, Converter<T, C> converter, Fetcher<C> fetcher);
+
+		/**
+		 * Sets the actual column type, and the required {@link Converter}.
+		 * @param <C> the column type
+		 * @param columnClass the underlying column type class
+		 * @param converter the converter to use when converting to and from column values
+		 * @param setter the setter to use when setting parameters in a {@link PreparedStatement}
+		 * @return this instance
+		 */
+		<C> B columnClass(Class<C> columnClass, Converter<T, C> converter, Setter<C> setter);
+
+		/**
+		 * Sets the actual column type, and the required {@link Converter}.
+		 * @param <C> the column type
+		 * @param columnClass the underlying column type class
+		 * @param converter the converter to use when converting to and from column values
+		 * @param fetcher the fetcher to use to retrieve the value from a {@link ResultSet}
+		 * @param setter the setter to use when setting parameters in a {@link PreparedStatement}
+		 * @return this instance
+		 */
+		<C> B columnClass(Class<C> columnClass, Converter<T, C> converter, Fetcher<C> fetcher, Setter<C> setter);
 
 		/**
 		 * Sets the actual string used as column name when inserting and updating.
