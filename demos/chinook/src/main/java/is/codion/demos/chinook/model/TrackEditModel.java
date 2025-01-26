@@ -50,7 +50,7 @@ public final class TrackEditModel extends SwingEntityEditModel {
 		// Collect the album keys of tracks which rating is
 		// modified, to propagate to the ratingUpdated event
 		List<Entity.Key> albumKeys = entities.stream()
-						.filter(entity -> entity.entityType().equals(Track.TYPE))
+						.filter(entity -> entity.type().equals(Track.TYPE))
 						.filter(track -> track.modified(Track.RATING))
 						.map(track -> track.key(Track.ALBUM_FK))
 						.toList();
