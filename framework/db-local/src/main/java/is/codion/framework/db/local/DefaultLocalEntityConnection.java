@@ -1518,11 +1518,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 			String stringValue;
 			try {
 				Column.Converter<Object, Object> converter = columnDefinition.converter();
-				if (value == null && !converter.handlesNull()) {
-					columnValue = null;
+				if (value != null || converter.handlesNull()) {
+					columnValue = converter.fromColumnValue(value);
 				}
 				else {
-					columnValue = converter.toColumnValue(value, null);
+					columnValue = null;
 				}
 				stringValue = String.valueOf(value);
 			}
