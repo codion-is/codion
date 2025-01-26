@@ -653,19 +653,17 @@ public final class AbstractEntityEditModelTest {
 
 	@Test
 	public void revert() {
-		EntityEditModel editModel = new TestEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
 		EntityConnection connection = employeeEditModel.connection();
 		Entity martin = connection.selectSingle(Employee.NAME.equalTo("MARTIN"));
-		EntityEditor editor = editModel.editor();
 		editor.set(martin);
 
-		editModel.editor().value(Employee.NAME).set("newname");
+		editor.value(Employee.NAME).set("newname");
 		assertTrue(editor.modified().get());
-		editModel.editor().value(Employee.NAME).revert();
+		editor.value(Employee.NAME).revert();
 		assertFalse(editor.modified().get());
 
-		editModel.editor().value(Employee.NAME).set("another");
-		editModel.editor().value(Employee.HIREDATE).set(LocalDate.now());
+		editor.value(Employee.NAME).set("another");
+		editor.value(Employee.HIREDATE).set(LocalDate.now());
 		assertTrue(editor.modified().get());
 		editor.revert();
 		assertFalse(editor.modified().get());

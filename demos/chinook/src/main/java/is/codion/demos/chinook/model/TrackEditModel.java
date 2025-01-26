@@ -27,7 +27,9 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
+
+import static java.util.stream.Collectors.toSet;
 
 public final class TrackEditModel extends SwingEntityEditModel {
 
@@ -35,9 +37,8 @@ public final class TrackEditModel extends SwingEntityEditModel {
 
 	public TrackEditModel(EntityConnectionProvider connectionProvider) {
 		super(Track.TYPE, connectionProvider);
-		// Create and populates the combo box models for the given foreign keys,
-		// otherwise this would happen when the respective combo boxes are created
-		// which happens on the Event Dispatch Thread.
+		// Creates and populates the combo box models for the given foreign keys, otherwise this
+		// would happen when the associated combo boxes are created, as the UI is initialized.
 		initializeComboBoxModels(Track.MEDIATYPE_FK, Track.GENRE_FK);
 	}
 
@@ -47,15 +48,17 @@ public final class TrackEditModel extends SwingEntityEditModel {
 
 	@Override
 	protected Collection<Entity> update(Collection<Entity> entities, EntityConnection connection) {
-		// Collect the album keys of tracks which rating is
-		// modified, to propagate to the ratingUpdated event
-		List<Entity.Key> albumKeys = entities.stream()
+		// Find tracks which rating has been modified and collect the
+		// album keys, in order to propagate to the ratingUpdated event
+		Set<Entity.Key> albumKeys = entities.stream()
 						.filter(entity -> entity.type().equals(Track.TYPE))
 						.filter(track -> track.modified(Track.RATING))
 						.map(track -> track.key(Track.ALBUM_FK))
-						.toList();
+						.collect(toSet());
 		Collection<Entity> updated = super.update(entities, connection);
-		ratingUpdated.accept(albumKeys);
+		if (!albumKeys.isEmpty()) {
+			ratingUpdated.accept(albumKeys);
+		}
 
 		return updated;
 	}

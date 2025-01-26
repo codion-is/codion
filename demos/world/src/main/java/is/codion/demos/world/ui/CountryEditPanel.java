@@ -18,9 +18,11 @@
  */
 package is.codion.demos.world.ui;
 
+import is.codion.common.model.FilterModel.Items;
 import is.codion.demos.world.domain.api.World.City;
 import is.codion.demos.world.domain.api.World.Country;
 import is.codion.demos.world.model.CountryEditModel;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -35,8 +37,11 @@ final class CountryEditPanel extends EntityEditPanel {
 
 	private static final int PREFERRED_COMBO_BOX_WIDTH = 120;
 
-	CountryEditPanel(SwingEntityEditModel editModel) {
+	private final Items<Entity> cityTableItems;
+
+	CountryEditPanel(SwingEntityEditModel editModel, Items<Entity> cityTableItems) {
 		super(editModel);
+		this.cityTableItems = cityTableItems;
 	}
 
 	@Override
@@ -125,14 +130,16 @@ final class CountryEditPanel extends EntityEditPanel {
 	}
 
 	private EntityEditPanel createCapitalEditPanel() {
-		CityEditPanel capitalEditPanel = new CityEditPanel(new SwingEntityEditModel(City.TYPE, editModel().connectionProvider()));
+		SwingEntityEditModel cityEditModel = new SwingEntityEditModel(City.TYPE, editModel().connectionProvider());
+		CityEditPanel capitalEditPanel = new CityEditPanel(cityEditModel);
 		if (editModel().editor().exists().get()) {
-			//if an existing country is selected, then we don't allow it to be changed
+			//add the city to the table model items when a new city is inserted
+			cityEditModel.afterInsert().addConsumer(cityTableItems::add);
+			//if an existing country is selected, then we assume we are adding a city in that country
 			capitalEditPanel.editModel().editor().value(City.COUNTRY_FK).set(editModel().editor().get());
 			//initialize the panel components, so we can configure the country component
 			capitalEditPanel.initialize();
-			//disable the country selection component
-			//and change the initial focus property
+			//disables the country selection component and changes the initial focus property
 			capitalEditPanel.disableCountryInput();
 		}
 

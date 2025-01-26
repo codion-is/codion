@@ -11,7 +11,7 @@ dependencies {
     implementation(project(":codion-plugin-flatlaf-intellij-themes"))
 
     testImplementation(project(":codion-framework-domain-test"))
-    testImplementation(project(":codion-swing-framework-ui-test"))
+    testImplementation(project(":codion-framework-db-local"))
 
     runtimeOnly(project(":codion-dbms-h2"))
     runtimeOnly(libs.h2)

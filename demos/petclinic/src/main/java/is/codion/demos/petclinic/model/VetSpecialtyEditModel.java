@@ -20,10 +20,12 @@ package is.codion.demos.petclinic.model;
 
 import is.codion.demos.petclinic.domain.api.VetSpecialty;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.DefaultEntityValidator;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+
+import java.util.Collection;
+import java.util.Map;
 
 import static is.codion.framework.db.EntityConnection.Count.where;
 import static is.codion.framework.domain.entity.condition.Condition.and;
@@ -35,21 +37,28 @@ public final class VetSpecialtyEditModel extends SwingEntityEditModel {
 		initializeComboBoxModels(VetSpecialty.VET_FK, VetSpecialty.SPECIALTY_FK);
 		editor().value(VetSpecialty.VET_FK).persist().set(false);
 		editor().value(VetSpecialty.SPECIALTY_FK).persist().set(false);
-		editor().validator().set(new VetSpecialtyValidator());
+		beforeUpdate().addConsumer(this::validate);
+		beforeInsert().addConsumer(this::validate);
 	}
 
-	private final class VetSpecialtyValidator extends DefaultEntityValidator {
+	private void validate(Map<Entity.Key, Entity> entities) {
+		validate(entities.values());
+	}
 
-		@Override
-		public void validate(Entity entity) {
-			super.validate(entity);
-			int rowCount = connection().count(where(and(
-							VetSpecialty.SPECIALTY.equalTo(entity.get(VetSpecialty.SPECIALTY)),
-							VetSpecialty.VET.equalTo(entity.get(VetSpecialty.VET)))));
-			if (rowCount > 0) {
-				throw new ValidationException(VetSpecialty.SPECIALTY_FK,
-								entity.get(VetSpecialty.SPECIALTY_FK), "Vet/specialty combination already exists");
-			}
+	private void validate(Collection<Entity> entities) {
+		// Perform the standard validation in order to
+		// assert that all required values are present
+		editor().validate(entities);
+		entities.forEach(this::validate);
+	}
+
+	private void validate(Entity entity) {
+		int rowCount = connection().count(where(and(
+						VetSpecialty.SPECIALTY.equalTo(entity.get(VetSpecialty.SPECIALTY)),
+						VetSpecialty.VET.equalTo(entity.get(VetSpecialty.VET)))));
+		if (rowCount > 0) {
+			throw new ValidationException(VetSpecialty.SPECIALTY_FK,
+							entity.get(VetSpecialty.SPECIALTY_FK), "Vet/specialty combination already exists");
 		}
 	}
 }

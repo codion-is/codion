@@ -460,7 +460,7 @@ Custom validation of Entities is performed by implementing a {url-javadoc}{frame
 
 The *DefaultEntityValidator* implementation provides basic range and null validation and can be extended to provide further validations.
 Note that validation is performed quite often, so it should not perform expensive operations.
-Validation requiring database access for example belongs in the application model or ui.
+Validation requiring database access for example belongs in a `beforeInsert` and/or `beforeUpdate` listener in the edit model.
 
 [source,java,indent=0]
 ----
