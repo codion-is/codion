@@ -19,7 +19,11 @@
 package is.codion.framework.model;
 
 import is.codion.common.property.PropertyValue;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+
+import java.util.Collection;
+import java.util.function.Consumer;
 
 import static is.codion.common.Configuration.booleanValue;
 
@@ -98,7 +102,24 @@ public interface ForeignKeyModelLink extends ModelLink {
 	/**
 	 * Builds a {@link ForeignKeyModelLink}
 	 */
-	interface Builder {
+	interface Builder extends ModelLink.Builder<Builder> {
+
+		/**
+		 * <p>Note that this overrides {@link #refreshOnSelection(boolean)},
+		 * {@link #clearConditionOnEmptySelection(boolean)} and {@link #clearValueOnEmptySelection(boolean)}
+		 * <br>
+		 * {@inheritDoc}
+		 */
+		@Override
+		Builder onSelection(Consumer<Collection<Entity>> onSelection);
+
+		/**
+		 * <p>Note that this overrides {@link #setValueOnInsert(boolean)}
+		 * <br>
+		 * {@inheritDoc}
+		 */
+		@Override
+		Builder onInsert(Consumer<Collection<Entity>> onInsert);
 
 		/**
 		 * @param setConditionOnInsert specifies whether the linked table model should automatically search by the inserted entity
@@ -138,12 +159,6 @@ public interface ForeignKeyModelLink extends ModelLink {
 		 * @see ForeignKeyModelLink#CLEAR_CONDITION_ON_EMPTY_SELECTION
 		 */
 		Builder clearConditionOnEmptySelection(boolean clearConditionOnEmptySelection);
-
-		/**
-		 * @param active the initial active state of this link
-		 * @return this builder
-		 */
-		Builder active(boolean active);
 
 		/**
 		 * @return a {@link ForeignKeyModelLink}

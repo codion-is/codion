@@ -80,16 +80,18 @@ public interface ModelLink {
 	 * <p>Note that if the linked model contains a table model it is configured so that a query condition is required for it to show
 	 * any data, via {@link EntityQueryModel#conditionRequired()}
 	 * @param model the model to link
+	 * @param <B> the builder type
 	 * @return a {@link Builder} instance
 	 */
-	static Builder builder(EntityModel<?, ?> model) {
-		return new DefaultModelLink.DefaultBuilder(model);
+	static <B extends Builder<B>> Builder<B> builder(EntityModel<?, ?> model) {
+		return new DefaultModelLink.DefaultBuilder<>(model);
 	}
 
 	/**
 	 * Builds a {@link ModelLink}
+	 * @param <B> the builder type
 	 */
-	interface Builder {
+	interface Builder<B extends Builder<B>> {
 
 		/**
 		 * Note that only active model links respond to parent model selection by default.
@@ -97,31 +99,31 @@ public interface ModelLink {
 		 * @return this builder
 		 * @see #active()
 		 */
-		Builder onSelection(Consumer<Collection<Entity>> onSelection);
+		B onSelection(Consumer<Collection<Entity>> onSelection);
 
 		/**
 		 * @param onInsert called when an insert is performed in the parent model
 		 * @return this builder
 		 */
-		Builder onInsert(Consumer<Collection<Entity>> onInsert);
+		B onInsert(Consumer<Collection<Entity>> onInsert);
 
 		/**
 		 * @param onUpdate called when an update is performed in the parent model
 		 * @return this builder
 		 */
-		Builder onUpdate(Consumer<Map<Entity.Key, Entity>> onUpdate);
+		B onUpdate(Consumer<Map<Entity.Key, Entity>> onUpdate);
 
 		/**
 		 * @param onDelete called when a delete is performed in the parent model
 		 * @return this builder
 		 */
-		Builder onDelete(Consumer<Collection<Entity>> onDelete);
+		B onDelete(Consumer<Collection<Entity>> onDelete);
 
 		/**
 		 * @param active the initial active state of this link
 		 * @return this builder
 		 */
-		Builder active(boolean active);
+		B active(boolean active);
 
 		/**
 		 * @return a {@link ModelLink}

@@ -81,7 +81,7 @@ final class DefaultModelLink implements ModelLink {
 		onDelete.accept(deletedEntities);
 	}
 
-	static class DefaultBuilder implements ModelLink.Builder {
+	static class DefaultBuilder<B extends ModelLink.Builder<B>> implements ModelLink.Builder<B> {
 
 		private static final Consumer<?> EMPTY_CONSUMER = new EmptyConsumer<>();
 
@@ -98,33 +98,33 @@ final class DefaultModelLink implements ModelLink {
 		}
 
 		@Override
-		public Builder onSelection(Consumer<Collection<Entity>> onSelection) {
+		public B onSelection(Consumer<Collection<Entity>> onSelection) {
 			this.onSelection = requireNonNull(onSelection);
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder onInsert(Consumer<Collection<Entity>> onInsert) {
+		public B onInsert(Consumer<Collection<Entity>> onInsert) {
 			this.onInsert = requireNonNull(onInsert);
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder onUpdate(Consumer<Map<Entity.Key, Entity>> onUpdate) {
+		public B onUpdate(Consumer<Map<Entity.Key, Entity>> onUpdate) {
 			this.onUpdate = requireNonNull(onUpdate);
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder onDelete(Consumer<Collection<Entity>> onDelete) {
+		public B onDelete(Consumer<Collection<Entity>> onDelete) {
 			this.onDelete = requireNonNull(onDelete);
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder active(boolean active) {
+		public B active(boolean active) {
 			this.active = active;
-			return this;
+			return (B) this;
 		}
 
 		@Override

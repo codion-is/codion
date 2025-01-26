@@ -42,10 +42,10 @@ final class DefaultForeignKeyModelLink implements ForeignKeyModelLink {
 
 	private DefaultForeignKeyModelLink(DefaultBuilder builder) {
 		this.modelLink = ModelLink.builder(builder.model)
-						.onSelection(new OnSelection())
-						.onInsert(new OnInsert())
-						.onUpdate(new OnUpdate())
-						.onDelete(new OnDelete())
+						.onSelection(builder.onSelection == null ? new OnSelection() : builder.onSelection)
+						.onInsert(builder.onInsert == null ? new OnInsert() : builder.onInsert)
+						.onUpdate(builder.onUpdate == null ? new OnUpdate() : builder.onUpdate)
+						.onDelete(builder.onDelete == null ? new OnDelete() : builder.onDelete)
 						.active(builder.active)
 						.build();
 		this.foreignKey = builder.foreignKey;
@@ -189,6 +189,11 @@ final class DefaultForeignKeyModelLink implements ForeignKeyModelLink {
 		private final EntityModel<?, ?> model;
 		private final ForeignKey foreignKey;
 
+		private Consumer<Collection<Entity>> onSelection;
+		private Consumer<Collection<Entity>> onInsert;
+		private Consumer<Map<Entity.Key, Entity>> onUpdate;
+		private Consumer<Collection<Entity>> onDelete;
+
 		private boolean clearValueOnEmptySelection = CLEAR_VALUE_ON_EMPTY_SELECTION.getOrThrow();
 		private boolean clearConditionOnEmptySelection = CLEAR_CONDITION_ON_EMPTY_SELECTION.getOrThrow();
 		private boolean setValueOnInsert = SET_VALUE_ON_INSERT.getOrThrow();
@@ -199,6 +204,30 @@ final class DefaultForeignKeyModelLink implements ForeignKeyModelLink {
 		DefaultBuilder(EntityModel<?, ?> model, ForeignKey foreignKey) {
 			this.model = requireNonNull(model);
 			this.foreignKey = requireNonNull(foreignKey);
+		}
+
+		@Override
+		public Builder onSelection(Consumer<Collection<Entity>> onSelection) {
+			this.onSelection = requireNonNull(onSelection);
+			return this;
+		}
+
+		@Override
+		public Builder onInsert(Consumer<Collection<Entity>> onInsert) {
+			this.onInsert = requireNonNull(onInsert);
+			return this;
+		}
+
+		@Override
+		public Builder onUpdate(Consumer<Map<Entity.Key, Entity>> onUpdate) {
+			this.onUpdate = requireNonNull(onUpdate);
+			return this;
+		}
+
+		@Override
+		public Builder onDelete(Consumer<Collection<Entity>> onDelete) {
+			this.onDelete = requireNonNull(onDelete);
+			return this;
 		}
 
 		@Override

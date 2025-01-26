@@ -55,6 +55,7 @@ Codion Change Log
 - DefaultModelLink.onSelection() does nothing unless link is active.
 - EntityEditModel.value() removed.
 - EntityEditModel.PERSIST_FOREIGN_KEYS moved to EntityEditor, some docs fixes and minor cleanup.
+- ForeignKeyModelLink.Builder now extends ModelLink.Builder.
 ### is.codion.swing.framework.model
 - DefaultSwingForeignKeyConditionModel now links search and combo box models to their respective operands.
 ### is.codion.swing.framework.ui
