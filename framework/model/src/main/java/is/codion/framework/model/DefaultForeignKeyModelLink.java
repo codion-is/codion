@@ -65,7 +65,7 @@ final class DefaultForeignKeyModelLink implements ForeignKeyModelLink {
 	}
 
 	@Override
-	public <E extends EntityEditModel, T extends EntityTableModel<E>> EntityModel<E, T> model() {
+	public <M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> M model() {
 		return modelLink.model();
 	}
 
@@ -186,7 +186,7 @@ final class DefaultForeignKeyModelLink implements ForeignKeyModelLink {
 
 	static final class DefaultBuilder implements Builder {
 
-		private final EntityModel<?, ?> model;
+		private final EntityModel<?, ?, ?> model;
 		private final ForeignKey foreignKey;
 
 		private Consumer<Collection<Entity>> onSelection;
@@ -201,7 +201,7 @@ final class DefaultForeignKeyModelLink implements ForeignKeyModelLink {
 		private boolean refreshOnSelection = REFRESH_ON_SELECTION.getOrThrow();
 		private boolean active = false;
 
-		DefaultBuilder(EntityModel<?, ?> model, ForeignKey foreignKey) {
+		DefaultBuilder(EntityModel<?, ?, ?> model, ForeignKey foreignKey) {
 			this.model = requireNonNull(model);
 			this.foreignKey = requireNonNull(foreignKey);
 		}

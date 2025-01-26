@@ -41,10 +41,12 @@ import static java.util.stream.Collectors.toList;
 
 /**
  * An abstract {@link EntityModel} implementation.
+ * @param <M> the type of {@link EntityModel} used for detail models
  * @param <E> the type of {@link EntityEditModel} used by this {@link EntityModel}
  * @param <T> the type of {@link EntityTableModel} used by this {@link EntityModel}
  */
-public abstract class AbstractEntityModel<E extends EntityEditModel, T extends EntityTableModel<E>> implements EntityModel<E, T> {
+public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E extends EntityEditModel,
+				T extends EntityTableModel<E>> implements EntityModel<M, E, T> {
 
 	private final E editModel;
 	private final T tableModel;
@@ -124,7 +126,7 @@ public abstract class AbstractEntityModel<E extends EntityEditModel, T extends E
 	}
 
 	@Override
-	public final ForeignKeyModelLink.Builder link(EntityModel<E, T> model) {
+	public final ForeignKeyModelLink.Builder link(M model) {
 		Collection<ForeignKey> foreignKeys = requireNonNull(model).editModel()
 						.entityDefinition().foreignKeys().get(editModel.entityType());
 		if (foreignKeys.isEmpty()) {
@@ -140,7 +142,7 @@ public abstract class AbstractEntityModel<E extends EntityEditModel, T extends E
 	}
 
 	@Override
-	public final DetailModels<E, T> detailModels() {
+	public final DetailModels<M, E, T> detailModels() {
 		return detailModels;
 	}
 
@@ -196,7 +198,7 @@ public abstract class AbstractEntityModel<E extends EntityEditModel, T extends E
 		public void accept(Boolean active) {
 			detailModels.active.set(detailModels.models.values().stream()
 							.filter(link -> link.active().get())
-							.map(modelLink -> (EntityModel<E, T>) modelLink.model())
+							.map(modelLink -> (M) modelLink.model())
 							.collect(toList()));
 			if (active) {
 				detailModelLink.onSelection(activeEntities());
@@ -204,25 +206,25 @@ public abstract class AbstractEntityModel<E extends EntityEditModel, T extends E
 		}
 	}
 
-	private final class DefaultDetailModels implements DetailModels<E, T> {
+	private final class DefaultDetailModels implements DetailModels<M, E, T> {
 
-		private final Map<EntityModel<E, T>, ModelLink> models = new HashMap<>();
-		private final ValueSet<EntityModel<E, T>> active = ValueSet.valueSet();
+		private final Map<M, ModelLink> models = new HashMap<>();
+		private final ValueSet<M> active = ValueSet.valueSet();
 
 		@Override
-		public void add(EntityModel<E, T>... detailModels) {
-			for (EntityModel<E, T> detailModel : requireNonNull(detailModels)) {
+		public void add(M... detailModels) {
+			for (M detailModel : requireNonNull(detailModels)) {
 				add(detailModel);
 			}
 		}
 
 		@Override
-		public void add(EntityModel<E, T> detailModel) {
+		public void add(M detailModel) {
 			add(link(detailModel).build());
 		}
 
 		@Override
-		public void add(EntityModel<E, T> detailModel, ForeignKey foreignKey) {
+		public void add(M detailModel, ForeignKey foreignKey) {
 			add(ForeignKeyModelLink.builder(requireNonNull(detailModel), requireNonNull(foreignKey)).build());
 		}
 
@@ -243,17 +245,17 @@ public abstract class AbstractEntityModel<E extends EntityEditModel, T extends E
 		}
 
 		@Override
-		public boolean contains(EntityModel<E, T> detailModel) {
+		public boolean contains(M detailModel) {
 			return models.containsKey(requireNonNull(detailModel));
 		}
 
 		@Override
-		public Collection<EntityModel<E, T>> get() {
+		public Collection<M> get() {
 			return unmodifiableCollection(models.keySet());
 		}
 
 		@Override
-		public State active(EntityModel<E, T> detailModel) {
+		public State active(M detailModel) {
 			if (!models.containsKey(requireNonNull(detailModel))) {
 				throw new IllegalStateException("Detail model not found: " + detailModel);
 			}
@@ -262,12 +264,12 @@ public abstract class AbstractEntityModel<E extends EntityEditModel, T extends E
 		}
 
 		@Override
-		public ObservableValueSet<EntityModel<E, T>> active() {
+		public ObservableValueSet<M> active() {
 			return active.observable();
 		}
 
 		@Override
-		public <C extends EntityModel<E, T>> C get(Class<C> modelClass) {
+		public <C extends M> C get(Class<C> modelClass) {
 			requireNonNull(modelClass);
 			return (C) models.keySet().stream()
 							.filter(detailModel -> detailModel.getClass().equals(modelClass))
@@ -276,7 +278,7 @@ public abstract class AbstractEntityModel<E extends EntityEditModel, T extends E
 		}
 
 		@Override
-		public <C extends EntityModel<E, T>> C get(EntityType entityType) {
+		public <C extends M> C get(EntityType entityType) {
 			requireNonNull(entityType);
 			return (C) models.keySet().stream()
 							.filter(detailModel -> detailModel.entityType().equals(entityType))

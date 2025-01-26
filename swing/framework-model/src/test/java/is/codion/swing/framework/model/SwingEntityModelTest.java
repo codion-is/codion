@@ -33,7 +33,7 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class SwingEntityModelTest
-				extends AbstractEntityModelTest<SwingEntityEditModel, SwingEntityTableModel> {
+				extends AbstractEntityModelTest<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
 
 	@Override
 	protected SwingEntityModel createDepartmentModel() {

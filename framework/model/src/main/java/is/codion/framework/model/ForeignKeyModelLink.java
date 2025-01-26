@@ -95,7 +95,7 @@ public interface ForeignKeyModelLink extends ModelLink {
 	 * @param foreignKey the foreign key
 	 * @return a {@link Builder} instance
 	 */
-	static Builder builder(EntityModel<?, ?> model, ForeignKey foreignKey) {
+	static Builder builder(EntityModel<?, ?, ?> model, ForeignKey foreignKey) {
 		return new DefaultForeignKeyModelLink.DefaultBuilder(model, foreignKey);
 	}
 

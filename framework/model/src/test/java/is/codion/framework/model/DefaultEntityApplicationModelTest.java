@@ -19,18 +19,20 @@
 package is.codion.framework.model;
 
 import is.codion.framework.model.DefaultEntityModelTest.TestEntityEditModel;
+import is.codion.framework.model.DefaultEntityModelTest.TestEntityModel;
 import is.codion.framework.model.DefaultEntityModelTest.TestEntityTableModel;
 import is.codion.framework.model.test.AbstractEntityApplicationModelTest;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
 
-public final class DefaultEntityApplicationModelTest extends AbstractEntityApplicationModelTest<TestEntityEditModel, TestEntityTableModel> {
+public final class DefaultEntityApplicationModelTest extends AbstractEntityApplicationModelTest<TestEntityModel,
+				TestEntityEditModel, TestEntityTableModel> {
 
 	@Override
-	protected DefaultEntityModelTest.TestEntityModel createDepartmentModel() {
-		DefaultEntityModelTest.TestEntityModel deptModel = new DefaultEntityModelTest.TestEntityModel(
+	protected TestEntityModel createDepartmentModel() {
+		TestEntityModel deptModel = new TestEntityModel(
 						new TestEntityEditModel(Department.TYPE, connectionProvider()));
-		DefaultEntityModelTest.TestEntityModel empModel = new DefaultEntityModelTest.TestEntityModel(
+		TestEntityModel empModel = new TestEntityModel(
 						new TestEntityEditModel(Employee.TYPE, connectionProvider()));
 		deptModel.detailModels().add(deptModel.link(empModel)
 						.active(true)

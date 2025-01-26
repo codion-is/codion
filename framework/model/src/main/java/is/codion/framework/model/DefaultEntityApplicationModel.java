@@ -34,14 +34,16 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A central application model class.
- * @param <E> the type of {@link EntityEditModel}
- * @param <T> the type of {@link EntityTableModel}
+ * @param <M> the type of {@link EntityModel} this application model is based on
+ * @param <E> the type of {@link EntityEditModel} used by this {@link EntityModel}
+ * @param <T> the type of {@link EntityTableModel} used by this {@link EntityModel}
  */
-public class DefaultEntityApplicationModel<E extends EntityEditModel, T extends EntityTableModel<E>> implements EntityApplicationModel<E, T> {
+public class DefaultEntityApplicationModel<M extends EntityModel<M, E, T>,
+				E extends EntityEditModel, T extends EntityTableModel<E>> implements EntityApplicationModel<M, E, T> {
 
 	private final EntityConnectionProvider connectionProvider;
 	private final Version version;
-	private final DefaultEntityModels models = new DefaultEntityModels();
+	private final DefaultEntityModels<M, E, T> models = new DefaultEntityModels<>();
 
 	/**
 	 * Instantiates a new DefaultEntityApplicationModel
@@ -89,32 +91,33 @@ public class DefaultEntityApplicationModel<E extends EntityEditModel, T extends 
 	}
 
 	@Override
-	public final EntityModels<E, T> entityModels() {
+	public final EntityModels<M, E, T> entityModels() {
 		return models;
 	}
 
 	@Override
 	public final void refresh() {
-		for (EntityModel<E, T> entityModel : models.entityModels) {
+		for (M entityModel : models.entityModels) {
 			if (entityModel.containsTableModel()) {
 				entityModel.tableModel().items().refresh();
 			}
 		}
 	}
 
-	private final class DefaultEntityModels implements EntityModels<E, T> {
+	private final class DefaultEntityModels<M extends EntityModel<M, E, T>,
+					E extends EntityEditModel, T extends EntityTableModel<E>> implements EntityModels<M, E, T> {
 
-		private final List<EntityModel<E, T>> entityModels = new ArrayList<>();
+		private final List<M> entityModels = new ArrayList<>();
 
 		@Override
-		public void add(EntityModel<E, T>... entityModels) {
-			for (EntityModel<E, T> entityModel : requireNonNull(entityModels)) {
+		public void add(M... entityModels) {
+			for (M entityModel : requireNonNull(entityModels)) {
 				add(entityModel);
 			}
 		}
 
 		@Override
-		public void add(EntityModel<E, T> entityModel) {
+		public void add(M entityModel) {
 			if (this.entityModels.contains(requireNonNull(entityModel))) {
 				throw new IllegalArgumentException("Entity model " + entityModel + " has already been added");
 			}
@@ -122,7 +125,7 @@ public class DefaultEntityApplicationModel<E extends EntityEditModel, T extends 
 		}
 
 		@Override
-		public boolean contains(Class<? extends EntityModel<E, T>> modelClass) {
+		public boolean contains(Class<? extends M> modelClass) {
 			return entityModels.stream()
 							.anyMatch(entityModel -> entityModel.getClass().equals(modelClass));
 		}
@@ -134,18 +137,18 @@ public class DefaultEntityApplicationModel<E extends EntityEditModel, T extends 
 		}
 
 		@Override
-		public boolean contains(EntityModel<E, T> entityModel) {
+		public boolean contains(M entityModel) {
 			return entityModels.contains(entityModel);
 		}
 
 		@Override
-		public List<EntityModel<E, T>> get() {
+		public List<M> get() {
 			return Collections.unmodifiableList(entityModels);
 		}
 
 		@Override
-		public <C extends EntityModel<E, T>> C get(Class<C> modelClass) {
-			for (EntityModel<E, T> model : entityModels) {
+		public <C extends M> C get(Class<C> modelClass) {
+			for (M model : entityModels) {
 				if (model.getClass().equals(modelClass)) {
 					return (C) model;
 				}
@@ -155,8 +158,8 @@ public class DefaultEntityApplicationModel<E extends EntityEditModel, T extends 
 		}
 
 		@Override
-		public <C extends EntityModel<E, T>> C get(EntityType entityType) {
-			for (EntityModel<E, T> entityModel : entityModels) {
+		public <C extends M> C get(EntityType entityType) {
+			for (M entityModel : entityModels) {
 				if (entityModel.entityType().equals(entityType)) {
 					return (C) entityModel;
 				}

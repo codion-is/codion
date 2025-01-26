@@ -26,7 +26,7 @@ import is.codion.framework.model.DefaultEntityApplicationModel;
  * A Swing implementation of {@link is.codion.framework.model.EntityApplicationModel}
  */
 public class SwingEntityApplicationModel
-				extends DefaultEntityApplicationModel<SwingEntityEditModel, SwingEntityTableModel> {
+				extends DefaultEntityApplicationModel<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
 
 	/**
 	 * Instantiates a new {@link SwingEntityApplicationModel}

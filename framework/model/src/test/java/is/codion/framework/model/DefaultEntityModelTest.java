@@ -28,7 +28,7 @@ import is.codion.framework.model.test.TestDomain.Employee;
 
 import java.util.Collection;
 
-public class DefaultEntityModelTest extends AbstractEntityModelTest<
+public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntityModelTest.TestEntityModel,
 				DefaultEntityModelTest.TestEntityEditModel, DefaultEntityModelTest.TestEntityTableModel> {
 
 	@Override
@@ -65,7 +65,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<
 		public void remove(ForeignKey foreignKey, Collection<Entity> entities) {}
 	}
 
-	public static final class TestEntityModel extends AbstractEntityModel<TestEntityEditModel, TestEntityTableModel> {
+	public static final class TestEntityModel extends AbstractEntityModel<TestEntityModel, TestEntityEditModel, TestEntityTableModel> {
 		public TestEntityModel(TestEntityEditModel editModel) {
 			super(editModel);
 		}

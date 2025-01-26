@@ -24,7 +24,7 @@ import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
 
 public final class SwingEntityApplicationModelTest
-				extends AbstractEntityApplicationModelTest<SwingEntityEditModel, SwingEntityTableModel> {
+				extends AbstractEntityApplicationModelTest<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
 
 	@Override
 	protected SwingEntityModel createDepartmentModel() {
