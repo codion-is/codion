@@ -514,13 +514,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	public int count(Count count) {
 		EntityDefinition entityDefinition = definition(requireNonNull(count, "count may not be null").where().entityType());
 		String selectQuery = selectQueries.builder(entityDefinition)
-						.columns("COUNT(*)")
-						.subquery(selectQueries.builder(entityDefinition)
-										.select(where(count.where())
-														.having(count.having())
-														.attributes(entityDefinition.primaryKey().columns())
-														.build())
-										.build())
+						.count(count)
 						.build();
 		List<Object> statementValues = statementValues(count.where(), count.having());
 		List<ColumnDefinition<?>> statementColumns = statementColumns(count.where(), count.having());

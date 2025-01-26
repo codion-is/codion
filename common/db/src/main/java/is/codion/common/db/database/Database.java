@@ -171,12 +171,6 @@ public interface Database extends ConnectionFactory {
 	String limitOffsetClause(@Nullable Integer limit, @Nullable Integer offset);
 
 	/**
-	 * Returns true if this database requires that subqueries by aliased.
-	 * @return true if subqueries require an alias
-	 */
-	boolean subqueryRequiresAlias();
-
-	/**
 	 * Returns the maximum number of prepared statement parameters, supported by this database.
 	 * The default implementation simply returns {@link Integer#MAX_VALUE}, as in, no limit.
 	 * @return the maximum number of prepared statement parameters, supported by this database.

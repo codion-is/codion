@@ -19,6 +19,7 @@
 package is.codion.framework.db.local;
 
 import is.codion.common.db.database.Database;
+import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -70,6 +71,7 @@ final class SelectQueries {
 		private static final String NEWLINE = "\n";
 		private static final String NULL_FIRST = " NULLS FIRST";
 		private static final String NULL_LAST = " NULLS LAST";
+		private static final String COUNT = "COUNT(*)";
 
 		private final EntityDefinition definition;
 
@@ -131,8 +133,13 @@ final class SelectQueries {
 			return this;
 		}
 
-		Builder subquery(String subquery) {
-			return from("(" + subquery + ")" + (database.subqueryRequiresAlias() ? " AS row_count" : ""));
+		Builder count(Count count) {
+			return columns(COUNT).from("(" + builder(definition)
+							.select(Select.where(count.where())
+											.having(count.having())
+											.attributes(definition.primaryKey().columns())
+											.build())
+							.build() + ") AS row_count");
 		}
 
 		Builder from(String from) {

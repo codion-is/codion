@@ -200,11 +200,6 @@ public abstract class AbstractDatabase implements Database {
 	}
 
 	@Override
-	public boolean subqueryRequiresAlias() {
-		return false;
-	}
-
-	@Override
 	public int maximumNumberOfParameters() {
 		return Integer.MAX_VALUE;
 	}
