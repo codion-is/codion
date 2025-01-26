@@ -282,6 +282,9 @@ public final class FilterTable<R, C> extends JTable {
 		if (builder.resizeRowToFitEditor) {
 			addPropertyChangeListener(TABLE_CELL_EDITOR, new ResizeRowToFitEditor());
 		}
+		if (builder.cellSelectionEnabled) {
+			setCellSelectionEnabled(true);
+		}
 	}
 
 	@Override
@@ -510,7 +513,7 @@ public final class FilterTable<R, C> extends JTable {
 	 */
 	public void copySelectedCell() {
 		int selectedRow = getSelectedRow();
-		int selectedColumn = getSelectedColumn();
+		int selectedColumn  = columnModel.getSelectionModel().getLeadSelectionIndex();
 		if (selectedRow >= 0 && selectedColumn >= 0) {
 			FilterTableColumn<C> column = columnModel().getColumn(selectedColumn);
 			Utilities.setClipboard(model().values().string(selectedRow, column.identifier()));
@@ -884,11 +887,11 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	private CommandControl createToggleSortColumnAddControl() {
-		return command(() -> toggleColumnSorting(getSelectedColumn(), true));
+		return command(() -> toggleColumnSorting(columnModel.getSelectionModel().getLeadSelectionIndex(), true));
 	}
 
 	private CommandControl createToggleSortColumnControl() {
-		return command(() -> toggleColumnSorting(getSelectedColumn(), false));
+		return command(() -> toggleColumnSorting(columnModel.getSelectionModel().getLeadSelectionIndex(), false));
 	}
 
 	private static Stream<JComponent> columnComponents(FilterTableColumn<?> column) {
@@ -1101,6 +1104,13 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> selectionMode(int selectionMode);
 
 		/**
+		 * @param cellSelectionEnabled true if cell selection should be enabled
+		 * @return this builder instance
+		 * @see JTable#setCellSelectionEnabled(boolean)
+		 */
+		Builder<R, C> cellSelectionEnabled(boolean cellSelectionEnabled);
+
+		/**
 		 * @param columnReorderingAllowed true if column reordering should be allowed
 		 * @return this builder instance
 		 */
@@ -1206,6 +1216,7 @@ public final class FilterTable<R, C> extends JTable {
 		private boolean scrollToSelectedItem = true;
 		private boolean sortingEnabled = true;
 		private int selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
+		private boolean cellSelectionEnabled = false;
 		private boolean columnReorderingAllowed = ALLOW_COLUMN_REORDERING.getOrThrow();
 		private boolean columnResizingAllowed = true;
 		private int autoResizeMode = AUTO_RESIZE_MODE.getOrThrow();
@@ -1297,6 +1308,12 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
+		public Builder<R, C> cellSelectionEnabled(boolean cellSelectionEnabled) {
+			this.cellSelectionEnabled = cellSelectionEnabled;
+			return this;
+		}
+
+		@Override
 		public Builder<R, C> columnReorderingAllowed(boolean columnReorderingAllowed) {
 			this.columnReorderingAllowed = columnReorderingAllowed;
 			return this;
@@ -1354,9 +1371,9 @@ public final class FilterTable<R, C> extends JTable {
 							.sorted()
 							.collect(toList());
 			for (int i = 0; i < modelIndexes.size(); i++) {
-				 if (modelIndexes.get(i) != i) {
-					 throw new IllegalArgumentException("Column model indexes should start with zero, be unique and continuous");
-				 }
+				if (modelIndexes.get(i) != i) {
+					throw new IllegalArgumentException("Column model indexes should start with zero, be unique and continuous");
+				}
 			}
 
 			return columns;
@@ -1576,7 +1593,7 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		private void moveSelectedColumn(boolean left) {
-			int selectedColumnIndex = getSelectedColumn();
+			int selectedColumnIndex = columnModel.getSelectionModel().getLeadSelectionIndex();
 			if (selectedColumnIndex != -1) {
 				int columnCount = columnModel().getColumnCount();
 				int newIndex;
@@ -1602,7 +1619,7 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		private void resizeSelectedColumn(boolean enlarge) {
-			int selectedColumnIndex = getSelectedColumn();
+			int selectedColumnIndex = columnModel.getSelectionModel().getLeadSelectionIndex();
 			if (selectedColumnIndex != -1) {
 				TableColumn column = columnModel().getColumn(selectedColumnIndex);
 				tableHeader.setResizingColumn(column);

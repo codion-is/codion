@@ -22,6 +22,8 @@ Codion Change Log
 - CalendarPanel.doubleClicked() added.
 - DefaultCalendarDialogBuilder now accepts the selected date when the day selection panel is double clicked.
 - FilterTable.Export.replaceNewline(String) added, defaults to a single space, DefaultExport now automatically trims strings.
+- FilterTable.Builder.cellSelectionEnabled().
+- FilterTable, column moving, resizing and sorting now based on lead selection index instead of selected column.
 ### is.codion.framework.db.rmi
 - LocalConnectionHandler, method logging improved, fetch/return connection no longer logged during an open transaction.
 - LocalConnectionHandler, local connection creation logged.
