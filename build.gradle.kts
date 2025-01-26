@@ -289,6 +289,6 @@ fun hasSonarqubeProperties(): Boolean {
 
 fun frameworkModules(): Iterable<Project> {
     return subprojects.filter { project ->
-        !project.name.startsWith("demo") && !project.name.equals("documentation")
+        !project.name.startsWith("demo") && project.name != "documentation"
     }
 }

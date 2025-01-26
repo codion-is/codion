@@ -35,6 +35,8 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.attribute.TransientAttributeDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.model.EntityEditModel.EntityEditor;
+import is.codion.framework.model.EntityEditModel.ValueEditor;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -47,7 +49,7 @@ import java.util.function.Supplier;
 import static java.util.Collections.emptyMap;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultEntityEditor implements EntityEditModel.EntityEditor {
+final class DefaultEntityEditor implements EntityEditor {
 
 	private final Map<Attribute<?>, Event<?>> editEvents = new HashMap<>();
 	private final Event<Attribute<?>> valueChanged = Event.event();
@@ -192,8 +194,8 @@ final class DefaultEntityEditor implements EntityEditModel.EntityEditor {
 	}
 
 	@Override
-	public <T> EntityEditModel.ValueEditor<T> value(Attribute<T> attribute) {
-		return (EntityEditModel.ValueEditor<T>) valueEditors.computeIfAbsent(attribute, this::createValueEditor);
+	public <T> ValueEditor<T> value(Attribute<T> attribute) {
+		return (ValueEditor<T>) valueEditors.computeIfAbsent(attribute, this::createValueEditor);
 	}
 
 	void setOrDefaults(Entity entity) {
@@ -333,7 +335,7 @@ final class DefaultEntityEditor implements EntityEditModel.EntityEditor {
 	}
 
 	private void configurePersistentForeignKeys() {
-		if (EntityEditModel.PERSIST_FOREIGN_KEYS.getOrThrow()) {
+		if (PERSIST_FOREIGN_KEYS.getOrThrow()) {
 			entityDefinition.foreignKeys().get().forEach(foreignKey ->
 							value(foreignKey).persist().set(foreignKeyWritable(foreignKey)));
 		}
@@ -428,7 +430,7 @@ final class DefaultEntityEditor implements EntityEditModel.EntityEditor {
 		}
 	}
 
-	private final class DefaultValueEditor<T> extends AbstractValue<T> implements EntityEditModel.ValueEditor<T> {
+	private final class DefaultValueEditor<T> extends AbstractValue<T> implements ValueEditor<T> {
 
 		private final Attribute<T> attribute;
 		private final Value<Supplier<T>> defaultValue;

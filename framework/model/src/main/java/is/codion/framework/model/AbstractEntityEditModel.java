@@ -230,7 +230,9 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	public final EntitySearchModel searchModel(ForeignKey foreignKey) {
 		entityDefinition().foreignKeys().definition(foreignKey);
 		synchronized (entitySearchModels) {
-			// can't use computeIfAbsent here, see comment in SwingEntityEditModel.comboBoxModel(ForeignKey)
+			// can't use computeIfAbsent() here, since that prevents recursive initialization of interdepending combo
+			// box models, createSearchModel() may for example call this function
+			// see javadoc: must not attempt to update any other mappings of this map
 			EntitySearchModel entitySearchModel = entitySearchModels.get(foreignKey);
 			if (entitySearchModel == null) {
 				entitySearchModel = createSearchModel(foreignKey);

@@ -28,6 +28,7 @@ import is.codion.swing.common.model.component.AbstractFilterModelRefresher;
 import is.codion.swing.common.model.component.table.FilterTableModel.FilterTableModelItems;
 import is.codion.swing.common.model.component.table.FilterTableModel.RefreshStrategy;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
+import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
@@ -60,7 +61,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 	private final DefaultFilteredItems filtered;
 
 	final TableColumns<R, C> columns;
-	final FilterTableModel.TableSelection<R> selection;
+	final TableSelection<R> selection;
 	final TableConditionModel<C> filters;
 	final FilterTableSortModel<R, C> sorter;
 

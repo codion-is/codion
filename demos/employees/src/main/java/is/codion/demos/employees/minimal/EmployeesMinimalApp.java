@@ -167,8 +167,8 @@ public final class EmployeesMinimalApp {
 
 		public EmployeeEditModel(EntityConnectionProvider connectionProvider) {
 			super(Employee.TYPE, connectionProvider);
-			//initialize the combo box models now, otherwise it
-			//happens on the EDT later when the combo boxes are created
+			//initialize the combo box models now, otherwise it happens
+			//during UI initialization when the combo boxes are created
 			initializeComboBoxModels(Employee.MANAGER_FK, Employee.DEPARTMENT_FK);
 		}
 

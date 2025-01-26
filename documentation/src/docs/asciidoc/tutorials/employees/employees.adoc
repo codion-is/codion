@@ -100,7 +100,7 @@ For further information on parameters required for running Codion applications s
 In many cases we can use the default model implementations, but here we will customize the employee edit model by extending {url-javadoc}{swing-framework-model}/is/codion/swing/framework/model/SwingEntityEditModel.html[SwingEntityEditModel].
 
 We must provide a constructor with a single *EntityConnectionProvider* parameter.
-We call the *initializeComboBoxModels* method in order to populate a couple of combo box models, otherwise that will happen on the EDT when the associated combo boxes are created.
+We call the *initializeComboBoxModels* method in order to populate a couple of combo box models, otherwise that will happen during UI initialization when the associated combo boxes are created.
 
 [source,java]
 ----

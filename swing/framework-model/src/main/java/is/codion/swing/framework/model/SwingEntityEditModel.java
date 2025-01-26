@@ -61,9 +61,8 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	}
 
 	/**
-	 * Creates and refreshes combo box models for the given attributes. Doing this in the
-	 * model constructor avoids the models being refreshed when the combo boxes using
-	 * them are initialized, which happens on the EDT.
+	 * Creates and refreshes combo box models for the given attributes. Doing this in the model
+	 * constructor avoids the models being refreshed when the combo boxes using them are initialized.
 	 * @param attributes the attributes for which to initialize combo box models
 	 * @see #createComboBoxModel(Column)
 	 * @see #createComboBoxModel(ForeignKey)
@@ -125,7 +124,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 		entityDefinition().foreignKeys().definition(foreignKey);
 		synchronized (comboBoxModels) {
 			// can't use computeIfAbsent() here, since that prevents recursive initialization of interdepending combo
-			// box models, createForeignKeyComboBoxModel() may for example call this function
+			// box models, createComboBoxModel() may for example call this function
 			// see javadoc: must not attempt to update any other mappings of this map
 			EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) comboBoxModels.get(foreignKey);
 			if (comboBoxModel == null) {
@@ -147,7 +146,9 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	public final <T> FilterComboBoxModel<T> comboBoxModel(Column<T> column) {
 		entityDefinition().columns().definition(column);
 		synchronized (comboBoxModels) {
-			// can't use computeIfAbsent here, see foreignKeyComboBoxModel() comment
+			// can't use computeIfAbsent() here, since that prevents recursive initialization of interdepending combo
+			// box models, createComboBoxModel() may for example call this function
+			// see javadoc: must not attempt to update any other mappings of this map
 			FilterComboBoxModel<T> comboBoxModel = (FilterComboBoxModel<T>) comboBoxModels.get(column);
 			if (comboBoxModel == null) {
 				comboBoxModel = createComboBoxModel(column);

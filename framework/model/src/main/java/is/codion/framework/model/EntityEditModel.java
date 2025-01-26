@@ -18,7 +18,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.observable.Observable;
 import is.codion.common.observable.Observer;
@@ -43,22 +42,14 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static is.codion.common.Configuration.booleanValue;
+
 /**
  * Specifies a class for editing {@link Entity} instances.
  * The underlying attribute values are available via {@link EntityEditor#value(Attribute)}.
  * @see #editor()
  */
 public interface EntityEditModel {
-
-	/**
-	 * Specifies whether foreign key values should persist by default when defaults are set
-	 * <ul>
-	 * <li>Value type: Boolean
-	 * <li>Default value: true
-	 * </ul>
-	 * @see EntityEditor#defaults()
-	 */
-	PropertyValue<Boolean> PERSIST_FOREIGN_KEYS = Configuration.booleanValue(EntityEditModel.class.getName() + ".persistForeignKeys", true);
 
 	/**
 	 * Specifies whether edit models post their insert, update and delete events to {@link EntityEditEvents}
@@ -69,7 +60,7 @@ public interface EntityEditModel {
 	 * @see #postEditEvents()
 	 * @see EntityTableModel#HANDLE_EDIT_EVENTS
 	 */
-	PropertyValue<Boolean> POST_EDIT_EVENTS = Configuration.booleanValue(EntityEditModel.class.getName() + ".postEditEvents", true);
+	PropertyValue<Boolean> POST_EDIT_EVENTS = booleanValue(EntityEditModel.class.getName() + ".postEditEvents", true);
 
 	/**
 	 * @return the type of the entity this edit model is based on
@@ -378,6 +369,16 @@ public interface EntityEditModel {
 	interface EntityEditor extends Observable<Entity> {
 
 		/**
+		 * Specifies whether foreign key values should persist by default when defaults are set
+		 * <ul>
+		 * <li>Value type: Boolean
+		 * <li>Default value: true
+		 * </ul>
+		 * @see EntityEditor#defaults()
+		 */
+		PropertyValue<Boolean> PERSIST_FOREIGN_KEYS = booleanValue(EntityEditor.class.getName() + ".persistForeignKeys", true);
+
+		/**
 		 * @return an immutable copy of the entity being edited
 		 */
 		@Override
@@ -572,7 +573,7 @@ public interface EntityEditModel {
 		 * <p>Returns a {@link State} controlling whether the last used value for this attribute should persist when defaults are set.
 		 * @return a {@link State} controlling whether the given attribute value should persist when defaults are set
 		 * @see EntityEditor#defaults()
-		 * @see EntityEditModel#PERSIST_FOREIGN_KEYS
+		 * @see EntityEditor#PERSIST_FOREIGN_KEYS
 		 */
 		State persist();
 

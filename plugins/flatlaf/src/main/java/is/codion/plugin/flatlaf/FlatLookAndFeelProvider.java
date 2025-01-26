@@ -29,10 +29,11 @@ import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 
 import javax.swing.UIManager.LookAndFeelInfo;
-import java.util.Arrays;
 import java.util.Collection;
 
 import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.lookAndFeelEnabler;
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 
 /**
  * Provides all available Flat Look and Feels
@@ -43,13 +44,13 @@ public final class FlatLookAndFeelProvider implements LookAndFeelProvider {
 
 	@Override
 	public Collection<LookAndFeelEnabler> get() {
-		return Arrays.asList(
+		return unmodifiableList(asList(
 						lookAndFeelEnabler(new LookAndFeelInfo("Flat Darcula ", FlatDarculaLaf.class.getName())),
 						lookAndFeelEnabler(new LookAndFeelInfo("Flat Dark", FlatDarkLaf.class.getName())),
 						lookAndFeelEnabler(new LookAndFeelInfo("Flat IntelliJ", FlatIntelliJLaf.class.getName())),
 						lookAndFeelEnabler(new LookAndFeelInfo("Flat Light", FlatLightLaf.class.getName())),
 						lookAndFeelEnabler(new LookAndFeelInfo("Flat Mac Dark", FlatMacDarkLaf.class.getName())),
 						lookAndFeelEnabler(new LookAndFeelInfo("Flat Mac Light", FlatMacLightLaf.class.getName()))
-		);
+		));
 	}
 }
