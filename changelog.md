@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.18.28
+
 ## 0.18.27
 ### is.codion.common.core
 - Value.set() and map() return value removed.
