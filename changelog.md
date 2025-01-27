@@ -8,6 +8,7 @@ Codion Change Log
 - Configuration property value methods now statically imported.
 ### is.codion.common.db
 - Database.subqueryRequiresAlias() removed, related refactoring.
+- Database.subqueryRequiresAlias() reintroduced.
 ### is.codion.common.model
 - DefaultConditionModel.DefaultSetCondition refactored.
 - MultiSelection.Indexes now extends Value.

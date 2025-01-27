@@ -65,6 +65,14 @@ final class SQLServerDatabase extends AbstractDatabase {
 		return createOffsetFetchNextClause(limit, offset);
 	}
 
+	/**
+	 * @return true
+	 */
+	@Override
+	public boolean subqueryRequiresAlias() {
+		return true;
+	}
+
 	@Override
 	public String autoIncrementQuery(String idSource) {
 		return AUTO_INCREMENT_QUERY;

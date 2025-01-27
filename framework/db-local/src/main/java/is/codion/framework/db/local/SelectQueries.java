@@ -139,7 +139,7 @@ final class SelectQueries {
 											.having(count.having())
 											.attributes(definition.primaryKey().columns())
 											.build())
-							.build() + ") AS row_count");
+							.build() + ")" + (database.subqueryRequiresAlias() ? " AS row_count" : ""));
 		}
 
 		Builder from(String from) {
