@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.28
+### is.codion.framework.model
+- EntityModel.DetailModels.get() now returns a Map, related refactoring.
 
 ## 0.18.27
 ### is.codion.common.core

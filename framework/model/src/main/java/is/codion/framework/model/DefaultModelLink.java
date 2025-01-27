@@ -37,7 +37,7 @@ final class DefaultModelLink implements ModelLink {
 	private final Consumer<Map<Entity.Key, Entity>> onUpdate;
 	private final Consumer<Collection<Entity>> onDelete;
 
-	private DefaultModelLink(DefaultBuilder builder) {
+	private DefaultModelLink(DefaultBuilder<?> builder) {
 		this.model = builder.model;
 		this.active = State.state(builder.active);
 		this.onSelection = builder.onSelection;

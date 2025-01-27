@@ -122,7 +122,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 		employeeModel.tableModel().items().refresh();
 		assertTrue(employeeModel.tableModel().items().visible().count() > 0);
 
-		departmentModel.detailModels().get().forEach(detailModel -> detailModel.tableModel().items().clear());
+		departmentModel.detailModels().get().keySet().forEach(detailModel -> detailModel.tableModel().items().clear());
 		assertEquals(0, employeeModel.tableModel().items().visible().count());
 
 		departmentModel.tableModel().items().clear();

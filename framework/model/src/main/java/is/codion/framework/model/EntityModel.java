@@ -27,7 +27,7 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
-import java.util.Collection;
+import java.util.Map;
 
 /**
  * Specifies a class responsible for, among other things, coordinating a {@link EntityEditModel} and an {@link EntityTableModel}.
@@ -103,9 +103,9 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 	interface DetailModels<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
 
 		/**
-		 * @return an unmodifiable collection containing the detail models this model contains
+		 * @return an unmodifiable view of the detail models this model contains
 		 */
-		Collection<M> get();
+		Map<M, ModelLink> get();
 
 		/**
 		 * @return detail models with an active link to this model, that is, those that should respond to master model events

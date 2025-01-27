@@ -37,7 +37,6 @@ import java.util.function.Consumer;
 
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 
 /**
  * An abstract {@link EntityModel} implementation.
@@ -50,7 +49,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 
 	private final E editModel;
 	private final T tableModel;
-	private final DefaultDetailModels detailModels = new DefaultDetailModels();
+	private final DetailModels<M, E, T> detailModels = new DefaultDetailModels();
 
 	/**
 	 * Instantiates a new {@link AbstractEntityModel}, without a table model
@@ -148,7 +147,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 
 	private void selectionChanged() {
 		List<Entity> activeEntities = activeEntities();
-		detailModels.models.values().forEach(link -> link.onSelection(activeEntities));
+		detailModels.get().values().forEach(link -> link.onSelection(activeEntities));
 	}
 
 	private List<Entity> activeEntities() {
@@ -175,35 +174,15 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 	}
 
 	private void onInsert(Collection<Entity> insertedEntities) {
-		detailModels.models.values().forEach(link -> link.onInsert(insertedEntities));
+		detailModels.get().values().forEach(link -> link.onInsert(insertedEntities));
 	}
 
 	private void onUpdate(Map<Entity.Key, Entity> updatedEntities) {
-		detailModels.models.values().forEach(link -> link.onUpdate(updatedEntities));
+		detailModels.get().values().forEach(link -> link.onUpdate(updatedEntities));
 	}
 
 	private void onDelete(Collection<Entity> deletedEntities) {
-		detailModels.models.values().forEach(link -> link.onDelete(deletedEntities));
-	}
-
-	private final class ActiveDetailModelConsumer implements Consumer<Boolean> {
-
-		private final ModelLink detailModelLink;
-
-		private ActiveDetailModelConsumer(ModelLink detailModelLink) {
-			this.detailModelLink = detailModelLink;
-		}
-
-		@Override
-		public void accept(Boolean active) {
-			detailModels.active.set(detailModels.models.values().stream()
-							.filter(link -> link.active().get())
-							.map(modelLink -> (M) modelLink.model())
-							.collect(toList()));
-			if (active) {
-				detailModelLink.onSelection(activeEntities());
-			}
-		}
+		detailModels.get().values().forEach(link -> link.onDelete(deletedEntities));
 	}
 
 	private final class DefaultDetailModels implements DetailModels<M, E, T> {
@@ -241,7 +220,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 				active.add(modelLink.model());
 				modelLink.onSelection(activeEntities());
 			}
-			modelLink.active().addConsumer(new ActiveDetailModelConsumer(modelLink));
+			modelLink.active().addConsumer(new ActiveChanged(modelLink));
 		}
 
 		@Override
@@ -250,8 +229,8 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 		}
 
 		@Override
-		public Collection<M> get() {
-			return unmodifiableCollection(models.keySet());
+		public Map<M, ModelLink> get() {
+			return unmodifiableMap(models);
 		}
 
 		@Override
@@ -284,6 +263,26 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 							.filter(detailModel -> detailModel.entityType().equals(entityType))
 							.findFirst()
 							.orElseThrow(() -> new IllegalArgumentException("No detail model for entity " + entityType + " found in model: " + AbstractEntityModel.this));
+		}
+
+		private final class ActiveChanged implements Consumer<Boolean> {
+
+			private final ModelLink modelLink;
+
+			private ActiveChanged(ModelLink modelLink) {
+				this.modelLink = modelLink;
+			}
+
+			@Override
+			public void accept(Boolean isActive) {
+				if (isActive) {
+					active.add(modelLink.model());
+					modelLink.onSelection(activeEntities());
+				}
+				else {
+					active.remove(modelLink.model());
+				}
+			}
 		}
 	}
 }
