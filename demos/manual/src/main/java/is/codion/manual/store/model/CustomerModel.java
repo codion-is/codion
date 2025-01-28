@@ -32,7 +32,7 @@ public class CustomerModel extends SwingEntityModel {
 
 	// tag::bindEvents[]
 	private void bindEvents() {
-		CustomerTableModel tableModel = tableModel();
+		CustomerTableModel tableModel = (CustomerTableModel) tableModel();
 
 		tableModel.selection().items()
 						.addConsumer(selected ->
@@ -41,7 +41,7 @@ public class CustomerModel extends SwingEntityModel {
 		tableModel.items().refresher().result()
 						.addListener(() -> System.out.println("Refresh successful"));
 
-		CustomerEditModel editModel = editModel();
+		CustomerEditModel editModel = (CustomerEditModel) editModel();
 
 		editModel.afterInsert()
 						.addConsumer(inserted ->

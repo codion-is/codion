@@ -106,17 +106,17 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 	}
 
 	@Override
-	public final <C extends E> C editModel() {
-		return (C) editModel;
+	public final E editModel() {
+		return editModel;
 	}
 
 	@Override
-	public final <C extends T> C tableModel() {
+	public final T tableModel() {
 		if (tableModel == null) {
 			throw new IllegalStateException("Entity model " + this + " does not contain a table model");
 		}
 
-		return (C) tableModel;
+		return tableModel;
 	}
 
 	@Override
@@ -257,9 +257,9 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 		}
 
 		@Override
-		public <C extends M> C get(EntityType entityType) {
+		public M get(EntityType entityType) {
 			requireNonNull(entityType);
-			return (C) models.keySet().stream()
+			return models.keySet().stream()
 							.filter(detailModel -> detailModel.entityType().equals(entityType))
 							.findFirst()
 							.orElseThrow(() -> new IllegalArgumentException("No detail model for entity " + entityType + " found in model: " + AbstractEntityModel.this));

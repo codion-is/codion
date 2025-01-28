@@ -104,7 +104,7 @@ public final class CityTableModel extends SwingEntityTableModel {
 		@Override
 		public Void execute(ProgressReporter<String> progressReporter) throws IOException {
 			Collection<Entity> updatedCities = new ArrayList<>();
-			CityEditModel editModel = editModel();
+			CityEditModel editModel = (CityEditModel) editModel();
 			Iterator<Entity> citiesIterator = cities.iterator();
 			while (citiesIterator.hasNext() && !cancelled.get()) {
 				Entity city = citiesIterator.next();

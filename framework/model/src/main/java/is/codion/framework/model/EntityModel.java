@@ -65,17 +65,15 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 	EntityDefinition entityDefinition();
 
 	/**
-	 * @param <C> the edit model type
 	 * @return the {@link EntityEditModel} instance used by this {@link EntityModel}
 	 */
-	<C extends E> C editModel();
+	E editModel();
 
 	/**
-	 * @param <C> the table model type
 	 * @return the {@link EntityTableModel}
 	 * @throws IllegalStateException in case no table model is available
 	 */
-	<C extends T> C tableModel();
+	T tableModel();
 
 	/**
 	 * @return true if this {@link EntityModel} contains a {@link EntityTableModel}
@@ -164,12 +162,11 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 
 		/**
 		 * Returns a detail model of the given type
-		 * @param <C> the detail model type
 		 * @param entityType the entityType of the required EntityModel
 		 * @return the detail model of type {@code entityModelClass}
 		 * @throws IllegalArgumentException in case this model does not contain a detail model for the entityType
 		 */
-		<C extends M> C get(EntityType entityType);
+		M get(EntityType entityType);
 
 		/**
 		 * @param detailModel the detail model

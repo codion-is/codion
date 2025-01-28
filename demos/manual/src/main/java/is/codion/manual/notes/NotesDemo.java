@@ -206,8 +206,8 @@ public final class NotesDemo {
 
 		private NotePanel(NoteModel noteModel) {
 			super(noteModel,
-							new NoteEditPanel(noteModel.editModel()),
-							new NoteTablePanel(noteModel.tableModel()), config -> config
+							new NoteEditPanel((NoteEditModel) noteModel.editModel()),
+							new NoteTablePanel((NoteTableModel) noteModel.tableModel()), config -> config
 											// No need to include the default control buttons since
 											// we added the CLEAR control button to the edit panel
 											.includeControls(false)
@@ -240,7 +240,8 @@ public final class NotesDemo {
 
 		@Override
 		protected List<EntityPanel> createEntityPanels() {
-			NoteModel noteModel = applicationModel().entityModels().get(Note.TYPE);
+			NoteModel noteModel = (NoteModel)
+							applicationModel().entityModels().get(Note.TYPE);
 
 			return List.of(new NotePanel(noteModel));
 		}

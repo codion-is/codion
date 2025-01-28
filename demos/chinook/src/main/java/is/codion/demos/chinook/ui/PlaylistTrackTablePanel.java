@@ -20,6 +20,7 @@ package is.codion.demos.chinook.ui;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.demos.chinook.domain.api.Chinook.PlaylistTrack;
+import is.codion.demos.chinook.model.PlaylistTrackEditModel;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -35,7 +36,7 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 	public PlaylistTrackTablePanel(SwingEntityTableModel tableModel) {
 		// We provide an edit panel, which becomes available via
 		// double click and keyboard shortcuts, instead of embedding it
-		super(tableModel, new PlaylistTrackEditPanel(tableModel.editModel()), config -> config
+		super(tableModel, new PlaylistTrackEditPanel((PlaylistTrackEditModel) tableModel.editModel()), config -> config
 						// Custom component for editing tracks
 						.editComponentFactory(PlaylistTrack.TRACK_FK, new TrackEditComponentFactory(PlaylistTrack.TRACK_FK))
 						// Custom condition component factory for the track condition panel

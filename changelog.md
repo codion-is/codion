@@ -4,6 +4,9 @@ Codion Change Log
 ## 0.18.28
 ### is.codion.framework.model
 - EntityModel.DetailModels.get() now returns a Map, related refactoring.
+- Remove type inference return values, convenient but unsafe.
+### is.codion.swing.framework.ui
+- Remove type inference return values, convenient but unsafe.
 
 ## 0.18.27
 ### is.codion.common.core

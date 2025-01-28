@@ -405,7 +405,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		}
 
 		private static void resizePanel(EntityPanel parentPanel, boolean right, boolean expand) {
-			TabbedDetailLayout detailLayout = parentPanel.detailLayout();
+			TabbedDetailLayout detailLayout = (TabbedDetailLayout) parentPanel.detailLayout();
 			JSplitPane splitPane = detailLayout.splitPane;
 			if (expand) {
 				expand(splitPane, right);

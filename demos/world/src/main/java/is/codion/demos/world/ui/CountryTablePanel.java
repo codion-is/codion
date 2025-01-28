@@ -61,7 +61,7 @@ final class CountryTablePanel extends EntityTablePanel {
 	}
 
 	private JasperPrint fillCountryReport(ProgressReporter<String> progressReporter) {
-		CountryTableModel countryTableModel = tableModel();
+		CountryTableModel countryTableModel = (CountryTableModel) tableModel();
 
 		return countryTableModel.fillCountryReport(progressReporter);
 	}

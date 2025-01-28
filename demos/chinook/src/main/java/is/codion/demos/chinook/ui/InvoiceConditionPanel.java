@@ -112,9 +112,9 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 	}
 
 	@Override
-	public <T extends ConditionPanel<?>> T panel(Attribute<?> attribute) {
+	public ConditionPanel<?> panel(Attribute<?> attribute) {
 		if (view().isNotEqualTo(ADVANCED)) {
-			return (T) simpleConditionPanel.panel(attribute);
+			return simpleConditionPanel.panel(attribute);
 		}
 
 		return advancedConditionPanel.panel(attribute);

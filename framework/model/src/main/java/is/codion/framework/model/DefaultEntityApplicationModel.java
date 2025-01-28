@@ -158,10 +158,10 @@ public class DefaultEntityApplicationModel<M extends EntityModel<M, E, T>,
 		}
 
 		@Override
-		public <C extends M> C get(EntityType entityType) {
+		public M get(EntityType entityType) {
 			for (M entityModel : entityModels) {
 				if (entityModel.entityType().equals(entityType)) {
-					return (C) entityModel;
+					return entityModel;
 				}
 			}
 

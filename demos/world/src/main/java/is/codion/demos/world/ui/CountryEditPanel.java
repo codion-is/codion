@@ -81,7 +81,7 @@ final class CountryEditPanel extends EntityEditPanel {
 						.comboBoxPreferredWidth(PREFERRED_COMBO_BOX_WIDTH)
 						.includeAddButton(true);
 		//add a field displaying the avarage city population for the selected country
-		CountryEditModel editModel = editModel();
+		CountryEditModel editModel = (CountryEditModel) editModel();
 		NumberField<Double> averageCityPopulationField = doubleField()
 						.link(editModel.averageCityPopulation())
 						.maximumFractionDigits(2)

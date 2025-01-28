@@ -159,10 +159,9 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
 		<C extends M> C get(Class<C> modelClass);
 
 		/**
-		 * @param <C> the model type
 		 * @param entityType the entityType
 		 * @return the EntityModel based on the given entityType
 		 */
-		<C extends M> C get(EntityType entityType);
+		M get(EntityType entityType);
 	}
 }

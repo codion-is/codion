@@ -20,6 +20,8 @@ package is.codion.demos.world.ui;
 
 import is.codion.demos.world.domain.api.World.City;
 import is.codion.demos.world.domain.api.World.CountryLanguage;
+import is.codion.demos.world.model.CityTableModel;
+import is.codion.demos.world.model.CountryLanguageTableModel;
 import is.codion.demos.world.model.CountryModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel;
@@ -38,13 +40,13 @@ final class CountryPanel extends EntityPanel {
 
 		SwingEntityModel cityModel = countryModel.detailModels().get(City.TYPE);
 		EntityPanel cityPanel = new EntityPanel(cityModel,
-						new CityEditPanel(cityModel.tableModel()),
-						new CityTablePanel(cityModel.tableModel()));
+						new CityEditPanel((CityTableModel) cityModel.tableModel()),
+						new CityTablePanel((CityTableModel) cityModel.tableModel()));
 
 		SwingEntityModel countryLanguageModel = countryModel.detailModels().get(CountryLanguage.TYPE);
 		EntityPanel countryLanguagePanel = new EntityPanel(countryLanguageModel,
 						new CountryLanguageEditPanel(countryLanguageModel.editModel()),
-						new CountryLanguageTablePanel(countryLanguageModel.tableModel()));
+						new CountryLanguageTablePanel((CountryLanguageTableModel) countryLanguageModel.tableModel()));
 
 		detailPanels().add(cityPanel, countryLanguagePanel);
 	}

@@ -126,8 +126,8 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	}
 
 	@Override
-	public final <C extends E> C editModel() {
-		return (C) editModel;
+	public final E editModel() {
+		return editModel;
 	}
 
 	@Override

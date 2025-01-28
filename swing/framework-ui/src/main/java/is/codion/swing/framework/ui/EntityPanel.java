@@ -349,27 +349,24 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * @param <T> the model type
 	 * @return the EntityModel
 	 */
-	public final <T extends SwingEntityModel> T model() {
-		return (T) entityModel;
+	public final SwingEntityModel model() {
+		return entityModel;
 	}
 
 	/**
-	 * @param <T> the edit model type
 	 * @return the EntityEditModel
 	 */
-	public final <T extends SwingEntityEditModel> T editModel() {
+	public final SwingEntityEditModel editModel() {
 		return entityModel.editModel();
 	}
 
 	/**
-	 * @param <T> the table model type
 	 * @return the EntityTableModel
 	 * @throws IllegalStateException in case no table model is available
 	 */
-	public final <T extends SwingEntityTableModel> T tableModel() {
+	public final SwingEntityTableModel tableModel() {
 		return entityModel.tableModel();
 	}
 
@@ -390,10 +387,9 @@ public class EntityPanel extends JPanel {
 	/**
 	 * Initializes this EntityPanel, in case of some specific initialization code you can override the
 	 * {@link #initializeUI()} method and add your code there. Calling this method a second time has no effect.
-	 * @param <T> the entity panel type
 	 * @return this EntityPanel instance
 	 */
-	public final <T extends EntityPanel> T initialize() {
+	public final EntityPanel initialize() {
 		if (!initialized) {
 			try {
 				setupControls();
@@ -409,21 +405,20 @@ public class EntityPanel extends JPanel {
 			}
 		}
 
-		return (T) this;
+		return this;
 	}
 
 	/**
-	 * @param <T> the edit panel type
 	 * @return the edit panel
 	 * @throws IllegalStateException in case no edit panel is available
 	 * @see #containsEditPanel()
 	 */
-	public final <T extends EntityEditPanel> T editPanel() {
+	public final EntityEditPanel editPanel() {
 		if (editPanel == null) {
 			throw new IllegalStateException("No edit panel available");
 		}
 
-		return (T) editPanel;
+		return editPanel;
 	}
 
 	/**
@@ -434,17 +429,16 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * @param <T> the table panel type
 	 * @return the table panel
 	 * @throws IllegalStateException in case no table panel is available
 	 * @see #containsTablePanel()
 	 */
-	public final <T extends EntityTablePanel> T tablePanel() {
+	public final EntityTablePanel tablePanel() {
 		if (tablePanel == null) {
 			throw new IllegalStateException("No table panel available");
 		}
 
-		return (T) tablePanel;
+		return tablePanel;
 	}
 
 	/**
@@ -847,19 +841,17 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * @param <T> the detail layout type
 	 * @return the detail layout used by this panel
 	 */
-	protected final <T extends DetailLayout> T detailLayout() {
-		return (T) detailLayout;
+	protected final DetailLayout detailLayout() {
+		return detailLayout;
 	}
 
 	/**
-	 * @param <T> the detail controller type
 	 * @return the detail controller used by this panel
 	 */
-	protected final <T extends DetailController> T detailController() {
-		return (T) detailController;
+	protected final DetailController detailController() {
+		return detailController;
 	}
 
 	private JPanel createEditControlPanel() {
@@ -1122,14 +1114,13 @@ public class EntityPanel extends JPanel {
 
 		/**
 		 * Returns the first detail panel found based on the given {@code entityType}
-		 * @param <T> the entity panel type
 		 * @param entityType the entityType of the detail panel to retrieve
 		 * @return the detail panel of the given type
 		 * @throws IllegalArgumentException in case a panel based on the given entityType was not found
 		 */
-		public <T extends EntityPanel> T get(EntityType entityType) {
+		public EntityPanel get(EntityType entityType) {
 			requireNonNull(entityType);
-			return (T) panels.stream()
+			return panels.stream()
 							.filter(detailPanel -> detailPanel.model().entityType().equals(entityType))
 							.findFirst()
 							.orElseThrow(() -> new IllegalArgumentException("Detail panel for entity: " + entityType + " not found in panel: " + this));
@@ -1359,11 +1350,10 @@ public class EntityPanel extends JPanel {
 		}
 
 		/**
-		 * @param <T> the panel type
 		 * @return the entity panel
 		 */
-		public <T extends EntityPanel> T entityPanel() {
-			return (T) entityPanel;
+		public EntityPanel entityPanel() {
+			return entityPanel;
 		}
 
 		/**

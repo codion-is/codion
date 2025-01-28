@@ -90,7 +90,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 	}
 
 	private void raisePriceOfSelected() {
-		TrackTableModel tableModel = tableModel();
+		TrackTableModel tableModel = (TrackTableModel) tableModel();
 		tableModel.raisePriceOfSelected(getAmountFromUser());
 	}
 

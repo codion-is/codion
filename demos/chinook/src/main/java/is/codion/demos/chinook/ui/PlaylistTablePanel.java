@@ -75,7 +75,7 @@ public final class PlaylistTablePanel extends EntityTablePanel {
 						.valid(playlistParametersValue.component().parametersValid())
 						.show();
 
-		PlaylistTableModel playlistTableModel = tableModel();
+		PlaylistTableModel playlistTableModel = (PlaylistTableModel) tableModel();
 		playlistTableModel.createRandomPlaylist(randomPlaylistParameters);
 	}
 

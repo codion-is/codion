@@ -98,19 +98,18 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	}
 
 	/**
-	 * @param <T> the condition panel type
 	 * @param identifier the identifier for which to retrieve the {@link ConditionPanel}
 	 * @return the {@link ConditionPanel} associated with the given identifier
 	 * @throws IllegalArgumentException in case no panel is available for the given identifier
 	 */
-	public <T extends ConditionPanel<?>> T panel(C identifier) {
+	public ConditionPanel<?> panel(C identifier) {
 		requireNonNull(identifier);
 		ConditionPanel<?> conditionPanel = panels().get(identifier);
 		if (conditionPanel == null) {
 			throw new IllegalArgumentException("No condition panel available for " + identifier);
 		}
 
-		return (T) conditionPanel;
+		return conditionPanel;
 	}
 
 	/**

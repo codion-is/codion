@@ -571,25 +571,23 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
-	 * @param <T> the table model type
 	 * @return the EntityTableModel used by this EntityTablePanel
 	 */
-	public final <T extends SwingEntityTableModel> T tableModel() {
-		return (T) tableModel;
+	public final SwingEntityTableModel tableModel() {
+		return tableModel;
 	}
 
 	/**
-	 * @param <T> the condition panel type
 	 * @return the condition panel
 	 * @throws IllegalStateException in case a condition panel is not available
 	 * @see Config#includeConditions(boolean)
 	 */
-	public final <T extends TableConditionPanel<Attribute<?>>> T conditions() {
+	public final TableConditionPanel<Attribute<?>> conditions() {
 		if (!configuration.includeConditions) {
 			throw new IllegalStateException("No condition panel is available");
 		}
 
-		return (T) tableConditionPanel;
+		return tableConditionPanel;
 	}
 
 	/**
@@ -948,16 +946,15 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
-	 * @param <T> the edit panel type
 	 * @return the edit panel
 	 * @throws IllegalStateException in case no edit panel is available
 	 */
-	protected final <T extends EntityEditPanel> T editPanel() {
+	protected final EntityEditPanel editPanel() {
 		if (editPanel == null) {
 			throw new IllegalStateException("No editPanel is available");
 		}
 
-		return (T) editPanel;
+		return editPanel;
 	}
 
 	/**
@@ -2382,11 +2379,10 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * @param <T> the table panel type
 		 * @return the table panel
 		 */
-		public <T extends EntityTablePanel> T tablePanel() {
-			return (T) tablePanel;
+		public EntityTablePanel tablePanel() {
+			return tablePanel;
 		}
 
 		/**

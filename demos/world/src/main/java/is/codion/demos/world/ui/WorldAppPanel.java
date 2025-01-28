@@ -51,10 +51,12 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 	// tag::initializeEntityPanels[]
 	@Override
 	protected List<EntityPanel> createEntityPanels() {
-		CountryModel countryModel = applicationModel().entityModels().get(Country.TYPE);
+		CountryModel countryModel = (CountryModel)
+						applicationModel().entityModels().get(Country.TYPE);
 		CountryPanel countryPanel = new CountryPanel(countryModel);
 
-		ContinentModel continentModel = applicationModel().entityModels().get(Continent.TYPE);
+		ContinentModel continentModel = (ContinentModel)
+						applicationModel().entityModels().get(Continent.TYPE);
 		ContinentPanel continentPanel = new ContinentPanel(continentModel);
 
 		SwingEntityModel lookupModel = applicationModel().entityModels().get(Lookup.TYPE);

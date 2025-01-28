@@ -46,7 +46,7 @@ final class ContinentPanel extends EntityPanel {
 
 	@Override
 	protected void initializeUI() {
-		ContinentModel model = model();
+		ContinentModel model = (ContinentModel) model();
 
 		ChartPanel populationChartPanel = createPieChartPanel(this, model.populationDataset(), "Population");
 		ChartPanel surfaceAreaChartPanel = createPieChartPanel(this, model.surfaceAreaDataset(), "Surface area");

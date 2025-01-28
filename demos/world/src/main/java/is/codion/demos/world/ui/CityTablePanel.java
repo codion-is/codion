@@ -52,7 +52,7 @@ final class CityTablePanel extends ChartTablePanel {
 	}
 
 	private Control createPopulateLocationControl() {
-		CityTableModel cityTableModel = tableModel();
+		CityTableModel cityTableModel = (CityTableModel) tableModel();
 
 		return Control.builder()
 						.command(this::populateLocation)
@@ -63,7 +63,7 @@ final class CityTablePanel extends ChartTablePanel {
 	}
 
 	private void populateLocation() {
-		CityTableModel tableModel = tableModel();
+		CityTableModel tableModel = (CityTableModel) tableModel();
 		PopulateLocationTask task = tableModel.populateLocationTask();
 
 		Dialogs.progressWorkerDialog(task)
