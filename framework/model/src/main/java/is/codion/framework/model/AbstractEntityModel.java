@@ -125,7 +125,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 	}
 
 	@Override
-	public final ForeignKeyModelLink.Builder link(M model) {
+	public final <B extends ForeignKeyModelLink.Builder<M, E, T, B>> ForeignKeyModelLink.Builder<M, E, T, B> link(M model) {
 		Collection<ForeignKey> foreignKeys = requireNonNull(model).editModel()
 						.entityDefinition().foreignKeys().get(editModel.entityType());
 		if (foreignKeys.isEmpty()) {
@@ -187,7 +187,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 
 	private final class DefaultDetailModels implements DetailModels<M, E, T> {
 
-		private final Map<M, ModelLink> models = new HashMap<>();
+		private final Map<M, ModelLink<M, E, T>> models = new HashMap<>();
 		private final ValueSet<M> active = ValueSet.valueSet();
 
 		@Override
@@ -208,7 +208,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 		}
 
 		@Override
-		public void add(ModelLink modelLink) {
+		public void add(ModelLink<M, E, T> modelLink) {
 			if (AbstractEntityModel.this == requireNonNull(modelLink).model()) {
 				throw new IllegalArgumentException("A model can not be its own detail model");
 			}
@@ -229,7 +229,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 		}
 
 		@Override
-		public Map<M, ModelLink> get() {
+		public Map<M, ModelLink<M, E, T>> get() {
 			return unmodifiableMap(models);
 		}
 
@@ -267,9 +267,9 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 
 		private final class ActiveChanged implements Consumer<Boolean> {
 
-			private final ModelLink modelLink;
+			private final ModelLink<M, E, T> modelLink;
 
-			private ActiveChanged(ModelLink modelLink) {
+			private ActiveChanged(ModelLink<M, E, T> modelLink) {
 				this.modelLink = modelLink;
 			}
 

@@ -29,8 +29,12 @@ import static is.codion.common.Configuration.booleanValue;
 
 /**
  * Represents a link between two entity models based on a foreign key.
+ * @param <M> the {@link EntityModel} type
+ * @param <E> the {@link EntityEditModel} type
+ * @param <T> the {@link EntityTableModel} type
  */
-public interface ForeignKeyModelLink extends ModelLink {
+public interface ForeignKeyModelLink<M extends EntityModel<M, E, T>, E extends EntityEditModel,
+				T extends EntityTableModel<E>> extends ModelLink<M, E, T> {
 
 	/**
 	 * Specifies whether a linked model should automatically set the foreign key value to the entity inserted by the parent model.
@@ -91,18 +95,29 @@ public interface ForeignKeyModelLink extends ModelLink {
 	 * <p>Returns a new {@link Builder} instance.
 	 * <p>Note that if the linked model contains a table model it is configured so that a query condition is required for it to show
 	 * any data, via {@link EntityQueryModel#conditionRequired()}
+	 * @param <M> the {@link EntityModel} type
+	 * @param <E> the {@link EntityEditModel} type
+	 * @param <T> the {@link EntityTableModel} type
+	 * @param <B> the builder type
 	 * @param model the model to link
 	 * @param foreignKey the foreign key
 	 * @return a {@link Builder} instance
 	 */
-	static Builder builder(EntityModel<?, ?, ?> model, ForeignKey foreignKey) {
-		return new DefaultForeignKeyModelLink.DefaultBuilder(model, foreignKey);
+	static <M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>,
+					B extends ForeignKeyModelLink.Builder<M, E, T, B>> ForeignKeyModelLink.Builder<M, E, T, B> builder(M model,
+																																																						 ForeignKey foreignKey) {
+		return new DefaultForeignKeyModelLink.DefaultBuilder<>(model, foreignKey);
 	}
 
 	/**
 	 * Builds a {@link ForeignKeyModelLink}
+	 * @param <M> the {@link EntityModel} type
+	 * @param <E> the {@link EntityEditModel} type
+	 * @param <T> the {@link EntityTableModel} type
+	 * @param <B> the builder type
 	 */
-	interface Builder extends ModelLink.Builder<Builder> {
+	interface Builder<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>,
+					B extends ForeignKeyModelLink.Builder<M, E, T, B>> extends ModelLink.Builder<M, E, T, B> {
 
 		/**
 		 * <p>Note that this overrides {@link #refreshOnSelection(boolean)},
@@ -111,7 +126,7 @@ public interface ForeignKeyModelLink extends ModelLink {
 		 * {@inheritDoc}
 		 */
 		@Override
-		Builder onSelection(Consumer<Collection<Entity>> onSelection);
+		B onSelection(Consumer<Collection<Entity>> onSelection);
 
 		/**
 		 * <p>Note that this overrides {@link #setValueOnInsert(boolean)}
@@ -119,7 +134,7 @@ public interface ForeignKeyModelLink extends ModelLink {
 		 * {@inheritDoc}
 		 */
 		@Override
-		Builder onInsert(Consumer<Collection<Entity>> onInsert);
+		B onInsert(Consumer<Collection<Entity>> onInsert);
 
 		/**
 		 * @param setConditionOnInsert specifies whether the linked table model should automatically search by the inserted entity
@@ -127,14 +142,14 @@ public interface ForeignKeyModelLink extends ModelLink {
 		 * @return this builder
 		 * @see ForeignKeyModelLink#SET_CONDITION_ON_INSERT
 		 */
-		Builder setConditionOnInsert(boolean setConditionOnInsert);
+		B setConditionOnInsert(boolean setConditionOnInsert);
 
 		/**
 		 * @param setValueOnInsert specifies whether the linked edit model should automatically set the foreign key value to the inserted entity
 		 * @return this builder
 		 * @see ForeignKeyModelLink#SET_VALUE_ON_INSERT
 		 */
-		Builder setValueOnInsert(boolean setValueOnInsert);
+		B setValueOnInsert(boolean setValueOnInsert);
 
 		/**
 		 * Note that only active model links respond to parent model selection by default.
@@ -144,25 +159,25 @@ public interface ForeignKeyModelLink extends ModelLink {
 		 * @see ForeignKeyModelLink#REFRESH_ON_SELECTION
 		 * @see #active()
 		 */
-		Builder refreshOnSelection(boolean refreshOnSelection);
+		B refreshOnSelection(boolean refreshOnSelection);
 
 		/**
 		 * @param clearValueOnEmptySelection specifies whether the linked model should set the foreign key to null when null or no value is selected in the parent model.
 		 * @return this builder
 		 * @see ForeignKeyModelLink#CLEAR_VALUE_ON_EMPTY_SELECTION
 		 */
-		Builder clearValueOnEmptySelection(boolean clearValueOnEmptySelection);
+		B clearValueOnEmptySelection(boolean clearValueOnEmptySelection);
 
 		/**
 		 * @param clearConditionOnEmptySelection specifies whether the linked table model should clear the foreign key search condition when no value is selected in the parent model
 		 * @return this builder
 		 * @see ForeignKeyModelLink#CLEAR_CONDITION_ON_EMPTY_SELECTION
 		 */
-		Builder clearConditionOnEmptySelection(boolean clearConditionOnEmptySelection);
+		B clearConditionOnEmptySelection(boolean clearConditionOnEmptySelection);
 
 		/**
 		 * @return a {@link ForeignKeyModelLink}
 		 */
-		ForeignKeyModelLink build();
+		ForeignKeyModelLink<M, E, T> build();
 	}
 }

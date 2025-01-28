@@ -27,9 +27,10 @@ import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultModelLink implements ModelLink {
+final class DefaultModelLink<M extends EntityModel<M, E, T>, E extends EntityEditModel,
+				T extends EntityTableModel<E>> implements ModelLink<M, E, T> {
 
-	private final EntityModel<?, ?, ?> model;
+	private final M model;
 	private final State active;
 
 	private final Consumer<Collection<Entity>> onSelection;
@@ -37,7 +38,7 @@ final class DefaultModelLink implements ModelLink {
 	private final Consumer<Map<Entity.Key, Entity>> onUpdate;
 	private final Consumer<Collection<Entity>> onDelete;
 
-	private DefaultModelLink(DefaultBuilder<?> builder) {
+	private DefaultModelLink(DefaultBuilder<M, E, T, ?> builder) {
 		this.model = builder.model;
 		this.active = State.state(builder.active);
 		this.onSelection = builder.onSelection;
@@ -50,8 +51,8 @@ final class DefaultModelLink implements ModelLink {
 	}
 
 	@Override
-	public <M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> M model() {
-		return (M) model;
+	public M model() {
+		return model;
 	}
 
 	@Override
@@ -81,11 +82,12 @@ final class DefaultModelLink implements ModelLink {
 		onDelete.accept(deletedEntities);
 	}
 
-	static class DefaultBuilder<B extends ModelLink.Builder<B>> implements ModelLink.Builder<B> {
+	static class DefaultBuilder<M extends EntityModel<M, E, T>, E extends EntityEditModel,
+					T extends EntityTableModel<E>, B extends Builder<M, E, T, B>> implements Builder<M, E, T, B> {
 
 		private static final Consumer<?> EMPTY_CONSUMER = new EmptyConsumer<>();
 
-		private final EntityModel<?, ?, ?> model;
+		private final M model;
 
 		private Consumer<Collection<Entity>> onSelection = (Consumer<Collection<Entity>>) EMPTY_CONSUMER;
 		private Consumer<Collection<Entity>> onInsert = (Consumer<Collection<Entity>>) EMPTY_CONSUMER;
@@ -93,7 +95,7 @@ final class DefaultModelLink implements ModelLink {
 		private Consumer<Collection<Entity>> onDelete = (Consumer<Collection<Entity>>) EMPTY_CONSUMER;
 		private boolean active = false;
 
-		DefaultBuilder(EntityModel<?, ?, ?> model) {
+		DefaultBuilder(M model) {
 			this.model = requireNonNull(model);
 		}
 
@@ -128,8 +130,8 @@ final class DefaultModelLink implements ModelLink {
 		}
 
 		@Override
-		public ModelLink build() {
-			return new DefaultModelLink(this);
+		public ModelLink<M, E, T> build() {
+			return new DefaultModelLink<>(this);
 		}
 	}
 

@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.framework.model
 - EntityModel.DetailModels.get() now returns a Map, related refactoring.
 - Remove type inference return values, convenient but unsafe.
+- ModelLink, model type parameters added, removed from static builder factory methods.
 ### is.codion.swing.framework.ui
 - Remove type inference return values, convenient but unsafe.
 

@@ -29,10 +29,11 @@ import java.util.function.Consumer;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-final class DefaultForeignKeyModelLink implements ForeignKeyModelLink {
+final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T>, E extends EntityEditModel,
+				T extends EntityTableModel<E>> implements ForeignKeyModelLink<M, E, T> {
 
 	private final ForeignKey foreignKey;
-	private final ModelLink modelLink;
+	private final ModelLink<M, E, T> modelLink;
 
 	private final boolean clearValueOnEmptySelection;
 	private final boolean clearConditionOnEmptySelection;
@@ -40,7 +41,7 @@ final class DefaultForeignKeyModelLink implements ForeignKeyModelLink {
 	private final boolean setConditionOnInsert;
 	private final boolean refreshOnSelection;
 
-	private DefaultForeignKeyModelLink(DefaultBuilder builder) {
+	private DefaultForeignKeyModelLink(DefaultBuilder<M, E, T, ?> builder) {
 		this.modelLink = ModelLink.builder(builder.model)
 						.onSelection(builder.onSelection == null ? new OnSelection() : builder.onSelection)
 						.onInsert(builder.onInsert == null ? new OnInsert() : builder.onInsert)
@@ -65,7 +66,7 @@ final class DefaultForeignKeyModelLink implements ForeignKeyModelLink {
 	}
 
 	@Override
-	public <M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> M model() {
+	public M model() {
 		return modelLink.model();
 	}
 
@@ -184,9 +185,10 @@ final class DefaultForeignKeyModelLink implements ForeignKeyModelLink {
 						.collect(toList());
 	}
 
-	static final class DefaultBuilder implements Builder {
+	static final class DefaultBuilder<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>,
+					B extends ForeignKeyModelLink.Builder<M, E, T, B>> implements Builder<M, E, T, B> {
 
-		private final EntityModel<?, ?, ?> model;
+		private final M model;
 		private final ForeignKey foreignKey;
 
 		private Consumer<Collection<Entity>> onSelection;
@@ -201,74 +203,74 @@ final class DefaultForeignKeyModelLink implements ForeignKeyModelLink {
 		private boolean refreshOnSelection = REFRESH_ON_SELECTION.getOrThrow();
 		private boolean active = false;
 
-		DefaultBuilder(EntityModel<?, ?, ?> model, ForeignKey foreignKey) {
+		DefaultBuilder(M model, ForeignKey foreignKey) {
 			this.model = requireNonNull(model);
 			this.foreignKey = requireNonNull(foreignKey);
 		}
 
 		@Override
-		public Builder onSelection(Consumer<Collection<Entity>> onSelection) {
+		public B onSelection(Consumer<Collection<Entity>> onSelection) {
 			this.onSelection = requireNonNull(onSelection);
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder onInsert(Consumer<Collection<Entity>> onInsert) {
+		public B onInsert(Consumer<Collection<Entity>> onInsert) {
 			this.onInsert = requireNonNull(onInsert);
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder onUpdate(Consumer<Map<Entity.Key, Entity>> onUpdate) {
+		public B onUpdate(Consumer<Map<Entity.Key, Entity>> onUpdate) {
 			this.onUpdate = requireNonNull(onUpdate);
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder onDelete(Consumer<Collection<Entity>> onDelete) {
+		public B onDelete(Consumer<Collection<Entity>> onDelete) {
 			this.onDelete = requireNonNull(onDelete);
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder setConditionOnInsert(boolean setConditionOnInsert) {
+		public B setConditionOnInsert(boolean setConditionOnInsert) {
 			this.setConditionOnInsert = setConditionOnInsert;
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder setValueOnInsert(boolean setValueOnInsert) {
+		public B setValueOnInsert(boolean setValueOnInsert) {
 			this.setValueOnInsert = setValueOnInsert;
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder refreshOnSelection(boolean refreshOnSelection) {
+		public B refreshOnSelection(boolean refreshOnSelection) {
 			this.refreshOnSelection = refreshOnSelection;
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder clearValueOnEmptySelection(boolean clearValueOnEmptySelection) {
+		public B clearValueOnEmptySelection(boolean clearValueOnEmptySelection) {
 			this.clearValueOnEmptySelection = clearValueOnEmptySelection;
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder clearConditionOnEmptySelection(boolean clearConditionOnEmptySelection) {
+		public B clearConditionOnEmptySelection(boolean clearConditionOnEmptySelection) {
 			this.clearConditionOnEmptySelection = clearConditionOnEmptySelection;
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public Builder active(boolean active) {
+		public B active(boolean active) {
 			this.active = active;
-			return this;
+			return (B) this;
 		}
 
 		@Override
-		public ForeignKeyModelLink build() {
-			return new DefaultForeignKeyModelLink(this);
+		public ForeignKeyModelLink<M, E, T> build() {
+			return new DefaultForeignKeyModelLink<>(this);
 		}
 	}
 }

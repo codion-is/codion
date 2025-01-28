@@ -81,11 +81,12 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 	boolean containsTableModel();
 
 	/**
+	 * @param <B> the builder type
 	 * @param model the model to link to
 	 * @return a {@link ForeignKeyModelLink.Builder}, based on a fitting foreign key
 	 * @throws IllegalArgumentException in case zero or multiple fitting foreign keys are found
 	 */
-	ForeignKeyModelLink.Builder link(M model);
+	<B extends ForeignKeyModelLink.Builder<M, E, T, B>> ForeignKeyModelLink.Builder<M, E, T, B> link(M model);
 
 	/**
 	 * @return the detail models
@@ -103,10 +104,10 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 		/**
 		 * @return an unmodifiable view of the detail models this model contains
 		 */
-		Map<M, ModelLink> get();
+		Map<M, ModelLink<M, E, T>> get();
 
 		/**
-		 * @return detail models with an active link to this model, that is, those that should respond to master model events
+		 * @return the active detail models, that is, those that should respond to master model selection events
 		 * @see ModelLink#active()
 		 */
 		ObservableValueSet<M> active();
@@ -143,7 +144,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 		 * @param modelLink the {@link ModelLink} to add
 		 * @throws IllegalArgumentException in case the model has already been added
 		 */
-		void add(ModelLink modelLink);
+		void add(ModelLink<M, E, T> modelLink);
 
 		/**
 		 * @param detailModel the detail model

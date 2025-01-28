@@ -27,20 +27,21 @@ import java.util.function.Consumer;
 
 /**
  * Represents a link between two entity models.
+ * @param <M> the {@link EntityModel} type
+ * @param <E> the {@link EntityEditModel} type
+ * @param <T> the {@link EntityTableModel} type
  * @see #onSelection(Collection)
  * @see #onInsert(Collection)
  * @see #onUpdate(Map)
  * @see #onDelete(Collection)
  */
-public interface ModelLink {
+public interface ModelLink<M extends EntityModel<M, E, T>, E extends EntityEditModel,
+				T extends EntityTableModel<E>> {
 
 	/**
-	 * @param <M> the {@link EntityModel} type
-	 * @param <E> the {@link EntityEditModel} type
-	 * @param <T> the {@link EntityTableModel} type
 	 * @return the linked model
 	 */
-	<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> M model();
+	M model();
 
 	/**
 	 * <p>Controls the active status of this link.
@@ -81,18 +82,26 @@ public interface ModelLink {
 	 * <p>Note that if the linked model contains a table model it is configured so that a query condition is required for it to show
 	 * any data, via {@link EntityQueryModel#conditionRequired()}
 	 * @param model the model to link
+	 * @param <M> the {@link EntityModel} type
+	 * @param <E> the {@link EntityEditModel} type
+	 * @param <T> the {@link EntityTableModel} type
 	 * @param <B> the builder type
 	 * @return a {@link Builder} instance
 	 */
-	static <B extends Builder<B>> Builder<B> builder(EntityModel<?, ?, ?> model) {
+	static <M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>,
+					B extends Builder<M, E, T, B>> Builder<M, E, T, B> builder(M model) {
 		return new DefaultModelLink.DefaultBuilder<>(model);
 	}
 
 	/**
 	 * Builds a {@link ModelLink}
+	 * @param <M> the {@link EntityModel} type
+	 * @param <E> the {@link EntityEditModel} type
+	 * @param <T> the {@link EntityTableModel} type
 	 * @param <B> the builder type
 	 */
-	interface Builder<B extends Builder<B>> {
+	interface Builder<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>,
+					B extends Builder<M, E, T, B>> {
 
 		/**
 		 * Note that only active model links respond to parent model selection by default.
@@ -129,6 +138,6 @@ public interface ModelLink {
 		/**
 		 * @return a {@link ModelLink}
 		 */
-		ModelLink build();
+		ModelLink<M, E, T> build();
 	}
 }
