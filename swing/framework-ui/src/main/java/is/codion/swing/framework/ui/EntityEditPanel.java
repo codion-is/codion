@@ -35,9 +35,9 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
-import is.codion.framework.model.EntityEditModel.Delete;
-import is.codion.framework.model.EntityEditModel.Insert;
-import is.codion.framework.model.EntityEditModel.Update;
+import is.codion.framework.model.EntityEditModel.DeleteEntities;
+import is.codion.framework.model.EntityEditModel.InsertEntities;
+import is.codion.framework.model.EntityEditModel.UpdateEntities;
 import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
@@ -1083,7 +1083,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			}
 		}
 
-		private void handleResult(Insert.Result result) {
+		private void handleResult(InsertEntities.Result result) {
 			onInsert.accept(result.handle());
 			if (configuration.clearAfterInsert) {
 				editModel().editor().defaults();
@@ -1121,7 +1121,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			}
 		}
 
-		private void handleResult(Update.Result result) {
+		private void handleResult(UpdateEntities.Result result) {
 			onUpdate.accept(result.handle());
 			focus().afterUpdate().request();
 		}
@@ -1154,7 +1154,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			}
 		}
 
-		private void handleResult(Delete.Result result) {
+		private void handleResult(DeleteEntities.Result result) {
 			onDelete.accept(result.handle());
 			focus().initial().request();
 		}

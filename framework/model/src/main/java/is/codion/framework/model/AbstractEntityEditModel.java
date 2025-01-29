@@ -184,33 +184,33 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final Insert createInsert() {
-		return new DefaultInsert();
+	public final InsertEntities createInsert() {
+		return new DefaultInsertEntities();
 	}
 
 	@Override
-	public final Insert createInsert(Collection<Entity> entities) {
-		return new DefaultInsert(entities);
+	public final InsertEntities createInsert(Collection<Entity> entities) {
+		return new DefaultInsertEntities(entities);
 	}
 
 	@Override
-	public final Update createUpdate() {
-		return new DefaultUpdate();
+	public final UpdateEntities createUpdate() {
+		return new DefaultUpdateEntities();
 	}
 
 	@Override
-	public final Update createUpdate(Collection<Entity> entities) {
-		return new DefaultUpdate(entities);
+	public final UpdateEntities createUpdate(Collection<Entity> entities) {
+		return new DefaultUpdateEntities(entities);
 	}
 
 	@Override
-	public final Delete createDelete() {
-		return new DefaultDelete();
+	public final DeleteEntities createDelete() {
+		return new DefaultDeleteEntities();
 	}
 
 	@Override
-	public final Delete createDelete(Collection<Entity> entities) {
-		return new DefaultDelete(entities);
+	public final DeleteEntities createDelete(Collection<Entity> entities) {
+		return new DefaultDeleteEntities(entities);
 	}
 
 	@Override
@@ -414,19 +414,19 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		return null;
 	}
 
-	private final class DefaultInsert implements Insert {
+	private final class DefaultInsertEntities implements InsertEntities {
 
 		private final Collection<Entity> entities;
 		private final boolean activeEntity;
 
-		private DefaultInsert() {
+		private DefaultInsertEntities() {
 			this.entities = entityForInsert();
 			this.activeEntity = true;
 			states.verifyInsertEnabled();
 			editor.validate(entities);
 		}
 
-		private DefaultInsert(Collection<Entity> entities) {
+		private DefaultInsertEntities(Collection<Entity> entities) {
 			this.entities = unmodifiableCollection(new ArrayList<>(entities));
 			this.activeEntity = false;
 			states.verifyInsertEnabled();
@@ -483,18 +483,18 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 	}
 
-	private final class DefaultUpdate implements Update {
+	private final class DefaultUpdateEntities implements UpdateEntities {
 
 		private final Collection<Entity> entities;
 
-		private DefaultUpdate() {
+		private DefaultUpdateEntities() {
 			entities = singleton(editor.getOrThrow().copy().mutable());
 			states.verifyUpdateEnabled(entities.size());
 			editor.validate(entities);
 			verifyModified(entities);
 		}
 
-		private DefaultUpdate(Collection<Entity> entities) {
+		private DefaultUpdateEntities(Collection<Entity> entities) {
 			this.entities = unmodifiableCollection(new ArrayList<>(entities));
 			states.verifyUpdateEnabled(entities.size());
 			editor.validate(entities);
@@ -548,18 +548,18 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 	}
 
-	private final class DefaultDelete implements Delete {
+	private final class DefaultDeleteEntities implements DeleteEntities {
 
 		private final Collection<Entity> entities;
 		private final boolean activeEntity;
 
-		private DefaultDelete() {
+		private DefaultDeleteEntities() {
 			this.entities = singleton(activeEntity());
 			this.activeEntity = true;
 			states.verifyDeleteEnabled();
 		}
 
-		private DefaultDelete(Collection<Entity> entities) {
+		private DefaultDeleteEntities(Collection<Entity> entities) {
 			this.entities = unmodifiableCollection(new ArrayList<>(entities));
 			this.activeEntity = false;
 			states.verifyDeleteEnabled();

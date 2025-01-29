@@ -250,59 +250,59 @@ public interface EntityEditModel {
 	Collection<Entity> delete(Collection<Entity> entities);
 
 	/**
-	 * Creates a new {@link Insert} instance for inserting the active entity.
-	 * @return a new {@link Insert} instance
+	 * Creates a new {@link InsertEntities} instance for inserting the active entity.
+	 * @return a new {@link InsertEntities} instance
 	 * @throws IllegalStateException in inserting is not enabled
 	 * @throws ValidationException in case validation fails
 	 * @see #insertEnabled()
 	 */
-	Insert createInsert();
+	InsertEntities createInsert();
 
 	/**
-	 * Creates a new {@link Insert} instance for inserting the given entities.
+	 * Creates a new {@link InsertEntities} instance for inserting the given entities.
 	 * @param entities the entities to insert
-	 * @return a new {@link Insert} instance
+	 * @return a new {@link InsertEntities} instance
 	 * @throws IllegalStateException in inserting is not enabled
 	 * @throws ValidationException in case validation fails
 	 * @see #insertEnabled()
 	 */
-	Insert createInsert(Collection<Entity> entities);
+	InsertEntities createInsert(Collection<Entity> entities);
 
 	/**
-	 * Creates a new {@link Update} instance for updating the active entity.
-	 * @return a new {@link Update} instance
+	 * Creates a new {@link UpdateEntities} instance for updating the active entity.
+	 * @return a new {@link UpdateEntities} instance
 	 * @throws IllegalStateException in case the active entity is unmodified or if updating is not enabled
 	 * @throws ValidationException in case validation fails
 	 * @see #updateEnabled()
 	 */
-	Update createUpdate();
+	UpdateEntities createUpdate();
 
 	/**
-	 * Creates a new {@link Update} instance for updating the given entities.
+	 * Creates a new {@link UpdateEntities} instance for updating the given entities.
 	 * @param entities the entities to update
-	 * @return a new {@link Update} instance
+	 * @return a new {@link UpdateEntities} instance
 	 * @throws IllegalStateException in case any of the given entities are unmodified or if updating is not enabled
 	 * @throws ValidationException in case validation fails
 	 * @see #updateEnabled()
 	 */
-	Update createUpdate(Collection<Entity> entities);
+	UpdateEntities createUpdate(Collection<Entity> entities);
 
 	/**
-	 * Creates a new {@link Delete} instance for deleting the active entity.
-	 * @return a new {@link Delete} instance
+	 * Creates a new {@link DeleteEntities} instance for deleting the active entity.
+	 * @return a new {@link DeleteEntities} instance
 	 * @throws IllegalStateException in deleting is not enabled
 	 * @see #deleteEnabled()
 	 */
-	Delete createDelete();
+	DeleteEntities createDelete();
 
 	/**
-	 * Creates a new {@link Delete} instance for deleting the given entities.
+	 * Creates a new {@link DeleteEntities} instance for deleting the given entities.
 	 * @param entities the entities to delete
-	 * @return a new {@link Delete} instance
+	 * @return a new {@link DeleteEntities} instance
 	 * @throws IllegalStateException in deleting is not enabled
 	 * @see #deleteEnabled()
 	 */
-	Delete createDelete(Collection<Entity> entities);
+	DeleteEntities createDelete(Collection<Entity> entities);
 
 	/**
 	 * Adds the given entities to all foreign key models based on that entity type
@@ -613,20 +613,20 @@ public interface EntityEditModel {
 	 * Represents a task for inserting entities, split up for use with a background thread.
 	 * <pre>
 	 * {@code
-	 *   Insert insert = editModel.createInsert();
+	 *   InsertEntities insert = editModel.createInsert();
 	 *
-	 *   Insert.Task task = insert.prepare();
+	 *   InsertEntities.Task task = insert.prepare();
 	 *
 	 *   // Can safely be called in a background thread
-	 *   Insert.Result result = task.perform();
+	 *   InsertEntities.Result result = task.perform();
 	 *
 	 *   Collection<Entity> insertedEntities = result.handle();
 	 * }
 	 * </pre>
-	 * {@link Task#perform()} may be called on a background thread while {@link Insert#prepare()}
+	 * {@link Task#perform()} may be called on a background thread while {@link InsertEntities#prepare()}
 	 * and {@link Result#handle()} must be called on the UI thread.
 	 */
-	interface Insert {
+	interface InsertEntities {
 
 		/**
 		 * Notifies listeners that an insert is about to be performed.
@@ -665,20 +665,20 @@ public interface EntityEditModel {
 	 * Represents a task for updating entities, split up for use with a background thread.
 	 * <pre>
 	 * {@code
-	 *   Update update = editModel.createUpdate();
+	 *   UpdateEntities update = editModel.createUpdate();
 	 *
-	 *   Update.Task task = update.prepare();
+	 *   UpdateEntities.Task task = update.prepare();
 	 *
 	 *   // Can safely be called in a background thread
-	 *   Update.Result result = task.perform();
+	 *   UpdateEntities.Result result = task.perform();
 	 *
 	 *   Collection<Entity> updatedEntities = result.handle();
 	 * }
 	 * </pre>
-	 * {@link Task#perform()} may be called on a background thread while {@link Update#prepare()}
+	 * {@link Task#perform()} may be called on a background thread while {@link UpdateEntities#prepare()}
 	 * and {@link Result#handle()} must be called on the UI thread.
 	 */
-	interface Update {
+	interface UpdateEntities {
 
 		/**
 		 * Notifies listeners that an update is about to be performed.
@@ -717,20 +717,20 @@ public interface EntityEditModel {
 	 * Represents a task for deleting entities, split up for use with a background thread.
 	 * <pre>
 	 * {@code
-	 *   Delete delete = editModel.createDelete();
+	 *   DeleteEntities delete = editModel.createDelete();
 	 *
-	 *   Delete.Task task = delete.prepare();
+	 *   DeleteEntities.Task task = delete.prepare();
 	 *
 	 *   // Can safely be called in a background thread
-	 *   Delete.Result result = task.perform();
+	 *   DeleteEntities.Result result = task.perform();
 	 *
 	 *   Collection<Entity> deletedEntities = result.handle();
 	 * }
 	 * </pre>
-	 * {@link Task#perform()} may be called on a background thread while {@link Delete#prepare()}
+	 * {@link Task#perform()} may be called on a background thread while {@link DeleteEntities#prepare()}
 	 * and {@link Result#handle()} must be called on the UI thread.
 	 */
-	interface Delete {
+	interface DeleteEntities {
 
 		/**
 		 * Notifies listeners that a delete is about to be performed.
