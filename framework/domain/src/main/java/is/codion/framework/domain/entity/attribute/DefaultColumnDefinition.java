@@ -59,8 +59,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 	private final boolean searchable;
 	private final boolean groupBy;
 	private final boolean aggregate;
-	private final boolean selectable;
-	private final boolean lazy;
+	private final boolean selected;
 
 	private final transient String name;
 	private final transient String expression;
@@ -83,8 +82,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		this.converter = builder.converter;
 		this.groupBy = builder.groupBy;
 		this.aggregate = builder.aggregate;
-		this.selectable = builder.selectable;
-		this.lazy = builder.lazy;
+		this.selected = builder.selected;
 	}
 
 	@Override
@@ -148,13 +146,8 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 	}
 
 	@Override
-	public final boolean selectable() {
-		return selectable;
-	}
-
-	@Override
-	public final boolean lazy() {
-		return lazy;
+	public final boolean selected() {
+		return selected;
 	}
 
 	@Override
@@ -282,8 +275,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		private Converter<T, Object> converter;
 		private boolean groupBy;
 		private boolean aggregate;
-		private boolean selectable;
-		private boolean lazy;
+		private boolean selected;
 
 		DefaultColumnDefinitionBuilder(Column<T> column) {
 			this(column, -1);
@@ -304,8 +296,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 			this.converter = (Converter<T, Object>) DEFAULT_CONVERTER;
 			this.groupBy = false;
 			this.aggregate = false;
-			this.selectable = true;
-			this.lazy = false;
+			this.selected = true;
 		}
 
 		@Override
@@ -409,14 +400,8 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		}
 
 		@Override
-		public final B selectable(boolean selectable) {
-			this.selectable = selectable;
-			return self();
-		}
-
-		@Override
-		public final B lazy(boolean lazy) {
-			this.lazy = lazy;
+		public final B selected(boolean selected) {
+			this.selected = selected;
 			return self();
 		}
 

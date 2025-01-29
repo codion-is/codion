@@ -149,7 +149,7 @@ public final class TestDomain extends DomainModel {
 										Employee.DATA.define()
 														.column()
 														.caption("Data")
-														.lazy(true))
+														.selected(false))
 						.stringFactory(Employee.NAME)
 						.keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
 						.orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))

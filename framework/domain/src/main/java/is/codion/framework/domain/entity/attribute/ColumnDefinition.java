@@ -80,14 +80,9 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
 	boolean aggregate();
 
 	/**
-	 * @return true if this column should be included in select queries
+	 * @return true if this column should be selected by default
 	 */
-	boolean selectable();
-
-	/**
-	 * @return true if this column should not be selected by default
-	 */
-	boolean lazy();
+	boolean selected();
 
 	/**
 	 * Specifies whether this column is insertable
@@ -239,17 +234,12 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
 		B aggregate(boolean aggregate);
 
 		/**
-		 * Specifies whether this column should be included in select queries
-		 * @param selectable true if this column should be included in select queries
+		 * <p>Specifies whether this column should be inlucluded by default when selecting.
+		 * <p>Default true.
+		 * @param selected false if this column should not be selected by default
 		 * @return this instance
 		 */
-		B selectable(boolean selectable);
-
-		/**
-		 * @param lazy true if this column should be lazily loaded
-		 * @return this instance
-		 */
-		B lazy(boolean lazy);
+		B selected(boolean selected);
 
 		/**
 		 * Specifies whether this column should be included when searching for an entity by a string value.

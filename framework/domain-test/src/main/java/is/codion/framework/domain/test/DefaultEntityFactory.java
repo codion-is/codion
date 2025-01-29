@@ -236,7 +236,7 @@ public class DefaultEntityFactory implements EntityFactory {
 	private static byte[] randomByteArray(AttributeDefinition<?> attributeDefinition) {
 		if (attributeDefinition.attribute().type().isByteArray() &&
 						attributeDefinition instanceof ColumnDefinition &&
-						!((ColumnDefinition<?>) attributeDefinition).lazy()) {
+						((ColumnDefinition<?>) attributeDefinition).selected()) {
 			return randomByteArray(1024);
 		}
 

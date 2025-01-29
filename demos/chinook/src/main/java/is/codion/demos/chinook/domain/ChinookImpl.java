@@ -333,7 +333,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 										Track.RANDOM.define()
 														.column()
 														.readOnly(true)
-														.selectable(false))
+														.selected(false))
 						.keyGenerator(identity())
 						.selectQuery(SelectQuery.builder()
 										.from("chinook.track " +

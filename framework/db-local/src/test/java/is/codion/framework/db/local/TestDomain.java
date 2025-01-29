@@ -219,7 +219,7 @@ public final class TestDomain extends DomainModel {
 														.caption(Department.LOC.name()),
 										Employee.DATA_LAZY.define()
 														.column()
-														.lazy(true),
+														.selected(false),
 										Employee.DATA.define()
 														.column())
 						.stringFactory(Employee.NAME)

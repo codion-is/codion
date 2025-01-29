@@ -541,8 +541,8 @@ public final class DomainSource {
 		if (!column.nullable() && !column.primaryKey()) {
 			builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".nullable(false)");
 		}
-		if (column.lazy()) {
-			builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".lazy(true)");
+		if (!column.selected()) {
+			builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".selected(false)");
 		}
 		if (!readOnly) {
 			if (column.columnHasDefaultValue()) {

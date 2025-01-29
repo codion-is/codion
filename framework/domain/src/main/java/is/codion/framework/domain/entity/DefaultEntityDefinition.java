@@ -609,23 +609,22 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 		private List<Attribute<?>> defaultSelectAttributes() {
 			List<Attribute<?>> selectableAttributes = columnDefinitions.stream()
-							.filter(ColumnDefinition::selectable)
-							.filter(column -> !column.lazy())
+							.filter(ColumnDefinition::selected)
 							.map(AttributeDefinition::attribute)
 							.collect(toList());
 			selectableAttributes.addAll(foreignKeyDefinitions.stream()
 							.map(ForeignKeyDefinition::attribute)
-							.filter(this::basedOnEagerlyLoadedColumns)
+							.filter(this::basedOnSelectedColumns)
 							.collect(toList()));
 
 			return selectableAttributes;
 		}
 
-		private boolean basedOnEagerlyLoadedColumns(ForeignKey foreignKey) {
+		private boolean basedOnSelectedColumns(ForeignKey foreignKey) {
 			return Collections.disjoint(foreignKey.references().stream()
 							.map(Reference::column)
 							.collect(toSet()), columnDefinitions.stream()
-							.filter(ColumnDefinition::lazy)
+							.filter(column -> !column.selected())
 							.map(ColumnDefinition::attribute)
 							.collect(toSet()));
 		}

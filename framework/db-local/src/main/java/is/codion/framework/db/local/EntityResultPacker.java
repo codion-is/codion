@@ -41,10 +41,10 @@ final class EntityResultPacker implements ResultPacker<Entity> {
 
 	private static final Function<EntityDefinition, List<TransientAttributeDefinition<?>>> INIT_NON_DERIVED_TRANSIENT_ATTRIBUTES =
 					EntityResultPacker::initializeNonDerivedTransientAttributes;
-	private static final Function<EntityDefinition, List<ColumnDefinition<?>>> INIT_LAZY_LOADED_COLUMNS =
-					EntityResultPacker::initializeLazyLoadedColumns;
+	private static final Function<EntityDefinition, List<ColumnDefinition<?>>> INIT_NON_SELECTED_COLUMNS =
+					EntityResultPacker::initializeNonSelectedColumns;
 	private static final Map<EntityDefinition, List<TransientAttributeDefinition<?>>> NON_DERIVED_TRANSIENT_ATTRIBUTES = new ConcurrentHashMap<>();
-	private static final Map<EntityDefinition, List<ColumnDefinition<?>>> LAZY_LOADED_COLUMNS = new ConcurrentHashMap<>();
+	private static final Map<EntityDefinition, List<ColumnDefinition<?>>> NON_SELECTED_COLUMNS = new ConcurrentHashMap<>();
 
 	private final EntityDefinition entityDefinition;
 	private final List<ColumnDefinition<?>> columnDefinitions;
@@ -63,7 +63,7 @@ final class EntityResultPacker implements ResultPacker<Entity> {
 		Map<Attribute<?>, Object> values = new HashMap<>(columnDefinitions.size());
 		addResultSetValues(resultSet, values);
 		addTransientNullValues(values);
-		addLazyLoadedNullValues(values);
+		addNonSelectedNullValues(values);
 
 		return entityDefinition.entity(values);
 	}
@@ -91,10 +91,10 @@ final class EntityResultPacker implements ResultPacker<Entity> {
 		}
 	}
 
-	private void addLazyLoadedNullValues(Map<Attribute<?>, Object> values) {
-		List<ColumnDefinition<?>> lazyLoadedColumns = LAZY_LOADED_COLUMNS.computeIfAbsent(entityDefinition, INIT_LAZY_LOADED_COLUMNS);
-		if (!lazyLoadedColumns.isEmpty()) {
-			for (ColumnDefinition<?> column : lazyLoadedColumns) {
+	private void addNonSelectedNullValues(Map<Attribute<?>, Object> values) {
+		List<ColumnDefinition<?>> nonSelectedColumns = NON_SELECTED_COLUMNS.computeIfAbsent(entityDefinition, INIT_NON_SELECTED_COLUMNS);
+		if (!nonSelectedColumns.isEmpty()) {
+			for (ColumnDefinition<?> column : nonSelectedColumns) {
 				values.putIfAbsent(column.attribute(), null);
 			}
 		}
@@ -108,9 +108,9 @@ final class EntityResultPacker implements ResultPacker<Entity> {
 						.collect(Collectors.toList());
 	}
 
-	private static List<ColumnDefinition<?>> initializeLazyLoadedColumns(EntityDefinition entityDefinition) {
+	private static List<ColumnDefinition<?>> initializeNonSelectedColumns(EntityDefinition entityDefinition) {
 		return entityDefinition.columns().definitions().stream()
-						.filter(ColumnDefinition::lazy)
+						.filter(columnDefinition -> !columnDefinition.selected())
 						.collect(Collectors.toList());
 	}
 }

@@ -281,8 +281,7 @@ final class SelectQueries {
 		private List<ColumnDefinition<?>> defaultSelectColumns() {
 			return defaultSelectColumnsCache.computeIfAbsent(definition.type(), entityType ->
 							definition.columns().definitions().stream()
-											.filter(ColumnDefinition::selectable)
-											.filter(columnDefinition -> !columnDefinition.lazy())
+											.filter(ColumnDefinition::selected)
 											.collect(toList()));
 		}
 

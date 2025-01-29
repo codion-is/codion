@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.28
+### is.codion.framework.domain
+- ColumnDefinition.lazy() and selectable() replaced with selected().
 ### is.codion.framework.model
 - EntityModel.DetailModels.get() now returns a Map, related refactoring.
 - Remove type inference return values, convenient but unsafe.

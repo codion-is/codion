@@ -1417,7 +1417,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	 * @param entity the entity instance to check
 	 * @param comparison the entity instance to compare with
 	 * @return the updatable columns which values differ from the ones in the comparison entity
-	 * @see ColumnDefinition#lazy()
+	 * @see ColumnDefinition#selected()
 	 */
 	static Collection<Column<?>> modifiedColumns(Entity entity, Entity comparison) {
 		return entity.entrySet().stream()
@@ -1425,7 +1425,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 						.filter(ColumnDefinition.class::isInstance)
 						.map(attributeDefinition -> (ColumnDefinition<?>) attributeDefinition)
 						.filter(columnDefinition -> columnDefinition.updatable()
-										&& !columnDefinition.lazy()
+										&& columnDefinition.selected()
 										&& valueMissingOrModified(entity, comparison, columnDefinition.attribute()))
 						.map(ColumnDefinition::attribute)
 						.collect(toList());

@@ -322,7 +322,7 @@ public final class TestDomain extends DomainModel {
 										Detail.STRING.define()
 														.column()
 														.caption("Detail string")
-														.selectable(false),
+														.selected(false),
 										Detail.DATE.define()
 														.column()
 														.caption(Detail.DATE.name())
@@ -375,7 +375,7 @@ public final class TestDomain extends DomainModel {
 										Detail.BYTES.define()
 														.column()
 														.updatable(false)
-														.lazy(true))
+														.selected(false))
 						.keyGenerator(queried("select id from dual"))
 						.orderBy(ascending(Detail.STRING))
 						.selectTableName(DETAIL_SELECT_TABLE_NAME.name())
@@ -418,7 +418,7 @@ public final class TestDomain extends DomainModel {
 														.readOnly(true),
 										Department.DATA.define()
 														.column()
-														.lazy(true),
+														.selected(false),
 										Department.CODE.define()
 														.column())
 						.tableName("employees.department")
@@ -669,7 +669,7 @@ public final class TestDomain extends DomainModel {
 														.primaryKey(),
 										ForeignKeyLazyColumn.DEPARTMENT_ID.define()
 														.column()
-														.lazy(true),
+														.selected(false),
 										ForeignKeyLazyColumn.DEPARTMENT_FK.define()
 														.foreignKey())
 						.build());

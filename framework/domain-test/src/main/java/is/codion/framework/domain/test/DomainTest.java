@@ -266,7 +266,7 @@ public class DomainTest {
 			assertTrue((updatedValue == originalValue) || (updatedValue != null
 							&& ((BigDecimal) updatedValue).compareTo((BigDecimal) originalValue) == 0));
 		}
-		else if (columnDefinition.attribute().type().isByteArray() && !columnDefinition.lazy()) {
+		else if (columnDefinition.attribute().type().isByteArray() && columnDefinition.selected()) {
 			assertArrayEquals((byte[]) originalValue, (byte[]) updatedValue, message);
 		}
 		else {
