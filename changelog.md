@@ -8,6 +8,7 @@ Codion Change Log
 - ModelLink, model type parameters added, removed from static builder factory methods.
 ### is.codion.swing.framework.ui
 - Remove type inference return values, convenient but unsafe.
+- EntityPanelBuilder.createPanel(), createEditPanel() and createTablePanel() error message on incorrect model type improved.
 
 ## 0.18.27
 ### is.codion.common.core

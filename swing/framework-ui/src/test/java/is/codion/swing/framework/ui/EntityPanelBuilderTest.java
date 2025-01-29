@@ -22,7 +22,9 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
+import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.TestDomain.Department;
 import is.codion.swing.framework.ui.TestDomain.Employee;
 
@@ -99,6 +101,21 @@ public class EntityPanelBuilderTest {
 		assertEquals(ConditionView.SIMPLE, testPanel.tablePanel().table().filters().view().get());
 	}
 
+	@Test
+	void incorrectModelType() {
+		assertThrows(IllegalArgumentException.class, () -> EntityPanel.builder(Department.TYPE)
+						.panel(DeptPanel.class)
+						.build(CONNECTION_PROVIDER));
+
+		assertThrows(IllegalArgumentException.class, () -> EntityPanel.builder(Department.TYPE)
+						.editPanel(DeptEditPanel.class)
+						.build(CONNECTION_PROVIDER));
+
+		assertThrows(IllegalArgumentException.class, () -> EntityPanel.builder(Department.TYPE)
+						.tablePanel(DeptTablePanel.class)
+						.build(CONNECTION_PROVIDER));
+	}
+
 	public static final class TestPanel extends EntityPanel {
 
 		public TestPanel(SwingEntityModel entityModel) {
@@ -107,6 +124,51 @@ public class EntityPanelBuilderTest {
 							.includeFilters(true)));
 			tablePanel().conditions().view().set(ConditionView.SIMPLE);
 			tablePanel().table().filters().view().set(ConditionView.ADVANCED);
+		}
+	}
+
+	public static final class DeptModel extends SwingEntityModel {
+
+		public DeptModel(EntityConnectionProvider connectionProvider) {
+			super(Department.TYPE, connectionProvider);
+		}
+	}
+
+	public static final class DeptEditModel extends SwingEntityEditModel {
+
+		public DeptEditModel(EntityConnectionProvider connectionProvider) {
+			super(Department.TYPE, connectionProvider);
+		}
+	}
+
+	public static final class DeptTableModel extends SwingEntityTableModel {
+
+		public DeptTableModel(EntityConnectionProvider connectionProvider) {
+			super(Department.TYPE, connectionProvider);
+		}
+	}
+
+	public static final class DeptPanel extends EntityPanel {
+
+		public DeptPanel(DeptModel entityModel) {
+			super(entityModel);
+		}
+	}
+
+	public static final class DeptEditPanel extends EntityEditPanel {
+
+		public DeptEditPanel(DeptEditModel editModel) {
+			super(editModel);
+		}
+
+		@Override
+		protected void initializeUI() {}
+	}
+
+	public static final class DeptTablePanel extends EntityTablePanel {
+
+		public DeptTablePanel(DeptTableModel tableModel) {
+			super(tableModel);
 		}
 	}
 }
