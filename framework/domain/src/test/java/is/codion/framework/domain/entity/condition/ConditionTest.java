@@ -224,8 +224,7 @@ public final class ConditionTest {
 		condition = Employee.DEPARTMENT_FK.equalTo(null);
 		assertEquals("deptno IS NULL", condition.toString(empDefinition));
 
-		condition = Employee.DEPARTMENT_FK.in(emptyList());
-		assertEquals("deptno IN ()", condition.toString(empDefinition));
+		assertThrows(IllegalArgumentException.class, () -> Employee.DEPARTMENT_FK.in(emptyList()));
 
 		condition = Employee.DEPARTMENT_FK.isNull();
 		assertEquals("deptno IS NULL", condition.toString(empDefinition));
@@ -236,8 +235,7 @@ public final class ConditionTest {
 		condition = Employee.DEPARTMENT_FK.notEqualTo(null);
 		assertEquals("deptno IS NOT NULL", condition.toString(empDefinition));
 
-		condition = Employee.DEPARTMENT_FK.notIn(emptyList());
-		assertEquals("deptno NOT IN ()", condition.toString(empDefinition));
+		assertThrows(IllegalArgumentException.class, () -> Employee.DEPARTMENT_FK.notIn(emptyList()));
 
 		Entity master1 = ENTITIES.builder(Master2.TYPE)
 						.with(Master2.ID_1, null)
@@ -334,8 +332,7 @@ public final class ConditionTest {
 		assertEquals(columnDefinition.expression() + " IS NULL", condition.toString(departmentDefinition));
 		condition = Department.NAME.equalTo(null);
 		assertEquals(columnDefinition.expression() + " IS NULL", condition.toString(departmentDefinition));
-		condition = Department.NAME.in(emptyList());
-		assertEquals(columnDefinition.expression() + " IN ()", condition.toString(departmentDefinition));
+		assertThrows(IllegalArgumentException.class, () -> Department.NAME.in(emptyList()));
 
 		condition = Department.NAME.notEqualTo("upper");
 		assertEquals(columnDefinition.expression() + " <> ?", condition.toString(departmentDefinition));
@@ -347,8 +344,7 @@ public final class ConditionTest {
 		assertEquals(columnDefinition.expression() + " IS NOT NULL", condition.toString(departmentDefinition));
 		condition = Department.NAME.notEqualTo(null);
 		assertEquals(columnDefinition.expression() + " IS NOT NULL", condition.toString(departmentDefinition));
-		condition = Department.NAME.notIn(emptyList());
-		assertEquals(columnDefinition.expression() + " NOT IN ()", condition.toString(departmentDefinition));
+		assertThrows(IllegalArgumentException.class, () -> Department.NAME.notIn(emptyList()));
 
 		condition = Department.NAME.greaterThan("upper");
 		assertEquals(columnDefinition.expression() + " > ?", condition.toString(departmentDefinition));

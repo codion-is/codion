@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.28
 ### is.codion.framework.domain
 - ColumnDefinition.lazy() and selectable() replaced with selected().
+- MultiValueColumnCondition bug fixed, now rejects empty values for IN and NOT_IN.
 ### is.codion.framework.model
 - EntityModel.DetailModels.get() now returns a Map, related refactoring.
 - Remove type inference return values, convenient but unsafe.
