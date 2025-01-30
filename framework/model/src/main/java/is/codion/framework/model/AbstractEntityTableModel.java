@@ -42,8 +42,7 @@ import java.util.stream.Stream;
 
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 
 /**
  * An abstract {@link EntityTableModel} implementation
@@ -62,7 +61,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	private final Value<OnInsert> onInsert =
 					Value.nonNull(EntityTableModel.ON_INSERT.getOrThrow());
 
-	private final Consumer<Map<Entity.Key, Entity>> updateListener = new UpdateListener();
+	private final Consumer<Map<Entity, Entity>> updateListener = new UpdateListener();
 
 	/**
 	 * @param editModel the edit model
@@ -245,8 +244,9 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 		}
 	}
 
-	private void onUpdate(Map<Entity.Key, Entity> updatedEntities) {
-		replaceEntitiesByKey(new HashMap<>(updatedEntities));
+	private void onUpdate(Map<Entity, Entity> updatedEntities) {
+		replaceEntitiesByKey(updatedEntities.entrySet().stream()
+						.collect(toMap(entry -> entry.getKey().originalPrimaryKey(), Map.Entry::getValue)));
 	}
 
 	private void onDelete(Collection<Entity> deletedEntities) {
@@ -306,10 +306,10 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 		return false;
 	}
 
-	private final class UpdateListener implements Consumer<Map<Entity.Key, Entity>> {
+	private final class UpdateListener implements Consumer<Map<Entity, Entity>> {
 
 		@Override
-		public void accept(Map<Entity.Key, Entity> updated) {
+		public void accept(Map<Entity, Entity> updated) {
 			updated.values().stream()
 							.collect(groupingBy(Entity::type, HashMap::new, toList()))
 							.forEach(this::handleUpdate);

@@ -71,10 +71,11 @@ public final class DefaultEntityComboBoxModelTest {
 		assertTrue(comboBoxModel.items().visible().contains(temp));
 
 		temp.put(Employee.NAME, "Newname");
-		temp.save(Employee.NAME);
+		Entity tempUpdated = temp.copy().mutable();
+		tempUpdated.save(Employee.NAME);
 
-		Map<Entity.Key, Entity> updated = new HashMap<>();
-		updated.put(temp.primaryKey(), temp);
+		Map<Entity, Entity> updated = new HashMap<>();
+		updated.put(temp, tempUpdated);
 
 		EntityEditEvents.updated(updated);
 		assertEquals("Newname", comboBoxModel.find(temp.primaryKey()).orElseThrow().get(Employee.NAME));

@@ -259,7 +259,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final Observer<Map<Entity.Key, Entity>> afterUpdate() {
+	public final Observer<Map<Entity, Entity>> afterUpdate() {
 		return events.afterUpdate.observer();
 	}
 
@@ -358,10 +358,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 	/**
 	 * Notifies that update has been performed
-	 * @param updatedEntities the updated entities
+	 * @param updatedEntities a map containing the updated entities, mapped to their state before the update
 	 * @see #afterUpdate()
 	 */
-	protected final void notifyAfterUpdate(Map<Entity.Key, Entity> updatedEntities) {
+	protected final void notifyAfterUpdate(Map<Entity, Entity> updatedEntities) {
 		events.afterUpdate.accept(requireNonNull(updatedEntities));
 	}
 
@@ -384,18 +384,17 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	/**
-	 * Maps the given entities and their updated counterparts to their original primary keys,
-	 * assumes a single copy of each entity in the given lists.
+	 * Maps the given entities and their updated counterparts, assumes a single copy of each entity in the given lists.
 	 * @param entitiesBeforeUpdate the entities before update
 	 * @param entitiesAfterUpdate the entities after update
-	 * @return the updated entities mapped to their respective original primary keys
+	 * @return the updated entities mapped to their respective state before the update
 	 */
-	private static Map<Entity.Key, Entity> originalPrimaryKeyMap(Collection<Entity> entitiesBeforeUpdate,
-																															 Collection<Entity> entitiesAfterUpdate) {
+	private static Map<Entity, Entity> originalEntityMap(Collection<Entity> entitiesBeforeUpdate,
+																											 Collection<Entity> entitiesAfterUpdate) {
 		List<Entity> entitiesAfterUpdateCopy = new ArrayList<>(entitiesAfterUpdate);
-		Map<Entity.Key, Entity> keyMap = new HashMap<>(entitiesBeforeUpdate.size());
+		Map<Entity, Entity> keyMap = new HashMap<>(entitiesBeforeUpdate.size());
 		for (Entity entity : entitiesBeforeUpdate) {
-			keyMap.put(entity.originalPrimaryKey(), findAndRemove(entity.primaryKey(), entitiesAfterUpdateCopy.listIterator()));
+			keyMap.put(entity.immutable(), findAndRemove(entity.primaryKey(), entitiesAfterUpdateCopy.listIterator()));
 		}
 
 		return unmodifiableMap(keyMap);
@@ -541,7 +540,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 								.filter(updatedEntity -> updatedEntity.equals(entity))
 								.findFirst()
 								.ifPresent(editor::setOrDefaults);
-				notifyAfterUpdate(originalPrimaryKeyMap(entities, updatedEntities));
+				notifyAfterUpdate(originalEntityMap(entities, updatedEntities));
 
 				return updatedEntities;
 			}
@@ -615,7 +614,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private final Event<Collection<Entity>> beforeInsert = Event.event();
 		private final Event<Collection<Entity>> afterInsert = Event.event();
 		private final Event<Map<Entity.Key, Entity>> beforeUpdate = Event.event();
-		private final Event<Map<Entity.Key, Entity>> afterUpdate = Event.event();
+		private final Event<Map<Entity, Entity>> afterUpdate = Event.event();
 		private final Event<Collection<Entity>> beforeDelete = Event.event();
 		private final Event<Collection<Entity>> afterDelete = Event.event();
 		private final Event<?> afterInsertUpdateOrDelete = Event.event();

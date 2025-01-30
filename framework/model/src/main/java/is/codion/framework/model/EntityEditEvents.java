@@ -60,7 +60,7 @@ public final class EntityEditEvents {
 	 * @param entityType the type of entity to listen for
 	 * @return the update observer for the given entity type
 	 */
-	public static Observer<Map<Entity.Key, Entity>> updateObserver(EntityType entityType) {
+	public static Observer<Map<Entity, Entity>> updateObserver(EntityType entityType) {
 		return EDIT_LISTENER.updateObserver(requireNonNull(entityType));
 	}
 
@@ -83,9 +83,9 @@ public final class EntityEditEvents {
 
 	/**
 	 * Notifies update
-	 * @param updatedEntities the updated entities mapped to their original primary key
+	 * @param updatedEntities the updated entities mapped to their state before the update
 	 */
-	public static void updated(Map<Entity.Key, Entity> updatedEntities) {
+	public static void updated(Map<Entity, Entity> updatedEntities) {
 		EDIT_LISTENER.notifyUpdated(requireNonNull(updatedEntities));
 	}
 
@@ -100,14 +100,14 @@ public final class EntityEditEvents {
 	private static final class EntityEditListener {
 
 		private final Map<EntityType, Event<Collection<Entity>>> insertEvents = synchronizedMap(new LinkedHashMap<>());
-		private final Map<EntityType, Event<Map<Entity.Key, Entity>>> updateEvents = synchronizedMap(new LinkedHashMap<>());
+		private final Map<EntityType, Event<Map<Entity, Entity>>> updateEvents = synchronizedMap(new LinkedHashMap<>());
 		private final Map<EntityType, Event<Collection<Entity>>> deleteEvents = synchronizedMap(new LinkedHashMap<>());
 
 		private Observer<Collection<Entity>> insertObserver(EntityType entityType) {
 			return insertEvents.computeIfAbsent(entityType, k -> event()).observer();
 		}
 
-		private Observer<Map<Entity.Key, Entity>> updateObserver(EntityType entityType) {
+		private Observer<Map<Entity, Entity>> updateObserver(EntityType entityType) {
 			return updateEvents.computeIfAbsent(entityType, k -> event()).observer();
 		}
 
@@ -126,15 +126,15 @@ public final class EntityEditEvents {
 			}
 		}
 
-		private void notifyUpdated(Map<Entity.Key, Entity> updated) {
+		private void notifyUpdated(Map<Entity, Entity> updated) {
 			updated.entrySet()
 							.stream()
 							.collect(groupingBy(entry -> entry.getKey().type(), LinkedHashMap::new, toList()))
 							.forEach(this::notifyUpdated);
 		}
 
-		private void notifyUpdated(EntityType entityType, List<Map.Entry<Entity.Key, Entity>> updated) {
-			Event<Map<Entity.Key, Entity>> event = updateEvents.get(entityType);
+		private void notifyUpdated(EntityType entityType, List<Map.Entry<Entity, Entity>> updated) {
+			Event<Map<Entity, Entity>> event = updateEvents.get(entityType);
 			if (event != null) {
 				event.accept(updated.stream()
 								.collect(toMap(Map.Entry::getKey, Map.Entry::getValue)));

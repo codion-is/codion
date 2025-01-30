@@ -10,6 +10,7 @@ Codion Change Log
 - Remove type inference return values, convenient but unsafe.
 - ModelLink, model type parameters added, removed from static builder factory methods.
 - EntityEditModel.Insert, Update and Delete renamed InsertEntities, UpdateEntities and DeleteEntities.
+- EntityEditModel.afterUpdate() map keys are now an immutable copy of the entity before update, instead of only the original primary key.
 ### is.codion.swing.framework.ui
 - Remove type inference return values, convenient but unsafe.
 - EntityPanelBuilder.createPanel(), createEditPanel() and createTablePanel() error message on incorrect model type improved.

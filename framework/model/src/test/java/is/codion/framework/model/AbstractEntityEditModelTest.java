@@ -88,7 +88,7 @@ public final class AbstractEntityEditModelTest {
 		AtomicInteger deleteEvents = new AtomicInteger();
 
 		Consumer<Collection<Entity>> insertListener = inserted -> insertEvents.incrementAndGet();
-		Consumer<Map<Entity.Key, Entity>> updateListener = udpated -> updateEvents.incrementAndGet();
+		Consumer<Map<Entity, Entity>> updateListener = udpated -> updateEvents.incrementAndGet();
 		Consumer<Collection<Entity>> deleteListener = deleted -> deleteEvents.incrementAndGet();
 
 		EntityEditEvents.insertObserver(Employee.TYPE).addWeakConsumer(insertListener);
@@ -391,7 +391,7 @@ public final class AbstractEntityEditModelTest {
 			editor.value(Employee.NAME).set("BJORN");
 			assertTrue(editor.modified().get());
 			List<Entity> toUpdate = singletonList(editor.get());
-			Consumer<Map<Entity.Key, Entity>> consumer = updatedEntities ->
+			Consumer<Map<Entity, Entity>> consumer = updatedEntities ->
 							assertEquals(toUpdate, new ArrayList<>(updatedEntities.values()));
 			employeeEditModel.afterUpdate().addConsumer(consumer);
 			employeeEditModel.updateEnabled().set(false);

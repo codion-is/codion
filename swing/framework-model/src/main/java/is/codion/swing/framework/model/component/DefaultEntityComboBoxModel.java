@@ -48,6 +48,7 @@ import java.util.function.Supplier;
 
 import static is.codion.common.value.Value.Notify.WHEN_SET;
 import static is.codion.framework.db.EntityConnection.Select.where;
+import static is.codion.framework.domain.entity.Entity.entity;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
@@ -65,7 +66,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 	//we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
 	private final Consumer<Collection<Entity>> insertListener = new InsertListener();
-	private final Consumer<Map<Entity.Key, Entity>> updateListener = new UpdateListener();
+	private final Consumer<Map<Entity, Entity>> updateListener = new UpdateListener();
 	private final Consumer<Collection<Entity>> deleteListener = new DeleteListener();
 
 	DefaultEntityComboBoxModel(DefaultBuilder builder) {
@@ -224,11 +225,12 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 	}
 
-	private final class UpdateListener implements Consumer<Map<Entity.Key, Entity>> {
+	private final class UpdateListener implements Consumer<Map<Entity, Entity>> {
 
 		@Override
-		public void accept(Map<Entity.Key, Entity> updated) {
-			updated.forEach((key, entity) -> items().replace(Entity.entity(key), entity));
+		public void accept(Map<Entity, Entity> updated) {
+			updated.forEach((beforeUpdate, afterUpdate) ->
+							items().replace(entity(beforeUpdate.originalPrimaryKey()), afterUpdate));
 		}
 	}
 

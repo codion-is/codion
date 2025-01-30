@@ -86,7 +86,7 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T>, E extends
 	}
 
 	@Override
-	public void onUpdate(Map<Entity.Key, Entity> updatedEntities) {
+	public void onUpdate(Map<Entity, Entity> updatedEntities) {
 		modelLink.onUpdate(updatedEntities);
 	}
 
@@ -157,10 +157,10 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T>, E extends
 		}
 	}
 
-	private final class OnUpdate implements Consumer<Map<Entity.Key, Entity>> {
+	private final class OnUpdate implements Consumer<Map<Entity, Entity>> {
 
 		@Override
-		public void accept(Map<Entity.Key, Entity> updatedEntities) {
+		public void accept(Map<Entity, Entity> updatedEntities) {
 			Collection<Entity> entities = ofReferencedType(updatedEntities.values());
 			model().editModel().replace(foreignKey, entities);
 			if (model().containsTableModel() &&
@@ -193,7 +193,7 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T>, E extends
 
 		private Consumer<Collection<Entity>> onSelection;
 		private Consumer<Collection<Entity>> onInsert;
-		private Consumer<Map<Entity.Key, Entity>> onUpdate;
+		private Consumer<Map<Entity, Entity>> onUpdate;
 		private Consumer<Collection<Entity>> onDelete;
 
 		private boolean clearValueOnEmptySelection = CLEAR_VALUE_ON_EMPTY_SELECTION.getOrThrow();
@@ -221,7 +221,7 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T>, E extends
 		}
 
 		@Override
-		public B onUpdate(Consumer<Map<Entity.Key, Entity>> onUpdate) {
+		public B onUpdate(Consumer<Map<Entity, Entity>> onUpdate) {
 			this.onUpdate = requireNonNull(onUpdate);
 			return (B) this;
 		}

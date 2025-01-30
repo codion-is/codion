@@ -67,9 +67,9 @@ public interface ModelLink<M extends EntityModel<M, E, T>, E extends EntityEditM
 
 	/**
 	 * Called when an update is performed in the parent model, regardless of entity type.
-	 * @param updatedEntities the updated entities, mapped to their original primary keys
+	 * @param updatedEntities the updated entities, mapped to their state before the update
 	 */
-	void onUpdate(Map<Entity.Key, Entity> updatedEntities);
+	void onUpdate(Map<Entity, Entity> updatedEntities);
 
 	/**
 	 * Called when delete is performed in the parent model, regardless of entity type.
@@ -121,7 +121,7 @@ public interface ModelLink<M extends EntityModel<M, E, T>, E extends EntityEditM
 		 * @param onUpdate called when an update is performed in the parent model
 		 * @return this builder
 		 */
-		B onUpdate(Consumer<Map<Entity.Key, Entity>> onUpdate);
+		B onUpdate(Consumer<Map<Entity, Entity>> onUpdate);
 
 		/**
 		 * @param onDelete called when a delete is performed in the parent model

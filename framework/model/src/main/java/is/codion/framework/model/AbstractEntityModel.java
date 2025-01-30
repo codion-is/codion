@@ -177,7 +177,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 		detailModels.get().values().forEach(link -> link.onInsert(insertedEntities));
 	}
 
-	private void onUpdate(Map<Entity.Key, Entity> updatedEntities) {
+	private void onUpdate(Map<Entity, Entity> updatedEntities) {
 		detailModels.get().values().forEach(link -> link.onUpdate(updatedEntities));
 	}
 

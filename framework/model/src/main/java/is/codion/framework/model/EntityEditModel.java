@@ -346,7 +346,7 @@ public interface EntityEditModel {
 	/**
 	 * @return an observer notified after an update is performed
 	 */
-	Observer<Map<Entity.Key, Entity>> afterUpdate();
+	Observer<Map<Entity, Entity>> afterUpdate();
 
 	/**
 	 * @return an observer notified before a delete is performed

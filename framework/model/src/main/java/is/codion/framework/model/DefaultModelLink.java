@@ -35,7 +35,7 @@ final class DefaultModelLink<M extends EntityModel<M, E, T>, E extends EntityEdi
 
 	private final Consumer<Collection<Entity>> onSelection;
 	private final Consumer<Collection<Entity>> onInsert;
-	private final Consumer<Map<Entity.Key, Entity>> onUpdate;
+	private final Consumer<Map<Entity, Entity>> onUpdate;
 	private final Consumer<Collection<Entity>> onDelete;
 
 	private DefaultModelLink(DefaultBuilder<M, E, T, ?> builder) {
@@ -73,7 +73,7 @@ final class DefaultModelLink<M extends EntityModel<M, E, T>, E extends EntityEdi
 	}
 
 	@Override
-	public void onUpdate(Map<Entity.Key, Entity> updatedEntities) {
+	public void onUpdate(Map<Entity, Entity> updatedEntities) {
 		onUpdate.accept(updatedEntities);
 	}
 
@@ -91,7 +91,7 @@ final class DefaultModelLink<M extends EntityModel<M, E, T>, E extends EntityEdi
 
 		private Consumer<Collection<Entity>> onSelection = (Consumer<Collection<Entity>>) EMPTY_CONSUMER;
 		private Consumer<Collection<Entity>> onInsert = (Consumer<Collection<Entity>>) EMPTY_CONSUMER;
-		private Consumer<Map<Entity.Key, Entity>> onUpdate = (Consumer<Map<Entity.Key, Entity>>) EMPTY_CONSUMER;
+		private Consumer<Map<Entity, Entity>> onUpdate = (Consumer<Map<Entity, Entity>>) EMPTY_CONSUMER;
 		private Consumer<Collection<Entity>> onDelete = (Consumer<Collection<Entity>>) EMPTY_CONSUMER;
 		private boolean active = false;
 
@@ -112,7 +112,7 @@ final class DefaultModelLink<M extends EntityModel<M, E, T>, E extends EntityEdi
 		}
 
 		@Override
-		public B onUpdate(Consumer<Map<Entity.Key, Entity>> onUpdate) {
+		public B onUpdate(Consumer<Map<Entity, Entity>> onUpdate) {
 			this.onUpdate = requireNonNull(onUpdate);
 			return (B) this;
 		}
