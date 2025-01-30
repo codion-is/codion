@@ -467,7 +467,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 						.with(Department.LOCATION, "Loc")
 						.build();
 
-		Entity emp = connectionProvider().connection().selectSingle(Employee.ID.equalTo(8)).clearPrimaryKey();
+		Entity emp = connectionProvider().connection().selectSingle(Employee.ID.equalTo(8)).copy().builder().clearPrimaryKey().build();
 		emp.put(Employee.NAME, "NewName");
 
 		M model = createDepartmentModelWithoutDetailModel();

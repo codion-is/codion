@@ -20,6 +20,7 @@ package is.codion.framework.domain.entity;
 
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.Column;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -71,10 +72,26 @@ final class DefaultEntityBuilder implements Entity.Builder {
 	}
 
 	@Override
+	public Entity.Builder clearPrimaryKey() {
+		definition.primaryKey().columns().forEach(this::remove);
+
+		return this;
+	}
+
+	@Override
 	public Entity build() {
 		Entity entity = definition.entity(values, originalValues);
 		builderValues.forEach((attribute, value) -> entity.put((Attribute<Object>) attribute, value));
 
 		return entity;
+	}
+
+	private void remove(Column<?> column) {
+		if (values != null) {
+			values.remove(column);
+		}
+		if (originalValues != null) {
+			originalValues.remove(column);
+		}
 	}
 }

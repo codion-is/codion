@@ -59,11 +59,6 @@ final class ImmutableEntity extends DefaultEntity implements Serializable {
 	}
 
 	@Override
-	public Entity clearPrimaryKey() {
-		throw new UnsupportedOperationException(ERROR_MESSAGE);
-	}
-
-	@Override
 	public void save(Attribute<?> attribute) {
 		throw new UnsupportedOperationException(ERROR_MESSAGE);
 	}

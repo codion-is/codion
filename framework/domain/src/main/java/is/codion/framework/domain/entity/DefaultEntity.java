@@ -209,14 +209,6 @@ class DefaultEntity implements Entity, Serializable {
 	}
 
 	@Override
-	public Entity clearPrimaryKey() {
-		definition.primaryKey().columns().forEach(this::remove);
-		primaryKey = null;
-
-		return this;
-	}
-
-	@Override
 	public void save(Attribute<?> attribute) {
 		removeOriginalValue(requireNonNull(attribute));
 	}

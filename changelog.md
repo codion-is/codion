@@ -6,6 +6,7 @@ Codion Change Log
 - ColumnDefinition.lazy() and selectable() replaced with selected().
 - MultiValueColumnCondition bug fixed, now rejects empty values for IN and NOT_IN.
 - Entity.Key.get() renamed value().
+- Entity.clearPrimaryKey() moved to Builder.
 ### is.codion.framework.model
 - EntityModel.DetailModels.get() now returns a Map, related refactoring.
 - Remove type inference return values, convenient but unsafe.

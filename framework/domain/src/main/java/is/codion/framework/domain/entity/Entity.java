@@ -211,14 +211,6 @@ public interface Entity extends Comparable<Entity> {
 	boolean exists();
 
 	/**
-	 * Clears the primary key values from this entity,
-	 * current as well as original values if any
-	 * @return this Entity instance
-	 * @throws UnsupportedOperationException in case this entity is immutable
-	 */
-	Entity clearPrimaryKey();
-
-	/**
 	 * Compares the values of all attributes in the given entity to the values in this entity instance.
 	 * Returns true if all attribute values available in the this entity are available and equal in the comparison entity
 	 * @param entity the entity to compare to
@@ -352,6 +344,13 @@ public interface Entity extends Comparable<Entity> {
 		 * @see AttributeDefinition#hasDefaultValue()
 		 */
 		Builder withDefaults();
+
+		/**
+		 * Clears the primary key values from this builder,
+		 * current as well as original values if any
+		 * @return this builder instance
+		 */
+		Builder clearPrimaryKey();
 
 		/**
 		 * Builds the Entity instance

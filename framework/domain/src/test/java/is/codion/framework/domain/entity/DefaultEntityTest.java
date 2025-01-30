@@ -516,7 +516,7 @@ public class DefaultEntityTest {
 		testEntity = detailEntity(detailId, detailInt, detailDouble,
 						detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
 
-		testEntity.clearPrimaryKey();
+		testEntity = testEntity.copy().builder().clearPrimaryKey().build();
 		assertTrue(testEntity.primaryKey().isNull());
 		assertTrue(testEntity.contains(Detail.DATE));
 		assertTrue(testEntity.contains(Detail.STRING));
@@ -932,7 +932,6 @@ public class DefaultEntityTest {
 		assertSame(emp, emp.immutable());
 
 		assertThrows(UnsupportedOperationException.class, () -> emp.put(Department.ID, 2));
-		assertThrows(UnsupportedOperationException.class, emp::clearPrimaryKey);
 		assertThrows(UnsupportedOperationException.class, () -> emp.save(Department.ID));
 		assertThrows(UnsupportedOperationException.class, emp::save);
 		assertThrows(UnsupportedOperationException.class, () -> emp.revert(Department.ID));
@@ -942,7 +941,6 @@ public class DefaultEntityTest {
 
 		Entity dept = emp.get(Employee.DEPARTMENT_FK);
 		assertThrows(UnsupportedOperationException.class, () -> dept.put(Department.ID, 2));
-		assertThrows(UnsupportedOperationException.class, dept::clearPrimaryKey);
 		assertThrows(UnsupportedOperationException.class, () -> dept.save(Department.ID));
 		assertThrows(UnsupportedOperationException.class, dept::save);
 		assertThrows(UnsupportedOperationException.class, () -> dept.revert(Department.ID));

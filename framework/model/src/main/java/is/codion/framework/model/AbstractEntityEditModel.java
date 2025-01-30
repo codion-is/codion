@@ -433,12 +433,12 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		private Collection<Entity> entityForInsert() {
-			Entity toInsert = editor.getOrThrow().copy().mutable();
-			if (toInsert.definition().primaryKey().generated()) {
-				toInsert.clearPrimaryKey();
+			Entity.Builder builder = editor.getOrThrow().copy().builder();
+			if (entityDefinition.primaryKey().generated()) {
+				builder.clearPrimaryKey();
 			}
 
-			return singleton(toInsert);
+			return singleton(builder.build());
 		}
 
 		@Override

@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 final class DefaultBatchCopy implements BatchCopy {
 
@@ -54,11 +55,13 @@ final class DefaultBatchCopy implements BatchCopy {
 							Select.all(entityTypeCondition.getKey()) :
 							Select.where(entityTypeCondition.getValue());
 			List<Entity> entities = source.select(conditionBuilder
-							.fetchDepth(0)
-							.build());
-			if (!includePrimaryKeys) {
-				entities.forEach(Entity::clearPrimaryKey);
-			}
+											.fetchDepth(0)
+											.build())
+							.stream()
+							.map(entity -> includePrimaryKeys ? entity : entity.copy().builder()
+											.clearPrimaryKey()
+											.build())
+							.collect(toList());
 			new DefaultBatchInsert.DefaultBuilder(destination, entities.iterator())
 							.batchSize(batchSize)
 							.execute();
