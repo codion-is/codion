@@ -130,8 +130,8 @@ public final class EntityObjectMapperTest {
 
 		List<Entity.Key> keys = mapper.deserializeKeys(jsonString);
 		assertEquals(Department.TYPE, keys.get(0).type());
-		assertEquals(Integer.valueOf(1), keys.get(0).get());
-		assertEquals(Integer.valueOf(2), keys.get(1).get());
+		assertEquals(Integer.valueOf(1), keys.get(0).value());
+		assertEquals(Integer.valueOf(2), keys.get(1).value());
 
 		Entity.Key entityKey = entities.keyBuilder(TestEntity.TYPE)
 						.with(TestEntity.DECIMAL, BigDecimal.valueOf(1234L))
@@ -154,7 +154,7 @@ public final class EntityObjectMapperTest {
 		Entity.Key keyParsed = mapper.deserializeKeys(keyJSON).get(0);
 		assertEquals(key.type(), keyParsed.type());
 		assertEquals(key.column(), keyParsed.column());
-		assertEquals((Integer) key.get(), keyParsed.get());
+		assertEquals((Integer) key.value(), keyParsed.value());
 	}
 
 	@Test

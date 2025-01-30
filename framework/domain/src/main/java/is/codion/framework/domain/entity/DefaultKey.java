@@ -113,7 +113,7 @@ class DefaultKey implements Entity.Key, Serializable {
 	}
 
 	@Override
-	public <T> T get() {
+	public <T> T value() {
 		assertSingleValueKey();
 
 		return (T) values.get(columns.get(0));
@@ -121,7 +121,7 @@ class DefaultKey implements Entity.Key, Serializable {
 
 	@Override
 	public <T> Optional<T> optional() {
-		return Optional.ofNullable(get());
+		return Optional.ofNullable(value());
 	}
 
 	@Override
@@ -249,7 +249,7 @@ class DefaultKey implements Entity.Key, Serializable {
 	}
 
 	private Integer computeSingleValueHashCode() {
-		Object value = get();
+		Object value = value();
 		if (value == null) {
 			return null;
 		}

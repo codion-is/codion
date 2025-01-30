@@ -96,7 +96,7 @@ abstract class AbstractHttpEntityConnectionTest {
 						.with(Department.LOCATION, "loc")
 						.build();
 		Entity.Key key = connection.insert(entity);
-		assertEquals(Long.valueOf(33), key.get());
+		assertEquals(Long.valueOf(33), key.value());
 		connection.delete(key);
 	}
 

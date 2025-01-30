@@ -124,7 +124,7 @@ public interface Condition {
 			return compositeEqualCondition(columnMap, EQUAL, valueMap);
 		}
 
-		return key.column().equalTo(key.get());
+		return key.column().equalTo(key.value());
 	}
 
 	/**

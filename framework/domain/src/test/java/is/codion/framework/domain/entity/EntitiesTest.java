@@ -151,7 +151,7 @@ public final class EntitiesTest {
 		assertTrue(key.isNull());
 
 		assertThrows(IllegalStateException.class, () -> entities.primaryKey(KeyTest.TYPE, 1));
-		assertThrows(NoSuchElementException.class, key::get);
+		assertThrows(NoSuchElementException.class, key::value);
 		assertThrows(NoSuchElementException.class, key::optional);
 		assertThrows(NoSuchElementException.class, key::column);
 
@@ -207,10 +207,10 @@ public final class EntitiesTest {
 	void keys() {
 		List<Entity.Key> intKeys = entities.primaryKeys(Employee.TYPE, 1, 2, 3, 4);
 		assertEquals(4, intKeys.size());
-		assertEquals(Integer.valueOf(3), intKeys.get(2).get());
+		assertEquals(Integer.valueOf(3), intKeys.get(2).value());
 		List<Entity.Key> longKeys = entities.primaryKeys(Detail.TYPE, 1L, 2L, 3L, 4L);
 		assertEquals(4, longKeys.size());
-		assertEquals(Long.valueOf(3), longKeys.get(2).get());
+		assertEquals(Long.valueOf(3), longKeys.get(2).value());
 	}
 
 	@Test

@@ -320,9 +320,9 @@ public class DefaultEntityTest {
 						.build();
 
 		Entity.Key codeKey = detail.key(Detail.MASTER_VIA_CODE_FK);
-		assertEquals(Integer.valueOf(3), codeKey.get());
+		assertEquals(Integer.valueOf(3), codeKey.value());
 		Entity.Key cachedCodeKey = detail.key(Detail.MASTER_VIA_CODE_FK);
-		assertEquals(Integer.valueOf(3), cachedCodeKey.get());
+		assertEquals(Integer.valueOf(3), cachedCodeKey.value());
 
 		assertSame(codeKey, cachedCodeKey);
 	}
@@ -737,7 +737,7 @@ public class DefaultEntityTest {
 		emp.put(Employee.DEPARTMENT_NO, 2);
 		assertNull(emp.get(Employee.DEPARTMENT_FK));
 		Entity referencedDept = emp.entity(Employee.DEPARTMENT_FK);
-		assertEquals(Integer.valueOf(2), referencedDept.primaryKey().get());
+		assertEquals(Integer.valueOf(2), referencedDept.primaryKey().value());
 
 		Entity dept2 = ENTITIES.builder(Department.TYPE)
 						.with(Department.ID, 3)

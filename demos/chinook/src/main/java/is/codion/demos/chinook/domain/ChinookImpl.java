@@ -552,7 +552,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 																	List<Long> trackIds) {
 			Entity playlist = connection.insertSelect(createPlaylist(playlistName));
 
-			connection.insert(createPlaylistTracks(playlist.primaryKey().get(), trackIds));
+			connection.insert(createPlaylistTracks(playlist.primaryKey().value(), trackIds));
 
 			return playlist;
 		}

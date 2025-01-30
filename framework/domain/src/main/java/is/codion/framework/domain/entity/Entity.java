@@ -420,7 +420,7 @@ public interface Entity extends Comparable<Entity> {
 	 */
 	static <T> Collection<T> values(Collection<Key> keys) {
 		return requireNonNull(keys).stream()
-						.map(key -> (T) key.get())
+						.map(key -> (T) key.value())
 						.collect(toList());
 	}
 
@@ -560,7 +560,7 @@ public interface Entity extends Comparable<Entity> {
 		 * @throws IllegalStateException in case this is a composite key
 		 * @throws NoSuchElementException in case this key contains no values
 		 */
-		<T> T get();
+		<T> T value();
 
 		/**
 		 * Returns the value of this key, wrapped in an {@link Optional}. Note that this method throws an exception if this key is a composite key.
