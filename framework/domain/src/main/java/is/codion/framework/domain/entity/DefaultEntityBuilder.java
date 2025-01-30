@@ -18,6 +18,7 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.framework.domain.entity.Entity.Key;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -35,7 +36,7 @@ final class DefaultEntityBuilder implements Entity.Builder {
 	private final Map<Attribute<?>, Object> originalValues;
 	private final Map<Attribute<?>, Object> builderValues = new LinkedHashMap<>();
 
-	DefaultEntityBuilder(Entity.Key key) {
+	DefaultEntityBuilder(Key key) {
 		this(requireNonNull(key).definition());
 		key.columns().forEach(attribute -> with((Attribute<Object>) attribute, key.get(attribute)));
 	}
@@ -76,6 +77,20 @@ final class DefaultEntityBuilder implements Entity.Builder {
 		definition.primaryKey().columns().forEach(this::remove);
 
 		return this;
+	}
+
+	@Override
+	public Key.Builder key() {
+		DefaultKeyBuilder builder = new DefaultKeyBuilder(definition);
+		if (values != null) {
+			definition.primaryKey().columns().forEach(column -> {
+				if (values.containsKey(column)) {
+					builder.with((Column<Object>) column, values.get(column));
+				}
+			});
+		}
+
+		return builder;
 	}
 
 	@Override

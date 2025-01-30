@@ -145,7 +145,7 @@ public final class EntitiesTest {
 
 	@Test
 	void key() {
-		Entity.Key key = entities.keyBuilder(KeyTest.TYPE).build();
+		Entity.Key key = entities.builder(KeyTest.TYPE).key().build();
 		assertEquals(0, key.hashCode());
 		assertTrue(key.columns().isEmpty());
 		assertTrue(key.isNull());
@@ -193,14 +193,19 @@ public final class EntitiesTest {
 		assertTrue(key.isNotNull());
 		assertEquals(43, key.hashCode());
 
-		assertThrows(NullPointerException.class, () -> entities.keyBuilder(null));
-
-		assertFalse(entities.keyBuilder(NoPk.TYPE)
+		assertFalse(entities.builder(NoPk.TYPE).key()
 						.with(NoPk.COL1, 1)
 						.build()
 						.primary());
-		Entity.Key noPk = entities.keyBuilder(NoPk.TYPE).build();
+		Entity.Key noPk = entities.builder(NoPk.TYPE).key().build();
 		assertThrows(IllegalArgumentException.class, () -> noPk.get(NoPk.COL1));
+
+		key = entities.builder(Employee.TYPE)
+						.with(Employee.ID, 42)
+						.with(Employee.NAME, "Name")
+						.build()
+						.copy().builder().key().build();
+		assertEquals(Integer.valueOf(42), key.value());
 	}
 
 	@Test

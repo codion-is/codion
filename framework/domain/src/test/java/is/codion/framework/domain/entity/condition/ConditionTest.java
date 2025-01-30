@@ -170,14 +170,14 @@ public final class ConditionTest {
 
 	@Test
 	void compositePrimaryKeyConditionWithNullValues() {
-		Entity.Key masterKey = ENTITIES.keyBuilder(Master2.TYPE)
+		Entity.Key masterKey = ENTITIES.builder(Master2.TYPE).key()
 						.with(Master2.ID_1, 1)
 						.with(Master2.ID_2, null)
 						.with(Master2.CODE, 3)
 						.build();
 		Condition.key(masterKey);
 
-		Entity.Key masterKey2 = ENTITIES.keyBuilder(Master2.TYPE)
+		Entity.Key masterKey2 = ENTITIES.builder(Master2.TYPE).key()
 						.with(Master2.ID_1, null)
 						.with(Master2.ID_2, null)
 						.with(Master2.CODE, 42)

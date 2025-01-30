@@ -996,7 +996,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	private Key createKey(Entity entity, Collection<Column<?>> keyColumns) {
-		Key.Builder keyBuilder = entities().keyBuilder(entity.type());
+		Key.Builder keyBuilder = entities().builder(entity.type()).key();
 		keyColumns.forEach(column -> keyBuilder.with((Column<Object>) column, entity.get(column)));
 
 		return keyBuilder.build();

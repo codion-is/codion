@@ -109,7 +109,7 @@ public final class EntitySerializerTest {
 		assertTrue(manager.entity(Employee.DEPARTMENT_FK).equalValues(deserializedManager.entity(Employee.DEPARTMENT_FK)));
 
 		DefaultKey key = createTestKey();
-		DefaultKey deserializedKey = (DefaultKey) ENTITIES.keyBuilder(CompositeMaster.TYPE).build();
+		DefaultKey deserializedKey = (DefaultKey) ENTITIES.builder(CompositeMaster.TYPE).key().build();
 		serializeDeserialize(serializer, key, deserializedKey);
 		assertEquals(key.values, deserializedKey.values);
 	}
@@ -167,7 +167,7 @@ public final class EntitySerializerTest {
 	}
 
 	private static DefaultKey createTestKey() {
-		return (DefaultKey) ENTITIES.keyBuilder(CompositeMaster.TYPE)
+		return (DefaultKey) ENTITIES.builder(CompositeMaster.TYPE).key()
 						.with(CompositeMaster.COMPOSITE_MASTER_ID, 1)
 						.with(CompositeMaster.COMPOSITE_MASTER_ID_2, 2)
 						.with(CompositeMaster.COMPOSITE_MASTER_ID_3, 3)

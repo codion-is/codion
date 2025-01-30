@@ -33,7 +33,6 @@ import static is.codion.common.Configuration.booleanValue;
  * @see #builder(EntityType)
  * @see #primaryKey(EntityType, Object)
  * @see #primaryKeys(EntityType, Object[])
- * @see #keyBuilder(EntityType)
  */
 public interface Entities {
 
@@ -129,11 +128,4 @@ public interface Entities {
 	 * @throws NullPointerException in case entityType or values is null
 	 */
 	<T> List<Entity.Key> primaryKeys(EntityType entityType, T... values);
-
-	/**
-	 * Creates a new {@link Entity.Key.Builder} instance for the given entity type
-	 * @param entityType the entity type
-	 * @return a new builder
-	 */
-	Entity.Key.Builder keyBuilder(EntityType entityType);
 }

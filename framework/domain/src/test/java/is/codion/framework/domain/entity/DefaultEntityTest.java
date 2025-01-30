@@ -694,7 +694,7 @@ public class DefaultEntityTest {
 
 	@Test
 	void keyInvalidAttributeGet() {
-		assertThrows(IllegalArgumentException.class, () -> ENTITIES.keyBuilder(Employee.TYPE).build().get(Employee.NAME));
+		assertThrows(IllegalArgumentException.class, () -> ENTITIES.builder(Employee.TYPE).key().build().get(Employee.NAME));
 	}
 
 	@Test

@@ -108,11 +108,6 @@ public abstract class DefaultEntities implements Entities, Serializable {
 	}
 
 	@Override
-	public final Entity.Key.Builder keyBuilder(EntityType entityType) {
-		return new DefaultKeyBuilder(definition(entityType));
-	}
-
-	@Override
 	public final String toString() {
 		return getClass().getSimpleName() + ": " + domainType;
 	}

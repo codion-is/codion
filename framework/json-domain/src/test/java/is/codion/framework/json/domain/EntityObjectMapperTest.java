@@ -133,7 +133,7 @@ public final class EntityObjectMapperTest {
 		assertEquals(Integer.valueOf(1), keys.get(0).value());
 		assertEquals(Integer.valueOf(2), keys.get(1).value());
 
-		Entity.Key entityKey = entities.keyBuilder(TestEntity.TYPE)
+		Entity.Key entityKey = entities.builder(TestEntity.TYPE).key()
 						.with(TestEntity.DECIMAL, BigDecimal.valueOf(1234L))
 						.with(TestEntity.DATE_TIME, LocalDateTime.now())
 						.build();
