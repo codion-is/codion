@@ -114,7 +114,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		deptModel.items().refresh();
 
 		Entities entities = deptModel.entities();
-		deptModel.onInsert().set(EntityTableModel.OnInsert.ADD_BOTTOM);
+		deptModel.onInsert().set(EntityTableModel.OnInsert.APPEND);
 		Entity dept = entities.builder(Department.TYPE)
 						.with(Department.ID, -10)
 						.with(Department.LOCATION, "Nowhere1")
@@ -123,9 +123,10 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		int count = deptModel.items().visible().count();
 		deptModel.editModel().insert(singletonList(dept));
 		assertEquals(count + 1, deptModel.items().visible().count());
-		assertEquals(dept, deptModel.items().visible().get().get(deptModel.items().visible().count() - 1));
+		// Sort by name is enabled
+		assertEquals(dept, deptModel.items().visible().get().get(1));
 
-		deptModel.onInsert().set(EntityTableModel.OnInsert.ADD_TOP_SORTED);
+		deptModel.onInsert().set(EntityTableModel.OnInsert.PREPEND);
 		Entity dept2 = entities.builder(Department.TYPE)
 						.with(Department.ID, -20)
 						.with(Department.LOCATION, "Nowhere2")

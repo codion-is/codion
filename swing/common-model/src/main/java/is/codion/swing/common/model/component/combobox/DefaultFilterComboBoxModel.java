@@ -340,6 +340,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 					if (!visible.items.contains(item)) {
 						visible.items.add(item);
 						visible.sortInternal();
+						visible.added.accept(singleton(item));
 						visible.notifyChanges();
 					}
 				}
@@ -494,6 +495,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			private final Comparator<T> comparator;
 			private final List<T> items = new ArrayList<>();
 			private final Event<List<T>> event = Event.event();
+			private final Event<Collection<T>> added = Event.event();
 
 			private DefaultVisibleItems(Comparator<T> comparator) {
 				this.comparator = requireNonNull(comparator);
@@ -521,6 +523,11 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			@Override
 			public Observer<List<T>> observer() {
 				return event.observer();
+			}
+
+			@Override
+			public Observer<Collection<T>> added() {
+				return added.observer();
 			}
 
 			@Override

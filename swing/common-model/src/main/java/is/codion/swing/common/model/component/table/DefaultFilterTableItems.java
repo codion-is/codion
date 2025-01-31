@@ -46,8 +46,7 @@ import java.util.function.Supplier;
 
 import static is.codion.common.model.condition.TableConditionModel.tableConditionModel;
 import static is.codion.common.value.Value.Notify.WHEN_SET;
-import static java.util.Collections.unmodifiableCollection;
-import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
@@ -138,9 +137,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 	@Override
 	public void add(Collection<R> items) {
 		synchronized (lock) {
-			if (addInternal(visible.items.size(), rejectNulls(items))) {
-				visible.sort();
-			}
+			addInternal(visible.items.size(), rejectNulls(items));
 		}
 	}
 
@@ -258,9 +255,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 	private void clearAndAdd(Collection<R> items) {
 		List<R> selectedItems = selection.items().get();
 		clear();
-		if (addInternal(0, items)) {
-			visible.sort();
-		}
+		addInternal(0, items);
 		selection.items().set(selectedItems);
 	}
 
@@ -273,6 +268,8 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		if (visiblePredicate.test(item)) {
 			visible.items.add(index, item);
 			tableModel.fireTableRowsInserted(index, index);
+			visible.sort();
+			visible.notifyAdded(singleton(item));
 
 			return true;
 		}
@@ -297,6 +294,8 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		if (!visibleItems.isEmpty()) {
 			visible.items.addAll(index, visibleItems);
 			tableModel.fireTableRowsInserted(index, index + visibleItems.size());
+			visible.sort();
+			visible.notifyAdded(visibleItems);
 		}
 		if (!filteredItems.isEmpty()) {
 			filtered.items.addAll(filteredItems);
@@ -395,6 +394,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 
 		private final List<R> items = new ArrayList<>();
 		private final Event<List<R>> event = Event.event();
+		private final Event<Collection<R>> added = Event.event();
 
 		private DefaultVisibleItems() {
 			tableModel.addTableModelListener(e -> {
@@ -421,6 +421,11 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		@Override
 		public Observer<List<R>> observer() {
 			return event.observer();
+		}
+
+		@Override
+		public Observer<Collection<R>> added() {
+			return added.observer();
 		}
 
 		@Override
@@ -519,6 +524,10 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 				}
 				selection.items().set(selectedItems);
 			}
+		}
+
+		private void notifyAdded(Collection<R> addedItems) {
+			added.accept(addedItems);
 		}
 
 		private void notifyChanges() {

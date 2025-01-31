@@ -47,10 +47,10 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	 * Specifies the default action a table model takes when entities are inserted via its edit model.
 	 * <ul>
 	 * <li>Value type: {@link OnInsert}
-	 * <li>Default value: {@link OnInsert#ADD_TOP}
+	 * <li>Default value: {@link OnInsert#PREPEND}
 	 * </ul>
 	 */
-	PropertyValue<OnInsert> ON_INSERT = enumValue(EntityTableModel.class.getName() + ".onInsert", OnInsert.class, OnInsert.ADD_TOP);
+	PropertyValue<OnInsert> ON_INSERT = enumValue(EntityTableModel.class.getName() + ".onInsert", OnInsert.class, OnInsert.PREPEND);
 
 	/**
 	 * Specifies whether table models handle entity edit events, by replacing updated entities
@@ -72,23 +72,15 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 		 */
 		DO_NOTHING,
 		/**
-		 * The entities inserted via the associated edit model are added as the topmost rows in the model
+		 * The entities inserted via the associated edit model are prepended to the model rows,
+		 * the rows are then sorted if sorting is enabled.
 		 */
-		ADD_TOP,
+		PREPEND,
 		/**
-		 * The entities inserted via the associated edit model are added as the bottommost rows in the model
+		 * The entities inserted via the associated edit model are appended to the model rows,
+		 * the rows are then sorted if sorting is enabled.
 		 */
-		ADD_BOTTOM,
-		/**
-		 * The entities inserted via the associated edit model are added as the topmost rows in the model,
-		 * if sorting is enabled then sorting is performed
-		 */
-		ADD_TOP_SORTED,
-		/**
-		 * The entities inserted via the associated edit model are added as the bottommost rows in the model,
-		 * if sorting is enabled then sorting is performed
-		 */
-		ADD_BOTTOM_SORTED
+		APPEND
 	}
 
 	/**

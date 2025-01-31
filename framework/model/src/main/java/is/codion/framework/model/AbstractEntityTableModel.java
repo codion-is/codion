@@ -58,8 +58,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 					.build();
 	private final State editable = State.state();
 	private final State removeDeleted = State.state(true);
-	private final Value<OnInsert> onInsert =
-					Value.nonNull(EntityTableModel.ON_INSERT.getOrThrow());
+	private final Value<OnInsert> onInsert = Value.nonNull(ON_INSERT.getOrThrow());
 
 	private final Consumer<Map<Entity, Entity>> updateListener = new UpdateListener();
 
@@ -221,26 +220,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 				selection().clear();
 			}
 			VisibleItems<Entity> visibleItems = items().visible();
-			switch (onInsert.getOrThrow()) {
-				case ADD_TOP:
-					visibleItems.add(0, entitiesToAdd);
-					break;
-				case ADD_TOP_SORTED:
-					if (visibleItems.add(0, entitiesToAdd)) {
-						visibleItems.sort();
-					}
-					break;
-				case ADD_BOTTOM:
-					visibleItems.add(visibleItems.count(), entitiesToAdd);
-					break;
-				case ADD_BOTTOM_SORTED:
-					if (visibleItems.add(visibleItems.count(), entitiesToAdd)) {
-						visibleItems.sort();
-					}
-					break;
-				default:
-					break;
-			}
+			visibleItems.add(onInsert.getOrThrow() == OnInsert.PREPEND ? 0 : visibleItems.count(), entitiesToAdd);
 		}
 	}
 

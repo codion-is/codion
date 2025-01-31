@@ -247,9 +247,9 @@ public final class DefaultFilterTableModelTest {
 		tableModel.sort().ascending(0);
 		Items<TestRow> items = tableModel.items();
 		items.add(asList(A, B));
-		// does not sort
+		// sorts
 		assertTrue(items.visible().add(0, C));
-		assertEquals(0, items.visible().indexOf(C));
+		assertEquals(2, items.visible().indexOf(C));
 
 		items.remove(C);
 		// sorts
@@ -263,10 +263,10 @@ public final class DefaultFilterTableModelTest {
 		items.visible().predicate().clear();
 		assertEquals(2, items.visible().indexOf(C));
 
-		// does not sort
+		// sorts
 		assertTrue(items.visible().add(0, asList(D, E)));
-		assertEquals(0, items.visible().indexOf(D));
-		assertEquals(1, items.visible().indexOf(E));
+		assertEquals(3, items.visible().indexOf(D));
+		assertEquals(4, items.visible().indexOf(E));
 
 		items.visible().predicate().set(item -> !item.equals(E));
 		assertEquals(3, items.visible().indexOf(D));

@@ -190,6 +190,11 @@ public interface FilterModel<T> {
 		Value<Predicate<T>> predicate();
 
 		/**
+		 * @return an {@link Observer} notified when items have been added
+		 */
+		Observer<Collection<T>> added();
+
+		/**
 		 * Returns true if the given item is visible
 		 * @param item the item
 		 * @return true if the item is visible
@@ -210,7 +215,7 @@ public interface FilterModel<T> {
 		T get(int index);
 
 		/**
-		 * <p>Adds the given item at the given index. This method does not trigger a sort.
+		 * <p>Adds the given item at the given index and sorts the visible items if sorting is enabled.
 		 * <p>Note that if the item does not pass the {@link VisibleItems#predicate()} it is filtered right away and the method returns false.
 		 * @param index the index
 		 * @param item the item to add
@@ -220,7 +225,7 @@ public interface FilterModel<T> {
 		boolean add(int index, T item);
 
 		/**
-		 * <p>Adds the given items at the given index. This method does not trigger a sort.
+		 * <p>Adds the given items at the given index and sorts the visible items if sorting is enabled.
 		 * <p>Note that if an item does not pass the {@link VisibleItems#predicate()} it is filtered right away.
 		 * @param index the index at which to add the items
 		 * @param items the items to add

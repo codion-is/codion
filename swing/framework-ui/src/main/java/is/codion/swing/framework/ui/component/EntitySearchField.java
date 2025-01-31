@@ -20,7 +20,6 @@ package is.codion.swing.framework.ui.component;
 
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
-import is.codion.common.model.FilterModel.VisibleItems;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
@@ -873,10 +872,7 @@ public final class EntitySearchField extends HintTextField {
 
 		@Override
 		public void select(JComponent dialogOwner, List<Entity> entities) {
-			VisibleItems<Entity> visibleItems = table.model().items().visible();
-			if (visibleItems.add(0, entities)) {
-				visibleItems.sort();
-			}
+			table.model().items().visible().add(0, entities);
 			table.scrollRectToVisible(table.getCellRect(0, 0, true));
 			initializeResultLimitMessage(resultLimitLabel, searchModel.limit().optional().orElse(-1), entities.size());
 

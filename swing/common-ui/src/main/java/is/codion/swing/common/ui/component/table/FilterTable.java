@@ -53,6 +53,7 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
 
 import javax.swing.Action;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTable;
@@ -80,9 +81,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.IntStream;
@@ -246,6 +249,7 @@ public final class FilterTable<R, C> extends JTable {
 	private final State sortingEnabled;
 	private final State scrollToSelectedItem;
 	private final Value<CenterOnScroll> centerOnScroll;
+	private final boolean scrollToAddedItem;
 
 	private final ControlMap controlMap;
 
@@ -268,6 +272,7 @@ public final class FilterTable<R, C> extends JTable {
 						.build();
 		this.doubleClickAction = Value.nullable(builder.doubleClickAction);
 		this.scrollToSelectedItem = State.state(builder.scrollToSelectedItem);
+		this.scrollToAddedItem = builder.scrollToAddedItem;
 		this.sortingEnabled = State.state(builder.sortingEnabled);
 		this.controlMap = builder.controlMap;
 		this.controlMap.control(COPY_CELL).set(createCopyCellControl());
@@ -351,9 +356,6 @@ public final class FilterTable<R, C> extends JTable {
 	public void setSelectionModel(ListSelectionModel selectionModel) {
 		if (this.selectionModel != null) {
 			throw new IllegalStateException("Selection model has already been set");
-		}
-		if (!(selectionModel instanceof TableSelection)) {
-			throw new IllegalArgumentException("FilterTable selection model must be a TableSelection instance");
 		}
 		super.setSelectionModel(selectionModel);
 	}
@@ -514,7 +516,7 @@ public final class FilterTable<R, C> extends JTable {
 	 */
 	public void copySelectedCell() {
 		int selectedRow = getSelectedRow();
-		int selectedColumn  = columnModel.getSelectionModel().getLeadSelectionIndex();
+		int selectedColumn = columnModel.getSelectionModel().getLeadSelectionIndex();
 		if (selectedRow >= 0 && selectedColumn >= 0) {
 			FilterTableColumn<C> column = columnModel().getColumn(selectedColumn);
 			Utilities.setClipboard(model().values().string(selectedRow, column.identifier()));
@@ -871,6 +873,7 @@ public final class FilterTable<R, C> extends JTable {
 													boolean columnResizingAllowed) {
 		columnModel().columnHidden().addConsumer(this::onColumnHidden);
 		tableModel.selection().indexes().addConsumer(new ScrollToSelected());
+		tableModel.items().visible().added().addConsumer(new ScrollToAdded());
 		tableModel.filters().changed().addListener(getTableHeader()::repaint);
 		searchModel.results().current().addListener(this::repaint);
 		tableModel.sort().observer().addListener(getTableHeader()::repaint);
@@ -976,6 +979,32 @@ public final class FilterTable<R, C> extends JTable {
 			int visibleRows = viewport.getExtentSize().height / getRowHeight();
 
 			return row >= topRow && row <= topRow + visibleRows;
+		}
+	}
+
+	private final class ScrollToAdded implements Consumer<Collection<R>> {
+
+		@Override
+		public void accept(Collection<R> items) {
+			JViewport viewport = Utilities.parentOfType(JViewport.class, FilterTable.this);
+			if (scrollToAddedItem && viewport != null) {
+				Set<R> itemSet = new HashSet<>(items);
+				List<R> visibleItems = tableModel.items().visible().get();
+				for (int row = 0; row < visibleItems.size(); row++) {
+					if (itemSet.contains(visibleItems.get(row))) {
+						scrollToAddedRow(viewport, row);
+					}
+				}
+			}
+		}
+
+		private void scrollToAddedRow(JViewport viewport, int row) {
+			Rectangle cellRectangle = getCellRect(row, 0, true);
+			Rectangle viewRectangle = viewport.getViewRect();
+			cellRectangle.setLocation(0, cellRectangle.y - viewRectangle.y);
+			cellRectangle.height = viewRectangle.height;
+			viewport.scrollRectToVisible(cellRectangle);
+			((DefaultListSelectionModel) getSelectionModel()).moveLeadSelectionIndex(row);
 		}
 	}
 
@@ -1090,6 +1119,14 @@ public final class FilterTable<R, C> extends JTable {
 		 * @return this builder instance
 		 */
 		Builder<R, C> scrollToSelectedItem(boolean scrollToSelectedItem);
+
+		/**
+		 * <p>Specifies whether the table should scroll when items are added, so that the topmost added item appears at the top of the table view.
+		 * <p>Default: false.
+		 * @param scrollToAddedItem true if this table should scroll to the topmost added item
+		 * @return this builder instance
+		 */
+		Builder<R, C> scrollToAddedItem(boolean scrollToAddedItem);
 
 		/**
 		 * @param sortingEnabled true if sorting via clicking the header should be enbled
@@ -1215,6 +1252,7 @@ public final class FilterTable<R, C> extends JTable {
 		private CenterOnScroll centerOnScroll = CenterOnScroll.NEITHER;
 		private Action doubleClickAction;
 		private boolean scrollToSelectedItem = true;
+		private boolean scrollToAddedItem = false;
 		private boolean sortingEnabled = true;
 		private int selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
 		private boolean cellSelectionEnabled = false;
@@ -1293,6 +1331,12 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public Builder<R, C> scrollToSelectedItem(boolean scrollToSelectedItem) {
 			this.scrollToSelectedItem = scrollToSelectedItem;
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> scrollToAddedItem(boolean scrollToAddedItem) {
+			this.scrollToAddedItem = scrollToAddedItem;
 			return this;
 		}
 

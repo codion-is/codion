@@ -2332,6 +2332,7 @@ public class EntityTablePanel extends JPanel {
 							.summaryValuesFactory(new EntitySummaryValuesFactory(entityDefinition, tablePanel.tableModel))
 							.cellRendererFactory(EntityTableCellRenderer.factory())
 							.cellEditorFactory(new EntityTableCellEditorFactory(tablePanel.tableModel.editModel()))
+							.scrollToAddedItem(true)
 							.onBuild(filterTable -> filterTable.setRowHeight(filterTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT));
 			this.conditionPanelFactory = new DefaultConditionPanelFactory();
 			this.conditionComponentFactories = new HashMap<>();

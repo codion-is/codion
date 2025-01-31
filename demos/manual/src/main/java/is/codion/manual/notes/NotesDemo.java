@@ -173,7 +173,6 @@ public final class NotesDemo {
 
 		private NoteTableModel(EntityConnectionProvider connectionProvider) {
 			super(new NoteEditModel(connectionProvider));
-			onInsert().set(OnInsert.ADD_TOP_SORTED);
 		}
 	}
 

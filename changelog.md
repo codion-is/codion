@@ -2,6 +2,12 @@ Codion Change Log
 ==================
 
 ## 0.18.28
+### is.codion.common.model
+- FilterModel.VisibleItems.added() added.
+### is.codion.swing.common.model
+- DefaultFilterTableItems.DefaultVisibleItems now always sorts when items are added, even when added at a specific index.
+### is.codion.swing.common.ui
+- FilterTable.scrollToAddedItem() added.
 ### is.codion.framework.domain
 - ColumnDefinition.lazy() and selectable() replaced with selected().
 - MultiValueColumnCondition bug fixed, now rejects empty values for IN and NOT_IN.
@@ -14,6 +20,7 @@ Codion Change Log
 - ModelLink, model type parameters added, removed from static builder factory methods.
 - EntityEditModel.Insert, Update and Delete renamed InsertEntities, UpdateEntities and DeleteEntities.
 - EntityEditModel.afterUpdate() map keys are now an immutable copy of the entity before update, instead of only the original primary key.
+- EntityTableModel.OnInsert.ADD_TOP and ADD_TOP_SORTED replaced with PREPEND and ADD_BOTTOM and ADD_BOTTOM_SORTED with APPEND.
 ### is.codion.swing.framework.ui
 - Remove type inference return values, convenient but unsafe.
 - EntityPanelBuilder.createPanel(), createEditPanel() and createTablePanel() error message on incorrect model type improved.
