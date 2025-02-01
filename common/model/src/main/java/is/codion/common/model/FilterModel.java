@@ -138,6 +138,17 @@ public interface FilterModel<T> {
 		void remove(Collection<T> items);
 
 		/**
+		 * <p>Replaces the first occurrence of the given item. If the item is not found this method has no effect.
+		 * <p>Note that this method respects the visible predicate, so a
+		 * currently filtered item may be replaced with a visible item and vice verse.
+		 * <p>If the visible items change they are sorted if sorting is enabled.
+		 * @param item the item to replace
+		 * @param replacement the replacement item
+		 * @see VisibleItems#predicate()
+		 */
+		void replace(T item, T replacement);
+
+		/**
 		 * Clears the items
 		 */
 		void clear();

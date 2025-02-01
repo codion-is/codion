@@ -720,6 +720,41 @@ public final class DefaultFilterTableModelTest {
 		assertThrows(NullPointerException.class, () -> selection.items().contains(null));
 	}
 
+	@Test
+	void replace() {
+		tableModel.sort().ascending(0);
+		tableModel.items().refresh();
+		//a, b, c, d, e
+		//replace d with f
+		tableModel.items().replace(D, F);
+		assertTrue(tableModel.items().contains(F));
+		assertTrue(tableModel.items().visible().contains(F));
+		assertEquals(4, tableModel.items().visible().indexOf(F));
+		assertFalse(tableModel.items().contains(D));
+		assertFalse(tableModel.items().visible().contains(D));
+		//filter f and replace with d
+		tableModel.items().visible().predicate().set(testRow -> testRow != F);
+		tableModel.items().replace(F, D);
+		assertTrue(tableModel.items().contains(D));
+		assertTrue(tableModel.items().visible().contains(D));
+		assertEquals(3, tableModel.items().visible().indexOf(D));
+		assertFalse(tableModel.items().contains(F));
+		assertFalse(tableModel.items().filtered().contains(F));
+		//replace d with f
+		tableModel.items().replace(D, F);
+		assertFalse(tableModel.items().contains(D));
+		assertFalse(tableModel.items().visible().contains(D));
+		assertTrue(tableModel.items().contains(F));
+		assertTrue(tableModel.items().filtered().contains(F));
+		//filter both d and f and replace f with d
+		tableModel.items().visible().predicate().set(testRow -> testRow != F && testRow != D);
+		tableModel.items().replace(F, D);
+		assertFalse(tableModel.items().contains(F));
+		assertFalse(tableModel.items().filtered().contains(F));
+		assertTrue(tableModel.items().contains(D));
+		assertTrue(tableModel.items().filtered().contains(D));
+	}
+
 	private static boolean tableModelContainsAll(List<TestRow> rows, boolean includeFiltered,
 																							 FilterTableModel<TestRow, Integer> model) {
 		for (TestRow row : rows) {

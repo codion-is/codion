@@ -165,6 +165,21 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 	}
 
 	@Override
+	public void replace(R item, R replacement) {
+		validate(requireNonNull(replacement));
+		synchronized (lock) {
+			int visibleIndex = visible.items.indexOf(requireNonNull(item));
+			if (visibleIndex != -1) {
+				replaceVisibleItem(replacement, visibleIndex);
+			}
+			int filteredIndex = filtered.items.indexOf(item);
+			if (filteredIndex != -1) {
+				replaceFilteredItem(replacement, filteredIndex);
+			}
+		}
+	}
+
+	@Override
 	public void add(R item) {
 		synchronized (lock) {
 			if (addInternal(requireNonNull(item))) {
@@ -277,6 +292,35 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		filtered.notifyChanges();
 
 		return false;
+	}
+
+	private void replaceVisibleItem(R replacement, int visibleIndex) {
+		if (visiblePredicate.test(replacement)) {
+			visible.items.set(visibleIndex, replacement);
+			tableModel.fireTableRowsUpdated(visibleIndex, visibleIndex);
+		}
+		else {
+			visible.items.remove(visibleIndex);
+			filtered.items.add(replacement);
+			tableModel.fireTableRowsDeleted(visibleIndex, visibleIndex);
+			visible.notifyChanges();
+			filtered.notifyChanges();
+		}
+		visible.sort();
+	}
+
+	private void replaceFilteredItem(R replacement, int filteredIndex) {
+		filtered.items.remove(filteredIndex);
+		if (visiblePredicate.test(replacement)) {
+			int index = visible.items.size();
+			visible.items.add(replacement);
+			tableModel.fireTableRowsInserted(index, index);
+			visible.sort();
+		}
+		else {
+			filtered.items.add(replacement);
+			filtered.notifyChanges();
+		}
 	}
 
 	private boolean addInternal(int index, Collection<R> items) {
