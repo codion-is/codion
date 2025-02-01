@@ -341,7 +341,7 @@ public interface EntityEditModel {
 	/**
 	 * @return an observer notified before an update is performed, after validation
 	 */
-	Observer<Map<Entity.Key, Entity>> beforeUpdate();
+	Observer<Collection<Entity>> beforeUpdate();
 
 	/**
 	 * @return an observer notified after an update is performed

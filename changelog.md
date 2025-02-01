@@ -23,6 +23,7 @@ Codion Change Log
 - EntityEditModel.Insert, Update and Delete renamed InsertEntities, UpdateEntities and DeleteEntities.
 - EntityEditModel.afterUpdate() map keys are now an immutable copy of the entity before update, instead of only the original primary key.
 - EntityTableModel.OnInsert.ADD_TOP and ADD_TOP_SORTED replaced with PREPEND and ADD_BOTTOM and ADD_BOTTOM_SORTED with APPEND.
+- EntityEditModel.beforeUpdate() observer data now a Collection instead of a Map.
 ### is.codion.swing.framework.ui
 - Remove type inference return values, convenient but unsafe.
 - EntityPanelBuilder.createPanel(), createEditPanel() and createTablePanel() error message on incorrect model type improved.

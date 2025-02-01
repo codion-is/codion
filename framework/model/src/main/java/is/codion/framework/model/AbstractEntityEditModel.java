@@ -41,12 +41,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.function.Function;
 
 import static is.codion.framework.model.EntityEditEvents.*;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toMap;
 
 /**
  * A default {@link EntityEditModel} implementation
@@ -58,7 +56,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	private final EntityDefinition entityDefinition;
 	private final EntityConnectionProvider connectionProvider;
 	private final DefaultEntityEditor editor;
-	private final Map<ForeignKey, EntitySearchModel> entitySearchModels = new HashMap<>();
+	private final Map<ForeignKey, EntitySearchModel> searchModels = new HashMap<>();
 
 	private final Events events;
 	private final States states;
@@ -229,14 +227,14 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	@Override
 	public final EntitySearchModel searchModel(ForeignKey foreignKey) {
 		entityDefinition().foreignKeys().definition(foreignKey);
-		synchronized (entitySearchModels) {
+		synchronized (searchModels) {
 			// can't use computeIfAbsent() here, since that prevents recursive initialization of interdepending combo
 			// box models, createSearchModel() may for example call this function
 			// see javadoc: must not attempt to update any other mappings of this map
-			EntitySearchModel entitySearchModel = entitySearchModels.get(foreignKey);
+			EntitySearchModel entitySearchModel = searchModels.get(foreignKey);
 			if (entitySearchModel == null) {
 				entitySearchModel = createSearchModel(foreignKey);
-				entitySearchModels.put(foreignKey, entitySearchModel);
+				searchModels.put(foreignKey, entitySearchModel);
 			}
 
 			return entitySearchModel;
@@ -254,7 +252,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final Observer<Map<Entity.Key, Entity>> beforeUpdate() {
+	public final Observer<Collection<Entity>> beforeUpdate() {
 		return events.beforeUpdate.observer();
 	}
 
@@ -352,7 +350,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	 * @param entitiesToUpdate the entities about to be updated
 	 * @see #beforeUpdate()
 	 */
-	protected final void notifyBeforeUpdate(Map<Entity.Key, Entity> entitiesToUpdate) {
+	protected final void notifyBeforeUpdate(Collection<Entity> entitiesToUpdate) {
 		events.beforeUpdate.accept(requireNonNull(entitiesToUpdate));
 	}
 
@@ -502,7 +500,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 		@Override
 		public Task prepare() {
-			notifyBeforeUpdate(unmodifiableMap(entities.stream().collect(toMap(Entity::originalPrimaryKey, Function.identity()))));
+			notifyBeforeUpdate(entities);
 
 			return new UpdateTask();
 		}
@@ -613,7 +611,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 		private final Event<Collection<Entity>> beforeInsert = Event.event();
 		private final Event<Collection<Entity>> afterInsert = Event.event();
-		private final Event<Map<Entity.Key, Entity>> beforeUpdate = Event.event();
+		private final Event<Collection<Entity>> beforeUpdate = Event.event();
 		private final Event<Map<Entity, Entity>> afterUpdate = Event.event();
 		private final Event<Collection<Entity>> beforeDelete = Event.event();
 		private final Event<Collection<Entity>> afterDelete = Event.event();
