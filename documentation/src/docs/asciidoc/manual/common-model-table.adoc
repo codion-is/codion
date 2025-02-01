@@ -38,6 +38,11 @@ include::{dir-source}/is/codion/manual/swing/common/model/component/table/Filter
 
 [source,java,indent=0]
 ----
+include::{dir-source}/is/codion/manual/swing/common/model/component/table/FilterTableModelDemo.java[tags=personEditor]
+----
+
+[source,java,indent=0]
+----
 include::{dir-source}/is/codion/manual/swing/common/model/component/table/FilterTableModelDemo.java[tags=filterTableModel]
 ----
 

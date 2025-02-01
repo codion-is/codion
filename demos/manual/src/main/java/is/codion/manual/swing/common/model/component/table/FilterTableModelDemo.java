@@ -18,9 +18,11 @@
  */
 package is.codion.manual.swing.common.model.component.table;
 
+import is.codion.common.model.FilterModel.Items;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
+import is.codion.swing.common.model.component.table.FilterTableModel.RowEditor;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
 import is.codion.swing.common.model.component.table.FilterTableSortModel;
@@ -78,6 +80,34 @@ public final class FilterTableModelDemo {
 	}
 	// end::personColumns[]
 
+	// tag::personEditor[]
+	// Implement a RowEditor for handling row edits
+	private static final class PersonEditor implements RowEditor<Person, String> {
+
+		// We need the underlying Items instance to replace the edited
+		// row since the row objects are records and thereby immutable
+		private final Items<Person> items;
+
+		private PersonEditor(FilterTableModel<Person, String> table) {
+			this.items = table.items();
+		}
+
+		@Override
+		public boolean editable(Person person, String column) {
+			// Both columns editable
+			return true;
+		}
+
+		@Override
+		public void set(Object value, Person person, String column) {
+			switch (column) {
+				case NAME -> items.replace(person, new Person((String) value, person.age()));
+				case AGE -> items.replace(person, new Person(person.name(), (Integer) value));
+			}
+		}
+	}
+	// end::personEditor[]
+
 	public static FilterTableModel<Person, String> createFilterTableModel() {
 		// tag::filterTableModel[]
 		// Implement an item supplier responsible for supplying
@@ -90,10 +120,11 @@ public final class FilterTableModelDemo {
 						new Person("Joan", 37));
 
 		// Build the table model, providing the TableColumns
-		// implementation along with the item supplier.
+		// implementation along with the item supplier and row editor.
 		FilterTableModel<Person, String> tableModel =
 						FilterTableModel.builder(new PersonColumns())
 										.supplier(supplier)
+										.rowEditor(PersonEditor::new)
 										.build();
 
 		// Populate the model

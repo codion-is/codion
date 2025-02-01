@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
@@ -54,11 +55,15 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	private final DefaultFilterTableItems<R, C> items;
 	private final DefaultColumnValues columnValues = new DefaultColumnValues();
+	private final Function<FilterTableModel<R, C>, RowEditor<R, C>> rowEditorFactory;
 	private final RemoveSelectionListener removeSelectionListener;
+
+	private RowEditor<R, C> rowEditor;
 
 	private DefaultFilterTableModel(DefaultBuilder<R, C> builder) {
 		this.items = new DefaultFilterTableItems<>(this, builder.validator, builder.supplier,
 						builder.refreshStrategy, builder.asyncRefresh, builder.columns, builder.filterModelFactory);
+		this.rowEditorFactory = builder.rowEditorFactory;
 		this.removeSelectionListener = new RemoveSelectionListener();
 		addTableModelListener(removeSelectionListener);
 	}
@@ -114,6 +119,16 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
+	public boolean isCellEditable(int rowIndex, int columnIndex) {
+		return rowEditor().editable(items.visible().get(rowIndex), items.columns.identifier(columnIndex));
+	}
+
+	@Override
+	public void setValueAt(Object value, int rowIndex, int columnIndex) {
+		rowEditor().set(value, items.visible().get(rowIndex), items.columns.identifier(columnIndex));
+	}
+
+	@Override
 	public TableColumns<R, C> columns() {
 		return items.columns;
 	}
@@ -134,6 +149,14 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			// JTable handles removing the selected indexes on row removal
 			addTableModelListener(removeSelectionListener);
 		}
+	}
+
+	private RowEditor<R, C> rowEditor() {
+		if (rowEditor == null) {
+			rowEditor = rowEditorFactory.apply(this);
+		}
+
+		return rowEditor;
 	}
 
 	private final class RemoveSelectionListener implements TableModelListener {
@@ -208,6 +231,25 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 	}
 
+	private static final class DefaultRowEditor<R, C> implements RowEditor<R, C> {
+
+		@Override
+		public boolean editable(R row, C identifier) {
+			return false;
+		}
+
+		@Override
+		public void set(Object value, R row, C identifier) {}
+	}
+
+	private static final class DefaultRowEditorFactory<R, C> implements Function<FilterTableModel<R, C>, RowEditor<R, C>> {
+
+		@Override
+		public RowEditor<R, C> apply(FilterTableModel<R, C> tableModel) {
+			return new DefaultRowEditor<>();
+		}
+	}
+
 	static final class DefaultBuilder<R, C> implements Builder<R, C> {
 
 		private final TableColumns<R, C> columns;
@@ -217,6 +259,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		private Supplier<Map<C, ConditionModel<?>>> filterModelFactory;
 		private RefreshStrategy refreshStrategy = RefreshStrategy.CLEAR;
 		private boolean asyncRefresh = FilterModel.ASYNC_REFRESH.getOrThrow();
+		private Function<FilterTableModel<R, C>, RowEditor<R, C>> rowEditorFactory = new DefaultRowEditorFactory<>();
 
 		DefaultBuilder(TableColumns<R, C> columns) {
 			if (requireNonNull(columns).identifiers().isEmpty()) {
@@ -253,6 +296,12 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		@Override
 		public Builder<R, C> asyncRefresh(boolean asyncRefresh) {
 			this.asyncRefresh = asyncRefresh;
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> rowEditor(Function<FilterTableModel<R, C>, RowEditor<R, C>> rowEditor) {
+			this.rowEditorFactory = requireNonNull(rowEditor);
 			return this;
 		}
 

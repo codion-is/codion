@@ -31,6 +31,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -249,6 +250,12 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		Builder<R, C> asyncRefresh(boolean asyncRefresh);
 
 		/**
+		 * @param rowEditor supplies the row editor
+		 * @return this builder instance
+		 */
+		Builder<R, C> rowEditor(Function<FilterTableModel<R, C>, RowEditor<R, C>> rowEditor);
+
+		/**
 		 * @return a new {@link FilterTableModel} instance.
 		 */
 		FilterTableModel<R, C> build();
@@ -334,6 +341,31 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 
 			return STRING_COMPARATOR;
 		}
+	}
+
+	/**
+	 * Handles the editing of rows
+	 * @param <R> the row type
+	 * @param <C> the column identifier type
+	 */
+	interface RowEditor<R, C> {
+
+		/**
+		 * @param row the row
+		 * @param identifier the column identifier
+		 * @return true if the given cell is editable
+		 * @see TableModel#isCellEditable(int, int)
+		 */
+		boolean editable(R row, C identifier);
+
+		/**
+		 * Sets the value of the given column
+		 * @param value the value to set
+		 * @param row the row
+		 * @param identifier the column identifier
+		 * @see TableModel#setValueAt(Object, int, int)
+		 */
+		void set(Object value, R row, C identifier);
 	}
 
 	/**

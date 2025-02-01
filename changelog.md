@@ -7,6 +7,7 @@ Codion Change Log
 - FilterModel.Items.replace() added.
 ### is.codion.swing.common.model
 - DefaultFilterTableItems.DefaultVisibleItems now always sorts when items are added, even when added at a specific index.
+- FilterTableModel.RowEditor added.
 ### is.codion.swing.common.ui
 - FilterTable.scrollToAddedItem() added.
 ### is.codion.framework.domain

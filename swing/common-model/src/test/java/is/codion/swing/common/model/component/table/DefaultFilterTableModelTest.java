@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -63,6 +64,20 @@ public final class DefaultFilterTableModelTest {
 		private TestRow(String value) {
 			this.value = value;
 		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (object == null || getClass() != object.getClass()) {
+				return false;
+			}
+			TestRow testRow = (TestRow) object;
+			return Objects.equals(value, testRow.value);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hashCode(value);
+		}
 	}
 
 	private static final class TestColumns implements TableColumns<TestRow, Integer> {
@@ -83,7 +98,7 @@ public final class DefaultFilterTableModelTest {
 	}
 
 	private static FilterTableModel<TestRow, Integer> createTestModel() {
-		return FilterTableModel.<TestRow, Integer>builder(new TestColumns())
+		return FilterTableModel.builder(new TestColumns())
 						.supplier(() -> ITEMS)
 						.build();
 	}
@@ -753,6 +768,43 @@ public final class DefaultFilterTableModelTest {
 		assertFalse(tableModel.items().filtered().contains(F));
 		assertTrue(tableModel.items().contains(D));
 		assertTrue(tableModel.items().filtered().contains(D));
+	}
+
+	@Test
+	void rowEditor() {
+		class ItemEditor implements FilterTableModel.RowEditor<TestRow, Integer> {
+
+			private final Items<TestRow> items;
+
+			private ItemEditor(FilterTableModel<TestRow, Integer> model) {
+				items = model.items();
+			}
+
+			@Override
+			public boolean editable(TestRow row, Integer identifier) {
+				return true;
+			}
+
+			@Override
+			public void set(Object value, TestRow row, Integer identifier) {
+				items.replace(row, new TestRow((String) value));
+			}
+		}
+		FilterTableModel<TestRow, Integer> model = FilterTableModel.builder(new TestColumns())
+						.supplier(() -> ITEMS)
+						.rowEditor(ItemEditor::new)
+						.build();
+
+		model.items().refresh();
+		model.sort().ascending(0);
+
+		assertTrue(model.items().contains(A));
+		assertFalse(model.items().contains(G));
+		assertTrue(model.isCellEditable(0, 0));
+		model.setValueAt("g", 0, 0);
+		assertFalse(model.items().contains(A));
+		assertTrue(model.items().contains(G));
+		assertEquals(4, model.items().visible().indexOf(G));
 	}
 
 	private static boolean tableModelContainsAll(List<TestRow> rows, boolean includeFiltered,
