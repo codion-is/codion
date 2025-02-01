@@ -19,7 +19,6 @@
 package is.codion.demos.chinook.ui;
 
 import is.codion.demos.chinook.domain.api.Chinook.InvoiceLine;
-import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -136,13 +135,13 @@ public final class InvoiceEditPanel extends EntityEditPanel {
 						config.includeControls(false));
 	}
 
-	private static final class CustomerSelectorFactory implements Function<EntitySearchModel, Selector> {
+	private static final class CustomerSelectorFactory implements Function<EntitySearchField, Selector> {
 
 		@Override
-		public Selector apply(EntitySearchModel searchModel) {
+		public Selector apply(EntitySearchField searchField) {
 			// We use the TableSelector, provided by EntitySearchField,
 			// configuring the the visible table columns, the sorting and size
-			TableSelector selector = EntitySearchField.tableSelector(searchModel);
+			TableSelector selector = EntitySearchField.tableSelector(searchField);
 			selector.table().columnModel().visible().set(Customer.LASTNAME, Customer.FIRSTNAME, Customer.EMAIL);
 			selector.table().model().sort().ascending(Customer.LASTNAME, Customer.FIRSTNAME);
 			selector.preferredSize(new Dimension(500, 300));

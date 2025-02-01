@@ -187,7 +187,7 @@ public final class EntitySearchFieldPanel extends JPanel {
 		 * @param selectorFactory the selector factory to use
 		 * @return this builder instance
 		 */
-		Builder<T, B> selectorFactory(Function<EntitySearchModel, EntitySearchField.Selector> selectorFactory);
+		Builder<T, B> selectorFactory(Function<EntitySearchField, EntitySearchField.Selector> selectorFactory);
 
 		/**
 		 * @param limit the search result limit
@@ -427,7 +427,7 @@ public final class EntitySearchFieldPanel extends JPanel {
 		}
 
 		@Override
-		public Builder<T, B> selectorFactory(Function<EntitySearchModel, EntitySearchField.Selector> selectorFactory) {
+		public Builder<T, B> selectorFactory(Function<EntitySearchField, EntitySearchField.Selector> selectorFactory) {
 			searchFieldBuilder.selectorFactory(selectorFactory);
 			return this;
 		}

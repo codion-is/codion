@@ -26,6 +26,9 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - Remove type inference return values, convenient but unsafe.
 - EntityPanelBuilder.createPanel(), createEditPanel() and createTablePanel() error message on incorrect model type improved.
+- EntitySearchField.Builder.selectorFactory() function input now EntitySearchField instead of EntitySearchModel.
+- EntitySearchField.DefaultListSelector now uses the search field stringFactory.
+- EntitySearchField.Selector.select(), dialogOwner parameter removed, search field used.
 
 ## 0.18.27
 ### is.codion.common.core

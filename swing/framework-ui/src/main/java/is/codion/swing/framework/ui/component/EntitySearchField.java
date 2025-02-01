@@ -58,6 +58,7 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityTableCellRenderer;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -68,12 +69,14 @@ import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
+import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -207,7 +210,7 @@ public final class EntitySearchField extends HintTextField {
 	private final boolean searchOnFocusLost;
 	private final State searching = State.state();
 	private final Consumer<Boolean> searchIndicator;
-	private final Function<EntitySearchModel, Selector> selectorFactory;
+	private final Function<EntitySearchField, Selector> selectorFactory;
 	private final ControlMap controlMap;
 
 	private SettingsPanel settingsPanel;
@@ -403,7 +406,7 @@ public final class EntitySearchField extends HintTextField {
 		 * @param selectorFactory the selector factory to use
 		 * @return this builder instance
 		 */
-		B selectorFactory(Function<EntitySearchModel, Selector> selectorFactory);
+		B selectorFactory(Function<EntitySearchField, Selector> selectorFactory);
 
 		/**
 		 * A edit panel is required for the add and edit controls.
@@ -581,7 +584,7 @@ public final class EntitySearchField extends HintTextField {
 							SwingMessages.get("OptionPane.messageDialogTitle"), JOptionPane.INFORMATION_MESSAGE);
 		}
 		else {
-			selectorFactory.apply(model).select(this, searchResult);
+			selectorFactory.apply(this).select(searchResult);
 		}
 	}
 
@@ -701,17 +704,16 @@ public final class EntitySearchField extends HintTextField {
 
 	/**
 	 * Provides a way for the user to select one or more of a given set of entities
-	 * @see #listSelector(EntitySearchModel)
-	 * @see #tableSelector(EntitySearchModel)
+	 * @see #listSelector(EntitySearchField)
+	 * @see #tableSelector(EntitySearchField)
 	 */
 	public interface Selector {
 
 		/**
 		 * Displays a dialog for selecting from the given entities.
-		 * @param dialogOwner the dialog owner
 		 * @param entities the entities to select from
 		 */
-		void select(JComponent dialogOwner, List<Entity> entities);
+		void select(List<Entity> entities);
 
 		/**
 		 * Sets the preferred size of the selection component.
@@ -743,34 +745,36 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	/**
-	 * @param searchModel the search model
+	 * @param searchField the search field
 	 * @return a {@link Selector} based on a {@link JList}.
 	 */
-	public static ListSelector listSelector(EntitySearchModel searchModel) {
-		return new DefaultListSelector(searchModel);
+	public static ListSelector listSelector(EntitySearchField searchField) {
+		return new DefaultListSelector(searchField);
 	}
 
 	/**
-	 * @param searchModel the search model
+	 * @param searchField the search field
 	 * @return a {@link Selector} based on a {@link FilterTable}.
 	 */
-	public static TableSelector tableSelector(EntitySearchModel searchModel) {
-		return new DefaultTableSelector(searchModel);
+	public static TableSelector tableSelector(EntitySearchField searchField) {
+		return new DefaultTableSelector(searchField);
 	}
 
 	private static final class DefaultListSelector implements ListSelector {
 
-		private final EntitySearchModel searchModel;
+		private final EntitySearchField searchField;
 		private final JList<Entity> list;
+		private final Function<Entity, String> stringFactory;
 		private final JPanel selectorPanel;
 		private final JLabel resultLimitLabel = label()
 						.horizontalAlignment(SwingConstants.RIGHT)
 						.build();
 		private final Control selectControl = command(new SelectCommand());
 
-		private DefaultListSelector(EntitySearchModel searchModel) {
-			this.searchModel = requireNonNull(searchModel);
-			this.list = createList(searchModel);
+		private DefaultListSelector(EntitySearchField searchField) {
+			this.searchField = requireNonNull(searchField);
+			this.list = createList(searchField.model);
+			this.stringFactory = searchField.stringFactory;
 			this.selectorPanel = borderLayoutPanel()
 							.centerComponent(scrollPane(list).build())
 							.southComponent(resultLimitLabel)
@@ -784,14 +788,14 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		@Override
-		public void select(JComponent dialogOwner, List<Entity> entities) {
+		public void select(List<Entity> entities) {
 			DefaultListModel<Entity> listModel = (DefaultListModel<Entity>) list.getModel();
 			requireNonNull(entities).forEach(listModel::addElement);
 			list.scrollRectToVisible(list.getCellBounds(0, 0));
-			initializeResultLimitMessage(resultLimitLabel, searchModel.limit().optional().orElse(-1), entities.size());
+			initializeResultLimitMessage(resultLimitLabel, searchField.model.limit().optional().orElse(-1), entities.size());
 
 			okCancelDialog(selectorPanel)
-							.owner(dialogOwner)
+							.owner(searchField)
 							.title(MESSAGES.getString("select_entity"))
 							.okAction(selectControl)
 							.show();
@@ -810,14 +814,27 @@ public final class EntitySearchField extends HintTextField {
 							Components.list(listModel).selectedItem() : Components.list(listModel).selectedItems();
 
 			return listBuilder.mouseListener(new DoubleClickListener())
+							.cellRenderer(new Renderer())
 							.onBuild(new RemoveDefaultEnterAction())
 							.build();
+		}
+
+		private final class Renderer implements ListCellRenderer<Entity> {
+
+			private final ListCellRenderer<Object> listCellRenderer = new DefaultListCellRenderer();
+
+			@Override
+			public Component getListCellRendererComponent(JList<? extends Entity> list, Entity value,
+																										int index, boolean isSelected, boolean cellHasFocus) {
+				return listCellRenderer.getListCellRendererComponent(list,
+								stringFactory.apply(value), index, isSelected, cellHasFocus);
+			}
 		}
 
 		private final class SelectCommand implements Control.Command {
 			@Override
 			public void execute() {
-				searchModel.selection().entities().set(list.getSelectedValuesList());
+				searchField.model.selection().entities().set(list.getSelectedValuesList());
 				disposeParentWindow(list);
 			}
 		}
@@ -842,7 +859,7 @@ public final class EntitySearchField extends HintTextField {
 
 	private static final class DefaultTableSelector implements TableSelector {
 
-		private final EntitySearchModel searchModel;
+		private final EntitySearchField searchField;
 		private final FilterTable<Entity, Attribute<?>> table;
 		private final JPanel selectorPanel;
 		private final JLabel resultLimitLabel = label()
@@ -850,8 +867,8 @@ public final class EntitySearchField extends HintTextField {
 						.build();
 		private final Control selectControl = command(new SelectCommand());
 
-		private DefaultTableSelector(EntitySearchModel searchModel) {
-			this.searchModel = requireNonNull(searchModel);
+		private DefaultTableSelector(EntitySearchField searchField) {
+			this.searchField = requireNonNull(searchField);
 			table = createTable();
 			selectorPanel = borderLayoutPanel()
 							.centerComponent(scrollPane(table).build())
@@ -871,13 +888,13 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		@Override
-		public void select(JComponent dialogOwner, List<Entity> entities) {
+		public void select(List<Entity> entities) {
 			table.model().items().visible().add(0, entities);
 			table.scrollRectToVisible(table.getCellRect(0, 0, true));
-			initializeResultLimitMessage(resultLimitLabel, searchModel.limit().optional().orElse(-1), entities.size());
+			initializeResultLimitMessage(resultLimitLabel, searchField.model.limit().optional().orElse(-1), entities.size());
 
 			okCancelDialog(selectorPanel)
-							.owner(dialogOwner)
+							.owner(searchField)
 							.title(MESSAGES.getString("select_entity"))
 							.okAction(selectControl)
 							.show();
@@ -893,14 +910,14 @@ public final class EntitySearchField extends HintTextField {
 
 		private FilterTable<Entity, Attribute<?>> createTable() {
 			SwingEntityTableModel tableModel =
-							new SwingEntityTableModel(searchModel.entityDefinition().type(),
-											emptyList(), searchModel.connectionProvider());
+							new SwingEntityTableModel(searchField.model.entityDefinition().type(),
+											emptyList(), searchField.model.connectionProvider());
 
 			FilterTable<Entity, Attribute<?>> filterTable = FilterTable.builder(tableModel,
 											entityTableColumns(tableModel.entityDefinition()))
 							.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 							.cellRendererFactory(EntityTableCellRenderer.factory())
-							.selectionMode(searchModel.singleSelection() ?
+							.selectionMode(searchField.model.singleSelection() ?
 											ListSelectionModel.SINGLE_SELECTION : ListSelectionModel.MULTIPLE_INTERVAL_SELECTION)
 							.doubleClickAction(selectControl)
 							.keyEvent(KeyEvents.builder(VK_ENTER)
@@ -917,8 +934,8 @@ public final class EntitySearchField extends HintTextField {
 											.enable(t.searchField()))
 							.build();
 
-			filterTable.model().sort().ascending(searchModel.columns().iterator().next());
-			filterTable.columnModel().visible().set(searchModel.columns().toArray(new Attribute[0]));
+			filterTable.model().sort().ascending(searchField.model.columns().iterator().next());
+			filterTable.columnModel().visible().set(searchField.model.columns().toArray(new Attribute[0]));
 
 			return filterTable;
 		}
@@ -930,7 +947,7 @@ public final class EntitySearchField extends HintTextField {
 		private final class SelectCommand implements Control.Command {
 			@Override
 			public void execute() {
-				searchModel.selection().entities().set(table.model().selection().items().get());
+				searchField.model.selection().entities().set(table.model().selection().items().get());
 				disposeParentWindow(table);
 			}
 		}
@@ -949,7 +966,7 @@ public final class EntitySearchField extends HintTextField {
 
 		private SingleSelectionValue(EntitySearchField searchField) {
 			super(searchField);
-			searchField.model().selection().entity().addListener(this::notifyListeners);
+			searchField.model.selection().entity().addListener(this::notifyListeners);
 		}
 
 		@Override
@@ -967,7 +984,7 @@ public final class EntitySearchField extends HintTextField {
 
 		private MultiSelectionValue(EntitySearchField searchField) {
 			super(searchField);
-			searchField.model().selection().entities().addListener(this::notifyListeners);
+			searchField.model.selection().entities().addListener(this::notifyListeners);
 		}
 
 		@Override
@@ -1146,7 +1163,7 @@ public final class EntitySearchField extends HintTextField {
 		private boolean searchHintEnabled = true;
 		private boolean searchOnFocusLost = true;
 		private SearchIndicator searchIndicator = SEARCH_INDICATOR.get();
-		private Function<EntitySearchModel, Selector> selectorFactory = new ListSelectorFactory();
+		private Function<EntitySearchField, Selector> selectorFactory = new ListSelectorFactory();
 		private Function<Entity, String> stringFactory = DEFAULT_TO_STRING;
 		private String separator = DEFAULT_SEPARATOR;
 		private Supplier<EntityEditPanel> editPanel;
@@ -1221,7 +1238,7 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		@Override
-		public B selectorFactory(Function<EntitySearchModel, Selector> selectorFactory) {
+		public B selectorFactory(Function<EntitySearchField, Selector> selectorFactory) {
 			this.selectorFactory = requireNonNull(selectorFactory);
 			return (B) this;
 		}
@@ -1266,11 +1283,11 @@ public final class EntitySearchField extends HintTextField {
 			component.transferFocusOnEnter(true);
 		}
 
-		private static final class ListSelectorFactory implements Function<EntitySearchModel, Selector> {
+		private static final class ListSelectorFactory implements Function<EntitySearchField, Selector> {
 
 			@Override
-			public Selector apply(EntitySearchModel searchModel) {
-				return new DefaultListSelector(searchModel);
+			public Selector apply(EntitySearchField searchField) {
+				return new DefaultListSelector(searchField);
 			}
 		}
 	}

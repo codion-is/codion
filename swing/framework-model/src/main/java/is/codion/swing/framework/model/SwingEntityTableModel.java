@@ -31,7 +31,6 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.AbstractEntityTableModel;
 import is.codion.framework.model.EntityQueryModel;
 import is.codion.framework.model.EntityTableConditionModel;
-import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableSortModel;
 
@@ -56,7 +55,7 @@ import static java.util.stream.Collectors.toMap;
  * A TableModel implementation for displaying and working with entities.
  */
 public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityEditModel>
-				implements EntityTableModel<SwingEntityEditModel>, FilterTableModel<Entity, Attribute<?>> {
+				implements FilterTableModel<Entity, Attribute<?>> {
 
 	/**
 	 * Instantiates a new SwingEntityTableModel.
@@ -162,8 +161,8 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	 */
 	@Override
 	public final void setValueAt(Object value, int rowIndex, int modelColumnIndex) {
-		if (!editable().get() || editModel().readOnly().get() || !editModel().updateEnabled().get()) {
-			throw new IllegalStateException("This table model is readOnly or has disabled update");
+		if (!isCellEditable(rowIndex, modelColumnIndex)) {
+			throw new IllegalStateException("Table model cell is not editable, row: " + rowIndex + ", column: " + modelColumnIndex);
 		}
 		Entity entity = items().visible().get(rowIndex).copy().mutable();
 		entity.put((Attribute<Object>) columns().identifier(modelColumnIndex), value);

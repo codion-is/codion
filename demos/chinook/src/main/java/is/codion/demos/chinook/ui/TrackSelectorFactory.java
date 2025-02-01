@@ -19,7 +19,7 @@
 package is.codion.demos.chinook.ui;
 
 import is.codion.demos.chinook.domain.api.Chinook.Track;
-import is.codion.framework.model.EntitySearchModel;
+import is.codion.swing.framework.ui.component.EntitySearchField;
 import is.codion.swing.framework.ui.component.EntitySearchField.Selector;
 import is.codion.swing.framework.ui.component.EntitySearchField.TableSelector;
 
@@ -32,11 +32,11 @@ import static is.codion.swing.framework.ui.component.EntitySearchField.tableSele
  * Provides a {@link TableSelector} for selecting tracks,
  * displaying columns for the artist, album and track name.
  */
-final class TrackSelectorFactory implements Function<EntitySearchModel, Selector> {
+final class TrackSelectorFactory implements Function<EntitySearchField, Selector> {
 
 	@Override
-	public TableSelector apply(EntitySearchModel searchModel) {
-		TableSelector selector = tableSelector(searchModel);
+	public TableSelector apply(EntitySearchField searchField) {
+		TableSelector selector = tableSelector(searchField);
 		selector.table().columnModel().visible().set(Track.ARTIST_NAME, Track.ALBUM_FK, Track.NAME);
 		selector.table().model().sort().ascending(Track.ARTIST_NAME, Track.ALBUM_FK, Track.NAME);
 		selector.preferredSize(new Dimension(500, 300));
