@@ -336,13 +336,13 @@ public final class ApplicationPanel extends JPanel {
 
 	private static class PGValidator implements Value.Validator<String> {
 
-		private final List<String> swearWords = List.of("fuck", "shit");
+		private static final List<String> SWEAR_WORDS = List.of("fuck", "shit");
 
 		@Override
 		public void validate(String value) {
 			if (value != null) {
 				String lowerCaseValue = value.toLowerCase();
-				swearWords.forEach(swearWord -> {
+				SWEAR_WORDS.forEach(swearWord -> {
 					if (lowerCaseValue.contains(swearWord)) {
 						throw new IllegalArgumentException("No swearing please");
 					}
@@ -355,12 +355,12 @@ public final class ApplicationPanel extends JPanel {
 
 		private static final String DEFAULT_SELECTION = "strings";
 
-		private final List<String> stringsToSelectFrom =
+		private static final List<String> STRINGS_TO_SELECT_FROM =
 						List.of("a", "few", "short", "strings", "to", "choose", "from");
 
 		@Override
 		public Optional<String> select(JComponent dialogOwner) {
-			return Dialogs.selectionDialog(stringsToSelectFrom)
+			return Dialogs.selectionDialog(STRINGS_TO_SELECT_FROM)
 							.owner(dialogOwner)
 							.defaultSelection(DEFAULT_SELECTION)
 							.selectSingle();

@@ -22,8 +22,6 @@
 module is.codion.demos.employees {
 	requires net.sf.jasperreports.core;
 	requires is.codion.framework.db.http;
-	requires is.codion.framework.db.local;
-	requires is.codion.framework.db.rmi;
 	requires is.codion.framework.domain.test;
 	requires is.codion.framework.json.domain;
 	requires is.codion.tools.loadtest.ui;

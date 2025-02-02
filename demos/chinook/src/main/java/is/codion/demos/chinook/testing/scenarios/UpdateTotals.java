@@ -28,12 +28,12 @@ import is.codion.tools.loadtest.LoadTest.Scenario.Performer;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static is.codion.demos.chinook.testing.scenarios.LoadTestUtil.RANDOM;
 import static is.codion.demos.chinook.testing.scenarios.LoadTestUtil.randomCustomerId;
 import static is.codion.framework.db.EntityConnection.transaction;
 import static is.codion.framework.domain.entity.Entity.distinct;
+import static java.util.stream.Collectors.toList;
 
 public final class UpdateTotals implements Performer<EntityConnectionProvider> {
 
@@ -44,12 +44,11 @@ public final class UpdateTotals implements Performer<EntityConnectionProvider> {
 		List<Long> invoiceIds = connection.select(Invoice.ID, Invoice.CUSTOMER_FK.equalTo(customer));
 		if (!invoiceIds.isEmpty()) {
 			Entity invoice = connection.selectSingle(Invoice.ID.equalTo(invoiceIds.get(RANDOM.nextInt(invoiceIds.size()))));
-			Collection<Entity> invoiceLines = connection.select(InvoiceLine.INVOICE_FK.equalTo(invoice));
-			invoiceLines.forEach(invoiceLine ->
-							invoiceLine.put(InvoiceLine.QUANTITY, RANDOM.nextInt(4) + 1));
-			updateInvoiceLines(invoiceLines.stream()
-							.filter(Entity::modified)
-							.collect(Collectors.toList()), connection);
+			updateInvoiceLines(connection.select(InvoiceLine.INVOICE_FK.equalTo(invoice)).stream()
+							.map(invoiceLine -> invoiceLine.copy().builder()
+											.with(InvoiceLine.QUANTITY, invoiceLine.get(InvoiceLine.QUANTITY) + 1)
+											.build())
+							.collect(toList()), connection);
 		}
 	}
 

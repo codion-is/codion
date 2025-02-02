@@ -261,22 +261,19 @@ public interface Chinook {
 
 		@Override
 		public String apply(Entity customer) {
-			switch (LANGUAGE) {
-				case "en":
-					return new StringBuilder()
-									.append(customer.get(Customer.LASTNAME))
-									.append(", ")
-									.append(customer.get(Customer.FIRSTNAME))
-									.toString();
-				case "is":
-					return new StringBuilder()
-									.append(customer.get(Customer.FIRSTNAME))
-									.append(" ")
-									.append(customer.get(Customer.LASTNAME))
-									.toString();
-				default:
-					throw new IllegalArgumentException("Unsupported language: " + LANGUAGE);
-			}
+			return switch (LANGUAGE) {
+				case "en" -> new StringBuilder()
+								.append(customer.get(Customer.LASTNAME))
+								.append(", ")
+								.append(customer.get(Customer.FIRSTNAME))
+								.toString();
+				case "is" -> new StringBuilder()
+								.append(customer.get(Customer.FIRSTNAME))
+								.append(" ")
+								.append(customer.get(Customer.LASTNAME))
+								.toString();
+				default -> throw new IllegalArgumentException("Unsupported language: " + LANGUAGE);
+			};
 		}
 	}
 

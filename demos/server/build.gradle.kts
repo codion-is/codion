@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    runtimeOnly(project(":codion-framework-server"));
+    runtimeOnly(project(":codion-framework-server"))
     runtimeOnly(project(":codion-framework-servlet"))
     runtimeOnly(project(":codion-framework-i18n"))
     runtimeOnly (project(":codion-plugin-jasperreports")) {
