@@ -97,6 +97,7 @@ import static is.codion.common.item.Item.item;
 import static is.codion.common.model.summary.TableSummaryModel.tableSummaryModel;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.model.component.table.FilterTableSortModel.nextSortOrder;
+import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.itemComboBox;
 import static is.codion.swing.common.ui.component.table.FilterTable.ControlKeys.*;
@@ -478,7 +479,7 @@ public final class FilterTable<R, C> extends JTable {
 	 * @return true if this table is contained in a scrollpanel and the cell with the given coordinates is visible.
 	 */
 	public boolean cellVisible(int row, int column) {
-		JViewport viewport = Utilities.parentOfType(JViewport.class, this);
+		JViewport viewport = parentOfType(JViewport.class, this);
 
 		return viewport != null && cellVisible(viewport, row, column);
 	}
@@ -490,7 +491,7 @@ public final class FilterTable<R, C> extends JTable {
 	 */
 	public void scrollToColumn(C identifier) {
 		requireNonNull(identifier);
-		JViewport viewport = Utilities.parentOfType(JViewport.class, this);
+		JViewport viewport = parentOfType(JViewport.class, this);
 		if (viewport != null) {
 			scrollToRowColumn(viewport, rowAtPoint(viewport.getViewPosition()),
 							columnModel().getColumnIndex(identifier), CenterOnScroll.NEITHER);
@@ -503,9 +504,9 @@ public final class FilterTable<R, C> extends JTable {
 	 * @param column the column
 	 * @param centerOnScroll specifies whether to center the selected row and or column
 	 */
-	public void scrollToCoordinate(int row, int column, CenterOnScroll centerOnScroll) {
+	public void scrollToRowColumn(int row, int column, CenterOnScroll centerOnScroll) {
 		requireNonNull(centerOnScroll);
-		JViewport viewport = Utilities.parentOfType(JViewport.class, this);
+		JViewport viewport = parentOfType(JViewport.class, this);
 		if (viewport != null) {
 			scrollToRowColumn(viewport, row, column, centerOnScroll);
 		}
@@ -725,7 +726,7 @@ public final class FilterTable<R, C> extends JTable {
 			if (!addToSelection) {
 				setColumnSelectionInterval(rowColumn.column(), rowColumn.column());
 			}
-			scrollToCoordinate(rowColumn.row(), rowColumn.column(), centerOnScroll.get());
+			scrollToRowColumn(rowColumn.row(), rowColumn.column(), centerOnScroll.get());
 		});
 	}
 
@@ -960,18 +961,15 @@ public final class FilterTable<R, C> extends JTable {
 
 		@Override
 		public void accept(List<Integer> selectedRowIndexes) {
-			if (scrollToSelectedItem.get() && !selectedRowIndexes.isEmpty() && noRowVisible(selectedRowIndexes)) {
-				scrollToCoordinate(selectedRowIndexes.get(0), getSelectedColumn(), centerOnScroll.get());
+			JViewport viewport = parentOfType(JViewport.class, FilterTable.this);
+			if (viewport != null && scrollToSelectedItem.get() &&
+							!selectedRowIndexes.isEmpty() && noRowVisible(viewport, selectedRowIndexes)) {
+				scrollToRowColumn(selectedRowIndexes.get(0), getSelectedColumn(), centerOnScroll.get());
 			}
 		}
 
-		private boolean noRowVisible(List<Integer> rows) {
-			JViewport viewport = Utilities.parentOfType(JViewport.class, FilterTable.this);
-			if (viewport != null) {
-				return rows.stream().noneMatch(row -> rowVisible(viewport, row));
-			}
-
-			return false;
+		private boolean noRowVisible(JViewport viewport, List<Integer> rows) {
+			return rows.stream().noneMatch(row -> rowVisible(viewport, row));
 		}
 
 		private boolean rowVisible(JViewport viewport, int row) {
@@ -985,13 +983,13 @@ public final class FilterTable<R, C> extends JTable {
 	private final class ScrollToAdded implements Consumer<Collection<R>> {
 
 		@Override
-		public void accept(Collection<R> items) {
-			JViewport viewport = Utilities.parentOfType(JViewport.class, FilterTable.this);
-			if (scrollToAddedItem && viewport != null) {
-				Set<R> itemSet = new HashSet<>(items);
+		public void accept(Collection<R> addedItems) {
+			JViewport viewport = parentOfType(JViewport.class, FilterTable.this);
+			if (viewport != null && scrollToAddedItem && !addedItems.isEmpty()) {
+				Set<R> items = new HashSet<>(addedItems);
 				List<R> visibleItems = tableModel.items().visible().get();
 				for (int row = 0; row < visibleItems.size(); row++) {
-					if (itemSet.contains(visibleItems.get(row))) {
+					if (items.contains(visibleItems.get(row))) {
 						scrollToAddedRow(viewport, row);
 					}
 				}

@@ -215,12 +215,10 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 		Collection<Entity> entitiesToAdd = insertedEntities.stream()
 						.filter(entity -> entity.type().equals(entityType()))
 						.collect(toList());
-		if (!onInsert.isEqualTo(OnInsert.DO_NOTHING) && !entitiesToAdd.isEmpty()) {
-			if (!selection().empty().get()) {
-				selection().clear();
-			}
-			VisibleItems<Entity> visibleItems = items().visible();
-			visibleItems.add(onInsert.getOrThrow() == OnInsert.PREPEND ? 0 : visibleItems.count(), entitiesToAdd);
+		OnInsert onInsertAction = onInsert.getOrThrow();
+		if (onInsertAction != OnInsert.DO_NOTHING && !entitiesToAdd.isEmpty()) {
+			selection().clear();
+			items().visible().add(onInsertAction == OnInsert.PREPEND ? 0 : items().visible().count(), entitiesToAdd);
 		}
 	}
 
@@ -236,7 +234,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	}
 
 	private void onEntityChanged(Entity entity) {
-		if (entity == null && selection().empty().not().get()) {
+		if (entity == null) {
 			selection().clear();
 		}
 	}

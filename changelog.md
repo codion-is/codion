@@ -10,6 +10,7 @@ Codion Change Log
 - FilterTableModel.RowEditor added.
 ### is.codion.swing.common.ui
 - FilterTable.scrollToAddedItem() added.
+- FilterTable.scrollToCoordinate() renamed scrollToRowColumn().
 ### is.codion.framework.domain
 - ColumnDefinition.lazy() and selectable() replaced with selected().
 - MultiValueColumnCondition bug fixed, now rejects empty values for IN and NOT_IN.
