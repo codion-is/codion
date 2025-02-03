@@ -247,7 +247,7 @@ public final class EntitySearchField extends HintTextField {
 		stringFactory = builder.stringFactory;
 		separator = builder.separator;
 		setComponentPopupMenu(createPopupMenu());
-		setToolTipText(selectionToolTip());
+		onSelectionChanged();
 		configureColors();
 		bindEvents();
 	}

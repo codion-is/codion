@@ -2,6 +2,8 @@ Codion Change Log
 ==================
 
 ## 0.18.29
+### is.codion.swing.framework.ui
+- EntitySearchField bug fixed, did not initialize correctly when instantiated with a search model with non-empty selection.
 
 ## 0.18.28
 ### is.codion.common.model

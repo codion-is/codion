@@ -96,13 +96,16 @@ public class EntitySearchFieldTest {
 
 	@Test
 	void text() {
+		Entity jones = CONNECTION_PROVIDER.connection().selectSingle(Employee.NAME.equalTo("JONES"));
 		EntitySearchModel searchModel = EntitySearchModel.builder(Employee.TYPE, CONNECTION_PROVIDER).build();
+		searchModel.selection().entity().set(jones);
+
 		EntitySearchField searchField = EntitySearchField.builder(searchModel)
 						.multiSelection()
 						.separator(";")
 						.build();
+		assertEquals("JONES", searchField.getText());
 
-		Entity jones = CONNECTION_PROVIDER.connection().selectSingle(Employee.NAME.equalTo("JONES"));
 		Entity blake = CONNECTION_PROVIDER.connection().selectSingle(Employee.NAME.equalTo("BLAKE"));
 		Entity allen = CONNECTION_PROVIDER.connection().selectSingle(Employee.NAME.equalTo("ALLEN"));
 
