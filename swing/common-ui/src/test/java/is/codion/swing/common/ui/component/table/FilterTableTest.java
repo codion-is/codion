@@ -28,13 +28,18 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.JViewport;
 import javax.swing.SortOrder;
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.component.table.FilterTableColumn.filterTableColumn;
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
@@ -584,6 +589,51 @@ public class FilterTableTest {
 
 		assertSame(oneRenderer, table.columnModel().column(1).getCellRenderer());
 		assertSame(oneRenderer, table.getCellRenderer(0, 1));
+	}
+
+	@Test
+	void scrollToAdded() {
+		FilterTable<TestRow, Integer> table = FilterTable.builder(createTestModel(null), createColumns())
+						.scrollToAddedItem(true)
+						.build();
+		JScrollPane scrollPane = new JScrollPane(table);
+		scrollPane.setPreferredSize(new Dimension(200, 200));
+		FilterTableModel<TestRow, Integer> model = table.model();
+		List<TestRow> rows = IntStream.range(0, 100)
+						.mapToObj(i -> new TestRow("" + i))
+						.collect(Collectors.toList());
+
+		model.items().add(rows);
+		model.sort().ascending(0);
+		model.items().add(new TestRow("200"));
+
+		JViewport viewport = parentOfType(JViewport.class, table);
+		int row = table.rowAtPoint(viewport.getViewPosition());
+		TestRow testRow = model.items().visible().get(row);
+		assertEquals("200", testRow.value);
+
+		rows = IntStream.range(301, 350)
+						.mapToObj(i -> new TestRow("" + i))
+						.collect(Collectors.toList());
+
+		model.items().add(rows);
+		row = table.rowAtPoint(viewport.getViewPosition());
+		testRow = model.items().visible().get(row);
+		assertEquals("301", testRow.value);
+
+		model.sort().clear();
+
+		model.items().visible().add(0, new TestRow("400"));
+		row = table.rowAtPoint(viewport.getViewPosition());
+		testRow = model.items().visible().get(row);
+		assertEquals(0, row);
+		assertEquals("400", testRow.value);
+
+		model.items().visible().add(20, new TestRow("401"));
+		row = table.rowAtPoint(viewport.getViewPosition());
+		testRow = model.items().visible().get(row);
+		assertEquals(20, row);
+		assertEquals("401", testRow.value);
 	}
 
 	private static boolean tableModelContainsAll(List<TestRow> rows, boolean includeFiltered,

@@ -991,6 +991,7 @@ public final class FilterTable<R, C> extends JTable {
 				for (int row = 0; row < visibleItems.size(); row++) {
 					if (items.contains(visibleItems.get(row))) {
 						scrollToAddedRow(viewport, row);
+						return;
 					}
 				}
 			}
