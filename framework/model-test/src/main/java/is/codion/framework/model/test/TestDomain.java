@@ -173,7 +173,8 @@ public final class TestDomain extends DomainModel {
 										Department.ID.define()
 														.primaryKey()
 														.caption(Department.ID.name())
-														.updatable(true).nullable(false),
+														.updatable(true)
+														.nullable(false),
 										Department.NAME.define()
 														.column()
 														.caption(Department.NAME.name())

@@ -50,6 +50,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -88,7 +89,7 @@ public final class AbstractEntityEditModelTest {
 		AtomicInteger deleteEvents = new AtomicInteger();
 
 		Consumer<Collection<Entity>> insertListener = inserted -> insertEvents.incrementAndGet();
-		Consumer<Map<Entity, Entity>> updateListener = udpated -> updateEvents.incrementAndGet();
+		Consumer<Map<Entity, Entity>> updateListener = updated -> updateEvents.incrementAndGet();
 		Consumer<Collection<Entity>> deleteListener = deleted -> deleteEvents.incrementAndGet();
 
 		EntityEditEvents.insertObserver(Employee.TYPE).addWeakConsumer(insertListener);
@@ -264,7 +265,7 @@ public final class AbstractEntityEditModelTest {
 		editor.defaults();
 		assertFalse(entityExistsState.get());
 
-   	Double originalCommission = editor.value(Employee.COMMISSION).get();
+		Double originalCommission = editor.value(Employee.COMMISSION).get();
 		double commission = 1500.5;
 		LocalDate originalHiredate = editor.value(Employee.HIREDATE).get();
 		LocalDate hiredate = LocalDate.now();
@@ -411,6 +412,34 @@ public final class AbstractEntityEditModelTest {
 			Entity emp2 = connection.selectSingle(Employee.NAME.equalTo("JONES"));
 			emp2.put(Employee.COMMISSION, 100d);
 			assertThrows(IllegalStateException.class, () -> employeeEditModel.update(Arrays.asList(emp1, emp2)));
+
+			// Test afterUpdate event map contents
+			EntityEditModel deptEditModel = new TestEntityEditModel(Department.TYPE, CONNECTION_PROVIDER);
+			deptEditModel.editor().value(Department.ID).set(-1);
+			deptEditModel.editor().value(Department.NAME).set("UpdTest");
+			Entity dept = deptEditModel.insert();
+			deptEditModel.editor().set(dept);
+
+			AtomicBoolean checker = new AtomicBoolean(false);
+
+			deptEditModel.afterUpdate().addConsumer(updated -> {
+				checker.set(true);
+				Map.Entry<Entity, Entity> entry = updated.entrySet().iterator().next();
+				Entity beforeUpdate = entry.getKey();
+				Entity afterUpdate = entry.getValue();
+				assertEquals(Integer.valueOf(-1), beforeUpdate.originalPrimaryKey().value());
+				assertEquals("UpdTest", beforeUpdate.original(Department.NAME));
+				assertEquals(Integer.valueOf(-2), beforeUpdate.primaryKey().value());
+				assertEquals("UpdTest2", beforeUpdate.get(Department.NAME));
+				assertEquals(Integer.valueOf(-2), afterUpdate.primaryKey().value());
+				assertEquals("UpdTest2", afterUpdate.get(Department.NAME));
+			});
+
+			deptEditModel.editor().value(Department.ID).set(-2);
+			deptEditModel.editor().value(Department.NAME).set("UpdTest2");
+			deptEditModel.update();
+
+			assertTrue(checker.get(), "After update event should have been triggered");
 		}
 		finally {
 			connection.rollbackTransaction();
