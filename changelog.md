@@ -1,6 +1,8 @@
 Codion Change Log
 ==================
 
+## 0.18.29
+
 ## 0.18.28
 ### is.codion.common.model
 - FilterModel.VisibleItems.added() added.
