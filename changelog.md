@@ -11,6 +11,8 @@ Codion Change Log
 - AbstractEntityConnectionProvider.validateConnection() replaced with validConnection(), connection() no longer final.
 ### is.codion.framework.db.local
 - LocalEntityConnectionProvider now overrides connection() with LocalEntityConnection return type.
+### is.codion.swing.framework.model
+- SwingEntityTableModel.isCellEditable() now final, protected editable() added.
 ### is.codion.swing.framework.ui
 - EntitySearchField bug fixed, did not initialize correctly when instantiated with a search model with non-empty selection.
 

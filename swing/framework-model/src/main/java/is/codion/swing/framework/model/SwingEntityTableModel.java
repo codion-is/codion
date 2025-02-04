@@ -136,21 +136,15 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	 * @param rowIndex the row to edit
 	 * @param modelColumnIndex the model index of the column to edit
 	 * @return true if the cell is editable
-	 * @see #setValueAt(Object, int, int)
+	 * @see #editable(Entity, Attribute)
 	 */
 	@Override
-	public boolean isCellEditable(int rowIndex, int modelColumnIndex) {
+	public final boolean isCellEditable(int rowIndex, int modelColumnIndex) {
 		if (!editable().get() || editModel().readOnly().get() || !editModel().updateEnabled().get()) {
 			return false;
 		}
-		Attribute<?> attribute = columns().identifier(modelColumnIndex);
-		if (attribute instanceof ForeignKey) {
-			return entityDefinition().foreignKeys().updatable((ForeignKey) attribute);
-		}
 
-		AttributeDefinition<?> attributeDefinition = entityDefinition().attributes().definition(attribute);
-
-		return attributeDefinition instanceof ColumnDefinition && ((ColumnDefinition<?>) attributeDefinition).updatable();
+		return editable(items().visible().get(rowIndex), columns().identifier(modelColumnIndex));
 	}
 
 	/**
@@ -264,6 +258,23 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	@Override
 	protected final void onRowsUpdated(int fromIndex, int toIndex) {
 		fireTableRowsUpdated(fromIndex, toIndex);
+	}
+
+	/**
+	 * Returns true if the given attribute is editable for the given entity.
+	 * @param entity the entity row item
+	 * @param attribute the attribute
+	 * @return true if the attribute is editable
+	 * @see #setValueAt(Object, int, int)
+	 */
+	protected boolean editable(Entity entity, Attribute<?> attribute) {
+		if (attribute instanceof ForeignKey) {
+			return entityDefinition().foreignKeys().updatable((ForeignKey) attribute);
+		}
+
+		AttributeDefinition<?> attributeDefinition = entityDefinition().attributes().definition(attribute);
+
+		return attributeDefinition instanceof ColumnDefinition && ((ColumnDefinition<?>) attributeDefinition).updatable();
 	}
 
 	private void onTableModelEvent(TableModelEvent tableModelEvent) {
