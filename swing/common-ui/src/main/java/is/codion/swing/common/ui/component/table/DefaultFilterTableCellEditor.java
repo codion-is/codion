@@ -87,7 +87,9 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 			((JCheckBox) editorComponent).setHorizontalAlignment(SwingConstants.CENTER);
 		}
 		if (editorComponent instanceof JComboBox) {
-			new ComboBoxEnterPressedAction((JComboBox<?>) editorComponent, command(this::stopCellEditing));
+			JComboBox<?> comboBox = (JComboBox<?>) editorComponent;
+			comboBox.putClientProperty("JComboBox.isTableCellEditor", true);
+			new ComboBoxEnterPressedAction(comboBox, command(this::stopCellEditing));
 		}
 
 		return value;

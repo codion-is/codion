@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - FilterTable.ScrollToAdded bug fixed, now stops scrolling after the first row.
 - FilterTable.Builder.surrendersFocusOnKeystroke() added.
+- DefaultFilterTableCellEditor now sets JComboBox.isTableCellEditor client property for combo boxes.
 ### is.codion.framework.db
 - EntityConnectionProvider.connection() inferred return type removed.
 - AbstractEntityConnectionProvider.validateConnection() replaced with validConnection(), connection() no longer final.
