@@ -281,6 +281,7 @@ public final class FilterTable<R, C> extends JTable {
 		this.controlMap.control(TOGGLE_SORT_COLUMN_ADD).set(createToggleSortColumnAddControl());
 		filters().view().set(builder.filterView);
 		autoStartsEdit(builder.autoStartsEdit);
+		setSurrendersFocusOnKeystroke(builder.surrendersFocusOnKeystroke);
 		setSelectionMode(builder.selectionMode);
 		setAutoResizeMode(builder.autoResizeMode);
 		configureColumns(builder.cellRenderers, builder.cellRendererFactory, builder.cellEditors, builder.cellEditorFactory);
@@ -1102,6 +1103,14 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> autoStartsEdit(boolean autoStartsEdit);
 
 		/**
+		 *
+		 * @param surrendersFocusOnKeystroke true if the table should surrenders focus on keystroke
+		 * @return this builder instance
+		 * @see JTable#setSurrendersFocusOnKeystroke(boolean)
+		 */
+		Builder<R, C> surrendersFocusOnKeystroke(boolean surrendersFocusOnKeystroke);
+
+		/**
 		 * @param centerOnScroll the center on scroll behavious
 		 * @return this builder instance
 		 */
@@ -1248,6 +1257,7 @@ public final class FilterTable<R, C> extends JTable {
 		private FilterTableCellRenderer.Factory<R, C> cellRendererFactory;
 		private FilterTableCellEditor.Factory<C> cellEditorFactory;
 		private boolean autoStartsEdit = false;
+		private boolean surrendersFocusOnKeystroke = false;
 		private CenterOnScroll centerOnScroll = CenterOnScroll.NEITHER;
 		private Action doubleClickAction;
 		private boolean scrollToSelectedItem = true;
@@ -1312,6 +1322,12 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public Builder<R, C> autoStartsEdit(boolean autoStartsEdit) {
 			this.autoStartsEdit = autoStartsEdit;
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> surrendersFocusOnKeystroke(boolean surrendersFocusOnKeystroke) {
+			this.surrendersFocusOnKeystroke = surrendersFocusOnKeystroke;
 			return this;
 		}
 
