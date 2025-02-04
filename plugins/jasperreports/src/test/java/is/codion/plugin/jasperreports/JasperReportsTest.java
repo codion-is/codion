@@ -24,7 +24,6 @@ import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.user.User;
 import is.codion.dbms.h2.H2DatabaseFactory;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.plugin.jasperreports.TestDomain.Employee;
@@ -51,7 +50,7 @@ public class JasperReportsTest {
 
 	private static final String REPORT_PATH = "build/resources/test";
 
-	private static final EntityConnectionProvider CONNECTION_PROVIDER =
+	private static final LocalEntityConnectionProvider CONNECTION_PROVIDER =
 					LocalEntityConnectionProvider.builder()
 									.database(H2DatabaseFactory.createDatabase("jdbc:h2:mem:JasperReportsWrapperTest",
 													Database.DATABASE_INIT_SCRIPTS.get()))

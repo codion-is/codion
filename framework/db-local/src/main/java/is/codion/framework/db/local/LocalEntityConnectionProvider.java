@@ -38,6 +38,9 @@ public interface LocalEntityConnectionProvider extends EntityConnectionProvider 
 	 */
 	Database database();
 
+	@Override
+	LocalEntityConnection connection();
+
 	/**
 	 * @return the default query timeout being used
 	 */

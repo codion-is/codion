@@ -339,7 +339,7 @@ public final class EntityConnectionDemo {
 		// end::deleteKey[]
 	}
 
-	static void iterator(EntityConnectionProvider connectionProvider) {
+	static void iterator(LocalEntityConnectionProvider connectionProvider) {
 		// tag::iterator[]
 		LocalEntityConnection connection = connectionProvider.connection();
 
@@ -543,7 +543,7 @@ public final class EntityConnectionDemo {
 		Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
 		Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
 
-		EntityConnectionProvider connectionProvider =
+		LocalEntityConnectionProvider connectionProvider =
 						LocalEntityConnectionProvider.builder()
 										.domainType(DOMAIN)
 										.user(User.parse("scott:tiger"))

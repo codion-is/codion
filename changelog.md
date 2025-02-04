@@ -4,6 +4,11 @@ Codion Change Log
 ## 0.18.29
 ### is.codion.swing.common.ui
 - FilterTable.ScrollToAdded bug fixed, now stops scrolling after the first row.
+### is.codion.framework.db
+- EntityConnectionProvider.connection() inferred return type removed.
+- AbstractEntityConnectionProvider.validateConnection() replaced with validConnection(), connection() no longer final.
+### is.codion.framework.db.local
+- LocalEntityConnectionProvider now overrides connection() with LocalEntityConnection return type.
 ### is.codion.swing.framework.ui
 - EntitySearchField bug fixed, did not initialize correctly when instantiated with a search model with non-empty selection.
 

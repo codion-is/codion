@@ -72,6 +72,11 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
 	}
 
 	@Override
+	public LocalEntityConnection connection() {
+		return (LocalEntityConnection) validConnection();
+	}
+
+	@Override
 	protected LocalEntityConnection connect() {
 		LOG.debug("Initializing connection for {}", user());
 		LocalEntityConnection connection = localEntityConnection(database(), domain(), user());

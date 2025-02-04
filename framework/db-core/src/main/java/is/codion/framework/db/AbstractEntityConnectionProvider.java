@@ -125,10 +125,8 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	}
 
 	@Override
-	public final EntityConnection connection() {
-		synchronized (lock) {
-			return validateConnection();
-		}
+	public EntityConnection connection() {
+		return validConnection();
 	}
 
 	@Override
@@ -147,7 +145,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	}
 
 	/**
-	 * @return an established connection
+	 * @return a new valid connection
 	 */
 	protected abstract EntityConnection connect();
 
@@ -157,21 +155,27 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	 */
 	protected abstract void close(EntityConnection connection);
 
-	private EntityConnection validateConnection() {
-		if (entityConnection == null) {
-			doConnect();
-		}
-		else if (!connectionValid()) {
-			LOG.info("Previous connection invalid, reconnecting");
-			try {//try to disconnect just in case
-				entityConnection.close();
+	/**
+	 * Returns a valid connection or throws an exception in case one can not be established
+	 * @return a valid connection
+	 */
+	protected final EntityConnection validConnection() {
+		synchronized (lock) {
+			if (entityConnection == null) {
+				doConnect();
 			}
-			catch (Exception ignored) {/*ignored*/}
-			entityConnection = null;
-			doConnect();
-		}
+			else if (!connectionValid()) {
+				LOG.info("Previous connection invalid, reconnecting");
+				try {//try to disconnect just in case
+					entityConnection.close();
+				}
+				catch (Exception ignored) {/*ignored*/}
+				entityConnection = null;
+				doConnect();
+			}
 
-		return entityConnection;
+			return entityConnection;
+		}
 	}
 
 	private void doConnect() {
