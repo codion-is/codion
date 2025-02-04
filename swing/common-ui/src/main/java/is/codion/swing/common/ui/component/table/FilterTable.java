@@ -53,6 +53,7 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
 
 import javax.swing.Action;
+import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -302,6 +303,7 @@ public final class FilterTable<R, C> extends JTable {
 		Utilities.updateUI(columnModel().hidden().columns().stream()
 						.flatMap(FilterTable::columnComponents)
 						.collect(toList()));
+		updateCellEditorUI();
 	}
 
 	@Override
@@ -903,7 +905,6 @@ public final class FilterTable<R, C> extends JTable {
 	private static Stream<JComponent> columnComponents(FilterTableColumn<?> column) {
 		Collection<JComponent> components = new ArrayList<>(3);
 		addIfComponent(components, column.getCellRenderer());
-		addIfComponent(components, column.getCellEditor());
 		addIfComponent(components, column.getHeaderRenderer());
 
 		return components.stream();
@@ -932,6 +933,21 @@ public final class FilterTable<R, C> extends JTable {
 	private void configureFilterPanel(C identifier, ConditionPanel<?> filterPanel) {
 		filterPanel.focusGainedObserver().ifPresent(focusGainedObserver ->
 						focusGainedObserver.addListener(() -> scrollToColumn(identifier)));
+	}
+
+	private void updateCellEditorUI() {
+		columnModel().columns().forEach(column -> {
+			TableCellEditor columnCellEditor = column.getCellEditor();
+			if (columnCellEditor instanceof DefaultFilterTableCellEditor) {
+				((DefaultFilterTableCellEditor<?>) columnCellEditor).updateUI();
+			}
+			else if (columnCellEditor instanceof DefaultCellEditor) {
+				((JComponent) ((DefaultCellEditor) columnCellEditor).getComponent()).updateUI();
+			}
+			else if (columnCellEditor instanceof JComponent) {
+				((JComponent) columnCellEditor).updateUI();
+			}
+		});
 	}
 
 	private static void addIfComponent(Collection<JComponent> components, Object object) {
@@ -1103,7 +1119,6 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> autoStartsEdit(boolean autoStartsEdit);
 
 		/**
-		 *
 		 * @param surrendersFocusOnKeystroke true if the table should surrenders focus on keystroke
 		 * @return this builder instance
 		 * @see JTable#setSurrendersFocusOnKeystroke(boolean)

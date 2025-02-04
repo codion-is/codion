@@ -80,6 +80,12 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 		return true;
 	}
 
+	void updateUI() {
+		if (componentValue != null) {
+			componentValue.component().updateUI();
+		}
+	}
+
 	private ComponentValue<T, ? extends JComponent> initializeComponentValue() {
 		ComponentValue<T, ? extends JComponent> value = inputComponent.get();
 		JComponent editorComponent = value.component();
