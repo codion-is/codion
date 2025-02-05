@@ -40,6 +40,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -278,29 +279,37 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	}
 
 	private static <T> ColumnCondition<T> inCondition(ConditionModel<T> conditionModel, Column<T> column) {
+		Set<T> operands = conditionModel.operands().in().get();
+		if (operands.isEmpty()) {
+			return column.isNull();
+		}
 		if (column.type().isString()) {
 			Column<String> stringColumn = (Column<String>) column;
-			Collection<String> inOperands = (Collection<String>) conditionModel.operands().in().get();
+			Collection<String> inOperands = (Collection<String>) operands;
 
 			return (ColumnCondition<T>) (conditionModel.caseSensitive().get() ?
 							stringColumn.in(inOperands) :
 							stringColumn.inIgnoreCase(inOperands));
 		}
 
-		return column.in(conditionModel.operands().in().get());
+		return column.in(operands);
 	}
 
 	private static <T> ColumnCondition<T> notInCondition(ConditionModel<T> conditionModel, Column<T> column) {
+		Set<T> operands = conditionModel.operands().in().get();
+		if (operands.isEmpty()) {
+			return column.isNotNull();
+		}
 		if (column.type().isString()) {
 			Column<String> stringColumn = (Column<String>) column;
-			Collection<String> inOperands = (Collection<String>) conditionModel.operands().in().get();
+			Collection<String> inOperands = (Collection<String>) operands;
 
 			return (ColumnCondition<T>) (conditionModel.caseSensitive().get() ?
 							stringColumn.notIn(inOperands) :
 							stringColumn.notInIgnoreCase(inOperands));
 		}
 
-		return column.notIn(conditionModel.operands().in().get());
+		return column.notIn(operands);
 	}
 
 	private static boolean containsWildcards(String value) {

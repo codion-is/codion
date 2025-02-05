@@ -18,6 +18,8 @@
  */
 package is.codion.framework.model;
 
+import is.codion.common.Conjunction;
+import is.codion.common.Operator;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -106,6 +108,11 @@ public class DefaultEntityTableConditionModelTest {
 		searchStateChanged = conditionModel.get(Employee.DEPARTMENT_FK).set().in(emptyList());
 		assertTrue(searchStateChanged);
 		assertFalse(conditionModel.get(Employee.DEPARTMENT_FK).enabled().get());
+		conditionModel.get(Employee.DEPARTMENT_FK).enabled().set(true);
+		assertEquals(Employee.DEPARTMENT_FK.isNull(), conditionModel.where(Conjunction.AND));
+		conditionModel.get(Employee.DEPARTMENT_FK).operator().set(Operator.NOT_IN);
+		conditionModel.get(Employee.DEPARTMENT_FK).enabled().set(true);
+		assertEquals(Employee.DEPARTMENT_FK.isNotNull(), conditionModel.where(Conjunction.AND));
 	}
 
 	@Test
