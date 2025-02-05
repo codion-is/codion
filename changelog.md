@@ -7,6 +7,7 @@ Codion Change Log
 - FilterTable.Builder.surrendersFocusOnKeystroke() added.
 - DefaultFilterTableCellEditor now sets JComboBox.isTableCellEditor client property for combo boxes.
 - FilterTable bug fixed, updateUI() now updates cell editor UIs.
+- FilterTable.ControlKeys.TOGGLE_NEXT_SORT_ORDER, TOGGLE_PREVIOUS_SORT_ORDER, TOGGLE_NEXT_SORT_ORDER_ADD and TOGGLE_PREVIOUS_SORT_ORDER_ADD added, replacing TOGGLE_SORT_ORDER and TOGGLE_SORT_ORDER_ADD.
 ### is.codion.framework.db
 - EntityConnectionProvider.connection() inferred return type removed.
 - AbstractEntityConnectionProvider.validateConnection() replaced with validConnection(), connection() no longer final.
@@ -16,6 +17,7 @@ Codion Change Log
 - SwingEntityTableModel.isCellEditable() now final, protected editable() added.
 ### is.codion.swing.framework.ui
 - EntitySearchField bug fixed, did not initialize correctly when instantiated with a search model with non-empty selection.
+- EntityTablePanel.ControlKeys.DECREMENT_SELECTION and INCREMENT_SELECTION keys changed from ALT-SHIFT to CTRL-SHIFT.
 
 ## 0.18.28
 ### is.codion.common.model

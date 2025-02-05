@@ -257,16 +257,16 @@ public class EntityTablePanel extends JPanel {
 		public static final ControlKey<CommandControl> SELECT_FILTER = CommandControl.key("selectFilter", keyStroke(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Decrements the selected indexes, moving the selection up.<br>
-		 * Default key stroke: ALT-SHIFT-UP
+		 * Default key stroke: CTRL-SHIFT-UP
 		 * @see MultiSelection.Indexes#decrement()
 		 */
-		public static final ControlKey<CommandControl> DECREMENT_SELECTION = CommandControl.key("decrementSelection", keyStroke(VK_UP, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> DECREMENT_SELECTION = CommandControl.key("decrementSelection", keyStroke(VK_UP, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Increments the selected indexes, moving the selection down.<br>
-		 * Default key stroke: ALT-SHIFT-DOWN
+		 * Default key stroke: CTRL-SHIFT-DOWN
 		 * @see MultiSelection.Indexes#increment()
 		 */
-		public static final ControlKey<CommandControl> INCREMENT_SELECTION = CommandControl.key("incrementSelection", keyStroke(VK_DOWN, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> INCREMENT_SELECTION = CommandControl.key("incrementSelection", keyStroke(VK_DOWN, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * The main print action<br>
 		 * Default key stroke: CTRL-P

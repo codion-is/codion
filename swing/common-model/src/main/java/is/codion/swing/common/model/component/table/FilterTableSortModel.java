@@ -25,8 +25,6 @@ import javax.swing.SortOrder;
 import java.util.Comparator;
 import java.util.List;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * Handles the column sorting states for a {@link FilterTableModel}.
  * @param <R> the type representing a row in the table model
@@ -149,24 +147,5 @@ public interface FilterTableSortModel<R, C> {
 		 * @return the {@link State} controlling whether sorting is locked for this column
 		 */
 		State locked();
-	}
-
-	/**
-	 * {@link SortOrder#ASCENDING} to {@link SortOrder#DESCENDING} to {@link SortOrder#UNSORTED} to {@link SortOrder#ASCENDING}.
-	 * @param currentSortOrder the current sort order
-	 * @return the next sort order
-	 */
-	static SortOrder nextSortOrder(SortOrder currentSortOrder) {
-		requireNonNull(currentSortOrder);
-		switch (currentSortOrder) {
-			case UNSORTED:
-				return SortOrder.ASCENDING;
-			case ASCENDING:
-				return SortOrder.DESCENDING;
-			case DESCENDING:
-				return SortOrder.UNSORTED;
-			default:
-				throw new IllegalStateException("Unknown sort order: " + currentSortOrder);
-		}
 	}
 }

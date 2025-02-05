@@ -130,7 +130,7 @@ final class KeyboardShortcutsPanel extends JPanel {
 						.addAll(new JLabel(MESSAGES.getString("copy_selected_cell")), new JLabel(CTRL + ALT + "C"))
 						.addAll(new JLabel(MESSAGES.getString("move_selected_column")), new JLabel(CTRL + SHIFT + LEFT_RIGHT))
 						.addAll(new JLabel(MESSAGES.getString("resize_selected_column")), new JLabel(CTRL + "+/-"))
-						.addAll(new JLabel(MESSAGES.getString("move_selection")), new JLabel(ALT + SHIFT + UP + "/" + DOWN))
+						.addAll(new JLabel(MESSAGES.getString("move_selection")), new JLabel(CTRL + SHIFT + UP + "/" + DOWN))
 						.addAll(new JLabel(MESSAGES.getString("show_popup_menu")), new JLabel(CTRL + "G"))
 						.addAll(new JLabel(MESSAGES.getString("print")), new JLabel(CTRL + "P"))
 						.addAll(new JLabel(MESSAGES.getString("refresh")), new JLabel(ALT + "R"))
@@ -139,8 +139,8 @@ final class KeyboardShortcutsPanel extends JPanel {
 						.addAll(new JLabel(MESSAGES.getString("select_condition_panel")), new JLabel(CTRL + "S"))
 						.addAll(new JLabel(MESSAGES.getString("toggle_filter_panel")), new JLabel(CTRL + ALT + "F"))
 						.addAll(new JLabel(MESSAGES.getString("select_filter_panel")), new JLabel(CTRL + SHIFT + "F"))
-						.addAll(new JLabel(MESSAGES.getString("toggle_column_sort")), new JLabel(ALT + DOWN))
-						.addAll(new JLabel(MESSAGES.getString("toggle_column_sort_add")), new JLabel(ALT + UP))
+						.addAll(new JLabel(MESSAGES.getString("toggle_column_sort")), new JLabel(ALT + UP + "/" + DOWN))
+						.addAll(new JLabel(MESSAGES.getString("toggle_column_sort_add")), new JLabel(SHIFT + ALT + UP + "/" + DOWN))
 						.border(createTitledBorder(MESSAGES.getString("table_panel")))
 						.build();
 	}

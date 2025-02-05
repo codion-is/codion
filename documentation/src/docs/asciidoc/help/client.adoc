@@ -141,7 +141,7 @@ This clears all values and resets all operators to *EQUAL*.
 |kbd:[Ctrl + Alt + C]|Copy selected cell to clipboard
 |kbd:[Ctrl + Shift + &#x2190;/&#x2192;]|Move selected column
 |kbd:[Ctrl + &#x002B;/&#x2212;]|Resize selected column
-|kbd:[Alt + Shift + &#x2191;/&#x2193;]|Move selection
+|kbd:[Ctrl + Shift + &#x2191;/&#x2193;]|Move selection
 |kbd:[Ctrl + G]|Show popup menu
 |kbd:[Ctrl + P]|Print (if available)
 |kbd:[Alt + R]|Refresh
@@ -150,8 +150,8 @@ This clears all values and resets all operators to *EQUAL*.
 |kbd:[Ctrl + S]|Select condition panel
 |kbd:[Ctrl + Alt + F]|Toggle filter panel between hidden, visible and advanced
 |kbd:[Ctrl + Shift + F]|Select filter panel
-|kbd:[Alt + &#x2193;]|Toggle sorting by selected column
-|kbd:[Alt + &#x2191;]|Toggle and add sorting by selected column
+|kbd:[Alt + &#x2191;/&#x2193;]|Toggle sorting by selected column
+|kbd:[Shift + Alt + &#x2191;/&#x2193;]|Toggle and add sorting by selected column
 |===
 
 [cols="1,3"]

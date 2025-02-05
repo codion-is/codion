@@ -62,6 +62,7 @@ import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import javax.swing.SortOrder;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
@@ -97,7 +98,6 @@ import static is.codion.common.Configuration.integerValue;
 import static is.codion.common.item.Item.item;
 import static is.codion.common.model.summary.TableSummaryModel.tableSummaryModel;
 import static is.codion.common.resource.MessageBundle.messageBundle;
-import static is.codion.swing.common.model.component.table.FilterTableSortModel.nextSortOrder;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.itemComboBox;
@@ -189,15 +189,25 @@ public final class FilterTable<R, C> extends JTable {
 		 */
 		public static final ControlKey<CommandControl> COPY_CELL = CommandControl.key("copyCell", keyStroke(VK_C, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 		/**
-		 * Toggles the sort on the selected column.<br>
+		 * Toggles the sort on the selected column from {@link SortOrder#ASCENDING} to {@link SortOrder#DESCENDING} to {@link SortOrder#UNSORTED}.<br>
 		 * Default key stroke: ALT-DOWN ARROW
 		 */
-		public static final ControlKey<CommandControl> TOGGLE_SORT_COLUMN = CommandControl.key("toggleSortColumn", keyStroke(VK_DOWN, ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> TOGGLE_NEXT_SORT_ORDER = CommandControl.key("toggleNextSortOrder", keyStroke(VK_DOWN, ALT_DOWN_MASK));
 		/**
-		 * Toggles the sort on the selected column adding it to any already sorted columns.<br>
+		 * Toggles the sort on the selected column from {@link SortOrder#ASCENDING} to {@link SortOrder#UNSORTED} to {@link SortOrder#DESCENDING}.<br>
 		 * Default key stroke: ALT-UP ARROW
 		 */
-		public static final ControlKey<CommandControl> TOGGLE_SORT_COLUMN_ADD = CommandControl.key("toggleSortColumnAdd", keyStroke(VK_UP, ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> TOGGLE_PREVIOUS_SORT_ORDER = CommandControl.key("togglePreviousSortOrder", keyStroke(VK_UP, ALT_DOWN_MASK));
+		/**
+		 * Toggles the sort on the selected column from {@link SortOrder#ASCENDING} to {@link SortOrder#DESCENDING} to {@link SortOrder#UNSORTED}, adding it to any already sorted columns.<br>
+		 * Default key stroke: SHIFT-ALT-DOWN ARROW
+		 */
+		public static final ControlKey<CommandControl> TOGGLE_NEXT_SORT_ORDER_ADD = CommandControl.key("toggleNextSortOrderAdd", keyStroke(VK_DOWN, SHIFT_DOWN_MASK | ALT_DOWN_MASK));
+		/**
+		 * Toggles the sort on the selected column from {@link SortOrder#ASCENDING} to {@link SortOrder#UNSORTED} to {@link SortOrder#DESCENDING}, adding it to any already sorted columns.<br>
+		 * Default key stroke: SHIFT-ALT-UP ARROW
+		 */
+		public static final ControlKey<CommandControl> TOGGLE_PREVIOUS_SORT_ORDER_ADD = CommandControl.key("togglePreviousSortOrderAdd", keyStroke(VK_UP, SHIFT_DOWN_MASK | ALT_DOWN_MASK));
 
 		private ControlKeys() {}
 	}
@@ -278,8 +288,10 @@ public final class FilterTable<R, C> extends JTable {
 		this.sortingEnabled = State.state(builder.sortingEnabled);
 		this.controlMap = builder.controlMap;
 		this.controlMap.control(COPY_CELL).set(createCopyCellControl());
-		this.controlMap.control(TOGGLE_SORT_COLUMN).set(createToggleSortColumnControl());
-		this.controlMap.control(TOGGLE_SORT_COLUMN_ADD).set(createToggleSortColumnAddControl());
+		this.controlMap.control(TOGGLE_PREVIOUS_SORT_ORDER).set(createToggleSortOrderControl(true));
+		this.controlMap.control(TOGGLE_NEXT_SORT_ORDER).set(createToggleSortOrderControl(false));
+		this.controlMap.control(TOGGLE_PREVIOUS_SORT_ORDER_ADD).set(createToggleSortOrderAddControl(true));
+		this.controlMap.control(TOGGLE_NEXT_SORT_ORDER_ADD).set(createToggleSortOrderAddControl(false));
 		filters().view().set(builder.filterView);
 		autoStartsEdit(builder.autoStartsEdit);
 		setSurrendersFocusOnKeystroke(builder.surrendersFocusOnKeystroke);
@@ -747,22 +759,22 @@ public final class FilterTable<R, C> extends JTable {
 		}
 	}
 
-	private void toggleColumnSorting(int selectedColumn, boolean add) {
+	private void toggleColumnSort(int selectedColumn, boolean previous, boolean add) {
 		if (sortingEnabled.get() && selectedColumn != -1) {
 			C identifier = columnModel().getColumn(selectedColumn).identifier();
 			if (!tableModel.sort().order(identifier).locked().get()) {
-				sortColumn(identifier, add);
+				toggleColumnSort(identifier, previous, add);
 			}
 		}
 	}
 
-	private void sortColumn(C identifier, boolean add) {
+	private void toggleColumnSort(C identifier, boolean previous, boolean add) {
 		ColumnSortOrder<C> columnSortOrder = tableModel.sort().columns().get(identifier);
 		if (add) {
-			tableModel.sort().order(identifier).add(nextSortOrder(columnSortOrder.sortOrder()));
+			tableModel.sort().order(identifier).add(previous ? previous(columnSortOrder.sortOrder()) : next(columnSortOrder.sortOrder()));
 		}
 		else {
-			tableModel.sort().order(identifier).set(nextSortOrder(columnSortOrder.sortOrder()));
+			tableModel.sort().order(identifier).set(previous ? previous(columnSortOrder.sortOrder()) : next(columnSortOrder.sortOrder()));
 		}
 	}
 
@@ -884,8 +896,10 @@ public final class FilterTable<R, C> extends JTable {
 		addMouseListener(new FilterTableMouseListener());
 		addKeyListener(new MoveResizeColumnKeyListener(columnReorderingAllowed, columnResizingAllowed));
 		controlMap.keyEvent(COPY_CELL).ifPresent(keyEvent -> keyEvent.enable(this));
-		controlMap.keyEvent(TOGGLE_SORT_COLUMN_ADD).ifPresent(keyEvent -> keyEvent.enable(this));
-		controlMap.keyEvent(TOGGLE_SORT_COLUMN).ifPresent(keyEvent -> keyEvent.enable(this));
+		controlMap.keyEvent(TOGGLE_PREVIOUS_SORT_ORDER_ADD).ifPresent(keyEvent -> keyEvent.enable(this));
+		controlMap.keyEvent(TOGGLE_NEXT_SORT_ORDER_ADD).ifPresent(keyEvent -> keyEvent.enable(this));
+		controlMap.keyEvent(TOGGLE_PREVIOUS_SORT_ORDER).ifPresent(keyEvent -> keyEvent.enable(this));
+		controlMap.keyEvent(TOGGLE_NEXT_SORT_ORDER).ifPresent(keyEvent -> keyEvent.enable(this));
 	}
 
 	private void onColumnHidden(C columnIdentifier) {
@@ -894,12 +908,12 @@ public final class FilterTable<R, C> extends JTable {
 						.ifPresent(condition -> condition.enabled().set(false));
 	}
 
-	private CommandControl createToggleSortColumnAddControl() {
-		return command(() -> toggleColumnSorting(columnModel.getSelectionModel().getLeadSelectionIndex(), true));
+	private CommandControl createToggleSortOrderAddControl(boolean previous) {
+		return command(() -> toggleColumnSort(columnModel.getSelectionModel().getLeadSelectionIndex(), previous, true));
 	}
 
-	private CommandControl createToggleSortColumnControl() {
-		return command(() -> toggleColumnSorting(columnModel.getSelectionModel().getLeadSelectionIndex(), false));
+	private CommandControl createToggleSortOrderControl(boolean previous) {
+		return command(() -> toggleColumnSort(columnModel.getSelectionModel().getLeadSelectionIndex(), previous, false));
 	}
 
 	private static Stream<JComponent> columnComponents(FilterTableColumn<?> column) {
@@ -953,6 +967,32 @@ public final class FilterTable<R, C> extends JTable {
 	private static void addIfComponent(Collection<JComponent> components, Object object) {
 		if (object instanceof JComponent) {
 			components.add((JComponent) object);
+		}
+	}
+
+	private static SortOrder next(SortOrder sortOrder) {
+		switch (sortOrder) {
+			case UNSORTED:
+				return SortOrder.ASCENDING;
+			case ASCENDING:
+				return SortOrder.DESCENDING;
+			case DESCENDING:
+				return SortOrder.UNSORTED;
+			default:
+				throw new IllegalStateException();
+		}
+	}
+
+	private static SortOrder previous(SortOrder sortOrder) {
+		switch (sortOrder) {
+			case UNSORTED:
+				return SortOrder.DESCENDING;
+			case ASCENDING:
+				return SortOrder.UNSORTED;
+			case DESCENDING:
+				return SortOrder.ASCENDING;
+			default:
+				throw new IllegalStateException();
 		}
 	}
 
@@ -1039,7 +1079,7 @@ public final class FilterTable<R, C> extends JTable {
 					if (!getSelectionModel().isSelectionEmpty()) {
 						setColumnSelectionInterval(index, index);//otherwise, the focus jumps to the selected column after sorting
 					}
-					sortColumn(identifier, e.isAltDown());
+					toggleColumnSort(identifier, e.isShiftDown(), e.isAltDown());
 				}
 			}
 		}
