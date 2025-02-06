@@ -20,6 +20,7 @@ package is.codion.framework.model;
 
 import is.codion.common.Conjunction;
 import is.codion.common.Operator;
+import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -113,6 +114,36 @@ public class DefaultEntityTableConditionModelTest {
 		conditionModel.get(Employee.DEPARTMENT_FK).operator().set(Operator.NOT_IN);
 		conditionModel.get(Employee.DEPARTMENT_FK).enabled().set(true);
 		assertEquals(Employee.DEPARTMENT_FK.isNotNull(), conditionModel.where(Conjunction.AND));
+	}
+
+	@Test
+	void conditions() {
+		ConditionModel<Double> condition = conditionModel.get(Employee.COMMISSION);
+		condition.set().between(0d, null);
+		condition.enabled().set(true);
+		assertEquals(Employee.COMMISSION.greaterThanOrEqualTo(0d), conditionModel.where(Conjunction.AND));
+		condition.set().between(null, 0d);
+		condition.enabled().set(true);
+		assertEquals(Employee.COMMISSION.lessThanOrEqualTo(0d), conditionModel.where(Conjunction.AND));
+		condition.set().betweenExclusive(0d, null);
+		condition.enabled().set(true);
+		assertEquals(Employee.COMMISSION.greaterThan(0d), conditionModel.where(Conjunction.AND));
+		condition.set().betweenExclusive(null, 0d);
+		condition.enabled().set(true);
+		assertEquals(Employee.COMMISSION.lessThan(0d), conditionModel.where(Conjunction.AND));
+
+		condition.set().notBetween(0d, null);
+		condition.enabled().set(true);
+		assertEquals(Employee.COMMISSION.lessThanOrEqualTo(0d), conditionModel.where(Conjunction.AND));
+		condition.set().notBetween(null, 0d);
+		condition.enabled().set(true);
+		assertEquals(Employee.COMMISSION.greaterThanOrEqualTo(0d), conditionModel.where(Conjunction.AND));
+		condition.set().notBetweenExclusive(0d, null);
+		condition.enabled().set(true);
+		assertEquals(Employee.COMMISSION.lessThan(0d), conditionModel.where(Conjunction.AND));
+		condition.set().notBetweenExclusive(null, 0d);
+		condition.enabled().set(true);
+		assertEquals(Employee.COMMISSION.greaterThan(0d), conditionModel.where(Conjunction.AND));
 	}
 
 	@Test

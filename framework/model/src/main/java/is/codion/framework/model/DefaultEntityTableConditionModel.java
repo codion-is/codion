@@ -200,13 +200,13 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 			case GREATER_THAN_OR_EQUAL:
 				return column.greaterThanOrEqualTo(operands.lower().get());
 			case BETWEEN_EXCLUSIVE:
-				return column.betweenExclusive(operands.lower().get(), operands.upper().get());
+				return betweenExclusiveCondition(operands.lower().get(), operands.upper().get(), column);
 			case BETWEEN:
-				return column.between(operands.lower().get(), operands.upper().get());
+				return betweenCondition(operands.lower().get(), operands.upper().get(), column);
 			case NOT_BETWEEN_EXCLUSIVE:
-				return column.notBetweenExclusive(operands.lower().get(), operands.upper().get());
+				return notBetweenExclusiveCondition(operands.lower().get(), operands.upper().get(), column);
 			case NOT_BETWEEN:
-				return column.notBetween(operands.lower().get(), operands.upper().get());
+				return notBetweenCondition(operands.lower().get(), operands.upper().get(), column);
 			case IN:
 				return inCondition(conditionModel, column);
 			case NOT_IN:
@@ -276,6 +276,50 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	private static <T> ColumnCondition<T> singleCharacterNotEqualCondition(ConditionModel<T> conditionModel,
 																																				 Column<T> column, Character value) {
 		return conditionModel.caseSensitive().get() ? column.notEqualTo((T) value) : (ColumnCondition<T>) column.notEqualToIgnoreCase(value);
+	}
+
+	private static <T> ColumnCondition<T> betweenExclusiveCondition(T lower, T upper, Column<T> column) {
+		if (lower == null && upper != null) {
+			return column.lessThan(upper);
+		}
+		if (upper == null && lower != null) {
+			return column.greaterThan(lower);
+		}
+
+		return column.betweenExclusive(lower, upper);
+	}
+
+	private static <T> ColumnCondition<T> betweenCondition(T lower, T upper, Column<T> column) {
+		if (lower == null && upper != null) {
+			return column.lessThanOrEqualTo(upper);
+		}
+		if (upper == null && lower != null) {
+			return column.greaterThanOrEqualTo(lower);
+		}
+
+		return column.between(lower, upper);
+	}
+
+	private static <T> ColumnCondition<T> notBetweenExclusiveCondition(T lower, T upper, Column<T> column) {
+		if (lower == null && upper != null) {
+			return column.greaterThan(upper);
+		}
+		if (upper == null && lower != null) {
+			return column.lessThan(lower);
+		}
+
+		return column.notBetweenExclusive(lower, upper);
+	}
+
+	private static <T> ColumnCondition<T> notBetweenCondition(T lower, T upper, Column<T> column) {
+		if (lower == null && upper != null) {
+			return column.greaterThanOrEqualTo(upper);
+		}
+		if (upper == null && lower != null) {
+			return column.lessThanOrEqualTo(lower);
+		}
+
+		return column.notBetween(lower, upper);
 	}
 
 	private static <T> ColumnCondition<T> inCondition(ConditionModel<T> conditionModel, Column<T> column) {

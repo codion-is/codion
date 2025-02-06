@@ -20,6 +20,7 @@ Codion Change Log
 - LocalEntityConnectionProvider now overrides connection() with LocalEntityConnection return type.
 ### is.codion.framework.model
 - DefaultEntityTableConditionModel bug fixed, inCondition() and notInCondition() now return isNull() and isNotNull() respectively when no operands are specified.
+- DefaultEntityTableConditionModel now returns an appropriate greaterThan or lessThan condition when either the lower or upper bound is missing for between conditions.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.isCellEditable() now final, protected editable() added.
 ### is.codion.swing.framework.ui
