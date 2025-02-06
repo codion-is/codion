@@ -430,6 +430,7 @@ public final class ConditionTest {
 		assertEquals(condition1, condition2);
 		condition2 = Employee.ID.equalTo(1);
 		assertNotEquals(condition1, condition2);
+		assertEquals(Employee.ID.equalTo(null), Employee.ID.isNull());
 
 		condition1 = Employee.NAME.equalTo("Luke");
 		condition2 = Employee.NAME.equalTo("Luke");
@@ -442,6 +443,7 @@ public final class ConditionTest {
 		assertEquals(condition1, condition2);
 		condition2 = Employee.ID.equalTo(0);
 		assertNotEquals(condition1, condition2);
+		assertEquals(Employee.ID.notEqualTo(null), Employee.ID.isNotNull());
 
 		condition1 = Employee.ID.notEqualTo(0);
 		condition2 = Employee.ID.notEqualTo(0);
@@ -454,48 +456,64 @@ public final class ConditionTest {
 		assertEquals(condition1, condition2);
 		condition2 = Employee.ID.lessThan(1);
 		assertNotEquals(condition1, condition2);
+		assertThrows(IllegalArgumentException.class, () -> Employee.ID.lessThan(null));
 
 		condition1 = Employee.ID.lessThanOrEqualTo(0);
 		condition2 = Employee.ID.lessThanOrEqualTo(0);
 		assertEquals(condition1, condition2);
 		condition2 = Employee.ID.lessThanOrEqualTo(1);
 		assertNotEquals(condition1, condition2);
+		assertThrows(IllegalArgumentException.class, () -> Employee.ID.lessThanOrEqualTo(null));
 
 		condition1 = Employee.ID.greaterThan(0);
 		condition2 = Employee.ID.greaterThan(0);
 		assertEquals(condition1, condition2);
 		condition2 = Employee.ID.greaterThan(1);
 		assertNotEquals(condition1, condition2);
+		assertThrows(IllegalArgumentException.class, () -> Employee.ID.greaterThan(null));
 
 		condition1 = Employee.ID.greaterThanOrEqualTo(0);
 		condition2 = Employee.ID.greaterThanOrEqualTo(0);
 		assertEquals(condition1, condition2);
 		condition2 = Employee.ID.greaterThanOrEqualTo(1);
 		assertNotEquals(condition1, condition2);
+		assertThrows(IllegalArgumentException.class, () -> Employee.ID.greaterThanOrEqualTo(null));
 
 		condition1 = Employee.ID.between(0, 1);
 		condition2 = Employee.ID.between(0, 1);
 		assertEquals(condition1, condition2);
 		condition2 = Employee.ID.between(1, 0);
 		assertNotEquals(condition1, condition2);
+		assertThrows(IllegalArgumentException.class, () -> Employee.ID.between(1, null));
+		assertThrows(IllegalArgumentException.class, () -> Employee.ID.between(null, 1));
+		assertThrows(IllegalArgumentException.class, () -> Employee.ID.between(null, null));
 
 		condition1 = Employee.ID.betweenExclusive(0, 1);
 		condition2 = Employee.ID.betweenExclusive(0, 1);
 		assertEquals(condition1, condition2);
 		condition2 = Employee.ID.betweenExclusive(1, 0);
 		assertNotEquals(condition1, condition2);
+		assertThrows(IllegalArgumentException.class, () -> Employee.ID.betweenExclusive(1, null));
+		assertThrows(IllegalArgumentException.class, () -> Employee.ID.betweenExclusive(null, 1));
+		assertThrows(IllegalArgumentException.class, () -> Employee.ID.betweenExclusive(null, null));
 
 		condition1 = Employee.ID.notBetween(0, 1);
 		condition2 = Employee.ID.notBetween(0, 1);
 		assertEquals(condition1, condition2);
 		condition2 = Employee.ID.notBetween(1, 0);
 		assertNotEquals(condition1, condition2);
+		assertThrows(IllegalArgumentException.class, () -> Employee.ID.notBetween(1, null));
+		assertThrows(IllegalArgumentException.class, () -> Employee.ID.notBetween(null, 1));
+		assertThrows(IllegalArgumentException.class, () -> Employee.ID.notBetween(null, null));
 
 		condition1 = Employee.ID.notBetweenExclusive(0, 1);
 		condition2 = Employee.ID.notBetweenExclusive(0, 1);
 		assertEquals(condition1, condition2);
 		condition2 = Employee.ID.notBetweenExclusive(1, 0);
 		assertNotEquals(condition1, condition2);
+		assertThrows(IllegalArgumentException.class, () -> Employee.ID.notBetweenExclusive(1, null));
+		assertThrows(IllegalArgumentException.class, () -> Employee.ID.notBetweenExclusive(null, 1));
+		assertThrows(IllegalArgumentException.class, () -> Employee.ID.notBetweenExclusive(null, null));
 
 		condition1 = Department.CONDITION.get(Department.NAME, "Test");
 		condition2 = Department.CONDITION.get(singletonList(Department.NAME), singletonList("Test"));

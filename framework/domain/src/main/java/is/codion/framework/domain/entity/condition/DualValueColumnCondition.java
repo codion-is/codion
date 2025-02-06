@@ -32,6 +32,9 @@ final class DualValueColumnCondition<T> extends AbstractColumnCondition<T> {
 
 	DualValueColumnCondition(Column<T> column, T lower, T upper, Operator operator) {
 		super(column, operator, asList(lower, upper), true);
+		if (lower == null || upper == null) {
+			throw new IllegalArgumentException("Operator " + operator + " does not support null bound values");
+		}
 		validateOperator(operator);
 	}
 

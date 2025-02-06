@@ -186,37 +186,42 @@ public interface ColumnCondition<T> extends Condition {
 
 		/**
 		 * Returns a 'lessThan' {@link ColumnCondition}.
-		 * @param value the value to use in the condition
+		 * @param upper the upper bound
 		 * @return a {@link ColumnCondition}
+		 * @throws IllegalArgumentException in case {@code upper} is null
 		 */
-		ColumnCondition<T> lessThan(T value);
+		ColumnCondition<T> lessThan(T upper);
 
 		/**
 		 * Returns a 'lessThanOrEqualTo' {@link ColumnCondition}.
-		 * @param value the value to use in the condition
+		 * @param upper the upper bound
 		 * @return a {@link ColumnCondition}
+		 * @throws IllegalArgumentException in case {@code upper} is null
 		 */
-		ColumnCondition<T> lessThanOrEqualTo(T value);
+		ColumnCondition<T> lessThanOrEqualTo(T upper);
 
 		/**
 		 * Returns a 'greaterThan' {@link ColumnCondition}.
-		 * @param value the value to use in the condition
+		 * @param lower the lower bound
 		 * @return a {@link ColumnCondition}
+		 * @throws IllegalArgumentException in case {@code lower} is null
 		 */
-		ColumnCondition<T> greaterThan(T value);
+		ColumnCondition<T> greaterThan(T lower);
 
 		/**
 		 * Returns a 'greaterThanOrEqualTo' {@link ColumnCondition}.
-		 * @param value the value to use in the condition
+		 * @param lower the lower bound
 		 * @return a {@link ColumnCondition}
+		 * @throws IllegalArgumentException in case {@code lower} is null
 		 */
-		ColumnCondition<T> greaterThanOrEqualTo(T value);
+		ColumnCondition<T> greaterThanOrEqualTo(T lower);
 
 		/**
-		 * Returns a 'betweenExclusive' {@link ColumnCondition}.
+		 * Returns a 'betweenExclusive' {@link ColumnCondition} if both bound values are non-null, 'greaterThan' if the upper bound is null and 'lessThan' if the lower bound is null.
 		 * @param lower the lower bound
 		 * @param upper the upper bound
 		 * @return a {@link ColumnCondition}
+		 * @throws IllegalArgumentException in case either {@code lower} or {@code upper} is null
 		 */
 		ColumnCondition<T> betweenExclusive(T lower, T upper);
 
@@ -225,6 +230,7 @@ public interface ColumnCondition<T> extends Condition {
 		 * @param lower the lower bound
 		 * @param upper the upper bound
 		 * @return a {@link ColumnCondition}
+		 * @throws IllegalArgumentException in case either {@code lower} or {@code upper} is null
 		 */
 		ColumnCondition<T> between(T lower, T upper);
 
@@ -233,6 +239,7 @@ public interface ColumnCondition<T> extends Condition {
 		 * @param lower the lower bound
 		 * @param upper the upper bound
 		 * @return a {@link ColumnCondition}
+		 * @throws IllegalArgumentException in case either {@code lower} or {@code upper} is null
 		 */
 		ColumnCondition<T> notBetweenExclusive(T lower, T upper);
 
@@ -241,6 +248,7 @@ public interface ColumnCondition<T> extends Condition {
 		 * @param lower the lower bound
 		 * @param upper the upper bound
 		 * @return a {@link ColumnCondition}
+		 * @throws IllegalArgumentException in case either {@code lower} or {@code upper} is null
 		 */
 		ColumnCondition<T> notBetween(T lower, T upper);
 

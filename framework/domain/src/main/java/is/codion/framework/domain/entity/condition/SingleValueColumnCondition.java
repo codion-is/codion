@@ -56,7 +56,7 @@ final class SingleValueColumnCondition<T> extends AbstractColumnCondition<T> {
 														 boolean caseSensitive, boolean useLikeOperator) {
 		super(column, operator, value == null ? emptyList() : singletonList(value), caseSensitive);
 		validateOperator(operator);
-		this.value = value;
+		this.value = validateOperand(value);
 		this.useLikeOperator = useLikeOperator;
 	}
 
@@ -143,6 +143,14 @@ final class SingleValueColumnCondition<T> extends AbstractColumnCondition<T> {
 
 	private boolean caseInsensitiveStringOrCharacter() {
 		return !caseSensitive() && (column().type().isString() || column().type().isCharacter());
+	}
+
+	private T validateOperand(T value) {
+		if (value == null && operator() != Operator.EQUAL && operator() != Operator.NOT_EQUAL) {
+			throw new IllegalArgumentException("Operator: " + operator() + " does not support a null value");
+		}
+
+		return value;
 	}
 
 	private static void validateOperator(Operator operator) {

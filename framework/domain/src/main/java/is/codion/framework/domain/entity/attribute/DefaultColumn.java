@@ -178,23 +178,23 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
 	}
 
 	@Override
-	public ColumnCondition<T> lessThan(T value) {
-		return factory(this).lessThan(value);
+	public ColumnCondition<T> lessThan(T upper) {
+		return factory(this).lessThan(upper);
 	}
 
 	@Override
-	public ColumnCondition<T> lessThanOrEqualTo(T value) {
-		return factory(this).lessThanOrEqualTo(value);
+	public ColumnCondition<T> lessThanOrEqualTo(T upper) {
+		return factory(this).lessThanOrEqualTo(upper);
 	}
 
 	@Override
-	public ColumnCondition<T> greaterThan(T value) {
-		return factory(this).greaterThan(value);
+	public ColumnCondition<T> greaterThan(T lower) {
+		return factory(this).greaterThan(lower);
 	}
 
 	@Override
-	public ColumnCondition<T> greaterThanOrEqualTo(T value) {
-		return factory(this).greaterThanOrEqualTo(value);
+	public ColumnCondition<T> greaterThanOrEqualTo(T lower) {
+		return factory(this).greaterThanOrEqualTo(lower);
 	}
 
 	@Override

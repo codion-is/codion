@@ -165,23 +165,23 @@ final class DefaultColumnConditionFactory<T> implements ColumnCondition.Factory<
 	}
 
 	@Override
-	public ColumnCondition<T> lessThan(T value) {
-		return new SingleValueColumnCondition<>(column, value, LESS_THAN);
+	public ColumnCondition<T> lessThan(T upper) {
+		return new SingleValueColumnCondition<>(column, upper, LESS_THAN);
 	}
 
 	@Override
-	public ColumnCondition<T> lessThanOrEqualTo(T value) {
-		return new SingleValueColumnCondition<>(column, value, LESS_THAN_OR_EQUAL);
+	public ColumnCondition<T> lessThanOrEqualTo(T upper) {
+		return new SingleValueColumnCondition<>(column, upper, LESS_THAN_OR_EQUAL);
 	}
 
 	@Override
-	public ColumnCondition<T> greaterThan(T value) {
-		return new SingleValueColumnCondition<>(column, value, GREATER_THAN);
+	public ColumnCondition<T> greaterThan(T lower) {
+		return new SingleValueColumnCondition<>(column, lower, GREATER_THAN);
 	}
 
 	@Override
-	public ColumnCondition<T> greaterThanOrEqualTo(T value) {
-		return new SingleValueColumnCondition<>(column, value, GREATER_THAN_OR_EQUAL);
+	public ColumnCondition<T> greaterThanOrEqualTo(T lower) {
+		return new SingleValueColumnCondition<>(column, lower, GREATER_THAN_OR_EQUAL);
 	}
 
 	@Override
