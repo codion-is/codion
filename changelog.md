@@ -12,6 +12,7 @@ Codion Change Log
 ### is.codion.framework.domain
 - DualValueColumnCondition now throws exception if a bound value is null.
 - SingleValueColumnCondition now throws exception if a required bound value is null.
+- DualValueColumnCondition bug fixed, incorrect operators used for NOT_BETWEEN and NOT_BETWEEN_EXCLUSIVE.
 ### is.codion.framework.db
 - EntityConnectionProvider.connection() inferred return type removed.
 - AbstractEntityConnectionProvider.validateConnection() replaced with validConnection(), connection() no longer final.

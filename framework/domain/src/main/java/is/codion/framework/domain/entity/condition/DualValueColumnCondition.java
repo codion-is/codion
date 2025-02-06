@@ -70,11 +70,11 @@ final class DualValueColumnCondition<T> extends AbstractColumnCondition<T> {
 			case BETWEEN:
 				return "(" + columnExpression + " >= ? AND " + columnExpression + " <= ?)";
 			case NOT_BETWEEN:
-				return "(" + columnExpression + " < ? OR " + columnExpression + " > ?)";
+				return "(" + columnExpression + " <= ? OR " + columnExpression + " >= ?)";
 			case BETWEEN_EXCLUSIVE:
 				return "(" + columnExpression + " > ? AND " + columnExpression + " < ?)";
 			case NOT_BETWEEN_EXCLUSIVE:
-				return "(" + columnExpression + " <= ? OR " + columnExpression + " >= ?)";
+				return "(" + columnExpression + " < ? OR " + columnExpression + " > ?)";
 			default:
 				throw new IllegalStateException("Unsupported dual value operator: " + operator());
 		}

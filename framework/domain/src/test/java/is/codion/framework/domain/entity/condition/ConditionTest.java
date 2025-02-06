@@ -361,9 +361,9 @@ public final class ConditionTest {
 		assertEquals("(" + columnDefinition.expression() + " >= ? AND " + columnDefinition.expression() + " <= ?)", condition.toString(departmentDefinition));
 
 		condition = Department.NAME.notBetweenExclusive("upper", "lower");
-		assertEquals("(" + columnDefinition.expression() + " <= ? OR " + columnDefinition.expression() + " >= ?)", condition.toString(departmentDefinition));
-		condition = Department.NAME.notBetween("upper", "lower");
 		assertEquals("(" + columnDefinition.expression() + " < ? OR " + columnDefinition.expression() + " > ?)", condition.toString(departmentDefinition));
+		condition = Department.NAME.notBetween("upper", "lower");
+		assertEquals("(" + columnDefinition.expression() + " <= ? OR " + columnDefinition.expression() + " >= ?)", condition.toString(departmentDefinition));
 
 		condition = Department.NAME.equalTo("upper");
 		assertEquals(columnDefinition.expression() + " = ?", condition.toString(departmentDefinition));
