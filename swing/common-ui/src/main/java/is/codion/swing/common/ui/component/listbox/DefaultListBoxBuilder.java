@@ -54,8 +54,8 @@ final class DefaultListBoxBuilder<T>
 	private Function<Object, String> string = new DefaultString();
 
 	DefaultListBoxBuilder(ComponentValue<T, ? extends JComponent> itemValue, ValueSet<T> linkedValue) {
-		this.itemValue = itemValue;
-		this.linkedValue = linkedValue;
+		this.itemValue = requireNonNull(itemValue);
+		this.linkedValue = requireNonNull(linkedValue);
 	}
 
 	@Override
@@ -67,6 +67,7 @@ final class DefaultListBoxBuilder<T>
 	@Override
 	protected JComboBox<T> createComponent() {
 		FilterComboBoxModel<T> comboBoxModel = FilterComboBoxModel.<T>builder().build();
+		linkedValue.get().forEach(comboBoxModel.items()::add);
 		ListComboBox<T> comboBox = new ListComboBox<>(comboBoxModel, itemValue, linkedValue);
 		comboBox.setEditor(new Editor<>(itemValue));
 		comboBox.setEditable(true);

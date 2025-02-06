@@ -22,6 +22,7 @@ import is.codion.common.item.Item;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueList;
+import is.codion.common.value.ValueSet;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.combobox.Completion;
@@ -77,8 +78,10 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static is.codion.common.item.Item.item;
 import static java.util.Arrays.asList;
@@ -923,6 +926,15 @@ public final class ComponentsTest {
 		assertEquals("3", firstValue.get());
 		assertEquals("3", thirdValue.get());
 		assertEquals("3", textField.getText());
+	}
+
+	@Test
+	void listBox() {
+		Set<String> items = new HashSet<>(asList("one", "two", "three"));
+		ComponentValue<Set<String>, JComboBox<String>> componentValue =
+						Components.listBox(Components.stringField().buildValue(), ValueSet.valueSet(items))
+										.buildValue();
+		assertEquals(items, componentValue.get());
 	}
 
 	@Test
