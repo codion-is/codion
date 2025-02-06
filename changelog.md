@@ -8,6 +8,7 @@ Codion Change Log
 - DefaultFilterTableCellEditor now sets JComboBox.isTableCellEditor client property for combo boxes.
 - FilterTable bug fixed, updateUI() now updates cell editor UIs.
 - FilterTable.ControlKeys.TOGGLE_NEXT_SORT_ORDER, TOGGLE_PREVIOUS_SORT_ORDER, TOGGLE_NEXT_SORT_ORDER_ADD and TOGGLE_PREVIOUS_SORT_ORDER_ADD added, replacing TOGGLE_SORT_ORDER and TOGGLE_SORT_ORDER_ADD.
+- ColumnConditionPanel bug fixed, incorrect operator caption for NOT_BETWEEN and NOT_BETWEEN_EXCLUSIVE.
 ### is.codion.framework.domain
 - DualValueColumnCondition now throws exception if a bound value is null.
 - SingleValueColumnCondition now throws exception if a required bound value is null.

@@ -788,9 +788,9 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 				case BETWEEN:
 					return "≤ α ≤";
 				case NOT_BETWEEN_EXCLUSIVE:
-					return "≥ α ≥";
-				case NOT_BETWEEN:
 					return "> α >";
+				case NOT_BETWEEN:
+					return "≥ α ≥";
 				case IN:
 					return "α ∈";
 				case NOT_IN:
