@@ -42,7 +42,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 	DefaultControls(DefaultControlsBuilder builder) {
 		super(builder);
-		actions = unmodifiableList(new ArrayList<>(builder.actions));
+		actions = initializeActions(builder);
 	}
 
 	@Override
@@ -61,6 +61,36 @@ final class DefaultControls extends AbstractControl implements Controls {
 	@Override
 	public ControlsBuilder copy() {
 		return new DefaultControlsBuilder(this);
+	}
+
+	private static List<Action> initializeActions(DefaultControlsBuilder builder) {
+		List<Action> actionsToAdd = new ArrayList<>();
+		builder.actions.forEach(action -> addAction(action, actionsToAdd));
+		removeTrailingSeparators(actionsToAdd);
+
+		return unmodifiableList(new ArrayList<>(actionsToAdd));
+	}
+
+	private static void addAction(Action action, List<Action> actionsToAdd) {
+		if (action == SEPARATOR) {
+			if (!actionsToAdd.isEmpty() && actionsToAdd.get(actionsToAdd.size() - 1) != SEPARATOR) {
+				actionsToAdd.add(SEPARATOR);
+			}
+		}
+		else if (action instanceof Controls) {
+			if (((Controls) action).size() > 0) {
+				actionsToAdd.add(action);
+			}
+		}
+		else {
+			actionsToAdd.add(action);
+		}
+	}
+
+	private static void removeTrailingSeparators(List<Action> actionsToAdd) {
+		while (!actionsToAdd.isEmpty() && actionsToAdd.get(actionsToAdd.size() - 1) == SEPARATOR) {
+			actionsToAdd.remove(actionsToAdd.size() - 1);
+		}
 	}
 
 	static final class DefaultSeparator implements Action {
@@ -401,9 +431,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 		@Override
 		public ControlsBuilder separatorAt(int index) {
-			if (actions.isEmpty() || actions.get(index - 1) != Controls.SEPARATOR) {
-				actions.add(index, SEPARATOR);
-			}
+			actions.add(index, SEPARATOR);
 			return this;
 		}
 

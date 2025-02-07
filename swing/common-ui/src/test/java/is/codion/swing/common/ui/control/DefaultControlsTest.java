@@ -43,19 +43,26 @@ public class DefaultControlsTest {
 		assertFalse(controls.smallIcon().isPresent());
 		assertEquals("controls", controls.name().orElse(null));
 
+		Controls emptyControls = Controls.builder()
+						.separator()
+						.build();
 		Controls controls1 = Controls.builder()
 						.name("controls")
+						.separator()
 						.control(one)
 						.separator()
+						.control(emptyControls)
 						.separator()
 						.action(Controls.SEPARATOR)
 						.actions(Controls.SEPARATOR, Controls.SEPARATOR)
 						.control(two)
+						.separator()
 						.build();
 		assertTrue(controls1.name().isPresent());
 		assertEquals("controls", controls1.name().orElse(null));
+		assertFalse(controls1.actions().contains(emptyControls));
 
-		assertEquals(3, controls1.actions().size());// only one separator
+		assertEquals(3, controls1.actions().size());
 		assertEquals(one, controls1.actions().get(0));
 		assertSame(Controls.SEPARATOR, controls1.actions().get(1));
 		assertEquals(two, controls1.actions().get(2));

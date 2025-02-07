@@ -13,6 +13,7 @@ Codion Change Log
 - ColumnConditionPanel bug fixed, incorrect operator caption for NOT_BETWEEN and NOT_BETWEEN_EXCLUSIVE.
 - DefaultListBoxBuilder bug fixed, did not populate combo box model with initial values.
 - Controls.empty(), notEmpty() and get(index) removed, related refactoring.
+- Controls.Builder no longer adds empty Controls instances, skips leading and trailing separators, related refactoring.
 ### is.codion.framework.domain
 - DualValueColumnCondition now throws exception if a bound value is null.
 - SingleValueColumnCondition now throws exception if a required bound value is null.

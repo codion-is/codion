@@ -516,21 +516,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 */
 	protected Optional<Controls> createMainMenuControls() {
 		ControlsBuilder menuControls = Controls.builder();
-		createFileMenuControls()
-						.filter(controls -> controls.size() > 0)
-						.ifPresent(menuControls::control);
-		createViewMenuControls()
-						.filter(controls -> controls.size() > 0)
-						.ifPresent(menuControls::control);
-		createToolsMenuControls()
-						.filter(controls -> controls.size() > 0)
-						.ifPresent(menuControls::control);
-		createSupportTableMenuControls()
-						.filter(controls -> controls.size() > 0)
-						.ifPresent(menuControls::control);
-		createHelpMenuControls()
-						.filter(controls -> controls.size() > 0)
-						.ifPresent(menuControls::control);
+		createFileMenuControls().ifPresent(menuControls::control);
+		createViewMenuControls().ifPresent(menuControls::control);
+		createToolsMenuControls().ifPresent(menuControls::control);
+		createSupportTableMenuControls().ifPresent(menuControls::control);
+		createHelpMenuControls().ifPresent(menuControls::control);
 
 		Controls controls = menuControls.build();
 
@@ -576,20 +566,16 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @return the Controls specifying the items in the 'Help' menu or an empty Optional to skip the menu
 	 */
 	protected Optional<Controls> createHelpMenuControls() {
-		ControlsBuilder builder = Controls.builder()
+		return Optional.of(Controls.builder()
 						.name(resourceBundle.getString(HELP))
 						.mnemonic(resourceBundle.getString("help_mnemonic").charAt(0))
 						.control(createHelpControl())
-						.control(createViewKeyboardShortcutsControl());
-
-		Controls logControls = createLogControls();
-		if (logControls.size() > 0) {
-			builder.separator()
-							.control(logControls);
-		}
-
-		return Optional.of(builder.separator()
-						.control(createAboutControl()).build());
+						.control(createViewKeyboardShortcutsControl())
+						.separator()
+						.control(createLogControls())
+						.separator()
+						.control(createAboutControl())
+						.build());
 	}
 
 	/**
@@ -870,7 +856,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @see #createMainMenuControls()
 	 */
 	protected Optional<JMenuBar> createMenuBar() {
-		return createMainMenuControls().filter(controls -> controls.size() > 0)
+		return createMainMenuControls()
+						.filter(controls -> controls.size() > 0)
 						.map(mainMenuControls -> menu(mainMenuControls).buildMenuBar());
 	}
 
