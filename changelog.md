@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.29
+### is.codion.common.model
+- ConditionModel.wildcard() moved to Operands, Operands.equalWildcards() added.
 ### is.codion.swing.common.ui
 - FilterTable.ScrollToAdded bug fixed, now stops scrolling after the first row.
 - FilterTable.Builder.surrendersFocusOnKeystroke() added.

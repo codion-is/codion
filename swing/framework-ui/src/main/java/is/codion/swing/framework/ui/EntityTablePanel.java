@@ -1749,7 +1749,7 @@ public class EntityTablePanel extends JPanel {
 							.ifPresent(condition -> conditionPreferencesMap.put(attribute, conditionPreferences(attribute,
 											condition.autoEnable().get(),
 											condition.caseSensitive().get(),
-											condition.wildcard().get())));
+											condition.operands().wildcard().get())));
 		}
 
 		return conditionPreferencesMap;

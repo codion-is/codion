@@ -152,7 +152,7 @@ final class ConditionPreferences {
 								.ifPresent(condition -> {
 									condition.caseSensitive().set(preferences.caseSensitive());
 									condition.autoEnable().set(preferences.autoEnable());
-									condition.wildcard().set(preferences.wildcard());
+									condition.operands().wildcard().set(preferences.wildcard());
 								});
 			}
 		}

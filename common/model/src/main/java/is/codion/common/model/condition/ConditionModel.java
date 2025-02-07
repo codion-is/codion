@@ -35,6 +35,7 @@ import java.util.Optional;
 
 import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.Configuration.enumValue;
+import static is.codion.common.model.condition.DefaultConditionModel.addWildcard;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static java.util.ResourceBundle.getBundle;
 
@@ -44,6 +45,11 @@ import static java.util.ResourceBundle.getBundle;
  * @param <T> the condition value type
  */
 public interface ConditionModel<T> {
+
+	/**
+	 * The wildcard character
+	 */
+	String WILDCARD_CHARACTER = "%";
 
 	/**
 	 * Specifies whether wildcards are added to string values
@@ -115,13 +121,6 @@ public interface ConditionModel<T> {
 	 * @return the date/time format pattern to use when presenting a temporal value, an empty {@link Optional} in case none is available
 	 */
 	Optional<String> dateTimePattern();
-
-	/**
-	 * Note that this is only applicable to string based condition models and only used for
-	 * operators {@link Operator#EQUAL} and {@link Operator#NOT_EQUAL}
-	 * @return the {@link Value} controlling whether wildcards are added to strings
-	 */
-	Value<Wildcard> wildcard();
 
 	/**
 	 * @return the {@link State} controlling whether this model is enabled automatically when a condition value is specified
@@ -198,6 +197,27 @@ public interface ConditionModel<T> {
 	 * @param <T> the value type
 	 */
 	interface Operands<T> {
+
+		/**
+		 * @return the {@link Value} controlling how wildcards are added to a String {@link #equal()} operand when accessed via {@link #equalWildcards()}
+		 */
+		default Value<Wildcard> wildcard() {
+			return Value.builder()
+							.nonNull(WILDCARD.getOrThrow())
+							.build();
+		}
+
+		/**
+		 * @return the {@link #equal()} operand, assuming it is a String, with wildcards added
+		 * @see #wildcard()
+		 */
+		default String equalWildcards() {
+			if (equal().isNull()) {
+				return (String) equal().get();
+			}
+
+			return addWildcard((String) equal().get(), wildcard().getOrThrow());
+		}
 
 		/**
 		 * @return a {@link Value} controlling the operand used for the {@link Operator#EQUAL} and {@link Operator#NOT_EQUAL} operators
@@ -412,12 +432,6 @@ public interface ConditionModel<T> {
 		 * @return this builder instance
 		 */
 		Builder<T> dateTimePattern(@Nullable String dateTimePattern);
-
-		/**
-		 * @param wildcard the wildcards to use
-		 * @return this builder instance
-		 */
-		Builder<T> wildcard(Wildcard wildcard);
 
 		/**
 		 * @param caseSensitive true if the model should be case-sensitive

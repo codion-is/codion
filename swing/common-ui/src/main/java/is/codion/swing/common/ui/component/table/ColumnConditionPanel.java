@@ -415,7 +415,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 						.popupMenu(radioButton -> menu(Controls.builder()
 										.control(Control.builder()
 														.toggle(model().autoEnable())
-														.name(MESSAGES.getString("auto_enable"))).build())
+														.name(MESSAGES.getString("auto_enable"))))
 										.buildPopupMenu())
 						.build();
 		boolean modelLocked = model().locked().get();
@@ -682,7 +682,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	}
 
 	private Controls createWildcardControls() {
-		Wildcard wildcard = model().wildcard().getOrThrow();
+		Wildcard wildcard = model().operands().wildcard().getOrThrow();
 
 		State wildcardNoneState = State.state(wildcard.equals(Wildcard.NONE));
 		State wildcardPostfixState = State.state(wildcard.equals(Wildcard.POSTFIX));
@@ -693,22 +693,22 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
 		wildcardNoneState.addConsumer(enabled -> {
 			if (enabled) {
-				model().wildcard().set(Wildcard.NONE);
+				model().operands().wildcard().set(Wildcard.NONE);
 			}
 		});
 		wildcardPostfixState.addConsumer(enabled -> {
 			if (enabled) {
-				model().wildcard().set(Wildcard.POSTFIX);
+				model().operands().wildcard().set(Wildcard.POSTFIX);
 			}
 		});
 		wildcardPrefixState.addConsumer(enabled -> {
 			if (enabled) {
-				model().wildcard().set(Wildcard.PREFIX);
+				model().operands().wildcard().set(Wildcard.PREFIX);
 			}
 		});
 		wildcardPrefixAndPostfixState.addConsumer(enabled -> {
 			if (enabled) {
-				model().wildcard().set(Wildcard.PREFIX_AND_POSTFIX);
+				model().operands().wildcard().set(Wildcard.PREFIX_AND_POSTFIX);
 			}
 		});
 

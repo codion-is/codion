@@ -65,11 +65,6 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 	}
 
 	@Override
-	public Value<Wildcard> wildcard() {
-		return condition.wildcard();
-	}
-
-	@Override
 	public State autoEnable() {
 		return condition.autoEnable();
 	}

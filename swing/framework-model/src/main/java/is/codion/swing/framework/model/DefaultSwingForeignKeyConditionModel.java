@@ -69,11 +69,6 @@ final class DefaultSwingForeignKeyConditionModel implements SwingForeignKeyCondi
 	}
 
 	@Override
-	public Value<Wildcard> wildcard() {
-		return condition.wildcard();
-	}
-
-	@Override
 	public State autoEnable() {
 		return condition.autoEnable();
 	}

@@ -59,7 +59,7 @@ public class DefaultConditionModelTest {
 						.autoEnable(false)
 						.build();
 		model.caseSensitive().set(false);
-		model.wildcard().set(Wildcard.NONE);
+		model.operands().wildcard().set(Wildcard.NONE);
 
 		Operands<String> operands = model.operands();
 		operands.equal().addConsumer(equalConsumer);
@@ -82,17 +82,17 @@ public class DefaultConditionModelTest {
 		assertEquals(1, equalCounter.get());
 		assertEquals("test", operands.equal().get());
 
-		model.wildcard().set(Wildcard.PREFIX_AND_POSTFIX);
-		assertEquals("%test%", operands.equal().get());
+		operands.wildcard().set(Wildcard.PREFIX_AND_POSTFIX);
+		assertEquals("%test%", operands.equalWildcards());
 
-		model.wildcard().set(Wildcard.PREFIX);
-		assertEquals("%test", operands.equal().get());
+		operands.wildcard().set(Wildcard.PREFIX);
+		assertEquals("%test", operands.equalWildcards());
 
-		model.wildcard().set(Wildcard.POSTFIX);
-		assertEquals("test%", operands.equal().get());
+		operands.wildcard().set(Wildcard.POSTFIX);
+		assertEquals("test%", operands.equalWildcards());
 
-		model.wildcard().set(Wildcard.NONE);
-		assertEquals("test", operands.equal().get());
+		operands.wildcard().set(Wildcard.NONE);
+		assertEquals("test", operands.equalWildcards());
 
 		model.clear();
 
@@ -106,9 +106,9 @@ public class DefaultConditionModelTest {
 	@Test
 	void testMisc() {
 		ConditionModel<String> model = ConditionModel.builder(String.class).build();
-		model.wildcard().set(Wildcard.PREFIX_AND_POSTFIX);
+		model.operands().wildcard().set(Wildcard.PREFIX_AND_POSTFIX);
 		model.set().equalTo("upper");
-		assertEquals("%upper%", model.operands().equal().get());
+		assertEquals("%upper%", model.operands().equalWildcards());
 
 		assertThrows(NullPointerException.class, () -> model.set().in((Collection<String>) null));
 		assertThrows(NullPointerException.class, () -> model.set().in("test", null));
@@ -152,8 +152,8 @@ public class DefaultConditionModelTest {
 		assertFalse(model.caseSensitive().get());
 		assertEquals(String.class, model.valueClass());
 
-		model.wildcard().set(Wildcard.PREFIX_AND_POSTFIX);
-		assertEquals(Wildcard.PREFIX_AND_POSTFIX, model.wildcard().get());
+		model.operands().wildcard().set(Wildcard.PREFIX_AND_POSTFIX);
+		assertEquals(Wildcard.PREFIX_AND_POSTFIX, model.operands().wildcard().get());
 
 		model.enabled().addListener(enabledListener);
 		model.enabled().set(false);
@@ -214,7 +214,7 @@ public class DefaultConditionModelTest {
 	void multiConditionString() {
 		ConditionModel<String> condition = ConditionModel.builder(String.class).build();
 		condition.caseSensitive().set(false);
-		condition.wildcard().set(Wildcard.NONE);
+		condition.operands().wildcard().set(Wildcard.NONE);
 
 		Collection<String> strings = asList("abc", "def");
 		condition.operands().in().set(strings);
@@ -540,7 +540,7 @@ public class DefaultConditionModelTest {
 
 		operands.equal().set("hell");
 		condition.operator().set(Operator.EQUAL);
-		condition.wildcard().set(Wildcard.NONE);
+		condition.operands().wildcard().set(Wildcard.NONE);
 		assertTrue(condition.accepts("HELl"));
 		assertTrue(condition.accepts("hElL"));
 		condition.operator().set(Operator.NOT_EQUAL);
