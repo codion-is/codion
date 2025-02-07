@@ -1151,7 +1151,7 @@ public class EntityTablePanel extends JPanel {
 										.build()));
 		Controls editControls = builder.build();
 
-		return editControls.empty() ? null : editControls;
+		return editControls.size() == 0 ? null : editControls;
 	}
 
 	private ObservableState createEditSelectedEnabledObservable() {
@@ -1229,7 +1229,7 @@ public class EntityTablePanel extends JPanel {
 
 		Controls printControls = builder.build();
 
-		return printControls.empty() ? null : printControls;
+		return printControls.size() == 0 ? null : printControls;
 	}
 
 	private Controls createAdditionalPopupControls() {
@@ -1244,7 +1244,7 @@ public class EntityTablePanel extends JPanel {
 		});
 		Controls additionalControls = builder.build();
 
-		return additionalControls.empty() ? null : additionalControls;
+		return additionalControls.size() == 0 ? null : additionalControls;
 	}
 
 	private Controls createAdditionalToolbarControls() {
@@ -1259,7 +1259,7 @@ public class EntityTablePanel extends JPanel {
 		});
 		Controls additionalControls = builder.build();
 
-		return additionalControls.empty() ? null : additionalControls;
+		return additionalControls.size() == 0 ? null : additionalControls;
 	}
 
 	private CommandControl createToggleConditionViewControl() {
@@ -1278,23 +1278,16 @@ public class EntityTablePanel extends JPanel {
 		if (!configuration.includeConditions || tableConditionPanel == null) {
 			return null;
 		}
-		ControlsBuilder builder = Controls.builder()
+
+		return tableConditionPanel.controls().copy()
 						.name(FrameworkMessages.searchNoun())
-						.smallIcon(ICONS.search());
-		Controls conditionPanelControls = tableConditionPanel.controls();
-		if (conditionPanelControls.notEmpty()) {
-			builder.actions(conditionPanelControls.actions());
-			builder.separator();
-		}
-		builder.control(Control.builder()
-						.toggle(tableModel.queryModel().conditionRequired())
-						.name(MESSAGES.getString("require_query_condition"))
-						.description(MESSAGES.getString("require_query_condition_description"))
-						.build());
-
-		Controls conditionControls = builder.build();
-
-		return conditionControls.empty() ? null : conditionControls;
+						.smallIcon(ICONS.search())
+						.separator()
+						.control(Control.builder()
+										.toggle(tableModel.queryModel().conditionRequired())
+										.name(MESSAGES.getString("require_query_condition"))
+										.description(MESSAGES.getString("require_query_condition_description")))
+						.build();
 	}
 
 	private CommandControl createToggleFilterViewControl() {
@@ -1339,12 +1332,12 @@ public class EntityTablePanel extends JPanel {
 						.name(FrameworkMessages.filterNoun())
 						.smallIcon(ICONS.filter());
 		Controls filterPanelControls = table.filters().controls();
-		if (filterPanelControls.notEmpty()) {
+		if (filterPanelControls.size() > 0) {
 			builder.actions(filterPanelControls.actions());
 		}
 		Controls filterControls = builder.build();
 
-		return filterControls.empty() ? null : filterControls;
+		return filterControls.size() == 0 ? null : filterControls;
 	}
 
 	private ToggleControl createToggleSummariesControl() {
@@ -1408,7 +1401,7 @@ public class EntityTablePanel extends JPanel {
 
 		Controls columnControls = builder.build();
 
-		return columnControls.empty() ? null : columnControls;
+		return columnControls.size() == 0 ? null : columnControls;
 	}
 
 	private Controls createCopyControls() {
@@ -1420,7 +1413,7 @@ public class EntityTablePanel extends JPanel {
 
 		Controls copyControls = builder.build();
 
-		return copyControls.empty() ? null : copyControls;
+		return copyControls.size() == 0 ? null : copyControls;
 	}
 
 	private CommandControl createCopyRowsControl() {
@@ -1671,7 +1664,7 @@ public class EntityTablePanel extends JPanel {
 	private void addTablePopupMenu() {
 		if (configuration.includePopupMenu) {
 			Controls popupControls = popupMenuLayout.create(configuration.controlMap);
-			if (popupControls == null || popupControls.empty()) {
+			if (popupControls == null || popupControls.size() == 0) {
 				return;
 			}
 
@@ -2960,7 +2953,7 @@ public class EntityTablePanel extends JPanel {
 
 		private JToolBar createToolBar() {
 			Controls toolbarControls = toolBarLayout.create(configuration.controlMap);
-			if (toolbarControls == null || toolbarControls.empty()) {
+			if (toolbarControls == null || toolbarControls.size() == 0) {
 				return null;
 			}
 

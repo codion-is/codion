@@ -155,7 +155,7 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
 
 		@Override
 		public boolean test(Controls controls) {
-			return controls.notEmpty();
+			return controls.size() > 0;
 		}
 	}
 

@@ -681,7 +681,7 @@ public class EntityPanel extends JPanel {
 		}
 		if (configuration.includeControls && editControlPanel != null) {
 			Controls controls = controlsLayout.create(configuration.controlMap);
-			if (controls.notEmpty()) {
+			if (controls.size() > 0) {
 				JComponent controlComponent = configuration.controlComponent.apply(controls);
 				if (controlComponent != null) {
 					editControlPanel.add(controlComponent, configuration.controlComponentConstraints);

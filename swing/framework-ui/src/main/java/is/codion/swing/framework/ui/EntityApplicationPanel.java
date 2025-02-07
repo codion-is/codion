@@ -517,24 +517,24 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	protected Optional<Controls> createMainMenuControls() {
 		ControlsBuilder menuControls = Controls.builder();
 		createFileMenuControls()
-						.filter(Controls::notEmpty)
+						.filter(controls -> controls.size() > 0)
 						.ifPresent(menuControls::control);
 		createViewMenuControls()
-						.filter(Controls::notEmpty)
+						.filter(controls -> controls.size() > 0)
 						.ifPresent(menuControls::control);
 		createToolsMenuControls()
-						.filter(Controls::notEmpty)
+						.filter(controls -> controls.size() > 0)
 						.ifPresent(menuControls::control);
 		createSupportTableMenuControls()
-						.filter(Controls::notEmpty)
+						.filter(controls -> controls.size() > 0)
 						.ifPresent(menuControls::control);
 		createHelpMenuControls()
-						.filter(Controls::notEmpty)
+						.filter(controls -> controls.size() > 0)
 						.ifPresent(menuControls::control);
 
 		Controls controls = menuControls.build();
 
-		return controls.empty() ? Optional.empty() : Optional.of(controls);
+		return controls.size() == 0 ? Optional.empty() : Optional.of(controls);
 	}
 
 	/**
@@ -583,7 +583,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 						.control(createViewKeyboardShortcutsControl());
 
 		Controls logControls = createLogControls();
-		if (!logControls.empty()) {
+		if (logControls.size() > 0) {
 			builder.separator()
 							.control(logControls);
 		}
@@ -870,7 +870,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * @see #createMainMenuControls()
 	 */
 	protected Optional<JMenuBar> createMenuBar() {
-		return createMainMenuControls().filter(Controls::notEmpty)
+		return createMainMenuControls().filter(controls -> controls.size() > 0)
 						.map(mainMenuControls -> menu(mainMenuControls).buildMenuBar());
 	}
 

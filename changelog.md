@@ -12,6 +12,7 @@ Codion Change Log
 - FilterTable.ControlKeys.TOGGLE_NEXT_SORT_ORDER, TOGGLE_PREVIOUS_SORT_ORDER, TOGGLE_NEXT_SORT_ORDER_ADD and TOGGLE_PREVIOUS_SORT_ORDER_ADD added, replacing TOGGLE_SORT_ORDER and TOGGLE_SORT_ORDER_ADD.
 - ColumnConditionPanel bug fixed, incorrect operator caption for NOT_BETWEEN and NOT_BETWEEN_EXCLUSIVE.
 - DefaultListBoxBuilder bug fixed, did not populate combo box model with initial values.
+- Controls.empty(), notEmpty() and get(index) removed, related refactoring.
 ### is.codion.framework.domain
 - DualValueColumnCondition now throws exception if a bound value is null.
 - SingleValueColumnCondition now throws exception if a required bound value is null.

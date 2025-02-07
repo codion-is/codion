@@ -33,36 +33,20 @@ import java.util.function.Consumer;
 public interface Controls extends Control {
 
 	/**
-	 * A placeholder representing a separator in a Controls instance.
+	 * A placeholder representing a separator in a {@link Controls} instance.
 	 * All methods throw {@link UnsupportedOperationException}.
 	 */
 	Action SEPARATOR = new DefaultControls.DefaultSeparator();
 
 	/**
-	 * @return an unmodifiable view of the actions in this set
+	 * @return an unmodifiable view of the actions in this {@link Controls} instance, including separators
 	 */
 	List<Action> actions();
 
 	/**
-	 * @return the number of controls in this controls instance
+	 * @return the number of actions in this {@link Controls} instance, ignoring separators
 	 */
 	int size();
-
-	/**
-	 * @return true if this controls instance contains no controls (ignoring separators)
-	 */
-	boolean empty();
-
-	/**
-	 * @return true if this controls instance contains controls (ignoring separators)
-	 */
-	boolean notEmpty();
-
-	/**
-	 * @param index the index
-	 * @return the action at the given index
-	 */
-	Action get(int index);
 
 	@Override
 	ControlsBuilder copy();

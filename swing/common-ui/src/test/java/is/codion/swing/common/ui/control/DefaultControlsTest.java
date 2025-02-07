@@ -55,16 +55,14 @@ public class DefaultControlsTest {
 		assertTrue(controls1.name().isPresent());
 		assertEquals("controls", controls1.name().orElse(null));
 
-		assertEquals(3, controls1.size());// only one separator
-		assertEquals(one, controls1.get(0));
-		assertSame(Controls.SEPARATOR, controls1.get(1));
-		assertEquals(two, controls1.get(2));
+		assertEquals(3, controls1.actions().size());// only one separator
+		assertEquals(one, controls1.actions().get(0));
+		assertSame(Controls.SEPARATOR, controls1.actions().get(1));
+		assertEquals(two, controls1.actions().get(2));
 
 		assertTrue(controls1.actions().contains(one));
 		assertTrue(controls1.actions().contains(two));
-		assertEquals(3, controls1.size());
-
-		assertTrue(controls1.notEmpty());
+		assertEquals(3, controls1.actions().size());
 
 		assertThrows(UnsupportedOperationException.class, () -> controls.setEnabled(false));
 		assertThrows(UnsupportedOperationException.class, () -> controls.putValue("enabled", false));
@@ -93,7 +91,7 @@ public class DefaultControlsTest {
 						.separatorAt(3)
 						.actionAt(4, action2)
 						.build();
-		assertSame(Controls.SEPARATOR, copy2.get(3));
-		assertSame(action2, copy2.get(4));
+		assertSame(Controls.SEPARATOR, copy2.actions().get(3));
+		assertSame(action2, copy2.actions().get(4));
 	}
 }

@@ -38,36 +38,21 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultControls extends AbstractControl implements Controls {
 
-	private final List<Action> actions = new ArrayList<>();
+	private final List<Action> actions;
 
 	DefaultControls(DefaultControlsBuilder builder) {
 		super(builder);
-		actions.addAll(builder.actions);
+		actions = unmodifiableList(new ArrayList<>(builder.actions));
 	}
 
 	@Override
 	public List<Action> actions() {
-		return unmodifiableList(actions);
+		return actions;
 	}
 
 	@Override
 	public int size() {
-		return actions.size();
-	}
-
-	@Override
-	public boolean empty() {
-		return actions.stream().noneMatch(action -> action != SEPARATOR);
-	}
-
-	@Override
-	public boolean notEmpty() {
-		return !empty();
-	}
-
-	@Override
-	public Action get(int index) {
-		return actions.get(index);
+		return (int) actions.stream().filter(action -> action != SEPARATOR).count();
 	}
 
 	@Override
@@ -272,7 +257,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 			}
 
 			private static void addControls(ControlsBuilder builder, Controls controlsToAdd, ControlMap controlMap) {
-				if (controlsToAdd.notEmpty()) {
+				if (controlsToAdd.size() > 0) {
 					if (!controlsToAdd.name().isPresent()) {
 						controlsToAdd.actions().stream()
 										.filter(action -> action != SEPARATOR)
