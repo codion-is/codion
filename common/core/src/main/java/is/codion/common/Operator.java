@@ -67,11 +67,11 @@ public enum Operator {
 	 */
 	BETWEEN,
 	/**
-	 * {@code x ≥ α ≥ y}
+	 * {@code x > α > y}
 	 */
 	NOT_BETWEEN_EXCLUSIVE,
 	/**
-	 * {@code x > α > y}
+	 * {@code x ≥ α ≥ y}
 	 */
 	NOT_BETWEEN;
 
