@@ -15,6 +15,7 @@ Codion Change Log
 - Controls.empty(), notEmpty() and get(index) removed, related refactoring.
 - Controls.Builder no longer adds empty Controls instances, skips leading and trailing separators, related refactoring.
 - FilterTable.Builder.startEditing(keyStroke) added.
+- DefaultFilterTableCellEditor now configures JCheckBox background and text field horizontal alignment according to the table cell renderer.
 ### is.codion.framework.domain
 - DualValueColumnCondition now throws exception if a bound value is null.
 - SingleValueColumnCondition now throws exception if a required bound value is null.

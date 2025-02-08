@@ -27,7 +27,9 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.table.TableCellRenderer;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
@@ -42,7 +44,7 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 	private final Supplier<ComponentValue<T, ? extends JComponent>> inputComponent;
 
 	private ComponentValue<T, ? extends JComponent> componentValue;
-	
+
 	int editedRow = -1;
 
 	DefaultFilterTableCellEditor(Supplier<ComponentValue<T, ? extends JComponent>> inputComponent) {
@@ -63,7 +65,21 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 		this.editedRow = row;
 		componentValue().set((T) value);
 
-		return componentValue().component();
+		return configure(componentValue().component(), table, value, isSelected, row, column);
+	}
+
+	private static JComponent configure(JComponent component, JTable table, Object value, boolean isSelected, int row, int column) {
+		TableCellRenderer renderer = table.getCellRenderer(row, column);
+		if (component instanceof JCheckBox) {
+			component.setBackground(renderer
+							.getTableCellRendererComponent(table, value, isSelected, true, row, column)
+							.getBackground());
+		}
+		if (component instanceof JTextField && renderer instanceof FilterTableCellRenderer) {
+			((JTextField) component).setHorizontalAlignment(((FilterTableCellRenderer<?>) renderer).horizontalAlignment());
+		}
+
+		return component;
 	}
 
 	@Override
