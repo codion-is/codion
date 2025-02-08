@@ -53,6 +53,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
+import static java.lang.Runtime.getRuntime;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
@@ -91,7 +92,6 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	protected AbstractServer(ServerConfiguration configuration) throws RemoteException {
 		super(requireNonNull(configuration).port(),
 						configuration.rmiClientSocketFactory().orElse(null), configuration.rmiServerSocketFactory().orElse(null));
-		Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
 		this.configuration = configuration;
 		this.serverInformation = new DefaultServerInformation(UUID.randomUUID(),
 						configuration.serverName(), configuration.port(), ZonedDateTime.now());
@@ -100,6 +100,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 						.initialDelay(configuration.connectionMaintenanceInterval())
 						.start();
 		setConnectionLimit(configuration.connectionLimit());
+		getRuntime().addShutdownHook(new Thread(this::shutdown));
 		try {
 			configureObjectInputFilter(configuration);
 			startAuxiliaryServers(configuration.auxiliaryServerFactoryClassNames());
