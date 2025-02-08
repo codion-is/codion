@@ -45,6 +45,7 @@ import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.Control.ActionCommand;
 import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.control.ControlMap;
 import is.codion.swing.common.ui.control.Controls;
@@ -292,6 +293,10 @@ public final class FilterTable<R, C> extends JTable {
 		this.controlMap.control(TOGGLE_NEXT_SORT_ORDER).set(createToggleSortOrderControl(false));
 		this.controlMap.control(TOGGLE_PREVIOUS_SORT_ORDER_ADD).set(createToggleSortOrderAddControl(true));
 		this.controlMap.control(TOGGLE_NEXT_SORT_ORDER_ADD).set(createToggleSortOrderAddControl(false));
+		CommandControl startEditing = Control.action(new StartEditing());
+		builder.startEditKeyStrokes.forEach(keyStroke -> KeyEvents.builder(keyStroke)
+						.action(startEditing)
+						.enable(this));
 		filters().view().set(builder.filterView);
 		autoStartsEdit(builder.autoStartsEdit);
 		setSurrendersFocusOnKeystroke(builder.surrendersFocusOnKeystroke);
@@ -1092,6 +1097,19 @@ public final class FilterTable<R, C> extends JTable {
 		}
 	}
 
+	private final class StartEditing implements ActionCommand {
+
+		private static final String START_EDITING = "startEditing";
+
+		@Override
+		public void execute(ActionEvent actionEvent) throws Exception {
+			Action startEditing = getActionMap().get(START_EDITING);
+			if (startEditing != null) {
+				startEditing.actionPerformed(actionEvent);
+			}
+		}
+	}
+
 	/**
 	 * A builder for a {@link FilterTable}
 	 * @param <R> the type representing rows
@@ -1151,6 +1169,13 @@ public final class FilterTable<R, C> extends JTable {
 		 * @return this builder instance
 		 */
 		Builder<R, C> cellEditorFactory(FilterTableCellEditor.Factory<C> cellEditorFactory);
+
+		/**
+		 * Associates the given keyStroke with the action associated with the 'startEditing' key in the table action map.
+		 * @param keyStroke a keyStroke for triggering the 'startEditing' action
+		 * @return this builder instance
+		 */
+		Builder<R, C> startEditing(KeyStroke keyStroke);
 
 		/**
 		 * @param autoStartsEdit true if editing should start automatically
@@ -1305,6 +1330,7 @@ public final class FilterTable<R, C> extends JTable {
 		private final ControlMap controlMap = controlMap(ControlKeys.class);
 		private final Map<C, FilterTableCellRenderer<?>> cellRenderers = new HashMap<>();
 		private final Map<C, FilterTableCellEditor<?>> cellEditors = new HashMap<>();
+		private final Collection<KeyStroke> startEditKeyStrokes = new ArrayList<>();
 
 		private SummaryValues.Factory<C> summaryValuesFactory;
 		private TableConditionPanel.Factory<C> filterPanelFactory = new DefaultFilterPanelFactory<>();
@@ -1371,6 +1397,12 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public Builder<R, C> cellEditorFactory(FilterTableCellEditor.Factory<C> cellEditorFactory) {
 			this.cellEditorFactory = requireNonNull(cellEditorFactory);
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> startEditing(KeyStroke keyStroke) {
+			this.startEditKeyStrokes.add(requireNonNull(keyStroke));
 			return this;
 		}
 

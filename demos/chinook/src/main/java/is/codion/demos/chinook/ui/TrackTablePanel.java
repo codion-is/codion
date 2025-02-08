@@ -46,7 +46,9 @@ import static is.codion.demos.chinook.ui.DurationComponentValue.minutes;
 import static is.codion.demos.chinook.ui.DurationComponentValue.seconds;
 import static is.codion.swing.common.ui.component.Components.bigDecimalField;
 import static is.codion.swing.common.ui.component.table.FilterTableCellEditor.filterTableCellEditor;
+import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
+import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
@@ -74,6 +76,9 @@ public final class TrackTablePanel extends EntityTablePanel {
 						.cellEditor(Track.RATING, ratingEditor(tableModel.entityDefinition()))
 						// Custom cell editor for track durations (min:sec:ms)
 						.cellEditor(Track.MILLISECONDS, durationEditor())
+						// Start editing when the INSERT key is pressed
+						.table(table ->
+										table.startEditing(keyStroke(VK_INSERT)))
 						.includeLimitMenu(true));
 		// Add a custom control to the top of the table popup menu.
 		// Start by clearing the popup menu layout
