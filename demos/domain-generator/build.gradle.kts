@@ -18,6 +18,10 @@ dependencies {
 //    runtimeOnly("org.mariadb.jdbc:mariadb-java-client:3.4.1")
 }
 
+sonarqube {
+    isSkipProject = true
+}
+
 application {
     mainModule = "is.codion.tools.generator.ui"
     mainClass = "is.codion.tools.generator.ui.DomainGeneratorPanel"

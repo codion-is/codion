@@ -29,6 +29,10 @@ public final class SchemaRow {
 
 	private SchemaDomain domainModel;
 
+	SchemaRow() {
+		this(null, "NO_SCHEMA");
+	}
+
 	SchemaRow(String catalog, String schema) {
 		this.catalog = catalog;
 		this.schema = schema;

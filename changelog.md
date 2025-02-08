@@ -20,6 +20,8 @@ Codion Change Log
 - DualValueColumnCondition now throws exception if a bound value is null.
 - SingleValueColumnCondition now throws exception if a required bound value is null.
 - DualValueColumnCondition bug fixed, incorrect operators used for NOT_BETWEEN and NOT_BETWEEN_EXCLUSIVE.
+### is.codion.framework.domain.db
+- MetaDataSchema now supports databases without schemas, as in, SQLite.
 ### is.codion.framework.db
 - EntityConnectionProvider.connection() inferred return type removed.
 - AbstractEntityConnectionProvider.validateConnection() replaced with validConnection(), connection() no longer final.
@@ -33,6 +35,10 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntitySearchField bug fixed, did not initialize correctly when instantiated with a search model with non-empty selection.
 - EntityTablePanel.ControlKeys.DECREMENT_SELECTION and INCREMENT_SELECTION keys changed from ALT-SHIFT to CTRL-SHIFT.
+### is.codion.tools.generator.model
+- DomainGeneratorModel now supports databases without schemas and users, as in, SQLite.
+### is.codion.tools.generator.ui
+- DomainGeneratorPanel.USER_REQUIRED configuration property added.
 
 ## 0.18.28
 ### is.codion.common.model

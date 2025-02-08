@@ -6,6 +6,10 @@ dependencies {
     runtimeOnly(project(":codion-tools-monitor-ui"))
 }
 
+sonarqube {
+    isSkipProject = true
+}
+
 application {
     mainModule = "is.codion.tools.monitor.ui"
     mainClass = "is.codion.tools.monitor.ui.EntityServerMonitorPanel"

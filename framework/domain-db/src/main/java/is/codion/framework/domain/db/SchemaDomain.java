@@ -105,7 +105,8 @@ public final class SchemaDomain extends DomainModel {
 
 	private void defineEntity(MetaDataTable table) {
 		if (!tableEntityTypes.containsKey(table)) {
-			EntityType entityType = type().entityType(table.schema().name() + "." + table.tableName());
+			EntityType entityType = type().entityType(table.schema().none() ?
+							table.tableName() : table.schema().name() + "." + table.tableName());
 			tableEntityTypes.put(table, entityType);
 			table.foreignKeys().stream()
 							.map(MetaDataForeignKeyConstraint::referencedTable)

@@ -22,6 +22,10 @@ dependencies {
     runtimeOnly(libs.h2)
 }
 
+sonarqube {
+    isSkipProject = true
+}
+
 tasks.withType<JavaExec>().configureEach {
     dependsOn(tasks.named("createServerKeystore"))
 }

@@ -114,7 +114,7 @@ public final class DomainGeneratorModel {
 
 	private DomainGeneratorModel(Database database, User user) {
 		this.database = requireNonNull(database);
-		this.user = requireNonNull(user);
+		this.user = user;
 		sourceDirectoryChanged();
 		domainPackageChanged();
 		schemaTableModel.sort().ascending(SchemaColumns.Id.SCHEMA);
@@ -207,12 +207,16 @@ public final class DomainGeneratorModel {
 	}
 
 	private SchemaDomain schemaDomain(SchemaRow schema) {
-		try (Connection connection = database.createConnection(user)) {
+		try (Connection connection = createConnection()) {
 			return SchemaDomain.schemaDomain(connection.getMetaData(), schema.name());
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private Connection createConnection() {
+		return user == null ? database.createConnection() : database.createConnection(user);
 	}
 
 	private void schemaSelectionChanged() {
@@ -229,13 +233,22 @@ public final class DomainGeneratorModel {
 	}
 
 	/**
+	 * Instantiates a new {@link DomainGeneratorModel} instance, assuming the underlying database does not require a user to connect.
+	 * @param database the database to connect to
+	 * @return a new {@link DomainGeneratorModel} instance
+	 */
+	public static DomainGeneratorModel domainGeneratorModel(Database database) {
+		return new DomainGeneratorModel(database, null);
+	}
+
+	/**
 	 * Instantiates a new {@link DomainGeneratorModel} instance.
 	 * @param database the database to connect to
 	 * @param user the user to connect with
 	 * @return a new {@link DomainGeneratorModel} instance
 	 */
 	public static DomainGeneratorModel domainGeneratorModel(Database database, User user) {
-		return new DomainGeneratorModel(database, user);
+		return new DomainGeneratorModel(database, requireNonNull(user));
 	}
 
 	private void sourceDirectoryChanged() {
@@ -290,7 +303,7 @@ public final class DomainGeneratorModel {
 
 		@Override
 		public Collection<SchemaRow> get() {
-			try (Connection connection = database.createConnection(user);
+			try (Connection connection = createConnection();
 					 ResultSet resultSet = connection.getMetaData().getSchemas()) {
 				return schemaRows(resultSet);
 			}
@@ -306,6 +319,9 @@ public final class DomainGeneratorModel {
 				if (tableSchem != null) {
 					schemaRows.add(new SchemaRow(resultSet.getString("TABLE_CATALOG"), tableSchem));
 				}
+			}
+			if (schemaRows.isEmpty()) {
+				schemaRows.add(new SchemaRow());
 			}
 
 			return schemaRows;

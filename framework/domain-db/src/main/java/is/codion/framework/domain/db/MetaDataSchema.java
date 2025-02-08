@@ -35,6 +35,8 @@ import static java.util.stream.Collectors.toMap;
 
 final class MetaDataSchema {
 
+	static final MetaDataSchema NO_SCHEMA = new MetaDataSchema("NO_SCHEMA");
+
 	private final String name;
 	private final Map<String, MetaDataTable> tables = new HashMap<>();
 
@@ -44,6 +46,10 @@ final class MetaDataSchema {
 
 	String name() {
 		return name;
+	}
+
+	boolean none() {
+		return this == NO_SCHEMA;
 	}
 
 	Map<String, MetaDataTable> tables() {
@@ -57,7 +63,7 @@ final class MetaDataSchema {
 	private void populate(DatabaseMetaData metaData, Map<String, MetaDataSchema> schemas, Set<String> populatedSchemas) {
 		if (!populatedSchemas.contains(name)) {
 			tables.clear();
-			try (ResultSet resultSet = metaData.getTables(null, name, null, new String[] {"TABLE", "VIEW"})) {
+			try (ResultSet resultSet = metaData.getTables(null, none() ? null : name, null, new String[] {"TABLE", "VIEW"})) {
 				tables.putAll(new TablePacker(this, metaData, null).pack(resultSet).stream()
 								.collect(toMap(MetaDataTable::tableName, Function.identity())));
 				tables.values().stream()

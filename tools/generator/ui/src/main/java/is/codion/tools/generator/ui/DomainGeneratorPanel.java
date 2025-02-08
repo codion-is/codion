@@ -69,6 +69,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.Configuration.stringValue;
 import static is.codion.common.model.UserPreferences.setUserPreference;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
@@ -78,6 +79,7 @@ import static is.codion.swing.common.ui.dialog.Dialogs.displayExceptionDialog;
 import static is.codion.swing.common.ui.dialog.Dialogs.lookAndFeelSelectionDialog;
 import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.enableLookAndFeel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.tools.generator.model.DomainGeneratorModel.domainGeneratorModel;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
@@ -89,9 +91,23 @@ public final class DomainGeneratorPanel extends JPanel {
 
 	/**
 	 * The default user on the form username:password or just username.
+	 * <ul>
+	 * <li>Value type: String
+	 * <li>Default value: null
+	 * </ul>
 	 */
 	public static final PropertyValue<String> DEFAULT_USER =
 					stringValue("codion.domain.generator.defaultUser");
+
+	/**
+	 * Specifies whether a user is required for connecting to the database.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 */
+	public static final PropertyValue<Boolean> USER_REQUIRED =
+					booleanValue("codion.domain.generator.userRequired", true);
 
 	private static final double RESIZE_WEIGHT = 0.2;
 	private static final String LOOK_AND_FEEL_PROPERTY = ".lookAndFeel";
@@ -515,14 +531,17 @@ public final class DomainGeneratorPanel extends JPanel {
 
 	private static void start() {
 		Database database = Database.instance();
-		new DomainGeneratorPanel(DomainGeneratorModel.domainGeneratorModel(database,
-						Dialogs.loginDialog()
-										.icon(Logos.logoTransparent())
-										.defaultUser(DEFAULT_USER.optional()
-														.map(User::parse)
-														.orElse(null))
-										.validator(user -> database.createConnection(user).close())
-										.show()))
-						.showFrame();
+		if (USER_REQUIRED.getOrThrow()) {
+			new DomainGeneratorPanel(domainGeneratorModel(database, Dialogs.loginDialog()
+							.icon(Logos.logoTransparent())
+							.defaultUser(DEFAULT_USER.optional()
+											.map(User::parse)
+											.orElse(null))
+							.validator(user -> database.createConnection(user).close())
+							.show())).showFrame();
+		}
+		else {
+			new DomainGeneratorPanel(domainGeneratorModel(database)).showFrame();
+		}
 	}
 }
