@@ -26,7 +26,7 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
-import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.AbstractEntityTableModel;
 import is.codion.framework.model.EntityQueryModel;
@@ -268,13 +268,16 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	 * @see #setValueAt(Object, int, int)
 	 */
 	protected boolean editable(Entity entity, Attribute<?> attribute) {
+		requireNonNull(entity);
+		requireNonNull(attribute);
 		if (attribute instanceof ForeignKey) {
 			return entityDefinition().foreignKeys().updatable((ForeignKey) attribute);
 		}
+		if (attribute instanceof Column) {
+			return entityDefinition().columns().definition((Column<?>) attribute).updatable();
+		}
 
-		AttributeDefinition<?> attributeDefinition = entityDefinition().attributes().definition(attribute);
-
-		return attributeDefinition instanceof ColumnDefinition && ((ColumnDefinition<?>) attributeDefinition).updatable();
+		return false;
 	}
 
 	private void onTableModelEvent(TableModelEvent tableModelEvent) {

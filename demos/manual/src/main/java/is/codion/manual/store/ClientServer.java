@@ -49,11 +49,12 @@ public final class ClientServer {
 						.createDatabase("jdbc:h2:mem:testdb",
 										"src/main/sql/create_schema.sql");
 
-		EntityServerConfiguration configuration = EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)
-						.domainClassNames(List.of(Store.class.getName()))
-						.database(database)
-						.sslEnabled(false)
-						.build();
+		EntityServerConfiguration configuration =
+						EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)
+										.domainClassNames(List.of(Store.class.getName()))
+										.database(database)
+										.sslEnabled(false)
+										.build();
 
 		EntityServer server = EntityServer.startServer(configuration);
 
@@ -85,12 +86,13 @@ public final class ClientServer {
 
 		EntityService.HTTP_SERVER_PORT.set(HTTP_PORT);
 
-		EntityServerConfiguration configuration = EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)
-						.domainClassNames(List.of(Store.class.getName()))
-						.database(database)
-						.sslEnabled(false)
-						.auxiliaryServerFactoryClassNames(List.of(EntityServiceFactory.class.getName()))
-						.build();
+		EntityServerConfiguration configuration =
+						EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)
+										.domainClassNames(List.of(Store.class.getName()))
+										.database(database)
+										.sslEnabled(false)
+										.auxiliaryServerFactoryClassNames(List.of(EntityServiceFactory.class.getName()))
+										.build();
 
 		EntityServer server = EntityServer.startServer(configuration);
 

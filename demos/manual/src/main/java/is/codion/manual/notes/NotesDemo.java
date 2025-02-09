@@ -126,7 +126,7 @@ public final class NotesDemo {
 
 	private static final class NoteEditPanel extends EntityEditPanel {
 
-		private NoteEditPanel(NoteEditModel editModel) {
+		private NoteEditPanel(SwingEntityEditModel editModel) {
 			super(editModel);
 			// CLEAR is the only standard control we require, for clearing the UI
 			configureControls(config -> config.clear()
@@ -177,7 +177,7 @@ public final class NotesDemo {
 
 	private static final class NoteTablePanel extends EntityTablePanel {
 
-		private NoteTablePanel(NoteTableModel tableModel) {
+		private NoteTablePanel(SwingEntityTableModel tableModel) {
 			super(tableModel, config -> config
 							// Exclude the Note.UPDATED attribute from the Edit popup menu since
 							// the value is set automatically and shouldn't be editable via the UI.
@@ -202,10 +202,10 @@ public final class NotesDemo {
 
 	private static final class NotePanel extends EntityPanel {
 
-		private NotePanel(NoteModel noteModel) {
+		private NotePanel(SwingEntityModel noteModel) {
 			super(noteModel,
-							new NoteEditPanel((NoteEditModel) noteModel.editModel()),
-							new NoteTablePanel((NoteTableModel) noteModel.tableModel()), config -> config
+							new NoteEditPanel(noteModel.editModel()),
+							new NoteTablePanel(noteModel.tableModel()), config -> config
 											// No need to include the default control buttons since
 											// we added the CLEAR control button to the edit panel
 											.includeControls(false)
@@ -238,7 +238,7 @@ public final class NotesDemo {
 
 		@Override
 		protected List<EntityPanel> createEntityPanels() {
-			NoteModel noteModel = (NoteModel)
+			SwingEntityModel noteModel =
 							applicationModel().entityModels().get(Note.TYPE);
 
 			return List.of(new NotePanel(noteModel));
