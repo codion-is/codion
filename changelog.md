@@ -36,6 +36,7 @@ Codion Change Log
 - EntitySearchField bug fixed, did not initialize correctly when instantiated with a search model with non-empty selection.
 - EntityTablePanel.ControlKeys.DECREMENT_SELECTION and INCREMENT_SELECTION keys changed from ALT-SHIFT to CTRL-SHIFT.
 - EntityApplicationPanel.Builder.LoginProvider removed, loginProvider() replaced with userSupplier().
+- EntityApplicationPanel.Builder.ConnectionProviderFactory removed, Builder.connectionProvider() added, related refactoring.
 ### is.codion.tools.generator.model
 - DomainGeneratorModel now supports databases without schemas and users, as in, SQLite.
 ### is.codion.tools.generator.ui

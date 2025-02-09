@@ -20,7 +20,6 @@ package is.codion.demos.chinook.tutorial;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.user.User;
-import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.DomainModel;
@@ -35,7 +34,6 @@ import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
-import is.codion.swing.framework.ui.EntityApplicationPanel.Builder.ConnectionProviderFactory;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 
@@ -190,19 +188,6 @@ public final class ClientTutorial {
 		}
 	}
 
-	private static final class LocalConnectionProviderFactory implements ConnectionProviderFactory {
-
-		@Override
-		public EntityConnectionProvider create(User user, DomainType domainType,
-																					 String clientType, Version clientVersion) {
-			return LocalEntityConnectionProvider.builder()
-							.user(user)
-							.domain(new Chinook())
-							.clientType(clientType)
-							.build();
-		}
-	}
-
 	public static void main(String[] args) {
 		Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
 		Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
@@ -211,7 +196,8 @@ public final class ClientTutorial {
 		EntityApplicationPanel.builder(ApplicationModel.class, ApplicationPanel.class)
 						.applicationModelFactory(ApplicationModel::new)
 						.applicationPanelFactory(ApplicationPanel::new)
-						.connectionProviderFactory(new LocalConnectionProviderFactory())
+						.connectionProvider(LocalEntityConnectionProvider.builder()
+										.domain(new Chinook()))
 						.defaultLookAndFeel(MaterialTheme.class)
 						.applicationName("Artists and Albums")
 						.defaultLoginUser(User.parse("scott:tiger"))

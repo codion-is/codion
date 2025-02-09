@@ -1304,10 +1304,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		Builder<M, P> lookAndFeel(String lookAndFeelClassName);
 
 		/**
-		 * @param connectionProviderFactory the connection provider factory
+		 * @param builder the connection provider builder
 		 * @return this Builder instance
 		 */
-		Builder<M, P> connectionProviderFactory(ConnectionProviderFactory connectionProviderFactory);
+		Builder<M, P> connectionProvider(EntityConnectionProvider.Builder<?, ?> builder);
 
 		/**
 		 * @param applicationModelFactory the application model factory
@@ -1434,8 +1434,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		Builder<M, P> defaultFrameSize(Dimension defaultFrameSize);
 
 		/**
-		 * If this is set to false, the {@link #connectionProviderFactory(ConnectionProviderFactory)}
-		 * {@link User} argument will be null.
+		 * If this is set to false, the {@link #connectionProvider(EntityConnectionProvider.Builder)} builder will receive no user before build.
 		 * @param loginRequired true if a user login is required for this application, false if the user is supplied differently
 		 * @return this Builder instance
 		 */
@@ -1451,28 +1450,5 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		 * @param onEventDispatchThread if true then startup is performed on the EDT
 		 */
 		void start(boolean onEventDispatchThread);
-
-		/**
-		 * A factory for a {@link EntityConnectionProvider} instance.
-		 */
-		interface ConnectionProviderFactory {
-
-			/**
-			 * Creates a new {@link EntityConnectionProvider} instance.
-			 * @param user the user, may be null in case login is not required {@link Builder#loginRequired(boolean)}.
-			 * @param domainType the domain type
-			 * @param clientType the client type
-			 * @param clientVersion the client version
-			 * @return a new {@link EntityConnectionProvider} instance.
-			 */
-			default EntityConnectionProvider create(User user, DomainType domainType, String clientType, Version clientVersion) {
-				return EntityConnectionProvider.builder()
-								.user(user)
-								.domainType(domainType)
-								.clientType(clientType)
-								.clientVersion(clientVersion)
-								.build();
-			}
-		}
 	}
 }

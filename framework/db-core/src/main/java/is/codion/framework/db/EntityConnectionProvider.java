@@ -150,7 +150,7 @@ public interface EntityConnectionProvider extends AutoCloseable {
 
 	/**
 	 * @return an unconfigured {@link Builder} instance, based on the
-	 * {@link EntityConnectionProvider#CLIENT_CONNECTION_TYPE} configuration value
+	 * {@link EntityConnectionProvider#CLIENT_CONNECTION_TYPE} and {@link EntityConnectionProvider#CLIENT_DOMAIN_TYPE} configuration values
 	 * @throws IllegalStateException in case the required connection provider builder is not available on the classpath
 	 * @see EntityConnectionProvider#CLIENT_CONNECTION_TYPE
 	 */
@@ -159,6 +159,11 @@ public interface EntityConnectionProvider extends AutoCloseable {
 		try {
 			return stream(ServiceLoader.load(Builder.class).spliterator(), false)
 							.filter(builder -> builder.connectionType().equalsIgnoreCase(clientConnectionType))
+							.map(builder -> {
+								CLIENT_DOMAIN_TYPE.optional().ifPresent(builder::domainType);
+
+								return builder;
+							})
 							.findFirst()
 							.orElseThrow(() -> new IllegalStateException("No connection provider builder available for requested client connection type: " + clientConnectionType));
 		}

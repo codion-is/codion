@@ -43,7 +43,6 @@ import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
-import is.codion.swing.framework.ui.EntityApplicationPanel.Builder.ConnectionProviderFactory;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
@@ -265,31 +264,6 @@ public final class NotesDemo {
 		}
 	}
 
-	private static final class NotesConnectionProviderFactory implements ConnectionProviderFactory {
-
-		@Override
-		public EntityConnectionProvider create(User user,
-																					 DomainType domainType,
-																					 String clientType,
-																					 Version clientVersion) {
-			Database database = new H2DatabaseFactory()
-							.create("jdbc:h2:mem:h2db;DB_CLOSE_DELAY=-1");
-
-			// Here we create the EntityConnectionProvider instance
-			// manually so we can safely ignore some method parameters
-			return LocalEntityConnectionProvider.builder()
-							// Create the schema
-							.database(createSchema(database))
-							// Supply a domain model instance, if we used the domainType we'd
-							// need to register the domain model in the ServiceLoader in order for
-							// the framework to instantiate one for us
-							.domain(new Notes())
-							.clientVersion(clientVersion)
-							.user(user)
-							.build();
-		}
-	}
-
 	private static void startApplication() {
 		// Change the default horizontal alignment for temporal table columns
 		FilterTableCellRenderer.TEMPORAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
@@ -300,8 +274,11 @@ public final class NotesDemo {
 						.applicationVersion(NotesApplicationModel.VERSION)
 						// No need for a startup dialog since startup is very quick
 						.displayStartupDialog(false)
-						// Supply our connection provider factory from above
-						.connectionProviderFactory(new NotesConnectionProviderFactory())
+						.connectionProvider(LocalEntityConnectionProvider.builder()
+										// Initialize the database schema
+										.database(initializeDatabase())
+										// Supply our domain model
+										.domain(new Notes()))
 						// Automatically login with the H2Database super user
 						.automaticLoginUser(User.user("sa"))
 						// IntelliJ theme based Flat Look and Feels are available
@@ -314,7 +291,7 @@ public final class NotesDemo {
 		startApplication();
 	}
 
-	private static Database createSchema(Database database) {
+	private static Database initializeDatabase() {
 		List<String> dataStatements = List.of(
 						"insert into notes.note(note, created) " +
 										"values ('My first note', '2023-10-03 10:40')",
@@ -328,6 +305,8 @@ public final class NotesDemo {
 										"values ('My fifth note', '2023-10-05 18:30')",
 						"commit"
 		);
+		Database database = new H2DatabaseFactory()
+						.create("jdbc:h2:mem:h2db;DB_CLOSE_DELAY=-1");
 		try (Connection connection = database.createConnection(User.user("sa"));
 				 Statement stmt = connection.createStatement()) {
 			for (String statement : CREATE_SCHEMA_STATEMENTS) {

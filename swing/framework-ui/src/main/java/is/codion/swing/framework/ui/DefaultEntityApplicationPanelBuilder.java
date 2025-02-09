@@ -63,7 +63,6 @@ import java.util.function.Supplier;
 
 import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.common.resource.MessageBundle.messageBundle;
-import static is.codion.framework.db.EntityConnectionProvider.CLIENT_DOMAIN_TYPE;
 import static is.codion.swing.common.ui.Utilities.*;
 import static is.codion.swing.common.ui.Windows.screenSizeRatio;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
@@ -101,9 +100,8 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
 	private final ApplicationPreferences preferences;
 
-	private DomainType domainType = CLIENT_DOMAIN_TYPE.get();
+	private EntityConnectionProvider.Builder<?, ?> connectionProviderBuilder = EntityConnectionProvider.builder();
 	private String applicationName = "";
-	private ConnectionProviderFactory connectionProviderFactory = new DefaultConnectionProviderFactory();
 	private Function<EntityConnectionProvider, M> applicationModelFactory = new DefaultApplicationModelFactory();
 	private Function<M, P> applicationPanelFactory = new DefaultApplicationPanelFactory();
 	private Observable<String> frameTitle;
@@ -141,7 +139,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
 	@Override
 	public EntityApplicationPanel.Builder<M, P> domainType(DomainType domainType) {
-		this.domainType = requireNonNull(domainType);
+		this.connectionProviderBuilder.domainType(domainType);
 		return this;
 	}
 
@@ -176,12 +174,14 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	@Override
 	public EntityApplicationPanel.Builder<M, P> applicationName(String applicationName) {
 		this.applicationName = requireNonNull(applicationName);
+		this.connectionProviderBuilder.clientType(applicationName);
 		return this;
 	}
 
 	@Override
 	public EntityApplicationPanel.Builder<M, P> applicationVersion(Version applicationVersion) {
 		this.applicationVersion = requireNonNull(applicationVersion);
+		this.connectionProviderBuilder.clientVersion(applicationVersion);
 		return this;
 	}
 
@@ -305,8 +305,8 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	}
 
 	@Override
-	public EntityApplicationPanel.Builder<M, P> connectionProviderFactory(ConnectionProviderFactory connectionProviderFactory) {
-		this.connectionProviderFactory = requireNonNull(connectionProviderFactory);
+	public EntityApplicationPanel.Builder<M, P> connectionProvider(EntityConnectionProvider.Builder<?, ?> builder) {
+		this.connectionProviderBuilder = requireNonNull(builder);
 		return this;
 	}
 
@@ -532,12 +532,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 			return ((DefaultUserSupplier) userSupplier).loginValidator.connectionProvider;
 		}
 
-		return initializeConnectionProvider(user, domainType, applicationPanelClass.getName(), applicationVersion);
-	}
-
-	private EntityConnectionProvider initializeConnectionProvider(User user, DomainType domainType,
-																																String clientType, Version clientVersion) {
-		return connectionProviderFactory.create(user, domainType, clientType, clientVersion);
+		return connectionProviderBuilder.user(user).build();
 	}
 
 	private static String userInfo(EntityConnectionProvider connectionProvider) {
@@ -608,8 +603,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
 		@Override
 		public void validate(User user) {
-			connectionProvider = initializeConnectionProvider(user, domainType,
-							applicationPanelClass.getName(), applicationVersion);
+			connectionProvider = connectionProviderBuilder.user(user).build();
 			try {
 				connectionProvider.connection();//throws exception if the server is not reachable
 			}
@@ -696,8 +690,6 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 			displayExceptionAndExit(e, null);
 		}
 	}
-
-	private static final class DefaultConnectionProviderFactory implements ConnectionProviderFactory {}
 
 	private static final class DefaultSouthComponentSupplier implements Supplier<JComponent> {
 
