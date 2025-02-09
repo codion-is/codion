@@ -108,7 +108,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	private Function<M, P> applicationPanelFactory = new DefaultApplicationPanelFactory();
 	private Observable<String> frameTitle;
 
-	private LoginProvider loginProvider = new DefaultDialogLoginProvider();
+	private Supplier<User> userSupplier = new DefaultUserSupplier();
 	private Supplier<JFrame> frameSupplier = new DefaultFrameSupplier();
 	private boolean displayStartupDialog = EntityApplicationPanel.SHOW_STARTUP_DIALOG.getOrThrow();
 	private ImageIcon applicationIcon;
@@ -210,8 +210,8 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	}
 
 	@Override
-	public EntityApplicationPanel.Builder<M, P> loginProvider(LoginProvider loginProvider) {
-		this.loginProvider = requireNonNull(loginProvider);
+	public EntityApplicationPanel.Builder<M, P> userSupplier(Supplier<User> userSupplier) {
+		this.userSupplier = requireNonNull(userSupplier);
 		return this;
 	}
 
@@ -466,7 +466,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 			return null;
 		}
 
-		return loginProvider.login();
+		return userSupplier.get();
 	}
 
 	private M initializeApplicationModel(EntityConnectionProvider connectionProvider) {
@@ -527,9 +527,9 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	}
 
 	private EntityConnectionProvider initializeConnectionProvider(User user) {
-		if (loginProvider instanceof DefaultEntityApplicationPanelBuilder.DefaultDialogLoginProvider &&
-						((DefaultDialogLoginProvider) loginProvider).loginValidator.connectionProvider != null) {
-			return ((DefaultDialogLoginProvider) loginProvider).loginValidator.connectionProvider;
+		if (userSupplier instanceof DefaultEntityApplicationPanelBuilder.DefaultUserSupplier &&
+						((DefaultUserSupplier) userSupplier).loginValidator.connectionProvider != null) {
+			return ((DefaultUserSupplier) userSupplier).loginValidator.connectionProvider;
 		}
 
 		return initializeConnectionProvider(user, domainType, applicationPanelClass.getName(), applicationVersion);
@@ -574,12 +574,12 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		}
 	}
 
-	private final class DefaultDialogLoginProvider implements LoginProvider {
+	private final class DefaultUserSupplier implements Supplier<User> {
 
 		private final DefaultLoginValidator loginValidator = new DefaultLoginValidator();
 
 		@Override
-		public User login() {
+		public User get() {
 			return Dialogs.loginDialog()
 							.defaultUser(defaultLoginUser)
 							.validator(loginValidator)

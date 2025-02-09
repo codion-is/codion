@@ -1322,10 +1322,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		Builder<M, P> applicationPanelFactory(Function<M, P> applicationPanelFactory);
 
 		/**
-		 * @param loginProvider provides a way for a user to login
+   	 * Supplies the {@link User} to use to connect to the database, may not return null.
+		 * Startup is silently cancelled in case the {@link Supplier#get()} throws a {@link CancelException}.
+		 * @param userSupplier provides the application user
 		 * @return this Builder instance
 		 */
-		Builder<M, P> loginProvider(LoginProvider loginProvider);
+		Builder<M, P> userSupplier(Supplier<User> userSupplier);
 
 		/**
 		 * @param defaultLoginUser the default user credentials to display in the login dialog
@@ -1347,7 +1349,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		Builder<M, P> saveDefaultUsername(boolean saveDefaultUsername);
 
 		/**
-		 * Note that this does not apply when a custom {@link LoginProvider} has been specified.
+		 * Note that this does not apply when a custom {@link #userSupplier(Supplier)} has been specified.
 		 * @param loginPanelSouthComponentSupplier supplies the component to add to the
 		 * {@link BorderLayout#SOUTH} position of the default login panel
 		 * @return this Builder instance
@@ -1449,20 +1451,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		 * @param onEventDispatchThread if true then startup is performed on the EDT
 		 */
 		void start(boolean onEventDispatchThread);
-
-		/**
-		 * Provides a way for a user to login.
-		 */
-		interface LoginProvider {
-
-			/**
-			 * Performs the login and returns the User, may not return null.
-			 * @return the user, not null
-			 * @throws RuntimeException in case the login failed
-			 * @throws CancelException in case the login is cancelled
-			 */
-			User login();
-		}
 
 		/**
 		 * A factory for a {@link EntityConnectionProvider} instance.
