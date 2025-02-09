@@ -234,7 +234,6 @@ dependencyResolutionManagement {
 
             library("sslcontext-kickstart", "io.github.hakky54", "sslcontext-kickstart").versionRef("sslcontext.kickstart")
             library("flatlaf", "com.formdev", "flatlaf").versionRef("flatlaf")
-            library("flatlaf-intellij-themes", "com.formdev", "flatlaf-intellij-themes").versionRef("flatlaf")
             library("ikonli-core", "org.kordamp.ikonli", "ikonli-core").versionRef("ikonli")
             library("ikonli-swing", "org.kordamp.ikonli", "ikonli-swing").versionRef("ikonli")
             library("ikonli-foundation-pack", "org.kordamp.ikonli", "ikonli-foundation-pack").versionRef("ikonli")

@@ -1304,10 +1304,17 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		Builder<M, P> lookAndFeel(String lookAndFeelClassName);
 
 		/**
-		 * @param builder the connection provider builder
+		 * Overrides {@link #connectionProvider(Function)}
+		 * @param connectionProvider the connection provider
 		 * @return this Builder instance
 		 */
-		Builder<M, P> connectionProvider(EntityConnectionProvider.Builder<?, ?> builder);
+		Builder<M, P> connectionProvider(EntityConnectionProvider connectionProvider);
+
+		/**
+		 * @param connectionProvider initializes the connection provider, receives the user provided by {@link #user(Supplier)}
+		 * @return this Builder instance
+		 */
+		Builder<M, P> connectionProvider(Function<User, EntityConnectionProvider> connectionProvider);
 
 		/**
 		 * @param applicationModelFactory the application model factory
@@ -1322,8 +1329,17 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		Builder<M, P> applicationPanelFactory(Function<M, P> applicationPanelFactory);
 
 		/**
-   	 * Supplies the {@link User} to use to connect to the database, may not return null.
-		 * Startup is silently cancelled in case the {@link Supplier#get()} throws a {@link CancelException}.
+   	 * <p>The {@link User} to use to connect to the database, this user is propagated to {@link #connectionProvider(Function)}.
+		 * <p>If this user is null, {@link #user(Supplier)} is used to fetch a user.
+		 * @param user the application user
+		 * @return this Builder instance
+		 */
+		Builder<M, P> user(User user);
+
+		/**
+   	 * <p>Supplies the {@link User} to use to connect to the database, this user is then propagated to {@link #connectionProvider(Function)}.
+		 * <p>This may be via a login dialog or simply by returning a hardcoded instance.
+		 * <p>Startup is silently cancelled in case the {@link Supplier#get()} throws a {@link CancelException}.
 		 * @param userSupplier supplies the application user, for example via a login dialog
 		 * @return this Builder instance
 		 */
@@ -1334,12 +1350,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		 * @return this Builder instance
 		 */
 		Builder<M, P> defaultUser(User defaultUser);
-
-		/**
-		 * @param user if specified the application is started automatically with the given user, instead of using the {@link #user(Supplier)}.
-		 * @return this Builder instance
-		 */
-		Builder<M, P> user(User user);
 
 		/**
 		 * @param saveDefaultUsername true if the username should be saved in user preferences after a successful login
@@ -1431,13 +1441,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		 * @return this Builder instance
 		 */
 		Builder<M, P> defaultFrameSize(Dimension defaultFrameSize);
-
-		/**
-		 * If this is set to false, the {@link #connectionProvider(EntityConnectionProvider.Builder)} builder will receive no user before build.
-		 * @param loginRequired true if a user login is required for this application, false if the user is supplied differently
-		 * @return this Builder instance
-		 */
-		Builder<M, P> loginRequired(boolean loginRequired);
 
 		/**
 		 * Starts the application on the Event Dispatch Thread.

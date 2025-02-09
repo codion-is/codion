@@ -75,7 +75,6 @@ public class EntityApplicationPanelTest {
 						.domainType(TestDomain.DOMAIN)
 						.setUncaughtExceptionHandler(false)
 						.saveDefaultUsername(false)
-						.loginRequired(false)
 						.displayFrame(false)
 						.includeMainMenu(true)
 						.displayStartupDialog(false)

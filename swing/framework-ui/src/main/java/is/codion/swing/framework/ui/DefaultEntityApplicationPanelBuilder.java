@@ -100,12 +100,14 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
 	private final ApplicationPreferences preferences;
 
-	private EntityConnectionProvider.Builder<?, ?> connectionProviderBuilder = EntityConnectionProvider.builder();
+	private Function<User, EntityConnectionProvider> connectionProviderFunction;
+	private EntityConnectionProvider connectionProvider;
 	private String applicationName = "";
 	private Function<EntityConnectionProvider, M> applicationModelFactory = new DefaultApplicationModelFactory();
 	private Function<M, P> applicationPanelFactory = new DefaultApplicationPanelFactory();
 	private Observable<String> frameTitle;
 
+	private DomainType domainType = EntityConnectionProvider.CLIENT_DOMAIN_TYPE.get();
 	private Supplier<User> userSupplier = new DefaultUserSupplier();
 	private Supplier<JFrame> frameSupplier = new DefaultFrameSupplier();
 	private boolean displayStartupDialog = EntityApplicationPanel.SHOW_STARTUP_DIALOG.getOrThrow();
@@ -124,7 +126,6 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	private boolean includeMainMenu = true;
 	private Dimension frameSize;
 	private Dimension defaultFrameSize;
-	private boolean loginRequired = EntityApplicationModel.AUTHENTICATION_REQUIRED.getOrThrow();
 	private User defaultUser;
 	private User user;
 
@@ -139,7 +140,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
 	@Override
 	public EntityApplicationPanel.Builder<M, P> domainType(DomainType domainType) {
-		this.connectionProviderBuilder.domainType(domainType);
+		this.domainType = requireNonNull(domainType);
 		return this;
 	}
 
@@ -174,14 +175,12 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	@Override
 	public EntityApplicationPanel.Builder<M, P> applicationName(String applicationName) {
 		this.applicationName = requireNonNull(applicationName);
-		this.connectionProviderBuilder.clientType(applicationName);
 		return this;
 	}
 
 	@Override
 	public EntityApplicationPanel.Builder<M, P> applicationVersion(Version applicationVersion) {
 		this.applicationVersion = requireNonNull(applicationVersion);
-		this.connectionProviderBuilder.clientVersion(applicationVersion);
 		return this;
 	}
 
@@ -281,12 +280,6 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	}
 
 	@Override
-	public EntityApplicationPanel.Builder<M, P> loginRequired(boolean loginRequired) {
-		this.loginRequired = loginRequired;
-		return this;
-	}
-
-	@Override
 	public EntityApplicationPanel.Builder<M, P> loginPanelSouthComponent(Supplier<JComponent> loginPanelSouthComponentSupplier) {
 		this.loginPanelSouthComponentSupplier = requireNonNull(loginPanelSouthComponentSupplier);
 		return this;
@@ -305,8 +298,14 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	}
 
 	@Override
-	public EntityApplicationPanel.Builder<M, P> connectionProvider(EntityConnectionProvider.Builder<?, ?> builder) {
-		this.connectionProviderBuilder = requireNonNull(builder);
+	public EntityApplicationPanel.Builder<M, P> connectionProvider(EntityConnectionProvider connectionProvider) {
+		this.connectionProvider = requireNonNull(connectionProvider);
+		return this;
+	}
+
+	@Override
+	public EntityApplicationPanel.Builder<M, P> connectionProvider(Function<User, EntityConnectionProvider> connectionProvider) {
+		this.connectionProviderFunction = requireNonNull(connectionProvider);
 		return this;
 	}
 
@@ -336,7 +335,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		if (beforeApplicationStarted != null) {
 			beforeApplicationStarted.run();
 		}
-		EntityConnectionProvider connectionProvider = initializeConnectionProvider(initializeUser());
+		EntityConnectionProvider connectionProvider = initializeConnectionProvider();
 		long initializationStarted = currentTimeMillis();
 		if (displayStartupDialog) {
 			Dialogs.progressWorkerDialog(new InitializeApplicationModel(connectionProvider))
@@ -458,17 +457,6 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		return frame;
 	}
 
-	private User initializeUser() {
-		if (user != null) {
-			return user;
-		}
-		if (!loginRequired) {
-			return null;
-		}
-
-		return userSupplier.get();
-	}
-
 	private M initializeApplicationModel(EntityConnectionProvider connectionProvider) {
 		return applicationModelFactory.apply(connectionProvider);
 	}
@@ -526,13 +514,33 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		return panel;
 	}
 
-	private EntityConnectionProvider initializeConnectionProvider(User user) {
+	private EntityConnectionProvider initializeConnectionProvider() {
+		if (connectionProvider != null) {
+			return connectionProvider;
+		}
+		User connectionUser = user == null ? userSupplier.get() : user;
+		if (connectionProviderFunction != null) {
+			return connectionProviderFunction.apply(connectionUser);
+		}
 		if (userSupplier instanceof DefaultEntityApplicationPanelBuilder.DefaultUserSupplier &&
 						((DefaultUserSupplier) userSupplier).loginValidator.connectionProvider != null) {
 			return ((DefaultUserSupplier) userSupplier).loginValidator.connectionProvider;
 		}
 
-		return connectionProviderBuilder.user(user).build();
+		return createConnectionProvider(connectionUser);
+	}
+
+	private EntityConnectionProvider createConnectionProvider(User user) {
+		if (domainType == null) {
+			throw new IllegalArgumentException("domainType must be specified before creating a EntityConnectionProvider");
+		}
+
+		return EntityConnectionProvider.builder()
+						.user(user)
+						.domainType(domainType)
+						.clientType(applicationName)
+						.clientVersion(applicationVersion)
+						.build();
 	}
 
 	private static String userInfo(EntityConnectionProvider connectionProvider) {
@@ -603,7 +611,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
 		@Override
 		public void validate(User user) {
-			connectionProvider = connectionProviderBuilder.user(user).build();
+			connectionProvider = createConnectionProvider(user);
 			try {
 				connectionProvider.connection();//throws exception if the server is not reachable
 			}

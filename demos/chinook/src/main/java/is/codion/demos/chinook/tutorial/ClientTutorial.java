@@ -19,7 +19,6 @@
 package is.codion.demos.chinook.tutorial;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.DomainModel;
@@ -197,10 +196,10 @@ public final class ClientTutorial {
 						.applicationModelFactory(ApplicationModel::new)
 						.applicationPanelFactory(ApplicationPanel::new)
 						.connectionProvider(LocalEntityConnectionProvider.builder()
-										.domain(new Chinook()))
+										.domain(new Chinook())
+										.build())
 						.defaultLookAndFeel(MaterialTheme.class)
 						.applicationName("Artists and Albums")
-						.defaultUser(User.parse("scott:tiger"))
 						.start();
 	}
 }

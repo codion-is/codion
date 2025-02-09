@@ -278,9 +278,10 @@ public final class NotesDemo {
 										// Initialize the database schema
 										.database(initializeDatabase())
 										// Supply our domain model
-										.domain(new Notes()))
-						// Automatically login with the H2Database super user
-						.user(User.user("sa"))
+										.domain(new Notes())
+										// Use the H2Database super user
+										.user(User.user("sa"))
+										.build())
 						// IntelliJ theme based Flat Look and Feels are available
 						.defaultLookAndFeel(MaterialDarker.class)
 						// Runs on the EventDispatchThread

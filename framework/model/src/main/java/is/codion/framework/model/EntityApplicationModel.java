@@ -50,15 +50,6 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
 	PropertyValue<String> USERNAME_PREFIX = stringValue("codion.client.usernamePrefix", "");
 
 	/**
-	 * Specifies whether user authentication is required
-	 * <ul>
-	 * <li>Value type: Boolean
-	 * <li>Default value: true
-	 * </ul>
-	 */
-	PropertyValue<Boolean> AUTHENTICATION_REQUIRED = booleanValue("codion.client.authenticationRequired", true);
-
-	/**
 	 * Specifies whether the client saves the last successful login username,
 	 * which is then displayed as the default username the next time the application is started
 	 * <ul>

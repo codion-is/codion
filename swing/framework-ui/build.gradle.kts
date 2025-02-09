@@ -10,7 +10,5 @@ dependencies {
     testImplementation(project(":codion-framework-db-local"))
 
     testRuntimeOnly(project(":codion-dbms-h2"))
-    testRuntimeOnly(project(":codion-plugin-flatlaf-intellij-themes"))
-    testRuntimeOnly(libs.flatlaf.intellij.themes)
     testRuntimeOnly(libs.h2)
 }
