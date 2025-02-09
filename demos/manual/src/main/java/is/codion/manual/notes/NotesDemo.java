@@ -280,7 +280,7 @@ public final class NotesDemo {
 										// Supply our domain model
 										.domain(new Notes()))
 						// Automatically login with the H2Database super user
-						.automaticLoginUser(User.user("sa"))
+						.user(User.user("sa"))
 						// IntelliJ theme based Flat Look and Feels are available
 						.defaultLookAndFeel(MaterialDarker.class)
 						// Runs on the EventDispatchThread

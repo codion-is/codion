@@ -71,7 +71,7 @@ public class EntityApplicationPanelTest {
 	void test() {
 		EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
 		EntityApplicationPanel.builder(TestApplicationModel.class, TestApplicationPanel.class)
-						.automaticLoginUser(UNIT_TEST_USER)
+						.user(UNIT_TEST_USER)
 						.domainType(TestDomain.DOMAIN)
 						.setUncaughtExceptionHandler(false)
 						.saveDefaultUsername(false)

@@ -83,7 +83,7 @@ public class EntityApplicationPanelTestUnit<M extends SwingEntityApplicationMode
 		EntityApplicationPanel.builder(modelClass, panelClass)
 						.lookAndFeel(getCrossPlatformLookAndFeelClassName())
 						.domainType(domainType)
-						.automaticLoginUser(user)
+						.user(user)
 						.saveDefaultUsername(false)
 						.setUncaughtExceptionHandler(false)
 						.displayStartupDialog(false)

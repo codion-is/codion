@@ -125,14 +125,14 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	private Dimension frameSize;
 	private Dimension defaultFrameSize;
 	private boolean loginRequired = EntityApplicationModel.AUTHENTICATION_REQUIRED.getOrThrow();
-	private User defaultLoginUser;
-	private User automaticLoginUser;
+	private User defaultUser;
+	private User user;
 
 	DefaultEntityApplicationPanelBuilder(Class<M> applicationModelClass, Class<P> applicationPanelClass) {
 		this.applicationModelClass = requireNonNull(applicationModelClass);
 		this.applicationPanelClass = requireNonNull(applicationPanelClass);
 		this.preferences = ApplicationPreferences.load(applicationPanelClass);
-		this.defaultLoginUser = preferences.defaultLoginUser();
+		this.defaultUser = preferences.defaultLoginUser();
 		this.frameSize = preferences.frameSize();
 		this.maximizeFrame = preferences.frameMaximized();
 	}
@@ -198,19 +198,19 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	}
 
 	@Override
-	public EntityApplicationPanel.Builder<M, P> defaultLoginUser(User defaultLoginUser) {
-		this.defaultLoginUser = defaultLoginUser;
+	public EntityApplicationPanel.Builder<M, P> defaultUser(User defaultUser) {
+		this.defaultUser = defaultUser;
 		return this;
 	}
 
 	@Override
-	public EntityApplicationPanel.Builder<M, P> automaticLoginUser(User automaticLoginUser) {
-		this.automaticLoginUser = automaticLoginUser;
+	public EntityApplicationPanel.Builder<M, P> user(User user) {
+		this.user = user;
 		return this;
 	}
 
 	@Override
-	public EntityApplicationPanel.Builder<M, P> userSupplier(Supplier<User> userSupplier) {
+	public EntityApplicationPanel.Builder<M, P> user(Supplier<User> userSupplier) {
 		this.userSupplier = requireNonNull(userSupplier);
 		return this;
 	}
@@ -459,8 +459,8 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	}
 
 	private User initializeUser() {
-		if (automaticLoginUser != null) {
-			return automaticLoginUser;
+		if (user != null) {
+			return user;
 		}
 		if (!loginRequired) {
 			return null;
@@ -576,7 +576,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		@Override
 		public User get() {
 			return Dialogs.loginDialog()
-							.defaultUser(defaultLoginUser)
+							.defaultUser(defaultUser)
 							.validator(loginValidator)
 							.title(loginDialogTitle())
 							.icon(applicationIcon)

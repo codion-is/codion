@@ -78,7 +78,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 						.domainType(World.DOMAIN)
 						.applicationVersion(WorldAppModel.VERSION)
 						.defaultLookAndFeel(MonokaiPro.class)
-						.defaultLoginUser(User.parse("scott:tiger"))
+						.defaultUser(User.parse("scott:tiger"))
 						.start();
 	}
 }

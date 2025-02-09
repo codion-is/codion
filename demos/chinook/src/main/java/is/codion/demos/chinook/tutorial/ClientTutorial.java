@@ -200,7 +200,7 @@ public final class ClientTutorial {
 										.domain(new Chinook()))
 						.defaultLookAndFeel(MaterialTheme.class)
 						.applicationName("Artists and Albums")
-						.defaultLoginUser(User.parse("scott:tiger"))
+						.defaultUser(User.parse("scott:tiger"))
 						.start();
 	}
 }

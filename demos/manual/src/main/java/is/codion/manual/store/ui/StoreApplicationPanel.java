@@ -77,7 +77,7 @@ public class StoreApplicationPanel extends EntityApplicationPanel<StoreApplicati
 		EntityApplicationPanel.builder(StoreApplicationModel.class, StoreApplicationPanel.class)
 						.applicationName("Store")
 						.domainType(Store.DOMAIN)
-						.defaultLoginUser(User.parse("scott:tiger"))
+						.defaultUser(User.parse("scott:tiger"))
 						.start();
 	}
 }

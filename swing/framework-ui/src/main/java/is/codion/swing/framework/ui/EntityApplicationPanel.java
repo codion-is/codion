@@ -1324,23 +1324,22 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		/**
    	 * Supplies the {@link User} to use to connect to the database, may not return null.
 		 * Startup is silently cancelled in case the {@link Supplier#get()} throws a {@link CancelException}.
-		 * @param userSupplier provides the application user
+		 * @param userSupplier supplies the application user, for example via a login dialog
 		 * @return this Builder instance
 		 */
-		Builder<M, P> userSupplier(Supplier<User> userSupplier);
+		Builder<M, P> user(Supplier<User> userSupplier);
 
 		/**
-		 * @param defaultLoginUser the default user credentials to display in the login dialog
+		 * @param defaultUser the default user credentials to display in a login dialog
 		 * @return this Builder instance
 		 */
-		Builder<M, P> defaultLoginUser(User defaultLoginUser);
+		Builder<M, P> defaultUser(User defaultUser);
 
 		/**
-		 * @param automaticLoginUser if specified the application is started automatically with the given user,
-		 * instead of displaying a login dialog
+		 * @param user if specified the application is started automatically with the given user, instead of using the {@link #user(Supplier)}.
 		 * @return this Builder instance
 		 */
-		Builder<M, P> automaticLoginUser(User automaticLoginUser);
+		Builder<M, P> user(User user);
 
 		/**
 		 * @param saveDefaultUsername true if the username should be saved in user preferences after a successful login
@@ -1349,7 +1348,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		Builder<M, P> saveDefaultUsername(boolean saveDefaultUsername);
 
 		/**
-		 * Note that this does not apply when a custom {@link #userSupplier(Supplier)} has been specified.
+		 * Note that this does not apply when a custom {@link #user(Supplier)} has been specified.
 		 * @param loginPanelSouthComponentSupplier supplies the component to add to the
 		 * {@link BorderLayout#SOUTH} position of the default login panel
 		 * @return this Builder instance

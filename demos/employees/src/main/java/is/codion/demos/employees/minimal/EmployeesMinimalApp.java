@@ -310,7 +310,7 @@ public final class EmployeesMinimalApp {
 		EntityApplicationPanel.builder(EmployeesApplicationModel.class, EmployeesApplicationPanel.class)
 						.applicationName("Employees Minimal")
 						.domainType(DOMAIN)
-						.defaultLoginUser(User.parse("scott:tiger"))
+						.defaultUser(User.parse("scott:tiger"))
 						.start();
 	}
 }

@@ -108,7 +108,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
 		EntityApplicationPanel.builder(PetstoreAppModel.class, PetstoreAppPanel.class)
 						.applicationName("The Pet Store")
 						.domainType(DOMAIN)
-						.defaultLoginUser(User.parse("scott:tiger"))
+						.defaultUser(User.parse("scott:tiger"))
 						.start();
 	}
 }
