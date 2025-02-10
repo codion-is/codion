@@ -41,6 +41,8 @@ Codion Change Log
 - EntityApplicationPanel.Builder.loginRequired() removed.
 - EntityApplicationPanel.Builder.connectionProvider(EntityConnectionProvider) and user(User) added, connectionProvider(EntityConnectionProvider.Builder) replaced with connectionProvider(Function<User, EntityConnectionProvider>).
 - EntityPanelBuilder.createPanel() bug fixed, no longer validates model types when constructor parameter type is the base model class.
+- DefaultEditComponentFactory bug fixed, text input panel not initialized with the current value.
+- DefaultEditComponentFactory.MAXIMUM_TEXT_FIELD_LENGTH replaced with DEFAULT_TEXT_FIELD_COLUMNS, back to text input panels for all strings, with the number of columns depending on the value and maximum length.
 ### is.codion.tools.generator.model
 - DomainGeneratorModel now supports databases without schemas and users, as in, SQLite.
 ### is.codion.tools.generator.ui

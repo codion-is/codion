@@ -26,13 +26,11 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
-import is.codion.swing.common.ui.component.text.TextFieldPanel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import javax.swing.JComponent;
-import javax.swing.JTextField;
 import java.time.temporal.Temporal;
 
 import static is.codion.common.Configuration.integerValue;
@@ -47,14 +45,16 @@ import static java.util.Objects.requireNonNull;
 public class DefaultEditComponentFactory<T, C extends JComponent> implements EditComponentFactory<T, C> {
 
 	/**
-	 * The maximum length a String attribute must exceed in order for a {@link TextFieldPanel} to be returned instead of a {@link JTextField}.
+	 * Specifies the default number of text field columns
 	 * <ul>
 	 * <li>Value type: Integer
-	 * <li>Default value: 30
+	 * <li>Default value: 20
 	 * </ul>
 	 */
-	public static final PropertyValue<Integer> MAXIMUM_TEXT_FIELD_LENGTH =
-					integerValue(DefaultEditComponentFactory.class.getName() + ".maximumTextFieldLength", 30);
+	public static final PropertyValue<Integer> DEFAULT_TEXT_FIELD_COLUMNS =
+					integerValue(DefaultEditComponentFactory.class.getName() + ".defaultTextFieldColumns", 20);
+
+	private static final int MAXIMUM_TEXT_FIELD_COLUMNS = 30;
 
 	private final Attribute<T> attribute;
 
@@ -75,11 +75,12 @@ public class DefaultEditComponentFactory<T, C extends JComponent> implements Edi
 			return createTemporalComponentValue(attribute, (Temporal) value, entityComponents(editModel.entityDefinition()));
 		}
 		EntityComponents components = entityComponents(editModel.entityDefinition());
-		if (attribute.type().isString()) {
-			AttributeDefinition<T> definition = editModel.entityDefinition().attributes().definition(attribute);
-			if (definition.items().isEmpty() && definition.maximumLength() > MAXIMUM_TEXT_FIELD_LENGTH.getOrThrow()) {
-				return (ComponentValue<T, C>) components.textFieldPanel((Attribute<String>) attribute).buildValue();
-			}
+		AttributeDefinition<T> definition = editModel.entityDefinition().attributes().definition(attribute);
+		if (attribute.type().isString() && definition.items().isEmpty()) {
+			return (ComponentValue<T, C>) components.textFieldPanel((Attribute<String>) attribute)
+							.value((String) value)
+							.columns(textFieldColumns((AttributeDefinition<String>) definition, (String) value))
+							.buildValue();
 		}
 
 		return (ComponentValue<T, C>) components.component(attribute)
@@ -100,7 +101,7 @@ public class DefaultEditComponentFactory<T, C extends JComponent> implements Edi
 	 * @param comboBoxModel the {@link EntityComboBoxModel} to base the combo box on
 	 * @return a {@link EntityComboBox.Builder} instance
 	 */
-	protected EntityComboBox.Builder comboBox(ForeignKey foreignKey,EntityDefinition entityDefinition,
+	protected EntityComboBox.Builder comboBox(ForeignKey foreignKey, EntityDefinition entityDefinition,
 																						EntityComboBoxModel comboBoxModel) {
 		return EntityComponents.entityComponents(entityDefinition).comboBox(foreignKey, comboBoxModel);
 	}
@@ -143,5 +144,15 @@ public class DefaultEditComponentFactory<T, C extends JComponent> implements Edi
 		return (ComponentValue<T, C>) inputComponents.temporalField((Attribute<Temporal>) attribute)
 						.value(value)
 						.buildValue();
+	}
+
+	private static int textFieldColumns(AttributeDefinition<String> definition, String value) {
+		int defaultTextFieldColumns = DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow();
+		if (definition.maximumLength() > defaultTextFieldColumns ||
+						(value != null && value.length() > defaultTextFieldColumns)) {
+			return MAXIMUM_TEXT_FIELD_COLUMNS;
+		}
+
+		return defaultTextFieldColumns;
 	}
 }
