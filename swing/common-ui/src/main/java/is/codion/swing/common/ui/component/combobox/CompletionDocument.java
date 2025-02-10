@@ -78,20 +78,19 @@ class CompletionDocument extends PlainDocument {
 		if (selecting) {
 			super.replace(offset, length, string, attrs);
 		}
-		else if (string != null && !string.isEmpty()) {
+		else if (string != null) {
 			if (length > 0) {
 				remove(offset, length);
 			}
-			insertString(offset, string, attrs);
+			if (!string.isEmpty()) {
+				insertString(offset, string, attrs);
+			}
 		}
 	}
 
 	@Override
 	public final void remove(int offs, int length) throws BadLocationException {
-		if (selecting) {
-			super.remove(offs, length);
-		}
-		else if (hitBackspace) {
+		if (hitBackspace) {
 			hitBackspace = false;
 			boolean selectFirst = false;
 			// user hit backspace => move the selection backwards
@@ -115,6 +114,9 @@ class CompletionDocument extends PlainDocument {
 				setTextAccordingToSelectedItem();
 			}
 			highlightCompletedText(offs);
+		}
+		else if (selecting || (offs == 0 && length == getLength())) {
+			super.remove(offs, length);
 		}
 	}
 
