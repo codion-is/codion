@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.30
+
 ## 0.18.29
 ### is.codion.common.model
 - ConditionModel.wildcard() moved to Operands, Operands.equalWildcards() added.
