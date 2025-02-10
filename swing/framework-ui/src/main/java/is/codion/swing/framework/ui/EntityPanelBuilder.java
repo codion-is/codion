@@ -256,7 +256,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 			else {
 				Constructor<EntityPanel> constructor = findModelConstructor(panelClass());
 				Class<?> requiredModelClass = constructor.getParameterTypes()[0];
-				if (!requiredModelClass.equals(entityModel.getClass())) {
+				if (!requiredModelClass.equals(SwingEntityModel.class) && !requiredModelClass.equals(entityModel.getClass())) {
 					throw new IllegalArgumentException("Model type mismatch, panel constructor expecting: " +
 									requiredModelClass + ", actual model class is: " + entityModel.getClass());
 				}
@@ -304,10 +304,10 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 		try {
 			Constructor<EntityEditPanel> constructor = findEditModelConstructor(editPanelClass());
 			Class<?> requiredEditModelClass = constructor.getParameterTypes()[0];
-				if (!requiredEditModelClass.equals(editModel.getClass())) {
-					throw new IllegalArgumentException("Edit model type mismatch, edit panel constructor expecting: " +
-									requiredEditModelClass + ", actual edit model class is: " + editModel.getClass());
-				}
+			if (!requiredEditModelClass.equals(SwingEntityEditModel.class) && !requiredEditModelClass.equals(editModel.getClass())) {
+				throw new IllegalArgumentException("Edit model type mismatch, edit panel constructor expecting: " +
+								requiredEditModelClass + ", actual edit model class is: " + editModel.getClass());
+			}
 			EntityEditPanel editPanel = constructor.newInstance(editModel);
 			onBuildEditPanel.accept(editPanel);
 
@@ -328,10 +328,10 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 			}
 			Constructor<EntityTablePanel> constructor = findTableModelConstructor(tablePanelClass());
 			Class<?> requiredTableModelClass = constructor.getParameterTypes()[0];
-				if (!requiredTableModelClass.equals(tableModel.getClass())) {
-					throw new IllegalArgumentException("Table model type mismatch, table panel constructor expecting: " +
-									requiredTableModelClass + ", actual table model class is: " + tableModel.getClass());
-				}
+			if (!requiredTableModelClass.equals(SwingEntityTableModel.class) && !requiredTableModelClass.equals(tableModel.getClass())) {
+				throw new IllegalArgumentException("Table model type mismatch, table panel constructor expecting: " +
+								requiredTableModelClass + ", actual table model class is: " + tableModel.getClass());
+			}
 			EntityTablePanel tablePanel = constructor.newInstance(tableModel);
 			onBuildTablePanel.accept(tablePanel);
 

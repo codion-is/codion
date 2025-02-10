@@ -40,6 +40,7 @@ Codion Change Log
 - EntityApplicationPanel.Builder.defaultLoginUser(), automaticLoginUser() and userSupplier() renamed defaultUser(), user() and user() respectively.
 - EntityApplicationPanel.Builder.loginRequired() removed.
 - EntityApplicationPanel.Builder.connectionProvider(EntityConnectionProvider) and user(User) added, connectionProvider(EntityConnectionProvider.Builder) replaced with connectionProvider(Function<User, EntityConnectionProvider>).
+- EntityPanelBuilder.createPanel() bug fixed, no longer validates model types when constructor parameter type is the base model class.
 ### is.codion.tools.generator.model
 - DomainGeneratorModel now supports databases without schemas and users, as in, SQLite.
 ### is.codion.tools.generator.ui
