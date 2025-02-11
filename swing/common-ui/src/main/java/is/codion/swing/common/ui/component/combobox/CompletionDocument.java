@@ -110,7 +110,7 @@ class CompletionDocument extends PlainDocument {
 				selectFirst = true;
 			}
 			if (selectFirst) {
-				setSelectedItem(comboBoxModel.getElementAt(0));
+				setSelectedItem(comboBoxModel.getSize() == 0 ? null : comboBoxModel.getElementAt(0));
 				setTextAccordingToSelectedItem();
 			}
 			highlightCompletedText(offs);

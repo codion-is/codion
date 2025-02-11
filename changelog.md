@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - CompletionDocument bug fixed, prevented combo boxes from selecting a null value, if the model did not contain null.
 - ComboBoxMouseWheelListener bug fixed, now selects first item instead of second on down scroll with null selected, if the model did not contain null.
+- CompletionDocument.remove() bug fixed, did not handle empty combo box.
 
 ## 0.18.29
 ### is.codion.common.model
