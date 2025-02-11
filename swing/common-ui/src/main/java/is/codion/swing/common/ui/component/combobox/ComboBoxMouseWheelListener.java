@@ -55,6 +55,9 @@ final class ComboBoxMouseWheelListener implements MouseWheelListener {
 	}
 
 	private Object itemToSelect(boolean next) {
+		if (comboBox.getSelectedIndex() == -1) {
+			return comboBox.getItemAt(next ? 0 : comboBoxModel.getSize() - 1);
+		}
 		Object currentSelection = comboBoxModel.getSelectedItem();
 		for (int i = 0; i < comboBoxModel.getSize(); i++) {
 			if (Objects.equals(currentSelection, comboBoxModel.getElementAt(i))) {
