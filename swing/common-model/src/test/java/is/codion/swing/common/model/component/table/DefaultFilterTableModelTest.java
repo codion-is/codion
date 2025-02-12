@@ -249,7 +249,7 @@ public final class DefaultFilterTableModelTest {
 
 		testModel.items().refresh();
 		//merge does not sort new items
-		testModel.items().visible().sort();
+		testModel.items().visible().sortItems();
 
 		testModel.selection().index().set(1);//b
 

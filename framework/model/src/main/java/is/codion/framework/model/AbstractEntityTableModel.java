@@ -27,6 +27,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -58,6 +60,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 					.build();
 	private final State editable = State.state();
 	private final State removeDeleted = State.state(true);
+	private final State orderQueryBySortOrder = State.state(ORDER_QUERY_BY_SORT_ORDER.getOrThrow());
 	private final Value<OnInsert> onInsert = Value.nonNull(ON_INSERT.getOrThrow());
 
 	private final Consumer<Map<Entity, Entity>> updateListener = new UpdateListener();
@@ -139,6 +142,11 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	}
 
 	@Override
+	public final State orderQueryBySortOrder() {
+		return orderQueryBySortOrder;
+	}
+
+	@Override
 	public final EntityQueryModel queryModel() {
 		return queryModel;
 	}
@@ -203,12 +211,22 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	 */
 	protected abstract void onRowsUpdated(int fromIndex, int toIndex);
 
+	/**
+	 * @return a {@link OrderBy} instance based on the sort order according to the {@link #sort()} model, an empty {@link Optional} if unsorted
+	 */
+	protected abstract Optional<OrderBy> orderByFromSortModel();
+
 	private void bindEvents() {
 		editModel.afterInsert().addConsumer(this::onInsert);
 		editModel.afterUpdate().addConsumer(this::onUpdate);
 		editModel.afterDelete().addConsumer(this::onDelete);
 		editModel.editor().addConsumer(this::onEntityChanged);
 		selection().item().addConsumer(editModel.editor()::set);
+
+		orderQueryBySortOrder.addConsumer(enabled ->
+						queryModel.orderBy().set(enabled ? orderByFromSortModel().orElse(null) : null));
+		sort().observer().addListener(() ->
+						queryModel.orderBy().set(orderQueryBySortOrder.get() ? orderByFromSortModel().orElse(null) : null));
 	}
 
 	private void onInsert(Collection<Entity> insertedEntities) {

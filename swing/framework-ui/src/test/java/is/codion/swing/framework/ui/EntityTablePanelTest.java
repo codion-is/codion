@@ -26,7 +26,6 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
@@ -37,7 +36,6 @@ import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
-import javax.swing.SortOrder;
 import javax.swing.table.TableColumn;
 import java.util.ArrayList;
 import java.util.List;
@@ -153,54 +151,6 @@ public class EntityTablePanelTest {
 
 		tablePanel.clearPreferences();
 		UserPreferences.flushUserPreferences();
-	}
-
-	@Test
-	void orderQueryBySortOrder() {
-		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER);
-		OrderBy orderBy = tableModel.queryModel().orderBy().getOrThrow();
-		//default order by for entity
-		assertEquals(2, orderBy.orderByColumns().size());
-		assertTrue(orderBy.orderByColumns().get(0).ascending());
-		assertEquals(Employee.DEPARTMENT, orderBy.orderByColumns().get(0).column());
-		assertTrue(orderBy.orderByColumns().get(1).ascending());
-		assertEquals(Employee.NAME, orderBy.orderByColumns().get(1).column());
-
-		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
-		tablePanel.table().model().sort().ascending(Employee.NAME);
-
-		orderBy = tableModel.queryModel().orderBy().getOrThrow();
-		//still default order by for entity
-		assertEquals(2, orderBy.orderByColumns().size());
-		assertTrue(orderBy.orderByColumns().get(0).ascending());
-		assertEquals(Employee.DEPARTMENT, orderBy.orderByColumns().get(0).column());
-		assertTrue(orderBy.orderByColumns().get(1).ascending());
-		assertEquals(Employee.NAME, orderBy.orderByColumns().get(1).column());
-
-		tablePanel.orderQueryBySortOrder().set(true);
-		orderBy = tableModel.queryModel().orderBy().getOrThrow();
-		assertEquals(1, orderBy.orderByColumns().size());
-		assertTrue(orderBy.orderByColumns().get(0).ascending());
-		assertEquals(Employee.NAME, orderBy.orderByColumns().get(0).column());
-
-		tablePanel.table().model().sort().order(Employee.HIREDATE).set(SortOrder.DESCENDING);
-		tablePanel.table().model().sort().order(Employee.NAME).add(SortOrder.ASCENDING);
-
-		orderBy = tableModel.queryModel().orderBy().getOrThrow();
-		assertEquals(2, orderBy.orderByColumns().size());
-		assertFalse(orderBy.orderByColumns().get(0).ascending());
-		assertEquals(Employee.HIREDATE, orderBy.orderByColumns().get(0).column());
-		assertTrue(orderBy.orderByColumns().get(1).ascending());
-		assertEquals(Employee.NAME, orderBy.orderByColumns().get(1).column());
-
-		tablePanel.table().model().sort().clear();
-		orderBy = tableModel.queryModel().orderBy().getOrThrow();
-		//back to default order by for entity
-		assertEquals(2, orderBy.orderByColumns().size());
-		assertTrue(orderBy.orderByColumns().get(0).ascending());
-		assertEquals(Employee.DEPARTMENT, orderBy.orderByColumns().get(0).column());
-		assertTrue(orderBy.orderByColumns().get(1).ascending());
-		assertEquals(Employee.NAME, orderBy.orderByColumns().get(1).column());
 	}
 
 	@Test

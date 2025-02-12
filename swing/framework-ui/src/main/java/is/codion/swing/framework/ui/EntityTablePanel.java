@@ -35,10 +35,8 @@ import is.codion.common.value.ValueSet;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
-import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
@@ -46,7 +44,6 @@ import is.codion.framework.model.EntityEditModel.DeleteEntities;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
-import is.codion.swing.common.model.component.table.FilterTableSortModel.ColumnSortOrder;
 import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
@@ -466,7 +463,6 @@ public class EntityTablePanel extends JPanel {
 	private static final Consumer<Config> NO_CONFIGURATION = c -> {};
 
 	private final State summaryPanelVisibleState = State.state(Config.SUMMARY_PANEL_VISIBLE.getOrThrow());
-	private final State orderQueryBySortOrder = State.state(Config.ORDER_QUERY_BY_SORT_ORDER.getOrThrow());
 	private final State queryHiddenColumns = State.state(Config.QUERY_HIDDEN_COLUMNS.getOrThrow());
 
 	private final FilterTable<Entity, Attribute<?>> table;
@@ -595,15 +591,6 @@ public class EntityTablePanel extends JPanel {
 	 */
 	public final State summaryPanelVisible() {
 		return summaryPanelVisibleState;
-	}
-
-	/**
-	 * Specifies whether the current sort order is used as a basis for the query order by clause.
-	 * Note that this only applies to column attributes.
-	 * @return the {@link State} controlling whether the current sort order should be used as a basis for the query order by clause
-	 */
-	public final State orderQueryBySortOrder() {
-		return orderQueryBySortOrder;
 	}
 
 	/**
@@ -1539,10 +1526,6 @@ public class EntityTablePanel extends JPanel {
 		table.columnModel().columnHidden().addListener(setSelectAttributes);
 		table.columnModel().columnHidden().addConsumer(this::onColumnHidden);
 		queryHiddenColumns.addListener(setSelectAttributes);
-		orderQueryBySortOrder.addConsumer(enabled ->
-						tableModel.queryModel().orderBy().set(enabled ? orderByFromSortModel() : null));
-		table.model().sort().observer().addListener(() ->
-						tableModel.queryModel().orderBy().set(orderQueryBySortOrder.get() ? orderByFromSortModel() : null));
 	}
 
 	private void bindEvents() {
@@ -1770,30 +1753,6 @@ public class EntityTablePanel extends JPanel {
 
 	private boolean columnNotHidden(Attribute<?> attribute) {
 		return !table.columnModel().contains(attribute) || table.columnModel().visible(attribute).get();
-	}
-
-	private OrderBy orderByFromSortModel() {
-		List<ColumnSortOrder<Attribute<?>>> columnSortOrder = table.model().sort().columns().get().stream()
-						.filter(sortOrder -> sortOrder.identifier() instanceof Column)
-						.collect(toList());
-		if (columnSortOrder.isEmpty()) {
-			return null;
-		}
-		OrderBy.Builder builder = OrderBy.builder();
-		columnSortOrder.forEach(sortOrder -> {
-			switch (sortOrder.sortOrder()) {
-				case ASCENDING:
-					builder.ascending((Column<?>) sortOrder.identifier());
-					break;
-				case DESCENDING:
-					builder.descending((Column<?>) sortOrder.identifier());
-					break;
-				default:
-					break;
-			}
-		});
-
-		return builder.build();
 	}
 
 	private void onColumnHidden(Attribute<?> attribute) {
@@ -2065,16 +2024,6 @@ public class EntityTablePanel extends JPanel {
 		 * </ul>
 		 */
 		public static final PropertyValue<Boolean> QUERY_HIDDEN_COLUMNS = booleanValue(EntityTablePanel.class.getName() + ".queryHiddenColumns", true);
-
-		/**
-		 * Specifies whether the table model sort order is used as a basis for the query order by clause.
-		 * Note that this only applies to {@link Column} based attributes.
-		 * <ul>
-		 * <li>Value type: Boolean
-		 * <li>Default value: false
-		 * </ul>
-		 */
-		public static final PropertyValue<Boolean> ORDER_QUERY_BY_SORT_ORDER = booleanValue(EntityTablePanel.class.getName() + ".orderQueryBySortOrder", false);
 
 		/**
 		 * Specifies the default initial table condition panel view

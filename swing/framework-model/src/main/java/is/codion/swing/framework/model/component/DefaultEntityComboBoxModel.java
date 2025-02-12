@@ -173,6 +173,11 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	}
 
 	@Override
+	public SortModel<Entity> sort() {
+		return comboBoxModel.sort();
+	}
+
+	@Override
 	public void setSelectedItem(Object selectedItem) {
 		comboBoxModel.setSelectedItem(selectedItem);
 	}

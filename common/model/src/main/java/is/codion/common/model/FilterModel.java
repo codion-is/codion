@@ -66,6 +66,11 @@ public interface FilterModel<T> {
 	SingleSelection<T> selection();
 
 	/**
+	 * @return the {@link SortModel} instance used by this model
+	 */
+	SortModel<T> sort();
+
+	/**
 	 * Manages the items in {@link FilterModel}.
 	 * @param <T> the item type
 	 */
@@ -251,8 +256,8 @@ public interface FilterModel<T> {
 		 * @param index the index
 		 * @param item the item
 		 * @return true if the item was set, false if it did not pass the {@link VisibleItems#predicate()}
-		 * @see VisibleItems#predicate()
 		 * @throws IndexOutOfBoundsException in case the index is out of bounds
+		 * @see VisibleItems#predicate()
 		 */
 		boolean set(int index, T item);
 
@@ -279,18 +284,10 @@ public interface FilterModel<T> {
 		int count();
 
 		/**
-		 * Note that this {@link Comparator}s sorting behaviour may be configured elsewhere,
-		 * and is not guaranteed to sort, since it may be disabled.
-		 * @return the {@link Comparator} used to sort the visible items
-		 * @see #sort()
+		 * Sorts the visible items using {@link FilterModel.SortModel#comparator()}, preserving the selection.
+		 * @see FilterModel#sort()
 		 */
-		Comparator<T> comparator();
-
-		/**
-		 * Sorts the visible items using {@link #comparator()}, preserving the selection.
-		 * @see #comparator()
-		 */
-		void sort();
+		void sortItems();
 	}
 
 	/**
@@ -350,6 +347,23 @@ public interface FilterModel<T> {
 		 * @return an observer notified with the exception when an asynchronous refresh has failed
 		 */
 		Observer<Exception> exception();
+	}
+
+	/**
+	 * Manages the sorting for a {@link FilterModel}
+	 * @param <T> the model item type
+	 */
+	interface SortModel<T> {
+
+		/**
+		 * @return a {@link Comparator} based on this sort model
+		 */
+		Comparator<T> comparator();
+
+		/**
+		 * @return an observer notified each time the sorting changes, the event data indicating whether the model is sorted or not
+		 */
+		Observer<Boolean> observer();
 	}
 
 	/**

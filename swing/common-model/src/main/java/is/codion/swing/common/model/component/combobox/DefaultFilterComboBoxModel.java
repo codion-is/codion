@@ -57,6 +57,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private static final Comparator<?> NULL_COMPARATOR = new NullComparator<>();
 
 	private final DefaultComboBoxSelection selection;
+	private final SortModel<T> sortModel;
 	private final DefaultComboBoxItems modelItems;
 
 	/**
@@ -66,12 +67,18 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	private DefaultFilterComboBoxModel(DefaultBuilder<T> builder) {
 		selection = new DefaultComboBoxSelection(builder.translator);
+		sortModel = new DefaultComboBoxSort<>(builder.comparator);
 		modelItems = new DefaultComboBoxItems(builder);
 	}
 
 	@Override
 	public ComboBoxItems<T> items() {
 		return modelItems;
+	}
+
+	@Override
+	public SortModel<T> sort() {
+		return sortModel;
 	}
 
 	@Override
@@ -248,6 +255,26 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 	}
 
+	private static final class DefaultComboBoxSort<T> implements SortModel<T> {
+
+		private final Comparator<T> comparator;
+		private final Event<Boolean> event = Event.event();
+
+		private DefaultComboBoxSort(Comparator<T> comparator) {
+			this.comparator = comparator;
+		}
+
+		@Override
+		public Comparator<T> comparator() {
+			return comparator;
+		}
+
+		@Override
+		public Observer<Boolean> observer() {
+			return event.observer();
+		}
+	}
+
 	private final class DefaultComboBoxItems implements ComboBoxItems<T> {
 
 		private final Lock lock = new Lock() {};
@@ -266,7 +293,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			this.includeNull = builder.includeNull;
 			this.nullItem = builder.nullItem;
 			this.filterSelected = builder.filterSelected;
-			this.visible = new DefaultVisibleItems(builder.comparator);
+			this.visible = new DefaultVisibleItems();
 			if (includeNull) {
 				visible.items.add(null);
 			}
@@ -492,14 +519,9 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 							.<Predicate<T>>nullable()
 							.notify(WHEN_SET)
 							.build();
-			private final Comparator<T> comparator;
 			private final List<T> items = new ArrayList<>();
 			private final Event<List<T>> event = Event.event();
 			private final Event<Collection<T>> added = Event.event();
-
-			private DefaultVisibleItems(Comparator<T> comparator) {
-				this.comparator = requireNonNull(comparator);
-			}
 
 			@Override
 			public Value<Predicate<T>> predicate() {
@@ -594,12 +616,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			}
 
 			@Override
-			public Comparator<T> comparator() {
-				return comparator;
-			}
-
-			@Override
-			public void sort() {
+			public void sortItems() {
 				synchronized (lock) {
 					if (sortInternal()) {
 						notifyChanges();
@@ -608,8 +625,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			}
 
 			private boolean sortInternal() {
-				if (comparator != NULL_COMPARATOR && count() > 0) {
-					items.subList(includeNull ? 1 : 0, items.size()).sort(comparator);
+				if (sortModel.comparator() != NULL_COMPARATOR && count() > 0) {
+					items.subList(includeNull ? 1 : 0, items.size()).sort(sortModel.comparator());
 					return true;
 				}
 

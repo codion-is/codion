@@ -30,6 +30,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.util.Collection;
@@ -62,6 +63,16 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	 * @see EntityEditModel#POST_EDIT_EVENTS
 	 */
 	PropertyValue<Boolean> HANDLE_EDIT_EVENTS = booleanValue(EntityTableModel.class.getName() + ".handleEditEvents", true);
+
+	/**
+	 * Specifies whether the {@link #sort()} model order is used as a basis for the {@link EntityQueryModel} order by clause.
+	 * Note that this only applies to {@link Column} based attributes.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
+	 * </ul>
+	 */
+	PropertyValue<Boolean> ORDER_QUERY_BY_SORT_ORDER = booleanValue(EntityTableModel.class.getName() + ".orderBySortOrder", false);
 
 	/**
 	 * Defines the actions a table model can perform when entities are inserted via the associated edit model
@@ -175,6 +186,13 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	 * @param keys the primary keys of the entities to select
 	 */
 	void select(Collection<Entity.Key> keys);
+
+	/**
+	 * Specifies whether the current {@link #sort()} order is used as a basis for the {@link EntityQueryModel} order by clause.
+	 * Note that this only applies to column attributes.
+	 * @return the {@link State} controlling whether the current sort order should be used as a basis for the query order by clause
+	 */
+	State orderQueryBySortOrder();
 
 	/**
 	 * @return the {@link MultiSelection} instance

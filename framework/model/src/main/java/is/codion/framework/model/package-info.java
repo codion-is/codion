@@ -25,6 +25,7 @@
  * <li>{@link is.codion.framework.model.EntityEditModel.EntityEditor#PERSIST_FOREIGN_KEYS}
  * <li>{@link is.codion.framework.model.EntityTableModel#ON_INSERT}
  * <li>{@link is.codion.framework.model.EntityTableModel#HANDLE_EDIT_EVENTS}
+ * <li>{@link is.codion.framework.model.EntityTableModel#ORDER_QUERY_BY_SORT_ORDER}
  * <li>{@link is.codion.framework.model.ForeignKeyModelLink#SET_CONDITION_ON_INSERT}
  * <li>{@link is.codion.framework.model.ForeignKeyModelLink#SET_VALUE_ON_INSERT}
  * <li>{@link is.codion.framework.model.ForeignKeyModelLink#REFRESH_ON_SELECTION}

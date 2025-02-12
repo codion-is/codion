@@ -34,7 +34,6 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
@@ -84,7 +83,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		this.visiblePredicate = new VisiblePredicate();
 		this.selection = new DefaultFilterTableSelection<>(this);
 		this.sorter = new DefaultFilterTableSortModel<>(columns);
-		this.sorter.observer().addListener(visible::sort);
+		this.sorter.observer().addListener(visible::sortItems);
 	}
 
 	@Override
@@ -183,7 +182,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 	public void add(R item) {
 		synchronized (lock) {
 			if (addInternal(requireNonNull(item))) {
-				visible.sort();
+				visible.sortItems();
 			}
 		}
 	}
@@ -283,7 +282,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		if (visiblePredicate.test(item)) {
 			visible.items.add(index, item);
 			tableModel.fireTableRowsInserted(index, index);
-			visible.sort();
+			visible.sortItems();
 			visible.notifyAdded(singleton(item));
 
 			return true;
@@ -306,7 +305,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 			visible.notifyChanges();
 			filtered.notifyChanges();
 		}
-		visible.sort();
+		visible.sortItems();
 	}
 
 	private void replaceFilteredItem(R replacement, int filteredIndex) {
@@ -315,7 +314,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 			int index = visible.items.size();
 			visible.items.add(replacement);
 			tableModel.fireTableRowsInserted(index, index);
-			visible.sort();
+			visible.sortItems();
 		}
 		else {
 			filtered.items.add(replacement);
@@ -338,7 +337,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		if (!visibleItems.isEmpty()) {
 			visible.items.addAll(index, visibleItems);
 			tableModel.fireTableRowsInserted(index, index + visibleItems.size());
-			visible.sort();
+			visible.sortItems();
 			visible.notifyAdded(visibleItems);
 		}
 		if (!filteredItems.isEmpty()) {
@@ -554,12 +553,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		}
 
 		@Override
-		public Comparator<R> comparator() {
-			return sorter.comparator();
-		}
-
-		@Override
-		public void sort() {
+		public void sortItems() {
 			if (sorter.sorted()) {
 				List<R> selectedItems = selection.items().get();
 				synchronized (lock) {

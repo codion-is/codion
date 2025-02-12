@@ -18,11 +18,10 @@
  */
 package is.codion.swing.common.model.component.table;
 
-import is.codion.common.observable.Observer;
+import is.codion.common.model.FilterModel;
 import is.codion.common.state.State;
 
 import javax.swing.SortOrder;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -30,12 +29,7 @@ import java.util.List;
  * @param <R> the type representing a row in the table model
  * @param <C> the type representing the column identifiers in the table model
  */
-public interface FilterTableSortModel<R, C> {
-
-	/**
-	 * @return a {@link Comparator} based on this sort model
-	 */
-	Comparator<R> comparator();
+public interface FilterTableSortModel<R, C> extends FilterModel.SortModel<R> {
 
 	/**
 	 * Clears the sorting state and sorts the given columns {@link SortOrder#ASCENDING}
@@ -69,11 +63,6 @@ public interface FilterTableSortModel<R, C> {
 	 * @return true if one or more columns are sorted
 	 */
 	boolean sorted();
-
-	/**
-	 * @return an observer notified each time the sorting changes, with the current sorted state as event data
-	 */
-	Observer<Boolean> observer();
 
 	/**
 	 * Specifies a sorting state for a column.

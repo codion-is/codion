@@ -24,6 +24,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -40,6 +41,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -258,6 +260,31 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	@Override
 	protected final void onRowsUpdated(int fromIndex, int toIndex) {
 		fireTableRowsUpdated(fromIndex, toIndex);
+	}
+
+	@Override
+	protected final Optional<OrderBy> orderByFromSortModel() {
+		List<FilterTableSortModel.ColumnSortOrder<Attribute<?>>> columnSortOrder = sort().columns().get().stream()
+						.filter(sortOrder -> sortOrder.identifier() instanceof Column)
+						.collect(toList());
+		if (columnSortOrder.isEmpty()) {
+			return Optional.empty();
+		}
+		OrderBy.Builder builder = OrderBy.builder();
+		columnSortOrder.forEach(sortOrder -> {
+			switch (sortOrder.sortOrder()) {
+				case ASCENDING:
+					builder.ascending((Column<?>) sortOrder.identifier());
+					break;
+				case DESCENDING:
+					builder.descending((Column<?>) sortOrder.identifier());
+					break;
+				default:
+					break;
+			}
+		});
+
+		return Optional.of(builder.build());
 	}
 
 	/**
