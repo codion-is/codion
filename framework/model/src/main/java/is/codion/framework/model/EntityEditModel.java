@@ -83,7 +83,7 @@ public interface EntityEditModel {
 	 * Returns a {@link EntityEditor} wrapping the entity being edited. {@link EntityEditor#get()} returns
 	 * an immutable copy of the {@link Entity} instance being edited, while {@link EntityEditor#set(Entity)}
 	 * copies the values from the given {@link Entity} into the underlying {@link Entity}.
-	 * Note that value changes must go through the {@link ValueEditor} accessible via {@link EntityEditor#value(Attribute)}.
+	 * Note that value changes must go through the {@link EditorValue} accessible via {@link EntityEditor#value(Attribute)}.
 	 * @return the {@link EntityEditor} wrapping the {@link Entity} instance being edited
 	 * @see Entity#immutable()
 	 */
@@ -388,21 +388,21 @@ public interface EntityEditModel {
 		 * <p>Populates this editor with the values from the given entity or sets the default value for all attributes in case it is null.
 		 * <p>Use {@link #clear()} in order to clear the editor of all values.
 		 * @param entity the entity to set, if null, then defaults are set
-		 * @see ValueEditor#defaultValue()
-		 * @see ValueEditor#persist()
+		 * @see EditorValue#defaultValue()
+		 * @see EditorValue#persist()
 		 * @see AttributeDefinition#defaultValue()
 		 */
 		void set(Entity entity);
 
 		/**
-		 * Clears all values from the underlying entity, disregarding the {@link ValueEditor#persist()} directive.
+		 * Clears all values from the underlying entity, disregarding the {@link EditorValue#persist()} directive.
 		 */
 		void clear();
 
 		/**
 		 * Populates this edit model with default values for all non-persistent attributes.
-		 * @see ValueEditor#defaultValue()
-		 * @see ValueEditor#persist()
+		 * @see EditorValue#defaultValue()
+		 * @see EditorValue#persist()
 		 * @see AttributeDefinition#defaultValue()
 		 */
 		void defaults();
@@ -436,7 +436,7 @@ public interface EntityEditModel {
 		Observer<Entity> changing();
 
 		/**
-		 * Returns an observer notified each time a value is changed, either via its associated {@link ValueEditor}
+		 * Returns an observer notified each time a value is changed, either via its associated {@link EditorValue}
 		 * instance or when the entity is set via {@link #set(Entity)} or {@link #defaults()}.
 		 * @return an observer notified each time a value is changed
 		 */
@@ -514,12 +514,12 @@ public interface EntityEditModel {
 		boolean nullable(Attribute<?> attribute);
 
 		/**
-		 * Returns the {@link ValueEditor} instance representing {@code attribute} in this {@link EntityEditor}.
+		 * Returns the {@link EditorValue} instance representing {@code attribute} in this {@link EntityEditor}.
 		 * @param attribute the attribute
 		 * @param <T> the value type
-		 * @return the {@link ValueEditor} representing the given attribute
+		 * @return the {@link EditorValue} representing the given attribute
 		 */
-		<T> ValueEditor<T> value(Attribute<T> attribute);
+		<T> EditorValue<T> value(Attribute<T> attribute);
 
 		/**
 		 * Indicates whether the active entity exists in the database.
@@ -562,7 +562,7 @@ public interface EntityEditModel {
 	 * Provides edit access to an {@link Attribute} value in the underlying entity being edited.
 	 * @param <T> the attribute value type
 	 */
-	interface ValueEditor<T> extends Value<T> {
+	interface EditorValue<T> extends Value<T> {
 
 		/**
 		 * Reverts to the original value if modified
@@ -591,7 +591,7 @@ public interface EntityEditModel {
 		ObservableState modified();
 
 		/**
-		 * <p>Returns an observer notified each time this value is modified via {@link ValueEditor#set(Object)}.
+		 * <p>Returns an observer notified each time this value is modified via {@link EditorValue#set(Object)}.
 		 * <p>This event is NOT triggered when the value changes due to the entity being set
 		 * via {@link EntityEditor#set(Entity)} or {@link EntityEditor#defaults()}.
 		 * <p>Note that this event is only triggered if the value actually changes.

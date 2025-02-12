@@ -35,8 +35,8 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.attribute.TransientAttributeDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.model.EntityEditModel.EditorValue;
 import is.codion.framework.model.EntityEditModel.EntityEditor;
-import is.codion.framework.model.EntityEditModel.ValueEditor;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -56,7 +56,7 @@ final class DefaultEntityEditor implements EntityEditor {
 	private final Event<Entity> changing = Event.event();
 	private final Event<Entity> changed = Event.event();
 
-	private final Map<Attribute<?>, DefaultValueEditor<?>> valueEditors = new HashMap<>();
+	private final Map<Attribute<?>, DefaultEditorValue<?>> editorValues = new HashMap<>();
 	private final Map<Attribute<?>, State> persistValues = new HashMap<>();
 	private final Map<Attribute<?>, State> attributeModified = new HashMap<>();
 	private final Map<Attribute<?>, State> attributeNull = new HashMap<>();
@@ -194,8 +194,8 @@ final class DefaultEntityEditor implements EntityEditor {
 	}
 
 	@Override
-	public <T> ValueEditor<T> value(Attribute<T> attribute) {
-		return (ValueEditor<T>) valueEditors.computeIfAbsent(attribute, this::createValueEditor);
+	public <T> EditorValue<T> value(Attribute<T> attribute) {
+		return (EditorValue<T>) editorValues.computeIfAbsent(attribute, this::createEditorValue);
 	}
 
 	void setOrDefaults(Entity entity) {
@@ -240,7 +240,7 @@ final class DefaultEntityEditor implements EntityEditor {
 	private void notifyValueChange(Attribute<?> attribute) {
 		updateStates();
 		updateAttributeStates(attribute);
-		DefaultValueEditor<?> valueEditor = valueEditors.get(attribute);
+		DefaultEditorValue<?> valueEditor = editorValues.get(attribute);
 		if (valueEditor != null) {
 			valueEditor.valueChanged();
 		}
@@ -349,10 +349,10 @@ final class DefaultEntityEditor implements EntityEditor {
 						.anyMatch(columnDefinition -> !columnDefinition.readOnly());
 	}
 
-	private <T> DefaultValueEditor<?> createValueEditor(Attribute<T> attribute) {
+	private <T> DefaultEditorValue<?> createEditorValue(Attribute<T> attribute) {
 		entityDefinition.attributes().definition(attribute);
 
-		return new DefaultValueEditor<>(attribute);
+		return new DefaultEditorValue<>(attribute);
 	}
 
 	private interface ValueSupplier {
@@ -430,12 +430,12 @@ final class DefaultEntityEditor implements EntityEditor {
 		}
 	}
 
-	private final class DefaultValueEditor<T> extends AbstractValue<T> implements ValueEditor<T> {
+	private final class DefaultEditorValue<T> extends AbstractValue<T> implements EditorValue<T> {
 
 		private final Attribute<T> attribute;
 		private final Value<Supplier<T>> defaultValue;
 
-		private DefaultValueEditor(Attribute<T> attribute) {
+		private DefaultEditorValue(Attribute<T> attribute) {
 			this.attribute = attribute;
 			this.defaultValue = Value.nonNull(entityDefinition.attributes().definition(attribute)::defaultValue);
 		}

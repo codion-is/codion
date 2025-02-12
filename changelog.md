@@ -12,6 +12,7 @@ Codion Change Log
 ### is.codion.framework.model
 - EntityTableModel.orderQueryBySortOrder() added.
 - AbstractEntityTableModel.orderByFromSortModel() added.
+- EntityEditModel.EntityEditor.ValueEditor renamed EditorValue.
 ### is.codion.swing.framework.ui
 - EntityTablePanel.orderQueryBySortOrder() moved to model.
 
