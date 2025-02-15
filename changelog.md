@@ -10,6 +10,7 @@ Codion Change Log
 ### is.codion.swing.common.model
 - FilterTableModel.ColumnValues.get() and selected() now returns List instead of Collection.
 - FilterTableSortModel renamed FilterTableSorter.
+- LookAndFeelComboBox, major memory usage reduction, now only holds on the required defaults.
 ### is.codion.swing.common.ui
 - CompletionDocument bug fixed, prevented combo boxes from selecting a null value, if the model did not contain null.
 - ComboBoxMouseWheelListener bug fixed, now selects first item instead of second on down scroll with null selected, if the model did not contain null.

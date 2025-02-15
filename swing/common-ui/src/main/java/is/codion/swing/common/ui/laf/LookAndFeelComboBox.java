@@ -30,6 +30,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.basic.BasicComboBoxEditor;
 import java.awt.Component;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.item.Item.item;
@@ -62,8 +64,9 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 
 	private LookAndFeelComboBox(boolean enableOnSelection) {
 		super(createLookAndFeelComboBoxModel());
-		setRenderer(new LookAndFeelRenderer());
-		setEditor(new LookAndFeelEditor());
+		Map<LookAndFeelEnabler, Map<String, Object>> lookAndFeelDefaults = new ConcurrentHashMap<>();
+		setRenderer(new LookAndFeelRenderer(lookAndFeelDefaults));
+		setEditor(new LookAndFeelEditor(lookAndFeelDefaults));
 		enableMouseWheelSelection(this);
 		getModel().selection().item().set(item(originalLookAndFeel));
 		if (enableOnSelection) {
@@ -85,7 +88,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 	}
 
 	/**
-	 * Enables the currently selected look and feel, if it is already selected, this method does nothing
+	 * Enables the currently selected look and feel, if it is already enabled, this method does nothing
 	 */
 	public void enableSelected() {
 		String currentLookAndFeelClassName = getLookAndFeel().getClass().getName();
@@ -124,9 +127,13 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 
 	private static final class LookAndFeelEditor extends BasicComboBoxEditor {
 
-		private final LookAndFeelPanel panel = new LookAndFeelPanel();
+		private final LookAndFeelPanel panel;
 
 		private Item<LookAndFeelEnabler> item;
+
+		private LookAndFeelEditor(Map<LookAndFeelEnabler, Map<String, Object>> lookAndFeelDefaults) {
+			panel = new LookAndFeelPanel(lookAndFeelDefaults);
+		}
 
 		@Override
 		public Component getEditorComponent() {
@@ -149,7 +156,11 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 
 	private static final class LookAndFeelRenderer implements ListCellRenderer<Item<LookAndFeelEnabler>> {
 
-		private final LookAndFeelPanel panel = new LookAndFeelPanel();
+		private final LookAndFeelPanel panel;
+
+		private LookAndFeelRenderer(Map<LookAndFeelEnabler, Map<String, Object>> lookAndFeelDefaults) {
+			panel = new LookAndFeelPanel(lookAndFeelDefaults);
+		}
 
 		@Override
 		public Component getListCellRendererComponent(JList<? extends Item<LookAndFeelEnabler>> list, Item<LookAndFeelEnabler> value,
