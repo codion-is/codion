@@ -61,7 +61,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 	final TableColumns<R, C> columns;
 	final TableSelection<R> selection;
 	final TableConditionModel<C> filters;
-	final FilterTableSortModel<R, C> sorter;
+	final FilterTableSorter<R, C> sorter;
 
 	final DefaultRefresher refresher;
 	final Value<RefreshStrategy> refreshStrategy;
@@ -82,7 +82,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		this.filters = tableConditionModel(filterModelFactory);
 		this.visiblePredicate = new VisiblePredicate();
 		this.selection = new DefaultFilterTableSelection<>(this);
-		this.sorter = new DefaultFilterTableSortModel<>(columns);
+		this.sorter = new DefaultFilterTableSorter<>(columns);
 		this.sorter.observer().addListener(visible::sortItems);
 	}
 

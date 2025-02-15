@@ -25,7 +25,7 @@ import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.RowEditor;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
-import is.codion.swing.common.model.component.table.FilterTableSortModel;
+import is.codion.swing.common.model.component.table.FilterTableSorter;
 
 import java.util.Collection;
 import java.util.List;
@@ -200,20 +200,20 @@ public final class FilterTableModelDemo {
 
 	static void sort(FilterTableModel<Person, String> tableModel) {
 		// tag::sort[]
-		FilterTableSortModel<Person, String> sort = tableModel.sort();
+		FilterTableSorter<Person, String> sorter = tableModel.sorter();
 
 		// Sort by age and name, ascending
-		sort.ascending(AGE, NAME);
+		sorter.ascending(AGE, NAME);
 
 		// Sort by age, descending,
 		// set() clears the previous sort
-		sort.order(AGE).set(DESCENDING);
+		sorter.order(AGE).set(DESCENDING);
 		// add sorting by name, ascending,
 		// add() adds to any previous sort
-		sort.order(NAME).add(ASCENDING);
+		sorter.order(NAME).add(ASCENDING);
 
 		// Clear the sorting
-		sort.clear();
+		sorter.clear();
 		// end::sort[]
 	}
 }

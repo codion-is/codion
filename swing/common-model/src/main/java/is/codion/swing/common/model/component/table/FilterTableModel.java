@@ -101,9 +101,9 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	TableConditionModel<C> filters();
 
 	/**
-	 * @return the sort model
+	 * @return the sorter
 	 */
-	FilterTableSortModel<R, C> sort();
+	FilterTableSorter<R, C> sorter();
 
 	/**
 	 * Notifies all listeners that all cell values in the table's rows may have changed.

@@ -66,9 +66,9 @@ public interface FilterModel<T> {
 	SingleSelection<T> selection();
 
 	/**
-	 * @return the {@link SortModel} instance used by this model
+	 * @return the {@link Sorter} instance used by this model
 	 */
-	SortModel<T> sort();
+	Sorter<T> sorter();
 
 	/**
 	 * Manages the items in {@link FilterModel}.
@@ -284,8 +284,8 @@ public interface FilterModel<T> {
 		int count();
 
 		/**
-		 * Sorts the visible items using {@link FilterModel.SortModel#comparator()}, preserving the selection.
-		 * @see FilterModel#sort()
+		 * Sorts the visible items using {@link Sorter#comparator()}, preserving the selection.
+		 * @see FilterModel#sorter()
 		 */
 		void sortItems();
 	}
@@ -353,7 +353,7 @@ public interface FilterModel<T> {
 	 * Manages the sorting for a {@link FilterModel}
 	 * @param <T> the model item type
 	 */
-	interface SortModel<T> {
+	interface Sorter<T> {
 
 		/**
 		 * @return a {@link Comparator} based on this sort model

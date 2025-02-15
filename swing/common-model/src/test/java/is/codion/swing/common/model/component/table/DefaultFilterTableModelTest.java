@@ -223,7 +223,7 @@ public final class DefaultFilterTableModelTest {
 										.build();
 		testModel.selection().indexes().addListener(selectionEvents::incrementAndGet);
 		testModel.items().refreshStrategy().set(RefreshStrategy.MERGE);
-		testModel.sort().ascending(0);
+		testModel.sorter().ascending(0);
 		testModel.items().refresh();
 		testModel.selection().index().set(1);//b
 
@@ -259,7 +259,7 @@ public final class DefaultFilterTableModelTest {
 
 	@Test
 	void addItems() {
-		tableModel.sort().ascending(0);
+		tableModel.sorter().ascending(0);
 		Items<TestRow> items = tableModel.items();
 		items.add(asList(A, B));
 		// sorts
@@ -737,7 +737,7 @@ public final class DefaultFilterTableModelTest {
 
 	@Test
 	void replace() {
-		tableModel.sort().ascending(0);
+		tableModel.sorter().ascending(0);
 		tableModel.items().refresh();
 		//a, b, c, d, e
 		//replace d with f
@@ -796,7 +796,7 @@ public final class DefaultFilterTableModelTest {
 						.build();
 
 		model.items().refresh();
-		model.sort().ascending(0);
+		model.sorter().ascending(0);
 
 		assertTrue(model.items().contains(A));
 		assertFalse(model.items().contains(G));

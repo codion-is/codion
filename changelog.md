@@ -5,8 +5,10 @@ Codion Change Log
 ### is.codion.common.model
 - FilterModel.SortModel added along with sort().
 - FilterModel.VisibleItems.sort() renamed sortItems().
+- FilterModel.SortModel renamed Sorter.
 ### is.codion.swing.common.model
 - FilterTableModel.ColumnValues.get() and selected() now returns List instead of Collection.
+- FilterTableSortModel renamed FilterTableSorter.
 ### is.codion.swing.common.ui
 - CompletionDocument bug fixed, prevented combo boxes from selecting a null value, if the model did not contain null.
 - ComboBoxMouseWheelListener bug fixed, now selects first item instead of second on down scroll with null selected, if the model did not contain null.

@@ -212,7 +212,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	protected abstract void onRowsUpdated(int fromIndex, int toIndex);
 
 	/**
-	 * @return a {@link OrderBy} instance based on the sort order according to the {@link #sort()} model, an empty {@link Optional} if unsorted
+	 * @return a {@link OrderBy} instance based on the sort order according to the {@link #sorter()} model, an empty {@link Optional} if unsorted
 	 */
 	protected abstract Optional<OrderBy> orderByFromSortModel();
 
@@ -225,7 +225,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 
 		orderQueryBySortOrder.addConsumer(enabled ->
 						queryModel.orderBy().set(enabled ? orderByFromSortModel().orElse(null) : null));
-		sort().observer().addListener(() ->
+		sorter().observer().addListener(() ->
 						queryModel.orderBy().set(orderQueryBySortOrder.get() ? orderByFromSortModel().orElse(null) : null));
 	}
 
