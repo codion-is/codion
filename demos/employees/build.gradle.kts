@@ -26,7 +26,7 @@ dependencies {
 
     runtimeOnly(project(":codion-plugin-logback-proxy"))
 
-    compileOnly(libs.jasperreports.jdt) {
+    jasperreportsClasspath(libs.jasperreports.jdt) {
         exclude(group = "net.sf.jasperreports")
     }
 

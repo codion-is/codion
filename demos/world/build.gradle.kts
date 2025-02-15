@@ -28,7 +28,7 @@ dependencies {
     implementation(project(":codion-plugin-flatlaf"))
     implementation(project(":codion-plugin-flatlaf-intellij-themes"))
 
-    compileOnly(libs.jasperreports.jdt) {
+    jasperreportsClasspath(libs.jasperreports.jdt) {
         exclude(group = "net.sf.jasperreports")
     }
 

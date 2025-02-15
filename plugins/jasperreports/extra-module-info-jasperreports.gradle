@@ -1,5 +1,4 @@
 extraJavaModuleInfo {
-    automaticModule("org.eclipse.jdt:ecj", "org.eclipse.jdt.ecj")
     automaticModule("commons-collections:commons-collections", "commons.collections")
     automaticModule("commons-digester:commons-digester", "commons.digester")
     automaticModule("commons-beanutils:commons-beanutils", "commons.beanutils")

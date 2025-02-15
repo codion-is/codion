@@ -23,7 +23,7 @@ dependencies {
 
     testImplementation(project(":codion-framework-domain-test"))
 
-    compileOnly(libs.jasperreports.jdt) {
+    jasperreportsClasspath(libs.jasperreports.jdt) {
         exclude(group = "net.sf.jasperreports")
     }
 

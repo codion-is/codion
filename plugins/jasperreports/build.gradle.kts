@@ -9,7 +9,7 @@ dependencies {
     api(libs.jasperreports) {
         exclude(group = "xml-apis")
     }
-    compileOnly(libs.jasperreports.jdt) {
+    jasperreportsClasspath(libs.jasperreports.jdt) {
         exclude(group = "xml-apis")
     }
 
