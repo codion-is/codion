@@ -55,7 +55,7 @@ public interface FilterTableSorter<R, C> extends FilterModel.Sorter<R> {
 	ColumnSort<C> columns();
 
 	/**
-	 * Clears the sorting states from this sort model
+	 * Clears the sorting states from this sorter
 	 */
 	void clear();
 

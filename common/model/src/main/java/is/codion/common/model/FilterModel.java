@@ -287,7 +287,7 @@ public interface FilterModel<T> {
 		 * Sorts the visible items using {@link Sorter#comparator()}, preserving the selection.
 		 * @see FilterModel#sorter()
 		 */
-		void sortItems();
+		void sort();
 	}
 
 	/**
@@ -356,7 +356,7 @@ public interface FilterModel<T> {
 	interface Sorter<T> {
 
 		/**
-		 * @return a {@link Comparator} based on this sort model
+		 * @return a {@link Comparator} based on this sorter
 		 */
 		Comparator<T> comparator();
 

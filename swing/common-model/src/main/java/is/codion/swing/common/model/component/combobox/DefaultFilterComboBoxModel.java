@@ -616,7 +616,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			}
 
 			@Override
-			public void sortItems() {
+			public void sort() {
 				synchronized (lock) {
 					if (sortInternal()) {
 						notifyChanges();

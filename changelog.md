@@ -6,6 +6,7 @@ Codion Change Log
 - FilterModel.SortModel added along with sort().
 - FilterModel.VisibleItems.sort() renamed sortItems().
 - FilterModel.SortModel renamed Sorter.
+- FilterModel.VisibleItems.sortItems() renamed back to sort().
 ### is.codion.swing.common.model
 - FilterTableModel.ColumnValues.get() and selected() now returns List instead of Collection.
 - FilterTableSortModel renamed FilterTableSorter.

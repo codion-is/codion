@@ -83,7 +83,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		this.visiblePredicate = new VisiblePredicate();
 		this.selection = new DefaultFilterTableSelection<>(this);
 		this.sorter = new DefaultFilterTableSorter<>(columns);
-		this.sorter.observer().addListener(visible::sortItems);
+		this.sorter.observer().addListener(visible::sort);
 	}
 
 	@Override
@@ -182,7 +182,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 	public void add(R item) {
 		synchronized (lock) {
 			if (addInternal(requireNonNull(item))) {
-				visible.sortItems();
+				visible.sort();
 			}
 		}
 	}
@@ -282,7 +282,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		if (visiblePredicate.test(item)) {
 			visible.items.add(index, item);
 			tableModel.fireTableRowsInserted(index, index);
-			visible.sortItems();
+			visible.sort();
 			visible.notifyAdded(singleton(item));
 
 			return true;
@@ -305,7 +305,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 			visible.notifyChanges();
 			filtered.notifyChanges();
 		}
-		visible.sortItems();
+		visible.sort();
 	}
 
 	private void replaceFilteredItem(R replacement, int filteredIndex) {
@@ -314,7 +314,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 			int index = visible.items.size();
 			visible.items.add(replacement);
 			tableModel.fireTableRowsInserted(index, index);
-			visible.sortItems();
+			visible.sort();
 		}
 		else {
 			filtered.items.add(replacement);
@@ -337,7 +337,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		if (!visibleItems.isEmpty()) {
 			visible.items.addAll(index, visibleItems);
 			tableModel.fireTableRowsInserted(index, index + visibleItems.size());
-			visible.sortItems();
+			visible.sort();
 			visible.notifyAdded(visibleItems);
 		}
 		if (!filteredItems.isEmpty()) {
@@ -553,7 +553,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		}
 
 		@Override
-		public void sortItems() {
+		public void sort() {
 			if (sorter.sorted()) {
 				List<R> selectedItems = selection.items().get();
 				synchronized (lock) {
