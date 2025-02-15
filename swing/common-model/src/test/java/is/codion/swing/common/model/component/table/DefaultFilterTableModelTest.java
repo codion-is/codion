@@ -682,18 +682,18 @@ public final class DefaultFilterTableModelTest {
 	void values() {
 		tableModel.items().refresh();
 		tableModel.selection().indexes().set(asList(0, 2));
-		Collection<String> values = tableModel.values().selected(0);
+		List<String> values = tableModel.values().selected(0);
 		assertEquals(2, values.size());
-		assertTrue(values.contains("a"));
-		assertTrue(values.contains("c"));
+		assertEquals(0, values.indexOf("a"));
+		assertEquals(1, values.indexOf("c"));
 
 		values = tableModel.values().get(0);
 		assertEquals(5, values.size());
-		assertTrue(values.contains("a"));
-		assertTrue(values.contains("b"));
-		assertTrue(values.contains("c"));
-		assertTrue(values.contains("d"));
-		assertTrue(values.contains("e"));
+		assertEquals(0, values.indexOf("a"));
+		assertEquals(1, values.indexOf("b"));
+		assertEquals(2, values.indexOf("c"));
+		assertEquals(3, values.indexOf("d"));
+		assertEquals(4, values.indexOf("e"));
 		assertFalse(values.contains("zz"));
 
 		// Unknown identifier

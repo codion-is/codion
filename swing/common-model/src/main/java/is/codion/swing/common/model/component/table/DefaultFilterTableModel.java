@@ -172,13 +172,13 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private final class DefaultColumnValues implements ColumnValues<C> {
 
 		@Override
-		public <T> Collection<T> get(C identifier) {
-			return (Collection<T>) values(IntStream.range(0, items.visible().count()).boxed(), validateIdentifier(identifier));
+		public <T> List<T> get(C identifier) {
+			return (List<T>) values(IntStream.range(0, items.visible().count()).boxed(), validateIdentifier(identifier));
 		}
 
 		@Override
-		public <T> Collection<T> selected(C identifier) {
-			return (Collection<T>) values(selection().indexes().get().stream(), validateIdentifier(identifier));
+		public <T> List<T> selected(C identifier) {
+			return (List<T>) values(selection().indexes().get().stream(), validateIdentifier(identifier));
 		}
 
 		@Override

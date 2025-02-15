@@ -181,7 +181,7 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		 * @return the values (including nulls) of the column identified by the given identifier from the visible rows in the table model
 		 * @throws IllegalArgumentException in case of an unknown identifier
 		 */
-		<T> Collection<T> get(C identifier);
+		<T> List<T> get(C identifier);
 
 		/**
 		 * @param identifier the identifier of the column for which to retrieve the selected values
@@ -189,7 +189,7 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		 * @return the values (including nulls) of the column identified by the given identifier from the selected rows in the table model
 		 * @throws IllegalArgumentException in case of an unknown identifier
 		 */
-		<T> Collection<T> selected(C identifier);
+		<T> List<T> selected(C identifier);
 
 		/**
 		 * Returns the value for the given row and column.
