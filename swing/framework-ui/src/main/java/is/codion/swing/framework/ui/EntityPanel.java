@@ -30,7 +30,6 @@ import is.codion.framework.model.ModelLink;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.border.Borders;
-import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlKey;
@@ -600,19 +599,11 @@ public class EntityPanel extends JPanel {
 	/**
 	 * Instantiates a new {@link EntityPanel.Builder}
 	 * @param entityType the entity type to base this panel builder on
+	 * @param entityPanel provides the {@link EntityPanel}
 	 * @return a panel builder
 	 */
-	public static EntityPanel.Builder builder(EntityType entityType) {
-		return new EntityPanelBuilder(entityType);
-	}
-
-	/**
-	 * Instantiates a new {@link EntityPanel.Builder}
-	 * @param modelBuilder the {@link SwingEntityModel.Builder} to base this panel builder on
-	 * @return a panel builder
-	 */
-	public static EntityPanel.Builder builder(SwingEntityModel.Builder modelBuilder) {
-		return new EntityPanelBuilder(modelBuilder);
+	public static EntityPanel.Builder builder(EntityType entityType, Function<EntityConnectionProvider, EntityPanel> entityPanel) {
+		return new EntityPanelBuilder(entityType, entityPanel);
 	}
 
 	//#############################################################################################
@@ -1743,97 +1734,11 @@ public class EntityPanel extends JPanel {
 		Optional<ImageIcon> icon();
 
 		/**
-		 * Adds the given detail panel builder to this panel builder, if it hasn't been previously added
-		 * @param panelBuilder the detail panel provider
-		 * @return this builder instance
-		 */
-		Builder detailPanel(EntityPanel.Builder panelBuilder);
-
-		/**
-		 * Default true.
-		 * @param refreshWhenInitialized if true then the table model this panel is based on
-		 * will be refreshed when the panel is initialized
-		 * @return this builder instance
-		 */
-		Builder refreshWhenInitialized(boolean refreshWhenInitialized);
-
-		/**
-		 * @param conditionView the initial condition panel view
-		 * @return this builder instance
-		 */
-		Builder conditionView(ConditionView conditionView);
-
-		/**
-		 * @param filterView the initial filter panel view
-		 * @return this builder instance
-		 */
-		Builder filterView(ConditionView filterView);
-
-		/**
-		 * @param detailLayout provides the detail panel layout to use
-		 * @return this builder instane
-		 */
-		Builder detailLayout(Function<EntityPanel, DetailLayout> detailLayout);
-
-		/**
-		 * @param preferredSize the preferred panel size
-		 * @return this builder instance
-		 */
-		Builder preferredSize(Dimension preferredSize);
-
-		/**
-		 * Note that setting the {@link EntityPanel} class overrides any {@link EntityTablePanel} or {@link EntityEditPanel} classes that have been set.
-		 * @param panelClass the {@link EntityPanel} class to use when creating the panel
-		 * @return this builder instance
-		 * @see #editPanel()
-		 * @see #tablePanel()
-		 */
-		Builder panel(Class<? extends EntityPanel> panelClass);
-
-		/**
-		 * @param editPanelClass the {@link EntityEditPanel} class to use when creating the panel
-		 * @return this builder instance
-		 */
-		Builder editPanel(Class<? extends EntityEditPanel> editPanelClass);
-
-		/**
-		 * @param tablePanelClass the {@link EntityTablePanel} class to use when creating the panel
-		 * @return this builder instance
-		 */
-		Builder tablePanel(Class<? extends EntityTablePanel> tablePanelClass);
-
-		/**
-		 * @param onBuildPanel called after the {@link EntityPanel} has been built
-		 * @return this builder instance
-		 */
-		Builder onBuildPanel(Consumer<EntityPanel> onBuildPanel);
-
-		/**
-		 * @param onBuildEditPanel called after the {@link EntityEditPanel} has been built
-		 * @return this builder instance
-		 */
-		Builder onBuildEditPanel(Consumer<EntityEditPanel> onBuildEditPanel);
-
-		/**
-		 * @param onBuildTablePanel called after the {@link EntityTablePanel} has been built
-		 * @return this builder instance
-		 */
-		Builder onBuildTablePanel(Consumer<EntityTablePanel> onBuildTablePanel);
-
-		/**
 		 * Builds an {@link EntityPanel} based on this builder configuration.
 		 * @param connectionProvider the connection provider
 		 * @return an {@link EntityPanel} based on this builder
-		 * @throws IllegalStateException in case no {@link SwingEntityModel.Builder} has been set
 		 */
 		EntityPanel build(EntityConnectionProvider connectionProvider);
-
-		/**
-		 * Builds an {@link EntityPanel} based on this builder configuration
-		 * @param model the {@link SwingEntityModel} to base the panel on
-		 * @return an {@link EntityPanel} based on this builder
-		 */
-		EntityPanel build(SwingEntityModel model);
 	}
 
 	private final class ActivateOnMouseClickListener extends MouseAdapter {

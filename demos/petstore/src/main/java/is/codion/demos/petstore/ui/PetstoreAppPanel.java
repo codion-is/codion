@@ -20,6 +20,7 @@ package is.codion.demos.petstore.ui;
 
 import is.codion.common.user.User;
 import is.codion.demos.petstore.model.PetstoreAppModel;
+import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
@@ -73,33 +74,46 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
 
 	@Override
 	protected List<EntityPanel.Builder> createSupportEntityPanelBuilders() {
-		SwingEntityModel.Builder tagModelBuilder =
-						SwingEntityModel.builder(Tag.TYPE)
-										.detailModel(SwingEntityModel.builder(TagItem.TYPE));
-		SwingEntityModel.Builder sellerContactInfoModelBuilder =
-						SwingEntityModel.builder(SellerContactInfo.TYPE)
-										.detailModel(SwingEntityModel.builder(Item.TYPE)
-														.detailModel(SwingEntityModel.builder(TagItem.TYPE)));
-
 		return List.of(
-						EntityPanel.builder(Address.TYPE)
-										.editPanel(AddressEditPanel.class),
-						EntityPanel.builder(sellerContactInfoModelBuilder)
-										.editPanel(ContactInfoEditPanel.class)
-										.detailPanel(EntityPanel.builder(Item.TYPE)
-														.editPanel(ItemEditPanel.class)
-														.detailPanel(EntityPanel.builder(TagItem.TYPE)
-																		.editPanel(TagItemEditPanel.class))
-														.detailLayout(entityPanel -> TabbedDetailLayout.builder(entityPanel)
-																		.initialDetailState(HIDDEN)
-																		.build())),
-						EntityPanel.builder(tagModelBuilder)
-										.editPanel(TagEditPanel.class)
-										.detailPanel(EntityPanel.builder(TagItem.TYPE)
-														.editPanel(TagItemEditPanel.class))
-										.detailLayout(entityPanel -> TabbedDetailLayout.builder(entityPanel)
-														.initialDetailState(HIDDEN)
-														.build()));
+						EntityPanel.builder(Address.TYPE,
+										PetstoreAppPanel::createAddressPanel),
+						EntityPanel.builder(SellerContactInfo.TYPE,
+										PetstoreAppPanel::createSellerContactInfoPanel),
+						EntityPanel.builder(Tag.TYPE,
+										PetstoreAppPanel::createTagPanel));
+	}
+
+	private static EntityPanel createAddressPanel(EntityConnectionProvider connectionProvider) {
+		SwingEntityModel addressModel = new SwingEntityModel(Address.TYPE, connectionProvider);
+		addressModel.tableModel().items().refresh();
+
+		return new EntityPanel(addressModel, new AddressEditPanel(addressModel.editModel()));
+	}
+
+	private static EntityPanel createSellerContactInfoPanel(EntityConnectionProvider connectionProvider) {
+		SwingEntityModel sellerContactInfoModel = new SwingEntityModel(SellerContactInfo.TYPE, connectionProvider);
+		sellerContactInfoModel.tableModel().items().refresh();
+
+		return new EntityPanel(sellerContactInfoModel,
+						new ContactInfoEditPanel(sellerContactInfoModel.editModel()));
+	}
+
+	private static EntityPanel createTagPanel(EntityConnectionProvider connectionProvider) {
+		SwingEntityModel tagModel = new SwingEntityModel(Tag.TYPE, connectionProvider);
+		SwingEntityModel tagItemModel = new SwingEntityModel(TagItem.TYPE, connectionProvider);
+		tagModel.detailModels().add(tagItemModel);
+		tagModel.tableModel().items().refresh();
+
+		EntityPanel tagPanel = new EntityPanel(tagModel,
+						new TagEditPanel(tagModel.editModel()), config -> config
+						.detailLayout(entityPanel -> TabbedDetailLayout.builder(entityPanel)
+										.initialDetailState(HIDDEN)
+										.build()));
+		EntityPanel tagItemPanel = new EntityPanel(tagItemModel,
+						new TagItemEditPanel(tagItemModel.editModel()));
+		tagPanel.detailPanels().add(tagItemPanel);
+
+		return tagPanel;
 	}
 
 	public static void main(String[] args) {

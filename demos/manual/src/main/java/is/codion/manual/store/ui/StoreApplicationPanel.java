@@ -26,6 +26,7 @@ import is.codion.manual.store.domain.Store.CustomerAddress;
 import is.codion.manual.store.model.CustomerAddressModel;
 import is.codion.manual.store.model.CustomerModel;
 import is.codion.manual.store.model.StoreApplicationModel;
+import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
@@ -62,8 +63,13 @@ public class StoreApplicationPanel extends EntityApplicationPanel<StoreApplicati
 	@Override
 	protected List<EntityPanel.Builder> createSupportEntityPanelBuilders() {
 		EntityPanel.Builder addressPanelBuilder =
-						EntityPanel.builder(Address.TYPE)
-										.editPanel(AddressEditPanel.class);
+						EntityPanel.builder(Address.TYPE, connectionProvider -> {
+											SwingEntityModel addressModel =
+															new SwingEntityModel(Address.TYPE, connectionProvider);
+
+											return new EntityPanel(addressModel,
+															new AddressEditPanel(addressModel.editModel()));
+										});
 
 		return List.of(addressPanelBuilder);
 	}

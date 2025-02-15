@@ -24,6 +24,7 @@ import is.codion.common.user.User;
 import is.codion.demos.chinook.domain.api.Chinook;
 import is.codion.demos.chinook.model.ChinookAppModel;
 import is.codion.demos.chinook.model.TrackTableModel;
+import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.plugin.flatlaf.intellij.themes.materialtheme.MaterialTheme;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.table.FilterTable;
@@ -91,49 +92,72 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 
 	@Override
 	protected List<EntityPanel.Builder> createSupportEntityPanelBuilders() {
-		EntityPanel.Builder trackPanelBuilder =
-						EntityPanel.builder(Track.TYPE)
-										.tablePanel(TrackTablePanel.class);
-
-		SwingEntityModel.Builder genreModelBuilder =
-						SwingEntityModel.builder(Genre.TYPE)
-										.detailModel(SwingEntityModel.builder(Track.TYPE)
-														.tableModel(TrackTableModel.class));
-
 		EntityPanel.Builder genrePanelBuilder =
-						EntityPanel.builder(genreModelBuilder)
-										.editPanel(GenreEditPanel.class)
-										.detailPanel(trackPanelBuilder)
-										.detailLayout(entityPanel -> TabbedDetailLayout.builder(entityPanel)
-														.initialDetailState(HIDDEN)
-														.build());
+						EntityPanel.builder(Genre.TYPE,
+										ChinookAppPanel::createGenrePanel);
 
 		EntityPanel.Builder mediaTypePanelBuilder =
-						EntityPanel.builder(MediaType.TYPE)
-										.editPanel(MediaTypeEditPanel.class);
+						EntityPanel.builder(MediaType.TYPE,
+										ChinookAppPanel::createMediaTypePanel);
 
 		EntityPanel.Builder artistPanelBuilder =
-						EntityPanel.builder(Artist.TYPE)
-										.editPanel(ArtistEditPanel.class);
-
-		EntityPanel.Builder customerPanelBuilder =
-						EntityPanel.builder(Customer.TYPE)
-										.tablePanel(CustomerTablePanel.class);
-
-		SwingEntityModel.Builder employeeModelBuilder =
-						SwingEntityModel.builder(Employee.TYPE)
-										.detailModel(SwingEntityModel.builder(Customer.TYPE));
+						EntityPanel.builder(Artist.TYPE,
+										ChinookAppPanel::createArtistPanel);
 
 		EntityPanel.Builder employeePanelBuilder =
-						EntityPanel.builder(employeeModelBuilder)
-										.tablePanel(EmployeeTablePanel.class)
-										.detailPanel(customerPanelBuilder)
-										.detailLayout(entityPanel -> TabbedDetailLayout.builder(entityPanel)
-														.initialDetailState(HIDDEN)
-														.build())
-										.preferredSize(new Dimension(1000, 500));
+						EntityPanel.builder(Employee.TYPE,
+										ChinookAppPanel::createEmployeePanel);
 
 		return List.of(artistPanelBuilder, genrePanelBuilder, mediaTypePanelBuilder, employeePanelBuilder);
+	}
+
+	private static EntityPanel createGenrePanel(EntityConnectionProvider connectionProvider) {
+		SwingEntityModel genreModel = new SwingEntityModel(Genre.TYPE, connectionProvider);
+		SwingEntityModel trackModel = new SwingEntityModel(new TrackTableModel(connectionProvider));
+		genreModel.detailModels().add(trackModel);
+		genreModel.tableModel().items().refresh();
+
+		EntityPanel genrePanel = new EntityPanel(genreModel,
+						new GenreEditPanel(genreModel.editModel()), config ->
+						config.detailLayout(entityPanel -> TabbedDetailLayout.builder(entityPanel)
+										.initialDetailState(HIDDEN)
+										.build()));
+		genrePanel.detailPanels().add(new EntityPanel(trackModel));
+
+		return genrePanel;
+	}
+
+	private static EntityPanel createMediaTypePanel(EntityConnectionProvider connectionProvider) {
+		SwingEntityModel mediaTypeModel = new SwingEntityModel(MediaType.TYPE, connectionProvider);
+		mediaTypeModel.tableModel().items().refresh();
+
+		return new EntityPanel(mediaTypeModel, new MediaTypeEditPanel(mediaTypeModel.editModel()));
+	}
+
+	private static EntityPanel createArtistPanel(EntityConnectionProvider connectionProvider) {
+		SwingEntityModel artistModel = new SwingEntityModel(Artist.TYPE, connectionProvider);
+		artistModel.tableModel().items().refresh();
+
+		return new EntityPanel(artistModel, new ArtistEditPanel(artistModel.editModel()));
+	}
+
+	private static EntityPanel createEmployeePanel(EntityConnectionProvider connectionProvider) {
+		SwingEntityModel employeeModel = new SwingEntityModel(Employee.TYPE, connectionProvider);
+		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
+		employeeModel.detailModels().add(customerModel);
+		employeeModel.tableModel().items().refresh();
+
+		EntityPanel employeePanel = new EntityPanel(employeeModel,
+						new EmployeeTablePanel(employeeModel.tableModel()), config -> config
+						.detailLayout(entityPanel -> TabbedDetailLayout.builder(entityPanel)
+										.initialDetailState(HIDDEN)
+										.build()));
+		EntityPanel customerPanel = new EntityPanel(customerModel,
+						new CustomerTablePanel(customerModel.tableModel()));
+		employeePanel.detailPanels().add(customerPanel);
+		employeePanel.setPreferredSize(new Dimension(1000, 500));
+
+		return employeePanel;
 	}
 
 	@Override

@@ -21,6 +21,7 @@ Codion Change Log
 - EntityEditModel.EntityEditor.ValueEditor renamed EditorValue.
 ### is.codion.swing.framework.ui
 - EntityTablePanel.orderQueryBySortOrder() moved to model.
+- EntityPanel.Builder, major simplification and related refactoring.
 
 ## 0.18.29
 ### is.codion.common.model

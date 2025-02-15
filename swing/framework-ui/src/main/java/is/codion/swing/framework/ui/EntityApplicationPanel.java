@@ -891,6 +891,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		return Control.builder()
 						.command(() -> displayEntityPanelWindow(panelBuilder))
 						.name(panelBuilder.caption().orElse(applicationModel.entities().definition(panelBuilder.entityType()).caption()))
+						.description(panelBuilder.description().orElse(null))
 						.smallIcon(panelBuilder.icon().orElse(null))
 						.build();
 	}

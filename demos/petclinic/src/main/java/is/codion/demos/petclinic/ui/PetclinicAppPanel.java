@@ -26,10 +26,10 @@ import is.codion.demos.petclinic.domain.api.PetType;
 import is.codion.demos.petclinic.domain.api.Petclinic;
 import is.codion.demos.petclinic.domain.api.Specialty;
 import is.codion.demos.petclinic.domain.api.Vet;
-import is.codion.demos.petclinic.domain.api.VetSpecialty;
 import is.codion.demos.petclinic.domain.api.Visit;
 import is.codion.demos.petclinic.model.PetclinicAppModel;
 import is.codion.demos.petclinic.model.VetSpecialtyEditModel;
+import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.plugin.flatlaf.intellij.themes.arc.Arc;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
@@ -67,32 +67,55 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
 	@Override
 	protected List<EntityPanel.Builder> createSupportEntityPanelBuilders() {
 		EntityPanel.Builder petTypePanelBuilder =
-						EntityPanel.builder(PetType.TYPE)
-										.editPanel(PetTypeEditPanel.class)
-										.caption("Pet types");
+						EntityPanel.builder(PetType.TYPE,
+										PetclinicAppPanel::createPetTypePanel);
 		EntityPanel.Builder specialtyPanelBuilder =
-						EntityPanel.builder(Specialty.TYPE)
-										.editPanel(SpecialtyEditPanel.class)
-										.caption("Specialties");
-
-		SwingEntityModel.Builder vetSpecialtyModelBuilder =
-						SwingEntityModel.builder(VetSpecialty.TYPE)
-										.editModel(VetSpecialtyEditModel.class);
-		SwingEntityModel.Builder vetModelBuilder =
-						SwingEntityModel.builder(Vet.TYPE)
-										.detailModel(vetSpecialtyModelBuilder);
-
-		EntityPanel.Builder vetSpecialtyPanelBuilder =
-						EntityPanel.builder(vetSpecialtyModelBuilder)
-										.editPanel(VetSpecialtyEditPanel.class)
-										.caption("Specialty");
+						EntityPanel.builder(Specialty.TYPE,
+										PetclinicAppPanel::createSpecialtyPanel);
 		EntityPanel.Builder vetPanelBuilder =
-						EntityPanel.builder(vetModelBuilder)
-										.editPanel(VetEditPanel.class)
-										.detailPanel(vetSpecialtyPanelBuilder)
-										.caption("Vets");
+						EntityPanel.builder(Vet.TYPE,
+										PetclinicAppPanel::createVetPanel);
 
 		return List.of(petTypePanelBuilder, specialtyPanelBuilder, vetPanelBuilder);
+	}
+
+	private static EntityPanel createPetTypePanel(EntityConnectionProvider connectionProvider) {
+		SwingEntityModel petTypeModel =
+						new SwingEntityModel(PetType.TYPE, connectionProvider);
+		petTypeModel.tableModel().items().refresh();
+
+		return new EntityPanel(petTypeModel,
+						new PetTypeEditPanel(petTypeModel.editModel()), config ->
+						config.caption("Pet types"));
+	}
+
+	private static EntityPanel createSpecialtyPanel(EntityConnectionProvider connectionProvider) {
+		SwingEntityModel specialtyModel =
+						new SwingEntityModel(Specialty.TYPE, connectionProvider);
+		specialtyModel.tableModel().items().refresh();
+
+		return new EntityPanel(specialtyModel,
+						new SpecialtyEditPanel(specialtyModel.editModel()), config -> config
+						.caption("Specialties"));
+	}
+
+	private static EntityPanel createVetPanel(EntityConnectionProvider connectionProvider) {
+		SwingEntityModel vetModel =
+						new SwingEntityModel(Vet.TYPE, connectionProvider);
+		SwingEntityModel vetSpecialtyModel =
+						new SwingEntityModel(new VetSpecialtyEditModel(connectionProvider));
+		vetModel.detailModels().add(vetSpecialtyModel);
+		vetModel.tableModel().items().refresh();
+
+		EntityPanel vetPanel = new EntityPanel(vetModel,
+						new VetEditPanel(vetModel.editModel()), config -> config
+						.caption("Vets"));
+		EntityPanel vetSpecialtyPanel = new EntityPanel(vetSpecialtyModel,
+						new VetSpecialtyEditPanel(vetSpecialtyModel.editModel()), config -> config
+						.caption("Specialty"));
+		vetPanel.detailPanels().add(vetSpecialtyPanel);
+
+		return vetPanel;
 	}
 
 	public static void main(String[] args) throws CancelException {
