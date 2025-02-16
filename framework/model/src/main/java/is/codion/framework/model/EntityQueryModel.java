@@ -19,6 +19,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.Conjunction;
+import is.codion.common.property.PropertyValue;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -34,6 +35,8 @@ import is.codion.framework.domain.entity.condition.Condition;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import static is.codion.common.Configuration.integerValue;
 
 /**
  * Provides entities fetched from a database.
@@ -52,6 +55,15 @@ import java.util.function.Supplier;
  * @see #entityQueryModel(EntityTableConditionModel)
  */
 public interface EntityQueryModel extends Supplier<List<Entity>> {
+
+	/**
+	 * Specifes a default {@link #limit()} to set for query models.
+	 * <ul>
+	 * <li>Value type: Integer
+	 * <li>Default value: null
+	 * </ul>
+	 */
+	PropertyValue<Integer> LIMIT = integerValue(EntityQueryModel.class.getName() + ".limit");
 
 	/**
 	 * @return the type of the entity this query model is based on

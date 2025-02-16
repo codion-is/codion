@@ -57,7 +57,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 					.validator(new AttributeValidator())
 					.build();
 	private final Value<OrderBy> orderBy;
-	private final Value<Integer> limit = Value.nullable();
+	private final Value<Integer> limit = Value.nullable(LIMIT.get());
 	private final Value<Function<EntityQueryModel, List<Entity>>> query = Value.nonNull(new DefaultQuery());
 
 	private volatile RefreshConditions refreshConditions;
