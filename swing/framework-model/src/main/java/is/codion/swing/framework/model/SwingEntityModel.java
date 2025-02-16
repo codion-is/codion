@@ -22,9 +22,6 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.model.AbstractEntityModel;
 
-import java.util.function.Consumer;
-import java.util.function.Function;
-
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -55,104 +52,5 @@ public class SwingEntityModel extends AbstractEntityModel<SwingEntityModel, Swin
 	 */
 	public SwingEntityModel(SwingEntityTableModel tableModel) {
 		super(tableModel);
-	}
-
-	/**
-	 * Instantiates a new {@link SwingEntityModel.Builder} instance
-	 * @param entityType the entity type
-	 * @return a new builder instance
-	 */
-	public static SwingEntityModel.Builder builder(EntityType entityType) {
-		return new SwingEntityModelBuilder(entityType);
-	}
-
-	/**
-	 * Builds a {@link SwingEntityModel}.
-	 */
-	public interface Builder {
-
-		/**
-		 * @return the underlying entity type
-		 */
-		EntityType entityType();
-
-		/**
-		 * Note that setting the {@link SwingEntityModel} class overrides any {@link SwingEntityEditModel} or {@link SwingEntityTableModel} classes that have been set
-		 * @param modelClass the model class to use
-		 * @return this builder instance
-		 * @throws IllegalStateException in case the edit or table model classes have already been set
-		 * @see #editModel(Class)
-		 * @see #tableModel(Class)
-		 */
-		Builder model(Class<? extends SwingEntityModel> modelClass);
-
-		/**
-		 * @param editModelClass the edit model class to use
-		 * @return this builder instance
-		 * @throws IllegalStateException in case the model class has already been set
-		 * @throws IllegalStateException in case the table model class has already been set
-		 */
-		Builder editModel(Class<? extends SwingEntityEditModel> editModelClass);
-
-		/**
-		 * @param tableModelClass the table model class to use
-		 * @return this builder instance
-		 * @throws IllegalStateException in case the model class has already been set
-		 * @throws IllegalStateException in case the edit model class has already been set
-		 */
-		Builder tableModel(Class<? extends SwingEntityTableModel> tableModelClass);
-
-		/**
-		 * Takes precedence over {@link #model(Class)}.
-		 * @param modelFactory creates the model
-		 * @return this builder instance
-		 */
-		Builder model(Function<EntityConnectionProvider, SwingEntityModel> modelFactory);
-
-		/**
-		 * Takes precedence over {@link #editModel(Class)}.
-		 * @param editModelFactory creates the edit model
-		 * @return this builder instance
-		 */
-		Builder editModel(Function<EntityConnectionProvider, SwingEntityEditModel> editModelFactory);
-
-		/**
-		 * Takes precedence over {@link #tableModel(Class)}.
-		 * @param tableModelFactory creates the table model
-		 * @return this builder instance
-		 */
-		Builder tableModel(Function<EntityConnectionProvider, SwingEntityTableModel> tableModelFactory);
-
-		/**
-		 * @param onBuildModel called after the entity model has been built
-		 * @return this builder instance
-		 */
-		Builder onBuildModel(Consumer<SwingEntityModel> onBuildModel);
-
-		/**
-		 * @param onBuildEditModel called after the edit model has been built
-		 * @return this builder instance
-		 */
-		Builder onBuildEditModel(Consumer<SwingEntityEditModel> onBuildEditModel);
-
-		/**
-		 * @param onBuildTableModel called after the table model has been built
-		 * @return this builder instance
-		 */
-		Builder onBuildTableModel(Consumer<SwingEntityTableModel> onBuildTableModel);
-
-		/**
-		 * Adds a detail model builder to this model builder
-		 * @param detailModelBuilder the detail model builder to add
-		 * @return this builder instance
-		 */
-		Builder detailModel(Builder detailModelBuilder);
-
-		/**
-		 * Builds a {@link SwingEntityModel} instance
-		 * @param connectionProvider the connection provider
-		 * @return a {@link SwingEntityModel} instance based on this builder
-		 */
-		SwingEntityModel build(EntityConnectionProvider connectionProvider);
 	}
 }

@@ -864,24 +864,14 @@ public class EntityPanel extends JPanel {
 		this.parentPanel = requireNonNull(parentPanel);
 	}
 
-	final void setPreviousPanel(EntityPanel previousPanel) {
-		this.previousPanel = requireNonNull(previousPanel);
-	}
-
-	final void setNextPanel(EntityPanel nextPanel) {
-		this.nextPanel = requireNonNull(nextPanel);
-	}
-
 	final void linkSiblings(List<EntityPanel> entityPanels) {
 		if (entityPanels.size() > 1) {
 			int index = entityPanels.indexOf(this);
 			if (index != -1) {
-				EntityPanel previousPanel = entityPanels.get(index == 0 ? entityPanels.size() - 1 : index - 1);
-				setPreviousPanel(previousPanel);
-				previousPanel.setNextPanel(this);
-				EntityPanel nextPanel = entityPanels.get(index == entityPanels.size() - 1 ? 0 : index + 1);
-				setNextPanel(nextPanel);
-				nextPanel.setPreviousPanel(this);
+				previousPanel = entityPanels.get(index == 0 ? entityPanels.size() - 1 : index - 1);
+				previousPanel.nextPanel = this;
+				nextPanel = entityPanels.get(index == entityPanels.size() - 1 ? 0 : index + 1);
+				nextPanel.previousPanel = this;
 			}
 		}
 	}
@@ -1158,12 +1148,10 @@ public class EntityPanel extends JPanel {
 
 		private void addDetailPanelAndLinkSiblings(EntityPanel detailPanel) {
 			if (!panels.isEmpty()) {
-				EntityPanel previousPanel = panels.get(panels.size() - 1);
-				detailPanel.setPreviousPanel(previousPanel);
-				previousPanel.setNextPanel(detailPanel);
-				EntityPanel firstPanel = panels.get(0);
-				detailPanel.setNextPanel(firstPanel);
-				firstPanel.setPreviousPanel(detailPanel);
+				detailPanel.previousPanel = panels.get(panels.size() - 1);
+				detailPanel.previousPanel.nextPanel = detailPanel;
+				detailPanel.nextPanel = panels.get(0);
+				detailPanel.nextPanel.previousPanel = detailPanel;
 			}
 			panels.add(detailPanel);
 		}
