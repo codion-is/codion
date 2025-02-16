@@ -24,15 +24,17 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 
+import java.util.List;
+
 public final class ChinookAppModel extends SwingEntityApplicationModel {
 
 	public static final Version VERSION = Version.parse(ChinookAppModel.class, "/version.properties");
 
 	public ChinookAppModel(EntityConnectionProvider connectionProvider) {
-		super(connectionProvider, VERSION);
-		entityModels().add(createAlbumModel(connectionProvider));
-		entityModels().add(createPlaylistModel(connectionProvider));
-		entityModels().add(createCustomerModel(connectionProvider));
+		super(connectionProvider, List.of(
+						createAlbumModel(connectionProvider),
+						createPlaylistModel(connectionProvider),
+						createCustomerModel(connectionProvider)), VERSION);
 	}
 
 	private static SwingEntityModel createAlbumModel(EntityConnectionProvider connectionProvider) {

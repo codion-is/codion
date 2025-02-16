@@ -19,24 +19,25 @@
 package is.codion.demos.world.model;
 
 import is.codion.common.version.Version;
+import is.codion.demos.world.domain.api.World.Continent;
+import is.codion.demos.world.domain.api.World.Country;
 import is.codion.demos.world.domain.api.World.Lookup;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
+
+import java.util.List;
 
 public final class WorldAppModel extends SwingEntityApplicationModel {
 
 	public static final Version VERSION = Version.parse(WorldAppModel.class, "/version.properties");
 
 	public WorldAppModel(EntityConnectionProvider connectionProvider) {
-		super(connectionProvider, VERSION);
-		CountryModel countryModel = new CountryModel(connectionProvider);
-		SwingEntityModel lookupModel = new SwingEntityModel(Lookup.TYPE, connectionProvider);
-		ContinentModel continentModel = new ContinentModel(connectionProvider);
-
-		countryModel.tableModel().items().refresh();
-		continentModel.tableModel().items().refresh();
-
-		entityModels().add(countryModel, lookupModel, continentModel);
+		super(connectionProvider, List.of(
+						new CountryModel(connectionProvider),
+						new SwingEntityModel(Lookup.TYPE, connectionProvider),
+						new ContinentModel(connectionProvider)), VERSION);
+		entityModels().get(Country.TYPE).tableModel().items().refresh();
+		entityModels().get(Continent.TYPE).tableModel().items().refresh();
 	}
 }

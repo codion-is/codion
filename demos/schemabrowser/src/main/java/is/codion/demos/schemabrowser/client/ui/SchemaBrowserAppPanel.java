@@ -99,7 +99,10 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 
 	public static final class SchemaBrowserApplicationModel extends SwingEntityApplicationModel {
 		public SchemaBrowserApplicationModel(EntityConnectionProvider connectionProvider) {
-			super(connectionProvider);
+			super(connectionProvider, List.of(createSchemaModel(connectionProvider)));
+		}
+
+		private static SwingEntityModel createSchemaModel(EntityConnectionProvider connectionProvider) {
 			SwingEntityModel schemaModel = new SwingEntityModel(Schema.TYPE, connectionProvider);
 			SwingEntityModel tableModel = new SwingEntityModel(Table.TYPE, connectionProvider);
 			SwingEntityModel columnModel = new SwingEntityModel(TableColumn.TYPE, connectionProvider);
@@ -110,7 +113,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 			tableModel.detailModels().add(columnModel, constraintModel);
 			constraintModel.detailModels().add(constraintColumnModel);
 
-			entityModels().add(schemaModel);
+			return schemaModel;
 		}
 	}
 }

@@ -258,11 +258,15 @@ public final class EmployeesMinimalApp {
 	public static final class EmployeesApplicationModel extends SwingEntityApplicationModel {
 
 		private EmployeesApplicationModel(EntityConnectionProvider connectionProvider) {
-			super(connectionProvider);
+			super(connectionProvider, List.of(createDepartmentModel(connectionProvider)));
+		}
+
+		private static SwingEntityModel createDepartmentModel(EntityConnectionProvider connectionProvider) {
 			SwingEntityModel employeeModel = new SwingEntityModel(new EmployeeEditModel(connectionProvider));
 			SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connectionProvider);
 			departmentModel.detailModels().add(employeeModel);
-			entityModels().add(departmentModel);
+
+			return departmentModel;
 		}
 	}
 

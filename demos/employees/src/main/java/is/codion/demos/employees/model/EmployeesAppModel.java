@@ -23,15 +23,21 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 
+import java.util.List;
+
 // tag::applicationModel[]
 public final class EmployeesAppModel extends SwingEntityApplicationModel {
 
 	public EmployeesAppModel(EntityConnectionProvider connectionProvider) {
-		super(connectionProvider);
+		super(connectionProvider, List.of(createDepartmentModel(connectionProvider)));
+	}
+
+	private static SwingEntityModel createDepartmentModel(EntityConnectionProvider connectionProvider) {
 		SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connectionProvider);
 		departmentModel.detailModels().add(new SwingEntityModel(new EmployeeEditModel(connectionProvider)));
 		departmentModel.tableModel().items().refresh();
-		entityModels().add(departmentModel);
+
+		return departmentModel;
 	}
 }
 // end::applicationModel[]

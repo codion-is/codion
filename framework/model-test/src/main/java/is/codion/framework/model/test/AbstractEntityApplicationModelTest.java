@@ -33,6 +33,8 @@ import is.codion.framework.model.test.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singleton;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -60,10 +62,8 @@ public abstract class AbstractEntityApplicationModelTest<M extends AbstractEntit
 
 	@Test
 	public void test() {
-		EntityApplicationModel<M, E, T> model = new DefaultEntityApplicationModel<>(connectionProvider);
 		M deptModel = createDepartmentModel();
-		model.entityModels().add(deptModel);
-		assertThrows(IllegalArgumentException.class, () -> model.entityModels().add(deptModel));
+		EntityApplicationModel<M, E, T> model = new DefaultEntityApplicationModel<>(connectionProvider, singleton(deptModel));
 		assertNotNull(model.entityModels().get(Department.TYPE));
 		assertEquals(1, model.entityModels().get().size());
 		assertEquals(UNIT_TEST_USER, model.user());
@@ -79,37 +79,33 @@ public abstract class AbstractEntityApplicationModelTest<M extends AbstractEntit
 
 	@Test
 	public void constructorNullConnectionProvider() {
-		assertThrows(NullPointerException.class, () -> new DefaultEntityApplicationModel<>(null));
+		assertThrows(NullPointerException.class, () -> new DefaultEntityApplicationModel<>(null, emptyList()));
 	}
 
 	@Test
 	public void entityModelByEntityTypeNotFound() {
-		EntityApplicationModel<M, E, T> model = new DefaultEntityApplicationModel<>(connectionProvider);
+		EntityApplicationModel<M, E, T> model = new DefaultEntityApplicationModel<>(connectionProvider, emptyList());
 		assertThrows(IllegalArgumentException.class, () -> model.entityModels().get(Department.TYPE));
 	}
 
 	@Test
 	public void entityModelByEntityType() {
-		EntityApplicationModel<M, E, T> model = new DefaultEntityApplicationModel<>(connectionProvider);
 		M departmentModel = createDepartmentModel();
-		model.entityModels().add(departmentModel);
+		EntityApplicationModel<M, E, T> model = new DefaultEntityApplicationModel<>(connectionProvider, singleton(departmentModel));
 		assertEquals(departmentModel, model.entityModels().get(Department.TYPE));
 	}
 
 	@Test
 	public void entityModelByClass() {
-		EntityApplicationModel<M, E, T> model = new DefaultEntityApplicationModel<>(connectionProvider);
 		M departmentModel = createDepartmentModel();
-		assertThrows(IllegalArgumentException.class, () -> model.entityModels().get((Class<? extends M>) departmentModel.getClass()));
-		model.entityModels().add(departmentModel);
+		EntityApplicationModel<M, E, T> model = new DefaultEntityApplicationModel<>(connectionProvider, singleton(departmentModel));
 		assertEquals(departmentModel, model.entityModels().get((Class<? extends M>) departmentModel.getClass()));
 	}
 
 	@Test
 	public void containsEntityModel() {
-		EntityApplicationModel<M, E, T> model = new DefaultEntityApplicationModel<>(connectionProvider);
 		M departmentModel = createDepartmentModel();
-		model.entityModels().add(departmentModel);
+		EntityApplicationModel<M, E, T> model = new DefaultEntityApplicationModel<>(connectionProvider, singleton(departmentModel));
 
 		assertTrue(model.entityModels().contains(Department.TYPE));
 		assertTrue(model.entityModels().contains((Class<? extends M>) departmentModel.getClass()));

@@ -78,7 +78,7 @@ public final class DefaultEntityApplicationPanelBuilderTest {
 	public static class TestApplicationModel extends SwingEntityApplicationModel {
 
 		public TestApplicationModel(EntityConnectionProvider connectionProvider) {
-			super(connectionProvider);
+			super(connectionProvider, emptyList());
 		}
 	}
 

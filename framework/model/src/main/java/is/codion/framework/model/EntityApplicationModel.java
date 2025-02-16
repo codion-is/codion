@@ -26,7 +26,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityType;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 
 import static is.codion.common.Configuration.booleanValue;
@@ -105,20 +105,6 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
 	interface EntityModels<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
 
 		/**
-		 * Adds the given entity models to this model.
-		 * @param entityModels the entity models to add
-		 * @throws IllegalArgumentException in case any of the models has already been added
-		 */
-		void add(M... entityModels);
-
-		/**
-		 * Adds the given entity model to this model
-		 * @param entityModel the detail model
-		 * @throws IllegalArgumentException in case the model has already been added
-		 */
-		void add(M entityModel);
-
-		/**
 		 * @param modelClass the application model class
 		 * @return true if this model contains a EntityModel instance of the given class
 		 */
@@ -137,10 +123,10 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
 		boolean contains(M entityModel);
 
 		/**
-		 * @return an unmodifiable List containing the EntityModel instances contained
+		 * @return an unmodifiable Collection containing the EntityModel instances contained
 		 * in this EntityApplicationModel
 		 */
-		List<M> get();
+		Collection<M> get();
 
 		/**
 		 * @param <C> the model type

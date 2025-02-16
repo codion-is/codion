@@ -85,8 +85,7 @@ public class EntityApplicationPanelTest {
 	private static final class TestApplicationModel extends SwingEntityApplicationModel {
 
 		public TestApplicationModel(EntityConnectionProvider connectionProvider) {
-			super(connectionProvider);
-			entityModels().add(new SwingEntityModel(Employee.TYPE, connectionProvider));
+			super(connectionProvider, singletonList(new SwingEntityModel(Employee.TYPE, connectionProvider)));
 		}
 	}
 

@@ -22,6 +22,8 @@ import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.model.DefaultEntityApplicationModel;
 
+import java.util.Collection;
+
 /**
  * A Swing implementation of {@link is.codion.framework.model.EntityApplicationModel}
  */
@@ -31,17 +33,19 @@ public class SwingEntityApplicationModel
 	/**
 	 * Instantiates a new {@link SwingEntityApplicationModel}
 	 * @param connectionProvider the connection provider
+	 * @param entityModels the entity models
 	 */
-	public SwingEntityApplicationModel(EntityConnectionProvider connectionProvider) {
-		this(connectionProvider, null);
+	public SwingEntityApplicationModel(EntityConnectionProvider connectionProvider, Collection<SwingEntityModel> entityModels) {
+		this(connectionProvider, entityModels, null);
 	}
 
 	/**
 	 * Instantiates a new {@link SwingEntityApplicationModel}
 	 * @param connectionProvider the connection provider
+	 * @param entityModels the entity models
 	 * @param version the application version
 	 */
-	public SwingEntityApplicationModel(EntityConnectionProvider connectionProvider, Version version) {
-		super(connectionProvider, version);
+	public SwingEntityApplicationModel(EntityConnectionProvider connectionProvider, Collection<SwingEntityModel> entityModels, Version version) {
+		super(connectionProvider, entityModels, version);
 	}
 }

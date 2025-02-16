@@ -160,13 +160,16 @@ public final class ClientTutorial {
 	private static final class ApplicationModel extends SwingEntityApplicationModel {
 
 		private ApplicationModel(EntityConnectionProvider connectionProvider) {
-			super(connectionProvider);
+			super(connectionProvider, List.of(createArtistModel(connectionProvider)));
+		}
+
+		private static SwingEntityModel createArtistModel(EntityConnectionProvider connectionProvider) {
 			SwingEntityModel artistModel = new SwingEntityModel(Artist.TYPE, connectionProvider);
 			SwingEntityModel albumModel = new SwingEntityModel(Album.TYPE, connectionProvider);
 			artistModel.detailModels().add(albumModel);
 			artistModel.tableModel().items().refresh();
 
-			entityModels().add(artistModel);
+			return artistModel;
 		}
 	}
 

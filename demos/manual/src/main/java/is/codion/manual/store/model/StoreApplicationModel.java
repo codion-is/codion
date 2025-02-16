@@ -20,13 +20,18 @@ package is.codion.manual.store.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
+import is.codion.swing.framework.model.SwingEntityModel;
+
+import java.util.List;
 
 // tag::storeAppModel[]
 public class StoreApplicationModel extends SwingEntityApplicationModel {
 
 	public StoreApplicationModel(EntityConnectionProvider connectionProvider) {
-		super(connectionProvider);
+		super(connectionProvider, List.of(createCustomerModel(connectionProvider)));
+	}
 
+	private static SwingEntityModel createCustomerModel(EntityConnectionProvider connectionProvider) {
 		CustomerModel customerModel =
 						new CustomerModel(connectionProvider);
 		CustomerAddressModel customerAddressModel =
@@ -37,7 +42,7 @@ public class StoreApplicationModel extends SwingEntityApplicationModel {
 		//populate the model with rows from the database
 		customerModel.tableModel().items().refresh();
 
-		entityModels().add(customerModel);
+		return customerModel;
 	}
 }
 // end::storeAppModel[]

@@ -22,12 +22,17 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 
+import java.util.List;
+
 import static is.codion.demos.petstore.domain.Petstore.*;
 
 public final class PetstoreAppModel extends SwingEntityApplicationModel {
 
 	public PetstoreAppModel(EntityConnectionProvider connectionProvider) {
-		super(connectionProvider);
+		super(connectionProvider, List.of(createCategoryModel(connectionProvider)));
+	}
+
+	private static SwingEntityModel createCategoryModel(EntityConnectionProvider connectionProvider) {
 		SwingEntityModel categoryModel = new SwingEntityModel(Category.TYPE, connectionProvider);
 		SwingEntityModel productModel = new SwingEntityModel(Product.TYPE, connectionProvider);
 		productModel.editModel().initializeComboBoxModels(Product.CATEGORY_FK);
@@ -39,6 +44,7 @@ public final class PetstoreAppModel extends SwingEntityApplicationModel {
 		itemModel.detailModels().add(tagItemModel);
 		productModel.detailModels().add(itemModel);
 		categoryModel.detailModels().add(productModel);
-		entityModels().add(categoryModel);
+
+		return categoryModel;
 	}
 }

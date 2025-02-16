@@ -26,10 +26,10 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -43,25 +43,29 @@ public class DefaultEntityApplicationModel<M extends EntityModel<M, E, T>,
 
 	private final EntityConnectionProvider connectionProvider;
 	private final Version version;
-	private final DefaultEntityModels<M, E, T> models = new DefaultEntityModels<>();
+	private final DefaultEntityModels<M, E, T> models;
 
 	/**
 	 * Instantiates a new DefaultEntityApplicationModel
 	 * @param connectionProvider the EntityConnectionProvider instance
+	 * @param entityModels the entity models
 	 * @throws NullPointerException in case connectionProvider is null
 	 */
-	public DefaultEntityApplicationModel(EntityConnectionProvider connectionProvider) {
-		this(connectionProvider, null);
+	public DefaultEntityApplicationModel(EntityConnectionProvider connectionProvider, Collection<? extends M> entityModels) {
+		this(connectionProvider, entityModels, null);
 	}
 
 	/**
 	 * Instantiates a new DefaultEntityApplicationModel
 	 * @param connectionProvider the EntityConnectionProvider instance
+	 * @param entityModels the entity models
 	 * @param version the application version
 	 * @throws NullPointerException in case connectionProvider is null
 	 */
-	public DefaultEntityApplicationModel(EntityConnectionProvider connectionProvider, Version version) {
+	public DefaultEntityApplicationModel(EntityConnectionProvider connectionProvider,
+																			 Collection<? extends M> entityModels, Version version) {
 		this.connectionProvider = requireNonNull(connectionProvider);
+		this.models = new DefaultEntityModels<>(requireNonNull(entityModels));
 		this.version = version;
 	}
 
@@ -107,21 +111,10 @@ public class DefaultEntityApplicationModel<M extends EntityModel<M, E, T>,
 	private final class DefaultEntityModels<M extends EntityModel<M, E, T>,
 					E extends EntityEditModel, T extends EntityTableModel<E>> implements EntityModels<M, E, T> {
 
-		private final List<M> entityModels = new ArrayList<>();
+		private final Collection<M> entityModels;
 
-		@Override
-		public void add(M... entityModels) {
-			for (M entityModel : requireNonNull(entityModels)) {
-				add(entityModel);
-			}
-		}
-
-		@Override
-		public void add(M entityModel) {
-			if (this.entityModels.contains(requireNonNull(entityModel))) {
-				throw new IllegalArgumentException("Entity model " + entityModel + " has already been added");
-			}
-			this.entityModels.add(entityModel);
+		private DefaultEntityModels(Collection<? extends M> entityModels) {
+			this.entityModels = unmodifiableList(new ArrayList<>(entityModels));
 		}
 
 		@Override
@@ -142,8 +135,8 @@ public class DefaultEntityApplicationModel<M extends EntityModel<M, E, T>,
 		}
 
 		@Override
-		public List<M> get() {
-			return Collections.unmodifiableList(entityModels);
+		public Collection<M> get() {
+			return entityModels;
 		}
 
 		@Override
