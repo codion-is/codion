@@ -148,8 +148,7 @@ public interface ConditionModel<T> {
 	State enabled();
 
 	/**
-	 * Clears this condition model, that is, clears all operands and sets the operator to the initial one.
-	 * @see #autoEnable()
+	 * Clears this condition model, that is, disables it, clears all operands and sets the operator to the initial one.
 	 * @see #operators()
 	 * @see Builder#operator(Operator)
 	 */

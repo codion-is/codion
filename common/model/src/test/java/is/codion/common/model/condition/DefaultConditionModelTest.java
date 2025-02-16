@@ -21,6 +21,7 @@ package is.codion.common.model.condition;
 import is.codion.common.Operator;
 import is.codion.common.model.condition.ConditionModel.Operands;
 import is.codion.common.model.condition.ConditionModel.Wildcard;
+import is.codion.common.value.Value;
 
 import org.junit.jupiter.api.Test;
 
@@ -719,5 +720,21 @@ public class DefaultConditionModelTest {
 		changed = condition.set().notBetween(null, null);
 		assertTrue(changed);
 		assertFalse(condition.enabled().get());
+	}
+
+	@Test
+	void clearNonNull() {
+		ConditionModel<Boolean> conditionModel = ConditionModel.builder(Boolean.class)
+						.operands(new Operands<Boolean>() {
+							@Override
+							public Value<Boolean> equal() {
+								return Value.nonNull(false);
+							}
+						})
+						.build();
+		conditionModel.operands().equal().set(true);
+		assertTrue(conditionModel.enabled().get());
+		conditionModel.clear();
+		assertFalse(conditionModel.enabled().get());
 	}
 }

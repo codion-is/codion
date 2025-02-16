@@ -7,6 +7,7 @@ Codion Change Log
 - FilterModel.VisibleItems.sort() renamed sortItems().
 - FilterModel.SortModel renamed Sorter.
 - FilterModel.VisibleItems.sortItems() renamed back to sort().
+- DefaultConditionModel bug fixed, now disables on clear, instead of relying on auto-enable, which fails for non-nullable conditions, since the equal operand doesn't become null when cleared.
 ### is.codion.swing.common.model
 - FilterTableModel.ColumnValues.get() and selected() now returns List instead of Collection.
 - FilterTableSortModel renamed FilterTableSorter.

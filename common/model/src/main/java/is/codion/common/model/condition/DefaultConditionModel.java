@@ -163,6 +163,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 	public void clear() {
 		operands.clear();
 		operator.clear();
+		enabled.set(false);
 	}
 
 	@Override
