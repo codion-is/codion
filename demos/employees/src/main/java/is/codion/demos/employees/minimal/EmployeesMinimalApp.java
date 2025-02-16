@@ -41,6 +41,7 @@ import java.util.Locale;
 
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static java.util.Collections.emptyList;
 
 /**
  * Employees minimal application demo
@@ -275,13 +276,12 @@ public final class EmployeesMinimalApp {
 	private static final class EmployeesApplicationPanel extends EntityApplicationPanel<EmployeesApplicationModel> {
 
 		private EmployeesApplicationPanel(EmployeesApplicationModel applicationModel) {
-			super(applicationModel);
+			super(applicationModel, createPanels(applicationModel), emptyList());
 		}
 
-		@Override
-		protected List<EntityPanel> createEntityPanels() {
+		private static List<EntityPanel> createPanels(EmployeesApplicationModel applicationModel) {
 			//now, let's assemble our application
-			SwingEntityModel departmentModel = applicationModel().entityModels().get(Department.TYPE);
+			SwingEntityModel departmentModel = applicationModel.entityModels().get(Department.TYPE);
 			SwingEntityModel employeeModel = departmentModel.detailModels().get(Employee.TYPE);
 
 			EntityPanel employeePanel = new EntityPanel(employeeModel,

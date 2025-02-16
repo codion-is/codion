@@ -78,20 +78,18 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 	private final ResourceBundle bundle = getBundle(ChinookAppPanel.class.getName());
 
 	public ChinookAppPanel(ChinookAppModel applicationModel) {
-		super(applicationModel);
+		super(applicationModel, createPanels(applicationModel), createSupportPanelBuilders());
 	}
 
-	@Override
-	protected List<EntityPanel> createEntityPanels() {
+	private static List<EntityPanel> createPanels(ChinookAppModel applicationModel) {
 		return List.of(
-						new CustomerPanel(applicationModel().entityModels().get(Customer.TYPE)),
-						new AlbumPanel(applicationModel().entityModels().get(Album.TYPE)),
-						new PlaylistPanel(applicationModel().entityModels().get(Playlist.TYPE))
+						new CustomerPanel(applicationModel.entityModels().get(Customer.TYPE)),
+						new AlbumPanel(applicationModel.entityModels().get(Album.TYPE)),
+						new PlaylistPanel(applicationModel.entityModels().get(Playlist.TYPE))
 		);
 	}
 
-	@Override
-	protected List<EntityPanel.Builder> createSupportEntityPanelBuilders() {
+	private static List<EntityPanel.Builder> createSupportPanelBuilders() {
 		EntityPanel.Builder genrePanelBuilder =
 						EntityPanel.builder(Genre.TYPE,
 										ChinookAppPanel::createGenrePanel);

@@ -872,16 +872,18 @@ public class EntityPanel extends JPanel {
 		this.nextPanel = requireNonNull(nextPanel);
 	}
 
-	static void addEntityPanelAndLinkSiblings(EntityPanel detailPanel, List<EntityPanel> entityPanels) {
-		if (!entityPanels.isEmpty()) {
-			EntityPanel previousPanel = entityPanels.get(entityPanels.size() - 1);
-			detailPanel.setPreviousPanel(previousPanel);
-			previousPanel.setNextPanel(detailPanel);
-			EntityPanel firstPanel = entityPanels.get(0);
-			detailPanel.setNextPanel(firstPanel);
-			firstPanel.setPreviousPanel(detailPanel);
+	final void linkSiblings(List<EntityPanel> entityPanels) {
+		if (entityPanels.size() > 1) {
+			int index = entityPanels.indexOf(this);
+			if (index != -1) {
+				EntityPanel previousPanel = entityPanels.get(index == 0 ? entityPanels.size() - 1 : index - 1);
+				setPreviousPanel(previousPanel);
+				previousPanel.setNextPanel(this);
+				EntityPanel nextPanel = entityPanels.get(index == entityPanels.size() - 1 ? 0 : index + 1);
+				setNextPanel(nextPanel);
+				nextPanel.setPreviousPanel(this);
+			}
 		}
-		entityPanels.add(detailPanel);
 	}
 
 	final WindowType windowType() {
@@ -1149,9 +1151,21 @@ public class EntityPanel extends JPanel {
 			if (panels.contains(requireNonNull(detailPanel))) {
 				throw new IllegalArgumentException("Panel already contains detail panel: " + detailPanel);
 			}
-			addEntityPanelAndLinkSiblings(detailPanel, panels);
+			addDetailPanelAndLinkSiblings(detailPanel);
 			detailPanel.setParentPanel(EntityPanel.this);
 			panelAdded.accept(detailPanel);
+		}
+
+		private void addDetailPanelAndLinkSiblings(EntityPanel detailPanel) {
+			if (!panels.isEmpty()) {
+				EntityPanel previousPanel = panels.get(panels.size() - 1);
+				detailPanel.setPreviousPanel(previousPanel);
+				previousPanel.setNextPanel(detailPanel);
+				EntityPanel firstPanel = panels.get(0);
+				detailPanel.setNextPanel(firstPanel);
+				firstPanel.setPreviousPanel(detailPanel);
+			}
+			panels.add(detailPanel);
 		}
 	}
 

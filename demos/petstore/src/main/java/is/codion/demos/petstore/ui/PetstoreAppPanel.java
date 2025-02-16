@@ -35,17 +35,16 @@ import static is.codion.swing.framework.ui.EntityPanel.PanelState.HIDDEN;
 public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppModel> {
 
 	public PetstoreAppPanel(PetstoreAppModel applicationModel) {
-		super(applicationModel);
+		super(applicationModel, createPanels(applicationModel), createSupportPanelBuilders());
 	}
 
-	@Override
-	protected List<EntityPanel> createEntityPanels() {
+	private static List<EntityPanel> createPanels(PetstoreAppModel applicationModel) {
 		/* CATEGORY
 		 *   PRODUCT
 		 *     ITEM
 		 *       ITEMTAG
 		 */
-		SwingEntityModel categoryModel = applicationModel().entityModels().get(Category.TYPE);
+		SwingEntityModel categoryModel = applicationModel.entityModels().get(Category.TYPE);
 		SwingEntityModel productModel = categoryModel.detailModels().get(Product.TYPE);
 		SwingEntityModel itemModel = productModel.detailModels().get(Item.TYPE);
 		SwingEntityModel tagItemModel = itemModel.detailModels().get(TagItem.TYPE);
@@ -72,8 +71,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
 		return List.of(categoryPanel);
 	}
 
-	@Override
-	protected List<EntityPanel.Builder> createSupportEntityPanelBuilders() {
+	private static List<EntityPanel.Builder> createSupportPanelBuilders() {
 		return List.of(
 						EntityPanel.builder(Address.TYPE,
 										PetstoreAppPanel::createAddressPanel),

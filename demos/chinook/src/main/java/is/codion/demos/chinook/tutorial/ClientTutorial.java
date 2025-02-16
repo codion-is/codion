@@ -45,6 +45,7 @@ import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerator.automatic;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.INSERT;
+import static java.util.Collections.emptyList;
 
 /**
  * When running this make sure the chinook demo module directory is the
@@ -172,12 +173,11 @@ public final class ClientTutorial {
 	private static final class ApplicationPanel extends EntityApplicationPanel<ApplicationModel> {
 
 		private ApplicationPanel(ApplicationModel applicationModel) {
-			super(applicationModel);
+			super(applicationModel, createPanels(applicationModel), emptyList());
 		}
 
-		@Override
-		protected List<EntityPanel> createEntityPanels() {
-			SwingEntityModel artistModel = applicationModel().entityModels().get(Artist.TYPE);
+		private static List<EntityPanel> createPanels(ApplicationModel applicationModel) {
+			SwingEntityModel artistModel = applicationModel.entityModels().get(Artist.TYPE);
 			SwingEntityModel albumModel = artistModel.detailModels().get(Album.TYPE);
 			EntityPanel artistPanel = new EntityPanel(artistModel, new ArtistEditPanel(artistModel.editModel()));
 			EntityPanel albumPanel = new EntityPanel(albumModel, new AlbumEditPanel(albumModel.editModel()));

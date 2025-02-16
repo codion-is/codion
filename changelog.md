@@ -22,6 +22,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityTablePanel.orderQueryBySortOrder() moved to model.
 - EntityPanel.Builder, major simplification and related refactoring.
+- EntityApplicationPanel.createEntityPanels() and createSupportEntityPanelBuilders() removed, constructor parameters added.
 
 ## 0.18.29
 ### is.codion.common.model

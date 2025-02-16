@@ -25,8 +25,6 @@ import is.codion.swing.framework.model.SwingEntityApplicationModel;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
@@ -87,12 +85,7 @@ public final class DefaultEntityApplicationPanelBuilderTest {
 	public static class TestApplicationPanel extends EntityApplicationPanel<TestApplicationModel> {
 
 		public TestApplicationPanel(TestApplicationModel applicationModel) {
-			super(applicationModel);
-		}
-
-		@Override
-		protected List<EntityPanel> createEntityPanels() {
-			return emptyList();
+			super(applicationModel, emptyList(), emptyList());
 		}
 	}
 }

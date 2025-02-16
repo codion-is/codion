@@ -112,6 +112,7 @@ import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static java.awt.Frame.MAXIMIZED_BOTH;
 import static java.util.Collections.singleton;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.joining;
@@ -234,8 +235,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 					messageBundle(EntityApplicationPanel.class, getBundle(EntityApplicationPanel.class.getName()));
 
 	private final M applicationModel;
-	private final Collection<EntityPanel.Builder> supportPanelBuilders = new ArrayList<>();
-	private final List<EntityPanel> entityPanels = new ArrayList<>();
+	private final Collection<EntityPanel.Builder> supportPanelBuilders;
+	private final List<EntityPanel> entityPanels;
 	private final ApplicationLayout applicationLayout;
 
 	private final State alwaysOnTopState = State.builder()
@@ -259,20 +260,30 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	 * Instantiates a new {@link EntityApplicationPanel} based on the given application model,
 	 * using the default {@link TabbedApplicationLayout}.
 	 * @param applicationModel the application model
+	 * @param entityPanels the entity panels
+	 * @param supportPanelBuilders the support panel builders
 	 */
-	public EntityApplicationPanel(M applicationModel) {
-		this(applicationModel, TabbedApplicationLayout::new);
+	public EntityApplicationPanel(M applicationModel, List<EntityPanel> entityPanels,
+																Collection<EntityPanel.Builder> supportPanelBuilders) {
+		this(applicationModel, entityPanels, supportPanelBuilders, TabbedApplicationLayout::new);
 	}
 
 	/**
 	 * Instantiates a new {@link EntityApplicationPanel} based on the given application model,
 	 * using the {@link ApplicationLayout} provided by {@code applicationLayout}.
 	 * @param applicationModel the application model
+	 * @param entityPanels the entity panels
+	 * @param supportPanelBuilders the support panel builders
 	 * @param applicationLayout provides the application layout
 	 */
-	public EntityApplicationPanel(M applicationModel, Function<EntityApplicationPanel<M>, ApplicationLayout> applicationLayout) {
+	public EntityApplicationPanel(M applicationModel, List<EntityPanel> entityPanels,
+																Collection<EntityPanel.Builder> supportPanelBuilders,
+																Function<EntityApplicationPanel<M>, ApplicationLayout> applicationLayout) {
 		this.applicationModel = requireNonNull(applicationModel);
+		this.entityPanels = unmodifiableList(new ArrayList<>(requireNonNull(entityPanels)));
+		this.supportPanelBuilders = requireNonNull(supportPanelBuilders);
 		this.applicationLayout = requireNonNull(applicationLayout).apply(this);
+		entityPanels.forEach(this::configureEntityPanel);
 		//initialize button captions, not in a static initializer since applications may set the locale in main()
 		UiManagerDefaults.initialize();
 	}
@@ -318,7 +329,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
 	/**
 	 * @return an unmodifiable view of the main application panels
-	 * @see #createEntityPanels()
 	 */
 	public final List<EntityPanel> entityPanels() {
 		return Collections.unmodifiableList(entityPanels);
@@ -453,9 +463,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	public final void initialize() {
 		if (!initialized) {
 			try {
-				createEntityPanels().forEach(this::addEntityPanel);
 				applyUserPreferences(entityPanels);
-				supportPanelBuilders.addAll(createSupportEntityPanelBuilders());
 				setLayout(new BorderLayout());
 				add(applicationLayout.layout(), BorderLayout.CENTER);
 				bindEvents();
@@ -827,22 +835,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	}
 
 	/**
-	 * Creates the {@link EntityPanel}s to include in this application panel.
-	 * Returns an empty list in case this panel contains no entity panels or has a custom UI.
-	 * @return a List containing the {@link EntityPanel}s to include in this application panel or an empty list in case of no entity panels.
-	 */
-	protected abstract List<EntityPanel> createEntityPanels();
-
-	/**
-	 * Returns a Collection of {@link EntityPanel.Builder} instances to use to populate the Support Table menu.
-	 * Returns an empty Collection in case of no support table panels.
-	 * @return a Collection of {@link EntityPanel.Builder} instances to use to populate the Support Table menu.
-	 */
-	protected Collection<EntityPanel.Builder> createSupportEntityPanelBuilders() {
-		return Collections.emptyList();
-	}
-
-	/**
 	 * To cancel the exit add a listener throwing a {@link CancelException}.
 	 * @return an observer notified when the application is about to exit.
 	 */
@@ -896,8 +888,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 						.build();
 	}
 
-	private void addEntityPanel(EntityPanel entityPanel) {
-		EntityPanel.addEntityPanelAndLinkSiblings(entityPanel, entityPanels);
+	private void configureEntityPanel(EntityPanel entityPanel) {
+		entityPanel.linkSiblings(entityPanels);
 		entityPanel.activated().addConsumer(applicationLayout::activated);
 		if (entityPanel.containsEditPanel()) {
 			entityPanel.editPanel().active().addConsumer(new DisplayActivatedPanel(entityPanel));

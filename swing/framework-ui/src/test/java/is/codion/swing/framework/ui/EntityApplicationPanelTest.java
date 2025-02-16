@@ -35,6 +35,7 @@ import javax.swing.tree.TreeModel;
 import java.util.Enumeration;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -92,12 +93,11 @@ public class EntityApplicationPanelTest {
 	private static final class TestApplicationPanel extends EntityApplicationPanel<TestApplicationModel> {
 
 		public TestApplicationPanel(TestApplicationModel applicationModel) {
-			super(applicationModel);
+			super(applicationModel, createPanels(applicationModel), emptyList());
 		}
 
-		@Override
-		protected List<EntityPanel> createEntityPanels() {
-			return singletonList(new EntityPanel(applicationModel().entityModels().get(Employee.TYPE)));
+		private static List<EntityPanel> createPanels(TestApplicationModel applicationModel) {
+			return singletonList(new EntityPanel(applicationModel.entityModels().get(Employee.TYPE)));
 		}
 	}
 }

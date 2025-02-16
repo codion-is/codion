@@ -38,13 +38,12 @@ import java.util.Locale;
 public class StoreApplicationPanel extends EntityApplicationPanel<StoreApplicationModel> {
 
 	public StoreApplicationPanel(StoreApplicationModel applicationModel) {
-		super(applicationModel);
+		super(applicationModel, createPanels(applicationModel), createSupportPanelBuilders());
 	}
 
-	@Override
-	protected List<EntityPanel> createEntityPanels() {
+	private static List<EntityPanel> createPanels(StoreApplicationModel applicationModel) {
 		CustomerModel customerModel = (CustomerModel)
-						applicationModel().entityModels().get(Customer.TYPE);
+						applicationModel.entityModels().get(Customer.TYPE);
 		CustomerAddressModel customerAddressModel = (CustomerAddressModel)
 						customerModel.detailModels().get(CustomerAddress.TYPE);
 
@@ -60,16 +59,15 @@ public class StoreApplicationPanel extends EntityApplicationPanel<StoreApplicati
 	}
 
 	// tag::createSupportEntityPanelBuilders[]
-	@Override
-	protected List<EntityPanel.Builder> createSupportEntityPanelBuilders() {
+	private static List<EntityPanel.Builder> createSupportPanelBuilders() {
 		EntityPanel.Builder addressPanelBuilder =
 						EntityPanel.builder(Address.TYPE, connectionProvider -> {
-											SwingEntityModel addressModel =
-															new SwingEntityModel(Address.TYPE, connectionProvider);
+							SwingEntityModel addressModel =
+											new SwingEntityModel(Address.TYPE, connectionProvider);
 
-											return new EntityPanel(addressModel,
-															new AddressEditPanel(addressModel.editModel()));
-										});
+							return new EntityPanel(addressModel,
+											new AddressEditPanel(addressModel.editModel()));
+						});
 
 		return List.of(addressPanelBuilder);
 	}

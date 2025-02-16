@@ -42,16 +42,16 @@ import javax.swing.JTable;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 
 public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> {
 
 	public SchemaBrowserAppPanel(SchemaBrowserApplicationModel applicationModel) {
-		super(applicationModel);
+		super(applicationModel, createPanels(applicationModel), emptyList());
 	}
 
-	@Override
-	protected List<EntityPanel> createEntityPanels() {
-		SwingEntityModel schemaModel = applicationModel().entityModels().get(Schema.TYPE);
+	private static List<EntityPanel> createPanels(SchemaBrowserApplicationModel applicationModel) {
+		SwingEntityModel schemaModel = applicationModel.entityModels().get(Schema.TYPE);
 		SwingEntityModel tableModel = schemaModel.detailModels().get(Table.TYPE);
 		SwingEntityModel columnModel = tableModel.detailModels().get(TableColumn.TYPE);
 		SwingEntityModel constraintModel = tableModel.detailModels().get(Constraint.TYPE);

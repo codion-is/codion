@@ -42,12 +42,11 @@ import java.util.Locale;
 public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicAppModel> {
 
 	public PetclinicAppPanel(PetclinicAppModel appModel) {
-		super(appModel);
+		super(appModel, createPanels(appModel), createSupportPanelBuilders());
 	}
 
-	@Override
-	protected List<EntityPanel> createEntityPanels() {
-		SwingEntityModel ownersModel = applicationModel().entityModels().get(Owner.TYPE);
+	private static List<EntityPanel> createPanels(PetclinicAppModel applicationModel) {
+		SwingEntityModel ownersModel = applicationModel.entityModels().get(Owner.TYPE);
 		SwingEntityModel petsModel = ownersModel.detailModels().get(Pet.TYPE);
 		SwingEntityModel visitsModel = petsModel.detailModels().get(Visit.TYPE);
 
@@ -64,8 +63,7 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
 		return List.of(ownersPanel);
 	}
 
-	@Override
-	protected List<EntityPanel.Builder> createSupportEntityPanelBuilders() {
+	private static List<EntityPanel.Builder> createSupportPanelBuilders() {
 		EntityPanel.Builder petTypePanelBuilder =
 						EntityPanel.builder(PetType.TYPE,
 										PetclinicAppPanel::createPetTypePanel);

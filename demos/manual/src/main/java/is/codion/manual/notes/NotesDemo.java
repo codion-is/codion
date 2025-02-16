@@ -60,6 +60,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.CLEAR;
+import static java.util.Collections.emptyList;
 
 // tag::notes[]
 public final class NotesDemo {
@@ -232,15 +233,10 @@ public final class NotesDemo {
 	public static final class NotesApplicationPanel extends EntityApplicationPanel<NotesApplicationModel> {
 
 		public NotesApplicationPanel(NotesApplicationModel applicationModel) {
-			super(applicationModel, NotesApplicationLayout::new);
-		}
-
-		@Override
-		protected List<EntityPanel> createEntityPanels() {
-			SwingEntityModel noteModel =
-							applicationModel().entityModels().get(Note.TYPE);
-
-			return List.of(new NotePanel(noteModel));
+			super(applicationModel,
+							// Supply an instance of our NotePanel, using the model from above
+							List.of(new NotePanel(applicationModel.entityModels().get(Note.TYPE))),
+							emptyList(), NotesApplicationLayout::new);
 		}
 
 		// Replace the default JTabbedPane based layout,

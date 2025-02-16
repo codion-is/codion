@@ -43,17 +43,17 @@ import java.util.List;
 import java.util.Optional;
 
 import static is.codion.framework.json.domain.EntityObjectMapper.entityObjectMapper;
+import static java.util.Collections.emptyList;
 
 // tag::createEntityPanels[]
 public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel> {
 
 	public EmployeesAppPanel(EmployeesAppModel applicationModel) {
-		super(applicationModel);
+		super(applicationModel, createPanels(applicationModel), emptyList());
 	}
 
-	@Override
-	protected List<EntityPanel> createEntityPanels() {
-		SwingEntityModel departmentModel = applicationModel().entityModels().get(Department.TYPE);
+	private static List<EntityPanel> createPanels(EmployeesAppModel applicationModel) {
+		SwingEntityModel departmentModel = applicationModel.entityModels().get(Department.TYPE);
 		SwingEntityModel employeeModel = departmentModel.detailModels().get(Employee.TYPE);
 
 		EntityPanel employeePanel = new EntityPanel(employeeModel,
