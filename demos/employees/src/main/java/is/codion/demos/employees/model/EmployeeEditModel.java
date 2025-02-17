@@ -26,6 +26,9 @@ import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import java.util.Objects;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singleton;
+
 // tag::constructor[]
 public final class EmployeeEditModel extends SwingEntityEditModel {
 
@@ -56,8 +59,8 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 											!Objects.equals(manager, employee)));
 			//and only show managers from the currently selected department
 			editor().value(Employee.DEPARTMENT_FK).addConsumer(department ->
-							managerComboBoxModel.filter()
-											.get(Employee.DEPARTMENT_FK).set(department.primaryKey()));
+							managerComboBoxModel.filter().get(Employee.DEPARTMENT_FK)
+											.set(department == null ? emptyList() : singleton(department.primaryKey())));
 
 			return managerComboBoxModel;
 		}

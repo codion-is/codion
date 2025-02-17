@@ -18,9 +18,10 @@
  */
 package is.codion.demos.chinook.ui;
 
+import is.codion.framework.domain.entity.Entity;
+import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.model.SwingEntityEditModel;
-import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JPanel;
@@ -36,11 +37,11 @@ import static java.awt.event.KeyEvent.VK_UP;
 
 public final class TrackEditPanel extends EntityEditPanel {
 
-	private final SwingEntityTableModel tableModel;
+	private final TableSelection<Entity> tableSelection;
 
-	public TrackEditPanel(SwingEntityEditModel editModel, SwingEntityTableModel tableModel) {
+	public TrackEditPanel(SwingEntityEditModel editModel, TableSelection<Entity> tableSelection) {
 		super(editModel);
-		this.tableModel = tableModel;
+		this.tableSelection = tableSelection;
 		addKeyEvents();
 	}
 
@@ -140,19 +141,19 @@ public final class TrackEditPanel extends EntityEditPanel {
 
 	private void decrementSelection() {
 		if (readyForSelectionChange()) {
-			tableModel.selection().indexes().decrement();
+			tableSelection.indexes().decrement();
 		}
 	}
 
 	private void incrementSelection() {
 		if (readyForSelectionChange()) {
-			tableModel.selection().indexes().increment();
+			tableSelection.indexes().increment();
 		}
 	}
 
 	private boolean readyForSelectionChange() {
 		// If the selection is empty
-		if (tableModel.selection().isSelectionEmpty()) {
+		if (tableSelection.empty().get()) {
 			return true;
 		}
 		// If the entity is not modified

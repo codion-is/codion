@@ -152,7 +152,8 @@ public final class Employees extends DomainModel {
 										Employee.JOB.define()
 														.column()
 														.caption("Job")
-														.items(Employee.JOB_ITEMS),
+														.items(Employee.JOB_ITEMS)
+														.nullable(false),
 										Employee.SALARY.define()
 														.column()
 														.caption("Salary")
