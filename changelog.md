@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.31
+
 ## 0.18.30
 ### is.codion.common.model
 - FilterModel.SortModel added along with sort().
