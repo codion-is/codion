@@ -35,6 +35,7 @@ import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -165,15 +166,17 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 
 	@Override
 	public void replace(R item, R replacement) {
+		requireNonNull(item);
 		validate(requireNonNull(replacement));
 		synchronized (lock) {
-			int visibleIndex = visible.items.indexOf(requireNonNull(item));
-			if (visibleIndex != -1) {
-				replaceVisibleItem(replacement, visibleIndex);
+			if (filtered.items.remove(item)) {
+				replaceFilteredItem(replacement);
 			}
-			int filteredIndex = filtered.items.indexOf(item);
-			if (filteredIndex != -1) {
-				replaceFilteredItem(replacement, filteredIndex);
+			else {
+				int visibleIndex = visible.items.indexOf(item);
+				if (visibleIndex != -1) {
+					replaceVisibleItem(replacement, visibleIndex);
+				}
 			}
 		}
 	}
@@ -308,8 +311,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		visible.sort();
 	}
 
-	private void replaceFilteredItem(R replacement, int filteredIndex) {
-		filtered.items.remove(filteredIndex);
+	private void replaceFilteredItem(R replacement) {
 		if (visiblePredicate.test(replacement)) {
 			int index = visible.items.size();
 			visible.items.add(replacement);
@@ -575,7 +577,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 
 	private final class DefaultFilteredItems implements FilterModel.FilteredItems<R> {
 
-		private final List<R> items = new ArrayList<>();
+		private final Set<R> items = new LinkedHashSet<>();
 		private final Event<Collection<R>> event = Event.event();
 
 		@Override
