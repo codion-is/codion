@@ -216,6 +216,27 @@ public class DefaultFilterComboBoxModelTest {
 	}
 
 	@Test
+	void replace() {
+		String bjorninn = "bjorninn";
+		testModel.selection().item().set(BJORN);
+		testModel.items().replace(BJORN, bjorninn);
+		assertSame(bjorninn, testModel.selection().item().get());
+
+		String test = "test";
+		testModel.items().replace("none", test);
+		assertFalse(testModel.items().visible().contains(test));
+
+		testModel.items().refresh();
+		testModel.selection().item().set(bjorninn);
+		testModel.items().visible().predicate().set(item -> !item.equals(bjorninn));
+		assertFalse(testModel.items().visible().contains(bjorninn));
+		testModel.items().replace(bjorninn, BJORN);
+		assertSame(BJORN, testModel.selection().item().get());
+		assertTrue(testModel.items().contains(BJORN));
+		assertTrue(testModel.items().visible().contains(BJORN));
+	}
+
+	@Test
 	void events() {
 		AtomicInteger filteredCounter = new AtomicInteger();
 		AtomicInteger visibleCounter = new AtomicInteger();

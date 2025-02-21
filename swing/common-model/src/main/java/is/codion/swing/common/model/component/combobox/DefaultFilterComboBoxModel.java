@@ -37,8 +37,10 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -371,8 +373,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 						visible.notifyChanges();
 					}
 				}
-				else if (!filtered.items.contains(item)) {
-					filtered.items.add(item);
+				else if (filtered.items.add(item)) {
 					filtered.notifyChanges();
 				}
 			}
@@ -466,11 +467,22 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			requireNonNull(item);
 			requireNonNull(replacement);
 			synchronized (lock) {
-				remove(item);
-				add(replacement);
+				if (filtered.items.remove(item)) {
+					add(replacement);
+				}
+				else {
+					ListIterator<T> iterator = visible.items.listIterator(includeNull ? 1 : 0);
+					while (iterator.hasNext()) {
+						if (iterator.next().equals(item)) {
+							iterator.remove();
+							add(replacement);
+							break;
+						}
+					}
+				}
 			}
 			if (Objects.equals(selection.selected.item, item)) {
-				selection.selected.replaceWith(item);
+				selection.selected.replaceWith(replacement);
 			}
 		}
 
@@ -641,7 +653,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private final class DefaultFilteredItems implements FilteredItems<T> {
 
-			private final List<T> items = new ArrayList<>();
+			private final Set<T> items = new LinkedHashSet<>();
 			private final Event<Collection<T>> event = Event.event();
 
 			@Override

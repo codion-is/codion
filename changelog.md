@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.31
+### is.codion.swing.common.model
+- DefaultFilterComboBoxModel.replace() bug fixed, added the replacement item even if it did not contain the item being replaced, did not replace the selected item.
 
 ## 0.18.30
 ### is.codion.common.model
