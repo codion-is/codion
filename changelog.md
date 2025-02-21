@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.swing.common.model
 - DefaultFilterComboBoxModel.replace() bug fixed, added the replacement item even if it did not contain the item being replaced, did not replace the selected item.
 - DefaultFilterTableItems.replace() improved a bit, DefaultFilteredItems.items now a LinkedHashSet.
+- DefaultFilterTableItems.DefaultVisibleItems.set() now sorts.
 
 ## 0.18.30
 ### is.codion.common.model

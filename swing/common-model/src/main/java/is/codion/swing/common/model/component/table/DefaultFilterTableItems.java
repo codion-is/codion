@@ -264,8 +264,9 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		if (index == -1) {
 			addInternal(item);
 		}
-		else {
-			visible.set(index, item);
+		else if (visiblePredicate.test(item)) {
+			visible.items.set(index, item);
+			tableModel.fireTableRowsUpdated(index, index);
 		}
 	}
 
@@ -515,6 +516,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 				if (visiblePredicate.test(item)) {
 					items.set(index, item);
 					tableModel.fireTableRowsUpdated(index, index);
+					visible.sort();
 
 					return true;
 				}
