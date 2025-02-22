@@ -34,6 +34,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -187,18 +188,42 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 
 	@Override
 	public void replace(R item, R replacement) {
-		requireNonNull(item);
-		validate(requireNonNull(replacement));
+		replace(singletonMap(requireNonNull(item), requireNonNull(replacement)));
+	}
+
+	@Override
+	public void replace(Map<R, R> items) {
+		// There is practically a carbon copy of this method in DefaultFilterComboBoxModel, fix both please
+		requireNonNull(items).values().forEach(this::validate);
 		synchronized (lock) {
-			if (filtered.items.remove(item)) {
-				replaceFilteredItem(replacement);
-			}
-			else {
-				int visibleIndex = visible.items.indexOf(item);
-				if (visibleIndex != -1) {
-					replaceVisibleItem(replacement, visibleIndex);
+			Map<R, R> toReplace = new HashMap<>(items);
+			for (R itemToReplace : items.keySet()) {
+				if (filtered.items.remove(itemToReplace)) {
+					R replacement = toReplace.remove(itemToReplace);
+					if (visiblePredicate.test(replacement)) {
+						visible.items.add(replacement);
+					}
+					else {
+						filtered.items.add(replacement);
+					}
 				}
 			}
+			ListIterator<R> iterator = visible.items.listIterator();
+			while (!toReplace.isEmpty() && iterator.hasNext()) {
+				R item = iterator.next();
+				R replacement = toReplace.remove(item);
+				if (replacement != null) {
+					if (visiblePredicate.test(replacement)) {
+						iterator.set(replacement);
+					}
+					else {
+						iterator.remove();
+						filtered.items.add(replacement);
+					}
+				}
+			}
+			tableModel.fireTableDataChanged();
+			visible.sort();
 		}
 	}
 
@@ -298,32 +323,6 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		selection.items().set(selectedItems);
 	}
 
-	private void replaceVisibleItem(R replacement, int visibleIndex) {
-		if (visiblePredicate.test(replacement)) {
-			visible.items.set(visibleIndex, replacement);
-			tableModel.fireTableRowsUpdated(visibleIndex, visibleIndex);
-		}
-		else {
-			visible.items.remove(visibleIndex);
-			filtered.items.add(replacement);
-			tableModel.fireTableRowsDeleted(visibleIndex, visibleIndex);
-			visible.notifyChanges();
-		}
-		visible.sort();
-	}
-
-	private void replaceFilteredItem(R replacement) {
-		if (visiblePredicate.test(replacement)) {
-			int index = visible.items.size();
-			visible.items.add(replacement);
-			tableModel.fireTableRowsInserted(index, index);
-			visible.sort();
-		}
-		else {
-			filtered.items.add(replacement);
-		}
-	}
-
 	private boolean addInternal(int index, Collection<R> items) {
 		Collection<R> visibleItems = new ArrayList<>(items.size());
 		Collection<R> filteredItems = new ArrayList<>(items.size());
@@ -350,7 +349,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 	}
 
 	private void validate(R item) {
-		if (!validator.test(item)) {
+		if (!validator.test(requireNonNull(item))) {
 			throw new IllegalArgumentException("Invalid item: " + item);
 		}
 	}

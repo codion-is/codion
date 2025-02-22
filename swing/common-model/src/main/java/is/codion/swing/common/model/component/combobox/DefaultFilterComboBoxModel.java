@@ -34,6 +34,7 @@ import javax.swing.event.ListDataListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -364,7 +365,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		public void add(T item) {
 			requireNonNull(item);
 			synchronized (lock) {
-				if (visible.predicate.isNull() || visible.predicate.getOrThrow().test(item)) {
+				if (visible(item)) {
 					if (!visible.items.contains(item)) {
 						visible.items.add(item);
 						visible.sortInternal();
@@ -391,11 +392,9 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		public void remove(T item) {
 			requireNonNull(item);
 			synchronized (lock) {
-				if (!filtered.items.remove(item)) {
-					if (visible.items.remove(item)) {
-						visible.notifyChanges();
-						updateSelectedItem(item);
-					}
+				if (!filtered.items.remove(item) && visible.items.remove(item)) {
+					visible.notifyChanges();
+					updateSelectedItem(item);
 				}
 			}
 		}
@@ -461,25 +460,45 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		public void replace(T item, T replacement) {
-			requireNonNull(item);
-			requireNonNull(replacement);
+			replace(singletonMap(requireNonNull(item), requireNonNull(replacement)));
+			if (Objects.equals(selection.selected.item, item)) {
+				selection.selected.replaceWith(replacement);
+			}
+		}
+
+		@Override
+		public void replace(Map<T, T> items) {
+			// There is practically a carbon copy of this method in DefaultFilterTableItems, fix both please
+			requireNonNull(items);
 			synchronized (lock) {
-				if (filtered.items.remove(item)) {
-					add(replacement);
-				}
-				else {
-					ListIterator<T> iterator = visible.items.listIterator(includeNull ? 1 : 0);
-					while (iterator.hasNext()) {
-						if (iterator.next().equals(item)) {
-							iterator.remove();
-							add(replacement);
-							break;
+				Map<T, T> replacements = new HashMap<>(items);
+				for (T itemToReplace : items.keySet()) {
+					if (filtered.items.remove(itemToReplace)) {
+						T replacement = replacements.remove(itemToReplace);
+						if (visible(replacement)) {
+							visible.items.add(replacement);
+						}
+						else {
+							filtered.items.add(replacement);
 						}
 					}
 				}
-			}
-			if (Objects.equals(selection.selected.item, item)) {
-				selection.selected.replaceWith(replacement);
+				ListIterator<T> iterator = visible.items.listIterator();
+				while (!replacements.isEmpty() && iterator.hasNext()) {
+					T item = iterator.next();
+					T replacement = replacements.remove(item);
+					if (replacement != null) {
+						if (visible(replacement)) {
+							iterator.set(replacement);
+						}
+						else {
+							iterator.remove();
+							filtered.items.add(replacement);
+						}
+					}
+				}
+				visible.notifyChanges();
+				visible.sort();
 			}
 		}
 
@@ -520,6 +539,10 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 					selection.selected.item = visible.items.get(index);
 				}
 			}
+		}
+
+		private boolean visible(T item) {
+			return visible.predicate.isNull() || visible.predicate.getOrThrow().test(item);
 		}
 
 		private final class DefaultVisibleItems implements VisibleItems<T> {

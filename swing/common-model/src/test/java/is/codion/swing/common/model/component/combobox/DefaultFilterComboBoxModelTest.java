@@ -28,7 +28,9 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -234,6 +236,35 @@ public class DefaultFilterComboBoxModelTest {
 		assertSame(BJORN, testModel.selection().item().get());
 		assertTrue(testModel.items().contains(BJORN));
 		assertTrue(testModel.items().visible().contains(BJORN));
+
+		testModel.items().refresh();
+		//ANNA, KALLI, SIGGI, TOMAS, BJORN
+		String karl = "karl";
+		String bjorn = "bjorn";
+		//replace KALLI with karl and BJORN with bjorn
+		Map<String, String> replacements = new HashMap<>();
+		replacements.put(KALLI, karl);
+		replacements.put(BJORN, bjorn);
+
+		testModel.items().replace(replacements);
+		assertFalse(testModel.items().contains(KALLI));
+		assertTrue(testModel.items().contains(karl));
+		assertFalse(testModel.items().contains(BJORN));
+		assertTrue(testModel.items().contains(bjorn));
+
+		//filter karl and BJORN and replace karl and bjorn with KALLI an BJORN
+		testModel.items().visible().predicate().set(testRow -> testRow != karl && testRow != BJORN);
+		replacements.clear();
+		replacements.put(karl, KALLI);
+		replacements.put(bjorn, BJORN);
+
+		testModel.items().replace(replacements);
+		assertTrue(testModel.items().contains(KALLI));
+		assertTrue(testModel.items().visible().contains(KALLI));
+		assertFalse(testModel.items().contains(karl));
+		assertTrue(testModel.items().contains(BJORN));
+		assertTrue(testModel.items().filtered().contains(BJORN));
+		assertFalse(testModel.items().contains(bjorn));
 	}
 
 	@Test

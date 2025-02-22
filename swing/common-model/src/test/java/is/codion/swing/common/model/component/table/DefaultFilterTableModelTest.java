@@ -30,7 +30,9 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -777,6 +779,33 @@ public final class DefaultFilterTableModelTest {
 		assertFalse(tableModel.items().filtered().contains(F));
 		assertTrue(tableModel.items().contains(D));
 		assertTrue(tableModel.items().filtered().contains(D));
+
+		tableModel.items().refresh();
+		//a, b, c, d, e
+		//replace d with f and b with g
+		Map<TestRow, TestRow> replacements = new HashMap<>();
+		replacements.put(D, F);
+		replacements.put(B, G);
+
+		tableModel.items().replace(replacements);
+		assertFalse(tableModel.items().contains(D));
+		assertTrue(tableModel.items().contains(F));
+		assertFalse(tableModel.items().contains(B));
+		assertTrue(tableModel.items().contains(G));
+
+		//filter f and b and replace f and g with d an b
+		tableModel.items().visible().predicate().set(testRow -> testRow != F && testRow != B);
+		replacements.clear();
+		replacements.put(F, D);
+		replacements.put(G, B);
+
+		tableModel.items().replace(replacements);
+		assertTrue(tableModel.items().contains(D));
+		assertTrue(tableModel.items().visible().contains(D));
+		assertFalse(tableModel.items().contains(F));
+		assertTrue(tableModel.items().contains(B));
+		assertTrue(tableModel.items().filtered().contains(B));
+		assertFalse(tableModel.items().contains(G));
 	}
 
 	@Test

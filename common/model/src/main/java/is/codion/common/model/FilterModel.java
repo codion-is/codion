@@ -32,6 +32,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -137,7 +138,7 @@ public interface FilterModel<T> {
 		void remove(T item);
 
 		/**
-		 * <p>Removes the given items from this table model.
+		 * <p>Removes the given items from this model.
 		 * @param items the items to remove from the model
 		 */
 		void remove(Collection<T> items);
@@ -152,6 +153,15 @@ public interface FilterModel<T> {
 		 * @see VisibleItems#predicate()
 		 */
 		void replace(T item, T replacement);
+
+		/**
+		 * <p>Replaces the given map keys with their respective values.
+		 * <p>Note that this method respects the visible predicate, so a
+		 * currently filtered item may be replaced with a visible item and vice verse.
+		 * <p>If the visible items change they are sorted if sorting is enabled.
+		 * @param replacements
+		 */
+		void replace(Map<T, T> replacements);
 
 		/**
 		 * Clears the items
@@ -262,7 +272,7 @@ public interface FilterModel<T> {
 		boolean set(int index, T item);
 
 		/**
-		 * <p>Removes from this table model the visible element at the given index
+		 * <p>Removes from this model the visible element at the given index
 		 * @param index the index of the row to be removed
 		 * @return the removed item
 		 * @throws IndexOutOfBoundsException in case the index is out of bounds
@@ -270,7 +280,7 @@ public interface FilterModel<T> {
 		T remove(int index);
 
 		/**
-		 * <p>Removes from this table model all visible elements whose index is between {@code fromIndex}, inclusive and {@code toIndex}, exclusive
+		 * <p>Removes from this model all visible elements whose index is between {@code fromIndex}, inclusive and {@code toIndex}, exclusive
 		 * @param fromIndex index of first row to be removed
 		 * @param toIndex index after last row to be removed
 		 * @return the removed items
