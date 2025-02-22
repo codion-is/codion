@@ -125,7 +125,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public void setValueAt(Object value, int rowIndex, int columnIndex) {
-		rowEditor().set(value, items.visible().get(rowIndex), items.columns.identifier(columnIndex));
+		rowEditor().set(value, rowIndex, items.visible().get(rowIndex), items.columns.identifier(columnIndex));
 	}
 
 	@Override
@@ -239,7 +239,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
-		public void set(Object value, R row, C identifier) {}
+		public void set(Object value, int rowIndex, R row, C identifier) {}
 	}
 
 	private static final class DefaultRowEditorFactory<R, C> implements Function<FilterTableModel<R, C>, RowEditor<R, C>> {

@@ -18,7 +18,7 @@
  */
 package is.codion.manual.swing.common.model.component.table;
 
-import is.codion.common.model.FilterModel.Items;
+import is.codion.common.model.FilterModel.VisibleItems;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
@@ -84,25 +84,25 @@ public final class FilterTableModelDemo {
 	// Implement a RowEditor for handling row edits
 	private static final class PersonEditor implements RowEditor<Person, String> {
 
-		// We need the underlying Items instance to replace the edited
+		// We need the underlying VisibleItems instance to replace the edited
 		// row since the row objects are records and thereby immutable
-		private final Items<Person> items;
+		private final VisibleItems<Person> items;
 
 		private PersonEditor(FilterTableModel<Person, String> table) {
-			this.items = table.items();
+			this.items = table.items().visible();
 		}
 
 		@Override
-		public boolean editable(Person person, String column) {
+		public boolean editable(Person person, String identifier) {
 			// Both columns editable
 			return true;
 		}
 
 		@Override
-		public void set(Object value, Person person, String column) {
-			switch (column) {
-				case NAME -> items.replace(person, new Person((String) value, person.age()));
-				case AGE -> items.replace(person, new Person(person.name(), (Integer) value));
+		public void set(Object value, int rowIndex, Person person, String identifier) {
+			switch (identifier) {
+				case NAME -> items.set(rowIndex, new Person((String) value, person.age()));
+				case AGE -> items.set(rowIndex, new Person(person.name(), (Integer) value));
 			}
 		}
 	}

@@ -824,7 +824,7 @@ public final class DefaultFilterTableModelTest {
 			}
 
 			@Override
-			public void set(Object value, TestRow row, Integer identifier) {
+			public void set(Object value, int rowIndex, TestRow row, Integer identifier) {
 				items.replace(row, new TestRow((String) value));
 			}
 		}

@@ -11,6 +11,7 @@ Codion Change Log
 - FilterModel.FilteredItems no longer extends Observable.
 - DefaultFilterTableItems.merge() refactored.
 - DefaultFilterTableItems.remove() refactored.
+- FilterTableModel.RowEditor.set(), rowIndex parameter added.
 
 ## 0.18.30
 ### is.codion.common.model

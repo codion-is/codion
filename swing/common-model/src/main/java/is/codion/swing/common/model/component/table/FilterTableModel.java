@@ -361,11 +361,12 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		/**
 		 * Sets the value of the given column
 		 * @param value the value to set
-		 * @param row the row
+		 * @param rowIndex the row index
+		 * @param row the row object
 		 * @param identifier the column identifier
 		 * @see TableModel#setValueAt(Object, int, int)
 		 */
-		void set(Object value, R row, C identifier);
+		void set(Object value, int rowIndex, R row, C identifier);
 	}
 
 	/**
