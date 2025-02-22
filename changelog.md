@@ -8,6 +8,7 @@ Codion Change Log
 - DefaultFilterTableItems.DefaultVisibleItems.set() now sorts.
 - FilterModel.FilteredItems no longer extends Observable.
 - DefaultFilterTableItems.merge() refactored.
+- DefaultFilterTableItems.remove() refactored.
 
 ## 0.18.30
 ### is.codion.common.model

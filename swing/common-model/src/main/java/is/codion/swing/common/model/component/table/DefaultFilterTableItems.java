@@ -143,8 +143,16 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 
 	@Override
 	public void remove(R item) {
+		requireNonNull(item);
 		synchronized (lock) {
-			removeInternal(requireNonNull(item), true);
+			if (!filtered.items.remove(item)) {
+				int index = visible.items.indexOf(item);
+				if (index >= 0) {
+					visible.items.remove(index);
+					tableModel.fireTableRowsDeleted(index, index);
+					visible.notifyChanges();
+				}
+			}
 		}
 	}
 
@@ -152,10 +160,23 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 	public void remove(Collection<R> items) {
 		rejectNulls(items);
 		synchronized (lock) {
-			selection.setValueIsAdjusting(true);
+			Set<R> toRemove = new HashSet<>(items);
+			for (R itemToRemove : items) {
+				if (filtered.items.remove(itemToRemove)) {
+					toRemove.remove(itemToRemove);
+				}
+			}
 			boolean visibleRemoved = false;
-			for (R item : items) {
-				visibleRemoved = removeInternal(item, false) || visibleRemoved;
+			selection.setValueIsAdjusting(true);
+			ListIterator<R> iterator = visible.items.listIterator(visible.items.size());
+			while (!toRemove.isEmpty() && iterator.hasPrevious()) {
+				int index = iterator.previousIndex();
+				R item = iterator.previous();
+				if (toRemove.remove(item)) {
+					iterator.remove();
+					tableModel.fireTableRowsDeleted(index, index);
+					visibleRemoved = true;
+				}
 			}
 			selection.setValueIsAdjusting(false);
 			if (visibleRemoved) {
@@ -237,8 +258,6 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 			visible.items.clear();
 			if (visibleSize > 0) {
 				tableModel.fireTableRowsDeleted(0, visibleSize - 1);
-			}
-			if (visibleSize != 0) {
 				visible.notifyChanges();
 			}
 		}
@@ -330,22 +349,6 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		return !visibleItems.isEmpty();
 	}
 
-	private boolean removeInternal(R item, boolean notifyDataChanged) {
-		int visibleItemIndex = visible.items.indexOf(item);
-		if (visibleItemIndex >= 0) {
-			visible.items.remove(visibleItemIndex);
-			tableModel.fireTableRowsDeleted(visibleItemIndex, visibleItemIndex);
-			if (notifyDataChanged) {
-				visible.notifyChanges();
-			}
-		}
-		else {
-			filtered.items.remove(item);
-		}
-
-		return visibleItemIndex >= 0;
-	}
-
 	private void validate(R item) {
 		if (!validator.test(item)) {
 			throw new IllegalArgumentException("Invalid item: " + item);
@@ -425,7 +428,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 			tableModel.addTableModelListener(e -> {
 				if (e.getType() != TableModelEvent.DELETE) {
 					// Deletions are handled differently, in order to trigger only a single
-					// event when multiple visible items are removed, see removeItems()
+					// event when multiple visible items are removed, see remove(Collection)
 					notifyChanges();
 				}
 			});

@@ -78,6 +78,11 @@ public final class DefaultFilterTableModelTest {
 		public int hashCode() {
 			return Objects.hashCode(value);
 		}
+
+		@Override
+		public String toString() {
+			return value;
+		}
 	}
 
 	private static final class TestColumns implements TableColumns<TestRow, Integer> {
@@ -325,6 +330,10 @@ public final class DefaultFilterTableModelTest {
 		assertEquals(9, events.get());//just a single event when removing multiple items
 		tableModel.items().visible().remove(0);
 		assertEquals(10, events.get());
+		tableModel.items().refresh();
+		assertEquals(12, events.get());
+		tableModel.items().remove(asList(B, D, E, G));//does not contain G
+		assertEquals(13, events.get());//just a single event when removing multiple items
 		tableModel.items().visible().removeListener(listener);
 	}
 
