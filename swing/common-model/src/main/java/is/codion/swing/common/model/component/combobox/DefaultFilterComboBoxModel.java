@@ -356,7 +356,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 				replaceSelectedItem();
 				cleared = items.isEmpty();
 				visible.sortInternal();
-				filtered.notifyChanges();
 				visible.notifyChanges();
 			}
 		}
@@ -373,8 +372,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 						visible.notifyChanges();
 					}
 				}
-				else if (filtered.items.add(item)) {
-					filtered.notifyChanges();
+				else {
+					filtered.items.add(item);
 				}
 			}
 		}
@@ -392,12 +391,11 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		public void remove(T item) {
 			requireNonNull(item);
 			synchronized (lock) {
-				if (filtered.items.remove(item)) {
-					filtered.notifyChanges();
-				}
-				else if (visible.items.remove(item)) {
-					visible.notifyChanges();
-					updateSelectedItem(item);
+				if (!filtered.items.remove(item)) {
+					if (visible.items.remove(item)) {
+						visible.notifyChanges();
+						updateSelectedItem(item);
+					}
 				}
 			}
 		}
@@ -448,7 +446,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 									&& !visible.items.contains(selection.selected.item)) {
 						selection.selected.setSelectedItem(null);
 					}
-					filtered.notifyChanges();
 					visible.notifyChanges();
 				}
 			}
@@ -654,18 +651,12 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		private final class DefaultFilteredItems implements FilteredItems<T> {
 
 			private final Set<T> items = new LinkedHashSet<>();
-			private final Event<Collection<T>> event = Event.event();
 
 			@Override
 			public Collection<T> get() {
 				synchronized (lock) {
 					return unmodifiableCollection(items);
 				}
-			}
-
-			@Override
-			public Observer<Collection<T>> observer() {
-				return event.observer();
 			}
 
 			@Override
@@ -680,10 +671,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 				synchronized (lock) {
 					return items.size();
 				}
-			}
-
-			private void notifyChanges() {
-				event.accept(get());
 			}
 		}
 	}

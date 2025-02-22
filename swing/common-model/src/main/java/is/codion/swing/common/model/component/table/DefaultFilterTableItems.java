@@ -184,9 +184,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 	@Override
 	public void add(R item) {
 		synchronized (lock) {
-			if (addInternal(requireNonNull(item))) {
-				visible.sort();
-			}
+			addInternal(visible.items.size(), singleton(requireNonNull(item)));
 		}
 	}
 
@@ -227,7 +225,6 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 				visible.items.sort(sorter.comparator());
 			}
 			tableModel.fireTableDataChanged();
-			filtered.notifyChanges();
 		}
 		selection.items().set(selectedItems);
 	}
@@ -235,7 +232,6 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 	@Override
 	public void clear() {
 		synchronized (lock) {
-			int filteredSize = filtered.items.size();
 			filtered.items.clear();
 			int visibleSize = visible.items.size();
 			visible.items.clear();
@@ -245,13 +241,11 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 			if (visibleSize != 0) {
 				visible.notifyChanges();
 			}
-			if (filteredSize != 0) {
-				filtered.notifyChanges();
-			}
 		}
 	}
 
 	private void merge(Collection<R> items) {
+		items.forEach(this::validate);
 		Set<R> itemSet = new HashSet<>(items);
 		get().stream()
 						.filter(item -> !itemSet.contains(item))
@@ -262,7 +256,15 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 	private void merge(R item) {
 		int index = visible.indexOf(item);
 		if (index == -1) {
-			addInternal(item);
+			int visibleCount = visible.count();
+			if (visiblePredicate.test(item)) {
+				visible.items.add(visibleCount, item);
+				tableModel.fireTableRowsInserted(visibleCount, visibleCount);
+				visible.notifyAdded(singleton(item));
+
+				return;
+			}
+			filtered.items.add(item);
 		}
 		else if (visiblePredicate.test(item)) {
 			visible.items.set(index, item);
@@ -277,26 +279,6 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		selection.items().set(selectedItems);
 	}
 
-	private boolean addInternal(R item) {
-		return addInternal(visible.count(), item);
-	}
-
-	private boolean addInternal(int index, R item) {
-		validate(item);
-		if (visiblePredicate.test(item)) {
-			visible.items.add(index, item);
-			tableModel.fireTableRowsInserted(index, index);
-			visible.sort();
-			visible.notifyAdded(singleton(item));
-
-			return true;
-		}
-		filtered.items.add(item);
-		filtered.notifyChanges();
-
-		return false;
-	}
-
 	private void replaceVisibleItem(R replacement, int visibleIndex) {
 		if (visiblePredicate.test(replacement)) {
 			visible.items.set(visibleIndex, replacement);
@@ -307,7 +289,6 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 			filtered.items.add(replacement);
 			tableModel.fireTableRowsDeleted(visibleIndex, visibleIndex);
 			visible.notifyChanges();
-			filtered.notifyChanges();
 		}
 		visible.sort();
 	}
@@ -321,7 +302,6 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		}
 		else {
 			filtered.items.add(replacement);
-			filtered.notifyChanges();
 		}
 	}
 
@@ -345,7 +325,6 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		}
 		if (!filteredItems.isEmpty()) {
 			filtered.items.addAll(filteredItems);
-			filtered.notifyChanges();
 		}
 
 		return !visibleItems.isEmpty();
@@ -360,8 +339,8 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 				visible.notifyChanges();
 			}
 		}
-		else if (filtered.items.remove(item)) {
-			filtered.notifyChanges();
+		else {
+			filtered.items.remove(item);
 		}
 
 		return visibleItemIndex >= 0;
@@ -505,7 +484,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		@Override
 		public boolean add(int index, R item) {
 			synchronized (lock) {
-				return addInternal(index, requireNonNull(item));
+				return addInternal(index, singleton(requireNonNull(item)));
 			}
 		}
 
@@ -580,18 +559,12 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 	private final class DefaultFilteredItems implements FilterModel.FilteredItems<R> {
 
 		private final Set<R> items = new LinkedHashSet<>();
-		private final Event<Collection<R>> event = Event.event();
 
 		@Override
 		public Collection<R> get() {
 			synchronized (lock) {
 				return unmodifiableCollection(items);
 			}
-		}
-
-		@Override
-		public Observer<Collection<R>> observer() {
-			return event.observer();
 		}
 
 		@Override
@@ -606,10 +579,6 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 			synchronized (lock) {
 				return items.size();
 			}
-		}
-
-		private void notifyChanges() {
-			event.accept(get());
 		}
 	}
 

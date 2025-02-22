@@ -293,12 +293,11 @@ public interface FilterModel<T> {
 	/**
 	 * @param <T> the item type
 	 */
-	interface FilteredItems<T> extends Observable<Collection<T>> {
+	interface FilteredItems<T> {
 
 		/**
 		 * @return the filtered items or an empty collection in case of no filtered items
 		 */
-		@Override
 		Collection<T> get();
 
 		/**

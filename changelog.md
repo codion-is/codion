@@ -6,6 +6,8 @@ Codion Change Log
 - DefaultFilterComboBoxModel.replace() bug fixed, added the replacement item even if it did not contain the item being replaced, did not replace the selected item.
 - DefaultFilterTableItems.replace() improved a bit, DefaultFilteredItems.items now a LinkedHashSet.
 - DefaultFilterTableItems.DefaultVisibleItems.set() now sorts.
+- FilterModel.FilteredItems no longer extends Observable.
+- DefaultFilterTableItems.merge() refactored.
 
 ## 0.18.30
 ### is.codion.common.model

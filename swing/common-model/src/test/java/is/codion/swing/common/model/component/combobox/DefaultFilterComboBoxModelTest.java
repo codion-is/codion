@@ -238,45 +238,35 @@ public class DefaultFilterComboBoxModelTest {
 
 	@Test
 	void events() {
-		AtomicInteger filteredCounter = new AtomicInteger();
 		AtomicInteger visibleCounter = new AtomicInteger();
 
 		FilterComboBoxModel<String> model = FilterComboBoxModel.builder(ITEMS)
 						.nullItem(NULL)
 						.build();
-		model.items().filtered().addListener(filteredCounter::incrementAndGet);
 		model.items().visible().addListener(visibleCounter::incrementAndGet);
 		model.items().visible().predicate().set(item -> !item.equals(BJORN));
 
-		assertEquals(1, filteredCounter.get());
 		assertEquals(1, visibleCounter.get());
 
 		model.items().clear();
-		assertEquals(2, filteredCounter.get());
 		assertEquals(2, visibleCounter.get());
 
 		model.items().add(BJORN);//filtered
-		assertEquals(3, filteredCounter.get());
 		assertEquals(2, visibleCounter.get());
 
 		model.items().add(ANNA);//visible
-		assertEquals(3, filteredCounter.get());
 		assertEquals(3, visibleCounter.get());
 
 		model.items().add(asList(KALLI, SIGGI));//visible
-		assertEquals(3, filteredCounter.get());
 		assertEquals(5, visibleCounter.get());
 
 		model.items().remove(BJORN);//filtered
-		assertEquals(4, filteredCounter.get());
 		assertEquals(5, visibleCounter.get());
 
 		model.items().add(asList(BJORN, TOMAS));//filtered and visible
-		assertEquals(5, filteredCounter.get());
 		assertEquals(6, visibleCounter.get());
 
 		model.items().visible().predicate().clear();
-		assertEquals(6, filteredCounter.get());
 		assertEquals(7, visibleCounter.get());
 	}
 
