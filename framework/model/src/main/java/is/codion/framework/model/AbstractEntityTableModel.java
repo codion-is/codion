@@ -33,14 +33,14 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import static is.codion.framework.domain.entity.Entity.primaryKeyMap;
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
@@ -151,12 +151,12 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 
 	@Override
 	public final void replace(Collection<Entity> entities) {
-		replaceEntitiesByKey(Entity.primaryKeyMap(entities));
+		replaceEntities(primaryKeyMap(entities));
 	}
 
 	@Override
 	public final void refresh(Collection<Entity.Key> keys) {
-		replaceEntitiesByKey(connection().select(keys).stream()
+		replaceEntities(connection().select(keys).stream()
 						.collect(toMap(Entity::primaryKey, identity())));
 	}
 
@@ -242,7 +242,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	}
 
 	private void onUpdate(Map<Entity, Entity> updatedEntities) {
-		replaceEntitiesByKey(updatedEntities.entrySet().stream()
+		replaceEntities(updatedEntities.entrySet().stream()
 						.collect(toMap(entry -> entry.getKey().originalPrimaryKey(), Map.Entry::getValue)));
 	}
 
@@ -258,38 +258,24 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 		}
 	}
 
-	/**
-	 * Replace the entities identified by the Entity.Key map keys with their respective value.
-	 * Note that this does not trigger {@link Items#filter()}, that must be done explicitly.
-	 * @param entitiesByKey the entities to replace mapped to the corresponding primary key found in this table model
-	 */
-	private void replaceEntitiesByKey(Map<Entity.Key, Entity> entitiesByKey) {
-		Map<Entity.Key, Integer> keyIndexes = keyIndexes(new HashSet<>(entitiesByKey.keySet()));
-		keyIndexes.forEach((key, index) -> items().visible().set(index, entitiesByKey.remove(key)));
-		if (!entitiesByKey.isEmpty()) {
-			items().filtered().get().forEach(item -> {
-				Entity replacement = entitiesByKey.remove(item.primaryKey());
-				if (replacement != null) {
-					item.set(replacement);
-				}
-			});
-		}
-	}
-
-	private Map<Entity.Key, Integer> keyIndexes(Set<Entity.Key> keys) {
-		List<Entity> visibleItems = items().visible().get();
-		Map<Entity.Key, Integer> keyIndexes = new HashMap<>();
-		for (int index = 0; index < visibleItems.size(); index++) {
-			Entity.Key primaryKey = visibleItems.get(index).primaryKey();
-			if (keys.remove(primaryKey)) {
-				keyIndexes.put(primaryKey, index);
-				if (keys.isEmpty()) {
-					break;
-				}
+	private void replaceEntities(Map<Entity.Key, Entity> entities) {
+		Map<Entity.Key, Entity> replacements = new HashMap<>(entities);
+		VisibleItems<Entity> visibleItems = items().visible();
+		List<Entity> visible = visibleItems.get();
+		for (int i = 0; i < visible.size() && !replacements.isEmpty(); i++) {
+			Entity replacement = replacements.remove(visible.get(i).primaryKey());
+			if (replacement != null) {
+				visibleItems.set(i, replacement);
 			}
 		}
-
-		return keyIndexes;
+		Iterator<Entity> filtered = items().filtered().get().iterator();
+		while (filtered.hasNext() && !replacements.isEmpty()) {
+			Entity entity = filtered.next();
+			Entity replacement = replacements.remove(entity.primaryKey());
+			if (replacement != null) {
+				entity.set(replacement);
+			}
+		}
 	}
 
 	private static boolean replace(ForeignKey foreignKey, Entity entity, Entity.Key key, Entity foreignKeyValue) {

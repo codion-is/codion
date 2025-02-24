@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.31
 ### is.codion.common.model
 - FilterModel.Items.replace() overloaded with a Map parameter.
+- FilterModel.VisibleItems.set() no longer sorts.
 ### is.codion.swing.common.model
 - DefaultFilterComboBoxModel.replace() bug fixed, added the replacement item even if it did not contain the item being replaced, did not replace the selected item.
 - DefaultFilterTableItems.replace() improved a bit, DefaultFilteredItems.items now a LinkedHashSet.
@@ -19,6 +20,7 @@ Codion Change Log
 - EntityTableModel.handleEditEvents() removed.
 - EntitySearchModel.Builder.handleEditEvents() added.
 - EntityTableModel.editModel() inferred return type removed.
+- AbstractEntityTableModel.replaceEntitiesByKey() refactored and renamed.
 
 ## 0.18.30
 ### is.codion.common.model

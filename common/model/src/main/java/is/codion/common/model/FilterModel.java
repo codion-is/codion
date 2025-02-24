@@ -261,7 +261,7 @@ public interface FilterModel<T> {
 		boolean add(int index, Collection<T> items);
 
 		/**
-		 * <p>Sets the item at the given index and sorts the visible items if sorting is enabled.
+		 * <p>Sets the item at the given index. Note that sorting is NOT performed after the item has been set.
 		 * <p>Note that if the item does not pass the {@link VisibleItems#predicate()} this method has no effect.
 		 * @param index the index
 		 * @param item the item
