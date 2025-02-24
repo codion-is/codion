@@ -32,7 +32,6 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
-import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityEditModel.EntityEditor;
 import is.codion.framework.model.test.TestDomain;
@@ -54,8 +53,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
+import static java.util.Collections.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class AbstractEntityEditModelTest {
@@ -70,7 +68,7 @@ public final class AbstractEntityEditModelTest {
 					.user(UNIT_TEST_USER)
 					.build();
 
-	private EntityEditModel employeeEditModel;
+	private AbstractEntityEditModel employeeEditModel;
 	private EntityEditor editor;
 
 	@BeforeEach
@@ -502,7 +500,7 @@ public final class AbstractEntityEditModelTest {
 	}
 
 	@Test
-	void replace() {
+	void updated() {
 		Entity james = employeeEditModel.connection()
 						.selectSingle(Employee.NAME.equalTo("JAMES"));
 		editor.set(james);
@@ -510,7 +508,7 @@ public final class AbstractEntityEditModelTest {
 		Entity blake = employeeEditModel.connection()
 						.selectSingle(Employee.NAME.equalTo("BLAKE"));
 		blake.put(Employee.COMMISSION, 100d);
-		employeeEditModel.replace(Employee.MGR_FK, singletonList(blake));
+		employeeEditModel.updated(Employee.MGR_FK, singletonMap(blake.primaryKey(), blake));
 		assertEquals(100d, editor.get().entity(Employee.MGR_FK).get(Employee.COMMISSION));
 	}
 
@@ -703,12 +701,6 @@ public final class AbstractEntityEditModelTest {
 		private TestEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
 			super(entityType, connectionProvider);
 		}
-
-		@Override
-		public void add(ForeignKey foreignKey, Collection<Entity> entities) {}
-
-		@Override
-		public void remove(ForeignKey foreignKey, Collection<Entity> entities) {}
 	}
 
 	private static final class DetailEditModel extends AbstractEntityEditModel {
@@ -716,11 +708,5 @@ public final class AbstractEntityEditModelTest {
 		private DetailEditModel(EntityConnectionProvider connectionProvider) {
 			super(Detail.TYPE, connectionProvider);
 		}
-
-		@Override
-		public void add(ForeignKey foreignKey, Collection<Entity> entities) {}
-
-		@Override
-		public void remove(ForeignKey foreignKey, Collection<Entity> entities) {}
 	}
 }

@@ -21,7 +21,6 @@ package is.codion.swing.framework.model;
 import is.codion.common.proxy.ProxyBuilder;
 import is.codion.common.proxy.ProxyBuilder.ProxyMethod;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
@@ -36,7 +35,6 @@ import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
@@ -206,42 +204,6 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 		afterInsertUpdateOrDelete().addListener(comboBoxModel.items()::refresh);
 
 		return comboBoxModel;
-	}
-
-	@Override
-	public final void add(ForeignKey foreignKey, Collection<Entity> entities) {
-		requireNonNull(foreignKey);
-		requireNonNull(entities);
-		if (comboBoxModels.containsKey(foreignKey)) {
-			entities.forEach(comboBoxModel(foreignKey).items()::add);
-		}
-	}
-
-	@Override
-	public final void remove(ForeignKey foreignKey, Collection<Entity> entities) {
-		requireNonNull(foreignKey);
-		requireNonNull(entities);
-		clearForeignKeyReferences(foreignKey, entities);
-		if (comboBoxModels.containsKey(foreignKey)) {
-			comboBoxModel(foreignKey).items().remove(entities);
-		}
-	}
-
-	@Override
-	protected void replaceForeignKey(ForeignKey foreignKey, Collection<Entity> entities) {
-		super.replaceForeignKey(foreignKey, entities);
-		if (comboBoxModels.containsKey(foreignKey)) {
-			EntityComboBoxModel comboBoxModel = comboBoxModel(foreignKey);
-			entities.forEach(foreignKeyValue -> comboBoxModel.items().replace(foreignKeyValue, foreignKeyValue));
-		}
-	}
-
-	private void clearForeignKeyReferences(ForeignKey foreignKey, Collection<Entity> entities) {
-		entities.forEach(entity -> {
-			if (Objects.equals(entity, editor().value(foreignKey).get())) {
-				editor().value(foreignKey).clear();
-			}
-		});
 	}
 
 	private <T> FilterComboBoxModel.Builder<T> createColumnComboBoxModel(Column<T> column) {

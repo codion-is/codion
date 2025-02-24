@@ -31,7 +31,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
-import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.util.Collection;
 
@@ -59,7 +58,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
 	 * </ul>
-	 * @see #handleEditEvents()
 	 * @see EntityEditModel#POST_EDIT_EVENTS
 	 */
 	PropertyValue<Boolean> HANDLE_EDIT_EVENTS = booleanValue(EntityTableModel.class.getName() + ".handleEditEvents", true);
@@ -122,20 +120,10 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	EntityDefinition entityDefinition();
 
 	/**
-	 * @param <C> the edit model type
 	 * Returns the {@link EntityEditModel} associated with this table model
 	 * @return the edit model associated with this table model
 	 */
-	<C extends E> C editModel();
-
-	/**
-	 * For every entity in this table model, replaces the foreign key instance bearing the primary
-	 * key with the corresponding entity from {@code foreignKeyValues}, useful when attribute
-	 * values have been changed in the referenced entity that must be reflected in the table model.
-	 * @param foreignKey the foreign key
-	 * @param foreignKeyValues the foreign key entities
-	 */
-	void replace(ForeignKey foreignKey, Collection<Entity> foreignKeyValues);
+	E editModel();
 
 	/**
 	 * Replaces the given entities in this table model
@@ -162,12 +150,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	 * @throws IllegalStateException in case this table model has no edit model or if the edit model does not allow deleting
 	 */
 	Collection<Entity> deleteSelected();
-
-	/**
-	 * @return the {@link State} controlling whether this table model handles entity edit events, by replacing updated entities
-	 * @see EntityEditEvents
-	 */
-	State handleEditEvents();
 
 	/**
 	 * @return the {@link Value} controlling the action to perform when entities are inserted via the associated edit model

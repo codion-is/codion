@@ -305,30 +305,6 @@ public interface EntityEditModel {
 	DeleteEntities createDelete(Collection<Entity> entities);
 
 	/**
-	 * Adds the given entities to all foreign key models based on that entity type
-	 * @param foreignKey the foreign key
-	 * @param entities the values
-	 */
-	void add(ForeignKey foreignKey, Collection<Entity> entities);
-
-	/**
-	 * Removes the given entities from all foreign key models based on that entity type and clears any foreign
-	 * key values referencing them.
-	 * @param foreignKey the foreign key
-	 * @param entities the values
-	 */
-	void remove(ForeignKey foreignKey, Collection<Entity> entities);
-
-	/**
-	 * For every field referencing the given foreign key values, replaces that foreign key instance with
-	 * the corresponding entity from {@code entities}, useful when attribute
-	 * values have been changed in the referenced entity that must be reflected in the edit model.
-	 * @param foreignKey the foreign key
-	 * @param entities the foreign key entities
-	 */
-	void replace(ForeignKey foreignKey, Collection<Entity> entities);
-
-	/**
 	 * @return an observer notified before an insert is performed, after validation
 	 */
 	Observer<Collection<Entity>> beforeInsert();

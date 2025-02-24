@@ -462,6 +462,10 @@ public class DefaultEntityTest {
 		dept.put(Department.NAME, "New name");
 		assertTrue(dept.copy().builder().build().modified());
 		assertFalse(dept.copy().builder().with(Department.NAME, "Name").build().modified());
+
+		dept.put(Department.ID, 2);
+		Entity entity = dept.copy().builder().originalPrimaryKey().build();
+		assertEquals(1, entity.get(Department.ID));
 	}
 
 	@Test

@@ -36,11 +36,12 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singleton;
+import static java.util.Collections.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class DefaultEntitySearchModelTest {
@@ -261,6 +262,29 @@ public final class DefaultEntitySearchModelTest {
 		assertEquals("John", result.get(0).get(Employee.NAME));
 		assertEquals("johnson", result.get(1).get(Employee.NAME));
 		assertEquals("JONES", result.get(2).get(Employee.NAME));
+	}
+
+	@Test
+	void editEvents() {
+		Entity temp = ENTITIES.builder(Employee.TYPE)
+						.with(Employee.ID, -42)
+						.with(Employee.NAME, "Noname")
+						.build();
+
+		searchModel.selection().entity().set(temp);
+
+		temp.put(Employee.NAME, "Newname");
+		Entity tempUpdated = temp.copy().mutable();
+		tempUpdated.save(Employee.NAME);
+
+		Map<Entity, Entity> updated = new HashMap<>();
+		updated.put(temp, tempUpdated);
+
+		EntityEditEvents.updated(updated);
+		assertEquals("Newname", searchModel.selection().entity().get().get(Employee.NAME));
+
+		EntityEditEvents.deleted(singletonList(temp));
+		assertTrue(searchModel.selection().empty().get());
 	}
 
 	@BeforeEach

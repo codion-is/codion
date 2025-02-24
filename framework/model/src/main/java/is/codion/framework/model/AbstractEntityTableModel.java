@@ -40,11 +40,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.*;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * An abstract {@link EntityTableModel} implementation
@@ -55,14 +56,12 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	private final FilterModel<Entity> filterModel;
 	private final E editModel;
 	private final EntityQueryModel queryModel;
-	private final State handleEditEvents = State.builder()
-					.consumer(new HandleEditEventsChanged())
-					.build();
 	private final State editable = State.state();
 	private final State removeDeleted = State.state(true);
 	private final State orderQueryBySortOrder = State.state(ORDER_QUERY_BY_SORT_ORDER.getOrThrow());
 	private final Value<OnInsert> onInsert = Value.nonNull(ON_INSERT.getOrThrow());
 
+	//we keep a reference to this listener, since it will only be referenced via a WeakReference elsewhere
 	private final Consumer<Map<Entity, Entity>> updateListener = new UpdateListener();
 
 	/**
@@ -88,7 +87,6 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 							editModel.entities() + ", query model: " + queryModel.entityType());
 		}
 		bindEvents();
-		handleEditEvents.set(HANDLE_EDIT_EVENTS.get());
 	}
 
 	@Override
@@ -114,11 +112,6 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	@Override
 	public final State removeDeleted() {
 		return removeDeleted;
-	}
-
-	@Override
-	public final State handleEditEvents() {
-		return handleEditEvents;
 	}
 
 	@Override
@@ -163,7 +156,8 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 
 	@Override
 	public final void refresh(Collection<Entity.Key> keys) {
-		replace(connection().select(keys));
+		replaceEntitiesByKey(connection().select(keys).stream()
+						.collect(toMap(Entity::primaryKey, identity())));
 	}
 
 	@Override
@@ -174,27 +168,6 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	@Override
 	public final Collection<Entity> deleteSelected() {
 		return editModel.delete(selection().items().get());
-	}
-
-	@Override
-	public final void replace(ForeignKey foreignKey, Collection<Entity> foreignKeyValues) {
-		requireNonNull(foreignKey);
-		requireNonNull(foreignKeyValues);
-		entityDefinition().foreignKeys().definition(foreignKey);
-		for (Entity entity : items().filtered().get()) {
-			for (Entity foreignKeyValue : foreignKeyValues) {
-				replace(foreignKey, entity, foreignKeyValue);
-			}
-		}
-		List<Entity> visibleItems = items().visible().get();
-		for (int i = 0; i < visibleItems.size(); i++) {
-			Entity entity = visibleItems.get(i);
-			for (Entity foreignKeyValue : foreignKeyValues) {
-				if (replace(foreignKey, entity, foreignKeyValue)) {
-					onRowsUpdated(i, i);
-				}
-			}
-		}
 	}
 
 	/**
@@ -216,6 +189,29 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	 */
 	protected abstract Optional<OrderBy> orderByFromSortModel();
 
+	/**
+	 * Called when entities of the type referenced by the given foreign key are updated
+	 * @param foreignKey the foreign key
+	 * @param entities the updated entities, mapped to their original primary key
+	 * @see EntityEditEvents
+	 */
+	protected void updated(ForeignKey foreignKey, Map<Entity.Key, Entity> entities) {
+		for (Entity entity : items().filtered().get()) {
+			for (Map.Entry<Entity.Key, Entity> entry : entities.entrySet()) {
+				replace(foreignKey, entity, entry.getKey(), entry.getValue());
+			}
+		}
+		List<Entity> visibleItems = items().visible().get();
+		for (int i = 0; i < visibleItems.size(); i++) {
+			Entity entity = visibleItems.get(i);
+			for (Map.Entry<Entity.Key, Entity> entry : entities.entrySet()) {
+				if (replace(foreignKey, entity, entry.getKey(), entry.getValue())) {
+					onRowsUpdated(i, i);
+				}
+			}
+		}
+	}
+
 	private void bindEvents() {
 		editModel.afterInsert().addConsumer(this::onInsert);
 		editModel.afterUpdate().addConsumer(this::onUpdate);
@@ -227,6 +223,11 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 						queryModel.orderBy().set(enabled ? orderByFromSortModel().orElse(null) : null));
 		sorter().observer().addListener(() ->
 						queryModel.orderBy().set(orderQueryBySortOrder.get() ? orderByFromSortModel().orElse(null) : null));
+		entityDefinition().foreignKeys().get().stream()
+						.map(ForeignKey::referencedType)
+						.distinct()
+						.forEach(entityType ->
+										EntityEditEvents.updateObserver(entityType).addWeakConsumer(updateListener));
 	}
 
 	private void onInsert(Collection<Entity> insertedEntities) {
@@ -291,9 +292,9 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 		return keyIndexes;
 	}
 
-	private static boolean replace(ForeignKey foreignKey, Entity entity, Entity foreignKeyValue) {
+	private static boolean replace(ForeignKey foreignKey, Entity entity, Entity.Key key, Entity foreignKeyValue) {
 		Entity currentForeignKeyValue = entity.entity(foreignKey);
-		if (currentForeignKeyValue != null && currentForeignKeyValue.equals(foreignKeyValue)) {
+		if (currentForeignKeyValue != null && currentForeignKeyValue.primaryKey().equals(key)) {
 			entity.put(foreignKey, foreignKeyValue.immutable());
 
 			return true;
@@ -306,37 +307,16 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 
 		@Override
 		public void accept(Map<Entity, Entity> updated) {
-			updated.values().stream()
-							.collect(groupingBy(Entity::type, HashMap::new, toList()))
-							.forEach(this::handleUpdate);
+			Map<EntityType, Map<Entity.Key, Entity>> grouped = new HashMap<>();
+			updated.forEach((beforeUpdate, afterUpdate) ->
+							grouped.computeIfAbsent(beforeUpdate.type(), k -> new HashMap<>())
+											.put(beforeUpdate.originalPrimaryKey(), afterUpdate));
+			grouped.forEach(this::updated);
 		}
 
-		private void handleUpdate(EntityType entityType, List<Entity> entities) {
-			if (entityType.equals(entityType())) {
-				replace(entities);
-			}
+		private void updated(EntityType entityType, Map<Entity.Key, Entity> entities) {
 			entityDefinition().foreignKeys().get(entityType)
-							.forEach(foreignKey -> replace(foreignKey, entities));
-		}
-	}
-
-	private final class HandleEditEventsChanged implements Consumer<Boolean> {
-
-		@Override
-		public void accept(Boolean handleEditEvents) {
-			if (handleEditEvents) {
-				entityTypes().forEach(entityType ->
-								EntityEditEvents.updateObserver(entityType).addWeakConsumer(updateListener));
-			}
-			else {
-				entityTypes().forEach(entityType ->
-								EntityEditEvents.updateObserver(entityType).removeWeakConsumer(updateListener));
-			}
-		}
-
-		private Stream<EntityType> entityTypes() {
-			return Stream.concat(entityDefinition().foreignKeys().get().stream()
-							.map(ForeignKey::referencedType), Stream.of(entityType()));
+							.forEach(foreignKey -> AbstractEntityTableModel.this.updated(foreignKey, entities));
 		}
 	}
 

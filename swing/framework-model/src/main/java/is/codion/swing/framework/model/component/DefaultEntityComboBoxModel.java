@@ -48,9 +48,9 @@ import java.util.function.Supplier;
 
 import static is.codion.common.value.Value.Notify.WHEN_SET;
 import static is.codion.framework.db.EntityConnection.Select.where;
-import static is.codion.framework.domain.entity.Entity.entity;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toMap;
 
 final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
@@ -89,7 +89,9 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		this.condition = Value.nonNull(builder.condition);
 		this.orderBy = builder.orderBy;
 		if (builder.handleEditEvents) {
-			addEditListeners();
+			EntityEditEvents.insertObserver(entityDefinition.type()).addWeakConsumer(insertListener);
+			EntityEditEvents.updateObserver(entityDefinition.type()).addWeakConsumer(updateListener);
+			EntityEditEvents.deleteObserver(entityDefinition.type()).addWeakConsumer(deleteListener);
 		}
 	}
 
@@ -234,8 +236,10 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 		@Override
 		public void accept(Map<Entity, Entity> updated) {
-			updated.forEach((beforeUpdate, afterUpdate) ->
-							items().replace(entity(beforeUpdate.originalPrimaryKey()), afterUpdate));
+			items().replace(updated.entrySet().stream()
+							.collect(toMap(entry -> entry.getKey().copy().builder()
+											.originalPrimaryKey()
+											.build(), Map.Entry::getValue)));
 		}
 	}
 
@@ -245,12 +249,6 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		public void accept(Collection<Entity> deleted) {
 			items().remove(deleted);
 		}
-	}
-
-	private void addEditListeners() {
-		EntityEditEvents.insertObserver(entityDefinition.type()).addWeakConsumer(insertListener);
-		EntityEditEvents.updateObserver(entityDefinition.type()).addWeakConsumer(updateListener);
-		EntityEditEvents.deleteObserver(entityDefinition.type()).addWeakConsumer(deleteListener);
 	}
 
 	private final class DefaultFilter implements Filter, Predicate<Entity> {
@@ -444,7 +442,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		private Supplier<Condition> condition;
 		private Comparator<Entity> comparator;
 		private Collection<Attribute<?>> attributes = emptyList();
-		private boolean handleEditEvents = EntityComboBoxModel.HANDLE_EDIT_EVENTS.getOrThrow();
+		private boolean handleEditEvents = HANDLE_EDIT_EVENTS.getOrThrow();
 		private String nullCaption;
 		private boolean filterSelected = false;
 

@@ -80,6 +80,13 @@ final class DefaultEntityBuilder implements Entity.Builder {
 	}
 
 	@Override
+	public Entity.Builder originalPrimaryKey() {
+		definition.primaryKey().columns().forEach(this::original);
+
+		return this;
+	}
+
+	@Override
 	public Key.Builder key() {
 		DefaultKeyBuilder builder = new DefaultKeyBuilder(definition);
 		if (values != null) {
@@ -107,6 +114,12 @@ final class DefaultEntityBuilder implements Entity.Builder {
 		}
 		if (originalValues != null) {
 			originalValues.remove(column);
+		}
+	}
+
+	private void original(Column<?> column) {
+		if (originalValues != null && originalValues.containsKey(column)) {
+			values.put(column, originalValues.get(column));
 		}
 	}
 }

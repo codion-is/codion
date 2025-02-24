@@ -36,9 +36,11 @@ import is.codion.framework.domain.entity.condition.Condition;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -69,6 +71,10 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private final Value<Supplier<Condition>> condition;
 	private final Value<Integer> limit;
 
+	//we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
+	private final Consumer<Map<Entity, Entity>> updateListener = new UpdateListener();
+	private final Consumer<Collection<Entity>> deleteListener = new DeleteListener();
+
 	private DefaultEntitySearchModel(DefaultBuilder builder) {
 		this.entityDefinition = builder.entityDefinition;
 		this.connectionProvider = builder.connectionProvider;
@@ -80,6 +86,10 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 						.collect(toMap(Function.identity(), column -> new DefaultSettings())));
 		this.singleSelection = builder.singleSelection;
 		this.limit = Value.nullable(builder.limit);
+		if (builder.handleEditEvents) {
+			EntityEditEvents.updateObserver(entityDefinition.type()).addWeakConsumer(updateListener);
+			EntityEditEvents.deleteObserver(entityDefinition.type()).addWeakConsumer(deleteListener);
+		}
 	}
 
 	@Override
@@ -237,6 +247,34 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		}
 	}
 
+	private final class UpdateListener implements Consumer<Map<Entity, Entity>> {
+
+		@Override
+		public void accept(Map<Entity, Entity> updated) {
+			Set<Entity> toRemove = new HashSet<>();
+			Set<Entity> toAdd = new HashSet<>();
+			updated.keySet().forEach(beforeUpdate -> {
+				Entity entity = beforeUpdate.copy().builder().originalPrimaryKey().build();
+				if (selection.entities.contains(entity)) {
+					toRemove.add(entity);
+					toAdd.add(updated.get(beforeUpdate));
+				}
+			});
+			if (!toRemove.isEmpty()) {
+				selection.entities.removeAll(toRemove);
+				selection.entities.addAll(toAdd);
+			}
+		}
+	}
+
+	private final class DeleteListener implements Consumer<Collection<Entity>> {
+
+		@Override
+		public void accept(Collection<Entity> deleted) {
+			selection.entities.removeAll(deleted);
+		}
+	}
+
 	private static boolean containsWildcards(String value) {
 		return value.contains(WILDCARD_MULTIPLE) || value.contains(WILDCARD_SINGLE);
 	}
@@ -278,6 +316,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		private Collection<Attribute<?>> attributes = emptyList();
 		private boolean singleSelection = false;
 		private Integer limit = DEFAULT_LIMIT.get();
+		private boolean handleEditEvents = HANDLE_EDIT_EVENTS.getOrThrow();
 		private OrderBy orderBy;
 
 		DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
@@ -322,6 +361,12 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		@Override
 		public Builder singleSelection(boolean singleSelection) {
 			this.singleSelection = singleSelection;
+			return this;
+		}
+
+		@Override
+		public Builder handleEditEvents(boolean handleEditEvents) {
+			this.handleEditEvents = handleEditEvents;
 			return this;
 		}
 

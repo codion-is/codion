@@ -45,8 +45,8 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T>, E extends
 		this.modelLink = ModelLink.builder(builder.model)
 						.onSelection(builder.onSelection == null ? new OnSelection() : builder.onSelection)
 						.onInsert(builder.onInsert == null ? new OnInsert() : builder.onInsert)
-						.onUpdate(builder.onUpdate == null ? new OnUpdate() : builder.onUpdate)
-						.onDelete(builder.onDelete == null ? new OnDelete() : builder.onDelete)
+						.onUpdate(builder.onUpdate)
+						.onDelete(builder.onDelete)
 						.active(builder.active)
 						.build();
 		this.foreignKey = builder.foreignKey;
@@ -132,7 +132,6 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T>, E extends
 		public void accept(Collection<Entity> insertedEntities) {
 			Collection<Entity> entities = ofReferencedType(insertedEntities);
 			if (!entities.isEmpty()) {
-				model().editModel().add(foreignKey, entities);
 				Entity insertedEntity = entities.iterator().next();
 				setValueOnInsert(insertedEntity);
 				if (model().containsTableModel() && setConditionOnInsert(insertedEntity)) {
@@ -155,46 +154,26 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T>, E extends
 
 			return false;
 		}
-	}
 
-	private final class OnUpdate implements Consumer<Map<Entity, Entity>> {
-
-		@Override
-		public void accept(Map<Entity, Entity> updatedEntities) {
-			Collection<Entity> entities = ofReferencedType(updatedEntities.values());
-			model().editModel().replace(foreignKey, entities);
-			if (model().containsTableModel() &&
-							// These will be replaced by the table model if it handles edit events
-							model().tableModel().handleEditEvents().not().get()) {
-				model().tableModel().replace(foreignKey, entities);
-			}
+		private Collection<Entity> ofReferencedType(Collection<Entity> entities) {
+			return entities.stream()
+							.filter(entity -> entity.type().equals(foreignKey.referencedType()))
+							.collect(toList());
 		}
-	}
-
-	private final class OnDelete implements Consumer<Collection<Entity>> {
-
-		@Override
-		public void accept(Collection<Entity> deletedEntities) {
-			model().editModel().remove(foreignKey, ofReferencedType(deletedEntities));
-		}
-	}
-
-	private Collection<Entity> ofReferencedType(Collection<Entity> entities) {
-		return entities.stream()
-						.filter(entity -> entity.type().equals(foreignKey.referencedType()))
-						.collect(toList());
 	}
 
 	static final class DefaultBuilder<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>,
 					B extends ForeignKeyModelLink.Builder<M, E, T, B>> implements Builder<M, E, T, B> {
+
+		private static final Consumer<?> EMPTY_CONSUMER = new EmptyConsumer<>();
 
 		private final M model;
 		private final ForeignKey foreignKey;
 
 		private Consumer<Collection<Entity>> onSelection;
 		private Consumer<Collection<Entity>> onInsert;
-		private Consumer<Map<Entity, Entity>> onUpdate;
-		private Consumer<Collection<Entity>> onDelete;
+		private Consumer<Map<Entity, Entity>> onUpdate = (Consumer<Map<Entity, Entity>>) EMPTY_CONSUMER;
+		private Consumer<Collection<Entity>> onDelete = (Consumer<Collection<Entity>>) EMPTY_CONSUMER;
 
 		private boolean clearValueOnEmptySelection = CLEAR_VALUE_ON_EMPTY_SELECTION.getOrThrow();
 		private boolean clearConditionOnEmptySelection = CLEAR_CONDITION_ON_EMPTY_SELECTION.getOrThrow();
@@ -272,5 +251,11 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T>, E extends
 		public ForeignKeyModelLink<M, E, T> build() {
 			return new DefaultForeignKeyModelLink<>(this);
 		}
+	}
+
+	private static final class EmptyConsumer<T> implements Consumer<T> {
+
+		@Override
+		public void accept(T result) {}
 	}
 }

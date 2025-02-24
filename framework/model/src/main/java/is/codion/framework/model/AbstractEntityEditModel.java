@@ -41,8 +41,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.function.Consumer;
 
-import static is.codion.framework.model.EntityEditEvents.*;
+import static is.codion.framework.domain.entity.Entity.groupByType;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
@@ -58,6 +59,11 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	private final DefaultEntityEditor editor;
 	private final Map<ForeignKey, EntitySearchModel> searchModels = new HashMap<>();
 
+	//we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
+	private final Consumer<Collection<Entity>> insertListener = new InsertListener();
+	private final Consumer<Map<Entity, Entity>> updateListener = new UpdateListener();
+	private final Consumer<Collection<Entity>> deleteListener = new DeleteListener();
+
 	private final Events events;
 	private final States states;
 
@@ -72,6 +78,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		this.editor = new DefaultEntityEditor(entityDefinition);
 		this.states = new States(entityDefinition.readOnly());
 		this.events = new Events(states.postEditEvents);
+		addEditListeners();
 	}
 
 	@Override
@@ -132,11 +139,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	@Override
 	public final EntityConnection connection() {
 		return connectionProvider().connection();
-	}
-
-	@Override
-	public final void replace(ForeignKey foreignKey, Collection<Entity> entities) {
-		replaceForeignKey(requireNonNull(foreignKey), requireNonNull(entities));
 	}
 
 	@Override
@@ -309,21 +311,44 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	/**
-	 * For every field referencing the given foreign key values, replaces that foreign key instance with
-	 * the corresponding entity from {@code values}, useful when attribute
-	 * values have been changed in the referenced entity that must be reflected in the edit model.
-	 * @param foreignKey the foreign key attribute
-	 * @param values the foreign key entities
+	 * <p>Called when entities of the type referenced by the given foreign key are inserted.
+	 * @param foreignKey the foreign key
+	 * @param entities the inserted entities
+	 * @see EntityEditEvents
 	 */
-	protected void replaceForeignKey(ForeignKey foreignKey, Collection<Entity> values) {
+	protected void inserted(ForeignKey foreignKey, Collection<Entity> entities) {}
+
+	/**
+	 * <p>Called when entities of the type referenced by the given foreign key have been updated.
+	 * <p>For every field referencing the given foreign key values, replaces that foreign key instance with
+	 * the corresponding value from {@code entities}
+	 * @param foreignKey the foreign key
+	 * @param entities the updated entities, mapped to their original primary key
+	 * @see EntityEditEvents
+	 */
+	protected void updated(ForeignKey foreignKey, Map<Entity.Key, Entity> entities) {
+		requireNonNull(foreignKey);
+		requireNonNull(entities);
 		Entity currentForeignKeyValue = editor.value(foreignKey).get();
-		if (currentForeignKeyValue != null) {
-			for (Entity replacementValue : values) {
-				if (currentForeignKeyValue.equals(replacementValue)) {
-					editor.value(foreignKey).clear();
-					editor.value(foreignKey).set(replacementValue);
-				}
-			}
+		if (currentForeignKeyValue != null && entities.containsKey(currentForeignKeyValue.primaryKey())) {
+			editor.value(foreignKey).clear();
+			editor.value(foreignKey).set(entities.get(currentForeignKeyValue.primaryKey()));
+		}
+	}
+
+	/**
+	 * <p>Called when entities of the type referenced by the given foreign key are deleted.
+	 * <p>Clears any foreign key values referencing the deleted entities.
+	 * @param foreignKey the foreign key
+	 * @param entities the deleted entities
+	 * @see EntityEditEvents
+	 */
+	protected void deleted(ForeignKey foreignKey, Collection<Entity> entities) {
+		requireNonNull(foreignKey);
+		requireNonNull(entities);
+		Entity currentForeignKeyValue = editor.value(foreignKey).get();
+		if (currentForeignKeyValue != null && entities.contains(currentForeignKeyValue)) {
+			editor.value(foreignKey).clear();
 		}
 	}
 
@@ -409,6 +434,17 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		return null;
+	}
+
+	private void addEditListeners() {
+		entityDefinition.foreignKeys().get().stream()
+						.map(ForeignKey::referencedType)
+						.distinct()
+						.forEach(entityType -> {
+							EntityEditEvents.insertObserver(entityType).addWeakConsumer(insertListener);
+							EntityEditEvents.updateObserver(entityType).addWeakConsumer(updateListener);
+							EntityEditEvents.deleteObserver(entityType).addWeakConsumer(deleteListener);
+						});
 	}
 
 	private final class DefaultInsertEntities implements InsertEntities {
@@ -623,17 +659,17 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			afterDelete.addListener(afterInsertUpdateOrDelete);
 			afterInsert.addConsumer(insertedEntities -> {
 				if (postEditEvents.get()) {
-					inserted(insertedEntities);
+					EntityEditEvents.inserted(insertedEntities);
 				}
 			});
 			afterUpdate.addConsumer(updatedEntities -> {
 				if (postEditEvents.get()) {
-					updated(updatedEntities);
+					EntityEditEvents.updated(updatedEntities);
 				}
 			});
 			afterDelete.addConsumer(deletedEntities -> {
 				if (postEditEvents.get()) {
-					deleted(deletedEntities);
+					EntityEditEvents.deleted(deletedEntities);
 				}
 			});
 		}
@@ -671,6 +707,52 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			if (readOnly.get() || !deleteEnabled.get()) {
 				throw new IllegalStateException("Edit model is readOnly or deleting is not enabled!");
 			}
+		}
+	}
+
+	private final class InsertListener implements Consumer<Collection<Entity>> {
+
+		@Override
+		public void accept(Collection<Entity> inserted) {
+			onInsert(groupByType(inserted));
+		}
+
+		private void onInsert(Map<EntityType, List<Entity>> inserted) {
+			inserted.forEach((entitType, value) ->
+							entityDefinition.foreignKeys().get(entitType)
+											.forEach(foreignKey -> inserted(foreignKey, value)));
+		}
+	}
+
+	private final class DeleteListener implements Consumer<Collection<Entity>> {
+
+		@Override
+		public void accept(Collection<Entity> deleted) {
+			onDelete(groupByType(deleted));
+		}
+
+		private void onDelete(Map<EntityType, List<Entity>> deleted) {
+			deleted.forEach((key, value) ->
+							entityDefinition.foreignKeys().get(key)
+											.forEach(foreignKey -> deleted(foreignKey, value)));
+		}
+	}
+
+	private final class UpdateListener implements Consumer<Map<Entity, Entity>> {
+
+		@Override
+		public void accept(Map<Entity, Entity> updated) {
+			Map<EntityType, Map<Entity.Key, Entity>> grouped = new HashMap<>();
+			updated.forEach((beforeUpdate, afterUpdate) ->
+							grouped.computeIfAbsent(beforeUpdate.type(), k -> new HashMap<>())
+											.put(beforeUpdate.originalPrimaryKey(), afterUpdate));
+			onUpdate(grouped);
+		}
+
+		private void onUpdate(Map<EntityType, Map<Entity.Key, Entity>> updated) {
+			updated.forEach((entityType, entities) ->
+							entityDefinition.foreignKeys().get(entityType)
+											.forEach(foreignKey -> updated(foreignKey, entities)));
 		}
 	}
 }

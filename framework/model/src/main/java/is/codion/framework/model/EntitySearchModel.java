@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.Configuration.integerValue;
 
 /**
@@ -44,6 +45,18 @@ import static is.codion.common.Configuration.integerValue;
  * Factory for {@link EntitySearchModel.Builder} instances via {@link EntitySearchModel#builder(EntityType, EntityConnectionProvider)}.
  */
 public interface EntitySearchModel {
+
+	/**
+	 * Specifies whether searcy models handle entity edit events, by replacing updated entities and removing deleted ones
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 * @see Builder#handleEditEvents(boolean)
+	 * @see EntityEditModel#POST_EDIT_EVENTS
+	 */
+	PropertyValue<Boolean> HANDLE_EDIT_EVENTS =
+					booleanValue(EntitySearchModel.class.getName() + ".handleEditEvents", true);
 
 	/**
 	 * Specifies the default search result limit, that is, the maximum number of results, null meaning no limit
@@ -212,6 +225,13 @@ public interface EntitySearchModel {
 		 * @return this builder
 		 */
 		Builder singleSelection(boolean singleSelection);
+
+		/**
+		 * @param handleEditEvents controls whether this search model should handle entity edit events, by updating any updated items and removing deleted ones
+		 * @return this builder instance
+		 * @see EntityEditEvents
+		 */
+		Builder handleEditEvents(boolean handleEditEvents);
 
 		/**
 		 * @param limit the search result limit

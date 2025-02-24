@@ -34,7 +34,6 @@ import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SwingEntityEditModelTest {
@@ -97,19 +96,6 @@ public class SwingEntityEditModelTest {
 			assertTrue(department.contains(Department.NAME));
 			assertFalse(department.contains(Department.LOCATION));
 		}
-	}
-
-	@Test
-	void replace() {
-		Entity blake = employeeEditModel.connection()
-						.selectSingle(Employee.NAME.equalTo("BLAKE"));
-		employeeEditModel.comboBoxModel(Employee.MGR_FK);
-		employeeEditModel.refreshComboBoxModels();
-		assertNotSame(employeeEditModel.comboBoxModel(Employee.MGR_FK)
-						.find(blake.primaryKey()).orElse(null), blake);
-		employeeEditModel.replace(Employee.MGR_FK, singletonList(blake));
-		assertSame(employeeEditModel.comboBoxModel(Employee.MGR_FK)
-						.find(blake.primaryKey()).orElse(null), blake);
 	}
 
 	@Test

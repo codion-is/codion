@@ -353,6 +353,13 @@ public interface Entity extends Comparable<Entity> {
 		Builder clearPrimaryKey();
 
 		/**
+		 * Resets the primary to its original state,
+		 * in case the original value is available
+		 * @return this builder instance
+		 */
+		Builder originalPrimaryKey();
+
+		/**
 		 * Creates a new {@link Entity.Key.Builder} instance, initialized with
 		 * any primary key values found in this builder.
 		 * @return a new {@link Key.Builder}

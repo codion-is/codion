@@ -12,6 +12,13 @@ Codion Change Log
 - DefaultFilterTableItems.merge() refactored.
 - DefaultFilterTableItems.remove() refactored.
 - FilterTableModel.RowEditor.set(), rowIndex parameter added.
+### is.codion.framework.domain
+- Entity.Builder.originalPrimaryKey() added.
+### is.codion.framework.model
+- AbstractEntityEditModel now handles edit events, EntityEditModel.add(), remove() and replace() removed, AbstractEntityEditModel.replaceForeignKey() removed, inserted(), updated() and deleted() added.
+- EntityTableModel.handleEditEvents() removed.
+- EntitySearchModel.Builder.handleEditEvents() added.
+- EntityTableModel.editModel() inferred return type removed.
 
 ## 0.18.30
 ### is.codion.common.model

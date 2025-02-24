@@ -19,14 +19,10 @@
 package is.codion.framework.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.test.AbstractEntityModelTest;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
-
-import java.util.Collection;
 
 public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntityModelTest.TestEntityModel,
 				DefaultEntityModelTest.TestEntityEditModel, DefaultEntityModelTest.TestEntityTableModel> {
@@ -57,12 +53,6 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
 		public TestEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
 			super(entityType, connectionProvider);
 		}
-
-		@Override
-		public void add(ForeignKey foreignKey, Collection<Entity> entities) {}
-
-		@Override
-		public void remove(ForeignKey foreignKey, Collection<Entity> entities) {}
 	}
 
 	public static final class TestEntityModel extends AbstractEntityModel<TestEntityModel, TestEntityEditModel, TestEntityTableModel> {
