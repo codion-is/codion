@@ -46,6 +46,7 @@ import java.util.function.Supplier;
 
 import static is.codion.framework.domain.entity.condition.Condition.and;
 import static is.codion.framework.domain.entity.condition.Condition.or;
+import static is.codion.framework.model.EntityEditModel.editEvents;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -87,8 +88,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		this.singleSelection = builder.singleSelection;
 		this.limit = Value.nullable(builder.limit);
 		if (builder.handleEditEvents) {
-			EntityEditEvents.updateObserver(entityDefinition.type()).addWeakConsumer(updateListener);
-			EntityEditEvents.deleteObserver(entityDefinition.type()).addWeakConsumer(deleteListener);
+			editEvents().updated(entityDefinition.type()).addWeakConsumer(updateListener);
+			editEvents().deleted(entityDefinition.type()).addWeakConsumer(deleteListener);
 		}
 	}
 

@@ -229,7 +229,7 @@ public interface EntitySearchModel {
 		/**
 		 * @param handleEditEvents controls whether this search model should handle entity edit events, by updating any updated items and removing deleted ones
 		 * @return this builder instance
-		 * @see EntityEditEvents
+		 * @see EntityEditModel.EditEvents
 		 */
 		Builder handleEditEvents(boolean handleEditEvents);
 

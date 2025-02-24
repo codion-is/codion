@@ -21,7 +21,6 @@ package is.codion.framework.model;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
 import is.codion.common.observable.Observer;
-import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -38,14 +37,19 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 import static is.codion.framework.domain.entity.Entity.groupByType;
+import static is.codion.framework.model.EntityEditModel.editEvents;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * A default {@link EntityEditModel} implementation
@@ -53,6 +57,8 @@ import static java.util.Objects.requireNonNull;
 public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityEditModel.class);
+
+	static final EditEvents EDIT_EVENTS = new DefaultEditEvents();
 
 	private final EntityDefinition entityDefinition;
 	private final EntityConnectionProvider connectionProvider;
@@ -77,7 +83,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		this.connectionProvider = connectionProvider;
 		this.editor = new DefaultEntityEditor(entityDefinition);
 		this.states = new States(entityDefinition.readOnly());
-		this.events = new Events(states.postEditEvents);
+		this.events = new Events();
 		addEditListeners();
 	}
 
@@ -314,7 +320,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	 * <p>Called when entities of the type referenced by the given foreign key are inserted.
 	 * @param foreignKey the foreign key
 	 * @param entities the inserted entities
-	 * @see EntityEditEvents
+	 * @see EditEvents#inserted(EntityType)
 	 */
 	protected void inserted(ForeignKey foreignKey, Collection<Entity> entities) {}
 
@@ -324,7 +330,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	 * the corresponding value from {@code entities}
 	 * @param foreignKey the foreign key
 	 * @param entities the updated entities, mapped to their original primary key
-	 * @see EntityEditEvents
+	 * @see EditEvents#updated(EntityType)
 	 */
 	protected void updated(ForeignKey foreignKey, Map<Entity.Key, Entity> entities) {
 		requireNonNull(foreignKey);
@@ -341,7 +347,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	 * <p>Clears any foreign key values referencing the deleted entities.
 	 * @param foreignKey the foreign key
 	 * @param entities the deleted entities
-	 * @see EntityEditEvents
+	 * @see EditEvents#deleted(EntityType)
 	 */
 	protected void deleted(ForeignKey foreignKey, Collection<Entity> entities) {
 		requireNonNull(foreignKey);
@@ -441,9 +447,9 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 						.map(ForeignKey::referencedType)
 						.distinct()
 						.forEach(entityType -> {
-							EntityEditEvents.insertObserver(entityType).addWeakConsumer(insertListener);
-							EntityEditEvents.updateObserver(entityType).addWeakConsumer(updateListener);
-							EntityEditEvents.deleteObserver(entityType).addWeakConsumer(deleteListener);
+							editEvents().inserted(entityType).addWeakConsumer(insertListener);
+							editEvents().updated(entityType).addWeakConsumer(updateListener);
+							editEvents().deleted(entityType).addWeakConsumer(deleteListener);
 						});
 	}
 
@@ -643,7 +649,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 	}
 
-	private static final class Events {
+	private final class Events {
 
 		private final Event<Collection<Entity>> beforeInsert = Event.event();
 		private final Event<Collection<Entity>> afterInsert = Event.event();
@@ -653,25 +659,38 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private final Event<Collection<Entity>> afterDelete = Event.event();
 		private final Event<?> afterInsertUpdateOrDelete = Event.event();
 
-		private Events(ObservableState postEditEvents) {
+		private Events() {
 			afterInsert.addListener(afterInsertUpdateOrDelete);
 			afterUpdate.addListener(afterInsertUpdateOrDelete);
 			afterDelete.addListener(afterInsertUpdateOrDelete);
-			afterInsert.addConsumer(insertedEntities -> {
-				if (postEditEvents.get()) {
-					EntityEditEvents.inserted(insertedEntities);
-				}
-			});
-			afterUpdate.addConsumer(updatedEntities -> {
-				if (postEditEvents.get()) {
-					EntityEditEvents.updated(updatedEntities);
-				}
-			});
-			afterDelete.addConsumer(deletedEntities -> {
-				if (postEditEvents.get()) {
-					EntityEditEvents.deleted(deletedEntities);
-				}
-			});
+			afterInsert.addConsumer(this::notifyInserted);
+			afterUpdate.addConsumer(this::notifyUpdated);
+			afterDelete.addConsumer(this::notifyDeleted);
+		}
+
+		private void notifyInserted(Collection<Entity> insertedEntities) {
+			if (states.postEditEvents.get()) {
+				groupByType(insertedEntities).forEach((entityType, entities) ->
+								editEvents().inserted(entityType).accept(entities));
+			}
+		}
+
+		private void notifyUpdated(Map<Entity, Entity> updatedEntities) {
+			if (states.postEditEvents.get()) {
+				updatedEntities.entrySet()
+								.stream()
+								.collect(groupingBy(entry -> entry.getKey().type(), LinkedHashMap::new,
+												toMap(Map.Entry::getKey, Map.Entry::getValue)))
+								.forEach((entityType, entities) ->
+												editEvents().updated(entityType).accept(entities));
+			}
+		}
+
+		private void notifyDeleted(Collection<Entity> deletedEntities) {
+			if (states.postEditEvents.get()) {
+				groupByType(deletedEntities).forEach((entityType, entities) ->
+								editEvents().deleted(entityType).accept(entities));
+			}
 		}
 	}
 
@@ -753,6 +772,78 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			updated.forEach((entityType, entities) ->
 							entityDefinition.foreignKeys().get(entityType)
 											.forEach(foreignKey -> updated(foreignKey, entities)));
+		}
+	}
+
+	private static final class DefaultEditEvents implements EditEvents {
+
+		private final Map<EntityType, EditEvent<Collection<Entity>>> insertEvents = new ConcurrentHashMap<>();
+		private final Map<EntityType, EditEvent<Map<Entity, Entity>>> updateEvents = new ConcurrentHashMap<>();
+		private final Map<EntityType, EditEvent<Collection<Entity>>> deleteEvents = new ConcurrentHashMap<>();
+
+		@Override
+		public EditEvent<Collection<Entity>> inserted(EntityType entityType) {
+			return insertEvents.computeIfAbsent(entityType, k -> new DefaultEntityEditEvent<>());
+		}
+
+		@Override
+		public EditEvent<Map<Entity, Entity>> updated(EntityType entityType) {
+			return updateEvents.computeIfAbsent(entityType, k -> new DefaultEntityEditEvent<>());
+		}
+
+		@Override
+		public EditEvent<Collection<Entity>> deleted(EntityType entityType) {
+			return deleteEvents.computeIfAbsent(entityType, k -> new DefaultEntityEditEvent<>());
+		}
+	}
+
+	private static final class DefaultEntityEditEvent<T> implements EditEvent<T> {
+
+		private final Event<T> event = Event.event();
+
+		@Override
+		public boolean addListener(Runnable listener) {
+			return event.addListener(listener);
+		}
+
+		@Override
+		public boolean removeListener(Runnable listener) {
+			return event.removeListener(listener);
+		}
+
+		@Override
+		public boolean addConsumer(Consumer<? super T> consumer) {
+			return event.addConsumer(consumer);
+		}
+
+		@Override
+		public boolean removeConsumer(Consumer<? super T> consumer) {
+			return event.removeConsumer(consumer);
+		}
+
+		@Override
+		public boolean addWeakListener(Runnable listener) {
+			return event.addWeakListener(listener);
+		}
+
+		@Override
+		public boolean removeWeakListener(Runnable listener) {
+			return event.removeWeakListener(listener);
+		}
+
+		@Override
+		public boolean addWeakConsumer(Consumer<? super T> consumer) {
+			return event.addWeakConsumer(consumer);
+		}
+
+		@Override
+		public boolean removeWeakConsumer(Consumer<? super T> consumer) {
+			return event.removeWeakConsumer(consumer);
+		}
+
+		@Override
+		public void accept(T entities) {
+			event.accept(requireNonNull(entities));
 		}
 	}
 }

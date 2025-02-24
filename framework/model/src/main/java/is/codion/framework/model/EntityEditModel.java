@@ -43,6 +43,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static is.codion.common.Configuration.booleanValue;
+import static is.codion.framework.model.AbstractEntityEditModel.EDIT_EVENTS;
 
 /**
  * Specifies a class for editing {@link Entity} instances.
@@ -52,7 +53,7 @@ import static is.codion.common.Configuration.booleanValue;
 public interface EntityEditModel {
 
 	/**
-	 * Specifies whether edit models post their insert, update and delete events to {@link EntityEditEvents}
+	 * Specifies whether edit models post their insert, update and delete events to {@link EditEvents}
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
@@ -152,7 +153,7 @@ public interface EntityEditModel {
 
 	/**
 	 * @return a state controlling whether this edit model posts insert, update and delete events
-	 * on the {@link EntityEditEvents} event bus.
+	 * on the {@link EditEvents} event bus.
 	 * @see #POST_EDIT_EVENTS
 	 */
 	State postEditEvents();
@@ -338,6 +339,13 @@ public interface EntityEditModel {
 	 * @return an observer notified each time one or more entities have been inserted, updated or deleted via this model
 	 */
 	Observer<?> afterInsertUpdateOrDelete();
+
+	/**
+	 * @return the central {@link EditEvents} instance
+	 */
+	static EditEvents editEvents() {
+		return EDIT_EVENTS;
+	}
 
 	/**
 	 * Provides edit access to the underlying entity being edited.
@@ -739,5 +747,47 @@ public interface EntityEditModel {
 			 */
 			Collection<Entity> handle();
 		}
+	}
+
+	/**
+	 * Represents an edit event
+	 * @param <T> the event data
+	 */
+	interface EditEvent<T> extends Observer<T> {
+
+		/**
+		 * Triggers this event
+		 * @param entities the edited entities
+		 */
+		void accept(T entities);
+	}
+
+	/**
+	 * @see EntityEditModel#POST_EDIT_EVENTS
+	 * @see EntityEditModel#postEditEvents()
+	 * @see #editEvents()
+	 */
+	interface EditEvents {
+
+		/**
+		 * Returns an insert {@link EditEvent}, notified each time entities of the given type are inserted.
+		 * @param entityType the type of entity to listen for
+		 * @return the insert {@link EditEvent} for the given entity type
+		 */
+		EditEvent<Collection<Entity>> inserted(EntityType entityType);
+
+		/**
+		 * Returns an update {@link EditEvent}, notified each time entities of the given type are updated.
+		 * @param entityType the type of entity to listen for
+		 * @return the update {@link EditEvent} for the given entity type
+		 */
+		EditEvent<Map<Entity, Entity>> updated(EntityType entityType);
+
+		/**
+		 * Returns a delete {@link EditEvent}, notified each time entities of the given type are deleted.
+		 * @param entityType the type of entity to listen for
+		 * @return the delete {@link EditEvent} for the given entity type
+		 */
+		EditEvent<Collection<Entity>> deleted(EntityType entityType);
 	}
 }

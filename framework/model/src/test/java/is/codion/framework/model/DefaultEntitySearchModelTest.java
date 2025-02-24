@@ -280,10 +280,10 @@ public final class DefaultEntitySearchModelTest {
 		Map<Entity, Entity> updated = new HashMap<>();
 		updated.put(temp, tempUpdated);
 
-		EntityEditEvents.updated(updated);
+		EntityEditModel.editEvents().updated(Employee.TYPE).accept(updated);
 		assertEquals("Newname", searchModel.selection().entity().get().get(Employee.NAME));
 
-		EntityEditEvents.deleted(singletonList(temp));
+		EntityEditModel.editEvents().deleted(Employee.TYPE).accept(singletonList(temp));
 		assertTrue(searchModel.selection().empty().get());
 	}
 

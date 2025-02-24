@@ -41,6 +41,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static is.codion.framework.domain.entity.Entity.primaryKeyMap;
+import static is.codion.framework.model.EntityEditModel.editEvents;
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
@@ -193,7 +194,6 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	 * Called when entities of the type referenced by the given foreign key are updated
 	 * @param foreignKey the foreign key
 	 * @param entities the updated entities, mapped to their original primary key
-	 * @see EntityEditEvents
 	 */
 	protected void updated(ForeignKey foreignKey, Map<Entity.Key, Entity> entities) {
 		for (Entity entity : items().filtered().get()) {
@@ -227,7 +227,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 						.map(ForeignKey::referencedType)
 						.distinct()
 						.forEach(entityType ->
-										EntityEditEvents.updateObserver(entityType).addWeakConsumer(updateListener));
+										editEvents().updated(entityType).addWeakConsumer(updateListener));
 	}
 
 	private void onInsert(Collection<Entity> insertedEntities) {

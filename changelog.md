@@ -21,6 +21,7 @@ Codion Change Log
 - EntitySearchModel.Builder.handleEditEvents() added.
 - EntityTableModel.editModel() inferred return type removed.
 - AbstractEntityTableModel.replaceEntitiesByKey() refactored and renamed.
+- EntityEditEvents removed, EntityEditModel.EditEvents added along with editEvents().
 
 ## 0.18.30
 ### is.codion.common.model

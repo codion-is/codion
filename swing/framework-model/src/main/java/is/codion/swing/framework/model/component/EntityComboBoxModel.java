@@ -29,7 +29,6 @@ import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.Condition;
-import is.codion.framework.model.EntityEditEvents;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 
 import java.util.Collection;
@@ -165,7 +164,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		 * @param handleEditEvents controls whether this combo box model should handle entity edit events, by adding inserted items,
 		 * updating any updated items and removing deleted ones
 		 * @return this builder instance
-		 * @see EntityEditEvents
+		 * @see is.codion.framework.model.EntityEditModel.EditEvents
 		 */
 		Builder handleEditEvents(boolean handleEditEvents);
 

@@ -30,7 +30,6 @@ import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.Condition;
-import is.codion.framework.model.EntityEditEvents;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 
 import javax.swing.event.ListDataListener;
@@ -48,6 +47,7 @@ import java.util.function.Supplier;
 
 import static is.codion.common.value.Value.Notify.WHEN_SET;
 import static is.codion.framework.db.EntityConnection.Select.where;
+import static is.codion.framework.model.EntityEditModel.editEvents;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toMap;
@@ -89,9 +89,9 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		this.condition = Value.nonNull(builder.condition);
 		this.orderBy = builder.orderBy;
 		if (builder.handleEditEvents) {
-			EntityEditEvents.insertObserver(entityDefinition.type()).addWeakConsumer(insertListener);
-			EntityEditEvents.updateObserver(entityDefinition.type()).addWeakConsumer(updateListener);
-			EntityEditEvents.deleteObserver(entityDefinition.type()).addWeakConsumer(deleteListener);
+			editEvents().inserted(entityDefinition.type()).addWeakConsumer(insertListener);
+			editEvents().updated(entityDefinition.type()).addWeakConsumer(updateListener);
+			editEvents().deleted(entityDefinition.type()).addWeakConsumer(deleteListener);
 		}
 	}
 
