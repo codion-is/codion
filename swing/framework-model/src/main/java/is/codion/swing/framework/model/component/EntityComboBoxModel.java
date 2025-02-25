@@ -82,9 +82,8 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	void select(Entity.Key primaryKey);
 
 	/**
-	 * Controls the condition supplier to use when querying data, setting this to null reverts back
-	 * to the original condition, set via {@link Builder#condition(Supplier)} or the default one,
-	 * fetching all underlying entities, if none was specified.
+	 * <p>Controls the condition supplier used when querying data, setting this to null reverts to the condition specifying all underlying entities.
+	 * <p>The condition supplier may not return null, doing so will cause an exception when refreshing the model items.
 	 * @return a value controlling the condition supplier
 	 */
 	Value<Supplier<Condition>> condition();
@@ -132,7 +131,9 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		Builder comparator(Comparator<Entity> comparator);
 
 		/**
-		 * @param condition the condition supplier to use when querying data
+		 * <p>If {@code condition} is null, the default condition, specifying all underlying entities is used.
+		 * <p>The condition supplier may not return null, doing so will cause an exception when refreshing the model items.
+		 * @param condition the condition supplier to use when querying data, may not return null
 		 * @return this builder instance
 		 */
 		Builder condition(Supplier<Condition> condition);

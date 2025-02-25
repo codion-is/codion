@@ -48,6 +48,7 @@ import java.util.function.Supplier;
 import static is.codion.common.value.Value.Notify.WHEN_SET;
 import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.model.EntityEditModel.editEvents;
+import static java.text.MessageFormat.format;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toMap;
@@ -86,7 +87,10 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 				throw new UnsupportedOperationException("EntityComboBoxModel visible item predicate can only be set via filter().predicate().set()");
 			}
 		});
-		this.condition = Value.nonNull(builder.condition);
+		this.condition = Value.builder()
+						.<Supplier<Condition>>nonNull(new DefaultConditionSupplier(entityDefinition.type()))
+						.value(builder.condition)
+						.build();
 		this.orderBy = builder.orderBy;
 		if (builder.handleEditEvents) {
 			editEvents().inserted(entityDefinition.type()).addWeakConsumer(insertListener);
@@ -205,10 +209,22 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	}
 
 	private Collection<Entity> performQuery() {
-		return connectionProvider.connection().select(where(condition.getOrThrow().get())
+		return connectionProvider.connection().select(where(validate(condition.getOrThrow().get()))
 						.attributes(attributes)
 						.orderBy(orderBy)
 						.build());
+	}
+
+	private Condition validate(Condition queryCondition) {
+		if (queryCondition == null) {
+			throw new IllegalArgumentException(format("EntityComboBoxModel condition supplier returned null: {0}", entityDefinition.type()));
+		}
+		if (!queryCondition.entityType().equals(entityDefinition.type())) {
+			throw new IllegalArgumentException(format("EntityComboBoxModel condition supplier returned a condition for the incorrect type {0}, expecting: {1}",
+							queryCondition.entityType(), entityDefinition.type()));
+		}
+
+		return queryCondition;
 	}
 
 	private Optional<Entity> filteredEntity(Entity.Key primaryKey) {
@@ -453,7 +469,6 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider, EntityComboBoxModel filterModel, ForeignKey filterForeignKey) {
 			this.connectionProvider = requireNonNull(connectionProvider);
 			this.entityDefinition = connectionProvider.entities().definition(entityType);
-			this.condition = new DefaultConditionSupplier(entityType);
 			this.comparator = connectionProvider.entities().definition(entityType).comparator();
 			this.filterModel = filterModel;
 			this.filterForeignKey = filterForeignKey;
@@ -473,7 +488,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 		@Override
 		public Builder condition(Supplier<Condition> condition) {
-			this.condition = requireNonNull(condition);
+			this.condition = condition;
 			return this;
 		}
 

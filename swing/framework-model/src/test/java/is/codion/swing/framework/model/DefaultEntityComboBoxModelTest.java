@@ -316,6 +316,10 @@ public final class DefaultEntityComboBoxModelTest {
 		comboBoxModel.items().clear();
 		assertEquals(0, comboBoxModel.getSize());
 
+		comboBoxModel.condition().set(() -> null);
+		assertThrows(IllegalArgumentException.class, comboBoxModel.items()::refresh);
+		comboBoxModel.condition().set(Department.NAME::isNotNull);
+		assertThrows(IllegalArgumentException.class, comboBoxModel.items()::refresh);
 		comboBoxModel.condition().set(Employee.ENAME_CLARK::get);
 		comboBoxModel.filter().get(Employee.DEPARTMENT_FK).set(singleton(ENTITIES.primaryKey(Department.TYPE, 10)));//accounting
 		assertThrows(UnsupportedOperationException.class, () -> comboBoxModel.items().visible().predicate().set(entity -> false));
