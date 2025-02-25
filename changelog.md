@@ -22,6 +22,8 @@ Codion Change Log
 - EntityTableModel.editModel() inferred return type removed.
 - AbstractEntityTableModel.replaceEntitiesByKey() refactored and renamed.
 - EntityEditEvents removed, EntityEditModel.EditEvents added along with editEvents().
+- EntitySearchModel.Builder.condition()  now accepts a null argument.
+- DefaultEntitySearchModel, improved exception message when refreshing in case the condition supplier returns null or a condition for the incorrect type.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Builder.condition() now accepts a null argument.
 - DefaultEntityComboBoxModel, improved exception message when refreshing in case the condition supplier returns null or a condition for the incorrect type.

@@ -47,6 +47,7 @@ import java.util.function.Supplier;
 import static is.codion.framework.domain.entity.condition.Condition.and;
 import static is.codion.framework.domain.entity.condition.Condition.or;
 import static is.codion.framework.model.EntityEditModel.editEvents;
+import static java.text.MessageFormat.format;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -80,7 +81,10 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		this.entityDefinition = builder.entityDefinition;
 		this.connectionProvider = builder.connectionProvider;
 		this.searchColumns = unmodifiableCollection(builder.searchColumns);
-		this.condition = Value.nonNull(builder.condition);
+		this.condition = Value.builder()
+						.nonNull(NULL_CONDITION)
+						.value(builder.condition)
+						.build();
 		this.attributes = builder.attributes;
 		this.orderBy = builder.orderBy;
 		this.settings = unmodifiableMap(searchColumns.stream()
@@ -200,9 +204,24 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 		private Condition createCombinedCondition(Collection<Condition> conditions) {
 			Condition conditionCombination = or(conditions);
-			Condition additionalCondition = condition.getOrThrow().get();
+			Supplier<Condition> conditionSupplier = condition.getOrThrow();
+			if (conditionSupplier == NULL_CONDITION) {
+				return conditionCombination;
+			}
 
-			return additionalCondition == null ? conditionCombination : and(additionalCondition, conditionCombination);
+			return and(validate(conditionSupplier.get()), conditionCombination);
+		}
+
+		private Condition validate(Condition queryCondition) {
+			if (queryCondition == null) {
+				throw new IllegalArgumentException(format("EntitySearchModel condition supplier returned null: {0}", entityDefinition.type()));
+			}
+			if (!queryCondition.entityType().equals(entityDefinition.type())) {
+				throw new IllegalArgumentException(format("EntitySearchModel condition supplier returned a condition for the incorrect type {0}, expecting: {1}",
+								queryCondition.entityType(), entityDefinition.type()));
+			}
+
+			return queryCondition;
 		}
 	}
 
@@ -313,7 +332,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		private final EntityDefinition entityDefinition;
 		private final EntityConnectionProvider connectionProvider;
 		private Collection<Column<String>> searchColumns;
-		private Supplier<Condition> condition = NULL_CONDITION;
+		private Supplier<Condition> condition;
 		private Collection<Attribute<?>> attributes = emptyList();
 		private boolean singleSelection = false;
 		private Integer limit = DEFAULT_LIMIT.get();
@@ -339,7 +358,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 		@Override
 		public Builder condition(Supplier<Condition> condition) {
-			this.condition = requireNonNull(condition);
+			this.condition = condition;
 			return this;
 		}
 

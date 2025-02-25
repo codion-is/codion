@@ -218,6 +218,11 @@ public final class DefaultEntitySearchModelTest {
 		assertEquals(1, searchModel.selection().entities().get().size());
 		result = searchModel.search().result();
 		assertTrue(result.isEmpty());
+		searchModel.condition().set(() -> null);
+		assertThrows(IllegalArgumentException.class, searchModel.search()::result);
+		searchModel.condition().set(Department.NAME::isNotNull);
+		assertThrows(IllegalArgumentException.class, searchModel.search()::result);
+		searchModel.condition().clear();
 	}
 
 	@Test

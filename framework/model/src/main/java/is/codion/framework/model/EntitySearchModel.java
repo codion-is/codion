@@ -98,9 +98,10 @@ public interface EntitySearchModel {
 	Value<Integer> limit();
 
 	/**
-	 * Sets the additional search condition supplier to use when performing the next search.
-	 * This condition is AND'ed to the actual search condition.
-	 * NOTE, this does not affect the currently selected value(s), if any.
+	 * <p>Controls the additional search condition supplier used when performing the next search data.
+	 * <p>The supplied condition condition is AND'ed to the actual search condition.
+	 * <p>NOTE, this does not affect the currently selected value(s), if any.
+	 * <p>The condition supplier may not return null, doing so will cause an exception when searching.
 	 * @return the {@link Value} controlling the additional condition supplier
 	 */
 	Value<Supplier<Condition>> condition();
@@ -200,6 +201,7 @@ public interface EntitySearchModel {
 		Builder searchColumns(Collection<Column<String>> searchColumns);
 
 		/**
+		 * <p>The condition supplier may not return null, doing so will cause an exception when searching.
 		 * @param condition the additional condition supplier to use when performing the search
 		 * @return this builder instance
 		 */
