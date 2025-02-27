@@ -153,6 +153,16 @@ public interface AttributeDefinition<T> {
 	PropertyValue<Boolean> USE_LEXICAL_STRING_COMPARATOR = booleanValue("codion.domain.useLexicalStringComparator", true);
 
 	/**
+	 * Specifies whether String values should be trimmed by default
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 * @see String#trim()
+	 */
+	PropertyValue<Boolean> TRIM_STRINGS = booleanValue("codion.domain.trimStrings", true);
+
+	/**
 	 * The {@link Attribute} this definition is based on, should be unique within an Entity.
 	 * By default, the {@link Attribute#name()} serves as column name for database columns.
 	 * @return the attribute this definition is based on
@@ -244,6 +254,11 @@ public interface AttributeDefinition<T> {
 	int maximumLength();
 
 	/**
+	 * @return if string values should be trimmed, this applies to String (varchar) based attributes
+	 */
+	boolean trim();
+
+	/**
 	 * Returns the mnemonic associated with this attribute.
 	 * @return the mnemonic to use when creating a label for this attribute, 0 meaning no mnemonic
 	 */
@@ -313,7 +328,7 @@ public interface AttributeDefinition<T> {
 		Attribute<T> attribute();
 
 		/**
-		 * Note that this method has a side-effect, when setting the caption to a null value
+		 * Note that this method has a side effect, when setting the caption to a null value
 		 * this attribute is automatically hidden via {@link #hidden(boolean)}, when
 		 * a non-null value is used it is automatically made visible (as in, not hidden).
 		 * @param caption the caption
@@ -440,6 +455,16 @@ public interface AttributeDefinition<T> {
 		 * @throws IllegalStateException in case this is not a String attribute
 		 */
 		B maximumLength(int maximumLength);
+
+    /**
+     * Specifies whether string values should be trimmed, this applies to String (varchar) based attributes.
+     * @param trim true if strings values should be trimmed
+     * @return this builder instance
+		 * @throws IllegalStateException in case this is not a String attribute
+     * @see String#trim()
+		 * @see #TRIM_STRINGS
+     */
+		B trim(boolean trim);
 
 		/**
 		 * Sets the mnemonic to use when creating a label for this attribute

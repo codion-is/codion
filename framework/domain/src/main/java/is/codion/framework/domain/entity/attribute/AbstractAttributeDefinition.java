@@ -70,6 +70,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 	private final boolean nullable;
 	private final boolean hidden;
 	private final int maximumLength;
+	private final boolean trim;
 	private final Number maximumValue;
 	private final Number minimumValue;
 	private final String description;
@@ -95,6 +96,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 		this.nullable = builder.nullable;
 		this.hidden = builder.hidden;
 		this.maximumLength = builder.maximumLength;
+		this.trim = builder.trim;
 		this.maximumValue = builder.maximumValue;
 		this.minimumValue = builder.minimumValue;
 		this.description = builder.description;
@@ -153,6 +155,11 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 	@Override
 	public final int maximumLength() {
 		return maximumLength;
+	}
+
+	@Override
+	public final boolean trim() {
+		return trim;
 	}
 
 	@Override
@@ -409,6 +416,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 		private boolean nullable;
 		private boolean hidden;
 		private int maximumLength;
+		private boolean trim;
 		private Number maximumValue;
 		private Number minimumValue;
 		private String description;
@@ -430,6 +438,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 			hidden = resourceNotFound(attribute.entityType().resourceBundleName(), captionResourceKey);
 			nullable = true;
 			maximumLength = attribute.type().isCharacter() ? 1 : -1;
+			trim = TRIM_STRINGS.getOrThrow();
 			defaultValueSupplier = (ValueSupplier<T>) DEFAULT_VALUE_SUPPLIER;
 			decimalRoundingMode = DECIMAL_ROUNDING_MODE.getOrThrow();
 			minimumValue = defaultMinimumValue();
@@ -518,6 +527,15 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 			this.maximumLength = maximumLength;
 			return self();
 		}
+
+    @Override
+    public final B trim(boolean trim) {
+      if (!attribute.type().isString()) {
+        throw new IllegalStateException("trim is only applicable to string attributes: " + attribute);
+      }
+      this.trim = trim;
+      return (B) this;
+    }
 
 		@Override
 		public final B minimumValue(Number minimumValue) {

@@ -15,6 +15,7 @@ Codion Change Log
 - FilterTableModel.RowEditor.set(), rowIndex parameter added.
 ### is.codion.framework.domain
 - Entity.Builder.originalPrimaryKey() added.
+- AttributeDefinition.trim() added along with TRIM_STRINGS configuration value.
 ### is.codion.framework.model
 - AbstractEntityEditModel now handles edit events, EntityEditModel.add(), remove() and replace() removed, AbstractEntityEditModel.replaceForeignKey() removed, inserted(), updated() and deleted() added.
 - EntityTableModel.handleEditEvents() removed.

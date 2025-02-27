@@ -520,6 +520,9 @@ class DefaultEntity implements Entity, Serializable {
 		if (attributeDefinition instanceof ForeignKeyDefinition) {
 			return (T) validateForeignKeyValue((ForeignKeyDefinition) attributeDefinition, (Entity) value);
 		}
+		if (attributeDefinition.attribute().type().isString() && attributeDefinition.trim()) {
+			return (T) ((String) value).trim();
+		}
 
 		return adjustDecimalFractionDigits(attributeDefinition, value);
 	}

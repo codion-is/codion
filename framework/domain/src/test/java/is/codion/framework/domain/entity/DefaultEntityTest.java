@@ -1047,6 +1047,14 @@ public class DefaultEntityTest {
 	}
 
 	@Test
+	void trim() {
+		Entity aron = ENTITIES.builder(Employee.TYPE)
+						.with(Employee.NAME, " Aron\n ")
+						.build();
+		assertEquals("Aron", aron.get(Employee.NAME));
+	}
+
+	@Test
 	void cachedDerived() {
 		DomainType domainType = DomainType.domainType("cached_derived");
 		EntityType type = domainType.entityType("derived");
