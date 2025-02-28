@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Consumer;
 
+import static is.codion.swing.common.ui.component.table.FilterTableColumn.filterTableColumn;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -74,10 +75,10 @@ public class DefaultFilterTableColumnModelTest {
 
 	@Test
 	void setColumns() {
-		FilterTableColumn<Integer> column0 = FilterTableColumn.filterTableColumn(0);
-		FilterTableColumn<Integer> column1 = FilterTableColumn.filterTableColumn(1);
-		FilterTableColumn<Integer> column2 = FilterTableColumn.filterTableColumn(2);
-		FilterTableColumn<Integer> column3 = FilterTableColumn.filterTableColumn(3);
+		FilterTableColumn<Integer> column0 = filterTableColumn(0);
+		FilterTableColumn<Integer> column1 = filterTableColumn(1);
+		FilterTableColumn<Integer> column2 = filterTableColumn(2);
+		FilterTableColumn<Integer> column3 = filterTableColumn(3);
 
 		DefaultFilterTableColumnModel<Integer> columnModel =
 						new DefaultFilterTableColumnModel<>(asList(column0, column1, column2, column3));
@@ -126,10 +127,10 @@ public class DefaultFilterTableColumnModelTest {
 
 	@Test
 	void lock() {
-		FilterTableColumn<Integer> column0 = FilterTableColumn.filterTableColumn(0);
-		FilterTableColumn<Integer> column1 = FilterTableColumn.filterTableColumn(1);
-		FilterTableColumn<Integer> column2 = FilterTableColumn.filterTableColumn(2);
-		FilterTableColumn<Integer> column3 = FilterTableColumn.filterTableColumn(3);
+		FilterTableColumn<Integer> column0 = filterTableColumn(0);
+		FilterTableColumn<Integer> column1 = filterTableColumn(1);
+		FilterTableColumn<Integer> column2 = filterTableColumn(2);
+		FilterTableColumn<Integer> column3 = filterTableColumn(3);
 
 		FilterTableColumnModel<Integer> columnModel =
 						new DefaultFilterTableColumnModel<>(asList(column0, column1, column2, column3));
@@ -155,7 +156,17 @@ public class DefaultFilterTableColumnModelTest {
 		assertThrows(IllegalArgumentException.class, () -> testModel.visible(1));
 	}
 
+	@Test
+	void nonUniqueColumns() {
+		assertThrows(IllegalArgumentException.class, () -> new DefaultFilterTableColumnModel<>(asList(
+						filterTableColumn(0, 0),
+						filterTableColumn(1, 0))));
+		assertThrows(IllegalArgumentException.class, () -> new DefaultFilterTableColumnModel<>(asList(
+						filterTableColumn(0, 0),
+						filterTableColumn(0, 1))));
+	}
+
 	private static FilterTableColumnModel<Integer> createTestModel() {
-		return new DefaultFilterTableColumnModel<>(singletonList(FilterTableColumn.filterTableColumn(0)));
+		return new DefaultFilterTableColumnModel<>(singletonList(filterTableColumn(0)));
 	}
 }

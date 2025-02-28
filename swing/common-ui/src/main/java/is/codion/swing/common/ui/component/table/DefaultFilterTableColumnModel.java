@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static java.text.MessageFormat.format;
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -234,6 +235,14 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 		Map<C, FilterTableColumn<C>> columnMap = new LinkedHashMap<>();
 		for (FilterTableColumn<C> column : tableColumns) {
 			C identifier = column.identifier();
+			if (columnMap.containsKey(identifier)) {
+				throw new IllegalArgumentException(format("Column with identifier {0} already exists", identifier));
+			}
+			int modelIndex = column.getModelIndex();
+			if (columnIdentifiers.containsKey(modelIndex)) {
+				throw new IllegalArgumentException(format("Column with model index {0} already exists as {1}",
+								modelIndex, columnIdentifiers.get(modelIndex)));
+			}
 			columnMap.put(identifier, column);
 			columnIdentifiers.put(column.getModelIndex(), identifier);
 			tableColumnModel.addColumn(column);
