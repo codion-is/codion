@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.ui.component.combobox;
 
+import is.codion.common.property.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
@@ -28,6 +29,7 @@ import javax.swing.JComboBox;
 import javax.swing.ListCellRenderer;
 import java.awt.event.ItemListener;
 
+import static is.codion.common.Configuration.booleanValue;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -37,6 +39,16 @@ import static java.util.Objects.requireNonNull;
  * @param <B> the builder type
  */
 public interface ComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> extends ComponentBuilder<T, C, B> {
+
+	/**
+	 * Specifies whether mouse wheel scrolling is enabled in combo boxes by default.
+	 * <ul>
+	 * <li>Value type:Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 */
+	PropertyValue<Boolean> MOUSE_WHEEL_SCROLLING =
+					booleanValue(ComboBoxBuilder.class.getName() + ".mouseWheelScrolling", true);
 
 	/**
 	 * @param editable specifies whether the combo box should be editable
@@ -77,6 +89,7 @@ public interface ComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBu
 	 * Enable mouse wheel scrolling on the combo box
 	 * @param mouseWheelScrolling true if mouse wheel scrolling should be enabled
 	 * @return this builder instance
+	 * @see #MOUSE_WHEEL_SCROLLING
 	 */
 	B mouseWheelScrolling(boolean mouseWheelScrolling);
 

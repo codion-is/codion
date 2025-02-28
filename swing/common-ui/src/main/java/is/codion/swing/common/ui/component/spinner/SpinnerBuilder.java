@@ -18,14 +18,27 @@
  */
 package is.codion.swing.common.ui.component.spinner;
 
+import is.codion.common.property.PropertyValue;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
 import javax.swing.JSpinner;
+
+import static is.codion.common.Configuration.booleanValue;
 
 /**
  * A builder for JSpinner.
  */
 public interface SpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends ComponentBuilder<T, JSpinner, B> {
+
+	/**
+	 * Specifies whether mouse wheel scrolling is enabled in spinners by default.
+	 * <ul>
+	 * <li>Value type:Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 */
+	PropertyValue<Boolean> MOUSE_WHEEL_SCROLLING =
+					booleanValue(SpinnerBuilder.class.getName() + ".mouseWheelScrolling", true);
 
 	/**
 	 * @param editable false if the spinner field should not be editable

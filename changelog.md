@@ -28,6 +28,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - DefaultFilterTableColumnModel, validation for unique model indexes and identifiers added.
 - FilterTableColumn.setModelIndex() now throws UnsupportedOperationException.
+- MOUSE_WHEEL_SCROLLING configuration property added to ComboBoxBuilder, SpinnerBuilder and SliderBuilder.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Builder.condition() now accepts a null argument.
 - DefaultEntityComboBoxModel, improved exception message when refreshing in case the condition supplier returns null or a condition for the incorrect type.

@@ -75,6 +75,7 @@ public interface ItemComboBoxBuilder<T> extends ComponentBuilder<T, JComboBox<It
 	 * Enable mouse wheel scrolling on the combo box
 	 * @param mouseWheelScrolling true if mouse wheel scrolling should be enabled
 	 * @return this builder instance
+	 * @see ComboBoxBuilder#MOUSE_WHEEL_SCROLLING
 	 */
 	ItemComboBoxBuilder<T> mouseWheelScrolling(boolean mouseWheelScrolling);
 

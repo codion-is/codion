@@ -38,7 +38,7 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
 
 	private boolean editable = true;
 	private int columns = -1;
-	private boolean mouseWheelScrolling = true;
+	private boolean mouseWheelScrolling = MOUSE_WHEEL_SCROLLING.getOrThrow();
 	private boolean mouseWheelScrollingReversed = false;
 	private int horizontalAlignment = -1;
 

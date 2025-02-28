@@ -50,7 +50,7 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
 	private boolean normalize = true;
 	private ListCellRenderer<T> renderer;
 	private ComboBoxEditor editor;
-	private boolean mouseWheelScrolling = true;
+	private boolean mouseWheelScrolling = MOUSE_WHEEL_SCROLLING.getOrThrow();
 	private boolean mouseWheelScrollingWithWrapAround = false;
 	private int maximumRowCount = -1;
 	private boolean moveCaretToFrontOnSelection = true;

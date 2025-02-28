@@ -40,7 +40,7 @@ final class DefaultSliderBuilder extends AbstractComponentBuilder<Integer, JSlid
 	private boolean paintLabels = false;
 	private boolean inverted = false;
 	private int orientation = SwingConstants.HORIZONTAL;
-	private boolean mouseWheelScrolling = true;
+	private boolean mouseWheelScrolling = MOUSE_WHEEL_SCROLLING.getOrThrow();
 	private boolean mouseWheelScrollingReversed = false;
 
 	DefaultSliderBuilder(BoundedRangeModel boundedRangeModel, Value<Integer> linkedValue) {

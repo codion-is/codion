@@ -18,18 +18,30 @@
  */
 package is.codion.swing.common.ui.component.slider;
 
+import is.codion.common.property.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.JSlider;
 
+import static is.codion.common.Configuration.booleanValue;
 import static java.util.Objects.requireNonNull;
 
 /**
  * A builder for JSpinner
  */
 public interface SliderBuilder extends ComponentBuilder<Integer, JSlider, SliderBuilder> {
+
+	/**
+	 * Specifies whether mouse wheel scrolling in sliders is enabled by default.
+	 * <ul>
+	 * <li>Value type:Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 */
+	PropertyValue<Boolean> MOUSE_WHEEL_SCROLLING =
+					booleanValue(SliderBuilder.class.getName() + ".mouseWheelScrolling", true);
 
 	/**
 	 * @param minorTickSpacing the minor tick spacing
@@ -91,6 +103,7 @@ public interface SliderBuilder extends ComponentBuilder<Integer, JSlider, Slider
 	 * Enable mouse wheel scrolling on the slider
 	 * @param mouseWheelScrolling true if mouse wheel scrolling should be enabled
 	 * @return this builder instance
+	 * @see #MOUSE_WHEEL_SCROLLING
 	 */
 	SliderBuilder mouseWheelScrolling(boolean mouseWheelScrolling);
 

@@ -50,7 +50,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
 	private boolean nullable;
 	private Completion.Mode completionMode = Completion.COMPLETION_MODE.get();
 	private boolean normalize = true;
-	private boolean mouseWheelScrolling = true;
+	private boolean mouseWheelScrolling = ComboBoxBuilder.MOUSE_WHEEL_SCROLLING.getOrThrow();
 	private boolean mouseWheelScrollingWithWrapAround = false;
 	private int maximumRowCount = -1;
 	private int popupWidth = 0;
