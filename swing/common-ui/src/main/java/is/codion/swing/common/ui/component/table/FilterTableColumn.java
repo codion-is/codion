@@ -87,6 +87,15 @@ public final class FilterTableColumn<C> extends TableColumn {
 	}
 
 	/**
+	 * @param modelIndex the new modelIndex
+	 * @throws UnsupportedOperationException changing the modelIndex is not supported
+	 */
+	@Override
+	public void setModelIndex(int modelIndex) {
+		throw new UnsupportedOperationException("Changing the model index of a FilterTableColumn is not supported");
+	}
+
+	/**
 	 * @return the column identifier
 	 */
 	public C identifier() {

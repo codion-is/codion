@@ -27,6 +27,7 @@ Codion Change Log
 - DefaultEntitySearchModel, improved exception message when refreshing in case the condition supplier returns null or a condition for the incorrect type.
 ### is.codion.swing.common.ui
 - DefaultFilterTableColumnModel, validation for unique model indexes and identifiers added.
+- FilterTableColumn.setModelIndex() now throws UnsupportedOperationException.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Builder.condition() now accepts a null argument.
 - DefaultEntityComboBoxModel, improved exception message when refreshing in case the condition supplier returns null or a condition for the incorrect type.
