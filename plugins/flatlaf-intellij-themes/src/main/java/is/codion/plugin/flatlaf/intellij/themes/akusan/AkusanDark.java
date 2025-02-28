@@ -23,7 +23,7 @@ import com.formdev.flatlaf.IntelliJTheme;
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
 /**
- * https://github.com/aKusaNas/aKusaN-no-Yami
+ * https://github.com/aKusaNas/aKusaN-no-Yami/blob/main/src/main/resources/theme/aKusaN_dark.theme.json
  */
 public final class AkusanDark extends IntelliJTheme.ThemeLaf {
 

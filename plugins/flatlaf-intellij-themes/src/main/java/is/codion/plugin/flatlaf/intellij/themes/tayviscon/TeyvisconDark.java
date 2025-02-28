@@ -23,7 +23,7 @@ import com.formdev.flatlaf.IntelliJTheme;
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
 /**
- * https://github.com/tayviscon-io/tayviscon-jetbrains-theme
+ * https://github.com/tayviscon-io/tayviscon-jetbrains-theme/blob/main/src/main/resources/themes/TayvisconDark.theme.json
  */
 public final class TeyvisconDark extends IntelliJTheme.ThemeLaf {
 

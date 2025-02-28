@@ -23,7 +23,7 @@ import com.formdev.flatlaf.IntelliJTheme;
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
 /**
- * https://plugins.jetbrains.com/plugin/12165-dark-flat-theme
+ * https://github.com/nerzhulart/DarkFlatTheme/blob/master/src/DarkFlatTheme.theme.json
  */
 public final class DarkFlat extends IntelliJTheme.ThemeLaf {
 

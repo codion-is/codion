@@ -23,7 +23,7 @@ import com.formdev.flatlaf.IntelliJTheme;
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
 /**
- * https://github.com/gerry-themes/gerry-themes
+ * https://github.com/gerry-themes/gerry-themes/blob/master/resources/light/gerryLight.theme.json
  */
 public final class GerryLight extends IntelliJTheme.ThemeLaf {
 

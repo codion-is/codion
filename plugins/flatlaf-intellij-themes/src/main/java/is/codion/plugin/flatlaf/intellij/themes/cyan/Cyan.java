@@ -23,7 +23,7 @@ import com.formdev.flatlaf.IntelliJTheme;
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
 /**
- * https://github.com/OlyaB/CyanTheme
+ * https://github.com/OlyaB/CyanTheme/blob/master/src/Cyan.theme.json
  */
 public final class Cyan extends IntelliJTheme.ThemeLaf {
 

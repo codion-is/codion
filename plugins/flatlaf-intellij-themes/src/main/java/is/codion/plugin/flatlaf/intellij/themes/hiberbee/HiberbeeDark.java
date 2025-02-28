@@ -23,7 +23,7 @@ import com.formdev.flatlaf.IntelliJTheme;
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
 /**
- * https://github.com/hiberbee/themes
+ * https://github.com/hiberbee/themes/blob/latest/src/intellij/src/main/resources/themes/HiberbeeDark.theme.json
  */
 public final class HiberbeeDark extends IntelliJTheme.ThemeLaf {
 

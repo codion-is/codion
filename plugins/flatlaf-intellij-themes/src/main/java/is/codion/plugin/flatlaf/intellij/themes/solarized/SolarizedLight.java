@@ -23,7 +23,7 @@ import com.formdev.flatlaf.IntelliJTheme;
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
 /**
- * https://github.com/snowe2010/solarized-jetbrains
+ * https://github.com/snowe2010/solarized-jetbrains/blob/master/src/solarized_light_theme.theme.json
  */
 public final class SolarizedLight extends IntelliJTheme.ThemeLaf {
 

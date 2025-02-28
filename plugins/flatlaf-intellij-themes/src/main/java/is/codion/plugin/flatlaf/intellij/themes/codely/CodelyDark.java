@@ -23,7 +23,7 @@ import com.formdev.flatlaf.IntelliJTheme;
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
 /**
- * https://github.com/CodelyTV/jetbrains-theme
+ * https://github.com/CodelyTV/jetbrains-theme/blob/main/src/main/resources/codely_dark.theme.json
  */
 public final class CodelyDark extends IntelliJTheme.ThemeLaf {
 

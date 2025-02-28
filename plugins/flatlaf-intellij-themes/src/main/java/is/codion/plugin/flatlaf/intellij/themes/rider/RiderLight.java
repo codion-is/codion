@@ -23,7 +23,7 @@ import com.formdev.flatlaf.IntelliJTheme;
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
 /**
- * https://github.com/JetBrains/rider-theme-pack
+ * https://github.com/JetBrains/rider-theme-pack/blob/master/src/main/resources/RiderLight.theme.json
  */
 public final class RiderLight extends IntelliJTheme.ThemeLaf {
 

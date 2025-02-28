@@ -23,7 +23,7 @@ import com.formdev.flatlaf.IntelliJTheme;
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
 /**
- * https://github.com/Vincent-P/gruvbox-intellij-theme
+ * https://github.com/Vincent-P/gruvbox-intellij-theme/blob/master/src/main/resources/gruvbox_dark_soft.theme.json
  */
 public final class GruvboxDarkSoft extends IntelliJTheme.ThemeLaf {
 

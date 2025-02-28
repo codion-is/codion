@@ -23,7 +23,7 @@ import com.formdev.flatlaf.IntelliJTheme;
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
 /**
- * https://github.com/francma/everforest-jetbrains
+ * https://github.com/MenWhoRust/everforest-jetbrains/blob/main/src/main/resources/Everforest_Light_Medium.theme.json
  */
 public final class EverforestLightMedium extends IntelliJTheme.ThemeLaf {
 

@@ -23,7 +23,7 @@ import com.formdev.flatlaf.IntelliJTheme;
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
 /**
- * https://github.com/codigrate/jetbrains-themes
+ * https://github.com/codigrate/jetbrains-themes/blob/main/nature-themes/sequoia-theme/resources/theme/sequoia.theme.json
  */
 public final class Sequoia extends IntelliJTheme.ThemeLaf {
 

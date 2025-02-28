@@ -23,7 +23,7 @@ import com.formdev.flatlaf.IntelliJTheme;
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
 /**
- * https://github.com/nordtheme/jetbrains
+ * https://github.com/nordtheme/jetbrains/blob/main/src/nord.theme.json
  */
 public final class Nord extends IntelliJTheme.ThemeLaf {
 

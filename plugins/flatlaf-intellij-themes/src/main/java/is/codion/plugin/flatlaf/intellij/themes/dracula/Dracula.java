@@ -23,7 +23,7 @@ import com.formdev.flatlaf.IntelliJTheme;
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
 /**
- * https://github.com/dracula/jetbrains
+ * https://github.com/dracula/jetbrains/blob/master/src/main/resources/themes/Dracula.theme.json
  */
 public final class Dracula extends IntelliJTheme.ThemeLaf {
 

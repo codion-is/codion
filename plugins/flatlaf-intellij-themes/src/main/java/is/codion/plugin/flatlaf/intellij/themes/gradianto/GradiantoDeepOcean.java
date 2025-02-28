@@ -23,7 +23,7 @@ import com.formdev.flatlaf.IntelliJTheme;
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
 /**
- * https://github.com/thvardhan/Gradianto
+ * https://github.com/thvardhan/Gradianto/blob/master/src/main/resources/Gradianto_deep_ocean.theme.json
  */
 public final class GradiantoDeepOcean extends IntelliJTheme.ThemeLaf {
 

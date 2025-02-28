@@ -23,7 +23,7 @@ import com.formdev.flatlaf.IntelliJTheme;
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
 /**
- * https://github.com/marcosramos87/one-pauintxi-theme
+ * https://github.com/marcosramos87/one-pauintxi-theme/blob/main/vscode/themes/one-pauintxi-all-blue.json
  */
 public final class OnePauintxiAllBlue extends IntelliJTheme.ThemeLaf {
 

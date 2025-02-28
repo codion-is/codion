@@ -23,11 +23,11 @@ import com.formdev.flatlaf.IntelliJTheme;
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
 /**
- * https://github.com/luisfer0793/theme-carbon
+ * https://github.com/luisfer0793/theme-carbon/blob/master/out/production/CarbonTheme/matte_carbon_basics.theme.json
  */
 public final class Carbon extends IntelliJTheme.ThemeLaf {
 
 	public Carbon() {
-		super(load(Carbon.class.getResourceAsStream("Carbon.theme.json")));
+		super(load(Carbon.class.getResourceAsStream("matte_carbon_basics.theme.json")));
 	}
 }

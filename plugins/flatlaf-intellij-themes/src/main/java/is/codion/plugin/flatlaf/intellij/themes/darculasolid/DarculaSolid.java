@@ -23,7 +23,7 @@ import com.formdev.flatlaf.IntelliJTheme;
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
 /**
- * https://github.com/vecheslav/darcula-solid
+ * https://github.com/vecheslav/darcula-solid/blob/master/src/Darcula_Solid.theme.json
  */
 public final class DarculaSolid extends IntelliJTheme.ThemeLaf {
 

@@ -23,7 +23,7 @@ import com.formdev.flatlaf.IntelliJTheme;
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
 /**
- * https://github.com/ngehlert/cobalt2
+ * https://github.com/ngehlert/cobalt2/blob/master/Cobalt2-UI-Theme/resources/Cobalt_2.theme.json
  */
 public final class Cobalt2 extends IntelliJTheme.ThemeLaf {
 

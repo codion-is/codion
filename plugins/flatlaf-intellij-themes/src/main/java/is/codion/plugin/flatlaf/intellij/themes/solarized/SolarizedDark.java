@@ -23,11 +23,11 @@ import com.formdev.flatlaf.IntelliJTheme;
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
 /**
- * https://github.com/snowe2010/solarized-jetbrains
+ * https://github.com/snowe2010/solarized-jetbrains/blob/master/src/solarized_dark_theme.theme.json
  */
 public final class SolarizedDark extends IntelliJTheme.ThemeLaf {
 
 	public SolarizedDark() {
-		super(load(SolarizedDark.class.getResourceAsStream("SolarizedDark.theme.json")));
+		super(load(SolarizedDark.class.getResourceAsStream("solarized_dark_theme.theme.json")));
 	}
 }

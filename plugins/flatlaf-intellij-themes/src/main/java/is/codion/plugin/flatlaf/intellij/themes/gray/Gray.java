@@ -23,7 +23,7 @@ import com.formdev.flatlaf.IntelliJTheme;
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
 /**
- * https://github.com/OlyaB/GreyTheme
+ * https://github.com/OlyaB/GreyTheme/blob/master/src/Gray.theme.json
  */
 public final class Gray extends IntelliJTheme.ThemeLaf {
 

@@ -23,7 +23,7 @@ import com.formdev.flatlaf.IntelliJTheme;
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
 /**
- * https://github.com/yx208/intellij-elegant-theme
+ * https://github.com/yx208/intellij-elegant-theme/blob/main/resources/theme/elegant-light.theme.json
  */
 public final class ElegantLight extends IntelliJTheme.ThemeLaf {
 

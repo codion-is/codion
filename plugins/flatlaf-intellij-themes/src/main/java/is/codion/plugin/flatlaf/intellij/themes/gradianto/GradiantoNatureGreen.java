@@ -23,11 +23,11 @@ import com.formdev.flatlaf.IntelliJTheme;
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
 /**
- * https://github.com/thvardhan/Gradianto
+ * https://github.com/thvardhan/Gradianto/blob/master/src/main/resources/Gradianto_Nature_Green.theme.json
  */
 public final class GradiantoNatureGreen extends IntelliJTheme.ThemeLaf {
 
 	public GradiantoNatureGreen() {
-		super(load(GradiantoNatureGreen.class.getResourceAsStream("Gradianto_nature_green.theme.json")));
+		super(load(GradiantoNatureGreen.class.getResourceAsStream("Gradianto_Nature_Green.theme.json")));
 	}
 }

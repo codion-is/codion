@@ -23,7 +23,7 @@ import com.formdev.flatlaf.IntelliJTheme;
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
 /**
- * https://github.com/perlun/jetbrains-one-dark-theme
+ * https://github.com/perlun/jetbrains-one-dark-theme/blob/master/src/main/resources/themes/one_dark.theme.json
  */
 public final class OneDark extends IntelliJTheme.ThemeLaf {
 

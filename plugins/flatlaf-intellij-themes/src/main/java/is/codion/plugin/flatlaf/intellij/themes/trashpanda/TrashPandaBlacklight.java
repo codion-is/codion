@@ -23,7 +23,7 @@ import com.formdev.flatlaf.IntelliJTheme;
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
 /**
- * https://github.com/jasonhulbert/jetbrains-trash-panda-theme
+ * https://github.com/jasonhulbert/jetbrains-trash-panda-theme/blob/master/src/main/resources/META-INF/trash-panda-theme-blacklight.theme.json
  */
 public final class TrashPandaBlacklight extends IntelliJTheme.ThemeLaf {
 

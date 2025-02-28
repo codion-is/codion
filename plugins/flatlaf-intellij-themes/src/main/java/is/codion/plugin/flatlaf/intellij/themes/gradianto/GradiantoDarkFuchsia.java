@@ -23,7 +23,7 @@ import com.formdev.flatlaf.IntelliJTheme;
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
 /**
- * https://github.com/thvardhan/Gradianto
+ * https://github.com/thvardhan/Gradianto/blob/master/src/main/resources/Gradianto_dark_fuchsia.theme.json
  */
 public final class GradiantoDarkFuchsia extends IntelliJTheme.ThemeLaf {
 
