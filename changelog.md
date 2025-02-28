@@ -32,6 +32,8 @@ Codion Change Log
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Builder.condition() now accepts a null argument.
 - DefaultEntityComboBoxModel, improved exception message when refreshing in case the condition supplier returns null or a condition for the incorrect type.
+### is.codion.plugin.flatlaf.intellij.themes
+- HighContrast theme now based on the on from IntelliJ, as in FlatLaf.
 
 ## 0.18.30
 ### is.codion.common.model

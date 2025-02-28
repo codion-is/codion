@@ -23,7 +23,7 @@ import com.formdev.flatlaf.IntelliJTheme;
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
 /**
- * https://github.com/chencn/intellij-high-contrast-theme
+ * https://github.com/JetBrains/intellij-community
  */
 public final class HighContrast extends IntelliJTheme.ThemeLaf {
 
