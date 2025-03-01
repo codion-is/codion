@@ -420,15 +420,13 @@ public final class FilterTable<R, C> extends JTable {
 
 	/**
 	 * The {@link ActionEvent} propagated when this action is performed, contains the associated {@link MouseEvent} as source.
-	 * <pre>
-	 * {@code
+	 * {@snippet :
 	 *   public void actionPerformed(ActionEvent event) {
 	 *       MouseEvent mouseEvent = (MouseEvent) event.getSource();
 	 *       Point location = mouseEvent.getLocationOnScreen();
 	 *       // ...
 	 *   }
 	 * }
-	 * </pre>
 	 * @return the {@link Value} controlling the action to perform when a double click is performed on the table
 	 */
 	public Value<Action> doubleClickAction() {

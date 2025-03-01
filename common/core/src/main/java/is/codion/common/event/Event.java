@@ -34,8 +34,7 @@ import java.util.function.Consumer;
  * <p>Events provide access to their {@link Observer} instance via {@link #observer()}, which can
  * be used to add listeners and consumers, but can not be used to trigger the event.
  * <p>Unhandled exceptions occurring in a listener will prevent further listeners from being notified.
- * <pre>
- * {@code
+ * {@snippet :
  * Event<Boolean> event = Event.event();
  *
  * event.addListener(this::doSomething);
@@ -50,14 +49,11 @@ import java.util.function.Consumer;
  *
  * observer.addListener(this::doSomethingElse);
  * }
- * </pre>
  * <p>Listeners and Consumers can be added using a {@link java.lang.ref.WeakReference}.
- * <pre>
- * {@code
+ * {@snippet :
  * observer.addWeakListener(this::doSomethingElse);
  * observer.addWeakConsumer(this::onBoolean);
  * }
- * </pre>
  * <p>Any weak references that no longer refer to a listener/consumer instance
  * are cleared when listeners or consumers are added or removed.
  * <p>A factory for {@link Event} instances via {@link #event()}.

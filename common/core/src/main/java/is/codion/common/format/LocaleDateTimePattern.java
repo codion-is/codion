@@ -28,8 +28,7 @@ import java.util.Optional;
  * <p>
  * Orders the year and month parts according to locale,
  * with two-digit month and day parts and two or four digit year.
- * <pre>
- * {@code
+ * {@snippet :
  * LocaleDateTimePattern pattern = LocaleDateTimePattern.builder()
  *     .delimiterDash()
  *     .yearFourDigits()
@@ -45,7 +44,6 @@ import java.util.Optional;
  * pattern.dateTimePattern(iceland);// "dd-MM-yyyy HH:mm"
  * pattern.dateTimePattern(us)     ;// "MM-dd-yyyy HH:mm"
  * }
- * </pre>
  * @see #builder()
  */
 public interface LocaleDateTimePattern {

@@ -60,8 +60,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 
 	/**
 	 * The client property key for the associated {@link ComponentValue}
-	 * <pre>
-	 * {@code
+	 * {@snippet :
 	 *   JTextField textField =
 	 *            Components.stringField()
 	 *                    .build();
@@ -70,7 +69,6 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 *            (ComponentValue<String, JTextField>)
 	 *                    textField.getClientProperty(COMPONENT_VALUE);
 	 * }
-	 * </pre>
 	 * @see JComponent#getClientProperty(Object)
 	 */
 	String COMPONENT_VALUE = "componentValue";

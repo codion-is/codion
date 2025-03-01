@@ -80,14 +80,12 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
 		 * Returns a new {@link ColumnDefinition.Builder} instance, with the primary key index 0.
 		 * Note that this renders this column non-null and non-updatable by default, this can be
 		 * reverted by setting it as updatable and/or nullable after defining a primary key column.
-		 * <pre>
-		 * {@code
-		 *   ...
+		 * {@snippet :
+		 * Employee.ID.define()
 		 *   .primaryKey()
 		 *   .nullable(true)
 		 *   .updatable(true)
 		 * }
-		 * </pre>
 		 * @param <B> the builder type
 		 * @return a new {@link ColumnDefinition.Builder} with primary key index 0
 		 * @see ColumnDefinition.Builder#nullable(boolean)
@@ -99,14 +97,12 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
 		 * Returns a new {@link ColumnDefinition.Builder} instance, with the given primary key index.
 		 * Note that this renders this column non-null and non-updatable by default, this can be
 		 * reverted by setting it as updatable and/or nullable after defining a primary key column.
-		 * <pre>
-		 * {@code
-		 *   ...
+		 * {@snippet :
+		 * Employee.ID.define()
 		 *   .primaryKey()
 		 *   .nullable(true)
 		 *   .updatable(true)
 		 * }
-		 * </pre>
 		 * @param index the zero-based index of this column in the primary key
 		 * @param <B> the builder type
 		 * @return a new {@link ColumnDefinition.Builder} with the given primary key index

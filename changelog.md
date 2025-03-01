@@ -2,6 +2,9 @@ Codion Change Log
 =================
 
 ## 0.18.31
+### is.codion
+- Build with JDK21, target 17.
+- Javadoc, replace multiline @code sections with @snippet.
 ### is.codion.common.model
 - FilterModel.Items.replace() overloaded with a Map parameter.
 - FilterModel.VisibleItems.set() no longer sorts.

@@ -28,20 +28,18 @@ import java.util.concurrent.TimeUnit;
  * A task scheduler based on a {@link ScheduledExecutorService}, scheduled at a fixed rate,
  * using a daemon thread by default.
  * A TaskScheduler can be stopped and restarted.
- * <pre>
- * {@code
- * TaskScheduler scheduler = TaskScheduler.builder(() -&gt; System.out.println("Running wild..."))
+ * {@snippet :
+ * TaskScheduler scheduler = TaskScheduler.builder(() -> System.out.println("Running wild..."))
  *     .interval(2)
  *     .timeUnit(TimeUnit.SECONDS)
  *     .build();
  *
  * scheduler.start();
- * ...
+ * // ...
  * scheduler.interval().set(1);//task restarted using the new interval
- * ...
+ * // ...
  * scheduler.stop();
  * }
- * </pre>
  * @see TaskScheduler#builder(Runnable)
  */
 public interface TaskScheduler {

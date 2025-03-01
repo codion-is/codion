@@ -25,8 +25,7 @@ import java.util.List;
 /**
  * Builds a dynamic proxy for a single interface.
  * Note that if the {@link Object#equals(Object)} method is not proxied the resulting proxy is equal only to itself.
- * <pre>
- * {@code
+ * {@snippet :
  * List<String> list = new ArrayList<>();
  *
  * List<String> listProxy = ProxyBuilder.builder(List.class)
@@ -56,7 +55,6 @@ import java.util.List;
  *     })
  *     .build();
  * }
- * </pre>
  * @param <T> the proxy type
  * @see #builder(Class)
  */

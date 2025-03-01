@@ -94,8 +94,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * NOTE: A transaction should ALWAYS be used in conjunction with a try/catch block,<br>
 	 * in order for the transaction to be properly ended in case of an exception.<br>
 	 * A transaction should always be started OUTSIDE the try/catch block.
-	 * <pre>
-	 * {@code
+	 * {@snippet :
 	 * EntityConnection connection = connectionProvider().connection();
 	 *
 	 * connection.startTransaction(); // Very important, should NOT be inside the try block
@@ -113,7 +112,6 @@ public interface EntityConnection extends AutoCloseable {
 	 *     throw new RuntimeException(e);
 	 * }
 	 * }
-	 * </pre>
 	 * @throws IllegalStateException if a transaction is already open
 	 * @see #transaction(EntityConnection, Transactional)
 	 * @see #transaction(EntityConnection, TransactionalResult)
@@ -443,6 +441,15 @@ public interface EntityConnection extends AutoCloseable {
 	 * Executes the given {@link Transactional} instance within a transaction on the given connection, committing on success and rolling back on exception.
 	 * Any {@link DatabaseException}s, {@link RuntimeException}s or {@link Error}s encountered are rethrown, other exceptions are rethrown wrapped in a {@link RuntimeException}.
 	 * Note that nesting transactions will cause an {@link IllegalStateException} to be thrown, causing the outer transaction to be rolled back.
+	 * {@snippet :
+	 * EntityConnection connection = connection();
+	 * transaction(connection, () -> {
+	 * 	 // Delete the playlist tracks
+	 *   connection.delete(PlaylistTrack.PLAYLIST_FK.in(playlists));
+	 * 	 // Then delete the playlists
+	 *   connection.delete(primaryKeys(playlists));
+	 * });
+	 * }
 	 * @param connection the connection to use
 	 * @param transactional the transactional to run
 	 * @throws DatabaseException in case of a database exception
@@ -461,6 +468,11 @@ public interface EntityConnection extends AutoCloseable {
 	 * Executes the given {@link TransactionalResult} instance within a transaction on the given connection, committing on success and rolling back on exception.
 	 * Any {@link DatabaseException}s, {@link RuntimeException}s or {@link Error}s encountered are rethrown, other exceptions are rethrown wrapped in a {@link RuntimeException}.
 	 * Note that nesting transactions will cause an {@link IllegalStateException} to be thrown, causing the outer transaction to be rolled back.
+	 * {@snippet :
+	 * EntityConnection connection = connection();
+	 * Entity randomPlaylist = transaction(connection, () ->
+	 *   connection.execute(Playlist.RANDOM_PLAYLIST, parameters));
+	 * }
 	 * @param <T> the result type
 	 * @param connection the connection to use
 	 * @param transactional the transactional to run

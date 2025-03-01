@@ -38,8 +38,7 @@ import static java.util.Objects.requireNonNull;
  * those directly to the {@code onProgress} and {@code onPublish} handlers on the Event Dispatch Thread.</p>
  * <p>Note that the {@code onStarted} handler is NOT called in case the background task finishes
  * 	before the {@link javax.swing.SwingWorker.StateValue#STARTED} change event is fired.
- * <pre>
- * {@code
+ * {@snippet :
  * ProgressWorker.builder(this::performTask)
  *   .onStarted(this::displayDialog)
  *   .onDone(this::closeDialog)
@@ -50,7 +49,6 @@ import static java.util.Objects.requireNonNull;
  *   .onException(this::displayException)
  *   .execute();
  * }
- * </pre>
  * @param <T> the type of result this {@link ProgressWorker} produces.
  * @param <V> the type of intermediate result produced by this {@link ProgressWorker}
  * @see #builder(ResultTask)

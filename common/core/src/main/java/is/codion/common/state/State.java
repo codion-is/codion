@@ -27,8 +27,7 @@ import java.util.Collection;
 
 /**
  * A class encapsulating a boolean state, non-nullable with null values translated to false.
- * <pre>
- * {@code
+ * {@snippet :
  * State state = State.state();
  *
  * ObservableState observable = state.observable();
@@ -39,7 +38,6 @@ import java.util.Collection;
  * state.set(false);
  * state.set(null); //translates to false
  * }
- * </pre>
  * A factory for {@link State} instances.
  * @see #state()
  * @see #builder()

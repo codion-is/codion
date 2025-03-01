@@ -151,7 +151,7 @@ tasks.register("combinedJavadoc") {
         options.write(optionsFile)
 
         val javadocTool = javaToolchains.javadocToolFor {
-            languageVersion = JavaLanguageVersion.of(properties["jdkVersion"] as String)
+            languageVersion = JavaLanguageVersion.of(21)
         }
         providers.exec {
             executable = javadocTool.get().executablePath.asFile.absolutePath

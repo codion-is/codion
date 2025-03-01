@@ -28,8 +28,7 @@ import java.awt.Component;
 
 /**
  * A builder for a JTabbedPane.
- * <pre>
- * {@code
+  * {@snippet :
  * Components.tabbedPane()
  *         .tab("First Tab", new JLabel("First"))
  *         .tab("Second Tab", new JLabel("Second"))
@@ -50,7 +49,6 @@ import java.awt.Component;
  *         .add()
  *         .build();
  * }
- * </pre>
  */
 public interface TabbedPaneBuilder extends ComponentBuilder<Void, JTabbedPane, TabbedPaneBuilder> {
 

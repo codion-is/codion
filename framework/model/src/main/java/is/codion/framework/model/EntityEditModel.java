@@ -595,8 +595,7 @@ public interface EntityEditModel {
 
 	/**
 	 * Represents a task for inserting entities, split up for use with a background thread.
-	 * <pre>
-	 * {@code
+	 * {@snippet :
 	 *   InsertEntities insert = editModel.createInsert();
 	 *
 	 *   InsertEntities.Task task = insert.prepare();
@@ -606,7 +605,6 @@ public interface EntityEditModel {
 	 *
 	 *   Collection<Entity> insertedEntities = result.handle();
 	 * }
-	 * </pre>
 	 * {@link Task#perform()} may be called on a background thread while {@link InsertEntities#prepare()}
 	 * and {@link Result#handle()} must be called on the UI thread.
 	 */
@@ -647,8 +645,7 @@ public interface EntityEditModel {
 
 	/**
 	 * Represents a task for updating entities, split up for use with a background thread.
-	 * <pre>
-	 * {@code
+	 * {@snippet :
 	 *   UpdateEntities update = editModel.createUpdate();
 	 *
 	 *   UpdateEntities.Task task = update.prepare();
@@ -658,7 +655,6 @@ public interface EntityEditModel {
 	 *
 	 *   Collection<Entity> updatedEntities = result.handle();
 	 * }
-	 * </pre>
 	 * {@link Task#perform()} may be called on a background thread while {@link UpdateEntities#prepare()}
 	 * and {@link Result#handle()} must be called on the UI thread.
 	 */
@@ -699,8 +695,7 @@ public interface EntityEditModel {
 
 	/**
 	 * Represents a task for deleting entities, split up for use with a background thread.
-	 * <pre>
-	 * {@code
+	 * {@snippet :
 	 *   DeleteEntities delete = editModel.createDelete();
 	 *
 	 *   DeleteEntities.Task task = delete.prepare();
@@ -710,7 +705,6 @@ public interface EntityEditModel {
 	 *
 	 *   Collection<Entity> deletedEntities = result.handle();
 	 * }
-	 * </pre>
 	 * {@link Task#perform()} may be called on a background thread while {@link DeleteEntities#prepare()}
 	 * and {@link Result#handle()} must be called on the UI thread.
 	 */

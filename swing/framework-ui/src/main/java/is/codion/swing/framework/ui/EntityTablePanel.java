@@ -849,8 +849,7 @@ public class EntityTablePanel extends JPanel {
 	 * Configures the toolbar controls layout.<br>
 	 * Note that the {@link Controls.Layout} instance has pre-configured defaults,
 	 * which must be cleared in order to start with an empty configuration.
-	 * <pre>
-	 * {@code
+	 * {@snippet :
 	 *   configureToolBar(layout -> layout.clear()
 	 *           .control(ControlKeys.REFRESH)
 	 *           .separator()
@@ -858,7 +857,6 @@ public class EntityTablePanel extends JPanel {
 	 *           .separator()
 	 *           .defaults())
 	 * }
-	 * </pre>
 	 * Defaults:
 	 * <ul>
 	 *   <li>{@link ControlKeys#TOGGLE_SUMMARIES ControlKeys#TOGGLE_SUMMARY_PANEL}
@@ -887,8 +885,7 @@ public class EntityTablePanel extends JPanel {
 	 * Configures the popup menu controls layout.<br>
 	 * Note that the {@link Controls.Layout} instance has pre-configured defaults,
 	 * which must be cleared in order to start with an empty configuration.
-	 * <pre>
-	 * {@code
+	 * {@snippet :
 	 *   configurePopupMenu(layout -> layout.clear()
 	 *           .control(ControlKeys.REFRESH)
 	 *           .separator()
@@ -896,7 +893,6 @@ public class EntityTablePanel extends JPanel {
 	 *           .separator()
 	 *           .defaults())
 	 * }
-	 * </pre>
 	 * Defaults:
 	 * <ul>
 	 *   <li>{@link ControlKeys#REFRESH ControlKeys#REFRESH}
@@ -1026,11 +1022,9 @@ public class EntityTablePanel extends JPanel {
 	/**
 	 * Returns the key used to identify user preferences for this table panel, that is column positions, widths and such.
 	 * The default implementation is:
-	 * <pre>
-	 * {@code
+	 * {@snippet :
 	 * return tableModel().getClass().getSimpleName() + "-" + entityType();
 	 * }
-	 * </pre>
 	 * Override in case this key is not unique within the application.
 	 * @return the key used to identify user preferences for this table panel
 	 */
@@ -2180,8 +2174,7 @@ public class EntityTablePanel extends JPanel {
 
 		/**
 		 * Specifies the default popup menu layout.
-		 * <pre>
-		 * {@code
+		 * {@snippet :
 		 *  EntityTablePanel.Config.POPUP_MENU_LAYOUT.set(Controls.layout(asList(
 		 *      EntityTablePanel.ControlKeys.REFRESH,
 		 *      null, // <- separator
@@ -2192,7 +2185,6 @@ public class EntityTablePanel extends JPanel {
 		 *      EntityTablePanel.ControlKeys.COPY_CONTROLS
 		 *  )));
 		 * }
-		 * </pre>
 		 * <ul>
 		 * <li>Value type: {@link Controls.Layout}
 		 * <li>Default value: null
@@ -2206,16 +2198,14 @@ public class EntityTablePanel extends JPanel {
 
 		/**
 		 * Specifies the default toolbar layout.
-		 * <pre>
-		 * {@code
+		 * {@snippet :
 		 *  EntityTablePanel.Config.TOOLBAR_LAYOUT.set(Controls.layout(asList(
 		 *      EntityTablePanel.ControlKeys.TOGGLE_CONDITION_VIEW,
-		 *      EntityTablePanel.ControlKeys.TOGGLE_FILTER_VIEW
+		 *      EntityTablePanel.ControlKeys.TOGGLE_FILTER_VIEW,
 		 *      null, // <- separator
 		 *      EntityTablePanel.ControlKeys.ADDITIONAL_TOOLBAR_CONTROLS
 		 *  )));
 		 * }
-		 * </pre>
 		 * <ul>
 		 * <li>Value type: {@link Controls.Layout}
 		 * <li>Default value: null

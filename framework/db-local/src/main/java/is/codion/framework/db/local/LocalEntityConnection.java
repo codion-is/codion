@@ -36,17 +36,15 @@ import static is.codion.common.Configuration.integerValue;
 
 /**
  * EntityConnection implementation based on a local JDBC connection.
- * <pre>
- * {@code
+ * {@snippet :
  * Domain domain = new Domain();
  * Database database = new H2DatabaseFactory().createDatabase("jdbc:h2:file:/path/to/database");
  * User user = User.parse("scott:tiger");
  *
- * try (EntityConnection connection = LocalEntityConnection.localEntityConnection(database, domain, user)) {
+ * try (EntityConnection connection = localEntityConnection(database, domain, user)) {
  *   List<Entity> customers = connection.select(Condition.all(Customer.TYPE));
  * }
  * }
- * </pre>
  * A factory for LocalEntityConnection instances.
  */
 public interface LocalEntityConnection extends EntityConnection {

@@ -29,11 +29,10 @@ import java.util.List;
  * conditions using JOINs or native DBMS functionality.
  * <p>A {@link ConditionType} is associated with a {@link ConditionProvider}, which is responsible
  * for creating the condition string via {@link ConditionProvider#toString(List, List)}.
- * <pre>
- * {@code
+  * {@snippet :
  * // Custom condition with values
  * Track.TYPE.define(
- *     ...
+ * // ...
  * ).condition(Track.NOT_IN_PLAYLIST, (columns, values) ->
  *         new StringBuilder("""
  *                 trackid NOT IN (
@@ -52,7 +51,7 @@ import java.util.List;
  *
  * // Custom condition without values
  * Track.TYPE.define(
- *     ...
+ * // ...
  * ).condition(Track.EXCLUDED, (columns, values) ->
  *         "trackid not in (select trackid from chinook.excluded_tracks)");
  *
@@ -61,7 +60,6 @@ import java.util.List;
  * List<Entity> tracks = connection.select(
  *         Condition.and(Track.NAME.like("The%"), condition));
  * }
- * </pre>
  * <p>The ? substitute character is replaced with the condition values when when the statement is prepared.
  * That relies on the {@code columns} List for the value data type, and assumes it contains the {@link Column} associated
  * with each value at the same index. If the {@code columns} List is empty, no value substitution is performed.

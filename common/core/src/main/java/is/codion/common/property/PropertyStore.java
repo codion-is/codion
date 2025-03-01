@@ -42,8 +42,7 @@ import static java.util.stream.Collectors.joining;
  * does not affect the property store value, so the value should only be modified via the property store value instance.
  * If no value is found in a configuration file or in a system property, the default property value is used as the inital value.
  * When the value is set to null via {@link is.codion.common.value.Value#set(Object)} the default value is used, if one has been specified.
- * <pre>
- * {@code
+ * {@snippet :
  * Path configurationFile = Path.of(System.getProperty("user.home") + "/app.properties");
  *
  * PropertyStore store = PropertyStore.propertyStore(configurationFile);
@@ -62,7 +61,6 @@ import static java.util.stream.Collectors.joining;
  *
  * String isFeatureEnabled = System.getProperty("feature.enabled"); // "false"
  * }
- * </pre>
  */
 public interface PropertyStore {
 

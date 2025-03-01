@@ -310,8 +310,7 @@ public interface Entity extends Comparable<Entity> {
 
 	/**
 	 * A builder for {@link Entity} instances.
-	 * <pre>
-	 * {@code
+	 * {@snippet :
 	 * Store domain = new Store();
 	 *
 	 * Entities entities = domain.entities();
@@ -321,7 +320,6 @@ public interface Entity extends Comparable<Entity> {
 	 *     .with(Customer.LAST_NAME, "Doe")
 	 *     .build();
 	 * }
-	 * </pre>
 	 * @see Entities#builder(EntityType)
 	 * @see Entity#builder(Key)
 	 * @see Copy#builder()

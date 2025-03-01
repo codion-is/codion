@@ -82,8 +82,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	 * NOTE: A transaction should ALWAYS be used in conjunction with a try/catch block,<br>
 	 * in order for the transaction to be properly ended in case of an exception.<br>
 	 * A transaction should always be started OUTSIDE the try/catch block.
-	 * <pre>
-	 * {@code
+	 * {@snippet :
 	 * EntityConnection connection = connectionProvider().connection();
 	 *
 	 * connection.startTransaction(); // Very important, should NOT be inside the try block
@@ -101,7 +100,6 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	 *     throw new RuntimeException(e);
 	 * }
 	 * }
-	 * </pre>
 	 * @throws IllegalStateException if a transaction is already open
 	 * @throws RemoteException in case of exception
 	 */

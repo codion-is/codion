@@ -46,6 +46,8 @@ configure(frameworkModules()) {
     }
 
     java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
         withJavadocJar()
         withSourcesJar()
     }
@@ -182,7 +184,7 @@ configure(subprojects) {
 
     java {
         toolchain {
-            languageVersion = JavaLanguageVersion.of(properties["jdkVersion"].toString())
+            languageVersion = JavaLanguageVersion.of(21)
         }
     }
 

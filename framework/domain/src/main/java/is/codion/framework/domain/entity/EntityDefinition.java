@@ -300,13 +300,11 @@ public interface EntityDefinition {
 
 		/**
 		 * Sets the string factory, using the value of the given attribute. Shortcut for:
-		 * <pre>
-		 * {@code
+		 * {@snippet :
 		 * stringFactory(StringFactory.builder()
 		 *           .value(attribute)
 		 *           .build())
 		 * }
-		 * </pre>
 		 * @param attribute the attribute which value to use
 		 * @return this {@link Builder} instance
 		 */

@@ -490,8 +490,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	/**
 	 * Initializes this EntityEditPanel UI, that is, creates and lays out the components
 	 * required for editing the underlying entity type.
-	 * <pre>
-	 * {@code
+	 * {@snippet :
 	 *   protected void initializeUI() {
 	 *      focus().initial().set(DomainModel.USER_NAME);
 	 *
@@ -504,7 +503,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 *      addInputPanel(DomainModel.USER_ADDRESS);
 	 *   }
 	 * }
-	 * </pre>
 	 */
 	protected abstract void initializeUI();
 
@@ -513,13 +511,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 * <p>
 	 * Note that the {@link Controls.Layout} instance has pre-configured defaults,
 	 * which must be cleared in order to start with an empty configuration.
-	 * <pre>
-	 * {@code
+	 * {@snippet :
 	 *   configureControls(layout -> layout
 	 *           .separator()
 	 *           .control(createCustomControl()))
 	 * }
-	 * </pre>
 	 * Defaults:
 	 * <ul>
 	 *   <li>{@link ControlKeys#INSERT ControlKeys#INSERT}

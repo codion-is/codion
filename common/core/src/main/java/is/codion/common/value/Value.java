@@ -30,27 +30,22 @@ import static java.util.Objects.requireNonNull;
 /**
  * <p>An observable wrapper for a value.</p>
  * <p>Nullable integer based Value:</p>
- * <pre>
- * {@code
+ * {@snippet :
  * Value<Integer> value = Value.nullable();
  * value.set(42);
  * value.addConsumer(this::onValueChange);
  * value.isNullable(); // true
  * }
- * </pre>
  * <p>Non-null boolean based Value, using 'false' as a null substitute:</p>
- * <pre>
- * {@code
+ * {@snippet :
  * Value<Boolean> value = Value.nonNull(false);
  * value.set(true);
  * value.set(null);
  * value.get(); // false
  * value.isNullable(); // false
  * }
- * </pre>
  * <p>Non-null String based Value, using "none" as a null substitute:</p>
- * <pre>
- * {@code
+ * {@snippet :
  * Value<String> value = Value.builder()
  *         .nonNull("none")
  *         .value("hello")                  // the initial value
@@ -62,7 +57,6 @@ import static java.util.Objects.requireNonNull;
  * value.set("hey");
  * value.set(null); // reverts to the null substitute: "none"
  * }
- * </pre>
  * <p>A factory for {@link Value} instances.</p>
  * @param <T> the type of the wrapped value
  * @see #nullable()
@@ -103,14 +97,12 @@ public interface Value<T> extends Observable<T> {
 
 	/**
 	 * Sets a new value mapped from the current value.
-	 * <pre>
-	 * {@code
+	 * {@snippet :
 	 * Value<Integer> value = Value.value(0);
 	 *
 	 * // increment the value by one
 	 * value.map(currentValue -> currentValue + 1);
 	 * }
-	 * </pre>
 	 * @param mapper maps from the current value to a new value
 	 * @throws NullPointerException in case {@code mapper} is null
 	 */

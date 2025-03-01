@@ -29,8 +29,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A wrapper for a value, providing a change observer.
- * <pre>
- * {@code
+ * {@snippet :
  *   class Person {
  *       private final Event<String> nameChanged = Event.event();
  *
@@ -63,7 +62,6 @@ import static java.util.Objects.requireNonNull;
  *  observableName.addConsumer(newName ->
  *          System.out.println("Name changed to " + newName));
  * }
- * </pre>
  * @param <T> the value type
  */
 public interface Observable<T> extends Observer<T> {

@@ -34,35 +34,35 @@ import static java.util.stream.Collectors.joining;
 
 /**
  * Factory class for building functions for String representations of {@link Entity} instances.
- * <pre>
- * {@code
- *   interface Department {
- *       EntityType TYPE = DOMAIN.entityType("employees.department");
- *       Column<Integer> ID = TYPE.integerColumn("id");
- *       Column<String> NAME = TYPE.stringColumn("name");
- *   }
+ * {@snippet :
+ *  interface Department {
+ *  		EntityType TYPE = DOMAIN.entityType("employees.department");
+ *  		Column<Integer> ID = TYPE.integerColumn("id");
+ *  		Column<String> NAME = TYPE.stringColumn("name");
+ *  }
  *
- *   interface Employee {
- *       EntityType TYPE = DOMAIN.entityType("employees.employee");
- *       Column<String> NAME = TYPE.stringColumn("name");
- *       Column<Integer> DEPARTMENT_ID = TYPE.integerColumn("department_id");
- *       ForeignKey DEPARTMENT_FK = TYPE.foreignKey("department_fk", DEPARTMENT_ID, Department.ID);
- *   }
+ *  interface Employee {
+ *  		EntityType TYPE = DOMAIN.entityType("employees.employee");
+ *  		Column<String> NAME = TYPE.stringColumn("name");
+ *  		Column<Integer> DEPARTMENT_ID = TYPE.integerColumn("department_id");
+ *  		ForeignKey DEPARTMENT_FK = TYPE.foreignKey("department_fk", DEPARTMENT_ID, Department.ID);
+ *  }
  *
- *   Entity department = ...// With name: Accounting
- *   Entity employee = ...// With name: John and the above department
+ *  void testStringFactory() {
+ *			Entity department = createDepartment();// With name: Accounting
+ *  		Entity employee = createEmployee(department);// With name: John and the above department
  *
- *   Function<Entity, String> stringFactory =
- *         StringFactory.builder()
+ *			Function<Entity, String> stringFactory =
+ *					StringFactory.builder()
  *             .text("Name=")
  *             .value(Employee.NAME)
- *             .text(", Department="')
+ *             .text(", Department='")
  *             .value(Employee.DEPARTMENT_FK, Department.NAME)
  *             .text("'");
  *
- * System.out.println(stringFactory.apply(employee));
+ *  		System.out.println(stringFactory.apply(employee));
  * }
- * </pre>
+ * }
  * Outputs the following String:
  * <p>
  * {@code Name=John, Department='Accounting'}<br><br>

@@ -41,17 +41,13 @@ import static is.codion.common.Configuration.integerValue;
 /**
  * Provides entities fetched from a database.
  * The default query mechanism can be overridden by using {@link #query()}.
- * <pre>
- * {@code
- * Function<EntityQueryModel, List<Entity>> query = queryModel -> {
- *     EntityConnection connection = queryModel.connectionProvider().connection();
+ * {@snippet :
+ * tableModel.queryModel().query().set(queryModel -> {
+ * 	 EntityConnection connection = queryModel.connectionProvider().connection();
  *
- *     return connection.select(Employee.NAME.equalTo("John"));
- * };
- *
- * tableModel.queryModel().query().set(query);
+	 return connection.select(Employee.NAME.equalTo("John"));
+ * });
  * }
- * </pre>
  * @see #entityQueryModel(EntityTableConditionModel)
  */
 public interface EntityQueryModel extends Supplier<List<Entity>> {
