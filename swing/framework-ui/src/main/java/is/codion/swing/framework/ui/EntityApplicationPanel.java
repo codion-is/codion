@@ -1322,7 +1322,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		Builder<M, P> applicationPanelFactory(Function<M, P> applicationPanelFactory);
 
 		/**
-   	 * <p>The {@link User} to use to connect to the database, this user is propagated to {@link #connectionProvider(Function)}.
+		 * <p>The {@link User} to use to connect to the database, this user is propagated to {@link #connectionProvider(Function)}.
 		 * <p>If this user is null, {@link #user(Supplier)} is used to fetch a user.
 		 * @param user the application user
 		 * @return this Builder instance
@@ -1330,7 +1330,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		Builder<M, P> user(User user);
 
 		/**
-   	 * <p>Supplies the {@link User} to use to connect to the database, this user is then propagated to {@link #connectionProvider(Function)}.
+		 * <p>Supplies the {@link User} to use to connect to the database, this user is then propagated to {@link #connectionProvider(Function)}.
 		 * <p>This may be via a login dialog or simply by returning a hardcoded instance.
 		 * <p>Startup is silently cancelled in case the {@link Supplier#get()} throws a {@link CancelException}.
 		 * @param userSupplier supplies the application user, for example via a login dialog

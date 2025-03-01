@@ -19,6 +19,7 @@
 package is.codion.demos.world.model;
 
 import is.codion.common.event.Event;
+import is.codion.common.observable.Observer;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 import is.codion.demos.world.domain.api.World.City;
@@ -37,18 +38,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
 
 public final class CityTableModel extends SwingEntityTableModel {
 
 	private final DefaultPieDataset<String> chartDataset = new DefaultPieDataset<>();
 	private final Event<Collection<Entity>> displayLocationEvent = Event.event();
-	private final State citiesWithoutLocationSelected = State.state();
+	private final State cityWithoutLocationSelected = State.state();
 
 	CityTableModel(EntityConnectionProvider connectionProvider) {
 		super(new CityEditModel(connectionProvider));
 		selection().items().addConsumer(displayLocationEvent);
-		selection().indexes().addListener(this::updateCitiesWithoutLocationSelected);
+		selection().items().addConsumer(cities ->
+						cityWithoutLocationSelected.set(cities.stream()
+										.anyMatch(city -> city.isNull(City.LOCATION))));
 		items().refresher().result().addConsumer(this::refreshChartDataset);
 	}
 
@@ -60,22 +62,17 @@ public final class CityTableModel extends SwingEntityTableModel {
 		return new PopulateLocationTask();
 	}
 
-	public void addDisplayLocationConsumer(Consumer<Collection<Entity>> consumer) {
-		displayLocationEvent.addConsumer(consumer);
+	public Observer<Collection<Entity>> displayLocations() {
+		return displayLocationEvent.observer();
 	}
 
-	public ObservableState citiesWithoutLocationSelected() {
-		return citiesWithoutLocationSelected.observable();
+	public ObservableState cityWithoutLocationSelected() {
+		return cityWithoutLocationSelected.observable();
 	}
 
 	private void refreshChartDataset(Collection<Entity> cities) {
 		chartDataset.clear();
 		cities.forEach(city -> chartDataset.setValue(city.get(City.NAME), city.get(City.POPULATION)));
-	}
-
-	private void updateCitiesWithoutLocationSelected() {
-		citiesWithoutLocationSelected.set(selection().items().get().stream()
-						.anyMatch(city -> city.isNull(City.LOCATION)));
 	}
 
 	public final class PopulateLocationTask implements ProgressResultTask<Void, String> {

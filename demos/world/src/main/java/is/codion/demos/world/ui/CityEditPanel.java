@@ -55,7 +55,7 @@ public final class CityEditPanel extends EntityEditPanel {
 	CityEditPanel(CityTableModel tableModel) {
 		super(tableModel.editModel());
 		this.mapKit = Maps.createMapKit();
-		tableModel.addDisplayLocationConsumer(this::displayLocation);
+		tableModel.displayLocations().addConsumer(this::displayLocations);
 		configureControls(config -> config
 						.control(Control.builder()
 										.command(this::populateLocation)
@@ -102,10 +102,10 @@ public final class CityEditPanel extends EntityEditPanel {
 	private void populateLocation() throws IOException {
 		CityEditModel editModel = (CityEditModel) editModel();
 		editModel.populateLocation();
-		displayLocation(List.of(editModel.editor().get()));
+		displayLocations(List.of(editModel.editor().get()));
 	}
 
-	private void displayLocation(Collection<Entity> cities) {
+	private void displayLocations(Collection<Entity> cities) {
 		Maps.paintWaypoints(cities.stream()
 						.map(city -> city.optional(City.LOCATION))
 						.flatMap(Optional::stream)

@@ -49,6 +49,9 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 							.nullCaption("None")
 							//Only select the president and managers from the database
 							.condition(() -> Employee.JOB.in(Employee.MANAGER, Employee.PRESIDENT))
+							//Prevent automatically reflecting changes to employees since
+							//we simply refresh instead, due to the condition, see below
+							.handleEditEvents(false)
 							.build();
 			//Refresh the manager ComboBoxModel when an employee is added, deleted or updated,
 			//in case a new manager got hired, fired or promoted
