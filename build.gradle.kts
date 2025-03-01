@@ -129,9 +129,6 @@ configure(frameworkModules()) {
 
     if (hasSonarqubeProperties()) {
         sonar {
-            System.setProperty("sonar.host.url", properties["sonarHostUrl"].toString())
-            System.setProperty("sonar.login", properties["sonarLogin"].toString())
-            System.setProperty("sonar.password", properties["sonarPassword"].toString())
             System.setProperty("sonar.projectVersion", (project.version as String).replace("-SNAPSHOT", ""))
             System.setProperty("sonar.java.source", properties["jdkVersion"].toString())
             System.setProperty("sonar.sourceEncoding", "UTF-8")
@@ -282,9 +279,9 @@ fun hasPublicationProperties(): Boolean {
 }
 
 fun hasSonarqubeProperties(): Boolean {
-    return project.hasProperty("sonarHostUrl") &&
-            project.hasProperty("sonarLogin") &&
-            project.hasProperty("sonarPassword")
+    return project.hasProperty("systemProp.sonar.host.url") &&
+            project.hasProperty("systemProp.sonar.login") &&
+            project.hasProperty("systemProp.sonar.password")
 }
 
 fun frameworkModules(): Iterable<Project> {
