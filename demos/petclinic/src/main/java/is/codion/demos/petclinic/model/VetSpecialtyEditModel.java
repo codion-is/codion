@@ -25,7 +25,6 @@ import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import java.util.Collection;
-import java.util.Map;
 
 import static is.codion.framework.db.EntityConnection.Count.where;
 import static is.codion.framework.domain.entity.condition.Condition.and;
@@ -39,10 +38,6 @@ public final class VetSpecialtyEditModel extends SwingEntityEditModel {
 		editor().value(VetSpecialty.SPECIALTY_FK).persist().set(false);
 		beforeUpdate().addConsumer(this::validate);
 		beforeInsert().addConsumer(this::validate);
-	}
-
-	private void validate(Map<Entity.Key, Entity> entities) {
-		validate(entities.values());
 	}
 
 	private void validate(Collection<Entity> entities) {
