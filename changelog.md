@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.32
+
 ## 0.18.31
 ### is.codion
 - Build with JDK21, target 17.
