@@ -106,6 +106,7 @@ import static is.codion.swing.common.ui.component.table.FilterTable.ControlKeys.
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
+import static java.awt.event.ActionEvent.ACTION_PERFORMED;
 import static java.awt.event.InputEvent.*;
 import static java.awt.event.KeyEvent.*;
 import static java.lang.String.join;
@@ -419,14 +420,15 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	/**
-	 * The {@link ActionEvent} propagated when this action is performed, contains the associated {@link MouseEvent} as source.
+	 * <p>The {@link Action} is only triggered if enabled.
+	 * <p>The {@link ActionEvent} propagated when this action is performed, contains the associated {@link MouseEvent} as source.
 	 * {@snippet :
 	 *   public void actionPerformed(ActionEvent event) {
 	 *       MouseEvent mouseEvent = (MouseEvent) event.getSource();
 	 *       Point location = mouseEvent.getLocationOnScreen();
 	 *       // ...
 	 *   }
-	 * }
+	 *}
 	 * @return the {@link Value} controlling the action to perform when a double click is performed on the table
 	 */
 	public Value<Action> doubleClickAction() {
@@ -999,20 +1001,15 @@ public final class FilterTable<R, C> extends JTable {
 		}
 	}
 
-	/**
-	 * A MouseListener for handling double click, which invokes the action returned by {@link #getDoubleClickAction()}
-	 * with the associated MouseEvent as the ActionEvent source as well as triggering the {@link #addDoubleClickListener(Consumer)} event.
-	 * @see #getDoubleClickAction()
-	 */
 	private final class FilterTableMouseListener extends MouseAdapter {
 
 		@Override
-		public void mouseClicked(MouseEvent e) {
-			if (e.getClickCount() == 2) {
-				if (!doubleClickAction.isNull()) {
-					doubleClickAction.getOrThrow().actionPerformed(new ActionEvent(e, ActionEvent.ACTION_PERFORMED, "doubleClick"));
-				}
-				doubleClick.accept(e);
+		public void mouseClicked(MouseEvent event) {
+			if (event.getClickCount() == 2) {
+				doubleClickAction.optional()
+								.filter(Action::isEnabled)
+								.ifPresent(action -> action.actionPerformed(new ActionEvent(event, ACTION_PERFORMED, "doubleClick")));
+				doubleClick.accept(event);
 			}
 		}
 	}

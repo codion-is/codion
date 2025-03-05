@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.32
+### is.codion.swing.common.ui
+- FilterTable bug fixed, doubleClickAction no longer triggered if disabled.
 
 ## 0.18.31
 ### is.codion
