@@ -28,10 +28,11 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
-import is.codion.swing.common.ui.border.Borders;
+import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.AbstractDialogBuilder;
+import is.codion.swing.common.ui.dialog.ActionDialogBuilder;
 import is.codion.swing.common.ui.dialog.DialogBuilder;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -46,7 +47,6 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Window;
@@ -116,12 +116,13 @@ public final class EntityDialogs {
 	}
 
 	/**
-	 * Creates a new {@link EntitySelectionDialogBuilder} instance for searching for and selecting one or more entities from a table model.
-	 * @param tableModel the table model on which to base the table panel
+	 * <p>Creates a new {@link EntitySelectionDialogBuilder} instance for searching for and selecting one or more entities via a {@link EntityTablePanel}.
+	 * <p>Note that calling this method configures actions and selection mode of the associated table panel.
+	 * @param tablePanel the table panel to use
 	 * @return a new builder instance
 	 */
-	public static EntitySelectionDialogBuilder selectionDialog(SwingEntityTableModel tableModel) {
-		return new DefaultEntitySelectionDialogBuilder(tableModel);
+	public static EntitySelectionDialogBuilder selectionDialog(EntityTablePanel tablePanel) {
+		return new DefaultEntitySelectionDialogBuilder(tablePanel);
 	}
 
 	/**
@@ -220,30 +221,25 @@ public final class EntityDialogs {
 	}
 
 	/**
-	 * A builder for a selection dialog.
+	 * A builder for a selection dialog based on an {@link EntityTablePanel}.
 	 */
 	public interface EntitySelectionDialogBuilder extends DialogBuilder<EntitySelectionDialogBuilder> {
 
 		/**
-		 * @param dialogSize the preferred dialog size
+		 * Defaults to false if no condition panel is available in the associated {@link EntityTablePanel}
+		 * @param includeSearchButton true if a search button should be included
 		 * @return this builder instance
 		 */
-		EntitySelectionDialogBuilder dialogSize(Dimension dialogSize);
+		EntitySelectionDialogBuilder includeSearchButton(boolean includeSearchButton);
 
 		/**
-		 * @param configureTablePanel configures the table panel
-		 * @return this builder instance
-		 */
-		EntitySelectionDialogBuilder configureTablePanel(Consumer<EntityTablePanel.Config> configureTablePanel);
-
-		/**
-		 * Displays table for selecting a one or more entities
+		 * Displays the {@link EntityTablePanel} for selecting a one or more entities
 		 * @return a List containing the selected entities or an empty list in case the selection was cancelled
 		 */
 		List<Entity> select();
 
 		/**
-		 * Displays table for selecting a single entity
+		 * Displays the {@link EntityTablePanel} for selecting a single entity
 		 * @return the selected entity or {@link Optional#empty()} in case the selection was cancelled
 		 */
 		Optional<Entity> selectSingle();
@@ -426,121 +422,114 @@ public final class EntityDialogs {
 	private static final class DefaultEntitySelectionDialogBuilder extends AbstractDialogBuilder<EntitySelectionDialogBuilder>
 					implements EntitySelectionDialogBuilder {
 
-		private static final Consumer<EntityTablePanel.Config> NO_CONFIGURATION = c -> {};
+		private final EntityTablePanel tablePanel;
 
-		private final SwingEntityTableModel tableModel;
+		private boolean includeSearchButton;
 
-		private Dimension dialogSize;
-		private Consumer<EntityTablePanel.Config> tablePanelConfig = NO_CONFIGURATION;
-
-		private DefaultEntitySelectionDialogBuilder(SwingEntityTableModel tableModel) {
-			this.tableModel = requireNonNull(tableModel);
+		private DefaultEntitySelectionDialogBuilder(EntityTablePanel tablePanel) {
+			this.tablePanel = requireNonNull(tablePanel);
+			try {
+				tablePanel.conditions();
+				includeSearchButton = true;
+			}
+			catch (IllegalStateException e) {
+				includeSearchButton = false;
+			}
 		}
 
 		@Override
-		public EntitySelectionDialogBuilder dialogSize(Dimension dialogSize) {
-			this.dialogSize = requireNonNull(dialogSize);
-			return this;
-		}
-
-		@Override
-		public EntitySelectionDialogBuilder configureTablePanel(Consumer<EntityTablePanel.Config> configureTablePanel) {
-			this.tablePanelConfig = requireNonNull(configureTablePanel);
+		public EntitySelectionDialogBuilder includeSearchButton(boolean includeSearchButton) {
+			this.includeSearchButton = includeSearchButton;
 			return this;
 		}
 
 		@Override
 		public List<Entity> select() {
-			return new EntitySelectionDialog(tableModel, owner, location, locationRelativeTo,
-							title, icon, dialogSize, false, tablePanelConfig).selectEntities();
+			return new EntitySearchDialog(tablePanel, owner, location,
+							locationRelativeTo, title, icon, false, includeSearchButton).selectedEntities();
 		}
 
 		@Override
 		public Optional<Entity> selectSingle() {
-			List<Entity> entities = new EntitySelectionDialog(tableModel, owner, location, locationRelativeTo,
-							title, icon, dialogSize, true, tablePanelConfig).selectEntities();
+			List<Entity> entities = new EntitySearchDialog(tablePanel, owner, location,
+							locationRelativeTo, title, icon, true, includeSearchButton).selectedEntities();
 
 			return entities.isEmpty() ? Optional.empty() : Optional.of(entities.get(0));
 		}
 	}
 
-	private static final class EntitySelectionDialog {
+	private static final class EntitySearchDialog {
 
-		private final EntityTablePanel entityTablePanel;
+		private final EntityTablePanel tablePanel;
 
-		private EntitySelectionDialog(SwingEntityTableModel tableModel, Window owner, Point location, Component locationRelativeTo,
-																	Observable<String> title, ImageIcon icon, Dimension dialogSize, boolean singleSelection,
-																	Consumer<EntityTablePanel.Config> configureTablePanel) {
+		private EntitySearchDialog(EntityTablePanel tablePanel, Window owner, Point location,
+															 Component locationRelativeTo, Observable<String> title, ImageIcon icon,
+															 boolean singleSelection, boolean includeSearchButton) {
+			this.tablePanel = requireNonNull(tablePanel);
 			Control okControl = Control.builder()
 							.command(this::ok)
 							.name(Messages.ok())
 							.mnemonic(Messages.okMnemonic())
-							.enabled(tableModel.selection().empty().not())
+							.enabled(tablePanel.tableModel().selection().empty().not())
 							.build();
-			Control cancelControl = Control.builder()
-							.command(this::cancel)
-							.name(Messages.cancel())
-							.mnemonic(Messages.cancelMnemonic())
-							.build();
-			Control searchControl = Control.builder()
-							.command(this::search)
-							.name(FrameworkMessages.searchVerb())
-							.mnemonic(FrameworkMessages.searchMnemonic())
-							.build();
-			entityTablePanel = createTablePanel(tableModel, okControl, singleSelection, configureTablePanel);
-			actionDialog(borderLayoutPanel()
-							.centerComponent(entityTablePanel)
-							.border(Borders.emptyBorder())
+			configureTable(tablePanel.table(), okControl, singleSelection);
+			ActionDialogBuilder<?> builder = actionDialog(borderLayoutPanel()
+							.centerComponent(tablePanel)
+							.border(emptyBorder())
 							.build())
 							.owner(owner)
 							.location(location)
 							.locationRelativeTo(locationRelativeTo)
 							.title(title)
 							.icon(icon)
-							.size(dialogSize)
 							.defaultAction(okControl)
-							.escapeAction(cancelControl)
-							.action(searchControl)
-							.show();
+							.escapeAction(Control.builder()
+											.command(this::cancel)
+											.name(Messages.cancel())
+											.mnemonic(Messages.cancelMnemonic())
+											.build());
+			if (includeSearchButton) {
+				builder.action(Control.builder()
+								.command(this::search)
+								.name(FrameworkMessages.searchVerb())
+								.mnemonic(FrameworkMessages.searchMnemonic())
+								.build());
+			}
+
+			builder.show();
 		}
 
-		private static EntityTablePanel createTablePanel(SwingEntityTableModel tableModel, Control okControl, boolean singleSelection,
-																										 Consumer<EntityTablePanel.Config> configureTablePanel) {
-			tableModel.editModel().readOnly().set(true);
-			EntityTablePanel tablePanel = new EntityTablePanel(tableModel, configureTablePanel);
-			tablePanel.initialize();
-			tablePanel.table().doubleClickAction().set(okControl);
-			tablePanel.table().getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+		private static void configureTable(FilterTable<?, ?> table, Control okControl, boolean singleSelection) {
+			table.doubleClickAction().set(okControl);
+			table.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 							.put(KeyStroke.getKeyStroke(VK_ENTER, 0), "none");
-			tablePanel.table().setSelectionMode(singleSelection ? SINGLE_SELECTION : MULTIPLE_INTERVAL_SELECTION);
-
-			return tablePanel;
+			table.setSelectionMode(singleSelection ? SINGLE_SELECTION : MULTIPLE_INTERVAL_SELECTION);
 		}
 
 		private void ok() {
-			disposeParentWindow(entityTablePanel);
+			disposeParentWindow(tablePanel);
 		}
 
 		private void cancel() {
-			entityTablePanel.tableModel().selection().clear();
-			disposeParentWindow(entityTablePanel);
+			tablePanel.tableModel().selection().clear();
+			disposeParentWindow(tablePanel);
 		}
 
 		private void search() {
-			SwingEntityTableModel tableModel = entityTablePanel.tableModel();
+			SwingEntityTableModel tableModel = tablePanel.tableModel();
 			tableModel.items().refresh(items -> {
 				if (tableModel.items().visible().count() > 0) {
 					tableModel.selection().index().set(0);
-					entityTablePanel.table().requestFocusInWindow();
+					tablePanel.table().requestFocusInWindow();
 				}
 				else {
-					showMessageDialog(parentWindow(entityTablePanel), FrameworkMessages.noSearchResults());
+					showMessageDialog(parentWindow(tablePanel), FrameworkMessages.noSearchResults());
 				}
 			});
 		}
 
-		private List<Entity> selectEntities() {
-			return entityTablePanel.tableModel().selection().items().get();
+		private List<Entity> selectedEntities() {
+			return tablePanel.tableModel().selection().items().get();
 		}
 	}
 
