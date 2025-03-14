@@ -82,7 +82,7 @@ import static is.codion.framework.json.domain.EntityObjectMapper.KEY_LIST_REFERE
 import static java.util.Objects.requireNonNull;
 
 /**
- * Provides persistance services for Entities
+ * An {@link AuxiliaryServer} implementation providing HTTP based entity services.
  */
 public final class EntityService implements AuxiliaryServer {
 
@@ -145,6 +145,16 @@ public final class EntityService implements AuxiliaryServer {
 	public static final PropertyValue<String> HTTP_SERVER_KEYSTORE_PASSWORD =
 					stringValue("codion.server.http.keyStorePassword");
 
+	/**
+	 * Specifies whether virtual threads should be used.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
+	 * </ul>
+	 */
+	public static final PropertyValue<Boolean> USE_VIRTUAL_THREADS =
+					booleanValue("codion.server.http.useVirtualThreads", false);
+
 	static final String DOMAIN_TYPE_NAME = "domainTypeName";
 	static final String CLIENT_TYPE = "clientType";
 	static final String CLIENT_ID = "clientId";
@@ -186,6 +196,7 @@ public final class EntityService implements AuxiliaryServer {
 	private final int port;
 	private final int securePort;
 	private final boolean sslEnabled;
+	private final boolean useVirtualThreads;
 
 	private final Map<DomainType, ObjectMapper> domainObjectMappers = new ConcurrentHashMap<>();
 
@@ -193,26 +204,12 @@ public final class EntityService implements AuxiliaryServer {
 		resolveClasspathKeyStore();
 	}
 
-	/**
-	 * Instantiates a new EntityService, the port specified by {@link #HTTP_SERVER_PORT}.
-	 * @param server the parent server
-	 */
 	EntityService(Server<RemoteEntityConnection, ? extends ServerAdmin> server) {
-		this(server, HTTP_SERVER_PORT.getOrThrow(), HTTP_SERVER_SECURE_PORT.getOrThrow(), HTTP_SERVER_SECURE.getOrThrow());
-	}
-
-	/**
-	 * Instantiates a new EntityService.
-	 * @param server the parent server
-	 * @param port the server port
-	 * @param securePort the server secure port (https)
-	 * @param sslEnabled true if ssl should be enabled
-	 */
-	EntityService(Server<RemoteEntityConnection, ? extends ServerAdmin> server, int port, int securePort, boolean sslEnabled) {
 		this.server = requireNonNull(server);
-		this.port = port;
-		this.securePort = securePort;
-		this.sslEnabled = sslEnabled;
+		this.port = HTTP_SERVER_PORT.getOrThrow();
+		this.securePort = HTTP_SERVER_SECURE_PORT.getOrThrow();
+		this.sslEnabled = HTTP_SERVER_SECURE.getOrThrow();
+		this.useVirtualThreads = USE_VIRTUAL_THREADS.getOrThrow();
 		this.javalin = Javalin.create(new JavalinConfigurer());
 	}
 
@@ -891,6 +888,7 @@ public final class EntityService implements AuxiliaryServer {
 
 		@Override
 		public void accept(JavalinConfig config) {
+			config.useVirtualThreads = useVirtualThreads;
 			if (sslEnabled) {
 				config.registerPlugin(new SslPlugin(new SslPLuginConfigurer()));
 			}
