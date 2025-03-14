@@ -215,8 +215,8 @@ public final class EntityService implements AuxiliaryServer {
 
 	@Override
 	public void startServer() {
-		javalin.start(sslEnabled ? securePort : port);
 		setupHandlers();
+		javalin.start(sslEnabled ? securePort : port);
 	}
 
 	@Override
