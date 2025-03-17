@@ -7,6 +7,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityDialogs.selectionDialog() parameter now EntityTablePanel.
 - EntitySelectionDialogBuilder.dialogSize() and configureTablePanel() removed, includeSearchButton() added.
+- EntityDialogs.EditAttributeDialogBuilder.defaultValue() and applier() added.
 ### is.codion.framework.servlet
 - EntityService.USE_VIRTUAL_THREADS configuration value added.
 - EntityService now configures handlers before starting.

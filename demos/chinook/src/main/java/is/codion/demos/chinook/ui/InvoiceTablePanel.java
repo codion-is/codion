@@ -19,15 +19,20 @@
 package is.codion.demos.chinook.ui;
 
 import is.codion.common.model.condition.TableConditionModel;
+import is.codion.demos.chinook.domain.api.Chinook.Customer;
 import is.codion.demos.chinook.domain.api.Chinook.Invoice;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.component.table.ConditionPanel;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
 import is.codion.swing.common.ui.component.table.TableConditionPanel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.ui.EntityDialogs.EditAttributeDialogBuilder;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
+import java.util.Collection;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView.SIMPLE;
@@ -43,6 +48,39 @@ public final class InvoiceTablePanel extends EntityTablePanel {
 						.conditionPanelFactory(new InvoiceConditionPanelFactory(tableModel))
 						// Start with the SIMPLE condition panel view.
 						.conditionView(SIMPLE));
+	}
+
+	// Override to configure the edit dialog when one or more entities are edited via the table popup menu.
+	// Here we override to update the billing address when the invoice customer is changed.
+	@Override
+	protected <T> EditAttributeDialogBuilder<T> editDialogBuilder(Attribute<T> attribute) {
+		EditAttributeDialogBuilder<T> builder = super.editDialogBuilder(attribute);
+		// If the customer is being edited
+		if (attribute.equals(Invoice.CUSTOMER_FK)) {
+			// Called to apply the new value to the entities
+			// being edited, when the editor value is accepted.
+			builder.applier(new ApplyCustomer<>());
+		}
+
+		return builder;
+	}
+
+	private static final class ApplyCustomer<T> implements BiConsumer<Collection<Entity>, T> {
+
+		@Override
+		public void accept(Collection<Entity> invoices, T newValue) {
+			Entity customer = (Entity) newValue;
+			invoices.forEach(invoice -> {
+				// Set the attribute being edited
+				invoice.put(Invoice.CUSTOMER_FK, customer);
+				// and set the billing address
+				invoice.put(Invoice.BILLINGADDRESS, customer.get(Customer.ADDRESS));
+				invoice.put(Invoice.BILLINGCITY, customer.get(Customer.CITY));
+				invoice.put(Invoice.BILLINGPOSTALCODE, customer.get(Customer.POSTALCODE));
+				invoice.put(Invoice.BILLINGSTATE, customer.get(Customer.STATE));
+				invoice.put(Invoice.BILLINGCOUNTRY, customer.get(Customer.COUNTRY));
+			});
+		}
 	}
 
 	private static final class InvoiceConditionPanelFactory implements TableConditionPanel.Factory<Attribute<?>> {

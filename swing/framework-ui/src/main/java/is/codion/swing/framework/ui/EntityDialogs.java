@@ -55,7 +55,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -148,6 +150,25 @@ public final class EntityDialogs {
 		 * @return this builder
 		 */
 		EditAttributeDialogBuilder<T> onException(Consumer<Exception> onException);
+
+		/**
+		 * <p>Provides the default value presented in the edit component.
+		 * <p>By default, the default value is the current value of the attribute being edited,
+		 * in the entities being edited, unless they contain multiple different values, then null is presented.
+		 * @param defaultValue provides the default value to present in the editor component
+		 * @return this builder
+		 */
+		EditAttributeDialogBuilder<T> defaultValue(Function<Collection<Entity>, T> defaultValue);
+
+		/**
+		 * <p>Applies the accepted editor value to the entities being edited.
+		 * <p>By default, this simply puts the accepted value in the given entities.
+		 * <p>The {@link BiConsumer} receives the entities being edited along with the new value.
+		 * @param applier applies the accepted value to the given entities
+		 * @return this builder
+		 * @see Entity#put(Attribute, Object)
+		 */
+		EditAttributeDialogBuilder<T> applier(BiConsumer<Collection<Entity>, T> applier);
 
 		/**
 		 * Displays a dialog for editing a single attribute for the given entity
@@ -256,6 +277,8 @@ public final class EntityDialogs {
 		private EditComponentFactory<T, ?> editComponentFactory;
 		private Consumer<ValidationException> onValidationException = new DefaultValidationExceptionHandler();
 		private Consumer<Exception> onException = new DefaultExceptionHandler();
+		private Function<Collection<Entity>, T> defaultValue = new DefaultValue();
+		private BiConsumer<Collection<Entity>, T> applier = new DefaultApplier();
 
 		private DefaultEditAttributeDialogBuilder(SwingEntityEditModel editModel, Attribute<T> attribute) {
 			this.editModel = requireNonNull(editModel);
@@ -282,6 +305,18 @@ public final class EntityDialogs {
 		}
 
 		@Override
+		public EditAttributeDialogBuilder<T> defaultValue(Function<Collection<Entity>, T> defaultValue) {
+			this.defaultValue = requireNonNull(defaultValue);
+			return this;
+		}
+
+		@Override
+		public EditAttributeDialogBuilder<T> applier(BiConsumer<Collection<Entity>, T> applier) {
+			this.applier = requireNonNull(applier);
+			return this;
+		}
+
+		@Override
 		public void edit(Entity entity) {
 			edit(singleton(requireNonNull(entity)));
 		}
@@ -298,7 +333,7 @@ public final class EntityDialogs {
 				throw new IllegalArgumentException("All entities must be of the same type when editing");
 			}
 
-			ComponentValue<T, ?> componentValue = editComponentFactory.componentValue(editModel, initialValue(entities));
+			ComponentValue<T, ?> componentValue = editComponentFactory.componentValue(editModel, defaultValue.apply(entities));
 			inputDialog(componentValue)
 							.owner(owner)
 							.location(location)
@@ -309,12 +344,24 @@ public final class EntityDialogs {
 							.show(new PerformUpdate(entities));
 		}
 
-		private T initialValue(Collection<Entity> entities) {
-			Collection<T> values = entities.stream()
-							.map(entity -> entity.get(attribute))
-							.collect(toSet());
+		private final class DefaultValue implements Function<Collection<Entity>, T> {
 
-			return values.size() == 1 ? values.iterator().next() : null;
+			@Override
+			public T apply(Collection<Entity> entities) {
+				Collection<T> values = entities.stream()
+								.map(entity -> entity.get(attribute))
+								.collect(toSet());
+
+				return values.size() == 1 ? values.iterator().next() : null;
+			}
+		}
+
+		private final class DefaultApplier implements BiConsumer<Collection<Entity>, T> {
+
+			@Override
+			public void accept(Collection<Entity> entities, T newValue) {
+				entities.forEach(entity -> entity.put(attribute, newValue));
+			}
 		}
 
 		private final class PerformUpdate implements Predicate<T> {
@@ -330,7 +377,7 @@ public final class EntityDialogs {
 
 			@Override
 			public boolean test(T newValue) {
-				entities.forEach(entity -> entity.put(attribute, newValue));
+				applier.accept(entities, newValue);
 				try {
 					progressWorkerDialog(editModel.createUpdate(entities.stream()
 									.filter(Entity::modified)
