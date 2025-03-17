@@ -166,11 +166,20 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	B transferFocusOnEnter(boolean transferFocusOnEnter);
 
 	/**
-	 * @param toolTipText the tool tip text
+	 * @param toolTipText a static tool tip text
 	 * @return this builder instance
+	 * @see #toolTipText(Observable)
 	 * @see JComponent#setToolTipText(String)
 	 */
 	B toolTipText(String toolTipText);
+
+	/**
+	 * Overrides {@link #toolTipText(String)}
+	 * @param toolTipText a dynamic tool tip text
+	 * @return this builder instance
+	 * @see JComponent#setToolTipText(String)
+	 */
+	B toolTipText(Observable<String> toolTipText);
 
 	/**
 	 * Sets the enabled state of the component, for a dynamic enabled state use {@link #enabled(ObservableState)}.

@@ -93,6 +93,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	private Border border;
 	private boolean transferFocusOnEnter = false;
 	private String toolTipText;
+	private Observable<String> toolTipTextObservable;
 	private Font font;
 	private Color foreground;
 	private Color background;
@@ -243,6 +244,12 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	@Override
 	public final B toolTipText(String toolTipText) {
 		this.toolTipText = toolTipText;
+		return self();
+	}
+
+	@Override
+	public final B toolTipText(Observable<String> toolTipText) {
+		this.toolTipTextObservable = toolTipText;
 		return self();
 	}
 
@@ -506,7 +513,11 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		if (popupMenu != null) {
 			component.setComponentPopupMenu(popupMenu.apply(component));
 		}
-		if (toolTipText != null) {
+		if (toolTipTextObservable != null) {
+			component.setToolTipText(toolTipTextObservable.get());
+			toolTipTextObservable.addConsumer(new SetToolTipText(component));
+		}
+		else if (toolTipText != null) {
 			component.setToolTipText(toolTipText);
 		}
 		if (font != null) {
@@ -591,6 +602,20 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		}
 
 		return value;
+	}
+
+	private static final class SetToolTipText implements Consumer<String> {
+
+		private final JComponent component;
+
+		private SetToolTipText(JComponent component) {
+			this.component = component;
+		}
+
+		@Override
+		public void accept(String toolTipText) {
+			component.setToolTipText(toolTipText);
+		}
 	}
 
 	private static final class OnSetVisible<C extends JComponent> implements AncestorListener {
