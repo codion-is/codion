@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.32
 ### is.codion.swing.common.ui
 - FilterTable bug fixed, doubleClickAction no longer triggered if disabled.
+### is.codion.framework.model
+- AbstractEntityEditModel.refresh() bug fixed, now handles the case when a primary key attribute has been modified.
 ### is.codion.swing.framework.ui
 - EntityDialogs.selectionDialog() parameter now EntityTablePanel.
 - EntitySelectionDialogBuilder.dialogSize() and configureTablePanel() removed, includeSearchButton() added.

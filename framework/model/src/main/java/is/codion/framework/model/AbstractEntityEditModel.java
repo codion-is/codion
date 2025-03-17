@@ -155,7 +155,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	@Override
 	public final void refresh() {
 		if (editor.exists().get()) {
-			editor.set(connectionProvider.connection().select(editor.getOrThrow().copy().mutable().primaryKey()));
+			editor.set(connectionProvider.connection().select(editor.getOrThrow().originalPrimaryKey()));
 		}
 	}
 

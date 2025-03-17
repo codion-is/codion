@@ -146,6 +146,18 @@ public final class AbstractEntityEditModelTest {
 			connection.update(employee);
 			employeeEditModel.refresh();
 			assertEquals("NOONE", editor.value(Employee.NAME).get());
+
+			EntityEditModel departmentEditModel = new TestEntityEditModel(Department.TYPE, employeeEditModel.connectionProvider());
+			Entity accounting = connection.selectSingle(Department.NAME.equalTo("ACCOUNTING"));
+			EntityEditor departmentEditor = departmentEditModel.editor();
+			departmentEditor.set(accounting);
+			departmentEditor.value(Department.ID).set(-20);
+
+			accounting.put(Department.NAME, "Accounting");
+			connection.update(accounting);
+			departmentEditModel.refresh();
+			assertEquals(10, departmentEditor.value(Department.ID).get());
+			assertEquals("Accounting", departmentEditor.value(Department.NAME).get());
 		}
 		finally {
 			connection.rollbackTransaction();
