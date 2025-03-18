@@ -27,7 +27,6 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
@@ -94,7 +93,6 @@ import java.util.function.Supplier;
 
 import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.Configuration.integerValue;
-import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.swing.common.ui.Colors.darker;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
@@ -700,7 +698,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @param <T> the value type
 	 */
 	protected final <T> void addValidator(Attribute<T> attribute, JTextComponent textComponent) {
-		new ComponentValidator<>(attribute, textComponent, editModel, textComponent.getToolTipText(), "TextField").validate();
+		new ComponentValidator<>(attribute, textComponent, editModel, "TextField").validate();
 	}
 
 	/**
@@ -710,7 +708,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @param <T> the value type
 	 */
 	protected final <T> void addValidator(Attribute<T> attribute, JComboBox<?> comboBox) {
-		new ComponentValidator<>(attribute, comboBox, editModel, comboBox.getToolTipText(), "ComboBox").validate();
+		new ComponentValidator<>(attribute, comboBox, editModel, "ComboBox").validate();
 	}
 
 	protected final Map<Attribute<?>, Value<JComponent>> components() {
@@ -726,6 +724,7 @@ public class EntityEditComponentPanel extends JPanel {
 		componentBuilders.put(attribute, componentBuilder
 						.name(attribute.toString())
 						.transferFocusOnEnter(inputFocus.transferOnEnter.get())
+						.toolTipText(editModel.editor().value(attribute).message())
 						.link(editModel().editor().value(attribute))
 						.onBuild(new SetComponent<>(attribute)));
 
@@ -1165,67 +1164,12 @@ public class EntityEditComponentPanel extends JPanel {
 		}
 	}
 
-	private static class DefaultValidator<T> {
+	private static final class ComponentValidator<T> {
 
+		private final String uiComponentKey;
 		private final Attribute<T> attribute;
 		private final JComponent component;
 		private final EntityEditModel editModel;
-		private final String defaultToolTip;
-
-		private DefaultValidator(Attribute<T> attribute, JComponent component, EntityEditModel editModel,
-														 String defaultToolTip) {
-			this.attribute = attribute;
-			this.component = component;
-			this.editModel = editModel;
-			this.defaultToolTip = defaultToolTip;
-		}
-
-		/**
-		 * If the current value is invalid this method returns a string describing the nature of
-		 * the invalidity, if the value is valid this method returns null
-		 * @return a validation string if the value is invalid, null otherwise
-		 */
-		protected final String validationMessage() {
-			try {
-				editModel.editor().validate(attribute);
-				return null;
-			}
-			catch (ValidationException e) {
-				return e.getMessage();
-			}
-		}
-
-		protected final boolean nullable() {
-			return editModel.editor().nullable(attribute);
-		}
-
-		protected final boolean isNull() {
-			return editModel.editor().isNull(attribute).get();
-		}
-
-		/**
-		 * @return the component associated with the value being validated
-		 */
-		protected final JComponent component() {
-			return component;
-		}
-
-		protected final void setToolTipText(String validationMessage) {
-			if (validationMessage == null) {
-				component.setToolTipText(defaultToolTip);
-			}
-			else if (nullOrEmpty(defaultToolTip)) {
-				component.setToolTipText(validationMessage);
-			}
-			else {
-				component.setToolTipText(validationMessage + ": " + defaultToolTip);
-			}
-		}
-	}
-
-	private static final class ComponentValidator<T> extends DefaultValidator<T> {
-
-		private final String uiComponentKey;
 
 		private Color backgroundColor;
 		private Color inactiveBackgroundColor;
@@ -1236,11 +1180,12 @@ public class EntityEditComponentPanel extends JPanel {
 		 * @param attribute the attribute of the value to validate
 		 * @param component the component bound to the value
 		 * @param editModel the edit model handling the value editing
-		 * @param defaultToolTip the default tooltip to show when the field value is valid
 		 */
 		private ComponentValidator(Attribute<T> attribute, JComponent component, EntityEditModel editModel,
-															 String defaultToolTip, String uiComponentKey) {
-			super(attribute, component, editModel, defaultToolTip);
+															 String uiComponentKey) {
+			this.attribute = attribute;
+			this.component = component;
+			this.editModel = editModel;
 			this.uiComponentKey = uiComponentKey;
 			editModel.editor().value(attribute).addListener(this::validate);
 			configureColors();
@@ -1251,20 +1196,13 @@ public class EntityEditComponentPanel extends JPanel {
 		 * Updates the underlying component indicating the validity of the value being displayed
 		 */
 		private void validate() {
-			JComponent component = super.component();
 			boolean enabled = component.isEnabled();
-			String validationMessage = validationMessage();
-			if (nullValid() && validationMessage == null) {
+			if (editModel.editor().value(attribute).valid().get()) {
 				component.setBackground(enabled ? backgroundColor : inactiveBackgroundColor);
 			}
 			else {
 				component.setBackground(invalidBackgroundColor);
 			}
-			setToolTipText(validationMessage);
-		}
-
-		private boolean nullValid() {
-			return !isNull() || nullable();
 		}
 
 		private void configureColors() {

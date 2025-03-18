@@ -19,6 +19,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.event.Event;
+import is.codion.common.observable.Observable;
 import is.codion.common.observable.Observer;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
@@ -45,9 +46,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
+import static is.codion.common.Text.nullOrEmpty;
 import static java.util.Collections.emptyMap;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.joining;
 
 final class DefaultEntityEditor implements EntityEditor {
 
@@ -61,6 +65,7 @@ final class DefaultEntityEditor implements EntityEditor {
 	private final Map<Attribute<?>, State> attributeModified = new HashMap<>();
 	private final Map<Attribute<?>, State> attributeNull = new HashMap<>();
 	private final Map<Attribute<?>, State> attributeValid = new HashMap<>();
+	private final Map<Attribute<?>, Observable<String>> messages = new HashMap<>();
 
 	private final EntityDefinition entityDefinition;
 	private final State primaryKeyNull = State.state(true);
@@ -459,6 +464,12 @@ final class DefaultEntityEditor implements EntityEditor {
 		}
 
 		@Override
+		public Observable<String> message() {
+			return messages.computeIfAbsent(attribute,
+							k -> observableMessage(attribute));
+		}
+
+		@Override
 		public ObservableState modified() {
 			return attributeModified.computeIfAbsent(attribute,
 							k -> State.state(exists.get() && entity.modified(attribute))).observable();
@@ -519,6 +530,41 @@ final class DefaultEntityEditor implements EntityEditor {
 		private void addDependingReferencedColumns(ForeignKey foreignKey, Map<Attribute<?>, Object> dependingValues) {
 			foreignKey.references().forEach(reference ->
 							dependingValues.put(reference.column(), entity.get(reference.column())));
+		}
+
+		private Observable<String> observableMessage(Attribute<?> attribute) {
+			String description = entityDefinition.attributes().definition(attribute).description();
+			Value<String> toolTip = Value.nullable(createMessage(description));
+			value(attribute).addListener(() -> toolTip.set(createMessage(description)));
+
+			return toolTip.observable();
+		}
+
+		private String createMessage(String description) {
+			return createToolTipText(validationString(), description);
+		}
+
+		private String validationString() {
+			try {
+				DefaultEntityEditor.this.validate(attribute);
+
+				return null;
+			}
+			catch (ValidationException e) {
+				return e.getMessage();
+			}
+		}
+
+		private String createToolTipText(String validationMessage, String description) {
+			if (nullOrEmpty(validationMessage)) {
+				return description;
+			}
+			else if (nullOrEmpty(description)) {
+				return validationMessage;
+			}
+
+			return Stream.of(validationMessage, description)
+							.collect(joining("<br>", "<html>", "</html"));
 		}
 
 		private void valueChanged() {

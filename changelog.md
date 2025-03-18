@@ -7,10 +7,12 @@ Codion Change Log
 - ComponentBuilder.toolTipText(Observable<String>) added for a dynamic tool tip.
 ### is.codion.framework.model
 - AbstractEntityEditModel.refresh() bug fixed, now handles the case when a primary key attribute has been modified.
+- EntityEditModel.EntityEditor.EditorValue.message() added.
 ### is.codion.swing.framework.ui
 - EntityDialogs.selectionDialog() parameter now EntityTablePanel.
 - EntitySelectionDialogBuilder.dialogSize() and configureTablePanel() removed, includeSearchButton() added.
 - EntityDialogs.EditAttributeDialogBuilder.defaultValue() and applier() added.
+- EntityEditComponentPanel, toolTip validation message split from ComponentValidator.
 ### is.codion.framework.servlet
 - EntityService.USE_VIRTUAL_THREADS configuration value added.
 - EntityService now configures handlers before starting.

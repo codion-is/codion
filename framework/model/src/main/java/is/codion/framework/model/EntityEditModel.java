@@ -567,6 +567,11 @@ public interface EntityEditModel {
 		ObservableState valid();
 
 		/**
+		 * @return the validation message in case the value is invalid, otherwise the attribute description
+		 */
+		Observable<String> message();
+
+		/**
 		 * <p>Returns an {@link ObservableState} instance indicating whether the value of the given attribute has been modified.
 		 * <p>Note that only attributes of existing entities are modified, attributes of new, or non-existing entities are never modified.
 		 * @return an {@link ObservableState} indicating the modified state of the value of the given attribute
