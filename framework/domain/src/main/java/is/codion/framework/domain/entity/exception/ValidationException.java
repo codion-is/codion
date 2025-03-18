@@ -25,7 +25,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * An exception used to indicate that an attribute value is invalid.
  */
-public class ValidationException extends RuntimeException {
+public class ValidationException extends IllegalArgumentException {
 
 	private final Attribute<?> attribute;
 	private final Object value;

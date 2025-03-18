@@ -459,7 +459,7 @@ public final class EntityDialogs {
 
 					return true;
 				}
-				catch (ValidationException | IllegalArgumentException e) {
+				catch (IllegalArgumentException e) {
 					return false;
 				}
 			}
