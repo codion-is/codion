@@ -208,6 +208,7 @@ public final class EntitySearchField extends HintTextField {
 	private final Function<Entity, String> stringFactory;
 	private final String separator;
 	private final boolean searchOnFocusLost;
+	private final boolean selectionToolTip;
 	private final State searching = State.state();
 	private final Consumer<Boolean> searchIndicator;
 	private final Function<EntitySearchField, Selector> selectorFactory;
@@ -241,6 +242,7 @@ public final class EntitySearchField extends HintTextField {
 			setEditable(false);
 		}
 		searchOnFocusLost = builder.searchOnFocusLost;
+		selectionToolTip = builder.selectionToolTip;
 		searchIndicator = createSearchIndicator(builder.searchIndicator);
 		searching.addConsumer(searchIndicator);
 		selectorFactory = builder.selectorFactory;
@@ -391,6 +393,14 @@ public final class EntitySearchField extends HintTextField {
 		B searchHintEnabled(boolean searchHintEnabled);
 
 		/**
+		 * Specifies whether the selection should be available in a multi-line tool tip.
+		 * Enabled by default for multi-selection instances.
+		 * @param selectionToolTip true if the selection should be available in a multi-line tool tip
+		 * @return this builder instance
+		 */
+		B selectionToolTip(boolean selectionToolTip);
+
+		/**
 		 * @param searchOnFocusLost true if search should be performed on focus lost
 		 * @return this builder instance
 		 */
@@ -494,7 +504,9 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	private void onSelectionChanged() {
-		setToolTipText(selectionToolTip());
+		if (selectionToolTip) {
+			setToolTipText(createSelectionToolTip());
+		}
 		String text = selectionString();
 		setText(text);
 		setCaretPosition(text.length());
@@ -525,7 +537,7 @@ public final class EntitySearchField extends HintTextField {
 		}
 	}
 
-	private String selectionToolTip() {
+	private String createSelectionToolTip() {
 		return model.selection().empty().get() ? null : strings()
 						.map(EntitySearchField::escape)
 						.collect(joining("<br>", "<html>", "</html"));
@@ -1162,6 +1174,7 @@ public final class EntitySearchField extends HintTextField {
 		private boolean editable = true;
 		private boolean searchHintEnabled = true;
 		private boolean searchOnFocusLost = true;
+		private boolean selectionToolTip;
 		private SearchIndicator searchIndicator = SEARCH_INDICATOR.get();
 		private Function<EntitySearchField, Selector> selectorFactory = new ListSelectorFactory();
 		private Function<Entity, String> stringFactory = DEFAULT_TO_STRING;
@@ -1172,6 +1185,7 @@ public final class EntitySearchField extends HintTextField {
 
 		private AbstractBuilder(EntitySearchModel searchModel) {
 			this.searchModel = searchModel;
+			this.selectionToolTip = !searchModel.singleSelection();
 		}
 
 		@Override
@@ -1222,6 +1236,12 @@ public final class EntitySearchField extends HintTextField {
 		@Override
 		public B searchHintEnabled(boolean searchHintEnabled) {
 			this.searchHintEnabled = searchHintEnabled;
+			return (B) this;
+		}
+
+		@Override
+		public B selectionToolTip(boolean selectionToolTip) {
+			this.selectionToolTip = selectionToolTip;
 			return (B) this;
 		}
 

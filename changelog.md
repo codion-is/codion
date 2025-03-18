@@ -13,6 +13,7 @@ Codion Change Log
 - EntitySelectionDialogBuilder.dialogSize() and configureTablePanel() removed, includeSearchButton() added.
 - EntityDialogs.EditAttributeDialogBuilder.defaultValue() and applier() added.
 - EntityEditComponentPanel, toolTip validation message split from ComponentValidator.
+- EntitySearchField.Builder.selectionToolTip() added, enabled by default for multi-selection instances.
 ### is.codion.framework.servlet
 - EntityService.USE_VIRTUAL_THREADS configuration value added.
 - EntityService now configures handlers before starting.
