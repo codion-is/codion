@@ -40,7 +40,9 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.domain.entity.Entity.primaryKeyMap;
+import static is.codion.framework.domain.entity.condition.Condition.keys;
 import static is.codion.framework.model.EntityEditModel.editEvents;
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static java.util.Objects.requireNonNull;
@@ -157,8 +159,12 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 
 	@Override
 	public final void refresh(Collection<Entity.Key> keys) {
-		replaceEntities(connection().select(keys).stream()
-						.collect(toMap(Entity::primaryKey, identity())));
+		if (!requireNonNull(keys).isEmpty()) {
+			replaceEntities(connection().select(where(keys(keys))
+											.attributes(queryModel.attributes().get())
+											.build()).stream()
+							.collect(toMap(Entity::primaryKey, identity())));
+		}
 	}
 
 	@Override
