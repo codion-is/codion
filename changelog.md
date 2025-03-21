@@ -11,6 +11,7 @@ Codion Change Log
 - EntityDialogs.selectionDialog() parameter now EntityTablePanel.
 - EntitySelectionDialogBuilder.dialogSize() and configureTablePanel() removed, includeSearchButton() added.
 - EntityDialogs.EditAttributeDialogBuilder.defaultValue() and applier() added.
+- EntityPanel.Builder no longer implements equals() and hashCode() based on entityType, restricts entity panel caching to a single panel per entity type.
 ### is.codion.framework.servlet
 - EntityService.USE_VIRTUAL_THREADS configuration value added.
 - EntityService now configures handlers before starting.
