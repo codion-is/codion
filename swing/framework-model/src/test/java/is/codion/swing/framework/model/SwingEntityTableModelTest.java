@@ -36,6 +36,8 @@ import javax.swing.SortOrder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -260,6 +262,21 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		assertEquals(Employee.DEPARTMENT, orderBy.orderByColumns().get(0).column());
 		assertTrue(orderBy.orderByColumns().get(1).ascending());
 		assertEquals(Employee.NAME, orderBy.orderByColumns().get(1).column());
+	}
+
+	@Test
+	void replaceByKey() {
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
+		tableModel.queryModel().attributes().set(asList(Employee.NAME, Employee.COMMISSION));
+		tableModel.items().refresh();
+		Entity.Key jonesKey = tableModel.entities().primaryKey(Employee.TYPE, 3);
+		tableModel.refresh(singleton(jonesKey));
+		tableModel.select(singleton(jonesKey));
+		Entity selected = tableModel.selection().item().get();
+		assertTrue(selected.contains(Employee.NAME));
+		assertTrue(selected.contains(Employee.COMMISSION));
+		assertFalse(selected.contains(Employee.JOB));
+		assertFalse(selected.contains(Employee.SALARY));
 	}
 
 //	@Test

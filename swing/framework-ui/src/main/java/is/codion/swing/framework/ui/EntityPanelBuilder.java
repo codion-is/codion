@@ -22,7 +22,6 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
 
 import javax.swing.ImageIcon;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -78,22 +77,6 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 	@Override
 	public Optional<ImageIcon> icon() {
 		return Optional.ofNullable(icon);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof EntityPanelBuilder) {
-			EntityPanelBuilder that = (EntityPanelBuilder) obj;
-
-			return Objects.equals(entityType, that.entityType);
-		}
-
-		return false;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(entityType);
 	}
 
 	@Override

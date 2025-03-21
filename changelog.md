@@ -9,11 +9,13 @@ Codion Change Log
 - ValidationException now extends IllegalArgumentException.
 ### is.codion.framework.model
 - AbstractEntityEditModel.refresh() bug fixed, now handles the case when a primary key attribute has been modified.
+- AbstractEntityTableModel.refresh(keys) bug fixed, now includes the same attributes as the query model, when selecting.
 - EntityEditModel.EntityEditor.EditorValue.message() added.
 ### is.codion.swing.framework.ui
 - EntityDialogs.selectionDialog() parameter now EntityTablePanel.
 - EntitySelectionDialogBuilder.dialogSize() and configureTablePanel() removed, includeSearchButton() added.
 - EntityDialogs.EditAttributeDialogBuilder.defaultValue() and applier() added.
+- EntityPanel.Builder no longer implements equals() and hashCode() based on entityType, restricts entity panel caching to a single panel per entity type.
 - EntityEditComponentPanel, toolTip validation message split from ComponentValidator.
 - EntitySearchField.Builder.selectionToolTip() added, enabled by default for multi-selection instances.
 ### is.codion.framework.servlet

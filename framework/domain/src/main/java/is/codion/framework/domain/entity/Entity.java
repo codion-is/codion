@@ -486,7 +486,7 @@ public interface Entity extends Comparable<Entity> {
 	 */
 	static <T> LinkedHashMap<T, List<Entity>> groupByValue(Attribute<T> attribute, Collection<Entity> entities) {
 		LinkedHashMap<T, List<Entity>> result = new LinkedHashMap<>();
-		entities.forEach(entity -> result.computeIfAbsent(entity.get(attribute), k -> new ArrayList<>()).add(entity));
+		requireNonNull(entities).forEach(entity -> result.computeIfAbsent(entity.get(attribute), k -> new ArrayList<>()).add(entity));
 
 		return result;
 	}
