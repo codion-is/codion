@@ -22,6 +22,7 @@ import is.codion.common.observable.Observable;
 import is.codion.common.state.ObservableState;
 import is.codion.common.value.Value;
 import is.codion.common.value.Value.Validator;
+import is.codion.swing.common.ui.component.indicator.ModifiedIndicatorFactory;
 import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
 import is.codion.swing.common.ui.component.scrollpane.ScrollPaneBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -225,6 +226,21 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 * @see is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory
 	 */
 	B validIndicator(Consumer<T> validator);
+
+	/**
+	 * By default {@link is.codion.swing.common.ui.component.indicator.UnderlineModifiedIndicatorFactory}.
+	 * @param modifiedIndicatorFactory the {@link ModifiedIndicatorFactory} to use, null for none
+	 * @return this builder instance
+	 */
+	B modifiedIndicatorFactory(ModifiedIndicatorFactory modifiedIndicatorFactory);
+
+	/**
+	 * Enables a modified indicator based on the given modified state.
+	 * @param modified the modified state
+	 * @return this builder instance
+	 * @see #modifiedIndicatorFactory(ModifiedIndicatorFactory)
+	 */
+	B modifiedIndicator(ObservableState modified);
 
 	/**
 	 * @param popupMenuControl a function, receiving the component being built, providing the control to base a popup menu on

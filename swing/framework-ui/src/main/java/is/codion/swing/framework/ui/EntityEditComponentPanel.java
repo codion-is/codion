@@ -68,12 +68,9 @@ import javax.swing.JTextField;
 import javax.swing.ListModel;
 import javax.swing.SpinnerListModel;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Font;
 import java.awt.KeyboardFocusManager;
-import java.awt.font.TextAttribute;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.math.BigDecimal;
@@ -113,27 +110,15 @@ public class EntityEditComponentPanel extends JPanel {
 					booleanValue(EntityEditComponentPanel.class.getName() + ".validIndicator", true);
 
 	/**
-	 * Specifies whether label text should be underlined to indicate that the associated value is modified
+	 * Specifies whether components should indicate that the value is modified
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
 	 * </ul>
-	 * @see #MODIFIED_INDICATOR_UNDERLINE_STYLE
+	 * @see is.codion.swing.common.ui.component.indicator.ModifiedIndicatorFactory
 	 */
 	public static final PropertyValue<Boolean> MODIFIED_INDICATOR =
 					booleanValue(EntityEditComponentPanel.class.getName() + ".modifiedIndicator", true);
-
-	/**
-	 * The type of underline to use to indicate a modified value
-	 * <ul>
-	 * <li>Value type: Integer
-	 * <li>Default value: {@link TextAttribute#UNDERLINE_LOW_DOTTED}
-	 * <li>Valid values: {@link TextAttribute}.UNDERLINE_*
-	 * </ul>
-	 * @see #MODIFIED_INDICATOR
-	 */
-	public static final PropertyValue<Integer> MODIFIED_INDICATOR_UNDERLINE_STYLE =
-					integerValue(EntityEditComponentPanel.class.getName() + ".modifiedIndicatorUnderlineStyle", TextAttribute.UNDERLINE_LOW_DOTTED);
 
 	/**
 	 * Specifies the default number of text field columns
@@ -212,7 +197,7 @@ public class EntityEditComponentPanel extends JPanel {
 			componentBuilder.build();
 		}
 
-		return components.computeIfAbsent(attribute, this::createComponentValue);
+		return components.computeIfAbsent(attribute, k -> Value.nullable());
 	}
 
 	/**
@@ -712,6 +697,7 @@ public class EntityEditComponentPanel extends JPanel {
 						.transferFocusOnEnter(inputFocus.transferOnEnter.get())
 						.toolTipText(editorValue.message())
 						.validIndicator(validIndicator.get() ? editorValue.valid() : null)
+						.modifiedIndicator(modifiedIndicator.get() ? editorValue.modified() : null)
 						.link(editorValue)
 						.onBuild(new SetComponent<>(attribute)));
 
@@ -732,13 +718,6 @@ public class EntityEditComponentPanel extends JPanel {
 						.map(Value::get)
 						.filter(Objects::nonNull)
 						.anyMatch(comp -> sameOrParentOf(comp, component));
-	}
-
-	private Value<JComponent> createComponentValue(Attribute<?> attribute) {
-		return Value.builder()
-						.<JComponent>nullable()
-						.consumer(new AddModifiedIndicator(attribute))
-						.build();
 	}
 
 	private static JLabel setLabelForComponent(JLabel label, JComponent component) {
@@ -1088,66 +1067,6 @@ public class EntityEditComponentPanel extends JPanel {
 					parent.inputFocus.afterUpdate.focusedInputComponent = component;
 				}
 			}
-		}
-	}
-
-	private final class AddModifiedIndicator implements Consumer<JComponent> {
-
-		private final Attribute<?> attribute;
-
-		private AddModifiedIndicator(Attribute<?> attribute) {
-			this.attribute = attribute;
-		}
-
-		@Override
-		public void accept(JComponent component) {
-			if (modifiedIndicator.get() && attribute.entityType().equals(editModel.entityType())) {
-				editModel.editor().value(attribute).modified().addConsumer(new ModifiedIndicator(component));
-			}
-		}
-	}
-
-	private static final class ModifiedIndicator implements Consumer<Boolean> {
-
-		private static final String LABELED_BY_PROPERTY = "labeledBy";
-		private static final int UNDERLINE_STYLE = MODIFIED_INDICATOR_UNDERLINE_STYLE.getOrThrow();
-
-		private final JComponent component;
-
-		private ModifiedIndicator(JComponent component) {
-			this.component = component;
-		}
-
-		@Override
-		public void accept(Boolean modified) {
-			JLabel label = (JLabel) component.getClientProperty(LABELED_BY_PROPERTY);
-			if (label != null) {
-				SwingUtilities.invokeLater(() -> setModifiedIndicator(label, modified));
-			}
-		}
-
-		@Override
-		public boolean equals(Object object) {
-			if (this == object) {
-				return true;
-			}
-			if (!(object instanceof ModifiedIndicator)) {
-				return false;
-			}
-			ModifiedIndicator that = (ModifiedIndicator) object;
-			return Objects.equals(component, that.component);
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(component);
-		}
-
-		private static void setModifiedIndicator(JLabel label, boolean modified) {
-			Font font = label.getFont();
-			Map<TextAttribute, Object> attributes = (Map<TextAttribute, Object>) font.getAttributes();
-			attributes.put(TextAttribute.INPUT_METHOD_UNDERLINE, modified ? UNDERLINE_STYLE : null);
-			label.setFont(font.deriveFont(attributes));
 		}
 	}
 

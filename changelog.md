@@ -6,6 +6,7 @@ Codion Change Log
 - FilterTable bug fixed, doubleClickAction no longer triggered if disabled.
 - ComponentBuilder.toolTipText(Observable<String>) added for a dynamic tool tip.
 - ComponentBuilder.validIndicator() added along with ValidIndicatorFactory.
+- ComponentBuilder.modifiedIndicator() added along with ModifiedIndicatorFactory.
 ### is.codion.framework.domain
 - ValidationException now extends IllegalArgumentException.
 ### is.codion.framework.model

@@ -167,7 +167,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 
 		@Override
 		public ComponentValue<Integer, DurationPanel> componentValue(SwingEntityEditModel editModel, Integer value) {
-			DurationComponentValue durationValue = new DurationComponentValue();
+			DurationComponentValue durationValue = new DurationComponentValue(false);
 			durationValue.set(value);
 
 			return durationValue;

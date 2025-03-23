@@ -38,17 +38,13 @@ import static java.util.ResourceBundle.getBundle;
 
 final class DurationComponentValue extends AbstractComponentValue<Integer, DurationComponentValue.DurationPanel> {
 
-	DurationComponentValue() {
-		this(new DurationPanel(false, null));
-	}
-
 	DurationComponentValue(EditorValue<Integer> millisecondsValue) {
-		this(new DurationPanel(false, millisecondsValue.valid()));
+		this(new DurationPanel(false, millisecondsValue.valid(), millisecondsValue.modified()));
 		link(millisecondsValue);
 	}
 
 	DurationComponentValue(boolean cellEditor) {
-		this(new DurationPanel(cellEditor, null));
+		this(new DurationPanel(cellEditor));
 	}
 
 	DurationComponentValue(DurationPanel panel) {
@@ -112,16 +108,26 @@ final class DurationComponentValue extends AbstractComponentValue<Integer, Durat
 
 		private static final ResourceBundle BUNDLE = getBundle(DurationPanel.class.getName());
 
-		final NumberField<Integer> minutesField;
-		final NumberField<Integer> secondsField;
-		final NumberField<Integer> millisecondsField;
+		private final NumberField<Integer> minutesField;
+		private final NumberField<Integer> secondsField;
+		private final NumberField<Integer> millisecondsField;
 
-		private DurationPanel(boolean cellEditor, ObservableState valid) {
+		private final JLabel minLabel = new JLabel(BUNDLE.getString("min"));
+		private final JLabel secLabel = new JLabel(BUNDLE.getString("sec"));
+		private final JLabel msLabel = new JLabel(BUNDLE.getString("ms"));
+
+		private DurationPanel(boolean cellEditor) {
+			this(cellEditor, null, null);
+		}
+
+		private DurationPanel(boolean cellEditor, ObservableState valid, ObservableState modified) {
 			super(borderLayout());
 			minutesField = integerField()
 							.transferFocusOnEnter(true)
 							.selectAllOnFocusGained(true)
+							.modifiedIndicator(modified)
 							.validIndicator(valid)
+							.label(minLabel)
 							.columns(2)
 							.build();
 			secondsField = integerField()
@@ -129,7 +135,9 @@ final class DurationComponentValue extends AbstractComponentValue<Integer, Durat
 							.transferFocusOnEnter(true)
 							.selectAllOnFocusGained(true)
 							.silentValidation(true)
+							.modifiedIndicator(modified)
 							.validIndicator(valid)
+							.label(secLabel)
 							.columns(2)
 							.build();
 			millisecondsField = integerField()
@@ -137,7 +145,9 @@ final class DurationComponentValue extends AbstractComponentValue<Integer, Durat
 							.transferFocusOnEnter(!cellEditor)
 							.selectAllOnFocusGained(true)
 							.silentValidation(true)
+							.modifiedIndicator(modified)
 							.validIndicator(valid)
+							.label(msLabel)
 							.columns(3)
 							.build();
 			if (cellEditor) {
@@ -155,7 +165,7 @@ final class DurationComponentValue extends AbstractComponentValue<Integer, Durat
 		}
 
 		private void initializeCellEditor() {
-			add(flexibleGridLayoutPanel(1, 3)
+			add(flexibleGridLayoutPanel(1, 0)
 							.add(minutesField)
 							.add(secondsField)
 							.add(millisecondsField)
@@ -164,12 +174,12 @@ final class DurationComponentValue extends AbstractComponentValue<Integer, Durat
 
 		private void initializeInputPanel() {
 			add(borderLayoutPanel()
-							.northComponent(gridLayoutPanel(1, 3)
-											.add(new JLabel(BUNDLE.getString("min")))
-											.add(new JLabel(BUNDLE.getString("sec")))
-											.add(new JLabel(BUNDLE.getString("ms")))
+							.northComponent(gridLayoutPanel(1, 0)
+											.add(minLabel)
+											.add(secLabel)
+											.add(msLabel)
 											.build())
-							.centerComponent(gridLayoutPanel(1, 2)
+							.centerComponent(gridLayoutPanel(1, 0)
 											.add(minutesField)
 											.add(secondsField)
 											.add(millisecondsField)

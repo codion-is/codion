@@ -23,6 +23,8 @@ import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.button.MenuBuilder;
+import is.codion.swing.common.ui.component.indicator.ModifiedIndicatorFactory;
+import is.codion.swing.common.ui.component.indicator.UnderlineModifiedIndicatorFactory;
 import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
 import is.codion.swing.common.ui.component.scrollpane.ScrollPaneBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -103,6 +105,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	private ValidIndicatorFactory validIndicatorFactory = ValidIndicatorFactory.instance();
 	private ObservableState enabledObservable;
 	private ObservableState validObservable;
+	private ModifiedIndicatorFactory modifiedIndicatorFactory = new UnderlineModifiedIndicatorFactory();
+	private ObservableState modifiedObservable;
 	private Consumer<T> validator;
 	private boolean enabled = true;
 	private Function<C, JPopupMenu> popupMenu;
@@ -241,6 +245,18 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	@Override
 	public final B validIndicator(Consumer<T> validator) {
 		this.validator = validator;
+		return self();
+	}
+
+	@Override
+	public final B modifiedIndicatorFactory(ModifiedIndicatorFactory modifiedIndicatorFactory) {
+		this.modifiedIndicatorFactory = modifiedIndicatorFactory;
+		return self();
+	}
+
+	@Override
+	public final B modifiedIndicator(ObservableState modified) {
+		this.modifiedObservable = modified;
 		return self();
 	}
 
@@ -595,6 +611,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 			label.setLabelFor(component);
 		}
 		configureValidIndicator(componentValue);
+		configureModifiedIndicator(component);
 		keyEventBuilders.forEach(keyEventBuilder -> keyEventBuilder.enable(component));
 		focusListeners.forEach(component::addFocusListener);
 		mouseListeners.forEach(component::addMouseListener);
@@ -619,6 +636,12 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		}
 		else if (validator != null) {
 			enableValidIndicator(validIndicatorFactory, componentValue.component(), createValidState(componentValue, validator));
+		}
+	}
+
+	private void configureModifiedIndicator(C component) {
+		if (modifiedIndicatorFactory != null && modifiedObservable != null) {
+			modifiedIndicatorFactory.enable(component, modifiedObservable);
 		}
 	}
 
