@@ -39,7 +39,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static is.codion.swing.common.ui.Utilities.disposeParentWindow;
-import static is.codion.swing.common.ui.control.Control.command;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createEmptyBorder;
 
@@ -135,11 +134,11 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 		if (caption != null) {
 			basePanel.add(new JLabel(caption), BorderLayout.NORTH);
 		}
-		okCancelDialogBuilder.okAction(command(() -> {
+		okCancelDialogBuilder.onOk(() -> {
 			if (closeDialog.test(componentValue.get())) {
 				disposeParentWindow(componentValue.component());
 			}
-		})).show();
+		}).show();
 	}
 
 	@Override

@@ -7,6 +7,7 @@ Codion Change Log
 - ComponentBuilder.toolTipText(Observable<String>) added for a dynamic tool tip.
 - ComponentBuilder.validIndicator() added along with ValidIndicatorFactory.
 - ComponentBuilder.modifiedIndicator() added along with ModifiedIndicatorFactory.
+- DefaultInputDialogBuilder.show(closeDialog) bug fixed, now uses onOk() instead of okAction(), which bypassed the valid state.
 ### is.codion.framework.domain
 - ValidationException now extends IllegalArgumentException.
 ### is.codion.framework.model
