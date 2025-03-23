@@ -53,7 +53,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
@@ -338,20 +337,22 @@ public final class ApplicationPanel extends JPanel {
 		Sizes.setPreferredWidth(this, 400);
 	}
 
-	private static class PGValidator implements Consumer<String> {
+	private static class PGValidator implements Predicate<String> {
 
 		private static final List<String> SWEAR_WORDS = List.of("fuck", "shit");
 
 		@Override
-		public void accept(String value) {
+		public boolean test(String value) {
 			if (value != null) {
 				String lowerCaseValue = value.toLowerCase();
-				SWEAR_WORDS.forEach(swearWord -> {
+				for (String swearWord : SWEAR_WORDS) {
 					if (lowerCaseValue.contains(swearWord)) {
-						throw new IllegalArgumentException();
+						return false;
 					}
-				});
+				}
 			}
+
+			return true;
 		}
 	}
 
@@ -393,13 +394,11 @@ public final class ApplicationPanel extends JPanel {
 		}
 	}
 
-	private static final class LocalDateValidator implements Consumer<LocalDate> {
+	private static final class LocalDateValidator implements Predicate<LocalDate> {
 
 		@Override
-		public void accept(LocalDate localDate) {
-			if (localDate == null || localDate.isBefore(LocalDate.now())) {
-				throw new IllegalArgumentException();
-			}
+		public boolean test(LocalDate localDate) {
+			return localDate != null && !localDate.isBefore(LocalDate.now());
 		}
 	}
 

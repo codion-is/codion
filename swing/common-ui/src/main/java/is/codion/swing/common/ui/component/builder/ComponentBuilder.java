@@ -49,6 +49,7 @@ import java.awt.event.MouseWheelListener;
 import java.beans.PropertyChangeListener;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * Use {@link #build} to build a JComponent instance or {@link #buildValue()} to build a {@link ComponentValue} instance.<br>
@@ -218,14 +219,14 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	/**
 	 * <p>Enables a valid indicator based on the given validator. Note that this
 	 * is overridden by {@link #validIndicator(ObservableState)}.
-	 * <p>The validator gets called each time the value changes and should throw
-	 * an {@link IllegalArgumentException} in case the given value is invalid.
+	 * <p>The validator gets called each time the value changes and
+	 * should return true as long as the value is valid.
 	 * @param validator called each time the component value changes
 	 * @return this builder instance
 	 * @see #validIndicatorFactory(ValidIndicatorFactory)
 	 * @see is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory
 	 */
-	B validIndicator(Consumer<T> validator);
+	B validIndicator(Predicate<T> validator);
 
 	/**
 	 * By default {@link is.codion.swing.common.ui.component.indicator.UnderlineModifiedIndicatorFactory}.

@@ -57,6 +57,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static is.codion.swing.common.ui.Sizes.*;
 import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
@@ -107,7 +108,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	private ObservableState validObservable;
 	private ModifiedIndicatorFactory modifiedIndicatorFactory = new UnderlineModifiedIndicatorFactory();
 	private ObservableState modifiedObservable;
-	private Consumer<T> validator;
+	private Predicate<T> validator;
 	private boolean enabled = true;
 	private Function<C, JPopupMenu> popupMenu;
 	private T value;
@@ -243,7 +244,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	}
 
 	@Override
-	public final B validIndicator(Consumer<T> validator) {
+	public final B validIndicator(Predicate<T> validator) {
 		this.validator = validator;
 		return self();
 	}
@@ -675,7 +676,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	}
 
 	private static <T, C extends JComponent> ObservableState createValidState(ComponentValue<T, C> componentValue,
-																																						Consumer<T> validator) {
+																																						Predicate<T> validator) {
 		ValidationConsumer<T> validationConsumer = new ValidationConsumer<>(componentValue.get(), validator);
 		componentValue.addConsumer(validationConsumer);
 
@@ -684,10 +685,10 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
 	private static final class ValidationConsumer<T> implements Consumer<T> {
 
-		private final Consumer<T> validator;
+		private final Predicate<T> validator;
 		private final State valid;
 
-		private ValidationConsumer(T initialValue, Consumer<T> validator) {
+		private ValidationConsumer(T initialValue, Predicate<T> validator) {
 			this.validator = validator;
 			this.valid = State.state();
 			accept(initialValue);
@@ -695,13 +696,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
 		@Override
 		public void accept(T value) {
-			try {
-				validator.accept(value);
-				valid.set(true);
-			}
-			catch (IllegalArgumentException e) {
-				valid.set(false);
-			}
+			valid.set(validator.test(value));
 		}
 	}
 
