@@ -18,11 +18,13 @@
  */
 package is.codion.swing.common.ui.component.text;
 
+import is.codion.common.state.ObservableState;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.button.ButtonPanelBuilder;
 import is.codion.swing.common.ui.component.calendar.CalendarPanel;
+import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
@@ -286,6 +288,12 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 		@Override
 		protected void enableTransferFocusOnEnter(TemporalFieldPanel<T> component) {
 			component.transferFocusOnEnter(true);
+		}
+
+		@Override
+		protected void enableValidIndicator(ValidIndicatorFactory validIndicatorFactory,
+																				TemporalFieldPanel<T> component, ObservableState valid) {
+			validIndicatorFactory.enable(component.temporalField, valid);
 		}
 
 		private TemporalField<T> createTemporalField() {

@@ -157,16 +157,19 @@ public interface World {
 		private static final long serialVersionUID = 1;
 
 		@Override
-		public void validate(Entity city) {
-			super.validate(city);
-			//after a call to super.validate() values that are not nullable
-			//(such as country and population) are guaranteed to be non-null
-			Entity country = city.get(City.COUNTRY_FK);
-			Integer cityPopulation = city.get(City.POPULATION);
-			Integer countryPopulation = country.get(Country.POPULATION);
-			if (countryPopulation != null && cityPopulation > countryPopulation) {
-				throw new ValidationException(City.POPULATION,
-								cityPopulation, "City population can not exceed country population");
+		public <T> void validate(Entity city, Attribute<T> attribute) {
+			super.validate(city, attribute);
+			if (attribute.equals(City.POPULATION)) {
+				// population is guaranteed to be non-null after the call to super.validate()
+				Integer cityPopulation = city.get(City.POPULATION);
+				if (city.isNotNull(City.COUNTRY_FK)) {
+					Entity country = city.get(City.COUNTRY_FK);
+					Integer countryPopulation = country.get(Country.POPULATION);
+					if (countryPopulation != null && cityPopulation > countryPopulation) {
+						throw new ValidationException(City.POPULATION,
+										cityPopulation, "City population can not exceed country population");
+					}
+				}
 			}
 		}
 	}

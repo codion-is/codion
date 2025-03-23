@@ -20,8 +20,10 @@ package is.codion.swing.common.ui.component.builder;
 
 import is.codion.common.observable.Observable;
 import is.codion.common.state.ObservableState;
+import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.button.MenuBuilder;
+import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
 import is.codion.swing.common.ui.component.scrollpane.ScrollPaneBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
@@ -98,7 +100,10 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	private Color foreground;
 	private Color background;
 	private ComponentOrientation componentOrientation;
+	private ValidIndicatorFactory validIndicatorFactory = ValidIndicatorFactory.instance();
 	private ObservableState enabledObservable;
+	private ObservableState validObservable;
+	private Consumer<T> validator;
 	private boolean enabled = true;
 	private Function<C, JPopupMenu> popupMenu;
 	private T value;
@@ -218,6 +223,24 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	@Override
 	public final B enabled(ObservableState enabled) {
 		this.enabledObservable = enabled;
+		return self();
+	}
+
+	@Override
+	public final B validIndicatorFactory(ValidIndicatorFactory validIndicatorFactory) {
+		this.validIndicatorFactory = validIndicatorFactory;
+		return self();
+	}
+
+	@Override
+	public final B validIndicator(ObservableState valid) {
+		this.validObservable = valid;
+		return self();
+	}
+
+	@Override
+	public final B validIndicator(Consumer<T> validator) {
+		this.validator = validator;
 		return self();
 	}
 
@@ -487,6 +510,17 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		TransferFocusOnEnter.enable(component);
 	}
 
+	/**
+	 * Enables a valid indicator on the given component, based on the given valid state instance
+	 * using the given {@link ValidIndicatorFactory}, override for special handling.
+	 * @param validIndicatorFactory the {@link ValidIndicatorFactory} to use
+	 * @param component the component
+	 * @param valid the valid state to indicate
+	 */
+	protected void enableValidIndicator(ValidIndicatorFactory validIndicatorFactory, C component, ObservableState valid) {
+		validIndicatorFactory.enable(component, valid);
+	}
+
 	protected final B self() {
 		return (B) this;
 	}
@@ -560,6 +594,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		if (label != null) {
 			label.setLabelFor(component);
 		}
+		configureValidIndicator(componentValue);
 		keyEventBuilders.forEach(keyEventBuilder -> keyEventBuilder.enable(component));
 		focusListeners.forEach(component::addFocusListener);
 		mouseListeners.forEach(component::addMouseListener);
@@ -573,6 +608,18 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		buildValueConsumers.forEach(consumer -> consumer.accept(componentValue));
 
 		return component;
+	}
+
+	private void configureValidIndicator(ComponentValue<T, C> componentValue) {
+		if (validIndicatorFactory == null) {
+			return;
+		}
+		if (validObservable != null) {
+			enableValidIndicator(validIndicatorFactory, componentValue.component(), validObservable);
+		}
+		else if (validator != null) {
+			enableValidIndicator(validIndicatorFactory, componentValue.component(), createValidState(componentValue, validator));
+		}
 	}
 
 	private void setSizes(C component) {
@@ -602,6 +649,37 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		}
 
 		return value;
+	}
+
+	private static <T, C extends JComponent> ObservableState createValidState(ComponentValue<T, C> componentValue,
+																																						Consumer<T> validator) {
+		ValidationConsumer<T> validationConsumer = new ValidationConsumer<>(componentValue.get(), validator);
+		componentValue.addConsumer(validationConsumer);
+
+		return validationConsumer.valid.observable();
+	}
+
+	private static final class ValidationConsumer<T> implements Consumer<T> {
+
+		private final Consumer<T> validator;
+		private final State valid;
+
+		private ValidationConsumer(T initialValue, Consumer<T> validator) {
+			this.validator = validator;
+			this.valid = State.state();
+			accept(initialValue);
+		}
+
+		@Override
+		public void accept(T value) {
+			try {
+				validator.accept(value);
+				valid.set(true);
+			}
+			catch (IllegalArgumentException e) {
+				valid.set(false);
+			}
+		}
 	}
 
 	private static final class SetToolTipText implements Consumer<String> {

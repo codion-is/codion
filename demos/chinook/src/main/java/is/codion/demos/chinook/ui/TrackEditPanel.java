@@ -18,6 +18,7 @@
  */
 package is.codion.demos.chinook.ui;
 
+import is.codion.demos.chinook.ui.DurationComponentValue.DurationPanel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
 import is.codion.swing.common.ui.key.KeyEvents;
@@ -63,8 +64,8 @@ public final class TrackEditPanel extends EntityEditPanel {
 		createTextFieldPanel(Track.COMPOSER)
 						.columns(12);
 
-		DurationComponentValue durationValue = createDurationValue();
-		component(Track.MILLISECONDS).set(durationValue.component());
+		DurationPanel durationPanel = createDurationPanel();
+		component(Track.MILLISECONDS).set(durationPanel);
 
 		createIntegerField(Track.BYTES)
 						.columns(6);
@@ -78,9 +79,9 @@ public final class TrackEditPanel extends EntityEditPanel {
 						.add(createInputPanel(Track.MEDIATYPE_FK))
 						.build();
 
-		JPanel durationPanel = gridLayoutPanel(1, 2)
+		JPanel durationInputPanel = gridLayoutPanel(1, 2)
 						.add(createInputPanel(Track.BYTES))
-						.add(durationValue.component())
+						.add(durationPanel)
 						.build();
 
 		JPanel unitPricePanel = borderLayoutPanel()
@@ -93,7 +94,7 @@ public final class TrackEditPanel extends EntityEditPanel {
 		addInputPanel(Track.NAME);
 		add(genreMediaTypePanel);
 		addInputPanel(Track.COMPOSER);
-		add(durationPanel);
+		add(durationInputPanel);
 		add(unitPricePanel);
 	}
 
@@ -105,14 +106,8 @@ public final class TrackEditPanel extends EntityEditPanel {
 		return new GenreEditPanel(new SwingEntityEditModel(Genre.TYPE, editModel().connectionProvider()));
 	}
 
-	private DurationComponentValue createDurationValue() {
-		DurationComponentValue durationValue = new DurationComponentValue();
-		addValidator(Track.MILLISECONDS, durationValue.component().minutesField);
-		addValidator(Track.MILLISECONDS, durationValue.component().secondsField);
-		addValidator(Track.MILLISECONDS, durationValue.component().millisecondsField);
-		durationValue.link(editModel().editor().value(Track.MILLISECONDS));
-
-		return durationValue;
+	private DurationPanel createDurationPanel() {
+		return new DurationComponentValue(editModel().editor().value(Track.MILLISECONDS)).component();
 	}
 
 	private void addKeyEvents() {

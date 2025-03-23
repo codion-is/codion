@@ -18,6 +18,8 @@
  */
 package is.codion.demos.chinook.ui;
 
+import is.codion.common.state.ObservableState;
+import is.codion.framework.model.EntityEditModel.EditorValue;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 
@@ -37,11 +39,20 @@ import static java.util.ResourceBundle.getBundle;
 final class DurationComponentValue extends AbstractComponentValue<Integer, DurationComponentValue.DurationPanel> {
 
 	DurationComponentValue() {
-		this(false);
+		this(new DurationPanel(false, null));
+	}
+
+	DurationComponentValue(EditorValue<Integer> millisecondsValue) {
+		this(new DurationPanel(false, millisecondsValue.valid()));
+		link(millisecondsValue);
 	}
 
 	DurationComponentValue(boolean cellEditor) {
-		super(new DurationPanel(cellEditor));
+		this(new DurationPanel(cellEditor, null));
+	}
+
+	DurationComponentValue(DurationPanel panel) {
+		super(panel);
 		component().minutesField.observable().addListener(this::notifyListeners);
 		component().secondsField.observable().addListener(this::notifyListeners);
 		component().millisecondsField.observable().addListener(this::notifyListeners);
@@ -49,6 +60,13 @@ final class DurationComponentValue extends AbstractComponentValue<Integer, Durat
 
 	@Override
 	protected Integer getComponentValue() {
+		Integer minutes = component().minutesField.get();
+		Integer seconds = component().secondsField.get();
+		Integer milliseconds = component().millisecondsField.get();
+		if (minutes == null && seconds == null && milliseconds == null) {
+			return null;
+		}
+
 		return (int) ofMinutes(component().minutesField.optional().orElse(0))
 						.plusSeconds(component().secondsField.optional().orElse(0))
 						.plusMillis(component().millisecondsField.optional().orElse(0))
@@ -98,11 +116,12 @@ final class DurationComponentValue extends AbstractComponentValue<Integer, Durat
 		final NumberField<Integer> secondsField;
 		final NumberField<Integer> millisecondsField;
 
-		private DurationPanel(boolean cellEditor) {
+		private DurationPanel(boolean cellEditor, ObservableState valid) {
 			super(borderLayout());
 			minutesField = integerField()
 							.transferFocusOnEnter(true)
 							.selectAllOnFocusGained(true)
+							.validIndicator(valid)
 							.columns(2)
 							.build();
 			secondsField = integerField()
@@ -110,6 +129,7 @@ final class DurationComponentValue extends AbstractComponentValue<Integer, Durat
 							.transferFocusOnEnter(true)
 							.selectAllOnFocusGained(true)
 							.silentValidation(true)
+							.validIndicator(valid)
 							.columns(2)
 							.build();
 			millisecondsField = integerField()
@@ -117,6 +137,7 @@ final class DurationComponentValue extends AbstractComponentValue<Integer, Durat
 							.transferFocusOnEnter(!cellEditor)
 							.selectAllOnFocusGained(true)
 							.silentValidation(true)
+							.validIndicator(valid)
 							.columns(3)
 							.build();
 			if (cellEditor) {

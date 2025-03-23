@@ -19,11 +19,13 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.resource.MessageBundle;
+import is.codion.common.state.ObservableState;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.button.ButtonPanelBuilder;
+import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.CommandControl;
@@ -413,6 +415,12 @@ public final class TextFieldPanel extends JPanel {
 		@Override
 		protected void enableTransferFocusOnEnter(TextFieldPanel component) {
 			component.transferFocusOnEnter(true);
+		}
+
+		@Override
+		protected void enableValidIndicator(ValidIndicatorFactory validIndicatorFactory,
+																				TextFieldPanel component, ObservableState valid) {
+			validIndicatorFactory.enable(component.textField, valid);
 		}
 	}
 

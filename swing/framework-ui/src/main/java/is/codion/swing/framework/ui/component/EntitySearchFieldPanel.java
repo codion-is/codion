@@ -18,10 +18,12 @@
  */
 package is.codion.swing.framework.ui.component;
 
+import is.codion.common.state.ObservableState;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.key.TransferFocusOnEnter;
@@ -447,6 +449,12 @@ public final class EntitySearchFieldPanel extends JPanel {
 		protected void enableTransferFocusOnEnter(EntitySearchFieldPanel component) {
 			TransferFocusOnEnter.enable(component.searchField());
 			component.buttons.forEach(TransferFocusOnEnter::enable);
+		}
+
+		@Override
+		protected void enableValidIndicator(ValidIndicatorFactory validIndicatorFactory,
+																				EntitySearchFieldPanel component, ObservableState valid) {
+			validIndicatorFactory.enable(component.searchField, valid);
 		}
 
 		private EntitySearchField createSearchField() {

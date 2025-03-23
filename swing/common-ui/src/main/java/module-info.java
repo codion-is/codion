@@ -59,6 +59,7 @@ module is.codion.swing.common.ui {
 	exports is.codion.swing.common.ui.component.tabbedpane;
 	exports is.codion.swing.common.ui.component.table;
 	exports is.codion.swing.common.ui.component.text;
+	exports is.codion.swing.common.ui.component.indicator;
 	exports is.codion.swing.common.ui.component.value;
 	exports is.codion.swing.common.ui.border;
 	exports is.codion.swing.common.ui.control;
@@ -69,7 +70,10 @@ module is.codion.swing.common.ui {
 	exports is.codion.swing.common.ui.layout;
 
 	uses is.codion.swing.common.ui.laf.LookAndFeelProvider;
+	uses is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
 
 	provides is.codion.swing.common.ui.laf.LookAndFeelProvider
 					with is.codion.swing.common.ui.laf.PlatformLookAndFeelProvider;
+	provides is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory
+					with is.codion.swing.common.ui.component.indicator.DefaultValidIndicatorFactory;
 }

@@ -28,6 +28,7 @@ import is.codion.swing.common.model.component.combobox.FilterComboBoxModel.ItemF
 import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.combobox.Completion;
+import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -46,11 +47,13 @@ import javax.swing.SwingConstants;
 import javax.swing.TransferHandler;
 import java.awt.BorderLayout;
 import java.awt.datatransfer.DataFlavor;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
@@ -102,7 +105,7 @@ public final class ApplicationPanel extends JPanel {
 						.maximumLength(20)
 						.selectAllOnFocusGained(true)
 						.transferFocusOnEnter(true)
-						.validator(new PGValidator())
+						.validIndicator(new PGValidator())
 						.selector(new StringSelector())
 						.label(label("Short String (1)")
 										.displayedMnemonic('1')
@@ -173,6 +176,7 @@ public final class ApplicationPanel extends JPanel {
 										.build()
 										.dateTimePattern())
 						.transferFocusOnEnter(true)
+						.validIndicator(new LocalDateValidator())
 						.label(label("Date (6)")
 										.displayedMnemonic('6')
 										.build(inputPanel::add))
@@ -334,17 +338,17 @@ public final class ApplicationPanel extends JPanel {
 		Sizes.setPreferredWidth(this, 400);
 	}
 
-	private static class PGValidator implements Value.Validator<String> {
+	private static class PGValidator implements Consumer<String> {
 
 		private static final List<String> SWEAR_WORDS = List.of("fuck", "shit");
 
 		@Override
-		public void validate(String value) {
+		public void accept(String value) {
 			if (value != null) {
 				String lowerCaseValue = value.toLowerCase();
 				SWEAR_WORDS.forEach(swearWord -> {
 					if (lowerCaseValue.contains(swearWord)) {
-						throw new IllegalArgumentException("No swearing please");
+						throw new IllegalArgumentException();
 					}
 				});
 			}
@@ -389,6 +393,16 @@ public final class ApplicationPanel extends JPanel {
 		}
 	}
 
+	private static final class LocalDateValidator implements Consumer<LocalDate> {
+
+		@Override
+		public void accept(LocalDate localDate) {
+			if (localDate == null || localDate.isBefore(LocalDate.now())) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
 	private static final class IntegerItemFinder implements ItemFinder<Item<Integer>, Integer> {
 
 		@Override
@@ -414,6 +428,8 @@ public final class ApplicationPanel extends JPanel {
 	public static void main(String[] args) {
 		findLookAndFeel(MonokaiPro.class)
 						.ifPresent(LookAndFeelEnabler::enable);
+
+		ValidIndicatorFactory.FACTORY_CLASS.set("is.codion.plugin.flatlaf.indicator.FlatLafValidIndicatorFactory");
 
 		ApplicationModel applicationModel = new ApplicationModel();
 

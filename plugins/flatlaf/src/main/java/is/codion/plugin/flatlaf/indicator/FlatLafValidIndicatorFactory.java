@@ -14,18 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2023 - 2025, Björn Darri Sigurðsson.
+ * Copyright (c) 2025, Björn Darri Sigurðsson.
  */
-/**
- * Flat Look and Feel
- */
-module is.codion.plugin.flatlaf {
-	requires java.desktop;
-	requires is.codion.swing.common.ui;
-	requires transitive com.formdev.flatlaf;
+package is.codion.plugin.flatlaf.indicator;
 
-	provides is.codion.swing.common.ui.laf.LookAndFeelProvider
-					with is.codion.plugin.flatlaf.FlatLookAndFeelProvider;
-	provides is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory
-					with is.codion.plugin.flatlaf.indicator.FlatLafValidIndicatorFactory;
+import is.codion.common.state.ObservableState;
+import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
+
+import javax.swing.JComponent;
+
+import static java.util.Objects.requireNonNull;
+
+public final class FlatLafValidIndicatorFactory implements ValidIndicatorFactory {
+
+	@Override
+	public void enable(JComponent component, ObservableState valid) {
+		new FlatLafValidIndicator(requireNonNull(component), requireNonNull(valid));
+	}
 }

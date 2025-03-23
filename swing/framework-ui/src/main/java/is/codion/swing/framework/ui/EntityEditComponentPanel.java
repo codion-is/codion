@@ -27,7 +27,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.model.EntityEditModel;
+import is.codion.framework.model.EntityEditModel.EditorValue;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
@@ -69,10 +69,7 @@ import javax.swing.ListModel;
 import javax.swing.SpinnerListModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.text.JTextComponent;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.KeyboardFocusManager;
@@ -93,7 +90,6 @@ import java.util.function.Supplier;
 
 import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.Configuration.integerValue;
-import static is.codion.swing.common.ui.Colors.darker;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
@@ -104,6 +100,17 @@ import static java.util.Objects.requireNonNull;
  * A base class for entity edit panels, managing the components used for editing entities.
  */
 public class EntityEditComponentPanel extends JPanel {
+
+	/**
+	 * Specifies whether components should indicate the validity of their current value
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 * @see is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory
+	 */
+	public static final PropertyValue<Boolean> VALID_INDICATOR =
+					booleanValue(EntityEditComponentPanel.class.getName() + ".validIndicator", true);
 
 	/**
 	 * Specifies whether label text should be underlined to indicate that the associated value is modified
@@ -150,6 +157,7 @@ public class EntityEditComponentPanel extends JPanel {
 	private final InputFocus inputFocus;
 
 	private final State modifiedIndicator = State.state(MODIFIED_INDICATOR.getOrThrow());
+	private final State validIndicator = State.state(VALID_INDICATOR.getOrThrow());
 
 	private final Defaults defaults = new Defaults();
 
@@ -238,6 +246,19 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final State modifiedIndicator() {
 		return modifiedIndicator;
+	}
+
+	/**
+	 * If set to true then components will indicate whether the current value is valid.
+	 * This applies to all components created by this edit component panel as well as
+	 * components set via {@link #component(Attribute)}
+	 * Note that changing this has no effect on components that have already been created.
+	 * @return the {@link State} controlling whether components indicate if the current value is valid
+	 * @see #VALID_INDICATOR
+	 * @see is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory
+	 */
+	protected final State validIndicator() {
+		return validIndicator;
 	}
 
 	/**
@@ -380,8 +401,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a text area builder
 	 */
 	protected final TextAreaBuilder createTextArea(Attribute<String> attribute) {
-		return setComponentBuilder(attribute, entityComponents.textArea(attribute)
-						.onBuild(textArea -> addValidator(attribute, textArea)));
+		return setComponentBuilder(attribute, entityComponents.textArea(attribute));
 	}
 
 	/**
@@ -391,8 +411,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final TextFieldPanel.Builder createTextFieldPanel(Attribute<String> attribute) {
 		return setComponentBuilder(attribute, entityComponents.textFieldPanel(attribute)
-						.columns(defaults.textFieldColumns.getOrThrow())
-						.onBuild(inputPanel -> addValidator(attribute, inputPanel.textField())));
+						.columns(defaults.textFieldColumns.getOrThrow()));
 	}
 
 	/**
@@ -402,8 +421,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a text area builder
 	 */
 	protected final <T extends Temporal> TemporalFieldPanel.Builder<T> createTemporalFieldPanel(Attribute<T> attribute) {
-		return setComponentBuilder(attribute, entityComponents.temporalFieldPanel(attribute)
-						.onBuild(inputPanel -> addValidator(attribute, inputPanel.temporalField())));
+		return setComponentBuilder(attribute, entityComponents.temporalFieldPanel(attribute));
 	}
 
 	/**
@@ -416,8 +434,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> createTextField(Attribute<T> attribute) {
 		return setComponentBuilder(attribute, (TextFieldBuilder<T, C, B>) entityComponents.textField(attribute)
-						.columns(defaults.textFieldColumns.getOrThrow())
-						.onBuild(field -> addValidator(attribute, field)));
+						.columns(defaults.textFieldColumns.getOrThrow()));
 	}
 
 	/**
@@ -427,8 +444,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return an offset date time field builder
 	 */
 	protected final <T extends Temporal> TemporalField.Builder<T> createTemporalField(Attribute<T> attribute) {
-		return setComponentBuilder(attribute, entityComponents.temporalField(attribute)
-						.onBuild(field -> addValidator(attribute, field)));
+		return setComponentBuilder(attribute, entityComponents.temporalField(attribute));
 	}
 
 	/**
@@ -486,8 +502,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final NumberField.Builder<Integer> createIntegerField(Attribute<Integer> attribute) {
 		return setComponentBuilder(attribute, entityComponents.integerField(attribute)
-						.columns(defaults.textFieldColumns.getOrThrow())
-						.onBuild(field -> addValidator(attribute, field)));
+						.columns(defaults.textFieldColumns.getOrThrow()));
 	}
 
 	/**
@@ -497,8 +512,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final NumberField.Builder<Long> createLongField(Attribute<Long> attribute) {
 		return setComponentBuilder(attribute, entityComponents.longField(attribute)
-						.columns(defaults.textFieldColumns.getOrThrow())
-						.onBuild(field -> addValidator(attribute, field)));
+						.columns(defaults.textFieldColumns.getOrThrow()));
 	}
 
 	/**
@@ -508,8 +522,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final NumberField.Builder<Double> createDoubleField(Attribute<Double> attribute) {
 		return setComponentBuilder(attribute, entityComponents.doubleField(attribute)
-						.columns(defaults.textFieldColumns.getOrThrow())
-						.onBuild(field -> addValidator(attribute, field)));
+						.columns(defaults.textFieldColumns.getOrThrow()));
 	}
 
 	/**
@@ -519,8 +532,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final NumberField.Builder<BigDecimal> createBigDecimalField(Attribute<BigDecimal> attribute) {
 		return setComponentBuilder(attribute, entityComponents.bigDecimalField(attribute)
-						.columns(defaults.textFieldColumns.getOrThrow())
-						.onBuild(field -> addValidator(attribute, field)));
+						.columns(defaults.textFieldColumns.getOrThrow()));
 	}
 
 	/**
@@ -529,8 +541,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a formatted text field builder
 	 */
 	protected final MaskedTextFieldBuilder createMaskedTextField(Attribute<String> attribute) {
-		return setComponentBuilder(attribute, entityComponents.maskedTextField(attribute)
-						.onBuild(textField -> addValidator(attribute, textField)));
+		return setComponentBuilder(attribute, entityComponents.maskedTextField(attribute));
 	}
 
 	/**
@@ -549,8 +560,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a boolean combo box builder
 	 */
 	protected final ItemComboBoxBuilder<Boolean> createBooleanComboBox(Attribute<Boolean> attribute) {
-		return setComponentBuilder(attribute, entityComponents.booleanComboBox(attribute))
-						.onBuild(comboBox -> addValidator(attribute, comboBox));
+		return setComponentBuilder(attribute, entityComponents.booleanComboBox(attribute));
 	}
 
 	/**
@@ -564,8 +574,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> createComboBox(Attribute<T> attribute, ComboBoxModel<T> comboBoxModel) {
 		return (ComboBoxBuilder<T, C, B>) setComponentBuilder(attribute, entityComponents.comboBox(attribute, comboBoxModel)
-						.preferredWidth(defaults.comboBoxPreferredWidth.getOrThrow()))
-						.onBuild(comboBox -> addValidator(attribute, comboBox));
+						.preferredWidth(defaults.comboBoxPreferredWidth.getOrThrow()));
 	}
 
 	/**
@@ -576,8 +585,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final <T> ItemComboBoxBuilder<T> createItemComboBox(Attribute<T> attribute) {
 		return setComponentBuilder(attribute, entityComponents.itemComboBox(attribute)
-						.preferredWidth(defaults.itemComboBoxPreferredWidth.getOrThrow()))
-						.onBuild(comboBox -> addValidator(attribute, comboBox));
+						.preferredWidth(defaults.itemComboBoxPreferredWidth.getOrThrow()));
 	}
 
 	/**
@@ -594,8 +602,7 @@ public class EntityEditComponentPanel extends JPanel {
 
 		return (ComboBoxBuilder<T, C, B>) setComponentBuilder(column, entityComponents.comboBox(column, comboBoxModel)
 						.preferredWidth(defaults.comboBoxPreferredWidth.getOrThrow())
-						.onSetVisible(EntityEditComponentPanel::refreshIfCleared))
-						.onBuild(comboBox -> addValidator(column, comboBox));
+						.onSetVisible(EntityEditComponentPanel::refreshIfCleared));
 	}
 
 	/**
@@ -609,8 +616,7 @@ public class EntityEditComponentPanel extends JPanel {
 
 		return setComponentBuilder(foreignKey, entityComponents.comboBox(foreignKey, comboBoxModel)
 						.preferredWidth(defaults.entityComboBoxPreferredWidth.getOrThrow())
-						.onSetVisible(EntityEditComponentPanel::refreshIfCleared))
-						.onBuild(comboBox -> addValidator(foreignKey, comboBox));
+						.onSetVisible(EntityEditComponentPanel::refreshIfCleared));
 	}
 
 	/**
@@ -626,8 +632,7 @@ public class EntityEditComponentPanel extends JPanel {
 
 		return setComponentBuilder(foreignKey, entityComponents.comboBoxPanel(foreignKey, comboBoxModel, editPanel))
 						.comboBoxPreferredWidth(defaults.entityComboBoxPreferredWidth.getOrThrow())
-						.onSetVisible(entityComboBoxPanel -> refreshIfCleared(entityComboBoxPanel.comboBox()))
-						.onBuild(comboBoxPanel -> addValidator(foreignKey, comboBoxPanel.comboBox()));
+						.onSetVisible(entityComboBoxPanel -> refreshIfCleared(entityComboBoxPanel.comboBox()));
 	}
 
 	/**
@@ -691,26 +696,6 @@ public class EntityEditComponentPanel extends JPanel {
 						.labelFor(component(attribute).get());
 	}
 
-	/**
-	 * Adds a validator to the given text component
-	 * @param attribute the attribute of the value to validate
-	 * @param textComponent the text component
-	 * @param <T> the value type
-	 */
-	protected final <T> void addValidator(Attribute<T> attribute, JTextComponent textComponent) {
-		new ComponentValidator<>(attribute, textComponent, editModel, "TextField").validate();
-	}
-
-	/**
-	 * Adds a validator to the given combo box
-	 * @param attribute the attribute of the value to validate
-	 * @param comboBox the combo box
-	 * @param <T> the value type
-	 */
-	protected final <T> void addValidator(Attribute<T> attribute, JComboBox<?> comboBox) {
-		new ComponentValidator<>(attribute, comboBox, editModel, "ComboBox").validate();
-	}
-
 	protected final Map<Attribute<?>, Value<JComponent>> components() {
 		return unmodifiableMap(components);
 	}
@@ -721,11 +706,13 @@ public class EntityEditComponentPanel extends JPanel {
 		if (componentBuilders.containsKey(attribute) || !component(attribute).isNull()) {
 			throw new IllegalStateException("Component has already been created for attribute: " + attribute);
 		}
+		EditorValue<T> editorValue = editModel.editor().value(attribute);
 		componentBuilders.put(attribute, componentBuilder
 						.name(attribute.toString())
 						.transferFocusOnEnter(inputFocus.transferOnEnter.get())
-						.toolTipText(editModel.editor().value(attribute).message())
-						.link(editModel().editor().value(attribute))
+						.toolTipText(editorValue.message())
+						.validIndicator(validIndicator.get() ? editorValue.valid() : null)
+						.link(editorValue)
 						.onBuild(new SetComponent<>(attribute)));
 
 		return componentBuilder;
@@ -1161,55 +1148,6 @@ public class EntityEditComponentPanel extends JPanel {
 			Map<TextAttribute, Object> attributes = (Map<TextAttribute, Object>) font.getAttributes();
 			attributes.put(TextAttribute.INPUT_METHOD_UNDERLINE, modified ? UNDERLINE_STYLE : null);
 			label.setFont(font.deriveFont(attributes));
-		}
-	}
-
-	private static final class ComponentValidator<T> {
-
-		private final String uiComponentKey;
-		private final Attribute<T> attribute;
-		private final JComponent component;
-		private final EntityEditModel editModel;
-
-		private Color backgroundColor;
-		private Color inactiveBackgroundColor;
-		private Color invalidBackgroundColor;
-
-		/**
-		 * Instantiates a new ComponentValidator
-		 * @param attribute the attribute of the value to validate
-		 * @param component the component bound to the value
-		 * @param editModel the edit model handling the value editing
-		 */
-		private ComponentValidator(Attribute<T> attribute, JComponent component, EntityEditModel editModel,
-															 String uiComponentKey) {
-			this.attribute = attribute;
-			this.component = component;
-			this.editModel = editModel;
-			this.uiComponentKey = uiComponentKey;
-			editModel.editor().value(attribute).addListener(this::validate);
-			configureColors();
-			component.addPropertyChangeListener("UI", event -> configureColors());
-		}
-
-		/**
-		 * Updates the underlying component indicating the validity of the value being displayed
-		 */
-		private void validate() {
-			boolean enabled = component.isEnabled();
-			if (editModel.editor().value(attribute).valid().get()) {
-				component.setBackground(enabled ? backgroundColor : inactiveBackgroundColor);
-			}
-			else {
-				component.setBackground(invalidBackgroundColor);
-			}
-		}
-
-		private void configureColors() {
-			this.backgroundColor = UIManager.getColor(uiComponentKey + ".background");
-			this.inactiveBackgroundColor = UIManager.getColor(uiComponentKey + ".inactiveBackground");
-			this.invalidBackgroundColor = darker(backgroundColor);
-			validate();
 		}
 	}
 

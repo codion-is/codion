@@ -22,6 +22,7 @@ import is.codion.common.observable.Observable;
 import is.codion.common.state.ObservableState;
 import is.codion.common.value.Value;
 import is.codion.common.value.Value.Validator;
+import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
 import is.codion.swing.common.ui.component.scrollpane.ScrollPaneBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
@@ -195,6 +196,35 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 * @return this builder instance
 	 */
 	B enabled(ObservableState enabled);
+
+	/**
+	 * @param validIndicatorFactory the {@link ValidIndicatorFactory} to use, null for none
+	 * @return this builder instance
+	 * @see ValidIndicatorFactory#instance()
+	 */
+	B validIndicatorFactory(ValidIndicatorFactory validIndicatorFactory);
+
+	/**
+	 * Enables a valid indicator based on the given valid state.
+	 * @param valid the valid state
+	 * @return this builder instance
+	 * @see #validIndicatorFactory(ValidIndicatorFactory)
+	 * @see is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory
+	 *
+	 */
+	B validIndicator(ObservableState valid);
+
+	/**
+	 * <p>Enables a valid indicator based on the given validator. Note that this
+	 * is overridden by {@link #validIndicator(ObservableState)}.
+	 * <p>The validator gets called each time the value changes and should throw
+	 * an {@link IllegalArgumentException} in case the given value is invalid.
+	 * @param validator called each time the component value changes
+	 * @return this builder instance
+	 * @see #validIndicatorFactory(ValidIndicatorFactory)
+	 * @see is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory
+	 */
+	B validIndicator(Consumer<T> validator);
 
 	/**
 	 * @param popupMenuControl a function, receiving the component being built, providing the control to base a popup menu on
