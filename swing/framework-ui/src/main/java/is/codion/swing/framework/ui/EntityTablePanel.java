@@ -544,6 +544,7 @@ public class EntityTablePanel extends JPanel {
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
 		this.popupMenuLayout = createPopupMenuLayout();
 		this.toolBarLayout = createToolBarLayout();
+		initializeConditionsAndFilters();
 		createControls();
 		bindTableEvents();
 	}

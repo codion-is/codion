@@ -22,6 +22,7 @@ Codion Change Log
 - EntityPanel.Builder no longer implements equals() and hashCode() based on entityType, restricts entity panel caching to a single panel per entity type.
 - EntityEditComponentPanel, toolTip validation message split from ComponentValidator.
 - EntitySearchField.Builder.selectionToolTip() added, enabled by default for multi-selection instances.
+- EntityTablePanel bug fixed, both constructors now call initializeConditionsAndFilters().
 ### is.codion.framework.servlet
 - EntityService.USE_VIRTUAL_THREADS configuration value added.
 - EntityService now configures handlers before starting.
