@@ -1519,7 +1519,6 @@ public class EntityTablePanel extends JPanel {
 		Runnable setSelectAttributes = () -> tableModel.queryModel().attributes().set(selectAttributes());
 		table.columnModel().columnShown().addListener(setSelectAttributes);
 		table.columnModel().columnHidden().addListener(setSelectAttributes);
-		table.columnModel().columnHidden().addConsumer(this::onColumnHidden);
 		queryHiddenColumns.addListener(setSelectAttributes);
 	}
 
@@ -1748,12 +1747,6 @@ public class EntityTablePanel extends JPanel {
 
 	private boolean columnNotHidden(Attribute<?> attribute) {
 		return !table.columnModel().contains(attribute) || table.columnModel().visible(attribute).get();
-	}
-
-	private void onColumnHidden(Attribute<?> attribute) {
-		//disable the filter for the column to be hidden, to prevent confusion
-		tableModel.filters().optional(attribute)
-						.ifPresent(condition -> condition.enabled().set(false));
 	}
 
 	private void applyColumnPreferences(String preferencesString) {

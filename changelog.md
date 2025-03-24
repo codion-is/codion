@@ -24,6 +24,7 @@ Codion Change Log
 - EntitySearchField.Builder.selectionToolTip() added, enabled by default for multi-selection instances.
 - EntityTablePanel bug fixed, both constructors now call initializeConditionsAndFilters().
 - EntityTablePanel.updateUI() bug fixed, now includes editPanel.
+- EntityTablePanel, redundant disabling of filters on column hidden removed, handled by FilterTable.
 ### is.codion.framework.servlet
 - EntityService.USE_VIRTUAL_THREADS configuration value added.
 - EntityService now configures handlers before starting.
