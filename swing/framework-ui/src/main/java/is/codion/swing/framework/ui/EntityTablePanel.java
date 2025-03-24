@@ -1516,7 +1516,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void bindTableEvents() {
-		Runnable setSelectAttributes = () -> tableModel.queryModel().attributes().set(selectAttributes());
+		Runnable setSelectAttributes = () -> tableModel.queryModel().attributes().included().set(selectAttributes());
 		table.columnModel().columnShown().addListener(setSelectAttributes);
 		table.columnModel().columnHidden().addListener(setSelectAttributes);
 		queryHiddenColumns.addListener(setSelectAttributes);

@@ -32,6 +32,7 @@ import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.condition.Condition;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -45,7 +46,7 @@ import static is.codion.common.Configuration.integerValue;
  * tableModel.queryModel().query().set(queryModel -> {
  * 	 EntityConnection connection = queryModel.connectionProvider().connection();
  *
-	 return connection.select(Employee.NAME.equalTo("John"));
+ *   return connection.select(Employee.NAME.equalTo("John"));
  * });
  * }
  * @see #entityQueryModel(EntityTableConditionModel)
@@ -122,11 +123,9 @@ public interface EntityQueryModel extends Supplier<List<Entity>> {
 	ObservableState conditionChanged();
 
 	/**
-	 * Returns the {@link ValueSet} controlling which attributes are included when querying entities.
-	 * Note that an empty {@link ValueSet} indicates that the default select attributes should be used.
-	 * @return the {@link ValueSet} controlling the selected attributes
+	 * @return the {@link SelectAttributes} instance
 	 */
-	ValueSet<Attribute<?>> attributes();
+	SelectAttributes attributes();
 
 	/**
 	 * Returns the {@link Value} controlling the maximum number of rows to fetch, a null value means all rows should be fetched
@@ -177,5 +176,29 @@ public interface EntityQueryModel extends Supplier<List<Entity>> {
 		 * @return the {@link Value} controlling the {@link Conjunction} to use when adding the additional condition
 		 */
 		Value<Conjunction> conjunction();
+	}
+
+	/**
+	 * Manages the attributes to include when querying.
+	 */
+	interface SelectAttributes {
+
+		/**
+		 * Returns the {@link ValueSet} controlling which attributes are included when querying entities.
+		 * Note that an empty {@link ValueSet} indicates that the default select attributes should be used.
+		 * @return the {@link ValueSet} controlling the included attributes
+		 */
+		ValueSet<Attribute<?>> included();
+
+		/**
+		 * Returns the {@link ValueSet} controlling which attributes are excluded when querying entities.
+		 * @return the {@link ValueSet} controlling the excluded attributes
+		 */
+		ValueSet<Attribute<?>> excluded();
+
+		/**
+		 * @return the attributes to select, taking into account {@link #included()} and {@link #excluded()}
+		 */
+		Collection<Attribute<?>> get();
 	}
 }

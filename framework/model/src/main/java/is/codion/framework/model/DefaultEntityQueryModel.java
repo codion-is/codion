@@ -31,8 +31,12 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.condition.Condition;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -42,20 +46,21 @@ import java.util.function.Supplier;
 import static is.codion.framework.domain.entity.condition.Condition.combination;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 final class DefaultEntityQueryModel implements EntityQueryModel {
 
 	private static final Supplier<Condition> NULL_CONDITION_SUPPLIER = () -> null;
 
 	private final EntityTableConditionModel conditionModel;
+	private final EntityDefinition entityDefinition;
 	private final AdditionalCondition additionalWhere = new DefaultAdditionalCondition();
 	private final AdditionalCondition additionalHaving = new DefaultAdditionalCondition();
 	private final Value<ObservableState> conditionEnabled;
 	private final State conditionRequired = State.state();
 	private final State conditionChanged = State.state();
-	private final ValueSet<Attribute<?>> attributes = ValueSet.<Attribute<?>>builder()
-					.validator(new AttributeValidator())
-					.build();
+	private final DefaultSelectAttributes attributes = new DefaultSelectAttributes();
+
 	private final Value<OrderBy> orderBy;
 	private final Value<Integer> limit = Value.nullable(LIMIT.get());
 	private final Value<Function<EntityQueryModel, List<Entity>>> query = Value.nonNull(new DefaultQuery());
@@ -64,6 +69,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 
 	DefaultEntityQueryModel(EntityTableConditionModel conditionModel) {
 		this.conditionModel = requireNonNull(conditionModel);
+		this.entityDefinition = conditionModel.connectionProvider().entities().definition(conditionModel.entityType());
 		this.conditionEnabled = Value.nonNull(conditionModel.enabled());
 		this.orderBy = createOrderBy();
 		resetConditionChanged();
@@ -96,7 +102,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	}
 
 	@Override
-	public ValueSet<Attribute<?>> attributes() {
+	public SelectAttributes attributes() {
 		return attributes;
 	}
 
@@ -158,8 +164,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	}
 
 	private Value<OrderBy> createOrderBy() {
-		EntityDefinition definition = conditionModel.connectionProvider().entities().definition(conditionModel.entityType());
-		return definition.orderBy()
+		return entityDefinition.orderBy()
 						.map(Value::nonNull)
 						.orElse(Value.nullable());
 	}
@@ -225,6 +230,51 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 		@Override
 		public int hashCode() {
 			return Objects.hash(where, having);
+		}
+	}
+
+	private final class DefaultSelectAttributes implements SelectAttributes {
+
+		private final AttributeValidator attributeValidator = new AttributeValidator();
+
+		private final ValueSet<Attribute<?>> included = ValueSet.<Attribute<?>>builder()
+						.validator(attributeValidator)
+						.build();
+
+		private final ValueSet<Attribute<?>> excluded = ValueSet.<Attribute<?>>builder()
+						.validator(attributeValidator)
+						.build();
+
+		@Override
+		public ValueSet<Attribute<?>> included() {
+			return included;
+		}
+
+		@Override
+		public ValueSet<Attribute<?>> excluded() {
+			return excluded;
+		}
+
+		@Override
+		public Collection<Attribute<?>> get() {
+			if (included.isEmpty() && excluded.isEmpty()) {
+				return emptyList();
+			}
+
+			return entityDefinition.attributes().definitions().stream()
+							.filter(this::foreignKeyOrSelectedColumn)
+							.filter(attributeDefinition -> included.isEmpty() || included.contains(attributeDefinition.attribute()))
+							.filter(attributeDefinition -> !excluded.contains(attributeDefinition.attribute()))
+							.map(AttributeDefinition::attribute)
+							.collect(toList());
+		}
+
+		private boolean foreignKeyOrSelectedColumn(AttributeDefinition<?> attribute) {
+			if (attribute instanceof ForeignKeyDefinition) {
+				return true;
+			}
+
+			return attribute instanceof ColumnDefinition<?> && ((ColumnDefinition<?>) attribute).selected();
 		}
 	}
 

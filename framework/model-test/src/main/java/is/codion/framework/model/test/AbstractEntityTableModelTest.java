@@ -204,7 +204,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 	public void attributes() {
 		TableModel tableModel = createTableModel(Employee.TYPE, connectionProvider);
 		assertTrue(tableModel.queryModel().attributes().get().isEmpty());
-		tableModel.queryModel().attributes().addAll(Employee.NAME, Employee.HIREDATE);
+		tableModel.queryModel().attributes().included().addAll(Employee.NAME, Employee.HIREDATE);
 		tableModel.items().refresh();
 		assertTrue(tableModel.items().visible().count() > 0);
 		tableModel.items().get().forEach(employee -> {
@@ -213,7 +213,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 			assertTrue(employee.contains(Employee.NAME));
 			assertTrue(employee.contains(Employee.HIREDATE));
 		});
-		assertThrows(IllegalArgumentException.class, () -> tableModel.queryModel().attributes().add(Department.NAME));
+		assertThrows(IllegalArgumentException.class, () -> tableModel.queryModel().attributes().included().add(Department.NAME));
 	}
 
 	@Test
