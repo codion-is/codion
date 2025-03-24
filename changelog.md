@@ -26,6 +26,7 @@ Codion Change Log
 - EntityTablePanel bug fixed, both constructors now call initializeConditionsAndFilters().
 - EntityTablePanel.updateUI() bug fixed, now includes editPanel.
 - EntityTablePanel, redundant disabling of filters on column hidden removed, handled by FilterTable.
+- EntityTablePanel.Config.QUERY_HIDDEN_COLUMNS replaced with EXCLUDE_HIDDEN_COLUMNS, EntityTablePanel.queryHiddenColumns() removed.
 ### is.codion.framework.servlet
 - EntityService.USE_VIRTUAL_THREADS configuration value added.
 - EntityService now configures handlers before starting.

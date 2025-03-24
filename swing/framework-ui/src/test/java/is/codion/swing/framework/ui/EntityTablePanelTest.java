@@ -54,9 +54,8 @@ public class EntityTablePanelTest {
 					.build();
 
 	@Test
-	void queryHiddenColumns() {
+	void excludeHiddenColumns() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER);
-		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
 		tableModel.items().refresh();
 		tableModel.items().get().forEach(employee -> {
 			assertTrue(employee.contains(Employee.ID));
@@ -66,8 +65,8 @@ public class EntityTablePanelTest {
 			assertTrue(employee.contains(Employee.HIREDATE));
 			assertTrue(employee.contains(Employee.JOB));
 		});
+		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.excludeHiddenColumns(true));
 		tablePanel.table().columnModel().visible().set(Employee.ID, Employee.NAME, Employee.COMMISSION);
-		tablePanel.queryHiddenColumns().set(false);
 		tableModel.items().refresh();
 		tableModel.items().get().forEach(employee -> {
 			assertTrue(employee.contains(Employee.ID));

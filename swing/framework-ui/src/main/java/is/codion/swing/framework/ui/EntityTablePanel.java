@@ -150,7 +150,6 @@ import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
@@ -463,7 +462,6 @@ public class EntityTablePanel extends JPanel {
 	private static final Consumer<Config> NO_CONFIGURATION = c -> {};
 
 	private final State summaryPanelVisibleState = State.state(Config.SUMMARY_PANEL_VISIBLE.getOrThrow());
-	private final State queryHiddenColumns = State.state(Config.QUERY_HIDDEN_COLUMNS.getOrThrow());
 
 	private final FilterTable<Entity, Attribute<?>> table;
 	private final JScrollPane tableScrollPane = new JScrollPane();
@@ -516,7 +514,7 @@ public class EntityTablePanel extends JPanel {
 		this.toolBarLayout = createToolBarLayout();
 		initializeConditionsAndFilters();
 		createControls();
-		bindTableEvents();
+		configureExcludedColumns();
 	}
 
 	/**
@@ -546,7 +544,7 @@ public class EntityTablePanel extends JPanel {
 		this.toolBarLayout = createToolBarLayout();
 		initializeConditionsAndFilters();
 		createControls();
-		bindTableEvents();
+		configureExcludedColumns();
 	}
 
 	@Override
@@ -592,14 +590,6 @@ public class EntityTablePanel extends JPanel {
 	 */
 	public final State summaryPanelVisible() {
 		return summaryPanelVisibleState;
-	}
-
-	/**
-	 * Returns whether the values of hidden columns are included when querying data
-	 * @return the {@link State} controlling whether the values of hidden columns are included when querying data
-	 */
-	public final State queryHiddenColumns() {
-		return queryHiddenColumns;
 	}
 
 	/**
@@ -1515,11 +1505,12 @@ public class EntityTablePanel extends JPanel {
 		conditionPanel.components().forEach(this::enableConditionPanelRefreshOnEnter);
 	}
 
-	private void bindTableEvents() {
-		Runnable setSelectAttributes = () -> tableModel.queryModel().attributes().included().set(selectAttributes());
-		table.columnModel().columnShown().addListener(setSelectAttributes);
-		table.columnModel().columnHidden().addListener(setSelectAttributes);
-		queryHiddenColumns.addListener(setSelectAttributes);
+	private void configureExcludedColumns() {
+		if (configuration.excludeHiddenColumns) {
+			table.columnModel().columnShown().addListener(this::excludeHiddenColumns);
+			table.columnModel().columnHidden().addListener(this::excludeHiddenColumns);
+			excludeHiddenColumns();
+		}
 	}
 
 	private void bindEvents() {
@@ -1734,19 +1725,8 @@ public class EntityTablePanel extends JPanel {
 		}
 	}
 
-	private Collection<Attribute<?>> selectAttributes() {
-		FilterTableColumnModel<Attribute<?>> columnModel = table.columnModel();
-		if (queryHiddenColumns.get() || columnModel.hidden().get().isEmpty()) {
-			return emptyList();
-		}
-
-		return tableModel.entityDefinition().attributes().selected().stream()
-						.filter(this::columnNotHidden)
-						.collect(toList());
-	}
-
-	private boolean columnNotHidden(Attribute<?> attribute) {
-		return !table.columnModel().contains(attribute) || table.columnModel().visible(attribute).get();
+	private void excludeHiddenColumns() {
+		tableModel.queryModel().attributes().excluded().set(table.columnModel().hidden().get());
 	}
 
 	private void applyColumnPreferences(String preferencesString) {
@@ -2005,13 +1985,13 @@ public class EntityTablePanel extends JPanel {
 	public static final class Config {
 
 		/**
-		 * Specifies whether the values of hidden columns are included in the underlying query
+		 * Specifies whether the values of hidden columns should be excluded in the underlying query
 		 * <ul>
 		 * <li>Value type: Boolean
-		 * <li>Default value: true
+		 * <li>Default value: false
 		 * </ul>
 		 */
-		public static final PropertyValue<Boolean> QUERY_HIDDEN_COLUMNS = booleanValue(EntityTablePanel.class.getName() + ".queryHiddenColumns", true);
+		public static final PropertyValue<Boolean> EXCLUDE_HIDDEN_COLUMNS = booleanValue(EntityTablePanel.class.getName() + ".excludeHiddenColumns", false);
 
 		/**
 		 * Specifies the default initial table condition panel view
@@ -2240,6 +2220,7 @@ public class EntityTablePanel extends JPanel {
 		private boolean includeEditControl = true;
 		private boolean includeEditAttributeControl = true;
 		private boolean includeToolBar = true;
+		private boolean excludeHiddenColumns = EXCLUDE_HIDDEN_COLUMNS.getOrThrow();
 		private ColumnSelection columnSelection = COLUMN_SELECTION.get();
 		private AutoResizeModeSelection autoResizeModeSelection = AUTO_RESIZE_MODE_SELECTION.get();
 		private EditAttributeSelection editAttributeSelection = EDIT_ATTRIBUTE_SELECTION.get();
@@ -2303,6 +2284,7 @@ public class EntityTablePanel extends JPanel {
 			this.includeToolBar = config.includeToolBar;
 			this.conditionPanelFactory = config.conditionPanelFactory;
 			this.conditionComponentFactories = new HashMap<>(config.conditionComponentFactories);
+			this.excludeHiddenColumns = config.excludeHiddenColumns;
 		}
 
 		/**
@@ -2638,6 +2620,16 @@ public class EntityTablePanel extends JPanel {
 		 */
 		public Config refreshProgressBar(boolean refreshProgressBar) {
 			this.refreshProgressBar = refreshProgressBar;
+			return this;
+		}
+
+		/**
+		 * Specifies whether the values of hidden columns are excluded when querying data
+		 * @return this Config instance
+		 * @see #EXCLUDE_HIDDEN_COLUMNS
+		 */
+		public Config excludeHiddenColumns(boolean excludeHiddenColumns) {
+			this.excludeHiddenColumns = excludeHiddenColumns;
 			return this;
 		}
 
