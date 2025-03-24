@@ -23,6 +23,7 @@ Codion Change Log
 - EntityEditComponentPanel, toolTip validation message split from ComponentValidator.
 - EntitySearchField.Builder.selectionToolTip() added, enabled by default for multi-selection instances.
 - EntityTablePanel bug fixed, both constructors now call initializeConditionsAndFilters().
+- EntityTablePanel.updateUI() bug fixed, now includes editPanel.
 ### is.codion.framework.servlet
 - EntityService.USE_VIRTUAL_THREADS configuration value added.
 - EntityService now configures handlers before starting.

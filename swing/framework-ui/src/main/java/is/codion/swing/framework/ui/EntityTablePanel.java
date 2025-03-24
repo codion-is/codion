@@ -552,7 +552,7 @@ public class EntityTablePanel extends JPanel {
 	@Override
 	public void updateUI() {
 		super.updateUI();
-		Utilities.updateUI(conditionPanelScrollPane, filterPanelScrollPane, tableConditionPanel);
+		Utilities.updateUI(conditionPanelScrollPane, filterPanelScrollPane, tableConditionPanel, editPanel);
 	}
 
 	/**
