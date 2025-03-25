@@ -10,7 +10,7 @@ buildscript {
 }
 
 plugins {
-    id("org.sonarqube") version "6.0.1.5171"
+    id("org.sonarqube") version "6.1.0.5360"
     id("com.github.ben-manes.versions") version "0.52.0"
     id("com.vanniktech.dependency.graph.generator") version "0.8.0"
     id("com.diffplug.spotless") version "7.0.2"
