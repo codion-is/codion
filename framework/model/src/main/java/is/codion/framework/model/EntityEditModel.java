@@ -306,32 +306,32 @@ public interface EntityEditModel {
 	DeleteEntities createDelete(Collection<Entity> entities);
 
 	/**
-	 * @return an observer notified before an insert is performed, after validation
+	 * @return an observer notified before insert is performed, after validation
 	 */
 	Observer<Collection<Entity>> beforeInsert();
 
 	/**
-	 * @return an observer notified after an insert is performed
+	 * @return an observer notified after insert is performed
 	 */
 	Observer<Collection<Entity>> afterInsert();
 
 	/**
-	 * @return an observer notified before an update is performed, after validation
+	 * @return an observer notified before update is performed, after validation
 	 */
 	Observer<Collection<Entity>> beforeUpdate();
 
 	/**
-	 * @return an observer notified after an update is performed
+	 * @return an observer notified after update is performed
 	 */
 	Observer<Map<Entity, Entity>> afterUpdate();
 
 	/**
-	 * @return an observer notified before a delete is performed
+	 * @return an observer notified before delete is performed
 	 */
 	Observer<Collection<Entity>> beforeDelete();
 
 	/**
-	 * @return an observer notified after a delete is performed
+	 * @return an observer notified after delete is performed
 	 */
 	Observer<Collection<Entity>> afterDelete();
 
@@ -348,7 +348,7 @@ public interface EntityEditModel {
 	}
 
 	/**
-	 * Provides edit access to the underlying entity being edited.
+	 * Provides edit access to the underlying entity.
 	 */
 	interface EntityEditor extends Observable<Entity> {
 
@@ -421,7 +421,7 @@ public interface EntityEditModel {
 
 		/**
 		 * Returns an observer notified each time a value is changed, either via its associated {@link EditorValue}
-		 * instance or when the entity is set via {@link #set(Entity)} or {@link #defaults()}.
+		 * instance or when the entity is set via {@link #clear()}, {@link #set(Entity)} or {@link #defaults()}.
 		 * @return an observer notified each time a value is changed
 		 */
 		Observer<Attribute<?>> valueChanged();

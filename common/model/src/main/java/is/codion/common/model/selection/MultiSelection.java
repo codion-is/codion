@@ -122,7 +122,7 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 	}
 
 	/**
-	 * Manages the the selected items.
+	 * Manages the selected items.
 	 * @param <R> the item type
 	 */
 	interface Items<R> extends Value<List<R>> {

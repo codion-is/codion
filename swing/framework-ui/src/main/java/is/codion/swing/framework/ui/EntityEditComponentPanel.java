@@ -831,7 +831,7 @@ public class EntityEditComponentPanel extends JPanel {
 			private Initial() {}
 
 			/**
-			 * <p>Sets the the component that should receive the focus when this edit panel is cleared or activated.
+			 * <p>Sets the component that should receive the focus when this edit panel is cleared or activated.
 			 * @param component the component that should receive the focus when this edit panel is cleared or activated
 			 */
 			public void set(JComponent component) {

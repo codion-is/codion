@@ -140,7 +140,7 @@ public final class InvoiceEditPanel extends EntityEditPanel {
 		@Override
 		public Selector apply(EntitySearchField searchField) {
 			// We use the TableSelector, provided by EntitySearchField,
-			// configuring the the visible table columns, the sorting and size
+			// configuring the visible table columns, the sorting and size
 			TableSelector selector = EntitySearchField.tableSelector(searchField);
 			selector.table().columnModel().visible().set(Customer.LASTNAME, Customer.FIRSTNAME, Customer.EMAIL);
 			selector.table().model().sorter().ascending(Customer.LASTNAME, Customer.FIRSTNAME);

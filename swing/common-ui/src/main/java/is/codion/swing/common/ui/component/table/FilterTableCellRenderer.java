@@ -382,7 +382,7 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 		protected DefaultUISettings() {}
 
 		/**
-		 * Updates the colors according the the selected look and feel
+		 * Updates the colors according to the selected look and feel
 		 */
 		@Override
 		public void update(int leftPadding, int rightPadding) {

@@ -52,7 +52,7 @@ public interface InputDialogBuilder<T> extends DialogBuilder<InputDialogBuilder<
 	/**
 	 * Shows the input dialog and calls {@code closeDialog} with the current
 	 * input when OK is pressed, closing the dialog if the predicate returns true.
-	 * @param closeDialog called with the current input to determine if the the dialog should be closed
+	 * @param closeDialog called with the current input to determine if the dialog should be closed
 	 */
 	void show(Predicate<T> closeDialog);
 

@@ -33,13 +33,13 @@ import java.util.function.Consumer;
 public interface ComponentDialogBuilder extends DialogBuilder<ComponentDialogBuilder> {
 
 	/**
-	 * @param modal true if the dialog should be modal
+	 * @param modal true if the dialog should be modal, default true
 	 * @return this DialogBuilder instance
 	 */
 	ComponentDialogBuilder modal(boolean modal);
 
 	/**
-	 * @param resizable true if the dialog should be resizable
+	 * @param resizable true if the dialog should be resizable, default true
 	 * @return this DialogBuilder instance
 	 */
 	ComponentDialogBuilder resizable(boolean resizable);

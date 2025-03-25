@@ -88,8 +88,8 @@ public final class FilterTableModelDemo {
 		// row since the row objects are records and thereby immutable
 		private final VisibleItems<Person> items;
 
-		private PersonEditor(FilterTableModel<Person, String> table) {
-			this.items = table.items().visible();
+		private PersonEditor(FilterTableModel<Person, String> tableModel) {
+			this.items = tableModel.items().visible();
 		}
 
 		@Override

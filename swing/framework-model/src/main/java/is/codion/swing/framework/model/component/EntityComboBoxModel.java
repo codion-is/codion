@@ -47,7 +47,7 @@ import static is.codion.common.Configuration.booleanValue;
 public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 
 	/**
-	 * Specifies whether entity combo box models handle entity edit events, by replacing updated entities and removing deleted ones
+	 * Specifies whether entity combo box models handle entity edit events, by adding new entities, replacing updated and removing deleted ones
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true

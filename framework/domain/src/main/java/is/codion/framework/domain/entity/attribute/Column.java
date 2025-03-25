@@ -224,7 +224,7 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
 	/**
 	 * Converts to and from SQL values, such as integers being used to represent booleans in a database.
 	 * <p>
-	 * By default a {@link Converter} is not expected to handle null values, with null values automatically converted to/from null column values.
+	 * By default, a {@link Converter} is not expected to handle null values, with null values automatically converted to/from null column values.
 	 * <p>
 	 * If a {@link Converter} needs to handle null values as well as non-null values {@link #handlesNull()} must be overridden to return true.
 	 * @param <T> the type of the value
