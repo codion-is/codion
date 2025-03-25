@@ -22,6 +22,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.component.table.FilterTableColumn.filterTableColumn;
@@ -164,6 +166,37 @@ public class DefaultFilterTableColumnModelTest {
 		assertThrows(IllegalArgumentException.class, () -> new DefaultFilterTableColumnModel<>(asList(
 						filterTableColumn(0, 0),
 						filterTableColumn(0, 1))));
+	}
+
+	@Test
+	void events() {
+		FilterTableColumn<Integer> column0 = filterTableColumn(0);
+		FilterTableColumn<Integer> column1 = filterTableColumn(1);
+		FilterTableColumn<Integer> column2 = filterTableColumn(2);
+		FilterTableColumn<Integer> column3 = filterTableColumn(3);
+
+		DefaultFilterTableColumnModel<Integer> columnModel =
+						new DefaultFilterTableColumnModel<>(asList(column0, column1, column2, column3));
+
+		Set<Integer> hidden = new HashSet<>();
+		columnModel.hidden().addConsumer(identifiers -> {
+			hidden.clear();
+			hidden.addAll(identifiers);
+		});
+		columnModel.visible().set(1, 2);
+		assertEquals(hidden, new HashSet<>(asList(0, 3)));
+
+		columnModel.visible(1).set(false);
+		assertEquals(hidden, new HashSet<>(asList(0, 1, 3)));
+
+		columnModel.visible(2).set(false);
+		assertEquals(hidden, new HashSet<>(asList(0, 1, 2, 3)));
+
+		columnModel.visible(0).set(true);
+		assertEquals(hidden, new HashSet<>(asList(1, 2, 3)));
+
+		columnModel.visible().set(0, 1, 2, 3);
+		assertTrue(hidden.isEmpty());
 	}
 
 	private static FilterTableColumnModel<Integer> createTestModel() {

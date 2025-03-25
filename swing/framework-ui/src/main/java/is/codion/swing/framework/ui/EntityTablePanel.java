@@ -1507,9 +1507,9 @@ public class EntityTablePanel extends JPanel {
 
 	private void configureExcludedColumns() {
 		if (configuration.excludeHiddenColumns) {
-			table.columnModel().columnShown().addListener(this::excludeHiddenColumns);
-			table.columnModel().columnHidden().addListener(this::excludeHiddenColumns);
-			excludeHiddenColumns();
+			ValueSet<Attribute<?>> excluded = tableModel.queryModel().attributes().excluded();
+			table.columnModel().hidden().addConsumer(excluded::set);
+			excluded.set(table.columnModel().hidden().get());
 		}
 	}
 
@@ -1723,10 +1723,6 @@ public class EntityTablePanel extends JPanel {
 		catch (Exception e) {
 			LOG.error("Error while applying condition preferences: {}", preferencesString, e);
 		}
-	}
-
-	private void excludeHiddenColumns() {
-		tableModel.queryModel().attributes().excluded().set(table.columnModel().hidden().get());
 	}
 
 	private void applyColumnPreferences(String preferencesString) {

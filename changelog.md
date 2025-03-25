@@ -9,6 +9,7 @@ Codion Change Log
 - ComponentBuilder.modifiedIndicator() added along with ModifiedIndicatorFactory.
 - DefaultInputDialogBuilder.show(closeDialog) bug fixed, now uses onOk() instead of okAction(), which bypassed the valid state.
 - ComponentBuilder.validIndicator(validator) argument now Predicate instead of Consumer.
+- DefaultFilterTableColumnModel.hideColumn() bug fixed, event triggered too early.
 ### is.codion.framework.domain
 - ValidationException now extends IllegalArgumentException.
 ### is.codion.framework.model

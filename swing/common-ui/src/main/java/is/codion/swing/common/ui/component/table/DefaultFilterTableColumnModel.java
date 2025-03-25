@@ -279,23 +279,21 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 	}
 
 	private void showColumn(C identifier) {
-		HiddenColumn column = hiddenColumnMap.get(identifier);
-		if (column != null) {
-			hiddenColumnMap.remove(identifier);
-			tableColumnModel.addColumn(column.column);
-			tableColumnModel.moveColumn(getColumnCount() - 1, column.indexWhenShown());
+		HiddenColumn hiddenColumn = hiddenColumnMap.remove(identifier);
+		if (hiddenColumn != null) {
+			tableColumnModel.addColumn(hiddenColumn.column);
+			tableColumnModel.moveColumn(getColumnCount() - 1, hiddenColumn.indexWhenShown());
 			columnShown.accept(identifier);
 		}
 	}
 
 	private void hideColumn(C identifier) {
-		hiddenColumnMap.computeIfAbsent(identifier, k -> {
-			HiddenColumn hiddenColumn = new HiddenColumn(column(identifier));
-			tableColumnModel.removeColumn(hiddenColumn.column);
+		if (!hiddenColumnMap.containsKey(identifier)) {
+			FilterTableColumn<C> column = column(identifier);
+			hiddenColumnMap.put(identifier, new HiddenColumn(column));
+			tableColumnModel.removeColumn(column);
 			columnHidden.accept(identifier);
-
-			return hiddenColumn;
-		});
+		}
 	}
 
 	private void checkIfLocked() {
