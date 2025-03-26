@@ -17,6 +17,7 @@ Codion Change Log
 - AbstractEntityTableModel.refresh(keys) bug fixed, now includes the same attributes as the query model, when selecting.
 - EntityEditModel.EntityEditor.EditorValue.message() added.
 - EntityQueryModel.SelectAttributes added, returned by attributes().
+- EntityQueryModel.createSelect() added, DefaultEntityQueryModel refactored.
 ### is.codion.swing.framework.ui
 - EntityDialogs.selectionDialog() parameter now EntityTablePanel.
 - EntitySelectionDialogBuilder.dialogSize() and configureTablePanel() removed, includeSearchButton() added.

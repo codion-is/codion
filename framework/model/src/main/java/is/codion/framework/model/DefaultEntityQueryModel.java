@@ -93,7 +93,16 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 
 	@Override
 	public List<Entity> get() {
-		return query.getOrThrow().apply(this);
+		if (conditionRequired.get() && !conditionEnabled.getOrThrow().get()) {
+			resetConditionChanged();
+
+			return emptyList();
+		}
+
+		List<Entity> entities = query.getOrThrow().apply(this);
+		resetConditionChanged();
+
+		return entities;
 	}
 
 	@Override
@@ -146,7 +155,8 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 		return additionalHaving;
 	}
 
-	Select createSelect() {
+	@Override
+	public Select createSelect() {
 		return Select.where(createCondition(conditionModel.where(Conjunction.AND), additionalWhere))
 						.having(createCondition(conditionModel.having(Conjunction.AND), additionalHaving))
 						.attributes(attributes.get())
@@ -190,20 +200,11 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 		}
 	}
 
-	private final class DefaultQuery implements Function<EntityQueryModel, List<Entity>> {
+	private static final class DefaultQuery implements Function<EntityQueryModel, List<Entity>> {
 
 		@Override
 		public List<Entity> apply(EntityQueryModel queryModel) {
-			Select select = createSelect();
-			if (conditionRequired.get() && !conditionEnabled.getOrThrow().get()) {
-				resetConditionChanged();
-
-				return emptyList();
-			}
-			List<Entity> items = conditionModel.connectionProvider().connection().select(select);
-			resetConditionChanged();
-
-			return items;
+			return queryModel.connectionProvider().connection().select(queryModel.createSelect());
 		}
 	}
 
@@ -236,11 +237,9 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	private final class DefaultSelectAttributes implements SelectAttributes {
 
 		private final AttributeValidator attributeValidator = new AttributeValidator();
-
 		private final ValueSet<Attribute<?>> included = ValueSet.<Attribute<?>>builder()
 						.validator(attributeValidator)
 						.build();
-
 		private final ValueSet<Attribute<?>> excluded = ValueSet.<Attribute<?>>builder()
 						.validator(attributeValidator)
 						.build();

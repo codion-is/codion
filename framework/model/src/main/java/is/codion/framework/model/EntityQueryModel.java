@@ -24,6 +24,7 @@ import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
+import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -77,9 +78,15 @@ public interface EntityQueryModel extends Supplier<List<Entity>> {
 	 * Note that if a query condition is required ({@link #conditionRequired()})
 	 * and the condition is not enabled ({@link #conditionEnabled()}) an empty list is returned.
 	 * @return entities selected from the database according to the query condition.
+	 * @see #createSelect()
 	 */
 	@Override
 	List<Entity> get();
+
+	/**
+	 * @return a {@link Select} instance based on the current state of this {@link EntityQueryModel}
+	 */
+	Select createSelect();
 
 	/**
 	 * @return the {@link EntityTableConditionModel} instance used by this query model
