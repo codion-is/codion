@@ -52,7 +52,7 @@ import static is.codion.common.Configuration.integerValue;
  * }
  * @see #entityQueryModel(EntityTableConditionModel)
  */
-public interface EntityQueryModel extends Supplier<List<Entity>> {
+public interface EntityQueryModel {
 
 	/**
 	 * Specifes a default {@link #limit()} to set for query models.
@@ -80,8 +80,7 @@ public interface EntityQueryModel extends Supplier<List<Entity>> {
 	 * @return entities selected from the database according to the query condition.
 	 * @see #createSelect()
 	 */
-	@Override
-	List<Entity> get();
+	List<Entity> query();
 
 	/**
 	 * @return a {@link Select} instance based on the current state of this {@link EntityQueryModel}

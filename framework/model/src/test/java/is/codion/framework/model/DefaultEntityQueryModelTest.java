@@ -100,11 +100,11 @@ public final class DefaultEntityQueryModelTest {
 
 		queryModel.where().set(Employee.CONDITION_2_TYPE::get);
 		assertTrue(queryModel.conditionChanged().get());
-		queryModel.get();
+		queryModel.query();
 		assertFalse(queryModel.conditionChanged().get());
 		queryModel.where().conjunction().set(Conjunction.OR);
 		assertTrue(queryModel.conditionChanged().get());
-		queryModel.get();
+		queryModel.query();
 		assertFalse(queryModel.conditionChanged().get());
 
 		queryModel = new DefaultEntityQueryModel(new DefaultEntityTableConditionModel(Job.TYPE,
@@ -112,11 +112,11 @@ public final class DefaultEntityQueryModelTest {
 		assertFalse(queryModel.conditionChanged().get());
 		queryModel.having().set(Job.ADDITIONAL_HAVING::get);
 		assertTrue(queryModel.conditionChanged().get());
-		queryModel.get();
+		queryModel.query();
 		assertFalse(queryModel.conditionChanged().get());
 		queryModel.having().conjunction().set(Conjunction.OR);
 		assertTrue(queryModel.conditionChanged().get());
-		queryModel.get();
+		queryModel.query();
 		assertFalse(queryModel.conditionChanged().get());
 	}
 
@@ -126,7 +126,7 @@ public final class DefaultEntityQueryModelTest {
 						CONNECTION_PROVIDER, new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER)));
 		queryModel.limit().set(1);
 		queryModel.attributes().included().set(asList(Employee.NAME, Employee.JOB));
-		Entity employee = queryModel.get().get(0);
+		Entity employee = queryModel.query().get(0);
 		assertTrue(employee.contains(Employee.NAME));
 		assertTrue(employee.contains(Employee.JOB));
 		assertFalse(employee.contains(Employee.MGR));
@@ -134,14 +134,14 @@ public final class DefaultEntityQueryModelTest {
 
 		queryModel.attributes().included().clear();
 		queryModel.attributes().excluded().set(singleton(Employee.JOB));
-		employee = queryModel.get().get(0);
+		employee = queryModel.query().get(0);
 		assertTrue(employee.contains(Employee.NAME));
 		assertFalse(employee.contains(Employee.JOB));
 		assertTrue(employee.contains(Employee.MGR));
 		assertTrue(employee.contains(Employee.MGR_FK));
 
 		queryModel.attributes().included().set(asList(Employee.NAME, Employee.JOB, Employee.MGR_FK));
-		employee = queryModel.get().get(0);
+		employee = queryModel.query().get(0);
 		assertTrue(employee.contains(Employee.NAME));
 		assertFalse(employee.contains(Employee.JOB));
 		assertTrue(employee.contains(Employee.MGR));
@@ -149,7 +149,7 @@ public final class DefaultEntityQueryModelTest {
 		assertFalse(employee.contains(Employee.COMMISSION));
 
 		queryModel.attributes().included().set(singleton(Employee.JOB));
-		employee = queryModel.get().get(0);
+		employee = queryModel.query().get(0);
 		// All, since included and excluded cancel each other out
 		assertTrue(employee.contains(Employee.NAME));
 		assertTrue(employee.contains(Employee.JOB));
