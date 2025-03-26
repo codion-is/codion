@@ -18,6 +18,7 @@ Codion Change Log
 - EntityEditModel.EntityEditor.EditorValue.message() added.
 - EntityQueryModel.SelectAttributes added, returned by attributes().
 - EntityQueryModel.createSelect() added, DefaultEntityQueryModel refactored.
+- EntityQueryModel.query() renamed dataSource().
 ### is.codion.swing.framework.ui
 - EntityDialogs.selectionDialog() parameter now EntityTablePanel.
 - EntitySelectionDialogBuilder.dialogSize() and configureTablePanel() removed, includeSearchButton() added.

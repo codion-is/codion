@@ -63,7 +63,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 
 	private final Value<OrderBy> orderBy;
 	private final Value<Integer> limit = Value.nullable(LIMIT.get());
-	private final Value<Function<EntityQueryModel, List<Entity>>> query = Value.nonNull(new DefaultQuery());
+	private final Value<Function<EntityQueryModel, List<Entity>>> dataSource = Value.nonNull(new DefaultDataSource());
 
 	private volatile RefreshConditions refreshConditions;
 
@@ -71,7 +71,9 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 		this.conditionModel = requireNonNull(conditionModel);
 		this.entityDefinition = conditionModel.connectionProvider().entities().definition(conditionModel.entityType());
 		this.conditionEnabled = Value.nonNull(conditionModel.enabled());
-		this.orderBy = createOrderBy();
+		this.orderBy = entityDefinition.orderBy()
+						.map(Value::nonNull)
+						.orElse(Value.nullable());
 		resetConditionChanged();
 		Runnable conditionListener = this::onConditionChanged;
 		conditionModel.changed().addListener(conditionListener);
@@ -99,7 +101,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 			return emptyList();
 		}
 
-		List<Entity> entities = query.getOrThrow().apply(this);
+		List<Entity> entities = dataSource.getOrThrow().apply(this);
 		resetConditionChanged();
 
 		return entities;
@@ -141,8 +143,8 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	}
 
 	@Override
-	public Value<Function<EntityQueryModel, List<Entity>>> query() {
-		return query;
+	public Value<Function<EntityQueryModel, List<Entity>>> dataSource() {
+		return dataSource;
 	}
 
 	@Override
@@ -173,12 +175,6 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 						.orElse(entityCondition);
 	}
 
-	private Value<OrderBy> createOrderBy() {
-		return entityDefinition.orderBy()
-						.map(Value::nonNull)
-						.orElse(Value.nullable());
-	}
-
 	private void resetConditionChanged() {
 		refreshConditions = new RefreshConditions();
 		conditionChanged.set(false);
@@ -200,7 +196,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 		}
 	}
 
-	private static final class DefaultQuery implements Function<EntityQueryModel, List<Entity>> {
+	private static final class DefaultDataSource implements Function<EntityQueryModel, List<Entity>> {
 
 		@Override
 		public List<Entity> apply(EntityQueryModel queryModel) {

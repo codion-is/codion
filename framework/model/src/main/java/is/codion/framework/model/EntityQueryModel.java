@@ -41,10 +41,10 @@ import java.util.function.Supplier;
 import static is.codion.common.Configuration.integerValue;
 
 /**
- * Provides entities fetched from a database.
- * The default query mechanism can be overridden by using {@link #query()}.
+ * Provides entities based on query conditions.
+ * The default data source can be overridden by using {@link #dataSource()}.
  * {@snippet :
- * tableModel.queryModel().query().set(queryModel -> {
+ * tableModel.queryModel().dataSource().set(queryModel -> {
  * 	 EntityConnection connection = queryModel.connectionProvider().connection();
  *
  *   return connection.select(Employee.NAME.equalTo("John"));
@@ -160,10 +160,10 @@ public interface EntityQueryModel extends Supplier<List<Entity>> {
 	Value<ObservableState> conditionEnabled();
 
 	/**
-	 * A {@link Value} controlling the override query. Use this to replace the default query.
-	 * @return the {@link Value} controlling the query override
+	 * A {@link Value} controlling the data source. Use this to replace the default one.
+	 * @return the {@link Value} controlling the data source
 	 */
-	Value<Function<EntityQueryModel, List<Entity>>> query();
+	Value<Function<EntityQueryModel, List<Entity>>> dataSource();
 
 	/**
 	 * @param conditionModel the {@link EntityTableConditionModel}
@@ -204,7 +204,9 @@ public interface EntityQueryModel extends Supplier<List<Entity>> {
 		ValueSet<Attribute<?>> excluded();
 
 		/**
-		 * @return the attributes to select, taking into account {@link #included()} and {@link #excluded()}
+		 * <p>Provides the attributes to include when querying based on {@link #included()} and {@link #excluded()}.
+		 * <p>An empty result indicates that all attributes should be selected.
+		 * @return the attributes to include, taking into account {@link #included()} and {@link #excluded()}
 		 */
 		Collection<Attribute<?>> get();
 	}
