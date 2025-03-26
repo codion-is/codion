@@ -55,18 +55,18 @@ public final class DefaultEntityQueryModelTest {
 		EntityTableConditionModel conditionModel = queryModel.conditions();
 		assertFalse(conditionModel.get(Employee.DEPARTMENT_FK).enabled().get());
 		conditionModel.get(Employee.NAME).set().in("Scott", "John");
-		Condition condition = queryModel.createSelect().where();
+		Condition condition = queryModel.select().where();
 		assertFalse(condition instanceof Combination);
 		queryModel.where().set(Employee.CONDITION_2_TYPE::get);
 		assertNotNull(queryModel.where().get());
-		condition = queryModel.createSelect().where();
+		condition = queryModel.select().where();
 		assertInstanceOf(Combination.class, condition);
 		assertEquals(Conjunction.AND, ((Combination) condition).conjunction());
 		queryModel.where().conjunction().set(Conjunction.OR);
-		condition = queryModel.createSelect().where();
+		condition = queryModel.select().where();
 		assertEquals(Conjunction.OR, ((Combination) condition).conjunction());
 		queryModel.where().set(null);
-		condition = queryModel.createSelect().where();
+		condition = queryModel.select().where();
 		assertFalse(condition instanceof Combination);
 	}
 

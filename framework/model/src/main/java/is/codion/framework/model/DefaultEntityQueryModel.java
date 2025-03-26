@@ -158,7 +158,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	}
 
 	@Override
-	public Select createSelect() {
+	public Select select() {
 		return Select.where(createCondition(conditionModel.where(Conjunction.AND), additionalWhere))
 						.having(createCondition(conditionModel.having(Conjunction.AND), additionalHaving))
 						.attributes(attributes.get())
@@ -200,7 +200,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 
 		@Override
 		public List<Entity> apply(EntityQueryModel queryModel) {
-			return queryModel.connectionProvider().connection().select(queryModel.createSelect());
+			return queryModel.connectionProvider().connection().select(queryModel.select());
 		}
 	}
 

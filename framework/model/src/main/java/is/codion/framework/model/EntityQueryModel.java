@@ -78,14 +78,14 @@ public interface EntityQueryModel {
 	 * Note that if a query condition is required ({@link #conditionRequired()})
 	 * and the condition is not enabled ({@link #conditionEnabled()}) an empty list is returned.
 	 * @return entities selected from the database according to the query condition.
-	 * @see #createSelect()
+	 * @see #select()
 	 */
 	List<Entity> query();
 
 	/**
 	 * @return a {@link Select} instance based on the current state of this {@link EntityQueryModel}
 	 */
-	Select createSelect();
+	Select select();
 
 	/**
 	 * @return the {@link EntityTableConditionModel} instance used by this query model
@@ -123,7 +123,7 @@ public interface EntityQueryModel {
 	State conditionRequired();
 
 	/**
-	 * When using the default query mechanism, the {@link #conditionChanged()} state is reset after each successful query.
+	 * This state is reset each time {@link #query()} returns successfully.
 	 * @return an {@link ObservableState} indicating if the search condition has changed since last reset
 	 */
 	ObservableState conditionChanged();

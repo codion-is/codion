@@ -20,6 +20,7 @@ Codion Change Log
 - EntityQueryModel.createSelect() added, DefaultEntityQueryModel refactored.
 - EntityQueryModel.query() renamed dataSource().
 - EntityQueryModel no longer implements Supplier, get() renamed query().
+- EntityQueryModel.createSelect() renamed select().
 ### is.codion.swing.framework.ui
 - EntityDialogs.selectionDialog() parameter now EntityTablePanel.
 - EntitySelectionDialogBuilder.dialogSize() and configureTablePanel() removed, includeSearchButton() added.
