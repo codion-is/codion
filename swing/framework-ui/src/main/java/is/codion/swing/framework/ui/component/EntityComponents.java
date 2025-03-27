@@ -467,8 +467,8 @@ public final class EntityComponents {
 	 */
 	public SliderBuilder slider(Attribute<Integer> attribute) {
 		AttributeDefinition<Integer> attributeDefinition = entityDefinition.attributes().definition(attribute);
-		Number minimumValue = attributeDefinition.minimumValue();
-		Number maximumValue = attributeDefinition.maximumValue();
+		Number minimumValue = attributeDefinition.minimumValue().orElse(null);
+		Number maximumValue = attributeDefinition.maximumValue().orElse(null);
 		if (minimumValue == null || maximumValue == null) {
 			throw new IllegalArgumentException("Cannot create a slider for an attribute without min and max values");
 		}
@@ -500,8 +500,8 @@ public final class EntityComponents {
 	 */
 	public NumberSpinnerBuilder<Integer> integerSpinner(Attribute<Integer> attribute) {
 		AttributeDefinition<Integer> attributeDefinition = entityDefinition.attributes().definition(attribute);
-		Number minimumValue = attributeDefinition.minimumValue();
-		Number maximumValue = attributeDefinition.maximumValue();
+		Number minimumValue = attributeDefinition.minimumValue().orElse(null);
+		Number maximumValue = attributeDefinition.maximumValue().orElse(null);
 
 		return Components.integerSpinner()
 						.minimum(minimumValue == null ? null : minimumValue.intValue())
@@ -516,8 +516,8 @@ public final class EntityComponents {
 	 */
 	public NumberSpinnerBuilder<Double> doubleSpinner(Attribute<Double> attribute) {
 		AttributeDefinition<Double> attributeDefinition = entityDefinition.attributes().definition(attribute);
-		Number minimumValue = attributeDefinition.minimumValue();
-		Number maximumValue = attributeDefinition.maximumValue();
+		Number minimumValue = attributeDefinition.minimumValue().orElse(null);
+		Number maximumValue = attributeDefinition.maximumValue().orElse(null);
 
 		return Components.doubleSpinner()
 						.minimum(minimumValue == null ? null : minimumValue.doubleValue())

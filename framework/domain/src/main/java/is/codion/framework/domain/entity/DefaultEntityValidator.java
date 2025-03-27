@@ -176,12 +176,12 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 			return;
 		}
 
-		Number minimumValue = definition.minimumValue();
+		Number minimumValue = definition.minimumValue().orElse(null);
 		if (minimumValue != null && value.doubleValue() < minimumValue.doubleValue()) {
 			throw new RangeValidationException(definition.attribute(), value, "'" + definition.caption() + "' " +
 							MESSAGES.getString("value_too_small") + " " + minimumValue);
 		}
-		Number maximumValue = definition.maximumValue();
+		Number maximumValue = definition.maximumValue().orElse(null);
 		if (maximumValue != null && value.doubleValue() > maximumValue.doubleValue()) {
 			throw new RangeValidationException(definition.attribute(), value, "'" + definition.caption() + "' " +
 							MESSAGES.getString("value_too_large") + " " + maximumValue);

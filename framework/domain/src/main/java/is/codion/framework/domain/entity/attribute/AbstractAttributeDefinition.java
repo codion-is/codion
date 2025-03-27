@@ -37,6 +37,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Function;
 
@@ -163,13 +164,13 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 	}
 
 	@Override
-	public final Number maximumValue() {
-		return maximumValue;
+	public final Optional<Number> maximumValue() {
+		return Optional.ofNullable(maximumValue);
 	}
 
 	@Override
-	public final Number minimumValue() {
-		return minimumValue;
+	public final Optional<Number> minimumValue() {
+		return Optional.ofNullable(minimumValue);
 	}
 
 	@Override

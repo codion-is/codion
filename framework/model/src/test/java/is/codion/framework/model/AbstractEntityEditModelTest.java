@@ -49,6 +49,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -310,7 +311,7 @@ public final class AbstractEntityEditModelTest {
 			assertEquals(50d, e.value());
 			AttributeDefinition<?> attributeDefinition = ENTITIES.definition(Employee.TYPE).attributes().definition(e.attribute());
 			assertTrue(e.getMessage().contains(attributeDefinition.toString()));
-			assertTrue(e.getMessage().contains(attributeDefinition.minimumValue().toString()));
+			assertTrue(e.getMessage().contains(attributeDefinition.minimumValue().map(Objects::toString).get()));
 		}
 
 		editor.defaults();

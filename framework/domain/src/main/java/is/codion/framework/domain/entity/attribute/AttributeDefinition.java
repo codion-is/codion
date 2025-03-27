@@ -30,6 +30,7 @@ import java.text.Format;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import static is.codion.common.Configuration.*;
 
@@ -211,16 +212,16 @@ public interface AttributeDefinition<T> {
 	boolean hidden();
 
 	/**
-	 * @return the maximum allowed value for this attribute, null if none is defined,
+	 * @return the maximum allowed value for this attribute, an empty Optional if none is defined,
 	 * only applicable to numerical attributes
 	 */
-	Number maximumValue();
+	Optional<Number> maximumValue();
 
 	/**
-	 * @return the minimum allowed value for this attribute, null if none is defined,
+	 * @return the minimum allowed value for this attribute, an empty Optional if none is defined,
 	 * only applicable to numerical attributes
 	 */
-	Number minimumValue();
+	Optional<Number> minimumValue();
 
 	/**
 	 * @return the maximum number of fraction digits to use for this attribute value,
