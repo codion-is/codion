@@ -232,7 +232,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 
 	@Override
 	public final String caption() {
-		String resourceBundleName = attribute.entityType().resourceBundleName();
+		String resourceBundleName = attribute.entityType().resourceBundleName().orElse(null);
 		if (resourceBundleName != null) {
 			if (resourceCaption == null) {
 				ResourceBundle bundle = getBundle(resourceBundleName);
@@ -249,7 +249,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 
 	@Override
 	public final char mnemonic() {
-		String resourceBundleName = attribute.entityType().resourceBundleName();
+		String resourceBundleName = attribute.entityType().resourceBundleName().orElse(null);
 		if (resourceBundleName != null) {
 			if (resourceMnemonic == null) {
 				ResourceBundle bundle = getBundle(resourceBundleName);
@@ -435,7 +435,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 			comparator = defaultComparator(attribute);
 			captionResourceKey = attribute.name();
 			mnemonicResourceKey = captionResourceKey + MNEMONIC_RESOURCE_SUFFIX;
-			hidden = resourceNotFound(attribute.entityType().resourceBundleName(), captionResourceKey);
+			hidden = resourceNotFound(attribute.entityType().resourceBundleName().orElse(null), captionResourceKey);
 			nullable = true;
 			maximumLength = attribute.type().isCharacter() ? 1 : -1;
 			trim = TRIM_STRINGS.getOrThrow();
@@ -462,7 +462,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 			if (caption != null) {
 				throw new IllegalStateException("Caption has already been set for attribute: " + attribute);
 			}
-			String resourceBundleName = attribute.entityType().resourceBundleName();
+			String resourceBundleName = attribute.entityType().resourceBundleName().orElse(null);
 			if (resourceBundleName == null) {
 				throw new IllegalStateException("No resource bundle specified for entity: " + attribute.entityType());
 			}
@@ -479,7 +479,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 			if (mnemonic != 0) {
 				throw new IllegalStateException("Mnemonic has already been set for attribute: " + attribute);
 			}
-			String resourceBundleName = attribute.entityType().resourceBundleName();
+			String resourceBundleName = attribute.entityType().resourceBundleName().orElse(null);
 			if (resourceBundleName == null) {
 				throw new IllegalStateException("No resource bundle specified for entity: " + attribute.entityType());
 			}

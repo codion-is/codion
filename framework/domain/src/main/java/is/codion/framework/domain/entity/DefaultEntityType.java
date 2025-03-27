@@ -36,6 +36,7 @@ import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.framework.domain.entity.attribute.ForeignKey.reference;
@@ -78,8 +79,8 @@ final class DefaultEntityType implements EntityType, Serializable {
 	}
 
 	@Override
-	public String resourceBundleName() {
-		return resourceBundleName;
+	public Optional<String> resourceBundleName() {
+		return Optional.ofNullable(resourceBundleName);
 	}
 
 	@Override

@@ -32,6 +32,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
@@ -54,7 +55,7 @@ public interface EntityType {
 	/**
 	 * @return the name of the resource bundle, containing captions for this entity type, if any
 	 */
-	String resourceBundleName();
+	Optional<String> resourceBundleName();
 
 	/**
 	 * Creates a {@link EntityDefinition.Builder} instance based on the given attribute definition builders.
@@ -375,6 +376,7 @@ public interface EntityType {
 	 * @param domainType the domainType to associate this entity type with
 	 * @param resourceBundleName the name of a resource bundle to use for captions
 	 * @return a {@link EntityType} instance with the given name
+	 * @throws NullPointerException in case {@code resourceBundleName} is null
 	 */
 	static EntityType entityType(String name, DomainType domainType,
 															 String resourceBundleName) {

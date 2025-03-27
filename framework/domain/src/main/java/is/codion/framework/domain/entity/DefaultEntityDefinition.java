@@ -143,7 +143,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 	@Override
 	public String caption() {
-		String resourceBundleName = entityType.resourceBundleName();
+		String resourceBundleName = entityType.resourceBundleName().orElse(null);
 		if (resourceBundleName != null) {
 			if (resourceCaption == null) {
 				ResourceBundle bundle = getBundle(resourceBundleName);

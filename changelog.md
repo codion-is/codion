@@ -15,6 +15,7 @@ Codion Change Log
 - DefaultFilterTableColumnModel.hideColumn() bug fixed, event triggered too early.
 ### is.codion.framework.domain
 - ValidationException now extends IllegalArgumentException.
+- EntityType.resourceBundleName() now returns Optional.
 ### is.codion.framework.model
 - AbstractEntityEditModel.refresh() bug fixed, now handles the case when a primary key attribute has been modified.
 - AbstractEntityTableModel.refresh(keys) bug fixed, now includes the same attributes as the query model, when selecting.
