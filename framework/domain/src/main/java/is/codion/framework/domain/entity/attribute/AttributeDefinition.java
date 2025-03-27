@@ -266,22 +266,22 @@ public interface AttributeDefinition<T> {
 	char mnemonic();
 
 	/**
-	 * Returns the Format used when presenting values for this attribute, null if none has been specified.
+	 * Returns the Format used when presenting values for this attribute, an empty Optional if none has been specified.
 	 * @return the Format object used to format the value of attributes when being presented
 	 */
-	Format format();
+	Optional<Format> format();
 
 	/**
 	 * Returns the date time format pattern used when presenting and inputting values for this attribute.
 	 * @return the date/time format pattern
 	 */
-	String dateTimePattern();
+	Optional<String> dateTimePattern();
 
 	/**
 	 * Returns the date time formatter used when presenting and inputting values for this attribute.
-	 * @return the DateTimeFormatter for this attribute or null if this is not a date/time based attribute
+	 * @return the DateTimeFormatter for this attribute or an empty Optional if this is not a date/time based attribute
 	 */
-	DateTimeFormatter dateTimeFormatter();
+	Optional<DateTimeFormatter> dateTimeFormatter();
 
 	/**
 	 * @return the Comparator to use when comparing values associated with this attribute

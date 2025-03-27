@@ -17,6 +17,7 @@ Codion Change Log
 - ValidationException now extends IllegalArgumentException.
 - EntityType.resourceBundleName() now returns Optional.
 - AttributeDefinition.minimumValue() and maximumValue() now return Optional.
+- AttributeDefinition.format(), dateTimePattern() and dateTimeFormatter() now return Optional.
 ### is.codion.framework.model
 - AbstractEntityEditModel.refresh() bug fixed, now handles the case when a primary key attribute has been modified.
 - AbstractEntityTableModel.refresh(keys) bug fixed, now includes the same attributes as the query model, when selecting.

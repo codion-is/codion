@@ -305,7 +305,7 @@ public final class EntityComponents {
 		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.temporalFieldPanel(attribute.type().valueClass())
-						.dateTimePattern(attributeDefinition.dateTimePattern())
+						.dateTimePattern(attributeDefinition.dateTimePattern().orElse(null))
 						.toolTipText(attributeDefinition.description())
 						.calendarIcon(ICONS.calendar());
 	}
@@ -361,18 +361,18 @@ public final class EntityComponents {
 		}
 		if (attribute.type().isTemporal()) {
 			return (TextFieldBuilder<T, C, B>) temporalField((Attribute<Temporal>) attribute)
-							.dateTimePattern(attributeDefinition.dateTimePattern())
+							.dateTimePattern(attributeDefinition.dateTimePattern().orElse(null))
 							.toolTipText(attributeDefinition.description())
 							.calendarIcon(ICONS.calendar());
 		}
 		if (attribute.type().isNumerical()) {
 			return (TextFieldBuilder<T, C, B>) NumberField.builder((Class<Number>) attribute.type().valueClass())
-							.format(attributeDefinition.format())
+							.format(attributeDefinition.format().orElse(null))
 							.toolTipText(attributeDefinition.description());
 		}
 
 		return (TextFieldBuilder<T, C, B>) Components.textField(attribute.type().valueClass())
-						.format(attributeDefinition.format())
+						.format(attributeDefinition.format().orElse(null))
 						.maximumLength(attributeDefinition.maximumLength())
 						.toolTipText(attributeDefinition.description());
 	}
@@ -387,7 +387,7 @@ public final class EntityComponents {
 		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.temporalField(attributeDefinition.attribute().type().valueClass())
-						.dateTimePattern(attributeDefinition.dateTimePattern())
+						.dateTimePattern(attributeDefinition.dateTimePattern().orElse(null))
 						.toolTipText(attributeDefinition.description())
 						.calendarIcon(ICONS.calendar());
 	}
@@ -401,7 +401,7 @@ public final class EntityComponents {
 		AttributeDefinition<Short> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.shortField()
-						.format(attributeDefinition.format())
+						.format(attributeDefinition.format().orElse(null))
 						.toolTipText(attributeDefinition.description());
 	}
 
@@ -414,7 +414,7 @@ public final class EntityComponents {
 		AttributeDefinition<Integer> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.integerField()
-						.format(attributeDefinition.format())
+						.format(attributeDefinition.format().orElse(null))
 						.toolTipText(attributeDefinition.description());
 	}
 
@@ -427,7 +427,7 @@ public final class EntityComponents {
 		AttributeDefinition<Long> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.longField()
-						.format(attributeDefinition.format())
+						.format(attributeDefinition.format().orElse(null))
 						.toolTipText(attributeDefinition.description());
 	}
 
@@ -440,7 +440,7 @@ public final class EntityComponents {
 		AttributeDefinition<Double> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.doubleField()
-						.format(attributeDefinition.format())
+						.format(attributeDefinition.format().orElse(null))
 						.maximumFractionDigits(attributeDefinition.maximumFractionDigits())
 						.toolTipText(attributeDefinition.description());
 	}
@@ -454,7 +454,7 @@ public final class EntityComponents {
 		AttributeDefinition<BigDecimal> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.bigDecimalField()
-						.format(attributeDefinition.format())
+						.format(attributeDefinition.format().orElse(null))
 						.maximumFractionDigits(attributeDefinition.maximumFractionDigits())
 						.toolTipText(attributeDefinition.description());
 	}

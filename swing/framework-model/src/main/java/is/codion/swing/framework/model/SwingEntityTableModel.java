@@ -395,8 +395,8 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 			}
 
 			return ConditionModel.builder(definition.attribute().type().valueClass())
-							.format(definition.format())
-							.dateTimePattern(definition.dateTimePattern())
+							.format(definition.format().orElse(null))
+							.dateTimePattern(definition.dateTimePattern().orElse(null))
 							.build();
 		}
 

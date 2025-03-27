@@ -179,27 +179,18 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 	}
 
 	@Override
-	public final Format format() {
-		return format;
+	public final Optional<Format> format() {
+		return Optional.ofNullable(format);
 	}
 
 	@Override
-	public final String dateTimePattern() {
-		if (dateTimePattern == null) {
-			dateTimePattern = localeDateTimePattern == null ? defaultDateTimePattern() : localeDateTimePattern.dateTimePattern();
-		}
-
-		return dateTimePattern;
+	public final Optional<String> dateTimePattern() {
+		return Optional.ofNullable(dateTimePatternInternal());
 	}
 
 	@Override
-	public final DateTimeFormatter dateTimeFormatter() {
-		if (dateTimeFormatter == null) {
-			String pattern = dateTimePattern();
-			dateTimeFormatter = pattern == null ? null : ofPattern(pattern);
-		}
-
-		return dateTimeFormatter;
+	public final Optional<DateTimeFormatter> dateTimeFormatter() {
+		return Optional.ofNullable(dateTimeFormatterInternal());
 	}
 
 	@Override
@@ -301,7 +292,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 			return "";
 		}
 		if (attribute.type().isTemporal()) {
-			DateTimeFormatter formatter = dateTimeFormatter();
+			DateTimeFormatter formatter = dateTimeFormatterInternal();
 			if (formatter != null) {
 				return formatter.format((TemporalAccessor) value);
 			}
@@ -311,6 +302,23 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 		}
 
 		return value.toString();
+	}
+
+	private String dateTimePatternInternal() {
+		if (dateTimePattern == null) {
+			dateTimePattern = localeDateTimePattern == null ? defaultDateTimePattern() : localeDateTimePattern.dateTimePattern();
+		}
+
+		return dateTimePattern;
+	}
+
+	private DateTimeFormatter dateTimeFormatterInternal() {
+		if (dateTimeFormatter == null) {
+			String pattern = dateTimePatternInternal();
+			dateTimeFormatter = pattern == null ? null : ofPattern(pattern);
+		}
+
+		return dateTimeFormatter;
 	}
 
 	private String invalidItemString(T value) {
