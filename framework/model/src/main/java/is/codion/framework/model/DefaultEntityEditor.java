@@ -533,7 +533,7 @@ final class DefaultEntityEditor implements EntityEditor {
 		}
 
 		private Observable<String> observableMessage(Attribute<?> attribute) {
-			String description = entityDefinition.attributes().definition(attribute).description();
+			String description = entityDefinition.attributes().definition(attribute).description().orElse(null);
 			Value<String> toolTip = Value.nullable(createMessage(description));
 			value(attribute).addListener(() -> toolTip.set(createMessage(description)));
 

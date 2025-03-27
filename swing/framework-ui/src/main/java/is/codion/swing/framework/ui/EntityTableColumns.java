@@ -60,7 +60,7 @@ public final class EntityTableColumns {
 		FilterTableColumn.Builder<? extends Attribute<?>> columnBuilder =
 						FilterTableColumn.builder(attributeDefinition.attribute(), modelIndex)
 										.headerValue(attributeDefinition.caption())
-										.toolTipText(attributeDefinition.description());
+										.toolTipText(attributeDefinition.description().orElse(null));
 
 		return (FilterTableColumn<Attribute<?>>) columnBuilder.build();
 	}

@@ -1012,7 +1012,7 @@ public class EntityEditComponentPanel extends JPanel {
 			AttributeDefinition<List<T>> attributeDefinition = editModel.entityDefinition().attributes().definition(attribute);
 
 			return setComponentBuilder(attribute, builderFactory.items()
-							.toolTipText(attributeDefinition.description()));
+							.toolTipText(attributeDefinition.description().orElse(null)));
 		}
 
 		/**
@@ -1024,7 +1024,7 @@ public class EntityEditComponentPanel extends JPanel {
 			AttributeDefinition<List<T>> attributeDefinition = editModel.entityDefinition().attributes().definition(attribute);
 
 			return setComponentBuilder(attribute, builderFactory.selectedItems()
-							.toolTipText(attributeDefinition.description()));
+							.toolTipText(attributeDefinition.description().orElse(null)));
 		}
 
 		/**
@@ -1036,7 +1036,7 @@ public class EntityEditComponentPanel extends JPanel {
 			AttributeDefinition<T> attributeDefinition = editModel.entityDefinition().attributes().definition(attribute);
 
 			return setComponentBuilder(attribute, builderFactory.selectedItem()
-							.toolTipText(attributeDefinition.description()));
+							.toolTipText(attributeDefinition.description().orElse(null)));
 		}
 	}
 

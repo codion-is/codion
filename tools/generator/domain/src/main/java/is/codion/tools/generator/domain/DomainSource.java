@@ -557,10 +557,12 @@ public final class DomainSource {
 								.append(column.maximumFractionDigits()).append(")");
 			}
 		}
-		if (!nullOrEmpty(column.description())) {
-			builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".description(")
-							.append("\"").append(column.description()).append("\")");
-		}
+		column.description()
+						.filter(description -> !description.isEmpty())
+						.ifPresent(description -> {
+							builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".description(")
+											.append("\"").append(description).append("\")");
+						});
 
 		return builder.toString();
 	}

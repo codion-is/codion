@@ -174,8 +174,8 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 	}
 
 	@Override
-	public final String description() {
-		return description;
+	public final Optional<String> description() {
+		return Optional.ofNullable(description);
 	}
 
 	@Override

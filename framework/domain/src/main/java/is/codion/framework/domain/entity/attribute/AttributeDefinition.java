@@ -181,9 +181,9 @@ public interface AttributeDefinition<T> {
 	String caption();
 
 	/**
-	 * @return a String describing this attribute
+	 * @return a String describing this attribute or an empty Optional if none is available
 	 */
-	String description();
+	Optional<String> description();
 
 	/**
 	 * Returns a string representation of the given value formatted with this attributes format.

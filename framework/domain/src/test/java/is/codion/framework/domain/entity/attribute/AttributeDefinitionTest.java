@@ -206,7 +206,7 @@ public final class AttributeDefinitionTest {
 						.column()
 						.description(description)
 						.build();
-		assertEquals(description, attributeDefinition.description());
+		assertEquals(description, attributeDefinition.description().orElse(""));
 	}
 
 	@Test

@@ -156,7 +156,7 @@ public final class EntityComponents {
 		AttributeDefinition<Boolean> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.checkBox()
-						.toolTipText(attributeDefinition.description())
+						.toolTipText(attributeDefinition.description().orElse(null))
 						.nullable(attributeDefinition.nullable())
 						.text(attributeDefinition.caption())
 						.includeText(false);
@@ -172,7 +172,7 @@ public final class EntityComponents {
 		AttributeDefinition<Boolean> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return (ButtonBuilder<Boolean, JToggleButton, B>) Components.toggleButton()
-						.toolTipText(attributeDefinition.description())
+						.toolTipText(attributeDefinition.description().orElse(null))
 						.text(attributeDefinition.caption())
 						.includeText(false);
 	}
@@ -186,7 +186,7 @@ public final class EntityComponents {
 		AttributeDefinition<Boolean> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.booleanComboBox()
-						.toolTipText(attributeDefinition.description());
+						.toolTipText(attributeDefinition.description().orElse(null));
 	}
 
 	/**
@@ -200,7 +200,7 @@ public final class EntityComponents {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
 		return EntityComboBox.builder(comboBoxModel)
-						.toolTipText(foreignKeyDefinition.description());
+						.toolTipText(foreignKeyDefinition.description().orElse(null));
 	}
 
 	/**
@@ -216,7 +216,7 @@ public final class EntityComponents {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
 		return EntityComboBoxPanel.builder(comboBoxModel, editPanel)
-						.toolTipText(foreignKeyDefinition.description());
+						.toolTipText(foreignKeyDefinition.description().orElse(null));
 	}
 
 	/**
@@ -253,7 +253,7 @@ public final class EntityComponents {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
 		return (TextFieldBuilder<Entity, JTextField, B>) Components.textField(Entity.class)
-						.toolTipText(foreignKeyDefinition.description())
+						.toolTipText(foreignKeyDefinition.description().orElse(null))
 						.format(new EntityReadOnlyFormat())
 						.editable(false)
 						.focusable(false);
@@ -274,7 +274,7 @@ public final class EntityComponents {
 		}
 
 		return Components.itemComboBox(attributeDefinition.items())
-						.toolTipText(attributeDefinition.description())
+						.toolTipText(attributeDefinition.description().orElse(null))
 						.nullable(attributeDefinition.nullable());
 	}
 
@@ -292,7 +292,7 @@ public final class EntityComponents {
 		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return (ComboBoxBuilder<T, C, B>) Components.comboBox(comboBoxModel)
-						.toolTipText(attributeDefinition.description());
+						.toolTipText(attributeDefinition.description().orElse(null));
 	}
 
 	/**
@@ -306,7 +306,7 @@ public final class EntityComponents {
 
 		return Components.temporalFieldPanel(attribute.type().valueClass())
 						.dateTimePattern(attributeDefinition.dateTimePattern().orElse(null))
-						.toolTipText(attributeDefinition.description())
+						.toolTipText(attributeDefinition.description().orElse(null))
 						.calendarIcon(ICONS.calendar());
 	}
 
@@ -319,7 +319,7 @@ public final class EntityComponents {
 		AttributeDefinition<String> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.textFieldPanel()
-						.toolTipText(attributeDefinition.description())
+						.toolTipText(attributeDefinition.description().orElse(null))
 						.maximumLength(attributeDefinition.maximumLength())
 						.dialogTitle(attributeDefinition.caption())
 						.buttonIcon(ICONS.editText());
@@ -337,7 +337,7 @@ public final class EntityComponents {
 		}
 
 		return Components.textArea()
-						.toolTipText(attributeDefinition.description())
+						.toolTipText(attributeDefinition.description().orElse(null))
 						.maximumLength(attributeDefinition.maximumLength());
 	}
 
@@ -355,26 +355,26 @@ public final class EntityComponents {
 		if (!attributeDefinition.items().isEmpty()) {
 			return (TextFieldBuilder<T, C, B>) Components.textField(attribute.type().valueClass())
 							.format(new ItemReadOnlyFormat(attributeDefinition))
-							.toolTipText(attributeDefinition.description())
+							.toolTipText(attributeDefinition.description().orElse(null))
 							.editable(false)
 							.focusable(false);
 		}
 		if (attribute.type().isTemporal()) {
 			return (TextFieldBuilder<T, C, B>) temporalField((Attribute<Temporal>) attribute)
 							.dateTimePattern(attributeDefinition.dateTimePattern().orElse(null))
-							.toolTipText(attributeDefinition.description())
+							.toolTipText(attributeDefinition.description().orElse(null))
 							.calendarIcon(ICONS.calendar());
 		}
 		if (attribute.type().isNumerical()) {
 			return (TextFieldBuilder<T, C, B>) NumberField.builder((Class<Number>) attribute.type().valueClass())
 							.format(attributeDefinition.format().orElse(null))
-							.toolTipText(attributeDefinition.description());
+							.toolTipText(attributeDefinition.description().orElse(null));
 		}
 
 		return (TextFieldBuilder<T, C, B>) Components.textField(attribute.type().valueClass())
 						.format(attributeDefinition.format().orElse(null))
 						.maximumLength(attributeDefinition.maximumLength())
-						.toolTipText(attributeDefinition.description());
+						.toolTipText(attributeDefinition.description().orElse(null));
 	}
 
 	/**
@@ -388,7 +388,7 @@ public final class EntityComponents {
 
 		return Components.temporalField(attributeDefinition.attribute().type().valueClass())
 						.dateTimePattern(attributeDefinition.dateTimePattern().orElse(null))
-						.toolTipText(attributeDefinition.description())
+						.toolTipText(attributeDefinition.description().orElse(null))
 						.calendarIcon(ICONS.calendar());
 	}
 
@@ -402,7 +402,7 @@ public final class EntityComponents {
 
 		return Components.shortField()
 						.format(attributeDefinition.format().orElse(null))
-						.toolTipText(attributeDefinition.description());
+						.toolTipText(attributeDefinition.description().orElse(null));
 	}
 
 	/**
@@ -415,7 +415,7 @@ public final class EntityComponents {
 
 		return Components.integerField()
 						.format(attributeDefinition.format().orElse(null))
-						.toolTipText(attributeDefinition.description());
+						.toolTipText(attributeDefinition.description().orElse(null));
 	}
 
 	/**
@@ -428,7 +428,7 @@ public final class EntityComponents {
 
 		return Components.longField()
 						.format(attributeDefinition.format().orElse(null))
-						.toolTipText(attributeDefinition.description());
+						.toolTipText(attributeDefinition.description().orElse(null));
 	}
 
 	/**
@@ -442,7 +442,7 @@ public final class EntityComponents {
 		return Components.doubleField()
 						.format(attributeDefinition.format().orElse(null))
 						.maximumFractionDigits(attributeDefinition.maximumFractionDigits())
-						.toolTipText(attributeDefinition.description());
+						.toolTipText(attributeDefinition.description().orElse(null));
 	}
 
 	/**
@@ -456,7 +456,7 @@ public final class EntityComponents {
 		return Components.bigDecimalField()
 						.format(attributeDefinition.format().orElse(null))
 						.maximumFractionDigits(attributeDefinition.maximumFractionDigits())
-						.toolTipText(attributeDefinition.description());
+						.toolTipText(attributeDefinition.description().orElse(null));
 	}
 
 	/**
@@ -490,7 +490,7 @@ public final class EntityComponents {
 		AttributeDefinition<Integer> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.slider(boundedRangeModel)
-						.toolTipText(attributeDefinition.description());
+						.toolTipText(attributeDefinition.description().orElse(null));
 	}
 
 	/**
@@ -506,7 +506,7 @@ public final class EntityComponents {
 		return Components.integerSpinner()
 						.minimum(minimumValue == null ? null : minimumValue.intValue())
 						.maximum(maximumValue == null ? null : maximumValue.intValue())
-						.toolTipText(attributeDefinition.description());
+						.toolTipText(attributeDefinition.description().orElse(null));
 	}
 
 	/**
@@ -522,7 +522,7 @@ public final class EntityComponents {
 		return Components.doubleSpinner()
 						.minimum(minimumValue == null ? null : minimumValue.doubleValue())
 						.maximum(maximumValue == null ? null : maximumValue.doubleValue())
-						.toolTipText(attributeDefinition.description());
+						.toolTipText(attributeDefinition.description().orElse(null));
 	}
 
 	/**
@@ -536,7 +536,7 @@ public final class EntityComponents {
 		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.<T>listSpinner(listModel)
-						.toolTipText(attributeDefinition.description());
+						.toolTipText(attributeDefinition.description().orElse(null));
 	}
 
 	/**
@@ -552,7 +552,7 @@ public final class EntityComponents {
 		}
 
 		return Components.<T>itemSpinner(new SpinnerListModel(attributeDefinition.items()))
-						.toolTipText(attributeDefinition.description());
+						.toolTipText(attributeDefinition.description().orElse(null));
 	}
 
 	/**
@@ -564,7 +564,7 @@ public final class EntityComponents {
 		AttributeDefinition<String> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.maskedTextField()
-						.toolTipText(attributeDefinition.description());
+						.toolTipText(attributeDefinition.description().orElse(null));
 	}
 
 	/**
@@ -576,7 +576,7 @@ public final class EntityComponents {
 		AttributeDefinition<byte[]> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.byteArrayInputPanel()
-						.toolTipText(attributeDefinition.description());
+						.toolTipText(attributeDefinition.description().orElse(null));
 	}
 
 	/**
@@ -607,14 +607,14 @@ public final class EntityComponents {
 		public EntitySearchField.MultiSelectionBuilder multiSelection() {
 			return EntitySearchField.builder(searchModel)
 							.multiSelection()
-							.toolTipText(foreignKeyDefinition.description());
+							.toolTipText(foreignKeyDefinition.description().orElse(null));
 		}
 
 		@Override
 		public EntitySearchField.SingleSelectionBuilder singleSelection() {
 			return EntitySearchField.builder(searchModel)
 							.singleSelection()
-							.toolTipText(foreignKeyDefinition.description());
+							.toolTipText(foreignKeyDefinition.description().orElse(null));
 		}
 	}
 
@@ -634,14 +634,14 @@ public final class EntityComponents {
 		public EntitySearchFieldPanel.MultiSelectionBuilder multiSelection() {
 			return EntitySearchFieldPanel.builder(searchModel, editPanel)
 							.multiSelection()
-							.toolTipText(foreignKeyDefinition.description());
+							.toolTipText(foreignKeyDefinition.description().orElse(null));
 		}
 
 		@Override
 		public EntitySearchFieldPanel.SingleSelectionBuilder singleSelection() {
 			return EntitySearchFieldPanel.builder(searchModel, editPanel)
 							.singleSelection()
-							.toolTipText(foreignKeyDefinition.description());
+							.toolTipText(foreignKeyDefinition.description().orElse(null));
 		}
 	}
 

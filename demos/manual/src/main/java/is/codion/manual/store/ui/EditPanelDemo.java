@@ -62,7 +62,8 @@ final class EditPanelDemo extends EntityEditPanel {
 		//create the text field
 		JTextField firstNameField = new JTextField();
 		firstNameField.setColumns(12);
-		firstNameField.setToolTipText(firstNameDefinition.description());
+		firstNameDefinition.description()
+						.ifPresent(firstNameField::setToolTipText);
 		//associate the text field with the first name attribute
 		component(Customer.FIRST_NAME).set(firstNameField);
 
