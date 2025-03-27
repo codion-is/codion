@@ -46,9 +46,10 @@ public final class UserPreferences {
 	 * @param key the key identifying the preference
 	 * @param defaultValue the default value if no preference is available
 	 * @return the user preference associated with the given key
+	 * @throws NullPointerException in case {@code defaultValue} is null
 	 */
-	public static @Nullable String getUserPreference(String key, String defaultValue) {
-		return userPreferences().get(requireNonNull(key), defaultValue);
+	public static String getUserPreference(String key, String defaultValue) {
+		return userPreferences().get(requireNonNull(key), requireNonNull(defaultValue));
 	}
 
 	/**
