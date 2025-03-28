@@ -195,7 +195,6 @@ public final class AbstractEntityEditModelTest {
 		editor.value(Employee.DEPARTMENT_FK).clear();
 		//set the reference key attribute value
 		assertTrue(editor.isNull(Employee.DEPARTMENT_FK).get());
-		assertFalse(editor.isNotNull(Employee.DEPARTMENT_FK).get());
 		editor.value(Employee.DEPARTMENT).set(dept.get(Department.ID));
 		assertNull(editor.get().get(Employee.DEPARTMENT_FK));
 		dept = editor.value(Employee.DEPARTMENT_FK).get();
@@ -221,7 +220,7 @@ public final class AbstractEntityEditModelTest {
 		Entity employee = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("MARTIN"));
 		editor.set(employee);
 		editor.defaults();
-		assertTrue(editor.isNotNull(Employee.DEPARTMENT_FK).get());//persists
+		assertTrue(editor.isNull(Employee.DEPARTMENT_FK).not().get());//persists
 		assertTrue(editor.isNull(Employee.NAME).get());
 		editor.set(employee);
 		editor.clear();

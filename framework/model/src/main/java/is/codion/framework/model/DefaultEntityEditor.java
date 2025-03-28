@@ -151,12 +151,6 @@ final class DefaultEntityEditor implements EntityEditor {
 	}
 
 	@Override
-	public ObservableState isNotNull(Attribute<?> attribute) {
-		return attributeNull.computeIfAbsent(attribute,
-						k -> State.state(entity.isNull(attribute))).observable().not();
-	}
-
-	@Override
 	public ObservableState primaryKeyNull() {
 		return primaryKeyNull.observable();
 	}

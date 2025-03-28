@@ -433,12 +433,6 @@ public interface EntityEditModel {
 		ObservableState isNull(Attribute<?> attribute);
 
 		/**
-		 * @param attribute the attribute
-		 * @return an {@link ObservableState} indicating whether the value of the given attribute is not null
-		 */
-		ObservableState isNotNull(Attribute<?> attribute);
-
-		/**
 		 * @return an {@link ObservableState} indicating whether the primary key of the entity is null
 		 */
 		ObservableState primaryKeyNull();
@@ -582,7 +576,7 @@ public interface EntityEditModel {
 		/**
 		 * <p>Returns an observer notified each time this value is modified via {@link EditorValue#set(Object)}.
 		 * <p>This event is NOT triggered when the value changes due to the entity being set
-		 * via {@link EntityEditor#set(Entity)} or {@link EntityEditor#defaults()}.
+		 * via {@link EntityEditor#set(Entity)}, {@link EntityEditor#defaults()} or {@link EntityEditor#clear()}.
 		 * <p>Note that this event is only triggered if the value actually changes.
 		 * @return an observer notified when the given attribute value is edited
 		 */
