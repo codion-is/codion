@@ -14,6 +14,7 @@ Codion Change Log
 - ComponentBuilder.validIndicator(validator) argument now Predicate instead of Consumer.
 - DefaultFilterTableColumnModel.hideColumn() bug fixed, event triggered too early.
 - Icons.ICON_COLOR and iconColor() removed, enableIconColorConsumer() and disableIconColorConsumer() removed.
+- Utilities.propertyChangeEvent() renamed propertyObserver().
 ### is.codion.framework.domain
 - ValidationException now extends IllegalArgumentException.
 - EntityType.resourceBundleName() now returns Optional.

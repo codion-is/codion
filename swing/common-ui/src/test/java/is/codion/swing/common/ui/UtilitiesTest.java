@@ -73,11 +73,11 @@ public class UtilitiesTest {
 	}
 
 	@Test
-	void propertyChangeObserver() {
+	void propertyObserver() {
 		JTextField textField = new JTextField();
 		AtomicInteger counter = new AtomicInteger();
 		Observer<Integer> alignmentObserver =
-						Utilities.propertyChangeEvent(textField, "horizontalAlignment");
+						Utilities.propertyObserver(textField, "horizontalAlignment");
 		alignmentObserver.addListener(counter::incrementAndGet);
 		textField.setHorizontalAlignment(SwingConstants.RIGHT);
 		assertEquals(1, counter.get());
