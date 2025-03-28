@@ -529,23 +529,11 @@ public interface Entity extends Comparable<Entity> {
 		boolean isNull();
 
 		/**
-		 * @return true if no non-nullable values are null
-		 */
-		boolean isNotNull();
-
-		/**
 		 * Returns true if a null value is mapped to the given column or no mapping exists.
 		 * @param column the column
 		 * @return true if the value mapped to the given column is null or none exists
 		 */
 		boolean isNull(Column<?> column);
-
-		/**
-		 * Returns true if a non-null value is mapped to the given column.
-		 * @param column the column
-		 * @return true if a non-null value is mapped to the given column
-		 */
-		boolean isNotNull(Column<?> column);
 
 		/**
 		 * Returns this keys column. Note that this method throws an exception if this key is a composite key.

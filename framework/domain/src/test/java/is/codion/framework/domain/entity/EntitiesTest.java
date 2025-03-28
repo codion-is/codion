@@ -160,7 +160,7 @@ public final class EntitiesTest {
 						.with(KeyTest.ID2, 2)
 						.with(KeyTest.ID3, 3)
 						.build();
-		assertTrue(key.isNotNull());
+		assertFalse(key.isNull());
 		assertEquals(6, key.hashCode());
 		assertTrue(key.optional(KeyTest.ID1).isPresent());
 
@@ -172,7 +172,7 @@ public final class EntitiesTest {
 		key = key.copy()
 						.with(KeyTest.ID3, null)
 						.build();
-		assertTrue(key.isNotNull());
+		assertFalse(key.isNull());
 		assertEquals(4, key.hashCode());
 		key = key.copy()
 						.with(KeyTest.ID2, null)
@@ -184,13 +184,13 @@ public final class EntitiesTest {
 						.with(KeyTest.ID2, 4)
 						.build();
 		assertTrue(key.optional(KeyTest.ID2).isPresent());
-		assertTrue(key.isNotNull());
+		assertFalse(key.isNull());
 		assertEquals(5, key.hashCode());
 
 		key = key.copy()
 						.with(KeyTest.ID2, 42)
 						.build();
-		assertTrue(key.isNotNull());
+		assertFalse(key.isNull());
 		assertEquals(43, key.hashCode());
 
 		assertFalse(entities.builder(NoPk.TYPE).key()

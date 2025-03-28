@@ -207,18 +207,8 @@ class DefaultKey implements Entity.Key, Serializable {
 	}
 
 	@Override
-	public boolean isNotNull() {
-		return !isNull();
-	}
-
-	@Override
 	public boolean isNull(Column<?> column) {
 		return get(column) == null;
-	}
-
-	@Override
-	public boolean isNotNull(Column<?> column) {
-		return !isNull(column);
 	}
 
 	private Integer computeHashCode() {

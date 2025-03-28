@@ -38,25 +38,20 @@ public final class DefaultKeyTest {
 	void compositeKeyNull() {
 		Entity master = ENTITIES.entity(CompositeMaster.TYPE);
 		assertTrue(master.primaryKey().isNull());
-		assertFalse(master.primaryKey().isNotNull());
 
 		master.put(CompositeMaster.COMPOSITE_MASTER_ID_2, 2);
 		master.put(CompositeMaster.COMPOSITE_MASTER_ID_3, 3);
 		assertFalse(master.primaryKey().isNull());
-		assertTrue(master.primaryKey().isNotNull());
 
 		master.put(CompositeMaster.COMPOSITE_MASTER_ID, null);
 		assertFalse(master.primaryKey().isNull());
-		assertTrue(master.primaryKey().isNotNull());
 
 		master.put(CompositeMaster.COMPOSITE_MASTER_ID, 2);
 		master.put(CompositeMaster.COMPOSITE_MASTER_ID_2, null);
 		assertTrue(master.primaryKey().isNull());
-		assertFalse(master.primaryKey().isNotNull());
 
 		master.put(CompositeMaster.COMPOSITE_MASTER_ID, null);
 		assertTrue(master.primaryKey().isNull());
-		assertFalse(master.primaryKey().isNotNull());
 	}
 
 	@Test
@@ -70,7 +65,7 @@ public final class DefaultKeyTest {
 		key = key.copy()
 						.with(Detail.ID, 1L)
 						.build();
-		assertTrue(key.isNotNull());
+		assertFalse(key.isNull());
 	}
 
 	@Test

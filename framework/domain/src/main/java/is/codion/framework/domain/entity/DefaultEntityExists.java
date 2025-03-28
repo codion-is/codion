@@ -29,6 +29,6 @@ final class DefaultEntityExists implements Predicate<Entity>, Serializable {
 
 	@Override
 	public boolean test(Entity entity) {
-		return entity.originalPrimaryKey().isNotNull();
+		return !entity.originalPrimaryKey().isNull();
 	}
 }

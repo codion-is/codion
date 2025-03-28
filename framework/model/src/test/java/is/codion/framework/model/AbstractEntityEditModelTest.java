@@ -172,7 +172,7 @@ public final class AbstractEntityEditModelTest {
 		editor.set(employee);
 		Entity copyWithPrimaryKeyValue = editor.get();
 		assertEquals(employee, copyWithPrimaryKeyValue);
-		assertTrue(copyWithPrimaryKeyValue.primaryKey().isNotNull());
+		assertFalse(copyWithPrimaryKeyValue.primaryKey().isNull());
 	}
 
 	@Test
@@ -265,7 +265,7 @@ public final class AbstractEntityEditModelTest {
 		assertTrue(editor.get().primaryKey().isNull(), "Active entity primary key is not null after defaults are set");
 
 		editor.set(employee);
-		assertTrue(editor.get().primaryKey().isNotNull(), "Active entity primary key is null after entity is set");
+		assertFalse(editor.get().primaryKey().isNull(), "Active entity primary key is null after entity is set");
 
 		Integer originalEmployeeId = editor.value(Employee.ID).get();
 		editor.value(Employee.ID).clear();
@@ -376,7 +376,7 @@ public final class AbstractEntityEditModelTest {
 			employeeEditModel.insert();
 			assertTrue(editor.exists().get());
 			Entity entityCopy = editor.get();
-			assertTrue(entityCopy.primaryKey().isNotNull());
+			assertFalse(entityCopy.primaryKey().isNull());
 			assertEquals(entityCopy.primaryKey(), entityCopy.originalPrimaryKey());
 
 			editor.value(Employee.NAME).set("Bobby");

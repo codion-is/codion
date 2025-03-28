@@ -185,7 +185,7 @@ public class DomainTest {
 		try {
 			Entity insertedEntity = connection.insertSelect(entity);
 			assertEquals(entity.primaryKey(), insertedEntity.primaryKey());
-			assertTrue(entity.primaryKey().isNotNull());
+			assertFalse(entity.primaryKey().isNull());
 			entity.definition().columns().definitions().stream()
 							.filter(ColumnDefinition::insertable)
 							.forEach(columnDefinition -> assertValueEqual(columnDefinition, entity, insertedEntity));
