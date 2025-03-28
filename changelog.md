@@ -21,6 +21,7 @@ Codion Change Log
 - AttributeDefinition.minimumValue() and maximumValue() now return Optional.
 - AttributeDefinition.format(), dateTimePattern() and dateTimeFormatter() now return Optional.
 - AttributeDefinition.description() now returns Optional.
+- Entity.isNotNull() removed.
 ### is.codion.framework.model
 - AbstractEntityEditModel.refresh() bug fixed, now handles the case when a primary key attribute has been modified.
 - AbstractEntityTableModel.refresh(keys) bug fixed, now includes the same attributes as the query model, when selecting.

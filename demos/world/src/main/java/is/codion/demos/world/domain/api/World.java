@@ -162,7 +162,7 @@ public interface World {
 			if (attribute.equals(City.POPULATION)) {
 				// population is guaranteed to be non-null after the call to super.validate()
 				Integer cityPopulation = city.get(City.POPULATION);
-				if (city.isNotNull(City.COUNTRY_FK)) {
+				if (!city.isNull(City.COUNTRY_FK)) {
 					Entity country = city.get(City.COUNTRY_FK);
 					Integer countryPopulation = country.get(Country.POPULATION);
 					if (countryPopulation != null && cityPopulation > countryPopulation) {
@@ -185,7 +185,7 @@ public interface World {
 		public Integer get(SourceValues values) {
 			Double percentage = values.get(CountryLanguage.PERCENTAGE);
 			Entity country = values.get(CountryLanguage.COUNTRY_FK);
-			if (percentage != null && country != null && country.isNotNull(Country.POPULATION)) {
+			if (percentage != null && country != null && !country.isNull(Country.POPULATION)) {
 				return Double.valueOf(country.get(Country.POPULATION) * (percentage / 100)).intValue();
 			}
 

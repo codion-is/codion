@@ -166,7 +166,7 @@ final class EntityPopupMenu extends JPopupMenu {
 	private static Entity populateEntityGraph(Entity entity, EntityConnection connection, Set<ForeignKeyEntity> visited) {
 		for (ForeignKey foreignKey : entity.definition().foreignKeys().get()) {
 			Entity.Key key = entity.key(foreignKey);
-			if (entity.isNotNull(foreignKey)) {
+			if (!entity.isNull(foreignKey)) {
 				ForeignKeyEntity foreignKeyEntity = new ForeignKeyEntity(foreignKey, select(key, connection));
 				if (visited.contains(foreignKeyEntity)) {
 					entity.put(foreignKey, duplicate(foreignKeyEntity.entity));

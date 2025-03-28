@@ -155,14 +155,6 @@ public interface Entity extends Comparable<Entity> {
 	boolean isNull(Attribute<?> attribute);
 
 	/**
-	 * Returns true if this Entity contains a non-null value mapped to the given attribute.
-	 * In case of foreign keys the value of the underlying reference column(s) is checked.
-	 * @param attribute the attribute
-	 * @return true if a non-null value is mapped to the given attribute
-	 */
-	boolean isNotNull(Attribute<?> attribute);
-
-	/**
 	 * Returns true if this Entity contains a value for the given attribute, that value can be null.
 	 * @param attribute the attribute
 	 * @return true if a value is mapped to this attribute

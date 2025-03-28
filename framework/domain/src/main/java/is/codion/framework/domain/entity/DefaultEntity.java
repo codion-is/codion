@@ -162,11 +162,6 @@ class DefaultEntity implements Entity, Serializable {
 	}
 
 	@Override
-	public final boolean isNotNull(Attribute<?> attribute) {
-		return !isNull(attribute);
-	}
-
-	@Override
 	public final boolean modified(Attribute<?> attribute) {
 		definition.attributes().definition(attribute);
 		return isModified(attribute);

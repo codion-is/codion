@@ -252,7 +252,6 @@ public final class EntityTest {
 		for (AttributeDefinition<?> definition : entities.definition(Department.TYPE).attributes().definitions()) {
 			assertFalse(dept.contains(definition.attribute()));
 			assertTrue(dept.isNull(definition.attribute()));
-			assertFalse(dept.isNotNull(definition.attribute()));
 		}
 		for (AttributeDefinition<?> definition : entities.definition(Department.TYPE).attributes().definitions()) {
 			dept.put(definition.attribute(), null);
@@ -262,7 +261,6 @@ public final class EntityTest {
 		for (AttributeDefinition<?> definition : entities.definition(Department.TYPE).attributes().definitions()) {
 			assertTrue(dept.contains(definition.attribute()));
 			assertTrue(dept.isNull(definition.attribute()));
-			assertFalse(dept.isNotNull(definition.attribute()));
 		}
 	}
 

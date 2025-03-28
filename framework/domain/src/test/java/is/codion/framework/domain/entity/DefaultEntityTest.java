@@ -410,7 +410,6 @@ public class DefaultEntityTest {
 		assertEquals(masterName, testEntity.get(Detail.MASTER_NAME));
 		assertEquals(7, testEntity.get(Detail.MASTER_CODE));
 		assertFalse(testEntity.isNull(Detail.MASTER_ID));
-		assertTrue(testEntity.isNotNull(Detail.MASTER_ID));
 
 		testEntity.key(Detail.MASTER_FK);
 
