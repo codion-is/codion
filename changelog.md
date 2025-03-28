@@ -13,6 +13,7 @@ Codion Change Log
 - DefaultInputDialogBuilder.show(closeDialog) bug fixed, now uses onOk() instead of okAction(), which bypassed the valid state.
 - ComponentBuilder.validIndicator(validator) argument now Predicate instead of Consumer.
 - DefaultFilterTableColumnModel.hideColumn() bug fixed, event triggered too early.
+- Icons.ICON_COLOR and iconColor() removed, enableIconColorConsumer() and disableIconColorConsumer() removed.
 ### is.codion.framework.domain
 - ValidationException now extends IllegalArgumentException.
 - EntityType.resourceBundleName() now returns Optional.

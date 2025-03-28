@@ -23,16 +23,13 @@ import is.codion.common.property.PropertyValue;
 import org.kordamp.ikonli.Ikon;
 
 import javax.swing.ImageIcon;
-import javax.swing.UIManager;
-import java.awt.Color;
 
 import static is.codion.common.Configuration.integerValue;
-import static is.codion.common.Configuration.value;
 
 /**
  * Provides icons for ui components.
  * The icon color follows the 'Button.foreground' color of the current Look and feel.
- * Add icons via {@link #add(Ikon...)} (Ikon)} and retrieve them via {@link #icon(Ikon)}.
+ * Add icons via {@link #add(Ikon...)} and retrieve them via {@link #icon(Ikon)}.
  * @see #icons()
  */
 public interface Icons {
@@ -49,15 +46,6 @@ public interface Icons {
 	PropertyValue<Integer> ICON_SIZE = integerValue(Icons.class.getName() + ".iconSize", DEFAULT_ICON_SIZE);
 
 	/**
-	 * The icon color
-	 * <ul>
-	 * <li>Value type: Color
-	 * <li>Default value: UIManager.getColor("Button.foreground")
-	 * </ul>
-	 */
-	PropertyValue<Color> ICON_COLOR = value(Icons.class.getName() + ".iconColor", Color::decode, UIManager.getColor("Button.foreground"));
-
-	/**
 	 * Adds the given ikons to this FrameworkIcons instance. Retrieve an icon via {@link #icon(Ikon)}.
 	 * @param ikons the ikons to add
 	 * @throws IllegalArgumentException in case an icon has already been associated with any of the given ikons
@@ -72,25 +60,6 @@ public interface Icons {
 	 * @see #add(Ikon...)
 	 */
 	ImageIcon icon(Ikon ikon);
-
-	/**
-	 * Sets the icon color
-	 * @param color the color
-	 */
-	void iconColor(Color color);
-
-	/**
-	 * Adds a consumer to the {@link #ICON_COLOR} property value,
-	 * dynamically changing the color of the icons in this instance.
-	 * @return this icons instance
-	 */
-	Icons enableIconColorConsumer();
-
-	/**
-	 * Disables the dynamic color change consumer
-	 * @return this icons instance
-	 */
-	Icons disableIconColorConsumer();
 
 	/**
 	 * @return a new {@link Icons} instance

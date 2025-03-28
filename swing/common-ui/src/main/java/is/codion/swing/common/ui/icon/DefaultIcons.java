@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.icon;
 
+import is.codion.common.value.Value;
+
 import org.kordamp.ikonli.Ikon;
 
 import javax.swing.ImageIcon;
@@ -35,12 +37,18 @@ final class DefaultIcons implements Icons {
 
 	private static final String BUTTON_FOREGROUND_PROPERTY = "Button.foreground";
 
+	static final Value<Color> ICON_COLOR = Value.nonNull(UIManager.getColor(BUTTON_FOREGROUND_PROPERTY));
+
 	private final Map<Ikon, FontImageIcon> icons = new HashMap<>();
 
 	private final OnIconColorChanged onIconColorChanged = new OnIconColorChanged();
 
 	static {
 		UIManager.addPropertyChangeListener(new OnLookAndFeelChanged());
+	}
+
+	DefaultIcons() {
+		ICON_COLOR.addWeakConsumer(onIconColorChanged);
 	}
 
 	@Override
@@ -64,30 +72,12 @@ final class DefaultIcons implements Icons {
 		return icons.get(ikon).imageIcon();
 	}
 
-	@Override
-	public void iconColor(Color color) {
-		requireNonNull(color);
-		icons.values().forEach(icon -> icon.color(color));
-	}
-
-	@Override
-	public Icons enableIconColorConsumer() {
-		ICON_COLOR.addWeakConsumer(onIconColorChanged);
-		return this;
-	}
-
-	@Override
-	public Icons disableIconColorConsumer() {
-		ICON_COLOR.removeWeakConsumer(onIconColorChanged);
-		return this;
-	}
-
 	private final class OnIconColorChanged implements Consumer<Color> {
 
 		@Override
 		public void accept(Color color) {
 			if (color != null) {
-				iconColor(color);
+				icons.values().forEach(icon -> icon.color(color));
 			}
 		}
 	}
