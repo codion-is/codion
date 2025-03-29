@@ -42,6 +42,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -116,7 +117,7 @@ public final class SearchHighlighter {
 	 */
 	public void highlightColor(Color color) {
 		highlightPainter = new DefaultHighlightPainter(requireNonNull(color));
-		updateHighligths();
+		updateHighlights();
 	}
 
 	/**
@@ -124,7 +125,7 @@ public final class SearchHighlighter {
 	 */
 	public void selectedHighlightColor(Color color) {
 		selectedHightlightPainter = new SelectedHighlightPainter(requireNonNull(color));
-		updateHighligths();
+		updateHighlights();
 	}
 
 	/**
@@ -302,11 +303,12 @@ public final class SearchHighlighter {
 		return yPosition;
 	}
 
-	private void updateHighligths() {
+	private void updateHighlights() {
 		Highlight[] highlights = highlighter.getHighlights();
 		highlighter.removeAllHighlights();
 		for (Highlight highlight : highlights) {
-			updateHighlight(highlight, matchPosition(highlight.getStartOffset()));
+			matchPosition(highlight.getStartOffset()).ifPresent(matchPosition ->
+							updateHighlight(highlight, matchPosition));
 		}
 	}
 
@@ -320,11 +322,10 @@ public final class SearchHighlighter {
 		}
 	}
 
-	private MatchPosition matchPosition(int startOffset) {
+	private Optional<MatchPosition> matchPosition(int startOffset) {
 		return searchTextPositions.stream()
 						.filter(matchPosition -> matchPosition.start == startOffset)
-						.findFirst()
-						.orElseThrow(IllegalStateException::new);
+						.findFirst();
 	}
 
 	/**

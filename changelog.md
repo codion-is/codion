@@ -16,6 +16,7 @@ Codion Change Log
 - DefaultFilterTableColumnModel.hideColumn() bug fixed, event triggered too early.
 - Icons.ICON_COLOR and iconColor() removed, enableIconColorConsumer() and disableIconColorConsumer() removed.
 - Utilities.propertyChangeEvent() renamed propertyObserver().
+- SearchHighlighter.updateHighlights() bug fixed, now only tries to update highlight if a matching position is found, failed on look and feel change with text selected.
 ### is.codion.framework.domain
 - ValidationException now extends IllegalArgumentException.
 - EntityType.resourceBundleName() now returns Optional.
