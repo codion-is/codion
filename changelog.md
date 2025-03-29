@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.common.model
 - UserPreferences.getUserPreference(key, defaultValue) now requires a non-null default value, can no longer return null.
 - MultiSelection.Indexes and Items override get() annotated with @NonNull.
+- DefaultConditionModel.isEqualWildcard() bug fixed, bypassed the automic wildcards.
 ### is.codion.swing.common.ui
 - FilterTable bug fixed, doubleClickAction no longer triggered if disabled.
 - ComponentBuilder.toolTipText(Observable<String>) added for a dynamic tool tip.

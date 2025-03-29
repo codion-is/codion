@@ -547,6 +547,14 @@ public class DefaultConditionModelTest {
 		condition.operator().set(Operator.NOT_EQUAL);
 		assertFalse(condition.accepts("HELl"));
 		assertFalse(condition.accepts("hElL"));
+
+		condition.operator().set(Operator.EQUAL);
+		condition.operands().wildcard().set(Wildcard.PREFIX_AND_POSTFIX);
+		assertTrue(condition.accepts("hELlo"));
+		assertTrue(condition.accepts("rhElLoo"));
+		condition.operator().set(Operator.NOT_EQUAL);
+		assertFalse(condition.accepts("hELlo"));
+		assertFalse(condition.accepts("rhElLoo"));
 	}
 
 	@Test

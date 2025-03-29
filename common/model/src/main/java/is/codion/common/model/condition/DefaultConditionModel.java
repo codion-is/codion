@@ -225,7 +225,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 			equalOperand = (T) operands.equalWildcards();
 		}
 		if (comparable instanceof String && ((String) equalOperand).contains(WILDCARD_CHARACTER)) {
-			return isEqualWildcard((String) comparable);
+			return isEqualWildcard((String) comparable, (String) equalOperand);
 		}
 
 		return comparable.compareTo(equalOperand) == 0;
@@ -246,7 +246,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 			equalOperand = (T) operands.equalWildcards();
 		}
 		if (comparable instanceof String && ((String) equalOperand).contains(WILDCARD_CHARACTER)) {
-			return !isEqualWildcard((String) comparable);
+			return !isEqualWildcard((String) comparable, (String) equalOperand);
 		}
 
 		return comparable.compareTo(equalOperand) != 0;
@@ -288,19 +288,9 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		return operand;
 	}
 
-	private boolean isEqualWildcard(String value) {
-		String equalOperand = (String) operands.equal().get();
-		if (equalOperand == null) {
-			equalOperand = "";
-		}
+	private static boolean isEqualWildcard(String value, String equalOperand) {
 		if (equalOperand.equals(WILDCARD_CHARACTER)) {
 			return true;
-		}
-		if (!caseSensitive.get()) {
-			equalOperand = equalOperand.toLowerCase();
-		}
-		if (!equalOperand.contains(WILDCARD_CHARACTER)) {
-			return value.compareTo(equalOperand) == 0;
 		}
 
 		return Pattern.matches(Stream.of(equalOperand.split(WILDCARD_CHARACTER))
