@@ -35,7 +35,7 @@
   "ui": {
     "*": {
       "background": "bg0",
-      "selectionBackground": "bg1",
+      "selectionBackground": "bg5",
       "lightSelectionBackground": "bg1",
       "selectionBackgroundInactive": "bg1",
       "selectionInactiveBackground": "bg1",

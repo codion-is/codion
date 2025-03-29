@@ -39,7 +39,7 @@
       "infoForeground": "teal",
 
       "lightSelectionBackground": "bg1",
-      "selectionBackground": "bg1",
+      "selectionBackground": "bg5",
       "selectionForeground": "fg",
 
       "selectionBackgroundInactive": "bg1",
