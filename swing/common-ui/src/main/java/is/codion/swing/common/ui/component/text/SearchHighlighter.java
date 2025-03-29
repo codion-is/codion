@@ -380,7 +380,7 @@ public final class SearchHighlighter {
 		private Color selectedHighlightColor;
 		private boolean customHighlightColor = false;
 		private boolean customSelectedHighlightColor = false;
-		private boolean caseSensitive = true;
+		private boolean caseSensitive = false;
 		private double scrollYRatio = 0.5;
 		private double scrollXRatio = 0.5;
 

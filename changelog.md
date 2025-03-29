@@ -17,6 +17,7 @@ Codion Change Log
 - Icons.ICON_COLOR and iconColor() removed, enableIconColorConsumer() and disableIconColorConsumer() removed.
 - Utilities.propertyChangeEvent() renamed propertyObserver().
 - SearchHighlighter.updateHighlights() bug fixed, now only tries to update highlight if a matching position is found, failed on look and feel change with text selected.
+- SearchHighlighter, search no longer case-sensitive by default.
 ### is.codion.framework.domain
 - ValidationException now extends IllegalArgumentException.
 - EntityType.resourceBundleName() now returns Optional.
