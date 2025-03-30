@@ -97,20 +97,6 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 		temporalField.set(temporal);
 	}
 
-	/**
-	 * @param transferFocusOnEnter specifies whether focus should be transferred on Enter
-	 */
-	public void transferFocusOnEnter(boolean transferFocusOnEnter) {
-		if (transferFocusOnEnter) {
-			TransferFocusOnEnter.enable(temporalField);
-			TransferFocusOnEnter.enable(button.get());
-		}
-		else {
-			TransferFocusOnEnter.disable(temporalField);
-			TransferFocusOnEnter.disable(button.get());
-		}
-	}
-
 	@Override
 	public void setEnabled(boolean enabled) {
 		super.setEnabled(enabled);
@@ -286,8 +272,9 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 		}
 
 		@Override
-		protected void enableTransferFocusOnEnter(TemporalFieldPanel<T> component) {
-			component.transferFocusOnEnter(true);
+		protected void enableTransferFocusOnEnter(TemporalFieldPanel<T> component, TransferFocusOnEnter transferFocusOnEnter) {
+			transferFocusOnEnter.enable(component.temporalField);
+			component.button.optional().ifPresent(transferFocusOnEnter::enable);
 		}
 
 		@Override

@@ -31,6 +31,7 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.AbstractButton;
 import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.event.FocusAdapter;
@@ -446,9 +447,9 @@ public final class EntitySearchFieldPanel extends JPanel {
 		}
 
 		@Override
-		protected void enableTransferFocusOnEnter(EntitySearchFieldPanel component) {
-			TransferFocusOnEnter.enable(component.searchField());
-			component.buttons.forEach(TransferFocusOnEnter::enable);
+		protected void enableTransferFocusOnEnter(EntitySearchFieldPanel component, TransferFocusOnEnter transferFocusOnEnter) {
+			transferFocusOnEnter.enable(component.searchField);
+			transferFocusOnEnter.enable(component.buttons.toArray(new JComponent[0]));
 		}
 
 		@Override

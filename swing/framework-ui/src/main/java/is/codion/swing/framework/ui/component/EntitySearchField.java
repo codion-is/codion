@@ -60,7 +60,6 @@ import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -79,7 +78,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
@@ -113,7 +111,6 @@ import static is.codion.swing.framework.ui.component.EntitySearchField.ControlKe
 import static is.codion.swing.framework.ui.component.EntitySearchField.SearchIndicator.WAIT_CURSOR;
 import static java.awt.event.FocusEvent.Cause.ACTIVATION;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
-import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.text.MessageFormat.format;
 import static java.util.Arrays.asList;
@@ -188,22 +185,12 @@ public final class EntitySearchField extends HintTextField {
 		private ControlKeys() {}
 	}
 
-	private static final TransferFocusCommand FORWARD = new TransferFocusCommand(true);
-	private static final TransferFocusCommand BACKWARD = new TransferFocusCommand(false);
 	private static final Function<Entity, String> DEFAULT_TO_STRING = Object::toString;
 	private static final String DEFAULT_SEPARATOR = ", ";
 
 	private final EntitySearchModel model;
 	private final State searchEnabled = State.builder()
 					.listener(this::updateColors)
-					.build();
-	private final Control transferFocusForward = Control.builder()
-					.action(FORWARD)
-					.enabled(searchEnabled.not())
-					.build();
-	private final Control transferFocusBackward = Control.builder()
-					.action(BACKWARD)
-					.enabled(searchEnabled.not())
 					.build();
 	private final Function<Entity, String> stringFactory;
 	private final String separator;
@@ -278,27 +265,6 @@ public final class EntitySearchField extends HintTextField {
 	 */
 	public EntitySearchModel model() {
 		return model;
-	}
-
-	/**
-	 * @param transferFocusOnEnter true if this component should transfer focus on Enter
-	 */
-	public void transferFocusOnEnter(boolean transferFocusOnEnter) {
-		KeyEvents.Builder transferForward = KeyEvents.builder(VK_ENTER)
-						.condition(WHEN_FOCUSED)
-						.action(transferFocusForward);
-		KeyEvents.Builder transferBackward = KeyEvents.builder(VK_ENTER)
-						.condition(WHEN_FOCUSED)
-						.modifiers(SHIFT_DOWN_MASK)
-						.action(transferFocusBackward);
-		if (transferFocusOnEnter) {
-			transferForward.enable(this);
-			transferBackward.enable(this);
-		}
-		else {
-			transferForward.disable(this);
-			transferBackward.disable(this);
-		}
 	}
 
 	/**
@@ -1091,26 +1057,6 @@ public final class EntitySearchField extends HintTextField {
 		}
 	}
 
-	private static final class TransferFocusCommand implements Control.ActionCommand {
-
-		private final boolean forward;
-
-		private TransferFocusCommand(boolean forward) {
-			this.forward = forward;
-		}
-
-		@Override
-		public void execute(ActionEvent event) throws Exception {
-			JComponent component = (JComponent) event.getSource();
-			if (forward) {
-				component.transferFocus();
-			}
-			else {
-				component.transferFocusBackward();
-			}
-		}
-	}
-
 	private static final class DefaultBuilderFactory implements Builder.Factory {
 
 		private final EntitySearchModel searchModel;
@@ -1296,11 +1242,6 @@ public final class EntitySearchField extends HintTextField {
 		@Override
 		protected EntitySearchField createComponent() {
 			return new EntitySearchField(this);
-		}
-
-		@Override
-		protected void enableTransferFocusOnEnter(EntitySearchField component) {
-			component.transferFocusOnEnter(true);
 		}
 
 		private static final class ListSelectorFactory implements Function<EntitySearchField, Selector> {

@@ -182,9 +182,8 @@ public final class FileInputPanel extends JPanel {
 		}
 
 		@Override
-		protected final void enableTransferFocusOnEnter(FileInputPanel component) {
-			TransferFocusOnEnter.enable(component.filePathField);
-			TransferFocusOnEnter.enable(component.browseButton);
+		protected final void enableTransferFocusOnEnter(FileInputPanel component, TransferFocusOnEnter transferFocusOnEnter) {
+			transferFocusOnEnter.enable(component.filePathField, component.browseButton);
 		}
 	}
 

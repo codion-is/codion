@@ -61,6 +61,7 @@ import java.util.function.Predicate;
 
 import static is.codion.swing.common.ui.Sizes.*;
 import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
+import static is.codion.swing.common.ui.key.TransferFocusOnEnter.FORWARD_BACKWARD;
 import static java.util.Objects.requireNonNull;
 
 public abstract class AbstractComponentBuilder<T, C extends JComponent, B extends ComponentBuilder<T, C, B>>
@@ -96,7 +97,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	private boolean opaque = false;
 	private boolean visible = true;
 	private Border border;
-	private boolean transferFocusOnEnter = false;
+	private TransferFocusOnEnter transferFocusOnEnter;
 	private String toolTipText;
 	private Observable<String> toolTipTextObservable;
 	private Font font;
@@ -215,7 +216,16 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
 	@Override
 	public final B transferFocusOnEnter(boolean transferFocusOnEnter) {
-		this.transferFocusOnEnter = transferFocusOnEnter;
+		if (transferFocusOnEnter) {
+			return transferFocusOnEnter(FORWARD_BACKWARD);
+		}
+		this.transferFocusOnEnter = null;
+		return self();
+	}
+
+	@Override
+	public final B transferFocusOnEnter(TransferFocusOnEnter transferFocusOnEnter) {
+		this.transferFocusOnEnter = requireNonNull(transferFocusOnEnter);
 		return self();
 	}
 
@@ -522,9 +532,10 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	/**
 	 * Enables focus transfer on Enter, override for special handling
 	 * @param component the component
+	 * @param transferFocusOnEnter the transfer focus on enter to enable
 	 */
-	protected void enableTransferFocusOnEnter(C component) {
-		TransferFocusOnEnter.enable(component);
+	protected void enableTransferFocusOnEnter(C component, TransferFocusOnEnter transferFocusOnEnter) {
+		transferFocusOnEnter.enable(component);
 	}
 
 	/**
@@ -591,8 +602,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		if (onSetVisible != null) {
 			new OnSetVisible<>(component, onSetVisible);
 		}
-		if (transferFocusOnEnter) {
-			enableTransferFocusOnEnter(component);
+		if (transferFocusOnEnter != null) {
+			enableTransferFocusOnEnter(component, transferFocusOnEnter);
 		}
 		if (transferHandler != null) {
 			component.setTransferHandler(transferHandler);

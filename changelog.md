@@ -18,6 +18,8 @@ Codion Change Log
 - Utilities.propertyChangeEvent() renamed propertyObserver().
 - SearchHighlighter.updateHighlights() bug fixed, now only tries to update highlight if a matching position is found, failed on look and feel change with text selected.
 - SearchHighlighter, search no longer case-sensitive by default.
+- TransferFocusOnEnter now an enum.
+- ComponentBuilder.transferFocusOnEnter(TransferFocusOnEnter) added, related refactoring.
 ### is.codion.framework.domain
 - ValidationException now extends IllegalArgumentException.
 - EntityType.resourceBundleName() now returns Optional.
@@ -47,6 +49,7 @@ Codion Change Log
 - EntityTablePanel.updateUI() bug fixed, now includes editPanel.
 - EntityTablePanel, redundant disabling of filters on column hidden removed, handled by FilterTable.
 - EntityTablePanel.Config.QUERY_HIDDEN_COLUMNS replaced with EXCLUDE_HIDDEN_COLUMNS, EntityTablePanel.queryHiddenColumns() removed.
+- EntitySearchField, special handling for transferring focus on enter removed.
 ### is.codion.framework.servlet
 - EntityService.USE_VIRTUAL_THREADS configuration value added.
 - EntityService now configures handlers before starting.

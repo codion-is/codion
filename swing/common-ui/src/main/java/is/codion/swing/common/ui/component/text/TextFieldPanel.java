@@ -149,20 +149,6 @@ public final class TextFieldPanel extends JPanel {
 	}
 
 	/**
-	 * @param transferFocusOnEnter specifies whether focus should be transferred on Enter
-	 */
-	public void transferFocusOnEnter(boolean transferFocusOnEnter) {
-		if (transferFocusOnEnter) {
-			TransferFocusOnEnter.enable(textField);
-			TransferFocusOnEnter.enable(button.get());
-		}
-		else {
-			TransferFocusOnEnter.disable(textField);
-			TransferFocusOnEnter.disable(button.get());
-		}
-	}
-
-	/**
 	 * @return a new builder
 	 */
 	public static Builder builder() {
@@ -413,8 +399,9 @@ public final class TextFieldPanel extends JPanel {
 		}
 
 		@Override
-		protected void enableTransferFocusOnEnter(TextFieldPanel component) {
-			component.transferFocusOnEnter(true);
+		protected void enableTransferFocusOnEnter(TextFieldPanel component, TransferFocusOnEnter transferFocusOnEnter) {
+			transferFocusOnEnter.enable(component.textField);
+			component.button.optional().ifPresent(transferFocusOnEnter::enable);
 		}
 
 		@Override

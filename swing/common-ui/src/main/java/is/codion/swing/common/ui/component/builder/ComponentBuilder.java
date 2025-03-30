@@ -29,10 +29,12 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.key.KeyEvents;
+import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPopupMenu;
+import javax.swing.JTextArea;
 import javax.swing.TransferHandler;
 import javax.swing.border.Border;
 import java.awt.Color;
@@ -71,7 +73,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 *   ComponentValue<String, JTextField> componentValue =
 	 *            (ComponentValue<String, JTextField>)
 	 *                    textField.getClientProperty(COMPONENT_VALUE);
-	 * }
+	 *}
 	 * @see JComponent#getClientProperty(Object)
 	 */
 	String COMPONENT_VALUE = "componentValue";
@@ -162,11 +164,20 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	B border(Border border);
 
 	/**
-	 * Note that for JTextArea CTRL is added to move focus forward and CTRL + SHIFT to move it backwards
-	 * @param transferFocusOnEnter if true then the text field transfer focus on enter (shift-enter for backwards)
+	 * <p>Note that in case of {@link JTextArea} the {@link java.awt.event.InputEvent#CTRL_DOWN_MASK}
+	 * modifier is added for transferring the focus forward.
+	 * @param transferFocusOnEnter if true then the compnent transfers focus on enter (shift-enter for backwards)
 	 * @return this builder instance
 	 */
 	B transferFocusOnEnter(boolean transferFocusOnEnter);
+
+	/**
+	 * <p>Note that in case of {@link JTextArea} the {@link java.awt.event.InputEvent#CTRL_DOWN_MASK}
+	 * modifier is added for transferring the focus forward.
+	 * @param transferFocusOnEnter the transfer focus on enter to enable
+	 * @return this builder instance
+	 */
+	B transferFocusOnEnter(TransferFocusOnEnter transferFocusOnEnter);
 
 	/**
 	 * @param toolTipText a static tool tip text
@@ -212,7 +223,6 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 * @return this builder instance
 	 * @see #validIndicatorFactory(ValidIndicatorFactory)
 	 * @see is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory
-	 *
 	 */
 	B validIndicator(ObservableState valid);
 

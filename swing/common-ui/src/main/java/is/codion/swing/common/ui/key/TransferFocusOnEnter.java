@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.key;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JTextArea;
 import java.awt.event.ActionEvent;
@@ -26,87 +27,87 @@ import java.awt.event.ActionEvent;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_ENTER;
-import static javax.swing.JComponent.WHEN_FOCUSED;
+import static java.util.Objects.requireNonNull;
 
 /**
- * A utility class for adding focus traversal events based on the Enter key.
+ * A utility enum for enabled focus traversal based on the Enter key.
  */
-public final class TransferFocusOnEnter {
-
-	private static final TransferFocusAction FORWARD = new TransferFocusAction(false);
-	private static final TransferFocusAction BACKWARD = new TransferFocusAction(true);
-
-	private TransferFocusOnEnter() {}
+public enum TransferFocusOnEnter {
 
 	/**
-	 * Adds a key event to the component which transfers focus on enter, and backwards if SHIFT is down.
-	 * Note that for JTextArea CTRL is added to move focus forward.
-	 * @param component the component
-	 * @param <T> the component type
-	 * @return the component
-	 * @see #disable(JComponent)
+	 * <p>Transfer the focus forward when Enter is pressed.
+	 * <p>Note that in case of {@link JTextArea} the {@link java.awt.event.InputEvent#CTRL_DOWN_MASK} modifier is added.
 	 */
-	public static <T extends JComponent> T enable(T component) {
-		forwardBuilder(component).enable(component);
-		backwardsBuilder().enable(component);
-
-		return component;
-	}
+	FORWARD {
+		@Override
+		public void enable(JComponent... components) {
+			for (JComponent component : requireNonNull(components)) {
+				forward(component).enable(component);
+			}
+		}
+	},
+	/**
+	 * <p>Transfer the focus backward when Enter is pressed with the
+	 * {@link java.awt.event.InputEvent#SHIFT_DOWN_MASK} modifier enabled.
+	 */
+	BACKWARD {
+		@Override
+		public void enable(JComponent... components) {
+			for (JComponent component : requireNonNull(components)) {
+				backward().enable(component);
+			}
+		}
+	},
+	/**
+	 * <p>Transfer the focus forward when Enter is pressed and backward when Enter
+	 * is pressed with the {@link java.awt.event.InputEvent#SHIFT_DOWN_MASK} modifier enabled.
+	 * <p>Note that in case of {@link JTextArea} the {@link java.awt.event.InputEvent#CTRL_DOWN_MASK}
+	 * modifier is added for the forward trigger.
+	 */
+	FORWARD_BACKWARD {
+		@Override
+		public void enable(JComponent... components) {
+			FORWARD.enable(components);
+			BACKWARD.enable(components);
+		}
+	};
 
 	/**
-	 * Disables the transfer focus action added via {@link #enable(JComponent)}
-	 * @param component the component
-	 * @param <T> the component type
-	 * @return the component
+	 * @param components the components for which to enable focus transfer on enter
 	 */
-	public static <T extends JComponent> T disable(T component) {
-		forwardBuilder(component).disable(component);
-		backwardsBuilder().disable(component);
+	public abstract void enable(JComponent... components);
 
-		return component;
-	}
+	private static final Action TRANSFER_FOCUS_FORWARD = new TransferFocusAction(false);
+	private static final Action TRANSFER_FOCUS_BACKWARD = new TransferFocusAction(true);
 
-	private static KeyEvents.Builder backwardsBuilder() {
+	private static KeyEvents.Builder backward() {
 		return KeyEvents.builder(VK_ENTER)
 						.modifiers(SHIFT_DOWN_MASK)
-						.condition(WHEN_FOCUSED)
-						.action(BACKWARD);
+						.action(TRANSFER_FOCUS_BACKWARD);
 	}
 
-	private static <T extends JComponent> KeyEvents.Builder forwardBuilder(T component) {
+	private static <T extends JComponent> KeyEvents.Builder forward(T component) {
 		return KeyEvents.builder(VK_ENTER)
 						.modifiers(component instanceof JTextArea ? CTRL_DOWN_MASK : 0)
-						.condition(WHEN_FOCUSED)
-						.action(FORWARD);
+						.action(TRANSFER_FOCUS_FORWARD);
 	}
 
-	/**
-	 * An action which transfers focus either forward or backward for a given component
-	 */
 	private static final class TransferFocusAction extends AbstractAction {
 
 		private final boolean backward;
 
-		/**
-		 * @param backward if true the focus is transferred backward
-		 */
 		private TransferFocusAction(boolean backward) {
-			super(backward ? "TransferFocusOnEnter.transferFocusBackward" : "KeyTransferFocusOnEnter.transferFocusForward");
 			this.backward = backward;
 		}
 
-		/**
-		 * Transfers focus according the value of {@code backward}
-		 * @param e the action event
-		 */
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			JComponent source = (JComponent) e.getSource();
+			JComponent component = (JComponent) e.getSource();
 			if (backward) {
-				source.transferFocusBackward();
+				component.transferFocusBackward();
 			}
 			else {
-				source.transferFocus();
+				component.transferFocus();
 			}
 		}
 	}
