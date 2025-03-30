@@ -559,10 +559,9 @@ public final class DomainSource {
 		}
 		column.description()
 						.filter(description -> !description.isEmpty())
-						.ifPresent(description -> {
-							builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".description(")
-											.append("\"").append(description).append("\")");
-						});
+						.ifPresent(description ->
+										builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT)
+														.append(".description(").append("\"").append(description).append("\")"));
 
 		return builder.toString();
 	}

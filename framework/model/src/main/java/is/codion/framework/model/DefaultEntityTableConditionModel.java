@@ -192,13 +192,13 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 			case NOT_EQUAL:
 				return notEqualCondition(conditionModel, column);
 			case LESS_THAN:
-				return column.lessThan(operands.upper().get());
+				return column.lessThan(operands.upper().getOrThrow());
 			case LESS_THAN_OR_EQUAL:
-				return column.lessThanOrEqualTo(operands.upper().get());
+				return column.lessThanOrEqualTo(operands.upper().getOrThrow());
 			case GREATER_THAN:
-				return column.greaterThan(operands.lower().get());
+				return column.greaterThan(operands.lower().getOrThrow());
 			case GREATER_THAN_OR_EQUAL:
-				return column.greaterThanOrEqualTo(operands.lower().get());
+				return column.greaterThanOrEqualTo(operands.lower().getOrThrow());
 			case BETWEEN_EXCLUSIVE:
 				return betweenExclusiveCondition(operands.lower().get(), operands.upper().get(), column);
 			case BETWEEN:

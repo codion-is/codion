@@ -254,7 +254,7 @@ public final class EntityDialogs {
 		EntitySelectionDialogBuilder includeSearchButton(boolean includeSearchButton);
 
 		/**
-		 * Displays the {@link EntityTablePanel} for selecting a one or more entities
+		 * Displays the {@link EntityTablePanel} for selecting one or more entities
 		 * @return a List containing the selected entities or an empty list in case the selection was cancelled
 		 */
 		List<Entity> select();

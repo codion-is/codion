@@ -1257,8 +1257,8 @@ public class EntityTablePanel extends JPanel {
 						.separator()
 						.control(Control.builder()
 										.toggle(tableModel.queryModel().conditionRequired())
-										.name(MESSAGES.getString("require_query_condition"))
-										.description(MESSAGES.getString("require_query_condition_description")))
+										.name(MESSAGES.getString("condition_required"))
+										.description(MESSAGES.getString("condition_required_description")))
 						.build();
 	}
 

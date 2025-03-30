@@ -31,7 +31,6 @@ import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.db.result.ResultIterator;
-import is.codion.common.db.result.ResultPacker;
 import is.codion.common.logging.MethodLogger;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.user.User;
@@ -1164,10 +1163,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
 	private <T> List<T> packResult(ColumnDefinition<T> columnDefinition, ResultSet resultSet) throws SQLException {
 		SQLException packingException = null;
-		List<T> result = emptyList();
+		List<T> result = new ArrayList<>();
 		try {
 			logEntry(PACK_RESULT);
-			result = resultPacker(columnDefinition).pack(resultSet);
+			while (resultSet.next()) {
+				result.add(columnDefinition.get(resultSet, 1));
+			}
 
 			return result;
 		}
@@ -1376,10 +1377,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 																		boolean includeNonUpdatable) {
 		return column.insertable() && (includeNonUpdatable || column.updatable())
 						&& (includePrimaryKeyColumns || !column.primaryKey());
-	}
-
-	private static <T> ResultPacker<T> resultPacker(ColumnDefinition<T> columnDefinition) {
-		return resultSet -> columnDefinition.get(resultSet, 1);
 	}
 
 	private static PreparedStatement setParameterValues(PreparedStatement statement, List<ColumnDefinition<?>> statementColumns,

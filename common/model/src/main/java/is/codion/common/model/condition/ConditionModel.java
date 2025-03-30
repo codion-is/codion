@@ -210,12 +210,13 @@ public interface ConditionModel<T> {
 		 * @return the {@link #equal()} operand, assuming it is a String, with wildcards added
 		 * @see #wildcard()
 		 */
-		default String equalWildcards() {
-			if (equal().isNull()) {
-				return (String) equal().get();
+		default @Nullable String equalWildcards() {
+			String equalOperand = (String) equal().get();
+			if (equalOperand != null) {
+				return addWildcard(equalOperand, wildcard().getOrThrow());
 			}
 
-			return addWildcard((String) equal().get(), wildcard().getOrThrow());
+			return null;
 		}
 
 		/**

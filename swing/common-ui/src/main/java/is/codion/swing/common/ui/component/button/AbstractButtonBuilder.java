@@ -328,7 +328,8 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
 
 	static ButtonModel createButtonModel(ToggleControl toggleControl) {
 		ButtonModel buttonModel = toggleControl.value().isNullable() ?
-						new NullableToggleButtonModel(toggleControl.value().get()) : createToggleButtonModel(toggleControl.value().get());
+						new NullableToggleButtonModel(toggleControl.value().get()) :
+						createToggleButtonModel(toggleControl.value().getOrThrow());
 		buttonModel.setEnabled(toggleControl.enabled().get());
 		toggleControl.enabled().addConsumer(new SetEnabled(buttonModel));
 		new BooleanButtonModelValue(buttonModel).link(toggleControl.value());

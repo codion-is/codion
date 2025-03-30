@@ -707,7 +707,6 @@ is/codion/swing/common/ui/dialog/ExceptionPanel_is_IS.properties
 
 |close|Close|Loka
 |close_dialog|Close this dialog|Loka glugga
-|close_mnemonic|C|L
 |copy_mnemonic|C|A
 |copy_to_clipboard|Copy text to clipboard|Afrita texta á klippiborð
 |details|Details|Meira
@@ -819,14 +818,14 @@ is/codion/swing/framework/ui/EntityTablePanel_is_IS.properties
 
 |clear_selection_tip|Clear selection|Hreinsa val
 |columns|Columns|Dálkar
+|condition_required|Condition Required|Leitarskilyrðis krafist
+|condition_required_description|One or more active search conditions required for displaying data|Eins eða fleiri virkra leitarskilyrða krafist til að sækja gögn
 |decrement_selection_tip|Move selection up|Færa val upp
 |delete_dependent_records|Delete these dependent records first|Eyddu þessum tengdu færslum fyrst
 |filtered|filtered|sýjaðar
 |increment_selection_tip|Move selection down|Færa val niður
 |limited_to|Limited to|Takmarkað við
 |refreshing|Refreshing|Endurhleð
-|require_query_condition|Search Condition Required|Krefjast Leitarskilyrðis
-|require_query_condition_description|One or more active search conditions required for displaying data|Eins eða fleiri leitarskilyrða krafist til að sækja gögn
 |row_limit|Row limit|Fjöldatakmörkun
 |selected|selected|valdar
 |show_condition_panel|Show Condition Panel|Sýna Leitarflöt

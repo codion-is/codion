@@ -502,7 +502,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 	private final class InOperandsValidator implements Value.Validator<Set<T>> {
 
 		@Override
-		public void validate(@Nullable Set<T> values) {
+		public void validate(Set<T> values) {
 			for (T value : values) {
 				requireNonNull(value, "In operands must not be null");
 			}
