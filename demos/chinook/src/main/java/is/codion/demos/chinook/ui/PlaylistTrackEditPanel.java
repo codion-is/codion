@@ -19,8 +19,8 @@
 package is.codion.demos.chinook.ui;
 
 import is.codion.demos.chinook.domain.api.Chinook.PlaylistTrack;
-import is.codion.demos.chinook.model.PlaylistTrackEditModel;
 import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.border.EmptyBorder;
@@ -31,7 +31,7 @@ import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 
 final class PlaylistTrackEditPanel extends EntityEditPanel {
 
-	PlaylistTrackEditPanel(PlaylistTrackEditModel editModel) {
+	PlaylistTrackEditPanel(SwingEntityEditModel editModel) {
 		super(editModel, config -> config
 						// Skip confirmation when deleting
 						.deleteConfirmer(Confirmer.NONE));

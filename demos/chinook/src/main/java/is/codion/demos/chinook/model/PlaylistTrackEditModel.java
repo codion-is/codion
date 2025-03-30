@@ -23,20 +23,24 @@ import is.codion.demos.chinook.domain.api.Chinook.PlaylistTrack;
 import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
 public final class PlaylistTrackEditModel extends SwingEntityEditModel {
 
 	public PlaylistTrackEditModel(EntityConnectionProvider connectionProvider) {
 		super(PlaylistTrack.TYPE, connectionProvider);
+		// So that the track editor value is cleared after a track is added
 		editor().value(PlaylistTrack.TRACK_FK).persist().set(false);
 		// Set the search model condition, so the search results
-		// won't contain tracks already in the currently selected playlist
-		editor().value(PlaylistTrack.PLAYLIST_FK).addConsumer(this::excludePlaylistTracks);
+		// won't contain tracks already in the selected playlist
+		searchModel(PlaylistTrack.TRACK_FK).condition().set(this::excludePlaylistTracks);
 	}
 
-	private void excludePlaylistTracks(Entity playlist) {
-		searchModel(PlaylistTrack.TRACK_FK).condition().set(() -> playlist == null ? null :
-						Track.NOT_IN_PLAYLIST.get(Playlist.ID, playlist.get(Playlist.ID)));
+	private Condition excludePlaylistTracks() {
+		Entity playlist = editor().value(PlaylistTrack.PLAYLIST_FK).getOrThrow();
+
+		// Use a custom subquery based condition, see domain model implementation
+		return Track.NOT_IN_PLAYLIST.get(Playlist.ID, playlist.get(Playlist.ID));
 	}
 }

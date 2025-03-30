@@ -24,7 +24,7 @@ import is.codion.framework.i18n.FrameworkMessages;
 import java.util.Locale;
 
 /**
- * Replace the english insert caption/mnemonic Add/A with Insert/I.
+ * Replace the english modified warning text and title.
  */
 public final class ChinookResources implements Resources {
 
@@ -38,8 +38,8 @@ public final class ChinookResources implements Resources {
 	public String getString(String baseBundleName, String key, String defaultString) {
 		if (english && baseBundleName.equals(FRAMEWORK_MESSAGES)) {
 			return switch (key) {
-				case "insert" -> "Insert";
-				case "insert_mnemonic" -> "I";
+				case "modified_warning" -> "Unsaved changes will be lost, continue?";
+				case "modified_warning_title" -> "Unsaved changes";
 				default -> defaultString;
 			};
 		}

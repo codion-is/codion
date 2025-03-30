@@ -20,7 +20,6 @@ package is.codion.demos.chinook.ui;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.demos.chinook.domain.api.Chinook.PlaylistTrack;
-import is.codion.demos.chinook.model.PlaylistTrackEditModel;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -34,19 +33,27 @@ import javax.swing.JComponent;
 public final class PlaylistTrackTablePanel extends EntityTablePanel {
 
 	public PlaylistTrackTablePanel(SwingEntityTableModel tableModel) {
-		// We provide an edit panel, which becomes available via
-		// double click and keyboard shortcuts, instead of embedding it
-		super(tableModel, new PlaylistTrackEditPanel((PlaylistTrackEditModel) tableModel.editModel()), config -> config
-						// Custom component for editing tracks
-						.editComponentFactory(PlaylistTrack.TRACK_FK, new TrackEditComponentFactory(PlaylistTrack.TRACK_FK))
+		// We provide an edit panel to use when adding a new row. The Add action
+		// is available via the popup menu, toolbar and keyboard shortcut (INSERT)
+		super(tableModel, new PlaylistTrackEditPanel(tableModel.editModel()), config -> config
 						// Custom condition component factory for the track condition panel
-						.conditionComponentFactory(PlaylistTrack.TRACK_FK, new TrackConditionComponentFactory(tableModel.entityDefinition()))
+						.conditionComponentFactory(PlaylistTrack.TRACK_FK,
+										new TrackConditionComponentFactory(tableModel.entityDefinition()))
 						// Skip confirmation when deleting
 						.deleteConfirmer(Confirmer.NONE)
-						// No need for the edit toolbar control
+						// No need to edit individual rows, we just add or delete
+						.includeEditAttributeControl(false)
 						.includeEditControl(false));
-		table().columnModel()
-						.visible().set(PlaylistTrack.TRACK_FK, PlaylistTrack.ARTIST, PlaylistTrack.ALBUM);
+		// Hide the playlist column
+		table().columnModel().visible(PlaylistTrack.PLAYLIST_FK).set(false);
+	}
+
+	@Override
+	protected void setupControls() {
+		// Modify the ADD control so that it is only enabled when a playlist is selected
+		control(ControlKeys.ADD).map(control -> control.copy()
+						.enabled(tableModel().editModel().editor().isNull(PlaylistTrack.PLAYLIST_FK).not())
+						.build());
 	}
 
 	// A ComponentFactory, which uses the TrackSelectorFactory, displaying

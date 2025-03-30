@@ -34,7 +34,7 @@ application {
     //no mainModule, since we dont want to run this on the module path, due to non-modular demo domain model dependencies
     mainClass = "is.codion.framework.server.EntityServer"
     applicationDefaultJvmArgs = listOf(
-        "-Xmx256m",
+        "-Xmx512m",
         "-Dcodion.db.url=jdbc:h2:mem:h2db",
         "-Dcodion.db.initScripts=../employees/src/main/sql/create_schema.sql,../chinook/src/main/sql/create_schema.sql,../petclinic/src/main/sql/create_schema.sql,../petstore/src/main/sql/create_schema.sql,../world/src/main/sql/create_schema.sql",
         "-Dcodion.db.countQueries=true",

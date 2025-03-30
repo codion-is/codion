@@ -51,24 +51,38 @@ public final class AlbumEditPanel extends EntityEditPanel {
 						.editPanel(this::createArtistEditPanel);
 		createTextField(Album.TITLE)
 						.columns(15);
-		// We create JList based value for the album tags, on which
-		// we then base the custom AlbumTagPanel component below.
-		ComponentValue<List<String>, JList<String>> tagsValue =
-						createList(new DefaultListModel<String>())
-										.items(Album.TAGS)
-										.buildValue();
-		// We set the Album.COVER component to the custom CoverArtPanel component.
-		component(Album.COVER).set(new CoverArtPanel(editModel().editor().value(Album.COVER)));
+		// We create a custom component for the album tags,
+		// the JList it is based on is automatically associated
+		// with Album.TAGS, since we use the createList() method.
+		AlbumTagPanel albumTagPanel = createAlbumTagPanel();
+		// We create a custom component for the album cover art
+		CoverArtPanel coverArtPanel = new CoverArtPanel(editModel().editor().value(Album.COVER));
+		// We set the CoverArtPanel as the component for Album.COVER,
+		// so that it will appear in the input component selection dialog
+		component(Album.COVER).set(coverArtPanel);
 
 		JPanel centerPanel = flexibleGridLayoutPanel(2, 2)
 						.add(createInputPanel(Album.ARTIST_FK))
 						.add(createInputPanel(Album.TITLE))
-						.add(createInputPanel(Album.TAGS, new AlbumTagPanel(tagsValue)))
+						.add(createInputPanel(Album.TAGS, albumTagPanel))
 						.add(createInputPanel(Album.COVER))
 						.build();
 
 		setLayout(borderLayout());
 		add(centerPanel, BorderLayout.CENTER);
+	}
+
+	private AlbumTagPanel createAlbumTagPanel() {
+		// We create JList based value for the album tags.
+		ComponentValue<List<String>, JList<String>> tagsValue =
+						createList(new DefaultListModel<String>())
+										// The value should be based on the items in
+										// the list as opposed to the selected items
+										.items(Album.TAGS)
+										.buildValue();
+		// We then base the custom AlbumTagPanel component
+		// on the above component value
+		return new AlbumTagPanel(tagsValue);
 	}
 
 	private EntityEditPanel createArtistEditPanel() {
