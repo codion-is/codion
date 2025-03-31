@@ -34,4 +34,5 @@
  * <li>{@link is.codion.framework.domain.entity.attribute.ForeignKeyDefinition#FOREIGN_KEY_FETCH_DEPTH}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 package is.codion.framework.domain.entity;
