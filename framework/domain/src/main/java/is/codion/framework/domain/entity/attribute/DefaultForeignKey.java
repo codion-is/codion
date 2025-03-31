@@ -23,6 +23,8 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.DefaultAttribute.DefaultAttributeDefiner;
 import is.codion.framework.domain.entity.condition.Condition;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -113,12 +115,12 @@ final class DefaultForeignKey implements ForeignKey, Serializable {
 	}
 
 	@Override
-	public Condition equalTo(Entity value) {
+	public Condition equalTo(@Nullable Entity value) {
 		return factory(this).equalTo(value);
 	}
 
 	@Override
-	public Condition notEqualTo(Entity value) {
+	public Condition notEqualTo(@Nullable Entity value) {
 		return factory(this).notEqualTo(value);
 	}
 

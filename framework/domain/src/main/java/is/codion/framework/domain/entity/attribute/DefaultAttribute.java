@@ -23,6 +23,8 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDerivedAttributeDefinitionBuilder;
 import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefinition.DefaultTransientAttributeDefinitionBuilder;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -116,7 +118,7 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 		}
 
 		@Override
-		public T validateType(T value) {
+		public @Nullable T validateType(@Nullable T value) {
 			if (value != null && valueClass != value.getClass() && !valueClass.isAssignableFrom(value.getClass())) {
 				throw new IllegalArgumentException("Value of type " + valueClass +
 								" expected for attribute " + DefaultAttribute.this + ", got: " + value.getClass());

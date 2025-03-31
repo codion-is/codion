@@ -18,6 +18,8 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serializable;
 import java.util.Optional;
 
@@ -39,7 +41,7 @@ public interface DerivedAttribute<T> extends Attribute<T> {
 		 * @return the value associated with the given source attribute
 		 * @throws IllegalArgumentException in case the given attribute is not a source attribute
 		 */
-		<T> T get(Attribute<T> attribute);
+		@Nullable <T> T get(Attribute<T> attribute);
 
 		/**
 		 * Returns the source value associated with the given attribute or an empty {@link Optional}
@@ -61,6 +63,6 @@ public interface DerivedAttribute<T> extends Attribute<T> {
 		 * @param values the source values, mapped to their respective attributes
 		 * @return the derived value
 		 */
-		T get(SourceValues values);
+		@Nullable T get(SourceValues values);
 	}
 }

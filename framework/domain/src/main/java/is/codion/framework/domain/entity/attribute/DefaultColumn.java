@@ -22,6 +22,8 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.DefaultAttribute.DefaultAttributeDefiner;
 import is.codion.framework.domain.entity.condition.ColumnCondition;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.sql.Statement;
@@ -88,52 +90,52 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
 	}
 
 	@Override
-	public ColumnCondition<T> equalTo(T value) {
+	public ColumnCondition<T> equalTo(@Nullable T value) {
 		return factory(this).equalTo(value);
 	}
 
 	@Override
-	public ColumnCondition<T> notEqualTo(T value) {
+	public ColumnCondition<T> notEqualTo(@Nullable T value) {
 		return factory(this).notEqualTo(value);
 	}
 
 	@Override
-	public ColumnCondition<String> equalToIgnoreCase(String value) {
+	public ColumnCondition<String> equalToIgnoreCase(@Nullable String value) {
 		return factory(this).equalToIgnoreCase(value);
 	}
 
 	@Override
-	public ColumnCondition<Character> equalToIgnoreCase(Character value) {
+	public ColumnCondition<Character> equalToIgnoreCase(@Nullable Character value) {
 		return factory(this).equalToIgnoreCase(value);
 	}
 
 	@Override
-	public ColumnCondition<String> notEqualToIgnoreCase(String value) {
+	public ColumnCondition<String> notEqualToIgnoreCase(@Nullable String value) {
 		return factory(this).notEqualToIgnoreCase(value);
 	}
 
 	@Override
-	public ColumnCondition<Character> notEqualToIgnoreCase(Character value) {
+	public ColumnCondition<Character> notEqualToIgnoreCase(@Nullable Character value) {
 		return factory(this).notEqualToIgnoreCase(value);
 	}
 
 	@Override
-	public ColumnCondition<String> like(String value) {
+	public ColumnCondition<String> like(@Nullable String value) {
 		return factory(this).like(value);
 	}
 
 	@Override
-	public ColumnCondition<String> notLike(String value) {
+	public ColumnCondition<String> notLike(@Nullable String value) {
 		return factory(this).notLike(value);
 	}
 
 	@Override
-	public ColumnCondition<String> likeIgnoreCase(String value) {
+	public ColumnCondition<String> likeIgnoreCase(@Nullable String value) {
 		return factory(this).likeIgnoreCase(value);
 	}
 
 	@Override
-	public ColumnCondition<String> notLikeIgnoreCase(String value) {
+	public ColumnCondition<String> notLikeIgnoreCase(@Nullable String value) {
 		return factory(this).notLikeIgnoreCase(value);
 	}
 

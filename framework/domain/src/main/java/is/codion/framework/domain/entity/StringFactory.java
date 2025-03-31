@@ -21,6 +21,8 @@ package is.codion.framework.domain.entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.text.Format;
@@ -244,7 +246,7 @@ public final class StringFactory {
 
 		private final List<Function<Entity, String>> valueProviders = new ArrayList<>();
 
-		private EntityType entityType;
+		private @Nullable EntityType entityType;
 
 		@Override
 		public Builder value(Attribute<?> attribute) {

@@ -21,6 +21,8 @@ package is.codion.framework.domain.entity.condition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
@@ -63,7 +65,7 @@ final class DefaultConditionType implements ConditionType, Serializable {
 	}
 
 	@Override
-	public <T> CustomCondition get(Column<T> column, T value) {
+	public <T> CustomCondition get(Column<T> column, @Nullable T value) {
 		return get(singletonList(requireNonNull(column)), singletonList(value));
 	}
 

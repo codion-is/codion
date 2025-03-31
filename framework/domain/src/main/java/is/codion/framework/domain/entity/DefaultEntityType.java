@@ -26,6 +26,8 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.TypeReference;
 import is.codion.framework.domain.entity.condition.ConditionType;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -52,10 +54,10 @@ final class DefaultEntityType implements EntityType, Serializable {
 
 	private final DomainType domainType;
 	private final String name;
-	private final String resourceBundleName;
+	private final @Nullable String resourceBundleName;
 	private final int hashCode;
 
-	DefaultEntityType(DomainType domainType, String name, String resourceBundleName) {
+	DefaultEntityType(DomainType domainType, String name, @Nullable String resourceBundleName) {
 		this.domainType = requireNonNull(domainType);
 		if (nullOrEmpty(name)) {
 			throw new IllegalArgumentException("name must be a non-empty string");

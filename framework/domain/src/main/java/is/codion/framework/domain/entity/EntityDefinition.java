@@ -29,6 +29,8 @@ import is.codion.framework.domain.entity.condition.ConditionProvider;
 import is.codion.framework.domain.entity.condition.ConditionType;
 import is.codion.framework.domain.entity.query.SelectQuery;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -384,7 +386,7 @@ public interface EntityDefinition {
 		 * @param <T> the attribute type
 		 * @return the attribute with the given name, null if none is found
 		 */
-		<T> Attribute<T> get(String attributeName);
+		<T> @Nullable Attribute<T> get(String attributeName);
 
 		/**
 		 * Returns the attributes selected by default for this entity type.

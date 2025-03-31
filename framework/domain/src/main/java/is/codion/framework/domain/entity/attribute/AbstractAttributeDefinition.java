@@ -23,6 +23,8 @@ import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.EntityType;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.RoundingMode;
@@ -64,7 +66,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 	private static final ValueSupplier<Object> DEFAULT_VALUE_SUPPLIER = new NullDefaultValueSupplier();
 
 	private final Attribute<T> attribute;
-	private final String caption;
+	private final @Nullable String caption;
 	private final String captionResourceKey;
 	private final String mnemonicResourceKey;
 	private final ValueSupplier<T> defaultValueSupplier;
@@ -72,20 +74,20 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 	private final boolean hidden;
 	private final int maximumLength;
 	private final boolean trim;
-	private final Number maximumValue;
-	private final Number minimumValue;
-	private final String description;
+	private final @Nullable Number maximumValue;
+	private final @Nullable Number minimumValue;
+	private final @Nullable String description;
 	private final char mnemonic;
-	private final Format format;
-	private final LocaleDateTimePattern localeDateTimePattern;
+	private final @Nullable Format format;
+	private final @Nullable LocaleDateTimePattern localeDateTimePattern;
 	private final RoundingMode decimalRoundingMode;
 	private final Comparator<T> comparator;
-	private final List<Item<T>> items;
-	private final Map<T, Item<T>> itemMap;
-	private transient String resourceCaption;
-	private transient Character resourceMnemonic;
-	private transient String dateTimePattern;
-	private transient DateTimeFormatter dateTimeFormatter;
+	private final @Nullable List<Item<T>> items;
+	private final @Nullable Map<T, Item<T>> itemMap;
+	private transient @Nullable String resourceCaption;
+	private transient @Nullable Character resourceMnemonic;
+	private transient @Nullable String dateTimePattern;
+	private transient @Nullable DateTimeFormatter dateTimeFormatter;
 
 	protected AbstractAttributeDefinition(AbstractAttributeDefinitionBuilder<T, ?> builder) {
 		requireNonNull(builder);
@@ -144,7 +146,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 	}
 
 	@Override
-	public final T defaultValue() {
+	public final @Nullable T defaultValue() {
 		return defaultValueSupplier.get();
 	}
 
@@ -199,7 +201,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 	}
 
 	@Override
-	public final boolean validItem(T value) {
+	public final boolean validItem(@Nullable T value) {
 		return itemMap == null || itemMap.containsKey(value);
 	}
 
@@ -304,7 +306,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 		return value.toString();
 	}
 
-	private String dateTimePatternInternal() {
+	private @Nullable String dateTimePatternInternal() {
 		if (dateTimePattern == null) {
 			dateTimePattern = localeDateTimePattern == null ? defaultDateTimePattern() : localeDateTimePattern.dateTimePattern();
 		}
@@ -312,7 +314,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 		return dateTimePattern;
 	}
 
-	private DateTimeFormatter dateTimeFormatterInternal() {
+	private @Nullable DateTimeFormatter dateTimeFormatterInternal() {
 		if (dateTimeFormatter == null) {
 			String pattern = dateTimePatternInternal();
 			dateTimeFormatter = pattern == null ? null : ofPattern(pattern);
@@ -330,7 +332,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 		return value + " <" + INVALID_ITEM_SUFFIX + ">";
 	}
 
-	private String defaultDateTimePattern() {
+	private @Nullable String defaultDateTimePattern() {
 		if (attribute.type().isLocalDate()) {
 			return DATE_FORMAT.getOrThrow();
 		}
@@ -352,14 +354,14 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 		@Serial
 		private static final long serialVersionUID = 1;
 
-		private final T defaultValue;
+		private final @Nullable T defaultValue;
 
-		DefaultValueSupplier(T defaultValue) {
+		DefaultValueSupplier(@Nullable T defaultValue) {
 			this.defaultValue = defaultValue;
 		}
 
 		@Override
-		public T get() {
+		public @Nullable T get() {
 			return defaultValue;
 		}
 	}
@@ -418,7 +420,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 
 		private final Attribute<T> attribute;
 
-		private String caption;
+		private @Nullable String caption;
 		private ValueSupplier<T> defaultValueSupplier;
 		private String captionResourceKey;
 		private String mnemonicResourceKey;
@@ -426,17 +428,17 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 		private boolean hidden;
 		private int maximumLength;
 		private boolean trim;
-		private Number maximumValue;
-		private Number minimumValue;
-		private String description;
+		private @Nullable Number maximumValue;
+		private @Nullable Number minimumValue;
+		private @Nullable String description;
 		private char mnemonic;
-		private Format format;
-		private LocaleDateTimePattern localeDateTimePattern;
+		private @Nullable Format format;
+		private @Nullable LocaleDateTimePattern localeDateTimePattern;
 		private RoundingMode decimalRoundingMode;
 		private Comparator<T> comparator;
-		private String dateTimePattern;
-		private DateTimeFormatter dateTimeFormatter;
-		private List<Item<T>> items;
+		private @Nullable String dateTimePattern;
+		private @Nullable DateTimeFormatter dateTimeFormatter;
+		private @Nullable List<Item<T>> items;
 
 		AbstractAttributeDefinitionBuilder(Attribute<T> attribute) {
 			this.attribute = requireNonNull(attribute);
@@ -548,16 +550,16 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 
 		@Override
 		public final B minimumValue(Number minimumValue) {
-			return valueRange(minimumValue, null);
+			return valueRange(requireNonNull(minimumValue), null);
 		}
 
 		@Override
 		public final B maximumValue(Number maximumValue) {
-			return valueRange(null, maximumValue);
+			return valueRange(null, requireNonNull(maximumValue));
 		}
 
 		@Override
-		public B valueRange(Number minimumValue, Number maximumValue) {
+		public B valueRange(@Nullable Number minimumValue, @Nullable Number maximumValue) {
 			if (!attribute.type().isNumerical()) {
 				throw new IllegalStateException("valueRange is only applicable to numerical attributes");
 			}
@@ -574,6 +576,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 			if (!attribute.type().isNumerical()) {
 				throw new IllegalStateException("numberFormatGrouping is only applicable to numerical attributes: " + attribute);
 			}
+			requireNonNull(format);
 			((NumberFormat) format).setGroupingUsed(numberFormatGrouping);
 			return self();
 		}
@@ -637,6 +640,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 			if (!attribute.type().isDecimal()) {
 				throw new IllegalStateException("maximumFractionDigits is only applicable to decimal attributes: " + attribute);
 			}
+			requireNonNull(format);
 			((NumberFormat) format).setMaximumFractionDigits(maximumFractionDigits);
 			return self();
 		}
@@ -667,7 +671,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 			return (B) this;
 		}
 
-		private static boolean resourceNotFound(String resourceBundleName, String captionResourceKey) {
+		private static boolean resourceNotFound(@Nullable String resourceBundleName, String captionResourceKey) {
 			if (resourceBundleName == null) {
 				return true;
 			}
@@ -689,7 +693,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 			return unmodifiableList(new ArrayList<>(items));
 		}
 
-		private static Format defaultFormat(Attribute<?> attribute) {
+		private static @Nullable Format defaultFormat(Attribute<?> attribute) {
 			if (attribute.type().isNumerical()) {
 				NumberFormat numberFormat = defaultNumberFormat(attribute);
 				if (attribute.type().isDecimal()) {
@@ -752,7 +756,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 			return (Comparator<T>) TO_STRING_COMPARATOR;
 		}
 
-		private Number defaultMinimumValue() {
+		private @Nullable Number defaultMinimumValue() {
 			if (attribute.type().isNumerical()) {
 				if (attribute.type().isShort()) {
 					return Short.MIN_VALUE;
@@ -771,7 +775,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 			return null;
 		}
 
-		private Number defaultMaximumValue() {
+		private @Nullable Number defaultMaximumValue() {
 			if (attribute.type().isNumerical()) {
 				if (attribute.type().isShort()) {
 					return Short.MAX_VALUE;

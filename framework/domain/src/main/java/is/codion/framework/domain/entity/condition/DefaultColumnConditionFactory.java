@@ -20,6 +20,8 @@ package is.codion.framework.domain.entity.condition;
 
 import is.codion.framework.domain.entity.attribute.Column;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 
 import static is.codion.common.Operator.*;
@@ -35,7 +37,7 @@ final class DefaultColumnConditionFactory<T> implements ColumnCondition.Factory<
 	}
 
 	@Override
-	public ColumnCondition<T> equalTo(T value) {
+	public ColumnCondition<T> equalTo(@Nullable T value) {
 		if (value == null) {
 			return isNull();
 		}
@@ -44,7 +46,7 @@ final class DefaultColumnConditionFactory<T> implements ColumnCondition.Factory<
 	}
 
 	@Override
-	public ColumnCondition<T> notEqualTo(T value) {
+	public ColumnCondition<T> notEqualTo(@Nullable T value) {
 		if (value == null) {
 			return isNotNull();
 		}
@@ -53,7 +55,7 @@ final class DefaultColumnConditionFactory<T> implements ColumnCondition.Factory<
 	}
 
 	@Override
-	public ColumnCondition<String> equalToIgnoreCase(String value) {
+	public ColumnCondition<String> equalToIgnoreCase(@Nullable String value) {
 		if (value == null) {
 			return (ColumnCondition<String>) isNull();
 		}
@@ -62,7 +64,7 @@ final class DefaultColumnConditionFactory<T> implements ColumnCondition.Factory<
 	}
 
 	@Override
-	public ColumnCondition<Character> equalToIgnoreCase(Character value) {
+	public ColumnCondition<Character> equalToIgnoreCase(@Nullable Character value) {
 		if (value == null) {
 			return (ColumnCondition<Character>) isNull();
 		}
@@ -71,7 +73,7 @@ final class DefaultColumnConditionFactory<T> implements ColumnCondition.Factory<
 	}
 
 	@Override
-	public ColumnCondition<String> notEqualToIgnoreCase(String value) {
+	public ColumnCondition<String> notEqualToIgnoreCase(@Nullable String value) {
 		if (value == null) {
 			return (ColumnCondition<String>) isNotNull();
 		}
@@ -80,7 +82,7 @@ final class DefaultColumnConditionFactory<T> implements ColumnCondition.Factory<
 	}
 
 	@Override
-	public ColumnCondition<Character> notEqualToIgnoreCase(Character value) {
+	public ColumnCondition<Character> notEqualToIgnoreCase(@Nullable Character value) {
 		if (value == null) {
 			return (ColumnCondition<Character>) isNotNull();
 		}
@@ -89,7 +91,7 @@ final class DefaultColumnConditionFactory<T> implements ColumnCondition.Factory<
 	}
 
 	@Override
-	public ColumnCondition<String> like(String value) {
+	public ColumnCondition<String> like(@Nullable String value) {
 		if (value == null) {
 			return (ColumnCondition<String>) isNull();
 		}
@@ -98,7 +100,7 @@ final class DefaultColumnConditionFactory<T> implements ColumnCondition.Factory<
 	}
 
 	@Override
-	public ColumnCondition<String> notLike(String value) {
+	public ColumnCondition<String> notLike(@Nullable String value) {
 		if (value == null) {
 			return (ColumnCondition<String>) isNotNull();
 		}
@@ -107,7 +109,7 @@ final class DefaultColumnConditionFactory<T> implements ColumnCondition.Factory<
 	}
 
 	@Override
-	public ColumnCondition<String> likeIgnoreCase(String value) {
+	public ColumnCondition<String> likeIgnoreCase(@Nullable String value) {
 		if (value == null) {
 			return (ColumnCondition<String>) isNull();
 		}
@@ -116,7 +118,7 @@ final class DefaultColumnConditionFactory<T> implements ColumnCondition.Factory<
 	}
 
 	@Override
-	public ColumnCondition<String> notLikeIgnoreCase(String value) {
+	public ColumnCondition<String> notLikeIgnoreCase(@Nullable String value) {
 		if (value == null) {
 			return (ColumnCondition<String>) isNotNull();
 		}

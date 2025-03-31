@@ -23,6 +23,8 @@ import is.codion.common.db.database.Database;
 import is.codion.common.logging.MethodLogger;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 
+import org.jspecify.annotations.Nullable;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -62,13 +64,13 @@ abstract class AbstractQueriedKeyGenerator implements KeyGenerator {
 
 	protected abstract String query(Database database);
 
-	private static void logEntry(MethodLogger methodLogger, Object argument) {
+	private static void logEntry(@Nullable MethodLogger methodLogger, @Nullable Object argument) {
 		if (methodLogger != null && methodLogger.isEnabled()) {
 			methodLogger.enter("selectAndPopulate", argument);
 		}
 	}
 
-	private static void logExit(MethodLogger methodLogger, Exception exception) {
+	private static void logExit(@Nullable MethodLogger methodLogger, @Nullable Exception exception) {
 		if (methodLogger != null && methodLogger.isEnabled()) {
 			methodLogger.exit("selectAndPopulate", exception);
 		}

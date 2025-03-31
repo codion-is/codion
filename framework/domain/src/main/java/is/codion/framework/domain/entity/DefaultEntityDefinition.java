@@ -31,6 +31,8 @@ import is.codion.framework.domain.entity.condition.ConditionProvider;
 import is.codion.framework.domain.entity.condition.ConditionType;
 import is.codion.framework.domain.entity.query.SelectQuery;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -69,11 +71,11 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 	private static final String COLUMN = "column";
 
 	private final EntityType entityType;
-	private final String caption;
+	private final @Nullable String caption;
 	private final String captionResourceKey;
-	private transient String resourceCaption;
-	private final String description;
-	private final OrderBy orderBy;
+	private transient @Nullable String resourceCaption;
+	private final @Nullable String description;
+	private final @Nullable OrderBy orderBy;
 	private final boolean readOnly;
 	private final boolean smallDataset;
 	private final boolean keyGenerated;
@@ -83,11 +85,11 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 	private final EntityValidator validator;
 	private final Predicate<Entity> exists;
 	private final transient String tableName;
-	private final transient String selectTableName;
+	private final transient @Nullable String selectTableName;
 	private final transient KeyGenerator keyGenerator;
 	private final transient boolean optimisticLocking;
-	private final transient SelectQuery selectQuery;
-	private final transient Map<ConditionType, ConditionProvider> conditionProviders;
+	private final transient @Nullable SelectQuery selectQuery;
+	private final transient @Nullable Map<ConditionType, ConditionProvider> conditionProviders;
 	private final Map<ForeignKey, EntityDefinition> referencedEntities = new HashMap<>();
 	private final EntityAttributes entityAttributes;
 	private final PrimaryKey primaryKey = new DefaultPrimaryKey();
@@ -245,12 +247,12 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 	@Override
 	public Entity entity() {
-		return entity(emptyMap());
+		return entity(EMPTY_MAP);
 	}
 
 	@Override
 	public Entity entity(Map<Attribute<?>, Object> values) {
-		return entity(values, emptyMap());
+		return entity(values, EMPTY_MAP);
 	}
 
 	@Override
@@ -769,18 +771,18 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		private final EntityAttributes attributes;
 
 		private String tableName;
-		private Map<ConditionType, ConditionProvider> conditionProviders;
-		private String caption;
+		private @Nullable Map<ConditionType, ConditionProvider> conditionProviders;
+		private @Nullable String caption;
 		private String captionResourceKey;
-		private String description;
+		private @Nullable String description;
 		private boolean smallDataset;
 		private boolean readOnly;
 		private KeyGenerator keyGenerator = DefaultEntity.DEFAULT_KEY_GENERATOR;
 		private boolean keyGenerated;
 		private boolean optimisticLocking = OPTIMISTIC_LOCKING.getOrThrow();
-		private OrderBy orderBy;
-		private String selectTableName;
-		private SelectQuery selectQuery;
+		private @Nullable OrderBy orderBy;
+		private @Nullable String selectTableName;
+		private @Nullable SelectQuery selectQuery;
 		private Function<Entity, String> stringFactory = DefaultEntity.DEFAULT_STRING_FACTORY;
 		private boolean cacheToString = true;
 		private Comparator<Entity> comparator = Text.collator();

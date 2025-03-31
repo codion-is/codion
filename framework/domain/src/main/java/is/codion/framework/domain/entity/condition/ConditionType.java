@@ -22,6 +22,8 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.List;
 
 /**
@@ -64,7 +66,7 @@ public interface ConditionType {
 	 * @return a {@link CustomCondition} instance
 	 * @see EntityDefinition#condition(ConditionType)
 	 */
-	<T> CustomCondition get(Column<T> column, T value);
+	<T> CustomCondition get(Column<T> column, @Nullable T value);
 
 	/**
 	 * Returns a {@link CustomCondition} based on the {@link ConditionProvider} associated with this {@link ConditionType}

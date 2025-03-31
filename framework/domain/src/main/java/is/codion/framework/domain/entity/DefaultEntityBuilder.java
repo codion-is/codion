@@ -23,11 +23,13 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static java.util.Collections.emptyMap;
+import static java.util.Collections.EMPTY_MAP;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultEntityBuilder implements Entity.Builder {
@@ -45,18 +47,18 @@ final class DefaultEntityBuilder implements Entity.Builder {
 	DefaultEntityBuilder(EntityDefinition definition) {
 		this.definition = definition;
 		this.values = new HashMap<>();
-		this.originalValues = emptyMap();
+		this.originalValues = EMPTY_MAP;
 	}
 
 	DefaultEntityBuilder(EntityDefinition definition, Map<Attribute<?>, Object> values,
-											 Map<Attribute<?>, Object> originalValues) {
+											 @Nullable Map<Attribute<?>, Object> originalValues) {
 		this.definition = definition;
 		this.values = new HashMap<>(requireNonNull(values));
-		this.originalValues = originalValues == null ? emptyMap() : new HashMap<>(originalValues);
+		this.originalValues = originalValues == null ? EMPTY_MAP : new HashMap<>(originalValues);
 	}
 
 	@Override
-	public <T> Entity.Builder with(Attribute<T> attribute, T value) {
+	public <T> Entity.Builder with(Attribute<T> attribute, @Nullable T value) {
 		AttributeDefinition<T> attributeDefinition = definition.attributes().definition(attribute);
 		if (attributeDefinition.derived()) {
 			throw new IllegalArgumentException("Can not set the value of a derived attribute");

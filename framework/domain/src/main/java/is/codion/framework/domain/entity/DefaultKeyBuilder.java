@@ -21,6 +21,8 @@ package is.codion.framework.domain.entity;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,7 +44,7 @@ final class DefaultKeyBuilder implements Entity.Key.Builder {
 	}
 
 	@Override
-	public <T> Entity.Key.Builder with(Column<T> column, T value) {
+	public <T> Entity.Key.Builder with(Column<T> column, @Nullable T value) {
 		ColumnDefinition<T> columnDefinition = definition.columns().definition(column);
 		if (!columnDefinition.primaryKey()) {
 			primary = false;

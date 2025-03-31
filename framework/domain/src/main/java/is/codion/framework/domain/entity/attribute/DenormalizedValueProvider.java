@@ -21,6 +21,8 @@ package is.codion.framework.domain.entity.attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serial;
 
 import static java.util.Objects.requireNonNull;
@@ -47,7 +49,7 @@ final class DenormalizedValueProvider<T> implements DerivedAttribute.Provider<T>
 	}
 
 	@Override
-	public T get(DerivedAttribute.SourceValues values) {
+	public @Nullable T get(DerivedAttribute.SourceValues values) {
 		Entity foreignKeyValue = values.get(entityAttribute);
 
 		return foreignKeyValue == null ? null : foreignKeyValue.get(denormalizedAttribute);

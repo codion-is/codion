@@ -21,6 +21,8 @@ package is.codion.framework.domain.entity.attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 
+import org.jspecify.annotations.Nullable;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -92,7 +94,7 @@ public interface Attribute<T> {
 		 * @throws IllegalArgumentException in case {@code value} is of a type incompatible with this attribute
 		 * @see #valueClass()
 		 */
-		T validateType(T value);
+		@Nullable T validateType(@Nullable T value);
 
 		/**
 		 * @return true if this attribute represents a numerical value.

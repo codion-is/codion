@@ -22,6 +22,8 @@ import is.codion.framework.domain.entity.attribute.Column.Converter;
 import is.codion.framework.domain.entity.attribute.Column.Getter;
 import is.codion.framework.domain.entity.attribute.Column.Setter;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serial;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
@@ -161,7 +163,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 	}
 
 	@Override
-	public final T get(ResultSet resultSet, int index) throws SQLException {
+	public final @Nullable T get(ResultSet resultSet, int index) throws SQLException {
 		Object columnValue = getter.get(resultSet, index);
 		if (columnValue != null || converter.handlesNull()) {
 			return converter.fromColumnValue(columnValue);
@@ -171,11 +173,11 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 	}
 
 	@Override
-	public final void set(PreparedStatement statement, int index, T value) throws SQLException {
+	public final void set(PreparedStatement statement, int index, @Nullable T value) throws SQLException {
 		setter.set(statement, index, columnValue(statement, value));
 	}
 
-	private Object columnValue(PreparedStatement statement, T value) throws SQLException {
+	private @Nullable Object columnValue(PreparedStatement statement, @Nullable T value) throws SQLException {
 		if (value != null || converter.handlesNull()) {
 			return converter.toColumnValue(value, statement);
 		}
@@ -192,7 +194,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		}
 
 		@Override
-		public void set(PreparedStatement statement, int index, Object value) throws SQLException {
+		public void set(PreparedStatement statement, int index, @Nullable Object value) throws SQLException {
 			if (value == null) {
 				statement.setNull(index, type);
 			}
@@ -204,12 +206,12 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 
 	private static final class DefaultConverter implements Converter<Object, Object> {
 		@Override
-		public Object toColumnValue(Object value, Statement statement) {
+		public @Nullable Object toColumnValue(@Nullable Object value, Statement statement) {
 			return value;
 		}
 
 		@Override
-		public Object fromColumnValue(Object columnValue) {
+		public @Nullable Object fromColumnValue(@Nullable Object columnValue) {
 			return columnValue;
 		}
 	}
@@ -269,7 +271,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		private boolean updatable;
 		private boolean searchable;
 		private String name;
-		private String expression;
+		private @Nullable String expression;
 		private Getter<Object> getter;
 		private Setter<Object> setter;
 		private Converter<T, Object> converter;
@@ -477,7 +479,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 	private static final class ShortGetter implements Getter<Short> {
 
 		@Override
-		public Short get(ResultSet resultSet, int index) throws SQLException {
+		public @Nullable Short get(ResultSet resultSet, int index) throws SQLException {
 			short value = resultSet.getShort(index);
 
 			return value == 0 && resultSet.wasNull() ? null : value;
@@ -487,7 +489,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 	private static final class IntegerGetter implements Getter<Integer> {
 
 		@Override
-		public Integer get(ResultSet resultSet, int index) throws SQLException {
+		public @Nullable Integer get(ResultSet resultSet, int index) throws SQLException {
 			int value = resultSet.getInt(index);
 
 			return value == 0 && resultSet.wasNull() ? null : value;
@@ -497,7 +499,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 	private static final class LongGetter implements Getter<Long> {
 
 		@Override
-		public Long get(ResultSet resultSet, int index) throws SQLException {
+		public @Nullable Long get(ResultSet resultSet, int index) throws SQLException {
 			long value = resultSet.getLong(index);
 
 			return value == 0L && resultSet.wasNull() ? null : value;
@@ -507,7 +509,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 	private static final class DoubleGetter implements Getter<Double> {
 
 		@Override
-		public Double get(ResultSet resultSet, int index) throws SQLException {
+		public @Nullable Double get(ResultSet resultSet, int index) throws SQLException {
 			double value = resultSet.getDouble(index);
 
 			return Double.compare(value, 0d) == 0 && resultSet.wasNull() ? null : value;
@@ -517,7 +519,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 	private static final class BigDecimalGetter implements Getter<BigDecimal> {
 
 		@Override
-		public BigDecimal get(ResultSet resultSet, int index) throws SQLException {
+		public @Nullable BigDecimal get(ResultSet resultSet, int index) throws SQLException {
 			BigDecimal value = resultSet.getBigDecimal(index);
 
 			return value == null ? null : value.stripTrailingZeros();
@@ -527,7 +529,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 	private static final class LocalDateGetter implements Getter<LocalDate> {
 
 		@Override
-		public LocalDate get(ResultSet resultSet, int index) throws SQLException {
+		public @Nullable LocalDate get(ResultSet resultSet, int index) throws SQLException {
 			return resultSet.getObject(index, LocalDate.class);
 		}
 	}
@@ -535,7 +537,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 	private static final class LocalDateTimeGetter implements Getter<LocalDateTime> {
 
 		@Override
-		public LocalDateTime get(ResultSet resultSet, int index) throws SQLException {
+		public @Nullable LocalDateTime get(ResultSet resultSet, int index) throws SQLException {
 			return resultSet.getObject(index, LocalDateTime.class);
 		}
 	}
@@ -543,7 +545,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 	private static final class OffsetDateTimeGetter implements Getter<OffsetDateTime> {
 
 		@Override
-		public OffsetDateTime get(ResultSet resultSet, int index) throws SQLException {
+		public @Nullable OffsetDateTime get(ResultSet resultSet, int index) throws SQLException {
 			return resultSet.getObject(index, OffsetDateTime.class);
 		}
 	}
@@ -551,7 +553,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 	private static final class LocalTimeGetter implements Getter<LocalTime> {
 
 		@Override
-		public LocalTime get(ResultSet resultSet, int index) throws SQLException {
+		public @Nullable LocalTime get(ResultSet resultSet, int index) throws SQLException {
 			return resultSet.getObject(index, LocalTime.class);
 		}
 	}
@@ -559,7 +561,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 	private static final class OffsetTimeGetter implements Getter<OffsetTime> {
 
 		@Override
-		public OffsetTime get(ResultSet resultSet, int index) throws SQLException {
+		public @Nullable OffsetTime get(ResultSet resultSet, int index) throws SQLException {
 			return resultSet.getObject(index, OffsetTime.class);
 		}
 	}
@@ -567,7 +569,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 	private static final class StringGetter implements Getter<String> {
 
 		@Override
-		public String get(ResultSet resultSet, int index) throws SQLException {
+		public @Nullable String get(ResultSet resultSet, int index) throws SQLException {
 			return resultSet.getString(index);
 		}
 	}
@@ -575,7 +577,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 	private static final class BooleanGetter implements Getter<Boolean> {
 
 		@Override
-		public Boolean get(ResultSet resultSet, int index) throws SQLException {
+		public @Nullable Boolean get(ResultSet resultSet, int index) throws SQLException {
 			boolean value = resultSet.getBoolean(index);
 
 			return !value && resultSet.wasNull() ? null : value;
@@ -585,7 +587,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 	private static final class CharacterGetter implements Getter<Character> {
 
 		@Override
-		public Character get(ResultSet resultSet, int index) throws SQLException {
+		public @Nullable Character get(ResultSet resultSet, int index) throws SQLException {
 			String string = resultSet.getString(index);
 			if (nullOrEmpty(string)) {
 				return null;
@@ -598,7 +600,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 	private static final class ByteArrayGetter implements Getter<byte[]> {
 
 		@Override
-		public byte[] get(ResultSet resultSet, int index) throws SQLException {
+		public @Nullable byte[] get(ResultSet resultSet, int index) throws SQLException {
 			return resultSet.getBytes(index);
 		}
 	}
@@ -612,7 +614,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		}
 
 		@Override
-		public Object get(ResultSet resultSet, int index) throws SQLException {
+		public @Nullable Object get(ResultSet resultSet, int index) throws SQLException {
 			return resultSet.getObject(index, valueClass);
 		}
 	}

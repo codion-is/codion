@@ -24,6 +24,8 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.TransientAttributeDefinition;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -69,7 +71,7 @@ public interface Entity extends Comparable<Entity> {
 	 * @return the previous value
 	 * @throws UnsupportedOperationException in case this entity is immutable
 	 */
-	<T> T put(Attribute<T> attribute, T value);
+	@Nullable <T> T put(Attribute<T> attribute, @Nullable T value);
 
 	/**
 	 * Returns the value associated with {@code attribute}.
@@ -77,7 +79,7 @@ public interface Entity extends Comparable<Entity> {
 	 * @param <T> the value type
 	 * @return the value of the given attribute
 	 */
-	<T> T get(Attribute<T> attribute);
+	@Nullable <T> T get(Attribute<T> attribute);
 
 	/**
 	 * Returns the value associated with {@code attribute}, wrapped in an {@link Optional}.
@@ -93,7 +95,7 @@ public interface Entity extends Comparable<Entity> {
 	 * @param <T> the value type
 	 * @return the original value of the given attribute
 	 */
-	<T> T original(Attribute<T> attribute);
+	@Nullable <T> T original(Attribute<T> attribute);
 
 	/**
 	 * This method returns a String representation of the value associated with the given attribute,
@@ -144,7 +146,7 @@ public interface Entity extends Comparable<Entity> {
 	 * @return the previous value mapped to the given attribute
 	 * @throws UnsupportedOperationException in case this entity is immutable
 	 */
-	<T> T remove(Attribute<T> attribute);
+	@Nullable <T> T remove(Attribute<T> attribute);
 
 	/**
 	 * Returns true if a null value is mapped to the given attribute or if no mapping is found.
@@ -170,7 +172,7 @@ public interface Entity extends Comparable<Entity> {
 	 * @param foreignKey the foreign key for which to retrieve the referenced entity
 	 * @return the entity associated with {@code foreignKey}
 	 */
-	Entity entity(ForeignKey foreignKey);
+	@Nullable Entity entity(ForeignKey foreignKey);
 
 	/**
 	 * Returns the key referenced by the given {@link ForeignKey},
@@ -178,7 +180,7 @@ public interface Entity extends Comparable<Entity> {
 	 * @param foreignKey the foreign key for which to retrieve the underlying {@link Key}
 	 * @return the key for the underlying entity, null if no entity is referenced
 	 */
-	Key key(ForeignKey foreignKey);
+	@Nullable Key key(ForeignKey foreignKey);
 
 	/**
 	 * Returns true if the value associated with the given attribute has been modified since first set,
@@ -229,7 +231,7 @@ public interface Entity extends Comparable<Entity> {
 	 * @throws IllegalArgumentException in case the entity is not of the same type
 	 * @throws UnsupportedOperationException in case this entity is immutable
 	 */
-	Map<Attribute<?>, Object> set(Entity entity);
+	Map<Attribute<?>, Object> set(@Nullable Entity entity);
 
 	/**
 	 * @return a {@link Copy} instance for this entity
@@ -325,7 +327,7 @@ public interface Entity extends Comparable<Entity> {
 		 * @param <T> the value type
 		 * @return this builder instance
 		 */
-		<T> Builder with(Attribute<T> attribute, T value);
+		<T> Builder with(Attribute<T> attribute, @Nullable T value);
 
 		/**
 		 * Sets the default value for all attributes which have a default value.
@@ -551,7 +553,7 @@ public interface Entity extends Comparable<Entity> {
 		 * @throws IllegalStateException in case this is a composite key
 		 * @throws NoSuchElementException in case this key contains no values
 		 */
-		<T> T value();
+		@Nullable <T> T value();
 
 		/**
 		 * Returns the value of this key, wrapped in an {@link Optional}. Note that this method throws an exception if this key is a composite key.
@@ -568,7 +570,7 @@ public interface Entity extends Comparable<Entity> {
 		 * @return the value associated with the given column
 		 * @throws IllegalArgumentException in case this column is not part of this key
 		 */
-		<T> T get(Column<T> column);
+		@Nullable <T> T get(Column<T> column);
 
 		/**
 		 * @param column the column
@@ -610,7 +612,7 @@ public interface Entity extends Comparable<Entity> {
 			 * @return this builder instance
 			 * @throws IllegalArgumentException in case this column is not part of the entity
 			 */
-			<T> Builder with(Column<T> column, T value);
+			<T> Builder with(Column<T> column, @Nullable T value);
 
 			/**
 			 * Builds the key instance

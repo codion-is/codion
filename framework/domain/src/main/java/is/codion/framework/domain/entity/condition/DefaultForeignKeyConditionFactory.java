@@ -24,6 +24,8 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKey.Reference;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -49,7 +51,7 @@ final class DefaultForeignKeyConditionFactory implements ForeignKeyCondition.Fac
 	}
 
 	@Override
-	public Condition equalTo(Entity value) {
+	public Condition equalTo(@Nullable Entity value) {
 		if (value == null) {
 			return isNull();
 		}
@@ -69,7 +71,7 @@ final class DefaultForeignKeyConditionFactory implements ForeignKeyCondition.Fac
 	}
 
 	@Override
-	public Condition notEqualTo(Entity value) {
+	public Condition notEqualTo(@Nullable Entity value) {
 		if (value == null) {
 			return isNotNull();
 		}

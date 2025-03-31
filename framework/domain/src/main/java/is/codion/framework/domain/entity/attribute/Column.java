@@ -21,6 +21,8 @@ package is.codion.framework.domain.entity.attribute;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.condition.ColumnCondition;
 
+import org.jspecify.annotations.Nullable;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -202,7 +204,7 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
 		 * @return a single value fetched from the given ResultSet
 		 * @throws java.sql.SQLException in case of an exception
 		 */
-		C get(ResultSet resultSet, int index) throws SQLException;
+		@Nullable C get(ResultSet resultSet, int index) throws SQLException;
 	}
 
 	/**
@@ -218,7 +220,7 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
 		 * @param value the value to set, may be null
 		 * @throws SQLException in case of an exception
 		 */
-		void set(PreparedStatement statement, int index, C value) throws SQLException;
+		void set(PreparedStatement statement, int index, @Nullable C value) throws SQLException;
 	}
 
 	/**
@@ -249,7 +251,7 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
 		 * @return the sql value used to represent the given value
 		 * @throws SQLException in case of an exception
 		 */
-		C toColumnValue(T value, Statement statement) throws SQLException;
+		@Nullable C toColumnValue(@Nullable T value, Statement statement) throws SQLException;
 
 		/**
 		 * Translates the given sql column value into a column value.
@@ -257,6 +259,6 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
 		 * @return the value of sql {@code columnValue}
 		 * @throws SQLException in case of an exception
 		 */
-		T fromColumnValue(C columnValue) throws SQLException;
+		@Nullable T fromColumnValue(@Nullable C columnValue) throws SQLException;
 	}
 }

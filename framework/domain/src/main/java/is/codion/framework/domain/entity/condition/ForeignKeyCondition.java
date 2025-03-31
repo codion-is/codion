@@ -21,6 +21,8 @@ package is.codion.framework.domain.entity.condition;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 
 /**
@@ -38,14 +40,14 @@ public interface ForeignKeyCondition extends Condition {
 		 * @param value the value to use in the condition
 		 * @return a {@link Condition}
 		 */
-		Condition equalTo(Entity value);
+		Condition equalTo(@Nullable Entity value);
 
 		/**
 		 * Returns a 'notEqualTo' {@link Condition} or 'isNotNull' in case {@code value} is null.
 		 * @param value the value to use in the condition
 		 * @return a {@link Condition}
 		 */
-		Condition notEqualTo(Entity value);
+		Condition notEqualTo(@Nullable Entity value);
 
 		/**
 		 * Returns a 'in' {@link Condition}.

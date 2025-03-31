@@ -18,6 +18,8 @@
  */
 package is.codion.framework.domain.entity.query;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Defines a select query or parts of a select query, that is, from, column, where, groupBy, having and orderBy clauses.
  * {@link Builder} provided by {@link #builder()}.
@@ -27,32 +29,32 @@ public interface SelectQuery {
 	/**
 	 * @return the COLUMNS clause
 	 */
-	String columns();
+	@Nullable String columns();
 
 	/**
 	 * @return the FROM clause
 	 */
-	String from();
+	@Nullable String from();
 
 	/**
 	 * @return the WHERE clause
 	 */
-	String where();
+	@Nullable String where();
 
 	/**
 	 * @return the GROUP BY clause
 	 */
-	String groupBy();
+	@Nullable String groupBy();
 
 	/**
 	 * @return the HAVING clause
 	 */
-	String having();
+	@Nullable String having();
 
 	/**
 	 * @return the order by clause
 	 */
-	String orderBy();
+	@Nullable String orderBy();
 
 	/**
 	 * Creates a {@link Builder}

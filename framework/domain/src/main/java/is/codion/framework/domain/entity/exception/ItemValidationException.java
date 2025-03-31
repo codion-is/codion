@@ -20,6 +20,8 @@ package is.codion.framework.domain.entity.exception;
 
 import is.codion.framework.domain.entity.attribute.Attribute;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * An exception used to indicate that an item value is invalid.
  */
@@ -31,7 +33,7 @@ public final class ItemValidationException extends ValidationException {
 	 * @param value the value
 	 * @param message the exception message
 	 */
-	public ItemValidationException(Attribute<?> attribute, Object value, String message) {
+	public ItemValidationException(Attribute<?> attribute, @Nullable Object value, String message) {
 		super(attribute, value, message);
 	}
 }

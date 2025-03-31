@@ -20,6 +20,8 @@ package is.codion.framework.domain.entity.exception;
 
 import is.codion.framework.domain.entity.attribute.Attribute;
 
+import org.jspecify.annotations.Nullable;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -28,7 +30,7 @@ import static java.util.Objects.requireNonNull;
 public class ValidationException extends IllegalArgumentException {
 
 	private final Attribute<?> attribute;
-	private final Object value;
+	private final @Nullable Object value;
 
 	/**
 	 * Instantiates a new ValidationException.
@@ -36,7 +38,7 @@ public class ValidationException extends IllegalArgumentException {
 	 * @param value the value
 	 * @param message the exception message
 	 */
-	public ValidationException(Attribute<?> attribute, Object value, String message) {
+	public ValidationException(Attribute<?> attribute, @Nullable Object value, String message) {
 		super(message);
 		this.attribute = requireNonNull(attribute);
 		this.value = value;
@@ -52,7 +54,7 @@ public class ValidationException extends IllegalArgumentException {
 	/**
 	 * @return the invalid value
 	 */
-	public final Object value() {
+	public final @Nullable Object value() {
 		return value;
 	}
 }

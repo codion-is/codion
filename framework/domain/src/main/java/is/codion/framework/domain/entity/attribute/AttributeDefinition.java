@@ -23,6 +23,8 @@ import is.codion.common.item.Item;
 import is.codion.common.property.PropertyValue;
 import is.codion.framework.domain.entity.EntityType;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serializable;
 import java.math.RoundingMode;
 import java.text.DecimalFormatSymbols;
@@ -193,7 +195,7 @@ public interface AttributeDefinition<T> {
 	 * @see Builder#format(Format)
 	 * @see Builder#dateTimePattern(String)
 	 */
-	String string(T value);
+	String string(@Nullable T value);
 
 	/**
 	 * @return true if a default value has been set for this attribute
@@ -204,7 +206,7 @@ public interface AttributeDefinition<T> {
 	 * @return the default value for this attribute, if no default value has been set null is returned
 	 * @see #hasDefaultValue()
 	 */
-	T defaultValue();
+	@Nullable T defaultValue();
 
 	/**
 	 * @return true if this attribute should be hidden in table views
@@ -295,7 +297,7 @@ public interface AttributeDefinition<T> {
 	 * @return true if the given value is a valid item for this attribute
 	 * @see #items()
 	 */
-	boolean validItem(T value);
+	boolean validItem(@Nullable T value);
 
 	/**
 	 * Returns the valid items for this attribute or an empty list in
@@ -313,7 +315,7 @@ public interface AttributeDefinition<T> {
 		/**
 		 * @return the value
 		 */
-		T get();
+		@Nullable T get();
 	}
 
 	/**

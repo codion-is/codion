@@ -18,16 +18,18 @@
  */
 package is.codion.framework.domain.entity.query;
 
+import org.jspecify.annotations.Nullable;
+
 import static java.util.Objects.requireNonNull;
 
 final class DefaultSelectQuery implements SelectQuery {
 
-	private final String columns;
-	private final String from;
-	private final String where;
-	private final String groupBy;
-	private final String having;
-	private final String orderBy;
+	private final @Nullable String columns;
+	private final @Nullable String from;
+	private final @Nullable String where;
+	private final @Nullable String groupBy;
+	private final @Nullable String having;
+	private final @Nullable String orderBy;
 
 	DefaultSelectQuery(DefaultSelectQueryBuilder builder) {
 		this.columns = builder.columns;
@@ -39,43 +41,43 @@ final class DefaultSelectQuery implements SelectQuery {
 	}
 
 	@Override
-	public String columns() {
+	public @Nullable String columns() {
 		return columns;
 	}
 
 	@Override
-	public String from() {
+	public @Nullable String from() {
 		return from;
 	}
 
 	@Override
-	public String where() {
+	public @Nullable String where() {
 		return where;
 	}
 
 	@Override
-	public String groupBy() {
+	public @Nullable String groupBy() {
 		return groupBy;
 	}
 
 	@Override
-	public String having() {
+	public @Nullable String having() {
 		return having;
 	}
 
 	@Override
-	public String orderBy() {
+	public @Nullable String orderBy() {
 		return orderBy;
 	}
 
 	static class DefaultSelectQueryBuilder implements Builder {
 
-		private String from;
-		private String columns;
-		private String where;
-		private String groupBy;
-		private String having;
-		private String orderBy;
+		private @Nullable String from;
+		private @Nullable String columns;
+		private @Nullable String where;
+		private @Nullable String groupBy;
+		private @Nullable String having;
+		private @Nullable String orderBy;
 
 		@Override
 		public Builder columns(String columns) {

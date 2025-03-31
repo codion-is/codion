@@ -20,6 +20,8 @@ package is.codion.framework.domain.entity;
 
 import is.codion.framework.domain.entity.attribute.Attribute;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -42,7 +44,7 @@ final class ImmutableEntity extends DefaultEntity implements Serializable {
 	}
 
 	ImmutableEntity(EntityDefinition definition, Map<Attribute<?>, Object> valueMap,
-									Map<Attribute<?>, Object> originalValueMap, Map<Key, ImmutableEntity> immutables) {
+									@Nullable Map<Attribute<?>, Object> originalValueMap, Map<Key, ImmutableEntity> immutables) {
 		super(definition);
 		values = new HashMap<>(valueMap);
 		immutables.put(primaryKey(), this);

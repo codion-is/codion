@@ -21,6 +21,8 @@ package is.codion.framework.domain.entity;
 import is.codion.common.property.PropertyValue;
 import is.codion.framework.domain.DomainType;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -115,7 +117,7 @@ public interface Entities {
 	 * @throws IllegalArgumentException in case the value is not of the correct type
 	 * @throws NullPointerException in case entityType is null
 	 */
-	<T> Entity.Key primaryKey(EntityType entityType, T value);
+	<T> Entity.Key primaryKey(EntityType entityType, @Nullable T value);
 
 	/**
 	 * Creates new {@link Entity.Key} instances of the given entityType, initialised with the given values

@@ -21,6 +21,8 @@ package is.codion.framework.domain.entity.condition;
 import is.codion.common.Operator;
 import is.codion.framework.domain.entity.attribute.Column;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serial;
 import java.util.Objects;
 
@@ -45,14 +47,14 @@ final class SingleValueColumnCondition<T> extends AbstractColumnCondition<T> {
 	private static final String PLACEHOLDER = "?";
 	private static final String PLACEHOLDER_UPPER = "UPPER(?)";
 
-	private final T value;
+	private final @Nullable T value;
 	private final boolean useLikeOperator;
 
-	SingleValueColumnCondition(Column<T> column, T value, Operator operator) {
+	SingleValueColumnCondition(Column<T> column, @Nullable T value, Operator operator) {
 		this(column, value, operator, true, false);
 	}
 
-	SingleValueColumnCondition(Column<T> column, T value, Operator operator,
+	SingleValueColumnCondition(Column<T> column, @Nullable T value, Operator operator,
 														 boolean caseSensitive, boolean useLikeOperator) {
 		super(column, operator, value == null ? emptyList() : singletonList(value), caseSensitive);
 		validateOperator(operator);
@@ -145,7 +147,7 @@ final class SingleValueColumnCondition<T> extends AbstractColumnCondition<T> {
 		return !caseSensitive() && (column().type().isString() || column().type().isCharacter());
 	}
 
-	private T validateOperand(T value) {
+	private @Nullable T validateOperand(@Nullable T value) {
 		if (value == null && operator() != Operator.EQUAL && operator() != Operator.NOT_EQUAL) {
 			throw new IllegalArgumentException("Operator: " + operator() + " does not support a null value");
 		}

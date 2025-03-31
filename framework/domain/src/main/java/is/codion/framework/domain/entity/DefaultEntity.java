@@ -28,6 +28,8 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.attribute.TransientAttributeDefinition;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -61,19 +63,19 @@ class DefaultEntity implements Entity, Serializable {
 	static final Predicate<Entity> DEFAULT_EXISTS = new DefaultEntityExists();
 
 	protected EntityDefinition definition;
-	protected Map<Attribute<?>, Object> values;
-	protected Map<Attribute<?>, Object> originalValues;
+	protected Map<Attribute<?>, Object> values = EMPTY_MAP;
+	protected @Nullable Map<Attribute<?>, Object> originalValues;
 
-	private String toStringCache;
-	private Map<ForeignKey, Key> foreignKeyCache;
-	private Key primaryKey;
+	private @Nullable String toStringCache;
+	private @Nullable Map<ForeignKey, Key> foreignKeyCache;
+	private @Nullable Key primaryKey;
 
 	protected DefaultEntity(EntityDefinition definition) {
 		this.definition = requireNonNull(definition);
 	}
 
 	DefaultEntity(Key key) {
-		this(requireNonNull(key).definition(), createValueMap(key), emptyMap());
+		this(requireNonNull(key).definition(), createValueMap(key), EMPTY_MAP);
 		if (key.primary()) {
 			this.primaryKey = key;
 		}
@@ -131,7 +133,7 @@ class DefaultEntity implements Entity, Serializable {
 	}
 
 	@Override
-	public final <T> T get(Attribute<T> attribute) {
+	public final @Nullable <T> T get(Attribute<T> attribute) {
 		return cached(definition.attributes().definition(attribute));
 	}
 
@@ -141,7 +143,7 @@ class DefaultEntity implements Entity, Serializable {
 	}
 
 	@Override
-	public final <T> T original(Attribute<T> attribute) {
+	public final @Nullable <T> T original(Attribute<T> attribute) {
 		return original(definition.attributes().definition(attribute));
 	}
 
@@ -162,7 +164,7 @@ class DefaultEntity implements Entity, Serializable {
 	}
 
 	@Override
-	public final Entity entity(ForeignKey foreignKey) {
+	public final @Nullable Entity entity(ForeignKey foreignKey) {
 		Entity entity = (Entity) values.get(requireNonNull(foreignKey));
 		if (entity == null) {//possibly not loaded
 			Key key = key(foreignKey);
@@ -188,7 +190,7 @@ class DefaultEntity implements Entity, Serializable {
 	}
 
 	@Override
-	public <T> T put(Attribute<T> attribute, T value) {
+	public @Nullable <T> T put(Attribute<T> attribute, @Nullable T value) {
 		return put(definition.attributes().definition(attribute), value);
 	}
 
@@ -220,7 +222,7 @@ class DefaultEntity implements Entity, Serializable {
 	}
 
 	@Override
-	public <T> T remove(Attribute<T> attribute) {
+	public @Nullable <T> T remove(Attribute<T> attribute) {
 		AttributeDefinition<T> attributeDefinition = definition.attributes().definition(attribute);
 		T value = null;
 		if (values.containsKey(attribute)) {
@@ -238,9 +240,9 @@ class DefaultEntity implements Entity, Serializable {
 	}
 
 	@Override
-	public Map<Attribute<?>, Object> set(Entity entity) {
+	public Map<Attribute<?>, Object> set(@Nullable Entity entity) {
 		if (entity == this) {
-			return emptyMap();
+			return EMPTY_MAP;
 		}
 		if (entity != null && !definition.type().equals(entity.type())) {
 			throw new IllegalArgumentException("Entity of type: " + definition.type() + " expected, got: " + entity.type());
@@ -334,7 +336,7 @@ class DefaultEntity implements Entity, Serializable {
 	}
 
 	@Override
-	public final Key key(ForeignKey foreignKey) {
+	public final @Nullable Key key(ForeignKey foreignKey) {
 		definition.foreignKeys().definition(foreignKey);
 		Key cachedReferencedKey = cachedKey(foreignKey);
 		if (cachedReferencedKey != null) {
@@ -380,7 +382,7 @@ class DefaultEntity implements Entity, Serializable {
 		toStringCache = null;
 	}
 
-	private Map<Attribute<?>, Object> populateValues(Entity entity) {
+	private Map<Attribute<?>, Object> populateValues(@Nullable Entity entity) {
 		Map<Attribute<?>, Object> previousValues = currentValues();
 		clear();
 		if (entity != null) {
@@ -402,7 +404,7 @@ class DefaultEntity implements Entity, Serializable {
 										map.put(attributeDefinition.attribute(), get(attributeDefinition)), HashMap::putAll);
 	}
 
-	private <T> T get(AttributeDefinition<T> attributeDefinition) {
+	private @Nullable <T> T get(AttributeDefinition<T> attributeDefinition) {
 		if (attributeDefinition.derived()) {
 			return derived((DerivedAttributeDefinition<T>) attributeDefinition);
 		}
@@ -410,7 +412,7 @@ class DefaultEntity implements Entity, Serializable {
 		return (T) values.get(attributeDefinition.attribute());
 	}
 
-	private <T> T cached(AttributeDefinition<T> attributeDefinition) {
+	private @Nullable <T> T cached(AttributeDefinition<T> attributeDefinition) {
 		if (attributeDefinition instanceof DerivedAttributeDefinition<T>) {
 			DerivedAttributeDefinition<T> derivedDefinition = (DerivedAttributeDefinition<T>) attributeDefinition;
 			if (derivedDefinition.cached()) {
@@ -423,7 +425,7 @@ class DefaultEntity implements Entity, Serializable {
 		return (T) values.get(attributeDefinition.attribute());
 	}
 
-	private <T> T original(AttributeDefinition<T> attributeDefinition) {
+	private @Nullable <T> T original(AttributeDefinition<T> attributeDefinition) {
 		if (attributeDefinition.derived()) {
 			return derivedOriginal((DerivedAttributeDefinition<T>) attributeDefinition);
 		}
@@ -434,7 +436,7 @@ class DefaultEntity implements Entity, Serializable {
 		return get(attributeDefinition);
 	}
 
-	private <T> T put(AttributeDefinition<T> attributeDefinition, T value) {
+	private @Nullable <T> T put(AttributeDefinition<T> attributeDefinition, @Nullable T value) {
 		T newValue = validateAndAdjustValue(attributeDefinition, value);
 		Attribute<T> attribute = attributeDefinition.attribute();
 		boolean initialization = !values.containsKey(attribute);
@@ -490,7 +492,7 @@ class DefaultEntity implements Entity, Serializable {
 		return false;
 	}
 
-	private <T> T validateAndAdjustValue(AttributeDefinition<T> attributeDefinition, T value) {
+	private @Nullable <T> T validateAndAdjustValue(AttributeDefinition<T> attributeDefinition, @Nullable T value) {
 		if (attributeDefinition.derived()) {
 			throw new IllegalArgumentException("Can not set the value of a derived attribute");
 		}
@@ -589,7 +591,7 @@ class DefaultEntity implements Entity, Serializable {
 	 * @param foreignKey the foreign key
 	 * @return the referenced key or null if a valid key can not be created (null values for non-nullable columns)
 	 */
-	private Key createAndCacheReferencedKey(ForeignKey foreignKey) {
+	private @Nullable Key createAndCacheReferencedKey(ForeignKey foreignKey) {
 		EntityDefinition referencedEntity = definition.foreignKeys().referencedBy(foreignKey);
 		List<ForeignKey.Reference<?>> references = foreignKey.references();
 		if (references.size() > 1) {
@@ -599,9 +601,9 @@ class DefaultEntity implements Entity, Serializable {
 		return createAndCacheSingleReferenceKey(foreignKey, references.get(0), referencedEntity);
 	}
 
-	private Key createAndCacheCompositeReferenceKey(ForeignKey foreignKey,
-																									List<ForeignKey.Reference<?>> references,
-																									EntityDefinition referencedEntity) {
+	private @Nullable Key createAndCacheCompositeReferenceKey(ForeignKey foreignKey,
+																														List<ForeignKey.Reference<?>> references,
+																														EntityDefinition referencedEntity) {
 		Map<Column<?>, Object> keyValues = new HashMap<>(references.size());
 		for (int i = 0; i < references.size(); i++) {
 			ForeignKey.Reference<?> reference = references.get(i);
@@ -619,9 +621,9 @@ class DefaultEntity implements Entity, Serializable {
 		return cacheKey(foreignKey, new DefaultKey(referencedEntity, keyValues, isPrimaryKey));
 	}
 
-	private Key createAndCacheSingleReferenceKey(ForeignKey foreignKey,
-																							 ForeignKey.Reference<?> reference,
-																							 EntityDefinition referencedEntityDefinition) {
+	private @Nullable Key createAndCacheSingleReferenceKey(ForeignKey foreignKey,
+																												 ForeignKey.Reference<?> reference,
+																												 EntityDefinition referencedEntityDefinition) {
 		Object value = values.get(reference.column());
 		if (value == null) {
 			return null;
@@ -644,7 +646,7 @@ class DefaultEntity implements Entity, Serializable {
 		return key;
 	}
 
-	private Key cachedKey(ForeignKey foreignKey) {
+	private @Nullable Key cachedKey(ForeignKey foreignKey) {
 		if (foreignKeyCache == null) {
 			return null;
 		}
@@ -716,11 +718,11 @@ class DefaultEntity implements Entity, Serializable {
 		return derivedValue;
 	}
 
-	private <T> T derived(DerivedAttributeDefinition<T> derivedDefinition) {
+	private @Nullable <T> T derived(DerivedAttributeDefinition<T> derivedDefinition) {
 		return derivedDefinition.valueProvider().get(sourceValues(derivedDefinition, false));
 	}
 
-	private <T> T derivedOriginal(DerivedAttributeDefinition<T> derivedDefinition) {
+	private @Nullable <T> T derivedOriginal(DerivedAttributeDefinition<T> derivedDefinition) {
 		return derivedDefinition.valueProvider().get(sourceValues(derivedDefinition, true));
 	}
 
@@ -728,7 +730,7 @@ class DefaultEntity implements Entity, Serializable {
 																										 boolean originalValue) {
 		List<Attribute<?>> sourceAttributes = derivedDefinition.sourceAttributes();
 		if (sourceAttributes.isEmpty()) {
-			return new DefaultSourceValues(derivedDefinition.attribute(), emptyMap());
+			return new DefaultSourceValues(derivedDefinition.attribute(), EMPTY_MAP);
 		}
 		else if (sourceAttributes.size() == 1) {
 			return new DefaultSourceValues(derivedDefinition.attribute(), createSingleAttributeSourceValueMap(sourceAttributes.get(0), originalValue));
@@ -751,7 +753,7 @@ class DefaultEntity implements Entity, Serializable {
 		return valueMap;
 	}
 
-	private <T> void setOriginalValue(Attribute<T> attribute, T originalValue) {
+	private <T> void setOriginalValue(Attribute<T> attribute, @Nullable T originalValue) {
 		if (originalValues == null) {
 			originalValues = new HashMap<>();
 		}
@@ -767,7 +769,7 @@ class DefaultEntity implements Entity, Serializable {
 		}
 	}
 
-	private <T> void updateOriginalValue(Attribute<T> attribute, T value, T previousValue) {
+	private <T> void updateOriginalValue(Attribute<T> attribute, @Nullable T value, @Nullable T previousValue) {
 		boolean modified = isModified(attribute);
 		if (modified && Objects.equals(originalValues.get(attribute), value)) {
 			removeOriginalValue(attribute);//we're back to the original value
@@ -868,7 +870,7 @@ class DefaultEntity implements Entity, Serializable {
 
 		@Override
 		public Entity mutable() {
-			DefaultEntity copy = new DefaultEntity(entity.definition(), emptyMap(), emptyMap());
+			DefaultEntity copy = new DefaultEntity(entity.definition(), EMPTY_MAP, EMPTY_MAP);
 			copy.values.putAll(entity.values);
 			if (entity.originalValues != null) {
 				copy.originalValues = new HashMap<>(entity.originalValues);
@@ -894,7 +896,7 @@ class DefaultEntity implements Entity, Serializable {
 		}
 
 		@Override
-		public <T> T get(Attribute<T> attribute) {
+		public @Nullable <T> T get(Attribute<T> attribute) {
 			if (!values.containsKey(attribute)) {
 				throw new IllegalArgumentException("Attribute " + attribute +
 								" is not specified as a source attribute for derived attribute: " + derivedAttribute);

@@ -22,6 +22,8 @@ import is.codion.framework.domain.entity.attribute.Column.Converter;
 import is.codion.framework.domain.entity.attribute.Column.Getter;
 import is.codion.framework.domain.entity.attribute.Column.Setter;
 
+import org.jspecify.annotations.Nullable;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -118,7 +120,7 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
 	 * @return a single value fetched from the given {@link ResultSet}
 	 * @throws SQLException in case of an exception
 	 */
-	T get(ResultSet resultSet, int index) throws SQLException;
+	@Nullable T get(ResultSet resultSet, int index) throws SQLException;
 
 	/**
 	 * Sets a parameter for this column in a {@link PreparedStatement}
@@ -127,7 +129,7 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
 	 * @param value the value to set, may be null
 	 * @throws SQLException in case of an exception
 	 */
-	void set(PreparedStatement statement, int index, T value) throws SQLException;
+	void set(PreparedStatement statement, int index, @Nullable T value) throws SQLException;
 
 	/**
 	 * Builds a {@link ColumnDefinition}

@@ -29,6 +29,7 @@ Codion Change Log
 - Entity.isNotNull() removed.
 - Entity.Key.isNotNull() removed.
 - EntityDefinition.entity() factory methods no longer accept null for values and originalValues, empty maps expected instead.
+- JSpecify annotations added.
 ### is.codion.framework.model
 - AbstractEntityEditModel.refresh() bug fixed, now handles the case when a primary key attribute has been modified.
 - AbstractEntityTableModel.refresh(keys) bug fixed, now includes the same attributes as the query model, when selecting.

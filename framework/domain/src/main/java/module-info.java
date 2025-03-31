@@ -34,6 +34,7 @@
  * </ul>
  * @uses is.codion.framework.domain.Domain
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.framework.domain {
 	requires transitive is.codion.common.db;
 

@@ -21,6 +21,8 @@ package is.codion.framework.domain.entity;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -53,7 +55,7 @@ class DefaultKey implements Entity.Key, Serializable {
 	boolean primary;
 	Map<Column<?>, Object> values;
 	boolean singleIntegerKey;
-	private Integer cachedHashCode = null;
+	private @Nullable Integer cachedHashCode = null;
 	boolean hashCodeDirty = true;
 	EntityDefinition definition;
 
@@ -64,7 +66,7 @@ class DefaultKey implements Entity.Key, Serializable {
 	 * @param value the value
 	 * @param primary true if this key represents a primary key
 	 */
-	DefaultKey(EntityDefinition definition, Column<?> column, Object value, boolean primary) {
+	DefaultKey(EntityDefinition definition, Column<?> column, @Nullable Object value, boolean primary) {
 		this(definition, singletonMap(column, value), primary);
 	}
 
@@ -113,7 +115,7 @@ class DefaultKey implements Entity.Key, Serializable {
 	}
 
 	@Override
-	public <T> T value() {
+	public @Nullable <T> T value() {
 		assertSingleValueKey();
 
 		return (T) values.get(columns.get(0));
@@ -125,7 +127,7 @@ class DefaultKey implements Entity.Key, Serializable {
 	}
 
 	@Override
-	public <T> T get(Column<T> column) {
+	public @Nullable <T> T get(Column<T> column) {
 		if (!values.containsKey(requireNonNull(column))) {
 			throw new IllegalArgumentException("Column " + column + " is not part of key: " + definition.type());
 		}
@@ -211,7 +213,7 @@ class DefaultKey implements Entity.Key, Serializable {
 		return get(column) == null;
 	}
 
-	private Integer computeHashCode() {
+	private @Nullable Integer computeHashCode() {
 		if (values.isEmpty()) {
 			return null;
 		}
@@ -222,7 +224,7 @@ class DefaultKey implements Entity.Key, Serializable {
 		return computeSingleValueHashCode();
 	}
 
-	private Integer computeMultipleValueHashCode() {
+	private @Nullable Integer computeMultipleValueHashCode() {
 		int hash = 0;
 		for (int i = 0; i < columns.size(); i++) {
 			ColumnDefinition<?> columnDefinition = definition.columns().definition(columns.get(i));
@@ -238,7 +240,7 @@ class DefaultKey implements Entity.Key, Serializable {
 		return hash;
 	}
 
-	private Integer computeSingleValueHashCode() {
+	private @Nullable Integer computeSingleValueHashCode() {
 		Object value = value();
 		if (value == null) {
 			return null;
