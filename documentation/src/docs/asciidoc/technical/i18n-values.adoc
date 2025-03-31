@@ -818,7 +818,7 @@ is/codion/swing/framework/ui/EntityTablePanel_is_IS.properties
 
 |clear_selection_tip|Clear selection|Hreinsa val
 |columns|Columns|Dálkar
-|condition_required|Condition Required|Leitarskilyrðis krafist
+|condition_required|Condition Required|Krefjast Leitarskilyrðis
 |condition_required_description|One or more active search conditions required for displaying data|Eins eða fleiri virkra leitarskilyrða krafist til að sækja gögn
 |decrement_selection_tip|Move selection up|Færa val upp
 |delete_dependent_records|Delete these dependent records first|Eyddu þessum tengdu færslum fyrst
