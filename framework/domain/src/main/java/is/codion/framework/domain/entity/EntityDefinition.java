@@ -167,7 +167,7 @@ public interface EntityDefinition {
 
 	/**
 	 * Creates a new {@link Entity} instance based on this definition
-	 * @param values the values
+	 * @param values the initial values, an empty map in case of no values
 	 * @return a new {@link Entity} instance
 	 * @throws IllegalArgumentException in case any of the value attributes are not part of the entity.
 	 */
@@ -175,8 +175,8 @@ public interface EntityDefinition {
 
 	/**
 	 * Creates a new {@link Entity} instance based on this definition
-	 * @param values the values
-	 * @param originalValues the original values
+	 * @param values the initial values, an empty map in case of no values
+ 	 * @param originalValues the original values, an empty map in case of no original values
 	 * @return a new {@link Entity} instance
 	 * @throws IllegalArgumentException in case any of the value attributes are not part of the entity.
 	 */

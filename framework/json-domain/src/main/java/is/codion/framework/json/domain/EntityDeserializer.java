@@ -37,6 +37,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static java.util.Collections.emptyMap;
+
 final class EntityDeserializer extends StdDeserializer<Entity> {
 
 	@Serial
@@ -78,7 +80,7 @@ final class EntityDeserializer extends StdDeserializer<Entity> {
 			return attributeValueMap(definition, originalValues);
 		}
 
-		return null;
+		return emptyMap();
 	}
 
 	private Map<Attribute<?>, Object> attributeValueMap(EntityDefinition definition, JsonNode values) throws JsonProcessingException {

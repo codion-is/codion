@@ -72,28 +72,17 @@ class DefaultEntity implements Entity, Serializable {
 		this.definition = requireNonNull(definition);
 	}
 
-	/**
-	 * Instantiates a new DefaultEntity
-	 * @param key the key
-	 */
 	DefaultEntity(Key key) {
-		this(requireNonNull(key).definition(), createValueMap(key), null);
+		this(requireNonNull(key).definition(), createValueMap(key), emptyMap());
 		if (key.primary()) {
 			this.primaryKey = key;
 		}
 	}
 
-	/**
-	 * Instantiates a new DefaultEntity based on the given values.
-	 * @param definition the entity definition
-	 * @param values the initial values, may be null
-	 * @param originalValues the original values, may be null
-	 * @throws IllegalArgumentException in case any of the attributes are not part of the entity.
-	 */
 	DefaultEntity(EntityDefinition definition, Map<Attribute<?>, Object> values, Map<Attribute<?>, Object> originalValues) {
 		this(definition);
-		this.values = validateValues(definition, values == null ? new HashMap<>() : new HashMap<>(values));
-		this.originalValues = validateTypes(definition, originalValues == null ? null : new HashMap<>(originalValues));
+		this.values = validateValues(definition, new HashMap<>(requireNonNull(values)));
+		this.originalValues = requireNonNull(originalValues).isEmpty() ? null : validateTypes(definition, new HashMap<>(originalValues));
 		this.definition = definition;
 	}
 
@@ -879,7 +868,7 @@ class DefaultEntity implements Entity, Serializable {
 
 		@Override
 		public Entity mutable() {
-			DefaultEntity copy = new DefaultEntity(entity.definition(), null, null);
+			DefaultEntity copy = new DefaultEntity(entity.definition(), emptyMap(), emptyMap());
 			copy.values.putAll(entity.values);
 			if (entity.originalValues != null) {
 				copy.originalValues = new HashMap<>(entity.originalValues);

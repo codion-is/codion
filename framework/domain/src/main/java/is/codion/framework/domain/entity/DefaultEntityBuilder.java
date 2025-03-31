@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static java.util.Collections.emptyMap;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultEntityBuilder implements Entity.Builder {
@@ -42,14 +43,16 @@ final class DefaultEntityBuilder implements Entity.Builder {
 	}
 
 	DefaultEntityBuilder(EntityDefinition definition) {
-		this(definition, null, null);
+		this.definition = definition;
+		this.values = new HashMap<>();
+		this.originalValues = emptyMap();
 	}
 
 	DefaultEntityBuilder(EntityDefinition definition, Map<Attribute<?>, Object> values,
 											 Map<Attribute<?>, Object> originalValues) {
 		this.definition = definition;
-		this.values = values == null ? null : new HashMap<>(values);
-		this.originalValues = originalValues == null ? null : new HashMap<>(originalValues);
+		this.values = new HashMap<>(requireNonNull(values));
+		this.originalValues = originalValues == null ? emptyMap() : new HashMap<>(originalValues);
 	}
 
 	@Override

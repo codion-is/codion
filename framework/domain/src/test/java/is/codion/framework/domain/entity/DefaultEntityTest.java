@@ -53,6 +53,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
+import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -78,30 +79,30 @@ public class DefaultEntityTest {
 		values.put(Detail.BOOLEAN, false);
 		values.put(Master.CODE, 1);
 
-		assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, values, null));
+		assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, values, emptyMap()));
 
 		Map<Attribute<?>, Object> originalValues = new HashMap<>();
 		originalValues.put(Detail.BOOLEAN, false);
 		originalValues.put(Master.CODE, 1);
 
-		assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, null, originalValues));
+		assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, emptyMap(), originalValues));
 
 		Map<Attribute<?>, Object> invalidTypeValues = new HashMap<>();
 		invalidTypeValues.put(Master.CODE, false);
 
-		assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, invalidTypeValues, null));
+		assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, invalidTypeValues, emptyMap()));
 
 		Map<Attribute<?>, Object> invalidTypeOriginalValues = new HashMap<>();
 		invalidTypeOriginalValues.put(Master.CODE, false);
 
-		assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, null, invalidTypeOriginalValues));
+		assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, emptyMap(), invalidTypeOriginalValues));
 
 		EntityType entityType = TestDomain.DOMAIN.entityType("entityType");
 		Attribute<?> invalid = entityType.integerAttribute("invalid");
 		Map<Attribute<?>, Object> invalidAttributeValues = new HashMap<>();
 		invalidAttributeValues.put(invalid, 1);
 
-		assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, invalidAttributeValues, null));
+		assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, invalidAttributeValues, emptyMap()));
 	}
 
 	@Test
