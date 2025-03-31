@@ -181,7 +181,7 @@ public interface HttpEntityConnection extends EntityConnection {
 		Builder clientId(UUID clientId);
 
 		/**
-		 * By default the http client uses a shared thread pool executor.
+		 * By default, the http client uses a shared thread pool executor.
 		 * @param executor the http client executor to use
 		 * @return this builder instance
 		 */

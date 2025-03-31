@@ -217,7 +217,7 @@ or on a connection instance via {url-javadoc}{framework-db-local}/is/codion/fram
 connection.setOptimisticLocking(false);
 ----
 
-or on a per entity basis via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.Builder.html#optimisticLocking{opar}boolean{cpar}[EntityDefinition.Builder.optimisticLocking(false)].
+or on a per-entity basis via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.Builder.html#optimisticLocking{opar}boolean{cpar}[EntityDefinition.Builder.optimisticLocking(false)].
 
 For updating by condition.
 
@@ -325,7 +325,7 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDem
 
 === Transaction
 
-For a more fine grained transaction control and the ability to rollback, transactions can be started and ended manually, note that this is more complex and thereby error prone and should not be used unless the method described above does not work for your use-case.
+For a more fine-grained transaction control and the ability to rollback, transactions can be started and ended manually, note that this is more complex and thereby error-prone and should not be used unless the method described above does not work for your use-case.
 
 [source,java,indent=0]
 ----

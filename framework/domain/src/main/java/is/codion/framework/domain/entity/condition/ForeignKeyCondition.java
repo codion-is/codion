@@ -50,7 +50,7 @@ public interface ForeignKeyCondition extends Condition {
 		Condition notEqualTo(@Nullable Entity value);
 
 		/**
-		 * Returns a 'in' {@link Condition}.
+		 * Returns an 'in' {@link Condition}.
 		 * @param values the values to use in the condition
 		 * @return a {@link Condition}
 		 * @throws NullPointerException in case {@code values} is null
@@ -66,7 +66,7 @@ public interface ForeignKeyCondition extends Condition {
 		Condition notIn(Entity... values);
 
 		/**
-		 * Returns a 'in' {@link Condition}.
+		 * Returns an 'in' {@link Condition}.
 		 * @param values the values to use in the condition
 		 * @return a {@link Condition}
 		 * @throws NullPointerException in case {@code values} is null

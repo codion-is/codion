@@ -710,7 +710,7 @@ public interface EntityEditModel {
 	interface DeleteEntities {
 
 		/**
-		 * Notifies listeners that a delete is about to be performed.
+		 * Notifies listeners that delete is about to be performed.
 		 * Must be called on the UI thread if this model has a panel based on it.
 		 * @return the delete task
 		 */
@@ -734,7 +734,7 @@ public interface EntityEditModel {
 		interface Result {
 
 			/**
-			 * Notifies listeners that a delete has been performed.
+			 * Notifies listeners that delete has been performed.
 			 * Must be called on the UI thread if this model has a panel based on it.
 			 * @return the deleted entities
 			 */
@@ -777,7 +777,7 @@ public interface EntityEditModel {
 		EditEvent<Map<Entity, Entity>> updated(EntityType entityType);
 
 		/**
-		 * Returns a delete {@link EditEvent}, notified each time entities of the given type are deleted.
+		 * Returns delete {@link EditEvent}, notified each time entities of the given type are deleted.
 		 * @param entityType the type of entity to listen for
 		 * @return the delete {@link EditEvent} for the given entity type
 		 */

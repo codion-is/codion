@@ -134,7 +134,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		public static final ControlKey<CommandControl> RESIZE_LEFT = CommandControl.key("resizeLeft", keyStroke(VK_LEFT, ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Collapses the detail panel all the way to the right, hiding it.<br>
-		 * Default key stroke: SHIFT-CTRL-ALT RIGHT ARROW
+		 * Default keyStroke: SHIFT-CTRL-ALT RIGHT ARROW
 		 */
 		public static final ControlKey<CommandControl> COLLAPSE = CommandControl.key("collapse", keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**

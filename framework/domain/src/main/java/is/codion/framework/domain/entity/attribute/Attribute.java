@@ -78,7 +78,7 @@ public interface Attribute<T> {
 	}
 
 	/**
-	 * Defines the data type of an Attribute
+	 * Defines the data-type of an Attribute
 	 * @param <T> the attribute data type
 	 */
 	interface Type<T> {

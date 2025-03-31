@@ -74,7 +74,7 @@ public final class KeyEvents {
 	/**
 	 * Instantiates a new {@link KeyEvents.Builder} instance.
 	 * Note that an Action must be set via {@link Builder#action(Action)} before enabling/disabling.
-	 * @param keyStroke the key stroke
+	 * @param keyStroke the keyStroke
 	 * @return a {@link Builder} instance.
 	 */
 	public static Builder builder(KeyStroke keyStroke) {
@@ -135,7 +135,7 @@ public final class KeyEvents {
 		Builder onKeyRelease(boolean onKeyRelease);
 
 		/**
-		 * @param keyStroke the key stroke
+		 * @param keyStroke the keyStroke
 		 * @return this builder instance
 		 */
 		Builder keyStroke(KeyStroke keyStroke);

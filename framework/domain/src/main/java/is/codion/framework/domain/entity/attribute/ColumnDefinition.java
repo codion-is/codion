@@ -29,7 +29,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Specifies a attribute definition based on a table column
+ * Specifies an attribute definition based on a table column
  * @param <T> the underlying type
  */
 public interface ColumnDefinition<T> extends AttributeDefinition<T> {

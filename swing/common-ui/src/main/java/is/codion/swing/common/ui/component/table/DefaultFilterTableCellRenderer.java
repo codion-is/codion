@@ -256,7 +256,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			if (uiSettings.alternateRowColor() == null) {
 				return uiSettings.background();
 			}
-			// If alternate row coloring is enabled outside of the framework, respect it
+			// If alternate row coloring is enabled, respect it
 			return alternateRow ? uiSettings.alternateRowColor() : uiSettings.background();
 		}
 

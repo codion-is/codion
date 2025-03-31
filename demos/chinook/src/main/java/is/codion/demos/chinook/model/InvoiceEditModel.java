@@ -29,7 +29,7 @@ public final class InvoiceEditModel extends SwingEntityEditModel {
 
 	public InvoiceEditModel(EntityConnectionProvider connectionProvider) {
 		super(Invoice.TYPE, connectionProvider);
-		// By default foreign key values persist when the model
+		// By default, foreign key values persist when the model
 		// is cleared, here we disable that for CUSTOMER_FK
 		editor().value(Invoice.CUSTOMER_FK).persist().set(false);
 		// We populate the invoice address fields with

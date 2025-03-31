@@ -122,7 +122,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 		void add(M... detailModels);
 
 		/**
-		 * <p>Adds the given detail model to this model, based on the a fitting foreign key.
+		 * <p>Adds the given detail model to this model, based on a fitting foreign key.
 		 * <p>Note that if the detail model contains a table model it is configured so that a query condition is required for it to show
 		 * any data, via {@link EntityQueryModel#conditionRequired()}
 		 * @param detailModel the detail model

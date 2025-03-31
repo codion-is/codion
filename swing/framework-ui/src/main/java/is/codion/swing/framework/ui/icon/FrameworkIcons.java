@@ -31,7 +31,7 @@ import static is.codion.common.Configuration.stringValue;
 /**
  * Provides icons for framework ui components.
  * The icon color follows the 'Button.foreground' color of the current Look and feel.
- * Add custom icons via {@link #add(Ikon...)} (Ikon)} and retrieve them via {@link #icon(Ikon)}.
+ * Add custom icons via {@link #add(Ikon...)} and retrieve them via {@link #icon(Ikon)}.
  * @see #instance()
  */
 public interface FrameworkIcons extends Icons, Logos {

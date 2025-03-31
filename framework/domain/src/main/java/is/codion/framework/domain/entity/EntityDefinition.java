@@ -81,7 +81,7 @@ public interface EntityDefinition {
 
 	/**
 	 * The default exists predicate returns true if the entity has a non-null original primary key,
-	 * which is a best guess about an entity existing in a database.
+	 * which is a best-guess about an entity existing in a database.
 	 * @return the predicate to use to check if an entity of this type exists in the database
 	 */
 	Predicate<Entity> exists();
@@ -338,7 +338,7 @@ public interface EntityDefinition {
 		/**
 		 * Sets the predicate to use when checking if an entity of this type exists in the database.
 		 * The default predicate returns true if the entity has a non-null original primary key,
-		 * which is a best guess about an entity existing in a database.
+		 * which is a best-guess about an entity existing in a database.
 		 * @param exists the entity exists predicate
 		 * @return this {@link Builder} instance
 		 */

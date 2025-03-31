@@ -60,7 +60,7 @@ public interface ModelLink<M extends EntityModel<M, E, T>, E extends EntityEditM
 	void onSelection(Collection<Entity> selectedEntities);
 
 	/**
-	 * Called when a insert is performed in the parent model, regardless of entity type.
+	 * Called when insert is performed in the parent model, regardless of entity type.
 	 * @param insertedEntities the inserted entities
 	 */
 	void onInsert(Collection<Entity> insertedEntities);
@@ -124,7 +124,7 @@ public interface ModelLink<M extends EntityModel<M, E, T>, E extends EntityEditM
 		B onUpdate(Consumer<Map<Entity, Entity>> onUpdate);
 
 		/**
-		 * @param onDelete called when a delete is performed in the parent model
+		 * @param onDelete called when delete is performed in the parent model
 		 * @return this builder
 		 */
 		B onDelete(Consumer<Collection<Entity>> onDelete);

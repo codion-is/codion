@@ -42,7 +42,7 @@ javax.net.ssl.keyStore=keystore.jks
 javax.net.ssl.keyStorePassword=password
 ----
 
-<1> This property is 'true' by default, included here for completeness' sake
+<1> This property is 'true' by default, included here for completeness's sake
 
 ==== Client side
 

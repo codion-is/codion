@@ -28,13 +28,13 @@ link:https://github.com/codion-is/petclinic[Petclinic project on Github]
 
 link:{basedir}/tutorials/world/world.html[World tutorial]
 
-link:https://github.com/codion-is/world[World project on Github]
+link:https://github.com/codion-is/world[World project on GitHub]
 
 === Chinook
 
 link:{basedir}/tutorials/chinook/chinook.html[Chinook tutorial]
 
-link:https://github.com/codion-is/chinook[Chinook project on Github]
+link:https://github.com/codion-is/chinook[Chinook project on GitHub]
 
 ==== Minimal
 

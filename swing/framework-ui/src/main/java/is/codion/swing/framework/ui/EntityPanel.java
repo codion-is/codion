@@ -76,8 +76,8 @@ import static is.codion.swing.common.ui.control.ControlMap.controlMap;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.SELECT_INPUT_FIELD;
-import static is.codion.swing.framework.ui.EntityPanel.ControlKeys.REFRESH;
 import static is.codion.swing.framework.ui.EntityPanel.ControlKeys.*;
+import static is.codion.swing.framework.ui.EntityPanel.ControlKeys.REFRESH;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.*;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
 import static is.codion.swing.framework.ui.EntityPanel.WindowType.DIALOG;
@@ -418,7 +418,7 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * @return true if this panel contains a edit panel.
+	 * @return true if this panel contains an edit panel.
 	 */
 	public final boolean containsEditPanel() {
 		return editPanel != null;
@@ -619,7 +619,7 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * Override to setup any custom controls. This default implementation is empty.
+	 * Override to set up any custom controls. This default implementation is empty.
 	 * This method is called after all standard controls have been initialized.
 	 * @see #control(ControlKey)
 	 */
@@ -1498,7 +1498,7 @@ public class EntityPanel extends JPanel {
 
 		/**
 		 * @param controlKey the control key
-		 * @param keyStroke provides access to the {@link Value} controlling the key stroke for the given control
+		 * @param keyStroke provides access to the {@link Value} controlling the keyStroke for the given control
 		 * @return this Config instance
 		 */
 		public Config keyStroke(ControlKey<?> controlKey, Consumer<Value<KeyStroke>> keyStroke) {

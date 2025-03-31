@@ -60,7 +60,7 @@ import java.util.List;
  * List<Entity> tracks = connection.select(
  *         Condition.and(Track.NAME.like("The%"), condition));
  * }
- * <p>The ? substitute character is replaced with the condition values when when the statement is prepared.
+ * <p>The ? substitute character is replaced with the condition values when the statement is prepared.
  * That relies on the {@code columns} List for the value data type, and assumes it contains the {@link Column} associated
  * with each value at the same index. If the {@code columns} List is empty, no value substitution is performed.
  */

@@ -31,7 +31,7 @@ public interface EntityValidator {
 
 	/**
 	 * Specifies whether the default validator performs strict validation or not.
-	 * By default all non-read-only attribute values are validated if the entity
+	 * By default, all non-read-only attribute values are validated if the entity
 	 * is being inserted (as in, when it does not exist according to {@link Entity#exists()}).
 	 * If the entity exists, only modified values are validated.
 	 * With strict validation enabled all values are validated, regardless

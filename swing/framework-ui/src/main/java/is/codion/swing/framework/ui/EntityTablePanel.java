@@ -312,7 +312,7 @@ public class EntityTablePanel extends JPanel {
 		 */
 		public static final ControlKey<CommandControl> SELECT_COLUMNS = CommandControl.key("selectColumns");
 		/**
-		 * A {@link Controls} instance containing a {@link ToggleControl} for each columns visibility.
+		 * A {@link Controls} instance containing a {@link ToggleControl} for each columns' visibility.
 		 * @see Config#columnSelection(ColumnSelection)
 		 */
 		public static final ControlKey<Controls> TOGGLE_COLUMN_CONTROLS = Controls.key("toggleColumnControls");
@@ -770,7 +770,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
-	 * Override to setup any custom controls. This default implementation is empty.
+	 * Override to set up any custom controls. This default implementation is empty.
 	 * This method is called after all standard controls have been initialized.
 	 * @see #control(ControlKey)
 	 */
@@ -2430,7 +2430,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * @param includeAddControl true if a Add control should be included if a edit panel is available
+		 * @param includeAddControl true if an Add control should be included if an edit panel is available
 		 * @return this Config instance
 		 */
 		public Config includeAddControl(boolean includeAddControl) {
@@ -2439,7 +2439,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * @param includeEditControl true if a Edit control should be included if a edit panel is available
+		 * @param includeEditControl true if an Edit control should be included if an edit panel is available
 		 * @return this Config instance
 		 */
 		public Config includeEditControl(boolean includeEditControl) {
@@ -2448,7 +2448,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * @param includeEditAttributeControl true if a 'Edit' attribute control should be included
+		 * @param includeEditAttributeControl true if an 'Edit' attribute control should be included
 		 * @return this Config instance
 		 * @see #editAttributeSelection(EditAttributeSelection)
 		 */
@@ -2486,7 +2486,7 @@ public class EntityTablePanel extends JPanel {
 
 		/**
 		 * @param controlKey the control key
-		 * @param keyStroke provides access to the {@link Value} controlling the key stroke for the given control
+		 * @param keyStroke provides access to the {@link Value} controlling the keyStroke for the given control
 		 * @return this Config instance
 		 */
 		public Config keyStroke(ControlKey<?> controlKey, Consumer<Value<KeyStroke>> keyStroke) {
@@ -2495,7 +2495,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * By default all attributes are editable via the table popup menu or the {@link ControlKeys#EDIT_SELECTED_ATTRIBUTE} control,
+		 * By default, all attributes are editable via the table popup menu or the {@link ControlKeys#EDIT_SELECTED_ATTRIBUTE} control,
 		 * use this method to exclude one or more attributes from being editable.
 		 * @param attributes provides this tables editable attribute value set
 		 * @return this Config instance

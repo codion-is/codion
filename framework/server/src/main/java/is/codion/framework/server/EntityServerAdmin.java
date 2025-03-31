@@ -267,7 +267,7 @@ public interface EntityServerAdmin extends ServerAdmin {
 	void setMinimumConnectionPoolSize(String username, int value) throws RemoteException;
 
 	/**
-	 * Basic information about a entity definition.
+	 * Basic information about an entity definition.
 	 */
 	interface DomainEntityDefinition {
 

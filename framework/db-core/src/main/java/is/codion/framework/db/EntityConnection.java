@@ -752,7 +752,7 @@ public interface EntityConnection extends AutoCloseable {
 
 			/**
 			 * Marks the Select instance as a FOR UPDATE query, this means the resulting rows
-			 * will be locked by the given connection until unlocked by running another (non select for update)
+			 * will be locked by the given connection until unlocked by running another (non-select for update)
 			 * query on the same connection or performing an update.
 			 * Note that marking this Select instance as for update, sets the {@link #fetchDepth()} to zero, which can
 			 * then be modified by setting it after setting forUpdate.

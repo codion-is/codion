@@ -45,7 +45,7 @@ public interface ControlMap {
 
 	/**
 	 * @param controlKey the control key
-	 * @return the {@link Value} controlling the key stroke for the given control
+	 * @return the {@link Value} controlling the keyStroke for the given control
 	 * @throws IllegalArgumentException in case no control is associated with the given control key
 	 */
 	Value<KeyStroke> keyStroke(ControlKey<?> controlKey);

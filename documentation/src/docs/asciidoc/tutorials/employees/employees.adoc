@@ -47,7 +47,7 @@ Next we define the constants required for the employee entity, which is based on
 include::{dir-source}/is/codion/demos/employees/domain/Employees.java[tags=employeeConstants]
 ----
 
-In this section we add a constructor, adding two entity definition builders to the domain model, along with a employee report, loaded from the classpath.
+In this section we add a constructor, adding two entity definition builders to the domain model, along with an employee report, loaded from the classpath.
 
 [source,java]
 ----

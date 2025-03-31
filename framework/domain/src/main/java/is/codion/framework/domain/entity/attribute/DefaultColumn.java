@@ -327,7 +327,7 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
 		/**
 		 * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a row was inserted.
 		 * @param column the column
-		 * @param <T> the Temporal type to base column column on
+		 * @param <T> the Temporal type to base the column on
 		 * @param <B> the builder type
 		 * @return a new {@link ColumnDefinition.Builder}
 		 */
@@ -342,7 +342,7 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
 		/**
 		 * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a row was updated.
 		 * @param column the column
-		 * @param <T> the Temporal type to base column column on
+		 * @param <T> the Temporal type to base the column on
 		 * @param <B> the builder type
 		 * @return a new {@link ColumnDefinition.Builder}
 		 */

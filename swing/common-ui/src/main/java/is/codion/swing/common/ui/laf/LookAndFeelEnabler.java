@@ -92,7 +92,7 @@ public interface LookAndFeelEnabler {
 	 * Enables the look and feel specified by the given user preference or the default one if no preference value is found.
 	 * @param userPreferencePropertyName the name of the user preference look and feel property
 	 * @param defaultLookAndFeel the default look and feel class to use if none is found in user preferences
-	 * @return true if a look and feel was enabled, false if the neither the user preference or default look and feels were available
+	 * @return true if a look and feel was enabled, false if the neither the user preference nor default look and feels were available
 	 */
 	static boolean enableLookAndFeel(String userPreferencePropertyName, Class<? extends LookAndFeel> defaultLookAndFeel) {
 		return enableLookAndFeel(userPreferencePropertyName, requireNonNull(defaultLookAndFeel).getName());
@@ -102,7 +102,7 @@ public interface LookAndFeelEnabler {
 	 * Enables the look and feel specified by the given user preference or the default one if no preference value is found.
 	 * @param userPreferencePropertyName the name of the user preference look and feel property
 	 * @param defaultLookAndFeel the classname of the default look and feel to use if none is found in user preferences
-	 * @return true if a look and feel was enabled, false if the neither the user preference or default look and feels were available
+	 * @return true if a look and feel was enabled, false if the neither the user preference nor default look and feels were available
 	 */
 	static boolean enableLookAndFeel(String userPreferencePropertyName, String defaultLookAndFeel) {
 		Optional<LookAndFeelEnabler> lookAndFeel = findLookAndFeel(getUserPreference(userPreferencePropertyName, requireNonNull(defaultLookAndFeel)));

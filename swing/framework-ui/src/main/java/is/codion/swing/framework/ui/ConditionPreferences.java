@@ -96,7 +96,7 @@ final class ConditionPreferences {
 	 * Creates a new {@link ConditionPreferences} instance.
 	 * @param attribute the attribute
 	 * @param autoEnable true if auto enable is enabled
-	 * @param caseSensitive true if case sensitive
+	 * @param caseSensitive true if case-sensitive
 	 * @param wildcard the wildcard state
 	 * @return a new {@link ConditionPreferences} instance.
 	 */
@@ -121,7 +121,7 @@ final class ConditionPreferences {
 
 	/**
 	 * @param attributes the attributes
-	 * @param preferencesString the preferences encoded as as string
+	 * @param preferencesString the preferences encoded as a string
 	 * @return a map containing the {@link EntityTablePanel.ColumnPreferences} instances parsed from the given string
 	 */
 	static Map<Attribute<?>, ConditionPreferences> fromString(Collection<Attribute<?>> attributes, String preferencesString) {

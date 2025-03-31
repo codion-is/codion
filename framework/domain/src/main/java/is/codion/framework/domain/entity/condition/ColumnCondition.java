@@ -42,7 +42,7 @@ public interface ColumnCondition<T> extends Condition {
 	Operator operator();
 
 	/**
-	 * @return true if this condition is case sensitive, only applies to String based conditions
+	 * @return true if this condition is case-sensitive, only applies to String based conditions
 	 */
 	boolean caseSensitive();
 
@@ -123,7 +123,7 @@ public interface ColumnCondition<T> extends Condition {
 		ColumnCondition<String> notLikeIgnoreCase(@Nullable String value);
 
 		/**
-		 * Returns a 'in' {@link ColumnCondition}.
+		 * Returns an 'in' {@link ColumnCondition}.
 		 * @param values the values to use in the condition
 		 * @return a {@link ColumnCondition}
 		 * @throws NullPointerException in case {@code values} is null
@@ -139,7 +139,7 @@ public interface ColumnCondition<T> extends Condition {
 		ColumnCondition<T> notIn(T... values);
 
 		/**
-		 * Returns a 'in' {@link ColumnCondition}.
+		 * Returns an 'in' {@link ColumnCondition}.
 		 * @param values the values to use in the condition
 		 * @return a {@link ColumnCondition}
 		 * @throws NullPointerException in case {@code values} is null

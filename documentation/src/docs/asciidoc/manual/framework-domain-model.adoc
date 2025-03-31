@@ -79,7 +79,7 @@ To define a domain model API we:
 * Use the *DomainType* to create {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityType.html[EntityType] constants for each table, wrapped in a namespace interface.
 * Use the *EntityTypes* to create {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/Column.html[Column] constants for each column and a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/ForeignKey.html[ForeignKey] constant for each foreign key.
 
-NOTE: https://en.wikipedia.org/wiki/Constant_interface[Constant interfaces] are considered an anti-pattern in Java, a *public static final class* can be used instead in case interfaces is not acceptable, but that involves a bit more typing, since the constants must all be *public static final*.
+NOTE: https://en.wikipedia.org/wiki/Constant_interface[Constant interfaces] are considered an antipattern in Java, a *public static final class* can be used instead in case interfaces is not acceptable, but that involves a bit more typing, since the constants must all be *public static final*.
 
 These constants represent the domain API and are used when referring to tables, columns or foreign keys.
 
@@ -91,7 +91,7 @@ include::{dir-source}/is/codion/manual/store/minimal/ManualDomainModel.java[tags
 <1> The *DomainType* instance serves as a factory for *EntityTypes* associated with that domain.
 <2> Each *EntityType* instance serves as a factory for *Columns* and *ForeignKeys* associated with that entity.
 
-Typically the underlying table name is used as the *EntityType* name, but you can use whatever identifying string you want and specify the table name via the *tableName()* builder method when defining the entity.
+Typically, the underlying table name is used as the *EntityType* name, but you can use whatever identifying string you want and specify the table name via the *tableName()* builder method when defining the entity.
 
 The underlying column name is typically used as the *Column* name, but as with the *EntityType* you can use whatever value you want and specify the column name via the *columnName()* method when creating the associated *ColumnDefinition*.
 
@@ -100,7 +100,7 @@ The underlying column name is typically used as the *Column* name, but as with t
 The domain model is implemented by extending the {url-javadoc}{framework-domain}/is/codion/framework/domain/DomainModel.html[DomainModel] class and populating it with *EntityDefinitions* based on the domain tables.
 An *EntityDefinition* is comprised of *AttributeDefinitions* based on the *Attributes* associated with the entity.
 
-The *EntityType* and *Attribute* constants provide *define()* methods returning builders which allow for further configuration (such as nullability and maximum length for values and the caption and primary key generator for the entity definition)..
+The *EntityType* and *Attribute* constants provide *define()* methods returning builders which allow for further configuration (such as nullability and maximum length for values and the caption and primary key generator for the entity definition).
 
 NOTE: If a caption is not specified for an attribute, it is marked as hidden and is not visible in table views.
 
@@ -130,7 +130,7 @@ _src/main/resources/META-INF/services/is.codion.framework.domain.Domain_
 is.codion.demos.store.domain.StoreImpl
 ----
 
-NOTE: The domain model implementation must be on the classpath when running with a local JDBC connection, but when running with a RMI or HTTP connection the domain model API is sufficient.
+NOTE: The domain model implementation must be on the classpath when running with a local JDBC connection, but when running with an RMI or HTTP connection the domain model API is sufficient.
 If you forsee using RMI or HTTP connections it is recommended to split your domain model into separate API and implementation modules, to simplify client configurations (see https://github.com/codion-is/chinook[Chinook] and https://github.com/codion-is/world[World] demo applications, see https://github.com/codion-is/petclinic[Petclinic] for a simple single class domain model).
 
 The domain model provides an {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Entities.html[Entities] instance via {url-javadoc}{framework-domain}/is/codion/framework/domain/Domain.html#entities{opar}{cpar}[entities()], which contains the entity definitions and serves as a factory for *Entity* and *Entity.Key* instances.

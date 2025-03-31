@@ -483,7 +483,7 @@ public class EntityEditComponentPanel extends JPanel {
 	/**
 	 * Creates a builder for integer fields.
 	 * @param attribute the attribute for which to build a text field
-	 * @return a integer field builder
+	 * @return an integer field builder
 	 */
 	protected final NumberField.Builder<Integer> createIntegerField(Attribute<Integer> attribute) {
 		return setComponentBuilder(attribute, entityComponents.integerField(attribute)

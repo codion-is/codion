@@ -293,7 +293,7 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	/**
-	 * @return an {@link Observer} notified when the day selection panel is double clicked
+	 * @return an {@link Observer} notified when the day selection panel is double-clicked
 	 */
 	public Observer<Integer> doubleClicked() {
 		return doubleClicked.observer();

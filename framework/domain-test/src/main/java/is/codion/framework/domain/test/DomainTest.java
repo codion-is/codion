@@ -146,7 +146,7 @@ public class DomainTest {
 		/**
 		 * Initializes an Entity instance to reference via the given foreign key. The entity returned by this method must exist
 		 * in the database, so it can either return an entity with a known hard-coded primary key value or return a newly inserted one.
-		 * By default this method returns a newly inserted Entity populated with random values.
+		 * By default, this method returns a newly inserted Entity populated with random values.
 		 * Note that this default implementation returns an empty Optional in case the referenced entity type is read-only.
 		 * @param foreignKey the foreign key referencing the entity
 		 * @return an entity for the given foreign key or an empty Optional if none is required

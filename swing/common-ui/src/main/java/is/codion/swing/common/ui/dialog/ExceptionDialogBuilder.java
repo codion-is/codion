@@ -48,7 +48,7 @@ public interface ExceptionDialogBuilder extends DialogBuilder<ExceptionDialogBui
 
 	/**
 	 * Specifies a list of exception types, which are considered wrapping exceptions, that is, exceptions that wrap a root cause.<br>
-	 * By default root cause exceptions are unwrapped before being displayed, in order to simplify the error message and stack trace.<br>
+	 * By default, root cause exceptions are unwrapped before being displayed, in order to simplify the error message and stack trace.<br>
 	 * Replace with an empty list in order to disable unwrapping altogether.
 	 * <ul>
 	 * <li>Value type: String list

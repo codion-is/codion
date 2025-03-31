@@ -64,7 +64,7 @@ public interface ComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBu
 	B completionMode(Completion.Mode completionMode);
 
 	/**
-	 * Specifies whether to normalize strings during auto completion
+	 * Specifies whether to normalize strings during auto-completion
 	 * @param normalize true if strings should be normalized during autocomplete
 	 * @return this builder instance
 	 * @see #completionMode(Completion.Mode)

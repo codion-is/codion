@@ -384,7 +384,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	}
 
 	/**
-	 * @return an unmodifiable view of the auxialiary servers running along side this server
+	 * @return an unmodifiable view of the auxialiary servers running along-side this server
 	 */
 	protected final Collection<AuxiliaryServer> auxiliaryServers() {
 		return unmodifiableCollection(auxiliaryServers);

@@ -26,7 +26,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.StreamSupport.stream;
 
 /**
- * Creates {@link ObjectInputFilter} a instance.
+ * Creates an {@link ObjectInputFilter} instance.
  */
 public interface ObjectInputFilterFactory {
 

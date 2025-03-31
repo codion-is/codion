@@ -53,10 +53,10 @@ public final class H2DatabaseFactory implements DatabaseFactory {
 	}
 
 	/**
-	 * Creates a H2 Database instance
+	 * Creates an H2 Database instance
 	 * @param url the jdbc url
 	 * @param initScripts initialization scripts to run on database creation
-	 * @return a H2 Database instance
+	 * @return an H2 Database instance
 	 */
 	public static Database createDatabase(String url, String... initScripts) {
 		return new H2Database(url, initScripts == null ? emptyList() : Arrays.asList(initScripts),

@@ -618,7 +618,7 @@ public final class Components {
 	}
 
 	/**
-	 * @return a Integer based {@link NumberField} builder
+	 * @return an Integer based {@link NumberField} builder
 	 */
 	public static NumberField.Builder<Integer> integerField() {
 		return NumberField.builder(Integer.class);
@@ -626,7 +626,7 @@ public final class Components {
 
 	/**
 	 * @param linkedValue the value to link to the component
-	 * @return a Integer based {@link NumberField} builder
+	 * @return an Integer based {@link NumberField} builder
 	 */
 	public static NumberField.Builder<Integer> integerField(Value<Integer> linkedValue) {
 		return NumberField.builder(Integer.class, linkedValue);
@@ -741,7 +741,7 @@ public final class Components {
 	}
 
 	/**
-	 * @return a Integer based JSpinner builder
+	 * @return an Integer based JSpinner builder
 	 */
 	public static NumberSpinnerBuilder<Integer> integerSpinner() {
 		return NumberSpinnerBuilder.builder(new SpinnerNumberModel(), Integer.class);
@@ -749,7 +749,7 @@ public final class Components {
 
 	/**
 	 * @param linkedValue the value to link to the component
-	 * @return a Integer based JSpinner builder
+	 * @return an Integer based JSpinner builder
 	 */
 	public static NumberSpinnerBuilder<Integer> integerSpinner(Value<Integer> linkedValue) {
 		return NumberSpinnerBuilder.builder(new SpinnerNumberModel(), Integer.class, linkedValue);
@@ -757,7 +757,7 @@ public final class Components {
 
 	/**
 	 * @param spinnerNumberModel the spinner model
-	 * @return a Integer based JSpinner builder
+	 * @return an Integer based JSpinner builder
 	 */
 	public static NumberSpinnerBuilder<Integer> integerSpinner(SpinnerNumberModel spinnerNumberModel) {
 		return NumberSpinnerBuilder.builder(spinnerNumberModel, Integer.class);
@@ -766,7 +766,7 @@ public final class Components {
 	/**
 	 * @param spinnerNumberModel the spinner model
 	 * @param linkedValue the value to link to the component
-	 * @return a Integer based JSpinner builder
+	 * @return an Integer based JSpinner builder
 	 */
 	public static NumberSpinnerBuilder<Integer> integerSpinner(SpinnerNumberModel spinnerNumberModel,
 																														 Value<Integer> linkedValue) {

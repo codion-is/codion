@@ -309,7 +309,7 @@ public abstract class AbstractDatabase implements Database {
 	}
 
 	/**
-	 * Creates a offset/fetch next clause of the form {@code OFFSET {offset} ROWS FETCH NEXT {limit} ROWS ONLY}.
+	 * Creates an offset/fetch next clause of the form {@code OFFSET {offset} ROWS FETCH NEXT {limit} ROWS ONLY}.
 	 * Returns a partial clause if either value is null.
 	 * If both values are null, an empty string is returned.
 	 * @param limit the limit, may be null

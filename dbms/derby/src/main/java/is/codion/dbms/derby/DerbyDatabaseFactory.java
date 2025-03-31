@@ -46,7 +46,7 @@ public final class DerbyDatabaseFactory implements DatabaseFactory {
 
 	/**
 	 * Shuts down the given database instance, assuming it is embedded
-	 * @param database the database to shutdown
+	 * @param database the database to shut down
 	 */
 	public static void shutdown(Database database) {
 		requireNonNull(database);

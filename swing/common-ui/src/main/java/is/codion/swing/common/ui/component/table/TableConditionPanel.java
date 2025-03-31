@@ -88,7 +88,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 	public abstract Map<C, ConditionPanel<?>> panels();
 
 	/**
-	 * By default this returns all condition panels, override to customize.
+	 * By default, this returns all condition panels, override to customize.
 	 * @return the selectable condition panels
 	 * @see #panels()
 	 * @see #select(JComponent)

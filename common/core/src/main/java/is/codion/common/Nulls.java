@@ -33,7 +33,7 @@ public final class Nulls {
 	/**
 	 * Included to skip the array creation in the varargs version
 	 * @param object the object to check
-	 * @return true if the object is non null
+	 * @return true if the object is non-null
 	 */
 	public static boolean nonNull(@Nullable Object object) {
 		return Objects.nonNull(object);

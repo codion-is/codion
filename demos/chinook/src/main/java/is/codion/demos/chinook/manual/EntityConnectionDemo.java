@@ -150,7 +150,7 @@ public final class EntityConnectionDemo {
 		// fetch depth limit prevented it from being selected
 		Entity album = track.get(Track.ALBUM_FK);
 
-		// using track.entity(Track.ALBUM_FK) you get a 'album'
+		// using track.entity(Track.ALBUM_FK) you get an 'album'
 		// instance containing only the primary key, since the condition
 		// fetch depth limit prevented it from being selected
 		album = track.entity(Track.ALBUM_FK);
@@ -496,7 +496,7 @@ public final class EntityConnectionDemo {
 
 		Entities entities = connection.entities();
 
-		// It is very important to start the transaction here, outside of the try/catch block,
+		// It is very important to start the transaction here, outside the try/catch block,
 		// otherwise, trying to start a transaction on a connection already with an open transaction
 		// (which is a bug in itself), would cause the current transaction to be rolled back
 		// in the Exception catch block, which is probably not what you want.

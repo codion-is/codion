@@ -116,7 +116,7 @@ final class ColumnPreferences {
 
 	/**
 	 * @param attributes the attributes
-	 * @param preferencesString the preferences encoded as as string
+	 * @param preferencesString the preferences encoded as a string
 	 * @return a map containing the {@link ColumnPreferences} instances parsed from the given string
 	 */
 	static Map<Attribute<?>, ColumnPreferences> fromString(Collection<Attribute<?>> attributes, String preferencesString) {

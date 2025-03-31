@@ -1,4 +1,4 @@
 [#_chinook_tutorial]
 = Chinook Tutorial
 
-link:https://github.com/codion-is/chinook[Chinook project on Github]
+link:https://github.com/codion-is/chinook[Chinook project on GitHub]

@@ -227,7 +227,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	public interface Builder extends ComboBoxBuilder<Entity, EntityComboBox, Builder> {
 
 		/**
-		 * A edit panel is required for the add and edit controls.
+		 * An edit panel is required for the add and edit controls.
 		 * @param editPanel the edit panel supplier
 		 * @return this builder instance
 		 */

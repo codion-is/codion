@@ -308,7 +308,7 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	/**
-	 * Builds a entity search field.
+	 * Builds an entity search field.
 	 */
 	public interface Builder<T, B extends Builder<T, B>> extends ComponentBuilder<T, EntitySearchField, B> {
 
@@ -385,7 +385,7 @@ public final class EntitySearchField extends HintTextField {
 		B selectorFactory(Function<EntitySearchField, Selector> selectorFactory);
 
 		/**
-		 * A edit panel is required for the add and edit controls.
+		 * An edit panel is required for the add and edit controls.
 		 * @param editPanel the edit panel supplier
 		 * @return this builder instance
 		 */

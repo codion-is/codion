@@ -90,7 +90,7 @@ public interface HttpEntityConnectionProvider extends EntityConnectionProvider {
 		Builder connectTimeout(int connectTimeout);
 
 		/**
-		 * By default the http client uses a shared thread pool executor.
+		 * By default, the http client uses a shared thread pool executor.
 		 * @param executor the http client executor to use
 		 * @return this builder instance
 		 */

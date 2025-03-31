@@ -262,7 +262,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 * Performs insert on the active entity after asking for confirmation using the {@link Confirmer}
 	 * specified via {@link Config#insertConfirmer(Confirmer)}.
 	 * Note that the default insert {@link Confirmer} simply returns true, so in order to implement
-	 * a insert confirmation you must set the {@link Confirmer} via {@link Config#insertConfirmer(Confirmer)}.
+	 * an insert confirmation you must set the {@link Confirmer} via {@link Config#insertConfirmer(Confirmer)}.
 	 * @return true in case of successful insert, false otherwise
 	 * @see Config#insertConfirmer(Confirmer)
 	 */
@@ -481,7 +481,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	}
 
 	/**
-	 * Override to setup any custom controls. This default implementation is empty.
+	 * Override to set up any custom controls. This default implementation is empty.
 	 * This method is called after all standard controls have been initialized.
 	 * @see #control(ControlKey)
 	 */
@@ -851,7 +851,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 		/**
 		 * @param controlKey the control key
-		 * @param keyStroke provides access to the {@link Value} controlling the key stroke for the given control
+		 * @param keyStroke provides access to the {@link Value} controlling the keyStroke for the given control
 		 * @return this Config instance
 		 */
 		public Config keyStroke(ControlKey<?> controlKey, Consumer<Value<KeyStroke>> keyStroke) {
@@ -898,7 +898,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		}
 
 		/**
-		 * @param includeEntityMenu true if a entity menu should be included
+		 * @param includeEntityMenu true if an entity menu should be included
 		 * @return this Config instance
 		 * @see #INCLUDE_ENTITY_MENU
 		 */
@@ -970,7 +970,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		Confirmer NONE = dialogOwner -> true;
 
 		/**
-		 * Returns true if the action is confirmed, presents an confirmation dialog to the user if required.
+		 * Returns true if the action is confirmed, presents a confirmation dialog to the user if required.
 		 * @param dialogOwner the owner for the dialog
 		 * @return true if the action is confirmed
 		 */

@@ -1,4 +1,4 @@
 [#_world_tutorial]
 = World Tutorial
 
-link:https://github.com/codion-is/world[World project on Github]
+link:https://github.com/codion-is/world[World project on GitHub]

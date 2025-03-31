@@ -3,7 +3,7 @@
 :dir-source: ../../../../../demos/manual/src/main/java
 :imagesdir: ../images
 
-A Note taking application in ~300 lines.
+A Note-taking application in ~300 lines.
 
 [source,shell]
 ----

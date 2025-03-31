@@ -1,6 +1,6 @@
 # Contributing to Codion
 
-Thank you for you wanting to contribute, here's what you need to know before proceeding.
+Thank you for wanting to contribute, here's what you need to know before proceeding.
 
 ## Code contributions
 

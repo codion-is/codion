@@ -273,7 +273,7 @@ public final class NotesDemo {
 										.database(initializeDatabase())
 										// Supply our domain model
 										.domain(new Notes())
-										// Use the H2Database super user
+										// Use the H2Database super-user
 										.user(User.user("sa"))
 										.build())
 						// IntelliJ theme based Flat Look and Feels are available

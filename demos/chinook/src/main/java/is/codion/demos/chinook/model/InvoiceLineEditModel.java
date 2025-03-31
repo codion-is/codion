@@ -50,19 +50,19 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 
 	@Override
 	protected Collection<Entity> insert(Collection<Entity> invoiceLines, EntityConnection connection) {
-		// Use a transaction to update the invoice totals when a invoice line is inserted
+		// Use a transaction to update the invoice totals when an invoice line is inserted
 		return transaction(connection, () -> updateTotals(connection.insertSelect(invoiceLines), connection));
 	}
 
 	@Override
 	protected Collection<Entity> update(Collection<Entity> invoiceLines, EntityConnection connection) {
-		// Use a transaction to update the invoice totals when a invoice line is updated
+		// Use a transaction to update the invoice totals when an invoice line is updated
 		return transaction(connection, () -> updateTotals(connection.updateSelect(invoiceLines), connection));
 	}
 
 	@Override
 	protected void delete(Collection<Entity> invoiceLines, EntityConnection connection) {
-		// Use a transaction to update the invoice totals when a invoice line is deleted
+		// Use a transaction to update the invoice totals when an invoice line is deleted
 		transaction(connection, () -> {
 			connection.delete(primaryKeys(invoiceLines));
 			updateTotals(invoiceLines, connection);

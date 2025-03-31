@@ -346,7 +346,7 @@ public final class SearchHighlighter {
 		Builder selectedHighlightColor(Color selectedHighlightColor);
 
 		/**
-		 * @param caseSensitive true if the search should be case sensitive, default tue
+		 * @param caseSensitive true if the search should be case-sensitive, default tue
 		 * @return this builder
 		 */
 		Builder caseSensitive(boolean caseSensitive);

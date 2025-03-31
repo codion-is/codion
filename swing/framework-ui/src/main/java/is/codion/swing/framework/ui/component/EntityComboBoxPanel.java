@@ -102,13 +102,13 @@ public final class EntityComboBoxPanel extends JPanel {
 	public interface Builder extends ComponentBuilder<Entity, EntityComboBoxPanel, Builder> {
 
 		/**
-		 * @param includeAddButton true if a 'Add' button should be included
+		 * @param includeAddButton true if an 'Add' button should be included
 		 * @return this builder instance
 		 */
 		Builder includeAddButton(boolean includeAddButton);
 
 		/**
-		 * @param includeEditButton true if a 'Edit' button should be included
+		 * @param includeEditButton true if an 'Edit' button should be included
 		 * @return this builder instance
 		 */
 		Builder includeEditButton(boolean includeEditButton);

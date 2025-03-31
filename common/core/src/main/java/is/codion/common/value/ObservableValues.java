@@ -43,9 +43,9 @@ public interface ObservableValues<T, C extends Collection<T>> extends Observable
 	boolean contains(@Nullable T value);
 
 	/**
-	 * Returns true if this {@link Values} instance contains all of the elements of the specified collection
+	 * Returns true if this {@link Values} instance contains all the elements of the specified collection
 	 * @param values the elements to check
-	 * @return true if this {@link Values} instance contains all of the elements of the specified collection
+	 * @return true if this {@link Values} instance contains all the elements of the specified collection
 	 */
 	boolean containsAll(Collection<T> values);
 

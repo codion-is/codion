@@ -446,7 +446,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	}
 
 	/**
-	 * Shows an about dialog
+	 * Shows an about-dialog
 	 * @see #createAboutPanel()
 	 */
 	public final void displayAbout() {
@@ -1410,7 +1410,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		Builder<M, P> displayFrame(boolean displayFrame);
 
 		/**
-		 * Specifies whether or not to set the default uncaught exception handler when starting the application, true by default.
+		 * Specifies whether to set the default uncaught exception handler when starting the application, true by default.
 		 * @param setUncaughtExceptionHandler if true the default uncaught exception handler is set on application start
 		 * @return this Builder instance
 		 * @see Thread#setDefaultUncaughtExceptionHandler(Thread.UncaughtExceptionHandler)
