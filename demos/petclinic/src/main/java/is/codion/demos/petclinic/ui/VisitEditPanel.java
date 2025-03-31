@@ -40,13 +40,17 @@ public final class VisitEditPanel extends EntityEditPanel {
 		focus().initial().set(Visit.PET_FK);
 
 		createComboBox(Visit.PET_FK);
+		createComboBox(Visit.VET_FK);
 		createTemporalFieldPanel(Visit.VISIT_DATE);
 		createTextArea(Visit.DESCRIPTION)
 						.rowsColumns(4, 20);
 
-		JPanel northPanel = gridLayoutPanel(1, 2)
-						.add(createInputPanel(Visit.PET_FK))
-						.add(createInputPanel(Visit.VISIT_DATE))
+		JPanel northPanel = gridLayoutPanel(2, 1)
+						.add(gridLayoutPanel(1, 2)
+										.add(createInputPanel(Visit.PET_FK))
+										.add(createInputPanel(Visit.VISIT_DATE))
+										.build())
+						.add(createInputPanel(Visit.VET_FK))
 						.build();
 
 		setLayout(borderLayout());

@@ -236,6 +236,12 @@ public final class PetclinicImpl extends DomainModel {
 														.column()
 														.caption("Date")
 														.nullable(false),
+										Visit.VET_ID.define()
+														.column()
+														.nullable(false),
+										Visit.VET_FK.define()
+														.foreignKey()
+														.caption("Vet"),
 										Visit.DESCRIPTION.define()
 														.column()
 														.caption("Description")
