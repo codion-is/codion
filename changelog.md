@@ -52,6 +52,7 @@ Codion Change Log
 - EntityTablePanel, redundant disabling of filters on column hidden removed, handled by FilterTable.
 - EntityTablePanel.Config.QUERY_HIDDEN_COLUMNS replaced with EXCLUDE_HIDDEN_COLUMNS, EntityTablePanel.queryHiddenColumns() removed.
 - EntitySearchField, special handling for transferring focus on enter removed.
+- EntityDialogs.selectionDialog() bug fixed, now initializes the EntityTablePanel.
 ### is.codion.framework.servlet
 - EntityService.USE_VIRTUAL_THREADS configuration value added.
 - EntityService now configures handlers before starting.

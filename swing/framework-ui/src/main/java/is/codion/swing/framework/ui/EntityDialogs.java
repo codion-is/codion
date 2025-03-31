@@ -512,7 +512,7 @@ public final class EntityDialogs {
 		private EntitySearchDialog(EntityTablePanel tablePanel, Window owner, Point location,
 															 Component locationRelativeTo, Observable<String> title, ImageIcon icon,
 															 boolean singleSelection, boolean includeSearchButton) {
-			this.tablePanel = requireNonNull(tablePanel);
+			this.tablePanel = requireNonNull(tablePanel).initialize();
 			Control okControl = Control.builder()
 							.command(this::ok)
 							.name(Messages.ok())
