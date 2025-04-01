@@ -21,6 +21,8 @@ package is.codion.framework.db;
 import is.codion.framework.db.EntityConnection.BatchInsert;
 import is.codion.framework.domain.entity.Entity;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -34,8 +36,8 @@ final class DefaultBatchInsert implements BatchInsert {
 	private final EntityConnection connection;
 	private final Iterator<Entity> entityIterator;
 	private final int batchSize;
-	private final Consumer<Integer> progressReporter;
-	private final Consumer<Collection<Entity.Key>> onInsert;
+	private final @Nullable Consumer<Integer> progressReporter;
+	private final @Nullable Consumer<Collection<Entity.Key>> onInsert;
 
 	DefaultBatchInsert(DefaultBuilder builder) {
 		this.connection = builder.connection;
@@ -71,8 +73,8 @@ final class DefaultBatchInsert implements BatchInsert {
 		private final Iterator<Entity> entityIterator;
 
 		private int batchSize = 100;
-		private Consumer<Integer> progressReporter;
-		private Consumer<Collection<Entity.Key>> onInsert;
+		private @Nullable Consumer<Integer> progressReporter;
+		private @Nullable Consumer<Collection<Entity.Key>> onInsert;
 
 		DefaultBuilder(EntityConnection connection, Iterator<Entity> entityIterator) {
 			this.connection = requireNonNull(connection);

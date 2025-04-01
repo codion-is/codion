@@ -25,6 +25,8 @@ import is.codion.common.version.Version;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Optional;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
@@ -217,7 +219,7 @@ public interface EntityConnectionProvider extends AutoCloseable {
 		 * @param clientVersion the client version
 		 * @return this builder instance
 		 */
-		B clientVersion(Version clientVersion);
+		B clientVersion(@Nullable Version clientVersion);
 
 		/**
 		 * @param onClose called when this connection provider has been closed

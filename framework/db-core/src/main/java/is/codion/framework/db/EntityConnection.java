@@ -36,6 +36,8 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.condition.Condition;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -160,7 +162,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @return the function return value
 	 * @throws DatabaseException in case anything goes wrong during the execution
 	 */
-	<C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType);
+	<C extends EntityConnection, T, R> @Nullable R execute(FunctionType<C, T, R> functionType);
 
 	/**
 	 * Executes the function with the given type
@@ -172,7 +174,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @return the function return value
 	 * @throws DatabaseException in case anything goes wrong during the execution
 	 */
-	<C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T argument);
+	<C extends EntityConnection, T, R> @Nullable R execute(FunctionType<C, T, R> functionType, @Nullable T argument);
 
 	/**
 	 * Executes the procedure with the given type with no arguments
@@ -191,7 +193,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @param <T> the argument type
 	 * @throws DatabaseException in case anything goes wrong during the execution
 	 */
-	<C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T argument);
+	<C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, @Nullable T argument);
 
 	/**
 	 * Inserts the given entity, returning the primary key.
@@ -435,7 +437,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @throws is.codion.common.db.report.ReportException in case of a report exception
 	 * @see Report#fill(java.sql.Connection, Object)
 	 */
-	<T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters);
+	<T, R, P> R report(ReportType<T, R, P> reportType, @Nullable P reportParameters);
 
 	/**
 	 * Executes the given {@link Transactional} instance within a transaction on the given connection, committing on success and rolling back on exception.
@@ -480,7 +482,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * @throws DatabaseException in case of a database exception
 	 * @throws RuntimeException in case of exceptions other than {@link DatabaseException}
 	 */
-	static <T> T transaction(EntityConnection connection, TransactionalResult<T> transactional) {
+	static <T> @Nullable T transaction(EntityConnection connection, TransactionalResult<T> transactional) {
 		requireNonNull(connection);
 		requireNonNull(transactional);
 		connection.startTransaction();
@@ -550,7 +552,7 @@ public interface EntityConnection extends AutoCloseable {
 		 * @throws Exception in case of an exception
 		 * @return the result
 		 */
-		T execute() throws Exception;
+		@Nullable T execute() throws Exception;
 	}
 
 	/**
@@ -736,19 +738,19 @@ public interface EntityConnection extends AutoCloseable {
 			 * @param orderBy the {@link OrderBy} to use when applying this condition
 			 * @return this builder instance
 			 */
-			Builder orderBy(OrderBy orderBy);
+			Builder orderBy(@Nullable OrderBy orderBy);
 
 			/**
 			 * @param limit the LIMIT to use for this condition, null for no limit
 			 * @return this builder instance
 			 */
-			Builder limit(Integer limit);
+			Builder limit(@Nullable Integer limit);
 
 			/**
 			 * @param offset the OFFSET to use for this condition, null for no offset
 			 * @return this builder instance
 			 */
-			Builder offset(Integer offset);
+			Builder offset(@Nullable Integer offset);
 
 			/**
 			 * Marks the Select instance as a FOR UPDATE query, this means the resulting rows

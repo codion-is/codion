@@ -25,6 +25,7 @@ import is.codion.common.version.Version;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,12 +48,12 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	private final User user;
 	private final DomainType domainType;
 	private final UUID clientId;
-	private final Version clientVersion;
-	private final String clientType;
-	private final Consumer<EntityConnectionProvider> onClose;
+	private final @Nullable Version clientVersion;
+	private final @Nullable String clientType;
+	private final @Nullable Consumer<EntityConnectionProvider> onClose;
 
-	private EntityConnection entityConnection;
-	private Entities entities;
+	private @Nullable EntityConnection entityConnection;
+	private @Nullable Entities entities;
 
 	/**
 	 * @param builder the builder
@@ -194,12 +195,12 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
 		private final String connectionType;
 
-		private User user;
-		private DomainType domainType;
+		private @Nullable User user;
+		private @Nullable DomainType domainType;
 		private UUID clientId = UUID.randomUUID();
-		private String clientType;
-		private Version clientVersion;
-		private Consumer<EntityConnectionProvider> onClose;
+		private @Nullable String clientType;
+		private @Nullable Version clientVersion;
+		private @Nullable Consumer<EntityConnectionProvider> onClose;
 
 		/**
 		 * @param connectionType a string describing the connection type
@@ -238,7 +239,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 		}
 
 		@Override
-		public final B clientVersion(Version clientVersion) {
+		public final B clientVersion(@Nullable Version clientVersion) {
 			this.clientVersion = clientVersion;
 			return self();
 		}

@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.33
+### is.codion.framework.db.core
+- JSpecify annotations added.
 ### is.codion.framework.model
 - AbstractEntityEditModel.configureSearchModel() added, for separating the configuration of a search model for use in the edit model from search model creation.
 ### is.codion.swing.framework.model

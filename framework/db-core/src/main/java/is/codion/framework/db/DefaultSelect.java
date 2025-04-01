@@ -24,6 +24,8 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.Condition;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -45,13 +47,13 @@ final class DefaultSelect implements Select, Serializable {
 
 	private final Condition where;
 	private final Condition having;
-	private final Map<ForeignKey, Integer> foreignKeyFetchDepths;
+	private final @Nullable Map<ForeignKey, Integer> foreignKeyFetchDepths;
 	private final Collection<Attribute<?>> attributes;
-	private final OrderBy orderBy;
-	private final Integer fetchDepth;
+	private final @Nullable OrderBy orderBy;
+	private final @Nullable Integer fetchDepth;
 	private final boolean forUpdate;
-	private final Integer limit;
-	private final Integer offset;
+	private final @Nullable Integer limit;
+	private final @Nullable Integer offset;
 	private final int queryTimeout;
 
 	private DefaultSelect(DefaultBuilder builder) {
@@ -173,15 +175,15 @@ final class DefaultSelect implements Select, Serializable {
 
 		private final Condition where;
 
-		private Map<ForeignKey, Integer> foreignKeyFetchDepths;
+		private @Nullable Map<ForeignKey, Integer> foreignKeyFetchDepths;
 		private Collection<Attribute<?>> attributes = emptyList();
 
 		private Condition having;
-		private OrderBy orderBy;
-		private Integer fetchDepth;
+		private @Nullable OrderBy orderBy;
+		private @Nullable Integer fetchDepth;
 		private boolean forUpdate;
-		private Integer limit;
-		private Integer offset;
+		private @Nullable Integer limit;
+		private @Nullable Integer offset;
 		private int queryTimeout = EntityConnection.DEFAULT_QUERY_TIMEOUT_SECONDS;
 
 		DefaultBuilder(Condition where) {
@@ -190,19 +192,19 @@ final class DefaultSelect implements Select, Serializable {
 		}
 
 		@Override
-		public Builder orderBy(OrderBy orderBy) {
+		public Builder orderBy(@Nullable OrderBy orderBy) {
 			this.orderBy = orderBy;
 			return this;
 		}
 
 		@Override
-		public Builder limit(Integer limit) {
+		public Builder limit(@Nullable Integer limit) {
 			this.limit = limit;
 			return this;
 		}
 
 		@Override
-		public Builder offset(Integer offset) {
+		public Builder offset(@Nullable Integer offset) {
 			this.offset = offset;
 			return this;
 		}
