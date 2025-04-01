@@ -1,6 +1,10 @@
 Codion Change Log
 =================
 
+## 0.18.33
+### is.codion.swing.framework.model
+- DefaultEntityComboBoxModel.DefaultForeignKeyFilter.link() bug fixed, combo box model used its own selection instead of the one from the filter model when initializing the link.
+
 ## 0.18.32
 ### is.codion.common.model
 - UserPreferences.getUserPreference(key, defaultValue) now requires a non-null default value, can no longer return null.

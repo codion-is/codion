@@ -104,7 +104,9 @@ public final class DefaultEntityComboBoxModelTest {
 						.condition(() -> Employee.JOB.in("MANAGER", "PRESIDENT"))
 						.filterSelected(true)
 						.build();
+		managerComboBoxModel.selection().item().set(employeeComboBoxModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("BLAKE")));
 		EntityComboBoxModel departmentComboBoxModel = managerComboBoxModel.filter().get(Employee.DEPARTMENT_FK).builder().build();
+		managerComboBoxModel.selection().clear();
 		employeeComboBoxModel.items().refresh();
 		employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).strict().set(true);
 		assertEquals(0, employeeComboBoxModel.items().visible().count());

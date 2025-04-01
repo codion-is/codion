@@ -376,7 +376,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 			if (!filterKeys.isEmpty()) {
 				filterModel.select(filterKeys.iterator().next());
 			}
-			set(selection().item().get());
+			set(filterModel.selection().item().get());
 			filterModel.selection().item().addConsumer(this::set);
 			selection().item().addConsumer(selected -> select(filterModel, selected));
 			items().refresher().result().addListener(filterModel.items()::refresh);
