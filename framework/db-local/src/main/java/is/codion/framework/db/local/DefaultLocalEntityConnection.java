@@ -49,6 +49,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey.Reference;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.condition.Condition;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -571,12 +572,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	@Override
-	public <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType) {
+	public <C extends EntityConnection, T, R> @Nullable R execute(FunctionType<C, T, R> functionType) {
 		return execute(functionType, null);
 	}
 
 	@Override
-	public <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T argument) {
+	public <C extends EntityConnection, T, R> @Nullable R execute(FunctionType<C, T, R> functionType, @Nullable T argument) {
 		requireNonNull(functionType, "functionType may not be null");
 		Exception exception = null;
 		logEntry(EXECUTE, functionType, argument);
@@ -602,7 +603,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	@Override
-	public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T argument) {
+	public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, @Nullable T argument) {
 		requireNonNull(procedureType, "procedureType may not be null");
 		Exception exception = null;
 		logEntry(EXECUTE, procedureType, argument);
@@ -700,7 +701,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		this.defaultQueryTimeout = defaultQueryTimeout;
 	}
 
-	private Collection<Key> insert(Collection<Entity> entities, Collection<Entity> insertedEntities) {
+	private Collection<Key> insert(Collection<Entity> entities, @Nullable Collection<Entity> insertedEntities) {
 		throwIfReadOnly(entities);
 
 		List<Key> insertedKeys = new ArrayList<>(entities.size());
@@ -753,7 +754,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		}
 	}
 
-	private void update(Collection<Entity> entities, Collection<Entity> updatedEntities) {
+	private void update(Collection<Entity> entities, @Nullable Collection<Entity> updatedEntities) {
 		Map<EntityType, List<Entity>> entitiesByEntityType = groupByType(entities);
 		throwIfReadOnly(entitiesByEntityType.keySet());
 
@@ -1247,7 +1248,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		}
 	}
 
-	private void logEntry(String method, Object... arguments) {
+	private void logEntry(String method, @Nullable Object... arguments) {
 		MethodLogger methodLogger = connection.getMethodLogger();
 		if (methodLogger != null && methodLogger.isEnabled()) {
 			methodLogger.enter(method, arguments);
@@ -1258,18 +1259,18 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		logExit(method, null);
 	}
 
-	private void logExit(String method, Exception exception) {
+	private void logExit(String method, @Nullable Exception exception) {
 		logExit(method, exception, null);
 	}
 
-	private void logExit(String method, Exception exception, String exitMessage) {
+	private void logExit(String method, @Nullable Exception exception, @Nullable String exitMessage) {
 		MethodLogger methodLogger = connection.getMethodLogger();
 		if (methodLogger != null && methodLogger.isEnabled()) {
 			methodLogger.exit(method, exception, exitMessage);
 		}
 	}
 
-	private String createLogMessage(String sqlStatement, List<?> values, List<ColumnDefinition<?>> columnDefinitions, Exception exception) {
+	private String createLogMessage(@Nullable String sqlStatement, List<?> values, List<ColumnDefinition<?>> columnDefinitions, @Nullable Exception exception) {
 		StringBuilder logMessage = new StringBuilder(user().toString()).append("\n");
 		String valueString = "[" + createValueString(values, columnDefinitions) + "]";
 		logMessage.append(sqlStatement == null ? "no sql statement" : sqlStatement).append(", ").append(valueString);
@@ -1335,7 +1336,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		return domain.entities().definition(entityType);
 	}
 
-	private List<Entity> cachedResult(Select select) {
+	private @Nullable List<Entity> cachedResult(Select select) {
 		if (queryCacheEnabled && !select.forUpdate()) {
 			return queryCache.get(select);
 		}
@@ -1352,7 +1353,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		return result;
 	}
 
-	private static Entity entity(Key key, Map<Key, Entity> entityKeyMap) {
+	private static @Nullable Entity entity(@Nullable Key key, Map<Key, Entity> entityKeyMap) {
 		if (key == null) {
 			return null;
 		}
@@ -1559,7 +1560,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		});
 	}
 
-	private static void closeSilently(AutoCloseable closeable) {
+	private static void closeSilently(@Nullable AutoCloseable closeable) {
 		try {
 			if (closeable != null) {
 				closeable.close();

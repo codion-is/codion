@@ -23,6 +23,8 @@ import is.codion.framework.db.AbstractEntityConnectionProvider.AbstractBuilder;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.Domain;
 
+import org.jspecify.annotations.Nullable;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -33,8 +35,8 @@ public final class DefaultLocalEntityConnectionProviderBuilder
 				extends AbstractBuilder<LocalEntityConnectionProvider, LocalEntityConnectionProvider.Builder>
 				implements LocalEntityConnectionProvider.Builder {
 
-	Domain domain;
-	Database database;
+	@Nullable Domain domain;
+	@Nullable Database database;
 	int defaultQueryTimeout = LocalEntityConnection.QUERY_TIMEOUT_SECONDS.getOrThrow();
 
 	/**

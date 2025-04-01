@@ -25,4 +25,5 @@
  * <li>{@link is.codion.framework.db.local.LocalEntityConnection#LIMIT_FOREIGN_KEY_FETCH_DEPTH}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 package is.codion.framework.db.local;
