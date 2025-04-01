@@ -34,6 +34,8 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.condition.Condition;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -64,7 +66,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private final EntityDefinition entityDefinition;
 	private final Collection<Column<String>> searchColumns;
 	private final Collection<Attribute<?>> attributes;
-	private final OrderBy orderBy;
+	private final @Nullable OrderBy orderBy;
 	private final DefaultSearch search = new DefaultSearch();
 	private final DefaultSelection selection = new DefaultSelection();
 	private final EntityConnectionProvider connectionProvider;
@@ -332,12 +334,12 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		private final EntityDefinition entityDefinition;
 		private final EntityConnectionProvider connectionProvider;
 		private Collection<Column<String>> searchColumns;
-		private Supplier<Condition> condition;
+		private @Nullable Supplier<Condition> condition;
 		private Collection<Attribute<?>> attributes = emptyList();
 		private boolean singleSelection = false;
-		private Integer limit = DEFAULT_LIMIT.get();
+		private @Nullable Integer limit = DEFAULT_LIMIT.get();
 		private boolean handleEditEvents = HANDLE_EDIT_EVENTS.getOrThrow();
-		private OrderBy orderBy;
+		private @Nullable OrderBy orderBy;
 
 		DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
 			this.connectionProvider = requireNonNull(connectionProvider);

@@ -31,6 +31,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -437,7 +438,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		return unmodifiableMap(keyMap);
 	}
 
-	private static Entity findAndRemove(Entity.Key primaryKey, ListIterator<Entity> iterator) {
+	private static @Nullable Entity findAndRemove(Entity.Key primaryKey, ListIterator<Entity> iterator) {
 		while (iterator.hasNext()) {
 			Entity current = iterator.next();
 			if (current.primaryKey().equals(primaryKey)) {

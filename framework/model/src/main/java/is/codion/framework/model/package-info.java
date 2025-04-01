@@ -35,4 +35,5 @@
  * <li>{@link is.codion.framework.model.EntitySearchModel#DEFAULT_LIMIT}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 package is.codion.framework.model;

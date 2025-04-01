@@ -22,6 +22,8 @@ import is.codion.common.state.State;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -170,8 +172,8 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T>, E extends
 		private final M model;
 		private final ForeignKey foreignKey;
 
-		private Consumer<Collection<Entity>> onSelection;
-		private Consumer<Collection<Entity>> onInsert;
+		private @Nullable Consumer<Collection<Entity>> onSelection;
+		private @Nullable Consumer<Collection<Entity>> onInsert;
 		private Consumer<Map<Entity, Entity>> onUpdate = (Consumer<Map<Entity, Entity>>) EMPTY_CONSUMER;
 		private Consumer<Collection<Entity>> onDelete = (Consumer<Collection<Entity>>) EMPTY_CONSUMER;
 

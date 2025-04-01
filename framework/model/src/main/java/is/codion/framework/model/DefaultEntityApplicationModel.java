@@ -25,6 +25,8 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityType;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -42,7 +44,7 @@ public class DefaultEntityApplicationModel<M extends EntityModel<M, E, T>,
 				E extends EntityEditModel, T extends EntityTableModel<E>> implements EntityApplicationModel<M, E, T> {
 
 	private final EntityConnectionProvider connectionProvider;
-	private final Version version;
+	private final @Nullable Version version;
 	private final DefaultEntityModels<M, E, T> models;
 
 	/**
@@ -63,7 +65,7 @@ public class DefaultEntityApplicationModel<M extends EntityModel<M, E, T>,
 	 * @throws NullPointerException in case connectionProvider is null
 	 */
 	public DefaultEntityApplicationModel(EntityConnectionProvider connectionProvider,
-																			 Collection<? extends M> entityModels, Version version) {
+																			 Collection<? extends M> entityModels, @Nullable Version version) {
 		this.connectionProvider = requireNonNull(connectionProvider);
 		this.models = new DefaultEntityModels<>(requireNonNull(entityModels));
 		this.version = version;

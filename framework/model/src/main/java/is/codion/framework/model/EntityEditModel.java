@@ -37,6 +37,8 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.exception.ValidationException;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -378,7 +380,7 @@ public interface EntityEditModel {
 		 * @see EditorValue#persist()
 		 * @see AttributeDefinition#defaultValue()
 		 */
-		void set(Entity entity);
+		void set(@Nullable Entity entity);
 
 		/**
 		 * Clears all values from the underlying entity, disregarding the {@link EditorValue#persist()} directive.

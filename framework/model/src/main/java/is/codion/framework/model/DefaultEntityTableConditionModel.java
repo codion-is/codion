@@ -36,6 +36,8 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.ColumnCondition;
 import is.codion.framework.domain.entity.condition.Condition;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -278,7 +280,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 		return conditionModel.caseSensitive().get() ? column.notEqualTo((T) value) : (ColumnCondition<T>) column.notEqualToIgnoreCase(value);
 	}
 
-	private static <T> ColumnCondition<T> betweenExclusiveCondition(T lower, T upper, Column<T> column) {
+	private static <T> ColumnCondition<T> betweenExclusiveCondition(@Nullable T lower, @Nullable T upper, Column<T> column) {
 		if (lower == null && upper != null) {
 			return column.lessThan(upper);
 		}
@@ -289,7 +291,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 		return column.betweenExclusive(lower, upper);
 	}
 
-	private static <T> ColumnCondition<T> betweenCondition(T lower, T upper, Column<T> column) {
+	private static <T> ColumnCondition<T> betweenCondition(@Nullable T lower, @Nullable T upper, Column<T> column) {
 		if (lower == null && upper != null) {
 			return column.lessThanOrEqualTo(upper);
 		}
@@ -300,7 +302,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 		return column.between(lower, upper);
 	}
 
-	private static <T> ColumnCondition<T> notBetweenExclusiveCondition(T lower, T upper, Column<T> column) {
+	private static <T> ColumnCondition<T> notBetweenExclusiveCondition(@Nullable T lower, @Nullable T upper, Column<T> column) {
 		if (lower == null && upper != null) {
 			return column.greaterThan(upper);
 		}
@@ -311,7 +313,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 		return column.notBetweenExclusive(lower, upper);
 	}
 
-	private static <T> ColumnCondition<T> notBetweenCondition(T lower, T upper, Column<T> column) {
+	private static <T> ColumnCondition<T> notBetweenCondition(@Nullable T lower, @Nullable T upper, Column<T> column) {
 		if (lower == null && upper != null) {
 			return column.greaterThanOrEqualTo(upper);
 		}

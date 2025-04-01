@@ -39,6 +39,8 @@ import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityEditModel.EditorValue;
 import is.codion.framework.model.EntityEditModel.EntityEditor;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -89,7 +91,7 @@ final class DefaultEntityEditor implements EntityEditor {
 	}
 
 	@Override
-	public void set(Entity entity) {
+	public void set(@Nullable Entity entity) {
 		changing.accept(entity == null ? null : entity.immutable());
 		setOrDefaults(entity);
 	}
@@ -197,7 +199,7 @@ final class DefaultEntityEditor implements EntityEditor {
 		return (EditorValue<T>) editorValues.computeIfAbsent(attribute, this::createEditorValue);
 	}
 
-	void setOrDefaults(Entity entity) {
+	void setOrDefaults(@Nullable Entity entity) {
 		Map<Attribute<?>, Object> affectedAttributes = this.entity.set(entity == null ? createEntity(this::defaultValue) : entity);
 		for (Attribute<?> affectedAttribute : affectedAttributes.keySet()) {
 			notifyValueChange(affectedAttribute);
@@ -210,7 +212,7 @@ final class DefaultEntityEditor implements EntityEditor {
 		changed.accept(entity);
 	}
 
-	private <T> T defaultValue(AttributeDefinition<T> attributeDefinition) {
+	private <T> @Nullable T defaultValue(AttributeDefinition<T> attributeDefinition) {
 		if (value(attributeDefinition.attribute()).persist().get()) {
 			if (attributeDefinition instanceof ForeignKeyDefinition) {
 				return (T) entity.entity((ForeignKey) attributeDefinition.attribute());
@@ -222,7 +224,7 @@ final class DefaultEntityEditor implements EntityEditor {
 		return value(attributeDefinition.attribute()).defaultValue().getOrThrow().get();
 	}
 
-	private <T> void notifyValueEdit(Attribute<T> attribute, T value, Map<Attribute<?>, Object> dependingValues) {
+	private <T> void notifyValueEdit(Attribute<T> attribute, @Nullable T value, Map<Attribute<?>, Object> dependingValues) {
 		notifyValueChange(attribute);
 		Event<T> editEvent = (Event<T>) editEvents.get(attribute);
 		if (editEvent != null) {
@@ -355,7 +357,7 @@ final class DefaultEntityEditor implements EntityEditor {
 	}
 
 	private interface ValueSupplier {
-		<T> T get(AttributeDefinition<T> attributeDefinition);
+		<T> @Nullable T get(AttributeDefinition<T> attributeDefinition);
 	}
 
 	private final class DefaultExists implements Exists {
@@ -436,7 +438,12 @@ final class DefaultEntityEditor implements EntityEditor {
 
 		private DefaultEditorValue(Attribute<T> attribute) {
 			this.attribute = attribute;
-			this.defaultValue = Value.nonNull(entityDefinition.attributes().definition(attribute)::defaultValue);
+			this.defaultValue = Value.nonNull(new Supplier<T>() {
+				@Override
+				public @Nullable T get() {
+					return entityDefinition.attributes().definition(attribute).defaultValue();
+				}
+			});
 		}
 
 		@Override
@@ -480,7 +487,7 @@ final class DefaultEntityEditor implements EntityEditor {
 		}
 
 		@Override
-		protected T getValue() {
+		protected @Nullable T getValue() {
 			return entity.get(attribute);
 		}
 
@@ -534,11 +541,11 @@ final class DefaultEntityEditor implements EntityEditor {
 			return toolTip.observable();
 		}
 
-		private String createMessage(String description) {
+		private @Nullable String createMessage(String description) {
 			return createToolTipText(validationString(), description);
 		}
 
-		private String validationString() {
+		private @Nullable String validationString() {
 			try {
 				DefaultEntityEditor.this.validate(attribute);
 
@@ -549,7 +556,7 @@ final class DefaultEntityEditor implements EntityEditor {
 			}
 		}
 
-		private String createToolTipText(String validationMessage, String description) {
+		private @Nullable String createToolTipText(@Nullable String validationMessage, @Nullable String description) {
 			if (nullOrEmpty(validationMessage)) {
 				return description;
 			}

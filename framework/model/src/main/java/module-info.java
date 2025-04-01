@@ -27,6 +27,7 @@
  * <li>{@link is.codion.framework.model.EntityApplicationModel}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.framework.model {
 	requires org.slf4j;
 	requires transitive is.codion.common.model;

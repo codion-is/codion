@@ -29,6 +29,8 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +50,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 				T extends EntityTableModel<E>> implements EntityModel<M, E, T> {
 
 	private final E editModel;
-	private final T tableModel;
+	private final @Nullable T tableModel;
 	private final DetailModels<M, E, T> detailModels = new DefaultDetailModels();
 
 	/**

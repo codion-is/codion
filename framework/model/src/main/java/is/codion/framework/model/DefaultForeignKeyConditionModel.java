@@ -26,6 +26,8 @@ import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 import is.codion.framework.domain.entity.Entity;
 
+import org.jspecify.annotations.Nullable;
+
 import java.text.Format;
 import java.util.List;
 import java.util.Optional;
@@ -36,8 +38,8 @@ import static java.util.Objects.requireNonNull;
 final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel {
 
 	private final ConditionModel<Entity> condition;
-	private final EntitySearchModel equalSearchModel;
-	private final EntitySearchModel inSearchModel;
+	private final @Nullable EntitySearchModel equalSearchModel;
+	private final @Nullable EntitySearchModel inSearchModel;
 
 	private DefaultForeignKeyConditionModel(DefaultBuilder builder) {
 		equalSearchModel = builder.equalSearchModel;
@@ -139,8 +141,8 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 
 	static final class DefaultBuilder implements Builder {
 
-		private EntitySearchModel equalSearchModel;
-		private EntitySearchModel inSearchModel;
+		private @Nullable EntitySearchModel equalSearchModel;
+		private @Nullable EntitySearchModel inSearchModel;
 
 		@Override
 		public Builder equalSearchModel(EntitySearchModel equalSearchModel) {
