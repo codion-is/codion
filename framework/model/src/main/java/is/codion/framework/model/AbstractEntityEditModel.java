@@ -242,6 +242,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			EntitySearchModel entitySearchModel = searchModels.get(foreignKey);
 			if (entitySearchModel == null) {
 				entitySearchModel = createSearchModel(foreignKey);
+				configureSearchModel(foreignKey, entitySearchModel);
 				searchModels.put(foreignKey, entitySearchModel);
 			}
 
@@ -283,6 +284,13 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	public final Observer<?> afterInsertUpdateOrDelete() {
 		return events.afterInsertUpdateOrDelete.observer();
 	}
+
+	/**
+	 * <p>Called when a {@link EntitySearchModel} is created in {@link #searchModel(ForeignKey)}.
+	 * @param foreignKey the foreign key
+	 * @param entitySearchModel the search model
+	 */
+	protected void configureSearchModel(ForeignKey foreignKey, EntitySearchModel entitySearchModel) {}
 
 	/**
 	 * Inserts the given entities into the database using the given connection

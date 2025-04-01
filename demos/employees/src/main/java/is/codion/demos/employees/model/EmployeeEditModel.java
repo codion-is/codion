@@ -43,32 +43,42 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 	@Override
 	public EntityComboBoxModel createComboBoxModel(ForeignKey foreignKey) {
 		if (foreignKey.equals(Employee.MANAGER_FK)) {
-			EntityComboBoxModel managerComboBoxModel = EntityComboBoxModel.builder(Employee.TYPE, connectionProvider())
+			return EntityComboBoxModel.builder(Employee.TYPE, connectionProvider())
 							//Customize the null value caption so that it displays 'None'
 							//instead of the default '-' character
 							.nullCaption("None")
 							//Only select the president and managers from the database
 							.condition(() -> Employee.JOB.in(Employee.MANAGER, Employee.PRESIDENT))
-							//Prevent automatically reflecting changes to employees since
-							//we simply refresh instead, due to the condition, see below
+							//Prevent automatically reflecting changes to employees
+							//when edited, as we simply refresh instead, due to the
+							//condition, see configureComboBoxModel() below
 							.handleEditEvents(false)
 							.build();
-			//Refresh the manager ComboBoxModel when an employee is added, deleted or updated,
-			//in case a new manager got hired, fired or promoted
-			afterInsertUpdateOrDelete().addListener(managerComboBoxModel.items()::refresh);
-			//hide the employee being edited to prevent an employee from being made her own manager
-			editor().addConsumer(employee ->
-							managerComboBoxModel.filter().predicate().set(manager ->
-											!Objects.equals(manager, employee)));
-			//and only show managers from the currently selected department
-			editor().value(Employee.DEPARTMENT_FK).addConsumer(department ->
-							managerComboBoxModel.filter().get(Employee.DEPARTMENT_FK)
-											.set(department == null ? emptyList() : singleton(department.primaryKey())));
-
-			return managerComboBoxModel;
 		}
 
 		return super.createComboBoxModel(foreignKey);
 	}
 	// end::createComboBoxModel[]
+
+	// tag::configureComboBoxModel[]
+	// Configure the manager ComboBoxModel, this should not be done when creating
+	// the combo box model in createComboBox(), since that method is also called each
+	// time a combo box is required for editing multiple entities via the table panel
+	@Override
+	protected void configureComboBoxModel(ForeignKey foreignKey, EntityComboBoxModel comboBoxModel) {
+		if (foreignKey.equals(Employee.MANAGER_FK)) {
+			//Refresh the manager ComboBoxModel when an employee is added, deleted or updated,
+			//in case a new manager got hired, fired or promoted
+			afterInsertUpdateOrDelete().addListener(comboBoxModel.items()::refresh);
+			//hide the employee being edited to prevent an employee from being made her own manager
+			editor().addConsumer(employee ->
+							comboBoxModel.filter().predicate().set(manager ->
+											!Objects.equals(manager, employee)));
+			//and only show managers from the currently selected department
+			editor().value(Employee.DEPARTMENT_FK).addConsumer(department ->
+							comboBoxModel.filter().get(Employee.DEPARTMENT_FK)
+											.set(department == null ? emptyList() : singleton(department.primaryKey())));
+		}
+	}
+	// end::configureComboBoxModel[]
 }

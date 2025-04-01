@@ -113,10 +113,13 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	}
 
 	/**
-	 * Returns the {@link EntityComboBoxModel} for the given foreign key. If one does not exist one is created.
+	 * <p>Returns the {@link EntityComboBoxModel} associated with the given foreign key.
+	 * If no such combo box model exists, one is created by calling {@link #createComboBoxModel(ForeignKey)}.
+	 * <p>This method always returns the same {@link EntityComboBoxModel} instance, once one has been created.
 	 * @param foreignKey the foreign key
-	 * @return a {@link EntityComboBoxModel} based on the entity referenced by the given foreign key
+	 * @return the {@link EntityComboBoxModel} associated with the given foreign key
 	 * @see #createComboBoxModel(ForeignKey)
+	 * @see #configureComboBoxModel(ForeignKey, EntityComboBoxModel)
 	 */
 	public final EntityComboBoxModel comboBoxModel(ForeignKey foreignKey) {
 		entityDefinition().foreignKeys().definition(foreignKey);
@@ -127,6 +130,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 			EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) comboBoxModels.get(foreignKey);
 			if (comboBoxModel == null) {
 				comboBoxModel = createComboBoxModel(foreignKey);
+				configureComboBoxModel(foreignKey, comboBoxModel);
 				comboBoxModels.put(foreignKey, comboBoxModel);
 			}
 
@@ -135,11 +139,14 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	}
 
 	/**
-	 * Returns the {@link FilterComboBoxModel} for the given column. If one does not exist one is created.
+	 * <p>Returns the {@link FilterComboBoxModel} associated with the given column.
+	 * If no such combo box model exists, one is created by calling {@link #createComboBoxModel(Column)}.
+	 * <p>This method always returns the same {@link FilterComboBoxModel} instance, once one has been created.
 	 * @param column the column
 	 * @param <T> the value type
-	 * @return a {@link FilterComboBoxModel} for the given column
+	 * @return the {@link FilterComboBoxModel} associated with the given column
 	 * @see #createComboBoxModel(Column)
+	 * @see #configureComboBoxModel(Column, FilterComboBoxModel)
 	 */
 	public final <T> FilterComboBoxModel<T> comboBoxModel(Column<T> column) {
 		entityDefinition().columns().definition(column);
@@ -150,6 +157,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 			FilterComboBoxModel<T> comboBoxModel = (FilterComboBoxModel<T>) comboBoxModels.get(column);
 			if (comboBoxModel == null) {
 				comboBoxModel = createComboBoxModel(column);
+				configureComboBoxModel(column, comboBoxModel);
 				comboBoxModels.put(column, comboBoxModel);
 			}
 
@@ -158,11 +166,11 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	}
 
 	/**
-	 * Creates a {@link EntityComboBoxModel} for the given foreign key, override to
+	 * <p>Creates a new {@link EntityComboBoxModel} for the given foreign key, override to
 	 * provide a custom {@link EntityComboBoxModel} implementation.
-	 * This default implementation returns a sorted {@link EntityComboBoxModel} using the default
+	 * <p>This default implementation returns a sorted {@link EntityComboBoxModel} using the default
 	 * null item caption if the underlying attribute is nullable.
-	 * If the foreign key has select attributes defined, those are set in the combo box model.
+	 * <p>If the foreign key has select attributes defined, those are set in the combo box model.
 	 * @param foreignKey the foreign key for which to create a {@link EntityComboBoxModel}
 	 * @return a {@link EntityComboBoxModel} for the given foreign key
 	 * @see FilterComboBoxModel#NULL_CAPTION
@@ -205,6 +213,21 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 
 		return comboBoxModel;
 	}
+
+	/**
+	 * <p>Called when a {@link EntityComboBoxModel} is created in {@link #comboBoxModel(ForeignKey)}.
+	 * @param foreignKey the foreign key
+	 * @param comboBoxModel the combo box model
+	 */
+	protected void configureComboBoxModel(ForeignKey foreignKey, EntityComboBoxModel comboBoxModel) {}
+
+	/**
+	 * Called when a {@link FilterComboBoxModel} is created in {@link #comboBoxModel(Column)}
+	 * @param column the column
+	 * @param comboBoxModel the combo box model
+	 * @param <T> the column type
+	 */
+	protected <T> void configureComboBoxModel(Column<T> column, FilterComboBoxModel<T> comboBoxModel) {}
 
 	private <T> FilterComboBoxModel.Builder<T> createColumnComboBoxModel(Column<T> column) {
 		return column.type().isEnum() ?

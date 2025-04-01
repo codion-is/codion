@@ -136,18 +136,20 @@ public interface EntityEditModel {
 	State deleteEnabled();
 
 	/**
-	 * Creates a {@link EntitySearchModel} for looking up entities referenced by the given foreign key,
+	 * <p>Creates a {@link EntitySearchModel} for looking up entities of the type referenced by the given foreign key,
 	 * using the search attributes defined for that entity type.
 	 * @param foreignKey the foreign key for which to create a {@link EntitySearchModel}
-	 * @return a {@link EntitySearchModel} for looking up entities of the type referenced by the given foreign key attribute,
+	 * @return a new {@link EntitySearchModel} for looking up entities of the type referenced by the given foreign key attribute,
 	 * @throws IllegalStateException in case no searchable attributes can be found for the entity type referenced by the given foreign key
 	 */
 	EntitySearchModel createSearchModel(ForeignKey foreignKey);
 
 	/**
+	 * <p>Returns the {@link EntitySearchModel} associated with the given foreign key.
+	 * If no such search model exists, one is created by calling {@link #createSearchModel(ForeignKey)}.
+	 * <p>This method always returns the same {@link EntitySearchModel} instance, once one has been created.
 	 * @param foreignKey the foreign key for which to retrieve the {@link EntitySearchModel}
-	 * @return the {@link EntitySearchModel} associated with the {@code foreignKey}, if no search model
-	 * has been initialized for the given foreign key, a new one is created, associated with the foreign key and returned.
+	 * @return the {@link EntitySearchModel} associated with the given foreign key
 	 */
 	EntitySearchModel searchModel(ForeignKey foreignKey);
 

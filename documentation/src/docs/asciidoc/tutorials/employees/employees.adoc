@@ -114,11 +114,16 @@ NOTE: The foreign key (Employee.MANAGER_FK) is used when referring to the manage
 
 We create a {url-javadoc}{swing-framework-model}/is/codion/swing/framework/model/component/EntityComboBoxModel.html[EntityComboBoxModel] for the Employee.MANAGER_FK attribute, using the static *builder()* method, configured to only display employees with the job PRESIDENT or MANAGER.
 
-We then wire up a fiew listeners in order to further restrict the items displayed in the combo box model, such as the employee currently being edited and managers from other departments.
-
 [source,java]
 ----
 include::{dir-source}/is/codion/demos/employees/model/EmployeeEditModel.java[tags=createComboBoxModel]
+----
+
+We also override *configureComboBoxModel* to wire up a few listeners in order to further restrict the items displayed in the combo box model, such as excluding the employee currently being edited and managers from other departments.
+
+[source,java]
+----
+include::{dir-source}/is/codion/demos/employees/model/EmployeeEditModel.java[tags=configureComboBoxModel]
 ----
 
 For further information on event binding see <<{basedir}/manual/manual.adoc#_event_binding, Manual#Event binding>>.
