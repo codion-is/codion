@@ -29,10 +29,10 @@ public final class IconsTest {
 	@Test
 	void test() {
 		Icons icons = Icons.icons();
-		assertThrows(IllegalArgumentException.class, () -> icons.icon(Foundation.ALERT));
+		assertThrows(IllegalArgumentException.class, () -> icons.get(Foundation.ALERT));
 		icons.add(Foundation.ALERT, Foundation.FOUNDATION);
 		assertThrows(IllegalArgumentException.class, () -> icons.add(Foundation.FOUNDATION));
-		assertNotNull(icons.icon(Foundation.ALERT));
-		assertNotNull(icons.icon(Foundation.FOUNDATION));
+		assertNotNull(icons.get(Foundation.ALERT));
+		assertNotNull(icons.get(Foundation.FOUNDATION));
 	}
 }

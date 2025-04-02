@@ -84,43 +84,43 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 	}
 
 	@Override
-	public ImageIcon icon(Ikon ikon) {
-		return icons.icon(ikon);
+	public ImageIcon get(Ikon ikon) {
+		return icons.get(ikon);
 	}
 
 	@Override
 	public ImageIcon filter() {
-		return icon(FILTER);
+		return get(FILTER);
 	}
 
 	@Override
 	public ImageIcon search() {
-		return icon(SEARCH);
+		return get(SEARCH);
 	}
 
 	@Override
 	public ImageIcon add() {
-		return icon(ADD);
+		return get(ADD);
 	}
 
 	@Override
 	public ImageIcon delete() {
-		return icon(DELETE);
+		return get(DELETE);
 	}
 
 	@Override
 	public ImageIcon update() {
-		return icon(UPDATE);
+		return get(UPDATE);
 	}
 
 	@Override
 	public ImageIcon copy() {
-		return icon(COPY);
+		return get(COPY);
 	}
 
 	@Override
 	public ImageIcon refresh() {
-		return icon(REFRESH);
+		return get(REFRESH);
 	}
 
 	@Override
@@ -130,77 +130,77 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 
 	@Override
 	public ImageIcon clear() {
-		return icon(CLEAR);
+		return get(CLEAR);
 	}
 
 	@Override
 	public ImageIcon up() {
-		return icon(UP);
+		return get(UP);
 	}
 
 	@Override
 	public ImageIcon down() {
-		return icon(DOWN);
+		return get(DOWN);
 	}
 
 	@Override
 	public ImageIcon detail() {
-		return icon(DETAIL);
+		return get(DETAIL);
 	}
 
 	@Override
 	public ImageIcon print() {
-		return icon(PRINT);
+		return get(PRINT);
 	}
 
 	@Override
 	public ImageIcon clearSelection() {
-		return icon(CLEAR);
+		return get(CLEAR);
 	}
 
 	@Override
 	public ImageIcon edit() {
-		return icon(EDIT);
+		return get(EDIT);
 	}
 
 	@Override
 	public ImageIcon summary() {
-		return icon(SUMMARY);
+		return get(SUMMARY);
 	}
 
 	@Override
 	public ImageIcon editPanel() {
-		return icon(EDIT_PANEL);
+		return get(EDIT_PANEL);
 	}
 
 	@Override
 	public ImageIcon dependencies() {
-		return icon(DEPENDENCIES);
+		return get(DEPENDENCIES);
 	}
 
 	@Override
 	public ImageIcon settings() {
-		return icon(SETTINGS);
+		return get(SETTINGS);
 	}
 
 	@Override
 	public ImageIcon calendar() {
-		return icon(CALENDAR);
+		return get(CALENDAR);
 	}
 
 	@Override
 	public ImageIcon editText() {
-		return icon(EDIT_TEXT);
+		return get(EDIT_TEXT);
 	}
 
 	@Override
 	public ImageIcon columns() {
-		return icon(COLUMNS);
+		return get(COLUMNS);
 	}
 
 	@Override
 	public ImageIcon logo() {
-		return icon(LOGO);
+		return get(LOGO);
 	}
 
 	@Override

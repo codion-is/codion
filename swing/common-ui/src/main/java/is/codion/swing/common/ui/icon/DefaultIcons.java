@@ -64,7 +64,7 @@ final class DefaultIcons implements Icons {
 	}
 
 	@Override
-	public ImageIcon icon(Ikon ikon) {
+	public ImageIcon get(Ikon ikon) {
 		if (!icons.containsKey(requireNonNull(ikon))) {
 			throw new IllegalArgumentException("No icon has been added for key: " + ikon);
 		}

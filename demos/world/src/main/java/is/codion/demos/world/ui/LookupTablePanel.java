@@ -93,7 +93,7 @@ final class LookupTablePanel extends EntityTablePanel {
 
 	private final Control toggleMapControl = Control.builder()
 					.toggle(mapDialogVisible)
-					.smallIcon(ICONS.icon(Foundation.MAP))
+					.smallIcon(ICONS.get(Foundation.MAP))
 					.name("Show map")
 					.build();
 	private final JScrollPane columnSelectionScrollPane = scrollPane(createColumnSelectionToolBar())
@@ -143,7 +143,7 @@ final class LookupTablePanel extends EntityTablePanel {
 						.separator()
 						.control(Controls.builder()
 										.name("Export")
-										.smallIcon(ICONS.icon(Foundation.PAGE_EXPORT))
+										.smallIcon(ICONS.get(Foundation.PAGE_EXPORT))
 										.control(Control.builder()
 														.command(this::exportCSV)
 														.name("CSV..."))
@@ -152,7 +152,7 @@ final class LookupTablePanel extends EntityTablePanel {
 														.name("JSON...")))
 						.control(Controls.builder()
 										.name("Import")
-										.smallIcon(ICONS.icon(Foundation.PAGE_ADD))
+										.smallIcon(ICONS.get(Foundation.PAGE_ADD))
 										.control(Control.builder()
 														.command(this::importJSON)
 														.name("JSON...")))
@@ -302,7 +302,7 @@ final class LookupTablePanel extends EntityTablePanel {
 										.map(ToggleControl.class::cast)
 										.forEach(toggleControl -> toggleControl.value().set(true)))
 						.name("Select all")
-						.smallIcon(ICONS.icon(Foundation.CHECK))
+						.smallIcon(ICONS.get(Foundation.CHECK))
 						.build();
 	}
 }

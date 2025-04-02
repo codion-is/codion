@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.33
+### is.codion.swing.common.ui
+- Icons.icon() renamed get().
 ### is.codion.framework.db.core
 - JSpecify annotations added.
 ### is.codion.framework.db.local

@@ -54,11 +54,11 @@ final class AlbumTagPanel extends JPanel {
 	private final State movingTags = State.state(false);
 	private final Control addTagControl = Control.builder()
 					.command(this::addTag)
-					.smallIcon(ICONS.icon(Foundation.PLUS))
+					.smallIcon(ICONS.get(Foundation.PLUS))
 					.build();
 	private final Control removeTagControl = Control.builder()
 					.command(this::removeTag)
-					.smallIcon(ICONS.icon(Foundation.MINUS))
+					.smallIcon(ICONS.get(Foundation.MINUS))
 					.enabled(selectionEmpty.not())
 					.build();
 	private final Control moveSelectionUpControl = Control.builder()

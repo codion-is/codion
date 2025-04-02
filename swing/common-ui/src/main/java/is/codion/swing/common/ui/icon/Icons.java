@@ -29,7 +29,7 @@ import static is.codion.common.Configuration.integerValue;
 /**
  * Provides icons for ui components.
  * The icon color follows the 'Button.foreground' color of the current Look and feel.
- * Add icons via {@link #add(Ikon...)} and retrieve them via {@link #icon(Ikon)}.
+ * Add icons via {@link #add(Ikon...)} and retrieve them via {@link #get(Ikon)}.
  * @see #icons()
  */
 public interface Icons {
@@ -46,7 +46,7 @@ public interface Icons {
 	PropertyValue<Integer> ICON_SIZE = integerValue(Icons.class.getName() + ".iconSize", DEFAULT_ICON_SIZE);
 
 	/**
-	 * Adds the given ikons to this FrameworkIcons instance. Retrieve an icon via {@link #icon(Ikon)}.
+	 * Adds the given ikons to this FrameworkIcons instance. Retrieve an icon via {@link #get(Ikon)}.
 	 * @param ikons the ikons to add
 	 * @throws IllegalArgumentException in case an icon has already been associated with any of the given ikons
 	 */
@@ -59,7 +59,7 @@ public interface Icons {
 	 * @throws IllegalArgumentException in case no icon has been associated with the given ikon
 	 * @see #add(Ikon...)
 	 */
-	ImageIcon icon(Ikon ikon);
+	ImageIcon get(Ikon ikon);
 
 	/**
 	 * @return a new {@link Icons} instance
