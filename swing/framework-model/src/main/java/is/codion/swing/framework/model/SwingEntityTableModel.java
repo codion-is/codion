@@ -162,7 +162,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 			throw new IllegalStateException("Table model cell is not editable, row: " + rowIndex + ", column: " + modelColumnIndex);
 		}
 		Entity entity = items().visible().get(rowIndex).copy().mutable();
-		entity.put((Attribute<Object>) columns().identifier(modelColumnIndex), value);
+		editModel().apply(singletonList(entity), (Attribute<Object>) columns().identifier(modelColumnIndex), value);
 		try {
 			if (entity.modified()) {
 				editModel().update(singletonList(entity));

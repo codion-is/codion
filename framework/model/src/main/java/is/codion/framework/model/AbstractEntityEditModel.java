@@ -28,6 +28,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
@@ -284,6 +285,12 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	@Override
 	public final Observer<?> afterInsertUpdateOrDelete() {
 		return events.afterInsertUpdateOrDelete.observer();
+	}
+
+	@Override
+	public <T> void apply(Collection<Entity> entities, Attribute<T> attribute, T value) {
+		requireNonNull(attribute);
+		requireNonNull(entities).forEach(entity -> entity.put(attribute, value));
 	}
 
 	/**
