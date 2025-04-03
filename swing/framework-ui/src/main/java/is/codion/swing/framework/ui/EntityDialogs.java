@@ -55,7 +55,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -90,10 +89,11 @@ public final class EntityDialogs {
 	private EntityDialogs() {}
 
 	/**
-	 * @param editModel the edit model to use
+	 * @param editModel the edit model to use for creating component data models and applying the accepted value
 	 * @param attribute the attribute to edit
 	 * @param <T> the attribute type
 	 * @return a new builder
+	 * @see is.codion.framework.model.EntityEditModel#apply(Collection, Attribute, Object)
 	 */
 	public static <T> EditAttributeDialogBuilder<T> editAttributeDialog(SwingEntityEditModel editModel, Attribute<T> attribute) {
 		return new DefaultEditAttributeDialogBuilder<>(editModel, attribute);
@@ -159,16 +159,6 @@ public final class EntityDialogs {
 		 * @return this builder
 		 */
 		EditAttributeDialogBuilder<T> defaultValue(Function<Collection<Entity>, T> defaultValue);
-
-		/**
-		 * <p>Applies the accepted editor value to the entities being edited.
-		 * <p>By default, this simply puts the accepted value in the given entities.
-		 * <p>The {@link BiConsumer} receives the entities being edited along with the new value.
-		 * @param applier applies the accepted value to the given entities
-		 * @return this builder
-		 * @see Entity#put(Attribute, Object)
-		 */
-		EditAttributeDialogBuilder<T> applier(BiConsumer<Collection<Entity>, T> applier);
 
 		/**
 		 * Displays a dialog for editing a single attribute for the given entity
@@ -278,7 +268,6 @@ public final class EntityDialogs {
 		private Consumer<ValidationException> onValidationException = new DefaultValidationExceptionHandler();
 		private Consumer<Exception> onException = new DefaultExceptionHandler();
 		private Function<Collection<Entity>, T> defaultValue = new DefaultValue();
-		private BiConsumer<Collection<Entity>, T> applier = new DefaultApplier();
 
 		private DefaultEditAttributeDialogBuilder(SwingEntityEditModel editModel, Attribute<T> attribute) {
 			this.editModel = requireNonNull(editModel);
@@ -307,12 +296,6 @@ public final class EntityDialogs {
 		@Override
 		public EditAttributeDialogBuilder<T> defaultValue(Function<Collection<Entity>, T> defaultValue) {
 			this.defaultValue = requireNonNull(defaultValue);
-			return this;
-		}
-
-		@Override
-		public EditAttributeDialogBuilder<T> applier(BiConsumer<Collection<Entity>, T> applier) {
-			this.applier = requireNonNull(applier);
 			return this;
 		}
 
@@ -356,14 +339,6 @@ public final class EntityDialogs {
 			}
 		}
 
-		private final class DefaultApplier implements BiConsumer<Collection<Entity>, T> {
-
-			@Override
-			public void accept(Collection<Entity> entities, T newValue) {
-				entities.forEach(entity -> entity.put(attribute, newValue));
-			}
-		}
-
 		private final class PerformUpdate implements Predicate<T> {
 
 			private final Collection<Entity> entities;
@@ -377,7 +352,7 @@ public final class EntityDialogs {
 
 			@Override
 			public boolean test(T newValue) {
-				applier.accept(entities, newValue);
+				editModel.apply(entities, attribute, newValue);
 				try {
 					progressWorkerDialog(editModel.createUpdate(entities.stream()
 									.filter(Entity::modified)

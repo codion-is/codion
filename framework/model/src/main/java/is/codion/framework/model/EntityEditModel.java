@@ -345,6 +345,17 @@ public interface EntityEditModel {
 	Observer<?> afterInsertUpdateOrDelete();
 
 	/**
+	 * <p>Applies the given value to the given entities.
+	 * <p>By default, this simply puts the value in the entities.
+	 * <p>Override to customize, f.ex. when related values must be changed as well.
+	 * @param entities the entities to apply the value to
+	 * @param attribute the attribute being edited
+	 * @param value the value to apply
+	 * @see Entity#put(Attribute, Object)
+	 */
+	<T> void apply(Collection<Entity> entities, Attribute<T> attribute, T newValue);
+
+	/**
 	 * @return the central {@link EditEvents} instance
 	 */
 	static EditEvents editEvents() {

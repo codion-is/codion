@@ -20,7 +20,10 @@ package is.codion.demos.chinook.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+
+import java.util.Collection;
 
 import static is.codion.demos.chinook.domain.api.Chinook.Customer;
 import static is.codion.demos.chinook.domain.api.Chinook.Invoice;
@@ -35,6 +38,23 @@ public final class InvoiceEditModel extends SwingEntityEditModel {
 		// We populate the invoice address fields with
 		// the customer address when the customer is edited
 		editor().value(Invoice.CUSTOMER_FK).edited().addConsumer(this::setAddress);
+	}
+
+	// Override to update the billing address when the invoice customer is changed
+	@Override
+	public <T> void apply(Collection<Entity> entities, Attribute<T> attribute, T newValue) {
+		super.apply(entities, attribute, newValue);
+		if (attribute.equals(Invoice.CUSTOMER_FK)) {
+			Entity customer = (Entity) newValue;
+			entities.forEach(invoice -> {
+				// Set the billing address
+				invoice.put(Invoice.BILLINGADDRESS, customer.get(Customer.ADDRESS));
+				invoice.put(Invoice.BILLINGCITY, customer.get(Customer.CITY));
+				invoice.put(Invoice.BILLINGPOSTALCODE, customer.get(Customer.POSTALCODE));
+				invoice.put(Invoice.BILLINGSTATE, customer.get(Customer.STATE));
+				invoice.put(Invoice.BILLINGCOUNTRY, customer.get(Customer.COUNTRY));
+			});
+		}
 	}
 
 	private void setAddress(Entity customer) {

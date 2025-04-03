@@ -10,13 +10,16 @@ Codion Change Log
 - JSpecify annotations added.
 ### is.codion.framework.model
 - AbstractEntityEditModel.configureSearchModel() added, for separating the configuration of a search model for use in the edit model from search model creation.
+- EntityEditModel.apply() added.
 ### is.codion.swing.framework.model
 - DefaultEntityComboBoxModel.DefaultForeignKeyFilter.link() bug fixed, combo box model used its own selection instead of the one from the filter model when initializing the link
 - SwingEntityEditModel.configureComboBoxModel() added, for separating the configuration of a combo box model for use in the edit model from combo box model creation.
+- SwingEntityTableModel.setValueAt() now uses EntityEditModel.apply().
 ### is.codion.swing.framework.ui
 - EntityEditPanel, exception handling and logging now consistent for insert, update and delete.
 - EditComponentFactory.caption() AttributeDefinition parameter added.
 - DefaultEditAttributeDialogBuilder now displays no caption if EditComponentFactory.caption() returns nothing.
+- EntityDialogs.EditAttributeDialogBuilder.applier() removed, EntityEditModel.apply() used instead.
 
 ## 0.18.32
 ### is.codion.common.model
