@@ -339,7 +339,7 @@ public final class EntityDialogs {
 							.location(location)
 							.locationRelativeTo(locationRelativeTo)
 							.title(FrameworkMessages.edit())
-							.caption(editComponentFactory.caption().orElse(editModel.entityDefinition().attributes().definition(attribute).caption()))
+							.caption(editComponentFactory.caption(editModel.entityDefinition().attributes().definition(attribute)).orElse(null))
 							.validator(new InputValidator(componentValue))
 							.show(new PerformUpdate(entities));
 		}

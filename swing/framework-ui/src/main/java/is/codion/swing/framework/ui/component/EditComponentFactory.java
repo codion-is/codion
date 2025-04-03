@@ -18,11 +18,14 @@
  */
 package is.codion.swing.framework.ui.component;
 
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import javax.swing.JComponent;
 import java.util.Optional;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A factory for {@link ComponentValue} instances.
@@ -41,9 +44,10 @@ public interface EditComponentFactory<T, C extends JComponent> {
 
 	/**
 	 * Provides a way to override the default attribute caption, when presenting the component to the user.
-	 * @return a caption to use when displaying the component
+	 * @param attributeDefinition the attribute definition
+	 * @return a caption to use when displaying the component, or an empty {@link Optional} for no caption
 	 */
-	default Optional<String> caption() {
-		return Optional.empty();
+	default Optional<String> caption(AttributeDefinition<T> attributeDefinition) {
+		return Optional.of(requireNonNull(attributeDefinition).caption());
 	}
 }

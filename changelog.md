@@ -15,6 +15,8 @@ Codion Change Log
 - SwingEntityEditModel.configureComboBoxModel() added, for separating the configuration of a combo box model for use in the edit model from combo box model creation.
 ### is.codion.swing.framework.ui
 - EntityEditPanel, exception handling and logging now consistent for insert, update and delete.
+- EditComponentFactory.caption() AttributeDefinition parameter added.
+- DefaultEditAttributeDialogBuilder now displays no caption if EditComponentFactory.caption() returns nothing.
 
 ## 0.18.32
 ### is.codion.common.model

@@ -22,6 +22,7 @@ import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.demos.chinook.model.TrackTableModel;
 import is.codion.demos.chinook.ui.DurationComponentValue.DurationPanel;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.swing.common.ui.component.spinner.NumberSpinnerBuilder;
 import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
@@ -67,7 +68,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 						// Custom component for editing track ratings
 						.editComponentFactory(Track.RATING, new RatingEditComponentFactory())
 						// Custom component for editing track durations
-						.editComponentFactory(Track.MILLISECONDS, new DurationEditComponentFactory(tableModel))
+						.editComponentFactory(Track.MILLISECONDS, new DurationEditComponentFactory())
 						// Custom cell renderer for ratings
 						.cellRenderer(Track.RATING, ratingRenderer(tableModel))
 						// Custom cell renderer for track duration (min:sec)
@@ -154,15 +155,9 @@ public final class TrackTablePanel extends EntityTablePanel {
 	private static final class DurationEditComponentFactory
 					implements EditComponentFactory<Integer, DurationPanel> {
 
-		private final String caption;
-
-		private DurationEditComponentFactory(TrackTableModel tableModel) {
-			this.caption = tableModel.entityDefinition().attributes().definition(Track.MILLISECONDS).caption();
-		}
-
 		@Override
-		public Optional<String> caption() {
-			return Optional.of(caption);
+		public Optional<String> caption(AttributeDefinition<Integer> attributeDefinition) {
+			return Optional.empty();
 		}
 
 		@Override
