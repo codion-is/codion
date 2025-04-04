@@ -1442,7 +1442,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
 		/**
 		 * Starts the application.
-		 * @param onEventDispatchThread if true then startup is performed on the EDT
+		 * @param onEventDispatchThread if true then startup is performed on the Event Dispatch Thread
 		 */
 		void start(boolean onEventDispatchThread);
 	}

@@ -228,31 +228,31 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		Builder<T, V> onStarted(Runnable onStarted);
 
 		/**
-		 * @param onDone called on the EDT when the task is done running, successfully or not, before the result is processed
+		 * @param onDone called on the Event Dispatch Thread when the task is done running, successfully or not, before the result is processed
 		 * @return this builder instance
 		 */
 		Builder<T, V> onDone(Runnable onDone);
 
 		/**
-		 * @param onResult called on the EDT when the result of a successful run is available
+		 * @param onResult called on the Event Dispatch Thread when the result of a successful run is available
 		 * @return this builder instance
 		 */
 		Builder<T, V> onResult(Consumer<T> onResult);
 
 		/**
-		 * @param onProgress called on the EDT when progress is reported
+		 * @param onProgress called on the Event Dispatch Thread when progress is reported
 		 * @return this builder instance
 		 */
 		Builder<T, V> onProgress(Consumer<Integer> onProgress);
 
 		/**
-		 * @param onPublish called on the EDT when chunks are available for publishing
+		 * @param onPublish called on the Event Dispatch Thread when chunks are available for publishing
 		 * @return this builder instance
 		 */
 		Builder<T, V> onPublish(Consumer<List<V>> onPublish);
 
 		/**
-		 * @param onException called on the EDT if an exception occurred
+		 * @param onException called on the Event Dispatch Thread if an exception occurred
 		 * @return this builder instance
 		 */
 		Builder<T, V> onException(Consumer<Exception> onException);
@@ -260,13 +260,13 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		/**
 		 * Called in case the background task is cancelled via {@link SwingWorker#cancel(boolean)}
 		 * or if it throws a {@link CancelException}
-		 * @param onCancelled called on the EDT if the background task was cancelled
+		 * @param onCancelled called on the Event Dispatch Thread if the background task was cancelled
 		 * @return this builder instance
 		 */
 		Builder<T, V> onCancelled(Runnable onCancelled);
 
 		/**
-		 * @param onInterrupted called on the EDT if the background task was interrupted
+		 * @param onInterrupted called on the Event Dispatch Thread if the background task was interrupted
 		 * @return this builder instance
 		 */
 		Builder<T, V> onInterrupted(Runnable onInterrupted);

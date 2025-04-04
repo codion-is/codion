@@ -204,7 +204,7 @@ public interface EntityQueryModel {
 
 		/**
 		 * <p>Provides the attributes to include when querying based on {@link #included()} and {@link #excluded()}.
-		 * <p>An empty result indicates that all attributes should be selected.
+		 * <p>An empty result indicates that all attributes should be included.
 		 * @return the attributes to include, taking into account {@link #included()} and {@link #excluded()}
 		 */
 		Collection<Attribute<?>> get();

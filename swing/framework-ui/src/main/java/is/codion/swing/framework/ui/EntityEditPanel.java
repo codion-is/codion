@@ -263,7 +263,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 * specified via {@link Config#insertConfirmer(Confirmer)}.
 	 * <p>Note that the default insert {@link Confirmer} simply returns true, so in order to implement
 	 * an insert confirmation you must set the {@link Confirmer} via {@link Config#insertConfirmer(Confirmer)}.
-	 * <p>This method executes synchronously on the EDT.
+	 * <p>This method executes synchronously on the Event Dispatch Thread.
 	 * @return true in case of successful insert, false otherwise
 	 * @see Config#insertConfirmer(Confirmer)
 	 */
@@ -277,7 +277,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	/**
 	 * <p>Performs insert on the active entity without asking for confirmation.
-	 * <p>This method executes synchronously on the EDT.
+	 * <p>This method executes synchronously on the Event Dispatch Thread.
 	 * @return true in case of successful insert, false otherwise
 	 */
 	public final boolean insert() {
@@ -302,7 +302,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	/**
 	 * <p>Performs delete on the active entity after asking for confirmation using the {@link Confirmer}
 	 * specified via {@link Config#deleteConfirmer(Confirmer)}.
-	 * <p>This method executes synchronously on the EDT.
+	 * <p>This method executes synchronously on the Event Dispatch Thread.
 	 * @return true if the delete operation was successful
 	 * @see Config#deleteConfirmer(Confirmer)
 	 */
@@ -316,7 +316,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	/**
 	 * <p>Performs delete on the active entity without asking for confirmation
-	 * <p>This method executes synchronously on the EDT.
+	 * <p>This method executes synchronously on the Event Dispatch Thread.
 	 * @return true if the delete operation was successful
 	 */
 	public final boolean delete() {
@@ -336,7 +336,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	/**
 	 * <p>Performs update on the active entity after asking for confirmation using the {@link Confirmer}
 	 * specified via {@link Config#updateConfirmer(Confirmer)}.
-	 * <p>This method executes synchronously on the EDT.
+	 * <p>This method executes synchronously on the Event Dispatch Thread.
 	 * @return true if the update operation was successful
 	 * @see Config#updateConfirmer(Confirmer)
 	 */
@@ -350,7 +350,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	/**
 	 * <p>Performs update on the active entity without asking for confirmation.
-	 * <p>This method executes synchronously on the EDT.
+	 * <p>This method executes synchronously on the Event Dispatch Thread.
 	 * @return true if the update operation was successful
 	 */
 	public final boolean update() {

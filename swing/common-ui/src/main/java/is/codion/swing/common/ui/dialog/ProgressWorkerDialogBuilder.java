@@ -99,13 +99,13 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
 	ProgressWorkerDialogBuilder<T, V> progressBarSize(Dimension progressBarSize);
 
 	/**
-	 * @param onResult executed on the EDT after a successful run
+	 * @param onResult executed on the Event Dispatch Thread after a successful run
 	 * @return this Builder instance
 	 */
 	ProgressWorkerDialogBuilder<T, V> onResult(Runnable onResult);
 
 	/**
-	 * @param onResult executed on the EDT after a successful run
+	 * @param onResult executed on the Event Dispatch Thread after a successful run
 	 * @return this Builder instance
 	 */
 	ProgressWorkerDialogBuilder<T, V> onResult(Consumer<T> onResult);

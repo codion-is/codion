@@ -60,7 +60,8 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 
 	/**
 	 * Creates and refreshes combo box models for the given attributes. Doing this in the model
-	 * constructor avoids the models being refreshed when the combo boxes using them are initialized.
+	 * constructor avoids the models being refreshed when the combo boxes using them are initialized,
+	 * which usually happens on the Event Dispatch Thread.
 	 * @param attributes the attributes for which to initialize combo box models
 	 * @see #createComboBoxModel(Column)
 	 * @see #createComboBoxModel(ForeignKey)
@@ -215,14 +216,14 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 	}
 
 	/**
-	 * <p>Called when a {@link EntityComboBoxModel} is created in {@link #comboBoxModel(ForeignKey)}.
+	 * <p>Called when a {@link EntityComboBoxModel} is created by {@link #comboBoxModel(ForeignKey)}.
 	 * @param foreignKey the foreign key
 	 * @param comboBoxModel the combo box model
 	 */
 	protected void configureComboBoxModel(ForeignKey foreignKey, EntityComboBoxModel comboBoxModel) {}
 
 	/**
-	 * Called when a {@link FilterComboBoxModel} is created in {@link #comboBoxModel(Column)}
+	 * Called when a {@link FilterComboBoxModel} is created by {@link #comboBoxModel(Column)}
 	 * @param column the column
 	 * @param comboBoxModel the combo box model
 	 * @param <T> the column type

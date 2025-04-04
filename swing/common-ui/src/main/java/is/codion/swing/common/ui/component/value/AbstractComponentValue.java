@@ -87,7 +87,7 @@ public abstract class AbstractComponentValue<T, C extends JComponent> extends Ab
 	protected abstract T getComponentValue();
 
 	/**
-	 * Sets the given value in the underlying component. Note that this method is called on the EDT.
+	 * Sets the given value in the underlying component. Note that this method is called on the Event Dispatch Thread.
 	 * @param value the value to display in the underlying component
 	 * @see #component()
 	 */

@@ -178,7 +178,8 @@ public interface AttributeDefinition<T> {
 	EntityType entityType();
 
 	/**
-	 * @return the caption
+	 * @return the caption or the attribute name if no caption has been specified
+	 * @see Attribute#name()
 	 */
 	String caption();
 

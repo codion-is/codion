@@ -123,7 +123,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	}
 
 	/**
-	 * Displays this LoadTestPanel in a frame on the EDT.
+	 * Displays this LoadTestPanel in a frame on the Event Dispatch Thread.
 	 */
 	public void run() {
 		SwingUtilities.invokeLater(this::showFrame);
