@@ -70,7 +70,7 @@ final class EntityControls {
 	 * @return the add Control
 	 */
 	static CommandControl createAddControl(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke, boolean confirm) {
-		return createAddControl(() -> addEntityDialog(editPanel)
+		return createAddControl(() -> addEntityDialog(requireNonNull(editPanel).get())
 						.owner(comboBox)
 						.confirm(confirm)
 						.onInsert(new EntityComboBoxOnInsert(comboBox.getModel()))
@@ -88,7 +88,7 @@ final class EntityControls {
 	 * @return the add Control
 	 */
 	static CommandControl createAddControl(EntitySearchField searchField, Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke, boolean confirm) {
-		return createAddControl(() -> addEntityDialog(editPanel)
+		return createAddControl(() -> addEntityDialog(requireNonNull(editPanel).get())
 						.owner(searchField)
 						.confirm(confirm)
 						.onInsert(new EntitySearchFieldOnInsert(searchField.model()))
@@ -106,7 +106,7 @@ final class EntityControls {
 	 * @return the edit Control
 	 */
 	static CommandControl createEditControl(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke, boolean confirm) {
-		return createEditControl(() -> editEntityDialog(editPanel)
+		return createEditControl(() -> editEntityDialog(requireNonNull(editPanel).get())
 						.owner(comboBox)
 						.confirm(confirm)
 						.entity(() -> comboBox.getModel().selection().item().getOrThrow())
@@ -125,7 +125,7 @@ final class EntityControls {
 	 * @return the edit Control
 	 */
 	static CommandControl createEditControl(EntitySearchField searchField, Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke, boolean confirm) {
-		return createEditControl(() -> editEntityDialog(editPanel)
+		return createEditControl(() -> editEntityDialog(requireNonNull(editPanel).get())
 						.owner(searchField)
 						.confirm(confirm)
 						.entity(() -> searchField.model().selection().entity().getOrThrow())

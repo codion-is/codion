@@ -101,19 +101,19 @@ public final class EntityDialogs {
 
 	/**
 	 * Creates a new {@link AddEntityDialogBuilder} instance.
-	 * @param editPanel supplies the edit panel to use
+	 * @param editPanel the edit panel to use
 	 * @return a new builder instance
 	 */
-	public static AddEntityDialogBuilder addEntityDialog(Supplier<EntityEditPanel> editPanel) {
+	public static AddEntityDialogBuilder addEntityDialog(EntityEditPanel editPanel) {
 		return new DefaultAddEntityDialogBuilder(editPanel);
 	}
 
 	/**
 	 * Creates a new {@link EditEntityDialogBuilder} instance.
-	 * @param editPanel supplies the edit panel to use
+	 * @param editPanel the edit panel to use
 	 * @return a new builder instance
 	 */
-	public static EditEntityDialogBuilder editEntityDialog(Supplier<EntityEditPanel> editPanel) {
+	public static EditEntityDialogBuilder editEntityDialog(EntityEditPanel editPanel) {
 		return new DefaultEditEntityDialogBuilder(editPanel);
 	}
 
@@ -558,14 +558,14 @@ public final class EntityDialogs {
 	private static final class DefaultAddEntityDialogBuilder extends AbstractDialogBuilder<AddEntityDialogBuilder>
 					implements AddEntityDialogBuilder {
 
-		private final Supplier<EntityEditPanel> editPanelSupplier;
+		private final EntityEditPanel editPanel;
 
 		private Consumer<Entity> onInsert = emptyConsumer();
 		private boolean closeDialog = true;
 		private boolean confirm = false;
 
-		private DefaultAddEntityDialogBuilder(Supplier<EntityEditPanel> editPanelSupplier) {
-			this.editPanelSupplier = requireNonNull(editPanelSupplier);
+		private DefaultAddEntityDialogBuilder(EntityEditPanel editPanel) {
+			this.editPanel = requireNonNull(editPanel);
 		}
 
 		@Override
@@ -588,11 +588,10 @@ public final class EntityDialogs {
 
 		@Override
 		public void show() {
-			EntityEditPanel editPanel = editPanelSupplier.get().initialize();
 			SwingEntityEditModel editModel = editPanel.editModel();
 			Runnable disposeDialog = new DisposeDialog(editPanel);
 			actionDialog(borderLayoutPanel()
-							.centerComponent(editPanel)
+							.centerComponent(editPanel.initialize())
 							.border(emptyBorder())
 							.build())
 							.owner(owner)
@@ -642,14 +641,14 @@ public final class EntityDialogs {
 	private static final class DefaultEditEntityDialogBuilder extends AbstractDialogBuilder<EditEntityDialogBuilder>
 					implements EditEntityDialogBuilder {
 
-		private final Supplier<EntityEditPanel> editPanelSupplier;
+		private final EntityEditPanel editPanel;
 
 		private Supplier<Entity> entity;
 		private Consumer<Entity> onUpdate = emptyConsumer();
 		private boolean confirm = false;
 
-		private DefaultEditEntityDialogBuilder(Supplier<EntityEditPanel> editPanelSupplier) {
-			this.editPanelSupplier = requireNonNull(editPanelSupplier);
+		private DefaultEditEntityDialogBuilder(EntityEditPanel editPanel) {
+			this.editPanel = requireNonNull(editPanel);
 		}
 
 		@Override
@@ -672,11 +671,10 @@ public final class EntityDialogs {
 
 		@Override
 		public void show() {
-			EntityEditPanel editPanel = editPanelSupplier.get().initialize();
 			SwingEntityEditModel editModel = editPanel.editModel();
 			initializeEditModel(editModel);
 			actionDialog(borderLayoutPanel()
-							.centerComponent(editPanel)
+							.centerComponent(editPanel.initialize())
 							.border(emptyBorder())
 							.build())
 							.owner(owner)

@@ -21,6 +21,7 @@ Codion Change Log
 - DefaultEditAttributeDialogBuilder now displays no caption if EditComponentFactory.caption() returns nothing.
 - EntityDialogs.EditAttributeDialogBuilder.applier() removed, EntityEditModel.apply() used instead.
 - EntityTablePanel, edit panel dialog location no longer follows mouse when displayed on double click.
+- EntityDialogs.addEntityDialog() and editEntityDialog() editPanel parameter no longer Supplier.
 
 ## 0.18.32
 ### is.codion.common.model

@@ -1860,7 +1860,7 @@ public class EntityTablePanel extends JPanel {
 
 		@Override
 		public void execute() {
-			addEntityDialog(() -> editPanel)
+			addEntityDialog(editPanel())
 							.owner(EntityTablePanel.this)
 							.closeDialog(false)
 							.show();
@@ -1871,7 +1871,7 @@ public class EntityTablePanel extends JPanel {
 
 		@Override
 		public void execute() {
-			editEntityDialog(EntityTablePanel.this::editPanel)
+			editEntityDialog(editPanel())
 							.owner(EntityTablePanel.this)
 							.show();
 		}
