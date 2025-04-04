@@ -50,6 +50,7 @@ import java.awt.Component;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Window;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -197,6 +198,12 @@ public final class EntityDialogs {
 		AddEntityDialogBuilder confirm(boolean confirm);
 
 		/**
+		 * @param onShown called each time the dialog is shown
+		 * @return this builder instance
+		 */
+		AddEntityDialogBuilder onShown(Consumer<EntityEditPanel> onShown);
+
+		/**
 		 * Displays the dialog.
 		 */
 		void show();
@@ -224,6 +231,12 @@ public final class EntityDialogs {
 		 * @return this builder instance
 		 */
 		EditEntityDialogBuilder confirm(boolean confirm);
+
+		/**
+		 * @param onShown called each time the dialog is shown
+		 * @return this builder instance
+		 */
+		EditEntityDialogBuilder onShown(Consumer<EntityEditPanel> onShown);
 
 		/**
 		 * Displays the dialog.
@@ -559,6 +572,7 @@ public final class EntityDialogs {
 					implements AddEntityDialogBuilder {
 
 		private final EntityEditPanel editPanel;
+		private final Collection<Consumer<EntityEditPanel>> onShownConsumers = new ArrayList<>(1);
 
 		private Consumer<Entity> onInsert = emptyConsumer();
 		private boolean closeDialog = true;
@@ -587,6 +601,12 @@ public final class EntityDialogs {
 		}
 
 		@Override
+		public AddEntityDialogBuilder onShown(Consumer<EntityEditPanel> onShown) {
+			onShownConsumers.add(requireNonNull(onShown));
+			return this;
+		}
+
+		@Override
 		public void show() {
 			SwingEntityEditModel editModel = editPanel.editModel();
 			Runnable disposeDialog = new DisposeDialog(editPanel);
@@ -602,7 +622,7 @@ public final class EntityDialogs {
 							.escapeAction(createCancelControl(disposeDialog))
 							.title(FrameworkMessages.add() + " - " + editModel.entities()
 											.definition(editModel.entityType()).caption())
-							.onShown(new ClearAndRequestFocus(editPanel))
+							.onShown(new OnShown(editPanel, onShownConsumers))
 							.show();
 		}
 
@@ -636,12 +656,30 @@ public final class EntityDialogs {
 							.onException(new EditPanelExceptionHandler(editPanel))
 							.build();
 		}
+
+		private static final class OnShown implements Consumer<JDialog> {
+
+			private final EntityEditPanel editPanel;
+			private final Collection<Consumer<EntityEditPanel>> onShownConsumers;
+
+			private OnShown(EntityEditPanel editPanel, Collection<Consumer<EntityEditPanel>> onShownConsumers) {
+				this.editPanel = editPanel;
+				this.onShownConsumers = onShownConsumers;
+			}
+
+			@Override
+			public void accept(JDialog dialog) {
+				editPanel.clearAndRequestFocus();
+				onShownConsumers.forEach(onShown -> onShown.accept(editPanel));
+			}
+		}
 	}
 
 	private static final class DefaultEditEntityDialogBuilder extends AbstractDialogBuilder<EditEntityDialogBuilder>
 					implements EditEntityDialogBuilder {
 
 		private final EntityEditPanel editPanel;
+		private final Collection<Consumer<EntityEditPanel>> onShownConsumers = new ArrayList<>(1);
 
 		private Supplier<Entity> entity;
 		private Consumer<Entity> onUpdate = emptyConsumer();
@@ -670,6 +708,12 @@ public final class EntityDialogs {
 		}
 
 		@Override
+		public EditEntityDialogBuilder onShown(Consumer<EntityEditPanel> onShown) {
+			onShownConsumers.add(requireNonNull(onShown));
+			return this;
+		}
+
+		@Override
 		public void show() {
 			SwingEntityEditModel editModel = editPanel.editModel();
 			initializeEditModel(editModel);
@@ -685,7 +729,7 @@ public final class EntityDialogs {
 							.escapeAction(createCancelControl(new RevertAndDisposeDialog(editPanel)))
 							.title(FrameworkMessages.edit() + " - " + editModel.entities()
 											.definition(editModel.entityType()).caption())
-							.onShown(new RequestFocus(editPanel))
+							.onShown(new OnShown(editPanel, onShownConsumers))
 							.show();
 		}
 
@@ -727,6 +771,23 @@ public final class EntityDialogs {
 							.enabled(editPanel.editModel().editor().modified())
 							.build();
 		}
+
+		private static final class OnShown implements Consumer<JDialog> {
+
+			private final EntityEditPanel editPanel;
+			private final Collection<Consumer<EntityEditPanel>> onShownConsumers;
+
+			private OnShown(EntityEditPanel editPanel, Collection<Consumer<EntityEditPanel>> onShownConsumers) {
+				this.editPanel = editPanel;
+				this.onShownConsumers = onShownConsumers;
+			}
+
+			@Override
+			public void accept(JDialog dialog) {
+				editPanel.focus().initial().request();
+				onShownConsumers.forEach(onShown -> onShown.accept(editPanel));
+			}
+		}
 	}
 
 	private static Control createCancelControl(Runnable disposeDialog) {
@@ -752,34 +813,6 @@ public final class EntityDialogs {
 		@Override
 		public void accept(Exception exception) {
 			editPanel.onException(exception);
-		}
-	}
-
-	private static final class ClearAndRequestFocus implements Consumer<JDialog> {
-
-		private final EntityEditPanel editPanel;
-
-		private ClearAndRequestFocus(EntityEditPanel editPanel) {
-			this.editPanel = editPanel;
-		}
-
-		@Override
-		public void accept(JDialog dialog) {
-			editPanel.clearAndRequestFocus();
-		}
-	}
-
-	private static final class RequestFocus implements Consumer<JDialog> {
-
-		private final EntityEditPanel editPanel;
-
-		private RequestFocus(EntityEditPanel editPanel) {
-			this.editPanel = editPanel;
-		}
-
-		@Override
-		public void accept(JDialog dialog) {
-			editPanel.focus().initial().request();
 		}
 	}
 

@@ -18,8 +18,13 @@
  */
 package is.codion.demos.chinook.ui;
 
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
+
+import static is.codion.swing.framework.ui.EntityDialogs.editEntityDialog;
 
 public final class EmployeeTablePanel extends EntityTablePanel {
 
@@ -28,5 +33,26 @@ public final class EmployeeTablePanel extends EntityTablePanel {
 		// via double click, popup menu (Add/Edit) or keyboard shortcuts:
 		// INSERT to add a new employee or CTRL-INSERT to edit the selected one.
 		super(tableModel, new EmployeeEditPanel(tableModel.editModel()));
+	}
+
+	@Override
+	protected void setupControls() {
+		// Replace the default EDIT control command with one that configures
+		// the initial focus attribute according the selected table column
+		control(ControlKeys.EDIT).map(control -> control.copy(this::edit).build());
+	}
+
+	private void edit() {
+		editEntityDialog(editPanel())
+						.owner(this)
+						.onShown(this::requestEditFocus)
+						.show();
+	}
+
+	private void requestEditFocus(EntityEditPanel editPanel) {
+		FilterTableColumnModel<Attribute<?>> columnModel = table().columnModel();
+		int columnIndex = columnModel.getSelectionModel().getMinSelectionIndex();
+		Attribute<?> attribute = columnModel.getColumn(columnIndex).identifier();
+		editPanel.focus().request(attribute);
 	}
 }
