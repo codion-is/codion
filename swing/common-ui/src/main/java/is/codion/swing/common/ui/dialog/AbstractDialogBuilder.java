@@ -41,7 +41,7 @@ import static java.util.Objects.requireNonNull;
 public abstract class AbstractDialogBuilder<B extends DialogBuilder<B>> implements DialogBuilder<B> {
 
 	protected final List<KeyEvents.Builder> keyEventBuilders = new ArrayList<>(1);
-	protected final List<Consumer<JDialog>> onBuildConsumers = new ArrayList<>();
+	protected final List<Consumer<JDialog>> onBuildConsumers = new ArrayList<>(1);
 
 	protected Window owner;
 	protected Component locationRelativeTo;

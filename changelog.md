@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.33
 ### is.codion.swing.common.ui
 - Icons.icon() renamed get().
+- ActionDialogBuilder.onShown() now supports multiple consumers.
+- ComponentDialogBuilder.onShown(), onOpened() and onClosed() now support multiple consumers.
 ### is.codion.framework.db.core
 - JSpecify annotations added.
 ### is.codion.framework.db.local

@@ -38,6 +38,8 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -51,14 +53,14 @@ import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<ComponentDialogBuilder> implements ComponentDialogBuilder {
 
 	private final JComponent component;
+	private final Collection<Consumer<JDialog>> onShownConsumers = new ArrayList<>(1);
+	private final Collection<Consumer<WindowEvent>> onOpenedConsumers = new ArrayList<>(1);
+	private final Collection<Consumer<WindowEvent>> onClosedConsumers = new ArrayList<>(1);
 
 	private boolean modal = true;
 	private boolean resizable = true;
 	private Dimension size;
 	private Action enterAction;
-	private Consumer<JDialog> onShown;
-	private Consumer<WindowEvent> onOpened;
-	private Consumer<WindowEvent> onClosed;
 	private Observer<?> closeObserver;
 	private Consumer<State> confirmCloseListener;
 	private boolean disposeOnEscape = true;
@@ -111,19 +113,19 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 
 	@Override
 	public ComponentDialogBuilder onShown(Consumer<JDialog> onShown) {
-		this.onShown = onShown;
+		onShownConsumers.add(requireNonNull(onShown));
 		return this;
 	}
 
 	@Override
 	public ComponentDialogBuilder onOpened(Consumer<WindowEvent> onOpened) {
-		this.onOpened = requireNonNull(onOpened);
+		onOpenedConsumers.add(requireNonNull(onOpened));
 		return this;
 	}
 
 	@Override
 	public ComponentDialogBuilder onClosed(Consumer<WindowEvent> onClosed) {
-		this.onClosed = requireNonNull(onClosed);
+		onClosedConsumers.add(requireNonNull(onClosed));
 		return this;
 	}
 
@@ -138,7 +140,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 	@Override
 	public JDialog build() {
 		JDialog dialog = createDialog(owner, title, icon, component, size, locationRelativeTo,
-						location, modal, resizable, onShown, keyEventBuilders);
+						location, modal, resizable, onShownConsumers, keyEventBuilders);
 		if (enterAction != null) {
 			KeyEvents.builder(VK_ENTER)
 							.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -147,7 +149,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 		}
 
 		Action disposeAction = new DisposeDialogAction(new DialogSupplier(dialog), confirmCloseListener);
-		dialog.addWindowListener(new DialogListener(disposeAction, onClosed, onOpened));
+		dialog.addWindowListener(new DialogListener(disposeAction, onClosedConsumers, onOpenedConsumers));
 		if (closeObserver == null) {
 			dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			if (disposeOnEscape) {
@@ -167,7 +169,8 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 
 	static JDialog createDialog(Window owner, Observable<String> title, ImageIcon icon,
 															JComponent component, Dimension size, Component locationRelativeTo,
-															Point location, boolean modal, boolean resizable, Consumer<JDialog> onShown,
+															Point location, boolean modal, boolean resizable,
+															Collection<Consumer<JDialog>> onShownConsumers,
 															List<KeyEvents.Builder> keyEventBuilders) {
 		JDialog dialog = new JDialog(owner);
 		if (title != null) {
@@ -197,8 +200,8 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 		dialog.setModal(modal);
 		dialog.setResizable(resizable);
 		keyEventBuilders.forEach(new EnableKeyEvent(dialog));
-		if (onShown != null) {
-			dialog.addComponentListener(new OnShownAdapter(dialog, onShown));
+		if (!onShownConsumers.isEmpty()) {
+			dialog.addComponentListener(new OnShownAdapter(dialog, onShownConsumers));
 		}
 
 		return dialog;
@@ -235,13 +238,15 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 	private static final class DialogListener extends WindowAdapter {
 
 		private final Action disposeAction;
-		private final Consumer<WindowEvent> onClosed;
-		private final Consumer<WindowEvent> onOpened;
+		private final Collection<Consumer<WindowEvent>> onOpenedConsumers;
+		private final Collection<Consumer<WindowEvent>> onClosedConsumers;
 
-		private DialogListener(Action disposeAction, Consumer<WindowEvent> onClosed, Consumer<WindowEvent> onOpened) {
+		private DialogListener(Action disposeAction,
+													 Collection<Consumer<WindowEvent>> onClosedConsumers,
+													 Collection<Consumer<WindowEvent>> onOpenedConsumers) {
 			this.disposeAction = disposeAction;
-			this.onClosed = onClosed;
-			this.onOpened = onOpened;
+			this.onClosedConsumers = onClosedConsumers;
+			this.onOpenedConsumers = onOpenedConsumers;
 		}
 
 		@Override
@@ -251,16 +256,12 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 
 		@Override
 		public void windowClosed(WindowEvent e) {
-			if (onClosed != null) {
-				onClosed.accept(e);
-			}
+			onClosedConsumers.forEach(consumer -> consumer.accept(e));
 		}
 
 		@Override
 		public void windowOpened(WindowEvent e) {
-			if (onOpened != null) {
-				onOpened.accept(e);
-			}
+			onOpenedConsumers.forEach(consumer -> consumer.accept(e));
 		}
 	}
 
@@ -295,16 +296,16 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 	private static final class OnShownAdapter extends ComponentAdapter {
 
 		private final JDialog dialog;
-		private final Consumer<JDialog> onShown;
+		private final Collection<Consumer<JDialog>> onShownConsumers;
 
-		private OnShownAdapter(JDialog dialog, Consumer<JDialog> onShown) {
+		private OnShownAdapter(JDialog dialog, Collection<Consumer<JDialog>> onShownConsumers) {
 			this.dialog = dialog;
-			this.onShown = onShown;
+			this.onShownConsumers = onShownConsumers;
 		}
 
 		@Override
 		public void componentShown(ComponentEvent e) {
-			onShown.accept(dialog);
+			onShownConsumers.forEach(onShown -> onShown.accept(dialog));
 		}
 	}
 }

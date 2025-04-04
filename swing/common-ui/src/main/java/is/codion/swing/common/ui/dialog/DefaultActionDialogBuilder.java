@@ -41,6 +41,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -55,6 +56,7 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 
 	private final List<Action> actions = new ArrayList<>();
 	private final JComponent component;
+	private final Collection<Consumer<JDialog>> onShownConsumers = new ArrayList<>(1);
 
 	private Action defaultAction;
 	private Action escapeAction;
@@ -63,7 +65,6 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 	private boolean modal = true;
 	private boolean resizable = true;
 	private Dimension size;
-	private Consumer<JDialog> onShown;
 
 	DefaultActionDialogBuilder(JComponent component) {
 		this.component = requireNonNull(component);
@@ -125,7 +126,7 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 
 	@Override
 	public final B onShown(Consumer<JDialog> onShown) {
-		this.onShown = requireNonNull(onShown);
+		onShownConsumers.add(requireNonNull(onShown));
 		return self();
 	}
 
@@ -155,7 +156,7 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 						.build();
 
 		JDialog dialog = createDialog(owner, title, icon, panel, size, locationRelativeTo,
-						location, modal, resizable, onShown, keyEventBuilders);
+						location, modal, resizable, onShownConsumers, keyEventBuilders);
 		dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		if (defaultAction != null) {
 			Arrays.stream(buttonPanel.getComponents())
