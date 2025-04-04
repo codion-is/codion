@@ -1067,7 +1067,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
-	 * Creates a {@link Control} for editing the selected component via the available edit panel.
+	 * Creates a {@link Control} for editing the selected entity via the available edit panel.
 	 * @return the edit control
 	 */
 	private CommandControl createEditControl() {
@@ -1092,7 +1092,7 @@ public class EntityTablePanel extends JPanel {
 		return Control.builder()
 						.command(this::editSelected)
 						.name(FrameworkMessages.edit())
-						.enabled(createEditSelectedEnabledObservable())
+						.enabled(createEditAttributeEnabledState())
 						.smallIcon(ICONS.edit())
 						.description(FrameworkMessages.editSelectedTip())
 						.build();
@@ -1107,26 +1107,23 @@ public class EntityTablePanel extends JPanel {
 	 * @see EntityEditModel#updateEnabled()
 	 */
 	private Controls createEditAttributeControls() {
-		ObservableState editSelectedEnabledObservable = createEditSelectedEnabledObservable();
+		ObservableState enabled = createEditAttributeEnabledState();
 		ControlsBuilder builder = Controls.builder()
 						.name(FrameworkMessages.edit())
-						.enabled(editSelectedEnabledObservable)
+						.enabled(enabled)
 						.smallIcon(ICONS.edit())
 						.description(FrameworkMessages.editSelectedTip());
 		configuration.editable.get().stream()
 						.map(attribute -> tableModel.entityDefinition().attributes().definition(attribute))
 						.sorted(new AttributeDefinitionComparator())
-						.forEach(attributeDefinition -> builder.control(Control.builder()
-										.command(() -> editSelected(attributeDefinition.attribute()))
-										.name(attributeDefinition.caption() == null ? attributeDefinition.attribute().name() : attributeDefinition.caption())
-										.enabled(editSelectedEnabledObservable)
-										.build()));
+						.forEach(definition ->
+										builder.control(createEditAttributeControl(definition, enabled)));
 		Controls editControls = builder.build();
 
 		return editControls.size() == 0 ? null : editControls;
 	}
 
-	private ObservableState createEditSelectedEnabledObservable() {
+	private ObservableState createEditAttributeEnabledState() {
 		ObservableState selectionNotEmpty = tableModel.selection().empty().not();
 		ObservableState updateEnabled = tableModel.editModel().updateEnabled();
 		ObservableState updateMultipleEnabledOrSingleSelection =
@@ -1134,6 +1131,14 @@ public class EntityTablePanel extends JPanel {
 										tableModel.selection().single());
 
 		return State.and(selectionNotEmpty, updateEnabled, updateMultipleEnabledOrSingleSelection);
+	}
+
+	private Control createEditAttributeControl(AttributeDefinition<?> definition, ObservableState enabled) {
+		return Control.builder()
+						.command(new EditAttributeCommand(definition.attribute()))
+						.name(definition.caption())
+						.enabled(enabled)
+						.build();
 	}
 
 	/**
@@ -1892,6 +1897,20 @@ public class EntityTablePanel extends JPanel {
 		private void onException(Exception exception) {
 			LOG.error(exception.getMessage(), exception);
 			EntityTablePanel.this.onException(exception);
+		}
+	}
+
+	private final class EditAttributeCommand implements Control.Command {
+
+		private final Attribute<?> attribute;
+
+		private EditAttributeCommand(Attribute<?> attribute) {
+			this.attribute = attribute;
+		}
+
+		@Override
+		public void execute() {
+			editSelected(attribute);
 		}
 	}
 

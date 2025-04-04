@@ -729,8 +729,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 								" does not match the definition entityType: " + entityType);
 			}
 			if (attributeDefinitions.containsKey(definition.attribute())) {
-				throw new IllegalArgumentException("Attribute " + definition.attribute()
-								+ (definition.caption() != null ? " (" + definition.caption() + ")" : "")
+				throw new IllegalArgumentException("Attribute " + definition.attribute() + " (" + definition.caption() + ")"
 								+ " has already been defined as: " + attributeDefinitions.get(definition.attribute()) + " in entity: " + entityType);
 			}
 		}
