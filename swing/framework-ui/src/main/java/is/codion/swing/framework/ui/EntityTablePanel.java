@@ -1072,7 +1072,7 @@ public class EntityTablePanel extends JPanel {
 	 */
 	private CommandControl createEditControl() {
 		return Control.builder()
-						.action(new EditCommand())
+						.command(new EditCommand())
 						.name(FrameworkMessages.edit())
 						.mnemonic(FrameworkMessages.editMnemonic())
 						.smallIcon(ICONS.edit())
@@ -1867,14 +1867,12 @@ public class EntityTablePanel extends JPanel {
 		}
 	}
 
-	private final class EditCommand implements Control.ActionCommand {
+	private final class EditCommand implements Control.Command {
 
 		@Override
-		public void execute(ActionEvent actionEvent) {
-			editEntityDialog(() -> editPanel)
+		public void execute() {
+			editEntityDialog(EntityTablePanel.this::editPanel)
 							.owner(EntityTablePanel.this)
-							.location(actionEvent.getSource() instanceof MouseEvent ?
-											((MouseEvent) actionEvent.getSource()).getLocationOnScreen() : null)
 							.show();
 		}
 	}
