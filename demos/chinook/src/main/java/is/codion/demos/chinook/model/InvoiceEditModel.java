@@ -42,10 +42,10 @@ public final class InvoiceEditModel extends SwingEntityEditModel {
 
 	// Override to update the billing address when the invoice customer is changed
 	@Override
-	public <T> void apply(Collection<Entity> entities, Attribute<T> attribute, T value) {
-		super.apply(entities, attribute, value);
+	public <T> void apply(Collection<Entity> entities, Attribute<T> attribute, T newValue) {
+		super.apply(entities, attribute, newValue);
 		if (attribute.equals(Invoice.CUSTOMER_FK)) {
-			Entity customer = (Entity) value;
+			Entity customer = (Entity) newValue;
 			entities.forEach(invoice -> {
 				// Set the billing address
 				invoice.put(Invoice.BILLINGADDRESS, customer.get(Customer.ADDRESS));
