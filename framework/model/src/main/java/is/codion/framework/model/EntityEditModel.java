@@ -345,20 +345,20 @@ public interface EntityEditModel {
 	Observer<?> afterInsertUpdateOrDelete();
 
 	/**
-	 * <p>Applies the given value to the given entities. This method is used by components
+	 * <p>Applies the given value to the given entities. This method can be used by components
 	 * providing edit functionality, such as editable tables, in order to apply the edited value,
 	 * ensuring that any associated values are updated as well.
 	 * <p>By default, this puts the given attribute value in the entities via {@link Entity#put(Attribute, Object)}.
-	 * <p>Override to customize, f.ex. when associated values must be changed as well.
+	 * <p>Override to customize, f.ex. when associated values must be changed accordingly.
 	 * {@snippet :
 	 *  @Override
-	 * 	public <T> void apply(Collection<Entity> entities, Attribute<T> attribute, T value) {
-	 * 	  super.apply(entities, attribute, value);
+	 * 	public <T> void applyEdit(Collection<Entity> entities, Attribute<T> attribute, T value) {
+	 * 	  super.applyEdit(entities, attribute, value);
 	 * 	  if (attribute.equals(Invoice.CUSTOMER_FK)) {
 	 * 	    Entity customer = (Entity) value;
 	 * 	    // Set the billing address when the customer is changed
-	 * 	    entities.forEach(invoice ->
-	 *            invoice.put(Invoice.BILLINGADDRESS, customer.get(Customer.ADDRESS)));
+	 * 	    entities.forEach(entity ->
+	 *            entity.put(Invoice.BILLINGADDRESS, customer.get(Customer.ADDRESS)));
 	 * 	  }
 	 * 	}
 	 * }
@@ -367,7 +367,7 @@ public interface EntityEditModel {
 	 * @param value the value to apply
 	 * @see Entity#put(Attribute, Object)
 	 */
-	<T> void apply(Collection<Entity> entities, Attribute<T> attribute, T value);
+	<T> void applyEdit(Collection<Entity> entities, Attribute<T> attribute, T value);
 
 	/**
 	 * @return the central {@link EditEvents} instance

@@ -48,7 +48,7 @@ import java.util.function.Supplier;
 
 import static is.codion.framework.model.EntityQueryModel.entityQueryModel;
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
-import static java.util.Collections.singletonList;
+import static java.util.Collections.singleton;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -162,10 +162,10 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 			throw new IllegalStateException("Table model cell is not editable, row: " + rowIndex + ", column: " + modelColumnIndex);
 		}
 		Entity entity = items().visible().get(rowIndex).copy().mutable();
-		editModel().apply(singletonList(entity), (Attribute<Object>) columns().identifier(modelColumnIndex), value);
+		editModel().applyEdit(singleton(entity), (Attribute<Object>) columns().identifier(modelColumnIndex), value);
 		try {
 			if (entity.modified()) {
-				editModel().update(singletonList(entity));
+				editModel().update(singleton(entity));
 			}
 		}
 		catch (Exception e) {

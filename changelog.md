@@ -13,6 +13,7 @@ Codion Change Log
 ### is.codion.framework.model
 - AbstractEntityEditModel.configureSearchModel() added, for separating the configuration of a search model for use in the edit model from search model creation.
 - EntityEditModel.apply() added.
+- EntityEditModel.apply() renamed applyEdit().
 ### is.codion.swing.framework.model
 - DefaultEntityComboBoxModel.DefaultForeignKeyFilter.link() bug fixed, combo box model used its own selection instead of the one from the filter model when initializing the link
 - SwingEntityEditModel.configureComboBoxModel() added, for separating the configuration of a combo box model for use in the edit model from combo box model creation.

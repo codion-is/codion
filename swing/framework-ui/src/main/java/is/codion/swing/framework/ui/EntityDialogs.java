@@ -94,7 +94,7 @@ public final class EntityDialogs {
 	 * @param attribute the attribute to edit
 	 * @param <T> the attribute type
 	 * @return a new builder
-	 * @see is.codion.framework.model.EntityEditModel#apply(Collection, Attribute, Object)
+	 * @see is.codion.framework.model.EntityEditModel#applyEdit(Collection, Attribute, Object)
 	 */
 	public static <T> EditAttributeDialogBuilder<T> editAttributeDialog(SwingEntityEditModel editModel, Attribute<T> attribute) {
 		return new DefaultEditAttributeDialogBuilder<>(editModel, attribute);
@@ -365,7 +365,7 @@ public final class EntityDialogs {
 
 			@Override
 			public boolean test(T newValue) {
-				editModel.apply(entities, attribute, newValue);
+				editModel.applyEdit(entities, attribute, newValue);
 				try {
 					progressWorkerDialog(editModel.createUpdate(entities.stream()
 									.filter(Entity::modified)

@@ -288,7 +288,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public <T> void apply(Collection<Entity> entities, Attribute<T> attribute, T value) {
+	public <T> void applyEdit(Collection<Entity> entities, Attribute<T> attribute, T value) {
 		requireNonNull(attribute);
 		requireNonNull(entities).forEach(entity -> entity.put(attribute, value));
 	}
