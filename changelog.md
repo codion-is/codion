@@ -25,6 +25,7 @@ Codion Change Log
 - EntityTablePanel, edit panel dialog location no longer follows mouse when displayed on double click.
 - EntityDialogs.addEntityDialog() and editEntityDialog() editPanel parameter no longer Supplier.
 - EntityDialogs.AddEntityDialogBuilder and EditEntityDialogBuilder.onShown() added.
+- EntityEditPanel, insert, update and delete commands refactored.
 
 ## 0.18.32
 ### is.codion.common.model

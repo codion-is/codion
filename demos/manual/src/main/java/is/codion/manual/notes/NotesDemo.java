@@ -37,6 +37,7 @@ import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -51,9 +52,12 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.time.LocalDateTime;
@@ -128,41 +132,43 @@ public final class NotesDemo {
 
 		private NoteEditPanel(SwingEntityEditModel editModel) {
 			super(editModel);
-			// CLEAR is the only standard control we require, for clearing the UI
-			configureControls(config -> config.clear()
-							.control(CLEAR));
 		}
 
 		@Override
 		protected void initializeUI() {
 			focus().initial().set(Note.NOTE);
 
-			createTextField(Note.NOTE)
+			JTextField noteField = createTextField(Note.NOTE)
 							.hint("Take note...")
-							// Use the Enter key for inserting, updating
-							// and deleting, depending on the edit model state
-							.action(Control.command(this::insertDeleteOrUpdate));
+							// Only a single input field, no need for focus transfer
+							.transferFocusOnEnter(false)
+							// Use CTRL-Enter for inserting, updating and
+							// deleting, depending on the edit model state
+							.keyEvent(KeyEvents.builder(KeyEvent.VK_ENTER)
+											.modifiers(InputEvent.CTRL_DOWN_MASK)
+											.action(Control.command(this::insertDeleteOrUpdate)))
+							.build();
 
 			setLayout(Layouts.borderLayout());
-			add(component(Note.NOTE).get(), BorderLayout.CENTER);
+			add(noteField, BorderLayout.CENTER);
 			// Add a button based on the CLEAR control
 			add(new JButton(control(CLEAR).get()), BorderLayout.EAST);
 		}
 
 		private void insertDeleteOrUpdate() {
 			EntityEditor editor = editModel().editor();
-			if (editor.exists().not().get() && editor.isNull(Note.NOTE).not().get()) {
-				// A new note with a non-empty text
-				insert();
+			if (editor.exists().not().get() && !editor.isNull(Note.NOTE).get()) {
+				// A new note with a non-null text
+				editModel().insert();
 			}
 			else if (editor.modified().get()) {
 				if (editor.isNull(Note.NOTE).get()) {
-					// An existing note with empty text
-					deleteWithConfirmation();
+					// An existing note with no text
+					editModel().delete();
 				}
 				else {
 					// An existing note with a modified text
-					updateWithConfirmation();
+					editModel().update();
 				}
 			}
 		}

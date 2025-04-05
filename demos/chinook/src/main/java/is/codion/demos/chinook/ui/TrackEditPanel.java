@@ -39,10 +39,18 @@ import static java.awt.event.KeyEvent.VK_UP;
 public final class TrackEditPanel extends EntityEditPanel {
 
 	private final TableSelection<Entity> tableSelection;
+	private final UpdateCommand updateAndDecrementSelectedIndexes;
+	private final UpdateCommand updateAndIncrementSelectedIndexes;
 
 	public TrackEditPanel(SwingEntityEditModel editModel, TableSelection<Entity> tableSelection) {
 		super(editModel);
 		this.tableSelection = tableSelection;
+		this.updateAndDecrementSelectedIndexes = updateCommandBuilder()
+						.onUpdate(tableSelection.indexes()::decrement)
+						.build();
+		this.updateAndIncrementSelectedIndexes = updateCommandBuilder()
+						.onUpdate(tableSelection.indexes()::increment)
+						.build();
 		addKeyEvents();
 	}
 
@@ -135,28 +143,20 @@ public final class TrackEditPanel extends EntityEditPanel {
 	}
 
 	private void decrementSelection() {
-		if (readyForSelectionChange()) {
+		if (editModel().editor().modified().get()) {
+			updateAndDecrementSelectedIndexes.execute();
+		}
+		else {
 			tableSelection.indexes().decrement();
 		}
 	}
 
 	private void incrementSelection() {
-		if (readyForSelectionChange()) {
+		if (editModel().editor().modified().get()) {
+			updateAndIncrementSelectedIndexes.execute();
+		}
+		else {
 			tableSelection.indexes().increment();
 		}
-	}
-
-	private boolean readyForSelectionChange() {
-		// If the selection is empty
-		if (tableSelection.empty().get()) {
-			return true;
-		}
-		// If the entity is not modified
-		if (!editModel().editor().modified().get()) {
-			return true;
-		}
-		// If the current item was modified and
-		// successfully updated after user confirmation
-		return updateWithConfirmation();
 	}
 }
