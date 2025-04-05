@@ -560,13 +560,13 @@ public class EntityPanel extends JPanel {
 			editPanel.focus().initial().request();
 		}
 		else if (tablePanel != null) {
-			tablePanel.table().requestFocus();
+			tablePanel.table().requestFocusInWindow();
 		}
 		else if (getComponentCount() > 0) {
-			getComponents()[0].requestFocus();
+			getComponents()[0].requestFocusInWindow();
 		}
 		else {
-			requestFocus();
+			requestFocusInWindow();
 		}
 	}
 
