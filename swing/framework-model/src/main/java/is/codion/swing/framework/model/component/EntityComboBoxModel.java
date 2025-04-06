@@ -243,13 +243,6 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		State strict();
 
 		/**
-		 * Returns a {@link Builder} for a {@link EntityComboBoxModel} filtering this model using the given {@link ForeignKey}
-		 * @return a {@link Builder} for a foreign key filter model
-		 * @see #link(EntityComboBoxModel)
-		 */
-		Builder builder();
-
-		/**
 		 * Links the given combo box model representing foreign key entities to this combo box model
 		 * so that selection in the foreign key model filters this model.
 		 * Note that {@code filterModel} is automatically refreshed each time this combo box model is refreshed.

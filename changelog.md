@@ -18,6 +18,7 @@ Codion Change Log
 - DefaultEntityComboBoxModel.DefaultForeignKeyFilter.link() bug fixed, combo box model used its own selection instead of the one from the filter model when initializing the link
 - SwingEntityEditModel.configureComboBoxModel() added, for separating the configuration of a combo box model for use in the edit model from combo box model creation.
 - SwingEntityTableModel.setValueAt() now uses EntityEditModel.apply().
+- EntityComboBoxModel.Filter.builder() removed.
 ### is.codion.swing.framework.ui
 - EntityEditPanel, exception handling and logging now consistent for insert, update and delete.
 - EditComponentFactory.caption() AttributeDefinition parameter added.

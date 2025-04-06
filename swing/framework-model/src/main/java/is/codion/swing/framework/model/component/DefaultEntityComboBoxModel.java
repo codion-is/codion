@@ -355,16 +355,6 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 
 		@Override
-		public EntityComboBoxModel.Builder builder() {
-			return new DefaultBuilder(foreignKey.referencedType(), connectionProvider, DefaultEntityComboBoxModel.this, foreignKey)
-							.includeNull(connectionProvider.entities()
-											.definition(foreignKey.entityType())
-											.foreignKeys()
-											.definition(foreignKey)
-											.nullable());
-		}
-
-		@Override
 		public void link(EntityComboBoxModel filterModel) {
 			entityDefinition.foreignKeys().definition(foreignKey);
 			if (!foreignKey.referencedType().equals(filterModel.entityDefinition().type())) {
@@ -451,8 +441,6 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 		private final EntityDefinition entityDefinition;
 		private final EntityConnectionProvider connectionProvider;
-		private final EntityComboBoxModel filterModel;
-		private final ForeignKey filterForeignKey;
 
 		private OrderBy orderBy;
 		private Supplier<Condition> condition;
@@ -463,15 +451,9 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		private boolean filterSelected = false;
 
 		DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
-			this(entityType, connectionProvider, null, null);
-		}
-
-		DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider, EntityComboBoxModel filterModel, ForeignKey filterForeignKey) {
 			this.connectionProvider = requireNonNull(connectionProvider);
 			this.entityDefinition = connectionProvider.entities().definition(entityType);
 			this.comparator = connectionProvider.entities().definition(entityType).comparator();
-			this.filterModel = filterModel;
-			this.filterForeignKey = filterForeignKey;
 		}
 
 		@Override
@@ -528,12 +510,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 		@Override
 		public EntityComboBoxModel build() {
-			DefaultEntityComboBoxModel entityComboBoxModel = new DefaultEntityComboBoxModel(this);
-			if (filterModel != null) {
-				filterModel.filter().get(filterForeignKey).link(entityComboBoxModel);
-			}
-
-			return entityComboBoxModel;
+			return new DefaultEntityComboBoxModel(this);
 		}
 	}
 }
