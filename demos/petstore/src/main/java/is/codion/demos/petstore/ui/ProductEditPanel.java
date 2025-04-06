@@ -36,9 +36,10 @@ public class ProductEditPanel extends EntityEditPanel {
 
 		createComboBox(Product.CATEGORY_FK);
 		createTextField(Product.NAME);
-		createTextField(Product.DESCRIPTION).columns(16);
+		createTextField(Product.DESCRIPTION)
+						.columns(16);
 
-		setLayout(Layouts.flexibleGridLayout(3, 1));
+		setLayout(Layouts.gridLayout(3, 1));
 		addInputPanel(Product.CATEGORY_FK);
 		addInputPanel(Product.NAME);
 		addInputPanel(Product.DESCRIPTION);

@@ -35,10 +35,11 @@ public class CategoryEditPanel extends EntityEditPanel {
 		focus().initial().set(Category.NAME);
 
 		createTextField(Category.NAME);
-		createTextField(Category.DESCRIPTION).columns(18);
+		createTextField(Category.DESCRIPTION)
+						.columns(18);
 		createTextField(Category.IMAGE_URL);
 
-		setLayout(Layouts.flexibleGridLayout(2, 2));
+		setLayout(Layouts.gridLayout(3, 1));
 		addInputPanel(Category.NAME);
 		addInputPanel(Category.DESCRIPTION);
 		addInputPanel(Category.IMAGE_URL);

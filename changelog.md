@@ -28,6 +28,7 @@ Codion Change Log
 - EntityDialogs.AddEntityDialogBuilder and EditEntityDialogBuilder.onShown() added.
 - EntityEditPanel, insert, update and delete commands refactored.
 - EntityPanel.requestInitialFocus() now uses requestFocusInWindow() instead of requestFocus(), otherwise focus can escape the application when toggling the edit panel state.
+- EntityEditComponentPanel.Defaults removed.
 
 ## 0.18.32
 ### is.codion.common.model

@@ -33,9 +33,10 @@ public class TagEditPanel extends EntityEditPanel {
 	protected void initializeUI() {
 		focus().initial().set(Tag.TAG);
 
-		createTextField(Tag.TAG).columns(16);
+		createTextField(Tag.TAG)
+						.columns(16);
 
-		setLayout(Layouts.flexibleGridLayout(1, 1));
+		setLayout(Layouts.gridLayout(1, 1));
 		addInputPanel(Tag.TAG);
 	}
 }

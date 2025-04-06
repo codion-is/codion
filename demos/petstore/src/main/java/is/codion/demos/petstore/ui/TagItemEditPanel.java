@@ -20,9 +20,10 @@ package is.codion.demos.petstore.ui;
 
 import is.codion.demos.petstore.domain.Petstore.Tag;
 import is.codion.demos.petstore.domain.Petstore.TagItem;
-import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
+
+import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 
 public class TagItemEditPanel extends EntityEditPanel {
 
@@ -33,11 +34,12 @@ public class TagItemEditPanel extends EntityEditPanel {
 	@Override
 	protected void initializeUI() {
 		focus().initial().set(TagItem.ITEM_FK);
+
 		createComboBox(TagItem.ITEM_FK)
 						.preferredWidth(180);
 		createComboBoxPanel(TagItem.TAG_FK, this::createTagEditPanel)
 						.includeAddButton(true);
-		setLayout(Layouts.flexibleGridLayout(2, 1));
+		setLayout(flexibleGridLayout(2, 1));
 		addInputPanel(TagItem.ITEM_FK);
 		addInputPanel(TagItem.TAG_FK);
 	}
