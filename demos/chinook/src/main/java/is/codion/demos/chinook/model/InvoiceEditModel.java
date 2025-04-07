@@ -40,7 +40,9 @@ public final class InvoiceEditModel extends SwingEntityEditModel {
 		editor().value(Invoice.CUSTOMER_FK).edited().addConsumer(this::setAddress);
 	}
 
-	// Override to update the billing address when the invoice customer is changed
+	// Override to update the billing address when the invoice customer is changed.
+	// This method is called when editing happens outside of the edit model,
+	// such as in a table, via an editable table cell or multi item editing
 	@Override
 	public <T> void applyEdit(Collection<Entity> invoices, Attribute<T> attribute, T value) {
 		super.applyEdit(invoices, attribute, value);
@@ -58,23 +60,10 @@ public final class InvoiceEditModel extends SwingEntityEditModel {
 	}
 
 	private void setAddress(Entity customer) {
-		// We only populate the address fields
-		// when we are editing a new invoice
-		if (editor().exists().not().get()) {
-			if (customer == null) {
-				editor().value(Invoice.BILLINGADDRESS).clear();
-				editor().value(Invoice.BILLINGCITY).clear();
-				editor().value(Invoice.BILLINGPOSTALCODE).clear();
-				editor().value(Invoice.BILLINGSTATE).clear();
-				editor().value(Invoice.BILLINGCOUNTRY).clear();
-			}
-			else {
-				editor().value(Invoice.BILLINGADDRESS).set(customer.get(Customer.ADDRESS));
-				editor().value(Invoice.BILLINGCITY).set(customer.get(Customer.CITY));
-				editor().value(Invoice.BILLINGPOSTALCODE).set(customer.get(Customer.POSTALCODE));
-				editor().value(Invoice.BILLINGSTATE).set(customer.get(Customer.STATE));
-				editor().value(Invoice.BILLINGCOUNTRY).set(customer.get(Customer.COUNTRY));
-			}
-		}
+		editor().value(Invoice.BILLINGADDRESS).set(customer == null ? null : customer.get(Customer.ADDRESS));
+		editor().value(Invoice.BILLINGCITY).set(customer == null ? null : customer.get(Customer.CITY));
+		editor().value(Invoice.BILLINGPOSTALCODE).set(customer == null ? null : customer.get(Customer.POSTALCODE));
+		editor().value(Invoice.BILLINGSTATE).set(customer == null ? null : customer.get(Customer.STATE));
+		editor().value(Invoice.BILLINGCOUNTRY).set(customer == null ? null : customer.get(Customer.COUNTRY));
 	}
 }

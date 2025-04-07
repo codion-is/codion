@@ -37,8 +37,8 @@ public final class EmployeeTablePanel extends EntityTablePanel {
 
 	@Override
 	protected void setupControls() {
-		// Replace the default EDIT control command with one that configures
-		// the initial focus attribute according the selected table column
+		// Replace the default EDIT control command with one that sets
+		// the initial focus according the selected table column
 		control(ControlKeys.EDIT).map(control -> control.copy(this::edit).build());
 	}
 
