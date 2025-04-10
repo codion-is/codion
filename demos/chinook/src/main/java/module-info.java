@@ -44,5 +44,5 @@ module is.codion.framework.demos.chinook {
 	provides is.codion.common.rmi.server.Authenticator
 					with is.codion.demos.chinook.server.ChinookAuthenticator;
 	provides is.codion.common.resource.Resources
-					with is.codion.demos.chinook.domain.ChinookResources;
+					with is.codion.demos.chinook.i18n.ChinookResources;
 }

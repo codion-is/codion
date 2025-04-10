@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2024 - 2025, Björn Darri Sigurðsson.
  */
-package is.codion.demos.chinook.domain;
+package is.codion.demos.chinook.i18n;
 
 import is.codion.common.resource.Resources;
 import is.codion.framework.i18n.FrameworkMessages;
