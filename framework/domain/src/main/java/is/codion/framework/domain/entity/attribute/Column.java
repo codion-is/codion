@@ -195,7 +195,7 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
 	 * Gets a single value from a {@link ResultSet}.
 	 * @param <C> the column value type
 	 */
-	interface Getter<C> {
+	interface GetValue<C> {
 
 		/**
 		 * Fetches a single value from a ResultSet
@@ -211,7 +211,7 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
 	 * Sets a parameter value in a {@link PreparedStatement}
 	 * @param <C> the column value type
 	 */
-	interface Setter<C> {
+	interface SetParameter<C> {
 
 		/**
 		 * Sets a parameter value in a {@link PreparedStatement}

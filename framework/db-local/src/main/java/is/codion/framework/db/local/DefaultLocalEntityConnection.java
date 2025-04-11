@@ -628,8 +628,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	public <T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) {
 		requireNonNull(reportType, "reportType may not be null");
 		Exception exception = null;
+		logEntry(REPORT, reportType, reportParameters);
 		synchronized (connection) {
-			logEntry(REPORT, reportType, reportParameters);
 			try {
 				R result = domain.report(reportType).fill(connection.getConnection(), reportParameters);
 				commitIfTransactionIsNotOpen();
@@ -1112,8 +1112,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
 	private PreparedStatement prepareStatement(String query, boolean returnGeneratedKeys,
 																						 int queryTimeout) throws SQLException {
+		logEntry("prepareStatement", query);
 		try {
-			logEntry("prepareStatement", query);
 			PreparedStatement statement = returnGeneratedKeys ?
 							connection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS) :
 							connection.getConnection().prepareStatement(query);
@@ -1145,8 +1145,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	private List<Entity> packResult(ResultIterator<Entity> iterator) throws SQLException {
 		SQLException packingException = null;
 		List<Entity> result = new ArrayList<>();
+		logEntry(PACK_RESULT);
 		try {
-			logEntry(PACK_RESULT);
 			while (iterator.hasNext()) {
 				result.add(iterator.next());
 			}
@@ -1165,8 +1165,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	private <T> List<T> packResult(ColumnDefinition<T> columnDefinition, ResultSet resultSet) throws SQLException {
 		SQLException packingException = null;
 		List<T> result = new ArrayList<>();
+		logEntry(PACK_RESULT);
 		try {
-			logEntry(PACK_RESULT);
 			while (resultSet.next()) {
 				result.add(columnDefinition.get(resultSet, 1));
 			}

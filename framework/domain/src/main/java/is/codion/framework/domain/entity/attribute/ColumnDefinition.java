@@ -19,8 +19,8 @@
 package is.codion.framework.domain.entity.attribute;
 
 import is.codion.framework.domain.entity.attribute.Column.Converter;
-import is.codion.framework.domain.entity.attribute.Column.Getter;
-import is.codion.framework.domain.entity.attribute.Column.Setter;
+import is.codion.framework.domain.entity.attribute.Column.GetValue;
+import is.codion.framework.domain.entity.attribute.Column.SetParameter;
 
 import org.jspecify.annotations.Nullable;
 
@@ -152,31 +152,31 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
 		 * @param <C> the column type
 		 * @param columnClass the underlying column type class
 		 * @param converter the converter to use when converting to and from column values
-		 * @param getter the getter to use to retrieve the value from a {@link ResultSet}
+		 * @param getValue the getter to use to retrieve the value from a {@link ResultSet}
 		 * @return this instance
 		 */
-		<C> B columnClass(Class<C> columnClass, Converter<T, C> converter, Getter<C> getter);
+		<C> B columnClass(Class<C> columnClass, Converter<T, C> converter, GetValue<C> getValue);
 
 		/**
 		 * Sets the actual column type, and the required {@link Converter}.
 		 * @param <C> the column type
 		 * @param columnClass the underlying column type class
 		 * @param converter the converter to use when converting to and from column values
-		 * @param setter the setter to use when setting parameters in a {@link PreparedStatement}
+		 * @param setParameter the setter to use when setting parameters in a {@link PreparedStatement}
 		 * @return this instance
 		 */
-		<C> B columnClass(Class<C> columnClass, Converter<T, C> converter, Setter<C> setter);
+		<C> B columnClass(Class<C> columnClass, Converter<T, C> converter, SetParameter<C> setParameter);
 
 		/**
 		 * Sets the actual column type, and the required {@link Converter}.
 		 * @param <C> the column type
 		 * @param columnClass the underlying column type class
 		 * @param converter the converter to use when converting to and from column values
-		 * @param getter the getter to use to retrieve the value from a {@link ResultSet}
-		 * @param setter the setter to use when setting parameters in a {@link PreparedStatement}
+		 * @param getValue the getter to use to retrieve the value from a {@link ResultSet}
+		 * @param setParameter the setter to use when setting parameters in a {@link PreparedStatement}
 		 * @return this instance
 		 */
-		<C> B columnClass(Class<C> columnClass, Converter<T, C> converter, Getter<C> getter, Setter<C> setter);
+		<C> B columnClass(Class<C> columnClass, Converter<T, C> converter, GetValue<C> getValue, SetParameter<C> setParameter);
 
 		/**
 		 * Sets the actual string used as column name when inserting and updating.
