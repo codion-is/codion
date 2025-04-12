@@ -70,7 +70,13 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 	}
 
 	@Override
+	public Control createControl() {
+		return createControl(enabler -> {});
+	}
+
+	@Override
 	public Control createControl(Consumer<LookAndFeelEnabler> selectedLookAndFeel) {
+		requireNonNull(selectedLookAndFeel);
 		String caption = MESSAGES.getString("select_look_and_feel");
 
 		return Control.builder()

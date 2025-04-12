@@ -649,7 +649,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	}
 
 	/**
-	 * Allows the user the select between the available Look and Feels, saves the selection as a user preference.
+	 * Allows the user the select between the available Look and Feels.
 	 * @return a Control for selecting the application look and feel
 	 * @see LookAndFeelProvider#addLookAndFeel(LookAndFeelEnabler)
 	 * @see LookAndFeelProvider#findLookAndFeel(String)
@@ -659,7 +659,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	protected final Control createSelectLookAndFeelControl() {
 		return Dialogs.lookAndFeelSelectionDialog()
 						.owner(this)
-						.createControl(lookAndFeelProvider -> {});
+						.createControl();
 	}
 
 	/**

@@ -71,6 +71,12 @@ public interface LookAndFeelSelectionDialogBuilder {
 
 	/**
 	 * Creates a {@link Control} for selecting the Look and Feel.
+	 * @return a Control for displaying a dialog for selecting a look and feel
+	 */
+	Control createControl();
+
+	/**
+	 * Creates a {@link Control} for selecting the Look and Feel.
 	 * @param selectedLookAndFeel called when the OK button is pressed
 	 * @return a Control for displaying a dialog for selecting a look and feel
 	 */
