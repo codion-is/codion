@@ -6,6 +6,8 @@ Codion Change Log
 - Column.Getter and Setter renamed GetValue and SetParameter respectively.
 ### is.codion.swing.common.ui
 - LookAndFeelSelectionDialogBuilder.createControl() overloaded without parameter.
+### is.codion.swing.framework.ui
+- EntityApplicationPanel.Builder.applicationModelFactory() and applicationPanelFactory() renamed applicationModel() and applicationPanel().
 
 ## 0.18.33
 ### is.codion.swing.common.ui

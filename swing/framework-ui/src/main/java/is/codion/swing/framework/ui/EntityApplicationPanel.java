@@ -1310,16 +1310,16 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		Builder<M, P> connectionProvider(Function<User, EntityConnectionProvider> connectionProvider);
 
 		/**
-		 * @param applicationModelFactory the application model factory
+		 * @param applicationModel the application model factory
 		 * @return this Builder instance
 		 */
-		Builder<M, P> applicationModelFactory(Function<EntityConnectionProvider, M> applicationModelFactory);
+		Builder<M, P> applicationModel(Function<EntityConnectionProvider, M> applicationModel);
 
 		/**
-		 * @param applicationPanelFactory the application panel factory
+		 * @param applicationPanel the application panel factory
 		 * @return this Builder instance
 		 */
-		Builder<M, P> applicationPanelFactory(Function<M, P> applicationPanelFactory);
+		Builder<M, P> applicationPanel(Function<M, P> applicationPanel);
 
 		/**
 		 * <p>The {@link User} to use to connect to the database, this user is propagated to {@link #connectionProvider(Function)}.

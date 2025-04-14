@@ -103,8 +103,8 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	private Function<User, EntityConnectionProvider> connectionProviderFunction;
 	private EntityConnectionProvider connectionProvider;
 	private String applicationName = "";
-	private Function<EntityConnectionProvider, M> applicationModelFactory = new DefaultApplicationModelFactory();
-	private Function<M, P> applicationPanelFactory = new DefaultApplicationPanelFactory();
+	private Function<EntityConnectionProvider, M> applicationModel = new DefaultApplicationModelFactory();
+	private Function<M, P> applicationPanel = new DefaultApplicationPanelFactory();
 	private Observable<String> frameTitle;
 
 	private DomainType domainType = EntityConnectionProvider.CLIENT_DOMAIN_TYPE.get();
@@ -185,14 +185,14 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	}
 
 	@Override
-	public EntityApplicationPanel.Builder<M, P> applicationModelFactory(Function<EntityConnectionProvider, M> applicationModelFactory) {
-		this.applicationModelFactory = requireNonNull(applicationModelFactory);
+	public EntityApplicationPanel.Builder<M, P> applicationModel(Function<EntityConnectionProvider, M> applicationModel) {
+		this.applicationModel = requireNonNull(applicationModel);
 		return this;
 	}
 
 	@Override
-	public EntityApplicationPanel.Builder<M, P> applicationPanelFactory(Function<M, P> applicationPanelFactory) {
-		this.applicationPanelFactory = requireNonNull(applicationPanelFactory);
+	public EntityApplicationPanel.Builder<M, P> applicationPanel(Function<M, P> applicationPanel) {
+		this.applicationPanel = requireNonNull(applicationPanel);
 		return this;
 	}
 
@@ -458,11 +458,11 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	}
 
 	private M initializeApplicationModel(EntityConnectionProvider connectionProvider) {
-		return applicationModelFactory.apply(connectionProvider);
+		return applicationModel.apply(connectionProvider);
 	}
 
 	private P initializeApplicationPanel(M applicationModel) {
-		P applicationPanel = applicationPanelFactory.apply(applicationModel);
+		P applicationPanel = this.applicationPanel.apply(applicationModel);
 		applicationPanel.initialize();
 
 		return applicationPanel;
