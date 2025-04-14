@@ -6,6 +6,7 @@ Codion Change Log
 - Column.Getter and Setter renamed GetValue and SetParameter respectively.
 ### is.codion.swing.common.ui
 - LookAndFeelSelectionDialogBuilder.createControl() overloaded without parameter.
+- BackgroundColorValidIndicator bug fixed, did not refres state when colors changed during updateUI().
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel.Builder.applicationModelFactory() and applicationPanelFactory() renamed applicationModel() and applicationPanel().
 

@@ -40,8 +40,7 @@ final class BackgroundColorValidIndicator {
 		this.component = component;
 		this.uiComponentKey = initializeUiComponentKey();
 		if (componentSupported(uiComponentKey)) {
-			configureColors();
-			component.addPropertyChangeListener("UI", event -> configureColors());
+			component.addPropertyChangeListener("UI", event -> configureColors(valid.get()));
 			valid.addConsumer(this::update);
 			update(valid.get());
 		}
@@ -59,10 +58,11 @@ final class BackgroundColorValidIndicator {
 		});
 	}
 
-	private void configureColors() {
+	private void configureColors(boolean valid) {
 		this.backgroundColor = UIManager.getColor(uiComponentKey + ".background");
 		this.inactiveBackgroundColor = UIManager.getColor(uiComponentKey + ".inactiveBackground");
 		this.invalidBackgroundColor = darker(backgroundColor);
+		update(valid);
 	}
 
 	private String initializeUiComponentKey() {
