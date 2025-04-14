@@ -144,7 +144,7 @@ public final class EntityComponents {
 			return (ComponentBuilder<T, C, B>) byteArrayInputPanel((Attribute<byte[]>) attribute);
 		}
 
-		throw new IllegalArgumentException("Attribute: " + attribute + " (type: " + type.valueClass() + ") no supported");
+		throw new IllegalArgumentException("Attribute: " + attribute + " (type: " + type.valueClass() + ") not supported");
 	}
 
 	/**
