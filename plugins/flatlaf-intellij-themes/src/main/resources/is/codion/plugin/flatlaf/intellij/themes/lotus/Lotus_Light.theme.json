@@ -553,7 +553,7 @@
     "textText": "textColor",
 
     "TitledBorder": {
-      "titleColor": "backgroundColor"
+      "titleColor": "foregroundColor"
     },
 
     "TitlePane": {

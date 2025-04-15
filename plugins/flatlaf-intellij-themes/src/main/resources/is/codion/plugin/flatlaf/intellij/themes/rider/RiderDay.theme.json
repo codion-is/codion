@@ -742,6 +742,10 @@
 
     "OnePixelDivider.background": "Gray12",
 
+    "TitledBorder": {
+      "titleColor": "foregroundColor"
+    },
+
     "TitlePane": {
       "background": "Gray13",
       "inactiveBackground": "Gray13",

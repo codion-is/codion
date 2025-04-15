@@ -180,6 +180,9 @@
       "newNotification.background": "gray",
       "Notification.hoverBackground": "gray"
     },
+    "TitledBorder": {
+      "titleColor": "white"
+    },
     "ComboBox": {
       "nonEditableBackground": "dark",
       "disabledBackground": "gray2",
