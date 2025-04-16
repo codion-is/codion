@@ -24,6 +24,6 @@ public final class LookAndFeelComboBoxTest {
 
 	@Test
 	void test() {
-		LookAndFeelComboBox.lookAndFeelComboBox(true).selectedLookAndFeel();
+		LookAndFeelComboBox.builder().enableOnSelection(true).build().selectedLookAndFeel();
 	}
 }

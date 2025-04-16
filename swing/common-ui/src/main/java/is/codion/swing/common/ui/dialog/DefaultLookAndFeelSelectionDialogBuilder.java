@@ -19,7 +19,6 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.resource.MessageBundle;
-import is.codion.common.state.State;
 import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.control.Control;
@@ -35,7 +34,6 @@ import java.awt.FlowLayout;
 import java.util.function.Consumer;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
-import static is.codion.swing.common.ui.laf.LookAndFeelComboBox.lookAndFeelComboBox;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 
@@ -49,7 +47,6 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 
 	private JComponent owner;
 	private boolean enableOnSelection = LookAndFeelComboBox.ENABLE_ON_SELECTION.getOrThrow();
-	private boolean includePlatformLookAndFeels = INCLUDE_PLATFORM_LOOK_AND_FEELS.getOrThrow();
 
 	@Override
 	public LookAndFeelSelectionDialogBuilder owner(JComponent owner) {
@@ -60,12 +57,6 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 	@Override
 	public LookAndFeelSelectionDialogBuilder enableOnSelection(boolean enableOnSelection) {
 		this.enableOnSelection = enableOnSelection;
-		return this;
-	}
-
-	@Override
-	public LookAndFeelSelectionDialogBuilder includePlatformLookAndFeels(boolean includePlatformLookAndFeels) {
-		this.includePlatformLookAndFeels = includePlatformLookAndFeels;
 		return this;
 	}
 
@@ -88,19 +79,15 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 	@Override
 	public void selectLookAndFeel(Consumer<LookAndFeelEnabler> selectedLookAndFeel) {
 		requireNonNull(selectedLookAndFeel);
-		LookAndFeelComboBox lookAndFeelComboBox = lookAndFeelComboBox(enableOnSelection);
+		LookAndFeelComboBox lookAndFeelComboBox = LookAndFeelComboBox.builder()
+						.enableOnSelection(enableOnSelection)
+						.build();
 		JPanel basePanel = new JPanel(new BorderLayout());
 		basePanel.setBorder(BorderFactory.createEmptyBorder(PADDING, PADDING, 0, PADDING));
 		basePanel.add(lookAndFeelComboBox, BorderLayout.CENTER);
 		if (auxiliaryLookAndFeelsAvailable()) {
-			State includeBuiltIn = State.builder(includePlatformLookAndFeels)
-							.listener(lookAndFeelComboBox.getModel().items()::filter)
-							.build();
-			lookAndFeelComboBox.getModel().items().visible()
-							.predicate().set(item -> includeBuiltIn.get() || !item.value().platform());
-
 			basePanel.add(PanelBuilder.builder(new FlowLayout(FlowLayout.TRAILING))
-							.add(CheckBoxBuilder.builder(includeBuiltIn)
+							.add(CheckBoxBuilder.builder(lookAndFeelComboBox.includePlatform())
 											.text(MESSAGES.getString("include_platform_look_and_feels"))
 											.includeText(true)
 											.build())

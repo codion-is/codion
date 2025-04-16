@@ -18,31 +18,16 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.common.property.PropertyValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 
 import javax.swing.JComponent;
 import java.util.function.Consumer;
 
-import static is.codion.common.Configuration.booleanValue;
-
 /**
  * Builds a dialog for selecting a look and feel.
  */
 public interface LookAndFeelSelectionDialogBuilder {
-
-	/**
-	 * <p>Specifies whether to include the platform look and feels in the selection combo box by default, if auxiliary ones are provided.
-	 * <p>Note that this has no effect if only the platform look and feels are provided.
-	 * <ul>
-	 * <li>Value type: Boolean
-	 * <li>Default value: false
-	 * </ul>
-	 * @see is.codion.swing.common.ui.laf.LookAndFeelProvider
-	 */
-	PropertyValue<Boolean> INCLUDE_PLATFORM_LOOK_AND_FEELS =
-					booleanValue(LookAndFeelSelectionDialogBuilder.class.getName() + ".includePlatformLookAndFeels", false);
 
 	/**
 	 * @param owner the dialog owner
@@ -55,13 +40,6 @@ public interface LookAndFeelSelectionDialogBuilder {
 	 * @return this builder
 	 */
 	LookAndFeelSelectionDialogBuilder enableOnSelection(boolean enableOnSelection);
-
-	/**
-	 * @param includePlatformLookAndFeels true if the platform look and feels should be included by default in the selection combo box
-	 * @return this builder
-	 * @see #INCLUDE_PLATFORM_LOOK_AND_FEELS
-	 */
-	LookAndFeelSelectionDialogBuilder includePlatformLookAndFeels(boolean includePlatformLookAndFeels);
 
 	/**
 	 * Displays a dialog allowing the user the select between all available Look and Feels.

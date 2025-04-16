@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.laf;
 
 import is.codion.common.item.Item;
 import is.codion.common.property.PropertyValue;
+import is.codion.common.state.ObservableState;
+import is.codion.common.state.State;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 
 import javax.swing.JComboBox;
@@ -35,6 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.item.Item.item;
+import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
 import static is.codion.swing.common.ui.component.combobox.ComboBoxBuilder.enableMouseWheelSelection;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.lookAndFeels;
 import static java.util.stream.Collectors.toList;
@@ -42,13 +45,24 @@ import static javax.swing.UIManager.getLookAndFeel;
 
 /**
  * A combo box for selecting a LookAndFeel.
- * Instantiate via factory methods {@link #lookAndFeelComboBox()} or {@link #lookAndFeelComboBox(boolean)}.
- * @see #lookAndFeelComboBox()
- * @see #lookAndFeelComboBox(boolean)
+ * Instantiate via builder {@link #builder()}.
+ * @see #builder()
  * @see LookAndFeelProvider#addLookAndFeel(LookAndFeelInfo)
  * @see LookAndFeelProvider#addLookAndFeel(LookAndFeelEnabler)
  */
 public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler>> {
+
+	/**
+	 * <p>Specifies whether to include the platform look and feels in the selection combo box by default, if auxiliary ones are provided.
+	 * <p>Note that this has no effect if only the platform look and feels are provided.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
+	 * </ul>
+	 * @see is.codion.swing.common.ui.laf.LookAndFeelProvider
+	 */
+	public static final PropertyValue<Boolean> INCLUDE_PLATFORM_LOOK_AND_FEELS =
+					booleanValue(LookAndFeelComboBox.class.getName() + ".includePlatformLookAndFeels", false);
 
 	/**
 	 * Specifies whether to enable the Look and Feel dynamically when selected
@@ -62,14 +76,24 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 
 	private final LookAndFeelEnabler originalLookAndFeel = createOriginalLookAndFeel();
 
-	private LookAndFeelComboBox(boolean enableOnSelection) {
+	private final State includePlatform;
+
+	private LookAndFeelComboBox(DefaultBuilder builder) {
 		super(createLookAndFeelComboBoxModel());
 		Map<LookAndFeelEnabler, Map<String, Object>> lookAndFeelDefaults = new ConcurrentHashMap<>();
 		setRenderer(new LookAndFeelRenderer(lookAndFeelDefaults));
 		setEditor(new LookAndFeelEditor(lookAndFeelDefaults));
 		enableMouseWheelSelection(this);
 		getModel().selection().item().set(item(originalLookAndFeel));
-		if (enableOnSelection) {
+		if (builder.enabled != null) {
+			linkToEnabledState(builder.enabled, this);
+		}
+		includePlatform = State.builder(builder.includePlatform)
+						.listener(getModel().items()::filter)
+						.build();
+		getModel().items().visible().predicate()
+						.set(item -> includePlatform.get() || !item.value().platform());
+		if (builder.enableOnSelection) {
 			getModel().selection().item().addConsumer(lookAndFeelProvider ->
 							SwingUtilities.invokeLater(() -> lookAndFeelProvider.value().enable()));
 		}
@@ -78,6 +102,13 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 	@Override
 	public FilterComboBoxModel<Item<LookAndFeelEnabler>> getModel() {
 		return (FilterComboBoxModel<Item<LookAndFeelEnabler>>) super.getModel();
+	}
+
+	/**
+	 * @return a {@link State} controlling whether platform look and feels are included
+	 */
+	public State includePlatform() {
+		return includePlatform;
 	}
 
 	/**
@@ -109,20 +140,70 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 	}
 
 	/**
-	 * Instantiates a new {@link LookAndFeelComboBox} displaying the available look and feels
-	 * @return a new {@link LookAndFeelComboBox} instance
+	 * Instantiates a new {@link LookAndFeelComboBox.Builder} displaying the available look and feels
+	 * @return a new {@link LookAndFeelComboBox.Builder} instance
 	 */
-	public static LookAndFeelComboBox lookAndFeelComboBox() {
-		return new LookAndFeelComboBox(ENABLE_ON_SELECTION.getOrThrow());
+	public static LookAndFeelComboBox.Builder builder() {
+		return new LookAndFeelComboBox.DefaultBuilder();
 	}
 
 	/**
-	 * Instantiates a new {@link LookAndFeelComboBox} displaying the available look and feels
-	 * @param enableOnSelection if true the look and feel is enabled dynamically when selected
-	 * @return a new {@link LookAndFeelComboBox} instance
-	 */
-	public static LookAndFeelComboBox lookAndFeelComboBox(boolean enableOnSelection) {
-		return new LookAndFeelComboBox(enableOnSelection);
+ * Builds a {@link LookAndFeelComboBox}
+ */
+	public interface Builder {
+
+		/**
+		 * @param enableOnSelection true if look and feel should be enabled when selected
+		 * @return this builder
+		 */
+		Builder enableOnSelection(boolean enableOnSelection);
+
+		/**
+		 * @param includePlatform true if platform look and feels should be included
+		 * @return this builder
+		 */
+		Builder includePlatform(boolean includePlatform);
+
+		/**
+		 * @param enabled the enabled observer
+		 * @return this builder
+		 */
+		Builder enabled(ObservableState enabled);
+
+		/**
+		 * @return a new {@link LookAndFeelComboBox}
+		 */
+		LookAndFeelComboBox build();
+	}
+
+	private static final class DefaultBuilder implements Builder {
+
+		private ObservableState enabled;
+		private boolean includePlatform = INCLUDE_PLATFORM_LOOK_AND_FEELS.getOrThrow();
+		private boolean enableOnSelection = ENABLE_ON_SELECTION.getOrThrow();
+
+		@Override
+		public Builder enableOnSelection(boolean enableOnSelection) {
+			this.enableOnSelection = enableOnSelection;
+			return this;
+		}
+
+		@Override
+		public Builder includePlatform(boolean includePlatform) {
+			this.includePlatform = includePlatform;
+			return this;
+		}
+
+		@Override
+		public Builder enabled(ObservableState enabled) {
+			this.enabled = enabled;
+			return this;
+		}
+
+		@Override
+		public LookAndFeelComboBox build() {
+			return new LookAndFeelComboBox(this);
+		}
 	}
 
 	private static final class LookAndFeelEditor extends BasicComboBoxEditor {

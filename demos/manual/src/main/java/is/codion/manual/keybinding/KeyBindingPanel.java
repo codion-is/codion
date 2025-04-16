@@ -39,7 +39,6 @@ import java.util.List;
 
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.laf.LookAndFeelComboBox.lookAndFeelComboBox;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 
@@ -51,7 +50,7 @@ import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
  */
 public final class KeyBindingPanel extends JPanel {
 
-	private final LookAndFeelComboBox lookAndFeelComboBox = lookAndFeelComboBox(true);
+	private final LookAndFeelComboBox lookAndFeelComboBox = LookAndFeelComboBox.builder().build();
 	private final KeyBindingModel keyBindingModel;
 	private final FilterTable<KeyBindingRow, ColumnId> table;
 	private final JComboBox<String> componentComboBox;

@@ -35,6 +35,7 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.SelectionDialogBuilder.SingleSelector;
 import is.codion.swing.common.ui.icon.Logos;
 import is.codion.swing.common.ui.key.KeyEvents;
+import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 
 import javax.swing.JComboBox;
@@ -57,7 +58,6 @@ import java.util.function.Predicate;
 
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.laf.LookAndFeelComboBox.lookAndFeelComboBox;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
@@ -331,7 +331,7 @@ public final class ApplicationPanel extends JPanel {
 										.enabled(inputEnabledState)
 										.link(model.message())
 										.build(component -> add(component, BorderLayout.SOUTH)))
-						.add(lookAndFeelComboBox(true))
+						.add(LookAndFeelComboBox.builder().build())
 						.build(southPanel -> add(southPanel, BorderLayout.SOUTH));
 
 		Sizes.setPreferredWidth(this, 400);
