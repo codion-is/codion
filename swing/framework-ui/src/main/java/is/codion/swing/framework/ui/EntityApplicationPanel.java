@@ -706,6 +706,21 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 	}
 
 	/**
+	 * @return Controls for log handling
+	 */
+	protected final Controls createLogControls() {
+		ControlsBuilder builder = Controls.builder()
+						.name(resourceBundle.getString("log"))
+						.mnemonic(resourceBundle.getString("log_mnemonic").charAt(0));
+		if (!logLevelStates.isEmpty()) {
+			builder.control(createLogLevelControl());
+		}
+		createOpenLogControls().ifPresent(builder::control);
+
+		return builder.build();
+	}
+
+	/**
 	 * @return a Control for displaying the keyboard shortcuts overview
 	 */
 	protected final Control createViewKeyboardShortcutsControl() {
@@ -995,18 +1010,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 		}
 
 		return Collections.unmodifiableMap(levelStateMap);
-	}
-
-	private Controls createLogControls() {
-		ControlsBuilder builder = Controls.builder()
-						.name(resourceBundle.getString("log"))
-						.mnemonic(resourceBundle.getString("log_mnemonic").charAt(0));
-		if (!logLevelStates.isEmpty()) {
-			builder.control(createLogLevelControl());
-		}
-		createOpenLogControls().ifPresent(builder::control);
-
-		return builder.build();
 	}
 
 	private Optional<Controls> createOpenLogControls() {

@@ -13,6 +13,7 @@ Codion Change Log
 - LookAndFeelComboBox.Builder added.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel.Builder.applicationModelFactory() and applicationPanelFactory() renamed applicationModel() and applicationPanel().
+- EntityApplicationPanel.createLogControls() now protected final.
 
 ## 0.18.33
 ### is.codion.swing.common.ui
