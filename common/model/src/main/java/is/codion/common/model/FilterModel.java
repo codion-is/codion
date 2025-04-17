@@ -27,6 +27,7 @@ import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
@@ -208,7 +209,7 @@ public interface FilterModel<T> {
 		 * @return the visible items or an empty list if no item is visible
 		 */
 		@Override
-		List<T> get();
+		@NonNull List<T> get();
 
 		/**
 		 * @return the {@link Value} controlling the predicate specifying which items should be visible
@@ -308,7 +309,7 @@ public interface FilterModel<T> {
 		/**
 		 * @return the filtered items or an empty collection in case of no filtered items
 		 */
-		Collection<T> get();
+		@NonNull Collection<T> get();
 
 		/**
 		 * Returns true if the given item is filtered.

@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.34
+### is.codion.common.model
+- FilterModel.VisibleItems and FilteredItems.get() annotated as NonNull.
 ### is.codion.framework.domain
 - Column.Getter and Setter renamed GetValue and SetParameter respectively.
 ### is.codion.swing.common.ui
