@@ -219,7 +219,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 						.active(true)
 						.build());
 		assertEquals(new HashSet<>(departmentModel.tableModel().selection().items().get()),
-						employeeModel.tableModel().queryModel().conditions().get(Employee.DEPARTMENT_FK).operands().in().get());
+						employeeModel.tableModel().queryModel().condition().get(Employee.DEPARTMENT_FK).operands().in().get());
 	}
 
 	@Test
@@ -242,7 +242,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 		connection.startTransaction();
 		try {
 			ConditionModel<Entity> deptCondition = employeeModel.tableModel().queryModel()
-							.conditions()
+							.condition()
 							.get(Employee.DEPARTMENT_FK);
 
 			departmentModel.editModel().editor().value(Department.ID).set(-10);
@@ -269,7 +269,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 		connection.startTransaction();
 		try {
 			ConditionModel<Entity> deptCondition = employeeModel.tableModel().queryModel()
-							.conditions()
+							.condition()
 							.get(Employee.DEPARTMENT_FK);
 
 			deptCondition.clear();
@@ -423,7 +423,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 						.setValueOnInsert(false)
 						.build());
 		ConditionModel<Entity> deptCondition = employeeModel.tableModel().queryModel()
-							.conditions()
+							.condition()
 							.get(Employee.DEPARTMENT_FK);
 
 		departmentModel.tableModel().items().refresh();
@@ -444,7 +444,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 						.setValueOnInsert(false)
 						.build());
 		deptCondition = employeeModel.tableModel().queryModel()
-							.conditions()
+							.condition()
 							.get(Employee.DEPARTMENT_FK);
 
 		departmentModel.tableModel().items().refresh();

@@ -7,6 +7,8 @@ Codion Change Log
 - FilterModel.Sorter renamed Sort, sorter() renamed sort().
 ### is.codion.framework.domain
 - Column.Getter and Setter renamed GetValue and SetParameter respectively.
+### is.codion.framework.model
+- EntityQueryModel.conditions() renamed condition().
 ### is.codion.swing.common.ui
 - LookAndFeelSelectionDialogBuilder.createControl() overloaded without parameter.
 - BackgroundColorValidIndicator bug fixed, did not refresh state when colors changed during updateUI().

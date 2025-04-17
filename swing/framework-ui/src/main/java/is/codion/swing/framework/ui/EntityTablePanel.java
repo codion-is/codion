@@ -1462,7 +1462,7 @@ public class EntityTablePanel extends JPanel {
 	private TableConditionPanel<Attribute<?>> createTableConditionPanel() {
 		if (configuration.includeConditions) {
 			TableConditionPanel<Attribute<?>> conditionPanel = configuration.conditionPanelFactory
-							.create(tableModel.queryModel().conditions().conditionModel(), createConditionPanels(),
+							.create(tableModel.queryModel().condition().conditionModel(), createConditionPanels(),
 											table.columnModel(), this::configureTableConditionPanel);
 			KeyEvents.builder(VK_ENTER)
 							.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -1478,7 +1478,7 @@ public class EntityTablePanel extends JPanel {
 
 	private Map<Attribute<?>, ConditionPanel<?>> createConditionPanels() {
 		Map<Attribute<?>, ConditionPanel<?>> conditionPanels = new HashMap<>();
-		for (Map.Entry<Attribute<?>, ConditionModel<?>> conditionEntry : tableModel.queryModel().conditions().get().entrySet()) {
+		for (Map.Entry<Attribute<?>, ConditionModel<?>> conditionEntry : tableModel.queryModel().condition().get().entrySet()) {
 			Attribute<?> attribute = conditionEntry.getKey();
 			if (table.columnModel().contains(attribute)) {
 				ComponentFactory componentFactory = configuration.conditionComponentFactories.getOrDefault(attribute,
@@ -1520,7 +1520,7 @@ public class EntityTablePanel extends JPanel {
 
 	private void bindEvents() {
 		summaryPanelVisibleState.addConsumer(this::setSummaryPanelVisible);
-		tableModel.queryModel().conditions().changed().addListener(this::onConditionChanged);
+		tableModel.queryModel().condition().changed().addListener(this::onConditionChanged);
 		tableModel.items().refresher().active().addConsumer(this::refresherActive);
 		tableModel.items().refresher().exception().addConsumer(this::onException);
 		tableModel.editModel().afterInsertUpdateOrDelete().addListener(table::repaint);
@@ -1711,7 +1711,7 @@ public class EntityTablePanel extends JPanel {
 	private Map<Attribute<?>, ConditionPreferences> createConditionPreferences() {
 		Map<Attribute<?>, ConditionPreferences> conditionPreferencesMap = new HashMap<>();
 		for (Attribute<?> attribute : tableModel.columns().identifiers()) {
-			tableModel.queryModel().conditions().optional(attribute)
+			tableModel.queryModel().condition().optional(attribute)
 							.ifPresent(condition -> conditionPreferencesMap.put(attribute, conditionPreferences(attribute,
 											condition.autoEnable().get(),
 											condition.caseSensitive().get(),
@@ -1954,7 +1954,7 @@ public class EntityTablePanel extends JPanel {
 			TableCellRenderer renderer = tableColumn.getCellRenderer();
 			boolean useBoldFont = renderer instanceof FilterTableCellRenderer
 							&& ((FilterTableCellRenderer<?>) renderer).filterIndicator()
-							&& tableModel.queryModel().conditions().optional(tableColumn.identifier())
+							&& tableModel.queryModel().condition().optional(tableColumn.identifier())
 							.map(conditionModel -> conditionModel.enabled().get()).orElse(false);
 			Font defaultFont = component.getFont();
 			component.setFont(useBoldFont ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);

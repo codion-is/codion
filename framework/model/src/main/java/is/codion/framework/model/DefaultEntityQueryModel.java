@@ -108,7 +108,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	}
 
 	@Override
-	public EntityTableConditionModel conditions() {
+	public EntityTableConditionModel condition() {
 		return conditionModel;
 	}
 

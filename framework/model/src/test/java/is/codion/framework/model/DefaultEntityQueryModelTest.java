@@ -52,7 +52,7 @@ public final class DefaultEntityQueryModelTest {
 	void condition() {
 		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(new DefaultEntityTableConditionModel(Employee.TYPE,
 						CONNECTION_PROVIDER, new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER)));
-		EntityTableConditionModel conditionModel = queryModel.conditions();
+		EntityTableConditionModel conditionModel = queryModel.condition();
 		assertFalse(conditionModel.get(Employee.DEPARTMENT_FK).enabled().get());
 		conditionModel.get(Employee.NAME).set().in("Scott", "John");
 		Condition condition = queryModel.select().where();
@@ -75,7 +75,7 @@ public final class DefaultEntityQueryModelTest {
 		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(new DefaultEntityTableConditionModel(Employee.TYPE,
 						CONNECTION_PROVIDER, new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER)));
 
-		ConditionModel<String> nameCondition = queryModel.conditions().get(Employee.NAME);
+		ConditionModel<String> nameCondition = queryModel.condition().get(Employee.NAME);
 
 		queryModel.limit().set(10);
 		nameCondition.operands().equal().set(null);

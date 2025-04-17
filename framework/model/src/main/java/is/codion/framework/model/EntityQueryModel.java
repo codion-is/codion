@@ -90,10 +90,10 @@ public interface EntityQueryModel {
 	/**
 	 * @return the {@link EntityTableConditionModel} instance used by this query model
 	 */
-	EntityTableConditionModel conditions();
+	EntityTableConditionModel condition();
 
 	/**
-	 * Controls the additional WHERE condition, which can be used in conjunction with {@link #conditions()}.
+	 * Controls the additional WHERE condition, which can be used in conjunction with {@link #condition()}.
 	 * The condition supplier may return null in case of no condition.
 	 * Note that in order for the {@link #conditionChanged()} {@link ObservableState} to indicate
 	 * a changed condition, the additional condition must be set via {@link AdditionalCondition#set(Object)},
@@ -103,7 +103,7 @@ public interface EntityQueryModel {
 	AdditionalCondition where();
 
 	/**
-	 * Controls the additional HAVING condition, which can be used in conjunction with {@link #conditions()}.
+	 * Controls the additional HAVING condition, which can be used in conjunction with {@link #condition()}.
 	 * The condition supplier may return null in case of no condition.
 	 * Note that in order for the {@link #conditionChanged()} {@link ObservableState} to indicate
 	 * a changed condition, the additional condition must be set via {@link AdditionalCondition#set(Object)},

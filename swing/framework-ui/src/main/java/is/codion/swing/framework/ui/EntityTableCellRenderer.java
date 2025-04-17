@@ -52,7 +52,7 @@ public final class EntityTableCellRenderer {
 		EntityDefinition entityDefinition = tableModel.entityDefinition();
 		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 		ConditionModel<?> queryCondition = tableModel.queryModel()
-						.conditions()
+						.condition()
 						.optional(attribute)
 						.orElse(null);
 

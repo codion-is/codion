@@ -104,7 +104,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	 */
 	public SwingEntityTableModel(EntityQueryModel queryModel) {
 		this(new SwingEntityEditModel(requireNonNull(queryModel).entityType(),
-						queryModel.conditions().connectionProvider()), queryModel);
+						queryModel.condition().connectionProvider()), queryModel);
 	}
 
 	/**
