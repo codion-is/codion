@@ -38,7 +38,7 @@ final class TrackSelectorFactory implements Function<EntitySearchField, Selector
 	public TableSelector apply(EntitySearchField searchField) {
 		TableSelector selector = tableSelector(searchField);
 		selector.table().columnModel().visible().set(Track.ARTIST_NAME, Track.ALBUM_FK, Track.NAME);
-		selector.table().model().sorter().ascending(Track.ARTIST_NAME, Track.ALBUM_FK, Track.NAME);
+		selector.table().model().sort().ascending(Track.ARTIST_NAME, Track.ALBUM_FK, Track.NAME);
 		selector.preferredSize(new Dimension(500, 300));
 
 		return selector;

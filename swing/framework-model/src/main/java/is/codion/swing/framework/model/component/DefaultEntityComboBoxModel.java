@@ -179,8 +179,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	}
 
 	@Override
-	public Sorter<Entity> sorter() {
-		return comboBoxModel.sorter();
+	public Sort<Entity> sort() {
+		return comboBoxModel.sort();
 	}
 
 	@Override

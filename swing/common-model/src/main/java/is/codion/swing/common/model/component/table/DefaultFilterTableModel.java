@@ -99,8 +99,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public FilterTableSorter<R, C> sorter() {
-		return items.sorter;
+	public FilterTableSort<R, C> sort() {
+		return items.sort;
 	}
 
 	@Override

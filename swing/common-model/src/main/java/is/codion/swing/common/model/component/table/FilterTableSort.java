@@ -29,7 +29,7 @@ import java.util.List;
  * @param <R> the type representing a row in the table model
  * @param <C> the type representing the column identifiers in the table model
  */
-public interface FilterTableSorter<R, C> extends FilterModel.Sorter<R> {
+public interface FilterTableSort<R, C> extends FilterModel.Sort<R> {
 
 	/**
 	 * Clears the sorting state and sorts the given columns {@link SortOrder#ASCENDING}

@@ -63,7 +63,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	PropertyValue<Boolean> HANDLE_EDIT_EVENTS = booleanValue(EntityTableModel.class.getName() + ".handleEditEvents", true);
 
 	/**
-	 * Specifies whether the {@link #sorter()} model order is used as a basis for the {@link EntityQueryModel} order by clause.
+	 * Specifies whether the {@link #sort()} model order is used as a basis for the {@link EntityQueryModel} order by clause.
 	 * Note that this only applies to {@link Column} based attributes.
 	 * <ul>
 	 * <li>Value type: Boolean
@@ -170,7 +170,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	void select(Collection<Entity.Key> keys);
 
 	/**
-	 * Specifies whether the current {@link #sorter()} order is used as a basis for the {@link EntityQueryModel} order by clause.
+	 * Specifies whether the current {@link #sort()} order is used as a basis for the {@link EntityQueryModel} order by clause.
 	 * Note that this only applies to column attributes.
 	 * @return the {@link State} controlling whether the current sort order should be used as a basis for the query order by clause
 	 */

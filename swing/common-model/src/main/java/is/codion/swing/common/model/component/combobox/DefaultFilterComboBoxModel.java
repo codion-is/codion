@@ -60,7 +60,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private static final Comparator<?> NULL_COMPARATOR = new NullComparator<>();
 
 	private final DefaultComboBoxSelection selection;
-	private final Sorter<T> sorter;
+	private final Sort<T> sort;
 	private final DefaultComboBoxItems modelItems;
 
 	/**
@@ -70,7 +70,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	private DefaultFilterComboBoxModel(DefaultBuilder<T> builder) {
 		selection = new DefaultComboBoxSelection(builder.translator);
-		sorter = new DefaultComboBoxSorter<>(builder.comparator);
+		sort = new DefaultComboBoxSort<>(builder.comparator);
 		modelItems = new DefaultComboBoxItems(builder);
 	}
 
@@ -80,8 +80,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public Sorter<T> sorter() {
-		return sorter;
+	public Sort<T> sort() {
+		return sort;
 	}
 
 	@Override
@@ -258,12 +258,12 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 	}
 
-	private static final class DefaultComboBoxSorter<T> implements Sorter<T> {
+	private static final class DefaultComboBoxSort<T> implements Sort<T> {
 
 		private final Comparator<T> comparator;
 		private final Event<Boolean> event = Event.event();
 
-		private DefaultComboBoxSorter(Comparator<T> comparator) {
+		private DefaultComboBoxSort(Comparator<T> comparator) {
 			this.comparator = comparator;
 		}
 
@@ -657,8 +657,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			}
 
 			private boolean sortInternal() {
-				if (sorter.comparator() != NULL_COMPARATOR && count() > 0) {
-					items.subList(includeNull ? 1 : 0, items.size()).sort(sorter.comparator());
+				if (sort.comparator() != NULL_COMPARATOR && count() > 0) {
+					items.subList(includeNull ? 1 : 0, items.size()).sort(sort.comparator());
 					return true;
 				}
 

@@ -51,7 +51,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	@Override
 	protected SwingEntityTableModel createDepartmentTableModel() {
 		SwingEntityTableModel deptModel = createTableModel(Department.TYPE, testModel.connectionProvider());
-		deptModel.sorter().ascending(Department.NAME);
+		deptModel.sort().ascending(Department.NAME);
 
 		return deptModel;
 	}
@@ -228,7 +228,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		assertTrue(orderBy.orderByColumns().get(1).ascending());
 		assertEquals(Employee.NAME, orderBy.orderByColumns().get(1).column());
 
-		tableModel.sorter().ascending(Employee.NAME);
+		tableModel.sort().ascending(Employee.NAME);
 
 		orderBy = tableModel.queryModel().orderBy().getOrThrow();
 		//still default order by for entity
@@ -244,8 +244,8 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		assertTrue(orderBy.orderByColumns().get(0).ascending());
 		assertEquals(Employee.NAME, orderBy.orderByColumns().get(0).column());
 
-		tableModel.sorter().order(Employee.HIREDATE).set(SortOrder.DESCENDING);
-		tableModel.sorter().order(Employee.NAME).add(SortOrder.ASCENDING);
+		tableModel.sort().order(Employee.HIREDATE).set(SortOrder.DESCENDING);
+		tableModel.sort().order(Employee.NAME).add(SortOrder.ASCENDING);
 
 		orderBy = tableModel.queryModel().orderBy().getOrThrow();
 		assertEquals(2, orderBy.orderByColumns().size());
@@ -254,7 +254,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		assertTrue(orderBy.orderByColumns().get(1).ascending());
 		assertEquals(Employee.NAME, orderBy.orderByColumns().get(1).column());
 
-		tableModel.sorter().clear();
+		tableModel.sort().clear();
 		orderBy = tableModel.queryModel().orderBy().getOrThrow();
 		//back to default order by for entity
 		assertEquals(2, orderBy.orderByColumns().size());

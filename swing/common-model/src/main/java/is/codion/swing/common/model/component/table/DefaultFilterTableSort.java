@@ -34,7 +34,7 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.SortOrder.*;
 
-final class DefaultFilterTableSorter<R, C> implements FilterTableSorter<R, C> {
+final class DefaultFilterTableSort<R, C> implements FilterTableSort<R, C> {
 
 	private final TableColumns<R, C> columns;
 	private final Map<C, Comparator<?>> columnComparators = new HashMap<>();
@@ -43,7 +43,7 @@ final class DefaultFilterTableSorter<R, C> implements FilterTableSorter<R, C> {
 	private final Map<C, State> locked = new HashMap<>();
 	private final RowComparator comparator = new RowComparator();
 
-	DefaultFilterTableSorter(TableColumns<R, C> columns) {
+	DefaultFilterTableSort(TableColumns<R, C> columns) {
 		this.columns = columns;
 	}
 

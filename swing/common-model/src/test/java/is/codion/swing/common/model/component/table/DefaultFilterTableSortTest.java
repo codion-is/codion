@@ -30,9 +30,9 @@ import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class DefaultFilterTableSorterTest {
+public class DefaultFilterTableSortTest {
 
-	DefaultFilterTableSorter<Row, Integer> model = new DefaultFilterTableSorter<>(new FilterTableModel.TableColumns<Row, Integer>() {
+	DefaultFilterTableSort<Row, Integer> model = new DefaultFilterTableSort<>(new FilterTableModel.TableColumns<Row, Integer>() {
 
 		@Override
 		public List<Integer> identifiers() {
@@ -149,7 +149,7 @@ public class DefaultFilterTableSorterTest {
 
 	@Test
 	void nonComparableColumnClass() {
-		DefaultFilterTableSorter<ArrayList<Object>, Integer> sortModel = new DefaultFilterTableSorter<>(new FilterTableModel.TableColumns<ArrayList<Object>, Integer>() {
+		DefaultFilterTableSort<ArrayList<Object>, Integer> sortModel = new DefaultFilterTableSort<>(new FilterTableModel.TableColumns<ArrayList<Object>, Integer>() {
 			@Override
 			public List<Integer> identifiers() {
 				return Collections.singletonList(0);

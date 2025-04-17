@@ -33,8 +33,8 @@ import is.codion.framework.model.AbstractEntityTableModel;
 import is.codion.framework.model.EntityQueryModel;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
-import is.codion.swing.common.model.component.table.FilterTableSorter;
-import is.codion.swing.common.model.component.table.FilterTableSorter.ColumnSortOrder;
+import is.codion.swing.common.model.component.table.FilterTableSort;
+import is.codion.swing.common.model.component.table.FilterTableSort.ColumnSortOrder;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -219,8 +219,8 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	}
 
 	@Override
-	public final FilterTableSorter<Entity, Attribute<?>> sorter() {
-		return filterModel().sorter();
+	public final FilterTableSort<Entity, Attribute<?>> sort() {
+		return filterModel().sort();
 	}
 
 	@Override
@@ -265,7 +265,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 
 	@Override
 	protected final Optional<OrderBy> orderByFromSortModel() {
-		List<ColumnSortOrder<Attribute<?>>> columnSortOrder = sorter().columns().get().stream()
+		List<ColumnSortOrder<Attribute<?>>> columnSortOrder = sort().columns().get().stream()
 						.filter(sortOrder -> sortOrder.identifier() instanceof Column)
 						.collect(toList());
 		if (columnSortOrder.isEmpty()) {

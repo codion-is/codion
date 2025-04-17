@@ -63,7 +63,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 	final TableColumns<R, C> columns;
 	final TableSelection<R> selection;
 	final TableConditionModel<C> filters;
-	final FilterTableSorter<R, C> sorter;
+	final FilterTableSort<R, C> sort;
 
 	final DefaultRefresher refresher;
 	final Value<RefreshStrategy> refreshStrategy;
@@ -84,8 +84,8 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		this.filters = tableConditionModel(filterModelFactory);
 		this.visiblePredicate = new VisiblePredicate();
 		this.selection = new DefaultFilterTableSelection<>(this);
-		this.sorter = new DefaultFilterTableSorter<>(columns);
-		this.sorter.observer().addListener(visible::sort);
+		this.sort = new DefaultFilterTableSort<>(columns);
+		this.sort.observer().addListener(visible::sort);
 	}
 
 	@Override
@@ -267,8 +267,8 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 					filtered.items.add(item);
 				}
 			}
-			if (sorter.sorted()) {
-				visible.items.sort(sorter.comparator());
+			if (sort.sorted()) {
+				visible.items.sort(sort.comparator());
 			}
 			tableModel.fireTableDataChanged();
 		}
@@ -538,10 +538,10 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 
 		@Override
 		public void sort() {
-			if (sorter.sorted()) {
+			if (sort.sorted()) {
 				List<R> selectedItems = selection.items().get();
 				synchronized (lock) {
-					items.sort(sorter.comparator());
+					items.sort(sort.comparator());
 					tableModel.fireTableRowsUpdated(0, items.size());
 				}
 				selection.items().set(selectedItems);

@@ -117,8 +117,8 @@ public final class DomainGeneratorModel {
 		this.user = user;
 		sourceDirectoryChanged();
 		domainPackageChanged();
-		schemaTableModel.sorter().ascending(SchemaColumns.Id.SCHEMA);
-		entityTableModel.sorter().ascending(EntityColumns.Id.ENTITY);
+		schemaTableModel.sort().ascending(SchemaColumns.Id.SCHEMA);
+		entityTableModel.sort().ascending(EntityColumns.Id.ENTITY);
 		schemaTableModel.items().refresh();
 		bindEvents();
 	}

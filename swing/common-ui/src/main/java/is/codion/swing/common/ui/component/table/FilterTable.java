@@ -32,7 +32,7 @@ import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
-import is.codion.swing.common.model.component.table.FilterTableSorter.ColumnSortOrder;
+import is.codion.swing.common.model.component.table.FilterTableSort.ColumnSortOrder;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.border.Borders;
 import is.codion.swing.common.ui.component.Components;
@@ -767,19 +767,19 @@ public final class FilterTable<R, C> extends JTable {
 	private void toggleColumnSort(int selectedColumn, boolean previous, boolean add) {
 		if (sortingEnabled.get() && selectedColumn != -1) {
 			C identifier = columnModel().getColumn(selectedColumn).identifier();
-			if (!tableModel.sorter().order(identifier).locked().get()) {
+			if (!tableModel.sort().order(identifier).locked().get()) {
 				toggleColumnSort(identifier, previous, add);
 			}
 		}
 	}
 
 	private void toggleColumnSort(C identifier, boolean previous, boolean add) {
-		ColumnSortOrder<C> columnSortOrder = tableModel.sorter().columns().get(identifier);
+		ColumnSortOrder<C> columnSortOrder = tableModel.sort().columns().get(identifier);
 		if (add) {
-			tableModel.sorter().order(identifier).add(previous ? previous(columnSortOrder.sortOrder()) : next(columnSortOrder.sortOrder()));
+			tableModel.sort().order(identifier).add(previous ? previous(columnSortOrder.sortOrder()) : next(columnSortOrder.sortOrder()));
 		}
 		else {
-			tableModel.sorter().order(identifier).set(previous ? previous(columnSortOrder.sortOrder()) : next(columnSortOrder.sortOrder()));
+			tableModel.sort().order(identifier).set(previous ? previous(columnSortOrder.sortOrder()) : next(columnSortOrder.sortOrder()));
 		}
 	}
 
@@ -897,7 +897,7 @@ public final class FilterTable<R, C> extends JTable {
 		tableModel.items().visible().added().addConsumer(new ScrollToAdded());
 		tableModel.filters().changed().addListener(getTableHeader()::repaint);
 		searchModel.results().current().addListener(this::repaint);
-		tableModel.sorter().observer().addListener(getTableHeader()::repaint);
+		tableModel.sort().observer().addListener(getTableHeader()::repaint);
 		addMouseListener(new FilterTableMouseListener());
 		addKeyListener(new MoveResizeColumnKeyListener(columnReorderingAllowed, columnResizingAllowed));
 		controlMap.keyEvent(COPY_CELL).ifPresent(keyEvent -> keyEvent.enable(this));
@@ -1075,7 +1075,7 @@ public final class FilterTable<R, C> extends JTable {
 			int index = columnModel.getColumnIndexAtX(e.getX());
 			if (index >= 0) {
 				C identifier = columnModel.getColumn(index).identifier();
-				if (!tableModel.sorter().order(identifier).locked().get()) {
+				if (!tableModel.sort().order(identifier).locked().get()) {
 					if (!getSelectionModel().isSelectionEmpty()) {
 						setColumnSelectionInterval(index, index);//otherwise, the focus jumps to the selected column after sorting
 					}
