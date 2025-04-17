@@ -418,16 +418,16 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 			applicationFrame.setVisible(true);
 		}
 		try {
-			P applicationPanel = initializeApplicationPanel(applicationModel);
-			applicationPanel.setSaveDefaultUsername(saveDefaultUsername);
-			configureFrame(applicationFrame, applicationPanel);
+			P panel = initializeApplicationPanel(applicationModel);
+			panel.setSaveDefaultUsername(saveDefaultUsername);
+			configureFrame(applicationFrame, panel);
 			LOG.info("{}, application started successfully: {} ms", applicationFrame.getTitle(), currentTimeMillis() - initializationStarted);
 			if (displayFrame) {
 				applicationFrame.setVisible(true);
 			}
-			applicationPanel.requestInitialFocus();
+			panel.requestInitialFocus();
 			if (onApplicationStarted != null) {
-				onApplicationStarted.accept(applicationPanel);
+				onApplicationStarted.accept(panel);
 			}
 		}
 		catch (Exception e) {
@@ -462,10 +462,10 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	}
 
 	private P initializeApplicationPanel(M applicationModel) {
-		P applicationPanel = this.applicationPanel.apply(applicationModel);
-		applicationPanel.initialize();
+		P panel = applicationPanel.apply(applicationModel);
+		panel.initialize();
 
-		return applicationPanel;
+		return panel;
 	}
 
 	private void configureFrame(JFrame frame, P applicationPanel) {

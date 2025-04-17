@@ -577,7 +577,7 @@ public class EntityTablePanel extends JPanel {
 	 * @throws IllegalStateException in case a condition panel is not available
 	 * @see Config#includeConditions(boolean)
 	 */
-	public final TableConditionPanel<Attribute<?>> conditions() {
+	public final TableConditionPanel<Attribute<?>> condition() {
 		if (!configuration.includeConditions) {
 			throw new IllegalStateException("No condition panel is available");
 		}
@@ -1248,7 +1248,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private CommandControl createSelectConditionControl() {
-		return command(() -> conditions().select(this));
+		return command(() -> condition().select(this));
 	}
 
 	private Controls createConditionControls() {
@@ -1280,7 +1280,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void toggleConditionView() {
-		toggleView(conditions().view(), conditionPanelScrollPane);
+		toggleView(condition().view(), conditionPanelScrollPane);
 	}
 
 	private void toggleFilterView() {
@@ -2330,7 +2330,7 @@ public class EntityTablePanel extends JPanel {
 		 * @param attribute the attribute
 		 * @param componentFactory the component factory for the given attribute
 		 * @return this Config instance
-		 * @see EntityTablePanel#conditions()
+		 * @see EntityTablePanel#condition()
 		 */
 		public Config conditionComponentFactory(Attribute<?> attribute, ComponentFactory componentFactory) {
 			this.conditionComponentFactories.put(attribute, requireNonNull(componentFactory));

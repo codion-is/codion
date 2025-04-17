@@ -464,7 +464,7 @@ public final class EntityDialogs {
 		private DefaultEntitySelectionDialogBuilder(EntityTablePanel tablePanel) {
 			this.tablePanel = requireNonNull(tablePanel);
 			try {
-				tablePanel.conditions();
+				tablePanel.condition();
 				includeSearchButton = true;
 			}
 			catch (IllegalStateException e) {

@@ -114,7 +114,7 @@ public class StoreDemo {
 
 		customerPanel.setBorder(createEmptyBorder(5, 5, 0, 5));
 		addressPanel.tablePanel()
-						.conditions().view().set(SIMPLE);
+						.condition().view().set(SIMPLE);
 
 		customerModel.tableModel().items().refresh();
 
