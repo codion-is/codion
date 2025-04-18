@@ -37,7 +37,6 @@ import is.codion.swing.common.ui.control.ControlMap;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
-import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -91,7 +90,6 @@ import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toList;
-import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.SwingConstants.HORIZONTAL;
 import static javax.swing.SwingConstants.VERTICAL;
 
@@ -847,7 +845,6 @@ public class EntityPanel extends JPanel {
 
 		return borderLayoutPanel()
 						.minimumSize(new Dimension(0, 0))
-						.border(createEmptyBorder(Layouts.GAP.getOrThrow(), 0, Layouts.GAP.getOrThrow(), 0))
 						.mouseListener(new ActivateOnMouseClickListener())
 						.build();
 	}

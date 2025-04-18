@@ -18,6 +18,7 @@ Codion Change Log
 - EntityApplicationPanel.Builder.applicationModelFactory() and applicationPanelFactory() renamed applicationModel() and applicationPanel().
 - EntityApplicationPanel.createLogControls() now protected final.
 - EntityTablePanel.conditions() renamed condition().
+- EntityPanel.createEditControlPanel() no longer adds an empty border.
 
 ## 0.18.33
 ### is.codion.swing.common.ui
