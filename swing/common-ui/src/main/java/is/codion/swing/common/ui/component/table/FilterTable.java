@@ -55,7 +55,6 @@ import is.codion.swing.common.ui.key.KeyEvents;
 
 import javax.swing.Action;
 import javax.swing.DefaultCellEditor;
-import javax.swing.DefaultListSelectionModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTable;
@@ -1060,7 +1059,6 @@ public final class FilterTable<R, C> extends JTable {
 			cellRectangle.setLocation(0, cellRectangle.y - viewRectangle.y);
 			cellRectangle.height = viewRectangle.height;
 			viewport.scrollRectToVisible(cellRectangle);
-			((DefaultListSelectionModel) getSelectionModel()).moveLeadSelectionIndex(row);
 		}
 	}
 

@@ -15,6 +15,7 @@ Codion Change Log
 - LookAndFeelSelectionDialogBuilder.INCLUDE_PLATFORM_LOOK_AND_FEELS moved to LookAndFeelComboBox.
 - LookAndFeelComboBox.Builder added.
 - TextPaneBuilder added.
+- FilterTable.ScrollToAdded.scrollToAddedRow() no longer calls moveLeadSelectionIndex(), caused a selection event.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel.Builder.applicationModelFactory() and applicationPanelFactory() renamed applicationModel() and applicationPanel().
 - EntityApplicationPanel.createLogControls() now protected final.
