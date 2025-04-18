@@ -58,6 +58,7 @@ import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
 import is.codion.swing.common.ui.component.text.TextAreaBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldPanel;
+import is.codion.swing.common.ui.component.text.TextPaneBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -462,6 +463,21 @@ public final class Components {
 	 */
 	public static TextAreaBuilder textArea(Value<String> linkedValue) {
 		return TextAreaBuilder.builder(linkedValue);
+	}
+
+	/**
+	 * @return a JTextPane builder
+	 */
+	public static TextPaneBuilder textPane() {
+		return TextPaneBuilder.builder();
+	}
+
+	/**
+	 * @param linkedValue the value to link to the component
+	 * @return a JTextPane builder
+	 */
+	public static TextPaneBuilder textPane(Value<String> linkedValue) {
+		return TextPaneBuilder.builder(linkedValue);
 	}
 
 	/**
