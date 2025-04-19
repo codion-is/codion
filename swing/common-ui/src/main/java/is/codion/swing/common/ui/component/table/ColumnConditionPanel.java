@@ -415,7 +415,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 						.popupMenu(radioButton -> menu(Controls.builder()
 										.control(Control.builder()
 														.toggle(model().autoEnable())
-														.name(MESSAGES.getString("auto_enable"))))
+														.caption(MESSAGES.getString("auto_enable"))))
 										.buildPopupMenu())
 						.build();
 		boolean modelLocked = model().locked().get();
@@ -666,7 +666,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 			ControlsBuilder controlsBuilder = Controls.builder();
 			controlsBuilder.control(Control.builder()
 							.toggle(model().caseSensitive())
-							.name(MESSAGES.getString("case_sensitive")));
+							.caption(MESSAGES.getString("case_sensitive")));
 			if (model().valueClass().equals(String.class)) {
 				controlsBuilder.control(createWildcardControls());
 			}
@@ -713,19 +713,19 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		});
 
 		return Controls.builder()
-						.name(MESSAGES.getString("wildcard"))
+						.caption(MESSAGES.getString("wildcard"))
 						.control(Control.builder()
 										.toggle(wildcardNoneState)
-										.name(Wildcard.NONE.description()))
+										.caption(Wildcard.NONE.description()))
 						.control(Control.builder()
 										.toggle(wildcardPostfixState)
-										.name(Wildcard.POSTFIX.description()))
+										.caption(Wildcard.POSTFIX.description()))
 						.control(Control.builder()
 										.toggle(wildcardPrefixState)
-										.name(Wildcard.PREFIX.description()))
+										.caption(Wildcard.PREFIX.description()))
 						.control(Control.builder()
 										.toggle(wildcardPrefixAndPostfixState)
-										.name(Wildcard.PREFIX_AND_POSTFIX.description()))
+										.caption(Wildcard.PREFIX_AND_POSTFIX.description()))
 						.build();
 	}
 

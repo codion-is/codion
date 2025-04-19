@@ -577,7 +577,7 @@ public final class FilterTable<R, C> extends JTable {
 	public CommandControl createSelectColumnsControl() {
 		return Control.builder()
 						.command(this::selectColumns)
-						.name(MESSAGES.getString(SELECT) + "...")
+						.caption(MESSAGES.getString(SELECT) + "...")
 						.enabled(columnModel().locked().not())
 						.description(MESSAGES.getString(SELECT_COLUMNS))
 						.build();
@@ -588,7 +588,7 @@ public final class FilterTable<R, C> extends JTable {
 	 */
 	public Controls createToggleColumnsControls() {
 		return Controls.builder()
-						.name(MESSAGES.getString(SELECT))
+						.caption(MESSAGES.getString(SELECT))
 						.enabled(columnModel().locked().not())
 						.controls(columnModel().columns().stream()
 										.sorted(new ColumnComparator())
@@ -603,7 +603,7 @@ public final class FilterTable<R, C> extends JTable {
 	public CommandControl createResetColumnsControl() {
 		return Control.builder()
 						.command(columnModel()::reset)
-						.name(MESSAGES.getString(RESET))
+						.caption(MESSAGES.getString(RESET))
 						.enabled(columnModel().locked().not())
 						.description(MESSAGES.getString(RESET_COLUMNS_DESCRIPTION))
 						.build();
@@ -615,7 +615,7 @@ public final class FilterTable<R, C> extends JTable {
 	public CommandControl createSelectAutoResizeModeControl() {
 		return Control.builder()
 						.command(this::selectAutoResizeMode)
-						.name(MESSAGES.getString(AUTO_RESIZE) + "...")
+						.caption(MESSAGES.getString(AUTO_RESIZE) + "...")
 						.build();
 	}
 
@@ -624,7 +624,7 @@ public final class FilterTable<R, C> extends JTable {
 	 */
 	public Controls createToggleAutoResizeModeControls() {
 		return Controls.builder()
-						.name(MESSAGES.getString(AUTO_RESIZE))
+						.caption(MESSAGES.getString(AUTO_RESIZE))
 						.controls(createAutoResizeModeControls())
 						.build();
 	}
@@ -635,7 +635,7 @@ public final class FilterTable<R, C> extends JTable {
 	public ToggleControl createSingleSelectionControl() {
 		return Control.builder()
 						.toggle(tableModel.selection().singleSelection())
-						.name(MESSAGES.getString(SINGLE_SELECTION))
+						.caption(MESSAGES.getString(SINGLE_SELECTION))
 						.build();
 	}
 
@@ -645,7 +645,7 @@ public final class FilterTable<R, C> extends JTable {
 	public CommandControl createCopyCellControl() {
 		return Control.builder()
 						.command(this::copySelectedCell)
-						.name(MESSAGES.getString("copy_cell"))
+						.caption(MESSAGES.getString("copy_cell"))
 						.enabled(tableModel.selection().empty().not())
 						.build();
 	}
@@ -786,10 +786,10 @@ public final class FilterTable<R, C> extends JTable {
 		return Controls.builder()
 						.control(Control.builder()
 										.toggle(searchModel.caseSensitive())
-										.name(MESSAGES.getString("case_sensitive_search")))
+										.caption(MESSAGES.getString("case_sensitive_search")))
 						.control(Control.builder()
 										.toggle(searchModel.regularExpression())
-										.name(MESSAGES.getString("regular_expression_search")))
+										.caption(MESSAGES.getString("regular_expression_search")))
 						.build();
 	}
 
@@ -828,7 +828,7 @@ public final class FilterTable<R, C> extends JTable {
 	private ToggleControl createToggleColumnControl(FilterTableColumn<C> column) {
 		return Control.builder()
 						.toggle(columnModel().visible(column.identifier()))
-						.name(String.valueOf(column.getHeaderValue()))
+						.caption(String.valueOf(column.getHeaderValue()))
 						.description(column.toolTipText().orElse(null))
 						.build();
 	}
@@ -880,7 +880,7 @@ public final class FilterTable<R, C> extends JTable {
 			});
 			controls.add(Control.builder()
 							.toggle(state)
-							.name(resizeMode.caption())
+							.caption(resizeMode.caption())
 							.build());
 		}
 		addPropertyChangeListener("autoResizeMode", changeEvent ->

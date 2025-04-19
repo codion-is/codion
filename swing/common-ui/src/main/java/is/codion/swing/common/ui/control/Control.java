@@ -51,9 +51,9 @@ public interface Control extends Action {
 	Optional<String> description();
 
 	/**
-	 * @return the name or an empty Optional if none is available
+	 * @return the caption or an empty Optional if none is available
 	 */
-	Optional<String> name();
+	Optional<String> caption();
 
 	/**
 	 * @return an {@link ObservableState} indicating whether this Control is enabled
@@ -224,10 +224,10 @@ public interface Control extends Action {
 	interface Builder<C extends Control, B extends Builder<C, B>> {
 
 		/**
-		 * @param name the name of the control
+		 * @param caption the caption for the control
 		 * @return this Builder instance
 		 */
-		B name(String name);
+		B caption(String caption);
 
 		/**
 		 * @param enabled the state observer which controls the enabled state of the control

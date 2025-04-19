@@ -81,12 +81,12 @@ public final class DefaultCommandControlTest {
 	void basics() {
 		Control test = Control.builder()
 						.command(this::doNothing)
-						.name("test")
+						.caption("test")
 						.description("description")
 						.mnemonic(10)
 						.build();
 		assertEquals("test", test.toString());
-		assertEquals("test", test.name().orElse(null));
+		assertEquals("test", test.caption().orElse(null));
 		assertEquals(10, test.mnemonic().orElse(0));
 		assertFalse(test.smallIcon().isPresent());
 		assertEquals("description", test.description().orElse(null));
@@ -107,8 +107,8 @@ public final class DefaultCommandControlTest {
 	@Test
 	void setEnabled() {
 		State enabledState = State.state();
-		Control control = Control.builder().command(this::doNothing).name("control").enabled(enabledState.observable()).build();
-		assertEquals("control", control.name().orElse(null));
+		Control control = Control.builder().command(this::doNothing).caption("control").enabled(enabledState.observable()).build();
+		assertEquals("control", control.caption().orElse(null));
 		assertSame(enabledState.observable(), control.enabled());
 		assertFalse(control.isEnabled());
 		SwingUtilities.invokeLater(() -> {
@@ -149,13 +149,13 @@ public final class DefaultCommandControlTest {
 		Control control = Control.builder()
 						.command(() -> {})
 						.enabled(enabled)
-						.name("name")
+						.caption("name")
 						.description("desc")
 						.mnemonic('n')
 						.value("key", "value")
 						.build();
 		Control copy = control.copy()
-						.name("new name")
+						.caption("new name")
 						.description("new desc")
 						.value("key", "newvalue")
 						.build();
@@ -169,7 +169,7 @@ public final class DefaultCommandControlTest {
 			assertTrue(control.isEnabled());
 			assertTrue(copy.isEnabled());
 
-			assertNotEquals(control.name().orElse(null), copy.name().orElse(null));
+			assertNotEquals(control.caption().orElse(null), copy.caption().orElse(null));
 			assertNotEquals(control.description().orElse(null), copy.description().orElse(null));
 			assertEquals(control.mnemonic().orElse(0), copy.mnemonic().orElse(1));
 			assertNotEquals(control.getValue("key"), copy.getValue("key"));

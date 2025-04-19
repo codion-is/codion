@@ -102,7 +102,7 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 						.map(controls -> controls.copy()
 										.control(Control.builder()
 														.command(this::importJSON)
-														.name("Import JSON"))
+														.caption("Import JSON"))
 										.build());
 	}
 	// end::createToolsMenuControls[]

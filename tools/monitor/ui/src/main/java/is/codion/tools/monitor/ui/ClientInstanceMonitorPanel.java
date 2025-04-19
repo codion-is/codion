@@ -153,11 +153,11 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 		textArea.setComponentPopupMenu(menu(Controls.builder()
 						.control(Control.builder()
 										.command(() -> saveLogToFile(textArea))
-										.name("Save to file..."))
+										.caption("Save to file..."))
 						.separator()
 						.control(Control.builder()
 										.toggle(lineWrapState)
-										.name("Line wrap")))
+										.caption("Line wrap")))
 						.buildPopupMenu());
 
 		return textArea;

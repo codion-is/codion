@@ -158,24 +158,24 @@ public final class LoadTestPanel<T> extends JPanel {
 	private Controls createMainMenuControls() {
 		return Controls.builder()
 						.control(Controls.builder()
-										.name("File")
+										.caption("File")
 										.mnemonic('F')
 										.control(Control.builder()
 														.command(this::exit)
-														.name("Exit")
+														.caption("Exit")
 														.mnemonic('X')))
 						.control(Controls.builder()
-										.name("View")
+										.caption("View")
 										.mnemonic('V')
 										.control(lookAndFeelSelectionDialog()
 														.owner(this)
 														.createControl(LoadTestPanel::lookAndFeelSelected))
 										.control(Control.builder()
 														.toggle(loadTestModel.collectChartData())
-														.name("Collect chart data"))
+														.caption("Collect chart data"))
 										.control(Control.builder()
 														.command(loadTestModel::clearCharts)
-														.name("Clear charts")))
+														.caption("Clear charts")))
 						.build();
 	}
 
@@ -199,7 +199,7 @@ public final class LoadTestPanel<T> extends JPanel {
 		return borderLayoutPanel()
 						.westComponent(button(Control.builder()
 										.command(loadTest::removeApplicationBatch)
-										.name("-")
+										.caption("-")
 										.description("Remove application batch"))
 										.build())
 						.centerComponent(integerField()
@@ -211,7 +211,7 @@ public final class LoadTestPanel<T> extends JPanel {
 										.build())
 						.eastComponent(button(Control.builder()
 										.command(loadTest::addApplicationBatch)
-										.name("+")
+										.caption("+")
 										.description("Add application batch"))
 										.build())
 						.build();
@@ -287,7 +287,7 @@ public final class LoadTestPanel<T> extends JPanel {
 						.add(usernameField)
 						.add(new JButton(Control.builder()
 										.command(this::setUser)
-										.name("...")
+										.caption("...")
 										.description("Set the application user")
 										.build()))
 						.build();
@@ -395,15 +395,15 @@ public final class LoadTestPanel<T> extends JPanel {
 						.popupMenuControls(table -> Controls.builder()
 										.control(Control.builder()
 														.command(table.model().items()::refresh)
-														.name("Refresh")
+														.caption("Refresh")
 														.enabled(model().autoRefreshApplications().not()))
 										.separator()
 										.control(Control.builder()
 														.command(model()::removeSelectedApplications)
-														.name("Remove selected"))
+														.caption("Remove selected"))
 										.separator()
 										.control(Controls.builder()
-														.name("Columns")
+														.caption("Columns")
 														.control(table.createToggleColumnsControls())
 														.control(table.createResetColumnsControl())
 														.control(table.createSelectAutoResizeModeControl()))
@@ -482,13 +482,13 @@ public final class LoadTestPanel<T> extends JPanel {
 						.build();
 		JButton refreshButton = button(Control.builder()
 						.command(new RefreshExceptionsCommand(exceptionsArea, scenario))
-						.name("Refresh"))
+						.caption("Refresh"))
 						.build();
 		refreshButton.doClick();
 
 		JButton clearButton = button(Control.builder()
 						.command(new ClearExceptionsCommand(exceptionsArea, scenario))
-						.name("Clear"))
+						.caption("Clear"))
 						.build();
 
 		return borderLayoutPanel()

@@ -72,7 +72,7 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 
 		return Control.builder()
 						.command(() -> selectLookAndFeel(selectedLookAndFeel))
-						.name(caption)
+						.caption(caption)
 						.build();
 	}
 

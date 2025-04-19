@@ -64,7 +64,7 @@ final class DefaultFontSizeSelectionDialogBuilder implements FontSizeSelectionDi
 
 		return Control.builder()
 						.command(() -> selectFontSize(selectedFontSize))
-						.name(caption)
+						.caption(caption)
 						.build();
 	}
 

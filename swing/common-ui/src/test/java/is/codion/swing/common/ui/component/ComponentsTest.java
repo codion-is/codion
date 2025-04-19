@@ -91,16 +91,16 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class ComponentsTest {
 
 	private final Controls controls = Controls.builder()
-					.name("SubMenu")
+					.caption("SubMenu")
 					.controls(Control.builder()
 													.command(() -> {})
-													.name("one"),
+													.caption("one"),
 									Control.builder()
 													.command(() -> {})
-													.name("two"),
+													.caption("two"),
 									Control.builder()
 													.toggle(State.state())
-													.name("three"))
+													.caption("three"))
 					.build();
 
 	@Test
@@ -1007,20 +1007,20 @@ public final class ComponentsTest {
 	void buttonPanel() {
 		JPanel base = new JPanel();
 		base.add(Components.buttonPanel(Controls.builder()
-										.name("SubMenu")
+										.caption("SubMenu")
 										.controls(Control.builder()
 																		.command(() -> {})
-																		.name("one"),
+																		.caption("one"),
 														Control.builder()
 																		.command(() -> {})
-																		.name("two"),
+																		.caption("two"),
 														Control.builder()
 																		.toggle(State.state())
-																		.name("three"))
+																		.caption("three"))
 										.controls(Controls.builder()
 														.control(Control.builder()
 																		.command(() -> {})
-																		.name("four")))
+																		.caption("four")))
 										.build())
 						.orientation(SwingConstants.VERTICAL)
 						.build());

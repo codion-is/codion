@@ -143,7 +143,7 @@ public final class SearchHighlighter {
 						.popupMenu(textField -> menu()
 										.control(Control.builder()
 														.toggle(caseSensitiveState)
-														.name(MESSAGES.getString("case_sensitive"))
+														.caption(MESSAGES.getString("case_sensitive"))
 														.build())
 										.buildPopupMenu())
 						.hint(Messages.find() + "...")

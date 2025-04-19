@@ -45,7 +45,7 @@ final class CountryTablePanel extends EntityTablePanel {
 	protected void setupControls() {
 		control(PRINT).set(Control.builder()
 						.command(this::viewCountryReport)
-						.name("Country report")
+						.caption("Country report")
 						.smallIcon(FrameworkIcons.instance().print())
 						.enabled(tableModel().selection().empty().not())
 						.build());

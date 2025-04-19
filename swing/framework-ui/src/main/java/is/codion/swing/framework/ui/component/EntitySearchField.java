@@ -592,7 +592,7 @@ public final class EntitySearchField extends HintTextField {
 										.title(FrameworkMessages.settings())
 										.icon(ICONS.settings())
 										.show())
-						.name(FrameworkMessages.settings())
+						.caption(FrameworkMessages.settings())
 						.smallIcon(ICONS.settings())
 						.build()))
 						.buildPopupMenu();

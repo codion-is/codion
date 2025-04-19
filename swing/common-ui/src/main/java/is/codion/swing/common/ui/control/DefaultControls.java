@@ -288,7 +288,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 			private static void addControls(ControlsBuilder builder, Controls controlsToAdd, ControlMap controlMap) {
 				if (controlsToAdd.size() > 0) {
-					if (!controlsToAdd.name().isPresent()) {
+					if (!controlsToAdd.caption().isPresent()) {
 						controlsToAdd.actions().stream()
 										.filter(action -> action != SEPARATOR)
 										.forEach(action -> new CustomAction(action).addTo(builder, controlMap));

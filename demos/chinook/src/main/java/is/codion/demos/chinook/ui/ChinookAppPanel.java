@@ -164,7 +164,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 						.map(controls -> controls.copy()
 										.controlAt(2, Control.builder()
 														.command(this::selectLanguage)
-														.name(bundle.getString(SELECT_LANGUAGE))
+														.caption(bundle.getString(SELECT_LANGUAGE))
 														.build())
 										.build());
 	}

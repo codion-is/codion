@@ -64,7 +64,7 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
 		if (comboBoxModel instanceof FilterComboBoxModel) {
 			popupMenuControl(comboBox -> Control.builder()
 							.command(new RefreshCommand((FilterComboBoxModel<?>) comboBoxModel))
-							.name(Messages.refresh())
+							.caption(Messages.refresh())
 							.build());
 		}
 	}

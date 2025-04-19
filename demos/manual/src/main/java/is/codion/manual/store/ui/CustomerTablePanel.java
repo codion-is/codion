@@ -47,7 +47,7 @@ public class CustomerTablePanel extends EntityTablePanel {
 		// enabled only when the selection is not empty
 		control(PRINT).set(Control.builder()
 						.command(this::viewCustomerReport)
-						.name("Customer report")
+						.caption("Customer report")
 						.smallIcon(FrameworkIcons.instance().print())
 						.enabled(tableModel().selection().empty().not())
 						.build());

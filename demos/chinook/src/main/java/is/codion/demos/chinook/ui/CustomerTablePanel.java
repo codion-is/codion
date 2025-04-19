@@ -55,7 +55,7 @@ public final class CustomerTablePanel extends EntityTablePanel {
 		// which is then made available in the popup menu and on the toolbar
 		control(PRINT).set(Control.builder()
 						.command(this::viewCustomerReport)
-						.name(BUNDLE.getString("customer_report"))
+						.caption(BUNDLE.getString("customer_report"))
 						.smallIcon(FrameworkIcons.instance().print())
 						.enabled(tableModel().selection().empty().not())
 						.build());

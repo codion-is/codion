@@ -66,7 +66,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
 
 	@Override
 	public final String toString() {
-		return name().orElse(super.toString());
+		return caption().orElse(super.toString());
 	}
 
 	@Override
@@ -105,7 +105,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
 	}
 
 	@Override
-	public final Optional<String> name() {
+	public final Optional<String> caption() {
 		Object value = getValue(NAME);
 
 		return value == null ? Optional.empty() : Optional.of(String.valueOf(value));
@@ -173,8 +173,8 @@ abstract class AbstractControl extends AbstractAction implements Control {
 		private ObservableState enabled;
 
 		@Override
-		public final B name(String name) {
-			values.put(NAME, name);
+		public final B caption(String caption) {
+			values.put(NAME, caption);
 			return self();
 		}
 

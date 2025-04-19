@@ -501,7 +501,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	private CommandControl createDeleteControl() {
 		return Control.builder()
 						.command(deleteCommand)
-						.name(FrameworkMessages.delete())
+						.caption(FrameworkMessages.delete())
 						.enabled(State.and(active,
 										editModel().deleteEnabled(),
 										editModel().editor().exists()))
@@ -515,7 +515,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	private CommandControl createClearControl() {
 		return Control.builder()
 						.command(this::clearAndRequestFocus)
-						.name(Messages.clear())
+						.caption(Messages.clear())
 						.enabled(active)
 						.description(Messages.clearTip() + ALT_PREFIX + Messages.clearMnemonic() + ")")
 						.mnemonic(Messages.clearMnemonic())
@@ -534,7 +534,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	private CommandControl createUpdateControl() {
 		return Control.builder()
 						.command(updateCommand)
-						.name(FrameworkMessages.update())
+						.caption(FrameworkMessages.update())
 						.enabled(State.and(active,
 										editModel().updateEnabled(),
 										editModel().editor().modified()))
@@ -551,7 +551,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		String caption = useSaveCaption ? FrameworkMessages.save() : FrameworkMessages.insert();
 		return Control.builder()
 						.command(insertCommand)
-						.name(caption)
+						.caption(caption)
 						.enabled(State.and(active, editModel().insertEnabled()))
 						.description(FrameworkMessages.insertTip() + ALT_PREFIX + mnemonic + ")")
 						.mnemonic(mnemonic)

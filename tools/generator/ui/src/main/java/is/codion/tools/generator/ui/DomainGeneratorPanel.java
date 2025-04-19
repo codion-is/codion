@@ -174,7 +174,7 @@ public final class DomainGeneratorPanel extends JPanel {
 	private FilterTable<SchemaRow, SchemaColumns.Id> createSchemaTable() {
 		Control populateSchemaControl = Control.builder()
 						.command(this::populateSchema)
-						.name("Populate")
+						.caption("Populate")
 						.enabled(model.schemaModel().selection().empty().not())
 						.build();
 
@@ -188,7 +188,7 @@ public final class DomainGeneratorPanel extends JPanel {
 						.popupMenuControls(table -> Controls.builder()
 										.control(populateSchemaControl)
 										.control(Controls.builder()
-														.name("Columns")
+														.caption("Columns")
 														.control(table.createToggleColumnsControls())
 														.control(table.createToggleAutoResizeModeControls()))
 										.build())
@@ -236,7 +236,7 @@ public final class DomainGeneratorPanel extends JPanel {
 	private static Control createCopyControl(JTextArea textArea) {
 		return Control.builder()
 						.command(() -> Utilities.setClipboard(textArea.getText()))
-						.name(Messages.copy())
+						.caption(Messages.copy())
 						.mnemonic(Messages.copy().charAt(0))
 						.build();
 	}
@@ -288,7 +288,7 @@ public final class DomainGeneratorPanel extends JPanel {
 										.add(label(" ").build())
 										.add(button(Control.builder()
 														.command(this::save)
-														.name("Save")
+														.caption("Save")
 														.mnemonic('S')
 														.enabled(model.saveEnabled()))
 														.build())
@@ -302,7 +302,7 @@ public final class DomainGeneratorPanel extends JPanel {
 						.build();
 		Control selectSourceDirectoryControl = Control.builder()
 						.command(this::selectSourceDirectory)
-						.name("...")
+						.caption("...")
 						.build();
 
 		return borderLayoutPanel()
@@ -417,14 +417,14 @@ public final class DomainGeneratorPanel extends JPanel {
 	private Controls createMainMenuControls() {
 		return Controls.builder()
 						.control(Controls.builder()
-										.name("File")
+										.caption("File")
 										.mnemonic('F')
 										.control(Control.builder()
 														.command(() -> System.exit(0))
-														.name("Exit")
+														.caption("Exit")
 														.mnemonic('X')))
 						.control(Controls.builder()
-										.name("View")
+										.caption("View")
 										.mnemonic('V')
 										.control(lookAndFeelSelectionDialog()
 														.owner(this)

@@ -98,7 +98,7 @@ public class DefaultToggleControlTest {
 		State enabledState = State.state(false);
 		ToggleControl control = Control.builder()
 						.toggle(state)
-						.name("stateToggleControl")
+						.caption("stateToggleControl")
 						.enabled(enabledState)
 						.build();
 		ButtonModel buttonModel = toggleButton()
@@ -111,7 +111,7 @@ public class DefaultToggleControlTest {
 			enabledState.set(true);
 			assertTrue(control.isEnabled());
 			assertTrue(buttonModel.isEnabled());
-			assertEquals("stateToggleControl", control.name().orElse(null));
+			assertEquals("stateToggleControl", control.caption().orElse(null));
 			assertFalse(control.value().getOrThrow());
 			state.set(true);
 			assertTrue(control.value().getOrThrow());
@@ -163,7 +163,7 @@ public class DefaultToggleControlTest {
 		JCheckBox box = CheckBoxBuilder.builder()
 						.toggleControl(Control.builder()
 										.toggle(value)
-										.name("Test"))
+										.caption("Test"))
 						.build();
 		assertEquals("Test", box.getText());
 	}
@@ -174,7 +174,7 @@ public class DefaultToggleControlTest {
 		JMenuItem item = CheckBoxMenuItemBuilder.builder()
 						.toggleControl(Control.builder()
 										.toggle(value)
-										.name("Test"))
+										.caption("Test"))
 						.build();
 		assertEquals("Test", item.getText());
 	}
@@ -186,13 +186,13 @@ public class DefaultToggleControlTest {
 		ToggleControl control = Control.builder()
 						.toggle(state)
 						.enabled(enabled)
-						.name("name")
+						.caption("name")
 						.description("desc")
 						.mnemonic('n')
 						.value("key", "value")
 						.build();
 		ToggleControl copy = control.copy(state)
-						.name("new name")
+						.caption("new name")
 						.description("new desc")
 						.value("key", "newvalue")
 						.build();
@@ -206,7 +206,7 @@ public class DefaultToggleControlTest {
 			assertTrue(control.isEnabled());
 			assertTrue(copy.isEnabled());
 
-			assertNotEquals(control.name().orElse(null), copy.name().orElse(null));
+			assertNotEquals(control.caption().orElse(null), copy.caption().orElse(null));
 			assertNotEquals(control.description().orElse(null), copy.description().orElse(null));
 			assertEquals(control.mnemonic().orElse(0), copy.mnemonic().orElse(1));
 			assertNotEquals(control.getValue("key"), copy.getValue("key"));

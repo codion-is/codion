@@ -261,7 +261,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		if (CalendarPanel.supportedTypes().contains(temporalClass)) {
 			return Control.builder()
 							.command(this::displayCalendar)
-							.name(calendarIcon == null ? "..." : null)
+							.caption(calendarIcon == null ? "..." : null)
 							.smallIcon(calendarIcon)
 							.description(MESSAGES.getString("display_calendar"))
 							.enabled(calendarEnabledState())

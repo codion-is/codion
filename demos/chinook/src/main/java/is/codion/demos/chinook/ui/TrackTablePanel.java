@@ -87,7 +87,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 						// add our custom control
 						.control(Control.builder()
 										.command(this::raisePriceOfSelected)
-										.name(BUNDLE.getString("raise_price") + "...")
+										.caption(BUNDLE.getString("raise_price") + "...")
 										.enabled(tableModel().selection().empty().not()))
 						// and a separator
 						.separator()

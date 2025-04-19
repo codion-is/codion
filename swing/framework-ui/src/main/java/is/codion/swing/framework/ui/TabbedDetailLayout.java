@@ -294,12 +294,12 @@ public final class TabbedDetailLayout implements DetailLayout {
 											.description(MESSAGES.getString("toggle_detail")))
 							.build());
 			tablePanel.addPopupMenuControls(Controls.builder()
-							.name(MESSAGES.getString(DETAIL_TABLES))
+							.caption(MESSAGES.getString(DETAIL_TABLES))
 							.smallIcon(ICONS.detail())
 							.controls(entityPanel.detailPanels().get().stream()
 											.map(detailPanel -> Control.builder()
 															.command(new ActivateDetailPanel(detailPanel))
-															.name(detailPanel.caption())
+															.caption(detailPanel.caption())
 															.build())
 											.collect(toList()))
 							.build());

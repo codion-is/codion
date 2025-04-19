@@ -119,17 +119,17 @@ public abstract class TableConditionPanel<C> extends JPanel {
 		return Controls.builder()
 						.control(Control.builder()
 										.toggle(hiddenView)
-										.name(MESSAGES.getString("hidden")))
+										.caption(MESSAGES.getString("hidden")))
 						.control(Control.builder()
 										.toggle(simpleView)
-										.name(MESSAGES.getString("simple")))
+										.caption(MESSAGES.getString("simple")))
 						.control(Control.builder()
 										.toggle(advancedView)
-										.name(MESSAGES.getString("advanced")))
+										.caption(MESSAGES.getString("advanced")))
 						.separator()
 						.control(Control.builder()
 										.command(this::clear)
-										.name(Messages.clear()))
+										.caption(Messages.clear()))
 						.build();
 	}
 

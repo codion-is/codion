@@ -86,13 +86,13 @@ final class LoginPanel extends JPanel {
 		this.icon = icon;
 		this.okControl = Control.builder()
 						.command(this::onOkPressed)
-						.name(Messages.ok())
+						.caption(Messages.ok())
 						.mnemonic(Messages.okMnemonic())
 						.enabled(State.and(usernameSpecifiedState(usernameValue), validating.not()))
 						.build();
 		this.cancelControl = Control.builder()
 						.command(this::closeDialog)
-						.name(Messages.cancel())
+						.caption(Messages.cancel())
 						.mnemonic(Messages.cancelMnemonic())
 						.enabled(validating.not())
 						.build();

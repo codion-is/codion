@@ -65,7 +65,7 @@ public final class InputControls {
 
 		CommandControl control = Control.builder()
 						.command(() -> System.out.println("Doing something"))
-						.name("Do something")
+						.caption("Do something")
 						.mnemonic('D')
 						.enabled(somethingEnabledState)
 						.build();
@@ -79,7 +79,7 @@ public final class InputControls {
 		};
 		CommandControl actionControl = Control.builder()
 						.action(actionCommand)
-						.name("Do something else")
+						.caption("Do something else")
 						.mnemonic('S')
 						.build();
 
@@ -118,21 +118,21 @@ public final class InputControls {
 		Controls controls = Controls.builder()
 						.control(Control.builder()
 										.command(this::doFirst)
-										.name("First")
+										.caption("First")
 										.mnemonic('F'))
 						.control(Control.builder()
 										.command(this::doSecond)
-										.name("Second")
+										.caption("Second")
 										.mnemonic('S'))
 						.control(Controls.builder()
-										.name("Submenu")
+										.caption("Submenu")
 										.control(Control.builder()
 														.command(this::doSubFirst)
-														.name("Sub-first")
+														.caption("Sub-first")
 														.mnemonic('b'))
 										.control(Control.builder()
 														.command(this::doSubSecond)
-														.name("Sub-second")
+														.caption("Sub-second")
 														.mnemonic('u')))
 						.build();
 
@@ -140,12 +140,12 @@ public final class InputControls {
 
 		Control firstControl = Control.builder()
 						.command(this::doFirst)
-						.name("First")
+						.caption("First")
 						.mnemonic('F')
 						.build();
 		Control secondControl = Control.builder()
 						.command(this::doSecond)
-						.name("Second")
+						.caption("Second")
 						.mnemonic('S')
 						.build();
 

@@ -166,11 +166,11 @@ public final class EntityServerMonitorPanel extends JPanel {
 	private Controls createMainMenuControls() {
 		return Controls.builder()
 						.control(Controls.builder()
-										.name("File")
+										.caption("File")
 										.mnemonic('F')
 										.control(createExitControl()))
 						.control(Controls.builder()
-										.name("View")
+										.caption("View")
 										.mnemonic('V')
 										.control(createRefreshControl())
 										.control(createUpateIntervalControl())
@@ -181,7 +181,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 														.createControl(EntityServerMonitorPanel::lookAndFeelSelected))
 										.control(createAlwaysOnTopControl()))
 						.control(Controls.builder()
-										.name("Tools")
+										.caption("Tools")
 										.mnemonic('T')
 										.control(createSetJDKDirControl())
 										.control(createJConsoleControl()))
@@ -191,7 +191,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 	private Control createRefreshControl() {
 		return Control.builder()
 						.command(this::refresh)
-						.name("Refresh")
+						.caption("Refresh")
 						.mnemonic('R')
 						.build();
 	}
@@ -199,7 +199,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 	private Control createAlwaysOnTopControl() {
 		return Control.builder()
 						.toggle(alwaysOnTopState)
-						.name("Always on Top")
+						.caption("Always on Top")
 						.mnemonic('A')
 						.build();
 	}
@@ -207,21 +207,21 @@ public final class EntityServerMonitorPanel extends JPanel {
 	private Control createUpateIntervalControl() {
 		return Control.builder()
 						.command(this::setUpdateInterval)
-						.name("Chart update interval...")
+						.caption("Chart update interval...")
 						.build();
 	}
 
 	private Control createClearChartsControl() {
 		return Control.builder()
 						.command(model::clearCharts)
-						.name("Clear charts")
+						.caption("Clear charts")
 						.build();
 	}
 
 	private Control createSetJDKDirControl() {
 		return Control.builder()
 						.command(this::setJDKDir)
-						.name("Set JDK home...")
+						.caption("Set JDK home...")
 						.mnemonic('S')
 						.build();
 	}
@@ -229,7 +229,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 	private Control createJConsoleControl() {
 		return Control.builder()
 						.command(this::runJConsole)
-						.name("Run JConsole")
+						.caption("Run JConsole")
 						.mnemonic('J')
 						.build();
 	}
@@ -263,7 +263,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 	private static Control createExitControl() {
 		return Control.builder()
 						.command(() -> System.exit(0))
-						.name("Exit")
+						.caption("Exit")
 						.mnemonic('X')
 						.build();
 	}

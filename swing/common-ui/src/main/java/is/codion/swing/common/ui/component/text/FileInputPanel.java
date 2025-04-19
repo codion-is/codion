@@ -58,7 +58,7 @@ public final class FileInputPanel extends JPanel {
 	private FileInputPanel(AbstractBuilder<?> builder) {
 		CommandControl browseControl = Control.builder()
 						.command(this::browseFile)
-						.name(builder.buttonCaption)
+						.caption(builder.buttonCaption)
 						.smallIcon(builder.buttonIcon)
 						.build();
 		filePathField = builder.pathFieldBuilder

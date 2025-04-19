@@ -248,7 +248,7 @@ public final class TextFieldPanel extends JPanel {
 	private CommandControl createTextAreaControl(DefaultBuilder builder) {
 		return Control.builder()
 						.command(this::inputFromUser)
-						.name(builder.buttonIcon == null ? "..." : "")
+						.caption(builder.buttonIcon == null ? "..." : "")
 						.smallIcon(builder.buttonIcon)
 						.build();
 	}

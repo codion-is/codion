@@ -121,14 +121,14 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
 		if (okAction == null) {
 			okAction = Control.builder()
 							.command(onOk == null ? new DefaultOkCommand(component()) : new PerformAndCloseCommand(onOk, component()))
-							.name(Messages.ok())
+							.caption(Messages.ok())
 							.mnemonic(Messages.okMnemonic())
 							.enabled(okEnabled)
 							.build();
 		}
 		else if (okAction instanceof Control) {
 			okAction = ((Control) okAction).copy()
-							.name(Messages.ok())
+							.caption(Messages.ok())
 							.mnemonic(Messages.okMnemonic())
 							.build();
 		}
@@ -139,14 +139,14 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
 		if (cancelAction == null) {
 			cancelAction = Control.builder()
 							.command(onCancel == null ? new DefaultCancelCommand(component()) : new PerformAndCloseCommand(onCancel, component()))
-							.name(Messages.cancel())
+							.caption(Messages.cancel())
 							.mnemonic(Messages.cancelMnemonic())
 							.enabled(cancelEnabled)
 							.build();
 		}
 		else if (cancelAction instanceof Control) {
 			cancelAction = ((Control) cancelAction).copy()
-							.name(Messages.cancel())
+							.caption(Messages.cancel())
 							.mnemonic(Messages.cancelMnemonic())
 							.build();
 		}

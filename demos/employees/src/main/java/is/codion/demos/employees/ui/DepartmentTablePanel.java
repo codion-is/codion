@@ -50,7 +50,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
 	protected void setupControls() {
 		control(PRINT).set(Control.builder()
 						.command(this::viewEmployeeReport)
-						.name("Employee Report")
+						.caption("Employee Report")
 						.smallIcon(FrameworkIcons.instance().print())
 						.enabled(tableModel().selection().empty().not())
 						.build());

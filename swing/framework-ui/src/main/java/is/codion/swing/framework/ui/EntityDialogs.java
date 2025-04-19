@@ -503,7 +503,7 @@ public final class EntityDialogs {
 			this.tablePanel = requireNonNull(tablePanel).initialize();
 			Control okControl = Control.builder()
 							.command(this::ok)
-							.name(Messages.ok())
+							.caption(Messages.ok())
 							.mnemonic(Messages.okMnemonic())
 							.enabled(tablePanel.tableModel().selection().empty().not())
 							.build();
@@ -520,13 +520,13 @@ public final class EntityDialogs {
 							.defaultAction(okControl)
 							.escapeAction(Control.builder()
 											.command(this::cancel)
-											.name(Messages.cancel())
+											.caption(Messages.cancel())
 											.mnemonic(Messages.cancelMnemonic())
 											.build());
 			if (includeSearchButton) {
 				builder.action(Control.builder()
 								.command(this::search)
-								.name(FrameworkMessages.searchVerb())
+								.caption(FrameworkMessages.searchVerb())
 								.mnemonic(FrameworkMessages.searchMnemonic())
 								.build());
 			}
@@ -651,7 +651,7 @@ public final class EntityDialogs {
 											.confirm(confirm)
 											.onInsert(onInsert)
 											.build())
-							.name(FrameworkMessages.add())
+							.caption(FrameworkMessages.add())
 							.mnemonic(FrameworkMessages.addMnemonic())
 							.onException(new EditPanelExceptionHandler(editPanel))
 							.build();
@@ -765,7 +765,7 @@ public final class EntityDialogs {
 											.confirm(confirm)
 											.onUpdate(onUpdate)
 											.build())
-							.name(FrameworkMessages.update())
+							.caption(FrameworkMessages.update())
 							.mnemonic(FrameworkMessages.updateMnemonic())
 							.onException(new EditPanelExceptionHandler(editPanel))
 							.enabled(editPanel.editModel().editor().modified())
@@ -793,7 +793,7 @@ public final class EntityDialogs {
 	private static Control createCancelControl(Runnable disposeDialog) {
 		return Control.builder()
 						.command(new RunnableCommand(disposeDialog))
-						.name(Messages.cancel())
+						.caption(Messages.cancel())
 						.mnemonic(Messages.cancelMnemonic())
 						.build();
 	}

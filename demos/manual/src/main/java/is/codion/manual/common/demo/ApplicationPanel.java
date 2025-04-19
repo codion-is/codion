@@ -91,7 +91,7 @@ public final class ApplicationPanel extends JPanel {
 		button(Control.builder()
 						.command(model::clear)
 						.enabled(inputEnabledState)
-						.name("Clear")
+						.caption("Clear")
 						.mnemonic('L'))
 						.transferFocusOnEnter(true)
 						.build(button -> settingsPanel.add(button, BorderLayout.EAST));
@@ -420,7 +420,7 @@ public final class ApplicationPanel extends JPanel {
 		return Control.builder()
 						.command(() -> integerItemComboBoxModel.setSelectedItem(
 										random.nextInt(integerItemComboBoxModel.getSize()) + 1))
-						.name("Select Random Item")
+						.caption("Select Random Item")
 						.build();
 	}
 

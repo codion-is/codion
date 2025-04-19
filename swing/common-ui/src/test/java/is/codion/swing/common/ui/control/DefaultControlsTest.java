@@ -32,22 +32,22 @@ public class DefaultControlsTest {
 		Control two = Control.command(() -> {});
 		Action action = Control.command(() -> {});
 		Controls controls = Controls.builder()
-						.name("controls")
+						.caption("controls")
 						.control(one)
 						.separator()
 						.control(two)
 						.action(action)
 						.build();
 
-		assertTrue(controls.name().isPresent());
+		assertTrue(controls.caption().isPresent());
 		assertFalse(controls.smallIcon().isPresent());
-		assertEquals("controls", controls.name().orElse(null));
+		assertEquals("controls", controls.caption().orElse(null));
 
 		Controls emptyControls = Controls.builder()
 						.separator()
 						.build();
 		Controls controls1 = Controls.builder()
-						.name("controls")
+						.caption("controls")
 						.separator()
 						.control(one)
 						.separator()
@@ -58,8 +58,8 @@ public class DefaultControlsTest {
 						.control(two)
 						.separator()
 						.build();
-		assertTrue(controls1.name().isPresent());
-		assertEquals("controls", controls1.name().orElse(null));
+		assertTrue(controls1.caption().isPresent());
+		assertEquals("controls", controls1.caption().orElse(null));
 		assertFalse(controls1.actions().contains(emptyControls));
 
 		assertEquals(3, controls1.actions().size());
@@ -84,7 +84,7 @@ public class DefaultControlsTest {
 		Control two = Control.command(() -> {});
 		Action action = Control.command(() -> {});
 		Controls controls = Controls.builder()
-						.name("controls")
+						.caption("controls")
 						.control(one)
 						.separator()
 						.control(two)
