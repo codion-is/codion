@@ -78,7 +78,7 @@ A basic CRUD client pulls in ~15 Codion modules totalling ~1.7MB, so the combine
 
 == Demo application projects
 
-The following applications can be found in the `demos` folder of the Codion project, but are also available in separate Git repositories as fully configured stand-alone Gradle projects.
+Most of the following applications can be found in the `demos` folder of the Codion project, but are also available in separate Git repositories as fully configured stand-alone Gradle projects.
 
 All these projects contain jlink/jpackage configurations for packaging the application, server, server monitor and load-test, if applicable.
 
@@ -90,6 +90,14 @@ Minimalistic bare-bones project, with a local JDBC connection option.
 A good place to start.
 
 image::https://github.com/codion-is/petclinic/blob/main/src/docs/asciidoc/images/owners.png[Petclinic client]
+
+=== https://github.com/codion-is/llemmy[Llemmy]
+
+A simple LLM chat demo application.
+
+image::https://github.com/codion-is/llemmy/blob/main/llemmy/src/docs/asciidoc/images/llemmy.png[Llemmy client]
+
+Includes a local Ollama model runner and the application configured to interact with it.
 
 === https://github.com/codion-is/world[World]
 

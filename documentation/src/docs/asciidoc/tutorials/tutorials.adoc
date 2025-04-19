@@ -14,7 +14,7 @@
 
 === Notes
 
-A simple Note-taking appliation.
+A simple Note-taking application.
 
 <<{basedir}/tutorials/notes.adoc#_notes, Notes tutorial>>
 
@@ -23,6 +23,14 @@ A simple Note-taking appliation.
 link:{basedir}/tutorials/petclinic/petclinic.html[Petclinic tutorial]
 
 link:https://github.com/codion-is/petclinic[Petclinic project on Github]
+
+=== Llemmy
+
+A simple LLM chat application.
+
+link:{basedir}/tutorials/llemmy/llemmy.html[Llemmy tutorial]
+
+link:https://github.com/codion-is/llemmy[Llemmy project on Github]
 
 === World
 

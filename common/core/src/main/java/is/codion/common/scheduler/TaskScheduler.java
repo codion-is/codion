@@ -30,8 +30,7 @@ import java.util.concurrent.TimeUnit;
  * A TaskScheduler can be stopped and restarted.
  * {@snippet :
  * TaskScheduler scheduler = TaskScheduler.builder(() -> System.out.println("Running wild..."))
- *     .interval(2)
- *     .timeUnit(TimeUnit.SECONDS)
+ *     .interval(2, TimeUnit.SECONDS)
  *     .build();
  *
  * scheduler.start();
