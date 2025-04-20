@@ -22,6 +22,8 @@ Codion Change Log
 - EntityApplicationPanel.createLogControls() now protected final.
 - EntityTablePanel.conditions() renamed condition().
 - EntityPanel.createEditControlPanel() no longer adds an empty border.
+- EntityApplicationPanel no longer abstract.
+- EntityEditPanel constructors now protected.
 ### is.codion.plugin.flatlaf.intellij
 - IntelliJThemeProvider, disable FlatLaf logging due to FlatLaf #990.
 

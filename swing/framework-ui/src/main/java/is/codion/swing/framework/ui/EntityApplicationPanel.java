@@ -127,7 +127,7 @@ import static javax.swing.UIManager.getLookAndFeel;
  * @param <M> the application model type
  * @see #builder(Class, Class)
  */
-public abstract class EntityApplicationPanel<M extends SwingEntityApplicationModel> extends JPanel {
+public class EntityApplicationPanel<M extends SwingEntityApplicationModel> extends JPanel {
 
 	/**
 	 * Specifies whether the client should apply and save user preferences

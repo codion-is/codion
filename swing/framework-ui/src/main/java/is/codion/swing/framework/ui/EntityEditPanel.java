@@ -172,7 +172,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 * Instantiates a new EntityEditPanel based on the given {@link EntityEditModel}
 	 * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
 	 */
-	public EntityEditPanel(SwingEntityEditModel editModel) {
+	protected EntityEditPanel(SwingEntityEditModel editModel) {
 		this(editModel, NO_CONFIGURATION);
 	}
 
@@ -181,7 +181,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
 	 * @param config provides access to the panel configuration
 	 */
-	public EntityEditPanel(SwingEntityEditModel editModel, Consumer<Config> config) {
+	protected EntityEditPanel(SwingEntityEditModel editModel, Consumer<Config> config) {
 		super(editModel);
 		this.configuration = configure(config);
 		this.active = State.state(!configuration.focusActivation);
