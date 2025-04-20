@@ -20,6 +20,7 @@
  * IntelliJ themes
  */
 module is.codion.plugin.flatlaf.intellij.themes {
+	requires java.logging;
 	requires java.desktop;
 	requires is.codion.swing.common.ui;
 	requires transitive com.formdev.flatlaf;

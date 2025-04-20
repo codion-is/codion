@@ -123,8 +123,13 @@ import is.codion.plugin.flatlaf.intellij.themes.xcodedark.XcodeDark;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.util.LoggingFacade;
+
 import javax.swing.UIManager.LookAndFeelInfo;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.lookAndFeelEnabler;
 import static java.util.Arrays.asList;
@@ -137,6 +142,13 @@ import static java.util.Collections.unmodifiableList;
 public final class IntelliJThemeProvider implements LookAndFeelProvider {
 
 	private final Collection<LookAndFeelEnabler> providers;
+
+	static {
+		// Turn off FlatLaf logging to get around
+		// https://github.com/JFormDesigner/FlatLaf/issues/990
+		LoggingFacade facade = LoggingFacade.INSTANCE;
+		Logger.getLogger(FlatLaf.class.getName()).setLevel(Level.OFF);
+	}
 
 	public IntelliJThemeProvider() {
 		providers = unmodifiableList(asList(
