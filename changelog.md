@@ -26,6 +26,7 @@ Codion Change Log
 - EntityEditPanel constructors now protected.
 ### is.codion.plugin.flatlaf.intellij
 - IntelliJThemeProvider, disable FlatLaf logging due to FlatLaf #990.
+- material.Dracula theme renamed DraculaMaterial, conflicted with the other Dracula theme.
 
 ## 0.18.33
 ### is.codion.swing.common.ui

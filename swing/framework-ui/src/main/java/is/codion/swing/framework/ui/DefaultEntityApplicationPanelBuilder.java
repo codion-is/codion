@@ -796,7 +796,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 						"is.codion.plugin.flatlaf.intellij.themes.material.AtomOneLight");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatDraculaIJTheme",
-						"is.codion.plugin.flatlaf.intellij.themes.material.Dracula");
+						"is.codion.plugin.flatlaf.intellij.themes.material.DraculaMaterial");
 		INTELLIJ_THEMES.put(
 						"com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme",
 						"is.codion.plugin.flatlaf.intellij.themes.material.GitHubMaterial");

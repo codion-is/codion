@@ -38,6 +38,7 @@ import is.codion.plugin.flatlaf.intellij.themes.darculasolid.DarculaSolid;
 import is.codion.plugin.flatlaf.intellij.themes.darkflat.DarkFlat;
 import is.codion.plugin.flatlaf.intellij.themes.darkhorizon.DarkHorizon;
 import is.codion.plugin.flatlaf.intellij.themes.darkpurple.DarkPurple;
+import is.codion.plugin.flatlaf.intellij.themes.dracula.Dracula;
 import is.codion.plugin.flatlaf.intellij.themes.elegant.ElegantDark;
 import is.codion.plugin.flatlaf.intellij.themes.elegant.ElegantLight;
 import is.codion.plugin.flatlaf.intellij.themes.espresso.EspressoLight;
@@ -75,7 +76,7 @@ import is.codion.plugin.flatlaf.intellij.themes.lotus.LotusLight;
 import is.codion.plugin.flatlaf.intellij.themes.material.ArcDarkMaterial;
 import is.codion.plugin.flatlaf.intellij.themes.material.AtomOneDark;
 import is.codion.plugin.flatlaf.intellij.themes.material.AtomOneLight;
-import is.codion.plugin.flatlaf.intellij.themes.material.Dracula;
+import is.codion.plugin.flatlaf.intellij.themes.material.DraculaMaterial;
 import is.codion.plugin.flatlaf.intellij.themes.material.GitHubDarkMaterial;
 import is.codion.plugin.flatlaf.intellij.themes.material.GitHubMaterial;
 import is.codion.plugin.flatlaf.intellij.themes.material.LightOwl;
@@ -213,12 +214,13 @@ public final class IntelliJThemeProvider implements LookAndFeelProvider {
 						lookAndFeelEnabler(new LookAndFeelInfo("Elegant Dark", ElegantDark.class.getName())),
 						lookAndFeelEnabler(new LookAndFeelInfo("Elegant Light", ElegantLight.class.getName())),
 						lookAndFeelEnabler(new LookAndFeelInfo("Espresso Light", EspressoLight.class.getName())),
+						lookAndFeelEnabler(new LookAndFeelInfo("Dracula", Dracula.class.getName())),
 
 						// From FlatLaf
 						lookAndFeelEnabler(new LookAndFeelInfo("Arc Dark (Material)", ArcDarkMaterial.class.getName())),
 						lookAndFeelEnabler(new LookAndFeelInfo("Atom One Dark (Material)", AtomOneDark.class.getName())),
 						lookAndFeelEnabler(new LookAndFeelInfo("Atom One Light (Material)", AtomOneLight.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Dracula (Material)", Dracula.class.getName())),
+						lookAndFeelEnabler(new LookAndFeelInfo("Dracula (Material)", DraculaMaterial.class.getName())),
 						lookAndFeelEnabler(new LookAndFeelInfo("Github Dark (Material)", GitHubDarkMaterial.class.getName())),
 						lookAndFeelEnabler(new LookAndFeelInfo("Github (Material)", GitHubMaterial.class.getName())),
 						lookAndFeelEnabler(new LookAndFeelInfo("Light Owl (Material)", LightOwl.class.getName())),
@@ -242,7 +244,6 @@ public final class IntelliJThemeProvider implements LookAndFeelProvider {
 						lookAndFeelEnabler(new LookAndFeelInfo("Cobalt 2", Cobalt2.class.getName())),
 						lookAndFeelEnabler(new LookAndFeelInfo("Dark Flat", DarkFlat.class.getName())),
 						lookAndFeelEnabler(new LookAndFeelInfo("Dark Purple", DarkPurple.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Dracula", Dracula.class.getName())),
 						lookAndFeelEnabler(new LookAndFeelInfo("Gradianto Dark Fuchsia", GradiantoDarkFuchsia.class.getName())),
 						lookAndFeelEnabler(new LookAndFeelInfo("Gradianto Deep Ocean", GradiantoDeepOcean.class.getName())),
 						lookAndFeelEnabler(new LookAndFeelInfo("Gradianto Midnight Blue", GradiantoMidnightBlue.class.getName())),

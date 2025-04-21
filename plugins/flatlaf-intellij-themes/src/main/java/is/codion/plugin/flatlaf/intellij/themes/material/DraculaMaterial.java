@@ -22,9 +22,9 @@ import com.formdev.flatlaf.IntelliJTheme;
 
 import static is.codion.plugin.flatlaf.intellij.themes.ThemeLoader.load;
 
-public final class Dracula extends IntelliJTheme.ThemeLaf {
+public final class DraculaMaterial extends IntelliJTheme.ThemeLaf {
 
-	public Dracula() {
-		super(load(Dracula.class.getResourceAsStream("Dracula.theme.json")));
+	public DraculaMaterial() {
+		super(load(DraculaMaterial.class.getResourceAsStream("Dracula.theme.json")));
 	}
 }
