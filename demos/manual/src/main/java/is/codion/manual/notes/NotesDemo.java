@@ -33,7 +33,6 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.model.EntityEditModel.EntityEditor;
 import is.codion.plugin.flatlaf.intellij.themes.material.MaterialDarker;
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
 import is.codion.swing.common.ui.control.Control;
@@ -50,7 +49,6 @@ import is.codion.swing.framework.ui.EntityTablePanel;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -159,16 +157,24 @@ public final class NotesDemo {
 			EntityEditor editor = editModel().editor();
 			if (editor.exists().not().get() && !editor.isNull(Note.NOTE).get()) {
 				// A new note with a non-null text
-				editModel().insert();
+				insertCommand()
+								.build()
+								.execute();
 			}
 			else if (editor.modified().get()) {
 				if (editor.isNull(Note.NOTE).get()) {
 					// An existing note with no text
-					editModel().delete();
+					deleteCommand()
+									.confirm(false)
+									.build()
+									.execute();
 				}
 				else {
 					// An existing note with a modified text
-					editModel().update();
+					updateCommand()
+									.confirm(false)
+									.build()
+									.execute();
 				}
 			}
 		}
@@ -215,11 +221,9 @@ public final class NotesDemo {
 											// No need to include the default control buttons since
 											// we added the CLEAR control button to the edit panel
 											.includeControls(false)
-											// Replace the default edit base panel which uses a FlowLayout, in order
-											// to have the edit panel fill the horizontal width of the parent panel
-											.editBasePanel(editPanel -> Components.borderLayoutPanel()
-															.centerComponent(editPanel)
-															.build()));
+											// No need for a edit base panel, since we want the edit
+											// panel to fill the horizontal width of the parent panel
+											.editBasePanel(editPanel -> editPanel));
 		}
 	}
 
@@ -240,27 +244,12 @@ public final class NotesDemo {
 			super(applicationModel,
 							// Supply an instance of our NotePanel, using the model from above
 							List.of(new NotePanel(applicationModel.entityModels().get(Note.TYPE))),
-							emptyList(), NotesApplicationLayout::new);
-		}
-
-		// Replace the default JTabbedPane based layout,
-		// since we're only displaying a single panel
-		private static final class NotesApplicationLayout implements ApplicationLayout {
-
-			private final EntityApplicationPanel<?> applicationPanel;
-
-			private NotesApplicationLayout(EntityApplicationPanel<?> applicationPanel) {
-				this.applicationPanel = applicationPanel;
-			}
-
-			@Override
-			public JComponent layout() {
-				return Components.borderLayoutPanel()
-								// initialize() must be called to initialize the UI components
-								.centerComponent(applicationPanel.entityPanel(Note.TYPE).initialize())
-								.border(BorderFactory.createEmptyBorder(5, 5, 0, 5))
-								.build();
-			}
+							emptyList(), applicationPanel -> () ->
+											// Replace the default JTabbedPane based layout
+											// since we're only displaying a single panel,
+											// simply return our main panel, initialized
+											applicationPanel.entityPanel(Note.TYPE).initialize());
+			setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
 		}
 	}
 

@@ -157,9 +157,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	private static final Consumer<Config> NO_CONFIGURATION = emptyConsumer();
 
-	private final InsertCommand insertCommand = insertCommandBuilder().build();
-	private final UpdateCommand updateCommand = updateCommandBuilder().build();
-	private final DeleteCommand deleteCommand = deleteCommandBuilder().build();
+	private final InsertCommand insertCommand = insertCommand().build();
+	private final UpdateCommand updateCommand = updateCommand().build();
+	private final DeleteCommand deleteCommand = deleteCommand().build();
 
 	private final Controls.Layout controlsLayout;
 	private final State active;
@@ -325,7 +325,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 * Returns an async insert command builder
 	 * @return a new async insert command builder
 	 */
-	protected final InsertCommand.Builder insertCommandBuilder() {
+	protected final InsertCommand.Builder insertCommand() {
 		return new DefaultInsertCommand.DefaultBuilder(this);
 	}
 
@@ -333,7 +333,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 * Returns an async update command builder
 	 * @return a new async update command builder
 	 */
-	protected final UpdateCommand.Builder updateCommandBuilder() {
+	protected final UpdateCommand.Builder updateCommand() {
 		return new DefaultUpdateCommand.DefaultBuilder(this);
 	}
 
@@ -341,7 +341,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 * Returns an async delete command builder
 	 * @return a new async delete command builder
 	 */
-	protected final DeleteCommand.Builder deleteCommandBuilder() {
+	protected final DeleteCommand.Builder deleteCommand() {
 		return new DefaultDeleteCommand.DefaultBuilder(this);
 	}
 

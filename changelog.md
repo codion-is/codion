@@ -25,6 +25,7 @@ Codion Change Log
 - EntityPanel.createEditControlPanel() no longer adds an empty border.
 - EntityApplicationPanel no longer abstract.
 - EntityEditPanel constructors now protected.
+- EntityEditPanel.insertCommandBuilder(), updateCommandBuilder() and deleteCommandBuilder() renamed insertCommand(), updateCommand() and deleteCommand().
 ### is.codion.plugin.flatlaf.intellij
 - IntelliJThemeProvider, disable FlatLaf logging due to FlatLaf #990.
 - material.Dracula theme renamed DraculaMaterial, conflicted with the other Dracula theme.

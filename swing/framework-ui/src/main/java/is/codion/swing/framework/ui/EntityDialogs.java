@@ -647,7 +647,7 @@ public final class EntityDialogs {
 																						Consumer<Collection<Entity>> onInsert,
 																						boolean confirm) {
 			return Control.builder()
-							.command(editPanel.insertCommandBuilder()
+							.command(editPanel.insertCommand()
 											.confirm(confirm)
 											.onInsert(onInsert)
 											.build())
@@ -761,7 +761,7 @@ public final class EntityDialogs {
 																							 Consumer<Collection<Entity>> onUpdate,
 																							 boolean confirm) {
 			return Control.builder()
-							.command(editPanel.updateCommandBuilder()
+							.command(editPanel.updateCommand()
 											.confirm(confirm)
 											.onUpdate(onUpdate)
 											.build())

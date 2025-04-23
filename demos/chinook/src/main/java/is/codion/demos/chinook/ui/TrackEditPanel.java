@@ -45,10 +45,10 @@ public final class TrackEditPanel extends EntityEditPanel {
 	public TrackEditPanel(SwingEntityEditModel editModel, TableSelection<Entity> tableSelection) {
 		super(editModel);
 		this.tableSelection = tableSelection;
-		this.updateAndDecrementSelectedIndexes = updateCommandBuilder()
+		this.updateAndDecrementSelectedIndexes = updateCommand()
 						.onUpdate(tableSelection.indexes()::decrement)
 						.build();
-		this.updateAndIncrementSelectedIndexes = updateCommandBuilder()
+		this.updateAndIncrementSelectedIndexes = updateCommand()
 						.onUpdate(tableSelection.indexes()::increment)
 						.build();
 		addKeyEvents();
