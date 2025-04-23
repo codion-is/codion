@@ -41,9 +41,6 @@ class DefaultValue<T> extends AbstractValue<T> {
 		builder.linkedValues.forEach(this::link);
 		builder.linkedObservables.forEach(this::link);
 		builder.listeners.forEach(this::addListener);
-		builder.weakListeners.forEach(this::addWeakListener);
-		builder.consumers.forEach(this::addConsumer);
-		builder.weakConsumers.forEach(this::addWeakConsumer);
 	}
 
 	@Override
@@ -54,6 +51,21 @@ class DefaultValue<T> extends AbstractValue<T> {
 	@Override
 	protected final void setValue(@Nullable T value) {
 		this.value = value;
+	}
+
+	private void addListener(Listener listener) {
+		if (listener instanceof RunnableListener) {
+			addListener(((RunnableListener) listener).runnable);
+		}
+		else if (listener instanceof ConsumerListener) {
+			addConsumer(((ConsumerListener<T>) listener).consumer);
+		}
+		else if (listener instanceof WeakRunnableListener) {
+			addWeakListener(((WeakRunnableListener) listener).runnable);
+		}
+		else if (listener instanceof WeakConsumerListener) {
+			addWeakConsumer(((WeakConsumerListener<T>) listener).consumer);
+		}
 	}
 
 	static final class DefaultBuilderFactory implements BuilderFactory {
@@ -81,10 +93,7 @@ class DefaultValue<T> extends AbstractValue<T> {
 		private final List<Validator<? super T>> validators = new ArrayList<>();
 		private final List<Value<T>> linkedValues = new ArrayList<>();
 		private final List<Observable<T>> linkedObservables = new ArrayList<>();
-		private final List<Runnable> listeners = new ArrayList<>();
-		private final List<Runnable> weakListeners = new ArrayList<>();
-		private final List<Consumer<? super T>> consumers = new ArrayList<>();
-		private final List<Consumer<? super T>> weakConsumers = new ArrayList<>();
+		private final List<Listener> listeners = new ArrayList<>();
 
 		private @Nullable T value;
 		private Notify notify = Notify.WHEN_CHANGED;
@@ -130,25 +139,25 @@ class DefaultValue<T> extends AbstractValue<T> {
 
 		@Override
 		public final B listener(Runnable listener) {
-			this.listeners.add(requireNonNull(listener));
+			this.listeners.add(new RunnableListener(requireNonNull(listener)));
 			return self();
 		}
 
 		@Override
 		public final B consumer(Consumer<? super T> consumer) {
-			this.consumers.add(requireNonNull(consumer));
+			this.listeners.add(new ConsumerListener<>(requireNonNull(consumer)));
 			return self();
 		}
 
 		@Override
 		public final B weakListener(Runnable weakListener) {
-			this.weakListeners.add(requireNonNull(weakListener));
+			this.listeners.add(new WeakRunnableListener(requireNonNull(weakListener)));
 			return self();
 		}
 
 		@Override
 		public final B weakConsumer(Consumer<? super T> weakConsumer) {
-			this.weakConsumers.add(requireNonNull(weakConsumer));
+			this.listeners.add(new WeakConsumerListener<>(requireNonNull(weakConsumer)));
 			return self();
 		}
 
@@ -166,6 +175,44 @@ class DefaultValue<T> extends AbstractValue<T> {
 
 		private B self() {
 			return (B) this;
+		}
+	}
+
+	private interface Listener {}
+
+	private static final class RunnableListener implements Listener {
+
+		private final Runnable runnable;
+
+		private RunnableListener(Runnable runnable) {
+			this.runnable = runnable;
+		}
+	}
+
+	private static final class WeakRunnableListener implements Listener {
+
+		private final Runnable runnable;
+
+		private WeakRunnableListener(Runnable runnable) {
+			this.runnable = runnable;
+		}
+	}
+
+	private static final class ConsumerListener<T> implements Listener {
+
+		private final Consumer<T> consumer;
+
+		private ConsumerListener(Consumer<T> consumer) {
+			this.consumer = consumer;
+		}
+	}
+
+	private static final class WeakConsumerListener<T> implements Listener {
+
+		private final Consumer<T> consumer;
+
+		private WeakConsumerListener(Consumer<T> consumer) {
+			this.consumer = consumer;
 		}
 	}
 	

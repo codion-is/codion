@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.34
+### is.codion.common.core
+- DefaultValue.DefaultBuilder now adds listeners in the order they were added to the builder.
 ### is.codion.common.model
 - FilterModel.VisibleItems and FilteredItems.get() annotated as NonNull.
 - FilterModel.Sorter renamed Sort, sorter() renamed sort().
