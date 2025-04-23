@@ -126,10 +126,10 @@ public final class Utilities {
 	/**
 	 * Links the given actions to the given {@link ObservableState}, so that the actions are enabled
 	 * only when the observed state is active
-	 * @param enabledState the {@link ObservableState} with which to link the action
+	 * @param enabledState the {@link ObservableState} with which to link the actions
 	 * @param actions the actions
 	 */
-	public static void linkToEnabledState(ObservableState enabledState, Action... actions) {
+	public static void enableActions(ObservableState enabledState, Action... actions) {
 		requireNonNull(enabledState);
 		for (Action action : requireNonNull(actions)) {
 			if (action != null) {
@@ -144,7 +144,7 @@ public final class Utilities {
 	 * @param enabledState the {@link ObservableState} with which to link the components
 	 * @param components the components
 	 */
-	public static void linkToEnabledState(ObservableState enabledState, JComponent... components) {
+	public static void enableComponents(ObservableState enabledState, JComponent... components) {
 		requireNonNull(enabledState);
 		for (JComponent component : requireNonNull(components)) {
 			if (component != null) {

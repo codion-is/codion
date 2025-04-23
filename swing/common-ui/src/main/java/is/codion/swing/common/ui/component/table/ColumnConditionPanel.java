@@ -66,7 +66,7 @@ import java.util.stream.Stream;
 
 import static is.codion.common.Operator.*;
 import static is.codion.common.resource.MessageBundle.messageBundle;
-import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
+import static is.codion.swing.common.ui.Utilities.enableComponents;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ControlKeys.*;
@@ -461,7 +461,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	private void bindEvents() {
 		model().operator().addConsumer(this::onOperatorChanged);
 		Collection<JComponent> components = components();
-		linkToEnabledState(model().locked().not(), components.toArray(new JComponent[0]));
+		enableComponents(model().locked().not(), components.toArray(new JComponent[0]));
 		FocusGained focusGained = new FocusGained();
 		components.forEach(component -> component.addFocusListener(focusGained));
 		TOGGLE_ENABLED.defaultKeystroke().optional().ifPresent(keyStroke ->

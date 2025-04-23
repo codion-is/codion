@@ -31,12 +31,13 @@ import javax.swing.SwingConstants;
 import java.awt.event.ActionEvent;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static is.codion.swing.common.ui.Utilities.enableComponents;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UtilitiesTest {
 
 	@Test
-	void linkToEnabledState() {
+	void enableActions() {
 		Action action = new AbstractAction("test") {
 			@Override
 			public void actionPerformed(ActionEvent e) {}
@@ -44,7 +45,7 @@ public class UtilitiesTest {
 		State state = State.state();
 
 		try {
-			Utilities.linkToEnabledState(state, action);
+			Utilities.enableActions(state, action);
 			assertFalse(action.isEnabled());
 			state.set(true);
 			Thread.sleep(50);//due to EDT
@@ -60,7 +61,7 @@ public class UtilitiesTest {
 
 		State theState = state;
 		try {
-			Utilities.linkToEnabledState(theState, comp);
+			enableComponents(theState, comp);
 			assertFalse(comp.isEnabled());
 			theState.set(true);
 			Thread.sleep(50);//due to EDT

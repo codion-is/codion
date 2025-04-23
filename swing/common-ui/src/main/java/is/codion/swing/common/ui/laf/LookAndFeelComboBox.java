@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.item.Item.item;
-import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
+import static is.codion.swing.common.ui.Utilities.enableComponents;
 import static is.codion.swing.common.ui.component.combobox.ComboBoxBuilder.enableMouseWheelSelection;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.lookAndFeels;
 import static java.util.stream.Collectors.toList;
@@ -86,7 +86,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 		enableMouseWheelSelection(this);
 		getModel().selection().item().set(item(originalLookAndFeel));
 		if (builder.enabled != null) {
-			linkToEnabledState(builder.enabled, this);
+			enableComponents(builder.enabled, this);
 		}
 		includePlatform = State.builder(builder.includePlatform)
 						.listener(getModel().items()::filter)

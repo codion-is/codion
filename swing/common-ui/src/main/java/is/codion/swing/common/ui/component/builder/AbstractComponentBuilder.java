@@ -60,7 +60,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static is.codion.swing.common.ui.Sizes.*;
-import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
+import static is.codion.swing.common.ui.Utilities.enableComponents;
 import static is.codion.swing.common.ui.key.TransferFocusOnEnter.FORWARD_BACKWARD;
 import static java.util.Objects.requireNonNull;
 
@@ -570,7 +570,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 			component.setEnabled(false);
 		}
 		if (enabledObservable != null) {
-			linkToEnabledState(enabledObservable, component);
+			enableComponents(enabledObservable, component);
 		}
 		if (popupMenu != null) {
 			component.setComponentPopupMenu(popupMenu.apply(component));
