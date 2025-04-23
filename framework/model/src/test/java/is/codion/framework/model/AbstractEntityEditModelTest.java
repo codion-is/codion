@@ -194,7 +194,7 @@ public final class AbstractEntityEditModelTest {
 		Entity dept = editor.get().entity(Employee.DEPARTMENT_FK);
 		editor.value(Employee.DEPARTMENT_FK).clear();
 		//set the reference key attribute value
-		assertTrue(editor.isNull(Employee.DEPARTMENT_FK).get());
+		assertFalse(editor.value(Employee.DEPARTMENT_FK).present().get());
 		editor.value(Employee.DEPARTMENT).set(dept.get(Department.ID));
 		assertNull(editor.get().get(Employee.DEPARTMENT_FK));
 		dept = editor.value(Employee.DEPARTMENT_FK).get();
@@ -206,13 +206,13 @@ public final class AbstractEntityEditModelTest {
 	@Test
 	void defaults() {
 		editor.value(Employee.NAME).defaultValue().set(() -> "Scott");
-		assertTrue(editor.isNull(Employee.NAME).get());
+		assertFalse(editor.value(Employee.NAME).present().get());
 		editor.defaults();
 		assertEquals("Scott", editor.value(Employee.NAME).get());
 
 		editor.value(Employee.NAME).defaultValue().set(() -> null);
 		editor.defaults();
-		assertTrue(editor.isNull(Employee.NAME).get());
+		assertFalse(editor.value(Employee.NAME).present().get());
 	}
 
 	@Test
@@ -220,12 +220,12 @@ public final class AbstractEntityEditModelTest {
 		Entity employee = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("MARTIN"));
 		editor.set(employee);
 		editor.defaults();
-		assertTrue(editor.isNull(Employee.DEPARTMENT_FK).not().get());//persists
-		assertTrue(editor.isNull(Employee.NAME).get());
+		assertTrue(editor.value(Employee.DEPARTMENT_FK).present().get());//persists
+		assertFalse(editor.value(Employee.NAME).present().get());
 		editor.set(employee);
 		editor.clear();
-		assertTrue(editor.isNull(Employee.DEPARTMENT_FK).get());//should not persist on clear
-		assertTrue(editor.isNull(Employee.NAME).get());
+		assertFalse(editor.value(Employee.DEPARTMENT_FK).present().get());//should not persist on clear
+		assertFalse(editor.value(Employee.NAME).present().get());
 	}
 
 	@Test
@@ -624,7 +624,7 @@ public final class AbstractEntityEditModelTest {
 		State nullState = State.state();
 		ObservableState nameModifiedObserver = editor.value(Employee.NAME).modified();
 		nameModifiedObserver.addConsumer(modifiedState::set);
-		ObservableState nameIsNull = editor.isNull(Employee.NAME);
+		ObservableState nameIsNull = editor.value(Employee.NAME).present().not();
 		nameIsNull.addConsumer(nullState::set);
 
 		editor.value(Employee.NAME).set("JOHN");

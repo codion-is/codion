@@ -9,6 +9,7 @@ Codion Change Log
 - Column.Getter and Setter renamed GetValue and SetParameter respectively.
 ### is.codion.framework.model
 - EntityQueryModel.conditions() renamed condition().
+- EntityEditModel.EntityEditor.isNull(attribute) replaced with EditorValue.present().
 ### is.codion.swing.common.ui
 - LookAndFeelSelectionDialogBuilder.createControl() overloaded without parameter.
 - BackgroundColorValidIndicator bug fixed, did not refresh state when colors changed during updateUI().

@@ -456,12 +456,6 @@ public interface EntityEditModel {
 		Observer<Attribute<?>> valueChanged();
 
 		/**
-		 * @param attribute the attribute
-		 * @return an {@link ObservableState} indicating whether the value of the given attribute is null
-		 */
-		ObservableState isNull(Attribute<?> attribute);
-
-		/**
 		 * @return an {@link ObservableState} indicating whether the primary key of the entity is null
 		 */
 		ObservableState primaryKeyNull();
@@ -588,6 +582,11 @@ public interface EntityEditModel {
 		 * @return an {@link ObservableState} indicating the valid status of this attribute value.
 		 */
 		ObservableState valid();
+
+		/**
+		 * @return an {@link ObservableState} indicating whether the value of this attribute is non-null
+		 */
+		ObservableState present();
 
 		/**
 		 * @return the validation message in case the value is invalid, otherwise the attribute description

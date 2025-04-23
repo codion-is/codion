@@ -60,7 +60,7 @@ public final class CityEditPanel extends EntityEditPanel {
 						.control(Control.builder()
 										.command(this::populateLocation)
 										.enabled(State.and(active(),
-														editModel().editor().isNull(City.LOCATION),
+														editModel().editor().value(City.LOCATION).present().not(),
 														editModel().editor().exists()))
 										.smallIcon(FrameworkIcons.instance().get(Foundation.MAP))));
 	}

@@ -65,7 +65,7 @@ final class DefaultEntityEditor implements EntityEditor {
 	private final Map<Attribute<?>, DefaultEditorValue<?>> editorValues = new HashMap<>();
 	private final Map<Attribute<?>, State> persistValues = new HashMap<>();
 	private final Map<Attribute<?>, State> attributeModified = new HashMap<>();
-	private final Map<Attribute<?>, State> attributeNull = new HashMap<>();
+	private final Map<Attribute<?>, State> attributePresent = new HashMap<>();
 	private final Map<Attribute<?>, State> attributeValid = new HashMap<>();
 	private final Map<Attribute<?>, Observable<String>> messages = new HashMap<>();
 
@@ -144,12 +144,6 @@ final class DefaultEntityEditor implements EntityEditor {
 	@Override
 	public boolean nullable(Attribute<?> attribute) {
 		return validator.getOrThrow().nullable(entity, attribute);
-	}
-
-	@Override
-	public ObservableState isNull(Attribute<?> attribute) {
-		return attributeNull.computeIfAbsent(attribute,
-						k -> State.state(entity.isNull(attribute))).observable();
 	}
 
 	@Override
@@ -256,9 +250,9 @@ final class DefaultEntityEditor implements EntityEditor {
 	}
 
 	private <T> void updateAttributeStates(Attribute<T> attribute) {
-		State nullState = attributeNull.get(attribute);
-		if (nullState != null) {
-			nullState.set(entity.isNull(attribute));
+		State presentState = attributePresent.get(attribute);
+		if (presentState != null) {
+			presentState.set(!entity.isNull(attribute));
 		}
 		State validState = attributeValid.get(attribute);
 		if (validState != null) {
@@ -465,6 +459,12 @@ final class DefaultEntityEditor implements EntityEditor {
 		}
 
 		@Override
+		public ObservableState present() {
+			return attributePresent.computeIfAbsent(attribute,
+							k -> State.state(!entity.isNull(attribute))).observable();
+		}
+
+		@Override
 		public Observable<String> message() {
 			return messages.computeIfAbsent(attribute,
 							k -> observableMessage(attribute));
@@ -492,7 +492,7 @@ final class DefaultEntityEditor implements EntityEditor {
 		}
 
 		@Override
-		protected void setValue(T value) {
+		protected void setValue(@Nullable T value) {
 			Map<Attribute<?>, Object> dependingValues = dependingValues(attribute);
 			T previousValue = entity.put(attribute, value);
 			if (!Objects.equals(value, previousValue)) {
