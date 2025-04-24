@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.ServiceLoader;
 
 import static is.codion.common.Configuration.stringValue;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.StreamSupport.stream;
 
 /**
@@ -51,10 +52,18 @@ public interface ValidIndicatorFactory {
 	 * @return an instance from the {@link ServiceLoader} or an empty {@link Optional} in case one is not found
 	 */
 	static Optional<ValidIndicatorFactory> instance() {
-		String classname = FACTORY_CLASS.getOrThrow();
+		return instance(FACTORY_CLASS.getOrThrow());
+	}
+
+	/**
+	 * Returns an instance from the {@link ServiceLoader}, of the type specified by {@code factoryClassName}
+	 * @return an instance from the {@link ServiceLoader} or an empty {@link Optional} in case one is not found
+	 */
+	static Optional<ValidIndicatorFactory> instance(String factoryClassName) {
+		requireNonNull(factoryClassName);
 
 		return stream(ServiceLoader.load(ValidIndicatorFactory.class).spliterator(), false)
-						.filter(factory -> factory.getClass().getName().equals(classname))
+						.filter(factory -> factory.getClass().getName().equals(factoryClassName))
 						.findFirst();
 	}
 }
