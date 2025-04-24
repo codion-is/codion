@@ -69,7 +69,7 @@ public final class VersionTest {
 
 	@Test
 	void parseIllegalNull() {
-		assertThrows(IllegalArgumentException.class, () -> Version.parse(null));
+		assertThrows(NullPointerException.class, () -> Version.parse(null));
 	}
 
 	@Test

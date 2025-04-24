@@ -141,10 +141,12 @@ public interface Version extends Comparable<Version> {
 	 * Parses a string on the form x.y.z-metadata+build
 	 * @param versionString the version string
 	 * @return a Version based on the given string
+	 * @throws NullPointerException in case {@code versionString} is null
+	 * @throws IllegalArgumentException in case {@code versionString} is empty
 	 */
 	static Version parse(String versionString) {
-		if (versionString == null || versionString.isEmpty()) {
-			throw new IllegalArgumentException("Invalid version string: " + versionString);
+		if (requireNonNull(versionString).isEmpty()) {
+			throw new IllegalArgumentException("Empty version string: " + versionString);
 		}
 		String version;
 		String metadata;
