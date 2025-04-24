@@ -22,6 +22,7 @@ import is.codion.common.property.PropertyValue;
 import is.codion.common.state.ObservableState;
 
 import javax.swing.JComponent;
+import java.util.Optional;
 import java.util.ServiceLoader;
 
 import static is.codion.common.Configuration.stringValue;
@@ -47,14 +48,13 @@ public interface ValidIndicatorFactory {
 
 	/**
 	 * Returns an instance from the {@link ServiceLoader}, of the type specified by {@link #FACTORY_CLASS}
-	 * @return an instance from the {@link ServiceLoader}
+	 * @return an instance from the {@link ServiceLoader} or an empty {@link Optional} in case one is not found
 	 */
-	static ValidIndicatorFactory instance() {
+	static Optional<ValidIndicatorFactory> instance() {
 		String classname = FACTORY_CLASS.getOrThrow();
 
 		return stream(ServiceLoader.load(ValidIndicatorFactory.class).spliterator(), false)
 						.filter(factory -> factory.getClass().getName().equals(classname))
-						.findFirst()
-						.orElseThrow(() -> new IllegalStateException("No ValidIndicatorFactory of type: " + classname + " available"));
+						.findFirst();
 	}
 }

@@ -22,6 +22,8 @@ Codion Change Log
 - FilterTable.ScrollToAdded.scrollToAddedRow() no longer calls moveLeadSelectionIndex(), caused a selection event.
 - Control.Builder.name() renamed caption().
 - Utilities.linkToEnabledState() renamed enableActions() and enableComponents().
+- ValidIndicatorFactory.instance() now returns Optional.
+- AbstractComponentBuilder no longer throws exception if the specified ValidIndicatorFactory is not found.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel.Builder.applicationModelFactory() and applicationPanelFactory() renamed applicationModel() and applicationPanel().
 - EntityApplicationPanel.createLogControls() now protected final.

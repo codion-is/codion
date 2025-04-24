@@ -104,7 +104,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	private Color foreground;
 	private Color background;
 	private ComponentOrientation componentOrientation;
-	private ValidIndicatorFactory validIndicatorFactory = ValidIndicatorFactory.instance();
+	private ValidIndicatorFactory validIndicatorFactory =
+					ValidIndicatorFactory.instance().orElse(null);
 	private ObservableState enabledObservable;
 	private ObservableState validObservable;
 	private ModifiedIndicatorFactory modifiedIndicatorFactory = new UnderlineModifiedIndicatorFactory();
