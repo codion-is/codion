@@ -39,18 +39,18 @@ public final class DefaultKeyTest {
 		Entity master = ENTITIES.entity(CompositeMaster.TYPE);
 		assertTrue(master.primaryKey().isNull());
 
-		master.put(CompositeMaster.COMPOSITE_MASTER_ID_2, 2);
-		master.put(CompositeMaster.COMPOSITE_MASTER_ID_3, 3);
+		master.set(CompositeMaster.COMPOSITE_MASTER_ID_2, 2);
+		master.set(CompositeMaster.COMPOSITE_MASTER_ID_3, 3);
 		assertFalse(master.primaryKey().isNull());
 
-		master.put(CompositeMaster.COMPOSITE_MASTER_ID, null);
+		master.set(CompositeMaster.COMPOSITE_MASTER_ID, null);
 		assertFalse(master.primaryKey().isNull());
 
-		master.put(CompositeMaster.COMPOSITE_MASTER_ID, 2);
-		master.put(CompositeMaster.COMPOSITE_MASTER_ID_2, null);
+		master.set(CompositeMaster.COMPOSITE_MASTER_ID, 2);
+		master.set(CompositeMaster.COMPOSITE_MASTER_ID_2, null);
 		assertTrue(master.primaryKey().isNull());
 
-		master.put(CompositeMaster.COMPOSITE_MASTER_ID, null);
+		master.set(CompositeMaster.COMPOSITE_MASTER_ID, null);
 		assertTrue(master.primaryKey().isNull());
 	}
 
@@ -135,13 +135,13 @@ public final class DefaultKeyTest {
 
 		assertEquals(department1.primaryKey(), department2.primaryKey());
 
-		department2.put(Department.ID, 2);
+		department2.set(Department.ID, 2);
 		assertNotEquals(department1.primaryKey(), department2.primaryKey());
 
-		department1.put(Department.ID, null);
+		department1.set(Department.ID, null);
 		assertNotEquals(department1.primaryKey(), department2.primaryKey());
 
-		department2.put(Department.ID, null);
+		department2.set(Department.ID, null);
 		assertNotEquals(department1.primaryKey(), department2.primaryKey());
 
 		department1.remove(Department.ID);

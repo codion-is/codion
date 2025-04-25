@@ -278,7 +278,7 @@ public final class DefaultEntitySearchModelTest {
 
 		searchModel.selection().entity().set(temp);
 
-		temp.put(Employee.NAME, "Newname");
+		temp.set(Employee.NAME, "Newname");
 		Entity tempUpdated = temp.copy().mutable();
 		tempUpdated.save(Employee.NAME);
 

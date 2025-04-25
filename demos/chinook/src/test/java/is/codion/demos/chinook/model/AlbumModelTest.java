@@ -63,7 +63,7 @@ public final class AlbumModelTest {
 			assertEquals(1, albumTableModel.items().count());
 
 			List<Entity> modifiedTracks = connection.select(Track.ALBUM_FK.equalTo(masterOfPuppets)).stream()
-							.peek(track -> track.put(Track.RATING, 10))
+							.peek(track -> track.set(Track.RATING, 10))
 							.toList();
 
 			// Update the tracks using the edit model

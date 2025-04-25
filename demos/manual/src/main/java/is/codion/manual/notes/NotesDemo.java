@@ -122,7 +122,7 @@ public final class NotesDemo {
 			super(Note.TYPE, connectionProvider);
 			// Set the Note.UPDATED value before we perform an update
 			beforeUpdate().addConsumer(notes ->
-							notes.forEach(note -> note.put(Note.UPDATED, LocalDateTime.now())));
+							notes.forEach(note -> note.set(Note.UPDATED, LocalDateTime.now())));
 		}
 	}
 

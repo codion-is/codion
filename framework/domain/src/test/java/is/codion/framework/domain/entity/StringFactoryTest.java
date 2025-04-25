@@ -66,12 +66,12 @@ public class StringFactoryTest {
 
 		assertEquals("Darri (department: Sales, location: Reykjavik, hiredate: " + dateFormat.format(hiredate) + ")", employeeToString.apply(employee));
 
-		department.put(Department.LOCATION, null);
-		department.put(Department.NAME, null);
+		department.set(Department.LOCATION, null);
+		department.set(Department.NAME, null);
 
-		employee.put(Employee.DEPARTMENT_FK, null);
-		employee.put(Employee.NAME, null);
-		employee.put(Employee.HIREDATE, null);
+		employee.set(Employee.DEPARTMENT_FK, null);
+		employee.set(Employee.NAME, null);
+		employee.set(Employee.HIREDATE, null);
 
 		employeeToString = StringFactory.builder()
 						.value(Employee.NAME)

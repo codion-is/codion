@@ -70,7 +70,7 @@ public final class DefaultEntityComboBoxModelTest {
 		EntityEditModel.editEvents().inserted(Employee.TYPE).accept(singletonList(temp));
 		assertTrue(comboBoxModel.items().visible().contains(temp));
 
-		temp.put(Employee.NAME, "Newname");
+		temp.set(Employee.NAME, "Newname");
 		Entity tempUpdated = temp.copy().mutable();
 		tempUpdated.save(Employee.NAME);
 

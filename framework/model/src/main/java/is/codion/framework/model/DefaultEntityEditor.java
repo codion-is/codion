@@ -313,7 +313,7 @@ final class DefaultEntityEditor implements EntityEditor {
 						.filter(columnDefinition -> !entityDefinition.foreignKeys().foreignKeyColumn(columnDefinition.attribute()))
 						.filter(columnDefinition -> !columnDefinition.columnHasDefaultValue() || columnDefinition.hasDefaultValue())
 						.map(columnDefinition -> (AttributeDefinition<Object>) columnDefinition)
-						.forEach(attributeDefinition -> newEntity.put(attributeDefinition.attribute(), valueSupplier.get(attributeDefinition)));
+						.forEach(attributeDefinition -> newEntity.set(attributeDefinition.attribute(), valueSupplier.get(attributeDefinition)));
 	}
 
 	private void addTransientValues(ValueSupplier valueSupplier, Entity newEntity) {
@@ -321,12 +321,12 @@ final class DefaultEntityEditor implements EntityEditor {
 						.filter(TransientAttributeDefinition.class::isInstance)
 						.filter(attributeDefinition -> !attributeDefinition.derived())
 						.map(attributeDefinition -> (AttributeDefinition<Object>) attributeDefinition)
-						.forEach(attributeDefinition -> newEntity.put(attributeDefinition.attribute(), valueSupplier.get(attributeDefinition)));
+						.forEach(attributeDefinition -> newEntity.set(attributeDefinition.attribute(), valueSupplier.get(attributeDefinition)));
 	}
 
 	private void addForeignKeyValues(ValueSupplier valueSupplier, Entity newEntity) {
 		entityDefinition.foreignKeys().definitions().forEach(foreignKeyDefinition ->
-						newEntity.put(foreignKeyDefinition.attribute(), valueSupplier.get(foreignKeyDefinition)));
+						newEntity.set(foreignKeyDefinition.attribute(), valueSupplier.get(foreignKeyDefinition)));
 	}
 
 	private void configurePersistentForeignKeys() {
@@ -494,7 +494,7 @@ final class DefaultEntityEditor implements EntityEditor {
 		@Override
 		protected void setValue(@Nullable T value) {
 			Map<Attribute<?>, Object> dependingValues = dependingValues(attribute);
-			T previousValue = entity.put(attribute, value);
+			T previousValue = entity.set(attribute, value);
 			if (!Objects.equals(value, previousValue)) {
 				notifyValueEdit(attribute, value, dependingValues);
 			}

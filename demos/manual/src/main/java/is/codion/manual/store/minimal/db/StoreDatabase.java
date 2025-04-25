@@ -86,7 +86,7 @@ public class StoreDatabase {
 
 		Entity.Key addressKey = connection.insert(address);
 
-		customer.put(Customer.EMAIL, "mail@email.com");
+		customer.set(Customer.EMAIL, "mail@email.com");
 
 		customer = connection.updateSelect(customer);
 

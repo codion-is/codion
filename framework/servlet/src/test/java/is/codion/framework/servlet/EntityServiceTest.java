@@ -355,7 +355,7 @@ public class EntityServiceTest {
 		List<Entity> values = Serializer.deserialize(response.body());
 		assertEquals(2, values.size());
 
-		entities.forEach(entity -> entity.put(Department.ID, entity.get(Department.ID) + 1));
+		entities.forEach(entity -> entity.set(Department.ID, entity.get(Department.ID) + 1));
 		response = HTTP_CLIENT.send(createJsonRequest("insert",
 						BodyPublishers.ofString(OBJECT_MAPPER.writeValueAsString(entities))), BodyHandlers.ofByteArray());
 		assertEquals(OK, response.statusCode());
@@ -376,8 +376,8 @@ public class EntityServiceTest {
 						.with(Department.NAME, "RESEARCH")
 						.with(Department.LOCATION, "DALLAS")
 						.build());
-		entities.get(0).put(Department.LOCATION, "NEW YORK2");
-		entities.get(1).put(Department.LOCATION, "DALLAS2");
+		entities.get(0).set(Department.LOCATION, "NEW YORK2");
+		entities.get(1).set(Department.LOCATION, "DALLAS2");
 
 		HttpResponse<byte[]> response = HTTP_CLIENT.send(createRequest("updateSelect",
 						BodyPublishers.ofByteArray(Serializer.serialize(entities))), BodyHandlers.ofByteArray());
@@ -391,9 +391,9 @@ public class EntityServiceTest {
 						.findFirst().orElse(null).get(Department.LOCATION));
 
 		entities.get(0).save(Department.LOCATION);
-		entities.get(0).put(Department.LOCATION, "NEW YORK");
+		entities.get(0).set(Department.LOCATION, "NEW YORK");
 		entities.get(1).save(Department.LOCATION);
-		entities.get(1).put(Department.LOCATION, "DALLAS");
+		entities.get(1).set(Department.LOCATION, "DALLAS");
 		response = HTTP_CLIENT.send(createJsonRequest("updateSelect",
 						BodyPublishers.ofString(OBJECT_MAPPER.writeValueAsString(entities))), BodyHandlers.ofByteArray());
 		assertEquals(OK, response.statusCode());

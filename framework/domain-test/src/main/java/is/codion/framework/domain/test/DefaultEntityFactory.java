@@ -200,13 +200,13 @@ public class DefaultEntityFactory implements EntityFactory {
 		EntityDefinition definition = entity.definition();
 		for (Column<?> column : columns) {
 			if (!definition.foreignKeys().foreignKeyColumn(column)) {
-				entity.put((Attribute<Object>) column, value(column));
+				entity.set((Attribute<Object>) column, value(column));
 			}
 		}
 		for (ForeignKey foreignKey : entity.definition().foreignKeys().get()) {
 			Entity value = value(foreignKey);
 			if (value != null) {
-				entity.put(foreignKey, value);
+				entity.set(foreignKey, value);
 			}
 		}
 	}

@@ -71,7 +71,7 @@ public final class InvoiceLineEditModelTest {
 			assertEquals(battery.get(Track.UNITPRICE).add(orion.get(Track.UNITPRICE)), invoice.get(Invoice.TOTAL));
 
 			Entity theCallOfKtulu = connection.selectSingle(Track.NAME.equalToIgnoreCase("the call of ktulu"));
-			theCallOfKtulu.put(Track.UNITPRICE, BigDecimal.valueOf(2));
+			theCallOfKtulu.set(Track.UNITPRICE, BigDecimal.valueOf(2));
 			theCallOfKtulu = connection.updateSelect(theCallOfKtulu);
 
 			editor.set(invoiceLineBattery);

@@ -86,7 +86,7 @@ public final class EmployeesServletLoadTest {
 		public void perform(EntityConnectionProvider client) {
 			List<Entity> departments = client.connection().select(all(Department.TYPE));
 			Entity entity = departments.get(new Random().nextInt(departments.size()));
-			entity.put(Department.LOCATION, randomString(12));
+			entity.set(Department.LOCATION, randomString(12));
 			client.connection().update(entity);
 		}
 	}

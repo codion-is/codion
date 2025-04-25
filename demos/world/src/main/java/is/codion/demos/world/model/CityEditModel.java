@@ -58,7 +58,7 @@ public final class CityEditModel extends SwingEntityEditModel {
 	}
 
 	void populateLocation(Entity city) throws IOException {
-		lookupLocation(city).ifPresent(location -> city.put(City.LOCATION, location));
+		lookupLocation(city).ifPresent(location -> city.set(City.LOCATION, location));
 		if (city.modified()) {
 			update(List.of(city));
 		}

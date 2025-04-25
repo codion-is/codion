@@ -61,10 +61,10 @@ public final class EntityObjectMapperTest {
 						.with(Department.NAME, "Name")
 						.with(Department.LOCATION, "Location")
 						.build();
-		dept.put(Department.LOCATION, "New Location");
+		dept.set(Department.LOCATION, "New Location");
 		byte[] logoBytes = new byte[20];
 		new Random().nextBytes(logoBytes);
-		dept.put(Department.LOGO, logoBytes);
+		dept.set(Department.LOGO, logoBytes);
 		dept = dept.immutable();
 
 		String jsonString = mapper.writeValueAsString(dept);
@@ -86,7 +86,7 @@ public final class EntityObjectMapperTest {
 
 		assertTrue(entity.equalValues(mapper.readValue(jsonString, Entity.class)));
 
-		entity.put(TestEntity.BOOLEAN, false);
+		entity.set(TestEntity.BOOLEAN, false);
 		jsonString = mapper.writeValueAsString(entity);
 		Entity entityModified = mapper.readValue(jsonString, Entity.class);
 		assertTrue(entityModified.modified());
@@ -226,13 +226,13 @@ public final class EntityObjectMapperTest {
 		assertTrue(emp1.entity(Employee.MGR_FK).equalValues(emp1Deserialized.entity(Employee.MGR_FK)));
 
 		LocalDate newHiredate = LocalDate.parse("2002-11-21", format);
-		emp1.put(Employee.COMMISSION, 550.55);
-		emp1.put(Employee.DEPARTMENT_FK, dept20);
-		emp1.put(Employee.JOB, "ANALYST");
-		emp1.put(Employee.MGR_FK, mgr50);
-		emp1.put(Employee.NAME, "ANOTHER NAME");
-		emp1.put(Employee.SALARY, BigDecimal.valueOf(3500.5));
-		emp1.put(Employee.HIREDATE, newHiredate);
+		emp1.set(Employee.COMMISSION, 550.55);
+		emp1.set(Employee.DEPARTMENT_FK, dept20);
+		emp1.set(Employee.JOB, "ANALYST");
+		emp1.set(Employee.MGR_FK, mgr50);
+		emp1.set(Employee.NAME, "ANOTHER NAME");
+		emp1.set(Employee.SALARY, BigDecimal.valueOf(3500.5));
+		emp1.set(Employee.HIREDATE, newHiredate);
 
 		jsonString = mapper.writeValueAsString(singletonList(emp1));
 		emp1Deserialized = mapper.deserializeEntities(jsonString).get(0);

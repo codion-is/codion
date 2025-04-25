@@ -287,7 +287,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	private static boolean replace(ForeignKey foreignKey, Entity entity, Entity.Key key, Entity foreignKeyValue) {
 		Entity currentForeignKeyValue = entity.entity(foreignKey);
 		if (currentForeignKeyValue != null && currentForeignKeyValue.primaryKey().equals(key)) {
-			entity.put(foreignKey, foreignKeyValue.immutable());
+			entity.set(foreignKey, foreignKeyValue.immutable());
 
 			return true;
 		}

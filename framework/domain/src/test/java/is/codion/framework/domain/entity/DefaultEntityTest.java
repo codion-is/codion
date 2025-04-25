@@ -115,7 +115,7 @@ public class DefaultEntityTest {
 		final String originalStringValue = "string value";
 		Entity entity = detailEntity(10, 34, 23.4, originalStringValue, LocalDate.now(),
 						LocalDateTime.now(), true, referencedEntityValue);
-		entity.put(Detail.STRING, "a new String value");
+		entity.set(Detail.STRING, "a new String value");
 		List<Object> fromFile = Serializer.deserialize(Serializer.serialize(singletonList(entity)));
 		assertEquals(1, fromFile.size());
 		Entity entityFromFile = (Entity) fromFile.get(0);
@@ -165,7 +165,7 @@ public class DefaultEntityTest {
 		assertTrue(test.set(test).isEmpty());
 
 		//assure that no cached foreign key values linger
-		test.put(Detail.MASTER_FK, null);
+		test.set(Detail.MASTER_FK, null);
 		testEntity.set(test);
 		assertNull(testEntity.get(Detail.MASTER_ID));
 		assertNull(testEntity.get(Detail.MASTER_FK));
@@ -179,7 +179,7 @@ public class DefaultEntityTest {
 						.with(Master.READ_ONLY, 42)
 						.build();
 
-		entity.put(Master.READ_ONLY, 1);
+		entity.set(Master.READ_ONLY, 1);
 
 		Entity setAsEntity = ENTITIES.entity(Master.TYPE);
 		setAsEntity.set(entity);
@@ -200,25 +200,25 @@ public class DefaultEntityTest {
 		assertEquals(0, original.set(entity).size());
 		assertTrue(original.equalValues(entity));
 
-		original.put(Detail.BOOLEAN, true);
-		entity.put(Detail.BOOLEAN, false);
+		original.set(Detail.BOOLEAN, true);
+		entity.set(Detail.BOOLEAN, false);
 
 		assertEquals(1, original.set(entity).size());
 		assertTrue(original.equalValues(entity));
 
-		original.put(Detail.INT, 1);
-		entity.put(Detail.INT, 2);
-		entity.put(Detail.INT, 3);//modified
+		original.set(Detail.INT, 1);
+		entity.set(Detail.INT, 2);
+		entity.set(Detail.INT, 3);//modified
 
 		assertEquals(2, original.set(entity).size());//int + int_derived
 		assertTrue(original.equalValues(entity));
 		assertTrue(original.modified());
 		assertTrue(entity.modified());
 
-		original.put(Detail.DOUBLE, 1.2);
-		original.put(Detail.STRING, "str");
-		entity.put(Detail.DOUBLE, 1.3);
-		entity.put(Detail.STRING, "strng");
+		original.set(Detail.DOUBLE, 1.2);
+		original.set(Detail.STRING, "str");
+		entity.set(Detail.DOUBLE, 1.3);
+		entity.set(Detail.STRING, "strng");
 
 		assertEquals(2, original.set(entity).size());
 		assertTrue(original.equalValues(entity));
@@ -239,11 +239,11 @@ public class DefaultEntityTest {
 		assertEquals(10, entity.get(Detail.INT_DERIVED));
 		assertEquals(10, entity.original(Detail.INT_DERIVED));
 
-		entity.put(Detail.INT, 2);
+		entity.set(Detail.INT, 2);
 		assertEquals(10, entity.original(Detail.INT_DERIVED));
 		assertEquals(20, entity.get(Detail.INT_DERIVED));
 
-		entity.put(Detail.INT, 1);
+		entity.set(Detail.INT, 1);
 		assertEquals(10, entity.get(Detail.INT_DERIVED));
 		assertEquals(10, entity.original(Detail.INT_DERIVED));
 
@@ -263,7 +263,7 @@ public class DefaultEntityTest {
 						.with(Master.CODE, 7)
 						.build();
 
-		entity.put(Master.ID, -55L);
+		entity.set(Master.ID, -55L);
 		//the id is not updatable as it is part of the primary key, which is not updatable by default
 		assertFalse(entity.modified());
 		entity.save(Master.ID);
@@ -271,13 +271,13 @@ public class DefaultEntityTest {
 
 		final String newName = "aname";
 
-		entity.put(Master.NAME, newName);
+		entity.set(Master.NAME, newName);
 		assertTrue(entity.modified());
 		entity.revert(Master.NAME);
 		assertEquals(masterName, entity.get(Master.NAME));
 		assertFalse(entity.modified());
 
-		entity.put(Master.NAME, newName);
+		entity.set(Master.NAME, newName);
 		assertTrue(entity.modified());
 		assertTrue(entity.modified(Master.NAME));
 		entity.save(Master.NAME);
@@ -288,11 +288,11 @@ public class DefaultEntityTest {
 		Entity entity2 = ENTITIES.builder(Master.TYPE)
 						.with(Master.NAME, "name")
 						.build();
-		entity2.put(Master.NAME, "newname");
+		entity2.set(Master.NAME, "newname");
 		assertTrue(entity2.modified());
 		assertEquals("name", entity2.original(Master.NAME));
 		entity2.save(Master.NAME);
-		entity2.put(Master.NAME, "name");
+		entity2.set(Master.NAME, "name");
 		assertEquals("newname", entity2.original(Master.NAME));
 
 		assertTrue(entity2.modified());
@@ -340,22 +340,22 @@ public class DefaultEntityTest {
 						.with(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_3, 1)
 						.build();
 		//can not update read only attribute reference, with a different value
-		assertThrows(IllegalArgumentException.class, () -> detail.put(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK, master));
+		assertThrows(IllegalArgumentException.class, () -> detail.set(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK, master));
 
-		detail.put(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_3, 3);
-		detail.put(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK, master);
+		detail.set(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_3, 3);
+		detail.set(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK, master);
 
 		//otherwise the values are equal and put() returns before propagating foreign key values
 		Entity masterCopy = master.copy().mutable();
-		masterCopy.put(CompositeMaster.COMPOSITE_MASTER_ID, 1);
-		masterCopy.put(CompositeMaster.COMPOSITE_MASTER_ID_2, null);
-		detail.put(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK, masterCopy);
+		masterCopy.set(CompositeMaster.COMPOSITE_MASTER_ID, 1);
+		masterCopy.set(CompositeMaster.COMPOSITE_MASTER_ID_2, null);
+		detail.set(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK, masterCopy);
 
 		assertNull(detail.key(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK));
 
-		master.put(CompositeMaster.COMPOSITE_MASTER_ID, 1);
-		master.put(CompositeMaster.COMPOSITE_MASTER_ID_2, 3);
-		master.put(CompositeMaster.COMPOSITE_MASTER_ID_3, 3);
+		master.set(CompositeMaster.COMPOSITE_MASTER_ID, 1);
+		master.set(CompositeMaster.COMPOSITE_MASTER_ID_2, 3);
+		master.set(CompositeMaster.COMPOSITE_MASTER_ID_3, 3);
 
 		Entity detail2 = ENTITIES.builder(CompositeDetail.TYPE)
 						.with(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_3, 3)
@@ -364,7 +364,7 @@ public class DefaultEntityTest {
 
 		assertEquals(3, detail2.get(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_2));
 
-		detail2.put(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_2, null);
+		detail2.set(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_2, null);
 		assertTrue(detail2.isNull(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK));
 		assertNull(detail2.key(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK));
 	}
@@ -421,19 +421,19 @@ public class DefaultEntityTest {
 		assertTrue(test2.equalValues(testEntity), "Entity attribute values should be equal after deepCopy()");
 		assertNotSame(testEntity.entity(Detail.MASTER_FK), test2.entity(Detail.MASTER_FK), "This should be a deep copy");
 
-		test2.put(Detail.DOUBLE, 2.1);
+		test2.set(Detail.DOUBLE, 2.1);
 		assertTrue(test2.modified());
 		Entity test2Copy = test2.immutable();
 		assertTrue(test2Copy.modified());
 
 		//test propagate entity reference/denormalized values
-		testEntity.put(Detail.MASTER_FK, null);
+		testEntity.set(Detail.MASTER_FK, null);
 		assertTrue(testEntity.isNull(Detail.MASTER_ID));
 		assertTrue(testEntity.isNull(Detail.MASTER_NAME));
 		assertFalse(testEntity.optional(Detail.MASTER_NAME).isPresent());
 		assertTrue(testEntity.isNull(Detail.MASTER_CODE));
 
-		testEntity.put(Detail.MASTER_FK, referencedEntityValue);
+		testEntity.set(Detail.MASTER_FK, referencedEntityValue);
 		assertFalse(testEntity.isNull(Detail.MASTER_ID));
 		assertEquals(testEntity.get(Detail.MASTER_ID),
 						referencedEntityValue.get(Master.ID));
@@ -442,8 +442,8 @@ public class DefaultEntityTest {
 		assertEquals(testEntity.get(Detail.MASTER_CODE),
 						referencedEntityValue.get(Master.CODE));
 
-		referencedEntityValue.put(Master.CODE, 20);
-		testEntity.put(Detail.MASTER_FK, referencedEntityValue);
+		referencedEntityValue.set(Master.CODE, 20);
+		testEntity.set(Detail.MASTER_FK, referencedEntityValue);
 		assertEquals(testEntity.get(Detail.MASTER_CODE),
 						referencedEntityValue.get(Master.CODE));
 	}
@@ -459,11 +459,11 @@ public class DefaultEntityTest {
 		assertTrue(dept.equalValues(dept.copy().builder().build()));
 		assertFalse(dept.equalValues(dept.copy().builder().with(Department.NAME, "new name").build()));
 
-		dept.put(Department.NAME, "New name");
+		dept.set(Department.NAME, "New name");
 		assertTrue(dept.copy().builder().build().modified());
 		assertFalse(dept.copy().builder().with(Department.NAME, "Name").build().modified());
 
-		dept.put(Department.ID, 2);
+		dept.set(Department.ID, 2);
 		Entity entity = dept.copy().builder().originalPrimaryKey().build();
 		assertEquals(1, entity.get(Department.ID));
 	}
@@ -482,7 +482,7 @@ public class DefaultEntityTest {
 						detailString, detailDate, detailTimestamp, detailBoolean, null);
 		assertTrue(testEntity.isNull(Detail.MASTER_ID));
 		assertTrue(testEntity.isNull(Detail.MASTER_FK));
-		testEntity.put(Detail.MASTER_ID, 10L);
+		testEntity.set(Detail.MASTER_ID, 10L);
 
 		assertNull(testEntity.get(Detail.MASTER_FK));
 		Entity referencedEntityValue = testEntity.entity(Detail.MASTER_FK);
@@ -491,14 +491,14 @@ public class DefaultEntityTest {
 		assertFalse(testEntity.isNull(Detail.MASTER_ID));
 
 		Entity composite = ENTITIES.entity(CompositeDetail.TYPE);
-		composite.put(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID, null);
+		composite.set(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID, null);
 		assertTrue(composite.isNull(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK));
-		composite.put(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID, 1);
+		composite.set(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID, 1);
 		assertTrue(composite.isNull(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK));
-		composite.put(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_2, null);
+		composite.set(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_2, null);
 		assertTrue(composite.isNull(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK));
-		composite.put(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_2, 1);
-		composite.put(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_3, 2);
+		composite.set(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_2, 1);
+		composite.set(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_3, 2);
 		assertFalse(composite.isNull(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK));
 	}
 
@@ -507,7 +507,7 @@ public class DefaultEntityTest {
 		Entity referencedEntityValue = ENTITIES.entity(Master.TYPE);
 		Entity testEntity = detailEntity(detailId, detailInt, detailDouble,
 						detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
-		testEntity.put(Detail.STRING, "TestString");
+		testEntity.set(Detail.STRING, "TestString");
 		assertTrue(testEntity.modified());
 
 		testEntity.set(null);
@@ -528,21 +528,21 @@ public class DefaultEntityTest {
 	}
 
 	@Test
-	void putDenormalizedViewValue() {
+	void setDenormalizedViewValue() {
 		Entity testEntity = detailEntity(detailId, detailInt, detailDouble,
 						detailString, detailDate, detailTimestamp, detailBoolean, null);
-		assertThrows(IllegalArgumentException.class, () -> testEntity.put(Detail.MASTER_NAME, "hello"));
+		assertThrows(IllegalArgumentException.class, () -> testEntity.set(Detail.MASTER_NAME, "hello"));
 	}
 
 	@Test
-	void putDenormalizedValue() {
+	void setDenormalizedValue() {
 		Entity testEntity = detailEntity(detailId, detailInt, detailDouble,
 						detailString, detailDate, detailTimestamp, detailBoolean, null);
-		assertThrows(IllegalArgumentException.class, () -> testEntity.put(Detail.MASTER_CODE, 2));
+		assertThrows(IllegalArgumentException.class, () -> testEntity.set(Detail.MASTER_CODE, 2));
 	}
 
 	@Test
-	void putValue() {
+	void setValue() {
 		Entity department = ENTITIES.builder(Department.TYPE)
 						.with(Department.ID, -10)
 						.build();
@@ -552,21 +552,21 @@ public class DefaultEntityTest {
 						.build();
 		assertEquals(1200d, employee.get(Employee.COMMISSION));
 
-		employee.put(Employee.DEPARTMENT_FK, department);
+		employee.set(Employee.DEPARTMENT_FK, department);
 		assertEquals(department, employee.get(Employee.DEPARTMENT_FK));
 
 		LocalDateTime date = LocalDateTime.now();
-		employee.put(Employee.HIREDATE, date);
+		employee.set(Employee.HIREDATE, date);
 		assertEquals(date, employee.get(Employee.HIREDATE));
 
-		employee.put(Employee.ID, 123);
+		employee.set(Employee.ID, 123);
 		assertEquals(123, employee.get(Employee.ID));
 
-		employee.put(Employee.NAME, "noname");
+		employee.set(Employee.NAME, "noname");
 		assertEquals("noname", employee.get(Employee.NAME));
 
 		//noinspection rawtypes
-		assertThrows(IllegalArgumentException.class, () -> employee.put((Attribute) Employee.NAME, 42));
+		assertThrows(IllegalArgumentException.class, () -> employee.set((Attribute) Employee.NAME, 42));
 	}
 
 	@Test
@@ -578,10 +578,10 @@ public class DefaultEntityTest {
 
 		assertTrue(testEntityOne.equalValues(testEntityTwo));
 
-		testEntityTwo.put(Detail.INT, 42);
+		testEntityTwo.set(Detail.INT, 42);
 		assertFalse(testEntityOne.equalValues(testEntityTwo));
 
-		testEntityOne.put(Detail.INT, 42);
+		testEntityOne.set(Detail.INT, 42);
 		assertTrue(testEntityOne.equalValues(testEntityTwo));
 
 		testEntityTwo.remove(Detail.INT);
@@ -594,10 +594,10 @@ public class DefaultEntityTest {
 		byte[] bytes = new byte[1024];
 		random.nextBytes(bytes);
 
-		testEntityOne.put(Detail.BYTES, bytes);
+		testEntityOne.set(Detail.BYTES, bytes);
 		assertFalse(testEntityOne.equalValues(testEntityTwo));
 
-		testEntityTwo.put(Detail.BYTES, bytes);
+		testEntityTwo.set(Detail.BYTES, bytes);
 		assertTrue(testEntityOne.equalValues(testEntityTwo));
 
 		assertThrows(IllegalArgumentException.class, () -> testEntityOne.equalValues(ENTITIES.entity(Master.TYPE)));
@@ -612,7 +612,7 @@ public class DefaultEntityTest {
 		assertNull(employee.get(Employee.SALARY));
 
 		final double salary = 1000.1234;
-		employee.put(Employee.SALARY, salary);
+		employee.set(Employee.SALARY, salary);
 		assertEquals(Double.valueOf(1000.12), employee.get(Employee.SALARY));
 	}
 
@@ -628,7 +628,7 @@ public class DefaultEntityTest {
 		assertNull(employee.get(Employee.DEPARTMENT_FK));
 		assertNull(employee.get(Employee.DEPARTMENT_NO));
 
-		employee.put(Employee.DEPARTMENT_FK, department);
+		employee.set(Employee.DEPARTMENT_FK, department);
 		assertFalse(employee.isNull(Employee.DEPARTMENT_FK));
 		assertNotNull(employee.get(Employee.DEPARTMENT_FK));
 		assertNotNull(employee.get(Employee.DEPARTMENT_NO));
@@ -687,7 +687,7 @@ public class DefaultEntityTest {
 						.with(Employee.COMMISSION, 1.1234)
 						.build();
 		assertEquals(1.12, employee.get(Employee.COMMISSION));
-		employee.put(Employee.COMMISSION, 1.1255);
+		employee.set(Employee.COMMISSION, 1.1255);
 		assertEquals(1.13, employee.get(Employee.COMMISSION));
 
 		Entity detail = ENTITIES.builder(Detail.TYPE)
@@ -708,7 +708,7 @@ public class DefaultEntityTest {
 						.with(TransModifies.TRANS, null)
 						.build();
 
-		entity.put(TransModifies.TRANS, 1);
+		entity.set(TransModifies.TRANS, 1);
 		assertTrue(entity.modified());
 
 		Entity deserialized = Serializer.deserialize(Serializer.serialize(entity));
@@ -720,7 +720,7 @@ public class DefaultEntityTest {
 						.with(TransModifiesNot.TRANS, null)
 						.build();
 
-		entity.put(TransModifiesNot.TRANS, 1);
+		entity.set(TransModifiesNot.TRANS, 1);
 		assertFalse(entity.modified());
 
 		deserialized = Serializer.deserialize(Serializer.serialize(entity));
@@ -738,7 +738,7 @@ public class DefaultEntityTest {
 						.with(Employee.DEPARTMENT_FK, dept)
 						.build();
 		assertEquals(1, emp.get(Employee.DEPARTMENT_NO));
-		emp.put(Employee.DEPARTMENT_NO, 2);
+		emp.set(Employee.DEPARTMENT_NO, 2);
 		assertNull(emp.get(Employee.DEPARTMENT_FK));
 		Entity referencedDept = emp.entity(Employee.DEPARTMENT_FK);
 		assertEquals(Integer.valueOf(2), referencedDept.primaryKey().value());
@@ -747,22 +747,22 @@ public class DefaultEntityTest {
 						.with(Department.ID, 3)
 						.with(Department.NAME, "Name2")
 						.build();
-		emp.put(Employee.DEPARTMENT_FK, dept2);
-		emp.put(Employee.DEPARTMENT_NO, 3);
+		emp.set(Employee.DEPARTMENT_FK, dept2);
+		emp.set(Employee.DEPARTMENT_NO, 3);
 		assertNotNull(emp.get(Employee.DEPARTMENT_FK));
-		emp.put(Employee.DEPARTMENT_NO, 4);
+		emp.set(Employee.DEPARTMENT_NO, 4);
 		assertNull(emp.get(Employee.DEPARTMENT_FK));
-		emp.put(Employee.DEPARTMENT_FK, dept2);
+		emp.set(Employee.DEPARTMENT_FK, dept2);
 		assertNotNull(emp.get(Employee.DEPARTMENT_FK));
-		emp.put(Employee.DEPARTMENT_NO, null);
+		emp.set(Employee.DEPARTMENT_NO, null);
 		assertNull(emp.get(Employee.DEPARTMENT_FK));
 
 		Entity manager = ENTITIES.builder(Employee.TYPE)
 						.with(Employee.ID, 10)
 						.with(Employee.DEPARTMENT_FK, dept)
 						.build();
-		emp.put(Employee.MANAGER_FK, manager);
-		emp.put(Employee.DEPARTMENT_FK, dept2);
+		emp.set(Employee.MANAGER_FK, manager);
+		emp.set(Employee.DEPARTMENT_FK, dept2);
 
 		Entity copy = emp.immutable();
 		assertNotSame(emp, copy);
@@ -832,12 +832,12 @@ public class DefaultEntityTest {
 						.with(Otolith.SPECIES_FK, cod)
 						.build();
 		//try to set a haddock maturity
-		assertThrows(IllegalArgumentException.class, () -> otolith.put(Otolith.MATURITY_FK, haddockMaturity10));
-		assertThrows(IllegalArgumentException.class, () -> otolith.put(Otolith.OTOLITH_CATEGORY_FK, otolithCategoryHaddock100));
-		otolith.put(Otolith.MATURITY_FK, codMaturity10);
-		otolith.put(Otolith.OTOLITH_CATEGORY_FK, otolithCategoryCod100);
+		assertThrows(IllegalArgumentException.class, () -> otolith.set(Otolith.MATURITY_FK, haddockMaturity10));
+		assertThrows(IllegalArgumentException.class, () -> otolith.set(Otolith.OTOLITH_CATEGORY_FK, otolithCategoryHaddock100));
+		otolith.set(Otolith.MATURITY_FK, codMaturity10);
+		otolith.set(Otolith.OTOLITH_CATEGORY_FK, otolithCategoryCod100);
 		//remove species, maturity and category should be removed
-		otolith.put(Otolith.SPECIES_FK, null);
+		otolith.set(Otolith.SPECIES_FK, null);
 		//removes the invalid foreign key entity
 		assertTrue(otolith.isNull(Otolith.MATURITY_FK));
 		assertTrue(otolith.isNull(Otolith.OTOLITH_CATEGORY_FK));
@@ -846,45 +846,45 @@ public class DefaultEntityTest {
 		assertFalse(otolith.isNull(Otolith.OTOLITH_CATEGORY_NO));
 		assertTrue(otolith.isNull(Otolith.SPECIES_NO));
 		//try to set haddock maturity and category
-		assertThrows(IllegalArgumentException.class, () -> otolith.put(Otolith.MATURITY_FK, haddockMaturity10));
-		assertThrows(IllegalArgumentException.class, () -> otolith.put(Otolith.OTOLITH_CATEGORY_FK, otolithCategoryHaddock100));
+		assertThrows(IllegalArgumentException.class, () -> otolith.set(Otolith.MATURITY_FK, haddockMaturity10));
+		assertThrows(IllegalArgumentException.class, () -> otolith.set(Otolith.OTOLITH_CATEGORY_FK, otolithCategoryHaddock100));
 		//set the species to haddock
-		otolith.put(Otolith.SPECIES_FK, haddock);
-		otolith.put(Otolith.MATURITY_FK, haddockMaturity10);
-		otolith.put(Otolith.OTOLITH_CATEGORY_FK, otolithCategoryHaddock200);
+		otolith.set(Otolith.SPECIES_FK, haddock);
+		otolith.set(Otolith.MATURITY_FK, haddockMaturity10);
+		otolith.set(Otolith.OTOLITH_CATEGORY_FK, otolithCategoryHaddock200);
 		assertFalse(otolith.isNull(Otolith.MATURITY_FK));
 		assertFalse(otolith.isNull(Otolith.OTOLITH_CATEGORY_FK));
 		//set the species back to cod, haddock maturity should be removed
-		otolith.put(Otolith.SPECIES_FK, cod);
+		otolith.set(Otolith.SPECIES_FK, cod);
 		assertNull(otolith.get(Otolith.MATURITY_FK));
 		assertNull(otolith.get(Otolith.OTOLITH_CATEGORY_FK));
 		//set the cod maturity
-		otolith.put(Otolith.MATURITY_FK, codMaturity20);
+		otolith.set(Otolith.MATURITY_FK, codMaturity20);
 		//set the underlying cod maturity column value
-		otolith.put(Otolith.MATURITY_NO, 10);
+		otolith.set(Otolith.MATURITY_NO, 10);
 		//maturity foreign key value should be removed
 		assertNull(otolith.get(Otolith.MATURITY_FK));
 		//set the species column value
-		otolith.put(Otolith.SPECIES_NO, 2);
+		otolith.set(Otolith.SPECIES_NO, 2);
 		//species foreign key value should be removed
 		assertNull(otolith.get(Otolith.SPECIES_FK));
 		//set the maturity
-		otolith.put(Otolith.MATURITY_FK, haddockMaturity10);
-		otolith.put(Otolith.OTOLITH_CATEGORY_FK, otolithCategoryHaddock200);
+		otolith.set(Otolith.MATURITY_FK, haddockMaturity10);
+		otolith.set(Otolith.OTOLITH_CATEGORY_FK, otolithCategoryHaddock200);
 		//set the species column value to null, should remove both species and maturity fk values
-		otolith.put(Otolith.SPECIES_NO, null);
+		otolith.set(Otolith.SPECIES_NO, null);
 		assertNull(otolith.get(Otolith.SPECIES_FK));
 		assertNull(otolith.get(Otolith.MATURITY_FK));
 		assertNull(otolith.get(Otolith.OTOLITH_CATEGORY_FK));
 		//set the species column value to cod
-		otolith.put(Otolith.SPECIES_NO, 1);
+		otolith.set(Otolith.SPECIES_NO, 1);
 		//should be able to set the cod maturity and category
-		otolith.put(Otolith.MATURITY_FK, codMaturity20);
-		otolith.put(Otolith.OTOLITH_CATEGORY_FK, otolithCategoryCod200);
+		otolith.set(Otolith.MATURITY_FK, codMaturity20);
+		otolith.set(Otolith.OTOLITH_CATEGORY_FK, otolithCategoryCod200);
 		assertNull(otolith.get(Otolith.SPECIES_FK));
 		assertNotNull(otolith.get(Otolith.MATURITY_FK));
 		assertNotNull(otolith.get(Otolith.OTOLITH_CATEGORY_FK));
-		otolith.put(Otolith.SPECIES_FK, cod);
+		otolith.set(Otolith.SPECIES_FK, cod);
 		assertNotNull(otolith.get(Otolith.SPECIES_FK));
 		assertNotNull(otolith.get(Otolith.MATURITY_FK));
 		assertNotNull(otolith.get(Otolith.OTOLITH_CATEGORY_FK));
@@ -926,7 +926,7 @@ public class DefaultEntityTest {
 										.with(Department.NAME, "Dept name")
 										.build())
 						.build();
-		employee.put(Employee.DEPARTMENT_FK, ENTITIES.builder(Department.TYPE)
+		employee.set(Employee.DEPARTMENT_FK, ENTITIES.builder(Department.TYPE)
 						.with(Department.ID, 99)
 						.with(Department.NAME, "Another")
 						.build());
@@ -935,7 +935,7 @@ public class DefaultEntityTest {
 
 		assertSame(emp, emp.immutable());
 
-		assertThrows(UnsupportedOperationException.class, () -> emp.put(Department.ID, 2));
+		assertThrows(UnsupportedOperationException.class, () -> emp.set(Department.ID, 2));
 		assertThrows(UnsupportedOperationException.class, () -> emp.save(Department.ID));
 		assertThrows(UnsupportedOperationException.class, emp::save);
 		assertThrows(UnsupportedOperationException.class, () -> emp.revert(Department.ID));
@@ -944,7 +944,7 @@ public class DefaultEntityTest {
 		assertThrows(UnsupportedOperationException.class, () -> emp.set(emp));
 
 		Entity dept = emp.get(Employee.DEPARTMENT_FK);
-		assertThrows(UnsupportedOperationException.class, () -> dept.put(Department.ID, 2));
+		assertThrows(UnsupportedOperationException.class, () -> dept.set(Department.ID, 2));
 		assertThrows(UnsupportedOperationException.class, () -> dept.save(Department.ID));
 		assertThrows(UnsupportedOperationException.class, dept::save);
 		assertThrows(UnsupportedOperationException.class, () -> dept.revert(Department.ID));
@@ -967,11 +967,11 @@ public class DefaultEntityTest {
 						.with(Employee.NAME, "Man 3")
 						.with(Employee.MANAGER_FK, manager2)
 						.build();
-		manager1.put(Employee.MANAGER_FK, manager3);
+		manager1.set(Employee.MANAGER_FK, manager3);
 
 		manager1.immutable();
 
-		manager1.put(Employee.MANAGER_FK, manager1);
+		manager1.set(Employee.MANAGER_FK, manager1);
 
 		manager1.immutable();
 	}
@@ -983,16 +983,16 @@ public class DefaultEntityTest {
 						.build();
 		assertTrue(emp.originalPrimaryKey().isNull());
 		assertFalse(emp.exists());
-		emp.put(Employee.ID, 1);
+		emp.set(Employee.ID, 1);
 		assertTrue(emp.originalPrimaryKey().isNull());
 		assertFalse(emp.exists());
 		emp.save();
 		assertTrue(emp.exists());
-		emp.put(Employee.ID, 2);
+		emp.set(Employee.ID, 2);
 		assertTrue(emp.exists());
 		emp.save();
 		assertTrue(emp.exists());
-		emp.put(Employee.ID, null);
+		emp.set(Employee.ID, null);
 		assertTrue(emp.exists());
 		emp.save();
 		assertFalse(emp.exists());
@@ -1001,9 +1001,9 @@ public class DefaultEntityTest {
 
 		emp = ENTITIES.entity(Employee.TYPE);
 		assertFalse(emp.exists());
-		emp.put(Employee.ID, 1);
+		emp.set(Employee.ID, 1);
 		assertTrue(emp.exists());
-		emp.put(Employee.ID, null);
+		emp.set(Employee.ID, null);
 		assertTrue(emp.exists());
 		emp.save();
 		assertFalse(emp.exists());
@@ -1012,7 +1012,7 @@ public class DefaultEntityTest {
 						.with(Employee.ID, 1)
 						.build();
 		assertTrue(emp.exists());
-		emp.put(Employee.ID, null);
+		emp.set(Employee.ID, null);
 		assertTrue(emp.exists());
 		emp.save();
 		assertFalse(emp.exists());
@@ -1041,7 +1041,7 @@ public class DefaultEntityTest {
 
 		assertEquals(-1, aron.compareTo(bjorn));
 
-		aron.put(Employee.COMMISSION, 10.1234);
+		aron.set(Employee.COMMISSION, 10.1234);
 		// decimal fraction digits adjusted
 		assertEquals(0, Double.compare(aron.get(Employee.COMMISSION), 10.12));
 	}
@@ -1081,14 +1081,14 @@ public class DefaultEntityTest {
 			}
 		}
 		Entity entity = new DerivedDomain().entities().entity(type);
-		entity.put(stringAttribute, "hello");
+		entity.set(stringAttribute, "hello");
 		String derivedCachedValue = entity.get(derivedAttributeCached);
 		String derivedNonCachedValue = entity.get(derivedAttributeNonCached);
 		// Cached instance
 		assertSame(derivedCachedValue, entity.get(derivedAttributeCached));
 		assertNotSame(derivedNonCachedValue, entity.get(derivedAttributeNonCached));
 
-		entity.put(stringAttribute, "hello hello");
+		entity.set(stringAttribute, "hello hello");
 		derivedCachedValue = entity.get(derivedAttributeCached);
 		assertSame(derivedCachedValue, entity.get(derivedAttributeCached));
 		assertNotSame(derivedNonCachedValue, entity.get(derivedAttributeNonCached));

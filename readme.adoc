@@ -155,7 +155,7 @@ String lastName = customer.get(Customer.LAST_NAME);
 Boolean active = customer.get(Customer.ACTIVE);
 
 // modify values
-customer.put(Customer.LAST_NAME, "Carter");
+customer.set(Customer.LAST_NAME, "Carter");
 
 System.out.println(customer.modified()); // true
 System.out.println(customer.original(Customer.LAST_NAME)); // "Doe"
@@ -554,7 +554,7 @@ Entity address = entities.builder(Address.TYPE)
 
 Entity.Key addressKey = connection.insert(address);
 
-customer.put(Customer.EMAIL, "mail@email.com");
+customer.set(Customer.EMAIL, "mail@email.com");
 
 customer = connection.updateSelect(customer);
 

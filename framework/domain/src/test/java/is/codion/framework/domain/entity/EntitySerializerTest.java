@@ -161,7 +161,7 @@ public final class EntitySerializerTest {
 										.build())
 						.build();
 		//make it modified
-		entity.put(Employee.NAME, "Björn Darri");
+		entity.set(Employee.NAME, "Björn Darri");
 
 		return entity;
 	}

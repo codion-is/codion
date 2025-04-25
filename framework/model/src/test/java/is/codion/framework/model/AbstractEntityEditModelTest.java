@@ -143,7 +143,7 @@ public final class AbstractEntityEditModelTest {
 			Entity employee = connection.selectSingle(Employee.NAME.equalTo("MARTIN"));
 			employeeEditModel.refresh();
 			editor.set(employee);
-			employee.put(Employee.NAME, "NOONE");
+			employee.set(Employee.NAME, "NOONE");
 			connection.update(employee);
 			employeeEditModel.refresh();
 			assertEquals("NOONE", editor.value(Employee.NAME).get());
@@ -154,7 +154,7 @@ public final class AbstractEntityEditModelTest {
 			departmentEditor.set(accounting);
 			departmentEditor.value(Department.ID).set(-20);
 
-			accounting.put(Department.NAME, "Accounting");
+			accounting.set(Department.NAME, "Accounting");
 			connection.update(accounting);
 			departmentEditModel.refresh();
 			assertEquals(10, departmentEditor.value(Department.ID).get());
@@ -419,9 +419,9 @@ public final class AbstractEntityEditModelTest {
 			employeeEditModel.updateMultipleEnabled().set(false);
 
 			Entity emp1 = connection.selectSingle(Employee.NAME.equalTo("BLAKE"));
-			emp1.put(Employee.COMMISSION, 100d);
+			emp1.set(Employee.COMMISSION, 100d);
 			Entity emp2 = connection.selectSingle(Employee.NAME.equalTo("JONES"));
-			emp2.put(Employee.COMMISSION, 100d);
+			emp2.set(Employee.COMMISSION, 100d);
 			assertThrows(IllegalStateException.class, () -> employeeEditModel.update(Arrays.asList(emp1, emp2)));
 
 			// Test afterUpdate event map contents
@@ -487,7 +487,7 @@ public final class AbstractEntityEditModelTest {
 		editor.set(king);
 		editor.value(Employee.MGR_FK).set(martin);
 		editor.defaults();
-		king.put(Employee.MGR_FK, null);
+		king.set(Employee.MGR_FK, null);
 		editor.set(king);
 		assertNull(editor.value(Employee.MGR_FK).get());
 		editor.defaults();
@@ -520,7 +520,7 @@ public final class AbstractEntityEditModelTest {
 		assertTrue(editor.get().entity(Employee.MGR_FK).isNull(Employee.COMMISSION));
 		Entity blake = employeeEditModel.connection()
 						.selectSingle(Employee.NAME.equalTo("BLAKE"));
-		blake.put(Employee.COMMISSION, 100d);
+		blake.set(Employee.COMMISSION, 100d);
 		employeeEditModel.updated(Employee.MGR_FK, singletonMap(blake.primaryKey(), blake));
 		assertEquals(100d, editor.get().entity(Employee.MGR_FK).get(Employee.COMMISSION));
 	}

@@ -108,7 +108,7 @@ final class DefaultEntityBuilder implements Entity.Builder {
 	@Override
 	public Entity build() {
 		Entity entity = definition.entity(values, originalValues);
-		builderValues.forEach((attribute, value) -> entity.put((Attribute<Object>) attribute, value));
+		builderValues.forEach((attribute, value) -> entity.set((Attribute<Object>) attribute, value));
 
 		return entity;
 	}

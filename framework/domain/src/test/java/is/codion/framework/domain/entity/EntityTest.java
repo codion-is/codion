@@ -134,8 +134,8 @@ public final class EntityTest {
 		Entity dept2 = entities.builder(Department.TYPE)
 						.with(Department.ID, 2)
 						.build();
-		dept1.put(Department.ID, 3);
-		dept2.put(Department.ID, 4);
+		dept1.set(Department.ID, 3);
+		dept2.set(Department.ID, 4);
 
 		Collection<Key> originalPrimaryKeys = Entity.originalPrimaryKeys(asList(dept1, dept2));
 		assertTrue(originalPrimaryKeys.contains(entities.primaryKey(Department.TYPE, 1)));
@@ -247,14 +247,14 @@ public final class EntityTest {
 	}
 
 	@Test
-	void putNull() {
+	void setNull() {
 		Entity dept = entities.entity(Department.TYPE);
 		for (AttributeDefinition<?> definition : entities.definition(Department.TYPE).attributes().definitions()) {
 			assertFalse(dept.contains(definition.attribute()));
 			assertTrue(dept.isNull(definition.attribute()));
 		}
 		for (AttributeDefinition<?> definition : entities.definition(Department.TYPE).attributes().definitions()) {
-			dept.put(definition.attribute(), null);
+			dept.set(definition.attribute(), null);
 		}
 		//putting nulls should not have an effect
 		assertFalse(dept.modified());

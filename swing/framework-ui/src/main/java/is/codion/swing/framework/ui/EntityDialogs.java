@@ -440,7 +440,7 @@ public final class EntityDialogs {
 			public boolean test(T value) {
 				EntityDefinition entityDefinition = editModel.entityDefinition();
 				Entity entity = entityDefinition.entity();
-				entity.put(attribute, value);
+				entity.set(attribute, value);
 				try {
 					entityDefinition.validator().validate(entity, attribute);
 					componentValue.validate(value);

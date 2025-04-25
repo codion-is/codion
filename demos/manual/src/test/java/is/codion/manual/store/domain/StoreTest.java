@@ -112,15 +112,15 @@ public class StoreTest extends DomainTest {
 		@Override
 		public void modify(Entity entity) {
 			if (entity.type().equals(Address.TYPE)) {
-				entity.put(Address.STREET, "New Street");
-				entity.put(Address.CITY, "New City");
+				entity.set(Address.STREET, "New Street");
+				entity.set(Address.CITY, "New City");
 			}
 			else if (entity.type().equals(Customer.TYPE)) {
 				// It is sufficient to change the value of a
 				// single property, but the more, the merrier
-				entity.put(Customer.FIRST_NAME, "Jesse");
-				entity.put(Customer.LAST_NAME, "James");
-				entity.put(Customer.ACTIVE, false);
+				entity.set(Customer.FIRST_NAME, "Jesse");
+				entity.set(Customer.LAST_NAME, "James");
+				entity.set(Customer.ACTIVE, false);
 			}
 		}
 	}

@@ -348,7 +348,7 @@ public interface EntityEditModel {
 	 * <p>Applies the given value to the given entities. This method can be used by components
 	 * providing edit functionality, such as editable tables, in order to apply the edited value,
 	 * ensuring that any associated values are updated as well.
-	 * <p>By default, this puts the given attribute value in the entities via {@link Entity#put(Attribute, Object)}.
+	 * <p>By default, this sets the given attribute value in the entities via {@link Entity#set(Attribute, Object)}.
 	 * <p>Override to customize, f.ex. when associated values must be changed accordingly.
 	 * {@snippet :
 	 *  @Override
@@ -358,14 +358,14 @@ public interface EntityEditModel {
 	 * 	    Entity customer = (Entity) value;
 	 * 	    // Set the billing address when the customer is changed
 	 * 	    entities.forEach(entity ->
-	 *            entity.put(Invoice.BILLINGADDRESS, customer.get(Customer.ADDRESS)));
+	 *            entity.set(Invoice.BILLINGADDRESS, customer.get(Customer.ADDRESS)));
 	 * 	  }
 	 * 	}
-	 * }
+	 *}
 	 * @param entities the entities to apply the value to
 	 * @param attribute the attribute being edited
 	 * @param value the value to apply
-	 * @see Entity#put(Attribute, Object)
+	 * @see Entity#set(Attribute, Object)
 	 */
 	<T> void applyEdit(Collection<Entity> entities, Attribute<T> attribute, T value);
 

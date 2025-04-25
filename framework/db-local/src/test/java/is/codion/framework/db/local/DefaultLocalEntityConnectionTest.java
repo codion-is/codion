@@ -237,7 +237,7 @@ public class DefaultLocalEntityConnectionTest {
 	@Test
 	void updateUniqueConstraint() {
 		Entity department = connection.selectSingle(Department.DEPTNO.equalTo(20));
-		department.put(Department.DNAME, "SALES");
+		department.set(Department.DNAME, "SALES");
 		assertThrows(UniqueConstraintException.class, () -> connection.update(department));
 	}
 
@@ -275,7 +275,7 @@ public class DefaultLocalEntityConnectionTest {
 	@Test
 	void updateNoParentKey() {
 		Entity emp = connection.selectSingle(Employee.ID.equalTo(3));
-		emp.put(Employee.DEPARTMENT, -1010);//not available
+		emp.set(Employee.DEPARTMENT, -1010);//not available
 		try {
 			connection.update(emp);
 			fail("ReferentialIntegrityException should have been thrown");
@@ -644,10 +644,10 @@ public class DefaultLocalEntityConnectionTest {
 						.with(Employee.SALARY, salary)
 						.build();
 		LocalDate hiredate = LocalDate.parse("03-10-1975", DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-		emp.put(Employee.HIREDATE, hiredate);
+		emp.set(Employee.HIREDATE, hiredate);
 		OffsetDateTime hiretime = LocalDateTime.parse("03-10-1975 08:30:22", DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"))
 						.atZone(TimeZone.getDefault().toZoneId()).toOffsetDateTime();
-		emp.put(Employee.HIRETIME, hiretime);
+		emp.set(Employee.HIRETIME, hiretime);
 
 		emp = connection.select(connection.insert(emp));
 
@@ -677,7 +677,7 @@ public class DefaultLocalEntityConnectionTest {
 		assertEquals(defaultCommission, emp.get(Employee.COMMISSION));
 		connection.delete(emp.primaryKey());
 
-		emp.put(Employee.COMMISSION, null);//default value should not kick in
+		emp.set(Employee.COMMISSION, null);//default value should not kick in
 		emp = connection.insertSelect(emp);
 		assertEquals(sales, emp.get(Employee.DEPARTMENT_FK));
 		assertEquals(name, emp.get(Employee.NAME));
@@ -706,8 +706,8 @@ public class DefaultLocalEntityConnectionTest {
 			Entity sales = connection.selectSingle(Department.DNAME.equalTo("SALES"));
 			Entity king = connection.selectSingle(Employee.NAME.equalTo("KING"));
 			final String newName = "New name";
-			sales.put(Department.DNAME, newName);
-			king.put(Employee.NAME, newName);
+			sales.set(Department.DNAME, newName);
+			king.set(Employee.NAME, newName);
 			List<Entity> updated = new ArrayList<>(connection.updateSelect(asList(sales, king)));
 			assertTrue(updated.containsAll(asList(sales, king)));
 			assertEquals(newName, updated.get(updated.indexOf(sales)).get(Department.DNAME));
@@ -721,9 +721,9 @@ public class DefaultLocalEntityConnectionTest {
 	@Test
 	void updateNonExisting() {
 		Entity employee = connection.selectSingle(EmployeeNonOpt.ID.equalTo(4));
-		employee.put(EmployeeNonOpt.ID, -888);//non existing
+		employee.set(EmployeeNonOpt.ID, -888);//non existing
 		employee.save();
-		employee.put(EmployeeNonOpt.NAME, "New name");
+		employee.set(EmployeeNonOpt.NAME, "New name");
 		assertThrows(UpdateException.class, () -> connection.update(employee));
 	}
 
@@ -849,7 +849,7 @@ public class DefaultLocalEntityConnectionTest {
 			Entity sales = connection.selectSingle(select);
 			originalLocation = sales.get(Department.LOC);
 
-			sales.put(Department.LOC, "Syracuse");
+			sales.set(Department.LOC, "Syracuse");
 			try {
 				connection2.update(sales);
 				fail("Should not be able to update row selected for update by another connection");
@@ -862,7 +862,7 @@ public class DefaultLocalEntityConnectionTest {
 
 			try {
 				sales = connection2.updateSelect(sales);
-				sales.put(Department.LOC, originalLocation);
+				sales.set(Department.LOC, originalLocation);
 				connection2.update(sales);//revert changes to data
 			}
 			catch (DatabaseException ignored) {
@@ -888,7 +888,7 @@ public class DefaultLocalEntityConnectionTest {
 
 			connection2.delete(allen.primaryKey());
 
-			allen.put(Employee.JOB, "CLERK");
+			allen.set(Employee.JOB, "CLERK");
 			try {
 				connection.update(allen);
 				fail("Should not be able to update row deleted by another connection");
@@ -921,7 +921,7 @@ public class DefaultLocalEntityConnectionTest {
 		Entity updatedDepartment = null;
 		try {
 			Entity department = baseConnection.selectSingle(Department.DNAME.equalTo("SALES"));
-			oldLocation = department.put(Department.LOC, "NEWLOC");
+			oldLocation = department.set(Department.LOC, "NEWLOC");
 			updatedDepartment = baseConnection.updateSelect(department);
 			try {
 				optimisticConnection.update(department);
@@ -935,7 +935,7 @@ public class DefaultLocalEntityConnectionTest {
 		finally {
 			try {
 				if (updatedDepartment != null && oldLocation != null) {
-					updatedDepartment.put(Department.LOC, oldLocation);
+					updatedDepartment.set(Department.LOC, oldLocation);
 					baseConnection.update(updatedDepartment);
 				}
 			}
@@ -959,11 +959,11 @@ public class DefaultLocalEntityConnectionTest {
 			random.nextBytes(bytes);
 
 			Entity employee = baseConnection.selectSingle(Employee.NAME.equalTo("BLAKE"));
-			employee.put(Employee.DATA, bytes);
+			employee.set(Employee.DATA, bytes);
 			updatedEmployee = baseConnection.updateSelect(employee);
 
 			random.nextBytes(bytes);
-			employee.put(Employee.DATA, bytes);
+			employee.set(Employee.DATA, bytes);
 
 			try {
 				optimisticConnection.update(employee);
@@ -1081,8 +1081,8 @@ public class DefaultLocalEntityConnectionTest {
 		random.nextBytes(bytes);
 
 		Entity scott = connection.selectSingle(Employee.ID.equalTo(7));
-		scott.put(Employee.DATA_LAZY, lazyBytes);
-		scott.put(Employee.DATA, bytes);
+		scott.set(Employee.DATA_LAZY, lazyBytes);
+		scott.set(Employee.DATA, bytes);
 		connection.update(scott);
 		scott.save();
 
@@ -1102,8 +1102,8 @@ public class DefaultLocalEntityConnectionTest {
 		random.nextBytes(newLazyBytes);
 		random.nextBytes(newBytes);
 
-		scott.put(Employee.DATA_LAZY, newLazyBytes);
-		scott.put(Employee.DATA, newBytes);
+		scott.set(Employee.DATA_LAZY, newLazyBytes);
+		scott.set(Employee.DATA, newBytes);
 
 		connection.update(scott);
 
@@ -1356,7 +1356,7 @@ public class DefaultLocalEntityConnectionTest {
 		assertFalse(valueMissingOrModified(current, entity, Department.LOC));
 		assertFalse(valueMissingOrModified(current, entity, Department.DNAME));
 
-		current.put(Department.DEPTNO, 2);
+		current.set(Department.DEPTNO, 2);
 		current.save();
 		assertTrue(valueMissingOrModified(current, entity, Department.DEPTNO));
 		assertEquals(Department.DEPTNO, modifiedColumns(current, entity).iterator().next());
@@ -1365,12 +1365,12 @@ public class DefaultLocalEntityConnectionTest {
 		current.save();
 		assertTrue(valueMissingOrModified(current, entity, Department.DEPTNO));
 		assertTrue(modifiedColumns(current, entity).isEmpty());
-		current.put(Department.DEPTNO, 1);
+		current.set(Department.DEPTNO, 1);
 		current.save();
 		assertFalse(valueMissingOrModified(current, entity, Department.DEPTNO));
 		assertTrue(modifiedColumns(current, entity).isEmpty());
 
-		current.put(Department.LOC, "New location");
+		current.set(Department.LOC, "New location");
 		current.save();
 		assertTrue(valueMissingOrModified(current, entity, Department.LOC));
 		assertEquals(Department.LOC, modifiedColumns(current, entity).iterator().next());
@@ -1378,13 +1378,13 @@ public class DefaultLocalEntityConnectionTest {
 		current.save();
 		assertTrue(valueMissingOrModified(current, entity, Department.LOC));
 		assertTrue(modifiedColumns(current, entity).isEmpty());
-		current.put(Department.LOC, "Location");
+		current.set(Department.LOC, "Location");
 		current.save();
 		assertFalse(valueMissingOrModified(current, entity, Department.LOC));
 		assertTrue(modifiedColumns(current, entity).isEmpty());
 
-		entity.put(Department.LOC, "new loc");
-		entity.put(Department.DNAME, "new name");
+		entity.set(Department.LOC, "new loc");
+		entity.set(Department.DNAME, "new name");
 
 		assertEquals(2, modifiedColumns(current, entity).size());
 
@@ -1396,7 +1396,7 @@ public class DefaultLocalEntityConnectionTest {
 		current = entity.copy().mutable();
 
 		// Original value becomes null
-		entity.put(Department.LOC, "Location");
+		entity.set(Department.LOC, "Location");
 
 		current.remove(Department.LOC);
 		Collection<Column<?>> columns = modifiedColumns(entity, current);
@@ -1442,7 +1442,7 @@ public class DefaultLocalEntityConnectionTest {
 		modifiedColumns = modifiedColumns(dept1, dept2);
 		assertFalse(modifiedColumns.contains(Department.DATA));
 
-		dept2.put(Department.LOC, "new loc");
+		dept2.set(Department.LOC, "new loc");
 		modifiedColumns = modifiedColumns(dept1, dept2);
 		assertTrue(modifiedColumns.contains(Department.LOC));
 
@@ -1469,9 +1469,9 @@ public class DefaultLocalEntityConnectionTest {
 						.with(NullConverter.NAME, null)
 						.build();
 		entity = connection.insertSelect(entity);
-		entity.put(NullConverter.NAME, "name");
+		entity.set(NullConverter.NAME, "name");
 		entity = connection.updateSelect(entity);
-		entity.put(NullConverter.NAME, "null");
+		entity.set(NullConverter.NAME, "null");
 		entity = connection.updateSelect(entity);
 		assertTrue(entity.isNull(NullConverter.NAME));
 	}

@@ -38,8 +38,8 @@ public final class EntityPopupMenuTest {
 						.user(UNIT_TEST_USER)
 						.build()) {
 			Entity blake = connectionProvider.connection().selectSingle(Employee.NAME.equalTo("BLAKE"));
-			blake.put(Employee.NAME, "a really long name aaaaaaaaaaaaaaaaaaaaaaaaaa");
-			blake.put(Employee.SALARY, 100d);
+			blake.set(Employee.NAME, "a really long name aaaaaaaaaaaaaaaaaaaaaaaaaa");
+			blake.set(Employee.SALARY, 100d);
 
 			new EntityPopupMenu(blake, connectionProvider.connection());
 		}

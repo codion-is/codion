@@ -69,8 +69,8 @@ public final class WorldImplTest extends DomainTest {
 		public Entity entity(EntityType entityType) {
 			Entity entity = super.entity(entityType);
 			if (entityType.equals(Country.TYPE)) {
-				entity.put(Country.CODE, "XYZ");
-				entity.put(Country.CONTINENT, "Asia");
+				entity.set(Country.CODE, "XYZ");
+				entity.set(Country.CONTINENT, "Asia");
 			}
 			else if (entityType.equals(City.TYPE)) {
 				entity.remove(City.LOCATION);
@@ -83,10 +83,10 @@ public final class WorldImplTest extends DomainTest {
 		public void modify(Entity entity) {
 			super.modify(entity);
 			if (entity.type().equals(Country.TYPE)) {
-				entity.put(Country.CONTINENT, "Europe");
+				entity.set(Country.CONTINENT, "Europe");
 			}
 			else if (entity.type().equals(City.TYPE)) {
-				entity.put(City.LOCATION, null);
+				entity.set(City.LOCATION, null);
 			}
 		}
 

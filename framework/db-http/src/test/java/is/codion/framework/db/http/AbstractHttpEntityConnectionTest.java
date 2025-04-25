@@ -119,22 +119,22 @@ abstract class AbstractHttpEntityConnectionTest {
 	@Test
 	void update() {
 		Entity department = connection.selectSingle(Department.NAME.equalTo("ACCOUNTING"));
-		department.put(Department.NAME, "TEstING");
+		department.set(Department.NAME, "TEstING");
 		connection.update(department);
 		department = connection.selectSingle(Department.ID.equalTo(department.get(Department.ID)));
 		assertEquals("TEstING", department.get(Department.NAME));
-		department.put(Department.NAME, "ACCOUNTING");
+		department.set(Department.NAME, "ACCOUNTING");
 		connection.update(department);
 	}
 
 	@Test
 	void updateSelect() {
 		Entity department = connection.selectSingle(Department.NAME.equalTo("ACCOUNTING"));
-		department.put(Department.NAME, "TEstING");
+		department.set(Department.NAME, "TEstING");
 		department = connection.updateSelect(department);
 		department = connection.selectSingle(Department.ID.equalTo(department.get(Department.ID)));
 		assertEquals("TEstING", department.get(Department.NAME));
-		department.put(Department.NAME, "ACCOUNTING");
+		department.set(Department.NAME, "ACCOUNTING");
 		department = connection.updateSelect(department);
 	}
 
@@ -242,7 +242,7 @@ abstract class AbstractHttpEntityConnectionTest {
 		new Random().nextBytes(bytes);
 
 		Entity scott = connection.selectSingle(Employee.ID.equalTo(7));
-		scott.put(Employee.DATA, bytes);
+		scott.set(Employee.DATA, bytes);
 		connection.update(scott);
 		assertArrayEquals(bytes, connection.select(Employee.DATA, key(scott.primaryKey())).get(0));
 	}

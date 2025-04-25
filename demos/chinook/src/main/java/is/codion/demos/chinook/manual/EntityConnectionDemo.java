@@ -258,7 +258,7 @@ public final class EntityConnectionDemo {
 		Entity myBand = connection.selectSingle(
 						Artist.NAME.equalTo("My Band"));
 
-		myBand.put(Artist.NAME, "Proper Name");
+		myBand.set(Artist.NAME, "Proper Name");
 
 		myBand = connection.updateSelect(myBand);
 
@@ -266,7 +266,7 @@ public final class EntityConnectionDemo {
 						connection.select(Customer.PHONE.isNull());
 
 		customersWithoutPhoneNo.forEach(customer ->
-						customer.put(Customer.PHONE, "<none>"));
+						customer.set(Customer.PHONE, "<none>"));
 
 		connection.update(customersWithoutPhoneNo);
 		// end::updateEntity[]

@@ -223,8 +223,8 @@ public final class EntitiesTutorial {
 		album = connection.insertSelect(album);
 
 		// let's rename our album and our band as well
-		myBand.put(Artist.NAME, "A proper bandname");
-		album.put(Album.TITLE, "A proper title");
+		myBand.set(Artist.NAME, "A proper bandname");
+		album.set(Album.TITLE, "A proper title");
 
 		// and perform the update
 		connection.update(List.of(myBand, album));

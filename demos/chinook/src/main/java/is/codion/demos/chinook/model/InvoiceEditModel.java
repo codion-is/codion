@@ -50,11 +50,11 @@ public final class InvoiceEditModel extends SwingEntityEditModel {
 			Entity customer = (Entity) value;
 			invoices.forEach(invoice -> {
 				// Set the billing address
-				invoice.put(Invoice.BILLINGADDRESS, customer.get(Customer.ADDRESS));
-				invoice.put(Invoice.BILLINGCITY, customer.get(Customer.CITY));
-				invoice.put(Invoice.BILLINGPOSTALCODE, customer.get(Customer.POSTALCODE));
-				invoice.put(Invoice.BILLINGSTATE, customer.get(Customer.STATE));
-				invoice.put(Invoice.BILLINGCOUNTRY, customer.get(Customer.COUNTRY));
+				invoice.set(Invoice.BILLINGADDRESS, customer.get(Customer.ADDRESS));
+				invoice.set(Invoice.BILLINGCITY, customer.get(Customer.CITY));
+				invoice.set(Invoice.BILLINGPOSTALCODE, customer.get(Customer.POSTALCODE));
+				invoice.set(Invoice.BILLINGSTATE, customer.get(Customer.STATE));
+				invoice.set(Invoice.BILLINGCOUNTRY, customer.get(Customer.COUNTRY));
 			});
 		}
 	}

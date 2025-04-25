@@ -125,7 +125,7 @@ public class ChinookTest extends DomainTest {
 		public void modify(Entity entity) {
 			super.modify(entity);
 			if (entity.type().equals(Album.TYPE)) {
-				entity.put(Album.TAGS, List.of("tag_one", "tag_two", "tag_three"));
+				entity.set(Album.TAGS, List.of("tag_one", "tag_two", "tag_three"));
 			}
 		}
 

@@ -175,7 +175,7 @@ public final class Example {
 
 		customerAddress = connection.insertSelect(customerAddress);
 
-		customer.put(Customer.FIRST_NAME, "Jonathan");
+		customer.set(Customer.FIRST_NAME, "Jonathan");
 
 		connection.update(customer);
 

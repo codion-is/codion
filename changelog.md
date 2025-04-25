@@ -11,6 +11,7 @@ Codion Change Log
 - FilterModel.Sorter renamed Sort, sorter() renamed sort().
 ### is.codion.framework.domain
 - Column.Getter and Setter renamed GetValue and SetParameter respectively.
+- Entity.put() renamed set().
 ### is.codion.framework.model
 - EntityQueryModel.conditions() renamed condition().
 - EntityEditModel.EntityEditor.isNull(attribute) replaced with EditorValue.present().

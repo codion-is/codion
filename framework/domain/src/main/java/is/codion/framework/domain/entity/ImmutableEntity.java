@@ -56,7 +56,7 @@ final class ImmutableEntity extends DefaultEntity implements Serializable {
 	}
 
 	@Override
-	public <T> T put(Attribute<T> attribute, T value) {
+	public <T> T set(Attribute<T> attribute, T value) {
 		throw new UnsupportedOperationException(ERROR_MESSAGE);
 	}
 

@@ -190,8 +190,8 @@ class DefaultEntity implements Entity, Serializable {
 	}
 
 	@Override
-	public @Nullable <T> T put(Attribute<T> attribute, @Nullable T value) {
-		return put(definition.attributes().definition(attribute), value);
+	public @Nullable <T> T set(Attribute<T> attribute, @Nullable T value) {
+		return set(definition.attributes().definition(attribute), value);
 	}
 
 	@Override
@@ -208,7 +208,7 @@ class DefaultEntity implements Entity, Serializable {
 	public void revert(Attribute<?> attribute) {
 		AttributeDefinition<?> attributeDefinition = definition.attributes().definition(attribute);
 		if (isModified(attribute)) {
-			put((AttributeDefinition<Object>) attributeDefinition, original(attributeDefinition));
+			set((AttributeDefinition<Object>) attributeDefinition, original(attributeDefinition));
 		}
 	}
 
@@ -436,7 +436,7 @@ class DefaultEntity implements Entity, Serializable {
 		return get(attributeDefinition);
 	}
 
-	private @Nullable <T> T put(AttributeDefinition<T> attributeDefinition, @Nullable T value) {
+	private @Nullable <T> T set(AttributeDefinition<T> attributeDefinition, @Nullable T value) {
 		T newValue = validateAndAdjustValue(attributeDefinition, value);
 		Attribute<T> attribute = attributeDefinition.attribute();
 		boolean initialization = !values.containsKey(attribute);
@@ -581,7 +581,7 @@ class DefaultEntity implements Entity, Serializable {
 			ForeignKey.Reference<?> reference = references.get(i);
 			if (!foreignKeyDefinition.readOnly(reference.column())) {
 				AttributeDefinition<Object> columnDefinition = definition.columns().definition((Column<Object>) reference.column());
-				put(columnDefinition, referencedEntity == null ? null : referencedEntity.get(reference.foreign()));
+				set(columnDefinition, referencedEntity == null ? null : referencedEntity.get(reference.foreign()));
 			}
 		}
 	}

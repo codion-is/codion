@@ -169,11 +169,11 @@ final class EntityPopupMenu extends JPopupMenu {
 			if (!entity.isNull(foreignKey)) {
 				ForeignKeyEntity foreignKeyEntity = new ForeignKeyEntity(foreignKey, select(key, connection));
 				if (visited.contains(foreignKeyEntity)) {
-					entity.put(foreignKey, duplicate(foreignKeyEntity.entity));
+					entity.set(foreignKey, duplicate(foreignKeyEntity.entity));
 				}
 				else {
 					visited.add(foreignKeyEntity);
-					entity.put(foreignKey, foreignKeyEntity.entity);
+					entity.set(foreignKey, foreignKeyEntity.entity);
 					populateEntityGraph(foreignKeyEntity.entity, connection, visited);
 				}
 			}

@@ -71,7 +71,7 @@ public interface Entity extends Comparable<Entity> {
 	 * @return the previous value
 	 * @throws UnsupportedOperationException in case this entity is immutable
 	 */
-	@Nullable <T> T put(Attribute<T> attribute, @Nullable T value);
+	@Nullable <T> T set(Attribute<T> attribute, @Nullable T value);
 
 	/**
 	 * Returns the value associated with {@code attribute}.

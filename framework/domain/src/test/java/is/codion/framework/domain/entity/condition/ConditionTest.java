@@ -246,7 +246,7 @@ public final class ConditionTest {
 		condition = Detail2.MASTER_FK.equalTo(master1);
 		assertEquals("(master_id IS NULL AND master_id_2 IS NULL)", condition.toString(detailDefinition));
 
-		master1.put(Master2.ID_2, 1);
+		master1.set(Master2.ID_2, 1);
 		condition = Detail2.MASTER_FK.equalTo(master1);
 		assertEquals("(master_id IS NULL AND master_id_2 = ?)", condition.toString(detailDefinition));
 

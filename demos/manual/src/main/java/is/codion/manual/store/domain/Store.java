@@ -198,7 +198,7 @@ public final class Store extends DomainModel {
 
 		@Override
 		public void beforeInsert(Entity entity, DatabaseConnection connection) {
-			entity.put(Customer.ID, UUID.randomUUID().toString());
+			entity.set(Customer.ID, UUID.randomUUID().toString());
 		}
 	}
 	// end::keyGenerator[]

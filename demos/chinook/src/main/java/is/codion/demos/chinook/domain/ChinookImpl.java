@@ -517,7 +517,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 		}
 
 		private static Entity updateTotal(Entity invoice) {
-			invoice.put(Invoice.TOTAL, invoice.optional(Invoice.CALCULATED_TOTAL).orElse(BigDecimal.ZERO));
+			invoice.set(Invoice.TOTAL, invoice.optional(Invoice.CALCULATED_TOTAL).orElse(BigDecimal.ZERO));
 
 			return invoice;
 		}
@@ -592,7 +592,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 		}
 
 		private static Entity raisePrice(Entity track, BigDecimal priceIncrease) {
-			track.put(Track.UNITPRICE, track.get(Track.UNITPRICE).add(priceIncrease));
+			track.set(Track.UNITPRICE, track.get(Track.UNITPRICE).add(priceIncrease));
 
 			return track;
 		}

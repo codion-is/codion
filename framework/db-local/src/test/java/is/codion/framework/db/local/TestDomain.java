@@ -331,7 +331,7 @@ public final class TestDomain extends DomainModel {
 			public void afterInsert(Entity entity, DatabaseConnection connection, Statement insertStatement) throws SQLException {
 				try (ResultSet generatedKeys = insertStatement.getGeneratedKeys()) {
 					if (generatedKeys.next()) {
-						entity.put(UUIDTestDefault.ID, (UUID) generatedKeys.getObject(1));
+						entity.set(UUIDTestDefault.ID, (UUID) generatedKeys.getObject(1));
 					}
 				}
 			}
@@ -363,7 +363,7 @@ public final class TestDomain extends DomainModel {
 		KeyGenerator uuidKeyGenerator = new KeyGenerator() {
 			@Override
 			public void beforeInsert(Entity entity, DatabaseConnection connection) {
-				entity.put(UUIDTestNoDefault.ID, UUID.randomUUID());
+				entity.set(UUIDTestNoDefault.ID, UUID.randomUUID());
 			}
 		};
 		add(UUIDTestNoDefault.TYPE.define(

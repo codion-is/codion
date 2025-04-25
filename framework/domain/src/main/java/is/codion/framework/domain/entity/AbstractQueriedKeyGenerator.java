@@ -50,7 +50,7 @@ abstract class AbstractQueriedKeyGenerator implements KeyGenerator {
 			}
 			ColumnDefinition<Object> column = (ColumnDefinition<Object>) entity.definition().primaryKey().definitions().get(0);
 			entity.remove(column.attribute());
-			entity.put(column.attribute(), column.get(resultSet, 1));
+			entity.set(column.attribute(), column.get(resultSet, 1));
 		}
 		catch (SQLException e) {
 			exception = e;

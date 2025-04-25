@@ -8,7 +8,7 @@
 :dir-chinook-source: ../../../../../demos/chinook/src/main/java
 :url-javadoc: link:../api
 
-A Codion domain model is based around the {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Entity.html[Entity] interface, which represents a row in a table, providing access to the column values via its *get()* and *put()* methods.
+A Codion domain model is based around the {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Entity.html[Entity] interface, which represents a row in a table, providing access to the column values via its *get()* and *set()* methods.
 
 == Domain core classes
 
@@ -63,7 +63,7 @@ Represents a row in a table (or query) and maps *Attributes* to their associated
 interface Entity {
     +Entity.Key primaryKey()
     +<T> T get(Attribute<T> attribute)
-    +<T> T put(Attribute<T> attribute, T value)
+    +<T> T set(Attribute<T> attribute, T value)
     +boolean modified()
 }
 -------------------------------------------
@@ -329,7 +329,7 @@ Note that boolean attributes always use the boolean Java type, the framework han
 
 [source,java]
 ----
-entity.put(Customer.ACTIVE, true);
+entity.set(Customer.ACTIVE, true);
 
 Boolean isActive = entity.get(Customer.ACTIVE);
 ----

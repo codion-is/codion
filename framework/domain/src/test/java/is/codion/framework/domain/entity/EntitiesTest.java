@@ -331,14 +331,14 @@ public final class EntitiesTest {
 			assertInstanceOf(NullValidationException.class, e);
 			assertEquals(Employee.DEPARTMENT_FK, e.attribute());
 		}
-		emp.put(Employee.DEPARTMENT_NO, 1);
+		emp.set(Employee.DEPARTMENT_NO, 1);
 		try {
 			validator.validate(emp);
 		}
 		catch (ValidationException e) {
 			fail();
 		}
-		emp.put(Employee.SALARY, null);
+		emp.set(Employee.SALARY, null);
 		try {
 			validator.validate(emp);
 			fail();
@@ -359,7 +359,7 @@ public final class EntitiesTest {
 						.build();
 		DefaultEntityValidator validator = new DefaultEntityValidator();
 		assertDoesNotThrow(() -> validator.validate(emp));
-		emp.put(Employee.NAME, "LooooongName");
+		emp.set(Employee.NAME, "LooooongName");
 		assertThrows(LengthValidationException.class, () -> validator.validate(emp));
 	}
 
@@ -374,9 +374,9 @@ public final class EntitiesTest {
 						.build();
 		DefaultEntityValidator validator = new DefaultEntityValidator();
 		assertDoesNotThrow(() -> validator.validate(emp));
-		emp.put(Employee.COMMISSION, 10d);
+		emp.set(Employee.COMMISSION, 10d);
 		assertThrows(RangeValidationException.class, () -> validator.validate(emp));
-		emp.put(Employee.COMMISSION, 2100d);
+		emp.set(Employee.COMMISSION, 2100d);
 		assertThrows(RangeValidationException.class, () -> validator.validate(emp));
 	}
 
@@ -402,11 +402,11 @@ public final class EntitiesTest {
 						.build();
 		DefaultEntityValidator validator = new DefaultEntityValidator();
 		assertThrows(LengthValidationException.class, () -> validator.validate(emp));
-		emp.put(Employee.NAME, "Name");
+		emp.set(Employee.NAME, "Name");
 		emp.save();
 
-		emp.put(Employee.ID, 10);//now it "exists"
-		emp.put(Employee.NAME, "1234567891000");
+		emp.set(Employee.ID, 10);//now it "exists"
+		emp.set(Employee.NAME, "1234567891000");
 		assertThrows(LengthValidationException.class, () -> validator.validate(emp));
 		emp.save();//but not modified
 		validator.validate(emp);
@@ -414,11 +414,11 @@ public final class EntitiesTest {
 		DefaultEntityValidator validator2 = new DefaultEntityValidator(true);
 
 		assertThrows(LengthValidationException.class, () -> validator2.validate(emp));
-		emp.put(Employee.NAME, "Name");
+		emp.set(Employee.NAME, "Name");
 		emp.save();
 
-		emp.put(Employee.ID, 10);//now it "exists"
-		emp.put(Employee.NAME, "1234567891000");
+		emp.set(Employee.ID, 10);//now it "exists"
+		emp.set(Employee.NAME, "1234567891000");
 		assertThrows(LengthValidationException.class, () -> validator2.validate(emp));
 		emp.save();//but not modified
 		assertThrows(LengthValidationException.class, () -> validator2.validate(emp));//strict
@@ -440,19 +440,19 @@ public final class EntitiesTest {
 	void validateTypeEntity() {
 		Entity entity = entities.entity(Detail.TYPE);
 		Entity entity1 = entities.entity(Detail.TYPE);
-		assertThrows(IllegalArgumentException.class, () -> entity.put(Detail.MASTER_FK, entity1));
+		assertThrows(IllegalArgumentException.class, () -> entity.set(Detail.MASTER_FK, entity1));
 	}
 
 	@Test
 	void setValueDerived() {
 		Entity entity = entities.entity(Detail.TYPE);
-		assertThrows(IllegalArgumentException.class, () -> entity.put(Detail.INT_DERIVED, 10));
+		assertThrows(IllegalArgumentException.class, () -> entity.set(Detail.INT_DERIVED, 10));
 	}
 
 	@Test
 	void setValueItem() {
 		Entity entity = entities.entity(Detail.TYPE);
-		assertThrows(IllegalArgumentException.class, () -> entity.put(Detail.INT_ITEMS, -10));
+		assertThrows(IllegalArgumentException.class, () -> entity.set(Detail.INT_ITEMS, -10));
 	}
 
 	@Test

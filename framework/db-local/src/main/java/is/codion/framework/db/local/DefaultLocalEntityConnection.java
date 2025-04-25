@@ -928,12 +928,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 					logEntry("populateForeignKeys", foreignKeyDefinition);
 					Collection<Key> referencedKeys = Entity.keys(foreignKey, entities);
 					if (referencedKeys.isEmpty()) {
-						entities.forEach(entity -> entity.put(foreignKey, null));
+						entities.forEach(entity -> entity.set(foreignKey, null));
 					}
 					else {
 						Map<Key, Entity> referencedEntitiesMappedByKey = queryReferencedEntities(foreignKeyDefinition,
 										new ArrayList<>(referencedKeys), currentForeignKeyFetchDepth, conditionOrForeignKeyFetchDepthLimit);
-						entities.forEach(entity -> entity.put(foreignKey,
+						entities.forEach(entity -> entity.set(foreignKey,
 										entity(entity.key(foreignKey), referencedEntitiesMappedByKey)));
 					}
 				}
