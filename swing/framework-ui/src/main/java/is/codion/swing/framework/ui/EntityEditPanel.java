@@ -234,7 +234,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 							.map(attribute -> entities.definition(attribute.entityType()).attributes().definition(attribute))
 							.sorted(new AttributeDefinitionComparator())
 							.collect(toList());
-			Dialogs.selectionDialog(sortedDefinitions)
+			Dialogs.listSelectionDialog(sortedDefinitions)
 							.owner(this)
 							.title(FrameworkMessages.selectInputField())
 							.selectSingle()

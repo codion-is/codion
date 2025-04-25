@@ -19,7 +19,6 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.swing.common.ui.control.Control;
 
@@ -32,62 +31,27 @@ import javax.swing.ListSelectionModel;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.disposeParentWindow;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.util.Collections.reverseOrder;
-import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
-import static java.util.ResourceBundle.getBundle;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 
-final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<SelectionDialogBuilder<T>>
-				implements SelectionDialogBuilder<T> {
+final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialogBuilder<T, ListSelectionDialogBuilder<T>>
+				implements ListSelectionDialogBuilder<T> {
 
-	private static final MessageBundle MESSAGES =
-					messageBundle(DefaultSelectionDialogBuilder.class, getBundle(DefaultSelectionDialogBuilder.class.getName()));
-
-	private static final int MAX_SELECT_VALUE_DIALOG_WIDTH = 500;
-
-	private final Collection<T> values;
-	private final Collection<T> defaultSelection = new ArrayList<>();
-	private boolean allowEmptySelection = false;
 	private Dimension dialogSize;
 
-	DefaultSelectionDialogBuilder(Collection<T> values) {
-		if (requireNonNull(values).isEmpty()) {
-			throw new IllegalArgumentException("One or more items to select from must be provided");
-		}
-		this.values = new ArrayList<>(values);
+	DefaultListSelectionDialogBuilder(Collection<T> values) {
+		super(values);
 	}
 
 	@Override
-	public SelectionDialogBuilder<T> defaultSelection(T defaultSelection) {
-		return defaultSelection(singletonList(requireNonNull(defaultSelection)));
-	}
-
-	@Override
-	public SelectionDialogBuilder<T> defaultSelection(Collection<T> defaultSelection) {
-		if (!values.containsAll(requireNonNull(defaultSelection))) {
-			throw new IllegalArgumentException("defaultSelection was not found in selection items");
-		}
-		this.defaultSelection.addAll(defaultSelection);
-		return this;
-	}
-
-	@Override
-	public SelectionDialogBuilder<T> allowEmptySelection(boolean allowEmptySelection) {
-		this.allowEmptySelection = allowEmptySelection;
-		return this;
-	}
-
-	@Override
-	public SelectionDialogBuilder<T> dialogSize(Dimension dialogSize) {
+	public ListSelectionDialogBuilder<T> dialogSize(Dimension dialogSize) {
 		this.dialogSize = requireNonNull(dialogSize);
 		return this;
 	}

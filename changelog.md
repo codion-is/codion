@@ -27,6 +27,8 @@ Codion Change Log
 - AbstractComponentBuilder no longer throws exception if the specified ValidIndicatorFactory is not found.
 - ValidIndicatorFactory.instance() overloaded with factoryClassName parameter.
 - DefaultFileSelectionDialogBuilder.selectFileToSave() and selectFilesOrDirectories() bug fixed, incorrect class used for synchronization.
+- SelectionDialogBuilder split into ListSelectionDialogBuilder and ComboBoxSelectionDialogBuilder.
+- Dialogs.selectionDialog() renamed listSelectionDialog() and comboBoxSelectionDialog() added.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel.Builder.applicationModelFactory() and applicationPanelFactory() renamed applicationModel() and applicationPanel().
 - EntityApplicationPanel.createLogControls() now protected final.

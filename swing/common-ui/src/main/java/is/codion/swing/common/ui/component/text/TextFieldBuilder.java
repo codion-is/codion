@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.dialog.SelectionDialogBuilder.SingleSelector;
+import is.codion.swing.common.ui.dialog.ListSelectionDialogBuilder.SingleSelector;
 
 import javax.swing.Action;
 import javax.swing.JTextField;

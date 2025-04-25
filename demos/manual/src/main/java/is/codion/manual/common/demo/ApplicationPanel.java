@@ -32,7 +32,7 @@ import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.dialog.SelectionDialogBuilder.SingleSelector;
+import is.codion.swing.common.ui.dialog.ListSelectionDialogBuilder.SingleSelector;
 import is.codion.swing.common.ui.icon.Logos;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
@@ -365,7 +365,7 @@ public final class ApplicationPanel extends JPanel {
 
 		@Override
 		public Optional<String> select(JComponent dialogOwner) {
-			return Dialogs.selectionDialog(STRINGS_TO_SELECT_FROM)
+			return Dialogs.listSelectionDialog(STRINGS_TO_SELECT_FROM)
 							.owner(dialogOwner)
 							.defaultSelection(DEFAULT_SELECTION)
 							.selectSingle();

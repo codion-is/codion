@@ -22,8 +22,8 @@ import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTask;
 import is.codion.swing.common.model.worker.ProgressWorker.ResultTask;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control.Command;
-import is.codion.swing.common.ui.dialog.SelectionDialogBuilder.MultiSelector;
-import is.codion.swing.common.ui.dialog.SelectionDialogBuilder.SingleSelector;
+import is.codion.swing.common.ui.dialog.ListSelectionDialogBuilder.MultiSelector;
+import is.codion.swing.common.ui.dialog.ListSelectionDialogBuilder.SingleSelector;
 
 import javax.swing.JComponent;
 import java.awt.Window;
@@ -116,11 +116,21 @@ public final class Dialogs {
 	/**
 	 * @param values the values to select from
 	 * @param <T> the value type
-	 * @return a new selection dialog builder
+	 * @return a new {@link javax.swing.JList} based selection dialog builder
 	 * @throws IllegalArgumentException in case values is empty
 	 */
-	public static <T> SelectionDialogBuilder<T> selectionDialog(Collection<T> values) {
-		return new DefaultSelectionDialogBuilder<>(values);
+	public static <T> ListSelectionDialogBuilder<T> listSelectionDialog(Collection<T> values) {
+		return new DefaultListSelectionDialogBuilder<>(values);
+	}
+
+	/**
+	 * @param values the values to select from
+	 * @param <T> the value type
+	 * @return a new {@link javax.swing.JComboBox} based selection dialog builder
+	 * @throws IllegalArgumentException in case values is empty
+	 */
+	public static <T> ComboBoxSelectionDialogBuilder<T> comboBoxSelectionDialog(Collection<T> values) {
+		return new DefaultComboBoxSelectionDialogBuilder<>(values);
 	}
 
 	/**
@@ -178,7 +188,7 @@ public final class Dialogs {
 	 */
 	public static <T> SingleSelector<T> singleSelector(Supplier<Collection<T>> valueSupplier) {
 		requireNonNull(valueSupplier);
-		return dialogOwner -> selectionDialog(valueSupplier.get())
+		return dialogOwner -> listSelectionDialog(valueSupplier.get())
 						.owner(dialogOwner)
 						.selectSingle();
 	}
@@ -191,7 +201,7 @@ public final class Dialogs {
 	 */
 	public static <T> MultiSelector<T> multiSelector(Supplier<Collection<T>> valueSupplier) {
 		requireNonNull(valueSupplier);
-		return dialogOwner -> selectionDialog(valueSupplier.get())
+		return dialogOwner -> listSelectionDialog(valueSupplier.get())
 						.owner(dialogOwner)
 						.select();
 	}

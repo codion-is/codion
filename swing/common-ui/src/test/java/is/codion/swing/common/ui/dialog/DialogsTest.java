@@ -154,7 +154,12 @@ public final class DialogsTest {
 
 	@Test
 	void selectionDialog() {
-		Dialogs.selectionDialog(Collections.singletonList("hello"))
+		Dialogs.listSelectionDialog(Collections.singletonList("hello"))
+						.owner(new JLabel())
+						.title("title")
+						.allowEmptySelection(true)
+						.defaultSelection("hello");
+		Dialogs.comboBoxSelectionDialog(Collections.singletonList("hello"))
 						.owner(new JLabel())
 						.title("title")
 						.allowEmptySelection(true)
@@ -163,12 +168,15 @@ public final class DialogsTest {
 
 	@Test
 	void selectionDialogNoItems() {
-		assertThrows(IllegalArgumentException.class, () -> Dialogs.selectionDialog(Collections.emptyList()));
+		assertThrows(IllegalArgumentException.class, () -> Dialogs.listSelectionDialog(Collections.emptyList()));
+		assertThrows(IllegalArgumentException.class, () -> Dialogs.comboBoxSelectionDialog(Collections.emptyList()));
 	}
 
 	@Test
 	void selectionDialogNonExistingDefaultSelection() {
-		assertThrows(IllegalArgumentException.class, () -> Dialogs.selectionDialog(Collections.singletonList("helloist"))
+		assertThrows(IllegalArgumentException.class, () -> Dialogs.listSelectionDialog(Collections.singletonList("helloist"))
+						.defaultSelection("hello"));
+		assertThrows(IllegalArgumentException.class, () -> Dialogs.comboBoxSelectionDialog(Collections.singletonList("helloist"))
 						.defaultSelection("hello"));
 	}
 }
