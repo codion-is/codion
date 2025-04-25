@@ -31,7 +31,6 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
 import java.io.Serial;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -55,9 +54,7 @@ final class EntityKeyDeserializer extends StdDeserializer<Entity.Key> {
 		EntityDefinition definition = definitions.computeIfAbsent(node.get("entityType").asText(), entityObjectMapper.entities()::definition);
 		JsonNode values = node.get("values");
 		Entity.Key.Builder builder = entityObjectMapper.entities().builder(definition.type()).key();
-		Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
-		while (fields.hasNext()) {
-			Map.Entry<String, JsonNode> field = fields.next();
+		for (Map.Entry<String, JsonNode> field : values.properties()) {
 			ColumnDefinition<Object> columnDefinition =
 							definition.columns().definition((Column<Object>) definition.attributes().get(field.getKey()));
 			builder.with(columnDefinition.attribute(),

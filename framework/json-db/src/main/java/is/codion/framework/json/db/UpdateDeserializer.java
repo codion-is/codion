@@ -32,7 +32,6 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
 import java.io.Serial;
-import java.util.Iterator;
 import java.util.Map;
 
 final class UpdateDeserializer extends StdDeserializer<Update> {
@@ -58,9 +57,7 @@ final class UpdateDeserializer extends StdDeserializer<Update> {
 
 		Update.Builder updateBuilder = Update.where(condition);
 		JsonNode values = jsonNode.get("values");
-		Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
-		while (fields.hasNext()) {
-			Map.Entry<String, JsonNode> field = fields.next();
+		for (Map.Entry<String, JsonNode> field : values.properties()) {
 			Column<Object> column = definition.columns().definition((Column<Object>) definition.attributes().get(field.getKey())).attribute();
 			updateBuilder.set(column, entityObjectMapper.readValue(field.getValue().toString(), column.type().valueClass()));
 		}

@@ -33,7 +33,6 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import java.io.IOException;
 import java.io.Serial;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -85,9 +84,7 @@ final class EntityDeserializer extends StdDeserializer<Entity> {
 
 	private Map<Attribute<?>, Object> attributeValueMap(EntityDefinition definition, JsonNode values) throws JsonProcessingException {
 		Map<Attribute<?>, Object> valueMap = new HashMap<>();
-		Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
-		while (fields.hasNext()) {
-			Map.Entry<String, JsonNode> field = fields.next();
+		for (Map.Entry<String, JsonNode> field : values.properties()) {
 			AttributeDefinition<?> attributeDefinition = definition.attributes()
 							.definition(definition.attributes().get(field.getKey()));
 			valueMap.put(attributeDefinition.attribute(),
