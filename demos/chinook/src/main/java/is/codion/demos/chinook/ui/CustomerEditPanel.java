@@ -18,18 +18,22 @@
  */
 package is.codion.demos.chinook.ui;
 
-import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JPanel;
-import java.util.Collection;
-import java.util.function.Supplier;
+import javax.swing.JTextField;
+import java.awt.event.ActionEvent;
 
 import static is.codion.demos.chinook.domain.api.Chinook.Customer;
 import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
+import static is.codion.swing.common.ui.dialog.Dialogs.listSelectionDialog;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
+import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
+import static java.awt.event.KeyEvent.VK_SPACE;
 
 public final class CustomerEditPanel extends EntityEditPanel {
 
@@ -58,9 +62,11 @@ public final class CustomerEditPanel extends EntityEditPanel {
 		createTextField(Customer.STATE)
 						.columns(4)
 						.upperCase(true)
-						// CTRL-SPACE displays a dialog for
-						// selecting one of the supplied values
-						.selector(Dialogs.singleSelector(new StatesSupplier()));
+						// CTRL-SPACE displays a dialog for selecting
+						// a State from existing column values
+						.keyEvent(KeyEvents.builder(VK_SPACE)
+										.modifiers(CTRL_DOWN_MASK)
+										.action(Control.action(this::selectState)));
 		createTextField(Customer.COUNTRY)
 						.columns(8);
 		createTextField(Customer.PHONE)
@@ -98,11 +104,11 @@ public final class CustomerEditPanel extends EntityEditPanel {
 		addInputPanel(Customer.SUPPORTREP_FK);
 	}
 
-	private class StatesSupplier implements Supplier<Collection<String>> {
-
-		@Override
-		public Collection<String> get() {
-			return editModel().connection().select(Customer.STATE);
-		}
+	private void selectState(ActionEvent event) {
+		JTextField stateField = (JTextField) event.getSource();
+		listSelectionDialog(editModel().connection().select(Customer.STATE))
+						.owner(stateField)
+						.selectSingle()
+						.ifPresent(stateField::setText);
 	}
 }

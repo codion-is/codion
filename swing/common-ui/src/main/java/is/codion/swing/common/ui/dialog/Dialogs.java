@@ -22,13 +22,10 @@ import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTask;
 import is.codion.swing.common.model.worker.ProgressWorker.ResultTask;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control.Command;
-import is.codion.swing.common.ui.dialog.ListSelectionDialogBuilder.MultiSelector;
-import is.codion.swing.common.ui.dialog.ListSelectionDialogBuilder.SingleSelector;
 
 import javax.swing.JComponent;
 import java.awt.Window;
 import java.util.Collection;
-import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -178,32 +175,6 @@ public final class Dialogs {
 	 */
 	public static <T> InputDialogBuilder<T> inputDialog(ComponentValue<T, ?> componentValue) {
 		return new DefaultInputDialogBuilder<>(componentValue);
-	}
-
-	/**
-	 * Returns a {@link SingleSelector} implmentation based on a selection dialog.
-	 * @param valueSupplier supplies the values for the selection dialog
-	 * @param <T> the type of values being looked up
-	 * @return a new {@link SingleSelector} based on a selection dialog
-	 */
-	public static <T> SingleSelector<T> singleSelector(Supplier<Collection<T>> valueSupplier) {
-		requireNonNull(valueSupplier);
-		return dialogOwner -> listSelectionDialog(valueSupplier.get())
-						.owner(dialogOwner)
-						.selectSingle();
-	}
-
-	/**
-	 * Returns a {@link MultiSelector} implmentation based on a selection dialog.
-	 * @param valueSupplier supplies the values for the selection dialog
-	 * @param <T> the type of values being looked up
-	 * @return a new {@link MultiSelector} based on a selection dialog
-	 */
-	public static <T> MultiSelector<T> multiSelector(Supplier<Collection<T>> valueSupplier) {
-		requireNonNull(valueSupplier);
-		return dialogOwner -> listSelectionDialog(valueSupplier.get())
-						.owner(dialogOwner)
-						.select();
 	}
 
 	/**

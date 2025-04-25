@@ -19,7 +19,6 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.dialog.ListSelectionDialogBuilder.SingleSelector;
 
 import javax.swing.Action;
 import javax.swing.JTextField;
@@ -58,13 +57,6 @@ public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBu
 	 * @see JTextField#addActionListener(ActionListener)
 	 */
 	B actionListener(ActionListener actionListener);
-
-	/**
-	 * Adds a CTRL-SPACE action the given text field allowing the user to select a value to display in the field
-	 * @param selector the selector providing the values to select from
-	 * @return this builder instance
-	 */
-	B selector(SingleSelector<T> selector);
 
 	/**
 	 * Associates the given format with the text field. Note that the format instance is

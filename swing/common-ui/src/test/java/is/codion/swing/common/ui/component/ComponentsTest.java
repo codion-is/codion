@@ -80,7 +80,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import static is.codion.common.item.Item.item;
@@ -570,7 +569,6 @@ public final class ComponentsTest {
 						.upperCase(true)
 						.selectAllOnFocusGained(true)
 						.action(Control.command(() -> {}))
-						.selector(component -> Optional.empty())
 						.format(null)
 						.horizontalAlignment(SwingConstants.CENTER)
 						.link(value)

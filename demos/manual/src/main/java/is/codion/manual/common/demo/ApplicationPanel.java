@@ -32,32 +32,32 @@ import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.dialog.ListSelectionDialogBuilder.SingleSelector;
 import is.codion.swing.common.ui.icon.Logos;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.TransferHandler;
 import java.awt.BorderLayout;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.event.ActionEvent;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Random;
 import java.util.function.Predicate;
 
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
+import static is.codion.swing.common.ui.dialog.Dialogs.listSelectionDialog;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
@@ -105,7 +105,10 @@ public final class ApplicationPanel extends JPanel {
 						.selectAllOnFocusGained(true)
 						.transferFocusOnEnter(true)
 						.validIndicator(new PGValidator())
-						.selector(new StringSelector())
+						// CTRL-SPACE displays a dialog for selecting a value
+						.keyEvent(KeyEvents.builder(VK_SPACE)
+										.modifiers(CTRL_DOWN_MASK)
+										.action(Control.action(ApplicationPanel::selectString)))
 						.label(label("Short String (1)")
 										.displayedMnemonic('1')
 										.build(inputPanel::add))
@@ -337,6 +340,16 @@ public final class ApplicationPanel extends JPanel {
 		Sizes.setPreferredWidth(this, 400);
 	}
 
+	private static void selectString(ActionEvent event) {
+		JTextField stringField = (JTextField) event.getSource();
+
+		listSelectionDialog(List.of("a", "few", "short", "strings", "to", "choose", "from"))
+						.owner(stringField)
+						.defaultSelection("strings")
+						.selectSingle()
+						.ifPresent(stringField::setText);
+	}
+
 	private static class PGValidator implements Predicate<String> {
 
 		private static final List<String> SWEAR_WORDS = List.of("fuck", "shit");
@@ -353,22 +366,6 @@ public final class ApplicationPanel extends JPanel {
 			}
 
 			return true;
-		}
-	}
-
-	private static class StringSelector implements SingleSelector<String> {
-
-		private static final String DEFAULT_SELECTION = "strings";
-
-		private static final List<String> STRINGS_TO_SELECT_FROM =
-						List.of("a", "few", "short", "strings", "to", "choose", "from");
-
-		@Override
-		public Optional<String> select(JComponent dialogOwner) {
-			return Dialogs.listSelectionDialog(STRINGS_TO_SELECT_FROM)
-							.owner(dialogOwner)
-							.defaultSelection(DEFAULT_SELECTION)
-							.selectSingle();
 		}
 	}
 

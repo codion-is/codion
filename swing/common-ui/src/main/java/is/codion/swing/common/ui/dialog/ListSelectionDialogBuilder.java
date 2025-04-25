@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import javax.swing.JComponent;
 import java.awt.Dimension;
 import java.util.Collection;
 import java.util.Optional;
@@ -46,32 +45,4 @@ public interface ListSelectionDialogBuilder<T> extends SelectionDialogBuilder<T,
 	 * @throws is.codion.common.model.CancelException in case the user cancelled
 	 */
 	Collection<T> select();
-
-	/**
-	 * Provides the user with the ability to select a single value.
-	 * @param <T> the value type
-	 */
-	interface SingleSelector<T> {
-
-		/**
-		 * @param dialogOwner the dialog owner
-		 * @return the selected value, an empty Optional if nothing was selected
-		 * @throws is.codion.common.model.CancelException in case the user cancelled
-		 */
-		Optional<T> select(JComponent dialogOwner);
-	}
-
-	/**
-	 * Provides the user with the ability to select one or more values.
-	 * @param <T> the value type
-	 */
-	interface MultiSelector<T> {
-
-		/**
-		 * @param dialogOwner the dialog owner
-		 * @return the selected values, an empty Collections if nothing was selected
-		 * @throws is.codion.common.model.CancelException in case the user cancelled
-		 */
-		Collection<T> select(JComponent dialogOwner);
-	}
 }
