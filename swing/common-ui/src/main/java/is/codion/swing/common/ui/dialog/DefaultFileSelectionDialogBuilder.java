@@ -122,7 +122,7 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 
 	@Override
 	public File selectFileToSave(String defaultFileName) {
-		synchronized (DefaultSelectionDialogBuilder.class) {
+		synchronized (DefaultFileSelectionDialogBuilder.class) {
 			if (fileChooserSave == null) {
 				if (owner != null) {
 					owner.setCursor(Cursors.WAIT);
@@ -213,7 +213,7 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 	}
 
 	private List<File> selectFilesOrDirectories(FilesOrDirectories filesOrDirectories, String defaultDialogTitle, boolean singleSelection) {
-		synchronized (DefaultSelectionDialogBuilder.class) {
+		synchronized (DefaultFileSelectionDialogBuilder.class) {
 			if (fileChooserOpen == null) {
 				if (owner != null) {
 					owner.setCursor(Cursors.WAIT);
