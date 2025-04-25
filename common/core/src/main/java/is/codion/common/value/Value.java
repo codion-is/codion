@@ -23,7 +23,7 @@ import is.codion.common.observable.Observable;
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import static java.util.Objects.requireNonNull;
 
@@ -106,7 +106,7 @@ public interface Value<T> extends Observable<T> {
 	 * @param mapper maps from the current value to a new value
 	 * @throws NullPointerException in case {@code mapper} is null
 	 */
-	default void map(Function<T, T> mapper) {
+	default void map(UnaryOperator<T> mapper) {
 		set(requireNonNull(mapper).apply(get()));
 	}
 

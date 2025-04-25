@@ -65,6 +65,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import static is.codion.common.Configuration.*;
 import static is.codion.common.resource.MessageBundle.messageBundle;
@@ -225,7 +226,7 @@ public class EntityPanel extends JPanel {
 	private final DetailController detailController;
 	private final Event<EntityPanel> activatedEvent = Event.event();
 	private final Value<PanelState> editPanelState;
-	private final Function<PanelState, PanelState> editPanelStateMapper;
+	private final UnaryOperator<PanelState> editPanelStateMapper;
 
 	private final Config configuration;
 	private final Controls.Layout controlsLayout;
@@ -1743,11 +1744,11 @@ public class EntityPanel extends JPanel {
 		}
 	}
 
-	static Function<PanelState, PanelState> panelStateMapper(Set<PanelState> states) {
+	static UnaryOperator<PanelState> panelStateMapper(Set<PanelState> states) {
 		return new PanelStateMapper(states);
 	}
 
-	private static final class PanelStateMapper implements Function<PanelState, PanelState> {
+	private static final class PanelStateMapper implements UnaryOperator<PanelState> {
 
 		private final List<PanelState> states;
 

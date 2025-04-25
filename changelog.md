@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.common.core
 - DefaultValue.DefaultBuilder now adds listeners in the order they were added to the builder.
 - Version.parse() input validation improved.
+- Value.map() parameter now UnaryOperator instead of Function.
 ### is.codion.common.model
 - FilterModel.VisibleItems and FilteredItems.get() annotated as NonNull.
 - FilterModel.Sorter renamed Sort, sorter() renamed sort().

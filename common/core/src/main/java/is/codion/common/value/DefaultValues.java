@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -197,9 +198,9 @@ class DefaultValues<T, C extends Collection<T>> extends DefaultValue<C> implemen
 					extends DefaultValue.DefaultBuilder<C, B> implements Values.Builder<T, C, B> {
 
 		private final Supplier<C> create;
-		private final Function<C, C> unmodifiable;
+		private final UnaryOperator<C> unmodifiable;
 
-		DefaultBuilder(Supplier<C> create, Function<C, C> unmodifiable) {
+		DefaultBuilder(Supplier<C> create, UnaryOperator<C> unmodifiable) {
 			super(requireNonNull(unmodifiable).apply(requireNonNull(create).get()));
 			this.create = create;
 			this.unmodifiable = unmodifiable;

@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -362,7 +362,7 @@ public class ValueTest {
 	@Test
 	void map() {
 		Value<Integer> value = Value.nullable(0);
-		Function<Integer, Integer> increment = currentValue -> currentValue + 1;
+		UnaryOperator<Integer> increment = currentValue -> currentValue + 1;
 		value.map(increment);
 		assertEquals(1, value.get());
 		value.map(currentValue -> null);

@@ -124,6 +124,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 import static is.codion.common.Configuration.*;
 import static is.codion.common.resource.MessageBundle.messageBundle;
@@ -1978,7 +1979,7 @@ public class EntityTablePanel extends JPanel {
 		}
 	}
 
-	private static final class ReplaceIfNull implements Function<Controls, Controls> {
+	private static final class ReplaceIfNull implements UnaryOperator<Controls> {
 
 		private final Supplier<Controls> controls;
 

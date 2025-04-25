@@ -25,7 +25,7 @@ import is.codion.common.value.Value;
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 final class DefaultState implements State {
 
@@ -62,7 +62,7 @@ final class DefaultState implements State {
 	}
 
 	@Override
-	public void map(Function<Boolean, Boolean> mapper) {
+	public void map(UnaryOperator<Boolean> mapper) {
 		synchronized (this.value) {
 			this.value.map(mapper);
 		}

@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
@@ -121,7 +121,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 	}
 
 	@Override
-	public final void map(Function<T, T> mapper) {
+	public final void map(UnaryOperator<T> mapper) {
 		Value.super.map(mapper);
 	}
 

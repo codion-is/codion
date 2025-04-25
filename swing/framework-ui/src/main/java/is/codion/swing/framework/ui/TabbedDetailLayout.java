@@ -61,7 +61,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.resource.MessageBundle.messageBundle;
@@ -457,7 +457,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 	private final class TabbedDetailController implements DetailController {
 
 		private final Set<PanelState> panelStates;
-		private final Function<PanelState, PanelState> panelStateMapper;
+		private final UnaryOperator<PanelState> panelStateMapper;
 		private final Value<PanelState> panelState;
 
 		private TabbedDetailController(Set<PanelState> panelStates, PanelState initialState) {
