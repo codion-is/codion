@@ -98,7 +98,7 @@ final class CoverArtPanel extends JPanel {
 																		.command(this::removeCover)
 																		.smallIcon(ICONS.get(Foundation.MINUS))
 																		.enabled(imageSelected)))
-														.buttonBuilder(buttonBuilder -> buttonBuilder.transferFocusOnEnter(true))
+														.transferFocusOnEnter(true)
 														.buttonGap(0)
 														.build())
 										.build())

@@ -21,13 +21,16 @@ package is.codion.swing.common.ui.component.button;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
+import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.Action;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import java.awt.GridLayout;
+import java.util.stream.Stream;
 
 final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel, ButtonPanelBuilder>
 				implements ButtonPanelBuilder {
@@ -54,6 +57,14 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 		new ButtonControlHandler(panel, controls(), buttonBuilder(), toggleButtonBuilder());
 
 		return panel;
+	}
+
+	@Override
+	protected void enableTransferFocusOnEnter(JPanel panel, TransferFocusOnEnter transferFocusOnEnter) {
+		Stream.of(panel.getComponents())
+						.filter(JButton.class::isInstance)
+						.map(JButton.class::cast)
+						.forEach(transferFocusOnEnter::enable);
 	}
 
 	private JPanel createPanel() {
