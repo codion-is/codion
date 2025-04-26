@@ -112,26 +112,26 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 	}
 
 	@Override
-	public final B buttonBuilder(Consumer<ButtonBuilder<?, ?, ?>> buttonBuilder) {
-		requireNonNull(buttonBuilder).accept(this.buttonBuilder);
+	public final B button(Consumer<ButtonBuilder<?, ?, ?>> builder) {
+		requireNonNull(builder).accept(this.buttonBuilder);
 		return self();
 	}
 
 	@Override
-	public final B toggleButtonBuilder(Consumer<ToggleButtonBuilder<?, ?>> toggleButtonBuilder) {
-		requireNonNull(toggleButtonBuilder).accept(this.toggleButtonBuilder);
+	public final B toggleButton(Consumer<ToggleButtonBuilder<?, ?>> builder) {
+		requireNonNull(builder).accept(this.toggleButtonBuilder);
 		return self();
 	}
 
 	@Override
-	public final B checkBoxBuilder(Consumer<CheckBoxBuilder> checkBoxBuilder) {
-		requireNonNull(checkBoxBuilder).accept(this.checkBoxBuilder);
+	public final B checkBox(Consumer<CheckBoxBuilder> builder) {
+		requireNonNull(builder).accept(this.checkBoxBuilder);
 		return self();
 	}
 
 	@Override
-	public final B radioButtonBuilder(Consumer<RadioButtonBuilder> radioButtonBuilder) {
-		requireNonNull(radioButtonBuilder).accept(this.radioButtonBuilder);
+	public final B radioButton(Consumer<RadioButtonBuilder> builder) {
+		requireNonNull(builder).accept(this.radioButtonBuilder);
 		return self();
 	}
 

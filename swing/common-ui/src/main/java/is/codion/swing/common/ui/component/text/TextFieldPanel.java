@@ -267,7 +267,7 @@ public final class TextFieldPanel extends JPanel {
 						.buttonsFocusable(buttonFocusable)
 						.toolTipText(MESSAGES.getString("show_input_dialog"))
 						.preferredButtonSize(new Dimension(textField.getPreferredSize().height, textField.getPreferredSize().height))
-						.buttonBuilder(buttonBuilder -> buttonBuilder.onBuild(button::set))
+						.button(buttonBuilder -> buttonBuilder.onBuild(button::set))
 						.build(), BorderLayout.EAST);
 		if (caption != null) {
 			setBorder(BorderFactory.createTitledBorder(caption));

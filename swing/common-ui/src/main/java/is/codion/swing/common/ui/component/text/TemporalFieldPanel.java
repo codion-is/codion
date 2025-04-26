@@ -190,7 +190,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 		add(ButtonPanelBuilder.builder(calendarControl)
 						.buttonsFocusable(builder.buttonFocusable)
 						.preferredButtonSize(new Dimension(temporalField.getPreferredSize().height, temporalField.getPreferredSize().height))
-						.buttonBuilder(buttonBuilder -> buttonBuilder.onBuild(button::set))
+						.button(buttonBuilder -> buttonBuilder.onBuild(button::set))
 						.build(), BorderLayout.EAST);
 		addFocusListener(new InputFocusAdapter(temporalField));
 	}

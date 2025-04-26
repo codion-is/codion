@@ -85,29 +85,29 @@ public interface ControlPanelBuilder<C extends JComponent, B extends ControlPane
 
 	/**
 	 * Provides a way to configure the {@link ButtonBuilder} used by this {@link ControlPanelBuilder}.
-	 * @param buttonBuilder provides the button builder used to create buttons
+	 * @param builder provides the button builder used to create buttons
 	 * @return this builder instance
 	 */
-	B buttonBuilder(Consumer<ButtonBuilder<?, ?, ?>> buttonBuilder);
+	B button(Consumer<ButtonBuilder<?, ?, ?>> builder);
 
 	/**
 	 * Provides a way to configure the {@link ToggleButtonBuilder} used by this {@link ControlPanelBuilder}.
-	 * @param toggleButtonBuilder provides the toggle button builder used to create toggle buttons
+	 * @param builder provides the toggle button builder used to create toggle buttons
 	 * @return this builder instance
 	 */
-	B toggleButtonBuilder(Consumer<ToggleButtonBuilder<?, ?>> toggleButtonBuilder);
+	B toggleButton(Consumer<ToggleButtonBuilder<?, ?>> builder);
 
 	/**
 	 * Provides a way to configure the {@link CheckBoxBuilder} used by this {@link ControlPanelBuilder}.
-	 * @param checkBoxBuilder provides the toggle button builder used to create check boxes
+	 * @param builder provides the toggle button builder used to create check boxes
 	 * @return this builder instance
 	 */
-	B checkBoxBuilder(Consumer<CheckBoxBuilder> checkBoxBuilder);
+	B checkBox(Consumer<CheckBoxBuilder> builder);
 
 	/**
 	 * Provides a way to configure the {@link RadioButtonBuilder} used by this {@link ControlPanelBuilder}.
-	 * @param radioButtonBuilder provides the toggle button builder used to create radio buttons
+	 * @param builder provides the toggle button builder used to create radio buttons
 	 * @return this builder instance
 	 */
-	B radioButtonBuilder(Consumer<RadioButtonBuilder> radioButtonBuilder);
+	B radioButton(Consumer<RadioButtonBuilder> builder);
 }

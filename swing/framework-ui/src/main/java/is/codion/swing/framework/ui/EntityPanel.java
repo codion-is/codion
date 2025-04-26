@@ -1605,8 +1605,7 @@ public class EntityPanel extends JPanel {
 				return borderLayoutPanel()
 								.northComponent(buttonPanel(controls)
 												.orientation(VERTICAL)
-												.buttonBuilder(buttonBuilder ->
-																buttonBuilder.horizontalAlignment(SwingConstants.LEADING))
+												.button(button -> button.horizontalAlignment(SwingConstants.LEADING))
 												.build())
 								.build();
 			}

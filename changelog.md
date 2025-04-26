@@ -34,6 +34,7 @@ Codion Change Log
 - Dialogs.singleSelector() and multiSelector() removed.
 - TextFieldBuilder.selector() removed.
 - DefaultButtonPanelBuilder.enableTransferFocusOnEnter() implemented.
+- ControlPanelBuilder, Builder suffix removed from a few methods.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel.Builder.applicationModelFactory() and applicationPanelFactory() renamed applicationModel() and applicationPanel().
 - EntityApplicationPanel.createLogControls() now protected final.
