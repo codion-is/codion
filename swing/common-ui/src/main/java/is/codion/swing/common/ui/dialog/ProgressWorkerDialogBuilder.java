@@ -24,6 +24,7 @@ import is.codion.swing.common.ui.control.Control;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import java.awt.Dimension;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -97,6 +98,12 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
 	 * @return this Builder instance
 	 */
 	ProgressWorkerDialogBuilder<T, V> progressBarSize(Dimension progressBarSize);
+
+	/**
+	 * @param onPublish called on the Event Dispatch Thread when chunks are available for publishing
+	 * @return this builder instance
+	 */
+	ProgressWorkerDialogBuilder<T, V> onPublish(Consumer<List<V>> onPublish);
 
 	/**
 	 * @param onResult executed on the Event Dispatch Thread after a successful run

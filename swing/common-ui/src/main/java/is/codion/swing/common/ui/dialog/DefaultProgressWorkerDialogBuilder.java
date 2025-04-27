@@ -41,6 +41,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 	private final ProgressDialog.Builder progressDialogBuilder;
 
 	private Consumer<T> onResult = result -> {};
+	private Consumer<List<V>> onPublish;
 	private Consumer<Exception> onException = new DisplayExceptionInDialog();
 
 	DefaultProgressWorkerDialogBuilder(ProgressResultTask<T, V> progressTask) {
@@ -110,6 +111,12 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 	}
 
 	@Override
+	public ProgressWorkerDialogBuilder<T, V> onPublish(Consumer<List<V>> onPublish) {
+		this.onPublish = requireNonNull(onPublish);
+		return this;
+	}
+
+	@Override
 	public ProgressWorkerDialogBuilder<T, V> onResult(Runnable onResult) {
 		return onResult(result -> onResult.run());
 	}
@@ -160,13 +167,20 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 		return progressWorkerBuilder
 						.onStarted(() -> progressDialog.setVisible(true))
 						.onProgress(progressDialog::setProgress)
-						.onPublish(chunks -> progressDialog.setMessage(message(chunks)))
+						.onPublish(chunks -> publish(chunks, progressDialog))
 						.onDone(() -> closeDialog(progressDialog))
 						.onResult(result -> onResult(result, progressDialog))
 						.onInterrupted(() -> closeDialog(progressDialog))
 						.onException(exception -> onException(exception, progressDialog))
 						.onCancelled(() -> closeDialog(progressDialog))
 						.build();
+	}
+
+	private void publish(List<V> chunks, ProgressDialog progressDialog) {
+		progressDialog.setMessage(message(chunks));
+		if (onPublish != null) {
+			onPublish.accept(chunks);
+		}
 	}
 
 	private String message(List<V> chunks) {
