@@ -22,20 +22,24 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.key.TransferFocusOnEnter;
+import is.codion.swing.common.ui.layout.FlexibleGridLayout;
 import is.codion.swing.common.ui.layout.Layouts;
 
+import javax.swing.AbstractButton;
 import javax.swing.Action;
-import javax.swing.JButton;
+import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
-import java.awt.GridLayout;
 import java.util.stream.Stream;
 
 final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel, ButtonPanelBuilder>
 				implements ButtonPanelBuilder {
 
 	private int buttonGap = Layouts.GAP.getOrThrow();
+	private boolean fixedButtonSize = true;
+	private ButtonGroup buttonGroup;
 
 	DefaultButtonPanelBuilder(Action... actions) {
 		this(Controls.controls(actions));
@@ -48,6 +52,18 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 	@Override
 	public ButtonPanelBuilder buttonGap(int buttonGap) {
 		this.buttonGap = buttonGap;
+		return this;
+	}
+
+	@Override
+	public ButtonPanelBuilder fixedButtonSize(boolean fixedButtonSize) {
+		this.fixedButtonSize = fixedButtonSize;
+		return this;
+	}
+
+	@Override
+	public ButtonPanelBuilder buttonGroup(ButtonGroup buttonGroup) {
+		this.buttonGroup = buttonGroup;
 		return this;
 	}
 
@@ -68,9 +84,19 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 	}
 
 	private JPanel createPanel() {
+		FlexibleGridLayout.Builder layout = FlexibleGridLayout.builder()
+						.fixColumnWidths(fixedButtonSize)
+						.fixRowHeights(fixedButtonSize);
+
 		return new JPanel(orientation() == SwingConstants.HORIZONTAL ?
-						new GridLayout(1, 0, buttonGap, 0) :
-						new GridLayout(0, 1, 0, buttonGap));
+						layout.rowsColumns(1, 0)
+										.horizontalGap(buttonGap)
+										.verticalGap(0)
+										.build() :
+						layout.rowsColumns(0, 1)
+										.horizontalGap(0)
+										.verticalGap(buttonGap)
+										.build());
 	}
 
 	private final class ButtonControlHandler extends ControlHandler {
@@ -100,7 +126,11 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 
 		@Override
 		void onToggleControl(ToggleControl toggleControl) {
-			panel.add(toggleButtonBuilder.toggleControl(toggleControl).build());
+			JToggleButton button = toggleButtonBuilder.toggleControl(toggleControl).build();
+			if (buttonGroup != null) {
+				buttonGroup.add(button);
+			}
+			panel.add(button);
 		}
 
 		@Override
@@ -112,7 +142,11 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 
 		@Override
 		void onAction(Action action) {
-			panel.add(buttonBuilder.action(action).build());
+			AbstractButton button = buttonBuilder.action(action).build();
+			if (buttonGroup != null) {
+				buttonGroup.add(button);
+			}
+			panel.add(button);
 		}
 	}
 }

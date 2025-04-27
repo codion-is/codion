@@ -22,6 +22,7 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 
 import javax.swing.Action;
+import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 
 import static java.util.Objects.requireNonNull;
@@ -37,6 +38,20 @@ public interface ButtonPanelBuilder extends ControlPanelBuilder<JPanel, ButtonPa
 	 * @return this builder instance
 	 */
 	ButtonPanelBuilder buttonGap(int buttonGap);
+
+	/**
+	 * Specifies whether the button grid sizing should be fixed according
+	 * to the largest button or flexible. Default false.
+	 * @param fixedButtonSize true if the button grid sizing should be fixed
+	 * @return this builder instance
+	 */
+	ButtonPanelBuilder fixedButtonSize(boolean fixedButtonSize);
+
+	/**
+	 * @param buttonGroup the button group to add all buttons to
+	 * @return this builder instance
+	 */
+	ButtonPanelBuilder buttonGroup(ButtonGroup buttonGroup);
 
 	/**
 	 * @return a new button panel builder
