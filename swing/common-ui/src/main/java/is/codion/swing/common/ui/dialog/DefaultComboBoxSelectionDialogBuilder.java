@@ -35,13 +35,22 @@ import static is.codion.swing.common.ui.component.Components.comboBox;
 final class DefaultComboBoxSelectionDialogBuilder<T> extends AbstractSelectionDialogBuilder<T, ComboBoxSelectionDialogBuilder<T>>
 				implements ComboBoxSelectionDialogBuilder<T> {
 
+	private T defaultSelection;
+
 	DefaultComboBoxSelectionDialogBuilder(Collection<T> values) {
 		super(values);
 	}
 
 	@Override
+	public ComboBoxSelectionDialogBuilder<T> defaultSelection(T defaultSelection) {
+		this.defaultSelection = defaultSelection;
+		return this;
+	}
+
+	@Override
 	public Optional<T> select() {
 		FilterComboBoxModel<T> comboBoxModel = FilterComboBoxModel.builder(values).build();
+		comboBoxModel.selection().item().set(defaultSelection);
 		JComboBox<T> comboBox = comboBox(comboBoxModel)
 						.build();
 		Control okControl = Control.builder()

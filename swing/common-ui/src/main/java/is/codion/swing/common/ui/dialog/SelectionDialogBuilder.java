@@ -18,27 +18,11 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import java.util.Collection;
-
 /**
  * A builder for a selection dialog.
  * @param <T> the value type
  */
 public interface SelectionDialogBuilder<T, B extends SelectionDialogBuilder<T, B>> extends DialogBuilder<B> {
-
-	/**
-	 * @param defaultSelection the item selected by default
-	 * @return this SelectionDialogBuilder instance
-	 * @throws IllegalArgumentException in case the selection values do not contain the default selection item
-	 */
-	B defaultSelection(T defaultSelection);
-
-	/**
-	 * @param defaultSelection the items selected by default
-	 * @return this SelectionDialogBuilder instance
-	 * @throws IllegalArgumentException in case the selection values do not contain the default selection items
-	 */
-	B defaultSelection(Collection<T> defaultSelection);
 
 	/**
 	 * @param allowEmptySelection if true then the dialog accepts an empty selection, default false

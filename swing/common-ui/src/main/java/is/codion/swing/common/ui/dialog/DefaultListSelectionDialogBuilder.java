@@ -31,6 +31,7 @@ import javax.swing.ListSelectionModel;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -38,16 +39,34 @@ import java.util.Optional;
 import static is.codion.swing.common.ui.Utilities.disposeParentWindow;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.util.Collections.reverseOrder;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 
 final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialogBuilder<T, ListSelectionDialogBuilder<T>>
 				implements ListSelectionDialogBuilder<T> {
 
+	private final Collection<T> defaultSelection = new ArrayList<>();
+
 	private Dimension dialogSize;
 
 	DefaultListSelectionDialogBuilder(Collection<T> values) {
 		super(values);
+	}
+
+	@Override
+	public ListSelectionDialogBuilder<T> defaultSelection(T defaultSelection) {
+		return defaultSelection(singletonList(requireNonNull(defaultSelection)));
+	}
+
+	@Override
+	public ListSelectionDialogBuilder<T> defaultSelection(Collection<T> defaultSelection) {
+		if (!values.containsAll(requireNonNull(defaultSelection))) {
+			throw new IllegalArgumentException("defaultSelection was not found in selection items");
+		}
+		this.defaultSelection.clear();
+		this.defaultSelection.addAll(defaultSelection);
+		return this;
 	}
 
 	@Override

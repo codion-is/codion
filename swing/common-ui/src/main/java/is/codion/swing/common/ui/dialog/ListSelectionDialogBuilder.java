@@ -29,8 +29,22 @@ import java.util.Optional;
 public interface ListSelectionDialogBuilder<T> extends SelectionDialogBuilder<T, ListSelectionDialogBuilder<T>> {
 
 	/**
+	 * @param defaultSelection the item selected by default
+	 * @return this builder instance
+	 * @throws IllegalArgumentException in case the selection values do not contain the default selection item
+	 */
+	ListSelectionDialogBuilder<T> defaultSelection(T defaultSelection);
+
+	/**
+	 * @param defaultSelection the items selected by default
+	 * @return this builder instance
+	 * @throws IllegalArgumentException in case the selection values do not contain the default selection items
+	 */
+	ListSelectionDialogBuilder<T> defaultSelection(Collection<T> defaultSelection);
+
+	/**
 	 * @param dialogSize the preferred dialog size
-	 * @return this SelectionDialogBuilder instance
+	 * @return this builder instance
 	 */
 	ListSelectionDialogBuilder<T> dialogSize(Dimension dialogSize);
 

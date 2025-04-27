@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
-import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 
@@ -37,7 +36,6 @@ abstract class AbstractSelectionDialogBuilder<T, B extends SelectionDialogBuilde
 					messageBundle(SelectionDialogBuilder.class, getBundle(SelectionDialogBuilder.class.getName()));
 
 	protected final Collection<T> values;
-	protected final Collection<T> defaultSelection = new ArrayList<>();
 	protected boolean allowEmptySelection = false;
 
 	AbstractSelectionDialogBuilder(Collection<T> values) {
@@ -45,20 +43,6 @@ abstract class AbstractSelectionDialogBuilder<T, B extends SelectionDialogBuilde
 			throw new IllegalArgumentException("One or more items to select from must be provided");
 		}
 		this.values = new ArrayList<>(values);
-	}
-
-	@Override
-	public final B defaultSelection(T defaultSelection) {
-		return defaultSelection(singletonList(requireNonNull(defaultSelection)));
-	}
-
-	@Override
-	public final B defaultSelection(Collection<T> defaultSelection) {
-		if (!values.containsAll(requireNonNull(defaultSelection))) {
-			throw new IllegalArgumentException("defaultSelection was not found in selection items");
-		}
-		this.defaultSelection.addAll(defaultSelection);
-		return (B) this;
 	}
 
 	@Override
