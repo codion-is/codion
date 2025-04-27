@@ -47,6 +47,7 @@ tasks.register<Jar>("domainJar") {
     include("**/domain/**/*")
     include("**/server/**/*")
     include("**/services/**/*")
+    include("**/i18n/**/*")
     includeEmptyDirs = false
     manifest {
         attributes["Automatic-Module-Name"] = "is." + project.name.replace("-", ".") + ".domain"
