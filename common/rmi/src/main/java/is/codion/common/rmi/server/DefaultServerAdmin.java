@@ -19,7 +19,6 @@
 package is.codion.common.rmi.server;
 
 import is.codion.common.property.PropertyStore;
-import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.user.User;
 
 import com.sun.management.GarbageCollectionNotificationInfo;
@@ -45,7 +44,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toSet;
 
 /**
  * A base server admin implementation.
@@ -87,52 +85,13 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 	}
 
 	@Override
-	public final List<GcEvent> gcEvents(long since) {
-		List<GcEvent> gcEvents;
-		synchronized (gcEventList) {
-			gcEvents = new LinkedList<>(gcEventList);
-		}
-		gcEvents.removeIf(gcEvent -> gcEvent.timestamp() < since);
-
-		return gcEvents;
-	}
-
-	@Override
-	public final ThreadStatistics threadStatistics() throws RemoteException {
-		ThreadMXBean bean = ManagementFactory.getThreadMXBean();
-		Map<Thread.State, Integer> threadStateMap = new EnumMap<>(Thread.State.class);
-		for (Long threadId : bean.getAllThreadIds()) {
-			threadStateMap.compute(bean.getThreadInfo(threadId).getThreadState(), (threadState, value) -> value == null ? 1 : value + 1);
-		}
-
-		return new DefaultThreadStatistics(bean.getThreadCount(), bean.getDaemonThreadCount(), threadStateMap);
-	}
-
-	@Override
 	public final Collection<User> users() throws RemoteException {
 		return server.users();
 	}
 
 	@Override
-	public final Collection<RemoteClient> clients(User user) throws RemoteException {
-		return server.clients(user);
-	}
-
-	@Override
-	public final Collection<RemoteClient> clients(String clientType) {
-		return server.clients(clientType);
-	}
-
-	@Override
 	public final Collection<RemoteClient> clients() {
 		return server.clients();
-	}
-
-	@Override
-	public final Collection<String> clientTypes() {
-		return clients().stream()
-						.map(ConnectionRequest::clientType)
-						.collect(toSet());
 	}
 
 	@Override
@@ -147,40 +106,10 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 	}
 
 	@Override
-	public int requestsPerSecond() {
-		return -1;
-	}
-
-	@Override
 	public final ServerStatistics serverStatistics(long since) throws RemoteException {
 		return new DefaultServerStatistics(System.currentTimeMillis(), connectionCount(), getConnectionLimit(),
 						usedMemory(), maxMemory(), totalMemory(), requestsPerSecond(), systemCpuLoad(),
 						processCpuLoad(), threadStatistics(), gcEvents(since));
-	}
-
-	@Override
-	public final long totalMemory() {
-		return RUNTIME.totalMemory();
-	}
-
-	@Override
-	public final long usedMemory() {
-		return RUNTIME.totalMemory() - RUNTIME.freeMemory();
-	}
-
-	@Override
-	public final long maxMemory() {
-		return RUNTIME.maxMemory();
-	}
-
-	@Override
-	public final double systemCpuLoad() throws RemoteException {
-		return ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getCpuLoad();
-	}
-
-	@Override
-	public final double processCpuLoad() throws RemoteException {
-		return ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getProcessCpuLoad();
 	}
 
 	@Override
@@ -197,6 +126,53 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 	public final void setConnectionLimit(int value) {
 		LOG.info("setConnectionLimit({})", value);
 		server.setConnectionLimit(value);
+	}
+
+	/**
+	 * @return the number of service requests per second
+	 */
+	protected int requestsPerSecond() {
+		return -1;
+	}
+
+	private static long totalMemory() {
+		return RUNTIME.totalMemory();
+	}
+
+	private static long usedMemory() {
+		return RUNTIME.totalMemory() - RUNTIME.freeMemory();
+	}
+
+	private static long maxMemory() {
+		return RUNTIME.maxMemory();
+	}
+
+	private static double systemCpuLoad() {
+		return ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getCpuLoad();
+	}
+
+	private static double processCpuLoad() {
+		return ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getProcessCpuLoad();
+	}
+
+	private List<GcEvent> gcEvents(long since) {
+		List<GcEvent> gcEvents;
+		synchronized (gcEventList) {
+			gcEvents = new LinkedList<>(gcEventList);
+		}
+		gcEvents.removeIf(gcEvent -> gcEvent.timestamp() < since);
+
+		return gcEvents;
+	}
+
+	private static ThreadStatistics threadStatistics() {
+		ThreadMXBean bean = ManagementFactory.getThreadMXBean();
+		Map<Thread.State, Integer> threadStateMap = new EnumMap<>(Thread.State.class);
+		for (Long threadId : bean.getAllThreadIds()) {
+			threadStateMap.compute(bean.getThreadInfo(threadId).getThreadState(), (threadState, value) -> value == null ? 1 : value + 1);
+		}
+
+		return new DefaultThreadStatistics(bean.getThreadCount(), bean.getDaemonThreadCount(), threadStateMap);
 	}
 
 	private void initializeGarbageCollectionListener() {

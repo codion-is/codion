@@ -131,11 +131,6 @@ final class DefaultEntityServerAdmin extends DefaultServerAdmin implements Entit
 	}
 
 	@Override
-	public int requestsPerSecond() {
-		return AbstractRemoteEntityConnection.requestsPerSecond();
-	}
-
-	@Override
 	public ConnectionPoolStatistics connectionPoolStatistics(String username, long since) {
 		return server.database().connectionPool(username).statistics(since);
 	}
@@ -260,5 +255,10 @@ final class DefaultEntityServerAdmin extends DefaultServerAdmin implements Entit
 	@Override
 	public void clearReportCache() throws RemoteException {
 		server.clearReportCache();
+	}
+
+	@Override
+	protected int requestsPerSecond() {
+		return AbstractRemoteEntityConnection.requestsPerSecond();
 	}
 }

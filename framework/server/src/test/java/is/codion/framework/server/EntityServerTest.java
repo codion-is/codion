@@ -185,14 +185,6 @@ public class EntityServerTest {
 		assertEquals(2, admin.connectionCount());
 		assertEquals(2, admin.clients().size());
 
-		Collection<RemoteClient> clients = admin.clients(User.user(UNIT_TEST_USER.username()));
-		assertEquals(2, clients.size());
-		clients = admin.clients("ClientType");
-		assertEquals(2, clients.size());
-		Collection<String> clientTypes = admin.clientTypes();
-		assertEquals(1, clientTypes.size());
-		assertTrue(clientTypes.contains("ClientType"));
-
 		Collection<User> users = admin.users();
 		assertEquals(1, users.size());
 		assertEquals(UNIT_TEST_USER, users.iterator().next());
@@ -254,15 +246,13 @@ public class EntityServerTest {
 						.clientType(testClientType)
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 		server.connect(connectionRequestJohn);
-		RemoteClient clientJohn = admin.clients(john).iterator().next();
-		assertNotNull(clientJohn.clientHost());
 		server.connect(connectionRequestHelen);
 		try {
 			server.connect(connectionRequestInvalid);
 			fail("Should not be able to connect with an invalid user");
 		}
 		catch (LoginException ignored) {/*ignored*/}
-		Collection<RemoteClient> employeesClients = admin.clients(testClientType);
+		Collection<RemoteClient> employeesClients = admin.clients();
 		assertEquals(2, employeesClients.size());
 		for (RemoteClient employeesClient : employeesClients) {
 			assertEquals(UNIT_TEST_USER, employeesClient.databaseUser());

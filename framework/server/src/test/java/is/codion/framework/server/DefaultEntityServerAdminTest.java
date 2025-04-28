@@ -88,7 +88,6 @@ public final class DefaultEntityServerAdminTest {
 			assertEquals(1000, admin.getPooledConnectionIdleTimeout(SCOTT));
 			admin.clientLog(connectionRequest.clientId());
 
-			admin.totalMemory();
 			admin.setIdleConnectionTimeout(30);
 			try {
 				admin.setIdleConnectionTimeout(-1);
@@ -105,16 +104,8 @@ public final class DefaultEntityServerAdminTest {
 			assertEquals(2, admin.domainOperations().get("TestDomain").size());
 			admin.clearReportCache();
 			assertEquals(500, admin.getMaintenanceInterval());
-			admin.maxMemory();
-			admin.requestsPerSecond();
-			try {
-				admin.threadStatistics();
-			}
-			catch (NullPointerException e) {/*Intermittent failure when run in Github actions*/}
-			admin.gcEvents(0);
 			admin.serverInformation();
 			admin.systemProperties();
-			admin.usedMemory();
 			admin.users();
 			admin.serverStatistics(System.currentTimeMillis());
 			admin.disconnectTimedOutClients();

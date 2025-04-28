@@ -9,6 +9,8 @@ Codion Change Log
 ### is.codion.common.model
 - FilterModel.VisibleItems and FilteredItems.get() annotated as NonNull.
 - FilterModel.Sorter renamed Sort, sorter() renamed sort().
+### is.codion.common.rmi
+- ServerAdmin, removed a few public accessors for values included in ServerStatistics, related cleanup.
 ### is.codion.framework.domain
 - Column.Getter and Setter renamed GetValue and SetParameter respectively.
 - Entity.put() renamed set().

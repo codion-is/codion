@@ -33,9 +33,8 @@ import java.util.UUID;
 public interface ServerAdmin extends Remote {
 
 	/**
-	 * Unregisters the connection from the server, if connection pooling is enabled
-	 * for the user the connection is pooled.
-	 * @param clientId the id of the client
+	 * Disconnects the given client from the server
+	 * @param clientId the id of the client to disconnect
 	 * @throws RemoteException in case of a communication error
 	 */
 	void disconnect(UUID clientId) throws RemoteException;
@@ -53,26 +52,6 @@ public interface ServerAdmin extends Remote {
 	Collection<RemoteClient> clients() throws RemoteException;
 
 	/**
-	 * @param user the user for which to retrieve the clients
-	 * @return the clients associated with the given user
-	 * @throws RemoteException in case of a communication error
-	 */
-	Collection<RemoteClient> clients(User user) throws RemoteException;
-
-	/**
-	 * @param clientType the type of clients to retrieve
-	 * @return the clients of the given type
-	 * @throws RemoteException in case of a communication error
-	 */
-	Collection<RemoteClient> clients(String clientType) throws RemoteException;
-
-	/**
-	 * @return the identifiers of the client types connected to the server
-	 * @throws RemoteException in case of an exception
-	 */
-	Collection<String> clientTypes() throws RemoteException;
-
-	/**
 	 * Shuts down the server
 	 * @throws RemoteException in case of a communication error
 	 */
@@ -83,12 +62,6 @@ public interface ServerAdmin extends Remote {
 	 * @throws RemoteException in case of an exception
 	 */
 	ServerInformation serverInformation() throws RemoteException;
-
-	/**
-	 * @return the number of service requests per second
-	 * @throws RemoteException in case of an exception
-	 */
-	int requestsPerSecond() throws RemoteException;
 
 	/**
 	 * @return the number of active connections
@@ -109,55 +82,10 @@ public interface ServerAdmin extends Remote {
 	void setConnectionLimit(int value) throws RemoteException;
 
 	/**
-	 * @return the total amount of memory allocated by the server process
-	 * @throws RemoteException in case of a communication error
-	 */
-	long totalMemory() throws RemoteException;
-
-	/**
-	 * @return the amount of memory being used by the server process
-	 * @throws RemoteException in case of a communication error
-	 */
-	long usedMemory() throws RemoteException;
-
-	/**
-	 * @return the maximum amount of memory available to the server process
-	 * @throws RemoteException in case of a communication error
-	 */
-	long maxMemory() throws RemoteException;
-
-	/**
-	 * @return the system cpu load, a negative number if not available
-	 * @throws RemoteException in case of a communication error
-	 * @see com.sun.management.OperatingSystemMXBean#getSystemCpuLoad()
-	 */
-	double systemCpuLoad() throws RemoteException;
-
-	/**
-	 * @return the java vm process cpu load, a negative number if not available
-	 * @throws RemoteException in case of a communication error
-	 * @see com.sun.management.OperatingSystemMXBean#getProcessCpuLoad()
-	 */
-	double processCpuLoad() throws RemoteException;
-
-	/**
 	 * @return the server system properties
 	 * @throws RemoteException in case of an exception
 	 */
 	String systemProperties() throws RemoteException;
-
-	/**
-	 * @param since the time since from which to get gc events
-	 * @return a list containing garbage collection notifications
-	 * @throws RemoteException in case of an exception
-	 */
-	List<GcEvent> gcEvents(long since) throws RemoteException;
-
-	/**
-	 * @return current thread statistics
-	 * @throws RemoteException in case of an exception
-	 */
-	ThreadStatistics threadStatistics() throws RemoteException;
 
 	/**
 	 * @param since the time since from which to retrieve statistics

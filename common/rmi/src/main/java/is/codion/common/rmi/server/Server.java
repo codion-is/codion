@@ -63,7 +63,7 @@ public interface Server<C extends Remote, A extends ServerAdmin> extends Remote 
 	A serverAdmin(User user) throws RemoteException, ServerAuthenticationException;
 
 	/**
-	 * Disconnects the connection identified by the given key.
+	 * Disconnects the connection identified by the given id.
 	 * @param clientId the UUID identifying the client that should be disconnected
 	 * @throws RemoteException in case of a communication error
 	 */

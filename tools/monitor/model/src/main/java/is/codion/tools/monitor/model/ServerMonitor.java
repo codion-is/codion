@@ -388,7 +388,7 @@ public final class ServerMonitor {
 	 */
 	public boolean serverReachable() {
 		try {
-			server.usedMemory();
+			server.connectionCount();
 			return true;
 		}
 		catch (Exception e) {
@@ -467,7 +467,7 @@ public final class ServerMonitor {
 							(Server<?, EntityServerAdmin>) LocateRegistry.getRegistry(hostName, registryPort).lookup(serverName);
 			EntityServerAdmin serverAdmin = theServer.serverAdmin(serverAdminUser);
 			//just some simple call to validate the remote connection
-			serverAdmin.usedMemory();
+			serverAdmin.connectionCount();
 			LOG.info("ServerMonitor connected to server: {}", serverName);
 			return serverAdmin;
 		}

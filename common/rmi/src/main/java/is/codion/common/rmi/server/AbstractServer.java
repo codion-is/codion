@@ -45,13 +45,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Predicate;
 
 import static java.lang.Runtime.getRuntime;
 import static java.util.Arrays.asList;
@@ -283,15 +281,10 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	 * @return info on all connected clients
 	 */
 	final Collection<RemoteClient> clients() {
-		return clients(remoteClient -> true);
-	}
-
-	/**
-	 * @param user the user
-	 * @return all clients connected with the given user
-	 */
-	final Collection<RemoteClient> clients(User user) {
-		return clients(remoteClient -> remoteClient.user().equals(requireNonNull(user)));
+		return connections().keySet().stream()
+						.map(RemoteClient::copy)
+						.map(AbstractServer::clearPasswords)
+						.collect(toList());
 	}
 
 	/**
@@ -349,14 +342,6 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	 * @throws RemoteException in case of an exception
 	 */
 	protected abstract void maintainConnections(Collection<ClientConnection<T>> connections) throws RemoteException;
-
-	/**
-	 * @param clientType the client type
-	 * @return all clients of the given type
-	 */
-	protected final Collection<RemoteClient> clients(String clientType) {
-		return clients(remoteClient -> Objects.equals(remoteClient.clientType(), requireNonNull(clientType)));
-	}
 
 	/**
 	 * @return the Registry instance
@@ -447,14 +432,6 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 			LOG.error("Starting auxiliary server", e);
 			throw new RuntimeException(e);
 		}
-	}
-
-	private Collection<RemoteClient> clients(Predicate<RemoteClient> predicate) {
-		return connections().keySet().stream()
-						.filter(predicate)
-						.map(RemoteClient::copy)
-						.map(AbstractServer::clearPasswords)
-						.collect(toList());
 	}
 
 	private static RemoteClient clearPasswords(RemoteClient remoteClient) {

@@ -115,7 +115,7 @@ public class AbstractServerTest {
 		clients.forEach(client -> assertEquals(0, client.databaseUser().password().length));
 		admin.users().forEach(user -> assertEquals(0, user.password().length));
 
-		RemoteClient client = server.clients(UNIT_TEST_USER).iterator().next();
+		RemoteClient client = server.clients().iterator().next();
 		client.connectionRequest();
 		client.clientHost();
 		client.clientVersion();
@@ -203,24 +203,10 @@ public class AbstractServerTest {
 	void admin() throws RemoteException {
 		ServerAdmin admin = server.getAdmin();
 		admin.clients();
-		admin.clientTypes();
-		admin.connectionCount();
 		admin.setConnectionLimit(10);
 		admin.getConnectionLimit();
-		admin.maxMemory();
-		admin.totalMemory();
-		admin.clients("test");
 		admin.users();
-		admin.clients(User.user("test"));
 		admin.systemProperties();
-		try {
-			admin.threadStatistics();
-		}
-		catch (NullPointerException e) {/*Intermittent failure when run in Github actions*/}
-		admin.gcEvents(System.currentTimeMillis());
-		admin.requestsPerSecond();
-		admin.systemCpuLoad();
-		admin.processCpuLoad();
 		ServerInformation serverInformation = admin.serverInformation();
 		serverInformation.serverName();
 		serverInformation.serverId();
