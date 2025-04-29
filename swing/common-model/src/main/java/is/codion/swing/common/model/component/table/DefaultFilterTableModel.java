@@ -18,9 +18,10 @@
  */
 package is.codion.swing.common.model.component.table;
 
-import is.codion.common.model.FilterModel;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.model.list.FilterListModel;
+import is.codion.swing.common.model.component.list.FilterListSelection;
 
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
@@ -89,7 +90,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public TableSelection<R> selection() {
+	public FilterListSelection<R> selection() {
 		return items.selection;
 	}
 
@@ -258,7 +259,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		private Predicate<R> validator = new ValidPredicate<>();
 		private Supplier<Map<C, ConditionModel<?>>> filterModelFactory;
 		private RefreshStrategy refreshStrategy = RefreshStrategy.CLEAR;
-		private boolean asyncRefresh = FilterModel.ASYNC_REFRESH.getOrThrow();
+		private boolean asyncRefresh = FilterListModel.ASYNC_REFRESH.getOrThrow();
 		private Function<FilterTableModel<R, C>, RowEditor<R, C>> rowEditorFactory = new DefaultRowEditorFactory<>();
 
 		DefaultBuilder(TableColumns<R, C> columns) {

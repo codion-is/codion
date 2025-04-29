@@ -16,9 +16,9 @@
  *
  * Copyright (c) 2023 - 2025, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.model.component;
+package is.codion.swing.common.model.component.list;
 
-import is.codion.common.model.FilterModel;
+import is.codion.common.model.list.FilterListModel;
 import is.codion.swing.common.model.worker.ProgressWorker;
 
 import javax.swing.SwingUtilities;
@@ -27,17 +27,17 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
- * A default swing based {@link FilterModel.Refresher}.
+ * A default swing based {@link FilterListModel.Refresher}.
  * @param <T> the model row type
  */
-public abstract class AbstractFilterModelRefresher<T> extends FilterModel.AbstractRefresher<T> {
+public abstract class AbstractFilterListModelRefresher<T> extends FilterListModel.AbstractRefresher<T> {
 
 	private ProgressWorker<Collection<T>, ?> refreshWorker;
 
 	/**
 	 * @param supplier supplies the items
 	 */
-	protected AbstractFilterModelRefresher(Supplier<Collection<T>> supplier) {
+	protected AbstractFilterListModelRefresher(Supplier<Collection<T>> supplier) {
 		super(supplier);
 	}
 

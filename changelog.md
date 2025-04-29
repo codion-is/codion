@@ -9,6 +9,7 @@ Codion Change Log
 ### is.codion.common.model
 - FilterModel.VisibleItems and FilteredItems.get() annotated as NonNull.
 - FilterModel.Sorter renamed Sort, sorter() renamed sort().
+- FilterModel renamed FilterListModel and moved to list package.
 ### is.codion.common.rmi
 - ServerAdmin, removed a few public accessors for values included in ServerStatistics, related cleanup.
 ### is.codion.framework.domain
@@ -17,6 +18,8 @@ Codion Change Log
 ### is.codion.framework.model
 - EntityQueryModel.conditions() renamed condition().
 - EntityEditModel.EntityEditor.isNull(attribute) replaced with EditorValue.present().
+### is.codion.swing.common.model
+- FilterTableModel.TableSelection moved to list package and renamed FilterListSelection, related refactoring.
 ### is.codion.swing.common.ui
 - LookAndFeelSelectionDialogBuilder.createControl() overloaded without parameter.
 - BackgroundColorValidIndicator bug fixed, did not refresh state when colors changed during updateUI().

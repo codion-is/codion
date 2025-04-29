@@ -27,7 +27,7 @@ import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.component.AbstractFilterModelRefresher;
+import is.codion.swing.common.model.component.list.AbstractFilterListModelRefresher;
 
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -790,7 +790,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 	}
 
-	private final class DefaultRefresher extends AbstractFilterModelRefresher<T> {
+	private final class DefaultRefresher extends AbstractFilterListModelRefresher<T> {
 
 		private DefaultRefresher(Supplier<Collection<T>> supplier) {
 			super(supplier);

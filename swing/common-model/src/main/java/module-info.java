@@ -20,8 +20,8 @@
  * Common Swing model classes, such as:
  * <ul>
  * <li>{@link is.codion.swing.common.model.component.combobox.FilterComboBoxModel}
+ * <li>{@link is.codion.swing.common.model.component.list.FilterListSelection}
  * <li>{@link is.codion.swing.common.model.component.table.FilterTableModel}
- * <li>{@link is.codion.swing.common.model.component.table.FilterTableModel.TableSelection}
  * <li>{@link is.codion.swing.common.model.worker.ProgressWorker}
  * </ul>
  */
@@ -32,6 +32,7 @@ module is.codion.swing.common.model {
 
 	exports is.codion.swing.common.model.component.button;
 	exports is.codion.swing.common.model.component.combobox;
+	exports is.codion.swing.common.model.component.list;
 	exports is.codion.swing.common.model.component.table;
 	exports is.codion.swing.common.model.component.text;
 	exports is.codion.swing.common.model.worker;

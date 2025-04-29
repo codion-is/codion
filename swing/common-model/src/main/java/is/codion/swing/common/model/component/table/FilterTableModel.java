@@ -18,13 +18,12 @@
  */
 package is.codion.swing.common.model.component.table;
 
-import is.codion.common.model.FilterModel;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
-import is.codion.common.model.selection.MultiSelection;
+import is.codion.common.model.list.FilterListModel;
 import is.codion.common.value.Value;
+import is.codion.swing.common.model.component.list.FilterListSelection;
 
-import javax.swing.ListSelectionModel;
 import javax.swing.table.TableModel;
 import java.util.Collection;
 import java.util.Comparator;
@@ -45,7 +44,7 @@ import static is.codion.swing.common.model.component.table.DefaultFilterTableMod
  * @param <C> the type used to identify columns in this table model, Integer for indexed identification for example
  * @see #builder(TableColumns)
  */
-public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
+public interface FilterTableModel<R, C> extends TableModel, FilterListModel<R> {
 
 	/**
 	 * Specifies how the data in a table model is refreshed.
@@ -91,9 +90,9 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	ColumnValues<C> values();
 
 	/**
-	 * @return the {@link TableSelection} instance used by this table model
+	 * @return the {@link FilterListSelection} instance used by this table model
 	 */
-	TableSelection<R> selection();
+	FilterListSelection<R> selection();
 
 	/**
 	 * @return the {@link TableConditionModel} used to filter this table model
@@ -134,7 +133,7 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	/**
 	 * @param <R> the row type
 	 */
-	interface FilterTableModelItems<R> extends FilterModel.Items<R> {
+	interface FilterTableModelItems<R> extends FilterListModel.Items<R> {
 
 		/**
 		 * {@inheritDoc}
@@ -368,10 +367,4 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		 */
 		void set(Object value, int rowIndex, R row, C identifier);
 	}
-
-	/**
-	 * A selection model for a {@link FilterTableModel}.
-	 * @param <R> the type of rows
-	 */
-	interface TableSelection<R> extends ListSelectionModel, MultiSelection<R> {}
 }

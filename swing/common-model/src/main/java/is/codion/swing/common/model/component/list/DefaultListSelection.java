@@ -16,16 +16,15 @@
  *
  * Copyright (c) 2013 - 2025, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.model.component.table;
+package is.codion.swing.common.model.component.list;
 
 import is.codion.common.event.Event;
-import is.codion.common.model.FilterModel;
+import is.codion.common.model.list.FilterListModel;
 import is.codion.common.observable.Observer;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
 
 import javax.swing.DefaultListSelectionModel;
 import java.util.ArrayList;
@@ -38,7 +37,7 @@ import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-final class DefaultFilterTableSelection<R> extends DefaultListSelectionModel implements TableSelection<R> {
+final class DefaultListSelection<R> extends DefaultListSelectionModel implements FilterListSelection<R> {
 
 	private final SelectedIndex selectedIndex = new SelectedIndex();
 	private final SelectedIndexes selectedIndexes = new SelectedIndexes();
@@ -50,9 +49,9 @@ final class DefaultFilterTableSelection<R> extends DefaultListSelectionModel imp
 	private final State single = State.state(false);
 	private final ObservableState multiple = State.and(empty.not(), single.not());
 
-	private final FilterModel.Items<R> items;
+	private final FilterListModel.Items<R> items;
 
-	DefaultFilterTableSelection(FilterModel.Items<R> items) {
+	DefaultListSelection(FilterListModel.Items<R> items) {
 		this.items = requireNonNull(items);
 		bindEvents();
 	}
@@ -220,7 +219,7 @@ final class DefaultFilterTableSelection<R> extends DefaultListSelectionModel imp
 			}
 
 			return unmodifiableList(IntStream.rangeClosed(getMinSelectionIndex(), getMaxSelectionIndex())
-							.filter(DefaultFilterTableSelection.this::isSelectedIndex)
+							.filter(DefaultListSelection.this::isSelectedIndex)
 							.boxed()
 							.collect(toList()));
 		}

@@ -32,6 +32,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.AbstractEntityTableModel;
 import is.codion.framework.model.EntityQueryModel;
 import is.codion.framework.model.EntityTableConditionModel;
+import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableSort;
 import is.codion.swing.common.model.component.table.FilterTableSort.ColumnSortOrder;
@@ -175,87 +176,87 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 
 	@Override
 	public final int getRowCount() {
-		return filterModel().getRowCount();
+		return listModel().getRowCount();
 	}
 
 	@Override
 	public final Object getValueAt(int rowIndex, int columnIndex) {
-		return filterModel().getValueAt(rowIndex, columnIndex);
+		return listModel().getValueAt(rowIndex, columnIndex);
 	}
 
 	@Override
 	public final void fireTableDataChanged() {
-		filterModel().fireTableDataChanged();
+		listModel().fireTableDataChanged();
 	}
 
 	@Override
 	public final void fireTableRowsUpdated(int fromIndex, int toIndex) {
-		filterModel().fireTableRowsUpdated(fromIndex, toIndex);
+		listModel().fireTableRowsUpdated(fromIndex, toIndex);
 	}
 
 	@Override
 	public final FilterTableModelItems<Entity> items() {
-		return (FilterTableModelItems<Entity>) super.filterModel().items();
+		return (FilterTableModelItems<Entity>) super.listModel().items();
 	}
 
 	@Override
 	public final ColumnValues<Attribute<?>> values() {
-		return filterModel().values();
+		return listModel().values();
 	}
 
 	@Override
 	public final Class<?> getColumnClass(Attribute<?> attribute) {
-		return filterModel().getColumnClass(attribute);
+		return listModel().getColumnClass(attribute);
 	}
 
 	@Override
-	public final TableSelection<Entity> selection() {
-		return filterModel().selection();
+	public final FilterListSelection<Entity> selection() {
+		return listModel().selection();
 	}
 
 	@Override
 	public final TableConditionModel<Attribute<?>> filters() {
-		return filterModel().filters();
+		return listModel().filters();
 	}
 
 	@Override
 	public final FilterTableSort<Entity, Attribute<?>> sort() {
-		return filterModel().sort();
+		return listModel().sort();
 	}
 
 	@Override
 	public final int getColumnCount() {
-		return filterModel().getColumnCount();
+		return listModel().getColumnCount();
 	}
 
 	@Override
 	public final String getColumnName(int columnIndex) {
-		return filterModel().getColumnName(columnIndex);
+		return listModel().getColumnName(columnIndex);
 	}
 
 	@Override
 	public final Class<?> getColumnClass(int columnIndex) {
-		return filterModel().getColumnClass(columnIndex);
+		return listModel().getColumnClass(columnIndex);
 	}
 
 	@Override
 	public final void addTableModelListener(TableModelListener listener) {
-		filterModel().addTableModelListener(listener);
+		listModel().addTableModelListener(listener);
 	}
 
 	@Override
 	public final void removeTableModelListener(TableModelListener listener) {
-		filterModel().removeTableModelListener(listener);
+		listModel().removeTableModelListener(listener);
 	}
 
 	@Override
 	public final TableColumns<Entity, Attribute<?>> columns() {
-		return filterModel().columns();
+		return listModel().columns();
 	}
 
 	@Override
-	protected final FilterTableModel<Entity, Attribute<?>> filterModel() {
-		return (FilterTableModel<Entity, Attribute<?>>) super.filterModel();
+	protected final FilterTableModel<Entity, Attribute<?>> listModel() {
+		return (FilterTableModel<Entity, Attribute<?>>) super.listModel();
 	}
 
 	@Override

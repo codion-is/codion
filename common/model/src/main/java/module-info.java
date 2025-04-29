@@ -21,7 +21,7 @@
  * <ul>
  * <li>{@link is.codion.common.model.UserPreferences}
  * <li>{@link is.codion.common.model.CancelException}
- * <li>{@link is.codion.common.model.FilterModel}
+ * <li>{@link is.codion.common.model.list.FilterListModel}
  * <li>{@link is.codion.common.model.selection.SingleSelection}
  * <li>{@link is.codion.common.model.selection.MultiSelection}
  * <li>{@link is.codion.common.model.condition.ConditionModel}
@@ -38,6 +38,7 @@ module is.codion.common.model {
 
 	exports is.codion.common.model;
 	exports is.codion.common.model.condition;
+	exports is.codion.common.model.list;
 	exports is.codion.common.model.selection;
 	exports is.codion.common.model.summary;
 }

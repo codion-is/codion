@@ -29,8 +29,8 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.manual.store.domain.Store.Customer;
+import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.FilterTableModel;
-import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.text.TemporalField;
 
@@ -93,7 +93,7 @@ public final class DesignAndStyle {
 		//end::getters[]
 
 		//tag::mutable[]
-		TableSelection<List<String>> selection = tableModel.selection();
+		FilterListSelection<List<String>> selection = tableModel.selection();
 
 		List<Integer> selectedIndexes = selection.indexes().get();
 

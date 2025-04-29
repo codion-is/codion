@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2010 - 2025, Björn Darri Sigurðsson.
  */
-package is.codion.common.model;
+package is.codion.common.model.list;
 
 import is.codion.common.event.Event;
 import is.codion.common.model.selection.SingleSelection;
@@ -42,10 +42,10 @@ import static is.codion.common.Configuration.booleanValue;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Specifies a data model that can be filtered to hide some or all of the items it contains.
+ * Specifies a list data model that can be filtered to hide some or all of the items it contains.
  * @param <T> the type of items in the model.
  */
-public interface FilterModel<T> {
+public interface FilterListModel<T> {
 
 	/**
 	 * Specifies whether data models should refresh data asynchronously or on the UI thread
@@ -55,7 +55,7 @@ public interface FilterModel<T> {
 	 * </ul>
 	 * @see Refresher#async()
 	 */
-	PropertyValue<Boolean> ASYNC_REFRESH = booleanValue(FilterModel.class.getName() + ".asyncRefresh", true);
+	PropertyValue<Boolean> ASYNC_REFRESH = booleanValue(FilterListModel.class.getName() + ".asyncRefresh", true);
 
 	/**
 	 * @return the model items
@@ -73,7 +73,7 @@ public interface FilterModel<T> {
 	Sort<T> sort();
 
 	/**
-	 * Manages the items in {@link FilterModel}.
+	 * Manages the items in {@link FilterListModel}.
 	 * @param <T> the item type
 	 */
 	interface Items<T> {
@@ -296,7 +296,7 @@ public interface FilterModel<T> {
 
 		/**
 		 * Sorts the visible items using {@link Sort#comparator()}, preserving the selection.
-		 * @see FilterModel#sort()
+		 * @see FilterListModel#sort()
 		 */
 		void sort();
 	}
@@ -325,7 +325,7 @@ public interface FilterModel<T> {
 	}
 
 	/**
-	 * Handles refreshing data for a {@link FilterModel}.
+	 * Handles refreshing data for a {@link FilterListModel}.
 	 * @param <T> the type of items produced by this {@link Refresher}
 	 */
 	interface Refresher<T> {
@@ -360,7 +360,7 @@ public interface FilterModel<T> {
 	}
 
 	/**
-	 * Manages the sorting for a {@link FilterModel}
+	 * Manages the sorting for a {@link FilterListModel}
 	 * @param <T> the model item type
 	 */
 	interface Sort<T> {

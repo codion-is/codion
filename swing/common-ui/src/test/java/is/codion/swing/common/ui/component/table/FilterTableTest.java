@@ -18,8 +18,8 @@
  */
 package is.codion.swing.common.ui.component.table;
 
+import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.FilterTableModel;
-import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
 import is.codion.swing.common.model.component.table.FilterTableSort;
 import is.codion.swing.common.ui.component.table.DefaultFilterTableSearchModel.DefaultRowColumn;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColumn;
@@ -405,7 +405,7 @@ public class FilterTableTest {
 		assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
 
 		//test selection and filtering together
-		TableSelection<TestRow> selectionModel = tableModel.selection();
+		FilterListSelection<TestRow> selectionModel = tableModel.selection();
 		tableModel.selection().index().set(3);
 		assertEquals(3, selectionModel.index().get());
 

@@ -19,16 +19,18 @@
 package is.codion.swing.common.model.component.table;
 
 import is.codion.common.event.Event;
-import is.codion.common.model.FilterModel;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.model.list.FilterListModel.FilteredItems;
+import is.codion.common.model.list.FilterListModel.Refresher;
+import is.codion.common.model.list.FilterListModel.VisibleItems;
 import is.codion.common.observable.Observer;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.component.AbstractFilterModelRefresher;
+import is.codion.swing.common.model.component.list.AbstractFilterListModelRefresher;
+import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.FilterTableModel.FilterTableModelItems;
 import is.codion.swing.common.model.component.table.FilterTableModel.RefreshStrategy;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
-import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
@@ -47,6 +49,7 @@ import java.util.function.Supplier;
 
 import static is.codion.common.model.condition.TableConditionModel.tableConditionModel;
 import static is.codion.common.value.Value.Notify.WHEN_SET;
+import static is.codion.swing.common.model.component.list.FilterListSelection.filterListSelection;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
@@ -61,7 +64,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 	private final DefaultFilteredItems filtered;
 
 	final TableColumns<R, C> columns;
-	final TableSelection<R> selection;
+	final FilterListSelection<R> selection;
 	final TableConditionModel<C> filters;
 	final FilterTableSort<R, C> sort;
 
@@ -83,13 +86,13 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		this.filtered = new DefaultFilteredItems();
 		this.filters = tableConditionModel(filterModelFactory);
 		this.visiblePredicate = new VisiblePredicate();
-		this.selection = new DefaultFilterTableSelection<>(this);
+		this.selection = filterListSelection(this);
 		this.sort = new DefaultFilterTableSort<>(columns);
 		this.sort.observer().addListener(visible::sort);
 	}
 
 	@Override
-	public FilterModel.Refresher<R> refresher() {
+	public Refresher<R> refresher() {
 		return refresher;
 	}
 
@@ -235,12 +238,12 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 	}
 
 	@Override
-	public FilterModel.VisibleItems<R> visible() {
+	public VisibleItems<R> visible() {
 		return visible;
 	}
 
 	@Override
-	public FilterModel.FilteredItems<R> filtered() {
+	public FilteredItems<R> filtered() {
 		return filtered;
 	}
 
@@ -362,7 +365,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		return items;
 	}
 
-	final class DefaultRefresher extends AbstractFilterModelRefresher<R> {
+	final class DefaultRefresher extends AbstractFilterListModelRefresher<R> {
 
 		private final Event<Collection<R>> onResult = Event.event();
 
@@ -417,7 +420,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		}
 	}
 
-	private final class DefaultVisibleItems implements FilterModel.VisibleItems<R> {
+	private final class DefaultVisibleItems implements VisibleItems<R> {
 
 		private final List<R> items = new ArrayList<>();
 		private final Event<List<R>> event = Event.event();
@@ -557,7 +560,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		}
 	}
 
-	private final class DefaultFilteredItems implements FilterModel.FilteredItems<R> {
+	private final class DefaultFilteredItems implements FilteredItems<R> {
 
 		private final Set<R> items = new LinkedHashSet<>();
 

@@ -18,13 +18,13 @@
  */
 package is.codion.manual.swing.common.model.component.table;
 
-import is.codion.common.model.FilterModel.VisibleItems;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.model.list.FilterListModel.VisibleItems;
+import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.RowEditor;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
-import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
 import is.codion.swing.common.model.component.table.FilterTableSort;
 
 import java.util.Collection;
@@ -162,7 +162,7 @@ public final class FilterTableModelDemo {
 
 	static void select(FilterTableModel<Person, String> tableModel) {
 		// tag::selection[]
-		TableSelection<Person> selection = tableModel.selection();
+		FilterListSelection<Person> selection = tableModel.selection();
 
 		// Print the selected items when they change
 		selection.items().addConsumer(System.out::println);

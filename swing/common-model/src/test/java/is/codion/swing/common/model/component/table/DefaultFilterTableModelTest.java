@@ -18,11 +18,11 @@
  */
 package is.codion.swing.common.model.component.table;
 
-import is.codion.common.model.FilterModel.Items;
+import is.codion.common.model.list.FilterListModel.Items;
 import is.codion.common.state.State;
+import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.FilterTableModel.RefreshStrategy;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
-import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -455,7 +455,7 @@ public final class DefaultFilterTableModelTest {
 		AtomicInteger events = new AtomicInteger();
 		Runnable listener = events::incrementAndGet;
 		Consumer consumer = data -> listener.run();
-		TableSelection<TestRow> selection = tableModel.selection();
+		FilterListSelection<TestRow> selection = tableModel.selection();
 		selection.index().addConsumer(consumer);
 		selection.indexes().addListener(listener);
 		selection.item().addConsumer(consumer);
@@ -737,7 +737,7 @@ public final class DefaultFilterTableModelTest {
 
 		assertThrows(NullPointerException.class, () -> tableModel.items().filtered().contains(null));
 
-		TableSelection<TestRow> selection = tableModel.selection();
+		FilterListSelection<TestRow> selection = tableModel.selection();
 		assertThrows(NullPointerException.class, () -> selection.items().remove((TestRow) null));
 		assertThrows(NullPointerException.class, () -> selection.items().remove((Collection<TestRow>) null));
 		assertThrows(NullPointerException.class, () -> selection.items().remove(singleNull));

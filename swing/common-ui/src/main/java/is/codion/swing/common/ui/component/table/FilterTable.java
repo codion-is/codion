@@ -30,8 +30,8 @@ import is.codion.common.property.PropertyValue;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
+import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.FilterTableModel;
-import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
 import is.codion.swing.common.model.component.table.FilterTableSort.ColumnSortOrder;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.border.Borders;
@@ -1581,7 +1581,7 @@ public final class FilterTable<R, C> extends JTable {
 
 		@Override
 		public boolean subset() {
-			TableSelection<?> selection = tableModel.selection();
+			FilterListSelection<?> selection = tableModel.selection();
 
 			return selection.empty().not().get() &&
 							selection.count() != tableModel.items().visible().count();

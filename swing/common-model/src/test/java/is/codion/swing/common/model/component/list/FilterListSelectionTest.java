@@ -16,25 +16,26 @@
  *
  * Copyright (c) 2013 - 2025, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.model.component.table;
+package is.codion.swing.common.model.component.list;
 
-import is.codion.swing.common.model.component.table.FilterTableModel.TableSelection;
+import is.codion.swing.common.model.component.table.FilterTableModel;
 
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static is.codion.swing.common.model.component.list.FilterListSelection.filterListSelection;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static javax.swing.ListSelectionModel.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DefaultTableSelectionTest {
+public class FilterListSelectionTest {
 
-	private final TableSelection<String> testModel;
+	private final FilterListSelection<String> testModel;
 
-	public DefaultTableSelectionTest() {
+	public FilterListSelectionTest() {
 		List<String> data = asList("A", "B", "C");
 		FilterTableModel<String, Integer> tableModel =
 						FilterTableModel.builder(new FilterTableModel.TableColumns<String, Integer>() {
@@ -57,7 +58,7 @@ public class DefaultTableSelectionTest {
 										.build();
 		tableModel.items().refresh();
 
-		testModel = tableModel.selection();
+		testModel = filterListSelection(tableModel.items());
 	}
 
 	@Test
