@@ -22,9 +22,9 @@ import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.ObservableState;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
-import is.codion.swing.common.ui.component.button.ButtonPanelBuilder;
 import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -35,7 +35,6 @@ import is.codion.swing.common.ui.control.ControlMap;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 
-import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -47,10 +46,12 @@ import javax.swing.KeyStroke;
 import javax.swing.event.DocumentEvent;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.swing.common.ui.component.Components.panel;
 import static is.codion.swing.common.ui.component.text.SizedDocument.sizedDocument;
 import static is.codion.swing.common.ui.component.text.TextFieldPanel.ControlKeys.DISPLAY_TEXT_AREA;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
@@ -84,7 +85,7 @@ public final class TextFieldPanel extends JPanel {
 	}
 
 	private final JTextField textField;
-	private final Value<AbstractButton> button = Value.nullable();
+	private final JButton button;
 	private final ControlMap controlMap;
 	private final String dialogTitle;
 	private final String caption;
@@ -95,11 +96,12 @@ public final class TextFieldPanel extends JPanel {
 		this.controlMap = builder.controlMap;
 		this.controlMap.control(DISPLAY_TEXT_AREA).set(createTextAreaControl(builder));
 		this.textField = createTextField(builder);
+		this.button = createButton(builder);
 		this.dialogTitle = builder.dialogTitle;
 		this.textAreaSize = builder.textAreaSize;
 		this.caption = builder.caption;
 		this.maximumLength = builder.maximumLength;
-		initializeUI(builder.buttonFocusable);
+		initializeUI();
 	}
 
 	/**
@@ -133,14 +135,14 @@ public final class TextFieldPanel extends JPanel {
 	 * @return the input dialog button
 	 */
 	public JButton button() {
-		return (JButton) button.get();
+		return button;
 	}
 
 	@Override
 	public void setEnabled(boolean enabled) {
 		super.setEnabled(enabled);
 		textField.setEnabled(enabled);
-		button.getOrThrow().setEnabled(enabled);
+		button.setEnabled(enabled);
 	}
 
 	@Override
@@ -260,14 +262,19 @@ public final class TextFieldPanel extends JPanel {
 						.build();
 	}
 
-	private void initializeUI(boolean buttonFocusable) {
+	private JButton createButton(DefaultBuilder builder) {
+		return Components.button(controlMap.control(DISPLAY_TEXT_AREA).get())
+						.focusable(builder.buttonFocusable)
+						.toolTipText(MESSAGES.getString("show_input_dialog"))
+						.preferredSize(new Dimension(textField.getPreferredSize().height, textField.getPreferredSize().height))
+						.build();
+	}
+
+	private void initializeUI() {
 		setLayout(new BorderLayout());
 		add(textField, BorderLayout.CENTER);
-		add(ButtonPanelBuilder.builder(controlMap.control(DISPLAY_TEXT_AREA).get())
-						.buttonsFocusable(buttonFocusable)
-						.toolTipText(MESSAGES.getString("show_input_dialog"))
-						.preferredButtonSize(new Dimension(textField.getPreferredSize().height, textField.getPreferredSize().height))
-						.button(buttonBuilder -> buttonBuilder.onBuild(button::set))
+		add(panel(new GridLayout(1, 1, 0, 0))
+						.add(button)
 						.build(), BorderLayout.EAST);
 		if (caption != null) {
 			setBorder(BorderFactory.createTitledBorder(caption));
@@ -401,7 +408,7 @@ public final class TextFieldPanel extends JPanel {
 		@Override
 		protected void enableTransferFocusOnEnter(TextFieldPanel component, TransferFocusOnEnter transferFocusOnEnter) {
 			transferFocusOnEnter.enable(component.textField);
-			component.button.optional().ifPresent(transferFocusOnEnter::enable);
+			transferFocusOnEnter.enable(component.button);
 		}
 
 		@Override

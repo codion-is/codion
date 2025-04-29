@@ -20,23 +20,22 @@ package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.state.ObservableState;
 import is.codion.common.value.Value;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
-import is.codion.swing.common.ui.component.button.ButtonPanelBuilder;
 import is.codion.swing.common.ui.component.calendar.CalendarPanel;
 import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
-import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 
-import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.time.LocalDate;
@@ -44,6 +43,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.Temporal;
 import java.util.Optional;
 
+import static is.codion.swing.common.ui.component.Components.panel;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -54,11 +54,12 @@ import static java.util.Objects.requireNonNull;
 public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 
 	private final TemporalField<T> temporalField;
-	private final Value<AbstractButton> button = Value.nullable();
+	private final JButton button;
 
 	TemporalFieldPanel(DefaultBuilder<T> builder) {
 		temporalField = requireNonNull(builder.createTemporalField());
-		initializeUI(builder);
+		button = createButton(builder);
+		initializeUI();
 	}
 
 	/**
@@ -72,7 +73,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 	 * @return the calendar button
 	 */
 	public JButton calendarButton() {
-		return (JButton) button.get();
+		return button;
 	}
 
 	/**
@@ -182,15 +183,11 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 		Builder<T> calendarIcon(ImageIcon calendarIcon);
 	}
 
-	private void initializeUI(DefaultBuilder<T> builder) {
+	private void initializeUI() {
 		setLayout(new BorderLayout());
-		Control calendarControl = temporalField.calendarControl()
-						.orElseThrow(() -> new IllegalArgumentException("TemporalField does not support a calendar for: " + temporalField.temporalClass()));
 		add(temporalField, BorderLayout.CENTER);
-		add(ButtonPanelBuilder.builder(calendarControl)
-						.buttonsFocusable(builder.buttonFocusable)
-						.preferredButtonSize(new Dimension(temporalField.getPreferredSize().height, temporalField.getPreferredSize().height))
-						.button(buttonBuilder -> buttonBuilder.onBuild(button::set))
+		add(panel(new GridLayout(1, 1, 0, 0))
+						.add(button)
 						.build(), BorderLayout.EAST);
 		addFocusListener(new InputFocusAdapter(temporalField));
 	}
@@ -207,6 +204,15 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 		public void focusGained(FocusEvent e) {
 			inputField.requestFocusInWindow();
 		}
+	}
+
+	private JButton createButton(DefaultBuilder<T> builder) {
+		return Components.button(temporalField.calendarControl().orElseThrow(() ->
+										new IllegalArgumentException("TemporalField does not support a calendar for: " +
+														temporalField.temporalClass())))
+						.focusable(builder.buttonFocusable)
+						.preferredSize(new Dimension(temporalField.getPreferredSize().height, temporalField.getPreferredSize().height))
+						.build();
 	}
 
 	private static final class DefaultBuilder<T extends Temporal>
@@ -274,7 +280,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 		@Override
 		protected void enableTransferFocusOnEnter(TemporalFieldPanel<T> component, TransferFocusOnEnter transferFocusOnEnter) {
 			transferFocusOnEnter.enable(component.temporalField);
-			component.button.optional().ifPresent(transferFocusOnEnter::enable);
+			transferFocusOnEnter.enable(component.button);
 		}
 
 		@Override

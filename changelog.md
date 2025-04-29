@@ -42,6 +42,7 @@ Codion Change Log
 - SelectionDialogBuilder.defaultSelection() moved to sub-interfaces.
 - ProgressDialogBuilder.onPublish() added.
 - DefaultComboBoxSelectionDialogBuilder bug fixed, did not validate default selection item.
+- TemporalFieldPanel and TextFieldPanel, minor button related improvements.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel.Builder.applicationModelFactory() and applicationPanelFactory() renamed applicationModel() and applicationPanel().
 - EntityApplicationPanel.createLogControls() now protected final.
