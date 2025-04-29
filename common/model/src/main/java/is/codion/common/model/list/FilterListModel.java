@@ -371,6 +371,11 @@ public interface FilterListModel<T> {
 		Comparator<T> comparator();
 
 		/**
+		 * @return true true if sorting is enabled
+		 */
+		boolean sorted();
+
+		/**
 		 * @return an observer notified each time the sorting changes, the event data indicating whether the model is sorted or not
 		 */
 		Observer<Boolean> observer();

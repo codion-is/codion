@@ -21,6 +21,7 @@ package is.codion.swing.common.model.component.table;
 import is.codion.common.event.Event;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
+import is.codion.common.model.list.FilterListModel;
 import is.codion.common.model.list.FilterListModel.FilteredItems;
 import is.codion.common.model.list.FilterListModel.Refresher;
 import is.codion.common.model.list.FilterListModel.VisibleItems;
@@ -66,7 +67,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 	final TableColumns<R, C> columns;
 	final FilterListSelection<R> selection;
 	final TableConditionModel<C> filters;
-	final FilterTableSort<R, C> sort;
+	final FilterListModel.Sort<R> sort;
 
 	final DefaultRefresher refresher;
 	final Value<RefreshStrategy> refreshStrategy;

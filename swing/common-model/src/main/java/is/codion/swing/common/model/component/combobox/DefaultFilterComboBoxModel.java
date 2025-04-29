@@ -273,6 +273,11 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
+		public boolean sorted() {
+			return comparator != NULL_COMPARATOR;
+		}
+
+		@Override
 		public Observer<Boolean> observer() {
 			return event.observer();
 		}

@@ -20,6 +20,7 @@ Codion Change Log
 - EntityEditModel.EntityEditor.isNull(attribute) replaced with EditorValue.present().
 ### is.codion.swing.common.model
 - FilterTableModel.TableSelection moved to list package and renamed FilterListSelection, related refactoring.
+- FilterTableSort.sorted() moved to FilterListModel.Sort.
 ### is.codion.swing.common.ui
 - LookAndFeelSelectionDialogBuilder.createControl() overloaded without parameter.
 - BackgroundColorValidIndicator bug fixed, did not refresh state when colors changed during updateUI().

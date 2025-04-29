@@ -60,11 +60,6 @@ public interface FilterTableSort<R, C> extends FilterListModel.Sort<R> {
 	void clear();
 
 	/**
-	 * @return true if one or more columns are sorted
-	 */
-	boolean sorted();
-
-	/**
 	 * Specifies a sorting state for a column.
 	 */
 	interface ColumnSortOrder<C> {
