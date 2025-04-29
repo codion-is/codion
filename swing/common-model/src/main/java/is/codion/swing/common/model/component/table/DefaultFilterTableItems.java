@@ -33,7 +33,6 @@ import is.codion.swing.common.model.component.table.FilterTableModel.FilterTable
 import is.codion.swing.common.model.component.table.FilterTableModel.RefreshStrategy;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
 
-import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -227,6 +226,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 				}
 			}
 			tableModel.fireTableDataChanged();
+			visible.notifyChanges();
 			visible.sort();
 		}
 	}
@@ -275,6 +275,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 				visible.items.sort(sort.comparator());
 			}
 			tableModel.fireTableDataChanged();
+			visible.notifyChanges();
 		}
 		selection.items().set(selectedItems);
 	}
@@ -308,6 +309,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 			if (visiblePredicate.test(item)) {
 				visible.items.add(visibleCount, item);
 				tableModel.fireTableRowsInserted(visibleCount, visibleCount);
+				visible.notifyChanges();
 				visible.notifyAdded(singleton(item));
 
 				return;
@@ -317,6 +319,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		else if (visiblePredicate.test(item)) {
 			visible.items.set(index, item);
 			tableModel.fireTableRowsUpdated(index, index);
+			visible.notifyChanges();
 		}
 	}
 
@@ -342,6 +345,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		if (!visibleItems.isEmpty()) {
 			visible.items.addAll(index, visibleItems);
 			tableModel.fireTableRowsInserted(index, index + visibleItems.size());
+			visible.notifyChanges();
 			visible.sort();
 			visible.notifyAdded(visibleItems);
 		}
@@ -427,16 +431,6 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		private final Event<List<R>> event = Event.event();
 		private final Event<Collection<R>> added = Event.event();
 
-		private DefaultVisibleItems() {
-			tableModel.addTableModelListener(e -> {
-				if (e.getType() != TableModelEvent.DELETE) {
-					// Deletions are handled differently, in order to trigger only a single
-					// event when multiple visible items are removed, see remove(Collection)
-					notifyChanges();
-				}
-			});
-		}
-
 		@Override
 		public Value<Predicate<R>> predicate() {
 			return visiblePredicate.predicate;
@@ -501,6 +495,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 				if (visiblePredicate.test(item)) {
 					items.set(index, item);
 					tableModel.fireTableRowsUpdated(index, index);
+					notifyChanges();
 
 					return true;
 				}
@@ -547,6 +542,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 				synchronized (lock) {
 					items.sort(sort.comparator());
 					tableModel.fireTableRowsUpdated(0, items.size());
+					notifyChanges();
 				}
 				selection.items().set(selectedItems);
 			}

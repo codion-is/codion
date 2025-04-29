@@ -19,6 +19,7 @@
 package is.codion.swing.common.model.component.list;
 
 import is.codion.common.model.list.FilterListModel;
+import is.codion.common.model.list.FilterListModel.AbstractRefresher;
 import is.codion.swing.common.model.worker.ProgressWorker;
 
 import javax.swing.SwingUtilities;
@@ -30,7 +31,7 @@ import java.util.function.Supplier;
  * A default swing based {@link FilterListModel.Refresher}.
  * @param <T> the model row type
  */
-public abstract class AbstractFilterListModelRefresher<T> extends FilterListModel.AbstractRefresher<T> {
+public abstract class AbstractFilterListModelRefresher<T> extends AbstractRefresher<T> {
 
 	private ProgressWorker<Collection<T>, ?> refreshWorker;
 
