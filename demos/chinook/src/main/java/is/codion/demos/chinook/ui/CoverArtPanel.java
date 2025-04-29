@@ -24,18 +24,19 @@ import is.codion.plugin.imagepanel.NavigableImagePanel;
 import is.codion.swing.common.ui.FileTransferHandler;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.kordamp.ikonli.foundation.Foundation;
 
 import javax.imageio.ImageIO;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -46,8 +47,7 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
-import static is.codion.swing.common.ui.component.Components.buttonPanel;
+import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.util.ResourceBundle.getBundle;
 import static javax.swing.BorderFactory.createEtchedBorder;
@@ -66,6 +66,8 @@ final class CoverArtPanel extends JPanel {
 					new FileNameExtensionFilter(BUNDLE.getString("images"),
 									new String[] {"jpg", "jpeg", "png", "bmp", "gif"});
 
+	private final JButton addButton;
+	private final JButton removeButton;
 	private final JPanel centerPanel;
 	private final NavigableImagePanel imagePanel;
 	private final Value<byte[]> imageBytes;
@@ -80,9 +82,27 @@ final class CoverArtPanel extends JPanel {
 		this.imageBytes = imageBytes;
 		this.imageSelected = State.state(!imageBytes.isNull());
 		this.imagePanel = createImagePanel();
+		this.addButton = button(Control.builder()
+						.command(this::addCover)
+						.smallIcon(ICONS.get(Foundation.PLUS)))
+						.transferFocusOnEnter(true)
+						.build();
+		this.removeButton = button(Control.builder()
+						.command(this::removeCover)
+						.smallIcon(ICONS.get(Foundation.MINUS)))
+						.transferFocusOnEnter(true)
+						.enabled(imageSelected)
+						.build();
 		this.centerPanel = createCenterPanel();
 		add(centerPanel, BorderLayout.CENTER);
 		bindEvents();
+	}
+
+	@Override
+	public boolean requestFocusInWindow() {
+		// The panel itself is not focusable,
+		// request focus for the add button instead
+		return addButton.requestFocusInWindow();
 	}
 
 	private JPanel createCenterPanel() {
@@ -90,16 +110,8 @@ final class CoverArtPanel extends JPanel {
 						.preferredSize(EMBEDDED_SIZE)
 						.centerComponent(imagePanel)
 						.southComponent(borderLayoutPanel()
-										.eastComponent(buttonPanel(Controls.builder()
-														.control(Control.builder()
-																		.command(this::selectCover)
-																		.smallIcon(ICONS.get(Foundation.PLUS)))
-														.control(Control.builder()
-																		.command(this::removeCover)
-																		.smallIcon(ICONS.get(Foundation.MINUS))
-																		.enabled(imageSelected)))
-														.transferFocusOnEnter(true)
-														.buttonGap(0)
+										.eastComponent(panel(new GridLayout(1, 2, 0, 0))
+														.add(addButton, removeButton)
 														.build())
 										.build())
 						.build();
@@ -112,7 +124,7 @@ final class CoverArtPanel extends JPanel {
 		imagePanel.addMouseListener(new EmbeddingMouseListener());
 	}
 
-	private void selectCover() throws IOException {
+	private void addCover() throws IOException {
 		File coverFile = Dialogs.fileSelectionDialog()
 						.owner(this)
 						.title(BUNDLE.getString("select_image"))
