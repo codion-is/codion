@@ -16,9 +16,13 @@
  *
  * Copyright (c) 2010 - 2025, Björn Darri Sigurðsson.
  */
-package is.codion.common.model.list;
+package is.codion.common.model.filter;
 
 import is.codion.common.event.Event;
+import is.codion.common.model.filter.DefaultFilterModelItems.DefaultSelectionStage;
+import is.codion.common.model.filter.FilterModel.Items.Builder.SelectionStage;
+import is.codion.common.model.filter.FilterModel.VisibleItems.ItemsListener;
+import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.model.selection.SingleSelection;
 import is.codion.common.observable.Observable;
 import is.codion.common.observable.Observer;
@@ -35,6 +39,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -42,10 +47,33 @@ import static is.codion.common.Configuration.booleanValue;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Specifies a list data model that can be filtered to hide some or all of the items it contains.
+ * Specifies a data model that can be filtered to hide some or all of the items it contains.
  * @param <T> the type of items in the model.
  */
-public interface FilterListModel<T> {
+public interface FilterModel<T> {
+
+	/**
+	 * Specifies how the data in a table model is refreshed.
+	 */
+	enum RefreshStrategy {
+
+		/**
+		 * Clear the model before populating it with the refreshed data.
+		 * This causes an empty selection event to be triggered, since the
+		 * selection is cleared when the model is cleared.
+		 */
+		CLEAR,
+
+		/**
+		 * Merges the refreshed data with the data already in the model,
+		 * by removing items that are missing, replacing existing items and adding new ones.
+		 * This strategy does not cause an empty selection event to be triggered
+		 * but at a considerable performance cost.
+		 * Note that sorting is not performed using this strategy, since that would
+		 * cause an empty selection event as well.
+		 */
+		MERGE
+	}
 
 	/**
 	 * Specifies whether data models should refresh data asynchronously or on the UI thread
@@ -55,7 +83,7 @@ public interface FilterListModel<T> {
 	 * </ul>
 	 * @see Refresher#async()
 	 */
-	PropertyValue<Boolean> ASYNC_REFRESH = booleanValue(FilterListModel.class.getName() + ".asyncRefresh", true);
+	PropertyValue<Boolean> ASYNC_REFRESH = booleanValue(FilterModel.class.getName() + ".asyncRefresh", true);
 
 	/**
 	 * @return the model items
@@ -73,7 +101,7 @@ public interface FilterListModel<T> {
 	Sort<T> sort();
 
 	/**
-	 * Manages the items in {@link FilterListModel}.
+	 * Manages the items in {@link FilterModel}.
 	 * @param <T> the item type
 	 */
 	interface Items<T> {
@@ -85,7 +113,14 @@ public interface FilterListModel<T> {
 
 		/**
 		 * Refreshes the items in this model using its {@link Refresher}.
+		 * <br><br>
+		 * Retains the selection and filtering. Sorts the refreshed data unless merging on refresh is enabled.
+		 * Note that an empty selection event will be triggered during a normal refresh, since the model is cleared
+		 * before it is repopulated, during which the selection is cleared as well. Using merge on refresh
+		 * ({@link #refreshStrategy()}) will prevent that at a considerable performance cost.
 		 * @throws RuntimeException in case of an exception when running refresh synchronously
+		 * @see #refreshStrategy()
+		 * @see RefreshStrategy
 		 */
 		void refresh();
 
@@ -93,13 +128,25 @@ public interface FilterListModel<T> {
 		 * <p>Refreshes the data in this model using its {@link Refresher}.
 		 * <p>Note that this method only throws exceptions when run synchronously off the user interface thread.
 		 * Use {@link Refresher#exception()} to listen for exceptions that happen during asynchronous refresh.
+		 * <br><br>
+		 * Retains the selection and filtering. Sorts the refreshed data unless merging on refresh is enabled.
+		 * Note that an empty selection event will be triggered during a normal refresh, since the model is cleared
+		 * before it is repopulated, during which the selection is cleared as well. Using merge on refresh
+		 * ({@link #refreshStrategy()}) will prevent that at a considerable performance cost.
 		 * @param onResult called after a successful refresh
+		 * @throws RuntimeException in case of an exception when running refresh synchronously
 		 * @see Refresher#active()
 		 * @see Refresher#result()
 		 * @see Refresher#exception()
 		 * @see Refresher#async()
 		 */
 		void refresh(Consumer<Collection<T>> onResult);
+
+		/**
+		 * Default {@link RefreshStrategy#CLEAR}
+		 * @return the {@link Value} controlling the refresh strategy
+		 */
+		Value<RefreshStrategy> refreshStrategy();
 
 		/**
 		 * @return all items, visible and filtered, in no particular order
@@ -198,6 +245,92 @@ public interface FilterListModel<T> {
 		 * @see VisibleItems#predicate()
 		 */
 		void filter();
+
+		/**
+		 * @param refresher the item refresher to use
+		 * @return a new {@link SelectionStage} instance
+		 * @param <T> the item type
+		 */
+		static <T> SelectionStage<T> builder(Function<Items<T>, Refresher<T>> refresher) {
+			return new DefaultSelectionStage<>(requireNonNull(refresher));
+		}
+
+		/**
+		 * Builds a {@link FilterModel.Items} instance
+		 * @param <T> the item type
+		 */
+		interface Builder<T> {
+
+			/**
+			 * @param <T> the item type
+			 */
+			interface SelectionStage<T> {
+
+				/**
+				 * @param selection provides the {@link MultiSelection} instance to use
+				 * @return the next stage
+				 */
+				SortStage<T> selection(Function<VisibleItems<T>, MultiSelection<T>> selection);
+			}
+
+			/**
+			 * @param <T> the item type
+			 */
+			interface SortStage<T> {
+
+				/**
+				 * @param sort the {@link Sort} instance to use
+				 * @return the {@link Builder}
+				 */
+				Builder<T> sort(Sort<T> sort);
+			}
+
+			/**
+			 * @param validator the item validator
+			 * @return this builder
+			 */
+			Builder<T> validator(Predicate<T> validator);
+
+			/**
+			 * @param visiblePredicate the visible predicate
+			 * @return this builder
+			 */
+			Builder<T> visiblePredicate(VisiblePredicate<T> visiblePredicate);
+
+			/**
+			 * @param refreshStrategy the {@link RefreshStrategy} to use
+			 * @return this builder
+			 */
+			Builder<T> refreshStrategy(RefreshStrategy refreshStrategy);
+
+			/**
+			 * @param itemsListener the {@link ItemsListener}
+			 * @return this builder
+			 */
+			Builder<T> listener(ItemsListener itemsListener);
+
+			/**
+			 * @return a new {@link Items} instance
+			 */
+			Items<T> build();
+		}
+	}
+
+	/**
+	 * Controls which items should be visible.
+	 * Tests the predicate set as its value, but subclasses may provide additional tests.
+	 */
+	interface VisiblePredicate<T> extends Value<Predicate<T>>, Predicate<T> {
+
+		/**
+		 * @param item the item to test
+		 * @return true if the given item should be visible
+		 */
+		default boolean test(T item) {
+			Predicate<T> predicate = get();
+
+			return predicate == null || predicate.test(item);
+		}
 	}
 
 	/**
@@ -212,14 +345,19 @@ public interface FilterListModel<T> {
 		@NonNull List<T> get();
 
 		/**
-		 * @return the {@link Value} controlling the predicate specifying which items should be visible
+		 * @return the {@link VisiblePredicate} controlling which items should be visible
 		 */
-		Value<Predicate<T>> predicate();
+		VisiblePredicate<T> predicate();
 
 		/**
 		 * @return an {@link Observer} notified when items have been added
 		 */
 		Observer<Collection<T>> added();
+
+		/**
+		 * @return the {@link SingleSelection} instance for these items
+		 */
+		SingleSelection<T> selection();
 
 		/**
 		 * Returns true if the given item is visible
@@ -296,9 +434,41 @@ public interface FilterListModel<T> {
 
 		/**
 		 * Sorts the visible items using {@link Sort#comparator()}, preserving the selection.
-		 * @see FilterListModel#sort()
+		 * @see FilterModel#sort()
 		 */
 		void sort();
+
+		/**
+		 * Provides a way to respond to changes to the visible items
+		 */
+		interface ItemsListener {
+
+			/**
+			 * Called when visible items are inserted
+			 * @param firstIndex the first index
+			 * @param lastIndex the last index
+			 */
+			void inserted(int firstIndex, int lastIndex);
+
+			/**
+			 * Called when visible items are updated
+			 * @param firstIndex the first index
+			 * @param lastIndex the last index
+			 */
+			void updated(int firstIndex, int lastIndex);
+
+			/**
+			 * Called when visible items are deleted
+			 * @param firstIndex the first index
+			 * @param lastIndex the last index
+			 */
+			void deleted(int firstIndex, int lastIndex);
+
+			/**
+			 * Called when all items may have changed
+			 */
+			void changed();
+		}
 	}
 
 	/**
@@ -325,7 +495,7 @@ public interface FilterListModel<T> {
 	}
 
 	/**
-	 * Handles refreshing data for a {@link FilterListModel}.
+	 * Handles refreshing data for a {@link FilterModel}.
 	 * @param <T> the type of items produced by this {@link Refresher}
 	 */
 	interface Refresher<T> {
@@ -357,10 +527,23 @@ public interface FilterListModel<T> {
 		 * @return an observer notified with the exception when an asynchronous refresh has failed
 		 */
 		Observer<Exception> exception();
+
+		/**
+		 * <p>Refreshes the data. Note that this method only throws exceptions when run synchronously.
+		 * <p>Use {@link #exception()} to listen for exceptions that happen during asynchronous refresh.
+		 * <p>Async refresh is performed when it is enabled ({@link #async()}) and this method is called on the UI thread.
+		 * @param onResult called with the result after a successful refresh, may be null
+		 * @throws RuntimeException in case of an exception when running synchronously.
+		 * @see #active()
+		 * @see #result()
+		 * @see #exception()
+		 * @see #async()
+		 */
+		void refresh(@Nullable Consumer<Collection<T>> onResult);
 	}
 
 	/**
-	 * Manages the sorting for a {@link FilterListModel}
+	 * Manages the sorting for a {@link FilterModel}
 	 * @param <T> the model item type
 	 */
 	interface Sort<T> {
@@ -420,31 +603,21 @@ public interface FilterListModel<T> {
 			return onException.observer();
 		}
 
-		/**
-		 * @return the item supplier for this refresher instance
-		 */
-		protected final Supplier<Collection<T>> supplier() {
-			return supplier;
-		}
-
-		/**
-		 * <p>Refreshes the data. Note that this method only throws exceptions when run synchronously.
-		 * <p>Use {@link #exception()} to listen for exceptions that happen during asynchronous refresh.
-		 * <p>Async refresh is performed when it is enabled ({@link #async()}) and this method is called on the UI thread.
-		 * @param onResult called with the result after a successful refresh, may be null
-		 * @throws RuntimeException in case of an exception when running synchronously.
-		 * @see #active()
-		 * @see #result()
-		 * @see #exception()
-		 * @see #async()
-		 */
-		protected final void refresh(@Nullable Consumer<Collection<T>> onResult) {
+		@Override
+		public final void refresh(@Nullable Consumer<Collection<T>> onResult) {
 			if (async.get() && isUserInterfaceThread()) {
 				refreshAsync(onResult);
 			}
 			else {
 				refreshSync(onResult);
 			}
+		}
+
+		/**
+		 * @return the item supplier for this refresher instance
+		 */
+		protected final Supplier<Collection<T>> supplier() {
+			return supplier;
 		}
 
 		/**

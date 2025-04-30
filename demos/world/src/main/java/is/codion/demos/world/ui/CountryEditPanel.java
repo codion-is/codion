@@ -18,7 +18,7 @@
  */
 package is.codion.demos.world.ui;
 
-import is.codion.common.model.list.FilterListModel.Items;
+import is.codion.common.model.filter.FilterModel.Items;
 import is.codion.demos.world.domain.api.World.City;
 import is.codion.demos.world.domain.api.World.Country;
 import is.codion.demos.world.model.CountryEditModel;

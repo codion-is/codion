@@ -10,6 +10,9 @@ Codion Change Log
 - FilterModel.VisibleItems and FilteredItems.get() annotated as NonNull.
 - FilterModel.Sorter renamed Sort, sorter() renamed sort().
 - FilterModel renamed FilterListModel and moved to list package.
+- FilterListModel renamed back to FilterModel and moved to filter package.
+- FilterListModel.Items.Builder added along with ItemsListener.
+- DefaultFilterListItems added, extracted from DefaultFilterTableItems, related refactoring.
 ### is.codion.common.rmi
 - ServerAdmin, removed a few public accessors for values included in ServerStatistics, related cleanup.
 ### is.codion.framework.domain

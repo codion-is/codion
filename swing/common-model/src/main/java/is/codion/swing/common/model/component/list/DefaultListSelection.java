@@ -19,7 +19,7 @@
 package is.codion.swing.common.model.component.list;
 
 import is.codion.common.event.Event;
-import is.codion.common.model.list.FilterListModel;
+import is.codion.common.model.filter.FilterModel.VisibleItems;
 import is.codion.common.observable.Observer;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
@@ -49,9 +49,9 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 	private final State single = State.state(false);
 	private final ObservableState multiple = State.and(empty.not(), single.not());
 
-	private final FilterListModel.Items<R> items;
+	private final VisibleItems<R> items;
 
-	DefaultListSelection(FilterListModel.Items<R> items) {
+	DefaultListSelection(VisibleItems<R> items) {
 		this.items = requireNonNull(items);
 		bindEvents();
 	}
@@ -81,6 +81,11 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 	}
 
 	@Override
+	public void adjusting(boolean adjusting) {
+		setValueIsAdjusting(adjusting);
+	}
+
+	@Override
 	public Indexes indexes() {
 		return selectedIndexes;
 	}
@@ -92,7 +97,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 
 	@Override
 	public void selectAll() {
-		setSelectionInterval(0, items.visible().count() - 1);
+		setSelectionInterval(0, items.count() - 1);
 	}
 
 	@Override
@@ -197,7 +202,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 
 		@Override
 		protected void setValue(Integer index) {
-			checkIndex(index, items.visible().count());
+			checkIndex(index, items.count());
 			setSelectionInterval(index, index);
 		}
 
@@ -235,20 +240,20 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 
 		@Override
 		public void add(int index) {
-			checkIndex(index, items.visible().count());
+			checkIndex(index, items.count());
 			addSelectionInterval(index, index);
 		}
 
 		@Override
 		public void remove(int index) {
-			checkIndex(index, items.visible().count());
+			checkIndex(index, items.count());
 			removeSelectionInterval(index, index);
 		}
 
 		@Override
 		public void remove(Collection<Integer> indexes) {
 			indexes.forEach(index -> {
-				checkIndex(index, items.visible().count());
+				checkIndex(index, items.count());
 				removeSelectionInterval(index, index);
 			});
 		}
@@ -273,7 +278,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 
 		@Override
 		public void decrement() {
-			int visibleSize = items.visible().count();
+			int visibleSize = items.count();
 			if (visibleSize > 0) {
 				int lastIndex = visibleSize - 1;
 				if (isSelectionEmpty()) {
@@ -289,7 +294,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 
 		@Override
 		public void increment() {
-			int filteredSize = items.visible().count();
+			int filteredSize = items.count();
 			if (filteredSize > 0) {
 				if (isSelectionEmpty()) {
 					setSelectionInterval(0, 0);
@@ -303,7 +308,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		}
 
 		private void checkIndexes(Collection<Integer> indexes) {
-			int size = items.visible().count();
+			int size = items.count();
 			for (Integer index : indexes) {
 				checkIndex(index, size);
 			}
@@ -319,8 +324,8 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		@Override
 		protected R getValue() {
 			int index = selectedIndex.getOrThrow();
-			if (index >= 0 && index < items.visible().count()) {
-				return items.visible().get(index);
+			if (index >= 0 && index < items.count()) {
+				return items.get(index);
 			}
 
 			return null;
@@ -351,7 +356,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		protected List<R> getValue() {
 			return unmodifiableList(selectedIndexes.getOrThrow().stream()
 							.mapToInt(Integer::intValue)
-							.mapToObj(items.visible()::get)
+							.mapToObj(items::get)
 							.collect(toList()));
 		}
 
@@ -395,17 +400,17 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 
 		@Override
 		public void remove(Collection<R> itemsToRemove) {
-			rejectNulls(itemsToRemove).forEach(item -> selectedIndexes.remove(items.visible().indexOf(item)));
+			rejectNulls(itemsToRemove).forEach(item -> selectedIndexes.remove(items.indexOf(item)));
 		}
 
 		@Override
 		public boolean contains(R item) {
-			return isSelectedIndex(items.visible().indexOf(requireNonNull(item)));
+			return isSelectedIndex(items.indexOf(requireNonNull(item)));
 		}
 
 		private void addInternal(Collection<R> itemsToAdd) {
 			selectedIndexes.add(itemsToAdd.stream()
-							.mapToInt(items.visible()::indexOf)
+							.mapToInt(items::indexOf)
 							.filter(index -> index >= 0)
 							.boxed()
 							.collect(toList()));
@@ -413,7 +418,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 
 		private List<Integer> indexesToSelect(Predicate<R> predicate) {
 			List<Integer> indexes = new ArrayList<>();
-			List<R> visibleItems = items.visible().get();
+			List<R> visibleItems = items.get();
 			for (int i = 0; i < visibleItems.size(); i++) {
 				R item = visibleItems.get(i);
 				if (predicate.test(item)) {

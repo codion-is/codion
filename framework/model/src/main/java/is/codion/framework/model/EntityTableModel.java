@@ -19,7 +19,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.model.list.FilterListModel;
+import is.codion.common.model.filter.FilterModel;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
@@ -41,7 +41,7 @@ import static is.codion.common.Configuration.enumValue;
  * Specifies a table model containing {@link Entity} instances.
  * @param <E> the type of {@link EntityEditModel} used by this {@link EntityTableModel}
  */
-public interface EntityTableModel<E extends EntityEditModel> extends FilterListModel<Entity> {
+public interface EntityTableModel<E extends EntityEditModel> extends FilterModel<Entity> {
 
 	/**
 	 * Specifies the default action a table model takes when entities are inserted via its edit model.

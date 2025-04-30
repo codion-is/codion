@@ -20,7 +20,7 @@ package is.codion.swing.common.model.component.combobox;
 
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
-import is.codion.common.model.list.FilterListModel;
+import is.codion.common.model.filter.FilterModel;
 import is.codion.common.model.selection.SingleSelection;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.value.Value;
@@ -40,12 +40,12 @@ import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A combo box model based on {@link FilterListModel}.
+ * A combo box model based on {@link FilterModel}.
  * @param <T> the type of values in this combo box model
  * @see #builder()
  * @see VisibleItems#predicate()
  */
-public interface FilterComboBoxModel<T> extends FilterListModel<T>, ComboBoxModel<T> {
+public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T> {
 
 	/**
 	 * Specifies the caption used by default to represent the null item in combo box models.

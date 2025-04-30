@@ -18,8 +18,8 @@
  */
 package is.codion.swing.common.model.component.list;
 
-import is.codion.common.model.list.FilterListModel;
-import is.codion.common.model.list.FilterListModel.AbstractRefresher;
+import is.codion.common.model.filter.FilterModel;
+import is.codion.common.model.filter.FilterModel.AbstractRefresher;
 import is.codion.swing.common.model.worker.ProgressWorker;
 
 import javax.swing.SwingUtilities;
@@ -28,17 +28,17 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
- * A default swing based {@link FilterListModel.Refresher}.
+ * A {@link ProgressWorker} based {@link FilterModel.Refresher}.
  * @param <T> the model row type
  */
-public abstract class AbstractFilterListModelRefresher<T> extends AbstractRefresher<T> {
+public abstract class AbstractRefreshWorker<T> extends AbstractRefresher<T> {
 
-	private ProgressWorker<Collection<T>, ?> refreshWorker;
+	private ProgressWorker<Collection<T>, ?> worker;
 
 	/**
 	 * @param supplier supplies the items
 	 */
-	protected AbstractFilterListModelRefresher(Supplier<Collection<T>> supplier) {
+	protected AbstractRefreshWorker(Supplier<Collection<T>> supplier) {
 		super(supplier);
 	}
 
@@ -49,7 +49,7 @@ public abstract class AbstractFilterListModelRefresher<T> extends AbstractRefres
 
 	protected final void refreshAsync(Consumer<Collection<T>> onResult) {
 		cancelCurrentRefresh();
-		refreshWorker = ProgressWorker.builder(supplier()::get)
+		worker = ProgressWorker.builder(supplier()::get)
 						.onStarted(this::onRefreshStarted)
 						.onResult(items -> onRefreshResult(items, onResult))
 						.onException(this::onRefreshFailedAsync)
@@ -71,7 +71,7 @@ public abstract class AbstractFilterListModelRefresher<T> extends AbstractRefres
 	}
 
 	private void onRefreshFailedAsync(Exception exception) {
-		refreshWorker = null;
+		worker = null;
 		setActive(false);
 		notifyException(exception);
 	}
@@ -86,7 +86,7 @@ public abstract class AbstractFilterListModelRefresher<T> extends AbstractRefres
 	}
 
 	private void onRefreshResult(Collection<T> result, Consumer<Collection<T>> onResult) {
-		refreshWorker = null;
+		worker = null;
 		setActive(false);
 		processResult(result);
 		if (onResult != null) {
@@ -96,9 +96,9 @@ public abstract class AbstractFilterListModelRefresher<T> extends AbstractRefres
 	}
 
 	private void cancelCurrentRefresh() {
-		ProgressWorker<?, ?> worker = refreshWorker;
-		if (worker != null) {
-			worker.cancel(true);
+		ProgressWorker<?, ?> progressWorker = worker;
+		if (progressWorker != null) {
+			progressWorker.cancel(true);
 		}
 	}
 }

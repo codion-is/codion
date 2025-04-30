@@ -58,7 +58,7 @@ public class FilterListSelectionTest {
 										.build();
 		tableModel.items().refresh();
 
-		testModel = filterListSelection(tableModel.items());
+		testModel = filterListSelection(tableModel.items().visible());
 	}
 
 	@Test

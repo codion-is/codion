@@ -18,9 +18,13 @@
  */
 package is.codion.swing.common.model.component.table;
 
+import is.codion.common.event.Event;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
-import is.codion.common.model.list.FilterListModel;
+import is.codion.common.model.filter.FilterModel;
+import is.codion.common.model.filter.FilterModel.VisibleItems.ItemsListener;
+import is.codion.common.value.AbstractValue;
+import is.codion.swing.common.model.component.list.AbstractRefreshWorker;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 
 import javax.swing.JTable;
@@ -39,6 +43,9 @@ import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static is.codion.common.model.condition.TableConditionModel.tableConditionModel;
+import static is.codion.common.value.Value.Notify.WHEN_SET;
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -54,7 +61,11 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	 */
 	static final Comparator<?> STRING_COMPARATOR = Comparator.comparing(Object::toString);
 
-	private final DefaultFilterTableItems<R, C> items;
+	private final Items<R> items;
+	private final TableColumns<R, C> columns;
+	private final TableConditionModel<C> filters;
+	private final FilterListSelection<R> selection;
+	private final DefaultFilterTableSort<R, C> sort;
 	private final DefaultColumnValues columnValues = new DefaultColumnValues();
 	private final Function<FilterTableModel<R, C>, RowEditor<R, C>> rowEditorFactory;
 	private final RemoveSelectionListener removeSelectionListener;
@@ -62,15 +73,25 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private RowEditor<R, C> rowEditor;
 
 	private DefaultFilterTableModel(DefaultBuilder<R, C> builder) {
-		this.items = new DefaultFilterTableItems<>(this, builder.validator, builder.supplier,
-						builder.refreshStrategy, builder.asyncRefresh, builder.columns, builder.filterModelFactory);
+		this.columns = builder.columns;
+		this.filters = tableConditionModel(builder.filterModelFactory);
+		this.sort = new DefaultFilterTableSort<>(columns);
 		this.rowEditorFactory = builder.rowEditorFactory;
+		this.items = Items.builder(builder::createRefresher)
+						.selection(FilterListSelection::filterListSelection)
+						.sort(sort)
+						.validator(builder.validator)
+						.visiblePredicate(new DefaultVisiblePredicate<>(builder.columns, filters))
+						.refreshStrategy(builder.refreshStrategy)
+						.listener(new TableModelAdapter())
+						.build();
+		this.selection = (FilterListSelection<R>) items.visible().selection();
 		this.removeSelectionListener = new RemoveSelectionListener();
 		addTableModelListener(removeSelectionListener);
 	}
 
 	@Override
-	public FilterTableModelItems<R> items() {
+	public Items<R> items() {
 		return items;
 	}
 
@@ -81,7 +102,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public int getColumnCount() {
-		return items.columns.identifiers().size();
+		return columns.identifiers().size();
 	}
 
 	@Override
@@ -91,27 +112,27 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public FilterListSelection<R> selection() {
-		return items.selection;
+		return selection;
 	}
 
 	@Override
 	public TableConditionModel<C> filters() {
-		return items.filters;
+		return filters;
 	}
 
 	@Override
 	public FilterTableSort<R, C> sort() {
-		return (FilterTableSort<R, C>) items.sort;
+		return sort;
 	}
 
 	@Override
 	public Class<?> getColumnClass(C identifier) {
-		return items.columns.columnClass(requireNonNull(identifier));
+		return columns.columnClass(requireNonNull(identifier));
 	}
 
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
-		return items.columns.columnClass(items.columns.identifier(columnIndex));
+		return columns.columnClass(columns.identifier(columnIndex));
 	}
 
 	@Override
@@ -121,17 +142,17 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
-		return rowEditor().editable(items.visible().get(rowIndex), items.columns.identifier(columnIndex));
+		return rowEditor().editable(items.visible().get(rowIndex), columns.identifier(columnIndex));
 	}
 
 	@Override
 	public void setValueAt(Object value, int rowIndex, int columnIndex) {
-		rowEditor().set(value, rowIndex, items.visible().get(rowIndex), items.columns.identifier(columnIndex));
+		rowEditor().set(value, rowIndex, items.visible().get(rowIndex), columns.identifier(columnIndex));
 	}
 
 	@Override
 	public TableColumns<R, C> columns() {
-		return items.columns;
+		return columns;
 	}
 
 	@Override
@@ -165,8 +186,31 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		@Override
 		public void tableChanged(TableModelEvent e) {
 			if (e.getType() == TableModelEvent.DELETE) {
-				items.selection.removeIndexInterval(e.getFirstRow(), e.getLastRow());
+				selection().removeIndexInterval(e.getFirstRow(), e.getLastRow());
 			}
+		}
+	}
+
+	private final class TableModelAdapter implements ItemsListener {
+
+		@Override
+		public void inserted(int firstIndex, int lastIndex) {
+			fireTableRowsInserted(firstIndex, lastIndex);
+		}
+
+		@Override
+		public void updated(int firstIndex, int lastIndex) {
+			fireTableRowsUpdated(firstIndex, lastIndex);
+		}
+
+		@Override
+		public void deleted(int firstIndex, int lastIndex) {
+			fireTableRowsDeleted(firstIndex, lastIndex);
+		}
+
+		@Override
+		public void changed() {
+			fireTableDataChanged();
 		}
 	}
 
@@ -184,12 +228,12 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		@Override
 		public String string(int rowIndex, C identifier) {
-			return items.columns.string(items.visible().get(rowIndex), requireNonNull(identifier));
+			return columns.string(items.visible().get(rowIndex), requireNonNull(identifier));
 		}
 
 		@Override
 		public Object value(int rowIndex, C identifier) {
-			return items.columns.value(items.visible().get(rowIndex), identifier);
+			return columns.value(items.visible().get(rowIndex), identifier);
 		}
 
 		private List<Object> values(Stream<Integer> rowIndexStream, C identifier) {
@@ -197,11 +241,11 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		private Object valueAt(int rowIndex, int columnIndex) {
-			return value(rowIndex, items.columns.identifier(columnIndex));
+			return value(rowIndex, columns.identifier(columnIndex));
 		}
 
 		private C validateIdentifier(C identifier) {
-			int modelIndex = items.columns.identifiers().indexOf(identifier);
+			int modelIndex = columns.identifiers().indexOf(identifier);
 			if (modelIndex == -1) {
 				throw new IllegalArgumentException("Unknown column identifier: " + identifier);
 			}
@@ -232,6 +276,54 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 	}
 
+	private static final class DefaultVisiblePredicate<R, C>
+					extends AbstractValue<Predicate<R>> implements VisiblePredicate<R> {
+
+		private final TableColumns<R, C> tableColumns;
+		private final TableConditionModel<C> filters;
+
+		private Predicate<R> predicate;
+
+		private DefaultVisiblePredicate(TableColumns<R, C> columns, TableConditionModel<C> filters) {
+			super(WHEN_SET);
+			this.tableColumns = columns;
+			this.filters = filters;
+			this.filters.changed().addListener(this::notifyListeners);
+		}
+
+		@Override
+		public boolean test(R item) {
+			if (!VisiblePredicate.super.test(item)) {
+				return false;
+			}
+
+			return filters.get().entrySet().stream()
+							.filter(entry -> entry.getValue().enabled().get())
+							.allMatch(entry -> accepts(item, entry.getValue(), entry.getKey(), tableColumns));
+		}
+
+		@Override
+		protected Predicate<R> getValue() {
+			return predicate;
+		}
+
+		@Override
+		protected void setValue(Predicate<R> predicate) {
+			this.predicate = predicate;
+		}
+
+		private boolean accepts(R item, ConditionModel<?> condition, C identifier,
+														TableColumns<R, C> columns) {
+			if (condition.valueClass().equals(String.class)) {
+				String string = columns.string(item, identifier);
+
+				return ((ConditionModel<String>) condition).accepts(string.isEmpty() ? null : string);
+			}
+
+			return condition.accepts(columns.comparable(item, identifier));
+		}
+	}
+
 	private static final class DefaultRowEditor<R, C> implements RowEditor<R, C> {
 
 		@Override
@@ -259,7 +351,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		private Predicate<R> validator = new ValidPredicate<>();
 		private Supplier<Map<C, ConditionModel<?>>> filterModelFactory;
 		private RefreshStrategy refreshStrategy = RefreshStrategy.CLEAR;
-		private boolean asyncRefresh = FilterListModel.ASYNC_REFRESH.getOrThrow();
+		private boolean asyncRefresh = FilterModel.ASYNC_REFRESH.getOrThrow();
 		private Function<FilterTableModel<R, C>, RowEditor<R, C>> rowEditorFactory = new DefaultRowEditorFactory<>();
 
 		DefaultBuilder(TableColumns<R, C> columns) {
@@ -317,6 +409,29 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			}
 
 			return columns;
+		}
+
+		private Refresher<R> createRefresher(Items<R> items) {
+			return new DefaultRefreshWorker<>(supplier == null ? items::get : supplier, items, asyncRefresh);
+		}
+
+		private static final class DefaultRefreshWorker<R> extends AbstractRefreshWorker<R> {
+
+			private final Event<Collection<R>> onResult = Event.event();
+			private final Items<R> items;
+
+			private DefaultRefreshWorker(Supplier<? extends Collection<R>> supplier,
+																	 Items<R> items, boolean asyncRefresh) {
+				super((Supplier<Collection<R>>) supplier);
+				this.items = items;
+				async().set(asyncRefresh);
+			}
+
+			@Override
+			protected void processResult(Collection<R> result) {
+				items.set(result);
+				onResult.accept(unmodifiableCollection(result));
+			}
 		}
 
 		private static final class ValidPredicate<R> implements Predicate<R> {

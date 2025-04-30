@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.model.component.list;
 
-import is.codion.common.model.list.FilterListModel;
+import is.codion.common.model.filter.FilterModel.VisibleItems;
 import is.codion.common.model.selection.MultiSelection;
 
 import javax.swing.ListSelectionModel;
@@ -31,11 +31,11 @@ public interface FilterListSelection<T> extends ListSelectionModel, MultiSelecti
 
 	/**
 	 * Instantiates a new {@link FilterListSelection} instance based on the given items
-	 * @param items the {@link FilterListModel.Items} items to select from
+	 * @param items the {@link VisibleItems} to select from
 	 * @return a new {@link FilterListSelection} instance
 	 * @param <T> the list item type
 	 */
-	static <T> FilterListSelection<T> filterListSelection(FilterListModel.Items<T> items) {
+	static <T> FilterListSelection<T> filterListSelection(VisibleItems<T> items) {
 		return new DefaultListSelection<>(items);
 	}
 }

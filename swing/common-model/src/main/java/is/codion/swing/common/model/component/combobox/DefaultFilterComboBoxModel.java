@@ -27,7 +27,7 @@ import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.component.list.AbstractFilterListModelRefresher;
+import is.codion.swing.common.model.component.list.AbstractRefreshWorker;
 
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -287,7 +287,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private final Lock lock = new Lock() {};
 
-		private final DefaultRefresher refresher;
+		private final AbstractRefresher<T> refresher;
 		private final DefaultVisibleItems visible;
 		private final DefaultFilteredItems filtered = new DefaultFilteredItems();
 
@@ -307,13 +307,13 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			}
 			visible.predicate.addListener(this::filter);
 			if (builder.supplier == null) {
-				refresher = new DefaultRefresher(this::get);
+				refresher = new DefaultRefreshWorker(this::get);
 				if (builder.items != null) {
 					set(builder.items);
 				}
 			}
 			else {
-				refresher = new DefaultRefresher(builder.supplier);
+				refresher = new DefaultRefreshWorker(builder.supplier);
 			}
 		}
 
@@ -324,12 +324,17 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		public void refresh() {
-			refresher.doRefresh(null);
+			refresher.refresh(null);
 		}
 
 		@Override
 		public void refresh(Consumer<Collection<T>> onResult) {
-			refresher.doRefresh(requireNonNull(onResult));
+			refresher.refresh(requireNonNull(onResult));
+		}
+
+		@Override
+		public Value<RefreshStrategy> refreshStrategy() {
+			throw new UnsupportedOperationException();
 		}
 
 		@Override
@@ -552,16 +557,13 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private final class DefaultVisibleItems implements VisibleItems<T> {
 
-			private final Value<Predicate<T>> predicate = Value.builder()
-							.<Predicate<T>>nullable()
-							.notify(WHEN_SET)
-							.build();
+			private final VisiblePredicate<T> predicate = new DefaultVisiblePredicate<>();
 			private final List<T> items = new ArrayList<>();
 			private final Event<List<T>> event = Event.event();
 			private final Event<Collection<T>> added = Event.event();
 
 			@Override
-			public Value<Predicate<T>> predicate() {
+			public VisiblePredicate<T> predicate() {
 				return predicate;
 			}
 
@@ -587,6 +589,11 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			@Override
 			public Observer<Collection<T>> added() {
 				return added.observer();
+			}
+
+			@Override
+			public SingleSelection<T> selection() {
+				return selection;
 			}
 
 			@Override
@@ -795,9 +802,9 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 	}
 
-	private final class DefaultRefresher extends AbstractFilterListModelRefresher<T> {
+	private final class DefaultRefreshWorker extends AbstractRefreshWorker<T> {
 
-		private DefaultRefresher(Supplier<Collection<T>> supplier) {
+		private DefaultRefreshWorker(Supplier<Collection<T>> supplier) {
 			super(supplier);
 		}
 
@@ -805,9 +812,25 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		protected void processResult(Collection<T> result) {
 			modelItems.set(result);
 		}
+	}
 
-		private void doRefresh(Consumer<Collection<T>> onRefresh) {
-			super.refresh(onRefresh);
+	private static final class DefaultVisiblePredicate<R>
+					extends AbstractValue<Predicate<R>> implements VisiblePredicate<R> {
+
+		private Predicate<R> predicate;
+
+		private DefaultVisiblePredicate() {
+			super(WHEN_SET);
+		}
+
+		@Override
+		protected Predicate<R> getValue() {
+			return predicate;
+		}
+
+		@Override
+		protected void setValue(Predicate<R> predicate) {
+			this.predicate = predicate;
 		}
 	}
 

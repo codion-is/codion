@@ -20,8 +20,7 @@ package is.codion.swing.common.model.component.table;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
-import is.codion.common.model.list.FilterListModel;
-import is.codion.common.value.Value;
+import is.codion.common.model.filter.FilterModel;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 
 import javax.swing.table.TableModel;
@@ -29,7 +28,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -44,29 +42,7 @@ import static is.codion.swing.common.model.component.table.DefaultFilterTableMod
  * @param <C> the type used to identify columns in this table model, Integer for indexed identification for example
  * @see #builder(TableColumns)
  */
-public interface FilterTableModel<R, C> extends TableModel, FilterListModel<R> {
-
-	/**
-	 * Specifies how the data in a table model is refreshed.
-	 */
-	enum RefreshStrategy {
-		/**
-		 * Clear the table model before populating it with the refreshed data.
-		 * This causes an empty selection event to be triggered, since the
-		 * selection is cleared when the table model is cleared.
-		 * @see TableSelection#indexes()
-		 */
-		CLEAR,
-		/**
-		 * Merges the refreshed data with the data already in the table model,
-		 * by removing rows that are missing, replacing existing rows and adding new ones.
-		 * This strategy does not cause an empty selection event to be triggered
-		 * but at a considerable performance cost.
-		 * Note that sorting is not performed using this strategy, since that would
-		 * cause an empty selection event as well.
-		 */
-		MERGE
-	}
+public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 
 	/**
 	 * @return the table columns
@@ -79,9 +55,6 @@ public interface FilterTableModel<R, C> extends TableModel, FilterListModel<R> {
 	 * @return the Class representing the given column
 	 */
 	Class<?> getColumnClass(C identifier);
-
-	@Override
-	FilterTableModelItems<R> items();
 
 	/**
 	 * Provides access to column values
@@ -128,44 +101,6 @@ public interface FilterTableModel<R, C> extends TableModel, FilterListModel<R> {
 	 */
 	static <R, C> Builder<R, C> builder(TableColumns<R, C> columns) {
 		return new DefaultFilterTableModel.DefaultBuilder<>(columns);
-	}
-
-	/**
-	 * @param <R> the row type
-	 */
-	interface FilterTableModelItems<R> extends FilterListModel.Items<R> {
-
-		/**
-		 * {@inheritDoc}
-		 * <br><br>
-		 * Retains the selection and filtering. Sorts the refreshed data unless merging on refresh is enabled.
-		 * Note that an empty selection event will be triggered during a normal refresh, since the model is cleared
-		 * before it is repopulated, during which the selection is cleared as well. Using merge on refresh
-		 * ({@link #refreshStrategy()}) will prevent that at a considerable performance cost.
-		 * @see #refreshStrategy()
-		 * @see RefreshStrategy
-		 */
-		@Override
-		void refresh();
-
-		/**
-		 * {@inheritDoc}
-		 * <br><br>
-		 * Retains the selection and filtering. Sorts the refreshed data unless merging on refresh is enabled.
-		 * Note that an empty selection event will be triggered during a normal refresh, since the model is cleared
-		 * before it is repopulated, during which the selection is cleared as well. Using merge on refresh
-		 * ({@link #refreshStrategy()}) will prevent that at a considerable performance cost.
-		 * @see #refreshStrategy()
-		 * @see RefreshStrategy
-		 */
-		@Override
-		void refresh(Consumer<Collection<R>> onResult);
-
-		/**
-		 * Default {@link RefreshStrategy#CLEAR}
-		 * @return the {@link Value} controlling the refresh strategy
-		 */
-		Value<RefreshStrategy> refreshStrategy();
 	}
 
 	/**

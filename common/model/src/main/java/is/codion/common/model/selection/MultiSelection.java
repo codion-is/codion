@@ -76,6 +76,13 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 	int count();
 
 	/**
+	 * Indicates whether the subsequent selection events
+	 * should be grouped and not triggered individually
+	 * @param adjusting true if subsequent selection events should be grouped
+	 */
+	void adjusting(boolean adjusting);
+
+	/**
 	 * Manages the selected indexes.
 	 */
 	interface Indexes extends Value<List<Integer>> {

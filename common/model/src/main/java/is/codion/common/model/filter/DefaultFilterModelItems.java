@@ -16,24 +16,24 @@
  *
  * Copyright (c) 2024 - 2025, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.model.component.table;
+package is.codion.common.model.filter;
 
 import is.codion.common.event.Event;
-import is.codion.common.model.condition.ConditionModel;
-import is.codion.common.model.condition.TableConditionModel;
-import is.codion.common.model.list.FilterListModel;
-import is.codion.common.model.list.FilterListModel.FilteredItems;
-import is.codion.common.model.list.FilterListModel.Refresher;
-import is.codion.common.model.list.FilterListModel.VisibleItems;
+import is.codion.common.model.filter.FilterModel.FilteredItems;
+import is.codion.common.model.filter.FilterModel.Items;
+import is.codion.common.model.filter.FilterModel.RefreshStrategy;
+import is.codion.common.model.filter.FilterModel.Refresher;
+import is.codion.common.model.filter.FilterModel.Sort;
+import is.codion.common.model.filter.FilterModel.VisibleItems;
+import is.codion.common.model.filter.FilterModel.VisibleItems.ItemsListener;
+import is.codion.common.model.filter.FilterModel.VisiblePredicate;
+import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.observable.Observer;
+import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.component.list.AbstractFilterListModelRefresher;
-import is.codion.swing.common.model.component.list.FilterListSelection;
-import is.codion.swing.common.model.component.table.FilterTableModel.FilterTableModelItems;
-import is.codion.swing.common.model.component.table.FilterTableModel.RefreshStrategy;
-import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
 
-import javax.swing.table.AbstractTableModel;
+import org.jspecify.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -44,50 +44,40 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
-import static is.codion.common.model.condition.TableConditionModel.tableConditionModel;
 import static is.codion.common.value.Value.Notify.WHEN_SET;
-import static is.codion.swing.common.model.component.list.FilterListSelection.filterListSelection;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
+final class DefaultFilterModelItems<R> implements Items<R> {
 
 	private final Lock lock = new Lock() {};
 
-	private final AbstractTableModel tableModel;
 	private final Predicate<R> validator;
-	private final VisiblePredicate visiblePredicate;
 	private final DefaultVisibleItems visible;
 	private final DefaultFilteredItems filtered;
+	private final ItemsListener itemsListener;
 
-	final TableColumns<R, C> columns;
-	final FilterListSelection<R> selection;
-	final TableConditionModel<C> filters;
-	final FilterListModel.Sort<R> sort;
+	private final MultiSelection<R> selection;
+	private final Sort<R> sort;
+	private final Refresher<R> refresher;
+	private final Value<RefreshStrategy> refreshStrategy;
 
-	final DefaultRefresher refresher;
-	final Value<RefreshStrategy> refreshStrategy;
-
-	DefaultFilterTableItems(AbstractTableModel tableModel, Predicate<R> validator, Supplier<? extends Collection<R>> supplier,
-													RefreshStrategy refreshStrategy, boolean asyncRefresh, TableColumns<R, C> columns,
-													Supplier<Map<C, ConditionModel<?>>> filterModelFactory) {
-		this.tableModel = requireNonNull(tableModel);
-		this.columns = requireNonNull(columns);
-		this.validator = validator;
-		this.refresher = new DefaultRefresher(supplier == null ? this::get : supplier, asyncRefresh);
+	private DefaultFilterModelItems(DefaultBuilder<R> builder) {
+		this.sort = builder.sort;
+		this.validator = builder.validator;
+		this.visible = new DefaultVisibleItems(builder.visiblePredicate);
+		this.filtered = new DefaultFilteredItems();
+		this.refresher = builder.refresher.apply(this);
+		this.selection = builder.selection.apply(visible);
+		this.itemsListener = builder.itemsListener;
 		this.refreshStrategy = Value.builder()
 						.nonNull(RefreshStrategy.CLEAR)
-						.value(refreshStrategy)
+						.value(builder.refreshStrategy)
 						.build();
-		this.visible = new DefaultVisibleItems();
-		this.filtered = new DefaultFilteredItems();
-		this.filters = tableConditionModel(filterModelFactory);
-		this.visiblePredicate = new VisiblePredicate();
-		this.selection = filterListSelection(this);
-		this.sort = new DefaultFilterTableSort<>(columns);
+		this.visible.predicate.addListener(DefaultFilterModelItems.this::filter);
 		this.sort.observer().addListener(visible::sort);
 	}
 
@@ -98,12 +88,12 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 
 	@Override
 	public void refresh() {
-		refresher.doRefresh(null);
+		refresher.refresh(null);
 	}
 
 	@Override
 	public void refresh(Consumer<Collection<R>> onResult) {
-		refresher.doRefresh(requireNonNull(onResult));
+		refresher.refresh(requireNonNull(onResult));
 	}
 
 	@Override
@@ -153,7 +143,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 				int index = visible.items.indexOf(item);
 				if (index >= 0) {
 					visible.items.remove(index);
-					tableModel.fireTableRowsDeleted(index, index);
+					itemsListener.deleted(index, index);
 					visible.notifyChanges();
 				}
 			}
@@ -171,18 +161,18 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 				}
 			}
 			boolean visibleRemoved = false;
-			selection.setValueIsAdjusting(true);
+			selection.adjusting(true);
 			ListIterator<R> iterator = visible.items.listIterator(visible.items.size());
 			while (!toRemove.isEmpty() && iterator.hasPrevious()) {
 				int index = iterator.previousIndex();
 				R item = iterator.previous();
 				if (toRemove.remove(item)) {
 					iterator.remove();
-					tableModel.fireTableRowsDeleted(index, index);
+					itemsListener.deleted(index, index);
 					visibleRemoved = true;
 				}
 			}
-			selection.setValueIsAdjusting(false);
+			selection.adjusting(false);
 			if (visibleRemoved) {
 				visible.notifyChanges();
 			}
@@ -203,7 +193,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 			for (R itemToReplace : items.keySet()) {
 				if (filtered.items.remove(itemToReplace)) {
 					R replacement = toReplace.remove(itemToReplace);
-					if (visiblePredicate.test(replacement)) {
+					if (visible.predicate.test(replacement)) {
 						visible.items.add(replacement);
 					}
 					else {
@@ -216,7 +206,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 				R item = iterator.next();
 				R replacement = toReplace.remove(item);
 				if (replacement != null) {
-					if (visiblePredicate.test(replacement)) {
+					if (visible.predicate.test(replacement)) {
 						iterator.set(replacement);
 					}
 					else {
@@ -225,8 +215,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 					}
 				}
 			}
-			tableModel.fireTableDataChanged();
-			visible.notifyChanges();
+			itemsListener.changed();
 			visible.sort();
 		}
 	}
@@ -266,7 +255,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 			filtered.items.clear();
 			for (ListIterator<R> visibleItemsIterator = visible.items.listIterator(); visibleItemsIterator.hasNext(); ) {
 				R item = visibleItemsIterator.next();
-				if (!visiblePredicate.test(item)) {
+				if (!visible.predicate.test(item)) {
 					visibleItemsIterator.remove();
 					filtered.items.add(item);
 				}
@@ -274,7 +263,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 			if (sort.sorted()) {
 				visible.items.sort(sort.comparator());
 			}
-			tableModel.fireTableDataChanged();
+			itemsListener.changed();
 			visible.notifyChanges();
 		}
 		selection.items().set(selectedItems);
@@ -287,7 +276,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 			int visibleSize = visible.items.size();
 			visible.items.clear();
 			if (visibleSize > 0) {
-				tableModel.fireTableRowsDeleted(0, visibleSize - 1);
+				itemsListener.deleted(0, visibleSize - 1);
 				visible.notifyChanges();
 			}
 		}
@@ -306,9 +295,9 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		int index = visible.indexOf(item);
 		if (index == -1) {
 			int visibleCount = visible.count();
-			if (visiblePredicate.test(item)) {
+			if (visible.predicate.test(item)) {
 				visible.items.add(visibleCount, item);
-				tableModel.fireTableRowsInserted(visibleCount, visibleCount);
+				itemsListener.inserted(visibleCount, visibleCount);
 				visible.notifyChanges();
 				visible.notifyAdded(singleton(item));
 
@@ -316,9 +305,9 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 			}
 			filtered.items.add(item);
 		}
-		else if (visiblePredicate.test(item)) {
+		else if (visible.predicate.test(item)) {
 			visible.items.set(index, item);
-			tableModel.fireTableRowsUpdated(index, index);
+			itemsListener.updated(index, index);
 			visible.notifyChanges();
 		}
 	}
@@ -335,7 +324,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		Collection<R> filteredItems = new ArrayList<>(items.size());
 		for (R item : items) {
 			validate(item);
-			if (visiblePredicate.test(item)) {
+			if (visible.predicate.test(item)) {
 				visibleItems.add(item);
 			}
 			else {
@@ -344,7 +333,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		}
 		if (!visibleItems.isEmpty()) {
 			visible.items.addAll(index, visibleItems);
-			tableModel.fireTableRowsInserted(index, index + visibleItems.size());
+			itemsListener.inserted(index, index + visibleItems.size());
 			visible.notifyChanges();
 			visible.sort();
 			visible.notifyAdded(visibleItems);
@@ -370,70 +359,20 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		return items;
 	}
 
-	final class DefaultRefresher extends AbstractFilterListModelRefresher<R> {
-
-		private final Event<Collection<R>> onResult = Event.event();
-
-		private DefaultRefresher(Supplier<? extends Collection<R>> supplier, boolean asyncRefresh) {
-			super((Supplier<Collection<R>>) supplier);
-			async().set(asyncRefresh);
-		}
-
-		@Override
-		protected void processResult(Collection<R> result) {
-			set(result);
-			onResult.accept(unmodifiableCollection(result));
-		}
-
-		void doRefresh(Consumer<Collection<R>> onResult) {
-			super.refresh(onResult);
-		}
-	}
-
-	private final class VisiblePredicate implements Predicate<R> {
-
-		private final Value<Predicate<R>> predicate;
-
-		private VisiblePredicate() {
-			predicate = Value.builder()
-							.<Predicate<R>>nullable()
-							.notify(WHEN_SET)
-							.listener(DefaultFilterTableItems.this::filter)
-							.build();
-			filters.changed().addListener(DefaultFilterTableItems.this::filter);
-		}
-
-		@Override
-		public boolean test(R item) {
-			if (!predicate.isNull() && !predicate.getOrThrow().test(item)) {
-				return false;
-			}
-
-			return filters.get().entrySet().stream()
-							.filter(entry -> entry.getValue().enabled().get())
-							.allMatch(entry -> accepts(item, entry.getValue(), entry.getKey(), columns));
-		}
-
-		private boolean accepts(R item, ConditionModel<?> condition, C identifier, TableColumns<R, C> columns) {
-			if (condition.valueClass().equals(String.class)) {
-				String string = columns.string(item, identifier);
-
-				return ((ConditionModel<String>) condition).accepts(string.isEmpty() ? null : string);
-			}
-
-			return condition.accepts(columns.comparable(item, identifier));
-		}
-	}
-
 	private final class DefaultVisibleItems implements VisibleItems<R> {
 
 		private final List<R> items = new ArrayList<>();
+		private final VisiblePredicate<R> predicate;
 		private final Event<List<R>> event = Event.event();
 		private final Event<Collection<R>> added = Event.event();
 
+		private DefaultVisibleItems(VisiblePredicate<R> predicate) {
+			this.predicate = predicate;
+		}
+
 		@Override
-		public Value<Predicate<R>> predicate() {
-			return visiblePredicate.predicate;
+		public VisiblePredicate<R> predicate() {
+			return predicate;
 		}
 
 		@Override
@@ -451,6 +390,11 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		@Override
 		public Observer<Collection<R>> added() {
 			return added.observer();
+		}
+
+		@Override
+		public MultiSelection<R> selection() {
+			return selection;
 		}
 
 		@Override
@@ -492,10 +436,10 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		public boolean set(int index, R item) {
 			validate(requireNonNull(item));
 			synchronized (lock) {
-				if (visiblePredicate.test(item)) {
+				if (predicate.test(item)) {
 					items.set(index, item);
-					tableModel.fireTableRowsUpdated(index, index);
-					notifyChanges();
+					itemsListener.updated(index, index);
+					visible.notifyChanges();
 
 					return true;
 				}
@@ -508,7 +452,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 		public R remove(int index) {
 			synchronized (lock) {
 				R removed = items.remove(index);
-				tableModel.fireTableRowsDeleted(index, index);
+				itemsListener.deleted(index, index);
 				notifyChanges();
 
 				return removed;
@@ -521,7 +465,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 				List<R> subList = items.subList(fromIndex, toIndex);
 				List<R> removedItems = new ArrayList<>(subList);
 				subList.clear();
-				tableModel.fireTableRowsDeleted(fromIndex, toIndex);
+				itemsListener.deleted(fromIndex, toIndex);
 				notifyChanges();
 
 				return removedItems;
@@ -541,7 +485,7 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 				List<R> selectedItems = selection.items().get();
 				synchronized (lock) {
 					items.sort(sort.comparator());
-					tableModel.fireTableRowsUpdated(0, items.size());
+					itemsListener.updated(0, items.size());
 					notifyChanges();
 				}
 				selection.items().set(selectedItems);
@@ -580,6 +524,128 @@ final class DefaultFilterTableItems<R, C> implements FilterTableModelItems<R> {
 			synchronized (lock) {
 				return items.size();
 			}
+		}
+	}
+
+	static final class DefaultSelectionStage<T> implements Builder.SelectionStage<T> {
+
+		private final Function<Items<T>, Refresher<T>> refresher;
+
+		DefaultSelectionStage(Function<Items<T>, Refresher<T>> refresher) {
+			this.refresher = refresher;
+		}
+
+		@Override
+		public Builder.SortStage<T> selection(Function<VisibleItems<T>, MultiSelection<T>> selection) {
+			return new DefaultSortStage<>(refresher, requireNonNull(selection));
+		}
+	}
+
+	private static final class DefaultSortStage<T> implements Builder.SortStage<T> {
+
+		private final Function<Items<T>, Refresher<T>> refresher;
+		private final Function<VisibleItems<T>, MultiSelection<T>> selectionFunction;
+
+		private DefaultSortStage(Function<Items<T>, Refresher<T>> refresher,
+														 Function<VisibleItems<T>, MultiSelection<T>> selection) {
+			this.refresher = refresher;
+			this.selectionFunction = selection;
+		}
+
+		@Override
+		public Builder<T> sort(Sort<T> sort) {
+			return new DefaultBuilder<>(selectionFunction, refresher, requireNonNull(sort));
+		}
+	}
+
+	private static final class DefaultBuilder<T> implements Builder<T> {
+
+		private final Function<VisibleItems<T>, MultiSelection<T>> selection;
+		private final Function<Items<T>, Refresher<T>> refresher;
+		private final Sort<T> sort;
+
+		private VisiblePredicate<T> visiblePredicate = new DefaultVisiblePredicate<>();
+		private Predicate<T> validator = new ValidPredicate<>();
+		private RefreshStrategy refreshStrategy = RefreshStrategy.CLEAR;
+		private ItemsListener itemsListener = new DefaultItemsListener();
+
+		private DefaultBuilder(Function<VisibleItems<T>, MultiSelection<T>> selection,
+													 Function<Items<T>, Refresher<T>> refresher, Sort<T> sort) {
+			this.selection = requireNonNull(selection);
+			this.refresher = requireNonNull(refresher);
+			this.sort = requireNonNull(sort);
+		}
+
+		@Override
+		public Builder<T> validator(Predicate<T> validator) {
+			this.validator = requireNonNull(validator);
+			return this;
+		}
+
+		@Override
+		public Builder<T> visiblePredicate(VisiblePredicate<T> visiblePredicate) {
+			this.visiblePredicate = requireNonNull(visiblePredicate);
+			return this;
+		}
+
+		@Override
+		public Builder<T> refreshStrategy(RefreshStrategy refreshStrategy) {
+			this.refreshStrategy = requireNonNull(refreshStrategy);
+			return this;
+		}
+
+		@Override
+		public Builder<T> listener(ItemsListener itemsListener) {
+			this.itemsListener = requireNonNull(itemsListener);
+			return this;
+		}
+
+		@Override
+		public Items<T> build() {
+			return new DefaultFilterModelItems<>(this);
+		}
+	}
+
+	private static final class DefaultItemsListener implements ItemsListener {
+
+		@Override
+		public void inserted(int firstIndex, int lastIndex) {}
+
+		@Override
+		public void updated(int firstIndex, int lastIndex) {}
+
+		@Override
+		public void deleted(int firstIndex, int lastIndex) {}
+
+		@Override
+		public void changed() {}
+	}
+
+	private static final class ValidPredicate<R> implements Predicate<R> {
+
+		@Override
+		public boolean test(R item) {
+			return true;
+		}
+	}
+
+	private static final class DefaultVisiblePredicate<R>
+					extends AbstractValue<Predicate<R>> implements VisiblePredicate<R> {
+
+		private @Nullable Predicate<R> predicate;
+
+		private DefaultVisiblePredicate() {
+			super(WHEN_SET);
+		}
+
+		@Override
+		protected @Nullable Predicate<R> getValue() {
+			return predicate;
+		}
+
+		@Override
+		protected void setValue(@Nullable Predicate<R> predicate) {
+			this.predicate = predicate;
 		}
 	}
 

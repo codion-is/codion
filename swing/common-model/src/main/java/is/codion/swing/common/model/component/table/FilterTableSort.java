@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.model.component.table;
 
-import is.codion.common.model.list.FilterListModel;
+import is.codion.common.model.filter.FilterModel;
 import is.codion.common.state.State;
 
 import javax.swing.SortOrder;
@@ -29,7 +29,7 @@ import java.util.List;
  * @param <R> the type representing a row in the table model
  * @param <C> the type representing the column identifiers in the table model
  */
-public interface FilterTableSort<R, C> extends FilterListModel.Sort<R> {
+public interface FilterTableSort<R, C> extends FilterModel.Sort<R> {
 
 	/**
 	 * Clears the sorting state and sorts the given columns {@link SortOrder#ASCENDING}

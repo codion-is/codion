@@ -18,7 +18,7 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.model.list.FilterListModel;
+import is.codion.common.model.filter.FilterModel;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnection;
@@ -56,7 +56,7 @@ import static java.util.stream.Collectors.toMap;
  */
 public abstract class AbstractEntityTableModel<E extends EntityEditModel> implements EntityTableModel<E> {
 
-	private final FilterListModel<Entity> listModel;
+	private final FilterModel<Entity> filterModel;
 	private final E editModel;
 	private final EntityQueryModel queryModel;
 	private final State editable = State.state();
@@ -69,22 +69,22 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 
 	/**
 	 * @param editModel the edit model
-	 * @param listModel the list model
+	 * @param filterModel the list model
 	 */
-	protected AbstractEntityTableModel(E editModel, FilterListModel<Entity> listModel) {
-		this(editModel, listModel, new DefaultEntityQueryModel(entityTableConditionModel(editModel.entityType(), editModel.connectionProvider())));
+	protected AbstractEntityTableModel(E editModel, FilterModel<Entity> filterModel) {
+		this(editModel, filterModel, new DefaultEntityQueryModel(entityTableConditionModel(editModel.entityType(), editModel.connectionProvider())));
 	}
 
 	/**
 	 * @param editModel the edit model
-	 * @param listModel the list model
+	 * @param filterModel the list model
 	 * @param queryModel the table query model
 	 * @throws IllegalArgumentException in case the edit and query model entity types do not match
 	 */
-	protected AbstractEntityTableModel(E editModel, FilterListModel<Entity> listModel, EntityQueryModel queryModel) {
+	protected AbstractEntityTableModel(E editModel, FilterModel<Entity> filterModel, EntityQueryModel queryModel) {
 		this.editModel = requireNonNull(editModel);
 		this.queryModel = requireNonNull(queryModel);
-		this.listModel = requireNonNull(listModel);
+		this.filterModel = requireNonNull(filterModel);
 		if (queryModel != null && !editModel.entityType().equals(queryModel.entityType())) {
 			throw new IllegalArgumentException("Entity type mismatch, edit model: " +
 							editModel.entities() + ", query model: " + queryModel.entityType());
@@ -178,10 +178,10 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	}
 
 	/**
-	 * @return the underlying list model
+	 * @return the underlying model
 	 */
-	protected FilterListModel<Entity> listModel() {
-		return listModel;
+	protected FilterModel<Entity> filterModel() {
+		return filterModel;
 	}
 
 	/**

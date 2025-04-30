@@ -20,7 +20,7 @@ package is.codion.manual.swing.common.model.component.table;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
-import is.codion.common.model.list.FilterListModel.VisibleItems;
+import is.codion.common.model.filter.FilterModel.VisibleItems;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.RowEditor;
