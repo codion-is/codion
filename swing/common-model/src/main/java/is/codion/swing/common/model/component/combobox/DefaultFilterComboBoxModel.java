@@ -268,8 +268,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public Comparator<T> comparator() {
-			return comparator;
+		public int compare(T o1, T o2) {
+			return comparator.compare(o1, o2);
 		}
 
 		@Override
@@ -669,8 +669,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			}
 
 			private boolean sortInternal() {
-				if (sort.comparator() != NULL_COMPARATOR && count() > 0) {
-					items.subList(includeNull ? 1 : 0, items.size()).sort(sort.comparator());
+				if (sort.sorted() && count() > 0) {
+					items.subList(includeNull ? 1 : 0, items.size()).sort(sort);
 					return true;
 				}
 

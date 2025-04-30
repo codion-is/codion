@@ -13,6 +13,7 @@ Codion Change Log
 - FilterListModel renamed back to FilterModel and moved to filter package.
 - FilterListModel.Items.Builder added along with ItemsListener.
 - DefaultFilterListItems added, extracted from DefaultFilterTableItems, related refactoring.
+- FilterModel.Sort now extends Comparator, comparator() removed.
 ### is.codion.common.rmi
 - ServerAdmin, removed a few public accessors for values included in ServerStatistics, related cleanup.
 ### is.codion.framework.domain

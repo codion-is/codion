@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import javax.swing.SortOrder;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -66,46 +65,44 @@ public class DefaultFilterTableSortTest {
 		Row thirdRow = new Row(1, 3, 6);
 		List<Row> items = asList(firstRow, secondRow, thirdRow);
 
-		Comparator<Row> rowComparator = model.comparator();
-
-		items.sort(rowComparator);
+		items.sort(model);
 		assertEquals(0, items.indexOf(firstRow));
 		assertEquals(1, items.indexOf(secondRow));
 		assertEquals(2, items.indexOf(thirdRow));
 
 		model.order(0).set(SortOrder.ASCENDING);
-		items.sort(rowComparator);
+		items.sort(model);
 		assertEquals(0, items.indexOf(firstRow));
 		assertEquals(1, items.indexOf(secondRow));
 		assertEquals(2, items.indexOf(thirdRow));
 
 		model.order(2).set(SortOrder.ASCENDING);
-		items.sort(rowComparator);
+		items.sort(model);
 		assertEquals(0, items.indexOf(firstRow));
 		assertEquals(1, items.indexOf(secondRow));
 		assertEquals(2, items.indexOf(thirdRow));
 
 		model.order(0).set(SortOrder.ASCENDING);
 		model.order(1).add(SortOrder.DESCENDING);
-		items.sort(rowComparator);
+		items.sort(model);
 		assertEquals(0, items.indexOf(thirdRow));
 		assertEquals(1, items.indexOf(firstRow));
 		assertEquals(2, items.indexOf(secondRow));
 
 		model.order(2).add(SortOrder.DESCENDING);
-		items.sort(rowComparator);
+		items.sort(model);
 		assertEquals(0, items.indexOf(thirdRow));
 		assertEquals(1, items.indexOf(secondRow));
 		assertEquals(2, items.indexOf(firstRow));
 
 		model.order(2).add(SortOrder.ASCENDING);
-		items.sort(rowComparator);
+		items.sort(model);
 		assertEquals(0, items.indexOf(thirdRow));
 		assertEquals(1, items.indexOf(firstRow));
 		assertEquals(2, items.indexOf(secondRow));
 
 		model.order(2).set(SortOrder.ASCENDING);
-		items.sort(rowComparator);
+		items.sort(model);
 		assertEquals(0, items.indexOf(firstRow));
 		assertEquals(1, items.indexOf(secondRow));
 		assertEquals(2, items.indexOf(thirdRow));
@@ -128,16 +125,14 @@ public class DefaultFilterTableSortTest {
 		Row thirdRow = new Row(1, 2, 6);
 		List<Row> items = asList(firstRow, secondRow, thirdRow);
 
-		Comparator<Row> rowComparator = model.comparator();
-
 		model.ascending(1, 2);
-		items.sort(rowComparator);
+		items.sort(model);
 		assertEquals(0, items.indexOf(secondRow));
 		assertEquals(1, items.indexOf(thirdRow));
 		assertEquals(2, items.indexOf(firstRow));
 
 		model.descending(1, 2);
-		items.sort(rowComparator);
+		items.sort(model);
 		assertEquals(0, items.indexOf(firstRow));
 		assertEquals(1, items.indexOf(thirdRow));
 		assertEquals(2, items.indexOf(secondRow));
@@ -167,7 +162,7 @@ public class DefaultFilterTableSortTest {
 		});
 		List<ArrayList<Object>> collections = asList(new ArrayList<Object>(), new ArrayList<Object>());
 		sortModel.descending(0);
-		collections.sort(sortModel.comparator());
+		collections.sort(sortModel);
 	}
 
 	private static final class Row {

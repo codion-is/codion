@@ -543,15 +543,10 @@ public interface FilterModel<T> {
 	}
 
 	/**
-	 * Manages the sorting for a {@link FilterModel}
+	 * Implements the sorting for a {@link FilterModel}
 	 * @param <T> the model item type
 	 */
-	interface Sort<T> {
-
-		/**
-		 * @return a {@link Comparator} based on this sorter
-		 */
-		Comparator<T> comparator();
+	interface Sort<T> extends Comparator<T> {
 
 		/**
 		 * @return true true if sorting is enabled
@@ -559,7 +554,7 @@ public interface FilterModel<T> {
 		boolean sorted();
 
 		/**
-		 * @return an observer notified each time the sorting changes, the event data indicating whether the model is sorted or not
+		 * @return an observer notified each time the sorting changes, the event data indicating whether the model is sorted
 		 */
 		Observer<Boolean> observer();
 	}

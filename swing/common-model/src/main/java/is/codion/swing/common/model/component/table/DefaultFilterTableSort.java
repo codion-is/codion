@@ -48,8 +48,8 @@ final class DefaultFilterTableSort<R, C> implements FilterTableSort<R, C> {
 	}
 
 	@Override
-	public Comparator<R> comparator() {
-		return comparator;
+	public int compare(R o1, R o2) {
+		return comparator.compare(o1, o2);
 	}
 
 	@Override

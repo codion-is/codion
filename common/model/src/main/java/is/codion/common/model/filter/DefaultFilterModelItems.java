@@ -261,7 +261,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 				}
 			}
 			if (sort.sorted()) {
-				visible.items.sort(sort.comparator());
+				visible.items.sort(sort);
 			}
 			itemsListener.changed();
 			visible.notifyChanges();
@@ -484,7 +484,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 			if (sort.sorted()) {
 				List<R> selectedItems = selection.items().get();
 				synchronized (lock) {
-					items.sort(sort.comparator());
+					items.sort(sort);
 					itemsListener.updated(0, items.size());
 					notifyChanges();
 				}
