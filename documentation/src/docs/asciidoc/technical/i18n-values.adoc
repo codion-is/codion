@@ -677,22 +677,6 @@ is/codion/swing/common/ui/dialog/DefaultLookAndFeelSelectionDialogBuilder_is_IS.
 |select_look_and_feel|Select Look & Feel|Velja Útlit
 |===
 
-=== is/codion/swing/common/ui/dialog/DefaultSelectionDialogBuilder.java
-
-[source]
-----
-is/codion/swing/common/ui/dialog/DefaultSelectionDialogBuilder.properties
-is/codion/swing/common/ui/dialog/DefaultSelectionDialogBuilder_is_IS.properties
-----
-
-[cols="1,1,1"]
-|===
-|key|default|is_IS
-
-|select_value|Select value|Veldu gildi
-|select_values|Select values|Veldu gildi
-|===
-
 === is/codion/swing/common/ui/dialog/ExceptionPanel.java
 
 [source]
@@ -716,6 +700,22 @@ is/codion/swing/common/ui/dialog/ExceptionPanel_is_IS.properties
 |save_error_log|Save error log|Vista upplýsingar um villu
 |save_mnemonic|S|S
 |show_details|Show details|Sýna meira
+|===
+
+=== is/codion/swing/common/ui/dialog/SelectionDialogBuilder.java
+
+[source]
+----
+is/codion/swing/common/ui/dialog/SelectionDialogBuilder.properties
+is/codion/swing/common/ui/dialog/SelectionDialogBuilder_is_IS.properties
+----
+
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|select_value|Select value|Veldu gildi
+|select_values|Select values|Veldu gildi
 |===
 
 == codion-swing-framework-ui
