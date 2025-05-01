@@ -22,6 +22,7 @@ Codion Change Log
 ### is.codion.framework.model
 - EntityQueryModel.conditions() renamed condition().
 - EntityEditModel.EntityEditor.isNull(attribute) replaced with EditorValue.present().
+- DefaultForeignKeyModelLink bug fixed, clearing the condition did not change it if the entities involved had been deleted, problem masked by referential integrity.
 ### is.codion.swing.common.model
 - FilterTableModel.TableSelection moved to list package and renamed FilterListSelection, related refactoring.
 - FilterTableSort.sorted() moved to FilterListModel.Sort.

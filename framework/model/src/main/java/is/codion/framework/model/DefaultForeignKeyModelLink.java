@@ -110,10 +110,18 @@ final class DefaultForeignKeyModelLink<M extends EntityModel<M, E, T>, E extends
 			}
 		}
 
-		private boolean setConditionOnSelection(Collection<Entity> selectedEntities) {
-			if (!selectedEntities.isEmpty() || clearConditionOnEmptySelection) {
+		private boolean setConditionOnSelection(Collection<Entity> selection) {
+			if (!selection.isEmpty()) {
 				return model().tableModel().queryModel().condition()
-								.get(foreignKey).set().in(selectedEntities);
+								.get(foreignKey).set().in(selection);
+			}
+			if (clearConditionOnEmptySelection) {
+				model().tableModel().queryModel().condition()
+								.get(foreignKey).set().in(selection);
+
+				// Always refresh if the selection is empty, since
+				// clearing an already empty condition does not change it
+				return true;
 			}
 
 			return false;
