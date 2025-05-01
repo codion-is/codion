@@ -105,8 +105,8 @@ public final class AlbumTablePanel extends EntityTablePanel {
 					implements EditComponentFactory<List<String>, AlbumTagPanel> {
 
 		@Override
-		public ComponentValue<List<String>, AlbumTagPanel> componentValue(SwingEntityEditModel editModel,
-																																			List<String> value) {
+		public ComponentValue<List<String>, AlbumTagPanel> component(SwingEntityEditModel editModel,
+																																 List<String> value) {
 			return new TagComponentValue(value);
 		}
 	}

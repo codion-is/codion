@@ -40,7 +40,7 @@ public interface EditComponentFactory<T, C extends JComponent> {
 	 * @param value the initial value to display
 	 * @return a new {@link ComponentValue} instance handling input for {@code attribute}
 	 */
-	ComponentValue<T, C> componentValue(SwingEntityEditModel editModel, T value);
+	ComponentValue<T, C> component(SwingEntityEditModel editModel, T value);
 
 	/**
 	 * Provides a way to override the default attribute caption, when presenting the component to the user.

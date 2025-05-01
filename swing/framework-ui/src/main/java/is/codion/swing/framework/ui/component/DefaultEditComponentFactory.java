@@ -66,7 +66,7 @@ public class DefaultEditComponentFactory<T, C extends JComponent> implements Edi
 	}
 
 	@Override
-	public ComponentValue<T, C> componentValue(SwingEntityEditModel editModel, T value) {
+	public ComponentValue<T, C> component(SwingEntityEditModel editModel, T value) {
 		requireNonNull(editModel);
 		if (attribute instanceof ForeignKey) {
 			return createForeignKeyComponentValue((ForeignKey) attribute, editModel, (Entity) value);

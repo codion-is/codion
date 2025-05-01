@@ -57,7 +57,7 @@ final class EntityTableCellEditorFactory implements FilterTableCellEditor.Factor
 						new DefaultEditComponentFactory<>((Attribute<Object>) attribute);
 
 		return Optional.of(filterTableCellEditor(() ->
-						componentFactory.componentValue(editModel, null)));
+						componentFactory.component(editModel, null)));
 	}
 
 	private boolean nonUpdatableForeignKey(Attribute<?> attribute) {
