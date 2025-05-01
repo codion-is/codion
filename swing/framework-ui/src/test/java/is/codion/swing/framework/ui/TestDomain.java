@@ -169,14 +169,15 @@ public final class TestDomain extends DomainModel {
 														.items(ITEMS)
 														.caption(Detail.INT_ITEMS.name()),
 										Detail.INT_DERIVED.define()
-														.derived(linkedValues -> {
-															Integer intValue = linkedValues.get(Detail.INT);
+														.derived(Detail.INT)
+														.provider(values -> {
+															Integer intValue = values.get(Detail.INT);
 															if (intValue == null) {
 																return null;
 															}
 
 															return intValue * 10;
-														}, Detail.INT)
+														})
 														.caption(Detail.INT_DERIVED.name()),
 										Detail.ENUM_TYPE.define()
 														.column())

@@ -256,14 +256,15 @@ public final class TestDomain extends DomainModel {
 														.items(INT_VALUE_ITEMS)
 														.caption(Detail2.INT_ITEMS.name()),
 										Detail2.INT_DERIVED.define()
-														.derived(sourceValues -> {
-															Integer intValue = sourceValues.get(Detail2.INT);
+														.derived(Detail2.INT)
+														.provider(values -> {
+															Integer intValue = values.get(Detail2.INT);
 															if (intValue == null) {
 																return null;
 															}
 
 															return intValue * 10;
-														}, Detail2.INT)
+														})
 														.caption(Detail2.INT_DERIVED.name()))
 						.selectTableName(DETAIL_SELECT_TABLE_NAME.name())
 						.orderBy(ascending(Detail2.STRING))
@@ -362,15 +363,16 @@ public final class TestDomain extends DomainModel {
 														.items(INT_VALUE_ITEMS)
 														.caption(Detail.INT_ITEMS.name()),
 										Detail.INT_DERIVED.define()
-														.derived(sourceValues -> {
-															Integer intValue = sourceValues.get(Detail.INT);
+														.derived(Detail.INT)
+														.provider(values -> {
+															Integer intValue = values.get(Detail.INT);
 															if (intValue == null) {
 
 																return null;
 															}
 
 															return intValue * 10;
-														}, Detail.INT)
+														})
 														.caption(Detail.INT_DERIVED.name()),
 										Detail.BYTES.define()
 														.column()
@@ -510,7 +512,8 @@ public final class TestDomain extends DomainModel {
 														.denormalized(Employee.DEPARTMENT_FK, Department.LOCATION)
 														.caption(Department.LOCATION.name()),
 										Employee.DEPARTMENT_NAME.define()
-														.derived(new DepartmentNameProvider(), Employee.NAME, Employee.DEPARTMENT_FK),
+														.derived(Employee.NAME, Employee.DEPARTMENT_FK)
+														.provider(new DepartmentNameProvider()),
 										Employee.DATA.define()
 														.column()
 														.caption("Data"))
@@ -648,7 +651,8 @@ public final class TestDomain extends DomainModel {
 										InvalidDerived.INT.define()
 														.column(),
 										InvalidDerived.INVALID_DERIVED.define()
-														.derived(sourceValues -> sourceValues.get(InvalidDerived.INT).intValue(), InvalidDerived.ID))
+														.derived(InvalidDerived.ID)
+														.provider(values -> values.get(InvalidDerived.INT).intValue()))
 						.caption(InvalidDerived.INVALID_DERIVED.name())//incorrect source value, trigger exception
 						.stringFactory(entity -> null)
 						.build());

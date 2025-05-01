@@ -1069,14 +1069,17 @@ public class DefaultEntityTest {
 												stringAttribute.define()
 																.attribute(),
 												derivedAttributeCached.define()
-																.derived(sourceValues ->
-																				sourceValues.get(stringAttribute) + "-derived", stringAttribute),
+																.derived(stringAttribute)
+																.provider(values ->
+																				values.get(stringAttribute) + "-derived"),
 												derivedAttributeNonCached.define()
-																.derived(sourceValues ->
-																				sourceValues.get(stringAttribute) + "-derived", stringAttribute)
+																.derived(stringAttribute)
+																.provider(values ->
+																				values.get(stringAttribute) + "-derived")
 																.cached(false),
 												derivedAttributeNoSource.define()
-																.derived(sourceValues -> UUID.randomUUID()))
+																.derived()
+																.provider(values -> UUID.randomUUID()))
 								.build());
 			}
 		}

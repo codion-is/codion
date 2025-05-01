@@ -431,8 +431,8 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.nullable(false)
 														.defaultValue(1),
 										InvoiceLine.TOTAL.define()
-														.derived(new InvoiceLineTotalProvider(),
-																		InvoiceLine.QUANTITY, InvoiceLine.UNITPRICE))
+														.derived(InvoiceLine.QUANTITY, InvoiceLine.UNITPRICE)
+														.provider(new InvoiceLineTotalProvider()))
 						.keyGenerator(identity())
 						.build();
 	}

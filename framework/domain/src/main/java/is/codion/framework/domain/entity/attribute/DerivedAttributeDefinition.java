@@ -56,5 +56,18 @@ public interface DerivedAttributeDefinition<T> extends AttributeDefinition<T> {
 		 * @throws IllegalArgumentException in case this is a denormalized attribute
 		 */
 		DerivedAttributeDefinition.Builder<T, B> cached(boolean cached);
+
+		/**
+		 * The first stage in building a {@link DerivedAttributeDefinition}
+		 * @param <T> the attribute value type
+		 */
+		interface ProviderStage<T, B extends Builder<T, B>> {
+
+			/**
+			 * @param provider a {@link DerivedAttribute.Provider} instance responsible for providing the derived value
+			 * @return a {@link Builder} instance
+			 */
+			Builder<T, B> provider(DerivedAttribute.Provider<T> provider);
+		}
 	}
 }

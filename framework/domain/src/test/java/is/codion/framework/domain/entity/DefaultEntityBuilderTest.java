@@ -84,11 +84,12 @@ public final class DefaultEntityBuilderTest {
 																.column()
 																.defaultValue(42),
 												derivedValue.define()
-																.derived(sourceValues -> {
-																	Integer sourceValue = sourceValues.get(value);
+																.derived(value)
+																.provider(values -> {
+																	Integer sourceValue = values.get(value);
 
 																	return sourceValue == null ? null : sourceValue + 1;
-																}, value))
+																}))
 								.tableName("tableName")
 								.build());
 			}

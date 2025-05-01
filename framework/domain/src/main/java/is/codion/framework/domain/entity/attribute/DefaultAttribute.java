@@ -20,8 +20,9 @@ package is.codion.framework.domain.entity.attribute;
 
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDerivedAttributeDefinitionBuilder;
+import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultValueProviderStage;
 import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefinition.DefaultTransientAttributeDefinitionBuilder;
+import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition.Builder;
 
 import org.jspecify.annotations.Nullable;
 
@@ -36,6 +37,8 @@ import java.time.temporal.Temporal;
 import java.util.Objects;
 
 import static is.codion.common.Text.nullOrEmpty;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultAttribute<T> implements Attribute<T>, Serializable {
@@ -238,14 +241,13 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 		@Override
 		public final <B extends DerivedAttributeDefinition.Builder<T, B>> DerivedAttributeDefinition.Builder<T, B> denormalized(Attribute<Entity> entityAttribute,
 																																																														Attribute<T> denormalizedAttribute) {
-			return new DefaultDerivedAttributeDefinitionBuilder<>(attribute,
-							new DenormalizedValueProvider<>(entityAttribute, denormalizedAttribute), entityAttribute);
+			return (DerivedAttributeDefinition.Builder<T, B>) new DefaultValueProviderStage<>(attribute, singletonList(entityAttribute))
+							.provider(new DenormalizedValueProvider<>(entityAttribute, denormalizedAttribute));
 		}
 
 		@Override
-		public final <B extends DerivedAttributeDefinition.Builder<T, B>> DerivedAttributeDefinition.Builder<T, B> derived(DerivedAttribute.Provider<T> valueProvider,
-																																																											 Attribute<?>... sourceAttributes) {
-			return new DefaultDerivedAttributeDefinitionBuilder<>(attribute, valueProvider, sourceAttributes);
+		public final <B extends DerivedAttributeDefinition.Builder<T, B>> Builder.ProviderStage<T, B> derived(Attribute<?>... from) {
+			return new DefaultValueProviderStage<>(attribute, asList(from));
 		}
 	}
 }

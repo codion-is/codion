@@ -253,8 +253,8 @@ public final class WorldImpl extends DomainModel {
 										// end::booleanColumn[]
 										// tag::derivedAttribute[]
 										CountryLanguage.NO_OF_SPEAKERS.define()
-														.derived(new NoOfSpeakersProvider(),
-																		CountryLanguage.COUNTRY_FK, CountryLanguage.PERCENTAGE)
+														.derived(CountryLanguage.COUNTRY_FK, CountryLanguage.PERCENTAGE)
+														.provider(new NoOfSpeakersProvider())
 														.caption("No. of speakers")
 														.numberFormatGrouping(true),
 										// end::derivedAttribute[]

@@ -201,8 +201,10 @@ public class DefaultEntityDefinitionTest {
 												entityType.integerColumn("id").define().primaryKey(),
 												name.define().column(),
 												info.define().column(),
-												derived.define().derived(sourceValues ->
-																sourceValues.get(name).toString() + sourceValues.get(info), name, info))
+												derived.define()
+																.derived(name, info)
+																.provider(values ->
+																				values.get(name).toString() + values.get(info)))
 								.build());
 			}
 		}
@@ -227,7 +229,9 @@ public class DefaultEntityDefinitionTest {
 										entityType.integerColumn("id").define().primaryKey(),
 										//name.define().column(), <- the problem
 										info.define().column(),
-										derived.define().derived(sourceValues -> null, name, info))
+										derived.define()
+														.derived(name, info)
+														.provider(values -> null))
 						.build());
 	}
 
@@ -366,7 +370,9 @@ public class DefaultEntityDefinitionTest {
 												pk.define().primaryKey(),
 												column1.define().column(),
 												column2.define().column(),
-												der.define().derived(sourceValues -> null, column1, column2))
+												der.define()
+																.derived(column1, column2)
+																.provider(values -> null))
 								.build());
 			}
 		}

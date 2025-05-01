@@ -20,6 +20,7 @@ package is.codion.framework.domain.entity.attribute;
 
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition.Builder;
 
 import org.jspecify.annotations.Nullable;
 
@@ -211,14 +212,11 @@ public interface Attribute<T> {
 																																																							 Attribute<T> denormalizedAttribute);
 
 		/**
-		 * Instantiates a {@link DerivedAttributeDefinition.Builder} instance, which value is derived from one or more source attributes.
-		 * @param valueProvider a {@link DerivedAttribute.Provider} instance responsible for deriving the value
-		 * @param sourceAttributes the attributes from which this attribute derives its value
+		 * Instantiates a {@link DerivedAttributeDefinition.Builder} instance, which value is derived from zero or more source attributes.
+		 * @param from the attributes the value is derived from
 		 * @param <B> the builder type
-		 * @return a new {@link DerivedAttributeDefinition.Builder}
-		 * @throws IllegalArgumentException in case no source attributes are specified
+		 * @return a new {@link Builder.ProviderStage}
 		 */
-		<B extends DerivedAttributeDefinition.Builder<T, B>> DerivedAttributeDefinition.Builder<T, B> derived(DerivedAttribute.Provider<T> valueProvider,
-																																																					Attribute<?>... sourceAttributes);
+		<B extends DerivedAttributeDefinition.Builder<T, B>> Builder.ProviderStage<T, B> derived(Attribute<?>... from);
 	}
 }

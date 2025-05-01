@@ -144,14 +144,15 @@ public final class TestDomain extends DomainModel {
 														.items(ITEMS)
 														.caption(Detail.INT_VALUE_LIST.name()),
 										Detail.INT_DERIVED.define()
-														.derived(sourceValues -> {
-															Integer intValue = sourceValues.get(Detail.INT);
+														.derived(Detail.INT)
+														.provider(values -> {
+															Integer intValue = values.get(Detail.INT);
 															if (intValue == null) {
 																return null;
 															}
 
 															return intValue * 10;
-														}, Detail.INT)
+														})
 														.caption(Detail.INT_DERIVED.name()))
 						.selectTableName(DETAIL_SELECT_TABLE_NAME)
 						.orderBy(ascending(Detail.STRING))
@@ -303,17 +304,20 @@ public final class TestDomain extends DomainModel {
 										Derived.INT1.define()
 														.column(),
 										Derived.INT2.define()
-														.derived(sourceValues -> sourceValues.optional(Derived.INT1)
+														.derived(Derived.INT1)
+														.provider(values -> values.optional(Derived.INT1)
 																		.map(value -> value + 1)
-																		.orElse(null), Derived.INT1),
+																		.orElse(null)),
 										Derived.INT3.define()
-														.derived(sourceValues -> sourceValues.optional(Derived.INT2)
+														.derived(Derived.INT2)
+														.provider(values -> values.optional(Derived.INT2)
 																		.map(value -> value + 1)
-																		.orElse(null), Derived.INT2),
+																		.orElse(null)),
 										Derived.INT4.define()
-														.derived(sourceValues -> sourceValues.optional(Derived.INT3)
+														.derived(Derived.INT3)
+														.provider(values -> values.optional(Derived.INT3)
 																		.map(value -> value + 1)
-																		.orElse(null), Derived.INT3))
+																		.orElse(null)))
 						.build();
 	}
 
