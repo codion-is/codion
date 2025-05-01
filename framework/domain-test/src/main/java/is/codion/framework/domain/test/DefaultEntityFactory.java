@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 import static java.util.Collections.singletonList;
@@ -182,6 +183,9 @@ public class DefaultEntityFactory implements EntityFactory {
 			}
 			if (attribute.type().isEnum()) {
 				return randomEnum(attribute);
+			}
+			if (attribute.type().valueClass().equals(UUID.class)) {
+				return (T) UUID.randomUUID();
 			}
 
 			return null;

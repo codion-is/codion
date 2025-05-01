@@ -20,6 +20,8 @@ Codion Change Log
 - Column.Getter and Setter renamed GetValue and SetParameter respectively.
 - Entity.put() renamed set().
 - DerivedAttributeDefinition.Builder.ProviderStage added, related refactoring.
+### is.codion.framework.domain.test
+- DefaultEntityFactory.value() now handles UUIDs.
 ### is.codion.framework.model
 - EntityQueryModel.conditions() renamed condition().
 - EntityEditModel.EntityEditor.isNull(attribute) replaced with EditorValue.present().
