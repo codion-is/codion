@@ -55,6 +55,7 @@ Codion Change Log
 - TemporalFieldPanel and TextFieldPanel, minor button related improvements.
 - FilterList added, ListBuilder now FilterList based.
 - ListSelectionDialogBuilder.comparator() added.
+- Dialogs.inputDialog() overloaded with ComponentBuilder.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel.Builder.applicationModelFactory() and applicationPanelFactory() renamed applicationModel() and applicationPanel().
 - EntityApplicationPanel.createLogControls() now protected final.

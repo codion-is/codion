@@ -20,6 +20,7 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTask;
 import is.codion.swing.common.model.worker.ProgressWorker.ResultTask;
+import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control.Command;
 
@@ -166,6 +167,15 @@ public final class Dialogs {
 	 */
 	public static FontSizeSelectionDialogBuilder fontSizeSelectionDialog() {
 		return new DefaultFontSizeSelectionDialogBuilder();
+	}
+
+	/**
+	 * @param componentBuilder the builder which component to display
+	 * @param <T> the value type
+	 * @return a builder for an input dialog
+	 */
+	public static <T> InputDialogBuilder<T> inputDialog(ComponentBuilder<T, ?, ?> componentBuilder) {
+		return new DefaultInputDialogBuilder<>(requireNonNull(componentBuilder).buildValue());
 	}
 
 	/**

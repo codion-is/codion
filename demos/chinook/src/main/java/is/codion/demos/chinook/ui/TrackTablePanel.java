@@ -26,10 +26,8 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.swing.common.ui.component.spinner.NumberSpinnerBuilder;
 import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
-import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTableCellRenderer;
@@ -47,6 +45,7 @@ import static is.codion.demos.chinook.ui.DurationComponentValue.minutes;
 import static is.codion.demos.chinook.ui.DurationComponentValue.seconds;
 import static is.codion.swing.common.ui.component.Components.bigDecimalField;
 import static is.codion.swing.common.ui.component.table.FilterTableCellEditor.filterTableCellEditor;
+import static is.codion.swing.common.ui.dialog.Dialogs.inputDialog;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.awt.event.KeyEvent.VK_INSERT;
@@ -101,13 +100,9 @@ public final class TrackTablePanel extends EntityTablePanel {
 	}
 
 	private BigDecimal getAmountFromUser() {
-		ComponentValue<BigDecimal, NumberField<BigDecimal>> amountValue =
-						bigDecimalField()
+		return inputDialog(bigDecimalField()
 										.nullable(false)
-										.minimumValue(0)
-										.buildValue();
-
-		return Dialogs.inputDialog(amountValue)
+										.minimumValue(0))
 						.owner(this)
 						.title(BUNDLE.getString("amount"))
 						.validator(amount -> amount.compareTo(BigDecimal.ZERO) > 0)

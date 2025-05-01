@@ -58,9 +58,7 @@ import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
 import is.codion.swing.common.ui.component.table.TableConditionPanel;
-import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
-import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlKey;
@@ -69,7 +67,6 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 import is.codion.swing.common.ui.control.Controls.ControlsKey;
 import is.codion.swing.common.ui.control.ToggleControl;
-import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -130,19 +127,17 @@ import static is.codion.common.Configuration.*;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.common.value.ValueSet.valueSet;
 import static is.codion.swing.common.ui.Utilities.*;
-import static is.codion.swing.common.ui.component.Components.menu;
-import static is.codion.swing.common.ui.component.Components.toolBar;
+import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.table.ColumnSummaryPanel.columnSummaryPanel;
 import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView.*;
 import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
 import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
 import static is.codion.swing.common.ui.control.Control.command;
-import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
+import static is.codion.swing.common.ui.dialog.Dialogs.*;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.framework.ui.ColumnPreferences.columnPreferences;
 import static is.codion.swing.framework.ui.ConditionPreferences.conditionPreferences;
-import static is.codion.swing.framework.ui.EntityDialogs.addEntityDialog;
-import static is.codion.swing.framework.ui.EntityDialogs.editEntityDialog;
+import static is.codion.swing.framework.ui.EntityDialogs.*;
 import static is.codion.swing.framework.ui.EntityTableColumns.entityTableColumns;
 import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.*;
 import static is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING;
@@ -638,7 +633,7 @@ public class EntityTablePanel extends JPanel {
 						.map(attribute -> tableModel.entityDefinition().attributes().definition(attribute))
 						.sorted(new AttributeDefinitionComparator())
 						.collect(toList());
-		Dialogs.listSelectionDialog(sortedDefinitions)
+		listSelectionDialog(sortedDefinitions)
 						.owner(this)
 						.selectSingle()
 						.map(AttributeDefinition::attribute)
@@ -1004,8 +999,8 @@ public class EntityTablePanel extends JPanel {
 	 * @param <T> the attribute type
 	 * @return a edit dialog builder
 	 */
-	protected <T> EntityDialogs.EditAttributeDialogBuilder<T> editDialogBuilder(Attribute<T> attribute) {
-		return EntityDialogs.editAttributeDialog(tableModel.editModel(), attribute)
+	protected <T> EditAttributeDialogBuilder<T> editDialogBuilder(Attribute<T> attribute) {
+		return editAttributeDialog(tableModel.editModel(), attribute)
 						.owner(this)
 						.editComponentFactory((EditComponentFactory<T, ?>) configuration.editComponentFactories
 										.getOrDefault(attribute, new DefaultEditComponentFactory<>(attribute)));
@@ -1034,7 +1029,7 @@ public class EntityTablePanel extends JPanel {
 		if (focusOwner == null) {
 			focusOwner = EntityTablePanel.this;
 		}
-		Dialogs.displayExceptionDialog(exception, parentWindow(focusOwner));
+		displayExceptionDialog(exception, parentWindow(focusOwner));
 	}
 
 	/**
@@ -1767,7 +1762,7 @@ public class EntityTablePanel extends JPanel {
 							dependencyTablePanel.applyColumnPreferences(dependencyPanelPreferences.get(entityType)));
 			int gap = Layouts.GAP.getOrThrow();
 			dependenciesPanel.setBorder(createEmptyBorder(0, gap, 0, gap));
-			Dialogs.componentDialog(dependenciesPanel)
+			componentDialog(dependenciesPanel)
 							.owner(this)
 							.modal(false)
 							.size(dependenciesDialogSize.get())
@@ -2946,14 +2941,12 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		private void configureLimit() {
-			ComponentValue<Integer, NumberField<Integer>> limitValue = Components.integerField()
+			tableModel.queryModel().limit().set(inputDialog(integerField()
 							.value(tableModel.queryModel().limit().get())
 							.selectAllOnFocusGained(true)
 							.groupingUsed(true)
 							.minimumValue(0)
-							.columns(6)
-							.buildValue();
-			tableModel.queryModel().limit().set(Dialogs.inputDialog(limitValue)
+							.columns(6))
 							.title(MESSAGES.getString("row_limit"))
 							.owner(EntityTablePanel.this)
 							.validator(new LimitValidator())

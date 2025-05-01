@@ -23,13 +23,13 @@ import is.codion.demos.chinook.model.PlaylistTableModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import java.util.ResourceBundle;
 
+import static is.codion.swing.common.ui.dialog.Dialogs.inputDialog;
 import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.DELETE;
 import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.EDIT_ATTRIBUTE_CONTROLS;
 import static java.util.ResourceBundle.getBundle;
@@ -69,7 +69,7 @@ public final class PlaylistTablePanel extends EntityTablePanel {
 
 	private void randomPlaylist() {
 		RandomPlaylistParametersValue playlistParametersValue = new RandomPlaylistParametersValue(tableModel().connectionProvider());
-		RandomPlaylistParameters randomPlaylistParameters = Dialogs.inputDialog(playlistParametersValue)
+		RandomPlaylistParameters randomPlaylistParameters = inputDialog(playlistParametersValue)
 						.owner(this)
 						.title(BUNDLE.getString("random_playlist"))
 						.valid(playlistParametersValue.component().parametersValid())

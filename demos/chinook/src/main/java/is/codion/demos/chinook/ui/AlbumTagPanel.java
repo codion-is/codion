@@ -31,7 +31,6 @@ import is.codion.swing.framework.ui.icon.FrameworkIcons;
 import org.kordamp.ikonli.foundation.Foundation;
 
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.BorderLayout;
@@ -128,10 +127,8 @@ final class AlbumTagPanel extends JPanel {
 
 	private void addTag() {
 		State tagNull = State.state(true);
-		ComponentValue<String, JTextField> tagValue = stringField()
-						.consumer(tag -> tagNull.set(tag == null))
-						.buildValue();
-		tagItems.add(inputDialog(tagValue)
+		tagItems.add(inputDialog(stringField()
+						.consumer(tag -> tagNull.set(tag == null)))
 						.owner(this)
 						.title(FrameworkMessages.add())
 						.valid(tagNull.not())
