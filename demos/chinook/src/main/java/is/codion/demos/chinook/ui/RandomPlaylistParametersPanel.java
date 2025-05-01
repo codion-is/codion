@@ -27,20 +27,21 @@ import is.codion.demos.chinook.domain.api.Chinook.Playlist.RandomPlaylistParamet
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.component.text.NumberField;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
+import java.util.Collection;
 import java.util.ResourceBundle;
 
 import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.framework.db.EntityConnection.Select.all;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
+import static is.codion.swing.common.model.component.list.FilterListModel.filterListModel;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.util.ResourceBundle.getBundle;
@@ -53,7 +54,7 @@ final class RandomPlaylistParametersPanel extends JPanel {
 
 	private final JTextField playlistNameField;
 	private final NumberField<Integer> noOfTracksField;
-	private final JList<Entity> genreList;
+	private final FilterList<Entity> genreList;
 
 	RandomPlaylistParametersPanel(EntityConnectionProvider connectionProvider) {
 		super(borderLayout());
@@ -102,21 +103,17 @@ final class RandomPlaylistParametersPanel extends JPanel {
 						.build();
 	}
 
-	private JList<Entity> createGenreList(EntityConnectionProvider connectionProvider) {
-		return Components.list(createGenreListModel(connectionProvider))
+	private FilterList<Entity> createGenreList(EntityConnectionProvider connectionProvider) {
+		return Components.list(filterListModel(allGenres(connectionProvider)))
 						.selectedItems(model.genres)
 						.visibleRowCount(5)
 						.build();
 	}
 
-	private static DefaultListModel<Entity> createGenreListModel(EntityConnectionProvider connectionProvider) {
-		DefaultListModel<Entity> listModel = new DefaultListModel<>();
-		connectionProvider.connection().select(all(Genre.TYPE)
-										.orderBy(ascending(Genre.NAME))
-										.build())
-						.forEach(listModel::addElement);
-
-		return listModel;
+	private static Collection<Entity> allGenres(EntityConnectionProvider connectionProvider) {
+		return connectionProvider.connection().select(all(Genre.TYPE)
+						.orderBy(ascending(Genre.NAME))
+						.build());
 	}
 
 	private static final class RandomPlaylistParametersModel {

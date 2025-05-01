@@ -18,8 +18,10 @@
  */
 package is.codion.demos.chinook.ui;
 
+import is.codion.common.model.filter.FilterModel;
 import is.codion.common.state.State;
 import is.codion.framework.i18n.FrameworkMessages;
+import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -28,8 +30,6 @@ import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.kordamp.ikonli.foundation.Foundation;
 
-import javax.swing.DefaultListModel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
@@ -48,8 +48,8 @@ final class AlbumTagPanel extends JPanel {
 
 	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
 
-	private final ComponentValue<List<String>, JList<String>> tagsValue;
-	private final DefaultListModel<String> tagListModel;
+	private final ComponentValue<List<String>, FilterList<String>> tagsValue;
+	private final FilterModel.Items<String> tagItems;
 	private final State selectionEmpty = State.state(true);
 	private final State movingTags = State.state(false);
 	private final Control addTagControl = Control.builder()
@@ -75,16 +75,16 @@ final class AlbumTagPanel extends JPanel {
 	/**
 	 * @param tagsValue the list value providing the list component
 	 */
-	AlbumTagPanel(ComponentValue<List<String>, JList<String>> tagsValue) {
+	AlbumTagPanel(ComponentValue<List<String>, FilterList<String>> tagsValue) {
 		super(borderLayout());
 		this.tagsValue = tagsValue;
 		this.tagsValue.component().addListSelectionListener(new UpdateSelectionEmptyState());
-		this.tagListModel = (DefaultListModel<String>) tagsValue.component().getModel();
+		this.tagItems = tagsValue.component().model().items();
 		add(createCenterPanel(), BorderLayout.CENTER);
 		setupKeyEvents();
 	}
 
-	ComponentValue<List<String>, JList<String>> tagsValue() {
+	ComponentValue<List<String>, FilterList<String>> tagsValue() {
 		return tagsValue;
 	}
 
@@ -131,7 +131,7 @@ final class AlbumTagPanel extends JPanel {
 		ComponentValue<String, JTextField> tagValue = stringField()
 						.consumer(tag -> tagNull.set(tag == null))
 						.buildValue();
-		tagListModel.addElement(inputDialog(tagValue)
+		tagItems.add(inputDialog(tagValue)
 						.owner(this)
 						.title(FrameworkMessages.add())
 						.valid(tagNull.not())
@@ -139,7 +139,7 @@ final class AlbumTagPanel extends JPanel {
 	}
 
 	private void removeTag() {
-		tagsValue.component().getSelectedValuesList().forEach(tagListModel::removeElement);
+		tagsValue.component().getSelectedValuesList().forEach(tagItems::remove);
 	}
 
 	private void moveSelectedTagsUp() {
@@ -160,7 +160,7 @@ final class AlbumTagPanel extends JPanel {
 		movingTags.set(true);
 		try {
 			int[] selected = tagsValue.component().getSelectedIndices();
-			if (selected.length > 0 && selected[selected.length - 1] != tagListModel.getSize() - 1) {
+			if (selected.length > 0 && selected[selected.length - 1] != tagItems.visible().count() - 1) {
 				moveTagsDown(selected);
 				moveSelectionDown(selected);
 			}
@@ -172,13 +172,13 @@ final class AlbumTagPanel extends JPanel {
 
 	private void moveTagsUp(int[] selected) {
 		for (int i = 0; i < selected.length; i++) {
-			tagListModel.add(selected[i] - 1, tagListModel.remove(selected[i]));
+			tagItems.visible().add(selected[i] - 1, tagItems.visible().remove(selected[i]));
 		}
 	}
 
 	private void moveTagsDown(int[] selected) {
 		for (int i = selected.length - 1; i >= 0; i--) {
-			tagListModel.add(selected[i] + 1, tagListModel.remove(selected[i]));
+			tagItems.visible().add(selected[i] + 1, tagItems.visible().remove(selected[i]));
 		}
 	}
 

@@ -26,6 +26,7 @@ Codion Change Log
 - FilterTableModel.TableSelection moved to list package and renamed FilterListSelection, related refactoring.
 - FilterTableSort.sorted() moved to FilterListModel.Sort.
 - DefaultFilterTableItems.DefaultVisibleItems no longer adds a table model listener, changes to visible items notified explicitly.
+- FilterListModel and FilterListSort added.
 ### is.codion.swing.common.ui
 - LookAndFeelSelectionDialogBuilder.createControl() overloaded without parameter.
 - BackgroundColorValidIndicator bug fixed, did not refresh state when colors changed during updateUI().
@@ -52,6 +53,8 @@ Codion Change Log
 - ProgressDialogBuilder.onPublish() added.
 - DefaultComboBoxSelectionDialogBuilder bug fixed, did not validate default selection item.
 - TemporalFieldPanel and TextFieldPanel, minor button related improvements.
+- FilterList added, ListBuilder now FilterList based.
+- ListSelectionDialogBuilder.comparator() added.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel.Builder.applicationModelFactory() and applicationPanelFactory() renamed applicationModel() and applicationPanel().
 - EntityApplicationPanel.createLogControls() now protected final.

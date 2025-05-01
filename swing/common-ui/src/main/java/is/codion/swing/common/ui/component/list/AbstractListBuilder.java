@@ -19,32 +19,30 @@
 package is.codion.swing.common.ui.component.list;
 
 import is.codion.common.value.Value;
+import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
-import javax.swing.ListModel;
-import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-abstract class AbstractListBuilder<T, V, B extends ListBuilder<T, V, B>> extends AbstractComponentBuilder<V, JList<T>, B> implements ListBuilder<T, V, B> {
+abstract class AbstractListBuilder<T, V, B extends ListBuilder<T, V, B>> extends AbstractComponentBuilder<V, FilterList<T>, B> implements ListBuilder<T, V, B> {
 
-	private final ListModel<T> listModel;
+	private final FilterListModel<T> listModel;
 	private final List<ListSelectionListener> listSelectionListeners = new ArrayList<>();
 
 	private ListCellRenderer<T> cellRenderer;
-	private ListSelectionModel selectionModel;
 
 	private Integer visibleRowCount;
 	private int layoutOrientation = JList.VERTICAL;
 	private int fixedCellHeight = -1;
 	private int fixedCellWidth = -1;
 
-	AbstractListBuilder(ListModel<T> listModel, Value<V> value) {
+	AbstractListBuilder(FilterListModel<T> listModel, Value<V> value) {
 		super(value);
 		this.listModel = requireNonNull(listModel);
 	}
@@ -80,24 +78,15 @@ abstract class AbstractListBuilder<T, V, B extends ListBuilder<T, V, B>> extends
 	}
 
 	@Override
-	public final B selectionModel(ListSelectionModel selectionModel) {
-		this.selectionModel = selectionModel;
-		return self();
-	}
-
-	@Override
 	public final B listSelectionListener(ListSelectionListener listSelectionListener) {
 		listSelectionListeners.add(requireNonNull(listSelectionListener));
 		return self();
 	}
 
-	protected final JList<T> createList() {
-		JList<T> list = new JList<>(listModel);
+	protected final FilterList<T> createList() {
+		FilterList<T> list = new FilterList<>(listModel);
 		if (cellRenderer != null) {
 			list.setCellRenderer(cellRenderer);
-		}
-		if (selectionModel != null) {
-			list.setSelectionModel(selectionModel);
 		}
 		listSelectionListeners.forEach(new AddListSelectionListener(list));
 		if (visibleRowCount != null) {

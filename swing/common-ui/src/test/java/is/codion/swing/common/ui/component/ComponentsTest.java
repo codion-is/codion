@@ -19,13 +19,16 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.item.Item;
+import is.codion.common.model.filter.FilterModel.VisibleItems;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueList;
 import is.codion.common.value.ValueSet;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.combobox.Completion;
+import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.component.list.ListBuilder;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
@@ -46,7 +49,6 @@ import org.junit.jupiter.api.Test;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
@@ -83,6 +85,7 @@ import java.util.List;
 import java.util.Set;
 
 import static is.codion.common.item.Item.item;
+import static is.codion.swing.common.model.component.list.FilterListModel.filterListModel;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -826,10 +829,7 @@ public final class ComponentsTest {
 
 	@Test
 	void listSelectedItems() {
-		DefaultListModel<String> listModel = new DefaultListModel<>();
-		listModel.addElement("one");
-		listModel.addElement("two");
-		listModel.addElement("three");
+		FilterListModel<String> listModel = filterListModel(asList("one", "two", "three"));
 
 		ValueList<String> textValue = ValueList.valueList(singletonList("two"));
 		ListBuilder.SelectedItems<String> listBuilder = Components.list(listModel)
@@ -839,23 +839,21 @@ public final class ComponentsTest {
 						.fixedCellHeight(10)
 						.fixedCellWidth(10)
 						.link(textValue);
-		ComponentValue<List<String>, JList<String>> componentValue = listBuilder
+		ComponentValue<List<String>, FilterList<String>> componentValue = listBuilder
 						.buildValue();
-		assertTrue(componentValue.component().isSelectedIndex(listModel.indexOf("two")));
+		VisibleItems<String> visibleItems = listModel.items().visible();
+		assertTrue(componentValue.component().isSelectedIndex(visibleItems.indexOf("two")));
 		assertEquals(singletonList("two"), componentValue.get());
 		textValue.add("three");
-		assertTrue(componentValue.component().isSelectedIndex(listModel.indexOf("two")));
-		assertTrue(componentValue.component().isSelectedIndex(listModel.indexOf("three")));
+		assertTrue(componentValue.component().isSelectedIndex(visibleItems.indexOf("two")));
+		assertTrue(componentValue.component().isSelectedIndex(visibleItems.indexOf("three")));
 		assertEquals(asList("two", "three"), componentValue.get());
 		listBuilder.scrollPane().build();
 	}
 
 	@Test
 	void listSelectedItem() {
-		DefaultListModel<String> listModel = new DefaultListModel<>();
-		listModel.addElement("one");
-		listModel.addElement("two");
-		listModel.addElement("three");
+		FilterListModel<String> listModel = filterListModel(asList("one", "two", "three"));
 
 		Value<String> textValue = Value.nullable("two");
 		ListBuilder.SelectedItem<String> listBuilder = Components.list(listModel)
@@ -865,40 +863,42 @@ public final class ComponentsTest {
 						.fixedCellHeight(10)
 						.fixedCellWidth(10)
 						.link(textValue);
-		ComponentValue<String, JList<String>> componentValue = listBuilder
+		ComponentValue<String, FilterList<String>> componentValue = listBuilder
 						.buildValue();
-		assertTrue(componentValue.component().isSelectedIndex(listModel.indexOf("two")));
+		VisibleItems<String> visibleItems = listModel.items().visible();
+		assertTrue(componentValue.component().isSelectedIndex(visibleItems.indexOf("two")));
 		assertEquals("two", componentValue.get());
 		textValue.set("three");
-		assertFalse(componentValue.component().isSelectedIndex(listModel.indexOf("two")));
-		assertTrue(componentValue.component().isSelectedIndex(listModel.indexOf("three")));
+		assertFalse(componentValue.component().isSelectedIndex(visibleItems.indexOf("two")));
+		assertTrue(componentValue.component().isSelectedIndex(visibleItems.indexOf("three")));
 		assertEquals("three", componentValue.get());
 		componentValue.set("one");
-		assertTrue(componentValue.component().isSelectedIndex(listModel.indexOf("one")));
-		assertFalse(componentValue.component().isSelectedIndex(listModel.indexOf("two")));
-		assertFalse(componentValue.component().isSelectedIndex(listModel.indexOf("three")));
+		assertTrue(componentValue.component().isSelectedIndex(visibleItems.indexOf("one")));
+		assertFalse(componentValue.component().isSelectedIndex(visibleItems.indexOf("two")));
+		assertFalse(componentValue.component().isSelectedIndex(visibleItems.indexOf("three")));
 		listBuilder.scrollPane().build();
 	}
 
 	@Test
 	void listItems() {
 		ValueList<String> textValue = ValueList.valueList(asList("one", "two", "three"));
-		ListBuilder.Items<String> listBuilder = Components.list(new DefaultListModel<String>())
+		ListBuilder.Items<String> listBuilder = Components.list(FilterListModel.builder(
+										asList("one", "two", "three"))
+						.build())
 						.items()
 						.visibleRowCount(4)
 						.layoutOrientation(JList.VERTICAL)
 						.fixedCellHeight(10)
 						.fixedCellWidth(10)
 						.link(textValue);
-		ComponentValue<List<String>, JList<String>> componentValue = listBuilder
-						.buildValue();
+		ComponentValue<List<String>, FilterList<String>> componentValue = listBuilder.buildValue();
 		assertEquals(asList("one", "two", "three"), componentValue.get());
 		textValue.add("four");
 		assertEquals(asList("one", "two", "three", "four"), componentValue.get());
-		DefaultListModel<String> listModel = (DefaultListModel<String>) componentValue.component().getModel();
-		listModel.removeElement("two");
+		FilterListModel<String> listModel = componentValue.component().getModel();
+		listModel.items().remove("two");
 		assertEquals(asList("one", "three", "four"), componentValue.get());
-		listModel.removeElement("one");
+		listModel.items().remove("one");
 		assertEquals(asList("three", "four"), componentValue.get());
 		listBuilder.scrollPane().build();
 	}

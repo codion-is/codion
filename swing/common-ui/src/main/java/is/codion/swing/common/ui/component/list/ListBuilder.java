@@ -19,12 +19,11 @@
 package is.codion.swing.common.ui.component.list;
 
 import is.codion.common.value.Value;
+import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
-import javax.swing.ListModel;
-import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionListener;
 import java.util.List;
 
@@ -33,9 +32,9 @@ import java.util.List;
  * @param <T> the value type
  * @param <V> the component value type
  * @param <B> the builder type
- * @see #factory(ListModel)
+ * @see #factory(FilterListModel)
  */
-public interface ListBuilder<T, V, B extends ListBuilder<T, V, B>> extends ComponentBuilder<V, JList<T>, B> {
+public interface ListBuilder<T, V, B extends ListBuilder<T, V, B>> extends ComponentBuilder<V, FilterList<T>, B> {
 
 	/**
 	 * @param visibleRowCount the visible row count
@@ -71,13 +70,6 @@ public interface ListBuilder<T, V, B extends ListBuilder<T, V, B>> extends Compo
 	 * @see JList#setCellRenderer(ListCellRenderer)
 	 */
 	B cellRenderer(ListCellRenderer<T> cellRenderer);
-
-	/**
-	 * @param selectionModel the list selection model
-	 * @return this builder instance
-	 * @see JList#setSelectionModel(ListSelectionModel)
-	 */
-	B selectionModel(ListSelectionModel selectionModel);
 
 	/**
 	 * @param listSelectionListener the list selection listener
@@ -162,7 +154,7 @@ public interface ListBuilder<T, V, B extends ListBuilder<T, V, B>> extends Compo
 	 * @param <T> the list value type
 	 * @return a new list builder factory
 	 */
-	static <T> Factory<T> factory(ListModel<T> listModel) {
+	static <T> Factory<T> factory(FilterListModel<T> listModel) {
 		return new DefaultListBuilderFactory<>(listModel);
 	}
 }

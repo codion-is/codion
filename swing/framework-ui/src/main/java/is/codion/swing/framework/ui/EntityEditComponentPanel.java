@@ -29,6 +29,7 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntityEditModel.EditorValue;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
@@ -65,7 +66,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.ListModel;
 import javax.swing.SpinnerListModel;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
@@ -648,7 +648,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @param <T> the value type
 	 * @return a list builder factory
 	 */
-	protected final <T> ListBuilderFactory<T> createList(ListModel<T> listModel) {
+	protected final <T> ListBuilderFactory<T> createList(FilterListModel<T> listModel) {
 		return new ListBuilderFactory<>(listModel);
 	}
 
@@ -927,7 +927,7 @@ public class EntityEditComponentPanel extends JPanel {
 
 		private final ListBuilder.Factory<T> builderFactory;
 
-		private ListBuilderFactory(ListModel<T> listModel) {
+		private ListBuilderFactory(FilterListModel<T> listModel) {
 			this.builderFactory = Components.list(listModel);
 		}
 

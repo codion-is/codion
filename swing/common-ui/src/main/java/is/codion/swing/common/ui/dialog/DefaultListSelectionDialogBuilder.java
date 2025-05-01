@@ -20,11 +20,12 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.state.State;
+import is.codion.swing.common.model.component.list.FilterListModel;
+import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.control.Control;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
-import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
@@ -33,6 +34,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,6 +50,7 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 
 	private final Collection<T> defaultSelection = new ArrayList<>();
 
+	private Comparator<T> comparator;
 	private Dimension dialogSize;
 
 	DefaultListSelectionDialogBuilder(Collection<T> values) {
@@ -76,6 +79,12 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 	}
 
 	@Override
+	public ListSelectionDialogBuilder<T> comparator(Comparator<T> comparator) {
+		this.comparator = requireNonNull(comparator);
+		return this;
+	}
+
+	@Override
 	public Optional<T> selectSingle() {
 		return selectSingle(dialogSize);
 	}
@@ -95,7 +104,7 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 	}
 
 	private List<T> select(boolean singleSelection, Dimension dialogSize) {
-		JList<T> list = createList(singleSelection);
+		FilterList<T> list = createList(singleSelection);
 		Control okControl = Control.builder()
 						.command(() -> disposeParentWindow(list))
 						.enabled(allowEmptySelection ? null : createSelectionNonEmptyState(list))
@@ -134,21 +143,22 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 		return list.getSelectedValuesList();
 	}
 
-	private JList<T> createList(boolean singleSelection) {
-		DefaultListModel<T> listModel = new DefaultListModel<>();
-		values.forEach(listModel::addElement);
-		JList<T> list = new JList<>(listModel);
+	private FilterList<T> createList(boolean singleSelection) {
+		FilterListModel<T> model = FilterListModel.builder(values)
+						.comparator(comparator)
+						.build();
+		FilterList<T> list = Components.list(model).items().build();
 		if (singleSelection) {
 			list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		}
 		list.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(VK_ENTER, 0), "none");
 
 		List<Integer> sortedDefaultSelectedIndexes = defaultSelection.stream()
-						.mapToInt(listModel::indexOf)
+						.mapToInt(model.items().visible()::indexOf)
 						.boxed()
 						.sorted(reverseOrder())//reverse order so that topmost item is selected last
 						.toList();
-		sortedDefaultSelectedIndexes.forEach(index -> list.getSelectionModel().addSelectionInterval(index, index));
+		sortedDefaultSelectedIndexes.forEach(model.selection().indexes()::add);
 		sortedDefaultSelectedIndexes.stream()
 						.mapToInt(Integer::intValue)
 						.min()
@@ -165,7 +175,7 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 		return title == null ? MESSAGES.getString("select_values") : title.get();
 	}
 
-	private static State createSelectionNonEmptyState(JList<?> list) {
+	private static State createSelectionNonEmptyState(FilterList<?> list) {
 		State selectionNonEmptyState = State.state(!list.getSelectionModel().isSelectionEmpty());
 		list.addListSelectionListener(e -> selectionNonEmptyState.set(!list.getSelectionModel().isSelectionEmpty()));
 

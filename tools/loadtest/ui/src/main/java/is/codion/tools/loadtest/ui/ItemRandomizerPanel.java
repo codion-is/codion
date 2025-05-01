@@ -19,24 +19,21 @@
 package is.codion.tools.loadtest.ui;
 
 import is.codion.common.observable.Observable;
-import is.codion.common.observable.Observer;
 import is.codion.common.value.AbstractValue;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.tools.loadtest.randomizer.ItemRandomizer;
 import is.codion.tools.loadtest.randomizer.ItemRandomizer.RandomItem;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
+import static is.codion.swing.common.model.component.list.FilterListModel.filterListModel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.util.Objects.requireNonNull;
@@ -50,15 +47,14 @@ final class ItemRandomizerPanel<T> extends JPanel {
 	private static final int SPINNER_COLUMNS = 3;
 
 	private final ItemRandomizer<T> itemRandomizer;
-	private final SelectedItems selectedItems = new SelectedItems();
 	private final JPanel configPanel = new JPanel(gridLayout(0, 1));
-	private final ComponentValue<List<RandomItem<T>>, JList<RandomItem<T>>> listComponentValue =
-					Components.<RandomItem<T>>list(new DefaultListModel<>())
-									.selectedItems()
-									.buildValue();
+	private final ComponentValue<List<RandomItem<T>>, FilterList<RandomItem<T>>> listValue;
 
 	ItemRandomizerPanel(ItemRandomizer<T> itemRandomizer) {
 		this.itemRandomizer = requireNonNull(itemRandomizer);
+		this.listValue = Components.list(filterListModel(itemRandomizer.items()))
+						.selectedItems()
+						.buildValue();
 		initializeUI();
 	}
 
@@ -73,20 +69,17 @@ final class ItemRandomizerPanel<T> extends JPanel {
 	 * @return the selected items
 	 */
 	public Observable<List<RandomItem<T>>> selectedItems() {
-		return selectedItems;
+		return listValue.component().model().selection().items().observable();
 	}
 
 	private void initializeUI() {
-		List<RandomItem<T>> items = new ArrayList<>(itemRandomizer.items());
-		items.sort(Comparator.comparing(item -> item.item().toString()));
-		items.forEach(((DefaultListModel<RandomItem<T>>) listComponentValue.component().getModel())::addElement);
-		listComponentValue.addConsumer(selected -> {
+		listValue.addConsumer(selected -> {
 			configPanel.removeAll();
 			selected.forEach(item -> configPanel.add(createWeightPanel(item)));
 			revalidate();
 		});
 		setLayout(borderLayout());
-		add(new JScrollPane(listComponentValue.component()), BorderLayout.CENTER);
+		add(new JScrollPane(listValue.component()), BorderLayout.CENTER);
 		add(configPanel, BorderLayout.SOUTH);
 	}
 
@@ -149,19 +142,6 @@ final class ItemRandomizerPanel<T> extends JPanel {
 		@Override
 		protected void setValue(Integer value) {
 			itemRandomizer.setWeight(item, value);
-		}
-	}
-
-	private final class SelectedItems implements Observable<List<RandomItem<T>>> {
-
-		@Override
-		public List<RandomItem<T>> get() {
-			return listComponentValue.get();
-		}
-
-		@Override
-		public Observer<List<RandomItem<T>>> observer() {
-			return listComponentValue.observer();
 		}
 	}
 }

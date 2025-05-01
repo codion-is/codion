@@ -19,17 +19,17 @@
 package is.codion.swing.common.ui.component.list;
 
 import is.codion.common.value.Value;
+import is.codion.swing.common.model.component.list.FilterListModel;
 
-import javax.swing.ListModel;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
 final class DefaultListBuilderFactory<T> implements ListBuilder.Factory<T> {
 
-	private final ListModel<T> listModel;
+	private final FilterListModel<T> listModel;
 
-	DefaultListBuilderFactory(ListModel<T> listModel) {
+	DefaultListBuilderFactory(FilterListModel<T> listModel) {
 		this.listModel = requireNonNull(listModel);
 	}
 

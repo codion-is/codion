@@ -20,6 +20,7 @@ package is.codion.demos.chinook.ui;
 
 import is.codion.demos.chinook.domain.api.Chinook.Album;
 import is.codion.plugin.imagepanel.NavigableImagePanel;
+import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
@@ -34,7 +35,6 @@ import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.component.EditComponentFactory;
 
 import javax.imageio.ImageIO;
-import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -114,7 +114,7 @@ public final class AlbumTablePanel extends EntityTablePanel {
 	private static final class TagComponentValue extends AbstractComponentValue<List<String>, AlbumTagPanel> {
 
 		private TagComponentValue(List<String> tags) {
-			super(new AlbumTagPanel(Components.list(new DefaultListModel<String>())
+			super(new AlbumTagPanel(Components.list(FilterListModel.<String>filterListModel())
 							// A list component value based on the items in
 							// the model, as opposed to the selected items
 							.items()

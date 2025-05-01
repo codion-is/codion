@@ -433,7 +433,7 @@ public interface FilterModel<T> {
 		int count();
 
 		/**
-		 * Sorts the visible items using {@link Sort#comparator()}, preserving the selection.
+		 * Sorts the visible items using this {@link Sort} instance, preserving the selection.
 		 * @see FilterModel#sort()
 		 */
 		void sort();
@@ -549,12 +549,12 @@ public interface FilterModel<T> {
 	interface Sort<T> extends Comparator<T> {
 
 		/**
-		 * @return true true if sorting is enabled
+		 * @return true if sorting is active
 		 */
 		boolean sorted();
 
 		/**
-		 * @return an observer notified each time the sorting changes, the event data indicating whether the model is sorted
+		 * @return an observer notified each time the sorting changes, the event data indicating whether the sort is active
 		 */
 		Observer<Boolean> observer();
 	}

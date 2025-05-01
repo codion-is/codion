@@ -19,70 +19,50 @@
 package is.codion.swing.common.ui.component.list;
 
 import is.codion.common.value.Value;
+import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
-import javax.swing.JList;
-import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import java.util.List;
-import java.util.Objects;
-import java.util.OptionalInt;
+
+import static java.util.Collections.emptyList;
 
 final class DefaultListSelectedItemsBuilder<T> extends AbstractListBuilder<T, List<T>, ListBuilder.SelectedItems<T>>
 				implements ListBuilder.SelectedItems<T> {
 
-	DefaultListSelectedItemsBuilder(ListModel<T> listModel, Value<List<T>> linkedValue) {
+	DefaultListSelectedItemsBuilder(FilterListModel<T> listModel, Value<List<T>> linkedValue) {
 		super(listModel, linkedValue);
 	}
 
 	@Override
-	protected JList<T> createComponent() {
-		JList<T> list = createList();
+	protected FilterList<T> createComponent() {
+		FilterList<T> list = createList();
 		list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
 		return list;
 	}
 
 	@Override
-	protected ComponentValue<List<T>, JList<T>> createComponentValue(JList<T> component) {
+	protected ComponentValue<List<T>, FilterList<T>> createComponentValue(FilterList<T> component) {
 		return new ListSelectedItemsValue<>(component);
 	}
 
-	private static final class ListSelectedItemsValue<T> extends AbstractComponentValue<List<T>, JList<T>> {
+	private static final class ListSelectedItemsValue<T> extends AbstractComponentValue<List<T>, FilterList<T>> {
 
-		private ListSelectedItemsValue(JList<T> list) {
-			super(list);
-			list.addListSelectionListener(e -> notifyListeners());
+		private ListSelectedItemsValue(FilterList<T> list) {
+			super(list, emptyList());
+			list.model().selection().indexes().addListener(this::notifyListeners);
 		}
 
 		@Override
 		protected List<T> getComponentValue() {
-			return component().getSelectedValuesList();
+			return component().model().selection().items().get();
 		}
 
 		@Override
 		protected void setComponentValue(List<T> value) {
-			selectValues(component(), value);
-		}
-
-		private static <T> void selectValues(JList<T> list, List<T> valueSet) {
-			list.setSelectedIndices(valueSet.stream()
-							.map(value -> indexOf(list, value))
-							.filter(OptionalInt::isPresent)
-							.mapToInt(OptionalInt::getAsInt)
-							.toArray());
-		}
-
-		private static <T> OptionalInt indexOf(JList<T> list, T element) {
-			ListModel<T> model = list.getModel();
-			for (int i = 0; i < model.getSize(); i++) {
-				if (Objects.equals(model.getElementAt(i), element)) {
-					return OptionalInt.of(i);
-				}
-			}
-
-			return OptionalInt.empty();
+			component().model().selection().items().set(value);
 		}
 	}
 }

@@ -23,6 +23,7 @@ import is.codion.common.observable.Observable;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.button.ButtonPanelBuilder;
@@ -76,7 +77,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
-import javax.swing.ListModel;
 import javax.swing.SpinnerListModel;
 import javax.swing.SpinnerNumberModel;
 import java.awt.BorderLayout;
@@ -849,7 +849,7 @@ public final class Components {
 	 * @param <T> the list value type
 	 * @return a new list builder factory
 	 */
-	public static <T> ListBuilder.Factory<T> list(ListModel<T> listModel) {
+	public static <T> ListBuilder.Factory<T> list(FilterListModel<T> listModel) {
 		return ListBuilder.factory(listModel);
 	}
 

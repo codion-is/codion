@@ -19,27 +19,23 @@
 package is.codion.swing.common.ui.component.list;
 
 import is.codion.common.value.Value;
+import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
-import javax.swing.DefaultListModel;
-import javax.swing.JList;
-import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+
+import static java.util.Collections.emptyList;
 
 final class DefaultListItemsBuilder<T> extends AbstractListBuilder<T, List<T>, ListBuilder.Items<T>> implements ListBuilder.Items<T> {
 
 	private int selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
 
-	DefaultListItemsBuilder(ListModel<T> listModel, Value<List<T>> linkedValue) {
+	DefaultListItemsBuilder(FilterListModel<T> listModel, Value<List<T>> linkedValue) {
 		super(listModel, linkedValue);
 	}
 
@@ -50,49 +46,33 @@ final class DefaultListItemsBuilder<T> extends AbstractListBuilder<T, List<T>, L
 	}
 
 	@Override
-	protected JList<T> createComponent() {
-		JList<T> list = createList();
+	protected FilterList<T> createComponent() {
+		FilterList<T> list = createList();
 		list.setSelectionMode(selectionMode);
 
 		return list;
 	}
 
 	@Override
-	protected ComponentValue<List<T>, JList<T>> createComponentValue(JList<T> component) {
+	protected ComponentValue<List<T>, FilterList<T>> createComponentValue(FilterList<T> component) {
 		return new ListItemsValue<>(component);
 	}
 
-	private static final class ListItemsValue<T> extends AbstractComponentValue<List<T>, JList<T>> {
+	private static final class ListItemsValue<T> extends AbstractComponentValue<List<T>, FilterList<T>> {
 
-		private ListItemsValue(JList<T> list) {
-			super(list, Collections.emptyList());
-			list.getModel().addListDataListener(new DefaultListDataNotifier());
+		private ListItemsValue(FilterList<T> list) {
+			super(list, emptyList());
+			list.model().addListDataListener(new DefaultListDataNotifier());
 		}
 
 		@Override
 		protected List<T> getComponentValue() {
-			return new ArrayList<>(getItems());
+			return new ArrayList<>(component().model().items().get());
 		}
 
 		@Override
 		protected void setComponentValue(List<T> value) {
-			setItems(component(), value);
-		}
-
-		private Collection<T> getItems() {
-			DefaultListModel<T> listModel = (DefaultListModel<T>) component().getModel();
-
-			return IntStream.range(0, listModel.getSize())
-							.mapToObj(listModel::getElementAt)
-							.collect(Collectors.toList());
-		}
-
-		private static <T> void setItems(JList<T> list, List<T> items) {
-			DefaultListModel<T> listModel = (DefaultListModel<T>) list.getModel();
-			listModel.removeAllElements();
-			if (items != null) {
-				listModel.addAll(items);
-			}
+			component().model().items().set(value);
 		}
 
 		private final class DefaultListDataNotifier implements ListDataListener {

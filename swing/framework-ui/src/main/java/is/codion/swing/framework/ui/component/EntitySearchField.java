@@ -30,6 +30,7 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.Cursors;
@@ -38,6 +39,7 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.component.list.ListBuilder;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.component.table.FilterTable;
@@ -59,7 +61,6 @@ import is.codion.swing.framework.ui.EntityTableCellRenderer;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import javax.swing.DefaultListCellRenderer;
-import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -741,7 +742,7 @@ public final class EntitySearchField extends HintTextField {
 	private static final class DefaultListSelector implements ListSelector {
 
 		private final EntitySearchField searchField;
-		private final JList<Entity> list;
+		private final FilterList<Entity> list;
 		private final Function<Entity, String> stringFactory;
 		private final JPanel selectorPanel;
 		private final JLabel resultLimitLabel = label()
@@ -767,8 +768,8 @@ public final class EntitySearchField extends HintTextField {
 
 		@Override
 		public void select(List<Entity> entities) {
-			DefaultListModel<Entity> listModel = (DefaultListModel<Entity>) list.getModel();
-			requireNonNull(entities).forEach(listModel::addElement);
+			FilterListModel<Entity> listModel = list.model();
+			requireNonNull(entities).forEach(listModel.items()::add);
 			list.scrollRectToVisible(list.getCellBounds(0, 0));
 			initializeResultLimitMessage(resultLimitLabel, searchField.model.limit().optional().orElse(-1), entities.size());
 
@@ -778,7 +779,7 @@ public final class EntitySearchField extends HintTextField {
 							.okAction(selectControl)
 							.show();
 
-			listModel.removeAllElements();
+			listModel.items().clear();
 		}
 
 		@Override
@@ -786,8 +787,8 @@ public final class EntitySearchField extends HintTextField {
 			selectorPanel.setPreferredSize(preferredSize);
 		}
 
-		private JList<Entity> createList(EntitySearchModel searchModel) {
-			DefaultListModel<Entity> listModel = new DefaultListModel<>();
+		private FilterList<Entity> createList(EntitySearchModel searchModel) {
+			FilterListModel<Entity> listModel = FilterListModel.<Entity>filterListModel();
 			ListBuilder<Entity, ?, ?> listBuilder = searchModel.singleSelection() ?
 							Components.list(listModel).selectedItem() : Components.list(listModel).selectedItems();
 
@@ -826,9 +827,9 @@ public final class EntitySearchField extends HintTextField {
 			}
 		}
 
-		private static final class RemoveDefaultEnterAction implements Consumer<JList<Entity>> {
+		private static final class RemoveDefaultEnterAction implements Consumer<FilterList<Entity>> {
 			@Override
-			public void accept(JList list) {
+			public void accept(FilterList<Entity> list) {
 				list.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 								.put(KeyStroke.getKeyStroke(VK_ENTER, 0), "none");
 			}

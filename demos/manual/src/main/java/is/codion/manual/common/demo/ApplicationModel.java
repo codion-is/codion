@@ -23,12 +23,11 @@ import is.codion.common.observable.Observable;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueList;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
+import is.codion.swing.common.model.component.list.FilterListModel;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
-import javax.swing.ListModel;
 import javax.swing.SpinnerListModel;
 import javax.swing.SpinnerNumberModel;
 import java.time.LocalDate;
@@ -38,16 +37,15 @@ import java.util.List;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.common.value.ValueList.valueList;
+import static is.codion.swing.common.model.component.list.FilterListModel.filterListModel;
 import static java.lang.Thread.setDefaultUncaughtExceptionHandler;
 
 /*
 // tag::demoModelImport[]
 import static is.codion.common.item.Item.item;
-import static is.codion.common.value.Value.value;
 import static is.codion.common.value.ValueList.valueList;
-import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.itemComboBoxModel;
+import static is.codion.swing.common.model.component.list.FilterListModel.filterListModel;
 import static java.lang.Thread.setDefaultUncaughtExceptionHandler;
-import static java.util.List;
 // end::demoModelImport[]
 */
 // tag::demoModel[]
@@ -205,18 +203,12 @@ public final class ApplicationModel {
 		));
 	}
 
-	public ListModel<String> createStringListModel() {
-		DefaultListModel<String> listModel = new DefaultListModel<>();
-		listModel.addElement("Here");
-		listModel.addElement("Are");
-		listModel.addElement("A");
-		listModel.addElement("Few");
-		listModel.addElement("Elements");
-		listModel.addElement("To");
-		listModel.addElement("Select");
-		listModel.addElement("From");
-
-		return listModel;
+	public FilterListModel<String> createStringListModel() {
+		return filterListModel(List.of(
+						"Here", "Are", "A",
+						"Few", "Elements", "To",
+						"Select", "From"
+		));
 	}
 
 	private void exceptionHandler(Thread thread, Throwable exception) {
