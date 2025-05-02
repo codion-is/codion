@@ -42,11 +42,6 @@ public interface LocalEntityConnectionProvider extends EntityConnectionProvider 
 	LocalEntityConnection connection();
 
 	/**
-	 * @return the default query timeout being used
-	 */
-	int defaultQueryTimeout();
-
-	/**
 	 * Instantiates a new builder instance.
 	 * @return a new builder
 	 */

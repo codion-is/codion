@@ -82,9 +82,9 @@ public final class KeyEvents {
 	}
 
 	/**
-	 * Creates a {@link KeyStroke} with the given keyCode and no modifiers.
+	 * Returns a {@link KeyStroke} with the given keyCode and no modifiers.
 	 * @param keyCode the key code
-	 * @return a keystroke value
+	 * @return a keystroke
 	 * @see KeyStroke#getKeyStroke(int, int)
 	 */
 	public static KeyStroke keyStroke(int keyCode) {
@@ -92,10 +92,10 @@ public final class KeyEvents {
 	}
 
 	/**
-	 * Creates a {@link KeyStroke} with the given keyCode and modifiers.
+	 * Returns a {@link KeyStroke} with the given keyCode and modifiers.
 	 * @param keyCode the key code
 	 * @param modifiers the modifiers
-	 * @return a keystroke value
+	 * @return a keystroke
 	 * @see KeyStroke#getKeyStroke(int, int)
 	 */
 	public static KeyStroke keyStroke(int keyCode, int modifiers) {

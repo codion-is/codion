@@ -359,11 +359,9 @@ final class LocalConnectionHandler implements InvocationHandler {
 
 		private void updateRequestsPerSecond() {
 			long current = System.currentTimeMillis();
-			double seconds = (current - requestsPerSecondTime.get()) / THOUSAND;
+			double seconds = (current - requestsPerSecondTime.getAndSet(current)) / THOUSAND;
 			if (seconds > 0) {
-				requestsPerSecond.set((int) (requestsPerSecondCounter.get() / seconds));
-				requestsPerSecondCounter.set(0);
-				requestsPerSecondTime.set(current);
+				requestsPerSecond.set((int) (requestsPerSecondCounter.getAndSet(0) / seconds));
 			}
 		}
 

@@ -67,7 +67,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 	private final Value<Integer> limit = Value.nullable(LIMIT.get());
 	private final Value<Function<EntityQueryModel, List<Entity>>> dataSource = Value.nonNull(new DefaultDataSource());
 
-	private volatile RefreshConditions refreshConditions;
+	private @Nullable RefreshConditions refreshConditions;
 
 	DefaultEntityQueryModel(EntityTableConditionModel conditionModel) {
 		this.conditionModel = requireNonNull(conditionModel);

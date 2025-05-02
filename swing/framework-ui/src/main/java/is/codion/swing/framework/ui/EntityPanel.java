@@ -459,8 +459,7 @@ public class EntityPanel extends JPanel {
 	 * @param keyEventBuilder the key event builder
 	 */
 	public final void addKeyEvent(KeyEvents.Builder keyEventBuilder) {
-		requireNonNull(keyEventBuilder);
-		keyEventBuilder.enable(this);
+		requireNonNull(keyEventBuilder).enable(this);
 		if (containsEditPanel()) {
 			keyEventBuilder.enable(editControlPanel);
 		}
@@ -471,8 +470,7 @@ public class EntityPanel extends JPanel {
 	 * @param keyEventBuilder the key event builder
 	 */
 	public final void removeKeyEvent(KeyEvents.Builder keyEventBuilder) {
-		requireNonNull(keyEventBuilder);
-		keyEventBuilder.disable(this);
+		requireNonNull(keyEventBuilder).disable(this);
 		if (containsEditPanel()) {
 			keyEventBuilder.disable(editControlPanel);
 		}
@@ -746,29 +744,14 @@ public class EntityPanel extends JPanel {
 	 * @see ControlKeys#NAVIGATE_RIGHT
 	 */
 	protected final void setupNavigation() {
-		JComponent[] components = navigationComponents();
 		configuration.controlMap.keyEvent(NAVIGATE_UP).ifPresent(keyEvent ->
-						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-										.enable(components));
+						addKeyEvent(keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)));
 		configuration.controlMap.keyEvent(NAVIGATE_DOWN).ifPresent(keyEvent ->
-						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-										.enable(components));
+						addKeyEvent(keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)));
 		configuration.controlMap.keyEvent(NAVIGATE_LEFT).ifPresent(keyEvent ->
-						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-										.enable(components));
+						addKeyEvent(keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)));
 		configuration.controlMap.keyEvent(NAVIGATE_RIGHT).ifPresent(keyEvent ->
-						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-										.enable(components));
-	}
-
-	private JComponent[] navigationComponents() {
-		List<JComponent> comps = new ArrayList<>();
-		comps.add(this);
-		if (containsEditPanel()) {
-			comps.add(editControlPanel);
-		}
-
-		return comps.toArray(new JComponent[0]);
+						addKeyEvent(keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)));
 	}
 
 	/**

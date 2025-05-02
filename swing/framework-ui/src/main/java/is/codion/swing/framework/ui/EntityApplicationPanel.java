@@ -331,7 +331,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * @return an unmodifiable view of the main application panels
 	 */
 	public final List<EntityPanel> entityPanels() {
-		return Collections.unmodifiableList(entityPanels);
+		return entityPanels;
 	}
 
 	/**

@@ -59,16 +59,14 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
 		return database().name().toUpperCase();
 	}
 
+	@Override
 	public Domain domain() {
 		return domain;
 	}
 
+	@Override
 	public Database database() {
 		return database;
-	}
-
-	public int defaultQueryTimeout() {
-		return defaultQueryTimeout;
 	}
 
 	@Override

@@ -37,6 +37,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static is.codion.swing.common.ui.Utilities.disposeParentWindow;
 import static java.awt.event.KeyEvent.VK_ENTER;
@@ -157,7 +158,7 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 						.mapToInt(model.items().visible()::indexOf)
 						.boxed()
 						.sorted(reverseOrder())//reverse order so that topmost item is selected last
-						.toList();
+						.collect(Collectors.toList());
 		sortedDefaultSelectedIndexes.forEach(model.selection().indexes()::add);
 		sortedDefaultSelectedIndexes.stream()
 						.mapToInt(Integer::intValue)

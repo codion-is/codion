@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.model.component.table;
 
-import is.codion.common.event.Event;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.model.filter.FilterModel;
@@ -45,7 +44,6 @@ import java.util.stream.Stream;
 
 import static is.codion.common.model.condition.TableConditionModel.tableConditionModel;
 import static is.codion.common.value.Value.Notify.WHEN_SET;
-import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -417,7 +415,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		private static final class DefaultRefreshWorker<R> extends AbstractRefreshWorker<R> {
 
-			private final Event<Collection<R>> onResult = Event.event();
 			private final Items<R> items;
 
 			private DefaultRefreshWorker(Supplier<? extends Collection<R>> supplier,
@@ -430,7 +427,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			@Override
 			protected void processResult(Collection<R> result) {
 				items.set(result);
-				onResult.accept(unmodifiableCollection(result));
 			}
 		}
 

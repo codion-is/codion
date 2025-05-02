@@ -305,6 +305,7 @@ public class DefaultEntityTest {
 		Entity compositeDetail = ENTITIES.builder(CompositeDetail.TYPE)
 						.with(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID, 1)
 						.with(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_2, 2)
+						.with(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_3, 3)
 						.build();
 
 		Entity.Key referencedKey = compositeDetail.key(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK);
