@@ -51,7 +51,7 @@ public final class CityTableModel extends SwingEntityTableModel {
 		selection().items().addConsumer(cities ->
 						cityWithoutLocationSelected.set(cities.stream()
 										.anyMatch(city -> city.isNull(City.LOCATION))));
-		items().refresher().result().addConsumer(this::refreshChartDataset);
+		items().visible().addConsumer(this::refreshChartDataset);
 	}
 
 	public PieDataset<String> chartDataset() {
