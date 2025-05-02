@@ -197,9 +197,8 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 
 			private DefaultRefreshWorker(Supplier<? extends Collection<R>> supplier,
 																	 Items<R> items, boolean asyncRefresh) {
-				super((Supplier<Collection<R>>) supplier);
+				super((Supplier<Collection<R>>) supplier, asyncRefresh);
 				this.items = items;
-				async().set(asyncRefresh);
 			}
 
 			@Override

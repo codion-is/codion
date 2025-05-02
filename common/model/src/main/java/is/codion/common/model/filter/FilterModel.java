@@ -246,7 +246,7 @@ public interface FilterModel<T> {
 
 		/**
 		 * @param refresher the item refresher to use
-		 * @return a new {@link SelectionStage} instance
+		 * @return a new {@link Builder.SelectionStage} instance
 		 * @param <T> the item type
 		 */
 		static <T> Builder.SelectionStage<T> builder(Function<Items<T>, Refresher<T>> refresher) {
@@ -302,7 +302,7 @@ public interface FilterModel<T> {
 			Builder<T> refreshStrategy(RefreshStrategy refreshStrategy);
 
 			/**
-			 * @param itemsListener the {@link ItemsListener}
+			 * @param itemsListener the {@link VisibleItems.ItemsListener}
 			 * @return this builder
 			 */
 			Builder<T> listener(VisibleItems.ItemsListener itemsListener);
@@ -567,13 +567,15 @@ public interface FilterModel<T> {
 		private final Event<Exception> onException = Event.event();
 		private final State active = State.state();
 		private final @Nullable Supplier<Collection<T>> supplier;
-		private final State async = State.state(ASYNC_REFRESH.getOrThrow());
+		private final State async;
 
 		/**
 		 * @param supplier supplies the items when refreshing
+		 * @param async true if async refresh should be used
 		 */
-		protected AbstractRefresher(@Nullable Supplier<Collection<T>> supplier) {
+		protected AbstractRefresher(@Nullable Supplier<Collection<T>> supplier, boolean async) {
 			this.supplier = supplier;
+			this.async = State.state(async);
 		}
 
 		@Override

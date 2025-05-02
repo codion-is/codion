@@ -15,6 +15,7 @@ Codion Change Log
 - DefaultFilterListItems added, extracted from DefaultFilterTableItems, related refactoring.
 - FilterModel.Sort now extends Comparator, comparator() removed.
 - FilterModel.AbstractRefresher no longer refreshes if no supplier is available.
+- FilterModel.AbstractRefresher, async constructor parameter added.
 ### is.codion.common.rmi
 - ServerAdmin, removed a few public accessors for values included in ServerStatistics, related cleanup.
 ### is.codion.framework.domain
@@ -32,6 +33,7 @@ Codion Change Log
 - FilterTableSort.sorted() moved to FilterListModel.Sort.
 - DefaultFilterTableItems.DefaultVisibleItems no longer adds a table model listener, changes to visible items notified explicitly.
 - FilterListModel and FilterListSort added.
+- FilterComboBoxModel.Builder.asyncRefresh() added.
 ### is.codion.swing.common.ui
 - LookAndFeelSelectionDialogBuilder.createControl() overloaded without parameter.
 - BackgroundColorValidIndicator bug fixed, did not refresh state when colors changed during updateUI().

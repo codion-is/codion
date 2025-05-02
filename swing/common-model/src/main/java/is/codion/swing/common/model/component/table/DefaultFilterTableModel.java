@@ -419,9 +419,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 			private DefaultRefreshWorker(Supplier<? extends Collection<R>> supplier,
 																	 Items<R> items, boolean asyncRefresh) {
-				super((Supplier<Collection<R>>) supplier);
+				super((Supplier<Collection<R>>) supplier, asyncRefresh);
 				this.items = items;
-				async().set(asyncRefresh);
 			}
 
 			@Override

@@ -147,6 +147,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private Comparator<T> comparator = (Comparator<T>) DEFAULT_COMPARATOR;
 		private Function<Object, T> translator = (Function<Object, T>) DEFAULT_SELECTED_ITEM_TRANSLATOR;
+		private boolean asyncRefresh = ASYNC_REFRESH.getOrThrow();
 		private boolean filterSelected;
 		private boolean includeNull;
 		private T nullItem;
@@ -184,6 +185,12 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public Builder<T> filterSelected(boolean filterSelected) {
 			this.filterSelected = filterSelected;
+			return this;
+		}
+
+		@Override
+		public Builder<T> asyncRefresh(boolean asyncRefresh) {
+			this.asyncRefresh = asyncRefresh;
 			return this;
 		}
 
@@ -309,7 +316,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			if (builder.items != null) {
 				set(builder.items);
 			}
-			refresher = new DefaultRefreshWorker(builder.supplier);
+			refresher = new DefaultRefreshWorker(builder.supplier, builder.asyncRefresh);
 		}
 
 		@Override
@@ -799,8 +806,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 	private final class DefaultRefreshWorker extends AbstractRefreshWorker<T> {
 
-		private DefaultRefreshWorker(Supplier<Collection<T>> supplier) {
-			super(supplier);
+		private DefaultRefreshWorker(Supplier<Collection<T>> supplier, boolean async) {
+			super(supplier, async);
 		}
 
 		@Override

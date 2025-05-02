@@ -189,6 +189,12 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 		Builder<T> filterSelected(boolean filterSelected);
 
 		/**
+		 * @param asyncRefresh true if async refresh should be enabled
+		 * @return this builder instance
+		 */
+		Builder<T> asyncRefresh(boolean asyncRefresh);
+
+		/**
 		 * @return a new {@link FilterComboBoxModel} instance
 		 */
 		FilterComboBoxModel<T> build();

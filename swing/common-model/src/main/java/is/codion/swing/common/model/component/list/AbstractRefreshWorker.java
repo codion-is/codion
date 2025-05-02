@@ -37,9 +37,10 @@ public abstract class AbstractRefreshWorker<T> extends AbstractRefresher<T> {
 
 	/**
 	 * @param supplier supplies the items
+	 * @param async true if async refresh should be used
 	 */
-	protected AbstractRefreshWorker(Supplier<Collection<T>> supplier) {
-		super(supplier);
+	protected AbstractRefreshWorker(Supplier<Collection<T>> supplier, boolean async) {
+		super(supplier, async);
 	}
 
 	@Override
