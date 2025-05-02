@@ -410,7 +410,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		private Refresher<R> createRefresher(Items<R> items) {
-			return new DefaultRefreshWorker<>(supplier == null ? items::get : supplier, items, asyncRefresh);
+			return new DefaultRefreshWorker<>(supplier, items, asyncRefresh);
 		}
 
 		private static final class DefaultRefreshWorker<R> extends AbstractRefreshWorker<R> {

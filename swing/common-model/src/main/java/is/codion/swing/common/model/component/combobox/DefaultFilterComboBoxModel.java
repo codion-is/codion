@@ -306,15 +306,10 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 				visible.items.add(null);
 			}
 			visible.predicate.addListener(this::filter);
-			if (builder.supplier == null) {
-				refresher = new DefaultRefreshWorker(this::get);
-				if (builder.items != null) {
-					set(builder.items);
-				}
+			if (builder.items != null) {
+				set(builder.items);
 			}
-			else {
-				refresher = new DefaultRefreshWorker(builder.supplier);
-			}
+			refresher = new DefaultRefreshWorker(builder.supplier);
 		}
 
 		@Override

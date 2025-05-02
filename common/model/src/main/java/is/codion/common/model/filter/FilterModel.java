@@ -35,6 +35,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -565,14 +566,14 @@ public interface FilterModel<T> {
 		private final Event<Collection<T>> onResult = Event.event();
 		private final Event<Exception> onException = Event.event();
 		private final State active = State.state();
-		private final Supplier<Collection<T>> supplier;
+		private final @Nullable Supplier<Collection<T>> supplier;
 		private final State async = State.state(ASYNC_REFRESH.getOrThrow());
 
 		/**
 		 * @param supplier supplies the items when refreshing
 		 */
-		protected AbstractRefresher(Supplier<Collection<T>> supplier) {
-			this.supplier = requireNonNull(supplier);
+		protected AbstractRefresher(@Nullable Supplier<Collection<T>> supplier) {
+			this.supplier = supplier;
 		}
 
 		@Override
@@ -608,8 +609,8 @@ public interface FilterModel<T> {
 		/**
 		 * @return the item supplier for this refresher instance
 		 */
-		protected final Supplier<Collection<T>> supplier() {
-			return supplier;
+		protected final Optional<Supplier<Collection<T>>> supplier() {
+			return Optional.ofNullable(supplier);
 		}
 
 		/**

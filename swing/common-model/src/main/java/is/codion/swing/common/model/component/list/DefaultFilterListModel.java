@@ -188,7 +188,7 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 		}
 
 		private Refresher<T> createRefresher(Items<T> items) {
-			return new DefaultRefreshWorker<>(supplier == null ? items::get : supplier, items, asyncRefresh);
+			return new DefaultRefreshWorker<>(supplier, items, asyncRefresh);
 		}
 
 		private static final class DefaultRefreshWorker<R> extends AbstractRefreshWorker<R> {

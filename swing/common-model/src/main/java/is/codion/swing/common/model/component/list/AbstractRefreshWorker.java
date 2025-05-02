@@ -48,22 +48,26 @@ public abstract class AbstractRefreshWorker<T> extends AbstractRefresher<T> {
 	}
 
 	protected final void refreshAsync(Consumer<Collection<T>> onResult) {
-		cancelCurrentRefresh();
-		worker = ProgressWorker.builder(supplier()::get)
-						.onStarted(this::onRefreshStarted)
-						.onResult(items -> onRefreshResult(items, onResult))
-						.onException(this::onRefreshFailedAsync)
-						.execute();
+		supplier().ifPresent(supplier -> {
+			cancelCurrentRefresh();
+			worker = ProgressWorker.builder(supplier::get)
+							.onStarted(this::onRefreshStarted)
+							.onResult(items -> onRefreshResult(items, onResult))
+							.onException(this::onRefreshFailedAsync)
+							.execute();
+		});
 	}
 
 	protected final void refreshSync(Consumer<Collection<T>> onResult) {
-		onRefreshStarted();
-		try {
-			onRefreshResult(supplier().get(), onResult);
-		}
-		catch (Exception e) {
-			onRefreshFailedSync(e);
-		}
+		supplier().ifPresent(supplier -> {
+			onRefreshStarted();
+			try {
+				onRefreshResult(supplier.get(), onResult);
+			}
+			catch (Exception e) {
+				onRefreshFailedSync(e);
+			}
+		});
 	}
 
 	private void onRefreshStarted() {
