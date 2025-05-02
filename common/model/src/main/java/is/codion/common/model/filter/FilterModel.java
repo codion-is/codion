@@ -19,9 +19,6 @@
 package is.codion.common.model.filter;
 
 import is.codion.common.event.Event;
-import is.codion.common.model.filter.DefaultFilterModelItems.DefaultSelectionStage;
-import is.codion.common.model.filter.FilterModel.Items.Builder.SelectionStage;
-import is.codion.common.model.filter.FilterModel.VisibleItems.ItemsListener;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.model.selection.SingleSelection;
 import is.codion.common.observable.Observable;
@@ -251,8 +248,8 @@ public interface FilterModel<T> {
 		 * @return a new {@link SelectionStage} instance
 		 * @param <T> the item type
 		 */
-		static <T> SelectionStage<T> builder(Function<Items<T>, Refresher<T>> refresher) {
-			return new DefaultSelectionStage<>(requireNonNull(refresher));
+		static <T> Builder.SelectionStage<T> builder(Function<Items<T>, Refresher<T>> refresher) {
+			return new DefaultFilterModelItems.DefaultSelectionStage<>(requireNonNull(refresher));
 		}
 
 		/**
@@ -307,7 +304,7 @@ public interface FilterModel<T> {
 			 * @param itemsListener the {@link ItemsListener}
 			 * @return this builder
 			 */
-			Builder<T> listener(ItemsListener itemsListener);
+			Builder<T> listener(VisibleItems.ItemsListener itemsListener);
 
 			/**
 			 * @return a new {@link Items} instance
