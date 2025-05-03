@@ -58,8 +58,10 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 	private static final String STATE_PROPERTY = "state";
 
-	private final ResultTask<T> task;
-	private final ProgressResultTask<T, V> progressTask;
+	private final Task task;
+	private final ProgressTask<V> progressTask;
+	private final ResultTask<T> resultTask;
+	private final ProgressResultTask<T, V> progressResultTask;
 	private final int maximumProgress;
 	private final Runnable onStarted;
 	private final Runnable onDone;
@@ -75,6 +77,8 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	private ProgressWorker(DefaultBuilder<T, V> builder) {
 		this.task = builder.task;
 		this.progressTask = builder.progressTask;
+		this.resultTask = builder.resultTask;
+		this.progressResultTask = builder.progressResultTask;
 		this.maximumProgress = builder.maximumProgress;
 		this.onStarted = builder.onStarted;
 		this.onDone = builder.onDone;
@@ -85,6 +89,23 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		this.onCancelled = builder.onCancelled;
 		this.onInterrupted = builder.onInterrupted;
 		getPropertyChangeSupport().addPropertyChangeListener(STATE_PROPERTY, new StateListener());
+	}
+
+	/**
+	 * @param task the task to run
+	 * @return a new {@link Builder} instance
+	 */
+	public static Builder<?, ?> builder(Task task) {
+		return new DefaultBuilder<>(task);
+	}
+
+	/**
+	 * @param task the task to run
+	 * @param <V> the intermediate result type
+	 * @return a new {@link Builder} instance
+	 */
+	public static <V> Builder<?, V> builder(ProgressTask<V> task) {
+		return new DefaultBuilder<>(task);
 	}
 
 	/**
@@ -108,7 +129,20 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 	@Override
 	protected T doInBackground() throws Exception {
-		return task != null ? task.execute() : progressTask.execute(new TaskProgressReporter());
+		if (task != null) {
+			task.execute();
+		}
+		else if (progressTask != null) {
+			progressTask.execute(new TaskProgressReporter());
+		}
+		else if (resultTask != null) {
+			return resultTask.execute();
+		}
+		else if (progressResultTask != null) {
+			return progressResultTask.execute(new TaskProgressReporter());
+		}
+
+		return null;
 	}
 
 	@Override
@@ -159,6 +193,15 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		}
 	}
 
+	public interface Task {
+
+		/**
+		 * Executes the task.
+		 * @throws Exception in case of an exception
+		 */
+		void execute() throws Exception;
+	}
+
 	/**
 	 * A background task producing a result.
 	 * @param <T> the task result type
@@ -171,6 +214,16 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		 * @throws Exception in case of an exception
 		 */
 		T execute() throws Exception;
+	}
+
+	public interface ProgressTask<V> {
+
+		/**
+		 * Executes the task.
+		 * @param progressReporter the progress reporter to report a message or progress (0 - maximumProgress).
+		 * @throws Exception in case of an exception
+		 */
+		void execute(ProgressReporter<V> progressReporter) throws Exception;
 	}
 
 	/**
@@ -232,6 +285,8 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		 * @return this builder instance
 		 */
 		Builder<T, V> onDone(Runnable onDone);
+
+		Builder<T, V> onResult(Runnable onResult);
 
 		/**
 		 * @param onResult called on the Event Dispatch Thread when the result of a successful run is available
@@ -309,8 +364,10 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		private static final Consumer<Exception> RETHROW_HANDLER = new RethrowHandler();
 		private static final Runnable INTERRUPT_CURRENT_ON_INTERRUPTED = new InterruptCurrentOnInterrupted();
 
-		private final ResultTask<T> task;
-		private final ProgressResultTask<T, V> progressTask;
+		private final Task task;
+		private final ProgressTask<V> progressTask;
+		private final ResultTask<T> resultTask;
+		private final ProgressResultTask<T, V> progressResultTask;
 
 		private int maximumProgress = 100;
 		private Runnable onStarted = EMPTY_RUNNABLE;
@@ -322,14 +379,32 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		private Runnable onCancelled = EMPTY_RUNNABLE;
 		private Runnable onInterrupted = INTERRUPT_CURRENT_ON_INTERRUPTED;
 
-		private DefaultBuilder(ResultTask<T> task) {
+		private DefaultBuilder(Task task) {
 			this.task = requireNonNull(task);
+			this.resultTask = null;
 			this.progressTask = null;
+			this.progressResultTask = null;
 		}
 
-		private DefaultBuilder(ProgressResultTask<T, V> progressTask) {
-			this.progressTask = requireNonNull(progressTask);
+		private DefaultBuilder(ProgressTask<V> progressTask) {
 			this.task = null;
+			this.resultTask = null;
+			this.progressTask = requireNonNull(progressTask);
+			this.progressResultTask = null;
+		}
+
+		private DefaultBuilder(ResultTask<T> resultTask) {
+			this.task = null;
+			this.resultTask = requireNonNull(resultTask);
+			this.progressTask = null;
+			this.progressResultTask = null;
+		}
+
+		private DefaultBuilder(ProgressResultTask<T, V> progressResultTask) {
+			this.task = null;
+			this.resultTask = null;
+			this.progressTask = null;
+			this.progressResultTask = requireNonNull(progressResultTask);
 		}
 
 		@Override
@@ -351,6 +426,12 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		public Builder<T, V> onDone(Runnable onDone) {
 			this.onDone = requireNonNull(onDone);
 			return this;
+		}
+
+		@Override
+		public Builder<T, V> onResult(Runnable onResult) {
+			requireNonNull(onResult);
+			return onResult(result -> onResult.run());
 		}
 
 		@Override

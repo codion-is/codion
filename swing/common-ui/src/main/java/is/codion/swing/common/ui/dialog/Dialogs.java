@@ -19,10 +19,11 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTask;
+import is.codion.swing.common.model.worker.ProgressWorker.ProgressTask;
 import is.codion.swing.common.model.worker.ProgressWorker.ResultTask;
+import is.codion.swing.common.model.worker.ProgressWorker.Task;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
-import is.codion.swing.common.ui.control.Control.Command;
 
 import javax.swing.JComponent;
 import java.awt.Window;
@@ -56,13 +57,8 @@ public final class Dialogs {
 	 * @param task the task to run
 	 * @return a new indeterminate {@link ProgressWorkerDialogBuilder} instance
 	 */
-	public static ProgressWorkerDialogBuilder<?, ?> progressWorkerDialog(Command task) {
-		requireNonNull(task);
-
-		return new DefaultProgressWorkerDialogBuilder<>(progressReporter -> {
-			task.execute();
-			return null;
-		});
+	public static ProgressWorkerDialogBuilder<?, ?> progressWorkerDialog(Task task) {
+		return new DefaultProgressWorkerDialogBuilder<>(requireNonNull(task));
 	}
 
 	/**
@@ -71,9 +67,18 @@ public final class Dialogs {
 	 * @return a new indeterminate {@link ProgressWorkerDialogBuilder} instance
 	 */
 	public static <T> ProgressWorkerDialogBuilder<T, ?> progressWorkerDialog(ResultTask<T> task) {
-		requireNonNull(task);
+		return new DefaultProgressWorkerDialogBuilder<>(requireNonNull(task));
+	}
 
-		return new DefaultProgressWorkerDialogBuilder<>(progressReporter -> task.execute());
+	/**
+	 * Note, also sets the progress bar type to 'determinate'.
+	 * @param task the task to run
+	 * @param <V> the worker intermediate result type
+	 * @return a new determinate {@link ProgressWorkerDialogBuilder} instance
+	 * @see ProgressWorkerDialogBuilder#indeterminate(boolean)
+	 */
+	public static <V> ProgressWorkerDialogBuilder<?, V> progressWorkerDialog(ProgressTask<V> task) {
+		return new DefaultProgressWorkerDialogBuilder<>(requireNonNull(task)).indeterminate(false);
 	}
 
 	/**

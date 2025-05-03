@@ -21,6 +21,9 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.common.i18n.Messages;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTask;
+import is.codion.swing.common.model.worker.ProgressWorker.ProgressTask;
+import is.codion.swing.common.model.worker.ProgressWorker.ResultTask;
+import is.codion.swing.common.model.worker.ProgressWorker.Task;
 import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.JPanel;
@@ -38,15 +41,26 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 				implements ProgressWorkerDialogBuilder<T, V> {
 
 	private final ProgressWorker.Builder<T, V> progressWorkerBuilder;
-	private final ProgressDialog.Builder progressDialogBuilder;
+	private final ProgressDialog.Builder progressDialogBuilder = new ProgressDialog.DefaultBuilder();
 
 	private Consumer<T> onResult = result -> {};
 	private Consumer<List<V>> onPublish;
 	private Consumer<Exception> onException = new DisplayExceptionInDialog();
 
+	DefaultProgressWorkerDialogBuilder(Task task) {
+		this.progressWorkerBuilder = (ProgressWorker.Builder<T, V>) ProgressWorker.builder(task);
+	}
+
+	DefaultProgressWorkerDialogBuilder(ResultTask<T> task) {
+		this.progressWorkerBuilder = (ProgressWorker.Builder<T, V>) ProgressWorker.builder(task);
+	}
+
+	DefaultProgressWorkerDialogBuilder(ProgressTask<V> task) {
+		this.progressWorkerBuilder = (ProgressWorker.Builder<T, V>) ProgressWorker.builder(task);
+	}
+
 	DefaultProgressWorkerDialogBuilder(ProgressResultTask<T, V> progressTask) {
 		this.progressWorkerBuilder = ProgressWorker.builder(progressTask);
-		this.progressDialogBuilder = new ProgressDialog.DefaultBuilder();
 	}
 
 	@Override
