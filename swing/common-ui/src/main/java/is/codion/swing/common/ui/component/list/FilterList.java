@@ -21,8 +21,13 @@ package is.codion.swing.common.ui.component.list;
 import is.codion.swing.common.model.component.list.FilterListModel;
 
 import javax.swing.JList;
+import javax.swing.JViewport;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
+import java.util.List;
+import java.util.function.Consumer;
+
+import static is.codion.swing.common.ui.Utilities.parentOfType;
 
 /**
  * A {@link JList} based on a {@link FilterListModel}
@@ -37,6 +42,7 @@ public final class FilterList<T> extends JList<T> {
 	FilterList(FilterListModel<T> listModel) {
 		super(listModel);
 		super.setSelectionModel((listModel).selection());
+		listModel.selection().indexes().addConsumer(new ScrollToSelected());
 	}
 
 	/**
@@ -59,5 +65,16 @@ public final class FilterList<T> extends JList<T> {
 	@Override
 	public void setSelectionModel(ListSelectionModel selectionModel) {
 		throw new IllegalStateException("Selection model has already been set");
+	}
+
+	private final class ScrollToSelected implements Consumer<List<Integer>> {
+
+		@Override
+		public void accept(List<Integer> selectedIndexes) {
+			JViewport viewport = parentOfType(JViewport.class, FilterList.this);
+			if (viewport != null && !selectedIndexes.isEmpty()) {
+				ensureIndexIsVisible(selectedIndexes.getFirst());
+			}
+		}
 	}
 }

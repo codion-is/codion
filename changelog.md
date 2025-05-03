@@ -65,6 +65,7 @@ Codion Change Log
 - FilterList added, ListBuilder now FilterList based.
 - ListSelectionDialogBuilder.comparator() added.
 - Dialogs.inputDialog() overloaded with ComponentBuilder.
+- FilterList now scrolls to the selected item.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel.Builder.applicationModelFactory() and applicationPanelFactory() renamed applicationModel() and applicationPanel().
 - EntityApplicationPanel.createLogControls() now protected final.
