@@ -190,6 +190,12 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		Builder<R, C> rowEditor(Function<FilterTableModel<R, C>, RowEditor<R, C>> rowEditor);
 
 		/**
+		 * @param predicate the {@link Predicate} controlling which items should be visible
+		 * @return this builder instance
+		 */
+		Builder<R, C> visible(Predicate<R> predicate);
+
+		/**
 		 * @return a new {@link FilterTableModel} instance.
 		 */
 		FilterTableModel<R, C> build();

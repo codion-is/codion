@@ -83,6 +83,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 						.refreshStrategy(builder.refreshStrategy)
 						.listener(new TableModelAdapter())
 						.build();
+		this.items.visible().predicate().set(builder.visiblePredicate);
 		this.selection = (FilterListSelection<R>) items.visible().selection();
 		this.removeSelectionListener = new RemoveSelectionListener();
 		addTableModelListener(removeSelectionListener);
@@ -351,6 +352,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		private RefreshStrategy refreshStrategy = RefreshStrategy.CLEAR;
 		private boolean asyncRefresh = FilterModel.ASYNC_REFRESH.getOrThrow();
 		private Function<FilterTableModel<R, C>, RowEditor<R, C>> rowEditorFactory = new DefaultRowEditorFactory<>();
+		private Predicate<R> visiblePredicate;
 
 		DefaultBuilder(TableColumns<R, C> columns) {
 			if (requireNonNull(columns).identifiers().isEmpty()) {
@@ -393,6 +395,12 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		@Override
 		public Builder<R, C> rowEditor(Function<FilterTableModel<R, C>, RowEditor<R, C>> rowEditor) {
 			this.rowEditorFactory = requireNonNull(rowEditor);
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> visible(Predicate<R> predicate) {
+			this.visiblePredicate = requireNonNull(predicate);
 			return this;
 		}
 

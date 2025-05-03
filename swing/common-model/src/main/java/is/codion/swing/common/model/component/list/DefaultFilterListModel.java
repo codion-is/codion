@@ -27,6 +27,7 @@ import javax.swing.AbstractListModel;
 import javax.swing.SortOrder;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
@@ -45,6 +46,7 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 						.sort(sort)
 						.listener(new ListModelAdapter())
 						.build();
+		this.items.visible().predicate().set(builder.visiblePredicate);
 		this.selection = (FilterListSelection<T>) items.visible().selection();
 		this.items.set(builder.items);
 		this.items.visible().sort();
@@ -159,6 +161,7 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 		private Supplier<? extends Collection<T>> supplier;
 		private Comparator<T> comparator;
 		private boolean asyncRefresh = ASYNC_REFRESH.getOrThrow();
+		private Predicate<T> visiblePredicate;
 
 		DefaultBuilder(Collection<T> items) {
 			this.items = items;
@@ -179,6 +182,12 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 		@Override
 		public Builder<T> asyncRefresh(boolean asyncRefresh) {
 			this.asyncRefresh = asyncRefresh;
+			return this;
+		}
+
+		@Override
+		public Builder<T> visible(Predicate<T> predicate) {
+			this.visiblePredicate = requireNonNull(predicate);
 			return this;
 		}
 

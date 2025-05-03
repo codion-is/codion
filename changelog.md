@@ -34,6 +34,7 @@ Codion Change Log
 - DefaultFilterTableItems.DefaultVisibleItems no longer adds a table model listener, changes to visible items notified explicitly.
 - FilterListModel and FilterListSort added.
 - FilterComboBoxModel.Builder.asyncRefresh() added.
+- FilterListModel, FilterTableModel.Builder.visible() added.
 ### is.codion.swing.common.ui
 - LookAndFeelSelectionDialogBuilder.createControl() overloaded without parameter.
 - BackgroundColorValidIndicator bug fixed, did not refresh state when colors changed during updateUI().

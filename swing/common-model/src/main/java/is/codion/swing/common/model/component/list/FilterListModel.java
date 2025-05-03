@@ -24,6 +24,7 @@ import is.codion.swing.common.model.component.list.DefaultFilterListModel.Defaul
 import javax.swing.ListModel;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static java.util.Collections.emptyList;
@@ -103,6 +104,12 @@ public interface FilterListModel<T> extends ListModel<T>, FilterModel<T> {
 		 * @return this builder instance
 		 */
 		Builder<T> asyncRefresh(boolean asyncRefresh);
+
+		/**
+		 * @param predicate the {@link Predicate} controlling which items should be visible
+		 * @return this builder instance
+		 */
+		Builder<T> visible(Predicate<T> predicate);
 
 		/**
 		 * @return a new {@link FilterListModel} instance
