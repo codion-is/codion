@@ -175,6 +175,15 @@ public final class FilterTableColumn<C> extends TableColumn {
 	public interface Builder<C> {
 
 		/**
+		 * Sets both the minimum and maximum widths.
+		 * @param fixedWidth the fixed width
+		 * @return this builder instance
+		 * @see #minWidth(int)
+		 * @see #maxWidth(int)
+		 */
+		Builder<C> fixedWidth(int fixedWidth);
+
+		/**
 		 * @param preferredWidth the preferred column width
 		 * @return this builder instance
 		 */
@@ -245,6 +254,7 @@ public final class FilterTableColumn<C> extends TableColumn {
 		private final C identifier;
 		private final int modelIndex;
 
+		private int fixedWidth;
 		private int preferredWidth;
 		private int maxWidth;
 		private int minWidth;
@@ -263,6 +273,13 @@ public final class FilterTableColumn<C> extends TableColumn {
 			this.identifier = requireNonNull(identifier);
 			this.modelIndex = modelIndex;
 			this.headerValue = identifier;
+		}
+
+		@Override
+		public Builder<C> fixedWidth(int fixedWidth) {
+			minWidth(fixedWidth);
+			maxWidth(fixedWidth);
+			return this;
 		}
 
 		@Override
