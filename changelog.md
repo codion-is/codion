@@ -69,6 +69,7 @@ Codion Change Log
 - FilterTableColumn.Builder.fixedWidth() added.
 - FilterTable.doubleClick() renamed doubleClicked().
 - FilterTable.Builder.doubleClickAction() renamed doubleClick().
+- LookAndFeelComboBox.Builder.onSelection() added.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel.Builder.applicationModelFactory() and applicationPanelFactory() renamed applicationModel() and applicationPanel().
 - EntityApplicationPanel.createLogControls() now protected final.

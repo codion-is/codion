@@ -34,6 +34,7 @@ import javax.swing.plaf.basic.BasicComboBoxEditor;
 import java.awt.Component;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.item.Item.item;
@@ -93,6 +94,10 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 						.build();
 		getModel().items().visible().predicate()
 						.set(item -> includePlatform.get() || !item.value().platform());
+		if (builder.onSelection != null) {
+			getModel().selection().item().addConsumer(item ->
+							builder.onSelection.accept(item.value()));
+		}
 		if (builder.enableOnSelection) {
 			getModel().selection().item().addConsumer(lookAndFeelProvider ->
 							SwingUtilities.invokeLater(() -> lookAndFeelProvider.value().enable()));
@@ -171,6 +176,12 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 		Builder enabled(ObservableState enabled);
 
 		/**
+		 * @param onSelection called when the selection changes
+		 * @return this builcer
+		 */
+		Builder onSelection(Consumer<LookAndFeelEnabler> onSelection);
+
+		/**
 		 * @return a new {@link LookAndFeelComboBox}
 		 */
 		LookAndFeelComboBox build();
@@ -181,6 +192,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 		private ObservableState enabled;
 		private boolean includePlatform = INCLUDE_PLATFORM_LOOK_AND_FEELS.getOrThrow();
 		private boolean enableOnSelection = ENABLE_ON_SELECTION.getOrThrow();
+		private Consumer<LookAndFeelEnabler> onSelection;
 
 		@Override
 		public Builder enableOnSelection(boolean enableOnSelection) {
@@ -197,6 +209,12 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 		@Override
 		public Builder enabled(ObservableState enabled) {
 			this.enabled = enabled;
+			return this;
+		}
+
+		@Override
+		public Builder onSelection(Consumer<LookAndFeelEnabler> onSelection) {
+			this.onSelection = onSelection;
 			return this;
 		}
 
