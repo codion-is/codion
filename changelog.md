@@ -67,6 +67,7 @@ Codion Change Log
 - Dialogs.inputDialog() overloaded with ComponentBuilder.
 - FilterList now scrolls to the selected item.
 - FilterTableColumn.Builder.fixedWidth() added.
+- FilterTable.doubleClick() renamed doubleClicked().
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel.Builder.applicationModelFactory() and applicationPanelFactory() renamed applicationModel() and applicationPanel().
 - EntityApplicationPanel.createLogControls() now protected final.

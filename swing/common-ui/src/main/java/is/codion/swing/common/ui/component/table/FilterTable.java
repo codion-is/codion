@@ -257,7 +257,7 @@ public final class FilterTable<R, C> extends JTable {
 
 	private final TableConditionPanel.Factory<C> filterPanelFactory;
 	private final ComponentFactory filterComponentFactory;
-	private final Event<MouseEvent> doubleClick = Event.event();
+	private final Event<MouseEvent> doubleClicked = Event.event();
 	private final Value<Action> doubleClickAction;
 	private final State sortingEnabled;
 	private final State scrollToSelectedItem;
@@ -661,8 +661,8 @@ public final class FilterTable<R, C> extends JTable {
 	/**
 	 * @return an observer notified each time the table is double-clicked
 	 */
-	public Observer<MouseEvent> doubleClick() {
-		return doubleClick.observer();
+	public Observer<MouseEvent> doubleClicked() {
+		return doubleClicked.observer();
 	}
 
 	/**
@@ -1008,7 +1008,7 @@ public final class FilterTable<R, C> extends JTable {
 				doubleClickAction.optional()
 								.filter(Action::isEnabled)
 								.ifPresent(action -> action.actionPerformed(new ActionEvent(event, ACTION_PERFORMED, "doubleClick")));
-				doubleClick.accept(event);
+				doubleClicked.accept(event);
 			}
 		}
 	}
