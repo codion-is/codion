@@ -898,7 +898,7 @@ public final class EntitySearchField extends HintTextField {
 							.cellRendererFactory(EntityTableCellRenderer.factory())
 							.selectionMode(searchField.model.singleSelection() ?
 											ListSelectionModel.SINGLE_SELECTION : ListSelectionModel.MULTIPLE_INTERVAL_SELECTION)
-							.doubleClickAction(selectControl)
+							.doubleClick(selectControl)
 							.keyEvent(KeyEvents.builder(VK_ENTER)
 											.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 											.action(selectControl))

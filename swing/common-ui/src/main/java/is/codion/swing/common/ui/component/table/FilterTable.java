@@ -258,7 +258,7 @@ public final class FilterTable<R, C> extends JTable {
 	private final TableConditionPanel.Factory<C> filterPanelFactory;
 	private final ComponentFactory filterComponentFactory;
 	private final Event<MouseEvent> doubleClicked = Event.event();
-	private final Value<Action> doubleClickAction;
+	private final Value<Action> doubleClick;
 	private final State sortingEnabled;
 	private final State scrollToSelectedItem;
 	private final Value<CenterOnScroll> centerOnScroll;
@@ -283,7 +283,7 @@ public final class FilterTable<R, C> extends JTable {
 						.nonNull(CenterOnScroll.NEITHER)
 						.value(builder.centerOnScroll)
 						.build();
-		this.doubleClickAction = Value.nullable(builder.doubleClickAction);
+		this.doubleClick = Value.nullable(builder.doubleClick);
 		this.scrollToSelectedItem = State.state(builder.scrollToSelectedItem);
 		this.scrollToAddedItem = builder.scrollToAddedItem;
 		this.sortingEnabled = State.state(builder.sortingEnabled);
@@ -430,8 +430,8 @@ public final class FilterTable<R, C> extends JTable {
 	 *}
 	 * @return the {@link Value} controlling the action to perform when a double click is performed on the table
 	 */
-	public Value<Action> doubleClickAction() {
-		return doubleClickAction;
+	public Value<Action> doubleClick() {
+		return doubleClick;
 	}
 
 	/**
@@ -1005,7 +1005,7 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public void mouseClicked(MouseEvent event) {
 			if (event.getClickCount() == 2) {
-				doubleClickAction.optional()
+				doubleClick.optional()
 								.filter(Action::isEnabled)
 								.ifPresent(action -> action.actionPerformed(new ActionEvent(event, ACTION_PERFORMED, "doubleClick")));
 				doubleClicked.accept(event);
@@ -1190,10 +1190,10 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> centerOnScroll(CenterOnScroll centerOnScroll);
 
 		/**
-		 * @param doubleClickAction the double click action
+		 * @param doubleClick the action to perform on a double-click
 		 * @return this builder instance
 		 */
-		Builder<R, C> doubleClickAction(Action doubleClickAction);
+		Builder<R, C> doubleClick(Action doubleClick);
 
 		/**
 		 * @param scrollToSelectedItem true if this table should scroll to the selected item
@@ -1333,7 +1333,7 @@ public final class FilterTable<R, C> extends JTable {
 		private boolean autoStartsEdit = false;
 		private boolean surrendersFocusOnKeystroke = false;
 		private CenterOnScroll centerOnScroll = CenterOnScroll.NEITHER;
-		private Action doubleClickAction;
+		private Action doubleClick;
 		private boolean scrollToSelectedItem = true;
 		private boolean scrollToAddedItem = false;
 		private boolean sortingEnabled = true;
@@ -1418,8 +1418,8 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> doubleClickAction(Action doubleClickAction) {
-			this.doubleClickAction = requireNonNull(doubleClickAction);
+		public Builder<R, C> doubleClick(Action doubleClick) {
+			this.doubleClick = requireNonNull(doubleClick);
 			return this;
 		}
 

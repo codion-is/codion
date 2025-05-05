@@ -802,8 +802,8 @@ public class EntityPanel extends JPanel {
 	protected final void initializeTablePanel() {
 		if (tablePanel != null) {
 			tablePanel.initialize();
-			if (tablePanel.table().doubleClickAction().isNull()) {
-				tablePanel.table().doubleClickAction().set(command(new ShowHiddenEditPanel()));
+			if (tablePanel.table().doubleClick().isNull()) {
+				tablePanel.table().doubleClick().set(command(new ShowHiddenEditPanel()));
 			}
 		}
 	}

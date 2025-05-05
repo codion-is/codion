@@ -535,7 +535,7 @@ public final class EntityDialogs {
 		}
 
 		private static void configureTable(FilterTable<?, ?> table, Control okControl, boolean singleSelection) {
-			table.doubleClickAction().set(okControl);
+			table.doubleClick().set(okControl);
 			table.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 							.put(KeyStroke.getKeyStroke(VK_ENTER, 0), "none");
 			table.setSelectionMode(singleSelection ? SINGLE_SELECTION : MULTIPLE_INTERVAL_SELECTION);

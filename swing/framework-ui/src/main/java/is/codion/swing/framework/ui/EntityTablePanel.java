@@ -1644,8 +1644,8 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void addDoubleClickAction() {
-		if (table.doubleClickAction().isNull()) {
-			control(EDIT).optional().ifPresent(table.doubleClickAction()::set);
+		if (table.doubleClick().isNull()) {
+			control(EDIT).optional().ifPresent(table.doubleClick()::set);
 		}
 	}
 

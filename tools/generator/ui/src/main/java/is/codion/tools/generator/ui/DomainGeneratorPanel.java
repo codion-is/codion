@@ -180,7 +180,7 @@ public final class DomainGeneratorPanel extends JPanel {
 
 		return FilterTable.builder(model.schemaModel(), createSchemaColumns())
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-						.doubleClickAction(populateSchemaControl)
+						.doubleClick(populateSchemaControl)
 						.selectionMode(ListSelectionModel.SINGLE_SELECTION)
 						.keyEvent(KeyEvents.builder(VK_ENTER)
 										.modifiers(InputEvent.CTRL_DOWN_MASK)

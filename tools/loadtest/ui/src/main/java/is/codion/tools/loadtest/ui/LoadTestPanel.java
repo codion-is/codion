@@ -387,7 +387,7 @@ public final class LoadTestPanel<T> extends JPanel {
 
 		return FilterTable.builder(tableModel, createApplicationTableModelColumns())
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-						.doubleClickAction(command(this::viewException))
+						.doubleClick(command(this::viewException))
 						.scrollToSelectedItem(false)
 						.cellRenderer(ColumnId.DURATION, FilterTableCellRenderer.builder(Integer.class)
 										.string(duration -> duration == null ? null : DURATION_FORMAT.format(duration))

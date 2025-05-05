@@ -46,7 +46,7 @@ final class FilterTableDemo {
 
 		FilterTable<Person, String> table =
 						FilterTable.builder(tableModel, columns)
-										.doubleClickAction(Control.command(() ->
+										.doubleClick(Control.command(() ->
 														tableModel.selection().item().optional()
 																		.ifPresent(System.out::println)))
 										.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
