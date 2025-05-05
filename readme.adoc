@@ -84,6 +84,12 @@ All these projects contain jlink/jpackage configurations for packaging the appli
 
 Look & Feel provided by https://github.com/JFormDesigner/FlatLaf[Flat Look and Feel].
 
+=== https://github.com/codion-is/sdkboy[SDKBoy]
+
+A SDKMAN desktop client.
+
+image::https://github.com/codion-is/sdkboy/blob/main/sdkboy/src/docs/asciidoc/images/sdkboy.png[SDKBoy client]
+
 === https://github.com/codion-is/petclinic[Petclinic]
 
 Minimalistic bare-bones project, with a local JDBC connection option.

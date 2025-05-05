@@ -254,7 +254,6 @@ public final class FilterTableColumn<C> extends TableColumn {
 		private final C identifier;
 		private final int modelIndex;
 
-		private int fixedWidth;
 		private int preferredWidth;
 		private int maxWidth;
 		private int minWidth;
