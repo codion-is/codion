@@ -20,17 +20,17 @@ package is.codion.swing.common.model.worker;
 
 import is.codion.common.model.CancelException;
 
-import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static javax.swing.SwingUtilities.invokeLater;
 
 /**
  * <p>A {@link SwingWorker} implementation. Instances of this class are not reusable.</p>
@@ -58,10 +58,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 	private static final String STATE_PROPERTY = "state";
 
-	private final Task task;
-	private final ProgressTask<V> progressTask;
-	private final ResultTask<T> resultTask;
-	private final ProgressResultTask<T, V> progressResultTask;
+	private final Object task;
 	private final int maximumProgress;
 	private final Runnable onStarted;
 	private final Runnable onDone;
@@ -76,9 +73,6 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 	private ProgressWorker(DefaultBuilder<T, V> builder) {
 		this.task = builder.task;
-		this.progressTask = builder.progressTask;
-		this.resultTask = builder.resultTask;
-		this.progressResultTask = builder.progressResultTask;
 		this.maximumProgress = builder.maximumProgress;
 		this.onStarted = builder.onStarted;
 		this.onDone = builder.onDone;
@@ -129,17 +123,17 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 	@Override
 	protected T doInBackground() throws Exception {
-		if (task != null) {
-			task.execute();
+		if (task instanceof Task) {
+			((Task) task).execute();
 		}
-		else if (progressTask != null) {
-			progressTask.execute(new TaskProgressReporter());
+		else if (task instanceof ProgressTask) {
+			((ProgressTask<V>) task).execute(new TaskProgressReporter());
 		}
-		else if (resultTask != null) {
-			return resultTask.execute();
+		else if (task instanceof ResultTask) {
+			return ((ResultTask<T>) task).execute();
 		}
-		else if (progressResultTask != null) {
-			return progressResultTask.execute(new TaskProgressReporter());
+		else if (task instanceof ProgressResultTask) {
+			return ((ProgressResultTask<T, V>) task).execute(new TaskProgressReporter());
 		}
 
 		return null;
@@ -286,6 +280,10 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		 */
 		Builder<T, V> onDone(Runnable onDone);
 
+		/**
+		 * @param onResult called on the Event Dispatch Thread when the result of a successful run is available
+		 * @return this builder instance
+		 */
 		Builder<T, V> onResult(Runnable onResult);
 
 		/**
@@ -344,7 +342,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		public void report(int progress) {
 			setProgress(maximumProgress == 0 ? 100 : 100 * progress / maximumProgress);
 			if (onProgress != DefaultBuilder.EMPTY_CONSUMER) {
-				SwingUtilities.invokeLater(() -> onProgress.accept(progress));
+				invokeLater(() -> onProgress.accept(progress));
 			}
 		}
 
@@ -352,7 +350,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		public void publish(V... chunks) {
 			ProgressWorker.this.publish(chunks);
 			if (onPublish != DefaultBuilder.EMPTY_CONSUMER) {
-				SwingUtilities.invokeLater(() -> onPublish.accept(Arrays.asList(chunks)));
+				invokeLater(() -> onPublish.accept(asList(chunks)));
 			}
 		}
 	}
@@ -364,10 +362,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		private static final Consumer<Exception> RETHROW_HANDLER = new RethrowHandler();
 		private static final Runnable INTERRUPT_CURRENT_ON_INTERRUPTED = new InterruptCurrentOnInterrupted();
 
-		private final Task task;
-		private final ProgressTask<V> progressTask;
-		private final ResultTask<T> resultTask;
-		private final ProgressResultTask<T, V> progressResultTask;
+		private final Object task;
 
 		private int maximumProgress = 100;
 		private Runnable onStarted = EMPTY_RUNNABLE;
@@ -381,30 +376,18 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 		private DefaultBuilder(Task task) {
 			this.task = requireNonNull(task);
-			this.resultTask = null;
-			this.progressTask = null;
-			this.progressResultTask = null;
 		}
 
 		private DefaultBuilder(ProgressTask<V> progressTask) {
-			this.task = null;
-			this.resultTask = null;
-			this.progressTask = requireNonNull(progressTask);
-			this.progressResultTask = null;
+			this.task = requireNonNull(progressTask);
 		}
 
 		private DefaultBuilder(ResultTask<T> resultTask) {
-			this.task = null;
-			this.resultTask = requireNonNull(resultTask);
-			this.progressTask = null;
-			this.progressResultTask = null;
+			this.task = requireNonNull(resultTask);
 		}
 
 		private DefaultBuilder(ProgressResultTask<T, V> progressResultTask) {
-			this.task = null;
-			this.resultTask = null;
-			this.progressTask = null;
-			this.progressResultTask = requireNonNull(progressResultTask);
+			this.task = requireNonNull(progressResultTask);
 		}
 
 		@Override
