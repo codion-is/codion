@@ -97,8 +97,11 @@ final class LookAndFeelPanel extends JPanel {
 			return defaults;
 		}
 		catch (RuntimeException e) {
-			System.err.println("Could not initialize defaults for LookAndFeel: " +
-							lookAndFeelEnabler.lookAndFeelInfo() + ": " + e.getCause().getMessage());
+			if (!(e.getCause() instanceof IllegalAccessException)) {
+				System.err.println("Could not initialize defaults for LookAndFeel: " +
+								lookAndFeelEnabler.lookAndFeelInfo() + ": " + e.getCause().getMessage());
+			}
+
 			return EMPTY_MAP;
 		}
 	}
