@@ -40,10 +40,12 @@ import static javax.swing.JOptionPane.showMessageDialog;
 final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuilder<ProgressWorkerDialogBuilder<T, V>>
 				implements ProgressWorkerDialogBuilder<T, V> {
 
+	private static final Consumer<?> EMPTY_CONSUMER = new EmptyConsumer<>();
+
 	private final ProgressWorker.Builder<T, V> progressWorkerBuilder;
 	private final ProgressDialog.Builder progressDialogBuilder = new ProgressDialog.DefaultBuilder();
 
-	private Consumer<T> onResult = result -> {};
+	private Consumer<T> onResult = (Consumer<T>) EMPTY_CONSUMER;
 	private Consumer<List<V>> onPublish;
 	private Consumer<Exception> onException = new DisplayExceptionInDialog();
 
@@ -57,10 +59,12 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 
 	DefaultProgressWorkerDialogBuilder(ProgressTask<V> task) {
 		this.progressWorkerBuilder = (ProgressWorker.Builder<T, V>) ProgressWorker.builder(task);
+		this.progressDialogBuilder.maximumProgress(task.maximumProgress());
 	}
 
 	DefaultProgressWorkerDialogBuilder(ProgressResultTask<T, V> progressTask) {
 		this.progressWorkerBuilder = ProgressWorker.builder(progressTask);
+		this.progressDialogBuilder.maximumProgress(progressTask.maximumProgress());
 	}
 
 	@Override
@@ -235,5 +239,11 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 							.title(dialogTitle)
 							.show(exception);
 		}
+	}
+
+	private static final class EmptyConsumer<T> implements Consumer<T> {
+
+		@Override
+		public void accept(T result) {}
 	}
 }

@@ -37,6 +37,7 @@ Codion Change Log
 - FilterListModel, FilterTableModel.Builder.visible() added.
 - ProgressWorker.Task and ProgressTask added, related changes.
 - ProgressWorker refactored.
+- ProgressWorker.ProgressTask and ResultProgressTask.maximumProgress() added.
 ### is.codion.swing.common.ui
 - LookAndFeelSelectionDialogBuilder.createControl() overloaded without parameter.
 - BackgroundColorValidIndicator bug fixed, did not refresh state when colors changed during updateUI().

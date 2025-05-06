@@ -86,6 +86,7 @@ public final class CityTableModel extends SwingEntityTableModel {
 							.toList();
 		}
 
+		@Override
 		public int maximumProgress() {
 			return cities.size();
 		}

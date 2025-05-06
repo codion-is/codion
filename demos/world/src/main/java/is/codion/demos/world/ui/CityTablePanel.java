@@ -69,7 +69,6 @@ final class CityTablePanel extends ChartTablePanel {
 		Dialogs.progressWorkerDialog(task)
 						.owner(this)
 						.title("Populating locations")
-						.maximumProgress(task.maximumProgress())
 						.stringPainted(true)
 						.control(Control.builder()
 										.command(task::cancel)

@@ -56,6 +56,8 @@ import static javax.swing.SwingUtilities.invokeLater;
  */
 public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
+	public static final int DEFAULT_MAXIMUM_PROGRESS = 100;
+
 	private static final String STATE_PROPERTY = "state";
 
 	private final Object task;
@@ -187,6 +189,9 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		}
 	}
 
+	/**
+	 * A background task.
+	 */
 	public interface Task {
 
 		/**
@@ -210,6 +215,10 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		T execute() throws Exception;
 	}
 
+	/**
+	 * A progress aware background task.
+	 * @param <V> the intermediate result type
+	 */
 	public interface ProgressTask<V> {
 
 		/**
@@ -218,6 +227,14 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		 * @throws Exception in case of an exception
 		 */
 		void execute(ProgressReporter<V> progressReporter) throws Exception;
+
+		/**
+		 * Default {@link #DEFAULT_MAXIMUM_PROGRESS} (100)
+		 * @return the maximum progress this task will report
+		 */
+		default int maximumProgress() {
+			return DEFAULT_MAXIMUM_PROGRESS;
+		}
 	}
 
 	/**
@@ -234,6 +251,14 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		 * @throws Exception in case of an exception
 		 */
 		T execute(ProgressReporter<V> progressReporter) throws Exception;
+
+		/**
+		 * Default {@link #DEFAULT_MAXIMUM_PROGRESS} (100)
+		 * @return the maximum progress this task will report
+		 */
+		default int maximumProgress() {
+			return DEFAULT_MAXIMUM_PROGRESS;
+		}
 	}
 
 	/**
@@ -261,8 +286,11 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	public interface Builder<T, V> {
 
 		/**
-		 * @param maximumProgress the maximum progress, 100 by default
+		 * Overrides any maximumProgress specified by the task itself.
+		 * @param maximumProgress the maximum progress, {@link #DEFAULT_MAXIMUM_PROGRESS} (100) by default
 		 * @return this builder instance
+		 * @see ProgressTask#maximumProgress()
+		 * @see ProgressResultTask#maximumProgress()
 		 */
 		Builder<T, V> maximumProgress(int maximumProgress);
 
@@ -364,7 +392,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 		private final Object task;
 
-		private int maximumProgress = 100;
+		private int maximumProgress = DEFAULT_MAXIMUM_PROGRESS;
 		private Runnable onStarted = EMPTY_RUNNABLE;
 		private Runnable onDone = EMPTY_RUNNABLE;
 		private Consumer<T> onResult = (Consumer<T>) EMPTY_CONSUMER;
@@ -380,6 +408,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 		private DefaultBuilder(ProgressTask<V> progressTask) {
 			this.task = requireNonNull(progressTask);
+			this.maximumProgress = progressTask.maximumProgress();
 		}
 
 		private DefaultBuilder(ResultTask<T> resultTask) {
@@ -388,6 +417,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 		private DefaultBuilder(ProgressResultTask<T, V> progressResultTask) {
 			this.task = requireNonNull(progressResultTask);
+			this.maximumProgress = progressResultTask.maximumProgress();
 		}
 
 		@Override
