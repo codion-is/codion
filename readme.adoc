@@ -84,18 +84,11 @@ All these projects contain jlink/jpackage configurations for packaging the appli
 
 Look & Feel provided by https://github.com/JFormDesigner/FlatLaf[Flat Look and Feel].
 
-=== https://github.com/codion-is/sdkboy[SDKBoy]
+=== https://github.com/codion-is/sdkboy[SDKBOY]
 
-A SDKMAN desktop client.
+A SDKMAN desktop app.
 
-image::https://github.com/codion-is/sdkboy/blob/main/sdkboy/src/docs/asciidoc/images/sdkboy.png[SDKBoy client]
-
-=== https://github.com/codion-is/petclinic[Petclinic]
-
-Minimalistic bare-bones project, with a local JDBC connection option.
-A good place to start.
-
-image::https://github.com/codion-is/petclinic/blob/main/src/docs/asciidoc/images/owners.png[Petclinic client]
+image::https://github.com/codion-is/sdkboy/blob/main/src/docs/asciidoc/images/sdkboy.png[SDKBOY client]
 
 === https://github.com/codion-is/llemmy[Llemmy]
 
@@ -104,6 +97,13 @@ A simple LLM chat demo application.
 image::https://github.com/codion-is/llemmy/blob/main/llemmy/src/docs/asciidoc/images/llemmy.png[Llemmy client]
 
 Includes a local Ollama model runner and the application configured to interact with it.
+
+=== https://github.com/codion-is/petclinic[Petclinic]
+
+Minimalistic bare-bones project, with a local JDBC connection option.
+A good place to start.
+
+image::https://github.com/codion-is/petclinic/blob/main/src/docs/asciidoc/images/owners.png[Petclinic client]
 
 === https://github.com/codion-is/world[World]
 
