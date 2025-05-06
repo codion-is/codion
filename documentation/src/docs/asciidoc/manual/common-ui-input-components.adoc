@@ -155,3 +155,7 @@ In the following example we link a value based on a Person class to a component 
 ----
 include::{dir-source}/is/codion/manual/common/InputControls.java[tags=customTextFields]
 ----
+
+== Examples
+
+<<{basedir}/tutorials/input-components.adoc#_input_components, Input components>>

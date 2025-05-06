@@ -1,0 +1,42 @@
+= ProgressWorker
+:dir-source: ../../../../../demos/manual/src/main/java
+:url-javadoc: link:../api
+
+{url-javadoc}{swing-common-model}/is/codion/swing/common/model/worker/ProgressWorker.html[ProgressWorker] is a https://docs.oracle.com/javase/tutorial/uiswing/concurrency/dispatch.html[SwingWorker] extension, providing a fluent API for constructing background task workers for a variety of task types.
+
+All handlers get called on the https://docs.oracle.com/javase/tutorial/uiswing/concurrency/dispatch.html[EventDispatchThread].
+
+NOTE: Like https://docs.oracle.com/javase/tutorial/uiswing/concurrency/dispatch.html[SwingWorker], ProgressWorker instances can **not** be reused. Tasks, on the other hand, can be made stateful and reusable if required.
+
+== {url-javadoc}{swing-common-model}/is/codion/swing/common/model/worker/ProgressWorker.Task.html[Task]
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/model/worker/ProgressWorkerDemo.java[tags=taskWorker]
+----
+
+== {url-javadoc}{swing-common-model}/is/codion/swing/common/model/worker/ProgressWorker.ResultTask.html[ResultTask]
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/model/worker/ProgressWorkerDemo.java[tags=resultTaskWorker]
+----
+
+== {url-javadoc}{swing-common-model}/is/codion/swing/common/model/worker/ProgressWorker.ProgressTask.html[ProgressTask]
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/model/worker/ProgressWorkerDemo.java[tags=progressTaskWorker]
+----
+
+== {url-javadoc}{swing-common-model}/is/codion/swing/common/model/worker/ProgressWorker.ProgressResultTask.html[ProgressResultTask]
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/model/worker/ProgressWorkerDemo.java[tags=progressResultWorker]
+----
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/model/worker/ProgressWorkerDemo.java[tags=progressResultTask1;progressResultTask2]
+----
