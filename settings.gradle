@@ -215,7 +215,7 @@ dependencyResolutionManagement {
             version("log4j", "2.24.3")
             version("tomcat", "11.0.6")
 
-            version("jasperreports", "7.0.2")
+            version("jasperreports", "7.0.3")
             version("jspecify", "1.0.0")
 
             library("slf4j-api", "org.slf4j", "slf4j-api").versionRef("slf4j.api")
