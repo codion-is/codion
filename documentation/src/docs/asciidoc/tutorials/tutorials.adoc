@@ -18,13 +18,13 @@ A simple Note-taking application.
 
 <<{basedir}/tutorials/notes.adoc#_notes, Notes tutorial>>
 
-=== SDKBoy
+=== SDKBOY
 
 A SDKMAN desktop client.
 
-link:{basedir}/tutorials/sdkboy/sdkboy.html[SDKBoy tutorial]
+link:{basedir}/tutorials/sdkboy/sdkboy.html[SDKBOY tutorial]
 
-link:https://github.com/codion-is/sdkboy[SDKBoy project on Github]
+link:https://github.com/codion-is/sdkboy[SDKBOY project on Github]
 
 === Petclinic
 

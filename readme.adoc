@@ -74,42 +74,40 @@ The core Codion framework components use a limited set of third-party libraries,
 * *JDBC driver*
 * *Logging framework*
 
-A basic CRUD client pulls in ~15 Codion modules totalling ~1.7MB, so the combined size of the Petclinic demo client for example, with local connection capabilities, is ~5MB.
-
 == Demo application projects
 
-Most of the following applications can be found in the `demos` folder of the Codion project, but are also available in separate Git repositories as fully configured stand-alone Gradle projects.
+The three CRUD demo apps below can be found in the `demos` folder of the **Codion** project, but are also available in separate Git repositories as fully configured stand-alone Gradle projects.
 
-All these projects contain jlink/jpackage configurations for packaging the application, server, server monitor and load-test, if applicable.
+All these projects contain `jlink`/`jpackage` configurations for packaging the application, server, server monitor and load-test, if applicable.
 
 Look & Feel provided by https://github.com/JFormDesigner/FlatLaf[Flat Look and Feel].
 
 === https://github.com/codion-is/sdkboy[SDKBOY]
 
-A SDKMAN desktop app.
+A SDKMAN desktop app, demonstrating Swing UI development using the `codion-swing-common-ui` library for apps not requiring CRUD functionality.
 
 image::https://github.com/codion-is/sdkboy/blob/main/src/docs/asciidoc/images/sdkboy.png[SDKBOY client]
 
 === https://github.com/codion-is/llemmy[Llemmy]
 
-A simple LLM chat demo application.
+A simple LLM chat app, mixing a custom UI for chat interaction with some basic CRUD functionality.
+
+Includes modules configured for the **OpenAI** models as well as one configured for a local **Ollama** model. A module for running a local **Ollama** model using https://testcontainers.com/[Testcontainers] is included.
 
 image::https://github.com/codion-is/llemmy/blob/main/llemmy/src/docs/asciidoc/images/llemmy.png[Llemmy client]
 
-Includes a local Ollama model runner and the application configured to interact with it.
-
 === https://github.com/codion-is/petclinic[Petclinic]
 
-Minimalistic bare-bones project, with a local JDBC connection option.
+Minimalistic bare-bones CRUD application project, with a local JDBC connection option.
 A good place to start.
 
 image::https://github.com/codion-is/petclinic/blob/main/src/docs/asciidoc/images/owners.png[Petclinic client]
 
 === https://github.com/codion-is/world[World]
 
-Fully configured multi-module project, with separate client modules configured for JDBC, RMI and HTTP connection options.
+Fully configured multi-module CRUD application project, with separate client modules configured for JDBC, RMI and HTTP connection options.
 
-Includes server and server monitor modules and jlink/jpackage configurations.
+Includes server and server monitor modules and `jlink`/`jpackage` configurations.
 
 image::https://github.com/codion-is/world/blob/main/documentation/src/docs/asciidoc/images/world-client.png[World client]
 
@@ -117,9 +115,9 @@ image::https://github.com/codion-is/world/blob/main/documentation/src/docs/ascii
 
 The *Kitchen Sink* demo, with lots of customization examples.
 
-Fully configured multi-module project, with separate client modules configured for JDBC, RMI and HTTP connection options.
+Fully configured multi-module CRUD application project, with separate client modules configured for JDBC, RMI and HTTP connection options.
 
-Includes load-test, server, and server monitor modules and jlink/jpackage configurations.
+Includes load-test, server, and server monitor modules and `jlink`/`jpackage` configurations.
 
 image::https://github.com/codion-is/chinook/blob/main/documentation/src/docs/asciidoc/images/customers.png[Chinook client]
 

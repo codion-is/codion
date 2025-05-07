@@ -1,4 +1,4 @@
 [#_sdkboy_tutorial]
-= SDKBoy Tutorial
+= SDKBOY Tutorial
 
-link:https://github.com/codion-is/sdkboy[SDKBoy project on GitHub]
+link:https://github.com/codion-is/sdkboy[SDKBOY project on GitHub]
