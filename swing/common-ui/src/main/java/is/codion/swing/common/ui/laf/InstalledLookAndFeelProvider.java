@@ -26,32 +26,20 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toList;
 
 /**
- * <p>Provides the built-in platform look and feels.
+ * <p>Provides the installed look and feels.
  * <p>Note that Nimbus and Motif are excluded.
  */
-public final class PlatformLookAndFeelProvider implements LookAndFeelProvider {
+public final class InstalledLookAndFeelProvider implements LookAndFeelProvider {
 
 	@Override
 	public Collection<LookAndFeelEnabler> get() {
 		return Stream.of(UIManager.getInstalledLookAndFeels())
-						.filter(PlatformLookAndFeelProvider::included)
-						.map(PlatformLookAndFeelEnabler::new)
+						.filter(InstalledLookAndFeelProvider::included)
+						.map(DefaultLookAndFeelEnabler::new)
 						.collect(toList());
 	}
 
 	private static boolean included(LookAndFeelInfo lookAndFeelInfo) {
 		return !lookAndFeelInfo.getClassName().contains("Motif") && !lookAndFeelInfo.getName().contains("Nimbus");
-	}
-
-	private static final class PlatformLookAndFeelEnabler extends DefaultLookAndFeelEnabler {
-
-		private PlatformLookAndFeelEnabler(LookAndFeelInfo lookAndFeelInfo) {
-			super(lookAndFeelInfo);
-		}
-
-		@Override
-		public boolean platform() {
-			return true;
-		}
 	}
 }

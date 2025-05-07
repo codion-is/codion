@@ -73,7 +73,7 @@ module is.codion.swing.common.ui {
 	uses is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
 
 	provides is.codion.swing.common.ui.laf.LookAndFeelProvider
-					with is.codion.swing.common.ui.laf.PlatformLookAndFeelProvider;
+					with is.codion.swing.common.ui.laf.InstalledLookAndFeelProvider;
 	provides is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory
 					with is.codion.swing.common.ui.component.indicator.DefaultValidIndicatorFactory;
 }

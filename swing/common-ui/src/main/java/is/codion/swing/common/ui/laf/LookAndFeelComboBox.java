@@ -29,6 +29,7 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.basic.BasicComboBoxEditor;
 import java.awt.Component;
@@ -54,16 +55,17 @@ import static javax.swing.UIManager.getLookAndFeel;
 public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler>> {
 
 	/**
-	 * <p>Specifies whether to include the platform look and feels in the selection combo box by default, if auxiliary ones are provided.
-	 * <p>Note that this has no effect if only the platform look and feels are provided.
+	 * <p>Specifies whether to include installed look and feels in the selection combo box by default, if auxiliary ones are provided.
+	 * <p>Note that this has no effect if only the look and feels are installed.
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: false
 	 * </ul>
+	 * @see UIManager#getInstalledLookAndFeels()
 	 * @see is.codion.swing.common.ui.laf.LookAndFeelProvider
 	 */
-	public static final PropertyValue<Boolean> INCLUDE_PLATFORM_LOOK_AND_FEELS =
-					booleanValue(LookAndFeelComboBox.class.getName() + ".includePlatformLookAndFeels", false);
+	public static final PropertyValue<Boolean> INCLUDE_INSTALLED_LOOK_AND_FEELS =
+					booleanValue(LookAndFeelComboBox.class.getName() + ".includeInstalledLookAndFeels", false);
 
 	/**
 	 * Specifies whether to enable the Look and Feel dynamically when selected
@@ -77,7 +79,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 
 	private final LookAndFeelEnabler originalLookAndFeel = createOriginalLookAndFeel();
 
-	private final State includePlatform;
+	private final State includeInstalled;
 
 	private LookAndFeelComboBox(DefaultBuilder builder) {
 		super(createLookAndFeelComboBoxModel());
@@ -89,11 +91,11 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 		if (builder.enabled != null) {
 			enableComponents(builder.enabled, this);
 		}
-		includePlatform = State.builder(builder.includePlatform)
+		includeInstalled = State.builder(builder.includeInstalled)
 						.listener(getModel().items()::filter)
 						.build();
 		getModel().items().visible().predicate()
-						.set(item -> includePlatform.get() || !item.value().platform());
+						.set(item -> includeInstalled.get() || !item.value().installed());
 		if (builder.onSelection != null) {
 			getModel().selection().item().addConsumer(item ->
 							builder.onSelection.accept(item.value()));
@@ -110,10 +112,10 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 	}
 
 	/**
-	 * @return a {@link State} controlling whether platform look and feels are included
+	 * @return a {@link State} controlling whether installed look and feels are included
 	 */
-	public State includePlatform() {
-		return includePlatform;
+	public State includeInstalled() {
+		return includeInstalled;
 	}
 
 	/**
@@ -164,10 +166,10 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 		Builder enableOnSelection(boolean enableOnSelection);
 
 		/**
-		 * @param includePlatform true if platform look and feels should be included
+		 * @param includeInstalled true if installed look and feels should be included
 		 * @return this builder
 		 */
-		Builder includePlatform(boolean includePlatform);
+		Builder includeInstalled(boolean includeInstalled);
 
 		/**
 		 * @param enabled the enabled observer
@@ -190,7 +192,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 	private static final class DefaultBuilder implements Builder {
 
 		private ObservableState enabled;
-		private boolean includePlatform = INCLUDE_PLATFORM_LOOK_AND_FEELS.getOrThrow();
+		private boolean includeInstalled = INCLUDE_INSTALLED_LOOK_AND_FEELS.getOrThrow();
 		private boolean enableOnSelection = ENABLE_ON_SELECTION.getOrThrow();
 		private Consumer<LookAndFeelEnabler> onSelection;
 
@@ -201,8 +203,8 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 		}
 
 		@Override
-		public Builder includePlatform(boolean includePlatform) {
-			this.includePlatform = includePlatform;
+		public Builder includeInstalled(boolean includeInstalled) {
+			this.includeInstalled = includeInstalled;
 			return this;
 		}
 

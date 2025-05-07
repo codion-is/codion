@@ -25,11 +25,14 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
+import static javax.swing.UIManager.getInstalledLookAndFeels;
 
-class DefaultLookAndFeelEnabler implements LookAndFeelEnabler {
+final class DefaultLookAndFeelEnabler implements LookAndFeelEnabler {
 
 	private static final Consumer<LookAndFeelInfo> DEFAULT_ENABLER = new DefaultEnabler();
 
@@ -54,17 +57,24 @@ class DefaultLookAndFeelEnabler implements LookAndFeelEnabler {
 	}
 
 	@Override
-	public final LookAndFeelInfo lookAndFeelInfo() {
+	public LookAndFeelInfo lookAndFeelInfo() {
 		return lookAndFeelInfo;
 	}
 
 	@Override
-	public final void enable() {
+	public void enable() {
 		enabler.accept(lookAndFeelInfo);
 	}
 
 	@Override
-	public final LookAndFeel lookAndFeel() {
+	public boolean installed() {
+		return Stream.of(getInstalledLookAndFeels())
+						.filter(Objects::nonNull)
+						.anyMatch(info -> lookAndFeelInfo().getClassName().equals(info.getClassName()));
+	}
+
+	@Override
+	public LookAndFeel lookAndFeel() {
 		try {
 			return (LookAndFeel) Class.forName(lookAndFeelInfo.getClassName()).getDeclaredConstructor().newInstance();
 		}
@@ -74,12 +84,12 @@ class DefaultLookAndFeelEnabler implements LookAndFeelEnabler {
 	}
 
 	@Override
-	public final String toString() {
+	public String toString() {
 		return lookAndFeelInfo.getName();
 	}
 
 	@Override
-	public final boolean equals(Object obj) {
+	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -93,7 +103,7 @@ class DefaultLookAndFeelEnabler implements LookAndFeelEnabler {
 	}
 
 	@Override
-	public final int hashCode() {
+	public int hashCode() {
 		return lookAndFeelInfo().getClassName().hashCode();
 	}
 

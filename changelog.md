@@ -73,6 +73,7 @@ Codion Change Log
 - FilterTable.Builder.doubleClickAction() renamed doubleClick().
 - LookAndFeelComboBox.Builder.onSelection() added.
 - LookAndFeelPanel no longer prints to err when encountering an IllegalAccessException while loading defaults, LookAndFeel not exported from module.
+- LookAndFeelEnabler.platform() is now installed(), PlatformLookAndFeelEnabler renamed InstalledLookAndFeelEnabler, related refactoring.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel.Builder.applicationModelFactory() and applicationPanelFactory() renamed applicationModel() and applicationPanel().
 - EntityApplicationPanel.createLogControls() now protected final.

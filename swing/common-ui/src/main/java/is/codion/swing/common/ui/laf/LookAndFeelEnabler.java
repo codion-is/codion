@@ -53,11 +53,9 @@ public interface LookAndFeelEnabler {
 	LookAndFeel lookAndFeel();
 
 	/**
-	 * @return true if the look and feel enabled by this enabler is a built-in platform Look and Feel
+	 * @return true if the look and feel enabled by this enabler is an installed platform Look and Feel
 	 */
-	default boolean platform() {
-		return false;
-	}
+	boolean installed();
 
 	/**
 	 * Instantiates a new {@link LookAndFeelEnabler}, using {@link UIManager#setLookAndFeel(String)} to enable.
