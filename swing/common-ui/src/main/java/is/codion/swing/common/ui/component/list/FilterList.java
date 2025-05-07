@@ -73,7 +73,7 @@ public final class FilterList<T> extends JList<T> {
 		public void accept(List<Integer> selectedIndexes) {
 			JViewport viewport = parentOfType(JViewport.class, FilterList.this);
 			if (viewport != null && !selectedIndexes.isEmpty()) {
-				ensureIndexIsVisible(selectedIndexes.getFirst());
+				ensureIndexIsVisible(selectedIndexes.get(0));
 			}
 		}
 	}

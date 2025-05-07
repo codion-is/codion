@@ -206,7 +206,7 @@ final class ProgressWorkerDemo {
 		}
 
 		private void publish(List<String> strings) {
-			progressBar.setString(strings.getFirst());
+			progressBar.setString(strings.get(0));
 		}
 
 		private void done() {
