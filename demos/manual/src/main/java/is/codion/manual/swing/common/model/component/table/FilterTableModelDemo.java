@@ -180,7 +180,7 @@ public final class FilterTableModelDemo {
 		// Fetch the selected items
 		List<Person> items = selection.items().get();
 
-		// Or just the first (minimun index)
+		// Or just the first (minimum index)
 		Person item = selection.item().get();
 
 		// Select a specific person
