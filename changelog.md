@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.35
+### is.codion.swing.common.ui
+- FilterTable.ScrollToSelected bug fixed, rowVisible() now based on viewport.getViewRect(). 
 
 ## 0.18.34
 ### is.codion.common.core

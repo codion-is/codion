@@ -1016,23 +1016,22 @@ public final class FilterTable<R, C> extends JTable {
 	private final class ScrollToSelected implements Consumer<List<Integer>> {
 
 		@Override
-		public void accept(List<Integer> selectedRowIndexes) {
+		public void accept(List<Integer> selectedRows) {
 			JViewport viewport = parentOfType(JViewport.class, FilterTable.this);
-			if (viewport != null && scrollToSelectedItem.get() &&
-							!selectedRowIndexes.isEmpty() && noRowVisible(viewport, selectedRowIndexes)) {
-				scrollToRowColumn(selectedRowIndexes.get(0), getSelectedColumn(), centerOnScroll.get());
+			if (viewport != null && scrollToSelectedItem.get() && !selectedRows.isEmpty()) {
+				int column = getSelectedColumn();
+				if (noCellVisible(viewport, selectedRows, column)) {
+					scrollToRowColumn(selectedRows.get(0), column, centerOnScroll.get());
+				}
 			}
 		}
 
-		private boolean noRowVisible(JViewport viewport, List<Integer> rows) {
-			return rows.stream().noneMatch(row -> rowVisible(viewport, row));
+		private boolean noCellVisible(JViewport viewport, List<Integer> rows, int column) {
+			return rows.stream().noneMatch(row -> cellVisible(viewport, row, column));
 		}
 
-		private boolean rowVisible(JViewport viewport, int row) {
-			int topRow = rowAtPoint(viewport.getViewPosition());
-			int visibleRows = viewport.getExtentSize().height / getRowHeight();
-
-			return row >= topRow && row <= topRow + visibleRows;
+		private boolean cellVisible(JViewport viewport, int row, int column) {
+			return viewport.getViewRect().contains(getCellRect(row, column, true));
 		}
 	}
 
