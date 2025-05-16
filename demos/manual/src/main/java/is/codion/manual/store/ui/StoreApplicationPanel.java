@@ -38,7 +38,7 @@ import java.util.Locale;
 public class StoreApplicationPanel extends EntityApplicationPanel<StoreApplicationModel> {
 
 	public StoreApplicationPanel(StoreApplicationModel applicationModel) {
-		super(applicationModel, createPanels(applicationModel), createSupportPanelBuilders());
+		super(applicationModel, createPanels(applicationModel), createLookupPanelBuilders());
 	}
 
 	private static List<EntityPanel> createPanels(StoreApplicationModel applicationModel) {
@@ -58,8 +58,8 @@ public class StoreApplicationPanel extends EntityApplicationPanel<StoreApplicati
 		return List.of(customerPanel);
 	}
 
-	// tag::createSupportEntityPanelBuilders[]
-	private static List<EntityPanel.Builder> createSupportPanelBuilders() {
+	// tag::createLookupPanelBuilders[]
+	private static List<EntityPanel.Builder> createLookupPanelBuilders() {
 		EntityPanel.Builder addressPanelBuilder =
 						EntityPanel.builder(Address.TYPE, connectionProvider -> {
 							SwingEntityModel addressModel =
@@ -71,7 +71,7 @@ public class StoreApplicationPanel extends EntityApplicationPanel<StoreApplicati
 
 		return List.of(addressPanelBuilder);
 	}
-	// end::createSupportEntityPanelBuilders[]
+	// end::createLookupPanelBuilders[]
 
 	public static void main(String[] args) {
 		Locale.setDefault(new Locale("en", "EN"));

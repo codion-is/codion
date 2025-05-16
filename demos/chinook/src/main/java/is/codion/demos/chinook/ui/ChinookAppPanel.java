@@ -79,7 +79,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 	private final ResourceBundle bundle = getBundle(ChinookAppPanel.class.getName());
 
 	public ChinookAppPanel(ChinookAppModel applicationModel) {
-		super(applicationModel, createPanels(applicationModel), createSupportPanelBuilders());
+		super(applicationModel, createPanels(applicationModel), createLookupPanelBuilders());
 	}
 
 	private static List<EntityPanel> createPanels(ChinookAppModel applicationModel) {
@@ -89,7 +89,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 						new PlaylistPanel(applicationModel.entityModels().get(Playlist.TYPE)));
 	}
 
-	private static List<EntityPanel.Builder> createSupportPanelBuilders() {
+	private static List<EntityPanel.Builder> createLookupPanelBuilders() {
 		EntityPanel.Builder genrePanelBuilder =
 						EntityPanel.builder(Genre.TYPE,
 										ChinookAppPanel::createGenrePanel);

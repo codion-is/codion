@@ -3,7 +3,9 @@ Codion Change Log
 
 ## 0.18.35
 ### is.codion.swing.common.ui
-- FilterTable.ScrollToSelected bug fixed, rowVisible() now based on viewport.getViewRect(). 
+- FilterTable.ScrollToSelected bug fixed, rowVisible() now based on viewport.getViewRect().
+### is.codion.swing.framework.ui
+- EntityApplicationPanel, support table now known as lookup table.
 
 ## 0.18.34
 ### is.codion.common.core

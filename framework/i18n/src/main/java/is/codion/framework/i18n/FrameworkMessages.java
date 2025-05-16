@@ -39,8 +39,8 @@ public final class FrameworkMessages {
 	private static final String EXIT_TIP = "exit_tip";
 	private static final String VIEW = "view";
 	private static final String VIEW_MNEMONIC = "view_mnemonic";
-	private static final String SUPPORT_TABLES = "support_tables";
-	private static final String SUPPORT_TABLES_MNEMONIC = "support_tables_mnemonic";
+	private static final String LOOKUP = "lookup";
+	private static final String LOOKUP_MNEMONIC = "lookup_mnemonic";
 	private static final String UPDATE = "update";
 	private static final String UPDATE_MNEMONIC = "update_mnemonic";
 	private static final String UPDATE_TIP = "update_tip";
@@ -131,17 +131,17 @@ public final class FrameworkMessages {
 	}
 
 	/**
-	 * @return support tables
+	 * @return lookup
 	 */
-	public static String supportTables() {
-		return get(SUPPORT_TABLES);
+	public static String lookup() {
+		return get(LOOKUP);
 	}
 
 	/**
-	 * @return support table mnemonic
+	 * @return lookup mnemonic
 	 */
-	public static char supportTablesMnemonic() {
-		return get(SUPPORT_TABLES_MNEMONIC).charAt(0);
+	public static char lookupMnemonic() {
+		return get(LOOKUP_MNEMONIC).charAt(0);
 	}
 
 	/**

@@ -31,8 +31,8 @@ public class FrameworkMessagesTest {
 		FrameworkMessages.exitTip();
 		FrameworkMessages.view();
 		FrameworkMessages.viewMnemonic();
-		FrameworkMessages.supportTables();
-		FrameworkMessages.supportTablesMnemonic();
+		FrameworkMessages.lookup();
+		FrameworkMessages.lookupMnemonic();
 		FrameworkMessages.update();
 		FrameworkMessages.updateMnemonic();
 		FrameworkMessages.updateTip();

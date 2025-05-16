@@ -235,7 +235,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 					messageBundle(EntityApplicationPanel.class, getBundle(EntityApplicationPanel.class.getName()));
 
 	private final M applicationModel;
-	private final Collection<EntityPanel.Builder> supportPanelBuilders;
+	private final Collection<EntityPanel.Builder> lookupPanelBuilders;
 	private final List<EntityPanel> entityPanels;
 	private final ApplicationLayout applicationLayout;
 
@@ -261,11 +261,11 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * using the default {@link TabbedApplicationLayout}.
 	 * @param applicationModel the application model
 	 * @param entityPanels the entity panels
-	 * @param supportPanelBuilders the support panel builders
+	 * @param lookupPanelBuilders the support panel builders
 	 */
 	public EntityApplicationPanel(M applicationModel, List<EntityPanel> entityPanels,
-																Collection<EntityPanel.Builder> supportPanelBuilders) {
-		this(applicationModel, entityPanels, supportPanelBuilders, TabbedApplicationLayout::new);
+																Collection<EntityPanel.Builder> lookupPanelBuilders) {
+		this(applicationModel, entityPanels, lookupPanelBuilders, TabbedApplicationLayout::new);
 	}
 
 	/**
@@ -273,15 +273,15 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * using the {@link ApplicationLayout} provided by {@code applicationLayout}.
 	 * @param applicationModel the application model
 	 * @param entityPanels the entity panels
-	 * @param supportPanelBuilders the support panel builders
+	 * @param lookupPanelBuilders the support panel builders
 	 * @param applicationLayout provides the application layout
 	 */
 	public EntityApplicationPanel(M applicationModel, List<EntityPanel> entityPanels,
-																Collection<EntityPanel.Builder> supportPanelBuilders,
+																Collection<EntityPanel.Builder> lookupPanelBuilders,
 																Function<EntityApplicationPanel<M>, ApplicationLayout> applicationLayout) {
 		this.applicationModel = requireNonNull(applicationModel);
 		this.entityPanels = unmodifiableList(new ArrayList<>(requireNonNull(entityPanels)));
-		this.supportPanelBuilders = requireNonNull(supportPanelBuilders);
+		this.lookupPanelBuilders = requireNonNull(lookupPanelBuilders);
 		this.applicationLayout = requireNonNull(applicationLayout).apply(this);
 		entityPanels.forEach(this::configureEntityPanel);
 		//initialize button captions, not in a static initializer since applications may set the locale in main()
@@ -519,7 +519,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * @see #createFileMenuControls()
 	 * @see #createViewMenuControls()
 	 * @see #createToolsMenuControls()
-	 * @see #createSupportTableMenuControls()
+	 * @see #createLookupMenuControls()
 	 * @see #createHelpMenuControls()
 	 */
 	protected Optional<Controls> createMainMenuControls() {
@@ -527,7 +527,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		createFileMenuControls().ifPresent(menuControls::control);
 		createViewMenuControls().ifPresent(menuControls::control);
 		createToolsMenuControls().ifPresent(menuControls::control);
-		createSupportTableMenuControls().ifPresent(menuControls::control);
+		createLookupMenuControls().ifPresent(menuControls::control);
 		createHelpMenuControls().ifPresent(menuControls::control);
 
 		Controls controls = menuControls.build();
@@ -587,15 +587,15 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	}
 
 	/**
-	 * @return the Controls on which to base the Support Tables menu or an empty Optional to skip the menu
+	 * @return the Controls on which to base the Lookup menu or an empty Optional to skip the menu
 	 */
-	protected Optional<Controls> createSupportTableMenuControls() {
-		return supportPanelBuilders.isEmpty() ? Optional.empty() : Optional.of(Controls.builder()
-						.caption(FrameworkMessages.supportTables())
-						.mnemonic(FrameworkMessages.supportTablesMnemonic())
-						.controls(supportPanelBuilders.stream()
-										.sorted(new SupportPanelBuilderComparator(applicationModel.entities()))
-										.map(this::createSupportPanelControl)
+	protected Optional<Controls> createLookupMenuControls() {
+		return lookupPanelBuilders.isEmpty() ? Optional.empty() : Optional.of(Controls.builder()
+						.caption(FrameworkMessages.lookup())
+						.mnemonic(FrameworkMessages.lookupMnemonic())
+						.controls(lookupPanelBuilders.stream()
+										.sorted(new LookupPanelBuilderComparator(applicationModel.entities()))
+										.map(this::createLookupPanelControl)
 										.collect(toList()))
 						.build());
 	}
@@ -894,7 +894,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 						parentFrame != null && (parentFrame.getExtendedState() & MAXIMIZED_BOTH) == MAXIMIZED_BOTH);
 	}
 
-	private Control createSupportPanelControl(EntityPanel.Builder panelBuilder) {
+	private Control createLookupPanelControl(EntityPanel.Builder panelBuilder) {
 		return Control.builder()
 						.command(() -> displayEntityPanelWindow(panelBuilder))
 						.caption(panelBuilder.caption().orElse(applicationModel.entities().definition(panelBuilder.entityType()).caption()))
@@ -1141,12 +1141,12 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		}
 	}
 
-	private static final class SupportPanelBuilderComparator implements Comparator<EntityPanel.Builder> {
+	private static final class LookupPanelBuilderComparator implements Comparator<EntityPanel.Builder> {
 
 		private final Entities entities;
 		private final Comparator<String> comparator = Text.collator();
 
-		private SupportPanelBuilderComparator(Entities entities) {
+		private LookupPanelBuilderComparator(Entities entities) {
 			this.entities = entities;
 		}
 
