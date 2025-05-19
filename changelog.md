@@ -9,6 +9,7 @@ Codion Change Log
 - FlexibleGridLayout re-implemented.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel, support table now known as lookup table.
+- NullableCheckBox, FlatLaf hack removed.
 
 ## 0.18.34
 ### is.codion.common.core

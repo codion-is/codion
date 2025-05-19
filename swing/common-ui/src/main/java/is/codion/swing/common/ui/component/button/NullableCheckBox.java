@@ -41,9 +41,10 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A JCheckBox implementation, which allows null values, via {@link NullableToggleButtonModel}.
- * Heavily influenced by TristateCheckBox by Heinz M. Kabutz.
- * <a href="https://www.javaspecialists.eu/archive/Issue145.html">https://www.javaspecialists.eu/archive/Issue145.html</a>
- * Included with permission.
+ * This component is heavily influenced on TristateCheckBox by Heinz M. Kabutz.
+ * Original article: http://www.javaspecialists.eu/archive/Issue145.html
+ * Included with express permission from the author, 2019.
+ * Naming, formatting and behavior refinements by Björn Darri Sigurðsson.
  * @author Heinz M. Kabutz
  * @author Björn Darri Sigurðsson
  */
@@ -146,7 +147,6 @@ public class NullableCheckBox extends JCheckBox {
 	private final class NullableIcon implements Icon {
 
 		private final Icon icon = UIManager.getIcon("CheckBox.icon");
-		private final boolean flatLaf = getUI().getClass().getSimpleName().startsWith("Flat");
 
 		@Override
 		public void paintIcon(Component component, Graphics graphics, int x, int y) {
@@ -155,14 +155,17 @@ public class NullableCheckBox extends JCheckBox {
 				return;
 			}
 
-			double width = getIconWidth() / 3d;
-			double height = getIconHeight() / 3d;
+			int width = getIconWidth();
+			int height = getIconHeight();
 
-			//todo remove x/y adjustment hack for FlatLaf
-			double xCorner = (x + width) + (flatLaf ? 0.5 : 0);
-			double yCorner = (y + height) - (flatLaf ? 0.25 : 0);
+			double nullBoxWidth = width / 3.0;
+			double nullBoxHeight = height / 3.0;
 
-			Rectangle2D rectangle = new Rectangle2D.Double(xCorner, yCorner, width, height);
+			// Center the null marker rectangle within the icon bounds
+			double xCorner = x + (width - nullBoxWidth) / 2.0;
+			double yCorner = y + (height - nullBoxHeight) / 2.0;
+
+			Rectangle2D rectangle = new Rectangle2D.Double(xCorner, yCorner, nullBoxWidth, nullBoxHeight);
 
 			Graphics2D graphics2D = (Graphics2D) graphics;
 			graphics2D.setColor(isEnabled() ? getForeground() : UIManager.getColor("CheckBoxMenuItem.disabledForeground"));
