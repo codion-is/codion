@@ -1,23 +1,38 @@
 # Contributing to Codion
 
-Thank you for wanting to contribute, here's what you need to know before proceeding.
+Thank you for your interest in contributing — it means a lot. Here’s what you should know before getting started.
 
-## Code contributions
+## Code Contributions
 
-Codion may be dual-licenced at some point, so in order to accept code contributions I must require that contributors provide a copyright assignment. I have yet to set up the infrastructure for accepting copyright assignments, but I will do so when the need arises. 
+Codion may be dual-licensed (GPL + commercial) in the future. Because of this, I will require copyright
+assignment for all code contributions. The infrastructure for this isn't in place yet, but will be added if and when it becomes necessary.
 
-## Bug reports
+Until then, feel free to fork, explore, and share feedback — but no pull requests just yet.
 
-Bug reports are most welcome and appreciated, please specify the version of Codion you are using and be as detailed as possible. Please provide a [SSCCE](http://sscce.org) if at all possible.
+## Bug Reports
+
+Bug reports are very welcome and appreciated.
+
+- Please specify the Codion version you’re using.
+- Be as detailed as possible in describing the issue.
+- If feasible, include a [SSCCE](http://sscce.org) — a Short, Self-Contained, Correct Example.
 
 ## Translations
 
-There is a lot of translation work available for those who are interested, for an overview of localized messages see the technical/i18n section of the documentation.
+There’s plenty of localization work available for those interested.
 
-## Documentation requests
+For an overview of localizable messages, see the `technical/i18n` section in the documentation.
 
-The Codion documentation is a work in progress, feel free to create issues requesting specific documentation improvements and/or additions.
+## Documentation Requests
 
-## Feature requests
+The documentation is a work in progress. If something is unclear, missing, or needs improvement, feel free to open an issue — I’ll prioritize based on demand.
 
-Feel free to request features but please be aware that I regard Codion as being mostly feature-complete so the feature request acceptance threshold may be very high.
+## Feature Requests
+
+Feature requests are welcome — with a note of caution:
+
+Codion is mostly feature-complete by design. I may be very selective about new feature inclusion to preserve its simplicity and focus. That said, good ideas are always worth discussing.
+
+---
+
+Thanks again for taking the time to explore Codion and help improve it.

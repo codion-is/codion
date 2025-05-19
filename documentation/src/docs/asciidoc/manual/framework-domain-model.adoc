@@ -258,7 +258,7 @@ include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=col
 
 ==== Lazy loading
 
-A column can be specified as being lazy, which means its value is not selected by default.
+A column can be specified as being not selected, which means its value is not selected by default.
 Note that the selected entity contains a null value by default for lazy loaded values.
 
 [source,java,indent=0]

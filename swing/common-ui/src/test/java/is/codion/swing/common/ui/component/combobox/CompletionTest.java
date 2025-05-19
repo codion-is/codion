@@ -37,6 +37,8 @@ import static org.assertj.swing.core.KeyPressInfo.keyCode;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+// This test is only run in CI or when explicitly enabled with -Djava.awt.headless=true
+// Prevents UI window focus issues during local development
 @EnabledIfSystemProperty(named = "java.awt.headless", matches = "true")
 public final class CompletionTest {
 

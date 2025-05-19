@@ -50,13 +50,15 @@ https://codion.is/doc/{version}/index.html[Codion v{version} documentation]
 
 === Development version ({version-dev}-SNAPSHOT)
 
-Snapshots are available in link:https://s01.oss.sonatype.org/content/repositories/snapshots[Sonatype's snapshots repository].
+NOTE: Snapshot versions are not automatically published, feel free to create an issue asking for a snapshot version.
+
+Snapshots will be available in link:https://s01.oss.sonatype.org/content/repositories/snapshots[Sonatype's snapshots repository].
 
 [source,groovy]
 ----
 repositories {
     maven {
-        url "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+        url "https://central.sonatype.com/repository/maven-snapshots/"
     }
 }
 ----
