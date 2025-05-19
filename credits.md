@@ -30,4 +30,12 @@ This document honors the creators of components, patterns, or tools that have in
 
 ---
 
+### Foundation Icons
+
+A subset of the Foundation Icons set by Zurb (https://get.foundation) is included in Codion as part of a custom font file.
+
+Licensed under the MIT License.
+
+Original source (archived): https://github.com/zurb/foundation-icon-fonts
+
 *If you see your code or ideas in Codion and we’ve missed you — let us know. We’d love to credit you properly.*
