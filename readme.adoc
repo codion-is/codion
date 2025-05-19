@@ -63,8 +63,6 @@ repositories {
 }
 ----
 
-https://codion.is/doc/{version-dev}/index.html[Codion v{version-dev}-SNAPSHOT documentation]
-
 == Dependencies
 
 The core Codion framework components use a limited set of third-party libraries, a Swing client with local JDBC and RMI connection capabilities pulls in the following dependencies:
