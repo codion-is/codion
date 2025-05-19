@@ -14,269 +14,259 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2008 - 2025, Björn Darri Sigurðsson.
+ * Copyright (c) 2025, Björn Darri Sigurðsson.
  */
 package is.codion.swing.common.ui.layout;
 
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.LayoutManager2;
 import java.util.Arrays;
+import java.util.function.Function;
 
 /**
- * Grid Layout which allows components of different sizes.
- * @author unknown
+ * A layout manager similar to GridLayout, but allows components to maintain their preferred size.
+ * Rows and columns can optionally be normalized to the largest size in their dimension.
+ * Designed in Codion style with a fluent builder API.
+ * <p>
+ * Features:
+ * - Optional fixed row heights or column widths.
+ * - Custom horizontal and vertical gaps.
+ * - Maintains preferred component sizes when not fixed.
+ * - Safe for variable component counts and nested containers.
+ * <p>
+ * Author: Björn Darri Sigurðsson (with help)
  */
-public final class FlexibleGridLayout extends GridLayout {
+public final class FlexibleGridLayout implements LayoutManager2 {
 
-	private static final double ONE_POINT_O = 1.0;
+	private final int rows;
+	private final int columns;
+	private final int horizontalGap;
+	private final int verticalGap;
+	private final boolean fixRowHeights;
+	private final boolean fixColumnWidths;
+	private final Integer fixedRowHeight;
+	private final Integer fixedColumnWidth;
 
-	private final boolean fixedRowHeights;
-	private final boolean fixedColumnWidths;
-
-	private int fixedColumnWidth;
-	private int fixedRowHeight;
-
-	private FlexibleGridLayout(DefaultBuilder builder) {
-		super(builder.rows, builder.columns, builder.horizontalGap, builder.verticalGap);
-		this.fixedRowHeights = builder.fixRowHeights;
-		this.fixedColumnWidths = builder.fixColumnWidths;
+	private FlexibleGridLayout(DefaultBuilder defaultBuilder) {
+		this.rows = defaultBuilder.rows;
+		this.columns = defaultBuilder.columns;
+		this.horizontalGap = defaultBuilder.horizontalGap;
+		this.verticalGap = defaultBuilder.verticalGap;
+		this.fixRowHeights = defaultBuilder.fixRowHeights;
+		this.fixColumnWidths = defaultBuilder.fixColumnWidths;
+		this.fixedRowHeight = defaultBuilder.fixedRowHeight;
+		this.fixedColumnWidth = defaultBuilder.fixedColumnWidth;
 	}
 
 	/**
-	 * @param height the fixed row height to use in this layout
-	 * @return this layout instance
-	 */
-	public FlexibleGridLayout setFixedRowHeight(int height) {
-		fixedRowHeight = height;
-		return this;
-	}
-
-	/**
-	 * @param width the fixed column width to use in this layout
-	 * @return this layout instance
-	 */
-	public FlexibleGridLayout setFixedColumnWidth(int width) {
-		fixedColumnWidth = width;
-		return this;
-	}
-
-	@Override
-	public Dimension preferredLayoutSize(Container parent) {
-		return layoutSize(parent, true);
-	}
-
-	@Override
-	public Dimension minimumLayoutSize(Container parent) {
-		return layoutSize(parent, false);
-	}
-
-	@Override
-	public void layoutContainer(Container parent) {
-		synchronized (parent.getTreeLock()) {
-			Insets insets = parent.getInsets();
-			int numberOfComponents = parent.getComponentCount();
-			int numberOfRows = getRows();
-			int numberOfColumns = getColumns();
-			if (numberOfComponents == 0) {
-				return;
-			}
-			if (numberOfRows > 0) {
-				numberOfColumns = (numberOfComponents + numberOfRows - 1) / numberOfRows;
-			}
-			else {
-				numberOfRows = (numberOfComponents + numberOfColumns - 1) / numberOfColumns;
-			}
-			int horizontalGap = getHgap();
-			int verticalGap = getVgap();
-			// scaling factors
-			Dimension pd = preferredLayoutSize(parent);
-			double sw = (ONE_POINT_O * parent.getWidth()) / pd.getWidth();
-			double sh = (ONE_POINT_O * parent.getHeight()) / pd.getHeight();
-			// scale
-			int[] columnWidths = new int[numberOfColumns];
-			int[] rowHeights = new int[numberOfRows];
-			for (int i = 0; i < numberOfComponents; i++) {
-				int row = i / numberOfColumns;
-				int column = i % numberOfColumns;
-				Component currentComponent = parent.getComponent(i);
-				Dimension currCompPrefSize = currentComponent.getPreferredSize();
-				currCompPrefSize.width = (int) (sw * currCompPrefSize.getWidth());
-				currCompPrefSize.height = (int) (sh * currCompPrefSize.getHeight());
-				if (columnWidths[column] < currCompPrefSize.getWidth()) {
-					columnWidths[column] = (int) currCompPrefSize.getWidth();
-				}
-				if (rowHeights[row] < currCompPrefSize.getHeight()) {
-					rowHeights[row] = (int) currCompPrefSize.getHeight();
-				}
-			}
-
-			arrangeFixedSizes(columnWidths, rowHeights);
-
-			int x = insets.left;
-			for (int c = 0; c < numberOfColumns; c++) {
-				int y = insets.top;
-				for (int r = 0; r < numberOfRows; r++) {
-					int i = r * numberOfColumns + c;
-					if (i < numberOfComponents) {
-						parent.getComponent(i).setBounds(x, y, columnWidths[c], rowHeights[r]);
-					}
-					y += rowHeights[r] + verticalGap;
-				}
-				x += columnWidths[c] + horizontalGap;
-			}
-		}
-	}
-
-	/**
-	 * @return a builder for {@link FlexibleGridLayout}.
+	 * Returns a new builder instance for FlexibleGridLayout.
+	 * @return a builder
 	 */
 	public static Builder builder() {
 		return new DefaultBuilder();
 	}
 
+	@Override
+	public void layoutContainer(Container parent) {
+		synchronized (parent.getTreeLock()) {
+			int componentCount = parent.getComponentCount();
+			if (componentCount == 0) {
+				return;
+			}
+
+			Insets insets = parent.getInsets();
+			int effectiveRows = rows > 0 ? rows : (componentCount + columns - 1) / columns;
+			int effectiveCols = columns > 0 ? columns : (componentCount + rows - 1) / rows;
+
+			int[] rowHeights = new int[effectiveRows];
+			int[] colWidths = new int[effectiveCols];
+			Dimension[] sizes = new Dimension[componentCount];
+
+			for (int i = 0; i < componentCount; i++) {
+				Component c = parent.getComponent(i);
+				sizes[i] = c.getPreferredSize();
+				int row = i / effectiveCols;
+				int col = i % effectiveCols;
+				rowHeights[row] = Math.max(rowHeights[row], sizes[i].height);
+				colWidths[col] = Math.max(colWidths[col], sizes[i].width);
+			}
+
+			adjustFixedSizes(rowHeights, colWidths);
+
+			int x = insets.left;
+			for (int col = 0; col < effectiveCols; col++) {
+				int y = insets.top;
+				for (int row = 0; row < effectiveRows; row++) {
+					int idx = row * effectiveCols + col;
+					if (idx < componentCount) {
+						parent.getComponent(idx).setBounds(x, y, colWidths[col], rowHeights[row]);
+					}
+					y += rowHeights[row] + verticalGap;
+				}
+				x += colWidths[col] + horizontalGap;
+			}
+		}
+	}
+
+	private void adjustFixedSizes(int[] rowHeights, int[] colWidths) {
+		if (fixRowHeights || fixedRowHeight != null) {
+			int height = (fixedRowHeight != null) ? fixedRowHeight : Arrays.stream(rowHeights).max().orElse(0);
+			Arrays.fill(rowHeights, height);
+		}
+		if (fixColumnWidths || fixedColumnWidth != null) {
+			int width = (fixedColumnWidth != null) ? fixedColumnWidth : Arrays.stream(colWidths).max().orElse(0);
+			Arrays.fill(colWidths, width);
+		}
+	}
+
+	private Dimension calculateLayoutSize(Container parent, Function<Component, Dimension> dimension) {
+		int componentCount = parent.getComponentCount();
+		if (componentCount == 0) {
+			return new Dimension(0, 0);
+		}
+
+		int effectiveRows = rows > 0 ? rows : (componentCount + columns - 1) / columns;
+		int effectiveCols = columns > 0 ? columns : (componentCount + rows - 1) / rows;
+
+		int[] rowHeights = new int[effectiveRows];
+		int[] columnWidths = new int[effectiveCols];
+
+		for (int i = 0; i < componentCount; i++) {
+			Dimension d = dimension.apply(parent.getComponent(i));
+			int row = i / effectiveCols;
+			int column = i % effectiveCols;
+			rowHeights[row] = Math.max(rowHeights[row], d.height);
+			columnWidths[column] = Math.max(columnWidths[column], d.width);
+		}
+
+		adjustFixedSizes(rowHeights, columnWidths);
+
+		Insets insets = parent.getInsets();
+		int width = Arrays.stream(columnWidths).sum() + (effectiveCols - 1) * horizontalGap;
+		int height = Arrays.stream(rowHeights).sum() + (effectiveRows - 1) * verticalGap;
+
+		return new Dimension(width + insets.left + insets.right, height + insets.top + insets.bottom);
+	}
+
+	@Override
+	public Dimension preferredLayoutSize(Container parent) {
+		return calculateLayoutSize(parent, Component::getPreferredSize);
+	}
+
+	@Override
+	public Dimension minimumLayoutSize(Container parent) {
+		return calculateLayoutSize(parent, Component::getMinimumSize);
+	}
+
+	@Override
+	public void addLayoutComponent(Component comp, Object constraints) {}
+
+	@Override
+	public void addLayoutComponent(String name, Component comp) {}
+
+	@Override
+	public void removeLayoutComponent(Component comp) {}
+
+	@Override
+	public Dimension maximumLayoutSize(Container target) {return preferredLayoutSize(target);}
+
+	@Override
+	public float getLayoutAlignmentX(Container target) {return 0.5f;}
+
+	@Override
+	public float getLayoutAlignmentY(Container target) {return 0.5f;}
+
+	@Override
+	public void invalidateLayout(Container target) {}
+
 	/**
-	 * A builder for {@link FlexibleGridLayout}.
+	 * Builds a {@link FlexibleGridLayout} instances.
 	 */
 	public interface Builder {
 
 		/**
+		 * Sets the number of rows in the layout.
+		 * If both rows and columns are zero, layout behavior is undefined.
 		 * @param rows the number of rows
 		 * @return this builder instance
 		 */
 		Builder rows(int rows);
 
 		/**
+		 * Sets the number of columns in the layout.
+		 * If both rows and columns are zero, layout behavior is undefined.
 		 * @param columns the number of columns
 		 * @return this builder instance
 		 */
 		Builder columns(int columns);
 
 		/**
-		 * @param rows the rows
-		 * @param columns the columns
+		 * Sets both the number of rows and columns.
+		 * @param rows the number of rows
+		 * @param columns the number of columns
 		 * @return this builder instance
 		 */
 		Builder rowsColumns(int rows, int columns);
 
 		/**
-		 * @param gap the horizontal and vertical gap to use
+		 * Sets both the horizontal and vertical gap between components.
+		 * @param gap the number of pixels between components in both directions
 		 * @return this builder instance
 		 */
 		Builder gap(int gap);
 
 		/**
-		 * @param horizontalGap the horizontal gap
+		 * Sets the horizontal gap between components.
+		 * @param horizontalGap the number of pixels between columns
 		 * @return this builder instance
 		 */
 		Builder horizontalGap(int horizontalGap);
 
 		/**
-		 * @param verticalGap the vertical gap
+		 * Sets the vertical gap between components.
+		 * @param verticalGap the number of pixels between rows
 		 * @return this builder instance
 		 */
 		Builder verticalGap(int verticalGap);
 
 		/**
-		 * @param fixRowHeights true if rows should have a
-		 * fixed height according to the tallest component
+		 * Enables or disables uniform row heights based on the tallest component in each row.
+		 * @param fixRowHeights true to use fixed row heights
 		 * @return this builder instance
 		 */
 		Builder fixRowHeights(boolean fixRowHeights);
 
 		/**
-		 * @param fixColumnWidths true if columns should have a
-		 * fixed width according to the widest component
+		 * Enables or disables uniform column widths based on the widest component in each column.
+		 * @param fixColumnWidths true to use fixed column widths
 		 * @return this builder instance
 		 */
 		Builder fixColumnWidths(boolean fixColumnWidths);
 
 		/**
-		 * Also enables the fixed row heights.
-		 * @param fixedRowHeight the fixed row height
+		 * Sets a specific fixed pixel height for all rows.
+		 * Automatically implies {@link #fixRowHeights(boolean)} with true.
+		 * @param fixedRowHeight the fixed row height in pixels
 		 * @return this builder instance
-		 * @see #fixRowHeights(boolean)
 		 */
 		Builder fixedRowHeight(int fixedRowHeight);
 
 		/**
-		 * Also enables the fixed column widths.
-		 * @param fixedColumnWidth the fixed column width
+		 * Sets a specific fixed pixel width for all columns.
+		 * Automatically implies {@link #fixColumnWidths(boolean)} with true.
+		 * @param fixedColumnWidth the fixed column width in pixels
 		 * @return this builder instance
-		 * @see #fixColumnWidths(boolean)
 		 */
 		Builder fixedColumnWidth(int fixedColumnWidth);
 
 		/**
-		 * @return a new layout instance
+		 * Builds a new {@link FlexibleGridLayout} instance with the current configuration.
+		 * @return a configured layout manager
 		 */
 		FlexibleGridLayout build();
-	}
-
-	private void arrangeFixedSizes(int[] columnWidths, int[] rowHeights) {
-		if (fixedColumnWidths) {
-			int maxColumnWidth = 0;
-			if (fixedColumnWidth <= 0) {
-				for (int columnWidth : columnWidths) {
-					maxColumnWidth = Math.max(columnWidth, maxColumnWidth);
-				}
-			}
-			else {
-				maxColumnWidth = fixedColumnWidth;
-			}
-			Arrays.fill(columnWidths, maxColumnWidth);
-		}
-		if (fixedRowHeights) {
-			int maxRowHeight = 0;
-			if (fixedRowHeight <= 0) {
-				for (int rowHeight : rowHeights) {
-					maxRowHeight = Math.max(rowHeight, maxRowHeight);
-				}
-			}
-			else {
-				maxRowHeight = fixedRowHeight;
-			}
-			Arrays.fill(rowHeights, maxRowHeight);
-		}
-	}
-
-	private Dimension layoutSize(Container parent, boolean preferredSize) {
-		synchronized (parent.getTreeLock()) {
-			Insets insets = parent.getInsets();
-			int numberOfComponents = parent.getComponentCount();
-			int numberOfRows = getRows();
-			int numberOfColumns = getColumns();
-			if (numberOfRows > 0) {
-				numberOfColumns = (numberOfComponents + numberOfRows - 1) / numberOfRows;
-			}
-			else {
-				numberOfRows = (numberOfComponents + numberOfColumns - 1) / numberOfColumns;
-			}
-			int[] columnWidths = new int[numberOfColumns];
-			int[] rowHeights = new int[numberOfRows];
-			for (int i = 0; i < numberOfComponents; i++) {
-				int row = i / numberOfColumns;
-				int column = i % numberOfColumns;
-				Component comp = parent.getComponent(i);
-				Dimension d = preferredSize ? comp.getPreferredSize() : comp.getMinimumSize();
-				if (columnWidths[column] < d.getWidth()) {
-					columnWidths[column] = (int) d.getWidth();
-				}
-				if (rowHeights[row] < d.getHeight()) {
-					rowHeights[row] = (int) d.getHeight();
-				}
-			}
-
-			arrangeFixedSizes(columnWidths, rowHeights);
-
-			int newWidth = Arrays.stream(columnWidths).sum();
-			int newHeight = Arrays.stream(rowHeights).sum();
-
-			return new Dimension(insets.left + insets.right + newWidth + (numberOfColumns - 1) * getHgap(),
-							insets.top + insets.bottom + newHeight + (numberOfRows - 1) * getVgap());
-		}
 	}
 
 	private static final class DefaultBuilder implements Builder {
@@ -287,18 +277,16 @@ public final class FlexibleGridLayout extends GridLayout {
 		private int verticalGap = 0;
 		private boolean fixRowHeights = false;
 		private boolean fixColumnWidths = false;
-		private int fixedRowHeight;
-		private int fixedColumnWidth;
+		private Integer fixedRowHeight = null;
+		private Integer fixedColumnWidth = null;
 
-		@Override
 		public Builder rows(int rows) {
 			this.rows = rows;
 			return this;
 		}
 
-		@Override
-		public Builder columns(int columns) {
-			this.columns = columns;
+		public Builder columns(int cols) {
+			this.columns = cols;
 			return this;
 		}
 
@@ -309,62 +297,44 @@ public final class FlexibleGridLayout extends GridLayout {
 			return this;
 		}
 
-		@Override
 		public Builder gap(int gap) {
 			this.horizontalGap = gap;
 			this.verticalGap = gap;
 			return this;
 		}
 
-		@Override
 		public Builder horizontalGap(int horizontalGap) {
 			this.horizontalGap = horizontalGap;
 			return this;
 		}
 
-		@Override
 		public Builder verticalGap(int verticalGap) {
 			this.verticalGap = verticalGap;
 			return this;
 		}
 
-		@Override
 		public Builder fixRowHeights(boolean fixRowHeights) {
 			this.fixRowHeights = fixRowHeights;
 			return this;
 		}
 
-		@Override
 		public Builder fixColumnWidths(boolean fixColumnWidths) {
 			this.fixColumnWidths = fixColumnWidths;
 			return this;
 		}
 
-		@Override
 		public Builder fixedRowHeight(int fixedRowHeight) {
-			fixRowHeights(true);
 			this.fixedRowHeight = fixedRowHeight;
 			return this;
 		}
 
-		@Override
 		public Builder fixedColumnWidth(int fixedColumnWidth) {
-			fixColumnWidths(true);
 			this.fixedColumnWidth = fixedColumnWidth;
 			return this;
 		}
 
-		@Override
 		public FlexibleGridLayout build() {
-			FlexibleGridLayout layout = new FlexibleGridLayout(this);
-			if (fixedRowHeight > 0) {
-				layout.setFixedRowHeight(fixedRowHeight);
-			}
-			if (fixedColumnWidth > 0) {
-				layout.setFixedColumnWidth(fixedColumnWidth);
-			}
-
-			return layout;
+			return new FlexibleGridLayout(this);
 		}
 	}
 }

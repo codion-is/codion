@@ -6,6 +6,7 @@ Codion Change Log
 - Database.URL_SCOPED_INSTANCE configuration value added.
 ### is.codion.swing.common.ui
 - FilterTable.ScrollToSelected bug fixed, rowVisible() now based on viewport.getViewRect().
+- FlexibleGridLayout re-implemented.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel, support table now known as lookup table.
 
