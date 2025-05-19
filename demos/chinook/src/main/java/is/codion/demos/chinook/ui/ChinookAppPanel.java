@@ -22,6 +22,7 @@ import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.user.User;
 import is.codion.demos.chinook.domain.api.Chinook;
+import is.codion.demos.chinook.model.ArtistTableModel;
 import is.codion.demos.chinook.model.ChinookAppModel;
 import is.codion.demos.chinook.model.TrackTableModel;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -133,10 +134,12 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 	}
 
 	private static EntityPanel createArtistPanel(EntityConnectionProvider connectionProvider) {
-		SwingEntityModel artistModel = new SwingEntityModel(Artist.TYPE, connectionProvider);
+		SwingEntityModel artistModel = new SwingEntityModel(new ArtistTableModel(connectionProvider));
 		artistModel.tableModel().items().refresh();
 
-		return new EntityPanel(artistModel, new ArtistEditPanel(artistModel.editModel()));
+		return new EntityPanel(artistModel,
+						new ArtistEditPanel(artistModel.editModel()),
+						new ArtistTablePanel(artistModel.tableModel()));
 	}
 
 	private static EntityPanel createEmployeePanel(EntityConnectionProvider connectionProvider) {
