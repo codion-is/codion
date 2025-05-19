@@ -174,6 +174,7 @@ configure(subprojects) {
                         testTask.configure {
                             systemProperty("codion.db.url", "jdbc:h2:mem:h2db")
                             systemProperty("codion.db.initScripts", "src/test/sql/create_h2_db.sql")
+                            systemProperty("codion.db.urlScopedInstance", "true")
                             systemProperty("codion.test.user", "scott:tiger")
                         }
                     }

@@ -264,17 +264,17 @@ public abstract class AbstractDatabase implements Database {
 	}
 
 	static Database instance() {
+		String databaseUrl = DATABASE_URL.getOrThrow();
 		try {
 			synchronized (AbstractDatabase.class) {
-				String databaseUrl = DATABASE_URL.getOrThrow();
-				if (AbstractDatabase.instance == null || !AbstractDatabase.instance.url().equals(databaseUrl)) {
-					Database previousInstance = AbstractDatabase.instance;
-					//replace the instance
+				if (AbstractDatabase.instance == null) {
 					AbstractDatabase.instance = DatabaseFactory.instance().create(databaseUrl);
-					if (previousInstance != null) {
-						//cleanup
-						previousInstance.closeConnectionPools();
+				}
+				else if (!databaseUrl.equals(AbstractDatabase.instance.url())) {
+					if (!URL_SCOPED_INSTANCE.getOrThrow()) {
+						throw new DatabaseException("Database URL has changed from " + AbstractDatabase.instance.url() + " to " + databaseUrl);
 					}
+					AbstractDatabase.instance = cleanupAndCreateInstance(databaseUrl, AbstractDatabase.instance);
 				}
 
 				return AbstractDatabase.instance;
@@ -350,6 +350,15 @@ public abstract class AbstractDatabase implements Database {
 		}
 
 		return result;
+	}
+
+	private static Database cleanupAndCreateInstance(String databaseUrl, Database previousInstance) throws SQLException {
+		Database instance = DatabaseFactory.instance().create(databaseUrl);
+		if (previousInstance != null) {
+			previousInstance.closeConnectionPools(); //cleanup
+		}
+
+		return instance;
 	}
 
 	private static final class DefaultQueryCounter implements QueryCounter {

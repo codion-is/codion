@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.35
+### is.codion.common.db
+- Database.URL_SCOPED_INSTANCE configuration value added.
 ### is.codion.swing.common.ui
 - FilterTable.ScrollToSelected bug fixed, rowVisible() now based on viewport.getViewRect().
 ### is.codion.swing.framework.ui

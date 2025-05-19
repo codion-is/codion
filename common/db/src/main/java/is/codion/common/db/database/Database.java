@@ -73,6 +73,17 @@ public interface Database extends ConnectionFactory {
 	PropertyValue<String> DATABASE_URL = stringValue("codion.db.url");
 
 	/**
+	 * Specifies whether {@link #instance()} should create a new instance each time the database URL has changed.
+	 * This is convenient when running tests using in-memory databases.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
+	 * </ul>
+	 * @see #DATABASE_URL
+	 */
+	PropertyValue<Boolean> URL_SCOPED_INSTANCE = booleanValue("codion.db.urlScopedInstance", false);
+
+	/**
 	 * A comma separated list of paths to scripts to run when initializing the database, implementation specific
 	 */
 	PropertyValue<String> DATABASE_INIT_SCRIPTS = stringValue("codion.db.initScripts");
@@ -294,10 +305,12 @@ public interface Database extends ConnectionFactory {
 
 	/**
 	 * Returns a {@link Database} instance based on the currently configured JDBC URL ({@link Database#DATABASE_URL}).
-	 * Subsequent calls to this method return the same instance, until the JDBC URL changes, then a new instance is created.
+	 * Subsequent changes to {@link Database#DATABASE_URL} will cause an exception to be thrown
+	 * unless {@link #URL_SCOPED_INSTANCE} is enabled, then a new instance is created and returned.
 	 * @return a Database instance based on the current jdbc url
 	 * @throws IllegalArgumentException in case an unsupported database type is specified
 	 * @throws RuntimeException in case of an exception occurring while instantiating the database implementation
+	 * @throws DatabaseException in case {@link Database#DATABASE_URL} has changed and {@link #URL_SCOPED_INSTANCE} is not enabled
 	 * @see Database#DATABASE_URL
 	 */
 	static Database instance() {
