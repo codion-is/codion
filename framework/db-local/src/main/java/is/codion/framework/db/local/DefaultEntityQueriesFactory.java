@@ -14,23 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2023 - 2025, Björn Darri Sigurðsson.
+ * Copyright (c) 2025, Björn Darri Sigurðsson.
  */
-/**
- * Core framework database connection classes, such as:
- * <ul>
- * <li>{@link is.codion.framework.db.EntityConnection}
- * <li>{@link is.codion.framework.db.EntityConnectionProvider}
- * </ul>
- * @uses is.codion.framework.db.EntityConnectionProvider.Builder
- */
-@org.jspecify.annotations.NullMarked
-module is.codion.framework.db.core {
-	requires org.slf4j;
-	requires transitive is.codion.framework.domain;
+package is.codion.framework.db.local;
 
-	exports is.codion.framework.db;
+import is.codion.common.db.database.Database;
+import is.codion.framework.db.EntityQueries;
+import is.codion.framework.domain.entity.Entities;
 
-	uses is.codion.framework.db.EntityConnectionProvider.Builder;
-	uses is.codion.framework.db.EntityQueries.Factory;
+public final class DefaultEntityQueriesFactory implements EntityQueries.Factory {
+
+	@Override
+	public EntityQueries create(Database database, Entities entities) {
+		return new DefaultEntityQueries(database, entities);
+	}
 }

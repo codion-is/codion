@@ -1,0 +1,634 @@
+/*
+ * This file is part of Codion.
+ *
+ * Codion is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Codion is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Copyright (c) 2025, Björn Darri Sigurðsson.
+ */
+package is.codion.swing.framework.ui;
+
+import is.codion.common.Conjunction;
+import is.codion.common.db.database.Database;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityQueries;
+import is.codion.framework.domain.entity.condition.Condition;
+import is.codion.framework.model.EntityQueryModel;
+import is.codion.swing.common.ui.component.Components;
+
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import java.awt.BorderLayout;
+import java.awt.Font;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.time.temporal.Temporal;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Locale;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.function.Supplier;
+
+import static is.codion.framework.domain.entity.condition.Condition.combination;
+import static is.codion.swing.common.ui.component.Components.scrollPane;
+import static java.lang.System.lineSeparator;
+import static java.util.Arrays.asList;
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
+
+final class QueryInspector extends JPanel {
+
+	private static final DecimalFormat NUMBER_FORMAT = (DecimalFormat) NumberFormat.getInstance();
+	private static final char PLACEHOLDER = '?';
+
+	static {
+		NUMBER_FORMAT.setGroupingUsed(false);
+		DecimalFormatSymbols symbols = NUMBER_FORMAT.getDecimalFormatSymbols();
+		symbols.setDecimalSeparator('.');
+	}
+
+	private final JTextArea textArea = Components.textArea()
+					.rowsColumns(30, 42)
+					.editable(false)
+					.build();
+	private final EntityQueries queries;
+	private final EntityQueryModel queryModel;
+
+	QueryInspector(EntityQueryModel queryModel) {
+		super(new BorderLayout());
+		requireNonNull(queryModel);
+		add(scrollPane(textArea).build());
+		this.queries = EntityQueries.instance()
+						.orElseThrow(() -> new IllegalStateException("No EntityQueries instance available"))
+						.create(Database.instance(), queryModel.connectionProvider().connection().entities());
+		this.queryModel = queryModel;
+		Font font = textArea.getFont();
+		textArea.setFont(new Font(Font.MONOSPACED, font.getStyle(), font.getSize()));
+		refreshQuery();
+		bindEvents();
+	}
+
+	private void bindEvents() {
+		queryModel.condition().changed().addListener(this::refreshQuery);
+		queryModel.limit().addListener(this::refreshQuery);
+		queryModel.orderBy().addListener(this::refreshQuery);
+		queryModel.attributes().included().addListener(this::refreshQuery);
+	}
+
+	private void refreshQuery() {
+		textArea.setText(createQuery());
+	}
+
+	private String createQuery() {
+		Condition where = createCondition(queryModel.condition().where(Conjunction.AND), queryModel.where());
+		Condition having = createCondition(queryModel.condition().having(Conjunction.AND), queryModel.having());
+		EntityConnection.Select select = EntityConnection.Select.where(where)
+						.having(having)
+						.attributes(queryModel.attributes().get())
+						.limit(queryModel.limit().get())
+						.orderBy(queryModel.orderBy().get())
+						.build();
+
+		String formatted = BasicFormatterImpl.format(queries.select(select));
+		ListIterator<?> parameters = parameterValues(where, having).listIterator();
+		StringBuilder builder = new StringBuilder();
+		for (int i = 0; i < formatted.length(); i++) {
+			if (formatted.charAt(i) == PLACEHOLDER && parameters.hasNext()) {
+				builder.append(parameters.next());
+			}
+			else {
+				builder.append(formatted.charAt(i));
+			}
+		}
+
+		return builder.toString();
+	}
+
+	private static Condition createCondition(Condition entityCondition, EntityQueryModel.AdditionalCondition additional) {
+		return additional.optional()
+						.map(Supplier::get)
+						.map(condition -> combination(additional.conjunction().getOrThrow(), entityCondition, condition))
+						.map(Condition.class::cast)
+						.orElse(entityCondition);
+	}
+
+	private static List<?> parameterValues(Condition where, Condition having) {
+		List<Object> values = new ArrayList<>(where.values());
+		values.addAll(having.values());
+
+		return values.stream()
+						.map(QueryInspector::addSingleQuotes)
+						.map(QueryInspector::formatDecimal)
+						.collect(toList());
+	}
+
+	private static Object addSingleQuotes(Object value) {
+		if (value instanceof String || value instanceof Temporal) {
+			return "'" + value + "'";
+		}
+
+		return value;
+	}
+
+	private static Object formatDecimal(Object value) {
+		if (value instanceof Number) {
+			return NUMBER_FORMAT.format(value);
+		}
+
+		return value;
+	}
+
+	/**
+	 * <p>Adapted from <a href="https://github.com/hibernate/hibernate-orm/blob/main/hibernate-core/src/main/java/org/hibernate/engine/jdbc/internal/BasicFormatterImpl.java">BasicFormatterImpl.java</a> (Apache 2.0)
+	 * with minor changes, mostly formatting.</p>
+	 * Performs formatting of basic SQL statements (DML + query).
+	 * @author Gavin King
+	 * @author Steve Ebersole
+	 */
+	private static final class BasicFormatterImpl {
+
+		private static final Set<String> NON_FUNCTION_NAMES = new HashSet<>(
+						asList("select", "from", "on", "set", "and", "or", "where", "having", "by", "using")
+		);
+
+		private static final String INDENT_STRING = "    ";
+		private static final String WHITESPACE = " \n\r\f\t";
+
+		private BasicFormatterImpl() {}
+
+		public static String format(String source) {
+			return new FormatProcess(source).perform();
+		}
+
+		private static class FormatProcess {
+			boolean beginLine = true;
+			boolean afterBeginBeforeEnd;
+			boolean afterByOrSetOrFromOrSelect;
+			int afterOn;
+			boolean afterBetween;
+			boolean afterExtract;
+			boolean afterInsert;
+			int inFunction;
+			int parensSinceSelect;
+			int valuesParenCount;
+			private final LinkedList<Integer> parenCounts = new LinkedList<>();
+			private final LinkedList<Boolean> afterByOrFromOrSelects = new LinkedList<>();
+
+			int indent = 0;
+
+			StringBuilder result = new StringBuilder();
+			StringTokenizer tokens;
+			String lastToken;
+			String token;
+			String lcToken;
+
+			public FormatProcess(String sql) {
+				assert sql != null : "SQL to format should not be null";
+
+				tokens = new StringTokenizer(
+								sql,
+								"()+*/-=<>'`\"[]," + WHITESPACE,
+								true
+				);
+			}
+
+			public String perform() {
+				while (tokens.hasMoreTokens()) {
+					token = tokens.nextToken();
+					if ("-".equals(token) && result.toString().endsWith("-")) {
+						do {
+							result.append(token);
+							token = tokens.nextToken();
+						}
+						while (!"\n".equals(token) && tokens.hasMoreTokens());
+					}
+					lcToken = token.toLowerCase(Locale.ROOT);
+					switch (lcToken) {
+						case "'":
+						case "`":
+						case "\"":
+							String t;
+							do {
+								t = tokens.nextToken();
+								token += t;
+							}
+							while (!lcToken.equals(t) && tokens.hasMoreTokens());
+							lcToken = token;
+							misc();
+							break;
+						// SQL Server uses "[" and "]" to escape reserved words
+						// see SQLServerDialect.openQuote and SQLServerDialect.closeQuote
+						case "[":
+							String tt;
+							do {
+								tt = tokens.nextToken();
+								token += tt;
+							}
+							while (!"]".equals(tt) && tokens.hasMoreTokens());
+							lcToken = token;
+							misc();
+							break;
+						case ",":
+							comma();
+							break;
+						case "(":
+							openParen();
+							break;
+						case ")":
+							closeParen();
+							break;
+						case "select":
+							select();
+							break;
+						case "merge":
+						case "insert":
+						case "update":
+						case "delete":
+							updateOrInsertOrDelete();
+							break;
+						case "values":
+							values();
+							break;
+						case "on":
+							on();
+							break;
+						case "between":
+							afterBetween = true;
+							misc();
+							break;
+						case "trim":
+						case "extract":
+							afterExtract = true;
+							misc();
+							break;
+						//TODO: detect when 'left', 'right' are function names
+						case "left":
+						case "right":
+						case "full":
+						case "inner":
+						case "outer":
+						case "cross":
+						case "group":
+						case "order":
+						case "returning":
+						case "using":
+							beginNewClause();
+							break;
+						case "from":
+							from();
+							break;
+						case "where":
+						case "set":
+						case "having":
+						case "by":
+						case "join":
+						case "into":
+						case "union":
+						case "intersect":
+						case "offset":
+						case "limit":
+						case "fetch":
+							endNewClause();
+							break;
+						case "case":
+							beginCase();
+							break;
+						case "end":
+							endCase();
+							break;
+						case "when":
+						case "else":
+							when();
+							break;
+						case "then":
+							then();
+							break;
+						case "and":
+							and();
+							break;
+						case "or":
+							or();
+							break;
+						default:
+							if (isWhitespace(token)) {
+								white();
+							}
+							else {
+								misc();
+							}
+					}
+					if (!isWhitespace(token)) {
+						lastToken = lcToken;
+					}
+				}
+
+				return result.toString();
+			}
+
+			private void or() {
+				logical();
+			}
+
+			private void and() {
+				if (afterBetween) {
+					misc();
+					afterBetween = false;
+				}
+				else {
+					logical();
+				}
+			}
+
+			private void from() {
+				if (afterExtract) {
+					misc();
+					afterExtract = false;
+				}
+				else {
+					endNewClause();
+				}
+			}
+
+			private void comma() {
+				if (afterByOrSetOrFromOrSelect && inFunction == 0) {
+					commaAfterByOrFromOrSelect();
+				}
+	//			else if ( afterOn && inFunction==0 ) {
+	//				commaAfterOn();
+	//			}
+				else {
+					misc();
+				}
+			}
+
+			private void then() {
+				incrementIndent();
+				newline();
+				misc();
+			}
+
+			private void when() {
+				decrementIndent();
+				newline();
+				out();
+				beginLine = false;
+				afterBeginBeforeEnd = true;
+			}
+
+	//		private void commaAfterOn() {
+	//			out();
+	//			decrementIndent();
+	//			newline();
+	//			afterOn = false;
+	//			afterByOrSetOrFromOrSelect = true;
+	//		}
+
+			private void commaAfterByOrFromOrSelect() {
+				out();
+				newline();
+			}
+
+			private void logical() {
+				newline();
+				out();
+				beginLine = false;
+			}
+
+			private void endCase() {
+				afterBeginBeforeEnd = false;
+				decrementIndent();
+				decrementIndent();
+				logical();
+			}
+
+			private void on() {
+				if (afterOn == 0) {
+					incrementIndent();
+				}
+				else if (afterOn == 1) {
+					// ad hoc, but gives a nice result
+					decrementIndent();
+				}
+				afterOn++;
+				newline();
+				out();
+				beginLine = false;
+			}
+
+			private void beginCase() {
+				out();
+				beginLine = false;
+				incrementIndent();
+				incrementIndent();
+				afterBeginBeforeEnd = true;
+			}
+
+			private void misc() {
+				out();
+				if (afterInsert && inFunction == 0) {
+					newline();
+					afterInsert = false;
+				}
+				else {
+					beginLine = false;
+				}
+			}
+
+			private void white() {
+				if (!beginLine) {
+					result.append(" ");
+				}
+			}
+
+			private void updateOrInsertOrDelete() {
+				if (indent > 1) {
+					//probably just the insert SQL function
+					out();
+				}
+				else {
+					out();
+					incrementIndent();
+					beginLine = false;
+					if ("update".equals(lcToken)) {
+						newline();
+					}
+					if ("insert".equals(lcToken)) {
+						afterInsert = true;
+					}
+				}
+			}
+
+			private void select() {
+				out();
+				incrementIndent();
+				newline();
+				parenCounts.addLast(parensSinceSelect);
+				afterByOrFromOrSelects.addLast(afterByOrSetOrFromOrSelect);
+				parensSinceSelect = 0;
+				afterByOrSetOrFromOrSelect = true;
+			}
+
+			private void out() {
+				if (!result.isEmpty() && result.charAt(result.length() - 1) == ',') {
+					result.append(" ");
+				}
+				result.append(token);
+			}
+
+			private void endNewClause() {
+				if (!afterBeginBeforeEnd) {
+					decrementIndent();
+					if (afterOn == 1) {
+						decrementIndent();
+					}
+					if (afterOn > 0) {
+						afterOn = 0;
+					}
+					newline();
+				}
+				out();
+				if (!"union".equals(lcToken) && !"intersect".equals(lcToken)) {
+					incrementIndent();
+				}
+				newline();
+				afterBeginBeforeEnd = false;
+				afterByOrSetOrFromOrSelect = "by".equals(lcToken)
+								|| "set".equals(lcToken)
+								|| "from".equals(lcToken);
+			}
+
+			private void beginNewClause() {
+				if (!afterBeginBeforeEnd) {
+					if (afterOn == 1) {
+						decrementIndent();
+					}
+					if (afterOn > 0) {
+						afterOn = 0;
+					}
+					decrementIndent();
+					newline();
+				}
+				out();
+				beginLine = false;
+				afterBeginBeforeEnd = true;
+			}
+
+			private void values() {
+				if (parensSinceSelect == 0) {
+					if (!afterBeginBeforeEnd) {
+						decrementIndent();
+					}
+					newline();
+					out();
+					incrementIndent();
+					newline();
+					valuesParenCount = parensSinceSelect + 1;
+				}
+				else {
+					out();
+				}
+			}
+
+			private void closeParen() {
+				if (parensSinceSelect == 0) {
+					decrementIndent();
+					parensSinceSelect = parenCounts.removeLast();
+					afterByOrSetOrFromOrSelect = afterByOrFromOrSelects.removeLast();
+				}
+				else if (valuesParenCount == parensSinceSelect) {
+					valuesParenCount = 0;
+					if (afterBeginBeforeEnd) {
+						decrementIndent();
+					}
+				}
+				parensSinceSelect--;
+				if (inFunction > 0) {
+					// this should come first,
+					// because we increment
+					// inFunction for every
+					// opening paren from the
+					// first one after the
+					// function name
+					inFunction--;
+					out();
+				}
+				else if (afterOn > 0) {
+					out();
+				}
+				else {
+					if (!afterByOrSetOrFromOrSelect) {
+						decrementIndent();
+						newline();
+					}
+					out();
+				}
+				beginLine = false;
+			}
+
+			private void openParen() {
+				if (isFunctionName(lastToken) || inFunction > 0) {
+					inFunction++;
+				}
+				beginLine = false;
+				if (afterOn > 0 || inFunction > 0) {
+					out();
+				}
+				else {
+					out();
+					if (!afterByOrSetOrFromOrSelect) {
+						incrementIndent();
+						newline();
+						beginLine = true;
+					}
+				}
+				parensSinceSelect++;
+			}
+
+			private void incrementIndent() {
+				indent++;
+			}
+
+			private void decrementIndent() {
+				if (indent > 0) {
+					indent--;
+				}
+			}
+
+			private static boolean isFunctionName(String tok) {
+				if (tok == null || tok.isEmpty()) {
+					return false;
+				}
+
+				char begin = tok.charAt(0);
+				boolean isIdentifier = Character.isJavaIdentifierStart(begin) || '"' == begin;
+
+				return isIdentifier && !NON_FUNCTION_NAMES.contains(tok);
+			}
+
+			private static boolean isWhitespace(String token) {
+				return WHITESPACE.contains(token);
+			}
+
+			private void newline() {
+				result.append(lineSeparator())
+								.append(INDENT_STRING.repeat(indent));
+				beginLine = true;
+			}
+		}
+	}
+}

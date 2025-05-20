@@ -33,4 +33,6 @@ module is.codion.framework.db.local {
 
 	provides is.codion.framework.db.EntityConnectionProvider.Builder
 					with is.codion.framework.db.local.DefaultLocalEntityConnectionProviderBuilder;
+	provides is.codion.framework.db.EntityQueries.Factory
+					with is.codion.framework.db.local.DefaultEntityQueriesFactory;
 }

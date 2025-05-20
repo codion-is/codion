@@ -46,6 +46,7 @@
  * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#SUMMARY_PANEL_VISIBLE}
  * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_POPUP_MENU}
  * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_ENTITY_MENU}
+ * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_QUERY_INSPECTOR}
  * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_CLEAR_CONTROL}
  * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#INCLUDE_LIMIT_MENU}
  * <li>{@link is.codion.swing.framework.ui.EntityTablePanel.Config#REFRESH_BUTTON_VISIBLE}

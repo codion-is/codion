@@ -275,6 +275,11 @@ public class EntityTablePanel extends JPanel {
 		 */
 		public static final ControlKey<CommandControl> DISPLAY_POPUP_MENU = CommandControl.key("displayPopupMenu", keyStroke(VK_G, CTRL_DOWN_MASK));
 		/**
+		 * Displays the query inspector, if one is available.<br>
+		 * Default key stroke: CTRL-ALT-Q
+		 */
+		public static final ControlKey<CommandControl> DISPLAY_QUERY_INSPECTOR = CommandControl.key("displayQueryInspector", keyStroke(VK_Q, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		/**
 		 * Displays the entity menu, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-V
 		 */
@@ -480,6 +485,7 @@ public class EntityTablePanel extends JPanel {
 	private StatusPanel statusPanel;
 	private FilterTableColumnComponentPanel<Attribute<?>> summaryPanel;
 	private JScrollPane summaryPanelScrollPane;
+	private QueryInspector queryInspector;
 
 	final Config configuration;
 
@@ -828,6 +834,7 @@ public class EntityTablePanel extends JPanel {
 		configuration.controlMap.keyEvent(DELETE).ifPresent(keyEvent -> keyEvent.enable(table));
 		configuration.controlMap.keyEvent(DECREMENT_SELECTION).ifPresent(keyEvent -> keyEvent.enable(table));
 		configuration.controlMap.keyEvent(INCREMENT_SELECTION).ifPresent(keyEvent -> keyEvent.enable(table));
+		configuration.controlMap.keyEvent(DISPLAY_QUERY_INSPECTOR).ifPresent(keyEvent -> keyEvent.enable(table));
 		configuration.controlMap.keyEvent(DISPLAY_ENTITY_MENU).ifPresent(keyEvent -> keyEvent.enable(table));
 		configuration.controlMap.keyEvent(DISPLAY_POPUP_MENU).ifPresent(keyEvent -> keyEvent.enable(table));
 	}
@@ -1606,6 +1613,9 @@ public class EntityTablePanel extends JPanel {
 		if (configuration.includeEntityMenu) {
 			controlMap.control(DISPLAY_ENTITY_MENU).set(command(this::showEntityMenu));
 		}
+		if (configuration.includeQueryInspector) {
+			controlMap.control(DISPLAY_QUERY_INSPECTOR).set(command(this::showQueryInspector));
+		}
 		if (configuration.includePopupMenu) {
 			controlMap.control(DISPLAY_POPUP_MENU).set(command(this::showPopupMenu));
 		}
@@ -1653,6 +1663,22 @@ public class EntityTablePanel extends JPanel {
 		Point location = popupLocation(table);
 		tableModel.selection().item().optional().ifPresent(selected ->
 						new EntityPopupMenu(selected, tableModel.connection()).show(table, location.x, location.y));
+	}
+
+	private void showQueryInspector() {
+		if (queryInspector == null) {
+			queryInspector = new QueryInspector(tableModel.queryModel());
+		}
+		if (queryInspector.isShowing()) {
+			parentWindow(queryInspector).toFront();
+		}
+		else {
+			componentDialog(queryInspector)
+							.owner(this)
+							.title(tableModel.entityDefinition().caption() + " Query")
+							.modal(false)
+							.show();
+		}
 	}
 
 	private void showPopupMenu() {
@@ -2055,6 +2081,16 @@ public class EntityTablePanel extends JPanel {
 						booleanValue(EntityTablePanel.class.getName() + ".includeEntityMenu", true);
 
 		/**
+		 * Specifies whether to include a Query Inspector on this table, triggered with CTRL-ALT-Q.
+		 * <ul>
+		 * <li>Value type: Boolean
+		 * <li>Default value: false
+		 * </ul>
+		 */
+		public static final PropertyValue<Boolean> INCLUDE_QUERY_INSPECTOR =
+						booleanValue(EntityTablePanel.class.getName() + ".includeQueryInspector", false);
+
+		/**
 		 * Specifies whether to include a 'Clear' control in the popup menu.
 		 * <ul>
 		 * <li>Value type: Boolean
@@ -2223,6 +2259,7 @@ public class EntityTablePanel extends JPanel {
 		private boolean includeClearControl = INCLUDE_CLEAR_CONTROL.getOrThrow();
 		private boolean includeLimitMenu = INCLUDE_LIMIT_MENU.getOrThrow();
 		private boolean includeEntityMenu = INCLUDE_ENTITY_MENU.getOrThrow();
+		private boolean includeQueryInspector = INCLUDE_QUERY_INSPECTOR.getOrThrow();
 		private boolean includePopupMenu = INCLUDE_POPUP_MENU.getOrThrow();
 		private boolean includeSingleSelectionControl = false;
 		private boolean includeAddControl = true;
@@ -2276,6 +2313,7 @@ public class EntityTablePanel extends JPanel {
 			this.includeClearControl = config.includeClearControl;
 			this.includeLimitMenu = config.includeLimitMenu;
 			this.includeEntityMenu = config.includeEntityMenu;
+			this.includeQueryInspector = config.includeQueryInspector;
 			this.includePopupMenu = config.includePopupMenu;
 			this.includeSingleSelectionControl = config.includeSingleSelectionControl;
 			this.includeAddControl = config.includeAddControl;
@@ -2421,6 +2459,15 @@ public class EntityTablePanel extends JPanel {
 		 */
 		public Config includeEntityMenu(boolean includeEntityMenu) {
 			this.includeEntityMenu = includeEntityMenu;
+			return this;
+		}
+
+		/**
+		 * @param includeQueryInspector true if a Query Inspector should be available in this table, triggered with CTRL-ALT-Q.
+		 * @return this Config instance
+		 */
+		public Config includeQueryInspector(boolean includeQueryInspector) {
+			this.includeQueryInspector = includeQueryInspector;
 			return this;
 		}
 
