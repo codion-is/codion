@@ -7,6 +7,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - FilterTable.ScrollToSelected bug fixed, rowVisible() now based on viewport.getViewRect().
 - FlexibleGridLayout re-implemented.
+- FlexibleGridLayout edge case for zero rows/columns bug fixed, test added.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel, support table now known as lookup table.
 - NullableCheckBox, FlatLaf hack removed.
