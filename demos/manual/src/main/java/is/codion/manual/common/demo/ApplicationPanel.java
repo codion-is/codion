@@ -225,8 +225,8 @@ public final class ApplicationPanel extends JPanel {
 						.build(inputPanel::add);
 
 		FilterComboBoxModel<Item<Integer>> integerItemComboBoxModel = model.createIntegerItemComboBoxModel();
-		Value<Integer> integerItemSelectorValue = integerItemComboBoxModel.createSelectorValue(new IntegerItemFinder());
-		NumberField<Integer> integerItemSelectorField = integerField(integerItemSelectorValue)
+		Value<Integer> integerItemSelector = integerItemComboBoxModel.createSelector(new IntegerItemFinder());
+		NumberField<Integer> integerItemSelectorField = integerField(integerItemSelector)
 						.columns(2)
 						.horizontalAlignment(SwingConstants.CENTER)
 						.selectAllOnFocusGained(true)

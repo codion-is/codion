@@ -168,7 +168,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	public <B extends TextFieldBuilder<Integer, NumberField<Integer>, B>> TextFieldBuilder<Integer, NumberField<Integer>, B> integerSelectorField(
 					ItemFinder<Entity, Integer> itemFinder) {
 		requireNonNull(itemFinder);
-		return (B) Components.integerField(getModel().createSelectorValue(itemFinder))
+		return (B) Components.integerField(getModel().createSelector(itemFinder))
 						.columns(2)
 						.selectAllOnFocusGained(true);
 	}
@@ -196,7 +196,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	public <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> stringSelectorField(
 					ItemFinder<Entity, String> itemFinder) {
 		requireNonNull(itemFinder);
-		return (B) Components.stringField(getModel().createSelectorValue(itemFinder))
+		return (B) Components.stringField(getModel().createSelector(itemFinder))
 						.columns(2)
 						.selectAllOnFocusGained(true);
 	}

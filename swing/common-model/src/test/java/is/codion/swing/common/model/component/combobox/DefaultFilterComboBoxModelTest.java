@@ -333,8 +333,8 @@ public class DefaultFilterComboBoxModelTest {
 	}
 
 	@Test
-	void selectorValue() {
-		Value<Character> selectorValue = testModel.createSelectorValue(new ItemFinder<String, Character>() {
+	void selector() {
+		Value<Character> selectorValue = testModel.createSelector(new ItemFinder<String, Character>() {
 			@Override
 			public Character value(String item) {
 				return item.charAt(0);

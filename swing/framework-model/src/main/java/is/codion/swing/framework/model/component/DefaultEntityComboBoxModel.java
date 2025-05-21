@@ -155,7 +155,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 			throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityDefinition.type());
 		}
 
-		return createSelectorValue(new EntityFinder<>(attribute));
+		return createSelector(new EntityFinder<>(attribute));
 	}
 
 	@Override
@@ -169,8 +169,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	}
 
 	@Override
-	public <V> Value<V> createSelectorValue(ItemFinder<Entity, V> itemFinder) {
-		return comboBoxModel.createSelectorValue(itemFinder);
+	public <V> Value<V> createSelector(ItemFinder<Entity, V> itemFinder) {
+		return comboBoxModel.createSelector(itemFinder);
 	}
 
 	@Override
