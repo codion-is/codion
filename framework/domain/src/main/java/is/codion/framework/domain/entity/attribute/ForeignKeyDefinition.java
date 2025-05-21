@@ -90,7 +90,8 @@ public interface ForeignKeyDefinition extends AttributeDefinition<Entity> {
 		Builder soft(boolean soft);
 
 		/**
-		 * Marks the given foreign key reference column as read-only, as in, not updated when the foreign key value is set.
+		 * Marks the given foreign key reference column as read-only, which causes an exception being
+		 * thrown when the given column value is modified via this foreign key.
 		 * @param column the reference column
 		 * @return this instance
 		 */

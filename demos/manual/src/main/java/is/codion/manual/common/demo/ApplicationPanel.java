@@ -25,7 +25,6 @@ import is.codion.common.value.Value;
 import is.codion.plugin.flatlaf.intellij.themes.monokaipro.MonokaiPro;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel.ItemFinder;
-import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
@@ -336,8 +335,6 @@ public final class ApplicationPanel extends JPanel {
 										.build(component -> add(component, BorderLayout.SOUTH)))
 						.add(LookAndFeelComboBox.builder().build())
 						.build(southPanel -> add(southPanel, BorderLayout.SOUTH));
-
-		Sizes.setPreferredWidth(this, 400);
 	}
 
 	private static void selectString(ActionEvent event) {

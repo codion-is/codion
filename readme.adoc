@@ -86,6 +86,8 @@ Look & Feel provided by https://github.com/JFormDesigner/FlatLaf[Flat Look and F
 
 A SDKMAN desktop app, demonstrating Swing UI development using the `codion-swing-common-ui` library for apps not requiring CRUD functionality.
 
+UI design and SDKMAN API borrowed from https://github.com/jagodevreede/sdkman-ui[sdkman-ui]. This app would not exist without it!
+
 image::https://github.com/codion-is/sdkboy/blob/main/src/docs/asciidoc/images/sdkboy.png[SDKBOY client]
 
 === https://github.com/codion-is/llemmy[Llemmy]
@@ -470,7 +472,7 @@ public class StoreDemo {
 
     customerPanel.setBorder(createEmptyBorder(5, 5, 0, 5));
     addressPanel.tablePanel()
-            .conditions().view().set(SIMPLE);
+            .condition().view().set(SIMPLE);
 
     customerModel.tableModel().items().refresh();
 

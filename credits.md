@@ -38,4 +38,10 @@ Licensed under the MIT License.
 
 Original source (archived): https://github.com/zurb/foundation-icon-fonts
 
-*If you see your code or ideas in Codion and we’ve missed you — let us know. We’d love to credit you properly.*
+*If you see your code or ideas in Codion, and we’ve missed you — let us know. We’d love to credit you properly.*
+
+---
+
+### Thanks
+
+And last but not least, thanks to **GG**, who showed me what Swing is capable of back in the day and shaped the way I think about API design. You know who you are.
