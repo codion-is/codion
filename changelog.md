@@ -14,6 +14,7 @@ Codion Change Log
 - EntityApplicationPanel, support table now known as lookup table.
 - NullableCheckBox, FlatLaf hack removed.
 - QueryInspector added, available with Ctrl-Alt-Q in EntityTablePanel, when using a local connection.
+- EntityTableExport added.
 
 ## 0.18.34
 ### is.codion.common.core

@@ -804,6 +804,34 @@ is/codion/swing/framework/ui/EntityPanel_is_IS.properties
 |toggle_edit|Toggle between edit views|Skipta á milli sýna á innsláttarsvæði
 |===
 
+=== is/codion/swing/framework/ui/EntityTableExport.java
+
+[source]
+----
+is/codion/swing/framework/ui/EntityTableExport.properties
+is/codion/swing/framework/ui/EntityTableExport_is_IS.properties
+----
+
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|columns|Columns|Dálkar
+|columns_all|All|Allir
+|columns_all_mnemonic|L|R
+|columns_none|None|Enginn
+|columns_none_mnemonic|N|E
+|default_columns|Default|Sjálfgefnir
+|default_columns_mnemonic|D|S
+|export|Export|Afrita
+|exporting_rows|Exporting data|Afrita gögn
+|rows|Rows|Færslur
+|rows_all|All|Allar
+|rows_all_mnemonic|A|A
+|rows_selected|Selected|Valdar
+|rows_selected_mnemonic|S|V
+|===
+
 === is/codion/swing/framework/ui/EntityTablePanel.java
 
 [source]
@@ -820,6 +848,7 @@ is/codion/swing/framework/ui/EntityTablePanel_is_IS.properties
 |columns|Columns|Dálkar
 |condition_required|Condition Required|Krefjast Leitarskilyrðis
 |condition_required_description|One or more active search conditions required for displaying data|Eins eða fleiri virkra leitarskilyrða krafist til að sækja gögn
+|copy_expanded|Copy Expanded|Afrita Útvíkkað
 |decrement_selection_tip|Move selection up|Færa val upp
 |delete_dependent_records|Delete these dependent records first|Eyddu þessum tengdu færslum fyrst
 |filtered|filtered|sýjaðar

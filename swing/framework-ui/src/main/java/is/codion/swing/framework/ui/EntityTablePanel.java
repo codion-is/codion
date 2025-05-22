@@ -371,15 +371,21 @@ public class EntityTablePanel extends JPanel {
 		 */
 		public static final ControlKey<CommandControl> COPY_ROWS = CommandControl.key("copyRows");
 		/**
+		 * A {@link Control} for copying the table rows expanded with header.
+		 */
+		public static final ControlKey<CommandControl> COPY_EXPANDED = CommandControl.key("copyExpanded");
+		/**
 		 * A {@link Controls} instance containing controls for copying either cell or table data.
 		 * <ul>
-		 * <li>{@link ControlKeys#COPY_ROWS ControlKeys#COPY_ROWS}
 		 * <li>{@link ControlKeys#COPY_CELL ControlKeys#COPY_CELL}
+		 * <li>{@link ControlKeys#COPY_ROWS ControlKeys#COPY_ROWS}
+		 * <li>{@link ControlKeys#COPY_EXPANDED ControlKeys#COPY_EXPANDED}
 		 * </ul>
 		 * @see #COPY_CELL
 		 * @see #COPY_ROWS
+		 * @see #COPY_EXPANDED
 		 */
-		public static final ControlsKey COPY_CONTROLS = Controls.key("copyControls", Controls.layout(asList(COPY_CELL, COPY_ROWS)));
+		public static final ControlsKey COPY_CONTROLS = Controls.key("copyControls", Controls.layout(asList(COPY_CELL, COPY_ROWS, COPY_EXPANDED)));
 		/**
 		 * A {@link Controls} instance containing controls for configuring columns.
 		 * <ul>
@@ -485,6 +491,7 @@ public class EntityTablePanel extends JPanel {
 	private StatusPanel statusPanel;
 	private FilterTableColumnComponentPanel<Attribute<?>> summaryPanel;
 	private JScrollPane summaryPanelScrollPane;
+	private EntityTableExport export;
 	private QueryInspector queryInspector;
 
 	final Config configuration;
@@ -1390,6 +1397,7 @@ public class EntityTablePanel extends JPanel {
 						.smallIcon(ICONS.copy());
 		control(COPY_CELL).optional().ifPresent(builder::control);
 		control(COPY_ROWS).optional().ifPresent(builder::control);
+		control(COPY_EXPANDED).optional().ifPresent(builder::control);
 
 		Controls copyControls = builder.build();
 
@@ -1401,6 +1409,20 @@ public class EntityTablePanel extends JPanel {
 						.command(table::copyToClipboard)
 						.caption(FrameworkMessages.copyTableWithHeader())
 						.build();
+	}
+
+	private CommandControl createCopyRowsExpandedControl() {
+		return Control.builder()
+						.command(this::copyExpanded)
+						.caption(MESSAGES.getString("copy_expanded") + "...")
+						.build();
+	}
+
+	private void copyExpanded() {
+		if (export == null) {
+			export = new EntityTableExport(this, table.columnModel());
+		}
+		export.exportToClipboard();
 	}
 
 	private boolean includeAddControl() {
@@ -1610,6 +1632,7 @@ public class EntityTablePanel extends JPanel {
 		controlMap.control(INCREMENT_SELECTION).set(createIncrementSelectionControl());
 		controlMap.control(COPY_CELL).set(table.createCopyCellControl());
 		controlMap.control(COPY_ROWS).set(createCopyRowsControl());
+		controlMap.control(COPY_EXPANDED).set(createCopyRowsExpandedControl());
 		if (configuration.includeEntityMenu) {
 			controlMap.control(DISPLAY_ENTITY_MENU).set(command(this::showEntityMenu));
 		}
