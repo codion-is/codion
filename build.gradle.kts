@@ -1,7 +1,4 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
-import org.gradle.internal.jvm.Jvm
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 buildscript {
     dependencies {
@@ -63,18 +60,11 @@ configure(frameworkModules()) {
 
     tasks.withType<Jar>().configureEach {
         manifest {
-            attributes["Sealed"] = "true"
-            attributes["Specification-Title"] = project.name
-            attributes["Specification-Version"] = project.version
-            attributes["Specification-Vendor"] = "Codion"
             attributes["Implementation-Title"] = project.name
             attributes["Implementation-Version"] = project.version
             attributes["Implementation-Vendor"] = "Codion"
-            attributes["Implementation-Vendor-Id"] = "is.codion"
             attributes["Implementation-URL"] = "https://codion.is"
-            attributes["Build-Jdk"] = Jvm.current()
-            attributes["Built-By"] = System.getProperty("user.name")
-            attributes["Build-Date"] = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDate.now())
+            attributes["Sealed"] = "true"
         }
     }
 
@@ -158,6 +148,13 @@ configure(subprojects) {
     spotless {
         java {
             licenseHeaderFile(rootProject.file("documentation/src/misc/license_header")).yearSeparator(" - ")
+            targetExclude(
+                "src/main/java/is/codion/swing/common/model/component/button/NullableToggleButtonModel.java",
+                "src/main/java/is/codion/swing/common/ui/component/button/NullableCheckBox.java",
+                "src/main/java/is/codion/swing/common/ui/component/combobox/Completion.java",
+                "src/main/java/is/codion/swing/common/ui/component/combobox/CompletionDocument.java",
+                "src/main/java/is/codion/plugin/imagepanel/NavigableImagePanel.java"
+            )
         }
         format("javaMisc") {
             target("src/**/package-info.java", "src/**/module-info.java")
@@ -207,19 +204,19 @@ configure(subprojects) {
         group = "other"
         description = "Creates a key and truststore pair to use when running server unit tests and demos with remote connection"
 
-        val keystoreDir = "${rootDir}/framework/server/src/main/config/"
-        val keystore = keystoreDir + "keystore.jks"
-        val truststore = keystoreDir + "truststore.jks"
-        val certificate = keystoreDir + "certificate.cer"
+        val keystoreDir = rootProject.layout.projectDirectory.dir("framework/server/src/main/config")
+        val keystore = keystoreDir.file("keystore.jks")
+        val truststore = keystoreDir.file("truststore.jks")
+        val certificate = keystoreDir.file("certificate.cer")
         val keyToolExecutable = System.getProperty("java.home") + "/bin/keytool"
 
-        onlyIf { !file(keystore).exists() }
+        onlyIf { !keystore.asFile.exists() }
 
         doLast {
             providers.exec {
                 executable = keyToolExecutable
                 args = listOf(
-                    "-genkeypair", "-keyalg", "RSA", "-keystore", keystore, "-storepass", "crappypass",
+                    "-genkeypair", "-keyalg", "RSA", "-keystore", keystore.asFile.absolutePath, "-storepass", "crappypass",
                     "-keypass", "crappypass", "-dname", "CN=Dummy, OU=dummy, O=dummy.org, C=DU", "-alias", "Alias",
                     "-storetype", "pkcs12", "-ext", "SAN=dns:localhost"
                 )
@@ -227,15 +224,15 @@ configure(subprojects) {
             providers.exec {
                 executable = keyToolExecutable
                 args = listOf(
-                    "-exportcert", "-keystore", keystore, "-storepass", "crappypass",
-                    "-alias", "Alias", "-rfc", "-file", certificate
+                    "-exportcert", "-keystore", keystore.asFile.absolutePath, "-storepass", "crappypass",
+                    "-alias", "Alias", "-rfc", "-file", certificate.asFile.absolutePath
                 )
             }.result.get()
             providers.exec {
                 executable = keyToolExecutable
                 args = listOf(
-                    "-import", "-alias", "Alias", "-storepass", "changeit", "-file", certificate,
-                    "-keystore", truststore, "-noprompt", "-storetype", "pkcs12"
+                    "-import", "-alias", "Alias", "-storepass", "changeit", "-file", certificate.asFile.absolutePath,
+                    "-keystore", truststore.asFile.absolutePath, "-noprompt", "-storetype", "pkcs12"
                 )
             }.result.get()
             delete(certificate)

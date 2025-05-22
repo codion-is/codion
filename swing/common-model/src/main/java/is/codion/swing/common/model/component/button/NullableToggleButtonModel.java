@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2019 - 2025, Björn Darri Sigurðsson.
+ * Copyright (c) Heinz M. Kabutz.
  */
 package is.codion.swing.common.model.component.button;
 
@@ -31,7 +31,7 @@ import java.util.Objects;
  * The states are null -&gt; false -&gt; true.
  * Heavily influenced by TristateCheckBox by Heinz M. Kabutz
  * <a href="http://www.javaspecialists.eu/archive/Issue145.html">http://www.javaspecialists.eu/archive/Issue145.html</a>
- * Included with permission.
+ * Included with express permission from the author, 2019.
  * @author Heinz M. Kabutz
  * @author Björn Darri Sigurðsson
  */

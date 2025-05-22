@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2009 - 2025, Björn Darri Sigurðsson.
+ * Copyright (c) Slav Boleslawski.
  */
 package is.codion.plugin.imagepanel;
 
@@ -127,7 +127,7 @@ import static java.util.ResourceBundle.getBundle;
  * {@code HIGH_QUALITY_RENDERING_SCALE_THRESHOLD}.
  * <p>
  * <a href="http://today.java.net/pub/a/today/2007/03/27/navigable-image-panel.html">http://today.java.net/pub/a/today/2007/03/27/navigable-image-panel.html</a>
- * Included with permission.
+ * Included with express permission from the author, 2019.
  * @author Slav Boleslawski
  */
 public class NavigableImagePanel extends JPanel {

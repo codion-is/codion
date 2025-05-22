@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2020 - 2025, Björn Darri Sigurðsson.
+ * Copyright (c) Thomas Bierhance.
  */
 package is.codion.swing.common.ui.component.combobox;
 
@@ -40,7 +40,7 @@ import static java.util.Objects.requireNonNull;
  * }
  * <p>
  * Based on code originally from: <a href="http://www.orbital-computer.de/JComboBox">http://www.orbital-computer.de/JComboBox</a><br>
- * Included with permission.
+ * Included with express permission from the author, 2019.
  * @author Thomas Bierhance
  * @author Björn Darri Sigurðsson
  */
