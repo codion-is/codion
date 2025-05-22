@@ -10,70 +10,70 @@ Codion’s {url-entity-connection}[EntityConnection] is the primary interface fo
 
 Codion’s database layer is intentionally minimal. It does not perform SQL joins, nor does it rely on DB-specific features — except where needed for primary key generation via <<manual.adoc#_keygenerator, KeyGenerator>> strategies.
 
-Instead, it gives you predictable, queryable access to individual Entity objects and their associated foreign keys — controlled through a feature called fetch depth.
+Instead, it gives you predictable, queryable access to individual Entity objects and their associated foreign keys — controlled through a feature called reference depth.
 
 The <<{dir-tutorials}/chinook/chinook.adoc#_domain, Chinook domain model>> is used in the examples below.
 
 == Selecting
 
-By default, when you select a row using {url-entity-connection}[EntityConnection] you receive an Entity instance along with a single level of foreign key references, that is a so-called fetch depth of one.
+By default, when you select a row using {url-entity-connection}[EntityConnection] you receive an Entity instance along with a single level of foreign key references, that is a so-called reference depth of one.
 This means that selecting a track you get all the entities referenced via foreign keys as well.
 
-The fetch depth can be configured on a foreign key basis when defining entities.
-A fetch depth of zero means that no foreign key references are fetched, and a value larger than one means that not only is the foreign key reference fetched but also its foreign key references, until the defined depth has been reached.
-A negative fetch depth means no limit with the whole dependency graph fetched.
-This limiting of foreign key fetch depth can be turned off, meaning the full reference graph is always fetched, via a system property:
+The reference depth can be configured on a foreign key basis when defining entities.
+A reference depth of zero means that no foreign key references are fetched, and a value larger than one means that not only is the foreign key reference fetched but also its foreign key references, until the defined depth has been reached.
+A negative reference depth means no limit with the whole dependency graph fetched.
+This limiting of foreign key reference depth can be turned off, meaning the full reference graph is always fetched, via a system property:
 
 [source]
 ----
-codion.db.limitForeignKeyFetchDepth=false
+codion.db.limitForeignKeyReferenceDepth=false
 ----
 
-or the {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#LIMIT_FOREIGN_KEY_FETCH_DEPTH[LocalEntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH] configuration value:
-
-[source,java,]
-----
-LocalEntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.set(false);
-----
-
-or on a connection instance via {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#setLimitForeignKeyFetchDepth{opar}boolean{cpar}[setLimitForeignKeyFetchDepth()]
+or the {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#LIMIT_FOREIGN_KEY_REFERENCE_DEPTH[LocalEntityConnection.LIMIT_FOREIGN_KEY_REFERENCE_DEPTH] configuration value:
 
 [source,java,]
 ----
-connection.setLimitForeignKeyFetchDepth(false);
+LocalEntityConnection.LIMIT_FOREIGN_KEY_REFERENCE_DEPTH.set(false);
 ----
 
-You can specify that the foreign key should not be populated by default by using a fetch depth of 0.
+or on a connection instance via {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#setLimitForeignKeyReferenceDepth{opar}boolean{cpar}[setLimitForeignKeyReferenceDepth()]
+
+[source,java,]
+----
+connection.setLimitForeignKeyReferenceDepth(false);
+----
+
+You can specify that the foreign key should not be populated by default by using a reference depth of 0.
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/demos/chinook/domain/ChinookImpl.java[tags=fetchDepth0]
+include::{dir-chinook-source}/is/codion/demos/chinook/domain/ChinookImpl.java[tags=referenceDepth0]
 ----
 
-Or you can specify that the foreign key should be populated along with one more level by using a fetch depth of 2.
-
-[source,java,indent=0]
-----
-include::{dir-chinook-source}/is/codion/demos/chinook/domain/ChinookImpl.java[tags=fetchDepth2]
-----
-
-[source,java,indent=0]
-----
-include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=fetchDepthEntity]
-----
-
-The fetch depth can also be configured on a query basis, either for the whole query or one or more foreign keys.
+Or you can specify that the foreign key should be populated along with one more level by using a reference depth of 2.
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=fetchDepthCondition]
+include::{dir-chinook-source}/is/codion/demos/chinook/domain/ChinookImpl.java[tags=referenceDepth2]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=fetchDepthConditionForeignKey]
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=referenceDepthEntity]
 ----
 
-=== Fetch Depth Values:
+The reference depth can also be configured on a query basis, either for the whole query or one or more foreign keys.
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=referenceDepthCondition]
+----
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=referenceDepthConditionForeignKey]
+----
+
+=== Reference Depth Values:
 
 * 0 – Do not fetch foreign key references
 * 1 (default) – Fetch directly referenced foreign key entities

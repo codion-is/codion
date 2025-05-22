@@ -31,7 +31,7 @@
  * <li>{@link is.codion.framework.domain.entity.attribute.AttributeDefinition#DATE_TIME_FORMAT}<br>
  * <li>{@link is.codion.framework.domain.entity.attribute.AttributeDefinition#DATE_FORMAT}<br>
  * <li>{@link is.codion.framework.domain.entity.attribute.AttributeDefinition#DECIMAL_ROUNDING_MODE}<br>
- * <li>{@link is.codion.framework.domain.entity.attribute.ForeignKeyDefinition#FOREIGN_KEY_FETCH_DEPTH}
+ * <li>{@link is.codion.framework.domain.entity.attribute.ForeignKeyDefinition#FOREIGN_KEY_REFERENCE_DEPTH}
  * </ul>
  */
 @org.jspecify.annotations.NullMarked

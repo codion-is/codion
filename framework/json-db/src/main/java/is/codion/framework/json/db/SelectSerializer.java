@@ -80,15 +80,15 @@ final class SelectSerializer extends StdSerializer<Select> {
 		if (select.queryTimeout() != 0) {
 			generator.writeObjectField("queryTimeout", select.queryTimeout());
 		}
-		int conditionFetchDepth = select.fetchDepth().orElse(-1);
-		if (conditionFetchDepth != -1) {
-			generator.writeObjectField("fetchDepth", conditionFetchDepth);
+		int conditionReferenceDepth = select.referenceDepth().orElse(-1);
+		if (conditionReferenceDepth != -1) {
+			generator.writeObjectField("referenceDepth", conditionReferenceDepth);
 		}
-		Map<ForeignKey, Integer> foreignKeyFetchDepths = select.foreignKeyFetchDepths();
-		if (!foreignKeyFetchDepths.isEmpty()) {
-			generator.writeFieldName("fkFetchDepth");
+		Map<ForeignKey, Integer> foreignKeyReferenceDepths = select.foreignKeyReferenceDepths();
+		if (!foreignKeyReferenceDepths.isEmpty()) {
+			generator.writeFieldName("fkReferenceDepth");
 			generator.writeStartObject();
-			for (Map.Entry<ForeignKey, Integer> entry : foreignKeyFetchDepths.entrySet()) {
+			for (Map.Entry<ForeignKey, Integer> entry : foreignKeyReferenceDepths.entrySet()) {
 				generator.writeObjectField(entry.getKey().name(), entry.getValue());
 			}
 			generator.writeEndObject();

@@ -47,10 +47,10 @@ final class DefaultSelect implements Select, Serializable {
 
 	private final Condition where;
 	private final Condition having;
-	private final @Nullable Map<ForeignKey, Integer> foreignKeyFetchDepths;
+	private final @Nullable Map<ForeignKey, Integer> foreignKeyReferenceDepths;
 	private final Collection<Attribute<?>> attributes;
 	private final @Nullable OrderBy orderBy;
-	private final @Nullable Integer fetchDepth;
+	private final @Nullable Integer referenceDepth;
 	private final boolean forUpdate;
 	private final @Nullable Integer limit;
 	private final @Nullable Integer offset;
@@ -59,12 +59,12 @@ final class DefaultSelect implements Select, Serializable {
 	private DefaultSelect(DefaultBuilder builder) {
 		this.where = builder.where;
 		this.having = builder.having;
-		this.foreignKeyFetchDepths = builder.foreignKeyFetchDepths == null ?
+		this.foreignKeyReferenceDepths = builder.foreignKeyReferenceDepths == null ?
 						null :
-						unmodifiableMap(builder.foreignKeyFetchDepths);
+						unmodifiableMap(builder.foreignKeyReferenceDepths);
 		this.attributes = builder.attributes;
 		this.orderBy = builder.orderBy;
-		this.fetchDepth = builder.fetchDepth;
+		this.referenceDepth = builder.referenceDepth;
 		this.forUpdate = builder.forUpdate;
 		this.limit = builder.limit;
 		this.offset = builder.offset;
@@ -102,23 +102,23 @@ final class DefaultSelect implements Select, Serializable {
 	}
 
 	@Override
-	public OptionalInt fetchDepth() {
-		return fetchDepth == null ? OptionalInt.empty() : OptionalInt.of(fetchDepth);
+	public OptionalInt referenceDepth() {
+		return referenceDepth == null ? OptionalInt.empty() : OptionalInt.of(referenceDepth);
 	}
 
 	@Override
-	public OptionalInt fetchDepth(ForeignKey foreignKey) {
-		Integer foreignKeyFetchDepth = foreignKeyFetchDepths().get(requireNonNull(foreignKey));
-		if (foreignKeyFetchDepth != null) {
-			return OptionalInt.of(foreignKeyFetchDepth);
+	public OptionalInt referenceDepth(ForeignKey foreignKey) {
+		Integer foreignKeyReferenceDepth = foreignKeyReferenceDepths().get(requireNonNull(foreignKey));
+		if (foreignKeyReferenceDepth != null) {
+			return OptionalInt.of(foreignKeyReferenceDepth);
 		}
 
-		return fetchDepth();
+		return referenceDepth();
 	}
 
 	@Override
-	public Map<ForeignKey, Integer> foreignKeyFetchDepths() {
-		return foreignKeyFetchDepths == null ? emptyMap() : foreignKeyFetchDepths;
+	public Map<ForeignKey, Integer> foreignKeyReferenceDepths() {
+		return foreignKeyReferenceDepths == null ? emptyMap() : foreignKeyReferenceDepths;
 	}
 
 	@Override
@@ -145,15 +145,15 @@ final class DefaultSelect implements Select, Serializable {
 						offset == that.offset &&
 						where.equals(that.where) &&
 						Objects.equals(having, that.having) &&
-						Objects.equals(foreignKeyFetchDepths, that.foreignKeyFetchDepths) &&
+						Objects.equals(foreignKeyReferenceDepths, that.foreignKeyReferenceDepths) &&
 						attributes.equals(that.attributes) &&
 						Objects.equals(orderBy, that.orderBy) &&
-						Objects.equals(fetchDepth, that.fetchDepth);
+						Objects.equals(referenceDepth, that.referenceDepth);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(forUpdate, limit, offset, where, foreignKeyFetchDepths, attributes, orderBy, fetchDepth);
+		return Objects.hash(forUpdate, limit, offset, where, foreignKeyReferenceDepths, attributes, orderBy, referenceDepth);
 	}
 
 	@Override
@@ -161,10 +161,10 @@ final class DefaultSelect implements Select, Serializable {
 		return "Select{" +
 						"where=" + where +
 						", having=" + having +
-						", foreignKeyFetchDepths=" + foreignKeyFetchDepths +
+						", foreignKeyReferenceDepths=" + foreignKeyReferenceDepths +
 						", attributes=" + attributes +
 						", orderBy=" + orderBy +
-						", fetchDepth=" + fetchDepth +
+						", referenceDepth=" + referenceDepth +
 						", forUpdate=" + forUpdate +
 						", limit=" + limit +
 						", offset=" + offset +
@@ -175,12 +175,12 @@ final class DefaultSelect implements Select, Serializable {
 
 		private final Condition where;
 
-		private @Nullable Map<ForeignKey, Integer> foreignKeyFetchDepths;
+		private @Nullable Map<ForeignKey, Integer> foreignKeyReferenceDepths;
 		private Collection<Attribute<?>> attributes = emptyList();
 
 		private Condition having;
 		private @Nullable OrderBy orderBy;
-		private @Nullable Integer fetchDepth;
+		private @Nullable Integer referenceDepth;
 		private boolean forUpdate;
 		private @Nullable Integer limit;
 		private @Nullable Integer offset;
@@ -212,23 +212,23 @@ final class DefaultSelect implements Select, Serializable {
 		@Override
 		public Builder forUpdate() {
 			this.forUpdate = true;
-			this.fetchDepth = 0;
+			this.referenceDepth = 0;
 			return this;
 		}
 
 		@Override
-		public Builder fetchDepth(int fetchDepth) {
-			this.fetchDepth = fetchDepth;
+		public Builder referenceDepth(int referenceDepth) {
+			this.referenceDepth = referenceDepth;
 			return this;
 		}
 
 		@Override
-		public Builder fetchDepth(ForeignKey foreignKey, int fetchDepth) {
+		public Builder referenceDepth(ForeignKey foreignKey, int referenceDepth) {
 			requireNonNull(foreignKey);
-			if (foreignKeyFetchDepths == null) {
-				foreignKeyFetchDepths = new HashMap<>();
+			if (foreignKeyReferenceDepths == null) {
+				foreignKeyReferenceDepths = new HashMap<>();
 			}
-			foreignKeyFetchDepths.put(foreignKey, fetchDepth);
+			foreignKeyReferenceDepths.put(foreignKey, referenceDepth);
 			return this;
 		}
 

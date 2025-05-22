@@ -703,24 +703,24 @@ public interface EntityConnection extends AutoCloseable {
 		int queryTimeout();
 
 		/**
-		 * @return the global fetch depth limit for this condition, an empty Optional if none has been specified
+		 * @return the global reference depth limit for this condition, an empty Optional if none has been specified
 		 */
-		OptionalInt fetchDepth();
+		OptionalInt referenceDepth();
 
 		/**
 		 * Returns the number of levels of foreign key values to fetch, with 0 meaning the referenced entity
-		 * should not be fetched, -1 no limit and an empty Optional if the global limit should be used ({@link #fetchDepth()}).
+		 * should not be fetched, -1 no limit and an empty Optional if the global limit should be used ({@link #referenceDepth()}).
 		 * @param foreignKey the foreign key
 		 * @return the number of levels of foreign key values to fetch
 		 */
-		OptionalInt fetchDepth(ForeignKey foreignKey);
+		OptionalInt referenceDepth(ForeignKey foreignKey);
 
 		/**
 		 * Returns a map containing the number of levels of foreign key values to fetch per foreign key,
 		 * with 0 meaning no referenced entities should be fetched, -1 no limit.
 		 * @return a map containing the number of levels of foreign key values to fetch for each foreign key
 		 */
-		Map<ForeignKey, Integer> foreignKeyFetchDepths();
+		Map<ForeignKey, Integer> foreignKeyReferenceDepths();
 
 		/**
 		 * @return the attributes to include in the query result,
@@ -756,7 +756,7 @@ public interface EntityConnection extends AutoCloseable {
 			 * Marks the Select instance as a FOR UPDATE query, this means the resulting rows
 			 * will be locked by the given connection until unlocked by running another (non-select for update)
 			 * query on the same connection or performing an update.
-			 * Note that marking this Select instance as for update, sets the {@link #fetchDepth()} to zero, which can
+			 * Note that marking this Select instance as for update, sets the {@link #referenceDepth()} to zero, which can
 			 * then be modified by setting it after setting forUpdate.
 			 * @return this builder instance
 			 */
@@ -764,18 +764,22 @@ public interface EntityConnection extends AutoCloseable {
 
 			/**
 			 * Limit the levels of foreign keys to fetch
-			 * @param fetchDepth the foreign key fetch depth limit
+			 * @param referenceDepth the foreign key reference depth limit
 			 * @return this builder instance
 			 */
-			Builder fetchDepth(int fetchDepth);
+			Builder referenceDepth(int referenceDepth);
 
 			/**
-			 * Limit the levels of foreign keys to fetch via the given foreign key
+			 * Returns the depth limit for a specific foreign key traversal.
+			 * <ul>
+			 *   <li>{@code OptionalInt.empty()} means use the global {@link #referenceDepth()} value</li>
+			 *   <li>{@code 0} means do not fetch the referenced entity</li>
+			 *   <li>{@code -1} means unlimited depth</li>
+			 * </ul>
 			 * @param foreignKey the foreign key
-			 * @param fetchDepth the foreign key fetch depth limit
-			 * @return this builder instance
+			 * @return the number of levels of foreign key values to fetch for the given key
 			 */
-			Builder fetchDepth(ForeignKey foreignKey, int fetchDepth);
+			Builder referenceDepth(ForeignKey foreignKey, int referenceDepth);
 
 			/**
 			 * Sets the attributes to include in the query result. An empty array means all attributes should be included.

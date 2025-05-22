@@ -84,13 +84,13 @@ public interface LocalEntityConnection extends EntityConnection {
 
 	/**
 	 * Specifies whether the foreign key value graph should be fully populated instead of
-	 * being limited by the foreign key fetch depth setting
+	 * being limited by the foreign key reference depth setting
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
 	 * </ul>
 	 */
-	PropertyValue<Boolean> LIMIT_FOREIGN_KEY_FETCH_DEPTH = booleanValue("codion.db.limitForeignKeyFetchDepth", true);
+	PropertyValue<Boolean> LIMIT_FOREIGN_KEY_REFERENCE_DEPTH = booleanValue("codion.db.limitForeignKeyReferenceDepth", true);
 
 	/**
 	 * @return the underlying connection
@@ -126,15 +126,15 @@ public interface LocalEntityConnection extends EntityConnection {
 	void setOptimisticLocking(boolean optimisticLocking);
 
 	/**
-	 * @return true if foreign key fetch depths are being limited
+	 * @return true if foreign key reference depths are being limited
 	 */
-	boolean isLimitForeignKeyFetchDepth();
+	boolean isLimitForeignKeyReferenceDepth();
 
 	/**
-	 * @param limitForeignKeyFetchDepth false to override the fetch depth limit specified by conditions or entities
-	 * @see Select.Builder#fetchDepth(int)
+	 * @param limitForeignKeyReferenceDepth false to override the reference depth limit specified by conditions or entities
+	 * @see Select.Builder#referenceDepth(int)
 	 */
-	void setLimitForeignKeyFetchDepth(boolean limitForeignKeyFetchDepth);
+	void setLimitForeignKeyReferenceDepth(boolean limitForeignKeyReferenceDepth);
 
 	/**
 	 * @return the default query timeout being used

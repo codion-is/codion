@@ -55,8 +55,8 @@ public final class DatabaseObjectMapperTest {
 						.offset(1)
 						.forUpdate()
 						.queryTimeout(42)
-						.fetchDepth(2)
-						.fetchDepth(Employee.DEPARTMENT_FK, 0)
+						.referenceDepth(2)
+						.referenceDepth(Employee.DEPARTMENT_FK, 0)
 						.attributes(Employee.COMMISSION, Employee.DEPARTMENT)
 						.build();
 
@@ -68,9 +68,9 @@ public final class DatabaseObjectMapperTest {
 		assertEquals(select.orderBy().orElse(null).orderByColumns(), readCondition.orderBy().get().orderByColumns());
 		assertEquals(select.limit(), readCondition.limit());
 		assertEquals(select.offset(), readCondition.offset());
-		assertEquals(select.fetchDepth().orElse(-1), readCondition.fetchDepth().orElse(-1));
+		assertEquals(select.referenceDepth().orElse(-1), readCondition.referenceDepth().orElse(-1));
 		for (ForeignKey foreignKey : entities.definition(select.where().entityType()).foreignKeys().get()) {
-			assertEquals(select.foreignKeyFetchDepths().get(foreignKey), readCondition.foreignKeyFetchDepths().get(foreignKey));
+			assertEquals(select.foreignKeyReferenceDepths().get(foreignKey), readCondition.foreignKeyReferenceDepths().get(foreignKey));
 		}
 		assertEquals(select.attributes(), readCondition.attributes());
 		assertTrue(readCondition.forUpdate());
@@ -83,7 +83,7 @@ public final class DatabaseObjectMapperTest {
 		readCondition = mapper.readValue(jsonString, Select.class);
 
 		assertFalse(readCondition.orderBy().isPresent());
-		assertFalse(readCondition.fetchDepth().isPresent());
+		assertFalse(readCondition.referenceDepth().isPresent());
 
 		select = Select.where(Employee.EMPNO.equalTo(2)).build();
 		jsonString = mapper.writeValueAsString(select);

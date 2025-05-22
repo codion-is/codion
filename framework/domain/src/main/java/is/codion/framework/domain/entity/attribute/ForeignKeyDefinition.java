@@ -33,16 +33,16 @@ public interface ForeignKeyDefinition extends AttributeDefinition<Entity> {
 	/**
 	 * The default number of levels of foreign keys to fetch
 	 */
-	int DEFAULT_FOREIGN_KEY_FETCH_DEPTH = 1;
+	int DEFAULT_FOREIGN_KEY_REFERENCE_DEPTH = 1;
 
 	/**
-	 * Specifies the default foreign key fetch depth
+	 * Specifies the default foreign key reference depth
 	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 1
 	 * </ul>
 	 */
-	PropertyValue<Integer> FOREIGN_KEY_FETCH_DEPTH = integerValue("codion.domain.foreignKeyFetchDepth", DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
+	PropertyValue<Integer> FOREIGN_KEY_REFERENCE_DEPTH = integerValue("codion.domain.foreignKeyReferenceDepth", DEFAULT_FOREIGN_KEY_REFERENCE_DEPTH);
 
 	/**
 	 * @return the foreign key attribute this foreign key is based on.
@@ -51,9 +51,9 @@ public interface ForeignKeyDefinition extends AttributeDefinition<Entity> {
 	ForeignKey attribute();
 
 	/**
-	 * @return the default query fetch depth for this foreign key
+	 * @return the default query reference depth for this foreign key
 	 */
-	int fetchDepth();
+	int referenceDepth();
 
 	/**
 	 * @return true if this foreign key is not based on a physical (table) foreign key and should not prevent deletion

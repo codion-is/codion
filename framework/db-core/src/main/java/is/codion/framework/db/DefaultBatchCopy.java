@@ -55,7 +55,7 @@ final class DefaultBatchCopy implements BatchCopy {
 							Select.all(entityTypeCondition.getKey()) :
 							Select.where(entityTypeCondition.getValue());
 			List<Entity> entities = source.select(conditionBuilder
-											.fetchDepth(0)
+											.referenceDepth(0)
 											.build())
 							.stream()
 							.map(entity -> includePrimaryKeys ? entity : entity.copy().builder()

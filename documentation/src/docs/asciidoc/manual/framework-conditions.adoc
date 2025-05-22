@@ -65,7 +65,7 @@ The `EntityConnection.Select`, `EntityConnection.Update`, and `EntityConnection.
 === Select
 
 *{url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Select.html[EntityConnection.Select]*::
-Represents a `WHERE` condition as well as extended configuration specifically for selecting, such as *orderBy*, *limit*, *offset* and *fetchDepth*.
+Represents a `WHERE` condition as well as extended configuration specifically for selecting, such as *orderBy*, *limit*, *offset* and *referenceDepth*.
 
 [source,java,indent=0]
 ----

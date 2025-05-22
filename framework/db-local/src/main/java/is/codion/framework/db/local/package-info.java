@@ -22,7 +22,7 @@
  * <li>{@link is.codion.framework.db.local.LocalEntityConnection#CONNECTION_LOG_SIZE}
  * <li>{@link is.codion.framework.db.local.LocalEntityConnection#QUERY_TIMEOUT_SECONDS}
  * <li>{@link is.codion.framework.db.local.LocalEntityConnection#OPTIMISTIC_LOCKING}
- * <li>{@link is.codion.framework.db.local.LocalEntityConnection#LIMIT_FOREIGN_KEY_FETCH_DEPTH}
+ * <li>{@link is.codion.framework.db.local.LocalEntityConnection#LIMIT_FOREIGN_KEY_REFERENCE_DEPTH}
  * </ul>
  */
 @org.jspecify.annotations.NullMarked

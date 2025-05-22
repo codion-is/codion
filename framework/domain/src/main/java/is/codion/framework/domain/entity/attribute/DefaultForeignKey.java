@@ -217,12 +217,12 @@ final class DefaultForeignKey implements ForeignKey, Serializable {
 
 		@Override
 		public ForeignKeyDefinition.Builder foreignKey() {
-			return foreignKey(ForeignKeyDefinition.FOREIGN_KEY_FETCH_DEPTH.getOrThrow());
+			return foreignKey(ForeignKeyDefinition.FOREIGN_KEY_REFERENCE_DEPTH.getOrThrow());
 		}
 
 		@Override
-		public ForeignKeyDefinition.Builder foreignKey(int fetchDepth) {
-			return new DefaultForeignKeyDefinition.DefaultForeignKeyDefinitionBuilder(foreignKey, fetchDepth);
+		public ForeignKeyDefinition.Builder foreignKey(int referenceDepth) {
+			return new DefaultForeignKeyDefinition.DefaultForeignKeyDefinitionBuilder(foreignKey, referenceDepth);
 		}
 	}
 }

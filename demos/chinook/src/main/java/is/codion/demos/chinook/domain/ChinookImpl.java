@@ -282,11 +282,11 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 										Track.ALBUM_ID.define()
 														.column()
 														.nullable(false),
-										// tag::fetchDepth2[]
+										// tag::referenceDepth2[]
 										Track.ALBUM_FK.define()
 														.foreignKey(2)
 														.attributes(Album.ARTIST_FK, Album.TITLE),
-										// end::fetchDepth2[]
+										// end::referenceDepth2[]
 										Track.ARTIST_NAME.define()
 														.column()
 														.expression("artist.name")
@@ -412,11 +412,11 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 										InvoiceLine.INVOICE_ID.define()
 														.column()
 														.nullable(false),
-										// tag::fetchDepth0[]
+										// tag::referenceDepth0[]
 										InvoiceLine.INVOICE_FK.define()
 														.foreignKey(0)
 														.hidden(true),
-										// end::fetchDepth0[]
+										// end::referenceDepth0[]
 										InvoiceLine.TRACK_ID.define()
 														.column()
 														.nullable(false),

@@ -421,7 +421,7 @@ public class DefaultLocalEntityConnectionTest {
 		assertNull(emp.get(Employee.MGR_FK));
 
 		select = Select.where(select.where())
-						.fetchDepth(Employee.DEPARTMENT_FK, 0)
+						.referenceDepth(Employee.DEPARTMENT_FK, 0)
 						.build();
 		result = connection.select(select);
 		assertEquals(1, result.size());
@@ -430,8 +430,8 @@ public class DefaultLocalEntityConnectionTest {
 		assertNotNull(emp.get(Employee.MGR_FK));
 
 		select = Select.where(select.where())
-						.fetchDepth(Employee.DEPARTMENT_FK, 0)
-						.fetchDepth(Employee.MGR_FK, 0)
+						.referenceDepth(Employee.DEPARTMENT_FK, 0)
+						.referenceDepth(Employee.MGR_FK, 0)
 						.build();
 		result = connection.select(select);
 		assertEquals(1, result.size());
@@ -440,8 +440,8 @@ public class DefaultLocalEntityConnectionTest {
 		assertNull(emp.get(Employee.MGR_FK));
 
 		select = Select.where(select.where())
-						.fetchDepth(Employee.DEPARTMENT_FK, 0)
-						.fetchDepth(Employee.MGR_FK, 2)
+						.referenceDepth(Employee.DEPARTMENT_FK, 0)
+						.referenceDepth(Employee.MGR_FK, 2)
 						.build();
 		result = connection.select(select);
 		assertEquals(1, result.size());
@@ -452,8 +452,8 @@ public class DefaultLocalEntityConnectionTest {
 		assertNotNull(emp.get(Employee.MGR_FK));
 
 		select = Select.where(select.where())
-						.fetchDepth(Employee.DEPARTMENT_FK, 0)
-						.fetchDepth(Employee.MGR_FK, -1)
+						.referenceDepth(Employee.DEPARTMENT_FK, 0)
+						.referenceDepth(Employee.MGR_FK, -1)
 						.build();
 		result = connection.select(select);
 		assertEquals(1, result.size());
@@ -500,7 +500,7 @@ public class DefaultLocalEntityConnectionTest {
 	@Test
 	void foreignKeyAttributes() {
 		List<Entity> emps = connection.select(Select.where(EmployeeFk.MGR_FK.isNotNull())
-						.fetchDepth(EmployeeFk.MGR_FK, 2)
+						.referenceDepth(EmployeeFk.MGR_FK, 2)
 						.build());
 		for (Entity emp : emps) {
 			Entity mgr = emp.entity(EmployeeFk.MGR_FK);
@@ -1306,17 +1306,17 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
-	void foreignKeyFetchDepth() {
+	void foreignKeyReferenceDepth() {
 		try (LocalEntityConnection conn = createConnection()) {
-			conn.setLimitForeignKeyFetchDepth(false);
-			assertFalse(conn.isLimitForeignKeyFetchDepth());
+			conn.setLimitForeignKeyReferenceDepth(false);
+			assertFalse(conn.isLimitForeignKeyReferenceDepth());
 			Entity employee = conn.selectSingle(Employee.ID.equalTo(10));
 			Entity manager = employee.get(Employee.MGR_FK);
 			assertNotNull(manager);
 			Entity managersManager = manager.get(Employee.MGR_FK);
 			assertNotNull(managersManager);
-			conn.setLimitForeignKeyFetchDepth(true);
-			assertTrue(conn.isLimitForeignKeyFetchDepth());
+			conn.setLimitForeignKeyReferenceDepth(true);
+			assertTrue(conn.isLimitForeignKeyReferenceDepth());
 			employee = conn.selectSingle(Employee.ID.equalTo(10));
 			manager = employee.get(Employee.MGR_FK);
 			assertNotNull(manager);

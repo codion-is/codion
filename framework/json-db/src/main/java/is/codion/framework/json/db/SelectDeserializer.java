@@ -81,16 +81,16 @@ final class SelectDeserializer extends StdDeserializer<Select> {
 		if (forUpdate != null && !forUpdate.isNull() && forUpdate.asBoolean()) {
 			selectBuilder.forUpdate();
 		}
-		JsonNode fetchDepth = jsonNode.get("fetchDepth");
-		if (fetchDepth != null && !fetchDepth.isNull()) {
-			selectBuilder.fetchDepth(fetchDepth.asInt());
+		JsonNode referenceDepth = jsonNode.get("referenceDepth");
+		if (referenceDepth != null && !referenceDepth.isNull()) {
+			selectBuilder.referenceDepth(referenceDepth.asInt());
 		}
-		JsonNode fkFetchDepth = jsonNode.get("fkFetchDepth");
-		if (fkFetchDepth != null && !fkFetchDepth.isNull()) {
+		JsonNode fkReferenceDepth = jsonNode.get("fkReferenceDepth");
+		if (fkReferenceDepth != null && !fkReferenceDepth.isNull()) {
 			for (ForeignKey foreignKey : definition.foreignKeys().get()) {
-				JsonNode fetchDepthNode = fkFetchDepth.get(foreignKey.name());
-				if (fetchDepthNode != null) {
-					selectBuilder.fetchDepth(foreignKey, fetchDepthNode.asInt());
+				JsonNode referenceDepthNode = fkReferenceDepth.get(foreignKey.name());
+				if (referenceDepthNode != null) {
+					selectBuilder.referenceDepth(foreignKey, referenceDepthNode.asInt());
 				}
 			}
 		}

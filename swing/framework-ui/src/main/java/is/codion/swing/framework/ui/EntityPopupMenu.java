@@ -185,7 +185,7 @@ final class EntityPopupMenu extends JPopupMenu {
 	private static Entity select(Entity.Key primaryKey, EntityConnection connection) {
 		try {
 			return connection.selectSingle(where(key(primaryKey))
-							.fetchDepth(0)
+							.referenceDepth(0)
 							.build());
 		}
 		catch (RecordNotFoundException e) {

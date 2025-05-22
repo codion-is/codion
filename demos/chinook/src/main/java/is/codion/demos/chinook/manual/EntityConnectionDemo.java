@@ -92,8 +92,8 @@ public final class EntityConnectionDemo {
 		// end::select[]
 	}
 
-	static void fetchDepthEntity(EntityConnectionProvider connectionProvider) {
-		// tag::fetchDepthEntity[]
+	static void referenceDepthEntity(EntityConnectionProvider connectionProvider) {
+		// tag::referenceDepthEntity[]
 		EntityConnection connection = connectionProvider.connection();
 
 		List<Entity> tracks = connection.select(Track.NAME.like("Bad%"));
@@ -104,40 +104,40 @@ public final class EntityConnectionDemo {
 		Entity mediaType = track.get(Track.MEDIATYPE_FK);
 		Entity album = track.get(Track.ALBUM_FK);
 
-		// fetch depth for Track.ALBUM_FK is 2, which means two levels of
+		// reference depth for Track.ALBUM_FK is 2, which means two levels of
 		// references are fetched, so we have the artist here as well
 		Entity artist = album.get(Album.ARTIST_FK);
-		// end::fetchDepthEntity[]
+		// end::referenceDepthEntity[]
 	}
 
-	static void fetchDepthCondition(EntityConnectionProvider connectionProvider) {
-		// tag::fetchDepthCondition[]
+	static void referenceDepthCondition(EntityConnectionProvider connectionProvider) {
+		// tag::referenceDepthCondition[]
 		EntityConnection connection = connectionProvider.connection();
 
 		List<Entity> tracks = connection.select(
 						Select.where(Track.NAME.like("Bad%"))
-										.fetchDepth(0)
+										.referenceDepth(0)
 										.build());
 
 		Entity track = tracks.get(0);
 
-		// fetch depth is 0, so this 'genre' instance is null
+		// reference depth is 0, so this 'genre' instance is null
 		Entity genre = track.get(Track.GENRE_FK);
 
 		// using track.entity(Track.GENRE_FK) you get a 'genre'
 		// instance containing only the primary key, since the condition
-		// fetch depth limit prevented it from being selected
+		// reference depth limit prevented it from being selected
 		genre = track.entity(Track.GENRE_FK);
-		// end::fetchDepthCondition[]
+		// end::referenceDepthCondition[]
 	}
 
-	static void fetchDepthForeignKeyCondition(EntityConnectionProvider connectionProvider) {
-		// tag::fetchDepthConditionForeignKey[]
+	static void referenceDepthForeignKeyCondition(EntityConnectionProvider connectionProvider) {
+		// tag::referenceDepthConditionForeignKey[]
 		EntityConnection connection = connectionProvider.connection();
 
 		List<Entity> tracks = connection.select(
 						Select.where(Track.NAME.like("Bad%"))
-										.fetchDepth(Track.ALBUM_FK, 0)
+										.referenceDepth(Track.ALBUM_FK, 0)
 										.build());
 
 		Entity track = tracks.get(0);
@@ -146,14 +146,14 @@ public final class EntityConnectionDemo {
 		Entity mediaType = track.get(Track.MEDIATYPE_FK);
 
 		// this 'album' instance is null, since the condition
-		// fetch depth limit prevented it from being selected
+		// reference depth limit prevented it from being selected
 		Entity album = track.get(Track.ALBUM_FK);
 
 		// using track.entity(Track.ALBUM_FK) you get an 'album'
 		// instance containing only the primary key, since the condition
-		// fetch depth limit prevented it from being selected
+		// reference depth limit prevented it from being selected
 		album = track.entity(Track.ALBUM_FK);
-		// end::fetchDepthConditionForeignKey[]
+		// end::referenceDepthConditionForeignKey[]
 	}
 
 	static void selectKeys(EntityConnectionProvider connectionProvider) {
@@ -552,9 +552,9 @@ public final class EntityConnectionDemo {
 										.build();
 
 		select(connectionProvider);
-		fetchDepthEntity(connectionProvider);
-		fetchDepthCondition(connectionProvider);
-		fetchDepthForeignKeyCondition(connectionProvider);
+		referenceDepthEntity(connectionProvider);
+		referenceDepthCondition(connectionProvider);
+		referenceDepthForeignKeyCondition(connectionProvider);
 		selectKeys(connectionProvider);
 		iterator(connectionProvider);
 		selectKey(connectionProvider);
