@@ -4,9 +4,12 @@ Codion Change Log
 ## 0.18.35
 ### is.codion.common.db
 - Database.URL_SCOPED_INSTANCE configuration value added.
+### is.codion.swing.common.model
+- FilterComboBoxModel.createSelectorValue() renamed createSelector().
 ### is.codion.swing.common.ui
 - FilterTable.ScrollToSelected bug fixed, rowVisible() now based on viewport.getViewRect().
 - FlexibleGridLayout re-implemented.
+- FlexibleGridLayout edge case for zero rows/columns bug fixed, test added.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel, support table now known as lookup table.
 - NullableCheckBox, FlatLaf hack removed.

@@ -129,7 +129,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public <V> Value<V> createSelectorValue(ItemFinder<T, V> itemFinder) {
+	public <V> Value<V> createSelector(ItemFinder<T, V> itemFinder) {
 		return new SelectorValue<>(itemFinder);
 	}
 

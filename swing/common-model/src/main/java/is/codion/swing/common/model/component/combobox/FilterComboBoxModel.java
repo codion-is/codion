@@ -71,7 +71,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	 * @param <V> the value type
 	 * @return a {@link Value} linked to the selected item using the given {@link ItemFinder} instance
 	 */
-	<V> Value<V> createSelectorValue(ItemFinder<T, V> itemFinder);
+	<V> Value<V> createSelector(ItemFinder<T, V> itemFinder);
 
 	/**
 	 * @param <T> the item type

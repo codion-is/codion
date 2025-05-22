@@ -78,8 +78,14 @@ public final class FlexibleGridLayout implements LayoutManager2 {
 			}
 
 			Insets insets = parent.getInsets();
-			int effectiveRows = rows > 0 ? rows : (componentCount + columns - 1) / columns;
-			int effectiveCols = columns > 0 ? columns : (componentCount + rows - 1) / rows;
+			int effectiveCols = columns > 0
+							? columns
+							: (rows > 0
+							? Math.max(1, (componentCount + rows - 1) / rows)
+							: 1);
+			int effectiveRows = rows > 0
+							? rows
+							: Math.max(1, (componentCount + effectiveCols - 1) / effectiveCols);
 
 			int[] rowHeights = new int[effectiveRows];
 			int[] colWidths = new int[effectiveCols];
@@ -90,8 +96,10 @@ public final class FlexibleGridLayout implements LayoutManager2 {
 				sizes[i] = c.getPreferredSize();
 				int row = i / effectiveCols;
 				int col = i % effectiveCols;
-				rowHeights[row] = Math.max(rowHeights[row], sizes[i].height);
-				colWidths[col] = Math.max(colWidths[col], sizes[i].width);
+				if (row < rowHeights.length && col < colWidths.length) {
+					rowHeights[row] = Math.max(rowHeights[row], sizes[i].height);
+					colWidths[col] = Math.max(colWidths[col], sizes[i].width);
+				}
 			}
 
 			adjustFixedSizes(rowHeights, colWidths);
@@ -128,8 +136,14 @@ public final class FlexibleGridLayout implements LayoutManager2 {
 			return new Dimension(0, 0);
 		}
 
-		int effectiveRows = rows > 0 ? rows : (componentCount + columns - 1) / columns;
-		int effectiveCols = columns > 0 ? columns : (componentCount + rows - 1) / rows;
+		int effectiveCols = columns > 0
+						? columns
+						: (rows > 0
+						? Math.max(1, (componentCount + rows - 1) / rows)
+						: 1);
+		int effectiveRows = rows > 0
+						? rows
+						: Math.max(1, (componentCount + effectiveCols - 1) / effectiveCols);
 
 		int[] rowHeights = new int[effectiveRows];
 		int[] columnWidths = new int[effectiveCols];
@@ -138,8 +152,10 @@ public final class FlexibleGridLayout implements LayoutManager2 {
 			Dimension d = dimension.apply(parent.getComponent(i));
 			int row = i / effectiveCols;
 			int column = i % effectiveCols;
-			rowHeights[row] = Math.max(rowHeights[row], d.height);
-			columnWidths[column] = Math.max(columnWidths[column], d.width);
+			if (row < rowHeights.length && column < columnWidths.length) {
+				rowHeights[row] = Math.max(rowHeights[row], d.height);
+				columnWidths[column] = Math.max(columnWidths[column], d.width);
+			}
 		}
 
 		adjustFixedSizes(rowHeights, columnWidths);
@@ -171,13 +187,19 @@ public final class FlexibleGridLayout implements LayoutManager2 {
 	public void removeLayoutComponent(Component comp) {}
 
 	@Override
-	public Dimension maximumLayoutSize(Container target) {return preferredLayoutSize(target);}
+	public Dimension maximumLayoutSize(Container target) {
+		return preferredLayoutSize(target);
+	}
 
 	@Override
-	public float getLayoutAlignmentX(Container target) {return 0.5f;}
+	public float getLayoutAlignmentX(Container target) {
+		return 0.5f;
+	}
 
 	@Override
-	public float getLayoutAlignmentY(Container target) {return 0.5f;}
+	public float getLayoutAlignmentY(Container target) {
+		return 0.5f;
+	}
 
 	@Override
 	public void invalidateLayout(Container target) {}
