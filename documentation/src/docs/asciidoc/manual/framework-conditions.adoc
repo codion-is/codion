@@ -3,20 +3,23 @@
 :dir-chinook-source: ../../../../../demos/chinook/src/main/java
 :url-javadoc: link:../api
 
+Conditions in Codion are composable, strongly-typed query filters used to construct WHERE or HAVING clauses for select, update, and count operations. They are typically created via domain attributes (like Column or ForeignKey), and can be freely combined using logical operators like `AND` and `OR`.
+
 The <<{dir-tutorials}/chinook/chinook.adoc#_domain_model, Chinook domain model>> is used in the examples below.
 
 == Condition
 
 *{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/condition/Condition.html[Condition]*::
-Represents a query condition and contains factory methods for creating *Condition* instances.
+Represents a query condition and contains factory methods for creating `Condition` instances.
 
 *{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/condition/ColumnCondition.html[ColumnCondition]*::
-Represents a column based Condition element.
+Represents a column based `Condition`.
 
 *{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/condition/ForeignKeyCondition.html[ForeignKeyCondition]*::
-Represents a foreign key based Condition element.
+Represents a foreign key based `Condition`.
 
-NOTE: {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/Column.html[Column] and {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/ForeignKey.html[ForeignKey] implement {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/condition/ColumnCondition.Factory.html[ColumnCondition.Factory] and {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/condition/ForeignKeyCondition.Factory.html[ForeignKeyCondition.Factory] respectively, and can be used to create *Condition* instances.
+NOTE: {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/Column.html[Column] and {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/ForeignKey.html[ForeignKey] implement their respective condition factory interfaces ({url-javadoc}{framework-domain}/is/codion/framework/domain/entity/condition/ColumnCondition.Factory.html[ColumnCondition.Factory] and {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/condition/ForeignKeyCondition.Factory.html[ForeignKeyCondition.Factory]), so you can create `Condition` instances directly from them using fluent methods like `.equalTo()`, `.isNull()`, `.in()`, etc.
+
 
 [source,java,indent=0]
 ----
@@ -34,7 +37,7 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/ConditionDemo.java[
 ----
 
 *{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/condition/CustomCondition.html[CustomCondition]*::
-Provides a way to specify a query condition which can not be created with the column or foreign key based APIs.
+A CustomCondition can be used when your logic can't be expressed through column-based or foreign-key-based conditions — for example, when writing native SQL fragments or using DB-specific syntax.
 
 [source,java,indent=0]
 ----
@@ -42,38 +45,47 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/ConditionDemo.java[
 ----
 
 *{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/condition/Condition.Combination.html[Condition.Combination]*::
-Extends *Condition* and represents a combination of *Condition* instances, which are combined using either *AND* or *OR*.
-These can be nested and combined with other condition combinations.
+Allows you to combine multiple conditions using logical `AND` / `OR` operators. Conditions can be nested to build expressive and complex query logic.
 
 [source,java,indent=0]
 ----
 include::{dir-chinook-source}/is/codion/demos/chinook/manual/ConditionDemo.java[tags=combination]
 ----
 
-== Select
+== Select, Update, Count
 
-*{url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Select.html[Select]*::
-Represents a where condition as well as extended configuration specifically for selecting, such as *orderBy*, *limit*, *offset* and *fetchDepth*. {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Select.html#where{opar}is.codion.framework.domain.entity.condition.Condition{cpar}[Select.where] returns a {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Select.Builder.html[Select.Builder] instance for further configuration.
+The `EntityConnection.Select`, `EntityConnection.Update`, and `EntityConnection.Count` classes each provide a `.where(Condition)` factory method returning a builder object for further configuration.
+
+{url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Select.html#where{opar}is.codion.framework.domain.entity.condition.Condition{cpar}[Select.where] returns a {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Select.Builder.html[Select.Builder].
+
+{url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Update.html#where{opar}is.codion.framework.domain.entity.condition.Condition{cpar}[Update.where] returns a {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Update.Builder.html[Update.Builder].
+
+{url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Count.html#where{opar}is.codion.framework.domain.entity.condition.Condition{cpar}[Count.where] returns a {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Count.Builder.html[Count.Builder]
+
+=== Select
+
+*{url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Select.html[EntityConnection.Select]*::
+Represents a `WHERE` condition as well as extended configuration specifically for selecting, such as *orderBy*, *limit*, *offset* and *fetchDepth*.
 
 [source,java,indent=0]
 ----
 include::{dir-chinook-source}/is/codion/demos/chinook/manual/ConditionDemo.java[tags=select]
 ----
 
-== Update
+=== Update
 
-*{url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Update.html[Update]*::
-Represents a where condition as well as the columns values for updating one or more entities. {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Update.html#where{opar}is.codion.framework.domain.entity.condition.Condition{cpar}[Update.where] returns a {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Update.Builder.html[Update.Builder] instance for specifying the columns to update and their respective values.
+*{url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Update.html[EntityConnection.Update]*::
+Represents a `WHERE` condition as well as the columns and values for updating one or more entities.
 
 [source,java,indent=0]
 ----
 include::{dir-chinook-source}/is/codion/demos/chinook/manual/ConditionDemo.java[tags=update]
 ----
 
-== Count
+=== Count
 
-*{url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Count.html[Count]*::
-Represents a where condition specifically for counting records. {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Count.html#where{opar}is.codion.framework.domain.entity.condition.Condition{cpar}[Count.where] returns a {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Count.Builder.html[Count.Builder].
+*{url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Count.html[EntityConnection.Count]*::
+Represents a `WHERE` condition specifically for counting records.
 
 [source,java,indent=0]
 ----

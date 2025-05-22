@@ -6,11 +6,11 @@
 :url-entity-connection: {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.html
 :url-local-entity-connection: {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html
 
-The Codion database layer is extremely thin, it doesn't perform any joins and provides no access to DBMS specific funtionality except primary key generation via <<manual.adoc#_keygenerator, KeyGenerator>> strategies.
-The framework provides implementations for the most common strategies, sequences (with or without triggers) and auto increment columns.
+Codion’s {url-entity-connection}[EntityConnection] is the primary interface for executing database operations — including querying, modifying, transaction control, calling procedures and functions and filling reports. It exposes a small, explicit API for working with Entity instances and makes no assumptions about your database engine or schema design.
 
-The database layer is specified by the {url-entity-connection}[EntityConnection] class.
-It provides methods for selecting, inserting, updating and deleting entities, executing procedures and functions, filling reports as well as providing transaction control.
+Codion’s database layer is intentionally minimal. It does not perform SQL joins, nor does it rely on DB-specific features — except where needed for primary key generation via <<manual.adoc#_keygenerator, KeyGenerator>> strategies.
+
+Instead, it gives you predictable, queryable access to individual Entity objects and their associated foreign keys — controlled through a feature called fetch depth.
 
 The <<{dir-tutorials}/chinook/chinook.adoc#_domain, Chinook domain model>> is used in the examples below.
 
@@ -18,9 +18,6 @@ The <<{dir-tutorials}/chinook/chinook.adoc#_domain, Chinook domain model>> is us
 
 By default, when you select a row using {url-entity-connection}[EntityConnection] you receive an Entity instance along with a single level of foreign key references, that is a so-called fetch depth of one.
 This means that selecting a track you get all the entities referenced via foreign keys as well.
-
-.The N+1 problem
-This means that selecting tracks performs four queries (track + album, mediatype and genre), but that number of queries is the same whether you select one or a thousand tracks.
 
 The fetch depth can be configured on a foreign key basis when defining entities.
 A fetch depth of zero means that no foreign key references are fetched, and a value larger than one means that not only is the foreign key reference fetched but also its foreign key references, until the defined depth has been reached.
@@ -46,10 +43,13 @@ or on a connection instance via {url-javadoc}{framework-db-local}/is/codion/fram
 connection.setLimitForeignKeyFetchDepth(false);
 ----
 
+You can specify that the foreign key should not be populated by default by using a fetch depth of 0.
 [source,java,indent=0]
 ----
 include::{dir-chinook-source}/is/codion/demos/chinook/domain/ChinookImpl.java[tags=fetchDepth0]
 ----
+
+Or you can specify that the foreign key should be populated along with one more level by using a fetch depth of 2.
 
 [source,java,indent=0]
 ----
@@ -72,6 +72,17 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDem
 ----
 include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=fetchDepthConditionForeignKey]
 ----
+
+=== Fetch Depth Values:
+
+* 0 – Do not fetch foreign key references
+* 1 (default) – Fetch directly referenced foreign key entities
+* N – Fetch up to N levels deep
+* -1 – Fetch entire reference graph (no limit)
+
+=== The N+1 problem
+
+Selecting tracks performs four queries (track + album, mediatype and genre), but that number of queries is the same whether you select one or a thousand tracks.
 
 === Selecting entities
 
@@ -174,7 +185,8 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDem
 === update
 
 For updating one or more entity instances.
-These methods throw an exception if any of the entities is unmodified.
+
+IMPORTANT: These methods throw an exception if any of the entities is unmodified.
 
 ** {url-entity-connection}#update{opar}is.codion.framework.domain.entity.Entity{cpar}[update(Entity entity)]
 
@@ -192,7 +204,13 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDem
 ==== Optimistic locking
 
 The framework performs optimistic locking during updates using the methods above.
-This is done by selecting the entities being updated *FOR UPDATE* (when supported by the underlying database) and comparing all original values to the current row values, throwing an exception if one or more values differ or the row is missing.
+This is done by selecting the entities being updated *FOR UPDATE* (when supported by the underlying database) and comparing all original values to the current row values, throwing an exception if one or more values differ or the row is missing. Optimistic locking is field-based: any difference between original and current values causes an update to fail.
+
+[source,java]
+----
+entity.set(Album.TITLE, "New Title");
+connection.update(entity); // fails if the row has been changed by someone else
+----
 
 NOTE: Excluding attributes when selecting entities results in those attributes (lazy loaded ones for example) not being included when optimistic locking is performed on subsequent updates, since optimistic locking relies on the original attribute value being available for making a comparison.
 
@@ -250,6 +268,10 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDem
 
 == Procedures & Functions
 
+* Functions return a single value.
+* Procedures perform logic with no return value.
+* Both are executed through the same API: `EntityConnection.execute(...)`.
+
 === Function
 
 ** {url-entity-connection}#execute{opar}is.codion.common.db.operation.FunctionType{cpar}[execute(FunctionType functionType)]
@@ -264,8 +286,6 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDem
 
 ** {url-entity-connection}#execute{opar}is.codion.common.db.operation.ProcedureType{cpar}[execute(ProcedureType procedureType)]
 ** {url-entity-connection}#execute{opar}is.codion.common.db.operation.ProcedureType{comma}T{cpar}[execute(ProcedureType procedureType, T argument)]
-
-Executing procedures is the same as executing functions, except without a return value.
 
 == Reporting
 
@@ -282,10 +302,12 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDem
 
 === Transactional
 
-The recommended way to use transactions is to use either of the following, depending on whether a return value is required.
+Codion encourages declarative transaction boundaries using lambdas or anonymous classes. This ensures transaction safety (commit/rollback) with minimal boilerplate.
 
-** {url-entity-connection}#transaction{opar}is.codion.framework.db.EntityConnection{comma}is.codion.framework.db.EntityConnection.Transactional{cpar}[transaction(EntityConnection, Transactional transactional)]
-** {url-entity-connection}#transaction{opar}is.codion.framework.db.EntityConnection{comma}is.codion.framework.db.EntityConnection.TransactionalResult{cpar}[transaction(EntityConnection, TransactionalResult transactional)]
+Most use cases are covered by:
+
+* {url-entity-connection}#transaction{opar}is.codion.framework.db.EntityConnection{comma}is.codion.framework.db.EntityConnection.Transactional{cpar}[EntityConnection.transaction(EntityConnection, Transactional transactional)] – no return value
+* {url-entity-connection}#transaction{opar}is.codion.framework.db.EntityConnection{comma}is.codion.framework.db.EntityConnection.TransactionalResult{cpar}[EntityConnection.transaction(EntityConnection, TransactionalResult transactional)] – with return value
 
 These methods perform a commit on success and rollback on failure.
 
@@ -334,14 +356,14 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDem
 
 == LocalEntityConnection
 
-A EntityConnection implementation based on a direct connection to the database, provides access to the underlying JDBC connection.
+An EntityConnection implementation based on a direct connection to the database, provides access to the underlying JDBC connection.
 
 == RemoteEntityConnection
 
-A EntityConnection implementation based on an RMI connection.
+An EntityConnection implementation based on an RMI connection.
 Requires a server.
 
 == HttpEntityConnection
 
-A EntityConnection implementation based on HTTP.
+An EntityConnection implementation based on HTTP.
 Requires a server.

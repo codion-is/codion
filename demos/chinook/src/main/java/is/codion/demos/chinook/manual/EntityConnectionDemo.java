@@ -96,8 +96,7 @@ public final class EntityConnectionDemo {
 		// tag::fetchDepthEntity[]
 		EntityConnection connection = connectionProvider.connection();
 
-		List<Entity> tracks = connection.select(
-						Track.NAME.like("Bad%"));
+		List<Entity> tracks = connection.select(Track.NAME.like("Bad%"));
 
 		Entity track = tracks.get(0);
 
@@ -492,6 +491,8 @@ public final class EntityConnectionDemo {
 
 	static void transaction(EntityConnectionProvider connectionProvider) {
 		// tag::transaction[]
+		// This example demonstrates full manual transaction control, including rollback safety
+		// and protection against leaving transactions open in the presence of unexpected failures.
 		EntityConnection connection = connectionProvider.connection();
 
 		Entities entities = connection.entities();
@@ -532,7 +533,8 @@ public final class EntityConnectionDemo {
 			throw new RuntimeException(e);
 		}
 		catch (Throwable e) {
-			// And you may as well include a catch for Throwable, just in case.
+			// It's rare, but including a catch for Throwable ensures rollback safety
+			// even in the face of serious errors (e.g., OutOfMemoryError, LinkageError).
 			connection.rollbackTransaction();
 			throw e;
 		}

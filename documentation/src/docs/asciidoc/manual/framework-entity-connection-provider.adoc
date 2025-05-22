@@ -2,15 +2,14 @@
 :dir-chinook-source: ../../../../../demos/chinook/src/main/java
 :url-javadoc: link:../api
 
+An {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnectionProvider.html[EntityConnectionProvider] is a factory and lifecycle manager for EntityConnection instances — ensuring reliable access to the database regardless of protocol (JDBC, RMI, HTTP).
+
 In most cases *EntityConnections* are retrieved from a {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnectionProvider.html[EntityConnectionProvider], which is responsible for establishing a connection to the underlying database.
 The *EntityConnectionProvider* class is central to the framework and is a common constructor parameter in classes requiring database access.
 
-The *EntityConnectionProvider* manages a single connection, that is, the one returned by *connection()*.
-If a connection becomes invalid, i.e. due to a network outage or a server restart the *EntityConnectionProvider* is responsible for reconnecting and returning a new valid connection.
-If the *EntityConnectionProvider* is unable to connect to the underlying database or server *connection()* throws an exception.
+Each call to *connection()* returns the current active connection. If the existing connection is invalid (e.g., due to network failure or server restart), a new one is transparently established. If the *EntityConnectionProvider* is unable to connect to the underlying database or server, *connection()* throws an exception.
 
-A reference to the *EntityConnection* instance returned by *connection()* should only be kept for a short time, i.e. as a method field or parameter, and should not be cached or kept as a class field since it can become invalid and thereby unusable.
-Always use *connection()* to be sure you have a healthy *EntityConnection*.
+IMPORTANT: Do NOT cache the *EntityConnection* instance. The instance returned by *connection()* should only be kept for a short time, such as a local variable or method parameter since it can become invalid and thereby unusable. Always use *connection()* to make sure you have a healthy *EntityConnection*.
 
 == LocalEntityConnectionProvider
 

@@ -8,9 +8,16 @@
 :dir-chinook-source: ../../../../../demos/chinook/src/main/java
 :url-javadoc: link:../api
 
-A Codion domain model is based around the {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Entity.html[Entity] interface, which represents a row in a table, providing access to the column values via its *get()* and *set()* methods.
+== Domain modelling
 
-== Domain core classes
+* Declarative, not magical
+* Visible and localized behavior
+* Safe, testable, Java-native APIs
+* Avoiding runtime introspection/config injection
+
+Codion’s domain model layer is a declarative, type-safe representation of the underlying database schema, designed to provide expressive CRUD functionality without annotation overhead. At its heart is the {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Entity.html[Entity] interface — representing a single row of data and its modifiable state, providing access to attribute values via its *get()* and *set()* methods.
+
+== Core classes
 
 *{url-javadoc}{framework-domain}/is/codion/framework/domain/Domain.html[Domain]*::
 Specifies a domain model, containing entity definitions, procedures, functions and reports.
@@ -20,10 +27,10 @@ A Codion domain model is implemented by extending the *{url-javadoc}{framework-d
 A unique identifier for a domain model and a factory for *EntityType* instances associated with that domain model.
 
 *{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityType.html[EntityType]*::
-A unique identifier for an entity type (based on a table or query) and a factory for *Attribute* instances associated with that entity type.
+A unique identifier for an entity type and a factory for *Attribute* instances associated with that entity type.
 
 *{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/Attribute.html[Attribute]*::
-A typed identifier for a column, foreign key or transient value, usually a *Column* or *ForeignKey*, allowing for type safe access to the associated value.
+A typed identifier for a column, foreign key or transient attribute, usually a *Column* or *ForeignKey*, allowing for type safe access to the associated value.
 Attributes are usually wrapped in an interface, serving as a convenient namespace.
 
 [plantuml,attribute-diagram,svg,align=center]
@@ -79,9 +86,9 @@ To define a domain model API we:
 * Use the *DomainType* to create {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityType.html[EntityType] constants for each table, wrapped in a namespace interface.
 * Use the *EntityTypes* to create {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/Column.html[Column] constants for each column and a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/ForeignKey.html[ForeignKey] constant for each foreign key.
 
-NOTE: https://en.wikipedia.org/wiki/Constant_interface[Constant interfaces] are considered an antipattern in Java, a *public static final class* can be used instead in case interfaces is not acceptable, but that involves a bit more typing, since the constants must all be *public static final*.
-
 These constants represent the domain API and are used when referring to tables, columns or foreign keys.
+
+NOTE: The use of https://en.wikipedia.org/wiki/Constant_interface[constant interfaces] is discouraged in modern Java practice because all implementing classes inherit the constants, potentially polluting their namespaces. If this is a concern, use a *public static final* constants class instead — at the cost of slightly more typing.
 
 [source,java,indent=0]
 ----
@@ -102,7 +109,7 @@ An *EntityDefinition* is comprised of *AttributeDefinitions* based on the *Attri
 
 The *EntityType* and *Attribute* constants provide *define()* methods returning builders which allow for further configuration (such as nullability and maximum length for values and the caption and primary key generator for the entity definition).
 
-NOTE: If a caption is not specified for an attribute, it is marked as hidden and is not visible in table views.
+TIP: Omitting a caption marks an attribute as hidden. Hidden attributes won’t appear in table views by default.
 
 [source,java,indent=0]
 ----
@@ -131,7 +138,7 @@ is.codion.demos.store.domain.StoreImpl
 ----
 
 NOTE: The domain model implementation must be on the classpath when running with a local JDBC connection, but when running with an RMI or HTTP connection the domain model API is sufficient.
-If you forsee using RMI or HTTP connections it is recommended to split your domain model into separate API and implementation modules, to simplify client configurations (see https://github.com/codion-is/chinook[Chinook] and https://github.com/codion-is/world[World] demo applications, see https://github.com/codion-is/petclinic[Petclinic] for a simple single class domain model).
+If you foresee using RMI or HTTP connections it is recommended to split your domain model into separate API and implementation modules, to simplify client configurations (see https://github.com/codion-is/chinook[Chinook] and https://github.com/codion-is/world[World] demo applications, see https://github.com/codion-is/petclinic[Petclinic] for a simple single class domain model).
 
 The domain model provides an {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Entities.html[Entities] instance via {url-javadoc}{framework-domain}/is/codion/framework/domain/Domain.html#entities{opar}{cpar}[entities()], which contains the entity definitions and serves as a factory for *Entity* and *Entity.Key* instances.
 
@@ -219,7 +226,7 @@ An *Attribute* can be configured three ways, as transient, derived or denormaliz
 
 === Transient
 
-A transient attribute is not based on an underlying column, these attributes all have a default value of null and can be set and retrieved just like normal attributes.
+Transient attributes are nullable by default and behave like regular fields, but do not map to any underlying column. Transient attributes are always initialized with a null value. Changing the value of a transient attribute does not render the Entity instance modified by default, but can be configured to do so.
 
 === Denormalized
 
@@ -259,7 +266,7 @@ include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=col
 ==== Lazy loading
 
 A column can be specified as being not selected, which means its value is not selected by default.
-Note that the selected entity contains a null value by default for lazy loaded values.
+Note that entitities contain a null value by default for lazy loaded columns.
 
 [source,java,indent=0]
 ----
@@ -459,8 +466,8 @@ include::{dir-source}/is/codion/manual/store/domain/Store.java[tags=toString]
 Custom validation of Entities is performed by implementing a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityValidator.html[EntityValidator].
 
 The *DefaultEntityValidator* implementation provides basic range and null validation and can be extended to provide further validations.
-Note that validation is performed quite often, so it should not perform expensive operations.
-Validation requiring database access for example belongs in a `beforeInsert` and/or `beforeUpdate` listener in the edit model.
+
+WARNING: EntityValidator logic runs frequently — avoid expensive operations like database queries. Use edit model listeners (such as `beforeInsert` or `beforeUpdate`) for validations that require cross-entity or remote checks.
 
 [source,java,indent=0]
 ----
