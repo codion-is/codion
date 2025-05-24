@@ -139,7 +139,8 @@ public final class SchemaBrowser extends DomainModel {
 										TableColumn.TABLE_NAME.define()
 														.primaryKey(1),
 										TableColumn.TABLE_FK.define()
-														.foreignKey(2)
+														.foreignKey()
+														.referenceDepth(2)
 														.caption("Table"),
 										TableColumn.NAME.define()
 														.primaryKey(2)
@@ -179,7 +180,8 @@ public final class SchemaBrowser extends DomainModel {
 										Constraint.TABLE_NAME.define()
 														.primaryKey(1),
 										Constraint.TABLE_FK.define()
-														.foreignKey(2)
+														.foreignKey()
+														.referenceDepth(2)
 														.caption("Table"),
 										Constraint.NAME.define()
 														.primaryKey(2)
@@ -223,7 +225,8 @@ public final class SchemaBrowser extends DomainModel {
 										ConstraintColumn.CONSTRAINT_NAME.define()
 														.primaryKey(2),
 										ConstraintColumn.CONSTRAINT_FK.define()
-														.foreignKey(3)
+														.foreignKey()
+														.referenceDepth(3)
 														.caption("Constraint"),
 										ConstraintColumn.COLUMN_NAME.define()
 														.column()

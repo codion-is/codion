@@ -104,5 +104,22 @@ public interface ForeignKeyDefinition extends AttributeDefinition<Entity> {
 		 * @return this instance
 		 */
 		Builder attributes(Attribute<?>... attributes);
+
+		/**
+		 * Specifies the default query reference depth for this foreign key.
+		 * <pre>
+		 * Reference depth:
+		 * -1: the full foreign key graph of the referenced entity is fetched.
+		 *  0: the referenced entity not fetched.
+		 *  1: the referenced entity is fetched, without any foreign key references.
+		 *  2: the referenced entity is fetched, with a single level of foreign key references.
+		 *  3: the referenced entity is fetched, with two levels of foreign key references.
+		 *  etc...
+		 * </pre>
+		 * @param referenceDepth the number of levels of foreign key references to fetch for this foreign key
+		 * @return this instance
+		 * @throws IllegalArgumentException in case reference depth is less than -1
+		 */
+		Builder referenceDepth(int referenceDepth);
 	}
 }

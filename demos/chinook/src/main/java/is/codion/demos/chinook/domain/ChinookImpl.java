@@ -284,7 +284,8 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.nullable(false),
 										// tag::referenceDepth2[]
 										Track.ALBUM_FK.define()
-														.foreignKey(2)
+														.foreignKey()
+														.referenceDepth(2)
 														.attributes(Album.ARTIST_FK, Album.TITLE),
 										// end::referenceDepth2[]
 										Track.ARTIST_NAME.define()
@@ -414,7 +415,8 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.nullable(false),
 										// tag::referenceDepth0[]
 										InvoiceLine.INVOICE_FK.define()
-														.foreignKey(0)
+														.foreignKey()
+														.referenceDepth(0)
 														.hidden(true),
 										// end::referenceDepth0[]
 										InvoiceLine.TRACK_ID.define()
@@ -467,7 +469,8 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.column()
 														.nullable(false),
 										PlaylistTrack.TRACK_FK.define()
-														.foreignKey(3),
+														.foreignKey()
+														.referenceDepth(3),
 										PlaylistTrack.ALBUM.define()
 														.denormalized(PlaylistTrack.TRACK_FK, Track.ALBUM_FK))
 						.keyGenerator(identity())

@@ -103,22 +103,5 @@ public interface ForeignKey extends Attribute<Entity>, ForeignKeyCondition.Facto
 		 * @see ForeignKeyDefinition#FOREIGN_KEY_REFERENCE_DEPTH
 		 */
 		ForeignKeyDefinition.Builder foreignKey();
-
-		/**
-		 * Instantiates a {@link ForeignKeyDefinition.Builder} instance.
-		 * <pre>
-		 * Reference depth:
-		 * -1: the full foreign key graph of the referenced entity is fetched.
-		 *  0: the referenced entity not fetched.
-		 *  1: the referenced entity is fetched, without any foreign key references.
-		 *  2: the referenced entity is fetched, with a single level of foreign key references.
-		 *  3: the referenced entity is fetched, with two levels of foreign key references.
-		 *  4: etc...
-		 *  </pre>
-		 * @param referenceDepth the number of levels of foreign key references to fetch for this foreign key
-		 * @return a new {@link ForeignKeyDefinition.Builder}
-		 * @throws IllegalArgumentException in case fetch depth is less than 0
-		 */
-		ForeignKeyDefinition.Builder foreignKey(int referenceDepth);
 	}
 }

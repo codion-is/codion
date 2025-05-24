@@ -86,10 +86,10 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
 
 		private final Set<Column<?>> readOnlyColumns = new HashSet<>(1);
 		private final EntityType referencedEntityType;
-		private final int referenceDepth;
 
 		private List<Attribute<?>> attributes = emptyList();
 		private boolean soft = false;
+		private int referenceDepth;
 
 		DefaultForeignKeyDefinitionBuilder(ForeignKey foreignKey, int referenceDepth) {
 			super(foreignKey);
@@ -131,6 +131,15 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
 			}
 			this.attributes = unmodifiableList(new ArrayList<>(attributeSet));
 
+			return this;
+		}
+
+		@Override
+		public ForeignKeyDefinition.Builder referenceDepth(int referenceDepth) {
+			if (referenceDepth < -1) {
+				throw new IllegalArgumentException("Reference depth must be at least -1: " + super.attribute());
+			}
+			this.referenceDepth = referenceDepth;
 			return this;
 		}
 

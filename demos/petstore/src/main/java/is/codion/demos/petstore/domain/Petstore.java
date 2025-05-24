@@ -281,7 +281,8 @@ public final class Petstore extends DomainModel {
 														.name("productid")
 														.nullable(false),
 										Item.PRODUCT_FK.define()
-														.foreignKey(2)
+														.foreignKey()
+														.referenceDepth(2)
 														.caption(Item.PRODUCT_FK.name()),
 										Item.NAME.define()
 														.column()
@@ -396,7 +397,8 @@ public final class Petstore extends DomainModel {
 														.primaryKey(0)
 														.name("itemid"),
 										TagItem.ITEM_FK.define()
-														.foreignKey(3)
+														.foreignKey()
+														.referenceDepth(3)
 														.caption(TagItem.ITEM_FK.name()),
 										TagItem.TAG_ID.define()
 														.primaryKey(1)

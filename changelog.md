@@ -12,6 +12,7 @@ Codion Change Log
 - FlexibleGridLayout edge case for zero rows/columns bug fixed, test added.
 ### is.codion.framework.domain
 - fetchDepth renamed referenceDepth.
+- ForeignKeyDefinition.Builder.referenceDepth() added, ForeignKeyDefiner.foreignKey(referenceDepth) removed.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel, support table now known as lookup table.
 - NullableCheckBox, FlatLaf hack removed.
