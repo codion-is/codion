@@ -1,3 +1,5 @@
+import java.util.*
+
 plugins {
     id("org.asciidoctor.jvm.convert") version "4.0.4"
 }
@@ -31,19 +33,22 @@ tasks.register("generateI18nValuesPage") {
         }
     })
     outputs.file(file("src/docs/asciidoc/technical/i18n-values.adoc"))
+    outputs.cacheIf { true }
 
     doLast {
-        val file = file("src/docs/asciidoc/technical/i18n-values.adoc")
-        val moduleFiles = LinkedHashMap<String, List<String>>()
+        val outputFile = file("src/docs/asciidoc/technical/i18n-values.adoc")
+        val moduleFiles = mutableMapOf<String, List<File>>()
+        
         frameworkModules().forEach { module ->
             val files = module.sourceSets.main.get().resources.matching {
                 include("**/*.properties")
-            }.files.map { it.toString() }.sorted()
+            }.files.toList().sortedBy { it.path }
             if (files.isNotEmpty()) {
                 moduleFiles[module.name] = files
             }
         }
-        file.writeText(I18n(moduleFiles).toAsciidoc())
+        
+        outputFile.writeText(generateI18nAsciidoc(moduleFiles))
     }
 }
 
@@ -199,6 +204,34 @@ val combinedJavadoc by tasks.registering {
     }
 }
 
+tasks.register("checkI18nDocs") {
+    group = "verification"
+    description = "Verifies that i18n documentation is up to date"
+    
+    dependsOn("generateI18nValuesPage")
+    
+    doLast {
+        val generatedFile = file("src/docs/asciidoc/technical/i18n-values.adoc")
+        val tempFile = layout.buildDirectory.file("tmp/i18n-values-check.adoc").get().asFile
+        
+        // Save current content
+        if (generatedFile.exists()) {
+            tempFile.parentFile.mkdirs()
+            generatedFile.copyTo(tempFile, overwrite = true)
+            
+            // Run generation
+            tasks.named("generateI18nValuesPage").get().actions.forEach { it.execute(tasks.named("generateI18nValuesPage").get()) }
+            
+            // Compare
+            if (tempFile.readText() != generatedFile.readText()) {
+                throw GradleException("i18n documentation is out of date. Run './gradlew :documentation:generateI18nValuesPage' to update it.")
+            }
+            
+            tempFile.delete()
+        }
+    }
+}
+
 tasks.register("assembleDocs") {
     dependsOn("combinedJavadoc", "asciidoctor")
     group = "documentation"
@@ -240,4 +273,107 @@ fun frameworkModules(): Iterable<Project> {
     return project.parent?.subprojects?.filter { project ->
         !project.name.startsWith("demo") && !project.name.equals("documentation")
     } ?: emptyList()
+}
+
+fun generateI18nAsciidoc(moduleFiles: Map<String, List<File>>): String {
+    val localePattern = Regex(".*_[a-z]{2}_[A-Z]{2}\\.properties")
+    
+    data class Resource(
+        val owner: String,
+        val locales: List<String>,
+        val localeFiles: Map<String, File>,
+        val localeProperties: Map<String, Properties>
+    )
+    
+    fun parseLocale(file: File): String {
+        val fileName = file.name
+        val match = Regex("_([a-z]{2}_[A-Z]{2})\\.properties$").find(fileName)
+        return match?.groupValues?.get(1) ?: "default"
+    }
+    
+    fun loadProperties(file: File): Properties {
+        return Properties().apply {
+            file.inputStream().use { load(it) }
+        }
+    }
+    
+    fun cleanResourcePath(file: File): String {
+        val path = file.path.replace("\\", "/")
+        val resourcesIndex = path.indexOf("src/main/resources/")
+        return if (resourcesIndex >= 0) {
+            path.substring(resourcesIndex + 19)
+        } else {
+            file.name
+        }
+    }
+    
+    fun extractResourceOwner(file: File): String {
+        val cleanPath = cleanResourcePath(file)
+        return when {
+            localePattern.matches(cleanPath) -> cleanPath.substring(0, cleanPath.length - 17)
+            else -> cleanPath.substring(0, cleanPath.length - 11)
+        }
+    }
+    
+    val moduleResources = moduleFiles.map { (module, files) ->
+        val resourceMap = files.groupBy { extractResourceOwner(it) }
+            .map { (owner, ownerFiles) ->
+                val localeFiles = ownerFiles.associateBy { parseLocale(it) }
+                val localeProperties = localeFiles.mapValues { (_, file) -> loadProperties(file) }
+                Resource(owner, localeFiles.keys.sorted(), localeFiles, localeProperties)
+            }
+        module to resourceMap
+    }
+    
+    return buildString {
+        appendLine("= Values")
+        appendLine()
+        appendLine("Overview of the available i18n properties files and their keys and values.")
+        appendLine()
+        
+        moduleResources.forEach { (module, resources) ->
+            appendLine("== $module")
+            appendLine()
+            
+            resources.forEach { resource ->
+                appendLine("=== ${resource.owner}.java")
+                appendLine()
+                appendLine("[source]")
+                appendLine("----")
+                resource.localeFiles.values.forEach { file ->
+                    appendLine(cleanResourcePath(file))
+                }
+                appendLine("----")
+                appendLine()
+                
+                // Table header
+                append("[cols=\"")
+                append((0..resource.locales.size).joinToString(",") { "1" })
+                appendLine("\"]")
+                appendLine("|===")
+                append("|key")
+                resource.locales.forEach { locale ->
+                    append("|$locale")
+                }
+                appendLine()
+                appendLine()
+                
+                // Table rows
+                val defaultProperties = resource.localeProperties["default"] ?: Properties()
+                val propertyNames = defaultProperties.stringPropertyNames().sorted()
+                
+                for (propertyName in propertyNames) {
+                    append("|$propertyName")
+                    for (locale in resource.locales) {
+                        val value = resource.localeProperties[locale]?.getProperty(propertyName) ?: ""
+                        append("|${value.replace("|", "\\|")}")
+                    }
+                    appendLine()
+                }
+                
+                appendLine("|===")
+                appendLine()
+            }
+        }
+    }.trim()
 }
