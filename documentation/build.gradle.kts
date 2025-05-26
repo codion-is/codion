@@ -109,56 +109,93 @@ tasks.asciidoctor {
     }
 }
 
-tasks.register("combinedJavadoc") {
+val combinedJavadoc by tasks.registering {
     group = "documentation"
-    description = "An absolute monstrosity of a workaround for combining javadocs for multiple modular sub-projects"
-    val tempDir = project.layout.buildDirectory.dir("tmp").get()
-    val combinedSrcDir = "${tempDir}/combinedSource"
-    val outputDirectory = project.layout.buildDirectory.dir("javadoc").get()
-    val optionsFile = tempDir.file("javadoc.options").asFile
-
-    outputs.dir(outputDirectory)
-    var classpath: FileCollection = project.files()
+    description = "Generates combined Javadocs for all framework modules"
+    
+    // Define directories
+    val tempDir = layout.buildDirectory.dir("tmp/javadoc")
+    val combinedSourceDir = tempDir.map { it.dir("combined-source") }
+    val outputDir = layout.buildDirectory.dir("javadoc")
+    
+    // Track inputs and outputs
     frameworkModules().forEach { module ->
+        inputs.files(module.sourceSets.main.get().allJava)
         inputs.files(module.sourceSets.main.get().output)
-        module.tasks.withType<Javadoc>().forEach { javadocTask ->
-            classpath += javadocTask.classpath
-        }
     }
+    outputs.dir(outputDir)
+    
     doLast {
-        //combine the framework source, with each module in a separate directory, named after the module
+        // Clean and create directories
+        delete(tempDir)
+        mkdir(combinedSourceDir)
+        
+        // Prepare module source structure
+        val moduleNames = mutableListOf<String>()
+        val classpath = mutableSetOf<File>()
+        
         frameworkModules().forEach { module ->
-            ant.withGroovyBuilder {
-                "copy"("todir" to "${combinedSrcDir}/is.${module.name.replace("-", ".")}") {
-                    "fileset"("dir" to "${module.projectDir}/src/main/java")
-                }
+            val moduleName = "is.${module.name.replace("-", ".")}"
+            moduleNames.add(moduleName)
+            
+            // Copy source files maintaining module structure
+            copy {
+                from(module.file("src/main/java"))
+                into(combinedSourceDir.get().dir(moduleName))
+            }
+            
+            // Collect classpath
+            module.sourceSets.main.get().compileClasspath.forEach { classpath.add(it) }
+            module.sourceSets.main.get().output.files.forEach { classpath.add(it) }
+        }
+        
+        // Prepare javadoc arguments
+        val javadocArgs = mutableListOf<String>().apply {
+            // Output directory
+            add("-d"); add(outputDir.get().asFile.absolutePath)
+            
+            // Module configuration
+            add("--module-source-path"); add(combinedSourceDir.get().asFile.absolutePath)
+            add("--add-modules"); add(moduleNames.joinToString(","))
+            add("--module-path"); add(classpath.joinToString(File.pathSeparator))
+            
+            // Documentation options
+            add("-doctitle"); add("Codion Framework API $documentationVersion")
+            add("-windowtitle"); add("Codion Framework API $documentationVersion")
+            add("-encoding"); add("UTF-8")
+            add("-charset"); add("UTF-8")
+            add("-author")
+            add("-use")
+            add("-notimestamp")
+            add("-Xdoclint:none")
+            add("-quiet")
+            
+            // Links to external documentation
+            add("-link"); add("https://docs.oracle.com/en/java/javase/${properties["jdkVersion"]}/docs/api/")
+            add("-link"); add("https://jspecify.dev/docs/api/")
+            
+            // Add all source files
+            fileTree(combinedSourceDir).matching {
+                include("**/*.java")
+            }.files.forEach { sourceFile ->
+                add(sourceFile.absolutePath)
             }
         }
-        val options = StandardJavadocDocletOptions().apply {
-            sourceNames = project.objects.fileCollection().from(combinedSrcDir).asFileTree.files.map { it.absolutePath }.toList()
-            modulePath = classpath.files.toList()
-            addStringOption("-module-source-path", combinedSrcDir)
-            destinationDirectory = file(outputDirectory)
-            docTitle = "Codion Framework API $documentationVersion"
-            links(
-                "https://docs.oracle.com/en/java/javase/" + properties["jdkVersion"] + "/docs/api/",
-                "https://jspecify.dev/docs/api/"
-            )
-            encoding = "UTF-8"
-            noTimestamp(true)
-        }
-
-        options.write(optionsFile)
-
+        
+        // Execute javadoc
         val javadocTool = javaToolchains.javadocToolFor {
             languageVersion = JavaLanguageVersion.of(21)
         }
-        providers.exec {
+        
+        val execResult = providers.exec {
             executable = javadocTool.get().executablePath.asFile.absolutePath
-            args = listOf("@${optionsFile.absolutePath}")
-        }.result.get()
-
-        delete(combinedSrcDir)
+            args = javadocArgs
+        }
+        
+        execResult.result.get()
+        
+        // Clean up temporary directory
+        delete(tempDir)
     }
 }
 
