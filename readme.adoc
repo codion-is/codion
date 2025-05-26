@@ -349,7 +349,7 @@ EntityDefinition.Builder address =
                 .stringFactory(stringFactory)
                 .caption("Address");
 
-add(address);
+add(address.build());
 ----
 ====
 

@@ -55,8 +55,7 @@ import static javax.swing.UIManager.getLookAndFeel;
 public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler>> {
 
 	/**
-	 * <p>Specifies whether to include installed look and feels in the selection combo box by default, if auxiliary ones are provided.
-	 * <p>Note that this has no effect if only the look and feels are installed.
+	 * <p>Specifies whether to include installed look and feels in the selection combo box by default.
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: false

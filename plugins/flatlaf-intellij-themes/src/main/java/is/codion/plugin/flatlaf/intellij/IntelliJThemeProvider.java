@@ -142,7 +142,7 @@ import static java.util.Collections.unmodifiableList;
  */
 public final class IntelliJThemeProvider implements LookAndFeelProvider {
 
-	private final Collection<LookAndFeelEnabler> providers;
+	private final Collection<LookAndFeelEnabler> enablers;
 
 	static {
 		// Turn off FlatLaf logging to get around
@@ -152,7 +152,7 @@ public final class IntelliJThemeProvider implements LookAndFeelProvider {
 	}
 
 	public IntelliJThemeProvider() {
-		providers = unmodifiableList(asList(
+		enablers = unmodifiableList(asList(
 						lookAndFeelEnabler(new LookAndFeelInfo("Nature Aurora Borealis", AuroraBorealis.class.getName())),
 						lookAndFeelEnabler(new LookAndFeelInfo("Nature Autumn", Autumn.class.getName())),
 						lookAndFeelEnabler(new LookAndFeelInfo("Nature Everest", Everest.class.getName())),
@@ -268,6 +268,6 @@ public final class IntelliJThemeProvider implements LookAndFeelProvider {
 	 * @return all available IntelliJ Theme Look and Feels
 	 */
 	public Collection<LookAndFeelEnabler> get() {
-		return providers;
+		return enablers;
 	}
 }

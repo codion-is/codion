@@ -30,7 +30,7 @@ import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A utility enum for enabled focus traversal based on the Enter key.
+ * A utility enum for enabling component focus traversal based on the Enter key.
  */
 public enum TransferFocusOnEnter {
 
