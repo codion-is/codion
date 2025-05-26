@@ -24,7 +24,6 @@ import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.Report;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.user.User;
-import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -49,14 +48,56 @@ import java.util.function.Consumer;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A connection to a database, for querying and manipulating {@link Entity}s and running database
- * operations specified by a single {@link Domain} model.
- * {@link #execute(FunctionType)} and {@link #execute(ProcedureType)}
- * do not perform any transaction control whereas the select, insert, update and delete methods
- * perform a commit unless they are run within a transaction.
- * A static helper class for mass data manipulation.
+ * A connection to a database for querying and manipulating {@link Entity} instances.
+ * <p>
+ * The EntityConnection interface provides comprehensive database access with:
+ * <ul>
+ *   <li>Type-safe querying with the {@link Select} API</li>
+ *   <li>CRUD operations with automatic transaction management</li>
+ *   <li>Support for database functions and procedures</li>
+ *   <li>Configurable foreign key fetching depth</li>
+ *   <li>Query result caching</li>
+ * </ul>
+ * 
+ * <p>Transaction Management</p>
+ * All insert, update, and delete operations automatically commit unless run within an explicit transaction.
+ * {@link #execute(FunctionType)} and {@link #execute(ProcedureType)} do not perform transaction control.
+ * {@snippet :
+ * // Automatic transaction management
+ * Entity artist = connection.insertSelect(artistEntity);
+ * 
+ * // Explicit transaction for multiple operations
+ * EntityConnection.transaction(connection, () -> {
+ *     connection.insert(artist);
+ *     connection.insert(album);
+ *     connection.update(tracks);
+ * });
+ * }
+ * 
+ * <p>Basic Usage</p>
+ * {@snippet :
+ * EntityConnection connection = connectionProvider.connection();
+ * 
+ * // Select entities
+ * List<Entity> albums = connection.select(Album.ARTIST_FK.equalTo(artist));
+ * 
+ * // Insert with returned key
+ * Entity.Key albumKey = connection.insert(album);
+ * 
+ * // Update modified entity
+ * album.set(Album.TITLE, "New Title");
+ * connection.update(album);
+ * 
+ * // Delete by condition
+ * connection.delete(Track.ALBUM_FK.equalTo(album));
+ * }
+ * 
+ * @see EntityConnectionProvider
  * @see #transaction(EntityConnection, Transactional)
  * @see #transaction(EntityConnection, TransactionalResult)
+ * @see Select
+ * @see Update
+ * @see Count
  */
 public interface EntityConnection extends AutoCloseable {
 
@@ -198,6 +239,15 @@ public interface EntityConnection extends AutoCloseable {
 	/**
 	 * Inserts the given entity, returning the primary key.
 	 * Performs a commit unless a transaction is open.
+	 * {@snippet :
+	 * Entities entities = connection.entities();
+	 * 
+	 * Entity artist = entities.builder(Artist.TYPE)
+	 *     .with(Artist.NAME, "The Beatles")
+	 *     .build();
+	 * 
+	 * Entity.Key artistKey = connection.insert(artist);
+	 * }
 	 * @param entity the entity to insert
 	 * @return the primary key of the inserted entity
 	 * @throws DatabaseException in case of a database exception
@@ -207,6 +257,16 @@ public interface EntityConnection extends AutoCloseable {
 	/**
 	 * Inserts the given entity, returning the inserted entity.
 	 * Performs a commit unless a transaction is open.
+	 * {@snippet :
+	 * Entity album = entities.builder(Album.TYPE)
+	 *     .with(Album.ARTIST_FK, artist)
+	 *     .with(Album.TITLE, "Abbey Road")
+	 *     .build();
+	 * 
+	 * // Insert and get the entity with generated ID
+	 * album = connection.insertSelect(album);
+	 * Long generatedId = album.get(Album.ID);
+	 * }
 	 * @param entity the entity to insert
 	 * @return the inserted entity
 	 * @throws DatabaseException in case of a database exception
@@ -280,6 +340,22 @@ public interface EntityConnection extends AutoCloseable {
 	/**
 	 * Performs an update based on the given update, updating the columns found
 	 * in the {@link Update#values()} map, using the associated value.
+	 * {@snippet :
+	 * // Update all customers without email
+	 * int updatedCount = connection.update(
+	 *     Update.where(Customer.EMAIL.isNull())
+	 *         .set(Customer.EMAIL, "noemail@example.com")
+	 *         .set(Customer.SUPPORTREP_ID, supportRepId)
+	 *         .build()
+	 * );
+	 * 
+	 * // Bulk price increase
+	 * int tracksUpdated = connection.update(
+	 *     Update.where(Track.GENRE_FK.equalTo(genre))
+	 *         .set(Track.UNITPRICE, newPrice)
+	 *         .build()
+	 * );
+	 * }
 	 * @param update the update to perform
 	 * @return the number of affected rows
 	 * @throws DatabaseException in case of a database exception
@@ -393,6 +469,17 @@ public interface EntityConnection extends AutoCloseable {
 
 	/**
 	 * Selects entities based on the given condition
+	 * {@snippet :
+	 * // Select all jazz albums
+	 * Entity jazz = connection.selectSingle(Genre.NAME.equalTo("Jazz"));
+	 * List<Entity> jazzTracks = connection.select(Track.GENRE_FK.equalTo(jazz));
+	 * 
+	 * // Select with composite condition
+	 * List<Entity> longExpensiveTracks = connection.select(and(
+	 *     Track.UNITPRICE.greaterThan(0.99),
+	 *     Track.MILLISECONDS.greaterThan(300_000)
+	 * ));
+	 * }
 	 * @param condition the condition specifying which entities to select
 	 * @return entities based to the given condition
 	 * @throws DatabaseException in case of a database exception
@@ -401,6 +488,29 @@ public interface EntityConnection extends AutoCloseable {
 
 	/**
 	 * Selects entities based on the given select
+	 * {@snippet :
+	 * // Select with ordering and limit
+	 * List<Entity> recentInvoices = connection.select(
+	 *     Select.where(Invoice.CUSTOMER_FK.equalTo(customer))
+	 *         .orderBy(OrderBy.descending(Invoice.DATE))
+	 *         .limit(10)
+	 *         .build()
+	 * );
+	 * 
+	 * // Select specific attributes only
+	 * List<Entity> trackInfo = connection.select(
+	 *     Select.where(Track.ALBUM_FK.equalTo(album))
+	 *         .attributes(Track.NAME, Track.MILLISECONDS)
+	 *         .build()
+	 * );
+	 * 
+	 * // Control foreign key fetching depth
+	 * List<Entity> tracks = connection.select(
+	 *     Select.where(Track.GENRE_FK.equalTo(genre))
+	 *         .referenceDepth(0)  // Don't fetch foreign keys
+	 *         .build()
+	 * );
+	 * }
 	 * @param select the select to perform
 	 * @return entities based to the given select
 	 * @throws DatabaseException in case of a database exception
@@ -664,6 +774,31 @@ public interface EntityConnection extends AutoCloseable {
 	 * A class encapsulating select query parameters.
 	 * A factory for {@link Builder} instances via
 	 * {@link Select#all(EntityType)}, {@link Select#where(Condition)}.
+	 * {@snippet :
+	 * // Simple select with condition
+	 * List<Entity> metalTracks = connection.select(
+	 *     Select.where(Track.GENRE_FK.equalTo(metal))
+	 *         .build()
+	 * );
+	 * 
+	 * // Complex select with multiple options
+	 * List<Entity> tracks = connection.select(
+	 *     Select.where(Track.ALBUM_FK.equalTo(album))
+	 *         .orderBy(OrderBy.ascending(Track.TRACKNO))
+	 *         .attributes(Track.NAME, Track.MILLISECONDS, Track.COMPOSER)
+	 *         .limit(50)
+	 *         .referenceDepth(Track.GENRE_FK, 0)  // Don't fetch genre
+	 *         .referenceDepth(Track.MEDIATYPE_FK, 1)  // Fetch media type
+	 *         .build()
+	 * );
+	 * 
+	 * // Select for update (row locking)
+	 * Entity invoice = connection.selectSingle(
+	 *     Select.where(Invoice.ID.equalTo(invoiceId))
+	 *         .forUpdate()
+	 *         .build()
+	 * );
+	 * }
 	 */
 	interface Select {
 

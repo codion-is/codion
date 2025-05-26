@@ -38,9 +38,56 @@ import static is.codion.common.Configuration.value;
 import static java.util.stream.StreamSupport.stream;
 
 /**
- * Specifies a class responsible for providing a single {@link EntityConnection} instance.
- * {@link #connection()} is guaranteed to return a healthy connection or throw an exception.
- * A factory for EntityConnectionProviders based on system properties.
+ * Provides a managed {@link EntityConnection} instance with automatic reconnection handling.
+ * <p>
+ * EntityConnectionProvider serves as the primary entry point for database access in Codion applications.
+ * It manages connection lifecycle, handles reconnection for both local and remote connections,
+ * and provides a consistent interface regardless of the underlying connection type.
+ * 
+ * <h2>Connection Types</h2>
+ * <ul>
+ *   <li>{@link #CONNECTION_TYPE_LOCAL} - Direct JDBC connection</li>
+ *   <li>{@link #CONNECTION_TYPE_REMOTE} - RMI-based remote connection</li>
+ *   <li>{@link #CONNECTION_TYPE_HTTP} - HTTP-based remote connection</li>
+ * </ul>
+ * 
+ * <h2>Basic Usage</h2>
+ * {@snippet :
+ * // Local connection
+ * EntityConnectionProvider provider = LocalEntityConnectionProvider.builder()
+ *     .domainType(DOMAIN)
+ *     .user(User.parse("scott:tiger"))
+ *     .build();
+ * 
+ * // Remote connection
+ * EntityConnectionProvider provider = RemoteEntityConnectionProvider.builder()
+ *     .domainType(DOMAIN)
+ *     .hostName("localhost")
+ *     .port(2223)
+ *     .registryPort(1099)
+ *     .user(User.parse("scott:tiger"))
+ *     .build();
+ * 
+ * // Use the connection
+ * try (EntityConnectionProvider connProvider = provider) {
+ *     EntityConnection connection = connProvider.connection();
+ *     List<Entity> customers = connection.select(all(Customer.TYPE));
+ * }
+ * }
+ * 
+ * <h2>Configuration-based Creation</h2>
+ * {@snippet :
+ * // Configure via system properties
+ * System.setProperty("codion.client.connectionType", "remote");
+ * System.setProperty("codion.client.domainType", "chinook:Chinook");
+ * 
+ * // Create provider based on configuration
+ * EntityConnectionProvider provider = EntityConnectionProvider.builder()
+ *     .user(User.parse("scott:tiger"))
+ *     .build();
+ * }
+ * 
+ * @see EntityConnection
  * @see #builder()
  */
 public interface EntityConnectionProvider extends AutoCloseable {
@@ -151,6 +198,18 @@ public interface EntityConnectionProvider extends AutoCloseable {
 	Optional<Version> clientVersion();
 
 	/**
+	 * Creates a connection provider builder based on system configuration.
+	 * {@snippet :
+	 * // Configure connection type and domain
+	 * System.setProperty("codion.client.connectionType", "remote");
+	 * System.setProperty("codion.client.domainType", "Chinook");
+	 * 
+	 * // Create builder based on configuration
+	 * EntityConnectionProvider provider = EntityConnectionProvider.builder()
+	 *     .user(User.parse("scott:tiger"))
+	 *     .clientType("MyApp")
+	 *     .build();
+	 * }
 	 * @return an unconfigured {@link Builder} instance, based on the
 	 * {@link EntityConnectionProvider#CLIENT_CONNECTION_TYPE} and {@link EntityConnectionProvider#CLIENT_DOMAIN_TYPE} configuration values
 	 * @throws IllegalStateException in case the required connection provider builder is not available on the classpath
@@ -179,7 +238,27 @@ public interface EntityConnectionProvider extends AutoCloseable {
 	}
 
 	/**
-	 * Builds a {@link EntityConnectionProvider} instances
+	 * Builds {@link EntityConnectionProvider} instances.
+	 * {@snippet :
+	 * // Local connection with full configuration
+	 * EntityConnectionProvider local = LocalEntityConnectionProvider.builder()
+	 *     .domainType(DOMAIN)
+	 *     .user(User.parse("scott:tiger"))
+	 *     .clientId(UUID.randomUUID())
+	 *     .clientType("MyApplication")
+	 *     .clientVersion(Version.parse("1.0.0"))
+	 *     .onClose(provider -> System.out.println("Connection closed"))
+	 *     .build();
+	 * 
+	 * // Remote connection
+	 * EntityConnectionProvider remote = RemoteEntityConnectionProvider.builder()
+	 *     .domainType(DOMAIN)
+	 *     .hostName("server.example.com")
+   *     .port(2223)
+	 *     .user(User.parse("scott:tiger"))
+	 *     .clientType("MyApplication")
+	 *     .build();
+	 * }
 	 * @param <T> the connection provider type
 	 * @param <B> the builder type
 	 */

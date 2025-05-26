@@ -228,7 +228,6 @@ public interface Entity extends Comparable<Entity> {
 	 * }
 	 * @param foreignKey the foreign key for which to retrieve the referenced entity
 	 * @return the entity associated with {@code foreignKey}
-	 * @see ForeignKey#referenceDepth()
 	 */
 	@Nullable Entity entity(ForeignKey foreignKey);
 
