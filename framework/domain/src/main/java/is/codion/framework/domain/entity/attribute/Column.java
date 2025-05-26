@@ -32,7 +32,82 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * An {@link Attribute} representing a table column.
+ * <p>
+ * Columns are attributes that map directly to database table columns, providing type-safe
+ * access to column values and enabling query condition creation. They extend the base
+ * {@link Attribute} interface with column-specific functionality for database operations.
+ * <p>
+ * Columns inherit from {@link ColumnCondition.Factory} to provide condition creation methods:
+ * {@snippet :
+ * public class Store extends DefaultDomain {
+ *     
+ *     interface Customer {
+ *         EntityType TYPE = DOMAIN.entityType("store.customer");
+ *         
+ *         // Column definitions
+ *         Column<Integer> ID = TYPE.integerColumn("id");
+ *         Column<String> NAME = TYPE.stringColumn("name");
+ *         Column<String> EMAIL = TYPE.stringColumn("email");
+ *         Column<LocalDate> BIRTH_DATE = TYPE.localDateColumn("birth_date");
+ *         Column<Boolean> ACTIVE = TYPE.booleanColumn("active");
+ *         Column<BigDecimal> CREDIT_LIMIT = TYPE.bigDecimalColumn("credit_limit");
+ *     }
+ *     
+ *     void defineCustomer() {
+ *         Customer.TYPE.define(
+ *                 Customer.ID.define()
+ *                     .primaryKey()
+ *                     .keyGenerator(KeyGenerator.identity()),
+ *                 Customer.NAME.define()
+ *                     .column()
+ *                     .nullable(false)
+ *                     .maximumLength(100)
+ *                     .caption("Customer Name"),
+ *                 Customer.EMAIL.define()
+ *                     .column()
+ *                     .nullable(false)
+ *                     .maximumLength(255)
+ *                     .caption("Email Address"),
+ *                 Customer.BIRTH_DATE.define()
+ *                     .column()
+ *                     .nullable(true)
+ *                     .caption("Date of Birth"),
+ *                 Customer.ACTIVE.define()
+ *                     .column()
+ *                     .nullable(false)
+ *                     .defaultValue(true)
+ *                     .caption("Active"),
+ *                 Customer.CREDIT_LIMIT.define()
+ *                     .column()
+ *                     .nullable(true)
+ *                     .minimumValue(BigDecimal.ZERO)
+ *                     .maximumValue(new BigDecimal("50000"))
+ *                     .caption("Credit Limit"))
+ *             .build();
+ *     }
+ * }
+ * 
+ * // Query condition usage (inherited from ColumnCondition.Factory)
+ * List<Entity> activeCustomers = connection.select(
+ *     Customer.ACTIVE.equalTo(true));
+ * 
+ * List<Entity> customersByName = connection.select(
+ *     Customer.NAME.like("John%"));
+ * 
+ * List<Entity> recentCustomers = connection.select(
+ *     Customer.BIRTH_DATE.greaterThanOrEqualTo(LocalDate.now().minusYears(25)));
+ * 
+ * List<Entity> highValueCustomers = connection.select(
+ *     Customer.CREDIT_LIMIT.greaterThan(new BigDecimal("10000")));
+ * 
+ * // Complex conditions
+ * List<Entity> nonLiveAlbums = connection.select(and(
+ * 						Album.ARTIST_FK.in(artists),
+ * 						Album.TITLE.likeIgnoreCase("%live%")));
+ * }
  * @param <T> the column value type
+ * @see ColumnCondition.Factory
+ * @see #define()
  */
 public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
 

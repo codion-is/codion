@@ -26,6 +26,90 @@ import java.util.List;
 
 /**
  * An {@link Attribute} representing a foreign key relation.
+ * <p>
+ * Foreign keys establish relationships between entities, allowing navigation from one entity 
+ * to related entities. They represent database foreign key constraints and enable automatic
+ * loading of referenced entities based on reference depth configuration.
+ * <p>
+ * Foreign keys inherit from {@link ForeignKeyCondition.Factory} to provide condition creation methods:
+ * {@snippet :
+ * public class Store extends DefaultDomain {
+ *     
+ *     interface Customer {
+ *         EntityType TYPE = DOMAIN.entityType("store.customer");
+ *         Column<Integer> ID = TYPE.integerColumn("id");
+ *         Column<String> NAME = TYPE.stringColumn("name");
+ *     }
+ *     
+ *     interface Order {
+ *         EntityType TYPE = DOMAIN.entityType("store.order");
+ *         Column<Integer> ID = TYPE.integerColumn("id");
+ *         Column<Integer> CUSTOMER_ID = TYPE.integerColumn("customer_id");
+ *         Column<LocalDateTime> ORDER_DATE = TYPE.localDateTimeColumn("order_date");
+ *         
+ *         // Single-column foreign key
+ *         ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
+ *     }
+ *     
+ *     interface OrderLine {
+ *         EntityType TYPE = DOMAIN.entityType("store.order_line");
+ *         Column<Integer> ORDER_ID = TYPE.integerColumn("order_id");
+ *         Column<Integer> LINE_NUMBER = TYPE.integerColumn("line_number");
+ *         Column<Integer> PRODUCT_ID = TYPE.integerColumn("product_id");
+ *         
+ *         // Composite foreign key (two columns)
+ *         ForeignKey ORDER_FK = TYPE.foreignKey("order_fk", 
+ *             List.of(ForeignKey.reference(ORDER_ID, Order.ID),
+ *                     ForeignKey.reference(LINE_NUMBER, Order.LINE_NUMBER)));
+ *     }
+ *     
+ *     void defineOrder() {
+ *         Order.TYPE.define(
+ *                 Order.ID.define()
+ *                     .primaryKey(),
+ *                 Order.CUSTOMER_ID.define()
+ *                     .column(),
+ *                 Order.ORDER_DATE.define()
+ *                     .column(),
+ *                 Order.CUSTOMER_FK.define()
+ *                     .foreignKey()
+ *                     .caption("Customer")
+ *                     .referenceDepth(1))  // Load customer automatically (1 is the default)
+ *             .build();
+ *     }
+ * }
+ * 
+ * // Foreign key navigation and usage
+ * List<Entity> orders = connection.select(all(Order.TYPE));
+ * 
+ * for (Entity order : orders) {
+ *     // Direct foreign key entity access (loaded automatically with reference depth)
+ *     Entity customer = order.get(Order.CUSTOMER_FK);
+ *     if (customer != null) {
+ *         String customerName = customer.get(Customer.NAME);
+ *         System.out.println("Customer: " + customerName);
+ *     }
+ *     
+ *     // Or use entity() method to get entity even if not fully loaded
+ *     Entity customerEntity = order.entity(Order.CUSTOMER_FK);
+ *     if (customerEntity != null) {
+ *         Integer customerId = customerEntity.get(Customer.ID); // Always available
+ *     }
+ * }
+ * 
+ * // Query conditions using foreign keys
+ * Entity specificCustomer = connection.selectSingle(Customer.ID.equalTo(42));
+ * 
+ * List<Entity> customerOrders = connection.select(
+ *     Order.CUSTOMER_FK.equalTo(specificCustomer));
+ * 
+ * List<Entity> ordersFromActiveCustomers = connection.select(
+ *     Order.CUSTOMER_FK.in(connection.select(Customer.ACTIVE.equalTo(true))));
+ * }
+ * @see ForeignKeyCondition.Factory
+ * @see #define()
+ * @see #referencedType()
+ * @see #references()
  */
 public interface ForeignKey extends Attribute<Entity>, ForeignKeyCondition.Factory {
 

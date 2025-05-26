@@ -29,8 +29,60 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Specifies an attribute definition based on a table column
+ * Specifies an attribute definition based on a table column.
+ * <p>
+ * ColumnDefinition extends {@link AttributeDefinition} with column-specific configuration
+ * such as primary key properties, SQL expressions, insertable/updatable flags, and
+ * database value conversion logic.
+ * <p>
+ * Column definitions are created through the column builder API:
+ * {@snippet :
+ * interface Product {
+ *     EntityType TYPE = DOMAIN.entityType("store.product");
+ *     
+ *     Column<Integer> ID = TYPE.integerColumn("id");
+ *     Column<String> NAME = TYPE.stringColumn("name");
+ *     Column<BigDecimal> PRICE = TYPE.bigDecimalColumn("price");
+ *     Column<Boolean> ACTIVE = TYPE.booleanColumn("active");
+ *     Column<LocalDateTime> CREATED_DATE = TYPE.localDateTimeColumn("created_date");
+ * }
+ * 
+ * Product.TYPE.define(
+ *         // Primary key with auto-generation
+ *         Product.ID.define()
+ *             .primaryKey()
+ *             .keyGenerator(KeyGenerator.identity()),
+ *         
+ *         // Required string column with length constraint
+ *         Product.NAME.define()
+ *             .column()
+ *             .nullable(false)
+ *             .maximumLength(100),
+ *         
+ *         // Decimal column with precision and range validation
+ *         Product.PRICE.define()
+ *             .column()
+ *             .nullable(false)
+ *             .minimumValue(BigDecimal.ZERO)
+ *             .maximumValue(new BigDecimal("99999.99"))
+ *             .maximumFractionDigits(2),
+ *         
+ *         // Boolean column with database mapping
+ *         Product.ACTIVE.define()
+ *             .booleanColumn(String.class, "Y", "N") // Maps Y/N to true/false
+ *             .defaultValue(true),
+ *         
+ *         // Audit column (database-managed)
+ *         Product.CREATED_DATE.define()
+ *             .column()
+ *             .insertable(false)  // Not included in INSERT
+ *             .updatable(false)   // Not included in UPDATE
+ *             .columnHasDefaultValue(true)) // Database provides value
+ *     .build();
+ * }
  * @param <T> the underlying type
+ * @see AttributeDefinition
+ * @see Column#define()
  */
 public interface ColumnDefinition<T> extends AttributeDefinition<T> {
 

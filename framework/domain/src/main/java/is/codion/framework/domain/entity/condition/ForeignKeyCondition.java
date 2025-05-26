@@ -26,7 +26,69 @@ import org.jspecify.annotations.Nullable;
 import java.util.Collection;
 
 /**
- * A ForeignKey based condition.
+ * A ForeignKey based condition for filtering entities by their relationships.
+ * <p>
+ * ForeignKeyConditions enable querying entities based on their references to other entities.
+ * They provide type-safe filtering using entity instances or collections of entities,
+ * automatically handling primary key extraction and null value cases.
+ * <p>
+ * Foreign key conditions are typically created through the ForeignKey.Factory interface,
+ * which all ForeignKey instances implement:
+ * {@snippet :
+ * // Find albums by specific artist
+ * Entity aliceInChains = connection.selectSingle(
+ *     Artist.NAME.equalTo("Alice In Chains"));
+ * 
+ * List<Entity> aliceInChainsAlbums = connection.select(
+ *     Album.ARTIST_FK.equalTo(aliceInChains));
+ * 
+ * // Find tracks by genre
+ * Entity metalGenre = connection.selectSingle(
+ *     Genre.NAME.equalToIgnoreCase("metal"));
+ * 
+ * List<Entity> metalTracks = connection.select(
+ *     Track.GENRE_FK.equalTo(metalGenre));
+ * 
+ * // Find albums by multiple artists
+ * List<Entity> selectedArtists = connection.select(
+ *     Artist.NAME.like("The %"));
+ * 
+ * List<Entity> albumsByTheArtists = connection.select(
+ *     Album.ARTIST_FK.in(selectedArtists));
+ * 
+ * // Find tracks not in classical playlist
+ * Long classicalPlaylistId = 1L;
+ * List<Entity> nonClassicalTracks = connection.select(
+ *     Track.NOT_IN_PLAYLIST.get(Playlist.ID, classicalPlaylistId));
+ * 
+ * // Find albums without an artist (orphaned albums)
+ * List<Entity> orphanedAlbums = connection.select(
+ *     Album.ARTIST_FK.isNull());
+ * 
+ * // Find tracks with a genre assigned
+ * List<Entity> categorizedTracks = connection.select(
+ *     Track.GENRE_FK.isNotNull());
+ * 
+ * // Complex query with foreign key conditions
+ * List<Entity> complexQuery = connection.select(and(
+ *     Album.ARTIST_FK.in(popularArtists),
+ *     Album.ARTIST_FK.notEqualTo(excludedArtist)));
+ * 
+ * // Using with Select builder for more control
+ * List<Entity> detailedQuery = connection.select(
+ *     Select.where(Track.GENRE_FK.equalTo(rockGenre))
+ *         .attributes(Track.NAME, Track.ALBUM_FK)
+ *         .orderBy(ascending(Track.NAME))
+ *         .build());
+ * 
+ * // Foreign key conditions with null handling
+ * List<Entity> albumsWithOrWithoutArtist = connection.select(or(
+ *     Album.ARTIST_FK.equalTo(specificArtist),
+ *     Album.ARTIST_FK.isNull()));
+ * }
+ * @see Factory
+ * @see ForeignKey
+ * @see Entity
  */
 public interface ForeignKeyCondition extends Condition {
 

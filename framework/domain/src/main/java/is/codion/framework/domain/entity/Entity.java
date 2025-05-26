@@ -42,8 +42,49 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.*;
 
 /**
- * Represents a row in a table or query.
- * Helper class for working with Entity instances and related classes.
+ * Represents a row in a table or query result, encapsulating the data and state of a domain entity.
+ * <p>
+ * An Entity instance maintains both current and original values for all attributes, tracks modifications,
+ * and provides type-safe access to column values and foreign key relationships.
+ * <p>
+ * Entity instances can be mutable or immutable. Mutable entities track value modifications and
+ * support operations like {@link #set(Attribute, Object)}, {@link #revert()}, and {@link #save()}.
+ * Immutable entities throw {@link UnsupportedOperationException} for modification operations.
+ * 
+ * {@snippet :
+ * // Creating and working with entities
+ * Entity customer = entities.builder(Customer.TYPE)
+ *     .with(Customer.ID, 42)
+ *     .with(Customer.NAME, "John Doe")
+ *     .with(Customer.EMAIL, "john@example.com")
+ *     .build();
+ * 
+ * // Accessing values
+ * String name = customer.get(Customer.NAME);
+ * Optional<String> email = customer.optional(Customer.EMAIL);
+ * 
+ * // Modifying values (if mutable)
+ * customer.set(Customer.EMAIL, "newemail@example.com");
+ * boolean isModified = customer.modified(Customer.EMAIL); // true
+ * 
+ * // Reverting changes
+ * customer.revert(Customer.EMAIL); // back to "john@example.com"
+ * }
+ * 
+ * {@snippet :
+ * // Working with foreign keys
+ * Entity invoice = connection.selectSingle(Invoice.ID.equalTo(123));
+ * 
+ * // Access the referenced entity (automatically loaded if configured)
+ * Entity customer = invoice.get(Invoice.CUSTOMER_FK);
+ * 
+ * // Access foreign key attributes directly
+ * String customerName = invoice.get(Invoice.CUSTOMER_FK).get(Customer.NAME);
+ * 
+ * // Get the foreign key value
+ * Key customerKey = invoice.key(Invoice.CUSTOMER_FK);
+ * }
+ * 
  * @see EntityDefinition#entity()
  * @see Entities#entity(EntityType)
  * @see Entities#builder(EntityType)
@@ -169,8 +210,25 @@ public interface Entity extends Comparable<Entity> {
 	 * a foreign key value exists but the actual referenced entity has not
 	 * been loaded, an "empty" entity is returned, containing only the referenced
 	 * key value(s). Null is returned only if the actual foreign key is null.
+	 * {@snippet :
+	 * // Assuming Invoice has a foreign key to Customer
+	 * Entity invoice = connection.selectSingle(Invoice.ID.equalTo(42));
+	 * 
+	 * // Get the customer entity - may be fully loaded or just contain the key
+	 * Entity customer = invoice.entity(Invoice.CUSTOMER_FK);
+	 * 
+	 * if (customer != null) {
+	 *     // This is always available - the foreign key value
+	 *     Integer customerId = customer.get(Customer.ID);
+	 *     
+	 *     // This may return null if customer wasn't loaded
+	 *     // and the foreign key definition doesn't include Customer.NAME
+	 *     String customerName = customer.get(Customer.NAME);
+	 * }
+	 * }
 	 * @param foreignKey the foreign key for which to retrieve the referenced entity
 	 * @return the entity associated with {@code foreignKey}
+	 * @see ForeignKey#referenceDepth()
 	 */
 	@Nullable Entity entity(ForeignKey foreignKey);
 
@@ -185,6 +243,20 @@ public interface Entity extends Comparable<Entity> {
 	/**
 	 * Returns true if the value associated with the given attribute has been modified since first set,
 	 * note that this does not apply to attributes based on derived values.
+	 * {@snippet :
+	 * Entity customer = entities.builder(Customer.TYPE)
+	 *     .with(Customer.NAME, "John")
+	 *     .with(Customer.EMAIL, "john@example.com")
+	 *     .build();
+	 * 
+	 * customer.modified(Customer.NAME); // false
+	 * 
+	 * customer.set(Customer.NAME, "Jane");
+	 * customer.modified(Customer.NAME); // true
+	 * 
+	 * customer.save();
+	 * customer.modified(Customer.NAME); // false
+	 * }
 	 * @param attribute the attribute
 	 * @return true if the value associated with the given attribute has been modified
 	 */
@@ -207,6 +279,23 @@ public interface Entity extends Comparable<Entity> {
 	/**
 	 * Compares the values of all attributes in the given entity to the values in this entity instance.
 	 * Returns true if all attribute values available in this entity are available and equal in the comparison entity
+	 * {@snippet :
+	 * Entity customer1 = entities.builder(Customer.TYPE)
+	 *     .with(Customer.ID, 42)
+	 *     .with(Customer.NAME, "John Doe")
+	 *     .with(Customer.EMAIL, "john@example.com")
+	 *     .build();
+	 * 
+	 * Entity customer2 = entities.builder(Customer.TYPE)
+	 *     .with(Customer.ID, 42)
+	 *     .with(Customer.NAME, "John Doe")
+	 *     .with(Customer.EMAIL, "john@example.com")
+	 *     .with(Customer.PHONE, "555-1234") // Extra attribute
+	 *     .build();
+	 * 
+	 * customer1.equalValues(customer2); // true - all values in customer1 exist and are equal in customer2
+	 * customer2.equalValues(customer1); // false - customer2 has PHONE which customer1 doesn't have
+	 * }
 	 * @param entity the entity to compare to
 	 * @return true if all values in this entity instance are present and equal to the values in the given entity
 	 * @throws IllegalArgumentException in case the entity is not of the same type
@@ -216,6 +305,26 @@ public interface Entity extends Comparable<Entity> {
 	/**
 	 * Compares the values of the given attributes in the given entity to the values in this entity instance.
 	 * Returns true if these two entities contain values for the given attributes and all the values are equal.
+	 * {@snippet :
+	 * Entity customer1 = entities.builder(Customer.TYPE)
+	 *     .with(Customer.ID, 42)
+	 *     .with(Customer.NAME, "John Doe")
+	 *     .with(Customer.EMAIL, "john@example.com")
+	 *     .build();
+	 * 
+	 * Entity customer2 = entities.builder(Customer.TYPE)
+	 *     .with(Customer.ID, 42)
+	 *     .with(Customer.NAME, "John Doe")
+	 *     .with(Customer.EMAIL, "different@example.com")
+	 *     .build();
+	 * 
+	 * // Compare only specific attributes
+	 * Set<Attribute<?>> nameAttributes = Set.of(Customer.ID, Customer.NAME);
+	 * customer1.equalValues(customer2, nameAttributes); // true - ID and NAME are equal
+	 * 
+	 * Set<Attribute<?>> allAttributes = Set.of(Customer.ID, Customer.NAME, Customer.EMAIL);
+	 * customer1.equalValues(customer2, allAttributes); // false - EMAIL differs
+	 * }
 	 * @param entity the entity to compare to
 	 * @param attributes the attributes to compare
 	 * @return true if all the given values in this entity instance are present and equal to the values in the given entity
@@ -234,6 +343,28 @@ public interface Entity extends Comparable<Entity> {
 	Map<Attribute<?>, Object> set(@Nullable Entity entity);
 
 	/**
+	 * Returns a {@link Copy} instance providing ways to create copies of this entity.
+	 * {@snippet :
+	 * Entity customer = entities.builder(Customer.TYPE)
+	 *     .with(Customer.ID, 42)
+	 *     .with(Customer.NAME, "John Doe")
+	 *     .with(Customer.EMAIL, "john@example.com")
+	 *     .build();
+	 * 
+	 * // Create a mutable copy
+	 * Entity mutableCopy = customer.copy().mutable();
+	 * mutableCopy.set(Customer.EMAIL, "new@example.com");
+	 * 
+	 * // Original remains unchanged
+	 * customer.get(Customer.EMAIL); // "john@example.com"
+	 * mutableCopy.get(Customer.EMAIL); // "new@example.com"
+	 * 
+	 * // Create a builder initialized with entity values
+	 * Entity newCustomer = customer.copy().builder()
+	 *     .with(Customer.ID, 43) // Different ID
+	 *     .with(Customer.PHONE, "555-1234") // Additional field
+	 *     .build();
+	 * }
 	 * @return a {@link Copy} instance for this entity
 	 */
 	Copy copy();
@@ -461,6 +592,16 @@ public interface Entity extends Comparable<Entity> {
 
 	/**
 	 * Maps the given entities to their primary key, assuming each entity appears only once in the given collection.
+	 * {@snippet :
+	 * List<Entity> customers = connection.select(Customer.ID.in(1, 2, 3));
+	 * 
+	 * // Create a map for fast lookup by primary key
+	 * Map<Key, Entity> customerMap = Entity.primaryKeyMap(customers);
+	 * 
+	 * // Later, quick lookup by key
+	 * Key customerKey = entities.primaryKey(Customer.TYPE, 2);
+	 * Entity customer = customerMap.get(customerKey);
+	 * }
 	 * @param entities the entities to map
 	 * @return the mapped entities
 	 * @throws IllegalArgumentException in case a non-unique primary key is encountered
@@ -473,6 +614,22 @@ public interface Entity extends Comparable<Entity> {
 	/**
 	 * Returns a {@link LinkedHashMap} containing the given entities mapped to the value of {@code attribute},
 	 * respecting the iteration order of the given collection
+	 * {@snippet :
+	 * List<Entity> orders = connection.select(all(Order.TYPE));
+	 * 
+	 * // Group orders by status
+	 * LinkedHashMap<String, List<Entity>> ordersByStatus = 
+	 *     Entity.groupByValue(Order.STATUS, orders);
+	 * 
+	 * // Process orders by status
+	 * ordersByStatus.forEach((status, statusOrders) -> {
+	 *     System.out.println("Status: " + status + ", Count: " + statusOrders.size());
+	 * });
+	 * 
+	 * // Groups can contain entities with null values
+	 * List<Entity> pendingOrders = ordersByStatus.get("PENDING");
+	 * List<Entity> nullStatusOrders = ordersByStatus.get(null);
+	 * }
 	 * @param <T> the key type
 	 * @param attribute the attribute which value should be used for mapping
 	 * @param entities the entities to map by attribute value

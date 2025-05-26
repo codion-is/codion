@@ -37,8 +37,91 @@ import java.util.Optional;
 import static is.codion.common.Configuration.*;
 
 /**
- * Defines an Attribute. Factory for {@link AttributeDefinition} instances.
+ * Defines an Attribute configuration including validation, formatting, and behavior settings.
+ * <p>
+ * AttributeDefinition instances specify how attributes behave within entities, including:
+ * <ul>
+ *   <li>Display properties (caption, description, format patterns)
+ *   <li>Validation rules (nullable, min/max values, length constraints)
+ *   <li>Default values and value generation
+ *   <li>UI behavior (items for combo boxes, comparators for sorting)
+ *   <li>Data conversion and formatting
+ * </ul>
+ * <p>
+ * AttributeDefinitions are created using the builder pattern through attribute definers:
+ * {@snippet :
+ * public class Store extends DefaultDomain {
+ *     
+ *     interface Product {
+ *         EntityType TYPE = DOMAIN.entityType("store.product");
+ *         
+ *         Column<Integer> ID = TYPE.integerColumn("id");
+ *         Column<String> NAME = TYPE.stringColumn("name");
+ *         Column<String> DESCRIPTION = TYPE.stringColumn("description");
+ *         Column<BigDecimal> PRICE = TYPE.bigDecimalColumn("price");
+ *         Column<String> CATEGORY = TYPE.stringColumn("category");
+ *         Column<Boolean> ACTIVE = TYPE.booleanColumn("active");
+ *         Column<LocalDateTime> CREATED_DATE = TYPE.localDateTimeColumn("created_date");
+ *     }
+ *     
+ *     void defineProduct() {
+ *         Product.TYPE.define(
+ *                 Product.ID.define()
+ *                     .primaryKey()
+ *                     .keyGenerator(KeyGenerator.identity())
+ *                     .caption("Product ID"),
+ *                 
+ *                 Product.NAME.define()
+ *                     .column()
+ *                     .caption("Product Name")
+ *                     .nullable(false)
+ *                     .maximumLength(100)
+ *                     .description("The name of the product"),
+ *                 
+ *                 Product.DESCRIPTION.define()
+ *                     .column()
+ *                     .caption("Description")
+ *                     .maximumLength(500)
+ *                     .nullable(true),
+ *                 
+ *                 Product.PRICE.define()
+ *                     .column()
+ *                     .caption("Price")
+ *                     .nullable(false)
+ *                     .minimumValue(BigDecimal.ZERO)
+ *                     .maximumValue(new BigDecimal("99999.99"))
+ *                     .maximumFractionDigits(2)
+ *                     .defaultValue(BigDecimal.ZERO),
+ *                 
+ *                 Product.CATEGORY.define()
+ *                     .column()
+ *                     .caption("Category")
+ *                     .nullable(false)
+ *                     .items(List.of(
+ *                         Item.item("ELECTRONICS", "Electronics"),
+ *                         Item.item("CLOTHING", "Clothing"),
+ *                         Item.item("BOOKS", "Books"),
+ *                         Item.item("HOME", "Home & Garden"))),
+ *                 
+ *                 Product.ACTIVE.define()
+ *                     .column()
+ *                     .caption("Active")
+ *                     .nullable(false)
+ *                     .defaultValue(true),
+ *                 
+ *                 Product.CREATED_DATE.define()
+ *                     .column()
+ *                     .caption("Created")
+ *                     .nullable(false)
+ *                     .columnHasDefaultValue(true) // Database sets this
+ *                     .updatable(false))
+ *             .build();
+ *     }
+ * }
+ * }
  * @param <T> the underlying type
+ * @see Attribute#define()
+ * @see Builder
  */
 public interface AttributeDefinition<T> {
 

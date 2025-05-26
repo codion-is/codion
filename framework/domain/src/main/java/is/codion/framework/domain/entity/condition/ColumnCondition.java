@@ -27,7 +27,72 @@ import java.util.Collection;
 
 /**
  * A condition based on a single {@link Column}.
+ * <p>
+ * ColumnConditions provide type-safe filtering for column values using various operators
+ * such as equality, comparison, pattern matching, and range operations. String conditions
+ * support case-sensitive and case-insensitive variants.
+ * <p>
+ * Column conditions are typically created through the Column.Factory interface, which
+ * all Column instances implement:
+ * {@snippet :
+ * // Equality conditions
+ * List<Entity> metalTracks = connection.select(
+ *     Track.GENRE_FK.equalTo(metalGenre));
+ * 
+ * List<Entity> unpriced = connection.select(
+ *     Track.UNIT_PRICE.equalTo(null)); // Becomes "IS NULL"
+ * 
+ * // String pattern matching
+ * List<Entity> theArtists = connection.select(
+ *     Artist.NAME.like("The %"));
+ * 
+ * List<Entity> liveAlbums = connection.select(
+ *     Album.TITLE.likeIgnoreCase("%live%"));
+ * 
+ * // Comparison conditions
+ * List<Entity> expensiveTracks = connection.select(
+ *     Track.UNIT_PRICE.greaterThan(new BigDecimal("0.99")));
+ * 
+ * List<Entity> recentTracks = connection.select(
+ *     Track.CREATED_DATE.greaterThanOrEqualTo(
+ *         LocalDateTime.now().minusDays(30)));
+ * 
+ * // Range conditions
+ * List<Entity> mediumPricedTracks = connection.select(
+ *     Track.UNIT_PRICE.between(
+ *         new BigDecimal("0.50"), 
+ *         new BigDecimal("1.50")));
+ * 
+ * // Collection-based conditions
+ * List<String> genres = List.of("Rock", "Metal", "Blues");
+ * List<Entity> rockishTracks = connection.select(
+ *     Track.GENRE_NAME.inIgnoreCase(genres));
+ * 
+ * List<Integer> excludedIds = List.of(1, 5, 10);
+ * List<Entity> filteredArtists = connection.select(
+ *     Artist.ID.notIn(excludedIds));
+ * 
+ * // Null checks
+ * List<Entity> tracksWithPrice = connection.select(
+ *     Track.UNIT_PRICE.isNotNull());
+ * 
+ * List<Entity> tracksWithoutComposer = connection.select(
+ *     Track.COMPOSER.isNull());
+ * 
+ * // Case-insensitive operations
+ * List<Entity> beatlesAlbums = connection.select(
+ *     Album.ARTIST_NAME.equalToIgnoreCase("the beatles"));
+ * 
+ * // Complex combinations with logical operators
+ * List<Entity> complexQuery = connection.select(and(
+ *     Track.UNIT_PRICE.greaterThan(new BigDecimal("0.99")),
+ *     Track.GENRE_NAME.inIgnoreCase("Rock", "Metal"),
+ *     Track.DURATION.lessThan(300000))); // Less than 5 minutes
+ * }
  * @param <T> the attribute type
+ * @see Factory
+ * @see Column
+ * @see Operator
  */
 public interface ColumnCondition<T> extends Condition {
 

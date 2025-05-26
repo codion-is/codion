@@ -39,6 +39,52 @@ import static java.util.Objects.requireNonNull;
 /**
  * Defines an Entity type and serves as a Factory for {@link Attribute} instances associated with this entity type.
  * A factory for {@link EntityType} instances.
+ * <p>
+ * EntityType instances are the foundation of the domain model, representing database tables or queries.
+ * They serve as factories for creating typed attributes (columns, foreign keys, derived attributes)
+ * and provide the starting point for defining entity structure.
+ * <p>
+ * {@snippet :
+ * public class Store extends DefaultDomain {
+ *     public static final DomainType DOMAIN = domainType(Store.class);
+ *     
+ *     // Define entity types as interfaces for organization
+ *     public interface Customer {
+ *         EntityType TYPE = DOMAIN.entityType("store.customer");
+ *         
+ *         // Define typed columns
+ *         Column<Integer> ID = TYPE.integerColumn("id");
+ *         Column<String> NAME = TYPE.stringColumn("name");
+ *         Column<String> EMAIL = TYPE.stringColumn("email");
+ *         Column<LocalDate> BIRTH_DATE = TYPE.localDateColumn("birth_date");
+ *         Column<Boolean> ACTIVE = TYPE.booleanColumn("active");
+ *     }
+ *     
+ *     public interface Order {
+ *         EntityType TYPE = DOMAIN.entityType("store.order");
+ *         
+ *         Column<Integer> ID = TYPE.integerColumn("id");
+ *         Column<LocalDateTime> ORDER_DATE = TYPE.localDateTimeColumn("order_date");
+ *         Column<BigDecimal> TOTAL = TYPE.bigDecimalColumn("total");
+ *         
+ *         // Define foreign key to Customer
+ *         Column<Integer> CUSTOMER_ID = TYPE.integerColumn("customer_id");
+ *         ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
+ *         
+ *         // Custom condition type for filtering
+ *         ConditionType RECENT = TYPE.conditionType("recent_orders");
+ *     }
+ *     
+ *     // Constructor defines the entity structures
+ *     public Store() {
+ *         super(DOMAIN);
+ *         defineCustomer();
+ *         defineOrder();
+ *     }
+ * }
+ * }
+ * @see #define(AttributeDefinition.Builder...)
+ * @see DomainType#entityType(String)
  */
 public interface EntityType {
 
@@ -68,6 +114,37 @@ public interface EntityType {
 
 	/**
 	 * Creates a {@link EntityDefinition.Builder} instance based on the given attribute definition builders.
+	 * {@snippet :
+	 * EntityDefinition definition = Customer.TYPE.define(
+	 *         Customer.ID.define()
+	 *             .primaryKey()
+	 *             .columnHasDefaultValue(true),
+	 *         Customer.NAME.define()
+	 *             .column()
+	 *             .caption("Customer Name")
+	 *             .nullable(false)
+	 *             .maximumLength(100),
+	 *         Customer.EMAIL.define()
+	 *             .column()
+	 *             .caption("Email Address")
+	 *             .maximumLength(255),
+	 *         Customer.BIRTH_DATE.define()
+	 *             .column()
+	 *             .caption("Date of Birth")
+	 *             .nullable(true),
+	 *         Customer.ACTIVE.define()
+	 *             .column()
+	 *             .caption("Active")
+	 *             .nullable(false)
+	 *             .defaultValue(true))
+	 *     .tableName("customer")
+	 *     .caption("Customer")
+	 *     .description("Customer information")
+	 *     .orderBy(ascending(Customer.NAME))
+	 *     .stringFactory(customer -> 
+	 *         customer.get(Customer.NAME) + " (" + customer.get(Customer.EMAIL) + ")")
+	 *     .build();
+	 * }
 	 * @param definitionBuilders builders for the attribute definitions comprising the entity
 	 * @return a {@link EntityDefinition.Builder} instance
 	 * @throws IllegalArgumentException in case {@code definitionBuilders} is empty
@@ -302,6 +379,30 @@ public interface EntityType {
 
 	/**
 	 * Creates a new {@link ForeignKey} based on the given attributes.
+	 * {@snippet :
+	 * // Single column foreign key
+	 * interface Order {
+	 *     EntityType TYPE = DOMAIN.entityType("store.order");
+	 *     
+	 *     Column<Integer> ID = TYPE.integerColumn("id");
+	 *     Column<Integer> CUSTOMER_ID = TYPE.integerColumn("customer_id");
+	 *     
+	 *     // Define foreign key to Customer entity
+	 *     ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", 
+	 *         CUSTOMER_ID, Customer.ID);
+	 * }
+	 * 
+	 * // Usage in entity definition
+	 * Order.TYPE.define(
+	 *         Order.ID.define()
+	 *             .primaryKey(),
+	 *         Order.CUSTOMER_ID.define()
+	 *             .column(),
+	 *         Order.CUSTOMER_FK.define()
+	 *             .foreignKey()
+	 *             .caption("Customer"))
+	 *     .build();
+	 * }
 	 * @param name the attribute name
 	 * @param column the column
 	 * @param referencedColumn the referenced column
@@ -312,6 +413,25 @@ public interface EntityType {
 
 	/**
 	 * Creates a new {@link ForeignKey} based on the given columns.
+	 * {@snippet :
+	 * // Composite foreign key (two columns)
+	 * interface OrderLine {
+	 *     EntityType TYPE = DOMAIN.entityType("store.order_line");
+	 *     
+	 *     // Composite primary key columns
+	 *     Column<Integer> ORDER_ID = TYPE.integerColumn("order_id");
+	 *     Column<Integer> LINE_NUMBER = TYPE.integerColumn("line_number");
+	 *     
+	 *     // Foreign key columns to ProductPrice (which has composite key)
+	 *     Column<Integer> PRODUCT_ID = TYPE.integerColumn("product_id");
+	 *     Column<LocalDate> PRICE_DATE = TYPE.localDateColumn("price_date");
+	 *     
+	 *     // Composite foreign key
+	 *     ForeignKey PRODUCT_PRICE_FK = TYPE.foreignKey("product_price_fk",
+	 *         PRODUCT_ID, ProductPrice.PRODUCT_ID,
+	 *         PRICE_DATE, ProductPrice.EFFECTIVE_DATE);
+	 * }
+	 * }
 	 * @param name the column name
 	 * @param firstColumn the first column
 	 * @param firstReferencedColumn the first referenced column

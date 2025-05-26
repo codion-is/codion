@@ -18,51 +18,102 @@
  */
 package is.codion.framework.domain.entity.condition;
 
-import is.codion.framework.domain.entity.attribute.Column;
-
 import java.util.List;
 
 /**
- * <p>A custom {@link Condition} based on a {@link ConditionProvider}.
- * <p>Custom conditions are used to create query conditions that can not be created with the
- * {@link Condition}, {@link ColumnCondition} or {@link ForeignKeyCondition} APIs, for example
- * conditions using JOINs or native DBMS functionality.
- * <p>A {@link ConditionType} is associated with a {@link ConditionProvider}, which is responsible
+ * A custom {@link Condition} based on a {@link ConditionProvider}.
+ * <p>
+ * Custom conditions are used to create query conditions that cannot be created with the
+ * standard {@link Condition}, {@link ColumnCondition} or {@link ForeignKeyCondition} APIs.
+ * They enable complex SQL constructs such as subqueries, JOINs, window functions, and
+ * database-specific functionality.
+ * <p>
+ * A {@link ConditionType} is associated with a {@link ConditionProvider}, which is responsible
  * for creating the condition string via {@link ConditionProvider#toString(List, List)}.
-  * {@snippet :
- * // Custom condition with values
- * Track.TYPE.define(
- * // ...
- * ).condition(Track.NOT_IN_PLAYLIST, (columns, values) ->
- *         new StringBuilder("""
- *                 trackid NOT IN (
- *                     SELECT trackid
- *                     FROM chinook.playlisttrack
- *                     WHERE playlistid IN ("""
- *                  )
- *                 .append(String.join(", ",
- *                         Collections.nCopies(values.size(), "?")))
- *                 .append(")\n")
- *                 .append(")")
- *                 .toString());
- *
- * Condition condition =
- *         Track.NOT_IN_PLAYLIST.get(Playlist.ID, List.of(42L, 43L));
- *
- * // Custom condition without values
- * Track.TYPE.define(
- * // ...
- * ).condition(Track.EXCLUDED, (columns, values) ->
- *         "trackid not in (select trackid from chinook.excluded_tracks)");
- *
- * Condition condition = Track.EXCLUDED.get();
- *
- * List<Entity> tracks = connection.select(
- *         Condition.and(Track.NAME.like("The%"), condition));
+ * The {@code ?} substitute character is replaced with condition values when the statement is prepared.
+ * <p>
+ * Custom conditions provide the flexibility to use any SQL construct while maintaining
+ * type safety and parameter binding:
+ * {@snippet :
+ * // Define custom condition types in entity interface
+ * interface Track {
+ *     EntityType TYPE = DOMAIN.entityType("chinook.track");
+ *     
+ *     // Custom condition with dynamic values
+ *     ConditionType NOT_IN_PLAYLIST = TYPE.conditionType("notInPlaylist");
+ *     
+ *     // Custom condition without values
+ *     ConditionType EXCLUDED = TYPE.conditionType("excluded");
+ *     
+ *     // Custom condition with complex SQL
+ *     ConditionType TOP_TRACKS_BY_GENRE = TYPE.conditionType("topTracksByGenre");
  * }
- * <p>The ? substitute character is replaced with the condition values when the statement is prepared.
- * That relies on the {@code columns} List for the value data type, and assumes it contains the {@link Column} associated
- * with each value at the same index. If the {@code columns} List is empty, no value substitution is performed.
+ * 
+ * // Register custom conditions in entity definition
+ * Track.TYPE.define(
+ *         // ... attribute definitions
+ *         )
+ *     .condition(Track.NOT_IN_PLAYLIST, (columns, values) -> {
+ *         // Dynamic subquery with parameter placeholders
+ *         return new StringBuilder()
+ *             .append("trackid NOT IN (")
+ *             .append("    SELECT trackid FROM chinook.playlisttrack")
+ *             .append("    WHERE playlistid IN (")
+ *             .append(String.join(", ", Collections.nCopies(values.size(), "?")))
+ *             .append("))")
+ *             .toString();
+ *     })
+ *     .condition(Track.EXCLUDED, (columns, values) -> 
+ *         // Static condition without parameters
+ *         "trackid NOT IN (SELECT trackid FROM chinook.excluded_tracks)")
+ *     .condition(Track.TOP_TRACKS_BY_GENRE, (columns, values) ->
+ *         // Complex condition with window functions
+ *         """
+ *         trackid IN (
+ *             SELECT trackid FROM (
+ *                 SELECT trackid, 
+ *                        ROW_NUMBER() OVER (PARTITION BY genreid ORDER BY playcount DESC) as rn
+ *                 FROM chinook.track_stats
+ *                 WHERE genreid = ?
+ *             ) ranked
+ *             WHERE rn <= ?
+ *         )
+ *         """)
+ *     .build();
+ * 
+ * // Usage examples
+ * 
+ * // Custom condition with values - tracks not in specific playlists
+ * List<Long> playlistIds = List.of(1L, 5L, 10L);
+ * Condition notInPlaylists = Track.NOT_IN_PLAYLIST.get(Playlist.ID, playlistIds);
+ * List<Entity> availableTracks = connection.select(notInPlaylists);
+ * 
+ * // Custom condition without values - excluded tracks
+ * Condition excludedCondition = Track.EXCLUDED.get();
+ * List<Entity> nonExcludedTracks = connection.select(excludedCondition);
+ * 
+ * // Complex custom condition with multiple parameters
+ * Condition topRockTracks = Track.TOP_TRACKS_BY_GENRE.get(
+ *     List.of(Genre.ID, Track.LIMIT), 
+ *     List.of(1, 10)); // Genre ID 1, top 10 tracks
+ * 
+ * // Combine custom conditions with standard conditions
+ * List<Entity> complexQuery = connection.select(and(
+ *     Track.NAME.like("The%"),
+ *     Track.NOT_IN_PLAYLIST.get(Playlist.ID, List.of(1L)),
+ *     Track.UNIT_PRICE.greaterThan(new BigDecimal("0.99"))));
+ * 
+ * // Use with Select builder for additional control
+ * List<Entity> detailedQuery = connection.select(
+ *     Select.where(Track.TOP_TRACKS_BY_GENRE.get(
+ *             List.of(Genre.ID, Track.LIMIT), List.of(genreId, 5)))
+ *         .attributes(Track.NAME, Track.ALBUM_FK, Track.UNIT_PRICE)
+ *         .orderBy(descending(Track.UNIT_PRICE))
+ *         .build());
+ * }
+ * @see ConditionType
+ * @see ConditionProvider
+ * @see #conditionType()
  */
 public interface CustomCondition extends Condition {
 

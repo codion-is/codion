@@ -40,17 +40,70 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
 /**
- * <p>Specifies a query condition.</p>
+ * Specifies a query condition for filtering entities from the database.
+ * <p>
+ * Conditions are the foundation of entity queries, providing type-safe filtering
+ * capabilities. They can be simple column-based conditions, foreign key relationships,
+ * or complex combinations using logical operators.
+ * <p>
  * {@link Condition.All} indicates no condition, as in, all entities should be returned.
+ * <p>
+ * Conditions are typically created using column factory methods and combined using logical operators:
+ * {@snippet :
+ * // Simple conditions using column factory methods
+ * List<Entity> artists = connection.select(
+ *     Artist.NAME.like("The %"));
+ * 
+ * List<Entity> classicalTracks = connection.select(
+ *     Track.GENRE_FK.equalTo(classicalGenre));
+ * 
+ * List<Entity> expensiveTracks = connection.select(
+ *     Track.UNIT_PRICE.greaterThan(new BigDecimal("0.99")));
+ * 
+ * // Complex conditions using logical combinations
+ * List<Entity> filteredAlbums = connection.select(and(
+ *     Album.ARTIST_FK.in(selectedArtists),
+ *     Album.TITLE.likeIgnoreCase("%live%")));
+ * 
+ * List<Entity> rockOrMetalTracks = connection.select(or(
+ *     Track.GENRE_FK.equalTo(rockGenre),
+ *     Track.GENRE_FK.equalTo(metalGenre)));
+ * 
+ * // Key-based conditions
+ * Entity.Key artistKey = entities.primaryKey(Artist.TYPE, 1);
+ * List<Entity> albumsByKey = connection.select(
+ *     Album.ARTIST_FK.equalTo(Condition.key(artistKey)));
+ * 
+ * // Multiple key conditions
+ * List<Entity.Key> trackKeys = entities.primaryKeys(Track.TYPE, 1, 2, 3);
+ * List<Entity> specificTracks = connection.select(
+ *     Condition.keys(trackKeys));
+ * 
+ * // Complex nested conditions
+ * List<Entity> complexQuery = connection.select(
+ *     Select.where(and(
+ *         Album.ARTIST_FK.in(popularArtists),
+ *         or(
+ *             Album.TITLE.likeIgnoreCase("%greatest%"),
+ *             Album.TITLE.likeIgnoreCase("%best%"))))
+ *         .orderBy(ascending(Album.TITLE))
+ *         .build());
+ * 
+ * // All entities (no filtering)
+ * List<Entity> allArtists = connection.select(all(Artist.TYPE));
+ * 
+ * // Custom conditions for advanced queries
+ * List<Entity> customQuery = connection.select(
+ *     Artist.CUSTOM_CONDITION.get("searchParam", searchValue));
+ * }
  * @see #all(EntityType)
  * @see #key(Entity.Key)
  * @see #keys(Collection)
  * @see #and(Condition...)
- * @see #and(Collection)
  * @see #or(Condition...)
- * @see #or(Collection)
  * @see #combination(Conjunction, Condition...)
- * @see #combination(Conjunction, Condition...)
+ * @see ColumnCondition.Factory
+ * @see ForeignKeyCondition.Factory
  */
 public interface Condition {
 

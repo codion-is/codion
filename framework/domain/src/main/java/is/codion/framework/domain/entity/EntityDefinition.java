@@ -42,7 +42,54 @@ import java.util.function.Predicate;
 import static is.codion.common.Configuration.booleanValue;
 
 /**
- * Specifies an entity definition.
+ * Specifies an entity definition, encapsulating the metadata for an entity type.
+ * <p>
+ * An EntityDefinition contains all information about an entity's structure including:
+ * <ul>
+ *   <li>The underlying table name and database mapping
+ *   <li>All attributes (columns, foreign keys, derived attributes)
+ *   <li>Primary key definition
+ *   <li>Validation rules and behavior settings
+ *   <li>Display properties (caption, description, ordering)
+ * </ul>
+ * <p>
+ * Entity definitions are typically created using the builder pattern during domain initialization:
+ * {@snippet :
+ * public class Store extends DefaultDomain {
+ *     
+ *     // Define entity types
+ *     interface Customer {
+ *         EntityType TYPE = DOMAIN.entityType("store.customer");
+ *         
+ *         Column<Integer> ID = TYPE.integerColumn("id");
+ *         Column<String> NAME = TYPE.stringColumn("name");
+ *         Column<String> EMAIL = TYPE.stringColumn("email");
+ *     }
+ *
+ *     // Define the entity structure
+ *     void defineCustomer() {
+ *         EntityDefinition definition = Customer.TYPE.define(
+ *                 Customer.ID.define()
+ *                     .primaryKey(),
+ *                 Customer.NAME.define()
+ *                     .column()
+ *                     .caption("Name")
+ *                     .nullable(false)
+ *                     .maximumLength(100),
+ *                 Customer.EMAIL.define()
+ *                     .column()
+ *                     .caption("Email")
+ *                     .maximumLength(255))
+ *             .tableName("customer")
+ *             .caption("Customer")
+ *             .orderBy(ascending(Customer.NAME))
+ *             .smallDataset(true)
+ *             .build();
+ *     }
+ * }
+ * }
+ * @see EntityType#define(AttributeDefinition.Builder[])
+ * @see Builder
  */
 public interface EntityDefinition {
 
@@ -67,6 +114,36 @@ public interface EntityDefinition {
 
 	/**
 	 * Returns the {@link ConditionProvider} associated with the given type
+	 * {@snippet :
+	 * // Define custom condition types in entity definition
+	 * interface Customer {
+	 *     EntityType TYPE = DOMAIN.entityType("customer");
+	 *     Column<String> STATUS = TYPE.stringColumn("status");
+	 *     Column<LocalDate> LAST_ORDER_DATE = TYPE.localDateColumn("last_order_date");
+	 *     
+	 *     // Custom condition for active customers
+	 *     ConditionType ACTIVE = ConditionType.custom("activeCustomers");
+	 * }
+	 * 
+	 * // In domain definition
+	 * Customer.TYPE.define(
+	 *         Customer.STATUS.define()
+	 *             .column(),
+	 *         Customer.LAST_ORDER_DATE.define()
+	 *             .column())
+	 *     .condition(Customer.ACTIVE, (columns, values) -> 
+	 *         // Returns customers with active status and recent activity
+	 *         Condition.and(
+	 *             Customer.STATUS.equalTo("ACTIVE"),
+	 *             Customer.LAST_ORDER_DATE.greaterThanOrEqualTo(LocalDate.now().minusMonths(6))
+	 *         ))
+	 *     .build();
+	 * 
+	 * // Usage
+	 * Condition activeCondition = Customer.ACTIVE.get();
+	 *
+	 * List<Entity> activeCustomers = connection.select(activeCondition);
+	 * }
 	 * @param conditionType the condition type
 	 * @return the condition provider associated with the given type
 	 * @throws IllegalArgumentException in case no ConditionProvider is associated with the given conditionType
@@ -127,6 +204,33 @@ public interface EntityDefinition {
 	Optional<SelectQuery> selectQuery();
 
 	/**
+	 * Returns the function responsible for providing toString values for this entity type.
+	 * {@snippet :
+	 * // Define custom string representation
+	 * Customer.TYPE.define(
+	 *         Customer.ID.define()
+	 *             .primaryKey(),
+	 *         Customer.FIRST_NAME.define()
+	 *             .column(),
+	 *         Customer.LAST_NAME.define()
+	 *             .column(),
+	 *         Customer.EMAIL.define()
+	 *             .column())
+	 *     .stringFactory(customer -> 
+	 *         customer.get(Customer.LAST_NAME) + ", " + 
+	 *         customer.get(Customer.FIRST_NAME) + 
+	 *         " (" + customer.get(Customer.EMAIL) + ")")
+	 *     .build();
+	 * 
+	 * // Usage
+	 * Entity customer = entities.builder(Customer.TYPE)
+	 *     .with(Customer.FIRST_NAME, "John")
+	 *     .with(Customer.LAST_NAME, "Doe")
+	 *     .with(Customer.EMAIL, "john@example.com")
+	 *     .build();
+	 * 
+	 * System.out.println(customer); // "Doe, John (john@example.com)"
+	 * }
 	 * @return the function responsible for providing toString values for this entity type
 	 */
 	Function<Entity, String> stringFactory();

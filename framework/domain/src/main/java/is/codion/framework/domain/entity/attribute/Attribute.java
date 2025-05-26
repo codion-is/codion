@@ -27,10 +27,91 @@ import org.jspecify.annotations.Nullable;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Typed {@link Attribute}.
+ * Typed {@link Attribute} representing a named, typed property of an entity.
+ * <p>
+ * Attributes are the building blocks of entity definitions, representing columns, foreign keys,
+ * derived values, or transient properties. Each attribute has a name, type, and is associated 
+ * with a specific entity type.
+ * <p>
  * Note that attribute names are case-sensitive and Attributes are equal if their
  * names and entityTypes are equal, the valueClass does not factor into equality.
+ * <p>
+ * Attributes are typically created through entity type factory methods and then configured
+ * using the {@link #define()} method to create attribute definitions:
+ * {@snippet :
+ * public class Store extends DefaultDomain {
+ *     
+ *     interface Customer {
+ *         EntityType TYPE = DOMAIN.entityType("store.customer");
+ *         
+ *         // Typed attribute creation
+ *         Column<Integer> ID = TYPE.integerColumn("id");
+ *         Column<String> NAME = TYPE.stringColumn("name");
+ *         Column<String> EMAIL = TYPE.stringColumn("email");
+ *         Column<LocalDate> BIRTH_DATE = TYPE.localDateColumn("birth_date");
+ *         Column<Boolean> ACTIVE = TYPE.booleanColumn("active");
+ *         
+ *         // Transient attribute (not mapped to database)
+ *         Attribute<String> DISPLAY_NAME = TYPE.stringAttribute("display_name");
+ *         
+ *         // Custom typed attribute
+ *         Attribute<CustomerStatus> STATUS = TYPE.attribute("status", CustomerStatus.class);
+ *     }
+ *     
+ *     void defineCustomer() {
+ *         Customer.TYPE.define(
+ *                 // Column attributes
+ *                 Customer.ID.define()
+ *                     .primaryKey(),
+ *                 Customer.NAME.define()
+ *                     .column()
+ *                     .nullable(false)
+ *                     .maximumLength(100),
+ *                 Customer.EMAIL.define()
+ *                     .column()
+ *                     .nullable(false),
+ *                 Customer.BIRTH_DATE.define()
+ *                     .column(),
+ *                 Customer.ACTIVE.define()
+ *                     .column()
+ *                     .defaultValue(true),
+ *                 
+ *                 // Transient attribute
+ *                 Customer.DISPLAY_NAME.define()
+ *                     .attribute()
+ *                     .derived(Customer.NAME, Customer.EMAIL)
+ *                     .valueProvider(sourceValues ->
+ *                         sourceValues.get(Customer.NAME) + " (" + sourceValues.get(Customer.EMAIL) + ")"),
+ *                 
+ *                 // Custom typed attribute
+ *                 Customer.STATUS.define()
+ *                     .column()
+ *                     .columnClass(String.class, CustomerStatus::valueOf))
+ *             .build();
+ *     }
+ * }
+ * 
+ * // Usage with entities
+ * Entity customer = entities.builder(Customer.TYPE)
+ *     .with(Customer.NAME, "John Doe")
+ *     .with(Customer.EMAIL, "john@example.com")
+ *     .with(Customer.ACTIVE, true)
+ *     .build();
+ * 
+ * // Type-safe value access
+ * String name = customer.get(Customer.NAME);           // String
+ * Boolean active = customer.get(Customer.ACTIVE);     // Boolean
+ * LocalDate birthDate = customer.get(Customer.BIRTH_DATE); // LocalDate
+ * 
+ * // Attribute type information
+ * Class<String> nameType = Customer.NAME.type().valueClass(); // String.class
+ * boolean isNumerical = Customer.ID.type().isNumerical();     // true
+ * boolean isTemporal = Customer.BIRTH_DATE.type().isTemporal(); // true
+ * }
  * @param <T> the attribute type
+ * @see #define()
+ * @see #type()
+ * @see EntityType
  */
 public interface Attribute<T> {
 

@@ -21,7 +21,7 @@ package is.codion.framework.domain.entity.query;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Defines a select query or parts of a select query, that is, from, column, where, groupBy, having and orderBy clauses.
+ * Defines a select query or parts of a select query, that is, from, columns, where, groupBy, having and orderBy clauses.
  * {@link Builder} provided by {@link #builder()}.
  */
 public interface SelectQuery {
