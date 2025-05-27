@@ -59,7 +59,7 @@ public interface ConditionModel<T> {
 	 * </ul>
 	 */
 	PropertyValue<Wildcard> WILDCARD =
-					enumValue(ConditionModel.class.getName() + ".wildard",
+					enumValue(ConditionModel.class.getName() + ".wildcard",
 									Wildcard.class, Wildcard.PREFIX_AND_POSTFIX);
 
 	/**
