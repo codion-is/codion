@@ -43,8 +43,6 @@ Key design decisions:
 
 2. **Weak reference support**: Prevents memory leaks in long-lived UI components
 
-3. **Boolean return values**: Indicate whether the observer was modified
-
 === Observable Interface
 
 {url-javadoc}{common-core}/is/codion/common/observable/Observable.html[Observable] combines value access with observation:
@@ -78,8 +76,8 @@ This separation allows exposing read-only observables while keeping mutation con
 ----
 public interface Value<T> extends Observable<T> {
     enum Notify {
-        WHEN_SET,     // Notify on every set() call
-        WHEN_CHANGED  // Notify only when value changes
+        SET,     // Notify on every set() call
+        CHANGED  // Notify only when value changes
     }
     
     void set(@Nullable T value);
@@ -343,41 +341,44 @@ status.set("OK");  // Still notifies with SET
 
 == Best Practices
 
-1. **Use appropriate abstraction**:
+. **Use appropriate abstraction**:
    - `State` for booleans
    - `Value` for mutable observables
    - `Event` for actions
    - `Observable` for read-only exposure
 
-2. **Prefer weak references** for UI components to prevent memory leaks
+. **Prefer weak references** for UI components to prevent memory leaks
 
-3. **Use validators** for domain constraints:
-   ```java
-   Value<Integer> age = Value.builder()
+. **Use validators** for domain constraints:
+[source,java]
+----
+Value<Integer> age = Value.builder()
        .nonNull(0)
        .validator(a -> a >= 0 && a <= 150)
        .build();
-   ```
+----
 
-4. **Link values** instead of manual synchronization:
-   ```java
-   // Instead of:
-   source.addConsumer(value -> target.set(value));
+. **Link values** instead of manual synchronization:
+[source,java]
+----
+// Instead of:
+source.addConsumer(value -> target.set(value));
    
-   // Use:
-   target.link(source);
-   ```
+// Use:
+target.link(source);
+----
 
-5. **Expose read-only views**:
-   ```java
-   public class Model {
-       private final State processing = State.state();
-       
-       public ObservableState processing() {
-           return processing.observable();
-       }
+. **Expose read-only views**:
+[source,java]
+----
+public class Model {
+   private final State processing = State.state();
+
+   public ObservableState processing() {
+       return processing.observable();
    }
-   ```
+}
+----
 
 == Integration Examples
 
