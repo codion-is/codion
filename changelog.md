@@ -6,6 +6,7 @@ Codion Change Log
 - Value.Notify.WHEN_CHANGED and WHEN_SET renamed CHANGED and SET respectively.
 - MethodLogger.Entry.getChildren() renamed children(), enterMessage() renamed message(), ArgumentToString renamed ArgumentFormatter.
 - PropertyValue.propertyName() renamed name().
+- Item.itemI18n() renamed i18n().
 ### is.codion.common.db
 - Database.URL_SCOPED_INSTANCE configuration value added.
 ### is.codion.swing.common.model

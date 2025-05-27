@@ -28,7 +28,7 @@ import org.jspecify.annotations.Nullable;
  * @see #value()
  * @see Item#item(Object)
  * @see Item#item(Object, String)
- * @see Item#itemI18n(Object, String, String)
+ * @see Item#i18n(Object, String, String)
  */
 public interface Item<T> {
 
@@ -78,7 +78,7 @@ public interface Item<T> {
 	 * @param <T> the value type
 	 * @return an Item based on the given value and resource bundle
 	 */
-	static <T> Item<T> itemI18n(@Nullable T value, String resourceBundleName, String resourceBundleKey) {
+	static <T> Item<T> i18n(@Nullable T value, String resourceBundleName, String resourceBundleKey) {
 		return new ItemI18n<>(value, resourceBundleName, resourceBundleKey);
 	}
 }

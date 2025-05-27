@@ -55,21 +55,21 @@ public class ItemsTest {
 	}
 
 	@Test
-	void itemI18n() {
-		assertThrows(NullPointerException.class, () -> Item.itemI18n("value", null, "item"));
-		assertThrows(NullPointerException.class, () -> Item.itemI18n("value", ItemsTest.class.getName(), null));
+	void i18n() {
+		assertThrows(NullPointerException.class, () -> Item.i18n("value", null, "item"));
+		assertThrows(NullPointerException.class, () -> Item.i18n("value", ItemsTest.class.getName(), null));
 
-		Item<String> item = Item.itemI18n("value", ItemsTest.class.getName(), "item");
+		Item<String> item = Item.i18n("value", ItemsTest.class.getName(), "item");
 		Locale.setDefault(new Locale("is", "IS"));
 		assertEquals("Gildi", item.caption());
 
-		item = Item.itemI18n("value", ItemsTest.class.getName(), "item");
+		item = Item.i18n("value", ItemsTest.class.getName(), "item");
 		Locale.setDefault(new Locale("en", "EN"));
 		assertEquals("Item", item.caption());
 		//repeat for some coverage
 		assertEquals("Item", item.caption());
 
-		assertThrows(MissingResourceException.class, () -> Item.itemI18n("value", ItemsTest.class.getName(), "nonexisting"));
-		assertThrows(MissingResourceException.class, () -> Item.itemI18n("value", String.class.getName(), "item"));
+		assertThrows(MissingResourceException.class, () -> Item.i18n("value", ItemsTest.class.getName(), "nonexisting"));
+		assertThrows(MissingResourceException.class, () -> Item.i18n("value", String.class.getName(), "item"));
 	}
 }
