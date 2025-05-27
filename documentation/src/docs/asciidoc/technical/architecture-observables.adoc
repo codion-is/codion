@@ -1,0 +1,449 @@
+= Architecture Deep Dive: Observable Pattern
+:url-javadoc: link:../api
+:basedir: ..
+
+== Overview
+
+The Observable pattern is the foundation of Codion's reactive architecture. It provides a unified approach to change notification throughout the framework, from UI components to domain models. The pattern consists of four core abstractions:
+
+* **Observer** - Manages listeners and consumers for change notifications
+* **Observable** - Combines a value accessor with change observation
+* **Value** - Mutable observable wrapper for any object
+* **State** - Specialized boolean observable with null-to-false coercion
+* **Event** - Push-only notification mechanism
+
+== Core Architecture
+
+=== Observer Interface
+
+The {url-javadoc}{common-core}/is/codion/common/observable/Observer.html[Observer] interface is the foundation for all change notification:
+
+[source,java]
+----
+public interface Observer<T> {
+    // Strong references - prevent garbage collection
+    boolean addListener(Runnable listener);
+    boolean addConsumer(Consumer<? super T> consumer);
+    
+    // Weak references - allow garbage collection
+    boolean addWeakListener(Runnable listener);
+    boolean addWeakConsumer(Consumer<? super T> consumer);
+    
+    // Removal methods
+    boolean removeListener(Runnable listener);
+    boolean removeConsumer(Consumer<? super T> consumer);
+}
+----
+
+Key design decisions:
+
+1. **Two notification types**: 
+   - `Runnable` listeners for simple notifications
+   - `Consumer<T>` for data propagation
+
+2. **Weak reference support**: Prevents memory leaks in long-lived UI components
+
+3. **Boolean return values**: Indicate whether the observer was modified
+
+=== Observable Interface
+
+{url-javadoc}{common-core}/is/codion/common/observable/Observable.html[Observable] combines value access with observation:
+
+[source,java]
+----
+public interface Observable<T> extends Observer<T> {
+    @Nullable T get();
+    
+    default T getOrThrow() {
+        T value = get();
+        if (value == null) {
+            throw new NoSuchElementException("No value present");
+        }
+        return value;
+    }
+    
+    Observer<T> observer();  // For read-only access
+}
+----
+
+This separation allows exposing read-only observables while keeping mutation control private.
+
+== Value Implementation
+
+=== Value Interface
+
+{url-javadoc}{common-core}/is/codion/common/value/Value.html[Value] is the primary mutable observable:
+
+[source,java]
+----
+public interface Value<T> extends Observable<T> {
+    enum Notify {
+        WHEN_SET,     // Notify on every set() call
+        WHEN_CHANGED  // Notify only when value changes
+    }
+    
+    void set(@Nullable T value);
+    void clear();
+    void map(UnaryOperator<T> mapper);
+    
+    // Linking support
+    void link(Value<T> originalValue);      // Bidirectional
+    void link(Observable<T> observable);    // Unidirectional
+    
+    // Validation
+    boolean addValidator(Validator<? super T> validator);
+}
+----
+
+=== Nullable vs Non-Null Values
+
+Codion provides two value types:
+
+[source,java]
+----
+// Nullable - can hold null
+Value<String> nullable = Value.nullable();
+nullable.set(null);  // OK
+
+// Non-null - uses null substitute
+Value<String> nonNull = Value.nonNull("default");
+nonNull.set(null);   // Sets to "default"
+nonNull.isNull();    // Always false
+----
+
+=== Value Linking
+
+Values can be linked for automatic synchronization:
+
+[source,java]
+----
+Value<Integer> primary = Value.value(10);
+Value<Integer> secondary = Value.value(0);
+
+// Bidirectional link
+secondary.link(primary);  // secondary becomes 10
+primary.set(20);          // both become 20
+secondary.set(30);        // both become 30
+
+// Unidirectional link
+Value<String> display = Value.value("");
+Observable<String> source = getDataSource();
+display.link(source);  // display follows source changes
+----
+
+== State Implementation
+
+{url-javadoc}{common-core}/is/codion/common/state/State.html[State] is optimized for boolean values:
+
+[source,java]
+----
+public interface State extends ObservableState, Value<Boolean> {
+    @NonNull Boolean get();  // Never null
+    
+    ObservableState observable();  // Read-only view
+}
+----
+
+=== State Negation
+
+The `not()` method creates an inverse view of a state:
+
+[source,java]
+----
+State enabled = State.state(true);
+ObservableState disabled = enabled.not();
+
+enabled.get();   // true
+disabled.get();  // false
+
+enabled.set(false);
+disabled.get();  // true
+
+// Common UI patterns
+State processing = State.state();
+button.setEnabled(processing.not());  // Disabled while processing
+
+// Combining with other states
+State.Combination canEdit = State.and(
+    loggedIn,
+    processing.not(),
+    hasPermission
+);
+----
+
+=== State Combinations
+
+States can be combined using boolean logic:
+
+[source,java]
+----
+State canSave = State.state();
+State hasChanges = State.state();
+State isValid = State.state();
+
+// AND combination
+State.Combination saveEnabled = State.and(canSave, hasChanges, isValid);
+
+// OR combination  
+State.Combination anyProgress = State.or(loading, saving, validating);
+
+// Dynamic combination
+State.Combination dynamic = State.combination(Conjunction.AND);
+dynamic.add(condition1);
+dynamic.add(condition2);
+dynamic.remove(condition1);
+----
+
+=== State Groups
+
+State groups implement radio-button behavior:
+
+[source,java]
+----
+State.Group viewMode = State.group();
+
+State listView = State.state();
+State tableView = State.state();
+State treeView = State.state();
+
+viewMode.add(listView, tableView, treeView);
+
+tableView.set(true);  // Others become false
+listView.set(true);   // tableView becomes false
+----
+
+== Event Implementation
+
+{url-javadoc}{common-core}/is/codion/common/event/Event.html[Event] provides push-only notifications:
+
+[source,java]
+----
+public interface Event<T> extends Runnable, Consumer<T>, Observer<T> {
+    void run();                    // Trigger without data
+    void accept(@Nullable T data); // Trigger with data
+    
+    Observer<T> observer();        // Read-only access
+}
+----
+
+Usage patterns:
+
+[source,java]
+----
+// Simple event
+Event<Void> refreshRequested = Event.event();
+refreshRequested.addListener(this::refresh);
+refreshRequested.run();
+
+// Data event
+Event<String> errorOccurred = Event.event();
+errorOccurred.addConsumer(this::showError);
+errorOccurred.accept("Connection failed");
+
+// Both listeners and consumers are notified
+Event<Integer> progress = Event.event();
+progress.addListener(() -> updateProgressBar());
+progress.addConsumer(percent -> setProgress(percent));
+progress.accept(75);  // Both are called
+----
+
+== Thread Safety
+
+The observable implementations use synchronization for thread safety:
+
+1. **Listener Management**: Adding/removing listeners is synchronized
+2. **Value Updates**: Setting values is atomic
+3. **Notification Order**: Listeners are notified in registration order
+4. **Exception Handling**: Unhandled exceptions in listeners prevent further notifications
+
+Example from DefaultEvent:
+
+[source,java]
+----
+private void notifyListeners() {
+    synchronized (listeners) {
+        for (Runnable listener : listeners) {
+            listener.run();  // Exception here stops the loop
+        }
+    }
+}
+----
+
+**Important**: If a listener throws an exception, subsequent listeners will not be notified. Always handle exceptions within your listeners:
+
+[source,java]
+----
+event.addListener(() -> {
+    try {
+        riskyOperation();
+    } catch (Exception e) {
+        LOG.error("Error in listener", e);
+    }
+});
+----
+
+== Memory Management
+
+=== Weak References
+
+Weak listeners/consumers prevent memory leaks:
+
+[source,java]
+----
+public class DetailPanel {
+    private final State visible = State.state();
+    
+    public void attachToMaster(Observable<Entity> selection) {
+        // Weak reference prevents this panel from keeping
+        // the selection model alive if panel is discarded
+        selection.addWeakConsumer(this::showDetails);
+    }
+}
+----
+
+=== Automatic Cleanup
+
+Weak references are cleaned up automatically:
+
+1. When adding/removing listeners
+2. During notification (dead references are skipped)
+3. No explicit cleanup needed
+
+== Performance Characteristics
+
+=== Notification Strategies
+
+Choose the appropriate notification strategy:
+
+[source,java]
+----
+// WHEN_CHANGED: Only when value changes (default)
+Value<Integer> counter = Value.builder()
+    .nonNull(0)
+    .build();  // Uses WHEN_CHANGED by default
+
+counter.set(1);  // Notifies
+counter.set(1);  // No notification
+
+// WHEN_SET: Always notify, even if value unchanged
+Value<String> status = Value.builder()
+    .nonNull("")
+    .notify(Notify.WHEN_SET)
+    .build();
+
+status.set("OK");  // Notifies
+status.set("OK");  // Still notifies with WHEN_SET
+----
+
+=== Listener Overhead
+
+* Adding/removing listeners: O(n) due to synchronization
+* Notification: O(n) where n is listener count
+* Value access: O(1) - direct field access
+
+== Best Practices
+
+1. **Use appropriate abstraction**:
+   - `State` for booleans
+   - `Value` for mutable observables
+   - `Event` for actions
+   - `Observable` for read-only exposure
+
+2. **Prefer weak references** for UI components to prevent memory leaks
+
+3. **Use validators** for domain constraints:
+   ```java
+   Value<Integer> age = Value.builder()
+       .nonNull(0)
+       .validator(a -> a >= 0 && a <= 150)
+       .build();
+   ```
+
+4. **Link values** instead of manual synchronization:
+   ```java
+   // Instead of:
+   source.addConsumer(value -> target.set(value));
+   
+   // Use:
+   target.link(source);
+   ```
+
+5. **Expose read-only views**:
+   ```java
+   public class Model {
+       private final State processing = State.state();
+       
+       public ObservableState processing() {
+           return processing.observable();
+       }
+   }
+   ```
+
+== Integration Examples
+
+=== UI Component Binding
+
+[source,java]
+----
+// Swing component binding
+JTextField textField = new JTextField();
+Value<String> model = Value.value("");
+
+// Bidirectional binding
+textField.getDocument().addDocumentListener(new DocumentAdapter() {
+    protected void documentChanged() {
+        model.set(textField.getText());
+    }
+});
+
+model.addConsumer(textField::setText);
+----
+
+=== Model State Management
+
+[source,java]
+----
+public class EntityEditModel {
+    private final State modified = State.state();
+    private final State valid = State.state();
+    private final State.Combination canSave = State.and(modified, valid);
+    
+    private final Value<Entity> entity = Value.value();
+    
+    public EntityEditModel() {
+        entity.addConsumer(e -> validateEntity());
+    }
+    
+    public ObservableState canSave() {
+        return canSave;
+    }
+}
+----
+
+=== Event-Driven Architecture
+
+[source,java]
+----
+public class Application {
+    private final Event<Void> shutdownRequested = Event.event();
+    private final Event<Exception> errorOccurred = Event.event();
+    
+    public void initialize() {
+        shutdownRequested.addListener(this::performShutdown);
+        errorOccurred.addConsumer(this::logError);
+        errorOccurred.addConsumer(this::notifyUser);
+    }
+}
+----
+
+== Summary
+
+Codion's Observable pattern provides:
+
+1. **Unified change notification** across the framework
+2. **Type-safe value observation** with validation
+3. **Memory-safe weak references** for UI components
+4. **Thread-safe implementation** for concurrent access
+5. **Composable state management** for complex UI logic
+
+This pattern is fundamental to Codion's reactive architecture, enabling automatic UI updates, clean separation of concerns, and maintainable application state management.

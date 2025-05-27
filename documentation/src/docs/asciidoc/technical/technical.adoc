@@ -23,3 +23,5 @@ include::{basedir}/technical/modules.adoc[leveloffset=+1]
 include::{basedir}/technical/utilities.adoc[leveloffset=+1]
 
 include::{basedir}/technical/i18n.adoc[leveloffset=+1]
+
+include::{basedir}/technical/architecture-deep-dives.adoc[leveloffset=+1]

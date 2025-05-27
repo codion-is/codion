@@ -1,0 +1,6 @@
+= Architecture Deep Dives
+:basedir: ..
+
+This section provides detailed technical exploration of Codion's core architectural components and patterns.
+
+include::{basedir}/technical/architecture-observables.adoc[leveloffset=+1]
