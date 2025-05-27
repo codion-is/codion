@@ -47,7 +47,7 @@ public interface SummaryModel {
 		 * @param <T> the value type
 		 * @return a summary text
 		 */
-		<T extends Number> String summary(SummaryValues<T> summaryValues);
+		<T extends Number> String get(SummaryValues<T> summaryValues);
 	}
 
 	/**

@@ -43,7 +43,7 @@ public enum ColumnSummary implements SummaryModel.Summary {
 		}
 
 		@Override
-		public <T extends Number> String summary(SummaryValues<T> summaryValues) {
+		public <T extends Number> String get(SummaryValues<T> summaryValues) {
 			return "";
 		}
 	},
@@ -57,7 +57,7 @@ public enum ColumnSummary implements SummaryModel.Summary {
 		}
 
 		@Override
-		public <T extends Number> String summary(SummaryValues<T> summaryValues) {
+		public <T extends Number> String get(SummaryValues<T> summaryValues) {
 			Collection<T> values = requireNonNull(summaryValues).values();
 			if (!values.isEmpty()) {
 				return addSubsetIndicator(summaryValues.format(values.stream()
@@ -78,7 +78,7 @@ public enum ColumnSummary implements SummaryModel.Summary {
 		}
 
 		@Override
-		public <T extends Number> String summary(SummaryValues<T> summaryValues) {
+		public <T extends Number> String get(SummaryValues<T> summaryValues) {
 			Collection<T> values = requireNonNull(summaryValues).values();
 			if (!values.isEmpty()) {
 				OptionalDouble average = values.stream()
@@ -102,7 +102,7 @@ public enum ColumnSummary implements SummaryModel.Summary {
 		}
 
 		@Override
-		public <T extends Number> String summary(SummaryValues<T> summaryValues) {
+		public <T extends Number> String get(SummaryValues<T> summaryValues) {
 			Collection<T> values = requireNonNull(summaryValues).values();
 			if (!values.isEmpty()) {
 				OptionalDouble min = values.stream()
@@ -127,7 +127,7 @@ public enum ColumnSummary implements SummaryModel.Summary {
 		}
 
 		@Override
-		public <T extends Number> String summary(SummaryValues<T> summaryValues) {
+		public <T extends Number> String get(SummaryValues<T> summaryValues) {
 			Collection<T> values = requireNonNull(summaryValues).values();
 			if (!values.isEmpty()) {
 				OptionalDouble max = values.stream()
@@ -152,7 +152,7 @@ public enum ColumnSummary implements SummaryModel.Summary {
 		}
 
 		@Override
-		public <T extends Number> String summary(SummaryValues<T> summaryValues) {
+		public <T extends Number> String get(SummaryValues<T> summaryValues) {
 			Collection<T> values = requireNonNull(summaryValues).values();
 			if (!values.isEmpty()) {
 				OptionalDouble min = values.stream()

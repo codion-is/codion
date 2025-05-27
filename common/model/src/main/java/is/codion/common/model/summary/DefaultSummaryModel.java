@@ -73,6 +73,6 @@ final class DefaultSummaryModel<T extends Number> implements SummaryModel {
 	}
 
 	private void updateSummary() {
-		summaryText.set(summary().getOrThrow().summary(summaryValues));
+		summaryText.set(summary().getOrThrow().get(summaryValues));
 	}
 }

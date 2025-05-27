@@ -16,6 +16,7 @@ Codion Change Log
 ### is.codion.common.model
 - UserPreferences, UserPreference suffix removed from method names.
 - ConditionModel.equalWildcards() renamed equalWithWildcards().
+- SummaryModel.Summary.summary() renamed get().
 ### is.codion.swing.common.model
 - FilterComboBoxModel.createSelectorValue() renamed createSelector().
 ### is.codion.swing.common.ui
