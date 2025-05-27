@@ -9,7 +9,6 @@ dependencies {
     runtimeOnly(project(":codion-framework-db-http"))
 
     testImplementation(project(":codion-framework-domain-test"))
-    testImplementation(project(":codion-swing-framework-ui-test"))
 
     runtimeOnly(project(":codion-dbms-h2"))
     runtimeOnly(libs.h2)

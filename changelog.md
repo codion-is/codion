@@ -19,6 +19,8 @@ Codion Change Log
 - QueryInspector added, available with Ctrl-Alt-Q in EntityTablePanel, when using a local connection.
 - EntityTableExport added.
 - EntityEditPanel, query inspector available with Ctrl-Alt-Q, when using a local connection, QueryInspector split into SelectQueryInspector and InsertUpdateQueryInspector.
+### is.codion.swing.framework.ui.test
+- is.codion.swing.framework.ui.test module removed
 
 ## 0.18.34
 ### is.codion.common.core

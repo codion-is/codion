@@ -16,7 +16,6 @@ dependencies {
     implementation(libs.ikonli.foundation.pack)
 
     testImplementation(project(":codion-framework-domain-test"))
-    testImplementation(project(":codion-swing-framework-ui-test"))
     testImplementation(project(":codion-framework-db-local"))
 
     runtimeOnly(project(":codion-plugin-logback-proxy"))

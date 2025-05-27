@@ -115,9 +115,6 @@ project(":codion-swing-framework-model").projectDir = file("swing/framework-mode
 include "codion-swing-framework-ui"
 project(":codion-swing-framework-ui").projectDir = file("swing/framework-ui")
 
-include "codion-swing-framework-ui-test"
-project(":codion-swing-framework-ui-test").projectDir = file("swing/framework-ui-test")
-
 include "codion-tools-generator-domain"
 project(":codion-tools-generator-domain").projectDir = file("tools/generator/domain")
 

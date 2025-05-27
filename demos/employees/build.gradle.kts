@@ -19,8 +19,6 @@ dependencies {
     }
     implementation(project(":codion-framework-json-domain"))
 
-    testImplementation(project(":codion-swing-framework-ui-test"))
-
     implementation(project(":codion-plugin-flatlaf"))
     implementation(project(":codion-plugin-flatlaf-intellij-themes"))
 
