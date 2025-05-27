@@ -77,7 +77,7 @@ package is.codion.framework.domain.entity.attribute;
  *                 // UI state attribute that doesn't modify entity
  *                 Customer.SELECTED.define()
  *                     .attribute()
- *                     .modifiesEntity(false) // Doesn't mark entity as modified
+ *                     .modifies(false) // Doesn't mark entity as modified
  *                     .defaultValue(false)
  *                     .caption("Selected"),
  *                 
@@ -89,7 +89,7 @@ package is.codion.framework.domain.entity.attribute;
  *                 // Generic UI state storage
  *                 Customer.UI_STATE.define()
  *                     .attribute()
- *                     .modifiesEntity(false)
+ *                     .modifies(false)
  *                     .caption("UI State"))
  *             .build();
  *     }
@@ -119,7 +119,7 @@ package is.codion.framework.domain.entity.attribute;
  * boolean isModified = customer.modified(); // Only true if database columns changed
  * }
  * @param <T> the attribute value type
- * @see #modifiesEntity()
+ * @see #modifies()
  * @see DerivedAttributeDefinition
  */
 public interface TransientAttributeDefinition<T> extends AttributeDefinition<T> {
@@ -127,7 +127,7 @@ public interface TransientAttributeDefinition<T> extends AttributeDefinition<T> 
 	/**
 	 * @return true if the value of this attribute being modified should result in a modified entity
 	 */
-	boolean modifiesEntity();
+	boolean modifies();
 
 	/**
 	 * Builds a transient AttributeDefinition instance
@@ -137,9 +137,9 @@ public interface TransientAttributeDefinition<T> extends AttributeDefinition<T> 
 
 		/**
 		 * Default true.
-		 * @param modifiesEntity if false then modifications to the value will not result in the owning entity becoming modified
+		 * @param modifies if false then modifications to the value will not result in the owning entity becoming modified
 		 * @return this builder instance
 		 */
-		Builder<T, B> modifiesEntity(boolean modifiesEntity);
+		Builder<T, B> modifies(boolean modifies);
 	}
 }

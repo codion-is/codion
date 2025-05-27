@@ -123,7 +123,7 @@ class DefaultEntity implements Entity, Serializable {
 						return true;
 					}
 				}
-				if (attributeDefinition instanceof TransientAttributeDefinition && ((TransientAttributeDefinition<?>) attributeDefinition).modifiesEntity()) {
+				if (attributeDefinition instanceof TransientAttributeDefinition && ((TransientAttributeDefinition<?>) attributeDefinition).modifies()) {
 					return true;
 				}
 			}

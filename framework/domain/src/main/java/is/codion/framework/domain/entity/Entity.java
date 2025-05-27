@@ -265,7 +265,7 @@ public interface Entity extends Comparable<Entity> {
 	 * Returns true if one or more writable attributes have been modified from their initial value,
 	 * non-insertable and non-updatable attributes are excluded unless they are transient and modify the entity.
 	 * @return true if one or more writable attributes have been modified since they were first set
-	 * @see TransientAttributeDefinition#modifiesEntity()
+	 * @see TransientAttributeDefinition#modifies()
 	 */
 	boolean modified();
 

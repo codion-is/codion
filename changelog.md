@@ -15,6 +15,7 @@ Codion Change Log
 ### is.codion.framework.domain
 - fetchDepth renamed referenceDepth.
 - ForeignKeyDefinition.Builder.referenceDepth() added, ForeignKeyDefiner.foreignKey(referenceDepth) removed.
+- TransientAttribute.modifiesEntity() and Builder.modifiesEntity() renamed modifies().
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel, support table now known as lookup table.
 - NullableCheckBox, FlatLaf hack removed.

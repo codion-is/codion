@@ -25,22 +25,22 @@ class DefaultTransientAttributeDefinition<T> extends AbstractAttributeDefinition
 	@Serial
 	private static final long serialVersionUID = 1;
 
-	private final boolean modifiesEntity;
+	private final boolean modifies;
 
 	private DefaultTransientAttributeDefinition(DefaultTransientAttributeDefinitionBuilder<T, ?> builder) {
 		super(builder);
-		this.modifiesEntity = builder.modifiesEntity;
+		this.modifies = builder.modifies;
 	}
 
 	@Override
-	public final boolean modifiesEntity() {
-		return modifiesEntity;
+	public final boolean modifies() {
+		return modifies;
 	}
 
 	static class DefaultTransientAttributeDefinitionBuilder<T, B extends TransientAttributeDefinition.Builder<T, B>>
 					extends AbstractAttributeDefinitionBuilder<T, B> implements TransientAttributeDefinition.Builder<T, B> {
 
-		private boolean modifiesEntity = true;
+		private boolean modifies = true;
 
 		DefaultTransientAttributeDefinitionBuilder(Attribute<T> attribute) {
 			super(attribute);
@@ -52,8 +52,8 @@ class DefaultTransientAttributeDefinition<T> extends AbstractAttributeDefinition
 		}
 
 		@Override
-		public final TransientAttributeDefinition.Builder<T, B> modifiesEntity(boolean modifiesEntity) {
-			this.modifiesEntity = modifiesEntity;
+		public final TransientAttributeDefinition.Builder<T, B> modifies(boolean modifies) {
+			this.modifies = modifies;
 			return this;
 		}
 	}

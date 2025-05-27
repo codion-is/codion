@@ -612,7 +612,7 @@ public final class TestDomain extends DomainModel {
 														.primaryKey(),
 										TransModifiesNot.TRANS.define()
 														.attribute()
-														.modifiesEntity(false))
+														.modifies(false))
 						.build());
 	}
 
