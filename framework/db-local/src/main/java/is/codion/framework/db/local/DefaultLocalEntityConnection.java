@@ -1367,19 +1367,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		return entity;
 	}
 
-	private static List<ColumnDefinition<?>> writableColumnDefinitions(
-					EntityDefinition entityDefinition, boolean includePrimaryKeyColumns, boolean includeNonUpdatable) {
-		return entityDefinition.columns().definitions().stream()
-						.filter(column -> isWritable(column, includePrimaryKeyColumns, includeNonUpdatable))
-						.collect(toList());
-	}
-
-	private static boolean isWritable(ColumnDefinition<?> column, boolean includePrimaryKeyColumns,
-																		boolean includeNonUpdatable) {
-		return column.insertable() && (includeNonUpdatable || column.updatable())
-						&& (includePrimaryKeyColumns || !column.primaryKey());
-	}
-
 	private static PreparedStatement setParameterValues(PreparedStatement statement, List<ColumnDefinition<?>> statementColumns,
 																											List<?> statementValues) throws SQLException {
 		if (statementColumns.isEmpty()) {

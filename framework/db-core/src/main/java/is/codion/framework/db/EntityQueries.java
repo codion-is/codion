@@ -21,6 +21,7 @@ package is.codion.framework.db;
 import is.codion.common.db.database.Database;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
 
 import java.util.Optional;
 import java.util.ServiceConfigurationError;
@@ -38,6 +39,21 @@ public interface EntityQueries {
 	 * @return a String representation of the given {@link Select} instance, for debugging.
 	 */
 	String select(Select select);
+
+	/**
+	 * @param entity the entity
+	 * @return a String representation of the insert query for the given entity, for debugging
+	 */
+	String insert(Entity entity);
+
+	/**
+	 * Note that the query returned by this method is only guaranteed
+	 * to be valid if the the given entity is modified.
+	 * @param entity the entity
+	 * @return a String representation of the update query for the given entity, for debugging
+	 * @see Entity#modified()
+	 */
+	String update(Entity entity);
 
 	/**
 	 * Returns the first {@link Factory} implementation found by the {@link ServiceLoader}.

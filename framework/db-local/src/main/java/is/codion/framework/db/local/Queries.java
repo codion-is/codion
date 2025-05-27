@@ -18,9 +18,12 @@
  */
 package is.codion.framework.db.local;
 
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 final class Queries {
 
@@ -75,5 +78,20 @@ final class Queries {
 	 */
 	static String deleteQuery(String tableName, String conditionString) {
 		return "DELETE FROM " + tableName + (conditionString.isEmpty() ? "" : NEWLINE + WHERE_SPACE_POSTFIX + conditionString);
+	}
+
+	static List<ColumnDefinition<?>> writableColumnDefinitions(EntityDefinition entityDefinition,
+																														 boolean includePrimaryKeyColumns,
+																														 boolean includeNonUpdatable) {
+		return entityDefinition.columns().definitions().stream()
+						.filter(column -> isWritable(column, includePrimaryKeyColumns, includeNonUpdatable))
+						.collect(toList());
+	}
+
+	private static boolean isWritable(ColumnDefinition<?> column,
+																		boolean includePrimaryKeyColumns,
+																		boolean includeNonUpdatable) {
+		return column.insertable() && (includeNonUpdatable || column.updatable())
+						&& (includePrimaryKeyColumns || !column.primaryKey());
 	}
 }

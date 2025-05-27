@@ -30,15 +30,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import java.awt.BorderLayout;
 import java.awt.Font;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
-import java.time.temporal.Temporal;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -49,52 +42,36 @@ import static is.codion.swing.common.ui.component.Components.scrollPane;
 import static java.lang.System.lineSeparator;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 
-final class QueryInspector extends JPanel {
-
-	private static final DecimalFormat NUMBER_FORMAT = (DecimalFormat) NumberFormat.getInstance();
-	private static final char PLACEHOLDER = '?';
-
-	static {
-		NUMBER_FORMAT.setGroupingUsed(false);
-		DecimalFormatSymbols symbols = NUMBER_FORMAT.getDecimalFormatSymbols();
-		symbols.setDecimalSeparator('.');
-	}
+final class SelectQueryInspector extends JPanel {
 
 	private final JTextArea textArea = Components.textArea()
 					.rowsColumns(30, 42)
 					.editable(false)
+					.onBuild(SelectQueryInspector::setMonospaceFont)
 					.build();
 	private final EntityQueries queries;
 	private final EntityQueryModel queryModel;
 
-	QueryInspector(EntityQueryModel queryModel) {
-		super(new BorderLayout());
+	SelectQueryInspector(EntityQueryModel queryModel) {
 		requireNonNull(queryModel);
-		add(scrollPane(textArea).build());
 		this.queries = EntityQueries.instance()
 						.orElseThrow(() -> new IllegalStateException("No EntityQueries instance available"))
 						.create(Database.instance(), queryModel.connectionProvider().connection().entities());
 		this.queryModel = queryModel;
-		Font font = textArea.getFont();
-		textArea.setFont(new Font(Font.MONOSPACED, font.getStyle(), font.getSize()));
+		this.queryModel.condition().changed().addListener(this::refreshQuery);
+		this.queryModel.limit().addListener(this::refreshQuery);
+		this.queryModel.orderBy().addListener(this::refreshQuery);
+		this.queryModel.attributes().included().addListener(this::refreshQuery);
+		initializeUI();
 		refreshQuery();
-		bindEvents();
-	}
-
-	private void bindEvents() {
-		queryModel.condition().changed().addListener(this::refreshQuery);
-		queryModel.limit().addListener(this::refreshQuery);
-		queryModel.orderBy().addListener(this::refreshQuery);
-		queryModel.attributes().included().addListener(this::refreshQuery);
 	}
 
 	private void refreshQuery() {
-		textArea.setText(createQuery());
+		textArea.setText(createSelectQuery());
 	}
 
-	private String createQuery() {
+	private String createSelectQuery() {
 		Condition where = createCondition(queryModel.condition().where(Conjunction.AND), queryModel.where());
 		Condition having = createCondition(queryModel.condition().having(Conjunction.AND), queryModel.having());
 		EntityConnection.Select select = EntityConnection.Select.where(where)
@@ -104,19 +81,12 @@ final class QueryInspector extends JPanel {
 						.orderBy(queryModel.orderBy().get())
 						.build();
 
-		String formatted = BasicFormatterImpl.format(queries.select(select));
-		ListIterator<?> parameters = parameterValues(where, having).listIterator();
-		StringBuilder builder = new StringBuilder();
-		for (int i = 0; i < formatted.length(); i++) {
-			if (formatted.charAt(i) == PLACEHOLDER && parameters.hasNext()) {
-				builder.append(parameters.next());
-			}
-			else {
-				builder.append(formatted.charAt(i));
-			}
-		}
+		return BasicFormatterImpl.format(queries.select(select));
+	}
 
-		return builder.toString();
+	private void initializeUI() {
+		setLayout(new BorderLayout());
+		add(scrollPane(textArea).build());
 	}
 
 	private static Condition createCondition(Condition entityCondition, EntityQueryModel.AdditionalCondition additional) {
@@ -127,30 +97,9 @@ final class QueryInspector extends JPanel {
 						.orElse(entityCondition);
 	}
 
-	private static List<?> parameterValues(Condition where, Condition having) {
-		List<Object> values = new ArrayList<>(where.values());
-		values.addAll(having.values());
-
-		return values.stream()
-						.map(QueryInspector::addSingleQuotes)
-						.map(QueryInspector::formatDecimal)
-						.collect(toList());
-	}
-
-	private static Object addSingleQuotes(Object value) {
-		if (value instanceof String || value instanceof Temporal) {
-			return "'" + value + "'";
-		}
-
-		return value;
-	}
-
-	private static Object formatDecimal(Object value) {
-		if (value instanceof Number) {
-			return NUMBER_FORMAT.format(value);
-		}
-
-		return value;
+	private static void setMonospaceFont(JTextArea textArea) {
+		Font font = textArea.getFont();
+		textArea.setFont(new Font(Font.MONOSPACED, font.getStyle(), font.getSize()));
 	}
 
 	/**
@@ -160,7 +109,7 @@ final class QueryInspector extends JPanel {
 	 * @author Gavin King
 	 * @author Steve Ebersole
 	 */
-	private static final class BasicFormatterImpl {
+	static final class BasicFormatterImpl {
 
 		private static final Set<String> NON_FUNCTION_NAMES = new HashSet<>(
 						asList("select", "from", "on", "set", "and", "or", "where", "having", "by", "using")

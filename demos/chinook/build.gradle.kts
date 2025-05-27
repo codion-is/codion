@@ -91,6 +91,7 @@ tasks.register<JavaExec>("runClientLocal") {
         "codion.db.url" to "jdbc:h2:mem:h2db",
         "codion.db.initScripts" to "src/main/sql/create_schema.sql",
         "is.codion.swing.framework.ui.EntityTablePanel.includeQueryInspector" to "true",
+        "is.codion.swing.framework.ui.EntityEditPanel.includeQueryInspector" to "true",
         "sun.awt.disablegrab" to "true"
     )
 }

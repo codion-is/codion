@@ -492,7 +492,7 @@ public class EntityTablePanel extends JPanel {
 	private FilterTableColumnComponentPanel<Attribute<?>> summaryPanel;
 	private JScrollPane summaryPanelScrollPane;
 	private EntityTableExport export;
-	private QueryInspector queryInspector;
+	private SelectQueryInspector queryInspector;
 
 	final Config configuration;
 
@@ -1690,7 +1690,7 @@ public class EntityTablePanel extends JPanel {
 
 	private void showQueryInspector() {
 		if (queryInspector == null) {
-			queryInspector = new QueryInspector(tableModel.queryModel());
+			queryInspector = new SelectQueryInspector(tableModel.queryModel());
 		}
 		if (queryInspector.isShowing()) {
 			parentWindow(queryInspector).toFront();

@@ -18,6 +18,7 @@ Codion Change Log
 - NullableCheckBox, FlatLaf hack removed.
 - QueryInspector added, available with Ctrl-Alt-Q in EntityTablePanel, when using a local connection.
 - EntityTableExport added.
+- EntityEditPanel, query inspector available with Ctrl-Alt-Q, when using a local connection, QueryInspector split into SelectQueryInspector and InsertUpdateQueryInspector.
 
 ## 0.18.34
 ### is.codion.common.core

@@ -75,15 +75,16 @@ import java.util.function.Consumer;
 import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
+import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
+import static is.codion.swing.common.ui.dialog.Dialogs.componentDialog;
 import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.*;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
-import static java.awt.event.KeyEvent.VK_I;
-import static java.awt.event.KeyEvent.VK_V;
+import static java.awt.event.KeyEvent.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -139,6 +140,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		 * @see Config#INCLUDE_ENTITY_MENU
 		 */
 		public static final ControlKey<CommandControl> DISPLAY_ENTITY_MENU = CommandControl.key("displayEntityMenu", keyStroke(VK_V, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		/**
+		 * Displays the query inspector, if one is available.<br>
+		 * Default key stroke: CTRL-ALT-Q
+		 */
+		public static final ControlKey<CommandControl> DISPLAY_QUERY_INSPECTOR = CommandControl.key("displayQueryInspector", keyStroke(VK_Q, CTRL_DOWN_MASK | ALT_DOWN_MASK));
 
 		private ControlKeys() {}
 	}
@@ -163,6 +169,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	private final Controls.Layout controlsLayout;
 	private final State active;
+
+	private InsertUpdateQueryInspector queryInspector;
 
 	final Config configuration;
 
@@ -418,7 +426,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 *      addInputPanel(DomainModel.USER_NAME);
 	 *      addInputPanel(DomainModel.USER_ADDRESS);
 	 *   }
-	 * }
+	 *}
 	 */
 	protected abstract void initializeUI();
 
@@ -431,7 +439,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 *   configureControls(layout -> layout
 	 *           .separator()
 	 *           .control(createCustomControl()))
-	 * }
+	 *}
 	 * Defaults:
 	 * <ul>
 	 *   <li>{@link ControlKeys#INSERT ControlKeys#INSERT}
@@ -493,6 +501,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		}
 		controlMap.control(CLEAR).set(createClearControl());
 		controlMap.control(SELECT_INPUT_FIELD).set(createSelectInputComponentControl());
+		if (configuration.includeQueryInspector) {
+			controlMap.control(DISPLAY_QUERY_INSPECTOR).set(command(this::showQueryInspector));
+		}
 		if (configuration.includeEntityMenu) {
 			controlMap.control(DISPLAY_ENTITY_MENU).set(createShowEntityMenuControl());
 		}
@@ -525,6 +536,22 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	private CommandControl createSelectInputComponentControl() {
 		return command(this::selectInputComponent);
+	}
+
+	private void showQueryInspector() {
+		if (queryInspector == null) {
+			queryInspector = new InsertUpdateQueryInspector(editModel());
+		}
+		if (queryInspector.isShowing()) {
+			parentWindow(queryInspector).toFront();
+		}
+		else {
+			componentDialog(queryInspector)
+							.owner(this)
+							.title(editModel().entityDefinition().caption() + " Query")
+							.modal(false)
+							.show();
+		}
 	}
 
 	private CommandControl createShowEntityMenuControl() {
@@ -590,6 +617,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	private void setupKeyboardActions() {
 		configuration.controlMap.keyEvent(DISPLAY_ENTITY_MENU).ifPresent(keyEvent ->
+						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+										.enable(this));
+		configuration.controlMap.keyEvent(DISPLAY_QUERY_INSPECTOR).ifPresent(keyEvent ->
 						keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.enable(this));
 		configuration.controlMap.keyEvent(SELECT_INPUT_FIELD).ifPresent(keyEvent ->
@@ -703,6 +733,16 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 						booleanValue(EntityEditPanel.class.getName() + ".includeEntityMenu", true);
 
 		/**
+		 * Specifies whether to include a Query Inspector on this edit panel, triggered with CTRL-ALT-Q.
+		 * <ul>
+		 * <li>Value type: Boolean
+		 * <li>Default value: false
+		 * </ul>
+		 */
+		public static final PropertyValue<Boolean> INCLUDE_QUERY_INSPECTOR =
+						booleanValue(EntityEditPanel.class.getName() + ".includeQueryInspector", false);
+
+		/**
 		 * Specifies whether edit panels should be activated when the panel (or its parent EntityPanel) receives focus
 		 * <ul>
 		 * <li>Value type: Boolean
@@ -732,6 +772,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		private boolean requestFocusAfterInsert = true;
 		private boolean focusActivation = USE_FOCUS_ACTIVATION.getOrThrow();
 		private boolean includeEntityMenu = INCLUDE_ENTITY_MENU.getOrThrow();
+		private boolean includeQueryInspector = INCLUDE_QUERY_INSPECTOR.getOrThrow();
 		private boolean modifiedWarning = MODIFIED_WARNING.getOrThrow();
 		private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling =
 						ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get();
@@ -758,6 +799,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			this.updateConfirmer = config.updateConfirmer;
 			this.deleteConfirmer = config.deleteConfirmer;
 			this.includeEntityMenu = config.includeEntityMenu;
+			this.includeQueryInspector = config.includeQueryInspector;
 			this.modifiedWarning = config.modifiedWarning;
 			this.excludeFromSelection = unmodifiableSet(new HashSet<>(config.excludeFromSelection));
 		}
@@ -824,6 +866,15 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		 */
 		public Config includeEntityMenu(boolean includeEntityMenu) {
 			this.includeEntityMenu = includeEntityMenu;
+			return this;
+		}
+
+		/**
+		 * @param includeQueryInspector true if a Query Inspector should be available in this edit panel, triggered with CTRL-ALT-Q.
+		 * @return this Config instance
+		 */
+		public Config includeQueryInspector(boolean includeQueryInspector) {
+			this.includeQueryInspector = includeQueryInspector;
 			return this;
 		}
 
