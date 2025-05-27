@@ -124,15 +124,15 @@ public final class TextTest {
 	}
 
 	@Test
-	void parseCommaSeparatedValues() {
+	void parseCSV() {
 		List<String> hello = Collections.singletonList("hello");
-		assertEquals(hello, Text.parseCommaSeparatedValues("hello"));
-		assertEquals(hello, Text.parseCommaSeparatedValues("hello, "));
-		assertEquals(hello, Text.parseCommaSeparatedValues(",hello , "));
-		assertEquals(Arrays.asList("hello", "world", "how", "are", "you"), Text.parseCommaSeparatedValues("hello,world, how , are ,you"));
-		assertEquals(emptyList(), Text.parseCommaSeparatedValues(""));
-		assertEquals(emptyList(), Text.parseCommaSeparatedValues(", ,  , "));
-		assertEquals(emptyList(), Text.parseCommaSeparatedValues(null));
+		assertEquals(hello, Text.parseCSV("hello"));
+		assertEquals(hello, Text.parseCSV("hello, "));
+		assertEquals(hello, Text.parseCSV(",hello , "));
+		assertEquals(Arrays.asList("hello", "world", "how", "are", "you"), Text.parseCSV("hello,world, how , are ,you"));
+		assertEquals(emptyList(), Text.parseCSV(""));
+		assertEquals(emptyList(), Text.parseCSV(", ,  , "));
+		assertEquals(emptyList(), Text.parseCSV(null));
 	}
 
 	@Test

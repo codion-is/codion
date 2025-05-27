@@ -7,6 +7,7 @@ Codion Change Log
 - MethodLogger.Entry.getChildren() renamed children(), enterMessage() renamed message(), ArgumentToString renamed ArgumentFormatter.
 - PropertyValue.propertyName() renamed name().
 - Item.itemI18n() renamed i18n().
+- Text.parseCommaSeparatedText() renamed parseCSV().
 ### is.codion.common.db
 - Database.URL_SCOPED_INSTANCE configuration value added.
 ### is.codion.swing.common.model

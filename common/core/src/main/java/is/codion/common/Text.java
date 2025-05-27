@@ -114,17 +114,17 @@ public final class Text {
 	}
 
 	/**
-	 * Parses, splits and trims the given comma separated string.
+	 * Splits and trims the given comma separated string.
 	 * Returns an empty list in case of null or empty string argument.
-	 * @param commaSeparatedValues a String with comma separated values
+	 * @param csv a String with comma separated values
 	 * @return the trimmed values
 	 */
-	public static List<String> parseCommaSeparatedValues(@Nullable String commaSeparatedValues) {
-		if (nullOrEmpty(commaSeparatedValues)) {
+	public static List<String> parseCSV(@Nullable String csv) {
+		if (nullOrEmpty(csv)) {
 			return Collections.emptyList();
 		}
 
-		return Arrays.stream(commaSeparatedValues.split(","))
+		return Arrays.stream(csv.split(","))
 						.map(String::trim)
 						.filter(string -> !string.isEmpty())
 						.collect(Collectors.toList());

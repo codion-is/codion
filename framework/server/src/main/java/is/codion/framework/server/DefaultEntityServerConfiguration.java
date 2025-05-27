@@ -169,17 +169,17 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 
 	static EntityServerConfiguration.Builder builderFromSystemProperties() {
 		Builder builder = new DefaultBuilder(SERVER_PORT.getOrThrow(), REGISTRY_PORT.getOrThrow())
-						.auxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()))
+						.auxiliaryServerFactoryClassNames(Text.parseCSV(AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()))
 						.sslEnabled(SSL_ENABLED.getOrThrow())
 						.adminPort(ADMIN_PORT.getOrThrow())
 						.connectionLimit(CONNECTION_LIMIT.getOrThrow())
 						.database(Database.instance())
-						.domainClassNames(Text.parseCommaSeparatedValues(DOMAIN_MODEL_CLASSES.get()))
-						.connectionPoolUsers(Text.parseCommaSeparatedValues(CONNECTION_POOL_USERS.get()).stream()
+						.domainClassNames(Text.parseCSV(DOMAIN_MODEL_CLASSES.get()))
+						.connectionPoolUsers(Text.parseCSV(CONNECTION_POOL_USERS.get()).stream()
 										.map(User::parse)
 										.collect(toList()));
 		Map<String, Integer> clientTypeIdleConnectionTimeoutMap = new HashMap<>();
-		for (String clientTimeout : Text.parseCommaSeparatedValues(CLIENT_CONNECTION_TIMEOUT.get())) {
+		for (String clientTimeout : Text.parseCSV(CLIENT_CONNECTION_TIMEOUT.get())) {
 			String[] split = clientTimeout.split(":");
 			if (split.length < 2) {
 				throw new IllegalArgumentException("Expecting a ':' delimiter");
