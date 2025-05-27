@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Introductory package
+
+If you find a claude directory in the project root dir, then that is meant for you. It contains comprehensive information about Codion, what it is, where it's from and where it's going. Nothing in the claude directory is superfluous. claude/CLAUDE_INGESTION_GUIDE.md contains a guide for the directory contents.
+
 ## Project Overview
 
 Codion is a full-stack Java rich client desktop CRUD application framework based solely on Java Standard Edition components. It follows Domain-Driven Design principles with Entity-Relationship concepts rather than ORM. The framework has been continuously refined for over 20 years and is designed for internal business/scientific applications with 1-10 users, though it can handle thousands of concurrent users (see `documentation/src/docs/asciidoc/images/monitoring`).
@@ -150,6 +154,8 @@ codion/
 5. **Internationalization**: Resource bundles follow the pattern `Messages_<locale>.properties`.
 
 6. **License**: GPL-3.0 license. Note: This is "open-source, not open-contribution" - code contributions are not accepted.
+
+7. **Static Factory Methods**: Factory methods are named after the type they return (e.g., `ReportType.reportType()`, `State.state()`) to enable clean static imports: `import static is.codion.common.db.report.ReportType.reportType;` then `ReportType report = reportType("name");`. This pattern is used consistently throughout the framework.
 
 ### Development Notes
 
@@ -814,3 +820,32 @@ Dialogs.componentDialog(new JRViewer(employeeReport)).show();
 4. **Type Safety** - Leverage the type system, avoid string keys
 5. **Test at the Right Level** - Unit test domains, integration test with H2
 6. **Read the Manual** - Seriously, it's excellent and will save you time
+
+## API Refinement Window
+
+**IMPORTANT**: Codion is in its final API refinement phase before promotion. The change window is **closing in the next few months** (open until promotion or when someone provably starts using it). After that, backward compatibility will be maintained.
+
+### What This Means
+
+- **Now is the time** for breaking changes and API improvements
+- Every suboptimal name fixed now is one we won't be stuck with forever
+- After 20+ years of development and 3 years of intensive polishing, we're in the final sprint
+
+### How You Can Help
+
+If you spot any of these while working with Codion, **please speak up immediately**:
+
+1. **Redundant context** - Like `modifiesEntity()` in an attribute class → `modifies()`
+2. **Unnecessary prefixes/suffixes** - Like `WHEN_SET` → `SET`
+3. **Verbose names** where shorter would be clearer
+4. **Inconsistencies** with established patterns
+5. **Confusing method names** that could be more intuitive
+6. **Parameter names** that could be clearer
+
+### Examples of Recent Refinements
+
+- `Notify.WHEN_SET` → `Notify.SET` (removed redundant prefix)
+- `TransientAttributeDefinition.modifiesEntity()` → `modifies()` (removed redundant context)
+- 360+ renames and 237+ removals over the past 3 years (see `changelog.md`)
+
+Remember: Once the API freezes, these names are forever. Help make Codion something we'll all be happy using and maintaining for the next 20 years!
