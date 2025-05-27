@@ -198,7 +198,7 @@ public interface ConditionModel<T> {
 	interface Operands<T> {
 
 		/**
-		 * @return the {@link Value} controlling how wildcards are added to a String {@link #equal()} operand when accessed via {@link #equalWildcards()}
+		 * @return the {@link Value} controlling how wildcards are added to a String {@link #equal()} operand when accessed via {@link #equalWithWildcards()}
 		 */
 		default Value<Wildcard> wildcard() {
 			return Value.builder()
@@ -210,7 +210,7 @@ public interface ConditionModel<T> {
 		 * @return the {@link #equal()} operand, assuming it is a String, with wildcards added
 		 * @see #wildcard()
 		 */
-		default @Nullable String equalWildcards() {
+		default @Nullable String equalWithWildcards() {
 			String equalOperand = (String) equal().get();
 			if (equalOperand != null) {
 				return addWildcard(equalOperand, wildcard().getOrThrow());

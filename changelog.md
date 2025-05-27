@@ -15,6 +15,7 @@ Codion Change Log
 - Database.maximumNumberOfParameters() renamed maximumParameters().
 ### is.codion.common.model
 - UserPreferences, UserPreference suffix removed from method names.
+- ConditionModel.equalWildcards() renamed equalWithWildcards().
 ### is.codion.swing.common.model
 - FilterComboBoxModel.createSelectorValue() renamed createSelector().
 ### is.codion.swing.common.ui

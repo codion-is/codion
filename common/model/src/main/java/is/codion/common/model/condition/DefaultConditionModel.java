@@ -222,7 +222,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 			return comparable == null;
 		}
 		if (equalOperand instanceof String) {
-			equalOperand = (T) operands.equalWildcards();
+			equalOperand = (T) operands.equalWithWildcards();
 		}
 		if (comparable instanceof String && ((String) equalOperand).contains(WILDCARD_CHARACTER)) {
 			return isEqualWildcard((String) comparable, (String) equalOperand);
@@ -243,7 +243,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 			return comparable != null;
 		}
 		if (equalOperand instanceof String) {
-			equalOperand = (T) operands.equalWildcards();
+			equalOperand = (T) operands.equalWithWildcards();
 		}
 		if (comparable instanceof String && ((String) equalOperand).contains(WILDCARD_CHARACTER)) {
 			return !isEqualWildcard((String) comparable, (String) equalOperand);

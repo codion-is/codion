@@ -84,16 +84,16 @@ public class DefaultConditionModelTest {
 		assertEquals("test", operands.equal().get());
 
 		operands.wildcard().set(Wildcard.PREFIX_AND_POSTFIX);
-		assertEquals("%test%", operands.equalWildcards());
+		assertEquals("%test%", operands.equalWithWildcards());
 
 		operands.wildcard().set(Wildcard.PREFIX);
-		assertEquals("%test", operands.equalWildcards());
+		assertEquals("%test", operands.equalWithWildcards());
 
 		operands.wildcard().set(Wildcard.POSTFIX);
-		assertEquals("test%", operands.equalWildcards());
+		assertEquals("test%", operands.equalWithWildcards());
 
 		operands.wildcard().set(Wildcard.NONE);
-		assertEquals("test", operands.equalWildcards());
+		assertEquals("test", operands.equalWithWildcards());
 
 		model.clear();
 
@@ -109,7 +109,7 @@ public class DefaultConditionModelTest {
 		ConditionModel<String> model = ConditionModel.builder(String.class).build();
 		model.operands().wildcard().set(Wildcard.PREFIX_AND_POSTFIX);
 		model.set().equalTo("upper");
-		assertEquals("%upper%", model.operands().equalWildcards());
+		assertEquals("%upper%", model.operands().equalWithWildcards());
 
 		assertThrows(NullPointerException.class, () -> model.set().in((Collection<String>) null));
 		assertThrows(NullPointerException.class, () -> model.set().in("test", null));

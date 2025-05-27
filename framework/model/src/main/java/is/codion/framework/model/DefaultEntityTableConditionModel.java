@@ -225,7 +225,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 			return column.isNull();
 		}
 		if (column.type().isString()) {
-			return singleStringEqualCondition(conditionModel, column, conditionModel.operands().equalWildcards());
+			return singleStringEqualCondition(conditionModel, column, conditionModel.operands().equalWithWildcards());
 		}
 		if (column.type().isCharacter()) {
 			return singleCharacterEqualCondition(conditionModel, column, (Character) equalOperand);
@@ -241,7 +241,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 			return column.isNotNull();
 		}
 		if (column.type().isString()) {
-			return singleStringNotEqualCondition(conditionModel, column, conditionModel.operands().equalWildcards());
+			return singleStringNotEqualCondition(conditionModel, column, conditionModel.operands().equalWithWildcards());
 		}
 		if (column.type().isCharacter()) {
 			return singleCharacterNotEqualCondition(conditionModel, column, (Character) equalOperand);
