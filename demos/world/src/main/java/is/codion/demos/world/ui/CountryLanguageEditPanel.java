@@ -33,7 +33,7 @@ final class CountryLanguageEditPanel extends EntityEditPanel {
 		super(editModel);
 		// Perform an update each time the IS_OFFICIAL
 		// value is edited, bypassing the update confirmation
-		editModel.editor().value(CountryLanguage.IS_OFFICIAL).edited().addListener(editModel()::update);
+		editModel.editor().value(CountryLanguage.IS_OFFICIAL).edited().addListener(this::updateIfValid);
 	}
 
 	@Override
@@ -57,5 +57,11 @@ final class CountryLanguageEditPanel extends EntityEditPanel {
 		addInputPanel(CountryLanguage.COUNTRY_FK);
 		addInputPanel(CountryLanguage.LANGUAGE);
 		add(percentageOfficialPanel);
+	}
+
+	private void updateIfValid() {
+		if (editModel().editor().valid().get()) {
+			editModel().update();
+		}
 	}
 }
