@@ -280,33 +280,33 @@ final class DefaultPropertyStore implements PropertyStore {
 
 	private final class DefaultPropertyValue<T> extends AbstractValue<T> implements PropertyValue<T> {
 
-		private final String propertyName;
+		private final String name;
 		private final Function<T, String> encoder;
 
 		private @Nullable T value;
 
-		private DefaultPropertyValue(String propertyName, Function<String, T> decoder, Function<T, String> encoder) {
+		private DefaultPropertyValue(String name, Function<String, T> decoder, Function<T, String> encoder) {
 			super(null, Notify.CHANGED);
-			this.propertyName = requireNonNull(propertyName);
+			this.name = requireNonNull(name);
 			this.encoder = requireNonNull(encoder);
-			set(getInitialValue(propertyName, requireNonNull(decoder)));
+			set(getInitialValue(name, requireNonNull(decoder)));
 		}
 
-		private DefaultPropertyValue(String propertyName, Function<String, T> decoder, Function<T, String> encoder, T defaultValue) {
+		private DefaultPropertyValue(String name, Function<String, T> decoder, Function<T, String> encoder, T defaultValue) {
 			super(requireNonNull(defaultValue), Notify.CHANGED);
-			this.propertyName = requireNonNull(propertyName);
+			this.name = requireNonNull(name);
 			this.encoder = requireNonNull(encoder);
-			set(getInitialValue(propertyName, requireNonNull(decoder)));
+			set(getInitialValue(name, requireNonNull(decoder)));
 		}
 
 		@Override
-		public String propertyName() {
-			return propertyName;
+		public String name() {
+			return name;
 		}
 
 		@Override
 		public T getOrThrow() {
-			return getOrThrow("Required configuration value is missing: " + propertyName);
+			return getOrThrow("Required configuration value is missing: " + name);
 		}
 
 		@Override
@@ -320,7 +320,7 @@ final class DefaultPropertyStore implements PropertyStore {
 
 		@Override
 		public String toString() {
-			return propertyName;
+			return name;
 		}
 
 		@Override
@@ -332,12 +332,12 @@ final class DefaultPropertyStore implements PropertyStore {
 		protected void setValue(@Nullable T value) {
 			this.value = value;
 			if (value == null) {
-				properties.remove(propertyName);
-				System.clearProperty(propertyName);
+				properties.remove(name);
+				System.clearProperty(name);
 			}
 			else {
-				properties.setProperty(propertyName, encoder.apply(value));
-				System.setProperty(propertyName, properties.getProperty(propertyName));
+				properties.setProperty(name, encoder.apply(value));
+				System.setProperty(name, properties.getProperty(name));
 			}
 		}
 

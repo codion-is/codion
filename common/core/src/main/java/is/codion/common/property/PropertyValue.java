@@ -29,7 +29,7 @@ public interface PropertyValue<T> extends Value<T> {
 	/**
 	 * @return the name of the property this value represents
 	 */
-	String propertyName();
+	String name();
 
 	/**
 	 * Sets this value to null as well as removing it from the underlying store and clearing the system property.

@@ -1005,12 +1005,12 @@ public final class EntityService implements AuxiliaryServer {
 	private static synchronized void resolveClasspathKeyStore() {
 		String keystore = HTTP_SERVER_CLASSPATH_KEYSTORE.get();
 		if (nullOrEmpty(keystore)) {
-			LOG.debug("No classpath key store specified via {}", HTTP_SERVER_CLASSPATH_KEYSTORE.propertyName());
+			LOG.debug("No classpath key store specified via {}", HTTP_SERVER_CLASSPATH_KEYSTORE.name());
 			return;
 		}
 		if (!HTTP_SERVER_KEYSTORE_PATH.isNull()) {
 			throw new IllegalStateException("Classpath keystore (" + keystore + ") can not be specified when "
-							+ HTTP_SERVER_KEYSTORE_PATH.propertyName() + " is already set to " + HTTP_SERVER_KEYSTORE_PATH.get());
+							+ HTTP_SERVER_KEYSTORE_PATH.name() + " is already set to " + HTTP_SERVER_KEYSTORE_PATH.get());
 		}
 		try (InputStream inputStream = EntityService.class.getClassLoader().getResourceAsStream(keystore)) {
 			if (inputStream == null) {
@@ -1023,7 +1023,7 @@ public final class EntityService implements AuxiliaryServer {
 
 			HTTP_SERVER_KEYSTORE_PATH.set(file.getPath());
 			LOG.debug("Classpath key store {} written to file {} and set as {}",
-							HTTP_SERVER_CLASSPATH_KEYSTORE.propertyName(), file, HTTP_SERVER_KEYSTORE_PATH.propertyName());
+							HTTP_SERVER_CLASSPATH_KEYSTORE.name(), file, HTTP_SERVER_KEYSTORE_PATH.name());
 		}
 		catch (IOException e) {
 			throw new RuntimeException(e);
