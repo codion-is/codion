@@ -21,6 +21,7 @@ package is.codion.tools.generator.ui;
 import is.codion.common.db.database.Database;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
+import is.codion.common.model.UserPreferences;
 import is.codion.common.observable.Observable;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
@@ -71,7 +72,6 @@ import java.util.function.Consumer;
 
 import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.Configuration.stringValue;
-import static is.codion.common.model.UserPreferences.setUserPreference;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
@@ -507,7 +507,7 @@ public final class DomainGeneratorPanel extends JPanel {
 	}
 
 	private static void lookAndFeelSelected(LookAndFeelEnabler lookAndFeelEnabler) {
-		setUserPreference(DomainGeneratorPanel.class.getName() + LOOK_AND_FEEL_PROPERTY,
+		UserPreferences.set(DomainGeneratorPanel.class.getName() + LOOK_AND_FEEL_PROPERTY,
 						lookAndFeelEnabler.lookAndFeelInfo().getClassName());
 	}
 

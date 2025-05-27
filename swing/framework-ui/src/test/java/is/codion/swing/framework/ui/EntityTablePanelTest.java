@@ -149,7 +149,7 @@ public class EntityTablePanelTest {
 		assertFalse(condition.caseSensitive().get());
 
 		tablePanel.clearPreferences();
-		UserPreferences.flushUserPreferences();
+		UserPreferences.flush();
 	}
 
 	@Test

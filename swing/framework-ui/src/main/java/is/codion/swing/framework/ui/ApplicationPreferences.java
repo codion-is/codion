@@ -26,7 +26,6 @@ import org.json.JSONObject;
 
 import java.awt.Dimension;
 
-import static is.codion.common.model.UserPreferences.getUserPreference;
 import static java.lang.Boolean.parseBoolean;
 import static java.lang.Integer.parseInt;
 
@@ -78,7 +77,7 @@ final class ApplicationPreferences {
 	}
 
 	void save(Class<?> applicationClassName) {
-		UserPreferences.setUserPreference(applicationClassName.getName() + PREFERENCES_KEY, toJSONObject().toString());
+		UserPreferences.set(applicationClassName.getName() + PREFERENCES_KEY, toJSONObject().toString());
 	}
 
 	User defaultLoginUser() {
@@ -97,7 +96,7 @@ final class ApplicationPreferences {
 	}
 
 	static ApplicationPreferences load(Class<?> applicationClass) {
-		String preferences = getUserPreference(applicationClass.getName() + PREFERENCES_KEY, "");
+		String preferences = UserPreferences.get(applicationClass.getName() + PREFERENCES_KEY, "");
 		if (preferences.isEmpty()) {
 			String applicationDefaultUsernameProperty = LEGACY_DEFAULT_USERNAME_PROPERTY + "#" + applicationClass.getSimpleName();
 			String applicationLookAndFeelProperty = LEGACY_LOOK_AND_FEEL_PROPERTY + "#" + applicationClass.getSimpleName();
@@ -106,11 +105,11 @@ final class ApplicationPreferences {
 			String applicationFrameMaximizedProperty = LEGACY_FRAME_MAXIMIZED_PROPERTY + "#" + applicationClass.getSimpleName();
 
 			return new ApplicationPreferences(
-							getUserPreference(applicationDefaultUsernameProperty, System.getProperty("user.name")),
-							getUserPreference(applicationLookAndFeelProperty),
-							parseInt(getUserPreference(applicationFontSizeProperty, "100")),
-							parseFrameSize(getUserPreference(applicationFrameSizeProperty, "")),
-							parseBoolean(getUserPreference(applicationFrameMaximizedProperty, "false")));
+							UserPreferences.get(applicationDefaultUsernameProperty, System.getProperty("user.name")),
+							UserPreferences.get(applicationLookAndFeelProperty),
+							parseInt(UserPreferences.get(applicationFontSizeProperty, "100")),
+							parseFrameSize(UserPreferences.get(applicationFrameSizeProperty, "")),
+							parseBoolean(UserPreferences.get(applicationFrameMaximizedProperty, "false")));
 		}
 
 		return fromString(preferences);

@@ -38,7 +38,7 @@ public final class UserPreferences {
 	 * @param key the key identifying the preference
 	 * @return the user preference associated with the given key
 	 */
-	public static @Nullable String getUserPreference(String key) {
+	public static @Nullable String get(String key) {
 		return userPreferences().get(requireNonNull(key), null);
 	}
 
@@ -48,7 +48,7 @@ public final class UserPreferences {
 	 * @return the user preference associated with the given key
 	 * @throws NullPointerException in case {@code defaultValue} is null
 	 */
-	public static String getUserPreference(String key, String defaultValue) {
+	public static String get(String key, String defaultValue) {
 		return userPreferences().get(requireNonNull(key), requireNonNull(defaultValue));
 	}
 
@@ -56,7 +56,7 @@ public final class UserPreferences {
 	 * @param key the key to use to identify the preference
 	 * @param value the preference value to associate with the given key
 	 */
-	public static void setUserPreference(String key, String value) {
+	public static void set(String key, String value) {
 		userPreferences().put(requireNonNull(key), value);
 	}
 
@@ -64,7 +64,7 @@ public final class UserPreferences {
 	 * Removes the preference associated with the given key
 	 * @param key the key to use to identify the preference to remove
 	 */
-	public static void removeUserPreference(String key) {
+	public static void remove(String key) {
 		userPreferences().remove(requireNonNull(key));
 	}
 
@@ -72,7 +72,7 @@ public final class UserPreferences {
 	 * Flushes the preferences to disk
 	 * @throws BackingStoreException in case of a backing store failure
 	 */
-	public static void flushUserPreferences() throws BackingStoreException {
+	public static void flush() throws BackingStoreException {
 		userPreferences().flush();
 	}
 

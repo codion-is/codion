@@ -13,6 +13,8 @@ Codion Change Log
 - ConnectionPoolStatistics.averageGetTime(), minimumCheckOutTime() and maximumCheckOutTime() renamed averageTime(), minimumTime() and maximumTime() respectively.
 - ConnectionPoolWrapper.getIdleConnectionTimeout() and setIdleConnectionTimeout() renamed getIdleTimeout() and setIdleTimeout().
 - Database.maximumNumberOfParameters() renamed maximumParameters().
+### is.codion.common.model
+- UserPreferences, UserPreference suffix removed from method names.
 ### is.codion.swing.common.model
 - FilterComboBoxModel.createSelectorValue() renamed createSelector().
 ### is.codion.swing.common.ui

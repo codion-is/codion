@@ -173,7 +173,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 	}
 
 	private void selectLanguage() {
-		String currentLanguage = UserPreferences.getUserPreference(LANGUAGE_PREFERENCES_KEY, Locale.getDefault().getLanguage());
+		String currentLanguage = UserPreferences.get(LANGUAGE_PREFERENCES_KEY, Locale.getDefault().getLanguage());
 		JPanel languagePanel = gridLayoutPanel(2, 1).build();
 		ButtonGroup buttonGroup = new ButtonGroup();
 		radioButton()
@@ -189,13 +189,13 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 		showMessageDialog(this, languagePanel, bundle.getString("language"), JOptionPane.QUESTION_MESSAGE);
 		String selectedLanguage = isButton.isSelected() ? LANGUAGE_IS : LANGUAGE_EN;
 		if (!currentLanguage.equals(selectedLanguage)) {
-			UserPreferences.setUserPreference(LANGUAGE_PREFERENCES_KEY, selectedLanguage);
+			UserPreferences.set(LANGUAGE_PREFERENCES_KEY, selectedLanguage);
 			showMessageDialog(this, bundle.getString("language_has_been_changed"));
 		}
 	}
 
 	public static void main(String[] args) throws CancelException {
-		String language = UserPreferences.getUserPreference(LANGUAGE_PREFERENCES_KEY, Locale.getDefault().getLanguage());
+		String language = UserPreferences.get(LANGUAGE_PREFERENCES_KEY, Locale.getDefault().getLanguage());
 		Locale.setDefault(LANGUAGE_IS.equals(language) ? LOCALE_IS : LOCALE_EN);
 		FrameworkIcons.instance().add(Foundation.PLUS, Foundation.MINUS);
 		Completion.COMPLETION_MODE.set(Completion.Mode.AUTOCOMPLETE);

@@ -19,6 +19,7 @@
 package is.codion.tools.loadtest.ui;
 
 import is.codion.common.model.CancelException;
+import is.codion.common.model.UserPreferences;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.user.User;
 import is.codion.swing.common.model.component.table.FilterTableModel;
@@ -63,7 +64,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static is.codion.common.model.UserPreferences.setUserPreference;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.Windows.frame;
 import static is.codion.swing.common.ui.Windows.screenSizeRatio;
@@ -545,7 +545,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	}
 
 	private static void lookAndFeelSelected(LookAndFeelEnabler selectedLookAndFeel) {
-		setUserPreference(LoadTestPanel.class.getName() + LOOK_AND_FEEL_PROPERTY,
+		UserPreferences.set(LoadTestPanel.class.getName() + LOOK_AND_FEEL_PROPERTY,
 						selectedLookAndFeel.lookAndFeelInfo().getClassName());
 	}
 

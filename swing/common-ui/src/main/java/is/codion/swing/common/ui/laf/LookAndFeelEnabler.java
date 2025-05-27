@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.ui.laf;
 
+import is.codion.common.model.UserPreferences;
 import is.codion.swing.common.ui.Utilities;
 
 import javax.swing.LookAndFeel;
@@ -26,7 +27,6 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import static is.codion.common.model.UserPreferences.getUserPreference;
 import static is.codion.swing.common.ui.Utilities.systemLookAndFeelClassName;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeel;
 import static java.util.Objects.requireNonNull;
@@ -103,7 +103,7 @@ public interface LookAndFeelEnabler {
 	 * @return true if a look and feel was enabled, false if the neither the user preference nor default look and feels were available
 	 */
 	static boolean enableLookAndFeel(String userPreferencePropertyName, String defaultLookAndFeel) {
-		Optional<LookAndFeelEnabler> lookAndFeel = findLookAndFeel(getUserPreference(userPreferencePropertyName, requireNonNull(defaultLookAndFeel)));
+		Optional<LookAndFeelEnabler> lookAndFeel = findLookAndFeel(UserPreferences.get(userPreferencePropertyName, requireNonNull(defaultLookAndFeel)));
 		if (!lookAndFeel.isPresent()) {
 			lookAndFeel = findLookAndFeel(defaultLookAndFeel);
 		}

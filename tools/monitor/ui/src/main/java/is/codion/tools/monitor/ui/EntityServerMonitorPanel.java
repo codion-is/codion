@@ -58,7 +58,6 @@ import java.rmi.RemoteException;
 import java.text.NumberFormat;
 import java.util.concurrent.TimeUnit;
 
-import static is.codion.common.model.UserPreferences.setUserPreference;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.dialog.Dialogs.*;
 import static javax.swing.BorderFactory.createEmptyBorder;
@@ -77,7 +76,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 	private static final int MEMORY_USAGE_UPDATE_INTERVAL_MS = 2000;
 	private static final NumberFormat MEMORY_USAGE_FORMAT = NumberFormat.getIntegerInstance();
 	private static final Runtime RUNTIME = Runtime.getRuntime();
-	private static String jdkDir = UserPreferences.getUserPreference(JDK_PREFERENCE_KEY);
+	private static String jdkDir = UserPreferences.get(JDK_PREFERENCE_KEY);
 
 	private final State alwaysOnTopState = State.state();
 	private final EntityServerMonitor model;
@@ -146,7 +145,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 							.title("Set JDK home")
 							.selectDirectory()
 							.getAbsolutePath();
-			setUserPreference(JDK_PREFERENCE_KEY, jdkDir);
+			UserPreferences.set(JDK_PREFERENCE_KEY, jdkDir);
 		}
 		catch (CancelException ignored) {/*ignored*/}
 	}
@@ -293,7 +292,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 	}
 
 	private static void lookAndFeelSelected(LookAndFeelEnabler selectedLookAndFeel) {
-		setUserPreference(EntityServerMonitorPanel.class.getName() + LOOK_AND_FEEL_PROPERTY,
+		UserPreferences.set(EntityServerMonitorPanel.class.getName() + LOOK_AND_FEEL_PROPERTY,
 						selectedLookAndFeel.lookAndFeelInfo().getClassName());
 	}
 

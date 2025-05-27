@@ -405,7 +405,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 			if (userPreferencesEnabled) {
 				LOG.debug("Saving user preferences");
 				savePreferences();
-				UserPreferences.flushUserPreferences();
+				UserPreferences.flush();
 			}
 		}
 		catch (Throwable e) {

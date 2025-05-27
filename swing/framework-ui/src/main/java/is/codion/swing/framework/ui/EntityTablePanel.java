@@ -718,14 +718,14 @@ public class EntityTablePanel extends JPanel {
 	 */
 	public void savePreferences() {
 		try {
-			UserPreferences.setUserPreference(userPreferencesKey() + COLUMN_PREFERENCES,
+			UserPreferences.set(userPreferencesKey() + COLUMN_PREFERENCES,
 							ColumnPreferences.toString(createColumnPreferences()));
 		}
 		catch (Exception e) {
 			LOG.error("Error while saving column preferences", e);
 		}
 		try {
-			UserPreferences.setUserPreference(userPreferencesKey() + CONDITIONS_PREFERENCES,
+			UserPreferences.set(userPreferencesKey() + CONDITIONS_PREFERENCES,
 							ConditionPreferences.toString(createConditionPreferences()));
 		}
 		catch (Exception e) {
@@ -737,15 +737,15 @@ public class EntityTablePanel extends JPanel {
 	 * Applies any user preferences previously saved via {@link #savePreferences()}
 	 */
 	public void applyPreferences() {
-		String columnPreferencesString = UserPreferences.getUserPreference(userPreferencesKey() + COLUMN_PREFERENCES, "");
+		String columnPreferencesString = UserPreferences.get(userPreferencesKey() + COLUMN_PREFERENCES, "");
 		if (columnPreferencesString.isEmpty()) {//todo remove: see if a legacy one without "-columns" postfix exists
-			columnPreferencesString = UserPreferences.getUserPreference(userPreferencesKey(), "");
+			columnPreferencesString = UserPreferences.get(userPreferencesKey(), "");
 		}
 		if (!columnPreferencesString.isEmpty()) {
 			applyColumnPreferences(columnPreferencesString);
 		}
 
-		String conditionPreferencesString = UserPreferences.getUserPreference(userPreferencesKey() + CONDITIONS_PREFERENCES, "");
+		String conditionPreferencesString = UserPreferences.get(userPreferencesKey() + CONDITIONS_PREFERENCES, "");
 		if (!conditionPreferencesString.isEmpty()) {
 			applyConditionPreferences(conditionPreferencesString);
 		}
@@ -1059,8 +1059,8 @@ public class EntityTablePanel extends JPanel {
 	 */
 	final void clearPreferences() {
 		String userPreferencesKey = userPreferencesKey();
-		UserPreferences.removeUserPreference(userPreferencesKey + COLUMN_PREFERENCES);
-		UserPreferences.removeUserPreference(userPreferencesKey + CONDITIONS_PREFERENCES);
+		UserPreferences.remove(userPreferencesKey + COLUMN_PREFERENCES);
+		UserPreferences.remove(userPreferencesKey + CONDITIONS_PREFERENCES);
 	}
 
 	/**
