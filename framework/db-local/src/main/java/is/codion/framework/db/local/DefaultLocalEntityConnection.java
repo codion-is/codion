@@ -988,11 +988,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	private int keysPerStatement(Key key) {
-		if (database.maximumNumberOfParameters() == Integer.MAX_VALUE) {
+		if (database.maximumParameters() == Integer.MAX_VALUE) {
 			return Integer.MAX_VALUE;
 		}
 
-		return database.maximumNumberOfParameters() / key.columns().size();
+		return database.maximumParameters() / key.columns().size();
 	}
 
 	private Key createKey(Entity entity, Collection<Column<?>> keyColumns) {

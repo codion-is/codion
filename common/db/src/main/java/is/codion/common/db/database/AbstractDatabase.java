@@ -205,7 +205,7 @@ public abstract class AbstractDatabase implements Database {
 	}
 
 	@Override
-	public int maximumNumberOfParameters() {
+	public int maximumParameters() {
 		return Integer.MAX_VALUE;
 	}
 

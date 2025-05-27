@@ -130,7 +130,7 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 	}
 
 	@Override
-	public int maximumNumberOfParameters() {
+	public int maximumParameters() {
 		return MAXIMUM_STATEMENT_PARAMETERS;
 	}
 

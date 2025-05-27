@@ -193,7 +193,7 @@ public interface Database extends ConnectionFactory {
 	 * The default implementation simply returns {@link Integer#MAX_VALUE}, as in, no limit.
 	 * @return the maximum number of prepared statement parameters, supported by this database.
 	 */
-	int maximumNumberOfParameters();
+	int maximumParameters();
 
 	/**
 	 * Returns a user-friendly error message for the given exception,

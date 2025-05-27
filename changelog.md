@@ -12,6 +12,7 @@ Codion Change Log
 - Database.URL_SCOPED_INSTANCE configuration value added.
 - ConnectionPoolStatistics.averageGetTime(), minimumCheckOutTime() and maximumCheckOutTime() renamed averageTime(), minimumTime() and maximumTime() respectively.
 - ConnectionPoolWrapper.getIdleConnectionTimeout() and setIdleConnectionTimeout() renamed getIdleTimeout() and setIdleTimeout().
+- Database.maximumNumberOfParameters() renamed maximumParameters().
 ### is.codion.swing.common.model
 - FilterComboBoxModel.createSelectorValue() renamed createSelector().
 ### is.codion.swing.common.ui
