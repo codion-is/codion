@@ -47,9 +47,9 @@ final class DefaultConnectionPoolStatistics implements ConnectionPoolStatistics,
 	private int requestsPerSecond;
 	private int connectionRequestsFailed;
 	private int requestsFailedPerSecond;
-	private int averageCheckOutTime = 0;
-	private int minimumCheckOutTime = 0;
-	private int maximumCheckOutTime = 0;
+	private int averageTime = 0;
+	private int minimumTime = 0;
+	private int maximumTime = 0;
 
 	/**
 	 * @param username the database user the pool is based on
@@ -119,18 +119,18 @@ final class DefaultConnectionPoolStatistics implements ConnectionPoolStatistics,
 	}
 
 	@Override
-	public long averageGetTime() {
-		return averageCheckOutTime;
+	public long averageTime() {
+		return averageTime;
 	}
 
 	@Override
-	public long minimumCheckOutTime() {
-		return minimumCheckOutTime;
+	public long minimumTime() {
+		return minimumTime;
 	}
 
 	@Override
-	public long maximumCheckOutTime() {
-		return maximumCheckOutTime;
+	public long maximumTime() {
+		return maximumTime;
 	}
 
 	@Override
@@ -179,16 +179,16 @@ final class DefaultConnectionPoolStatistics implements ConnectionPoolStatistics,
 		this.requestsPerSecond = requestsPerSecond;
 	}
 
-	void averageCheckOutTime(int averageCheckOutTime) {
-		this.averageCheckOutTime = averageCheckOutTime;
+	void averageTime(int averageTime) {
+		this.averageTime = averageTime;
 	}
 
-	void minimumCheckOutTime(int minimumCheckOutTime) {
-		this.minimumCheckOutTime = minimumCheckOutTime;
+	void minimumTime(int minimumTime) {
+		this.minimumTime = minimumTime;
 	}
 
-	void maximumCheckOutTime(int maximumCheckOutTime) {
-		this.maximumCheckOutTime = maximumCheckOutTime;
+	void maximumTime(int maximumTime) {
+		this.maximumTime = maximumTime;
 	}
 
 	void resetDate(long resetDate) {

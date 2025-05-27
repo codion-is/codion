@@ -58,13 +58,13 @@ public final class AbstractConnectionPoolWrapperTest {
 		statistics.creationDate();
 		statistics.destroyed();
 		statistics.username();
-		statistics.averageGetTime();
+		statistics.averageTime();
 		statistics.requests();
 		statistics.requestsPerSecond();
 		statistics.failedRequests();
 		statistics.failedRequestsPerSecond();
-		statistics.maximumCheckOutTime();
-		statistics.minimumCheckOutTime();
+		statistics.maximumTime();
+		statistics.minimumTime();
 		statistics.resetTime();
 		statistics.size();
 		statistics.timestamp();

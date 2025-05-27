@@ -99,15 +99,15 @@ public interface ConnectionPoolStatistics {
 	/**
 	 * @return the avarage check-out time in ms
 	 */
-	long averageGetTime();
+	long averageTime();
 
 	/**
 	 * @return the minimum check-out time in ms
 	 */
-	long minimumCheckOutTime();
+	long minimumTime();
 
 	/**
 	 * @return the maximum check-out time in ms
 	 */
-	long maximumCheckOutTime();
+	long maximumTime();
 }

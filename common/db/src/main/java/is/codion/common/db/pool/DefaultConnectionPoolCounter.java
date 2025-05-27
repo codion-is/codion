@@ -180,9 +180,9 @@ final class DefaultConnectionPoolCounter {
 					max = Math.max(max, time);
 				}
 			}
-			statistics.averageCheckOutTime(total / checkOutTimes.size());
-			statistics.minimumCheckOutTime(min);
-			statistics.maximumCheckOutTime(max);
+			statistics.averageTime(total / checkOutTimes.size());
+			statistics.minimumTime(min);
+			statistics.maximumTime(max);
 			checkOutTimes.clear();
 		}
 	}

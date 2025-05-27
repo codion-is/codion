@@ -10,6 +10,7 @@ Codion Change Log
 - Text.parseCommaSeparatedText() renamed parseCSV().
 ### is.codion.common.db
 - Database.URL_SCOPED_INSTANCE configuration value added.
+- ConnectionPoolStatistics.averageGetTime(), minimumCheckOutTime() and maximumCheckOutTime() renamed averageTime(), minimumTime() and maximumTime() respectively.
 ### is.codion.swing.common.model
 - FilterComboBoxModel.createSelectorValue() renamed createSelector().
 ### is.codion.swing.common.ui

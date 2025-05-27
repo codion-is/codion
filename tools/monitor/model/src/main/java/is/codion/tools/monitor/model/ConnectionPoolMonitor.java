@@ -54,7 +54,7 @@ public final class ConnectionPoolMonitor {
 	private final Value<Integer> pooledCleanupIntervalValue;
 	private final Value<Integer> minimumPoolSizeValue;
 	private final Value<Integer> maximumPoolSizeValue;
-	private final Value<Integer> maximumCheckoutTimeValue;
+	private final Value<Integer> maximumValue;
 	private final State collectSnapshotStatisticsState;
 	private final State collectCheckOutTimesState;
 
@@ -68,7 +68,7 @@ public final class ConnectionPoolMonitor {
 	private final XYSeries failedRequestsPerSecond = new XYSeries("Failed requests/sec");
 	private final XYSeries connectionRequestsPerSecond = new XYSeries("Requests/sec");
 	private final XYSeriesCollection connectionRequestsPerSecondCollection = new XYSeriesCollection();
-	private final YIntervalSeries averageCheckOutTime = new YIntervalSeries("Average check out time (ms)");
+	private final YIntervalSeries averageTime = new YIntervalSeries("Average check out time (ms)");
 	private final YIntervalSeriesCollection checkOutTimeCollection = new YIntervalSeriesCollection();
 
 	private final TaskScheduler updateScheduler;
@@ -103,7 +103,7 @@ public final class ConnectionPoolMonitor {
 						.value(connectionPool.getMaximumPoolSize())
 						.consumer(connectionPool::setMaximumPoolSize)
 						.build();
-		this.maximumCheckoutTimeValue = Value.builder()
+		this.maximumValue = Value.builder()
 						.nonNull(0)
 						.value(connectionPool.getMaximumCheckOutTime())
 						.consumer(connectionPool::setMaximumCheckOutTime)
@@ -120,7 +120,7 @@ public final class ConnectionPoolMonitor {
 		this.statisticsCollection.addSeries(maximumPoolSizeSeries);
 		this.connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecond);
 		this.connectionRequestsPerSecondCollection.addSeries(failedRequestsPerSecond);
-		this.checkOutTimeCollection.addSeries(averageCheckOutTime);
+		this.checkOutTimeCollection.addSeries(averageTime);
 		this.updateScheduler = TaskScheduler.builder(this::updateStatistics)
 						.interval(updateRate, TimeUnit.SECONDS)
 						.start();
@@ -172,7 +172,7 @@ public final class ConnectionPoolMonitor {
 	 * @return the maximum wait time for a connection
 	 */
 	public Value<Integer> maximumCheckOutTime() {
-		return maximumCheckoutTimeValue;
+		return maximumValue;
 	}
 
 	/**
@@ -235,7 +235,7 @@ public final class ConnectionPoolMonitor {
 		poolSizeSeries.clear();
 		minimumPoolSizeSeries.clear();
 		maximumPoolSizeSeries.clear();
-		averageCheckOutTime.clear();
+		averageTime.clear();
 	}
 
 	/**
@@ -284,8 +284,8 @@ public final class ConnectionPoolMonitor {
 		inUseSeries.add(timestamp, poolStatistics.inUse());
 		connectionRequestsPerSecond.add(timestamp, poolStatistics.requestsPerSecond());
 		failedRequestsPerSecond.add(timestamp, poolStatistics.failedRequestsPerSecond());
-		averageCheckOutTime.add(timestamp, poolStatistics.averageGetTime(),
-						poolStatistics.minimumCheckOutTime(), poolStatistics.maximumCheckOutTime());
+		averageTime.add(timestamp, poolStatistics.averageTime(),
+						poolStatistics.minimumTime(), poolStatistics.maximumTime());
 		List<ConnectionPoolState> snapshotStatistics = poolStatistics.snapshot();
 		if (!snapshotStatistics.isEmpty()) {
 			XYSeries snapshotInPoolSeries = new XYSeries("In pool");
@@ -306,7 +306,7 @@ public final class ConnectionPoolMonitor {
 		pooledCleanupIntervalValue.set(connectionPool.getCleanupInterval());
 		minimumPoolSizeValue.set(connectionPool.getMinimumPoolSize());
 		maximumPoolSizeValue.set(connectionPool.getMaximumPoolSize());
-		maximumCheckoutTimeValue.set(connectionPool.getMaximumCheckOutTime());
+		maximumValue.set(connectionPool.getMaximumCheckOutTime());
 		statisticsUpdated.run();
 	}
 }
