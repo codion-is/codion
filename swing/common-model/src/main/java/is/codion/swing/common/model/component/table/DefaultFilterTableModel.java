@@ -43,7 +43,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static is.codion.common.model.condition.TableConditionModel.tableConditionModel;
-import static is.codion.common.value.Value.Notify.WHEN_SET;
+import static is.codion.common.value.Value.Notify.SET;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -284,7 +284,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		private Predicate<R> predicate;
 
 		private DefaultVisiblePredicate(TableColumns<R, C> columns, TableConditionModel<C> filters) {
-			super(WHEN_SET);
+			super(SET);
 			this.tableColumns = columns;
 			this.filters = filters;
 			this.filters.changed().addListener(this::notifyListeners);

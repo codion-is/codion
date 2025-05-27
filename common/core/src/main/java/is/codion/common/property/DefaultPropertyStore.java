@@ -286,14 +286,14 @@ final class DefaultPropertyStore implements PropertyStore {
 		private @Nullable T value;
 
 		private DefaultPropertyValue(String propertyName, Function<String, T> decoder, Function<T, String> encoder) {
-			super(null, Notify.WHEN_CHANGED);
+			super(null, Notify.CHANGED);
 			this.propertyName = requireNonNull(propertyName);
 			this.encoder = requireNonNull(encoder);
 			set(getInitialValue(propertyName, requireNonNull(decoder)));
 		}
 
 		private DefaultPropertyValue(String propertyName, Function<String, T> decoder, Function<T, String> encoder, T defaultValue) {
-			super(requireNonNull(defaultValue), Notify.WHEN_CHANGED);
+			super(requireNonNull(defaultValue), Notify.CHANGED);
 			this.propertyName = requireNonNull(propertyName);
 			this.encoder = requireNonNull(encoder);
 			set(getInitialValue(propertyName, requireNonNull(decoder)));

@@ -167,7 +167,7 @@ public class EntityConditionModelFactory implements Supplier<Map<Attribute<?>, C
 			if (definition.attribute().type().isBoolean() && !definition.nullable()) {
 				return (Value<T>) Value.builder()
 								.nonNull(false)
-								.notify(Notify.WHEN_SET)
+								.notify(Notify.SET)
 								.build();
 			}
 

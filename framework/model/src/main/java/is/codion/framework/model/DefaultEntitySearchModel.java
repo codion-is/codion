@@ -153,7 +153,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private final class DefaultSearch implements Search {
 
 		private final ValueSet<String> strings = ValueSet.<String>builder()
-						.notify(Notify.WHEN_SET)
+						.notify(Notify.SET)
 						.build();
 
 		@Override
@@ -230,7 +230,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private final class DefaultSelection implements Selection {
 
 		private final ValueSet<Entity> entities = ValueSet.<Entity>builder()
-						.notify(Notify.WHEN_SET)
+						.notify(Notify.SET)
 						.validator(new EntityValidator())
 						.consumer(selectedEntities -> selectionEmpty.set(selectedEntities.isEmpty()))
 						.build();

@@ -317,22 +317,22 @@ Choose the appropriate notification strategy:
 
 [source,java]
 ----
-// WHEN_CHANGED: Only when value changes (default)
+// CHANGED: Only when value changes (default)
 Value<Integer> counter = Value.builder()
     .nonNull(0)
-    .build();  // Uses WHEN_CHANGED by default
+    .build();  // Uses CHANGED by default
 
 counter.set(1);  // Notifies
 counter.set(1);  // No notification
 
-// WHEN_SET: Always notify, even if value unchanged
+// SET: Always notify, even if value unchanged
 Value<String> status = Value.builder()
     .nonNull("")
-    .notify(Notify.WHEN_SET)
+    .notify(Notify.SET)
     .build();
 
 status.set("OK");  // Notifies
-status.set("OK");  // Still notifies with WHEN_SET
+status.set("OK");  // Still notifies with SET
 ----
 
 === Listener Overhead

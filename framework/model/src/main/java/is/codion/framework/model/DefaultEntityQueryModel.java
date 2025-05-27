@@ -282,7 +282,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 		private final Value<Conjunction> conjunction = Value.nonNull(Conjunction.AND);
 
 		private DefaultAdditionalCondition() {
-			super(NULL_CONDITION_SUPPLIER, Notify.WHEN_SET);
+			super(NULL_CONDITION_SUPPLIER, Notify.SET);
 		}
 
 		@Override

@@ -45,7 +45,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static is.codion.common.value.Value.Notify.WHEN_SET;
+import static is.codion.common.value.Value.Notify.SET;
 import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.model.EntityEditModel.editEvents;
 import static java.text.MessageFormat.format;
@@ -272,7 +272,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		private final Map<ForeignKey, DefaultForeignKeyFilter> foreignKeyFilters = new HashMap<>();
 		private final Value<Predicate<Entity>> predicate = Value.builder()
 						.<Predicate<Entity>>nullable()
-						.notify(WHEN_SET)
+						.notify(SET)
 						.listener(items()::filter)
 						.build();
 

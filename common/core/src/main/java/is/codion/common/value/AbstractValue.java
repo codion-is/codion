@@ -40,8 +40,8 @@ import static java.util.Objects.requireNonNull;
 /**
  * <p>An abstract {@link Value} implementation handling everything except the value itself.
  * <p>The constructor parameter {@code notify} specifies whether this {@link AbstractValue} instance should call
- * {@link #notifyListeners()} each time the value is set ({@link Notify#WHEN_SET}) or only when it changes
- * ({@link Notify#WHEN_CHANGED}), which is determined using {@link Object#equals(Object)}.
+ * {@link #notifyListeners()} each time the value is set ({@link Notify#SET}) or only when it changes
+ * ({@link Notify#CHANGED}), which is determined using {@link Object#equals(Object)}.
  * <p>Implementations that want to handle notifications manually should use the
  * {@link AbstractValue#AbstractValue()} or {@link AbstractValue#AbstractValue(Object)} constructors.
  * @param <T> the value type
@@ -256,14 +256,14 @@ public abstract class AbstractValue<T> implements Value<T> {
 	}
 
 	private void setAndNotify(@Nullable T newValue) {
-		if (notify == Notify.WHEN_CHANGED) {
+		if (notify == Notify.CHANGED) {
 			T previousValue = getValue();
 			setValue(newValue);
 			if (!Objects.equals(previousValue, newValue)) {
 				notifyListeners();
 			}
 		}
-		else if (notify == Notify.WHEN_SET) {
+		else if (notify == Notify.SET) {
 			setValue(newValue);
 			notifyListeners();
 		}

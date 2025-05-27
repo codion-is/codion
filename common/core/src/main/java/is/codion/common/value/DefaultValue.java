@@ -96,7 +96,7 @@ class DefaultValue<T> extends AbstractValue<T> {
 		private final List<Listener> listeners = new ArrayList<>();
 
 		private @Nullable T value;
-		private Notify notify = Notify.WHEN_CHANGED;
+		private Notify notify = Notify.CHANGED;
 
 		DefaultBuilder() {
 			this.nullValue = null;

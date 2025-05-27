@@ -36,7 +36,7 @@ public class ValueTest {
 	void test() {
 		Value.builder()
 						.nullable(1)
-						.notify(Notify.WHEN_SET)
+						.notify(Notify.SET)
 						.build();
 		Value.builder()
 						.nonNull("NullString")

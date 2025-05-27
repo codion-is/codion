@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
 
 import static is.codion.common.Configuration.stringValue;
 import static is.codion.common.Text.nullOrEmpty;
-import static is.codion.common.value.Value.Notify.WHEN_SET;
+import static is.codion.common.value.Value.Notify.SET;
 import static is.codion.tools.generator.domain.DomainSource.domainSource;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
@@ -99,15 +99,15 @@ public final class DomainGeneratorModel {
 					.build();
 	private final Value<String> domainImplValue = Value.builder()
 					.<String>nullable()
-					.notify(WHEN_SET)
+					.notify(SET)
 					.build();
 	private final Value<String> domainApiValue = Value.builder()
 					.<String>nullable()
-					.notify(WHEN_SET)
+					.notify(SET)
 					.build();
 	private final Value<String> domainCombinedValue = Value.builder()
 					.<String>nullable()
-					.notify(WHEN_SET)
+					.notify(SET)
 					.build();
 	private final Value<String> apiSearchValue = Value.nullable();
 	private final Value<String> implSearchValue = Value.nullable();

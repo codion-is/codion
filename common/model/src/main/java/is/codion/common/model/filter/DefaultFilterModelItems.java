@@ -47,7 +47,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static is.codion.common.value.Value.Notify.WHEN_SET;
+import static is.codion.common.value.Value.Notify.SET;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
@@ -635,7 +635,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		private @Nullable Predicate<R> predicate;
 
 		private DefaultVisiblePredicate() {
-			super(WHEN_SET);
+			super(SET);
 		}
 
 		@Override

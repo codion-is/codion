@@ -48,7 +48,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static is.codion.common.value.Value.Notify.WHEN_SET;
+import static is.codion.common.value.Value.Notify.SET;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toMap;
@@ -822,7 +822,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		private Predicate<R> predicate;
 
 		private DefaultVisiblePredicate() {
-			super(WHEN_SET);
+			super(SET);
 		}
 
 		@Override

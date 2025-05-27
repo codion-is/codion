@@ -36,7 +36,7 @@ public interface ValueSet<T> extends Values<T, Set<T>> {
 	ObservableValueSet<T> observable();
 
 	/**
-	 * Creates a new empty {@link ValueSet}, using {@link Notify#WHEN_CHANGED}.
+	 * Creates a new empty {@link ValueSet}, using {@link Notify#CHANGED}.
 	 * @param <T> the value type
 	 * @return a new {@link ValueSet}
 	 */
@@ -45,7 +45,7 @@ public interface ValueSet<T> extends Values<T, Set<T>> {
 	}
 
 	/**
-	 * Creates a new {@link ValueSet}, using {@link Notify#WHEN_CHANGED}.
+	 * Creates a new {@link ValueSet}, using {@link Notify#CHANGED}.
 	 * @param values the initial values, may not be null
 	 * @param <T> the value type
 	 * @return a new {@link ValueSet}

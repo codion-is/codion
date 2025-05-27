@@ -49,7 +49,7 @@ import static java.util.Objects.requireNonNull;
  * Value<String> value = Value.builder()
  *         .nonNull("none")
  *         .value("hello")                  // the initial value
- *         .notify(Notify.WHEN_SET)         // notifies listeners when set
+ *         .notify(Notify.SET)         // notifies listeners when set
  *         .validator(this::validateString) // using a validator
  *         .listener(this::onStringSet)     // and a listener
  *         .build();
@@ -74,12 +74,12 @@ public interface Value<T> extends Observable<T> {
 		 * Notify listeners when the underlying value is set via {@link Value#set(Object)},
 		 * regardless of whether the new value is equal to the previous value.
 		 */
-		WHEN_SET,
+		SET,
 		/**
 		 * Notify listeners when the underlying value is changed via {@link Value#set(Object)},
 		 * that is, only when the new value differs from the previous value, determined by {@link Object#equals(Object)}.
 		 */
-		WHEN_CHANGED
+		CHANGED
 	}
 
 	/**
@@ -171,7 +171,7 @@ public interface Value<T> extends Observable<T> {
 	void validate(T value);
 
 	/**
-	 * Creates a new nullable {@link Value} instance, wrapping a null initial value, using {@link Notify#WHEN_CHANGED}.
+	 * Creates a new nullable {@link Value} instance, wrapping a null initial value, using {@link Notify#CHANGED}.
 	 * @param <T> the value type
 	 * @return a nullable Value
 	 */
@@ -180,7 +180,7 @@ public interface Value<T> extends Observable<T> {
 	}
 
 	/**
-	 * Creates a new nullable {@link Value} instance, wrapping the given initial value, using {@link Notify#WHEN_CHANGED}.
+	 * Creates a new nullable {@link Value} instance, wrapping the given initial value, using {@link Notify#CHANGED}.
 	 * @param <T> the value type
 	 * @param value the initial value
 	 * @return a nullable Value
@@ -192,7 +192,7 @@ public interface Value<T> extends Observable<T> {
 	}
 
 	/**
-	 * Creates a new non-null {@link Value} instance, using the given value as a null-substitute, using {@link Notify#WHEN_CHANGED}.
+	 * Creates a new non-null {@link Value} instance, using the given value as a null-substitute, using {@link Notify#CHANGED}.
 	 * @param <T> the value type
 	 * @param nullValue the null value substitute
 	 * @return a non-null Value
@@ -250,7 +250,7 @@ public interface Value<T> extends Observable<T> {
 		B value(@Nullable T value);
 
 		/**
-		 * @param notify the notify policy for this value, default {@link Notify#WHEN_CHANGED}
+		 * @param notify the notify policy for this value, default {@link Notify#CHANGED}
 		 * @return this builder instance
 		 */
 		B notify(Notify notify);

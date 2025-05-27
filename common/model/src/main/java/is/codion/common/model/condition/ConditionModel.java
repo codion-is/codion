@@ -225,7 +225,7 @@ public interface ConditionModel<T> {
 		default Value<T> equal() {
 			return Value.builder()
 							.<T>nullable()
-							.notify(Notify.WHEN_SET)
+							.notify(Notify.SET)
 							.build();
 		}
 
@@ -235,7 +235,7 @@ public interface ConditionModel<T> {
 		default Value<T> upper() {
 			return Value.builder()
 							.<T>nullable()
-							.notify(Notify.WHEN_SET)
+							.notify(Notify.SET)
 							.build();
 		}
 
@@ -245,7 +245,7 @@ public interface ConditionModel<T> {
 		default Value<T> lower() {
 			return Value.builder()
 							.<T>nullable()
-							.notify(Notify.WHEN_SET)
+							.notify(Notify.SET)
 							.build();
 		}
 
@@ -254,7 +254,7 @@ public interface ConditionModel<T> {
 		 */
 		default ValueSet<T> in() {
 			return ValueSet.<T>builder()
-							.notify(Notify.WHEN_SET)
+							.notify(Notify.SET)
 							.build();
 		}
 	}
