@@ -10,6 +10,8 @@ include::{basedir}/technical/architecture.adoc[leveloffset=+1]
 
 include::{basedir}/technical/client.adoc[leveloffset=+1]
 
+include::{basedir}/technical/testing.adoc[leveloffset=+1]
+
 include::{basedir}/technical/server.adoc[leveloffset=+1]
 
 include::{basedir}/technical/server-monitor.adoc[leveloffset=+1]

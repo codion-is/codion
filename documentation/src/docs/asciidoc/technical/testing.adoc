@@ -1,0 +1,310 @@
+= Testing Strategy & Patterns
+:dir-source: ../../../../../demos
+:url-javadoc: link:../api
+:basedir: ..
+
+== Overview
+
+Codion applications follow a layered testing approach, with each layer providing specific testing capabilities:
+
+* **Domain Testing** - Validates entity definitions, relationships, and domain logic
+* **Model Testing** - Tests business logic in edit and table models
+* **Integration Testing** - Verifies end-to-end functionality with database operations
+
+== Test Configuration
+
+=== User Configuration
+
+The test user is configured via the `codion.test.user` system property:
+
+[source,bash]
+----
+./gradlew test -Dcodion.test.user=scott:tiger
+----
+
+Or in your test configuration:
+
+[source,java]
+----
+private static final User UNIT_TEST_USER =
+        User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+----
+
+== Domain Testing
+
+The `DomainTest` base class provides comprehensive testing for entity definitions.
+
+=== Basic Domain Test
+
+[source,java]
+----
+public class ChinookTest extends DomainTest {
+
+    public ChinookTest() {
+        super(new ChinookImpl(), ChinookEntityFactory::new);
+    }
+
+    @Test
+    void album() {
+        test(Album.TYPE);
+    }
+    
+    @Test
+    void artist() {
+        test(Artist.TYPE);
+    }
+}
+----
+
+The `test(EntityType)` method automatically verifies:
+
+* Entity can be instantiated
+* All attributes are correctly defined
+* Primary keys work correctly
+* Foreign key relationships are valid
+* Insert, update, delete, and select operations succeed
+* Entity validation rules are enforced
+
+=== Custom Entity Factory
+
+For entities with complex validation rules or required relationships, provide a custom {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/EntityFactory.html[EntityFactory]:
+
+[source,java]
+----
+public class ChinookEntityFactory extends DefaultEntityFactory {
+    
+    @Override
+    public Entity entity(EntityType entityType) {
+        if (entityType.equals(InvoiceLine.TYPE)) {
+            return createInvoiceLine();
+        }
+
+		return super.entity(entityType);
+    }
+    
+    private Entity createInvoiceLine() {
+        Entity invoiceLine = entities.entity(InvoiceLine.TYPE);
+        // Set required relationships and values
+        invoiceLine.set(InvoiceLine.INVOICE_FK, randomInvoice());
+        invoiceLine.set(InvoiceLine.TRACK_FK, randomTrack());
+        invoiceLine.set(InvoiceLine.QUANTITY, 1);
+
+		return invoiceLine;
+    }
+}
+----
+
+=== Testing Domain Functions
+
+Test database functions and procedures through the domain:
+
+[source,java]
+----
+@Test
+void randomPlaylist() {
+    EntityConnection connection = connection();
+    connection.startTransaction();
+    try {
+        List<Entity> genres = connection.select(limit(Genre.TYPE, 3));
+        
+        Entity playlist = connection.execute(Playlist.RANDOM_PLAYLIST,
+                new RandomPlaylistParameters("Test Playlist", 10, genres));
+        
+        assertNotNull(playlist);
+        assertEquals(10, connection.count(where(PlaylistTrack.PLAYLIST_FK.equalTo(playlist))));
+    }
+    finally {
+        connection.rollbackTransaction();
+    }
+}
+----
+
+== Model Testing
+
+Test business logic in your Swing models independently of the UI.
+
+=== Edit Model Testing
+
+[source,java]
+----
+public class CountryEditModelTest {
+    
+    @Test
+    void averageCityPopulation() {
+        try (EntityConnectionProvider connectionProvider = createConnectionProvider()) {
+            CountryEditModel countryEditModel = new CountryEditModel(connectionProvider);
+            
+            // Load a country
+            countryEditModel.editor().set(connectionProvider.connection()
+                    .selectSingle(Country.NAME.equalTo("Afghanistan")));
+            
+            // Test computed values
+            assertEquals(583_025, countryEditModel.averageCityPopulation().get());
+            
+            // Test with new entity
+            countryEditModel.editor().defaults();
+            assertNull(countryEditModel.averageCityPopulation().get());
+        }
+    }
+}
+----
+
+=== Table Model Testing
+
+Test table model behavior and master-detail relationships:
+
+[source,java]
+----
+@Test
+void albumRefreshedWhenTrackRatingIsUpdated() {
+    try (EntityConnectionProvider connectionProvider = createConnectionProvider()) {
+        EntityConnection connection = connectionProvider.connection();
+        connection.startTransaction();
+        
+        // Setup test data
+        Entity album = connection.selectSingle(Album.TITLE.equalTo("Master Of Puppets"));
+        
+        // Create model and populate
+        AlbumModel albumModel = new AlbumModel(connectionProvider);
+        SwingEntityTableModel albumTableModel = albumModel.tableModel();
+        albumTableModel.queryModel().condition().get(Album.TITLE).set()
+                .equalTo("Master Of Puppets");
+        albumTableModel.items().refresh();
+        
+        // Modify tracks through detail model
+        List<Entity> tracks = connection.select(Track.ALBUM_FK.equalTo(album));
+        tracks.forEach(track -> track.set(Track.RATING, 10));
+        albumModel.detailModels().get(Track.TYPE).editModel().update(tracks);
+        
+        // Verify album rating was updated
+        assertEquals(10, albumTableModel.items().visible().get(0).get(Album.RATING));
+        
+        connection.rollbackTransaction();
+    }
+}
+----
+
+== Integration Testing
+
+Test complete workflows across multiple entities and models.
+
+=== Testing Report Generation
+
+[source,java]
+----
+@Test
+void countryReport() throws JRException {
+    EntityConnectionProvider connectionProvider = createConnectionProvider();
+    EntityConnection connection = connectionProvider.connection();
+    
+    CountryReportDataSource dataSource = 
+            new CountryReportDataSource(connection, "North America");
+    
+    Map<String, Object> parameters = new HashMap<>();
+    parameters.put("CONTINENT", "North America");
+    
+    JasperPrint jasperPrint = JasperFillManager.fillReport(
+            loadReport(), parameters, dataSource);
+    
+    assertNotNull(jasperPrint);
+    assertFalse(jasperPrint.getPages().isEmpty());
+}
+----
+
+== Test Utilities
+
+=== Connection Provider Setup
+
+The `LocalEntityConnectionProvider.Builder` requires the `codion.db.url` system property to be set:
+
+[source,bash]
+----
+-Dcodion.db.url=jdbc:h2:mem:h2db
+----
+
+Create connection providers for testing:
+
+[source,java]
+----
+private static EntityConnectionProvider createConnectionProvider() {
+    return LocalEntityConnectionProvider.builder()
+            .domain(new WorldImpl())
+            .user(UNIT_TEST_USER)
+            .build();
+}
+----
+
+Alternatively, you can provide your own `Database` instance:
+
+[source,java]
+----
+private static EntityConnectionProvider createConnectionProvider() {
+    Database database = H2DatabaseFactory.createDatabase("jdbc:h2:mem:testdb");
+    
+    return LocalEntityConnectionProvider.builder()
+            .domain(new WorldImpl())
+            .database(database)
+            .user(UNIT_TEST_USER)
+            .build();
+}
+----
+
+=== Transaction Management
+
+Always use transactions for data modification tests:
+
+[source,java]
+----
+@Test
+void updateTest() {
+    EntityConnection connection = connection();
+    connection.startTransaction();
+    try {
+        // Perform updates
+        Entity entity = connection.selectSingle(Country.CODE2.equalTo("IS"));
+        entity.set(Country.POPULATION, 400_000);
+        connection.update(entity);
+        
+        // Verify changes
+        Entity updated = connection.selectSingle(Country.CODE2.equalTo("IS"));
+        assertEquals(400_000, updated.get(Country.POPULATION));
+    }
+    finally {
+        connection.rollbackTransaction();
+    }
+}
+----
+
+=== Test Data Builders
+
+Create fluent builders for complex test data:
+
+[source,java]
+----
+public class TestDataBuilder {
+    
+    public static Entity.Builder customer() {
+        return entities.entity(Customer.TYPE)
+                .with(Customer.FIRST_NAME, "Test")
+                .with(Customer.LAST_NAME, "Customer")
+                .with(Customer.EMAIL, "test@example.com");
+    }
+    
+    public static Entity.Builder invoice(Entity customer) {
+        return entities.entity(Invoice.TYPE)
+                .with(Invoice.CUSTOMER_FK, customer)
+                .with(Invoice.INVOICE_DATE, LocalDate.now())
+                .with(Invoice.TOTAL, BigDecimal.ZERO);
+    }
+}
+----
+
+== Testing Best Practices
+
+1. **Use DomainTest for all entity types** - Even simple entities benefit from the comprehensive validation
+2. **Test with transactions** - Always rollback to keep tests isolated
+3. **Test observable behavior** - Verify that model state changes trigger appropriate notifications
+4. **Test validation rules** - Ensure domain constraints are properly enforced
+5. **Test computed values** - Verify derived attributes and denormalized values update correctly
+6. **Keep tests focused** - Each test should verify one specific behavior
+7. **Use realistic test data** - Your entity factories should create valid, meaningful entities
