@@ -26,4 +26,6 @@ module is.codion.demos.chinook {
 
 See <<{dir-tutorials}/chinook/chinook.adoc#_chinook_tutorial, Chinook demo>>.
 
-include::{basedir}/technical/i18n-values.adoc[leveloffset=+1]
+== i18n Property Values
+
+For a complete reference of all available i18n property keys and their default values, see link:i18n-values.html[i18n Property Values Reference].
