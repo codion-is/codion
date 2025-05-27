@@ -180,13 +180,13 @@ final class DefaultEntityServerAdmin extends DefaultServerAdmin implements Entit
 
 	@Override
 	public int getPooledConnectionIdleTimeout(String username) {
-		return server.database().connectionPool(username).getIdleConnectionTimeout();
+		return server.database().connectionPool(username).getIdleTimeout();
 	}
 
 	@Override
 	public void setPooledConnectionIdleTimeout(String username, int pooledConnectionIdleTimeout) {
 		LOG.info("setPooledConnectionIdleTimeout({}, {})", username, pooledConnectionIdleTimeout);
-		server.database().connectionPool(username).setIdleConnectionTimeout(pooledConnectionIdleTimeout);
+		server.database().connectionPool(username).setIdleTimeout(pooledConnectionIdleTimeout);
 	}
 
 	@Override

@@ -94,13 +94,13 @@ public final class HikariConnectionPoolFactory implements ConnectionPoolFactory 
 		public void setCleanupInterval(int poolCleanupInterval) {/*non-configurable, com.zaxxer.hikari.housekeeping.periodMs*/}
 
 		@Override
-		public int getIdleConnectionTimeout() {
+		public int getIdleTimeout() {
 			return (int) config.getIdleTimeout();
 		}
 
 		@Override
-		public void setIdleConnectionTimeout(int idleConnectionTimeout) {
-			config.setIdleTimeout(idleConnectionTimeout);
+		public void setIdleTimeout(int idleTimeout) {
+			config.setIdleTimeout(idleTimeout);
 		}
 
 		@Override

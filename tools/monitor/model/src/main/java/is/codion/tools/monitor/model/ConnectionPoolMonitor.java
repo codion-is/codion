@@ -85,8 +85,8 @@ public final class ConnectionPoolMonitor {
 		this.connectionPool = connectionPool;
 		this.pooledConnectionTimeoutValue = Value.builder()
 						.nonNull(0)
-						.value(connectionPool.getIdleConnectionTimeout())
-						.consumer(connectionPool::setIdleConnectionTimeout)
+						.value(connectionPool.getIdleTimeout())
+						.consumer(connectionPool::setIdleTimeout)
 						.build();
 		this.pooledCleanupIntervalValue = Value.builder()
 						.nonNull(0)
@@ -302,7 +302,7 @@ public final class ConnectionPoolMonitor {
 			this.snapshotStatisticsCollection.addSeries(snapshotInUseSeries);
 			this.snapshotStatisticsCollection.addSeries(snapshotWaitingSeries);
 		}
-		pooledConnectionTimeoutValue.set(connectionPool.getIdleConnectionTimeout());
+		pooledConnectionTimeoutValue.set(connectionPool.getIdleTimeout());
 		pooledCleanupIntervalValue.set(connectionPool.getCleanupInterval());
 		minimumPoolSizeValue.set(connectionPool.getMinimumPoolSize());
 		maximumPoolSizeValue.set(connectionPool.getMaximumPoolSize());
