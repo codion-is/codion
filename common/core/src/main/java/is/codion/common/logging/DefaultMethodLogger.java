@@ -48,14 +48,14 @@ final class DefaultMethodLogger implements MethodLogger {
 
 	private final Deque<DefaultEntry> callStack = new LinkedList<>();
 	private final LinkedList<Entry> entries = new LinkedList<>();
-	private final ArgumentToString argumentToString;
+	private final ArgumentFormatter formatter;
 	private final int maxSize;
 
 	private boolean enabled = false;
 
-	DefaultMethodLogger(int maxSize, ArgumentToString argumentToString) {
+	DefaultMethodLogger(int maxSize, ArgumentFormatter formatter) {
 		this.maxSize = maxSize;
-		this.argumentToString = requireNonNull(argumentToString);
+		this.formatter = requireNonNull(formatter);
 	}
 
 	@Override
@@ -68,7 +68,7 @@ final class DefaultMethodLogger implements MethodLogger {
 	@Override
 	public synchronized void enter(String method, @Nullable Object argument) {
 		if (enabled) {
-			callStack.push(new DefaultEntry(method, argumentToString.argumentToString(method, argument)));
+			callStack.push(new DefaultEntry(method, formatter.format(method, argument)));
 		}
 	}
 
@@ -143,7 +143,7 @@ final class DefaultMethodLogger implements MethodLogger {
 
 		private final LinkedList<Entry> childEntries = new LinkedList<>();
 		private final String method;
-		private final @Nullable String enterMessage;
+		private final @Nullable String message;
 		private final long enterTime;
 		private final long enterTimeNano;
 		private @Nullable String exitMessage;
@@ -154,28 +154,28 @@ final class DefaultMethodLogger implements MethodLogger {
 		/**
 		 * Creates a new Entry, using the current time
 		 * @param method the method being logged
-		 * @param enterMessage the message associated with entering the method
+		 * @param message the message associated with entering the method
 		 */
-		private DefaultEntry(String method, @Nullable String enterMessage) {
-			this(method, enterMessage, currentTimeMillis(), nanoTime());
+		private DefaultEntry(String method, @Nullable String message) {
+			this(method, message, currentTimeMillis(), nanoTime());
 		}
 
 		/**
 		 * Creates a new Entry
 		 * @param method the method being logged
-		 * @param enterMessage the message associated with entering the method
+		 * @param message the message associated with entering the method
 		 * @param enterTime the time to associate with entering the method
 		 * @param enterTimeNano the nano time to associate with entering the method
 		 */
-		private DefaultEntry(String method, @Nullable String enterMessage, long enterTime, long enterTimeNano) {
+		private DefaultEntry(String method, @Nullable String message, long enterTime, long enterTimeNano) {
 			this.method = requireNonNull(method);
 			this.enterTime = enterTime;
 			this.enterTimeNano = enterTimeNano;
-			this.enterMessage = enterMessage;
+			this.message = message;
 		}
 
 		@Override
-		public List<Entry> childEntries() {
+		public List<Entry> children() {
 			return unmodifiableList(childEntries);
 		}
 
@@ -185,8 +185,8 @@ final class DefaultMethodLogger implements MethodLogger {
 		}
 
 		@Override
-		public @Nullable String enterMessage() {
-			return enterMessage;
+		public @Nullable String message() {
+			return message;
 		}
 
 		@Override
@@ -197,7 +197,7 @@ final class DefaultMethodLogger implements MethodLogger {
 		@Override
 		public void appendTo(StringBuilder builder) {
 			requireNonNull(builder).append(this).append(NEWLINE);
-			appendLogEntries(builder, childEntries(), 1);
+			appendLogEntries(builder, children(), 1);
 		}
 
 		@Override
@@ -213,12 +213,12 @@ final class DefaultMethodLogger implements MethodLogger {
 			int timestampLength = stringBuilder.length();
 			stringBuilder.append(method);
 			String padString = Text.rightPad("", timestampLength, ' ');
-			if (enterMessage != null && !enterMessage.isEmpty()) {
-				if (multiLine(enterMessage)) {
-					stringBuilder.append(NEWLINE).append(padString).append(enterMessage.replace(NEWLINE, NEWLINE + padString));
+			if (message != null && !message.isEmpty()) {
+				if (multiLine(message)) {
+					stringBuilder.append(NEWLINE).append(padString).append(message.replace(NEWLINE, NEWLINE + padString));
 				}
 				else {
-					stringBuilder.append(": ").append(enterMessage);
+					stringBuilder.append(": ").append(message);
 				}
 			}
 			if (exitTime != 0) {
@@ -267,7 +267,7 @@ final class DefaultMethodLogger implements MethodLogger {
 		private static void appendLogEntries(StringBuilder log, List<Entry> entries, int indentationLevel) {
 			for (Entry entry : entries) {
 				log.append(entry.toString(indentationLevel)).append(NEWLINE);
-				appendLogEntries(log, entry.childEntries(), indentationLevel + 1);
+				appendLogEntries(log, entry.children(), indentationLevel + 1);
 			}
 		}
 

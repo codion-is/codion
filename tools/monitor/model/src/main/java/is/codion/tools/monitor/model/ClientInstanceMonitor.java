@@ -92,7 +92,7 @@ public final class ClientInstanceMonitor {
 				for (MethodLogger.Entry entry : log.entries()) {
 					entry.appendTo(logBuilder);
 					DefaultMutableTreeNode entryNode = new DefaultMutableTreeNode(entryString(entry));
-					addChildEntries(entryNode, entry.childEntries());
+					addChildEntries(entryNode, entry.children());
 					logRootNode.add(entryNode);
 				}
 				logDocument.insertString(0, logBuilder.toString(), null);
@@ -142,7 +142,7 @@ public final class ClientInstanceMonitor {
 	private static void addChildEntries(DefaultMutableTreeNode entryNode, List<MethodLogger.Entry> childEntries) {
 		for (MethodLogger.Entry entry : childEntries) {
 			DefaultMutableTreeNode subEntry = new DefaultMutableTreeNode(entryString(entry));
-			addChildEntries(subEntry, entry.childEntries());
+			addChildEntries(subEntry, entry.children());
 			entryNode.add(subEntry);
 		}
 	}
@@ -151,7 +151,7 @@ public final class ClientInstanceMonitor {
 		StringBuilder builder = new StringBuilder(entry.method()).append(" [")
 						.append(MICROSECOND_FORMAT.format(TimeUnit.NANOSECONDS.toMicros(entry.duration())))
 						.append(" μs").append("]");
-		String enterMessage = entry.enterMessage();
+		String enterMessage = entry.message();
 		if (enterMessage != null) {
 			builder.append(": ").append(enterMessage.replace('\n', ' '));
 		}

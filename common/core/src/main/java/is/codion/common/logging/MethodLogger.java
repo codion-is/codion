@@ -86,17 +86,17 @@ public interface MethodLogger {
 	 * @return a new MethodLogger instance
 	 */
 	static MethodLogger methodLogger(int maxSize) {
-		return methodLogger(maxSize, new DefaultArgumentToString());
+		return methodLogger(maxSize, new DefaultArgumentFormatter());
 	}
 
 	/**
 	 * Creates a new MethodLogger, disabled by default.
 	 * @param maxSize the maximum log size
-	 * @param argumentStringProvider responsible for providing String representations of method arguments
+	 * @param formatter responsible for providing String representations of method arguments
 	 * @return a new MethodLogger instance
 	 */
-	static MethodLogger methodLogger(int maxSize, ArgumentToString argumentStringProvider) {
-		return new DefaultMethodLogger(maxSize, argumentStringProvider);
+	static MethodLogger methodLogger(int maxSize, ArgumentFormatter formatter) {
+		return new DefaultMethodLogger(maxSize, formatter);
 	}
 
 	/**
@@ -107,7 +107,7 @@ public interface MethodLogger {
 		/**
 		 * @return the child log entries
 		 */
-		List<Entry> childEntries();
+		List<Entry> children();
 
 		/**
 		 * @return the name of the method logged by this entry
@@ -117,7 +117,7 @@ public interface MethodLogger {
 		/**
 		 * @return the entry message
 		 */
-		@Nullable String enterMessage();
+		@Nullable String message();
 
 		/**
 		 * Returns the duration of the method call this entry represents in nanoseconds,
@@ -127,7 +127,7 @@ public interface MethodLogger {
 		long duration();
 
 		/**
-		 * Appends this logger entry along with any child-entries to the given StringBuilder.
+		 * Appends this logger entry along with any child entries to the given StringBuilder.
 		 * @param builder the StringBuilder to append to.
 		 */
 		void appendTo(StringBuilder builder);
@@ -143,26 +143,26 @@ public interface MethodLogger {
 	/**
 	 * Provides String representations of method arguments for log display.
 	 */
-	interface ArgumentToString {
+	interface ArgumentFormatter {
 
 		/**
 		 * @param methodName the method name
 		 * @param argument the argument
 		 * @return a String representation of the argument
 		 */
-		String argumentToString(String methodName, @Nullable Object argument);
+		String format(String methodName, @Nullable Object argument);
 	}
 
 	/**
 	 * Provides String representations of method arguments.
 	 */
-	class DefaultArgumentToString implements ArgumentToString {
+	class DefaultArgumentFormatter implements ArgumentFormatter {
 
 		private static final String BRACKET_OPEN = "[";
 		private static final String BRACKET_CLOSE = "]";
 
 		@Override
-		public final String argumentToString(String methodName, @Nullable Object object) {
+		public final String format(String methodName, @Nullable Object object) {
 			return toString(methodName, object);
 		}
 
