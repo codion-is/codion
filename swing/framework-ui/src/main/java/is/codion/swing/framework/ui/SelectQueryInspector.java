@@ -42,6 +42,7 @@ import static is.codion.swing.common.ui.component.Components.scrollPane;
 import static java.lang.System.lineSeparator;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static javax.swing.SwingUtilities.invokeLater;
 
 final class SelectQueryInspector extends JPanel {
 
@@ -68,7 +69,7 @@ final class SelectQueryInspector extends JPanel {
 	}
 
 	private void refreshQuery() {
-		textArea.setText(createSelectQuery());
+		invokeLater(() -> textArea.setText(createSelectQuery()));
 	}
 
 	private String createSelectQuery() {

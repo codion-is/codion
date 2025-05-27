@@ -32,16 +32,17 @@ import java.awt.Font;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.scrollPane;
 import static java.util.Objects.requireNonNull;
+import static javax.swing.SwingUtilities.invokeLater;
 
 final class InsertUpdateQueryInspector extends JPanel {
 
 	private final JTextArea insertTextArea = Components.textArea()
-					.rowsColumns(30, 42)
+					.rowsColumns(15, 42)
 					.editable(false)
 					.onBuild(InsertUpdateQueryInspector::setMonospaceFont)
 					.build();
 	private final JTextArea updateTextArea = Components.textArea()
-					.rowsColumns(30, 42)
+					.rowsColumns(15, 42)
 					.editable(false)
 					.onBuild(InsertUpdateQueryInspector::setMonospaceFont)
 					.build();
@@ -60,8 +61,10 @@ final class InsertUpdateQueryInspector extends JPanel {
 	}
 
 	private void refreshQuery() {
-		insertTextArea.setText(createInsertQuery());
-		updateTextArea.setText(createUpdateQuery());
+		invokeLater(() ->  {
+			insertTextArea.setText(createInsertQuery());
+			updateTextArea.setText(createUpdateQuery());
+		});
 	}
 
 	private String createInsertQuery() {
