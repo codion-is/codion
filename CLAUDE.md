@@ -821,6 +821,86 @@ Dialogs.componentDialog(new JRViewer(employeeReport)).show();
 5. **Test at the Right Level** - Unit test domains, integration test with H2
 6. **Read the Manual** - Seriously, it's excellent and will save you time
 
+## Documentation Code Examples
+
+Codion documentation follows a strict pattern for code examples to ensure they stay synchronized with the actual codebase and are automatically refactored along with the code.
+
+### The Golden Rule: Never Embed Java Code Directly
+
+**❌ Wrong - Embedded code in AsciiDoc:**
+```asciidoc
+[source,java]
+----
+SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
+SwingEntityModel orderModel = new SwingEntityModel(Order.TYPE, connectionProvider);
+customerModel.detailModels().add(orderModel);
+----
+```
+
+**✅ Correct - Tagged includes from source files:**
+```asciidoc
+:dir-chinook-source: ../../../../../demos/chinook/src/main/java
+
+[source,java]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=entityModel]
+----
+```
+
+### Code Example Process
+
+1. **Create demo classes** in appropriate demo projects (e.g., `demos/chinook/src/main/java/is/codion/demos/chinook/manual/`)
+
+2. **Use tags to mark sections:**
+```java
+void entityModel(EntityConnectionProvider connectionProvider) {
+    // tag::entityModel[]
+    SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
+    SwingEntityModel invoiceModel = new SwingEntityModel(Invoice.TYPE, connectionProvider);
+    
+    // Establish master-detail relationship
+    customerModel.detailModels().add(invoiceModel);
+    // end::entityModel[]
+}
+```
+
+3. **Use the parameter trick** for dependencies:
+   - Methods take `EntityConnectionProvider connectionProvider` as parameter
+   - Avoids complex setup code in examples
+   - Keeps examples focused on the actual API usage
+
+4. **Include in documentation:**
+```asciidoc
+:dir-chinook-source: ../../../../../demos/chinook/src/main/java
+
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=entityModel]
+```
+
+### Benefits of This Approach
+
+- **Automatic Refactoring**: Code examples are updated when APIs change
+- **Compilation Guaranteed**: Examples must compile or the build fails
+- **IDE Support**: Full IntelliJ/IDE support for code examples
+- **Consistency**: All examples follow the same patterns
+- **Maintenance**: No manual synchronization between docs and code
+
+### Demo Class Organization
+
+Each major documentation section has a corresponding demo class:
+- `FrameworkModelDemo.java` - Model layer examples
+- `DomainDemo.java` - Domain modeling examples
+- `UIDemo.java` - UI component examples
+
+### Existing Demo Projects
+
+Use these demo projects for realistic examples:
+- **Chinook** - Most comprehensive, kitchen sink examples
+- **Petclinic** - Simple CRUD patterns
+- **World** - Advanced domain modeling, custom types
+- **Employees** - Business logic examples
+
+Never create artificial examples when real demo entities are available!
+
 ## API Refinement Window
 
 **IMPORTANT**: Codion is in its final API refinement phase before promotion. The change window is **closing in the next few months** (open until promotion or when someone provably starts using it). After that, backward compatibility will be maintained.
