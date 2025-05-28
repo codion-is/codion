@@ -214,20 +214,20 @@ public final class EntityService implements AuxiliaryServer {
 	}
 
 	@Override
-	public void startServer() {
+	public void start() {
 		setupHandlers();
 		javalin.start(sslEnabled ? securePort : port);
 	}
 
 	@Override
-	public void stopServer() {
+	public void stop() {
 		if (javalin != null) {
 			javalin.stop();
 		}
 	}
 
 	@Override
-	public String serverInformation() {
+	public String information() {
 		return "Entity Service " + Version.version()
 						+ " started on port: " + port
 						+ ", securePort: " + securePort
@@ -877,8 +877,8 @@ public final class EntityService implements AuxiliaryServer {
 
 		return server.connect(ConnectionRequest.builder()
 						.user(user)
-						.clientId(clientId)
-						.clientType(clientType)
+						.id(clientId)
+						.type(clientType)
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, domainTypeName)
 						.parameter(Server.CLIENT_HOST, remoteHost(context.req()))
 						.build());

@@ -123,19 +123,19 @@ public final class ClientMonitor {
 				case CLIENT_HOST:
 					return row.clientHost();
 				case CLIENT_TYPE:
-					return row.clientType();
+					return row.type();
 				case CLIENT_VERSION:
-					return row.clientVersion()
+					return row.version()
 									.map(Object::toString)
 									.orElse(null);
 				case CODION_VERSION:
 					return row.frameworkVersion().toString();
 				case CLIENT_ID:
-					return row.clientId().toString();
+					return row.id().toString();
 				case LOCALE:
-					return row.clientLocale().toString();
+					return row.locale().toString();
 				case TIMEZONE:
-					return row.clientTimeZone().toString();
+					return row.timeZone().toString();
 				case CREATION_TIME:
 					return row.creationTime();
 				default:

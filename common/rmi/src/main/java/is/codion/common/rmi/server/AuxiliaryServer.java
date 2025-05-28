@@ -27,16 +27,16 @@ public interface AuxiliaryServer {
 	 * Starts this server
 	 * @throws Exception in case of an exception
 	 */
-	void startServer() throws Exception;
+	void start() throws Exception;
 
 	/**
 	 * Stops this server
 	 * @throws Exception in case of an exception
 	 */
-	void stopServer() throws Exception;
+	void stop() throws Exception;
 
 	/**
 	 * @return a String describing the server and its configuration, for logging purposes
 	 */
-	String serverInformation();
+	String information();
 }

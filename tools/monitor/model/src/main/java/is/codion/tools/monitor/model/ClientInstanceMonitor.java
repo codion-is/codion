@@ -60,7 +60,7 @@ public final class ClientInstanceMonitor {
 	public ClientInstanceMonitor(EntityServerAdmin server, RemoteClient remoteClient) throws RemoteException {
 		this.remoteClient = requireNonNull(remoteClient);
 		this.server = requireNonNull(server);
-		this.loggingEnabled = State.state(server.isLoggingEnabled(remoteClient.clientId()));
+		this.loggingEnabled = State.state(server.isLoggingEnabled(remoteClient.id()));
 		bindEvents();
 	}
 
@@ -83,7 +83,7 @@ public final class ClientInstanceMonitor {
 	 * @throws RemoteException in case of an exception
 	 */
 	public void refreshLog() throws RemoteException {
-		ClientLog log = server.clientLog(remoteClient.clientId());
+		ClientLog log = server.clientLog(remoteClient.id());
 		try {
 			logDocument.remove(0, logDocument.getLength());
 			logRootNode.removeAllChildren();
@@ -128,7 +128,7 @@ public final class ClientInstanceMonitor {
 	 */
 	private void setLoggingEnabled(boolean status) {
 		try {
-			server.setLoggingEnabled(remoteClient.clientId(), status);
+			server.setLoggingEnabled(remoteClient.id(), status);
 		}
 		catch (RemoteException e) {
 			throw new RuntimeException(e);

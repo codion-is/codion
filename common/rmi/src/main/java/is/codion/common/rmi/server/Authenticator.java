@@ -38,7 +38,7 @@ public interface Authenticator {
 	 * If none is specified, this authenticator is shared between all client types.
 	 * @return the String identifying the client type for which to use this authenticator or an empty optional in case this authenticator should be shared
 	 */
-	default Optional<String> clientType() {
+	default Optional<String> type() {
 		return Optional.empty();
 	}
 

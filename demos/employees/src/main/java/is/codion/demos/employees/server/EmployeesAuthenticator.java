@@ -40,7 +40,7 @@ public final class EmployeesAuthenticator implements Authenticator {
 	}
 
 	@Override
-	public Optional<String> clientType() {
+	public Optional<String> type() {
 		return Optional.of("is.codion.demos.employees.ui.EmployeesAppPanel");
 	}
 

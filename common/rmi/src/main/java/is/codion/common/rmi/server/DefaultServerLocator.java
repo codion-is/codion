@@ -111,16 +111,16 @@ final class DefaultServerLocator implements Server.Locator {
 
 	private static <T extends Remote, A extends ServerAdmin> @Nullable Server<T, A> getIfReachable(Server<T, A> server,
 																																																 int requestedServerPort) throws RemoteException {
-		ServerInformation serverInformation = server.serverInformation();
-		if (requestedServerPort != -1 && serverInformation.serverPort() != requestedServerPort) {
+		ServerInformation serverInformation = server.information();
+		if (requestedServerPort != -1 && serverInformation.port() != requestedServerPort) {
 			LOG.warn("Server \"{}\" is serving on port {}, requested port was {}",
-							serverInformation.serverName(), serverInformation.serverPort(), requestedServerPort);
+							serverInformation.name(), serverInformation.port(), requestedServerPort);
 			return null;
 		}
 		if (server.connectionsAvailable()) {
 			return server;
 		}
-		LOG.warn("No connections available in server \"{}\"", serverInformation.serverName());
+		LOG.warn("No connections available in server \"{}\"", serverInformation.name());
 
 		return null;
 	}

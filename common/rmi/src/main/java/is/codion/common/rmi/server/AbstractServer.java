@@ -168,7 +168,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	}
 
 	@Override
-	public final ServerInformation serverInformation() {
+	public final ServerInformation information() {
 		return serverInformation;
 	}
 
@@ -184,10 +184,10 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		}
 		requireNonNull(connectionRequest);
 		requireNonNull(connectionRequest.user(), "user must be specified");
-		requireNonNull(connectionRequest.clientId(), "clientId must be specified");
-		requireNonNull(connectionRequest.clientType(), "clientType must be specified");
+		requireNonNull(connectionRequest.id(), "client id must be specified");
+		requireNonNull(connectionRequest.type(), "client type must be specified");
 		synchronized (connections) {
-			ClientConnection<T> clientConnection = connections.get(connectionRequest.clientId());
+			ClientConnection<T> clientConnection = connections.get(connectionRequest.id());
 			if (clientConnection != null) {
 				validateUserCredentials(connectionRequest.user(), clientConnection.remoteClient().user());
 				LOG.trace("Active connection exists {}", connectionRequest);
@@ -219,7 +219,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 			for (Authenticator authenticator : sharedAuthenticators) {
 				authenticator.logout(remoteClient);
 			}
-			Authenticator authenticator = authenticators.get(remoteClient.clientType());
+			Authenticator authenticator = authenticators.get(remoteClient.type());
 			if (authenticator != null) {
 				authenticator.logout(remoteClient);
 			}
@@ -247,15 +247,15 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
 	/**
 	 * Adds a {@link Authenticator} instance to this server.
-	 * If {@link Authenticator#clientType()} is empty, the authenticator
+	 * If {@link Authenticator#type()} is empty, the authenticator
 	 * is shared between all client types, otherwise it is only used for clients of the given type.
 	 * @param authenticator the authenticator to add
 	 * @throws IllegalStateException in case an authenticator with the same clientType has been added
 	 */
 	public final void addAuthenticator(Authenticator authenticator) {
 		requireNonNull(authenticator);
-		if (authenticator.clientType().isPresent()) {
-			String clientType = authenticator.clientType().get();
+		if (authenticator.type().isPresent()) {
+			String clientType = authenticator.type().get();
 			if (authenticators.containsKey(clientType)) {
 				throw new IllegalStateException("Authenticator for clientType '" + clientType + "' has alread been added");
 			}
@@ -400,13 +400,13 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		for (Authenticator authenticator : sharedAuthenticators) {
 			remoteClient = authenticator.login(remoteClient);
 		}
-		Authenticator clientAuthenticator = authenticators.get(connectionRequest.clientType());
+		Authenticator clientAuthenticator = authenticators.get(connectionRequest.type());
 		LOG.debug("Connecting client {}, authenticator {}", connectionRequest, clientAuthenticator);
 		if (clientAuthenticator != null) {
 			remoteClient = clientAuthenticator.login(remoteClient);
 		}
 		ClientConnection<T> clientConnection = new ClientConnection<>(remoteClient, connect(remoteClient));
-		connections.put(remoteClient.clientId(), clientConnection);
+		connections.put(remoteClient.id(), clientConnection);
 
 		return clientConnection;
 	}
@@ -459,13 +459,13 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 			authenticator.close();
 		}
 		catch (Exception e) {
-			LOG.error("Exception while closing authenticator for client type: {}", authenticator.clientType(), e);
+			LOG.error("Exception while closing authenticator for client type: {}", authenticator.type(), e);
 		}
 	}
 
 	private static void startAuxiliaryServer(AuxiliaryServer server) throws Exception {
 		try {
-			server.startServer();
+			server.start();
 			LOG.info("Auxiliary server started: {}", server);
 		}
 		catch (Exception e) {
@@ -476,7 +476,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
 	private static void stopAuxiliaryServer(AuxiliaryServer server) {
 		try {
-			server.stopServer();
+			server.stop();
 			LOG.info("Auxiliary server stopped: {}", server);
 		}
 		catch (Exception e) {
@@ -503,7 +503,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 				return getClientHost();
 			}
 			catch (ServerNotActiveException ignored) {
-				return RemoteClient.UNKNOWN_HOST;
+				return RemoteClient.UNKNOWN_CLIENT_HOST;
 			}
 		}
 
@@ -512,7 +512,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
 	private void loadAuthenticators() {
 		Authenticator.authenticators().forEach(authenticator -> {
-			String clientType = authenticator.clientType().orElse(null);
+			String clientType = authenticator.type().orElse(null);
 			LOG.info("Server loading authenticator '{}' as service, {}", authenticator.getClass()
 							.getName(), clientType == null ? "shared" : "(clientType: '" + clientType + "'");
 			addAuthenticator(authenticator);

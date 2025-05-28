@@ -146,7 +146,7 @@ public final class ServerMonitor {
 		this.serverInformation = requireNonNull(serverInformation);
 		this.registryPort = registryPort;
 		this.serverAdminUser = requireNonNull(serverAdminUser);
-		this.server = connectServer(serverInformation.serverName());
+		this.server = connectServer(serverInformation.name());
 		this.connectionLimitValue = Value.builder()
 						.nonNull(-1)
 						.value(getConnectionLimit())
@@ -287,10 +287,10 @@ public final class ServerMonitor {
 						.delimiterDash().yearFourDigits().hoursMinutesSeconds()
 						.build().createFormatter().format(serverInformation.startTime());
 		contents.append("Server info:").append("\n");
-		contents.append(serverInformation.serverName()).append(" (").append(startDate).append(")").append(
-						" port: ").append(serverInformation.serverPort()).append("\n").append("\n");
+		contents.append(serverInformation.name()).append(" (").append(startDate).append(")").append(
+						" port: ").append(serverInformation.port()).append("\n").append("\n");
 		contents.append("Server version:").append("\n");
-		contents.append(serverInformation.serverVersion()).append("\n");
+		contents.append(serverInformation.version()).append("\n");
 		contents.append("Database URL:").append("\n");
 		contents.append(server.databaseUrl()).append("\n").append("\n");
 		contents.append("Server locale: ").append("\n");
@@ -465,7 +465,7 @@ public final class ServerMonitor {
 		try {
 			Server<?, EntityServerAdmin> theServer =
 							(Server<?, EntityServerAdmin>) LocateRegistry.getRegistry(hostName, registryPort).lookup(serverName);
-			EntityServerAdmin serverAdmin = theServer.serverAdmin(serverAdminUser);
+			EntityServerAdmin serverAdmin = theServer.admin(serverAdminUser);
 			//just some simple call to validate the remote connection
 			serverAdmin.connectionCount();
 			LOG.info("ServerMonitor connected to server: {}", serverName);

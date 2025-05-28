@@ -32,7 +32,7 @@ public interface RemoteClient extends ConnectionRequest {
 	/**
 	 * @see #clientHost()
 	 */
-	String UNKNOWN_HOST = "unknown host";
+	String UNKNOWN_CLIENT_HOST = "unknown host";
 
 	/**
 	 * @return the initial connection request this client is based on
@@ -50,7 +50,7 @@ public interface RemoteClient extends ConnectionRequest {
 	User databaseUser();
 
 	/**
-	 * Note that if the client host is not known {@link #UNKNOWN_HOST} is returned.
+	 * Note that if the client host is not known {@link #UNKNOWN_CLIENT_HOST} is returned.
 	 * @return the client hostname
 	 */
 	String clientHost();

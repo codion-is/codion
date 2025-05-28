@@ -96,7 +96,7 @@ public final class HostMonitor {
 		removeUnreachableServers();
 		try {
 			for (ServerInformation serverInformation : findEntityServers(hostName, registryPort)) {
-				if (!containsServerMonitor(serverInformation.serverId())) {
+				if (!containsServerMonitor(serverInformation.id())) {
 					ServerMonitor serverMonitor = new ServerMonitor(hostName, serverInformation, registryPort, adminUser, updateRate);
 					serverMonitor.addServerShutDownListener(() -> removeServer(serverMonitor));
 					addServer(serverMonitor);
@@ -141,7 +141,7 @@ public final class HostMonitor {
 
 	private boolean containsServerMonitor(UUID serverId) {
 		return serverMonitors.stream()
-						.anyMatch(serverMonitor -> serverMonitor.serverInformation().serverId().equals(serverId));
+						.anyMatch(serverMonitor -> serverMonitor.serverInformation().id().equals(serverId));
 	}
 
 	private void removeUnreachableServers() {
@@ -166,7 +166,7 @@ public final class HostMonitor {
 			for (String name : boundNames) {
 				LOG.debug("HostMonitor found server '{}'", name);
 				Server<?, ?> server = (Server<?, ?>) LocateRegistry.getRegistry(serverHostName, registryPort).lookup(name);
-				servers.add(server.serverInformation());
+				servers.add(server.information());
 			}
 		}
 		catch (RemoteException | NotBoundException e) {

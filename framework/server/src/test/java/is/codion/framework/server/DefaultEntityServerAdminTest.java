@@ -61,13 +61,13 @@ public final class DefaultEntityServerAdminTest {
 		try {
 			ConnectionRequest connectionRequest = ConnectionRequest.builder()
 							.user(ADMIN_USER)
-							.clientType("DefaultEntityServerAdminTest")
+							.type("DefaultEntityServerAdminTest")
 							.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain")
 							.build();
 			server.connect(connectionRequest);
 			EntityServerAdmin admin = new DefaultEntityServerAdmin(server, configuration);
-			admin.setLoggingEnabled(connectionRequest.clientId(), true);
-			assertTrue(admin.isLoggingEnabled(connectionRequest.clientId()));
+			admin.setLoggingEnabled(connectionRequest.id(), true);
+			assertTrue(admin.isLoggingEnabled(connectionRequest.id()));
 			admin.setLogLevel("TEST");//no op logger
 			admin.getLogLevel();
 			admin.resetConnectionPoolStatistics(SCOTT);
@@ -86,7 +86,7 @@ public final class DefaultEntityServerAdminTest {
 			assertEquals(300, admin.getMaximumPoolCheckOutTime(SCOTT));
 			admin.setPooledConnectionIdleTimeout(SCOTT, 1000);
 			assertEquals(1000, admin.getPooledConnectionIdleTimeout(SCOTT));
-			admin.clientLog(connectionRequest.clientId());
+			admin.clientLog(connectionRequest.id());
 
 			admin.setIdleConnectionTimeout(30);
 			try {

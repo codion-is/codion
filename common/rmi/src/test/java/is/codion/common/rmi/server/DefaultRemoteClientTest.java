@@ -32,7 +32,7 @@ public final class DefaultRemoteClientTest {
 	void copy() {
 		RemoteClient client = RemoteClient.builder(ConnectionRequest.builder()
 										.user(User.user("scott"))
-										.clientType("DefaultRemoteClientTest")
+										.type("DefaultRemoteClientTest")
 										.build())
 						.databaseUser(User.user("john"))
 						.build();
@@ -48,7 +48,7 @@ public final class DefaultRemoteClientTest {
 	void withDatabaseUser() {
 		RemoteClient client = RemoteClient.builder(ConnectionRequest.builder()
 										.user(User.user("scott"))
-										.clientType("DefaultRemoteClientTest")
+										.type("DefaultRemoteClientTest")
 										.build())
 						.databaseUser(User.user("john"))
 						.build();

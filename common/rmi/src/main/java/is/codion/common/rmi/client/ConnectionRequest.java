@@ -42,27 +42,27 @@ public interface ConnectionRequest {
 	/**
 	 * @return the client id
 	 */
-	UUID clientId();
+	UUID id();
 
 	/**
 	 * @return the client type
 	 */
-	String clientType();
+	String type();
 
 	/**
 	 * @return the client locale
 	 */
-	Locale clientLocale();
+	Locale locale();
 
 	/**
 	 * @return the client time zone
 	 */
-	ZoneId clientTimeZone();
+	ZoneId timeZone();
 
 	/**
 	 * @return the client version
 	 */
-	Optional<Version> clientVersion();
+	Optional<Version> version();
 
 	/**
 	 * @return the version of Codion the client is using
@@ -98,22 +98,22 @@ public interface ConnectionRequest {
 		Builder user(User user);
 
 		/**
-		 * @param clientId the client id
+		 * @param id the client id
 		 * @return this Builder instance
 		 */
-		Builder clientId(UUID clientId);
+		Builder id(UUID id);
 
 		/**
-		 * @param clientType the client type
+		 * @param type the client type
 		 * @return this Builder instance
 		 */
-		Builder clientType(String clientType);
+		Builder type(String type);
 
 		/**
-		 * @param clientVersion the client version
+		 * @param version the client version
 		 * @return this Builder instance
 		 */
-		Builder clientVersion(@Nullable Version clientVersion);
+		Builder version(@Nullable Version version);
 
 		/**
 		 * @param key the key

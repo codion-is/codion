@@ -32,22 +32,22 @@ public interface ServerInformation {
 	/**
 	 * @return the server name
 	 */
-	String serverName();
+	String name();
 
 	/**
 	 * @return a unique identifier for this server
 	 */
-	UUID serverId();
+	UUID id();
 
 	/**
 	 * @return the server framework Version
 	 */
-	Version serverVersion();
+	Version version();
 
 	/**
 	 * @return the server port
 	 */
-	int serverPort();
+	int port();
 
 	/**
 	 * @return the time of server startup

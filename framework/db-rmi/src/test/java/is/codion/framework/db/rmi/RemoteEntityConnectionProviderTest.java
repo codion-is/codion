@@ -62,7 +62,7 @@ public class RemoteEntityConnectionProviderTest {
 		EntityServer.startServer(configuration);
 		Server<RemoteEntityConnection, EntityServerAdmin> server = (Server<RemoteEntityConnection, EntityServerAdmin>)
 						LocateRegistry.getRegistry(Clients.SERVER_HOSTNAME.get(), configuration.registryPort()).lookup(serverName);
-		EntityServerAdmin admin = server.serverAdmin(User.parse("scott:tiger"));
+		EntityServerAdmin admin = server.admin(User.parse("scott:tiger"));
 
 		RemoteEntityConnectionProvider provider = RemoteEntityConnectionProvider.builder()
 						.hostName(Clients.SERVER_HOSTNAME.get())

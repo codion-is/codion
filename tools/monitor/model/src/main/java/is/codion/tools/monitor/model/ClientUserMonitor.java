@@ -197,9 +197,9 @@ public final class ClientUserMonitor {
 			try {
 				List<UserInfo> items = new ArrayList<>(userHistoryTableModel.items().get());
 				for (RemoteClient remoteClient : server.clients()) {
-					UserInfo newUserInfo = new UserInfo(remoteClient.user(), remoteClient.clientType(),
-									remoteClient.clientHost(), LocalDateTime.now(), remoteClient.clientId(),
-									remoteClient.clientVersion().orElse(null), remoteClient.frameworkVersion());
+					UserInfo newUserInfo = new UserInfo(remoteClient.user(), remoteClient.type(),
+									remoteClient.clientHost(), LocalDateTime.now(), remoteClient.id(),
+									remoteClient.version().orElse(null), remoteClient.frameworkVersion());
 					int index = items.indexOf(newUserInfo);
 					if (index == -1) {
 						items.add(newUserInfo);

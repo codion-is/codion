@@ -55,7 +55,7 @@ public class EntityServerMonitorPanelTest {
 		EntityServer.startServer(CONFIGURATION);
 		server = (Server<?, EntityServerAdmin>) LocateRegistry.getRegistry(Clients.SERVER_HOSTNAME.get(),
 						CONFIGURATION.registryPort()).lookup(CONFIGURATION.serverName());
-		admin = server.serverAdmin(ADMIN_USER);
+		admin = server.admin(ADMIN_USER);
 	}
 
 	@AfterAll

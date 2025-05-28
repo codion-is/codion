@@ -74,7 +74,7 @@ public class EntityServerTest {
 		EntityServer.startServer(CONFIGURATION).addAuthenticator(new TestAuthenticator());
 		server = (Server<RemoteEntityConnection, EntityServerAdmin>)
 						LocateRegistry.getRegistry(Clients.SERVER_HOSTNAME.get(), CONFIGURATION.registryPort()).lookup(serverName);
-		admin = server.serverAdmin(ADMIN_USER);
+		admin = server.admin(ADMIN_USER);
 	}
 
 	@AfterAll
@@ -91,7 +91,7 @@ public class EntityServerTest {
 		new TestDomain();
 		ConnectionRequest connectionRequestOne = ConnectionRequest.builder()
 						.user(UNIT_TEST_USER)
-						.clientType("ClientType")
+						.type("ClientType")
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 		RemoteEntityConnection connection = server.connect(connectionRequestOne);
 
@@ -106,35 +106,35 @@ public class EntityServerTest {
 	void testWrongPassword() {
 		assertThrows(ServerAuthenticationException.class, () -> server.connect(ConnectionRequest.builder()
 						.user(User.user(UNIT_TEST_USER.username(), "foobar".toCharArray()))
-						.clientType(getClass().getSimpleName())
+						.type(getClass().getSimpleName())
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build()));
 	}
 
 	@Test
 	void serverAdminEmptyPassword() {
-		assertThrows(ServerAuthenticationException.class, () -> server.serverAdmin(User.user("test", "".toCharArray())));
+		assertThrows(ServerAuthenticationException.class, () -> server.admin(User.user("test", "".toCharArray())));
 	}
 
 	@Test
 	void serverAdminNullPassword() {
-		assertThrows(ServerAuthenticationException.class, () -> server.serverAdmin(User.user("test")));
+		assertThrows(ServerAuthenticationException.class, () -> server.admin(User.user("test")));
 	}
 
 	@Test
 	void serverAdminWrongPassword() {
-		assertThrows(ServerAuthenticationException.class, () -> server.serverAdmin(User.user("test", "test".toCharArray())));
+		assertThrows(ServerAuthenticationException.class, () -> server.admin(User.user("test", "test".toCharArray())));
 	}
 
 	@Test
 	void serverAdminWrongUsername() {
-		assertThrows(ServerAuthenticationException.class, () -> server.serverAdmin(User.user("test", "test".toCharArray())));
+		assertThrows(ServerAuthenticationException.class, () -> server.admin(User.user("test", "test".toCharArray())));
 	}
 
 	@Test
 	void configureConnection() throws Exception {
 		ConnectionRequest connectionRequestTwo = ConnectionRequest.builder()
 						.user(UNIT_TEST_USER)
-						.clientType("ClientType")
+						.type("ClientType")
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, ConfigureDb.class.getSimpleName()).build();
 		try (RemoteEntityConnection connection = server.connect(connectionRequestTwo)) {
 			//throws exception if table does not exist, which is created during connection configuration
@@ -146,7 +146,7 @@ public class EntityServerTest {
 	void test() throws Exception {
 		ConnectionRequest connectionRequestOne = ConnectionRequest.builder()
 						.user(UNIT_TEST_USER)
-						.clientType("ClientType").parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
+						.type("ClientType").parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 
 		RemoteEntityConnection remoteConnectionOne = server.connect(connectionRequestOne);
 		assertTrue(remoteConnectionOne.connected());
@@ -157,7 +157,7 @@ public class EntityServerTest {
 		assertEquals(2005, admin.getMaximumPoolCheckOutTime(UNIT_TEST_USER.username()));
 
 		try {
-			server.connect(ConnectionRequest.builder().user(UNIT_TEST_USER).clientType("ClientType").build());
+			server.connect(ConnectionRequest.builder().user(UNIT_TEST_USER).type("ClientType").build());
 			fail();
 		}
 		catch (LoginException ignored) {}
@@ -165,7 +165,7 @@ public class EntityServerTest {
 		try {
 			server.connect(ConnectionRequest.builder()
 							.user(UNIT_TEST_USER)
-							.clientType("ClientType")
+							.type("ClientType")
 							.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE,
 											new EmptyDomain().type().name()).build());
 			fail();
@@ -174,11 +174,11 @@ public class EntityServerTest {
 
 		ConnectionRequest connectionRequestTwo = ConnectionRequest.builder()
 						.user(UNIT_TEST_USER)
-						.clientType("ClientType")
+						.type("ClientType")
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 		RemoteEntityConnection remoteConnectionTwo = server.connect(connectionRequestTwo);
-		admin.setLoggingEnabled(connectionRequestTwo.clientId(), true);
-		assertTrue(admin.isLoggingEnabled(connectionRequestOne.clientId()));
+		admin.setLoggingEnabled(connectionRequestTwo.id(), true);
+		assertTrue(admin.isLoggingEnabled(connectionRequestOne.id()));
 		assertThrows(IllegalArgumentException.class, () -> admin.isLoggingEnabled(UUID.randomUUID()));
 		assertThrows(IllegalArgumentException.class, () -> admin.setLoggingEnabled(UUID.randomUUID(), true));
 		assertTrue(remoteConnectionTwo.connected());
@@ -196,7 +196,7 @@ public class EntityServerTest {
 
 		admin.databaseStatistics();
 
-		ClientLog log = admin.clientLog(connectionRequestTwo.clientId());
+		ClientLog log = admin.clientLog(connectionRequestTwo.id());
 
 		MethodLogger.Entry entry = log.entries().get(0);
 		assertEquals("select", entry.method());
@@ -204,10 +204,10 @@ public class EntityServerTest {
 
 		admin.disconnectTimedOutClients();
 
-		server.disconnect(connectionRequestOne.clientId());
+		server.disconnect(connectionRequestOne.id());
 		assertEquals(1, admin.connectionCount());
 
-		server.disconnect(connectionRequestTwo.clientId());
+		server.disconnect(connectionRequestTwo.id());
 		assertEquals(0, admin.connectionCount());
 
 		admin.setConnectionLimit(1);
@@ -223,9 +223,9 @@ public class EntityServerTest {
 		server.connect(connectionRequestTwo);
 		assertEquals(2, admin.connectionCount());
 
-		server.disconnect(connectionRequestOne.clientId());
+		server.disconnect(connectionRequestOne.id());
 		assertEquals(1, admin.connectionCount());
-		server.disconnect(connectionRequestTwo.clientId());
+		server.disconnect(connectionRequestTwo.id());
 		assertEquals(0, admin.connectionCount());
 
 		//testing with the TestAuthenticator
@@ -235,15 +235,15 @@ public class EntityServerTest {
 		User john = User.parse("john:hello");
 		ConnectionRequest connectionRequestJohn = ConnectionRequest.builder()
 						.user(john)
-						.clientType(testClientType)
+						.type(testClientType)
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 		ConnectionRequest connectionRequestHelen = ConnectionRequest.builder()
 						.user(User.parse("helen:juno"))
-						.clientType(testClientType)
+						.type(testClientType)
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 		ConnectionRequest connectionRequestInvalid = ConnectionRequest.builder()
 						.user(User.parse("foo:bar"))
-						.clientType(testClientType)
+						.type(testClientType)
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 		server.connect(connectionRequestJohn);
 		server.connect(connectionRequestHelen);
@@ -257,9 +257,9 @@ public class EntityServerTest {
 		for (RemoteClient employeesClient : employeesClients) {
 			assertEquals(UNIT_TEST_USER, employeesClient.databaseUser());
 		}
-		server.disconnect(connectionRequestJohn.clientId());
+		server.disconnect(connectionRequestJohn.id());
 		assertEquals(1, admin.connectionCount());
-		server.disconnect(connectionRequestHelen.clientId());
+		server.disconnect(connectionRequestHelen.id());
 		assertEquals(0, admin.connectionCount());
 	}
 

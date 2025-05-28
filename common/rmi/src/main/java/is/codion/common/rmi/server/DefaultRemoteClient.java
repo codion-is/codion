@@ -85,28 +85,28 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
 	}
 
 	@Override
-	public UUID clientId() {
-		return connectionRequest.clientId();
+	public UUID id() {
+		return connectionRequest.id();
 	}
 
 	@Override
-	public String clientType() {
-		return connectionRequest.clientType();
+	public String type() {
+		return connectionRequest.type();
 	}
 
 	@Override
-	public Locale clientLocale() {
-		return connectionRequest.clientLocale();
+	public Locale locale() {
+		return connectionRequest.locale();
 	}
 
 	@Override
-	public ZoneId clientTimeZone() {
-		return connectionRequest.clientTimeZone();
+	public ZoneId timeZone() {
+		return connectionRequest.timeZone();
 	}
 
 	@Override
-	public Optional<Version> clientVersion() {
-		return connectionRequest.clientVersion();
+	public Optional<Version> version() {
+		return connectionRequest.version();
 	}
 
 	@Override
@@ -150,9 +150,9 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
 		if (databaseUser != null && !connectionRequest.user().equals(databaseUser)) {
 			builder.append(" (databaseUser: ").append(databaseUser).append(")");
 		}
-		builder.append("@").append(clientHost).append(" [").append(connectionRequest.clientType())
-						.append(connectionRequest.clientVersion().map(version -> "-" + version).orElse(""))
-						.append("] - ").append(connectionRequest.clientId());
+		builder.append("@").append(clientHost).append(" [").append(connectionRequest.type())
+						.append(connectionRequest.version().map(version -> "-" + version).orElse(""))
+						.append("] - ").append(connectionRequest.id());
 
 		return builder.toString();
 	}
@@ -161,7 +161,7 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
 
 		private final ConnectionRequest connectionRequest;
 
-		private String clientHost = UNKNOWN_HOST;
+		private String clientHost = UNKNOWN_CLIENT_HOST;
 		private User databaseUser;
 
 		DefaultBuilder(ConnectionRequest connectionRequest) {

@@ -42,19 +42,19 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 	private static final long serialVersionUID = 1;
 
 	private final User user;
-	private final UUID clientId;
-	private final String clientType;
-	private final Locale clientLocale = Locale.getDefault();
-	private final ZoneId clientTimeZone = ZoneId.systemDefault();
-	private final @Nullable Version clientVersion;
+	private final UUID id;
+	private final String type;
+	private final Locale locale = Locale.getDefault();
+	private final ZoneId timeZone = ZoneId.systemDefault();
+	private final @Nullable Version version;
 	private final Version frameworkVersion = Version.version();
 	private final @Nullable Map<String, Object> parameters;
 
 	private DefaultConnectionRequest(DefaultBuilder builder) {
 		this.user = requireNonNull(builder.user, "user must be specified");
-		this.clientId = builder.clientId == null ? UUID.randomUUID() : builder.clientId;
-		this.clientType = requireNonNull(builder.clientType, "clientType must be specified");
-		this.clientVersion = builder.clientVersion;
+		this.id = builder.id == null ? UUID.randomUUID() : builder.id;
+		this.type = requireNonNull(builder.type, "client type must be specified");
+		this.version = builder.version;
 		this.parameters = builder.parameters == null ? null : unmodifiableMap(builder.parameters);
 	}
 
@@ -64,28 +64,28 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 	}
 
 	@Override
-	public UUID clientId() {
-		return clientId;
+	public UUID id() {
+		return id;
 	}
 
 	@Override
-	public String clientType() {
-		return clientType;
+	public String type() {
+		return type;
 	}
 
 	@Override
-	public Locale clientLocale() {
-		return clientLocale;
+	public Locale locale() {
+		return locale;
 	}
 
 	@Override
-	public ZoneId clientTimeZone() {
-		return clientTimeZone;
+	public ZoneId timeZone() {
+		return timeZone;
 	}
 
 	@Override
-	public Optional<Version> clientVersion() {
-		return Optional.ofNullable(clientVersion);
+	public Optional<Version> version() {
+		return Optional.ofNullable(version);
 	}
 
 	@Override
@@ -102,9 +102,9 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 	public ConnectionRequest copy() {
 		Builder builder = new DefaultBuilder()
 						.user(user.copy())
-						.clientId(clientId)
-						.clientType(clientType)
-						.clientVersion(clientVersion);
+						.id(id)
+						.type(type)
+						.version(version);
 		if (parameters != null) {
 			parameters.forEach(builder::parameter);
 		}
@@ -114,25 +114,25 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 
 	@Override
 	public boolean equals(Object obj) {
-		return this == obj || obj instanceof ConnectionRequest && clientId.equals(((ConnectionRequest) obj).clientId());
+		return this == obj || obj instanceof ConnectionRequest && id.equals(((ConnectionRequest) obj).id());
 	}
 
 	@Override
 	public int hashCode() {
-		return clientId.hashCode();
+		return id.hashCode();
 	}
 
 	@Override
 	public String toString() {
-		return user + " [" + clientType + "] - " + clientId;
+		return user + " [" + type + "] - " + id;
 	}
 
 	static final class DefaultBuilder implements Builder {
 
 		private @Nullable User user;
-		private @Nullable UUID clientId;
-		private @Nullable String clientType;
-		private @Nullable Version clientVersion;
+		private @Nullable UUID id;
+		private @Nullable String type;
+		private @Nullable Version version;
 		private @Nullable Map<String, Object> parameters;
 
 		DefaultBuilder() {}
@@ -144,20 +144,20 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
 		}
 
 		@Override
-		public Builder clientId(UUID clientId) {
-			this.clientId = requireNonNull(clientId);
+		public Builder id(UUID id) {
+			this.id = requireNonNull(id);
 			return this;
 		}
 
 		@Override
-		public Builder clientType(String clientType) {
-			this.clientType = requireNonNull(clientType);
+		public Builder type(String type) {
+			this.type = requireNonNull(type);
 			return this;
 		}
 
 		@Override
-		public Builder clientVersion(@Nullable Version clientVersion) {
-			this.clientVersion = clientVersion;
+		public Builder version(@Nullable Version version) {
+			this.version = version;
 			return this;
 		}
 

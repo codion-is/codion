@@ -50,8 +50,7 @@ public interface Server<C extends Remote, A extends ServerAdmin> extends Remote 
 	 * @throws ConnectionNotAvailableException in case the server isn't accepting more connections
 	 * @throws LoginException in case the login fails
 	 */
-	C connect(ConnectionRequest connectionRequest) throws RemoteException,
-					ConnectionNotAvailableException, LoginException;
+	C connect(ConnectionRequest connectionRequest) throws RemoteException, ConnectionNotAvailableException, LoginException;
 
 	/**
 	 * Returns the admin interface used to administer this server
@@ -60,7 +59,7 @@ public interface Server<C extends Remote, A extends ServerAdmin> extends Remote 
 	 * @throws RemoteException in case of a communication error
 	 * @throws ServerAuthenticationException in case authentication fails
 	 */
-	A serverAdmin(User user) throws RemoteException, ServerAuthenticationException;
+	A admin(User user) throws RemoteException, ServerAuthenticationException;
 
 	/**
 	 * Disconnects the connection identified by the given id.
@@ -73,7 +72,7 @@ public interface Server<C extends Remote, A extends ServerAdmin> extends Remote 
 	 * @return static information about this server
 	 * @throws RemoteException in case of an exception
 	 */
-	ServerInformation serverInformation() throws RemoteException;
+	ServerInformation information() throws RemoteException;
 
 	/**
 	 * @return true if there are connections available

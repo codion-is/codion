@@ -108,7 +108,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 			setIdleConnectionTimeout(configuration.idleConnectionTimeout());
 			setClientTypeIdleConnectionTimeouts(configuration.clientTypeIdleConnectionTimeouts());
 			createConnectionPools(configuration.database(), configuration.connectionPoolFactory(), configuration.connectionPoolUsers());
-			registry().rebind(serverInformation().serverName(), this);
+			registry().rebind(information().name(), this);
 		}
 		catch (Throwable t) {
 			throw logShutdownAndReturn(new RuntimeException(t));
@@ -122,7 +122,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	 * @throws IllegalStateException in case no server admin instance is available
 	 */
 	@Override
-	public final EntityServerAdmin serverAdmin(User user) throws ServerAuthenticationException {
+	public final EntityServerAdmin admin(User user) throws ServerAuthenticationException {
 		validateUserCredentials(user, configuration.adminUser());
 
 		return getAdmin();
@@ -229,7 +229,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 				boolean timedOut = hasConnectionTimedOut(connection);
 				if (!connected || timedOut) {
 					LOG.debug("Removing connection {}, connected: {}, timeout: {}", client, connected, timedOut);
-					disconnect(client.remoteClient().clientId());
+					disconnect(client.remoteClient().id());
 				}
 			}
 		}
@@ -318,21 +318,21 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	final void disconnectClients(boolean timedOutOnly) {
 		List<RemoteClient> clients = new ArrayList<>(connections().keySet());
 		for (RemoteClient client : clients) {
-			AbstractRemoteEntityConnection connection = connection(client.clientId());
+			AbstractRemoteEntityConnection connection = connection(client.id());
 			if (timedOutOnly) {
 				boolean active = connection.active();
 				if (!active && hasConnectionTimedOut(connection)) {
-					disconnect(client.clientId());
+					disconnect(client.id());
 				}
 			}
 			else {
-				disconnect(client.clientId());
+				disconnect(client.id());
 			}
 		}
 	}
 
 	private void removeConnection(AbstractRemoteEntityConnection connection) {
-		disconnect(connection.remoteClient().clientId());
+		disconnect(connection.remoteClient().id());
 	}
 
 	/**
@@ -350,7 +350,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	}
 
 	private boolean hasConnectionTimedOut(AbstractRemoteEntityConnection connection) {
-		Integer timeout = clientTypeIdleConnectionTimeouts.get(connection.remoteClient().clientType());
+		Integer timeout = clientTypeIdleConnectionTimeouts.get(connection.remoteClient().type());
 		if (timeout == null) {
 			timeout = idleConnectionTimeout;
 		}
@@ -444,8 +444,8 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	}
 
 	private static void printStartupInfo(EntityServer server, long startTime) {
-		String startupInfo = server.serverInformation().serverName()
-						+ " started on port: " + server.serverInformation().serverPort()
+		String startupInfo = server.information().name()
+						+ " started on port: " + server.information().port()
 						+ ", registryPort: " + server.configuration.registryPort()
 						+ ", adminPort: " + server.configuration.adminPort()
 						+ ", hostname: " + ServerConfiguration.RMI_SERVER_HOSTNAME.get()
@@ -457,7 +457,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
 	private static String auxiliaryServerInfo(Collection<AuxiliaryServer> auxiliaryServers) {
 		return auxiliaryServers.stream()
-						.map(AuxiliaryServer::serverInformation)
+						.map(AuxiliaryServer::information)
 						.collect(Collectors.joining("\n", !auxiliaryServers.isEmpty() ? "\n" : "", "\n"));
 	}
 
@@ -476,7 +476,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 		try {
 			Registry registry = LocateRegistry.getRegistry(registryPort);
 			Server<?, EntityServerAdmin> server = (Server<?, EntityServerAdmin>) registry.lookup(serverName);
-			EntityServerAdmin serverAdmin = server.serverAdmin(adminUser);
+			EntityServerAdmin serverAdmin = server.admin(adminUser);
 			String shutDownInfo = serverName + " found in registry on port: " + registryPort + ", shutting down";
 			LOG.info(shutDownInfo);
 			System.out.println(shutDownInfo);

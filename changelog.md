@@ -17,6 +17,11 @@ Codion Change Log
 - UserPreferences, UserPreference suffix removed from method names.
 - ConditionModel.equalWildcards() renamed equalWithWildcards().
 - SummaryModel.Summary.summary() renamed get().
+### is.codion.common.rmi
+- ServerInformation, server prefix removed from methods.
+- AuxiliaryServer.startServer() and stopServer() renamed start() and stop().
+- ConnectionRequest, client prefix renamed from methods.
+- Authenticator.clientType() renamed type().
 ### is.codion.swing.common.model
 - FilterComboBoxModel.createSelectorValue() renamed createSelector().
 ### is.codion.swing.common.ui

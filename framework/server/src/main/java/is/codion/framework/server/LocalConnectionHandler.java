@@ -81,7 +81,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 		this.connectionPool = database.containsConnectionPool(databaseUsername) ? database.connectionPool(databaseUsername) : null;
 		this.database = database;
 		this.methodLogger = MethodLogger.methodLogger(LocalEntityConnection.CONNECTION_LOG_SIZE.getOrThrow(), new EntityArgumentToString());
-		this.logIdentifier = remoteClient.user().username().toLowerCase() + "@" + remoteClient.clientType();
+		this.logIdentifier = remoteClient.user().username().toLowerCase() + "@" + remoteClient.type();
 		this.userDescription = "Remote user: " + remoteClient.user().username() + ", database user: " + databaseUsername;
 		try {
 			if (connectionPool == null) {
@@ -180,7 +180,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 
 	ClientLog clientLog() {
 		synchronized (methodLogger) {
-			return ClientLog.clientLog(remoteClient.clientId(), methodLogger.entries());
+			return ClientLog.clientLog(remoteClient.id(), methodLogger.entries());
 		}
 	}
 

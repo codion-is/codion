@@ -48,22 +48,22 @@ final class DefaultServerInformation implements ServerInformation, Serializable 
 	}
 
 	@Override
-	public String serverName() {
+	public String name() {
 		return serverName;
 	}
 
 	@Override
-	public UUID serverId() {
+	public UUID id() {
 		return serverId;
 	}
 
 	@Override
-	public int serverPort() {
+	public int port() {
 		return serverPort;
 	}
 
 	@Override
-	public Version serverVersion() {
+	public Version version() {
 		return serverVersion;
 	}
 
