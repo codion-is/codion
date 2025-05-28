@@ -120,6 +120,7 @@ import static java.util.stream.Collectors.toList;
 import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
+import static javax.swing.UIManager.getIcon;
 import static javax.swing.UIManager.getLookAndFeel;
 
 /**
@@ -1026,6 +1027,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 						.map(firstLogFile -> Control.builder()
 										.command(() -> Desktop.getDesktop().open(firstLogFile))
 										.caption(resourceBundle.getString("open_log_file"))
+										.smallIcon(getIcon("FileView.fileIcon"))
 										.description(firstLogFile.getAbsolutePath())
 										.build());
 	}
@@ -1036,6 +1038,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 						.map(logFileFolder -> Control.builder()
 										.command(() -> Desktop.getDesktop().open(logFileFolder))
 										.caption(resourceBundle.getString("open_log_folder"))
+										.smallIcon(getIcon("FileView.directoryIcon"))
 										.description(logFileFolder.getAbsolutePath())
 										.build());
 	}

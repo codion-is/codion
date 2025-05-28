@@ -41,6 +41,7 @@ Codion Change Log
 - SelectQueryInspector.BasicFormatterImpl bug fixed, now handles single quoted values.
 - SelectQueryInspector.BasicFormatterImpl now inserts line breaks in insert column and value lists.
 - EntityEditPanel, EntityTablePanel.updateUI() now includes queryInspector.
+- EntityApplicationPanel, log file/dir controls now with icons.
 ### is.codion.swing.framework.ui.test
 - is.codion.swing.framework.ui.test module removed
 
