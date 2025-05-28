@@ -147,8 +147,13 @@ final class SelectQueryInspector extends JPanel {
 			String token;
 			String lcToken;
 
+			private static final String ESCAPED_QUOTE_PLACEHOLDER = "\u0001ESQUOTE\u0001";
+
 			public FormatProcess(String sql) {
 				assert sql != null : "SQL to format should not be null";
+
+				// Temporarily replace escaped single quotes to avoid tokenization issues
+				sql = sql.replace("''", ESCAPED_QUOTE_PLACEHOLDER);
 
 				tokens = new StringTokenizer(
 								sql,
@@ -437,7 +442,8 @@ final class SelectQueryInspector extends JPanel {
 				if (!result.isEmpty() && result.charAt(result.length() - 1) == ',') {
 					result.append(" ");
 				}
-				result.append(token);
+				// Restore escaped quotes in the token before appending
+				result.append(token.replace(ESCAPED_QUOTE_PLACEHOLDER, "''"));
 			}
 
 			private void endNewClause() {
