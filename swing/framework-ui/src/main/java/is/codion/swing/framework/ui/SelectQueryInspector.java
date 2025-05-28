@@ -139,6 +139,11 @@ final class SelectQueryInspector extends JPanel {
 			private final LinkedList<Integer> parenCounts = new LinkedList<>();
 			private final LinkedList<Boolean> afterByOrFromOrSelects = new LinkedList<>();
 
+			// Track INSERT formatting
+			boolean inInsertColumns;
+			boolean inValues;
+			int commaCountInInsert;
+
 			int indent = 0;
 
 			StringBuilder result = new StringBuilder();
@@ -320,7 +325,19 @@ final class SelectQueryInspector extends JPanel {
 			}
 
 			private void comma() {
-				if (afterByOrSetOrFromOrSelect && inFunction == 0) {
+				if (afterInsert && (inInsertColumns || inValues)) {
+					// Handle INSERT column lists and VALUES - break every 5 items
+					out();
+					commaCountInInsert++;
+					if (commaCountInInsert % 5 == 0) {
+						result.append("\n");
+						// Add appropriate indentation
+						for (int i = 0; i < indent; i++) {
+							result.append("\t");
+						}
+					}
+				}
+				else if (afterByOrSetOrFromOrSelect && inFunction == 0) {
 					commaAfterByOrFromOrSelect();
 				}
 	//			else if ( afterOn && inFunction==0 ) {
@@ -395,9 +412,10 @@ final class SelectQueryInspector extends JPanel {
 
 			private void misc() {
 				out();
-				if (afterInsert && inFunction == 0) {
+				if (afterInsert && inFunction == 0 && !inInsertColumns && !inValues) {
+					// Only add newline after INSERT if we're not in column list or values
 					newline();
-					afterInsert = false;
+					// Don't reset afterInsert here - let closeParen handle it
 				}
 				else {
 					beginLine = false;
@@ -424,6 +442,9 @@ final class SelectQueryInspector extends JPanel {
 					}
 					if ("insert".equals(lcToken)) {
 						afterInsert = true;
+						inInsertColumns = false;
+						inValues = false;
+						commaCountInInsert = 0;
 					}
 				}
 			}
@@ -494,6 +515,11 @@ final class SelectQueryInspector extends JPanel {
 					incrementIndent();
 					newline();
 					valuesParenCount = parensSinceSelect + 1;
+					// Mark that we're entering VALUES section
+					if (afterInsert) {
+						inValues = true;
+						commaCountInInsert = 0;
+					}
 				}
 				else {
 					out();
@@ -501,6 +527,16 @@ final class SelectQueryInspector extends JPanel {
 			}
 
 			private void closeParen() {
+				// Check if we're closing the INSERT column list or VALUES list
+				if (inInsertColumns) {
+					inInsertColumns = false;
+				}
+				else if (inValues) {
+					inValues = false;
+					// If we're closing the VALUES parentheses, we're done with INSERT
+					afterInsert = false;
+				}
+
 				if (parensSinceSelect == 0) {
 					decrementIndent();
 					parensSinceSelect = parenCounts.removeLast();
@@ -541,6 +577,20 @@ final class SelectQueryInspector extends JPanel {
 					inFunction++;
 				}
 				beginLine = false;
+
+				// Check if this is the opening paren for INSERT column list or VALUES
+				if (afterInsert) {
+					if (!inInsertColumns && !inValues) {
+						// First parenthesis after INSERT - column list
+						inInsertColumns = true;
+						commaCountInInsert = 0;
+					}
+					else if (inValues) {
+						// Parenthesis after VALUES
+						commaCountInInsert = 0;
+					}
+				}
+
 				if (afterOn > 0 || inFunction > 0) {
 					out();
 				}
