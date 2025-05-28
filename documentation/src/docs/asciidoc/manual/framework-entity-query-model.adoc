@@ -1,0 +1,106 @@
+= EntityQueryModel
+:dir-chinook-source: ../../../../../demos/chinook/src/main/java
+:url-javadoc: link:../api
+
+The {url-javadoc}{framework-model}/is/codion/framework/model/EntityQueryModel.html[EntityQueryModel] manages how entities are fetched from the database for table models.
+It provides fine-grained control over query conditions, result limits, ordering, and custom data sources.
+
+== Overview
+
+`EntityQueryModel` acts as the data retrieval engine for `EntityTableModel`, encapsulating:
+
+* Query conditions (WHERE and HAVING clauses)
+* Result limits to prevent excessive data loading
+* Custom ordering specifications
+* Attribute selection for optimization
+* Custom data sources for specialized queries
+
+[source,java]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=entityQueryModel]
+----
+
+== Condition Management
+
+=== Table Condition Model
+
+The primary condition mechanism is the {url-javadoc}{framework-model}/is.codion.framework.model/is/codion/framework/model/EntityTableConditionModel.html[EntityTableConditionModel], which provides a flexible way to build complex queries:
+
+[source,java]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=tableConditionModel]
+----
+
+=== Additional WHERE Conditions
+
+Beyond the table condition model, you can add custom WHERE conditions:
+
+[source,java]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=additionalWhereConditions]
+----
+
+== Query Limits
+
+Prevent loading excessive data by setting query limits:
+
+[source,java]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=queryLimits]
+----
+
+== Result Ordering
+
+Specify how results should be ordered:
+
+[source,java]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=resultOrdering]
+----
+
+== Custom Data Sources
+
+For complex queries that can't be expressed through conditions, provide a custom data source:
+
+[source,java]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=customQueryDataSource]
+----
+
+== Condition Required
+
+Prevent accidental full table scans:
+
+[source,java]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=conditionRequired]
+----
+
+== Attribute Management
+
+Optimize queries by selecting only needed attributes:
+
+[source,java]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=attributeManagement]
+----
+
+== Configuration Properties
+
+.EntityQueryModel Configuration
+[cols="3,2,5"]
+|===
+|Property |Default |Description
+
+|`is.codion.framework.model.EntityTableModel.LIMIT`
+|1000
+|Default query limit
+
+|`is.codion.framework.model.EntityTableModel.CONDITION_REQUIRED`
+|false
+|Whether queries require at least one condition
+
+|`is.codion.framework.model.EntityQueryModel.SELECT_ATTRIBUTES`
+|empty
+|Default attributes to exclude from queries
+|===

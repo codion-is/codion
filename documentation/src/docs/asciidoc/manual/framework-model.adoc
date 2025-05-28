@@ -1,11 +1,19 @@
 = Framework Model
 :basedir: ..
 
+include::{basedir}/manual/framework-model-architecture.adoc[leveloffset=+1]
+
 include::{basedir}/manual/framework-entity-model.adoc[leveloffset=+1]
 
 include::{basedir}/manual/framework-entity-edit-model.adoc[leveloffset=+1]
 
 include::{basedir}/manual/framework-entity-table-model.adoc[leveloffset=+1]
+
+include::{basedir}/manual/framework-entity-query-model.adoc[leveloffset=+1]
+
+include::{basedir}/manual/framework-entity-search-model.adoc[leveloffset=+1]
+
+include::{basedir}/manual/framework-model-linking.adoc[leveloffset=+1]
 
 include::{basedir}/manual/framework-entity-application-model.adoc[leveloffset=+1]
 

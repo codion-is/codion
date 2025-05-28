@@ -1,0 +1,51 @@
+= Model Linking
+:dir-chinook-source: ../../../../../demos/chinook/src/main/java
+:url-javadoc: link:../api
+
+Model linking provides the mechanism for establishing master-detail relationships between entity models.
+The framework automatically synchronizes detail models based on master model selection and data changes.
+
+== Overview
+
+The {url-javadoc}{framework-model}/is/codion/framework/model/ModelLink.html[ModelLink] API enables automatic detail model filtering based on master selection and propagation of data changes.
+
+[source,java]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=simpleMasterDetail]
+----
+
+== Building Custom Links
+
+Create links with specific behavior:
+
+[source,java]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=customModelLink]
+----
+
+== Automatic Foreign Key Management
+
+The {url-javadoc}{framework-model}/is/codion/framework/model/ForeignKeyModelLink.html[ForeignKeyModelLink] specializes `ModelLink` for foreign key relationships:
+
+[source,java]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=foreignKeyLink]
+----
+
+== Simple One-to-Many
+
+Classic master-detail relationship:
+
+[source,java]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=simpleMasterDetail]
+----
+
+== Multi-Level Hierarchy
+
+Deep master-detail chains:
+
+[source,java]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=multiLevelHierarchy]
+----

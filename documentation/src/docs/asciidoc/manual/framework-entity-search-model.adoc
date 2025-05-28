@@ -1,0 +1,98 @@
+= EntitySearchModel
+:dir-chinook-source: ../../../../../demos/chinook/src/main/java
+:url-javadoc: link:../api
+
+The {url-javadoc}{framework-model}/is/codion/framework/model/EntitySearchModel.html[EntitySearchModel] is the model component underlying the {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/component/EntitySearchField.html[EntitySearchField] UI component.
+It provides entity search functionality with support for multi-column text searching and entity selection.
+
+== Overview
+
+`EntitySearchModel` provides:
+
+* Multi-column text searching with configurable wildcards
+* Single or multi-entity selection management
+* Result limiting to prevent excessive data retrieval
+* Case-sensitive or insensitive search options
+* The model component for `EntitySearchField` UI component
+* Automatic updates when entities are modified
+
+[source,java]
+.Basic search model
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=basicSearchModel]
+----
+
+== Search Configuration
+
+=== Search Settings
+
+Configure search behavior per column:
+
+[source,java]
+.Search settings configuration
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=searchSettings]
+----
+
+=== Wildcard Strategies
+
+The search model supports different wildcard configurations:
+
+* **Prefix search** (autocomplete style): `wildcardPrefix(false)`, `wildcardPostfix(true)` - "joh" → "joh%"
+* **Contains search**: `wildcardPrefix(true)`, `wildcardPostfix(true)` - "ohn" → "%ohn%"
+* **Exact search**: `wildcardPrefix(false)`, `wildcardPostfix(false)` - "john" → "john"
+* **Multi-word search**: `spaceAsWildcard(true)` - "john reyk" → "%john%reyk%"
+
+== Selection Management
+
+=== Single Selection Mode
+
+For selecting one entity at a time:
+
+[source,java]
+.Single selection search model
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=singleSelectionSearch]
+----
+
+=== Multi-Selection Mode
+
+For selecting multiple entities:
+
+[source,java]
+.Multi-selection search model
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkModelDemo.java[tags=multiSelectionSearch]
+----
+
+== Configuration Properties
+
+.EntitySearchModel Configuration
+[cols="3,2,5"]
+|===
+|Property |Default |Description
+
+|`is.codion.framework.model.EntitySearchModel.HANDLE_EDIT_EVENTS`
+|true
+|Whether search models react to entity edit events
+
+|`is.codion.framework.model.EntitySearchModel.DEFAULT_LIMIT`
+|100
+|Default result limit for search models
+
+|`is.codion.framework.model.EntitySearchModel.WILDCARD_PREFIX`
+|false
+|Default wildcard prefix setting
+
+|`is.codion.framework.model.EntitySearchModel.WILDCARD_POSTFIX`
+|true
+|Default wildcard postfix setting
+
+|`is.codion.framework.model.EntitySearchModel.SPACE_AS_WILDCARD`
+|false
+|Default space replacement setting
+
+|`is.codion.framework.model.EntitySearchModel.CASE_SENSITIVE`
+|false
+|Default case sensitivity setting
+|===
