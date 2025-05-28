@@ -17,6 +17,7 @@
 
 Codion’s domain model layer is a declarative, type-safe representation of the underlying database schema, designed to provide expressive CRUD functionality without annotation overhead. At its heart is the {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Entity.html[Entity] interface — representing a single row of data and its modifiable state, providing access to attribute values via its *get()* and *set()* methods.
 
+[#_core_framework_classes]
 == Core classes
 
 *{url-javadoc}{framework-domain}/is/codion/framework/domain/Domain.html[Domain]*::

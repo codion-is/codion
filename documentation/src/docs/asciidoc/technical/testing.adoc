@@ -67,7 +67,7 @@ The `test(EntityType)` method automatically verifies:
 
 === Custom Entity Factory
 
-For entities with complex validation rules or required relationships, provide a custom {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/EntityFactory.html[EntityFactory]:
+For entities with complex validation rules or required relationships, provide a custom {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/DomainTest.EntityFactory.html[EntityFactory]:
 
 [source,java]
 ----

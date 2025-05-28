@@ -30,6 +30,18 @@ import java.util.function.Predicate;
 
 /**
  * A selection model managing multiple selected items.
+ * <p>
+ * When multiple items are selected, the inherited {@link SingleSelection}
+ * {@link #index()} and {@link #item()} methods represent the minimum selected index
+ * and its corresponding item. If the selection is empty, {@link #index()} returns -1
+ * and {@link #item()} returns null.
+ * <p>
+ * Examples:
+ * <ul>
+ * <li>Selected indexes [2, 5, 8] → {@code index().get()} returns 2, {@code item().get()} returns item at index 2</li>
+ * <li>Selected indexes [7] → {@code index().get()} returns 7, {@code item().get()} returns item at index 7</li>
+ * <li>No selection → {@code index().get()} returns -1, {@code item().get()} returns null</li>
+ * </ul>
  * @param <T> the type of items
  */
 public interface MultiSelection<T> extends SingleSelection<T> {
@@ -50,7 +62,12 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 	State singleSelection();
 
 	/**
-	 * @return the {@link Value} controlling the selected index, -1 if selection is empty
+	 * Returns the {@link Value} controlling the selected index.
+	 * <p>
+	 * In a multi-selection context, this represents the minimum selected index.
+	 * When multiple items are selected, this value tracks the lowest index among
+	 * the selected items. The value's {@code get()} method returns -1 if the selection is empty.
+	 * @return the {@link Value} controlling the minimum selected index, whose {@code get()} method returns -1 if selection is empty
 	 */
 	Value<Integer> index();
 

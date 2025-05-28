@@ -404,15 +404,6 @@ image::modules/swing/framework-model/build/reports/dependency-graph/dependency-g
 image::modules/swing/framework-ui/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
-[discrete]
-=== codion-swing-framework-ui-test
-
-.Dependency graph
-[%collapsible]
-====
-image::modules/swing/framework-ui-test/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
-====
-
 == Tools
 
 [discrete]

@@ -70,7 +70,7 @@ public final class ArtistTablePanel extends EntityTablePanel {
 		List<Entity> artistsToDelete = new ArrayList<>(selectedArtists);
 		artistsToDelete.remove(artistToKeep);
 		int albumCount = tableModel().connection().count(where(Album.ARTIST_FK.in(artistsToDelete)));
-		if (confirmaCombination(artistsToDelete, artistToKeep, albumCount)) {
+		if (confirmCombination(artistsToDelete, artistToKeep, albumCount)) {
 			ArtistTableModel tableModel = (ArtistTableModel) tableModel();
 			progressWorkerDialog(() -> tableModel.combine(artistsToDelete, artistToKeep))
 							.owner(this)
@@ -83,7 +83,7 @@ public final class ArtistTablePanel extends EntityTablePanel {
 		}
 	}
 
-	private boolean confirmaCombination(List<Entity> artistsToDelete, Entity artistToKeep, int albumCount) {
+	private boolean confirmCombination(List<Entity> artistsToDelete, Entity artistToKeep, int albumCount) {
 		StringBuilder message = new StringBuilder();
 		if (albumCount > 0) {
 			message.append("Associate ").append(albumCount).append(" albums(s) ").append(lineSeparator())
