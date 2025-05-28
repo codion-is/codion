@@ -39,6 +39,7 @@ import is.codion.framework.model.EntityEditModel.DeleteEntities;
 import is.codion.framework.model.EntityEditModel.InsertEntities;
 import is.codion.framework.model.EntityEditModel.UpdateEntities;
 import is.codion.swing.common.ui.Cursors;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Control.Command;
@@ -200,6 +201,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		if (editModel.editor().exists().not().get()) {
 			editModel.editor().defaults();
 		}
+	}
+
+	@Override
+	public void updateUI() {
+		super.updateUI();
+		Utilities.updateUI(queryInspector);
 	}
 
 	@Override
