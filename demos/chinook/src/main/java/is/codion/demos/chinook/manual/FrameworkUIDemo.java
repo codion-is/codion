@@ -18,21 +18,36 @@
  */
 package is.codion.demos.chinook.manual;
 
+import is.codion.demos.chinook.domain.api.Chinook;
 import is.codion.demos.chinook.domain.api.Chinook.Customer;
 import is.codion.demos.chinook.domain.api.Chinook.Invoice;
 import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.demos.chinook.ui.CustomerEditPanel;
+import is.codion.demos.chinook.ui.MediaTypeEditPanel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntitySearchModel;
+import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.ui.EntityEditPanel;
+import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.component.EntitySearchField;
 import is.codion.swing.framework.ui.component.EntitySearchField.SearchIndicator;
 
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
 import java.util.List;
+
+import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
+import static java.awt.event.KeyEvent.VK_SPACE;
 
 final class FrameworkUIDemo {
 
@@ -188,5 +203,170 @@ final class FrameworkUIDemo {
 						.searchColumns(List.of(Customer.LASTNAME, Customer.EMAIL, Customer.PHONE))
 						.build();
 		// end::searchFieldProperConfiguration[]
+	}
+
+	// EntityEditPanel examples
+	void editPanelConfiguration(EntityConnectionProvider connectionProvider) {
+		// tag::editPanelConfiguration[]
+		class InvoiceEditPanel extends EntityEditPanel {
+			public InvoiceEditPanel(SwingEntityEditModel editModel) {
+				super(editModel, config ->
+								// Keep displaying newly inserted invoice since we'll continue
+								// working with it by adding invoice lines
+								config.clearAfterInsert(false));
+			}
+
+			@Override
+			protected void initializeUI() {
+				// UI setup
+			}
+		}
+		// end::editPanelConfiguration[]
+	}
+
+	void editPanelFocusManagement(EntityConnectionProvider connectionProvider) {
+		// tag::editPanelFocusManagement[]
+		class CustomerEditPanel extends EntityEditPanel {
+			public CustomerEditPanel(SwingEntityEditModel editModel) {
+				super(editModel);
+			}
+
+			@Override
+			protected void initializeUI() {
+				focus().initial().set(Customer.FIRSTNAME);
+				focus().afterInsert().set(Customer.ADDRESS);
+
+				// Create your input components...
+			}
+		}
+		// end::editPanelFocusManagement[]
+	}
+
+	void editPanelComboBoxPanel(EntityConnectionProvider connectionProvider) {
+		// tag::editPanelComboBoxPanel[]
+		class TrackEditPanel extends EntityEditPanel {
+			public TrackEditPanel(SwingEntityEditModel editModel) {
+				super(editModel);
+			}
+
+			@Override
+			protected void initializeUI() {
+				createComboBoxPanel(Track.MEDIATYPE_FK, this::createMediaTypeEditPanel)
+								.preferredWidth(160)
+								.includeAddButton(true)
+								.includeEditButton(true);
+
+				createSearchFieldPanel(Track.MEDIATYPE_FK, this::createMediaTypeEditPanel)
+								.preferredWidth(160)
+								.includeAddButton(true)
+								.includeEditButton(true);
+			}
+
+			private EntityEditPanel createMediaTypeEditPanel() {
+				return new MediaTypeEditPanel(new SwingEntityEditModel(Chinook.MediaType.TYPE, editModel().connectionProvider()));
+			}
+		}
+		// end::editPanelComboBoxPanel[]
+	}
+
+	void editPanelCustomComponent(EntityConnectionProvider connectionProvider) {
+		// tag::editPanelCustomComponent[]
+		class TrackEditPanel extends EntityEditPanel {
+			public TrackEditPanel(SwingEntityEditModel editModel) {
+				super(editModel);
+			}
+
+			@Override
+			protected void initializeUI() {
+				// Create a custom component
+				DurationComponentValue durationValue = createDurationComponent();
+
+				// Link it to the attribute value
+				editModel().editor().value(Track.MILLISECONDS).link(durationValue);
+				// And set the component it as the attribute component
+				component(Track.MILLISECONDS).set(durationValue.component());
+			}
+
+			private DurationComponentValue createDurationComponent() {
+				// Custom implementation
+				return new DurationComponentValue();
+			}
+		}
+		// end::editPanelCustomComponent[]
+	}
+
+	void editPanelKeyboardShortcuts(EntityConnectionProvider connectionProvider) {
+		// tag::editPanelKeyboardShortcuts[]
+		class CustomerEditPanel extends EntityEditPanel {
+			public CustomerEditPanel(SwingEntityEditModel editModel) {
+				super(editModel);
+			}
+
+			@Override
+			protected void initializeUI() {
+				createTextField(Customer.STATE)
+								.keyEvent(KeyEvents.builder(VK_SPACE)
+												.modifiers(CTRL_DOWN_MASK)
+												.action(Control.action(this::selectStateFromExistingValues)));
+			}
+
+			private void selectStateFromExistingValues(ActionEvent event) {
+				JTextField stateField = (JTextField) event.getSource();
+
+				Dialogs.listSelectionDialog(editModel().connection().select(Customer.STATE))
+								.owner(stateField)
+								.selectSingle()
+								.ifPresent(stateField::setText);
+			}
+		}
+		// end::editPanelKeyboardShortcuts[]
+	}
+
+	void editPanelDetailIntegration(EntityConnectionProvider connectionProvider) {
+		// tag::editPanelDetailIntegration[]
+		class InvoiceEditPanel extends EntityEditPanel {
+			private final EntityPanel invoiceLinePanel;
+
+			public InvoiceEditPanel(SwingEntityEditModel editModel, SwingEntityModel invoiceLineModel) {
+				super(editModel, config -> config.clearAfterInsert(false));
+				this.invoiceLinePanel = createInvoiceLinePanel(invoiceLineModel);
+			}
+
+			@Override
+			protected void initializeUI() {
+				// Initialize main edit controls...
+
+				// Add detail panel
+				add(invoiceLinePanel, BorderLayout.SOUTH);
+			}
+
+			private EntityPanel createInvoiceLinePanel(SwingEntityModel invoiceLineModel) {
+				// Create and return invoice line panel
+				return new EntityPanel(invoiceLineModel);
+			}
+		}
+		// end::editPanelDetailIntegration[]
+	}
+
+	static class DurationComponentValue extends AbstractComponentValue<Integer, JPanel> {
+
+		DurationComponentValue() {
+			super(new JPanel());
+		}
+
+		@Override
+		protected Integer getComponentValue() {
+			return 0;
+		}
+
+		@Override
+		protected void setComponentValue(Integer value) {}
+	}
+
+	private class CustomerSelectorFactory implements java.util.function.Function<EntitySearchField, EntitySearchField.Selector> {
+		@Override
+		public EntitySearchField.Selector apply(EntitySearchField entitySearchField) {
+			return null;
+		}
 	}
 }

@@ -1,4 +1,5 @@
 = EntityEditPanel
+:dir-chinook-source: ../../../../../demos/chinook/src/main/java
 :dir-source: ../../../../../demos/manual/src/main/java
 :url-javadoc: link:../api
 
@@ -126,6 +127,62 @@ include::{dir-source}/is/codion/manual/framework/EntityEditPanels.java[tags=item
 [source,java,indent=0]
 ----
 include::{dir-source}/is/codion/manual/framework/EntityEditPanels.java[tags=panelLabel]
+----
+
+== Advanced Patterns
+
+=== Configuration Options
+
+EntityEditPanel supports configuration via a lambda in the constructor:
+
+[source,java]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=editPanelConfiguration]
+----
+
+=== Focus Management
+
+Configure the focus behaviour:
+
+[source,java]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=editPanelFocusManagement]
+----
+
+=== Inline Edit Panels with ComboBoxPanel
+
+Create combo boxes with inline add/edit capabilities:
+
+[source,java]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=editPanelComboBoxPanel]
+----
+
+=== Custom Component Integration
+
+Replace default components with custom ones:
+
+[source,java]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=editPanelCustomComponent]
+----
+
+=== Keyboard Shortcuts and Actions
+
+Add custom keyboard shortcuts for enhanced productivity:
+
+[source,java]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=editPanelKeyboardShortcuts]
+----
+
+=== Detail Panel Integration
+
+EntityEditPanel can include detail panels for master-detail relationships:
+
+[source,java]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=editPanelDetailIntegration]
 ----
 
 == Custom actions
