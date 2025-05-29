@@ -1,0 +1,185 @@
+= EntitySearchField
+:dir-chinook-source: ../../../../../demos/chinook/src/main/java
+:dir-manual-source: ../../../../../demos/manual/src/main/java
+:url-javadoc: link:../api
+
+The {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/component/EntitySearchField.html[EntitySearchField] is a powerful UI component for entity selection through text-based searching.
+It extends `HintTextField` and provides a search interface that triggers on ENTER key, displaying results based on the configured search criteria.
+
+== Overview
+
+`EntitySearchField` provides:
+
+* Text-based entity searching with automatic result handling
+* Single or multi-entity selection
+* Customizable result selection UI (list, table, or custom)
+* Optional add/edit functionality for creating or modifying entities
+* Search progress indication (wait cursor or progress bar)
+* Automatic search on focus loss (optional)
+* Keyboard shortcuts for add/edit operations
+
+== Basic Usage
+
+[source,java]
+.Creating a basic search field
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=basicSearchField]
+----
+
+== Search Behavior
+
+The search field operates as follows:
+
+1. User types search text and presses ENTER
+2. If the search returns:
+   - **No results**: A message dialog is shown
+   - **Single result**: That entity is automatically selected
+   - **Multiple results**: A selection dialog appears
+
+== Selection Modes
+
+IMPORTANT: The `EntitySearchField` and its underlying `EntitySearchModel` must have matching selection modes. When building the field, you must call the appropriate method (`.singleSelection()` or `.multiSelection()`) that matches the model's configuration. A mismatch will throw an `IllegalArgumentException` at runtime.
+
+NOTE: Multi-selection is the default mode for `EntitySearchModel`. The `.singleSelection(false)` call in examples is shown for clarity but is not required.
+
+=== Single Selection
+
+For selecting one entity at a time:
+
+[source,java]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=singleSelectionSearchField]
+----
+
+=== Multi-Selection
+
+For selecting multiple entities (this is the default mode):
+
+[source,java]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=multiSelectionSearchField]
+----
+
+== Customization Options
+
+=== Custom Selectors
+
+The default selector uses a list for result selection. You can provide custom selectors:
+
+[source,java]
+.Custom table selector
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=customTableSelector]
+----
+
+=== Add and Edit Controls
+
+Enable inline entity creation and editing:
+
+[source,java]
+.Search field with add/edit capabilities
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=searchFieldWithAddEdit]
+----
+
+=== Search Indicators
+
+Configure how search progress is displayed:
+
+[source,java]
+.Progress bar indicator
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=searchFieldProgressBar]
+----
+
+=== Field Configuration
+
+[source,java]
+.Various field configurations
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=searchFieldConfiguration]
+----
+
+== Search Control
+
+You can trigger searches programmatically:
+
+[source,java]
+.Programmatic search control
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=searchFieldProgrammaticControl]
+----
+
+== Advanced Features
+
+=== Component Value Integration
+
+`EntitySearchField` implements `ComponentValue`, enabling reactive binding:
+
+[source,java]
+.Reactive search field
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=searchFieldReactiveBinding]
+----
+
+=== Custom Edit Component Factory
+
+Use custom search fields in edit panels:
+
+[source,java]
+.Custom factory example from Chinook demo
+----
+class TrackEditComponentFactory extends DefaultEditComponentFactory<Entity, EntitySearchField> {
+    
+    @Override
+    protected EntitySearchField.SingleSelectionBuilder searchField(
+            ForeignKey foreignKey,
+            EntityDefinition entityDefinition,
+            EntitySearchModel searchModel) {
+        return super.searchField(foreignKey, entityDefinition, searchModel)
+                .selectorFactory(new TrackSelectorFactory());
+    }
+}
+----
+
+== Configuration Properties
+
+.EntitySearchField Configuration
+[cols="3,2,5"]
+|===
+|Property |Default |Description
+
+|`is.codion.swing.framework.ui.component.EntitySearchField.searchIndicator`
+|WAIT_CURSOR
+|How to indicate ongoing searches (WAIT_CURSOR or PROGRESS_BAR)
+|===
+
+== Best Practices
+
+1. **Match Selection Modes**: Always ensure the field and model have the same `singleSelection` setting
+2. **Provide Clear Search Columns**: Configure the search model with appropriate searchable columns
+3. **Consider Performance**: Use result limits in the search model for large datasets
+4. **Keyboard Support**: Leverage the built-in keyboard shortcuts (INSERT for add, CTRL+INSERT for edit)
+5. **Custom Selectors**: Create custom selectors for complex selection scenarios
+
+== Common Pitfalls
+
+=== Selection Mode Mismatch
+
+The most common error is mismatched selection modes:
+
+[source,java]
+.Wrong - will throw IllegalArgumentException
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=searchFieldMismatchError]
+----
+
+=== Missing Search Configuration
+
+Ensure the search model has searchable columns configured:
+
+[source,java]
+.Proper search configuration
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=searchFieldProperConfiguration]
+----

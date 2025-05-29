@@ -11,4 +11,6 @@ include::{basedir}/manual/framework-entity-panel-builder.adoc[leveloffset=+1]
 
 include::{basedir}/manual/framework-entity-application-panel.adoc[leveloffset=+1]
 
+include::{basedir}/manual/framework-entity-search-field.adoc[leveloffset=+1]
+
 include::{basedir}/manual/framework-reports.adoc[leveloffset=+1]

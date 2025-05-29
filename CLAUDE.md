@@ -901,6 +901,23 @@ Use these demo projects for realistic examples:
 
 Never create artificial examples when real demo entities are available!
 
+### Documentation URL Pattern
+
+Codion uses a special URL pattern for Javadoc links to maintain compatibility across different JDK versions:
+
+```asciidoc
+:url-javadoc: link:../api
+
+// Then use with module name placeholders:
+{url-javadoc}{framework-model}/is/codion/framework/model/EntityModel.html
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/component/EntitySearchField.html
+```
+
+The module name placeholders (e.g., `{framework-model}`, `{swing-framework-ui}`) are defined in `documentation/build.gradle.kts` in the `tasks.asciidoctor` section. This pattern allows:
+- JDK 8 branch to have empty placeholders (no module system)
+- JDK 9+ branches to insert the proper module path
+- Single documentation source that works across all branches
+
 ## API Refinement Window
 
 **IMPORTANT**: Codion is in its final API refinement phase before promotion. The change window is **closing in the next few months** (open until promotion or when someone provably starts using it). After that, backward compatibility will be maintained.
