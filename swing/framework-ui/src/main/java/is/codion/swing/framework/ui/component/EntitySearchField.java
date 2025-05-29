@@ -197,6 +197,7 @@ public final class EntitySearchField extends HintTextField {
 	private final String separator;
 	private final boolean searchOnFocusLost;
 	private final boolean selectionToolTip;
+	private final boolean singleSelection;
 	private final State searching = State.state();
 	private final Consumer<Boolean> searchIndicator;
 	private final Function<EntitySearchField, Selector> selectorFactory;
@@ -231,6 +232,7 @@ public final class EntitySearchField extends HintTextField {
 		}
 		searchOnFocusLost = builder.searchOnFocusLost;
 		selectionToolTip = builder.selectionToolTip;
+		singleSelection = builder.singleSelection;
 		searchIndicator = createSearchIndicator(builder.searchIndicator);
 		searching.addConsumer(searchIndicator);
 		selectorFactory = builder.selectorFactory;
@@ -300,6 +302,13 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	/**
+	 * @return true if single selection is enabled
+	 */
+	public boolean singleSelection() {
+		return singleSelection;
+	}
+
+	/**
 	 * Instantiates a new {@link Builder.Factory}
 	 * @param searchModel the search model on which to base the search field
 	 * @return a new builder factory instance
@@ -366,6 +375,13 @@ public final class EntitySearchField extends HintTextField {
 		 * @return this builder instance
 		 */
 		B selectionToolTip(boolean selectionToolTip);
+
+		/**
+		 * Default false
+		 * @param singleSelection true if single selection should be enabled
+		 * @return this builder
+		 */
+		B singleSelection(boolean singleSelection);
 
 		/**
 		 * @param searchOnFocusLost true if search should be performed on focus lost
@@ -462,7 +478,7 @@ public final class EntitySearchField extends HintTextField {
 			model.search().strings().clear();
 		}
 		else {
-			model.search().strings().set(model.singleSelection() ? singleton(text) : asList(text.split(separator)));
+			model.search().strings().set(singleSelection ? singleton(text) : asList(text.split(separator)));
 		}
 	}
 
@@ -752,7 +768,7 @@ public final class EntitySearchField extends HintTextField {
 
 		private DefaultListSelector(EntitySearchField searchField) {
 			this.searchField = requireNonNull(searchField);
-			this.list = createList(searchField.model);
+			this.list = createList(searchField);
 			this.stringFactory = searchField.stringFactory;
 			this.selectorPanel = borderLayoutPanel()
 							.centerComponent(scrollPane(list).build())
@@ -787,9 +803,9 @@ public final class EntitySearchField extends HintTextField {
 			selectorPanel.setPreferredSize(preferredSize);
 		}
 
-		private FilterList<Entity> createList(EntitySearchModel searchModel) {
+		private FilterList<Entity> createList(EntitySearchField searchField) {
 			FilterListModel<Entity> listModel = FilterListModel.<Entity>filterListModel();
-			ListBuilder<Entity, ?, ?> listBuilder = searchModel.singleSelection() ?
+			ListBuilder<Entity, ?, ?> listBuilder = searchField.singleSelection() ?
 							Components.list(listModel).selectedItem() : Components.list(listModel).selectedItems();
 
 			return listBuilder.mouseListener(new DoubleClickListener())
@@ -896,7 +912,7 @@ public final class EntitySearchField extends HintTextField {
 											entityTableColumns(tableModel.entityDefinition()))
 							.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 							.cellRendererFactory(EntityTableCellRenderer.factory())
-							.selectionMode(searchField.model.singleSelection() ?
+							.selectionMode(searchField.singleSelection() ?
 											ListSelectionModel.SINGLE_SELECTION : ListSelectionModel.MULTIPLE_INTERVAL_SELECTION)
 							.doubleClick(selectControl)
 							.keyEvent(KeyEvents.builder(VK_ENTER)
@@ -1082,9 +1098,6 @@ public final class EntitySearchField extends HintTextField {
 
 		private DefaultMultiSelectionBuilder(EntitySearchModel searchModel) {
 			super(searchModel);
-			if (searchModel.singleSelection()) {
-				throw new IllegalArgumentException("EntitySearchModel is configured for single selection");
-			}
 		}
 
 		@Override
@@ -1098,9 +1111,6 @@ public final class EntitySearchField extends HintTextField {
 
 		private DefaultSingleSelectionBuilder(EntitySearchModel searchModel) {
 			super(searchModel);
-			if (!searchModel.singleSelection()) {
-				throw new IllegalArgumentException("EntitySearchModel is not configured for single selection");
-			}
 		}
 
 		@Override
@@ -1121,7 +1131,8 @@ public final class EntitySearchField extends HintTextField {
 		private boolean editable = true;
 		private boolean searchHintEnabled = true;
 		private boolean searchOnFocusLost = true;
-		private boolean selectionToolTip;
+		private boolean selectionToolTip = true;
+		private boolean singleSelection = false;
 		private SearchIndicator searchIndicator = SEARCH_INDICATOR.get();
 		private Function<EntitySearchField, Selector> selectorFactory = new ListSelectorFactory();
 		private Function<Entity, String> stringFactory = DEFAULT_TO_STRING;
@@ -1132,7 +1143,6 @@ public final class EntitySearchField extends HintTextField {
 
 		private AbstractBuilder(EntitySearchModel searchModel) {
 			this.searchModel = searchModel;
-			this.selectionToolTip = !searchModel.singleSelection();
 		}
 
 		@Override
@@ -1189,6 +1199,13 @@ public final class EntitySearchField extends HintTextField {
 		@Override
 		public B selectionToolTip(boolean selectionToolTip) {
 			this.selectionToolTip = selectionToolTip;
+			return (B) this;
+		}
+
+		@Override
+		public B singleSelection(boolean singleSelection) {
+			this.singleSelection = singleSelection;
+			this.selectionToolTip = !singleSelection;
 			return (B) this;
 		}
 

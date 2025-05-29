@@ -66,24 +66,20 @@ final class FrameworkUIDemo {
 
 	void singleSelectionSearchField(EntityConnectionProvider connectionProvider) {
 		// tag::singleSelectionSearchField[]
-		EntitySearchModel searchModel = EntitySearchModel.builder(Customer.TYPE, connectionProvider)
-						.singleSelection(true)  // Must match field configuration
-						.build();
+		EntitySearchModel searchModel = EntitySearchModel.builder(Customer.TYPE, connectionProvider).build();
 
 		EntitySearchField searchField = EntitySearchField.builder(searchModel)
-						.singleSelection()  // Must match model configuration
+						.singleSelection()
 						.build();
 		// end::singleSelectionSearchField[]
 	}
 
 	void multiSelectionSearchField(EntityConnectionProvider connectionProvider) {
 		// tag::multiSelectionSearchField[]
-		EntitySearchModel searchModel = EntitySearchModel.builder(Track.TYPE, connectionProvider)
-						.singleSelection(false)  // Must match field configuration
-						.build();
+		EntitySearchModel searchModel = EntitySearchModel.builder(Track.TYPE, connectionProvider).build();
 
 		EntitySearchField searchField = EntitySearchField.builder(searchModel)
-						.multiSelection()  // Must match model configuration
+						.multiSelection()
 						.build();
 		// end::multiSelectionSearchField[]
 	}
@@ -182,19 +178,6 @@ final class FrameworkUIDemo {
 						.searchIndicator(SearchIndicator.PROGRESS_BAR)
 						.build();
 		// end::searchFieldProgressBar[]
-	}
-
-	void searchFieldMismatchError(EntityConnectionProvider connectionProvider) {
-		// tag::searchFieldMismatchError[]
-		// Wrong - will throw IllegalArgumentException
-		EntitySearchModel model = EntitySearchModel.builder(Customer.TYPE, connectionProvider)
-						.singleSelection(true)
-						.build();
-
-		EntitySearchField field = EntitySearchField.builder(model)
-						.multiSelection()  // Mismatch!
-						.build();
-		// end::searchFieldMismatchError[]
 	}
 
 	void searchFieldProperConfiguration(EntityConnectionProvider connectionProvider) {

@@ -119,9 +119,7 @@ public class EntityConditionModelFactory implements Supplier<Map<Attribute<?>, C
 	 * @return a search model to use for the equal value
 	 */
 	protected EntitySearchModel createEqualSearchModel(ForeignKey foreignKey) {
-		return EntitySearchModel.builder(requireNonNull(foreignKey).referencedType(), connectionProvider)
-						.singleSelection(true)
-						.build();
+		return EntitySearchModel.builder(requireNonNull(foreignKey).referencedType(), connectionProvider).build();
 	}
 
 	/**

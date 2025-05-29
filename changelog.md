@@ -32,6 +32,8 @@ Codion Change Log
 - fetchDepth renamed referenceDepth.
 - ForeignKeyDefinition.Builder.referenceDepth() added, ForeignKeyDefiner.foreignKey(referenceDepth) removed.
 - TransientAttribute.modifiesEntity() and Builder.modifiesEntity() renamed modifies().
+### is.codion.framework.model
+- EntitySearchModel.singleSelection() removed.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel, support table now known as lookup table.
 - NullableCheckBox, FlatLaf hack removed.
@@ -42,6 +44,7 @@ Codion Change Log
 - SelectQueryInspector.BasicFormatterImpl now inserts line breaks in insert column and value lists.
 - EntityEditPanel, EntityTablePanel.updateUI() now includes queryInspector.
 - EntityApplicationPanel, log file/dir controls now with icons.
+- EntitySearchField.singleSelection() added.
 ### is.codion.swing.framework.ui.test
 - is.codion.swing.framework.ui.test module removed
 

@@ -71,7 +71,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	private final DefaultSelection selection = new DefaultSelection();
 	private final EntityConnectionProvider connectionProvider;
 	private final Map<Column<String>, Settings> settings;
-	private final boolean singleSelection;
 	private final Value<Supplier<Condition>> condition;
 	private final Value<Integer> limit;
 
@@ -91,7 +90,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		this.orderBy = builder.orderBy;
 		this.settings = unmodifiableMap(searchColumns.stream()
 						.collect(toMap(Function.identity(), column -> new DefaultSettings())));
-		this.singleSelection = builder.singleSelection;
 		this.limit = Value.nullable(builder.limit);
 		if (builder.handleEditEvents) {
 			editEvents().updated(entityDefinition.type()).addWeakConsumer(updateListener);
@@ -137,11 +135,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	@Override
 	public Value<Supplier<Condition>> condition() {
 		return condition;
-	}
-
-	@Override
-	public boolean singleSelection() {
-		return singleSelection;
 	}
 
 	private void validateType(Entity entity) {
@@ -260,12 +253,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
 		@Override
 		public void validate(Set<Entity> entitySet) {
-			if (entitySet != null) {
-				if (entitySet.size() > 1 && singleSelection) {
-					throw new IllegalArgumentException("This EntitySearchModel does not allow the selection of multiple entities");
-				}
-				entitySet.forEach(DefaultEntitySearchModel.this::validateType);
-			}
+			entitySet.forEach(DefaultEntitySearchModel.this::validateType);
 		}
 	}
 
@@ -336,7 +324,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		private Collection<Column<String>> searchColumns;
 		private @Nullable Supplier<Condition> condition;
 		private Collection<Attribute<?>> attributes = emptyList();
-		private boolean singleSelection = false;
 		private @Nullable Integer limit = DEFAULT_LIMIT.get();
 		private boolean handleEditEvents = HANDLE_EDIT_EVENTS.getOrThrow();
 		private @Nullable OrderBy orderBy;
@@ -377,12 +364,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 							.map(OrderByColumn::column)
 							.collect(toList()));
 			this.orderBy = orderBy;
-			return this;
-		}
-
-		@Override
-		public Builder singleSelection(boolean singleSelection) {
-			this.singleSelection = singleSelection;
 			return this;
 		}
 

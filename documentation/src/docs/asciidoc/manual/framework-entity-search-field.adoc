@@ -164,16 +164,6 @@ class TrackEditComponentFactory extends DefaultEditComponentFactory<Entity, Enti
 
 == Common Pitfalls
 
-=== Selection Mode Mismatch
-
-The most common error is mismatched selection modes:
-
-[source,java]
-.Wrong - will throw IllegalArgumentException
-----
-include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=searchFieldMismatchError]
-----
-
 === Missing Search Configuration
 
 Ensure the search model has searchable columns configured:

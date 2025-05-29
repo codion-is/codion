@@ -112,11 +112,6 @@ public interface EntitySearchModel {
 	Map<Column<String>, Settings> settings();
 
 	/**
-	 * @return true if single selection is enabled
-	 */
-	boolean singleSelection();
-
-	/**
 	 * Manages the search strings and provides search results.
 	 */
 	interface Search {
@@ -220,13 +215,6 @@ public interface EntitySearchModel {
 		 * @return this builder
 		 */
 		Builder orderBy(OrderBy orderBy);
-
-		/**
-		 * Default false
-		 * @param singleSelection true if single selection should be enabled
-		 * @return this builder
-		 */
-		Builder singleSelection(boolean singleSelection);
 
 		/**
 		 * @param handleEditEvents controls whether this search model should handle entity edit events, by updating any updated items and removing deleted ones

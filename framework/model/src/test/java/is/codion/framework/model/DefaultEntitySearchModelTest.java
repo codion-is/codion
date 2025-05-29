@@ -97,15 +97,6 @@ public final class DefaultEntitySearchModelTest {
 	}
 
 	@Test
-	void singleSelection() {
-		EntitySearchModel model = new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
-						.singleSelection(true)
-						.build();
-		List<Entity> entities = asList(ENTITIES.entity(Employee.TYPE), ENTITIES.entity(Employee.TYPE));
-		assertThrows(IllegalArgumentException.class, () -> model.selection().entities().set(entities));
-	}
-
-	@Test
 	void searchModel() {
 		searchModel.search().strings().set(singleton("joh"));
 		assertTrue(searchModel.selection().empty().get());

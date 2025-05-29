@@ -362,7 +362,6 @@ public final class FrameworkModelDemo {
 		// tag::basicSearchModel[]
 		EntitySearchModel searchModel = EntitySearchModel.builder(Customer.TYPE, connectionProvider)
 						.searchColumns(List.of(Customer.FIRSTNAME, Customer.LASTNAME, Customer.EMAIL))
-						.singleSelection(true)
 						.limit(50)
 						.build();
 
@@ -399,7 +398,6 @@ public final class FrameworkModelDemo {
 		// tag::singleSelectionSearch[]
 		EntitySearchModel searchModel = EntitySearchModel.builder(Album.TYPE, connectionProvider)
 						.searchColumns(List.of(Album.TITLE))
-						.singleSelection(true)
 						.build();
 
 		// Set selection programmatically
@@ -422,7 +420,6 @@ public final class FrameworkModelDemo {
 		// tag::multiSelectionSearch[]
 		EntitySearchModel searchModel = EntitySearchModel.builder(Track.TYPE, connectionProvider)
 						.searchColumns(List.of(Track.NAME))
-						.singleSelection(false)
 						.build();
 
 		// Get all selected entities

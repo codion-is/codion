@@ -56,9 +56,7 @@ public class EntitySearchFieldTest {
 
 	@Test
 	void componentValue() {
-		EntitySearchModel singleSelectionSearchModel = EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER)
-						.singleSelection(true)
-						.build();
+		EntitySearchModel singleSelectionSearchModel = EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build();
 		ComponentValue<Entity, EntitySearchField> singleSelectionValue = EntitySearchField.builder(singleSelectionSearchModel)
 						.singleSelection()
 						.buildValue();
@@ -75,8 +73,6 @@ public class EntitySearchFieldTest {
 		assertNull(singleSelectionValue.get());
 
 		Entity research = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("RESEARCH"));
-
-		assertThrows(IllegalArgumentException.class, () -> singleSelectionSearchModel.selection().entities().set(Arrays.asList(sales, research)));
 
 		singleSelectionValue.clear();
 		assertTrue(singleSelectionSearchModel.selection().empty().get());
