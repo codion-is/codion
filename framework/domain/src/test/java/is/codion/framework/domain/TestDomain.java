@@ -28,7 +28,7 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.DerivedAttribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.ConditionType;
-import is.codion.framework.domain.entity.query.SelectQuery;
+import is.codion.framework.domain.entity.query.EntitySelectQuery;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -522,8 +522,7 @@ public final class TestDomain extends DomainModel {
 						.keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
 						.orderBy(ascending(Employee.DEPARTMENT_NO, Employee.NAME))
 						.stringFactory(Employee.NAME)
-						.selectQuery(SelectQuery.builder()
-										.build())
+						.selectQuery(EntitySelectQuery.builder().build())
 						.condition(Employee.CONDITION, (columns, values) -> "")
 						.caption("Employee")
 						.build());

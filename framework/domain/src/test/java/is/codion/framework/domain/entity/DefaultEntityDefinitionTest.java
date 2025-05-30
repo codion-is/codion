@@ -31,7 +31,7 @@ import is.codion.framework.domain.TestDomain.Employee;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.domain.entity.query.SelectQuery;
+import is.codion.framework.domain.entity.query.EntitySelectQuery;
 
 import org.junit.jupiter.api.Test;
 
@@ -66,7 +66,7 @@ public class DefaultEntityDefinitionTest {
 																.column()
 																.groupBy(true))
 								.tableName("tableName")
-								.selectQuery(SelectQuery.builder()
+								.selectQuery(EntitySelectQuery.builder()
 												.columns("*")
 												.from("dual")
 												.groupBy("name")
@@ -86,10 +86,10 @@ public class DefaultEntityDefinitionTest {
 		assertEquals("tableName", definition.tableName());
 		assertNotNull(definition.primaryKey().generator());
 		assertFalse(definition.primaryKey().generated());
-		SelectQuery selectQuery = definition.selectQuery().orElseThrow(IllegalStateException::new);
-		assertEquals("*", selectQuery.columns());
-		assertEquals("dual", selectQuery.from());
-		assertEquals("name", selectQuery.groupBy());
+		EntitySelectQuery query = definition.selectQuery().orElseThrow(IllegalStateException::new);
+		assertEquals("*", query.columns());
+		assertEquals("dual", query.from());
+		assertEquals("name", query.groupBy());
 		assertFalse(definition.smallDataset());
 		assertTrue(definition.readOnly());
 		assertEquals("selectTableName", definition.selectTableName());
@@ -297,7 +297,7 @@ public class DefaultEntityDefinitionTest {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
 				add(entityType.define(entityType.integerColumn("p0").define().primaryKey())
-								.selectQuery(SelectQuery.builder()
+								.selectQuery(EntitySelectQuery.builder()
 												.having(havingClause)
 												.build())
 								.build());

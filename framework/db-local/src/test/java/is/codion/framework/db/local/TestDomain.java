@@ -35,7 +35,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.ConditionType;
-import is.codion.framework.domain.entity.query.SelectQuery;
+import is.codion.framework.domain.entity.query.EntitySelectQuery;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -414,7 +414,7 @@ public final class TestDomain extends DomainModel {
 														.expression("min(comm)")
 														.aggregate(true))
 						.tableName("employees.employee")
-						.selectQuery(SelectQuery.builder()
+						.selectQuery(EntitySelectQuery.builder()
 										.having("job <> 'PRESIDENT'")
 										.build())
 						.build());
@@ -457,7 +457,7 @@ public final class TestDomain extends DomainModel {
 														.column(),
 										EmpnoDeptno.EMPNO.define()
 														.primaryKey())
-						.selectQuery(SelectQuery.builder()
+						.selectQuery(EntitySelectQuery.builder()
 										.from("employees.employee e, employees.department d")
 										.where("e.deptno = d.deptno")
 										.orderBy("e.deptno, e.ename")
@@ -482,7 +482,7 @@ public final class TestDomain extends DomainModel {
 						.tableName("employees.employee")
 						.orderBy(OrderBy.descending(Query.ENAME))
 						.selectTableName("employees.employee e")
-						.selectQuery(SelectQuery.builder()
+						.selectQuery(EntitySelectQuery.builder()
 										.columns("empno, ename")
 										.orderBy("ename")
 										.build())
@@ -504,7 +504,7 @@ public final class TestDomain extends DomainModel {
 														.column())
 						.tableName("employees.employee e")
 						.orderBy(OrderBy.descending(QueryColumnsWhereClause.ENAME))
-						.selectQuery(SelectQuery.builder()
+						.selectQuery(EntitySelectQuery.builder()
 										.columns("e.empno, e.ename")
 										.where("e.deptno > 10")
 										.build())
@@ -525,7 +525,7 @@ public final class TestDomain extends DomainModel {
 										QueryFromClause.ENAME.define()
 														.column())
 						.orderBy(OrderBy.descending(QueryFromClause.ENAME))
-						.selectQuery(SelectQuery.builder()
+						.selectQuery(EntitySelectQuery.builder()
 										.from("employees.employee")
 										.orderBy("ename")
 										.build())
@@ -546,7 +546,7 @@ public final class TestDomain extends DomainModel {
 										QueryFromWhereClause.ENAME.define()
 														.column())
 						.orderBy(OrderBy.descending(QueryFromWhereClause.ENAME))
-						.selectQuery(SelectQuery.builder()
+						.selectQuery(EntitySelectQuery.builder()
 										.from("employees.employee")
 										.where("deptno > 10")
 										.orderBy("deptno")

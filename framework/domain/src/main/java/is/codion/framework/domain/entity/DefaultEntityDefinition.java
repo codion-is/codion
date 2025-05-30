@@ -29,7 +29,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey.Reference;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.condition.ConditionProvider;
 import is.codion.framework.domain.entity.condition.ConditionType;
-import is.codion.framework.domain.entity.query.SelectQuery;
+import is.codion.framework.domain.entity.query.EntitySelectQuery;
 
 import org.jspecify.annotations.Nullable;
 
@@ -88,7 +88,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 	private final transient @Nullable String selectTableName;
 	private final transient KeyGenerator keyGenerator;
 	private final transient boolean optimisticLocking;
-	private final transient @Nullable SelectQuery selectQuery;
+	private final transient @Nullable EntitySelectQuery selectQuery;
 	private final transient @Nullable Map<ConditionType, ConditionProvider> conditionProviders;
 	private final Map<ForeignKey, EntityDefinition> referencedEntities = new HashMap<>();
 	private final EntityAttributes entityAttributes;
@@ -191,7 +191,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 	}
 
 	@Override
-	public Optional<SelectQuery> selectQuery() {
+	public Optional<EntitySelectQuery> selectQuery() {
 		return Optional.ofNullable(selectQuery);
 	}
 
@@ -781,7 +781,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		private boolean optimisticLocking = OPTIMISTIC_LOCKING.getOrThrow();
 		private @Nullable OrderBy orderBy;
 		private @Nullable String selectTableName;
-		private @Nullable SelectQuery selectQuery;
+		private @Nullable EntitySelectQuery selectQuery;
 		private Function<Entity, String> stringFactory = DefaultEntity.DEFAULT_STRING_FACTORY;
 		private boolean cacheToString = true;
 		private Comparator<Entity> comparator = Text.collator();
@@ -879,7 +879,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		}
 
 		@Override
-		public Builder selectQuery(SelectQuery selectQuery) {
+		public Builder selectQuery(EntitySelectQuery selectQuery) {
 			this.selectQuery = requireNonNull(selectQuery);
 			return this;
 		}

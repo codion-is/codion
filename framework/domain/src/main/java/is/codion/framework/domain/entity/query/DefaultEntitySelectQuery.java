@@ -22,7 +22,7 @@ import org.jspecify.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultSelectQuery implements SelectQuery {
+final class DefaultEntitySelectQuery implements EntitySelectQuery {
 
 	private final @Nullable String columns;
 	private final @Nullable String from;
@@ -31,7 +31,7 @@ final class DefaultSelectQuery implements SelectQuery {
 	private final @Nullable String having;
 	private final @Nullable String orderBy;
 
-	DefaultSelectQuery(DefaultSelectQueryBuilder builder) {
+	DefaultEntitySelectQuery(DefaultBuilder builder) {
 		this.columns = builder.columns;
 		this.from = builder.from;
 		this.where = builder.where;
@@ -70,7 +70,7 @@ final class DefaultSelectQuery implements SelectQuery {
 		return orderBy;
 	}
 
-	static class DefaultSelectQueryBuilder implements Builder {
+	static class DefaultBuilder implements Builder {
 
 		private @Nullable String from;
 		private @Nullable String columns;
@@ -138,8 +138,8 @@ final class DefaultSelectQuery implements SelectQuery {
 		}
 
 		@Override
-		public SelectQuery build() {
-			return new DefaultSelectQuery(this);
+		public EntitySelectQuery build() {
+			return new DefaultEntitySelectQuery(this);
 		}
 	}
 }

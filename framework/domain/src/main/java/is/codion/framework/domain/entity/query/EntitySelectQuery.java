@@ -24,7 +24,7 @@ import org.jspecify.annotations.Nullable;
  * Defines a select query or parts of a select query, that is, from, columns, where, groupBy, having and orderBy clauses.
  * {@link Builder} provided by {@link #builder()}.
  */
-public interface SelectQuery {
+public interface EntitySelectQuery {
 
 	/**
 	 * @return the COLUMNS clause
@@ -58,14 +58,14 @@ public interface SelectQuery {
 
 	/**
 	 * Creates a {@link Builder}
-	 * @return a new {@link SelectQuery.Builder} instance.
+	 * @return a new {@link EntitySelectQuery.Builder} instance.
 	 */
 	static Builder builder() {
-		return new DefaultSelectQuery.DefaultSelectQueryBuilder();
+		return new DefaultEntitySelectQuery.DefaultBuilder();
 	}
 
 	/**
-	 * Builds a {@link SelectQuery}.
+	 * Builds a {@link EntitySelectQuery}.
 	 */
 	interface Builder {
 
@@ -112,8 +112,8 @@ public interface SelectQuery {
 		Builder orderBy(String orderBy);
 
 		/**
-		 * @return a new SelectQuery instance
+		 * @return a new {@link EntitySelectQuery} instance
 		 */
-		SelectQuery build();
+		EntitySelectQuery build();
 	}
 }

@@ -29,7 +29,7 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.Condition;
-import is.codion.framework.domain.entity.query.SelectQuery;
+import is.codion.framework.domain.entity.query.EntitySelectQuery;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -239,7 +239,7 @@ final class SelectQueries {
 			}
 		}
 
-		private void fromSelectQuery(SelectQuery selectQuery) {
+		private void fromSelectQuery(EntitySelectQuery selectQuery) {
 			if (selectQuery.columns() != null) {
 				columns(selectQuery.columns());
 				selectedColums = defaultSelectColumns();

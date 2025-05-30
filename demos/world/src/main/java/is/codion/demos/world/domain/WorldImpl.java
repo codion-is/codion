@@ -26,7 +26,7 @@ import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Column.Converter;
-import is.codion.framework.domain.entity.query.SelectQuery;
+import is.codion.framework.domain.entity.query.EntitySelectQuery;
 
 import java.sql.Statement;
 import java.util.List;
@@ -343,7 +343,7 @@ public final class WorldImpl extends DomainModel {
 														.caption("City location")
 														.columnClass(String.class, new LocationConverter())
 														.comparator(new LocationComparator()))
-						.selectQuery(SelectQuery.builder()
+						.selectQuery(EntitySelectQuery.builder()
 										.from("world.country left outer join world.city on city.countrycode = country.code")
 										.build())
 						.orderBy(OrderBy.builder()

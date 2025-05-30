@@ -33,7 +33,7 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.StringFactory;
 import is.codion.framework.domain.entity.attribute.Column.Converter;
-import is.codion.framework.domain.entity.query.SelectQuery;
+import is.codion.framework.domain.entity.query.EntitySelectQuery;
 
 import java.math.BigDecimal;
 import java.sql.Array;
@@ -332,7 +332,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.readOnly(true)
 														.selected(false))
 						.keyGenerator(identity())
-						.selectQuery(SelectQuery.builder()
+						.selectQuery(EntitySelectQuery.builder()
 										// Override the default FROM clause, joining
 										// the ALBUM and ARTIST tables in order to
 										// have the ARTIST.NAME column available

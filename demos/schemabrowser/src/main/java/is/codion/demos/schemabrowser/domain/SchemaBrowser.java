@@ -26,7 +26,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.StringFactory;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.framework.domain.entity.query.SelectQuery;
+import is.codion.framework.domain.entity.query.EntitySelectQuery;
 
 import java.sql.SQLException;
 import java.util.Locale;
@@ -109,7 +109,7 @@ public final class SchemaBrowser extends DomainModel {
 		if (!tableQueryFrom.isEmpty()) {
 			String tableQueryColumns = bundle.getString("t_table_query_columns");
 			String tableQueryWhere = bundle.getString("t_table_query_where");
-			tableBuilder.selectQuery(SelectQuery.builder()
+			tableBuilder.selectQuery(EntitySelectQuery.builder()
 							.columns(tableQueryColumns)
 							.from(tableQueryFrom)
 							.where(tableQueryWhere)

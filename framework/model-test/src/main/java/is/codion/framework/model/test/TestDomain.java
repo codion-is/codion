@@ -28,7 +28,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.ConditionType;
-import is.codion.framework.domain.entity.query.SelectQuery;
+import is.codion.framework.domain.entity.query.EntitySelectQuery;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -355,7 +355,7 @@ public final class TestDomain extends DomainModel {
 														.expression("min(comm)")
 														.aggregate(true))
 						.tableName("employees.employee")
-						.selectQuery(SelectQuery.builder()
+						.selectQuery(EntitySelectQuery.builder()
 										.having("job <> 'PRESIDENT'")
 										.build())
 						.condition(Job.ADDITIONAL_HAVING, (attributes, values) -> "count(*) > 1")

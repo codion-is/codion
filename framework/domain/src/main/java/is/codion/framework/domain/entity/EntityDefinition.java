@@ -27,7 +27,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.condition.ConditionProvider;
 import is.codion.framework.domain.entity.condition.ConditionType;
-import is.codion.framework.domain.entity.query.SelectQuery;
+import is.codion.framework.domain.entity.query.EntitySelectQuery;
 
 import org.jspecify.annotations.Nullable;
 
@@ -201,7 +201,7 @@ public interface EntityDefinition {
 	/**
 	 * @return the select query to use when selecting entities of this type, an empty Optional if none is available
 	 */
-	Optional<SelectQuery> selectQuery();
+	Optional<EntitySelectQuery> selectQuery();
 
 	/**
 	 * Returns the function responsible for providing toString values for this entity type.
@@ -402,7 +402,7 @@ public interface EntityDefinition {
 		 * @param selectQuery the select query to use for this entity type
 		 * @return this {@link Builder} instance
 		 */
-		Builder selectQuery(SelectQuery selectQuery);
+		Builder selectQuery(EntitySelectQuery selectQuery);
 
 		/**
 		 * Sets the string factory, using the value of the given attribute. Shortcut for:
