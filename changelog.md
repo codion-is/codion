@@ -34,6 +34,8 @@ Codion Change Log
 - fetchDepth renamed referenceDepth.
 - ForeignKeyDefinition.Builder.referenceDepth() added, ForeignKeyDefiner.foreignKey(referenceDepth) removed.
 - TransientAttribute.modifiesEntity() and Builder.modifiesEntity() renamed modifies().
+### is.codion.framework.db.local
+- SelectQueriesTest improved.
 ### is.codion.framework.model
 - EntitySearchModel.singleSelection() removed.
 ### is.codion.swing.framework.ui
