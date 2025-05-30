@@ -103,18 +103,30 @@ final class SelectQueries {
 		}
 
 		Builder select(Select select, boolean useWhereClause) {
+			// First apply any EntitySelectQuery settings (custom columns, from, where, etc.)
 			entitySelectQuery();
+			
+			// Only set columns from the Select object if they weren't already hardcoded by EntitySelectQuery
+			// This prevents overriding custom column clauses like "e.empno, e.ename" with default columns
 			if (!columnsClauseFromSelectQuery) {
 				setColumns(select);
 			}
 			//default from clause is handled by from()
+			
+			// Apply WHERE clause from Select unless explicitly disabled (e.g., for value selection)
 			if (useWhereClause) {
 				where(select.where());
 			}
+			
+			// Apply GROUP BY from column definitions if not already set by EntitySelectQuery
 			if (groupBy == null) {
 				groupBy(groupByClause());
 			}
+			
+			// Combine HAVING conditions from both Select and EntitySelectQuery
 			havingCondition(select.having());
+			
+			// Apply remaining clauses from Select, which take precedence over EntitySelectQuery
 			select.orderBy().ifPresent(this::setOrderBy);
 			forUpdate(select.forUpdate());
 			select.limit().ifPresent(this::limit);
@@ -134,6 +146,8 @@ final class SelectQueries {
 		}
 
 		Builder count(Count count) {
+			// For COUNT queries, we build a subquery that selects only the primary key columns
+			// This allows us to count distinct rows while respecting WHERE and HAVING conditions
 			return columns(COUNT).from("(" + builder(definition)
 							.select(Select.where(count.where())
 											.having(count.having())
@@ -230,10 +244,12 @@ final class SelectQueries {
 		private void setColumns(Select select) {
 			Collection<Attribute<?>> attributes = select.attributes();
 			if (attributes.isEmpty()) {
+				// No specific attributes requested - use default selectable columns (marked with .selected(true))
 				this.selectedColums = defaultSelectColumns();
 				columns(defaultColumnsClause());
 			}
 			else {
+				// Specific attributes requested - resolve columns and foreign key references
 				this.selectedColums = columnsToSelect(attributes);
 				columns(columnsClause(selectedColums));
 			}
@@ -241,13 +257,17 @@ final class SelectQueries {
 
 		private void fromSelectQuery(EntitySelectQuery selectQuery) {
 			if (selectQuery.columns() != null) {
+				// EntitySelectQuery has custom column clause (e.g., "e.empno, e.ename") - use it directly
 				columns(selectQuery.columns());
 				selectedColums = defaultSelectColumns();
-				columnsClauseFromSelectQuery = true;
+				columnsClauseFromSelectQuery = true; // Flag to prevent overriding with Select.attributes()
 			}
 			else {
+				// No custom columns - use default selectable columns
 				columns(defaultColumnsClause());
 			}
+			
+			// Apply all clauses from EntitySelectQuery - these form the base query structure
 			from(selectQuery.from());
 			where(selectQuery.where());
 			orderBy(selectQuery.orderBy());
@@ -256,7 +276,9 @@ final class SelectQueries {
 		}
 
 		private String from() {
+			// Use custom FROM clause if provided by EntitySelectQuery, otherwise use appropriate table name
 			if (from == null) {
+				// For UPDATE operations, use the base table; for SELECT, use the view/table optimized for reading
 				return forUpdate ? definition.tableName() : definition.selectTableName();
 			}
 
@@ -264,13 +286,18 @@ final class SelectQueries {
 		}
 
 		private List<ColumnDefinition<?>> columnsToSelect(Collection<Attribute<?>> selectAttributes) {
+			// Always include primary key columns to ensure entities can be properly constructed
 			Set<ColumnDefinition<?>> columnsToSelect = new HashSet<>(definition.primaryKey().definitions());
+			
+			// Add columns for each requested attribute
 			selectAttributes.forEach(attribute -> {
 				if (attribute instanceof ForeignKey) {
+					// For foreign keys, include the foreign key column(s) and any additional referenced columns
 					((ForeignKey) attribute).references().forEach(reference ->
 									columnsToSelect.add(definition.columns().definition(reference.column())));
 				}
 				else if (attribute instanceof Column) {
+					// For regular columns, just include the column itself
 					columnsToSelect.add(definition.columns().definition((Column<?>) attribute));
 				}
 			});
@@ -279,6 +306,7 @@ final class SelectQueries {
 		}
 
 		private List<ColumnDefinition<?>> defaultSelectColumns() {
+			// Cache the default selectable columns (those marked with .selected(true) in entity definition)
 			return defaultSelectColumnsCache.computeIfAbsent(definition.type(), entityType ->
 							definition.columns().definitions().stream()
 											.filter(ColumnDefinition::selected)
@@ -286,10 +314,13 @@ final class SelectQueries {
 		}
 
 		private String defaultColumnsClause() {
+			// Cache the default columns clause (e.g., "e.empno, e.ename AS name, d.dname")
 			return defaultColumnsClauseCache.computeIfAbsent(definition.type(), type -> columnsClause(defaultSelectColumns()));
 		}
 
 		private String groupByClause() {
+			// Cache the GROUP BY clause from columns marked with .groupBy(true) in entity definition
+			// This is used for aggregate entities (like reporting views)
 			return groupByClauseCache.computeIfAbsent(definition.type(), type ->
 							definition.columns().definitions().stream()
 											.filter(ColumnDefinition::groupBy)
@@ -298,12 +329,16 @@ final class SelectQueries {
 		}
 
 		private String columnsClause(List<ColumnDefinition<?>> columnDefinitions) {
+			// Build the SELECT columns clause with proper aliasing
+			// e.g., "e.empno, e.ename AS name, d.dname" 
 			StringBuilder stringBuilder = new StringBuilder();
 			for (int i = 0; i < columnDefinitions.size(); i++) {
 				ColumnDefinition<?> columnDefinition = columnDefinitions.get(i);
 				String columnName = columnDefinition.name();
 				String columnExpression = columnDefinition.expression();
 				stringBuilder.append(columnExpression);
+				
+				// Add AS alias only if column name differs from expression (e.g., "e.ename AS name")
 				if (!columnName.equals(columnExpression)) {
 					stringBuilder.append(" AS ").append(columnName);
 				}
@@ -318,6 +353,7 @@ final class SelectQueries {
 		private void havingCondition(Condition condition) {
 			String conditionString = condition.toString(definition);
 			if (!conditionString.isEmpty()) {
+				// Combine HAVING conditions with AND - useful when both EntitySelectQuery and Select have HAVING clauses
 				having(having == null ? conditionString : "(" + having + ") AND (" + conditionString + ")");
 			}
 		}
@@ -327,6 +363,7 @@ final class SelectQueries {
 		}
 
 		private String createOrderByClause(OrderBy orderBy) {
+			// Convert structured OrderBy object to SQL ORDER BY clause
 			List<OrderBy.OrderByColumn> orderByColumns = orderBy.orderByColumns();
 			if (orderByColumns.size() == 1) {
 				return columnOrderByClause(definition, orderByColumns.get(0));
@@ -338,6 +375,7 @@ final class SelectQueries {
 		}
 
 		private String columnOrderByClause(EntityDefinition entityDefinition, OrderBy.OrderByColumn orderByColumn) {
+			// Build ORDER BY clause for a single column (e.g., "UPPER(e.ename) DESC NULLS LAST")
 			String columnExpression = entityDefinition.columns().definition(orderByColumn.column()).expression();
 
 			return orderByColumn.ignoreCase() ? "UPPER(" + columnExpression + ")" : columnExpression +
@@ -346,6 +384,7 @@ final class SelectQueries {
 		}
 
 		private String nullOrderString(OrderBy.NullOrder nullOrder) {
+			// Convert null ordering enum to SQL clause
 			switch (nullOrder) {
 				case NULLS_FIRST:
 					return NULL_FIRST;
