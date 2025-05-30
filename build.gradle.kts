@@ -189,6 +189,7 @@ configure(subprojects) {
     tasks.withType<JavaCompile>().configureEach {
         options.encoding = "UTF-8"
         options.isDeprecation = true
+        options.compilerArgs.addAll(listOf("--module-version", project.version.toString()))
     }
 
     tasks.withType<JacocoReport>().configureEach {
