@@ -107,7 +107,11 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 						EntityPanel.builder(Employee.TYPE,
 										ChinookAppPanel::createEmployeePanel);
 
-		return List.of(artistPanelBuilder, genrePanelBuilder, mediaTypePanelBuilder, employeePanelBuilder);
+		EntityPanel.Builder preferencesPanelBuilder =
+						EntityPanel.builder(Preferences.TYPE,
+										ChinookAppPanel::createPreferencesPanel);
+
+		return List.of(artistPanelBuilder, genrePanelBuilder, mediaTypePanelBuilder, employeePanelBuilder, preferencesPanelBuilder);
 	}
 
 	private static EntityPanel createGenrePanel(EntityConnectionProvider connectionProvider) {
@@ -159,6 +163,15 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 		employeePanel.setPreferredSize(new Dimension(1000, 500));
 
 		return employeePanel;
+	}
+
+	private static EntityPanel createPreferencesPanel(EntityConnectionProvider connectionProvider) {
+		SwingEntityModel preferencesModel = new SwingEntityModel(Preferences.TYPE, connectionProvider);
+		preferencesModel.editModel().initializeComboBoxModels(Preferences.PREFERRED_GENRE_FK);
+		preferencesModel.tableModel().items().refresh();
+
+		return new EntityPanel(preferencesModel,
+						new PreferencesEditPanel(preferencesModel.editModel()));
 	}
 
 	@Override

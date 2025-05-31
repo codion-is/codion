@@ -1,0 +1,5 @@
+-- Add play count tracking to tracks
+ALTER TABLE CHINOOK.TRACK ADD COLUMN IF NOT EXISTS PLAY_COUNT INTEGER DEFAULT 0;
+
+-- Create index for performance when querying popular tracks
+CREATE INDEX IF NOT EXISTS IDX_TRACK_PLAY_COUNT ON CHINOOK.TRACK(PLAY_COUNT DESC);

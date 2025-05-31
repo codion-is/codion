@@ -28,7 +28,7 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 import javax.swing.JPanel;
 
 import static is.codion.demos.chinook.domain.api.Chinook.*;
-import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
+import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
@@ -81,6 +81,8 @@ public final class TrackEditPanel extends EntityEditPanel {
 						.columns(2);
 		createTextField(Track.UNITPRICE)
 						.columns(4);
+		createIntegerField(Track.PLAY_COUNT)
+						.columns(4);
 
 		JPanel genreMediaTypePanel = gridLayoutPanel(1, 2)
 						.add(createInputPanel(Track.GENRE_FK))
@@ -92,9 +94,10 @@ public final class TrackEditPanel extends EntityEditPanel {
 						.add(durationPanel)
 						.build();
 
-		JPanel unitPricePanel = borderLayoutPanel()
-						.westComponent(createInputPanel(Track.RATING))
-						.eastComponent(createInputPanel(Track.UNITPRICE))
+		JPanel unitPricePanel = flexibleGridLayoutPanel(1, 3)
+						.add(createInputPanel(Track.RATING))
+						.add(createInputPanel(Track.UNITPRICE))
+						.add(createInputPanel(Track.PLAY_COUNT))
 						.build();
 
 		setLayout(flexibleGridLayout(4, 2));

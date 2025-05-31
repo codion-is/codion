@@ -18,12 +18,15 @@
  */
 package is.codion.demos.chinook.domain;
 
+import is.codion.common.db.database.Database;
+import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.operation.DatabaseFunction;
 import is.codion.common.db.result.ResultPacker;
 import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.demos.chinook.domain.api.Chinook;
 import is.codion.demos.chinook.domain.api.Chinook.Playlist.RandomPlaylistParameters;
 import is.codion.demos.chinook.domain.api.Chinook.Track.RaisePriceParameters;
+import is.codion.demos.chinook.migration.MigrationManager;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.domain.DomainModel;
@@ -53,12 +56,17 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 
 	public ChinookImpl() {
 		super(DOMAIN);
-		add(artist(), album(), employee(), customer(), genre(), mediaType(),
+		add(artist(), album(), employee(), customer(), genre(), preferences(), mediaType(),
 						track(), invoice(), invoiceLine(), playlist(), playlistTrack());
 		add(Customer.REPORT, classPathReport(ChinookImpl.class, "customer_report.jasper"));
 		add(Track.RAISE_PRICE, new RaisePriceFunction());
 		add(Invoice.UPDATE_TOTALS, new UpdateTotalsFunction());
 		add(Playlist.RANDOM_PLAYLIST, new CreateRandomPlaylistFunction(entities()));
+	}
+
+	@Override
+	public void configure(Database database) throws DatabaseException {
+		MigrationManager.migrate(database);
 	}
 
 	EntityDefinition artist() {
@@ -244,6 +252,25 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 						.build();
 	}
 
+	EntityDefinition preferences() {
+		return Preferences.TYPE.define(
+										Preferences.CUSTOMER_ID.define()
+														.primaryKey(),
+										Preferences.CUSTOMER_FK.define()
+														.foreignKey(),
+										Preferences.PREFERRED_GENRE_ID.define()
+														.column(),
+										Preferences.PREFERRED_GENRE_FK.define()
+														.foreignKey()
+														.attributes(Genre.NAME),
+										Preferences.NEWSLETTER_SUBSCRIBED.define()
+														.column()
+														.nullable(false)
+														.defaultValue(false))
+						.caption("Preferences")
+						.build();
+	}
+
 	EntityDefinition genre() {
 		return Genre.TYPE.define(
 										Genre.ID.define()
@@ -327,6 +354,10 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.nullable(false)
 														.minimumValue(0)
 														.maximumFractionDigits(2),
+										Track.PLAY_COUNT.define()
+														.column()
+														.nullable(false)
+														.defaultValue(0),
 										Track.RANDOM.define()
 														.column()
 														.readOnly(true)

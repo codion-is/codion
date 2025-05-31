@@ -127,6 +127,17 @@ public interface Chinook {
 		JRReportType REPORT = JasperReports.reportType("customer_report");
 	}
 
+	interface Preferences {
+		EntityType TYPE = DOMAIN.entityType("chinook.preferences", Preferences.class.getName());
+
+		Column<Long> CUSTOMER_ID = TYPE.longColumn("customer_id");
+		Column<Long> PREFERRED_GENRE_ID = TYPE.longColumn("preferred_genre_id");
+		Column<Boolean> NEWSLETTER_SUBSCRIBED = TYPE.booleanColumn("newsletter_subscribed");
+
+		ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
+		ForeignKey PREFERRED_GENRE_FK = TYPE.foreignKey("preferred_genre_fk", PREFERRED_GENRE_ID, Genre.ID);
+	}
+
 	interface Genre {
 		EntityType TYPE = DOMAIN.entityType("chinook.genre", Genre.class.getName());
 
@@ -155,6 +166,7 @@ public interface Chinook {
 		Column<Integer> BYTES = TYPE.integerColumn("bytes");
 		Column<Integer> RATING = TYPE.integerColumn("rating");
 		Column<BigDecimal> UNITPRICE = TYPE.bigDecimalColumn("unitprice");
+		Column<Integer> PLAY_COUNT = TYPE.integerColumn("play_count");
 		Column<Void> RANDOM = TYPE.column("random()", Void.class);
 
 		ForeignKey ALBUM_FK = TYPE.foreignKey("album_fk", ALBUM_ID, Album.ID);
