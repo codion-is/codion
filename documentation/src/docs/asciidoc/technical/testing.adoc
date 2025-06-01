@@ -79,7 +79,7 @@ public class ChinookEntityFactory extends DefaultEntityFactory {
             return createInvoiceLine();
         }
 
-		return super.entity(entityType);
+        return super.entity(entityType);
     }
     
     private Entity createInvoiceLine() {
@@ -89,7 +89,7 @@ public class ChinookEntityFactory extends DefaultEntityFactory {
         invoiceLine.set(InvoiceLine.TRACK_FK, randomTrack());
         invoiceLine.set(InvoiceLine.QUANTITY, 1);
 
-		return invoiceLine;
+        return invoiceLine;
     }
 }
 ----

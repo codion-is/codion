@@ -19,9 +19,12 @@
 package is.codion.demos.chinook.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityModel;
 
-import javax.swing.SwingUtilities;
+import java.util.Collection;
+
+import static javax.swing.SwingUtilities.invokeLater;
 
 public final class InvoiceModel extends SwingEntityModel {
 
@@ -46,7 +49,10 @@ public final class InvoiceModel extends SwingEntityModel {
 		// Note the use of invokeLater() since the event is triggered during
 		// update, which happens in a background thread, so we have to update
 		// the table data on the Event Dispatch Thread.
-		invoiceLineEditModel.addTotalsUpdatedConsumer(updatedInvoices ->
-						SwingUtilities.invokeLater(() -> tableModel().replace(updatedInvoices)));
+		invoiceLineEditModel.totalsUpdated().addConsumer(this::onTotalsUpdated);
+	}
+
+	private void onTotalsUpdated(Collection<Entity> updatedInvoices) {
+		invokeLater(() -> tableModel().replace(updatedInvoices));
 	}
 }

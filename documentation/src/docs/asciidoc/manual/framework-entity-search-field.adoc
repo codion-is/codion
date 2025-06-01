@@ -36,10 +36,6 @@ The search field operates as follows:
    - **Single result**: That entity is automatically selected
    - **Multiple results**: A selection dialog appears
 
-== Selection Modes
-
-IMPORTANT: The `EntitySearchField` and its underlying `EntitySearchModel` must have matching selection modes. When building the field, you must call the appropriate method (`.singleSelection()` or `.multiSelection()`) that matches the model's configuration. A mismatch will throw an `IllegalArgumentException` at runtime.
-
 NOTE: Multi-selection is the default mode for `EntitySearchModel`. The `.singleSelection(false)` call in examples is shown for clarity but is not required.
 
 === Single Selection
@@ -114,7 +110,7 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.jav
 
 === Component Value Integration
 
-`EntitySearchField` implements `ComponentValue`, enabling reactive binding:
+A `EntitySearchField` based `ComponentValue` can be created via buildValue():
 
 [source,java]
 .Reactive search field
@@ -156,11 +152,10 @@ class TrackEditComponentFactory extends DefaultEditComponentFactory<Entity, Enti
 
 == Best Practices
 
-1. **Match Selection Modes**: Always ensure the field and model have the same `singleSelection` setting
-2. **Provide Clear Search Columns**: Configure the search model with appropriate searchable columns
-3. **Consider Performance**: Use result limits in the search model for large datasets
-4. **Keyboard Support**: Leverage the built-in keyboard shortcuts (INSERT for add, CTRL+INSERT for edit)
-5. **Custom Selectors**: Create custom selectors for complex selection scenarios
+1. **Provide Clear Search Columns**: Configure the search model with appropriate searchable columns
+2. **Consider Performance**: Use result limits in the search model for large datasets
+3. **Keyboard Support**: Leverage the built-in keyboard shortcuts (INSERT for add, CTRL+INSERT for edit)
+4. **Custom Selectors**: Create custom selectors for complex selection scenarios
 
 == Common Pitfalls
 

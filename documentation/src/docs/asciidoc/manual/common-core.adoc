@@ -43,7 +43,7 @@ The associated {url-javadoc}{common-core}/is/codion/common/observable/Observer.h
 
 Event listeners must implement either https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Runnable.html[Runnable] or https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Consumer.html[Consumer], depending on whether they are interested in the data associated with the event.
 
-NOTE: Both listeners and consumer are notified each time the event is trigger, regardless of whether *run* or *accept* is used, listeners and consumers are notified in the order they were added.
+NOTE: Both listeners and consumer are notified each time the event is triggered, regardless of whether *run* or *accept* is used, listeners and consumers are notified in the order they were added.
 
 Events are instantiated via factory methods in the {url-javadoc}{common-core}/is/codion/common/event/Event.html[Event] class.
 

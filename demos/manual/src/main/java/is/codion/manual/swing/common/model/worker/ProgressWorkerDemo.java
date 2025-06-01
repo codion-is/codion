@@ -70,8 +70,8 @@ final class ProgressWorkerDemo {
 		};
 
 		ProgressWorker.builder(task)
-						.onResult(message ->
-										showMessageDialog(applicationFrame, message))
+						.onResult(result ->
+										showMessageDialog(applicationFrame, result))
 						.onException(exception ->
 										exceptionDialog()
 														.owner(applicationFrame)

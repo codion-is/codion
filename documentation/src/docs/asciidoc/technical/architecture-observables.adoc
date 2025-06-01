@@ -159,7 +159,9 @@ disabled.get();  // true
 
 // Common UI patterns
 State processing = State.state();
-button.setEnabled(processing.not());  // Disabled while processing
+JButton button = Components.button()
+    .enabled(processing.not())  // Disabled while processing
+    .build();
 
 // Combining with other states
 State.Combination canEdit = State.and(

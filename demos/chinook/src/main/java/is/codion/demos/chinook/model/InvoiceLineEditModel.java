@@ -19,6 +19,7 @@
 package is.codion.demos.chinook.model;
 
 import is.codion.common.event.Event;
+import is.codion.common.observable.Observer;
 import is.codion.demos.chinook.domain.api.Chinook.Invoice;
 import is.codion.demos.chinook.domain.api.Chinook.InvoiceLine;
 import is.codion.demos.chinook.domain.api.Chinook.Track;
@@ -28,7 +29,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import java.util.Collection;
-import java.util.function.Consumer;
 
 import static is.codion.framework.db.EntityConnection.transaction;
 import static is.codion.framework.domain.entity.Entity.distinct;
@@ -44,8 +44,8 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 		editor().value(InvoiceLine.TRACK_FK).edited().addConsumer(this::setUnitPrice);
 	}
 
-	void addTotalsUpdatedConsumer(Consumer<Collection<Entity>> consumer) {
-		totalsUpdatedEvent.addConsumer(consumer);
+	Observer<Collection<Entity>> totalsUpdated() {
+		return totalsUpdatedEvent.observer();
 	}
 
 	@Override
