@@ -1,7 +1,7 @@
 Codion Change Log
 =================
 
-## 0.18.35
+## 0.18.36
 ### is.codion
 - module-version added to module-info.class files.
 ### is.codion.common.core

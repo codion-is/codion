@@ -20,7 +20,7 @@ nexusPublishing {
     packageGroup = "is.codion"
     repositories {
         sonatype {
-            nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
+            nexusUrl.set(uri("https://central.sonatype.com/api/v1/publish/"))
             snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
         }
     }
