@@ -103,6 +103,16 @@ public final class KeyEvents {
 	}
 
 	/**
+	 * Returns a {@link KeyStroke} parsed from the given string.
+	 * @param keyStroke the keystroke to parse
+	 * @return a keystroke
+	 * @see KeyStroke#getKeyStroke(String)
+	 */
+	public static KeyStroke keyStroke(String keyStroke) {
+		return getKeyStroke(keyStroke);
+	}
+
+	/**
 	 * A Builder for adding a key event to a component, with a default onKeyRelease trigger
 	 * and condition {@link JComponent#WHEN_FOCUSED}.
 	 * @see KeyEvents#builder(int)

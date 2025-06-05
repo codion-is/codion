@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.39
+### is.codion.swing.common.ui
+- KeyEvents.keyStroke() overloaded with String parameter.
 
 ## 0.18.38
 ### is.codion
