@@ -41,7 +41,8 @@ import java.util.concurrent.ThreadFactory;
 
 import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.Configuration.integerValue;
-import static is.codion.plugin.swing.mcp.SwingMcpServer.*;
+import static is.codion.plugin.swing.mcp.SwingMcpServer.booleanParam;
+import static is.codion.plugin.swing.mcp.SwingMcpServer.integerParam;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
@@ -108,6 +109,8 @@ public final class SwingMcpPlugin {
 	private static final String CODION_SWING_MCP = "codion-swing-mcp";
 	private static final String MCP_SERVER_NAME = "MCP_SERVER_NAME";
 	private static final String MCP_STDIO = "mcp.stdio";
+	private static final String HTTP_STARTUP_INFO = "Started MCP HTTP server for Swing application";
+	private static final String STDIO_STARTUP_INFO = "Swing MCP STDIO Server ready for AI connections";
 
 	private final JComponent applicationComponent;
 	private final ExecutorService executor = newSingleThreadExecutor(new DaemonThreadFactory());
@@ -164,7 +167,8 @@ public final class SwingMcpPlugin {
 		registerHttpTools(httpServer, swingMcpServer);
 
 		httpServer.start();
-		LOG.info("Started MCP HTTP server for Swing application");
+		LOG.info(HTTP_STARTUP_INFO);
+		System.out.println(HTTP_STARTUP_INFO);
 	}
 
 	private static void startStdioServer(SwingMcpServer swingMcpServer) {
@@ -183,7 +187,8 @@ public final class SwingMcpPlugin {
 			// Register UI automation tools
 			swingMcpServer.registerTools(mcpServer);
 
-			LOG.info("Swing MCP STDIO Server ready for AI connections");
+			LOG.info(STDIO_STARTUP_INFO);
+			System.out.println(STDIO_STARTUP_INFO);
 			LOG.info("Available tools: UI automation (keyboard, screenshots, mouse)");
 
 			// The server runs indefinitely on this daemon thread
@@ -257,48 +262,16 @@ public final class SwingMcpPlugin {
 
 		// Desktop screenshot tool
 		httpServer.addTool(new HttpTool(
-						SCREENSHOT, "Take a screenshot of the entire desktop and return as base64",
+						SCREENSHOT, "Take a screenshot of the entire desktop and return as base64, don't use this unless specified, use the app screenshot tool by default",
 						createSchema(FORMAT, STRING, IMAGE_FORMAT),
-						arguments -> {
-							try {
-								String format = (String) arguments.getOrDefault(FORMAT, PNG);
-								BufferedImage screenshot = swingMcpServer.takeScreenshot();
-								String base64 = screenshotToBase64(screenshot, format);
-
-								// Return as a structured object
-								return Map.<String, Object>of(
-												IMAGE, base64,
-												WIDTH, screenshot.getWidth(),
-												HEIGHT, screenshot.getHeight(),
-												FORMAT, format);
-							}
-							catch (IOException e) {
-								throw new RuntimeException("Failed to take screenshot: " + e.getMessage(), e);
-							}
-						}
+						arguments -> screenshotToBase64(arguments, swingMcpServer.takeScreenshot())
 		));
 
 		// Application window screenshot tool
 		httpServer.addTool(new HttpTool(
 						APP_SCREENSHOT, "Take a screenshot of just the application window and return as base64",
 						createSchema(FORMAT, STRING, IMAGE_FORMAT),
-						arguments -> {
-							try {
-								String format = (String) arguments.getOrDefault(FORMAT, PNG);
-								BufferedImage screenshot = swingMcpServer.takeApplicationScreenshot();
-								String base64 = screenshotToBase64(screenshot, format);
-
-								// Return as a structured object
-								return Map.<String, Object>of(
-												IMAGE, base64,
-												WIDTH, screenshot.getWidth(),
-												HEIGHT, screenshot.getHeight(),
-												FORMAT, format);
-							}
-							catch (IOException e) {
-								throw new RuntimeException("Failed to take application screenshot: " + e.getMessage(), e);
-							}
-						}
+						arguments -> screenshotToBase64(arguments, swingMcpServer.takeApplicationScreenshot())
 		));
 
 		// Application window bounds tool
@@ -360,6 +333,7 @@ public final class SwingMcpPlugin {
 						INPUT_SCHEMA,
 						arguments -> {
 							swingMcpServer.clearField();
+
 							return "Field cleared";
 						}
 		));
@@ -377,6 +351,23 @@ public final class SwingMcpPlugin {
 							return "Arrow " + direction + " pressed " + count + " times";
 						}
 		));
+	}
+
+	private static Map<String, Object> screenshotToBase64(Map<String, Object> arguments, BufferedImage screenshot) {
+		try {
+			String format = (String) arguments.getOrDefault(FORMAT, PNG);
+			String base64 = SwingMcpServer.screenshotToBase64(screenshot, format);
+
+			// Return as a structured object
+			return Map.<String, Object>of(
+							IMAGE, base64,
+							WIDTH, screenshot.getWidth(),
+							HEIGHT, screenshot.getHeight(),
+							FORMAT, format);
+		}
+		catch (IOException e) {
+			throw new RuntimeException("Failed to encode screenshot: " + e.getMessage(), e);
+		}
 	}
 
 	private static String createSchema(String propName, String propType, String propDesc) {

@@ -144,7 +144,6 @@ final class SwingMcpServer {
 	 * @param text the text to type
 	 */
 	void typeText(String text) {
-		focusApplicationWindow();
 		LOG.debug("Typing text: {}", text);
 		keyboardController.typeText(text);
 	}
@@ -154,7 +153,6 @@ final class SwingMcpServer {
 	 * @param combo the key combination (e.g., "Alt+A", "Ctrl+Shift+S")
 	 */
 	void keyCombo(String combo) {
-		focusApplicationWindow();
 		LOG.debug("Key combo: {}", combo);
 		keyboardController.pressKeyCombo(combo);
 	}
@@ -165,7 +163,6 @@ final class SwingMcpServer {
 	 * @param shift whether to hold Shift (for backward navigation)
 	 */
 	void tab(int count, boolean shift) {
-		focusApplicationWindow();
 		keyboardController.tab(count, shift);
 	}
 
@@ -173,7 +170,6 @@ final class SwingMcpServer {
 	 * Press Enter key
 	 */
 	void enter() {
-		focusApplicationWindow();
 		keyboardController.enter();
 	}
 
@@ -181,7 +177,6 @@ final class SwingMcpServer {
 	 * Press Escape key
 	 */
 	void escape() {
-		focusApplicationWindow();
 		keyboardController.escape();
 	}
 
@@ -191,7 +186,6 @@ final class SwingMcpServer {
 	 * @param count number of times to press the arrow key
 	 */
 	void arrow(String direction, int count) {
-		focusApplicationWindow();
 		keyboardController.arrow(direction, count);
 	}
 
@@ -199,7 +193,6 @@ final class SwingMcpServer {
 	 * Clear the current field by selecting all and deleting
 	 */
 	void clearField() {
-		focusApplicationWindow();
 		keyboardController.clearField();
 	}
 
@@ -265,27 +258,7 @@ final class SwingMcpServer {
 	 */
 	private void focusApplicationWindow() {
 		try {
-			Window window = getApplicationWindow();
-			Rectangle bounds = window.getBounds();
-
-			// First try the normal way
-			window.toFront();
-
-			// Wait a moment
-			wait(50);
-
-			// Force OS-level focus by clicking on the window
-			int centerX = bounds.x + bounds.width / 2;
-			int centerY = bounds.y + 30; // Click near title bar to avoid components
-
-			LOG.debug("Clicking window at ({}, {}) to force focus", centerX, centerY);
-			robot.mouseMove(centerX, centerY);
-			robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-			robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-
-			// Give time for focus to take effect
-			wait(100);
-			LOG.debug("Application window focused with OS-level click");
+			getApplicationWindow().toFront();
 		}
 		catch (Exception e) {
 			LOG.warn("Could not focus application window", e);
