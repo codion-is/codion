@@ -101,7 +101,7 @@ public final class DesignAndStyle {
 
 		selection.items().addListener(() -> System.out.println("Selected items changed"));
 
-		table.sortingEnabled().set(false);
+		table.sortable().set(false);
 		//end::mutable[]
 
 		//tag::exceptions[]

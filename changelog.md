@@ -6,6 +6,8 @@ Codion Change Log
 - KeyEvents.keyStroke() overloaded with String parameter.
 ### is.codion.plugin.swing.mcp
 - is.codion.plugin.swing.mcp module added.
+### is.codion.swing.common.ui
+- FilterTable.Builder.sortingEnabled() renamed sortable().
 
 ## 0.18.38
 ### is.codion

@@ -317,7 +317,7 @@ JTextField filter = stringField(model.filterValue())
 
 // Table with full configuration
 FilterTable<Row, Column> table = FilterTable.builder(model, columns)
-    .sortingEnabled(false)
+    .sortable(false)
     .selectionMode(SINGLE_SELECTION)
     .doubleClick(command(this::onDoubleClick))
     .enabled(taskActive.not())

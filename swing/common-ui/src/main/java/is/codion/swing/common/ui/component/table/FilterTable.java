@@ -259,7 +259,7 @@ public final class FilterTable<R, C> extends JTable {
 	private final ComponentFactory filterComponentFactory;
 	private final Event<MouseEvent> doubleClicked = Event.event();
 	private final Value<Action> doubleClick;
-	private final State sortingEnabled;
+	private final State sortable;
 	private final State scrollToSelectedItem;
 	private final Value<CenterOnScroll> centerOnScroll;
 	private final boolean scrollToAddedItem;
@@ -286,7 +286,7 @@ public final class FilterTable<R, C> extends JTable {
 		this.doubleClick = Value.nullable(builder.doubleClick);
 		this.scrollToSelectedItem = State.state(builder.scrollToSelectedItem);
 		this.scrollToAddedItem = builder.scrollToAddedItem;
-		this.sortingEnabled = State.state(builder.sortingEnabled);
+		this.sortable = State.state(builder.sortable);
 		this.controlMap = builder.controlMap;
 		this.controlMap.control(COPY_CELL).set(createCopyCellControl());
 		this.controlMap.control(TOGGLE_PREVIOUS_SORT_ORDER).set(createToggleSortOrderControl(true));
@@ -437,8 +437,8 @@ public final class FilterTable<R, C> extends JTable {
 	/**
 	 * @return the {@link State} controlling whether sorting via the table header is enabled
 	 */
-	public State sortingEnabled() {
-		return sortingEnabled;
+	public State sortable() {
+		return sortable;
 	}
 
 	/**
@@ -764,7 +764,7 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	private void toggleColumnSort(int selectedColumn, boolean previous, boolean add) {
-		if (sortingEnabled.get() && selectedColumn != -1) {
+		if (sortable.get() && selectedColumn != -1) {
 			C identifier = columnModel().getColumn(selectedColumn).identifier();
 			if (!tableModel.sort().order(identifier).locked().get()) {
 				toggleColumnSort(identifier, previous, add);
@@ -1064,7 +1064,7 @@ public final class FilterTable<R, C> extends JTable {
 	private final class MouseSortHandler extends MouseAdapter {
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			if (!sortingEnabled.get() || e.getButton() != MouseEvent.BUTTON1 || e.isControlDown()) {
+			if (!sortable.get() || e.getButton() != MouseEvent.BUTTON1 || e.isControlDown()) {
 				return;
 			}
 
@@ -1209,10 +1209,10 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> scrollToAddedItem(boolean scrollToAddedItem);
 
 		/**
-		 * @param sortingEnabled true if sorting via clicking the header should be enbled
+		 * @param sortable true if sorting via clicking the header should be enbled
 		 * @return this builder instance
 		 */
-		Builder<R, C> sortingEnabled(boolean sortingEnabled);
+		Builder<R, C> sortable(boolean sortable);
 
 		/**
 		 * @param selectionMode the table selection mode
@@ -1335,7 +1335,7 @@ public final class FilterTable<R, C> extends JTable {
 		private Action doubleClick;
 		private boolean scrollToSelectedItem = true;
 		private boolean scrollToAddedItem = false;
-		private boolean sortingEnabled = true;
+		private boolean sortable = true;
 		private int selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
 		private boolean cellSelectionEnabled = false;
 		private boolean columnReorderingAllowed = ALLOW_COLUMN_REORDERING.getOrThrow();
@@ -1435,8 +1435,8 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> sortingEnabled(boolean sortingEnabled) {
-			this.sortingEnabled = sortingEnabled;
+		public Builder<R, C> sortable(boolean sortable) {
+			this.sortable = sortable;
 			return this;
 		}
 
