@@ -157,6 +157,9 @@ project(":codion-plugin-flatlaf").projectDir = file("plugins/flatlaf")
 include "codion-plugin-flatlaf-intellij-themes"
 project(":codion-plugin-flatlaf-intellij-themes").projectDir = file("plugins/flatlaf-intellij-themes")
 
+include "codion-plugin-swing-mcp"
+project(":codion-plugin-swing-mcp").projectDir = file("plugins/swing-mcp")
+
 include "demo-chinook"
 project(":demo-chinook").projectDir = file("demos/chinook")
 
@@ -215,6 +218,8 @@ dependencyResolutionManagement {
             version("jasperreports", "7.0.3")
             version("jspecify", "1.0.0")
 
+            version("mcp", "0.10.0")
+
             library("slf4j-api", "org.slf4j", "slf4j-api").versionRef("slf4j.api")
             library("logback-core", "ch.qos.logback", "logback-core").versionRef("logback")
             library("logback-classic", "ch.qos.logback", "logback-classic").versionRef("logback")
@@ -247,6 +252,8 @@ dependencyResolutionManagement {
 
             library("jasperreports", "net.sf.jasperreports", "jasperreports").versionRef("jasperreports")
             library("jasperreports-jdt", "net.sf.jasperreports", "jasperreports-jdt").versionRef("jasperreports")
+
+            library("mcp", "io.modelcontextprotocol.sdk", "mcp").versionRef("mcp")
         }
     }
 }

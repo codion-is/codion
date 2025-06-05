@@ -27,6 +27,7 @@ import is.codion.demos.chinook.model.ChinookAppModel;
 import is.codion.demos.chinook.model.TrackTableModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.plugin.flatlaf.intellij.themes.materialtheme.MaterialTheme;
+import is.codion.plugin.swing.mcp.SwingMcpPlugin;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
 import is.codion.swing.common.ui.component.table.FilterTable;
@@ -234,6 +235,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 						.domainType(Chinook.DOMAIN)
 						.defaultLookAndFeel(MaterialTheme.class)
 						.defaultUser(User.parse("scott:tiger"))
+						.onApplicationStarted(SwingMcpPlugin::startMcpServer)
 						.start();
 	}
 }

@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.39
 ### is.codion.swing.common.ui
 - KeyEvents.keyStroke() overloaded with String parameter.
+### is.codion.plugin.swing.mcp
+- is.codion.plugin.swing.mcp module added.
 
 ## 0.18.38
 ### is.codion

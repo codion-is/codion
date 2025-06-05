@@ -21,6 +21,8 @@ dependencies {
     implementation(project(":codion-plugin-flatlaf-intellij-themes"))
     implementation(libs.ikonli.foundation.pack)
 
+    implementation(project(":codion-plugin-swing-mcp"))
+
     testImplementation(project(":codion-framework-domain-test"))
 
     jasperreportsClasspath(libs.jasperreports.jdt) {
