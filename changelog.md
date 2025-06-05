@@ -7,6 +7,7 @@ Codion Change Log
 ### is.codion.plugin.swing.mcp
 - is.codion.plugin.swing.mcp module added.
 - SwingMcpServer, unnecessary title bar click removed, refactoring.
+- SwingMcpServer.takeApplicationScreenshot() reimplemented, bypassing the robot, window no longer has to be in front.
 ### is.codion.swing.common.ui
 - FilterTable.Builder.sortingEnabled() renamed sortable().
 

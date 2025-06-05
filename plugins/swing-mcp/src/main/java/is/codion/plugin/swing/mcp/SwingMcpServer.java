@@ -32,6 +32,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import java.awt.AWTException;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
@@ -46,6 +47,7 @@ import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -217,13 +219,24 @@ final class SwingMcpServer {
 	}
 
 	/**
-	 * Take a screenshot of just the application window
+	 * Take a screenshot of just the application window by painting it directly into a BufferedImage.
+	 * This method works regardless of whether the window is visible or obscured by other windows.
 	 * @return the screenshot as a BufferedImage
 	 */
 	BufferedImage takeApplicationScreenshot() {
-		Rectangle bounds = getApplicationWindowBounds();
+		Window window = getApplicationWindow();
+		// Create buffered image with window dimensions
+		BufferedImage image = new BufferedImage(window.getWidth(), window.getHeight(), TYPE_INT_RGB);
+		// Get graphics context and paint the window into it
+		Graphics2D graphics = image.createGraphics();
+		try {
+			window.paint(graphics);
+		}
+		finally {
+			graphics.dispose();
+		}
 
-		return robot.createScreenCapture(bounds);
+		return image;
 	}
 
 	/**
