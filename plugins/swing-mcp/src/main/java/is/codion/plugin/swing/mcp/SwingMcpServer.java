@@ -18,21 +18,29 @@
  */
 package is.codion.plugin.swing.mcp;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.modelcontextprotocol.server.McpServerFeatures.SyncToolSpecification;
 import io.modelcontextprotocol.server.McpSyncServer;
 import io.modelcontextprotocol.spec.McpSchema;
 import io.modelcontextprotocol.spec.McpSchema.CallToolResult;
+import io.modelcontextprotocol.spec.McpSchema.LoggingLevel;
 import io.modelcontextprotocol.spec.McpSchema.Tool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import java.awt.AWTException;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.KeyboardFocusManager;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
@@ -43,12 +51,15 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * MCP Server for UI automation of Swing applications.
@@ -76,39 +87,14 @@ final class SwingMcpServer {
 	private static final String DIRECTION = "direction";
 	private static final String TYPE_OBJECT = "{\"type\": \"object\"}";
 	private static final String APP_SCREENSHOT = "app_screenshot";
-	private static final String IMAGE_DIMENSIONS = """
-					{
-						"image": "%s",
-						"width": %d,
-						"height": %d,
-						"format": "%s"
-					}""";
 	private static final String APP_WINDOW_BOUNDS = "app_window_bounds";
-	private static final String WINDOW_BOUNDS = """
-					{
-						"x": %d,
-						"y": %d,
-						"width": %d,
-						"height": %d
-					}""";
 	private static final String SAVE_SCREENSHOT = "save_screenshot";
 	private static final String FILENAME = "filename";
 	private static final String APP_ONLY = "app_only";
 	private static final String BOOLEAN = "boolean";
 	private static final String PNG = "png";
 	private static final String IMAGE_FORMAT = "Image format: 'png' or 'jpg' (default: 'png')";
-	private static final String SCREENSHOT_DATA = """
-					{
-						"saved": true,
-						"path": "%s",
-						"app_only": %s
-					}""";
 	private static final String SCREEN_SIZE = "screen_size";
-	private static final String SCREEN_SIZE_DATA = """
-					{
-						"width": %d,
-						"height": %d
-					}""";
 	private static final String FOCUS_WINDOW = "focus_window";
 	private static final String CLICK_AT = "click_at";
 	private static final String X = "x";
@@ -117,6 +103,12 @@ final class SwingMcpServer {
 	private static final String KEY_COMBO = "key_combo";
 	private static final String COMBO = "combo";
 	private static final String TAB = "tab";
+	private static final String LIST_WINDOWS = "list_windows";
+	private static final String WINDOW_SCREENSHOT = "window_screenshot";
+	private static final String FOCUSED_WINDOW_SCREENSHOT = "focused_window_screenshot";
+	private static final String TITLE = "title";
+
+	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
 	private final Robot robot;
 	private final KeyboardController keyboardController;
@@ -256,6 +248,116 @@ final class SwingMcpServer {
 		robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
 	}
+
+	/**
+	 * Get information about all application windows
+	 * @return JSON string containing window information
+	 * @throws RuntimeException if JSON serialization fails
+	 */
+	String listWindows() {
+		Window mainWindow = getApplicationWindow();
+		Window[] allWindows = Window.getWindows();
+		Window focusedWindow = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusedWindow();
+
+		List<WindowInfo> windowInfos = Arrays.stream(allWindows)
+						.filter(Window::isVisible)
+						.map(window -> {
+							String title = getWindowTitle(window);
+							String type = getWindowType(window);
+							boolean isMainWindow = window == mainWindow;
+							boolean isFocused = window == focusedWindow;
+							boolean isActive = window.isActive();
+							boolean isModal = window instanceof Dialog && ((Dialog) window).isModal();
+							Rectangle bounds = window.getBounds();
+
+							// Get parent window for dialogs
+							String parentWindowTitle = null;
+							if (window instanceof Dialog) {
+								Window owner = window.getOwner();
+								if (owner != null && owner.isVisible()) {
+									parentWindowTitle = getWindowTitle(owner);
+								}
+							}
+
+							return new WindowInfo(title, type, isMainWindow, isFocused,
+											isActive, isModal, true, // visible
+											new WindowBounds(bounds.x, bounds.y, bounds.width, bounds.height),
+											parentWindowTitle);
+						})
+						.collect(toList());
+		try {
+			return OBJECT_MAPPER.writeValueAsString(new WindowListResponse(windowInfos));
+		}
+		catch (IOException e) {
+			throw new RuntimeException("Failed to serialize window information", e);
+		}
+	}
+
+	/**
+	 * Take a screenshot of a window by its title
+	 * @param title the window title
+	 * @return the screenshot as a BufferedImage
+	 * @throws IllegalArgumentException if no window with the given title is found
+	 */
+	private static BufferedImage takeWindowScreenshot(String title) {
+		Window targetWindow = Arrays.stream(Window.getWindows())
+						.filter(Window::isVisible)
+						.filter(window -> title.equals(getWindowTitle(window)))
+						.findFirst()
+						.orElseThrow(() -> new IllegalArgumentException("No visible window found with title: " + title));
+
+		return paintWindowToImage(targetWindow);
+	}
+
+	/**
+	 * Take a screenshot of the currently focused window
+	 * @return the screenshot as a BufferedImage
+	 * @throws IllegalStateException if no window has focus
+	 */
+	private static BufferedImage takeFocusedWindowScreenshot() {
+		Window focusedWindow = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusedWindow();
+		if (focusedWindow == null) {
+			throw new IllegalStateException("No window currently has focus");
+		}
+
+		return paintWindowToImage(focusedWindow);
+	}
+
+	private static BufferedImage paintWindowToImage(Window window) {
+		BufferedImage image = new BufferedImage(window.getWidth(), window.getHeight(), TYPE_INT_RGB);
+		Graphics2D graphics = image.createGraphics();
+		try {
+			window.paint(graphics);
+
+			return image;
+		}
+		finally {
+			graphics.dispose();
+		}
+	}
+
+	private static String getWindowTitle(Window window) {
+		if (window instanceof JFrame) {
+			return ((JFrame) window).getTitle();
+		}
+		else if (window instanceof JDialog) {
+			return ((JDialog) window).getTitle();
+		}
+
+		return window.getClass().getSimpleName();
+	}
+
+	private static String getWindowType(Window window) {
+		if (window instanceof JFrame) {
+			return "frame";
+		}
+		else if (window instanceof JDialog) {
+			return "dialog";
+		}
+
+		return "window";
+	}
+
 
 	private Window getApplicationWindow() {
 		Window window = (Window) SwingUtilities.getAncestorOfClass(Window.class, applicationComponent);
@@ -515,7 +617,7 @@ final class SwingMcpServer {
 							swingMcpServer.typeText(text);
 
 							exchange.loggingNotification(McpSchema.LoggingMessageNotification.builder()
-											.level(McpSchema.LoggingLevel.INFO)
+											.level(LoggingLevel.INFO)
 											.logger(KEYBOARD)
 											.data("Typed: " + text)
 											.build());
@@ -533,7 +635,7 @@ final class SwingMcpServer {
 							swingMcpServer.keyCombo(combo);
 
 							exchange.loggingNotification(McpSchema.LoggingMessageNotification.builder()
-											.level(McpSchema.LoggingLevel.INFO)
+											.level(LoggingLevel.INFO)
 											.logger(KEYBOARD)
 											.data("Pressed: " + combo)
 											.build());
@@ -556,7 +658,7 @@ final class SwingMcpServer {
 
 							String direction = shift ? "backward" : "forward";
 							exchange.loggingNotification(McpSchema.LoggingMessageNotification.builder()
-											.level(McpSchema.LoggingLevel.INFO)
+											.level(LoggingLevel.INFO)
 											.logger(KEYBOARD)
 											.data("Tabbed " + direction + " " + count + " times")
 											.build());
@@ -578,7 +680,7 @@ final class SwingMcpServer {
 							swingMcpServer.arrow(direction, count);
 
 							exchange.loggingNotification(McpSchema.LoggingMessageNotification.builder()
-											.level(McpSchema.LoggingLevel.INFO)
+											.level(LoggingLevel.INFO)
 											.logger(KEYBOARD)
 											.data("Arrow " + direction + " pressed " + count + " times")
 											.build());
@@ -638,15 +740,15 @@ final class SwingMcpServer {
 								String base64 = SwingMcpServer.screenshotToBase64(screenshot, format);
 
 								exchange.loggingNotification(McpSchema.LoggingMessageNotification.builder()
-												.level(McpSchema.LoggingLevel.INFO)
+												.level(LoggingLevel.INFO)
 												.logger(SCREENSHOT)
 												.data("Desktop screenshot taken (" + format + ")")
 												.build());
 
-								// Return screenshot data as JSON text
-								String result = String.format(IMAGE_DIMENSIONS, base64, screenshot.getWidth(), screenshot.getHeight(), format);
+								// Return screenshot data as JSON
+								ScreenshotResponse response = new ScreenshotResponse(base64, screenshot.getWidth(), screenshot.getHeight(), format);
 
-								return new CallToolResult(result, false);
+								return new CallToolResult(OBJECT_MAPPER.writeValueAsString(response), false);
 							}
 							catch (IOException e) {
 								return new CallToolResult("Failed to take screenshot: " + e.getMessage(), true);
@@ -665,15 +767,15 @@ final class SwingMcpServer {
 								String base64 = SwingMcpServer.screenshotToBase64(screenshot, format);
 
 								exchange.loggingNotification(McpSchema.LoggingMessageNotification.builder()
-												.level(McpSchema.LoggingLevel.INFO)
+												.level(LoggingLevel.INFO)
 												.logger(SCREENSHOT)
 												.data("Application screenshot taken (" + format + ")")
 												.build());
 
-								// Return screenshot data as JSON text
-								String result = String.format(IMAGE_DIMENSIONS, base64, screenshot.getWidth(), screenshot.getHeight(), format);
+								// Return screenshot data as JSON
+								ScreenshotResponse response = new ScreenshotResponse(base64, screenshot.getWidth(), screenshot.getHeight(), format);
 
-								return new CallToolResult(result, false);
+								return new CallToolResult(OBJECT_MAPPER.writeValueAsString(response), false);
 							}
 							catch (IOException e) {
 								return new CallToolResult("Failed to take application screenshot: " + e.getMessage(), true);
@@ -687,8 +789,9 @@ final class SwingMcpServer {
 						(exchange, arguments) -> {
 							try {
 								Rectangle bounds = swingMcpServer.getApplicationWindowBounds();
+								WindowBounds response = new WindowBounds(bounds.x, bounds.y, bounds.width, bounds.height);
 
-								return new CallToolResult(String.format(WINDOW_BOUNDS, bounds.x, bounds.y, bounds.width, bounds.height), false);
+								return new CallToolResult(OBJECT_MAPPER.writeValueAsString(response), false);
 							}
 							catch (Exception e) {
 								return new CallToolResult("Failed to get application window bounds: " + e.getMessage(), true);
@@ -717,12 +820,14 @@ final class SwingMcpServer {
 								SwingMcpServer.saveScreenshot(screenshot, file, format);
 
 								exchange.loggingNotification(McpSchema.LoggingMessageNotification.builder()
-												.level(McpSchema.LoggingLevel.INFO)
+												.level(LoggingLevel.INFO)
 												.logger(SCREENSHOT)
 												.data("Screenshot saved to: " + file.getAbsolutePath())
 												.build());
 
-								return new CallToolResult(String.format(SCREENSHOT_DATA, file.getAbsolutePath(), appOnly), false);
+								SaveScreenshotResponse response = new SaveScreenshotResponse(true, file.getAbsolutePath(), appOnly);
+
+								return new CallToolResult(OBJECT_MAPPER.writeValueAsString(response), false);
 							}
 							catch (IOException e) {
 								return new CallToolResult("Failed to save screenshot: " + e.getMessage(), true);
@@ -734,9 +839,15 @@ final class SwingMcpServer {
 		server.addTool(new SyncToolSpecification(
 						new Tool(SCREEN_SIZE, "Get the current screen dimensions", TYPE_OBJECT),
 						(exchange, arguments) -> {
-							Dimension size = SwingMcpServer.getScreenSize();
+							try {
+								Dimension size = SwingMcpServer.getScreenSize();
+								ScreenSizeResponse response = new ScreenSizeResponse(size.width, size.height);
 
-							return new CallToolResult(String.format(SCREEN_SIZE_DATA, size.width, size.height), false);
+								return new CallToolResult(OBJECT_MAPPER.writeValueAsString(response), false);
+							}
+							catch (Exception e) {
+								return new CallToolResult("Failed to get screen size: " + e.getMessage(), true);
+							}
 						}
 		));
 	}
@@ -765,12 +876,84 @@ final class SwingMcpServer {
 							swingMcpServer.clickAt(x, y);
 
 							exchange.loggingNotification(McpSchema.LoggingMessageNotification.builder()
-											.level(McpSchema.LoggingLevel.INFO)
+											.level(LoggingLevel.INFO)
 											.logger(MOUSE)
 											.data("Clicked at: " + x + ", " + y)
 											.build());
 
 							return new CallToolResult("Clicked at position", false);
+						}
+		));
+
+		// List windows tool
+		server.addTool(new SyncToolSpecification(
+						new Tool(LIST_WINDOWS, "Get information about all application windows", TYPE_OBJECT),
+						(exchange, arguments) -> {
+							String windowInfo = swingMcpServer.listWindows();
+
+							exchange.loggingNotification(McpSchema.LoggingMessageNotification.builder()
+											.level(LoggingLevel.INFO)
+											.logger("window")
+											.data("Listed application windows")
+											.build());
+
+							return new CallToolResult(windowInfo, false);
+						}
+		));
+
+		// Window screenshot by title tool
+		server.addTool(new SyncToolSpecification(
+						new Tool(WINDOW_SCREENSHOT, "Take a screenshot of a window by its title",
+										createSchema(Map.of(
+														TITLE, Map.of(TYPE, STRING, DESCRIPTION, "The window title"),
+														FORMAT, Map.of(TYPE, STRING, DESCRIPTION, IMAGE_FORMAT)
+										))),
+						(exchange, arguments) -> {
+							try {
+								String title = (String) arguments.get(TITLE);
+								String format = (String) arguments.getOrDefault(FORMAT, PNG);
+								BufferedImage screenshot = takeWindowScreenshot(title);
+								String base64 = SwingMcpServer.screenshotToBase64(screenshot, format);
+
+								exchange.loggingNotification(McpSchema.LoggingMessageNotification.builder()
+												.level(LoggingLevel.INFO)
+												.logger(SCREENSHOT)
+												.data("Window screenshot taken: " + title)
+												.build());
+
+								ScreenshotResponse response = new ScreenshotResponse(base64, screenshot.getWidth(), screenshot.getHeight(), format);
+
+								return new CallToolResult(OBJECT_MAPPER.writeValueAsString(response), false);
+							}
+							catch (Exception e) {
+								return new CallToolResult("Failed to take window screenshot: " + e.getMessage(), true);
+							}
+						}
+		));
+
+		// Focused window screenshot tool
+		server.addTool(new SyncToolSpecification(
+						new Tool(FOCUSED_WINDOW_SCREENSHOT, "Take a screenshot of the currently focused window",
+										createSchema(FORMAT, STRING, IMAGE_FORMAT)),
+						(exchange, arguments) -> {
+							try {
+								String format = (String) arguments.getOrDefault(FORMAT, PNG);
+								BufferedImage screenshot = takeFocusedWindowScreenshot();
+								String base64 = SwingMcpServer.screenshotToBase64(screenshot, format);
+
+								exchange.loggingNotification(McpSchema.LoggingMessageNotification.builder()
+												.level(LoggingLevel.INFO)
+												.logger(SCREENSHOT)
+												.data("Focused window screenshot taken")
+												.build());
+
+								ScreenshotResponse response = new ScreenshotResponse(base64, screenshot.getWidth(), screenshot.getHeight(), format);
+
+								return new CallToolResult(OBJECT_MAPPER.writeValueAsString(response), false);
+							}
+							catch (Exception e) {
+								return new CallToolResult("Failed to take focused window screenshot: " + e.getMessage(), true);
+							}
 						}
 		));
 	}
@@ -824,4 +1007,20 @@ final class SwingMcpServer {
 										""", props,
 						required.length() > 0 ? ",\n\"required\": [" + required + "]" : "");
 	}
+
+	// Data classes for JSON serialization
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	record WindowInfo(String title, String type, boolean mainWindow, boolean focused,
+										boolean active, boolean modal, boolean visible, WindowBounds bounds,
+										@JsonProperty("parentWindow") String parentWindow) {}
+
+	record WindowBounds(int x, int y, int width, int height) {}
+
+	record WindowListResponse(List<WindowInfo> windows) {}
+
+	record ScreenshotResponse(String image, int width, int height, String format) {}
+
+	record ScreenSizeResponse(int width, int height) {}
+
+	record SaveScreenshotResponse(boolean saved, String path, @JsonProperty("app_only") boolean appOnly) {}
 }
