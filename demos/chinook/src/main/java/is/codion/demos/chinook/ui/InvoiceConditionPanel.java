@@ -27,6 +27,7 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.ConditionPanel;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
@@ -95,6 +96,12 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 		this.advancedConditionPanel = filterTableConditionPanel(tableModel.queryModel().condition().conditionModel(),
 						conditionPanels, columnModel, onPanelInitialized);
 		view().link(advancedConditionPanel.view());
+	}
+
+	@Override
+	public void updateUI() {
+		super.updateUI();
+		Utilities.updateUI(advancedConditionPanel);
 	}
 
 	@Override
