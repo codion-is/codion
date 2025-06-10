@@ -52,7 +52,7 @@ public final class EmployeesLoadTest {
 		public EmployeesAppModel apply(User user) {
 			EmployeesAppModel applicationModel =
 							new EmployeesAppModel(EntityConnectionProvider.builder()
-											.domainType(Employees.DOMAIN)
+											.domain(Employees.DOMAIN)
 											.clientType(EmployeesLoadTest.class.getSimpleName())
 											.user(user)
 											.build());

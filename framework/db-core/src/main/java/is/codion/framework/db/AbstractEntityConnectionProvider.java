@@ -46,7 +46,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	private final Event<EntityConnection> connectedEvent = Event.event();
 
 	private final User user;
-	private final DomainType domainType;
+	private final DomainType domain;
 	private final UUID clientId;
 	private final @Nullable Version clientVersion;
 	private final @Nullable String clientType;
@@ -61,7 +61,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	protected AbstractEntityConnectionProvider(AbstractBuilder<?, ?> builder) {
 		requireNonNull(builder);
 		this.user = requireNonNull(builder.user, "A user must be specified");
-		this.domainType = requireNonNull(builder.domainType, "A domainType must be specified");
+		this.domain = requireNonNull(builder.domain, "A domain must be specified");
 		this.clientId = requireNonNull(builder.clientId, "A clientId must be specified");
 		this.clientType = builder.clientType;
 		this.clientVersion = builder.clientVersion;
@@ -86,7 +86,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
 	@Override
 	public final DomainType domainType() {
-		return domainType;
+		return domain;
 	}
 
 	@Override
@@ -196,7 +196,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 		private final String connectionType;
 
 		private @Nullable User user;
-		private @Nullable DomainType domainType;
+		private @Nullable DomainType domain;
 		private UUID clientId = UUID.randomUUID();
 		private @Nullable String clientType;
 		private @Nullable Version clientVersion;
@@ -221,8 +221,8 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 		}
 
 		@Override
-		public final B domainType(DomainType domainType) {
-			this.domainType = requireNonNull(domainType);
+		public final B domain(DomainType domain) {
+			this.domain = requireNonNull(domain);
 			return self();
 		}
 

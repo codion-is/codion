@@ -39,7 +39,7 @@ public final class AbstractEntityConnectionProviderTest {
 	void connectClose() {
 		TestProviderBuilder builder = new TestProviderBuilder()
 						.user(UNIT_TEST_USER)
-						.domainType(TestDomain.DOMAIN);
+						.domain(TestDomain.DOMAIN);
 		EntityConnectionProvider provider = builder.build();
 		assertEquals("description", provider.description());
 		assertEquals(EntityConnectionProvider.CONNECTION_TYPE_LOCAL, provider.connectionType());

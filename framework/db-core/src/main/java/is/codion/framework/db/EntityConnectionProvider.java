@@ -221,7 +221,7 @@ public interface EntityConnectionProvider extends AutoCloseable {
 			return stream(ServiceLoader.load(Builder.class).spliterator(), false)
 							.filter(builder -> builder.connectionType().equalsIgnoreCase(clientConnectionType))
 							.map(builder -> {
-								CLIENT_DOMAIN_TYPE.optional().ifPresent(builder::domainType);
+								CLIENT_DOMAIN_TYPE.optional().ifPresent(builder::domain);
 
 								return builder;
 							})
@@ -277,10 +277,10 @@ public interface EntityConnectionProvider extends AutoCloseable {
 		B user(User user);
 
 		/**
-		 * @param domainType the domain type to base this connection on
+		 * @param domain the domain type to base this connection on
 		 * @return this builder instance
 		 */
-		B domainType(DomainType domainType);
+		B domain(DomainType domain);
 
 		/**
 		 * @param clientId the UUID identifying this client connection

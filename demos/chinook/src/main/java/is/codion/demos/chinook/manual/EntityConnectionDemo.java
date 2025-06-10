@@ -547,7 +547,7 @@ public final class EntityConnectionDemo {
 
 		LocalEntityConnectionProvider connectionProvider =
 						LocalEntityConnectionProvider.builder()
-										.domainType(DOMAIN)
+										.domain(DOMAIN)
 										.user(User.parse("scott:tiger"))
 										.build();
 

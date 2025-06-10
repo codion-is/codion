@@ -11,6 +11,8 @@ Codion Change Log
 - SwingMcpServer, window listing tool added and window screenshot functionality improved, refactoring.
 ### is.codion.swing.common.ui
 - FilterTable.Builder.sortingEnabled() renamed sortable().
+### is.codion.framework.db.core
+- EntityConnectionProvider.Builder.domainType() renamed domain().
 
 ## 0.18.38
 ### is.codion

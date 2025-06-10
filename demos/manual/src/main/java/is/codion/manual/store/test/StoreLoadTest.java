@@ -48,7 +48,7 @@ public class StoreLoadTest {
 			EntityConnectionProvider connectionProvider =
 							RemoteEntityConnectionProvider.builder()
 											.user(user)
-											.domainType(Store.DOMAIN)
+											.domain(Store.DOMAIN)
 											.build();
 
 			return new StoreApplicationModel(connectionProvider);

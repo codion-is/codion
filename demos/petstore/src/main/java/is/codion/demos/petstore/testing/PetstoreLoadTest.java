@@ -47,7 +47,7 @@ public final class PetstoreLoadTest {
 		public PetstoreAppModel apply(User user) {
 			PetstoreAppModel applicationModel = new PetstoreAppModel(
 							EntityConnectionProvider.builder()
-											.domainType(Petstore.DOMAIN)
+											.domain(Petstore.DOMAIN)
 											.clientType(getClass().getSimpleName())
 											.user(user)
 											.build());

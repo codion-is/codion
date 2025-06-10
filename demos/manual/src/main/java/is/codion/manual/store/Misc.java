@@ -44,7 +44,7 @@ public final class Misc {
 	static void jasperReports() {
 		EntityConnectionProvider connectionProvider =
 						EntityConnectionProvider.builder()
-										.domainType(Store.DOMAIN)
+										.domain(Store.DOMAIN)
 										.user(User.parse("scott:tiger"))
 										.clientType("StoreMisc")
 										.build();
@@ -73,7 +73,7 @@ public final class Misc {
 		// tag::editModel[]
 		EntityConnectionProvider connectionProvider =
 						EntityConnectionProvider.builder()
-										.domainType(Store.DOMAIN)
+										.domain(Store.DOMAIN)
 										.user(User.parse("scott:tiger"))
 										.clientType("StoreMisc")
 										.build();

@@ -35,7 +35,7 @@ public final class EntitiesInAction {
 	public static void main(String[] args) {
 		// tag::entitiesInAction[]
 		EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
-						.domainType(Petstore.DOMAIN)
+						.domain(Petstore.DOMAIN)
 						.clientType("Manual")
 						.user(User.parse("scott:tiger"))
 						.build();

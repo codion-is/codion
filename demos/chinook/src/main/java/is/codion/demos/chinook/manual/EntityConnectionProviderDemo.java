@@ -67,7 +67,7 @@ public final class EntityConnectionProviderDemo {
 		// tag::remote[]
 		RemoteEntityConnectionProvider connectionProvider =
 						RemoteEntityConnectionProvider.builder()
-										.domainType(Chinook.DOMAIN)
+										.domain(Chinook.DOMAIN)
 										.user(User.parse("scott:tiger"))
 										.clientType(EntityConnectionProviderDemo.class.getSimpleName())
 										.hostName("localhost")
@@ -89,7 +89,7 @@ public final class EntityConnectionProviderDemo {
 		// tag::http[]
 		HttpEntityConnectionProvider connectionProvider =
 						HttpEntityConnectionProvider.builder()
-										.domainType(Chinook.DOMAIN)
+										.domain(Chinook.DOMAIN)
 										.clientType(EntityConnectionProviderDemo.class.getSimpleName())
 										.user(User.parse("scott:tiger"))
 										.hostName("localhost")

@@ -55,7 +55,7 @@ public final class DefaultLocalEntityConnectionProviderBuilder
 	@Override
 	public LocalEntityConnectionProvider.Builder domain(Domain domain) {
 		this.domain = requireNonNull(domain);
-		return domainType(domain.type());
+		return domain(domain.type());
 	}
 
 	@Override

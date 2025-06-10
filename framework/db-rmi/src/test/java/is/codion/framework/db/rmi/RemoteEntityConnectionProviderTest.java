@@ -69,7 +69,7 @@ public class RemoteEntityConnectionProviderTest {
 						.port(configuration.port())
 						.registryPort(configuration.registryPort())
 						.clientType("RemoteEntityConnectionProviderTest")
-						.domainType(TestDomain.DOMAIN)
+						.domain(TestDomain.DOMAIN)
 						.user(User.parse("scott:tiger"))
 						.build();
 
@@ -94,7 +94,7 @@ public class RemoteEntityConnectionProviderTest {
 		EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
 		try {
 			EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
-							.domainType(DomainType.domainType("entityConnectionProviderBuilder"))
+							.domain(DomainType.domainType("entityConnectionProviderBuilder"))
 							.clientType("test")
 							.user(UNIT_TEST_USER)
 							.build();

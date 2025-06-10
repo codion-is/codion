@@ -57,7 +57,7 @@ public class LocalEntityConnectionProviderTest {
 		String previousValue = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
 		EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
 		EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
-						.domainType(TestDomain.DOMAIN)
+						.domain(TestDomain.DOMAIN)
 						.user(User.parse("scott:tiger"))
 						.build();
 		assertInstanceOf(LocalEntityConnectionProvider.class, connectionProvider);

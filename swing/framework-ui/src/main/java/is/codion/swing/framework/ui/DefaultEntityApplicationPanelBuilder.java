@@ -537,7 +537,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
 		return EntityConnectionProvider.builder()
 						.user(user)
-						.domainType(domainType)
+						.domain(domainType)
 						.clientType(applicationName)
 						.clientVersion(applicationVersion)
 						.build();
