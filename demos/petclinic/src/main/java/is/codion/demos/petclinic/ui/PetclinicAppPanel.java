@@ -123,8 +123,8 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
 						.set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
 		ValidIndicatorFactory.FACTORY_CLASS.set("is.codion.plugin.flatlaf.indicator.FlatLafValidIndicatorFactory");
 		EntityApplicationPanel.builder(PetclinicAppModel.class, PetclinicAppPanel.class)
+						.domain(Petclinic.DOMAIN)
 						.applicationName("Petclinic")
-						.domainType(Petclinic.DOMAIN)
 						.displayStartupDialog(false)
 						.defaultLookAndFeel(Arc.class)
 						.defaultUser(User.parse("scott:tiger"))

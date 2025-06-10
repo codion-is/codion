@@ -107,7 +107,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	private Function<M, P> applicationPanel = new DefaultApplicationPanelFactory();
 	private Observable<String> frameTitle;
 
-	private DomainType domainType = EntityConnectionProvider.CLIENT_DOMAIN_TYPE.get();
+	private DomainType domain = EntityConnectionProvider.CLIENT_DOMAIN_TYPE.get();
 	private Supplier<User> userSupplier = new DefaultUserSupplier();
 	private Supplier<JFrame> frameSupplier = new DefaultFrameSupplier();
 	private boolean displayStartupDialog = EntityApplicationPanel.SHOW_STARTUP_DIALOG.getOrThrow();
@@ -139,8 +139,8 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	}
 
 	@Override
-	public EntityApplicationPanel.Builder<M, P> domainType(DomainType domainType) {
-		this.domainType = requireNonNull(domainType);
+	public EntityApplicationPanel.Builder<M, P> domain(DomainType domain) {
+		this.domain = requireNonNull(domain);
 		return this;
 	}
 
@@ -531,13 +531,13 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	}
 
 	private EntityConnectionProvider createConnectionProvider(User user) {
-		if (domainType == null) {
-			throw new IllegalArgumentException("domainType must be specified before creating a EntityConnectionProvider");
+		if (domain == null) {
+			throw new IllegalArgumentException("domain must be specified before creating a EntityConnectionProvider");
 		}
 
 		return EntityConnectionProvider.builder()
 						.user(user)
-						.domain(domainType)
+						.domain(domain)
 						.clientType(applicationName)
 						.clientVersion(applicationVersion)
 						.build();

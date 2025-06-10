@@ -111,8 +111,8 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 	public static void main(String[] args) {
 		EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
 		EntityApplicationPanel.builder(EmployeesAppModel.class, EmployeesAppPanel.class)
+						.domain(Employees.DOMAIN)
 						.applicationName("Employees")
-						.domainType(Employees.DOMAIN)
 						.defaultLookAndFeel(Arc.class)
 						.defaultUser(User.parse("scott:tiger"))
 						.start();

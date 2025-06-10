@@ -91,8 +91,8 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 						ControlKeys.COPY_CONTROLS
 		)));
 		EntityApplicationPanel.builder(SchemaBrowserApplicationModel.class, SchemaBrowserAppPanel.class)
+						.domain(SchemaBrowser.DOMAIN)
 						.applicationName("Schema Browser")
-						.domainType(SchemaBrowser.DOMAIN)
 						.defaultUser(User.parse("scott:tiger"))
 						.start();
 	}

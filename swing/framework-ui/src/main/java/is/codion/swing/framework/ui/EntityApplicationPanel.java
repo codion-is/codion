@@ -1247,10 +1247,10 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	public interface Builder<M extends SwingEntityApplicationModel, P extends EntityApplicationPanel<M>> {
 
 		/**
-		 * @param domainType the domain type
+		 * @param domain the domain type
 		 * @return this Builder instance
 		 */
-		Builder<M, P> domainType(DomainType domainType);
+		Builder<M, P> domain(DomainType domain);
 
 		/**
 		 * @param applicationName the application name

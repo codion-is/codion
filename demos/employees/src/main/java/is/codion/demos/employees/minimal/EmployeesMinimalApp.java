@@ -312,8 +312,8 @@ public final class EmployeesMinimalApp {
 
 		//we create an instance of our application panel and start it
 		EntityApplicationPanel.builder(EmployeesApplicationModel.class, EmployeesApplicationPanel.class)
+						.domain(DOMAIN)
 						.applicationName("Employees Minimal")
-						.domainType(DOMAIN)
 						.defaultUser(User.parse("scott:tiger"))
 						.start();
 	}

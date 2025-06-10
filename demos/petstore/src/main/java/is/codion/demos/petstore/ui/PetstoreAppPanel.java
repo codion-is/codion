@@ -118,8 +118,8 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
 		Locale.setDefault(new Locale("en"));
 		EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
 		EntityApplicationPanel.builder(PetstoreAppModel.class, PetstoreAppPanel.class)
+						.domain(DOMAIN)
 						.applicationName("The Pet Store")
-						.domainType(DOMAIN)
 						.defaultUser(User.parse("scott:tiger"))
 						.start();
 	}

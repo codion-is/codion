@@ -13,6 +13,8 @@ Codion Change Log
 - FilterTable.Builder.sortingEnabled() renamed sortable().
 ### is.codion.framework.db.core
 - EntityConnectionProvider.Builder.domainType() renamed domain().
+### is.codion.swing.framework.ui
+- EntityApplicationPanel.Builder.domainType() renamed domain().
 
 ## 0.18.38
 ### is.codion

@@ -79,8 +79,8 @@ public class StoreApplicationPanel extends EntityApplicationPanel<StoreApplicati
 		ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
 						.set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
 		EntityApplicationPanel.builder(StoreApplicationModel.class, StoreApplicationPanel.class)
+						.domain(Store.DOMAIN)
 						.applicationName("Store")
-						.domainType(Store.DOMAIN)
 						.defaultUser(User.parse("scott:tiger"))
 						.start();
 	}

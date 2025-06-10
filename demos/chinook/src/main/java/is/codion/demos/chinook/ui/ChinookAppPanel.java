@@ -230,9 +230,9 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 		ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
 						.set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
 		EntityApplicationPanel.builder(ChinookAppModel.class, ChinookAppPanel.class)
+						.domain(Chinook.DOMAIN)
 						.applicationName("Chinook")
 						.applicationVersion(ChinookAppModel.VERSION)
-						.domainType(Chinook.DOMAIN)
 						.defaultLookAndFeel(MaterialTheme.class)
 						.defaultUser(User.parse("scott:tiger"))
 						.onApplicationStarted(SwingMcpPlugin::startMcpServer)

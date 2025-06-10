@@ -35,7 +35,7 @@ public final class DefaultEntityApplicationPanelBuilderTest {
 		User user = User.user("Test");
 		EntityApplicationPanel.builder(TestApplicationModel.class, TestApplicationPanel.class)
 						.onApplicationStarted(panel -> assertSame(user, panel.applicationModel().connectionProvider().user()))
-						.domainType(TestDomain.DOMAIN)
+						.domain(TestDomain.DOMAIN)
 						.user(user)
 						.displayStartupDialog(false)
 						.displayFrame(false)
@@ -43,7 +43,7 @@ public final class DefaultEntityApplicationPanelBuilderTest {
 		User user2 = User.user("Test2");
 		EntityApplicationPanel.builder(TestApplicationModel.class, TestApplicationPanel.class)
 						.onApplicationStarted(panel -> assertSame(user2, panel.applicationModel().connectionProvider().user()))
-						.domainType(TestDomain.DOMAIN)
+						.domain(TestDomain.DOMAIN)
 						.user(() -> user2)
 						.displayStartupDialog(false)
 						.displayFrame(false)
