@@ -545,8 +545,8 @@ public final class DomainSource {
 			builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".selected(false)");
 		}
 		if (!readOnly) {
-			if (column.columnHasDefaultValue()) {
-				builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".columnHasDefaultValue(true)");
+			if (column.hasDatabaseDefault()) {
+				builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".hasDatabaseDefault(true)");
 			}
 			if (column.attribute().type().isString() && column.maximumLength() != -1) {
 				builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".maximumLength(")

@@ -293,7 +293,7 @@ final class DefaultEntityEditor implements EntityEditor {
 	 * If a {@link ColumnDefinition}s underlying column has a default value the attribute is
 	 * skipped unless the attribute itself has a default value, which then overrides the columns default value.
 	 * @return an entity instance populated with default values
-	 * @see ColumnDefinition.Builder#columnHasDefaultValue()
+	 * @see ColumnDefinition.Builder#hasDatabaseDefault()
 	 * @see ColumnDefinition.Builder#defaultValue(Object)
 	 */
 	private Entity createEntity(ValueSupplier valueSupplier) {
@@ -311,7 +311,7 @@ final class DefaultEntityEditor implements EntityEditor {
 		entityDefinition.columns().definitions().stream()
 						//these are set via their respective parent foreign key
 						.filter(columnDefinition -> !entityDefinition.foreignKeys().foreignKeyColumn(columnDefinition.attribute()))
-						.filter(columnDefinition -> !columnDefinition.columnHasDefaultValue() || columnDefinition.hasDefaultValue())
+						.filter(columnDefinition -> !columnDefinition.hasDatabaseDefault() || columnDefinition.hasDefaultValue())
 						.map(columnDefinition -> (AttributeDefinition<Object>) columnDefinition)
 						.forEach(attributeDefinition -> newEntity.set(attributeDefinition.attribute(), valueSupplier.get(attributeDefinition)));
 	}

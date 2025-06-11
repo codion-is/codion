@@ -77,7 +77,7 @@ import java.sql.SQLException;
  *             .column()
  *             .insertable(false)  // Not included in INSERT
  *             .updatable(false)   // Not included in UPDATE
- *             .columnHasDefaultValue(true)) // Database provides value
+ *             .hasDatabaseDefault(true)) // Database provides a default value
  *     .build();
  * }
  * @param <T> the underlying type
@@ -156,9 +156,9 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
 	boolean readOnly();
 
 	/**
-	 * @return true if the underlying column has a default value
+	 * @return true if the underlying database column has a default value
 	 */
-	boolean columnHasDefaultValue();
+	boolean hasDatabaseDefault();
 
 	/**
 	 * @return true if this column should be included when searching by string
@@ -266,10 +266,10 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
 
 		/**
 		 * Specifies that the underlying table column has a default value
-		 * @param columnHasDefaultValue true if the column has a default value
+		 * @param hasDatabaseDefault true if the database column has a default value
 		 * @return this instance
 		 */
-		B columnHasDefaultValue(boolean columnHasDefaultValue);
+		B hasDatabaseDefault(boolean hasDatabaseDefault);
 
 		/**
 		 * Specifies that this column should be grouped by.

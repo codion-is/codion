@@ -248,7 +248,7 @@ public final class WorldImpl extends DomainModel {
 										CountryLanguage.IS_OFFICIAL.define()
 														.column()
 														.caption("Official")
-														.columnHasDefaultValue(true)
+														.hasDatabaseDefault(true)
 														.nullable(false),
 										// end::booleanColumn[]
 										// tag::derivedAttribute[]

@@ -51,10 +51,10 @@ import static is.codion.common.Configuration.*;
  * AttributeDefinitions are created using the builder pattern through attribute definers:
  * {@snippet :
  * public class Store extends DefaultDomain {
- *     
+ *
  *     interface Product {
  *         EntityType TYPE = DOMAIN.entityType("store.product");
- *         
+ *
  *         Column<Integer> ID = TYPE.integerColumn("id");
  *         Column<String> NAME = TYPE.stringColumn("name");
  *         Column<String> DESCRIPTION = TYPE.stringColumn("description");
@@ -63,27 +63,27 @@ import static is.codion.common.Configuration.*;
  *         Column<Boolean> ACTIVE = TYPE.booleanColumn("active");
  *         Column<LocalDateTime> CREATED_DATE = TYPE.localDateTimeColumn("created_date");
  *     }
- *     
+ *
  *     void defineProduct() {
  *         Product.TYPE.define(
  *                 Product.ID.define()
  *                     .primaryKey()
  *                     .keyGenerator(KeyGenerator.identity())
  *                     .caption("Product ID"),
- *                 
+ *
  *                 Product.NAME.define()
  *                     .column()
  *                     .caption("Product Name")
  *                     .nullable(false)
  *                     .maximumLength(100)
  *                     .description("The name of the product"),
- *                 
+ *
  *                 Product.DESCRIPTION.define()
  *                     .column()
  *                     .caption("Description")
  *                     .maximumLength(500)
  *                     .nullable(true),
- *                 
+ *
  *                 Product.PRICE.define()
  *                     .column()
  *                     .caption("Price")
@@ -92,7 +92,7 @@ import static is.codion.common.Configuration.*;
  *                     .maximumValue(new BigDecimal("99999.99"))
  *                     .maximumFractionDigits(2)
  *                     .defaultValue(BigDecimal.ZERO),
- *                 
+ *
  *                 Product.CATEGORY.define()
  *                     .column()
  *                     .caption("Category")
@@ -102,23 +102,23 @@ import static is.codion.common.Configuration.*;
  *                         Item.item("CLOTHING", "Clothing"),
  *                         Item.item("BOOKS", "Books"),
  *                         Item.item("HOME", "Home & Garden"))),
- *                 
+ *
  *                 Product.ACTIVE.define()
  *                     .column()
  *                     .caption("Active")
  *                     .nullable(false)
  *                     .defaultValue(true),
- *                 
+ *
  *                 Product.CREATED_DATE.define()
  *                     .column()
  *                     .caption("Created")
  *                     .nullable(false)
- *                     .columnHasDefaultValue(true) // Database sets this
+ *                     .hasDatabaseDefault(true) // Database sets this
  *                     .updatable(false))
  *             .build();
  *     }
  * }
- * }
+ *}
  * @param <T> the underlying type
  * @see Attribute#define()
  * @see Builder

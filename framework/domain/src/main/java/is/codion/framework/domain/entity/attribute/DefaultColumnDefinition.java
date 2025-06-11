@@ -55,7 +55,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 
 	private final int type;
 	private final int primaryKeyIndex;
-	private final boolean columnHasDefaultValue;
+	private final boolean hasDatabaseDefault;
 	private final boolean insertable;
 	private final boolean updatable;
 	private final boolean searchable;
@@ -73,7 +73,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		super(builder);
 		this.type = builder.type;
 		this.primaryKeyIndex = builder.primaryKeyIndex;
-		this.columnHasDefaultValue = builder.columnHasDefaultValue;
+		this.hasDatabaseDefault = builder.hasDatabaseDefault;
 		this.insertable = builder.insertable;
 		this.updatable = builder.updatable;
 		this.searchable = builder.searchable;
@@ -113,8 +113,8 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 	}
 
 	@Override
-	public final boolean columnHasDefaultValue() {
-		return columnHasDefaultValue;
+	public final boolean hasDatabaseDefault() {
+		return hasDatabaseDefault;
 	}
 
 	@Override
@@ -266,7 +266,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		private final int primaryKeyIndex;
 
 		private int type;
-		private boolean columnHasDefaultValue;
+		private boolean hasDatabaseDefault;
 		private boolean insertable;
 		private boolean updatable;
 		private boolean searchable;
@@ -287,7 +287,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 			super(column);
 			this.primaryKeyIndex = primaryKeyIndex;
 			this.type = sqlType(column.type().valueClass());
-			this.columnHasDefaultValue = false;
+			this.hasDatabaseDefault = false;
 			this.insertable = true;
 			nullable(primaryKeyIndex < 0);
 			this.updatable = primaryKeyIndex < 0;
@@ -363,8 +363,8 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		}
 
 		@Override
-		public final B columnHasDefaultValue(boolean columnHasDefaultValue) {
-			this.columnHasDefaultValue = columnHasDefaultValue;
+		public final B hasDatabaseDefault(boolean hasDatabaseDefault) {
+			this.hasDatabaseDefault = hasDatabaseDefault;
 			return self();
 		}
 

@@ -118,7 +118,7 @@ public interface EntityType {
 	 * EntityDefinition definition = Customer.TYPE.define(
 	 *         Customer.ID.define()
 	 *             .primaryKey()
-	 *             .columnHasDefaultValue(true),
+	 *             .hasDatabaseDefault(true),
 	 *         Customer.NAME.define()
 	 *             .column()
 	 *             .caption("Customer Name")

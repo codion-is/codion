@@ -211,6 +211,6 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 	private static boolean isNonKeyColumnWithoutDefaultValue(AttributeDefinition<?> definition) {
 		return definition instanceof ColumnDefinition
 						&& !((ColumnDefinition<?>) definition).primaryKey()
-						&& !((ColumnDefinition<?>) definition).columnHasDefaultValue();
+						&& !((ColumnDefinition<?>) definition).hasDatabaseDefault();
 	}
 }

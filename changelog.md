@@ -16,6 +16,8 @@ Codion Change Log
 - FilterTableModel.Builder.asyncRefresh() renamed async(), related renaming.
 ### is.codion.swing.common.ui
 - FilterTable.Builder.sortingEnabled() renamed sortable().
+### is.codion.framework.domain
+- ColumnDefinition.columnHasDefaultValue() renamed hasDatabaseDefault().
 ### is.codion.framework.db.core
 - EntityConnectionProvider.Builder.domainType() renamed domain().
 ### is.codion.swing.framework.ui

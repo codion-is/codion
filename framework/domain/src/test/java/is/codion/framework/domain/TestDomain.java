@@ -319,7 +319,7 @@ public final class TestDomain extends DomainModel {
 										Detail.DOUBLE.define()
 														.column()
 														.caption(Detail.DOUBLE.name())
-														.columnHasDefaultValue(true),
+														.hasDatabaseDefault(true),
 										Detail.STRING.define()
 														.column()
 														.caption("Detail string")
@@ -327,7 +327,7 @@ public final class TestDomain extends DomainModel {
 										Detail.DATE.define()
 														.column()
 														.caption(Detail.DATE.name())
-														.columnHasDefaultValue(true),
+														.hasDatabaseDefault(true),
 										Detail.TIMESTAMP.define()
 														.column()
 														.caption(Detail.TIMESTAMP.name()),
@@ -340,7 +340,7 @@ public final class TestDomain extends DomainModel {
 										Detail.BOOLEAN_NULLABLE.define()
 														.column()
 														.caption(Detail.BOOLEAN_NULLABLE.name())
-														.columnHasDefaultValue(true)
+														.hasDatabaseDefault(true)
 														.defaultValue(true),
 										Detail.MASTER_ID.define()
 														.column(),

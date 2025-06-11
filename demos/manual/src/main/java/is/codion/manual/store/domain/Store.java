@@ -106,7 +106,7 @@ public final class Store extends DomainModel {
 										Customer.ACTIVE.define()
 														.column()
 														.caption("Active")
-														.columnHasDefaultValue(true)
+														.hasDatabaseDefault(true)
 														.defaultValue(true))
 						.keyGenerator(new UUIDKeyGenerator())
 						// tag::customerStringFactory[]
@@ -135,7 +135,7 @@ public final class Store extends DomainModel {
 										Address.VALID.define()
 														.column()
 														.caption("Valid")
-														.columnHasDefaultValue(true)
+														.hasDatabaseDefault(true)
 														.defaultValue(true)
 														.nullable(false))
 						.stringFactory(StringFactory.builder()
