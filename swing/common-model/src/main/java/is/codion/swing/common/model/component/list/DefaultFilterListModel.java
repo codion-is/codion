@@ -160,7 +160,7 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 
 		private Supplier<? extends Collection<T>> supplier;
 		private Comparator<T> comparator;
-		private boolean asyncRefresh = ASYNC_REFRESH.getOrThrow();
+		private boolean async = ASYNC.getOrThrow();
 		private Predicate<T> visiblePredicate;
 
 		DefaultBuilder(Collection<T> items) {
@@ -180,8 +180,8 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 		}
 
 		@Override
-		public Builder<T> asyncRefresh(boolean asyncRefresh) {
-			this.asyncRefresh = asyncRefresh;
+		public Builder<T> async(boolean async) {
+			this.async = async;
 			return this;
 		}
 
@@ -197,7 +197,7 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 		}
 
 		private Refresher<T> createRefresher(Items<T> items) {
-			return new DefaultRefreshWorker<>(supplier, items, asyncRefresh);
+			return new DefaultRefreshWorker<>(supplier, items, async);
 		}
 
 		private static final class DefaultRefreshWorker<R> extends AbstractRefreshWorker<R> {
@@ -205,8 +205,8 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 			private final Items<R> items;
 
 			private DefaultRefreshWorker(Supplier<? extends Collection<R>> supplier,
-																	 Items<R> items, boolean asyncRefresh) {
-				super((Supplier<Collection<R>>) supplier, asyncRefresh);
+																	 Items<R> items, boolean async) {
+				super((Supplier<Collection<R>>) supplier, async);
 				this.items = items;
 			}
 

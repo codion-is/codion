@@ -178,10 +178,10 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		Builder<R, C> refreshStrategy(RefreshStrategy refreshStrategy);
 
 		/**
-		 * @param asyncRefresh true if async refresh should be enabled
+		 * @param async true if async refresh should be enabled
 		 * @return this builder instance
 		 */
-		Builder<R, C> asyncRefresh(boolean asyncRefresh);
+		Builder<R, C> async(boolean async);
 
 		/**
 		 * @param rowEditor supplies the row editor

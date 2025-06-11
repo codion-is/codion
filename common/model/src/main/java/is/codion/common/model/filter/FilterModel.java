@@ -81,7 +81,7 @@ public interface FilterModel<T> {
 	 * </ul>
 	 * @see Refresher#async()
 	 */
-	PropertyValue<Boolean> ASYNC_REFRESH = booleanValue(FilterModel.class.getName() + ".asyncRefresh", true);
+	PropertyValue<Boolean> ASYNC = booleanValue(FilterModel.class.getName() + ".async", true);
 
 	/**
 	 * @return the model items
@@ -504,7 +504,7 @@ public interface FilterModel<T> {
 		 * This is quite difficult to achieve with asynchronous refresh enabled, so here's a way to temporarily
 		 * disable asynchronous refresh, for a more predictable behaviour.
 		 * @return the {@link State} controlling whether asynchronous refreshing is enabled
-		 * @see #ASYNC_REFRESH
+		 * @see #ASYNC
 		 */
 		State async();
 

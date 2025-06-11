@@ -350,7 +350,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		private Predicate<R> validator = new ValidPredicate<>();
 		private Supplier<Map<C, ConditionModel<?>>> filters;
 		private RefreshStrategy refreshStrategy = RefreshStrategy.CLEAR;
-		private boolean asyncRefresh = FilterModel.ASYNC_REFRESH.getOrThrow();
+		private boolean async = FilterModel.ASYNC.getOrThrow();
 		private Function<FilterTableModel<R, C>, RowEditor<R, C>> rowEditorFactory = new DefaultRowEditorFactory<>();
 		private Predicate<R> visiblePredicate;
 
@@ -387,8 +387,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
-		public Builder<R, C> asyncRefresh(boolean asyncRefresh) {
-			this.asyncRefresh = asyncRefresh;
+		public Builder<R, C> async(boolean async) {
+			this.async = async;
 			return this;
 		}
 
@@ -418,7 +418,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		private Refresher<R> createRefresher(Items<R> items) {
-			return new DefaultRefreshWorker<>(supplier, items, asyncRefresh);
+			return new DefaultRefreshWorker<>(supplier, items, async);
 		}
 
 		private static final class DefaultRefreshWorker<R> extends AbstractRefreshWorker<R> {
@@ -426,8 +426,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			private final Items<R> items;
 
 			private DefaultRefreshWorker(Supplier<? extends Collection<R>> supplier,
-																	 Items<R> items, boolean asyncRefresh) {
-				super((Supplier<Collection<R>>) supplier, asyncRefresh);
+																	 Items<R> items, boolean async) {
+				super((Supplier<Collection<R>>) supplier, async);
 				this.items = items;
 			}
 

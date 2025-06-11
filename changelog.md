@@ -13,6 +13,7 @@ Codion Change Log
 ### is.codion.swing.common.model
 - FilterTableModel.Builder.filterModelFactory() renamed filters().
 - ProgressWorker.Builder.maximumProgress() renamed maximum, related renaming.
+- FilterTableModel.Builder.asyncRefresh() renamed async(), related renaming.
 ### is.codion.swing.common.ui
 - FilterTable.Builder.sortingEnabled() renamed sortable().
 ### is.codion.framework.db.core

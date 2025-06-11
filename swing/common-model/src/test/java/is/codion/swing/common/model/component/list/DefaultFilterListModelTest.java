@@ -39,7 +39,7 @@ final class DefaultFilterListModelTest {
 		List<String> items = asList(ONE, TWO, THREE);
 		FilterListModel<String> unsorted = FilterListModel.<String>builder()
 						.supplier(() -> items)
-						.asyncRefresh(false)
+						.async(false)
 						.comparator(null)
 						.build();
 		assertFalse(unsorted.sort().sorted());

@@ -100,10 +100,10 @@ public interface FilterListModel<T> extends ListModel<T>, FilterModel<T> {
 		Builder<T> comparator(Comparator<T> comparator);
 
 		/**
-		 * @param asyncRefresh true if async refresh should be enabled
+		 * @param async true if async refresh should be enabled
 		 * @return this builder instance
 		 */
-		Builder<T> asyncRefresh(boolean asyncRefresh);
+		Builder<T> async(boolean async);
 
 		/**
 		 * @param predicate the {@link Predicate} controlling which items should be visible
