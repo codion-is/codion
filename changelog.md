@@ -33,6 +33,9 @@ Codion Change Log
 - EntityQueryModel bug fixed, did support including non-selected columns.
 - EntityTableModel.orderQueryBySortOrder() renamed orderQuery().
 - AbstractEntityTableModel.orderByFromSortModel() renamed orderBy().
+- EntitySearchModel.handleEditEvents() renamed editEvents().
+### is.codion.swing.framework.model
+- EntityComboBoxModel.handleEditEvents() renamed editEvents().
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel.Builder.domainType() renamed domain().
 

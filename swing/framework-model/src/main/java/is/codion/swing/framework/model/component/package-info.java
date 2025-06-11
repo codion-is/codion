@@ -19,7 +19,7 @@
 /**
  * Package configuration values:
  * <ul>
- * <li>{@link is.codion.swing.framework.model.component.EntityComboBoxModel#HANDLE_EDIT_EVENTS}
+ * <li>{@link is.codion.swing.framework.model.component.EntityComboBoxModel#EDIT_EVENTS}
  * </ul>
  */
 package is.codion.swing.framework.model.component;

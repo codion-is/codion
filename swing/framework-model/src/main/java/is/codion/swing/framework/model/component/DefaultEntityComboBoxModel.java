@@ -92,7 +92,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 						.value(builder.condition)
 						.build();
 		this.orderBy = builder.orderBy;
-		if (builder.handleEditEvents) {
+		if (builder.editEvents) {
 			editEvents().inserted(entityDefinition.type()).addWeakConsumer(insertListener);
 			editEvents().updated(entityDefinition.type()).addWeakConsumer(updateListener);
 			editEvents().deleted(entityDefinition.type()).addWeakConsumer(deleteListener);
@@ -446,7 +446,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		private Supplier<Condition> condition;
 		private Comparator<Entity> comparator;
 		private Collection<Attribute<?>> attributes = emptyList();
-		private boolean handleEditEvents = HANDLE_EDIT_EVENTS.getOrThrow();
+		private boolean editEvents = EDIT_EVENTS.getOrThrow();
 		private String nullCaption;
 		private boolean filterSelected = false;
 
@@ -497,8 +497,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 
 		@Override
-		public Builder handleEditEvents(boolean handleEditEvents) {
-			this.handleEditEvents = handleEditEvents;
+		public Builder editEvents(boolean editEvents) {
+			this.editEvents = editEvents;
 			return this;
 		}
 

@@ -91,7 +91,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		this.settings = unmodifiableMap(searchColumns.stream()
 						.collect(toMap(Function.identity(), column -> new DefaultSettings())));
 		this.limit = Value.nullable(builder.limit);
-		if (builder.handleEditEvents) {
+		if (builder.editEvents) {
 			editEvents().updated(entityDefinition.type()).addWeakConsumer(updateListener);
 			editEvents().deleted(entityDefinition.type()).addWeakConsumer(deleteListener);
 		}
@@ -325,7 +325,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		private @Nullable Supplier<Condition> condition;
 		private Collection<Attribute<?>> attributes = emptyList();
 		private @Nullable Integer limit = DEFAULT_LIMIT.get();
-		private boolean handleEditEvents = HANDLE_EDIT_EVENTS.getOrThrow();
+		private boolean editEvents = EDIT_EVENTS.getOrThrow();
 		private @Nullable OrderBy orderBy;
 
 		DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
@@ -368,8 +368,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		}
 
 		@Override
-		public Builder handleEditEvents(boolean handleEditEvents) {
-			this.handleEditEvents = handleEditEvents;
+		public Builder editEvents(boolean editEvents) {
+			this.editEvents = editEvents;
 			return this;
 		}
 

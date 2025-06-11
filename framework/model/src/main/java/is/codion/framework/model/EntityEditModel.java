@@ -61,7 +61,6 @@ public interface EntityEditModel {
 	 * <li>Default value: true
 	 * </ul>
 	 * @see #postEditEvents()
-	 * @see EntityTableModel#HANDLE_EDIT_EVENTS
 	 */
 	PropertyValue<Boolean> POST_EDIT_EVENTS = booleanValue(EntityEditModel.class.getName() + ".postEditEvents", true);
 

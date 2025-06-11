@@ -52,11 +52,11 @@ public interface EntitySearchModel {
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
 	 * </ul>
-	 * @see Builder#handleEditEvents(boolean)
+	 * @see Builder#editEvents(boolean)
 	 * @see EntityEditModel#POST_EDIT_EVENTS
 	 */
-	PropertyValue<Boolean> HANDLE_EDIT_EVENTS =
-					booleanValue(EntitySearchModel.class.getName() + ".handleEditEvents", true);
+	PropertyValue<Boolean> EDIT_EVENTS =
+					booleanValue(EntitySearchModel.class.getName() + ".editEvents", true);
 
 	/**
 	 * Specifies the default search result limit, that is, the maximum number of results, null meaning no limit
@@ -217,11 +217,11 @@ public interface EntitySearchModel {
 		Builder orderBy(OrderBy orderBy);
 
 		/**
-		 * @param handleEditEvents controls whether this search model should handle entity edit events, by updating any updated items and removing deleted ones
+		 * @param editEvents controls whether this search model should handle entity edit events, by updating any updated items and removing deleted ones
 		 * @return this builder instance
 		 * @see EntityEditModel.EditEvents
 		 */
-		Builder handleEditEvents(boolean handleEditEvents);
+		Builder editEvents(boolean editEvents);
 
 		/**
 		 * @param limit the search result limit

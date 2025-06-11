@@ -194,7 +194,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	}
 
 	@Test
-	void handleEditEvents() {
+	void editEvents() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
 		tableModel.items().refresh();
 		SwingEntityEditModel employeeEditModel = tableModel.editModel();

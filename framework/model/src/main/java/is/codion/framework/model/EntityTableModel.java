@@ -53,16 +53,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	PropertyValue<OnInsert> ON_INSERT = enumValue(EntityTableModel.class.getName() + ".onInsert", OnInsert.class, OnInsert.PREPEND);
 
 	/**
-	 * Specifies whether table models handle entity edit events, by replacing updated entities
-	 * <ul>
-	 * <li>Value type: Boolean
-	 * <li>Default value: true
-	 * </ul>
-	 * @see EntityEditModel#POST_EDIT_EVENTS
-	 */
-	PropertyValue<Boolean> HANDLE_EDIT_EVENTS = booleanValue(EntityTableModel.class.getName() + ".handleEditEvents", true);
-
-	/**
 	 * Specifies whether the {@link #sort()} model order is used as a basis for the {@link EntityQueryModel} order by clause.
 	 * Note that this only applies to {@link Column} based attributes.
 	 * <ul>

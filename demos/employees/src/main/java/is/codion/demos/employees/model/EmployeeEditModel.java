@@ -52,7 +52,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 							//Prevent automatically reflecting changes to employees
 							//when edited, as we simply refresh instead, due to the
 							//condition, see configureComboBoxModel() below
-							.handleEditEvents(false)
+							.editEvents(false)
 							.build();
 		}
 

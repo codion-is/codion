@@ -52,11 +52,11 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
 	 * </ul>
-	 * @see Builder#handleEditEvents(boolean)
+	 * @see Builder#editEvents(boolean)
 	 * @see is.codion.framework.model.EntityEditModel#POST_EDIT_EVENTS
 	 */
-	PropertyValue<Boolean> HANDLE_EDIT_EVENTS =
-					booleanValue(EntityComboBoxModel.class.getName() + ".handleEditEvents", true);
+	PropertyValue<Boolean> EDIT_EVENTS =
+					booleanValue(EntityComboBoxModel.class.getName() + ".editEvents", true);
 
 	/**
 	 * @return the connection provider used by this combo box model
@@ -162,12 +162,12 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		Builder nullCaption(String nullCaption);
 
 		/**
-		 * @param handleEditEvents controls whether this combo box model should handle entity edit events, by adding inserted items,
+		 * @param editEvents controls whether this combo box model should handle entity edit events, by adding inserted items,
 		 * updating any updated items and removing deleted ones
 		 * @return this builder instance
 		 * @see is.codion.framework.model.EntityEditModel.EditEvents
 		 */
-		Builder handleEditEvents(boolean handleEditEvents);
+		Builder editEvents(boolean editEvents);
 
 		/**
 		 * Specifies whether filtering the model affects the currently selected item.
