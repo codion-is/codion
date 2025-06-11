@@ -76,7 +76,7 @@ final class SwingMcpHttpServer {
 
 	private HttpServer server;
 
-	SwingMcpHttpServer(int port, String name, String version) throws IOException {
+	SwingMcpHttpServer(int port, String name, String version) {
 		this.port = port;
 		this.serverName = name;
 		this.serverVersion = version;
