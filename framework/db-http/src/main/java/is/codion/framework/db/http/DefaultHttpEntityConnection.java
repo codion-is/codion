@@ -58,10 +58,10 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public void setQueryCacheEnabled(boolean queryCacheEnabled) {
+	public void queryCache(boolean queryCache) {
 		try {
 			synchronized (httpClient) {
-				handleResponse(execute(createRequest("setQueryCacheEnabled", serialize(queryCacheEnabled))));
+				handleResponse(execute(createRequest("setQueryCacheEnabled", serialize(queryCache))));
 			}
 		}
 		catch (InterruptedException e) {
@@ -74,7 +74,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public boolean isQueryCacheEnabled() {
+	public boolean queryCache() {
 		try {
 			synchronized (httpClient) {
 				return handleResponse(execute(createRequest("isQueryCacheEnabled")));

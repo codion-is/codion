@@ -217,17 +217,17 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	@Override
-	public void setQueryCacheEnabled(boolean queryCacheEnabled) {
+	public void queryCache(boolean queryCache) {
 		synchronized (connection) {
-			this.queryCacheEnabled = queryCacheEnabled;
-			if (!queryCacheEnabled) {
-				queryCache.clear();
+			this.queryCacheEnabled = queryCache;
+			if (!queryCache) {
+				this.queryCache.clear();
 			}
 		}
 	}
 
 	@Override
-	public boolean isQueryCacheEnabled() {
+	public boolean queryCache() {
 		synchronized (connection) {
 			return queryCacheEnabled;
 		}

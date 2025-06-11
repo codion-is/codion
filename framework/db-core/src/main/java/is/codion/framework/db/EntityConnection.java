@@ -184,15 +184,15 @@ public interface EntityConnection extends AutoCloseable {
 	 * Queries are cached on a {@link Select}
 	 * basis, but never when selecting for update.
 	 * The cache is cleared when disabled.
-	 * @param queryCacheEnabled the result cache state
+	 * @param queryCache true to turn on the query cache, false to clear and disable the cache
 	 */
-	void setQueryCacheEnabled(boolean queryCacheEnabled);
+	void queryCache(boolean queryCache);
 
 	/**
 	 * @return true if the query cache is enabled
-	 * @see #setQueryCacheEnabled(boolean)
+	 * @see #queryCache(boolean)
 	 */
-	boolean isQueryCacheEnabled();
+	boolean queryCache();
 
 	/**
 	 * Executes the function with the given type with no arguments

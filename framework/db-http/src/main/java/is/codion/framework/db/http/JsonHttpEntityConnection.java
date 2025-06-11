@@ -78,11 +78,11 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public void setQueryCacheEnabled(boolean queryCacheEnabled) {
+	public void queryCache(boolean queryCache) {
 		try {
 			synchronized (httpClient) {
 				handleResponse(execute(createJsonRequest("setQueryCacheEnabled",
-								objectMapper.writeValueAsString(queryCacheEnabled))));
+								objectMapper.writeValueAsString(queryCache))));
 			}
 		}
 		catch (InterruptedException e) {
@@ -95,7 +95,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	}
 
 	@Override
-	public boolean isQueryCacheEnabled() {
+	public boolean queryCache() {
 		try {
 			synchronized (httpClient) {
 				return handleJsonResponse(executeJson(createJsonRequest("isQueryCacheEnabled")),
