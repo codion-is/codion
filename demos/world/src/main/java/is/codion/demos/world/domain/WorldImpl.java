@@ -400,7 +400,7 @@ public final class WorldImpl extends DomainModel {
 														.expression("sum(gnp)")
 														.aggregate(true)
 														.numberFormatGrouping(true))
-						.tableName("world.country")
+						.table("world.country")
 						.readOnly(true)
 						.description("Continents of the World")
 						.caption("Continent")

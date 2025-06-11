@@ -354,7 +354,7 @@ public final class TestDomain extends DomainModel {
 														.column()
 														.expression("min(comm)")
 														.aggregate(true))
-						.tableName("employees.employee")
+						.table("employees.employee")
 						.selectQuery(EntitySelectQuery.builder()
 										.having("job <> 'PRESIDENT'")
 										.build())

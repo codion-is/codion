@@ -268,12 +268,12 @@ public final class DomainSource {
 	}
 
 	private TypeSpec createInterface(EntityDefinition definition, boolean includeDto) {
-		String interfaceName = interfaceName(definition.tableName(), true);
+		String interfaceName = interfaceName(definition.table(), true);
 		TypeSpec.Builder interfaceBuilder = interfaceBuilder(interfaceName)
 						.addModifiers(PUBLIC, STATIC)
 						.addField(FieldSpec.builder(EntityType.class, "TYPE")
 										.addModifiers(PUBLIC, STATIC, FINAL)
-										.initializer("DOMAIN.entityType($S)", definition.tableName().toLowerCase())
+										.initializer("DOMAIN.entityType($S)", definition.table().toLowerCase())
 										.build());
 		definition.attributes().get().stream()
 						.filter(Column.class::isInstance)
@@ -361,8 +361,8 @@ public final class DomainSource {
 		return MethodSpec.methodBuilder("dto")
 						.addModifiers(PUBLIC, STATIC)
 						.returns(ClassName.get("", "Dto"))
-						.addParameter(Entity.class, interfaceName(definition.tableName(), false))
-						.addCode(dtoFromEntityMethodBody(attributes, interfaceName(definition.tableName(), false)))
+						.addParameter(Entity.class, interfaceName(definition.table(), false))
+						.addCode(dtoFromEntityMethodBody(attributes, interfaceName(definition.table(), false)))
 						.build();
 	}
 
@@ -377,7 +377,7 @@ public final class DomainSource {
 								.filter(definition -> definition.type().equals(((ForeignKey) attribute).referencedType()))
 								.findFirst()
 								.orElseThrow();
-				arguments.add(interfaceName(referenced.tableName(), true)
+				arguments.add(interfaceName(referenced.table(), true)
 								+ ".dto(" + parameter + ".get(" + attribute.name().toUpperCase() + "))");
 			}
 		});
@@ -391,7 +391,7 @@ public final class DomainSource {
 	}
 
 	private static TypeName dtoName(EntityDefinition referenced) {
-		return ClassName.get("", interfaceName(referenced.tableName(), true) + ".Dto");
+		return ClassName.get("", interfaceName(referenced.table(), true) + ".Dto");
 	}
 
 	private static boolean noneForeignKeyColumn(Attribute<?> attribute, EntityDefinition entityDefinition) {
@@ -403,7 +403,7 @@ public final class DomainSource {
 	}
 
 	private static MethodSpec createDefinitionMethod(EntityDefinition definition) {
-		String interfaceName = interfaceName(definition.tableName(), true);
+		String interfaceName = interfaceName(definition.table(), true);
 		StringBuilder builder = new StringBuilder()
 						.append("return ").append(interfaceName).append(".TYPE.define(").append(LINE_SEPARATOR)
 						.append(String.join("," + LINE_SEPARATOR,
@@ -422,7 +422,7 @@ public final class DomainSource {
 		}
 		builder.append(LINE_SEPARATOR).append(INDENT).append(".build();");
 
-		return methodBuilder(interfaceName(definition.tableName(), false))
+		return methodBuilder(interfaceName(definition.table(), false))
 						.addModifiers(STATIC)
 						.returns(EntityDefinition.class)
 						.addCode(builder.toString())
@@ -629,7 +629,7 @@ public final class DomainSource {
 	private String addInterfaceImports(String sourceString,
 																		 String parentInterface) {
 		List<String> interfaceNames = sortedDefinitions.stream()
-						.map(definition -> interfaceName(definition.tableName(), true))
+						.map(definition -> interfaceName(definition.table(), true))
 						.sorted()
 						.collect(toList());
 		List<String> lines = new ArrayList<>();
@@ -661,11 +661,11 @@ public final class DomainSource {
 	}
 
 	public static String apiSearchString(EntityDefinition definition) {
-		return "interface " + interfaceName(definition.tableName(), true) + " ";
+		return "interface " + interfaceName(definition.table(), true) + " ";
 	}
 
 	public static String implSearchString(EntityDefinition definition) {
-		return "EntityDefinition " + interfaceName(definition.tableName(), false) + "()";
+		return "EntityDefinition " + interfaceName(definition.table(), false) + "()";
 	}
 
 	private static List<EntityDefinition> sortDefinitions(Domain domain) {
@@ -674,10 +674,10 @@ public final class DomainSource {
 
 		return concat(definitions.stream()
 										.filter(definition -> dependencies.get(definition.type()).isEmpty())
-										.sorted(comparing(EntityDefinition::tableName)),
+										.sorted(comparing(EntityDefinition::table)),
 						definitions.stream()
 										.filter(definition -> !dependencies.get(definition.type()).isEmpty())
-										.sorted(comparing(EntityDefinition::tableName))
+										.sorted(comparing(EntityDefinition::table))
 										.sorted(new DependencyOrder(dependencies)))
 						.collect(toList());
 	}

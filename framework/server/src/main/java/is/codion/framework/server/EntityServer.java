@@ -240,7 +240,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 		for (Domain domain : domainModels.values()) {
 			domainEntities.put(domain.type(), domain.entities().definitions().stream()
 							.map(definition -> new DefaultDomainEntityDefinition(domain.type().name(),
-											definition.type().name(), definition.tableName()))
+											definition.type().name(), definition.table()))
 							.collect(Collectors.toList()));
 		}
 
@@ -525,12 +525,12 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
 		private final String domain;
 		private final String name;
-		private final String tableName;
+		private final String table;
 
-		private DefaultDomainEntityDefinition(String domain, String name, String tableName) {
+		private DefaultDomainEntityDefinition(String domain, String name, String table) {
 			this.domain = domain;
 			this.name = name;
-			this.tableName = tableName;
+			this.table = table;
 		}
 
 		@Override
@@ -545,7 +545,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
 		@Override
 		public String table() {
-			return tableName;
+			return table;
 		}
 	}
 

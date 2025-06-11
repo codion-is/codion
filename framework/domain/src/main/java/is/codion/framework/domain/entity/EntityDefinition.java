@@ -56,11 +56,11 @@ import static is.codion.common.Configuration.booleanValue;
  * Entity definitions are typically created using the builder pattern during domain initialization:
  * {@snippet :
  * public class Store extends DefaultDomain {
- *     
+ *
  *     // Define entity types
  *     interface Customer {
  *         EntityType TYPE = DOMAIN.entityType("store.customer");
- *         
+ *
  *         Column<Integer> ID = TYPE.integerColumn("id");
  *         Column<String> NAME = TYPE.stringColumn("name");
  *         Column<String> EMAIL = TYPE.stringColumn("email");
@@ -80,14 +80,14 @@ import static is.codion.common.Configuration.booleanValue;
  *                     .column()
  *                     .caption("Email")
  *                     .maximumLength(255))
- *             .tableName("customer")
+ *             .table("customer")
  *             .caption("Customer")
  *             .orderBy(ascending(Customer.NAME))
  *             .smallDataset(true)
  *             .build();
  *     }
  * }
- * }
+ *}
  * @see EntityType#define(AttributeDefinition.Builder[])
  * @see Builder
  */
@@ -110,7 +110,7 @@ public interface EntityDefinition {
 	/**
 	 * @return the name of the underlying table, with schema prefix if applicable
 	 */
-	String tableName();
+	String table();
 
 	/**
 	 * Returns the {@link ConditionProvider} associated with the given type
@@ -306,10 +306,10 @@ public interface EntityDefinition {
 	interface Builder {
 
 		/**
-		 * @param tableName the table name
+		 * @param table the table name
 		 * @return this {@link Builder} instance
 		 */
-		Builder tableName(String tableName);
+		Builder table(String table);
 
 		/**
 		 * @param validator the validator for this entity type

@@ -129,7 +129,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
 		requireNonNull(definition);
 		if (entityDefinitions.containsKey(definition.type().name())) {
 			throw new IllegalArgumentException("Entity has already been defined: " +
-							definition.type() + ", for table: " + definition.tableName());
+							definition.type() + ", for table: " + definition.table());
 		}
 		validateForeignKeys(definition);
 		entityDefinitions.put(definition.type().name(), (DefaultEntityDefinition) definition);

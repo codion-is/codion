@@ -137,7 +137,7 @@ public interface EntityType {
 	 *             .caption("Active")
 	 *             .nullable(false)
 	 *             .defaultValue(true))
-	 *     .tableName("customer")
+	 *     .table("customer")
 	 *     .caption("Customer")
 	 *     .description("Customer information")
 	 *     .orderBy(ascending(Customer.NAME))

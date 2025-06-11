@@ -84,7 +84,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 	private final Comparator<Entity> comparator;
 	private final EntityValidator validator;
 	private final Predicate<Entity> exists;
-	private final transient String tableName;
+	private final transient String table;
 	private final transient @Nullable String selectTable;
 	private final transient KeyGenerator keyGenerator;
 	private final transient boolean optimisticLocking;
@@ -113,7 +113,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		this.comparator = builder.comparator;
 		this.validator = builder.validator;
 		this.exists = builder.exists;
-		this.tableName = builder.tableName;
+		this.table = builder.table;
 		this.selectTable = builder.selectTable;
 		this.selectQuery = builder.selectQuery;
 		this.conditionProviders = builder.conditionProviders == null ? null : new HashMap<>(builder.conditionProviders);
@@ -126,8 +126,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 	}
 
 	@Override
-	public String tableName() {
-		return tableName;
+	public String table() {
+		return table;
 	}
 
 	@Override
@@ -187,7 +187,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 	@Override
 	public String selectTable() {
-		return selectTable == null ? tableName : selectTable;
+		return selectTable == null ? table : selectTable;
 	}
 
 	@Override
@@ -769,7 +769,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 		private final EntityAttributes attributes;
 
-		private String tableName;
+		private String table;
 		private @Nullable Map<ConditionType, ConditionProvider> conditionProviders;
 		private @Nullable String caption;
 		private String captionResourceKey;
@@ -790,16 +790,16 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 		DefaultBuilder(EntityType entityType, List<AttributeDefinition.Builder<?, ?>> attributeDefinitionBuilders) {
 			this.attributes = new EntityAttributes(entityType, attributeDefinitionBuilders);
-			this.tableName = attributes.entityType.name();
+			this.table = attributes.entityType.name();
 			this.captionResourceKey = attributes.entityType.name();
 		}
 
 		@Override
-		public Builder tableName(String tableName) {
-			if (nullOrEmpty(tableName)) {
+		public Builder table(String table) {
+			if (nullOrEmpty(table)) {
 				throw new IllegalArgumentException("Table name must be non-empty");
 			}
-			this.tableName = tableName;
+			this.table = table;
 			return this;
 		}
 

@@ -90,7 +90,7 @@ public final class DefaultEntityBuilderTest {
 
 																	return sourceValue == null ? null : sourceValue + 1;
 																}))
-								.tableName("tableName")
+								.table("tableName")
 								.build());
 			}
 		}

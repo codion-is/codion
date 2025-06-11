@@ -20,6 +20,7 @@ Codion Change Log
 - ColumnDefinition.columnHasDefaultValue() renamed hasDatabaseDefault().
 - DerivedAttributeDefinition.sourceAttributes() renamed sources().
 - EntityDefinition.selectTableName() renamed selectTable().
+- EntityDefinition.tableName() renamed table().
 ### is.codion.framework.db.core
 - EntityConnectionProvider.Builder.domainType() renamed domain().
 ### is.codion.swing.framework.ui

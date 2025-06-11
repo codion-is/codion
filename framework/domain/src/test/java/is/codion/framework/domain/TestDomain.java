@@ -423,7 +423,7 @@ public final class TestDomain extends DomainModel {
 														.selected(false),
 										Department.CODE.define()
 														.column())
-						.tableName("employees.department")
+						.table("employees.department")
 						.smallDataset(true)
 						.orderBy(ascending(Department.NAME))
 						.stringFactory(Department.NAME)
@@ -517,7 +517,7 @@ public final class TestDomain extends DomainModel {
 										Employee.DATA.define()
 														.column()
 														.caption("Data"))
-						.tableName("employees.employee")
+						.table("employees.employee")
 						.selectTable("employees.employee")
 						.keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
 						.orderBy(ascending(Employee.DEPARTMENT_NO, Employee.NAME))

@@ -321,7 +321,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		EntityDefinition entityDefinition = definition(condition.entityType());
 		List<?> statementValues = condition.values();
 		List<ColumnDefinition<?>> statementColumns = definitions(condition.columns());
-		String deleteQuery = deleteQuery(entityDefinition.tableName(), condition.toString(entityDefinition));
+		String deleteQuery = deleteQuery(entityDefinition.table(), condition.toString(entityDefinition));
 		synchronized (connection) {
 			try (PreparedStatement statement = prepareStatement(deleteQuery)) {
 				int deleteCount = executeUpdate(statement, deleteQuery, statementColumns, statementValues, DELETE);
@@ -366,7 +366,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 						condition = keys(keysToDelete.subList(i, Math.min(i + keysPerStatement, keysToDelete.size())));
 						statementValues = condition.values();
 						statementColumns = definitions(condition.columns());
-						deleteQuery = deleteQuery(entityDefinition.tableName(), condition.toString(entityDefinition));
+						deleteQuery = deleteQuery(entityDefinition.table(), condition.toString(entityDefinition));
 						statement = prepareStatement(deleteQuery);
 						deleteCount += executeUpdate(statement, deleteQuery, statementColumns, statementValues, DELETE);
 						statement.close();
@@ -722,7 +722,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 						throw new SQLException("Unable to insert entity " + entity.type() + ", no values to insert");
 					}
 
-					insertQuery = insertQuery(entityDefinition.tableName(), statementColumns);
+					insertQuery = insertQuery(entityDefinition.table(), statementColumns);
 					statement = prepareStatement(insertQuery, keyGenerator.returnGeneratedKeys());
 					executeUpdate(statement, insertQuery, statementColumns, statementValues, INSERT);
 					keyGenerator.afterInsert(entity, connection, statement);
@@ -781,7 +781,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 						}
 
 						Condition condition = key(entity.originalPrimaryKey());
-						updateQuery = updateQuery(entityDefinition.tableName(), statementColumns, condition.toString(entityDefinition));
+						updateQuery = updateQuery(entityDefinition.table(), statementColumns, condition.toString(entityDefinition));
 						statement = prepareStatement(updateQuery);
 						statementColumns.addAll(definitions(condition.columns()));
 						statementValues.addAll(condition.values());
@@ -874,7 +874,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 			statementColumns.add(columnDefinition);
 			statementValues.add(columnDefinition.attribute().type().validateType(columnValue.getValue()));
 		}
-		String updateQuery = updateQuery(entityDefinition.tableName(), statementColumns, update.where().toString(entityDefinition));
+		String updateQuery = updateQuery(entityDefinition.table(), statementColumns, update.where().toString(entityDefinition));
 		statementColumns.addAll(definitions(update.where().columns()));
 		statementValues.addAll(update.where().values());
 

@@ -249,7 +249,7 @@ public final class TestDomain extends DomainModel {
 										DepartmentFk.LOC.define()
 														.column()
 														.caption(DepartmentFk.LOC.name()))
-						.tableName("employees.department")
+						.table("employees.department")
 						.stringFactory(DepartmentFk.DNAME)
 						.build());
 	}
@@ -311,7 +311,7 @@ public final class TestDomain extends DomainModel {
 										EmployeeFk.HIRETIME.define()
 														.column()
 														.caption(EmployeeFk.HIRETIME.name()))
-						.tableName("employees.employee")
+						.table("employees.employee")
 						.stringFactory(EmployeeFk.NAME)
 						.keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
 						.caption("Employee")
@@ -413,7 +413,7 @@ public final class TestDomain extends DomainModel {
 														.column()
 														.expression("min(comm)")
 														.aggregate(true))
-						.tableName("employees.employee")
+						.table("employees.employee")
 						.selectQuery(EntitySelectQuery.builder()
 										.having("job <> 'PRESIDENT'")
 										.build())
@@ -479,7 +479,7 @@ public final class TestDomain extends DomainModel {
 														.column(),
 										Query.ENAME.define()
 														.column())
-						.tableName("employees.employee")
+						.table("employees.employee")
 						.orderBy(OrderBy.descending(Query.ENAME))
 						.selectTable("employees.employee e")
 						.selectQuery(EntitySelectQuery.builder()
@@ -502,7 +502,7 @@ public final class TestDomain extends DomainModel {
 														.column(),
 										QueryColumnsWhereClause.ENAME.define()
 														.column())
-						.tableName("employees.employee e")
+						.table("employees.employee e")
 						.orderBy(OrderBy.descending(QueryColumnsWhereClause.ENAME))
 						.selectQuery(EntitySelectQuery.builder()
 										.columns("e.empno, e.ename")
@@ -647,7 +647,7 @@ public final class TestDomain extends DomainModel {
 														.primaryKey(),
 										EmployeeNonOpt.NAME.define()
 														.column())
-						.tableName("employees.employee")
+						.table("employees.employee")
 						.optimisticLocking(false)
 						.build());
 	}
@@ -690,7 +690,7 @@ public final class TestDomain extends DomainModel {
 										NullConverter.NAME.define()
 														.column()
 														.columnClass(String.class, new NullColumnConverter()))
-						.tableName("employees.master_fk")
+						.table("employees.master_fk")
 						.build());
 	}
 }

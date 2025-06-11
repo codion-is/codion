@@ -65,7 +65,7 @@ public class DefaultEntityDefinitionTest {
 												name.define()
 																.column()
 																.groupBy(true))
-								.tableName("tableName")
+								.table("tableName")
 								.selectQuery(EntitySelectQuery.builder()
 												.columns("*")
 												.from("dual")
@@ -83,7 +83,7 @@ public class DefaultEntityDefinitionTest {
 		EntityDefinition definition = domain.entities().definition(entityType);
 		assertEquals(entityType.name(), definition.toString());
 		assertEquals(entityType, definition.type());
-		assertEquals("tableName", definition.tableName());
+		assertEquals("tableName", definition.table());
 		assertNotNull(definition.primaryKey().generator());
 		assertFalse(definition.primaryKey().generated());
 		EntitySelectQuery query = definition.selectQuery().orElseThrow(IllegalStateException::new);
@@ -152,7 +152,7 @@ public class DefaultEntityDefinitionTest {
 				super(DOMAIN_TYPE);
 				EntityType entityType = DOMAIN_TYPE.entityType("entityWithoutAttributes");
 				add(entityType.define()
-								.tableName("tableName")
+								.table("tableName")
 								.build());
 			}
 		}
