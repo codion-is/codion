@@ -205,6 +205,7 @@ public final class TestDomain extends DomainModel {
 		Column<Double> COMMISSION = TYPE.doubleColumn("comm");
 		Column<Integer> DEPARTMENT = TYPE.integerColumn("deptno");
 		Column<String> DEPARTMENT_LOCATION = TYPE.stringColumn("location");
+		Column<String> DATA = TYPE.stringColumn("data");
 
 		ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.ID);
 		ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, ID);
@@ -259,7 +260,10 @@ public final class TestDomain extends DomainModel {
 														.nullable(false),
 										Employee.DEPARTMENT_LOCATION.define()
 														.denormalized(Employee.DEPARTMENT_FK, Department.LOCATION)
-														.caption(Department.LOCATION.name()))
+														.caption(Department.LOCATION.name()),
+										Employee.DATA.define()
+														.column()
+														.selected(false))
 						.stringFactory(Employee.NAME)
 						.keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
 						.orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))

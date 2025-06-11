@@ -51,7 +51,7 @@ public class DefaultEntityTableConditionModelTest {
 	@Test
 	void test() {
 		assertEquals(Employee.TYPE, conditionModel.entityType());
-		assertEquals(10, conditionModel.get().size());
+		assertEquals(11, conditionModel.get().size());
 
 		assertFalse(conditionModel.get(Employee.DEPARTMENT_FK).enabled().get());
 

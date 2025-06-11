@@ -240,7 +240,7 @@ public final class DefaultEntitySearchModelTest {
 		assertTrue(john.contains(Employee.ID));
 		assertTrue(john.contains(Employee.NAME));
 		ENTITIES.definition(Employee.TYPE).attributes().get().stream()
-						.filter(attribute -> !(attribute.equals(Employee.NAME) || attribute.equals(Employee.ID)))
+						.filter(attribute -> !(attribute.equals(Employee.NAME) || attribute.equals(Employee.ID) || attribute.equals(Employee.DATA)))
 						.forEach(attribute -> assertFalse(john.contains(attribute)));
 	}
 

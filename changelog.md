@@ -26,6 +26,8 @@ Codion Change Log
 - DerivedAttributeDefinition.valueProvider() renamed provider().
 ### is.codion.framework.db.core
 - EntityConnectionProvider.Builder.domainType() renamed domain().
+### is.codion.framework.model
+- EntityQueryModel bug fixed, did support including non-selected columns.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel.Builder.domainType() renamed domain().
 

@@ -125,10 +125,17 @@ public final class DefaultEntityQueryModelTest {
 		DefaultEntityQueryModel queryModel = new DefaultEntityQueryModel(new DefaultEntityTableConditionModel(Employee.TYPE,
 						CONNECTION_PROVIDER, new EntityConditionModelFactory(Employee.TYPE, CONNECTION_PROVIDER)));
 		queryModel.limit().set(1);
-		queryModel.attributes().included().set(asList(Employee.NAME, Employee.JOB));
 		Entity employee = queryModel.query().get(0);
 		assertTrue(employee.contains(Employee.NAME));
 		assertTrue(employee.contains(Employee.JOB));
+		assertNull(employee.get(Employee.DATA));// not selected by default
+		assertTrue(employee.contains(Employee.MGR_FK));
+
+		queryModel.attributes().included().set(asList(Employee.NAME, Employee.JOB, Employee.DATA));
+		employee = queryModel.query().get(0);
+		assertTrue(employee.contains(Employee.NAME));
+		assertTrue(employee.contains(Employee.JOB));
+		assertNotNull(employee.get(Employee.DATA)); // included manually
 		assertFalse(employee.contains(Employee.MGR));
 		assertFalse(employee.contains(Employee.MGR_FK));
 

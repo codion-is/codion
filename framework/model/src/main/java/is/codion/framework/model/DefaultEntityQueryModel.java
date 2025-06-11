@@ -259,19 +259,26 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 			}
 
 			return entityDefinition.attributes().definitions().stream()
-							.filter(this::foreignKeyOrSelectedColumn)
-							.filter(attributeDefinition -> included.isEmpty() || included.contains(attributeDefinition.attribute()))
-							.filter(attributeDefinition -> !excluded.contains(attributeDefinition.attribute()))
+							.filter(this::included)
+							.filter(this::notExcluded)
 							.map(AttributeDefinition::attribute)
 							.collect(toList());
 		}
 
-		private boolean foreignKeyOrSelectedColumn(AttributeDefinition<?> attribute) {
-			if (attribute instanceof ForeignKeyDefinition) {
+		private boolean included(AttributeDefinition<?> attribute) {
+			if (included.contains(attribute.attribute())) {
 				return true;
 			}
 
-			return attribute instanceof ColumnDefinition<?> && ((ColumnDefinition<?>) attribute).selected();
+			boolean column = attribute instanceof ColumnDefinition<?>;
+			boolean foreignKey = !column && attribute instanceof ForeignKeyDefinition;
+			boolean selectedColumn = column && ((ColumnDefinition<?>) attribute).selected();
+
+			return included.isEmpty() && (foreignKey || selectedColumn);
+		}
+
+		private boolean notExcluded(AttributeDefinition<?> attributeDefinition) {
+			return excluded.isEmpty() || !excluded.contains(attributeDefinition.attribute());
 		}
 	}
 
