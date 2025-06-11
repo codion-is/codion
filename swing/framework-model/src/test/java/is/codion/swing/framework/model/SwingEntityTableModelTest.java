@@ -218,7 +218,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	}
 
 	@Test
-	void orderQueryBySortOrder() {
+	void orderQuery() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
 		OrderBy orderBy = tableModel.queryModel().orderBy().getOrThrow();
 		//default order by for entity
@@ -238,7 +238,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		assertTrue(orderBy.orderByColumns().get(1).ascending());
 		assertEquals(Employee.NAME, orderBy.orderByColumns().get(1).column());
 
-		tableModel.orderQueryBySortOrder().set(true);
+		tableModel.orderQuery().set(true);
 		orderBy = tableModel.queryModel().orderBy().getOrThrow();
 		assertEquals(1, orderBy.orderByColumns().size());
 		assertTrue(orderBy.orderByColumns().get(0).ascending());

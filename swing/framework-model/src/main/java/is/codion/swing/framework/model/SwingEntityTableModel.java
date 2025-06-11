@@ -265,7 +265,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	}
 
 	@Override
-	protected final Optional<OrderBy> orderByFromSortModel() {
+	protected final Optional<OrderBy> orderBy() {
 		List<ColumnSortOrder<Attribute<?>>> columnSortOrder = sort().columns().get().stream()
 						.filter(sortOrder -> sortOrder.identifier() instanceof Column)
 						.collect(toList());

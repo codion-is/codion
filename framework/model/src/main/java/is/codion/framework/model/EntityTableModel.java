@@ -70,7 +70,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	 * <li>Default value: false
 	 * </ul>
 	 */
-	PropertyValue<Boolean> ORDER_QUERY_BY_SORT_ORDER = booleanValue(EntityTableModel.class.getName() + ".orderBySortOrder", false);
+	PropertyValue<Boolean> ORDER_QUERY = booleanValue(EntityTableModel.class.getName() + ".orderQuery", false);
 
 	/**
 	 * Defines the actions a table model can perform when entities are inserted via the associated edit model
@@ -174,7 +174,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilterModel
 	 * Note that this only applies to column attributes.
 	 * @return the {@link State} controlling whether the current sort order should be used as a basis for the query order by clause
 	 */
-	State orderQueryBySortOrder();
+	State orderQuery();
 
 	/**
 	 * @return the {@link MultiSelection} instance

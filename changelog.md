@@ -31,6 +31,8 @@ Codion Change Log
 - LocalEntityConnection, getter/setter combos renamed for consistency.
 ### is.codion.framework.model
 - EntityQueryModel bug fixed, did support including non-selected columns.
+- EntityTableModel.orderQueryBySortOrder() renamed orderQuery().
+- AbstractEntityTableModel.orderByFromSortModel() renamed orderBy().
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel.Builder.domainType() renamed domain().
 

@@ -61,7 +61,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	private final EntityQueryModel queryModel;
 	private final State editable = State.state();
 	private final State removeDeleted = State.state(true);
-	private final State orderQueryBySortOrder = State.state(ORDER_QUERY_BY_SORT_ORDER.getOrThrow());
+	private final State orderQuery = State.state(ORDER_QUERY.getOrThrow());
 	private final Value<OnInsert> onInsert = Value.nonNull(ON_INSERT.getOrThrow());
 
 	//we keep a reference to this listener, since it will only be referenced via a WeakReference elsewhere
@@ -138,8 +138,8 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	}
 
 	@Override
-	public final State orderQueryBySortOrder() {
-		return orderQueryBySortOrder;
+	public final State orderQuery() {
+		return orderQuery;
 	}
 
 	@Override
@@ -194,7 +194,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	/**
 	 * @return a {@link OrderBy} instance based on the sort order according to the {@link #sort()} model, an empty {@link Optional} if unsorted
 	 */
-	protected abstract Optional<OrderBy> orderByFromSortModel();
+	protected abstract Optional<OrderBy> orderBy();
 
 	/**
 	 * Called when entities of the type referenced by the given foreign key are updated
@@ -225,10 +225,10 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 		editModel.editor().addConsumer(this::onEntityChanged);
 		selection().item().addConsumer(editModel.editor()::set);
 
-		orderQueryBySortOrder.addConsumer(enabled ->
-						queryModel.orderBy().set(enabled ? orderByFromSortModel().orElse(null) : null));
+		orderQuery.addConsumer(enabled ->
+						queryModel.orderBy().set(enabled ? orderBy().orElse(null) : null));
 		sort().observer().addListener(() ->
-						queryModel.orderBy().set(orderQueryBySortOrder.get() ? orderByFromSortModel().orElse(null) : null));
+						queryModel.orderBy().set(orderQuery.get() ? orderBy().orElse(null) : null));
 		entityDefinition().foreignKeys().get().stream()
 						.map(ForeignKey::referencedType)
 						.distinct()
