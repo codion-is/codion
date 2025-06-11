@@ -117,7 +117,7 @@ final class EntityTableExport {
 		Dialogs.<String, Void>progressWorkerDialog(progress -> export(progress, entities))
 						.owner(tablePanel)
 						.title(MESSAGES.getString("exporting_rows"))
-						.maximumProgress(entities.size())
+						.maximum(entities.size())
 						.onResult(Utilities::setClipboard)
 						.execute();
 	}

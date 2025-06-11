@@ -66,7 +66,7 @@ public final class ProgressDialog extends JDialog {
 
 	/**
 	 * Sets the progress in the underlying JProgressBar
-	 * @param progress the progress (0 - maximumProgress)
+	 * @param progress the progress (0 - maximum)
 	 */
 	public void setProgress(int progress) {
 		progressBar.getModel().setValue(progress);
@@ -124,7 +124,7 @@ public final class ProgressDialog extends JDialog {
 			progressBar.setIndeterminate(true);
 		}
 		else {
-			progressBar.setMaximum(builder.maximumProgress);
+			progressBar.setMaximum(builder.maximum);
 		}
 
 		return progressBar;
@@ -143,11 +143,11 @@ public final class ProgressDialog extends JDialog {
 
 		/**
 		 * Note that calling this method renders the progress bar determinate
-		 * @param maximumProgress the maximum progress, 100 by default
+		 * @param maximum the maximum progress, 100 by default
 		 * @return this ProgressDialogBuilder instance
 		 * @see #indeterminate(boolean)
 		 */
-		Builder maximumProgress(int maximumProgress);
+		Builder maximum(int maximum);
 
 		/**
 		 * @param stringPainted the string painted status of the progress bar
@@ -209,7 +209,7 @@ public final class ProgressDialog extends JDialog {
 
 		private final ControlsBuilder controls = Controls.builder();
 
-		private int maximumProgress = 100;
+		private int maximum = 100;
 		private boolean indeterminate = true;
 		private boolean stringPainted = false;
 		private JPanel northPanel;
@@ -225,11 +225,11 @@ public final class ProgressDialog extends JDialog {
 		}
 
 		@Override
-		public Builder maximumProgress(int maximumProgress) {
-			if (maximumProgress < 0) {
+		public Builder maximum(int maximum) {
+			if (maximum < 0) {
 				throw new IllegalArgumentException("Maximum progress must be a positive integer");
 			}
-			this.maximumProgress = maximumProgress;
+			this.maximum = maximum;
 			return indeterminate(false);
 		}
 

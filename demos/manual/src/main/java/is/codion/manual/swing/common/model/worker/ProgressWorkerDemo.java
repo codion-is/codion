@@ -154,7 +154,7 @@ final class ProgressWorkerDemo {
 		private int taskSize;
 
 		@Override
-		public int maximumProgress() {
+		public int maximum() {
 			return taskSize;
 		}
 

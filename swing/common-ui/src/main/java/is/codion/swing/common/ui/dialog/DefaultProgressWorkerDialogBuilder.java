@@ -59,12 +59,12 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 
 	DefaultProgressWorkerDialogBuilder(ProgressTask<V> task) {
 		this.progressWorkerBuilder = (ProgressWorker.Builder<T, V>) ProgressWorker.builder(task);
-		this.progressDialogBuilder.maximumProgress(task.maximumProgress());
+		this.progressDialogBuilder.maximum(task.maximum());
 	}
 
 	DefaultProgressWorkerDialogBuilder(ProgressResultTask<T, V> progressTask) {
 		this.progressWorkerBuilder = ProgressWorker.builder(progressTask);
-		this.progressDialogBuilder.maximumProgress(progressTask.maximumProgress());
+		this.progressDialogBuilder.maximum(progressTask.maximum());
 	}
 
 	@Override
@@ -74,9 +74,9 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 	}
 
 	@Override
-	public ProgressWorkerDialogBuilder<T, V> maximumProgress(int maximumProgress) {
-		progressDialogBuilder.maximumProgress(maximumProgress);
-		progressWorkerBuilder.maximumProgress(maximumProgress);
+	public ProgressWorkerDialogBuilder<T, V> maximum(int maximum) {
+		progressDialogBuilder.maximum(maximum);
+		progressWorkerBuilder.maximum(maximum);
 		return this;
 	}
 

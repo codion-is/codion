@@ -12,6 +12,7 @@ Codion Change Log
 - SwingMcpPlugin.startMcpServer() removed, mcpServer() returning State added.
 ### is.codion.swing.common.model
 - FilterTableModel.Builder.filterModelFactory() renamed filters().
+- ProgressWorker.Builder.maximumProgress() renamed maximum, related renaming.
 ### is.codion.swing.common.ui
 - FilterTable.Builder.sortingEnabled() renamed sortable().
 ### is.codion.framework.db.core
