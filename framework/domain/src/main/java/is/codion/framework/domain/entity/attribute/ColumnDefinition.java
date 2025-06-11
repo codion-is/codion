@@ -197,7 +197,7 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
 		 * @param converter the converter to use when converting to and from column values
 		 * @return this instance
 		 */
-		<C> B columnClass(Class<C> columnClass, Converter<T, C> converter);
+		<C> B converter(Class<C> columnClass, Converter<T, C> converter);
 
 		/**
 		 * Sets the actual column type, and the required {@link Converter}.
@@ -207,7 +207,7 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
 		 * @param getValue the getter to use to retrieve the value from a {@link ResultSet}
 		 * @return this instance
 		 */
-		<C> B columnClass(Class<C> columnClass, Converter<T, C> converter, GetValue<C> getValue);
+		<C> B converter(Class<C> columnClass, Converter<T, C> converter, GetValue<C> getValue);
 
 		/**
 		 * Sets the actual column type, and the required {@link Converter}.
@@ -217,7 +217,7 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
 		 * @param setParameter the setter to use when setting parameters in a {@link PreparedStatement}
 		 * @return this instance
 		 */
-		<C> B columnClass(Class<C> columnClass, Converter<T, C> converter, SetParameter<C> setParameter);
+		<C> B converter(Class<C> columnClass, Converter<T, C> converter, SetParameter<C> setParameter);
 
 		/**
 		 * Sets the actual column type, and the required {@link Converter}.
@@ -228,7 +228,7 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
 		 * @param setParameter the setter to use when setting parameters in a {@link PreparedStatement}
 		 * @return this instance
 		 */
-		<C> B columnClass(Class<C> columnClass, Converter<T, C> converter, GetValue<C> getValue, SetParameter<C> setParameter);
+		<C> B converter(Class<C> columnClass, Converter<T, C> converter, GetValue<C> getValue, SetParameter<C> setParameter);
 
 		/**
 		 * Sets the actual string used as column name when inserting and updating.

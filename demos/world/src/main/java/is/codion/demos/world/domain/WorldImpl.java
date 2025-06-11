@@ -91,7 +91,7 @@ public final class WorldImpl extends DomainModel {
 										City.LOCATION.define()
 														.column()
 														.caption("Location")
-														.columnClass(String.class, new LocationConverter())
+														.converter(String.class, new LocationConverter())
 														.comparator(new LocationComparator()))
 						// end::columnClass[]
 						// tag::sequence[]
@@ -341,7 +341,7 @@ public final class WorldImpl extends DomainModel {
 										Lookup.CITY_LOCATION.define()
 														.column()
 														.caption("City location")
-														.columnClass(String.class, new LocationConverter())
+														.converter(String.class, new LocationConverter())
 														.comparator(new LocationComparator()))
 						.selectQuery(EntitySelectQuery.builder()
 										.from("world.country left outer join world.city on city.countrycode = country.code")

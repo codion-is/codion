@@ -312,7 +312,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		}
 
 		@Override
-		public final <C> B columnClass(Class<C> columnClass, Converter<T, C> converter) {
+		public final <C> B converter(Class<C> columnClass, Converter<T, C> converter) {
 			this.type = sqlType(columnClass);
 			this.converter = (Converter<T, Object>) requireNonNull(converter);
 			this.getValue = getter(this.type, (Column<Object>) super.attribute());
@@ -321,8 +321,8 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		}
 
 		@Override
-		public final <C> B columnClass(Class<C> columnClass, Converter<T, C> converter,
-																	 GetValue<C> getValue) {
+		public final <C> B converter(Class<C> columnClass, Converter<T, C> converter,
+																 GetValue<C> getValue) {
 			this.type = sqlType(columnClass);
 			this.converter = (Converter<T, Object>) requireNonNull(converter);
 			this.getValue = (GetValue<Object>) requireNonNull(getValue);
@@ -331,8 +331,8 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		}
 
 		@Override
-		public <C> B columnClass(Class<C> columnClass, Converter<T, C> converter,
-														 SetParameter<C> setParameter) {
+		public <C> B converter(Class<C> columnClass, Converter<T, C> converter,
+													 SetParameter<C> setParameter) {
 			this.type = sqlType(columnClass);
 			this.converter = (Converter<T, Object>) requireNonNull(converter);
 			this.getValue = getter(this.type, (Column<Object>) super.attribute());
@@ -341,8 +341,8 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		}
 
 		@Override
-		public <C> B columnClass(Class<C> columnClass, Converter<T, C> converter,
-														 GetValue<C> getValue, SetParameter<C> setParameter) {
+		public <C> B converter(Class<C> columnClass, Converter<T, C> converter,
+													 GetValue<C> getValue, SetParameter<C> setParameter) {
 			this.type = sqlType(columnClass);
 			this.converter = (Converter<T, Object>) requireNonNull(converter);
 			this.getValue = (GetValue<Object>) requireNonNull(getValue);

@@ -164,7 +164,7 @@ public final class PetclinicImpl extends DomainModel {
 														.caption("Phone type")
 														.nullable(false)
 														.defaultValue(PhoneType.MOBILE)
-														.columnClass(String.class, new PhoneTypeConverter()))
+														.converter(String.class, new PhoneTypeConverter()))
 						.keyGenerator(identity())
 						.caption("Owners")
 						.stringFactory(StringFactory.builder()

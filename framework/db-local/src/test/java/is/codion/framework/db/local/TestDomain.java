@@ -689,7 +689,7 @@ public final class TestDomain extends DomainModel {
 														.primaryKey(),
 										NullConverter.NAME.define()
 														.column()
-														.columnClass(String.class, new NullColumnConverter()))
+														.converter(String.class, new NullColumnConverter()))
 						.table("employees.master_fk")
 						.build());
 	}

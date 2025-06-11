@@ -305,7 +305,7 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
 			}
 
 			return (ColumnDefinition.Builder<Boolean, B>) new DefaultColumnDefinition.DefaultColumnDefinitionBuilder<>(column)
-							.columnClass(columnClass, (Converter<T, C>) new BooleanConverter<>(trueValue, falseValue));
+							.converter(columnClass, (Converter<T, C>) new BooleanConverter<>(trueValue, falseValue));
 		}
 
 		@Override

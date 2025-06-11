@@ -22,6 +22,7 @@ Codion Change Log
 - EntityDefinition.selectTableName() renamed selectTable().
 - EntityDefinition.tableName() renamed table().
 - ColumnDefinition.primaryKeyIndex() renamed keyIndex().
+- ColumnDefinition.Builder.columnClass() renamed converter().
 ### is.codion.framework.db.core
 - EntityConnectionProvider.Builder.domainType() renamed domain().
 ### is.codion.swing.framework.ui
