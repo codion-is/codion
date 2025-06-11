@@ -51,6 +51,6 @@ public final class ArtistTableModel extends SwingEntityTableModel {
 	public void onCombined(List<Entity> artistsToDelete, Entity artistToKeep) {
 		selection().item().set(artistToKeep);
 		items().remove(artistsToDelete);
-		EntityEditModel.editEvents().deleted(Artist.TYPE).accept(artistsToDelete);
+		EntityEditModel.events().deleted(Artist.TYPE).accept(artistsToDelete);
 	}
 }

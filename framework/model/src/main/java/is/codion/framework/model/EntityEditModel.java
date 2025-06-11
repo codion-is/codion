@@ -45,7 +45,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static is.codion.common.Configuration.booleanValue;
-import static is.codion.framework.model.AbstractEntityEditModel.EDIT_EVENTS;
+import static is.codion.framework.model.AbstractEntityEditModel.EVENTS;
 
 /**
  * Specifies a class for editing {@link Entity} instances.
@@ -60,9 +60,9 @@ public interface EntityEditModel {
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
 	 * </ul>
-	 * @see #postEditEvents()
+	 * @see #editEvents()
 	 */
-	PropertyValue<Boolean> POST_EDIT_EVENTS = booleanValue(EntityEditModel.class.getName() + ".postEditEvents", true);
+	PropertyValue<Boolean> EDIT_EVENTS = booleanValue(EntityEditModel.class.getName() + ".editEvents", true);
 
 	/**
 	 * @return the type of the entity this edit model is based on
@@ -157,9 +157,9 @@ public interface EntityEditModel {
 	/**
 	 * @return a state controlling whether this edit model posts insert, update and delete events
 	 * on the {@link EditEvents} event bus.
-	 * @see #POST_EDIT_EVENTS
+	 * @see #EDIT_EVENTS
 	 */
-	State postEditEvents();
+	State editEvents();
 
 	/**
 	 * Refreshes the active Entity from the database, discarding all changes.
@@ -371,8 +371,8 @@ public interface EntityEditModel {
 	/**
 	 * @return the central {@link EditEvents} instance
 	 */
-	static EditEvents editEvents() {
-		return EDIT_EVENTS;
+	static EditEvents events() {
+		return EVENTS;
 	}
 
 	/**
@@ -783,9 +783,9 @@ public interface EntityEditModel {
 	}
 
 	/**
-	 * @see EntityEditModel#POST_EDIT_EVENTS
-	 * @see EntityEditModel#postEditEvents()
-	 * @see #editEvents()
+	 * @see EntityEditModel#EDIT_EVENTS
+	 * @see EntityEditModel#editEvents()
+	 * @see #events()
 	 */
 	interface EditEvents {
 

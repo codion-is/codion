@@ -34,6 +34,7 @@ Codion Change Log
 - EntityTableModel.orderQueryBySortOrder() renamed orderQuery().
 - AbstractEntityTableModel.orderByFromSortModel() renamed orderBy().
 - EntitySearchModel.handleEditEvents() renamed editEvents().
+- EntityEditModel.postEditEvents() renamed editEvents(), editEvents() renamed events().
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.handleEditEvents() renamed editEvents().
 ### is.codion.swing.framework.ui

@@ -53,7 +53,7 @@ public interface EntitySearchModel {
 	 * <li>Default value: true
 	 * </ul>
 	 * @see Builder#editEvents(boolean)
-	 * @see EntityEditModel#POST_EDIT_EVENTS
+	 * @see EntityEditModel#EDIT_EVENTS
 	 */
 	PropertyValue<Boolean> EDIT_EVENTS =
 					booleanValue(EntitySearchModel.class.getName() + ".editEvents", true);

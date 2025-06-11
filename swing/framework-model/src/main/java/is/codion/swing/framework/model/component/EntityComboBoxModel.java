@@ -53,7 +53,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	 * <li>Default value: true
 	 * </ul>
 	 * @see Builder#editEvents(boolean)
-	 * @see is.codion.framework.model.EntityEditModel#POST_EDIT_EVENTS
+	 * @see is.codion.framework.model.EntityEditModel#EDIT_EVENTS
 	 */
 	PropertyValue<Boolean> EDIT_EVENTS =
 					booleanValue(EntityComboBoxModel.class.getName() + ".editEvents", true);

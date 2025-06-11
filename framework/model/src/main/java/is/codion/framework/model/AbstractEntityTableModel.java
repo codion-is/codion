@@ -43,7 +43,7 @@ import java.util.function.Predicate;
 import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.domain.entity.Entity.primaryKeyMap;
 import static is.codion.framework.domain.entity.condition.Condition.keys;
-import static is.codion.framework.model.EntityEditModel.editEvents;
+import static is.codion.framework.model.EntityEditModel.events;
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
@@ -233,7 +233,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 						.map(ForeignKey::referencedType)
 						.distinct()
 						.forEach(entityType ->
-										editEvents().updated(entityType).addWeakConsumer(updateListener));
+										events().updated(entityType).addWeakConsumer(updateListener));
 	}
 
 	private void onInsert(Collection<Entity> insertedEntities) {

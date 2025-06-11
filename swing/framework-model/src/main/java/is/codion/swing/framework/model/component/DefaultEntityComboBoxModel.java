@@ -47,7 +47,7 @@ import java.util.function.Supplier;
 
 import static is.codion.common.value.Value.Notify.SET;
 import static is.codion.framework.db.EntityConnection.Select.where;
-import static is.codion.framework.model.EntityEditModel.editEvents;
+import static is.codion.framework.model.EntityEditModel.events;
 import static java.text.MessageFormat.format;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -93,9 +93,9 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 						.build();
 		this.orderBy = builder.orderBy;
 		if (builder.editEvents) {
-			editEvents().inserted(entityDefinition.type()).addWeakConsumer(insertListener);
-			editEvents().updated(entityDefinition.type()).addWeakConsumer(updateListener);
-			editEvents().deleted(entityDefinition.type()).addWeakConsumer(deleteListener);
+			events().inserted(entityDefinition.type()).addWeakConsumer(insertListener);
+			events().updated(entityDefinition.type()).addWeakConsumer(updateListener);
+			events().deleted(entityDefinition.type()).addWeakConsumer(deleteListener);
 		}
 	}
 

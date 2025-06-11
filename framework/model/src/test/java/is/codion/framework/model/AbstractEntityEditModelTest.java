@@ -54,7 +54,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-import static is.codion.framework.model.EntityEditModel.editEvents;
+import static is.codion.framework.model.EntityEditModel.events;
 import static java.util.Collections.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -83,7 +83,7 @@ public final class AbstractEntityEditModelTest {
 	}
 
 	@Test
-	void postEditEvents() {
+	void editEvents() {
 		AtomicInteger insertEvents = new AtomicInteger();
 		AtomicInteger updateEvents = new AtomicInteger();
 		AtomicInteger deleteEvents = new AtomicInteger();
@@ -92,11 +92,11 @@ public final class AbstractEntityEditModelTest {
 		Consumer<Map<Entity, Entity>> updateListener = updated -> updateEvents.incrementAndGet();
 		Consumer<Collection<Entity>> deleteListener = deleted -> deleteEvents.incrementAndGet();
 
-		editEvents().inserted(Employee.TYPE).addWeakConsumer(insertListener);
-		editEvents().updated(Employee.TYPE).addWeakConsumer(updateListener);
-		editEvents().deleted(Employee.TYPE).addWeakConsumer(deleteListener);
+		events().inserted(Employee.TYPE).addWeakConsumer(insertListener);
+		events().updated(Employee.TYPE).addWeakConsumer(updateListener);
+		events().deleted(Employee.TYPE).addWeakConsumer(deleteListener);
 
-		employeeEditModel.postEditEvents().set(true);
+		employeeEditModel.editEvents().set(true);
 
 		EntityConnection connection = employeeEditModel.connection();
 		connection.startTransaction();
@@ -116,9 +116,9 @@ public final class AbstractEntityEditModelTest {
 			connection.rollbackTransaction();
 		}
 
-		editEvents().inserted(Employee.TYPE).removeWeakConsumer(insertListener);
-		editEvents().updated(Employee.TYPE).removeWeakConsumer(updateListener);
-		editEvents().deleted(Employee.TYPE).removeWeakConsumer(deleteListener);
+		events().inserted(Employee.TYPE).removeWeakConsumer(insertListener);
+		events().updated(Employee.TYPE).removeWeakConsumer(updateListener);
+		events().deleted(Employee.TYPE).removeWeakConsumer(deleteListener);
 	}
 
 	@Test
