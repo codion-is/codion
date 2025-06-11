@@ -31,13 +31,13 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefini
 	private static final long serialVersionUID = 1;
 
 	private final DerivedAttribute.Provider<T> valueProvider;
-	private final List<Attribute<?>> sourceAttributes;
+	private final List<Attribute<?>> sources;
 	private final boolean cached;
 
 	private DefaultDerivedAttributeDefinition(DefaultDerivedAttributeDefinitionBuilder<T, ?> builder) {
 		super(builder);
 		this.valueProvider = builder.provider;
-		this.sourceAttributes = builder.sourceAttributes;
+		this.sources = builder.sources;
 		this.cached = builder.cached;
 	}
 
@@ -47,8 +47,8 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefini
 	}
 
 	@Override
-	public List<Attribute<?>> sourceAttributes() {
-		return sourceAttributes;
+	public List<Attribute<?>> sources() {
+		return sources;
 	}
 
 	@Override
@@ -65,16 +65,16 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefini
 					implements DerivedAttributeDefinition.Builder.ProviderStage<T, B> {
 
 		private final Attribute<T> attribute;
-		private final List<Attribute<?>> sourceAttributes;
+		private final List<Attribute<?>> sources;
 
-		DefaultValueProviderStage(Attribute<T> attribute, List<Attribute<?>> sourceAttributes) {
+		DefaultValueProviderStage(Attribute<T> attribute, List<Attribute<?>> sources) {
 			this.attribute = requireNonNull(attribute);
-			this.sourceAttributes = requireNonNull(sourceAttributes);
+			this.sources = requireNonNull(sources);
 		}
 
 		@Override
 		public DerivedAttributeDefinition.Builder<T, B> provider(DerivedAttribute.Provider<T> provider) {
-			return new DefaultDerivedAttributeDefinitionBuilder<>(attribute, sourceAttributes, provider);
+			return new DefaultDerivedAttributeDefinitionBuilder<>(attribute, sources, provider);
 		}
 	}
 
@@ -82,16 +82,16 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefini
 					extends AbstractAttributeDefinitionBuilder<T, B> implements DerivedAttributeDefinition.Builder<T, B> {
 
 		private final DerivedAttribute.Provider<T> provider;
-		private final List<Attribute<?>> sourceAttributes;
+		private final List<Attribute<?>> sources;
 
 		private boolean cached;
 
 		DefaultDerivedAttributeDefinitionBuilder(Attribute<T> attribute,
-																						 List<Attribute<?>> sourceAttributes,
+																						 List<Attribute<?>> sources,
 																						 DerivedAttribute.Provider<T> provider) {
 			super(attribute);
 			this.provider = requireNonNull(provider);
-			for (Attribute<?> sourceAttribute : sourceAttributes) {
+			for (Attribute<?> sourceAttribute : sources) {
 				if (!attribute.entityType().equals(sourceAttribute.entityType())) {
 					throw new IllegalArgumentException("Source attribute must be from same entity as the derived attribute");
 				}
@@ -99,8 +99,8 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefini
 					throw new IllegalArgumentException("Attribute can not be derived from itself");
 				}
 			}
-			this.sourceAttributes = unmodifiableList(new ArrayList<>(sourceAttributes));
-			this.cached = !denormalized(provider) && !this.sourceAttributes.isEmpty();
+			this.sources = unmodifiableList(new ArrayList<>(sources));
+			this.cached = !denormalized(provider) && !this.sources.isEmpty();
 		}
 
 		@Override

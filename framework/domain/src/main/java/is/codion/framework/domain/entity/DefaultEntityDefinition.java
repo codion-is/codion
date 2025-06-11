@@ -637,9 +637,9 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 							.filter(DerivedAttributeDefinition.class::isInstance)
 							.map(DerivedAttributeDefinition.class::cast)
 							.forEach(derivedAttribute -> {
-								List<Attribute<?>> sourceAttributes = derivedAttribute.sourceAttributes();
-								validateSourceAttributes(sourceAttributes);
-								for (Attribute<?> sourceAttribute : sourceAttributes) {
+								List<Attribute<?>> sources = derivedAttribute.sources();
+								validateSourceAttributes(sources);
+								for (Attribute<?> sourceAttribute : sources) {
 									derivedAttributeMap.computeIfAbsent(sourceAttribute, attribute -> new HashSet<>()).add(derivedAttribute.attribute());
 								}
 							});

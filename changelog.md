@@ -18,6 +18,7 @@ Codion Change Log
 - FilterTable.Builder.sortingEnabled() renamed sortable().
 ### is.codion.framework.domain
 - ColumnDefinition.columnHasDefaultValue() renamed hasDatabaseDefault().
+- DerivedAttributeDefinition.sourceAttributes() renamed sources().
 ### is.codion.framework.db.core
 - EntityConnectionProvider.Builder.domainType() renamed domain().
 ### is.codion.swing.framework.ui

@@ -140,15 +140,15 @@ import java.util.List;
  * }
  * @param <T> the underlying type
  * @see DerivedAttribute.Provider
- * @see #sourceAttributes()
+ * @see #sources()
  * @see #cached()
  */
 public interface DerivedAttributeDefinition<T> extends AttributeDefinition<T> {
 
 	/**
-	 * @return the attributes this attribute derives from.
+	 * @return the source attributes this attribute derives from.
 	 */
-	List<Attribute<?>> sourceAttributes();
+	List<Attribute<?>> sources();
 
 	/**
 	 * @return the value provider, providing the derived value

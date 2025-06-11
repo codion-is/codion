@@ -728,26 +728,26 @@ class DefaultEntity implements Entity, Serializable {
 
 	private DerivedAttribute.SourceValues sourceValues(DerivedAttributeDefinition<?> derivedDefinition,
 																										 boolean originalValue) {
-		List<Attribute<?>> sourceAttributes = derivedDefinition.sourceAttributes();
-		if (sourceAttributes.isEmpty()) {
+		List<Attribute<?>> sources = derivedDefinition.sources();
+		if (sources.isEmpty()) {
 			return new DefaultSourceValues(derivedDefinition.attribute(), EMPTY_MAP);
 		}
-		else if (sourceAttributes.size() == 1) {
-			return new DefaultSourceValues(derivedDefinition.attribute(), createSingleAttributeSourceValueMap(sourceAttributes.get(0), originalValue));
+		else if (sources.size() == 1) {
+			return new DefaultSourceValues(derivedDefinition.attribute(), createSingleAttributeSourceValueMap(sources.get(0), originalValue));
 		}
 
-		return new DefaultSourceValues(derivedDefinition.attribute(), createMultiAttributeSourceValueMap(sourceAttributes, originalValue));
+		return new DefaultSourceValues(derivedDefinition.attribute(), createMultiAttributeSourceValueMap(sources, originalValue));
 	}
 
-	private Map<Attribute<?>, Object> createSingleAttributeSourceValueMap(Attribute<?> sourceAttribute, boolean originalValue) {
-		return singletonMap(sourceAttribute, originalValue ? original(sourceAttribute) : get(sourceAttribute));
+	private Map<Attribute<?>, Object> createSingleAttributeSourceValueMap(Attribute<?> source, boolean originalValue) {
+		return singletonMap(source, originalValue ? original(source) : get(source));
 	}
 
-	private Map<Attribute<?>, Object> createMultiAttributeSourceValueMap(List<Attribute<?>> sourceAttributes, boolean originalValue) {
-		Map<Attribute<?>, Object> valueMap = new HashMap<>(sourceAttributes.size());
-		for (int i = 0; i < sourceAttributes.size(); i++) {
-			Attribute<?> sourceAttribute = sourceAttributes.get(i);
-			valueMap.put(sourceAttribute, originalValue ? original(sourceAttribute) : get(sourceAttribute));
+	private Map<Attribute<?>, Object> createMultiAttributeSourceValueMap(List<Attribute<?>> sources, boolean originalValue) {
+		Map<Attribute<?>, Object> valueMap = new HashMap<>(sources.size());
+		for (int i = 0; i < sources.size(); i++) {
+			Attribute<?> source = sources.get(i);
+			valueMap.put(source, originalValue ? original(source) : get(source));
 		}
 
 		return valueMap;
