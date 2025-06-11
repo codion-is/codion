@@ -30,20 +30,20 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefini
 	@Serial
 	private static final long serialVersionUID = 1;
 
-	private final DerivedAttribute.Provider<T> valueProvider;
+	private final DerivedAttribute.Provider<T> provider;
 	private final List<Attribute<?>> sources;
 	private final boolean cached;
 
 	private DefaultDerivedAttributeDefinition(DefaultDerivedAttributeDefinitionBuilder<T, ?> builder) {
 		super(builder);
-		this.valueProvider = builder.provider;
+		this.provider = builder.provider;
 		this.sources = builder.sources;
 		this.cached = builder.cached;
 	}
 
 	@Override
-	public DerivedAttribute.Provider<T> valueProvider() {
-		return valueProvider;
+	public DerivedAttribute.Provider<T> provider() {
+		return provider;
 	}
 
 	@Override

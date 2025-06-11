@@ -65,7 +65,7 @@ import java.util.Optional;
  *                 Customer.FULL_NAME.define()
  *                     .attribute()
  *                     .derived(Customer.FIRST_NAME, Customer.LAST_NAME)
- *                     .valueProvider(values -> {
+ *                     .provider(values -> {
  *                         String first = values.get(Customer.FIRST_NAME);
  *                         String last = values.get(Customer.LAST_NAME);
  *                         return (first != null ? first : "") + " " + (last != null ? last : "");
@@ -75,7 +75,7 @@ import java.util.Optional;
  *                 Customer.DISPLAY_NAME.define()
  *                     .attribute()
  *                     .derived(Customer.FULL_NAME, Customer.EMAIL)
- *                     .valueProvider(values -> {
+ *                     .provider(values -> {
  *                         String fullName = values.get(Customer.FULL_NAME);
  *                         String email = values.get(Customer.EMAIL);
  *                         return fullName + " (" + email + ")";
@@ -85,7 +85,7 @@ import java.util.Optional;
  *                 Customer.AGE.define()
  *                     .attribute()
  *                     .derived(Customer.BIRTH_DATE)
- *                     .valueProvider(values -> {
+ *                     .provider(values -> {
  *                         LocalDate birthDate = values.get(Customer.BIRTH_DATE);
  *                         return birthDate != null ? 
  *                             Period.between(birthDate, LocalDate.now()).getYears() : null;
@@ -95,7 +95,7 @@ import java.util.Optional;
  *                 Customer.INITIALS.define()
  *                     .attribute()
  *                     .derived(Customer.FIRST_NAME, Customer.LAST_NAME)
- *                     .valueProvider(values -> {
+ *                     .provider(values -> {
  *                         String first = values.get(Customer.FIRST_NAME);
  *                         String last = values.get(Customer.LAST_NAME);
  *                         String firstInitial = first != null && !first.isEmpty() ? 

@@ -719,11 +719,11 @@ class DefaultEntity implements Entity, Serializable {
 	}
 
 	private @Nullable <T> T derived(DerivedAttributeDefinition<T> derivedDefinition) {
-		return derivedDefinition.valueProvider().get(sourceValues(derivedDefinition, false));
+		return derivedDefinition.provider().get(sourceValues(derivedDefinition, false));
 	}
 
 	private @Nullable <T> T derivedOriginal(DerivedAttributeDefinition<T> derivedDefinition) {
-		return derivedDefinition.valueProvider().get(sourceValues(derivedDefinition, true));
+		return derivedDefinition.provider().get(sourceValues(derivedDefinition, true));
 	}
 
 	private DerivedAttribute.SourceValues sourceValues(DerivedAttributeDefinition<?> derivedDefinition,

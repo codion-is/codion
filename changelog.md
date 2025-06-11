@@ -23,6 +23,7 @@ Codion Change Log
 - EntityDefinition.tableName() renamed table().
 - ColumnDefinition.primaryKeyIndex() renamed keyIndex().
 - ColumnDefinition.Builder.columnClass() renamed converter().
+- DerivedAttributeDefinition.valueProvider() renamed provider().
 ### is.codion.framework.db.core
 - EntityConnectionProvider.Builder.domainType() renamed domain().
 ### is.codion.swing.framework.ui

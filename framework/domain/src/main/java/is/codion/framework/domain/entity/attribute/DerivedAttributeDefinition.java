@@ -69,11 +69,11 @@ import java.util.List;
  *                         if (first == null && last == null) {
  *                             return null;
  *                         }
- *                         return ((first != null ? first : "") + " " + 
+ *                         return ((first != null ? first : "") + " " +
  *                                 (last != null ? last : "")).trim();
  *                     })
  *                     .caption("Full Name"),
- *                 
+ *
  *                 // Multi-source derived attribute with caching disabled
  *                 Customer.CONTACT_INFO.define()
  *                     .derived(Customer.FULL_NAME, Customer.EMAIL, Customer.PHONE)
@@ -81,7 +81,7 @@ import java.util.List;
  *                         String name = values.get(Customer.FULL_NAME);
  *                         String email = values.get(Customer.EMAIL);
  *                         String phone = values.get(Customer.PHONE);
- *                         
+ *
  *                         StringBuilder contact = new StringBuilder();
  *                         if (name != null) contact.append(name);
  *                         if (email != null) {
@@ -96,18 +96,18 @@ import java.util.List;
  *                     })
  *                     .cached(false) // Compute on each access
  *                     .caption("Contact Information"),
- *                 
+ *
  *                 // Time-dependent derived attribute (not cached)
  *                 Customer.AGE.define()
  *                     .derived(Customer.BIRTH_DATE)
  *                     .provider(values -> {
  *                         LocalDate birthDate = values.get(Customer.BIRTH_DATE);
- *                         return birthDate != null ? 
+ *                         return birthDate != null ?
  *                             Period.between(birthDate, LocalDate.now()).getYears() : null;
  *                     })
  *                     .cached(false) // Age changes over time
  *                     .caption("Age"),
- *                 
+ *
  *                 // Formatting derived attribute
  *                 Customer.NAME_UPPER.define()
  *                     .derived(Customer.FULL_NAME)
@@ -153,7 +153,7 @@ public interface DerivedAttributeDefinition<T> extends AttributeDefinition<T> {
 	/**
 	 * @return the value provider, providing the derived value
 	 */
-	DerivedAttribute.Provider<T> valueProvider();
+	DerivedAttribute.Provider<T> provider();
 
 	/**
 	 * Note that cached attributes are included when an entity is serialized.
