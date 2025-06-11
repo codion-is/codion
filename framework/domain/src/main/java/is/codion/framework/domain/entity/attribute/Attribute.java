@@ -80,8 +80,8 @@ import static java.util.Objects.requireNonNull;
  *                 Customer.DISPLAY_NAME.define()
  *                     .attribute()
  *                     .derived(Customer.NAME, Customer.EMAIL)
- *                     .valueProvider(sourceValues ->
- *                         sourceValues.get(Customer.NAME) + " (" + sourceValues.get(Customer.EMAIL) + ")"),
+ *                     .valueProvider(values ->
+ *                         values.get(Customer.NAME) + " (" + values.get(Customer.EMAIL) + ")"),
  *                 
  *                 // Custom typed attribute
  *                 Customer.STATUS.define()

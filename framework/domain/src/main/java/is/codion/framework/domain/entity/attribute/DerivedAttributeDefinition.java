@@ -63,9 +63,9 @@ import java.util.List;
  *                 // Simple derived attribute (cached by default)
  *                 Customer.FULL_NAME.define()
  *                     .derived(Customer.FIRST_NAME, Customer.LAST_NAME)
- *                     .provider(sourceValues -> {
- *                         String first = sourceValues.get(Customer.FIRST_NAME);
- *                         String last = sourceValues.get(Customer.LAST_NAME);
+ *                     .provider(values -> {
+ *                         String first = values.get(Customer.FIRST_NAME);
+ *                         String last = values.get(Customer.LAST_NAME);
  *                         if (first == null && last == null) {
  *                             return null;
  *                         }
@@ -77,10 +77,10 @@ import java.util.List;
  *                 // Multi-source derived attribute with caching disabled
  *                 Customer.CONTACT_INFO.define()
  *                     .derived(Customer.FULL_NAME, Customer.EMAIL, Customer.PHONE)
- *                     .provider(sourceValues -> {
- *                         String name = sourceValues.get(Customer.FULL_NAME);
- *                         String email = sourceValues.get(Customer.EMAIL);
- *                         String phone = sourceValues.get(Customer.PHONE);
+ *                     .provider(values -> {
+ *                         String name = values.get(Customer.FULL_NAME);
+ *                         String email = values.get(Customer.EMAIL);
+ *                         String phone = values.get(Customer.PHONE);
  *                         
  *                         StringBuilder contact = new StringBuilder();
  *                         if (name != null) contact.append(name);
@@ -100,8 +100,8 @@ import java.util.List;
  *                 // Time-dependent derived attribute (not cached)
  *                 Customer.AGE.define()
  *                     .derived(Customer.BIRTH_DATE)
- *                     .provider(sourceValues -> {
- *                         LocalDate birthDate = sourceValues.get(Customer.BIRTH_DATE);
+ *                     .provider(values -> {
+ *                         LocalDate birthDate = values.get(Customer.BIRTH_DATE);
  *                         return birthDate != null ? 
  *                             Period.between(birthDate, LocalDate.now()).getYears() : null;
  *                     })
@@ -111,8 +111,8 @@ import java.util.List;
  *                 // Formatting derived attribute
  *                 Customer.NAME_UPPER.define()
  *                     .derived(Customer.FULL_NAME)
- *                     .provider(sourceValues -> {
- *                         String fullName = sourceValues.get(Customer.FULL_NAME);
+ *                     .provider(values -> {
+ *                         String fullName = values.get(Customer.FULL_NAME);
  *                         return fullName != null ? fullName.toUpperCase() : null;
  *                     })
  *                     .caption("Name (Uppercase)"))

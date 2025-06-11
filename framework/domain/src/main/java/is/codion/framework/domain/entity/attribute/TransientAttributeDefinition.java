@@ -66,9 +66,9 @@ package is.codion.framework.domain.entity.attribute;
  *                 Customer.FULL_NAME.define()
  *                     .attribute()
  *                     .derived(Customer.FIRST_NAME, Customer.LAST_NAME)
- *                     .valueProvider(sourceValues -> {
- *                         String first = sourceValues.get(Customer.FIRST_NAME);
- *                         String last = sourceValues.get(Customer.LAST_NAME);
+ *                     .valueProvider(values -> {
+ *                         String first = values.get(Customer.FIRST_NAME);
+ *                         String last = values.get(Customer.LAST_NAME);
  *                         return ((first != null ? first : "") + " " + 
  *                                 (last != null ? last : "")).trim();
  *                     })
