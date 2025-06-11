@@ -54,7 +54,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 	private static final Map<Integer, GetValue<?>> GETTERS = createGetters();
 
 	private final int type;
-	private final int primaryKeyIndex;
+	private final int keyIndex;
 	private final boolean hasDatabaseDefault;
 	private final boolean insertable;
 	private final boolean updatable;
@@ -72,7 +72,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 	protected DefaultColumnDefinition(DefaultColumnDefinitionBuilder<T, ?> builder) {
 		super(builder);
 		this.type = builder.type;
-		this.primaryKeyIndex = builder.primaryKeyIndex;
+		this.keyIndex = builder.keyIndex;
 		this.hasDatabaseDefault = builder.hasDatabaseDefault;
 		this.insertable = builder.insertable;
 		this.updatable = builder.updatable;
@@ -133,8 +133,8 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 	}
 
 	@Override
-	public final int primaryKeyIndex() {
-		return primaryKeyIndex;
+	public final int keyIndex() {
+		return keyIndex;
 	}
 
 	@Override
@@ -154,7 +154,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 
 	@Override
 	public final boolean primaryKey() {
-		return primaryKeyIndex >= 0;
+		return keyIndex >= 0;
 	}
 
 	@Override
@@ -263,7 +263,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 	static class DefaultColumnDefinitionBuilder<T, B extends ColumnDefinition.Builder<T, B>>
 					extends AbstractAttributeDefinitionBuilder<T, B> implements ColumnDefinition.Builder<T, B> {
 
-		private final int primaryKeyIndex;
+		private final int keyIndex;
 
 		private int type;
 		private boolean hasDatabaseDefault;
@@ -283,14 +283,14 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 			this(column, -1);
 		}
 
-		DefaultColumnDefinitionBuilder(Column<T> column, int primaryKeyIndex) {
+		DefaultColumnDefinitionBuilder(Column<T> column, int keyIndex) {
 			super(column);
-			this.primaryKeyIndex = primaryKeyIndex;
+			this.keyIndex = keyIndex;
 			this.type = sqlType(column.type().valueClass());
 			this.hasDatabaseDefault = false;
 			this.insertable = true;
-			nullable(primaryKeyIndex < 0);
-			this.updatable = primaryKeyIndex < 0;
+			nullable(keyIndex < 0);
+			this.updatable = keyIndex < 0;
 			this.searchable = false;
 			this.name = column.name();
 			this.getValue = (GetValue<Object>) getter(this.type, column);

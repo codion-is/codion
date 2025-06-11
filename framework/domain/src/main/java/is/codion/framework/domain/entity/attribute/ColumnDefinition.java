@@ -116,7 +116,7 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
 	/**
 	 * @return this columns zero based index in the primary key, -1 if this column is not part of a primary key
 	 */
-	int primaryKeyIndex();
+	int keyIndex();
 
 	/**
 	 * @return true if this column is part of a primary key

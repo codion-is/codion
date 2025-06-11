@@ -89,8 +89,8 @@ public final class TestKeysDomain extends DomainModel {
 										TestFkMaster.ID1.define()
 														.primaryKey()//,
 //									here's what we're testing for, a missing fk reference property
-//            			TestFKMaster.ID1.define().column()
-//                    			.primaryKeyIndex(1)
+//            			TestFKMaster.ID2.define()
+//            	        		.primaryKey(1)
 						)
 						.build());
 		add(TestFkMaster.TYPE.define(

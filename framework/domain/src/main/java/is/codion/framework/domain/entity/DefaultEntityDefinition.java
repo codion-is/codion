@@ -652,7 +652,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 							.filter(ColumnDefinition.class::isInstance)
 							.map(column -> (ColumnDefinition<?>) column)
 							.filter(ColumnDefinition::primaryKey)
-							.sorted(comparingInt(ColumnDefinition::primaryKeyIndex))
+							.sorted(comparingInt(ColumnDefinition::keyIndex))
 							.collect(toList());
 		}
 
@@ -695,7 +695,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 			Set<Integer> usedPrimaryKeyIndexes = new LinkedHashSet<>();
 			for (AttributeDefinition<?> definition : attributeDefinitions.values()) {
 				if (definition instanceof ColumnDefinition && ((ColumnDefinition<?>) definition).primaryKey()) {
-					Integer index = ((ColumnDefinition<?>) definition).primaryKeyIndex();
+					Integer index = ((ColumnDefinition<?>) definition).keyIndex();
 					if (usedPrimaryKeyIndexes.contains(index)) {
 						throw new IllegalArgumentException("Primary key index " + index + " in column " + definition + " has already been used");
 					}

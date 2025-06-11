@@ -576,7 +576,7 @@ public final class DomainSource {
 
 	private static String definitionType(ColumnDefinition<?> column, boolean compositePrimaryKey) {
 		if (column.primaryKey()) {
-			return compositePrimaryKey ? "primaryKey(" + column.primaryKeyIndex() + ")" : "primaryKey()";
+			return compositePrimaryKey ? "primaryKey(" + column.keyIndex() + ")" : "primaryKey()";
 		}
 		if (auditColumn(column)) {
 			AuditColumnDefinition<?> auditColumnDefinition = (AuditColumnDefinition<?>) column;

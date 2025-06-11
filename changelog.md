@@ -21,6 +21,7 @@ Codion Change Log
 - DerivedAttributeDefinition.sourceAttributes() renamed sources().
 - EntityDefinition.selectTableName() renamed selectTable().
 - EntityDefinition.tableName() renamed table().
+- ColumnDefinition.primaryKeyIndex() renamed keyIndex().
 ### is.codion.framework.db.core
 - EntityConnectionProvider.Builder.domainType() renamed domain().
 ### is.codion.swing.framework.ui
