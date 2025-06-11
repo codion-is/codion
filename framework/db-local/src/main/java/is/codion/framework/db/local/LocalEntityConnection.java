@@ -118,33 +118,33 @@ public interface LocalEntityConnection extends EntityConnection {
 	/**
 	 * @return true if optimistic locking is enabled
 	 */
-	boolean isOptimisticLocking();
+	boolean optimisticLocking();
 
 	/**
 	 * @param optimisticLocking true if optimistic locking should be enabled
 	 */
-	void setOptimisticLocking(boolean optimisticLocking);
+	void optimisticLocking(boolean optimisticLocking);
 
 	/**
 	 * @return true if foreign key reference depths are being limited
 	 */
-	boolean isLimitForeignKeyReferenceDepth();
+	boolean limitForeignKeyReferenceDepth();
 
 	/**
 	 * @param limitForeignKeyReferenceDepth false to override the reference depth limit specified by conditions or entities
 	 * @see Select.Builder#referenceDepth(int)
 	 */
-	void setLimitForeignKeyReferenceDepth(boolean limitForeignKeyReferenceDepth);
+	void limitForeignKeyReferenceDepth(boolean limitForeignKeyReferenceDepth);
 
 	/**
 	 * @return the default query timeout being used
 	 */
-	int getDefaultQueryTimeout();
+	int defaultQueryTimeout();
 
 	/**
 	 * @param queryTimeout the query timeout in seconds
 	 */
-	void setDefaultQueryTimeout(int queryTimeout);
+	void defaultQueryTimeout(int queryTimeout);
 
 	/**
 	 * Constructs a new LocalEntityConnection instance

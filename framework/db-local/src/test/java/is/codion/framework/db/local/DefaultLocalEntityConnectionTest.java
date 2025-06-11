@@ -879,7 +879,7 @@ public class DefaultLocalEntityConnectionTest {
 	void optimisticLockingDeleted() {
 		LocalEntityConnection connection = createConnection();
 		EntityConnection connection2 = createConnection();
-		connection.setOptimisticLocking(true);
+		connection.optimisticLocking(true);
 		Entity allen;
 		try {
 			Condition condition = Employee.NAME.equalTo("ALLEN");
@@ -915,8 +915,8 @@ public class DefaultLocalEntityConnectionTest {
 	void optimisticLockingModified() {
 		LocalEntityConnection baseConnection = createConnection();
 		LocalEntityConnection optimisticConnection = createConnection(true);
-		optimisticConnection.setOptimisticLocking(true);
-		assertTrue(optimisticConnection.isOptimisticLocking());
+		optimisticConnection.optimisticLocking(true);
+		assertTrue(optimisticConnection.optimisticLocking());
 		String oldLocation = null;
 		Entity updatedDepartment = null;
 		try {
@@ -951,7 +951,7 @@ public class DefaultLocalEntityConnectionTest {
 	void optimisticLockingBlob() {
 		LocalEntityConnection baseConnection = createConnection();
 		LocalEntityConnection optimisticConnection = createConnection();
-		optimisticConnection.setOptimisticLocking(true);
+		optimisticConnection.optimisticLocking(true);
 		Entity updatedEmployee = null;
 		try {
 			Random random = new Random();
@@ -1308,15 +1308,15 @@ public class DefaultLocalEntityConnectionTest {
 	@Test
 	void foreignKeyReferenceDepth() {
 		try (LocalEntityConnection conn = createConnection()) {
-			conn.setLimitForeignKeyReferenceDepth(false);
-			assertFalse(conn.isLimitForeignKeyReferenceDepth());
+			conn.limitForeignKeyReferenceDepth(false);
+			assertFalse(conn.limitForeignKeyReferenceDepth());
 			Entity employee = conn.selectSingle(Employee.ID.equalTo(10));
 			Entity manager = employee.get(Employee.MGR_FK);
 			assertNotNull(manager);
 			Entity managersManager = manager.get(Employee.MGR_FK);
 			assertNotNull(managersManager);
-			conn.setLimitForeignKeyReferenceDepth(true);
-			assertTrue(conn.isLimitForeignKeyReferenceDepth());
+			conn.limitForeignKeyReferenceDepth(true);
+			assertTrue(conn.limitForeignKeyReferenceDepth());
 			employee = conn.selectSingle(Employee.ID.equalTo(10));
 			manager = employee.get(Employee.MGR_FK);
 			assertNotNull(manager);

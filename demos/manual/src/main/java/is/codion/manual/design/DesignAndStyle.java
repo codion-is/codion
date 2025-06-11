@@ -87,9 +87,9 @@ public final class DesignAndStyle {
 		//end::accessors[]
 
 		//tag::getters[]
-		boolean optimisticLocking = connection.isOptimisticLocking();
+		boolean optimisticLocking = connection.optimisticLocking();
 
-		connection.setOptimisticLocking(false);
+		connection.optimisticLocking(false);
 		//end::getters[]
 
 		//tag::mutable[]

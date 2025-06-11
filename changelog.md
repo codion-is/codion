@@ -27,6 +27,8 @@ Codion Change Log
 ### is.codion.framework.db.core
 - EntityConnectionProvider.Builder.domainType() renamed domain().
 - EntityConnection.setQueryCacheEnabled() and isQueryCacheEnabled() renamed queryCache().
+### is.codion.framework.db.local
+- LocalEntityConnection, getter/setter combos renamed for consistency.
 ### is.codion.framework.model
 - EntityQueryModel bug fixed, did support including non-selected columns.
 ### is.codion.swing.framework.ui

@@ -672,32 +672,32 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	@Override
-	public boolean isOptimisticLocking() {
+	public boolean optimisticLocking() {
 		return optimisticLocking;
 	}
 
 	@Override
-	public void setOptimisticLocking(boolean optimisticLocking) {
+	public void optimisticLocking(boolean optimisticLocking) {
 		this.optimisticLocking = optimisticLocking;
 	}
 
 	@Override
-	public boolean isLimitForeignKeyReferenceDepth() {
+	public boolean limitForeignKeyReferenceDepth() {
 		return limitForeignKeyReferenceDepth;
 	}
 
 	@Override
-	public void setLimitForeignKeyReferenceDepth(boolean limitForeignKeyReferenceDepth) {
+	public void limitForeignKeyReferenceDepth(boolean limitForeignKeyReferenceDepth) {
 		this.limitForeignKeyReferenceDepth = limitForeignKeyReferenceDepth;
 	}
 
 	@Override
-	public int getDefaultQueryTimeout() {
+	public int defaultQueryTimeout() {
 		return defaultQueryTimeout;
 	}
 
 	@Override
-	public void setDefaultQueryTimeout(int defaultQueryTimeout) {
+	public void defaultQueryTimeout(int defaultQueryTimeout) {
 		this.defaultQueryTimeout = defaultQueryTimeout;
 	}
 
@@ -911,7 +911,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	 * @param select the select
 	 * @param currentForeignKeyReferenceDepth the current foreign key reference depth
 	 * @throws SQLException in case of a database exception
-	 * @see #setLimitForeignKeyReferenceDepth(boolean)
+	 * @see #limitForeignKeyReferenceDepth(boolean)
 	 * @see Select.Builder#referenceDepth(int)
 	 */
 	private void populateForeignKeys(List<Entity> entities, Select select,
