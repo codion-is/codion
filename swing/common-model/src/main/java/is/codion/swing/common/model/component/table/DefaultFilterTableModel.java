@@ -72,7 +72,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	private DefaultFilterTableModel(DefaultBuilder<R, C> builder) {
 		this.columns = builder.columns;
-		this.filters = tableConditionModel(builder.filterModelFactory);
+		this.filters = tableConditionModel(builder.filters);
 		this.sort = new DefaultFilterTableSort<>(columns);
 		this.rowEditorFactory = builder.rowEditorFactory;
 		this.items = Items.builder(builder::createRefresher)
@@ -348,7 +348,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		private Supplier<? extends Collection<R>> supplier;
 		private Predicate<R> validator = new ValidPredicate<>();
-		private Supplier<Map<C, ConditionModel<?>>> filterModelFactory;
+		private Supplier<Map<C, ConditionModel<?>>> filters;
 		private RefreshStrategy refreshStrategy = RefreshStrategy.CLEAR;
 		private boolean asyncRefresh = FilterModel.ASYNC_REFRESH.getOrThrow();
 		private Function<FilterTableModel<R, C>, RowEditor<R, C>> rowEditorFactory = new DefaultRowEditorFactory<>();
@@ -359,12 +359,12 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 				throw new IllegalArgumentException("No columns specified");
 			}
 			this.columns = validateIdentifiers(columns);
-			this.filterModelFactory = new DefaultColumnFilterFactory<>(columns);
+			this.filters = new DefaultColumnFilterFactory<>(columns);
 		}
 
 		@Override
-		public Builder<R, C> filterModelFactory(Supplier<Map<C, ConditionModel<?>>> filterModelFactory) {
-			this.filterModelFactory = requireNonNull(filterModelFactory);
+		public Builder<R, C> filters(Supplier<Map<C, ConditionModel<?>>> filters) {
+			this.filters = requireNonNull(filters);
 			return this;
 		}
 
