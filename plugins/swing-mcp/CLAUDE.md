@@ -118,7 +118,9 @@ The swing-mcp module allows:
 ### Starting the MCP Server
 See how the server is started in ChinookAppPanel:
 ```java
-onApplicationStarted(SwingMcpPlugin::startMcpServer)
+State mcpServerController = SwingMcpPlugin.mcpServer(this);
+
+mcpServerController.set(true);
 ```
 
 ### Configuring Claude Desktop

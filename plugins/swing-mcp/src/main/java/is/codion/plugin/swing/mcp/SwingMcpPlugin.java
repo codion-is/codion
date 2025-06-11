@@ -19,6 +19,7 @@
 package is.codion.plugin.swing.mcp;
 
 import is.codion.common.property.PropertyValue;
+import is.codion.common.state.State;
 import is.codion.common.version.Version;
 import is.codion.plugin.swing.mcp.SwingMcpHttpServer.HttpTool;
 
@@ -38,6 +39,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadFactory;
+import java.util.function.Consumer;
 
 import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.Configuration.integerValue;
@@ -110,21 +112,29 @@ public final class SwingMcpPlugin {
 	private static final String MCP_SERVER_NAME = "MCP_SERVER_NAME";
 	private static final String MCP_STDIO = "mcp.stdio";
 	private static final String HTTP_STARTUP_INFO = "Started MCP HTTP server for Swing application";
-	private static final String STDIO_STARTUP_INFO = "Swing MCP STDIO Server ready for AI connections";
+	private static final String STDIO_STARTUP_INFO = "Started MCP STDIO server for AI connections";
+	private static final String SERVER_STOPPED_INFO = "Stopped MCP server";
 
 	private final JComponent applicationComponent;
-	private final ExecutorService executor = newSingleThreadExecutor(new DaemonThreadFactory());
+
+	private ExecutorService executor;
+	private SwingMcpHttpServer httpServer;
 
 	private SwingMcpPlugin(JComponent applicationComponent) {
 		this.applicationComponent = applicationComponent;
 	}
 
 	/**
-	 * Start the MCP server for the given application component.
+	 * Create an MCP server for the given application component.
 	 * @param applicationComponent the application component
+	 * @return a {@link State} controlling the started state of this mcp server
 	 */
-	public static void startMcpServer(JComponent applicationComponent) {
-		new SwingMcpPlugin(requireNonNull(applicationComponent)).start();
+	public static State mcpServer(JComponent applicationComponent) {
+		SwingMcpPlugin plugin = new SwingMcpPlugin(requireNonNull(applicationComponent));
+
+		return State.builder()
+						.consumer(new ServerController(plugin))
+						.build();
 	}
 
 	/**
@@ -132,7 +142,22 @@ public final class SwingMcpPlugin {
 	 * The mode (STDIO or HTTP) is determined by system properties and environment.
 	 */
 	private void start() {
+		executor = newSingleThreadExecutor(new DaemonThreadFactory());
 		executor.submit(this::runServer);
+	}
+
+	private void stop() {
+		if (httpServer != null) {
+			httpServer.stop();
+			httpServer = null;
+			LOG.info("Stopped MCP HTTP server");
+		}
+		if (executor != null) {
+			executor.shutdownNow();
+			executor = null;
+			LOG.info("Stopped MCP executor");
+		}
+		System.out.println(SERVER_STOPPED_INFO);
 	}
 
 	private void runServer() {
@@ -160,8 +185,8 @@ public final class SwingMcpPlugin {
 		}
 	}
 
-	private static void startHttpServer(SwingMcpServer swingMcpServer) throws IOException {
-		SwingMcpHttpServer httpServer = new SwingMcpHttpServer(HTTP_PORT.getOrThrow(), CODION_SWING_MCP, Version.versionString());
+	private void startHttpServer(SwingMcpServer swingMcpServer) throws IOException {
+		httpServer = new SwingMcpHttpServer(HTTP_PORT.getOrThrow(), CODION_SWING_MCP, Version.versionString());
 
 		// Register all UI automation tools with HTTP adapter
 		registerHttpTools(httpServer, swingMcpServer);
@@ -402,6 +427,25 @@ public final class SwingMcpPlugin {
 							}
 						}
 						""", prop1Name, prop1Type, prop1Desc, prop2Name, prop2Type, prop2Desc);
+	}
+
+	private static final class ServerController implements Consumer<Boolean> {
+
+		private final SwingMcpPlugin plugin;
+
+		private ServerController(SwingMcpPlugin plugin) {
+			this.plugin = plugin;
+		}
+
+		@Override
+		public void accept(Boolean start) {
+			if (start) {
+				plugin.start();
+			}
+			else {
+				plugin.stop();
+			}
+		}
 	}
 
 	private static final class DaemonThreadFactory implements ThreadFactory {

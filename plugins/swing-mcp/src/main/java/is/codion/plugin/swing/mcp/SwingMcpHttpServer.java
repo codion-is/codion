@@ -74,7 +74,9 @@ final class SwingMcpHttpServer {
 	private final String serverName;
 	private final String serverVersion;
 
-	SwingMcpHttpServer(int port, String name, String version) {
+	private HttpServer server;
+
+	SwingMcpHttpServer(int port, String name, String version) throws IOException {
 		this.port = port;
 		this.serverName = name;
 		this.serverVersion = version;
@@ -96,7 +98,7 @@ final class SwingMcpHttpServer {
 	 * @throws IOException if the server cannot be started
 	 */
 	void start() throws IOException {
-		HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+		server = HttpServer.create(new InetSocketAddress(port), 0);
 		server.setExecutor(Executors.newCachedThreadPool(runnable -> {
 			Thread thread = new Thread(runnable);
 			thread.setDaemon(true);
@@ -118,6 +120,11 @@ final class SwingMcpHttpServer {
 		LOG.info("No authentication required");
 	}
 
+	void stop() {
+		LOG.info("Stopping Server");
+		server.stop(0);
+		server = null;
+	}
 
 	private static void sendResponse(HttpExchange exchange, int statusCode, String response) throws IOException {
 		byte[] responseBytes = response.getBytes(StandardCharsets.UTF_8);

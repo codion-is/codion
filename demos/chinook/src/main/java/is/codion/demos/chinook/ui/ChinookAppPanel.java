@@ -20,6 +20,7 @@ package is.codion.demos.chinook.ui;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
+import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.demos.chinook.domain.api.Chinook;
 import is.codion.demos.chinook.model.ArtistTableModel;
@@ -79,6 +80,8 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 
 	/* Non-static so this is not initialized before main(), which sets the locale */
 	private final ResourceBundle bundle = getBundle(ChinookAppPanel.class.getName());
+
+	private final State mcpServerController = SwingMcpPlugin.mcpServer(this);
 
 	public ChinookAppPanel(ChinookAppModel applicationModel) {
 		super(applicationModel, createPanels(applicationModel), createLookupPanelBuilders());
@@ -176,6 +179,16 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 	}
 
 	@Override
+	protected Optional<Controls> createToolsMenuControls() {
+		return super.createToolsMenuControls()
+						.map(controls -> controls.copy()
+										.control(Control.builder()
+														.toggle(mcpServerController)
+														.caption("MCP Server"))
+										.build());
+	}
+
+	@Override
 	protected Optional<Controls> createViewMenuControls() {
 		return super.createViewMenuControls()
 						.map(controls -> controls.copy()
@@ -235,7 +248,6 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 						.applicationVersion(ChinookAppModel.VERSION)
 						.defaultLookAndFeel(MaterialTheme.class)
 						.defaultUser(User.parse("scott:tiger"))
-						.onApplicationStarted(SwingMcpPlugin::startMcpServer)
 						.start();
 	}
 }
