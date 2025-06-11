@@ -39,6 +39,7 @@ Codion Change Log
 - EntityComboBoxModel.handleEditEvents() renamed editEvents().
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel.Builder.domainType() renamed domain().
+- EntityApplicationPanel.exitObserver() renamed exiting().
 
 ## 0.18.38
 ### is.codion

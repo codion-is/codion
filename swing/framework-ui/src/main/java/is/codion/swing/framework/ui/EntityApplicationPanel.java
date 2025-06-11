@@ -243,7 +243,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	private final State alwaysOnTopState = State.builder()
 					.consumer(alwaysOnTop -> parentWindow().ifPresent(parent -> parent.setAlwaysOnTop(alwaysOnTop)))
 					.build();
-	private final Event<?> exitEvent = Event.event();
+	private final Event<?> exiting = Event.event();
 	private final Event<EntityApplicationPanel<?>> initializedEvent = Event.event();
 	private final boolean modifiedWarning = EntityEditPanel.Config.MODIFIED_WARNING.getOrThrow();
 	private final boolean userPreferencesEnabled = USER_PREFERENCES_ENABLED.getOrThrow();
@@ -382,7 +382,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	/**
 	 * Exits this application. Calls {@link System#exit(int)} in case {@link #CALL_SYSTEM_EXIT} is true.
 	 * @throws CancelException if the exit is cancelled
-	 * @see #exitObserver()
+	 * @see #exiting()
 	 * @see EntityEditPanel.Config#MODIFIED_WARNING
 	 * @see EntityApplicationPanel#CONFIRM_EXIT
 	 * @see EntityApplicationPanel#CALL_SYSTEM_EXIT
@@ -394,7 +394,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		}
 
 		try {
-			exitEvent.run();
+			exiting.run();
 		}
 		catch (CancelException e) {
 			throw e;
@@ -854,8 +854,8 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * To cancel the exit add a listener throwing a {@link CancelException}.
 	 * @return an observer notified when the application is about to exit.
 	 */
-	protected final Observer<?> exitObserver() {
-		return exitEvent.observer();
+	protected final Observer<?> exiting() {
+		return exiting.observer();
 	}
 
 	/**
