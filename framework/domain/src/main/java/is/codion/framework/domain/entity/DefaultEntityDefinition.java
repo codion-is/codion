@@ -85,7 +85,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 	private final EntityValidator validator;
 	private final Predicate<Entity> exists;
 	private final transient String tableName;
-	private final transient @Nullable String selectTableName;
+	private final transient @Nullable String selectTable;
 	private final transient KeyGenerator keyGenerator;
 	private final transient boolean optimisticLocking;
 	private final transient @Nullable EntitySelectQuery selectQuery;
@@ -114,7 +114,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		this.validator = builder.validator;
 		this.exists = builder.exists;
 		this.tableName = builder.tableName;
-		this.selectTableName = builder.selectTableName;
+		this.selectTable = builder.selectTable;
 		this.selectQuery = builder.selectQuery;
 		this.conditionProviders = builder.conditionProviders == null ? null : new HashMap<>(builder.conditionProviders);
 		this.entityAttributes = builder.attributes;
@@ -186,8 +186,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 	}
 
 	@Override
-	public String selectTableName() {
-		return selectTableName == null ? tableName : selectTableName;
+	public String selectTable() {
+		return selectTable == null ? tableName : selectTable;
 	}
 
 	@Override
@@ -780,7 +780,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		private boolean keyGenerated;
 		private boolean optimisticLocking = OPTIMISTIC_LOCKING.getOrThrow();
 		private @Nullable OrderBy orderBy;
-		private @Nullable String selectTableName;
+		private @Nullable String selectTable;
 		private @Nullable EntitySelectQuery selectQuery;
 		private Function<Entity, String> stringFactory = DefaultEntity.DEFAULT_STRING_FACTORY;
 		private boolean cacheToString = true;
@@ -873,8 +873,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		}
 
 		@Override
-		public Builder selectTableName(String selectTableName) {
-			this.selectTableName = requireNonNull(selectTableName);
+		public Builder selectTable(String selectTable) {
+			this.selectTable = requireNonNull(selectTable);
 			return this;
 		}
 

@@ -154,7 +154,7 @@ public final class TestDomain extends DomainModel {
 															return intValue * 10;
 														})
 														.caption(Detail.INT_DERIVED.name()))
-						.selectTableName(DETAIL_SELECT_TABLE_NAME)
+						.selectTable(DETAIL_SELECT_TABLE_NAME)
 						.orderBy(ascending(Detail.STRING))
 						.smallDataset(true)
 						.stringFactory(Detail.STRING)

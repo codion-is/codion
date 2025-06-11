@@ -481,7 +481,7 @@ public final class TestDomain extends DomainModel {
 														.column())
 						.tableName("employees.employee")
 						.orderBy(OrderBy.descending(Query.ENAME))
-						.selectTableName("employees.employee e")
+						.selectTable("employees.employee e")
 						.selectQuery(EntitySelectQuery.builder()
 										.columns("empno, ename")
 										.orderBy("ename")

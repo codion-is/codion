@@ -196,7 +196,7 @@ public interface EntityDefinition {
 	/**
 	 * @return the name of the table to use when selecting entities of this type
 	 */
-	String selectTableName();
+	String selectTable();
 
 	/**
 	 * @return the select query to use when selecting entities of this type, an empty Optional if none is available
@@ -390,10 +390,10 @@ public interface EntityDefinition {
 		/**
 		 * Sets the name of the table to use when selecting entities of this type,
 		 * when it differs from the one used to update/insert, such as a view.
-		 * @param selectTableName the name of the table
+		 * @param selectTable the name of the table
 		 * @return this {@link Builder} instance
 		 */
-		Builder selectTableName(String selectTableName);
+		Builder selectTable(String selectTable);
 
 		/**
 		 * Sets the select query to use when selecting entities of this type,

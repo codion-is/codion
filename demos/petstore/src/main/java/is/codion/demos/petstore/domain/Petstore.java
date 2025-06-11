@@ -375,7 +375,7 @@ public final class Petstore extends DomainModel {
 						.tableName("petstore.tag")
 						.keyGenerator(sequence("petstore.tag_seq"))
 						.orderBy(ascending(Tag.TAG))
-						.selectTableName("petstore.tag tag")
+						.selectTable("petstore.tag tag")
 						.stringFactory(Tag.TAG)
 						.caption("Tags")
 						.build();

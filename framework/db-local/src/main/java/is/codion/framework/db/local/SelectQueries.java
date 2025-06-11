@@ -279,7 +279,7 @@ final class SelectQueries {
 			// Use custom FROM clause if provided by EntitySelectQuery, otherwise use appropriate table name
 			if (from == null) {
 				// For UPDATE operations, use the base table; for SELECT, use the view/table optimized for reading
-				return forUpdate ? definition.tableName() : definition.selectTableName();
+				return forUpdate ? definition.tableName() : definition.selectTable();
 			}
 
 			return from;

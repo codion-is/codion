@@ -530,7 +530,7 @@ public final class EntitiesTest {
 	void transients() throws IOException, ClassNotFoundException {
 		EntityDefinition definition = entities.definition(Employee.TYPE);
 		assertNotNull(definition.tableName());
-		assertNotNull(definition.selectTableName());
+		assertNotNull(definition.selectTable());
 		assertNotNull(definition.primaryKey().generator());
 		assertTrue(definition.optimisticLocking());
 		assertTrue(definition.selectQuery().isPresent());
@@ -540,7 +540,7 @@ public final class EntitiesTest {
 		assertNotNull(nameDefinition.expression());
 		EntityDefinition deserialized = Serializer.deserialize(Serializer.serialize(definition));
 		assertNull(deserialized.tableName());
-		assertNull(deserialized.selectTableName());
+		assertNull(deserialized.selectTable());
 		assertNull(deserialized.primaryKey().generator());
 		assertFalse(deserialized.optimisticLocking());
 		assertFalse(deserialized.selectQuery().isPresent());

@@ -266,7 +266,7 @@ public final class TestDomain extends DomainModel {
 															return intValue * 10;
 														})
 														.caption(Detail2.INT_DERIVED.name()))
-						.selectTableName(DETAIL_SELECT_TABLE_NAME.name())
+						.selectTable(DETAIL_SELECT_TABLE_NAME.name())
 						.orderBy(ascending(Detail2.STRING))
 						.smallDataset(true)
 						.stringFactory(Detail2.STRING)
@@ -380,7 +380,7 @@ public final class TestDomain extends DomainModel {
 														.selected(false))
 						.keyGenerator(queried("select id from dual"))
 						.orderBy(ascending(Detail.STRING))
-						.selectTableName(DETAIL_SELECT_TABLE_NAME.name())
+						.selectTable(DETAIL_SELECT_TABLE_NAME.name())
 						.smallDataset(true)
 						.stringFactory(Detail.STRING)
 						.build());
@@ -518,7 +518,7 @@ public final class TestDomain extends DomainModel {
 														.column()
 														.caption("Data"))
 						.tableName("employees.employee")
-						.selectTableName("employees.employee")
+						.selectTable("employees.employee")
 						.keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
 						.orderBy(ascending(Employee.DEPARTMENT_NO, Employee.NAME))
 						.stringFactory(Employee.NAME)

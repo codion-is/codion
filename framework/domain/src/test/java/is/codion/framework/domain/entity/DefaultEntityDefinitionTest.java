@@ -73,7 +73,7 @@ public class DefaultEntityDefinitionTest {
 												.build())
 								.orderBy(OrderBy.descending(name))
 								.readOnly(true)
-								.selectTableName("selectTableName")
+								.selectTable("selectTableName")
 								.stringFactory(stringFactory)
 								.comparator(comparator)
 								.build());
@@ -92,7 +92,7 @@ public class DefaultEntityDefinitionTest {
 		assertEquals("name", query.groupBy());
 		assertFalse(definition.smallDataset());
 		assertTrue(definition.readOnly());
-		assertEquals("selectTableName", definition.selectTableName());
+		assertEquals("selectTableName", definition.selectTable());
 		assertEquals(stringFactory, definition.stringFactory());
 		assertEquals(comparator, definition.comparator());
 	}
