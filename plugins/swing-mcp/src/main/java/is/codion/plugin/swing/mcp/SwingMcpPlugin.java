@@ -23,11 +23,6 @@ import is.codion.common.state.State;
 import is.codion.common.version.Version;
 import is.codion.plugin.swing.mcp.SwingMcpHttpServer.HttpTool;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.modelcontextprotocol.server.McpServer;
-import io.modelcontextprotocol.server.McpSyncServer;
-import io.modelcontextprotocol.server.transport.StdioServerTransportProvider;
-import io.modelcontextprotocol.spec.McpSchema.ServerCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,37 +36,22 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.function.Consumer;
 
-import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.Configuration.integerValue;
-import static is.codion.plugin.swing.mcp.SwingMcpServer.booleanParam;
-import static is.codion.plugin.swing.mcp.SwingMcpServer.integerParam;
+import static is.codion.plugin.swing.mcp.SwingMcpServer.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
 /**
  * Plugin that integrates MCP server directly into a Codion application.
- * This allows AI tools to control the application via the Model Context Protocol.
- * <p>
- * The plugin supports two modes:
- * 1. STDIO mode - For subprocess-based clients like Claude Desktop
- * 2. HTTP mode - For any client that can make HTTP requests
+ * This allows AI tools to control the application via the Model Context Protocol over HTTP.
  * <p>
  * Configure with system properties:
- * -Dcodion.swing.mcp.http.enabled=true  (enables HTTP mode)
  * -Dcodion.swing.mcp.http.port=8080     (sets HTTP port, default 8080)
  */
 public final class SwingMcpPlugin {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SwingMcpPlugin.class);
 
-	/**
-	 * System property to enable HTTP mode instead of STDIO.
-	 * <ul>
-	 * <li>Value type: Boolean
-	 * <li>Default value: true
-	 * </ul>
-	 */
-	public static final PropertyValue<Boolean> HTTP_ENABLED = booleanValue("codion.swing.mcp.http.enabled", true);
 
 	/**
 	 * System property to set the HTTP server port (default: 8080).
@@ -82,42 +62,20 @@ public final class SwingMcpPlugin {
 	 */
 	public static final PropertyValue<Integer> HTTP_PORT = integerValue("codion.swing.mcp.http.port", 8080);
 
-	private static final String STRING = "string";
-	private static final String TEXT = "text";
-	private static final String COUNT = "count";
-	private static final String FORMAT = "format";
+	// Plugin-specific constants
 	private static final String WIDTH = "width";
 	private static final String HEIGHT = "height";
 	private static final String IMAGE = "image";
-	private static final String INPUT_SCHEMA = "{\"type\": \"object\", \"properties\": {}}";
-	private static final String FOCUS_WINDOW = "focus_window";
-	private static final String ENTER = "enter";
-	private static final String ESCAPE = "escape";
-	private static final String CLEAR_FIELD = "clear_field";
-	private static final String ARROW = "arrow";
-	private static final String APP_SCREENSHOT = "app_screenshot";
-	private static final String PNG = "png";
-	private static final String IMAGE_FORMAT = "Image format: 'png' or 'jpg' (default: 'png')";
-	private static final String APP_WINDOW_BOUNDS = "app_window_bounds";
-	private static final String SCREENSHOT = "screenshot";
-	private static final String KEY_COMBO = "key_combo";
-	private static final String TAB = "tab";
-	private static final String TYPE_TEXT = "type_text";
-	private static final String SHIFT = "shift";
-	private static final String BOOLEAN = "boolean";
-	private static final String NUMBER = "number";
 	private static final String BACKWARD = "backward";
 	private static final String FORWARD = "forward";
 	private static final String CODION_SWING_MCP = "codion-swing-mcp";
-	private static final String MCP_SERVER_NAME = "MCP_SERVER_NAME";
-	private static final String MCP_STDIO = "mcp.stdio";
-	private static final String HTTP_STARTUP_INFO = "Started MCP HTTP server for Swing application";
-	private static final String STDIO_STARTUP_INFO = "Started MCP STDIO server for AI connections";
+	private static final String SERVER_STARTUP_INFO = "Started MCP HTTP server for Swing application";
 	private static final String SERVER_STOPPED_INFO = "Stopped MCP server";
 
 	private final JComponent applicationComponent;
 
 	private ExecutorService executor;
+	private SwingMcpServer server;
 	private SwingMcpHttpServer httpServer;
 
 	private SwingMcpPlugin(JComponent applicationComponent) {
@@ -138,8 +96,7 @@ public final class SwingMcpPlugin {
 	}
 
 	/**
-	 * Start the MCP server in a daemon thread.
-	 * The mode (STDIO or HTTP) is determined by system properties and environment.
+	 * Start the MCP HTTP server in a daemon thread.
 	 */
 	private void start() {
 		executor = newSingleThreadExecutor(new DaemonThreadFactory());
@@ -157,25 +114,19 @@ public final class SwingMcpPlugin {
 			executor = null;
 			LOG.info("Stopped MCP executor");
 		}
+		if (server != null) {
+			server.stop();
+			server = null;
+		}
 		System.out.println(SERVER_STOPPED_INFO);
 	}
 
 	private void runServer() {
 		try {
 			// Initialize the UI automation server
-			SwingMcpServer server = new SwingMcpServer(applicationComponent);
-			if (HTTP_ENABLED.getOrThrow()) {
-				// HTTP mode - accessible from any MCP client
-				startHttpServer(server);
-			}
-			else if (System.console() != null || isStdioAvailable()) {
-				// STDIO mode - for subprocess-based clients
-				startStdioServer(server);
-			}
-			else {
-				LOG.warn("MCP server not started. No STDIO available and HTTP mode not enabled.");
-				LOG.warn("To enable HTTP mode, use: -D{}=true", HTTP_ENABLED);
-			}
+			server = new SwingMcpServer(applicationComponent);
+			// Start HTTP server for MCP client access
+			startHttpServer(server);
 		}
 		catch (AWTException e) {
 			LOG.error("Failed to initialize Robot for UI automation: {}", e.getMessage());
@@ -192,64 +143,27 @@ public final class SwingMcpPlugin {
 		registerHttpTools(httpServer, swingMcpServer);
 
 		httpServer.start();
-		LOG.info(HTTP_STARTUP_INFO);
-		System.out.println(HTTP_STARTUP_INFO);
+		LOG.info(SERVER_STARTUP_INFO);
+		System.out.println(SERVER_STARTUP_INFO);
 	}
 
-	private static void startStdioServer(SwingMcpServer swingMcpServer) {
-		try {
-			// Create STDIO transport provider
-			StdioServerTransportProvider transportProvider = new StdioServerTransportProvider(new ObjectMapper());
-			// Create MCP server with capabilities
-			McpSyncServer mcpServer = McpServer.sync(transportProvider)
-							.serverInfo(CODION_SWING_MCP, Version.versionString())
-							.capabilities(ServerCapabilities.builder()
-											.tools(true) // Enable tool support
-											.logging() // Enable logging support
-											.build())
-							.build();
 
-			// Register UI automation tools
-			swingMcpServer.registerTools(mcpServer);
-
-			LOG.info(STDIO_STARTUP_INFO);
-			System.out.println(STDIO_STARTUP_INFO);
-			LOG.info("Available tools: UI automation (keyboard, screenshots, mouse)");
-
-			// The server runs indefinitely on this daemon thread
-			// It will be terminated when the JVM shuts down
-			Thread.currentThread().join();
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			LOG.debug("MCP server thread interrupted");
-		}
-		catch (RuntimeException e) {
-			// This is expected when running without an MCP client connected
-			if (e.getMessage() != null && e.getMessage().contains("Failed to enqueue message")) {
-				LOG.info("No MCP client connected. The server is ready but waiting for a client.");
-				LOG.info("To use MCP, connect with Claude Desktop, Continue.dev, or another MCP client.");
+	private static SwingMcpHttpServer.ToolHandler wrapWithErrorHandling(SwingMcpHttpServer.ToolHandler handler, String errorMessage) {
+		return arguments -> {
+			try {
+				return handler.handle(arguments);
 			}
-			else {
-				LOG.error("MCP Server runtime error: {}", e.getMessage());
+			catch (Exception e) {
+				throw new RuntimeException(errorMessage + ": " + e.getMessage(), e);
 			}
-		}
-		catch (Exception e) {
-			LOG.error("MCP Server error: {}", e.getMessage());
-		}
-	}
-
-	private static boolean isStdioAvailable() {
-		// Check if we're running in an environment where STDIO might be piped
-		// This is a heuristic - MCP clients typically set certain environment variables
-		return System.getenv(MCP_SERVER_NAME) != null || System.getProperty(MCP_STDIO) != null;
+		};
 	}
 
 	private static void registerHttpTools(SwingMcpHttpServer httpServer, SwingMcpServer swingMcpServer) {
 		// Type text tool
 		httpServer.addTool(new HttpTool(
 						TYPE_TEXT, "Type text into the currently focused field",
-						createSchema(TEXT, STRING, "The text to type"),
+						SwingMcpServer.createSchema(TEXT, STRING, "The text to type"),
 						arguments -> {
 							String text = (String) arguments.get(TEXT);
 							swingMcpServer.typeText(text);
@@ -261,7 +175,7 @@ public final class SwingMcpPlugin {
 		// Key combination tool
 		httpServer.addTool(new HttpTool(
 						KEY_COMBO, "Press a key combination using Swing KeyStroke format",
-						createSchema("combo", STRING, "The key combination in Swing format (e.g., 'control alt UP', 'shift INSERT', 'alt A', 'control DOWN')"),
+						SwingMcpServer.createSchema("combo", STRING, "The key combination in Swing format (e.g., 'control alt UP', 'shift INSERT', 'alt A', 'control DOWN')"),
 						arguments -> {
 							String combo = (String) arguments.get("combo");
 							swingMcpServer.keyCombo(combo);
@@ -273,7 +187,7 @@ public final class SwingMcpPlugin {
 		// Tab navigation tool
 		httpServer.addTool(new HttpTool(
 						TAB, "Press Tab to navigate fields",
-						createComplexSchema(COUNT, NUMBER, "Number of times to press Tab (default: 1)",
+						SwingMcpServer.createTwoPropertySchema(COUNT, NUMBER, "Number of times to press Tab (default: 1)",
 										SHIFT, BOOLEAN, "Hold Shift for backward navigation (default: false)"),
 						arguments -> {
 							int count = integerParam(arguments, COUNT, 1);
@@ -285,38 +199,34 @@ public final class SwingMcpPlugin {
 						}
 		));
 
-		// Desktop screenshot tool
-		httpServer.addTool(new HttpTool(
-						SCREENSHOT, "Take a screenshot of the entire desktop and return as base64, don't use this unless specified, use the app screenshot tool by default",
-						createSchema(FORMAT, STRING, IMAGE_FORMAT),
-						arguments -> screenshotToBase64(arguments, swingMcpServer.takeScreenshot())
-		));
 
 		// Application window screenshot tool
 		httpServer.addTool(new HttpTool(
 						APP_SCREENSHOT, "Take a screenshot of just the application window and return as base64",
-						createSchema(FORMAT, STRING, IMAGE_FORMAT),
+						SwingMcpServer.createSchema(FORMAT, STRING, IMAGE_FORMAT + " (tip: use 'jpg' for better compression)"),
 						arguments -> screenshotToBase64(arguments, swingMcpServer.takeApplicationScreenshot())
+		));
+
+		// Active window screenshot tool
+		httpServer.addTool(new HttpTool(
+						ACTIVE_WINDOW_SCREENSHOT, "Take a screenshot of the currently active window (dialog, popup, etc.) and return as base64",
+						SwingMcpServer.createSchema(FORMAT, STRING, IMAGE_FORMAT + " (tip: use 'jpg' for better compression)"),
+						arguments -> screenshotToBase64(arguments, swingMcpServer.takeActiveWindowScreenshot())
 		));
 
 		// Application window bounds tool
 		httpServer.addTool(new HttpTool(
 						APP_WINDOW_BOUNDS, "Get the application window bounds (x, y, width, height)",
 						INPUT_SCHEMA,
-						arguments -> {
-							try {
-								Rectangle bounds = swingMcpServer.getApplicationWindowBounds();
+						wrapWithErrorHandling(arguments -> {
+							Rectangle bounds = swingMcpServer.getApplicationWindowBounds();
 
-								return Map.of(
-												"x", bounds.x,
-												"y", bounds.y,
-												WIDTH, bounds.width,
-												HEIGHT, bounds.height);
-							}
-							catch (Exception e) {
-								throw new RuntimeException("Failed to get application window bounds: " + e.getMessage(), e);
-							}
-						}
+							return Map.of(
+											"x", bounds.x,
+											"y", bounds.y,
+											WIDTH, bounds.width,
+											HEIGHT, bounds.height);
+						}, "Failed to get application window bounds")
 		));
 
 		// Focus application window tool
@@ -366,7 +276,7 @@ public final class SwingMcpPlugin {
 		// Arrow key navigation tool
 		httpServer.addTool(new HttpTool(
 						ARROW, "Press arrow keys for navigation",
-						createComplexSchema("direction", STRING, "Direction: 'up', 'down', 'left', or 'right'",
+						SwingMcpServer.createTwoPropertySchema("direction", STRING, "Direction: 'up', 'down', 'left', or 'right'",
 										COUNT, NUMBER, "Number of times to press (default: 1)"),
 						arguments -> {
 							String direction = (String) arguments.get("direction");
@@ -379,55 +289,35 @@ public final class SwingMcpPlugin {
 	}
 
 	private static Map<String, Object> screenshotToBase64(Map<String, Object> arguments, BufferedImage screenshot) {
-		try {
+		return handleImageOperation(() -> {
 			String format = (String) arguments.getOrDefault(FORMAT, PNG);
+			if ("jpg".equalsIgnoreCase(format)) {
+				format = "jpeg";
+			}
 			String base64 = SwingMcpServer.screenshotToBase64(screenshot, format);
 
-			// Return as a structured object
 			return Map.<String, Object>of(
 							IMAGE, base64,
 							WIDTH, screenshot.getWidth(),
 							HEIGHT, screenshot.getHeight(),
 							FORMAT, format);
+		});
+	}
+
+	private static <T> T handleImageOperation(ImageOperation<T> operation) {
+		try {
+			return operation.execute();
 		}
 		catch (IOException e) {
 			throw new RuntimeException("Failed to encode screenshot: " + e.getMessage(), e);
 		}
 	}
 
-	private static String createSchema(String propName, String propType, String propDesc) {
-		return String.format("""
-						{
-							"type": "object",
-							"properties": {
-								"%s": {
-									"type": "%s",
-									"description": "%s"
-								}
-							},
-							"required": ["%s"]
-						}
-						""", propName, propType, propDesc, propName);
+	@FunctionalInterface
+	private interface ImageOperation<T> {
+		T execute() throws IOException;
 	}
 
-	private static String createComplexSchema(String prop1Name, String prop1Type, String prop1Desc,
-																						String prop2Name, String prop2Type, String prop2Desc) {
-		return String.format("""
-						{
-							"type": "object",
-							"properties": {
-								"%s": {
-									"type": "%s",
-									"description": "%s"
-								},
-								"%s": {
-									"type": "%s",
-									"description": "%s"
-								}
-							}
-						}
-						""", prop1Name, prop1Type, prop1Desc, prop2Name, prop2Type, prop2Desc);
-	}
 
 	private static final class ServerController implements Consumer<Boolean> {
 

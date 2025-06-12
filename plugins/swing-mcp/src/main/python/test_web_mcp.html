@@ -3,116 +3,542 @@
 <head>
     <title>Codion MCP Test Interface</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .container { max-width: 800px; }
-        .tool-button { margin: 5px; padding: 10px; background: #007cba; color: white; border: none; border-radius: 4px; cursor: pointer; }
-        .tool-button:hover { background: #005a87; }
-        .result { margin: 10px 0; padding: 10px; background: #f5f5f5; border-radius: 4px; white-space: pre-wrap; }
-        .input-group { margin: 10px 0; }
-        label { display: inline-block; width: 120px; }
-        input { padding: 5px; width: 200px; }
-        #screenshot { max-width: 100%; border: 1px solid #ccc; margin: 10px 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #007cba;
+        }
+
+        .header h1 {
+            color: #007cba;
+            margin: 0;
+        }
+
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .status.connected {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.disconnected {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .tool-section {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: #fafafa;
+        }
+
+        .tool-section h3 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 1px solid #007cba;
+            padding-bottom: 5px;
+        }
+
+        .tool-button {
+            margin: 3px;
+            padding: 8px 12px;
+            background: #007cba;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background-color 0.2s;
+        }
+
+        .tool-button:hover {
+            background: #005a87;
+        }
+
+        .tool-button:active {
+            background: #004066;
+        }
+
+        .tool-button.secondary {
+            background: #6c757d;
+        }
+
+        .tool-button.secondary:hover {
+            background: #545b62;
+        }
+
+        .tool-button.danger {
+            background: #dc3545;
+        }
+
+        .tool-button.danger:hover {
+            background: #c82333;
+        }
+
+        .input-group {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-group label {
+            min-width: 100px;
+            font-weight: bold;
+        }
+
+        .input-group input {
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            flex: 1;
+            max-width: 200px;
+        }
+
+        .arrow-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 60px);
+            gap: 5px;
+            justify-content: center;
+            margin: 10px 0;
+        }
+
+        .arrow-grid .tool-button {
+            width: 60px;
+            height: 40px;
+            font-size: 16px;
+        }
+
+
+        .result-section {
+            margin-top: 30px;
+        }
+
+        .result {
+            margin: 10px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-left: 4px solid #007cba;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .screenshot-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        #screenshot {
+            max-width: 100%;
+            max-height: 400px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 5px;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .config-section {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .config-section h4 {
+            margin-top: 0;
+            color: #495057;
+        }
+
+        .port-input {
+            max-width: 100px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+<div class="container">
+    <div class="header">
         <h1>Codion MCP Test Interface</h1>
-        <p>Test the MCP integration with your Codion application</p>
-        
-        <h3>Quick Actions</h3>
-        <button class="tool-button" onclick="callTool('app_screenshot')">Take Screenshot</button>
-        <button class="tool-button" onclick="callTool('app_window_bounds')">Get Window Bounds</button>
-        <button class="tool-button" onclick="callTool('focus_window')">Focus Window</button>
-        <button class="tool-button" onclick="callTool('enter')">Press Enter</button>
-        <button class="tool-button" onclick="callTool('tab')">Press Tab</button>
-        
-        <h3>Type Text</h3>
-        <div class="input-group">
-            <label>Text:</label>
-            <input type="text" id="textInput" placeholder="Hello World">
-            <button class="tool-button" onclick="typeText()">Type</button>
-        </div>
-        
-        <h3>Key Combinations</h3>
-        <div class="input-group">
-            <label>Key Combo:</label>
-            <input type="text" id="keyCombo" placeholder="ctrl a">
-            <button class="tool-button" onclick="pressKeyCombo()">Press</button>
-        </div>
-        
-        <h3>Arrow Keys</h3>
-        <button class="tool-button" onclick="arrow('up')">↑ Up</button>
-        <button class="tool-button" onclick="arrow('down')">↓ Down</button>
-        <button class="tool-button" onclick="arrow('left')">← Left</button>
-        <button class="tool-button" onclick="arrow('right')">→ Right</button>
-        
-        <h3>Result</h3>
-        <div id="result" class="result">Ready to test...</div>
-        
-        <img id="screenshot" style="display: none;">
+        <p>Test the Model Context Protocol integration with your Codion application</p>
     </div>
 
-    <script>
-        const baseUrl = 'http://localhost:8080/mcp';
-        
-        async function callTool(toolName, args = {}) {
-            try {
-                const response = await fetch(`${baseUrl}/tools/call`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name: toolName, arguments: args })
-                });
-                
-                const result = await response.json();
-                displayResult(toolName, result);
-                
-                // Handle screenshot display
-                if (toolName.includes('screenshot') && result.content) {
-                    let content = result.content;
-                    if (typeof content === 'string') {
-                        content = JSON.parse(content);
-                    }
-                    if (content.image) {
-                        const img = document.getElementById('screenshot');
-                        img.src = `data:image/${content.format || 'png'};base64,${content.image}`;
-                        img.style.display = 'block';
-                    }
+    <div id="status" class="status disconnected">
+        Connecting to MCP server...
+    </div>
+
+    <div class="config-section">
+        <h4>Server Configuration</h4>
+        <div class="input-group">
+            <label>Server Port:</label>
+            <input type="number" id="serverPort" value="8080" class="port-input" min="1" max="65535">
+            <button class="tool-button secondary" onclick="updateServerUrl()">Update</button>
+            <button class="tool-button" onclick="checkConnection()">Test Connection</button>
+        </div>
+    </div>
+
+    <div class="two-column">
+        <div>
+            <div class="tool-section">
+                <h3>🔧 System Tools</h3>
+                <div class="tool-grid">
+                    <button class="tool-button" onclick="listTools()">List Tools</button>
+                    <button class="tool-button" onclick="callTool('focus_window')">Focus Window</button>
+                    <button class="tool-button" onclick="callTool('list_windows')">List Windows</button>
+                    <button class="tool-button" onclick="callTool('app_window_bounds')">Window Bounds</button>
+                </div>
+            </div>
+
+            <div class="tool-section">
+                <h3>📸 Screenshots</h3>
+                <div class="input-group">
+                    <label>Format:</label>
+                    <label><input type="radio" name="imageFormat" value="png" checked> PNG</label>
+                    <label><input type="radio" name="imageFormat" value="jpg"> JPG</label>
+                </div>
+                <div class="tool-grid">
+                    <button class="tool-button" onclick="takeAppScreenshot()">App Screenshot</button>
+                    <button class="tool-button" onclick="takeActiveWindowScreenshot()">Active Window</button>
+                </div>
+            </div>
+
+            <div class="tool-section">
+                <h3>⌨️ Keyboard Actions</h3>
+                <div class="tool-grid">
+                    <button class="tool-button" onclick="callTool('enter')">Enter</button>
+                    <button class="tool-button" onclick="callTool('escape')">Escape</button>
+                    <button class="tool-button" onclick="callTool('tab')">Tab</button>
+                    <button class="tool-button" onclick="callTool('tab', {shift: true})">Shift+Tab</button>
+                    <button class="tool-button danger" onclick="callTool('clear_field')">Clear Field</button>
+                </div>
+            </div>
+
+            <div class="tool-section">
+                <h3>🖱️ Navigation</h3>
+                <div class="arrow-grid">
+                    <div class="empty"></div>
+                    <button class="tool-button" onclick="arrow('up')">↑</button>
+                    <div class="empty"></div>
+                    <button class="tool-button" onclick="arrow('left')">←</button>
+                    <div class="empty"></div>
+                    <button class="tool-button" onclick="arrow('right')">→</button>
+                    <div class="empty"></div>
+                    <button class="tool-button" onclick="arrow('down')">↓</button>
+                    <div class="empty"></div>
+                </div>
+                <div class="input-group">
+                    <label>Count:</label>
+                    <input type="number" id="arrowCount" value="1" min="1" max="10" style="max-width: 60px;">
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="tool-section">
+                <h3>✏️ Text Input</h3>
+                <div class="input-group">
+                    <label>Text:</label>
+                    <input type="text" id="textInput" placeholder="Hello World">
+                    <button class="tool-button" onclick="typeText()">Type</button>
+                </div>
+                <div style="margin-top: 10px;">
+                    <button class="tool-button secondary" onclick="typePresetText('Hello, World!')">Hello World</button>
+                    <button class="tool-button secondary" onclick="typePresetText('test@example.com')">Email</button>
+                    <button class="tool-button secondary" onclick="typePresetText('2024-01-15')">Date</button>
+                    <button class="tool-button secondary" onclick="typePresetText('Lorem ipsum dolor sit amet')">Lorem
+                    </button>
+                </div>
+            </div>
+
+            <div class="tool-section">
+                <h3>🎹 Key Combinations</h3>
+                <div class="input-group">
+                    <label>Combo:</label>
+                    <input type="text" id="keyCombo" placeholder="ctrl a">
+                    <button class="tool-button" onclick="pressKeyCombo()">Press</button>
+                </div>
+                <div style="margin-top: 10px;">
+                    <button class="tool-button secondary" onclick="pressPresetCombo('ctrl a')">Select All</button>
+                    <button class="tool-button secondary" onclick="pressPresetCombo('ctrl c')">Copy</button>
+                    <button class="tool-button secondary" onclick="pressPresetCombo('ctrl v')">Paste</button>
+                    <button class="tool-button secondary" onclick="pressPresetCombo('ctrl z')">Undo</button>
+                    <button class="tool-button secondary" onclick="pressPresetCombo('alt TAB')">Alt+Tab</button>
+                    <button class="tool-button secondary" onclick="pressPresetCombo('F5')">F5</button>
+                </div>
+            </div>
+
+            <div class="tool-section">
+                <h3>🧪 Test Sequences</h3>
+                <div class="tool-grid">
+                    <button class="tool-button" onclick="runTestSequence('form_fill')">Form Fill Test</button>
+                    <button class="tool-button" onclick="runTestSequence('navigation')">Navigation Test</button>
+                    <button class="tool-button" onclick="runTestSequence('copy_paste')">Copy/Paste Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="result-section">
+        <h3>📋 Results</h3>
+        <div id="result" class="result">Ready to test MCP tools...</div>
+
+        <div class="screenshot-container">
+            <img id="screenshot" style="display: none;" alt="Screenshot">
+        </div>
+    </div>
+</div>
+
+<script>
+    let baseUrl = 'http://localhost:8080/mcp';
+
+    function updateServerUrl() {
+        const port = document.getElementById('serverPort').value;
+        baseUrl = `http://localhost:${port}/mcp`;
+        checkConnection();
+    }
+
+    async function checkConnection() {
+        try {
+            const response = await fetch(`${baseUrl}/status`);
+            const status = await response.json();
+            updateConnectionStatus(true, status);
+        } catch (error) {
+            updateConnectionStatus(false, error.message);
+        }
+    }
+
+    function updateConnectionStatus(connected, data) {
+        const statusDiv = document.getElementById('status');
+        if (connected) {
+            statusDiv.className = 'status connected';
+            statusDiv.textContent = `✅ Connected to ${data.serverName || 'MCP Server'} v${data.serverVersion || 'unknown'} (${data.toolCount || 0} tools)`;
+        } else {
+            statusDiv.className = 'status disconnected';
+            statusDiv.textContent = `❌ Not connected: ${data}`;
+        }
+    }
+
+    async function callTool(toolName, args = {}) {
+        try {
+            const startTime = Date.now();
+            const response = await fetch(`${baseUrl}/tools/call`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({name: toolName, arguments: args})
+            });
+
+            const result = await response.json();
+            const duration = Date.now() - startTime;
+
+            // Handle screenshot display
+            handleScreenshotDisplay(toolName, result);
+
+            // Display result
+            displayResult(toolName, result, args, duration);
+
+        } catch (error) {
+            displayResult(toolName, {error: error.message}, args, 0);
+        }
+    }
+
+    function handleScreenshotDisplay(toolName, result) {
+        const img = document.getElementById('screenshot');
+
+        if (toolName.includes('screenshot') && result.content) {
+            let content = result.content;
+            if (typeof content === 'string') {
+                try {
+                    content = JSON.parse(content);
+                } catch (e) {
+                    return;
                 }
-            } catch (error) {
-                displayResult(toolName, { error: error.message });
+            }
+
+            if (content.image) {
+                img.src = `data:image/${content.format || 'png'};base64,${content.image}`;
+                img.style.display = 'block';
+                img.scrollIntoView({behavior: 'smooth', block: 'center'});
             }
         }
-        
-        function displayResult(toolName, result) {
-            const resultDiv = document.getElementById('result');
-            const timestamp = new Date().toLocaleTimeString();
-            resultDiv.textContent = `[${timestamp}] ${toolName}: ${JSON.stringify(result, null, 2)}`;
+    }
+
+    function displayResult(toolName, result, args = {}, duration = 0) {
+        const resultDiv = document.getElementById('result');
+        const timestamp = new Date().toLocaleTimeString();
+
+        // Create clean display data
+        let displayData = {...result};
+        if (result.content && typeof result.content === 'object' && result.content.image) {
+            displayData.content = {
+                ...result.content,
+                image: `[base64 image data - ${result.content.image.length} chars]`
+            };
         }
-        
-        function typeText() {
-            const text = document.getElementById('textInput').value;
-            callTool('type_text', { text });
+
+        const argsStr = Object.keys(args).length > 0 ? ` with ${JSON.stringify(args)}` : '';
+        const durationStr = duration > 0 ? ` (${duration}ms)` : '';
+
+        resultDiv.textContent = `[${timestamp}] ${toolName}${argsStr}${durationStr}:\n${JSON.stringify(displayData, null, 2)}`;
+        resultDiv.scrollTop = 0;
+    }
+
+    function typeText() {
+        const text = document.getElementById('textInput').value;
+        if (text) {
+            callTool('type_text', {text});
         }
-        
-        function pressKeyCombo() {
-            const combo = document.getElementById('keyCombo').value;
-            callTool('key_combo', { combo });
+    }
+
+    function typePresetText(text) {
+        document.getElementById('textInput').value = text;
+        callTool('type_text', {text});
+    }
+
+    function pressKeyCombo() {
+        const combo = document.getElementById('keyCombo').value;
+        if (combo) {
+            callTool('key_combo', {combo});
         }
-        
-        function arrow(direction) {
-            callTool('arrow', { direction, count: 1 });
+    }
+
+    function pressPresetCombo(combo) {
+        document.getElementById('keyCombo').value = combo;
+        callTool('key_combo', {combo});
+    }
+
+    function arrow(direction) {
+        const count = parseInt(document.getElementById('arrowCount').value) || 1;
+        callTool('arrow', {direction, count});
+    }
+
+    async function listTools() {
+        try {
+            const response = await fetch(`${baseUrl}/tools/list`);
+            const result = await response.json();
+            displayResult('list_tools', result);
+        } catch (error) {
+            displayResult('list_tools', {error: error.message});
         }
-        
-        // Test server connection on load
-        window.onload = async () => {
-            try {
-                const response = await fetch(`${baseUrl}/status`);
-                const status = await response.json();
-                displayResult('server_status', status);
-            } catch (error) {
-                displayResult('server_status', { error: 'Server not running' });
+    }
+
+    async function runTestSequence(sequenceName) {
+        displayResult('test_sequence', {message: `Starting ${sequenceName} test...`});
+
+        try {
+            switch (sequenceName) {
+                case 'form_fill':
+                    await runFormFillTest();
+                    break;
+                case 'navigation':
+                    await runNavigationTest();
+                    break;
+                case 'copy_paste':
+                    await runCopyPasteTest();
+                    break;
             }
-        };
-    </script>
+        } catch (error) {
+            displayResult('test_sequence', {error: `Test failed: ${error.message}`});
+        }
+    }
+
+    async function runFormFillTest() {
+        await callTool('clear_field');
+        await sleep(200);
+        await callTool('type_text', {text: 'John Doe'});
+        await sleep(200);
+        await callTool('tab');
+        await sleep(200);
+        await callTool('type_text', {text: 'john.doe@example.com'});
+        await sleep(200);
+        await callTool('tab');
+        await sleep(200);
+        await callTool('type_text', {text: '2024-01-15'});
+        displayResult('test_sequence', {message: 'Form fill test completed'});
+    }
+
+    async function runNavigationTest() {
+        await callTool('arrow', {direction: 'down', count: 3});
+        await sleep(300);
+        await callTool('arrow', {direction: 'up', count: 2});
+        await sleep(300);
+        await callTool('arrow', {direction: 'right', count: 5});
+        await sleep(300);
+        await callTool('arrow', {direction: 'left', count: 3});
+        displayResult('test_sequence', {message: 'Navigation test completed'});
+    }
+
+    async function runCopyPasteTest() {
+        await callTool('key_combo', {combo: 'ctrl a'});
+        await sleep(200);
+        await callTool('key_combo', {combo: 'ctrl c'});
+        await sleep(200);
+        await callTool('tab');
+        await sleep(200);
+        await callTool('key_combo', {combo: 'ctrl v'});
+        displayResult('test_sequence', {message: 'Copy/paste test completed'});
+    }
+
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function getSelectedImageFormat() {
+        const formatRadio = document.querySelector('input[name="imageFormat"]:checked');
+        return formatRadio ? formatRadio.value : 'png';
+    }
+
+    function takeAppScreenshot() {
+        const format = getSelectedImageFormat();
+        callTool('app_screenshot', {format});
+    }
+
+    function takeActiveWindowScreenshot() {
+        const format = getSelectedImageFormat();
+        callTool('active_window_screenshot', {format});
+    }
+
+    // Initialize on load
+    window.onload = () => {
+        checkConnection();
+    };
+</script>
 </body>
 </html>

@@ -111,6 +111,7 @@ final class SwingMcpHttpServer {
 		server.createContext("/mcp/tools/list", new ListToolsHandler());
 		server.createContext("/mcp/tools/call", new CallToolHandler());
 		server.createContext("/mcp/status", new StatusHandler());
+		
 
 		server.start();
 
@@ -127,6 +128,7 @@ final class SwingMcpHttpServer {
 	}
 
 	private static void sendResponse(HttpExchange exchange, int statusCode, String response) throws IOException {
+		addCorsHeaders(exchange);
 		byte[] responseBytes = response.getBytes(StandardCharsets.UTF_8);
 		exchange.getResponseHeaders().set(CONTENT_TYPE, APPLICATION_JSON);
 		exchange.sendResponseHeaders(statusCode, responseBytes.length);
@@ -135,15 +137,35 @@ final class SwingMcpHttpServer {
 		}
 	}
 
+	private static void addCorsHeaders(HttpExchange exchange) {
+		exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
+		exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+		exchange.getResponseHeaders().set("Access-Control-Allow-Headers", "Content-Type");
+	}
+
+	private static boolean handleCorsPreflightRequest(HttpExchange exchange) throws IOException {
+		if ("OPTIONS".equals(exchange.getRequestMethod())) {
+			addCorsHeaders(exchange);
+			exchange.sendResponseHeaders(200, -1);
+			return true;
+		}
+		return false;
+	}
+
 
 	private static String readRequestBody(HttpExchange exchange) throws IOException {
 		return new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
 	}
 
+
 	private class InitializeHandler implements HttpHandler {
 
 		@Override
 		public void handle(HttpExchange exchange) throws IOException {
+			if (handleCorsPreflightRequest(exchange)) {
+				return;
+			}
+			
 			if (!POST.equals(exchange.getRequestMethod())) {
 				exchange.sendResponseHeaders(405, -1);
 				return;
@@ -168,6 +190,10 @@ final class SwingMcpHttpServer {
 
 		@Override
 		public void handle(HttpExchange exchange) throws IOException {
+			if (handleCorsPreflightRequest(exchange)) {
+				return;
+			}
+			
 			if (!GET.equals(exchange.getRequestMethod())) {
 				exchange.sendResponseHeaders(405, -1);
 				return;
@@ -198,6 +224,10 @@ final class SwingMcpHttpServer {
 
 		@Override
 		public void handle(HttpExchange exchange) throws IOException {
+			if (handleCorsPreflightRequest(exchange)) {
+				return;
+			}
+			
 			if (!POST.equals(exchange.getRequestMethod())) {
 				exchange.sendResponseHeaders(405, -1);
 				return;
@@ -249,6 +279,10 @@ final class SwingMcpHttpServer {
 
 		@Override
 		public void handle(HttpExchange exchange) throws IOException {
+			if (handleCorsPreflightRequest(exchange)) {
+				return;
+			}
+			
 			if (!GET.equals(exchange.getRequestMethod())) {
 				exchange.sendResponseHeaders(405, -1);
 				return;

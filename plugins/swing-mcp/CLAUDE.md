@@ -8,7 +8,7 @@ The swing-mcp module allows:
 - Remote control of Swing applications via keyboard/mouse automation
 - Screenshot capture of windows and dialogs
 - Window enumeration and management
-- Integration with any MCP-compatible client
+- HTTP-based MCP integration for any MCP-compatible client
 
 ## Architecture
 
@@ -16,14 +16,15 @@ The swing-mcp module allows:
 
 1. **SwingMcpPlugin** (`SwingMcpPlugin.java`)
    - Main plugin class that integrates with Codion applications
-   - Starts HTTP server on port 8080 (configurable via `codion.swing.mcp.port`)
-   - Registers with ApplicationStartedEvent
+   - Starts HTTP server on port 8080 (configurable via `codion.swing.mcp.http.port`)
+   - Simplified HTTP-only architecture
    - Uses SLF4J for logging
 
 2. **SwingMcpServer** (`SwingMcpServer.java`)
-   - Core MCP server implementation
+   - Core UI automation server implementation
    - Manages Robot instance for UI automation
-   - Provides all MCP tool implementations
+   - Provides all MCP tool implementations  
+   - HTTP-only, no STDIO complexity
    - Uses Jackson ObjectMapper for JSON serialization
 
 3. **SwingMcpHttpServer** (`SwingMcpHttpServer.java`)
@@ -48,12 +49,8 @@ The swing-mcp module allows:
 - **clear_field** - Select all and delete
 
 ### Screenshot Tools
-- **screenshot** - Desktop screenshot as base64
 - **app_screenshot** - Application window screenshot (works even when obscured!)
-- **window_screenshot** - Screenshot by window title
-- **focused_window_screenshot** - Currently focused window
-- **save_screenshot** - Save screenshot to file
-- **screen_size** - Get screen dimensions
+- **active_window_screenshot** - Currently active window screenshot (dialog, popup, etc.)
 - **app_window_bounds** - Get application window bounds
 
 ### Window Management Tools
@@ -66,11 +63,15 @@ The swing-mcp module allows:
 
 ## Recent Improvements (January 2025)
 
-1. **Replaced System.err.println with SLF4J logging** - Better logging integration
-2. **Implemented direct window painting for screenshots** - Works even when windows are obscured
-3. **Added window hierarchy tracking** - `parentWindow` field for dialogs
-4. **Refactored to use Jackson ObjectMapper** - Consistent JSON handling, no manual escaping
-5. **Added three new window tools** - list_windows, window_screenshot, focused_window_screenshot
+1. **Simplified to HTTP-only architecture** - Removed STDIO complexity for cleaner codebase
+2. **Consolidated error handling patterns** - Centralized error handling utilities across tool operations  
+3. **Replaced System.err.println with SLF4J logging** - Better logging integration
+4. **Implemented direct window painting for screenshots** - Works even when windows are obscured
+5. **Added window hierarchy tracking** - `parentWindow` field for dialogs
+6. **Refactored to use Jackson ObjectMapper** - Consistent JSON handling, no manual escaping
+7. **Added screenshot compression and scaling** - Optimized for AI processing with 1024×768 max size
+8. **Implemented JPG format support** - Better compression ratios for faster AI image processing
+9. **Added headless environment detection in tests** - Prevents dangerous automation in development environments
 
 ## JSON Response Formats
 
@@ -142,10 +143,15 @@ curl -X POST http://localhost:8080/mcp/tools/list \
   -H "Content-Type: application/json" \
   -d '{}'
 
-# Take screenshot
+# Take application screenshot
 curl -X POST http://localhost:8080/mcp/tools/call \
   -H "Content-Type: application/json" \
   -d '{"name": "app_screenshot", "arguments": {"format": "png"}}'
+
+# Take active window screenshot
+curl -X POST http://localhost:8080/mcp/tools/call \
+  -H "Content-Type: application/json" \
+  -d '{"name": "active_window_screenshot", "arguments": {"format": "png"}}'
 ```
 
 ## Building and Testing
@@ -182,8 +188,7 @@ All JSON responses use Jackson ObjectMapper with record classes:
 
 ## Configuration Properties
 
-- `codion.swing.mcp.port` - HTTP server port (default: 8080)
-- `codion.swing.mcp.hostname` - Hostname to bind (default: localhost)
+- `codion.swing.mcp.http.port` - HTTP server port (default: 8080)
 
 ## Known Limitations
 
@@ -216,9 +221,12 @@ All JSON responses use Jackson ObjectMapper with record classes:
 4. Restart Claude Desktop after configuration changes
 
 ### Screenshot Issues
-- Use `app_screenshot` for reliable window capture
-- `screenshot` captures entire desktop (requires window to be visible)
-- Check window title exactly matches for `window_screenshot`
+- Use `app_screenshot` for the main application window (reliable, works even when obscured)
+- Use `active_window_screenshot` for the currently active window (dialog, popup, etc.)
+- Both screenshot tools work even when windows are partially obscured
+- **Format options**: `"png"` (lossless) or `"jpg"` (smaller file size, good for AI processing)
+- JPG format is recommended for better compression and faster AI processing
+- Check that the target window is available and visible
 
 ### Key Combinations Not Working
 - Use lowercase for modifier keys: "control", not "CONTROL"

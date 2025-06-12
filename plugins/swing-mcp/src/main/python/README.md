@@ -7,9 +7,23 @@ This directory contains Python scripts for bridging between Claude Desktop's STD
 ### mcp_bridge.py
 The main bridge script that connects Claude Desktop to Codion applications via MCP.
 
+**Features:**
+- Object-oriented design with proper error handling
+- Type hints for better code clarity
+- Configurable port via `CODION_MCP_PORT` environment variable
+- Structured logging with different log levels
+- Robust HTTP error handling with detailed error messages
+- MCP protocol compliance with latest specification
+- Smart content type detection (images, JSON, text)
+
 **Usage:**
 ```bash
 python3 mcp_bridge.py
+```
+
+**With custom port:**
+```bash
+CODION_MCP_PORT=8081 python3 mcp_bridge.py
 ```
 
 **Claude Desktop Configuration:**
@@ -20,7 +34,9 @@ Add to `~/.config/Claude/claude_desktop_config.json`:
     "codion": {
       "command": "python3",
       "args": ["/path/to/mcp_bridge.py"],
-      "env": {}
+      "env": {
+        "CODION_MCP_PORT": "8080"
+      }
     }
   }
 }

@@ -10,6 +10,7 @@ Codion Change Log
 - SwingMcpServer.takeApplicationScreenshot() reimplemented, bypassing the robot, window no longer has to be in front.
 - SwingMcpServer, window listing tool added and window screenshot functionality improved, refactoring.
 - SwingMcpPlugin.startMcpServer() removed, mcpServer() returning State added.
+- SwingMcpPlugin, major overhaul, refactoring, cleanup and bugfixes.
 ### is.codion.swing.common.model
 - FilterTableModel.Builder.filterModelFactory() renamed filters().
 - ProgressWorker.Builder.maximumProgress() renamed maximum, related renaming.
