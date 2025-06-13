@@ -264,6 +264,10 @@ public final class Configuration {
 		boolean configurationFileRequired = System.getProperty(CONFIGURATION_FILE_REQUIRED, "false").equalsIgnoreCase(Boolean.TRUE.toString());
 		String configurationFilePath = System.getProperty(CONFIGURATION_FILE,
 						System.getProperty("user.home") + FileSystems.getDefault().getSeparator() + "codion.config");
+
+		// Validate configuration file path for security
+		validateConfigurationPath(configurationFilePath);
+
 		if (configurationFilePath.toLowerCase().startsWith(CLASSPATH_PREFIX)) {
 			return loadFromClasspath(configurationFilePath, configurationFileRequired);
 		}
@@ -313,6 +317,40 @@ public final class Configuration {
 		}
 		catch (IOException e) {
 			throw new RuntimeException("Unable to load configuration from file: " + filePath, e);
+		}
+	}
+
+	/**
+	 * Validates configuration file paths to prevent security issues.
+	 * @param filePath the configuration file path to validate
+	 * @throws SecurityException if the path is potentially dangerous
+	 */
+	private static void validateConfigurationPath(String filePath) {
+		if (filePath == null || filePath.trim().isEmpty()) {
+			throw new SecurityException("Configuration file path cannot be null or empty");
+		}
+
+		// Normalize path for consistent validation
+		String normalizedPath = filePath.trim().toLowerCase();
+		// Check for path traversal attempts
+		if (normalizedPath.contains("../") || normalizedPath.contains("..\\") ||
+						normalizedPath.contains("%2e%2e") || normalizedPath.contains("..%2f") ||
+						normalizedPath.contains("..%5c")) {
+			throw new SecurityException("Configuration file path contains path traversal sequences: " + filePath);
+		}
+
+		// For classpath files, additional validation is handled in classpathFilepath()
+		if (!normalizedPath.startsWith(CLASSPATH_PREFIX.toLowerCase())) {
+			// For filesystem paths, check for suspicious patterns
+			if (normalizedPath.startsWith("/etc/") || normalizedPath.startsWith("c:\\windows\\") ||
+							normalizedPath.contains("/proc/") || normalizedPath.contains("/sys/")) {
+				throw new SecurityException("Configuration file path accesses restricted system directories: " + filePath);
+			}
+		}
+
+		// Check path length to prevent potential buffer overflow-style attacks
+		if (filePath.length() > 4096) {
+			throw new SecurityException("Configuration file path exceeds maximum allowed length: " + filePath.length());
 		}
 	}
 
