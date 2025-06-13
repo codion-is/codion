@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.39
+### is.codion.common.core
+- DefaultPropertyStore, synchronization added.
 ### is.codion.swing.common.ui
 - KeyEvents.keyStroke() overloaded with String parameter.
 ### is.codion.plugin.swing.mcp

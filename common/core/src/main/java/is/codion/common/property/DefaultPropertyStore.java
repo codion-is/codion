@@ -168,37 +168,45 @@ final class DefaultPropertyStore implements PropertyStore {
 
 	@Override
 	public <T> PropertyValue<T> value(String propertyName, Function<String, T> decoder, Function<T, String> encoder) {
-		if (propertyValues.containsKey(requireNonNull(propertyName))) {
-			throw new IllegalStateException("A value has already been created for the property '" + propertyName + "'");
-		}
-		DefaultPropertyValue<T> value = new DefaultPropertyValue<>(propertyName, decoder, encoder);
-		propertyValues.put(propertyName, value);
+		synchronized (propertyValues) {
+			if (propertyValues.containsKey(requireNonNull(propertyName))) {
+				throw new IllegalStateException("A value has already been created for the property '" + propertyName + "'");
+			}
+			DefaultPropertyValue<T> value = new DefaultPropertyValue<>(propertyName, decoder, encoder);
+			propertyValues.put(propertyName, value);
 
-		return value;
+			return value;
+		}
 	}
 
 	@Override
 	public <T> PropertyValue<T> value(String propertyName, Function<String, T> decoder, Function<T, String> encoder, T defaultValue) {
-		if (propertyValues.containsKey(requireNonNull(propertyName))) {
-			throw new IllegalStateException("A value has already been created for the property '" + propertyName + "'");
-		}
-		DefaultPropertyValue<T> value = new DefaultPropertyValue<>(propertyName, decoder, encoder, defaultValue);
-		propertyValues.put(propertyName, value);
+		synchronized (propertyValues) {
+			if (propertyValues.containsKey(requireNonNull(propertyName))) {
+				throw new IllegalStateException("A value has already been created for the property '" + propertyName + "'");
+			}
+			DefaultPropertyValue<T> value = new DefaultPropertyValue<>(propertyName, decoder, encoder, defaultValue);
+			propertyValues.put(propertyName, value);
 
-		return value;
+			return value;
+		}
 	}
 
 	@Override
 	public <T> Optional<PropertyValue<T>> propertyValue(String propertyName) {
-		return Optional.ofNullable((PropertyValue<T>) propertyValues.get(requireNonNull(propertyName)));
+		synchronized (propertyValues) {
+			return Optional.ofNullable((PropertyValue<T>) propertyValues.get(requireNonNull(propertyName)));
+		}
 	}
 
 	@Override
 	public void setProperty(String propertyName, @Nullable String value) {
-		if (propertyValues.containsKey(requireNonNull(propertyName))) {
-			throw new IllegalArgumentException("Value bound properties can only be modified through their Value instances");
+		synchronized (propertyValues) {
+			if (propertyValues.containsKey(requireNonNull(propertyName))) {
+				throw new IllegalArgumentException("Value bound properties can only be modified through their Value instances");
+			}
+			properties.setProperty(propertyName, value);
 		}
-		properties.setProperty(propertyName, value);
 	}
 
 	@Override
@@ -230,21 +238,25 @@ final class DefaultPropertyStore implements PropertyStore {
 
 	@Override
 	public void removeAll(Predicate<String> predicate) {
-		Collection<String> propertyKeys = propertyNames(predicate);
-		if (propertyKeys.stream().anyMatch(propertyValues::containsKey)) {
-			throw new IllegalArgumentException("Value bound properties can only be modified through their Value instances");
+		synchronized (propertyValues) {
+			Collection<String> propertyKeys = propertyNames(predicate);
+			if (propertyKeys.stream().anyMatch(propertyValues::containsKey)) {
+				throw new IllegalArgumentException("Value bound properties can only be modified through their Value instances");
+			}
+			propertyKeys.forEach(properties::remove);
 		}
-		propertyKeys.forEach(properties::remove);
 	}
 
 	@Override
 	public void writeToFile(Path propertiesFile) throws IOException {
 		requireNonNull(propertiesFile);
-		if (!Files.exists(propertiesFile) && !propertiesFile.toFile().createNewFile()) {
-			throw new IOException("Unable to create properties file: " + propertiesFile);
-		}
-		try (OutputStream output = Files.newOutputStream(propertiesFile)) {
-			properties.store(output, null);
+		synchronized (propertyValues) {
+			if (!Files.exists(propertiesFile) && !propertiesFile.toFile().createNewFile()) {
+				throw new IOException("Unable to create properties file: " + propertiesFile);
+			}
+			try (OutputStream output = Files.newOutputStream(propertiesFile)) {
+				properties.store(output, null);
+			}
 		}
 	}
 
