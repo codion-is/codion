@@ -35,6 +35,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.concurrent.ConcurrentHashMap.newKeySet;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
@@ -51,7 +52,7 @@ final class SerializationFilter {
 
 	/**
 	 * Creates a serialization filter based on a pattern.
-	 * @param pattern the serilization filter patterns
+	 * @param pattern the serialization filter patterns
 	 */
 	static ObjectInputFilter fromPatterns(String patterns) {
 		ObjectInputFilter filter = ObjectInputFilter.Config.createFilter(patterns);
@@ -62,7 +63,7 @@ final class SerializationFilter {
 
 	/**
 	 * Creates a serialization filter based on a file containing patterns.
-	 * @param patternFile the path to the file containing the serilization filter patterns
+	 * @param patternFile the path to the file containing the serialization filter patterns
 	 */
 	static ObjectInputFilter fromFile(String patternFile) {
 		ObjectInputFilter filter = ObjectInputFilter.Config.createFilter(readPattern(patternFile));
@@ -90,7 +91,7 @@ final class SerializationFilter {
 	static final class DryRun implements ObjectInputFilter {
 
 		private final String patternFile;
-		private final Set<Class<?>> deserializedClasses = new HashSet<>();
+		private final Set<Class<?>> deserializedClasses = newKeySet();
 
 		private DryRun(String patternFile) {
 			if (requireNonNull(patternFile).toLowerCase().startsWith(CLASSPATH_PREFIX)) {
@@ -115,7 +116,7 @@ final class SerializationFilter {
 		/**
 		 * Writes all classnames found during the dry-run to the whitelist file.
 		 */
-		synchronized void writeToFile() {
+		void writeToFile() {
 			try {
 				Files.write(Paths.get(patternFile), deserializedClasses.stream()
 								.map(Class::getName)
@@ -147,14 +148,14 @@ final class SerializationFilter {
 		String path = classpathFilepath(patternFile);
 		try (InputStream patternFileStream = SerializationFilter.class.getClassLoader().getResourceAsStream(path)) {
 			if (patternFileStream == null) {
-				throw new RuntimeException("Seralization pattern file file not found on classpath: " + path);
+				throw new RuntimeException("Serialization pattern file not found on classpath: " + path);
 			}
 			return new BufferedReader(new InputStreamReader(patternFileStream, StandardCharsets.UTF_8))
 							.lines()
 							.collect(toList());
 		}
 		catch (IOException e) {
-			throw new RuntimeException("Unable to load seralization pattern file from classpath: " + patternFile, e);
+			throw new RuntimeException("Unable to load serialization pattern file from classpath: " + patternFile, e);
 		}
 	}
 
