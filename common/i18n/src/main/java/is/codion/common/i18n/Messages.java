@@ -66,7 +66,9 @@ public final class Messages {
 	 * @return cancel mnemonic
 	 */
 	public static char cancelMnemonic() {
-		return get(CANCEL_MNEMONIC).charAt(0);
+		String mnemonic = get(CANCEL_MNEMONIC);
+
+		return mnemonic.isEmpty() ? '\0' : mnemonic.charAt(0);
 	}
 
 	/**
@@ -80,7 +82,9 @@ public final class Messages {
 	 * @return print mnemonic
 	 */
 	public static char printMnemonic() {
-		return get(PRINT_MNEMONIC).charAt(0);
+		String mnemonic = get(PRINT_MNEMONIC);
+
+		return mnemonic.isEmpty() ? '\0' : mnemonic.charAt(0);
 	}
 
 	/**
@@ -115,7 +119,9 @@ public final class Messages {
 	 * @return ok mnemonic
 	 */
 	public static char okMnemonic() {
-		return get(OK_MNEMONIC).charAt(0);
+		String mnemonic = get(OK_MNEMONIC);
+
+		return mnemonic.isEmpty() ? '\0' : mnemonic.charAt(0);
 	}
 
 	/**
@@ -171,7 +177,9 @@ public final class Messages {
 	 * @return clear mnemonic
 	 */
 	public static char clearMnemonic() {
-		return get(CLEAR_MNEMONIC).charAt(0);
+		String mnemonic = get(CLEAR_MNEMONIC);
+
+		return mnemonic.isEmpty() ? '\0' : mnemonic.charAt(0);
 	}
 
 	/**
@@ -192,7 +200,9 @@ public final class Messages {
 	 * @return refresh mnemonic
 	 */
 	public static char refreshMnemonic() {
-		return get(REFRESH_MNEMONIC).charAt(0);
+		String mnemonic = get(REFRESH_MNEMONIC);
+
+		return mnemonic.isEmpty() ? '\0' : mnemonic.charAt(0);
 	}
 
 	/**
