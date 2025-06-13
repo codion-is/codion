@@ -352,7 +352,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
 		List<?> statementValues = emptyList();
 		List<ColumnDefinition<?>> statementColumns = emptyList();
-		PreparedStatement statement = null;
 		Condition condition = null;
 		String deleteQuery = null;
 		synchronized (connection) {
@@ -367,9 +366,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 						statementValues = condition.values();
 						statementColumns = definitions(condition.columns());
 						deleteQuery = deleteQuery(entityDefinition.table(), condition.toString(entityDefinition));
-						statement = prepareStatement(deleteQuery);
-						deleteCount += executeUpdate(statement, deleteQuery, statementColumns, statementValues, DELETE);
-						statement.close();
+						try (PreparedStatement statement = prepareStatement(deleteQuery)) {
+							deleteCount += executeUpdate(statement, deleteQuery, statementColumns, statementValues, DELETE);
+						}
 					}
 				}
 				if (keys.size() != deleteCount) {
@@ -382,9 +381,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 				LOG.error(createLogMessage(deleteQuery, statementValues, statementColumns, exception), exception);
 				throwDatabaseException(exception, DELETE);
 				throw runtimeException(exception);
-			}
-			finally {
-				closeSilently(statement);
 			}
 		}
 	}
@@ -673,32 +669,44 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
 	@Override
 	public boolean optimisticLocking() {
-		return optimisticLocking;
+		synchronized (connection) {
+			return optimisticLocking;
+		}
 	}
 
 	@Override
 	public void optimisticLocking(boolean optimisticLocking) {
-		this.optimisticLocking = optimisticLocking;
+		synchronized (connection) {
+			this.optimisticLocking = optimisticLocking;
+		}
 	}
 
 	@Override
 	public boolean limitForeignKeyReferenceDepth() {
-		return limitForeignKeyReferenceDepth;
+		synchronized (connection) {
+			return limitForeignKeyReferenceDepth;
+		}
 	}
 
 	@Override
 	public void limitForeignKeyReferenceDepth(boolean limitForeignKeyReferenceDepth) {
-		this.limitForeignKeyReferenceDepth = limitForeignKeyReferenceDepth;
+		synchronized (connection) {
+			this.limitForeignKeyReferenceDepth = limitForeignKeyReferenceDepth;
+		}
 	}
 
 	@Override
 	public int defaultQueryTimeout() {
-		return defaultQueryTimeout;
+		synchronized (connection) {
+			return defaultQueryTimeout;
+		}
 	}
 
 	@Override
 	public void defaultQueryTimeout(int defaultQueryTimeout) {
-		this.defaultQueryTimeout = defaultQueryTimeout;
+		synchronized (connection) {
+			this.defaultQueryTimeout = defaultQueryTimeout;
+		}
 	}
 
 	private Collection<Key> insert(Collection<Entity> entities, @Nullable Collection<Entity> insertedEntities) {
@@ -707,7 +715,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 		List<Key> insertedKeys = new ArrayList<>(entities.size());
 		List<Object> statementValues = new ArrayList<>();
 		List<ColumnDefinition<?>> statementColumns = new ArrayList<>();
-		PreparedStatement statement = null;
 		String insertQuery = null;
 		synchronized (connection) {
 			try {
@@ -723,13 +730,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 					}
 
 					insertQuery = insertQuery(entityDefinition.table(), statementColumns);
-					statement = prepareStatement(insertQuery, keyGenerator.returnGeneratedKeys());
-					executeUpdate(statement, insertQuery, statementColumns, statementValues, INSERT);
-					keyGenerator.afterInsert(entity, connection, statement);
+					try (PreparedStatement statement = prepareStatement(insertQuery, keyGenerator.returnGeneratedKeys())) {
+						executeUpdate(statement, insertQuery, statementColumns, statementValues, INSERT);
+						keyGenerator.afterInsert(entity, connection, statement);
+					}
 
 					insertedKeys.add(entity.primaryKey());
-
-					statement.close();
 					statementColumns.clear();
 					statementValues.clear();
 				}
@@ -748,9 +754,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 				throwDatabaseException(exception, INSERT);
 				throw runtimeException(exception);
 			}
-			finally {
-				closeSilently(statement);
-			}
 		}
 	}
 
@@ -760,7 +763,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
 		List<Object> statementValues = new ArrayList<>();
 		List<ColumnDefinition<?>> statementColumns = new ArrayList<>();
-		PreparedStatement statement = null;
 		String updateQuery = null;
 		synchronized (connection) {
 			try {
@@ -782,15 +784,15 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
 						Condition condition = key(entity.originalPrimaryKey());
 						updateQuery = updateQuery(entityDefinition.table(), statementColumns, condition.toString(entityDefinition));
-						statement = prepareStatement(updateQuery);
-						statementColumns.addAll(definitions(condition.columns()));
-						statementValues.addAll(condition.values());
-						int updatedRows = executeUpdate(statement, updateQuery, statementColumns, statementValues, UPDATE);
-						if (updatedRows == 0) {
-							throw new UpdateException("Update did not affect any rows, entityType: " + entityTypeEntities.getKey());
+						try (PreparedStatement statement = prepareStatement(updateQuery)) {
+							statementColumns.addAll(definitions(condition.columns()));
+							statementValues.addAll(condition.values());
+							int updatedRows = executeUpdate(statement, updateQuery, statementColumns, statementValues, UPDATE);
+							if (updatedRows == 0) {
+								throw new UpdateException("Update did not affect any rows, entityType: " + entityTypeEntities.getKey());
+							}
 						}
 
-						statement.close();
 						statementColumns.clear();
 						statementValues.clear();
 					}
@@ -814,9 +816,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 				LOG.error(createLogMessage(updateQuery, statementValues, statementColumns, exception), exception);
 				throwDatabaseException(exception, UPDATE);
 				throw runtimeException(exception);
-			}
-			finally {
-				closeSilently(statement);
 			}
 		}
 	}

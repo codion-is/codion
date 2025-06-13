@@ -51,6 +51,7 @@ Codion Change Log
 - EntityConnection.MAXIMUM_BATCH_SIZE added.
 ### is.codion.framework.db.local
 - LocalEntityConnection, getter/setter combos renamed for consistency.
+- DefaultLocalEntityConnection, resource handling improved.
 ### is.codion.framework.model
 - EntityQueryModel bug fixed, did support including non-selected columns.
 - EntityTableModel.orderQueryBySortOrder() renamed orderQuery().
