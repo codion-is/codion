@@ -442,26 +442,21 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		}
 	}
 
-	private static <T> @Nullable T stringOrCharacterToLowerCase(@Nullable T value) {
+	/**
+	 * Converts String or Character values to lowercase, leaving other types unchanged.
+	 * @param value the value to potentially convert to lowercase
+	 * @param <V> the value type
+	 * @return the value converted to lowercase if it's a String or Character, otherwise unchanged
+	 */
+	private static <V> @Nullable V stringOrCharacterToLowerCase(@Nullable V value) {
 		if (value instanceof String) {
-			return (T) ((String) value).toLowerCase();
+			return (V) ((String) value).toLowerCase();
 		}
 		if (value instanceof Character) {
-			return (T) Character.valueOf(Character.toLowerCase((Character) value));
+			return (V) Character.valueOf(Character.toLowerCase((Character) value));
 		}
 
 		return value;
-	}
-
-	private static <T> @Nullable Comparable<T> stringOrCharacterToLowerCase(@Nullable Comparable<T> comparable) {
-		if (comparable instanceof String) {
-			return (Comparable<T>) ((String) comparable).toLowerCase();
-		}
-		if (comparable instanceof Character) {
-			return (Comparable<T>) Character.valueOf(Character.toLowerCase((Character) comparable));
-		}
-
-		return comparable;
 	}
 
 	private final class AutoEnableListener implements Runnable {
