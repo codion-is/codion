@@ -178,6 +178,35 @@ final class H2Database extends AbstractDatabase {
 		return name.isEmpty() ? "private" : name;
 	}
 
+	/**
+	 * Sanitizes script paths to prevent SQL injection in H2 INIT parameters.
+	 * @param scriptPath the script path to sanitize
+	 * @return sanitized script path safe for use in H2 URL parameters
+	 * @throws SecurityException if the script path contains potential injection attempts
+	 */
+	private static String sanitizeScriptPath(String scriptPath) {
+		if (scriptPath == null || scriptPath.trim().isEmpty()) {
+			throw new SecurityException("Script path cannot be null or empty");
+		}
+		
+		String trimmedPath = scriptPath.trim();
+		
+		// Check for SQL injection attempts
+		if (trimmedPath.contains("'") || trimmedPath.contains("\"") || 
+			trimmedPath.contains(";") || trimmedPath.contains("--") ||
+			trimmedPath.contains("/*") || trimmedPath.contains("*/")) {
+			throw new SecurityException("Script path contains potentially dangerous characters: " + scriptPath);
+		}
+		
+		// Check for path traversal attempts
+		if (trimmedPath.contains("../") || trimmedPath.contains("..\\")) {
+			throw new SecurityException("Script path contains path traversal sequences: " + scriptPath);
+		}
+		
+		// Normalize path separators for consistency
+		return trimmedPath.replace("\\", "/");
+	}
+
 	private void initializeEmbeddedDatabase(List<String> scriptPaths) {
 		if ((isEmbeddedInMemory() || !databaseFileExists())) {
 			Properties properties = new Properties();
@@ -187,7 +216,8 @@ final class H2Database extends AbstractDatabase {
 			}
 			else {
 				for (String scriptPath : scriptPaths) {
-					initialize(properties, ";DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM '" + scriptPath.replace("\\", "/") + "'");
+					String sanitizedPath = sanitizeScriptPath(scriptPath);
+					initialize(properties, ";DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM '" + sanitizedPath + "'");
 				}
 			}
 		}

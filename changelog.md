@@ -11,6 +11,8 @@ Codion Change Log
 ### is.codion.common.db
 - AbstractConnectionPoolWrapper.closeStatisticsCollection() added.
 - SLF4J dependency added, DefaultDatabaseConnection logging improved.
+### is.codion.dbms.h2
+- H2Database, security validation for the H2 database script injection.
 ### is.codion.swing.common.ui
 - KeyEvents.keyStroke() overloaded with String parameter.
 ### is.codion.plugin.swing.mcp
