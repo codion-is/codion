@@ -41,6 +41,8 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel.Builder.domainType() renamed domain().
 - EntityApplicationPanel.exitObserver() renamed exiting().
+### is.codion.framework.bom
+- BOM module added.
 
 ## 0.18.38
 ### is.codion
