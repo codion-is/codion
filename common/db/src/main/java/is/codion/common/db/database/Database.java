@@ -90,9 +90,13 @@ public interface Database extends ConnectionFactory {
 
 	/**
 	 * Specifies the timeout (in seconds) to use when checking if database connections are valid.
+	 * This determines how long to wait for a connection validity check before considering it failed.
+	 * Lower values detect failed connections faster but may timeout prematurely on slow networks.
 	 * <ul>
 	 * <li>Value type: Integer
-	 * <li>Default value: 2
+	 * <li>Default value: 2 seconds
+	 * <li>Property name: codion.db.validityCheckTimeout
+	 * <li>Valid range: 1-30 seconds (typically 2-10 seconds for most networks)
 	 * </ul>
 	 */
 	PropertyValue<Integer> CONNECTION_VALIDITY_CHECK_TIMEOUT = integerValue("codion.db.validityCheckTimeout", 2);

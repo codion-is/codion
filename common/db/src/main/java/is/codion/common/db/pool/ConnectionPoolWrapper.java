@@ -32,47 +32,73 @@ import static is.codion.common.Configuration.integerValue;
  */
 public interface ConnectionPoolWrapper {
 
+	int DEFAULT_MAX_POOL_SIZE_VALUE = 8;
+	int DEFAULT_MIN_POOL_SIZE_VALUE = 4;
+	
+	int DEFAULT_IDLE_TIMEOUT_MS = 60_000;      // 1 minute
+	int DEFAULT_CHECK_OUT_TIMEOUT_MS = 30_000; // 30 seconds
+
 	/**
-	 * Specifies the default maximum connection pool size
+	 * Specifies the default maximum connection pool size.
+	 * This determines the maximum number of concurrent database connections that can be created.
+	 * Higher values allow more concurrent operations but consume more database resources.
 	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 8
+	 * <li>Property name: codion.db.pool.defaultMaximumPoolSize
+	 * <li>Valid range: 1-1000 (typically 5-50 for most applications)
 	 * </ul>
 	 */
-	PropertyValue<Integer> DEFAULT_MAXIMUM_POOL_SIZE = integerValue("codion.db.pool.defaultMaximumPoolSize", 8);
+	PropertyValue<Integer> DEFAULT_MAXIMUM_POOL_SIZE = integerValue("codion.db.pool.defaultMaximumPoolSize", DEFAULT_MAX_POOL_SIZE_VALUE);
 
 	/**
-	 * Specifies the default minimum connection pool size
+	 * Specifies the default minimum connection pool size.
+	 * This determines the number of connections that remain open even when idle.
+	 * Higher values reduce connection creation overhead but consume more database resources.
 	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 4
+	 * <li>Property name: codion.db.pool.defaultMinimumPoolSize
+	 * <li>Valid range: 0 to maximum pool size (typically 2-10 for most applications)
 	 * </ul>
 	 */
-	PropertyValue<Integer> DEFAULT_MINIMUM_POOL_SIZE = integerValue("codion.db.pool.defaultMinimumPoolSize", 4);
+	PropertyValue<Integer> DEFAULT_MINIMUM_POOL_SIZE = integerValue("codion.db.pool.defaultMinimumPoolSize", DEFAULT_MIN_POOL_SIZE_VALUE);
 
 	/**
-	 * Specifies the default idle timeout in milliseconds
+	 * Specifies the default idle timeout in milliseconds.
+	 * This determines how long a connection can remain idle before being eligible for eviction.
+	 * Lower values free up database resources faster but may cause more connection churn.
 	 * <ul>
 	 * <li>Value type: Integer
-	 * <li>Default value: 60.000
+	 * <li>Default value: 60.000 (1 minute)
+	 * <li>Property name: codion.db.pool.defaultIdleTimeout
+	 * <li>Valid range: 1000-3600000 (1 second to 1 hour, typically 30-300 seconds)
 	 * </ul>
 	 */
-	PropertyValue<Integer> DEFAULT_IDLE_TIMEOUT = integerValue("codion.db.pool.defaultIdleTimeout", 60000);
+	PropertyValue<Integer> DEFAULT_IDLE_TIMEOUT = integerValue("codion.db.pool.defaultIdleTimeout", DEFAULT_IDLE_TIMEOUT_MS);
 
 	/**
-	 * Specifies the default maximum connection check out timeout in milliseconds
+	 * Specifies the default maximum connection check out timeout in milliseconds.
+	 * This determines how long to wait for an available connection before throwing an exception.
+	 * Lower values fail faster but may cause premature timeouts under load.
 	 * <ul>
 	 * <li>Value type: Integer
-	 * <li>Default value: 30.000
+	 * <li>Default value: 30.000 (30 seconds)
+	 * <li>Property name: codion.db.pool.defaultCheckOutTimeout
+	 * <li>Valid range: 1000-300000 (1 second to 5 minutes, typically 10-60 seconds)
 	 * </ul>
 	 */
-	PropertyValue<Integer> DEFAULT_CHECK_OUT_TIMEOUT = integerValue("codion.db.pool.defaultCheckOutTimeout", 30000);
+	PropertyValue<Integer> DEFAULT_CHECK_OUT_TIMEOUT = integerValue("codion.db.pool.defaultCheckOutTimeout", DEFAULT_CHECK_OUT_TIMEOUT_MS);
 
 	/**
-	 * Specifies whether connections should be validated when checked out from the pool
+	 * Specifies whether connections should be validated when checked out from the pool.
+	 * Enables additional safety by checking connection validity before use, at the cost of performance.
+	 * Recommended for production environments with unreliable network connections.
 	 * <ul>
 	 * <li>Value type: Boolean
-	 * <li>Default value: false
+	 * <li>Default value: false (disabled for performance)
+	 * <li>Property name: codion.db.pool.validateConnectionsOnCheckout
+	 * <li>Performance impact: Small overhead per connection checkout (~1-5ms)
 	 * </ul>
 	 */
 	PropertyValue<Boolean> VALIDATE_CONNECTIONS_ON_CHECKOUT = booleanValue("codion.db.pool.validateConnectionsOnCheckout", false);
@@ -99,7 +125,7 @@ public interface ConnectionPoolWrapper {
 	void close();
 
 	/**
-	 * Retrives usage statistics for the connection pool since time {@code since}.
+	 * Retrieves usage statistics for the connection pool since time {@code since}.
 	 * @param since the time from which statistics should be retrieved
 	 * @return connection pool usage statistics
 	 */
@@ -111,7 +137,8 @@ public interface ConnectionPoolWrapper {
 	void resetStatistics();
 
 	/**
-	 * @return true if pool usage statistics for a snapshot should be collected.
+	 * Returns true if snapshot statistics are being collected.
+	 * @return true if pool usage statistics for a snapshot should be collected
 	 * @see #statistics(long)
 	 * @see ConnectionPoolStatistics#snapshot()
 	 */
@@ -126,7 +153,8 @@ public interface ConnectionPoolWrapper {
 	void setCollectSnapshotStatistics(boolean collectSnapshotStatistics);
 
 	/**
-	 * @return true if connection check out times should be collected.
+	 * Returns true if connection check out times are being collected.
+	 * @return true if connection check out times should be collected
 	 * @see #statistics(long)
 	 */
 	boolean isCollectCheckOutTimes();
@@ -139,60 +167,79 @@ public interface ConnectionPoolWrapper {
 	void setCollectCheckOutTimes(boolean collectCheckOutTimes);
 
 	/**
+	 * Returns the pool cleanup interval in milliseconds.
+	 * This determines how often the pool checks for and removes idle/expired connections.
 	 * @return the pool cleanup interval in milliseconds
 	 */
 	int getCleanupInterval();
 
 	/**
-	 * @param poolCleanupInterval the pool cleanup interval in milliseconds
+	 * Sets the pool cleanup interval in milliseconds.
+	 * Controls how frequently the pool performs maintenance operations like removing expired connections.
+	 * @param poolCleanupInterval the pool cleanup interval in milliseconds (typically 30000-300000)
+	 * @throws IllegalArgumentException if the value is less than 1000
 	 */
 	void setCleanupInterval(int poolCleanupInterval);
 
 	/**
-	 * @return the pooled connection timeout in milliseconds, that is, the time that needs
-	 * to pass before an idle connection can be harvested
+	 * Returns the connection idle timeout in milliseconds.
+	 * This is the time a connection can remain idle before being eligible for eviction.
+	 * @return the pooled connection timeout in milliseconds
 	 */
 	int getIdleTimeout();
 
 	/**
-	 * @param idleTimeout the pooled connection timeout in milliseconds, that is, the time that needs
-	 * to pass before an idle connection can be harvested
+	 * Sets the connection idle timeout in milliseconds.
+	 * Connections idle longer than this timeout may be closed to free up database resources.
+	 * @param idleTimeout the pooled connection timeout in milliseconds (typically 30000-300000)
+	 * @throws IllegalArgumentException if the value is less than 1000
 	 */
 	void setIdleTimeout(int idleTimeout);
 
 	/**
+	 * Returns the minimum number of connections to keep in the pool.
+	 * These connections remain open even when idle to reduce connection creation overhead.
 	 * @return the minimum number of connections to keep in the pool
 	 */
 	int getMinimumPoolSize();
 
 	/**
-	 * @param minimumPoolSize the minimum number of connections to keep in the pool
+	 * Sets the minimum number of connections to keep in the pool.
+	 * Higher values reduce latency but consume more database resources.
+	 * @param minimumPoolSize the minimum number of connections to keep in the pool (typically 1-10)
 	 * @throws IllegalArgumentException if the value is less than 0 or larger than maximum pool size
 	 */
 	void setMinimumPoolSize(int minimumPoolSize);
 
 	/**
+	 * Returns the maximum number of connections this pool can create.
+	 * This limits the total number of concurrent database connections to prevent resource exhaustion.
 	 * @return the maximum number of connections this pool can create
 	 */
 	int getMaximumPoolSize();
 
 	/**
 	 * Sets the maximum number of connections to keep in this pool.
+	 * Higher values support more concurrent operations but consume more database resources.
 	 * Note that if the current number of connections exceeds this value when set, excess connections
 	 * are not actively discarded.
-	 * @param maximumPoolSize the maximum number of connections this pool can create
+	 * @param maximumPoolSize the maximum number of connections this pool can create (typically 5-50)
 	 * @throws IllegalArgumentException if the value is less than 1 or less than minimum pool size
 	 */
 	void setMaximumPoolSize(int maximumPoolSize);
 
 	/**
+	 * Returns the maximum time to wait for a connection checkout in milliseconds.
+	 * This prevents threads from waiting indefinitely when the pool is exhausted.
 	 * @return the maximum number of milliseconds to retry connection checkout before throwing an exception
 	 */
 	int getMaximumCheckOutTime();
 
 	/**
-	 * @param maximumCheckOutTime the maximum number of milliseconds to retry connection checkout before throwing an exception,
-	 * note that this also modifies the new connection threshold, keeping its value to 1/4 of this one
+	 * Sets the maximum time to wait for a connection checkout in milliseconds.
+	 * Lower values fail faster under load, higher values may cause application timeouts.
+	 * Note that this also modifies the new connection threshold, keeping its value to 1/4 of this one.
+	 * @param maximumCheckOutTime the maximum number of milliseconds to retry connection checkout (typically 10000-60000)
 	 * @throws IllegalArgumentException if the value is less than 0
 	 */
 	void setMaximumCheckOutTime(int maximumCheckOutTime);

@@ -44,6 +44,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 
 	private static final String GET_CONNECTION = "getConnection";
 	private static final String CLOSE = "close";
+	private static final int NANOS_TO_MILLIS = 1_000_000;
 
 	private static final boolean VALIDATE = VALIDATE_CONNECTIONS_ON_CHECKOUT.getOrThrow();
 
@@ -64,10 +65,11 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 	 */
 	protected AbstractConnectionPoolWrapper(ConnectionFactory connectionFactory, User user, DataSource dataSource,
 																					Function<DataSource, T> poolFactory) {
-		this.connectionFactory = requireNonNull(connectionFactory);
-		this.user = requireNonNull(user);
+		this.connectionFactory = requireNonNull(connectionFactory, "connectionFactory");
+		this.user = requireNonNull(user, "user");
 		this.counter = new DefaultConnectionPoolCounter(this);
-		this.connectionPool = requireNonNull(poolFactory).apply(createDataSourceProxy(requireNonNull(dataSource)));
+		this.connectionPool = requireNonNull(poolFactory, "poolFactory")
+						.apply(createDataSourceProxy(requireNonNull(dataSource, "dataSource")));
 	}
 
 	@Override
@@ -77,7 +79,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 
 	@Override
 	public final Connection connection(User user) {
-		requireNonNull(user);
+		requireNonNull(user, "user");
 		checkConnectionPoolCredentials(user);
 		long startTime = counter.isCollectCheckOutTimes() ? System.nanoTime() : 0;
 		try {
@@ -91,7 +93,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 		}
 		finally {
 			if (counter.isCollectCheckOutTimes() && startTime > 0L) {
-				counter.addCheckOutTime((int) (System.nanoTime() - startTime) / 1_000_000);
+				counter.addCheckOutTime((int) (System.nanoTime() - startTime) / NANOS_TO_MILLIS);
 			}
 		}
 	}

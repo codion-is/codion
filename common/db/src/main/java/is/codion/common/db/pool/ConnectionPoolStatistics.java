@@ -97,7 +97,7 @@ public interface ConnectionPoolStatistics {
 	int failedRequestsPerSecond();
 
 	/**
-	 * @return the avarage check-out time in ms
+	 * @return the average check-out time in ms
 	 */
 	long averageTime();
 
