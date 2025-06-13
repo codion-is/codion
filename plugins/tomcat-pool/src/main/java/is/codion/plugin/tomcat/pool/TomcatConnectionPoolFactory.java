@@ -56,10 +56,11 @@ public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory 
 		properties.setTestOnBorrow(true);
 		properties.setValidator(new ConnectionValidator(connectionFactory));
 		properties.setMaxActive(ConnectionPoolWrapper.DEFAULT_MAXIMUM_POOL_SIZE.getOrThrow());
-		properties.setInitialSize(ConnectionPoolWrapper.DEFAULT_MAXIMUM_POOL_SIZE.getOrThrow());
+		properties.setInitialSize(ConnectionPoolWrapper.DEFAULT_MINIMUM_POOL_SIZE.getOrThrow());
 		properties.setMaxIdle(ConnectionPoolWrapper.DEFAULT_MAXIMUM_POOL_SIZE.getOrThrow());
 		properties.setMinIdle(ConnectionPoolWrapper.DEFAULT_MINIMUM_POOL_SIZE.getOrThrow());
 		properties.setSuspectTimeout(ConnectionPoolWrapper.DEFAULT_IDLE_TIMEOUT.getOrThrow() / 1000);
+		properties.setMaxWait(ConnectionPoolWrapper.DEFAULT_CHECK_OUT_TIMEOUT.getOrThrow());
 
 		return new DataSource(properties);
 	}

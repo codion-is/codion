@@ -56,6 +56,7 @@ public final class HikariConnectionPoolFactory implements ConnectionPoolFactory 
 		config.setMaximumPoolSize(ConnectionPoolWrapper.DEFAULT_MAXIMUM_POOL_SIZE.getOrThrow());
 		config.setMinimumIdle(ConnectionPoolWrapper.DEFAULT_MINIMUM_POOL_SIZE.getOrThrow());
 		config.setIdleTimeout(ConnectionPoolWrapper.DEFAULT_IDLE_TIMEOUT.getOrThrow());
+		config.setConnectionTimeout(ConnectionPoolWrapper.DEFAULT_CHECK_OUT_TIMEOUT.getOrThrow());
 
 		return config;
 	}

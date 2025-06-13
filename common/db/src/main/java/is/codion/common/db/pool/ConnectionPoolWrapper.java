@@ -59,6 +59,15 @@ public interface ConnectionPoolWrapper {
 	PropertyValue<Integer> DEFAULT_IDLE_TIMEOUT = integerValue("codion.db.pool.defaultIdleTimeout", 60000);
 
 	/**
+	 * Specifies the default maximum connection check out timeout in milliseconds
+	 * <ul>
+	 * <li>Value type: Integer
+	 * <li>Default value: 30.000
+	 * </ul>
+	 */
+	PropertyValue<Integer> DEFAULT_CHECK_OUT_TIMEOUT = integerValue("codion.db.pool.defaultCheckOutTimeout", 30000);
+
+	/**
 	 * Fetches a connection from the pool. Close the connection to return it to the pool.
 	 * @param user the user credentials
 	 * @return a database connection retrieved from the pool
