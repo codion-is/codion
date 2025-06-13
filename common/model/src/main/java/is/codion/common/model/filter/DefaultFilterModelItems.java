@@ -186,7 +186,9 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 
 	@Override
 	public void replace(Map<R, R> items) {
-		// There is practically a carbon copy of this method in DefaultFilterComboBoxModel, fix both please
+		// Note: Similar logic exists in DefaultFilterComboBoxModel in swing-common-model module.
+		// Both implementations handle item replacement with filtering but have different collection types
+		// and threading requirements, making extraction to a common utility non-trivial.
 		requireNonNull(items).values().forEach(this::validate);
 		synchronized (lock) {
 			Map<R, R> toReplace = new HashMap<>(items);
@@ -251,15 +253,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	public void filter() {
 		List<R> selectedItems = selection.items().get();
 		synchronized (lock) {
-			visible.items.addAll(filtered.items);
-			filtered.items.clear();
-			for (ListIterator<R> visibleItemsIterator = visible.items.listIterator(); visibleItemsIterator.hasNext(); ) {
-				R item = visibleItemsIterator.next();
-				if (!visible.predicate.test(item)) {
-					visibleItemsIterator.remove();
-					filtered.items.add(item);
-				}
-			}
+			filterIncremental();
 			if (sort.sorted()) {
 				visible.items.sort(sort);
 			}
@@ -280,6 +274,35 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 				visible.notifyChanges();
 			}
 		}
+	}
+
+	/**
+	 * Performs incremental filtering by only moving items between visible and filtered collections
+	 * instead of rebuilding the entire visible list. This optimizes performance for large datasets
+	 * by avoiding unnecessary operations on items that are already in the correct collection.
+	 */
+	private void filterIncremental() {
+		// First pass: move items from filtered to visible if they now pass the predicate
+		filtered.items.removeIf(item -> {
+			if (visible.predicate.test(item)) {
+				visible.items.add(item);
+
+				return true; // Remove from filtered
+			}
+
+			return false; // Keep in filtered
+		});
+
+		// Second pass: move items from visible to filtered if they no longer pass the predicate
+		visible.items.removeIf(item -> {
+			if (!visible.predicate.test(item)) {
+				filtered.items.add(item);
+
+				return true; // Remove from visible
+			}
+
+			return false; // Keep in visible
+		});
 	}
 
 	private void merge(Collection<R> items) {

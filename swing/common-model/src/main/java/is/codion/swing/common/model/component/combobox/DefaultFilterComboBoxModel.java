@@ -480,7 +480,9 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		public void replace(Map<T, T> items) {
-			// There is practically a carbon copy of this method in DefaultFilterTableItems, fix both please
+			// Note: Similar logic exists in DefaultFilterModelItems in common-model module.
+			// Both implementations handle item replacement with filtering but have different collection types
+			// and threading requirements, making extraction to a common utility non-trivial.
 			requireNonNull(items);
 			synchronized (lock) {
 				Map<T, T> replacements = new HashMap<>(items);
