@@ -279,7 +279,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 		}
 		catch (SQLException e) {
 			LOG.error("Unable to disable auto commit on connection, assuming invalid state", e);
-			throw new DatabaseException(e, "Connection invalid during instantiation");
+			throw new DatabaseException(e, "Failed to configure database connection: Unable to disable auto-commit");
 		}
 	}
 
@@ -295,7 +295,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 			return META_DATA_USER_CACHE.computeIfAbsent(connection.getMetaData().getUserName(), User::user);
 		}
 		catch (SQLException e) {
-			throw new DatabaseException(e, "Exception while trying to retrieve username from meta data");
+			throw new DatabaseException(e, "Failed to retrieve database username from connection metadata. Connection may be invalid or database may not support getUserName()");
 		}
 	}
 }

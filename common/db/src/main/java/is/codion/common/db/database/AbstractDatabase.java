@@ -72,7 +72,7 @@ public abstract class AbstractDatabase implements Database {
 
 	private final Map<String, ConnectionPoolWrapper> connectionPools = new HashMap<>();
 	private final int validityCheckTimeout = CONNECTION_VALIDITY_CHECK_TIMEOUT.getOrThrow();
-	private final	@Nullable Integer transactionIsolation = TRANSACTION_ISOLATION.get();
+	private final @Nullable Integer transactionIsolation = TRANSACTION_ISOLATION.get();
 	private final DefaultQueryCounter queryCounter = new DefaultQueryCounter();
 	private final String url;
 
@@ -151,7 +151,8 @@ public abstract class AbstractDatabase implements Database {
 		requireNonNull(connectionPoolFactory);
 		requireNonNull(poolUser);
 		if (connectionPools.containsKey(poolUser.username().toLowerCase())) {
-			throw new IllegalStateException("Connection pool for user " + poolUser.username() + " has already been created");
+			throw new IllegalStateException("Connection pool for user '" + poolUser.username() +
+							"' already exists. Use connectionPool(String) to retrieve existing pool.");
 		}
 		ConnectionPoolWrapper connectionPool = connectionPoolFactory.createConnectionPool(this, poolUser);
 		connectionPools.put(poolUser.username().toLowerCase(), connectionPool);
@@ -168,7 +169,8 @@ public abstract class AbstractDatabase implements Database {
 	public final ConnectionPoolWrapper connectionPool(String username) {
 		ConnectionPoolWrapper connectionPoolWrapper = connectionPools.get(requireNonNull(username).toLowerCase());
 		if (connectionPoolWrapper == null) {
-			throw new IllegalArgumentException("No connection pool available for user: " + username);
+			throw new IllegalArgumentException("No connection pool found for user '" + username +
+							"'. Available pools: " + connectionPools.keySet());
 		}
 
 		return connectionPoolWrapper;
@@ -211,7 +213,8 @@ public abstract class AbstractDatabase implements Database {
 
 	@Override
 	public String sequenceQuery(String sequenceName) {
-		throw new UnsupportedOperationException("Sequence support is not implemented for database: " + getClass().getSimpleName());
+		throw new UnsupportedOperationException("Sequence support is not implemented for database type: " + getClass().getSimpleName() +
+						". Use auto-increment columns or implement sequenceQuery() method.");
 	}
 
 	@Override
@@ -272,7 +275,8 @@ public abstract class AbstractDatabase implements Database {
 				}
 				else if (!databaseUrl.equals(AbstractDatabase.instance.url())) {
 					if (!URL_SCOPED_INSTANCE.getOrThrow()) {
-						throw new DatabaseException("Database URL has changed from " + AbstractDatabase.instance.url() + " to " + databaseUrl);
+						throw new DatabaseException("Database URL conflict: Cannot change from '" + AbstractDatabase.instance.url() +
+										"' to '" + databaseUrl + "'. Enable 'codion.db.urlScopedInstance' to allow multiple database URLs.");
 					}
 					AbstractDatabase.instance = cleanupAndCreateInstance(databaseUrl, AbstractDatabase.instance);
 				}

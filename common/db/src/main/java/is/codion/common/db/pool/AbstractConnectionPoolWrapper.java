@@ -87,7 +87,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 		}
 		catch (SQLException e) {
 			counter.incrementFailedRequestCounter();
-			throw new DatabaseException(e);
+			throw new DatabaseException(e, "Failed to fetch connection from pool for user: " + user.username());
 		}
 		finally {
 			if (counter.isCollectCheckOutTimes() && startTime > 0L) {
@@ -132,7 +132,8 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 				connection.close();
 			}
 			catch (SQLException ignored) {}
-			throw new SQLException("Connection retrieved from pool is invalid");
+			throw new SQLException("Connection validation failed: Retrieved invalid connection from pool '" +
+							user.username() + "' at " + connectionFactory.url());
 		}
 
 		return connection;
