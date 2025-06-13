@@ -24,7 +24,52 @@ import static is.codion.common.resource.MessageBundle.messageBundle;
 import static java.util.ResourceBundle.getBundle;
 
 /**
- * A class providing shared i18n messages.
+ * A class providing shared internationalization messages for common UI elements and actions
+ * throughout the Codion framework.
+ * <p>
+ * This class provides localized messages for standard UI operations such as Cancel, OK, Clear,
+ * Refresh, and other common actions. Messages are loaded from resource bundles and support
+ * multiple locales with automatic fallback to the default locale when translations are not available.
+ * <p>
+ * <strong>Thread Safety:</strong><br>
+ * This class is thread-safe. All methods are static and the underlying MessageBundle
+ * handles concurrent access safely.
+ * <p>
+ * <strong>Supported Locales:</strong><br>
+ * <ul>
+ * <li>English (default) - Messages.properties</li>
+ * <li>Icelandic (is_IS) - Messages_is_IS.properties</li>
+ * </ul>
+ * <p>
+ * <strong>Usage Examples:</strong><br>
+ * <pre>
+ * // Get localized messages
+ * String cancelText = Messages.cancel();
+ * String okText = Messages.ok();
+ * 
+ * // Get mnemonics for keyboard navigation
+ * char cancelMnemonic = Messages.cancelMnemonic();
+ * char clearMnemonic = Messages.clearMnemonic();
+ * 
+ * // Use in UI components
+ * JButton cancelButton = new JButton(Messages.cancel());
+ * cancelButton.setMnemonic(Messages.cancelMnemonic());
+ * </pre>
+ * <p>
+ * <strong>Adding New Messages:</strong><br>
+ * To add new messages:
+ * <ol>
+ * <li>Add the key constant to this class</li>
+ * <li>Add the corresponding entries to all Messages*.properties files</li>
+ * <li>Add public static methods to access the messages</li>
+ * <li>Update this documentation to reflect the new messages</li>
+ * </ol>
+ * <p>
+ * <strong>Mnemonic Guidelines:</strong><br>
+ * Mnemonics should be unique within each locale to avoid keyboard navigation conflicts.
+ * If a mnemonic string is empty, the corresponding method returns the null character ('\0').
+ *
+ * @see is.codion.common.resource.MessageBundle
  */
 public final class Messages {
 

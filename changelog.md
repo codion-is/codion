@@ -17,6 +17,7 @@ Codion Change Log
 - DefaultFilterModelItems.filterIncremental() added.
 ### is.codion.common.i18n
 - Messages, mnemonic bounds checking added.
+- Messages, icelandic Clear mnemonic fixed.
 ### is.codion.dbms.h2
 - H2Database, security validation for the H2 database script injection.
 ### is.codion.swing.common.ui
