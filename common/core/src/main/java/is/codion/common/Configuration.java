@@ -46,6 +46,9 @@ public final class Configuration {
 	/**
 	 * Specifies the main configuration file.<br>
 	 * Prefix with 'classpath:' to indicate that the configuration file is on the classpath.
+	 * <p>
+	 * Note: When using classpath prefix, the configuration file must be located in the classpath root
+	 * (not in subdirectories) to ensure accessibility across module boundaries.
 	 * <ul>
 	 * <li>Value type: String
 	 * <li>Default value: null
@@ -268,6 +271,15 @@ public final class Configuration {
 		return loadFromFile(configurationFilePath, configurationFileRequired);
 	}
 
+	/**
+	 * Loads configuration from classpath. The file must be in the classpath root
+	 * to ensure module system compatibility.
+	 * @param filePath the classpath file path (with classpath: prefix)
+	 * @param configurationRequired whether the configuration file is required
+	 * @return the property store
+	 * @throws ConfigurationFileNotFoundException if required file not found
+	 * @throws IllegalArgumentException if file path contains subdirectories
+	 */
 	static PropertyStore loadFromClasspath(String filePath, boolean configurationRequired) {
 		String filepath = classpathFilepath(filePath);
 		try (InputStream configurationFileStream = Configuration.class.getClassLoader().getResourceAsStream(filepath)) {
@@ -291,7 +303,7 @@ public final class Configuration {
 			Path file = Path.of(filePath);
 			if (!Files.exists(file)) {
 				if (configurationRequired) {
-					throw new RuntimeException("Required configuration file not found: " + filePath);
+					throw new ConfigurationFileNotFoundException(filePath);
 				}
 
 				return PropertyStore.propertyStore();
@@ -300,7 +312,7 @@ public final class Configuration {
 			return PropertyStore.propertyStore(file);
 		}
 		catch (IOException e) {
-			throw new RuntimeException("Unable to load configuration from file: " + filePath);
+			throw new RuntimeException("Unable to load configuration from file: " + filePath, e);
 		}
 	}
 
@@ -310,7 +322,10 @@ public final class Configuration {
 			path = path.substring(1);
 		}
 		if (path.contains("/")) {
-			throw new IllegalArgumentException("Configuration files must be in the classpath root");
+			throw new IllegalArgumentException(
+							"Configuration files must be in the classpath root to ensure " +
+											"accessibility across module boundaries. Use a filename without " +
+											"path separators (e.g. 'app.config' instead of 'config/app.config').");
 		}
 
 		return path;
@@ -322,7 +337,9 @@ public final class Configuration {
 	public static final class ConfigurationFileNotFoundException extends RuntimeException {
 
 		private ConfigurationFileNotFoundException(String filePath) {
-			super("Required configuration file not found on classpath: " + filePath);
+			super(filePath.toLowerCase().startsWith(CLASSPATH_PREFIX)
+							? "Required configuration file not found on classpath: " + filePath
+							: "Required configuration file not found: " + filePath);
 		}
 	}
 }
