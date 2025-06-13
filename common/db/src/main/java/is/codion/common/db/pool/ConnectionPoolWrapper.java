@@ -24,6 +24,7 @@ import is.codion.common.user.User;
 
 import java.sql.Connection;
 
+import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.Configuration.integerValue;
 
 /**
@@ -66,6 +67,15 @@ public interface ConnectionPoolWrapper {
 	 * </ul>
 	 */
 	PropertyValue<Integer> DEFAULT_CHECK_OUT_TIMEOUT = integerValue("codion.db.pool.defaultCheckOutTimeout", 30000);
+
+	/**
+	 * Specifies whether connections should be validated when checked out from the pool
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
+	 * </ul>
+	 */
+	PropertyValue<Boolean> VALIDATE_CONNECTIONS_ON_CHECKOUT = booleanValue("codion.db.pool.validateConnectionsOnCheckout", false);
 
 	/**
 	 * Fetches a connection from the pool. Close the connection to return it to the pool.
