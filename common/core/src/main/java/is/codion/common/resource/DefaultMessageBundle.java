@@ -19,7 +19,6 @@
 package is.codion.common.resource;
 
 import java.util.Enumeration;
-import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
@@ -49,8 +48,10 @@ final class DefaultMessageBundle extends ResourceBundle implements MessageBundle
 	protected Object handleGetObject(String key) {
 		requireNonNull(key);
 		if (!bundle.containsKey(key)) {
-			throw new MissingResourceException("Can't find resource for bundle " +
-							baseBundleName + ", key " + key, baseBundleName, key);
+			// Provide a fallback to prevent application crashes
+			// Return formatted key to make missing resources obvious
+			// Format: "!missing_key!" - clearly indicates missing resource
+			return RESOURCES.getString(baseBundleName, key, "!" + key + "!");
 		}
 
 		return RESOURCES.getString(baseBundleName, key, bundle.getString(key));

@@ -24,13 +24,17 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * An overridable resource bundle.
+ * <p>
+ * Unlike standard {@link ResourceBundle}, missing resource keys do not throw exceptions.
+ * Instead, missing keys return a formatted fallback string in the format {@code "!missing_key!"}
+ * to make missing resources obvious while preventing application crashes.
  * @see Resources
  */
 public interface MessageBundle {
 
 	/**
 	 * @param key the key
-	 * @return the string associated with the given key
+	 * @return the string associated with the given key, or {@code "!key!"} if the key is not found
 	 */
 	String getString(String key);
 
