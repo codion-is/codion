@@ -25,6 +25,7 @@ import java.util.function.Consumer;
 
 /**
  * A class for linking two values.
+ * Thread safety: Uses volatile flags to prevent update cycles in concurrent environments.
  * @param <T> the type of the value
  */
 final class ValueLink<T> {
@@ -38,8 +39,8 @@ final class ValueLink<T> {
 	private final LinkedValidator<T> linkedValidator;
 	private final LinkedValidator<T> originalValidator;
 
-	private boolean updatingLinked = false;
-	private boolean updatingOriginal = false;
+	private volatile boolean updatingLinked = false;
+	private volatile boolean updatingOriginal = false;
 
 	/**
 	 * Creates a new ValueLink

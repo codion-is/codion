@@ -39,6 +39,7 @@ import java.util.Collection;
  * state.set(null); //translates to false
  * }
  * A factory for {@link State} instances.
+ * <p>All implementations are thread-safe and support concurrent access.</p>
  * @see #state()
  * @see #builder()
  */

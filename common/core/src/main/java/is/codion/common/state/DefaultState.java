@@ -27,6 +27,10 @@ import org.jspecify.annotations.Nullable;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
+/**
+ * Thread-safe implementation of State.
+ * All state operations are synchronized on the internal value.
+ */
 final class DefaultState implements State {
 
 	private final Value<Boolean> value;

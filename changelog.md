@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.common.core
 - DefaultPropertyStore, synchronization added.
 - Configuration, error handling and javadocs improved.
+- ValueLink.updatingLinked and updatingOriginal now volatile, javadocs improved.
 ### is.codion.swing.common.ui
 - KeyEvents.keyStroke() overloaded with String parameter.
 ### is.codion.plugin.swing.mcp

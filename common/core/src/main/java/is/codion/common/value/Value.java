@@ -58,6 +58,7 @@ import static java.util.Objects.requireNonNull;
  * value.set(null); // reverts to the null substitute: "none"
  * }
  * <p>A factory for {@link Value} instances.</p>
+ * <p>All implementations are thread-safe and support concurrent access.</p>
  * @param <T> the type of the wrapped value
  * @see #nullable()
  * @see #nullable(Object)

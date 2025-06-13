@@ -28,6 +28,10 @@ import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Thread-safe implementation providing a custom Lock interface for synchronization.
+ * Subclasses should synchronize on the {@link #lock} field for thread safety.
+ */
 class DefaultValue<T> extends AbstractValue<T> {
 
 	protected final Lock lock = new Lock() {};

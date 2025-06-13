@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 
 /**
  * Manages event listeners. Implemented by {@link is.codion.common.event.Event}.
+ * <p>All implementations are thread-safe and support concurrent access.</p>
  * @param <T> the type of data propagated to listeners.
  */
 public interface Observer<T> {
@@ -61,6 +62,14 @@ public interface Observer<T> {
 	/**
 	 * Uses a {@link java.lang.ref.WeakReference}, adding {@code listener} does not prevent it from being garbage collected.
 	 * Adding the same listener a second time has no effect.
+	 * <p>
+	 * Note: Dead weak references accumulate until cleaned up, which happens automatically 
+	 * when listeners are added or removed. To trigger cleanup manually without modifying 
+	 * the listener set, call {@link #removeWeakListener(Runnable)} with any non-existing listener:
+	 * <pre>
+	 * // Clean up dead weak references
+	 * observer.removeWeakListener(() -> {});
+	 * </pre>
 	 * @param listener the listener
 	 * @return true if this observer did not already contain the specified listener
 	 */
@@ -76,6 +85,14 @@ public interface Observer<T> {
 	/**
 	 * Uses a {@link java.lang.ref.WeakReference}, adding {@code consumer} does not prevent it from being garbage collected.
 	 * Adding the same consumer a second time has no effect.
+	 * <p>
+	 * Note: Dead weak references accumulate until cleaned up, which happens automatically 
+	 * when listeners are added or removed. To trigger cleanup manually without modifying 
+	 * the listener set, call {@link #removeWeakConsumer(Consumer)} with any non-existing consumer:
+	 * <pre>
+	 * // Clean up dead weak references
+	 * observer.removeWeakConsumer(data -> {});
+	 * </pre>
 	 * @param consumer the consumer
 	 * @return true if this observer did not already contain the specified consumer
 	 */

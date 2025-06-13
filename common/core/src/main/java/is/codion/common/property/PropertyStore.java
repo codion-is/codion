@@ -61,6 +61,7 @@ import static java.util.stream.Collectors.joining;
  *
  * String isFeatureEnabled = System.getProperty("feature.enabled"); // "false"
  * }
+ * <p>All implementations are thread-safe and support concurrent access.</p>
  */
 public interface PropertyStore {
 

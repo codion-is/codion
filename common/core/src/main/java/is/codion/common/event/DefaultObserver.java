@@ -31,6 +31,11 @@ import java.util.function.Consumer;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Thread-safe implementation of Observer.
+ * All listener management operations are synchronized using an internal lock.
+ * Dead weak references are cleaned up during add/remove operations.
+ */
 final class DefaultObserver<T> implements Observer<T> {
 
 	private final Lock lock = new Lock() {};

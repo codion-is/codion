@@ -48,6 +48,10 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
+/**
+ * Thread-safe implementation of PropertyStore.
+ * All operations are synchronized on the internal propertyValues map.
+ */
 final class DefaultPropertyStore implements PropertyStore {
 
 	/**
