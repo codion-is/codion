@@ -24,6 +24,8 @@ import is.codion.common.logging.MethodLogger;
 import is.codion.common.user.User;
 
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -37,6 +39,8 @@ import static java.util.Objects.requireNonNull;
  * This class is not thread-safe.
  */
 final class DefaultDatabaseConnection implements DatabaseConnection {
+
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultDatabaseConnection.class);
 
 	private static final Map<String, User> META_DATA_USER_CACHE = new ConcurrentHashMap<>();
 
@@ -102,7 +106,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 			}
 		}
 		catch (SQLException ex) {
-			System.err.println("DefaultDatabaseConnection.close(), connection invalid: " + ex.getMessage());
+			LOG.warn("Failed to rollback during connection close, connection may be invalid: {}", ex.getMessage());
 		}
 		try {
 			if (connection != null) {
@@ -209,7 +213,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 			connection.commit();
 		}
 		catch (SQLException e) {
-			System.err.println("Exception during commit: " + user.username() + ": " + e.getMessage());
+			LOG.error("Exception during commit for user {}: {}", user.username(), e.getMessage(), e);
 			exception = e;
 			throw e;
 		}
@@ -274,7 +278,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 			return connection;
 		}
 		catch (SQLException e) {
-			System.err.println("Unable to disable auto commit on connection, assuming invalid state");
+			LOG.error("Unable to disable auto commit on connection, assuming invalid state", e);
 			throw new DatabaseException(e, "Connection invalid during instantiation");
 		}
 	}

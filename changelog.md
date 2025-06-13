@@ -10,6 +10,7 @@ Codion Change Log
 - Configuration, security validation added for paths.
 ### is.codion.common.db
 - AbstractConnectionPoolWrapper.closeStatisticsCollection() added.
+- SLF4J dependency added, DefaultDatabaseConnection logging improved.
 ### is.codion.swing.common.ui
 - KeyEvents.keyStroke() overloaded with String parameter.
 ### is.codion.plugin.swing.mcp
