@@ -8,6 +8,8 @@ Codion Change Log
 - ValueLink.updatingLinked and updatingOriginal now volatile, javadocs improved.
 - DefaultMessageBundle now provides a fallback resource indicating a missing key instead of throwing exception.
 - Configuration, security validation added for paths.
+### is.codion.common.db
+- AbstractConnectionPoolWrapper.closeStatisticsCollection() added.
 ### is.codion.swing.common.ui
 - KeyEvents.keyStroke() overloaded with String parameter.
 ### is.codion.plugin.swing.mcp

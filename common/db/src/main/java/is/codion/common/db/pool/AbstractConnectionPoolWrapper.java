@@ -163,6 +163,15 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 	}
 
 	/**
+	 * Cleans up statistics collection resources to prevent resource leaks.
+	 * This method should be called by concrete implementations in their close() methods
+	 * before shutting down the actual connection pool.
+	 */
+	protected final void closeStatisticsCollection() {
+		counter.close();
+	}
+
+	/**
 	 * Checks the given credentials against the credentials found in the connection pool user
 	 * @param user the user credentials to check
 	 * @throws AuthenticationException in case the username or password do not match the ones in the connection pool

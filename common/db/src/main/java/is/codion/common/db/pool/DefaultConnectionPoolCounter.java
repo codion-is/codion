@@ -187,6 +187,20 @@ final class DefaultConnectionPoolCounter {
 		}
 	}
 
+	/**
+	 * Cleans up resources associated with statistics collection.
+	 * Should be called when the connection pool is closed to prevent resource leaks.
+	 */
+	void close() {
+		snapshotStatisticsCollector.stop();
+		synchronized (snapshotStatistics) {
+			snapshotStatistics.clear();
+		}
+		synchronized (checkOutTimes) {
+			checkOutTimes.clear();
+		}
+	}
+
 	private final class StatisticsCollector implements Runnable {
 
 		/**

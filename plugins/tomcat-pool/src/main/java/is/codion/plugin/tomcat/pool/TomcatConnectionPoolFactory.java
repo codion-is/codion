@@ -78,6 +78,7 @@ public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory 
 		@Override
 		public void close() {
 			connectionPool().close();
+			closeStatisticsCollection();
 		}
 
 		@Override
