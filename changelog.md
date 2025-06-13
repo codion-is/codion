@@ -48,6 +48,7 @@ Codion Change Log
 ### is.codion.framework.db.core
 - EntityConnectionProvider.Builder.domainType() renamed domain().
 - EntityConnection.setQueryCacheEnabled() and isQueryCacheEnabled() renamed queryCache().
+- EntityConnection.MAXIMUM_BATCH_SIZE added.
 ### is.codion.framework.db.local
 - LocalEntityConnection, getter/setter combos renamed for consistency.
 ### is.codion.framework.model

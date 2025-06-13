@@ -86,6 +86,11 @@ final class DefaultBatchInsert implements BatchInsert {
 			if (batchSize <= 0) {
 				throw new IllegalArgumentException("Batch size must be a positive integer: " + batchSize);
 			}
+			int maximumBatchSize = EntityConnection.MAXIMUM_BATCH_SIZE.getOrThrow();
+			if (batchSize > maximumBatchSize) {
+				throw new IllegalArgumentException("Batch size " + batchSize + " exceeds maximum allowed: " + maximumBatchSize + 
+					". Configure codion.db.maximumBatchSize to increase the limit.");
+			}
 			this.batchSize = batchSize;
 			return this;
 		}

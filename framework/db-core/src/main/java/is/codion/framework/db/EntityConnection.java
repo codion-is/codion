@@ -23,6 +23,7 @@ import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.Report;
 import is.codion.common.db.report.ReportType;
+import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -45,6 +46,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.function.Consumer;
 
+import static is.codion.common.Configuration.integerValue;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -105,6 +107,23 @@ public interface EntityConnection extends AutoCloseable {
 	 * The default query timeout in seconds
 	 */
 	int DEFAULT_QUERY_TIMEOUT_SECONDS = 120;
+
+	/**
+	 * The default maximum batch operation size
+	 */
+	int DEFAULT_MAXIMUM_BATCH_SIZE = 10_000;
+
+	/**
+	 * Specifies the maximum batch operation size for insert and copy operations.
+	 * This prevents memory exhaustion from excessively large batch operations.
+	 * <ul>
+	 * <li>Value type: Integer
+	 * <li>Default value: 10,000
+	 * <li>Property name: codion.db.maximumBatchSize
+	 * <li>Valid range: 1-1,000,000 (typically 1,000-50,000 for most applications)
+	 * </ul>
+	 */
+	PropertyValue<Integer> MAXIMUM_BATCH_SIZE = integerValue("codion.db.maximumBatchSize", DEFAULT_MAXIMUM_BATCH_SIZE);
 
 	/**
 	 * @return the underlying domain entities
