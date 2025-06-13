@@ -38,7 +38,7 @@ final class DefaultVersion implements Version, Serializable {
 	private final @Nullable String metadata;
 	private final @Nullable String build;
 
-	private DefaultVersion(DefaulBuilder builder) {
+	private DefaultVersion(DefaultBuilder builder) {
 		this.major = builder.major;
 		this.minor = builder.minor;
 		this.patch = builder.patch;
@@ -125,7 +125,7 @@ final class DefaultVersion implements Version, Serializable {
 		return 0;
 	}
 
-	static final class DefaulBuilder implements Builder {
+	static final class DefaultBuilder implements Builder {
 
 		private int major = 0;
 		private int minor = 0;

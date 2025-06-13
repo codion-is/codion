@@ -108,7 +108,7 @@ public interface Version extends Comparable<Version> {
 	 * @return a new {@link Version.Builder} instance.
 	 */
 	static Builder builder() {
-		return new DefaultVersion.DefaulBuilder();
+		return new DefaultVersion.DefaultBuilder();
 	}
 
 	/**
