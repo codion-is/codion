@@ -3,18 +3,17 @@ plugins {
     `maven-publish`
 }
 
-description = "Codion Bill of Materials (BOM) - manages versions for all Codion modules"
+javaPlatform {
+    allowDependencies()
+}
+
+description = "Codion Framework BOM - Bill of Materials for the complete Codion framework including common modules"
 
 dependencies {
+    // Include all common modules via the common BOM
+    api(platform(project(":codion-common-bom")))
+    
     constraints {
-        // Common modules
-        api(project(":codion-common-core"))
-        api(project(":codion-common-db"))
-        api(project(":codion-common-model"))
-        api(project(":codion-common-rmi"))
-        api(project(":codion-common-i18n"))
-
-        // Framework core modules
         api(project(":codion-framework-domain"))
         api(project(":codion-framework-domain-db"))
         api(project(":codion-framework-domain-test"))
@@ -30,40 +29,15 @@ dependencies {
         api(project(":codion-framework-servlet"))
         api(project(":codion-framework-i18n"))
 
-        // Swing modules
         api(project(":codion-swing-common-model"))
         api(project(":codion-swing-common-ui"))
         api(project(":codion-swing-framework-model"))
         api(project(":codion-swing-framework-ui"))
 
-        // Database modules
-        api(project(":codion-dbms-h2"))
-        api(project(":codion-dbms-postgresql"))
-        api(project(":codion-dbms-oracle"))
-        api(project(":codion-dbms-mysql"))
-        api(project(":codion-dbms-mariadb"))
-        api(project(":codion-dbms-sqlite"))
-        api(project(":codion-dbms-sqlserver"))
-        api(project(":codion-dbms-db2"))
-        api(project(":codion-dbms-derby"))
-        api(project(":codion-dbms-hsqldb"))
 
-        // Plugin modules
         api(project(":codion-plugin-hikari-pool"))
         api(project(":codion-plugin-tomcat-pool"))
-        api(project(":codion-plugin-jasperreports"))
-        api(project(":codion-plugin-flatlaf"))
-        api(project(":codion-plugin-flatlaf-intellij-themes"))
-        api(project(":codion-plugin-jul-proxy"))
-        api(project(":codion-plugin-log4j-proxy"))
-        api(project(":codion-plugin-logback-proxy"))
-        api(project(":codion-plugin-imagepanel"))
-        api(project(":codion-plugin-swing-mcp"))
 
-        // Tools modules
-        api(project(":codion-tools-loadtest-core"))
-        api(project(":codion-tools-loadtest-model"))
-        api(project(":codion-tools-loadtest-ui"))
         api(project(":codion-tools-generator-domain"))
         api(project(":codion-tools-generator-model"))
         api(project(":codion-tools-generator-ui"))
@@ -81,8 +55,8 @@ publishing {
             from(components["javaPlatform"])
 
             pom {
-                name.set("Codion BOM")
-                description.set("Bill of Materials for Codion framework - manages compatible versions of all Codion modules")
+                name.set("Codion Framework BOM")
+                description.set("Bill of Materials for the complete Codion framework including common modules")
                 url.set("https://codion.is")
 
                 licenses {

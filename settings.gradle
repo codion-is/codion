@@ -7,6 +7,9 @@ rootProject.name = "is.codion"
 include "documentation"
 project(":documentation").projectDir = file("documentation")
 
+include "codion-common-bom"
+project(":codion-common-bom").projectDir = file("common/bom")
+
 include "codion-common-core"
 project(":codion-common-core").projectDir = file("common/core")
 

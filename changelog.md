@@ -65,6 +65,8 @@ Codion Change Log
 - EntityApplicationPanel.exitObserver() renamed exiting().
 ### is.codion.framework.bom
 - BOM module added.
+### is.codion.common.bom
+- Common BOM module added.
 
 ## 0.18.38
 ### is.codion

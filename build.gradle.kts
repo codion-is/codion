@@ -140,7 +140,7 @@ configure(frameworkModules()) {
     }
 }
 
-configure(subprojects.filter { it.name != "codion-framework-bom" }) {
+configure(subprojects.filter { it.name != "codion-framework-bom" && it.name != "codion-common-bom" }) {
     apply(plugin = "java")
     apply(plugin = "jacoco")
     apply(plugin = "com.diffplug.spotless")
@@ -287,6 +287,7 @@ fun hasSonarqubeProperties(): Boolean {
 
 fun frameworkModules(): Iterable<Project> {
     return subprojects.filter { project ->
-        !project.name.startsWith("demo") && project.name != "documentation" && project.name != "codion-framework-bom"
+        !project.name.startsWith("demo") && project.name != "documentation" &&
+                project.name != "codion-framework-bom" && project.name != "codion-common-bom"
     }
 }

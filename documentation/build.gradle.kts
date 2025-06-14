@@ -129,7 +129,9 @@ val combinedJavadoc by tasks.registering {
     val outputDir = layout.buildDirectory.dir("javadoc")
 
     // Track inputs and outputs
-    frameworkModules().forEach { module ->
+    frameworkModules().filter { module ->
+        module.plugins.hasPlugin("java")
+    }.forEach { module ->
         inputs.files(module.sourceSets.main.get().allJava)
         inputs.files(module.sourceSets.main.get().output)
     }
@@ -144,7 +146,9 @@ val combinedJavadoc by tasks.registering {
         val moduleNames = mutableListOf<String>()
         val classpath = mutableSetOf<File>()
 
-        frameworkModules().forEach { module ->
+        frameworkModules().filter { module ->
+            module.plugins.hasPlugin("java")
+        }.forEach { module ->
             val moduleName = "is.${module.name.replace("-", ".")}"
             moduleNames.add(moduleName)
 
