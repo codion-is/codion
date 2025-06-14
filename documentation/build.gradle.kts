@@ -27,7 +27,9 @@ tasks.register("generateI18nValuesPage") {
     group = "documentation"
     description = "Generates the i18n asciidoc page"
 
-    inputs.files(frameworkModules().map { module ->
+    inputs.files(frameworkModules().filter { module ->
+        module.plugins.hasPlugin("java")
+    }.map { module ->
         module.sourceSets.main.get().resources.matching {
             include("**/*.properties")
         }
@@ -38,8 +40,10 @@ tasks.register("generateI18nValuesPage") {
     doLast {
         val outputFile = file("src/docs/asciidoc/technical/i18n-values.adoc")
         val moduleFiles = mutableMapOf<String, List<File>>()
-        
-        frameworkModules().forEach { module ->
+
+        frameworkModules().filter { module ->
+            module.plugins.hasPlugin("java")
+        }.forEach { module ->
             val files = module.sourceSets.main.get().resources.matching {
                 include("**/*.properties")
             }.files.toList().sortedBy { it.path }
@@ -47,7 +51,7 @@ tasks.register("generateI18nValuesPage") {
                 moduleFiles[module.name] = files
             }
         }
-        
+
         outputFile.writeText(generateI18nAsciidoc(moduleFiles))
     }
 }
@@ -75,7 +79,8 @@ tasks.asciidoctor {
             "codion-version" to documentationVersion,
             "revnumber" to documentationVersion, "sectnums" to 4, "sectanchors" to true, "prewrap" to false,
             "experimental" to true, "reproducible" to true, "linkcss" to true, "tabsize" to 2,
-            "diagram-cachedir" to project.layout.buildDirectory.dir("asciidoc/images/diagram-cache").get().asFile.absolutePath,
+            "diagram-cachedir" to project.layout.buildDirectory.dir("asciidoc/images/diagram-cache")
+                .get().asFile.absolutePath,
             "opar" to "(",
             "cpar" to ")",
             "comma" to ",",
@@ -117,53 +122,53 @@ tasks.asciidoctor {
 val combinedJavadoc by tasks.registering {
     group = "documentation"
     description = "Generates combined Javadocs for all framework modules"
-    
+
     // Define directories
     val tempDir = layout.buildDirectory.dir("tmp/javadoc")
     val combinedSourceDir = tempDir.map { it.dir("combined-source") }
     val outputDir = layout.buildDirectory.dir("javadoc")
-    
+
     // Track inputs and outputs
     frameworkModules().forEach { module ->
         inputs.files(module.sourceSets.main.get().allJava)
         inputs.files(module.sourceSets.main.get().output)
     }
     outputs.dir(outputDir)
-    
+
     doLast {
         // Clean and create directories
         delete(tempDir)
         mkdir(combinedSourceDir)
-        
+
         // Prepare module source structure
         val moduleNames = mutableListOf<String>()
         val classpath = mutableSetOf<File>()
-        
+
         frameworkModules().forEach { module ->
             val moduleName = "is.${module.name.replace("-", ".")}"
             moduleNames.add(moduleName)
-            
+
             // Copy source files maintaining module structure
             copy {
                 from(module.file("src/main/java"))
                 into(combinedSourceDir.get().dir(moduleName))
             }
-            
+
             // Collect classpath
             module.sourceSets.main.get().compileClasspath.forEach { classpath.add(it) }
             module.sourceSets.main.get().output.files.forEach { classpath.add(it) }
         }
-        
+
         // Prepare javadoc arguments
         val javadocArgs = mutableListOf<String>().apply {
             // Output directory
             add("-d"); add(outputDir.get().asFile.absolutePath)
-            
+
             // Module configuration
             add("--module-source-path"); add(combinedSourceDir.get().asFile.absolutePath)
             add("--add-modules"); add(moduleNames.joinToString(","))
             add("--module-path"); add(classpath.joinToString(File.pathSeparator))
-            
+
             // Documentation options
             add("-doctitle"); add("Codion Framework API $documentationVersion")
             add("-windowtitle"); add("Codion Framework API $documentationVersion")
@@ -174,11 +179,11 @@ val combinedJavadoc by tasks.registering {
             add("-notimestamp")
             add("-Xdoclint:none")
             add("-quiet")
-            
+
             // Links to external documentation
             add("-link"); add("https://docs.oracle.com/en/java/javase/${properties["jdkVersion"]}/docs/api/")
             add("-link"); add("https://jspecify.dev/docs/api/")
-            
+
             // Add all source files
             fileTree(combinedSourceDir).matching {
                 include("**/*.java")
@@ -186,19 +191,19 @@ val combinedJavadoc by tasks.registering {
                 add(sourceFile.absolutePath)
             }
         }
-        
+
         // Execute javadoc
         val javadocTool = javaToolchains.javadocToolFor {
             languageVersion = JavaLanguageVersion.of(21)
         }
-        
+
         val execResult = providers.exec {
             executable = javadocTool.get().executablePath.asFile.absolutePath
             args = javadocArgs
         }
-        
+
         execResult.result.get()
-        
+
         // Clean up temporary directory
         delete(tempDir)
     }
@@ -207,26 +212,27 @@ val combinedJavadoc by tasks.registering {
 tasks.register("checkI18nDocs") {
     group = "verification"
     description = "Verifies that i18n documentation is up to date"
-    
+
     dependsOn("generateI18nValuesPage")
-    
+
     doLast {
         val generatedFile = file("src/docs/asciidoc/technical/i18n-values.adoc")
         val tempFile = layout.buildDirectory.file("tmp/i18n-values-check.adoc").get().asFile
-        
+
         // Save current content
         if (generatedFile.exists()) {
             tempFile.parentFile.mkdirs()
             generatedFile.copyTo(tempFile, overwrite = true)
-            
+
             // Run generation
-            tasks.named("generateI18nValuesPage").get().actions.forEach { it.execute(tasks.named("generateI18nValuesPage").get()) }
-            
+            tasks.named("generateI18nValuesPage")
+                .get().actions.forEach { it.execute(tasks.named("generateI18nValuesPage").get()) }
+
             // Compare
             if (tempFile.readText() != generatedFile.readText()) {
                 throw GradleException("i18n documentation is out of date. Run './gradlew :documentation:generateI18nValuesPage' to update it.")
             }
-            
+
             tempFile.delete()
         }
     }
@@ -277,26 +283,26 @@ fun frameworkModules(): Iterable<Project> {
 
 fun generateI18nAsciidoc(moduleFiles: Map<String, List<File>>): String {
     val localePattern = Regex(".*_[a-z]{2}_[A-Z]{2}\\.properties")
-    
+
     data class Resource(
         val owner: String,
         val locales: List<String>,
         val localeFiles: Map<String, File>,
         val localeProperties: Map<String, Properties>
     )
-    
+
     fun parseLocale(file: File): String {
         val fileName = file.name
         val match = Regex("_([a-z]{2}_[A-Z]{2})\\.properties$").find(fileName)
         return match?.groupValues?.get(1) ?: "default"
     }
-    
+
     fun loadProperties(file: File): Properties {
         return Properties().apply {
             file.inputStream().use { load(it) }
         }
     }
-    
+
     fun cleanResourcePath(file: File): String {
         val path = file.path.replace("\\", "/")
         val resourcesIndex = path.indexOf("src/main/resources/")
@@ -306,7 +312,7 @@ fun generateI18nAsciidoc(moduleFiles: Map<String, List<File>>): String {
             file.name
         }
     }
-    
+
     fun extractResourceOwner(file: File): String {
         val cleanPath = cleanResourcePath(file)
         return when {
@@ -314,7 +320,7 @@ fun generateI18nAsciidoc(moduleFiles: Map<String, List<File>>): String {
             else -> cleanPath.substring(0, cleanPath.length - 11)
         }
     }
-    
+
     val moduleResources = moduleFiles.map { (module, files) ->
         val resourceMap = files.groupBy { extractResourceOwner(it) }
             .map { (owner, ownerFiles) ->
@@ -324,17 +330,17 @@ fun generateI18nAsciidoc(moduleFiles: Map<String, List<File>>): String {
             }
         module to resourceMap
     }
-    
+
     return buildString {
         appendLine("= Values")
         appendLine()
         appendLine("Overview of the available i18n properties files and their keys and values.")
         appendLine()
-        
+
         moduleResources.forEach { (module, resources) ->
             appendLine("== $module")
             appendLine()
-            
+
             resources.forEach { resource ->
                 appendLine("=== ${resource.owner}.java")
                 appendLine()
@@ -345,7 +351,7 @@ fun generateI18nAsciidoc(moduleFiles: Map<String, List<File>>): String {
                 }
                 appendLine("----")
                 appendLine()
-                
+
                 // Table header
                 append("[cols=\"")
                 append((0..resource.locales.size).joinToString(",") { "1" })
@@ -357,11 +363,11 @@ fun generateI18nAsciidoc(moduleFiles: Map<String, List<File>>): String {
                 }
                 appendLine()
                 appendLine()
-                
+
                 // Table rows
                 val defaultProperties = resource.localeProperties["default"] ?: Properties()
                 val propertyNames = defaultProperties.stringPropertyNames().sorted()
-                
+
                 for (propertyName in propertyNames) {
                     append("|$propertyName")
                     for (locale in resource.locales) {
@@ -370,7 +376,7 @@ fun generateI18nAsciidoc(moduleFiles: Map<String, List<File>>): String {
                     }
                     appendLine()
                 }
-                
+
                 appendLine("|===")
                 appendLine()
             }
