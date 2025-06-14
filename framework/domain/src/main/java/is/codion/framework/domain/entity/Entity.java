@@ -51,6 +51,21 @@ import static java.util.stream.Collectors.*;
  * support operations like {@link #set(Attribute, Object)}, {@link #revert()}, and {@link #save()}.
  * Immutable entities throw {@link UnsupportedOperationException} for modification operations.
  * 
+ * <h2>Thread Safety</h2>
+ * <b>Mutable entities are NOT thread-safe.</b> They should not be shared between threads without
+ * external synchronization. Concurrent modifications may result in data corruption or inconsistent state.
+ * <p>
+ * <b>Immutable entities ARE thread-safe.</b> Created via {@link #immutable()}, they can be safely
+ * shared between threads. All referenced entities are also made immutable to ensure complete thread safety.
+ * <p>
+ * <b>Recommended patterns for concurrent use:</b>
+ * <ul>
+ *   <li>Use {@link #immutable()} to create thread-safe snapshots for sharing</li>
+ *   <li>Implement external synchronization when sharing mutable entities</li>
+ *   <li>Consider using immutable entities for read-only operations across threads</li>
+ *   <li>Create defensive copies with {@link #copy()} when passing entities between threads</li>
+ * </ul>
+ * 
  * {@snippet :
  * // Creating and working with entities
  * Entity customer = entities.builder(Customer.TYPE)
@@ -371,12 +386,29 @@ public interface Entity extends Comparable<Entity> {
 	/**
 	 * Returns an immutable version of this entity, all foreign key entities are also immutable.
 	 * Note that this may be the same instance in case this instance is already immutable.
-	 * @return an immutable version of this entity
+	 * <p>
+	 * <b>Thread Safety:</b> The returned immutable entity is thread-safe and can be safely
+	 * shared between threads without external synchronization. All referenced entities
+	 * are also made immutable to ensure complete thread safety throughout the object graph.
+	 * <p>
+	 * This method is particularly useful for:
+	 * <ul>
+	 *   <li>Creating thread-safe snapshots for sharing between threads</li>
+	 *   <li>Ensuring data integrity in concurrent read operations</li>
+	 *   <li>Caching entities safely in multi-threaded environments</li>
+	 * </ul>
+	 * @return an immutable, thread-safe version of this entity
 	 */
 	Entity immutable();
 
 	/**
-	 * @return true if this is a mutable instance
+	 * Returns whether this entity instance is mutable (can be modified).
+	 * <p>
+	 * <b>Thread Safety:</b> Mutable entities (returning {@code true}) are NOT thread-safe
+	 * and should not be shared between threads without external synchronization.
+	 * Immutable entities (returning {@code false}) are thread-safe and can be safely
+	 * shared between threads.
+	 * @return true if this is a mutable instance, false if immutable
 	 * @see #immutable()
 	 */
 	boolean mutable();

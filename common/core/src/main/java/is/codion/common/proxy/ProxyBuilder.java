@@ -140,6 +140,9 @@ public interface ProxyBuilder<T> {
 
 	/**
 	 * Returns a new {@link ProxyBuilder} instance.
+	 * <p>Note: Unlike other builders in the framework, ProxyBuilder serves as both the
+	 * builder interface and the factory, as it builds dynamic proxy instances rather 
+	 * than framework objects with separate builder interfaces.
 	 * @param interfaceToProxy the interface to proxy
 	 * @param <T> the proxy type
 	 * @return a new {@link ProxyBuilder} instance.

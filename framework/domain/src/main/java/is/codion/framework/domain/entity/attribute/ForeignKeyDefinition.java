@@ -19,6 +19,7 @@
 package is.codion.framework.domain.entity.attribute;
 
 import is.codion.common.property.PropertyValue;
+import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 
 import java.util.List;
@@ -124,10 +125,15 @@ import static is.codion.common.Configuration.integerValue;
  * Entity orderLine = orderLines.get(0);
  * Entity orderWithCustomer = orderLine.get(OrderLine.ORDER_FK); // Order is loaded
  * Entity customer = orderWithCustomer.get(Order.CUSTOMER_FK);   // Customer is also loaded
+ * 
+ * // WARNING: Circular references with referenceDepth(-1)
+ * // If Order had a foreign key back to OrderLine, using referenceDepth(-1) would cause infinite recursion:
+ * // OrderLine → Order → OrderLine → Order → ... → StackOverflowError
  * }
  * @see #referenceDepth()
  * @see #soft()
  * @see #attributes()
+ * @see Entities#VALIDATE_FOREIGN_KEYS
  */
 public interface ForeignKeyDefinition extends AttributeDefinition<Entity> {
 
@@ -217,9 +223,15 @@ public interface ForeignKeyDefinition extends AttributeDefinition<Entity> {
 		 *  3: the referenced entity is fetched, with two levels of foreign key references.
 		 *  etc...
 		 * </pre>
+		 * <p>
+		 * <b>Warning:</b> Using referenceDepth(-1) when the actual data contains circular references
+		 * (e.g., record A references B, B references C, C references A) will cause infinite recursion
+		 * and StackOverflowError. Self-referential foreign keys (like Employee.manager_id) are safe with
+		 * unlimited depth as long as the data forms a tree/hierarchy without cycles.
 		 * @param referenceDepth the number of levels of foreign key references to fetch for this foreign key
 		 * @return this instance
 		 * @throws IllegalArgumentException in case reference depth is less than -1
+		 * @see Entities#VALIDATE_FOREIGN_KEYS
 		 */
 		Builder referenceDepth(int referenceDepth);
 	}
