@@ -96,6 +96,7 @@ Domain modeling and data access layer:
 - `codion-framework-model-test` - Testing utilities for models
 - `codion-framework-server` - Server-side components and RMI server
 - `codion-framework-servlet` - Servlet-based server components
+- `codion-framework-lambda` - Serverless deployment
 - `codion-framework-i18n` - Framework internationalization
 
 ### Swing UI Layer

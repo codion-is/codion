@@ -27,6 +27,7 @@ dependencies {
         api(project(":codion-framework-model-test"))
         api(project(":codion-framework-server"))
         api(project(":codion-framework-servlet"))
+        api(project(":codion-framework-lambda"))
         api(project(":codion-framework-i18n"))
 
         api(project(":codion-swing-common-model"))

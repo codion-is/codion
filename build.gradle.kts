@@ -114,9 +114,9 @@ configure(frameworkModules()) {
             }
         }
 
-        configure<SigningExtension> {
-            sign(project.extensions.getByType<PublishingExtension>().publications["mavenJava"])
-        }
+//        configure<SigningExtension> {
+//            sign(project.extensions.getByType<PublishingExtension>().publications["mavenJava"])
+//        }
     }
 
     if (hasSonarqubeProperties()) {

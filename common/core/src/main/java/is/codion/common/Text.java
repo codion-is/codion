@@ -196,7 +196,33 @@ public final class Text {
 			String s1 = o1 == null ? "" : o1.toString();
 			String s2 = o2 == null ? "" : o2.toString();
 
-			return collator().compare(s1.replace(SPACE, UNDERSCORE), s2.replace(SPACE, UNDERSCORE));
+			// Optimize string replacement for frequently called comparisons
+			return collator().compare(replaceSpacesWithUnderscore(s1), replaceSpacesWithUnderscore(s2));
+		}
+
+		/**
+		 * Efficiently replaces spaces with underscores using StringBuilder
+		 * to avoid creating multiple intermediate String objects.
+		 */
+		private String replaceSpacesWithUnderscore(String input) {
+			int spaceIndex = input.indexOf(SPACE);
+			if (spaceIndex == -1) {
+				// No spaces found, return original string
+				return input;
+			}
+
+			StringBuilder sb = new StringBuilder(input.length());
+			int start = 0;
+			do {
+				sb.append(input, start, spaceIndex).append(UNDERSCORE);
+				start = spaceIndex + 1;
+				spaceIndex = input.indexOf(SPACE, start);
+			} while (spaceIndex != -1);
+
+			// Append remaining characters after last space
+			sb.append(input, start, input.length());
+
+			return sb.toString();
 		}
 
 		private Collator collator() {

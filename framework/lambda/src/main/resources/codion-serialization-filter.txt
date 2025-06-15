@@ -1,0 +1,24 @@
+# Default serialization filter patterns for Codion Lambda
+# This file provides a baseline set of allowed classes for Codion applications
+# Copy and modify this file to add your domain-specific classes
+
+# Java core classes
+java.lang.*
+java.util.*
+java.time.*
+java.math.*
+java.sql.*
+java.io.Serializable
+
+# Codion framework classes
+is.codion.common.*
+is.codion.framework.domain.*
+is.codion.framework.db.*
+
+# AWS Lambda classes (for error serialization)
+com.amazonaws.services.lambda.runtime.*
+
+# Add your domain classes here
+# Example:
+# com.mycompany.domain.*
+# com.mycompany.model.*

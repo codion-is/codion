@@ -259,6 +259,9 @@ image::modules/framework/db-http/build/reports/dependency-graph/dependency-graph
 ====
 
 [discrete]
+=== codion-framework-lambda
+
+[discrete]
 === codion-framework-i18n
 
 Internationalization strings.
