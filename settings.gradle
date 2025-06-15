@@ -100,6 +100,9 @@ project(":codion-framework-server").projectDir = file("framework/server")
 include "codion-framework-servlet"
 project(":codion-framework-servlet").projectDir = file("framework/servlet")
 
+include "codion-framework-lambda"
+project(":codion-framework-lambda").projectDir = file("framework/lambda")
+
 include "codion-swing-common-model"
 project(":codion-swing-common-model").projectDir = file("swing/common-model")
 
@@ -165,6 +168,7 @@ project(":codion-plugin-flatlaf-intellij-themes").projectDir = file("plugins/fla
 
 include "codion-plugin-swing-mcp"
 project(":codion-plugin-swing-mcp").projectDir = file("plugins/swing-mcp")
+
 
 include "demo-chinook"
 project(":demo-chinook").projectDir = file("demos/chinook")

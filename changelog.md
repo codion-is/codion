@@ -67,6 +67,8 @@ Codion Change Log
 - BOM module added.
 ### is.codion.common.bom
 - Common BOM module added.
+### is.codion.framework.lambda
+- Add codion-framework-lambda module for serverless deployment
 
 ## 0.18.38
 ### is.codion

@@ -1,0 +1,37 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Chinook Entity Server Lambda
+
+Resources:
+  ChinookEntityServer:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: build/distributions/chinook-lambda-deployment.zip
+      Handler: is.codion.demos.chinook.lambda.EntityProtocolHandler::handleRequest
+      Runtime: java21
+      MemorySize: 1024
+      Timeout: 30
+      Environment:
+        Variables:
+          DATABASE_URL: jdbc:h2:mem:chinook
+          DATABASE_USER: sa
+          DATABASE_PASSWORD: ""
+          DEFAULT_USER: "lambda:lambda"
+      Events:
+        EntityApi:
+          Type: Api
+          Properties:
+            Path: /entities
+            Method: POST
+            RequestParameters:
+              - method.request.header.Content-Type
+        HealthApi:
+          Type: Api
+          Properties:
+            Path: /health
+            Method: GET
+
+Outputs:
+  EntityServerApi:
+    Description: "API Gateway endpoint URL"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
