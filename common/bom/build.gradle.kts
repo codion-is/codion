@@ -1,6 +1,7 @@
 plugins {
     `java-platform`
     `maven-publish`
+    signing
 }
 
 description = "Codion Common BOM - UI components, tools, and plugins without framework dependencies"
@@ -11,14 +12,14 @@ dependencies.constraints {
     api("is.codion:codion-common-i18n:${project.version}")
     api("is.codion:codion-common-model:${project.version}")
     api("is.codion:codion-common-rmi:${project.version}")
-    
+
     api("is.codion:codion-swing-common-model:${project.version}")
     api("is.codion:codion-swing-common-ui:${project.version}")
-    
+
     api("is.codion:codion-tools-loadtest-core:${project.version}")
     api("is.codion:codion-tools-loadtest-model:${project.version}")
     api("is.codion:codion-tools-loadtest-ui:${project.version}")
-    
+
     api("is.codion:codion-dbms-h2:${project.version}")
     api("is.codion:codion-dbms-postgresql:${project.version}")
     api("is.codion:codion-dbms-oracle:${project.version}")
@@ -29,7 +30,7 @@ dependencies.constraints {
     api("is.codion:codion-dbms-db2:${project.version}")
     api("is.codion:codion-dbms-derby:${project.version}")
     api("is.codion:codion-dbms-hsqldb:${project.version}")
-    
+
     api("is.codion:codion-plugin-flatlaf:${project.version}")
     api("is.codion:codion-plugin-flatlaf-intellij-themes:${project.version}")
     api("is.codion:codion-plugin-imagepanel:${project.version}")
@@ -42,35 +43,36 @@ dependencies.constraints {
 
 publishing {
     publications {
-        create<MavenPublication>("maven") {
+        create<MavenPublication>("bom") {
+            groupId = "is.codion"
             from(components["javaPlatform"])
-            
             pom {
-                name.set("Codion Common BOM")
-                description.set("Bill of Materials for Codion common modules - UI components, tools, and plugins without framework dependencies")
-                url.set("https://codion.is")
-                
+                name = "Codion Common BOM"
+                description = "Bill of Materials for Codion common modules - UI components, tools, and plugins without framework dependencies"
+                url = "https://codion.is"
                 licenses {
                     license {
-                        name.set("GPL-3.0-or-later")
-                        url.set("https://www.gnu.org/licenses/gpl-3.0.html")
+                        name = "GPL-3.0"
+                        url = "https://www.gnu.org/licenses/gpl-3.0.en.html"
                     }
                 }
-                
                 developers {
                     developer {
-                        id.set("bjorndarri")
-                        name.set("Björn Darri Sigurðsson")
-                        email.set("bjorndarri@gmail.com")
+                        id = "bjorndarri"
+                        name = "Björn Darri Sigurðsson"
+                        email = "bjorndarri@gmail.com"
                     }
                 }
-                
                 scm {
-                    connection.set("scm:git:https://github.com/codion-is/codion.git")
-                    developerConnection.set("scm:git:https://github.com/codion-is/codion.git")
-                    url.set("https://github.com/codion-is/codion")
+                    connection = "scm:git:git://github.com/codion-is/codion.git"
+                    developerConnection = "scm:git:git://github.com/codion-is/codion.git"
+                    url = "https://github.com/codion-is/codion"
                 }
             }
         }
     }
+}
+
+signing {
+    sign(publishing.publications["bom"])
 }

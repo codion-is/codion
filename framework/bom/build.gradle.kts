@@ -1,6 +1,7 @@
 plugins {
     `java-platform`
     `maven-publish`
+    signing
 }
 
 javaPlatform {
@@ -10,9 +11,8 @@ javaPlatform {
 description = "Codion Framework BOM - Bill of Materials for the complete Codion framework including common modules"
 
 dependencies {
-    // Include all common modules via the common BOM
     api(platform(project(":codion-common-bom")))
-    
+
     constraints {
         api(project(":codion-framework-domain"))
         api(project(":codion-framework-domain-db"))
@@ -51,36 +51,36 @@ apply(plugin = "maven-publish")
 
 publishing {
     publications {
-        create<MavenPublication>("mavenJava") {
+        create<MavenPublication>("bom") {
             groupId = "is.codion"
             from(components["javaPlatform"])
-
             pom {
-                name.set("Codion Framework BOM")
-                description.set("Bill of Materials for the complete Codion framework including common modules")
-                url.set("https://codion.is")
-
+                name = "Codion Framework BOM"
+                description = "Bill of Materials for the complete Codion framework including common modules"
+                url = "https://codion.is"
                 licenses {
                     license {
-                        name.set("GPL-3.0")
-                        url.set("https://www.gnu.org/licenses/gpl-3.0.en.html")
+                        name = "GPL-3.0"
+                        url = "https://www.gnu.org/licenses/gpl-3.0.en.html"
                     }
                 }
-
                 developers {
                     developer {
-                        id.set("bjorndarri")
-                        name.set("Björn Darri Sigurðsson")
-                        email.set("bjorndarri@gmail.com")
+                        id = "bjorndarri"
+                        name = "Björn Darri Sigurðsson"
+                        email = "bjorndarri@gmail.com"
                     }
                 }
-
                 scm {
-                    connection.set("scm:git:git://github.com/codion-is/codion.git")
-                    developerConnection.set("scm:git:git://github.com/codion-is/codion.git")
-                    url.set("https://github.com/codion-is/codion")
+                    connection = "scm:git:git://github.com/codion-is/codion.git"
+                    developerConnection = "scm:git:git://github.com/codion-is/codion.git"
+                    url = "https://github.com/codion-is/codion"
                 }
             }
         }
     }
+}
+
+signing {
+    sign(publishing.publications["bom"])
 }
