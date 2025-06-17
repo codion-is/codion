@@ -47,7 +47,7 @@ is/codion/common/i18n/Messages_is_IS.properties
 |cancel|Cancel|Hætta við
 |cancel_mnemonic|C|H
 |clear|Clear|Hreinsa
-|clear_mnemonic|L|R
+|clear_mnemonic|C|R
 |clear_tip|Clear all fields|Hreinsa alla reiti
 |copy|Copy|Afrita
 |error|Error|Villa
