@@ -58,6 +58,7 @@ public abstract class AbstractDatabase implements Database {
 	 */
 	protected static final String FOR_UPDATE_NOWAIT = "FOR UPDATE NOWAIT";
 
+	private static final String USERNAME = "username";
 	private static final String FETCH_NEXT = "FETCH NEXT ";
 	private static final String ROWS = " ROWS";
 	private static final String ONLY = " ONLY";
@@ -163,12 +164,12 @@ public abstract class AbstractDatabase implements Database {
 
 	@Override
 	public final boolean containsConnectionPool(String username) {
-		return connectionPools.containsKey(requireNonNull(username, "username").toLowerCase());
+		return connectionPools.containsKey(requireNonNull(username, USERNAME).toLowerCase());
 	}
 
 	@Override
 	public final ConnectionPoolWrapper connectionPool(String username) {
-		requireNonNull(username, "username");
+		requireNonNull(username, USERNAME);
 		ConnectionPoolWrapper connectionPoolWrapper = connectionPools.get(username.toLowerCase());
 		if (connectionPoolWrapper == null) {
 			throw new IllegalArgumentException("No connection pool found for user '" + username +
@@ -180,7 +181,7 @@ public abstract class AbstractDatabase implements Database {
 
 	@Override
 	public final void closeConnectionPool(String username) {
-		requireNonNull(username, "username");
+		requireNonNull(username, USERNAME);
 		ConnectionPoolWrapper connectionPoolWrapper = connectionPools.remove(username.toLowerCase());
 		if (connectionPoolWrapper != null) {
 			connectionPoolWrapper.close();

@@ -133,7 +133,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 			try {
 				connection.close();
 			}
-			catch (SQLException ignored) {}
+			catch (SQLException ignored) {/*ignored*/}
 			throw new SQLException("Connection validation failed: Retrieved invalid connection from pool '" +
 							user.username() + "' at " + connectionFactory.url());
 		}

@@ -29,6 +29,7 @@ import javax.swing.JPanel;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 import java.util.Map;
 
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
@@ -45,16 +46,32 @@ public class SwingMcpCoreTest {
 	@Test
 	void testParameterParsing() {
 		// Test integer parameter parsing
-		assertEquals(5, SwingMcpServer.integerParam(Map.of("count", 5), "count", 1));
-		assertEquals(1, SwingMcpServer.integerParam(Map.of(), "count", 1));
-		assertEquals(1, SwingMcpServer.integerParam(Map.of("count", "invalid"), "count", 1));
-		assertEquals(10, SwingMcpServer.integerParam(Map.of("count", 10L), "count", 1)); // Long to int
+		Map<String, Object> countMap = new HashMap<>();
+		countMap.put("count", 5);
+		assertEquals(5, SwingMcpServer.integerParam(countMap, "count", 1));
+		assertEquals(1, SwingMcpServer.integerParam(new HashMap<>(), "count", 1));
+
+		Map<String, Object> invalidMap = new HashMap<>();
+		invalidMap.put("count", "invalid");
+		assertEquals(1, SwingMcpServer.integerParam(invalidMap, "count", 1));
+
+		Map<String, Object> longMap = new HashMap<>();
+		longMap.put("count", 10L);
+		assertEquals(10, SwingMcpServer.integerParam(longMap, "count", 1)); // Long to int
 
 		// Test boolean parameter parsing
-		assertTrue(SwingMcpServer.booleanParam(Map.of("shift", true), "shift", false));
-		assertFalse(SwingMcpServer.booleanParam(Map.of(), "shift", false));
-		assertFalse(SwingMcpServer.booleanParam(Map.of("shift", "invalid"), "shift", false));
-		assertTrue(SwingMcpServer.booleanParam(Map.of("shift", Boolean.TRUE), "shift", false));
+		Map<String, Object> shiftTrueMap = new HashMap<>();
+		shiftTrueMap.put("shift", true);
+		assertTrue(SwingMcpServer.booleanParam(shiftTrueMap, "shift", false));
+		assertFalse(SwingMcpServer.booleanParam(new HashMap<>(), "shift", false));
+
+		Map<String, Object> shiftInvalidMap = new HashMap<>();
+		shiftInvalidMap.put("shift", "invalid");
+		assertFalse(SwingMcpServer.booleanParam(shiftInvalidMap, "shift", false));
+
+		Map<String, Object> shiftBooleanMap = new HashMap<>();
+		shiftBooleanMap.put("shift", Boolean.TRUE);
+		assertTrue(SwingMcpServer.booleanParam(shiftBooleanMap, "shift", false));
 	}
 
 	@Test
@@ -159,10 +176,12 @@ public class SwingMcpCoreTest {
 		assertNotNull(tool.inputSchema());
 
 		// Test tool handler
-		String result = (String) tool.handler().handle(Map.of("message", "hello"));
+		Map<String, Object> messageMap = new HashMap<>();
+		messageMap.put("message", "hello");
+		String result = (String) tool.handler().handle(messageMap);
 		assertEquals("Response: hello", result);
 
-		String defaultResult = (String) tool.handler().handle(Map.of());
+		String defaultResult = (String) tool.handler().handle(new HashMap<>());
 		assertEquals("Response: default", defaultResult);
 	}
 

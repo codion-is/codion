@@ -7,6 +7,9 @@
 Common classes used throughout the framework.
 
 [discrete]
+=== codion-common-bom
+
+[discrete]
 === codion-common-core
 
 * {url-javadoc}{common-core}/is/codion/common/event/package-summary.html[is.codion.common.event]
@@ -166,6 +169,9 @@ image::modules/dbms/sqlserver/build/reports/dependency-graph/dependency-graph.sv
 == Framework
 
 The framework itself.
+
+[discrete]
+=== codion-framework-bom
 
 [discrete]
 === codion-framework-domain
@@ -580,4 +586,13 @@ image::modules/plugins/flatlaf-intellij-themes/build/reports/dependency-graph/de
 [%collapsible]
 ====
 image::modules/plugins/imagepanel/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+==== codion-plugin-swing-mcp
+
+.Dependency graph
+[%collapsible]
+====
+image::modules/plugins/swing-mcp/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====

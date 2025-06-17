@@ -140,7 +140,7 @@ final class SwingMcpHttpServer {
 	private static void addCorsHeaders(HttpExchange exchange) {
 		exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
 		exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-		exchange.getResponseHeaders().set("Access-Control-Allow-Headers", "Content-Type");
+		exchange.getResponseHeaders().set("Access-Control-Allow-Headers", CONTENT_TYPE);
 	}
 
 	private static boolean handleCorsPreflightRequest(HttpExchange exchange) throws IOException {

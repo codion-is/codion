@@ -118,7 +118,7 @@ public final class SwingMcpPlugin {
 			server.stop();
 			server = null;
 		}
-		System.out.println(SERVER_STOPPED_INFO);
+		LOG.info(SERVER_STOPPED_INFO);
 	}
 
 	private void runServer() {
@@ -144,7 +144,6 @@ public final class SwingMcpPlugin {
 
 		httpServer.start();
 		LOG.info(SERVER_STARTUP_INFO);
-		System.out.println(SERVER_STARTUP_INFO);
 	}
 
 

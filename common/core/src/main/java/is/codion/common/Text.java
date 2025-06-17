@@ -204,7 +204,7 @@ public final class Text {
 		 * Efficiently replaces spaces with underscores using StringBuilder
 		 * to avoid creating multiple intermediate String objects.
 		 */
-		private String replaceSpacesWithUnderscore(String input) {
+		private static String replaceSpacesWithUnderscore(String input) {
 			int spaceIndex = input.indexOf(SPACE);
 			if (spaceIndex == -1) {
 				// No spaces found, return original string

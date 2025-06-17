@@ -77,7 +77,7 @@ Add the BOM to your `pom.xml`:
 Core classes and utilities used throughout the framework:
 - `codion-common-core` - Observable pattern, State, Value, Events, Configuration
 - `codion-common-db` - Database abstractions and utilities
-- `codion-common-model` - Base model interfaces and table models
+- `codion-common-model` - Base model interfaces and implementations
 - `codion-common-rmi` - RMI communication utilities
 - `codion-common-i18n` - Internationalization support
 

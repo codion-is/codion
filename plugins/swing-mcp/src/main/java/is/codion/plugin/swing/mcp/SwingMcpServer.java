@@ -85,9 +85,7 @@ final class SwingMcpServer {
 	static final String ACTIVE_WINDOW_SCREENSHOT = "active_window_screenshot";
 	static final String APP_WINDOW_BOUNDS = "app_window_bounds";
 	static final String FOCUS_WINDOW = "focus_window";
-	static final String LIST_WINDOWS = "list_windows";
 
-	// Schema property names and types (public for SwingMcpPlugin)
 	static final String TEXT = "text";
 	static final String COUNT = "count";
 	static final String SHIFT = "shift";
@@ -270,25 +268,6 @@ final class SwingMcpServer {
 		}
 	}
 
-	private void onWindowEvent(WindowEvent event) {
-		if (event.getID() == WINDOW_ACTIVATED || event.getID() == WINDOW_GAINED_FOCUS) {
-			Window window = event.getWindow();
-			if (window.isVisible() && window.isFocusableWindow()) {
-				lastActiveWindow = window;
-				lastActivationTime = System.currentTimeMillis();
-				LOG.debug("Window activated/focused: {} at {}", getWindowTitle(window), lastActivationTime);
-			}
-		}
-		else if (event.getID() == WINDOW_CLOSED) {
-			Window window = event.getWindow();
-			if (window == lastActiveWindow) {
-				lastActiveWindow = null;
-				lastActivationTime = 0;
-				LOG.debug("Last active window closed: {}", getWindowTitle(window));
-			}
-		}
-	}
-
 	private static BufferedImage paintWindowToImage(Window window) {
 		BufferedImage image = new BufferedImage(window.getWidth(), window.getHeight(), TYPE_INT_RGB);
 		Graphics2D graphics = image.createGraphics();
@@ -410,7 +389,7 @@ final class SwingMcpServer {
 		return getApplicationWindow();
 	}
 
-	private Window findWindowByTitle(Window[] windows, String title) {
+	private static Window findWindowByTitle(Window[] windows, String title) {
 		for (Window window : windows) {
 			if (window.isVisible() && title.equals(getWindowTitle(window))) {
 				return window;
@@ -838,6 +817,25 @@ final class SwingMcpServer {
 		@Override
 		public void eventDispatched(AWTEvent event) {
 			onWindowEvent((WindowEvent) event);
+		}
+
+		private void onWindowEvent(WindowEvent event) {
+			if (event.getID() == WINDOW_ACTIVATED || event.getID() == WINDOW_GAINED_FOCUS) {
+				Window window = event.getWindow();
+				if (window.isVisible() && window.isFocusableWindow()) {
+					lastActiveWindow = window;
+					lastActivationTime = System.currentTimeMillis();
+					LOG.debug("Window activated/focused: {} at {}", getWindowTitle(window), lastActivationTime);
+				}
+			}
+			else if (event.getID() == WINDOW_CLOSED) {
+				Window window = event.getWindow();
+				if (window == lastActiveWindow) {
+					lastActiveWindow = null;
+					lastActivationTime = 0;
+					LOG.debug("Last active window closed: {}", getWindowTitle(window));
+				}
+			}
 		}
 	}
 }
