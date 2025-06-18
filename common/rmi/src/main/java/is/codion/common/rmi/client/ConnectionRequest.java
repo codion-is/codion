@@ -42,12 +42,12 @@ public interface ConnectionRequest {
 	/**
 	 * @return the client id
 	 */
-	UUID id();
+	UUID clientId();
 
 	/**
 	 * @return the client type
 	 */
-	String type();
+	String clientType();
 
 	/**
 	 * @return the client locale
@@ -98,16 +98,16 @@ public interface ConnectionRequest {
 		Builder user(User user);
 
 		/**
-		 * @param id the client id
+		 * @param clientId the client id
 		 * @return this Builder instance
 		 */
-		Builder id(UUID id);
+		Builder clientId(UUID clientId);
 
 		/**
-		 * @param type the client type
+		 * @param clientType the client type
 		 * @return this Builder instance
 		 */
-		Builder type(String type);
+		Builder clientType(String clientType);
 
 		/**
 		 * @param version the client version

@@ -35,15 +35,15 @@ public final class ClientsTest {
 		UUID uuid = UUID.randomUUID();
 		ConnectionRequest request = ConnectionRequest.builder()
 						.user(user)
-						.id(uuid)
-						.type("test")
+						.clientId(uuid)
+						.clientType("test")
 						.build();
 		assertEquals(user, request.user());
-		assertEquals(uuid, request.id());
+		assertEquals(uuid, request.clientId());
 		assertFalse(request.version().isPresent());
 		assertEquals(Version.version(), request.frameworkVersion());
 		assertEquals(uuid.hashCode(), request.hashCode());
-		assertEquals("test", request.type());
+		assertEquals("test", request.clientType());
 		assertTrue(request.toString().contains(user.username()));
 	}
 }

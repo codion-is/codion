@@ -70,8 +70,8 @@ public final class EmployeeServerTest {
 		UUID clientId = UUID.randomUUID();
 		EmployeeService employeeService = remoteServer.connect(ConnectionRequest.builder()
 						.user(User.parse("scott:tiger"))
-						.id(clientId)
-						.type("EmployeeServerTest")
+						.clientId(clientId)
+						.clientType("EmployeeServerTest")
 						.build());
 
 		Collection<Entity> employees = employeeService.employees();

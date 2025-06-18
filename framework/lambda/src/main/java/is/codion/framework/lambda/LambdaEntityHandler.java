@@ -290,8 +290,8 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 		// Build connection request
 		ConnectionRequest request = ConnectionRequest.builder()
 						.user(user)
-						.id(clientId)
-						.type(clientType)
+						.clientId(clientId)
+						.clientType(clientType)
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, domainTypeName)
 						.parameter(Server.CLIENT_HOST, "lambda")
 						.build();

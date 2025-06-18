@@ -184,10 +184,10 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		}
 		requireNonNull(connectionRequest);
 		requireNonNull(connectionRequest.user(), "user must be specified");
-		requireNonNull(connectionRequest.id(), "client id must be specified");
-		requireNonNull(connectionRequest.type(), "client type must be specified");
+		requireNonNull(connectionRequest.clientId(), "clientId must be specified");
+		requireNonNull(connectionRequest.clientType(), "clientType must be specified");
 		synchronized (connections) {
-			ClientConnection<T> clientConnection = connections.get(connectionRequest.id());
+			ClientConnection<T> clientConnection = connections.get(connectionRequest.clientId());
 			if (clientConnection != null) {
 				validateUserCredentials(connectionRequest.user(), clientConnection.remoteClient().user());
 				LOG.trace("Active connection exists {}", connectionRequest);
@@ -219,7 +219,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 			for (Authenticator authenticator : sharedAuthenticators) {
 				authenticator.logout(remoteClient);
 			}
-			Authenticator authenticator = authenticators.get(remoteClient.type());
+			Authenticator authenticator = authenticators.get(remoteClient.clientType());
 			if (authenticator != null) {
 				authenticator.logout(remoteClient);
 			}
@@ -400,13 +400,13 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		for (Authenticator authenticator : sharedAuthenticators) {
 			remoteClient = authenticator.login(remoteClient);
 		}
-		Authenticator clientAuthenticator = authenticators.get(connectionRequest.type());
+		Authenticator clientAuthenticator = authenticators.get(connectionRequest.clientType());
 		LOG.debug("Connecting client {}, authenticator {}", connectionRequest, clientAuthenticator);
 		if (clientAuthenticator != null) {
 			remoteClient = clientAuthenticator.login(remoteClient);
 		}
 		ClientConnection<T> clientConnection = new ClientConnection<>(remoteClient, connect(remoteClient));
-		connections.put(remoteClient.id(), clientConnection);
+		connections.put(remoteClient.clientId(), clientConnection);
 
 		return clientConnection;
 	}

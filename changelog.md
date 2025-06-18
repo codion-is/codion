@@ -20,6 +20,7 @@ Codion Change Log
 - Messages, icelandic Clear mnemonic fixed.
 ### is.codion.common.rmi
 - SerializationFilter, minor refactoring.
+- ConnectionRequest.id() and type() renamed back to clientId() and clientType().
 ### is.codion.dbms.h2
 - H2Database, security validation for the H2 database script injection.
 ### is.codion.swing.common.ui

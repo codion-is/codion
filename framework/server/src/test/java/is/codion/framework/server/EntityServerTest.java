@@ -91,7 +91,7 @@ public class EntityServerTest {
 		new TestDomain();
 		ConnectionRequest connectionRequestOne = ConnectionRequest.builder()
 						.user(UNIT_TEST_USER)
-						.type("ClientType")
+						.clientType("ClientType")
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 		RemoteEntityConnection connection = server.connect(connectionRequestOne);
 
@@ -106,7 +106,7 @@ public class EntityServerTest {
 	void testWrongPassword() {
 		assertThrows(ServerAuthenticationException.class, () -> server.connect(ConnectionRequest.builder()
 						.user(User.user(UNIT_TEST_USER.username(), "foobar".toCharArray()))
-						.type(getClass().getSimpleName())
+						.clientType(getClass().getSimpleName())
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build()));
 	}
 
@@ -134,7 +134,7 @@ public class EntityServerTest {
 	void configureConnection() throws Exception {
 		ConnectionRequest connectionRequestTwo = ConnectionRequest.builder()
 						.user(UNIT_TEST_USER)
-						.type("ClientType")
+						.clientType("ClientType")
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, ConfigureDb.class.getSimpleName()).build();
 		try (RemoteEntityConnection connection = server.connect(connectionRequestTwo)) {
 			//throws exception if table does not exist, which is created during connection configuration
@@ -146,7 +146,7 @@ public class EntityServerTest {
 	void test() throws Exception {
 		ConnectionRequest connectionRequestOne = ConnectionRequest.builder()
 						.user(UNIT_TEST_USER)
-						.type("ClientType").parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
+						.clientType("ClientType").parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 
 		RemoteEntityConnection remoteConnectionOne = server.connect(connectionRequestOne);
 		assertTrue(remoteConnectionOne.connected());
@@ -157,7 +157,7 @@ public class EntityServerTest {
 		assertEquals(2005, admin.getMaximumPoolCheckOutTime(UNIT_TEST_USER.username()));
 
 		try {
-			server.connect(ConnectionRequest.builder().user(UNIT_TEST_USER).type("ClientType").build());
+			server.connect(ConnectionRequest.builder().user(UNIT_TEST_USER).clientType("ClientType").build());
 			fail();
 		}
 		catch (LoginException ignored) {}
@@ -165,7 +165,7 @@ public class EntityServerTest {
 		try {
 			server.connect(ConnectionRequest.builder()
 							.user(UNIT_TEST_USER)
-							.type("ClientType")
+							.clientType("ClientType")
 							.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE,
 											new EmptyDomain().type().name()).build());
 			fail();
@@ -174,11 +174,11 @@ public class EntityServerTest {
 
 		ConnectionRequest connectionRequestTwo = ConnectionRequest.builder()
 						.user(UNIT_TEST_USER)
-						.type("ClientType")
+						.clientType("ClientType")
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 		RemoteEntityConnection remoteConnectionTwo = server.connect(connectionRequestTwo);
-		admin.setLoggingEnabled(connectionRequestTwo.id(), true);
-		assertTrue(admin.isLoggingEnabled(connectionRequestOne.id()));
+		admin.setLoggingEnabled(connectionRequestTwo.clientId(), true);
+		assertTrue(admin.isLoggingEnabled(connectionRequestOne.clientId()));
 		assertThrows(IllegalArgumentException.class, () -> admin.isLoggingEnabled(UUID.randomUUID()));
 		assertThrows(IllegalArgumentException.class, () -> admin.setLoggingEnabled(UUID.randomUUID(), true));
 		assertTrue(remoteConnectionTwo.connected());
@@ -196,7 +196,7 @@ public class EntityServerTest {
 
 		admin.databaseStatistics();
 
-		ClientLog log = admin.clientLog(connectionRequestTwo.id());
+		ClientLog log = admin.clientLog(connectionRequestTwo.clientId());
 
 		MethodLogger.Entry entry = log.entries().get(0);
 		assertEquals("select", entry.method());
@@ -204,10 +204,10 @@ public class EntityServerTest {
 
 		admin.disconnectTimedOutClients();
 
-		server.disconnect(connectionRequestOne.id());
+		server.disconnect(connectionRequestOne.clientId());
 		assertEquals(1, admin.connectionCount());
 
-		server.disconnect(connectionRequestTwo.id());
+		server.disconnect(connectionRequestTwo.clientId());
 		assertEquals(0, admin.connectionCount());
 
 		admin.setConnectionLimit(1);
@@ -223,9 +223,9 @@ public class EntityServerTest {
 		server.connect(connectionRequestTwo);
 		assertEquals(2, admin.connectionCount());
 
-		server.disconnect(connectionRequestOne.id());
+		server.disconnect(connectionRequestOne.clientId());
 		assertEquals(1, admin.connectionCount());
-		server.disconnect(connectionRequestTwo.id());
+		server.disconnect(connectionRequestTwo.clientId());
 		assertEquals(0, admin.connectionCount());
 
 		//testing with the TestAuthenticator
@@ -235,15 +235,15 @@ public class EntityServerTest {
 		User john = User.parse("john:hello");
 		ConnectionRequest connectionRequestJohn = ConnectionRequest.builder()
 						.user(john)
-						.type(testClientType)
+						.clientType(testClientType)
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 		ConnectionRequest connectionRequestHelen = ConnectionRequest.builder()
 						.user(User.parse("helen:juno"))
-						.type(testClientType)
+						.clientType(testClientType)
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 		ConnectionRequest connectionRequestInvalid = ConnectionRequest.builder()
 						.user(User.parse("foo:bar"))
-						.type(testClientType)
+						.clientType(testClientType)
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 		server.connect(connectionRequestJohn);
 		server.connect(connectionRequestHelen);
@@ -257,9 +257,9 @@ public class EntityServerTest {
 		for (RemoteClient employeesClient : employeesClients) {
 			assertEquals(UNIT_TEST_USER, employeesClient.databaseUser());
 		}
-		server.disconnect(connectionRequestJohn.id());
+		server.disconnect(connectionRequestJohn.clientId());
 		assertEquals(1, admin.connectionCount());
-		server.disconnect(connectionRequestHelen.id());
+		server.disconnect(connectionRequestHelen.clientId());
 		assertEquals(0, admin.connectionCount());
 	}
 

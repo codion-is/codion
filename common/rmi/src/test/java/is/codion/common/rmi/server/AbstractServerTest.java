@@ -62,42 +62,42 @@ public class AbstractServerTest {
 
 	@Test
 	void testConnectionCount() throws RemoteException, ServerException {
-		ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).type(CLIENT_TYPE).build();
-		ConnectionRequest connectionRequest2 = ConnectionRequest.builder().user(UNIT_TEST_USER).type(CLIENT_TYPE).build();
-		ConnectionRequest connectionRequest3 = ConnectionRequest.builder().user(UNIT_TEST_USER).type(CLIENT_TYPE).build();
+		ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).clientType(CLIENT_TYPE).build();
+		ConnectionRequest connectionRequest2 = ConnectionRequest.builder().user(UNIT_TEST_USER).clientType(CLIENT_TYPE).build();
+		ConnectionRequest connectionRequest3 = ConnectionRequest.builder().user(UNIT_TEST_USER).clientType(CLIENT_TYPE).build();
 		server.connect(connectionRequest);
 		assertEquals(1, server.connectionCount());
 		server.connect(connectionRequest2);
 		assertEquals(2, server.connectionCount());
-		server.disconnect(connectionRequest.id());
+		server.disconnect(connectionRequest.clientId());
 		assertEquals(1, server.connectionCount());
 		server.connect(connectionRequest);
 		assertEquals(2, server.connectionCount());
 		server.connect(connectionRequest3);
 		assertEquals(3, server.connectionCount());
-		server.disconnect(connectionRequest3.id());
+		server.disconnect(connectionRequest3.clientId());
 		assertEquals(2, server.connectionCount());
-		server.disconnect(connectionRequest2.id());
+		server.disconnect(connectionRequest2.clientId());
 		assertEquals(1, server.connectionCount());
-		server.disconnect(connectionRequest.id());
+		server.disconnect(connectionRequest.clientId());
 		assertEquals(0, server.connectionCount());
 	}
 
 	@Test
 	void testConnectionLimitReached() throws RemoteException, ServerException {
-		ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).type(CLIENT_TYPE).build();
-		ConnectionRequest connectionRequest2 = ConnectionRequest.builder().user(UNIT_TEST_USER).type(CLIENT_TYPE).build();
+		ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).clientType(CLIENT_TYPE).build();
+		ConnectionRequest connectionRequest2 = ConnectionRequest.builder().user(UNIT_TEST_USER).clientType(CLIENT_TYPE).build();
 		server.setConnectionLimit(1);
 		assertEquals(1, server.getConnectionLimit());
 		server.connect(connectionRequest);
 		assertThrows(ConnectionNotAvailableException.class, () -> server.connect(connectionRequest2));
-		server.disconnect(connectionRequest.id());
+		server.disconnect(connectionRequest.clientId());
 		server.setConnectionLimit(-1);
 	}
 
 	@Test
 	void testConnect() throws RemoteException, ServerException {
-		ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).type(CLIENT_TYPE).build();
+		ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).clientType(CLIENT_TYPE).build();
 		ServerTest connection = server.connect(connectionRequest);
 		assertNotNull(connection);
 		ServerTest connection2 = server.connect(connectionRequest);
@@ -105,8 +105,8 @@ public class AbstractServerTest {
 		Map<RemoteClient, ServerTest> connections = server.connections();
 		assertEquals(1, connections.size());
 		assertEquals(connection, connections.get(connectionRequest));
-		assertEquals(connection, server.connection(connectionRequest.id()));
-		assertNotNull(server.connection(connectionRequest.id()));
+		assertEquals(connection, server.connection(connectionRequest.clientId()));
+		assertNotNull(server.connection(connectionRequest.clientId()));
 
 		ServerAdmin admin = server.getAdmin();
 		Collection<RemoteClient> clients = admin.clients();
@@ -122,13 +122,13 @@ public class AbstractServerTest {
 		client.frameworkVersion();
 		client.databaseUser();
 		client.toString();
-		server.disconnect(connectionRequest.id());
-		assertThrows(IllegalArgumentException.class, () -> server.connection(connectionRequest.id()));
+		server.disconnect(connectionRequest.clientId());
+		assertThrows(IllegalArgumentException.class, () -> server.connection(connectionRequest.clientId()));
 		ServerTest connection3 = server.connect(connectionRequest);
 		assertNotSame(connection, connection3);
 		assertNotNull(server.information());
-		admin.disconnect(connection3.remoteClient().id());
-		assertThrows(IllegalArgumentException.class, () -> server.connection(connection3.remoteClient().id()));
+		admin.disconnect(connection3.remoteClient().clientId());
+		assertThrows(IllegalArgumentException.class, () -> server.connection(connection3.remoteClient().clientId()));
 		assertThrows(NullPointerException.class, () -> server.connect((ConnectionRequest) null));
 	}
 
@@ -138,27 +138,27 @@ public class AbstractServerTest {
 		TestAuthenticator.LOGOUT_COUNTER.set(0);
 		TestAuthenticator.CLOSE_COUNTER.set(0);
 
-		ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).type(CLIENT_TYPE).build();
+		ConnectionRequest connectionRequest = ConnectionRequest.builder().user(UNIT_TEST_USER).clientType(CLIENT_TYPE).build();
 		ServerTest connection = server.connect(connectionRequest);
 		assertNotNull(connection);
-		assertEquals(connectionRequest.id(), connection.remoteClient().id());
+		assertEquals(connectionRequest.clientId(), connection.remoteClient().clientId());
 
-		server.disconnect(connectionRequest.id());
+		server.disconnect(connectionRequest.clientId());
 
 		connection = server.connect(connectionRequest);
 		assertEquals(2, TestAuthenticator.LOGIN_COUNTER.get());
 		assertNotNull(connection);
-		assertEquals(connectionRequest.id(), connection.remoteClient().id());
+		assertEquals(connectionRequest.clientId(), connection.remoteClient().clientId());
 
-		server.disconnect(connectionRequest.id());
+		server.disconnect(connectionRequest.clientId());
 		assertEquals(2, TestAuthenticator.LOGOUT_COUNTER.get());
 
 		connection = server.connect(connectionRequest);
 		assertEquals(3, TestAuthenticator.LOGIN_COUNTER.get());
 		assertNotNull(connection);
-		assertEquals(connectionRequest.id(), connection.remoteClient().id());
+		assertEquals(connectionRequest.clientId(), connection.remoteClient().clientId());
 
-		server.disconnect(connectionRequest.id());
+		server.disconnect(connectionRequest.clientId());
 
 		assertThrows(IllegalStateException.class, () -> server.addAuthenticator(new TestAuthenticator()));
 	}
@@ -167,27 +167,27 @@ public class AbstractServerTest {
 	void connectionTheftWrongPassword() throws RemoteException, ServerException {
 		UUID connectionId = UUID.randomUUID();
 		ConnectionRequest connectionRequest = ConnectionRequest.builder()
-						.user(UNIT_TEST_USER).id(connectionId).type(CLIENT_TYPE).build();
+						.user(UNIT_TEST_USER).clientId(connectionId).clientType(CLIENT_TYPE).build();
 		ConnectionRequest connectionRequest2 = ConnectionRequest.builder()
-						.user(User.user(UNIT_TEST_USER.username(), "test".toCharArray())).id(connectionId).type(CLIENT_TYPE).build();
+						.user(User.user(UNIT_TEST_USER.username(), "test".toCharArray())).clientId(connectionId).clientType(CLIENT_TYPE).build();
 
 		server.connect(connectionRequest);
 
 		//try to steal the connection using the same connectionId, but incorrect user credentials
 		assertThrows(ServerAuthenticationException.class, () -> server.connect(connectionRequest2));
 
-		server.disconnect(connectionRequest.id());
+		server.disconnect(connectionRequest.clientId());
 	}
 
 	@Test
 	void connectionTheftWrongUsername() throws RemoteException, ServerException {
 		UUID connectionId = UUID.randomUUID();
 		ConnectionRequest connectionRequest = ConnectionRequest.builder()
-						.user(UNIT_TEST_USER).id(connectionId).type(CLIENT_TYPE).build();
+						.user(UNIT_TEST_USER).clientId(connectionId).clientType(CLIENT_TYPE).build();
 		ConnectionRequest connectionRequest2 = ConnectionRequest.builder()
 						.user(User.user("test", UNIT_TEST_USER.password()))
-						.id(connectionId)
-						.type(CLIENT_TYPE)
+						.clientId(connectionId)
+						.clientType(CLIENT_TYPE)
 						.build();
 
 		server.connect(connectionRequest);
@@ -195,7 +195,7 @@ public class AbstractServerTest {
 		//try to steal the connection using the same connectionId, but incorrect user credentials
 		assertThrows(ServerAuthenticationException.class, () -> server.connect(connectionRequest2));
 
-		server.disconnect(connectionRequest.id());
+		server.disconnect(connectionRequest.clientId());
 		System.out.println(server.connectionCount());
 	}
 

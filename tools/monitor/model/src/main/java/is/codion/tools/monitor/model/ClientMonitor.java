@@ -123,7 +123,7 @@ public final class ClientMonitor {
 				case CLIENT_HOST:
 					return row.clientHost();
 				case CLIENT_TYPE:
-					return row.type();
+					return row.clientType();
 				case CLIENT_VERSION:
 					return row.version()
 									.map(Object::toString)
@@ -131,7 +131,7 @@ public final class ClientMonitor {
 				case CODION_VERSION:
 					return row.frameworkVersion().toString();
 				case CLIENT_ID:
-					return row.id().toString();
+					return row.clientId().toString();
 				case LOCALE:
 					return row.locale().toString();
 				case TIMEZONE:

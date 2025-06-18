@@ -85,13 +85,13 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
 	}
 
 	@Override
-	public UUID id() {
-		return connectionRequest.id();
+	public UUID clientId() {
+		return connectionRequest.clientId();
 	}
 
 	@Override
-	public String type() {
-		return connectionRequest.type();
+	public String clientType() {
+		return connectionRequest.clientType();
 	}
 
 	@Override
@@ -150,9 +150,9 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
 		if (databaseUser != null && !connectionRequest.user().equals(databaseUser)) {
 			builder.append(" (databaseUser: ").append(databaseUser).append(")");
 		}
-		builder.append("@").append(clientHost).append(" [").append(connectionRequest.type())
+		builder.append("@").append(clientHost).append(" [").append(connectionRequest.clientType())
 						.append(connectionRequest.version().map(version -> "-" + version).orElse(""))
-						.append("] - ").append(connectionRequest.id());
+						.append("] - ").append(connectionRequest.clientId());
 
 		return builder.toString();
 	}

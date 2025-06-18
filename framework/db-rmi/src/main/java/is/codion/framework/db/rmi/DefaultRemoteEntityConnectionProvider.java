@@ -101,8 +101,8 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 							new Class[] {EntityConnection.class}, new RemoteEntityConnectionHandler(
 											server().connect(ConnectionRequest.builder()
 															.user(user())
-															.id(clientId())
-															.type(clientType().orElseThrow(() ->
+															.clientId(clientId())
+															.clientType(clientType().orElseThrow(() ->
 																			new IllegalStateException("client type must be specified")))
 															.version(clientVersion().orElse(null))
 															.parameter(REMOTE_CLIENT_DOMAIN_TYPE, domainType().name())
