@@ -69,6 +69,7 @@ Codion Change Log
 - Common BOM module added.
 ### is.codion.framework.lambda
 - Add codion-framework-lambda module for serverless deployment
+- LambdaEntityHandler, removed env variables, now configured with EntityServer system properties.
 
 ## 0.18.38
 ### is.codion

@@ -42,7 +42,7 @@ aws lambda create-function \
   --zip-file fileb://build/distributions/codion-server-aws-deployment.zip \
   --memory-size 1024 \
   --timeout 30 \
-  --environment Variables="{DATABASE_URL=jdbc:postgresql://your-db-host/dbname}"
+  --environment 'Variables={JAVA_TOOL_OPTIONS="-Dcodion.db.url=jdbc:postgresql://your-db-host/dbname -Dcodion.server.serialization.filter.patterns=is.codion.*;java.*;com.mycompany.*"}'
 
 # Create a Lambda Function URL for direct HTTP access
 aws lambda create-function-url-config \
@@ -97,24 +97,32 @@ This creates a deployable JAR in `build/libs/`
 
 ## Configuration
 
-### Environment Variables
+### Configuration
 
-#### Domain Configuration
-- `DOMAIN_CLASS_NAMES` - Comma-separated domain class names (optional, for non-service-enabled domains)
+#### EntityServer Configuration via System Properties
 
-#### Database Configuration
-- `DATABASE_URL` - JDBC connection URL (default: `jdbc:h2:mem:codion`)
-- `DATABASE_USER` - Database username (default: `sa`)
-- `DATABASE_PASSWORD` - Database password (default: empty)
-- `DATABASE_INIT_SCRIPTS` - Optional initialization scripts (e.g., `classpath:create_schema.sql`)
+All EntityServer configuration is done through standard Java system properties. Set these using the `JAVA_TOOL_OPTIONS` environment variable:
 
-#### EntityServer Configuration
-- `IDLE_CONNECTION_TIMEOUT` - Connection idle timeout in minutes (default: 10)
-- `CLIENT_CONNECTION_LIMIT` - Max connections per client (default: 10)
+```bash
+JAVA_TOOL_OPTIONS="-Dcodion.db.url=jdbc:postgresql://host/db -Dcodion.server.idleConnectionTimeout=10"
+```
 
-#### Security Configuration
-- `SERIALIZATION_FILTER_PATTERNS` - Serialization filter patterns (semicolon-separated)
-- `SERIALIZATION_FILTER_PATTERN_FILE` - Path to pattern file (supports `classpath:` prefix)
+Common configuration properties:
+
+**Database:**
+- `codion.db.url` - JDBC connection URL (required)
+- `codion.db.initScripts` - Initialization scripts (e.g., `classpath:create_schema.sql`)
+- `codion.db.countQueries` - Enable query counting for monitoring
+
+**EntityServer:**
+- `codion.server.domain.classes` - Comma-separated domain class names
+- `codion.server.idleConnectionTimeout` - Connection idle timeout in minutes (default: 10)
+- `codion.server.connectionLimit` - Max connections per client (default: 10)
+- `codion.server.pooling.poolFactoryClass` - Connection pool implementation (e.g., `is.codion.plugin.hikari.pool.HikariConnectionPoolProvider`)
+- `codion.server.serialization.filter.patterns` - Serialization filter patterns (required)
+- `codion.server.serialization.filter.patternFile` - Path to filter pattern file
+
+See EntityServer documentation for all available configuration properties.
 
 ### EntityServer Behavior
 
@@ -298,6 +306,8 @@ dependencies {
     compileOnly("com.amazonaws:aws-lambda-java-events:3.11.4")
 }
 ```
+
+**Note:** Database authentication is handled per-user through the Lambda authentication headers. Each user connects with their own database credentials, so there's no need to configure database username/password at the Lambda level.
 
 ### Deployment Scripts
 

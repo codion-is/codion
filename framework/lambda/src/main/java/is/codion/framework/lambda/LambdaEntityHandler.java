@@ -57,7 +57,6 @@ import java.util.UUID;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableSet;
-import static java.util.Objects.requireNonNull;
 
 /**
  * AWS Lambda handler that implements the Codion entity protocol using EntityServer.
@@ -73,14 +72,11 @@ import static java.util.Objects.requireNonNull;
  *   --runtime java21
  * </pre>
  * <p>
- * Configuration via environment variables:
- * <ul>
- *   <li>DATABASE_URL - JDBC connection URL (default: jdbc:h2:mem:codion)</li>
- *   <li>DATABASE_INIT_SCRIPTS - Initialization scripts (e.g., classpath:create_schema.sql)</li>
- *   <li>DOMAIN_CLASS_NAMES - Comma-separated domain class names (optional)</li>
- *   <li>IDLE_CONNECTION_TIMEOUT - Connection idle timeout in minutes (default: 10)</li>
- *   <li>CLIENT_CONNECTION_LIMIT - Max connections per client (default: 10)</li>
- * </ul>
+ * Configuration:
+ * Use JAVA_TOOL_OPTIONS environment variable to set system properties:
+ * <pre>
+ * JAVA_TOOL_OPTIONS="-Dcodion.db.url=jdbc:postgresql://host/db -Dcodion.server.idleConnectionTimeout=10"
+ * </pre>
  */
 public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV2HTTPResponse> {
 
@@ -116,6 +112,7 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 	private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
 	private static final String CONTENT_TYPE = "Content-Type";
 	private static final String X_LAMBDA_REQUEST_ID = "X-Lambda-Request-Id";
+	private static final String MISSING_REQUEST_HEADERS = "Missing request headers";
 	private static final String ENTITIES = "entities";
 	private static final String CLOSE = "close";
 	private static final String CLIENT_ID = "clientId";
@@ -128,22 +125,12 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 	private static final Set<String> NO_RETURN_DATA_OPERATIONS = unmodifiableSet(new HashSet<>(asList(
 					CLOSE, START_TRANSACTION, COMMIT_TRANSACTION, ROLLBACK_TRANSACTION)));
 
-	private final LambdaConfiguration configuration;
 	private final EntityServer entityServer;
 
 	/**
 	 * Creates a new Lambda handler.
 	 */
 	public LambdaEntityHandler() {
-		this(LambdaConfiguration.create());
-	}
-
-	/**
-	 * Creates a new Lambda handler with custom configuration.
-	 * @param configuration the configuration to use
-	 */
-	public LambdaEntityHandler(LambdaConfiguration configuration) {
-		this.configuration = requireNonNull(configuration);
 		try {
 			EntityServerConfiguration serverConfig = createServerConfiguration();
 			this.entityServer = EntityServer.startServer(serverConfig);
@@ -160,55 +147,13 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 	 * Override to customize server settings.
 	 * @return the server configuration
 	 */
-	private EntityServerConfiguration createServerConfiguration() {
-		// Map environment variables to system properties
-		configuration.databaseInitScripts().ifPresent(scripts ->
-						System.setProperty("codion.db.initScripts", scripts));
-
-		// Set idle connection timeout from environment variable
-		String idleTimeout = System.getenv("IDLE_CONNECTION_TIMEOUT");
-		if (idleTimeout != null) {
-			System.setProperty("codion.server.idleConnectionTimeout", idleTimeout);
-		}
-
+	private static EntityServerConfiguration createServerConfiguration() {
 		// Build server configuration
-		EntityServerConfiguration.Builder builder = EntityServerConfiguration
+		return EntityServerConfiguration
 						.builder(1098, 1099) // These are not exposed anywhere
-						.database(createDatabase())
-						.sslEnabled(false);
-
-		// Add domain classes if specified
-		String domainClassNames = System.getenv("DOMAIN_CLASS_NAMES");
-		if (domainClassNames != null && !domainClassNames.trim().isEmpty()) {
-			List<String> domains = asList(domainClassNames.split(","));
-			builder.domainClassNames(domains);
-		}
-
-		// Set client connection limit
-		String clientLimit = System.getenv("CLIENT_CONNECTION_LIMIT");
-		if (clientLimit != null) {
-			try {
-				builder.connectionLimit(Integer.parseInt(clientLimit));
-			}
-			catch (NumberFormatException e) {
-				LOG.warn("Invalid CLIENT_CONNECTION_LIMIT: {}", clientLimit);
-			}
-		}
-
-		return builder.build();
-	}
-
-	/**
-	 * Creates the database instance.
-	 * @return the database
-	 */
-	private Database createDatabase() {
-		// Set database configuration from environment
-		System.setProperty("codion.db.url", configuration.databaseUrl());
-		System.setProperty("codion.db.username", configuration.databaseUser());
-		System.setProperty("codion.db.password", configuration.databasePassword());
-
-		return Database.instance();
+						.database(Database.instance())
+						.sslEnabled(false)
+						.build();
 	}
 
 	@Override
@@ -254,7 +199,7 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 	 */
 	private static UUID extractClientId(Map<String, String> headers) {
 		if (headers == null) {
-			throw new IllegalArgumentException("Missing request headers");
+			throw new IllegalArgumentException(MISSING_REQUEST_HEADERS);
 		}
 
 		// Lambda Function URLs convert all header names to lowercase
@@ -284,7 +229,7 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 	 */
 	private static String extractClientType(Map<String, String> headers) {
 		if (headers == null) {
-			throw new IllegalArgumentException("Missing request headers");
+			throw new IllegalArgumentException(MISSING_REQUEST_HEADERS);
 		}
 
 		// Lambda Function URLs convert all header names to lowercase
@@ -315,7 +260,7 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 	 */
 	private static String extractDomainTypeName(Map<String, String> headers) {
 		if (headers == null) {
-			throw new IllegalArgumentException("Missing request headers");
+			throw new IllegalArgumentException(MISSING_REQUEST_HEADERS);
 		}
 
 		// Lambda Function URLs convert all header names to lowercase
@@ -371,7 +316,7 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 		}
 
 		// Extract user, domain, client ID, and client type
-		User user = LambdaConfiguration.extractUser(input.getHeaders());
+		User user = extractUser(input.getHeaders());
 		String domainTypeName = extractDomainTypeName(input.getHeaders());
 		UUID clientId = extractClientId(input.getHeaders());
 		String clientType = extractClientType(input.getHeaders());
@@ -566,7 +511,7 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 																		 APIGatewayV2HTTPResponse.APIGatewayV2HTTPResponseBuilder response,
 																		 Context context) throws Exception {
 		// Extract user, domain, client ID, and client type
-		User user = LambdaConfiguration.extractUser(input.getHeaders());
+		User user = extractUser(input.getHeaders());
 		String domainTypeName = extractDomainTypeName(input.getHeaders());
 		UUID clientId = extractClientId(input.getHeaders());
 		String clientType = extractClientType(input.getHeaders());
@@ -670,9 +615,38 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 		Map<String, String> headers = new HashMap<>();
 		headers.put(ACCESS_CONTROL_ALLOW_ORIGIN, "*");
 		headers.put(ACCESS_CONTROL_ALLOW_METHODS, GET_POST_OPTIONS);
-		headers.put(ACCESS_CONTROL_ALLOW_HEADERS, "Content-Type, content-type, X-User, x-user, domainTypeName, domaintypename, clientId, clientid, clientType, clienttype, Authorization, authorization");
+		headers.put(ACCESS_CONTROL_ALLOW_HEADERS, "Content-Type, content-type, domainTypeName, domaintypename, clientId, clientid, clientType, clienttype, Authorization, authorization");
 		headers.put(ACCESS_CONTROL_MAX_AGE, "86400");
 
 		return headers;
+	}
+
+	/**
+	 * Extracts user from request headers using Basic authentication.
+	 * @param headers the request headers
+	 * @return the authenticated user
+	 * @throws IllegalArgumentException if no authentication is provided or if authentication is invalid
+	 */
+	private static User extractUser(Map<String, String> headers) {
+		if (headers == null) {
+			throw new IllegalArgumentException("No authentication provided - missing headers");
+		}
+
+		// Check for Basic auth header (Lambda Function URLs lowercase headers)
+		String auth = headers.get("authorization");
+		if (auth == null) {
+			auth = headers.get("Authorization");
+		}
+		if (auth == null || !auth.startsWith("Basic ")) {
+			throw new IllegalArgumentException("No authentication provided - missing Authorization header");
+		}
+		try {
+			String encoded = auth.substring(6);
+			byte[] decoded = java.util.Base64.getDecoder().decode(encoded);
+			return User.parse(new String(decoded));
+		}
+		catch (Exception e) {
+			throw new IllegalArgumentException("Invalid Basic authentication format", e);
+		}
 	}
 }
