@@ -33,8 +33,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class StateTest {
 
+	private static final String CONJUNCTION_AND_PATTERN = "Combination and false, false, false, false";
+	private static final String CONJUNCTION_OR_PATTERN = "Combination or false, false, false, false";
+
 	@Test
-	void listeners() {
+	void state_addRemoveListeners_shouldNotifyOnChange() {
 		State state = State.state();
 		AtomicInteger stateChangeCounter = new AtomicInteger();
 		Runnable stateChangeListener = stateChangeCounter::incrementAndGet;
@@ -59,7 +62,7 @@ public class StateTest {
 	}
 
 	@Test
-	void not() {
+	void not_stateInversion_shouldMaintainOppositeValue() {
 		AtomicInteger stateCounter = new AtomicInteger();
 		Runnable listener = stateCounter::incrementAndGet;
 		AtomicInteger notStateCounter = new AtomicInteger();
@@ -91,7 +94,7 @@ public class StateTest {
 	}
 
 	@Test
-	void test() {
+	void state_basicOperations_shouldWorkAsExpected() {
 		State state = State.state();
 		assertFalse(state.get(), "State should be inactive when initialized");
 		assertFalse(state.isNull());
@@ -100,17 +103,17 @@ public class StateTest {
 		assertTrue(state.optional().isPresent());
 		state.set(true);
 		assertTrue(state.get(), "State should be active after activation");
-		assertEquals("true", state.toString());
+		assertEquals(Boolean.TRUE.toString(), state.toString());
 		assertFalse(state.not().get(), "Not state should be inactive after activation");
 		state.set(true);
 		state.set(false);
 		assertFalse(state.get(), "State should be inactive after deactivation");
-		assertEquals("false", state.toString());
+		assertEquals(Boolean.FALSE.toString(), state.toString());
 		assertTrue(state.not().get(), "Not state should be active after deactivation");
 	}
 
 	@Test
-	void group() {
+	void groupSingleStateAddition() {
 		State stateOne = State.state(true);
 		State stateTwo = State.state(true);
 		State stateThree = State.state(true);
@@ -131,7 +134,10 @@ public class StateTest {
 
 		stateGroup = State.group(asList(stateOne, stateTwo));
 		stateGroup.add(Collections.singletonList(stateThree));
+	}
 
+	@Test
+	void groupVarargsCreation() {
 		State one = State.state(true);
 		State two = State.state(true);
 		State three = State.state(true);
@@ -172,9 +178,12 @@ public class StateTest {
 		assertFalse(one.get());
 		assertFalse(two.get());
 		assertTrue(three.get());
+	}
 
-		one = State.state();
-		two = State.state();
+	@Test
+	void groupTwoStatesAndSingleState() {
+		State one = State.state();
+		State two = State.state();
 
 		State.group(one, two);
 		one.set(true);
@@ -189,7 +198,7 @@ public class StateTest {
 	}
 
 	@Test
-	void stateCombination() {
+	void stateCombinationAndOr() {
 		State stateOne = State.state();
 		State stateTwo = State.state();
 		State stateThree = State.state();
@@ -197,7 +206,7 @@ public class StateTest {
 
 		State.Combination andState = State.and(asList(stateOne, stateTwo, stateThree));
 		assertEquals(Conjunction.AND, andState.conjunction());
-		assertEquals("Combination and false, false, false, false", andState.toString());
+		assertEquals(CONJUNCTION_AND_PATTERN, andState.toString());
 
 		assertFalse(orState.get(), "Or state should be inactive");
 		assertFalse(andState.get(), "And state should be inactive");
@@ -226,17 +235,20 @@ public class StateTest {
 
 		andState.remove(stateOne);
 		assertTrue(andState.get());
+	}
 
-		stateOne.set(false);
-		stateTwo.set(false);
-		stateThree.set(false);
-		orState = State.or();
+	@Test
+	void stateCombinationBuildAndVerify() {
+		State stateOne = State.state();
+		State stateTwo = State.state();
+		State stateThree = State.state();
+		State.Combination orState = State.or();
 		orState.add(stateOne);
 		orState.add(stateTwo);
 		orState.add(stateThree);
-		andState = State.and(stateOne, stateTwo, stateThree);
-		assertEquals("Combination and false, false, false, false", andState.toString());
-		assertEquals("Combination or false, false, false, false", orState.toString());
+		State.Combination andState = State.and(stateOne, stateTwo, stateThree);
+		assertEquals(CONJUNCTION_AND_PATTERN, andState.toString());
+		assertEquals(CONJUNCTION_OR_PATTERN, orState.toString());
 
 		assertFalse(orState.get(), "Or state should be inactive");
 		assertFalse(andState.get(), "And state should be inactive");

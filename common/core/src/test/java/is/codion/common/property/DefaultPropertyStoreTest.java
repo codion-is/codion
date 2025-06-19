@@ -20,6 +20,7 @@ package is.codion.common.property;
 
 import is.codion.common.user.User;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -45,19 +46,32 @@ public final class DefaultPropertyStoreTest {
 
 	private static final String LINE_SEPARATOR = System.lineSeparator();
 
+	// Test constants
+	private static final String VALUE_1 = "value1";
+	private static final String VALUE_2 = "value2";
+	private static final String VALUE_3 = "value3";
+	private static final String VALUE_4 = "value4";
+	private static final String VALUE_5 = "value5";
+	private static final String VALUE_6 = "value6";
+	private static final int INT_VALUE_1 = 42;
+	private static final int INT_VALUE_2 = 44;
+	private static final double DOUBLE_VALUE = 3.14;
+
 	@Test
-	void test(@TempDir Path tempDir) throws IOException {
+	@DisplayName("PropertyStore operations with file backing")
+	void propertyStore_withFileBackingAndOperations_shouldPersistChanges(@TempDir Path tempDir) throws IOException {
 		Path configFile = tempDir.resolve("PropertyStoreTest.test.properties");
 		StringBuilder configBuilder = new StringBuilder()
-						.append("stringlist.property=value1;value2;value3").append(LINE_SEPARATOR)
+						.append("stringlist.property=").append(VALUE_1).append(";").append(VALUE_2).append(";").append(VALUE_3).append(LINE_SEPARATOR)
 						.append("intlist.property=1;2;3").append(LINE_SEPARATOR)
-						.append("int.property1=42").append(LINE_SEPARATOR)
-						.append("int.property3=44").append(LINE_SEPARATOR)
-						.append("double.property=3.14").append(LINE_SEPARATOR)
+						.append("int.property1=").append(INT_VALUE_1).append(LINE_SEPARATOR)
+						.append("int.property3=").append(INT_VALUE_2).append(LINE_SEPARATOR)
+						.append("double.property=").append(DOUBLE_VALUE).append(LINE_SEPARATOR)
 						.append("boolean.property=true");
 		Files.write(configFile, singletonList(configBuilder.toString()));
 		DefaultPropertyStore store = new DefaultPropertyStore(configFile);
 
+		// String property operations
 		AtomicInteger counter = new AtomicInteger();
 		PropertyValue<String> stringValue = store.stringValue("string.property", "value");
 		assertThrows(IllegalStateException.class, () -> store.stringValue("string.property", "another value"));
@@ -75,117 +89,134 @@ public final class DefaultPropertyStoreTest {
 		assertFalse(store.containsProperty(stringValue.name()));
 		assertNull(System.getProperty(stringValue.name()));
 
+		// String list property operations
 		PropertyValue<List<String>> stringListValue = store.listValue("stringlist.property", Objects::toString, Objects::toString);
 		assertTrue(store.containsProperty(stringListValue.name()));
-
-		assertTrue(stringListValue.getOrThrow().contains("value1"));
-		assertTrue(stringListValue.getOrThrow().contains("value2"));
-		assertTrue(stringListValue.getOrThrow().contains("value3"));
-
+		assertTrue(stringListValue.getOrThrow().contains(VALUE_1));
+		assertTrue(stringListValue.getOrThrow().contains(VALUE_2));
+		assertTrue(stringListValue.getOrThrow().contains(VALUE_3));
 		stringListValue.set(emptyList());
 		assertEquals("", store.getProperty(stringListValue.name()));
 		stringListValue.remove();
 		assertFalse(store.containsProperty(stringListValue.name()));
 
+		// Integer list property operations
 		PropertyValue<List<Integer>> integerListValue = store.listValue("intlist.property", Integer::parseInt, Objects::toString);
 		assertTrue(store.containsProperty(integerListValue.name()));
-
 		assertTrue(integerListValue.getOrThrow().contains(1));
 		assertTrue(integerListValue.getOrThrow().contains(2));
 		assertTrue(integerListValue.getOrThrow().contains(3));
 
+		// Integer property operations
 		PropertyValue<Integer> intValue1 = store.integerValue("int.property1", 0);
-		assertEquals(42, intValue1.get());
+		assertEquals(INT_VALUE_1, intValue1.get());
 		PropertyValue<Integer> intValue2 = store.integerValue("int.property2", 0);
 		assertEquals(0, intValue2.get());//default value kicks in
 		PropertyValue<Integer> intValue3 = store.integerValue("int.property3", 0);
-		assertEquals(44, intValue3.get());
+		assertEquals(INT_VALUE_2, intValue3.get());
 
+		// Double property operations
 		PropertyValue<Double> doubleValue = store.doubleValue("double.property", 0d);
-		assertEquals(3.14, doubleValue.get());
-		assertEquals("3.14", System.getProperty(doubleValue.name()));
+		assertEquals(DOUBLE_VALUE, doubleValue.get());
+		assertEquals(String.valueOf(DOUBLE_VALUE), System.getProperty(doubleValue.name()));
 		doubleValue.set(null);
 		assertEquals(0d, doubleValue.get());
 		doubleValue.remove();
 		assertFalse(store.containsProperty(doubleValue.name()));
 
+		// Boolean property operations
 		PropertyValue<Boolean> booleanValue = store.booleanValue("boolean.property", false);
 		assertTrue(booleanValue.getOrThrow());
 
+		// Property filtering
 		Collection<String> intProperties = store.propertyNames(propertyName -> propertyName.startsWith("int."));
 		assertTrue(intProperties.contains("int.property1"));
 		assertTrue(intProperties.contains("int.property2"));
 		assertTrue(intProperties.contains("int.property3"));
 
 		Collection<String> intPropertyValues = store.properties(propertyName -> propertyName.startsWith("int."));
-		assertTrue(intPropertyValues.contains("42"));
+		assertTrue(intPropertyValues.contains(String.valueOf(INT_VALUE_1)));
 		assertTrue(intPropertyValues.contains("0"));
-		assertTrue(intPropertyValues.contains("44"));
+		assertTrue(intPropertyValues.contains(String.valueOf(INT_VALUE_2)));
 
+		// Test writeToFile
 		stringListValue.set(emptyList());
-
 		stringValue.set("newValue");
-		stringListValue.set(asList("value4", "value5", "value6"));
+		stringListValue.set(asList(VALUE_4, VALUE_5, VALUE_6));
 		integerListValue.set(null);
-		intValue1.set(24);
-		intValue2.set(25);
+		intValue1.set(INT_VALUE_1 - 18);
+		intValue2.set(INT_VALUE_1 - 17);
 		intValue3.set(null);
-		doubleValue.set(4.22);
+		doubleValue.set(DOUBLE_VALUE + 1.08);
 		booleanValue.set(null);
 
 		store.writeToFile(configFile);
 
 		List<String> propertyValues = Files.readAllLines(configFile);
 		assertTrue(propertyValues.contains("string.property=newValue"));
-		assertTrue(propertyValues.contains("stringlist.property=value4;value5;value6"));
-		assertTrue(propertyValues.contains("int.property1=24"));
-		assertTrue(propertyValues.contains("int.property2=25"));
+		assertTrue(propertyValues.contains("stringlist.property=" + VALUE_4 + ";" + VALUE_5 + ";" + VALUE_6));
+		assertTrue(propertyValues.contains("int.property1=" + (INT_VALUE_1 - 18)));
+		assertTrue(propertyValues.contains("int.property2=" + (INT_VALUE_1 - 17)));
 		assertFalse(propertyValues.contains("int.property3=26"));
-		assertTrue(propertyValues.contains("double.property=4.22"));
+		assertTrue(propertyValues.contains("double.property=" + (DOUBLE_VALUE + 1.08)));
 		assertTrue(propertyValues.contains("boolean.property=false"));
 		assertFalse(propertyValues.contains("intlist.property=1;2;3"));
 	}
 
 	@Test
-	void testDefaultValues() throws IOException {
+	@DisplayName("Default values behavior")
+	void propertyValue_withDefaultValue_shouldUseDefaultWhenNull() throws IOException {
 		File configFile = File.createTempFile("PropertyStoreTest.testDefaultValues", "properties");
 		configFile.deleteOnExit();
 		DefaultPropertyStore store = new DefaultPropertyStore(configFile.toPath());
-		PropertyValue<String> stringValue = store.stringValue("string.property", "value");
+
+		// String default value
+		PropertyValue<String> stringValue = store.stringValue("string.property.default", "value");
 		assertEquals("value", stringValue.get());
 		stringValue.set("another");
 		stringValue.set(null);
 		assertEquals("value", stringValue.get());
-		PropertyValue<Boolean> booleanValue1 = store.booleanValue("boolean.property", true);
+
+		// Boolean default value
+		PropertyValue<Boolean> booleanValue1 = store.booleanValue("boolean.property.default", true);
 		assertTrue(booleanValue1.getOrThrow());
 		booleanValue1.set(false);
 		assertFalse(booleanValue1.getOrThrow());
 		booleanValue1.set(null);
 		assertTrue(booleanValue1.getOrThrow());
-		PropertyValue<Integer> integerValue = store.integerValue("integer.property", 42);
-		assertEquals(42, integerValue.get());
-		integerValue.set(64);
+
+		// Integer default value
+		PropertyValue<Integer> integerValue = store.integerValue("integer.property.default", INT_VALUE_1);
+		assertEquals(INT_VALUE_1, integerValue.get());
+		integerValue.set(INT_VALUE_1 + 22);
 		integerValue.set(null);
-		assertEquals(42, integerValue.get());
-		PropertyValue<Double> doubleValue = store.doubleValue("double.property", 3.14);
-		assertEquals(3.14, doubleValue.get());
-		doubleValue.set(42d);
+		assertEquals(INT_VALUE_1, integerValue.get());
+
+		// Double default value
+		PropertyValue<Double> doubleValue = store.doubleValue("double.property.default", DOUBLE_VALUE);
+		assertEquals(DOUBLE_VALUE, doubleValue.get());
+		doubleValue.set((double) INT_VALUE_1);
 		doubleValue.set(null);
-		assertEquals(3.14, doubleValue.get());
-		PropertyValue<List<String>> listValue = store.listValue("stringlist.property", Objects::toString, Objects::toString, asList("value1", "value2"));
+		assertEquals(DOUBLE_VALUE, doubleValue.get());
+
+		// List default value
+		PropertyValue<List<String>> listValue = store.listValue("stringlist.property.default", Objects::toString, Objects::toString, asList(VALUE_1, VALUE_2));
 		List<String> strings = listValue.getOrThrow();
-		assertTrue(strings.contains("value1"));
-		assertTrue(strings.contains("value2"));
-		listValue.set(Arrays.asList("another1", "another2"));
+		assertTrue(strings.contains(VALUE_1));
+		assertTrue(strings.contains(VALUE_2));
+		listValue.set(Arrays.asList(VALUE_3, VALUE_4));
 		listValue.set(null);
 		strings = listValue.getOrThrow();
-		assertTrue(strings.contains("value1"));
-		assertTrue(strings.contains("value2"));
+		assertTrue(strings.contains(VALUE_1));
+		assertTrue(strings.contains(VALUE_2));
 	}
 
 	@Test
-	void testNoDefaultValue() {
+	@DisplayName("Properties without default values")
+	void propertyValue_withoutDefaultValue_shouldReturnNull() {
 		DefaultPropertyStore store = new DefaultPropertyStore(new Properties());
+
+		// String without default
 		PropertyValue<String> stringValue = store.stringValue("string.property.noDefault");
 		assertNull(stringValue.get());
 		stringValue.set("value");
@@ -194,6 +225,7 @@ public final class DefaultPropertyStoreTest {
 		assertNull(stringValue.get());
 		assertFalse(store.containsProperty(stringValue.name()));
 
+		// Boolean without default
 		PropertyValue<Boolean> booleanValue = store.booleanValue("boolean.property.noDefault");
 		assertNull(booleanValue.get());
 		booleanValue.set(true);
@@ -204,7 +236,8 @@ public final class DefaultPropertyStoreTest {
 	}
 
 	@Test
-	void exceptions() {
+	@DisplayName("Exception handling")
+	void propertyStore_invalidOperations_shouldThrowExceptions() {
 		assertThrows(FileNotFoundException.class, () -> new DefaultPropertyStore(Path.of("test.file")));
 
 		PropertyStore store = PropertyStore.propertyStore();
@@ -221,7 +254,8 @@ public final class DefaultPropertyStoreTest {
 	}
 
 	@Test
-	void initialValue() {
+	@DisplayName("Initial value from Properties")
+	void propertyValue_fromPropertiesObject_shouldOverrideDefault() {
 		Properties properties = new Properties();
 		properties.put("property", "properties");
 
@@ -243,7 +277,8 @@ public final class DefaultPropertyStoreTest {
 	}
 
 	@Test
-	void getOrThrow() {
+	@DisplayName("getOrThrow behavior")
+	void getOrThrow_withNullValue_shouldThrowNoSuchElementException() {
 		Properties properties = new Properties();
 		properties.put("property", "");
 		DefaultPropertyStore store = new DefaultPropertyStore(properties);
@@ -257,7 +292,8 @@ public final class DefaultPropertyStoreTest {
 	}
 
 	@Test
-	void systemProperties() {
+	@DisplayName("System properties formatting")
+	void systemProperties_withFormatter_shouldFormatValues() {
 		PropertyStore.PropertyFormatter formatter = (property, value) -> {
 			if (property.equals("codion.test.user")) {
 				return User.parse(value).username();

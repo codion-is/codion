@@ -32,6 +32,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ValueTest {
 
+	private static final String NULL_STRING = "null";
+	private static final String TEST_STRING = "test";
+	private static final String HELLO_STRING = "hello";
+	private static final String ANOTHER_STRING = "another";
+	private static final int VALUE_42 = 42;
+	private static final int VALUE_20 = 20;
+	private static final int VALUE_22 = 22;
+	private static final int VALUE_NEGATIVE_1 = -1;
+
 	@Test
 	void test() {
 		Value.builder()
@@ -67,19 +76,19 @@ public class ValueTest {
 	}
 
 	@Test
-	void value() {
+	void valueNonNullBehavior() {
 		AtomicInteger eventCounter = new AtomicInteger();
 		Value<Integer> intValue = Value.builder()
-						.nonNull(-1)
-						.value(42)
+						.nonNull(VALUE_NEGATIVE_1)
+						.value(VALUE_42)
 						.build();
 		assertFalse(intValue.isNullable());
 		assertTrue(intValue.optional().isPresent());
-		assertTrue(intValue.isEqualTo(42));
+		assertTrue(intValue.isEqualTo(VALUE_42));
 		Observable<Integer> observable = intValue.observable();
 		assertFalse(observable.isNullable());
 		assertTrue(observable.optional().isPresent());
-		assertTrue(observable.isEqualTo(42));
+		assertTrue(observable.isEqualTo(VALUE_42));
 		Runnable listener = eventCounter::incrementAndGet;
 		assertTrue(observable.addListener(listener));
 		assertFalse(observable.addListener(listener));
@@ -89,48 +98,54 @@ public class ValueTest {
 			}
 		});
 		assertEquals(0, eventCounter.get());
-		intValue.set(20);
+		intValue.set(VALUE_20);
 		assertEquals(1, eventCounter.get());
-		assertTrue(intValue.isEqualTo(20));
+		assertTrue(intValue.isEqualTo(VALUE_20));
 		intValue.clear();
-		assertTrue(intValue.isEqualTo(-1));
+		assertTrue(intValue.isEqualTo(VALUE_NEGATIVE_1));
 		assertFalse(intValue.isNull());
 		assertTrue(intValue.optional().isPresent());
-		assertEquals(-1, intValue.get());
-		assertEquals(-1, observable.get());
+		assertEquals(VALUE_NEGATIVE_1, intValue.get());
+		assertEquals(VALUE_NEGATIVE_1, observable.get());
 		assertEquals(2, eventCounter.get());
 		intValue.clear();
-		assertEquals(-1, intValue.get());
-		assertEquals(-1, observable.get());
+		assertEquals(VALUE_NEGATIVE_1, intValue.get());
+		assertEquals(VALUE_NEGATIVE_1, observable.get());
 		assertEquals(2, eventCounter.get());
-		intValue.set(42);
+		intValue.set(VALUE_42);
 		assertEquals(3, eventCounter.get());
 		intValue.clear();
-		assertEquals(-1, intValue.get());
-		assertEquals(-1, observable.get());
-
-		Value<String> stringValue = Value.nonNull("null");
-		assertFalse(stringValue.isNullable());
-		assertEquals("null", stringValue.get());
-		stringValue.set("test");
-		assertEquals("test", stringValue.get());
-		stringValue.clear();
-		assertEquals("null", stringValue.get());
-
-		Value<String> value = Value.nullable();
-		assertFalse(value.optional().isPresent());
-		assertThrows(NoSuchElementException.class, value::getOrThrow);
-		value.set("hello");
-		assertTrue(value.optional().isPresent());
+		assertEquals(VALUE_NEGATIVE_1, intValue.get());
+		assertEquals(VALUE_NEGATIVE_1, observable.get());
 
 		assertTrue(observable.removeListener(listener));
 		assertFalse(observable.removeListener(listener));
 	}
 
 	@Test
+	void valueStringNonNull() {
+		Value<String> stringValue = Value.nonNull(NULL_STRING);
+		assertFalse(stringValue.isNullable());
+		assertEquals(NULL_STRING, stringValue.get());
+		stringValue.set(TEST_STRING);
+		assertEquals(TEST_STRING, stringValue.get());
+		stringValue.clear();
+		assertEquals(NULL_STRING, stringValue.get());
+	}
+
+	@Test
+	void valueNullableOptional() {
+		Value<String> value = Value.nullable();
+		assertFalse(value.optional().isPresent());
+		assertThrows(NoSuchElementException.class, value::getOrThrow);
+		value.set(HELLO_STRING);
+		assertTrue(value.optional().isPresent());
+	}
+
+	@Test
 	void linkValues() {
 		AtomicInteger modelValueEventCounter = new AtomicInteger();
-		Value<Integer> modelValue = Value.nullable(42);
+		Value<Integer> modelValue = Value.nullable(VALUE_42);
 		Value<Integer> uiValue = Value.nullable();
 		uiValue.link(modelValue);
 
@@ -139,21 +154,21 @@ public class ValueTest {
 		modelValue.addListener(modelValueEventCounter::incrementAndGet);
 		AtomicInteger uiValueEventCounter = new AtomicInteger();
 		uiValue.addListener(uiValueEventCounter::incrementAndGet);
-		assertEquals(Integer.valueOf(42), uiValue.get());
+		assertEquals(Integer.valueOf(VALUE_42), uiValue.get());
 		assertEquals(0, modelValueEventCounter.get());
 		assertEquals(0, uiValueEventCounter.get());
 
-		uiValue.set(20);
-		assertEquals(Integer.valueOf(20), modelValue.get());
+		uiValue.set(VALUE_20);
+		assertEquals(Integer.valueOf(VALUE_20), modelValue.get());
 		assertEquals(1, modelValueEventCounter.get());
 		assertEquals(1, uiValueEventCounter.get());
 
-		modelValue.set(22);
-		assertEquals(Integer.valueOf(22), uiValue.get());
+		modelValue.set(VALUE_22);
+		assertEquals(Integer.valueOf(VALUE_22), uiValue.get());
 		assertEquals(2, modelValueEventCounter.get());
 		assertEquals(2, uiValueEventCounter.get());
 
-		uiValue.set(22);
+		uiValue.set(VALUE_22);
 		assertEquals(2, modelValueEventCounter.get());
 		assertEquals(2, uiValueEventCounter.get());
 
@@ -175,7 +190,7 @@ public class ValueTest {
 		AtomicInteger modelValueEventCounter = new AtomicInteger();
 		Value<Integer> modelValue = Value.builder()
 						.nonNull(0)
-						.value(42)
+						.value(VALUE_42)
 						.build();
 		Value<Integer> uiValue = Value.nullable();
 		assertFalse(modelValue.isNullable());
@@ -183,21 +198,21 @@ public class ValueTest {
 		modelValue.addListener(modelValueEventCounter::incrementAndGet);
 		AtomicInteger uiValueEventCounter = new AtomicInteger();
 		uiValue.addListener(uiValueEventCounter::incrementAndGet);
-		assertEquals(Integer.valueOf(42), uiValue.get());
+		assertEquals(Integer.valueOf(VALUE_42), uiValue.get());
 		assertEquals(0, modelValueEventCounter.get());
 		assertEquals(0, uiValueEventCounter.get());
 
-		uiValue.set(20);
-		assertEquals(Integer.valueOf(42), modelValue.get());//read only, no change
+		uiValue.set(VALUE_20);
+		assertEquals(Integer.valueOf(VALUE_42), modelValue.get());//read only, no change
 		assertEquals(0, modelValueEventCounter.get());
 		assertEquals(1, uiValueEventCounter.get());
 
-		modelValue.set(22);
-		assertEquals(Integer.valueOf(22), uiValue.get());
+		modelValue.set(VALUE_22);
+		assertEquals(Integer.valueOf(VALUE_22), uiValue.get());
 		assertEquals(1, modelValueEventCounter.get());
 		assertEquals(2, uiValueEventCounter.get());
 
-		uiValue.set(22);
+		uiValue.set(VALUE_22);
 		assertEquals(1, modelValueEventCounter.get());
 		assertEquals(2, uiValueEventCounter.get());
 
@@ -367,7 +382,7 @@ public class ValueTest {
 		assertEquals(1, value.get());
 		value.map(currentValue -> null);
 		assertTrue(value.isNull());
-		value.map(currentValue -> 42);
+		value.map(currentValue -> VALUE_42);
 		assertFalse(value.isNull());
 	}
 }

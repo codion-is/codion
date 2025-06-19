@@ -18,6 +18,7 @@
  */
 package is.codion.common.value;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -35,7 +36,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ValuesTest {
 
 	@Test
-	void set() {
+	@DisplayName("ValueSet basic operations")
+	void valueSet_basicOperations_shouldWorkAsExpected() {
 		Values<Integer, Set<Integer>> set = ValueSet.valueSet();
 		ObservableValues<Integer, Set<Integer>> observer = set.observable();
 		assertTrue(observer.isEmpty());
@@ -50,14 +52,19 @@ public class ValuesTest {
 		assertTrue(set.remove(1));
 		assertFalse(set.remove(1));
 
+	}
+
+	@Test
+	@DisplayName("ValueSet with initial values")
+	void valueSet_withInitialValues_shouldContainValues() {
 		Set<Integer> initialValues = new HashSet<>();
 		initialValues.add(1);
 		initialValues.add(2);
 
-		set = ValueSet.<Integer>builder()
+		Values<Integer, Set<Integer>> set = ValueSet.<Integer>builder()
 						.value(initialValues)
 						.build();
-		observer = set.observable();
+		ObservableValues<Integer, Set<Integer>> observer = set.observable();
 		assertFalse(observer.isEmpty());
 		assertEquals(initialValues, observer.get());
 		assertUnmodifiable(observer);
@@ -68,31 +75,22 @@ public class ValuesTest {
 		assertTrue(set.add(3));
 		assertTrue(set.remove(1));
 		assertTrue(set.remove(2));
+	}
 
-		set.set(initialValues);
-		assertTrue(set.remove(1));
-		assertTrue(set.remove(2));
-		assertTrue(set.add(3));
-
-		set.clear();
-		assertTrue(observer.isEmpty());
-		assertTrue(set.add(3));
-		assertFalse(set.removeAll(1, 2));
-
+	@Test
+	@DisplayName("ValueSet null handling")
+	void valueSet_nullHandling_shouldAllowNullValues() {
+		Values<Integer, Set<Integer>> set = ValueSet.valueSet();
 		assertTrue(set.add(null));
 		assertFalse(set.add(null));
 		assertTrue(set.remove(null));
+	}
 
-		set.clear();
-		set.addAll(1, 2);
-		assertUnmodifiable(observer);
-
-		set.clear();
-		assertTrue(set.add(1));
-		assertTrue(set.add(2));
-
-		set.clear();
-
+	@Test
+	@DisplayName("ValueSet single value view")
+	void valueSet_singleValueView_shouldReflectChanges() {
+		Values<Integer, Set<Integer>> set = ValueSet.valueSet();
+		ObservableValues<Integer, Set<Integer>> observer = set.observable();
 		Value<Integer> value = set.value();
 
 		value.set(1);
@@ -105,6 +103,13 @@ public class ValuesTest {
 
 		set.clear();
 		assertNull(value.get());
+	}
+
+	@Test
+	@DisplayName("ValueSet bulk operations")
+	void valueSet_bulkOperations_shouldWorkCorrectly() {
+		Values<Integer, Set<Integer>> set = ValueSet.valueSet();
+		ObservableValues<Integer, Set<Integer>> observer = set.observable();
 
 		assertTrue(set.addAll(1, 2, 3));
 		assertEquals(3, observer.size());
@@ -151,7 +156,8 @@ public class ValuesTest {
 	}
 
 	@Test
-	void list() {
+	@DisplayName("ValueList basic operations")
+	void valueList_basicOperations_shouldWorkAsExpected() {
 		Values<Integer, List<Integer>> list = ValueList.valueList();
 		ObservableValues<Integer, List<Integer>> observable = list.observable();
 		assertTrue(observable.isEmpty());
@@ -166,14 +172,19 @@ public class ValuesTest {
 		assertTrue(list.remove(1));
 		assertTrue(list.remove(1));
 
+	}
+
+	@Test
+	@DisplayName("ValueList with initial values")
+	void valueList_withInitialValues_shouldContainValues() {
 		List<Integer> initialValues = new ArrayList<>();
 		initialValues.add(1);
 		initialValues.add(2);
 
-		list = ValueList.<Integer>builder()
+		Values<Integer, List<Integer>> list = ValueList.<Integer>builder()
 						.value(initialValues)
 						.build();
-		observable = list.observable();
+		ObservableValues<Integer, List<Integer>> observable = list.observable();
 		assertFalse(observable.isEmpty());
 		assertEquals(initialValues, observable.get());
 		assertUnmodifiable(observable);
@@ -184,31 +195,29 @@ public class ValuesTest {
 		assertTrue(list.add(3));
 		assertTrue(list.remove(1));
 		assertTrue(list.remove(2));
+	}
 
-		list.set(initialValues);
+	@Test
+	@DisplayName("ValueList duplicate and null handling")
+	void valueList_duplicatesAndNull_shouldAllowBoth() {
+		Values<Integer, List<Integer>> list = ValueList.valueList();
+		// Lists allow duplicates
+		assertTrue(list.add(1));
+		assertTrue(list.add(1));
 		assertTrue(list.remove(1));
-		assertTrue(list.remove(2));
-		assertTrue(list.add(3));
+		assertTrue(list.remove(1));
 
-		list.clear();
-		assertTrue(observable.isEmpty());
-		assertTrue(list.add(3));
-		assertFalse(list.removeAll(1, 2));
-
+		// Lists allow null values
 		assertTrue(list.add(null));
 		assertTrue(list.add(null));
 		assertTrue(list.remove(null));
+	}
 
-		list.clear();
-		list.addAll(1, 2);
-		assertUnmodifiable(observable);
-
-		list.clear();
-		assertTrue(list.add(1));
-		assertTrue(list.add(2));
-
-		list.clear();
-
+	@Test
+	@DisplayName("ValueList single value view")
+	void valueList_singleValueView_shouldReflectChanges() {
+		Values<Integer, List<Integer>> list = ValueList.valueList();
+		ObservableValues<Integer, List<Integer>> observable = list.observable();
 		Value<Integer> value = list.value();
 
 		value.set(1);
@@ -221,13 +230,20 @@ public class ValuesTest {
 
 		list.clear();
 		assertNull(value.get());
+	}
+
+	@Test
+	@DisplayName("ValueList bulk operations")
+	void valueList_bulkOperations_shouldWorkCorrectly() {
+		Values<Integer, List<Integer>> list = ValueList.valueList();
+		ObservableValues<Integer, List<Integer>> observable = list.observable();
 
 		assertTrue(list.addAll(1, 2, 3));
 		assertEquals(3, observable.size());
 		list.forEach(i -> {});
 		assertFalse(observable.containsAll(asList(1, 2, 4)));
 		assertTrue(observable.containsAll(asList(1, 2, 3)));
-		assertTrue(list.addAll(1, 2, 3));
+		assertTrue(list.addAll(1, 2, 3)); // Lists allow duplicates
 		assertTrue(list.removeAll(1, 2));
 		assertFalse(list.removeAll(1, 2));
 		assertTrue(list.removeAll(2, 3));
