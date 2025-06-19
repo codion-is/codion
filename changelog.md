@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.40
+
 ## 0.18.39
 ### is.codion.common.core
 - DefaultPropertyStore, synchronization added.
