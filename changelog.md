@@ -6,6 +6,8 @@ Codion Change Log
 - Unit tests improved.
 ### is.codion.common.db
 - Unit tests improved.
+### is.codion.common.model
+- Unit tests improved.
 
 ## 0.18.39
 ### is.codion.common.core

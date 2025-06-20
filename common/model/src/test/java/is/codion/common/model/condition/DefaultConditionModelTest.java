@@ -23,6 +23,9 @@ import is.codion.common.model.condition.ConditionModel.Operands;
 import is.codion.common.model.condition.ConditionModel.Wildcard;
 import is.codion.common.value.Value;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -37,6 +40,9 @@ import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultConditionModelTest {
+
+	private static final Integer TEST_VALUE_1 = 1;
+	private static final Integer TEST_VALUE_2 = 2;
 
 	final AtomicInteger equalCounter = new AtomicInteger();
 	final AtomicInteger inCounter = new AtomicInteger();
@@ -224,139 +230,221 @@ public class DefaultConditionModelTest {
 	}
 
 	@Test
-	void autoEnable() {
+	void autoEnable_equal_enablesWithEqualValue() {
 		ConditionModel<Integer> condition = ConditionModel.builder(Integer.class).build();
-
 		condition.operator().set(Operator.EQUAL);
-		assertFalse(condition.enabled().get());
 		Operands<Integer> operands = condition.operands();
-		operands.equal().set(1);
+
+		assertFalse(condition.enabled().get());
+		operands.equal().set(TEST_VALUE_1);
 		assertTrue(condition.enabled().get());
 		operands.equal().set(null);
 		assertFalse(condition.enabled().get());
-		condition.enabled().set(false);
-		operands.upper().set(1);
-		operands.lower().set(1);
-		assertFalse(condition.enabled().get());
-		operands.upper().set(null);
-		operands.lower().set(null);
 
+		// Setting other operands should not affect auto-enable for EQUAL
+		condition.enabled().set(false);
+		operands.upper().set(TEST_VALUE_1);
+		operands.lower().set(TEST_VALUE_1);
+		assertFalse(condition.enabled().get());
+	}
+
+	@Test
+	void autoEnable_notEqual_enablesWithEqualValue() {
+		ConditionModel<Integer> condition = ConditionModel.builder(Integer.class).build();
 		condition.operator().set(Operator.NOT_EQUAL);
+		Operands<Integer> operands = condition.operands();
+
 		assertFalse(condition.enabled().get());
-		operands.equal().set(1);
+		operands.equal().set(TEST_VALUE_1);
 		assertTrue(condition.enabled().get());
 		operands.equal().set(null);
 		assertFalse(condition.enabled().get());
+
+		// Setting other operands should not affect auto-enable for NOT_EQUAL
 		condition.enabled().set(false);
-		operands.upper().set(1);
-		operands.lower().set(1);
+		operands.upper().set(TEST_VALUE_1);
+		operands.lower().set(TEST_VALUE_1);
 		assertFalse(condition.enabled().get());
-		operands.upper().set(null);
-		operands.lower().set(null);
+	}
 
+	@Test
+	void autoEnable_lessThan_enablesWithUpperValue() {
+		ConditionModel<Integer> condition = ConditionModel.builder(Integer.class).build();
 		condition.operator().set(Operator.LESS_THAN);
+		Operands<Integer> operands = condition.operands();
+
 		assertFalse(condition.enabled().get());
-		operands.upper().set(1);
+		operands.upper().set(TEST_VALUE_1);
 		assertTrue(condition.enabled().get());
 		operands.upper().set(null);
 		assertFalse(condition.enabled().get());
-		operands.lower().set(1);
-		assertFalse(condition.enabled().get());
-		operands.lower().set(null);
 
+		// Setting lower operand should not affect auto-enable for LESS_THAN
+		operands.lower().set(TEST_VALUE_1);
+		assertFalse(condition.enabled().get());
+	}
+
+	@Test
+	void autoEnable_lessThanOrEqual_enablesWithUpperValue() {
+		ConditionModel<Integer> condition = ConditionModel.builder(Integer.class).build();
 		condition.operator().set(Operator.LESS_THAN_OR_EQUAL);
+		Operands<Integer> operands = condition.operands();
+
 		assertFalse(condition.enabled().get());
-		operands.upper().set(1);
+		operands.upper().set(TEST_VALUE_1);
 		assertTrue(condition.enabled().get());
 		operands.upper().set(null);
 		assertFalse(condition.enabled().get());
-		operands.lower().set(1);
-		assertFalse(condition.enabled().get());
-		operands.lower().set(null);
 
+		// Setting lower operand should not affect auto-enable for LESS_THAN_OR_EQUAL
+		operands.lower().set(TEST_VALUE_1);
+		assertFalse(condition.enabled().get());
+	}
+
+	@Test
+	void autoEnable_greaterThan_enablesWithLowerValue() {
+		ConditionModel<Integer> condition = ConditionModel.builder(Integer.class).build();
 		condition.operator().set(Operator.GREATER_THAN);
+		Operands<Integer> operands = condition.operands();
+
 		assertFalse(condition.enabled().get());
-		operands.lower().set(1);
+		operands.lower().set(TEST_VALUE_1);
 		assertTrue(condition.enabled().get());
 		operands.lower().set(null);
 		assertFalse(condition.enabled().get());
-		operands.upper().set(1);
-		assertFalse(condition.enabled().get());
-		operands.upper().set(null);
 
+		// Setting upper operand should not affect auto-enable for GREATER_THAN
+		operands.upper().set(TEST_VALUE_1);
+		assertFalse(condition.enabled().get());
+	}
+
+	@Test
+	void autoEnable_greaterThanOrEqual_enablesWithLowerValue() {
+		ConditionModel<Integer> condition = ConditionModel.builder(Integer.class).build();
 		condition.operator().set(Operator.GREATER_THAN_OR_EQUAL);
+		Operands<Integer> operands = condition.operands();
+
 		assertFalse(condition.enabled().get());
-		operands.lower().set(1);
+		operands.lower().set(TEST_VALUE_1);
 		assertTrue(condition.enabled().get());
 		operands.lower().set(null);
 		assertFalse(condition.enabled().get());
-		operands.upper().set(1);
-		assertFalse(condition.enabled().get());
-		operands.upper().set(null);
 
+		// Setting upper operand should not affect auto-enable for GREATER_THAN_OR_EQUAL
+		operands.upper().set(TEST_VALUE_1);
+		assertFalse(condition.enabled().get());
+	}
+
+	@Test
+	void autoEnable_between_enablesWithBothBounds() {
+		ConditionModel<Integer> condition = ConditionModel.builder(Integer.class).build();
 		condition.operator().set(Operator.BETWEEN);
+		Operands<Integer> operands = condition.operands();
+
 		assertFalse(condition.enabled().get());
-		operands.equal().set(1);
+
+		// Equal operand should not affect auto-enable for BETWEEN
+		operands.equal().set(TEST_VALUE_1);
 		assertFalse(condition.enabled().get());
 		operands.equal().set(null);
-		operands.lower().set(1);
-		assertFalse(condition.enabled().get());
-		operands.upper().set(1);
-		assertTrue(condition.enabled().get());
-		operands.lower().set(null);
-		assertFalse(condition.enabled().get());
-		operands.lower().set(1);
-		assertTrue(condition.enabled().get());
-		operands.lower().set(null);
-		operands.upper().set(null);
 
+		// Single bound is not sufficient
+		operands.lower().set(TEST_VALUE_1);
+		assertFalse(condition.enabled().get());
+
+		// Both bounds required for auto-enable
+		operands.upper().set(TEST_VALUE_2);
+		assertTrue(condition.enabled().get());
+
+		// Removing either bound disables
+		operands.lower().set(null);
+		assertFalse(condition.enabled().get());
+		operands.lower().set(TEST_VALUE_1);
+		assertTrue(condition.enabled().get());
+	}
+
+	@Test
+	void autoEnable_betweenExclusive_enablesWithBothBounds() {
+		ConditionModel<Integer> condition = ConditionModel.builder(Integer.class).build();
 		condition.operator().set(Operator.BETWEEN_EXCLUSIVE);
+		Operands<Integer> operands = condition.operands();
+
 		assertFalse(condition.enabled().get());
-		operands.equal().set(1);
+
+		// Equal operand should not affect auto-enable for BETWEEN_EXCLUSIVE
+		operands.equal().set(TEST_VALUE_1);
 		assertFalse(condition.enabled().get());
 		operands.equal().set(null);
-		operands.lower().set(1);
-		assertFalse(condition.enabled().get());
-		operands.upper().set(1);
-		assertTrue(condition.enabled().get());
-		operands.lower().set(null);
-		assertFalse(condition.enabled().get());
-		operands.lower().set(1);
-		assertTrue(condition.enabled().get());
-		operands.lower().set(null);
-		operands.upper().set(null);
 
+		// Single bound is not sufficient
+		operands.lower().set(TEST_VALUE_1);
+		assertFalse(condition.enabled().get());
+
+		// Both bounds required for auto-enable
+		operands.upper().set(TEST_VALUE_2);
+		assertTrue(condition.enabled().get());
+
+		// Removing either bound disables
+		operands.lower().set(null);
+		assertFalse(condition.enabled().get());
+		operands.lower().set(TEST_VALUE_1);
+		assertTrue(condition.enabled().get());
+	}
+
+	@Test
+	void autoEnable_notBetween_enablesWithBothBounds() {
+		ConditionModel<Integer> condition = ConditionModel.builder(Integer.class).build();
 		condition.operator().set(Operator.NOT_BETWEEN);
-		assertFalse(condition.enabled().get());
-		operands.equal().set(1);
-		assertFalse(condition.enabled().get());
-		operands.equal().set(null);
-		operands.lower().set(1);
-		assertFalse(condition.enabled().get());
-		operands.upper().set(1);
-		assertTrue(condition.enabled().get());
-		operands.lower().set(null);
-		assertFalse(condition.enabled().get());
-		operands.lower().set(1);
-		assertTrue(condition.enabled().get());
-		operands.lower().set(null);
-		operands.upper().set(null);
+		Operands<Integer> operands = condition.operands();
 
-		condition.operator().set(Operator.NOT_BETWEEN_EXCLUSIVE);
 		assertFalse(condition.enabled().get());
-		operands.equal().set(1);
+
+		// Equal operand should not affect auto-enable for NOT_BETWEEN
+		operands.equal().set(TEST_VALUE_1);
 		assertFalse(condition.enabled().get());
 		operands.equal().set(null);
-		operands.lower().set(1);
+
+		// Single bound is not sufficient
+		operands.lower().set(TEST_VALUE_1);
 		assertFalse(condition.enabled().get());
-		operands.upper().set(1);
+
+		// Both bounds required for auto-enable
+		operands.upper().set(TEST_VALUE_2);
 		assertTrue(condition.enabled().get());
+
+		// Removing either bound disables
 		operands.lower().set(null);
 		assertFalse(condition.enabled().get());
-		operands.lower().set(1);
+		operands.lower().set(TEST_VALUE_1);
 		assertTrue(condition.enabled().get());
+	}
+
+	@Test
+	void autoEnable_notBetweenExclusive_enablesWithBothBounds() {
+		ConditionModel<Integer> condition = ConditionModel.builder(Integer.class).build();
+		condition.operator().set(Operator.NOT_BETWEEN_EXCLUSIVE);
+		Operands<Integer> operands = condition.operands();
+
+		assertFalse(condition.enabled().get());
+
+		// Equal operand should not affect auto-enable for NOT_BETWEEN_EXCLUSIVE
+		operands.equal().set(TEST_VALUE_1);
+		assertFalse(condition.enabled().get());
+		operands.equal().set(null);
+
+		// Single bound is not sufficient
+		operands.lower().set(TEST_VALUE_1);
+		assertFalse(condition.enabled().get());
+
+		// Both bounds required for auto-enable
+		operands.upper().set(TEST_VALUE_2);
+		assertTrue(condition.enabled().get());
+
+		// Removing either bound disables
 		operands.lower().set(null);
-		operands.upper().set(null);
+		assertFalse(condition.enabled().get());
+		operands.lower().set(TEST_VALUE_1);
+		assertTrue(condition.enabled().get());
 	}
 
 	@Test
@@ -573,161 +661,403 @@ public class DefaultConditionModelTest {
 		assertTrue(condition.accepts('H'));
 	}
 
-	@Test
-	void set() {
-		ConditionModel<Integer> condition = ConditionModel.builder(Integer.class)
-						.autoEnable(false)
-						.build();
+	@Nested
+	@DisplayName("Set operations")
+	class SetOperationsTest {
 
-		//is null
-		boolean changed = condition.set().isNull();
-		assertFalse(changed);
-		assertTrue(condition.enabled().get());
+		private ConditionModel<Integer> condition;
 
-		//is not null
-		changed = condition.set().isNotNull();
-		assertTrue(changed);
-		assertTrue(condition.enabled().get());
+		@BeforeEach
+		void setUp() {
+			condition = ConditionModel.builder(Integer.class)
+							.autoEnable(false)
+							.build();
+		}
 
-		//equal
-		changed = condition.set().equalTo(5);
-		assertTrue(changed);
-		assertTrue(condition.enabled().get());
+		@Nested
+		@DisplayName("Null operations")
+		class NullOperationsTest {
 
-		changed = condition.set().equalTo(null);
-		assertTrue(changed);
-		assertFalse(condition.enabled().get());
+			@Test
+			@DisplayName("isNull operation")
+			void set_isNull_enablesCondition() {
+				boolean changed = condition.set().isNull();
 
-		// not equal
-		changed = condition.set().notEqualTo(5);
-		assertTrue(changed);
-		assertTrue(condition.enabled().get());
+				assertFalse(changed);
+				assertTrue(condition.enabled().get());
+			}
 
-		changed = condition.set().notEqualTo(null);
-		assertTrue(changed);
-		assertFalse(condition.enabled().get());
+			@Test
+			@DisplayName("isNotNull operation")
+			void set_isNotNull_enablesCondition() {
+				boolean changed = condition.set().isNotNull();
 
-		//greater than
-		changed = condition.set().greaterThan(5);
-		assertTrue(changed);
-		assertTrue(condition.enabled().get());
+				assertTrue(changed);
+				assertTrue(condition.enabled().get());
+			}
+		}
 
-		changed = condition.set().greaterThan(null);
-		assertTrue(changed);
-		assertFalse(condition.enabled().get());
+		@Nested
+		@DisplayName("Equality operations")
+		class EqualityOperationsTest {
 
-		//greater than or equal
-		changed = condition.set().greaterThanOrEqualTo(5);
-		assertTrue(changed);
-		assertTrue(condition.enabled().get());
+			@Test
+			@DisplayName("equalTo with value enables condition")
+			void set_equalToWithValue_enablesCondition() {
+				boolean changed = condition.set().equalTo(TEST_VALUE_1);
 
-		changed = condition.set().greaterThanOrEqualTo(null);
-		assertTrue(changed);
-		assertFalse(condition.enabled().get());
+				assertTrue(changed);
+				assertTrue(condition.enabled().get());
+			}
 
-		//less than
-		changed = condition.set().lessThan(5);
-		assertTrue(changed);
-		assertTrue(condition.enabled().get());
+			@Test
+			@DisplayName("equalTo with null disables condition")
+			void set_equalToWithNull_disablesCondition() {
+				// First set a non-null value to ensure state change
+				condition.set().equalTo(TEST_VALUE_1);
 
-		changed = condition.set().lessThan(null);
-		assertTrue(changed);
-		assertFalse(condition.enabled().get());
+				boolean changed = condition.set().equalTo(null);
 
-		//less than or equal
-		changed = condition.set().lessThanOrEqualTo(5);
-		assertTrue(changed);
-		assertTrue(condition.enabled().get());
+				assertTrue(changed);
+				assertFalse(condition.enabled().get());
+			}
 
-		changed = condition.set().lessThanOrEqualTo(null);
-		assertTrue(changed);
-		assertFalse(condition.enabled().get());
+			@Test
+			@DisplayName("notEqualTo with value enables condition")
+			void set_notEqualToWithValue_enablesCondition() {
+				boolean changed = condition.set().notEqualTo(TEST_VALUE_1);
 
-		//in
-		changed = condition.set().in(5, 6);
-		assertTrue(changed);
-		assertTrue(condition.enabled().get());
+				assertTrue(changed);
+				assertTrue(condition.enabled().get());
+			}
 
-		changed = condition.set().in(emptyList());
-		assertTrue(changed);
-		assertFalse(condition.enabled().get());
+			@Test
+			@DisplayName("notEqualTo with null disables condition")
+			void set_notEqualToWithNull_disablesCondition() {
+				// First set a non-null value to ensure state change
+				condition.set().notEqualTo(TEST_VALUE_1);
 
-		//not in
-		changed = condition.set().notIn(5, 6);
-		assertTrue(changed);
-		assertTrue(condition.enabled().get());
+				boolean changed = condition.set().notEqualTo(null);
 
-		changed = condition.set().notIn(emptyList());
-		assertTrue(changed);
-		assertFalse(condition.enabled().get());
+				assertTrue(changed);
+				assertFalse(condition.enabled().get());
+			}
+		}
 
-		//between exclusive
-		changed = condition.set().betweenExclusive(5, 6);
-		assertTrue(changed);
-		assertTrue(condition.enabled().get());
+		@Nested
+		@DisplayName("Comparison operations")
+		class ComparisonOperationsTest {
 
-		changed = condition.set().betweenExclusive(5, null);
-		assertTrue(changed);
-		assertFalse(condition.enabled().get());
+			@Test
+			@DisplayName("greaterThan with value enables condition")
+			void set_greaterThanWithValue_enablesCondition() {
+				boolean changed = condition.set().greaterThan(TEST_VALUE_1);
 
-		changed = condition.set().betweenExclusive(null, 6);
-		assertTrue(changed);
-		assertFalse(condition.enabled().get());
+				assertTrue(changed);
+				assertTrue(condition.enabled().get());
+			}
 
-		changed = condition.set().betweenExclusive(null, null);
-		assertTrue(changed);
-		assertFalse(condition.enabled().get());
+			@Test
+			@DisplayName("greaterThan with null disables condition")
+			void set_greaterThanWithNull_disablesCondition() {
+				// First set a non-null value to ensure state change
+				condition.set().greaterThan(TEST_VALUE_1);
 
-		//not between exclusive
-		changed = condition.set().notBetweenExclusive(5, 6);
-		assertTrue(changed);
-		assertTrue(condition.enabled().get());
+				boolean changed = condition.set().greaterThan(null);
 
-		changed = condition.set().notBetweenExclusive(5, null);
-		assertTrue(changed);
-		assertFalse(condition.enabled().get());
+				assertTrue(changed);
+				assertFalse(condition.enabled().get());
+			}
 
-		changed = condition.set().notBetweenExclusive(null, 6);
-		assertTrue(changed);
-		assertFalse(condition.enabled().get());
+			@Test
+			@DisplayName("greaterThanOrEqualTo with value enables condition")
+			void set_greaterThanOrEqualToWithValue_enablesCondition() {
+				boolean changed = condition.set().greaterThanOrEqualTo(TEST_VALUE_1);
 
-		changed = condition.set().notBetweenExclusive(null, null);
-		assertTrue(changed);
-		assertFalse(condition.enabled().get());
+				assertTrue(changed);
+				assertTrue(condition.enabled().get());
+			}
 
-		//between
-		changed = condition.set().between(5, 6);
-		assertTrue(changed);
-		assertTrue(condition.enabled().get());
+			@Test
+			@DisplayName("greaterThanOrEqualTo with null disables condition")
+			void set_greaterThanOrEqualToWithNull_disablesCondition() {
+				// First set a non-null value to ensure state change
+				condition.set().greaterThanOrEqualTo(TEST_VALUE_1);
 
-		changed = condition.set().between(5, null);
-		assertTrue(changed);
-		assertFalse(condition.enabled().get());
+				boolean changed = condition.set().greaterThanOrEqualTo(null);
 
-		changed = condition.set().between(null, 6);
-		assertTrue(changed);
-		assertFalse(condition.enabled().get());
+				assertTrue(changed);
+				assertFalse(condition.enabled().get());
+			}
 
-		changed = condition.set().between(null, null);
-		assertTrue(changed);
-		assertFalse(condition.enabled().get());
+			@Test
+			@DisplayName("lessThan with value enables condition")
+			void set_lessThanWithValue_enablesCondition() {
+				boolean changed = condition.set().lessThan(TEST_VALUE_1);
 
-		//not between
-		changed = condition.set().notBetween(5, 6);
-		assertTrue(changed);
-		assertTrue(condition.enabled().get());
+				assertTrue(changed);
+				assertTrue(condition.enabled().get());
+			}
 
-		changed = condition.set().notBetween(5, null);
-		assertTrue(changed);
-		assertFalse(condition.enabled().get());
+			@Test
+			@DisplayName("lessThan with null disables condition")
+			void set_lessThanWithNull_disablesCondition() {
+				// First set a non-null value to ensure state change
+				condition.set().lessThan(TEST_VALUE_1);
 
-		changed = condition.set().notBetween(null, 6);
-		assertTrue(changed);
-		assertFalse(condition.enabled().get());
+				boolean changed = condition.set().lessThan(null);
 
-		changed = condition.set().notBetween(null, null);
-		assertTrue(changed);
-		assertFalse(condition.enabled().get());
+				assertTrue(changed);
+				assertFalse(condition.enabled().get());
+			}
+
+			@Test
+			@DisplayName("lessThanOrEqualTo with value enables condition")
+			void set_lessThanOrEqualToWithValue_enablesCondition() {
+				boolean changed = condition.set().lessThanOrEqualTo(TEST_VALUE_1);
+
+				assertTrue(changed);
+				assertTrue(condition.enabled().get());
+			}
+
+			@Test
+			@DisplayName("lessThanOrEqualTo with null disables condition")
+			void set_lessThanOrEqualToWithNull_disablesCondition() {
+				// First set a non-null value to ensure state change
+				condition.set().lessThanOrEqualTo(TEST_VALUE_1);
+
+				boolean changed = condition.set().lessThanOrEqualTo(null);
+
+				assertTrue(changed);
+				assertFalse(condition.enabled().get());
+			}
+		}
+
+		@Nested
+		@DisplayName("Collection operations")
+		class CollectionOperationsTest {
+
+			@Test
+			@DisplayName("in with values enables condition")
+			void set_inWithValues_enablesCondition() {
+				boolean changed = condition.set().in(TEST_VALUE_1, TEST_VALUE_2);
+
+				assertTrue(changed);
+				assertTrue(condition.enabled().get());
+			}
+
+			@Test
+			@DisplayName("in with empty list disables condition")
+			void set_inWithEmptyList_disablesCondition() {
+				boolean changed = condition.set().in(emptyList());
+
+				assertTrue(changed);
+				assertFalse(condition.enabled().get());
+			}
+
+			@Test
+			@DisplayName("notIn with values enables condition")
+			void set_notInWithValues_enablesCondition() {
+				boolean changed = condition.set().notIn(TEST_VALUE_1, TEST_VALUE_2);
+
+				assertTrue(changed);
+				assertTrue(condition.enabled().get());
+			}
+
+			@Test
+			@DisplayName("notIn with empty list disables condition")
+			void set_notInWithEmptyList_disablesCondition() {
+				boolean changed = condition.set().notIn(emptyList());
+
+				assertTrue(changed);
+				assertFalse(condition.enabled().get());
+			}
+		}
+
+		@Nested
+		@DisplayName("Range operations")
+		class RangeOperationsTest {
+
+			@Test
+			@DisplayName("betweenExclusive with both values enables condition")
+			void set_betweenExclusiveWithBothValues_enablesCondition() {
+				boolean changed = condition.set().betweenExclusive(TEST_VALUE_1, TEST_VALUE_2);
+
+				assertTrue(changed);
+				assertTrue(condition.enabled().get());
+			}
+
+			@Test
+			@DisplayName("betweenExclusive with lower null disables condition")
+			void set_betweenExclusiveWithLowerNull_disablesCondition() {
+				// First set valid range to ensure state change
+				condition.set().betweenExclusive(TEST_VALUE_1, TEST_VALUE_2);
+
+				boolean changed = condition.set().betweenExclusive(TEST_VALUE_1, null);
+
+				assertTrue(changed);
+				assertFalse(condition.enabled().get());
+			}
+
+			@Test
+			@DisplayName("betweenExclusive with upper null disables condition")
+			void set_betweenExclusiveWithUpperNull_disablesCondition() {
+				// First set valid range to ensure state change
+				condition.set().betweenExclusive(TEST_VALUE_1, TEST_VALUE_2);
+
+				boolean changed = condition.set().betweenExclusive(null, TEST_VALUE_2);
+
+				assertTrue(changed);
+				assertFalse(condition.enabled().get());
+			}
+
+			@Test
+			@DisplayName("betweenExclusive with both null disables condition")
+			void set_betweenExclusiveWithBothNull_disablesCondition() {
+				// First set valid range to ensure state change
+				condition.set().betweenExclusive(TEST_VALUE_1, TEST_VALUE_2);
+
+				boolean changed = condition.set().betweenExclusive(null, null);
+
+				assertTrue(changed);
+				assertFalse(condition.enabled().get());
+			}
+
+			@Test
+			@DisplayName("notBetweenExclusive with both values enables condition")
+			void set_notBetweenExclusiveWithBothValues_enablesCondition() {
+				boolean changed = condition.set().notBetweenExclusive(TEST_VALUE_1, TEST_VALUE_2);
+
+				assertTrue(changed);
+				assertTrue(condition.enabled().get());
+			}
+
+			@Test
+			@DisplayName("notBetweenExclusive with lower null disables condition")
+			void set_notBetweenExclusiveWithLowerNull_disablesCondition() {
+				// First set valid range to ensure state change
+				condition.set().notBetweenExclusive(TEST_VALUE_1, TEST_VALUE_2);
+
+				boolean changed = condition.set().notBetweenExclusive(TEST_VALUE_1, null);
+
+				assertTrue(changed);
+				assertFalse(condition.enabled().get());
+			}
+
+			@Test
+			@DisplayName("notBetweenExclusive with upper null disables condition")
+			void set_notBetweenExclusiveWithUpperNull_disablesCondition() {
+				// First set valid range to ensure state change
+				condition.set().notBetweenExclusive(TEST_VALUE_1, TEST_VALUE_2);
+
+				boolean changed = condition.set().notBetweenExclusive(null, TEST_VALUE_2);
+
+				assertTrue(changed);
+				assertFalse(condition.enabled().get());
+			}
+
+			@Test
+			@DisplayName("notBetweenExclusive with both null disables condition")
+			void set_notBetweenExclusiveWithBothNull_disablesCondition() {
+				// First set valid range to ensure state change
+				condition.set().notBetweenExclusive(TEST_VALUE_1, TEST_VALUE_2);
+
+				boolean changed = condition.set().notBetweenExclusive(null, null);
+
+				assertTrue(changed);
+				assertFalse(condition.enabled().get());
+			}
+
+			@Test
+			@DisplayName("between with both values enables condition")
+			void set_betweenWithBothValues_enablesCondition() {
+				boolean changed = condition.set().between(TEST_VALUE_1, TEST_VALUE_2);
+
+				assertTrue(changed);
+				assertTrue(condition.enabled().get());
+			}
+
+			@Test
+			@DisplayName("between with lower null disables condition")
+			void set_betweenWithLowerNull_disablesCondition() {
+				// First set valid range to ensure state change
+				condition.set().between(TEST_VALUE_1, TEST_VALUE_2);
+
+				boolean changed = condition.set().between(TEST_VALUE_1, null);
+
+				assertTrue(changed);
+				assertFalse(condition.enabled().get());
+			}
+
+			@Test
+			@DisplayName("between with upper null disables condition")
+			void set_betweenWithUpperNull_disablesCondition() {
+				// First set valid range to ensure state change
+				condition.set().between(TEST_VALUE_1, TEST_VALUE_2);
+
+				boolean changed = condition.set().between(null, TEST_VALUE_2);
+
+				assertTrue(changed);
+				assertFalse(condition.enabled().get());
+			}
+
+			@Test
+			@DisplayName("between with both null disables condition")
+			void set_betweenWithBothNull_disablesCondition() {
+				// First set valid range to ensure state change
+				condition.set().between(TEST_VALUE_1, TEST_VALUE_2);
+
+				boolean changed = condition.set().between(null, null);
+
+				assertTrue(changed);
+				assertFalse(condition.enabled().get());
+			}
+
+			@Test
+			@DisplayName("notBetween with both values enables condition")
+			void set_notBetweenWithBothValues_enablesCondition() {
+				boolean changed = condition.set().notBetween(TEST_VALUE_1, TEST_VALUE_2);
+
+				assertTrue(changed);
+				assertTrue(condition.enabled().get());
+			}
+
+			@Test
+			@DisplayName("notBetween with lower null disables condition")
+			void set_notBetweenWithLowerNull_disablesCondition() {
+				// First set valid range to ensure state change
+				condition.set().notBetween(TEST_VALUE_1, TEST_VALUE_2);
+
+				boolean changed = condition.set().notBetween(TEST_VALUE_1, null);
+
+				assertTrue(changed);
+				assertFalse(condition.enabled().get());
+			}
+
+			@Test
+			@DisplayName("notBetween with upper null disables condition")
+			void set_notBetweenWithUpperNull_disablesCondition() {
+				// First set valid range to ensure state change
+				condition.set().notBetween(TEST_VALUE_1, TEST_VALUE_2);
+
+				boolean changed = condition.set().notBetween(null, TEST_VALUE_2);
+
+				assertTrue(changed);
+				assertFalse(condition.enabled().get());
+			}
+
+			@Test
+			@DisplayName("notBetween with both null disables condition")
+			void set_notBetweenWithBothNull_disablesCondition() {
+				// First set valid range to ensure state change
+				condition.set().notBetween(TEST_VALUE_1, TEST_VALUE_2);
+
+				boolean changed = condition.set().notBetween(null, null);
+
+				assertTrue(changed);
+				assertFalse(condition.enabled().get());
+			}
+		}
 	}
 
 	@Test
