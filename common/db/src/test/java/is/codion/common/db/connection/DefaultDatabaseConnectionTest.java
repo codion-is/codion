@@ -25,6 +25,8 @@ import is.codion.common.user.User;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
@@ -40,6 +42,9 @@ public class DefaultDatabaseConnectionTest {
 
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
+	private static final String INVALID_USERNAME = "foo";
+	private static final String INVALID_PASSWORD = "xxxxx";
+	private static final int METHOD_LOGGER_STACK_DEPTH = 20;
 
 	private final Database DATABASE = Database.instance();
 	private DefaultDatabaseConnection dbConnection;
@@ -59,156 +64,218 @@ public class DefaultDatabaseConnectionTest {
 		catch (Exception ignored) {/*ignored*/}
 	}
 
-	@Test
-	void createConnection() throws SQLException {
-		try (Connection connection = DATABASE.createConnection(UNIT_TEST_USER)) {
-			DatabaseConnection databaseConnection = databaseConnection(DATABASE, connection);
-			assertTrue(databaseConnection.connected());
-			assertNotNull(databaseConnection.user());
-			assertTrue(UNIT_TEST_USER.username().equalsIgnoreCase(databaseConnection.user().username()));
-		}
-	}
+	@Nested
+	@DisplayName("Connection creation tests")
+	class ConnectionCreationTests {
 
-	@Test
-	void createConnectionWithClosedConnection() {
-		assertThrows(DatabaseException.class, () -> {
+		@Test
+		@DisplayName("Create connection with valid credentials")
+		void createConnection_validCredentials_shouldSucceed() throws SQLException {
 			try (Connection connection = DATABASE.createConnection(UNIT_TEST_USER)) {
-				connection.close();
-				databaseConnection(DATABASE, connection);
+				DatabaseConnection databaseConnection = databaseConnection(DATABASE, connection);
+				assertTrue(databaseConnection.connected());
+				assertNotNull(databaseConnection.user());
+				assertTrue(UNIT_TEST_USER.username().equalsIgnoreCase(databaseConnection.user().username()));
 			}
-		});
-	}
+		}
 
-	@Test
-	void test() {
-		try (DatabaseConnection connection = databaseConnection(DATABASE, UNIT_TEST_USER)) {
-			MethodLogger methodLogger = MethodLogger.methodLogger(20);
-			methodLogger.setEnabled(true);
-			connection.setMethodLogger(methodLogger);
-			assertSame(methodLogger, connection.getMethodLogger());
-			connection.commit();
-			connection.rollback();
-			connection.toString();
+		@Test
+		@DisplayName("Create connection with closed connection throws exception")
+		void createConnection_closedConnection_shouldThrowException() {
+			assertThrows(DatabaseException.class, () -> {
+				try (Connection connection = DATABASE.createConnection(UNIT_TEST_USER)) {
+					connection.close();
+					databaseConnection(DATABASE, connection);
+				}
+			});
 		}
-		catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
 
-	@Test
-	void transaction() {
-		try (DatabaseConnection connection = databaseConnection(DATABASE, UNIT_TEST_USER)) {
-			assertThrows(IllegalStateException.class, () -> connection.rollbackTransaction());
-			connection.startTransaction();
-			assertThrows(IllegalStateException.class, () -> connection.startTransaction());
-			connection.commitTransaction();
-			assertThrows(IllegalStateException.class, () -> connection.commitTransaction());
-			connection.startTransaction();
-			connection.rollbackTransaction();
-			assertThrows(IllegalStateException.class, () -> connection.rollbackTransaction());
+		@Test
+		@DisplayName("Constructor with valid connection")
+		void constructor_validConnection_shouldCloseOnDatabaseConnectionClose() throws SQLException {
+			Connection connection = DATABASE.createConnection(UNIT_TEST_USER);
+			new DefaultDatabaseConnection(DATABASE, connection).close();
+			assertTrue(connection.isClosed());
 		}
-		catch (SQLException e) {
-			throw new RuntimeException(e);
+
+		@Test
+		@DisplayName("Constructor with invalid connection throws exception")
+		void constructor_invalidConnection_shouldThrowException() throws SQLException {
+			Connection connection = DATABASE.createConnection(UNIT_TEST_USER);
+			connection.close();
+			assertThrows(DatabaseException.class, () -> new DefaultDatabaseConnection(DATABASE, connection));
 		}
 	}
 
-	@Test
-	void constructorWithConnection() throws SQLException {
-		Connection connection = DATABASE.createConnection(UNIT_TEST_USER);
-		new DefaultDatabaseConnection(DATABASE, connection).close();
-		assertTrue(connection.isClosed());
+	@Nested
+	@DisplayName("Authentication tests")
+	class AuthenticationTests {
+
+		@Test
+		@DisplayName("Connection with wrong username throws exception")
+		void connection_wrongUsername_shouldThrowException() {
+			assertThrows(DatabaseException.class,
+							() -> new DefaultDatabaseConnection(DATABASE, User.user(INVALID_USERNAME, "bar".toCharArray())));
+		}
+
+		@Test
+		@DisplayName("Connection with wrong password throws exception")
+		void connection_wrongPassword_shouldThrowException() {
+			assertThrows(DatabaseException.class,
+							() -> new DefaultDatabaseConnection(DATABASE, User.user(UNIT_TEST_USER.username(), INVALID_PASSWORD.toCharArray())));
+		}
 	}
 
-	@Test
-	void constructorWithInvalidConnection() throws SQLException {
-		Connection connection = DATABASE.createConnection(UNIT_TEST_USER);
-		connection.close();
-		assertThrows(DatabaseException.class, () -> new DefaultDatabaseConnection(DATABASE, connection));
+	@Nested
+	@DisplayName("Basic operations tests")
+	class BasicOperationsTests {
+
+		@Test
+		@DisplayName("Database getter returns correct database")
+		void database_getter_shouldReturnCorrectDatabase() {
+			assertEquals(DATABASE, dbConnection.database());
+		}
+
+		@Test
+		@DisplayName("User getter returns correct user")
+		void user_getter_shouldReturnCorrectUser() {
+			assertEquals(UNIT_TEST_USER, dbConnection.user());
+		}
+
+		@Test
+		@DisplayName("Get connection returns non-null connection")
+		void getConnection_shouldReturnNonNull() {
+			assertNotNull(dbConnection.getConnection());
+		}
+
+		@Test
+		@DisplayName("Method logger can be set and retrieved")
+		void methodLogger_setAndGet_shouldWork() throws SQLException {
+			try (DatabaseConnection connection = databaseConnection(DATABASE, UNIT_TEST_USER)) {
+				MethodLogger methodLogger = MethodLogger.methodLogger(METHOD_LOGGER_STACK_DEPTH);
+				methodLogger.setEnabled(true);
+				connection.setMethodLogger(methodLogger);
+				assertSame(methodLogger, connection.getMethodLogger());
+			}
+		}
+
+		@Test
+		@DisplayName("Commit and rollback work outside transaction")
+		void commitAndRollback_outsideTransaction_shouldWork() throws SQLException {
+			try (DatabaseConnection connection = databaseConnection(DATABASE, UNIT_TEST_USER)) {
+				assertDoesNotThrow(() -> connection.commit());
+				assertDoesNotThrow(() -> connection.rollback());
+			}
+		}
+
+		@Test
+		@DisplayName("toString returns non-null value")
+		void toString_shouldReturnNonNull() throws SQLException {
+			try (DatabaseConnection connection = databaseConnection(DATABASE, UNIT_TEST_USER)) {
+				assertNotNull(connection.toString());
+			}
+		}
 	}
 
-	@Test
-	void wrongUsername() {
-		assertThrows(DatabaseException.class, () -> new DefaultDatabaseConnection(DATABASE, User.user("foo", "bar".toCharArray())));
+	@Nested
+	@DisplayName("Connection state tests")
+	class ConnectionStateTests {
+
+		@Test
+		@DisplayName("Close connection changes state correctly")
+		void close_shouldChangeStateCorrectly() {
+			dbConnection.close();
+			assertFalse(dbConnection.valid());
+			assertFalse(dbConnection.connected());
+		}
+
+		@Test
+		@DisplayName("Operations on closed connection throw IllegalStateException")
+		void closedConnection_operations_shouldThrowIllegalStateException() {
+			dbConnection.close();
+
+			assertThrows(IllegalStateException.class, () -> dbConnection.getConnection());
+			assertThrows(IllegalStateException.class, () -> dbConnection.startTransaction());
+			assertThrows(IllegalStateException.class, () -> dbConnection.commitTransaction());
+			assertThrows(IllegalStateException.class, () -> dbConnection.rollbackTransaction());
+			assertThrows(IllegalStateException.class, () -> dbConnection.commit());
+			assertThrows(IllegalStateException.class, () -> dbConnection.rollback());
+		}
 	}
 
-	@Test
-	void wrongPassword() {
-		assertThrows(DatabaseException.class, () -> new DefaultDatabaseConnection(DATABASE, User.user(UNIT_TEST_USER.username(), "xxxxx".toCharArray())));
-	}
+	@Nested
+	@DisplayName("Transaction tests")
+	class TransactionTests {
 
-	@Test
-	void database() {
-		assertEquals(DATABASE, dbConnection.database());
-	}
+		@Test
+		@DisplayName("Transaction lifecycle works correctly")
+		void transaction_lifecycle_shouldWorkCorrectly() throws SQLException {
+			try (DatabaseConnection connection = databaseConnection(DATABASE, UNIT_TEST_USER)) {
+				// Cannot rollback without transaction
+				assertThrows(IllegalStateException.class, () -> connection.rollbackTransaction());
 
-	@Test
-	void user() {
-		assertEquals(UNIT_TEST_USER, dbConnection.user());
-	}
+				// Start transaction
+				connection.startTransaction();
+				assertTrue(connection.transactionOpen());
 
-	@Test
-	void close() {
-		dbConnection.close();
-		assertFalse(dbConnection.valid());
-		assertFalse(dbConnection.connected());
-		assertThrows(IllegalStateException.class, () -> dbConnection.getConnection());
-		assertThrows(IllegalStateException.class, () -> dbConnection.startTransaction());
-		assertThrows(IllegalStateException.class, () -> dbConnection.commitTransaction());
-		assertThrows(IllegalStateException.class, () -> dbConnection.rollbackTransaction());
-		assertThrows(IllegalStateException.class, () -> dbConnection.commit());
-		assertThrows(IllegalStateException.class, () -> dbConnection.rollback());
-	}
+				// Cannot start another transaction
+				assertThrows(IllegalStateException.class, () -> connection.startTransaction());
 
-	@Test
-	void getConnection() {
-		assertNotNull(dbConnection.getConnection());
-	}
+				// Commit transaction
+				connection.commitTransaction();
+				assertFalse(connection.transactionOpen());
 
-	@Test
-	void startTransactionAlreadyOpen() {
-		dbConnection.startTransaction();
-		assertThrows(IllegalStateException.class, () -> dbConnection.startTransaction());
-	}
+				// Cannot commit again
+				assertThrows(IllegalStateException.class, () -> connection.commitTransaction());
 
-	@Test
-	void commitWithinTransaction() {
-		dbConnection.startTransaction();
-		assertThrows(IllegalStateException.class, () -> dbConnection.commit());
-	}
+				// Start new transaction
+				connection.startTransaction();
+				assertTrue(connection.transactionOpen());
 
-	@Test
-	void rollbackWithinTransaction() {
-		dbConnection.startTransaction();
-		assertThrows(IllegalStateException.class, () -> dbConnection.rollback());
-	}
+				// Rollback transaction
+				connection.rollbackTransaction();
+				assertFalse(connection.transactionOpen());
 
-	@Test
-	void commitTransactionAlreadyCommitted() throws SQLException {
-		dbConnection.startTransaction();
-		dbConnection.commitTransaction();
-		assertThrows(IllegalStateException.class, () -> dbConnection.commitTransaction());
-	}
+				// Cannot rollback again
+				assertThrows(IllegalStateException.class, () -> connection.rollbackTransaction());
+			}
+		}
 
-	@Test
-	void rollbackTransactionAlreadyRollbacked() throws SQLException {
-		dbConnection.startTransaction();
-		dbConnection.rollbackTransaction();
-		assertThrows(IllegalStateException.class, () -> dbConnection.rollbackTransaction());
-	}
+		@Test
+		@DisplayName("Cannot start transaction when one is already open")
+		void startTransaction_alreadyOpen_shouldThrowException() {
+			dbConnection.startTransaction();
+			assertThrows(IllegalStateException.class, () -> dbConnection.startTransaction());
+		}
 
-	@Test
-	void commitTransaction() throws SQLException {
-		dbConnection.startTransaction();
-		assertTrue(dbConnection.transactionOpen());
-		dbConnection.commitTransaction();
-		assertFalse(dbConnection.transactionOpen());
-	}
+		@Test
+		@DisplayName("Cannot commit within transaction using commit()")
+		void commit_withinTransaction_shouldThrowException() {
+			dbConnection.startTransaction();
+			assertThrows(IllegalStateException.class, () -> dbConnection.commit());
+		}
 
-	@Test
-	void rollbackTransaction() throws SQLException {
-		dbConnection.startTransaction();
-		assertTrue(dbConnection.transactionOpen());
-		dbConnection.rollbackTransaction();
-		assertFalse(dbConnection.transactionOpen());
+		@Test
+		@DisplayName("Cannot rollback within transaction using rollback()")
+		void rollback_withinTransaction_shouldThrowException() {
+			dbConnection.startTransaction();
+			assertThrows(IllegalStateException.class, () -> dbConnection.rollback());
+		}
+
+		@Test
+		@DisplayName("Cannot commit transaction after already committed")
+		void commitTransaction_alreadyCommitted_shouldThrowException() throws SQLException {
+			dbConnection.startTransaction();
+			dbConnection.commitTransaction();
+			assertThrows(IllegalStateException.class, () -> dbConnection.commitTransaction());
+		}
+
+		@Test
+		@DisplayName("Cannot rollback transaction after already rolled back")
+		void rollbackTransaction_alreadyRolledBack_shouldThrowException() throws SQLException {
+			dbConnection.startTransaction();
+			dbConnection.rollbackTransaction();
+			assertThrows(IllegalStateException.class, () -> dbConnection.rollbackTransaction());
+		}
 	}
 }
