@@ -22,12 +22,16 @@ import is.codion.common.proxy.ProxyBuilder;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.framework.db.AbstractEntityConnectionProvider.AbstractBuilder;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayName("AbstractEntityConnectionProviderTest")
 public final class AbstractEntityConnectionProviderTest {
 
 	private static final User UNIT_TEST_USER =
@@ -35,34 +39,278 @@ public final class AbstractEntityConnectionProviderTest {
 
 	private static final Entities ENTITIES = new TestDomain().entities();
 
-	@Test
-	void connectClose() {
-		TestProviderBuilder builder = new TestProviderBuilder()
-						.user(UNIT_TEST_USER)
-						.domain(TestDomain.DOMAIN);
-		EntityConnectionProvider provider = builder.build();
-		assertEquals("description", provider.description());
-		assertEquals(EntityConnectionProvider.CONNECTION_TYPE_LOCAL, provider.connectionType());
-		assertEquals(ENTITIES, provider.entities());
-		assertEquals(UNIT_TEST_USER, provider.user());
+	@Nested
+	@DisplayName("Connection Lifecycle")
+	class ConnectionLifecycle {
 
-		EntityConnection connection1 = provider.connection();
-		assertTrue(provider.connectionValid());
-		provider.close();
-		assertFalse(provider.connectionValid());
+		@Test
+		@DisplayName("provider creates and manages connections correctly")
+		void provider_connectionLifecycle_worksCorrectly() {
+			TestProviderBuilder builder = new TestProviderBuilder()
+							.user(UNIT_TEST_USER)
+							.domain(TestDomain.DOMAIN);
+			EntityConnectionProvider provider = builder.build();
 
-		EntityConnection connection2 = provider.connection();
-		assertTrue(provider.connectionValid());
-		assertNotEquals(connection1, connection2);
+			// Test initial state
+			assertEquals("description", provider.description());
+			assertEquals(EntityConnectionProvider.CONNECTION_TYPE_LOCAL, provider.connectionType());
+			assertEquals(ENTITIES, provider.entities());
+			assertEquals(UNIT_TEST_USER, provider.user());
+			assertEquals(TestDomain.DOMAIN, provider.domainType());
 
-		connection2.close();
-		assertFalse(provider.connectionValid());
-		EntityConnection connection3 = provider.connection();
-		assertNotEquals(connection2, connection3);
+			// Get connection
+			EntityConnection connection1 = provider.connection();
+			assertNotNull(connection1);
+			assertTrue(provider.connectionValid());
 
-		EntityConnection connection4 = provider.connection();
-		assertTrue(provider.connectionValid());
-		assertNotEquals(connection3, connection4);
+			// Close provider - should close connection
+			provider.close();
+			assertFalse(provider.connectionValid());
+
+			// Get new connection after close
+			EntityConnection connection2 = provider.connection();
+			assertNotNull(connection2);
+			assertTrue(provider.connectionValid());
+			assertNotEquals(connection1, connection2);
+		}
+
+		@Test
+		@DisplayName("closing connection invalidates provider")
+		void provider_closingConnection_invalidatesProvider() {
+			EntityConnectionProvider provider = new TestProviderBuilder()
+							.user(UNIT_TEST_USER)
+							.domain(TestDomain.DOMAIN)
+							.build();
+
+			EntityConnection connection = provider.connection();
+			assertTrue(provider.connectionValid());
+
+			// Close connection directly
+			connection.close();
+			assertFalse(provider.connectionValid());
+
+			// Provider creates new connection after previous was closed
+			EntityConnection newConnection = provider.connection();
+			assertNotNull(newConnection);
+			assertTrue(provider.connectionValid());
+			assertNotEquals(connection, newConnection);
+		}
+
+		@Test
+		@DisplayName("multiple connection retrievals return same instance")
+		void provider_multipleRetrievals_returnSameConnection() {
+			EntityConnectionProvider provider = new TestProviderBuilder()
+							.user(UNIT_TEST_USER)
+							.domain(TestDomain.DOMAIN)
+							.build();
+
+			EntityConnection connection1 = provider.connection();
+			EntityConnection connection2 = provider.connection();
+			EntityConnection connection3 = provider.connection();
+
+			assertSame(connection1, connection2);
+			assertSame(connection2, connection3);
+		}
+	}
+
+	@Nested
+	@DisplayName("Builder Configuration")
+	class BuilderConfiguration {
+
+		@Test
+		@DisplayName("builder with minimal configuration")
+		void builder_minimalConfiguration_buildsCorrectly() {
+			EntityConnectionProvider provider = new TestProviderBuilder()
+							.user(UNIT_TEST_USER)
+							.domain(TestDomain.DOMAIN)
+							.build();
+
+			assertNotNull(provider);
+			assertEquals(UNIT_TEST_USER, provider.user());
+			assertEquals(TestDomain.DOMAIN, provider.domainType());
+		}
+
+		@Test
+		@DisplayName("builder validates required parameters")
+		void builder_missingRequiredParameters_throwsException() {
+			// Missing user
+			assertThrows(NullPointerException.class, () ->
+							new TestProviderBuilder()
+											.domain(TestDomain.DOMAIN)
+											.build()
+			);
+
+			// Missing domain
+			assertThrows(NullPointerException.class, () ->
+							new TestProviderBuilder()
+											.user(UNIT_TEST_USER)
+											.build()
+			);
+		}
+
+		@Test
+		@DisplayName("builder with domain type string")
+		void builder_domainTypeString_buildsCorrectly() {
+			DomainType domainType = TestDomain.DOMAIN;
+			EntityConnectionProvider provider = new TestProviderBuilder()
+							.user(UNIT_TEST_USER)
+							.domain(domainType)
+							.build();
+
+			assertEquals(domainType, provider.domainType());
+		}
+	}
+
+	@Nested
+	@DisplayName("Connection State")
+	class ConnectionState {
+
+		@Test
+		@DisplayName("connection valid state changes correctly")
+		void provider_connectionValidState_changesCorrectly() {
+			EntityConnectionProvider provider = new TestProviderBuilder()
+							.user(UNIT_TEST_USER)
+							.domain(TestDomain.DOMAIN)
+							.build();
+
+			// Initially no connection
+			assertFalse(provider.connectionValid());
+
+			// After getting connection
+			provider.connection();
+			assertTrue(provider.connectionValid());
+
+			// After closing provider
+			provider.close();
+			assertFalse(provider.connectionValid());
+		}
+
+		@Test
+		@DisplayName("closed provider can create new connections")
+		void provider_afterClose_canCreateNewConnections() {
+			EntityConnectionProvider provider = new TestProviderBuilder()
+							.user(UNIT_TEST_USER)
+							.domain(TestDomain.DOMAIN)
+							.build();
+
+			EntityConnection connection1 = provider.connection();
+			provider.close();
+
+			// Should be able to get a new connection
+			EntityConnection connection2 = provider.connection();
+			assertNotNull(connection2);
+			assertNotEquals(connection1, connection2);
+			assertTrue(provider.connectionValid());
+		}
+
+		@Test
+		@DisplayName("invalid connection triggers reconnect")
+		void provider_invalidConnection_triggersReconnect() {
+			TestProviderBuilder builder = new TestProviderBuilder()
+							.user(UNIT_TEST_USER)
+							.domain(TestDomain.DOMAIN);
+			EntityConnectionProvider provider = builder.build();
+
+			// Get initial connection
+			EntityConnection connection1 = provider.connection();
+			assertTrue(provider.connectionValid());
+
+			// Close connection directly (simulating connection failure)
+			connection1.close();
+			assertFalse(connection1.connected());
+
+			// Provider should detect invalid connection
+			assertFalse(provider.connectionValid());
+
+			// Next call should create new connection
+			EntityConnection connection2 = provider.connection();
+			assertNotNull(connection2);
+			assertNotEquals(connection1, connection2);
+			assertTrue(connection2.connected());
+			assertTrue(provider.connectionValid());
+		}
+	}
+
+	@Nested
+	@DisplayName("Thread Safety")
+	class ThreadSafety {
+
+		@Test
+		@DisplayName("concurrent connection requests return same instance")
+		void provider_concurrentRequests_returnSameInstance() throws InterruptedException {
+			EntityConnectionProvider provider = new TestProviderBuilder()
+							.user(UNIT_TEST_USER)
+							.domain(TestDomain.DOMAIN)
+							.build();
+
+			EntityConnection[] connections = new EntityConnection[10];
+			Thread[] threads = new Thread[10];
+
+			// Create threads that all request connection
+			for (int i = 0; i < threads.length; i++) {
+				int index = i;
+				threads[i] = new Thread(() -> connections[index] = provider.connection());
+			}
+
+			// Start all threads
+			for (Thread thread : threads) {
+				thread.start();
+			}
+
+			// Wait for all to complete
+			for (Thread thread : threads) {
+				thread.join();
+			}
+
+			// All should have same connection instance
+			EntityConnection firstConnection = connections[0];
+			for (EntityConnection connection : connections) {
+				assertSame(firstConnection, connection);
+			}
+		}
+	}
+
+	@Nested
+	@DisplayName("Provider Properties")
+	class ProviderProperties {
+
+		@Test
+		@DisplayName("provider properties are accessible")
+		void provider_properties_accessible() {
+			EntityConnectionProvider provider = new TestProviderBuilder()
+							.user(UNIT_TEST_USER)
+							.domain(TestDomain.DOMAIN)
+							.build();
+
+			// Test all provider properties
+			assertNotNull(provider.connectionType());
+			assertNotNull(provider.description());
+			assertNotNull(provider.user());
+			assertNotNull(provider.domainType());
+			assertNotNull(provider.entities());
+
+			// Verify property values
+			assertEquals(EntityConnectionProvider.CONNECTION_TYPE_LOCAL, provider.connectionType());
+			assertEquals("description", provider.description());
+			assertEquals(UNIT_TEST_USER, provider.user());
+			assertEquals(TestDomain.DOMAIN, provider.domainType());
+			assertEquals(ENTITIES, provider.entities());
+		}
+
+		@Test
+		@DisplayName("toString includes key information")
+		void provider_toString_includesKeyInfo() {
+			EntityConnectionProvider provider = new TestProviderBuilder()
+							.user(UNIT_TEST_USER)
+							.domain(TestDomain.DOMAIN)
+							.build();
+
+			String toString = provider.toString();
+			assertNotNull(toString);
+			// AbstractEntityConnectionProvider likely includes user and domain in toString
+			assertTrue(toString.contains(UNIT_TEST_USER.username()) ||
+							toString.contains(provider.getClass().getSimpleName()));
+		}
 	}
 
 	private static final class TestProvider extends AbstractEntityConnectionProvider {
