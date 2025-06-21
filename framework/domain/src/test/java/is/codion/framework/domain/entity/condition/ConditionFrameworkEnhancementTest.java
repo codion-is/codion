@@ -512,11 +512,6 @@ public final class ConditionFrameworkEnhancementTest {
 							.with(Department.COMPANY_ID, 1)
 							.build();
 
-			Entity employee = entities.builder(Employee.TYPE)
-							.with(Employee.ID, 100)
-							.with(Employee.DEPARTMENT_ID, 10)
-							.build();
-
 			// Test foreign key conditions with the department relationship
 			Condition condition = Employee.DEPARTMENT_FK.equalTo(department);
 			EntityDefinition empDef = entities.definition(Employee.TYPE);

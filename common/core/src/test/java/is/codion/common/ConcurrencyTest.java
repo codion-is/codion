@@ -58,7 +58,6 @@ public class ConcurrencyTest {
 		ExecutorService executor = Executors.newFixedThreadPool(THREAD_COUNT);
 
 		for (int i = 0; i < THREAD_COUNT; i++) {
-			final int threadId = i;
 			executor.submit(() -> {
 				try {
 					startLatch.await();

@@ -215,7 +215,7 @@ public class EventsTest {
 						int listenerId = j;
 						Runnable listener = () -> {
 							// Some work
-							int x = threadId + listenerId;
+							String.valueOf(threadId + listenerId);
 						};
 						listeners.add(listener);
 
@@ -265,11 +265,9 @@ public class EventsTest {
 		ExecutorService executor = Executors.newFixedThreadPool(threadCount);
 
 		for (int i = 0; i < threadCount; i++) {
-			final int threadId = i;
 			executor.submit(() -> {
 				try {
 					startLatch.await();
-
 					for (int j = 0; j < eventsPerThread; j++) {
 						if (j % 2 == 0) {
 							event.run();

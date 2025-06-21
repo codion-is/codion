@@ -150,7 +150,7 @@ public class DefaultDatabaseConnectionTest {
 
 		@Test
 		@DisplayName("Method logger can be set and retrieved")
-		void methodLogger_setAndGet_shouldWork() throws SQLException {
+		void methodLogger_setAndGet_shouldWork() {
 			try (DatabaseConnection connection = databaseConnection(DATABASE, UNIT_TEST_USER)) {
 				MethodLogger methodLogger = MethodLogger.methodLogger(METHOD_LOGGER_STACK_DEPTH);
 				methodLogger.setEnabled(true);
@@ -161,7 +161,7 @@ public class DefaultDatabaseConnectionTest {
 
 		@Test
 		@DisplayName("Commit and rollback work outside transaction")
-		void commitAndRollback_outsideTransaction_shouldWork() throws SQLException {
+		void commitAndRollback_outsideTransaction_shouldWork() {
 			try (DatabaseConnection connection = databaseConnection(DATABASE, UNIT_TEST_USER)) {
 				assertDoesNotThrow(() -> connection.commit());
 				assertDoesNotThrow(() -> connection.rollback());
@@ -170,7 +170,7 @@ public class DefaultDatabaseConnectionTest {
 
 		@Test
 		@DisplayName("toString returns non-null value")
-		void toString_shouldReturnNonNull() throws SQLException {
+		void toString_shouldReturnNonNull() {
 			try (DatabaseConnection connection = databaseConnection(DATABASE, UNIT_TEST_USER)) {
 				assertNotNull(connection.toString());
 			}

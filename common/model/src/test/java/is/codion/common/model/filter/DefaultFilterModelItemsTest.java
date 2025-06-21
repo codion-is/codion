@@ -73,7 +73,7 @@ public class DefaultFilterModelItemsTest {
 			visiblePredicate = new TestPredicate();
 			selection = new TestMultiSelection();
 
-			items = Items.<String>builder(items -> new TestRefresher())
+			items = Items.<String>builder(i -> new TestRefresher())
 							.selection(visible -> selection)
 							.sort(new TestSort())
 							.visiblePredicate(visiblePredicate)
@@ -228,7 +228,7 @@ public class DefaultFilterModelItemsTest {
 			visiblePredicate = new TestPredicate();
 			TestMultiSelection selection = new TestMultiSelection();
 
-			items = Items.<String>builder(items -> new TestRefresher())
+			items = Items.<String>builder(i -> new TestRefresher())
 							.selection(visible -> selection)
 							.sort(new TestSort())
 							.visiblePredicate(visiblePredicate)
@@ -272,7 +272,7 @@ public class DefaultFilterModelItemsTest {
 			TestSort sort = new TestSort();
 			sort.setComparator(Comparator.reverseOrder());
 
-			items = Items.<String>builder(items -> new TestRefresher())
+			items = Items.<String>builder(i -> new TestRefresher())
 							.selection(visible -> new TestMultiSelection())
 							.sort(sort)
 							.visiblePredicate(visiblePredicate)
@@ -397,7 +397,7 @@ public class DefaultFilterModelItemsTest {
 		void setUp() {
 			sort = new TestSort();
 
-			items = Items.<String>builder(items -> new TestRefresher())
+			items = Items.<String>builder(i -> new TestRefresher())
 							.selection(visible -> new TestMultiSelection())
 							.sort(sort)
 							.build();
@@ -442,8 +442,8 @@ public class DefaultFilterModelItemsTest {
 
 		@BeforeEach
 		void setUp() {
-			items = Items.<String>builder(items -> new TestRefresher())
-							.selection(visible -> new TestMultiSelection())
+			items = Items.<String>builder(i -> new TestRefresher())
+							.selection(v -> new TestMultiSelection())
 							.sort(new TestSort())
 							.build();
 

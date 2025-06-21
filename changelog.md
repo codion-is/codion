@@ -18,6 +18,8 @@ Codion Change Log
 - Unit tests improved.
 ### is.codion.framework.model
 - Unit tests improved.
+### is.codion.swing.common.model
+- Unit tests improved.
 
 ## 0.18.39
 ### is.codion.common.core

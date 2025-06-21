@@ -341,8 +341,7 @@ public final class DefaultEntityQueryModelTest {
 
 		// Add another HAVING condition using the Job.ADDITIONAL_HAVING ConditionType
 		queryModel.having().set(Job.ADDITIONAL_HAVING::get);
-		results = queryModel.query();
-		// Should still have results (depends on test data)
+		queryModel.query();
 
 		// Clear having
 		queryModel.having().clear();

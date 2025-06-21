@@ -74,7 +74,7 @@ public final class ConnectionResilienceTest {
 
 	@Test
 	@DisplayName("DatabaseConnection validation uses database-specific validation")
-	void databaseConnection_validation_usesDatabaseSpecificValidation() throws SQLException {
+	void databaseConnection_validation_usesDatabaseSpecificValidation() {
 		try (DatabaseConnection dbConn = databaseConnection(database, TEST_USER)) {
 			// Should be valid
 			assertTrue(dbConn.valid());

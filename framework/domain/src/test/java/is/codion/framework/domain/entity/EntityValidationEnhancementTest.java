@@ -238,44 +238,44 @@ public final class EntityValidationEnhancementTest {
 
 			// OrderItem entity
 			add(OrderItem.TYPE.define(
-							OrderItem.ID.define().primaryKey(),
-							OrderItem.ORDER_ID.define()
-											.column()
-											.nullable(false),
-							OrderItem.PRODUCT_ID.define()
-											.column()
-											.nullable(false),
-							OrderItem.QUANTITY.define()
-											.column()
-											.nullable(false)
-											.valueRange(1, 1000),
-							OrderItem.UNIT_PRICE.define()
-											.column()
-											.nullable(false)
-											.minimumValue(BigDecimal.ZERO),
-							OrderItem.DISCOUNT.define()
-											.column()
-											.nullable(false)
-											.defaultValue(BigDecimal.ZERO)
-											.valueRange(BigDecimal.ZERO, new BigDecimal("100")),
-							OrderItem.ORDER_FK.define()
-											.foreignKey(),
-							OrderItem.PRODUCT_FK.define()
-											.foreignKey()
-											.attributes(Product.STOCK_QUANTITY, Product.ACTIVE),
-							OrderItem.LINE_TOTAL.define()
-											.derived(OrderItem.QUANTITY, OrderItem.UNIT_PRICE, OrderItem.DISCOUNT)
-											.provider(values -> {
-												Integer quantity = values.get(OrderItem.QUANTITY);
-												BigDecimal unitPrice = values.get(OrderItem.UNIT_PRICE);
-												BigDecimal discount = values.get(OrderItem.DISCOUNT);
-												if (quantity != null && unitPrice != null && discount != null) {
-													BigDecimal subtotal = unitPrice.multiply(BigDecimal.valueOf(quantity));
-													BigDecimal discountAmount = subtotal.multiply(discount.divide(new BigDecimal("100")));
-													return subtotal.subtract(discountAmount);
-												}
-												return null;
-											}))
+											OrderItem.ID.define().primaryKey(),
+											OrderItem.ORDER_ID.define()
+															.column()
+															.nullable(false),
+											OrderItem.PRODUCT_ID.define()
+															.column()
+															.nullable(false),
+											OrderItem.QUANTITY.define()
+															.column()
+															.nullable(false)
+															.valueRange(1, 1000),
+											OrderItem.UNIT_PRICE.define()
+															.column()
+															.nullable(false)
+															.minimumValue(BigDecimal.ZERO),
+											OrderItem.DISCOUNT.define()
+															.column()
+															.nullable(false)
+															.defaultValue(BigDecimal.ZERO)
+															.valueRange(BigDecimal.ZERO, new BigDecimal("100")),
+											OrderItem.ORDER_FK.define()
+															.foreignKey(),
+											OrderItem.PRODUCT_FK.define()
+															.foreignKey()
+															.attributes(Product.STOCK_QUANTITY, Product.ACTIVE),
+											OrderItem.LINE_TOTAL.define()
+															.derived(OrderItem.QUANTITY, OrderItem.UNIT_PRICE, OrderItem.DISCOUNT)
+															.provider(values -> {
+																Integer quantity = values.get(OrderItem.QUANTITY);
+																BigDecimal unitPrice = values.get(OrderItem.UNIT_PRICE);
+																BigDecimal discount = values.get(OrderItem.DISCOUNT);
+																if (quantity != null && unitPrice != null && discount != null) {
+																	BigDecimal subtotal = unitPrice.multiply(BigDecimal.valueOf(quantity));
+																	BigDecimal discountAmount = subtotal.multiply(discount.divide(new BigDecimal("100")));
+																	return subtotal.subtract(discountAmount);
+																}
+																return null;
+															}))
 							.validator(new OrderItemValidator()).build());
 		}
 
@@ -405,12 +405,11 @@ public final class EntityValidationEnhancementTest {
 					BigDecimal discount = entity.get(OrderItem.DISCOUNT);
 					BigDecimal unitPrice = entity.get(OrderItem.UNIT_PRICE);
 
-					if (discount != null && unitPrice != null) {
-						if (discount.compareTo(new BigDecimal("50")) > 0 &&
-										unitPrice.compareTo(new BigDecimal("100")) < 0) {
-							throw new ValidationException(OrderItem.DISCOUNT, discount,
-											"Discount cannot exceed 50% for items under $100");
-						}
+					if (discount != null && unitPrice != null &&
+									discount.compareTo(new BigDecimal("50")) > 0 &&
+									unitPrice.compareTo(new BigDecimal("100")) < 0) {
+						throw new ValidationException(OrderItem.DISCOUNT, discount,
+										"Discount cannot exceed 50% for items under $100");
 					}
 				}
 			}

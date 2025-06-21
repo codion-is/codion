@@ -50,7 +50,7 @@ public final class TransactionTest {
 	private DatabaseConnection connection;
 
 	@BeforeEach
-	void setup() throws SQLException {
+	void setup() {
 		database = Database.instance();
 		connection = databaseConnection(database, TEST_USER);
 		// Clean up any test data
