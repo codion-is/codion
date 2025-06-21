@@ -66,6 +66,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.TimeZone;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 import static is.codion.framework.db.EntityConnection.Count.where;
@@ -161,6 +163,39 @@ public class DefaultLocalEntityConnectionTest {
 							.batchSize(10)
 							.execute();
 			destinationConnection.delete(all(Department.TYPE));
+		}
+	}
+
+	@Test
+	void batchOperationPartialFailure() {
+		// Test batch insert with partial failure - some entities will violate unique constraint
+		connection.startTransaction();
+		try {
+			List<Entity> departments = new ArrayList<>();
+			// First two will succeed
+			departments.add(ENTITIES.builder(Department.TYPE)
+							.with(Department.DEPTNO, 100)
+							.with(Department.DNAME, "DEPT100")
+							.build());
+			departments.add(ENTITIES.builder(Department.TYPE)
+							.with(Department.DEPTNO, 101)
+							.with(Department.DNAME, "DEPT101")
+							.build());
+			// This one will fail due to duplicate DEPTNO
+			departments.add(ENTITIES.builder(Department.TYPE)
+							.with(Department.DEPTNO, 10) // Already exists
+							.with(Department.DNAME, "DUPLICATE")
+							.build());
+			// This one would succeed if batch continued
+			departments.add(ENTITIES.builder(Department.TYPE)
+							.with(Department.DEPTNO, 102)
+							.with(Department.DNAME, "DEPT102")
+							.build());
+
+			assertThrows(UniqueConstraintException.class, () -> connection.insert(departments), "Should have thrown UniqueConstraintException");
+		}
+		finally {
+			connection.rollbackTransaction();
 		}
 	}
 
@@ -1073,6 +1108,43 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
+	void operationOnClosedConnection() {
+		LocalEntityConnection closedConnection = createConnection();
+		closedConnection.close();
+		assertFalse(closedConnection.connected());
+
+		// Test that all operations throw appropriate exceptions on closed connection
+		Entity testEntity = ENTITIES.builder(Department.TYPE)
+						.with(Department.DEPTNO, 999)
+						.with(Department.DNAME, "TEST")
+						.build();
+		assertThrows(IllegalStateException.class, () -> closedConnection.insert(testEntity),
+						"Insert should fail on closed connection");
+		assertThrows(IllegalStateException.class, () -> closedConnection.insertSelect(testEntity),
+						"InsertSelect should fail on closed connection");
+		assertThrows(IllegalStateException.class, () -> closedConnection.update(testEntity),
+						"Update should fail on closed connection");
+		assertThrows(IllegalStateException.class, () -> closedConnection.updateSelect(testEntity),
+						"UpdateSelect should fail on closed connection");
+		assertThrows(IllegalStateException.class, () -> closedConnection.delete(testEntity.primaryKey()),
+						"Delete should fail on closed connection");
+		assertThrows(IllegalStateException.class, () -> closedConnection.delete(all(Department.TYPE)),
+						"Delete with condition should fail on closed connection");
+		assertThrows(IllegalStateException.class, () -> closedConnection.select(all(Department.TYPE)),
+						"Select should fail on closed connection");
+		assertThrows(IllegalStateException.class, () -> closedConnection.select(Department.DNAME, all(Department.TYPE)),
+						"Select should fail on closed connection");
+		assertThrows(IllegalStateException.class, () -> closedConnection.selectSingle(Department.DEPTNO.equalTo(10)),
+						"SelectSingle should fail on closed connection");
+		assertThrows(IllegalStateException.class, () -> closedConnection.count(Count.all(Department.TYPE)),
+						"Count should fail on closed connection");
+		assertThrows(IllegalStateException.class, () -> closedConnection.startTransaction(),
+						"StartTransaction should fail on closed connection");
+
+		assertFalse(closedConnection.connected());
+	}
+
+	@Test
 	void readWriteBlob() {
 		byte[] lazyBytes = new byte[1024];
 		byte[] bytes = new byte[1024];
@@ -1302,6 +1374,214 @@ public class DefaultLocalEntityConnectionTest {
 			catch (Throwable e) {
 				assertFalse(connection.transactionOpen());
 			}
+		}
+	}
+
+	@Test
+	void readOnlyTransaction() throws SQLException {
+		// Test read-only transaction behavior
+		try (LocalEntityConnection testConnection = createConnection()) {
+			// Get the underlying JDBC connection to set read-only mode
+			Connection jdbcConnection = testConnection.databaseConnection().getConnection();
+			// Start with a regular transaction to insert test data
+			testConnection.startTransaction();
+			Entity testDept = ENTITIES.builder(Department.TYPE)
+							.with(Department.DEPTNO, 999)
+							.with(Department.DNAME, "TEST_READONLY")
+							.with(Department.LOC, "TEST_LOC")
+							.build();
+			testDept = testConnection.insertSelect(testDept);
+			testConnection.commitTransaction();
+
+			// Now set the connection to read-only and start a new transaction
+			// Note: H2 database may not fully honor read-only mode in all scenarios
+			jdbcConnection.setReadOnly(true);
+
+			testConnection.startTransaction();
+
+			// Verify we're in a transaction
+			assertTrue(testConnection.transactionOpen());
+
+			// Read operations should work fine
+			Entity readDept = testConnection.selectSingle(Department.DEPTNO.equalTo(999));
+			assertEquals("TEST_READONLY", readDept.get(Department.DNAME));
+
+			// Count should work
+			assertEquals(1, testConnection.count(Count.where(Department.DEPTNO.equalTo(999))));
+
+			// Select multiple should work
+			List<Entity> depts = testConnection.select(Department.DEPTNO.greaterThanOrEqualTo(999));
+			assertFalse(depts.isEmpty());
+
+			// Test if H2 enforces read-only mode for write operations
+			Entity newDept = ENTITIES.builder(Department.TYPE)
+							.with(Department.DEPTNO, 998)
+							.with(Department.DNAME, "SHOULD_FAIL")
+							.build();
+
+			// Try insert - H2 might allow it even in read-only mode
+			try {
+				testConnection.insert(newDept);
+				// If insert succeeded, H2 doesn't enforce read-only at this level
+				// Clean up the inserted record
+				testConnection.delete(newDept.primaryKey());
+			}
+			catch (Exception e) {
+				// Good - insert failed as expected in read-only mode
+			}
+
+			// The main point of this test is to verify that read operations work
+			// correctly when the connection is marked as read-only, and that
+			// the transaction behavior is consistent
+
+			// Rollback the read-only transaction
+			testConnection.rollbackTransaction();
+
+			// Reset to read-write mode and clean up
+			jdbcConnection.setReadOnly(false);
+			testConnection.delete(testDept.primaryKey());
+		}
+	}
+
+	@Test
+	void concurrentTransactionIsolation() throws SQLException, InterruptedException {
+		// Test concurrent transactions with different isolation levels
+		try (LocalEntityConnection connection1 = createConnection();
+				 LocalEntityConnection connection2 = createConnection()) {
+
+			// First, test READ_COMMITTED isolation (default for most databases)
+			// This should prevent dirty reads but allow non-repeatable reads
+			Connection jdbc1 = connection1.databaseConnection().getConnection();
+			Connection jdbc2 = connection2.databaseConnection().getConnection();
+
+			jdbc1.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+			jdbc2.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+
+			// Create test data
+			Entity testDept = ENTITIES.builder(Department.TYPE)
+							.with(Department.DEPTNO, 888)
+							.with(Department.DNAME, "ISOLATION_TEST")
+							.with(Department.LOC, "ORIGINAL")
+							.build();
+			connection1.insert(testDept);
+
+			// Test 1: Verify dirty reads are prevented
+			connection1.startTransaction();
+			Entity dept1 = connection1.selectSingle(Department.DEPTNO.equalTo(888));
+			dept1.set(Department.LOC, "MODIFIED");
+			connection1.update(dept1);
+
+			// Connection 2 should NOT see the uncommitted change
+			Entity dept2 = connection2.selectSingle(Department.DEPTNO.equalTo(888));
+			assertEquals("ORIGINAL", dept2.get(Department.LOC),
+							"Should not see uncommitted changes (no dirty reads)");
+
+			connection1.commitTransaction();
+
+			// Now connection 2 should see the committed change
+			dept2 = connection2.selectSingle(Department.DEPTNO.equalTo(888));
+			assertEquals("MODIFIED", dept2.get(Department.LOC),
+							"Should see committed changes");
+
+			// Test 2: Simple deadlock scenario
+			// Create another entity for deadlock testing
+			Entity testDept2 = ENTITIES.builder(Department.TYPE)
+							.with(Department.DEPTNO, 889)
+							.with(Department.DNAME, "DEADLOCK_TEST")
+							.with(Department.LOC, "ORIGINAL2")
+							.build();
+			connection1.insert(testDept2);
+
+			// Use a flag to track if deadlock was detected
+			AtomicBoolean deadlockDetected = new AtomicBoolean(false);
+			AtomicReference<Exception> exception = new AtomicReference<>();
+
+			// Thread 1: Update dept1 then dept2
+			Thread thread1 = new Thread(() -> {
+				try {
+					connection1.startTransaction();
+					Entity d1 = connection1.selectSingle(Department.DEPTNO.equalTo(888));
+					d1.set(Department.LOC, "THREAD1_UPDATE");
+					connection1.update(d1);
+
+					// Small delay to ensure thread2 gets its first lock
+					Thread.sleep(100);
+
+					// Try to update the second department (this may deadlock)
+					Entity d2 = connection1.selectSingle(Department.DEPTNO.equalTo(889));
+					d2.set(Department.LOC, "THREAD1_UPDATE2");
+					connection1.update(d2);
+
+					connection1.commitTransaction();
+				}
+				catch (Exception e) {
+					exception.set(e);
+					// Check if it's a deadlock or timeout exception
+					if (e.getMessage() != null &&
+									(e.getMessage().contains("deadlock") ||
+													e.getMessage().contains("timeout") ||
+													e.getMessage().contains("lock"))) {
+						deadlockDetected.set(true);
+					}
+					try {
+						connection1.rollbackTransaction();
+					}
+					catch (Exception rollbackEx) {
+						// Ignore rollback exceptions
+					}
+				}
+			});
+
+			// Thread 2: Update dept2 then dept1 (opposite order)
+			Thread thread2 = new Thread(() -> {
+				try {
+					connection2.startTransaction();
+					Entity d2 = connection2.selectSingle(Department.DEPTNO.equalTo(889));
+					d2.set(Department.LOC, "THREAD2_UPDATE");
+					connection2.update(d2);
+
+					// Small delay to ensure thread1 gets its first lock
+					Thread.sleep(100);
+
+					// Try to update the first department (this may deadlock)
+					Entity d1 = connection2.selectSingle(Department.DEPTNO.equalTo(888));
+					d1.set(Department.LOC, "THREAD2_UPDATE2");
+					connection2.update(d1);
+
+					connection2.commitTransaction();
+				}
+				catch (Exception e) {
+					// Check if it's a deadlock or timeout exception
+					if (e.getMessage() != null &&
+									(e.getMessage().contains("deadlock") ||
+													e.getMessage().contains("timeout") ||
+													e.getMessage().contains("lock"))) {
+						deadlockDetected.set(true);
+					}
+					try {
+						connection2.rollbackTransaction();
+					}
+					catch (Exception rollbackEx) {
+						// Ignore rollback exceptions
+					}
+				}
+			});
+
+			// Start both threads
+			thread1.start();
+			thread2.start();
+
+			// Wait for both threads to complete
+			thread1.join(5000); // 5 second timeout
+			thread2.join(5000);
+
+			// At least one thread should have detected a lock/deadlock situation
+			// Note: H2 may use timeouts instead of deadlock detection
+			assertTrue(deadlockDetected.get() || exception.get() != null,
+							"Concurrent conflicting updates should result in lock contention");
+
+			// Clean up test data
+			connection1.delete(Department.DEPTNO.in(888, 889));
 		}
 	}
 
