@@ -19,7 +19,7 @@
 package is.codion.tools.monitor.ui;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.model.UserPreferences;
+import is.codion.common.model.preferences.UserPreferences;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.scheduler.TaskScheduler;

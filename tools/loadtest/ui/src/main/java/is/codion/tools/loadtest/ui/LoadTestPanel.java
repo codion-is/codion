@@ -19,7 +19,7 @@
 package is.codion.tools.loadtest.ui;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.model.UserPreferences;
+import is.codion.common.model.preferences.UserPreferences;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.user.User;
 import is.codion.swing.common.model.component.table.FilterTableModel;

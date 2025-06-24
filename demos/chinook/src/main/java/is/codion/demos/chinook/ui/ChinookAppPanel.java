@@ -19,8 +19,8 @@
 package is.codion.demos.chinook.ui;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.model.UserPreferences;
 import is.codion.common.model.preferences.FilePreferencesFactory;
+import is.codion.common.model.preferences.UserPreferences;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.demos.chinook.domain.api.Chinook;

@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.laf;
 
-import is.codion.common.model.UserPreferences;
+import is.codion.common.model.preferences.UserPreferences;
 import is.codion.swing.common.ui.Utilities;
 
 import javax.swing.LookAndFeel;

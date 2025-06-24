@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2025, Björn Darri Sigurðsson.
  */
-package is.codion.common.model;
+package is.codion.common.model.preferences;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

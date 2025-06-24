@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2016 - 2025, Björn Darri Sigurðsson.
  */
-package is.codion.common.model;
+package is.codion.common.model.preferences;
 
 import org.jspecify.annotations.Nullable;
 

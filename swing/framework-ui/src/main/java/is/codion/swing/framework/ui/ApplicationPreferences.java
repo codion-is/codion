@@ -19,7 +19,7 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.Text;
-import is.codion.common.model.UserPreferences;
+import is.codion.common.model.preferences.UserPreferences;
 import is.codion.common.user.User;
 
 import org.json.JSONObject;
