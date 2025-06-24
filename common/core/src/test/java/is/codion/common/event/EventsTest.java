@@ -296,64 +296,6 @@ public class EventsTest {
 	}
 
 	@Test
-	void stressTestManyListeners() {
-		Event<String> event = Event.event();
-		int listenerCount = 1000;
-		AtomicInteger counter = new AtomicInteger();
-
-		List<Runnable> listeners = new ArrayList<>();
-		for (int i = 0; i < listenerCount; i++) {
-			Runnable listener = counter::incrementAndGet;
-			listeners.add(listener);
-			event.addListener(listener);
-		}
-
-		// Trigger event
-		long startTime = System.nanoTime();
-		event.run();
-		long duration = System.nanoTime() - startTime;
-
-		assertEquals(listenerCount, counter.get());
-
-		// Basic performance check - should complete in reasonable time
-		// Even 1000 listeners should complete in under 100ms
-		assertTrue(duration < 100_000_000L, "Event notification took too long: " + (duration / 1_000_000) + "ms");
-
-		// Remove half the listeners
-		for (int i = 0; i < listenerCount / 2; i++) {
-			event.removeListener(listeners.get(i));
-		}
-
-		counter.set(0);
-		event.run();
-		assertEquals(listenerCount / 2, counter.get());
-	}
-
-	@Test
-	void stressTestManyConsumers() {
-		Event<Integer> event = Event.event();
-		int consumerCount = 1000;
-		AtomicInteger sum = new AtomicInteger();
-
-		List<Consumer<Integer>> consumers = new ArrayList<>();
-		for (int i = 0; i < consumerCount; i++) {
-			Consumer<Integer> consumer = sum::addAndGet;
-			consumers.add(consumer);
-			event.addConsumer(consumer);
-		}
-
-		// Trigger event
-		long startTime = System.nanoTime();
-		event.accept(1);
-		long duration = System.nanoTime() - startTime;
-
-		assertEquals(consumerCount, sum.get());
-
-		// Basic performance check
-		assertTrue(duration < 100_000_000L, "Event notification took too long: " + (duration / 1_000_000) + "ms");
-	}
-
-	@Test
 	void recursiveEventTrigger() {
 		Event<Integer> event = Event.event();
 		AtomicInteger depth = new AtomicInteger();

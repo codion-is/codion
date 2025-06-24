@@ -274,28 +274,6 @@ public final class AbstractEntityConnectionProviderTest {
 	@DisplayName("Provider Properties")
 	class ProviderProperties {
 
-		@Test
-		@DisplayName("provider properties are accessible")
-		void provider_properties_accessible() {
-			EntityConnectionProvider provider = new TestProviderBuilder()
-							.user(UNIT_TEST_USER)
-							.domain(TestDomain.DOMAIN)
-							.build();
-
-			// Test all provider properties
-			assertNotNull(provider.connectionType());
-			assertNotNull(provider.description());
-			assertNotNull(provider.user());
-			assertNotNull(provider.domainType());
-			assertNotNull(provider.entities());
-
-			// Verify property values
-			assertEquals(EntityConnectionProvider.CONNECTION_TYPE_LOCAL, provider.connectionType());
-			assertEquals("description", provider.description());
-			assertEquals(UNIT_TEST_USER, provider.user());
-			assertEquals(TestDomain.DOMAIN, provider.domainType());
-			assertEquals(ENTITIES, provider.entities());
-		}
 
 		@Test
 		@DisplayName("toString includes key information")

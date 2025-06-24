@@ -176,44 +176,16 @@ public class DefaultConditionModelTest {
 	}
 
 	@Test
-	void setUpperLocked() {
+	void lockedModelPreventsModification() {
 		ConditionModel<String> model = ConditionModel.builder(String.class).build();
 		model.locked().set(true);
+		
+		// Verify all modification attempts throw IllegalStateException when locked
 		assertThrows(IllegalStateException.class, () -> model.operands().upper().set("test"));
-	}
-
-	@Test
-	void setLowerLocked() {
-		ConditionModel<String> model = ConditionModel.builder(String.class).build();
-		model.locked().set(true);
 		assertThrows(IllegalStateException.class, () -> model.operands().lower().set("test"));
-	}
-
-	@Test
-	void setEqualOperandLocked() {
-		ConditionModel<String> model = ConditionModel.builder(String.class).build();
-		model.locked().set(true);
 		assertThrows(IllegalStateException.class, () -> model.operands().equal().set("test"));
-	}
-
-	@Test
-	void setInOperandsLocked() {
-		ConditionModel<String> model = ConditionModel.builder(String.class).build();
-		model.locked().set(true);
 		assertThrows(IllegalStateException.class, () -> model.operands().in().set(Collections.singletonList("test")));
-	}
-
-	@Test
-	void setEnabledLocked() {
-		ConditionModel<String> model = ConditionModel.builder(String.class).build();
-		model.locked().set(true);
 		assertThrows(IllegalStateException.class, () -> model.enabled().set(true));
-	}
-
-	@Test
-	void setOperatorLocked() {
-		ConditionModel<String> model = ConditionModel.builder(String.class).build();
-		model.locked().set(true);
 		assertThrows(IllegalStateException.class, () -> model.operator().set(Operator.NOT_EQUAL));
 	}
 

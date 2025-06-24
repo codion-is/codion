@@ -176,12 +176,8 @@ public final class AbstractEntityEditModelTest {
 	}
 
 	@Test
-	void constructorNullEntityType() {
+	void constructorValidation() {
 		assertThrows(NullPointerException.class, () -> new TestEntityEditModel(null, CONNECTION_PROVIDER));
-	}
-
-	@Test
-	void constructorNullConnectionProvider() {
 		assertThrows(NullPointerException.class, () -> new TestEntityEditModel(Employee.TYPE, null));
 	}
 

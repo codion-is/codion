@@ -60,27 +60,13 @@ public final class DefaultEntitySearchModelTest {
 	private Collection<Column<String>> searchable;
 
 	@Test
-	void constructorNullEntityType() {
+	void builderValidation() {
+		// Null checks
 		assertThrows(NullPointerException.class, () -> new DefaultBuilder(null, CONNECTION_PROVIDER));
-	}
-
-	@Test
-	void constructorNullConnectionProvider() {
 		assertThrows(NullPointerException.class, () -> new DefaultBuilder(Employee.TYPE, null));
-	}
-
-	@Test
-	void constructorNullColumns() {
 		assertThrows(NullPointerException.class, () -> new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER).searchColumns(null));
-	}
-
-	@Test
-	void searchWithNoColumns() {
+		// Invalid arguments
 		assertThrows(IllegalArgumentException.class, () -> new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER).searchColumns(emptyList()));
-	}
-
-	@Test
-	void constructorIncorrectEntityColumn() {
 		assertThrows(IllegalArgumentException.class, () -> new DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
 						.searchColumns(singleton(Department.NAME)));
 	}

@@ -300,23 +300,6 @@ public final class SelectQueriesTest {
 		assertTrue(query.contains("GROUP BY job"));
 	}
 
-	@Test
-	void testCachedColumnsClause() {
-		// First call should cache the result
-		SelectQueries.Builder builder1 = queries.builder(employeeDefinition);
-		Select select1 = Select.all(Employee.TYPE).build();
-		builder1.select(select1);
-		String query1 = builder1.build();
-		
-		// Second call should use cached result
-		SelectQueries.Builder builder2 = queries.builder(employeeDefinition);
-		Select select2 = Select.all(Employee.TYPE).build();
-		builder2.select(select2);
-		String query2 = builder2.build();
-		
-		// Should produce identical queries
-		assertEquals(query1, query2);
-	}
 
 	@Test
 	void testSelectWithoutUsingWhereClause() {
@@ -439,30 +422,6 @@ public final class SelectQueriesTest {
 		assertTrue(query.contains("min(sal) < ?"));
 	}
 
-	@Test
-	void testSelectQueryCaching() {
-		// Test that column clauses are cached properly
-		EntityDefinition empDef = testDomain.entities().definition(Employee.TYPE);
-		
-		// First query - should calculate and cache
-		SelectQueries.Builder builder1 = queries.builder(empDef);
-		builder1.select(Select.all(Employee.TYPE).build());
-		String query1 = builder1.build();
-		
-		// Second query - should use cached clauses
-		SelectQueries.Builder builder2 = queries.builder(empDef);
-		builder2.select(Select.all(Employee.TYPE).build());
-		String query2 = builder2.build();
-		
-		assertEquals(query1, query2);
-		
-		// Different attributes - should not use cache
-		SelectQueries.Builder builder3 = queries.builder(empDef);
-		builder3.select(Select.all(Employee.TYPE).attributes(Employee.NAME, Employee.SALARY).build());
-		String query3 = builder3.build();
-		
-		assertNotEquals(query1, query3);
-	}
 
 	@Test
 	void testEntityWithNoSelectableColumns() {

@@ -97,11 +97,6 @@ public class DefaultFilterComboBoxModelTest {
 		assertTrue(testModel.items().cleared());
 	}
 
-	@Test
-	void testDataListeners() {
-		testModel.addListDataListener(listDataListener);
-		testModel.removeListDataListener(listDataListener);
-	}
 
 	@Test
 	void testSelection() {

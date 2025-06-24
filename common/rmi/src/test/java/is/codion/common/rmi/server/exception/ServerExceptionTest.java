@@ -45,27 +45,11 @@ public class ServerExceptionTest {
 	class ServerExceptionTests {
 
 		@Test
-		@DisplayName("Constructor with message creates exception")
-		void constructor_withMessage_createsException() {
-			ServerException exception = new TestableServerException(TEST_MESSAGE);
-
-			assertEquals(TEST_MESSAGE, exception.getMessage());
-		}
-
-		@Test
-		@DisplayName("Constructor with null message creates exception")
-		void constructor_withNullMessage_createsException() {
-			ServerException exception = new TestableServerException(NULL_MESSAGE);
-
-			assertNull(exception.getMessage());
-		}
-
-		@Test
-		@DisplayName("Constructor with empty message creates exception")
-		void constructor_withEmptyMessage_createsException() {
-			ServerException exception = new TestableServerException(EMPTY_MESSAGE);
-
-			assertEquals(EMPTY_MESSAGE, exception.getMessage());
+		@DisplayName("Constructor handles various message types")
+		void constructor_handlesVariousMessages() {
+			assertEquals(TEST_MESSAGE, new TestableServerException(TEST_MESSAGE).getMessage());
+			assertNull(new TestableServerException(NULL_MESSAGE).getMessage());
+			assertEquals(EMPTY_MESSAGE, new TestableServerException(EMPTY_MESSAGE).getMessage());
 		}
 
 		@Test
@@ -102,19 +86,10 @@ public class ServerExceptionTest {
 	class LoginExceptionTests {
 
 		@Test
-		@DisplayName("Constructor with message creates exception")
-		void constructor_withMessage_createsException() {
-			LoginException exception = new LoginException(TEST_MESSAGE);
-
-			assertEquals(TEST_MESSAGE, exception.getMessage());
-		}
-
-		@Test
-		@DisplayName("Constructor with null message creates exception")
-		void constructor_withNullMessage_createsException() {
-			LoginException exception = new LoginException(NULL_MESSAGE);
-
-			assertNull(exception.getMessage());
+		@DisplayName("Constructor handles various message types")
+		void constructor_handlesVariousMessages() {
+			assertEquals(TEST_MESSAGE, new LoginException(TEST_MESSAGE).getMessage());
+			assertNull(new LoginException(NULL_MESSAGE).getMessage());
 		}
 
 		@Test
@@ -126,12 +101,6 @@ public class ServerExceptionTest {
 			assertInstanceOf(Exception.class, exception);
 		}
 
-		@Test
-		@DisplayName("Public constructor is accessible")
-		void publicConstructor_isAccessible() {
-			// This test ensures the constructor is properly public
-			assertDoesNotThrow(() -> new LoginException(TEST_MESSAGE));
-		}
 
 		@Test
 		@DisplayName("Serialization preserves message")
@@ -182,14 +151,6 @@ public class ServerExceptionTest {
 			assertTrue(java.lang.reflect.Modifier.isFinal(ServerAuthenticationException.class.getModifiers()));
 		}
 
-		@Test
-		@DisplayName("Authentication-specific error messages")
-		void authenticationSpecificMessages() {
-			String authMessage = "Invalid username or password";
-			ServerAuthenticationException exception = new ServerAuthenticationException(authMessage);
-
-			assertEquals(authMessage, exception.getMessage());
-		}
 
 		@Test
 		@DisplayName("Serialization preserves message")

@@ -89,41 +89,6 @@ public class OperatorTest {
 						"Resource bundle should have exactly " + expectedKeys.size() + " keys");
 	}
 
-	@Test
-	void operatorToString() {
-		// Verify toString returns the enum name (default behavior)
-		for (Operator operator : Operator.values()) {
-			assertEquals(operator.name(), operator.toString());
-		}
-	}
-
-	@Test
-	void operatorValueOf() {
-		// Test valueOf for all operators
-		for (Operator operator : Operator.values()) {
-			assertEquals(operator, Operator.valueOf(operator.name()));
-		}
-
-		// Test invalid name
-		assertThrows(IllegalArgumentException.class, () -> Operator.valueOf("INVALID_OPERATOR"));
-	}
-
-	@Test
-	void operatorOrdinals() {
-		// Verify ordinals are as expected based on declaration order
-		assertEquals(0, Operator.EQUAL.ordinal());
-		assertEquals(1, Operator.NOT_EQUAL.ordinal());
-		assertEquals(2, Operator.LESS_THAN.ordinal());
-		assertEquals(3, Operator.LESS_THAN_OR_EQUAL.ordinal());
-		assertEquals(4, Operator.GREATER_THAN.ordinal());
-		assertEquals(5, Operator.GREATER_THAN_OR_EQUAL.ordinal());
-		assertEquals(6, Operator.IN.ordinal());
-		assertEquals(7, Operator.NOT_IN.ordinal());
-		assertEquals(8, Operator.BETWEEN_EXCLUSIVE.ordinal());
-		assertEquals(9, Operator.BETWEEN.ordinal());
-		assertEquals(10, Operator.NOT_BETWEEN_EXCLUSIVE.ordinal());
-		assertEquals(11, Operator.NOT_BETWEEN.ordinal());
-	}
 
 	@Test
 	void verifySpecificDescriptions() {

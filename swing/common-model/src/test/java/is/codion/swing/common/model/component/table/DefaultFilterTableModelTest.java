@@ -28,6 +28,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -399,55 +400,21 @@ public final class DefaultFilterTableModelTest {
 	}
 
 	@Test
-	void addSelectedIndexesNegative() {
-		Collection<Integer> indexes = new ArrayList<>();
-		indexes.add(1);
-		indexes.add(-1);
-		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selection().indexes().add(indexes));
-	}
-
-	@Test
-	void addSelectedIndexesOutOfBounds() {
-		Collection<Integer> indexes = new ArrayList<>();
-		indexes.add(1);
-		indexes.add(10);
-		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selection().indexes().add(indexes));
-	}
-
-	@Test
-	void setSelectedIndexesNegative() {
-		List<Integer> indexes = new ArrayList<>();
-		indexes.add(1);
-		indexes.add(-1);
-		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selection().indexes().set(indexes));
-	}
-
-	@Test
-	void setSelectedIndexesOutOfBounds() {
-		List<Integer> indexes = new ArrayList<>();
-		indexes.add(1);
-		indexes.add(10);
-		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selection().indexes().set(indexes));
-	}
-
-	@Test
-	void setSelectedIndexNegative() {
+	void selectionBoundsValidation() {
+		// Single index bounds checking
 		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selection().index().set(-1));
-	}
-
-	@Test
-	void setSelectedIndexOutOfBounds() {
 		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selection().index().set(10));
-	}
-
-	@Test
-	void addSelectedIndexNegative() {
 		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selection().indexes().add(-1));
-	}
-
-	@Test
-	void addSelectedIndexOutOfBounds() {
 		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selection().indexes().add(10));
+
+		// Multiple indexes bounds checking
+		List<Integer> negativeIndexes = Arrays.asList(1, -1);
+		List<Integer> outOfBoundsIndexes = Arrays.asList(1, 10);
+
+		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selection().indexes().add(negativeIndexes));
+		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selection().indexes().add(outOfBoundsIndexes));
+		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selection().indexes().set(negativeIndexes));
+		assertThrows(IndexOutOfBoundsException.class, () -> tableModel.selection().indexes().set(outOfBoundsIndexes));
 	}
 
 	@Test
@@ -727,7 +694,7 @@ public final class DefaultFilterTableModelTest {
 		assertThrows(NullPointerException.class, () -> tableModel.items().remove(singleNull));
 		assertThrows(NullPointerException.class, () -> tableModel.items().contains(null));
 
-		assertThrows(NullPointerException.class, () -> tableModel.items().visible().add(0, (TestRow)null));
+		assertThrows(NullPointerException.class, () -> tableModel.items().visible().add(0, (TestRow) null));
 		assertThrows(NullPointerException.class, () -> tableModel.items().visible().add(0, (List<TestRow>) null));
 		assertThrows(NullPointerException.class, () -> tableModel.items().visible().add(0, singleNull));
 		assertThrows(NullPointerException.class, () -> tableModel.items().visible().contains(null));
