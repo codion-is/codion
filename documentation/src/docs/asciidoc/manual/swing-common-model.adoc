@@ -1,0 +1,4 @@
+= Swing Common Model
+:basedir: ..
+
+include::{basedir}/manual/swing-common-model-table.adoc[leveloffset=+1]

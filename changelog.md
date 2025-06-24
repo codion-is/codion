@@ -8,6 +8,7 @@ Codion Change Log
 - Unit tests improved.
 ### is.codion.common.model
 - Unit tests improved.
+- FilePreferencesFactory added.
 ### is.codion.common.rmi
 - Unit tests improved.
 ### is.codion.framework.domain

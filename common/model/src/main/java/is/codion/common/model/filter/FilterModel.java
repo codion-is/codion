@@ -246,8 +246,8 @@ public interface FilterModel<T> {
 
 		/**
 		 * @param refresher the item refresher to use
-		 * @return a new {@link Builder.SelectionStage} instance
 		 * @param <T> the item type
+		 * @return a new {@link Builder.SelectionStage} instance
 		 */
 		static <T> Builder.SelectionStage<T> builder(Function<Items<T>, Refresher<T>> refresher) {
 			return new DefaultFilterModelItems.DefaultSelectionStage<>(requireNonNull(refresher));

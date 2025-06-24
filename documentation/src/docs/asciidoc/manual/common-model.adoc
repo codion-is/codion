@@ -1,4 +1,212 @@
 = Common Model
-:basedir: ..
+:dir-source: ../../../../../demos/manual/src/main/java
+:url-javadoc: link:../api
 
-include::{basedir}/manual/common-model-table.adoc[leveloffset=+1]
+== File Preferences
+
+The {url-javadoc}{common-model}/is/codion/common/model/preferences/FilePreferencesFactory.html[FilePreferencesFactory] provides a file-based implementation of the Java Preferences API that removes the restrictive length limitations of the default implementation.
+
+=== Motivation
+
+The default Java Preferences API imposes the following restrictions:
+
+* Maximum key length: 80 characters
+* Maximum value length: 8,192 characters (8 KB)
+* Maximum node name length: 80 characters
+
+These limits can be problematic when storing configuration data such as serialized table column preferences or other structured data that may exceed these limits.
+
+=== Usage
+
+To use the file-based preferences implementation, set the system property before accessing preferences:
+
+[source,java]
+----
+// At application startup
+System.setProperty("java.util.prefs.PreferencesFactory",
+    "is.codion.common.model.preferences.FilePreferencesFactory");
+
+// Then use preferences normally
+Preferences prefs = Preferences.userRoot();
+prefs.put("my.very.long.key.name.that.exceeds.80.chars", "my huge value...");
+prefs.flush(); // Writes to ~/.codion/preferences.json
+----
+
+=== File Storage
+
+Preferences are stored in a JSON file at a platform-specific location:
+
+* **Windows**: `%LOCALAPPDATA%\Codion\preferences.json`
+* **macOS**: `~/Library/Preferences/Codion/preferences.json`
+* **Linux**: `~/.config/codion/preferences.json` (follows XDG Base Directory specification)
+* **Other**: `~/.codion/preferences.json`
+
+The file uses the following JSON format:
+
+[source,json]
+----
+{
+  "normal.key": "normal value",
+  "very.long.key.that.exceeds.eighty.characters": "value",
+  "key.with.large.value": "... 100KB of text ...",
+  "key.with.newlines": "Line 1\nLine 2\nLine 3"
+}
+----
+
+NOTE: When storing JSON data as a preference value (such as serialized column preferences), the JSON content is properly escaped and stored as a JSON string value. This double-encoding is handled automatically - you store and retrieve your JSON strings normally through the Preferences API.
+
+=== Features
+
+* **No length restrictions** - Keys and values can be of any length
+* **JSON format** - Human-readable and easily editable
+* **Thread-safe** - Safe for concurrent access within a single JVM
+* **Multi-JVM safe** - File locking ensures safe concurrent access from multiple JVMs
+* **Atomic writes** - Changes are written atomically to prevent corruption
+* **Drop-in replacement** - Uses the standard Java Preferences API
+* **Full hierarchy support** - Create nested preference nodes with paths
+
+=== Limitations
+
+* Currently only supports user preferences (not system preferences)
+
+=== Migration from Default Preferences
+
+The file preferences implementation includes automatic migration from the default Java Preferences on first use. When the preferences file doesn't exist, it will automatically copy all existing preferences from the default implementation.
+
+==== Automatic Migration
+
+Migration happens automatically the first time you use file preferences:
+
+[source,java]
+----
+// Set the system property
+System.setProperty("java.util.prefs.PreferencesFactory",
+    "is.codion.common.model.preferences.FilePreferencesFactory");
+
+// On first access, existing preferences are automatically migrated
+Preferences prefs = Preferences.userRoot();
+// All your existing preferences are now available
+----
+
+To disable automatic migration:
+
+[source,java]
+----
+System.setProperty("codion.preferences.migrate", "false");
+----
+
+==== Truncated Values
+
+The migration process detects values that may have been truncated by the default implementation:
+- Keys exactly 80 characters long
+- Values exactly 8,192 characters long
+
+These are marked with a `.truncated` suffix in the migrated preferences, allowing you to identify and potentially restore complete values from other sources.
+
+=== Example
+
+[source,java]
+----
+// Enable file preferences
+System.setProperty("java.util.prefs.PreferencesFactory",
+    "is.codion.common.model.preferences.FilePreferencesFactory");
+
+Preferences prefs = Preferences.userRoot();
+
+// Store large keys (> 80 chars)
+String longKey = "application.window.layout.configuration.with.very.long.name";
+prefs.put(longKey, "complex layout data");
+
+// Store large values (> 8KB)
+String largeConfig = generateLargeConfigurationString(); // e.g., 100KB
+prefs.put("application.config", largeConfig);
+
+// Store JSON data (e.g., column preferences)
+String columnPrefs = "{\"columns\":[{\"id\":\"name\",\"width\":100}]}";
+prefs.put("table.column.preferences", columnPrefs);
+
+// Persist to disk
+prefs.flush();
+
+// Read back later
+String config = prefs.get("application.config", "default");
+String jsonPrefs = prefs.get("table.column.preferences", "{}");
+// The JSON string is returned exactly as stored, ready for parsing
+----
+
+=== Hierarchy Support
+
+The file preferences implementation supports the full Java Preferences node hierarchy:
+
+[source,java]
+----
+// Enable file preferences
+System.setProperty("java.util.prefs.PreferencesFactory",
+    "is.codion.common.model.preferences.FilePreferencesFactory");
+
+Preferences root = Preferences.userRoot();
+
+// Create nested preference nodes
+Preferences appNode = root.node("myapp");
+Preferences uiNode = appNode.node("ui");
+Preferences dbNode = appNode.node("database");
+
+// Store preferences at different levels
+uiNode.put("theme", "dark");
+uiNode.put("font.size", "14");
+dbNode.put("connection.url", "jdbc:postgresql://localhost/mydb");
+dbNode.put("connection.pool.size", "10");
+
+// Navigate to nodes using paths
+Preferences ui = root.node("myapp/ui");
+String theme = ui.get("theme", "light"); // "dark"
+
+// List child nodes
+String[] appChildren = appNode.childrenNames(); // ["ui", "database"]
+
+// Remove entire node and its children
+dbNode.removeNode();
+root.flush();
+----
+
+The hierarchical structure is stored as nested JSON objects:
+
+[source,json]
+----
+{
+  "myapp": {
+    "ui": {
+      "theme": "dark",
+      "font.size": "14"
+    },
+    "database": {
+      "connection.url": "jdbc:postgresql://localhost/mydb",
+      "connection.pool.size": "10"
+    }
+  }
+}
+----
+
+=== Concurrency and Multi-JVM Access
+
+The file preferences implementation is designed to be safe for concurrent access:
+
+* **Within a single JVM**: All operations are synchronized using internal locks
+* **Across multiple JVMs**: File locking ensures only one JVM can write at a time
+* **Atomic writes**: Changes are written to a temporary file and atomically moved
+* **External changes**: The `sync()` method reloads the file if modified externally
+
+[source,java]
+----
+// JVM 1
+Preferences prefs1 = Preferences.userRoot();
+prefs1.put("shared.value", "from JVM 1");
+prefs1.flush();
+
+// JVM 2
+Preferences prefs2 = Preferences.userRoot();
+prefs2.sync(); // Reload to see changes from JVM 1
+String value = prefs2.get("shared.value", null); // "from JVM 1"
+----
+
+The implementation uses a 5-second timeout for acquiring file locks to prevent deadlocks.

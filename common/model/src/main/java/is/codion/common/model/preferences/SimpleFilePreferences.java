@@ -1,0 +1,149 @@
+/*
+ * This file is part of Codion.
+ *
+ * Codion is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Codion is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Copyright (c) 2025, Björn Darri Sigurðsson.
+ */
+package is.codion.common.model.preferences;
+
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.prefs.AbstractPreferences;
+import java.util.prefs.BackingStoreException;
+
+/**
+ * A file-based preferences implementation without length restrictions.
+ * Supports hierarchical preferences through nested JSON structure.
+ */
+final class SimpleFilePreferences extends AbstractPreferences {
+
+	private static final Logger LOG = LoggerFactory.getLogger(SimpleFilePreferences.class);
+
+	private static final String[] EMPTY_STRING_ARRAY = new String[0];
+	private static final String PATH_SEPARATOR = "/";
+
+	private final JsonPreferencesStore store;
+	private final String path;
+
+	SimpleFilePreferences() throws IOException {
+		this(null, "", createDefaultStore());
+		LOG.info("Created root file preferences with default store");
+	}
+
+	// Package-private constructor for testing
+	SimpleFilePreferences(JsonPreferencesStore store) {
+		this(null, "", store);
+		LOG.debug("Created root file preferences with custom store");
+	}
+
+	private SimpleFilePreferences(@Nullable SimpleFilePreferences parent, String name, JsonPreferencesStore store) {
+		super(parent, name);
+		this.store = store;
+		this.path = parent == null ? "" : (parent.path.isEmpty() ? name : parent.path + PATH_SEPARATOR + name);
+	}
+
+	private static JsonPreferencesStore createDefaultStore() throws IOException {
+		Path prefsPath = PreferencesPath.userPreferencesPath();
+
+		return new JsonPreferencesStore(prefsPath);
+	}
+
+	@Override
+	public void put(String key, String value) {
+		// Override to bypass AbstractPreferences validation
+		synchronized (lock) {
+			if (key == null) {
+				throw new NullPointerException("key cannot be null");
+			}
+			if (value == null) {
+				throw new NullPointerException("value cannot be null");
+			}
+			putSpi(key, value);
+		}
+	}
+
+	@Override
+	protected void putSpi(String key, String value) {
+		store.put(path, key, value);
+	}
+
+	@Override
+	protected String getSpi(String key) {
+		return store.get(path, key);
+	}
+
+	@Override
+	protected void removeSpi(String key) {
+		LOG.trace("Removing preference key '{}' at path '{}'", key, path);
+		store.remove(path, key);
+	}
+
+	@Override
+	protected String[] keysSpi() throws BackingStoreException {
+		return store.keys(path).toArray(EMPTY_STRING_ARRAY);
+	}
+
+	@Override
+	protected void flushSpi() throws BackingStoreException {
+		LOG.debug("Flushing preferences to disk");
+		try {
+			store.save();
+		}
+		catch (IOException e) {
+			LOG.error("Failed to flush preferences", e);
+			throw new BackingStoreException(e);
+		}
+	}
+
+	@Override
+	protected void syncSpi() throws BackingStoreException {
+		LOG.debug("Syncing preferences from disk");
+		try {
+			store.reload();
+		}
+		catch (IOException e) {
+			LOG.error("Failed to sync preferences", e);
+			throw new BackingStoreException(e);
+		}
+	}
+
+	@Override
+	protected String[] childrenNamesSpi() {
+		return store.childrenNames(path).toArray(EMPTY_STRING_ARRAY);
+	}
+
+	@Override
+	protected AbstractPreferences childSpi(String name) {
+		LOG.trace("Creating child preference node '{}' under path '{}'", name, path);
+		return new SimpleFilePreferences(this, name, store);
+	}
+
+	@Override
+	protected void removeNodeSpi() throws BackingStoreException {
+		LOG.debug("Removing preference node at path '{}'", path);
+		store.removeNode(path);
+		try {
+			store.save();
+		}
+		catch (IOException e) {
+			LOG.error("Failed to remove preference node", e);
+			throw new BackingStoreException(e);
+		}
+	}
+}

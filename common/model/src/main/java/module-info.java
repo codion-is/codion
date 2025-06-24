@@ -34,11 +34,14 @@
 module is.codion.common.model {
 	requires transitive org.jspecify;
 	requires java.prefs;
+	requires org.slf4j;
 	requires transitive is.codion.common.core;
+	requires org.json;
 
 	exports is.codion.common.model;
 	exports is.codion.common.model.condition;
 	exports is.codion.common.model.filter;
+	exports is.codion.common.model.preferences;
 	exports is.codion.common.model.selection;
 	exports is.codion.common.model.summary;
 }
