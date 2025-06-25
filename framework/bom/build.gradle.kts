@@ -35,7 +35,6 @@ dependencies {
         api(project(":codion-swing-framework-model"))
         api(project(":codion-swing-framework-ui"))
 
-
         api(project(":codion-plugin-hikari-pool"))
         api(project(":codion-plugin-tomcat-pool"))
 
