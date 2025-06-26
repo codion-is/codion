@@ -23,14 +23,6 @@
  * on AWS Lambda. It implements the Codion entity protocol directly, allowing
  * existing HTTP-based entity connection clients to connect to Lambda functions
  * without modification.<br>
- * <br>
- * Key features:
- * <ul>
- * <li>Connection pooling using Codion's {@link is.codion.common.db.pool.ConnectionPoolWrapper}</li>
- * <li>Multi-user support with separate pools per authenticated user</li>
- * <li>Health monitoring with connection pool statistics</li>
- * <li>Extensible architecture via {@link is.codion.framework.lambda.LambdaEntityHandler}</li>
- * </ul>
  */
 module is.codion.framework.lambda {
 	requires org.slf4j;

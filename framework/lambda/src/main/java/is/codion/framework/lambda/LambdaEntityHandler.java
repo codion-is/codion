@@ -23,12 +23,10 @@ import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.rmi.client.ConnectionRequest;
-import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
-import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.condition.Condition;
@@ -39,6 +37,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse.APIGatewayV2HTTPResponseBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +54,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import static is.codion.common.rmi.server.Server.CLIENT_HOST;
+import static is.codion.framework.db.rmi.RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableSet;
 
@@ -132,10 +133,8 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 	 */
 	public LambdaEntityHandler() {
 		try {
-			EntityServerConfiguration serverConfig = createServerConfiguration();
-			this.entityServer = EntityServer.startServer(serverConfig);
+			entityServer = EntityServer.startServer(createServerConfiguration());
 			LOG.info("EntityServer started successfully");
-			LOG.info("Available domains: {}", serverConfig.domainClassNames());
 		}
 		catch (Exception e) {
 			throw new RuntimeException("Failed to start EntityServer", e);
@@ -148,7 +147,6 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 	 * @return the server configuration
 	 */
 	private static EntityServerConfiguration createServerConfiguration() {
-		// Build server configuration
 		return EntityServerConfiguration
 						.builder(1098, 1099) // These are not exposed anywhere
 						.database(Database.instance())
@@ -158,7 +156,7 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 
 	@Override
 	public final APIGatewayV2HTTPResponse handleRequest(APIGatewayV2HTTPEvent input, Context context) {
-		APIGatewayV2HTTPResponse.APIGatewayV2HTTPResponseBuilder response = APIGatewayV2HTTPResponse.builder();
+		APIGatewayV2HTTPResponseBuilder response = APIGatewayV2HTTPResponse.builder();
 		try {
 			String path = extractPath(input);
 			// Handle OPTIONS requests for CORS preflight
@@ -246,7 +244,7 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 		return clientType.trim();
 	}
 
-	private static void handleOptionsRequest(APIGatewayV2HTTPResponse.APIGatewayV2HTTPResponseBuilder response) {
+	private static void handleOptionsRequest(APIGatewayV2HTTPResponseBuilder response) {
 		response.withStatusCode(200)
 						.withHeaders(createOptionsHeaders())
 						.withBody("");
@@ -286,22 +284,18 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 	 * @return a remote entity connection
 	 * @throws Exception if connection fails
 	 */
-	private RemoteEntityConnection getConnection(User user, String domainTypeName, UUID clientId, String clientType) throws Exception {
-		// Build connection request
-		ConnectionRequest request = ConnectionRequest.builder()
+	private RemoteEntityConnection connection(User user, String domainTypeName, UUID clientId, String clientType) throws Exception {
+		return (RemoteEntityConnection) entityServer.connect(ConnectionRequest.builder()
 						.user(user)
 						.clientId(clientId)
 						.clientType(clientType)
-						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, domainTypeName)
-						.parameter(Server.CLIENT_HOST, "lambda")
-						.build();
-
-		// Get connection from server
-		return (RemoteEntityConnection) entityServer.connect(request);
+						.parameter(REMOTE_CLIENT_DOMAIN_TYPE, domainTypeName)
+						.parameter(CLIENT_HOST, "lambda")
+						.build());
 	}
 
 	private void handleEntityRequest(APIGatewayV2HTTPEvent input,
-																	 APIGatewayV2HTTPResponse.APIGatewayV2HTTPResponseBuilder response,
+																	 APIGatewayV2HTTPResponseBuilder response,
 																	 Context context) throws Exception {
 		String path = extractPath(input);
 		String operation = null;
@@ -349,105 +343,76 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 		}
 	}
 
-	private void processOperation(String operation, ObjectInputStream ois, ObjectOutputStream oos,
+	private void processOperation(String operation, ObjectInputStream input, ObjectOutputStream output,
 																User user, String domainTypeName, UUID clientId, String clientType) throws Exception {
-		// Get connection from EntityServer
-		RemoteEntityConnection connection = getConnection(user, domainTypeName, clientId, clientType);
+		RemoteEntityConnection connection = connection(user, domainTypeName, clientId, clientType);
 		try {
 			switch (operation) {
 				case SELECT:
-					EntityConnection.Select select = (EntityConnection.Select) ois.readObject();
-					oos.writeObject(connection.select(select));
+					output.writeObject(connection.select((EntityConnection.Select) input.readObject()));
 					break;
 				case SELECT_BY_KEY:
-					Collection<Entity.Key> keys = (Collection<Entity.Key>) ois.readObject();
-					oos.writeObject(connection.select(keys));
+					output.writeObject(connection.select((Collection<Entity.Key>) input.readObject()));
 					break;
 				case COUNT:
-					EntityConnection.Count count = (EntityConnection.Count) ois.readObject();
-					oos.writeObject(connection.count(count));
+					output.writeObject(connection.count((EntityConnection.Count) input.readObject()));
 					break;
 				case INSERT:
-					Collection<Entity> entities = (Collection<Entity>) ois.readObject();
-					oos.writeObject(connection.insert(entities));
+					output.writeObject(connection.insert((Collection<Entity>) input.readObject()));
 					break;
 				case INSERT_SELECT:
-					entities = (Collection<Entity>) ois.readObject();
-					oos.writeObject(connection.insertSelect(entities));
+					output.writeObject(connection.insertSelect((Collection<Entity>) input.readObject()));
 					break;
 				case UPDATE:
-					entities = (Collection<Entity>) ois.readObject();
-					connection.update(entities);
-					oos.writeObject(null);
+					connection.update((Collection<Entity>) input.readObject());
+					output.writeObject(null);
 					break;
 				case UPDATE_SELECT:
-					entities = (Collection<Entity>) ois.readObject();
-					oos.writeObject(connection.updateSelect(entities));
+					output.writeObject(connection.updateSelect((Collection<Entity>) input.readObject()));
 					break;
 				case DELETE:
-					Object deleteParam = ois.readObject();
+					Object deleteParam = input.readObject();
 					if (deleteParam instanceof Collection) {
 						connection.delete((Collection<Entity.Key>) deleteParam);
-						oos.writeObject(null);
+						output.writeObject(null);
 					}
 					else {
-						Condition condition = (Condition) deleteParam;
-						oos.writeObject(connection.delete(condition));
+						output.writeObject(connection.delete((Condition) deleteParam));
 					}
 					break;
 				case DELETE_BY_KEY:
-					keys = (Collection<Entity.Key>) ois.readObject();
-					connection.delete(keys);
-					oos.writeObject(null);
+					connection.delete((Collection<Entity.Key>) input.readObject());
+					output.writeObject(null);
 					break;
 				case UPDATE_BY_CONDITION:
-					EntityConnection.Update update = (EntityConnection.Update) ois.readObject();
-					oos.writeObject(connection.update(update));
+					output.writeObject(connection.update((EntityConnection.Update) input.readObject()));
 					break;
 				case VALUES:
-					List<Object> params = (List<Object>) ois.readObject();
-					Column<?> column = (Column<?>) params.get(0);
-					EntityConnection.Select valueSelect = (EntityConnection.Select) params.get(1);
-					oos.writeObject(connection.select(column, valueSelect));
+					List<Object> params = (List<Object>) input.readObject();
+					output.writeObject(connection.select((Column<?>) params.get(0), (EntityConnection.Select) params.get(1)));
 					break;
 				case DEPENDENCIES:
-					entities = (Collection<Entity>) ois.readObject();
-					oos.writeObject(connection.dependencies(entities));
-					break;
-				case IS_TRANSACTION_OPEN:
-					oos.writeObject(connection.transactionOpen());
+					output.writeObject(connection.dependencies((Collection<Entity>) input.readObject()));
 					break;
 				case SET_QUERY_CACHE_ENABLED:
-					Boolean enabled = (Boolean) ois.readObject();
-					connection.queryCache(enabled);
-					oos.writeObject(null);
-					break;
-				case IS_QUERY_CACHE_ENABLED:
-					oos.writeObject(connection.queryCache());
+					connection.queryCache((Boolean) input.readObject());
+					output.writeObject(null);
 					break;
 				case PROCEDURE:
-					List<Object> parameters = (List<Object>) ois.readObject();
-					ProcedureType<EntityConnection, Object> procedureType =
-									(ProcedureType<EntityConnection, Object>) parameters.get(0);
-					Object argument = parameters.size() > 1 ? parameters.get(1) : null;
-					connection.execute(procedureType, argument);
-					oos.writeObject(null);
+					List<Object> parameters = (List<Object>) input.readObject();
+					ProcedureType<EntityConnection, Object> procedureType = (ProcedureType<EntityConnection, Object>) parameters.get(0);
+					connection.execute(procedureType, parameters.size() > 1 ? parameters.get(1) : null);
+					output.writeObject(null);
 					break;
 				case FUNCTION:
-					parameters = (List<Object>) ois.readObject();
-					FunctionType<EntityConnection, Object, Object> functionType =
-									(FunctionType<EntityConnection, Object, Object>) parameters.get(0);
-					argument = parameters.size() > 1 ? parameters.get(1) : null;
-					Object result = connection.execute(functionType, argument);
-					oos.writeObject(result);
+					parameters = (List<Object>) input.readObject();
+					FunctionType<EntityConnection, Object, Object> functionType = (FunctionType<EntityConnection, Object, Object>) parameters.get(0);
+					output.writeObject(connection.execute(functionType, parameters.size() > 1 ? parameters.get(1) : null));
 					break;
 				case REPORT:
-					parameters = (List<Object>) ois.readObject();
-					ReportType<Object, Object, Object> reportType =
-									(ReportType<Object, Object, Object>) parameters.get(0);
-					Object reportParameters = parameters.get(1);
-					Object report = connection.report(reportType, reportParameters);
-					oos.writeObject(report);
+					parameters = (List<Object>) input.readObject();
+					ReportType<Object, Object, Object> reportType = (ReportType<Object, Object, Object>) parameters.get(0);
+					output.writeObject(connection.report(reportType, parameters.get(1)));
 					break;
 				default:
 					throw new UnsupportedOperationException("Unknown operation: " + operation);
@@ -460,11 +425,11 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 	}
 
 	private void handleNoBodyOperation(String operation, User user, String domainTypeName, UUID clientId, String clientType,
-																		 APIGatewayV2HTTPResponse.APIGatewayV2HTTPResponseBuilder response,
+																		 APIGatewayV2HTTPResponseBuilder response,
 																		 Context context) throws Exception {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
-			RemoteEntityConnection connection = getConnection(user, domainTypeName, clientId, clientType);
+			RemoteEntityConnection connection = connection(user, domainTypeName, clientId, clientType);
 			switch (operation) {
 				case ENTITIES:
 					oos.writeObject(connection.entities());
@@ -508,7 +473,7 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 	}
 
 	private void handleEntitiesRequest(APIGatewayV2HTTPEvent input,
-																		 APIGatewayV2HTTPResponse.APIGatewayV2HTTPResponseBuilder response,
+																		 APIGatewayV2HTTPResponseBuilder response,
 																		 Context context) throws Exception {
 		// Extract user, domain, client ID, and client type
 		User user = extractUser(input.getHeaders());
@@ -517,20 +482,19 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 		String clientType = extractClientType(input.getHeaders());
 
 		// Get connection and entities
-		RemoteEntityConnection connection = getConnection(user, domainTypeName, clientId, clientType);
-
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
-			oos.writeObject(connection.entities());
+		RemoteEntityConnection connection = connection(user, domainTypeName, clientId, clientType);
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		try (ObjectOutputStream stream = new ObjectOutputStream(outputStream)) {
+			stream.writeObject(connection.entities());
 		}
 
 		response.withStatusCode(200)
 						.withHeaders(createCorsHeadersWithContent(context.getAwsRequestId()))
-						.withBody(Base64.getEncoder().encodeToString(baos.toByteArray()))
+						.withBody(Base64.getEncoder().encodeToString(outputStream.toByteArray()))
 						.withIsBase64Encoded(true);
 	}
 
-	private void handleHealthCheck(APIGatewayV2HTTPResponse.APIGatewayV2HTTPResponseBuilder response) {
+	private void handleHealthCheck(APIGatewayV2HTTPResponseBuilder response) {
 		try {
 			// Simple health check - just verify server is available
 			boolean available = entityServer.connectionsAvailable();
@@ -549,24 +513,23 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 	}
 
 
-	private static void sendErrorResponse(APIGatewayV2HTTPResponse.APIGatewayV2HTTPResponseBuilder response,
+	private static void sendErrorResponse(APIGatewayV2HTTPResponseBuilder response,
 																				Exception error, Context context) {
 		// Special handling for authentication errors
 		int statusCode = 500;
-		if (error instanceof LoginException || error.getMessage() != null &&
-						error.getMessage().contains("authentication")) {
+		if (error instanceof LoginException || error.getMessage() != null && error.getMessage().contains("authentication")) {
 			statusCode = 401;
 		}
 
 		try {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
-				oos.writeObject(error);
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			try (ObjectOutputStream stream = new ObjectOutputStream(outputStream)) {
+				stream.writeObject(error);
 			}
 
 			response.withStatusCode(statusCode)
 							.withHeaders(createCorsHeadersWithContent(context.getAwsRequestId()))
-							.withBody(Base64.getEncoder().encodeToString(baos.toByteArray()))
+							.withBody(Base64.getEncoder().encodeToString(outputStream.toByteArray()))
 							.withIsBase64Encoded(true);
 		}
 		catch (Exception e) {
