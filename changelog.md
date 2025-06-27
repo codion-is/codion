@@ -39,6 +39,7 @@ Codion Change Log
 - Colors moved to color package.
 - Cursors moved to cursor package.
 - FileTransferHandler moved to transfer package.
+- UiManagerDefaults renamed UIManagerDefaults.
 
 ## 0.18.39
 ### is.codion.common.core

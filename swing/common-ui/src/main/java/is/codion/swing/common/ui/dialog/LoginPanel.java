@@ -23,7 +23,7 @@ import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.worker.ProgressWorker;
-import is.codion.swing.common.ui.UiManagerDefaults;
+import is.codion.swing.common.ui.UIManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.component.progressbar.ProgressBarBuilder;
@@ -56,7 +56,7 @@ final class LoginPanel extends JPanel {
 
 	static {
 		//initialize button captions
-		UiManagerDefaults.initialize();
+		UIManagerDefaults.initialize();
 	}
 
 	private static final String PASSWORD_CARD = "password";

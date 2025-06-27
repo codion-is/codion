@@ -26,7 +26,7 @@ import java.awt.Insets;
 /**
  * A utility class for initializing default UIManager values, default ok, cancel button captions and such.
  */
-public final class UiManagerDefaults {
+public final class UIManagerDefaults {
 
 	static {
 		UIManager.put("OptionPane.yesButtonText", Messages.yes());
@@ -96,7 +96,7 @@ public final class UiManagerDefaults {
 		UIManager.put("TabbedPane.contentBorderInsets", new Insets(2, 0, 0, 0));
 	}
 
-	private UiManagerDefaults() {}
+	private UIManagerDefaults() {}
 
 	/**
 	 * A convenience method for triggering a loading of this class, which sets the UIManager defaults

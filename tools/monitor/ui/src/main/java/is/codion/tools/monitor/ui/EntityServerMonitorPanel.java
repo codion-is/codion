@@ -25,7 +25,7 @@ import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
-import is.codion.swing.common.ui.UiManagerDefaults;
+import is.codion.swing.common.ui.UIManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
@@ -298,7 +298,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 	}
 
 	public static void main(String[] arguments) {
-		UiManagerDefaults.initialize();
+		UIManagerDefaults.initialize();
 		Clients.resolveTrustStore();
 		SwingUtilities.invokeLater(() -> {
 			try {

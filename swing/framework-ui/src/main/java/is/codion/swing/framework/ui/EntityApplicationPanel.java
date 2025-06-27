@@ -40,7 +40,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
-import is.codion.swing.common.ui.UiManagerDefaults;
+import is.codion.swing.common.ui.UIManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
@@ -287,7 +287,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		this.applicationLayout = requireNonNull(applicationLayout).apply(this);
 		entityPanels.forEach(this::configureEntityPanel);
 		//initialize button captions, not in a static initializer since applications may set the locale in main()
-		UiManagerDefaults.initialize();
+		UIManagerDefaults.initialize();
 	}
 
 	/**
