@@ -69,6 +69,7 @@ module is.codion.swing.common.ui {
 	exports is.codion.swing.common.ui.key;
 	exports is.codion.swing.common.ui.laf;
 	exports is.codion.swing.common.ui.layout;
+	exports is.codion.swing.common.ui.window;
 
 	uses is.codion.swing.common.ui.laf.LookAndFeelProvider;
 	uses is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;

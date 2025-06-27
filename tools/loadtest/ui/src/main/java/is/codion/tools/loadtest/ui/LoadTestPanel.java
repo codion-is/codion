@@ -66,13 +66,13 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static is.codion.swing.common.ui.Utilities.parentWindow;
-import static is.codion.swing.common.ui.Windows.screenSizeRatio;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.dialog.Dialogs.*;
 import static is.codion.swing.common.ui.icon.Logos.logoTransparent;
 import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.enableLookAndFeel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.swing.common.ui.window.Windows.screenSizeRatio;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.*;
 import static org.jfree.chart.ChartFactory.createXYStepChart;

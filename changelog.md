@@ -34,6 +34,7 @@ Codion Change Log
 - Sizes, set prefix removed from methods.
 - Windows.FrameBuilder moved to frame package, Frames added.
 - Windows.setSizeWithinScreenBounds() renamed sizeWithinScreenBounds().
+- Windows moved to window package.
 
 ## 0.18.39
 ### is.codion.common.core

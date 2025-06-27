@@ -27,7 +27,6 @@ import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
 import is.codion.swing.common.ui.component.text.NumberField;
@@ -37,6 +36,7 @@ import is.codion.swing.common.ui.frame.Frames;
 import is.codion.swing.common.ui.icon.Logos;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.common.ui.window.Windows;
 import is.codion.tools.monitor.model.EntityServerMonitor;
 import is.codion.tools.monitor.model.HostMonitor;
 
