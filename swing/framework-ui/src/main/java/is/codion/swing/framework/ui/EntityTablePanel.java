@@ -2876,7 +2876,7 @@ public class EntityTablePanel extends JPanel {
 			return Components.scrollPane(componentToScroll)
 							.horizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER)
 							.verticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER)
-							.onBuild(scrollPane -> linkBoundedRangeModels(
+							.onBuild(scrollPane -> link(
 											tableScrollPane.getHorizontalScrollBar().getModel(),
 											scrollPane.getHorizontalScrollBar().getModel()))
 							.build();

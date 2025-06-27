@@ -41,7 +41,7 @@ import java.awt.BorderLayout;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import static is.codion.swing.common.ui.Utilities.linkBoundedRangeModels;
+import static is.codion.swing.common.ui.Utilities.link;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
@@ -166,7 +166,7 @@ public final class ClientMonitorPanel extends JPanel {
 		return Components.scrollPane(componentToScroll)
 						.horizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER)
 						.verticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER)
-						.onBuild(scrollPane -> linkBoundedRangeModels(
+						.onBuild(scrollPane -> link(
 										parentScrollPane.getHorizontalScrollBar().getModel(),
 										scrollPane.getHorizontalScrollBar().getModel()))
 						.build();

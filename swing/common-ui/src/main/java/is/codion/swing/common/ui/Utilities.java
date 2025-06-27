@@ -171,12 +171,12 @@ public final class Utilities {
 	}
 
 	/**
-	 * Links the given BoundedRangeModels so that changes in {@code main} are reflected in {@code linked}
+	 * Links the given {@link BoundedRangeModel}s so that changes in {@code main} are reflected in {@code linked}
 	 * @param main the main model
 	 * @param linked the model to link with main
 	 */
-	public static void linkBoundedRangeModels(BoundedRangeModel main, BoundedRangeModel linked) {
-		main.addChangeListener(new BoundedRangeModelListener(requireNonNull(main), requireNonNull(linked)));
+	public static void link(BoundedRangeModel main, BoundedRangeModel linked) {
+		requireNonNull(main).addChangeListener(new BoundedRangeModelListener(main, requireNonNull(linked)));
 	}
 
 	/**
