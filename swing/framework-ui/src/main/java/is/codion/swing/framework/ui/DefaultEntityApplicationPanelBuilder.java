@@ -484,7 +484,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		frame.getContentPane().add(applicationPanel, BorderLayout.CENTER);
 		if (frameSize == null && defaultFrameSize == null) {
 			frame.pack();
-			Windows.setSizeWithinScreenBounds(frame);
+			Windows.sizeWithinScreenBounds(frame);
 			frame.setLocationRelativeTo(null);
 		}
 	}

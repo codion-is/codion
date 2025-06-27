@@ -30,6 +30,7 @@ import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.frame.Frames;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.tools.loadtest.LoadTest;
@@ -65,7 +66,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static is.codion.swing.common.ui.Utilities.parentWindow;
-import static is.codion.swing.common.ui.Windows.frame;
 import static is.codion.swing.common.ui.Windows.screenSizeRatio;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
@@ -144,7 +144,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	 * @return the frame
 	 */
 	private JFrame showFrame() {
-		return frame(this)
+		return Frames.builder(this)
 						.icon(logoTransparent())
 						.menuBar(menu(createMainMenuControls()).buildMenuBar())
 						.title(loadTest.name().orElse(DEFAULT_TITLE))

@@ -32,6 +32,8 @@ Codion Change Log
 - Utilities.linkBoundedRangeModels() renamed link().
 - Windows.FrameBuilder.onBuild() added.
 - Sizes, set prefix removed from methods.
+- Windows.FrameBuilder moved to frame package, Frames added.
+- Windows.setSizeWithinScreenBounds() renamed sizeWithinScreenBounds().
 
 ## 0.18.39
 ### is.codion.common.core

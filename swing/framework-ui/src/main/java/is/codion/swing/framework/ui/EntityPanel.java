@@ -28,7 +28,6 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.model.ModelLink;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.border.Borders;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
@@ -36,6 +35,7 @@ import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.control.ControlMap;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.frame.Frames;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -915,7 +915,7 @@ public class EntityPanel extends JPanel {
 	}
 
 	private void displayEditFrame(JPanel editControlPanel) {
-		editWindow = Windows.frame(borderLayoutPanel()
+		editWindow = Frames.builder(borderLayoutPanel()
 										.centerComponent(editControlPanel)
 										.border(Borders.emptyBorder())
 										.build())

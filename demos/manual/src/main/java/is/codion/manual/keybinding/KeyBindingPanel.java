@@ -21,9 +21,9 @@ package is.codion.manual.keybinding;
 import is.codion.manual.keybinding.KeyBindingModel.KeyBindingColumns.ColumnId;
 import is.codion.manual.keybinding.KeyBindingModel.KeyBindingRow;
 import is.codion.plugin.flatlaf.intellij.themes.monokaipro.MonokaiPro;
-import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
+import is.codion.swing.common.ui.frame.Frames;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 
@@ -100,7 +100,7 @@ public final class KeyBindingPanel extends JPanel {
 		System.setProperty("sun.awt.disablegrab", "true");
 		findLookAndFeel(MonokaiPro.class)
 						.ifPresent(LookAndFeelEnabler::enable);
-		SwingUtilities.invokeLater(() -> Windows.frame(new KeyBindingPanel())
+		SwingUtilities.invokeLater(() -> Frames.builder(new KeyBindingPanel())
 						.title("Key Bindings")
 						.defaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
 						.centerFrame(true)

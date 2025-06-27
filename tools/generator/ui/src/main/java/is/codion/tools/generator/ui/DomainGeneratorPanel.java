@@ -26,13 +26,13 @@ import is.codion.common.observable.Observable;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.component.text.SearchHighlighter;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.frame.Frames;
 import is.codion.swing.common.ui.icon.Logos;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
@@ -388,7 +388,7 @@ public final class DomainGeneratorPanel extends JPanel {
 	}
 
 	public void showFrame() {
-		Windows.frame(borderLayoutPanel()
+		Frames.builder(borderLayoutPanel()
 										.centerComponent(this)
 										.border(createEmptyBorder())
 										.build())

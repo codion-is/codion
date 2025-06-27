@@ -22,7 +22,6 @@ import is.codion.common.property.PropertyValue;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
 import is.codion.swing.common.ui.control.CommandControl;
@@ -31,6 +30,7 @@ import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.control.ControlMap;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.frame.Frames;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -594,7 +594,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 			Point location = new Point(detailWindowX, detailWindowY);
 
 			if (windowType == WindowType.FRAME) {
-				return Windows.frame(createEmptyBorderBasePanel(tabbedPane))
+				return Frames.builder(createEmptyBorderBasePanel(tabbedPane))
 								.title(entityPanel.caption() + " - " + MESSAGES.getString(DETAIL_TABLES))
 								.defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
 								.size(size)

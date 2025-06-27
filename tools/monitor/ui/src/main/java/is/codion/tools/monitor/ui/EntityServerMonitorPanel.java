@@ -33,6 +33,7 @@ import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.frame.Frames;
 import is.codion.swing.common.ui.icon.Logos;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -127,7 +128,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 	}
 
 	public void showFrame() {
-		monitorFrame = Windows.frame(this)
+		monitorFrame = Frames.builder(this)
 						.icon(Logos.logoRed())
 						.menuBar(menu(createMainMenuControls()).buildMenuBar())
 						.title("Codion Server Monitor")

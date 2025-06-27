@@ -50,6 +50,7 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.frame.Frames;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
@@ -807,7 +808,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 			}
 		}
 		else {
-			Windows.frame(createEmptyBorderBasePanel(entityPanel))
+			Frames.builder(createEmptyBorderBasePanel(entityPanel))
 							.locationRelativeTo(this)
 							.title(entityPanel.caption())
 							.icon(entityPanel.icon().orElse(null))

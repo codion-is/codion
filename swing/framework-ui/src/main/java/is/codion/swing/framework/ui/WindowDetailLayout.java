@@ -21,11 +21,11 @@ package is.codion.swing.framework.ui;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.value.Value;
 import is.codion.common.value.Value.Notify;
-import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Control.Command;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.frame.Frames;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel.DetailController;
 import is.codion.swing.framework.ui.EntityPanel.DetailLayout;
@@ -208,7 +208,7 @@ public final class WindowDetailLayout implements DetailLayout {
 
 		private Window createDetailWindow() {
 			if (windowType == FRAME) {
-				return Windows.frame(detailPanel)
+				return Frames.builder(detailPanel)
 								.locationRelativeTo(entityPanel)
 								.title(detailPanel.caption())
 								.icon(detailPanel.icon().orElse(null))
