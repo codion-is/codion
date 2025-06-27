@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2022 - 2025, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.ui;
+package is.codion.swing.common.ui.transfer;
 
 import javax.swing.TransferHandler;
 import javax.swing.text.JTextComponent;

@@ -21,10 +21,10 @@ package is.codion.demos.chinook.ui;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.plugin.imagepanel.NavigableImagePanel;
-import is.codion.swing.common.ui.FileTransferHandler;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.transfer.FileTransferHandler;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.kordamp.ikonli.foundation.Foundation;
