@@ -30,6 +30,7 @@ Codion Change Log
 - AbstractControl bug fixed, default enabledObservable now an ObservableState instance instead of State.
 - Utilities.enableActions() and enableComponents() renamed enabled().
 - Utilities.linkBoundedRangeModels() renamed link().
+- Windows.FrameBuilder.onBuild() added.
 
 ## 0.18.39
 ### is.codion.common.core

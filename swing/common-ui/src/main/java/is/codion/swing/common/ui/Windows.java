@@ -219,6 +219,12 @@ public final class Windows {
 		FrameBuilder windowListener(WindowListener windowListener);
 
 		/**
+		 * @param onBuild called when the frame has been built.
+		 * @return this builder instance
+		 */
+		FrameBuilder onBuild(Consumer<JFrame> onBuild);
+
+		/**
 		 * @return a JFrame based on this builder
 		 */
 		JFrame build();
@@ -240,6 +246,7 @@ public final class Windows {
 		private Consumer<WindowEvent> onClosing;
 		private Consumer<WindowEvent> onClosed;
 		private Consumer<WindowEvent> onOpened;
+		private Consumer<JFrame> onBuild;
 		private Dimension size;
 		private boolean resizable = true;
 		private Point location;
@@ -343,6 +350,12 @@ public final class Windows {
 		}
 
 		@Override
+		public FrameBuilder onBuild(Consumer<JFrame> onBuild) {
+			this.onBuild = onBuild;
+			return this;
+		}
+
+		@Override
 		public JFrame build() {
 			JFrame frame = new JFrame();
 			frame.setDefaultCloseOperation(defaultCloseOperation);
@@ -380,6 +393,9 @@ public final class Windows {
 				frame.addWindowListener(new FrameListener(onClosing, onClosed, onOpened));
 			}
 			windowListeners.forEach(frame::addWindowListener);
+			if (onBuild != null) {
+				onBuild.accept(frame);
+			}
 
 			return frame;
 		}
