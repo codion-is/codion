@@ -22,7 +22,6 @@ import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel.ItemFinder;
-import is.codion.swing.common.ui.Cursors;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.DefaultComboBoxBuilder;
@@ -31,6 +30,7 @@ import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.control.ControlMap;
+import is.codion.swing.common.ui.cursor.Cursors;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 

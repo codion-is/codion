@@ -37,6 +37,7 @@ Codion Change Log
 - Windows moved to window package.
 - Sizes moved to component package.
 - Colors moved to color package.
+- Cursors moved to cursor package.
 
 ## 0.18.39
 ### is.codion.common.core

@@ -20,7 +20,7 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.resource.MessageBundle;
-import is.codion.swing.common.ui.Cursors;
+import is.codion.swing.common.ui.cursor.Cursors;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
