@@ -16,6 +16,8 @@ Codion Change Log
 - Unit tests improved.
 ### is.codion.framework.db.core
 - Unit tests improved.
+### is.codion.framework.db.http
+- HttpEntityConnection.DISCONNECT_ON_CLOSE configuration value added.
 ### is.codion.framework.db.local
 - Unit tests improved.
 ### is.codion.framework.model

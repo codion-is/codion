@@ -102,6 +102,26 @@ public interface HttpEntityConnection extends EntityConnection {
 	 */
 	PropertyValue<Integer> CONNECT_TIMEOUT = integerValue("codion.client.http.connectTimeout", 2000);
 
+	 /**
+   * Specifies whether HTTP connections should send a close request to the server when closing.
+   * <p>
+   * When {@code true} (default), the connection will notify the server when closing by sending
+   * a "close" request. This allows stateful servers to clean up resources associated with the
+   * connection.
+   * <p>
+   * When {@code false}, the connection will close immediately without notifying the server.
+   * This is useful for stateless deployments such as serverless functions (e.g. AWS Lambda),
+   * where sending a close request would unnecessarily invoke the function, causing delays
+   * and incurring costs.
+   * <p>
+	 * Value types: Boolean
+	 * <ul>
+	 * <li>Default value: true
+	 * </ul>
+   * @see #close()
+   */
+	PropertyValue<Boolean> DISCONNECT_ON_CLOSE = booleanValue("codion.client.http.disconnectOnClose", true);
+
 	/**
 	 * @return a new builder instance
 	 */

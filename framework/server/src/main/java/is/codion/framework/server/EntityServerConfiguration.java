@@ -104,7 +104,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
 	boolean clientLogging();
 
 	/**
-	 * @return the idle connection timeout
+	 * @return the idle connection timeout in milliseconds
 	 */
 	int idleConnectionTimeout();
 
@@ -124,7 +124,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
 	Collection<User> connectionPoolUsers();
 
 	/**
-	 * @return client type specific idle connection timeouts, mapped to clientType
+	 * @return client type specific idle connection timeouts in milliseconds, mapped to clientType
 	 */
 	Map<String, Integer> clientTypeIdleConnectionTimeouts();
 

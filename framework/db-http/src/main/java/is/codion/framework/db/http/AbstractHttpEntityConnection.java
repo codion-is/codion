@@ -129,7 +129,9 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	public final void close() {
 		try {
 			synchronized (httpClient) {
-				handleResponse(execute(createRequest("close")));
+				if (DISCONNECT_ON_CLOSE.getOrThrow()) {
+					handleResponse(execute(createRequest("close")));
+				}
 				closed = true;
 			}
 		}
