@@ -22,7 +22,7 @@ import is.codion.common.state.State;
 
 import org.junit.jupiter.api.Test;
 
-import static is.codion.swing.common.ui.Utilities.enableComponents;
+import static is.codion.swing.common.ui.Utilities.enabled;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TextFieldPanelTest {
@@ -60,7 +60,7 @@ public class TextFieldPanelTest {
 		State enabledState = State.state();
 		TextFieldPanel inputPanel = TextFieldPanel.builder()
 						.build();
-		enableComponents(enabledState, inputPanel);
+		enabled(enabledState, inputPanel);
 		assertFalse(inputPanel.textField().isEnabled());
 		assertFalse(inputPanel.button().isEnabled());
 		enabledState.set(true);

@@ -22,6 +22,7 @@ import is.codion.common.observable.Observable;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.button.MenuBuilder;
 import is.codion.swing.common.ui.component.indicator.ModifiedIndicatorFactory;
 import is.codion.swing.common.ui.component.indicator.UnderlineModifiedIndicatorFactory;
@@ -60,7 +61,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static is.codion.swing.common.ui.Sizes.*;
-import static is.codion.swing.common.ui.Utilities.enableComponents;
 import static is.codion.swing.common.ui.key.TransferFocusOnEnter.FORWARD_BACKWARD;
 import static java.util.Objects.requireNonNull;
 
@@ -571,7 +571,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 			component.setEnabled(false);
 		}
 		if (enabledObservable != null) {
-			enableComponents(enabledObservable, component);
+			Utilities.enabled(enabledObservable, component);
 		}
 		if (popupMenu != null) {
 			component.setComponentPopupMenu(popupMenu.apply(component));

@@ -99,7 +99,7 @@ public final class EventStateValue {
 			}
 		};
 
-		Utilities.enableActions(state, action);
+		Utilities.enabled(state, action);
 
 		System.out.println(action.isEnabled());// output: false
 

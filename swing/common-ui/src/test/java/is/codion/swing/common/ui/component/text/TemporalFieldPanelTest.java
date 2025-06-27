@@ -28,7 +28,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-import static is.codion.swing.common.ui.Utilities.enableComponents;
+import static is.codion.swing.common.ui.Utilities.enabled;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TemporalFieldPanelTest {
@@ -85,7 +85,7 @@ public class TemporalFieldPanelTest {
 			TemporalFieldPanel<LocalDate> inputPanel = TemporalFieldPanel.builder(LocalDate.class)
 							.dateTimePattern("dd.MM.yyyy")
 							.build();
-			enableComponents(enabledState, inputPanel);
+			enabled(enabledState, inputPanel);
 			assertFalse(inputPanel.temporalField().isEnabled());
 			JButton calendarButton = inputPanel.calendarButton();
 			assertFalse(calendarButton.isEnabled());

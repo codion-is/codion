@@ -39,7 +39,7 @@ import java.util.function.Consumer;
 
 import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.item.Item.item;
-import static is.codion.swing.common.ui.Utilities.enableComponents;
+import static is.codion.swing.common.ui.Utilities.enabled;
 import static is.codion.swing.common.ui.component.combobox.ComboBoxBuilder.enableMouseWheelSelection;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.lookAndFeels;
 import static java.util.stream.Collectors.toList;
@@ -88,7 +88,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 		enableMouseWheelSelection(this);
 		getModel().selection().item().set(item(originalLookAndFeel));
 		if (builder.enabled != null) {
-			enableComponents(builder.enabled, this);
+			enabled(builder.enabled, this);
 		}
 		includeInstalled = State.builder(builder.includeInstalled)
 						.listener(getModel().items()::filter)

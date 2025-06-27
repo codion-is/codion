@@ -129,12 +129,12 @@ public final class Utilities {
 	 * @param enabledState the {@link ObservableState} with which to link the actions
 	 * @param actions the actions
 	 */
-	public static void enableActions(ObservableState enabledState, Action... actions) {
+	public static void enabled(ObservableState enabledState, Action... actions) {
 		requireNonNull(enabledState);
 		for (Action action : requireNonNull(actions)) {
 			if (action != null) {
 				action.setEnabled(enabledState.get());
-				enabledState.addConsumer(new EnableAction(action));
+				enabledState.addConsumer(new ActionEnabled(action));
 			}
 		}
 	}
@@ -144,12 +144,12 @@ public final class Utilities {
 	 * @param enabledState the {@link ObservableState} with which to link the components
 	 * @param components the components
 	 */
-	public static void enableComponents(ObservableState enabledState, JComponent... components) {
+	public static void enabled(ObservableState enabledState, JComponent... components) {
 		requireNonNull(enabledState);
 		for (JComponent component : requireNonNull(components)) {
 			if (component != null) {
 				component.setEnabled(enabledState.get());
-				enabledState.addConsumer(new EnableComponent(component));
+				enabledState.addConsumer(new ComponentEnabled(component));
 			}
 		}
 	}
@@ -394,11 +394,11 @@ public final class Utilities {
 		}
 	}
 
-	private static final class EnableAction implements Consumer<Boolean> {
+	private static final class ActionEnabled implements Consumer<Boolean> {
 
 		private final Action action;
 
-		private EnableAction(Action action) {
+		private ActionEnabled(Action action) {
 			this.action = action;
 		}
 
@@ -413,11 +413,11 @@ public final class Utilities {
 		}
 	}
 
-	private static final class EnableComponent implements Consumer<Boolean> {
+	private static final class ComponentEnabled implements Consumer<Boolean> {
 
 		private final JComponent component;
 
-		private EnableComponent(JComponent component) {
+		private ComponentEnabled(JComponent component) {
 			this.component = component;
 		}
 
