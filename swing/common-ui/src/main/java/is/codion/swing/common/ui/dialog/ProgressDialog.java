@@ -118,7 +118,7 @@ public final class ProgressDialog extends JDialog {
 			progressBar.setPreferredSize(builder.progressBarSize);
 		}
 		else {
-			Sizes.setPreferredWidth(progressBar, DEFAULT_PROGRESS_BAR_WIDTH);
+			Sizes.preferredWidth(progressBar, DEFAULT_PROGRESS_BAR_WIDTH);
 		}
 		if (builder.indeterminate) {
 			progressBar.setIndeterminate(true);

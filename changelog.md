@@ -31,6 +31,7 @@ Codion Change Log
 - Utilities.enableActions() and enableComponents() renamed enabled().
 - Utilities.linkBoundedRangeModels() renamed link().
 - Windows.FrameBuilder.onBuild() added.
+- Sizes, set prefix removed from methods.
 
 ## 0.18.39
 ### is.codion.common.core

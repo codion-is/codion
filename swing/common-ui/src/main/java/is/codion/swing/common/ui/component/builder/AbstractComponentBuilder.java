@@ -22,6 +22,7 @@ import is.codion.common.observable.Observable;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
+import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.button.MenuBuilder;
 import is.codion.swing.common.ui.component.indicator.ModifiedIndicatorFactory;
@@ -60,7 +61,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static is.codion.swing.common.ui.Sizes.*;
 import static is.codion.swing.common.ui.key.TransferFocusOnEnter.FORWARD_BACKWARD;
 import static java.util.Objects.requireNonNull;
 
@@ -660,22 +660,22 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
 	private void setSizes(C component) {
 		if (minimumHeight != -1) {
-			setMinimumHeight(component, minimumHeight);
+			Sizes.minimumHeight(component, minimumHeight);
 		}
 		if (minimumWidth != -1) {
-			setMinimumWidth(component, minimumWidth);
+			Sizes.minimumWidth(component, minimumWidth);
 		}
 		if (maximumHeight != -1) {
-			setMaximumHeight(component, maximumHeight);
+			Sizes.maximumHeight(component, maximumHeight);
 		}
 		if (maximumWidth != -1) {
-			setMaximumWidth(component, maximumWidth);
+			Sizes.maximumWidth(component, maximumWidth);
 		}
 		if (preferredHeight != -1) {
-			setPreferredHeight(component, preferredHeight);
+			Sizes.preferredHeight(component, preferredHeight);
 		}
 		if (preferredWidth != -1) {
-			setPreferredWidth(component, preferredWidth);
+			Sizes.preferredWidth(component, preferredWidth);
 		}
 	}
 
