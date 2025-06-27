@@ -34,7 +34,7 @@ import java.awt.Component;
 import java.time.temporal.Temporal;
 import java.util.function.Function;
 
-import static is.codion.swing.common.ui.Colors.darker;
+import static is.codion.swing.common.ui.color.Colors.darker;
 import static is.codion.swing.common.ui.component.table.FilterTableCellRenderer.DefaultUISettings.DOUBLE_DARKENING_FACTOR;
 import static is.codion.swing.common.ui.component.table.FilterTableCellRenderer.DefaultUISettings.blendColors;
 import static java.util.Objects.requireNonNull;

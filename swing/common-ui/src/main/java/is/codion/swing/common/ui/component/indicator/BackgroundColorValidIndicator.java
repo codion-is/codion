@@ -25,7 +25,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import java.awt.Color;
 
-import static is.codion.swing.common.ui.Colors.darker;
+import static is.codion.swing.common.ui.color.Colors.darker;
 
 final class BackgroundColorValidIndicator {
 

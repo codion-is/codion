@@ -32,7 +32,7 @@ import java.util.function.Function;
 
 import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.Configuration.integerValue;
-import static is.codion.swing.common.ui.Colors.darker;
+import static is.codion.swing.common.ui.color.Colors.darker;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.*;
 

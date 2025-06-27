@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2023 - 2025, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.ui;
+package is.codion.swing.common.ui.color;
 
 import java.awt.Color;
 

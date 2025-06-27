@@ -36,6 +36,7 @@ Codion Change Log
 - Windows.setSizeWithinScreenBounds() renamed sizeWithinScreenBounds().
 - Windows moved to window package.
 - Sizes moved to component package.
+- Colors moved to color package.
 
 ## 0.18.39
 ### is.codion.common.core

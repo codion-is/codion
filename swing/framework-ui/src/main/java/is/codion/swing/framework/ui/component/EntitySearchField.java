@@ -97,9 +97,9 @@ import java.util.stream.Stream;
 
 import static is.codion.common.Configuration.enumValue;
 import static is.codion.common.resource.MessageBundle.messageBundle;
-import static is.codion.swing.common.ui.Colors.darker;
 import static is.codion.swing.common.ui.Utilities.disposeParentWindow;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
+import static is.codion.swing.common.ui.color.Colors.darker;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;

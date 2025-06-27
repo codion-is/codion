@@ -47,8 +47,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
-import static is.codion.swing.common.ui.Colors.darker;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
+import static is.codion.swing.common.ui.color.Colors.darker;
 import static is.codion.swing.common.ui.component.Components.menu;
 import static is.codion.swing.common.ui.control.Control.command;
 import static java.awt.event.KeyEvent.*;
