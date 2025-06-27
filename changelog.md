@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.40
 ### is.codion.common.core
 - Unit tests improved.
+- DefaultValue no longer exposes Lock interface to subclasses.
 ### is.codion.common.db
 - Unit tests improved.
 ### is.codion.common.model
