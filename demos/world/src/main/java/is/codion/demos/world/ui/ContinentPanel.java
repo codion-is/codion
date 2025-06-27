@@ -32,8 +32,8 @@ import java.awt.Dimension;
 
 import static is.codion.demos.world.ui.ChartPanels.createBarChartPanel;
 import static is.codion.demos.world.ui.ChartPanels.createPieChartPanel;
-import static is.codion.swing.common.ui.Sizes.preferredHeight;
 import static is.codion.swing.common.ui.component.Components.*;
+import static is.codion.swing.common.ui.component.Sizes.preferredHeight;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.KeyEvent.VK_1;
 import static java.awt.event.KeyEvent.VK_2;

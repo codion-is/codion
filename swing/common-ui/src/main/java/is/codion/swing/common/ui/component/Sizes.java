@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2021 - 2025, Björn Darri Sigurðsson.
  */
-package is.codion.swing.common.ui;
+package is.codion.swing.common.ui.component;
 
 import javax.swing.JComponent;
 import java.awt.Dimension;

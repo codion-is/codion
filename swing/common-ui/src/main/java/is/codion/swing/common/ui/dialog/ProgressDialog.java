@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.swing.common.ui.Sizes;
+import is.codion.swing.common.ui.component.Sizes;
 import is.codion.swing.common.ui.component.button.ButtonPanelBuilder;
 import is.codion.swing.common.ui.component.panel.BorderLayoutPanelBuilder;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;

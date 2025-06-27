@@ -35,6 +35,7 @@ Codion Change Log
 - Windows.FrameBuilder moved to frame package, Frames added.
 - Windows.setSizeWithinScreenBounds() renamed sizeWithinScreenBounds().
 - Windows moved to window package.
+- Sizes moved to component package.
 
 ## 0.18.39
 ### is.codion.common.core
