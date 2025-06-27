@@ -128,6 +128,9 @@ public class HintTextField extends JTextField {
 	private Color hintForegroundColor() {
 		Color foreground = getForeground();
 		Color background = getBackground();
+		if (foreground == null || background == null) {
+			return null;
+		}
 
 		//simplistic averaging of background and foreground
 		int r = (int) sqrt((pow(background.getRed(), 2) + pow(foreground.getRed(), 2)) / 2);

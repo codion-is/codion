@@ -26,6 +26,7 @@ Codion Change Log
 - Unit tests improved.
 ### is.codion.swing.common.ui
 - Unit tests improved.
+- HintTextField.hintForegroundColor() bug fixed, returns null if either foreground or background is unspecified.
 
 ## 0.18.39
 ### is.codion.common.core
