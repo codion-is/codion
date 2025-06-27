@@ -58,7 +58,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
 	AbstractControl(AbstractControlBuilder<?, ?> builder) {
 		super((String) builder.values.get(NAME));
 		initialized = true;
-		enabledObservable = builder.enabled == null ? State.state(true) : builder.enabled;
+		enabledObservable = builder.enabled == null ? State.state(true).observable() : builder.enabled;
 		enabledObservable.addWeakConsumer(enabler);
 		super.setEnabled(enabledObservable.get());
 		builder.values.forEach(super::putValue);

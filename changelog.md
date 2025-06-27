@@ -27,6 +27,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - Unit tests improved.
 - HintTextField.hintForegroundColor() bug fixed, returns null if either foreground or background is unspecified.
+- AbstractControl bug fixed, default enabledObservable now an ObservableState instance instead of State.
 
 ## 0.18.39
 ### is.codion.common.core
