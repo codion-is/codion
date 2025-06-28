@@ -25,6 +25,7 @@ import java.util.Collection;
 
 /**
  * <p>An observable wrapper for one or more values.
+ * <p>All implementations are thread-safe and support concurrent access.
  * @param <T> the value type
  * @param <C> the collection type
  * @see ValueSet

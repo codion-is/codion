@@ -423,7 +423,7 @@ Implement business logic in edit models, not domain definitions:
 public final class ChatEditModel extends AbstractEntityEditModel {
     private final Event<List<Document>> documentsSelected = Event.event();
     private final State processing = State.state();
-    private final Value<ChatLanguageModel> model = Value.value();
+    private final Value<ChatLanguageModel> model = Value.nullable();
     
     void submitPrompt() {
         ProgressWorker.builder(this::callLLM)
@@ -751,7 +751,7 @@ Dialogs.componentDialog(new JRViewer(employeeReport)).show();
 2. **Observable Values Replace Direct Fields**
    ```java
    // Instead of: private String name;
-   private final Value<String> name = Value.value();
+   private final Value<String> name = Value.nullable();
    
    // Usage
    name.set("John");

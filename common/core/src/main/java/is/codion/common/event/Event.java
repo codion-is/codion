@@ -34,6 +34,10 @@ import java.util.function.Consumer;
  * <p>Events provide access to their {@link Observer} instance via {@link #observer()}, which can
  * be used to add listeners and consumers, but can not be used to trigger the event.
  * <p>Unhandled exceptions occurring in a listener will prevent further listeners from being notified.
+ * <p><b>Thread Safety:</b> Listener and consumer management (add/remove) is thread-safe. 
+ * However, event triggering via {@link #run()} or {@link #accept(Object)} is NOT thread-safe
+ * and should be performed from a single thread (such as an application UI thread).
+ * This design assumes that all event notifications occur on the same thread.</p>
  * {@snippet :
  * Event<Boolean> event = Event.event();
  *

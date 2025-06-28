@@ -58,7 +58,10 @@ import static java.util.Objects.requireNonNull;
  * value.set(null); // reverts to the null substitute: "none"
  * }
  * <p>A factory for {@link Value} instances.</p>
- * <p>All implementations are thread-safe and support concurrent access.</p>
+ * <p><b>Thread Safety:</b> Listener management (add/remove) is thread-safe and supports concurrent access.
+ * However, value modifications via {@link #set(Object)} are NOT thread-safe and should be 
+ * performed from a single thread (such as an application UI thread). This design assumes
+ * that all value changes and notifications occur on the same thread.</p>
  * @param <T> the type of the wrapped value
  * @see #nullable()
  * @see #nullable(Object)

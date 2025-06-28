@@ -28,6 +28,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * <p>An observable wrapper for a List of values.
  * <p>A factory for {@link ValueList} instances.
+ * <p>All implementations are thread-safe and support concurrent access.
  * @param <T> the value type
  */
 public interface ValueList<T> extends Values<T, List<T>> {

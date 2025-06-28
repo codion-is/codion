@@ -28,6 +28,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * <p>An observable wrapper for a Set of values.
  * <p>A factory for {@link ValueSet} instances.
+ * <p>All implementations are thread-safe and support concurrent access.
  * @param <T> the value type
  */
 public interface ValueSet<T> extends Values<T, Set<T>> {

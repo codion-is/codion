@@ -48,7 +48,7 @@ public interface EntityQueries {
 
 	/**
 	 * Note that the query returned by this method is only guaranteed
-	 * to be valid if the the given entity is modified.
+	 * to be valid if the given entity is modified.
 	 * @param entity the entity
 	 * @return a String representation of the update query for the given entity, for debugging
 	 * @see Entity#modified()
