@@ -64,7 +64,7 @@ import static java.util.Collections.unmodifiableSet;
  * <p>
  * This implementation creates a local EntityServer instance and delegates all
  * entity operations to it. The EntityServer handles authentication, connection pooling,
- * transaction management, and all other complex server-side logic.
+ * transaction management, and all other server-side logic.
  * <p>
  * To deploy this handler directly:
  * <pre>
@@ -76,7 +76,7 @@ import static java.util.Collections.unmodifiableSet;
  * Configuration:
  * Use JAVA_TOOL_OPTIONS environment variable to set system properties:
  * <pre>
- * JAVA_TOOL_OPTIONS="-Dcodion.db.url=jdbc:postgresql://host/db -Dcodion.server.idleConnectionTimeout=10"
+ * JAVA_TOOL_OPTIONS="-Dcodion.db.url=jdbc:postgresql://host/db -Dcodion.server.idleConnectionTimeout=120000"
  * </pre>
  */
 public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV2HTTPResponse> {
@@ -113,11 +113,14 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 	private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
 	private static final String CONTENT_TYPE = "Content-Type";
 	private static final String X_LAMBDA_REQUEST_ID = "X-Lambda-Request-Id";
-	private static final String MISSING_REQUEST_HEADERS = "Missing request headers";
 	private static final String ENTITIES = "entities";
 	private static final String CLOSE = "close";
 	private static final String CLIENT_ID = "clientId";
 	private static final String CLIENT_TYPE = "clientType";
+	private static final String OPTIONS = "OPTIONS";
+	private static final String HEALTH = "/health";
+	private static final String BASIC = "Basic ";
+	private static final int BASIC_LENGTH = 6;
 
 	private static final Set<String> NO_BODY_OPERATIONS = unmodifiableSet(new HashSet<>(asList(
 					ENTITIES, CLOSE, START_TRANSACTION, COMMIT_TRANSACTION,
@@ -133,7 +136,10 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 	 */
 	public LambdaEntityHandler() {
 		try {
-			entityServer = EntityServer.startServer(createServerConfiguration());
+			entityServer = EntityServer.startServer(EntityServerConfiguration.builder(1098, 1099) // These ports are not exposed anywhere
+							.database(Database.instance())
+							.sslEnabled(false)
+							.build());
 			LOG.info("EntityServer started successfully");
 		}
 		catch (Exception e) {
@@ -141,35 +147,19 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 		}
 	}
 
-	/**
-	 * Creates the EntityServer configuration.
-	 * Override to customize server settings.
-	 * @return the server configuration
-	 */
-	private static EntityServerConfiguration createServerConfiguration() {
-		return EntityServerConfiguration
-						.builder(1098, 1099) // These are not exposed anywhere
-						.database(Database.instance())
-						.sslEnabled(false)
-						.build();
-	}
-
 	@Override
 	public final APIGatewayV2HTTPResponse handleRequest(APIGatewayV2HTTPEvent input, Context context) {
 		APIGatewayV2HTTPResponseBuilder response = APIGatewayV2HTTPResponse.builder();
 		try {
 			String path = extractPath(input);
-			// Handle OPTIONS requests for CORS preflight
-			if ("OPTIONS".equals(input.getRequestContext().getHttp().getMethod())) {
-				handleOptionsRequest(response);
+			if (OPTIONS.equals(input.getRequestContext().getHttp().getMethod())) {
+				handleOptionsRequest(response); // Handle OPTIONS requests for CORS preflight
 			}
 			else if (path.startsWith(ENTITIES_SERIAL)) {
-				handleEntityRequest(input, response, context);
+				String operation = path.substring(ENTITIES_SERIAL.length());
+				handleRequest(input, operation, response, context);
 			}
-			else if ("/entities".equals(path) || "/entities/".equals(path)) {
-				handleEntitiesRequest(input, response, context);
-			}
-			else if ("/health".equals(path) || "/health/".equals(path)) {
+			else if (path.startsWith(HEALTH)) {
 				handleHealthCheck(response);
 			}
 			else {
@@ -189,102 +179,21 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 		return path == null || path.isEmpty() ? "/" : path;
 	}
 
-	/**
-	 * Extracts the client ID from request headers.
-	 * @param headers the request headers
-	 * @return the client ID
-	 * @throws IllegalArgumentException if client ID is missing or invalid
-	 */
-	private static UUID extractClientId(Map<String, String> headers) {
-		if (headers == null) {
-			throw new IllegalArgumentException(MISSING_REQUEST_HEADERS);
-		}
-
-		// Lambda Function URLs convert all header names to lowercase
-		// Try both cases to be safe
-		String clientId = headers.get("clientid");
-		if (clientId == null) {
-			clientId = headers.get(CLIENT_ID);
-		}
-
-		if (clientId == null || clientId.trim().isEmpty()) {
-			throw new IllegalArgumentException("Missing required header: clientId");
-		}
-
-		try {
-			return UUID.fromString(clientId.trim());
-		}
-		catch (IllegalArgumentException e) {
-			throw new IllegalArgumentException("Invalid clientId format: " + clientId, e);
-		}
-	}
-
-	/**
-	 * Extracts the client type from request headers.
-	 * @param headers the request headers
-	 * @return the client type
-	 * @throws IllegalArgumentException if client type is missing
-	 */
-	private static String extractClientType(Map<String, String> headers) {
-		if (headers == null) {
-			throw new IllegalArgumentException(MISSING_REQUEST_HEADERS);
-		}
-
-		// Lambda Function URLs convert all header names to lowercase
-		// Try both cases to be safe
-		String clientType = headers.get("clienttype");
-		if (clientType == null) {
-			clientType = headers.get(CLIENT_TYPE);
-		}
-
-		if (clientType == null || clientType.trim().isEmpty()) {
-			throw new IllegalArgumentException("Missing required header: clientType");
-		}
-
-		return clientType.trim();
-	}
-
 	private static void handleOptionsRequest(APIGatewayV2HTTPResponseBuilder response) {
 		response.withStatusCode(200)
 						.withHeaders(createOptionsHeaders())
 						.withBody("");
 	}
 
-	/**
-	 * Extracts the domain type name from request headers.
-	 * @param headers the request headers
-	 * @return the domain type name
-	 * @throws IllegalArgumentException if domain type name is missing
-	 */
-	private static String extractDomainTypeName(Map<String, String> headers) {
+	private RemoteEntityConnection connection(Map<String, String> headers) throws Exception {
 		if (headers == null) {
-			throw new IllegalArgumentException(MISSING_REQUEST_HEADERS);
+			throw new IllegalArgumentException("No authentication provided - missing headers");
 		}
+		User user = extractUser(headers);
+		String domainTypeName = extractDomainTypeName(headers);
+		UUID clientId = extractClientId(headers);
+		String clientType = extractClientType(headers);
 
-		// Lambda Function URLs convert all header names to lowercase
-		// Try both cases to be safe
-		String domainTypeName = headers.get("domaintypename");
-		if (domainTypeName == null) {
-			domainTypeName = headers.get("domainTypeName");
-		}
-
-		if (domainTypeName == null || domainTypeName.trim().isEmpty()) {
-			throw new IllegalArgumentException("Missing required header: domainTypeName");
-		}
-
-		return domainTypeName.trim();
-	}
-
-	/**
-	 * Gets a connection from the EntityServer for the request.
-	 * @param user the authenticated user
-	 * @param domainTypeName the domain type name
-	 * @param clientId the client ID from headers
-	 * @param clientType the client type from headers
-	 * @return a remote entity connection
-	 * @throws Exception if connection fails
-	 */
-	private RemoteEntityConnection connection(User user, String domainTypeName, UUID clientId, String clientType) throws Exception {
 		return (RemoteEntityConnection) entityServer.connect(ConnectionRequest.builder()
 						.user(user)
 						.clientId(clientId)
@@ -294,58 +203,40 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 						.build());
 	}
 
-	private void handleEntityRequest(APIGatewayV2HTTPEvent input,
-																	 APIGatewayV2HTTPResponseBuilder response,
-																	 Context context) throws Exception {
-		String path = extractPath(input);
-		String operation = null;
-
-		if (path.startsWith(ENTITIES_SERIAL)) {
-			operation = path.substring(ENTITIES_SERIAL.length());
-		}
-
-		if (operation == null || operation.isEmpty()) {
+	private void handleRequest(APIGatewayV2HTTPEvent input, String operation,
+														 APIGatewayV2HTTPResponseBuilder response, Context context) throws Exception {
+		if (operation.isEmpty()) {
 			sendErrorResponse(response, new IllegalArgumentException("Invalid path - no operation specified"), context);
 			return;
 		}
 
-		// Extract user, domain, client ID, and client type
-		User user = extractUser(input.getHeaders());
-		String domainTypeName = extractDomainTypeName(input.getHeaders());
-		UUID clientId = extractClientId(input.getHeaders());
-		String clientType = extractClientType(input.getHeaders());
-
-		// Operations that don't require a request body
+		RemoteEntityConnection connection = connection(input.getHeaders());
 		if (NO_BODY_OPERATIONS.contains(operation)) {
-			handleNoBodyOperation(operation, user, domainTypeName, clientId, clientType, response, context);
+			processNoBodyOperation(operation, response, context, connection);
 			return;
 		}
 
-		// For other operations, we need a request body
 		if (input.getBody() == null || input.getBody().isEmpty()) {
 			sendErrorResponse(response, new IllegalArgumentException("Empty request body for operation: " + operation), context);
 			return;
 		}
 
-		// Process the operation
 		byte[] requestBytes = Base64.getDecoder().decode(input.getBody());
-		try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(requestBytes))) {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
-				processOperation(operation, ois, oos, user, domainTypeName, clientId, clientType);
+		try (ObjectInputStream inputStream = new ObjectInputStream(new ByteArrayInputStream(requestBytes))) {
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+			try (ObjectOutputStream outputStream = new ObjectOutputStream(byteArrayOutputStream)) {
+				processOperation(operation, inputStream, outputStream, connection);
 			}
 
-			// Build successful response
 			response.withStatusCode(200)
 							.withHeaders(createCorsHeadersWithContent(context.getAwsRequestId()))
-							.withBody(Base64.getEncoder().encodeToString(baos.toByteArray()))
+							.withBody(Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray()))
 							.withIsBase64Encoded(true);
 		}
 	}
 
-	private void processOperation(String operation, ObjectInputStream input, ObjectOutputStream output,
-																User user, String domainTypeName, UUID clientId, String clientType) throws Exception {
-		RemoteEntityConnection connection = connection(user, domainTypeName, clientId, clientType);
+	private static void processOperation(String operation, ObjectInputStream input, ObjectOutputStream output,
+																			 RemoteEntityConnection connection) throws Exception {
 		try {
 			switch (operation) {
 				case SELECT:
@@ -365,7 +256,6 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 					break;
 				case UPDATE:
 					connection.update((Collection<Entity>) input.readObject());
-					output.writeObject(null);
 					break;
 				case UPDATE_SELECT:
 					output.writeObject(connection.updateSelect((Collection<Entity>) input.readObject()));
@@ -374,7 +264,6 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 					Object deleteParam = input.readObject();
 					if (deleteParam instanceof Collection) {
 						connection.delete((Collection<Entity.Key>) deleteParam);
-						output.writeObject(null);
 					}
 					else {
 						output.writeObject(connection.delete((Condition) deleteParam));
@@ -382,7 +271,6 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 					break;
 				case DELETE_BY_KEY:
 					connection.delete((Collection<Entity.Key>) input.readObject());
-					output.writeObject(null);
 					break;
 				case UPDATE_BY_CONDITION:
 					output.writeObject(connection.update((EntityConnection.Update) input.readObject()));
@@ -396,13 +284,11 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 					break;
 				case SET_QUERY_CACHE_ENABLED:
 					connection.queryCache((Boolean) input.readObject());
-					output.writeObject(null);
 					break;
 				case PROCEDURE:
 					List<Object> parameters = (List<Object>) input.readObject();
 					ProcedureType<EntityConnection, Object> procedureType = (ProcedureType<EntityConnection, Object>) parameters.get(0);
 					connection.execute(procedureType, parameters.size() > 1 ? parameters.get(1) : null);
-					output.writeObject(null);
 					break;
 				case FUNCTION:
 					parameters = (List<Object>) input.readObject();
@@ -424,12 +310,10 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 		}
 	}
 
-	private void handleNoBodyOperation(String operation, User user, String domainTypeName, UUID clientId, String clientType,
-																		 APIGatewayV2HTTPResponseBuilder response,
-																		 Context context) throws Exception {
+	private static void processNoBodyOperation(String operation, APIGatewayV2HTTPResponseBuilder response,
+																						 Context context, RemoteEntityConnection connection) throws Exception {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
-			RemoteEntityConnection connection = connection(user, domainTypeName, clientId, clientType);
 			switch (operation) {
 				case ENTITIES:
 					oos.writeObject(connection.entities());
@@ -456,8 +340,6 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 					throw new UnsupportedOperationException("Unknown no-body operation: " + operation);
 			}
 		}
-
-		// Build response
 		if (NO_RETURN_DATA_OPERATIONS.contains(operation)) {
 			// These operations return no data, just status
 			response.withStatusCode(200)
@@ -472,31 +354,9 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 		}
 	}
 
-	private void handleEntitiesRequest(APIGatewayV2HTTPEvent input,
-																		 APIGatewayV2HTTPResponseBuilder response,
-																		 Context context) throws Exception {
-		// Extract user, domain, client ID, and client type
-		User user = extractUser(input.getHeaders());
-		String domainTypeName = extractDomainTypeName(input.getHeaders());
-		UUID clientId = extractClientId(input.getHeaders());
-		String clientType = extractClientType(input.getHeaders());
-
-		// Get connection and entities
-		RemoteEntityConnection connection = connection(user, domainTypeName, clientId, clientType);
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		try (ObjectOutputStream stream = new ObjectOutputStream(outputStream)) {
-			stream.writeObject(connection.entities());
-		}
-
-		response.withStatusCode(200)
-						.withHeaders(createCorsHeadersWithContent(context.getAwsRequestId()))
-						.withBody(Base64.getEncoder().encodeToString(outputStream.toByteArray()))
-						.withIsBase64Encoded(true);
-	}
-
 	private void handleHealthCheck(APIGatewayV2HTTPResponseBuilder response) {
 		try {
-			// Simple health check - just verify server is available
+			// Simple health check - just verify server is available and is accepting connections
 			boolean available = entityServer.connectionsAvailable();
 			String status = available ? "UP" : "DOWN";
 
@@ -584,32 +444,59 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 		return headers;
 	}
 
-	/**
-	 * Extracts user from request headers using Basic authentication.
-	 * @param headers the request headers
-	 * @return the authenticated user
-	 * @throws IllegalArgumentException if no authentication is provided or if authentication is invalid
-	 */
 	private static User extractUser(Map<String, String> headers) {
-		if (headers == null) {
-			throw new IllegalArgumentException("No authentication provided - missing headers");
-		}
-
-		// Check for Basic auth header (Lambda Function URLs lowercase headers)
 		String auth = headers.get("authorization");
 		if (auth == null) {
 			auth = headers.get("Authorization");
 		}
-		if (auth == null || !auth.startsWith("Basic ")) {
+		if (auth == null || !auth.startsWith(BASIC)) {
 			throw new IllegalArgumentException("No authentication provided - missing Authorization header");
 		}
 		try {
-			String encoded = auth.substring(6);
-			byte[] decoded = java.util.Base64.getDecoder().decode(encoded);
-			return User.parse(new String(decoded));
+			return User.parse(new String(Base64.getDecoder().decode(auth.substring(BASIC_LENGTH))));
 		}
 		catch (Exception e) {
 			throw new IllegalArgumentException("Invalid Basic authentication format", e);
 		}
+	}
+
+	private static String extractDomainTypeName(Map<String, String> headers) {
+		String domainTypeName = headers.get("domaintypename");
+		if (domainTypeName == null) {
+			domainTypeName = headers.get("domainTypeName");
+		}
+		if (domainTypeName == null || domainTypeName.trim().isEmpty()) {
+			throw new IllegalArgumentException("Missing required header: domainTypeName");
+		}
+
+		return domainTypeName.trim();
+	}
+
+	private static UUID extractClientId(Map<String, String> headers) {
+		String clientId = headers.get("clientid");
+		if (clientId == null) {
+			clientId = headers.get(CLIENT_ID);
+		}
+		if (clientId == null || clientId.trim().isEmpty()) {
+			throw new IllegalArgumentException("Missing required header: clientId");
+		}
+		try {
+			return UUID.fromString(clientId.trim());
+		}
+		catch (IllegalArgumentException e) {
+			throw new IllegalArgumentException("Invalid clientId format: " + clientId, e);
+		}
+	}
+
+	private static String extractClientType(Map<String, String> headers) {
+		String clientType = headers.get("clienttype");
+		if (clientType == null) {
+			clientType = headers.get(CLIENT_TYPE);
+		}
+		if (clientType == null || clientType.trim().isEmpty()) {
+			throw new IllegalArgumentException("Missing required header: clientType");
+		}
+
+		return clientType.trim();
 	}
 }

@@ -41,6 +41,8 @@ Codion Change Log
 - Cursors moved to cursor package.
 - FileTransferHandler moved to transfer package.
 - UiManagerDefaults renamed UIManagerDefaults.
+### is.codion.framework.lambda
+- LambdaEntityHandler refactored.
 
 ## 0.18.39
 ### is.codion.common.core
