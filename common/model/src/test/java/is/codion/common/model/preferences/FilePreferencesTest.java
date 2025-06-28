@@ -37,7 +37,7 @@ public final class FilePreferencesTest {
 		Path testFile = tempDir.resolve("test-" + System.nanoTime() + ".json");
 		JsonPreferencesStore store = new JsonPreferencesStore(testFile);
 
-		return new SimpleFilePreferences(store);
+		return new FilePreferences(store);
 	}
 
 	@Test

@@ -31,9 +31,9 @@ import java.util.prefs.BackingStoreException;
  * A file-based preferences implementation without length restrictions.
  * Supports hierarchical preferences through nested JSON structure.
  */
-final class SimpleFilePreferences extends AbstractPreferences {
+final class FilePreferences extends AbstractPreferences {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SimpleFilePreferences.class);
+	private static final Logger LOG = LoggerFactory.getLogger(FilePreferences.class);
 
 	private static final String[] EMPTY_STRING_ARRAY = new String[0];
 	private static final String PATH_SEPARATOR = "/";
@@ -41,18 +41,18 @@ final class SimpleFilePreferences extends AbstractPreferences {
 	private final JsonPreferencesStore store;
 	private final String path;
 
-	SimpleFilePreferences() throws IOException {
+	FilePreferences() throws IOException {
 		this(null, "", createDefaultStore());
 		LOG.info("Created root file preferences with default store");
 	}
 
 	// Package-private constructor for testing
-	SimpleFilePreferences(JsonPreferencesStore store) {
+	FilePreferences(JsonPreferencesStore store) {
 		this(null, "", store);
 		LOG.debug("Created root file preferences with custom store");
 	}
 
-	private SimpleFilePreferences(@Nullable SimpleFilePreferences parent, String name, JsonPreferencesStore store) {
+	private FilePreferences(@Nullable FilePreferences parent, String name, JsonPreferencesStore store) {
 		super(parent, name);
 		this.store = store;
 		this.path = parent == null ? "" : (parent.path.isEmpty() ? name : parent.path + PATH_SEPARATOR + name);
@@ -131,7 +131,7 @@ final class SimpleFilePreferences extends AbstractPreferences {
 	@Override
 	protected AbstractPreferences childSpi(String name) {
 		LOG.trace("Creating child preference node '{}' under path '{}'", name, path);
-		return new SimpleFilePreferences(this, name, store);
+		return new FilePreferences(this, name, store);
 	}
 
 	@Override

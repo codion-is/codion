@@ -129,7 +129,7 @@ public final class FilePreferencesFactory implements PreferencesFactory {
 						MIGRATING.set(false);
 					}
 				}
-				userRootInstance = new SimpleFilePreferences();
+				userRootInstance = new FilePreferences();
 				LOG.info("File-based preferences initialized successfully at {}", userPreferencesPath());
 			}
 			catch (IOException | BackingStoreException e) {

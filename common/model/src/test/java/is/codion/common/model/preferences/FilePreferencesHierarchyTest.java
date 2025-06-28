@@ -38,7 +38,7 @@ public final class FilePreferencesHierarchyTest {
 		Path testFile = tempDir.resolve("test-" + System.nanoTime() + ".json");
 		JsonPreferencesStore store = new JsonPreferencesStore(testFile);
 
-		return new SimpleFilePreferences(store);
+		return new FilePreferences(store);
 	}
 
 	@Test
@@ -184,7 +184,7 @@ public final class FilePreferencesHierarchyTest {
 	void testJsonStructure() throws Exception {
 		Path testFile = tempDir.resolve("hierarchy-test.json");
 		JsonPreferencesStore store = new JsonPreferencesStore(testFile);
-		Preferences root = new SimpleFilePreferences(store);
+		Preferences root = new FilePreferences(store);
 
 		// Create structure
 		root.put("root.setting", "value1");

@@ -232,7 +232,7 @@ public final class ConcurrentPreferencesTest {
 
 		// Create another instance for the preferences API
 		JsonPreferencesStore prefsStore = new JsonPreferencesStore(prefsPath);
-		SimpleFilePreferences prefs = new SimpleFilePreferences(prefsStore);
+		FilePreferences prefs = new FilePreferences(prefsStore);
 
 		// Write through preferences API
 		prefs.put("api.key", "api.value");

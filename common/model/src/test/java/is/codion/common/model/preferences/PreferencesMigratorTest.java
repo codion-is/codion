@@ -61,7 +61,7 @@ public final class PreferencesMigratorTest {
 
 			// Load migrated preferences
 			JsonPreferencesStore store = new JsonPreferencesStore(targetPath);
-			SimpleFilePreferences filePrefs = new SimpleFilePreferences(store);
+			FilePreferences filePrefs = new FilePreferences(store);
 
 			// Verify values were migrated
 			Preferences migratedNode = filePrefs.node("codion-test-migration");
@@ -127,7 +127,7 @@ public final class PreferencesMigratorTest {
 
 			// Load migrated preferences
 			JsonPreferencesStore store = new JsonPreferencesStore(targetPath);
-			SimpleFilePreferences filePrefs = new SimpleFilePreferences(store);
+			FilePreferences filePrefs = new FilePreferences(store);
 			Preferences migratedNode = filePrefs.node("codion-test-truncated");
 
 			// Verify truncated values were migrated
@@ -190,7 +190,7 @@ public final class PreferencesMigratorTest {
 		
 		// Load and check for migration marker
 		JsonPreferencesStore store = new JsonPreferencesStore(targetPath);
-		SimpleFilePreferences filePrefs = new SimpleFilePreferences(store);
+		FilePreferences filePrefs = new FilePreferences(store);
 		assertNotNull(filePrefs.get(".migrated", null));
 	}
 }
