@@ -38,6 +38,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import static java.lang.System.currentTimeMillis;
 import static java.util.Collections.emptySet;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toSet;
@@ -67,7 +68,8 @@ final class JsonPreferencesStore {
 	private final Path lockFilePath;
 	private final Lock inMemoryLock = new Lock() {};
 
-	private @Nullable JSONObject data;
+	private final JSONObject data = new JSONObject();
+
 	private long lastModified;
 
 	JsonPreferencesStore(Path filePath) throws IOException {
@@ -100,7 +102,7 @@ final class JsonPreferencesStore {
 		}
 	}
 
-	String get(String path, String key) {
+	@Nullable String get(String path, String key) {
 		requireNonNull(path);
 		requireNonNull(key);
 
@@ -205,18 +207,17 @@ final class JsonPreferencesStore {
 	void save() throws IOException {
 		synchronized (inMemoryLock) {
 			LOG.debug("Saving preferences to {}", filePath);
-			long startTime = System.currentTimeMillis();
+			long startTime = currentTimeMillis();
 			Files.createDirectories(filePath.getParent());
 			// Write to temp file first
 			Path tempFile = Files.createTempFile(filePath.getParent(), "prefs", ".tmp");
 			try {
 				Files.writeString(tempFile, data.toString(2)); // Pretty print
-
 				// Atomic move with lock
 				try (FileLock lock = acquireExclusiveLock()) {
 					Files.move(tempFile, filePath, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
 					lastModified = Files.getLastModifiedTime(filePath).toMillis();
-					LOG.trace("Preferences saved successfully in {} ms", System.currentTimeMillis() - startTime);
+					LOG.trace("Preferences saved successfully in {} ms", currentTimeMillis() - startTime);
 				}
 			}
 			finally {
@@ -267,17 +268,12 @@ final class JsonPreferencesStore {
 
 				try {
 					// Clear existing data and reload
-					if (this.data != null) {
-						this.data.keySet().clear();
-						JSONObject reloaded = new JSONObject(content);
-						for (String key : reloaded.keySet()) {
-							this.data.put(key, reloaded.get(key));
-						}
+					data.keySet().clear();
+					JSONObject reloaded = new JSONObject(content);
+					for (String key : reloaded.keySet()) {
+						data.put(key, reloaded.get(key));
 					}
-					else {
-						this.data = new JSONObject(content);
-					}
-					this.lastModified = Files.getLastModifiedTime(filePath).toMillis();
+					lastModified = Files.getLastModifiedTime(filePath).toMillis();
 					LOG.trace("Loaded {} keys from preferences file", this.data.length());
 				}
 				catch (JSONException e) {
@@ -289,26 +285,18 @@ final class JsonPreferencesStore {
 		}
 		else {
 			LOG.trace("Preferences file does not exist, starting with empty preferences");
-			if (this.data == null) {
-				this.data = new JSONObject();
-			}
-			this.lastModified = 0;
+			lastModified = 0;
 		}
 	}
 
 	private void handleCorruptedFile(String reason, Exception cause) throws IOException {
 		// Backup corrupted file
-		Path backupPath = filePath.resolveSibling(filePath.getFileName() + ".corrupt." + System.currentTimeMillis());
+		Path backupPath = filePath.resolveSibling(filePath.getFileName() + ".corrupt." + currentTimeMillis());
 		Files.copy(filePath, backupPath, StandardCopyOption.REPLACE_EXISTING);
 
 		// Initialize with empty data
-		if (this.data == null) {
-			this.data = new JSONObject();
-		}
-		else {
-			this.data.keySet().clear();
-		}
-		this.lastModified = 0;
+		data.keySet().clear();
+		lastModified = 0;
 
 		LOG.warn("Corrupted preferences file detected at {}, reason: {}, backup saved to: {}, starting with empty preferences",
 						filePath, reason, backupPath, cause);
@@ -332,9 +320,9 @@ final class JsonPreferencesStore {
 			lockFile = new RandomAccessFile(lockFilePath.toFile(), "rw");
 			channel = lockFile.getChannel();
 
-			long startTime = System.currentTimeMillis();
+			long startTime = currentTimeMillis();
 			int retryCount = 0;
-			while (System.currentTimeMillis() - startTime < LOCK_TIMEOUT_MS) {
+			while (currentTimeMillis() - startTime < LOCK_TIMEOUT_MS) {
 				try {
 					FileLock lock = shared ? channel.tryLock(0, Long.MAX_VALUE, true) : channel.tryLock();
 					if (lock != null) {
@@ -384,7 +372,7 @@ final class JsonPreferencesStore {
 		}
 	}
 
-	private JSONObject getNode(String path) {
+	private @Nullable JSONObject getNode(String path) {
 		if (path.isEmpty()) {
 			return data;
 		}
@@ -400,7 +388,7 @@ final class JsonPreferencesStore {
 		return current;
 	}
 
-	private @Nullable JSONObject getOrCreateNode(String path) {
+	private JSONObject getOrCreateNode(String path) {
 		if (path.isEmpty()) {
 			return data;
 		}

@@ -12,6 +12,7 @@ Codion Change Log
 - FilePreferencesFactory added.
 - UserPreferences moved to preferences package.
 - SimpleFilePreferences renamed to FilePreferences.
+- FilePreferencesFactory and JsonPreferencesStore refactored.
 ### is.codion.common.rmi
 - Unit tests improved.
 ### is.codion.framework.domain

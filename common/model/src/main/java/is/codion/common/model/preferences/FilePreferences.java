@@ -84,7 +84,7 @@ final class FilePreferences extends AbstractPreferences {
 	}
 
 	@Override
-	protected String getSpi(String key) {
+	protected @Nullable String getSpi(String key) {
 		return store.get(path, key);
 	}
 

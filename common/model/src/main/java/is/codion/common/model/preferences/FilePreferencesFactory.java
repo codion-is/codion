@@ -18,6 +18,8 @@
  */
 package is.codion.common.model.preferences;
 
+import is.codion.common.property.PropertyValue;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +29,7 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import java.util.prefs.PreferencesFactory;
 
+import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.model.preferences.PreferencesPath.userPreferencesPath;
 
 /**
@@ -100,7 +103,7 @@ import static is.codion.common.model.preferences.PreferencesPath.userPreferences
  * attempt to migrate existing preferences from the default Java implementation.
  * To disable automatic migration:
  * <pre>
- * System.setProperty("codion.preferences.migrate", "false");
+ * System.setProperty("is.codion.common.model.preferences.FilePreferencesFactory.migrate", "false");
  * </pre>
  * @see Preferences
  * @see PreferencesFactory
@@ -109,7 +112,16 @@ public final class FilePreferencesFactory implements PreferencesFactory {
 
 	private static final Logger LOG = LoggerFactory.getLogger(FilePreferencesFactory.class);
 
-	private static final String MIGRATE_PROPERTY = "codion.preferences.migrate";
+	/**
+	 * Specifies whether existing default java preferences should be migrated.
+	 * <ul>
+	 * <li>Value type:Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 */
+	public static final PropertyValue<Boolean> MIGRATE =
+					booleanValue(FilePreferencesFactory.class.getName() + ".migrate", true);
+
 	private static final ThreadLocal<Boolean> MIGRATING = ThreadLocal.withInitial(() -> false);
 
 	private static volatile Preferences userRootInstance;
@@ -119,16 +131,7 @@ public final class FilePreferencesFactory implements PreferencesFactory {
 		if (userRootInstance == null) {
 			LOG.debug("Initializing file-based preferences");
 			try {
-				if (shouldMigrate() && !MIGRATING.get()) {
-					LOG.info("Performing automatic migration from default preferences");
-					MIGRATING.set(true);
-					try {
-						performMigration();
-					}
-					finally {
-						MIGRATING.set(false);
-					}
-				}
+				migrate();
 				userRootInstance = new FilePreferences();
 				LOG.info("File-based preferences initialized successfully at {}", userPreferencesPath());
 			}
@@ -141,26 +144,33 @@ public final class FilePreferencesFactory implements PreferencesFactory {
 		return userRootInstance;
 	}
 
-	private static boolean shouldMigrate() {
-		String migrate = System.getProperty(MIGRATE_PROPERTY, "true");
-		boolean shouldMigrate = "true".equalsIgnoreCase(migrate) && !Files.exists(userPreferencesPath());
+	private static void migrate() throws IOException, BackingStoreException {
+		if (shouldMigrate() && !MIGRATING.get()) {
+			LOG.info("Performing automatic migration from default preferences");
+			MIGRATING.set(true);
+			try {
+				PreferencesMigrator.builder()
+								.targetPath(userPreferencesPath())
+								.build()
+								.migrate();
+			}
+			finally {
+				MIGRATING.set(false);
+			}
+		}
+	}
 
-		if (!shouldMigrate && "true".equalsIgnoreCase(migrate)) {
+	private static boolean shouldMigrate() {
+		boolean migrate = MIGRATE.getOrThrow();
+		boolean shouldMigrate = migrate && !Files.exists(userPreferencesPath());
+		if (!shouldMigrate && migrate) {
 			LOG.debug("Migration not needed, preferences file already exists");
 		}
-		else if (!"true".equalsIgnoreCase(migrate)) {
+		else if (!migrate) {
 			LOG.debug("Migration disabled via system property");
 		}
 
 		return shouldMigrate;
-	}
-
-	private static void performMigration() throws IOException, BackingStoreException {
-		PreferencesMigrator migrator = PreferencesMigrator.builder()
-						.targetPath(userPreferencesPath())
-						.build();
-
-		migrator.migrate();
 	}
 
 	@Override
