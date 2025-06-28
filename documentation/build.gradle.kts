@@ -6,19 +6,20 @@ plugins {
 
 val documentationVersion = project.version.toString().replace("-SNAPSHOT", "")
 
-tasks.register("copyModuleDependencyGraphs") {
+tasks.register<Copy>("copyModuleDependencyGraphs") {
     group = "documentation"
     description = "Copies the module dependency graphs to the asciidoc images folder"
-    doLast {
-        frameworkModules().forEach { module ->
-            val moduleDir = module.projectDir
-            var graphFilePath = "${moduleDir}/build/reports/dependency-graph/dependency-graph.svg"
-            graphFilePath = graphFilePath.replace(rootDir.toString(), "").substring(1)
-            ant.withGroovyBuilder {
-                "copy"("todir" to project.layout.buildDirectory.dir("asciidoc/images/modules").get()) {
-                    "fileset"("dir" to rootDir, "includes" to graphFilePath)
-                }
-            }
+    
+    destinationDir = project.layout.buildDirectory.dir("asciidoc/images/modules").get().asFile
+    
+    frameworkModules().forEach { module ->
+        dependsOn(module.tasks.named("generateDependencyGraph"))
+
+        val graphFile = module.file("build/reports/dependency-graph/dependency-graph.svg")
+        val relativePath = module.projectDir.relativeTo(rootDir).path
+
+        from(graphFile) {
+            into("$relativePath/build/reports/dependency-graph")
         }
     }
 }
@@ -243,16 +244,11 @@ tasks.register("checkI18nDocs") {
 }
 
 tasks.register("assembleDocs") {
-    dependsOn("combinedJavadoc", "asciidoctor")
+    dependsOn("combinedJavadoc", "asciidoctor", "assembleDemoDocs")
     group = "documentation"
-    description = "Creates the javadocs and asciidocs and combines them into the documentatio directory"
-    val docFolder = project.layout.buildDirectory.dir(documentationVersion).get()
+    description = "Creates the javadocs and asciidocs and combines them into the documentation directory"
+    val docFolder = project.layout.buildDirectory.dir("asciidoc").get()
     doLast {
-        delete(docFolder)
-        copy {
-            from(project.layout.buildDirectory.dir("asciidoc").get())
-            into(docFolder)
-        }
         copy {
             from(project.layout.buildDirectory.dir("javadoc").get())
             into(docFolder.dir("api"))
@@ -264,11 +260,49 @@ tasks.register("assembleDocs") {
     }
 }
 
+tasks.register("assembleDemoDocs") {
+    group = "documentation"
+    description = "Assembles documentation from all demo projects"
+
+    doLast {
+        val docFolder = project.layout.buildDirectory.dir("asciidoc").get()
+        val demoProjects = listOf(
+            Triple("petclinic", "asciidoctor", "build/docs/asciidoc"),
+            Triple("llemmy", "asciidoctor", "llemmy/build/docs/asciidoc"),
+            Triple("sdkboy", "asciidoctor", "build/docs/asciidoc"),
+            Triple("chinook", "documentation:asciidoctor", "documentation/build/docs/asciidoc"),
+            Triple("world", "documentation:asciidoctor", "documentation/build/docs/asciidoc")
+        )
+
+        demoProjects.forEach { (project, task, outputPath) ->
+            println("Processing $project...")
+
+            val projectDir = file("../../$project")
+
+            providers.exec {
+                workingDir(projectDir)
+                commandLine("git", "pull")
+            }.result.get()
+
+            providers.exec {
+                workingDir(projectDir)
+                commandLine("./gradlew", "clean", task)
+                environment("JAVA_HOME", System.getenv("JAVA_HOME") ?: System.getProperty("java.home"))
+            }.result.get()
+
+            copy {
+                from("../../$project/$outputPath")
+                into(docFolder.dir("tutorials/$project"))
+            }
+        }
+    }
+}
+
 tasks.register<Sync>("copyToGitHubPages") {
     dependsOn("assembleDocs")
     group = "documentation"
     description = "Copies the assembled docs to the github pages project"
-    from(project.layout.buildDirectory.dir(documentationVersion))
+    from(project.layout.buildDirectory.dir("asciidoc"))
     into("../../codion-pages/doc/$documentationVersion")
 }
 
@@ -279,9 +313,51 @@ tasks.register<Zip>("documentationZip") {
     from(project.layout.buildDirectory.dir(documentationVersion))
 }
 
+tasks.register("linkcheck") {
+    dependsOn("assembleDocs")
+    group = "documentation"
+    description = "Runs linkcheck on the assembled documentation"
+
+    doLast {
+        val docDir = project.layout.buildDirectory.dir("asciidoc").get().asFile
+        val port = 8080
+
+        val serverProcess = ProcessBuilder("python3", "-m", "http.server", port.toString())
+            .directory(docDir)
+            .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+            .redirectError(ProcessBuilder.Redirect.INHERIT)
+            .start()
+
+        println("Started Python HTTP server on port $port, serving ${docDir.absolutePath}")
+
+        Thread.sleep(2000)
+
+        if (!serverProcess.isAlive) {
+            throw GradleException("Server process died immediately")
+        }
+
+        try {
+            println("Running linkcheck...")
+            val execResult = providers.exec {
+                commandLine("docker", "run", "--rm", "--network=host", "tennox/linkcheck", "http://localhost:$port")
+                isIgnoreExitValue = true // Don't fail on warnings (exit code 1), only on errors (exit code 2)
+            }.result.get()
+            when (execResult.exitValue) {
+                0 -> println("Linkcheck completed successfully")
+                1 -> println("Linkcheck completed with warnings")
+                2 -> throw GradleException("Linkcheck failed with errors")
+                else -> throw GradleException("Linkcheck failed with unexpected exit code: ${execResult.exitValue}")
+            }
+        } finally {
+            serverProcess.destroy()
+            println("Stopped HTTP server")
+        }
+    }
+}
+
 fun frameworkModules(): Iterable<Project> {
     return project.parent?.subprojects?.filter { project ->
-        !project.name.startsWith("demo") && !project.name.equals("documentation")
+        !project.name.startsWith("demo") && !project.name.equals("documentation") && !project.name.endsWith("bom")
     } ?: emptyList()
 }
 
