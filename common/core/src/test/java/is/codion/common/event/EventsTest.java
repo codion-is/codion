@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -83,7 +84,7 @@ public class EventsTest {
 
 		event.run();
 
-		assertEquals(List.of(1, 2, 3), executionOrder);
+		assertEquals(Arrays.asList(1, 2, 3), executionOrder);
 	}
 
 	@Test
@@ -97,7 +98,7 @@ public class EventsTest {
 
 		event.accept("test");
 
-		assertEquals(List.of("1:test", "2:test", "3:test"), receivedValues);
+		assertEquals(Arrays.asList("1:test", "2:test", "3:test"), receivedValues);
 	}
 
 	@Test

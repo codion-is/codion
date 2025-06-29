@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("SelectTest")
@@ -195,7 +196,7 @@ public final class SelectTest {
 
 			// Empty collection
 			select = Select.all(Employee.TYPE)
-							.attributes(List.of())
+							.attributes(emptyList())
 							.build();
 			assertTrue(select.attributes().isEmpty());
 		}
@@ -238,7 +239,7 @@ public final class SelectTest {
 			assertEquals(3, select.referenceDepth(Employee.DEPARTMENT_FK).orElse(0));
 
 			// Test default when not set
-			assertTrue(select.referenceDepth(Employee.MGR_FK).isEmpty());
+			assertFalse(select.referenceDepth(Employee.MGR_FK).isPresent());
 		}
 
 		@Test

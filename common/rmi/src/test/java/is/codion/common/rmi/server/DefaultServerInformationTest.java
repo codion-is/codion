@@ -18,6 +18,7 @@
  */
 package is.codion.common.rmi.server;
 
+import is.codion.common.Text;
 import is.codion.common.version.Version;
 
 import org.junit.jupiter.api.DisplayName;
@@ -182,7 +183,7 @@ public class DefaultServerInformationTest {
 		@Test
 		@DisplayName("Very long server name")
 		void constructor_withLongServerName_allowed() {
-			String longName = "A".repeat(1000);
+			String longName = Text.leftPad("", 1000, 'A');
 			DefaultServerInformation info = new DefaultServerInformation(
 							TEST_SERVER_ID, longName, TEST_SERVER_PORT, TEST_START_TIME);
 

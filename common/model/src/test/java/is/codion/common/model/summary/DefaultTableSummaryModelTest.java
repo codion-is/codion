@@ -18,6 +18,7 @@
  */
 package is.codion.common.model.summary;
 
+import is.codion.common.Text;
 import is.codion.common.model.summary.SummaryModel.SummaryValues;
 import is.codion.common.observable.Observer;
 
@@ -197,13 +198,13 @@ public class DefaultTableSummaryModelTest {
 		}
 	}
 
+	enum TestColumn {
+		PRICE, QUANTITY, TOTAL
+	}
+
 	@Nested
 	@DisplayName("Enum column identifiers")
 	class EnumColumnTest {
-
-		enum TestColumn {
-			PRICE, QUANTITY, TOTAL
-		}
 
 		private TestFactory<TestColumn> factory;
 		private DefaultTableSummaryModel<TestColumn> tableSummary;
@@ -316,7 +317,7 @@ public class DefaultTableSummaryModelTest {
 		@Test
 		@DisplayName("Very long string identifier works")
 		void get_longStringIdentifier_works() {
-			String longIdentifier = "a".repeat(1000);
+			String longIdentifier = Text.leftPad("", 1000, 'a');
 			factory.returnValue = Optional.of(new TestSummaryValues());
 
 			Optional<SummaryModel> result = tableSummary.get(longIdentifier);

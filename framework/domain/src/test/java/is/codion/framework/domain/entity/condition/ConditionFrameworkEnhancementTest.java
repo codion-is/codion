@@ -48,6 +48,7 @@ import static is.codion.framework.domain.entity.condition.Condition.Combination;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -394,7 +395,7 @@ public final class ConditionFrameworkEnhancementTest {
 
 			List<Integer> largeList = IntStream.rangeClosed(1, 1000)
 							.boxed()
-							.toList();
+							.collect(toList());
 
 			Condition condition = Employee.ID.in(largeList);
 			assertEquals(1000, condition.values().size());
@@ -885,7 +886,7 @@ public final class ConditionFrameworkEnhancementTest {
 		void largeValueCollections_performAdequately() {
 			List<Integer> largeList = IntStream.rangeClosed(1, 10000)
 							.boxed()
-							.toList();
+							.collect(toList());
 
 			// This should not throw exceptions or take excessive time
 			assertDoesNotThrow(() -> {
@@ -920,7 +921,7 @@ public final class ConditionFrameworkEnhancementTest {
 		void variousCollectionSizes_workCorrectly(int size) {
 			List<String> positions = IntStream.rangeClosed(1, size)
 							.mapToObj(i -> "Position" + i)
-							.toList();
+							.collect(toList());
 
 			Condition condition = Employee.POSITION.in(positions);
 			assertEquals(size, condition.values().size());

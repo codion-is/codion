@@ -23,8 +23,8 @@ import is.codion.common.value.Value;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.KeyStroke;
-import java.util.List;
 
+import static java.util.Collections.emptyList;
 import static javax.swing.KeyStroke.getKeyStroke;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -86,7 +86,7 @@ public final class ControlKeyTest {
 		assertFalse(controlsKey.defaultLayout().isPresent());
 
 		// With layout
-		Controls.Layout layout = Controls.layout(List.of());
+		Controls.Layout layout = Controls.layout(emptyList());
 		Controls.ControlsKey controlsWithLayout = Controls.key("menu", layout);
 		assertEquals("menu", controlsWithLayout.name());
 		assertEquals(Controls.class, controlsWithLayout.controlClass());

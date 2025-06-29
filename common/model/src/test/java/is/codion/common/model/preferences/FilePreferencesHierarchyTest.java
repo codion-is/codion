@@ -18,10 +18,13 @@
  */
 package is.codion.common.model.preferences;
 
+import is.codion.common.Text;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -141,7 +144,7 @@ public final class FilePreferencesHierarchyTest {
 
 		// Large key in nested node
 		String longKey = "this.is.a.very.long.key.that.exceeds.the.default.limit.of.eighty.characters.in.nested.preferences.node";
-		String largeValue = "x".repeat(50_000); // 50KB
+		String largeValue = Text.leftPad("", 50_000, 'x'); // 50KB
 
 		child.put(longKey, largeValue);
 
@@ -198,7 +201,7 @@ public final class FilePreferencesHierarchyTest {
 		root.flush();
 
 		// Verify JSON structure
-		String json = Files.readString(testFile);
+		String json = new String(Files.readAllBytes(testFile), StandardCharsets.UTF_8);
 		assertTrue(json.contains("\"root.setting\": \"value1\""));
 		assertTrue(json.contains("\"application\": {"));
 		assertTrue(json.contains("\"app.name\": \"MyApp\""));

@@ -18,6 +18,8 @@
  */
 package is.codion.common.model.preferences;
 
+import is.codion.common.Text;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -236,7 +238,7 @@ public class UserPreferencesTest {
 		@DisplayName("Long key within limits works")
 		void longKeyWithinLimits_works() {
 			// Java Preferences typically has 80 character limit for keys
-			String longKey = "very.long.key." + "a".repeat(60);
+			String longKey = "very.long.key." + Text.leftPad("", 60, 'a');
 			UserPreferences.set(longKey, TEST_VALUE);
 
 			assertEquals(TEST_VALUE, UserPreferences.get(longKey));
@@ -248,7 +250,7 @@ public class UserPreferencesTest {
 		@Test
 		@DisplayName("Very long value works")
 		void veryLongValue_works() {
-			String longValue = "very.long.value." + "b".repeat(1000);
+			String longValue = "very.long.value." + Text.leftPad("", 1000, 'b');
 			UserPreferences.set(TEST_KEY, longValue);
 
 			assertEquals(longValue, UserPreferences.get(TEST_KEY));

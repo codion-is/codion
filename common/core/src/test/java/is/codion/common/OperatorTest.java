@@ -20,6 +20,7 @@ package is.codion.common;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -36,7 +37,6 @@ public class OperatorTest {
 			String description = operator.description();
 			assertNotNull(description, "Operator " + operator + " should have a description");
 			assertFalse(description.isEmpty(), "Operator " + operator + " should have a non-empty description");
-			assertFalse(description.isBlank(), "Operator " + operator + " should have a non-blank description");
 		}
 	}
 
@@ -196,16 +196,16 @@ public class OperatorTest {
 	@Test
 	void operatorGroupings() {
 		// Test logical groupings of operators
-		Set<Operator> equalityOperators = Set.of(Operator.EQUAL, Operator.NOT_EQUAL);
-		Set<Operator> comparisonOperators = Set.of(
+		Set<Operator> equalityOperators = new HashSet<>(Arrays.asList(Operator.EQUAL, Operator.NOT_EQUAL));
+		Set<Operator> comparisonOperators = new HashSet<>(Arrays.asList(
 						Operator.LESS_THAN, Operator.LESS_THAN_OR_EQUAL,
 						Operator.GREATER_THAN, Operator.GREATER_THAN_OR_EQUAL
-		);
-		Set<Operator> membershipOperators = Set.of(Operator.IN, Operator.NOT_IN);
-		Set<Operator> rangeOperators = Set.of(
+		));
+		Set<Operator> membershipOperators = new HashSet<>(Arrays.asList(Operator.IN, Operator.NOT_IN));
+		Set<Operator> rangeOperators = new HashSet<>(Arrays.asList(
 						Operator.BETWEEN, Operator.BETWEEN_EXCLUSIVE,
 						Operator.NOT_BETWEEN, Operator.NOT_BETWEEN_EXCLUSIVE
-		);
+		));
 
 		// Verify all operators are categorized
 		Set<Operator> allCategorized = new HashSet<>();
@@ -214,7 +214,7 @@ public class OperatorTest {
 		allCategorized.addAll(membershipOperators);
 		allCategorized.addAll(rangeOperators);
 
-		assertEquals(Set.of(Operator.values()), allCategorized,
+		assertEquals(new HashSet<>(Arrays.asList(Operator.values())), allCategorized,
 						"All operators should be categorized");
 
 		// Verify no overlap between categories
@@ -222,7 +222,6 @@ public class OperatorTest {
 						"Operator categories should not overlap");
 	}
 
-	@SafeVarargs
 	private boolean isDisjoint(Set<Operator>... sets) {
 		Set<Operator> seen = new HashSet<>();
 		for (Set<Operator> set : sets) {

@@ -18,6 +18,8 @@
  */
 package is.codion.common.model.preferences;
 
+import is.codion.common.Text;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -61,7 +63,7 @@ public final class FilePreferencesTest {
 		Preferences prefs = createTestPreferences();
 
 		// Test value larger than 8KB (the default limit)
-		String hugeValue = "x".repeat(100_000); // 100KB
+		String hugeValue = Text.leftPad("", 100_000, 'x'); // 100KB
 		prefs.put("key", hugeValue);
 
 		assertEquals(hugeValue, prefs.get("key", null));

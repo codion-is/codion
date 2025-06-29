@@ -18,6 +18,7 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.common.Text;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -465,7 +466,7 @@ public final class EntityValidationEnhancementTest {
 			assertDoesNotThrow(() -> validator.validate(customer));
 
 			// Now modify to violate length constraint and test validation
-			customer.set(Customer.NAME, "A".repeat(101)); // Exceeds 100 char limit
+			customer.set(Customer.NAME, Text.leftPad("", 101, 'A')); // Exceeds 100 char limit
 			ValidationException exception = assertThrows(LengthValidationException.class,
 							() -> validator.validate(customer));
 			assertEquals(Customer.NAME, exception.attribute());
@@ -1004,7 +1005,7 @@ public final class EntityValidationEnhancementTest {
 			// Create entity with multiple invalid values using entity(Map) to bypass immediate validation
 			Map<Attribute<?>, Object> values = new HashMap<>();
 			values.put(Customer.ID, 1);
-			values.put(Customer.NAME, "A".repeat(101)); // Too long
+			values.put(Customer.NAME, Text.leftPad("", 101, 'A')); // Too long
 			values.put(Customer.EMAIL, "invalid-email"); // Invalid format
 			values.put(Customer.CREDIT_LIMIT, new BigDecimal("-1000")); // Negative
 			values.put(Customer.STATUS, "INVALID"); // Invalid item

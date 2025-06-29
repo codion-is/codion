@@ -18,6 +18,8 @@
  */
 package is.codion.common.model.preferences;
 
+import is.codion.common.Text;
+
 import java.util.prefs.Preferences;
 
 /**
@@ -37,20 +39,10 @@ public final class FilePreferencesExample {
 		prefs.put(longKey, "value for long key");
 
 		// Store large values (> 8KB)
-		String hugeValue = "x".repeat(100_000); // 100KB
+		String hugeValue = Text.leftPad("", 100_000, 'x'); // 100KB
 		prefs.put("huge.value", hugeValue);
 
-		// Store complex values
-		prefs.put("json.data", """
-						{
-						  "name": "John Doe",
-						  "preferences": {
-						    "theme": "dark",
-						    "language": "en",
-						    "notifications": true
-						  }
-						}
-						""");
+		prefs.put("json.data", "{\"name\": \"a name\"}");
 
 		// Persist to disk
 		prefs.flush();

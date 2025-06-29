@@ -21,6 +21,7 @@ package is.codion.common.model.preferences;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -41,7 +42,7 @@ public final class CorruptedFileTest {
 		Path prefsFile = tempDir.resolve("prefs.json");
 
 		// Create a malformed JSON file
-		Files.writeString(prefsFile, "{ \"key\": \"value\" invalid json");
+		Files.write(prefsFile.toAbsolutePath(), "{ \"key\": \"value\" invalid json".getBytes());
 
 		// Create store - should handle corruption
 		JsonPreferencesStore store = new JsonPreferencesStore(prefsFile);
@@ -54,7 +55,7 @@ public final class CorruptedFileTest {
 		assertEquals(1, backupFiles.size(), "Should create exactly one backup file");
 
 		// Verify backup contains original corrupted content
-		String backupContent = Files.readString(backupFiles.get(0));
+		String backupContent = new String(Files.readAllBytes(backupFiles.get(0)), StandardCharsets.UTF_8);
 		assertEquals("{ \"key\": \"value\" invalid json", backupContent);
 
 		// Verify store works with empty data
@@ -65,7 +66,7 @@ public final class CorruptedFileTest {
 		store.save();
 
 		// Verify saved file is valid JSON
-		String savedContent = Files.readString(prefsFile);
+		String savedContent = new String(Files.readAllBytes(prefsFile), StandardCharsets.UTF_8);
 		assertTrue(savedContent.contains("\"newKey\""));
 		assertTrue(savedContent.contains("\"newValue\""));
 	}
@@ -75,7 +76,7 @@ public final class CorruptedFileTest {
 		Path prefsFile = tempDir.resolve("empty.json");
 
 		// Create empty file
-		Files.writeString(prefsFile, "");
+		Files.write(prefsFile.toAbsolutePath(), "".getBytes());
 
 		// Create store - should handle empty file as corrupted
 		JsonPreferencesStore store = new JsonPreferencesStore(prefsFile);
@@ -91,7 +92,7 @@ public final class CorruptedFileTest {
 		store.put("", "key", "value");
 		store.save();
 
-		assertTrue(Files.readString(prefsFile).contains("\"key\""));
+		assertTrue(new String(Files.readAllBytes(prefsFile), StandardCharsets.UTF_8).contains("\"key\""));
 	}
 
 	@Test
@@ -120,7 +121,7 @@ public final class CorruptedFileTest {
 		Path prefsFile = tempDir.resolve("partial.json");
 
 		// Create JSON that starts valid but is truncated
-		Files.writeString(prefsFile, "{ \"key1\": \"value1\", \"key2\": \"val");
+		Files.write(prefsFile.toAbsolutePath(), "{ \"key1\": \"value1\", \"key2\": \"val".getBytes());
 
 		// Create store
 		JsonPreferencesStore store = new JsonPreferencesStore(prefsFile);
@@ -142,7 +143,7 @@ public final class CorruptedFileTest {
 		Path prefsFile = tempDir.resolve("valid.json");
 
 		// Create valid JSON
-		Files.writeString(prefsFile, "{ \"key\": \"value\" }");
+		Files.write(prefsFile.toAbsolutePath(), "{ \"key\": \"value\" }".getBytes());
 
 		// Create store
 		JsonPreferencesStore store = new JsonPreferencesStore(prefsFile);
@@ -163,7 +164,7 @@ public final class CorruptedFileTest {
 		Path prefsFile = tempDir.resolve("reload.json");
 
 		// Start with valid JSON
-		Files.writeString(prefsFile, "{ \"key\": \"value\" }");
+		Files.write(prefsFile.toAbsolutePath(), "{ \"key\": \"value\" }".getBytes());
 		JsonPreferencesStore store = new JsonPreferencesStore(prefsFile);
 		assertEquals("value", store.get("", "key"));
 
@@ -171,7 +172,7 @@ public final class CorruptedFileTest {
 		Thread.sleep(10);
 
 		// Corrupt the file externally
-		Files.writeString(prefsFile, "corrupted{");
+		Files.write(prefsFile.toAbsolutePath(), "corrupted{".getBytes());
 
 		// Reload should handle corruption
 		store.reload();

@@ -18,9 +18,12 @@
  */
 package is.codion.common.model.preferences;
 
+import is.codion.common.Text;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.prefs.Preferences;
@@ -86,14 +89,14 @@ public final class PreferencesMigratorTest {
 		PreferencesMigrator.create();
 
 		// Test truncated key (exactly 80 chars)
-		String longKey = "x".repeat(80);
+		String longKey = Text.leftPad("", 80, 'x');
 		assertTrue(PreferencesMigrator.isTruncated(longKey, "value"));
 
 		// Test non-truncated key
 		assertFalse(PreferencesMigrator.isTruncated("normal.key", "value"));
 
 		// Test truncated value (exactly 8192 chars)
-		String longValue = "x".repeat(8192);
+		String longValue = Text.leftPad("", 8192, 'x');
 		assertTrue(PreferencesMigrator.isTruncated("key", longValue));
 
 		// Test non-truncated value
@@ -107,11 +110,11 @@ public final class PreferencesMigratorTest {
 		Preferences testNode = defaultRoot.node("codion-test-truncated");
 
 		// Create a key at the limit
-		String maxKey = "k".repeat(80);
+		String maxKey = Text.leftPad("", 80, 'x');
 		testNode.put(maxKey, "value at max key");
 
 		// Create a value at the limit (8KB)
-		String maxValue = "v".repeat(8192);
+		String maxValue = Text.leftPad("", 8192, 'v');
 		testNode.put("large.value", maxValue);
 		testNode.flush();
 
@@ -148,7 +151,7 @@ public final class PreferencesMigratorTest {
 	void testSkipExistingFile() throws Exception {
 		// Create existing file
 		Path targetPath = tempDir.resolve("existing-prefs.json");
-		Files.writeString(targetPath, "{\"existing\": \"data\"}");
+		Files.write(targetPath.toAbsolutePath(), "{\"existing\": \"data\"}".getBytes());
 
 		// Setup preferences that would be migrated
 		Preferences defaultRoot = Preferences.userRoot();
@@ -165,7 +168,7 @@ public final class PreferencesMigratorTest {
 			migrator.migrate();
 
 			// Verify existing file was not overwritten
-			String content = Files.readString(targetPath);
+			String content = new String(Files.readAllBytes(targetPath), StandardCharsets.UTF_8);
 			assertTrue(content.contains("existing"));
 			assertFalse(content.contains("codion-test-skip"));
 		}

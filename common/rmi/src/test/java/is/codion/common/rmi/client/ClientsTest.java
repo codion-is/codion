@@ -18,6 +18,7 @@
  */
 package is.codion.common.rmi.client;
 
+import is.codion.common.Text;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
 
@@ -38,7 +39,7 @@ public final class ClientsTest {
 	private static final String TEST_USER_SPEC = "scott:tiger";
 	private static final String TEST_CLIENT_TYPE = "TestClient";
 	private static final String EMPTY_CLIENT_TYPE = "";
-	private static final String LONG_CLIENT_TYPE = "A".repeat(1000);
+	private static final String LONG_CLIENT_TYPE = Text.leftPad("", 1000, 'A');
 
 	@Nested
 	@DisplayName("ConnectionRequest builder tests")

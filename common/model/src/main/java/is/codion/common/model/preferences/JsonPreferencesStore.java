@@ -32,6 +32,7 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
 import java.nio.charset.MalformedInputException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -212,7 +213,7 @@ final class JsonPreferencesStore {
 			// Write to temp file first
 			Path tempFile = Files.createTempFile(filePath.getParent(), "prefs", ".tmp");
 			try {
-				Files.writeString(tempFile, data.toString(2)); // Pretty print
+				Files.write(tempFile.toAbsolutePath(), data.toString(2).getBytes()); // Pretty print
 				// Atomic move with lock
 				try (FileLock lock = acquireExclusiveLock()) {
 					Files.move(tempFile, filePath, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
@@ -257,7 +258,7 @@ final class JsonPreferencesStore {
 			try (FileLock lock = acquireSharedLock()) {
 				String content;
 				try {
-					content = Files.readString(filePath);
+					content = new String(Files.readAllBytes(filePath), StandardCharsets.UTF_8);
 				}
 				catch (MalformedInputException e) {
 					// File contains binary data or invalid encoding

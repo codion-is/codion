@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -115,7 +116,7 @@ public final class ConcurrentPreferencesTest {
 
 		// Verify file exists and is valid JSON
 		assertTrue(Files.exists(prefsPath));
-		String content = Files.readString(prefsPath);
+		String content = new String(Files.readAllBytes(prefsPath), StandardCharsets.UTF_8);
 		assertDoesNotThrow(() -> new org.json.JSONObject(content));
 	}
 
@@ -175,7 +176,7 @@ public final class ConcurrentPreferencesTest {
 			while (!stopReading.get()) {
 				try {
 					if (Files.exists(prefsPath)) {
-						String content = Files.readString(prefsPath);
+						String content = new String(Files.readAllBytes(prefsPath), StandardCharsets.UTF_8);
 						// Try to parse - should never fail if writes are atomic
 						new org.json.JSONObject(content);
 					}
