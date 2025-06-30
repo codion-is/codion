@@ -9,9 +9,9 @@ val documentationVersion = project.version.toString().replace("-SNAPSHOT", "")
 tasks.register<Copy>("copyModuleDependencyGraphs") {
     group = "documentation"
     description = "Copies the module dependency graphs to the asciidoc images folder"
-    
+
     destinationDir = project.layout.buildDirectory.dir("asciidoc/images/modules").get().asFile
-    
+
     frameworkModules().forEach { module ->
         dependsOn(module.tasks.named("generateDependencyGraph"))
 
@@ -244,11 +244,19 @@ tasks.register("checkI18nDocs") {
 }
 
 tasks.register("assembleDocs") {
-    dependsOn("combinedJavadoc", "asciidoctor", "assembleDemoDocs")
+    dependsOn("combinedJavadoc", "asciidoctor", "assembleTutorials")
     group = "documentation"
     description = "Creates the javadocs and asciidocs and combines them into the documentation directory"
-    val docFolder = project.layout.buildDirectory.dir("asciidoc").get()
+    val docFolder = project.layout.buildDirectory.dir(documentationVersion).get()
     doLast {
+        copy {
+            from(project.layout.buildDirectory.dir("asciidoc").get())
+            into(docFolder)
+        }
+        copy {
+            from(project.layout.buildDirectory.dir("tutorials").get())
+            into(docFolder.dir("tutorials"))
+        }
         copy {
             from(project.layout.buildDirectory.dir("javadoc").get())
             into(docFolder.dir("api"))
@@ -260,12 +268,12 @@ tasks.register("assembleDocs") {
     }
 }
 
-tasks.register("assembleDemoDocs") {
+tasks.register("assembleTutorials") {
     group = "documentation"
-    description = "Assembles documentation from all demo projects"
+    description = "Assembles tutorials from demo projects"
 
     doLast {
-        val docFolder = project.layout.buildDirectory.dir("asciidoc").get()
+        val docFolder = project.layout.buildDirectory.dir("tutorials").get()
         val demoProjects = listOf(
             Triple("petclinic", "asciidoctor", "build/docs/asciidoc"),
             Triple("llemmy", "asciidoctor", "llemmy/build/docs/asciidoc"),
@@ -279,20 +287,17 @@ tasks.register("assembleDemoDocs") {
 
             val projectDir = file("../../$project")
 
-            providers.exec {
+            val exec = providers.exec {
                 workingDir(projectDir)
-                commandLine("git", "pull")
-            }.result.get()
-
-            providers.exec {
-                workingDir(projectDir)
-                commandLine("./gradlew", "clean", task)
+                commandLine("./gradlew", task)
                 environment("JAVA_HOME", System.getenv("JAVA_HOME") ?: System.getProperty("java.home"))
-            }.result.get()
+            }
+            exec.result.get()
+            println(exec.standardOutput.asText.get())
 
             copy {
                 from("../../$project/$outputPath")
-                into(docFolder.dir("tutorials/$project"))
+                into(docFolder.dir(project))
             }
         }
     }
@@ -302,33 +307,29 @@ tasks.register<Sync>("copyToGitHubPages") {
     dependsOn("assembleDocs")
     group = "documentation"
     description = "Copies the assembled docs to the github pages project"
-    from(project.layout.buildDirectory.dir("asciidoc"))
-    into("../../codion-pages/doc/$documentationVersion")
-}
-
-tasks.register<Zip>("documentationZip") {
-    dependsOn("assembleDocs")
-    group = "documentation"
-    description = "Creates a zip file containing the assembled documentation"
     from(project.layout.buildDirectory.dir(documentationVersion))
+    into("../../codion-pages/doc/$documentationVersion")
 }
 
 tasks.register("linkcheck") {
     dependsOn("assembleDocs")
-    group = "documentation"
+    group = "verification"
     description = "Runs linkcheck on the assembled documentation"
 
     doLast {
-        val docDir = project.layout.buildDirectory.dir("asciidoc").get().asFile
+        val docDir = project.layout.buildDirectory.dir(documentationVersion).get().asFile
         val port = 8080
 
-        val serverProcess = ProcessBuilder("python3", "-m", "http.server", port.toString())
-            .directory(docDir)
-            .redirectOutput(ProcessBuilder.Redirect.INHERIT)
-            .redirectError(ProcessBuilder.Redirect.INHERIT)
-            .start()
+        val javaHome = System.getenv("JAVA_HOME") ?: System.getProperty("java.home")
+        val javaExecutable = file("$javaHome/bin/java").absolutePath
 
-        println("Started Python HTTP server on port $port, serving ${docDir.absolutePath}")
+        val serverProcess =
+            ProcessBuilder(javaExecutable, "-m", "jdk.httpserver", "-p", port.toString(), "-d", docDir.absolutePath)
+                .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+                .redirectError(ProcessBuilder.Redirect.INHERIT)
+                .start()
+
+        println("Started jwebserver on port $port, serving ${docDir.absolutePath}")
 
         Thread.sleep(2000)
 
@@ -338,10 +339,12 @@ tasks.register("linkcheck") {
 
         try {
             println("Running linkcheck...")
-            val execResult = providers.exec {
+            val exec = providers.exec {
                 commandLine("docker", "run", "--rm", "--network=host", "tennox/linkcheck", "http://localhost:$port")
                 isIgnoreExitValue = true // Don't fail on warnings (exit code 1), only on errors (exit code 2)
-            }.result.get()
+            }
+            val execResult = exec.result.get()
+            println(exec.standardOutput.asText.get())
             when (execResult.exitValue) {
                 0 -> println("Linkcheck completed successfully")
                 1 -> println("Linkcheck completed with warnings")
@@ -350,14 +353,27 @@ tasks.register("linkcheck") {
             }
         } finally {
             serverProcess.destroy()
-            println("Stopped HTTP server")
+            println("Stopped jwebserver")
         }
     }
 }
 
+tasks.register<Exec>("serveDocs") {
+    dependsOn("assembleDocs")
+    group = "documentation"
+
+    val javaHome = System.getenv("JAVA_HOME") ?: System.getProperty("java.home")
+    val javaExecutable = file("$javaHome/bin/java").absolutePath
+
+    commandLine = listOf(
+        javaExecutable, "-m", "jdk.httpserver", "-p", "8080", "-d",
+        project.layout.buildDirectory.dir(documentationVersion).get().asFile.absolutePath
+    )
+}
+
 fun frameworkModules(): Iterable<Project> {
     return project.parent?.subprojects?.filter { project ->
-        !project.name.startsWith("demo") && !project.name.equals("documentation") && !project.name.endsWith("bom")
+        !project.name.startsWith("demo") && project.name != "documentation" && !project.name.endsWith("bom")
     } ?: emptyList()
 }
 
