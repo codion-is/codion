@@ -20,6 +20,7 @@
  * Package configuration values:
  * <ul>
  * <li>{@link is.codion.swing.common.ui.component.text.NumberField#CONVERT_GROUPING_TO_DECIMAL_SEPARATOR}
- * </ul> 
+ * <li>{@link is.codion.swing.common.ui.component.text.TextFieldBuilder#SELECT_ALL_ON_FOCUS_GAINED}
+ * </ul>
  */
 package is.codion.swing.common.ui.component.text;

@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.ui.component.text;
 
+import is.codion.common.property.PropertyValue;
 import is.codion.common.value.Value;
 
 import javax.swing.Action;
@@ -25,6 +26,7 @@ import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.text.Format;
 
+import static is.codion.common.Configuration.booleanValue;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -34,6 +36,17 @@ import static java.util.Objects.requireNonNull;
  * @param <B> the builder type
  */
 public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> extends TextComponentBuilder<T, C, B> {
+
+
+	/**
+	 * Specifies whether text fields should select all on focus gained by default.
+	 * <ul>
+	 * <li>Value type:Boolean
+	 * <li>Default value: false
+	 * </ul>
+	 */
+	PropertyValue<Boolean> SELECT_ALL_ON_FOCUS_GAINED =
+					booleanValue(TextFieldBuilder.class.getName() + ".selectAllOnFocusGained", false);
 
 	/**
 	 * @param columns the number of colums in the text component

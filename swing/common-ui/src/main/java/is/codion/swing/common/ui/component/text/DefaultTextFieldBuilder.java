@@ -49,6 +49,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
 		if (valueClass.equals(Character.class)) {
 			maximumLength(1);
 		}
+		selectAllOnFocusGained(SELECT_ALL_ON_FOCUS_GAINED.getOrThrow());
 	}
 
 	@Override
