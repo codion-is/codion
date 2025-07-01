@@ -54,6 +54,8 @@ public final class FontSize {
 		RATIO.addValidator(new FontSizeRatioValidator());
 	}
 
+	private FontSize() {}
+
 	/**
 	 * Updates the font sizes for the current {@link UIDefaults} using the ratio from {@link #RATIO}.
 	 * Note that this must be done before the UI is initialized, dynamic font size changes are not supported.

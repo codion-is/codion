@@ -42,6 +42,7 @@ final class DefaultIcons implements Icons {
 	private final Map<Ikon, FontImageIcon> icons = new HashMap<>();
 
 	private final OnIconColorChanged onIconColorChanged = new OnIconColorChanged();
+	private final OnIconSizeChanged onIconSizeChanged = new OnIconSizeChanged();
 
 	static {
 		UIManager.addPropertyChangeListener(new OnLookAndFeelChanged());
@@ -49,27 +50,42 @@ final class DefaultIcons implements Icons {
 
 	DefaultIcons() {
 		ICON_COLOR.addWeakConsumer(onIconColorChanged);
+		ICON_SIZE.addWeakConsumer(onIconSizeChanged);
 	}
 
 	@Override
 	public void add(Ikon... ikons) {
-		for (Ikon ikon : requireNonNull(ikons)) {
-			if (icons.containsKey(requireNonNull(ikon))) {
-				throw new IllegalArgumentException("Icon has already been added: " + ikon);
+		synchronized (icons) {
+			for (Ikon ikon : requireNonNull(ikons)) {
+				if (icons.containsKey(requireNonNull(ikon))) {
+					throw new IllegalArgumentException("Icon has already been added: " + ikon);
+				}
 			}
-		}
-		for (Ikon ikon : ikons) {
-			icons.put(ikon, FontImageIcon.builder(ikon).build());
+			for (Ikon ikon : ikons) {
+				icons.put(ikon, FontImageIcon.builder(ikon)
+								.size(ICON_SIZE.getOrThrow())
+								.build());
+			}
 		}
 	}
 
 	@Override
 	public ImageIcon get(Ikon ikon) {
-		if (!icons.containsKey(requireNonNull(ikon))) {
-			throw new IllegalArgumentException("No icon has been added for key: " + ikon);
-		}
+		synchronized (icons) {
+			if (!icons.containsKey(requireNonNull(ikon))) {
+				throw new IllegalArgumentException("No icon has been added for key: " + ikon);
+			}
 
-		return icons.get(ikon).imageIcon();
+			return icons.get(ikon).imageIcon();
+		}
+	}
+
+	private void resize(int size) {
+		synchronized (icons) {
+			icons.replaceAll((ikon, fontImageIcon) -> FontImageIcon.builder(ikon)
+							.size(size)
+							.build());
+		}
 	}
 
 	private final class OnIconColorChanged implements Consumer<Color> {
@@ -79,6 +95,14 @@ final class DefaultIcons implements Icons {
 			if (color != null) {
 				icons.values().forEach(icon -> icon.color(color));
 			}
+		}
+	}
+
+	private final class OnIconSizeChanged implements Consumer<Integer> {
+
+		@Override
+		public void accept(Integer size) {
+			resize(size);
 		}
 	}
 

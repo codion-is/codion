@@ -46,6 +46,7 @@ Codion Change Log
 - FontSize added. DefaultLookAndFeelEnabler now handles updating the font size when enabling.
 - FontSize.updateFontSize() bug fixed, Element Of character got lost and Font instances did not get resized, now uses deriveFont() for FontUIResource instead of instantiation.
 - TextFieldBuilder.SELECT_ALL_ON_FOCUS_GAINED configuration value added.
+- DefaultIcons now reacts to changes in Icons.ICON_SIZE, replacing each icon with a resized instance.
 ### is.codion.framework.lambda
 - LambdaEntityHandler refactored.
 

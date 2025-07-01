@@ -334,7 +334,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		}
 		setVersionProperty();
 		enableLookAndFeel();
-		configureFontsAndIcons();
+		configureIcons();
 		if (beforeApplicationStarted != null) {
 			beforeApplicationStarted.run();
 		}
@@ -388,12 +388,12 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		return lookAndFeelClassName;
 	}
 
-	private void configureFontsAndIcons() {
-		int fontSizePercentage = preferences.fontSize();
+	private void configureIcons() {
 		int logoSize = DEFAULT_LOGO_SIZE;
-		if (fontSizePercentage != 100) {
-			Icons.ICON_SIZE.set(Math.round(Icons.ICON_SIZE.getOrThrow() * (fontSizePercentage / 100f)));
-			logoSize = Math.round(logoSize * (fontSizePercentage / 100f));
+		if (preferences.fontSize() != 100) {
+			float ratio = preferences.fontSize() / 100f;
+			Icons.ICON_SIZE.map(iconSize -> Math.round(iconSize * ratio));
+			logoSize = Math.round(logoSize * ratio);
 		}
 		if (applicationIcon == null) {
 			applicationIcon = FrameworkIcons.instance().logo(logoSize);

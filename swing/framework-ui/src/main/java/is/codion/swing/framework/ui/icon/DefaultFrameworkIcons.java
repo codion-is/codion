@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
+import java.util.function.Consumer;
 
 import static is.codion.swing.framework.ui.icon.FrameworkIkon.*;
 import static java.util.stream.StreamSupport.stream;
@@ -64,9 +65,13 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 
 	private static FrameworkIcons instance;
 
+	private final OnIconSizeChanged onIconSizeChanged = new OnIconSizeChanged();
+
 	private final Icons icons = Icons.icons();
 	private final Map<Integer, FontImageIcon> logos = new HashMap<>();
-	private final ImageIcon refreshRequired = FontImageIcon.builder(REFRESH)
+
+	private ImageIcon refreshRequired = FontImageIcon.builder(REFRESH)
+					.size(Icons.ICON_SIZE.getOrThrow())
 					.color(Color.RED.darker())
 					.build().imageIcon();
 
@@ -76,6 +81,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 	public DefaultFrameworkIcons() {
 		add(LOGO, FILTER, SEARCH, ADD, DELETE, UPDATE, COPY, REFRESH, CLEAR, UP, DOWN, DETAIL,
 						PRINT, EDIT, SUMMARY, EDIT_PANEL, DEPENDENCIES, SETTINGS, CALENDAR, EDIT_TEXT, COLUMNS);
+		Icons.ICON_SIZE.addWeakConsumer(onIconSizeChanged);
 	}
 
 	@Override
@@ -212,6 +218,13 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 						.build()).imageIcon();
 	}
 
+	private void resize(Integer size) {
+		refreshRequired = FontImageIcon.builder(REFRESH)
+						.size(size)
+						.color(Color.RED.darker())
+						.build().imageIcon();
+	}
+
 	static FrameworkIcons instance() {
 		if (instance == null) {
 			instance = createInstance();
@@ -234,6 +247,14 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 				throw (RuntimeException) cause;
 			}
 			throw new RuntimeException(cause);
+		}
+	}
+
+	private final class OnIconSizeChanged implements Consumer<Integer> {
+
+		@Override
+		public void accept(Integer size) {
+			resize(size);
 		}
 	}
 }
