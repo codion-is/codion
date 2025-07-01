@@ -43,6 +43,7 @@ Codion Change Log
 - Cursors moved to cursor package.
 - FileTransferHandler moved to transfer package.
 - UiManagerDefaults renamed UIManagerDefaults.
+- FontSize added. DefaultLookAndFeelEnabler now handles updating the font size when enabling.
 ### is.codion.framework.lambda
 - LambdaEntityHandler refactored.
 

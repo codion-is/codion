@@ -49,6 +49,7 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.font.FontSize;
 import is.codion.swing.common.ui.frame.Frames;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
@@ -255,7 +256,6 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	private final Map<Object, State> logLevelStates = createLogLevelStateMap();
 
 	private boolean saveDefaultUsername = true;
-	private int fontSize = 100;
 	private boolean initialized = false;
 
 	/**
@@ -670,9 +670,9 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	protected final Control createSelectFontSizeControl() {
 		return Dialogs.fontSizeSelectionDialog()
 						.owner(this)
-						.initialSelection(fontSize)
+						.initialSelection(FontSize.RATIO.getOrThrow())
 						.createControl(selectedFontSize -> {
-							fontSize = selectedFontSize;
+							FontSize.RATIO.set(selectedFontSize);
 							showMessageDialog(this, resourceBundle.getString("font_size_selected_message"));
 						});
 	}
@@ -891,7 +891,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 		return new ApplicationPreferences(
 						saveDefaultUsername ? applicationModel.connectionProvider().user().username() : null,
-						getLookAndFeel().getClass().getName(), fontSize,
+						getLookAndFeel().getClass().getName(), FontSize.RATIO.getOrThrow(),
 						parentFrame == null ? null : parentFrame.getSize(),
 						parentFrame != null && (parentFrame.getExtendedState() & MAXIMIZED_BOTH) == MAXIMIZED_BOTH);
 	}

@@ -32,6 +32,7 @@ import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.ExceptionDialogBuilder;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
+import is.codion.swing.common.ui.font.FontSize;
 import is.codion.swing.common.ui.icon.Icons;
 import is.codion.swing.common.ui.window.Windows;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
@@ -63,7 +64,8 @@ import java.util.function.Supplier;
 
 import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.common.resource.MessageBundle.messageBundle;
-import static is.codion.swing.common.ui.Utilities.*;
+import static is.codion.swing.common.ui.Utilities.parentWindow;
+import static is.codion.swing.common.ui.Utilities.systemLookAndFeelClassName;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.dialog.Dialogs.displayExceptionDialog;
 import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.lookAndFeelEnabler;
@@ -136,6 +138,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		this.defaultUser = preferences.defaultLoginUser();
 		this.frameSize = preferences.frameSize();
 		this.maximizeFrame = preferences.frameMaximized();
+		FontSize.RATIO.set(preferences.fontSize());
 	}
 
 	@Override
@@ -389,7 +392,6 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		int fontSizePercentage = preferences.fontSize();
 		int logoSize = DEFAULT_LOGO_SIZE;
 		if (fontSizePercentage != 100) {
-			setFontSizePercentage(fontSizePercentage);
 			Icons.ICON_SIZE.set(Math.round(Icons.ICON_SIZE.getOrThrow() * (fontSizePercentage / 100f)));
 			logoSize = Math.round(logoSize * (fontSizePercentage / 100f));
 		}

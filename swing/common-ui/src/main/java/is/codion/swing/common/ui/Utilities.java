@@ -30,16 +30,13 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
-import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.plaf.FontUIResource;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.Component;
-import java.awt.Font;
 import java.awt.KeyboardFocusManager;
 import java.awt.Toolkit;
 import java.awt.Window;
@@ -231,33 +228,6 @@ public final class Utilities {
 		}
 
 		return new ImageIcon(Toolkit.getDefaultToolkit().getImage(url));
-	}
-
-	/**
-	 * Sets a global font size percentage.<br>
-	 * 85 = decrease the default font size by 15%<br>
-	 * 100 = use the default font size<br>
-	 * 125 = increase the default font size by 25%<br>
-	 * @param fontSizePercentage the font size percentage
-	 */
-	public static void setFontSizePercentage(int fontSizePercentage) {
-		float multiplier = fontSizePercentage / 100f;
-		UIDefaults defaults = UIManager.getLookAndFeelDefaults();
-		Enumeration<Object> enumeration = defaults.keys();
-		while (enumeration.hasMoreElements()) {
-			Object key = enumeration.nextElement();
-			Object defaultValue = defaults.get(key);
-			if (defaultValue instanceof Font) {
-				Font font = (Font) defaultValue;
-				int newSize = Math.round(font.getSize() * multiplier);
-				if (defaultValue instanceof FontUIResource) {
-					defaults.put(key, new FontUIResource(font.getName(), font.getStyle(), newSize));
-				}
-				else {
-					defaults.put(key, new Font(font.getName(), font.getStyle(), newSize));
-				}
-			}
-		}
 	}
 
 	/**
