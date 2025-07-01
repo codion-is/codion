@@ -67,12 +67,12 @@ public final class FontSize {
 			Object defaultValue = defaults.get(key);
 			if (defaultValue instanceof Font) {
 				Font font = (Font) defaultValue;
-				int newSize = Math.round(font.getSize() * multiplier);
+				Font derived = font.deriveFont((float) Math.round(font.getSize() * multiplier));
 				if (defaultValue instanceof FontUIResource) {
-					defaults.put(key, new FontUIResource(font.getName(), font.getStyle(), newSize));
+					defaults.put(key, new FontUIResource(derived));
 				}
 				else {
-					defaults.put(key, font.deriveFont(newSize));
+					defaults.put(key, derived);
 				}
 			}
 		}

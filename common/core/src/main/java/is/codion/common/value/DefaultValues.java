@@ -142,6 +142,7 @@ class DefaultValues<T, C extends Collection<T>> extends DefaultValue<C> implemen
 			return getOrThrow().isEmpty();
 		}
 	}
+
 	@Override
 	public final int size() {
 		synchronized (lock) {

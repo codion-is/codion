@@ -219,6 +219,6 @@ class DefaultValue<T> extends AbstractValue<T> {
 			this.consumer = consumer;
 		}
 	}
-	
+
 	private interface Lock {}
 }
