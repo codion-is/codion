@@ -144,7 +144,8 @@ public final class LoadTestPanel<T> extends JPanel {
 	 * @return the frame
 	 */
 	private JFrame showFrame() {
-		return Frames.builder(this)
+		return Frames.builder()
+						.component(this)
 						.icon(logoTransparent())
 						.menuBar(menu(createMainMenuControls()).buildMenuBar())
 						.title(loadTest.name().orElse(DEFAULT_TITLE))

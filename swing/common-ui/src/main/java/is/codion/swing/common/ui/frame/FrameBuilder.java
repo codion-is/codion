@@ -21,6 +21,7 @@ package is.codion.swing.common.ui.frame;
 import is.codion.common.observable.Observable;
 
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.WindowConstants;
@@ -35,6 +36,14 @@ import java.util.function.Consumer;
  * A builder for a JFrame.
  */
 public interface FrameBuilder {
+
+	/**
+	 * Note: sets the layout to {@link java.awt.BorderLayout} and
+	 * adds the component at location {@link java.awt.BorderLayout#CENTER}
+	 * @param component the component to display
+	 * @return this builder instance
+	 */
+	FrameBuilder component(JComponent component);
 
 	/**
 	 * @param title the title

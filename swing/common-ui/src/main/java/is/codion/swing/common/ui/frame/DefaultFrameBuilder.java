@@ -44,9 +44,9 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultFrameBuilder implements FrameBuilder {
 
-	private final JComponent component;
 	private final List<WindowListener> windowListeners = new ArrayList<>(0);
 
+	private JComponent component;
 	private ImageIcon icon;
 	private Observable<String> title;
 	private Consumer<WindowEvent> onClosing;
@@ -62,8 +62,10 @@ final class DefaultFrameBuilder implements FrameBuilder {
 	private int extendedState = Frame.NORMAL;
 	private boolean centerFrame;
 
-	DefaultFrameBuilder(JComponent component) {
-		this.component = requireNonNull(component);
+	@Override
+	public FrameBuilder component(JComponent component) {
+		this.component = component;
+		return this;
 	}
 
 	@Override
@@ -165,8 +167,10 @@ final class DefaultFrameBuilder implements FrameBuilder {
 	public JFrame build() {
 		JFrame frame = new JFrame();
 		frame.setDefaultCloseOperation(defaultCloseOperation);
-		frame.setLayout(Layouts.borderLayout());
-		frame.add(component, BorderLayout.CENTER);
+		if (component != null) {
+			frame.setLayout(Layouts.borderLayout());
+			frame.add(component, BorderLayout.CENTER);
+		}
 		if (title != null) {
 			frame.setTitle(title.get());
 			title.addConsumer(frame::setTitle);

@@ -100,7 +100,8 @@ public final class KeyBindingPanel extends JPanel {
 		System.setProperty("sun.awt.disablegrab", "true");
 		findLookAndFeel(MonokaiPro.class)
 						.ifPresent(LookAndFeelEnabler::enable);
-		SwingUtilities.invokeLater(() -> Frames.builder(new KeyBindingPanel())
+		SwingUtilities.invokeLater(() -> Frames.builder()
+						.component(new KeyBindingPanel())
 						.title("Key Bindings")
 						.defaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)
 						.centerFrame(true)

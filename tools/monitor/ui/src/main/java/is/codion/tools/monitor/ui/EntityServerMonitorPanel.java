@@ -128,7 +128,8 @@ public final class EntityServerMonitorPanel extends JPanel {
 	}
 
 	public void showFrame() {
-		monitorFrame = Frames.builder(this)
+		monitorFrame = Frames.builder()
+						.component(this)
 						.icon(Logos.logoRed())
 						.menuBar(menu(createMainMenuControls()).buildMenuBar())
 						.title("Codion Server Monitor")

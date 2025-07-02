@@ -808,7 +808,8 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 			}
 		}
 		else {
-			Frames.builder(createEmptyBorderBasePanel(entityPanel))
+			Frames.builder()
+							.component(createEmptyBorderBasePanel(entityPanel))
 							.locationRelativeTo(this)
 							.title(entityPanel.caption())
 							.icon(entityPanel.icon().orElse(null))

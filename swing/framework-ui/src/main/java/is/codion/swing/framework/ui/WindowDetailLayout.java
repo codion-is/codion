@@ -208,7 +208,8 @@ public final class WindowDetailLayout implements DetailLayout {
 
 		private Window createDetailWindow() {
 			if (windowType == FRAME) {
-				return Frames.builder(detailPanel)
+				return Frames.builder()
+								.component(detailPanel)
 								.locationRelativeTo(entityPanel)
 								.title(detailPanel.caption())
 								.icon(detailPanel.icon().orElse(null))

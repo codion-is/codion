@@ -388,7 +388,8 @@ public final class DomainGeneratorPanel extends JPanel {
 	}
 
 	public void showFrame() {
-		Frames.builder(borderLayoutPanel()
+		Frames.builder()
+						.component(borderLayoutPanel()
 										.centerComponent(this)
 										.border(createEmptyBorder())
 										.build())

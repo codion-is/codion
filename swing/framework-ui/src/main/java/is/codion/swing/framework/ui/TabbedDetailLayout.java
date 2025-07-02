@@ -594,7 +594,8 @@ public final class TabbedDetailLayout implements DetailLayout {
 			Point location = new Point(detailWindowX, detailWindowY);
 
 			if (windowType == WindowType.FRAME) {
-				return Frames.builder(createEmptyBorderBasePanel(tabbedPane))
+				return Frames.builder()
+								.component(createEmptyBorderBasePanel(tabbedPane))
 								.title(entityPanel.caption() + " - " + MESSAGES.getString(DETAIL_TABLES))
 								.defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
 								.size(size)

@@ -18,8 +18,6 @@
  */
 package is.codion.swing.common.ui.frame;
 
-import javax.swing.JComponent;
-
 /**
  * A utility class for frames.
  */
@@ -28,10 +26,9 @@ public final class Frames {
 	private Frames() {}
 
 	/**
-	 * @param component the component to display in the frame
 	 * @return a frame builder
 	 */
-	public static FrameBuilder builder(JComponent component) {
-		return new DefaultFrameBuilder(component);
+	public static FrameBuilder builder() {
+		return new DefaultFrameBuilder();
 	}
 }
