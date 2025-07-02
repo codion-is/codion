@@ -74,7 +74,7 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 
 	// tag::importJSON[]
 	public void importJSON() throws IOException {
-		File file = Dialogs.fileSelectionDialog()
+		File file = Dialogs.fileSelection()
 						.owner(this)
 						.fileFilter(new FileNameExtensionFilter("JSON files", "json"))
 						.fileFilter(new FileNameExtensionFilter("Text files", "txt"))
@@ -88,7 +88,7 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel,
 						config -> config.includePopupMenu(false));
 
-		Dialogs.dialog()
+		Dialogs.builder()
 						.component(tablePanel.initialize())
 						.owner(this)
 						.title("Import")

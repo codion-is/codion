@@ -197,7 +197,7 @@ final class LookupTablePanel extends EntityTablePanel {
 
 	private void setMapDialogVisible(boolean visible) {
 		if (mapKitDialog == null) {
-			mapKitDialog = Dialogs.dialog()
+			mapKitDialog = Dialogs.builder()
 							.component(mapKit)
 							.owner(this)
 							.modal(false)
@@ -219,10 +219,10 @@ final class LookupTablePanel extends EntityTablePanel {
 	}
 
 	private void export(ExportFormat format) {
-		File fileToSave = Dialogs.fileSelectionDialog()
+		File fileToSave = Dialogs.fileSelection()
 						.owner(this)
 						.selectFileToSave(format.defaultFileName());
-		Dialogs.progressWorkerDialog(() -> export(fileToSave, format))
+		Dialogs.progressWorker(() -> export(fileToSave, format))
 						.owner(this)
 						.title("Exporting data")
 						.onResult("Export successful")
@@ -260,7 +260,7 @@ final class LookupTablePanel extends EntityTablePanel {
 	}
 
 	private void importJSON() throws IOException {
-		importJSON(Dialogs.fileSelectionDialog()
+		importJSON(Dialogs.fileSelection()
 						.owner(this)
 						.fileFilter(new FileNameExtensionFilter("JSON", "json"))
 						.selectFile());

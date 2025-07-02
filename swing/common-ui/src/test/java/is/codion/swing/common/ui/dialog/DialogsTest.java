@@ -40,7 +40,7 @@ public final class DialogsTest {
 
 	@Test
 	void dialog() {
-		Dialogs.dialog()
+		Dialogs.builder()
 						.component(new JLabel())
 						.owner(new JLabel())
 						.title("title")
@@ -59,8 +59,8 @@ public final class DialogsTest {
 	}
 
 	@Test
-	void progressWorkerDialog() {
-		Dialogs.progressWorkerDialog(() -> {})
+	void progressWorker() {
+		Dialogs.progressWorker(() -> {})
 						.owner(new JLabel())
 						.title("title")
 						.icon(Logos.logoTransparent())
@@ -74,8 +74,8 @@ public final class DialogsTest {
 	}
 
 	@Test
-	void exceptionDialog() {
-		Dialogs.exceptionDialog()
+	void exception() {
+		Dialogs.exception()
 						.owner(new JLabel())
 						.title("title")
 						.icon(Logos.logoTransparent())
@@ -83,8 +83,8 @@ public final class DialogsTest {
 	}
 
 	@Test
-	void fileSelectionDialog() {
-		Dialogs.fileSelectionDialog()
+	void fileSelection() {
+		Dialogs.fileSelection()
 						.owner(new JLabel())
 						.title("title")
 						.startDirectory(System.getProperty("user.home"))
@@ -92,8 +92,8 @@ public final class DialogsTest {
 	}
 
 	@Test
-	void loginDialog() {
-		Dialogs.loginDialog()
+	void login() {
+		Dialogs.login()
 						.owner(new JLabel())
 						.title("title")
 						.icon(Logos.logoTransparent())
@@ -103,10 +103,10 @@ public final class DialogsTest {
 	}
 
 	@Test
-	void okCancelDialog() {
+	void okCancel() {
 		JLabel label = new JLabel();
 		Runnable runnable = () -> {};
-		Dialogs.okCancelDialog()
+		Dialogs.okCancel()
 						.component(label)
 						.owner(label)
 						.title("title")
@@ -119,31 +119,31 @@ public final class DialogsTest {
 		Control.Command command = () -> {};
 		ObservableState state = State.state().observable();
 
-		assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog()
+		assertThrows(IllegalStateException.class, () -> Dialogs.okCancel()
 						.onOk(runnable)
 						.okAction(command(command)));
-		assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog()
+		assertThrows(IllegalStateException.class, () -> Dialogs.okCancel()
 						.onCancel(runnable)
 						.cancelAction(command(command)));
 
-		assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog()
+		assertThrows(IllegalStateException.class, () -> Dialogs.okCancel()
 						.okAction(command(command))
 						.onOk(runnable));
-		assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog()
+		assertThrows(IllegalStateException.class, () -> Dialogs.okCancel()
 						.cancelAction(command(command))
 						.onCancel(runnable));
 
-		assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog()
+		assertThrows(IllegalStateException.class, () -> Dialogs.okCancel()
 						.okAction(command(command))
 						.okEnabled(state));
-		assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog()
+		assertThrows(IllegalStateException.class, () -> Dialogs.okCancel()
 						.cancelAction(command(command))
 						.cancelEnabled(state));
 	}
 
 	@Test
-	void progressDialog() {
-		Dialogs.progressDialog()
+	void progress() {
+		Dialogs.progress()
 						.owner(new JLabel())
 						.title("title")
 						.indeterminate(true)
@@ -156,12 +156,12 @@ public final class DialogsTest {
 
 	@Test
 	void selectionDialog() {
-		Dialogs.listSelectionDialog(Collections.singletonList("hello"))
+		Dialogs.listSelection(Collections.singletonList("hello"))
 						.owner(new JLabel())
 						.title("title")
 						.allowEmptySelection(true)
 						.defaultSelection("hello");
-		Dialogs.comboBoxSelectionDialog(Collections.singletonList("hello"))
+		Dialogs.comboBoxSelection(Collections.singletonList("hello"))
 						.owner(new JLabel())
 						.title("title")
 						.allowEmptySelection(true)
@@ -170,15 +170,15 @@ public final class DialogsTest {
 
 	@Test
 	void selectionDialogNoItems() {
-		assertThrows(IllegalArgumentException.class, () -> Dialogs.listSelectionDialog(Collections.emptyList()));
-		assertThrows(IllegalArgumentException.class, () -> Dialogs.comboBoxSelectionDialog(Collections.emptyList()));
+		assertThrows(IllegalArgumentException.class, () -> Dialogs.listSelection(Collections.emptyList()));
+		assertThrows(IllegalArgumentException.class, () -> Dialogs.comboBoxSelection(Collections.emptyList()));
 	}
 
 	@Test
 	void selectionDialogNonExistingDefaultSelection() {
-		assertThrows(IllegalArgumentException.class, () -> Dialogs.listSelectionDialog(Collections.singletonList("helloist"))
+		assertThrows(IllegalArgumentException.class, () -> Dialogs.listSelection(Collections.singletonList("helloist"))
 						.defaultSelection("hello"));
-		assertThrows(IllegalArgumentException.class, () -> Dialogs.comboBoxSelectionDialog(Collections.singletonList("helloist"))
+		assertThrows(IllegalArgumentException.class, () -> Dialogs.comboBoxSelection(Collections.singletonList("helloist"))
 						.defaultSelection("hello"));
 	}
 }

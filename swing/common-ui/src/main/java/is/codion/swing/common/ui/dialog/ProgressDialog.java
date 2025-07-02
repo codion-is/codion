@@ -41,7 +41,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A dialog containing a progress bar.
- * @see Dialogs#progressDialog()
+ * @see Dialogs#progress()
  */
 public final class ProgressDialog extends JDialog {
 

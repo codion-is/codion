@@ -466,7 +466,7 @@ public final class FilterTable<R, C> extends JTable {
 	 */
 	public void selectColumns() {
 		ColumnSelectionPanel<C> columnSelectionPanel = new ColumnSelectionPanel<>(columnModel());
-		Dialogs.okCancelDialog()
+		Dialogs.okCancel()
 						.component(columnSelectionPanel)
 						.owner(getParent())
 						.title(MESSAGES.getString(SELECT_COLUMNS))
@@ -482,7 +482,7 @@ public final class FilterTable<R, C> extends JTable {
 		ComponentValue<Integer, JComboBox<Item<Integer>>> componentValue = itemComboBox(AUTO_RESIZE_MODES)
 						.value(getAutoResizeMode())
 						.buildValue();
-		Dialogs.okCancelDialog()
+		Dialogs.okCancel()
 						.component(borderLayoutPanel()
 										.centerComponent(componentValue.component())
 										.border(Borders.emptyBorder())

@@ -67,7 +67,6 @@ import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.Utilities.systemLookAndFeelClassName;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
-import static is.codion.swing.common.ui.dialog.Dialogs.displayExceptionDialog;
 import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.lookAndFeelEnabler;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeel;
 import static is.codion.swing.common.ui.window.Windows.screenSizeRatio;
@@ -341,7 +340,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		EntityConnectionProvider connectionProvider = initializeConnectionProvider();
 		long initializationStarted = currentTimeMillis();
 		if (displayStartupDialog) {
-			Dialogs.progressWorkerDialog(new InitializeApplicationModel(connectionProvider))
+			Dialogs.progressWorker(new InitializeApplicationModel(connectionProvider))
 							.title(applicationName)
 							.icon(applicationIcon)
 							.border(emptyBorder())
@@ -575,7 +574,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	private static void displayException(Throwable exception, JFrame applicationFrame) {
 		if (!(exception instanceof CancelException)) {
 			Window focusOwnerParentWindow = parentWindow(getCurrentKeyboardFocusManager().getFocusOwner());
-			displayExceptionDialog(exception, focusOwnerParentWindow == null ? applicationFrame : focusOwnerParentWindow);
+			Dialogs.displayException(exception, focusOwnerParentWindow == null ? applicationFrame : focusOwnerParentWindow);
 		}
 	}
 
@@ -585,7 +584,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
 		@Override
 		public User get() {
-			return Dialogs.loginDialog()
+			return Dialogs.login()
 							.defaultUser(defaultUser)
 							.validator(loginValidator)
 							.title(loginDialogTitle())

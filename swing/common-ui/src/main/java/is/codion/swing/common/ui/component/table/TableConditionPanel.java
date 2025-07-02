@@ -150,7 +150,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 			panelItems.get(0).value().requestInputFocus();
 		}
 		else if (!panelItems.isEmpty()) {
-			Dialogs.listSelectionDialog(panelItems)
+			Dialogs.listSelection(panelItems)
 							.owner(dialogOwner)
 							.title(MESSAGES.getString("select_condition"))
 							.selectSingle()

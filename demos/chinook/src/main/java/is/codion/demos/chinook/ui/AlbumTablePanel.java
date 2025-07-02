@@ -83,7 +83,7 @@ public final class AlbumTablePanel extends EntityTablePanel {
 			dialog.toFront();
 		}
 		else {
-			Dialogs.dialog()
+			Dialogs.builder()
 							.component(coverPanel)
 							.owner(Utilities.parentWindow(this))
 							.title(title)

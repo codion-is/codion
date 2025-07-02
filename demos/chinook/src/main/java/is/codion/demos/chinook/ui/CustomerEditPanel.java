@@ -19,6 +19,7 @@
 package is.codion.demos.chinook.ui;
 
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -30,7 +31,6 @@ import java.awt.event.ActionEvent;
 import static is.codion.demos.chinook.domain.api.Chinook.Customer;
 import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
-import static is.codion.swing.common.ui.dialog.Dialogs.listSelectionDialog;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_SPACE;
@@ -106,7 +106,7 @@ public final class CustomerEditPanel extends EntityEditPanel {
 
 	private void selectState(ActionEvent event) {
 		JTextField stateField = (JTextField) event.getSource();
-		listSelectionDialog(editModel().connection().select(Customer.STATE))
+		Dialogs.listSelection(editModel().connection().select(Customer.STATE))
 						.owner(stateField)
 						.selectSingle()
 						.ifPresent(stateField::setText);

@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Objects;
 
 import static is.codion.framework.db.EntityConnection.Count.where;
-import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
 import static java.lang.System.lineSeparator;
 import static java.util.stream.Collectors.joining;
 import static javax.swing.JOptionPane.showConfirmDialog;
@@ -60,7 +59,7 @@ public final class ArtistTablePanel extends EntityTablePanel {
 
 	private void combineSelected() {
 		List<Entity> selectedArtists = tableModel().selection().items().get();
-		Entity artistToKeep = Dialogs.listSelectionDialog(selectedArtists)
+		Entity artistToKeep = Dialogs.listSelection(selectedArtists)
 						.owner(this)
 						.title("Select the artist to keep")
 						.comparator(Text.collator())
@@ -72,7 +71,7 @@ public final class ArtistTablePanel extends EntityTablePanel {
 		int albumCount = tableModel().connection().count(where(Album.ARTIST_FK.in(artistsToDelete)));
 		if (confirmCombination(artistsToDelete, artistToKeep, albumCount)) {
 			ArtistTableModel tableModel = (ArtistTableModel) tableModel();
-			progressWorkerDialog(() -> tableModel.combine(artistsToDelete, artistToKeep))
+			Dialogs.progressWorker(() -> tableModel.combine(artistsToDelete, artistToKeep))
 							.owner(this)
 							.title("Updating albums...")
 							.onResult(() -> {

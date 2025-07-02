@@ -32,6 +32,7 @@ import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.frame.Frames;
 import is.codion.swing.common.ui.icon.Logos;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
@@ -60,7 +61,6 @@ import java.text.NumberFormat;
 import java.util.concurrent.TimeUnit;
 
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.dialog.Dialogs.*;
 import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.BorderFactory.createEtchedBorder;
 
@@ -91,7 +91,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 		this(new EntityServerMonitor(Clients.SERVER_HOSTNAME.get(),
 						ServerConfiguration.REGISTRY_PORT.getOrThrow(), adminUser()));
 		Thread.setDefaultUncaughtExceptionHandler((t, e) ->
-						displayExceptionDialog(e, Utilities.parentWindow(EntityServerMonitorPanel.this)));
+						Dialogs.displayException(e, Utilities.parentWindow(EntityServerMonitorPanel.this)));
 	}
 
 	/**
@@ -141,7 +141,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 
 	public static synchronized void setJDKDir(JComponent dialogParent) {
 		try {
-			jdkDir = fileSelectionDialog()
+			jdkDir = Dialogs.fileSelection()
 							.owner(dialogParent)
 							.startDirectory(jdkDir)
 							.title("Set JDK home")
@@ -177,7 +177,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 										.control(createUpateIntervalControl())
 										.control(createClearChartsControl())
 										.separator()
-										.control(lookAndFeelSelectionDialog()
+										.control(Dialogs.lookAndFeelSelection()
 														.owner(this)
 														.createControl(EntityServerMonitorPanel::lookAndFeelSelected))
 										.control(createAlwaysOnTopControl()))
@@ -244,7 +244,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 						.selectAllOnFocusGained(true)
 						.build();
 
-		okCancelDialog()
+		Dialogs.okCancel()
 						.component(flowLayoutPanel(FlowLayout.CENTER)
 										.add(field)
 										.build())
@@ -309,7 +309,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 			}
 			catch (Exception exception) {
 				LOG.error(exception.getMessage(), exception);
-				exceptionDialog()
+				Dialogs.exception()
 								.title("Error during startup")
 								.show(exception);
 				System.exit(1);

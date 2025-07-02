@@ -112,7 +112,7 @@ public final class Example {
 		//populate the table model with data from the database
 		customerModel.tableModel().items().refresh();
 
-		Dialogs.dialog()
+		Dialogs.builder()
 						.component(customerPanel)
 						.title("Customers")
 						.show();

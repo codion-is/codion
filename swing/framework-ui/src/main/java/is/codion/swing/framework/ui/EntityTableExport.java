@@ -63,7 +63,6 @@ import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.button.ToggleButtonType.RADIO_BUTTON;
 import static is.codion.swing.common.ui.control.Control.command;
-import static is.codion.swing.common.ui.dialog.Dialogs.okCancelDialog;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.KeyEvent.VK_SPACE;
 import static java.lang.String.join;
@@ -105,7 +104,7 @@ final class EntityTableExport {
 			configurationPanel = new ConfigurationPanel();
 		}
 
-		okCancelDialog()
+		Dialogs.okCancel()
 						.component(configurationPanel)
 						.owner(tablePanel)
 						.title(MESSAGES.getString("export"))
@@ -115,7 +114,7 @@ final class EntityTableExport {
 
 	private void export() {
 		List<Entity> entities = entities(tablePanel.tableModel());
-		Dialogs.<String, Void>progressWorkerDialog(progress -> export(progress, entities))
+		Dialogs.<String, Void>progressWorker(progress -> export(progress, entities))
 						.owner(tablePanel)
 						.title(MESSAGES.getString("exporting_rows"))
 						.maximum(entities.size())

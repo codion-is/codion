@@ -125,7 +125,7 @@ final class CoverArtPanel extends JPanel {
 	}
 
 	private void addCover() throws IOException {
-		File coverFile = Dialogs.fileSelectionDialog()
+		File coverFile = Dialogs.fileSelection()
 						.owner(this)
 						.title(BUNDLE.getString("select_image"))
 						.fileFilter(IMAGE_FILE_FILTER)
@@ -160,7 +160,7 @@ final class CoverArtPanel extends JPanel {
 		remove(centerPanel);
 		revalidate();
 		repaint();
-		Dialogs.dialog()
+		Dialogs.builder()
 						.component(centerPanel)
 						.owner(this)
 						.modal(false)

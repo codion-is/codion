@@ -75,8 +75,6 @@ import static is.codion.common.Configuration.stringValue;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
-import static is.codion.swing.common.ui.dialog.Dialogs.displayExceptionDialog;
-import static is.codion.swing.common.ui.dialog.Dialogs.lookAndFeelSelectionDialog;
 import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.enableLookAndFeel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.tools.generator.model.DomainGeneratorModel.domainGeneratorModel;
@@ -358,7 +356,7 @@ public final class DomainGeneratorPanel extends JPanel {
 	}
 
 	private void selectSourceDirectory() {
-		model.sourceDirectory().set(Dialogs.fileSelectionDialog()
+		model.sourceDirectory().set(Dialogs.fileSelection()
 						.startDirectory(DomainGeneratorModel.DEFAULT_SOURCE_DIRECTORY.get())
 						.selectDirectory()
 						.getAbsolutePath());
@@ -407,7 +405,7 @@ public final class DomainGeneratorPanel extends JPanel {
 						.centerComponent(schemaLabel)
 						.build();
 		Consumer<String> schemaNotifier = schema -> SwingUtilities.invokeLater(() -> schemaLabel.setText(schema));
-		Dialogs.progressWorkerDialog(() -> model.populateSelected(schemaNotifier))
+		Dialogs.progressWorker(() -> model.populateSelected(schemaNotifier))
 						.owner(this)
 						.title("Populating")
 						.northPanel(northPanel)
@@ -427,7 +425,7 @@ public final class DomainGeneratorPanel extends JPanel {
 						.control(Controls.builder()
 										.caption("View")
 										.mnemonic('V')
-										.control(lookAndFeelSelectionDialog()
+										.control(Dialogs.lookAndFeelSelection()
 														.owner(this)
 														.createControl(DomainGeneratorPanel::lookAndFeelSelected)))
 						.build();
@@ -466,7 +464,7 @@ public final class DomainGeneratorPanel extends JPanel {
 	}
 
 	private void displayException(Exception e) {
-		displayExceptionDialog(e, parentWindow(this));
+		Dialogs.displayException(e, parentWindow(this));
 	}
 
 	private static List<FilterTableColumn<SchemaColumns.Id>> createSchemaColumns() {
@@ -525,7 +523,7 @@ public final class DomainGeneratorPanel extends JPanel {
 			System.exit(0);
 		}
 		catch (Exception e) {
-			displayExceptionDialog(e, null);
+			Dialogs.displayException(e, null);
 			System.exit(1);
 		}
 	}
@@ -533,7 +531,7 @@ public final class DomainGeneratorPanel extends JPanel {
 	private static void start() {
 		Database database = Database.instance();
 		if (USER_REQUIRED.getOrThrow()) {
-			new DomainGeneratorPanel(domainGeneratorModel(database, Dialogs.loginDialog()
+			new DomainGeneratorPanel(domainGeneratorModel(database, Dialogs.login()
 							.icon(Logos.logoTransparent())
 							.defaultUser(DEFAULT_USER.optional()
 											.map(User::parse)

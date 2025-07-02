@@ -103,7 +103,6 @@ import static is.codion.swing.common.ui.color.Colors.darker;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
-import static is.codion.swing.common.ui.dialog.Dialogs.okCancelDialog;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.EntityTableColumns.entityTableColumns;
@@ -585,7 +584,7 @@ public final class EntitySearchField extends HintTextField {
 
 	private void handleException(Exception exception) {
 		endSearch();
-		Dialogs.displayExceptionDialog(exception, Utilities.parentWindow(this));
+		Dialogs.displayException(exception, Utilities.parentWindow(this));
 	}
 
 	private void handleCancel() {
@@ -604,7 +603,7 @@ public final class EntitySearchField extends HintTextField {
 
 	private JPopupMenu createPopupMenu() {
 		return menu(Controls.controls(Control.builder()
-						.command(() -> Dialogs.dialog()
+						.command(() -> Dialogs.builder()
 										.component(settingsPanel())
 										.owner(EntitySearchField.this)
 										.title(FrameworkMessages.settings())
@@ -790,7 +789,7 @@ public final class EntitySearchField extends HintTextField {
 			list.scrollRectToVisible(list.getCellBounds(0, 0));
 			initializeResultLimitMessage(resultLimitLabel, searchField.model.limit().optional().orElse(-1), entities.size());
 
-			okCancelDialog()
+			Dialogs.okCancel()
 							.component(selectorPanel)
 							.owner(searchField)
 							.title(MESSAGES.getString("select_entity"))
@@ -890,7 +889,7 @@ public final class EntitySearchField extends HintTextField {
 			table.scrollRectToVisible(table.getCellRect(0, 0, true));
 			initializeResultLimitMessage(resultLimitLabel, searchField.model.limit().optional().orElse(-1), entities.size());
 
-			okCancelDialog()
+			Dialogs.okCancel()
 							.component(selectorPanel)
 							.owner(searchField)
 							.title(MESSAGES.getString("select_entity"))

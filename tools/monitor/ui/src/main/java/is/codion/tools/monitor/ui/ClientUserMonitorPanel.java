@@ -22,6 +22,7 @@ import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.tools.monitor.model.ClientUserMonitor;
 import is.codion.tools.monitor.model.ClientUserMonitor.UserHistoryColumns;
 
@@ -45,7 +46,6 @@ import java.util.List;
 
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
-import static is.codion.swing.common.ui.dialog.Dialogs.exceptionDialog;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createTitledBorder;
@@ -187,7 +187,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 	}
 
 	private void onException(Exception exception) {
-		exceptionDialog()
+		Dialogs.exception()
 						.owner(this)
 						.show(exception);
 	}

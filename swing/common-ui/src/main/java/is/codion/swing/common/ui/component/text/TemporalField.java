@@ -280,7 +280,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 
 	private void displayCalendar() {
 		if (LocalDate.class.equals(temporalClass())) {
-			Dialogs.calendarDialog()
+			Dialogs.calendar()
 							.owner(this)
 							.icon(calendarIcon)
 							.value((LocalDate) get())
@@ -288,7 +288,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 							.ifPresent(this::set);
 		}
 		else if (LocalDateTime.class.equals(temporalClass())) {
-			Dialogs.calendarDialog()
+			Dialogs.calendar()
 							.owner(this)
 							.icon(calendarIcon)
 							.value((LocalDateTime) get())

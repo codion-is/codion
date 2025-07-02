@@ -67,6 +67,7 @@ import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 import is.codion.swing.common.ui.control.Controls.ControlsKey;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.cursor.Cursors;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -133,7 +134,6 @@ import static is.codion.swing.common.ui.component.table.ConditionPanel.Condition
 import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
 import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
 import static is.codion.swing.common.ui.control.Control.command;
-import static is.codion.swing.common.ui.dialog.Dialogs.*;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.framework.ui.ColumnPreferences.columnPreferences;
 import static is.codion.swing.framework.ui.ConditionPreferences.conditionPreferences;
@@ -646,7 +646,7 @@ public class EntityTablePanel extends JPanel {
 						.map(attribute -> tableModel.entityDefinition().attributes().definition(attribute))
 						.sorted(new AttributeDefinitionComparator())
 						.collect(toList());
-		listSelectionDialog(sortedDefinitions)
+		Dialogs.listSelection(sortedDefinitions)
 						.owner(this)
 						.selectSingle()
 						.map(AttributeDefinition::attribute)
@@ -1043,7 +1043,7 @@ public class EntityTablePanel extends JPanel {
 		if (focusOwner == null) {
 			focusOwner = EntityTablePanel.this;
 		}
-		displayExceptionDialog(exception, parentWindow(focusOwner));
+		Dialogs.displayException(exception, parentWindow(focusOwner));
 	}
 
 	/**
@@ -1696,7 +1696,7 @@ public class EntityTablePanel extends JPanel {
 			parentWindow(queryInspector).toFront();
 		}
 		else {
-			dialog()
+			Dialogs.builder()
 							.component(queryInspector)
 							.owner(this)
 							.title(tableModel.entityDefinition().caption() + " Query")
@@ -1812,7 +1812,7 @@ public class EntityTablePanel extends JPanel {
 							dependencyTablePanel.applyColumnPreferences(dependencyPanelPreferences.get(entityType)));
 			int gap = Layouts.GAP.getOrThrow();
 			dependenciesPanel.setBorder(createEmptyBorder(0, gap, 0, gap));
-			dialog()
+			Dialogs.builder()
 							.component(dependenciesPanel)
 							.owner(this)
 							.modal(false)
@@ -1930,7 +1930,7 @@ public class EntityTablePanel extends JPanel {
 		public void execute() {
 			if (confirmDelete()) {
 				List<Entity> selectedItems = tableModel().selection().items().get();
-				progressWorkerDialog(tableModel().editModel().createDelete(selectedItems).prepare()::perform)
+				Dialogs.progressWorker(tableModel().editModel().createDelete(selectedItems).prepare()::perform)
 								.title(EDIT_PANEL_MESSAGES.getString("deleting"))
 								.owner(EntityTablePanel.this)
 								.onException(this::onException)
@@ -3013,7 +3013,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		private void configureLimit() {
-			tableModel.queryModel().limit().set(inputDialog(integerField()
+			tableModel.queryModel().limit().set(Dialogs.input(integerField()
 							.value(tableModel.queryModel().limit().get())
 							.selectAllOnFocusGained(true)
 							.groupingUsed(true)

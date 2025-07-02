@@ -299,7 +299,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		if (focusOwner == null) {
 			focusOwner = EntityApplicationPanel.this;
 		}
-		Dialogs.displayExceptionDialog(exception, Utilities.parentWindow(focusOwner));
+		Dialogs.displayException(exception, Utilities.parentWindow(focusOwner));
 	}
 
 	/**
@@ -354,7 +354,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * Displays in a dialog a tree describing the application layout
 	 */
 	public final void viewApplicationTree() {
-		Dialogs.dialog()
+		Dialogs.builder()
 						.component(createApplicationTree())
 						.owner(this)
 						.title(resourceBundle.getString("view_application_tree"))
@@ -366,7 +366,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * Shows a dialog containing a dependency tree view of all defined entities
 	 */
 	public final void viewDependencyTree() {
-		Dialogs.dialog()
+		Dialogs.builder()
 						.component(createDependencyTree())
 						.owner(this)
 						.title(FrameworkMessages.dependencies())
@@ -442,7 +442,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	public final void displayKeyboardShortcuts() {
 		KeyboardShortcutsPanel shortcutsPanel = new KeyboardShortcutsPanel();
 		shortcutsPanel.setPreferredSize(new Dimension(shortcutsPanel.getPreferredSize().width, Windows.screenSizeRatio(0.5).height));
-		Dialogs.dialog()
+		Dialogs.builder()
 						.component(shortcutsPanel)
 						.owner(this)
 						.title(resourceBundle.getString(KEYBOARD_SHORTCUTS))
@@ -455,7 +455,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * @see #createAboutPanel()
 	 */
 	public final void displayAbout() {
-		Dialogs.dialog()
+		Dialogs.builder()
 						.component(createAboutPanel())
 						.owner(this)
 						.title(resourceBundle.getString(ABOUT))
@@ -659,11 +659,11 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * @return a Control for selecting the application look and feel
 	 * @see LookAndFeelProvider#addLookAndFeel(LookAndFeelEnabler)
 	 * @see LookAndFeelProvider#findLookAndFeel(String)
-	 * @see Dialogs#lookAndFeelSelectionDialog()
+	 * @see Dialogs#lookAndFeelSelection()
 	 * @see LookAndFeelComboBox#ENABLE_ON_SELECTION
 	 */
 	protected final Control createSelectLookAndFeelControl() {
-		return Dialogs.lookAndFeelSelectionDialog()
+		return Dialogs.lookAndFeelSelection()
 						.owner(this)
 						.createControl();
 	}
@@ -672,7 +672,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * @return a Control for selecting the font size
 	 */
 	protected final Control createSelectFontSizeControl() {
-		return Dialogs.fontSizeSelectionDialog()
+		return Dialogs.fontSizeSelection()
 						.owner(this)
 						.initialSelection(FontSize.RATIO.getOrThrow())
 						.createControl(selectedFontSize -> {
@@ -845,7 +845,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 			}
 		}
 		else {
-			Dialogs.dialog()
+			Dialogs.builder()
 							.component(createEmptyBorderBasePanel(entityPanel))
 							.owner(parentWindow().orElse(null))
 							.title(entityPanel.caption())
@@ -1052,7 +1052,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 	private Control createDisplaySystemPropertiesControl() {
 		return Control.builder()
-						.command(() -> Dialogs.dialog()
+						.command(() -> Dialogs.builder()
 										.component(Components.textArea()
 														.value(PropertyStore.systemProperties())
 														.editable(false)

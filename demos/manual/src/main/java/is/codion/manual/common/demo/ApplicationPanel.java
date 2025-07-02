@@ -56,7 +56,6 @@ import java.util.function.Predicate;
 
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.dialog.Dialogs.listSelectionDialog;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
@@ -340,7 +339,7 @@ public final class ApplicationPanel extends JPanel {
 	private static void selectString(ActionEvent event) {
 		JTextField stringField = (JTextField) event.getSource();
 
-		listSelectionDialog(List.of("a", "few", "short", "strings", "to", "choose", "from"))
+		Dialogs.listSelection(List.of("a", "few", "short", "strings", "to", "choose", "from"))
 						.owner(stringField)
 						.defaultSelection("strings")
 						.selectSingle()
@@ -428,7 +427,7 @@ public final class ApplicationPanel extends JPanel {
 
 		ApplicationPanel applicationPanel = new ApplicationPanel(applicationModel);
 
-		Dialogs.dialog()
+		Dialogs.builder()
 						.component(applicationPanel)
 						.title("Codion Input Components Demo")
 						.icon(Logos.logoTransparent())

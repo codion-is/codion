@@ -79,8 +79,6 @@ import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
-import static is.codion.swing.common.ui.dialog.Dialogs.dialog;
-import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.*;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
@@ -249,7 +247,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 							.map(attribute -> entities.definition(attribute.entityType()).attributes().definition(attribute))
 							.sorted(new AttributeDefinitionComparator())
 							.collect(toList());
-			Dialogs.listSelectionDialog(sortedDefinitions)
+			Dialogs.listSelection(sortedDefinitions)
 							.owner(this)
 							.title(FrameworkMessages.selectInputField())
 							.selectSingle()
@@ -553,7 +551,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			parentWindow(queryInspector).toFront();
 		}
 		else {
-			dialog()
+			Dialogs.builder()
 							.component(queryInspector)
 							.owner(this)
 							.title(editModel().entityDefinition().caption() + " Query")
@@ -649,7 +647,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			EntityDependenciesPanel dependenciesPanel = new EntityDependenciesPanel(dependencies, editModel().connectionProvider());
 			int gap = Layouts.GAP.getOrThrow();
 			dependenciesPanel.setBorder(createEmptyBorder(0, gap, 0, gap));
-			dialog()
+			Dialogs.builder()
 							.component(dependenciesPanel)
 							.owner(this)
 							.modal(false)
@@ -1099,7 +1097,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		@Override
 		public void execute() {
 			if (!confirm || editPanel.confirmInsert()) {
-				progressWorkerDialog(editPanel.editModel().createInsert().prepare()::perform)
+				Dialogs.progressWorker(editPanel.editModel().createInsert().prepare()::perform)
 								.title(MESSAGES.getString("inserting"))
 								.owner(editPanel)
 								.onResult(this::handleResult)
@@ -1171,7 +1169,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		@Override
 		public void execute() {
 			if (!confirm || editPanel.confirmUpdate()) {
-				progressWorkerDialog(editPanel.editModel().createUpdate().prepare()::perform)
+				Dialogs.progressWorker(editPanel.editModel().createUpdate().prepare()::perform)
 								.title(MESSAGES.getString("updating"))
 								.owner(editPanel)
 								.onResult(this::handleResult)
@@ -1237,7 +1235,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		@Override
 		public void execute() {
 			if (!confirm || editPanel.confirmDelete()) {
-				progressWorkerDialog(editPanel.editModel().createDelete().prepare()::perform)
+				Dialogs.progressWorker(editPanel.editModel().createDelete().prepare()::perform)
 								.title(MESSAGES.getString("deleting"))
 								.owner(editPanel)
 								.onResult(this::handleResult)

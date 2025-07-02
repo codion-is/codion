@@ -61,7 +61,7 @@ public final class MultiPanelDemo {
 			basePanel.add(employeePanel);
 		}
 
-		Dialogs.dialog()
+		Dialogs.builder()
 						.component(basePanel)
 						.title("Multi Panel Demo")
 						.disposeOnEscape(false)

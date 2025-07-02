@@ -23,6 +23,7 @@ import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTask;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
 
 import javax.swing.JDialog;
@@ -34,8 +35,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.dialog.Dialogs.dialog;
-import static is.codion.swing.common.ui.dialog.Dialogs.exceptionDialog;
 import static java.awt.event.KeyEvent.VK_ESCAPE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
@@ -54,7 +53,7 @@ final class ProgressWorkerDemo {
 
 		ProgressWorker.builder(task)
 						.onException(exception ->
-										exceptionDialog()
+										Dialogs.exception()
 														.owner(applicationFrame)
 														.show(exception))
 						.execute();
@@ -73,7 +72,7 @@ final class ProgressWorkerDemo {
 						.onResult(result ->
 										showMessageDialog(applicationFrame, result))
 						.onException(exception ->
-										exceptionDialog()
+										Dialogs.exception()
 														.owner(applicationFrame)
 														.show(exception))
 						.execute();
@@ -95,7 +94,7 @@ final class ProgressWorkerDemo {
 						.onPublish(message ->
 										showMessageDialog(applicationFrame, message))
 						.onException(exception ->
-										exceptionDialog()
+										Dialogs.exception()
 														.owner(applicationFrame)
 														.show(exception))
 						.execute();
@@ -142,7 +141,7 @@ final class ProgressWorkerDemo {
 						.eastComponent(button(cancel).build())
 						.build();
 		// The dialog displaying the progress panel
-		private final JDialog dialog = dialog()
+		private final JDialog dialog = Dialogs.builder()
 						.component(progressPanel)
 						.owner(applicationFrame)
 						// Trigger the cancel control with the Escape key
@@ -224,7 +223,7 @@ final class ProgressWorkerDemo {
 		}
 
 		private void failed(Exception exception) {
-			exceptionDialog()
+			Dialogs.exception()
 							.owner(applicationFrame)
 							.show(exception);
 		}

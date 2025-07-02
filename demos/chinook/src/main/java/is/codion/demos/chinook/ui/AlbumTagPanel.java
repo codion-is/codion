@@ -25,6 +25,7 @@ import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
@@ -38,7 +39,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.dialog.Dialogs.inputDialog;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
@@ -127,7 +127,7 @@ final class AlbumTagPanel extends JPanel {
 
 	private void addTag() {
 		State tagNull = State.state(true);
-		tagItems.add(inputDialog(stringField()
+		tagItems.add(Dialogs.input(stringField()
 						.consumer(tag -> tagNull.set(tag == null)))
 						.owner(this)
 						.title(FrameworkMessages.add())

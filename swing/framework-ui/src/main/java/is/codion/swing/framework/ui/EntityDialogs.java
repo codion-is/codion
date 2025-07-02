@@ -34,6 +34,7 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.AbstractDialogBuilder;
 import is.codion.swing.common.ui.dialog.ActionDialogBuilder;
 import is.codion.swing.common.ui.dialog.DialogBuilder;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.component.DefaultEditComponentFactory;
@@ -66,7 +67,6 @@ import static is.codion.swing.common.ui.Utilities.disposeParentWindow;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
-import static is.codion.swing.common.ui.dialog.Dialogs.*;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
@@ -330,7 +330,7 @@ public final class EntityDialogs {
 			}
 
 			ComponentValue<T, ?> componentValue = editComponentFactory.component(editModel, defaultValue.apply(entities));
-			inputDialog(componentValue)
+			Dialogs.input(componentValue)
 							.owner(owner)
 							.location(location)
 							.locationRelativeTo(locationRelativeTo)
@@ -367,7 +367,7 @@ public final class EntityDialogs {
 			public boolean test(T newValue) {
 				editModel.applyEdit(entities, attribute, newValue);
 				try {
-					progressWorkerDialog(editModel.createUpdate(entities.stream()
+					Dialogs.progressWorker(editModel.createUpdate(entities.stream()
 									.filter(Entity::modified)
 									.collect(toList())).prepare()::perform)
 									.title(EDIT_PANEL_MESSAGES.getString("updating"))
@@ -412,7 +412,7 @@ public final class EntityDialogs {
 				if (focusOwner == null) {
 					focusOwner = owner;
 				}
-				displayExceptionDialog(exception, parentWindow(focusOwner));
+				Dialogs.displayException(exception, parentWindow(focusOwner));
 			}
 		}
 
@@ -508,7 +508,7 @@ public final class EntityDialogs {
 							.enabled(tablePanel.tableModel().selection().empty().not())
 							.build();
 			configureTable(tablePanel.table(), okControl, singleSelection);
-			ActionDialogBuilder<?> builder = actionDialog()
+			ActionDialogBuilder<?> builder = Dialogs.action()
 							.component(borderLayoutPanel()
 											.centerComponent(tablePanel)
 											.border(emptyBorder())
@@ -611,7 +611,7 @@ public final class EntityDialogs {
 		public void show() {
 			SwingEntityEditModel editModel = editPanel.editModel();
 			Runnable disposeDialog = new DisposeDialog(editPanel);
-			actionDialog()
+			Dialogs.action()
 							.component(borderLayoutPanel()
 											.centerComponent(editPanel.initialize())
 											.border(emptyBorder())
@@ -719,7 +719,7 @@ public final class EntityDialogs {
 		public void show() {
 			SwingEntityEditModel editModel = editPanel.editModel();
 			initializeEditModel(editModel);
-			actionDialog()
+			Dialogs.action()
 							.component(borderLayoutPanel()
 											.centerComponent(editPanel.initialize())
 											.border(emptyBorder())

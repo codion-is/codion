@@ -30,6 +30,7 @@ import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.frame.Frames;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -68,7 +69,6 @@ import java.util.concurrent.TimeUnit;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
-import static is.codion.swing.common.ui.dialog.Dialogs.*;
 import static is.codion.swing.common.ui.icon.Logos.logoTransparent;
 import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.enableLookAndFeel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
@@ -168,7 +168,7 @@ public final class LoadTestPanel<T> extends JPanel {
 						.control(Controls.builder()
 										.caption("View")
 										.mnemonic('V')
-										.control(lookAndFeelSelectionDialog()
+										.control(Dialogs.lookAndFeelSelection()
 														.owner(this)
 														.createControl(LoadTestPanel::lookAndFeelSelected))
 										.control(Control.builder()
@@ -297,7 +297,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	private void setUser() {
 		User user = loadTest.user().get();
 		try {
-			loadTest.user().set(loginDialog()
+			loadTest.user().set(Dialogs.login()
 							.owner(LoadTestPanel.this)
 							.title("User")
 							.defaultUser(user == null ? null : User.user(user.username()))
@@ -508,7 +508,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	private synchronized void exit() {
 		if (!exiting) {
 			exiting = true;
-			progressWorkerDialog(loadTest::shutdown)
+			Dialogs.progressWorker(loadTest::shutdown)
 							.owner(Utilities.parentFrame(this))
 							.title("Shutting down...")
 							.onResult(() -> System.exit(0))
@@ -517,7 +517,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	}
 
 	private void displayException(Exception exception) {
-		displayExceptionDialog(exception, parentWindow(this));
+		Dialogs.displayException(exception, parentWindow(this));
 	}
 
 	private static Exception exception(ApplicationRow application) {

@@ -40,14 +40,14 @@ public final class Dialogs {
 	/**
 	 * @return a new {@link ComponentDialogBuilder} instance.
 	 */
-	public static ComponentDialogBuilder dialog() {
+	public static ComponentDialogBuilder builder() {
 		return new DefaultComponentDialogBuilder();
 	}
 
 	/**
 	 * @return a new {@link ProgressDialog.Builder} instance.
 	 */
-	public static ProgressDialog.Builder progressDialog() {
+	public static ProgressDialog.Builder progress() {
 		return new ProgressDialog.DefaultBuilder();
 	}
 
@@ -55,7 +55,7 @@ public final class Dialogs {
 	 * @param task the task to run
 	 * @return a new indeterminate {@link ProgressWorkerDialogBuilder} instance
 	 */
-	public static ProgressWorkerDialogBuilder<?, ?> progressWorkerDialog(Task task) {
+	public static ProgressWorkerDialogBuilder<?, ?> progressWorker(Task task) {
 		return new DefaultProgressWorkerDialogBuilder<>(requireNonNull(task));
 	}
 
@@ -64,7 +64,7 @@ public final class Dialogs {
 	 * @param <T> the worker result type
 	 * @return a new indeterminate {@link ProgressWorkerDialogBuilder} instance
 	 */
-	public static <T> ProgressWorkerDialogBuilder<T, ?> progressWorkerDialog(ResultTask<T> task) {
+	public static <T> ProgressWorkerDialogBuilder<T, ?> progressWorker(ResultTask<T> task) {
 		return new DefaultProgressWorkerDialogBuilder<>(requireNonNull(task));
 	}
 
@@ -75,7 +75,7 @@ public final class Dialogs {
 	 * @return a new determinate {@link ProgressWorkerDialogBuilder} instance
 	 * @see ProgressWorkerDialogBuilder#indeterminate(boolean)
 	 */
-	public static <V> ProgressWorkerDialogBuilder<?, V> progressWorkerDialog(ProgressTask<V> task) {
+	public static <V> ProgressWorkerDialogBuilder<?, V> progressWorker(ProgressTask<V> task) {
 		return new DefaultProgressWorkerDialogBuilder<>(requireNonNull(task)).indeterminate(false);
 	}
 
@@ -87,7 +87,7 @@ public final class Dialogs {
 	 * @return a new determinate {@link ProgressWorkerDialogBuilder} instance
 	 * @see ProgressWorkerDialogBuilder#indeterminate(boolean)
 	 */
-	public static <T, V> ProgressWorkerDialogBuilder<T, V> progressWorkerDialog(ProgressResultTask<T, V> task) {
+	public static <T, V> ProgressWorkerDialogBuilder<T, V> progressWorker(ProgressResultTask<T, V> task) {
 		requireNonNull(task);
 
 		return new DefaultProgressWorkerDialogBuilder<>(task).indeterminate(false);
@@ -96,21 +96,21 @@ public final class Dialogs {
 	/**
 	 * @return a new login dialog builder
 	 */
-	public static LoginDialogBuilder loginDialog() {
+	public static LoginDialogBuilder login() {
 		return new DefaultLoginDialogBuilder();
 	}
 
 	/**
 	 * @return a new exception dialog builder
 	 */
-	public static ExceptionDialogBuilder exceptionDialog() {
+	public static ExceptionDialogBuilder exception() {
 		return new DefaultExceptionDialogBuilder();
 	}
 
 	/**
 	 * @return a new FileSelectionDialogBuilder
 	 */
-	public static FileSelectionDialogBuilder fileSelectionDialog() {
+	public static FileSelectionDialogBuilder fileSelection() {
 		return new DefaultFileSelectionDialogBuilder();
 	}
 
@@ -120,7 +120,7 @@ public final class Dialogs {
 	 * @return a new {@link javax.swing.JList} based selection dialog builder
 	 * @throws IllegalArgumentException in case values is empty
 	 */
-	public static <T> ListSelectionDialogBuilder<T> listSelectionDialog(Collection<T> values) {
+	public static <T> ListSelectionDialogBuilder<T> listSelection(Collection<T> values) {
 		return new DefaultListSelectionDialogBuilder<>(values);
 	}
 
@@ -130,14 +130,14 @@ public final class Dialogs {
 	 * @return a new {@link javax.swing.JComboBox} based selection dialog builder
 	 * @throws IllegalArgumentException in case values is empty
 	 */
-	public static <T> ComboBoxSelectionDialogBuilder<T> comboBoxSelectionDialog(Collection<T> values) {
+	public static <T> ComboBoxSelectionDialogBuilder<T> comboBoxSelection(Collection<T> values) {
 		return new DefaultComboBoxSelectionDialogBuilder<>(values);
 	}
 
 	/**
 	 * @return a new OkCancelDialogBuilder
 	 */
-	public static OkCancelDialogBuilder okCancelDialog() {
+	public static OkCancelDialogBuilder okCancel() {
 		return new DefaultOkCancelDialogBuilder();
 	}
 
@@ -145,28 +145,28 @@ public final class Dialogs {
 	 * @param <B> the builder type
 	 * @return a new ActionDialogBuilder
 	 */
-	public static <B extends ActionDialogBuilder<B>> ActionDialogBuilder<B> actionDialog() {
+	public static <B extends ActionDialogBuilder<B>> ActionDialogBuilder<B> action() {
 		return new DefaultActionDialogBuilder<>();
 	}
 
 	/**
 	 * @return a new CalendarDialogBuilder
 	 */
-	public static CalendarDialogBuilder calendarDialog() {
+	public static CalendarDialogBuilder calendar() {
 		return new DefaultCalendarDialogBuilder();
 	}
 
 	/**
 	 * @return a builder for a dialog for selecting a look and feel
 	 */
-	public static LookAndFeelSelectionDialogBuilder lookAndFeelSelectionDialog() {
+	public static LookAndFeelSelectionDialogBuilder lookAndFeelSelection() {
 		return new DefaultLookAndFeelSelectionDialogBuilder();
 	}
 
 	/**
 	 * @return a builder for a dialog for selecting the font size
 	 */
-	public static FontSizeSelectionDialogBuilder fontSizeSelectionDialog() {
+	public static FontSizeSelectionDialogBuilder fontSizeSelection() {
 		return new DefaultFontSizeSelectionDialogBuilder();
 	}
 
@@ -175,7 +175,7 @@ public final class Dialogs {
 	 * @param <T> the value type
 	 * @return a builder for an input dialog
 	 */
-	public static <T> InputDialogBuilder<T> inputDialog(ComponentBuilder<T, ?, ?> componentBuilder) {
+	public static <T> InputDialogBuilder<T> input(ComponentBuilder<T, ?, ?> componentBuilder) {
 		return new DefaultInputDialogBuilder<>(requireNonNull(componentBuilder).buildValue());
 	}
 
@@ -184,7 +184,7 @@ public final class Dialogs {
 	 * @param <T> the value type
 	 * @return a builder for an input dialog
 	 */
-	public static <T> InputDialogBuilder<T> inputDialog(ComponentValue<T, ?> componentValue) {
+	public static <T> InputDialogBuilder<T> input(ComponentValue<T, ?> componentValue) {
 		return new DefaultInputDialogBuilder<>(componentValue);
 	}
 
@@ -193,7 +193,7 @@ public final class Dialogs {
 	 * @param exception the exception
 	 * @param dialogParent the dialog parent window
 	 */
-	public static void displayExceptionDialog(Throwable exception, Window dialogParent) {
+	public static void displayException(Throwable exception, Window dialogParent) {
 		new DefaultExceptionDialogBuilder()
 						.owner(dialogParent)
 						.show(exception);

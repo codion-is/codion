@@ -24,6 +24,7 @@ import is.codion.common.user.User;
 import is.codion.swing.common.ui.component.text.SearchHighlighter;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.tools.monitor.model.ClientInstanceMonitor;
 
@@ -48,7 +49,6 @@ import java.time.format.DateTimeFormatter;
 
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
-import static is.codion.swing.common.ui.dialog.Dialogs.fileSelectionDialog;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createTitledBorder;
@@ -172,7 +172,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 		LocalDateTime creationDate = LocalDateTime.parse(creationDateField.getText(), DATE_TIME_FORMATTER);
 		String filename = user.username() + "@" + DATE_TIME_FILENAME_FORMATTER.format(creationDate) + ".log";
 
-		Files.write(fileSelectionDialog()
+		Files.write(Dialogs.fileSelection()
 						.owner(this)
 						.selectFileToSave(filename).toPath(), logArea.getText().getBytes());
 	}

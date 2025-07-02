@@ -297,7 +297,7 @@ public final class TextFieldPanel extends JPanel {
 						.editable(textField.isEditable())
 						.moveCaretToEndOnFocusGained(true)
 						.build();
-		Dialogs.okCancelDialog()
+		Dialogs.okCancel()
 						.component(new JScrollPane(textArea))
 						.owner(textField)
 						.title(dialogTitle == null ? caption : dialogTitle)

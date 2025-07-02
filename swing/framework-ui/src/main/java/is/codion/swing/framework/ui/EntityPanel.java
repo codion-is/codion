@@ -534,7 +534,7 @@ public class EntityPanel extends JPanel {
 		if (focusOwner == null) {
 			focusOwner = EntityPanel.this;
 		}
-		Dialogs.displayExceptionDialog(exception, parentWindow(focusOwner));
+		Dialogs.displayException(exception, parentWindow(focusOwner));
 	}
 
 	/**
@@ -929,7 +929,7 @@ public class EntityPanel extends JPanel {
 	}
 
 	private void displayEditDialog(JPanel editControlPanel) {
-		editWindow = Dialogs.dialog()
+		editWindow = Dialogs.builder()
 						.component(borderLayoutPanel()
 										.centerComponent(editControlPanel)
 										.border(Borders.emptyBorder())
