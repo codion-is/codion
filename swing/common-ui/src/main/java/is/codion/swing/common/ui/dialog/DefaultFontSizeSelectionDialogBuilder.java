@@ -81,7 +81,8 @@ final class DefaultFontSizeSelectionDialogBuilder implements FontSizeSelectionDi
 						messageBundle(DefaultFileSelectionDialogBuilder.class,
 										getBundle(DefaultFontSizeSelectionDialogBuilder.class.getName()));
 		FontSizeSelectionPanel fontSizeSelectionPanel = new FontSizeSelectionPanel(initialSelection);
-		new DefaultOkCancelDialogBuilder(fontSizeSelectionPanel)
+		new DefaultOkCancelDialogBuilder()
+						.component(fontSizeSelectionPanel)
 						.owner(owner)
 						.title(resourceBundle.getString("select_font_size"))
 						.onOk(() -> selectedFontSize.accept(fontSizeSelectionPanel.selectedFontSize()))

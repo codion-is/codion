@@ -66,7 +66,8 @@ final class DefaultComboBoxSelectionDialogBuilder<T> extends AbstractSelectionDi
 			comboBoxModel.selection().clear();
 			cancelledState.set(true);
 		};
-		OkCancelDialogBuilder dialogBuilder = new DefaultOkCancelDialogBuilder(comboBox)
+		OkCancelDialogBuilder dialogBuilder = new DefaultOkCancelDialogBuilder()
+						.component(comboBox)
 						.owner(owner)
 						.locationRelativeTo(locationRelativeTo)
 						.title(createTitle())

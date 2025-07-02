@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.dialog;
 
 import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.border.Border;
 import java.awt.Dimension;
@@ -29,6 +30,14 @@ import java.util.function.Consumer;
  * Builds a dialog with a button panel based on actions.
  */
 public interface ActionDialogBuilder<B extends ActionDialogBuilder<B>> extends DialogBuilder<B> {
+
+	/**
+	 * Note: sets the layout to {@link java.awt.BorderLayout} and
+	 * adds the component at location {@link java.awt.BorderLayout#CENTER}
+	 * @param component the component to display
+	 * @return this builder instance
+	 */
+	B component(JComponent component);
 
 	/**
 	 * @param action the action to add

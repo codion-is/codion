@@ -25,7 +25,6 @@ import is.codion.swing.common.model.worker.ProgressWorker.Task;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
-import javax.swing.JComponent;
 import java.awt.Window;
 import java.util.Collection;
 
@@ -136,20 +135,18 @@ public final class Dialogs {
 	}
 
 	/**
-	 * @param component the component to display
 	 * @return a new OkCancelDialogBuilder
 	 */
-	public static OkCancelDialogBuilder okCancelDialog(JComponent component) {
-		return new DefaultOkCancelDialogBuilder(component);
+	public static OkCancelDialogBuilder okCancelDialog() {
+		return new DefaultOkCancelDialogBuilder();
 	}
 
 	/**
-	 * @param component the component to display
 	 * @param <B> the builder type
 	 * @return a new ActionDialogBuilder
 	 */
-	public static <B extends ActionDialogBuilder<B>> ActionDialogBuilder<B> actionDialog(JComponent component) {
-		return new DefaultActionDialogBuilder<>(component);
+	public static <B extends ActionDialogBuilder<B>> ActionDialogBuilder<B> actionDialog() {
+		return new DefaultActionDialogBuilder<>();
 	}
 
 	/**

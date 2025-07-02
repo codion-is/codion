@@ -50,6 +50,7 @@ Codion Change Log
 - FrameBuilder.component() added.
 - ComponentDialogBuilder.component() added.
 - Dialogs.componentDialog() renamed dialog().
+- ActionDialogBuilder.component() added.
 ### is.codion.framework.lambda
 - LambdaEntityHandler refactored.
 

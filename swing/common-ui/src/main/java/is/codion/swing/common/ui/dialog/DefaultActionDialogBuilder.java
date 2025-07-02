@@ -55,9 +55,9 @@ import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends AbstractDialogBuilder<B> implements ActionDialogBuilder<B> {
 
 	private final List<Action> actions = new ArrayList<>();
-	private final JComponent component;
 	private final Collection<Consumer<JDialog>> onShownConsumers = new ArrayList<>(1);
 
+	private JComponent component;
 	private Action defaultAction;
 	private Action escapeAction;
 	private Border buttonPanelBorder = BorderFactory.createEmptyBorder(10, 10, 5, 10);
@@ -66,8 +66,10 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 	private boolean resizable = true;
 	private Dimension size;
 
-	DefaultActionDialogBuilder(JComponent component) {
-		this.component = requireNonNull(component);
+	@Override
+	public B component(JComponent component) {
+		this.component = component;
+		return self();
 	}
 
 	@Override
@@ -147,15 +149,7 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 		JPanel buttonPanel = ButtonPanelBuilder.builder(Controls.builder()
 										.actions(actions))
 						.build();
-		JPanel panel = BorderLayoutPanelBuilder.builder(new BorderLayout())
-						.centerComponent(component)
-						.southComponent(PanelBuilder.builder(Layouts.flowLayout(buttonPanelConstraints))
-										.add(buttonPanel)
-										.border(buttonPanelBorder)
-										.build())
-						.build();
-
-		JDialog dialog = createDialog(owner, title, icon, panel, size, locationRelativeTo,
+		JDialog dialog = createDialog(owner, title, icon, createPanel(buttonPanel), size, locationRelativeTo,
 						location, modal, resizable, onShownConsumers, keyEventBuilders);
 		dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		if (defaultAction != null) {
@@ -176,6 +170,21 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 		onBuildConsumers.forEach(consumer -> consumer.accept(dialog));
 
 		return dialog;
+	}
+
+	private JPanel createPanel(JPanel buttonPanel) {
+		JPanel buttonBasePanel = PanelBuilder.builder(Layouts.flowLayout(buttonPanelConstraints))
+						.add(buttonPanel)
+						.border(buttonPanelBorder)
+						.build();
+		if (component == null) {
+			return buttonBasePanel;
+		}
+
+		return BorderLayoutPanelBuilder.builder(new BorderLayout())
+						.centerComponent(component)
+						.southComponent(buttonBasePanel)
+						.build();
 	}
 
 	protected final List<Action> actions() {

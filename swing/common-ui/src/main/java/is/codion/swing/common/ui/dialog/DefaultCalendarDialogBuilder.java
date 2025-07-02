@@ -76,7 +76,8 @@ final class DefaultCalendarDialogBuilder extends AbstractDialogBuilder<CalendarD
 	}
 
 	private CalendarPanel showCalendarDialog(CalendarPanel calendarPanel, String title, State okPressed) {
-		OkCancelDialogBuilder dialogBuilder = new DefaultOkCancelDialogBuilder(calendarPanel)
+		OkCancelDialogBuilder dialogBuilder = new DefaultOkCancelDialogBuilder()
+						.component(calendarPanel)
 						.owner(owner)
 						.locationRelativeTo(locationRelativeTo)
 						.title(title)

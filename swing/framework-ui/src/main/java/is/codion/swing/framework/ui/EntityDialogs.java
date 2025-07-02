@@ -508,10 +508,11 @@ public final class EntityDialogs {
 							.enabled(tablePanel.tableModel().selection().empty().not())
 							.build();
 			configureTable(tablePanel.table(), okControl, singleSelection);
-			ActionDialogBuilder<?> builder = actionDialog(borderLayoutPanel()
-							.centerComponent(tablePanel)
-							.border(emptyBorder())
-							.build())
+			ActionDialogBuilder<?> builder = actionDialog()
+							.component(borderLayoutPanel()
+											.centerComponent(tablePanel)
+											.border(emptyBorder())
+											.build())
 							.owner(owner)
 							.location(location)
 							.locationRelativeTo(locationRelativeTo)
@@ -610,10 +611,11 @@ public final class EntityDialogs {
 		public void show() {
 			SwingEntityEditModel editModel = editPanel.editModel();
 			Runnable disposeDialog = new DisposeDialog(editPanel);
-			actionDialog(borderLayoutPanel()
-							.centerComponent(editPanel.initialize())
-							.border(emptyBorder())
-							.build())
+			actionDialog()
+							.component(borderLayoutPanel()
+											.centerComponent(editPanel.initialize())
+											.border(emptyBorder())
+											.build())
 							.owner(owner)
 							.location(location)
 							.locationRelativeTo(locationRelativeTo)
@@ -717,10 +719,11 @@ public final class EntityDialogs {
 		public void show() {
 			SwingEntityEditModel editModel = editPanel.editModel();
 			initializeEditModel(editModel);
-			actionDialog(borderLayoutPanel()
-							.centerComponent(editPanel.initialize())
-							.border(emptyBorder())
-							.build())
+			actionDialog()
+							.component(borderLayoutPanel()
+											.centerComponent(editPanel.initialize())
+											.border(emptyBorder())
+											.build())
 							.owner(owner)
 							.location(location)
 							.locationRelativeTo(locationRelativeTo)

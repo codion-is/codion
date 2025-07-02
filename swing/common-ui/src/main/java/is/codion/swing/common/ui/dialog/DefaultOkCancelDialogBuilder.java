@@ -38,10 +38,6 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
 	private Action okAction;
 	private Action cancelAction;
 
-	DefaultOkCancelDialogBuilder(JComponent component) {
-		super(component);
-	}
-
 	@Override
 	public OkCancelDialogBuilder action(Action action) {
 		throw new UnsupportedOperationException("Adding an action directly is not supported");

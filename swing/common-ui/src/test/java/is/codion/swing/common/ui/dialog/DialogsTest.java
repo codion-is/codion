@@ -106,7 +106,8 @@ public final class DialogsTest {
 	void okCancelDialog() {
 		JLabel label = new JLabel();
 		Runnable runnable = () -> {};
-		Dialogs.okCancelDialog(label)
+		Dialogs.okCancelDialog()
+						.component(label)
 						.owner(label)
 						.title("title")
 						.modal(false)
@@ -118,24 +119,24 @@ public final class DialogsTest {
 		Control.Command command = () -> {};
 		ObservableState state = State.state().observable();
 
-		assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog(label)
+		assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog()
 						.onOk(runnable)
 						.okAction(command(command)));
-		assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog(label)
+		assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog()
 						.onCancel(runnable)
 						.cancelAction(command(command)));
 
-		assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog(label)
+		assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog()
 						.okAction(command(command))
 						.onOk(runnable));
-		assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog(label)
+		assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog()
 						.cancelAction(command(command))
 						.onCancel(runnable));
 
-		assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog(label)
+		assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog()
 						.okAction(command(command))
 						.okEnabled(state));
-		assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog(label)
+		assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog()
 						.cancelAction(command(command))
 						.cancelEnabled(state));
 	}

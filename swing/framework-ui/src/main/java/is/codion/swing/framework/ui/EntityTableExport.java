@@ -105,7 +105,8 @@ final class EntityTableExport {
 			configurationPanel = new ConfigurationPanel();
 		}
 
-		okCancelDialog(configurationPanel)
+		okCancelDialog()
+						.component(configurationPanel)
 						.owner(tablePanel)
 						.title(MESSAGES.getString("export"))
 						.onOk(this::export)

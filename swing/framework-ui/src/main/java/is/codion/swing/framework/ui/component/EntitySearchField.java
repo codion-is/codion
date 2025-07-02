@@ -790,7 +790,8 @@ public final class EntitySearchField extends HintTextField {
 			list.scrollRectToVisible(list.getCellBounds(0, 0));
 			initializeResultLimitMessage(resultLimitLabel, searchField.model.limit().optional().orElse(-1), entities.size());
 
-			okCancelDialog(selectorPanel)
+			okCancelDialog()
+							.component(selectorPanel)
 							.owner(searchField)
 							.title(MESSAGES.getString("select_entity"))
 							.okAction(selectControl)
@@ -889,7 +890,8 @@ public final class EntitySearchField extends HintTextField {
 			table.scrollRectToVisible(table.getCellRect(0, 0, true));
 			initializeResultLimitMessage(resultLimitLabel, searchField.model.limit().optional().orElse(-1), entities.size());
 
-			okCancelDialog(selectorPanel)
+			okCancelDialog()
+							.component(selectorPanel)
 							.owner(searchField)
 							.title(MESSAGES.getString("select_entity"))
 							.okAction(selectControl)

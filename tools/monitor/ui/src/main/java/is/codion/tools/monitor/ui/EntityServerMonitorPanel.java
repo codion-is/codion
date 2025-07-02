@@ -244,9 +244,10 @@ public final class EntityServerMonitorPanel extends JPanel {
 						.selectAllOnFocusGained(true)
 						.build();
 
-		okCancelDialog(flowLayoutPanel(FlowLayout.CENTER)
-						.add(field)
-						.build())
+		okCancelDialog()
+						.component(flowLayoutPanel(FlowLayout.CENTER)
+										.add(field)
+										.build())
 						.owner(this)
 						.title("Update interval (s)")
 						.onOk(() -> model().setUpdateInterval(field.get()))

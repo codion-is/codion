@@ -93,7 +93,8 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 											.build())
 							.build(), BorderLayout.SOUTH);
 		}
-		new DefaultOkCancelDialogBuilder(basePanel)
+		new DefaultOkCancelDialogBuilder()
+						.component(basePanel)
 						.owner(owner)
 						.title(MESSAGES.getString("select_look_and_feel"))
 						.onOk(() -> selectedLookAndFeel.accept(lookAndFeelComboBox.selectedLookAndFeel()))
