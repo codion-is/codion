@@ -53,6 +53,7 @@ Codion Change Log
 - ActionDialogBuilder.component() added.
 - Dialogs, Dialog suffix removed from method names.
 - SelectionDialogBuilderFactory added.
+- Windows.resizeWindow() renamed resize().
 ### is.codion.framework.lambda
 - LambdaEntityHandler refactored.
 
