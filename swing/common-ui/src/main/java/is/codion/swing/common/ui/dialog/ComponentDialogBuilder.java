@@ -22,6 +22,7 @@ import is.codion.common.observable.Observer;
 import is.codion.common.state.State;
 
 import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import java.awt.Dimension;
 import java.awt.event.WindowEvent;
@@ -31,6 +32,14 @@ import java.util.function.Consumer;
  * A builder for JDialog containing a single component.
  */
 public interface ComponentDialogBuilder extends DialogBuilder<ComponentDialogBuilder> {
+
+	/**
+	 * Note: sets the layout to {@link java.awt.BorderLayout} and
+	 * adds the component at location {@link java.awt.BorderLayout#CENTER}
+	 * @param component the component to display
+	 * @return this builder instance
+	 */
+	ComponentDialogBuilder component(JComponent component);
 
 	/**
 	 * @param modal true if the dialog should be modal, default true

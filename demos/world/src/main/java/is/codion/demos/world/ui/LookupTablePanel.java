@@ -197,7 +197,8 @@ final class LookupTablePanel extends EntityTablePanel {
 
 	private void setMapDialogVisible(boolean visible) {
 		if (mapKitDialog == null) {
-			mapKitDialog = Dialogs.componentDialog(mapKit)
+			mapKitDialog = Dialogs.componentDialog()
+							.component(mapKit)
 							.owner(this)
 							.modal(false)
 							.title("World Map")

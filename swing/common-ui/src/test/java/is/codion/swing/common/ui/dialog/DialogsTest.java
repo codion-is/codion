@@ -40,7 +40,8 @@ public final class DialogsTest {
 
 	@Test
 	void componentDialog() {
-		Dialogs.componentDialog(new JLabel())
+		Dialogs.componentDialog()
+						.component(new JLabel())
 						.owner(new JLabel())
 						.title("title")
 						.icon(Logos.logoTransparent())

@@ -52,11 +52,11 @@ import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 
 final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<ComponentDialogBuilder> implements ComponentDialogBuilder {
 
-	private final JComponent component;
 	private final Collection<Consumer<JDialog>> onShownConsumers = new ArrayList<>(1);
 	private final Collection<Consumer<WindowEvent>> onOpenedConsumers = new ArrayList<>(1);
 	private final Collection<Consumer<WindowEvent>> onClosedConsumers = new ArrayList<>(1);
 
+	private JComponent component;
 	private boolean modal = true;
 	private boolean resizable = true;
 	private Dimension size;
@@ -65,8 +65,10 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 	private Consumer<State> confirmCloseListener;
 	private boolean disposeOnEscape = true;
 
-	DefaultComponentDialogBuilder(JComponent component) {
-		this.component = requireNonNull(component);
+	@Override
+	public ComponentDialogBuilder component(JComponent component) {
+		this.component = component;
+		return this;
 	}
 
 	@Override
@@ -180,8 +182,10 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 		if (icon != null) {
 			dialog.setIconImage(icon.getImage());
 		}
-		dialog.setLayout(Layouts.borderLayout());
-		dialog.add(component, BorderLayout.CENTER);
+		if (component != null) {
+			dialog.setLayout(Layouts.borderLayout());
+			dialog.add(component, BorderLayout.CENTER);
+		}
 		if (size != null) {
 			dialog.setSize(size);
 		}

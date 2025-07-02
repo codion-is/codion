@@ -110,7 +110,8 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
 
 	private void displayException(Throwable exception) {
 		ExceptionPanel exceptionPanel = new ExceptionPanel(exception, message == null ? exception.getMessage() : message, systemProperties);
-		ComponentDialogBuilder dialogBuilder = new DefaultComponentDialogBuilder(exceptionPanel)
+		ComponentDialogBuilder dialogBuilder = new DefaultComponentDialogBuilder()
+						.component(exceptionPanel)
 						.title(title)
 						.owner(owner)
 						.onShown(new OnShown(exceptionPanel));

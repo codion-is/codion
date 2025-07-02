@@ -112,7 +112,8 @@ public final class Example {
 		//populate the table model with data from the database
 		customerModel.tableModel().items().refresh();
 
-		Dialogs.componentDialog(customerPanel)
+		Dialogs.componentDialog()
+						.component(customerPanel)
 						.title("Customers")
 						.show();
 		// end::detailPanel[]

@@ -1696,7 +1696,8 @@ public class EntityTablePanel extends JPanel {
 			parentWindow(queryInspector).toFront();
 		}
 		else {
-			componentDialog(queryInspector)
+			componentDialog()
+							.component(queryInspector)
 							.owner(this)
 							.title(tableModel.entityDefinition().caption() + " Query")
 							.modal(false)
@@ -1811,7 +1812,8 @@ public class EntityTablePanel extends JPanel {
 							dependencyTablePanel.applyColumnPreferences(dependencyPanelPreferences.get(entityType)));
 			int gap = Layouts.GAP.getOrThrow();
 			dependenciesPanel.setBorder(createEmptyBorder(0, gap, 0, gap));
-			componentDialog(dependenciesPanel)
+			componentDialog()
+							.component(dependenciesPanel)
 							.owner(this)
 							.modal(false)
 							.size(dependenciesDialogSize.get())

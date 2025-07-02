@@ -553,7 +553,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			parentWindow(queryInspector).toFront();
 		}
 		else {
-			componentDialog(queryInspector)
+			componentDialog()
+							.component(queryInspector)
 							.owner(this)
 							.title(editModel().entityDefinition().caption() + " Query")
 							.modal(false)
@@ -648,7 +649,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			EntityDependenciesPanel dependenciesPanel = new EntityDependenciesPanel(dependencies, editModel().connectionProvider());
 			int gap = Layouts.GAP.getOrThrow();
 			dependenciesPanel.setBorder(createEmptyBorder(0, gap, 0, gap));
-			Dialogs.componentDialog(dependenciesPanel)
+			Dialogs.componentDialog()
+							.component(dependenciesPanel)
 							.owner(this)
 							.modal(false)
 							.title(FrameworkMessages.dependencies())

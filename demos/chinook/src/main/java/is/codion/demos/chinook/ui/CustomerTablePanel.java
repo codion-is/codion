@@ -81,7 +81,8 @@ public final class CustomerTablePanel extends EntityTablePanel {
 	}
 
 	private void viewReport(JasperPrint customerReport) {
-		Dialogs.componentDialog(new JRViewer(customerReport))
+		Dialogs.componentDialog()
+						.component(new JRViewer(customerReport))
 						.owner(this)
 						.modal(false)
 						.title(BUNDLE.getString("customer_report"))

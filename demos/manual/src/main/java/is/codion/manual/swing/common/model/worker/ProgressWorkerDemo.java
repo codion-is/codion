@@ -142,7 +142,8 @@ final class ProgressWorkerDemo {
 						.eastComponent(button(cancel).build())
 						.build();
 		// The dialog displaying the progress panel
-		private final JDialog dialog = componentDialog(progressPanel)
+		private final JDialog dialog = componentDialog()
+						.component(progressPanel)
 						.owner(applicationFrame)
 						// Trigger the cancel control with the Escape key
 						.keyEvent(KeyEvents.builder(VK_ESCAPE)

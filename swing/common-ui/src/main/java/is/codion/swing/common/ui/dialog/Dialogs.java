@@ -39,11 +39,10 @@ public final class Dialogs {
 	private Dialogs() {}
 
 	/**
-	 * @param component the component to display
 	 * @return a new {@link ComponentDialogBuilder} instance.
 	 */
-	public static ComponentDialogBuilder componentDialog(JComponent component) {
-		return new DefaultComponentDialogBuilder(component);
+	public static ComponentDialogBuilder componentDialog() {
+		return new DefaultComponentDialogBuilder();
 	}
 
 	/**

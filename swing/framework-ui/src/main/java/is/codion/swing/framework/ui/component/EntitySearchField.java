@@ -604,7 +604,8 @@ public final class EntitySearchField extends HintTextField {
 
 	private JPopupMenu createPopupMenu() {
 		return menu(Controls.controls(Control.builder()
-						.command(() -> Dialogs.componentDialog(settingsPanel())
+						.command(() -> Dialogs.componentDialog()
+										.component(settingsPanel())
 										.owner(EntitySearchField.this)
 										.title(FrameworkMessages.settings())
 										.icon(ICONS.settings())

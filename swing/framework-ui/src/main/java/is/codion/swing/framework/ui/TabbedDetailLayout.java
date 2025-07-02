@@ -609,7 +609,8 @@ public final class TabbedDetailLayout implements DetailLayout {
 								.build();
 			}
 
-			return Dialogs.componentDialog(createEmptyBorderBasePanel(tabbedPane))
+			return Dialogs.componentDialog()
+							.component(createEmptyBorderBasePanel(tabbedPane))
 							.owner(entityPanel)
 							.title(entityPanel.caption() + " - " + MESSAGES.getString(DETAIL_TABLES))
 							.modal(false)

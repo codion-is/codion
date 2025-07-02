@@ -929,7 +929,8 @@ public class EntityPanel extends JPanel {
 	}
 
 	private void displayEditDialog(JPanel editControlPanel) {
-		editWindow = Dialogs.componentDialog(borderLayoutPanel()
+		editWindow = Dialogs.componentDialog()
+						.component(borderLayoutPanel()
 										.centerComponent(editControlPanel)
 										.border(Borders.emptyBorder())
 										.build())
