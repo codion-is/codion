@@ -84,7 +84,8 @@ public final class DialogsTest {
 
 	@Test
 	void fileSelection() {
-		Dialogs.fileSelection()
+		Dialogs.select()
+						.files()
 						.owner(new JLabel())
 						.title("title")
 						.startDirectory(System.getProperty("user.home"))
@@ -156,12 +157,14 @@ public final class DialogsTest {
 
 	@Test
 	void selectionDialog() {
-		Dialogs.listSelection(Collections.singletonList("hello"))
+		Dialogs.select()
+						.list(Collections.singletonList("hello"))
 						.owner(new JLabel())
 						.title("title")
 						.allowEmptySelection(true)
 						.defaultSelection("hello");
-		Dialogs.comboBoxSelection(Collections.singletonList("hello"))
+		Dialogs.select()
+						.comboBox(Collections.singletonList("hello"))
 						.owner(new JLabel())
 						.title("title")
 						.allowEmptySelection(true)
@@ -170,15 +173,15 @@ public final class DialogsTest {
 
 	@Test
 	void selectionDialogNoItems() {
-		assertThrows(IllegalArgumentException.class, () -> Dialogs.listSelection(Collections.emptyList()));
-		assertThrows(IllegalArgumentException.class, () -> Dialogs.comboBoxSelection(Collections.emptyList()));
+		assertThrows(IllegalArgumentException.class, () -> Dialogs.select().list(Collections.emptyList()));
+		assertThrows(IllegalArgumentException.class, () -> Dialogs.select().comboBox(Collections.emptyList()));
 	}
 
 	@Test
 	void selectionDialogNonExistingDefaultSelection() {
-		assertThrows(IllegalArgumentException.class, () -> Dialogs.listSelection(Collections.singletonList("helloist"))
+		assertThrows(IllegalArgumentException.class, () -> Dialogs.select().list(Collections.singletonList("helloist"))
 						.defaultSelection("hello"));
-		assertThrows(IllegalArgumentException.class, () -> Dialogs.comboBoxSelection(Collections.singletonList("helloist"))
+		assertThrows(IllegalArgumentException.class, () -> Dialogs.select().comboBox(Collections.singletonList("helloist"))
 						.defaultSelection("hello"));
 	}
 }

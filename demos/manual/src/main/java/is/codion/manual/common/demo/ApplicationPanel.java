@@ -339,7 +339,8 @@ public final class ApplicationPanel extends JPanel {
 	private static void selectString(ActionEvent event) {
 		JTextField stringField = (JTextField) event.getSource();
 
-		Dialogs.listSelection(List.of("a", "few", "short", "strings", "to", "choose", "from"))
+		Dialogs.select()
+						.list(List.of("a", "few", "short", "strings", "to", "choose", "from"))
 						.owner(stringField)
 						.defaultSelection("strings")
 						.selectSingle()

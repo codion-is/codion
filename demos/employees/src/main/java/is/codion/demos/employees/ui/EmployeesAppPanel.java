@@ -74,7 +74,8 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 
 	// tag::importJSON[]
 	public void importJSON() throws IOException {
-		File file = Dialogs.fileSelection()
+		File file = Dialogs.select()
+						.files()
 						.owner(this)
 						.fileFilter(new FileNameExtensionFilter("JSON files", "json"))
 						.fileFilter(new FileNameExtensionFilter("Text files", "txt"))

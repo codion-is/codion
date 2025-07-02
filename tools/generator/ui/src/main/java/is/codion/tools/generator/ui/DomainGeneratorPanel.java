@@ -356,7 +356,8 @@ public final class DomainGeneratorPanel extends JPanel {
 	}
 
 	private void selectSourceDirectory() {
-		model.sourceDirectory().set(Dialogs.fileSelection()
+		model.sourceDirectory().set(Dialogs.select()
+						.files()
 						.startDirectory(DomainGeneratorModel.DEFAULT_SOURCE_DIRECTORY.get())
 						.selectDirectory()
 						.getAbsolutePath());
@@ -425,7 +426,8 @@ public final class DomainGeneratorPanel extends JPanel {
 						.control(Controls.builder()
 										.caption("View")
 										.mnemonic('V')
-										.control(Dialogs.lookAndFeelSelection()
+										.control(Dialogs.select()
+														.lookAndFeel()
 														.owner(this)
 														.createControl(DomainGeneratorPanel::lookAndFeelSelected)))
 						.build();

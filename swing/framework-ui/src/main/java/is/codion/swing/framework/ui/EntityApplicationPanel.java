@@ -659,11 +659,11 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * @return a Control for selecting the application look and feel
 	 * @see LookAndFeelProvider#addLookAndFeel(LookAndFeelEnabler)
 	 * @see LookAndFeelProvider#findLookAndFeel(String)
-	 * @see Dialogs#lookAndFeelSelection()
 	 * @see LookAndFeelComboBox#ENABLE_ON_SELECTION
 	 */
 	protected final Control createSelectLookAndFeelControl() {
-		return Dialogs.lookAndFeelSelection()
+		return Dialogs.select()
+						.lookAndFeel()
 						.owner(this)
 						.createControl();
 	}
@@ -672,7 +672,8 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * @return a Control for selecting the font size
 	 */
 	protected final Control createSelectFontSizeControl() {
-		return Dialogs.fontSizeSelection()
+		return Dialogs.select()
+						.fontSize()
 						.owner(this)
 						.initialSelection(FontSize.RATIO.getOrThrow())
 						.createControl(selectedFontSize -> {

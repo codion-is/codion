@@ -296,7 +296,8 @@ final class FrameworkUIDemo {
 			private void selectStateFromExistingValues(ActionEvent event) {
 				JTextField stateField = (JTextField) event.getSource();
 
-				Dialogs.listSelection(editModel().connection().select(Customer.STATE))
+				Dialogs.select()
+								.list(editModel().connection().select(Customer.STATE))
 								.owner(stateField)
 								.selectSingle()
 								.ifPresent(stateField::setText);

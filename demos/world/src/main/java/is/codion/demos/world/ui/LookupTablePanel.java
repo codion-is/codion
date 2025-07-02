@@ -219,7 +219,8 @@ final class LookupTablePanel extends EntityTablePanel {
 	}
 
 	private void export(ExportFormat format) {
-		File fileToSave = Dialogs.fileSelection()
+		File fileToSave = Dialogs.select()
+						.files()
 						.owner(this)
 						.selectFileToSave(format.defaultFileName());
 		Dialogs.progressWorker(() -> export(fileToSave, format))
@@ -260,7 +261,8 @@ final class LookupTablePanel extends EntityTablePanel {
 	}
 
 	private void importJSON() throws IOException {
-		importJSON(Dialogs.fileSelection()
+		importJSON(Dialogs.select()
+						.files()
 						.owner(this)
 						.fileFilter(new FileNameExtensionFilter("JSON", "json"))
 						.selectFile());

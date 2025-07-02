@@ -26,7 +26,6 @@ import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import java.awt.Window;
-import java.util.Collection;
 
 import static java.util.Objects.requireNonNull;
 
@@ -108,30 +107,10 @@ public final class Dialogs {
 	}
 
 	/**
-	 * @return a new FileSelectionDialogBuilder
+	 * @return a new {@link SelectionDialogBuilderFactory}
 	 */
-	public static FileSelectionDialogBuilder fileSelection() {
-		return new DefaultFileSelectionDialogBuilder();
-	}
-
-	/**
-	 * @param values the values to select from
-	 * @param <T> the value type
-	 * @return a new {@link javax.swing.JList} based selection dialog builder
-	 * @throws IllegalArgumentException in case values is empty
-	 */
-	public static <T> ListSelectionDialogBuilder<T> listSelection(Collection<T> values) {
-		return new DefaultListSelectionDialogBuilder<>(values);
-	}
-
-	/**
-	 * @param values the values to select from
-	 * @param <T> the value type
-	 * @return a new {@link javax.swing.JComboBox} based selection dialog builder
-	 * @throws IllegalArgumentException in case values is empty
-	 */
-	public static <T> ComboBoxSelectionDialogBuilder<T> comboBoxSelection(Collection<T> values) {
-		return new DefaultComboBoxSelectionDialogBuilder<>(values);
+	public static SelectionDialogBuilderFactory select() {
+		return new DefaultSelectionDialogBuilderFactory();
 	}
 
 	/**
@@ -154,20 +133,6 @@ public final class Dialogs {
 	 */
 	public static CalendarDialogBuilder calendar() {
 		return new DefaultCalendarDialogBuilder();
-	}
-
-	/**
-	 * @return a builder for a dialog for selecting a look and feel
-	 */
-	public static LookAndFeelSelectionDialogBuilder lookAndFeelSelection() {
-		return new DefaultLookAndFeelSelectionDialogBuilder();
-	}
-
-	/**
-	 * @return a builder for a dialog for selecting the font size
-	 */
-	public static FontSizeSelectionDialogBuilder fontSizeSelection() {
-		return new DefaultFontSizeSelectionDialogBuilder();
 	}
 
 	/**

@@ -646,7 +646,8 @@ public class EntityTablePanel extends JPanel {
 						.map(attribute -> tableModel.entityDefinition().attributes().definition(attribute))
 						.sorted(new AttributeDefinitionComparator())
 						.collect(toList());
-		Dialogs.listSelection(sortedDefinitions)
+		Dialogs.select()
+						.list(sortedDefinitions)
 						.owner(this)
 						.selectSingle()
 						.map(AttributeDefinition::attribute)

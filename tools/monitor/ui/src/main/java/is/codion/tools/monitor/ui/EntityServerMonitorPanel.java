@@ -141,7 +141,8 @@ public final class EntityServerMonitorPanel extends JPanel {
 
 	public static synchronized void setJDKDir(JComponent dialogParent) {
 		try {
-			jdkDir = Dialogs.fileSelection()
+			jdkDir = Dialogs.select()
+							.files()
 							.owner(dialogParent)
 							.startDirectory(jdkDir)
 							.title("Set JDK home")
@@ -177,7 +178,8 @@ public final class EntityServerMonitorPanel extends JPanel {
 										.control(createUpateIntervalControl())
 										.control(createClearChartsControl())
 										.separator()
-										.control(Dialogs.lookAndFeelSelection()
+										.control(Dialogs.select()
+														.lookAndFeel()
 														.owner(this)
 														.createControl(EntityServerMonitorPanel::lookAndFeelSelected))
 										.control(createAlwaysOnTopControl()))

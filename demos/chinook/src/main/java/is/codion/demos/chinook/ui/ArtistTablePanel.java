@@ -59,7 +59,8 @@ public final class ArtistTablePanel extends EntityTablePanel {
 
 	private void combineSelected() {
 		List<Entity> selectedArtists = tableModel().selection().items().get();
-		Entity artistToKeep = Dialogs.listSelection(selectedArtists)
+		Entity artistToKeep = Dialogs.select()
+						.list(selectedArtists)
 						.owner(this)
 						.title("Select the artist to keep")
 						.comparator(Text.collator())

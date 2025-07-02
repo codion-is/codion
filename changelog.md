@@ -52,6 +52,7 @@ Codion Change Log
 - Dialogs.componentDialog() renamed dialog().
 - ActionDialogBuilder.component() added.
 - Dialogs, Dialog suffix removed from method names.
+- SelectionDialogBuilderFactory added.
 ### is.codion.framework.lambda
 - LambdaEntityHandler refactored.
 
