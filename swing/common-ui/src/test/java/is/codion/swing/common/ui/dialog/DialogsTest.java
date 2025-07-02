@@ -39,8 +39,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public final class DialogsTest {
 
 	@Test
-	void componentDialog() {
-		Dialogs.componentDialog()
+	void dialog() {
+		Dialogs.dialog()
 						.component(new JLabel())
 						.owner(new JLabel())
 						.title("title")

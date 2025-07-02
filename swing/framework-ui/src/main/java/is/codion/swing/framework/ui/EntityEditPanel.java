@@ -79,7 +79,7 @@ import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
-import static is.codion.swing.common.ui.dialog.Dialogs.componentDialog;
+import static is.codion.swing.common.ui.dialog.Dialogs.dialog;
 import static is.codion.swing.common.ui.dialog.Dialogs.progressWorkerDialog;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.*;
@@ -553,7 +553,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			parentWindow(queryInspector).toFront();
 		}
 		else {
-			componentDialog()
+			dialog()
 							.component(queryInspector)
 							.owner(this)
 							.title(editModel().entityDefinition().caption() + " Query")
@@ -649,7 +649,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			EntityDependenciesPanel dependenciesPanel = new EntityDependenciesPanel(dependencies, editModel().connectionProvider());
 			int gap = Layouts.GAP.getOrThrow();
 			dependenciesPanel.setBorder(createEmptyBorder(0, gap, 0, gap));
-			Dialogs.componentDialog()
+			dialog()
 							.component(dependenciesPanel)
 							.owner(this)
 							.modal(false)

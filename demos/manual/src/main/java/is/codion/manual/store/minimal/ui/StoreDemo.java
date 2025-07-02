@@ -119,7 +119,7 @@ public class StoreDemo {
 		customerModel.tableModel().items().refresh();
 
 		SwingUtilities.invokeLater(() ->
-						Dialogs.componentDialog()
+						Dialogs.dialog()
 										.component(customerPanel.initialize())
 										.title("Customers")
 										.onClosed(e -> connectionProvider.close())

@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.dialog.Dialogs.componentDialog;
+import static is.codion.swing.common.ui.dialog.Dialogs.dialog;
 import static is.codion.swing.common.ui.dialog.Dialogs.exceptionDialog;
 import static java.awt.event.KeyEvent.VK_ESCAPE;
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -142,7 +142,7 @@ final class ProgressWorkerDemo {
 						.eastComponent(button(cancel).build())
 						.build();
 		// The dialog displaying the progress panel
-		private final JDialog dialog = componentDialog()
+		private final JDialog dialog = dialog()
 						.component(progressPanel)
 						.owner(applicationFrame)
 						// Trigger the cancel control with the Escape key

@@ -49,6 +49,7 @@ Codion Change Log
 - DefaultIcons now reacts to changes in Icons.ICON_SIZE, replacing each icon with a resized instance.
 - FrameBuilder.component() added.
 - ComponentDialogBuilder.component() added.
+- Dialogs.componentDialog() renamed dialog().
 ### is.codion.framework.lambda
 - LambdaEntityHandler refactored.
 

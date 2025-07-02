@@ -354,7 +354,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * Displays in a dialog a tree describing the application layout
 	 */
 	public final void viewApplicationTree() {
-		Dialogs.componentDialog()
+		Dialogs.dialog()
 						.component(createApplicationTree())
 						.owner(this)
 						.title(resourceBundle.getString("view_application_tree"))
@@ -366,7 +366,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * Shows a dialog containing a dependency tree view of all defined entities
 	 */
 	public final void viewDependencyTree() {
-		Dialogs.componentDialog()
+		Dialogs.dialog()
 						.component(createDependencyTree())
 						.owner(this)
 						.title(FrameworkMessages.dependencies())
@@ -442,7 +442,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	public final void displayKeyboardShortcuts() {
 		KeyboardShortcutsPanel shortcutsPanel = new KeyboardShortcutsPanel();
 		shortcutsPanel.setPreferredSize(new Dimension(shortcutsPanel.getPreferredSize().width, Windows.screenSizeRatio(0.5).height));
-		Dialogs.componentDialog()
+		Dialogs.dialog()
 						.component(shortcutsPanel)
 						.owner(this)
 						.title(resourceBundle.getString(KEYBOARD_SHORTCUTS))
@@ -455,7 +455,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * @see #createAboutPanel()
 	 */
 	public final void displayAbout() {
-		Dialogs.componentDialog()
+		Dialogs.dialog()
 						.component(createAboutPanel())
 						.owner(this)
 						.title(resourceBundle.getString(ABOUT))
@@ -845,7 +845,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 			}
 		}
 		else {
-			Dialogs.componentDialog()
+			Dialogs.dialog()
 							.component(createEmptyBorderBasePanel(entityPanel))
 							.owner(parentWindow().orElse(null))
 							.title(entityPanel.caption())
@@ -1052,7 +1052,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 	private Control createDisplaySystemPropertiesControl() {
 		return Control.builder()
-						.command(() -> Dialogs.componentDialog()
+						.command(() -> Dialogs.dialog()
 										.component(Components.textArea()
 														.value(PropertyStore.systemProperties())
 														.editable(false)

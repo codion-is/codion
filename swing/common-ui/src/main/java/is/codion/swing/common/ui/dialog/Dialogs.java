@@ -41,7 +41,7 @@ public final class Dialogs {
 	/**
 	 * @return a new {@link ComponentDialogBuilder} instance.
 	 */
-	public static ComponentDialogBuilder componentDialog() {
+	public static ComponentDialogBuilder dialog() {
 		return new DefaultComponentDialogBuilder();
 	}
 

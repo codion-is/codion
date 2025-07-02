@@ -160,7 +160,7 @@ final class CoverArtPanel extends JPanel {
 		remove(centerPanel);
 		revalidate();
 		repaint();
-		Dialogs.componentDialog()
+		Dialogs.dialog()
 						.component(centerPanel)
 						.owner(this)
 						.modal(false)

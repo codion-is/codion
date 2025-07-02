@@ -67,7 +67,7 @@ final class CountryTablePanel extends EntityTablePanel {
 	}
 
 	private void viewReport(JasperPrint countryReport) {
-		Dialogs.componentDialog()
+		Dialogs.dialog()
 						.component(new JRViewer(countryReport))
 						.owner(this)
 						.modal(false)

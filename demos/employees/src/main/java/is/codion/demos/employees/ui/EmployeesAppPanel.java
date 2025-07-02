@@ -88,7 +88,7 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel,
 						config -> config.includePopupMenu(false));
 
-		Dialogs.componentDialog()
+		Dialogs.dialog()
 						.component(tablePanel.initialize())
 						.owner(this)
 						.title("Import")

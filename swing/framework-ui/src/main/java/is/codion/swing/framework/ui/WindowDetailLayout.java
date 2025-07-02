@@ -217,7 +217,7 @@ public final class WindowDetailLayout implements DetailLayout {
 								.build();
 			}
 
-			return Dialogs.componentDialog()
+			return Dialogs.dialog()
 							.component(detailPanel)
 							.owner(entityPanel)
 							.locationRelativeTo(entityPanel)
