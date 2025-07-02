@@ -340,12 +340,10 @@ public final class Configuration {
 		}
 
 		// For classpath files, additional validation is handled in classpathFilepath()
-		if (!normalizedPath.startsWith(CLASSPATH_PREFIX.toLowerCase())) {
-			// For filesystem paths, check for suspicious patterns
-			if (normalizedPath.startsWith("/etc/") || normalizedPath.startsWith("c:\\windows\\") ||
-							normalizedPath.contains("/proc/") || normalizedPath.contains("/sys/")) {
-				throw new SecurityException("Configuration file path accesses restricted system directories: " + filePath);
-			}
+		if (!normalizedPath.startsWith(CLASSPATH_PREFIX.toLowerCase()) &&
+						(normalizedPath.startsWith("/etc/") || normalizedPath.startsWith("c:\\windows\\") ||
+										normalizedPath.contains("/proc/") || normalizedPath.contains("/sys/"))) {
+			throw new SecurityException("Configuration file path accesses restricted system directories: " + filePath);
 		}
 
 		// Check path length to prevent potential buffer overflow-style attacks

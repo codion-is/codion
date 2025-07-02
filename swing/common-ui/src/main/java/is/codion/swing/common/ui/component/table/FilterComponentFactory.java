@@ -42,6 +42,7 @@ final class FilterComponentFactory implements ComponentFactory {
 					BigDecimal.class, Long.class, LocalTime.class, LocalDate.class,
 					LocalDateTime.class, OffsetDateTime.class);
 
+	@Override
 	public boolean supportsType(Class<?> valueClass) {
 		return SUPPORTED_TYPES.contains(requireNonNull(valueClass));
 	}

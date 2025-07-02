@@ -218,13 +218,6 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 						.build()).imageIcon();
 	}
 
-	private void resize(Integer size) {
-		refreshRequired = FontImageIcon.builder(REFRESH)
-						.size(size)
-						.color(Color.RED.darker())
-						.build().imageIcon();
-	}
-
 	static FrameworkIcons instance() {
 		if (instance == null) {
 			instance = createInstance();
@@ -254,7 +247,10 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 
 		@Override
 		public void accept(Integer size) {
-			resize(size);
+			refreshRequired = FontImageIcon.builder(REFRESH)
+							.size(size)
+							.color(Color.RED.darker())
+							.build().imageIcon();
 		}
 	}
 }

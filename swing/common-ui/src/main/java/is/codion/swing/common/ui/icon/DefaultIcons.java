@@ -80,14 +80,6 @@ final class DefaultIcons implements Icons {
 		}
 	}
 
-	private void resize(int size) {
-		synchronized (icons) {
-			icons.replaceAll((ikon, fontImageIcon) -> FontImageIcon.builder(ikon)
-							.size(size)
-							.build());
-		}
-	}
-
 	private final class OnIconColorChanged implements Consumer<Color> {
 
 		@Override
@@ -102,7 +94,11 @@ final class DefaultIcons implements Icons {
 
 		@Override
 		public void accept(Integer size) {
-			resize(size);
+			synchronized (icons) {
+				icons.replaceAll((ikon, fontImageIcon) -> FontImageIcon.builder(ikon)
+								.size(size)
+								.build());
+			}
 		}
 	}
 

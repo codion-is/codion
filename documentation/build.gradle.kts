@@ -361,6 +361,7 @@ tasks.register("linkcheck") {
 tasks.register<Exec>("serveDocs") {
     dependsOn("assembleDocs")
     group = "documentation"
+    description = "Assembles and serves the docs on localhost:8080"
 
     val javaHome = System.getenv("JAVA_HOME") ?: System.getProperty("java.home")
     val javaExecutable = file("$javaHome/bin/java").absolutePath
