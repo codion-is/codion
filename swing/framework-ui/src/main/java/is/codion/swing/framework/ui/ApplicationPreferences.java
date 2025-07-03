@@ -123,7 +123,7 @@ final class ApplicationPreferences {
 						jsonObject.has(LOOK_AND_FEEL_KEY) ? jsonObject.getString(LOOK_AND_FEEL_KEY) : null,
 						jsonObject.has(FONT_SIZE_KEY) ? jsonObject.getInt(FONT_SIZE_KEY) : 100,
 						jsonObject.has(FRAME_SIZE_KEY) ? parseFrameSize(jsonObject.getString(FRAME_SIZE_KEY)) : null,
-						jsonObject.has(FONT_SIZE_KEY) && jsonObject.getBoolean(FRAME_MAXIMIZED_KEY));
+						jsonObject.has(FRAME_MAXIMIZED_KEY) && jsonObject.getBoolean(FRAME_MAXIMIZED_KEY));
 	}
 
 	private static Dimension parseFrameSize(String userPreference) {
