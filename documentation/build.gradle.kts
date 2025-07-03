@@ -374,7 +374,7 @@ tasks.register<Exec>("serveDocs") {
 
 fun frameworkModules(): Iterable<Project> {
     return project.parent?.subprojects?.filter { project ->
-        !project.name.startsWith("demo") && project.name != "documentation" && !project.name.endsWith("bom")
+        !project.name.startsWith("demo") && project.name != "documentation" && !project.name.endsWith("-bom")
     } ?: emptyList()
 }
 

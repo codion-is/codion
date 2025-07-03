@@ -258,6 +258,35 @@ tasks.register("tagRelease") {
     }
 }
 
+/**
+ * The publishToSonatype task does not distinguish between BOM and mavenJava publications and publishes
+ * everything the same way. Publishing the BOM modules that way causes a failure during release, with the
+ * following error message:
+ * Failed to release staging repository, server at https://ossrh-staging-api.central.sonatype.com/service/local/
+ * responded with status code 400, body: Failed to process request: Deployment reached an unexpected status: Failed
+ *   common
+ *   - Deployment components info not found
+ *
+ * Solution: Use publishBomPublicationToSonatypeRepository for BOM modules and
+ * publishMavenJavaPublicationToSonatypeRepository for regular modules.
+ */
+tasks.register("publishCodionToSonatype") {
+    group = "publishing"
+    description = "Publishes all modules, including boms, to Sonatype, closing and releasing on success"
+
+    dependsOn(
+        "publishMavenJavaPublicationToSonatypeRepository",
+        "publishBomPublicationToSonatypeRepository",
+        "closeAndReleaseSonatypeStagingRepository"
+    )
+}
+
+afterEvaluate {
+    tasks.named("closeAndReleaseSonatypeStagingRepository") {
+        mustRunAfter("publishMavenJavaPublicationToSonatypeRepository", "publishBomPublicationToSonatypeRepository")
+    }
+}
+
 fun isNonStable(version: String): Boolean {
     val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.uppercase().contains(it) }
     val regex = "^[0-9,.v-]+(-r)?$".toRegex()
