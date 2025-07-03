@@ -41,8 +41,7 @@ import java.util.Collection;
  * A factory for {@link State} instances.
  * <p><b>Thread Safety:</b> Listener management (add/remove) is thread-safe and supports concurrent access.
  * However, state modifications via {@link #set(Object)} are NOT thread-safe and should be
- * performed from a single thread (such as an application UI thread). This design assumes
- * that all state changes and notifications occur on the same thread.</p>
+ * performed from a single thread (such as an application UI thread).</p>
  * @see #state()
  * @see #builder()
  */

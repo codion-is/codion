@@ -28,7 +28,7 @@ final class DefaultEvent<T> implements Event<T> {
 
 	private final Lock lock = new Lock() {};
 
-	private @Nullable DefaultObserver<T> observer;
+	private volatile @Nullable DefaultObserver<T> observer;
 
 	@Override
 	public void run() {

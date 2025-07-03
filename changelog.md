@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.common.core
 - Unit tests improved.
 - DefaultValue no longer exposes Lock interface to subclasses.
+- DefaultEvent.observer field now volatile.
 ### is.codion.common.db
 - Unit tests improved.
 ### is.codion.common.model
