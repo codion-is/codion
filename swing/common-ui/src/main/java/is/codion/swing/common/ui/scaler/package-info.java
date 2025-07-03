@@ -19,7 +19,7 @@
 /**
  * Package configuration values:
  * <ul>
- * <li>{@link is.codion.swing.common.ui.font.FontSize#RATIO}
+ * <li>{@link is.codion.swing.common.ui.scaler.Scaler#RATIO}
  * </ul>
  */
-package is.codion.swing.common.ui.font;
+package is.codion.swing.common.ui.scaler;

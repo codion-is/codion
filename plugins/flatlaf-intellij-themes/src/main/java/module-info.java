@@ -72,4 +72,6 @@ module is.codion.plugin.flatlaf.intellij.themes {
 
 	provides is.codion.swing.common.ui.laf.LookAndFeelProvider
 					with is.codion.plugin.flatlaf.intellij.IntelliJThemeProvider;
+	provides is.codion.swing.common.ui.scaler.Scaler
+					with is.codion.plugin.flatlaf.intellij.scaler.UIScaler;
 }

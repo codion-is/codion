@@ -52,7 +52,7 @@ public interface SelectionDialogBuilderFactory {
 	LookAndFeelSelectionDialogBuilder lookAndFeel();
 
 	/**
-	 * @return a builder for a dialog for selecting the font size
+	 * @return a builder for a dialog for selecting the scaling
 	 */
-	FontSizeSelectionDialogBuilder fontSize();
+	ScalingSelectionDialogBuilder scaling();
 }

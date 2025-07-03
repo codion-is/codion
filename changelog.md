@@ -55,6 +55,7 @@ Codion Change Log
 - Dialogs, Dialog suffix removed from method names.
 - SelectionDialogBuilderFactory added.
 - Windows.resizeWindow() renamed resize().
+- FontSize replaced with Scaler, default implementation font size based while the FlatLaf one is based on the flatlaf.uiScale property.
 ### is.codion.swing.framework.ui
 - ApplicationPreferences.fromString() bug fixed, FRAME_MAXIMIZED_KEY now used.
 ### is.codion.framework.lambda

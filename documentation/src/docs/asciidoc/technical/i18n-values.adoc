@@ -646,21 +646,6 @@ is/codion/swing/common/ui/dialog/DefaultFileSelectionDialogBuilder_is_IS.propert
 |select_files_or_directories|Select files or directories|Veldu skrár eða möppur
 |===
 
-=== is/codion/swing/common/ui/dialog/DefaultFontSizeSelectionDialogBuilder.java
-
-[source]
-----
-is/codion/swing/common/ui/dialog/DefaultFontSizeSelectionDialogBuilder.properties
-is/codion/swing/common/ui/dialog/DefaultFontSizeSelectionDialogBuilder_is_IS.properties
-----
-
-[cols="1,1,1"]
-|===
-|key|default|is_IS
-
-|select_font_size|Select Font Size|Velja Leturstærð
-|===
-
 === is/codion/swing/common/ui/dialog/DefaultLookAndFeelSelectionDialogBuilder.java
 
 [source]
@@ -675,6 +660,21 @@ is/codion/swing/common/ui/dialog/DefaultLookAndFeelSelectionDialogBuilder_is_IS.
 
 |include_installed_look_and_feels|Include installed Look and Feels|Birta innbyggð útlit
 |select_look_and_feel|Select Look & Feel|Velja Útlit
+|===
+
+=== is/codion/swing/common/ui/dialog/DefaultScalingSelectionDialogBuilder.java
+
+[source]
+----
+is/codion/swing/common/ui/dialog/DefaultScalingSelectionDialogBuilder.properties
+is/codion/swing/common/ui/dialog/DefaultScalingSelectionDialogBuilder_is_IS.properties
+----
+
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|select_scaling|Select Scaling|Velja Skölun
 |===
 
 === is/codion/swing/common/ui/dialog/ExceptionPanel.java
@@ -751,7 +751,6 @@ is/codion/swing/framework/ui/EntityApplicationPanel_is_IS.properties
 |always_on_top|Always on Top|Alltaf Ofan á
 |application_version|Application Version|Kerfisútgáfa
 |codion_version|Codion Version|Codion Útgáfa
-|font_size_selected_message|The selected font size will be activated on next application start|Valin leturstærð virkjast við næstu ræsingu
 |help|Help|Hjálp
 |help_mnemonic|H|H
 |keyboard_shortcuts|Keyboard shortcuts|Flýtilyklar
@@ -763,6 +762,7 @@ is/codion/swing/framework/ui/EntityApplicationPanel_is_IS.properties
 |open_log|Open Log|Opna Log
 |open_log_file|File|Skrá
 |open_log_folder|Folder|Möppu
+|scaling_selected_message|The selected scaling will be activated on next application start|Valin skölun virkjast við næstu ræsingu
 |system_properties|System properties|Kerfisstillingar
 |tools|Tools|Tól
 |tools_mnemonic|T|T

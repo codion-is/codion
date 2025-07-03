@@ -41,21 +41,21 @@ final class ApplicationPreferences {
 
 	private static final String DEFAULT_USERNAME_KEY = "defaultUsername";
 	private static final String LOOK_AND_FEEL_KEY = "lookAndFeel";
-	private static final String FONT_SIZE_KEY = "fontSize";
+	private static final String SCALING_KEY = "scaling";
 	private static final String FRAME_SIZE_KEY = "frameSize";
 	private static final String FRAME_MAXIMIZED_KEY = "maximized";
 
 	private final String defaultUsername;
 	private final String lookAndFeel;
-	private final int fontSize;
+	private final int scaling;
 	private final Dimension frameSize;
 	private final boolean frameMaximized;
 
-	ApplicationPreferences(String defaultUsername, String lookAndFeel, int fontSize,
+	ApplicationPreferences(String defaultUsername, String lookAndFeel, int scaling,
 												 Dimension frameSize, boolean frameMaximized) {
 		this.defaultUsername = defaultUsername;
 		this.lookAndFeel = lookAndFeel;
-		this.fontSize = fontSize;
+		this.scaling = scaling;
 		this.frameSize = frameSize;
 		this.frameMaximized = frameMaximized;
 	}
@@ -64,8 +64,8 @@ final class ApplicationPreferences {
 		return lookAndFeel;
 	}
 
-	int fontSize() {
-		return fontSize;
+	int scaling() {
+		return scaling;
 	}
 
 	Dimension frameSize() {
@@ -88,7 +88,7 @@ final class ApplicationPreferences {
 		JSONObject preferences = new JSONObject();
 		preferences.put(DEFAULT_USERNAME_KEY, defaultUsername);
 		preferences.put(LOOK_AND_FEEL_KEY, lookAndFeel);
-		preferences.put(FONT_SIZE_KEY, fontSize);
+		preferences.put(SCALING_KEY, scaling);
 		preferences.put(FRAME_SIZE_KEY, frameSize.width + "x" + frameSize.height);
 		preferences.put(FRAME_MAXIMIZED_KEY, frameMaximized);
 
@@ -121,7 +121,7 @@ final class ApplicationPreferences {
 		return new ApplicationPreferences(
 						jsonObject.has(DEFAULT_USERNAME_KEY) ? jsonObject.getString(DEFAULT_USERNAME_KEY) : null,
 						jsonObject.has(LOOK_AND_FEEL_KEY) ? jsonObject.getString(LOOK_AND_FEEL_KEY) : null,
-						jsonObject.has(FONT_SIZE_KEY) ? jsonObject.getInt(FONT_SIZE_KEY) : 100,
+						jsonObject.has(SCALING_KEY) ? jsonObject.getInt(SCALING_KEY) : 100,
 						jsonObject.has(FRAME_SIZE_KEY) ? parseFrameSize(jsonObject.getString(FRAME_SIZE_KEY)) : null,
 						jsonObject.has(FRAME_MAXIMIZED_KEY) && jsonObject.getBoolean(FRAME_MAXIMIZED_KEY));
 	}

@@ -43,7 +43,7 @@ final class DefaultSelectionDialogBuilderFactory implements SelectionDialogBuild
 	}
 
 	@Override
-	public FontSizeSelectionDialogBuilder fontSize() {
-		return new DefaultFontSizeSelectionDialogBuilder();
+	public ScalingSelectionDialogBuilder scaling() {
+		return new DefaultScalingSelectionDialogBuilder();
 	}
 }

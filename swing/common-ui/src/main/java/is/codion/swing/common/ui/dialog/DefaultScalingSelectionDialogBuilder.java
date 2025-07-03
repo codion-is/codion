@@ -43,74 +43,74 @@ import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static javax.swing.BorderFactory.createEmptyBorder;
 
-final class DefaultFontSizeSelectionDialogBuilder implements FontSizeSelectionDialogBuilder {
+final class DefaultScalingSelectionDialogBuilder implements ScalingSelectionDialogBuilder {
 
 	private JComponent owner;
 	private int initialSelection = 100;
 
 	@Override
-	public FontSizeSelectionDialogBuilder owner(JComponent owner) {
+	public ScalingSelectionDialogBuilder owner(JComponent owner) {
 		this.owner = requireNonNull(owner);
 		return this;
 	}
 
 	@Override
-	public Control createControl(Consumer<Integer> selectedFontSize) {
-		requireNonNull(selectedFontSize);
+	public Control createControl(Consumer<Integer> scalingSelected) {
+		requireNonNull(scalingSelected);
 		MessageBundle resourceBundle =
-						messageBundle(DefaultFontSizeSelectionDialogBuilder.class,
-										getBundle(DefaultFontSizeSelectionDialogBuilder.class.getName()));
-		String caption = resourceBundle.getString("select_font_size");
+						messageBundle(DefaultScalingSelectionDialogBuilder.class,
+										getBundle(DefaultScalingSelectionDialogBuilder.class.getName()));
+		String caption = resourceBundle.getString("select_scaling");
 
 		return Control.builder()
-						.command(() -> selectFontSize(selectedFontSize))
+						.command(() -> selectScaling(scalingSelected))
 						.caption(caption)
 						.build();
 	}
 
 	@Override
-	public FontSizeSelectionDialogBuilder initialSelection(int initialSelection) {
+	public ScalingSelectionDialogBuilder initialSelection(int initialSelection) {
 		this.initialSelection = initialSelection;
 		return this;
 	}
 
 	@Override
-	public void selectFontSize(Consumer<Integer> selectedFontSize) {
-		requireNonNull(selectedFontSize);
+	public void selectScaling(Consumer<Integer> scalingSelected) {
+		requireNonNull(scalingSelected);
 		MessageBundle resourceBundle =
 						messageBundle(DefaultFileSelectionDialogBuilder.class,
-										getBundle(DefaultFontSizeSelectionDialogBuilder.class.getName()));
-		FontSizeSelectionPanel fontSizeSelectionPanel = new FontSizeSelectionPanel(initialSelection);
+										getBundle(DefaultScalingSelectionDialogBuilder.class.getName()));
+		ScalingSelectionPanel scalingSelectionPanel = new ScalingSelectionPanel(initialSelection);
 		new DefaultOkCancelDialogBuilder()
-						.component(fontSizeSelectionPanel)
+						.component(scalingSelectionPanel)
 						.owner(owner)
-						.title(resourceBundle.getString("select_font_size"))
-						.onOk(() -> selectedFontSize.accept(fontSizeSelectionPanel.selectedFontSize()))
+						.title(resourceBundle.getString("select_scaling"))
+						.onOk(() -> scalingSelected.accept(scalingSelectionPanel.selectedScaling()))
 						.show();
 	}
 
-	private static final class FontSizeSelectionPanel extends JPanel {
+	private static final class ScalingSelectionPanel extends JPanel {
 
 		private final ComponentValue<Integer, JComboBox<Item<Integer>>> componentValue;
 
-		private FontSizeSelectionPanel(int initialFontSize) {
+		private ScalingSelectionPanel(int initialScaling) {
 			super(Layouts.borderLayout());
 			List<Item<Integer>> values = initializeValues();
 			componentValue = ItemComboBoxBuilder.builder(values)
-							.value(initialFontSize)
-							.renderer(new FontSizeCellRenderer(values, initialFontSize))
+							.value(initialScaling)
+							.renderer(new FontSizeCellRenderer(values, initialScaling))
 							.buildValue();
 			add(componentValue.component(), BorderLayout.CENTER);
 			setBorder(createEmptyBorder(10, 10, 0, 10));
 		}
 
-		private int selectedFontSize() {
+		private int selectedScaling() {
 			return componentValue.getOrThrow();
 		}
 
 		private static List<Item<Integer>> initializeValues() {
 			List<Item<Integer>> values = new ArrayList<>();
-			for (int i = 50; i <= 200; i += 5) {
+			for (int i = 50; i <= 300; i += 5) {
 				values.add(Item.item(i, i + "%"));
 			}
 

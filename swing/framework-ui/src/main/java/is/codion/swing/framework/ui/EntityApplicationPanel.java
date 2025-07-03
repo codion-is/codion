@@ -49,12 +49,12 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.font.FontSize;
 import is.codion.swing.common.ui.frame.Frames;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.common.ui.scaler.Scaler;
 import is.codion.swing.common.ui.window.Windows;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.ui.EntityPanel.WindowType;
@@ -570,7 +570,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 						.caption(FrameworkMessages.view())
 						.mnemonic(FrameworkMessages.viewMnemonic())
 						.control(createSelectLookAndFeelControl())
-						.control(createSelectFontSizeControl())
+						.control(createSelectScalingControl())
 						.separator()
 						.control(createAlwaysOnTopControl())
 						.build());
@@ -669,16 +669,16 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	}
 
 	/**
-	 * @return a Control for selecting the font size
+	 * @return a Control for selecting the scaling
 	 */
-	protected final Control createSelectFontSizeControl() {
+	protected final Control createSelectScalingControl() {
 		return Dialogs.select()
-						.fontSize()
+						.scaling()
 						.owner(this)
-						.initialSelection(FontSize.RATIO.getOrThrow())
-						.createControl(selectedFontSize -> {
-							FontSize.RATIO.set(selectedFontSize);
-							showMessageDialog(this, resourceBundle.getString("font_size_selected_message"));
+						.initialSelection(Scaler.RATIO.getOrThrow())
+						.createControl(selectedScaling -> {
+							Scaler.RATIO.set(selectedScaling);
+							showMessageDialog(this, resourceBundle.getString("scaling_selected_message"));
 						});
 	}
 
@@ -898,7 +898,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 		return new ApplicationPreferences(
 						saveDefaultUsername ? applicationModel.connectionProvider().user().username() : null,
-						getLookAndFeel().getClass().getName(), FontSize.RATIO.getOrThrow(),
+						getLookAndFeel().getClass().getName(), Scaler.RATIO.getOrThrow(),
 						parentFrame == null ? null : parentFrame.getSize(),
 						parentFrame != null && (parentFrame.getExtendedState() & MAXIMIZED_BOTH) == MAXIMIZED_BOTH);
 	}

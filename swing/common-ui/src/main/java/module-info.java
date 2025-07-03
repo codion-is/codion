@@ -66,20 +66,23 @@ module is.codion.swing.common.ui {
 	exports is.codion.swing.common.ui.control;
 	exports is.codion.swing.common.ui.cursor;
 	exports is.codion.swing.common.ui.dialog;
-	exports is.codion.swing.common.ui.font;
 	exports is.codion.swing.common.ui.frame;
 	exports is.codion.swing.common.ui.icon;
 	exports is.codion.swing.common.ui.key;
 	exports is.codion.swing.common.ui.laf;
 	exports is.codion.swing.common.ui.layout;
+	exports is.codion.swing.common.ui.scaler;
 	exports is.codion.swing.common.ui.transfer;
 	exports is.codion.swing.common.ui.window;
 
 	uses is.codion.swing.common.ui.laf.LookAndFeelProvider;
 	uses is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
+	uses is.codion.swing.common.ui.scaler.Scaler;
 
 	provides is.codion.swing.common.ui.laf.LookAndFeelProvider
 					with is.codion.swing.common.ui.laf.InstalledLookAndFeelProvider;
 	provides is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory
 					with is.codion.swing.common.ui.component.indicator.DefaultValidIndicatorFactory;
+	provides is.codion.swing.common.ui.scaler.Scaler
+					with is.codion.swing.common.ui.scaler.FontSizeScaler;
 }

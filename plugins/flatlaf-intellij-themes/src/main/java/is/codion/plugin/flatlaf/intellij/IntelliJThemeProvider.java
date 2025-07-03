@@ -121,26 +121,33 @@ import is.codion.plugin.flatlaf.intellij.themes.trashpanda.TrashPandaMoonlight;
 import is.codion.plugin.flatlaf.intellij.themes.trashpanda.TrashPandaStarlight;
 import is.codion.plugin.flatlaf.intellij.themes.vuesion.Vuesion;
 import is.codion.plugin.flatlaf.intellij.themes.xcodedark.XcodeDark;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
+import is.codion.swing.common.ui.scaler.Scaler;
 
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.util.LoggingFacade;
 
+import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import java.util.Collection;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.lookAndFeelEnabler;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * <p>Provides Look And Feels based on IntelliJ themes.
  * <p>Uses Flat Look And Feel under the hood.
  */
 public final class IntelliJThemeProvider implements LookAndFeelProvider {
+
+	private static final Consumer<LookAndFeelInfo> ENABLER = new DefaultEnabler();
 
 	private final Collection<LookAndFeelEnabler> enablers;
 
@@ -153,114 +160,114 @@ public final class IntelliJThemeProvider implements LookAndFeelProvider {
 
 	public IntelliJThemeProvider() {
 		enablers = unmodifiableList(asList(
-						lookAndFeelEnabler(new LookAndFeelInfo("Nature Aurora Borealis", AuroraBorealis.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Nature Autumn", Autumn.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Nature Everest", Everest.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Nature Roraima", Roraima.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Nature Sakura", Sakura.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Nature Sequoia", Sequoia.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Srcery", Srcery.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Gerry Darcula", GerryDarcula.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Gerry Dark", GerryDark.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Gerry Oceanic", GerryOceanic.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Gerry Storm", GerryStorm.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Gerry Violet", GerryViolet.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Gerry Light", GerryLight.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Lotus Dark", LotusDark.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Lotus Light", LotusLight.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Teyviscon Dark", TeyvisconDark.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Everforest Dark Hard", EverforestDarkHard.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Everforest Dark Medium", EverforestDarkMedium.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Everforest Dark Soft", EverforestDarkSoft.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Everforest Light Hard", EverforestLightHard.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Everforest Light Medium", EverforestLightMedium.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Everforest Light Soft", EverforestLightSoft.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Dark Horizon", DarkHorizon.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Akusan Dark", AkusanDark.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Akusan Gray", AkusanGray.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Akusan Light", AkusanLight.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("One Pauintxi All Blue", OnePauintxiAllBlue.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("One Pauintxi Blue", OnePauintxiBlue.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("One Pauintxi All Orange", OnePauintxiAllOrange.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("One Pauintxi Orange", OnePauintxiOrange.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Gruvbox Light Hard", GruvboxMaterialLightHard.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Gruvbox Light Medium", GruvboxMaterialLightMedium.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Gruvbox Light Soft", GruvboxMaterialLightSoft.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Obsidian Sunset Blue", ObsidianSunsetBlue.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Obsidian Sunset Orange", ObsidianSunsetOrange.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Github Dark", GithubDark.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Github Dark Default", GithubDarkDefault.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Github Light", GithubLight.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Rider Dark", RiderDark.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Rider Day", RiderDay.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Rider Light", RiderLight.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Rider Night", RiderNight.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Rider Dark", RiderDark.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Darcula Solid", DarculaSolid.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Nightfall", Nightfall.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Trash Panda", TrashPanda.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Trash Panda Blacklight", TrashPandaBlacklight.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Trash Panda Dawnlight", TrashPandaDawnlight.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Trash Panda Daylight", TrashPandaDaylight.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Trash Panda Moonlight", TrashPandaMoonlight.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Trash Panda Starlight", TrashPandaStarlight.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Cute Pink Light", CutePinkLight.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Cute Pink Dark", CutePinkDark.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Codely", Codely.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Codely Blue", CodelyBlue.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Codely Dark", CodelyDark.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Codely Light", CodelyLight.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Cyberpunk", Cyberpunk.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Elegant Dark", ElegantDark.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Elegant Light", ElegantLight.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Espresso Light", EspressoLight.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Dracula", Dracula.class.getName())),
+						lookAndFeelEnabler(new LookAndFeelInfo("Nature Aurora Borealis", AuroraBorealis.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Nature Autumn", Autumn.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Nature Everest", Everest.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Nature Roraima", Roraima.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Nature Sakura", Sakura.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Nature Sequoia", Sequoia.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Srcery", Srcery.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Gerry Darcula", GerryDarcula.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Gerry Dark", GerryDark.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Gerry Oceanic", GerryOceanic.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Gerry Storm", GerryStorm.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Gerry Violet", GerryViolet.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Gerry Light", GerryLight.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Lotus Dark", LotusDark.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Lotus Light", LotusLight.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Teyviscon Dark", TeyvisconDark.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Everforest Dark Hard", EverforestDarkHard.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Everforest Dark Medium", EverforestDarkMedium.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Everforest Dark Soft", EverforestDarkSoft.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Everforest Light Hard", EverforestLightHard.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Everforest Light Medium", EverforestLightMedium.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Everforest Light Soft", EverforestLightSoft.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Dark Horizon", DarkHorizon.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Akusan Dark", AkusanDark.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Akusan Gray", AkusanGray.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Akusan Light", AkusanLight.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("One Pauintxi All Blue", OnePauintxiAllBlue.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("One Pauintxi Blue", OnePauintxiBlue.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("One Pauintxi All Orange", OnePauintxiAllOrange.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("One Pauintxi Orange", OnePauintxiOrange.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Gruvbox Light Hard", GruvboxMaterialLightHard.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Gruvbox Light Medium", GruvboxMaterialLightMedium.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Gruvbox Light Soft", GruvboxMaterialLightSoft.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Obsidian Sunset Blue", ObsidianSunsetBlue.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Obsidian Sunset Orange", ObsidianSunsetOrange.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Github Dark", GithubDark.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Github Dark Default", GithubDarkDefault.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Github Light", GithubLight.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Rider Dark", RiderDark.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Rider Day", RiderDay.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Rider Light", RiderLight.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Rider Night", RiderNight.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Rider Dark", RiderDark.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Darcula Solid", DarculaSolid.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Nightfall", Nightfall.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Trash Panda", TrashPanda.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Trash Panda Blacklight", TrashPandaBlacklight.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Trash Panda Dawnlight", TrashPandaDawnlight.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Trash Panda Daylight", TrashPandaDaylight.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Trash Panda Moonlight", TrashPandaMoonlight.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Trash Panda Starlight", TrashPandaStarlight.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Cute Pink Light", CutePinkLight.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Cute Pink Dark", CutePinkDark.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Codely", Codely.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Codely Blue", CodelyBlue.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Codely Dark", CodelyDark.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Codely Light", CodelyLight.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Cyberpunk", Cyberpunk.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Elegant Dark", ElegantDark.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Elegant Light", ElegantLight.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Espresso Light", EspressoLight.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Dracula", Dracula.class.getName()), ENABLER),
 
 						// From FlatLaf
-						lookAndFeelEnabler(new LookAndFeelInfo("Arc Dark (Material)", ArcDarkMaterial.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Atom One Dark (Material)", AtomOneDark.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Atom One Light (Material)", AtomOneLight.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Dracula (Material)", DraculaMaterial.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Github Dark (Material)", GitHubDarkMaterial.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Github (Material)", GitHubMaterial.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Light Owl (Material)", LightOwl.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Material Darker (Material)", MaterialDarker.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Material Deep Ocean (Material)", MaterialDeepOcean.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Material Lighter (Material)", MaterialLighter.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Material Oceanic (Material)", MaterialOceanic.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Material Palenight (Material)", MaterialPalenight.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Monokai Pro (Material)", MonokaiProMaterial.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Moonlight (Material)", Moonlight.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Night Owl (Material)", NightOwl.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Solarized Dark (Material)", SolarizedDark.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Solarized Light (Material)", SolarizedLight.class.getName())),
+						lookAndFeelEnabler(new LookAndFeelInfo("Arc Dark (Material)", ArcDarkMaterial.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Atom One Dark (Material)", AtomOneDark.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Atom One Light (Material)", AtomOneLight.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Dracula (Material)", DraculaMaterial.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Github Dark (Material)", GitHubDarkMaterial.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Github (Material)", GitHubMaterial.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Light Owl (Material)", LightOwl.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Material Darker (Material)", MaterialDarker.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Material Deep Ocean (Material)", MaterialDeepOcean.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Material Lighter (Material)", MaterialLighter.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Material Oceanic (Material)", MaterialOceanic.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Material Palenight (Material)", MaterialPalenight.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Monokai Pro (Material)", MonokaiProMaterial.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Moonlight (Material)", Moonlight.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Night Owl (Material)", NightOwl.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Solarized Dark (Material)", SolarizedDark.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Solarized Light (Material)", SolarizedLight.class.getName()), ENABLER),
 						// End material
 
-						lookAndFeelEnabler(new LookAndFeelInfo("Arc", Arc.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Arc Dark", ArcDark.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Arc Orance", ArcOrange.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Arc Dark Orange", ArcDarkOrange.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Carbon", Carbon.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Cobalt 2", Cobalt2.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Dark Flat", DarkFlat.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Dark Purple", DarkPurple.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Gradianto Dark Fuchsia", GradiantoDarkFuchsia.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Gradianto Deep Ocean", GradiantoDeepOcean.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Gradianto Midnight Blue", GradiantoMidnightBlue.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Gradianto Nature Green", GradiantoNatureGreen.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Gray", Gray.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Gruvbox Dark Hard", GruvboxDarkHard.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Gruvbox Dark Medium", GruvboxDarkMedium.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Gruvbox Dark Soft", GruvboxDarkSoft.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Hiberbee Dark", HiberbeeDark.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("High Contrast", HighContrast.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Light Flat", LightFlat.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Material Theme", MaterialTheme.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Monocai", Monocai.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Monokai Pro", MonokaiPro.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("One Dark", OneDark.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("Vuesion", Vuesion.class.getName())),
-						lookAndFeelEnabler(new LookAndFeelInfo("XCode Dark", XcodeDark.class.getName()))
+						lookAndFeelEnabler(new LookAndFeelInfo("Arc", Arc.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Arc Dark", ArcDark.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Arc Orance", ArcOrange.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Arc Dark Orange", ArcDarkOrange.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Carbon", Carbon.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Cobalt 2", Cobalt2.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Dark Flat", DarkFlat.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Dark Purple", DarkPurple.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Gradianto Dark Fuchsia", GradiantoDarkFuchsia.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Gradianto Deep Ocean", GradiantoDeepOcean.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Gradianto Midnight Blue", GradiantoMidnightBlue.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Gradianto Nature Green", GradiantoNatureGreen.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Gray", Gray.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Gruvbox Dark Hard", GruvboxDarkHard.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Gruvbox Dark Medium", GruvboxDarkMedium.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Gruvbox Dark Soft", GruvboxDarkSoft.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Hiberbee Dark", HiberbeeDark.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("High Contrast", HighContrast.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Light Flat", LightFlat.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Material Theme", MaterialTheme.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Monocai", Monocai.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Monokai Pro", MonokaiPro.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("One Dark", OneDark.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Vuesion", Vuesion.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("XCode Dark", XcodeDark.class.getName()), ENABLER)
 		));
 	}
 
@@ -269,5 +276,23 @@ public final class IntelliJThemeProvider implements LookAndFeelProvider {
 	 */
 	public Collection<LookAndFeelEnabler> get() {
 		return enablers;
+	}
+
+	/**
+	 * Requrired since scaling must happen before the look and feel is applied.
+	 */
+	private static final class DefaultEnabler implements Consumer<LookAndFeelInfo> {
+
+		@Override
+		public void accept(LookAndFeelInfo lookAndFeelInfo) {
+			try {
+				Scaler.instance(lookAndFeelInfo.getClassName()).ifPresent(Scaler::apply);
+				UIManager.setLookAndFeel(requireNonNull(lookAndFeelInfo).getClassName());
+				Utilities.updateComponentTreeForAllWindows();
+			}
+			catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
 	}
 }

@@ -24,32 +24,32 @@ import javax.swing.JComponent;
 import java.util.function.Consumer;
 
 /**
- * Builds a dialog for selecting the font size.
+ * Builds a dialog for selecting the scaling.
  */
-public interface FontSizeSelectionDialogBuilder {
+public interface ScalingSelectionDialogBuilder {
 
 	/**
 	 * @param owner the dialog owner
 	 * @return this builder
 	 */
-	FontSizeSelectionDialogBuilder owner(JComponent owner);
+	ScalingSelectionDialogBuilder owner(JComponent owner);
 
 	/**
 	 * @param initialSelection the initally selected font size ratio, default 100%
 	 * @return this builder
 	 */
-	FontSizeSelectionDialogBuilder initialSelection(int initialSelection);
+	ScalingSelectionDialogBuilder initialSelection(int initialSelection);
 
 	/**
-	 * Displays a dialog allowing the user the select a font size multiplier.
-	 * @param selectedFontSize called when the OK button is pressed
+	 * Displays a dialog allowing the user the select a scaling multiplier.
+	 * @param scalingSelected called when the OK button is pressed
 	 */
-	void selectFontSize(Consumer<Integer> selectedFontSize);
+	void selectScaling(Consumer<Integer> scalingSelected);
 
 	/**
-	 * Creates a {@link Control} for selecting the font size.
-	 * @param selectedFontSize called when the OK button is pressed
-	 * @return a Control for displaying a dialog for selecting a font size
+	 * Creates a {@link Control} for selecting the scaling.
+	 * @param scalingSelected called when the OK button is pressed
+	 * @return a Control for displaying a dialog for selecting a scaling
 	 */
-	Control createControl(Consumer<Integer> selectedFontSize);
+	Control createControl(Consumer<Integer> scalingSelected);
 }

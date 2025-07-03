@@ -32,8 +32,8 @@ import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.ExceptionDialogBuilder;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
-import is.codion.swing.common.ui.font.FontSize;
 import is.codion.swing.common.ui.icon.Icons;
+import is.codion.swing.common.ui.scaler.Scaler;
 import is.codion.swing.common.ui.window.Windows;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
@@ -137,7 +137,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		this.defaultUser = preferences.defaultLoginUser();
 		this.frameSize = preferences.frameSize();
 		this.maximizeFrame = preferences.frameMaximized();
-		FontSize.RATIO.set(preferences.fontSize());
+		Scaler.RATIO.set(preferences.scaling());
 	}
 
 	@Override
@@ -389,8 +389,8 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
 	private void configureIcons() {
 		int logoSize = DEFAULT_LOGO_SIZE;
-		if (preferences.fontSize() != 100) {
-			float ratio = preferences.fontSize() / 100f;
+		if (preferences.scaling() != 100) {
+			float ratio = preferences.scaling() / 100f;
 			Icons.ICON_SIZE.map(iconSize -> Math.round(iconSize * ratio));
 			logoSize = Math.round(logoSize * ratio);
 		}

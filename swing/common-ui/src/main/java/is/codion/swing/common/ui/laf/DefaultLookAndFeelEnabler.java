@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.laf;
 
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.font.FontSize;
+import is.codion.swing.common.ui.scaler.Scaler;
 
 import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
@@ -114,7 +114,7 @@ final class DefaultLookAndFeelEnabler implements LookAndFeelEnabler {
 		public void accept(LookAndFeelInfo lookAndFeelInfo) {
 			try {
 				UIManager.setLookAndFeel(requireNonNull(lookAndFeelInfo).getClassName());
-				FontSize.updateFontSize();
+				Scaler.instance(lookAndFeelInfo.getClassName()).ifPresent(Scaler::apply);
 				Utilities.updateComponentTreeForAllWindows();
 			}
 			catch (Exception e) {
