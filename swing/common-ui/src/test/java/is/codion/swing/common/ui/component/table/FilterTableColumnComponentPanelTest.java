@@ -62,7 +62,8 @@ public class FilterTableColumnComponentPanelTest {
 										.columns(columns)
 										.build();
 		FilterTable<Object, Integer> table =
-						FilterTable.builder(tableModel)
+						FilterTable.builder()
+										.model(tableModel)
 										.columns(asList(column0, column1, column2))
 										.build();
 		FilterTableColumnModel<Integer> columnModel = table.columnModel();
@@ -78,7 +79,8 @@ public class FilterTableColumnComponentPanelTest {
 										.columns(columns)
 										.build();
 		FilterTable<Object, Integer> table =
-						FilterTable.builder(tableModel)
+						FilterTable.builder()
+										.model(tableModel)
 										.columns(asList(column0, column1, column2))
 										.build();
 		FilterTableColumnModel<Integer> columnModel = table.columnModel();
@@ -104,7 +106,8 @@ public class FilterTableColumnComponentPanelTest {
 										.columns(columns)
 										.build();
 		FilterTable<Object, Integer> table =
-						FilterTable.builder(tableModel)
+						FilterTable.builder()
+										.model(tableModel)
 										.columns(asList(column0, column1, column2))
 										.build();
 		FilterTableColumnModel<Integer> columnModel = table.columnModel();

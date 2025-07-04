@@ -911,7 +911,8 @@ public final class EntitySearchField extends HintTextField {
 							new SwingEntityTableModel(searchField.model.entityDefinition().type(),
 											emptyList(), searchField.model.connectionProvider());
 
-			FilterTable<Entity, Attribute<?>> filterTable = FilterTable.builder(tableModel)
+			FilterTable<Entity, Attribute<?>> filterTable = FilterTable.builder()
+							.model(tableModel)
 							.columns(entityTableColumns(tableModel.entityDefinition()))
 							.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 							.cellRendererFactory(EntityTableCellRenderer.factory())

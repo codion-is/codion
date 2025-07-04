@@ -68,7 +68,8 @@ public final class ClientMonitorPanel extends JPanel {
 	 */
 	public ClientMonitorPanel(ClientMonitor model) {
 		this.model = model;
-		clientInstanceTable = FilterTable.builder(model.clientInstanceTableModel())
+		clientInstanceTable = FilterTable.builder()
+						.model(model.clientInstanceTableModel())
 						.columns(createColumns())
 						.popupMenu(this::createPopupMenu)
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)

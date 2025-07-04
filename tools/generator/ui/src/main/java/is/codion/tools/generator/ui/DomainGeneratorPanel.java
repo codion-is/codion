@@ -176,7 +176,8 @@ public final class DomainGeneratorPanel extends JPanel {
 						.enabled(model.schemaModel().selection().empty().not())
 						.build();
 
-		return FilterTable.builder(model.schemaModel())
+		return FilterTable.builder()
+						.model(model.schemaModel())
 						.columns(createSchemaColumns())
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.doubleClick(populateSchemaControl)
@@ -195,7 +196,8 @@ public final class DomainGeneratorPanel extends JPanel {
 	}
 
 	private FilterTable<EntityRow, EntityColumns.Id> createEntityTable() {
-		return FilterTable.builder(model.entityModel())
+		return FilterTable.builder()
+						.model(model.entityModel())
 						.columns(createEntityColumns())
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.popupMenuControl(FilterTable::createToggleAutoResizeModeControls)

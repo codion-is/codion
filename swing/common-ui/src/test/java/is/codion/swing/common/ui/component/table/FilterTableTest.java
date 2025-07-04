@@ -76,7 +76,7 @@ public class FilterTableTest {
 	}
 
 	private static FilterTable<TestRow, Integer> createTestTable(Comparator<String> customComparator) {
-		return FilterTable.builder(createTestModel(customComparator)).columns(createColumns()).build();
+		return FilterTable.builder().model(createTestModel(customComparator)).columns(createColumns()).build();
 	}
 
 	private static FilterTableModel<TestRow, Integer> createTestModel(Comparator<String> customComparator) {
@@ -120,12 +120,12 @@ public class FilterTableTest {
 
 	@Test
 	void builderNullTableModel() {
-		assertThrows(Exception.class, () -> FilterTable.builder(null));
+		assertThrows(Exception.class, () -> FilterTable.builder().model(null));
 	}
 
 	@Test
 	void builderNullColumns() {
-		assertThrows(Exception.class, () -> FilterTable.builder(createTestModel(null)).columns(null));
+		assertThrows(Exception.class, () -> FilterTable.builder().model(createTestModel(null)).columns(null));
 	}
 
 	@Test
@@ -157,7 +157,8 @@ public class FilterTableTest {
 														asList("dlabo", "hidden")))
 										.build();
 
-		FilterTable<List<String>, Integer> filterTable = FilterTable.builder(tableModel)
+		FilterTable<List<String>, Integer> filterTable = FilterTable.builder()
+						.model(tableModel)
 						.columns(asList(filterTableColumn(0), filterTableColumn(1)))
 						.build();
 		filterTable.columnModel().visible(1).set(false);
@@ -245,7 +246,8 @@ public class FilterTableTest {
 											}
 										}).supplier(() -> items).build();
 
-		FilterTable<Row, Integer> table = FilterTable.builder(testModel)
+		FilterTable<Row, Integer> table = FilterTable.builder()
+						.model(testModel)
 						.columns(asList(columnId, columnValue))
 						.build();
 		testModel.items().refresh();
@@ -514,7 +516,8 @@ public class FilterTableTest {
 							}
 						})
 						.build();
-		assertThrows(IllegalArgumentException.class, () -> FilterTable.builder(model)
+		assertThrows(IllegalArgumentException.class, () -> FilterTable.builder()
+						.model(model)
 						.columns(asList(
 										filterTableColumn(0, 0),
 										filterTableColumn(0, 1)
@@ -541,21 +544,24 @@ public class FilterTableTest {
 							}
 						})
 						.build();
-		assertThrows(IllegalArgumentException.class, () -> FilterTable.builder(model)
+		assertThrows(IllegalArgumentException.class, () -> FilterTable.builder()
+						.model(model)
 						.columns(asList(
 										filterTableColumn(0, 0),
 										filterTableColumn(1, 1),
 										filterTableColumn(2, 4),
 										filterTableColumn(3, 3)
 						)));
-		assertThrows(IllegalArgumentException.class, () -> FilterTable.builder(model)
+		assertThrows(IllegalArgumentException.class, () -> FilterTable.builder()
+						.model(model)
 						.columns(asList(
 										filterTableColumn(0, -1),
 										filterTableColumn(3, 0),
 										filterTableColumn(2, 1),
 										filterTableColumn(1, 2)
 						)));
-		assertThrows(IllegalArgumentException.class, () -> FilterTable.builder(model)
+		assertThrows(IllegalArgumentException.class, () -> FilterTable.builder()
+						.model(model)
 						.columns(asList(
 										filterTableColumn(0, 42),
 										filterTableColumn(1, 0),
@@ -594,7 +600,8 @@ public class FilterTableTest {
 		FilterTableCellRenderer<Object> zeroRenderer = FilterTableCellRenderer.builder(Object.class).build();
 		FilterTableCellRenderer<Object> oneRenderer = FilterTableCellRenderer.builder(Object.class).build();
 
-		FilterTable<Object, Integer> table = FilterTable.builder(model)
+		FilterTable<Object, Integer> table = FilterTable.builder()
+						.model(model)
 						.columns(tableColumns)
 						.cellRenderer(0, zeroRenderer)
 						.cellRendererFactory((identifier, tableModel) -> oneRenderer)
@@ -609,7 +616,8 @@ public class FilterTableTest {
 
 	@Test
 	void scrollToAdded() {
-		FilterTable<TestRow, Integer> table = FilterTable.builder(createTestModel(null))
+		FilterTable<TestRow, Integer> table = FilterTable.builder()
+						.model(createTestModel(null))
 						.columns(createColumns())
 						.scrollToAddedItem(true)
 						.build();

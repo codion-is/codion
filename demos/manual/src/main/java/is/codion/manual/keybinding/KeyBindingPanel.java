@@ -58,7 +58,8 @@ public final class KeyBindingPanel extends JPanel {
 	public KeyBindingPanel() {
 		super(borderLayout());
 		this.keyBindingModel = new KeyBindingModel(lookAndFeelComboBox.getModel());
-		this.table = FilterTable.builder(keyBindingModel.tableModel())
+		this.table = FilterTable.builder()
+						.model(keyBindingModel.tableModel())
 						.columns(createColumns())
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.build();

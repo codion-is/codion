@@ -131,7 +131,8 @@ public final class ClientUserMonitorPanel extends JPanel {
 										.build())
 						.build();
 
-		FilterTable<?, ?> userHistoryTable = FilterTable.builder(model.userHistoryTableModel())
+		FilterTable<?, ?> userHistoryTable = FilterTable.builder()
+						.model(model.userHistoryTableModel())
 						.columns(createUserHistoryColumns())
 						.popupMenuControls(table -> Controls.builder()
 										.control(Controls.builder()

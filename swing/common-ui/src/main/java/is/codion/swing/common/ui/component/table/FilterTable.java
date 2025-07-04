@@ -119,10 +119,10 @@ import static javax.swing.KeyStroke.getKeyStrokeForEvent;
 /**
  * A JTable implementation for {@link FilterTableModel}.
  * Note that for the table header to display you must add this table to a JScrollPane.
- * For instances use the builder {@link #builder(FilterTableModel)}
+ * For instances use the builder {@link #builder()}
  * @param <R> the type representing rows
  * @param <C> the type used to identify columns
- * @see #builder(FilterTableModel)
+ * @see #builder()
  */
 public final class FilterTable<R, C> extends JTable {
 
@@ -681,15 +681,11 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	/**
-	 * Instantiates a new {@link FilterTable.Builder} using the given model
-	 * @param tableModel the table model
-	 * @param <R> the type representing rows
-	 * @param <C> the type used to identify columns
-	 * @return a new {@link FilterTable.Builder} instance
-	 * @throws IllegalArgumentException in case the column identifiers are not unique
+	 * Instantiates a new {@link FilterTable.Builder.Model}
+	 * @return a new {@link FilterTable.Builder.Model} instance
 	 */
-	public static <R, C> Builder.Columns<R, C> builder(FilterTableModel<R, C> tableModel) {
-		return new DefaultColumns<>(tableModel);
+	public static Builder.Model builder() {
+		return new DefaultModel();
 	}
 
 	@Override
@@ -1110,6 +1106,18 @@ public final class FilterTable<R, C> extends JTable {
 	public interface Builder<R, C> extends ComponentBuilder<Void, FilterTable<R, C>, Builder<R, C>> {
 
 		/**
+		 * Provides a {@link Builder} instance based on a given table model
+		 */
+		interface Model {
+
+			/**
+			 * @param model the table model
+			 * @return a {@link Builder} based on the given columns
+			 */
+			<R, C> Columns<R, C> model(FilterTableModel<R, C> model);
+		}
+
+		/**
 		 * @param <R> the type representing rows
 		 * @param <C> the type used to identify columns
 		 */
@@ -1327,12 +1335,20 @@ public final class FilterTable<R, C> extends JTable {
 		String get();
 	}
 
+	private static class DefaultModel implements Builder.Model {
+
+		@Override
+		public <R, C> Builder.Columns<R, C> model(FilterTableModel<R, C> model) {
+			return new DefaultColumns<>(requireNonNull(model));
+		}
+	}
+
 	private static class DefaultColumns<R, C> implements Builder.Columns<R, C> {
 
 		private final FilterTableModel<R, C> tableModel;
 
 		private DefaultColumns(FilterTableModel<R, C> tableModel) {
-			this.tableModel = requireNonNull(tableModel);
+			this.tableModel = tableModel;
 		}
 
 		@Override
