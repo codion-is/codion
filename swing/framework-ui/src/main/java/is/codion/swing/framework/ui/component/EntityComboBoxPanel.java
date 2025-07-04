@@ -76,30 +76,37 @@ public final class EntityComboBoxPanel extends JPanel {
 
 	/**
 	 * @param comboBoxModel the combo box model
-	 * @param editPanel the edit panel supplier
-	 * @return a new builder instance
+	 * @return a new {@link Builder.EditPanel} instance
 	 */
-	public static Builder builder(EntityComboBoxModel comboBoxModel,
-																Supplier<EntityEditPanel> editPanel) {
-		return new DefaultBuilder(comboBoxModel, editPanel, null);
+	public static Builder.EditPanel builder(EntityComboBoxModel comboBoxModel) {
+		return new DefaultEditPanel(requireNonNull(comboBoxModel), null);
 	}
 
 	/**
 	 * @param comboBoxModel the combo box model
-	 * @param editPanel the edit panel supplier
 	 * @param linkedValue the linked value
-	 * @return a new builder instance
+	 * @return a new {@link Builder.EditPanel} instance
 	 */
-	public static Builder builder(EntityComboBoxModel comboBoxModel,
-																Supplier<EntityEditPanel> editPanel,
-																Value<Entity> linkedValue) {
-		return new DefaultBuilder(comboBoxModel, editPanel, requireNonNull(linkedValue));
+	public static Builder.EditPanel builder(EntityComboBoxModel comboBoxModel, Value<Entity> linkedValue) {
+		return new DefaultEditPanel(requireNonNull(comboBoxModel), requireNonNull(linkedValue));
 	}
 
 	/**
 	 * A builder for a {@link EntityComboBoxPanel}
 	 */
 	public interface Builder extends ComponentBuilder<Entity, EntityComboBoxPanel, Builder> {
+
+		/**
+		 * Provides a {@link Builder}
+		 */
+		interface EditPanel {
+
+			/**
+			 * @param editPanel the edit panel supplier
+			 * @return a new builder instance
+			 */
+			Builder editPanel(Supplier<EntityEditPanel> editPanel);
+		}
 
 		/**
 		 * @param includeAddButton true if an 'Add' button should be included
@@ -163,6 +170,22 @@ public final class EntityComboBoxPanel extends JPanel {
 		@Override
 		public void focusGained(FocusEvent e) {
 			comboBox.requestFocusInWindow();
+		}
+	}
+
+	private static class DefaultEditPanel implements Builder.EditPanel {
+
+		private final EntityComboBoxModel comboBoxModel;
+		private final Value<Entity> linkedValue;
+
+		private DefaultEditPanel(EntityComboBoxModel comboBoxModel, Value<Entity> linkedValue) {
+			this.comboBoxModel = comboBoxModel;
+			this.linkedValue = linkedValue;
+		}
+
+		@Override
+		public Builder editPanel(Supplier<EntityEditPanel> editPanel) {
+			return new DefaultBuilder(comboBoxModel, editPanel, linkedValue);
 		}
 	}
 

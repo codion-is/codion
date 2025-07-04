@@ -215,7 +215,8 @@ public final class EntityComponents {
 																									 Supplier<EntityEditPanel> editPanel) {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
-		return EntityComboBoxPanel.builder(comboBoxModel, editPanel)
+		return EntityComboBoxPanel.builder(comboBoxModel)
+						.editPanel(editPanel)
 						.toolTipText(foreignKeyDefinition.description().orElse(null));
 	}
 
