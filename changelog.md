@@ -64,6 +64,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - ApplicationPreferences.fromString() bug fixed, FRAME_MAXIMIZED_KEY now used.
 - EntityComboBoxPanel.Builder.EditPanel added, replacing the editPanel parameter in EntityComboBoxPanel.builder().
+- EntitySearchFieldPanel.Builder.EditPanel added, replacing the editPanel parameter in EntitySearchFieldPanel.builder().
 ### is.codion.framework.lambda
 - LambdaEntityHandler refactored.
 

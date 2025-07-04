@@ -80,18 +80,28 @@ public final class EntitySearchFieldPanel extends JPanel {
 
 	/**
 	 * @param entitySearchModel the search model
-	 * @param editPanel the edit panel supplier
 	 * @return a new builder factory instance
 	 */
-	public static Builder.Factory builder(EntitySearchModel entitySearchModel,
-																				Supplier<EntityEditPanel> editPanel) {
-		return new DefaultBuilderFactory(requireNonNull(entitySearchModel), requireNonNull(editPanel));
+	public static Builder.EditPanel builder(EntitySearchModel entitySearchModel) {
+		return new DefaultEditPanel(requireNonNull(entitySearchModel));
 	}
 
 	/**
 	 * A builder for a {@link EntitySearchFieldPanel}
 	 */
 	public interface Builder<T, B extends Builder<T, B>> extends ComponentBuilder<T, EntitySearchFieldPanel, B> {
+
+		/**
+		 * Provides a {@link Builder}
+		 */
+		interface EditPanel {
+
+			/**
+			 * @param editPanel the edit panel supplier
+			 * @return a new builder instance
+			 */
+			Builder.Factory editPanel(Supplier<EntityEditPanel> editPanel);
+		}
 
 		/**
 		 * @param includeSearchButton true if a search button should be included
@@ -102,16 +112,12 @@ public final class EntitySearchFieldPanel extends JPanel {
 		/**
 		 * @param includeAddButton true if an 'Add' button should be included
 		 * @return this builder instance
-		 * @throws IllegalStateException in case no edit panel supplier is available
-		 * @see EntitySearchFieldPanel#builder(EntitySearchModel, Supplier)
 		 */
 		Builder<T, B> includeAddButton(boolean includeAddButton);
 
 		/**
 		 * @param includeEditButton true if an 'Edit' button should be included
 		 * @return this builder instance
-		 * @throws IllegalStateException in case no edit panel supplier is available
-		 * @see EntitySearchFieldPanel#builder(EntitySearchModel, Supplier)
 		 */
 		Builder<T, B> includeEditButton(boolean includeEditButton);
 
@@ -279,6 +285,20 @@ public final class EntitySearchFieldPanel extends JPanel {
 		@Override
 		public void focusGained(FocusEvent e) {
 			searchField.requestFocusInWindow();
+		}
+	}
+
+	private static class DefaultEditPanel implements Builder.EditPanel {
+
+		private final EntitySearchModel entitySearchModel;
+
+		private DefaultEditPanel(EntitySearchModel entitySearchModel) {
+			this.entitySearchModel = entitySearchModel;
+		}
+
+		@Override
+		public Builder.Factory editPanel(Supplier<EntityEditPanel> editPanel) {
+			return new DefaultBuilderFactory(entitySearchModel, requireNonNull(editPanel));
 		}
 	}
 
