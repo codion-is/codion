@@ -342,7 +342,15 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 	}
 
-	static final class DefaultBuilder<R, C> implements Builder<R, C> {
+	static final class DefaultColumns implements Builder.Columns {
+
+		@Override
+		public <R, C> Builder<R, C> columns(TableColumns<R, C> columns) {
+			return new DefaultBuilder<>(columns);
+		}
+	}
+
+	private static final class DefaultBuilder<R, C> implements Builder<R, C> {
 
 		private final TableColumns<R, C> columns;
 
@@ -354,7 +362,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		private Function<FilterTableModel<R, C>, RowEditor<R, C>> rowEditorFactory = new DefaultRowEditorFactory<>();
 		private Predicate<R> visiblePredicate;
 
-		DefaultBuilder(TableColumns<R, C> columns) {
+		private DefaultBuilder(TableColumns<R, C> columns) {
 			if (requireNonNull(columns).identifiers().isEmpty()) {
 				throw new IllegalArgumentException("No columns specified");
 			}

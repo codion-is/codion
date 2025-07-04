@@ -106,7 +106,8 @@ public final class DefaultFilterTableModelTest {
 	}
 
 	private static FilterTableModel<TestRow, Integer> createTestModel() {
-		return FilterTableModel.builder(new TestColumns())
+		return FilterTableModel.builder()
+						.columns(new TestColumns())
 						.supplier(() -> ITEMS)
 						.build();
 	}
@@ -118,22 +119,23 @@ public final class DefaultFilterTableModelTest {
 
 	@Test
 	void nonUniqueColumnIdentifiers() {
-		assertThrows(IllegalArgumentException.class, () -> FilterTableModel.builder(new TableColumns<Object, Object>() {
-			@Override
-			public List<Object> identifiers() {
-				return List.of(0, 1, 0);
-			}
+		assertThrows(IllegalArgumentException.class, () -> FilterTableModel.builder()
+						.columns(new TableColumns<Object, Object>() {
+							@Override
+							public List<Object> identifiers() {
+								return List.of(0, 1, 0);
+							}
 
-			@Override
-			public Class<?> columnClass(Object o) {
-				return Object.class;
-			}
+							@Override
+							public Class<?> columnClass(Object o) {
+								return Object.class;
+							}
 
-			@Override
-			public Object value(Object row, Object o) {
-				return null;
-			}
-		}));
+							@Override
+							public Object value(Object row, Object o) {
+								return null;
+							}
+						}));
 	}
 
 	@Test
@@ -177,13 +179,13 @@ public final class DefaultFilterTableModelTest {
 
 	@Test
 	void nullColumns() {
-		assertThrows(NullPointerException.class, () -> FilterTableModel.<String, Integer>builder(null));
+		assertThrows(NullPointerException.class, () -> FilterTableModel.<String, Integer>builder().columns(null));
 	}
 
 	@Test
 	void noColumns() {
 		assertThrows(IllegalArgumentException.class, () ->
-						FilterTableModel.<String, Integer>builder(new TableColumns<String, Integer>() {
+						FilterTableModel.builder().columns(new TableColumns<String, Integer>() {
 							@Override
 							public List<Integer> identifiers() {
 								return emptyList();
@@ -226,7 +228,8 @@ public final class DefaultFilterTableModelTest {
 		AtomicInteger selectionEvents = new AtomicInteger();
 		List<TestRow> items = new ArrayList<>(ITEMS);
 		FilterTableModel<TestRow, Integer> testModel =
-						FilterTableModel.<TestRow, Integer>builder(new TestColumns())
+						FilterTableModel.builder()
+										.columns(new TestColumns())
 										.supplier(() -> items)
 										.build();
 		testModel.selection().indexes().addListener(selectionEvents::incrementAndGet);
@@ -795,7 +798,8 @@ public final class DefaultFilterTableModelTest {
 				items.replace(row, new TestRow((String) value));
 			}
 		}
-		FilterTableModel<TestRow, Integer> model = FilterTableModel.builder(new TestColumns())
+		FilterTableModel<TestRow, Integer> model = FilterTableModel.builder()
+						.columns(new TestColumns())
 						.supplier(() -> ITEMS)
 						.rowEditor(ItemEditor::new)
 						.build();

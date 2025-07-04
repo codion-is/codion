@@ -57,7 +57,8 @@ public final class ClientUserMonitor {
 	private final Value<Integer> idleConnectionTimeoutValue;
 	private final ClientMonitor clientMonitor;
 	private final FilterTableModel<UserInfo, UserHistoryColumns.Id> userHistoryTableModel =
-					FilterTableModel.builder(new UserHistoryColumns())
+					FilterTableModel.builder()
+									.columns(new UserHistoryColumns())
 									.supplier(new UserHistoryItems())
 									.refreshStrategy(MERGE)
 									.build();

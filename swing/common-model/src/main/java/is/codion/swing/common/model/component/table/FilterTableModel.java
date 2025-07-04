@@ -40,7 +40,7 @@ import static is.codion.swing.common.model.component.table.DefaultFilterTableMod
  * A {@link FilterTableModel} can not contain null items.
  * @param <R> the type representing the rows in this table model
  * @param <C> the type used to identify columns in this table model, Integer for indexed identification for example
- * @see #builder(TableColumns)
+ * @see #builder()
  */
 public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 
@@ -93,14 +93,10 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 
 	/**
 	 * Instantiates a new table model builder.
-	 * @param columns the columns
-	 * @param <R> the row type
-	 * @param <C> the column identifier type
 	 * @return a new builder instance
-	 * @throws NullPointerException in case {@code columnValues} is null
 	 */
-	static <R, C> Builder<R, C> builder(TableColumns<R, C> columns) {
-		return new DefaultFilterTableModel.DefaultBuilder<>(columns);
+	static Builder.Columns builder() {
+		return new DefaultFilterTableModel.DefaultColumns();
 	}
 
 	/**
@@ -150,6 +146,21 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	 * @param <C> the column identifer type
 	 */
 	interface Builder<R, C> {
+
+		/**
+		 * Provides a {@link Builder} instance
+		 */
+		interface Columns {
+
+			/**
+			 * @param <R> the type representing rows
+			 * @param <C> the type used to identify columns
+			 * @param columns the columns
+			 * @return a {@link Builder} based on the given columns
+			 * @throws NullPointerException in case {@code columnValues} is null
+			 */
+			<R, C> Builder<R, C> columns(TableColumns<R, C> columns);
+		}
 
 		/**
 		 * @param filters the column filter model factory

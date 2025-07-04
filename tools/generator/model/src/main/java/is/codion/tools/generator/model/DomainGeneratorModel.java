@@ -74,12 +74,14 @@ public final class DomainGeneratorModel {
 					Pattern.compile("^[A-Za-z_][A-Za-z0-9_]*(?:\\.[A-Za-z_][A-Za-z0-9_]*)*$");
 
 	private final FilterTableModel<SchemaRow, SchemaColumns.Id> schemaTableModel =
-					FilterTableModel.builder(new SchemaColumns())
+					FilterTableModel.builder()
+									.columns(new SchemaColumns())
 									.supplier(new SchemaItems())
 									.build();
 	private final State populatedSchemaSelected = State.state();
 	private final FilterTableModel<EntityRow, EntityColumns.Id> entityTableModel =
-					FilterTableModel.builder(new EntityColumns())
+					FilterTableModel.builder()
+									.columns(new EntityColumns())
 									.supplier(new EntityItems())
 									.build();
 	private final Database database;

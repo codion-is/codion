@@ -80,7 +80,8 @@ public class FilterTableTest {
 	}
 
 	private static FilterTableModel<TestRow, Integer> createTestModel(Comparator<String> customComparator) {
-		return FilterTableModel.<TestRow, Integer>builder(new FilterTableModel.TableColumns<TestRow, Integer>() {
+		return FilterTableModel.builder()
+						.columns(new FilterTableModel.TableColumns<TestRow, Integer>() {
 							@Override
 							public List<Integer> identifiers() {
 								return singletonList(0);
@@ -147,7 +148,8 @@ public class FilterTableTest {
 		};
 
 		FilterTableModel<List<String>, Integer> tableModel =
-						FilterTableModel.<List<String>, Integer>builder(columns)
+						FilterTableModel.builder()
+										.columns(columns)
 										.supplier(() -> asList(
 														asList("darri", "hidden"),
 														asList("dac", "hidden"),
@@ -221,26 +223,27 @@ public class FilterTableTest {
 		);
 
 		FilterTableModel<Row, Integer> testModel =
-						FilterTableModel.<Row, Integer>builder(new FilterTableModel.TableColumns<Row, Integer>() {
-							@Override
-							public List<Integer> identifiers() {
-								return asList(0, 1);
-							}
+						FilterTableModel.builder()
+										.columns(new FilterTableModel.TableColumns<Row, Integer>() {
+											@Override
+											public List<Integer> identifiers() {
+												return asList(0, 1);
+											}
 
-							@Override
-							public Class<?> columnClass(Integer identifier) {
-								return String.class;
-							}
+											@Override
+											public Class<?> columnClass(Integer identifier) {
+												return String.class;
+											}
 
-							@Override
-							public Object value(Row row, Integer identifier) {
-								if (identifier == 0) {
-									return row.id;
-								}
+											@Override
+											public Object value(Row row, Integer identifier) {
+												if (identifier == 0) {
+													return row.id;
+												}
 
-								return row.value;
-							}
-						}).supplier(() -> items).build();
+												return row.value;
+											}
+										}).supplier(() -> items).build();
 
 		FilterTable<Row, Integer> table = FilterTable.builder(testModel)
 						.columns(asList(columnId, columnValue))
@@ -493,7 +496,8 @@ public class FilterTableTest {
 
 	@Test
 	void nonUniqueColumnIdentifiers() {
-		FilterTableModel<Object, Integer> model = FilterTableModel.builder(new FilterTableModel.TableColumns<Object, Integer>() {
+		FilterTableModel<Object, Integer> model = FilterTableModel.builder()
+						.columns(new FilterTableModel.TableColumns<Object, Integer>() {
 							@Override
 							public List<Integer> identifiers() {
 								return List.of(0, 1);
@@ -519,7 +523,8 @@ public class FilterTableTest {
 
 	@Test
 	void invalidColumnModelIndexes() {
-		FilterTableModel<Object, Integer> model = FilterTableModel.builder(new FilterTableModel.TableColumns<Object, Integer>() {
+		FilterTableModel<Object, Integer> model = FilterTableModel.builder()
+						.columns(new FilterTableModel.TableColumns<Object, Integer>() {
 							@Override
 							public List<Integer> identifiers() {
 								return List.of(0, 1, 2, 3);
@@ -581,7 +586,9 @@ public class FilterTableTest {
 						FilterTableColumn.builder(0).build(),
 						FilterTableColumn.builder(1).build());
 
-		FilterTableModel<Object, Integer> model = FilterTableModel.builder(columns).build();
+		FilterTableModel<Object, Integer> model = FilterTableModel.builder()
+						.columns(columns)
+						.build();
 		model.items().add(1);
 
 		FilterTableCellRenderer<Object> zeroRenderer = FilterTableCellRenderer.builder(Object.class).build();

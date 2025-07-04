@@ -122,7 +122,8 @@ public final class FilterTableModelDemo {
 		// Build the table model, providing the TableColumns
 		// implementation along with the item supplier and row editor.
 		FilterTableModel<Person, String> tableModel =
-						FilterTableModel.builder(new PersonColumns())
+						FilterTableModel.builder()
+										.columns(new PersonColumns())
 										.supplier(supplier)
 										.rowEditor(PersonEditor::new)
 										.build();

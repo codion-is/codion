@@ -29,6 +29,7 @@ Codion Change Log
 ### is.codion.swing.common.model
 - Unit tests improved.
 - ProgressWorker.BuilderFactory added, replacing overloaded ProgressWorker.builder() methods.
+- FilterTableModel.Builder.Columns added, replacing the columns parameter in FilterTableModel.builder().
 ### is.codion.swing.common.ui
 - Unit tests improved.
 - HintTextField.hintForegroundColor() bug fixed, returns null if either foreground or background is unspecified.

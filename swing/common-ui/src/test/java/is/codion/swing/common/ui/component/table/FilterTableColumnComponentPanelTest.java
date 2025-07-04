@@ -58,7 +58,9 @@ public class FilterTableColumnComponentPanelTest {
 	@Test
 	void wrongColumn() {
 		FilterTableModel<Object, Integer> tableModel =
-						FilterTableModel.builder(columns).build();
+						FilterTableModel.builder()
+										.columns(columns)
+										.build();
 		FilterTable<Object, Integer> table =
 						FilterTable.builder(tableModel)
 										.columns(asList(column0, column1, column2))
@@ -72,7 +74,9 @@ public class FilterTableColumnComponentPanelTest {
 	@Test
 	void setColumnVisible() {
 		FilterTableModel<Object, Integer> tableModel =
-						FilterTableModel.builder(columns).build();
+						FilterTableModel.builder()
+										.columns(columns)
+										.build();
 		FilterTable<Object, Integer> table =
 						FilterTable.builder(tableModel)
 										.columns(asList(column0, column1, column2))
@@ -96,7 +100,9 @@ public class FilterTableColumnComponentPanelTest {
 	@Test
 	void width() {
 		FilterTableModel<Object, Integer> tableModel =
-						FilterTableModel.builder(columns).build();
+						FilterTableModel.builder()
+										.columns(columns)
+										.build();
 		FilterTable<Object, Integer> table =
 						FilterTable.builder(tableModel)
 										.columns(asList(column0, column1, column2))

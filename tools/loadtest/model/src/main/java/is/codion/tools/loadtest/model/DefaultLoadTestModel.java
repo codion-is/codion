@@ -102,7 +102,8 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
 	DefaultLoadTestModel(LoadTest<T> loadTest) {
 		this.loadTest = requireNonNull(loadTest);
-		applicationTableModel = FilterTableModel.builder(new ApplicationColumns())
+		applicationTableModel = FilterTableModel.builder()
+						.columns(new ApplicationColumns())
 						.supplier(new ApplicationItems())
 						.build();
 		chartUpdateSchedulerEnabled = State.and(loadTest.paused().not(), collectChartData);

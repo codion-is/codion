@@ -39,7 +39,8 @@ public class FilterListSelectionTest {
 	public FilterListSelectionTest() {
 		List<String> data = asList("A", "B", "C");
 		FilterTableModel<String, Integer> tableModel =
-						FilterTableModel.builder(new FilterTableModel.TableColumns<String, Integer>() {
+						FilterTableModel.builder()
+										.columns(new FilterTableModel.TableColumns<String, Integer>() {
 											@Override
 											public List<Integer> identifiers() {
 												return singletonList(0);

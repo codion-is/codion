@@ -41,7 +41,8 @@ public final class ClientMonitor {
 	private final EntityServerAdmin server;
 
 	private final FilterTableModel<RemoteClient, RemoteClientColumns.Id> clientInstanceTableModel =
-					FilterTableModel.builder(new RemoteClientColumns())
+					FilterTableModel.builder()
+									.columns(new RemoteClientColumns())
 									.supplier(new RemoteClientItems())
 									.build();
 

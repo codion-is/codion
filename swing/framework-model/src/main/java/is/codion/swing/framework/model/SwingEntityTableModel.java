@@ -319,7 +319,8 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	}
 
 	private static FilterTableModel.Builder<Entity, Attribute<?>> tableModelBuilder(EntityDefinition definition) {
-		return FilterTableModel.builder(new EntityTableColumns(definition))
+		return FilterTableModel.builder()
+						.columns(new EntityTableColumns(definition))
 						.filters(new EntityColumnFilterFactory(definition))
 						.validator(new EntityItemValidator(definition.type()));
 	}
