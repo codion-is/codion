@@ -27,7 +27,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.List;
 
 /**
- * Defines a custom condition type that can be used to create complex SQL WHERE clauses 
+ * Defines a custom condition type that can be used to create complex SQL WHERE clauses
  * that cannot be expressed using the standard {@link Condition} API.
  * <p>
  * Custom conditions are particularly useful for:
@@ -46,14 +46,14 @@ import java.util.List;
  * // Define a custom condition type for finding tracks not in a playlist
  * interface Track {
  *     EntityType TYPE = DOMAIN.entityType("music.track");
- *     
+ *
  *     Column<Long> ID = TYPE.longColumn("id");
  *     Column<String> NAME = TYPE.stringColumn("name");
- *     
+ *
  *     // Define a custom condition for complex subquery logic
  *     ConditionType NOT_IN_PLAYLIST = TYPE.conditionType("not_in_playlist");
  * }
- * 
+ *
  * // In the entity definition, provide the SQL generation logic
  * EntityDefinition track() {
  *     return Track.TYPE.define(
@@ -61,34 +61,34 @@ import java.util.List;
  *                 .primaryKey(),
  *             Track.NAME.define()
  *                 .column())
- *         .condition(Track.NOT_IN_PLAYLIST, (columns, values) -> 
+ *         .condition(Track.NOT_IN_PLAYLIST, (columns, values) ->
  *             "track.id NOT IN (SELECT track_id FROM playlist_track WHERE playlist_id = ?)")
  *         .build();
  * }
- * 
+ *
  * // Usage - find tracks not in a specific playlist
  * Long playlistId = 42L;
  * List<Entity> tracks = connection.select(
  *     Track.NOT_IN_PLAYLIST.get(Playlist.ID, playlistId));
- * 
+ *
  * // Or with multiple playlists
  * List<Long> playlistIds = List.of(42L, 43L, 44L);
  * List<Entity> tracks = connection.select(
  *     Track.NOT_IN_PLAYLIST.get(Playlist.ID, playlistIds));
- * }
+ *}
  * <p>
  * Example with multiple columns:
  * {@snippet :
  * // Define a condition that uses multiple columns
  * ConditionType OVERLAPPING_DATES = TYPE.conditionType("overlapping_dates");
- * 
+ *
  * // In entity definition
  * .condition(Event.OVERLAPPING_DATES, (columns, values) -> {
  *     return "((start_date <= ? AND end_date >= ?) OR " +
  *            "(start_date <= ? AND end_date >= ?) OR " +
  *            "(start_date >= ? AND end_date <= ?))";
  * })
- * 
+ *
  * // Usage with multiple column/value pairs
  * List<Column<?>> columns = List.of(
  *     Event.START_DATE, Event.END_DATE,
@@ -98,26 +98,25 @@ import java.util.List;
  *     searchStart, searchStart,
  *     searchEnd, searchEnd,
  *     searchStart, searchEnd);
- * 
+ *
  * List<Entity> overlapping = connection.select(
  *     Event.OVERLAPPING_DATES.get(columns, values));
- * }
+ *}
  * <p>
  * Example with no columns (using only values):
  * {@snippet :
  * // Define a condition that doesn't need column references
  * ConditionType WITHIN_RADIUS = TYPE.conditionType("within_radius");
- * 
+ *
  * // In entity definition - values are: latitude, longitude, radius
  * .condition(Location.WITHIN_RADIUS, (columns, values) -> {
  *     return "ST_Distance(coordinates, ST_MakePoint(?, ?)) <= ?";
  * })
- * 
+ *
  * // Usage with just values
  * List<Entity> nearby = connection.select(
  *     Location.WITHIN_RADIUS.get(List.of(40.7128, -74.0060, 10.0)));
- * }
- * 
+ *}
  * @see CustomCondition
  * @see ConditionProvider
  * @see EntityDefinition#condition(ConditionType)

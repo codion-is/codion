@@ -44,7 +44,7 @@ import static is.codion.common.Configuration.integerValue;
  * try (EntityConnection connection = localEntityConnection(database, domain, user)) {
  *   List<Entity> customers = connection.select(Condition.all(Customer.TYPE));
  * }
- * }
+ *}
  * A factory for LocalEntityConnection instances.
  */
 public interface LocalEntityConnection extends EntityConnection {

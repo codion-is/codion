@@ -51,11 +51,11 @@ import static java.util.stream.Collectors.joining;
  *  }
  *
  *  void testStringFactory() {
- *			Entity department = createDepartment();// With name: Accounting
+ * 			Entity department = createDepartment();// With name: Accounting
  *  		Entity employee = createEmployee(department);// With name: John and the above department
  *
- *			Function<Entity, String> stringFactory =
- *					StringFactory.builder()
+ * 			Function<Entity, String> stringFactory =
+ * 					StringFactory.builder()
  *             .text("Name=")
  *             .value(Employee.NAME)
  *             .text(", Department='")
@@ -64,7 +64,7 @@ import static java.util.stream.Collectors.joining;
  *
  *  		System.out.println(stringFactory.apply(employee));
  * }
- * }
+ *}
  * Outputs the following String:
  * <p>
  * {@code Name=John, Department='Accounting'}<br><br>

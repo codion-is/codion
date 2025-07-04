@@ -154,8 +154,8 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 	}
 
 	/**
- * Builds a {@link LookAndFeelComboBox}
- */
+	 * Builds a {@link LookAndFeelComboBox}
+	 */
 	public interface Builder {
 
 		/**

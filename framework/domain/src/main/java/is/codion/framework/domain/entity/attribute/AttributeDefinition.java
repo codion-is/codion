@@ -128,9 +128,9 @@ public interface AttributeDefinition<T> {
 	/**
 	 * The suffix used for the mnemonic resource key.
 	 * <ul>
- 	 * <li>name=Name
- 	 * <li>name.mnemonic=N
- 	 * </ul>
+	 * <li>name=Name
+	 * <li>name.mnemonic=N
+	 * </ul>
 	 */
 	String MNEMONIC_RESOURCE_SUFFIX = ".mnemonic";
 
@@ -543,14 +543,14 @@ public interface AttributeDefinition<T> {
 		 */
 		B maximumLength(int maximumLength);
 
-    /**
-     * Specifies whether string values should be trimmed, this applies to String (varchar) based attributes.
-     * @param trim true if strings values should be trimmed
-     * @return this builder instance
+		/**
+		 * Specifies whether string values should be trimmed, this applies to String (varchar) based attributes.
+		 * @param trim true if strings values should be trimmed
+		 * @return this builder instance
 		 * @throws IllegalStateException in case this is not a String attribute
-     * @see String#trim()
+		 * @see String#trim()
 		 * @see #TRIM_STRINGS
-     */
+		 */
 		B trim(boolean trim);
 
 		/**

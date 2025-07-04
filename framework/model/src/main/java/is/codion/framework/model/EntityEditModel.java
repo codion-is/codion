@@ -630,7 +630,7 @@ public interface EntityEditModel {
 	 *   InsertEntities.Result result = task.perform();
 	 *
 	 *   Collection<Entity> insertedEntities = result.handle();
-	 * }
+	 *}
 	 * {@link Task#perform()} may be called on a background thread while {@link InsertEntities#prepare()}
 	 * and {@link Result#handle()} must be called on the UI thread.
 	 */
@@ -680,7 +680,7 @@ public interface EntityEditModel {
 	 *   UpdateEntities.Result result = task.perform();
 	 *
 	 *   Collection<Entity> updatedEntities = result.handle();
-	 * }
+	 *}
 	 * {@link Task#perform()} may be called on a background thread while {@link UpdateEntities#prepare()}
 	 * and {@link Result#handle()} must be called on the UI thread.
 	 */
@@ -730,7 +730,7 @@ public interface EntityEditModel {
 	 *   DeleteEntities.Result result = task.perform();
 	 *
 	 *   Collection<Entity> deletedEntities = result.handle();
-	 * }
+	 *}
 	 * {@link Task#perform()} may be called on a background thread while {@link DeleteEntities#prepare()}
 	 * and {@link Result#handle()} must be called on the UI thread.
 	 */

@@ -34,7 +34,7 @@ import java.util.function.Consumer;
  * <p>Events provide access to their {@link Observer} instance via {@link #observer()}, which can
  * be used to add listeners and consumers, but can not be used to trigger the event.
  * <p>Unhandled exceptions occurring in a listener will prevent further listeners from being notified.
- * <p><b>Thread Safety:</b> Listener and consumer management (add/remove) is thread-safe. 
+ * <p><b>Thread Safety:</b> Listener and consumer management (add/remove) is thread-safe.
  * However, event triggering via {@link #run()} or {@link #accept(Object)} is NOT thread-safe
  * and should be performed from a single thread (such as an application UI thread).</p>
  * {@snippet :
@@ -51,12 +51,12 @@ import java.util.function.Consumer;
  * Observer<Boolean> observer = event.observer();
  *
  * observer.addListener(this::doSomethingElse);
- * }
+ *}
  * <p>Listeners and Consumers can be added using a {@link java.lang.ref.WeakReference}.
  * {@snippet :
  * observer.addWeakListener(this::doSomethingElse);
  * observer.addWeakConsumer(this::onBoolean);
- * }
+ *}
  * <p>Any weak references that no longer refer to a listener/consumer instance
  * are cleared when listeners or consumers are added or removed.
  * <p>A factory for {@link Event} instances via {@link #event()}.

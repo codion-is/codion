@@ -20,7 +20,7 @@
  * <ul>
  * <li>{@link is.codion.tools.loadtest.LoadTest}
  * <li>{@link is.codion.tools.loadtest.randomizer.ItemRandomizer}
- * </ul> 
+ * </ul>
  */
 module is.codion.tools.loadtest.core {
 	requires org.slf4j;

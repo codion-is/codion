@@ -43,7 +43,7 @@ import java.util.Optional;
  *
  * pattern.dateTimePattern(iceland);// "dd-MM-yyyy HH:mm"
  * pattern.dateTimePattern(us)     ;// "MM-dd-yyyy HH:mm"
- * }
+ *}
  * @see #builder()
  */
 public interface LocaleDateTimePattern {

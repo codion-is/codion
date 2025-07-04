@@ -49,7 +49,7 @@ import static is.codion.common.Configuration.integerValue;
  *
  *   return connection.select(Employee.NAME.equalTo("John"));
  * });
- * }
+ *}
  * @see #entityQueryModel(EntityTableConditionModel)
  */
 public interface EntityQueryModel {

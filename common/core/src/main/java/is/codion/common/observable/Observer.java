@@ -63,8 +63,8 @@ public interface Observer<T> {
 	 * Uses a {@link java.lang.ref.WeakReference}, adding {@code listener} does not prevent it from being garbage collected.
 	 * Adding the same listener a second time has no effect.
 	 * <p>
-	 * Note: Dead weak references accumulate until cleaned up, which happens automatically 
-	 * when listeners are added or removed. To trigger cleanup manually without modifying 
+	 * Note: Dead weak references accumulate until cleaned up, which happens automatically
+	 * when listeners are added or removed. To trigger cleanup manually without modifying
 	 * the listener set, call {@link #removeWeakListener(Runnable)} with any non-existing listener:
 	 * <pre>
 	 * // Clean up dead weak references
@@ -86,8 +86,8 @@ public interface Observer<T> {
 	 * Uses a {@link java.lang.ref.WeakReference}, adding {@code consumer} does not prevent it from being garbage collected.
 	 * Adding the same consumer a second time has no effect.
 	 * <p>
-	 * Note: Dead weak references accumulate until cleaned up, which happens automatically 
-	 * when listeners are added or removed. To trigger cleanup manually without modifying 
+	 * Note: Dead weak references accumulate until cleaned up, which happens automatically
+	 * when listeners are added or removed. To trigger cleanup manually without modifying
 	 * the listener set, call {@link #removeWeakConsumer(Consumer)} with any non-existing consumer:
 	 * <pre>
 	 * // Clean up dead weak references

@@ -39,8 +39,8 @@ public interface FilterTableCellEditor<T> extends TableCellEditor {
 	/**
 	 * Creates a new default {@link FilterTableCellEditor} instance.
 	 * @param inputComponent supplies the input component
-	 * @return a new default {@link FilterTableCellEditor} instance
 	 * @param <T> the cell value type
+	 * @return a new default {@link FilterTableCellEditor} instance
 	 */
 	static <T> FilterTableCellEditor<T> filterTableCellEditor(Supplier<ComponentValue<T, ? extends JComponent>> inputComponent) {
 		return new DefaultFilterTableCellEditor<>(inputComponent);

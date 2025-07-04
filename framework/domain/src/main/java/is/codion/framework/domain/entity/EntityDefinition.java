@@ -120,30 +120,30 @@ public interface EntityDefinition {
 	 *     EntityType TYPE = DOMAIN.entityType("customer");
 	 *     Column<String> STATUS = TYPE.stringColumn("status");
 	 *     Column<LocalDate> LAST_ORDER_DATE = TYPE.localDateColumn("last_order_date");
-	 *     
+	 *
 	 *     // Custom condition for active customers
 	 *     ConditionType ACTIVE = ConditionType.custom("activeCustomers");
 	 * }
-	 * 
+	 *
 	 * // In domain definition
 	 * Customer.TYPE.define(
 	 *         Customer.STATUS.define()
 	 *             .column(),
 	 *         Customer.LAST_ORDER_DATE.define()
 	 *             .column())
-	 *     .condition(Customer.ACTIVE, (columns, values) -> 
+	 *     .condition(Customer.ACTIVE, (columns, values) ->
 	 *         // Returns customers with active status and recent activity
 	 *         Condition.and(
 	 *             Customer.STATUS.equalTo("ACTIVE"),
 	 *             Customer.LAST_ORDER_DATE.greaterThanOrEqualTo(LocalDate.now().minusMonths(6))
 	 *         ))
 	 *     .build();
-	 * 
+	 *
 	 * // Usage
 	 * Condition activeCondition = Customer.ACTIVE.get();
 	 *
 	 * List<Entity> activeCustomers = connection.select(activeCondition);
-	 * }
+	 *}
 	 * @param conditionType the condition type
 	 * @return the condition provider associated with the given type
 	 * @throws IllegalArgumentException in case no ConditionProvider is associated with the given conditionType
@@ -216,21 +216,21 @@ public interface EntityDefinition {
 	 *             .column(),
 	 *         Customer.EMAIL.define()
 	 *             .column())
-	 *     .stringFactory(customer -> 
-	 *         customer.get(Customer.LAST_NAME) + ", " + 
-	 *         customer.get(Customer.FIRST_NAME) + 
+	 *     .stringFactory(customer ->
+	 *         customer.get(Customer.LAST_NAME) + ", " +
+	 *         customer.get(Customer.FIRST_NAME) +
 	 *         " (" + customer.get(Customer.EMAIL) + ")")
 	 *     .build();
-	 * 
+	 *
 	 * // Usage
 	 * Entity customer = entities.builder(Customer.TYPE)
 	 *     .with(Customer.FIRST_NAME, "John")
 	 *     .with(Customer.LAST_NAME, "Doe")
 	 *     .with(Customer.EMAIL, "john@example.com")
 	 *     .build();
-	 * 
+	 *
 	 * System.out.println(customer); // "Doe, John (john@example.com)"
-	 * }
+	 *}
 	 * @return the function responsible for providing toString values for this entity type
 	 */
 	Function<Entity, String> stringFactory();
@@ -282,7 +282,7 @@ public interface EntityDefinition {
 	/**
 	 * Creates a new {@link Entity} instance based on this definition
 	 * @param values the initial values, an empty map in case of no values
- 	 * @param originalValues the original values, an empty map in case of no original values
+	 * @param originalValues the original values, an empty map in case of no original values
 	 * @return a new {@link Entity} instance
 	 * @throws IllegalArgumentException in case any of the value attributes are not part of the entity.
 	 */
@@ -410,7 +410,7 @@ public interface EntityDefinition {
 		 * stringFactory(StringFactory.builder()
 		 *           .value(attribute)
 		 *           .build())
-		 * }
+		 *}
 		 * @param attribute the attribute which value to use
 		 * @return this {@link Builder} instance
 		 */

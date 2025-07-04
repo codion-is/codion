@@ -47,11 +47,11 @@ import static java.util.Objects.requireNonNull;
  * {@snippet :
  * public class Store extends DefaultDomain {
  *     public static final DomainType DOMAIN = domainType(Store.class);
- *     
+ *
  *     // Define entity types as interfaces for organization
  *     public interface Customer {
  *         EntityType TYPE = DOMAIN.entityType("store.customer");
- *         
+ *
  *         // Define typed columns
  *         Column<Integer> ID = TYPE.integerColumn("id");
  *         Column<String> NAME = TYPE.stringColumn("name");
@@ -59,22 +59,22 @@ import static java.util.Objects.requireNonNull;
  *         Column<LocalDate> BIRTH_DATE = TYPE.localDateColumn("birth_date");
  *         Column<Boolean> ACTIVE = TYPE.booleanColumn("active");
  *     }
- *     
+ *
  *     public interface Order {
  *         EntityType TYPE = DOMAIN.entityType("store.order");
- *         
+ *
  *         Column<Integer> ID = TYPE.integerColumn("id");
  *         Column<LocalDateTime> ORDER_DATE = TYPE.localDateTimeColumn("order_date");
  *         Column<BigDecimal> TOTAL = TYPE.bigDecimalColumn("total");
- *         
+ *
  *         // Define foreign key to Customer
  *         Column<Integer> CUSTOMER_ID = TYPE.integerColumn("customer_id");
  *         ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
- *         
+ *
  *         // Custom condition type for filtering
  *         ConditionType RECENT = TYPE.conditionType("recent_orders");
  *     }
- *     
+ *
  *     // Constructor defines the entity structures
  *     public Store() {
  *         super(DOMAIN);
@@ -82,7 +82,7 @@ import static java.util.Objects.requireNonNull;
  *         defineOrder();
  *     }
  * }
- * }
+ *}
  * @see #define(AttributeDefinition.Builder...)
  * @see DomainType#entityType(String)
  */
@@ -141,10 +141,10 @@ public interface EntityType {
 	 *     .caption("Customer")
 	 *     .description("Customer information")
 	 *     .orderBy(ascending(Customer.NAME))
-	 *     .stringFactory(customer -> 
+	 *     .stringFactory(customer ->
 	 *         customer.get(Customer.NAME) + " (" + customer.get(Customer.EMAIL) + ")")
 	 *     .build();
-	 * }
+	 *}
 	 * @param definitionBuilders builders for the attribute definitions comprising the entity
 	 * @return a {@link EntityDefinition.Builder} instance
 	 * @throws IllegalArgumentException in case {@code definitionBuilders} is empty
@@ -383,15 +383,15 @@ public interface EntityType {
 	 * // Single column foreign key
 	 * interface Order {
 	 *     EntityType TYPE = DOMAIN.entityType("store.order");
-	 *     
+	 *
 	 *     Column<Integer> ID = TYPE.integerColumn("id");
 	 *     Column<Integer> CUSTOMER_ID = TYPE.integerColumn("customer_id");
-	 *     
+	 *
 	 *     // Define foreign key to Customer entity
-	 *     ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", 
+	 *     ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk",
 	 *         CUSTOMER_ID, Customer.ID);
 	 * }
-	 * 
+	 *
 	 * // Usage in entity definition
 	 * Order.TYPE.define(
 	 *         Order.ID.define()
@@ -402,7 +402,7 @@ public interface EntityType {
 	 *             .foreignKey()
 	 *             .caption("Customer"))
 	 *     .build();
-	 * }
+	 *}
 	 * @param name the attribute name
 	 * @param column the column
 	 * @param referencedColumn the referenced column
@@ -417,21 +417,21 @@ public interface EntityType {
 	 * // Composite foreign key (two columns)
 	 * interface OrderLine {
 	 *     EntityType TYPE = DOMAIN.entityType("store.order_line");
-	 *     
+	 *
 	 *     // Composite primary key columns
 	 *     Column<Integer> ORDER_ID = TYPE.integerColumn("order_id");
 	 *     Column<Integer> LINE_NUMBER = TYPE.integerColumn("line_number");
-	 *     
+	 *
 	 *     // Foreign key columns to ProductPrice (which has composite key)
 	 *     Column<Integer> PRODUCT_ID = TYPE.integerColumn("product_id");
 	 *     Column<LocalDate> PRICE_DATE = TYPE.localDateColumn("price_date");
-	 *     
+	 *
 	 *     // Composite foreign key
 	 *     ForeignKey PRODUCT_PRICE_FK = TYPE.foreignKey("product_price_fk",
 	 *         PRODUCT_ID, ProductPrice.PRODUCT_ID,
 	 *         PRICE_DATE, ProductPrice.EFFECTIVE_DATE);
 	 * }
-	 * }
+	 *}
 	 * @param name the column name
 	 * @param firstColumn the first column
 	 * @param firstReferencedColumn the first referenced column

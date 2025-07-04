@@ -18,7 +18,7 @@
  */
 /**
  * Framework Swing UI classes, such as:
- * <ul> 
+ * <ul>
  * <li>{@link is.codion.swing.framework.ui.EntityPanel}
  * <li>{@link is.codion.swing.framework.ui.EntityEditPanel}
  * <li>{@link is.codion.swing.framework.ui.EntityTablePanel}

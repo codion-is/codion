@@ -60,7 +60,7 @@ import static java.util.stream.Collectors.joining;
  * defaultUsername.set(null);
  *
  * String isFeatureEnabled = System.getProperty("feature.enabled"); // "false"
- * }
+ *}
  * <p>All implementations are thread-safe and support concurrent access.</p>
  */
 public interface PropertyStore {

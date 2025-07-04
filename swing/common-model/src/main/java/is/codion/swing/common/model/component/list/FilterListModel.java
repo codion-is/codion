@@ -48,34 +48,34 @@ public interface FilterListModel<T> extends ListModel<T>, FilterModel<T> {
 	FilterListSort<T> sort();
 
 	/**
-	 * @return a new {@link FilterListModel} instance
 	 * @param <T> the item type
+	 * @return a new {@link FilterListModel} instance
 	 */
 	static <T> FilterListModel<T> filterListModel() {
 		return FilterListModel.<T>builder().build();
 	}
 
 	/**
-	 * @return a new {@link FilterListModel} instance
 	 * @param items the items
 	 * @param <T> the item type
+	 * @return a new {@link FilterListModel} instance
 	 */
 	static <T> FilterListModel<T> filterListModel(Collection<T> items) {
 		return FilterListModel.builder(items).build();
 	}
 
 	/**
-	 * @return a new {@link Builder} instance
 	 * @param <T> the item type
+	 * @return a new {@link Builder} instance
 	 */
 	static <T> Builder<T> builder() {
 		return new DefaultBuilder<>(emptyList());
 	}
 
 	/**
-	 * @return a new {@link Builder} instance
 	 * @param items the items
 	 * @param <T> the item type
+	 * @return a new {@link Builder} instance
 	 */
 	static <T> Builder<T> builder(Collection<T> items) {
 		return new DefaultBuilder<>(requireNonNull(items));

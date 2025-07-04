@@ -96,7 +96,7 @@ import static javax.swing.SwingConstants.VERTICAL;
 
 /**
  * A panel representing an Entity via a EntityModel, which facilitates browsing and editing of records.
-  * {@snippet :
+ * {@snippet :
  *   EntityConnectionProvider connectionProvider = createConnectionProvider();
  *   SwingEntityModel entityModel = new SwingEntityModel(Employee.TYPE, connectionProvider);
  *   EntityPanel entityPanel = new EntityPanel(entityModel);
@@ -105,7 +105,7 @@ import static javax.swing.SwingConstants.VERTICAL;
  *   frame.add(entityPanel);
  *   frame.pack();
  *   frame.setVisible(true);
- * }
+ *}
  */
 public class EntityPanel extends JPanel {
 
@@ -630,7 +630,7 @@ public class EntityPanel extends JPanel {
 	 *   configureControls(layout -> layout
 	 *           .separator()
 	 *           .control(createCustomControl()))
-	 * }
+	 *}
 	 * Defaults:
 	 * <ul>
 	 *   <li>{@link ControlKeys#EDIT_CONTROLS ControlKeys#EDIT_CONTROLS}

@@ -36,11 +36,6 @@ include::{dir-manual-source}/is/codion/manual/design/DesignAndStyle.java[tags=ac
 
 A `get`/`is` prefix implies that the field is mutable and that a corresponding setter method exists, with a `set` prefix.
 
-[source,java]
-----
-include::{dir-manual-source}/is/codion/manual/design/DesignAndStyle.java[tags=getters,indent=0]
-----
-
 === Observables
 
 Many classes expose their internal state via the {url-javadoc}{common-core}/is/codion/common/value/Value.html[Value] class, which can be used to mutate the associated state or observe it by adding listeners or consumers.

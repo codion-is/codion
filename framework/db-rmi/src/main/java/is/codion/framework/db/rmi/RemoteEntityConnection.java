@@ -99,7 +99,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	 *     connection.rollbackTransaction();
 	 *     throw new RuntimeException(e);
 	 * }
-	 * }
+	 *}
 	 * @throws IllegalStateException if a transaction is already open
 	 * @throws RemoteException in case of exception
 	 */

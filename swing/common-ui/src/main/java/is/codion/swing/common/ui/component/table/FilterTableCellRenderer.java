@@ -237,9 +237,9 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 	}
 
 	/**
-	 * @return a new default {@link Factory} instance
 	 * @param <R> the row type
 	 * @param <C> the column identifier type
+	 * @return a new default {@link Factory} instance
 	 */
 	static <R, C> Factory<R, C> factory() {
 		return new DefaultFilterTableCellRenderer.DefaultFactory<>();

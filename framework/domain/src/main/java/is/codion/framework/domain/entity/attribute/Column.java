@@ -40,10 +40,10 @@ import static java.util.Objects.requireNonNull;
  * Columns inherit from {@link ColumnCondition.Factory} to provide condition creation methods:
  * {@snippet :
  * public class Store extends DefaultDomain {
- *     
+ *
  *     interface Customer {
  *         EntityType TYPE = DOMAIN.entityType("store.customer");
- *         
+ *
  *         // Column definitions
  *         Column<Integer> ID = TYPE.integerColumn("id");
  *         Column<String> NAME = TYPE.stringColumn("name");
@@ -52,7 +52,7 @@ import static java.util.Objects.requireNonNull;
  *         Column<Boolean> ACTIVE = TYPE.booleanColumn("active");
  *         Column<BigDecimal> CREDIT_LIMIT = TYPE.bigDecimalColumn("credit_limit");
  *     }
- *     
+ *
  *     void defineCustomer() {
  *         Customer.TYPE.define(
  *                 Customer.ID.define()
@@ -86,25 +86,25 @@ import static java.util.Objects.requireNonNull;
  *             .build();
  *     }
  * }
- * 
+ *
  * // Query condition usage (inherited from ColumnCondition.Factory)
  * List<Entity> activeCustomers = connection.select(
  *     Customer.ACTIVE.equalTo(true));
- * 
+ *
  * List<Entity> customersByName = connection.select(
  *     Customer.NAME.like("John%"));
- * 
+ *
  * List<Entity> recentCustomers = connection.select(
  *     Customer.BIRTH_DATE.greaterThanOrEqualTo(LocalDate.now().minusYears(25)));
- * 
+ *
  * List<Entity> highValueCustomers = connection.select(
  *     Customer.CREDIT_LIMIT.greaterThan(new BigDecimal("10000")));
- * 
+ *
  * // Complex conditions
  * List<Entity> nonLiveAlbums = connection.select(and(
  * 						Album.ARTIST_FK.in(artists),
  * 						Album.TITLE.likeIgnoreCase("%live%")));
- * }
+ *}
  * @param <T> the column value type
  * @see ColumnCondition.Factory
  * @see #define()
@@ -162,7 +162,7 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
 		 *   .primaryKey()
 		 *   .nullable(true)
 		 *   .updatable(true)
-		 * }
+		 *}
 		 * @param <B> the builder type
 		 * @return a new {@link ColumnDefinition.Builder} with primary key index 0
 		 * @see ColumnDefinition.Builder#nullable(boolean)
@@ -179,7 +179,7 @@ public interface Column<T> extends Attribute<T>, ColumnCondition.Factory<T> {
 		 *   .primaryKey()
 		 *   .nullable(true)
 		 *   .updatable(true)
-		 * }
+		 *}
 		 * @param index the zero-based index of this column in the primary key
 		 * @param <B> the builder type
 		 * @return a new {@link ColumnDefinition.Builder} with the given primary key index

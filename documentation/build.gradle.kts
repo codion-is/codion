@@ -249,6 +249,7 @@ tasks.register("assembleDocs") {
     description = "Creates the javadocs and asciidocs and combines them into the documentation directory"
     val docFolder = project.layout.buildDirectory.dir(documentationVersion).get()
     doLast {
+        delete(docFolder)
         copy {
             from(project.layout.buildDirectory.dir("asciidoc").get())
             into(docFolder)

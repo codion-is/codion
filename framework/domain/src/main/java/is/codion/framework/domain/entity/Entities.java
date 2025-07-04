@@ -40,26 +40,26 @@ import static is.codion.common.Configuration.booleanValue;
  * // Define a domain
  * public class Store extends DefaultDomain {
  *     public static final DomainType DOMAIN = domainType(Store.class);
- *     
+ *
  *     public Store() {
  *         super(DOMAIN);
  *         // Define entities...
  *     }
  * }
- * 
+ *
  * // Access entities
  * Store store = new Store();
  * Entities entities = store.entities();
- * 
+ *
  * // Create entity instances
  * Entity customer = entities.builder(Customer.TYPE)
  *     .with(Customer.NAME, "John Doe")
  *     .with(Customer.EMAIL, "john@example.com")
  *     .build();
- * 
+ *
  * // Create primary keys
  * Entity.Key customerKey = entities.primaryKey(Customer.TYPE, 42);
- * }
+ *}
  * @see #entity(EntityType)
  * @see #builder(EntityType)
  * @see #primaryKey(EntityType, Object)
@@ -126,18 +126,18 @@ public interface Entities {
 	 * Creates a new empty {@link Entity} instance of the given entityType
 	 * {@snippet :
 	 * Entities entities = domain.entities();
-	 * 
+	 *
 	 * // Create an empty entity
 	 * Entity customer = entities.entity(Customer.TYPE);
-	 * 
+	 *
 	 * // Set values individually
 	 * customer.set(Customer.NAME, "John Doe");
 	 * customer.set(Customer.EMAIL, "john@example.com");
-	 * 
+	 *
 	 * // The entity is mutable and tracks changes
 	 * customer.set(Customer.NAME, "John Lennon");
 	 * customer.modified(Customer.NAME); // true
-	 * }
+	 *}
 	 * @param entityType the entityType
 	 * @return a new {@link Entity} instance
 	 */
@@ -147,21 +147,21 @@ public interface Entities {
 	 * Creates a new {@link Entity.Builder} instance for the given entityType
 	 * {@snippet :
 	 * Entities entities = domain.entities();
-	 * 
+	 *
 	 * // Build an entity with initial values
 	 * Entity customer = entities.builder(Customer.TYPE)
 	 *     .with(Customer.NAME, "John Doe")
 	 *     .with(Customer.EMAIL, "john@example.com")
 	 *     .with(Customer.ACTIVE, true)
 	 *     .build();
-	 * 
+	 *
 	 * // Build with a foreign key reference
 	 * Entity order = entities.builder(Order.TYPE)
 	 *     .with(Order.CUSTOMER_FK, customer)
 	 *     .with(Order.DATE, LocalDate.now())
 	 *     .with(Order.TOTAL, 100.50)
 	 *     .build();
-	 * }
+	 *}
 	 * @param entityType the entityType
 	 * @return a new {@link Entity.Builder}
 	 */
@@ -171,20 +171,20 @@ public interface Entities {
 	 * Creates a new {@link Entity.Key} instance of the given entityType, initialised with the given value
 	 * {@snippet :
 	 * Entities entities = domain.entities();
-	 * 
+	 *
 	 * // Create a single-value primary key
 	 * Entity.Key customerKey = entities.primaryKey(Customer.TYPE, 42);
-	 * 
+	 *
 	 * // Use the key to fetch an entity
 	 * Entity customer = connection.selectSingle(customerKey);
-	 * 
+	 *
 	 * // Keys can be compared
 	 * Entity.Key anotherKey = entities.primaryKey(Customer.TYPE, 42);
 	 * customerKey.equals(anotherKey); // true
-	 * 
+	 *
 	 * // Null values are allowed
 	 * Entity.Key nullKey = entities.primaryKey(Customer.TYPE, null);
-	 * }
+	 *}
 	 * @param entityType the entityType
 	 * @param value the key value, assumes a single value key
 	 * @param <T> the key value type
@@ -199,17 +199,17 @@ public interface Entities {
 	 * Creates new {@link Entity.Key} instances of the given entityType, initialised with the given values
 	 * {@snippet :
 	 * Entities entities = domain.entities();
-	 * 
+	 *
 	 * // Create multiple keys at once
 	 * List<Entity.Key> customerKeys = entities.primaryKeys(Customer.TYPE, 1, 2, 3, 4, 5);
-	 * 
+	 *
 	 * // Fetch multiple entities
 	 * List<Entity> customers = connection.select(customerKeys);
-	 * 
+	 *
 	 * // Varargs syntax allows flexible usage
-	 * List<Entity.Key> keys = entities.primaryKeys(Order.TYPE, 
+	 * List<Entity.Key> keys = entities.primaryKeys(Order.TYPE,
 	 *     "ORD-001", "ORD-002", "ORD-003");
-	 * }
+	 *}
 	 * @param entityType the entityType
 	 * @param values the key values, assumes a single value key
 	 * @param <T> the key value type

@@ -35,7 +35,7 @@ import java.util.Collection;
  *
  * //10% chance of getting 'one', 60% chance of getting 'two' and 30% chance of getting 'three'.
  * Object random = model.randomItem();
- * }
+ *}
  * For instances use the following factory functions: {@link #itemRandomizer(Collection)},
  * {@link #boundedItemRandomizer(Collection)}, {@link #boundedItemRandomizer(Collection, int)}
  * @param <T> the type of item this random item model returns

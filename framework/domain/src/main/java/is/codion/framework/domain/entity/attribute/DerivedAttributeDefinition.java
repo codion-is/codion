@@ -30,23 +30,23 @@ import java.util.List;
  * Derived attributes can be cached for performance or computed on-demand:
  * {@snippet :
  * public class Store extends DefaultDomain {
- *     
+ *
  *     interface Customer {
  *         EntityType TYPE = DOMAIN.entityType("store.customer");
- *         
+ *
  *         Column<String> FIRST_NAME = TYPE.stringColumn("first_name");
  *         Column<String> LAST_NAME = TYPE.stringColumn("last_name");
  *         Column<String> EMAIL = TYPE.stringColumn("email");
  *         Column<LocalDate> BIRTH_DATE = TYPE.localDateColumn("birth_date");
  *         Column<String> PHONE = TYPE.stringColumn("phone");
- *         
+ *
  *         // Derived attributes
  *         Attribute<String> FULL_NAME = TYPE.stringAttribute("full_name");
  *         Attribute<String> CONTACT_INFO = TYPE.stringAttribute("contact_info");
  *         Attribute<Integer> AGE = TYPE.integerAttribute("age");
  *         Attribute<String> NAME_UPPER = TYPE.stringAttribute("name_upper");
  *     }
- *     
+ *
  *     void defineCustomer() {
  *         Customer.TYPE.define(
  *                 Customer.FIRST_NAME.define()
@@ -59,7 +59,7 @@ import java.util.List;
  *                     .column(),
  *                 Customer.PHONE.define()
  *                     .column(),
- *                 
+ *
  *                 // Simple derived attribute (cached by default)
  *                 Customer.FULL_NAME.define()
  *                     .derived(Customer.FIRST_NAME, Customer.LAST_NAME)
@@ -119,7 +119,7 @@ import java.util.List;
  *             .build();
  *     }
  * }
- * 
+ *
  * // Usage examples
  * Entity customer = entities.builder(Customer.TYPE)
  *     .with(Customer.FIRST_NAME, "John")
@@ -127,17 +127,17 @@ import java.util.List;
  *     .with(Customer.EMAIL, "john.doe@example.com")
  *     .with(Customer.BIRTH_DATE, LocalDate.of(1990, 5, 15))
  *     .build();
- * 
+ *
  * // Derived values are computed automatically
  * String fullName = customer.get(Customer.FULL_NAME);         // "John Doe" (cached)
  * String contactInfo = customer.get(Customer.CONTACT_INFO);   // Computed each time
  * Integer age = customer.get(Customer.AGE);                   // Current age
  * String nameUpper = customer.get(Customer.NAME_UPPER);       // "JOHN DOE"
- * 
+ *
  * // Modifying source attributes updates derived values
  * customer.set(Customer.FIRST_NAME, "Jane");
  * String newFullName = customer.get(Customer.FULL_NAME);      // "Jane Doe"
- * }
+ *}
  * @param <T> the underlying type
  * @see DerivedAttribute.Provider
  * @see #sources()

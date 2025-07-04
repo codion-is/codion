@@ -35,7 +35,7 @@ import static java.util.Objects.requireNonNull;
  * value.set(42);
  * value.addConsumer(this::onValueChange);
  * value.isNullable(); // true
- * }
+ *}
  * <p>Non-null boolean based Value, using 'false' as a null substitute:</p>
  * {@snippet :
  * Value<Boolean> value = Value.nonNull(false);
@@ -43,7 +43,7 @@ import static java.util.Objects.requireNonNull;
  * value.set(null);
  * value.get(); // false
  * value.isNullable(); // false
- * }
+ *}
  * <p>Non-null String based Value, using "none" as a null substitute:</p>
  * {@snippet :
  * Value<String> value = Value.builder()
@@ -56,10 +56,10 @@ import static java.util.Objects.requireNonNull;
  * value.isNullable();// false
  * value.set("hey");
  * value.set(null); // reverts to the null substitute: "none"
- * }
+ *}
  * <p>A factory for {@link Value} instances.</p>
  * <p><b>Thread Safety:</b> Listener management (add/remove) is thread-safe and supports concurrent access.
- * However, value modifications via {@link #set(Object)} are NOT thread-safe and should be 
+ * However, value modifications via {@link #set(Object)} are NOT thread-safe and should be
  * performed from a single thread (such as an application UI thread). Sublasses may provide thread-safety.</p>
  * @param <T> the type of the wrapped value
  * @see #nullable()
@@ -105,7 +105,7 @@ public interface Value<T> extends Observable<T> {
 	 *
 	 * // increment the value by one
 	 * value.map(currentValue -> currentValue + 1);
-	 * }
+	 *}
 	 * @param mapper maps from the current value to a new value
 	 * @throws NullPointerException in case {@code mapper} is null
 	 */

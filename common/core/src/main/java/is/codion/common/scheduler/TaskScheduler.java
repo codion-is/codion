@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
  * scheduler.interval().set(1);//task restarted using the new interval
  * // ...
  * scheduler.stop();
- * }
+ *}
  * @see TaskScheduler#builder(Runnable)
  */
 public interface TaskScheduler {

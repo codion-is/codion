@@ -60,40 +60,39 @@ import static java.util.Objects.requireNonNull;
  *   <li>Configurable foreign key fetching depth</li>
  *   <li>Query result caching</li>
  * </ul>
- * 
+ *
  * <p>Transaction Management</p>
  * All insert, update, and delete operations automatically commit unless run within an explicit transaction.
  * {@link #execute(FunctionType)} and {@link #execute(ProcedureType)} do not perform transaction control.
  * {@snippet :
  * // Automatic transaction management
  * Entity artist = connection.insertSelect(artistEntity);
- * 
+ *
  * // Explicit transaction for multiple operations
  * EntityConnection.transaction(connection, () -> {
  *     connection.insert(artist);
  *     connection.insert(album);
  *     connection.update(tracks);
  * });
- * }
- * 
+ *}
+ *
  * <p>Basic Usage</p>
  * {@snippet :
  * EntityConnection connection = connectionProvider.connection();
- * 
+ *
  * // Select entities
  * List<Entity> albums = connection.select(Album.ARTIST_FK.equalTo(artist));
- * 
+ *
  * // Insert with returned key
  * Entity.Key albumKey = connection.insert(album);
- * 
+ *
  * // Update modified entity
  * album.set(Album.TITLE, "New Title");
  * connection.update(album);
- * 
+ *
  * // Delete by condition
  * connection.delete(Track.ALBUM_FK.equalTo(album));
- * }
- * 
+ *}
  * @see EntityConnectionProvider
  * @see #transaction(EntityConnection, Transactional)
  * @see #transaction(EntityConnection, TransactionalResult)
@@ -173,7 +172,7 @@ public interface EntityConnection extends AutoCloseable {
 	 *     connection.rollbackTransaction();
 	 *     throw new RuntimeException(e);
 	 * }
-	 * }
+	 *}
 	 * @throws IllegalStateException if a transaction is already open
 	 * @see #transaction(EntityConnection, Transactional)
 	 * @see #transaction(EntityConnection, TransactionalResult)
@@ -260,13 +259,13 @@ public interface EntityConnection extends AutoCloseable {
 	 * Performs a commit unless a transaction is open.
 	 * {@snippet :
 	 * Entities entities = connection.entities();
-	 * 
+	 *
 	 * Entity artist = entities.builder(Artist.TYPE)
 	 *     .with(Artist.NAME, "The Beatles")
 	 *     .build();
-	 * 
+	 *
 	 * Entity.Key artistKey = connection.insert(artist);
-	 * }
+	 *}
 	 * @param entity the entity to insert
 	 * @return the primary key of the inserted entity
 	 * @throws DatabaseException in case of a database exception
@@ -281,11 +280,11 @@ public interface EntityConnection extends AutoCloseable {
 	 *     .with(Album.ARTIST_FK, artist)
 	 *     .with(Album.TITLE, "Abbey Road")
 	 *     .build();
-	 * 
+	 *
 	 * // Insert and get the entity with generated ID
 	 * album = connection.insertSelect(album);
 	 * Long generatedId = album.get(Album.ID);
-	 * }
+	 *}
 	 * @param entity the entity to insert
 	 * @return the inserted entity
 	 * @throws DatabaseException in case of a database exception
@@ -367,14 +366,14 @@ public interface EntityConnection extends AutoCloseable {
 	 *         .set(Customer.SUPPORTREP_ID, supportRepId)
 	 *         .build()
 	 * );
-	 * 
+	 *
 	 * // Bulk price increase
 	 * int tracksUpdated = connection.update(
 	 *     Update.where(Track.GENRE_FK.equalTo(genre))
 	 *         .set(Track.UNITPRICE, newPrice)
 	 *         .build()
 	 * );
-	 * }
+	 *}
 	 * @param update the update to perform
 	 * @return the number of affected rows
 	 * @throws DatabaseException in case of a database exception
@@ -492,13 +491,13 @@ public interface EntityConnection extends AutoCloseable {
 	 * // Select all jazz albums
 	 * Entity jazz = connection.selectSingle(Genre.NAME.equalTo("Jazz"));
 	 * List<Entity> jazzTracks = connection.select(Track.GENRE_FK.equalTo(jazz));
-	 * 
+	 *
 	 * // Select with composite condition
 	 * List<Entity> longExpensiveTracks = connection.select(and(
 	 *     Track.UNITPRICE.greaterThan(0.99),
 	 *     Track.MILLISECONDS.greaterThan(300_000)
 	 * ));
-	 * }
+	 *}
 	 * @param condition the condition specifying which entities to select
 	 * @return entities based to the given condition
 	 * @throws DatabaseException in case of a database exception
@@ -515,21 +514,21 @@ public interface EntityConnection extends AutoCloseable {
 	 *         .limit(10)
 	 *         .build()
 	 * );
-	 * 
+	 *
 	 * // Select specific attributes only
 	 * List<Entity> trackInfo = connection.select(
 	 *     Select.where(Track.ALBUM_FK.equalTo(album))
 	 *         .attributes(Track.NAME, Track.MILLISECONDS)
 	 *         .build()
 	 * );
-	 * 
+	 *
 	 * // Control foreign key fetching depth
 	 * List<Entity> tracks = connection.select(
 	 *     Select.where(Track.GENRE_FK.equalTo(genre))
 	 *         .referenceDepth(0)  // Don't fetch foreign keys
 	 *         .build()
 	 * );
-	 * }
+	 *}
 	 * @param select the select to perform
 	 * @return entities based to the given select
 	 * @throws DatabaseException in case of a database exception
@@ -580,7 +579,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * 	 // Then delete the playlists
 	 *   connection.delete(primaryKeys(playlists));
 	 * });
-	 * }
+	 *}
 	 * @param connection the connection to use
 	 * @param transactional the transactional to run
 	 * @throws DatabaseException in case of a database exception
@@ -603,7 +602,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * EntityConnection connection = connection();
 	 * Entity randomPlaylist = transaction(connection, () ->
 	 *   connection.execute(Playlist.RANDOM_PLAYLIST, parameters));
-	 * }
+	 *}
 	 * @param <T> the result type
 	 * @param connection the connection to use
 	 * @param transactional the transactional to run
@@ -678,8 +677,8 @@ public interface EntityConnection extends AutoCloseable {
 
 		/**
 		 * Executes the given transactional.
-		 * @throws Exception in case of an exception
 		 * @return the result
+		 * @throws Exception in case of an exception
 		 */
 		@Nullable T execute() throws Exception;
 	}
@@ -799,7 +798,7 @@ public interface EntityConnection extends AutoCloseable {
 	 *     Select.where(Track.GENRE_FK.equalTo(metal))
 	 *         .build()
 	 * );
-	 * 
+	 *
 	 * // Complex select with multiple options
 	 * List<Entity> tracks = connection.select(
 	 *     Select.where(Track.ALBUM_FK.equalTo(album))
@@ -810,14 +809,14 @@ public interface EntityConnection extends AutoCloseable {
 	 *         .referenceDepth(Track.MEDIATYPE_FK, 1)  // Fetch media type
 	 *         .build()
 	 * );
-	 * 
+	 *
 	 * // Select for update (row locking)
 	 * Entity invoice = connection.selectSingle(
 	 *     Select.where(Invoice.ID.equalTo(invoiceId))
 	 *         .forUpdate()
 	 *         .build()
 	 * );
-	 * }
+	 *}
 	 */
 	interface Select {
 

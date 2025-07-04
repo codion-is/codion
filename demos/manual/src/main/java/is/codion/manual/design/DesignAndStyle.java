@@ -86,12 +86,6 @@ public final class DesignAndStyle {
 		Entity.Key primaryKey = entity.primaryKey();
 		//end::accessors[]
 
-		//tag::getters[]
-		boolean optimisticLocking = connection.optimisticLocking();
-
-		connection.optimisticLocking(false);
-		//end::getters[]
-
 		//tag::mutable[]
 		FilterListSelection<List<String>> selection = tableModel.selection();
 

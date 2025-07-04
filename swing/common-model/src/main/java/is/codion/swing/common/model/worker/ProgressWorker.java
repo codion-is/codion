@@ -37,7 +37,7 @@ import static javax.swing.SwingUtilities.invokeLater;
  * <p>Note that this implementation does <b>NOT</b> coalesce progress reports or intermediate result publishing, but simply pushes
  * those directly to the {@code onProgress} and {@code onPublish} handlers on the Event Dispatch Thread.</p>
  * <p>Note that the {@code onStarted} handler is NOT called in case the background task finishes
- * 	before the {@link javax.swing.SwingWorker.StateValue#STARTED} change event is fired.
+ * before the {@link javax.swing.SwingWorker.StateValue#STARTED} change event is fired.
  * {@snippet :
  * ProgressWorker.builder(this::performTask)
  *   .onStarted(this::displayDialog)
@@ -48,7 +48,7 @@ import static javax.swing.SwingUtilities.invokeLater;
  *   .onCancelled(this::displayCancelledMessage)
  *   .onException(this::displayException)
  *   .execute();
- * }
+ *}
  * @param <T> the type of result this {@link ProgressWorker} produces.
  * @param <V> the type of intermediate result produced by this {@link ProgressWorker}
  * @see #builder(ResultTask)

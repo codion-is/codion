@@ -46,11 +46,11 @@ import static java.util.ResourceBundle.getBundle;
  * // Get localized messages
  * String cancelText = Messages.cancel();
  * String okText = Messages.ok();
- * 
+ *
  * // Get mnemonics for keyboard navigation
  * char cancelMnemonic = Messages.cancelMnemonic();
  * char clearMnemonic = Messages.clearMnemonic();
- * 
+ *
  * // Use in UI components
  * JButton cancelButton = new JButton(Messages.cancel());
  * cancelButton.setMnemonic(Messages.cancelMnemonic());
@@ -68,7 +68,6 @@ import static java.util.ResourceBundle.getBundle;
  * <strong>Mnemonic Guidelines:</strong><br>
  * Mnemonics should be unique within each locale to avoid keyboard navigation conflicts.
  * If a mnemonic string is empty, the corresponding method returns the null character ('\0').
- *
  * @see is.codion.common.resource.MessageBundle
  */
 public final class Messages {

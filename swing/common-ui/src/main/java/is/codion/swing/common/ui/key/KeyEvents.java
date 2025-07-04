@@ -42,7 +42,7 @@ import static javax.swing.KeyStroke.getKeyStroke;
  *          .condition(WHEN_FOCUSED)
  *          .action(new FindNextAction())
  *          .enable(textField);
- * }
+ *}
  * @see #builder()
  * @see #builder(int)
  * @see #builder(KeyStroke)

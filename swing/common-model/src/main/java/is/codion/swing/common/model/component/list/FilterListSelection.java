@@ -25,15 +25,15 @@ import javax.swing.ListSelectionModel;
 
 /**
  * A {@link ListSelectionModel}
-	 * @param <T> the list item type
+ * @param <T> the list item type
  */
 public interface FilterListSelection<T> extends ListSelectionModel, MultiSelection<T> {
 
 	/**
 	 * Instantiates a new {@link FilterListSelection} instance based on the given items
 	 * @param items the {@link VisibleItems} to select from
-	 * @return a new {@link FilterListSelection} instance
 	 * @param <T> the list item type
+	 * @return a new {@link FilterListSelection} instance
 	 */
 	static <T> FilterListSelection<T> filterListSelection(VisibleItems<T> items) {
 		return new DefaultListSelection<>(items);

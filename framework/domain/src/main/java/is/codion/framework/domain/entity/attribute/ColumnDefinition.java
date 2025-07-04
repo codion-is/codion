@@ -39,26 +39,26 @@ import java.sql.SQLException;
  * {@snippet :
  * interface Product {
  *     EntityType TYPE = DOMAIN.entityType("store.product");
- *     
+ *
  *     Column<Integer> ID = TYPE.integerColumn("id");
  *     Column<String> NAME = TYPE.stringColumn("name");
  *     Column<BigDecimal> PRICE = TYPE.bigDecimalColumn("price");
  *     Column<Boolean> ACTIVE = TYPE.booleanColumn("active");
  *     Column<LocalDateTime> CREATED_DATE = TYPE.localDateTimeColumn("created_date");
  * }
- * 
+ *
  * Product.TYPE.define(
  *         // Primary key with auto-generation
  *         Product.ID.define()
  *             .primaryKey()
  *             .keyGenerator(KeyGenerator.identity()),
- *         
+ *
  *         // Required string column with length constraint
  *         Product.NAME.define()
  *             .column()
  *             .nullable(false)
  *             .maximumLength(100),
- *         
+ *
  *         // Decimal column with precision and range validation
  *         Product.PRICE.define()
  *             .column()
@@ -66,12 +66,12 @@ import java.sql.SQLException;
  *             .minimumValue(BigDecimal.ZERO)
  *             .maximumValue(new BigDecimal("99999.99"))
  *             .maximumFractionDigits(2),
- *         
+ *
  *         // Boolean column with database mapping
  *         Product.ACTIVE.define()
  *             .booleanColumn(String.class, "Y", "N") // Maps Y/N to true/false
  *             .defaultValue(true),
- *         
+ *
  *         // Audit column (database-managed)
  *         Product.CREATED_DATE.define()
  *             .column()
@@ -79,7 +79,7 @@ import java.sql.SQLException;
  *             .updatable(false)   // Not included in UPDATE
  *             .hasDatabaseDefault(true)) // Database provides a default value
  *     .build();
- * }
+ *}
  * @param <T> the underlying type
  * @see AttributeDefinition
  * @see Column#define()

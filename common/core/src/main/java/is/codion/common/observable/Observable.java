@@ -64,7 +64,7 @@ import static java.util.Objects.requireNonNull;
  *
  *  observableName.addConsumer(newName ->
  *          System.out.println("Name changed to " + newName));
- * }
+ *}
  * @param <T> the value type
  */
 public interface Observable<T> extends Observer<T> {

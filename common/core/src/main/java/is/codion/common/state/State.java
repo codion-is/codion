@@ -37,7 +37,7 @@ import java.util.Collection;
  * state.set(true);
  * state.set(false);
  * state.set(null); //translates to false
- * }
+ *}
  * A factory for {@link State} instances.
  * <p><b>Thread Safety:</b> Listener management (add/remove) is thread-safe and supports concurrent access.
  * However, state modifications via {@link #set(Object)} are NOT thread-safe and should be

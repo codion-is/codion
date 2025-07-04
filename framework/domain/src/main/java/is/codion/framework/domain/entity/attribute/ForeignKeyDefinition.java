@@ -36,33 +36,33 @@ import static is.codion.common.Configuration.integerValue;
  * Foreign key definitions control the loading strategy and behavior of entity relationships:
  * {@snippet :
  * public class Store extends DefaultDomain {
- *     
+ *
  *     interface Customer {
  *         EntityType TYPE = DOMAIN.entityType("store.customer");
  *         Column<Integer> ID = TYPE.integerColumn("id");
  *         Column<String> NAME = TYPE.stringColumn("name");
  *         Column<String> EMAIL = TYPE.stringColumn("email");
  *     }
- *     
+ *
  *     interface Order {
  *         EntityType TYPE = DOMAIN.entityType("store.order");
  *         Column<Integer> ID = TYPE.integerColumn("id");
  *         Column<Integer> CUSTOMER_ID = TYPE.integerColumn("customer_id");
  *         Column<LocalDateTime> ORDER_DATE = TYPE.localDateTimeColumn("order_date");
  *         Column<BigDecimal> TOTAL = TYPE.bigDecimalColumn("total");
- *         
+ *
  *         ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
  *     }
- *     
+ *
  *     interface OrderLine {
  *         EntityType TYPE = DOMAIN.entityType("store.order_line");
  *         Column<Integer> ORDER_ID = TYPE.integerColumn("order_id");
  *         Column<Integer> PRODUCT_ID = TYPE.integerColumn("product_id");
  *         Column<Integer> QUANTITY = TYPE.integerColumn("quantity");
- *         
+ *
  *         ForeignKey ORDER_FK = TYPE.foreignKey("order_fk", ORDER_ID, Order.ID);
  *     }
- *     
+ *
  *     void defineEntities() {
  *         Order.TYPE.define(
  *                 Order.ID.define()
@@ -73,13 +73,13 @@ import static is.codion.common.Configuration.integerValue;
  *                     .column(),
  *                 Order.TOTAL.define()
  *                     .column(),
- *                 
+ *
  *                 // Basic foreign key with default reference depth (1)
  *                 Order.CUSTOMER_FK.define()
  *                     .foreignKey()
  *                     .caption("Customer"))
  *             .build();
- *         
+ *
  *         OrderLine.TYPE.define(
  *                 OrderLine.ORDER_ID.define()
  *                     .primaryKey(),
@@ -87,7 +87,7 @@ import static is.codion.common.Configuration.integerValue;
  *                     .column(),
  *                 OrderLine.QUANTITY.define()
  *                     .column(),
- *                 
+ *
  *                 // Foreign key with deeper reference depth to load customer info
  *                 OrderLine.ORDER_FK.define()
  *                     .foreignKey()
@@ -97,39 +97,39 @@ import static is.codion.common.Configuration.integerValue;
  *             .build();
  *     }
  * }
- * 
+ *
  * // Reference depth behavior examples:
- * 
+ *
  * // Reference depth 0: No automatic loading
  * List<Entity> orders = connection.select(
  *     Select.where(all(Order.TYPE))
  *         .referenceDepth(0)
  *         .build());
- * 
+ *
  * Entity order = orders.get(0);
  * Entity customer = order.get(Order.CUSTOMER_FK); // null - not loaded
  * Entity customerEntity = order.entity(Order.CUSTOMER_FK); // Contains only primary key
- * 
+ *
  * // Reference depth 1: Load referenced entity only
  * List<Entity> ordersWithCustomers = connection.select(
  *     Select.where(all(Order.TYPE))
  *         .referenceDepth(1) // Default
  *         .build());
- * 
+ *
  * Entity orderWithCustomer = ordersWithCustomers.get(0);
  * Entity loadedCustomer = orderWithCustomer.get(Order.CUSTOMER_FK); // Fully loaded customer
- * 
+ *
  * // Reference depth 2: Load referenced entity and its references
  * List<Entity> orderLines = connection.select(all(OrderLine.TYPE));
- * 
+ *
  * Entity orderLine = orderLines.get(0);
  * Entity orderWithCustomer = orderLine.get(OrderLine.ORDER_FK); // Order is loaded
  * Entity customer = orderWithCustomer.get(Order.CUSTOMER_FK);   // Customer is also loaded
- * 
+ *
  * // WARNING: Circular references with referenceDepth(-1)
  * // If Order had a foreign key back to OrderLine, using referenceDepth(-1) would cause infinite recursion:
  * // OrderLine → Order → OrderLine → Order → ... → StackOverflowError
- * }
+ *}
  * @see #referenceDepth()
  * @see #soft()
  * @see #attributes()

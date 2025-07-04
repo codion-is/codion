@@ -33,23 +33,23 @@ package is.codion.framework.domain.entity.attribute;
  * Transient attributes are useful for UI state, temporary calculations, and derived values:
  * {@snippet :
  * public class Store extends DefaultDomain {
- *     
+ *
  *     interface Customer {
  *         EntityType TYPE = DOMAIN.entityType("store.customer");
- *         
+ *
  *         // Database columns
  *         Column<Integer> ID = TYPE.integerColumn("id");
  *         Column<String> FIRST_NAME = TYPE.stringColumn("first_name");
  *         Column<String> LAST_NAME = TYPE.stringColumn("last_name");
  *         Column<String> EMAIL = TYPE.stringColumn("email");
- *         
+ *
  *         // Transient attributes
  *         Attribute<String> FULL_NAME = TYPE.stringAttribute("full_name");
  *         Attribute<Boolean> SELECTED = TYPE.booleanAttribute("selected");
  *         Attribute<String> TEMP_NOTES = TYPE.stringAttribute("temp_notes");
  *         Attribute<Object> UI_STATE = TYPE.attribute("ui_state", Object.class);
  *     }
- *     
+ *
  *     void defineCustomer() {
  *         Customer.TYPE.define(
  *                 // Database columns
@@ -61,7 +61,7 @@ package is.codion.framework.domain.entity.attribute;
  *                     .column(),
  *                 Customer.EMAIL.define()
  *                     .column(),
- *                 
+ *
  *                 // Derived transient attribute (computed from other attributes)
  *                 Customer.FULL_NAME.define()
  *                     .attribute()
@@ -69,23 +69,23 @@ package is.codion.framework.domain.entity.attribute;
  *                     .provider(values -> {
  *                         String first = values.get(Customer.FIRST_NAME);
  *                         String last = values.get(Customer.LAST_NAME);
- *                         return ((first != null ? first : "") + " " + 
+ *                         return ((first != null ? first : "") + " " +
  *                                 (last != null ? last : "")).trim();
  *                     })
  *                     .caption("Full Name"),
- *                 
+ *
  *                 // UI state attribute that doesn't modify entity
  *                 Customer.SELECTED.define()
  *                     .attribute()
  *                     .modifies(false) // Doesn't mark entity as modified
  *                     .defaultValue(false)
  *                     .caption("Selected"),
- *                 
+ *
  *                 // Temporary notes (modifies entity by default)
  *                 Customer.TEMP_NOTES.define()
  *                     .attribute()
  *                     .caption("Temporary Notes"),
- *                 
+ *
  *                 // Generic UI state storage
  *                 Customer.UI_STATE.define()
  *                     .attribute()
@@ -94,30 +94,30 @@ package is.codion.framework.domain.entity.attribute;
  *             .build();
  *     }
  * }
- * 
+ *
  * // Usage examples
  * Entity customer = entities.builder(Customer.TYPE)
  *     .with(Customer.FIRST_NAME, "John")
  *     .with(Customer.LAST_NAME, "Doe")
  *     .with(Customer.EMAIL, "john@example.com")
  *     .build();
- * 
+ *
  * // Transient attributes can be used for UI state
  * customer.set(Customer.SELECTED, true);  // Doesn't mark entity as modified
  * customer.set(Customer.TEMP_NOTES, "Important customer"); // Marks entity as modified
- * 
+ *
  * // Derived transient values are computed automatically
  * String fullName = customer.get(Customer.FULL_NAME); // "John Doe"
- * 
+ *
  * // UI state storage
  * customer.set(Customer.UI_STATE, new HashMap<String, Object>());
- * 
+ *
  * // Transient attributes are ignored during database operations
  * connection.insert(customer); // Only persists database columns
- * 
+ *
  * // Check modification state
  * boolean isModified = customer.modified(); // Only true if database columns changed
- * }
+ *}
  * @param <T> the attribute value type
  * @see #modifies()
  * @see DerivedAttributeDefinition

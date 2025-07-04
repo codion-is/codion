@@ -35,7 +35,7 @@ import static is.codion.common.Configuration.booleanValue;
  * {@snippet :
  * // Custom validator for Customer entity
  * public class CustomerValidator implements EntityValidator {
- *     
+ *
  *     @Override
  *     public boolean valid(Entity customer) {
  *         try {
@@ -45,7 +45,7 @@ import static is.codion.common.Configuration.booleanValue;
  *             return false;
  *         }
  *     }
- *     
+ *
  *     @Override
  *     public void validate(Entity customer) throws ValidationException {
  *         // Validate email format
@@ -53,26 +53,26 @@ import static is.codion.common.Configuration.booleanValue;
  *         if (email != null && !isValidEmail(email)) {
  *             throw new ValidationException("Invalid email format: " + email);
  *         }
- *         
+ *
  *         // Business rule: Active customers must have email
  *         Boolean active = customer.get(Customer.ACTIVE);
- *         if (Boolean.TRUE.equals(active) && 
+ *         if (Boolean.TRUE.equals(active) &&
  *             (email == null || email.trim().isEmpty())) {
  *             throw new ValidationException("Active customers must have an email address");
  *         }
- *         
+ *
  *         // Age validation
  *         LocalDate birthDate = customer.get(Customer.BIRTH_DATE);
  *         if (birthDate != null && birthDate.isAfter(LocalDate.now().minusYears(13))) {
  *             throw new ValidationException("Customer must be at least 13 years old");
  *         }
  *     }
- *     
+ *
  *     @Override
- *     public <T> void validate(Entity customer, Attribute<T> attribute) 
+ *     public <T> void validate(Entity customer, Attribute<T> attribute)
  *             throws ValidationException {
  *         T value = customer.get(attribute);
- *         
+ *
  *         if (attribute.equals(Customer.EMAIL)) {
  *             String email = (String) value;
  *             if (email != null && !isValidEmail(email)) {
@@ -81,12 +81,12 @@ import static is.codion.common.Configuration.booleanValue;
  *         }
  *         // Additional attribute-specific validation...
  *     }
- *     
+ *
  *     private boolean isValidEmail(String email) {
  *         return email.contains("@") && email.contains(".");
  *     }
  * }
- * 
+ *
  * // Usage in domain definition
  * Customer.TYPE.define(
  *         Customer.EMAIL.define()
@@ -97,7 +97,7 @@ import static is.codion.common.Configuration.booleanValue;
  *             .column())
  *     .validator(new CustomerValidator())
  *     .build();
- * }
+ *}
  * @see EntityDefinition.Builder#validator(EntityValidator)
  * @see ValidationException
  */
@@ -123,7 +123,7 @@ public interface EntityValidator {
 	 * {@snippet :
 	 * // Context-aware nullable validation
 	 * public class OrderValidator implements EntityValidator {
-	 *     
+	 *
 	 *     @Override
 	 *     public <T> boolean nullable(Entity order, Attribute<T> attribute) {
 	 *         // Normally nullable, but not for shipped orders
@@ -131,19 +131,19 @@ public interface EntityValidator {
 	 *             String status = order.get(Order.STATUS);
 	 *             return !"SHIPPED".equals(status); // Tracking number required when shipped
 	 *         }
-	 *         
+	 *
 	 *         // Use default nullable behavior for other attributes
 	 *         return attribute.nullable();
 	 *     }
 	 * }
-	 * 
+	 *
 	 * // Usage during validation
 	 * Entity order = entities.builder(Order.TYPE)
 	 *     .with(Order.STATUS, "SHIPPED")
 	 *     .build(); // No tracking number
-	 * 
+	 *
 	 * boolean canBeNull = validator.nullable(order, Order.TRACKING_NUMBER); // false
-	 * }
+	 *}
 	 * @param entity the entity being validated
 	 * @param attribute the attribute
 	 * @param <T> the value type
@@ -170,9 +170,9 @@ public interface EntityValidator {
 	 *     .with(Customer.EMAIL, "invalid-email") // Invalid format
 	 *     .with(Customer.ACTIVE, true)
 	 *     .build();
-	 * 
+	 *
 	 * EntityValidator validator = entities.definition(Customer.TYPE).validator();
-	 * 
+	 *
 	 * try {
 	 *     validator.validate(customer);
 	 *     // Validation passed
@@ -182,14 +182,14 @@ public interface EntityValidator {
 	 *     System.err.println("Validation failed: " + e.getMessage());
 	 *     // e.getMessage() might be: "Invalid email format: invalid-email"
 	 * }
-	 * 
+	 *
 	 * // Check if entity is valid without throwing exception
 	 * if (validator.valid(customer)) {
 	 *     connection.insert(customer);
 	 * } else {
 	 *     // Handle invalid entity
 	 * }
-	 * }
+	 *}
 	 * @param entity the entity
 	 * @throws ValidationException in case of an invalid value
 	 * @see #STRICT_VALIDATION

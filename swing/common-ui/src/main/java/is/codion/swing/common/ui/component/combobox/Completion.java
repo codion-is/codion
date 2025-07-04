@@ -32,12 +32,12 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Selects an item in a JComboBox based on values typed on the keyboard.
-  * {@snippet :
+ * {@snippet :
  *   Completion.builder()
  *       .mode(Mode.AUTOCOMPLETE)
  *       .normalize(false)
  *       .enable(comboBox);
- * }
+ *}
  * <p>
  * Based on code originally from: <a href="http://www.orbital-computer.de/JComboBox">http://www.orbital-computer.de/JComboBox</a><br>
  * Included with express permission from the author, 2019.

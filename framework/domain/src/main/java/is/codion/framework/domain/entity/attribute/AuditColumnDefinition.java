@@ -28,22 +28,22 @@ package is.codion.framework.domain.entity.attribute;
  * Audit columns are assumed to be automatically populated during insert and update operations by the underlying database:
  * {@snippet :
  * public class Store extends DefaultDomain {
- *     
+ *
  *     interface Product {
  *         EntityType TYPE = DOMAIN.entityType("store.product");
- *         
+ *
  *         // Regular columns
  *         Column<Integer> ID = TYPE.integerColumn("id");
  *         Column<String> NAME = TYPE.stringColumn("name");
  *         Column<BigDecimal> PRICE = TYPE.bigDecimalColumn("price");
- *         
+ *
  *         // Audit columns
  *         Column<String> CREATED_BY = TYPE.stringColumn("created_by");
  *         Column<LocalDateTime> CREATED_DATE = TYPE.localDateTimeColumn("created_date");
  *         Column<String> UPDATED_BY = TYPE.stringColumn("updated_by");
  *         Column<LocalDateTime> UPDATED_DATE = TYPE.localDateTimeColumn("updated_date");
  *     }
- *     
+ *
  *     void defineProduct() {
  *         Product.TYPE.define(
  *                 Product.ID.define()
@@ -52,7 +52,7 @@ package is.codion.framework.domain.entity.attribute;
  *                     .column(),
  *                 Product.PRICE.define()
  *                     .column(),
- *                 
+ *
  *                 // Audit columns for INSERT operations
  *                 Product.CREATED_BY.define()
  *                     .auditColumn()
@@ -62,7 +62,7 @@ package is.codion.framework.domain.entity.attribute;
  *                     .auditColumn()
  *                     .auditAction(AuditAction.INSERT)
  *                     .caption("Created Date"),
- *                 
+ *
  *                 // Audit columns for UPDATE operations
  *                 Product.UPDATED_BY.define()
  *                     .auditColumn()
@@ -75,30 +75,30 @@ package is.codion.framework.domain.entity.attribute;
  *             .build();
  *     }
  * }
- * 
+ *
  * // Usage - audit columns are populated automatically
  * Entity product = entities.builder(Product.TYPE)
  *     .with(Product.NAME, "Laptop")
  *     .with(Product.PRICE, new BigDecimal("999.99"))
  *     .build();
- * 
+ *
  * // Insert - CREATED_BY and CREATED_DATE are populated automatically
  * connection.insert(product);
- * 
+ *
  * String createdBy = product.get(Product.CREATED_BY);         // Current user
  * LocalDateTime createdDate = product.get(Product.CREATED_DATE); // Current timestamp
- * 
+ *
  * // Update - UPDATED_BY and UPDATED_DATE are populated automatically
  * product.set(Product.PRICE, new BigDecimal("899.99"));
  * connection.update(product);
- * 
+ *
  * String updatedBy = product.get(Product.UPDATED_BY);         // Current user
  * LocalDateTime updatedDate = product.get(Product.UPDATED_DATE); // Current timestamp
- * 
+ *
  * // Audit columns provide full modification history
  * System.out.println("Product created by " + createdBy + " on " + createdDate);
  * System.out.println("Product updated by " + updatedBy + " on " + updatedDate);
- * }
+ *}
  * @param <T> the underlying type
  * @see AuditAction
  * @see #auditAction()

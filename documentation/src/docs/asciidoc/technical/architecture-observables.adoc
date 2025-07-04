@@ -249,25 +249,10 @@ progress.accept(75);  // Both are called
 
 == Thread Safety
 
-The observable implementations use synchronization for thread safety:
-
 1. **Listener Management**: Adding/removing listeners is synchronized
-2. **Value Updates**: Setting values is atomic
+2. **Value Updates**: Setting values is NOT thread safe
 3. **Notification Order**: Listeners are notified in registration order
 4. **Exception Handling**: Unhandled exceptions in listeners prevent further notifications
-
-Example from DefaultEvent:
-
-[source,java]
-----
-private void notifyListeners() {
-    synchronized (listeners) {
-        for (Runnable listener : listeners) {
-            listener.run();  // Exception here stops the loop
-        }
-    }
-}
-----
 
 **Important**: If a listener throws an exception, subsequent listeners will not be notified. Always handle exceptions within your listeners:
 

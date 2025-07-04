@@ -858,7 +858,7 @@ public class EntityTablePanel extends JPanel {
 	 *           .control(createCustomControl())
 	 *           .separator()
 	 *           .defaults())
-	 * }
+	 *}
 	 * Defaults:
 	 * <ul>
 	 *   <li>{@link ControlKeys#TOGGLE_SUMMARIES ControlKeys#TOGGLE_SUMMARY_PANEL}
@@ -894,7 +894,7 @@ public class EntityTablePanel extends JPanel {
 	 *           .control(createCustomControl())
 	 *           .separator()
 	 *           .defaults())
-	 * }
+	 *}
 	 * Defaults:
 	 * <ul>
 	 *   <li>{@link ControlKeys#REFRESH ControlKeys#REFRESH}
@@ -1026,7 +1026,7 @@ public class EntityTablePanel extends JPanel {
 	 * The default implementation is:
 	 * {@snippet :
 	 * return tableModel().getClass().getSimpleName() + "-" + entityType();
-	 * }
+	 *}
 	 * Override in case this key is not unique within the application.
 	 * @return the key used to identify user preferences for this table panel
 	 */
@@ -2229,7 +2229,7 @@ public class EntityTablePanel extends JPanel {
 		 *      null,
 		 *      EntityTablePanel.ControlKeys.COPY_CONTROLS
 		 *  )));
-		 * }
+		 *}
 		 * <ul>
 		 * <li>Value type: {@link Controls.Layout}
 		 * <li>Default value: null
@@ -2250,7 +2250,7 @@ public class EntityTablePanel extends JPanel {
 		 *      null, // <- separator
 		 *      EntityTablePanel.ControlKeys.ADDITIONAL_TOOLBAR_CONTROLS
 		 *  )));
-		 * }
+		 *}
 		 * <ul>
 		 * <li>Value type: {@link Controls.Layout}
 		 * <li>Default value: null
