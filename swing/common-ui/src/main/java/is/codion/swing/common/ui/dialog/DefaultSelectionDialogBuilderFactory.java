@@ -22,6 +22,10 @@ import java.util.Collection;
 
 final class DefaultSelectionDialogBuilderFactory implements SelectionDialogBuilderFactory {
 
+	static final SelectionDialogBuilderFactory INSTANCE = new DefaultSelectionDialogBuilderFactory();
+
+	private DefaultSelectionDialogBuilderFactory() {}
+
 	@Override
 	public FileSelectionDialogBuilder files() {
 		return new DefaultFileSelectionDialogBuilder();

@@ -110,7 +110,7 @@ public final class Dialogs {
 	 * @return a new {@link SelectionDialogBuilderFactory}
 	 */
 	public static SelectionDialogBuilderFactory select() {
-		return new DefaultSelectionDialogBuilderFactory();
+		return DefaultSelectionDialogBuilderFactory.INSTANCE;
 	}
 
 	/**

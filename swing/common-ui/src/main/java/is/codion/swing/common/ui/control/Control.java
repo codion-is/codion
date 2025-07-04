@@ -183,7 +183,7 @@ public interface Control extends Action {
 	 * @return a new Control {@link BuilderFactory} instance
 	 */
 	static BuilderFactory builder() {
-		return new DefaultControlBuilderFactory();
+		return DefaultControlBuilderFactory.INSTANCE;
 	}
 
 	/**

@@ -52,6 +52,8 @@ import static java.util.Objects.requireNonNull;
  */
 public final class FileInputPanel extends JPanel {
 
+	private static final DefaultBuilderFactory BUILDER_FACTORY = new DefaultBuilderFactory();
+
 	private final JTextField filePathField;
 	private final JButton browseButton;
 
@@ -89,7 +91,7 @@ public final class FileInputPanel extends JPanel {
 	 * @return a new {@link FileInputPanel.BuilderFactory} instance.
 	 */
 	public static FileInputPanel.BuilderFactory builder() {
-		return new DefaultBuilderFactory();
+		return BUILDER_FACTORY;
 	}
 
 	private void browseFile() {

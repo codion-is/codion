@@ -32,6 +32,10 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultControlBuilderFactory implements BuilderFactory {
 
+	static final BuilderFactory INSTANCE = new DefaultControlBuilderFactory();
+
+	private DefaultControlBuilderFactory() {}
+
 	@Override
 	public CommandControlBuilder command(Command command) {
 		return new DefaultCommandControlBuilder(requireNonNull(command), null);

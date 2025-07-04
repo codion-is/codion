@@ -210,7 +210,7 @@ public interface Value<T> extends Observable<T> {
 	 * @return a new {@link Value.BuilderFactory} instance
 	 */
 	static BuilderFactory builder() {
-		return new DefaultValue.DefaultBuilderFactory();
+		return DefaultValue.BUILDER_FACTORY;
 	}
 
 	/**

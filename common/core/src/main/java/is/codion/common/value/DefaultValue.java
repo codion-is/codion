@@ -34,6 +34,8 @@ import static java.util.Objects.requireNonNull;
  */
 class DefaultValue<T> extends AbstractValue<T> {
 
+	static final BuilderFactory BUILDER_FACTORY = new DefaultBuilderFactory();
+
 	protected final Object lock = new Lock() {};
 
 	private @Nullable T value;
@@ -72,7 +74,7 @@ class DefaultValue<T> extends AbstractValue<T> {
 		}
 	}
 
-	static final class DefaultBuilderFactory implements BuilderFactory {
+	private static final class DefaultBuilderFactory implements BuilderFactory {
 
 		@Override
 		public <T> Builder<T, ?> nonNull(T nullValue) {
