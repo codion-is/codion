@@ -51,14 +51,15 @@ import static javax.swing.SwingUtilities.invokeLater;
  *}
  * @param <T> the type of result this {@link ProgressWorker} produces.
  * @param <V> the type of intermediate result produced by this {@link ProgressWorker}
- * @see #builder(ResultTask)
- * @see #builder(ProgressResultTask)
+ * @see #builder()
  */
 public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 	public static final int DEFAULT_MAXIMUM = 100;
 
 	private static final String STATE_PROPERTY = "state";
+
+	private static final BuilderFactory BUILDER_FACTORY = new DefaultBuilderFactory();
 
 	private final Object task;
 	private final int maximum;
@@ -88,39 +89,10 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	}
 
 	/**
-	 * @param task the task to run
-	 * @return a new {@link Builder} instance
+	 * @return a {@link BuilderFactory}
 	 */
-	public static Builder<?, ?> builder(Task task) {
-		return new DefaultBuilder<>(task);
-	}
-
-	/**
-	 * @param task the task to run
-	 * @param <V> the intermediate result type
-	 * @return a new {@link Builder} instance
-	 */
-	public static <V> Builder<?, V> builder(ProgressTask<V> task) {
-		return new DefaultBuilder<>(task);
-	}
-
-	/**
-	 * @param task the task to run
-	 * @param <T> the worker result type
-	 * @return a new {@link Builder} instance
-	 */
-	public static <T> Builder<T, ?> builder(ResultTask<T> task) {
-		return new DefaultBuilder<>(task);
-	}
-
-	/**
-	 * @param task the task to run
-	 * @param <T> the worker result type
-	 * @param <V> the intermediate result type
-	 * @return a new {@link Builder} instance
-	 */
-	public static <T, V> Builder<T, V> builder(ProgressResultTask<T, V> task) {
-		return new DefaultBuilder<>(task);
+	public static BuilderFactory builder() {
+		return BUILDER_FACTORY;
 	}
 
 	@Override
@@ -187,6 +159,40 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Provides builders for a given task type.
+	 */
+	public interface BuilderFactory {
+
+		/**
+		 * @param task the task to run
+		 * @return a new {@link Builder} instance
+		 */
+		Builder<?, ?> task(Task task);
+
+		/**
+		 * @param task the task to run
+		 * @param <T> the worker result typee
+		 * @return a new {@link Builder} instance
+		 */
+		<T> Builder<T, ?> task(ResultTask<T> task);
+
+		/**
+		 * @param task the task to run
+		 * @param <V> the intermediate result type
+		 * @return a new {@link Builder} instance
+		 */
+		<V> Builder<?, V> task(ProgressTask<V> task);
+
+		/**
+		 * @param task the task to run
+		 * @param <T> the worker result type
+		 * @param <V> the intermediate result type
+		 * @return a new {@link Builder} instance
+		 */
+		<T, V> Builder<T, V> task(ProgressResultTask<T, V> task);
 	}
 
 	/**
@@ -380,6 +386,29 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 			if (onPublish != DefaultBuilder.EMPTY_CONSUMER) {
 				invokeLater(() -> onPublish.accept(asList(chunks)));
 			}
+		}
+	}
+
+	private static class DefaultBuilderFactory implements BuilderFactory {
+
+		@Override
+		public Builder<?, ?> task(Task task) {
+			return new DefaultBuilder<>(task);
+		}
+
+		@Override
+		public <T> Builder<T, ?> task(ResultTask<T> task) {
+			return new DefaultBuilder<>(task);
+		}
+
+		@Override
+		public <V> Builder<?, V> task(ProgressTask<V> task) {
+			return new DefaultBuilder<>(task);
+		}
+
+		@Override
+		public <T, V> Builder<T, V> task(ProgressResultTask<T, V> task) {
+			return new DefaultBuilder<>(task);
 		}
 	}
 

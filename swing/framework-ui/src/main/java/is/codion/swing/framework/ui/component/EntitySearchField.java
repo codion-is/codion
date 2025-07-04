@@ -546,7 +546,8 @@ public final class EntitySearchField extends HintTextField {
 		else if (searchEnabled.get()) {
 			cancelCurrentSearch();
 			searching.set(true);
-			searchWorker = ProgressWorker.builder(model.search()::result)
+			searchWorker = ProgressWorker.builder()
+							.task(model.search()::result)
 							.onResult(searchResult -> handleResult(searchResult, promptUser))
 							.onException(this::handleException)
 							.onCancelled(this::handleCancel)

@@ -48,7 +48,8 @@ public final class ProgressWorkerTest {
 
 			return 42;
 		};
-		ProgressWorker.builder(task)
+		ProgressWorker.builder()
+						.task(task)
 						.onStarted(() -> stateChanges.add(0))
 						.onProgress(progressValue::set)
 						.onPublish(chunks -> messageValue.set(chunks.get(0)))
@@ -88,7 +89,8 @@ public final class ProgressWorkerTest {
 			throw testException;
 		};
 
-		ProgressWorker<Integer, ?> worker = ProgressWorker.builder(task)
+		ProgressWorker<Integer, ?> worker = ProgressWorker.builder()
+						.task(task)
 						.onStarted(() -> onStartedCalled.set(true))
 						.onDone(() -> onDoneCalled.set(true))
 						.onException(exception -> {
@@ -123,7 +125,8 @@ public final class ProgressWorkerTest {
 			Thread.sleep(1000);
 		};
 
-		ProgressWorker<?, ?> worker = ProgressWorker.builder(task)
+		ProgressWorker<?, ?> worker = ProgressWorker.builder()
+						.task(task)
 						.onDone(() -> onDoneCalled.set(true))
 						.onCancelled(() -> {
 							onCancelledCalled.set(true);
@@ -157,7 +160,8 @@ public final class ProgressWorkerTest {
 			throw new CancelException();
 		};
 
-		ProgressWorker.builder(task)
+		ProgressWorker.builder()
+						.task(task)
 						.onCancelled(() -> {
 							onCancelledCalled.set(true);
 							latch.countDown();
@@ -188,7 +192,8 @@ public final class ProgressWorkerTest {
 			}
 		};
 
-		ProgressWorker<?, ?> worker = ProgressWorker.builder(task)
+		ProgressWorker<?, ?> worker = ProgressWorker.builder()
+						.task(task)
 						.onDone(() -> onDoneCalled.set(true))
 						.onInterrupted(() -> {
 							onInterruptedCalled.set(true);
@@ -239,7 +244,8 @@ public final class ProgressWorkerTest {
 			return "Task completed";
 		};
 
-		ProgressWorker.builder(task)
+		ProgressWorker.builder()
+						.task(task)
 						.onProgress(progressValue::set)
 						.onPublish(chunks -> publishedMessages.addAll(chunks))
 						.onResult(result -> {
@@ -264,7 +270,8 @@ public final class ProgressWorkerTest {
 			return "Result from task";
 		};
 
-		ProgressWorker.builder(task)
+		ProgressWorker.builder()
+						.task(task)
 						.onResult(result -> {
 							resultRef.set(result);
 							latch.countDown();
@@ -285,7 +292,8 @@ public final class ProgressWorkerTest {
 			taskExecuted.set(true);
 		};
 
-		ProgressWorker.builder(task)
+		ProgressWorker.builder()
+						.task(task)
 						.onDone(latch::countDown)
 						.execute();
 
@@ -306,7 +314,8 @@ public final class ProgressWorkerTest {
 			}
 		};
 
-		ProgressWorker.builder(task)
+		ProgressWorker.builder()
+						.task(task)
 						.onProgress(progressReports::add)
 						.onDone(latch::countDown)
 						.execute();

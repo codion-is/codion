@@ -51,7 +51,8 @@ final class ProgressWorkerDemo {
 			// Perform the task
 		};
 
-		ProgressWorker.builder(task)
+		ProgressWorker.builder()
+						.task(task)
 						.onException(exception ->
 										Dialogs.exception()
 														.owner(applicationFrame)
@@ -68,7 +69,8 @@ final class ProgressWorkerDemo {
 			return "Result";
 		};
 
-		ProgressWorker.builder(task)
+		ProgressWorker.builder()
+						.task(task)
 						.onResult(result ->
 										showMessageDialog(applicationFrame, result))
 						.onException(exception ->
@@ -88,7 +90,8 @@ final class ProgressWorkerDemo {
 			progressReporter.publish("Message");
 		};
 
-		ProgressWorker.builder(task)
+		ProgressWorker.builder()
+						.task(task)
 						.onProgress(progress ->
 										System.out.println("Progress: " + progress))
 						.onPublish(message ->
@@ -107,7 +110,8 @@ final class ProgressWorkerDemo {
 		// Displays a progress bar in a dialog while running.
 		var task = new DemoProgressResultTask();
 
-		ProgressWorker.builder(task.prepare(142))
+		ProgressWorker.builder()
+						.task(task.prepare(142))
 						.onStarted(task::started)
 						.onProgress(task::progress)
 						.onPublish(task::publish)

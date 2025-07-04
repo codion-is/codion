@@ -51,7 +51,8 @@ public abstract class AbstractRefreshWorker<T> extends AbstractRefresher<T> {
 	protected final void refreshAsync(Consumer<Collection<T>> onResult) {
 		supplier().ifPresent(supplier -> {
 			cancelCurrentRefresh();
-			worker = ProgressWorker.builder(supplier::get)
+			worker = ProgressWorker.builder()
+							.task(supplier::get)
 							.onStarted(this::onRefreshStarted)
 							.onResult(items -> onRefreshResult(items, onResult))
 							.onException(this::onRefreshFailedAsync)

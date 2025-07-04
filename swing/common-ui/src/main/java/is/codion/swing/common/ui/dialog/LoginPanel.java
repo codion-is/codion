@@ -166,7 +166,8 @@ final class LoginPanel extends JPanel {
 	}
 
 	private void onOkPressed() {
-		ProgressWorker.builder(this::validateLogin)
+		ProgressWorker.builder()
+						.task(this::validateLogin)
 						.onStarted(this::onValidationStarted)
 						.onResult(this::onValidationSuccess)
 						.onException(this::onValidationFailure)

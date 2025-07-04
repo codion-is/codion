@@ -50,20 +50,20 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 	private Consumer<Exception> onException = new DisplayExceptionInDialog();
 
 	DefaultProgressWorkerDialogBuilder(Task task) {
-		this.progressWorkerBuilder = (ProgressWorker.Builder<T, V>) ProgressWorker.builder(task);
+		this.progressWorkerBuilder = (ProgressWorker.Builder<T, V>) ProgressWorker.builder().task(task);
 	}
 
 	DefaultProgressWorkerDialogBuilder(ResultTask<T> task) {
-		this.progressWorkerBuilder = (ProgressWorker.Builder<T, V>) ProgressWorker.builder(task);
+		this.progressWorkerBuilder = (ProgressWorker.Builder<T, V>) ProgressWorker.builder().task(task);
 	}
 
 	DefaultProgressWorkerDialogBuilder(ProgressTask<V> task) {
-		this.progressWorkerBuilder = (ProgressWorker.Builder<T, V>) ProgressWorker.builder(task);
+		this.progressWorkerBuilder = (ProgressWorker.Builder<T, V>) ProgressWorker.builder().task(task);
 		this.progressDialogBuilder.maximum(task.maximum());
 	}
 
 	DefaultProgressWorkerDialogBuilder(ProgressResultTask<T, V> progressTask) {
-		this.progressWorkerBuilder = ProgressWorker.builder(progressTask);
+		this.progressWorkerBuilder = ProgressWorker.builder().task(progressTask);
 		this.progressDialogBuilder.maximum(progressTask.maximum());
 	}
 
