@@ -135,9 +135,10 @@ public interface DatabaseConnection extends AutoCloseable {
 	void setMethodLogger(@Nullable MethodLogger methodLogger);
 
 	/**
-	 * @return the MethodLogger being used, possibly null
+	 * @return the MethodLogger being used, possibly a no-op logger
+	 * @see MethodLogger#noOpLogger()
 	 */
-	@Nullable MethodLogger getMethodLogger();
+	MethodLogger getMethodLogger();
 
 	/**
 	 * Constructs a new DatabaseConnection instance, based on the given Database and User

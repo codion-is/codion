@@ -38,6 +38,7 @@ import java.util.concurrent.TimeUnit;
 
 import static java.lang.System.currentTimeMillis;
 import static java.lang.System.nanoTime;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
@@ -45,6 +46,8 @@ import static java.util.Objects.requireNonNull;
  * TODO this class should be able to handle/recover from incorrect usage, not crash the application
  */
 final class DefaultMethodLogger implements MethodLogger {
+
+	static final MethodLogger NO_OP = new NoOpLogger();
 
 	private final Deque<DefaultEntry> callStack = new LinkedList<>();
 	private final LinkedList<Entry> entries = new LinkedList<>();
@@ -280,6 +283,43 @@ final class DefaultMethodLogger implements MethodLogger {
 
 		private static boolean multiLine(String enterMessage) {
 			return enterMessage.contains(NEWLINE);
+		}
+	}
+
+	private static final class NoOpLogger implements MethodLogger {
+
+		@Override
+		public void enter(String method) {}
+
+		@Override
+		public void enter(String method, @Nullable Object argument) {}
+
+		@Override
+		public @Nullable Entry exit(String method) {
+			return null;
+		}
+
+		@Override
+		public @Nullable Entry exit(String method, @Nullable Exception exception) {
+			return null;
+		}
+
+		@Override
+		public @Nullable Entry exit(String method, @Nullable Exception exception, @Nullable String exitMessage) {
+			return null;
+		}
+
+		@Override
+		public boolean isEnabled() {
+			return false;
+		}
+
+		@Override
+		public void setEnabled(boolean enabled) {}
+
+		@Override
+		public List<Entry> entries() {
+			return emptyList();
 		}
 	}
 }

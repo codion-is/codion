@@ -100,6 +100,13 @@ public interface MethodLogger {
 	}
 
 	/**
+	 * @return a no-op logger, always disabled
+	 */
+	static MethodLogger noOpLogger() {
+		return DefaultMethodLogger.NO_OP;
+	}
+
+	/**
 	 * A method logger entry.
 	 */
 	interface Entry {

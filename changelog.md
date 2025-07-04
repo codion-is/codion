@@ -6,8 +6,10 @@ Codion Change Log
 - Unit tests improved.
 - DefaultValue no longer exposes Lock interface to subclasses.
 - DefaultEvent.observer field now volatile.
+- MethodLogger.noOpLogger() added.
 ### is.codion.common.db
 - Unit tests improved.
+- DatabaseConnection.getMethodLogger() now returns MethodLogger.noOpLogger() in case of no logger.
 ### is.codion.common.model
 - Unit tests improved.
 - FilePreferencesFactory added.

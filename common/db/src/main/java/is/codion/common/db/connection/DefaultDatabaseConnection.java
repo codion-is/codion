@@ -32,6 +32,7 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static is.codion.common.logging.MethodLogger.noOpLogger;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -50,7 +51,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 	private @Nullable Connection connection;
 	private boolean transactionOpen = false;
 
-	private @Nullable MethodLogger methodLogger;
+	private MethodLogger logger = noOpLogger();
 
 	/**
 	 * Constructs a new DefaultDatabaseConnection instance, initialized and ready for use.
@@ -90,12 +91,12 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
 	@Override
 	public void setMethodLogger(@Nullable MethodLogger methodLogger) {
-		this.methodLogger = methodLogger;
+		this.logger = methodLogger == null ?  noOpLogger() : methodLogger;
 	}
 
 	@Override
-	public @Nullable MethodLogger getMethodLogger() {
-		return methodLogger;
+	public MethodLogger getMethodLogger() {
+		return logger;
 	}
 
 	@Override
@@ -149,9 +150,9 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 			throw new IllegalStateException("Transaction already open");
 		}
 		connection = verifyOpenConnection();
-		logEntry("startTransaction");
+		logger.enter("startTransaction");
 		transactionOpen = true;
-		logExit("startTransaction", null);
+		logger.exit("startTransaction", null);
 	}
 
 	@Override
@@ -160,7 +161,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 			throw new IllegalStateException("Transaction is not open");
 		}
 		connection = verifyOpenConnection();
-		logEntry("rollbackTransaction");
+		logger.enter("rollbackTransaction");
 		SQLException exception = null;
 		try {
 			connection.rollback();
@@ -171,7 +172,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 		}
 		finally {
 			transactionOpen = false;
-			logExit("rollbackTransaction", exception);
+			logger.exit("rollbackTransaction", exception);
 		}
 	}
 
@@ -181,7 +182,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 			throw new IllegalStateException("Transaction is not open");
 		}
 		connection = verifyOpenConnection();
-		logEntry("commitTransaction");
+		logger.enter("commitTransaction");
 		SQLException exception = null;
 		try {
 			connection.commit();
@@ -192,7 +193,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 		}
 		finally {
 			transactionOpen = false;
-			logExit("commitTransaction", exception);
+			logger.exit("commitTransaction", exception);
 		}
 	}
 
@@ -207,7 +208,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 			throw new IllegalStateException("Can not perform a commit during an open transaction, use 'commitTransaction()'");
 		}
 		connection = verifyOpenConnection();
-		logEntry("commit");
+		logger.enter("commit");
 		SQLException exception = null;
 		try {
 			connection.commit();
@@ -218,7 +219,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 			throw e;
 		}
 		finally {
-			logExit("commit", exception);
+			logger.exit("commit", exception);
 		}
 	}
 
@@ -228,7 +229,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 			throw new IllegalStateException("Can not perform a rollback during an open transaction, use 'rollbackTransaction()'");
 		}
 		connection = verifyOpenConnection();
-		logEntry("rollback");
+		logger.enter("rollback");
 		SQLException exception = null;
 		try {
 			connection.rollback();
@@ -238,22 +239,8 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 			throw e;
 		}
 		finally {
-			logExit("rollback", exception);
+			logger.exit("rollback", exception);
 		}
-	}
-
-	private void logEntry(String method) {
-		if (methodLogger != null && methodLogger.isEnabled()) {
-			methodLogger.enter(method);
-		}
-	}
-
-	private MethodLogger.@Nullable Entry logExit(String method, @Nullable Exception exception) {
-		if (methodLogger != null && methodLogger.isEnabled()) {
-			return methodLogger.exit(method, exception);
-		}
-
-		return null;
 	}
 
 	private Connection verifyOpenConnection() {

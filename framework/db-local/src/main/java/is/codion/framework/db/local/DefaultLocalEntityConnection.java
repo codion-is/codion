@@ -31,7 +31,6 @@ import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.db.result.ResultIterator;
-import is.codion.common.logging.MethodLogger;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
@@ -1234,24 +1233,15 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	private void logEntry(String method) {
-		MethodLogger methodLogger = connection.getMethodLogger();
-		if (methodLogger != null && methodLogger.isEnabled()) {
-			methodLogger.enter(method);
-		}
+		connection.getMethodLogger().enter(method);
 	}
 
 	private void logEntry(String method, Object argument) {
-		MethodLogger methodLogger = connection.getMethodLogger();
-		if (methodLogger != null && methodLogger.isEnabled()) {
-			methodLogger.enter(method, argument);
-		}
+		connection.getMethodLogger().enter(method, argument);
 	}
 
 	private void logEntry(String method, @Nullable Object... arguments) {
-		MethodLogger methodLogger = connection.getMethodLogger();
-		if (methodLogger != null && methodLogger.isEnabled()) {
-			methodLogger.enter(method, arguments);
-		}
+		connection.getMethodLogger().enter(method, arguments);
 	}
 
 	private void logExit(String method) {
@@ -1263,10 +1253,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	private void logExit(String method, @Nullable Exception exception, @Nullable String exitMessage) {
-		MethodLogger methodLogger = connection.getMethodLogger();
-		if (methodLogger != null && methodLogger.isEnabled()) {
-			methodLogger.exit(method, exception, exitMessage);
-		}
+		connection.getMethodLogger().exit(method, exception, exitMessage);
 	}
 
 	private String createLogMessage(@Nullable String sqlStatement, List<?> values, List<ColumnDefinition<?>> columnDefinitions, @Nullable Exception exception) {

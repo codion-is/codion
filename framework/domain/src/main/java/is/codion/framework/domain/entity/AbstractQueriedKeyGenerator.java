@@ -23,8 +23,6 @@ import is.codion.common.db.database.Database;
 import is.codion.common.logging.MethodLogger;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 
-import org.jspecify.annotations.Nullable;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -35,14 +33,14 @@ import static is.codion.common.db.connection.DatabaseConnection.SQL_STATE_NO_DAT
 abstract class AbstractQueriedKeyGenerator implements KeyGenerator {
 
 	protected final void selectAndPopulate(Entity entity, DatabaseConnection databaseConnection) throws SQLException {
-		MethodLogger methodLogger = databaseConnection.getMethodLogger();
+		MethodLogger logger = databaseConnection.getMethodLogger();
 		Connection connection = databaseConnection.getConnection();
 		String query = query(databaseConnection.database());
 		if (query == null) {
 			throw new IllegalStateException("Queried key generator returned no query");
 		}
 		SQLException exception = null;
-		logEntry(methodLogger, query);
+		logger.enter("selectAndPopulate", query);
 		try (PreparedStatement statement = connection.prepareStatement(query);
 				 ResultSet resultSet = statement.executeQuery()) {
 			if (!resultSet.next()) {
@@ -57,22 +55,10 @@ abstract class AbstractQueriedKeyGenerator implements KeyGenerator {
 			throw e;
 		}
 		finally {
-			logExit(methodLogger, exception);
+			logger.exit("selectAndPopulate", exception);
 			databaseConnection.database().queryCounter().select();
 		}
 	}
 
 	protected abstract String query(Database database);
-
-	private static void logEntry(@Nullable MethodLogger methodLogger, @Nullable Object argument) {
-		if (methodLogger != null && methodLogger.isEnabled()) {
-			methodLogger.enter("selectAndPopulate", argument);
-		}
-	}
-
-	private static void logExit(@Nullable MethodLogger methodLogger, @Nullable Exception exception) {
-		if (methodLogger != null && methodLogger.isEnabled()) {
-			methodLogger.exit("selectAndPopulate", exception);
-		}
-	}
 }
