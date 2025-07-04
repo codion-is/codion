@@ -23,7 +23,7 @@ import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.model.filter.FilterModel.VisibleItems;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.FilterTableModel;
-import is.codion.swing.common.model.component.table.FilterTableModel.RowEditor;
+import is.codion.swing.common.model.component.table.FilterTableModel.Editor;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.swing.common.model.component.table.FilterTableSort;
 
@@ -81,8 +81,8 @@ public final class FilterTableModelDemo {
 	// end::personColumns[]
 
 	// tag::personEditor[]
-	// Implement a RowEditor for handling row edits
-	private static final class PersonEditor implements RowEditor<Person, String> {
+	// Implement a Editor for handling row edits
+	private static final class PersonEditor implements Editor<Person, String> {
 
 		// We need the underlying VisibleItems instance to replace the edited
 		// row since the row objects are records and thereby immutable
@@ -125,7 +125,7 @@ public final class FilterTableModelDemo {
 						FilterTableModel.builder()
 										.columns(new PersonColumns())
 										.supplier(supplier)
-										.rowEditor(PersonEditor::new)
+										.editor(PersonEditor::new)
 										.build();
 
 		// Populate the model

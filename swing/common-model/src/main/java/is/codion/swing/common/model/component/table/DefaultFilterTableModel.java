@@ -65,16 +65,16 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private final FilterListSelection<R> selection;
 	private final DefaultFilterTableSort<R, C> sort;
 	private final DefaultColumnValues columnValues = new DefaultColumnValues();
-	private final Function<FilterTableModel<R, C>, RowEditor<R, C>> rowEditorFactory;
+	private final Function<FilterTableModel<R, C>, Editor<R, C>> editorFactory;
 	private final RemoveSelectionListener removeSelectionListener;
 
-	private RowEditor<R, C> rowEditor;
+	private Editor<R, C> editor;
 
 	private DefaultFilterTableModel(DefaultBuilder<R, C> builder) {
 		this.columns = builder.columns;
 		this.filters = tableConditionModel(builder.filters);
 		this.sort = new DefaultFilterTableSort<>(columns);
-		this.rowEditorFactory = builder.rowEditorFactory;
+		this.editorFactory = builder.editorFactory;
 		this.items = Items.builder(builder::createRefresher)
 						.selection(FilterListSelection::filterListSelection)
 						.sort(sort)
@@ -141,12 +141,12 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
-		return rowEditor().editable(items.visible().get(rowIndex), columns.identifier(columnIndex));
+		return editor().editable(items.visible().get(rowIndex), columns.identifier(columnIndex));
 	}
 
 	@Override
 	public void setValueAt(Object value, int rowIndex, int columnIndex) {
-		rowEditor().set(value, rowIndex, items.visible().get(rowIndex), columns.identifier(columnIndex));
+		editor().set(value, rowIndex, items.visible().get(rowIndex), columns.identifier(columnIndex));
 	}
 
 	@Override
@@ -172,12 +172,12 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 	}
 
-	private RowEditor<R, C> rowEditor() {
-		if (rowEditor == null) {
-			rowEditor = rowEditorFactory.apply(this);
+	private Editor<R, C> editor() {
+		if (editor == null) {
+			editor = editorFactory.apply(this);
 		}
 
-		return rowEditor;
+		return editor;
 	}
 
 	private final class RemoveSelectionListener implements TableModelListener {
@@ -323,7 +323,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 	}
 
-	private static final class DefaultRowEditor<R, C> implements RowEditor<R, C> {
+	private static final class DefaultEditor<R, C> implements Editor<R, C> {
 
 		@Override
 		public boolean editable(R row, C identifier) {
@@ -334,11 +334,11 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		public void set(Object value, int rowIndex, R row, C identifier) {}
 	}
 
-	private static final class DefaultRowEditorFactory<R, C> implements Function<FilterTableModel<R, C>, RowEditor<R, C>> {
+	private static final class DefaultEditorFactory<R, C> implements Function<FilterTableModel<R, C>, Editor<R, C>> {
 
 		@Override
-		public RowEditor<R, C> apply(FilterTableModel<R, C> tableModel) {
-			return new DefaultRowEditor<>();
+		public Editor<R, C> apply(FilterTableModel<R, C> tableModel) {
+			return new DefaultEditor<>();
 		}
 	}
 
@@ -359,7 +359,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		private Supplier<Map<C, ConditionModel<?>>> filters;
 		private RefreshStrategy refreshStrategy = RefreshStrategy.CLEAR;
 		private boolean async = FilterModel.ASYNC.getOrThrow();
-		private Function<FilterTableModel<R, C>, RowEditor<R, C>> rowEditorFactory = new DefaultRowEditorFactory<>();
+		private Function<FilterTableModel<R, C>, Editor<R, C>> editorFactory = new DefaultEditorFactory<>();
 		private Predicate<R> visiblePredicate;
 
 		private DefaultBuilder(TableColumns<R, C> columns) {
@@ -401,8 +401,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
-		public Builder<R, C> rowEditor(Function<FilterTableModel<R, C>, RowEditor<R, C>> rowEditor) {
-			this.rowEditorFactory = requireNonNull(rowEditor);
+		public Builder<R, C> editor(Function<FilterTableModel<R, C>, Editor<R, C>> editor) {
+			this.editorFactory = requireNonNull(editor);
 			return this;
 		}
 

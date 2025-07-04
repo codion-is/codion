@@ -195,10 +195,10 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		Builder<R, C> async(boolean async);
 
 		/**
-		 * @param rowEditor supplies the row editor
+		 * @param editor supplies the row editor
 		 * @return this builder instance
 		 */
-		Builder<R, C> rowEditor(Function<FilterTableModel<R, C>, RowEditor<R, C>> rowEditor);
+		Builder<R, C> editor(Function<FilterTableModel<R, C>, Editor<R, C>> editor);
 
 		/**
 		 * @param predicate the {@link Predicate} controlling which items should be visible
@@ -299,7 +299,7 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	 * @param <R> the row type
 	 * @param <C> the column identifier type
 	 */
-	interface RowEditor<R, C> {
+	interface Editor<R, C> {
 
 		/**
 		 * @param row the row
