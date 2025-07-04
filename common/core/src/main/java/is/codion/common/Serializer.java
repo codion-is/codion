@@ -61,7 +61,7 @@ public final class Serializer {
 	 * @throws ClassNotFoundException in case the deserialized class is not found
 	 * @throws ClassCastException if the deserialized object cannot be cast to type T
 	 */
-	public static <T> @Nullable T deserialize(byte @Nullable[] bytes) throws IOException, ClassNotFoundException {
+	public static <T> @Nullable T deserialize(byte @Nullable [] bytes) throws IOException, ClassNotFoundException {
 		if (bytes != null && bytes.length > 0) {
 			// Unchecked cast is safe: caller is responsible for ensuring the byte array
 			// contains an object of type T. ClassCastException will be thrown at runtime

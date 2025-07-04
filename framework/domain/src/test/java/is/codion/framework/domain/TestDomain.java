@@ -687,10 +687,10 @@ public final class TestDomain extends DomainModel {
 
 	void nonCachedToString() {
 		add(NonCachedToString.TYPE.define(
-						NonCachedToString.ID.define()
-										.primaryKey(),
-						NonCachedToString.STRING.define()
-										.column())
+										NonCachedToString.ID.define()
+														.primaryKey(),
+										NonCachedToString.STRING.define()
+														.column())
 						.stringFactory(entity -> entity.string(NonCachedToString.ID) + "." + entity.get(NonCachedToString.STRING))
 						.cacheToString(false)
 						.build());

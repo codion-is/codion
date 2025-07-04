@@ -539,14 +539,14 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 			return self();
 		}
 
-    @Override
-    public final B trim(boolean trim) {
-      if (!attribute.type().isString()) {
-        throw new IllegalStateException("trim is only applicable to string attributes: " + attribute);
-      }
-      this.trim = trim;
-      return (B) this;
-    }
+		@Override
+		public final B trim(boolean trim) {
+			if (!attribute.type().isString()) {
+				throw new IllegalStateException("trim is only applicable to string attributes: " + attribute);
+			}
+			this.trim = trim;
+			return (B) this;
+		}
 
 		@Override
 		public final B minimumValue(Number minimumValue) {

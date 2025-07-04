@@ -64,7 +64,9 @@ final class DefaultEntityQueries implements EntityQueries {
 
 	@Override
 	public String select(Select select) {
-		return populateParameters(selectQueries.builder(entities.definition(requireNonNull(select).where().entityType())).select(select).build(),
+		return populateParameters(selectQueries.builder(entities.definition(requireNonNull(select).where().entityType()))
+										.select(select)
+										.build(),
 						parameterValues(select));
 	}
 

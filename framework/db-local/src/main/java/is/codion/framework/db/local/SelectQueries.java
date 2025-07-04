@@ -105,27 +105,27 @@ final class SelectQueries {
 		Builder select(Select select, boolean useWhereClause) {
 			// First apply any EntitySelectQuery settings (custom columns, from, where, etc.)
 			entitySelectQuery();
-			
+
 			// Only set columns from the Select object if they weren't already hardcoded by EntitySelectQuery
 			// This prevents overriding custom column clauses like "e.empno, e.ename" with default columns
 			if (!columnsClauseFromSelectQuery) {
 				setColumns(select);
 			}
 			//default from clause is handled by from()
-			
+
 			// Apply WHERE clause from Select unless explicitly disabled (e.g., for value selection)
 			if (useWhereClause) {
 				where(select.where());
 			}
-			
+
 			// Apply GROUP BY from column definitions if not already set by EntitySelectQuery
 			if (groupBy == null) {
 				groupBy(groupByClause());
 			}
-			
+
 			// Combine HAVING conditions from both Select and EntitySelectQuery
 			havingCondition(select.having());
-			
+
 			// Apply remaining clauses from Select, which take precedence over EntitySelectQuery
 			select.orderBy().ifPresent(this::setOrderBy);
 			forUpdate(select.forUpdate());
@@ -266,7 +266,7 @@ final class SelectQueries {
 				// No custom columns - use default selectable columns
 				columns(defaultColumnsClause());
 			}
-			
+
 			// Apply all clauses from EntitySelectQuery - these form the base query structure
 			from(selectQuery.from());
 			where(selectQuery.where());
@@ -288,7 +288,7 @@ final class SelectQueries {
 		private List<ColumnDefinition<?>> columnsToSelect(Collection<Attribute<?>> selectAttributes) {
 			// Always include primary key columns to ensure entities can be properly constructed
 			Set<ColumnDefinition<?>> columnsToSelect = new HashSet<>(definition.primaryKey().definitions());
-			
+
 			// Add columns for each requested attribute
 			selectAttributes.forEach(attribute -> {
 				if (attribute instanceof ForeignKey) {
@@ -337,7 +337,7 @@ final class SelectQueries {
 				String columnName = columnDefinition.name();
 				String columnExpression = columnDefinition.expression();
 				stringBuilder.append(columnExpression);
-				
+
 				// Add AS alias only if column name differs from expression (e.g., "e.ename AS name")
 				if (!columnName.equals(columnExpression)) {
 					stringBuilder.append(" AS ").append(columnName);

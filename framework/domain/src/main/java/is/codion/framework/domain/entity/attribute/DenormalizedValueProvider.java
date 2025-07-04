@@ -40,7 +40,7 @@ final class DenormalizedValueProvider<T> implements DerivedAttribute.Provider<T>
 		requireNonNull(denormalizedAttribute);
 		if (entityAttribute instanceof ForeignKey) {
 			EntityType referencedType = ((ForeignKey) entityAttribute).referencedType();
-			if (!denormalizedAttribute.entityType().equals(referencedType)){
+			if (!denormalizedAttribute.entityType().equals(referencedType)) {
 				throw new IllegalArgumentException("Denormalized attribute " + denormalizedAttribute + " must be from entity" + referencedType);
 			}
 		}

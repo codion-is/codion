@@ -113,7 +113,8 @@ public class H2DatabaseTest {
 		connection.close();
 
 		//test old url type
-		H2Database database3 = new H2Database("jdbc:h2:" + tempDir.toFile().getAbsolutePath() + "/h2db/database", singletonList("src/test/resources/create_schema.sql"));
+		H2Database database3 = new H2Database("jdbc:h2:" + tempDir.toFile()
+						.getAbsolutePath() + "/h2db/database", singletonList("src/test/resources/create_schema.sql"));
 		connection = database3.createConnection(user);
 		connection.prepareStatement("select id from test.test_table").execute();
 		connection.close();

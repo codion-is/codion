@@ -133,7 +133,8 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 		requireNonNull(remoteClient);
 		try {
 			AbstractRemoteEntityConnection connection = createRemoteConnection(database(), remoteClient,
-							configuration.port(), configuration.rmiClientSocketFactory().orElse(null), configuration.rmiServerSocketFactory().orElse(null));
+							configuration.port(), configuration.rmiClientSocketFactory().orElse(null),
+							configuration.rmiServerSocketFactory().orElse(null));
 			connection.setLoggingEnabled(clientLogging);
 
 			connection.closedObserver().addConsumer(this::removeConnection);

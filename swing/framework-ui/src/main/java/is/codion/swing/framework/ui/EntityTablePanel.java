@@ -3015,11 +3015,11 @@ public class EntityTablePanel extends JPanel {
 
 		private void configureLimit() {
 			tableModel.queryModel().limit().set(Dialogs.input(integerField()
-							.value(tableModel.queryModel().limit().get())
-							.selectAllOnFocusGained(true)
-							.groupingUsed(true)
-							.minimumValue(0)
-							.columns(6))
+											.value(tableModel.queryModel().limit().get())
+											.selectAllOnFocusGained(true)
+											.groupingUsed(true)
+											.minimumValue(0)
+											.columns(6))
 							.title(MESSAGES.getString("row_limit"))
 							.owner(EntityTablePanel.this)
 							.validator(new LimitValidator())

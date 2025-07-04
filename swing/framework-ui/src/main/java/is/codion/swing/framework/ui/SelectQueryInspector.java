@@ -340,9 +340,9 @@ final class SelectQueryInspector extends JPanel {
 				else if (afterByOrSetOrFromOrSelect && inFunction == 0) {
 					commaAfterByOrFromOrSelect();
 				}
-	//			else if ( afterOn && inFunction==0 ) {
-	//				commaAfterOn();
-	//			}
+				//			else if ( afterOn && inFunction==0 ) {
+				//				commaAfterOn();
+				//			}
 				else {
 					misc();
 				}
@@ -362,13 +362,13 @@ final class SelectQueryInspector extends JPanel {
 				afterBeginBeforeEnd = true;
 			}
 
-	//		private void commaAfterOn() {
-	//			out();
-	//			decrementIndent();
-	//			newline();
-	//			afterOn = false;
-	//			afterByOrSetOrFromOrSelect = true;
-	//		}
+			//		private void commaAfterOn() {
+			//			out();
+			//			decrementIndent();
+			//			newline();
+			//			afterOn = false;
+			//			afterByOrSetOrFromOrSelect = true;
+			//		}
 
 			private void commaAfterByOrFromOrSelect() {
 				out();

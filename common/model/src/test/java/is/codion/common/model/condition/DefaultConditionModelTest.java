@@ -179,7 +179,7 @@ public class DefaultConditionModelTest {
 	void lockedModelPreventsModification() {
 		ConditionModel<String> model = ConditionModel.builder(String.class).build();
 		model.locked().set(true);
-		
+
 		// Verify all modification attempts throw IllegalStateException when locked
 		assertThrows(IllegalStateException.class, () -> model.operands().upper().set("test"));
 		assertThrows(IllegalStateException.class, () -> model.operands().lower().set("test"));

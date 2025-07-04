@@ -108,11 +108,11 @@ public final class SelectQueriesTest {
 		SelectQueries.Builder builder = queries.builder(employeeDefinition);
 		Select select = Select.all(Employee.TYPE).build();
 		builder.select(select);
-		
+
 		String query = builder.build();
 		assertTrue(query.contains("SELECT"));
 		assertTrue(query.contains("FROM employees.employee"));
-		
+
 		// Check that all selected columns are included
 		List<ColumnDefinition<?>> selectedColumns = builder.selectedColumns();
 		assertFalse(selectedColumns.isEmpty());
@@ -122,10 +122,10 @@ public final class SelectQueriesTest {
 	void testSelectWithSpecificAttributes() {
 		SelectQueries.Builder builder = queries.builder(employeeDefinition);
 		Select select = Select.where(Employee.DEPARTMENT.equalTo(10))
-				.attributes(Employee.NAME, Employee.SALARY)
-				.build();
+						.attributes(Employee.NAME, Employee.SALARY)
+						.build();
 		builder.select(select);
-		
+
 		String query = builder.build();
 		assertTrue(query.contains("SELECT"));
 		assertTrue(query.contains("empno")); // Primary key always included
@@ -138,13 +138,13 @@ public final class SelectQueriesTest {
 	void testSelectWithForeignKeyAttribute() {
 		SelectQueries.Builder builder = queries.builder(employeeDefinition);
 		Select select = Select.where(Employee.DEPARTMENT.equalTo(10))
-				.attributes(Employee.DEPARTMENT_FK)
-				.build();
+						.attributes(Employee.DEPARTMENT_FK)
+						.build();
 		builder.select(select);
-		
+
 		String query = builder.build();
 		assertTrue(query.contains("deptno")); // Foreign key column should be included
-		
+
 		List<ColumnDefinition<?>> selectedColumns = builder.selectedColumns();
 		assertTrue(selectedColumns.stream().anyMatch(col -> col.attribute().equals(Employee.DEPARTMENT)));
 	}
@@ -153,15 +153,15 @@ public final class SelectQueriesTest {
 	void testComplexWhereConditions() {
 		SelectQueries.Builder builder = queries.builder(employeeDefinition);
 		Condition complexCondition = and(
-				Employee.DEPARTMENT.equalTo(10),
-				or(
-					Employee.SALARY.greaterThan(1000.0),
-					Employee.JOB.equalTo("MANAGER")
-				)
+						Employee.DEPARTMENT.equalTo(10),
+						or(
+										Employee.SALARY.greaterThan(1000.0),
+										Employee.JOB.equalTo("MANAGER")
+						)
 		);
 		Select select = Select.where(complexCondition).build();
 		builder.select(select);
-		
+
 		String query = builder.build();
 		assertTrue(query.contains("WHERE"));
 		assertTrue(query.contains("deptno = ?"));
@@ -173,14 +173,14 @@ public final class SelectQueriesTest {
 	void testOrderByClause() {
 		SelectQueries.Builder builder = queries.builder(employeeDefinition);
 		OrderBy orderBy = OrderBy.builder()
-				.ascending(Employee.DEPARTMENT)
-				.descending(Employee.SALARY)
-				.ascendingIgnoreCase(Employee.NAME)
-				.build();
-		
+						.ascending(Employee.DEPARTMENT)
+						.descending(Employee.SALARY)
+						.ascendingIgnoreCase(Employee.NAME)
+						.build();
+
 		Select select = Select.all(Employee.TYPE).orderBy(orderBy).build();
 		builder.select(select);
-		
+
 		String query = builder.build();
 		assertTrue(query.contains("ORDER BY"));
 		assertTrue(query.contains("deptno"));
@@ -192,13 +192,13 @@ public final class SelectQueriesTest {
 	void testOrderByWithNullOrdering() {
 		SelectQueries.Builder builder = queries.builder(employeeDefinition);
 		OrderBy orderBy = OrderBy.builder()
-				.ascending(OrderBy.NullOrder.NULLS_FIRST, Employee.COMMISSION)
-				.descending(OrderBy.NullOrder.NULLS_LAST, Employee.SALARY)
-				.build();
-		
+						.ascending(OrderBy.NullOrder.NULLS_FIRST, Employee.COMMISSION)
+						.descending(OrderBy.NullOrder.NULLS_LAST, Employee.SALARY)
+						.build();
+
 		Select select = Select.all(Employee.TYPE).orderBy(orderBy).build();
 		builder.select(select);
-		
+
 		String query = builder.build();
 		assertTrue(query.contains("comm NULLS FIRST"));
 		assertTrue(query.contains("sal DESC NULLS LAST"));
@@ -208,11 +208,11 @@ public final class SelectQueriesTest {
 	void testLimitOffset() {
 		SelectQueries.Builder builder = queries.builder(employeeDefinition);
 		Select select = Select.all(Employee.TYPE)
-				.limit(10)
-				.offset(20)
-				.build();
+						.limit(10)
+						.offset(20)
+						.build();
 		builder.select(select);
-		
+
 		String query = builder.build();
 		// Different databases have different syntax
 		assertTrue(query.contains("10") || query.contains("20"));
@@ -223,7 +223,7 @@ public final class SelectQueriesTest {
 		SelectQueries.Builder builder = queries.builder(employeeDefinition);
 		Select select = Select.all(Employee.TYPE).forUpdate().build();
 		builder.select(select);
-		
+
 		String query = builder.build();
 		assertTrue(query.contains("FOR UPDATE"));
 		// forUpdate should use the regular table name, not the select table name
@@ -235,10 +235,10 @@ public final class SelectQueriesTest {
 	void testGroupByAndHaving() {
 		SelectQueries.Builder builder = queries.builder(jobDefinition);
 		Select select = Select.all(Job.TYPE)
-				.having(Job.MAX_SALARY.greaterThan(5000.0))
-				.build();
+						.having(Job.MAX_SALARY.greaterThan(5000.0))
+						.build();
 		builder.select(select);
-		
+
 		String query = builder.build();
 		assertTrue(query.contains("GROUP BY"));
 		assertTrue(query.contains("HAVING"));
@@ -251,10 +251,10 @@ public final class SelectQueriesTest {
 	void testCountQuery() {
 		SelectQueries.Builder builder = queries.builder(employeeDefinition);
 		Count count = Count.builder(Employee.DEPARTMENT.equalTo(10))
-				.having(Employee.COMMISSION.isNotNull())
-				.build();
+						.having(Employee.COMMISSION.isNotNull())
+						.build();
 		builder.count(count);
-		
+
 		String query = builder.build();
 		assertTrue(query.contains("COUNT(*)"));
 		assertTrue(query.contains("SELECT"));
@@ -266,9 +266,9 @@ public final class SelectQueriesTest {
 	void testMultipleWhereConditions() {
 		SelectQueries.Builder builder = queries.builder(employeeDefinition);
 		builder.where("deptno = 10")
-				.where("job = 'CLERK'")
-				.where("sal > 1000");
-		
+						.where("job = 'CLERK'")
+						.where("sal > 1000");
+
 		String query = builder.build();
 		assertTrue(query.contains("WHERE deptno = 10"));
 		assertTrue(query.contains("AND job = 'CLERK'"));
@@ -280,7 +280,7 @@ public final class SelectQueriesTest {
 		EntityDefinition queryDef = testDomain.entities().definition(Query.TYPE);
 		SelectQueries.Builder builder = queries.builder(queryDef);
 		builder.entitySelectQuery();
-		
+
 		String query = builder.build();
 		assertEquals("SELECT empno, ename\nFROM employees.employee e\nORDER BY ename", query);
 	}
@@ -290,7 +290,7 @@ public final class SelectQueriesTest {
 		SelectQueries.Builder builder = queries.builder(jobDefinition);
 		Select select = Select.all(Job.TYPE).build();
 		builder.select(select);
-		
+
 		String query = builder.build();
 		assertTrue(query.contains("job"));
 		assertTrue(query.contains("max(sal)"));
@@ -305,10 +305,10 @@ public final class SelectQueriesTest {
 	void testSelectWithoutUsingWhereClause() {
 		SelectQueries.Builder builder = queries.builder(employeeDefinition);
 		Select select = Select.where(Employee.DEPARTMENT.equalTo(10)).build();
-		
+
 		// Use select but ignore where clause
 		builder.select(select, false);
-		
+
 		String query = builder.build();
 		assertFalse(query.contains("WHERE"));
 	}
@@ -318,7 +318,7 @@ public final class SelectQueriesTest {
 		EntityDefinition empnoDeptno = testDomain.entities().definition(EmpnoDeptno.TYPE);
 		SelectQueries.Builder builder = queries.builder(empnoDeptno);
 		builder.entitySelectQuery();
-		
+
 		String query = builder.build();
 		assertTrue(query.contains("FROM employees.employee e, employees.department d"));
 		assertTrue(query.contains("WHERE e.deptno = d.deptno"));
@@ -329,7 +329,7 @@ public final class SelectQueriesTest {
 	void testCustomFromClause() {
 		SelectQueries.Builder builder = queries.builder(employeeDefinition);
 		builder.from("(SELECT * FROM employees.employee WHERE deptno = 10) emp");
-		
+
 		String query = builder.build();
 		assertTrue(query.contains("FROM (SELECT * FROM employees.employee WHERE deptno = 10) emp"));
 	}
@@ -340,17 +340,17 @@ public final class SelectQueriesTest {
 		EntityDefinition masterDef = testDomain.entities().definition(Master.TYPE);
 		SelectQueries.Builder builder = queries.builder(masterDef);
 		builder.where((String) null)
-				.where("")
-				.groupBy(null)
-				.groupBy("")
-				.having(null)
-				.having("");
-		
+						.where("")
+						.groupBy(null)
+						.groupBy("")
+						.having(null)
+						.having("");
+
 		String query = builder.build();
 		assertFalse(query.contains("WHERE"));
 		assertFalse(query.contains("GROUP BY"));
 		// Note: HAVING might appear if the entity has a default having clause
-		
+
 		// Test that whitespace is NOT trimmed (kept as actual WHERE clause)
 		builder = queries.builder(masterDef);
 		builder.where("   ");
@@ -363,7 +363,7 @@ public final class SelectQueriesTest {
 		SelectQueries.Builder builder = queries.builder(jobDefinition);
 		Select select = Select.all(Job.TYPE).build();
 		builder.select(select);
-		
+
 		String query = builder.build();
 		// Aggregate columns should have aliases
 		assertTrue(query.contains("max(sal) AS max_salary"));
@@ -375,10 +375,10 @@ public final class SelectQueriesTest {
 		// Test entity with lazy column
 		SelectQueries.Builder builder = queries.builder(employeeDefinition);
 		Select select = Select.where(Employee.NAME.equalTo("SCOTT"))
-				.attributes(Employee.DATA_LAZY) // This column is marked as lazy
-				.build();
+						.attributes(Employee.DATA_LAZY) // This column is marked as lazy
+						.build();
 		builder.select(select);
-		
+
 		String query = builder.build();
 		assertTrue(query.contains("data_lazy"));
 	}
@@ -388,14 +388,14 @@ public final class SelectQueriesTest {
 		// Test that database-specific clauses are properly handled
 		Database db = Database.instance();
 		SelectQueries dbQueries = new SelectQueries(db);
-		
+
 		SelectQueries.Builder builder = dbQueries.builder(employeeDefinition);
 		Select select = Select.all(Employee.TYPE)
-				.limit(10)
-				.forUpdate()
-				.build();
+						.limit(10)
+						.forUpdate()
+						.build();
 		builder.select(select);
-		
+
 		String query = builder.build();
 		assertNotNull(query);
 		// Query should be valid SQL
@@ -410,10 +410,10 @@ public final class SelectQueriesTest {
 		Condition having1 = Job.MAX_SALARY.greaterThan(5000.0);
 		Condition having2 = Job.MIN_SALARY.lessThan(2000.0);
 		Select select = Select.all(Job.TYPE)
-				.having(and(having1, having2))
-				.build();
+						.having(and(having1, having2))
+						.build();
 		builder.select(select);
-		
+
 		String query = builder.build();
 		assertTrue(query.contains("HAVING"));
 		// Should combine the entity's having clause with the select's having clause
@@ -430,7 +430,7 @@ public final class SelectQueriesTest {
 		SelectQueries.Builder builder = queries.builder(noPkDef);
 		Select select = Select.all(NoPrimaryKey.TYPE).build();
 		builder.select(select);
-		
+
 		String query = builder.build();
 		assertTrue(query.contains("SELECT"));
 		assertTrue(query.contains("col1"));
@@ -444,9 +444,9 @@ public final class SelectQueriesTest {
 		// Test multiple where clauses combined
 		SelectQueries.Builder builder = queries.builder(employeeDefinition);
 		builder.where(Employee.DEPARTMENT.equalTo(10))
-				.where(Employee.JOB.equalTo("CLERK"))
-				.where(Employee.SALARY.greaterThan(1000.0));
-		
+						.where(Employee.JOB.equalTo("CLERK"))
+						.where(Employee.SALARY.greaterThan(1000.0));
+
 		String query = builder.build();
 		assertTrue(query.contains("WHERE"));
 		assertTrue(query.contains("deptno = ?"));

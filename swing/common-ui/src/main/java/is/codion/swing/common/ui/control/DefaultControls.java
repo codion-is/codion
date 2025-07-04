@@ -256,6 +256,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 		private interface ControlItem {
 			void addTo(ControlsBuilder builder, ControlMap controlMap);
+
 			default Optional<ControlKey<?>> controlKey() {
 				return Optional.empty();
 			}

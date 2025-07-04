@@ -156,7 +156,7 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
 
 		return builder.toString();
 	}
-	
+
 	static final class DefaultBuilder implements Builder {
 
 		private final ConnectionRequest connectionRequest;

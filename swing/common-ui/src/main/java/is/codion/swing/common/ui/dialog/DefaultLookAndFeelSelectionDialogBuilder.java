@@ -40,8 +40,8 @@ import static java.util.ResourceBundle.getBundle;
 final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelectionDialogBuilder {
 
 	private static final MessageBundle MESSAGES =
-						messageBundle(DefaultLookAndFeelSelectionDialogBuilder.class,
-										getBundle(DefaultLookAndFeelSelectionDialogBuilder.class.getName()));
+					messageBundle(DefaultLookAndFeelSelectionDialogBuilder.class,
+									getBundle(DefaultLookAndFeelSelectionDialogBuilder.class.getName()));
 
 	private static final int PADDING = 10;
 

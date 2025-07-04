@@ -188,21 +188,21 @@ final class H2Database extends AbstractDatabase {
 		if (scriptPath == null || scriptPath.trim().isEmpty()) {
 			throw new SecurityException("Script path cannot be null or empty");
 		}
-		
+
 		String trimmedPath = scriptPath.trim();
-		
+
 		// Check for SQL injection attempts
-		if (trimmedPath.contains("'") || trimmedPath.contains("\"") || 
-			trimmedPath.contains(";") || trimmedPath.contains("--") ||
-			trimmedPath.contains("/*") || trimmedPath.contains("*/")) {
+		if (trimmedPath.contains("'") || trimmedPath.contains("\"") ||
+						trimmedPath.contains(";") || trimmedPath.contains("--") ||
+						trimmedPath.contains("/*") || trimmedPath.contains("*/")) {
 			throw new SecurityException("Script path contains potentially dangerous characters: " + scriptPath);
 		}
-		
+
 		// Check for path traversal attempts
 		if (trimmedPath.contains("../") || trimmedPath.contains("..\\")) {
 			throw new SecurityException("Script path contains path traversal sequences: " + scriptPath);
 		}
-		
+
 		// Normalize path separators for consistency
 		return trimmedPath.replace("\\", "/");
 	}

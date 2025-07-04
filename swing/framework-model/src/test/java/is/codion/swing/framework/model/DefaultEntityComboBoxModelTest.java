@@ -106,7 +106,9 @@ public final class DefaultEntityComboBoxModelTest {
 						.filterSelected(true)
 						.build();
 		employeeComboBoxModel.filter().get(Employee.MGR_FK).link(managerComboBoxModel);
-		managerComboBoxModel.selection().item().set(employeeComboBoxModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("BLAKE")));
+		managerComboBoxModel.selection()
+						.item()
+						.set(employeeComboBoxModel.connectionProvider().connection().selectSingle(Employee.NAME.equalTo("BLAKE")));
 		EntityComboBoxModel departmentComboBoxModel = EntityComboBoxModel.builder(Department.TYPE, CONNECTION_PROVIDER).build();
 		managerComboBoxModel.filter().get(Employee.DEPARTMENT_FK).link(departmentComboBoxModel);
 		managerComboBoxModel.selection().clear();

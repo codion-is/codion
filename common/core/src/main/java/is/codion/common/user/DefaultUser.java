@@ -37,7 +37,7 @@ final class DefaultUser implements User, Serializable {
 	private String username;
 	private char[] password;
 
-	DefaultUser(String username, char @Nullable[] password) {
+	DefaultUser(String username, char @Nullable [] password) {
 		if (requireNonNull(username).isEmpty()) {
 			throw new IllegalArgumentException("Username must be non-empty");
 		}
@@ -97,7 +97,7 @@ final class DefaultUser implements User, Serializable {
 		this.password = createPassword((char[]) stream.readObject());
 	}
 
-	private static char[] createPassword(char @Nullable[] password) {
+	private static char[] createPassword(char @Nullable [] password) {
 		return password == null ? new char[0] : Arrays.copyOf(password, password.length);
 	}
 }

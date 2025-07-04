@@ -61,7 +61,7 @@ final class InsertUpdateQueryInspector extends JPanel {
 	}
 
 	private void refreshQuery() {
-		invokeLater(() ->  {
+		invokeLater(() -> {
 			insertTextArea.setText(createInsertQuery());
 			updateTextArea.setText(createUpdateQuery());
 		});

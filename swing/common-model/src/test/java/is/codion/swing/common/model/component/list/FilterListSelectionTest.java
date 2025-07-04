@@ -112,23 +112,23 @@ public class FilterListSelectionTest {
 	void multipleSelectionOperations() {
 		// Test multiple selection mode operations
 		testModel.setSelectionMode(MULTIPLE_INTERVAL_SELECTION);
-		
+
 		// Test selectAll
 		testModel.selectAll();
 		assertEquals(3, testModel.count());
 		assertEquals(asList(0, 1, 2), testModel.indexes().get());
-		
+
 		// Test contains operations
 		assertTrue(testModel.indexes().contains(1));
 		assertFalse(testModel.indexes().contains(3));
 		assertTrue(testModel.items().contains("B"));
 		assertFalse(testModel.items().contains("D"));
-		
+
 		// Test remove operations
 		testModel.indexes().remove(1);
 		assertEquals(2, testModel.count());
 		assertEquals(asList(0, 2), testModel.indexes().get());
-		
+
 		testModel.indexes().remove(asList(0, 2));
 		assertEquals(0, testModel.count());
 		assertTrue(testModel.empty().get());
@@ -140,20 +140,20 @@ public class FilterListSelectionTest {
 		testModel.item().set("B");
 		assertEquals(1, testModel.index().get());
 		assertEquals("B", testModel.item().get());
-		
+
 		// Test selecting multiple items
 		testModel.items().set(asList("A", "C"));
 		assertEquals(asList(0, 2), testModel.indexes().get());
 		assertEquals(asList("A", "C"), testModel.items().get());
-		
+
 		// Test adding items
 		testModel.items().add("B");
 		assertEquals(asList(0, 1, 2), testModel.indexes().get());
-		
+
 		// Test removing items
 		testModel.items().remove("B");
 		assertEquals(asList(0, 2), testModel.indexes().get());
-		
+
 		testModel.items().remove(asList("A", "C"));
 		assertTrue(testModel.empty().get());
 	}
@@ -164,7 +164,7 @@ public class FilterListSelectionTest {
 		testModel.items().set(item -> item.compareTo("B") >= 0);
 		assertEquals(asList(1, 2), testModel.indexes().get());
 		assertEquals(asList("B", "C"), testModel.items().get());
-		
+
 		// Test adding by predicate
 		testModel.clearSelection();
 		testModel.items().add(item -> item.equals("A") || item.equals("C"));
@@ -177,27 +177,27 @@ public class FilterListSelectionTest {
 		testModel.clearSelection();
 		testModel.indexes().increment();
 		assertEquals(0, testModel.index().get());
-		
+
 		// Test increment wrap around
 		testModel.index().set(2);
 		testModel.indexes().increment();
 		assertEquals(0, testModel.index().get());
-		
+
 		// Test decrement on empty selection
 		testModel.clearSelection();
 		testModel.indexes().decrement();
 		assertEquals(2, testModel.index().get());
-		
+
 		// Test decrement wrap around
 		testModel.index().set(0);
 		testModel.indexes().decrement();
 		assertEquals(2, testModel.index().get());
-		
+
 		// Test with multiple selections
 		testModel.indexes().set(asList(0, 1));
 		testModel.indexes().increment();
 		assertEquals(asList(1, 2), testModel.indexes().get());
-		
+
 		testModel.indexes().set(asList(1, 2));
 		testModel.indexes().decrement();
 		assertEquals(asList(0, 1), testModel.indexes().get());
@@ -218,11 +218,11 @@ public class FilterListSelectionTest {
 		testModel.setSelectionMode(MULTIPLE_INTERVAL_SELECTION);
 		testModel.indexes().set(asList(0, 1, 2));
 		assertEquals(3, testModel.count());
-		
+
 		// Change to single selection - should clear selection
 		testModel.setSelectionMode(SINGLE_SELECTION);
 		assertTrue(testModel.empty().get());
-		
+
 		// In single selection mode, adding multiple should only keep last
 		testModel.index().set(0);
 		testModel.indexes().add(1);
@@ -234,10 +234,10 @@ public class FilterListSelectionTest {
 	void valueIsAdjusting() {
 		// Test adjusting flag
 		assertFalse(testModel.getValueIsAdjusting());
-		
+
 		testModel.adjusting(true);
 		assertTrue(testModel.getValueIsAdjusting());
-		
+
 		// Test that selection interval changes with adjusting true still update values
 		// but should not fire final value changed events
 		AtomicInteger selectionEventCounter = new AtomicInteger();
@@ -246,16 +246,16 @@ public class FilterListSelectionTest {
 				selectionEventCounter.incrementAndGet();
 			}
 		});
-		
+
 		// Change selection while adjusting
 		testModel.adjusting(true);
 		testModel.setSelectionInterval(0, 0);
 		assertEquals(0, selectionEventCounter.get()); // No final event while adjusting
-		
+
 		// Setting adjusting to false fires a value changed event with the current selection
 		testModel.adjusting(false);
 		assertEquals(1, selectionEventCounter.get()); // Final event fired when adjusting set to false
-		
+
 		// Another selection change while not adjusting
 		testModel.setSelectionInterval(1, 1);
 		assertEquals(2, selectionEventCounter.get()); // Another final event
@@ -266,7 +266,7 @@ public class FilterListSelectionTest {
 		// Test null item selection
 		testModel.item().set(null);
 		assertTrue(testModel.empty().get());
-		
+
 		// Test null in collections
 		assertThrows(NullPointerException.class, () -> testModel.items().add((String) null));
 		assertThrows(NullPointerException.class, () -> testModel.items().set(asList("A", null)));
@@ -279,10 +279,10 @@ public class FilterListSelectionTest {
 		testModel.indexes().set(asList(0, 1));
 		testModel.indexes().add(emptyList());
 		assertEquals(asList(0, 1), testModel.indexes().get());
-		
+
 		testModel.indexes().remove(emptyList());
 		assertEquals(asList(0, 1), testModel.indexes().get());
-		
+
 		testModel.items().add(emptyList());
 		assertEquals(asList("A", "B"), testModel.items().get());
 	}
@@ -293,12 +293,12 @@ public class FilterListSelectionTest {
 		assertTrue(testModel.empty().get());
 		testModel.index().set(0);
 		assertFalse(testModel.empty().get());
-		
+
 		// Test single state
 		assertTrue(testModel.single().get());
 		testModel.indexes().add(1);
 		assertFalse(testModel.single().get());
-		
+
 		// Test multiple state
 		assertTrue(testModel.multiple().get());
 		testModel.clearSelection();
@@ -312,19 +312,19 @@ public class FilterListSelectionTest {
 		// Test changing event notifications
 		AtomicInteger changingCounter = new AtomicInteger();
 		testModel.changing().addListener(changingCounter::incrementAndGet);
-		
+
 		testModel.addSelectionInterval(0, 1);
 		assertEquals(1, changingCounter.get());
-		
+
 		testModel.setSelectionInterval(1, 2);
 		assertEquals(2, changingCounter.get());
-		
+
 		testModel.removeSelectionInterval(0, 2);
 		assertEquals(3, changingCounter.get());
-		
+
 		testModel.insertIndexInterval(0, 1, true);
 		assertEquals(4, changingCounter.get());
-		
+
 		testModel.removeIndexInterval(0, 1);
 		assertEquals(5, changingCounter.get());
 	}

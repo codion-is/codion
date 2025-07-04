@@ -883,8 +883,8 @@ public final class ComponentsTest {
 	void listItems() {
 		ValueList<String> textValue = ValueList.valueList(asList("one", "two", "three"));
 		ListBuilder.Items<String> listBuilder = Components.list(FilterListModel.builder(
-										asList("one", "two", "three"))
-						.build())
+														asList("one", "two", "three"))
+										.build())
 						.items()
 						.visibleRowCount(4)
 						.layoutOrientation(JList.VERTICAL)

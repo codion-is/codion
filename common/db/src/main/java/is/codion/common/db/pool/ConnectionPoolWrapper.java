@@ -34,7 +34,7 @@ public interface ConnectionPoolWrapper {
 
 	int DEFAULT_MAX_POOL_SIZE_VALUE = 8;
 	int DEFAULT_MIN_POOL_SIZE_VALUE = 4;
-	
+
 	int DEFAULT_IDLE_TIMEOUT_MS = 60_000;      // 1 minute
 	int DEFAULT_CHECK_OUT_TIMEOUT_MS = 30_000; // 30 seconds
 

@@ -296,7 +296,7 @@ public class DomainTest {
 	private static User testUser() {
 		String testUser = System.getProperty(TEST_USER);
 		if (testUser == null) {
-		throw new IllegalStateException("Required property '" + TEST_USER + "' not set");
+			throw new IllegalStateException("Required property '" + TEST_USER + "' not set");
 		}
 
 		return User.parse(testUser);

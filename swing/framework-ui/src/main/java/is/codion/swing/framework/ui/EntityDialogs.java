@@ -368,8 +368,8 @@ public final class EntityDialogs {
 				editModel.applyEdit(entities, attribute, newValue);
 				try {
 					Dialogs.progressWorker(editModel.createUpdate(entities.stream()
-									.filter(Entity::modified)
-									.collect(toList())).prepare()::perform)
+													.filter(Entity::modified)
+													.collect(toList())).prepare()::perform)
 									.title(EDIT_PANEL_MESSAGES.getString("updating"))
 									.owner(owner)
 									.location(location)

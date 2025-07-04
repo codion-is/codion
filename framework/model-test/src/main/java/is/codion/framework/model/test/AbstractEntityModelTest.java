@@ -155,7 +155,9 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 		departmentModel.detailModels().get((Class<? extends M>) departmentModel.detailModels().get(Employee.TYPE).getClass());
 		M detailModel = departmentModel.detailModels().get(Employee.TYPE);
 		assertTrue(departmentModel.detailModels().contains(detailModel));
-		assertEquals(1, departmentModel.detailModels().get().size(), "Only one detail EntityModel<EditModel, TableModel>should be in DepartmentModel");
+		assertEquals(1, departmentModel.detailModels()
+						.get()
+						.size(), "Only one detail EntityModel<EditModel, TableModel>should be in DepartmentModel");
 		assertEquals(1, departmentModel.detailModels().active().size());
 
 		departmentModel.detailModels().get(Employee.TYPE);
@@ -423,8 +425,8 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 						.setValueOnInsert(false)
 						.build());
 		ConditionModel<Entity> deptCondition = employeeModel.tableModel().queryModel()
-							.condition()
-							.get(Employee.DEPARTMENT_FK);
+						.condition()
+						.get(Employee.DEPARTMENT_FK);
 
 		departmentModel.tableModel().items().refresh();
 		departmentModel.tableModel().selection().indexes().set(asList(2, 3));
@@ -444,8 +446,8 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 						.setValueOnInsert(false)
 						.build());
 		deptCondition = employeeModel.tableModel().queryModel()
-							.condition()
-							.get(Employee.DEPARTMENT_FK);
+						.condition()
+						.get(Employee.DEPARTMENT_FK);
 
 		departmentModel.tableModel().items().refresh();
 		departmentModel.tableModel().selection().indexes().set(asList(0, 1));

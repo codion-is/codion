@@ -46,9 +46,9 @@ public final class UpdateTest {
 		void update_singleValue_buildsCorrectly() {
 			Condition condition = Employee.DEPARTMENT.equalTo(10);
 			Update update = Update.where(condition)
-					.set(Employee.SALARY, 55000d)
-					.build();
-			
+							.set(Employee.SALARY, 55000d)
+							.build();
+
 			assertEquals(condition, update.where());
 			Map<Column<?>, Object> values = update.values();
 			assertEquals(1, values.size());
@@ -59,9 +59,9 @@ public final class UpdateTest {
 		@DisplayName("update all with entity type builds correctly")
 		void update_allWithEntityType_buildsCorrectly() {
 			Update update = Update.all(Employee.TYPE)
-					.set(Employee.COMMISSION, 500d)
-					.build();
-			
+							.set(Employee.COMMISSION, 500d)
+							.build();
+
 			assertEquals(Condition.all(Employee.TYPE), update.where());
 			Map<Column<?>, Object> values = update.values();
 			assertEquals(1, values.size());
@@ -73,12 +73,12 @@ public final class UpdateTest {
 		void update_multipleValues_buildsCorrectly() {
 			LocalDate now = LocalDate.now();
 			Update update = Update.where(Employee.ID.equalTo(1))
-					.set(Employee.NAME, "John Doe")
-					.set(Employee.SALARY, 60000d)
-					.set(Employee.HIREDATE, now)
-					.set(Employee.JOB, "MANAGER")
-					.build();
-			
+							.set(Employee.NAME, "John Doe")
+							.set(Employee.SALARY, 60000d)
+							.set(Employee.HIREDATE, now)
+							.set(Employee.JOB, "MANAGER")
+							.build();
+
 			Map<Column<?>, Object> values = update.values();
 			assertEquals(4, values.size());
 			assertEquals("John Doe", values.get(Employee.NAME));
@@ -96,9 +96,9 @@ public final class UpdateTest {
 		@DisplayName("update with null value sets null correctly")
 		void update_nullValue_setsNullCorrectly() {
 			Update update = Update.where(Employee.ID.equalTo(1))
-					.set(Employee.COMMISSION, null)
-					.build();
-			
+							.set(Employee.COMMISSION, null)
+							.build();
+
 			Map<Column<?>, Object> values = update.values();
 			assertEquals(1, values.size());
 			assertTrue(values.containsKey(Employee.COMMISSION));
@@ -109,11 +109,11 @@ public final class UpdateTest {
 		@DisplayName("update with mixed null and non-null values")
 		void update_mixedNullAndNonNull_buildsCorrectly() {
 			Update update = Update.where(Employee.ID.equalTo(1))
-					.set(Employee.COMMISSION, null)
-					.set(Employee.SALARY, 70000d)
-					.set(Employee.MGR, null)
-					.build();
-			
+							.set(Employee.COMMISSION, null)
+							.set(Employee.SALARY, 70000d)
+							.set(Employee.MGR, null)
+							.build();
+
 			Map<Column<?>, Object> values = update.values();
 			assertEquals(3, values.size());
 			assertNull(values.get(Employee.COMMISSION));
@@ -131,18 +131,18 @@ public final class UpdateTest {
 		void update_variousColumnTypes_buildsCorrectly() {
 			LocalDateTime hireDate = LocalDateTime.now();
 			Update update = Update.where(Employee.ID.equalTo(1))
-					// String
-					.set(Employee.NAME, "Test Name")
-					.set(Employee.JOB, "CLERK")
-					// Numbers
-					.set(Employee.SALARY, 45000d)
-					.set(Employee.COMMISSION, 100d)
-					.set(Employee.DEPARTMENT, 20)
-					.set(Employee.MGR, 7839)
-					// Date/Time
-					.set(Employee.HIREDATE, hireDate)
-					.build();
-			
+							// String
+							.set(Employee.NAME, "Test Name")
+							.set(Employee.JOB, "CLERK")
+							// Numbers
+							.set(Employee.SALARY, 45000d)
+							.set(Employee.COMMISSION, 100d)
+							.set(Employee.DEPARTMENT, 20)
+							.set(Employee.MGR, 7839)
+							// Date/Time
+							.set(Employee.HIREDATE, hireDate)
+							.build();
+
 			Map<Column<?>, Object> values = update.values();
 			assertEquals(7, values.size());
 			assertEquals("Test Name", values.get(Employee.NAME));
@@ -158,10 +158,10 @@ public final class UpdateTest {
 		@DisplayName("update department with boolean and string")
 		void update_departmentColumns_buildsCorrectly() {
 			Update update = Update.where(Department.ID.equalTo(10))
-					.set(Department.NAME, "ACCOUNTING")
-					.set(Department.LOCATION, "NEW YORK")
-					.build();
-			
+							.set(Department.NAME, "ACCOUNTING")
+							.set(Department.LOCATION, "NEW YORK")
+							.build();
+
 			Map<Column<?>, Object> values = update.values();
 			assertEquals(2, values.size());
 			assertEquals("ACCOUNTING", values.get(Department.NAME));
@@ -176,27 +176,27 @@ public final class UpdateTest {
 		@Test
 		@DisplayName("duplicate column throws IllegalStateException")
 		void update_duplicateColumn_throwsIllegalStateException() {
-			assertThrows(IllegalStateException.class, () -> 
-					Update.all(Employee.TYPE)
-							.set(Employee.COMMISSION, 123d)
-							.set(Employee.COMMISSION, 456d)
+			assertThrows(IllegalStateException.class, () ->
+							Update.all(Employee.TYPE)
+											.set(Employee.COMMISSION, 123d)
+											.set(Employee.COMMISSION, 456d)
 			);
 		}
 
 		@Test
 		@DisplayName("no values throws IllegalStateException")
 		void update_noValues_throwsIllegalStateException() {
-			assertThrows(IllegalStateException.class, () -> 
-					Update.all(Employee.TYPE).build()
+			assertThrows(IllegalStateException.class, () ->
+							Update.all(Employee.TYPE).build()
 			);
 		}
 
 		@Test
 		@DisplayName("null column throws NullPointerException")
 		void update_nullColumn_throwsNullPointerException() {
-			assertThrows(NullPointerException.class, () -> 
-					Update.all(Employee.TYPE)
-							.set(null, "value")
+			assertThrows(NullPointerException.class, () ->
+							Update.all(Employee.TYPE)
+											.set(null, "value")
 			);
 		}
 	}
@@ -209,15 +209,15 @@ public final class UpdateTest {
 		@DisplayName("equals with same condition and values")
 		void update_equals_withSameConditionAndValues() {
 			Update update1 = Update.where(Employee.DEPARTMENT.equalTo(10))
-					.set(Employee.SALARY, 50000d)
-					.set(Employee.COMMISSION, 100d)
-					.build();
-			
+							.set(Employee.SALARY, 50000d)
+							.set(Employee.COMMISSION, 100d)
+							.build();
+
 			Update update2 = Update.where(Employee.DEPARTMENT.equalTo(10))
-					.set(Employee.SALARY, 50000d)
-					.set(Employee.COMMISSION, 100d)
-					.build();
-			
+							.set(Employee.SALARY, 50000d)
+							.set(Employee.COMMISSION, 100d)
+							.build();
+
 			assertEquals(update1, update2);
 			assertEquals(update1.hashCode(), update2.hashCode());
 		}
@@ -226,13 +226,13 @@ public final class UpdateTest {
 		@DisplayName("not equals with different conditions")
 		void update_notEquals_withDifferentConditions() {
 			Update update1 = Update.where(Employee.DEPARTMENT.equalTo(10))
-					.set(Employee.SALARY, 50000d)
-					.build();
-			
+							.set(Employee.SALARY, 50000d)
+							.build();
+
 			Update update2 = Update.where(Employee.DEPARTMENT.equalTo(20))
-					.set(Employee.SALARY, 50000d)
-					.build();
-			
+							.set(Employee.SALARY, 50000d)
+							.build();
+
 			assertNotEquals(update1, update2);
 		}
 
@@ -240,13 +240,13 @@ public final class UpdateTest {
 		@DisplayName("not equals with different values")
 		void update_notEquals_withDifferentValues() {
 			Update update1 = Update.all(Employee.TYPE)
-					.set(Employee.SALARY, 50000d)
-					.build();
-			
+							.set(Employee.SALARY, 50000d)
+							.build();
+
 			Update update2 = Update.all(Employee.TYPE)
-					.set(Employee.SALARY, 60000d)
-					.build();
-			
+							.set(Employee.SALARY, 60000d)
+							.build();
+
 			assertNotEquals(update1, update2);
 		}
 
@@ -254,13 +254,13 @@ public final class UpdateTest {
 		@DisplayName("not equals with different columns")
 		void update_notEquals_withDifferentColumns() {
 			Update update1 = Update.all(Employee.TYPE)
-					.set(Employee.SALARY, 50000d)
-					.build();
-			
+							.set(Employee.SALARY, 50000d)
+							.build();
+
 			Update update2 = Update.all(Employee.TYPE)
-					.set(Employee.COMMISSION, 50000d)
-					.build();
-			
+							.set(Employee.COMMISSION, 50000d)
+							.build();
+
 			assertNotEquals(update1, update2);
 		}
 	}
@@ -273,10 +273,10 @@ public final class UpdateTest {
 		@DisplayName("toString includes condition and values")
 		void update_toString_includesConditionAndValues() {
 			Update update = Update.where(Employee.NAME.equalTo("Test"))
-					.set(Employee.SALARY, 55000d)
-					.set(Employee.COMMISSION, 200d)
-					.build();
-			
+							.set(Employee.SALARY, 55000d)
+							.set(Employee.COMMISSION, 200d)
+							.build();
+
 			String toString = update.toString();
 			assertTrue(toString.contains("where="));
 			assertTrue(toString.contains("values="));
@@ -292,13 +292,13 @@ public final class UpdateTest {
 		@DisplayName("values maintain insertion order")
 		void update_values_maintainInsertionOrder() {
 			Update update = Update.all(Employee.TYPE)
-					.set(Employee.NAME, "A")
-					.set(Employee.JOB, "B")
-					.set(Employee.SALARY, 1d)
-					.set(Employee.COMMISSION, 2d)
-					.set(Employee.DEPARTMENT, 3)
-					.build();
-			
+							.set(Employee.NAME, "A")
+							.set(Employee.JOB, "B")
+							.set(Employee.SALARY, 1d)
+							.set(Employee.COMMISSION, 2d)
+							.set(Employee.DEPARTMENT, 3)
+							.build();
+
 			// LinkedHashMap should maintain insertion order
 			Map<Column<?>, Object> values = update.values();
 			Object[] columns = values.keySet().toArray();

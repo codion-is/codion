@@ -40,7 +40,7 @@ public final class PreferencesMigratorTest {
 		// Setup - create preferences in default store
 		Preferences defaultRoot = Preferences.userRoot();
 		Preferences testNode = defaultRoot.node("codion-test-migration");
-		
+
 		testNode.put("simple.key", "simple.value");
 		testNode.put("another.key", "another.value");
 		testNode.flush();
@@ -54,9 +54,9 @@ public final class PreferencesMigratorTest {
 			// Perform migration
 			Path targetPath = tempDir.resolve("migrated-prefs.json");
 			PreferencesMigrator migrator = PreferencesMigrator.builder()
-					.targetPath(targetPath)
-					.build();
-			
+							.targetPath(targetPath)
+							.build();
+
 			migrator.migrate();
 
 			// Verify file was created
@@ -122,9 +122,9 @@ public final class PreferencesMigratorTest {
 			// Perform migration
 			Path targetPath = tempDir.resolve("migrated-truncated.json");
 			PreferencesMigrator migrator = PreferencesMigrator.builder()
-					.targetPath(targetPath)
-					.migrateTruncated(true)
-					.build();
+							.targetPath(targetPath)
+							.migrateTruncated(true)
+							.build();
 
 			migrator.migrate();
 
@@ -162,8 +162,8 @@ public final class PreferencesMigratorTest {
 		try {
 			// Attempt migration
 			PreferencesMigrator migrator = PreferencesMigrator.builder()
-					.targetPath(targetPath)
-					.build();
+							.targetPath(targetPath)
+							.build();
 
 			migrator.migrate();
 
@@ -183,14 +183,14 @@ public final class PreferencesMigratorTest {
 		// Perform migration with no preferences
 		Path targetPath = tempDir.resolve("empty-prefs.json");
 		PreferencesMigrator migrator = PreferencesMigrator.builder()
-				.targetPath(targetPath)
-				.build();
+						.targetPath(targetPath)
+						.build();
 
 		migrator.migrate();
 
 		// Verify file was created with migration marker
 		assertTrue(Files.exists(targetPath));
-		
+
 		// Load and check for migration marker
 		JsonPreferencesStore store = new JsonPreferencesStore(targetPath);
 		FilePreferences filePrefs = new FilePreferences(store);

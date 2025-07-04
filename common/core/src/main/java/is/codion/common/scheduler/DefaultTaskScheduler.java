@@ -185,6 +185,6 @@ final class DefaultTaskScheduler implements TaskScheduler {
 			}
 		}
 	}
-	
+
 	private interface Lock {}
 }

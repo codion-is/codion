@@ -82,10 +82,10 @@ final class DefaultCalendarDialogBuilder extends AbstractDialogBuilder<CalendarD
 						.locationRelativeTo(locationRelativeTo)
 						.title(title)
 						.onBuild(dialog ->
-							calendarPanel.doubleClicked().addListener(() -> {
-								okPressed.set(true);
-								dialog.dispose();
-							}))
+										calendarPanel.doubleClicked().addListener(() -> {
+											okPressed.set(true);
+											dialog.dispose();
+										}))
 						.onShown(dialog -> calendarPanel.requestInputFocus())
 						.onOk(() -> okPressed.set(true));
 		onBuildConsumers.forEach(dialogBuilder::onBuild);

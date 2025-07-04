@@ -111,7 +111,6 @@ final class SwingMcpHttpServer {
 		server.createContext("/mcp/tools/list", new ListToolsHandler());
 		server.createContext("/mcp/tools/call", new CallToolHandler());
 		server.createContext("/mcp/status", new StatusHandler());
-		
 
 		server.start();
 
@@ -165,7 +164,7 @@ final class SwingMcpHttpServer {
 			if (handleCorsPreflightRequest(exchange)) {
 				return;
 			}
-			
+
 			if (!POST.equals(exchange.getRequestMethod())) {
 				exchange.sendResponseHeaders(405, -1);
 				return;
@@ -193,7 +192,7 @@ final class SwingMcpHttpServer {
 			if (handleCorsPreflightRequest(exchange)) {
 				return;
 			}
-			
+
 			if (!GET.equals(exchange.getRequestMethod())) {
 				exchange.sendResponseHeaders(405, -1);
 				return;
@@ -227,7 +226,7 @@ final class SwingMcpHttpServer {
 			if (handleCorsPreflightRequest(exchange)) {
 				return;
 			}
-			
+
 			if (!POST.equals(exchange.getRequestMethod())) {
 				exchange.sendResponseHeaders(405, -1);
 				return;
@@ -282,7 +281,7 @@ final class SwingMcpHttpServer {
 			if (handleCorsPreflightRequest(exchange)) {
 				return;
 			}
-			
+
 			if (!GET.equals(exchange.getRequestMethod())) {
 				exchange.sendResponseHeaders(405, -1);
 				return;

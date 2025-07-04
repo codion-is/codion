@@ -32,6 +32,6 @@ module is.codion.framework.lambda {
 	requires static aws.lambda.java.events;
 
 	uses is.codion.framework.domain.Domain;
-	
+
 	exports is.codion.framework.lambda;
 }
