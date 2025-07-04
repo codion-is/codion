@@ -239,7 +239,8 @@ public final class ServerMonitorPanel extends JPanel {
 
 	private JPanel createOperationPanel() {
 		FilterTable<DomainOperation, OperationColumns.Id> table =
-						FilterTable.builder(model.operationTableModel(), createOperationColumns())
+						FilterTable.builder(model.operationTableModel())
+										.columns(createOperationColumns())
 										.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 										.build();
 
@@ -257,7 +258,8 @@ public final class ServerMonitorPanel extends JPanel {
 
 	private JPanel createReportPanel() {
 		FilterTable<DomainReport, ReportColumns.Id> table =
-						FilterTable.builder(model.reportTableModel(), createReportColumns())
+						FilterTable.builder(model.reportTableModel())
+										.columns(createReportColumns())
 										.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 										.build();
 
@@ -278,7 +280,8 @@ public final class ServerMonitorPanel extends JPanel {
 
 	private JPanel createEntityPanel() {
 		FilterTable<DomainEntityDefinition, DomainColumns.Id> table =
-						FilterTable.builder(model.domainTableModel(), createDomainColumns())
+						FilterTable.builder(model.domainTableModel())
+										.columns(createDomainColumns())
 										.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 										.build();
 

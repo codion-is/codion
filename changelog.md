@@ -57,6 +57,7 @@ Codion Change Log
 - SelectionDialogBuilderFactory added.
 - Windows.resizeWindow() renamed resize().
 - FontSize replaced with Scaler, default implementation font size based while the FlatLaf one is based on the flatlaf.uiScale property.
+- FilterTable.Builder.Columns added, replacing the columns parameter in FilterTable.builder().
 ### is.codion.swing.framework.ui
 - ApplicationPreferences.fromString() bug fixed, FRAME_MAXIMIZED_KEY now used.
 ### is.codion.framework.lambda

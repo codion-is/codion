@@ -119,10 +119,10 @@ import static javax.swing.KeyStroke.getKeyStrokeForEvent;
 /**
  * A JTable implementation for {@link FilterTableModel}.
  * Note that for the table header to display you must add this table to a JScrollPane.
- * For instances use the builder {@link #builder(FilterTableModel, List)}
+ * For instances use the builder {@link #builder(FilterTableModel)}
  * @param <R> the type representing rows
  * @param <C> the type used to identify columns
- * @see #builder(FilterTableModel, List)
+ * @see #builder(FilterTableModel)
  */
 public final class FilterTable<R, C> extends JTable {
 
@@ -683,15 +683,13 @@ public final class FilterTable<R, C> extends JTable {
 	/**
 	 * Instantiates a new {@link FilterTable.Builder} using the given model
 	 * @param tableModel the table model
-	 * @param columns the columns
 	 * @param <R> the type representing rows
 	 * @param <C> the type used to identify columns
 	 * @return a new {@link FilterTable.Builder} instance
 	 * @throws IllegalArgumentException in case the column identifiers are not unique
 	 */
-	public static <R, C> Builder<R, C> builder(FilterTableModel<R, C> tableModel,
-																						 List<FilterTableColumn<C>> columns) {
-		return new DefaultBuilder<>(requireNonNull(tableModel), requireNonNull(columns));
+	public static <R, C> Builder.Columns<R, C> builder(FilterTableModel<R, C> tableModel) {
+		return new DefaultColumns<>(tableModel);
 	}
 
 	@Override
@@ -1112,6 +1110,20 @@ public final class FilterTable<R, C> extends JTable {
 	public interface Builder<R, C> extends ComponentBuilder<Void, FilterTable<R, C>, Builder<R, C>> {
 
 		/**
+		 * @param <R> the type representing rows
+		 * @param <C> the type used to identify columns
+		 */
+		interface Columns<R, C> {
+
+			/**
+			 * @param columns the columns
+			 * @return a {@link Builder} based on the given columns
+			 * @throws IllegalArgumentException in case the column identifiers are not unique
+			 */
+			Builder<R, C> columns(List<FilterTableColumn<C>> columns);
+		}
+
+		/**
 		 * @param summaryValuesFactory the column summary values factory
 		 * @return this builder instance
 		 */
@@ -1313,6 +1325,20 @@ public final class FilterTable<R, C> extends JTable {
 		 * @return the table data exported to a String
 		 */
 		String get();
+	}
+
+	private static class DefaultColumns<R, C> implements Builder.Columns<R, C> {
+
+		private final FilterTableModel<R, C> tableModel;
+
+		private DefaultColumns(FilterTableModel<R, C> tableModel) {
+			this.tableModel = requireNonNull(tableModel);
+		}
+
+		@Override
+		public Builder<R, C> columns(List<FilterTableColumn<C>> columns) {
+			return new DefaultBuilder<>(tableModel, requireNonNull(columns));
+		}
 	}
 
 	private static final class DefaultBuilder<R, C>

@@ -316,7 +316,8 @@ JTextField filter = stringField(model.filterValue())
     .build();
 
 // Table with full configuration
-FilterTable<Row, Column> table = FilterTable.builder(model, columns)
+FilterTable<Row, Column> table = FilterTable.builder(model)
+    .columns(columns)
     .sortable(false)
     .selectionMode(SINGLE_SELECTION)
     .doubleClick(command(this::onDoubleClick))
@@ -330,7 +331,8 @@ FilterTable<Row, Column> table = FilterTable.builder(model, columns)
 ProgressWorker provides elegant async execution with progress:
 
 ```java
-ProgressWorker.builder(task)
+ProgressWorker.builder()
+    .task(task)
     .onStarted(this::taskStarted)
     .onProgress(this::updateProgress)
     .onPublish(this::showStatus)

@@ -45,7 +45,8 @@ final class FilterTableDemo {
 						FilterTableColumn.builder(Person.AGE, 1).build());
 
 		FilterTable<Person, String> table =
-						FilterTable.builder(tableModel, columns)
+						FilterTable.builder(tableModel)
+										.columns(columns)
 										.doubleClick(Control.command(() ->
 														tableModel.selection().item().optional()
 																		.ifPresent(System.out::println)))

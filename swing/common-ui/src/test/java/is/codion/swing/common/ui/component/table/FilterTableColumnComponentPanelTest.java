@@ -60,7 +60,8 @@ public class FilterTableColumnComponentPanelTest {
 		FilterTableModel<Object, Integer> tableModel =
 						FilterTableModel.builder(columns).build();
 		FilterTable<Object, Integer> table =
-						FilterTable.builder(tableModel, asList(column0, column1, column2))
+						FilterTable.builder(tableModel)
+										.columns(asList(column0, column1, column2))
 										.build();
 		FilterTableColumnModel<Integer> columnModel = table.columnModel();
 		Map<Integer, JPanel> columnComponents = createColumnComponents(columnModel);
@@ -73,7 +74,8 @@ public class FilterTableColumnComponentPanelTest {
 		FilterTableModel<Object, Integer> tableModel =
 						FilterTableModel.builder(columns).build();
 		FilterTable<Object, Integer> table =
-						FilterTable.builder(tableModel, asList(column0, column1, column2))
+						FilterTable.builder(tableModel)
+										.columns(asList(column0, column1, column2))
 										.build();
 		FilterTableColumnModel<Integer> columnModel = table.columnModel();
 
@@ -96,7 +98,8 @@ public class FilterTableColumnComponentPanelTest {
 		FilterTableModel<Object, Integer> tableModel =
 						FilterTableModel.builder(columns).build();
 		FilterTable<Object, Integer> table =
-						FilterTable.builder(tableModel, asList(column0, column1, column2))
+						FilterTable.builder(tableModel)
+										.columns(asList(column0, column1, column2))
 										.build();
 		FilterTableColumnModel<Integer> columnModel = table.columnModel();
 

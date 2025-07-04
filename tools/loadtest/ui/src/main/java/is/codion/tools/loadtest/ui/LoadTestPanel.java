@@ -387,7 +387,8 @@ public final class LoadTestPanel<T> extends JPanel {
 	private FilterTable<ApplicationRow, ColumnId> createApplicationsTable() {
 		FilterTableModel<ApplicationRow, ColumnId> tableModel = model().applicationTableModel();
 
-		return FilterTable.builder(tableModel, createApplicationTableModelColumns())
+		return FilterTable.builder(tableModel)
+						.columns(createApplicationTableModelColumns())
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.doubleClick(command(this::viewException))
 						.scrollToSelectedItem(false)
