@@ -68,7 +68,7 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 	@Override
 	public Control createControl(Consumer<LookAndFeelEnabler> selectedLookAndFeel) {
 		requireNonNull(selectedLookAndFeel);
-		String caption = MESSAGES.getString("select_look_and_feel");
+		String caption = MESSAGES.getString("look_and_feel");
 
 		return Control.builder()
 						.command(() -> selectLookAndFeel(selectedLookAndFeel))
@@ -88,7 +88,8 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 		if (auxiliaryLookAndFeelsAvailable()) {
 			basePanel.add(PanelBuilder.builder(new FlowLayout(FlowLayout.TRAILING))
 							.add(CheckBoxBuilder.builder(lookAndFeelComboBox.includeInstalled())
-											.text(MESSAGES.getString("include_installed_look_and_feels"))
+											.text(MESSAGES.getString("include_installed"))
+											.mnemonic(MESSAGES.getString("include_installed_mnemonic").charAt(0))
 											.includeText(true)
 											.build())
 							.build(), BorderLayout.SOUTH);
@@ -96,7 +97,7 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 		new DefaultOkCancelDialogBuilder()
 						.component(basePanel)
 						.owner(owner)
-						.title(MESSAGES.getString("select_look_and_feel"))
+						.title(MESSAGES.getString("look_and_feel"))
 						.onOk(() -> selectedLookAndFeel.accept(lookAndFeelComboBox.selectedLookAndFeel()))
 						.onCancel(lookAndFeelComboBox::revert)
 						.show();

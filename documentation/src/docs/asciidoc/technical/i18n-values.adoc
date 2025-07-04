@@ -658,8 +658,9 @@ is/codion/swing/common/ui/dialog/DefaultLookAndFeelSelectionDialogBuilder_is_IS.
 |===
 |key|default|is_IS
 
-|include_installed_look_and_feels|Include installed Look and Feels|Birta innbyggð útlit
-|select_look_and_feel|Select Look & Feel|Velja Útlit
+|include_installed|Include installed Look and Feels|Birta innbyggð útlit
+|include_installed_mnemonic|I|I
+|look_and_feel|Look & Feel|Útlit
 |===
 
 === is/codion/swing/common/ui/dialog/DefaultScalingSelectionDialogBuilder.java
@@ -674,7 +675,7 @@ is/codion/swing/common/ui/dialog/DefaultScalingSelectionDialogBuilder_is_IS.prop
 |===
 |key|default|is_IS
 
-|select_scaling|Select Scaling|Velja Skölun
+|scaling|Scaling|Skölun
 |===
 
 === is/codion/swing/common/ui/dialog/ExceptionPanel.java

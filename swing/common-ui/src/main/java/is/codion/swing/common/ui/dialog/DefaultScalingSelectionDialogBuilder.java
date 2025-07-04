@@ -60,7 +60,7 @@ final class DefaultScalingSelectionDialogBuilder implements ScalingSelectionDial
 		MessageBundle resourceBundle =
 						messageBundle(DefaultScalingSelectionDialogBuilder.class,
 										getBundle(DefaultScalingSelectionDialogBuilder.class.getName()));
-		String caption = resourceBundle.getString("select_scaling");
+		String caption = resourceBundle.getString("scaling");
 
 		return Control.builder()
 						.command(() -> selectScaling(scalingSelected))
@@ -84,7 +84,7 @@ final class DefaultScalingSelectionDialogBuilder implements ScalingSelectionDial
 		new DefaultOkCancelDialogBuilder()
 						.component(scalingSelectionPanel)
 						.owner(owner)
-						.title(resourceBundle.getString("select_scaling"))
+						.title(resourceBundle.getString("scaling"))
 						.onOk(() -> scalingSelected.accept(scalingSelectionPanel.selectedScaling()))
 						.show();
 	}
