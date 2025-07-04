@@ -77,8 +77,6 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 	private static final Locale LOCALE_IS = new Locale(LANGUAGE_IS, "IS");
 	private static final Locale LOCALE_EN = new Locale(LANGUAGE_EN, "EN");
 
-	private static final String SELECT_LANGUAGE = "select_language";
-
 	/* Non-static so this is not initialized before main(), which sets the locale */
 	private final ResourceBundle bundle = getBundle(ChinookAppPanel.class.getName());
 
@@ -195,7 +193,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 						.map(controls -> controls.copy()
 										.controlAt(2, Control.builder()
 														.command(this::selectLanguage)
-														.caption(bundle.getString(SELECT_LANGUAGE))
+														.caption(bundle.getString("language"))
 														.build())
 										.build());
 	}
@@ -214,7 +212,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 						.selected(currentLanguage.equals(LANGUAGE_IS))
 						.buttonGroup(buttonGroup)
 						.build(languagePanel::add);
-		showMessageDialog(this, languagePanel, bundle.getString("language"), JOptionPane.QUESTION_MESSAGE);
+		showMessageDialog(this, languagePanel, bundle.getString("language_title"), JOptionPane.QUESTION_MESSAGE);
 		String selectedLanguage = isButton.isSelected() ? LANGUAGE_IS : LANGUAGE_EN;
 		if (!currentLanguage.equals(selectedLanguage)) {
 			UserPreferences.set(LANGUAGE_PREFERENCES_KEY, selectedLanguage);

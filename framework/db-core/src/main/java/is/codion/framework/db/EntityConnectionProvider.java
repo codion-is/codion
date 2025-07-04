@@ -241,7 +241,7 @@ public interface EntityConnectionProvider extends AutoCloseable {
 	 * {@snippet :
 	 * // Local connection with full configuration
 	 * EntityConnectionProvider local = LocalEntityConnectionProvider.builder()
-	 *     .domainType(DOMAIN)
+	 *     .domain(new MyDomain())
 	 *     .user(User.parse("scott:tiger"))
 	 *     .clientId(UUID.randomUUID())
 	 *     .clientType("MyApplication")
@@ -251,7 +251,7 @@ public interface EntityConnectionProvider extends AutoCloseable {
 	 *
 	 * // Remote connection
 	 * EntityConnectionProvider remote = RemoteEntityConnectionProvider.builder()
-	 *     .domainType(DOMAIN)
+	 *     .domain(MyDomain.DOMAIN)
 	 *     .hostName("server.example.com")
 	 *     .port(2223)
 	 *     .user(User.parse("scott:tiger"))
