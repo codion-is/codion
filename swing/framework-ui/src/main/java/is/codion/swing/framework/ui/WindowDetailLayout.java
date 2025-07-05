@@ -43,6 +43,7 @@ import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
 import static is.codion.swing.framework.ui.EntityPanel.WindowType.FRAME;
+import static is.codion.swing.framework.ui.WindowDetailLayout.Builder.PanelBuilder;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toList;
@@ -86,11 +87,10 @@ public final class WindowDetailLayout implements DetailLayout {
 	}
 
 	/**
-	 * @param entityPanel the entity panel
-	 * @return a new {@link Builder} instance
+	 * @return a {@link WindowDetailLayout.Builder.PanelBuilder} instance
 	 */
-	public static Builder builder(EntityPanel entityPanel) {
-		return new DefaultBuilder(entityPanel);
+	public static Builder.PanelBuilder builder() {
+		return DefaultBuilder.PANEL;
 	}
 
 	private void addDetailPanel(EntityPanel detailPanel) {
@@ -153,6 +153,18 @@ public final class WindowDetailLayout implements DetailLayout {
 	 * Builds a {@link WindowDetailLayout} instance.
 	 */
 	public interface Builder {
+
+		/**
+		 * Provides a {@link WindowDetailLayout.Builder}
+		 */
+		interface PanelBuilder {
+
+			/**
+			 * @param panel the entity panel
+			 * @return a new {@link WindowDetailLayout.Builder} instance
+			 */
+			WindowDetailLayout.Builder panel(EntityPanel panel);
+		}
 
 		/**
 		 * @param windowType specifies whether a JFrame or a JDialog should be used
@@ -229,7 +241,17 @@ public final class WindowDetailLayout implements DetailLayout {
 		}
 	}
 
+	private static final class DefaultPanelBuilder implements PanelBuilder {
+
+		@Override
+		public WindowDetailLayout.Builder panel(EntityPanel panel) {
+			return new DefaultBuilder(panel);
+		}
+	}
+
 	private static final class DefaultBuilder implements Builder {
+
+		private static final Builder.PanelBuilder PANEL = new DefaultPanelBuilder();
 
 		private final EntityPanel entityPanel;
 
