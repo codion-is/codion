@@ -3017,7 +3017,8 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		private void configureLimit() {
-			tableModel.queryModel().limit().set(Dialogs.input(integerField()
+			tableModel.queryModel().limit().set(Dialogs.input()
+							.component(integerField()
 											.value(tableModel.queryModel().limit().get())
 											.selectAllOnFocusGained(true)
 											.groupingUsed(true)

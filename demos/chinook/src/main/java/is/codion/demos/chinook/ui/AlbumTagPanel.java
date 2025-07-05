@@ -127,8 +127,9 @@ final class AlbumTagPanel extends JPanel {
 
 	private void addTag() {
 		State tagNull = State.state(true);
-		tagItems.add(Dialogs.input(stringField()
-						.consumer(tag -> tagNull.set(tag == null)))
+		tagItems.add(Dialogs.input()
+						.component(stringField()
+										.consumer(tag -> tagNull.set(tag == null)))
 						.owner(this)
 						.title(FrameworkMessages.add())
 						.valid(tagNull.not())

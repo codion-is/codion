@@ -19,6 +19,8 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.state.ObservableState;
+import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import java.util.function.Predicate;
 
@@ -26,6 +28,26 @@ import java.util.function.Predicate;
  * Displays the component from a given component value in a dialog and returns the value if the user accepts the input.
  */
 public interface InputDialogBuilder<T> extends DialogBuilder<InputDialogBuilder<T>> {
+
+	/**
+	 * Provides an {@link InputDialogBuilder} instance
+	 */
+	interface ComponentStep {
+
+		/**
+		 * @param componentBuilder the builder which component to display
+		 * @param <T> the value type
+		 * @return a builder for an input dialog
+		 */
+		<T> InputDialogBuilder<T> component(ComponentBuilder<T, ?, ?> componentBuilder);
+
+		/**
+		 * @param componentValue the value which component to display
+		 * @param <T> the value type
+		 * @return a builder for an input dialog
+		 */
+		<T> InputDialogBuilder<T> component(ComponentValue<T, ?> componentValue);
+	}
 
 	/**
 	 * @param caption the label caption

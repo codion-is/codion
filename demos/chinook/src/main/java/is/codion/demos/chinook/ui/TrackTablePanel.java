@@ -100,7 +100,8 @@ public final class TrackTablePanel extends EntityTablePanel {
 	}
 
 	private BigDecimal getAmountFromUser() {
-		return Dialogs.input(bigDecimalField()
+		return Dialogs.input()
+						.component(bigDecimalField()
 										.nullable(false)
 										.minimumValue(0))
 						.owner(this)

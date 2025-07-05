@@ -330,7 +330,8 @@ public final class EntityDialogs {
 			}
 
 			ComponentValue<T, ?> componentValue = editComponentFactory.component(editModel, defaultValue.apply(entities));
-			Dialogs.input(componentValue)
+			Dialogs.input()
+							.component(componentValue)
 							.owner(owner)
 							.location(location)
 							.locationRelativeTo(locationRelativeTo)

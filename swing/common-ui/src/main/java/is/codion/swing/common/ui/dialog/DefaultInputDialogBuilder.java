@@ -23,6 +23,7 @@ import is.codion.common.observable.Observable;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
+import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -43,6 +44,8 @@ import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createEmptyBorder;
 
 final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
+
+	static final ComponentStep COMPONENT = new DefaultComponentStep();
 
 	private final JPanel basePanel = new JPanel(Layouts.borderLayout());
 	private final ComponentValue<T, ?> componentValue;
@@ -161,6 +164,19 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 		componentValue.addListener(new InputValidStateListener<>(validInputState, inputValidator, componentValue));
 
 		return validInputState;
+	}
+
+	private static final class DefaultComponentStep implements ComponentStep {
+
+		@Override
+		public <T> InputDialogBuilder<T> component(ComponentBuilder<T, ?, ?> componentBuilder) {
+			return new DefaultInputDialogBuilder<>(requireNonNull(componentBuilder).buildValue());
+		}
+
+		@Override
+		public <T> InputDialogBuilder<T> component(ComponentValue<T, ?> componentValue) {
+			return new DefaultInputDialogBuilder<>(componentValue);
+		}
 	}
 
 	private static final class OnOk implements Runnable {

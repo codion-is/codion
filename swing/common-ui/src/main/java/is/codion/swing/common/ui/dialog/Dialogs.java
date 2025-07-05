@@ -18,12 +18,7 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.swing.common.ui.component.builder.ComponentBuilder;
-import is.codion.swing.common.ui.component.value.ComponentValue;
-
 import java.awt.Window;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * A utility class for displaying Dialogs.
@@ -97,21 +92,10 @@ public final class Dialogs {
 	}
 
 	/**
-	 * @param componentBuilder the builder which component to display
-	 * @param <T> the value type
-	 * @return a builder for an input dialog
+	 * @return a {@link InputDialogBuilder.ComponentStep} for an input dialog
 	 */
-	public static <T> InputDialogBuilder<T> input(ComponentBuilder<T, ?, ?> componentBuilder) {
-		return new DefaultInputDialogBuilder<>(requireNonNull(componentBuilder).buildValue());
-	}
-
-	/**
-	 * @param componentValue the value which component to display
-	 * @param <T> the value type
-	 * @return a builder for an input dialog
-	 */
-	public static <T> InputDialogBuilder<T> input(ComponentValue<T, ?> componentValue) {
-		return new DefaultInputDialogBuilder<>(componentValue);
+	public static InputDialogBuilder.ComponentStep input() {
+		return DefaultInputDialogBuilder.COMPONENT;
 	}
 
 	/**
