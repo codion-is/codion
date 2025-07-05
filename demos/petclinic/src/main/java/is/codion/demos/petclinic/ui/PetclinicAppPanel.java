@@ -65,15 +65,15 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
 	}
 
 	private static List<EntityPanel.Builder> createLookupPanelBuilders() {
-		EntityPanel.Builder petTypePanelBuilder =
-						EntityPanel.builder(PetType.TYPE,
-										PetclinicAppPanel::createPetTypePanel);
-		EntityPanel.Builder specialtyPanelBuilder =
-						EntityPanel.builder(Specialty.TYPE,
-										PetclinicAppPanel::createSpecialtyPanel);
-		EntityPanel.Builder vetPanelBuilder =
-						EntityPanel.builder(Vet.TYPE,
-										PetclinicAppPanel::createVetPanel);
+		EntityPanel.Builder petTypePanelBuilder = EntityPanel.builder()
+						.entityType(PetType.TYPE)
+						.panel(PetclinicAppPanel::createPetTypePanel);
+		EntityPanel.Builder specialtyPanelBuilder = EntityPanel.builder()
+						.entityType(Specialty.TYPE)
+						.panel(PetclinicAppPanel::createSpecialtyPanel);
+		EntityPanel.Builder vetPanelBuilder = EntityPanel.builder()
+						.entityType(Vet.TYPE)
+						.panel(PetclinicAppPanel::createVetPanel);
 
 		return List.of(petTypePanelBuilder, specialtyPanelBuilder, vetPanelBuilder);
 	}

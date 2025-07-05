@@ -93,6 +93,7 @@ Codion Change Log
 - EntityComboBoxPanel.Builder.ModelBuilder added.
 - TabbedDetailLayout.Builder.PanelBuilder.added.
 - WindowDetailLayout.Builder.PanelBuilder.added.
+- EntityPanel.Builder.EntityTypeBuilder and PanelBuilder added.
 ### is.codion.framework.lambda
 - LambdaEntityHandler refactored.
 

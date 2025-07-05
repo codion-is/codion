@@ -591,13 +591,10 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * Instantiates a new {@link EntityPanel.Builder}
-	 * @param entityType the entity type to base this panel builder on
-	 * @param entityPanel provides the {@link EntityPanel}
-	 * @return a panel builder
+	 * @return a {@link Builder.EntityTypeBuilder}
 	 */
-	public static EntityPanel.Builder builder(EntityType entityType, Function<EntityConnectionProvider, EntityPanel> entityPanel) {
-		return new EntityPanelBuilder(entityType, entityPanel);
+	public static Builder.EntityTypeBuilder builder() {
+		return EntityPanelBuilder.ENTITY_TYPE;
 	}
 
 	//#############################################################################################
@@ -1675,6 +1672,30 @@ public class EntityPanel extends JPanel {
 	 * A builder for {@link EntityPanel} instances.
 	 */
 	public interface Builder {
+
+		/**
+		 * Provides a {@link PanelBuilder}
+		 */
+		interface EntityTypeBuilder {
+
+			/**
+			 * @param entityType the entity type to base this panel builder on
+			 * @return a {@link PanelBuilder}
+			 */
+			PanelBuilder entityType(EntityType entityType);
+		}
+
+		/**
+		 * Provides a {@link Builder}
+		 */
+		interface PanelBuilder {
+
+			/**
+			 * @param entityPanel provides the {@link EntityPanel}
+			 * @return a {@link Builder}
+			 */
+			Builder panel(Function<EntityConnectionProvider, EntityPanel> entityPanel);
+		}
 
 		/**
 		 * @return the entityType

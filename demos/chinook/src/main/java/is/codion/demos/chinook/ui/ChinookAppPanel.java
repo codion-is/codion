@@ -94,25 +94,25 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 	}
 
 	private static List<EntityPanel.Builder> createLookupPanelBuilders() {
-		EntityPanel.Builder genrePanelBuilder =
-						EntityPanel.builder(Genre.TYPE,
-										ChinookAppPanel::createGenrePanel);
+		EntityPanel.Builder genrePanelBuilder = EntityPanel.builder()
+						.entityType(Genre.TYPE)
+						.panel(ChinookAppPanel::createGenrePanel);
 
-		EntityPanel.Builder mediaTypePanelBuilder =
-						EntityPanel.builder(MediaType.TYPE,
-										ChinookAppPanel::createMediaTypePanel);
+		EntityPanel.Builder mediaTypePanelBuilder = EntityPanel.builder()
+						.entityType(MediaType.TYPE)
+						.panel(ChinookAppPanel::createMediaTypePanel);
 
-		EntityPanel.Builder artistPanelBuilder =
-						EntityPanel.builder(Artist.TYPE,
-										ChinookAppPanel::createArtistPanel);
+		EntityPanel.Builder artistPanelBuilder = EntityPanel.builder()
+						.entityType(Artist.TYPE)
+						.panel(ChinookAppPanel::createArtistPanel);
 
-		EntityPanel.Builder employeePanelBuilder =
-						EntityPanel.builder(Employee.TYPE,
-										ChinookAppPanel::createEmployeePanel);
+		EntityPanel.Builder employeePanelBuilder = EntityPanel.builder()
+						.entityType(Employee.TYPE)
+						.panel(ChinookAppPanel::createEmployeePanel);
 
-		EntityPanel.Builder preferencesPanelBuilder =
-						EntityPanel.builder(Preferences.TYPE,
-										ChinookAppPanel::createPreferencesPanel);
+		EntityPanel.Builder preferencesPanelBuilder = EntityPanel.builder()
+						.entityType(Preferences.TYPE)
+						.panel(ChinookAppPanel::createPreferencesPanel);
 
 		return List.of(artistPanelBuilder, genrePanelBuilder, mediaTypePanelBuilder, employeePanelBuilder, preferencesPanelBuilder);
 	}

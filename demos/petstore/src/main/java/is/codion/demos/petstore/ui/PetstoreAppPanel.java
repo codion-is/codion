@@ -75,12 +75,15 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
 
 	private static List<EntityPanel.Builder> createLookupPanelBuilders() {
 		return List.of(
-						EntityPanel.builder(Address.TYPE,
-										PetstoreAppPanel::createAddressPanel),
-						EntityPanel.builder(SellerContactInfo.TYPE,
-										PetstoreAppPanel::createSellerContactInfoPanel),
-						EntityPanel.builder(Tag.TYPE,
-										PetstoreAppPanel::createTagPanel));
+						EntityPanel.builder()
+										.entityType(Address.TYPE)
+										.panel(PetstoreAppPanel::createAddressPanel),
+						EntityPanel.builder()
+										.entityType(SellerContactInfo.TYPE)
+										.panel(PetstoreAppPanel::createSellerContactInfoPanel),
+						EntityPanel.builder()
+										.entityType(Tag.TYPE)
+										.panel(PetstoreAppPanel::createTagPanel));
 	}
 
 	private static EntityPanel createAddressPanel(EntityConnectionProvider connectionProvider) {
