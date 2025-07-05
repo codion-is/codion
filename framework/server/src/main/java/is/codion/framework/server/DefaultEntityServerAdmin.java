@@ -21,6 +21,7 @@ package is.codion.framework.server;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.pool.ConnectionPoolStatistics;
 import is.codion.common.logging.LoggerProxy;
+import is.codion.common.logging.MethodTrace;
 import is.codion.common.rmi.server.DefaultServerAdmin;
 
 import org.slf4j.Logger;
@@ -30,6 +31,7 @@ import java.io.Serial;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -200,19 +202,19 @@ final class DefaultEntityServerAdmin extends DefaultServerAdmin implements Entit
 	}
 
 	@Override
-	public ClientLog clientLog(UUID clientId) {
-		return server.clientLog(clientId);
+	public List<MethodTrace> methodTraces(UUID clientId) {
+		return server.methodTraces(clientId);
 	}
 
 	@Override
-	public boolean isLoggingEnabled(UUID clientId) {
-		return server.isLoggingEnabled(clientId);
+	public boolean isTracingEnabled(UUID clientId) {
+		return server.isTracingEnabled(clientId);
 	}
 
 	@Override
-	public void setLoggingEnabled(UUID clientId, boolean loggingEnabled) {
-		LOG.info("setLoggingEnabled({}, {})", clientId, loggingEnabled);
-		server.setLoggingEnabled(clientId, loggingEnabled);
+	public void setTracingEnabled(UUID clientId, boolean tracingEnabled) {
+		LOG.info("setTracingEnabled({}, {})", clientId, tracingEnabled);
+		server.setTracingEnabled(clientId, tracingEnabled);
 	}
 
 	@Override

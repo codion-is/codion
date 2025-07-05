@@ -20,10 +20,12 @@ package is.codion.framework.server;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.pool.ConnectionPoolStatistics;
+import is.codion.common.logging.MethodTrace;
 import is.codion.common.rmi.server.ServerAdmin;
 
 import java.rmi.RemoteException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -54,26 +56,26 @@ public interface EntityServerAdmin extends ServerAdmin {
 
 	/**
 	 * @param clientId the id of the client for which to retrieve the log
-	 * @return the log for the given connection
+	 * @return the method trace log for the given connection
 	 * @throws RemoteException in case of a communication error
 	 */
-	ClientLog clientLog(UUID clientId) throws RemoteException;
+	List<MethodTrace> methodTraces(UUID clientId) throws RemoteException;
 
 	/**
 	 * Returns true if logging is enabled for the given connection
 	 * @param clientId the id of the client
-	 * @return true if logging is on for the given connection
+	 * @return true if method tracing is enabled for the given connection
 	 * @throws RemoteException in case of a communication error
 	 */
-	boolean isLoggingEnabled(UUID clientId) throws RemoteException;
+	boolean isTracingEnabled(UUID clientId) throws RemoteException;
 
 	/**
-	 * Sets the logging status for the given connection
+	 * Sets the method tracing status for the given connection
 	 * @param clientId the id of the client
-	 * @param loggingEnabled the new logging status
+	 * @param tracingEnabled the new tracing status
 	 * @throws RemoteException in case of a communication error
 	 */
-	void setLoggingEnabled(UUID clientId, boolean loggingEnabled) throws RemoteException;
+	void setTracingEnabled(UUID clientId, boolean tracingEnabled) throws RemoteException;
 
 	/**
 	 * @return the server log level

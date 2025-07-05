@@ -33,6 +33,9 @@ Codion Change Log
 - LocalEntityConnection.methodLogger() removed, MethodLogger no longer public api.
 ### is.codion.framework.model
 - Unit tests improved.
+### is.codion.framework.server
+- ClientLog removed, was just a wrapper for method traces.
+- EntityServerConfiguration.clientLogging() renamed methodTracing(), related renaming.
 ### is.codion.swing.common.model
 - Unit tests improved.
 - ProgressWorker.BuilderFactory added, replacing overloaded ProgressWorker.builder() methods.

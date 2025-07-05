@@ -21,6 +21,7 @@ package is.codion.framework.server;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
+import is.codion.common.logging.MethodTrace;
 import is.codion.common.observable.Observer;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.user.User;
@@ -37,6 +38,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.List;
 
 /**
  * A base class for remote connections served by a {@link EntityServer}.
@@ -130,10 +132,10 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 	}
 
 	/**
-	 * @return a ClientLog instance containing information about this connection's recent activity
+	 * @return method traces
 	 */
-	final ClientLog clientLog() {
-		return connectionHandler.clientLog();
+	final List<MethodTrace> methodTraces() {
+		return connectionHandler.methodTraces();
 	}
 
 	/**
@@ -144,11 +146,11 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 		return System.currentTimeMillis() - connectionHandler.lastAccessTime() > timeout;
 	}
 
-	final void setLoggingEnabled(boolean status) {
-		connectionHandler.methodLogger().setEnabled(status);
+	final void setTracingEnabled(boolean tracingEnabled) {
+		connectionHandler.methodLogger().setEnabled(tracingEnabled);
 	}
 
-	final boolean isLoggingEnabled() {
+	final boolean isTracingEnabled() {
 		return connectionHandler.methodLogger().isEnabled();
 	}
 

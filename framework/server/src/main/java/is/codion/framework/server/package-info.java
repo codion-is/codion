@@ -22,7 +22,7 @@
  * <li>{@link is.codion.framework.server.EntityServerConfiguration#CONNECTION_POOL_FACTORY_CLASS}
  * <li>{@link is.codion.framework.server.EntityServerConfiguration#CONNECTION_LIMIT}
  * <li>{@link is.codion.framework.server.EntityServerConfiguration#CLIENT_CONNECTION_TIMEOUT}
- * <li>{@link is.codion.framework.server.EntityServerConfiguration#CLIENT_LOGGING}
+ * <li>{@link is.codion.framework.server.EntityServerConfiguration#METHOD_TRACING}
  * <li>{@link is.codion.framework.server.EntityServerConfiguration#CONNECTION_POOL_USERS}
  * <li>{@link is.codion.framework.server.EntityServerConfiguration#DOMAIN_MODEL_CLASSES}
  * </ul>

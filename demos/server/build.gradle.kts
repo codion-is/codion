@@ -47,7 +47,7 @@ application {
         "-Dcodion.server.auxiliaryServerFactoryClassNames=is.codion.framework.servlet.EntityServiceFactory",
         "-Dcodion.server.objectInputFilterFactoryClassName=is.codion.common.rmi.server.SerializationFilterFactory",
         "-Dcodion.server.serialization.filter.patternFile=src/main/config/serialization-whitelist.txt",
-        "-Dcodion.server.clientLogging=false",
+        "-Dcodion.server.methodTracing=false",
         "-Djavax.net.ssl.keyStore=../../framework/server/src/main/config/keystore.jks",
         "-Djavax.net.ssl.keyStorePassword=crappypass",
         "-Djava.rmi.server.hostname=" + properties["serverHostName"],

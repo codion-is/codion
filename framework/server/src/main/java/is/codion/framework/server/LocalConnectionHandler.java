@@ -184,9 +184,9 @@ final class LocalConnectionHandler implements InvocationHandler {
 		cleanupLocalConnections();
 	}
 
-	ClientLog clientLog() {
+	List<MethodTrace> methodTraces() {
 		synchronized (methodLogger) {
-			return ClientLog.clientLog(remoteClient.clientId(), methodLogger.entries());
+			return methodLogger.entries();
 		}
 	}
 

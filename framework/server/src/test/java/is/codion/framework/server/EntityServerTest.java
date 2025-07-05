@@ -48,6 +48,7 @@ import org.junit.jupiter.api.Test;
 
 import java.rmi.registry.LocateRegistry;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 import static is.codion.framework.domain.entity.condition.Condition.all;
@@ -176,10 +177,10 @@ public class EntityServerTest {
 						.clientType("ClientType")
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
 		RemoteEntityConnection remoteConnectionTwo = server.connect(connectionRequestTwo);
-		admin.setLoggingEnabled(connectionRequestTwo.clientId(), true);
-		assertTrue(admin.isLoggingEnabled(connectionRequestOne.clientId()));
-		assertThrows(IllegalArgumentException.class, () -> admin.isLoggingEnabled(UUID.randomUUID()));
-		assertThrows(IllegalArgumentException.class, () -> admin.setLoggingEnabled(UUID.randomUUID(), true));
+		admin.setTracingEnabled(connectionRequestTwo.clientId(), true);
+		assertTrue(admin.isTracingEnabled(connectionRequestOne.clientId()));
+		assertThrows(IllegalArgumentException.class, () -> admin.isTracingEnabled(UUID.randomUUID()));
+		assertThrows(IllegalArgumentException.class, () -> admin.setTracingEnabled(UUID.randomUUID(), true));
 		assertTrue(remoteConnectionTwo.connected());
 		assertEquals(2, admin.connectionCount());
 		assertEquals(2, admin.clients().size());
@@ -195,9 +196,9 @@ public class EntityServerTest {
 
 		admin.databaseStatistics();
 
-		ClientLog log = admin.clientLog(connectionRequestTwo.clientId());
+		List<MethodTrace> traces = admin.methodTraces(connectionRequestTwo.clientId());
 
-		MethodTrace entry = log.entries().get(0);
+		MethodTrace entry = traces.get(0);
 		assertEquals("select", entry.method());
 		assertTrue(entry.duration() >= 0);
 
@@ -307,8 +308,8 @@ public class EntityServerTest {
 	}
 
 	@Test
-	void clientLogNotConnected() {
-		assertThrows(IllegalArgumentException.class, () -> admin.clientLog(UUID.randomUUID()));
+	void methodTracesNotConnected() {
+		assertThrows(IllegalArgumentException.class, () -> admin.methodTraces(UUID.randomUUID()));
 	}
 
 	private static EntityServerConfiguration configure() {
@@ -327,7 +328,7 @@ public class EntityServerTest {
 						.connectionPoolUsers(singletonList(UNIT_TEST_USER))
 						.clientTypeIdleConnectionTimeouts(singletonMap("ClientType", 10000))
 						.domainClassNames(asList("is.codion.framework.server.TestDomain", "is.codion.framework.server.ConfigureDb"))
-						.clientLogging(true)
+						.methodTracing(true)
 						.sslEnabled(true)
 						.objectInputFilterFactoryClassName(SerializationFilterFactory.class.getName())
 						.build();

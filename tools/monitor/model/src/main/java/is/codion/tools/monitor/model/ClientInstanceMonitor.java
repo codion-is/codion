@@ -21,7 +21,6 @@ package is.codion.tools.monitor.model;
 import is.codion.common.logging.MethodTrace;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.state.State;
-import is.codion.framework.server.ClientLog;
 import is.codion.framework.server.EntityServerAdmin;
 
 import javax.swing.text.BadLocationException;
@@ -60,7 +59,7 @@ public final class ClientInstanceMonitor {
 	public ClientInstanceMonitor(EntityServerAdmin server, RemoteClient remoteClient) throws RemoteException {
 		this.remoteClient = requireNonNull(remoteClient);
 		this.server = requireNonNull(server);
-		this.loggingEnabled = State.state(server.isLoggingEnabled(remoteClient.clientId()));
+		this.loggingEnabled = State.state(server.isTracingEnabled(remoteClient.clientId()));
 		bindEvents();
 	}
 
@@ -79,28 +78,23 @@ public final class ClientInstanceMonitor {
 	}
 
 	/**
-	 * Refreshes the log document and tree model with the most recent log from the server
+	 * Refreshes the log document and tree model with the most recent method traces from the server
 	 * @throws RemoteException in case of an exception
 	 */
 	public void refreshLog() throws RemoteException {
-		ClientLog log = server.clientLog(remoteClient.clientId());
+		List<MethodTrace> methodTraces = server.methodTraces(remoteClient.clientId());
 		try {
 			logDocument.remove(0, logDocument.getLength());
 			logRootNode.removeAllChildren();
-			if (log != null) {
-				StringBuilder logBuilder = new StringBuilder();
-				for (MethodTrace entry : log.entries()) {
-					entry.appendTo(logBuilder);
-					DefaultMutableTreeNode entryNode = new DefaultMutableTreeNode(traceString(entry));
-					addChildEntries(entryNode, entry.children());
-					logRootNode.add(entryNode);
-				}
-				logDocument.insertString(0, logBuilder.toString(), null);
-				logTreeModel.setRoot(logRootNode);
+			StringBuilder logBuilder = new StringBuilder();
+			for (MethodTrace trace : methodTraces) {
+				trace.appendTo(logBuilder);
+				DefaultMutableTreeNode traceNode = new DefaultMutableTreeNode(traceString(trace));
+				addChildTraces(traceNode, trace.children());
+				logRootNode.add(traceNode);
 			}
-			else {
-				logDocument.insertString(0, "Disconnected!", null);
-			}
+			logDocument.insertString(0, logBuilder.toString(), null);
+			logTreeModel.setRoot(logRootNode);
 		}
 		catch (BadLocationException e) {
 			throw new RuntimeException(e);
@@ -124,11 +118,11 @@ public final class ClientInstanceMonitor {
 	}
 
 	/**
-	 * @param status true if logging should be enabled, false otherwise
+	 * @param status true if method tracing should be enabled, false otherwise
 	 */
 	private void setLoggingEnabled(boolean status) {
 		try {
-			server.setLoggingEnabled(remoteClient.clientId(), status);
+			server.setTracingEnabled(remoteClient.clientId(), status);
 		}
 		catch (RemoteException e) {
 			throw new RuntimeException(e);
@@ -139,10 +133,10 @@ public final class ClientInstanceMonitor {
 		loggingEnabled.addConsumer(this::setLoggingEnabled);
 	}
 
-	private static void addChildEntries(DefaultMutableTreeNode traceNode, List<MethodTrace> childTraces) {
+	private static void addChildTraces(DefaultMutableTreeNode traceNode, List<MethodTrace> childTraces) {
 		for (MethodTrace trace : childTraces) {
 			DefaultMutableTreeNode subEntry = new DefaultMutableTreeNode(traceString(trace));
-			addChildEntries(subEntry, trace.children());
+			addChildTraces(subEntry, trace.children());
 			traceNode.add(subEntry);
 		}
 	}

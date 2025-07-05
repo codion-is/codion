@@ -66,8 +66,8 @@ public final class DefaultEntityServerAdminTest {
 							.build();
 			server.connect(connectionRequest);
 			EntityServerAdmin admin = new DefaultEntityServerAdmin(server, configuration);
-			admin.setLoggingEnabled(connectionRequest.clientId(), true);
-			assertTrue(admin.isLoggingEnabled(connectionRequest.clientId()));
+			admin.setTracingEnabled(connectionRequest.clientId(), true);
+			assertTrue(admin.isTracingEnabled(connectionRequest.clientId()));
 			admin.setLogLevel("TEST");//no op logger
 			admin.getLogLevel();
 			admin.resetConnectionPoolStatistics(SCOTT);
@@ -86,7 +86,7 @@ public final class DefaultEntityServerAdminTest {
 			assertEquals(300, admin.getMaximumPoolCheckOutTime(SCOTT));
 			admin.setPooledConnectionIdleTimeout(SCOTT, 1000);
 			assertEquals(1000, admin.getPooledConnectionIdleTimeout(SCOTT));
-			admin.clientLog(connectionRequest.clientId());
+			admin.methodTraces(connectionRequest.clientId());
 
 			admin.setIdleConnectionTimeout(30);
 			try {

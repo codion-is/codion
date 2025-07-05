@@ -23,6 +23,7 @@ import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.db.report.Report;
+import is.codion.common.logging.MethodTrace;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.AbstractServer;
 import is.codion.common.rmi.server.AuxiliaryServer;
@@ -79,7 +80,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	private final EntityServerConfiguration configuration;
 	private final Map<DomainType, Domain> domainModels;
 	private final Database database;
-	private final boolean clientLogging;
+	private final boolean methodTracing;
 	private final Map<String, Integer> clientTypeIdleConnectionTimeouts = new HashMap<>();
 
 	private int idleConnectionTimeout;
@@ -97,7 +98,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 		this.configuration = configuration;
 		try {
 			this.database = requireNonNull(configuration.database());
-			this.clientLogging = configuration.clientLogging();
+			this.methodTracing = configuration.methodTracing();
 			this.domainModels = loadDomainModels(configuration.domainClassNames());
 			configureDatabase(domainModels.values(), database);
 			EntityServerAdmin serverAdmin = createServerAdmin(configuration);
@@ -134,7 +135,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 			AbstractRemoteEntityConnection connection = createRemoteConnection(database(), remoteClient,
 							configuration.port(), configuration.rmiClientSocketFactory().orElse(null),
 							configuration.rmiServerSocketFactory().orElse(null));
-			connection.setLoggingEnabled(clientLogging);
+			connection.setTracingEnabled(methodTracing);
 
 			connection.closedObserver().addConsumer(this::removeConnection);
 			LOG.debug("{} connected", remoteClient);
@@ -287,28 +288,28 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 	}
 
 	/**
-	 * Returns the client log for the connection identified by the given key.
+	 * Returns the method traces for the connection identified by the given key.
 	 * @param clientId the UUID identifying the client
-	 * @return the client log for the given connection
+	 * @return the method traces for the given connection
 	 */
-	final ClientLog clientLog(UUID clientId) {
-		return connection(clientId).clientLog();
+	final List<MethodTrace> methodTraces(UUID clientId) {
+		return connection(clientId).methodTraces();
 	}
 
 	/**
 	 * @param clientId the client id
-	 * @return true if logging is enabled for the given client
+	 * @return true if method tracing is enabled for the given client
 	 */
-	final boolean isLoggingEnabled(UUID clientId) {
-		return connection(clientId).isLoggingEnabled();
+	final boolean isTracingEnabled(UUID clientId) {
+		return connection(clientId).isTracingEnabled();
 	}
 
 	/**
 	 * @param clientId the client id
-	 * @param loggingEnabled the new logging status
+	 * @param tracingEnabled the new tracing status
 	 */
-	final void setLoggingEnabled(UUID clientId, boolean loggingEnabled) {
-		connection(clientId).setLoggingEnabled(loggingEnabled);
+	final void setTracingEnabled(UUID clientId, boolean tracingEnabled) {
+		connection(clientId).setTracingEnabled(tracingEnabled);
 	}
 
 	/**

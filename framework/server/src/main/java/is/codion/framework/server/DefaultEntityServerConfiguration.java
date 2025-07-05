@@ -53,7 +53,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 
 	private final Database database;
 	private final User adminUser;
-	private final boolean clientLogging;
+	private final boolean methodTracing;
 	private final int idleConnectionTimeout;
 	private final String connectionPoolFactory;
 	private final Collection<String> domainClassNames;
@@ -64,7 +64,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 		this.serverConfiguration = requireNonNull(builder.serverConfigurationBuilder.build());
 		this.database = builder.database;
 		this.adminUser = builder.adminUser;
-		this.clientLogging = builder.clientLogging;
+		this.methodTracing = builder.methodTracing;
 		this.idleConnectionTimeout = builder.idleConnectionTimeout;
 		this.connectionPoolFactory = builder.connectionPoolFactory;
 		this.domainClassNames = unmodifiableCollection(builder.domainClassNames);
@@ -138,8 +138,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 	}
 
 	@Override
-	public boolean clientLogging() {
-		return clientLogging;
+	public boolean methodTracing() {
+		return methodTracing;
 	}
 
 	@Override
@@ -206,7 +206,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 
 		private Database database;
 		private User adminUser;
-		private boolean clientLogging = CLIENT_LOGGING.getOrThrow();
+		private boolean methodTracing = METHOD_TRACING.getOrThrow();
 		private int idleConnectionTimeout = IDLE_CONNECTION_TIMEOUT.getOrThrow();
 		private String connectionPoolFactory;
 		private final Collection<String> domainClassNames = new HashSet<>();
@@ -291,8 +291,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 		}
 
 		@Override
-		public Builder clientLogging(boolean clientLogging) {
-			this.clientLogging = clientLogging;
+		public Builder methodTracing(boolean methodTracing) {
+			this.methodTracing = methodTracing;
 			return this;
 		}
 

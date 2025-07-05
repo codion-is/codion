@@ -68,13 +68,13 @@ public interface EntityServerConfiguration extends ServerConfiguration {
 	PropertyValue<String> CLIENT_CONNECTION_TIMEOUT = stringValue("codion.server.clientConnectionTimeout");
 
 	/**
-	 * The initial connection logging status on the server, either true (on) or false (off)
+	 * The initial connection method tracing status on the server, either true (on) or false (off)
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: false
 	 * </ul>
 	 */
-	PropertyValue<Boolean> CLIENT_LOGGING = booleanValue("codion.server.clientLogging", false);
+	PropertyValue<Boolean> METHOD_TRACING = booleanValue("codion.server.methodTracing", false);
 
 	/**
 	 * Specifies a comma separated list of username:password combinations for which to create connection pools on startup
@@ -99,9 +99,9 @@ public interface EntityServerConfiguration extends ServerConfiguration {
 	User adminUser();
 
 	/**
-	 * @return true if client logging should be enabled on startup
+	 * @return true if method tracing should be enabled on startup
 	 */
-	boolean clientLogging();
+	boolean methodTracing();
 
 	/**
 	 * @return the idle connection timeout in milliseconds
@@ -146,10 +146,10 @@ public interface EntityServerConfiguration extends ServerConfiguration {
 		Builder adminUser(User adminUser);
 
 		/**
-		 * @param clientLogging if true then client logging is enabled on startup
+		 * @param methodTracing if true then method tracing is enabled on startup
 		 * @return this builder instance
 		 */
-		Builder clientLogging(boolean clientLogging);
+		Builder methodTracing(boolean methodTracing);
 
 		/**
 		 * @param idleConnectionTimeout the idle client connection timeout
