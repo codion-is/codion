@@ -20,8 +20,10 @@ package is.codion.framework.domain.entity;
 
 import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Database;
-import is.codion.common.logging.MethodLogger;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -32,15 +34,14 @@ import static is.codion.common.db.connection.DatabaseConnection.SQL_STATE_NO_DAT
 
 abstract class AbstractQueriedKeyGenerator implements KeyGenerator {
 
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractQueriedKeyGenerator.class);
+
 	protected final void selectAndPopulate(Entity entity, DatabaseConnection databaseConnection) throws SQLException {
-		MethodLogger logger = databaseConnection.getMethodLogger();
 		Connection connection = databaseConnection.getConnection();
 		String query = query(databaseConnection.database());
 		if (query == null) {
 			throw new IllegalStateException("Queried key generator returned no query");
 		}
-		SQLException exception = null;
-		logger.enter("selectAndPopulate", query);
 		try (PreparedStatement statement = connection.prepareStatement(query);
 				 ResultSet resultSet = statement.executeQuery()) {
 			if (!resultSet.next()) {
@@ -51,11 +52,10 @@ abstract class AbstractQueriedKeyGenerator implements KeyGenerator {
 			entity.set(column.attribute(), column.get(resultSet, 1));
 		}
 		catch (SQLException e) {
-			exception = e;
+			LOG.error("Exception during selectAndPopulate {}", e.getMessage(), e);
 			throw e;
 		}
 		finally {
-			logger.exit("selectAndPopulate", exception);
 			databaseConnection.database().queryCounter().select();
 		}
 	}

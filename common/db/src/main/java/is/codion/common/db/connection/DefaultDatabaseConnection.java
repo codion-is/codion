@@ -20,7 +20,6 @@ package is.codion.common.db.connection;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.logging.MethodLogger;
 import is.codion.common.user.User;
 
 import org.jspecify.annotations.Nullable;
@@ -32,7 +31,6 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static is.codion.common.logging.MethodLogger.noOpLogger;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -50,8 +48,6 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
 	private @Nullable Connection connection;
 	private boolean transactionOpen = false;
-
-	private MethodLogger logger = noOpLogger();
 
 	/**
 	 * Constructs a new DefaultDatabaseConnection instance, initialized and ready for use.
@@ -87,16 +83,6 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 	@Override
 	public User user() {
 		return user;
-	}
-
-	@Override
-	public void setMethodLogger(@Nullable MethodLogger methodLogger) {
-		this.logger = methodLogger == null ?  noOpLogger() : methodLogger;
-	}
-
-	@Override
-	public MethodLogger getMethodLogger() {
-		return logger;
 	}
 
 	@Override
@@ -150,9 +136,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 			throw new IllegalStateException("Transaction already open");
 		}
 		connection = verifyOpenConnection();
-		logger.enter("startTransaction");
 		transactionOpen = true;
-		logger.exit("startTransaction", null);
 	}
 
 	@Override
@@ -161,18 +145,14 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 			throw new IllegalStateException("Transaction is not open");
 		}
 		connection = verifyOpenConnection();
-		logger.enter("rollbackTransaction");
-		SQLException exception = null;
 		try {
 			connection.rollback();
 		}
 		catch (SQLException e) {
-			exception = e;
 			throw e;
 		}
 		finally {
 			transactionOpen = false;
-			logger.exit("rollbackTransaction", exception);
 		}
 	}
 
@@ -182,18 +162,14 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 			throw new IllegalStateException("Transaction is not open");
 		}
 		connection = verifyOpenConnection();
-		logger.enter("commitTransaction");
-		SQLException exception = null;
 		try {
 			connection.commit();
 		}
 		catch (SQLException e) {
-			exception = e;
 			throw e;
 		}
 		finally {
 			transactionOpen = false;
-			logger.exit("commitTransaction", exception);
 		}
 	}
 
@@ -208,18 +184,12 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 			throw new IllegalStateException("Can not perform a commit during an open transaction, use 'commitTransaction()'");
 		}
 		connection = verifyOpenConnection();
-		logger.enter("commit");
-		SQLException exception = null;
 		try {
 			connection.commit();
 		}
 		catch (SQLException e) {
 			LOG.error("Exception during commit for user {}: {}", user.username(), e.getMessage(), e);
-			exception = e;
 			throw e;
-		}
-		finally {
-			logger.exit("commit", exception);
 		}
 	}
 
@@ -229,17 +199,12 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 			throw new IllegalStateException("Can not perform a rollback during an open transaction, use 'rollbackTransaction()'");
 		}
 		connection = verifyOpenConnection();
-		logger.enter("rollback");
-		SQLException exception = null;
 		try {
 			connection.rollback();
 		}
 		catch (SQLException e) {
-			exception = e;
+			LOG.error("Exception during rollback for user {}: {}", user.username(), e.getMessage(), e);
 			throw e;
-		}
-		finally {
-			logger.exit("rollback", exception);
 		}
 	}
 

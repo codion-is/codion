@@ -37,6 +37,7 @@
 @org.jspecify.annotations.NullMarked
 module is.codion.framework.domain {
 	requires transitive is.codion.common.db;
+	requires org.slf4j;
 
 	exports is.codion.framework.domain.entity;
 	exports is.codion.framework.domain.entity.attribute;

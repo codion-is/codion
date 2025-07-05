@@ -20,7 +20,6 @@ package is.codion.common.db.connection;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.logging.MethodLogger;
 import is.codion.common.user.User;
 
 import org.jspecify.annotations.Nullable;
@@ -128,17 +127,6 @@ public interface DatabaseConnection extends AutoCloseable {
 	 * @return the database implementation this connection is based on
 	 */
 	Database database();
-
-	/**
-	 * @param methodLogger the MethodLogger to use, null to disable method logging
-	 */
-	void setMethodLogger(@Nullable MethodLogger methodLogger);
-
-	/**
-	 * @return the MethodLogger being used, possibly a no-op logger
-	 * @see MethodLogger#noOpLogger()
-	 */
-	MethodLogger getMethodLogger();
 
 	/**
 	 * Constructs a new DatabaseConnection instance, based on the given Database and User

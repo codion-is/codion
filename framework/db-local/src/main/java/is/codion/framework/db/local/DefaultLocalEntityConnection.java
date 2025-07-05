@@ -31,6 +31,7 @@ import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.db.result.ResultIterator;
+import is.codion.common.logging.MethodLogger;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
@@ -73,6 +74,7 @@ import java.util.stream.Collectors;
 
 import static is.codion.common.db.connection.DatabaseConnection.SQL_STATE_NO_DATA;
 import static is.codion.common.db.database.Database.Operation.*;
+import static is.codion.common.logging.MethodLogger.noOpLogger;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.db.local.Queries.*;
@@ -115,6 +117,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	private final Map<EntityType, List<ForeignKeyDefinition>> hardForeignKeyReferenceCache = new HashMap<>();
 	private final Map<EntityType, List<Attribute<?>>> primaryKeyAndWritableColumnsCache = new HashMap<>();
 	private final Map<Select, List<Entity>> queryCache = new HashMap<>();
+
+	private MethodLogger logger = noOpLogger();
 
 	private boolean optimisticLocking = LocalEntityConnection.OPTIMISTIC_LOCKING.getOrThrow();
 	private boolean limitForeignKeyReferenceDepth = LocalEntityConnection.LIMIT_FOREIGN_KEY_REFERENCE_DEPTH.getOrThrow();
@@ -178,7 +182,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	@Override
 	public void startTransaction() {
 		synchronized (connection) {
-			connection.startTransaction();
+			logEntry("startTransaction");
+			try {
+				connection.startTransaction();
+			}
+			finally {
+				logExit("startTransaction");
+			}
 		}
 	}
 
@@ -192,12 +202,18 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	@Override
 	public void rollbackTransaction() {
 		synchronized (connection) {
+			logEntry("rollbackTransaction");
+			SQLException exception = null;
 			try {
 				connection.rollbackTransaction();
 			}
 			catch (SQLException e) {
+				exception = e;
 				LOG.error("Exception during transaction rollback", e);
 				throw new DatabaseException(e);
+			}
+			finally {
+				logExit("rollbackTransaction", exception);
 			}
 		}
 	}
@@ -205,12 +221,18 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	@Override
 	public void commitTransaction() {
 		synchronized (connection) {
+			logEntry("commitTransaction");
+			SQLException exception = null;
 			try {
 				connection.commitTransaction();
 			}
 			catch (SQLException e) {
+				exception = e;
 				LOG.error("Exception during transaction commit", e);
 				throw new DatabaseException(e);
+			}
+			finally {
+				logExit("commitTransaction", exception);
 			}
 		}
 	}
@@ -705,6 +727,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	public void defaultQueryTimeout(int defaultQueryTimeout) {
 		synchronized (connection) {
 			this.defaultQueryTimeout = defaultQueryTimeout;
+		}
+	}
+
+	@Override
+	public void methodLogger(@Nullable MethodLogger methodLogger) {
+		synchronized (connection) {
+			this.logger = methodLogger == null ? noOpLogger() : methodLogger;
 		}
 	}
 
@@ -1212,36 +1241,53 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	private void rollbackQuietly() {
+		logEntry("rollback");
+		SQLException exception = null;
 		try {
 			connection.rollback();
 		}
 		catch (SQLException e) {
+			exception = e;
 			LOG.error("Exception while performing a quiet rollback", e);
+		}
+		finally {
+			logExit("rollback", exception);
 		}
 	}
 
 	private void commitIfTransactionIsNotOpen() throws SQLException {
-		if (!transactionOpen()) {
-			connection.commit();
+		if (!connection.transactionOpen()) {
+			logEntry("commit");
+			SQLException exception = null;
+			try {
+				connection.commit();
+			}
+			catch (SQLException e) {
+				exception = e;
+				throw e;
+			}
+			finally {
+				logExit("commit", exception);
+			}
 		}
 	}
 
 	private void rollbackQuietlyIfTransactionIsNotOpen() {
-		if (!transactionOpen()) {
+		if (!connection.transactionOpen()) {
 			rollbackQuietly();
 		}
 	}
 
 	private void logEntry(String method) {
-		connection.getMethodLogger().enter(method);
+		logger.enter(method);
 	}
 
 	private void logEntry(String method, Object argument) {
-		connection.getMethodLogger().enter(method, argument);
+		logger.enter(method, argument);
 	}
 
 	private void logEntry(String method, @Nullable Object... arguments) {
-		connection.getMethodLogger().enter(method, arguments);
+		logger.enter(method, arguments);
 	}
 
 	private void logExit(String method) {
@@ -1253,7 +1299,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 	}
 
 	private void logExit(String method, @Nullable Exception exception, @Nullable String exitMessage) {
-		connection.getMethodLogger().exit(method, exception, exitMessage);
+		logger.exit(method, exception, exitMessage);
 	}
 
 	private String createLogMessage(@Nullable String sqlStatement, List<?> values, List<ColumnDefinition<?>> columnDefinitions, @Nullable Exception exception) {

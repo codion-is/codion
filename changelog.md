@@ -10,6 +10,7 @@ Codion Change Log
 ### is.codion.common.db
 - Unit tests improved.
 - DatabaseConnection.getMethodLogger() now returns MethodLogger.noOpLogger() in case of no logger.
+- DatabaseConnection no longer uses MethodLogger.
 ### is.codion.common.model
 - Unit tests improved.
 - FilePreferencesFactory added.

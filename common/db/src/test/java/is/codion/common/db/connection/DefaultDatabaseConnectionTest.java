@@ -20,7 +20,6 @@ package is.codion.common.db.connection;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.logging.MethodLogger;
 import is.codion.common.user.User;
 
 import org.junit.jupiter.api.AfterEach;
@@ -146,17 +145,6 @@ public class DefaultDatabaseConnectionTest {
 		@DisplayName("Get connection returns non-null connection")
 		void getConnection_shouldReturnNonNull() {
 			assertNotNull(dbConnection.getConnection());
-		}
-
-		@Test
-		@DisplayName("Method logger can be set and retrieved")
-		void methodLogger_setAndGet_shouldWork() {
-			try (DatabaseConnection connection = databaseConnection(DATABASE, UNIT_TEST_USER)) {
-				MethodLogger methodLogger = MethodLogger.methodLogger(METHOD_LOGGER_STACK_DEPTH);
-				methodLogger.setEnabled(true);
-				connection.setMethodLogger(methodLogger);
-				assertSame(methodLogger, connection.getMethodLogger());
-			}
 		}
 
 		@Test
