@@ -511,7 +511,8 @@ public final class LoadTestPanel<T> extends JPanel {
 	private synchronized void exit() {
 		if (!exiting) {
 			exiting = true;
-			Dialogs.progressWorker(loadTest::shutdown)
+			Dialogs.progressWorker()
+							.task(loadTest::shutdown)
 							.owner(Utilities.parentFrame(this))
 							.title("Shutting down...")
 							.onResult(() -> System.exit(0))

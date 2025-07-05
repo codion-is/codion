@@ -18,10 +18,6 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTask;
-import is.codion.swing.common.model.worker.ProgressWorker.ProgressTask;
-import is.codion.swing.common.model.worker.ProgressWorker.ResultTask;
-import is.codion.swing.common.model.worker.ProgressWorker.Task;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
@@ -51,45 +47,10 @@ public final class Dialogs {
 	}
 
 	/**
-	 * @param task the task to run
-	 * @return a new indeterminate {@link ProgressWorkerDialogBuilder} instance
+	 * @return a {@link ProgressWorkerDialogBuilder.BuilderFactory}
 	 */
-	public static ProgressWorkerDialogBuilder<?, ?> progressWorker(Task task) {
-		return new DefaultProgressWorkerDialogBuilder<>(requireNonNull(task));
-	}
-
-	/**
-	 * @param task the task to run
-	 * @param <T> the worker result type
-	 * @return a new indeterminate {@link ProgressWorkerDialogBuilder} instance
-	 */
-	public static <T> ProgressWorkerDialogBuilder<T, ?> progressWorker(ResultTask<T> task) {
-		return new DefaultProgressWorkerDialogBuilder<>(requireNonNull(task));
-	}
-
-	/**
-	 * Note, also sets the progress bar type to 'determinate'.
-	 * @param task the task to run
-	 * @param <V> the worker intermediate result type
-	 * @return a new determinate {@link ProgressWorkerDialogBuilder} instance
-	 * @see ProgressWorkerDialogBuilder#indeterminate(boolean)
-	 */
-	public static <V> ProgressWorkerDialogBuilder<?, V> progressWorker(ProgressTask<V> task) {
-		return new DefaultProgressWorkerDialogBuilder<>(requireNonNull(task)).indeterminate(false);
-	}
-
-	/**
-	 * Note, also sets the progress bar type to 'determinate'.
-	 * @param task the task to run
-	 * @param <T> the worker result type
-	 * @param <V> the worker intermediate result type
-	 * @return a new determinate {@link ProgressWorkerDialogBuilder} instance
-	 * @see ProgressWorkerDialogBuilder#indeterminate(boolean)
-	 */
-	public static <T, V> ProgressWorkerDialogBuilder<T, V> progressWorker(ProgressResultTask<T, V> task) {
-		requireNonNull(task);
-
-		return new DefaultProgressWorkerDialogBuilder<>(task).indeterminate(false);
+	public static ProgressWorkerDialogBuilder.BuilderFactory progressWorker() {
+		return DefaultProgressWorkerDialogBuilder.BUILDER_FACTORY;
 	}
 
 	/**

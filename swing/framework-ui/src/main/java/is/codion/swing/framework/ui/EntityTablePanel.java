@@ -1931,7 +1931,8 @@ public class EntityTablePanel extends JPanel {
 		public void execute() {
 			if (confirmDelete()) {
 				List<Entity> selectedItems = tableModel().selection().items().get();
-				Dialogs.progressWorker(tableModel().editModel().createDelete(selectedItems).prepare()::perform)
+				Dialogs.progressWorker()
+								.task(tableModel().editModel().createDelete(selectedItems).prepare()::perform)
 								.title(EDIT_PANEL_MESSAGES.getString("deleting"))
 								.owner(EntityTablePanel.this)
 								.onException(this::onException)

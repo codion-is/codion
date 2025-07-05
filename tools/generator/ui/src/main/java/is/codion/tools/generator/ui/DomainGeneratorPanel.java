@@ -410,7 +410,8 @@ public final class DomainGeneratorPanel extends JPanel {
 						.centerComponent(schemaLabel)
 						.build();
 		Consumer<String> schemaNotifier = schema -> SwingUtilities.invokeLater(() -> schemaLabel.setText(schema));
-		Dialogs.progressWorker(() -> model.populateSelected(schemaNotifier))
+		Dialogs.progressWorker()
+						.task(() -> model.populateSelected(schemaNotifier))
 						.owner(this)
 						.title("Populating")
 						.northPanel(northPanel)

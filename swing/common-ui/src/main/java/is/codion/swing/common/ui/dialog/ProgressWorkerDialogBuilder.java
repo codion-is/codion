@@ -38,6 +38,44 @@ import java.util.function.Consumer;
 public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<ProgressWorkerDialogBuilder<T, V>> {
 
 	/**
+	 * Provides builders for a given task type.
+	 */
+	interface BuilderFactory {
+
+		/**
+		 * @param task the task to run
+		 * @return a new indeterminate {@link ProgressWorkerDialogBuilder} instance
+		 */
+		ProgressWorkerDialogBuilder<?, ?> task(ProgressWorker.Task task);
+
+		/**
+		 * @param task the task to run
+		 * @param <T> the worker result type
+		 * @return a new indeterminate {@link ProgressWorkerDialogBuilder} instance
+		 */
+		<T> ProgressWorkerDialogBuilder<T, ?> task(ProgressWorker.ResultTask<T> task);
+
+		/**
+		 * Note, also sets the progress bar type to 'determinate'.
+		 * @param task the task to run
+		 * @param <V> the worker intermediate result type
+		 * @return a new determinate {@link ProgressWorkerDialogBuilder} instance
+		 * @see ProgressWorkerDialogBuilder#indeterminate(boolean)
+		 */
+		<V> ProgressWorkerDialogBuilder<?, V> task(ProgressWorker.ProgressTask<V> task);
+
+		/**
+		 * Note, also sets the progress bar type to 'determinate'.
+		 * @param task the task to run
+		 * @param <T> the worker result type
+		 * @param <V> the worker intermediate result type
+		 * @return a new determinate {@link ProgressWorkerDialogBuilder} instance
+		 * @see ProgressWorkerDialogBuilder#indeterminate(boolean)
+		 */
+		<T, V> ProgressWorkerDialogBuilder<T, V> task(ProgressWorker.ProgressResultTask<T, V> task);
+	}
+
+	/**
 	 * @param indeterminate true if the progress bar should be indeterminate
 	 * @return this Builder instance
 	 */

@@ -72,7 +72,8 @@ public final class ArtistTablePanel extends EntityTablePanel {
 		int albumCount = tableModel().connection().count(where(Album.ARTIST_FK.in(artistsToDelete)));
 		if (confirmCombination(artistsToDelete, artistToKeep, albumCount)) {
 			ArtistTableModel tableModel = (ArtistTableModel) tableModel();
-			Dialogs.progressWorker(() -> tableModel.combine(artistsToDelete, artistToKeep))
+			Dialogs.progressWorker()
+							.task(() -> tableModel.combine(artistsToDelete, artistToKeep))
 							.owner(this)
 							.title("Updating albums...")
 							.onResult(() -> {

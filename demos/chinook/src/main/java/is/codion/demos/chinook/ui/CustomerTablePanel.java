@@ -62,7 +62,8 @@ public final class CustomerTablePanel extends EntityTablePanel {
 	}
 
 	private void viewCustomerReport() {
-		Dialogs.progressWorker(this::fillCustomerReport)
+		Dialogs.progressWorker()
+						.task(this::fillCustomerReport)
 						.owner(this)
 						.title(BUNDLE.getString("customer_report"))
 						.onResult(this::viewReport)

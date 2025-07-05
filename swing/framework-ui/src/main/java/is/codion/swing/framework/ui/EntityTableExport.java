@@ -30,6 +30,7 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
+import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTask;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
 import is.codion.swing.common.ui.control.CommandControl;
@@ -114,7 +115,9 @@ final class EntityTableExport {
 
 	private void export() {
 		List<Entity> entities = entities(tablePanel.tableModel());
-		Dialogs.<String, Void>progressWorker(progress -> export(progress, entities))
+		ProgressResultTask<String, Void> task = progress -> export(progress, entities);
+		Dialogs.progressWorker()
+						.task(task)
 						.owner(tablePanel)
 						.title(MESSAGES.getString("exporting_rows"))
 						.maximum(entities.size())

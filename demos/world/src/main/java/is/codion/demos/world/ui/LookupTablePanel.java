@@ -223,7 +223,8 @@ final class LookupTablePanel extends EntityTablePanel {
 						.files()
 						.owner(this)
 						.selectFileToSave(format.defaultFileName());
-		Dialogs.progressWorker(() -> export(fileToSave, format))
+		Dialogs.progressWorker()
+						.task(() -> export(fileToSave, format))
 						.owner(this)
 						.title("Exporting data")
 						.onResult("Export successful")

@@ -340,7 +340,8 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		EntityConnectionProvider connectionProvider = initializeConnectionProvider();
 		long initializationStarted = currentTimeMillis();
 		if (displayStartupDialog) {
-			Dialogs.progressWorker(new InitializeApplicationModel(connectionProvider))
+			Dialogs.progressWorker()
+							.task(new InitializeApplicationModel(connectionProvider))
 							.title(applicationName)
 							.icon(applicationIcon)
 							.border(emptyBorder())

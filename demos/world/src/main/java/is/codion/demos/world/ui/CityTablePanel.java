@@ -66,7 +66,8 @@ final class CityTablePanel extends ChartTablePanel {
 		CityTableModel tableModel = (CityTableModel) tableModel();
 		PopulateLocationTask task = tableModel.populateLocationTask();
 
-		Dialogs.progressWorker(task)
+		Dialogs.progressWorker()
+						.task(task)
 						.owner(this)
 						.title("Populating locations")
 						.stringPainted(true)

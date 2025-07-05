@@ -60,7 +60,8 @@ public final class DialogsTest {
 
 	@Test
 	void progressWorker() {
-		Dialogs.progressWorker(() -> {})
+		Dialogs.progressWorker()
+						.task(() -> {})
 						.owner(new JLabel())
 						.title("title")
 						.icon(Logos.logoTransparent())

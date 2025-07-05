@@ -52,7 +52,8 @@ final class CountryTablePanel extends EntityTablePanel {
 	}
 
 	private void viewCountryReport() {
-		Dialogs.progressWorker(this::fillCountryReport)
+		Dialogs.progressWorker()
+						.task(this::fillCountryReport)
 						.owner(this)
 						.maximum(tableModel().selection().count())
 						.stringPainted(true)

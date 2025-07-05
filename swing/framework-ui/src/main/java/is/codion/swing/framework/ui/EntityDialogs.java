@@ -367,7 +367,8 @@ public final class EntityDialogs {
 			public boolean test(T newValue) {
 				editModel.applyEdit(entities, attribute, newValue);
 				try {
-					Dialogs.progressWorker(editModel.createUpdate(entities.stream()
+					Dialogs.progressWorker()
+									.task(editModel.createUpdate(entities.stream()
 													.filter(Entity::modified)
 													.collect(toList())).prepare()::perform)
 									.title(EDIT_PANEL_MESSAGES.getString("updating"))

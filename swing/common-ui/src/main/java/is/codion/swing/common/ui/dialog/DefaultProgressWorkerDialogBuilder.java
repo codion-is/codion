@@ -40,6 +40,8 @@ import static javax.swing.JOptionPane.showMessageDialog;
 final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuilder<ProgressWorkerDialogBuilder<T, V>>
 				implements ProgressWorkerDialogBuilder<T, V> {
 
+	static final ProgressWorkerDialogBuilder.BuilderFactory BUILDER_FACTORY = new DefaultBuilderFactory();
+
 	private static final Consumer<?> EMPTY_CONSUMER = new EmptyConsumer<>();
 
 	private final ProgressWorker.Builder<T, V> progressWorkerBuilder;
@@ -192,6 +194,29 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 						.onException(exception -> onException(exception, progressDialog))
 						.onCancelled(() -> closeDialog(progressDialog))
 						.build();
+	}
+
+	private static class DefaultBuilderFactory implements BuilderFactory {
+
+		@Override
+		public ProgressWorkerDialogBuilder<?, ?> task(Task task) {
+			return new DefaultProgressWorkerDialogBuilder<>(requireNonNull(task));
+		}
+
+		@Override
+		public <T> ProgressWorkerDialogBuilder<T, ?> task(ResultTask<T> task) {
+			return new DefaultProgressWorkerDialogBuilder<>(requireNonNull(task));
+		}
+
+		@Override
+		public <V> ProgressWorkerDialogBuilder<?, V> task(ProgressTask<V> task) {
+			return new DefaultProgressWorkerDialogBuilder<>(requireNonNull(task)).indeterminate(false);
+		}
+
+		@Override
+		public <T, V> ProgressWorkerDialogBuilder<T, V> task(ProgressResultTask<T, V> task) {
+			return new DefaultProgressWorkerDialogBuilder<>(requireNonNull(task)).indeterminate(false);
+		}
 	}
 
 	private void publish(List<V> chunks, ProgressDialog progressDialog) {
