@@ -42,7 +42,7 @@ import static is.codion.common.Configuration.booleanValue;
 /**
  * <p>A ComboBoxModel based on an Entity, showing by default all the entities in the underlying table.</p>
  * <p>To filter a {@link EntityComboBoxModel} use {@link #filter()} to set a {@link Predicate} or configure {@link ForeignKey} based filtering.</p>
- * @see #builder(EntityType, EntityConnectionProvider)
+ * @see #builder()
  */
 public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 
@@ -102,18 +102,40 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	<T> Value<T> createSelectorValue(Attribute<T> attribute);
 
 	/**
-	 * @param entityType the type of the entity this combo box model should represent
-	 * @param connectionProvider a EntityConnectionProvider instance
-	 * @return a new {@link EntityComboBoxModel.Builder} instance
+	 * @return a new {@link EntityComboBoxModel.Builder.EntityTypeBuilder} instance
 	 */
-	static Builder builder(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		return new DefaultEntityComboBoxModel.DefaultBuilder(entityType, connectionProvider);
+	static Builder.EntityTypeBuilder builder() {
+		return DefaultEntityComboBoxModel.ENTITY_TYPE;
 	}
 
 	/**
 	 * Builds a {@link EntityComboBoxModel}.
 	 */
 	interface Builder {
+
+		/**
+		 * Provides a {@link ConnectionProviderBuilder}
+		 */
+		interface EntityTypeBuilder {
+
+			/**
+			 * @param entityType the type of the entity this combo box model should represent
+			 * @return a new {@link EntityComboBoxModel.Builder.ConnectionProviderBuilder} instance
+			 */
+			ConnectionProviderBuilder entityType(EntityType entityType);
+		}
+
+		/**
+		 * Provides a {@link Builder}
+		 */
+		interface ConnectionProviderBuilder {
+
+			/**
+			 * @param connectionProvider a EntityConnectionProvider instance
+			 * @return a new {@link EntityComboBoxModel.Builder} instance
+			 */
+			Builder connectionProvider(EntityConnectionProvider connectionProvider);
+		}
 
 		/**
 		 * Specifies the {@link OrderBy} to use when selecting entities for this model.

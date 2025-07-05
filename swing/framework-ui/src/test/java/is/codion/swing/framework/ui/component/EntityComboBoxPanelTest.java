@@ -44,7 +44,10 @@ public final class EntityComboBoxPanelTest {
 
 	@Test
 	void test() {
-		EntityComboBoxModel model = EntityComboBoxModel.builder(Department.TYPE, CONNECTION_PROVIDER).build();
+		EntityComboBoxModel model = EntityComboBoxModel.builder()
+						.entityType(Department.TYPE)
+						.connectionProvider(CONNECTION_PROVIDER)
+						.build();
 		model.items().refresh();
 		ComponentValue<Entity, EntityComboBoxPanel> value = EntityComboBoxPanel.builder(model)
 						.editPanel(() -> null)

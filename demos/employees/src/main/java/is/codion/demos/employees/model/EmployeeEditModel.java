@@ -43,7 +43,9 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 	@Override
 	public EntityComboBoxModel createComboBoxModel(ForeignKey foreignKey) {
 		if (foreignKey.equals(Employee.MANAGER_FK)) {
-			return EntityComboBoxModel.builder(Employee.TYPE, connectionProvider())
+			return EntityComboBoxModel.builder()
+							.entityType(Employee.TYPE)
+							.connectionProvider(connectionProvider())
 							//Customize the null value caption so that it displays 'None'
 							//instead of the default '-' character
 							.nullCaption("None")

@@ -55,6 +55,8 @@ import static java.util.stream.Collectors.toMap;
 
 final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
+	static final Builder.EntityTypeBuilder ENTITY_TYPE = new DefaultEntityTypeBuilder();
+
 	private final FilterComboBoxModel<Entity> comboBoxModel;
 
 	private final EntityDefinition entityDefinition;
@@ -437,7 +439,29 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 	}
 
-	static class DefaultBuilder implements Builder {
+	static class DefaultEntityTypeBuilder implements Builder.EntityTypeBuilder {
+
+		@Override
+		public Builder.ConnectionProviderBuilder entityType(EntityType entityType) {
+			return new DefaultConnectionProviderBuilder(requireNonNull(entityType));
+		}
+	}
+
+	private static class DefaultConnectionProviderBuilder implements Builder.ConnectionProviderBuilder {
+
+		private final EntityType entityType;
+
+		private DefaultConnectionProviderBuilder(EntityType entityType) {
+			this.entityType = entityType;
+		}
+
+		@Override
+		public Builder connectionProvider(EntityConnectionProvider connectionProvider) {
+			return new DefaultBuilder(this.entityType, connectionProvider);
+		}
+	}
+
+	private static class DefaultBuilder implements Builder {
 
 		private final EntityDefinition entityDefinition;
 		private final EntityConnectionProvider connectionProvider;
@@ -450,7 +474,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		private String nullCaption;
 		private boolean filterSelected = false;
 
-		DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
+		private DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
 			this.connectionProvider = requireNonNull(connectionProvider);
 			this.entityDefinition = connectionProvider.entities().definition(entityType);
 			this.comparator = connectionProvider.entities().definition(entityType).comparator();

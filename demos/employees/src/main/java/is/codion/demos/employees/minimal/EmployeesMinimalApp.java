@@ -180,7 +180,9 @@ public final class EmployeesMinimalApp {
 		@Override
 		public EntityComboBoxModel createComboBoxModel(ForeignKey foreignKey) {
 			if (foreignKey.equals(Employee.MANAGER_FK)) {
-				return EntityComboBoxModel.builder(Employee.TYPE, connectionProvider())
+				return EntityComboBoxModel.builder()
+								.entityType(Employee.TYPE)
+								.connectionProvider(connectionProvider())
 								.condition(() -> Employee.JOB.in("Manager", "President"))
 								.build();
 			}

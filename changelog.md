@@ -80,6 +80,8 @@ Codion Change Log
 - FileSelectionDialogBuilder.fileFilter() renamed filter().
 - ProgressWorkerDialogBuilder.BuilderFactory added, replacing overloaded methods in Dialogs.
 - InputDialogBuilder.ComponentStep added, replacing overloaded methods in Dialogs.
+### is.codion.swing.framework.model
+- EntityComboBoxModel.Builder.EntityTypeBuilder and ConnectionProviderBuilder added.
 ### is.codion.swing.framework.ui
 - ApplicationPreferences.fromString() bug fixed, FRAME_MAXIMIZED_KEY now used.
 - EntityComboBoxPanel.Builder.EditPanel added, replacing the editPanel parameter in EntityComboBoxPanel.builder().
