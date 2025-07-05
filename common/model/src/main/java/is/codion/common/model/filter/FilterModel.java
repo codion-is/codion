@@ -42,7 +42,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static is.codion.common.Configuration.booleanValue;
-import static java.util.Objects.requireNonNull;
 
 /**
  * Specifies a data model that can be filtered to hide some or all of the items it contains.
@@ -245,12 +244,10 @@ public interface FilterModel<T> {
 		void filter();
 
 		/**
-		 * @param refresher the item refresher to use
-		 * @param <T> the item type
-		 * @return a new {@link Builder.SelectionStage} instance
+		 * @return a new {@link Builder.RefresherStage} instance
 		 */
-		static <T> Builder.SelectionStage<T> builder(Function<Items<T>, Refresher<T>> refresher) {
-			return new DefaultFilterModelItems.DefaultSelectionStage<>(requireNonNull(refresher));
+		static Builder.RefresherStage builder() {
+			return DefaultFilterModelItems.REFRESHER_STAGE;
 		}
 
 		/**
@@ -258,6 +255,19 @@ public interface FilterModel<T> {
 		 * @param <T> the item type
 		 */
 		interface Builder<T> {
+
+			/**
+			 * Provides a {@link SelectionStage}
+			 */
+			interface RefresherStage {
+
+				/**
+				 * @param refresher the item refresher to use
+				 * @param <T> the item type
+				 * @return a new {@link Builder.SelectionStage} instance
+				 */
+				<T> SelectionStage<T> refresher(Function<Items<T>, Refresher<T>> refresher);
+			}
 
 			/**
 			 * @param <T> the item type

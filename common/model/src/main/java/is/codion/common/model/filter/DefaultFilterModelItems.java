@@ -53,6 +53,8 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultFilterModelItems<R> implements Items<R> {
 
+	static final Builder.RefresherStage REFRESHER_STAGE = new DefaultFilterModelItems.DefaultRefresherStage();
+
 	private final Lock lock = new Lock() {};
 
 	private final Predicate<R> validator;
@@ -550,11 +552,19 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 	}
 
-	static final class DefaultSelectionStage<T> implements Builder.SelectionStage<T> {
+	private static final class DefaultRefresherStage implements Builder.RefresherStage {
+
+		@Override
+		public <T> Builder.SelectionStage<T> refresher(Function<Items<T>, Refresher<T>> refresher) {
+			return new DefaultSelectionStage<>(requireNonNull(refresher));
+		}
+	}
+
+	private static final class DefaultSelectionStage<T> implements Builder.SelectionStage<T> {
 
 		private final Function<Items<T>, Refresher<T>> refresher;
 
-		DefaultSelectionStage(Function<Items<T>, Refresher<T>> refresher) {
+		private DefaultSelectionStage(Function<Items<T>, Refresher<T>> refresher) {
 			this.refresher = refresher;
 		}
 

@@ -41,7 +41,8 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 
 	DefaultFilterListModel(DefaultBuilder<T> builder) {
 		this.sort = new DefaultListSort(builder.comparator);
-		this.items = Items.<T>builder(builder::createRefresher)
+		this.items = Items.<T>builder()
+						.refresher(builder::createRefresher)
 						.selection(DefaultListSelection::new)
 						.sort(sort)
 						.listener(new ListModelAdapter())

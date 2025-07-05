@@ -73,7 +73,8 @@ public class DefaultFilterModelItemsTest {
 			visiblePredicate = new TestPredicate();
 			selection = new TestMultiSelection();
 
-			items = Items.<String>builder(i -> new TestRefresher())
+			items = Items.builder()
+							.<String>refresher(i -> new TestRefresher())
 							.selection(visible -> selection)
 							.sort(new TestSort())
 							.visiblePredicate(visiblePredicate)
@@ -228,7 +229,8 @@ public class DefaultFilterModelItemsTest {
 			visiblePredicate = new TestPredicate();
 			TestMultiSelection selection = new TestMultiSelection();
 
-			items = Items.<String>builder(i -> new TestRefresher())
+			items = Items.builder()
+							.<String>refresher(i -> new TestRefresher())
 							.selection(visible -> selection)
 							.sort(new TestSort())
 							.visiblePredicate(visiblePredicate)
@@ -272,7 +274,8 @@ public class DefaultFilterModelItemsTest {
 			TestSort sort = new TestSort();
 			sort.setComparator(Comparator.reverseOrder());
 
-			items = Items.<String>builder(i -> new TestRefresher())
+			items = Items.builder()
+							.<String>refresher(i -> new TestRefresher())
 							.selection(visible -> new TestMultiSelection())
 							.sort(sort)
 							.visiblePredicate(visiblePredicate)
@@ -299,7 +302,8 @@ public class DefaultFilterModelItemsTest {
 		void setUp() {
 			refresher = new TestRefresher();
 
-			items = Items.<String>builder(i -> refresher)
+			items = Items.builder()
+							.<String>refresher(i -> refresher)
 							.selection(visible -> new TestMultiSelection())
 							.sort(new TestSort())
 							.refreshStrategy(RefreshStrategy.CLEAR)
@@ -397,7 +401,8 @@ public class DefaultFilterModelItemsTest {
 		void setUp() {
 			sort = new TestSort();
 
-			items = Items.<String>builder(i -> new TestRefresher())
+			items = Items.builder()
+							.<String>refresher(i -> new TestRefresher())
 							.selection(visible -> new TestMultiSelection())
 							.sort(sort)
 							.build();
@@ -442,7 +447,8 @@ public class DefaultFilterModelItemsTest {
 
 		@BeforeEach
 		void setUp() {
-			items = Items.<String>builder(i -> new TestRefresher())
+			items = Items.builder()
+							.<String>refresher(i -> new TestRefresher())
 							.selection(v -> new TestMultiSelection())
 							.sort(new TestSort())
 							.build();
@@ -511,7 +517,8 @@ public class DefaultFilterModelItemsTest {
 		void validator_rejectsInvalid() {
 			Predicate<String> validator = item -> !item.contains("invalid");
 
-			Items<String> items = Items.<String>builder(i -> new TestRefresher())
+			Items<String> items = Items.builder()
+							.<String>refresher(i -> new TestRefresher())
 							.selection(visible -> new TestMultiSelection())
 							.sort(new TestSort())
 							.validator(validator)
@@ -527,7 +534,8 @@ public class DefaultFilterModelItemsTest {
 		@Test
 		@DisplayName("Default validator accepts all")
 		void defaultValidator_acceptsAll() {
-			Items<String> items = Items.<String>builder(i -> new TestRefresher())
+			Items<String> items = Items.builder()
+							.<String>refresher(i -> new TestRefresher())
 							.selection(visible -> new TestMultiSelection())
 							.sort(new TestSort())
 							.build();
@@ -553,7 +561,8 @@ public class DefaultFilterModelItemsTest {
 
 		@BeforeEach
 		void setUp() {
-			items = Items.<String>builder(i -> new TestRefresher())
+			items = Items.builder()
+							.<String>refresher(i -> new TestRefresher())
 							.selection(visible -> new TestMultiSelection())
 							.sort(new TestSort())
 							.build();

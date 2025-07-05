@@ -75,7 +75,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		this.filters = tableConditionModel(builder.filters);
 		this.sort = new DefaultFilterTableSort<>(columns);
 		this.editorFactory = builder.editorFactory;
-		this.items = Items.builder(builder::createRefresher)
+		this.items = Items.builder()
+						.refresher(builder::createRefresher)
 						.selection(FilterListSelection::filterListSelection)
 						.sort(sort)
 						.validator(builder.validator)
