@@ -148,9 +148,6 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 		try {
 			connection.rollback();
 		}
-		catch (SQLException e) {
-			throw e;
-		}
 		finally {
 			transactionOpen = false;
 		}
@@ -164,9 +161,6 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 		connection = verifyOpenConnection();
 		try {
 			connection.commit();
-		}
-		catch (SQLException e) {
-			throw e;
 		}
 		finally {
 			transactionOpen = false;
