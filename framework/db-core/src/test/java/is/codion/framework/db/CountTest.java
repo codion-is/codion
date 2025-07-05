@@ -67,7 +67,8 @@ public final class CountTest {
 			Condition whereCondition = Employee.DEPARTMENT.equalTo(10);
 			Condition havingCondition = Employee.SALARY.greaterThan(50000d);
 
-			Count count = Count.builder(whereCondition)
+			Count count = Count.builder()
+							.where(whereCondition)
 							.having(havingCondition)
 							.build();
 
@@ -86,7 +87,9 @@ public final class CountTest {
 		@DisplayName("null having throws NullPointerException")
 		void count_nullHaving_throwsNullPointerException() {
 			assertThrows(NullPointerException.class, () ->
-							Count.builder(Condition.all(Employee.TYPE)).having(null));
+							Count.builder().where(Condition.all(Employee.TYPE)).having(null));
+			assertThrows(NullPointerException.class, () ->
+							Count.builder().where(null));
 		}
 	}
 
@@ -128,7 +131,8 @@ public final class CountTest {
 			Condition whereCondition = Employee.NAME.like("J%");
 			Condition havingCondition = Employee.SALARY.greaterThan(40000d);
 
-			Count count = Count.builder(whereCondition)
+			Count count = Count.builder()
+							.where(whereCondition)
 							.having(havingCondition)
 							.build();
 
@@ -163,7 +167,8 @@ public final class CountTest {
 		void count_builderChaining_worksCorrectly() {
 			Condition havingCondition = Employee.SALARY.greaterThan(30000d);
 
-			Count count = Count.builder(Condition.all(Employee.TYPE))
+			Count count = Count.builder()
+							.where(Condition.all(Employee.TYPE))
 							.having(havingCondition)
 							.build();
 
@@ -178,7 +183,8 @@ public final class CountTest {
 			Condition having2 = Employee.SALARY.greaterThan(40000d);
 			Condition having3 = Employee.SALARY.greaterThan(50000d);
 
-			Count count = Count.builder(Condition.all(Employee.TYPE))
+			Count count = Count.builder()
+							.where(Condition.all(Employee.TYPE))
 							.having(having1)
 							.having(having2)
 							.having(having3)

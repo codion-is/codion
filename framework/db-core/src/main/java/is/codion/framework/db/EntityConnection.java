@@ -1056,7 +1056,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * A class encapsulating count query parameters.
 	 * A factory for {@link Count} instances via {@link Count#all(EntityType)},
 	 * {@link Count#where(Condition)} and {@link Count#having(Condition)}.
-	 * A factory for {@link Count.Builder} instances via {@link Count#builder(Condition)}.
+	 * A factory for {@link Count.Builder} instances via {@link Count#builder()}.
 	 */
 	interface Count {
 
@@ -1074,6 +1074,18 @@ public interface EntityConnection extends AutoCloseable {
 		 * Builds a {@link Count} instance.
 		 */
 		interface Builder {
+
+			/**
+			 * Provides a {@link Builder}.
+			 */
+			interface WhereStage {
+
+				/**
+				 * @param where the WHERE condition
+				 * @return a {@link Count.Builder} instance
+				 */
+				Builder where(Condition where);
+			}
 
 			/**
 			 * @param having the HAVING condition
@@ -1096,33 +1108,35 @@ public interface EntityConnection extends AutoCloseable {
 		}
 
 		/**
-		 * @param condition the WHERE condition
+		 * @param where the WHERE condition
 		 * @return a {@link Count} instance
 		 */
-		static Count where(Condition condition) {
-			requireNonNull(condition);
+		static Count where(Condition where) {
+			requireNonNull(where);
 
-			return new DefaultCount.DefaultBuilder(condition).build();
-		}
-
-		/**
-		 * @param condition the HAVING condition
-		 * @return a {@link Count} instance
-		 */
-		static Count having(Condition condition) {
-			requireNonNull(condition);
-
-			return new DefaultCount.DefaultBuilder(Condition.all(condition.entityType()))
-							.having(condition)
+			return builder()
+							.where(where)
 							.build();
 		}
 
 		/**
-		 * @param where the WHERE condition
-		 * @return a {@link Count.Builder} instance
+		 * @param having the HAVING condition
+		 * @return a {@link Count} instance
 		 */
-		static Builder builder(Condition where) {
-			return new DefaultCount.DefaultBuilder(where);
+		static Count having(Condition having) {
+			requireNonNull(having);
+
+			return builder()
+							.where(Condition.all(having.entityType()))
+							.having(having)
+							.build();
+		}
+
+		/**
+		 * @return a {@link Count.Builder.WhereStage} instance
+		 */
+		static Builder.WhereStage builder() {
+			return DefaultCount.WHERE_STAGE;
 		}
 	}
 }

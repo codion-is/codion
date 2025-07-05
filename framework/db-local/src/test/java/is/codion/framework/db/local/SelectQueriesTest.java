@@ -250,7 +250,8 @@ public final class SelectQueriesTest {
 	@Test
 	void testCountQuery() {
 		SelectQueries.Builder builder = queries.builder(employeeDefinition);
-		Count count = Count.builder(Employee.DEPARTMENT.equalTo(10))
+		Count count = Count.builder()
+						.where(Employee.DEPARTMENT.equalTo(10))
 						.having(Employee.COMMISSION.isNotNull())
 						.build();
 		builder.count(count);

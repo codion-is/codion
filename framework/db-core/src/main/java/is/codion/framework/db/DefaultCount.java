@@ -28,6 +28,8 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultCount implements Count, Serializable {
 
+	static final Builder.WhereStage WHERE_STAGE = new DefaultWhereStage();
+
 	@Serial
 	private static final long serialVersionUID = 1;
 
@@ -56,13 +58,21 @@ final class DefaultCount implements Count, Serializable {
 						", having=" + having + "}";
 	}
 
-	static final class DefaultBuilder implements Count.Builder {
+	private static final class DefaultWhereStage implements Builder.WhereStage {
+
+		@Override
+		public Builder where(Condition where) {
+			return new DefaultBuilder(where);
+		}
+	}
+
+	private static final class DefaultBuilder implements Count.Builder {
 
 		private final Condition where;
 
 		private Condition having;
 
-		public DefaultBuilder(Condition where) {
+		private DefaultBuilder(Condition where) {
 			this.where = requireNonNull(where);
 			this.having = Condition.all(where.entityType());
 		}
