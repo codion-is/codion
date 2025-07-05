@@ -19,6 +19,7 @@ Codion Change Log
 - FilePreferencesFactory and JsonPreferencesStore refactored.
 ### is.codion.common.rmi
 - Unit tests improved.
+- ClientLog moved to framework.server module.
 ### is.codion.framework.domain
 - Unit tests improved.
 ### is.codion.framework.db.core

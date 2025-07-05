@@ -19,9 +19,9 @@
 package is.codion.tools.monitor.model;
 
 import is.codion.common.logging.MethodLogger;
-import is.codion.common.rmi.server.ClientLog;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.state.State;
+import is.codion.framework.server.ClientLog;
 import is.codion.framework.server.EntityServerAdmin;
 
 import javax.swing.text.BadLocationException;

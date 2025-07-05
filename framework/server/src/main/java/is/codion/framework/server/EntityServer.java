@@ -26,7 +26,6 @@ import is.codion.common.db.report.Report;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.AbstractServer;
 import is.codion.common.rmi.server.AuxiliaryServer;
-import is.codion.common.rmi.server.ClientLog;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerConfiguration;

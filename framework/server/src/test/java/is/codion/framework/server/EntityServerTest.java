@@ -22,7 +22,6 @@ import is.codion.common.db.database.Database;
 import is.codion.common.logging.MethodLogger;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.client.ConnectionRequest;
-import is.codion.common.rmi.server.ClientLog;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.SerializationFilterFactory;
 import is.codion.common.rmi.server.Server;

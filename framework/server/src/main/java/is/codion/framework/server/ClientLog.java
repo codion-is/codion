@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2008 - 2025, Björn Darri Sigurðsson.
  */
-package is.codion.common.rmi.server;
+package is.codion.framework.server;
 
 import is.codion.common.logging.MethodLogger;
 
