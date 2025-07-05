@@ -91,6 +91,7 @@ Codion Change Log
 - EntitySearchField.Builder.ModelBuilder added.
 - EntitySearchFieldPanel.Builder.ModelBuilder added.
 - EntityComboBoxPanel.Builder.ModelBuilder added.
+- TabbedDetailLayout.Builder.PanelBuilder.added.
 ### is.codion.framework.lambda
 - LambdaEntityHandler refactored.
 

@@ -125,7 +125,8 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 
 		EntityPanel genrePanel = new EntityPanel(genreModel,
 						new GenreEditPanel(genreModel.editModel()), config ->
-						config.detailLayout(entityPanel -> TabbedDetailLayout.builder(entityPanel)
+						config.detailLayout(entityPanel -> TabbedDetailLayout.builder()
+										.panel(entityPanel)
 										.initialDetailState(HIDDEN)
 										.build()));
 		genrePanel.detailPanels().add(new EntityPanel(trackModel));
@@ -157,7 +158,8 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 
 		EntityPanel employeePanel = new EntityPanel(employeeModel,
 						new EmployeeTablePanel(employeeModel.tableModel()), config -> config
-						.detailLayout(entityPanel -> TabbedDetailLayout.builder(entityPanel)
+						.detailLayout(entityPanel -> TabbedDetailLayout.builder()
+										.panel(entityPanel)
 										.initialDetailState(HIDDEN)
 										.build()));
 		EntityPanel customerPanel = new EntityPanel(customerModel,

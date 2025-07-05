@@ -1561,7 +1561,9 @@ public class EntityPanel extends JPanel {
 
 			@Override
 			public DetailLayout apply(EntityPanel entityPanel) {
-				return TabbedDetailLayout.builder(entityPanel).build();
+				return TabbedDetailLayout.builder()
+								.panel(entityPanel)
+								.build();
 			}
 		}
 

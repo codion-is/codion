@@ -34,7 +34,8 @@ final class CountryPanel extends EntityPanel {
 						new CountryEditPanel(countryModel.editModel(),
 										countryModel.detailModels().get(City.TYPE).tableModel().items()),
 						new CountryTablePanel(countryModel.tableModel()),
-						config -> config.detailLayout(entityPanel -> TabbedDetailLayout.builder(entityPanel)
+						config -> config.detailLayout(entityPanel -> TabbedDetailLayout.builder()
+										.panel(entityPanel)
 										.splitPaneResizeWeight(0.7)
 										.build()));
 
