@@ -89,6 +89,7 @@ Codion Change Log
 - EntitySearchFieldPanel.Builder.EditPanel added, replacing the editPanel parameter in EntitySearchFieldPanel.builder().
 - EntityComboBox.Builder.ModelBuilder added.
 - EntitySearchField.Builder.ModelBuilder added.
+- EntitySearchFieldPanel.Builder.ModelBuilder added.
 ### is.codion.framework.lambda
 - LambdaEntityHandler refactored.
 

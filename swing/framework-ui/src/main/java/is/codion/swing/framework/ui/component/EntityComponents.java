@@ -636,7 +636,8 @@ public final class EntityComponents {
 
 		@Override
 		public EntitySearchFieldPanel.MultiSelectionBuilder multiSelection() {
-			return EntitySearchFieldPanel.builder(searchModel)
+			return EntitySearchFieldPanel.builder()
+							.model(searchModel)
 							.editPanel(editPanel)
 							.multiSelection()
 							.toolTipText(foreignKeyDefinition.description().orElse(null));
@@ -644,7 +645,8 @@ public final class EntityComponents {
 
 		@Override
 		public EntitySearchFieldPanel.SingleSelectionBuilder singleSelection() {
-			return EntitySearchFieldPanel.builder(searchModel)
+			return EntitySearchFieldPanel.builder()
+							.model(searchModel)
 							.editPanel(editPanel)
 							.singleSelection()
 							.toolTipText(foreignKeyDefinition.description().orElse(null));

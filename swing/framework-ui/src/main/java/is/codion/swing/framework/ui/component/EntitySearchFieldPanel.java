@@ -79,17 +79,28 @@ public final class EntitySearchFieldPanel extends JPanel {
 	}
 
 	/**
-	 * @param entitySearchModel the search model
-	 * @return a new builder factory instance
+	 * @return a {@link Builder.ModelBuilder}
 	 */
-	public static Builder.EditPanelBuilder builder(EntitySearchModel entitySearchModel) {
-		return new DefaultEditPanelBuilder(requireNonNull(entitySearchModel));
+	public static Builder.ModelBuilder builder() {
+		return DefaultBuilderFactory.MODEL;
 	}
 
 	/**
 	 * A builder for a {@link EntitySearchFieldPanel}
 	 */
 	public interface Builder<T, B extends Builder<T, B>> extends ComponentBuilder<T, EntitySearchFieldPanel, B> {
+
+		/**
+		 * Provides a {@link EditPanelBuilder}
+		 */
+		interface ModelBuilder {
+
+			/**
+			 * @param model the search model
+			 * @return a {@link EditPanelBuilder}
+			 */
+			EditPanelBuilder model(EntitySearchModel model);
+		}
 
 		/**
 		 * Provides a {@link Builder}
@@ -288,6 +299,14 @@ public final class EntitySearchFieldPanel extends JPanel {
 		}
 	}
 
+	private static final class DefaultModelBuilder implements Builder.ModelBuilder {
+
+		@Override
+		public Builder.EditPanelBuilder model(EntitySearchModel model) {
+			return new  DefaultEditPanelBuilder(requireNonNull(model));
+		}
+	}
+
 	private static class DefaultEditPanelBuilder implements Builder.EditPanelBuilder {
 
 		private final EntitySearchModel entitySearchModel;
@@ -303,6 +322,8 @@ public final class EntitySearchFieldPanel extends JPanel {
 	}
 
 	private static final class DefaultBuilderFactory implements Builder.Factory {
+
+		private static final Builder.ModelBuilder MODEL = new DefaultModelBuilder();
 
 		private final EntitySearchModel searchModel;
 		private final Supplier<EntityEditPanel> editPanel;
