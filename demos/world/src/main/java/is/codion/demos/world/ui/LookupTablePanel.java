@@ -264,7 +264,7 @@ final class LookupTablePanel extends EntityTablePanel {
 		importJSON(Dialogs.select()
 						.files()
 						.owner(this)
-						.fileFilter(new FileNameExtensionFilter("JSON", "json"))
+						.filter(new FileNameExtensionFilter("JSON", "json"))
 						.selectFile());
 	}
 

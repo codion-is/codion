@@ -80,8 +80,8 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 	}
 
 	@Override
-	public FileSelectionDialogBuilder fileFilter(FileFilter fileFilter) {
-		this.fileFilters.add(requireNonNull(fileFilter));
+	public FileSelectionDialogBuilder filter(FileFilter filter) {
+		this.fileFilters.add(requireNonNull(filter));
 		return this;
 	}
 

@@ -77,8 +77,8 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 		File file = Dialogs.select()
 						.files()
 						.owner(this)
-						.fileFilter(new FileNameExtensionFilter("JSON files", "json"))
-						.fileFilter(new FileNameExtensionFilter("Text files", "txt"))
+						.filter(new FileNameExtensionFilter("JSON files", "json"))
+						.filter(new FileNameExtensionFilter("Text files", "txt"))
 						.selectFile();
 
 		List<Entity> entities = entityObjectMapper(applicationModel().entities())

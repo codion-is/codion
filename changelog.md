@@ -72,6 +72,7 @@ Codion Change Log
 - FontSize replaced with Scaler, default implementation font size based while the FlatLaf one is based on the flatlaf.uiScale property.
 - FilterTable.Builder.Columns added, replacing the columns parameter in FilterTable.builder().
 - FilterTable.Builder.Model added, replacing the tableModel parameter in FilterTable.builder().
+- FileSelectionDialogBuilder.fileFilter() renamed filter().
 ### is.codion.swing.framework.ui
 - ApplicationPreferences.fromString() bug fixed, FRAME_MAXIMIZED_KEY now used.
 - EntityComboBoxPanel.Builder.EditPanel added, replacing the editPanel parameter in EntityComboBoxPanel.builder().

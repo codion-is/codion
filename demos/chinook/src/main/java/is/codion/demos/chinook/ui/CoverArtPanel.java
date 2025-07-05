@@ -129,7 +129,7 @@ final class CoverArtPanel extends JPanel {
 						.files()
 						.owner(this)
 						.title(BUNDLE.getString("select_image"))
-						.fileFilter(IMAGE_FILE_FILTER)
+						.filter(IMAGE_FILE_FILTER)
 						.selectFile();
 		imageBytes.set(Files.readAllBytes(coverFile.toPath()));
 	}

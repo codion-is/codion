@@ -49,10 +49,10 @@ public interface FileSelectionDialogBuilder extends DialogBuilder<FileSelectionD
 	FileSelectionDialogBuilder confirmOverwrite(boolean confirmOverwrite);
 
 	/**
-	 * @param fileFilter the file filter to add, only applicable to file selection
+	 * @param filter the file filter to add, only applicable to file selection
 	 * @return this builder instance
 	 */
-	FileSelectionDialogBuilder fileFilter(FileFilter fileFilter);
+	FileSelectionDialogBuilder filter(FileFilter filter);
 
 	/**
 	 * @return the selected file
