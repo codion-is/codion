@@ -27,13 +27,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static is.codion.common.logging.MethodTrace.methodTrace;
-import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultMethodLogger implements MethodLogger {
-
-	static final MethodLogger NO_OP = new NoOpLogger();
 
 	private final Deque<MethodTrace> callStack = new LinkedList<>();
 	private final LinkedList<MethodTrace> entries = new LinkedList<>();
@@ -116,42 +113,5 @@ final class DefaultMethodLogger implements MethodLogger {
 	@Override
 	public synchronized List<MethodTrace> entries() {
 		return unmodifiableList(entries);
-	}
-
-	private static final class NoOpLogger implements MethodLogger {
-
-		@Override
-		public void enter(String method) {}
-
-		@Override
-		public void enter(String method, @Nullable Object argument) {}
-
-		@Override
-		public @Nullable MethodTrace exit(String method) {
-			return null;
-		}
-
-		@Override
-		public @Nullable MethodTrace exit(String method, @Nullable Exception exception) {
-			return null;
-		}
-
-		@Override
-		public @Nullable MethodTrace exit(String method, @Nullable Exception exception, @Nullable String exitMessage) {
-			return null;
-		}
-
-		@Override
-		public boolean isEnabled() {
-			return false;
-		}
-
-		@Override
-		public void setEnabled(boolean enabled) {}
-
-		@Override
-		public List<MethodTrace> entries() {
-			return emptyList();
-		}
 	}
 }

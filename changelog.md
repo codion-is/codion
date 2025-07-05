@@ -31,6 +31,7 @@ Codion Change Log
 ### is.codion.framework.db.local
 - Unit tests improved.
 - LocalEntityConnection.methodLogger() removed, MethodLogger no longer public api.
+- MethodLogger.noOpLogger() removed.
 ### is.codion.framework.model
 - Unit tests improved.
 ### is.codion.framework.server

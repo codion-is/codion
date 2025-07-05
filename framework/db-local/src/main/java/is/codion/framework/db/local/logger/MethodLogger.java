@@ -49,10 +49,6 @@ public interface MethodLogger {
 		return new DefaultMethodLogger(maxSize, formatter);
 	}
 
-	static MethodLogger noOpLogger() {
-		return DefaultMethodLogger.NO_OP;
-	}
-
 	interface Loggable {
 
 		void methodLogger(@Nullable MethodLogger methodLogger);

@@ -77,7 +77,6 @@ import static is.codion.common.db.database.Database.Operation.*;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.db.local.Queries.*;
-import static is.codion.framework.db.local.logger.MethodLogger.noOpLogger;
 import static is.codion.framework.domain.entity.Entity.Key;
 import static is.codion.framework.domain.entity.Entity.Key.groupByType;
 import static is.codion.framework.domain.entity.Entity.groupByType;
@@ -118,7 +117,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	private final Map<EntityType, List<Attribute<?>>> primaryKeyAndWritableColumnsCache = new HashMap<>();
 	private final Map<Select, List<Entity>> queryCache = new HashMap<>();
 
-	private MethodLogger logger = noOpLogger();
+	private @Nullable MethodLogger methodLogger = null;
 
 	private boolean optimisticLocking = LocalEntityConnection.OPTIMISTIC_LOCKING.getOrThrow();
 	private boolean limitForeignKeyReferenceDepth = LocalEntityConnection.LIMIT_FOREIGN_KEY_REFERENCE_DEPTH.getOrThrow();
@@ -733,7 +732,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	@Override
 	public void methodLogger(@Nullable MethodLogger methodLogger) {
 		synchronized (connection) {
-			this.logger = methodLogger == null ? noOpLogger() : methodLogger;
+			this.methodLogger = methodLogger;
 		}
 	}
 
@@ -1279,15 +1278,21 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	private void logEntry(String method) {
-		logger.enter(method);
+		if (methodLogger != null) {
+			methodLogger.enter(method);
+		}
 	}
 
 	private void logEntry(String method, Object argument) {
-		logger.enter(method, argument);
+		if (methodLogger != null) {
+			methodLogger.enter(method, argument);
+		}
 	}
 
 	private void logEntry(String method, @Nullable Object... arguments) {
-		logger.enter(method, arguments);
+		if (methodLogger != null) {
+			methodLogger.enter(method, arguments);
+		}
 	}
 
 	private void logExit(String method) {
@@ -1299,7 +1304,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	private void logExit(String method, @Nullable Exception exception, @Nullable String exitMessage) {
-		logger.exit(method, exception, exitMessage);
+		if (methodLogger != null) {
+			methodLogger.exit(method, exception, exitMessage);
+		}
 	}
 
 	private String createLogMessage(@Nullable String sqlStatement, List<?> values, List<ColumnDefinition<?>> columnDefinitions, @Nullable Exception exception) {
