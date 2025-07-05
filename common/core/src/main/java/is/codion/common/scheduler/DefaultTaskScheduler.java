@@ -34,6 +34,8 @@ final class DefaultTaskScheduler implements TaskScheduler {
 
 	private static final Validator<Integer> INTERVAL_VALIDATOR = new IntervalValidator();
 
+	static final Builder.TaskStep TASK_STEP = new DefaultTaskStep();
+
 	private final Lock lock = new Lock() {};
 	private final Runnable task;
 	private final Value<Integer> interval;
@@ -101,7 +103,15 @@ final class DefaultTaskScheduler implements TaskScheduler {
 		}
 	}
 
-	static final class DefaultBuilder implements Builder {
+	private static final class DefaultTaskStep implements Builder.TaskStep {
+
+		@Override
+		public Builder task(Runnable task) {
+			return new DefaultBuilder(task);
+		}
+	}
+
+	private static final class DefaultBuilder implements Builder {
 
 		private final Runnable task;
 
@@ -110,7 +120,7 @@ final class DefaultTaskScheduler implements TaskScheduler {
 		private @Nullable TimeUnit timeUnit;
 		private ThreadFactory threadFactory = new DaemonThreadFactory();
 
-		DefaultBuilder(Runnable task) {
+		private DefaultBuilder(Runnable task) {
 			this.task = requireNonNull(task);
 		}
 

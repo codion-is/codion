@@ -63,7 +63,8 @@ public final class DesignAndStyle {
 
 		//tag::builders[]
 		TaskScheduler scheduler =
-						TaskScheduler.builder(() -> {})
+						TaskScheduler.builder()
+										.task(() -> {})
 										.interval(5, TimeUnit.SECONDS)
 										.initialDelay(15)
 										.build();

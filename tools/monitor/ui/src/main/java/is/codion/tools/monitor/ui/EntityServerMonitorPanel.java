@@ -280,8 +280,8 @@ public final class EntityServerMonitorPanel extends JPanel {
 										.columns(8)
 										.editable(false)
 										.horizontalAlignment(SwingConstants.CENTER)
-										.onBuild(memoryUsageField -> TaskScheduler.builder(() ->
-																		SwingUtilities.invokeLater(() -> memoryUsageField.setText(memoryUsage())))
+										.onBuild(memoryUsageField -> TaskScheduler.builder()
+														.task(() -> SwingUtilities.invokeLater(() -> memoryUsageField.setText(memoryUsage())))
 														.interval(MEMORY_USAGE_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS)
 														.start())
 										.build())

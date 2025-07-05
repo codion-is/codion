@@ -31,32 +31,33 @@ public class TaskSchedulerTest {
 
 	@Test
 	void constructorNegativeInterval() {
-		assertThrows(IllegalArgumentException.class, () -> TaskScheduler.builder(runnable).interval(-1, TimeUnit.SECONDS));
+		assertThrows(IllegalArgumentException.class, () -> TaskScheduler.builder().task(runnable).interval(-1, TimeUnit.SECONDS));
 	}
 
 	@Test
 	void constructorNegativeInitialDelay() {
-		assertThrows(IllegalArgumentException.class, () -> TaskScheduler.builder(runnable).initialDelay(-1));
+		assertThrows(IllegalArgumentException.class, () -> TaskScheduler.builder().task(runnable).initialDelay(-1));
 	}
 
 	@Test
 	void constructorNullTask() {
-		assertThrows(NullPointerException.class, () -> TaskScheduler.builder(null));
+		assertThrows(NullPointerException.class, () -> TaskScheduler.builder().task(null));
 	}
 
 	@Test
 	void constructorNullTimUnit() {
-		assertThrows(NullPointerException.class, () -> TaskScheduler.builder(runnable).interval(1, null));
+		assertThrows(NullPointerException.class, () -> TaskScheduler.builder().task(runnable).interval(1, null));
 	}
 
 	@Test
 	void constructorNullThreadFactory() {
-		assertThrows(NullPointerException.class, () -> TaskScheduler.builder(runnable).threadFactory(null));
+		assertThrows(NullPointerException.class, () -> TaskScheduler.builder().task(runnable).threadFactory(null));
 	}
 
 	@Test
 	void setIntervalNegative() {
-		assertThrows(IllegalArgumentException.class, () -> TaskScheduler.builder(runnable)
+		assertThrows(IllegalArgumentException.class, () -> TaskScheduler.builder()
+						.task(runnable)
 						.interval(1, TimeUnit.SECONDS)
 						.build()
 						.interval()
@@ -66,7 +67,9 @@ public class TaskSchedulerTest {
 	@Test
 	void startStop() throws InterruptedException {
 		AtomicInteger counter = new AtomicInteger();
-		TaskScheduler scheduler = TaskScheduler.builder(counter::incrementAndGet).interval(1, TimeUnit.MILLISECONDS).build();
+		TaskScheduler scheduler = TaskScheduler.builder()
+						.task(counter::incrementAndGet)
+						.interval(1, TimeUnit.MILLISECONDS).build();
 		assertFalse(scheduler.running());
 		assertEquals(TimeUnit.MILLISECONDS, scheduler.timeUnit());
 		scheduler.start();

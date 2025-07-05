@@ -9,6 +9,7 @@ Codion Change Log
 - MethodLogger.noOpLogger() added.
 - MethodLogger.Entry moved to package level as MethodTrace.
 - MethodLogger moved to framework.db.local.logger package, now internal only.
+- TaskScheduler.Builder.TaskStep added.
 ### is.codion.common.db
 - Unit tests improved.
 - DatabaseConnection.getMethodLogger() now returns MethodLogger.noOpLogger() in case of no logger.

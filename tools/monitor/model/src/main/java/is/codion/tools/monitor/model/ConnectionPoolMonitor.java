@@ -121,7 +121,8 @@ public final class ConnectionPoolMonitor {
 		this.connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecond);
 		this.connectionRequestsPerSecondCollection.addSeries(failedRequestsPerSecond);
 		this.checkOutTimeCollection.addSeries(averageTime);
-		this.updateScheduler = TaskScheduler.builder(this::updateStatistics)
+		this.updateScheduler = TaskScheduler.builder()
+						.task(this::updateStatistics)
 						.interval(updateRate, TimeUnit.SECONDS)
 						.start();
 	}

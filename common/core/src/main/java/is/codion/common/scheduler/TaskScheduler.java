@@ -24,12 +24,15 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
+import static is.codion.common.scheduler.TaskScheduler.Builder.TaskStep;
+
 /**
  * A task scheduler based on a {@link ScheduledExecutorService}, scheduled at a fixed rate,
  * using a daemon thread by default.
  * A TaskScheduler can be stopped and restarted.
  * {@snippet :
- * TaskScheduler scheduler = TaskScheduler.builder(() -> System.out.println("Running wild..."))
+ * TaskScheduler scheduler = TaskScheduler.builder()
+ *     .task(() -> System.out.println("Running wild..."))
  *     .interval(2, TimeUnit.SECONDS)
  *     .build();
  *
@@ -39,7 +42,7 @@ import java.util.concurrent.TimeUnit;
  * // ...
  * scheduler.stop();
  *}
- * @see TaskScheduler#builder(Runnable)
+ * @see TaskScheduler#builder()
  */
 public interface TaskScheduler {
 
@@ -72,17 +75,28 @@ public interface TaskScheduler {
 	boolean running();
 
 	/**
-	 * @param task the task to run
-	 * @return a new {@link TaskScheduler.Builder} instance.
+	 * @return a new {@link TaskStep} instance.
 	 */
-	static TaskScheduler.Builder builder(Runnable task) {
-		return new DefaultTaskScheduler.DefaultBuilder(task);
+	static TaskStep builder() {
+		return DefaultTaskScheduler.TASK_STEP;
 	}
 
 	/**
 	 * A builder for {@link TaskScheduler}
 	 */
 	interface Builder {
+
+		/**
+		 * Provides a {@link Builder}
+		 */
+		interface TaskStep {
+
+			/**
+			 * @param task the task to run
+			 * @return a new {@link Builder} instance.
+			 */
+			Builder task(Runnable task);
+		}
 
 		/**
 		 * @param interval the interval

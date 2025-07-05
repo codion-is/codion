@@ -109,10 +109,12 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 		chartUpdateSchedulerEnabled = State.and(loadTest.paused().not(), collectChartData);
 		applicationsRefreshSchedulerEnabled = State.and(loadTest.paused().not(), autoRefreshApplications);
 		initializeChartModels();
-		chartUpdateScheduler = TaskScheduler.builder(new ChartUpdateTask())
+		chartUpdateScheduler = TaskScheduler.builder()
+						.task(new ChartUpdateTask())
 						.interval(DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS)
 						.build();
-		applicationsRefreshScheduler = TaskScheduler.builder(applicationTableModel.items()::refresh)
+		applicationsRefreshScheduler = TaskScheduler.builder()
+						.task(applicationTableModel.items()::refresh)
 						.interval(DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS)
 						.start();
 		bindEvents();

@@ -93,7 +93,8 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		this.configuration = configuration;
 		this.serverInformation = new DefaultServerInformation(UUID.randomUUID(),
 						configuration.serverName(), configuration.port(), ZonedDateTime.now());
-		this.connectionMaintenanceScheduler = TaskScheduler.builder(new MaintenanceTask())
+		this.connectionMaintenanceScheduler = TaskScheduler.builder()
+						.task(new MaintenanceTask())
 						.interval(configuration.connectionMaintenanceInterval(), TimeUnit.MILLISECONDS)
 						.initialDelay(configuration.connectionMaintenanceInterval())
 						.start();
