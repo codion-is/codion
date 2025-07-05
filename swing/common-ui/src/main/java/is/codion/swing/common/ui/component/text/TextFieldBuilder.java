@@ -19,7 +19,6 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.property.PropertyValue;
-import is.codion.common.value.Value;
 
 import javax.swing.Action;
 import javax.swing.JTextField;
@@ -27,7 +26,6 @@ import java.awt.event.ActionListener;
 import java.text.Format;
 
 import static is.codion.common.Configuration.booleanValue;
-import static java.util.Objects.requireNonNull;
 
 /**
  * Builds a JTextField.
@@ -100,19 +98,6 @@ public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBu
 	 * @return a builder for a component
 	 */
 	static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> builder(Class<T> valueClass) {
-		return new DefaultTextFieldBuilder<>(valueClass, null);
-	}
-
-	/**
-	 * @param <T> the value type
-	 * @param <C> the text field type
-	 * @param <B> the builder type
-	 * @param valueClass the value class
-	 * @param linkedValue the value to link to the component
-	 * @return a builder for a component
-	 */
-	static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> builder(Class<T> valueClass,
-																																																					Value<T> linkedValue) {
-		return new DefaultTextFieldBuilder<>(valueClass, requireNonNull(linkedValue));
+		return new DefaultTextFieldBuilder<>(valueClass);
 	}
 }

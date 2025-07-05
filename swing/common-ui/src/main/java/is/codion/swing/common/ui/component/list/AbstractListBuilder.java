@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.component.list;
 
-import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 
@@ -42,8 +41,7 @@ abstract class AbstractListBuilder<T, V, B extends ListBuilder<T, V, B>> extends
 	private int fixedCellHeight = -1;
 	private int fixedCellWidth = -1;
 
-	AbstractListBuilder(FilterListModel<T> listModel, Value<V> value) {
-		super(value);
+	AbstractListBuilder(FilterListModel<T> listModel) {
 		this.listModel = requireNonNull(listModel);
 	}
 

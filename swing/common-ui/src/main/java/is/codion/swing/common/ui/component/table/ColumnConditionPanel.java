@@ -410,7 +410,8 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		controlPanel = new JPanel(new BorderLayout());
 		inputPanel = new JPanel(new BorderLayout());
 		rangePanel = new JPanel(new GridLayout(1, 2));
-		toggleEnabledButton = radioButton(model().enabled())
+		toggleEnabledButton = radioButton()
+						.link(model().enabled())
 						.horizontalAlignment(CENTER)
 						.popupMenu(radioButton -> menu(Controls.builder()
 										.control(Control.builder()
@@ -576,7 +577,8 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 										.collect(toList()))
 						.build();
 
-		return itemComboBox(operatorComboBoxModel, model().operator())
+		return itemComboBox(operatorComboBoxModel)
+						.link(model().operator())
 						.completionMode(Completion.Mode.NONE)
 						.renderer(new OperatorComboBoxRenderer())
 						.maximumRowCount(operators.size())

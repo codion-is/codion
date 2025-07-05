@@ -74,7 +74,8 @@ final class ExceptionPanel extends JPanel {
 	private final State showDetailState = State.builder()
 					.consumer(this::showDetails)
 					.build();
-	private final JCheckBox detailsCheckBox = CheckBoxBuilder.builder(showDetailState)
+	private final JCheckBox detailsCheckBox = CheckBoxBuilder.builder()
+					.link(showDetailState)
 					.text(MESSAGES.getString("details"))
 					.toolTipText(MESSAGES.getString("show_details"))
 					.build();

@@ -29,7 +29,6 @@ class DefaultMenuItemBuilder<C extends JMenuItem, B extends MenuItemBuilder<C, B
 				implements MenuItemBuilder<C, B> {
 
 	DefaultMenuItemBuilder(Action action) {
-		super(null);
 		action(action);
 		horizontalAlignment(SwingConstants.LEADING);
 	}

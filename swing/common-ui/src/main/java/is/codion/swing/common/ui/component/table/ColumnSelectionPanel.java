@@ -65,7 +65,8 @@ final class ColumnSelectionPanel<C> extends JPanel {
 		this.columnModel = columnModel;
 		this.visibleStates = createVisibleStates();
 		this.checkBoxes = visibleStates.entrySet().stream()
-						.map(entry -> checkBox(entry.getValue())
+						.map(entry -> checkBox()
+										.link(entry.getValue())
 										.text(String.valueOf(entry.getKey().getHeaderValue()))
 										.toolTipText(entry.getKey().toolTipText().orElse(null))
 										.build())

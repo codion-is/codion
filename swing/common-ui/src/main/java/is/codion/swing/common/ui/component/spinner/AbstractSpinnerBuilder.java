@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.component.spinner;
 
-import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 
 import javax.swing.JComponent;
@@ -42,8 +41,7 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
 	private boolean mouseWheelScrollingReversed = false;
 	private int horizontalAlignment = -1;
 
-	protected AbstractSpinnerBuilder(SpinnerModel spinnerModel, Value<T> linkedValue) {
-		super(linkedValue);
+	protected AbstractSpinnerBuilder(SpinnerModel spinnerModel) {
 		this.spinnerModel = requireNonNull(spinnerModel);
 	}
 

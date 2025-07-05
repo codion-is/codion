@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.component.button;
 
-import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -32,11 +31,8 @@ class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButton
 
 	private ToggleControl toggleControl;
 
-	DefaultToggleButtonBuilder(Value<Boolean> linkedValue) {
-		super(linkedValue);
-		if (linkedValue == null) {
-			value(false);
-		}
+	DefaultToggleButtonBuilder() {
+		value(false);
 	}
 
 	@Override

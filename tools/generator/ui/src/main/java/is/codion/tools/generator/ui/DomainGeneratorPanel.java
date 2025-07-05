@@ -320,7 +320,8 @@ public final class DomainGeneratorPanel extends JPanel {
 	}
 
 	private JCheckBox createDtoCheckBox() {
-		return checkBox(model.includeDto())
+		return checkBox()
+						.link(model.includeDto())
 						.text("Include DTOs")
 						.mnemonic('D')
 						.onBuild(checkBox -> KeyEvents.builder(KeyEvent.VK_D)
@@ -332,7 +333,8 @@ public final class DomainGeneratorPanel extends JPanel {
 	}
 
 	private JTextField createPackageField(JLabel packageLabel) {
-		return stringField(model.domainPackage())
+		return stringField()
+						.link(model.domainPackage())
 						.hint("(Alt-P)")
 						.onBuild(field -> KeyEvents.builder(KeyEvent.VK_P)
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -345,7 +347,8 @@ public final class DomainGeneratorPanel extends JPanel {
 
 	private JTextField createSourceDirectoryField(JLabel sourceDirectoryLabel,
 																								Control selectSourceDirectoryControl) {
-		return stringField(model.sourceDirectory())
+		return stringField()
+						.link(model.sourceDirectory())
 						.hint("(Alt-D / INSERT)")
 						.editable(false)
 						.keyEvent(KeyEvents.builder(KeyEvent.VK_INSERT)

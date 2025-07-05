@@ -40,7 +40,8 @@ public class NumericalValuesTest {
 	@Test
 	void testLong() {
 		Value<Long> longValue = Value.nullable();
-		NumberField<Long> longField = Components.longField(longValue)
+		NumberField<Long> longField = Components.longField()
+						.link(longValue)
 						.build();
 		assertNull(longField.get());
 		longValue.set(2L);
@@ -55,7 +56,8 @@ public class NumericalValuesTest {
 	void testLongPrimitive() {
 		Value<Long> longPrimitivePropertyValue = Value.nonNull(0L);
 		assertFalse(longPrimitivePropertyValue.isNullable());
-		ComponentValue<Long, NumberField<Long>> componentValue = Components.longField(longPrimitivePropertyValue)
+		ComponentValue<Long, NumberField<Long>> componentValue = Components.longField()
+						.link(longPrimitivePropertyValue)
 						.buildValue();
 		NumberField<Long> longField = componentValue.component();
 		assertEquals(0L, longField.get());
@@ -71,7 +73,8 @@ public class NumericalValuesTest {
 	@Test
 	void testInteger() {
 		Value<Integer> integerPropertyValue = Value.nullable();
-		NumberField<Integer> integerField = Components.integerField(integerPropertyValue)
+		NumberField<Integer> integerField = Components.integerField()
+						.link(integerPropertyValue)
 						.build();
 		assertNull(integerField.get());
 		integerPropertyValue.set(2);
@@ -85,7 +88,8 @@ public class NumericalValuesTest {
 	@Test
 	void testInt() {
 		Value<Integer> integerPropertyValue = Value.nonNull(0);
-		ComponentValue<Integer, NumberField<Integer>> componentValue = Components.integerField(integerPropertyValue)
+		ComponentValue<Integer, NumberField<Integer>> componentValue = Components.integerField()
+						.link(integerPropertyValue)
 						.buildValue();
 		NumberField<Integer> integerField = componentValue.component();
 		assertEquals(0, integerField.get());
@@ -118,7 +122,8 @@ public class NumericalValuesTest {
 	@Test
 	void testDouble() {
 		Value<Double> doublePropertyValue = Value.nullable();
-		NumberField<Double> doubleField = Components.doubleField(doublePropertyValue)
+		NumberField<Double> doubleField = Components.doubleField()
+						.link(doublePropertyValue)
 						.decimalSeparator('.')
 						.groupingSeparator(',')
 						.build();

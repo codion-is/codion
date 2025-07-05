@@ -18,10 +18,7 @@
  */
 package is.codion.swing.common.ui.component.list;
 
-import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.list.FilterListModel;
-
-import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -35,31 +32,16 @@ final class DefaultListBuilderFactory<T> implements ListBuilder.Factory<T> {
 
 	@Override
 	public ListBuilder.Items<T> items() {
-		return new DefaultListItemsBuilder<>(listModel, null);
-	}
-
-	@Override
-	public ListBuilder.Items<T> items(Value<List<T>> linkedValue) {
-		return new DefaultListItemsBuilder<>(listModel, linkedValue);
+		return new DefaultListItemsBuilder<>(listModel);
 	}
 
 	@Override
 	public ListBuilder.SelectedItems<T> selectedItems() {
-		return new DefaultListSelectedItemsBuilder<>(listModel, null);
-	}
-
-	@Override
-	public ListBuilder.SelectedItems<T> selectedItems(Value<List<T>> linkedValue) {
-		return new DefaultListSelectedItemsBuilder<>(listModel, linkedValue);
+		return new DefaultListSelectedItemsBuilder<>(listModel);
 	}
 
 	@Override
 	public ListBuilder.SelectedItem<T> selectedItem() {
-		return new DefaultListSelectedItemBuilder<>(listModel, null);
-	}
-
-	@Override
-	public ListBuilder.SelectedItem<T> selectedItem(Value<T> linkedValue) {
-		return new DefaultListSelectedItemBuilder<>(listModel, linkedValue);
+		return new DefaultListSelectedItemBuilder<>(listModel);
 	}
 }

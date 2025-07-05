@@ -20,7 +20,6 @@ package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.ObservableState;
-import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
@@ -154,15 +153,7 @@ public final class TextFieldPanel extends JPanel {
 	 * @return a new builder
 	 */
 	public static Builder builder() {
-		return new DefaultBuilder(null);
-	}
-
-	/**
-	 * @param linkedValue the linked value
-	 * @return a new builder
-	 */
-	public static Builder builder(Value<String> linkedValue) {
-		return new DefaultBuilder(requireNonNull(linkedValue));
+		return new DefaultBuilder();
 	}
 
 	/**
@@ -309,7 +300,7 @@ public final class TextFieldPanel extends JPanel {
 
 		private static final Dimension DEFAULT_TEXT_AREA_SIZE = new Dimension(500, 300);
 
-		private final TextFieldBuilder<String, JTextField, ?> textFieldBuilder = new DefaultTextFieldBuilder<>(String.class, null);
+		private final TextFieldBuilder<String, JTextField, ?> textFieldBuilder = new DefaultTextFieldBuilder<>(String.class);
 		private final ControlMap controlMap = controlMap(ControlKeys.class);
 
 		private boolean buttonFocusable;
@@ -319,9 +310,7 @@ public final class TextFieldPanel extends JPanel {
 		private String caption;
 		private String dialogTitle;
 
-		private DefaultBuilder(Value<String> linkedValue) {
-			super(linkedValue);
-		}
+		private DefaultBuilder() {}
 
 		@Override
 		public TextFieldPanel.Builder updateOn(UpdateOn updateOn) {

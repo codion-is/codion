@@ -66,7 +66,6 @@ import static java.util.ResourceBundle.getBundle;
  * Use {@link #get()} and {@link #set(Temporal)} for accessing and setting the value.
  * @param <T> the temporal type
  * @see #builder(Class)
- * @see #builder(Class, Value)
  */
 public final class TemporalField<T extends Temporal> extends JFormattedTextField {
 
@@ -199,20 +198,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	 * @return a new builder
 	 */
 	public static <T extends Temporal> Builder<T> builder(Class<T> temporalClass) {
-		return new DefaultBuilder<>(temporalClass, null);
-	}
-
-	/**
-	 * A builder for {@link TemporalField}.
-	 * This builder supports: {@link LocalTime}, {@link LocalDate}, {@link LocalDateTime}, {@link OffsetDateTime},<br>
-	 * for other {@link Temporal} types use {@link Builder#dateTimeParser} to supply a {@link DateTimeParser} instance.
-	 * @param temporalClass the temporal class
-	 * @param linkedValue the value to link to the component
-	 * @param <T> the temporal type
-	 * @return a new builder
-	 */
-	public static <T extends Temporal> Builder<T> builder(Class<T> temporalClass, Value<T> linkedValue) {
-		return new DefaultBuilder<>(temporalClass, requireNonNull(linkedValue));
+		return new DefaultBuilder<>(temporalClass);
 	}
 
 	private void increment() {
@@ -401,8 +387,8 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		private ImageIcon calendarIcon;
 		private boolean incrementDecrementEnabled = true;
 
-		private DefaultBuilder(Class<T> temporalClass, Value<T> linkedValue) {
-			super(temporalClass, linkedValue);
+		private DefaultBuilder(Class<T> temporalClass) {
+			super(temporalClass);
 			this.temporalClass = requireNonNull(temporalClass);
 			this.dateTimeParser = createDateTimeParser(temporalClass);
 			dateTimePattern(defaultDateTimePattern());

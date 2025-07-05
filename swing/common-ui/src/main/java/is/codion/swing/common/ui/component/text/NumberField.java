@@ -20,7 +20,6 @@ package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.observable.Observable;
 import is.codion.common.property.PropertyValue;
-import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.text.NumberDocument.DecimalDocument;
 import is.codion.swing.common.ui.component.text.NumberDocument.NumberParsingDocumentFilter;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -41,7 +40,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A text field for numbers.
- * Use {@link #builder(Class)} or {@link #builder(Class, Value)} for {@link Builder} instances.
+ * Use {@link #builder(Class)} or {@link #builder(Class)} for {@link Builder} instances.
  * @param <T> the Number type
  */
 public final class NumberField<T extends Number> extends HintTextField {
@@ -259,17 +258,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 	 * @return a builder for a component
 	 */
 	public static <T extends Number> Builder<T> builder(Class<T> valueClass) {
-		return createBuilder(valueClass, null);
-	}
-
-	/**
-	 * @param valueClass the value class
-	 * @param linkedValue the value to link to the component
-	 * @param <T> the value type
-	 * @return a builder for a component
-	 */
-	public static <T extends Number> Builder<T> builder(Class<T> valueClass, Value<T> linkedValue) {
-		return createBuilder(valueClass, requireNonNull(linkedValue));
+		return createBuilder(valueClass);
 	}
 
 	/**
@@ -280,22 +269,22 @@ public final class NumberField<T extends Number> extends HintTextField {
 		return (NumberDocument<T>) super.getDocument();
 	}
 
-	private static <T extends Number> Builder<T> createBuilder(Class<T> valueClass, Value<T> linkedValue) {
+	private static <T extends Number> Builder<T> createBuilder(Class<T> valueClass) {
 		requireNonNull(valueClass);
 		if (valueClass.equals(Short.class)) {
-			return (Builder<T>) new DefaultShortFieldBuilder((Value<Short>) linkedValue);
+			return (Builder<T>) new DefaultShortFieldBuilder();
 		}
 		if (valueClass.equals(Integer.class)) {
-			return (Builder<T>) new DefaultIntegerFieldBuilder((Value<Integer>) linkedValue);
+			return (Builder<T>) new DefaultIntegerFieldBuilder();
 		}
 		if (valueClass.equals(Long.class)) {
-			return (Builder<T>) new DefaultLongFieldBuilder((Value<Long>) linkedValue);
+			return (Builder<T>) new DefaultLongFieldBuilder();
 		}
 		if (valueClass.equals(Double.class)) {
-			return (Builder<T>) new DefaultDoubleFieldBuilder((Value<Double>) linkedValue);
+			return (Builder<T>) new DefaultDoubleFieldBuilder();
 		}
 		if (valueClass.equals(BigDecimal.class)) {
-			return (Builder<T>) new DefaultBigDecimalFieldBuilder((Value<BigDecimal>) linkedValue);
+			return (Builder<T>) new DefaultBigDecimalFieldBuilder();
 		}
 
 		throw new IllegalArgumentException("Unsupported number type: " + valueClass);
@@ -429,8 +418,8 @@ public final class NumberField<T extends Number> extends HintTextField {
 		private int maximumFractionDigits = -1;
 		private boolean convertGroupingToDecimalSeparator = CONVERT_GROUPING_TO_DECIMAL_SEPARATOR.getOrThrow();
 
-		protected AbstractNumberFieldBuilder(Class<T> type, Value<T> linkedValue) {
-			super(type, linkedValue);
+		protected AbstractNumberFieldBuilder(Class<T> type) {
+			super(type);
 		}
 
 		@Override
@@ -539,8 +528,8 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 	private static final class DefaultBigDecimalFieldBuilder extends AbstractNumberFieldBuilder<BigDecimal> {
 
-		private DefaultBigDecimalFieldBuilder(Value<BigDecimal> linkedValue) {
-			super(BigDecimal.class, linkedValue);
+		private DefaultBigDecimalFieldBuilder() {
+			super(BigDecimal.class);
 		}
 
 		@Override
@@ -556,8 +545,8 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 	private static final class DefaultDoubleFieldBuilder extends AbstractNumberFieldBuilder<Double> {
 
-		private DefaultDoubleFieldBuilder(Value<Double> linkedValue) {
-			super(Double.class, linkedValue);
+		private DefaultDoubleFieldBuilder() {
+			super(Double.class);
 		}
 
 		@Override
@@ -573,8 +562,8 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 	private static final class DefaultShortFieldBuilder extends AbstractNumberFieldBuilder<Short> {
 
-		private DefaultShortFieldBuilder(Value<Short> linkedValue) {
-			super(Short.class, linkedValue);
+		private DefaultShortFieldBuilder() {
+			super(Short.class);
 		}
 
 		@Override
@@ -590,8 +579,8 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 	private static final class DefaultIntegerFieldBuilder extends AbstractNumberFieldBuilder<Integer> {
 
-		private DefaultIntegerFieldBuilder(Value<Integer> linkedValue) {
-			super(Integer.class, linkedValue);
+		private DefaultIntegerFieldBuilder() {
+			super(Integer.class);
 		}
 
 		@Override
@@ -607,8 +596,8 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 	private static final class DefaultLongFieldBuilder extends AbstractNumberFieldBuilder<Long> {
 
-		private DefaultLongFieldBuilder(Value<Long> linkedValue) {
-			super(Long.class, linkedValue);
+		private DefaultLongFieldBuilder() {
+			super(Long.class);
 		}
 
 		@Override

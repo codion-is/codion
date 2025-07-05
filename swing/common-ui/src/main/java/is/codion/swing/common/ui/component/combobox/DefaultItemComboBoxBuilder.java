@@ -19,7 +19,6 @@
 package is.codion.swing.common.ui.component.combobox;
 
 import is.codion.common.item.Item;
-import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
@@ -57,14 +56,12 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
 	private ListCellRenderer<Item<T>> renderer;
 	private ComboBoxEditor editor;
 
-	DefaultItemComboBoxBuilder(List<Item<T>> items, Value<T> linkedValue) {
-		super(linkedValue);
+	DefaultItemComboBoxBuilder(List<Item<T>> items) {
 		this.items = new ArrayList<>(requireNonNull(items));
 		preferredHeight(preferredTextFieldHeight());
 	}
 
-	DefaultItemComboBoxBuilder(FilterComboBoxModel<Item<T>> comboBoxModel, Value<T> linkedValue) {
-		super(linkedValue);
+	DefaultItemComboBoxBuilder(FilterComboBoxModel<Item<T>> comboBoxModel) {
 		this.comboBoxModel = requireNonNull(comboBoxModel);
 		this.items = Collections.emptyList();
 		value(comboBoxModel.getSelectedItem() == null ? null : comboBoxModel.getSelectedItem().value());

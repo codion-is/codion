@@ -18,11 +18,7 @@
  */
 package is.codion.swing.common.ui.component.button;
 
-import is.codion.common.value.Value;
-
 import javax.swing.JCheckBox;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * Builds a JCheckBox.
@@ -39,14 +35,6 @@ public interface CheckBoxBuilder extends ToggleButtonBuilder<JCheckBox, CheckBox
 	 * @return a builder for a component
 	 */
 	static CheckBoxBuilder builder() {
-		return new DefaultCheckBoxBuilder(null);
-	}
-
-	/**
-	 * @param linkedValue the value to link to the check-box
-	 * @return a builder for a component
-	 */
-	static CheckBoxBuilder builder(Value<Boolean> linkedValue) {
-		return new DefaultCheckBoxBuilder(requireNonNull(linkedValue));
+		return new DefaultCheckBoxBuilder();
 	}
 }

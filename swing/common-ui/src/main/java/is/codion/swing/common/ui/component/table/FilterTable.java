@@ -704,7 +704,8 @@ public final class FilterTable<R, C> extends JTable {
 		Control selectPreviousResult = command(() -> selectSearchResult(true, false));
 		Control requestTableFocus = command(this::requestFocusInWindow);
 
-		return Components.stringField(searchModel.searchString())
+		return Components.stringField()
+						.link(searchModel.searchString())
 						.minimumWidth(SEARCH_FIELD_MINIMUM_WIDTH)
 						.preferredWidth(SEARCH_FIELD_MINIMUM_WIDTH)
 						.selectAllOnFocusGained(true)

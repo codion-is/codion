@@ -41,11 +41,6 @@ public class TextFieldPanelTest {
 	}
 
 	@Test
-	void constructorNullTextComponent() {
-		assertThrows(NullPointerException.class, () -> TextFieldPanel.builder(null));
-	}
-
-	@Test
 	void setTextExceedMaxLength() {
 		TextFieldPanel panel = TextFieldPanel.builder()
 						.maximumLength(5)

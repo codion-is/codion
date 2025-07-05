@@ -208,7 +208,6 @@ public final class EntityComboBoxPanel extends JPanel {
 		private String buttonLocation = defaultButtonLocation();
 
 		private DefaultBuilder(EntityComboBoxModel comboBoxModel, Supplier<EntityEditPanel> editPanelSupplier) {
-			super(null);
 			this.entityComboBoxBuilder = EntityComboBox.builder()
 							.model(comboBoxModel)
 							.editPanel(editPanelSupplier);

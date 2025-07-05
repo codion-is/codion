@@ -19,7 +19,6 @@
 package is.codion.swing.common.ui.component.button;
 
 import is.codion.common.value.AbstractValue;
-import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.button.NullableToggleButtonModel;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.control.Control;
@@ -80,9 +79,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
 	private boolean selected = false;
 	private Action action;
 
-	protected AbstractButtonBuilder(Value<T> linkedValue) {
-		super(linkedValue);
-	}
+	protected AbstractButtonBuilder() {}
 
 	@Override
 	public final B text(String text) {

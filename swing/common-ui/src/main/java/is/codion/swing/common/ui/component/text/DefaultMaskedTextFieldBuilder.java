@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
@@ -34,9 +33,7 @@ final class DefaultMaskedTextFieldBuilder
 	private int columns = -1;
 	private int focusLostBehaviour = JFormattedTextField.COMMIT;
 
-	DefaultMaskedTextFieldBuilder(Value<String> linkedValue) {
-		super(linkedValue);
-	}
+	DefaultMaskedTextFieldBuilder() {}
 
 	@Override
 	public MaskedTextFieldBuilder mask(String mask) {

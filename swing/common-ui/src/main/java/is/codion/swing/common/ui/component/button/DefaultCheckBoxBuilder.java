@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.component.button;
 
-import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.button.NullableToggleButtonModel;
 
 import javax.swing.JCheckBox;
@@ -29,11 +28,7 @@ final class DefaultCheckBoxBuilder extends DefaultToggleButtonBuilder<JCheckBox,
 
 	private boolean nullable = false;
 
-	DefaultCheckBoxBuilder(Value<Boolean> linkedValue) {
-		super(linkedValue);
-		if (linkedValue != null && linkedValue.isNullable()) {
-			nullable = true;
-		}
+	DefaultCheckBoxBuilder() {
 		horizontalAlignment(SwingConstants.LEADING);
 	}
 

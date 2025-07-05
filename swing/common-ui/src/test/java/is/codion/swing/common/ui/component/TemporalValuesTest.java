@@ -40,7 +40,8 @@ public class TemporalValuesTest {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
 
 		Value<LocalTime> timePropertyValue = Value.nullable();
-		TemporalField<LocalTime> textField = Components.localTimeField(timePropertyValue)
+		TemporalField<LocalTime> textField = Components.localTimeField()
+						.link(timePropertyValue)
 						.dateTimePattern(format)
 						.build();
 		assertEquals("__:__", textField.getText());
@@ -60,7 +61,8 @@ public class TemporalValuesTest {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
 		Value<LocalDate> datePropertyValue = Value.nullable();
-		TemporalField<LocalDate> textField = Components.localDateField(datePropertyValue)
+		TemporalField<LocalDate> textField = Components.localDateField()
+						.link(datePropertyValue)
 						.dateTimePattern("dd.MM.yyyy")
 						.build();
 		assertEquals("__.__.____", textField.getText());
@@ -80,7 +82,8 @@ public class TemporalValuesTest {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yy HH:mm");
 
 		Value<LocalDateTime> timestampPropertyValue = Value.nullable();
-		TemporalField<LocalDateTime> textField = Components.localDateTimeField(timestampPropertyValue)
+		TemporalField<LocalDateTime> textField = Components.localDateTimeField()
+						.link(timestampPropertyValue)
 						.dateTimePattern("dd-MM-yy HH:mm")
 						.build();
 		assertEquals("__-__-__ __:__", textField.getText());

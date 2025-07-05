@@ -80,7 +80,8 @@ public final class ApplicationPanel extends JPanel {
 
 		State inputEnabledState = State.state(true);
 
-		checkBox(inputEnabledState)
+		checkBox()
+						.link(inputEnabledState)
 						.text("Enabled")
 						.mnemonic('N')
 						.transferFocusOnEnter(true)
@@ -96,7 +97,8 @@ public final class ApplicationPanel extends JPanel {
 
 		JPanel inputPanel = flexibleGridLayoutPanel(0, 2).build();
 
-		stringField(model.shortStringValue())
+		stringField()
+						.link(model.shortStringValue())
 						.columns(20)
 						.lowerCase(true)
 						.maximumLength(20)
@@ -113,7 +115,8 @@ public final class ApplicationPanel extends JPanel {
 						.enabled(inputEnabledState)
 						.build(inputPanel::add);
 
-		textFieldPanel(model.longStringValue())
+		textFieldPanel()
+						.link(model.longStringValue())
 						.columns(20)
 						.maximumLength(400)
 						.buttonFocusable(true)
@@ -125,7 +128,8 @@ public final class ApplicationPanel extends JPanel {
 						.enabled(inputEnabledState)
 						.build(inputPanel::add);
 
-		textArea(model.textValue())
+		textArea()
+						.link(model.textValue())
 						.rowsColumns(4, 20)
 						.lineWrap(true)
 						.wrapStyleWord(true)
@@ -143,7 +147,8 @@ public final class ApplicationPanel extends JPanel {
 						.scrollPane()
 						.build(inputPanel::add);
 
-		maskedTextField(model.formattedStringValue())
+		maskedTextField()
+						.link(model.formattedStringValue())
 						.mask("(##) ##-##")
 						.placeholderCharacter('_')
 						.placeholder("(00) 00-00")
@@ -159,7 +164,8 @@ public final class ApplicationPanel extends JPanel {
 						.enabled(inputEnabledState)
 						.build(inputPanel::add);
 
-		comboBox(model.createStringComboBoxModel(), model.stringSelectionValue())
+		comboBox(model.createStringComboBoxModel())
+						.link(model.stringSelectionValue())
 						.editable(true)
 						.mouseWheelScrolling(true)
 						.transferFocusOnEnter(true)
@@ -169,7 +175,8 @@ public final class ApplicationPanel extends JPanel {
 						.enabled(inputEnabledState)
 						.build(inputPanel::add);
 
-		localDateField(model.localDateValue())
+		localDateField()
+						.link(model.localDateValue())
 						.dateTimePattern(LocaleDateTimePattern.builder()
 										.delimiterDash()
 										.yearFourDigits()
@@ -183,7 +190,8 @@ public final class ApplicationPanel extends JPanel {
 						.enabled(inputEnabledState)
 						.build(inputPanel::add);
 
-		localDateTimeFieldPanel(model.localDateTimeValue())
+		localDateTimeFieldPanel()
+						.link(model.localDateTimeValue())
 						.dateTimePattern(LocaleDateTimePattern.builder()
 										.delimiterDot()
 										.yearTwoDigits()
@@ -197,7 +205,8 @@ public final class ApplicationPanel extends JPanel {
 						.enabled(inputEnabledState)
 						.build(inputPanel::add);
 
-		integerField(model.integerValue())
+		integerField()
+						.link(model.integerValue())
 						.valueRange(0, 10_000)
 						.groupingUsed(true)
 						.groupingSeparator('.')
@@ -208,7 +217,8 @@ public final class ApplicationPanel extends JPanel {
 						.enabled(inputEnabledState)
 						.build(inputPanel::add);
 
-		doubleField(model.doubleValue())
+		doubleField()
+						.link(model.doubleValue())
 						.nullable(false)
 						.valueRange(0, 1_000_000)
 						.groupingUsed(true)
@@ -225,7 +235,8 @@ public final class ApplicationPanel extends JPanel {
 
 		FilterComboBoxModel<Item<Integer>> integerItemComboBoxModel = model.createIntegerItemComboBoxModel();
 		Value<Integer> integerItemSelector = integerItemComboBoxModel.createSelector(new IntegerItemFinder());
-		NumberField<Integer> integerItemSelectorField = integerField(integerItemSelector)
+		NumberField<Integer> integerItemSelectorField = integerField()
+						.link(integerItemSelector)
 						.columns(2)
 						.horizontalAlignment(SwingConstants.CENTER)
 						.selectAllOnFocusGained(true)
@@ -235,7 +246,8 @@ public final class ApplicationPanel extends JPanel {
 										.build(inputPanel::add))
 						.enabled(inputEnabledState)
 						.build();
-		JComboBox<Item<Integer>> integerItemComboBox = itemComboBox(integerItemComboBoxModel, model.integerItemValue())
+		JComboBox<Item<Integer>> integerItemComboBox = itemComboBox(integerItemComboBoxModel)
+						.link(model.integerItemValue())
 						.completionMode(Completion.Mode.AUTOCOMPLETE)
 						.popupMenuControl(comboBox -> createSelectRandomItemControl(integerItemComboBoxModel))
 						.mouseWheelScrollingWithWrapAround(true)
@@ -247,7 +259,8 @@ public final class ApplicationPanel extends JPanel {
 						.centerComponent(integerItemComboBox)
 						.build(inputPanel::add);
 
-		slider(model.createIntegerSliderModel(), model.integerSlideValue())
+		slider(model.createIntegerSliderModel())
+						.link(model.integerSlideValue())
 						.paintTicks(true)
 						.paintTrack(true)
 						.minorTickSpacing(5)
@@ -260,7 +273,8 @@ public final class ApplicationPanel extends JPanel {
 						.enabled(inputEnabledState)
 						.build(inputPanel::add);
 
-		integerSpinner(model.createIntegerSpinnerModel(), model.integerSpinValue())
+		integerSpinner(model.createIntegerSpinnerModel())
+						.link(model.integerSpinValue())
 						.columns(4)
 						.mouseWheelScrolling(true)
 						.transferFocusOnEnter(true)
@@ -270,7 +284,8 @@ public final class ApplicationPanel extends JPanel {
 						.enabled(inputEnabledState)
 						.build(inputPanel::add);
 
-		comboBox(model.createIntegerComboBoxModel(), model.integerSelectionValue())
+		comboBox(model.createIntegerComboBoxModel())
+						.link(model.integerSelectionValue())
 						.editable(true)
 						.mouseWheelScrolling(true)
 						.transferFocusOnEnter(true)
@@ -280,7 +295,8 @@ public final class ApplicationPanel extends JPanel {
 						.enabled(inputEnabledState)
 						.build(inputPanel::add);
 
-		itemSpinner(model.createItemSpinnerModel(), model.itemSpinnerValue())
+		Components.<String>itemSpinner(model.createItemSpinnerModel())
+						.link(model.itemSpinnerValue())
 						.columns(20)
 						.horizontalAlignment(SwingConstants.CENTER)
 						.mouseWheelScrolling(true)
@@ -291,7 +307,8 @@ public final class ApplicationPanel extends JPanel {
 						.enabled(inputEnabledState)
 						.build(inputPanel::add);
 
-		checkBox(model.booleanValue())
+		checkBox()
+						.link(model.booleanValue())
 						.horizontalAlignment(SwingConstants.CENTER)
 						.transferFocusOnEnter(true)
 						.label(label("Boolean (F)")
@@ -300,7 +317,8 @@ public final class ApplicationPanel extends JPanel {
 						.enabled(inputEnabledState)
 						.build(inputPanel::add);
 
-		booleanComboBox(model.booleanSelectionValue())
+		booleanComboBox()
+						.link(model.booleanSelectionValue())
 						.mouseWheelScrolling(true)
 						.transferFocusOnEnter(true)
 						.enabled(inputEnabledState)
@@ -310,7 +328,8 @@ public final class ApplicationPanel extends JPanel {
 						.build(inputPanel::add);
 
 		Components.list(model.createStringListModel())
-						.selectedItems(model.stringListValues())
+						.selectedItems()
+						.link(model.stringListValues())
 						.visibleRowCount(4)
 						.layoutOrientation(JList.HORIZONTAL_WRAP)
 						.transferFocusOnEnter(true)

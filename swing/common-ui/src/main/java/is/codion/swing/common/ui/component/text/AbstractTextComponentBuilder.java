@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.text.CaseDocumentFilter.DocumentCase;
 import is.codion.swing.common.ui.key.KeyEvents;
@@ -62,8 +61,7 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
 	private CaretPosition caretPosition = CaretPosition.START;
 	private int caretUpdatePolicy = DefaultCaret.UPDATE_WHEN_ON_EDT;
 
-	protected AbstractTextComponentBuilder(Value<T> linkedValue) {
-		super(linkedValue);
+	protected AbstractTextComponentBuilder() {
 		// Make sure this is done after value linking and setting the initial value
 		onBuild(this::setCaretPosition);
 	}

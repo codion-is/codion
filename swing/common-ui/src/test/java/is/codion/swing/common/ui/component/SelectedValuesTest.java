@@ -38,8 +38,8 @@ public class SelectedValuesTest {
 	@Test
 	void selectedItemValueLink() {
 		Value<String> value = Value.nullable();
-		ComponentValue<String, JComboBox<String>> componentValue = Components.comboBox(new DefaultComboBoxModel<>(new String[] {"b", "d", "s"}),
-										value)
+		ComponentValue<String, JComboBox<String>> componentValue = Components.comboBox(new DefaultComboBoxModel<>(new String[] {"b", "d", "s"}))
+						.link(value)
 						.buildValue();
 		JComboBox<String> box = componentValue.component();
 

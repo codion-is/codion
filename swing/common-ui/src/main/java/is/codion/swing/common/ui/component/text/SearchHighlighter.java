@@ -132,7 +132,8 @@ public final class SearchHighlighter {
 	 * @return a text field for entering the search text.
 	 */
 	public JTextField createSearchField() {
-		return new DefaultTextFieldBuilder<>(String.class, searchStringValue)
+		return new DefaultTextFieldBuilder<>(String.class)
+						.link(searchStringValue)
 						.selectAllOnFocusGained(true)
 						.keyEvent(KeyEvents.builder(VK_DOWN)
 										.action(command(this::nextSearchPosition)))

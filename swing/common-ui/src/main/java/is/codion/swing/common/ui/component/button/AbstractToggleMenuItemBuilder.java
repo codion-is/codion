@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.component.button;
 
-import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -34,11 +33,8 @@ abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends Togg
 	private ToggleControl toggleControl;
 	private PersistMenu persistMenu = PERSIST_MENU.get();
 
-	AbstractToggleMenuItemBuilder(Value<Boolean> linkedValue) {
-		super(linkedValue);
-		if (linkedValue == null) {
-			value(false);
-		}
+	AbstractToggleMenuItemBuilder() {
+		value(false);
 		horizontalAlignment(SwingConstants.LEADING);
 	}
 

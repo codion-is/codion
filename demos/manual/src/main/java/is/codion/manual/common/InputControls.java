@@ -173,7 +173,8 @@ public final class InputControls {
 
 		//create a spinner linked to the value
 		JSpinner spinner =
-						Components.integerSpinner(integerValue)
+						Components.integerSpinner()
+										.link(integerValue)
 										.build();
 
 		//create a NumberField component value, basically doing the same as
@@ -201,7 +202,8 @@ public final class InputControls {
 										.build();
 
 		JCheckBox checkBox =
-						Components.checkBox(booleanValue)
+						Components.checkBox()
+										.link(booleanValue)
 										.text("Check")
 										.horizontalAlignment(SwingConstants.CENTER)
 										.build();
@@ -215,7 +217,8 @@ public final class InputControls {
 		Value<Boolean> booleanValue = Value.nullable();
 
 		NullableCheckBox checkBox =
-						(NullableCheckBox) Components.checkBox(booleanValue)
+						(NullableCheckBox) Components.checkBox()
+										.link(booleanValue)
 										.text("Check")
 										.nullable(true)
 										.build();
@@ -227,7 +230,8 @@ public final class InputControls {
 		Value<Boolean> booleanValue = Value.nullable();
 
 		JComboBox<Item<Boolean>> comboBox =
-						Components.booleanComboBox(booleanValue)
+						Components.booleanComboBox()
+										.link(booleanValue)
 										.toolTipText("Select a value")
 										.build();
 		// end::booleanComboBox[]
@@ -238,7 +242,8 @@ public final class InputControls {
 		Value<String> stringValue = Value.nullable();
 
 		JTextField textField =
-						Components.stringField(stringValue)
+						Components.stringField()
+										.link(stringValue)
 										.preferredWidth(120)
 										.transferFocusOnEnter(true)
 										.build();
@@ -250,7 +255,8 @@ public final class InputControls {
 		Value<Character> characterValue = Value.nullable();
 
 		JTextField textField =
-						Components.characterField(characterValue)
+						Components.characterField()
+										.link(characterValue)
 										.preferredWidth(120)
 										.transferFocusOnEnter(true)
 										.build();
@@ -262,7 +268,8 @@ public final class InputControls {
 		Value<String> stringValue = Value.nullable();
 
 		JTextArea textArea =
-						Components.textArea(stringValue)
+						Components.textArea()
+										.link(stringValue)
 										.rowsColumns(10, 20)
 										.lineWrap(true)
 										.build();
@@ -274,7 +281,8 @@ public final class InputControls {
 		Value<Integer> integerValue = Value.nullable();
 
 		NumberField<Integer> integerField =
-						Components.integerField(integerValue)
+						Components.integerField()
+										.link(integerValue)
 										.valueRange(0, 10_000)
 										.groupingUsed(false)
 										.build();
@@ -286,7 +294,8 @@ public final class InputControls {
 		Value<Long> longValue = Value.nullable();
 
 		NumberField<Long> longField =
-						Components.longField(longValue)
+						Components.longField()
+										.link(longValue)
 										.groupingUsed(true)
 										.build();
 		// end::longField[]
@@ -297,7 +306,8 @@ public final class InputControls {
 		Value<Double> doubleValue = Value.nullable();
 
 		NumberField<Double> doubleField =
-						Components.doubleField(doubleValue)
+						Components.doubleField()
+										.link(doubleValue)
 										.maximumFractionDigits(3)
 										.decimalSeparator('.')
 										.build();
@@ -309,7 +319,8 @@ public final class InputControls {
 		Value<BigDecimal> bigDecimalValue = Value.nullable();
 
 		NumberField<BigDecimal> bigDecimalField =
-						Components.bigDecimalField(bigDecimalValue)
+						Components.bigDecimalField()
+										.link(bigDecimalValue)
 										.maximumFractionDigits(2)
 										.groupingSeparator('.')
 										.decimalSeparator(',')
@@ -322,7 +333,8 @@ public final class InputControls {
 		Value<LocalTime> localTimeValue = Value.nullable();
 
 		TemporalField<LocalTime> temporalField =
-						Components.localTimeField(localTimeValue)
+						Components.localTimeField()
+										.link(localTimeValue)
 										.dateTimePattern("HH:mm:ss")
 										.build();
 		// end::localTime[]
@@ -333,7 +345,8 @@ public final class InputControls {
 		Value<LocalDate> localDateValue = Value.nullable();
 
 		TemporalField<LocalDate> temporalField =
-						Components.localDateField(localDateValue)
+						Components.localDateField()
+										.link(localDateValue)
 										.dateTimePattern("dd-MM-yyyy")
 										.build();
 		// end::localDate[]
@@ -344,7 +357,8 @@ public final class InputControls {
 		Value<LocalDateTime> localDateTimeValue = Value.nullable();
 
 		TemporalField<LocalDateTime> temporalField =
-						Components.localDateTimeField(localDateTimeValue)
+						Components.localDateTimeField()
+										.link(localDateTimeValue)
 										.dateTimePattern("dd-MM-yyyy HH:mm")
 										.build();
 		// end::localDateTime[]
@@ -358,7 +372,8 @@ public final class InputControls {
 						new DefaultComboBoxModel<>(new String[] {"one", "two", "three"});
 
 		JComboBox<String> comboBox =
-						Components.comboBox(comboBoxModel, stringValue)
+						Components.comboBox(comboBoxModel)
+										.link(stringValue)
 										.preferredWidth(160)
 										.build();
 		// end::selectionComboBox[]

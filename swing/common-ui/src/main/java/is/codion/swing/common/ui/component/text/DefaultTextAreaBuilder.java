@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.JTextArea;
@@ -36,9 +35,7 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
 	private boolean autoscrolls = false;
 	private Document document;
 
-	DefaultTextAreaBuilder(Value<String> linkedValue) {
-		super(linkedValue);
-	}
+	DefaultTextAreaBuilder() {}
 
 	@Override
 	public TextAreaBuilder rows(int rows) {

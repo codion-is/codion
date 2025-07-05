@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.Action;
@@ -43,8 +42,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
 	private int horizontalAlignment = SwingConstants.LEADING;
 	private String hint;
 
-	DefaultTextFieldBuilder(Class<T> valueClass, Value<T> linkedValue) {
-		super(linkedValue);
+	DefaultTextFieldBuilder(Class<T> valueClass) {
 		this.valueClass = requireNonNull(valueClass);
 		if (valueClass.equals(Character.class)) {
 			maximumLength(1);

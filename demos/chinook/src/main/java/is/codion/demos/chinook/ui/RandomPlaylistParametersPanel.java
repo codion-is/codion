@@ -86,7 +86,8 @@ final class RandomPlaylistParametersPanel extends JPanel {
 	}
 
 	private JTextField createPlaylistNameField() {
-		return stringField(model.playlistName)
+		return stringField()
+						.link(model.playlistName)
 						.transferFocusOnEnter(true)
 						.selectAllOnFocusGained(true)
 						.maximumLength(120)
@@ -95,7 +96,8 @@ final class RandomPlaylistParametersPanel extends JPanel {
 	}
 
 	private NumberField<Integer> createNoOfTracksField() {
-		return integerField(model.noOfTracks)
+		return integerField()
+						.link(model.noOfTracks)
 						.valueRange(1, 5000)
 						.transferFocusOnEnter(true)
 						.selectAllOnFocusGained(true)
@@ -105,7 +107,8 @@ final class RandomPlaylistParametersPanel extends JPanel {
 
 	private FilterList<Entity> createGenreList(EntityConnectionProvider connectionProvider) {
 		return Components.list(filterListModel(allGenres(connectionProvider)))
-						.selectedItems(model.genres)
+						.selectedItems()
+						.link(model.genres)
 						.visibleRowCount(5)
 						.build();
 	}

@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.component.list;
 
-import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -35,8 +34,8 @@ final class DefaultListItemsBuilder<T> extends AbstractListBuilder<T, List<T>, L
 
 	private int selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
 
-	DefaultListItemsBuilder(FilterListModel<T> listModel, Value<List<T>> linkedValue) {
-		super(listModel, linkedValue);
+	DefaultListItemsBuilder(FilterListModel<T> listModel) {
+		super(listModel);
 	}
 
 	@Override

@@ -19,7 +19,6 @@
 package is.codion.swing.common.ui.component.combobox;
 
 import is.codion.common.i18n.Messages;
-import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
@@ -56,8 +55,7 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
 	private boolean moveCaretToFrontOnSelection = true;
 	private int popupWidth = 0;
 
-	protected DefaultComboBoxBuilder(ComboBoxModel<T> comboBoxModel, Value<T> linkedValue) {
-		super(linkedValue);
+	protected DefaultComboBoxBuilder(ComboBoxModel<T> comboBoxModel) {
 		this.comboBoxModel = requireNonNull(comboBoxModel);
 		value((T) comboBoxModel.getSelectedItem());
 		preferredHeight(preferredTextFieldHeight());

@@ -19,7 +19,6 @@
 package is.codion.swing.common.ui.component.combobox;
 
 import is.codion.common.property.PropertyValue;
-import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
@@ -141,20 +140,7 @@ public interface ComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBu
 	 * @return a builder for a component
 	 */
 	static <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> builder(ComboBoxModel<T> comboBoxModel) {
-		return new DefaultComboBoxBuilder<>(comboBoxModel, null);
-	}
-
-	/**
-	 * @param comboBoxModel the combo box model
-	 * @param linkedValue the value to link to the component
-	 * @param <T> the value type
-	 * @param <C> the component type
-	 * @param <B> the builder type
-	 * @return a builder for a component
-	 */
-	static <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> builder(ComboBoxModel<T> comboBoxModel,
-																																																					Value<T> linkedValue) {
-		return new DefaultComboBoxBuilder<>(comboBoxModel, requireNonNull(linkedValue));
+		return new DefaultComboBoxBuilder<>(comboBoxModel);
 	}
 
 	/**

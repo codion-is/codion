@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.JTextPane;
@@ -32,9 +31,7 @@ final class DefaultTextPaneBuilder extends AbstractTextComponentBuilder<String, 
 	private boolean autoscrolls = false;
 	private StyledDocument document;
 
-	DefaultTextPaneBuilder(Value<String> linkedValue) {
-		super(linkedValue);
-	}
+	DefaultTextPaneBuilder() {}
 
 	@Override
 	public TextPaneBuilder autoscrolls(boolean autoscrolls) {

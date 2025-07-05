@@ -18,11 +18,7 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.common.value.Value;
-
 import javax.swing.JPasswordField;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * Builds a JPasswordField.
@@ -40,14 +36,6 @@ public interface PasswordFieldBuilder extends TextFieldBuilder<String, JPassword
 	 * @return a new JPasswordField
 	 */
 	static PasswordFieldBuilder builder() {
-		return new DefaultPasswordFieldBuilder(null);
-	}
-
-	/**
-	 * @param linkedValue the value to link to the component
-	 * @return a new JPasswordField
-	 */
-	static PasswordFieldBuilder builder(Value<String> linkedValue) {
-		return new DefaultPasswordFieldBuilder(requireNonNull(linkedValue));
+		return new DefaultPasswordFieldBuilder();
 	}
 }

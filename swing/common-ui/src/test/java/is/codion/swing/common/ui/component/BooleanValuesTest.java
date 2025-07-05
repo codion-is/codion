@@ -40,7 +40,8 @@ public class BooleanValuesTest {
 	@Test
 	void booleanToggleButtonCheckBox() {
 		Value<Boolean> booleanValue = Value.nonNull(false);
-		JCheckBox checkBox = Components.checkBox(booleanValue)
+		JCheckBox checkBox = Components.checkBox()
+						.link(booleanValue)
 						.build();
 		assertFalse(checkBox.isSelected());
 		booleanValue.set(true);
@@ -85,7 +86,9 @@ public class BooleanValuesTest {
 	@Test
 	void booleanNullableToggleButton() {
 		Value<Boolean> nullableBooleanValue = Value.nullable();
-		ComponentValue<Boolean, JCheckBox> value = Components.checkBox(nullableBooleanValue)
+		ComponentValue<Boolean, JCheckBox> value = Components.checkBox()
+						.link(nullableBooleanValue)
+						.nullable(true)
 						.buildValue();
 
 		NullableCheckBox checkBox = (NullableCheckBox) value.component();

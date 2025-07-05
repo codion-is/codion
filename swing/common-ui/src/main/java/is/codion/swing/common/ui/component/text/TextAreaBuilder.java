@@ -18,12 +18,8 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.common.value.Value;
-
 import javax.swing.JTextArea;
 import javax.swing.text.Document;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * Builds a JTextArea.
@@ -85,14 +81,6 @@ public interface TextAreaBuilder extends TextComponentBuilder<String, JTextArea,
 	 * @return a builder for a component
 	 */
 	static TextAreaBuilder builder() {
-		return new DefaultTextAreaBuilder(null);
-	}
-
-	/**
-	 * @param linkedValue the value to link to the component
-	 * @return a builder for a component
-	 */
-	static TextAreaBuilder builder(Value<String> linkedValue) {
-		return new DefaultTextAreaBuilder(requireNonNull(linkedValue));
+		return new DefaultTextAreaBuilder();
 	}
 }

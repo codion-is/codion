@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.component.list;
 
-import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
@@ -116,37 +115,16 @@ public interface ListBuilder<T, V, B extends ListBuilder<T, V, B>> extends Compo
 		Items<T> items();
 
 		/**
-		 * A JList builder, where the value is represented by the list items.
-		 * @param linkedValue the value to link to the list items
-		 * @return a JList builder
-		 */
-		Items<T> items(Value<List<T>> linkedValue);
-
-		/**
 		 * A multi selection JList builder, where the value is represented by the selected items.
 		 * @return a JList builder
 		 */
 		SelectedItems<T> selectedItems();
 
 		/**
-		 * A multi selection JList builder, where the value is represented by the selected items.
-		 * @param linkedValue the value to link to the selected items
-		 * @return a JList builder
-		 */
-		SelectedItems<T> selectedItems(Value<List<T>> linkedValue);
-
-		/**
 		 * A single-selection JList builder, where the value is represented by the selected item.
 		 * @return a JList builder
 		 */
 		SelectedItem<T> selectedItem();
-
-		/**
-		 * A single-selection JList builder, where the value is represented by the selected item.
-		 * @param linkedValue the value to link to the selected item
-		 * @return a JList builder
-		 */
-		SelectedItem<T> selectedItem(Value<T> linkedValue);
 	}
 
 	/**

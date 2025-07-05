@@ -119,20 +119,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	private TransferHandler transferHandler;
 	private boolean focusCycleRoot = false;
 
-	protected AbstractComponentBuilder() {
-		this(null);
-	}
-
-	/**
-	 * Note that when a linked value is set via the constructor,
-	 * it is considered locked and cannot be changed.
-	 * @param linkedValue the linked value, may be null
-	 */
-	protected AbstractComponentBuilder(Value<T> linkedValue) {
-		if (linkedValue != null) {
-			link(linkedValue);
-		}
-	}
+	protected AbstractComponentBuilder() {}
 
 	@Override
 	public final B name(String name) {

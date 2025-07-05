@@ -18,14 +18,10 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.common.value.Value;
-
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.text.Document;
 import javax.swing.text.StyledDocument;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * Builds a JTextPane.
@@ -50,14 +46,6 @@ public interface TextPaneBuilder extends TextComponentBuilder<String, JTextPane,
 	 * @return a builder for a component
 	 */
 	static TextPaneBuilder builder() {
-		return new DefaultTextPaneBuilder(null);
-	}
-
-	/**
-	 * @param linkedValue the value to link to the component
-	 * @return a builder for a component
-	 */
-	static TextPaneBuilder builder(Value<String> linkedValue) {
-		return new DefaultTextPaneBuilder(requireNonNull(linkedValue));
+		return new DefaultTextPaneBuilder();
 	}
 }

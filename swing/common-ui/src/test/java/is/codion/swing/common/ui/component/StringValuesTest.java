@@ -39,7 +39,8 @@ public class StringValuesTest {
 							}
 						})
 						.build();
-		ComponentValue<String, JTextField> textFieldValue = Components.stringField(textValue)
+		ComponentValue<String, JTextField> textFieldValue = Components.stringField()
+						.link(textValue)
 						.buildValue();
 
 		assertEquals("start", textFieldValue.get());
@@ -59,7 +60,8 @@ public class StringValuesTest {
 	@Test
 	void nullInitialValue() {
 		Value<String> stringPropertyValue = Value.nullable();
-		JTextField textField = Components.stringField(stringPropertyValue)
+		JTextField textField = Components.stringField()
+						.link(stringPropertyValue)
 						.build();
 		assertNull(stringPropertyValue.get());
 		assertEquals("", textField.getText());
@@ -71,7 +73,8 @@ public class StringValuesTest {
 		assertNull(stringPropertyValue.get());
 
 		stringPropertyValue.set("test");
-		JTextField textField2 = Components.stringField(stringPropertyValue)
+		JTextField textField2 = Components.stringField()
+						.link(stringPropertyValue)
 						.build();
 		assertEquals("test", textField2.getText());
 	}
@@ -79,7 +82,8 @@ public class StringValuesTest {
 	@Test
 	void nonNullInitialValue() {
 		Value<String> value = Value.nullable("name");
-		JTextField textField = Components.stringField(value)
+		JTextField textField = Components.stringField()
+						.link(value)
 						.build();
 		assertEquals("name", textField.getText());
 		textField.setText("darri");

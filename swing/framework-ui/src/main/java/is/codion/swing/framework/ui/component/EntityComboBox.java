@@ -153,7 +153,8 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	public <B extends TextFieldBuilder<Integer, NumberField<Integer>, B>> TextFieldBuilder<Integer, NumberField<Integer>, B> integerSelectorField(
 					Attribute<Integer> attribute) {
 		requireNonNull(attribute);
-		return (B) Components.integerField(getModel().createSelectorValue(attribute))
+		return (B) Components.integerField()
+						.link(getModel().createSelectorValue(attribute))
 						.columns(2)
 						.selectAllOnFocusGained(true);
 	}
@@ -167,7 +168,8 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	public <B extends TextFieldBuilder<Integer, NumberField<Integer>, B>> TextFieldBuilder<Integer, NumberField<Integer>, B> integerSelectorField(
 					ItemFinder<Entity, Integer> itemFinder) {
 		requireNonNull(itemFinder);
-		return (B) Components.integerField(getModel().createSelector(itemFinder))
+		return (B) Components.integerField()
+						.link(getModel().createSelector(itemFinder))
 						.columns(2)
 						.selectAllOnFocusGained(true);
 	}
@@ -181,7 +183,8 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	public <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> stringSelectorField(
 					Attribute<String> attribute) {
 		requireNonNull(attribute);
-		return (B) Components.stringField(getModel().createSelectorValue(attribute))
+		return (B) Components.stringField()
+						.link(getModel().createSelectorValue(attribute))
 						.columns(2)
 						.selectAllOnFocusGained(true);
 	}
@@ -195,7 +198,8 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	public <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> stringSelectorField(
 					ItemFinder<Entity, String> itemFinder) {
 		requireNonNull(itemFinder);
-		return (B) Components.stringField(getModel().createSelector(itemFinder))
+		return (B) Components.stringField()
+						.link(getModel().createSelector(itemFinder))
 						.columns(2)
 						.selectAllOnFocusGained(true);
 	}
@@ -286,7 +290,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		private boolean confirmEdit;
 
 		private DefaultBuilder(EntityComboBoxModel comboBoxModel) {
-			super(comboBoxModel, null);
+			super(comboBoxModel);
 		}
 
 		@Override

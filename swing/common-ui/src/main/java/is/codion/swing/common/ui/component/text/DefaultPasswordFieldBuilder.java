@@ -18,8 +18,6 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.common.value.Value;
-
 import javax.swing.JPasswordField;
 
 final class DefaultPasswordFieldBuilder extends DefaultTextFieldBuilder<String, JPasswordField, PasswordFieldBuilder>
@@ -27,8 +25,8 @@ final class DefaultPasswordFieldBuilder extends DefaultTextFieldBuilder<String, 
 
 	private char echoChar;
 
-	DefaultPasswordFieldBuilder(Value<String> linkedValue) {
-		super(String.class, linkedValue);
+	DefaultPasswordFieldBuilder() {
+		super(String.class);
 	}
 
 	@Override

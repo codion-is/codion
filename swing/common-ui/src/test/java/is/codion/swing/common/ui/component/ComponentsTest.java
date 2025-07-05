@@ -108,7 +108,8 @@ public final class ComponentsTest {
 	@Test
 	void testDoubleLink() {
 		Value<Long> value = Value.nullable();
-		ComponentValue<Long, NumberField<Long>> componentValue = Components.longField(value)
+		ComponentValue<Long, NumberField<Long>> componentValue = Components.longField()
+						.link(value)
 						.buildValue();
 		assertThrows(IllegalStateException.class, () -> componentValue.link(value));
 	}
@@ -239,7 +240,8 @@ public final class ComponentsTest {
 
 		Value<LocalDate> value = Value.nullable();
 		ComponentValue<LocalDate, TemporalFieldPanel<LocalDate>> componentValue =
-						Components.temporalFieldPanel(LocalDate.class, value)
+						Components.temporalFieldPanel(LocalDate.class)
+										.link(value)
 										.dateTimePattern("dd-MM-yyyy")
 										.columns(8)
 										.selectAllOnFocusGained(true)
@@ -275,7 +277,8 @@ public final class ComponentsTest {
 						.nonNull(false)
 						.value(true)
 						.build();
-		ComponentValue<Boolean, JCheckBox> componentValue = Components.checkBox(value)
+		ComponentValue<Boolean, JCheckBox> componentValue = Components.checkBox()
+						.link(value)
 						.text("caption")
 						.horizontalAlignment(SwingConstants.CENTER)
 						.includeText(true)
@@ -321,7 +324,8 @@ public final class ComponentsTest {
 						.nonNull(false)
 						.value(true)
 						.build();
-		ComponentValue<Boolean, JToggleButton> componentValue = Components.toggleButton(value)
+		ComponentValue<Boolean, JToggleButton> componentValue = Components.toggleButton()
+						.link(value)
 						.text("caption")
 						.includeText(true)
 						.transferFocusOnEnter(true)
@@ -363,13 +367,15 @@ public final class ComponentsTest {
 
 	@Test
 	void radioButton() {
-		assertThrows(IllegalArgumentException.class, () -> Components.radioButton(Value.nullable()));
+		assertThrows(IllegalArgumentException.class, () -> Components.radioButton()
+						.link((Value.nullable())));
 
 		Value<Boolean> value = Value.builder()
 						.nonNull(false)
 						.value(true)
 						.build();
-		ComponentValue<Boolean, JRadioButton> componentValue = Components.radioButton(value)
+		ComponentValue<Boolean, JRadioButton> componentValue = Components.radioButton()
+						.link(value)
 						.text("caption")
 						.includeText(true)
 						.transferFocusOnEnter(true)
@@ -418,7 +424,7 @@ public final class ComponentsTest {
 
 	@Test
 	void checkBoxMenuItem() {
-		assertThrows(IllegalArgumentException.class, () -> Components.checkBoxMenuItem(Value.nullable()));
+		assertThrows(IllegalArgumentException.class, () -> Components.checkBoxMenuItem().link(Value.nullable()));
 
 		State enabledState = State.state(true);
 		State state = State.state(true);
@@ -445,7 +451,8 @@ public final class ComponentsTest {
 
 	@Test
 	void radioButtonMenuItem() {
-		assertThrows(IllegalArgumentException.class, () -> Components.radioButtonMenuItem(Value.nullable()));
+		assertThrows(IllegalArgumentException.class, () -> Components.radioButtonMenuItem()
+						.link(Value.nullable()));
 
 		State enabledState = State.state(true);
 		State state = State.state(true);
@@ -474,7 +481,8 @@ public final class ComponentsTest {
 	@Test
 	void nullableCheckBox() {
 		Value<Boolean> value = Value.nullable(true);
-		ComponentValue<Boolean, JCheckBox> componentValue = Components.checkBox(value)
+		ComponentValue<Boolean, JCheckBox> componentValue = Components.checkBox()
+						.link(value)
 						.transferFocusOnEnter(true)
 						.nullable(true)
 						.buildValue();
@@ -611,7 +619,8 @@ public final class ComponentsTest {
 		assertEquals(textArea.getDocument().getLength(), textArea.getCaretPosition());
 
 		Value<String> stringValue = Value.nullable("hello there");
-		builder = Components.textArea(stringValue)
+		builder = Components.textArea()
+						.link(stringValue)
 						.caretPosition(CaretPosition.START);
 		textArea = builder.build();
 		assertEquals(0, textArea.getCaretPosition());
@@ -948,7 +957,8 @@ public final class ComponentsTest {
 						.build());
 
 		Value<String> stringValue = Value.nullable("test");
-		assertThrows(IllegalArgumentException.class, () -> Components.textField(String.class, stringValue)
+		assertThrows(IllegalArgumentException.class, () -> Components.textField(String.class)
+						.link(stringValue)
 						.validator(validator)
 						.build());
 		assertThrows(IllegalArgumentException.class, () -> Components.textField(String.class)

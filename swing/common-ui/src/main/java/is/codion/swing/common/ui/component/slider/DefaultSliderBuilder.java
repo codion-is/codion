@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.component.slider;
 
-import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
@@ -43,8 +42,7 @@ final class DefaultSliderBuilder extends AbstractComponentBuilder<Integer, JSlid
 	private boolean mouseWheelScrolling = MOUSE_WHEEL_SCROLLING.getOrThrow();
 	private boolean mouseWheelScrollingReversed = false;
 
-	DefaultSliderBuilder(BoundedRangeModel boundedRangeModel, Value<Integer> linkedValue) {
-		super(linkedValue);
+	DefaultSliderBuilder(BoundedRangeModel boundedRangeModel) {
 		this.boundedRangeModel = requireNonNull(boundedRangeModel);
 	}
 

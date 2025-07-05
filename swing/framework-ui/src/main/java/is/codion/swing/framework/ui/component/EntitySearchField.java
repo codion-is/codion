@@ -685,7 +685,8 @@ public final class EntitySearchField extends HintTextField {
 		private static JPanel createLimitPanel(EntitySearchModel searchModel) {
 			return borderLayoutPanel()
 							.westComponent(new JLabel(MESSAGES.getString("result_limit")))
-							.centerComponent(integerField(searchModel.limit())
+							.centerComponent(integerField()
+											.link(searchModel.limit())
 											.columns(4)
 											.build())
 							.build();
@@ -693,16 +694,20 @@ public final class EntitySearchField extends HintTextField {
 
 		private static JPanel createSettingsPanel(EntitySearchModel.Settings settings) {
 			return gridLayoutPanel(4, 1)
-							.add(checkBox(settings.caseSensitive())
+							.add(checkBox()
+											.link(settings.caseSensitive())
 											.text(MESSAGES.getString("case_sensitive"))
 											.build())
-							.add(checkBox(settings.wildcardPrefix())
+							.add(checkBox()
+											.link(settings.wildcardPrefix())
 											.text(MESSAGES.getString("prefix_wildcard"))
 											.build())
-							.add(checkBox(settings.wildcardPostfix())
+							.add(checkBox()
+											.link(settings.wildcardPostfix())
 											.text(MESSAGES.getString("postfix_wildcard"))
 											.build())
-							.add(checkBox(settings.spaceAsWildcard())
+							.add(checkBox()
+											.link(settings.spaceAsWildcard())
 											.text(MESSAGES.getString("space_as_wildcard"))
 											.build())
 							.build();

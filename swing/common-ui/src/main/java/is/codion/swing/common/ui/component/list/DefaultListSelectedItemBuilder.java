@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.component.list;
 
-import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -27,8 +26,8 @@ import javax.swing.ListSelectionModel;
 
 final class DefaultListSelectedItemBuilder<T> extends AbstractListBuilder<T, T, ListBuilder.SelectedItem<T>> implements ListBuilder.SelectedItem<T> {
 
-	DefaultListSelectedItemBuilder(FilterListModel<T> listModel, Value<T> linkedValue) {
-		super(listModel, linkedValue);
+	DefaultListSelectedItemBuilder(FilterListModel<T> listModel) {
+		super(listModel);
 	}
 
 	@Override

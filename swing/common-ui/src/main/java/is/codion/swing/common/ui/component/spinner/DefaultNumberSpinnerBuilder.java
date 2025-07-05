@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.component.spinner;
 
-import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.JSpinner;
@@ -39,9 +38,8 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinne
 	private String decimalFormatPattern;
 	boolean commitOnValidEdit = true;
 
-	DefaultNumberSpinnerBuilder(SpinnerNumberModel spinnerNumberModel, Class<T> valueClass,
-															Value<T> linkedValue) {
-		super(spinnerNumberModel, linkedValue);
+	DefaultNumberSpinnerBuilder(SpinnerNumberModel spinnerNumberModel, Class<T> valueClass) {
+		super(spinnerNumberModel);
 		this.valueClass = requireNonNull(valueClass);
 		if (!valueClass.equals(Integer.class) && !valueClass.equals(Double.class)) {
 			throw new IllegalStateException("NumberSpinnerBuilder not implemented for type: " + valueClass);

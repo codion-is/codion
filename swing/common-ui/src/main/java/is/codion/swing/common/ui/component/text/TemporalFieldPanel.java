@@ -19,7 +19,6 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.state.ObservableState;
-import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
@@ -125,18 +124,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 	 * @return a builder for a temporal component
 	 */
 	public static <T extends Temporal> Builder<T> builder(Class<T> valueClass) {
-		return new DefaultBuilder<>(valueClass, null);
-	}
-
-	/**
-	 * @param <T> the value type
-	 * @param valueClass the value class
-	 * @param linkedValue the value to link to the component
-	 * @return a builder for a temporal component
-	 */
-	public static <T extends Temporal> Builder<T> builder(Class<T> valueClass,
-																												Value<T> linkedValue) {
-		return new DefaultBuilder<>(valueClass, requireNonNull(linkedValue));
+		return new DefaultBuilder<>(valueClass);
 	}
 
 	/**
@@ -223,8 +211,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 
 		private boolean buttonFocusable;
 
-		private DefaultBuilder(Class<T> valueClass, Value<T> linkedValue) {
-			super(linkedValue);
+		private DefaultBuilder(Class<T> valueClass) {
 			if (!supports(valueClass)) {
 				throw new IllegalArgumentException("Unsupported temporal type: " + valueClass);
 			}
