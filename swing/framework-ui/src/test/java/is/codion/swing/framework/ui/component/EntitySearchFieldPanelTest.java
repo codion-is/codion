@@ -44,7 +44,10 @@ public final class EntitySearchFieldPanelTest {
 
 	@Test
 	void test() {
-		EntitySearchModel model = EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build();
+		EntitySearchModel model = EntitySearchModel.builder()
+						.entityType(Department.TYPE)
+						.connectionProvider(CONNECTION_PROVIDER)
+						.build();
 		ComponentValue<Entity, EntitySearchFieldPanel> value = EntitySearchFieldPanel.builder(model)
 						.editPanel(() -> null)
 						.singleSelection()

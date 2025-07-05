@@ -56,7 +56,10 @@ public class EntitySearchFieldTest {
 
 	@Test
 	void componentValue() {
-		EntitySearchModel singleSelectionSearchModel = EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build();
+		EntitySearchModel singleSelectionSearchModel = EntitySearchModel.builder()
+						.entityType(Department.TYPE)
+						.connectionProvider(CONNECTION_PROVIDER)
+						.build();
 		ComponentValue<Entity, EntitySearchField> singleSelectionValue = EntitySearchField.builder(singleSelectionSearchModel)
 						.singleSelection()
 						.buildValue();
@@ -78,7 +81,10 @@ public class EntitySearchFieldTest {
 		assertTrue(singleSelectionSearchModel.selection().empty().get());
 		assertNull(singleSelectionValue.get());
 
-		EntitySearchModel multiSelectionSearchModel = EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER).build();
+		EntitySearchModel multiSelectionSearchModel = EntitySearchModel.builder()
+						.entityType(Department.TYPE)
+						.connectionProvider(CONNECTION_PROVIDER)
+						.build();
 		ComponentValue<Set<Entity>, EntitySearchField> multiSelectionValue = EntitySearchField.builder(multiSelectionSearchModel)
 						.multiSelection()
 						.buildValue();
@@ -93,7 +99,10 @@ public class EntitySearchFieldTest {
 	@Test
 	void text() {
 		Entity jones = CONNECTION_PROVIDER.connection().selectSingle(Employee.NAME.equalTo("JONES"));
-		EntitySearchModel searchModel = EntitySearchModel.builder(Employee.TYPE, CONNECTION_PROVIDER).build();
+		EntitySearchModel searchModel = EntitySearchModel.builder()
+						.entityType(Employee.TYPE)
+						.connectionProvider(CONNECTION_PROVIDER)
+						.build();
 		searchModel.selection().entity().set(jones);
 
 		EntitySearchField searchField = EntitySearchField.builder(searchModel)
@@ -116,7 +125,10 @@ public class EntitySearchFieldTest {
 
 	@Test
 	void stringFactory() {
-		EntitySearchModel model = EntitySearchModel.builder(Employee.TYPE, CONNECTION_PROVIDER).build();
+		EntitySearchModel model = EntitySearchModel.builder()
+						.entityType(Employee.TYPE)
+						.connectionProvider(CONNECTION_PROVIDER)
+						.build();
 		EntitySearchField field = EntitySearchField.builder(model)
 						.multiSelection()
 						.stringFactory(entity -> entity.string(Employee.JOB))

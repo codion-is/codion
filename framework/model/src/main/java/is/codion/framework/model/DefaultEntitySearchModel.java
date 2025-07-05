@@ -57,6 +57,8 @@ import static java.util.stream.Collectors.toMap;
 
 final class DefaultEntitySearchModel implements EntitySearchModel {
 
+	static final Builder.EntityTypeBuilder ENTITY_TYPE = new DefaultEntityTypeBuilder();
+
 	private static final Supplier<Condition> NULL_CONDITION = () -> null;
 	private static final String WILDCARD_MULTIPLE = "%";
 	private static final String WILDCARD_SINGLE = "_";
@@ -314,6 +316,28 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		@Override
 		public State caseSensitive() {
 			return caseSensitiveState;
+		}
+	}
+
+	static class DefaultEntityTypeBuilder implements Builder.EntityTypeBuilder {
+
+		@Override
+		public Builder.ConnectionProviderBuilder entityType(EntityType entityType) {
+			return new DefaultConnectionProviderBuilder(requireNonNull(entityType));
+		}
+	}
+
+	private static class DefaultConnectionProviderBuilder implements Builder.ConnectionProviderBuilder {
+
+		private final EntityType entityType;
+
+		private DefaultConnectionProviderBuilder(EntityType entityType) {
+			this.entityType = entityType;
+		}
+
+		@Override
+		public Builder connectionProvider(EntityConnectionProvider connectionProvider) {
+			return new DefaultBuilder(this.entityType, connectionProvider);
 		}
 	}
 

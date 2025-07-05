@@ -39,6 +39,7 @@ Codion Change Log
 - MethodLogger.noOpLogger() removed.
 ### is.codion.framework.model
 - Unit tests improved.
+- EntitySearchModel.Builder.EntityTypeBuilder and ConnectionProviderBuilder added.
 ### is.codion.framework.server
 - ClientLog removed, was just a wrapper for method traces.
 - EntityServerConfiguration.clientLogging() renamed methodTracing(), related renaming.

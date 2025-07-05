@@ -42,7 +42,7 @@ import static is.codion.common.Configuration.integerValue;
 
 /**
  * Searches for entities based on a search text and set of String based condition columns.
- * Factory for {@link EntitySearchModel.Builder} instances via {@link EntitySearchModel#builder(EntityType, EntityConnectionProvider)}.
+ * Factory for {@link EntitySearchModel.Builder} instances via {@link EntitySearchModel#builder()}.
  */
 public interface EntitySearchModel {
 
@@ -189,6 +189,30 @@ public interface EntitySearchModel {
 	interface Builder {
 
 		/**
+		 * Provides a {@link ConnectionProviderBuilder}
+		 */
+		interface EntityTypeBuilder {
+
+			/**
+			 * @param entityType the type of the entity this combo box model should represent
+			 * @return a new {@link Builder.ConnectionProviderBuilder} instance
+			 */
+			ConnectionProviderBuilder entityType(EntityType entityType);
+		}
+
+		/**
+		 * Provides a {@link Builder}
+		 */
+		interface ConnectionProviderBuilder {
+
+			/**
+			 * @param connectionProvider a EntityConnectionProvider instance
+			 * @return a new {@link Builder} instance
+			 */
+			Builder connectionProvider(EntityConnectionProvider connectionProvider);
+		}
+
+		/**
 		 * @param searchColumns the columns to search by
 		 * @return this builder
 		 * @throws IllegalArgumentException in case {@code columns} is empty or a column is not associated with the underlying entity
@@ -237,12 +261,10 @@ public interface EntitySearchModel {
 
 	/**
 	 * Instantiates a new {@link EntitySearchModel.Builder}, initialized with the search columns for the given entity type
-	 * @param entityType the type of the entity to search
-	 * @param connectionProvider the EntityConnectionProvider to use when performing the search
-	 * @return a new {@link EntitySearchModel.Builder} instance
+	 * @return a new {@link EntitySearchModel.Builder.EntityTypeBuilder} instance
 	 * @see is.codion.framework.domain.entity.EntityDefinition.Columns#searchable()
 	 */
-	static EntitySearchModel.Builder builder(EntityType entityType, EntityConnectionProvider connectionProvider) {
-		return new DefaultEntitySearchModel.DefaultBuilder(entityType, connectionProvider);
+	static EntitySearchModel.Builder.EntityTypeBuilder builder() {
+		return DefaultEntitySearchModel.ENTITY_TYPE;
 	}
 }

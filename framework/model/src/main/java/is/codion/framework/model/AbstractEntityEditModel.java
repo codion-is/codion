@@ -229,7 +229,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			throw new IllegalStateException("No searchable columns defined for entity: " + foreignKey.referencedType());
 		}
 
-		return EntitySearchModel.builder(foreignKey.referencedType(), connectionProvider()).build();
+		return EntitySearchModel.builder()
+						.entityType(foreignKey.referencedType())
+						.connectionProvider(connectionProvider())
+						.build();
 	}
 
 	@Override

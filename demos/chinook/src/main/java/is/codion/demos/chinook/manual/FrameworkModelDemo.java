@@ -360,7 +360,9 @@ public final class FrameworkModelDemo {
 	// EntitySearchModel examples
 	void basicSearchModel(EntityConnectionProvider connectionProvider) {
 		// tag::basicSearchModel[]
-		EntitySearchModel searchModel = EntitySearchModel.builder(Customer.TYPE, connectionProvider)
+		EntitySearchModel searchModel = EntitySearchModel.builder()
+						.entityType(Customer.TYPE)
+						.connectionProvider(connectionProvider)
 						.searchColumns(List.of(Customer.FIRSTNAME, Customer.LASTNAME, Customer.EMAIL))
 						.limit(50)
 						.build();
@@ -375,7 +377,9 @@ public final class FrameworkModelDemo {
 
 	void searchSettings(EntityConnectionProvider connectionProvider) {
 		// tag::searchSettings[]
-		EntitySearchModel searchModel = EntitySearchModel.builder(Customer.TYPE, connectionProvider)
+		EntitySearchModel searchModel = EntitySearchModel.builder()
+						.entityType(Customer.TYPE)
+						.connectionProvider(connectionProvider)
 						.searchColumns(List.of(Customer.FIRSTNAME, Customer.LASTNAME))
 						.build();
 
@@ -396,7 +400,9 @@ public final class FrameworkModelDemo {
 
 	void singleSelectionSearch(EntityConnectionProvider connectionProvider) {
 		// tag::singleSelectionSearch[]
-		EntitySearchModel searchModel = EntitySearchModel.builder(Album.TYPE, connectionProvider)
+		EntitySearchModel searchModel = EntitySearchModel.builder()
+						.entityType(Album.TYPE)
+						.connectionProvider(connectionProvider)
 						.searchColumns(List.of(Album.TITLE))
 						.build();
 
@@ -418,7 +424,9 @@ public final class FrameworkModelDemo {
 
 	void multiSelectionSearch(EntityConnectionProvider connectionProvider) {
 		// tag::multiSelectionSearch[]
-		EntitySearchModel searchModel = EntitySearchModel.builder(Track.TYPE, connectionProvider)
+		EntitySearchModel searchModel = EntitySearchModel.builder()
+						.entityType(Track.TYPE)
+						.connectionProvider(connectionProvider)
 						.searchColumns(List.of(Track.NAME))
 						.build();
 

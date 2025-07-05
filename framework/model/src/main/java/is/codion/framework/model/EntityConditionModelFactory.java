@@ -119,7 +119,10 @@ public class EntityConditionModelFactory implements Supplier<Map<Attribute<?>, C
 	 * @return a search model to use for the equal value
 	 */
 	protected EntitySearchModel createEqualSearchModel(ForeignKey foreignKey) {
-		return EntitySearchModel.builder(requireNonNull(foreignKey).referencedType(), connectionProvider).build();
+		return EntitySearchModel.builder()
+						.entityType(requireNonNull(foreignKey).referencedType())
+						.connectionProvider(connectionProvider)
+						.build();
 	}
 
 	/**
@@ -127,7 +130,10 @@ public class EntityConditionModelFactory implements Supplier<Map<Attribute<?>, C
 	 * @return a search model to use for the in values
 	 */
 	protected EntitySearchModel createInSearchModel(ForeignKey foreignKey) {
-		return EntitySearchModel.builder(requireNonNull(foreignKey).referencedType(), connectionProvider).build();
+		return EntitySearchModel.builder()
+						.entityType(requireNonNull(foreignKey).referencedType())
+						.connectionProvider(connectionProvider)
+						.build();
 	}
 
 	/**
