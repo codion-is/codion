@@ -199,7 +199,8 @@ public final class EntityComponents {
 																				 EntityComboBoxModel comboBoxModel) {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
-		return EntityComboBox.builder(comboBoxModel)
+		return EntityComboBox.builder()
+						.model(comboBoxModel)
 						.toolTipText(foreignKeyDefinition.description().orElse(null));
 	}
 

@@ -57,7 +57,8 @@ public class EntityComboBoxTest {
 		model.items().refresh();
 		Entity operations = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("OPERATIONS"));
 		model.selection().item().set(operations);
-		ComponentValue<Entity, EntityComboBox> value = EntityComboBox.builder(model)
+		ComponentValue<Entity, EntityComboBox> value = EntityComboBox.builder()
+						.model(model)
 						.buildValue();
 
 		assertNotNull(value.get());
@@ -80,7 +81,9 @@ public class EntityComboBoxTest {
 		comboBoxModel.items().refresh();
 		Entity.Key jonesKey = comboBoxModel.connectionProvider().entities().primaryKey(Employee.TYPE, 3);
 		comboBoxModel.select(jonesKey);
-		EntityComboBox comboBox = EntityComboBox.builder(comboBoxModel).build();
+		EntityComboBox comboBox = EntityComboBox.builder()
+						.model(comboBoxModel)
+						.build();
 		NumberField<Integer> empIdValue = comboBox.integerSelectorField(Employee.ID).build();
 		assertEquals(3, empIdValue.get());
 		Entity.Key blakeKey = comboBoxModel.connectionProvider().entities().primaryKey(Employee.TYPE, 5);

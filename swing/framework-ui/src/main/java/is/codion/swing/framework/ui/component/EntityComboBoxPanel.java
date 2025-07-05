@@ -200,7 +200,8 @@ public final class EntityComboBoxPanel extends JPanel {
 
 		private DefaultBuilder(EntityComboBoxModel comboBoxModel, Supplier<EntityEditPanel> editPanelSupplier, Value<Entity> linkedValue) {
 			super(linkedValue);
-			this.entityComboBoxBuilder = EntityComboBox.builder(comboBoxModel)
+			this.entityComboBoxBuilder = EntityComboBox.builder()
+							.model(comboBoxModel)
 							.editPanel(editPanelSupplier);
 		}
 

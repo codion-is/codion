@@ -107,7 +107,9 @@ public final class ClientUI {
 		// based on a combobox model supplied by the edit model
 		EntityComboBox artistComboBox =
 						// link the combo box to the edit model value
-						EntityComboBox.builder(artistComboBoxModel, editModelArtistValue)
+						EntityComboBox.builder()
+										.model(artistComboBoxModel)
+										.link(editModelArtistValue)
 										// limit the combo box width, due to long artist names
 										.preferredWidth(240)
 										// move focus with Enter key

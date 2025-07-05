@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.ui.component;
 
-import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel.ItemFinder;
@@ -202,22 +201,10 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	}
 
 	/**
-	 * Instantiates a new {@link EntityComboBox} builder
-	 * @param comboBoxModel the combo box model
-	 * @return a builder for a {@link EntityComboBox}
+	 * @return a {@link EntityComboBox.Builder.ModelBuilder}
 	 */
-	public static Builder builder(EntityComboBoxModel comboBoxModel) {
-		return builder(comboBoxModel, null);
-	}
-
-	/**
-	 * Instantiates a new {@link EntityComboBox} builder
-	 * @param comboBoxModel the combo box model
-	 * @param linkedValue the linked value
-	 * @return a builder for a {@link EntityComboBox}
-	 */
-	public static Builder builder(EntityComboBoxModel comboBoxModel, Value<Entity> linkedValue) {
-		return new DefaultBuilder(comboBoxModel, linkedValue);
+	public static Builder.ModelBuilder builder() {
+		return DefaultBuilder.MODEL;
 	}
 
 	/**
@@ -225,6 +212,19 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	 * @see Builder#editPanel(Supplier)
 	 */
 	public interface Builder extends ComboBoxBuilder<Entity, EntityComboBox, Builder> {
+
+		/**
+		 * Provides a {@link Builder}
+		 */
+		interface ModelBuilder {
+
+			/**
+			 * Instantiates a new {@link EntityComboBox.Builder}
+			 * @param model the combo box model
+			 * @return a builder for a {@link EntityComboBox}
+			 */
+			Builder model(EntityComboBoxModel model);
+		}
 
 		/**
 		 * An edit panel is required for the add and edit controls.
@@ -267,7 +267,17 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		setCursor(refresherActive ? Cursors.WAIT : Cursors.DEFAULT);
 	}
 
+	private static final class DefaultModelBuilder implements Builder.ModelBuilder {
+
+		@Override
+		public Builder model(EntityComboBoxModel model) {
+			return new DefaultBuilder(model);
+		}
+	}
+
 	private static final class DefaultBuilder extends DefaultComboBoxBuilder<Entity, EntityComboBox, Builder> implements Builder {
+
+		private static final ModelBuilder MODEL = new DefaultModelBuilder();
 
 		private final ControlMap controlMap = controlMap(ControlKeys.class);
 
@@ -275,8 +285,8 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		private boolean confirmAdd;
 		private boolean confirmEdit;
 
-		private DefaultBuilder(EntityComboBoxModel comboBoxModel, Value<Entity> linkedValue) {
-			super(comboBoxModel, linkedValue);
+		private DefaultBuilder(EntityComboBoxModel comboBoxModel) {
+			super(comboBoxModel, null);
 		}
 
 		@Override
