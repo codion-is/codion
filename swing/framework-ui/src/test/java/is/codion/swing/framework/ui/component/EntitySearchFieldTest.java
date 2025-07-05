@@ -60,7 +60,8 @@ public class EntitySearchFieldTest {
 						.entityType(Department.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
 						.build();
-		ComponentValue<Entity, EntitySearchField> singleSelectionValue = EntitySearchField.builder(singleSelectionSearchModel)
+		ComponentValue<Entity, EntitySearchField> singleSelectionValue = EntitySearchField.builder()
+						.model(singleSelectionSearchModel)
 						.singleSelection()
 						.buildValue();
 
@@ -85,7 +86,8 @@ public class EntitySearchFieldTest {
 						.entityType(Department.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
 						.build();
-		ComponentValue<Set<Entity>, EntitySearchField> multiSelectionValue = EntitySearchField.builder(multiSelectionSearchModel)
+		ComponentValue<Set<Entity>, EntitySearchField> multiSelectionValue = EntitySearchField.builder()
+						.model(multiSelectionSearchModel)
 						.multiSelection()
 						.buildValue();
 
@@ -105,7 +107,8 @@ public class EntitySearchFieldTest {
 						.build();
 		searchModel.selection().entity().set(jones);
 
-		EntitySearchField searchField = EntitySearchField.builder(searchModel)
+		EntitySearchField searchField = EntitySearchField.builder()
+						.model(searchModel)
 						.multiSelection()
 						.separator(";")
 						.build();
@@ -129,7 +132,8 @@ public class EntitySearchFieldTest {
 						.entityType(Employee.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
 						.build();
-		EntitySearchField field = EntitySearchField.builder(model)
+		EntitySearchField field = EntitySearchField.builder()
+						.model(model)
 						.multiSelection()
 						.stringFactory(entity -> entity.string(Employee.JOB))
 						.build();

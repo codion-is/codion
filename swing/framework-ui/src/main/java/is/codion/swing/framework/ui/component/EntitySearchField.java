@@ -130,9 +130,9 @@ import static javax.swing.BorderFactory.createTitledBorder;
  * fitting the condition is shown in a dialog allowing either a single or multiple
  * selection based on the search model settings.
  * {@link ListSelector} is the default {@link Selector}.
- * Use {@link EntitySearchField#builder(EntitySearchModel)} for a builder instance.
+ * Use {@link EntitySearchField#builder()} for a builder instance.
  * @see EntitySearchModel
- * @see #builder(EntitySearchModel)
+ * @see #builder()
  * @see Builder#selectorFactory(Function)
  */
 public final class EntitySearchField extends HintTextField {
@@ -308,18 +308,29 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	/**
-	 * Instantiates a new {@link Builder.Factory}
-	 * @param searchModel the search model on which to base the search field
-	 * @return a new builder factory instance
+	 * @return a {@link Builder.ModelBuilder}
 	 */
-	public static Builder.Factory builder(EntitySearchModel searchModel) {
-		return new DefaultBuilderFactory(requireNonNull(searchModel));
+	public static Builder.ModelBuilder builder() {
+		return DefaultBuilderFactory.MODEL;
 	}
 
 	/**
 	 * Builds an entity search field.
 	 */
 	public interface Builder<T, B extends Builder<T, B>> extends ComponentBuilder<T, EntitySearchField, B> {
+
+		/**
+		 * Provides a {@link EntitySearchField.Builder.Factory}
+		 */
+		interface ModelBuilder {
+
+			/**
+			 * Instantiates a new {@link EntitySearchField.Builder.Factory}
+			 * @param model the search model
+			 * @return a builder for a {@link EntitySearchField}
+			 */
+			Builder.Factory model(EntitySearchModel model);
+		}
 
 		/**
 		 * @param columns the number of colums in the text field
@@ -1078,7 +1089,17 @@ public final class EntitySearchField extends HintTextField {
 		}
 	}
 
+	private static final class DefaultModelBuilder implements Builder.ModelBuilder {
+
+		@Override
+		public Builder.Factory model(EntitySearchModel model) {
+			return new DefaultBuilderFactory(requireNonNull(model));
+		}
+	}
+
 	private static final class DefaultBuilderFactory implements Builder.Factory {
+
+		private static final Builder.ModelBuilder MODEL = new DefaultModelBuilder();
 
 		private final EntitySearchModel searchModel;
 

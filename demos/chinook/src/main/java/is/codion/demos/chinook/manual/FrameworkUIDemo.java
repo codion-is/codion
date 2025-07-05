@@ -59,7 +59,8 @@ final class FrameworkUIDemo {
 						.searchColumns(List.of(Customer.FIRSTNAME, Customer.EMAIL))
 						.build();
 
-		EntitySearchField searchField = EntitySearchField.builder(searchModel)
+		EntitySearchField searchField = EntitySearchField.builder()
+						.model(searchModel)
 						.multiSelection()
 						.columns(20)
 						.build();
@@ -73,7 +74,8 @@ final class FrameworkUIDemo {
 						.connectionProvider(connectionProvider)
 						.build();
 
-		EntitySearchField searchField = EntitySearchField.builder(searchModel)
+		EntitySearchField searchField = EntitySearchField.builder()
+						.model(searchModel)
 						.singleSelection()
 						.build();
 		// end::singleSelectionSearchField[]
@@ -86,7 +88,8 @@ final class FrameworkUIDemo {
 						.connectionProvider(connectionProvider)
 						.build();
 
-		EntitySearchField searchField = EntitySearchField.builder(searchModel)
+		EntitySearchField searchField = EntitySearchField.builder()
+						.model(searchModel)
 						.multiSelection()
 						.build();
 		// end::multiSelectionSearchField[]
@@ -99,7 +102,8 @@ final class FrameworkUIDemo {
 						.connectionProvider(connectionProvider)
 						.build();
 
-		EntitySearchField searchField = EntitySearchField.builder(searchModel)
+		EntitySearchField searchField = EntitySearchField.builder()
+						.model(searchModel)
 						.multiSelection()
 						.selectorFactory(EntitySearchField::tableSelector)
 						.build();
@@ -114,7 +118,8 @@ final class FrameworkUIDemo {
 						.build();
 		SwingEntityEditModel editModel = new SwingEntityEditModel(Customer.TYPE, connectionProvider);
 
-		EntitySearchField searchField = EntitySearchField.builder(searchModel)
+		EntitySearchField searchField = EntitySearchField.builder()
+						.model(searchModel)
 						.singleSelection()
 						.editPanel(() -> new CustomerEditPanel(editModel))
 						.confirmAdd(true)     // Confirm before adding
@@ -134,7 +139,8 @@ final class FrameworkUIDemo {
 						.connectionProvider(connectionProvider)
 						.build();
 
-		EntitySearchField searchField = EntitySearchField.builder(searchModel)
+		EntitySearchField searchField = EntitySearchField.builder()
+						.model(searchModel)
 						.singleSelection()
 						.columns(20)                      // Field width
 						.upperCase(true)                  // Force uppercase
@@ -155,7 +161,8 @@ final class FrameworkUIDemo {
 						.entityType(Customer.TYPE)
 						.connectionProvider(connectionProvider)
 						.build();
-		EntitySearchField searchField = EntitySearchField.builder(searchModel)
+		EntitySearchField searchField = EntitySearchField.builder()
+						.model(searchModel)
 						.multiSelection()
 						.build();
 
@@ -178,7 +185,8 @@ final class FrameworkUIDemo {
 		SwingEntityEditModel editModel = new SwingEntityEditModel(Invoice.TYPE, connectionProvider);
 
 		ComponentValue<Entity, EntitySearchField> searchFieldValue =
-						EntitySearchField.builder(searchModel)
+						EntitySearchField.builder()
+										.model(searchModel)
 										.singleSelection()
 										.buildValue();
 
@@ -199,7 +207,8 @@ final class FrameworkUIDemo {
 						.connectionProvider(connectionProvider)
 						.build();
 
-		EntitySearchField searchField = EntitySearchField.builder(searchModel)
+		EntitySearchField searchField = EntitySearchField.builder()
+						.model(searchModel)
 						.multiSelection()
 						.searchIndicator(SearchIndicator.PROGRESS_BAR)
 						.build();

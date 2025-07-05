@@ -607,14 +607,16 @@ public final class EntityComponents {
 
 		@Override
 		public EntitySearchField.MultiSelectionBuilder multiSelection() {
-			return EntitySearchField.builder(searchModel)
+			return EntitySearchField.builder()
+							.model(searchModel)
 							.multiSelection()
 							.toolTipText(foreignKeyDefinition.description().orElse(null));
 		}
 
 		@Override
 		public EntitySearchField.SingleSelectionBuilder singleSelection() {
-			return EntitySearchField.builder(searchModel)
+			return EntitySearchField.builder()
+							.model(searchModel)
 							.singleSelection()
 							.toolTipText(foreignKeyDefinition.description().orElse(null));
 		}

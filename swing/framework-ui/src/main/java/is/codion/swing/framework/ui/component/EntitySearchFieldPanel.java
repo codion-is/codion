@@ -327,7 +327,9 @@ public final class EntitySearchFieldPanel extends JPanel {
 					extends AbstractBuilder<Set<Entity>, MultiSelectionBuilder> implements MultiSelectionBuilder {
 
 		private DefaultMultiSelectionBuilder(EntitySearchModel searchModel, Supplier<EntityEditPanel> editPanel) {
-			super(EntitySearchField.builder(searchModel).multiSelection(), editPanel);
+			super(EntitySearchField.builder()
+							.model(searchModel)
+							.multiSelection(), editPanel);
 		}
 
 		@Override
@@ -340,7 +342,9 @@ public final class EntitySearchFieldPanel extends JPanel {
 					extends AbstractBuilder<Entity, SingleSelectionBuilder> implements SingleSelectionBuilder {
 
 		private DefaultSingleSelectionBuilder(EntitySearchModel searchModel, Supplier<EntityEditPanel> editPanel) {
-			super(EntitySearchField.builder(searchModel).singleSelection(), editPanel);
+			super(EntitySearchField.builder()
+							.model(searchModel)
+							.singleSelection(), editPanel);
 		}
 
 		@Override
