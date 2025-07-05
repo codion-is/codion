@@ -244,10 +244,10 @@ public interface FilterModel<T> {
 		void filter();
 
 		/**
-		 * @return a new {@link Builder.RefresherStage} instance
+		 * @return a new {@link Builder.RefresherBuilder} instance
 		 */
-		static Builder.RefresherStage builder() {
-			return DefaultFilterModelItems.REFRESHER_STAGE;
+		static Builder.RefresherBuilder builder() {
+			return DefaultFilterModelItems.REFRESHER;
 		}
 
 		/**
@@ -257,34 +257,34 @@ public interface FilterModel<T> {
 		interface Builder<T> {
 
 			/**
-			 * Provides a {@link SelectionStage}
+			 * Provides a {@link SelectionBuilder}
 			 */
-			interface RefresherStage {
+			interface RefresherBuilder {
 
 				/**
 				 * @param refresher the item refresher to use
 				 * @param <T> the item type
-				 * @return a new {@link Builder.SelectionStage} instance
+				 * @return a new {@link SelectionBuilder} instance
 				 */
-				<T> SelectionStage<T> refresher(Function<Items<T>, Refresher<T>> refresher);
+				<T> SelectionBuilder<T> refresher(Function<Items<T>, Refresher<T>> refresher);
 			}
 
 			/**
 			 * @param <T> the item type
 			 */
-			interface SelectionStage<T> {
+			interface SelectionBuilder<T> {
 
 				/**
 				 * @param selection provides the {@link MultiSelection} instance to use
 				 * @return the next stage
 				 */
-				SortStage<T> selection(Function<VisibleItems<T>, MultiSelection<T>> selection);
+				SortBuilder<T> selection(Function<VisibleItems<T>, MultiSelection<T>> selection);
 			}
 
 			/**
 			 * @param <T> the item type
 			 */
-			interface SortStage<T> {
+			interface SortBuilder<T> {
 
 				/**
 				 * @param sort the {@link Sort} instance to use

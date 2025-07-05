@@ -61,13 +61,13 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefini
 		return true;
 	}
 
-	static final class DefaultValueProviderStage<T, B extends DerivedAttributeDefinition.Builder<T, B>>
-					implements DerivedAttributeDefinition.Builder.ProviderStage<T, B> {
+	static final class DefaultProviderBuilder<T, B extends DerivedAttributeDefinition.Builder<T, B>>
+					implements DerivedAttributeDefinition.Builder.ProviderBuilder<T, B> {
 
 		private final Attribute<T> attribute;
 		private final List<Attribute<?>> sources;
 
-		DefaultValueProviderStage(Attribute<T> attribute, List<Attribute<?>> sources) {
+		DefaultProviderBuilder(Attribute<T> attribute, List<Attribute<?>> sources) {
 			this.attribute = requireNonNull(attribute);
 			this.sources = requireNonNull(sources);
 		}

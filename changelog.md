@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.40
+### is.codion
+- Builder step class names now consistently end with Builder, with one exception.
 ### is.codion.common.core
 - Unit tests improved.
 - DefaultValue no longer exposes Lock interface to subclasses.

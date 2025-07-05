@@ -28,7 +28,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultCount implements Count, Serializable {
 
-	static final Builder.WhereStage WHERE_STAGE = new DefaultWhereStage();
+	static final Builder.WhereBuilder WHERE = new DefaultWhereBuilder();
 
 	@Serial
 	private static final long serialVersionUID = 1;
@@ -58,7 +58,7 @@ final class DefaultCount implements Count, Serializable {
 						", having=" + having + "}";
 	}
 
-	private static final class DefaultWhereStage implements Builder.WhereStage {
+	private static final class DefaultWhereBuilder implements Builder.WhereBuilder {
 
 		@Override
 		public Builder where(Condition where) {

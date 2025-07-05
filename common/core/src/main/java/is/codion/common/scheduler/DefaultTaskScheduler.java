@@ -34,7 +34,7 @@ final class DefaultTaskScheduler implements TaskScheduler {
 
 	private static final Validator<Integer> INTERVAL_VALIDATOR = new IntervalValidator();
 
-	static final Builder.TaskStep TASK_STEP = new DefaultTaskStep();
+	static final Builder.TaskBuilder TASK = new DefaultTaskBuilder();
 
 	private final Lock lock = new Lock() {};
 	private final Runnable task;
@@ -103,7 +103,7 @@ final class DefaultTaskScheduler implements TaskScheduler {
 		}
 	}
 
-	private static final class DefaultTaskStep implements Builder.TaskStep {
+	private static final class DefaultTaskBuilder implements Builder.TaskBuilder {
 
 		@Override
 		public Builder task(Runnable task) {

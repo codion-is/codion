@@ -53,7 +53,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultFilterModelItems<R> implements Items<R> {
 
-	static final Builder.RefresherStage REFRESHER_STAGE = new DefaultFilterModelItems.DefaultRefresherStage();
+	static final Builder.RefresherBuilder REFRESHER = new DefaultRefresherBuilder();
 
 	private final Lock lock = new Lock() {};
 
@@ -552,35 +552,35 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 	}
 
-	private static final class DefaultRefresherStage implements Builder.RefresherStage {
+	private static final class DefaultRefresherBuilder implements Builder.RefresherBuilder {
 
 		@Override
-		public <T> Builder.SelectionStage<T> refresher(Function<Items<T>, Refresher<T>> refresher) {
-			return new DefaultSelectionStage<>(requireNonNull(refresher));
+		public <T> Builder.SelectionBuilder<T> refresher(Function<Items<T>, Refresher<T>> refresher) {
+			return new DefaultSelectionBuilder<>(requireNonNull(refresher));
 		}
 	}
 
-	private static final class DefaultSelectionStage<T> implements Builder.SelectionStage<T> {
+	private static final class DefaultSelectionBuilder<T> implements Builder.SelectionBuilder<T> {
 
 		private final Function<Items<T>, Refresher<T>> refresher;
 
-		private DefaultSelectionStage(Function<Items<T>, Refresher<T>> refresher) {
+		private DefaultSelectionBuilder(Function<Items<T>, Refresher<T>> refresher) {
 			this.refresher = refresher;
 		}
 
 		@Override
-		public Builder.SortStage<T> selection(Function<VisibleItems<T>, MultiSelection<T>> selection) {
-			return new DefaultSortStage<>(refresher, requireNonNull(selection));
+		public Builder.SortBuilder<T> selection(Function<VisibleItems<T>, MultiSelection<T>> selection) {
+			return new DefaultSortBuilder<>(refresher, requireNonNull(selection));
 		}
 	}
 
-	private static final class DefaultSortStage<T> implements Builder.SortStage<T> {
+	private static final class DefaultSortBuilder<T> implements Builder.SortBuilder<T> {
 
 		private final Function<Items<T>, Refresher<T>> refresher;
 		private final Function<VisibleItems<T>, MultiSelection<T>> selectionFunction;
 
-		private DefaultSortStage(Function<Items<T>, Refresher<T>> refresher,
-														 Function<VisibleItems<T>, MultiSelection<T>> selection) {
+		private DefaultSortBuilder(Function<Items<T>, Refresher<T>> refresher,
+															 Function<VisibleItems<T>, MultiSelection<T>> selection) {
 			this.refresher = refresher;
 			this.selectionFunction = selection;
 		}

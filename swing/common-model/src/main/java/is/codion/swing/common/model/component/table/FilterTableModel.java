@@ -95,8 +95,8 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	 * Instantiates a new table model builder.
 	 * @return a new builder instance
 	 */
-	static Builder.Columns builder() {
-		return new DefaultFilterTableModel.DefaultColumns();
+	static Builder.ColumnsBuilder builder() {
+		return new DefaultFilterTableModel.DefaultColumnsBuilder();
 	}
 
 	/**
@@ -150,7 +150,7 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		/**
 		 * Provides a {@link Builder} instance
 		 */
-		interface Columns {
+		interface ColumnsBuilder {
 
 			/**
 			 * @param <R> the type representing rows

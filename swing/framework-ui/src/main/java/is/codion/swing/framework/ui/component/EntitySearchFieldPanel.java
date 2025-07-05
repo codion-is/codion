@@ -82,8 +82,8 @@ public final class EntitySearchFieldPanel extends JPanel {
 	 * @param entitySearchModel the search model
 	 * @return a new builder factory instance
 	 */
-	public static Builder.EditPanel builder(EntitySearchModel entitySearchModel) {
-		return new DefaultEditPanel(requireNonNull(entitySearchModel));
+	public static Builder.EditPanelBuilder builder(EntitySearchModel entitySearchModel) {
+		return new DefaultEditPanelBuilder(requireNonNull(entitySearchModel));
 	}
 
 	/**
@@ -94,7 +94,7 @@ public final class EntitySearchFieldPanel extends JPanel {
 		/**
 		 * Provides a {@link Builder}
 		 */
-		interface EditPanel {
+		interface EditPanelBuilder {
 
 			/**
 			 * @param editPanel the edit panel supplier
@@ -288,11 +288,11 @@ public final class EntitySearchFieldPanel extends JPanel {
 		}
 	}
 
-	private static class DefaultEditPanel implements Builder.EditPanel {
+	private static class DefaultEditPanelBuilder implements Builder.EditPanelBuilder {
 
 		private final EntitySearchModel entitySearchModel;
 
-		private DefaultEditPanel(EntitySearchModel entitySearchModel) {
+		private DefaultEditPanelBuilder(EntitySearchModel entitySearchModel) {
 			this.entitySearchModel = entitySearchModel;
 		}
 

@@ -681,11 +681,11 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	/**
-	 * Instantiates a new {@link FilterTable.Builder.Model}
-	 * @return a new {@link FilterTable.Builder.Model} instance
+	 * Instantiates a new {@link Builder.ModelBuilder}
+	 * @return a new {@link Builder.ModelBuilder} instance
 	 */
-	public static Builder.Model builder() {
-		return new DefaultModel();
+	public static Builder.ModelBuilder builder() {
+		return new DefaultModelBuilder();
 	}
 
 	@Override
@@ -1108,20 +1108,20 @@ public final class FilterTable<R, C> extends JTable {
 		/**
 		 * Provides a {@link Builder} instance based on a given table model
 		 */
-		interface Model {
+		interface ModelBuilder {
 
 			/**
 			 * @param model the table model
 			 * @return a {@link Builder} based on the given columns
 			 */
-			<R, C> Columns<R, C> model(FilterTableModel<R, C> model);
+			<R, C> ColumnsBuilder<R, C> model(FilterTableModel<R, C> model);
 		}
 
 		/**
 		 * @param <R> the type representing rows
 		 * @param <C> the type used to identify columns
 		 */
-		interface Columns<R, C> {
+		interface ColumnsBuilder<R, C> {
 
 			/**
 			 * @param columns the columns
@@ -1335,19 +1335,19 @@ public final class FilterTable<R, C> extends JTable {
 		String get();
 	}
 
-	private static class DefaultModel implements Builder.Model {
+	private static class DefaultModelBuilder implements Builder.ModelBuilder {
 
 		@Override
-		public <R, C> Builder.Columns<R, C> model(FilterTableModel<R, C> model) {
-			return new DefaultColumns<>(requireNonNull(model));
+		public <R, C> Builder.ColumnsBuilder<R, C> model(FilterTableModel<R, C> model) {
+			return new DefaultColumnsBuilder<>(requireNonNull(model));
 		}
 	}
 
-	private static class DefaultColumns<R, C> implements Builder.Columns<R, C> {
+	private static class DefaultColumnsBuilder<R, C> implements Builder.ColumnsBuilder<R, C> {
 
 		private final FilterTableModel<R, C> tableModel;
 
-		private DefaultColumns(FilterTableModel<R, C> tableModel) {
+		private DefaultColumnsBuilder(FilterTableModel<R, C> tableModel) {
 			this.tableModel = tableModel;
 		}
 

@@ -177,10 +177,10 @@ public interface DerivedAttributeDefinition<T> extends AttributeDefinition<T> {
 		DerivedAttributeDefinition.Builder<T, B> cached(boolean cached);
 
 		/**
-		 * The first stage in building a {@link DerivedAttributeDefinition}
+		 * The first step in building a {@link DerivedAttributeDefinition}
 		 * @param <T> the attribute value type
 		 */
-		interface ProviderStage<T, B extends Builder<T, B>> {
+		interface ProviderBuilder<T, B extends Builder<T, B>> {
 
 			/**
 			 * @param provider a {@link DerivedAttribute.Provider} instance responsible for providing the derived value

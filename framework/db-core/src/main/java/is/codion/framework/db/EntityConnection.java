@@ -1078,7 +1078,7 @@ public interface EntityConnection extends AutoCloseable {
 			/**
 			 * Provides a {@link Builder}.
 			 */
-			interface WhereStage {
+			interface WhereBuilder {
 
 				/**
 				 * @param where the WHERE condition
@@ -1133,10 +1133,10 @@ public interface EntityConnection extends AutoCloseable {
 		}
 
 		/**
-		 * @return a {@link Count.Builder.WhereStage} instance
+		 * @return a {@link Builder.WhereBuilder} instance
 		 */
-		static Builder.WhereStage builder() {
-			return DefaultCount.WHERE_STAGE;
+		static Builder.WhereBuilder builder() {
+			return DefaultCount.WHERE;
 		}
 	}
 }

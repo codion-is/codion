@@ -296,8 +296,8 @@ public interface Attribute<T> {
 		 * Instantiates a {@link DerivedAttributeDefinition.Builder} instance, which value is derived from zero or more source attributes.
 		 * @param from the attributes the value is derived from
 		 * @param <B> the builder type
-		 * @return a new {@link Builder.ProviderStage}
+		 * @return a new {@link Builder.ProviderBuilder}
 		 */
-		<B extends DerivedAttributeDefinition.Builder<T, B>> Builder.ProviderStage<T, B> derived(Attribute<?>... from);
+		<B extends DerivedAttributeDefinition.Builder<T, B>> Builder.ProviderBuilder<T, B> derived(Attribute<?>... from);
 	}
 }

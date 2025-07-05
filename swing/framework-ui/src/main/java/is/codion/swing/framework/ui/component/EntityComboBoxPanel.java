@@ -76,19 +76,19 @@ public final class EntityComboBoxPanel extends JPanel {
 
 	/**
 	 * @param comboBoxModel the combo box model
-	 * @return a new {@link Builder.EditPanel} instance
+	 * @return a new {@link Builder.EditPanelBuilder} instance
 	 */
-	public static Builder.EditPanel builder(EntityComboBoxModel comboBoxModel) {
-		return new DefaultEditPanel(requireNonNull(comboBoxModel), null);
+	public static Builder.EditPanelBuilder builder(EntityComboBoxModel comboBoxModel) {
+		return new DefaultEditPanelBuilder(requireNonNull(comboBoxModel), null);
 	}
 
 	/**
 	 * @param comboBoxModel the combo box model
 	 * @param linkedValue the linked value
-	 * @return a new {@link Builder.EditPanel} instance
+	 * @return a new {@link Builder.EditPanelBuilder} instance
 	 */
-	public static Builder.EditPanel builder(EntityComboBoxModel comboBoxModel, Value<Entity> linkedValue) {
-		return new DefaultEditPanel(requireNonNull(comboBoxModel), requireNonNull(linkedValue));
+	public static Builder.EditPanelBuilder builder(EntityComboBoxModel comboBoxModel, Value<Entity> linkedValue) {
+		return new DefaultEditPanelBuilder(requireNonNull(comboBoxModel), requireNonNull(linkedValue));
 	}
 
 	/**
@@ -99,7 +99,7 @@ public final class EntityComboBoxPanel extends JPanel {
 		/**
 		 * Provides a {@link Builder}
 		 */
-		interface EditPanel {
+		interface EditPanelBuilder {
 
 			/**
 			 * @param editPanel the edit panel supplier
@@ -173,12 +173,12 @@ public final class EntityComboBoxPanel extends JPanel {
 		}
 	}
 
-	private static class DefaultEditPanel implements Builder.EditPanel {
+	private static class DefaultEditPanelBuilder implements Builder.EditPanelBuilder {
 
 		private final EntityComboBoxModel comboBoxModel;
 		private final Value<Entity> linkedValue;
 
-		private DefaultEditPanel(EntityComboBoxModel comboBoxModel, Value<Entity> linkedValue) {
+		private DefaultEditPanelBuilder(EntityComboBoxModel comboBoxModel, Value<Entity> linkedValue) {
 			this.comboBoxModel = comboBoxModel;
 			this.linkedValue = linkedValue;
 		}
