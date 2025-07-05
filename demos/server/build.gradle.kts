@@ -33,10 +33,20 @@ tasks.withType<JavaExec>().configureEach {
 application {
     //no mainModule, since we dont want to run this on the module path, due to non-modular demo domain model dependencies
     mainClass = "is.codion.framework.server.EntityServer"
+
+    // H2Database does not allow path traversal in init scripts
+    val scriptPaths = listOf(
+        project(":demo-employees").file("src/main/sql/create_schema.sql"),
+        project(":demo-chinook").file("src/main/sql/create_schema.sql"),
+        project(":demo-petclinic").file("src/main/sql/create_schema.sql"),
+        project(":demo-petstore").file("src/main/sql/create_schema.sql"),
+        project(":demo-world").file("src/main/sql/create_schema.sql")
+    ).joinToString(",") { it.absolutePath }
+
     applicationDefaultJvmArgs = listOf(
         "-Xmx512m",
         "-Dcodion.db.url=jdbc:h2:mem:h2db",
-        "-Dcodion.db.initScripts=../employees/src/main/sql/create_schema.sql,../chinook/src/main/sql/create_schema.sql,../petclinic/src/main/sql/create_schema.sql,../petstore/src/main/sql/create_schema.sql,../world/src/main/sql/create_schema.sql",
+        "-Dcodion.db.initScripts=$scriptPaths",
         "-Dcodion.db.countQueries=true",
         "-Dcodion.server.connectionPoolUsers=scott:tiger",
         "-Dcodion.server.port=2222",

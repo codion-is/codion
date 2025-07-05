@@ -47,6 +47,7 @@ tasks.register<Jar>("domainJar") {
     archiveBaseName = archiveBaseName.get() + "-domain"
     from(sourceSets.main.get().output)
     include("**/domain/**/*")
+    include("**/migration/**/*")
     include("**/server/**/*")
     include("**/services/**/*")
     include("**/i18n/**/*")
