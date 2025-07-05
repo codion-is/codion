@@ -22,15 +22,17 @@ import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
-import is.codion.common.logging.MethodLogger;
+import is.codion.common.logging.MethodTrace;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.local.LocalEntityConnection;
+import is.codion.framework.db.local.logger.MethodLogger;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -39,6 +41,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
@@ -46,6 +50,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.joining;
 
 final class LocalConnectionHandler implements InvocationHandler {
 
@@ -85,7 +92,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 		try {
 			if (connectionPool == null) {
 				localEntityConnection = LocalEntityConnection.localEntityConnection(database, domain, remoteClient.databaseUser());
-				localEntityConnection.methodLogger(methodLogger);
+				((MethodLogger.Loggable) localEntityConnection).methodLogger(methodLogger);
 			}
 			else {
 				poolEntityConnection = LocalEntityConnection.localEntityConnection(database, domain, connectionPool.connection(remoteClient.databaseUser()));
@@ -152,10 +159,10 @@ final class LocalConnectionHandler implements InvocationHandler {
 	}
 
 	private void logExit(String methodName, Exception exception) {
-		if (methodLogger.isEnabled()) {
-			MethodLogger.Entry entry = methodLogger.exit(methodName, exception);
+		MethodTrace trace = methodLogger.exit(methodName, exception);
+		if (trace != null) {
 			StringBuilder messageBuilder = new StringBuilder(remoteClient.toString()).append("\n");
-			entry.appendTo(messageBuilder);
+			trace.appendTo(messageBuilder);
 			LOG.info(messageBuilder.toString());
 		}
 		MDC.remove(LOG_IDENTIFIER_PROPERTY);
@@ -221,7 +228,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 				methodLogger.enter(FETCH_CONNECTION, userDescription);
 			}
 			poolEntityConnection.databaseConnection().setConnection(connectionPool.connection(remoteClient.databaseUser()));
-			poolEntityConnection.methodLogger(methodLogger);
+			((MethodLogger.Loggable) poolEntityConnection).methodLogger(methodLogger);
 		}
 		catch (DatabaseException ex) {
 			exception = ex;
@@ -245,7 +252,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 					methodLogger.enter(CREATE_CONNECTION, userDescription);
 				}
 				localEntityConnection = LocalEntityConnection.localEntityConnection(database, domain, remoteClient.databaseUser());
-				localEntityConnection.methodLogger(methodLogger);
+				((MethodLogger.Loggable) localEntityConnection).methodLogger(methodLogger);
 			}
 			catch (DatabaseException ex) {
 				exception = ex;
@@ -273,7 +280,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 			if (methodLogger.isEnabled()) {
 				methodLogger.enter(RETURN_CONNECTION, userDescription);
 			}
-			poolEntityConnection.methodLogger(null);
+			((MethodLogger.Loggable) poolEntityConnection).methodLogger(null);
 			returnConnectionToPool();
 		}
 		catch (Exception e) {
@@ -383,12 +390,19 @@ final class LocalConnectionHandler implements InvocationHandler {
 	/**
 	 * An implementation tailored for EntityConnections.
 	 */
-	private static final class EntityArgumentToString extends MethodLogger.DefaultArgumentFormatter {
+	private static final class EntityArgumentToString implements MethodLogger.ArgumentFormatter {
+
+		private static final String BRACKET_OPEN = "[";
+		private static final String BRACKET_CLOSE = "]";
 
 		private static final String PREPARE_STATEMENT = "prepareStatement";
 
 		@Override
-		protected String toString(String methodName, Object object) {
+		public String format(String methodName, @Nullable Object object) {
+			return toString(methodName, object);
+		}
+
+		private String toString(String methodName, Object object) {
 			if (ENTITIES.equals(methodName)) {
 				return "";
 			}
@@ -399,8 +413,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 			return toString(object);
 		}
 
-		@Override
-		protected String toString(Object object) {
+		private String toString(Object object) {
 			if (object == null) {
 				return "null";
 			}
@@ -413,8 +426,20 @@ final class LocalConnectionHandler implements InvocationHandler {
 			else if (object instanceof Entity.Key) {
 				return entityKeyToString((Entity.Key) object);
 			}
+			if (object instanceof List) {
+				return toString((List<?>) object);
+			}
+			if (object instanceof Collection) {
+				return toString((Collection<?>) object);
+			}
+			if (object instanceof byte[]) {
+				return "byte[" + ((byte[]) object).length + "]";
+			}
+			if (object.getClass().isArray()) {
+				return toString((Object[]) object);
+			}
 
-			return super.toString(object);
+			return object.toString();
 		}
 
 		private static String entityToString(Entity entity) {
@@ -433,6 +458,42 @@ final class LocalConnectionHandler implements InvocationHandler {
 			builder.deleteCharAt(builder.length() - 1);
 
 			return builder.append("}").toString();
+		}
+
+		private String toString(List<?> arguments) {
+			if (arguments.isEmpty()) {
+				return "";
+			}
+			if (arguments.size() == 1) {
+				return toString(arguments.get(0));
+			}
+
+			return arguments.stream()
+							.map(this::toString)
+							.collect(joining(", ", BRACKET_OPEN, BRACKET_CLOSE));
+		}
+
+		private String toString(Collection<?> arguments) {
+			if (arguments.isEmpty()) {
+				return "";
+			}
+
+			return arguments.stream()
+							.map(this::toString)
+							.collect(joining(", ", BRACKET_OPEN, BRACKET_CLOSE));
+		}
+
+		private String toString(Object[] arguments) {
+			if (arguments.length == 0) {
+				return "";
+			}
+			if (arguments.length == 1) {
+				return toString(arguments[0]);
+			}
+
+			return stream(arguments)
+							.map(this::toString)
+							.collect(joining(", ", BRACKET_OPEN, BRACKET_CLOSE));
 		}
 
 		private static String entityKeyToString(Entity.Key key) {

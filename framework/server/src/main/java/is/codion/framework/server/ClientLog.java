@@ -18,20 +18,20 @@
  */
 package is.codion.framework.server;
 
-import is.codion.common.logging.MethodLogger;
+import is.codion.common.logging.MethodTrace;
 
 import java.util.List;
 import java.util.UUID;
 
 /**
- * Encapsulates a collection of server access log entries and basic connection access info.
+ * Encapsulates a collection of server access log entries.
  */
 public interface ClientLog {
 
 	/**
-	 * @return the log entry list
+	 * @return the method trace list
 	 */
-	List<MethodLogger.Entry> entries();
+	List<MethodTrace> entries();
 
 	/**
 	 * @return the UUID identifying this logs client
@@ -39,12 +39,12 @@ public interface ClientLog {
 	UUID clientId();
 
 	/**
-	 * Instantiates a new ClientLog instance.
+	 * Instantiates a new {@link ClientLog} instance.
 	 * @param clientId the id of the client this log represents
 	 * @param entries the log entries
-	 * @return a new ClientLog instance
+	 * @return a new {@link ClientLog} instance
 	 */
-	static ClientLog clientLog(UUID clientId, List<MethodLogger.Entry> entries) {
+	static ClientLog clientLog(UUID clientId, List<MethodTrace> entries) {
 		return new DefaultClientLog(clientId, entries);
 	}
 }

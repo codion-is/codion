@@ -30,6 +30,8 @@ module is.codion.framework.db.local {
 	requires transitive is.codion.framework.db.core;
 
 	exports is.codion.framework.db.local;
+	exports is.codion.framework.db.local.logger
+					to is.codion.framework.server;
 
 	provides is.codion.framework.db.EntityConnectionProvider.Builder
 					with is.codion.framework.db.local.DefaultLocalEntityConnectionProviderBuilder;

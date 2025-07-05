@@ -18,7 +18,7 @@
  */
 package is.codion.tools.monitor.model;
 
-import is.codion.common.logging.MethodLogger;
+import is.codion.common.logging.MethodTrace;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.state.State;
 import is.codion.framework.server.ClientLog;
@@ -89,9 +89,9 @@ public final class ClientInstanceMonitor {
 			logRootNode.removeAllChildren();
 			if (log != null) {
 				StringBuilder logBuilder = new StringBuilder();
-				for (MethodLogger.Entry entry : log.entries()) {
+				for (MethodTrace entry : log.entries()) {
 					entry.appendTo(logBuilder);
-					DefaultMutableTreeNode entryNode = new DefaultMutableTreeNode(entryString(entry));
+					DefaultMutableTreeNode entryNode = new DefaultMutableTreeNode(traceString(entry));
 					addChildEntries(entryNode, entry.children());
 					logRootNode.add(entryNode);
 				}
@@ -139,19 +139,19 @@ public final class ClientInstanceMonitor {
 		loggingEnabled.addConsumer(this::setLoggingEnabled);
 	}
 
-	private static void addChildEntries(DefaultMutableTreeNode entryNode, List<MethodLogger.Entry> childEntries) {
-		for (MethodLogger.Entry entry : childEntries) {
-			DefaultMutableTreeNode subEntry = new DefaultMutableTreeNode(entryString(entry));
-			addChildEntries(subEntry, entry.children());
-			entryNode.add(subEntry);
+	private static void addChildEntries(DefaultMutableTreeNode traceNode, List<MethodTrace> childTraces) {
+		for (MethodTrace trace : childTraces) {
+			DefaultMutableTreeNode subEntry = new DefaultMutableTreeNode(traceString(trace));
+			addChildEntries(subEntry, trace.children());
+			traceNode.add(subEntry);
 		}
 	}
 
-	private static String entryString(MethodLogger.Entry entry) {
-		StringBuilder builder = new StringBuilder(entry.method()).append(" [")
-						.append(MICROSECOND_FORMAT.format(TimeUnit.NANOSECONDS.toMicros(entry.duration())))
+	private static String traceString(MethodTrace trace) {
+		StringBuilder builder = new StringBuilder(trace.method()).append(" [")
+						.append(MICROSECOND_FORMAT.format(TimeUnit.NANOSECONDS.toMicros(trace.duration())))
 						.append(" μs").append("]");
-		String enterMessage = entry.message();
+		String enterMessage = trace.message();
 		if (enterMessage != null) {
 			builder.append(": ").append(enterMessage.replace('\n', ' '));
 		}

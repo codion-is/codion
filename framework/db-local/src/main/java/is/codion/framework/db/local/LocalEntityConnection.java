@@ -22,15 +22,12 @@ import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.result.ResultIterator;
-import is.codion.common.logging.MethodLogger;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.condition.Condition;
-
-import org.jspecify.annotations.Nullable;
 
 import java.sql.Connection;
 
@@ -148,11 +145,6 @@ public interface LocalEntityConnection extends EntityConnection {
 	 * @param queryTimeout the query timeout in seconds
 	 */
 	void defaultQueryTimeout(int queryTimeout);
-
-	/**
-	 * @param methodLogger the MethodLogger to use, null to disable method logging
-	 */
-	void methodLogger(@Nullable MethodLogger methodLogger);
 
 	/**
 	 * Constructs a new LocalEntityConnection instance

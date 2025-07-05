@@ -7,6 +7,8 @@ Codion Change Log
 - DefaultValue no longer exposes Lock interface to subclasses.
 - DefaultEvent.observer field now volatile.
 - MethodLogger.noOpLogger() added.
+- MethodLogger.Entry moved to package level as MethodTrace.
+- MethodLogger moved to framework.db.local.logger package, now internal only.
 ### is.codion.common.db
 - Unit tests improved.
 - DatabaseConnection.getMethodLogger() now returns MethodLogger.noOpLogger() in case of no logger.
@@ -28,6 +30,7 @@ Codion Change Log
 - HttpEntityConnection.DISCONNECT_ON_CLOSE configuration value added.
 ### is.codion.framework.db.local
 - Unit tests improved.
+- LocalEntityConnection.methodLogger() removed, MethodLogger no longer public api.
 ### is.codion.framework.model
 - Unit tests improved.
 ### is.codion.swing.common.model

@@ -31,10 +31,10 @@ import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.db.result.ResultIterator;
-import is.codion.common.logging.MethodLogger;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.local.logger.MethodLogger;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -74,10 +74,10 @@ import java.util.stream.Collectors;
 
 import static is.codion.common.db.connection.DatabaseConnection.SQL_STATE_NO_DATA;
 import static is.codion.common.db.database.Database.Operation.*;
-import static is.codion.common.logging.MethodLogger.noOpLogger;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.db.local.Queries.*;
+import static is.codion.framework.db.local.logger.MethodLogger.noOpLogger;
 import static is.codion.framework.domain.entity.Entity.Key;
 import static is.codion.framework.domain.entity.Entity.Key.groupByType;
 import static is.codion.framework.domain.entity.Entity.groupByType;
@@ -91,7 +91,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.*;
 
-final class DefaultLocalEntityConnection implements LocalEntityConnection {
+final class DefaultLocalEntityConnection implements LocalEntityConnection, MethodLogger.Loggable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultLocalEntityConnection.class);
 

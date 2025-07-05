@@ -19,7 +19,7 @@
 package is.codion.framework.server;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.logging.MethodLogger;
+import is.codion.common.logging.MethodTrace;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.RemoteClient;
@@ -197,7 +197,7 @@ public class EntityServerTest {
 
 		ClientLog log = admin.clientLog(connectionRequestTwo.clientId());
 
-		MethodLogger.Entry entry = log.entries().get(0);
+		MethodTrace entry = log.entries().get(0);
 		assertEquals("select", entry.method());
 		assertTrue(entry.duration() >= 0);
 

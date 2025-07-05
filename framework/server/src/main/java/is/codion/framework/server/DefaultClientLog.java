@@ -18,7 +18,7 @@
  */
 package is.codion.framework.server;
 
-import is.codion.common.logging.MethodLogger;
+import is.codion.common.logging.MethodTrace;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -33,15 +33,15 @@ final class DefaultClientLog implements ClientLog, Serializable {
 	private static final long serialVersionUID = 1;
 
 	private final UUID clientId;
-	private final List<MethodLogger.Entry> entries;
+	private final List<MethodTrace> entries;
 
-	DefaultClientLog(UUID clientId, List<MethodLogger.Entry> entries) {
+	DefaultClientLog(UUID clientId, List<MethodTrace> entries) {
 		this.clientId = requireNonNull(clientId);
 		this.entries = requireNonNull(entries);
 	}
 
 	@Override
-	public List<MethodLogger.Entry> entries() {
+	public List<MethodTrace> entries() {
 		return entries;
 	}
 
