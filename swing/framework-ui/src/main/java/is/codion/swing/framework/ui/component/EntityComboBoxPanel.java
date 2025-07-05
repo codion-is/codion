@@ -19,7 +19,6 @@
 package is.codion.swing.framework.ui.component;
 
 import is.codion.common.state.ObservableState;
-import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
@@ -75,26 +74,28 @@ public final class EntityComboBoxPanel extends JPanel {
 	}
 
 	/**
-	 * @param comboBoxModel the combo box model
-	 * @return a new {@link Builder.EditPanelBuilder} instance
+	 * @return a {@link Builder.ModelBuilder}
 	 */
-	public static Builder.EditPanelBuilder builder(EntityComboBoxModel comboBoxModel) {
-		return new DefaultEditPanelBuilder(requireNonNull(comboBoxModel), null);
-	}
-
-	/**
-	 * @param comboBoxModel the combo box model
-	 * @param linkedValue the linked value
-	 * @return a new {@link Builder.EditPanelBuilder} instance
-	 */
-	public static Builder.EditPanelBuilder builder(EntityComboBoxModel comboBoxModel, Value<Entity> linkedValue) {
-		return new DefaultEditPanelBuilder(requireNonNull(comboBoxModel), requireNonNull(linkedValue));
+	public static Builder.ModelBuilder builder() {
+		return DefaultBuilder.MODEL;
 	}
 
 	/**
 	 * A builder for a {@link EntityComboBoxPanel}
 	 */
 	public interface Builder extends ComponentBuilder<Entity, EntityComboBoxPanel, Builder> {
+
+		/**
+		 * Provides a {@link EditPanelBuilder}
+		 */
+		interface ModelBuilder {
+
+			/**
+			 * @param model the search model
+			 * @return a {@link EntityComboBoxPanel.Builder.EditPanelBuilder}
+			 */
+			EditPanelBuilder model(EntityComboBoxModel model);
+		}
 
 		/**
 		 * Provides a {@link Builder}
@@ -173,23 +174,31 @@ public final class EntityComboBoxPanel extends JPanel {
 		}
 	}
 
+	private static final class DefaultModelBuilder implements EntityComboBoxPanel.Builder.ModelBuilder {
+
+		@Override
+		public EntityComboBoxPanel.Builder.EditPanelBuilder model(EntityComboBoxModel model) {
+			return new EntityComboBoxPanel.DefaultEditPanelBuilder(requireNonNull(model));
+		}
+	}
+
 	private static class DefaultEditPanelBuilder implements Builder.EditPanelBuilder {
 
 		private final EntityComboBoxModel comboBoxModel;
-		private final Value<Entity> linkedValue;
 
-		private DefaultEditPanelBuilder(EntityComboBoxModel comboBoxModel, Value<Entity> linkedValue) {
+		private DefaultEditPanelBuilder(EntityComboBoxModel comboBoxModel) {
 			this.comboBoxModel = comboBoxModel;
-			this.linkedValue = linkedValue;
 		}
 
 		@Override
 		public Builder editPanel(Supplier<EntityEditPanel> editPanel) {
-			return new DefaultBuilder(comboBoxModel, editPanel, linkedValue);
+			return new DefaultBuilder(comboBoxModel, editPanel);
 		}
 	}
 
 	private static final class DefaultBuilder extends AbstractComponentBuilder<Entity, EntityComboBoxPanel, Builder> implements Builder {
+
+		private static final ModelBuilder MODEL = new DefaultModelBuilder();
 
 		private final EntityComboBox.Builder entityComboBoxBuilder;
 
@@ -198,8 +207,8 @@ public final class EntityComboBoxPanel extends JPanel {
 		private boolean buttonsFocusable;
 		private String buttonLocation = defaultButtonLocation();
 
-		private DefaultBuilder(EntityComboBoxModel comboBoxModel, Supplier<EntityEditPanel> editPanelSupplier, Value<Entity> linkedValue) {
-			super(linkedValue);
+		private DefaultBuilder(EntityComboBoxModel comboBoxModel, Supplier<EntityEditPanel> editPanelSupplier) {
+			super(null);
 			this.entityComboBoxBuilder = EntityComboBox.builder()
 							.model(comboBoxModel)
 							.editPanel(editPanelSupplier);
