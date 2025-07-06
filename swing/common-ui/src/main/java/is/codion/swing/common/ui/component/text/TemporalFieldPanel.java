@@ -215,7 +215,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 			if (!supports(valueClass)) {
 				throw new IllegalArgumentException("Unsupported temporal type: " + valueClass);
 			}
-			temporalFieldBuilder = TemporalField.builder(valueClass);
+			temporalFieldBuilder = TemporalField.builder().temporalClass(valueClass);
 		}
 
 		@Override

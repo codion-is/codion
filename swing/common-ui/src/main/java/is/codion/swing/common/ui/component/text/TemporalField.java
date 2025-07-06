@@ -65,12 +65,14 @@ import static java.util.ResourceBundle.getBundle;
  * <p>
  * Use {@link #get()} and {@link #set(Temporal)} for accessing and setting the value.
  * @param <T> the temporal type
- * @see #builder(Class)
+ * @see #builder()
  */
 public final class TemporalField<T extends Temporal> extends JFormattedTextField {
 
 	private static final MessageBundle MESSAGES =
 					messageBundle(TemporalField.class, getBundle(TemporalField.class.getName()));
+
+	private static final Builder.TemporalClassBuilder TEMPORAL_CLASS = new DefaultTemporalClassBuilder();
 
 	/**
 	 * The controls.
@@ -190,15 +192,10 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	}
 
 	/**
-	 * A builder for {@link TemporalField}.
-	 * This builder supports: {@link LocalTime}, {@link LocalDate}, {@link LocalDateTime}, {@link OffsetDateTime},<br>
-	 * for other {@link Temporal} types use {@link Builder#dateTimeParser} to supply a {@link DateTimeParser} instance.
-	 * @param temporalClass the temporal class
-	 * @param <T> the temporal type
-	 * @return a new builder
+	 * @return a {@link Builder.TemporalClassBuilder}
 	 */
-	public static <T extends Temporal> Builder<T> builder(Class<T> temporalClass) {
-		return new DefaultBuilder<>(temporalClass);
+	public static Builder.TemporalClassBuilder builder() {
+		return TEMPORAL_CLASS;
 	}
 
 	private void increment() {
@@ -308,6 +305,22 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	public interface Builder<T extends Temporal> extends TextFieldBuilder<T, TemporalField<T>, Builder<T>> {
 
 		/**
+		 * Provides a {@link Builder}
+		 */
+		interface TemporalClassBuilder {
+
+			/**
+			 * A builder for {@link TemporalField}.
+			 * This builder supports: {@link LocalTime}, {@link LocalDate}, {@link LocalDateTime}, {@link OffsetDateTime},<br>
+			 * for other {@link Temporal} types use {@link Builder#dateTimeParser} to supply a {@link DateTimeParser} instance.
+			 * @param temporalClass the temporal class
+			 * @param <T> the temporal type
+			 * @return a new builder
+			 */
+			<T extends Temporal> Builder<T> temporalClass(Class<T> temporalClass);
+		}
+
+		/**
 		 * @param dateTimePattern the date time pattern
 		 * @return this builder instance
 		 */
@@ -371,6 +384,14 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		 * @throws DateTimeParseException if unable to parse the text
 		 */
 		T parse(CharSequence text, DateTimeFormatter formatter);
+	}
+
+	private static final class DefaultTemporalClassBuilder implements Builder.TemporalClassBuilder {
+
+		@Override
+		public <T extends Temporal> Builder<T> temporalClass(Class<T> temporalClass) {
+			return new DefaultBuilder<>(temporalClass);
+		}
 	}
 
 	private static final class DefaultBuilder<T extends Temporal>

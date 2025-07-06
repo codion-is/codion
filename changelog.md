@@ -85,6 +85,7 @@ Codion Change Log
 - KeyEvents, overloaded builder() methods removed.
 - FontImageIcon.Builder.IkonBuilder added.
 - TextFieldBuilder.ValueClassBuilder added.
+- TemporalField.Builder.TemporalClassBuilder added.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Builder.EntityTypeBuilder and ConnectionProviderBuilder added.
 ### is.codion.swing.framework.ui

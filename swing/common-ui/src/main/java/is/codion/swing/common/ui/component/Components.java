@@ -351,28 +351,28 @@ public final class Components {
 	 * @return a {@link LocalTime} based {@link TemporalField} builder
 	 */
 	public static TemporalField.Builder<LocalTime> localTimeField() {
-		return TemporalField.builder(LocalTime.class);
+		return TemporalField.builder().temporalClass(LocalTime.class);
 	}
 
 	/**
 	 * @return a {@link LocalDate} based {@link TemporalField} builder
 	 */
 	public static TemporalField.Builder<LocalDate> localDateField() {
-		return TemporalField.builder(LocalDate.class);
+		return TemporalField.builder().temporalClass(LocalDate.class);
 	}
 
 	/**
 	 * @return a {@link LocalDateTime} based {@link TemporalField} builder
 	 */
 	public static TemporalField.Builder<LocalDateTime> localDateTimeField() {
-		return TemporalField.builder(LocalDateTime.class);
+		return TemporalField.builder().temporalClass(LocalDateTime.class);
 	}
 
 	/**
 	 * @return a {@link OffsetDateTime} based {@link TemporalField} builder
 	 */
 	public static TemporalField.Builder<OffsetDateTime> offsetDateTimeField() {
-		return TemporalField.builder(OffsetDateTime.class);
+		return TemporalField.builder().temporalClass(OffsetDateTime.class);
 	}
 
 	/**
@@ -381,7 +381,7 @@ public final class Components {
 	 * @return a {@link TemporalField} builder
 	 */
 	public static <T extends Temporal> TemporalField.Builder<T> temporalField(Class<T> temporalClass) {
-		return TemporalField.builder(temporalClass);
+		return TemporalField.builder().temporalClass(temporalClass);
 	}
 
 	/**
