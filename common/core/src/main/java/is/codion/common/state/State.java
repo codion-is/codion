@@ -114,22 +114,14 @@ public interface State extends ObservableState, Value<Boolean> {
 	 * @return a new {@link State} instance
 	 */
 	static State state(boolean value) {
-		return builder(value).build();
+		return builder().value(value).build();
 	}
 
 	/**
 	 * @return a new {@link Builder} instance
 	 */
 	static Builder builder() {
-		return builder(false);
-	}
-
-	/**
-	 * @param value the initial value
-	 * @return a new {@link Builder} instance
-	 */
-	static Builder builder(boolean value) {
-		return new DefaultState.DefaultBuilder(value);
+		return new DefaultState.DefaultBuilder();
 	}
 
 	/**

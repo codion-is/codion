@@ -98,10 +98,12 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		this.valueClass = builder.valueClass;
 		this.format = builder.format;
 		this.dateTimePattern = builder.dateTimePattern;
-		this.caseSensitive = State.builder(builder.caseSensitive)
+		this.caseSensitive = State.builder()
+						.value(builder.caseSensitive)
 						.listener(conditionChanged)
 						.build();
-		this.autoEnable = State.builder(builder.autoEnable)
+		this.autoEnable = State.builder()
+						.value(builder.autoEnable)
 						.listener(autoEnableListener)
 						.build();
 	}

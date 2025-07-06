@@ -305,7 +305,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	private final class DefaultForeignKeyFilter implements ForeignKeyFilter, Predicate<Entity> {
 
 		private final ForeignKey foreignKey;
-		private final State strict = State.builder(true)
+		private final State strict = State.builder()
+						.value(true)
 						.listener(items()::filter)
 						.build();
 

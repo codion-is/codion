@@ -144,9 +144,7 @@ final class DefaultState implements State {
 
 		private final Value.Builder<Boolean, ?> valueBuilder = Value.builder().nonNull(false);
 
-		DefaultBuilder(boolean value) {
-			valueBuilder.value(value);
-		}
+		DefaultBuilder() {}
 
 		@Override
 		public Builder value(@Nullable Boolean value) {

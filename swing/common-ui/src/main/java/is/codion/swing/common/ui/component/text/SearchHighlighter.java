@@ -87,7 +87,8 @@ public final class SearchHighlighter {
 	private SearchHighlighter(DefaultBuilder builder) {
 		this.textComponent = builder.textComponent;
 		this.scrollToRatio = new ScrollToRatio(builder.scrollYRatio, builder.scrollXRatio);
-		this.caseSensitiveState = State.builder(builder.caseSensitive)
+		this.caseSensitiveState = State.builder()
+						.value(builder.caseSensitive)
 						.listener(this::searchAndHighlightResults)
 						.build();
 		customHighlightColor = builder.customHighlightColor;
