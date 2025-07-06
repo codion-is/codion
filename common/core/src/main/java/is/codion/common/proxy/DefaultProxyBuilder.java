@@ -56,22 +56,22 @@ final class DefaultProxyBuilder<T> implements ProxyBuilder<T> {
 	}
 
 	@Override
-	public ProxyBuilder<T> method(String methodName, ProxyMethod<T> proxyMethod) {
-		return method(methodName, emptyList(), proxyMethod);
+	public ProxyBuilder<T> method(String name, ProxyMethod<T> method) {
+		return method(name, emptyList(), method);
 	}
 
 	@Override
-	public ProxyBuilder<T> method(String methodName, Class<?> parameterType, ProxyMethod<T> proxyMethod) {
-		return method(methodName, singletonList(requireNonNull(parameterType)), proxyMethod);
+	public ProxyBuilder<T> method(String name, Class<?> parameterType, ProxyMethod<T> method) {
+		return method(name, singletonList(requireNonNull(parameterType)), method);
 	}
 
 	@Override
-	public ProxyBuilder<T> method(String methodName, List<Class<?>> parameterTypes, ProxyMethod<T> proxyMethod) {
-		requireNonNull(methodName);
+	public ProxyBuilder<T> method(String name, List<Class<?>> parameterTypes, ProxyMethod<T> method) {
+		requireNonNull(name);
 		requireNonNull(parameterTypes);
-		requireNonNull(proxyMethod);
+		requireNonNull(method);
 		try {
-			methodMap.put(findMethod(singletonList(interfaceToProxy), methodName, parameterTypes), proxyMethod);
+			methodMap.put(findMethod(singletonList(interfaceToProxy), name, parameterTypes), method);
 
 			return this;
 		}

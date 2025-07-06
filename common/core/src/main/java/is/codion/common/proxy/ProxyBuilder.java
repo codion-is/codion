@@ -70,29 +70,29 @@ public interface ProxyBuilder<T> {
 
 	/**
 	 * Proxy the given no-argument method with the given proxy method.
-	 * @param methodName the method name
-	 * @param proxyMethod the proxy replacement method
+	 * @param name the method name
+	 * @param method the proxy replacement method
 	 * @return this proxy builder
 	 */
-	ProxyBuilder<T> method(String methodName, ProxyMethod<T> proxyMethod);
+	ProxyBuilder<T> method(String name, ProxyMethod<T> method);
 
 	/**
 	 * Proxy the given single-argument method with the given proxy method.
-	 * @param methodName the method name
+	 * @param name the method name
 	 * @param parameterType the method parameter type
-	 * @param proxyMethod the proxy method
+	 * @param method the proxy method
 	 * @return this proxy builder
 	 */
-	ProxyBuilder<T> method(String methodName, Class<?> parameterType, ProxyMethod<T> proxyMethod);
+	ProxyBuilder<T> method(String name, Class<?> parameterType, ProxyMethod<T> method);
 
 	/**
 	 * Proxy the given method with the given proxy method.
-	 * @param methodName the method name
+	 * @param name the method name
 	 * @param parameterTypes the method parameter types
-	 * @param proxyMethod the proxy method
+	 * @param method the proxy method
 	 * @return this proxy builder
 	 */
-	ProxyBuilder<T> method(String methodName, List<Class<?>> parameterTypes, ProxyMethod<T> proxyMethod);
+	ProxyBuilder<T> method(String name, List<Class<?>> parameterTypes, ProxyMethod<T> method);
 
 	/**
 	 * Builds the Proxy instance.
