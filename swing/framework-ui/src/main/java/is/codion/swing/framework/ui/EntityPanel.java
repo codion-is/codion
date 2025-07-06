@@ -1603,7 +1603,8 @@ public class EntityPanel extends JPanel {
 
 			@Override
 			public JPanel apply(EntityEditPanel editPanel) {
-				return panel(new FlowLayout(horizontalControlLayout() ? FlowLayout.CENTER : FlowLayout.LEADING, 0, 0))
+				return panel()
+								.layout(new FlowLayout(horizontalControlLayout() ? FlowLayout.CENTER : FlowLayout.LEADING, 0, 0))
 								.add(editPanel)
 								.build();
 			}

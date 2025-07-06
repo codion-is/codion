@@ -157,10 +157,12 @@ final class ExceptionPanel extends JPanel {
 
 	private JPanel createButtonPanel() {
 		return BorderLayoutPanelBuilder.builder()
-						.westComponent(PanelBuilder.builder(flowLayout(FlowLayout.LEFT))
+						.westComponent(PanelBuilder.builder()
+										.layout(flowLayout(FlowLayout.LEFT))
 										.add(detailsCheckBox)
 										.build())
-						.centerComponent(PanelBuilder.builder(flowLayout(FlowLayout.RIGHT))
+						.centerComponent(PanelBuilder.builder()
+										.layout(flowLayout(FlowLayout.RIGHT))
 										.addAll(copyButton, printButton, saveButton, closeButton)
 										.build())
 						.build();

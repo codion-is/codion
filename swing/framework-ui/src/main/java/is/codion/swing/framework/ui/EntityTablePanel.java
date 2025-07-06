@@ -2937,7 +2937,8 @@ public class EntityTablePanel extends JPanel {
 			super(new BorderLayout());
 			add(Components.splitPane()
 							.continuousLayout(true)
-							.leftComponent(Components.panel(new GridBagLayout())
+							.leftComponent(Components.panel()
+											.layout(new GridBagLayout())
 											.add(table.searchField(), createHorizontalFillConstraints())
 											.build())
 							.rightComponent(statusPanel())
@@ -2994,7 +2995,8 @@ public class EntityTablePanel extends JPanel {
 						.string(MESSAGES.getString("refreshing"))
 						.stringPainted(true)
 						.build();
-		private final JPanel progressPanel = Components.panel(new GridBagLayout())
+		private final JPanel progressPanel = Components.panel()
+						.layout(new GridBagLayout())
 						.add(progressBar, createHorizontalFillConstraints())
 						.build();
 

@@ -26,12 +26,16 @@ import java.awt.Component;
 import java.awt.LayoutManager;
 import java.util.Collection;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * Builds a JPanel instance.
  */
 public interface PanelBuilder extends ComponentBuilder<Void, JPanel, PanelBuilder> {
+
+	/**
+	 * @param panel the panel
+	 * @return this builder instancwe
+	 */
+	PanelBuilder panel(JPanel panel);
 
 	/**
 	 * @param layoutManager the layout manager
@@ -73,22 +77,6 @@ public interface PanelBuilder extends ComponentBuilder<Void, JPanel, PanelBuilde
 	 * @return a panel builder
 	 */
 	static PanelBuilder builder() {
-		return new DefaultPanelBuilder((LayoutManager) null);
-	}
-
-	/**
-	 * @param layout the panel layout manager
-	 * @return a panel builder
-	 */
-	static PanelBuilder builder(LayoutManager layout) {
-		return new DefaultPanelBuilder(requireNonNull(layout));
-	}
-
-	/**
-	 * @param panel the panel to configure
-	 * @return a panel builder
-	 */
-	static PanelBuilder builder(JPanel panel) {
-		return new DefaultPanelBuilder(panel);
+		return new DefaultPanelBuilder();
 	}
 }

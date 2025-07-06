@@ -187,7 +187,8 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 	private void initializeUI() {
 		setLayout(new BorderLayout());
 		add(temporalField, BorderLayout.CENTER);
-		add(panel(new GridLayout(1, 1, 0, 0))
+		add(panel()
+						.layout(new GridLayout(1, 1, 0, 0))
 						.add(button)
 						.build(), BorderLayout.EAST);
 		addFocusListener(new InputFocusAdapter(temporalField));

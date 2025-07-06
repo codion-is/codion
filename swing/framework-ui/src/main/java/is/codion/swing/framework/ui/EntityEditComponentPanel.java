@@ -365,7 +365,8 @@ public class EntityEditComponentPanel extends JPanel {
 							.findAny()
 							.ifPresent(component -> setLabelForComponent((JLabel) labelComponent, component));
 		}
-		return Components.panel(borderLayout())
+		return Components.panel()
+						.layout(borderLayout())
 						.add(inputComponent, BorderLayout.CENTER)
 						.add(labelComponent, labelBorderLayoutConstraints)
 						.build();

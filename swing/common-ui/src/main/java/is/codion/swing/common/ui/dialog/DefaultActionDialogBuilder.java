@@ -175,7 +175,8 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 	}
 
 	private JPanel createPanel(JPanel buttonPanel) {
-		JPanel buttonBasePanel = PanelBuilder.builder(Layouts.flowLayout(buttonPanelConstraints))
+		JPanel buttonBasePanel = PanelBuilder.builder()
+						.layout(Layouts.flowLayout(buttonPanelConstraints))
 						.add(buttonPanel)
 						.border(buttonPanelBorder)
 						.build();

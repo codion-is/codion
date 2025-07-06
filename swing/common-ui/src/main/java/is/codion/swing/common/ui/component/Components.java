@@ -67,13 +67,11 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.SpinnerListModel;
 import javax.swing.SpinnerNumberModel;
 import java.awt.BorderLayout;
-import java.awt.LayoutManager;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -449,22 +447,6 @@ public final class Components {
 	}
 
 	/**
-	 * @param layout the panel layout manager
-	 * @return a JPanel builder
-	 */
-	public static PanelBuilder panel(LayoutManager layout) {
-		return PanelBuilder.builder(layout);
-	}
-
-	/**
-	 * @param panel the panel to configure
-	 * @return a JPanel builder
-	 */
-	public static PanelBuilder panel(JPanel panel) {
-		return PanelBuilder.builder(panel);
-	}
-
-	/**
 	 * @return a JTabbedPane builder
 	 */
 	public static TabbedPaneBuilder tabbedPane() {
@@ -550,7 +532,7 @@ public final class Components {
 	 * @see Layouts#GAP
 	 */
 	public static PanelBuilder gridLayoutPanel(int rows, int columns) {
-		return panel(gridLayout(rows, columns));
+		return panel().layout(gridLayout(rows, columns));
 	}
 
 	/**
@@ -562,7 +544,7 @@ public final class Components {
 	 * @see Layouts#GAP
 	 */
 	public static PanelBuilder flexibleGridLayoutPanel(int rows, int columns) {
-		return panel(flexibleGridLayout(rows, columns));
+		return panel().layout(flexibleGridLayout(rows, columns));
 	}
 
 	/**
@@ -573,7 +555,7 @@ public final class Components {
 	 * @see Layouts#GAP
 	 */
 	public static PanelBuilder flowLayoutPanel(int alignment) {
-		return panel(flowLayout(alignment));
+		return panel().layout(flowLayout(alignment));
 	}
 
 	/**

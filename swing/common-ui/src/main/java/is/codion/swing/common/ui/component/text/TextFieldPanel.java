@@ -265,7 +265,8 @@ public final class TextFieldPanel extends JPanel {
 	private void initializeUI() {
 		setLayout(new BorderLayout());
 		add(textField, BorderLayout.CENTER);
-		add(panel(new GridLayout(1, 1, 0, 0))
+		add(panel()
+						.layout(new GridLayout(1, 1, 0, 0))
 						.add(button)
 						.build(), BorderLayout.EAST);
 		if (caption != null) {

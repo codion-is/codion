@@ -149,7 +149,8 @@ final class EntityControls {
 		}
 		Dimension preferredSize = centerComponent.getPreferredSize();
 
-		return Components.panel(new BorderLayout())
+		return Components.panel()
+						.layout(new BorderLayout())
 						.add(centerComponent, BorderLayout.CENTER)
 						.add(Components.buttonPanel()
 										.actions(buttonActions)

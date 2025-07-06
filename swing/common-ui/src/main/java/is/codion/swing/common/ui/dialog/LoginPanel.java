@@ -145,7 +145,8 @@ final class LoginPanel extends JPanel {
 	}
 
 	private JPanel createCredentialsPanel() {
-		return PanelBuilder.builder(Layouts.flexibleGridLayout(2, 2))
+		return PanelBuilder.builder()
+						.layout(Layouts.flexibleGridLayout(2, 2))
 						.add(new JLabel(Messages.username(), SwingConstants.RIGHT))
 						.add(usernameField)
 						.add(new JLabel(Messages.password(), SwingConstants.RIGHT))
@@ -155,7 +156,8 @@ final class LoginPanel extends JPanel {
 
 	private JPanel createPasswordProgressPanel() {
 		CardLayout passwordProgressLayout = new CardLayout();
-		JPanel passwordProgressPanel = PanelBuilder.builder(passwordProgressLayout)
+		JPanel passwordProgressPanel = PanelBuilder.builder()
+						.layout(passwordProgressLayout)
 						.add(passwordField, PASSWORD_CARD)
 						.add(ProgressBarBuilder.builder()
 										.preferredSize(passwordField.getPreferredSize())

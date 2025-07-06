@@ -96,6 +96,7 @@ Codion Change Log
 - ToolBarBuilder, overloaded builder() methods removed.
 - LabelBuilder, overloaded builder() methods removed.
 - BorderLayoutPanelBuilder, overloaded builder() methods removed.
+- PanelBuilder, overloaded builder() methods removed.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Builder.EntityTypeBuilder and ConnectionProviderBuilder added.
 ### is.codion.swing.framework.ui

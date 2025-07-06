@@ -230,7 +230,8 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 	}
 
 	private JPanel chartPanel() {
-		return panel(new GridLayout(2, 2))
+		return panel()
+						.layout(new GridLayout(2, 2))
 						.border(createEtchedBorder())
 						.add(requestsPerSecondChartPanel)
 						.add(inPoolChartPanel)
