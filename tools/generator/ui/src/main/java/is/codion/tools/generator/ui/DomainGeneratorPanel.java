@@ -273,7 +273,8 @@ public final class DomainGeneratorPanel extends JPanel {
 	}
 
 	private JPanel createPackageSavePanel() {
-		JLabel packageLabel = label("Package")
+		JLabel packageLabel = label()
+						.text("Package")
 						.displayedMnemonic('P')
 						.build();
 
@@ -289,7 +290,9 @@ public final class DomainGeneratorPanel extends JPanel {
 														.build())
 										.build())
 						.eastComponent(gridLayoutPanel(2, 1)
-										.add(label(" ").build())
+										.add(label()
+														.text(" ")
+														.build())
 										.add(button()
 														.control(Control.builder()
 																		.command(this::save)
@@ -302,7 +305,8 @@ public final class DomainGeneratorPanel extends JPanel {
 	}
 
 	private JPanel createSourceDirectoryPanel() {
-		JLabel sourceDirectoryLabel = label("Source directory")
+		JLabel sourceDirectoryLabel = label()
+						.text("Source directory")
 						.displayedMnemonic('D')
 						.build();
 		Control selectSourceDirectoryControl = Control.builder()
@@ -316,7 +320,9 @@ public final class DomainGeneratorPanel extends JPanel {
 										.add(createSourceDirectoryField(sourceDirectoryLabel, selectSourceDirectoryControl))
 										.build())
 						.eastComponent(gridLayoutPanel(2, 1)
-										.add(label(" ").build())
+										.add(label()
+														.text(" ")
+														.build())
 										.add(button()
 														.control(selectSourceDirectoryControl)
 														.build())

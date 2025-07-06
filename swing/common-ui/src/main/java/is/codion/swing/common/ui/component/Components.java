@@ -19,7 +19,6 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.item.Item;
-import is.codion.common.observable.Observable;
 import is.codion.common.value.ValueSet;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.list.FilterListModel;
@@ -64,7 +63,6 @@ import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.ComboBoxModel;
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -440,33 +438,7 @@ public final class Components {
 	 * @return a JLabel builder
 	 */
 	public static <T> LabelBuilder<T> label() {
-		return LabelBuilder.builder((String) null);
-	}
-
-	/**
-	 * @param <T> the type to display in the label (using value.toString() or "" for null).
-	 * @param observable the observable to link to the label text
-	 * @return a JLabel builder
-	 */
-	public static <T> LabelBuilder<T> label(Observable<T> observable) {
-		return LabelBuilder.builder(observable);
-	}
-
-	/**
-	 * @param <T> the type to display in the label (using value.toString() or "" for null).
-	 * @param icon the label icon
-	 * @return a JLabel builder
-	 */
-	public static <T> LabelBuilder<T> label(Icon icon) {
-		return LabelBuilder.builder(icon);
-	}
-
-	/**
-	 * @param text the label text
-	 * @return a JLabel builder
-	 */
-	public static LabelBuilder<String> label(String text) {
-		return LabelBuilder.builder(text);
+		return LabelBuilder.builder();
 	}
 
 	/**

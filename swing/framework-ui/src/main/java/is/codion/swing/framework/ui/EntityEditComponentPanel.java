@@ -662,7 +662,8 @@ public class EntityEditComponentPanel extends JPanel {
 	protected final <T> LabelBuilder<T> createLabel(Attribute<T> attribute) {
 		AttributeDefinition<T> attributeDefinition = editModel().entities()
 						.definition(requireNonNull(attribute).entityType()).attributes().definition(attribute);
-		return (LabelBuilder<T>) Components.label(attributeDefinition.caption())
+		return (LabelBuilder<T>) Components.label()
+						.text(attributeDefinition.caption())
 						.displayedMnemonic(attributeDefinition.mnemonic())
 						.labelFor(component(attribute).get());
 	}

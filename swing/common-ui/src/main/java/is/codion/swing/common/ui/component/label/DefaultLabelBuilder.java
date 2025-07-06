@@ -19,18 +19,17 @@
 package is.codion.swing.common.ui.component.label;
 
 import is.codion.common.observable.Observable;
+import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-
-import static java.util.Objects.requireNonNull;
 
 final class DefaultLabelBuilder<T> extends AbstractComponentBuilder<T, JLabel, LabelBuilder<T>> implements LabelBuilder<T> {
 
+	private String text;
 	private Icon icon;
 	private int horizontalAlignment = HORIZONTAL_ALIGNMENT.getOrThrow();
 	private Integer displayedMnemonic;
@@ -38,17 +37,18 @@ final class DefaultLabelBuilder<T> extends AbstractComponentBuilder<T, JLabel, L
 	private int iconTextGap = -1;
 	private JComponent component;
 
-	DefaultLabelBuilder(Icon icon) {
-		icon(requireNonNull(icon));
-		horizontalAlignment(SwingConstants.CENTER);
+	DefaultLabelBuilder() {}
+
+	@Override
+	public LabelBuilder<T> text(String text) {
+		this.text = text;
+		return this;
 	}
 
-	DefaultLabelBuilder(String text) {
-		value((T) text);
-	}
-
-	DefaultLabelBuilder(Observable<T> linkedValue) {
-		link(requireNonNull(linkedValue));
+	@Override
+	public LabelBuilder<T> text(Observable<String> text) {
+		link((Value<T>) text);
+		return this;
 	}
 
 	@Override
@@ -89,7 +89,7 @@ final class DefaultLabelBuilder<T> extends AbstractComponentBuilder<T, JLabel, L
 
 	@Override
 	protected JLabel createComponent() {
-		JLabel label = new JLabel("", icon, horizontalAlignment);
+		JLabel label = new JLabel(text, icon, horizontalAlignment);
 		if (displayedMnemonic != null) {
 			label.setDisplayedMnemonic(displayedMnemonic);
 		}

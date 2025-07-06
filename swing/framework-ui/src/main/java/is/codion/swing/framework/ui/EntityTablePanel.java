@@ -2985,7 +2985,8 @@ public class EntityTablePanel extends JPanel {
 						.nonNull("")
 						.value(configuration.statusMessage.apply(tableModel))
 						.build();
-		private final JLabel label = Components.label(statusMessage)
+		private final JLabel label = Components.label()
+						.text(statusMessage)
 						.horizontalAlignment(SwingConstants.CENTER)
 						.build();
 		private final JProgressBar progressBar = Components.progressBar()

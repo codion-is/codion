@@ -669,7 +669,8 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	private JLabel createDayLabel(DayOfWeek dayOfWeek) {
-		return label(dayOfWeek.getDisplayName(TextStyle.SHORT, selectedLocale))
+		return label()
+						.text(dayOfWeek.getDisplayName(TextStyle.SHORT, selectedLocale))
 						.horizontalAlignment(SwingConstants.CENTER)
 						.border(emptyBorder())
 						.enabled(enabledState)

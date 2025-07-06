@@ -826,7 +826,8 @@ public final class ComponentsTest {
 	@Test
 	void label() {
 		Value<String> textValue = Value.nullable("label");
-		ComponentValue<String, JLabel> componentValue = Components.label(textValue)
+		ComponentValue<String, JLabel> componentValue = Components.<String>label()
+						.text(textValue)
 						.icon(Logos.logoTransparent())
 						.iconTextGap(5)
 						.displayedMnemonic('l')

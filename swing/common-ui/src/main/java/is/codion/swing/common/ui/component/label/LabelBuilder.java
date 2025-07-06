@@ -47,6 +47,20 @@ public interface LabelBuilder<T> extends ComponentBuilder<T, JLabel, LabelBuilde
 					integerValue(LabelBuilder.class.getName() + ".horizontalAlignment", SwingConstants.LEADING);
 
 	/**
+	 * @param text the label text
+	 * @return this builder instance
+	 * @see JLabel#setText(String)
+	 */
+	LabelBuilder<T> text(String text);
+
+	/**
+	 * @param text the label text
+	 * @return this builder instance
+	 * @see JLabel#setText(String)
+	 */
+	LabelBuilder<T> text(Observable<String> text);
+
+	/**
 	 * @param horizontalAlignment the horizontal text alignment
 	 * @return this builder instance
 	 * @see JLabel#setHorizontalAlignment(int)
@@ -90,29 +104,9 @@ public interface LabelBuilder<T> extends ComponentBuilder<T, JLabel, LabelBuilde
 	LabelBuilder<T> iconTextGap(int iconTextGap);
 
 	/**
-	 * @param <T> the type to display in the label (using value.toString() or "" for null).
-	 * @param icon the icon
 	 * @return a new builder
 	 */
-	static <T> LabelBuilder<T> builder(Icon icon) {
-		return new DefaultLabelBuilder<>(icon);
-	}
-
-	/**
-	 * @param <T> the type to display in the label (using value.toString() or "" for null).
-	 * @param text the label text
-	 * @return a new builder
-	 */
-	static <T> LabelBuilder<T> builder(String text) {
-		return new DefaultLabelBuilder<>(text);
-	}
-
-	/**
-	 * @param <T> the type to display in the label (using value.toString() or "" for null).
-	 * @param observable the observable to link to the label text
-	 * @return a new builder
-	 */
-	static <T> LabelBuilder<T> builder(Observable<T> observable) {
-		return new DefaultLabelBuilder<>(observable);
+	static <T> LabelBuilder<T> builder() {
+		return new DefaultLabelBuilder<>();
 	}
 }
