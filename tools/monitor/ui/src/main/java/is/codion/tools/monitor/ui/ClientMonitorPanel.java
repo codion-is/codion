@@ -139,17 +139,18 @@ public final class ClientMonitorPanel extends JPanel {
 	}
 
 	private JPopupMenu createPopupMenu(FilterTable<RemoteClient, RemoteClientColumns.Id> table) {
-		return menu(Controls.builder()
-						.control(Control.builder()
-										.command(this::disconnect)
-										.caption("Disconnect")
-										.enabled(model.clientInstanceTableModel().selection().empty().not()))
-						.separator()
-						.control(Controls.builder()
-										.caption("Columns")
-										.control(table.createToggleColumnsControls())
-										.control(table.createResetColumnsControl())
-										.control(table.createSelectAutoResizeModeControl())))
+		return menu()
+						.controls(Controls.builder()
+										.control(Control.builder()
+														.command(this::disconnect)
+														.caption("Disconnect")
+														.enabled(model.clientInstanceTableModel().selection().empty().not()))
+										.separator()
+										.control(Controls.builder()
+														.caption("Columns")
+														.control(table.createToggleColumnsControls())
+														.control(table.createResetColumnsControl())
+														.control(table.createSelectAutoResizeModeControl())))
 						.buildPopupMenu();
 	}
 

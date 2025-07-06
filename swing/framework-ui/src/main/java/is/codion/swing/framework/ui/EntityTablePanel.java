@@ -1673,7 +1673,9 @@ public class EntityTablePanel extends JPanel {
 				return;
 			}
 
-			JPopupMenu popupMenu = menu(popupControls).buildPopupMenu();
+			JPopupMenu popupMenu = menu()
+							.controls(popupControls)
+							.buildPopupMenu();
 			table.setComponentPopupMenu(popupMenu);
 			tableScrollPane.setComponentPopupMenu(popupMenu);
 		}

@@ -997,7 +997,9 @@ public final class ComponentsTest {
 		ControlsBuilder base = Controls.builder();
 		base.control(controls);
 
-		JMenuBar menu = Components.menu(base).buildMenuBar();
+		JMenuBar menu = Components.menu()
+						.controls(base)
+						.buildMenuBar();
 		assertEquals(1, menu.getMenuCount());
 		assertEquals("SubMenu", menu.getMenu(0).getText());
 		assertEquals(3, menu.getMenu(0).getItemCount());
@@ -1012,7 +1014,9 @@ public final class ComponentsTest {
 						.control(controls)
 						.build();
 
-		Components.menu(base).buildPopupMenu();
+		Components.menu()
+						.controls(base)
+						.buildPopupMenu();
 	}
 
 	@Test

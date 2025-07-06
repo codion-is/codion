@@ -153,14 +153,15 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 		State lineWrapState = State.builder()
 						.consumer(textArea::setLineWrap)
 						.build();
-		textArea.setComponentPopupMenu(menu(Controls.builder()
-						.control(Control.builder()
-										.command(() -> saveLogToFile(textArea))
-										.caption("Save to file..."))
-						.separator()
-						.control(Control.builder()
-										.toggle(lineWrapState)
-										.caption("Line wrap")))
+		textArea.setComponentPopupMenu(menu()
+						.controls(Controls.builder()
+										.control(Control.builder()
+														.command(() -> saveLogToFile(textArea))
+														.caption("Save to file..."))
+										.separator()
+										.control(Control.builder()
+														.toggle(lineWrapState)
+														.caption("Line wrap")))
 						.buildPopupMenu());
 
 		return textArea;

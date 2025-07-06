@@ -614,16 +614,17 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	private JPopupMenu createPopupMenu() {
-		return menu(Controls.controls(Control.builder()
-						.command(() -> Dialogs.builder()
-										.component(settingsPanel())
-										.owner(EntitySearchField.this)
-										.title(FrameworkMessages.settings())
-										.icon(ICONS.settings())
-										.show())
-						.caption(FrameworkMessages.settings())
-						.smallIcon(ICONS.settings())
-						.build()))
+		return menu()
+						.controls(Controls.controls(Control.builder()
+										.command(() -> Dialogs.builder()
+														.component(settingsPanel())
+														.owner(EntitySearchField.this)
+														.title(FrameworkMessages.settings())
+														.icon(ICONS.settings())
+														.show())
+										.caption(FrameworkMessages.settings())
+										.smallIcon(ICONS.settings())
+										.build()))
 						.buildPopupMenu();
 	}
 

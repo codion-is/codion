@@ -21,7 +21,6 @@ package is.codion.swing.common.ui.component.button;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 
 import javax.swing.Action;
 import javax.swing.JMenu;
@@ -29,8 +28,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JPopupMenu;
 import javax.swing.event.MenuListener;
 import javax.swing.event.PopupMenuListener;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * A builder for menus.
@@ -55,6 +52,13 @@ public interface MenuBuilder extends ComponentBuilder<Void, JMenu, MenuBuilder> 
 	 * @return this builder instance
 	 */
 	MenuBuilder controls(Controls controls);
+
+	/**
+	 * Adds all actions from the given {@link Controls} instance
+	 * @param controls the Controls instance
+	 * @return this builder instance
+	 */
+	MenuBuilder controls(Control.Builder<Controls, ?> controls);
 
 	/**
 	 * Adds a separator
@@ -106,21 +110,5 @@ public interface MenuBuilder extends ComponentBuilder<Void, JMenu, MenuBuilder> 
 	 */
 	static MenuBuilder builder() {
 		return new DefaultMenuBuilder(null);
-	}
-
-	/**
-	 * @param controls the controls to base the menu on
-	 * @return a new MenuBuilder based on the given controls
-	 */
-	static MenuBuilder builder(Controls controls) {
-		return new DefaultMenuBuilder(requireNonNull(controls));
-	}
-
-	/**
-	 * @param controlsBuilder the controls builder to base the menu on
-	 * @return a new MenuBuilder based on the given controls
-	 */
-	static MenuBuilder builder(ControlsBuilder controlsBuilder) {
-		return new DefaultMenuBuilder(requireNonNull(controlsBuilder).build());
 	}
 }

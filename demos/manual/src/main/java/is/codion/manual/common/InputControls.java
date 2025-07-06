@@ -136,7 +136,9 @@ public final class InputControls {
 														.mnemonic('u')))
 						.build();
 
-		JMenu menu = Components.menu(controls).build();
+		JMenu menu = Components.menu()
+						.controls(controls)
+						.build();
 
 		Control firstControl = Control.builder()
 						.command(this::doFirst)

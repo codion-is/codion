@@ -71,6 +71,11 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
 	}
 
 	@Override
+	public MenuBuilder controls(Control.Builder<Controls, ?> controls) {
+		return controls(requireNonNull(controls).build());
+	}
+
+	@Override
 	public MenuBuilder separator() {
 		this.controlsBuilder.separator();
 		return this;

@@ -668,20 +668,4 @@ public final class Components {
 	public static MenuBuilder menu() {
 		return MenuBuilder.builder();
 	}
-
-	/**
-	 * @param controls the controls to base the menu on
-	 * @return a new menu builder
-	 */
-	public static MenuBuilder menu(Controls controls) {
-		return MenuBuilder.builder(controls);
-	}
-
-	/**
-	 * @param controlsBuilder the {@link ControlsBuilder} to base the menu on
-	 * @return a new menu builder
-	 */
-	public static MenuBuilder menu(ControlsBuilder controlsBuilder) {
-		return MenuBuilder.builder(controlsBuilder);
-	}
 }

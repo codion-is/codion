@@ -413,7 +413,8 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		toggleEnabledButton = radioButton()
 						.link(model().enabled())
 						.horizontalAlignment(CENTER)
-						.popupMenu(radioButton -> menu(Controls.builder()
+						.popupMenu(radioButton -> menu()
+										.controls(Controls.builder()
 										.control(Control.builder()
 														.toggle(model().autoEnable())
 														.caption(MESSAGES.getString("auto_enable"))))
@@ -676,7 +677,9 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 			if (model().valueClass().equals(String.class)) {
 				controlsBuilder.control(createWildcardControls());
 			}
-			JPopupMenu popupMenu = menu(controlsBuilder).buildPopupMenu();
+			JPopupMenu popupMenu = menu()
+							.controls(controlsBuilder)
+							.buildPopupMenu();
 			Stream.of(equalComponent, lowerComponent, upperComponent, inComponent)
 							.filter(Objects::nonNull)
 							.forEach(component -> component.setComponentPopupMenu(popupMenu));
