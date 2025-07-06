@@ -100,9 +100,10 @@ final class AlbumTagPanel extends JPanel {
 	}
 
 	private JPanel createButtonPanel(Control leftControl, Control rightControl) {
-		return buttonPanel(Controls.builder()
-						.control(leftControl)
-						.control(rightControl))
+		return buttonPanel()
+						.controls(Controls.builder()
+										.control(leftControl)
+										.control(rightControl))
 						.transferFocusOnEnter(true)
 						.buttonGap(0)
 						.build();

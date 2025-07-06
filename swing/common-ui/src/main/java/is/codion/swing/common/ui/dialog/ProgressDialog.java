@@ -104,7 +104,9 @@ public final class ProgressDialog extends JDialog {
 		Controls controls = builder.controls.build();
 		if (controls.size() > 0) {
 			basePanelBuilder.southComponent(PanelBuilder.builder(flowLayout(FlowLayout.TRAILING))
-							.add(ButtonPanelBuilder.builder(controls).build())
+							.add(ButtonPanelBuilder.builder()
+											.controls(controls)
+											.build())
 							.build());
 		}
 

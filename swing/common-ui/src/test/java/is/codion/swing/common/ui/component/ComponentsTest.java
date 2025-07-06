@@ -1018,7 +1018,8 @@ public final class ComponentsTest {
 	@Test
 	void buttonPanel() {
 		JPanel base = new JPanel();
-		base.add(Components.buttonPanel(Controls.builder()
+		base.add(Components.buttonPanel()
+						.controls(Controls.builder()
 										.caption("SubMenu")
 										.controls(Control.builder()
 																		.command(() -> {})

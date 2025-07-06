@@ -21,6 +21,7 @@ package is.codion.swing.common.ui.component.button;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 
@@ -67,9 +68,20 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 	}
 
 	@Override
+	public final B actions(Action... actions) {
+		builder.actions(requireNonNull(actions));
+		return self();
+	}
+
+	@Override
 	public final B controls(Controls controls) {
 		builder.actions(requireNonNull(controls).actions());
 		return self();
+	}
+
+	@Override
+	public final B controls(Control.Builder<Controls, ?> controls) {
+		return controls(requireNonNull(controls).build());
 	}
 
 	@Override

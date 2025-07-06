@@ -151,7 +151,8 @@ final class EntityControls {
 
 		return Components.panel(new BorderLayout())
 						.add(centerComponent, BorderLayout.CENTER)
-						.add(Components.buttonPanel(buttonActions)
+						.add(Components.buttonPanel()
+										.actions(buttonActions)
 										.buttonsFocusable(buttonFocusable)
 										.preferredButtonSize(new Dimension(preferredSize.height, preferredSize.height))
 										.buttonGap(0)

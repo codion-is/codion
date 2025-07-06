@@ -610,30 +610,6 @@ public final class Components {
 	}
 
 	/**
-	 * @param actions the actions
-	 * @return a button panel builder
-	 */
-	public static ButtonPanelBuilder buttonPanel(Action... actions) {
-		return ButtonPanelBuilder.builder(actions);
-	}
-
-	/**
-	 * @param controls the Controls
-	 * @return a button panel builder
-	 */
-	public static ButtonPanelBuilder buttonPanel(Controls controls) {
-		return ButtonPanelBuilder.builder(controls);
-	}
-
-	/**
-	 * @param controlsBuilder the {@link ControlsBuilder}
-	 * @return a button panel builder
-	 */
-	public static ButtonPanelBuilder buttonPanel(ControlsBuilder controlsBuilder) {
-		return ButtonPanelBuilder.builder(controlsBuilder);
-	}
-
-	/**
 	 * Creates a new {@link BorderLayoutPanelBuilder} instance using a new
 	 * {@link BorderLayout} instance with the default horizontal and vertical gap.
 	 * @return a border layout panel builder

@@ -153,7 +153,9 @@ public final class InputControls {
 						.controls(firstControl, secondControl)
 						.build();
 
-		JPanel buttonPanel = Components.buttonPanel(twoControls).build();
+		JPanel buttonPanel = Components.buttonPanel()
+						.controls(twoControls)
+						.build();
 		// end::controls[]
 	}
 

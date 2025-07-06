@@ -146,7 +146,8 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 			throw new IllegalStateException("No actions have been specified");
 		}
 
-		JPanel buttonPanel = ButtonPanelBuilder.builder(Controls.builder()
+		JPanel buttonPanel = ButtonPanelBuilder.builder()
+						.controls(Controls.builder()
 										.actions(actions))
 						.build();
 		JDialog dialog = createDialog(owner, title, icon, createPanel(buttonPanel), size, locationRelativeTo,

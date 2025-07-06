@@ -90,6 +90,7 @@ Codion Change Log
 - TemporalFieldPanel.Builder.TemporalClassBuilder added.
 - NumberField.Builder.NumberClassBuilder added.
 - ButtonBuilder, overloaded builder() methods removed.
+- ButtonPanelBuilder, overloaded builder() methods removed.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Builder.EntityTypeBuilder and ConnectionProviderBuilder added.
 ### is.codion.swing.framework.ui

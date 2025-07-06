@@ -1582,12 +1582,15 @@ public class EntityPanel extends JPanel {
 			private JPanel createControlPanel(Controls controls) {
 				if (horizontalControlLayout()) {
 					return flowLayoutPanel(FlowLayout.CENTER)
-									.add(buttonPanel(controls).build())
+									.add(buttonPanel()
+													.controls(controls)
+													.build())
 									.build();
 				}
 
 				return borderLayoutPanel()
-								.northComponent(buttonPanel(controls)
+								.northComponent(buttonPanel()
+												.controls(controls)
 												.orientation(VERTICAL)
 												.button(button -> button.horizontalAlignment(SwingConstants.LEADING))
 												.build())

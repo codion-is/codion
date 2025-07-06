@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.component.button;
 
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 
 import javax.swing.Action;
@@ -45,11 +46,24 @@ public interface ControlPanelBuilder<C extends JComponent, B extends ControlPane
 	B action(Action action);
 
 	/**
+	 * @param actions the actions to add
+	 * @return this builder instance
+	 */
+	B actions(Action... actions);
+
+	/**
 	 * Adds all actions from the given {@link Controls} instance
 	 * @param controls the Controls instance
 	 * @return this builder instance
 	 */
 	B controls(Controls controls);
+
+	/**
+	 * Adds all actions from the given {@link Controls} instance
+	 * @param controls the Controls.Builder instance
+	 * @return this builder instance
+	 */
+	B controls(Control.Builder<Controls, ?> controls);
 
 	/**
 	 * Adds a separator
