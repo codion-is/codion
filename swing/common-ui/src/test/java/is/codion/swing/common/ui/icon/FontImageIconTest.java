@@ -27,7 +27,8 @@ public final class FontImageIconTest {
 
 	@Test
 	void builder() {
-		FontImageIcon.builder(Foundation.FOUNDATION)
+		FontImageIcon.builder()
+						.ikon(Foundation.FOUNDATION)
 						.size(42)
 						.color(Color.PINK)
 						.imageIconFactory(new FontImageIcon.ImageIconFactory() {})

@@ -70,7 +70,8 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 	private final Icons icons = Icons.icons();
 	private final Map<Integer, FontImageIcon> logos = new HashMap<>();
 
-	private ImageIcon refreshRequired = FontImageIcon.builder(REFRESH)
+	private ImageIcon refreshRequired = FontImageIcon.builder()
+					.ikon(REFRESH)
 					.size(Icons.ICON_SIZE.getOrThrow())
 					.color(Color.RED.darker())
 					.build().imageIcon();
@@ -211,7 +212,8 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 
 	@Override
 	public ImageIcon logo(int size) {
-		return logos.computeIfAbsent(size, k -> FontImageIcon.builder(LOGO)
+		return logos.computeIfAbsent(size, k -> FontImageIcon.builder()
+						.ikon(LOGO)
 						.size(size)
 						.iconPainter(LOGO_ICON_PAINTER)
 						.imageIconFactory(LOGO_ICON_FACTORY)
@@ -247,7 +249,8 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 
 		@Override
 		public void accept(Integer size) {
-			refreshRequired = FontImageIcon.builder(REFRESH)
+			refreshRequired = FontImageIcon.builder()
+							.ikon(REFRESH)
 							.size(size)
 							.color(Color.RED.darker())
 							.build().imageIcon();

@@ -79,6 +79,18 @@ public interface FontImageIcon {
 	interface Builder {
 
 		/**
+		 * Provides a {@link Builder}
+		 */
+		interface IkonBuilder {
+
+			/**
+			 * @param ikon the ikon
+			 * @return a new {@link Builder}
+			 */
+			Builder ikon(Ikon ikon);
+		}
+
+		/**
 		 * @param size the font size
 		 * @return this builder
 		 */
@@ -109,10 +121,9 @@ public interface FontImageIcon {
 	}
 
 	/**
-	 * @param ikon the ikon
-	 * @return a new {@link FontImageIcon.Builder}
+	 * @return a new {@link FontImageIcon.Builder.IkonBuilder}
 	 */
-	static Builder builder(Ikon ikon) {
-		return new DefaultFontImageIcon.DefaultBuilder(ikon);
+	static Builder.IkonBuilder builder() {
+		return DefaultFontImageIcon.IKON;
 	}
 }

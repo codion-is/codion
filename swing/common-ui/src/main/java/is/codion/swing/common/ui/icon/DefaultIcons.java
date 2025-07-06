@@ -62,7 +62,8 @@ final class DefaultIcons implements Icons {
 				}
 			}
 			for (Ikon ikon : ikons) {
-				icons.put(ikon, FontImageIcon.builder(ikon)
+				icons.put(ikon, FontImageIcon.builder()
+								.ikon(ikon)
 								.size(ICON_SIZE.getOrThrow())
 								.build());
 			}
@@ -95,7 +96,8 @@ final class DefaultIcons implements Icons {
 		@Override
 		public void accept(Integer size) {
 			synchronized (icons) {
-				icons.replaceAll((ikon, fontImageIcon) -> FontImageIcon.builder(ikon)
+				icons.replaceAll((ikon, fontImageIcon) -> FontImageIcon.builder()
+								.ikon(ikon)
 								.size(size)
 								.build());
 			}

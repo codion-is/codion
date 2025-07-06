@@ -83,6 +83,7 @@ Codion Change Log
 - InputDialogBuilder.ComponentStep added, replacing overloaded methods in Dialogs.
 - AbstractComponentBuilder, Value constructor parameter removed.
 - KeyEvents, overloaded builder() methods removed.
+- FontImageIcon.Builder.IkonBuilder added.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Builder.EntityTypeBuilder and ConnectionProviderBuilder added.
 ### is.codion.swing.framework.ui
