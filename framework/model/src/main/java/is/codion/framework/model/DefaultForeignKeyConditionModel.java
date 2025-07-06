@@ -44,7 +44,8 @@ final class DefaultForeignKeyConditionModel implements ForeignKeyConditionModel 
 	private DefaultForeignKeyConditionModel(DefaultBuilder builder) {
 		equalSearchModel = builder.equalSearchModel;
 		inSearchModel = builder.inSearchModel;
-		condition = ConditionModel.builder(Entity.class)
+		condition = ConditionModel.builder()
+						.valueClass(Entity.class)
 						.operators(builder.operators())
 						.operator(builder.inSearchModel == null ? Operator.EQUAL : Operator.IN)
 						.operands(new ForeignKeyOperands())

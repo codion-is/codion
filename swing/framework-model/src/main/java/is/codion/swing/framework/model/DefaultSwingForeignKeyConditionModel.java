@@ -46,7 +46,8 @@ final class DefaultSwingForeignKeyConditionModel implements SwingForeignKeyCondi
 	private DefaultSwingForeignKeyConditionModel(DefaultBuilder builder) {
 		equalComboBoxModel = builder.equalComboBoxModel;
 		inSearchModel = builder.inSearchModel;
-		condition = ConditionModel.builder(Entity.class)
+		condition = ConditionModel.builder()
+						.valueClass(Entity.class)
 						.operators(builder.operators())
 						.operator(defaultOperator(builder))
 						.operands(new ForeignKeyOperands())

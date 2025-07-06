@@ -393,10 +393,13 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 
 		private static ConditionModel<?> conditionModel(AttributeDefinition<?> definition) {
 			if (useStringCondition(definition)) {
-				return ConditionModel.builder(String.class).build();
+				return ConditionModel.builder()
+								.valueClass(String.class)
+								.build();
 			}
 
-			return ConditionModel.builder(definition.attribute().type().valueClass())
+			return ConditionModel.builder()
+							.valueClass(definition.attribute().type().valueClass())
 							.format(definition.format().orElse(null))
 							.dateTimePattern(definition.dateTimePattern().orElse(null))
 							.build();

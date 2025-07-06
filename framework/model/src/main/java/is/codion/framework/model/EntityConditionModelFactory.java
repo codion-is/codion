@@ -95,7 +95,8 @@ public class EntityConditionModelFactory implements Supplier<Map<Attribute<?>, C
 	protected <T> ConditionModel<T> conditionModel(Column<T> column) {
 		ColumnDefinition<T> definition = definition().columns().definition(column);
 
-		return ConditionModel.builder(column.type().valueClass())
+		return ConditionModel.builder()
+						.valueClass(column.type().valueClass())
 						.format(definition.format().orElse(null))
 						.dateTimePattern(definition.dateTimePattern().orElse(null))
 						.operands(new ColumnOperands<>(definition))

@@ -268,7 +268,9 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			for (C identifier : columns.identifiers()) {
 				Class<?> columnClass = columns.columnClass(requireNonNull(identifier));
 				if (Comparable.class.isAssignableFrom(columnClass)) {
-					columnFilterModels.put(identifier, ConditionModel.builder(columnClass).build());
+					columnFilterModels.put(identifier, ConditionModel.builder()
+									.valueClass(columnClass)
+									.build());
 				}
 			}
 

@@ -45,6 +45,8 @@ import static java.util.stream.Collectors.joining;
 
 final class DefaultConditionModel<T> implements ConditionModel<T> {
 
+	static final Builder.ValueClassBuilder VALUE_CLASS = new DefaultValueClassBuilder();
+
 	private static final String REGEX_WILDCARD = ".*";
 
 	private final Runnable autoEnableListener = new AutoEnableListener();
@@ -553,7 +555,15 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		}
 	}
 
-	static final class DefaultBuilder<T> implements Builder<T> {
+	private static final class DefaultValueClassBuilder implements Builder.ValueClassBuilder {
+
+		@Override
+		public <T> Builder<T> valueClass(Class<T> valueClass) {
+			return new DefaultBuilder<>(valueClass);
+		}
+	}
+
+	private static final class DefaultBuilder<T> implements Builder<T> {
 
 		private static final List<Operator> DEFAULT_OPERATORS = asList(Operator.values());
 
@@ -572,7 +582,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		private boolean caseSensitive = CASE_SENSITIVE.getOrThrow();
 		private boolean autoEnable = true;
 
-		DefaultBuilder(Class<T> valueClass) {
+		private DefaultBuilder(Class<T> valueClass) {
 			this.valueClass = requireNonNull(valueClass);
 			this.operators = valueClass.equals(Boolean.class) ? singletonList(Operator.EQUAL) : DEFAULT_OPERATORS;
 		}

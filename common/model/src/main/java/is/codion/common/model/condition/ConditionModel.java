@@ -41,7 +41,7 @@ import static java.util.ResourceBundle.getBundle;
 
 /**
  * Specifies a condition with an operator and operands as well as relevant events and states.
- * For instances create a {@link Builder} via {@link #builder(Class)}.
+ * For instances create a {@link Builder} via {@link #builder()}.
  * @param <T> the condition value type
  */
 public interface ConditionModel<T> {
@@ -182,13 +182,10 @@ public interface ConditionModel<T> {
 	Observer<?> changed();
 
 	/**
-	 * Returns a new {@link Builder} instance.
-	 * @param valueClass the value class
-	 * @param <T> the condition value type
-	 * @return a new {@link Builder} instance
+	 * @return a new {@link Builder.ValueClassBuilder} instance
 	 */
-	static <T> Builder<T> builder(Class<T> valueClass) {
-		return new DefaultConditionModel.DefaultBuilder<>(valueClass);
+	static Builder.ValueClassBuilder builder() {
+		return DefaultConditionModel.VALUE_CLASS;
 	}
 
 	/**
@@ -398,6 +395,20 @@ public interface ConditionModel<T> {
 	 * Builds a {@link ConditionModel} instance.
 	 */
 	interface Builder<T> {
+
+		/**
+		 * Provides a {@link Builder}
+		 */
+		interface ValueClassBuilder {
+
+			/**
+			 * Returns a new {@link Builder} instance.
+			 * @param valueClass the value class
+			 * @param <T> the condition value type
+			 * @return a new {@link Builder} instance
+			 */
+			<T> Builder<T> valueClass(Class<T> valueClass);
+		}
 
 		/**
 		 * @param operators the conditional operators available to this condition model

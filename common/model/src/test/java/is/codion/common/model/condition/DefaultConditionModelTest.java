@@ -62,7 +62,8 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void testOperands() {
-		ConditionModel<String> model = ConditionModel.builder(String.class)
+		ConditionModel<String> model = ConditionModel.builder()
+						.valueClass(String.class)
 						.autoEnable(false)
 						.build();
 		model.caseSensitive().set(false);
@@ -112,7 +113,8 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void testMisc() {
-		ConditionModel<String> model = ConditionModel.builder(String.class).build();
+		ConditionModel<String> model = ConditionModel.builder()
+						.valueClass(String.class).build();
 		model.operands().wildcard().set(Wildcard.PREFIX_AND_POSTFIX);
 		model.set().equalTo("upper");
 		assertEquals("%upper%", model.operands().equalWithWildcards());
@@ -123,14 +125,17 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void testOperator() {
-		assertThrows(IllegalArgumentException.class, () -> ConditionModel.builder(String.class)
+		assertThrows(IllegalArgumentException.class, () -> ConditionModel.builder()
+						.valueClass(String.class)
 						.operators(Arrays.asList(Operator.EQUAL, Operator.NOT_BETWEEN))
 						.operator(Operator.IN));
-		assertThrows(IllegalArgumentException.class, () -> ConditionModel.builder(String.class)
+		assertThrows(IllegalArgumentException.class, () -> ConditionModel.builder()
+						.valueClass(String.class)
 						.operator(Operator.IN)
 						.operators(Arrays.asList(Operator.EQUAL, Operator.NOT_BETWEEN)));
 
-		ConditionModel<String> model = ConditionModel.builder(String.class)
+		ConditionModel<String> model = ConditionModel.builder()
+						.valueClass(String.class)
 						.operators(Arrays.asList(Operator.EQUAL, Operator.NOT_EQUAL, Operator.LESS_THAN_OR_EQUAL, Operator.NOT_BETWEEN))
 						.build();
 		model.operator().addConsumer(operatorConsumer);
@@ -151,7 +156,8 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void test() {
-		ConditionModel<String> model = ConditionModel.builder(String.class).build();
+		ConditionModel<String> model = ConditionModel.builder()
+						.valueClass(String.class).build();
 		assertTrue(model.autoEnable().get());
 		model.operands().equal().set("test");
 		assertTrue(model.enabled().get());
@@ -177,7 +183,8 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void lockedModelPreventsModification() {
-		ConditionModel<String> model = ConditionModel.builder(String.class).build();
+		ConditionModel<String> model = ConditionModel.builder()
+						.valueClass(String.class).build();
 		model.locked().set(true);
 
 		// Verify all modification attempts throw IllegalStateException when locked
@@ -191,7 +198,8 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void multiConditionString() {
-		ConditionModel<String> condition = ConditionModel.builder(String.class).build();
+		ConditionModel<String> condition = ConditionModel.builder()
+						.valueClass(String.class).build();
 		condition.caseSensitive().set(false);
 		condition.operands().wildcard().set(Wildcard.NONE);
 
@@ -203,7 +211,9 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void autoEnable_equal_enablesWithEqualValue() {
-		ConditionModel<Integer> condition = ConditionModel.builder(Integer.class).build();
+		ConditionModel<Integer> condition = ConditionModel.builder()
+						.valueClass(Integer.class)
+						.build();
 		condition.operator().set(Operator.EQUAL);
 		Operands<Integer> operands = condition.operands();
 
@@ -222,7 +232,9 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void autoEnable_notEqual_enablesWithEqualValue() {
-		ConditionModel<Integer> condition = ConditionModel.builder(Integer.class).build();
+		ConditionModel<Integer> condition = ConditionModel.builder()
+						.valueClass(Integer.class)
+						.build();
 		condition.operator().set(Operator.NOT_EQUAL);
 		Operands<Integer> operands = condition.operands();
 
@@ -241,7 +253,9 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void autoEnable_lessThan_enablesWithUpperValue() {
-		ConditionModel<Integer> condition = ConditionModel.builder(Integer.class).build();
+		ConditionModel<Integer> condition = ConditionModel.builder()
+						.valueClass(Integer.class)
+						.build();
 		condition.operator().set(Operator.LESS_THAN);
 		Operands<Integer> operands = condition.operands();
 
@@ -258,7 +272,9 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void autoEnable_lessThanOrEqual_enablesWithUpperValue() {
-		ConditionModel<Integer> condition = ConditionModel.builder(Integer.class).build();
+		ConditionModel<Integer> condition = ConditionModel.builder()
+						.valueClass(Integer.class)
+						.build();
 		condition.operator().set(Operator.LESS_THAN_OR_EQUAL);
 		Operands<Integer> operands = condition.operands();
 
@@ -275,7 +291,9 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void autoEnable_greaterThan_enablesWithLowerValue() {
-		ConditionModel<Integer> condition = ConditionModel.builder(Integer.class).build();
+		ConditionModel<Integer> condition = ConditionModel.builder()
+						.valueClass(Integer.class)
+						.build();
 		condition.operator().set(Operator.GREATER_THAN);
 		Operands<Integer> operands = condition.operands();
 
@@ -292,7 +310,9 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void autoEnable_greaterThanOrEqual_enablesWithLowerValue() {
-		ConditionModel<Integer> condition = ConditionModel.builder(Integer.class).build();
+		ConditionModel<Integer> condition = ConditionModel.builder()
+						.valueClass(Integer.class)
+						.build();
 		condition.operator().set(Operator.GREATER_THAN_OR_EQUAL);
 		Operands<Integer> operands = condition.operands();
 
@@ -309,7 +329,9 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void autoEnable_between_enablesWithBothBounds() {
-		ConditionModel<Integer> condition = ConditionModel.builder(Integer.class).build();
+		ConditionModel<Integer> condition = ConditionModel.builder()
+						.valueClass(Integer.class)
+						.build();
 		condition.operator().set(Operator.BETWEEN);
 		Operands<Integer> operands = condition.operands();
 
@@ -337,7 +359,9 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void autoEnable_betweenExclusive_enablesWithBothBounds() {
-		ConditionModel<Integer> condition = ConditionModel.builder(Integer.class).build();
+		ConditionModel<Integer> condition = ConditionModel.builder()
+						.valueClass(Integer.class)
+						.build();
 		condition.operator().set(Operator.BETWEEN_EXCLUSIVE);
 		Operands<Integer> operands = condition.operands();
 
@@ -365,7 +389,9 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void autoEnable_notBetween_enablesWithBothBounds() {
-		ConditionModel<Integer> condition = ConditionModel.builder(Integer.class).build();
+		ConditionModel<Integer> condition = ConditionModel.builder()
+						.valueClass(Integer.class)
+						.build();
 		condition.operator().set(Operator.NOT_BETWEEN);
 		Operands<Integer> operands = condition.operands();
 
@@ -393,7 +419,9 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void autoEnable_notBetweenExclusive_enablesWithBothBounds() {
-		ConditionModel<Integer> condition = ConditionModel.builder(Integer.class).build();
+		ConditionModel<Integer> condition = ConditionModel.builder()
+						.valueClass(Integer.class)
+						.build();
 		condition.operator().set(Operator.NOT_BETWEEN_EXCLUSIVE);
 		Operands<Integer> operands = condition.operands();
 
@@ -421,13 +449,15 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void noOperators() {
-		assertThrows(IllegalArgumentException.class, () -> ConditionModel.builder(String.class)
+		assertThrows(IllegalArgumentException.class, () -> ConditionModel.builder()
+						.valueClass(String.class)
 						.operators(emptyList()));
 	}
 
 	@Test
 	void includeInteger() {
-		ConditionModel<Integer> condition = ConditionModel.builder(Integer.class)
+		ConditionModel<Integer> condition = ConditionModel.builder()
+						.valueClass(Integer.class)
 						.autoEnable(false)
 						.operator(Operator.EQUAL)
 						.build();
@@ -554,7 +584,8 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void acceptsString() {
-		ConditionModel<String> condition = ConditionModel.builder(String.class)
+		ConditionModel<String> condition = ConditionModel.builder()
+						.valueClass(String.class)
 						.autoEnable(false)
 						.build();
 		condition.enabled().set(true);
@@ -619,7 +650,9 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void acceptCharacter() {
-		ConditionModel<Character> condition = ConditionModel.builder(Character.class).build();
+		ConditionModel<Character> condition = ConditionModel.builder()
+						.valueClass(Character.class)
+						.build();
 		condition.autoEnable().set(false);
 		condition.enabled().set(true);
 
@@ -641,7 +674,8 @@ public class DefaultConditionModelTest {
 
 		@BeforeEach
 		void setUp() {
-			condition = ConditionModel.builder(Integer.class)
+			condition = ConditionModel.builder()
+							.valueClass(Integer.class)
 							.autoEnable(false)
 							.build();
 		}
@@ -1034,7 +1068,8 @@ public class DefaultConditionModelTest {
 
 	@Test
 	void clearNonNull() {
-		ConditionModel<Boolean> conditionModel = ConditionModel.builder(Boolean.class)
+		ConditionModel<Boolean> conditionModel = ConditionModel.builder()
+						.valueClass(Boolean.class)
 						.operands(new Operands<Boolean>() {
 							@Override
 							public Value<Boolean> equal() {

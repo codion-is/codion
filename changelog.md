@@ -23,6 +23,7 @@ Codion Change Log
 - SimpleFilePreferences renamed to FilePreferences.
 - FilePreferencesFactory and JsonPreferencesStore refactored.
 - FilterModel.Builder.RefresherStage added.
+- ConditionModel.Builder.ValueClassBuilder added.
 ### is.codion.common.rmi
 - Unit tests improved.
 - ClientLog moved to framework.server module.
