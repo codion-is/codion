@@ -420,7 +420,7 @@ public final class ComponentsTest {
 	void menuItem() {
 		Components.menuItem();
 		Control control = Control.command(() -> {});
-		Components.menuItem(control).buildValue();
+		Components.menuItem().control(control).buildValue();
 	}
 
 	@Test

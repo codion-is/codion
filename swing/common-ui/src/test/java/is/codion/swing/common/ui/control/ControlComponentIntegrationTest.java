@@ -54,7 +54,7 @@ public final class ControlComponentIntegrationTest {
 
 		// Create multiple UI components bound to the same control
 		JButton button = Components.button().control(control).build();
-		JMenuItem menuItem = Components.menuItem(control).build();
+		JMenuItem menuItem = Components.menuItem().control(control).build();
 
 		// Initially disabled
 		assertFalse(button.isEnabled());

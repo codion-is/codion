@@ -60,12 +60,10 @@ import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldPanel;
 import is.codion.swing.common.ui.component.text.TextPaneBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
-import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 import is.codion.swing.common.ui.layout.Layouts;
 
-import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
 import javax.swing.ComboBoxModel;
 import javax.swing.Icon;
@@ -136,36 +134,6 @@ public final class Components {
 	 */
 	public static <C extends JMenuItem, B extends MenuItemBuilder<C, B>> MenuItemBuilder<C, B> menuItem() {
 		return MenuItemBuilder.builder();
-	}
-
-	/**
-	 * @param action the item action
-	 * @param <C> the component type
-	 * @param <B> the builder type
-	 * @return a new JMenuItem builder
-	 */
-	public static <C extends JMenuItem, B extends MenuItemBuilder<C, B>> MenuItemBuilder<C, B> menuItem(Action action) {
-		return MenuItemBuilder.builder(action);
-	}
-
-	/**
-	 * @param control the item control
-	 * @param <C> the component type
-	 * @param <B> the builder type
-	 * @return a new JMenuItem builder
-	 */
-	public static <C extends JMenuItem, B extends MenuItemBuilder<C, B>> MenuItemBuilder<C, B> menuItem(Control control) {
-		return MenuItemBuilder.builder(control);
-	}
-
-	/**
-	 * @param controlBuilder the item control builder
-	 * @param <C> the component type
-	 * @param <B> the builder type
-	 * @return a new JMenuItem builder
-	 */
-	public static <C extends JMenuItem, B extends MenuItemBuilder<C, B>> MenuItemBuilder<C, B> menuItem(Control.Builder<?, ?> controlBuilder) {
-		return MenuItemBuilder.builder(controlBuilder);
 	}
 
 	/**

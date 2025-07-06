@@ -21,15 +21,13 @@ package is.codion.swing.common.ui.component.button;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
-import javax.swing.Action;
 import javax.swing.JMenuItem;
 import javax.swing.SwingConstants;
 
 class DefaultMenuItemBuilder<C extends JMenuItem, B extends MenuItemBuilder<C, B>> extends AbstractButtonBuilder<Void, C, B>
 				implements MenuItemBuilder<C, B> {
 
-	DefaultMenuItemBuilder(Action action) {
-		action(action);
+	DefaultMenuItemBuilder() {
 		horizontalAlignment(SwingConstants.LEADING);
 	}
 
