@@ -32,8 +32,7 @@ final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, 
 	private boolean rollover = false;
 	private boolean borderPainted = true;
 
-	DefaultToolBarBuilder(Controls controls) {
-		super(controls);
+	DefaultToolBarBuilder() {
 		includeButtonText(false);
 	}
 

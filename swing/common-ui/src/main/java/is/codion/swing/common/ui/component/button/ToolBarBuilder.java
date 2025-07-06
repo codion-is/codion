@@ -18,12 +18,7 @@
  */
 package is.codion.swing.common.ui.component.button;
 
-import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
-
 import javax.swing.JToolBar;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * A builder for a {@link JToolBar}.
@@ -55,22 +50,6 @@ public interface ToolBarBuilder extends ControlPanelBuilder<JToolBar, ToolBarBui
 	 * @return a new {@link ToolBarBuilder}
 	 */
 	static ToolBarBuilder builder() {
-		return new DefaultToolBarBuilder(null);
-	}
-
-	/**
-	 * @param controls the controls
-	 * @return a new {@link ToolBarBuilder}
-	 */
-	static ToolBarBuilder builder(Controls controls) {
-		return new DefaultToolBarBuilder(requireNonNull(controls));
-	}
-
-	/**
-	 * @param controlsBuilder the controls builder
-	 * @return a new {@link ToolBarBuilder}
-	 */
-	static ToolBarBuilder builder(ControlsBuilder controlsBuilder) {
-		return new DefaultToolBarBuilder(requireNonNull(controlsBuilder).build());
+		return new DefaultToolBarBuilder();
 	}
 }

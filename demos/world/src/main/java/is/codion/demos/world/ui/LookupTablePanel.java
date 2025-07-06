@@ -279,10 +279,11 @@ final class LookupTablePanel extends EntityTablePanel {
 	private JToolBar createColumnSelectionToolBar() {
 		Controls toggleColumnsControls = table().createToggleColumnsControls();
 
-		return toolBar(Controls.builder()
-						.control(createSelectAllColumnsControl(toggleColumnsControls))
-						.separator()
-						.actions(toggleColumnsControls.actions()))
+		return toolBar()
+						.controls(Controls.builder()
+										.control(createSelectAllColumnsControl(toggleColumnsControls))
+										.separator()
+										.actions(toggleColumnsControls.actions()))
 						.floatable(false)
 						.orientation(SwingConstants.VERTICAL)
 						.toggleButtonType(ToggleButtonType.CHECKBOX)

@@ -41,13 +41,7 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 	private boolean fixedButtonSize = true;
 	private ButtonGroup buttonGroup;
 
-	DefaultButtonPanelBuilder(Action... actions) {
-		this(Controls.controls(actions));
-	}
-
-	DefaultButtonPanelBuilder(Controls controls) {
-		super(controls);
-	}
+	DefaultButtonPanelBuilder() {}
 
 	@Override
 	public ButtonPanelBuilder buttonGap(int buttonGap) {

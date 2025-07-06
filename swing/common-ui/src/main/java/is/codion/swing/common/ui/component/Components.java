@@ -60,8 +60,6 @@ import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldPanel;
 import is.codion.swing.common.ui.component.text.TextPaneBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
-import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.BoundedRangeModel;
@@ -552,22 +550,6 @@ public final class Components {
 	 */
 	public static ToolBarBuilder toolBar() {
 		return ToolBarBuilder.builder();
-	}
-
-	/**
-	 * @param controls the Controls
-	 * @return a {@link javax.swing.JToolBar} builder
-	 */
-	public static ToolBarBuilder toolBar(Controls controls) {
-		return ToolBarBuilder.builder(controls);
-	}
-
-	/**
-	 * @param controlsBuilder the {@link ControlsBuilder}
-	 * @return a {@link javax.swing.JToolBar} builder
-	 */
-	public static ToolBarBuilder toolBar(ControlsBuilder controlsBuilder) {
-		return ToolBarBuilder.builder(controlsBuilder);
 	}
 
 	/**

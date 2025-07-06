@@ -18,8 +18,6 @@
  */
 package is.codion.swing.common.ui.component.button;
 
-import is.codion.swing.common.ui.control.Controls;
-
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 
@@ -53,6 +51,6 @@ public interface ButtonPanelBuilder extends ControlPanelBuilder<JPanel, ButtonPa
 	 * @return a new button panel builder
 	 */
 	static ButtonPanelBuilder builder() {
-		return new DefaultButtonPanelBuilder((Controls) null);
+		return new DefaultButtonPanelBuilder();
 	}
 }

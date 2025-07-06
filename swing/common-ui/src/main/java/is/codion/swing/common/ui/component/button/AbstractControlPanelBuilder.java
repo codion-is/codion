@@ -46,11 +46,7 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 	private int orientation = SwingConstants.HORIZONTAL;
 	private ToggleButtonType toggleButtonType = ToggleButtonType.BUTTON;
 
-	protected AbstractControlPanelBuilder(Controls controls) {
-		if (controls != null) {
-			builder.actions(controls.actions());
-		}
-	}
+	protected AbstractControlPanelBuilder() {}
 
 	@Override
 	public final B orientation(int orientation) {

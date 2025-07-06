@@ -1574,7 +1574,8 @@ public class EntityPanel extends JPanel {
 			}
 
 			private JToolBar createControlToolBar(Controls controls) {
-				return toolBar(controls)
+				return toolBar()
+								.controls(controls)
 								.orientation(horizontalControlLayout() ? HORIZONTAL : VERTICAL)
 								.build();
 			}
