@@ -23,12 +23,18 @@ import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import javax.swing.BoundedRangeModel;
 import javax.swing.JProgressBar;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * Builds a JProgressBar.
  */
 public interface ProgressBarBuilder extends ComponentBuilder<Integer, JProgressBar, ProgressBarBuilder> {
+
+	/**
+	 * Note: setting the model also sets {@link #indeterminate(boolean)} to false
+	 * @param model the model
+	 * @return this builder
+	 * @see JProgressBar#setModel(BoundedRangeModel)
+	 */
+	ProgressBarBuilder model(BoundedRangeModel model);
 
 	/**
 	 * @param string a string to paint
@@ -74,14 +80,6 @@ public interface ProgressBarBuilder extends ComponentBuilder<Integer, JProgressB
 	 * @return a new indeterminate {@link ProgressBarBuilder} instance
 	 */
 	static ProgressBarBuilder builder() {
-		return new DefaultProgressBarBuilder(null);
-	}
-
-	/**
-	 * @param boundedRangeModel the progress bar model
-	 * @return a new {@link ProgressBarBuilder} instance
-	 */
-	static ProgressBarBuilder builder(BoundedRangeModel boundedRangeModel) {
-		return new DefaultProgressBarBuilder(requireNonNull(boundedRangeModel));
+		return new DefaultProgressBarBuilder();
 	}
 }

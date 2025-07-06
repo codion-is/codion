@@ -23,22 +23,25 @@ import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.BoundedRangeModel;
-import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.JProgressBar;
+
+import static java.util.Objects.requireNonNull;
 
 final class DefaultProgressBarBuilder extends AbstractComponentBuilder<Integer, JProgressBar, ProgressBarBuilder> implements ProgressBarBuilder {
 
-	private final BoundedRangeModel boundedRangeModel;
-
+	private BoundedRangeModel boundedRangeModel;
 	private boolean borderPainted;
 	private boolean stringPainted;
 	private int orientation;
-	private boolean indeterminate;
+	private boolean indeterminate = true;
 	private String string;
 
-	DefaultProgressBarBuilder(BoundedRangeModel boundedRangeModel) {
-		this.indeterminate = boundedRangeModel == null;
-		this.boundedRangeModel = boundedRangeModel == null ? new DefaultBoundedRangeModel() : boundedRangeModel;
+	DefaultProgressBarBuilder() {}
+
+	@Override
+	public ProgressBarBuilder model(BoundedRangeModel model) {
+		this.boundedRangeModel = requireNonNull(model);
+		return indeterminate(false);
 	}
 
 	@Override

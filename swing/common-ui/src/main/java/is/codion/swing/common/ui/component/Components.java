@@ -476,14 +476,6 @@ public final class Components {
 	}
 
 	/**
-	 * @param boundedRangeModel the model
-	 * @return a JProgressBar builder
-	 */
-	public static ProgressBarBuilder progressBar(BoundedRangeModel boundedRangeModel) {
-		return ProgressBarBuilder.builder(boundedRangeModel);
-	}
-
-	/**
 	 * Provides builder for a {@link Path} based file input panel.
 	 * @return a {@link FileInputPanel} builder
 	 */

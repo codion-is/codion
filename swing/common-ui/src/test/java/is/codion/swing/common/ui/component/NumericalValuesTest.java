@@ -225,7 +225,8 @@ public class NumericalValuesTest {
 	@Test
 	void integerBoundedRangeModelUiValue() {
 		BoundedRangeModel model = new DefaultBoundedRangeModel(0, 0, 0, 150);
-		ComponentValue<Integer, JProgressBar> value = Components.progressBar(model)
+		ComponentValue<Integer, JProgressBar> value = Components.progressBar()
+						.model(model)
 						.buildValue();
 
 		assertEquals(Integer.valueOf(0), value.get());
