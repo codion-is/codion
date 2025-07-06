@@ -87,6 +87,7 @@ Codion Change Log
 - TextFieldBuilder.ValueClassBuilder added.
 - TemporalField.Builder.TemporalClassBuilder added.
 - TemporalFieldPanel.Builder.TemporalClassBuilder added.
+- NumberField.Builder.NumberClassBuilder added.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Builder.EntityTypeBuilder and ConnectionProviderBuilder added.
 ### is.codion.swing.framework.ui

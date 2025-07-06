@@ -372,7 +372,8 @@ public final class EntityComponents {
 							.calendarIcon(ICONS.calendar());
 		}
 		if (attribute.type().isNumerical()) {
-			return (TextFieldBuilder<T, C, B>) NumberField.builder((Class<Number>) attribute.type().valueClass())
+			return (TextFieldBuilder<T, C, B>) NumberField.builder()
+							.numberClass((Class<Number>) attribute.type().valueClass())
 							.format(attributeDefinition.format().orElse(null))
 							.toolTipText(attributeDefinition.description().orElse(null));
 		}

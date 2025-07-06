@@ -386,35 +386,35 @@ public final class Components {
 	 * @return a Short based {@link NumberField} builder
 	 */
 	public static NumberField.Builder<Short> shortField() {
-		return NumberField.builder(Short.class);
+		return NumberField.builder().numberClass(Short.class);
 	}
 
 	/**
 	 * @return an Integer based {@link NumberField} builder
 	 */
 	public static NumberField.Builder<Integer> integerField() {
-		return NumberField.builder(Integer.class);
+		return NumberField.builder().numberClass(Integer.class);
 	}
 
 	/**
 	 * @return a Long based {@link NumberField} builder
 	 */
 	public static NumberField.Builder<Long> longField() {
-		return NumberField.builder(Long.class);
+		return NumberField.builder().numberClass(Long.class);
 	}
 
 	/**
 	 * @return a Double based {@link NumberField} builder
 	 */
 	public static NumberField.Builder<Double> doubleField() {
-		return NumberField.builder(Double.class);
+		return NumberField.builder().numberClass(Double.class);
 	}
 
 	/**
 	 * @return a BigDecimal based {@link NumberField} builder
 	 */
 	public static NumberField.Builder<BigDecimal> bigDecimalField() {
-		return NumberField.builder(BigDecimal.class);
+		return NumberField.builder().numberClass(BigDecimal.class);
 	}
 
 	/**

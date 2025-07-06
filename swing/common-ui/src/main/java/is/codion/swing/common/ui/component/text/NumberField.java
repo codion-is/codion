@@ -45,6 +45,8 @@ import static java.util.Objects.requireNonNull;
  */
 public final class NumberField<T extends Number> extends HintTextField {
 
+	private static final Builder.NumberClassBuilder VALUE_CLASS = new DefaultNumberClassBuilder();
+
 	/**
 	 * Specifies whether NumberFields should convert a grouping separator symbol
 	 * to a decimal separator symbol when typed. This solves the problem of locale
@@ -253,12 +255,10 @@ public final class NumberField<T extends Number> extends HintTextField {
 	}
 
 	/**
-	 * @param valueClass the value class
-	 * @param <T> the value type
-	 * @return a builder for a component
+	 * @return a {@link Builder.NumberClassBuilder}
 	 */
-	public static <T extends Number> Builder<T> builder(Class<T> valueClass) {
-		return createBuilder(valueClass);
+	public static Builder.NumberClassBuilder builder() {
+		return VALUE_CLASS;
 	}
 
 	/**
@@ -295,6 +295,19 @@ public final class NumberField<T extends Number> extends HintTextField {
 	 * @param <T> the value type
 	 */
 	public interface Builder<T extends Number> extends TextFieldBuilder<T, NumberField<T>, Builder<T>> {
+
+		/**
+		 * Provides a {@link Builder}
+		 */
+		interface NumberClassBuilder {
+
+			/**
+			 * @param numberClass the number class
+			 * @return a {@link Builder}
+			 * @param <T> the value type
+			 */
+			<T extends Number> Builder<T> numberClass(Class<T> numberClass);
+		}
 
 		/**
 		 * Specifies whether the {@link ComponentValue} created by this builder is nullable, default true.
@@ -401,6 +414,14 @@ public final class NumberField<T extends Number> extends HintTextField {
 				}
 			}
 			catch (BadLocationException ignored) {/*Not happening*/}
+		}
+	}
+
+	private static final class DefaultNumberClassBuilder implements Builder.NumberClassBuilder {
+
+		@Override
+		public <T extends Number> Builder<T> numberClass(Class<T> numberClass) {
+			return createBuilder(numberClass);
 		}
 	}
 
