@@ -82,7 +82,8 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 		this.logTextArea = createLogTextArea();
 		this.searchHighlighter = SearchHighlighter.builder(logTextArea).build();
 		this.searchField = searchHighlighter.createSearchField();
-		KeyEvents.builder(KeyEvent.VK_F)
+		KeyEvents.builder()
+						.keyCode(KeyEvent.VK_F)
 						.modifiers(InputEvent.CTRL_DOWN_MASK)
 						.action(command(searchField::requestFocusInWindow))
 						.enable(logTextArea);

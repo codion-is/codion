@@ -162,7 +162,8 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 		}
 		if (escapeAction != null) {
 			dialog.addWindowListener(new EscapeOnWindowClosingListener(escapeAction));
-			KeyEvents.builder(VK_ESCAPE)
+			KeyEvents.builder()
+							.keyCode(VK_ESCAPE)
 							.condition(WHEN_IN_FOCUSED_WINDOW)
 							.action(escapeAction)
 							.enable(dialog.getRootPane());

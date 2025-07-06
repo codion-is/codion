@@ -81,12 +81,14 @@ final class EntityDependenciesPanel extends JPanel {
 						tabPane.addTab(connectionProvider.entities().definition(entityType).caption(), tablePanel));
 		add(tabPane, BorderLayout.CENTER);
 		NAVIGATE_RIGHT.defaultKeystroke().optional().ifPresent(keyStroke ->
-						KeyEvents.builder(keyStroke)
+						KeyEvents.builder()
+										.keyStroke(keyStroke)
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.action(command(new NavigateRightCommand()))
 										.enable(tabPane));
 		NAVIGATE_LEFT.defaultKeystroke().optional().ifPresent(keyStroke ->
-						KeyEvents.builder(keyStroke)
+						KeyEvents.builder()
+										.keyStroke(keyStroke)
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.action(command(new NavigateLeftCommand()))
 										.enable(tabPane));

@@ -210,10 +210,12 @@ final class KeyboardShortcutsPanel extends JPanel {
 
 	private static void addScrollKeyEvents(JScrollPane scrollPane) {
 		JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
-		KeyEvents.builder(VK_UP)
+		KeyEvents.builder()
+						.keyCode(VK_UP)
 						.action(command(() -> verticalScrollBar.setValue(verticalScrollBar.getValue() - VERTICAL_UNIT_INCREMENT)))
 						.enable(scrollPane);
-		KeyEvents.builder(VK_DOWN)
+		KeyEvents.builder()
+						.keyCode(VK_DOWN)
 						.action(command(() -> verticalScrollBar.setValue(verticalScrollBar.getValue() + VERTICAL_UNIT_INCREMENT)))
 						.enable(scrollPane);
 	}

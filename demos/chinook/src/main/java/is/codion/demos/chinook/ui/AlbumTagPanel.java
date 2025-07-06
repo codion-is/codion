@@ -109,17 +109,21 @@ final class AlbumTagPanel extends JPanel {
 	}
 
 	private void setupKeyEvents() {
-		KeyEvents.builder(VK_INSERT)
+		KeyEvents.builder()
+						.keyCode(VK_INSERT)
 						.action(addTagControl)
 						.enable(tagsValue.component());
-		KeyEvents.builder(VK_DELETE)
+		KeyEvents.builder()
+						.keyCode(VK_DELETE)
 						.action(removeTagControl)
 						.enable(tagsValue.component());
-		KeyEvents.builder(VK_UP)
+		KeyEvents.builder()
+						.keyCode(VK_UP)
 						.modifiers(CTRL_DOWN_MASK)
 						.action(moveSelectionUpControl)
 						.enable(tagsValue.component());
-		KeyEvents.builder(VK_DOWN)
+		KeyEvents.builder()
+						.keyCode(VK_DOWN)
 						.modifiers(CTRL_DOWN_MASK)
 						.action(moveSelectionDownControl)
 						.enable(tagsValue.component());

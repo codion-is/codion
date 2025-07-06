@@ -278,19 +278,23 @@ public final class TabbedDetailLayout implements DetailLayout {
 	private void bindEvents(EntityPanel detailPanel) {
 		detailPanel.activated().addConsumer(detailController::activated);
 		controlMap.keyStroke(RESIZE_RIGHT).optional().ifPresent(keyStroke ->
-						detailPanel.addKeyEvent(KeyEvents.builder(keyStroke)
+						detailPanel.addKeyEvent(KeyEvents.builder()
+										.keyStroke(keyStroke)
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.action(new ResizeAction(detailPanel, true, false))));
 		controlMap.keyStroke(RESIZE_LEFT).optional().ifPresent(keyStroke ->
-						detailPanel.addKeyEvent(KeyEvents.builder(keyStroke)
+						detailPanel.addKeyEvent(KeyEvents.builder()
+										.keyStroke(keyStroke)
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.action(new ResizeAction(detailPanel, false, false))));
 		controlMap.keyStroke(COLLAPSE).optional().ifPresent(keyStroke ->
-						detailPanel.addKeyEvent(KeyEvents.builder(keyStroke)
+						detailPanel.addKeyEvent(KeyEvents.builder()
+										.keyStroke(keyStroke)
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.action(new ResizeAction(detailPanel, true, true))));
 		controlMap.keyStroke(EXPAND).optional().ifPresent(keyStroke ->
-						detailPanel.addKeyEvent(KeyEvents.builder(keyStroke)
+						detailPanel.addKeyEvent(KeyEvents.builder()
+										.keyStroke(keyStroke)
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.action(new ResizeAction(detailPanel, false, true))));
 	}

@@ -214,10 +214,12 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
 			new MaximumTextFieldLength(textComponent.getDocument(), maximumLength);
 		}
 		if (controlDeleteWord) {
-			keyEvent(KeyEvents.builder(VK_DELETE)
+			keyEvent(KeyEvents.builder()
+							.keyCode(VK_DELETE)
 							.modifiers(CTRL_DOWN_MASK)
 							.action(new DeleteNextWordAction()));
-			keyEvent(KeyEvents.builder(VK_BACK_SPACE)
+			keyEvent(KeyEvents.builder()
+							.keyCode(VK_BACK_SPACE)
 							.modifiers(CTRL_DOWN_MASK)
 							.action(new DeletePreviousWordAction()));
 		}

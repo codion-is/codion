@@ -64,7 +64,8 @@ public final class CustomerEditPanel extends EntityEditPanel {
 						.upperCase(true)
 						// CTRL-SPACE displays a dialog for selecting
 						// a State from existing column values
-						.keyEvent(KeyEvents.builder(VK_SPACE)
+						.keyEvent(KeyEvents.builder()
+										.keyCode(VK_SPACE)
 										.modifiers(CTRL_DOWN_MASK)
 										.action(Control.action(this::selectState)));
 		createTextField(Customer.COUNTRY)

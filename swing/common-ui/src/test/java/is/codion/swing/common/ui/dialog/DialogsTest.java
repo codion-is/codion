@@ -53,7 +53,8 @@ public final class DialogsTest {
 						.closeObserver(Event.event())
 						.confirmCloseListener(state -> {})
 						.disposeOnEscape(false)
-						.keyEvent(KeyEvents.builder(KeyEvent.VK_ESCAPE)
+						.keyEvent(KeyEvents.builder()
+										.keyCode(KeyEvent.VK_ESCAPE)
 										.action(Control.command(() -> {})))
 						.build();
 	}

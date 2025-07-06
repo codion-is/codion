@@ -36,7 +36,8 @@ import static javax.swing.KeyStroke.getKeyStroke;
  * {@snippet :
  * JTextField textField = new JTextField();
  *
- * KeyEvents.builder(VK_DOWN)
+ * KeyEvents.builder()
+ * 					.keyCode(VK_DOWN)
  *          .onKeyRelease(false)
  *          .modifiers(CTRL_DOWN_MASK)
  *          .condition(WHEN_FOCUSED)
@@ -44,8 +45,6 @@ import static javax.swing.KeyStroke.getKeyStroke;
  *          .enable(textField);
  *}
  * @see #builder()
- * @see #builder(int)
- * @see #builder(KeyStroke)
  */
 public final class KeyEvents {
 
@@ -58,27 +57,6 @@ public final class KeyEvents {
 	 */
 	public static Builder builder() {
 		return new DefaultBuilder();
-	}
-
-	/**
-	 * Instantiates a new {@link KeyEvents.Builder} instance.
-	 * Note that an Action must be set via {@link Builder#action(Action)} before enabling/disabling.
-	 * @param keyCode the key code
-	 * @return a {@link Builder} instance.
-	 */
-	public static Builder builder(int keyCode) {
-		return new DefaultBuilder()
-						.keyCode(keyCode);
-	}
-
-	/**
-	 * Instantiates a new {@link KeyEvents.Builder} instance.
-	 * Note that an Action must be set via {@link Builder#action(Action)} before enabling/disabling.
-	 * @param keyStroke the keyStroke
-	 * @return a {@link Builder} instance.
-	 */
-	public static Builder builder(KeyStroke keyStroke) {
-		return new DefaultBuilder(keyStroke);
 	}
 
 	/**
@@ -115,7 +93,7 @@ public final class KeyEvents {
 	/**
 	 * A Builder for adding a key event to a component, with a default onKeyRelease trigger
 	 * and condition {@link JComponent#WHEN_FOCUSED}.
-	 * @see KeyEvents#builder(int)
+	 * @see KeyEvents#builder()
 	 */
 	public interface Builder {
 

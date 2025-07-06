@@ -325,7 +325,8 @@ final class FrameworkUIDemo {
 			@Override
 			protected void initializeUI() {
 				createTextField(Customer.STATE)
-								.keyEvent(KeyEvents.builder(VK_SPACE)
+								.keyEvent(KeyEvents.builder()
+												.keyCode(VK_SPACE)
 												.modifiers(CTRL_DOWN_MASK)
 												.action(Control.action(this::selectStateFromExistingValues)));
 			}

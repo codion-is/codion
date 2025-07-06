@@ -161,7 +161,8 @@ final class ExceptionPanel extends JPanel {
 	}
 
 	private void bindEvents() {
-		KeyEvents.builder(VK_ESCAPE)
+		KeyEvents.builder()
+						.keyCode(VK_ESCAPE)
 						.condition(WHEN_IN_FOCUSED_WINDOW)
 						.action(command(this::closeDialog))
 						.enable(this);

@@ -106,7 +106,8 @@ public final class ApplicationPanel extends JPanel {
 						.transferFocusOnEnter(true)
 						.validIndicator(new PGValidator())
 						// CTRL-SPACE displays a dialog for selecting a value
-						.keyEvent(KeyEvents.builder(VK_SPACE)
+						.keyEvent(KeyEvents.builder()
+										.keyCode(VK_SPACE)
 										.modifiers(CTRL_DOWN_MASK)
 										.action(Control.action(ApplicationPanel::selectString)))
 						.label(label("Short String (1)")
@@ -136,7 +137,8 @@ public final class ApplicationPanel extends JPanel {
 						.transferFocusOnEnter(true)
 						.dragEnabled(true)
 						.transferHandler(new FilePathTransferHandler())
-						.keyEvent(KeyEvents.builder(VK_SPACE)
+						.keyEvent(KeyEvents.builder()
+										.keyCode(VK_SPACE)
 										.modifiers(CTRL_DOWN_MASK)
 										.action(Control.action(actionEvent ->
 														((JTextArea) actionEvent.getSource()).append("SPACE"))))

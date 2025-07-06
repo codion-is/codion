@@ -64,7 +64,8 @@ public final class FileInputPanel extends JPanel {
 						.smallIcon(builder.buttonIcon)
 						.build();
 		filePathField = builder.pathFieldBuilder
-						.keyEvent(KeyEvents.builder(KeyEvent.VK_INSERT)
+						.keyEvent(KeyEvents.builder()
+										.keyCode(KeyEvent.VK_INSERT)
 										.action(browseControl))
 						.build();
 		browseButton = ButtonBuilder.builder(browseControl)

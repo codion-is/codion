@@ -91,7 +91,8 @@ final class DefaultControlMap implements ControlMap {
 		Optional<KeyStroke> keyStroke = keyStroke(controlKey).optional();
 		Optional<? extends Control> control = control(controlKey).optional();
 		if (keyStroke.isPresent() && control.isPresent()) {
-			return Optional.of(KeyEvents.builder(keyStroke.get())
+			return Optional.of(KeyEvents.builder()
+							.keyStroke(keyStroke.get())
 							.action(control.get()));
 		}
 

@@ -172,7 +172,8 @@ final class EntityControls {
 						.enabled(createComponentEnabledState(component))
 						.build();
 		if (keyStroke != null) {
-			KeyEvents.builder(keyStroke)
+			KeyEvents.builder()
+							.keyStroke(keyStroke)
 							.action(control)
 							.enable(component);
 		}
@@ -189,7 +190,8 @@ final class EntityControls {
 						.enabled(State.and(createComponentEnabledState(component), selectionNonEmptyState))
 						.build();
 		if (keyStroke != null) {
-			KeyEvents.builder(keyStroke)
+			KeyEvents.builder()
+							.keyStroke(keyStroke)
 							.action(control)
 							.enable(component);
 		}

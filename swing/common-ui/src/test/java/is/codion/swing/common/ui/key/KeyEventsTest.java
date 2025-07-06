@@ -36,7 +36,9 @@ public class KeyEventsTest {
 	void addRemoveKeyEvent() {
 		JTextField textField = new JTextField();
 		Control control = Control.builder().command(() -> {}).build();
-		KeyEvents.Builder builder = KeyEvents.builder(VK_ENTER).action(control);
+		KeyEvents.Builder builder = KeyEvents.builder()
+						.keyCode(VK_ENTER)
+						.action(control);
 		builder.enable(textField);
 		String actionMapKey = (String) textField.getInputMap().get(KeyStroke.getKeyStroke(VK_ENTER, 0));
 		assertSame(control, textField.getActionMap().get(actionMapKey));
@@ -47,13 +49,18 @@ public class KeyEventsTest {
 	@Test
 	void addKeyEventWithoutName() {
 		JComboBox<String> comboBox = new JComboBox<>();
-		KeyEvents.Builder builder = KeyEvents.builder(VK_ENTER).action(command(() -> {})).onKeyRelease(true);
+		KeyEvents.Builder builder = KeyEvents.builder()
+						.keyCode(VK_ENTER)
+						.action(command(() -> {}))
+						.onKeyRelease(true);
 		builder.enable(comboBox);
 		builder.disable(comboBox);
 	}
 
 	@Test
 	void actionMissing() {
-		assertThrows(IllegalStateException.class, () -> KeyEvents.builder(VK_ENTER).enable(new JTextField()));
+		assertThrows(IllegalStateException.class, () -> KeyEvents.builder()
+						.keyCode(VK_ENTER)
+						.enable(new JTextField()));
 	}
 }

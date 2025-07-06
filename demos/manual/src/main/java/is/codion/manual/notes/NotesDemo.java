@@ -142,7 +142,8 @@ public final class NotesDemo {
 							.transferFocusOnEnter(false)
 							// Use CTRL-Enter for inserting, updating and
 							// deleting, depending on the edit model state
-							.keyEvent(KeyEvents.builder(KeyEvent.VK_ENTER)
+							.keyEvent(KeyEvents.builder()
+											.keyCode(KeyEvent.VK_ENTER)
 											.modifiers(InputEvent.CTRL_DOWN_MASK)
 											.action(Control.command(this::insertDeleteOrUpdate)))
 							.build();

@@ -466,19 +466,23 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		FocusGained focusGained = new FocusGained();
 		components.forEach(component -> component.addFocusListener(focusGained));
 		TOGGLE_ENABLED.defaultKeystroke().optional().ifPresent(keyStroke ->
-						KeyEvents.builder(keyStroke)
+						KeyEvents.builder()
+										.keyStroke(keyStroke)
 										.action(command(this::toggleEnabled))
 										.enable(components));
 		CLEAR.defaultKeystroke().optional().ifPresent(keyStroke ->
-						KeyEvents.builder(keyStroke)
+						KeyEvents.builder()
+										.keyStroke(keyStroke)
 										.action(command(model()::clear))
 										.enable(components));
 		PREVIOUS_OPERATOR.defaultKeystroke().optional().ifPresent(keyStroke ->
-						KeyEvents.builder(keyStroke)
+						KeyEvents.builder()
+										.keyStroke(keyStroke)
 										.action(command(this::selectPreviousOperator))
 										.enable(components));
 		NEXT_OPERATOR.defaultKeystroke().optional().ifPresent(keyStroke ->
-						KeyEvents.builder(keyStroke)
+						KeyEvents.builder()
+										.keyStroke(keyStroke)
 										.action(command(this::selectNextOperator))
 										.enable(components));
 	}

@@ -1471,7 +1471,8 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private JToolBar createRefreshButtonToolBar() {
-		KeyEvents.builder(VK_F5)
+		KeyEvents.builder()
+						.keyCode(VK_F5)
 						.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 						.action(conditionRefreshControl)
 						.enable(this);
@@ -1490,7 +1491,8 @@ public class EntityTablePanel extends JPanel {
 			TableConditionPanel<Attribute<?>> conditionPanel = configuration.conditionPanelFactory
 							.create(tableModel.queryModel().condition().conditionModel(), createConditionPanels(),
 											table.columnModel(), this::configureTableConditionPanel);
-			KeyEvents.builder(VK_ENTER)
+			KeyEvents.builder()
+							.keyCode(VK_ENTER)
 							.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 							.action(conditionRefreshControl)
 							.enable(conditionPanel);

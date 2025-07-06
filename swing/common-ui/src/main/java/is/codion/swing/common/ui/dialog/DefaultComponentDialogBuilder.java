@@ -144,7 +144,8 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 		JDialog dialog = createDialog(owner, title, icon, component, size, locationRelativeTo,
 						location, modal, resizable, onShownConsumers, keyEventBuilders);
 		if (enterAction != null) {
-			KeyEvents.builder(VK_ENTER)
+			KeyEvents.builder()
+							.keyCode(VK_ENTER)
 							.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 							.action(enterAction)
 							.enable(dialog.getRootPane());
@@ -155,7 +156,8 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 		if (closeObserver == null) {
 			dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			if (disposeOnEscape) {
-				KeyEvents.builder(VK_ESCAPE)
+				KeyEvents.builder()
+								.keyCode(VK_ESCAPE)
 								.condition(WHEN_IN_FOCUSED_WINDOW)
 								.action(new DisposeDialogOnEscapeAction(dialog, confirmCloseListener))
 								.enable(dialog.getRootPane());

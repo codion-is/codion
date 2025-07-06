@@ -149,7 +149,8 @@ final class ProgressWorkerDemo {
 						.component(progressPanel)
 						.owner(applicationFrame)
 						// Trigger the cancel control with the Escape key
-						.keyEvent(KeyEvents.builder(VK_ESCAPE)
+						.keyEvent(KeyEvents.builder()
+										.keyCode(VK_ESCAPE)
 										.action(cancel))
 						// Prevent the dialog from closing on Escape
 						.disposeOnEscape(false)

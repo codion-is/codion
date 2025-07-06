@@ -85,7 +85,8 @@ public class NullableCheckBox extends JCheckBox {
 		super.setModel(requireNonNull(model));
 		setIcon(new NullableIcon());
 		addMouseListener(new NullableMouseListener());
-		KeyEvents.builder(VK_SPACE)
+		KeyEvents.builder()
+						.keyCode(VK_SPACE)
 						.action(new NextStateAction(model))
 						.enable(this);
 	}

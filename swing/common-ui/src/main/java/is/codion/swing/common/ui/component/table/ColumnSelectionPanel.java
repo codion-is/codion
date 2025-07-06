@@ -121,11 +121,13 @@ final class ColumnSelectionPanel<C> extends JPanel {
 		selectNoneBox.addActionListener(new SelectNone(selectAllBox, selectNoneBox));
 
 		List<JCheckBox> selectCheckBoxes = Arrays.asList(selectAllBox, selectNoneBox);
-		KeyEvents.builder(VK_UP)
+		KeyEvents.builder()
+						.keyCode(VK_UP)
 						.condition(WHEN_FOCUSED)
 						.action(command(new TransferFocusCommand(selectCheckBoxes, false)))
 						.enable(selectAllBox, selectNoneBox);
-		KeyEvents.builder(VK_DOWN)
+		KeyEvents.builder()
+						.keyCode(VK_DOWN)
 						.condition(WHEN_FOCUSED)
 						.action(command(new TransferFocusCommand(selectCheckBoxes, true)))
 						.enable(selectAllBox, selectNoneBox);
@@ -148,10 +150,12 @@ final class ColumnSelectionPanel<C> extends JPanel {
 		JPanel northPanel = gridLayoutPanel(0, 1)
 						.addAll(checkBoxes)
 						.build();
-		KeyEvents.Builder upEventBuilder = KeyEvents.builder(VK_UP)
+		KeyEvents.Builder upEventBuilder = KeyEvents.builder()
+						.keyCode(VK_UP)
 						.condition(WHEN_FOCUSED)
 						.action(command(new TransferFocusCommand(checkBoxes, false)));
-		KeyEvents.Builder downEventBuilder = KeyEvents.builder(VK_DOWN)
+		KeyEvents.Builder downEventBuilder = KeyEvents.builder()
+						.keyCode(VK_DOWN)
 						.condition(WHEN_FOCUSED)
 						.action(command(new TransferFocusCommand(checkBoxes, true)));
 		checkBoxes.forEach(checkBox -> {

@@ -53,13 +53,16 @@ final class ListComboBox<T> extends JComboBox<T> {
 		this.itemValue = itemValue;
 		this.linkedValue = linkedValue;
 		this.linkedValue.link(new ListBoxItemValue<>(itemValue, comboBoxModel));
-		KeyEvents.builder(VK_INSERT)
+		KeyEvents.builder()
+						.keyCode(VK_INSERT)
 						.action(command(this::addItem))
 						.enable(itemValue.component());
-		KeyEvents.builder(VK_DELETE)
+		KeyEvents.builder()
+						.keyCode(VK_DELETE)
 						.action(command(this::removeItem))
 						.enable(itemValue.component());
-		KeyEvents.builder(VK_DELETE)
+		KeyEvents.builder()
+						.keyCode(VK_DELETE)
 						.modifiers(CTRL_DOWN_MASK)
 						.action(command(this::clear))
 						.enable(itemValue.component());

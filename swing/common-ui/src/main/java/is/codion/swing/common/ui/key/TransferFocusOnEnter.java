@@ -81,13 +81,15 @@ public enum TransferFocusOnEnter {
 	private static final Action TRANSFER_FOCUS_BACKWARD = new TransferFocusAction(true);
 
 	private static KeyEvents.Builder backward() {
-		return KeyEvents.builder(VK_ENTER)
+		return KeyEvents.builder()
+						.keyCode(VK_ENTER)
 						.modifiers(SHIFT_DOWN_MASK)
 						.action(TRANSFER_FOCUS_BACKWARD);
 	}
 
 	private static <T extends JComponent> KeyEvents.Builder forward(T component) {
-		return KeyEvents.builder(VK_ENTER)
+		return KeyEvents.builder()
+						.keyCode(VK_ENTER)
 						.modifiers(component instanceof JTextArea ? CTRL_DOWN_MASK : 0)
 						.action(TRANSFER_FOCUS_FORWARD);
 	}

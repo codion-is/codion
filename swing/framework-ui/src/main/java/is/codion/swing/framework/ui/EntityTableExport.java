@@ -260,7 +260,8 @@ final class EntityTableExport {
 			JTree tree = new JTree(entityNode);
 			tree.setShowsRootHandles(true);
 			tree.setRootVisible(false);
-			KeyEvents.builder(VK_SPACE)
+			KeyEvents.builder()
+							.keyCode(VK_SPACE)
 							.action(command(this::toggleSelected))
 							.enable(tree);
 
