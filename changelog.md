@@ -14,6 +14,7 @@ Codion Change Log
 - TaskScheduler.Builder.TaskStep added.
 - State, overloaded builder() method removed.
 - ProxyBuilder.builder() renamed of().
+- DefaultProxyBuilder now thread-safe and reusable.
 ### is.codion.common.db
 - Unit tests improved.
 - DatabaseConnection.getMethodLogger() now returns MethodLogger.noOpLogger() in case of no logger.

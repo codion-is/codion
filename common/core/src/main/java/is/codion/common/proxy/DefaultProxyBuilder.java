@@ -51,7 +51,10 @@ final class DefaultProxyBuilder<T> implements ProxyBuilder<T> {
 
 	@Override
 	public ProxyBuilder<T> delegate(T delegate) {
-		this.delegate = requireNonNull(delegate);
+		requireNonNull(delegate);
+		synchronized (methodMap) {
+			this.delegate = delegate;
+		}
 		return this;
 	}
 
@@ -71,7 +74,9 @@ final class DefaultProxyBuilder<T> implements ProxyBuilder<T> {
 		requireNonNull(parameterTypes);
 		requireNonNull(method);
 		try {
-			methodMap.put(findMethod(singletonList(interfaceToProxy), name, parameterTypes), method);
+			synchronized (methodMap) {
+				methodMap.put(findMethod(singletonList(interfaceToProxy), name, parameterTypes), method);
+			}
 
 			return this;
 		}
@@ -82,8 +87,10 @@ final class DefaultProxyBuilder<T> implements ProxyBuilder<T> {
 
 	@Override
 	public T build() {
-		return (T) Proxy.newProxyInstance(interfaceToProxy.getClassLoader(),
-						new Class[] {interfaceToProxy}, new DefaultHandler<>(methodMap, delegate));
+		synchronized (methodMap) {
+			return (T) Proxy.newProxyInstance(interfaceToProxy.getClassLoader(),
+							new Class[] {interfaceToProxy}, new DefaultHandler<>(new HashMap<>(methodMap), delegate));
+		}
 	}
 
 	private static MethodKey findMethod(List<Class<?>> interfaces, String methodName, List<Class<?>> parameterTypes) throws NoSuchMethodException {

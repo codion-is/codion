@@ -24,11 +24,18 @@ import java.util.List;
 
 /**
  * Builds a dynamic proxy for a single interface.
+ * <p>
+ * This builder is reusable and thread-safe. Each call to {@link #build()} creates a new proxy instance
+ * based on the current builder state. Subsequent changes to the builder do not affect previously built proxies.
+ * <p>
+ * Methods can be replaced by calling {@link #method(String, ProxyMethod)} again with the same method signature,
+ * but once added, methods cannot be removed from the builder.
+ * <p>
  * Note that if the {@link Object#equals(Object)} method is not proxied the resulting proxy is equal only to itself.
  * {@snippet :
  * List<String> list = new ArrayList<>();
  *
- * List<String> listProxy = ProxyBuilder.of(List.class)
+ * ProxyBuilder<List> builder = ProxyBuilder.of(List.class)
  *     .delegate(list)
  *     .method("add", Object.class, parameters -> {
  *       Object item = parameters.arguments().get(0);
@@ -36,24 +43,24 @@ import java.util.List;
  *
  *       return parameters.delegate().add(item);
  *     })
- *     .method("remove", Object.class, parameters -> {
- *       Object item = parameters.arguments().get(0);
- *       System.out.println("Removing: " + item);
- *
- *       return parameters.delegate().remove(item);
- *     })
- *     .method("equals", Object.class, parameters -> {
- *       Object object = parameters.arguments().get(0);
- *       System.out.println("Equals: " + object);
- *
- *       return parameters.delegate().equals(object);
- *     })
  *     .method("size", parameters -> {
  *       System.out.println("Size");
  *
  *       return parameters.delegate().size();
- *     })
- *     .build();
+ *     });
+ *
+ * List<String> proxy1 = builder.build();
+ * 
+ * // Builder can be reused and modified
+ * builder.method("remove", Object.class, parameters -> {
+ *   Object item = parameters.arguments().get(0);
+ *   System.out.println("Removing: " + item);
+ *
+ *   return parameters.delegate().remove(item);
+ * });
+ *
+ * List<String> proxy2 = builder.build(); // Has all three methods
+ * // proxy1 still has only add() and size() methods proxied
  *}
  * @param <T> the proxy type
  * @see #of(Class)
@@ -63,6 +70,9 @@ public interface ProxyBuilder<T> {
 	/**
 	 * Sets the delegate instance to forward non-proxied method calls to.
 	 * If not specified, all non-proxied methods throw {@link UnsupportedOperationException}.
+	 * <p>
+	 * The delegate is captured at build time. Changing the delegate after building a proxy
+	 * does not affect previously built proxies.
 	 * @param delegate the delegate instance to receive all non-proxied method calls
 	 * @return this proxy builder
 	 */
@@ -70,6 +80,9 @@ public interface ProxyBuilder<T> {
 
 	/**
 	 * Proxy the given no-argument method with the given proxy method.
+	 * <p>
+	 * If a proxy method has already been defined for this method signature,
+	 * it will be replaced with the new one.
 	 * @param name the method name
 	 * @param method the proxy replacement method
 	 * @return this proxy builder
@@ -78,6 +91,9 @@ public interface ProxyBuilder<T> {
 
 	/**
 	 * Proxy the given single-argument method with the given proxy method.
+	 * <p>
+	 * If a proxy method has already been defined for this method signature,
+	 * it will be replaced with the new one.
 	 * @param name the method name
 	 * @param parameterType the method parameter type
 	 * @param method the proxy method
@@ -87,6 +103,9 @@ public interface ProxyBuilder<T> {
 
 	/**
 	 * Proxy the given method with the given proxy method.
+	 * <p>
+	 * If a proxy method has already been defined for this method signature,
+	 * it will be replaced with the new one.
 	 * @param name the method name
 	 * @param parameterTypes the method parameter types
 	 * @param method the proxy method
@@ -96,6 +115,10 @@ public interface ProxyBuilder<T> {
 
 	/**
 	 * Builds the Proxy instance.
+	 * <p>
+	 * Each call to this method returns a new proxy instance with the current builder configuration.
+	 * The returned proxy is independent of the builder and will not be affected by subsequent
+	 * changes to the builder.
 	 * @return a new proxy instance
 	 */
 	T build();
