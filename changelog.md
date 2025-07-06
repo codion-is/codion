@@ -99,6 +99,7 @@ Codion Change Log
 - PanelBuilder, overloaded builder() methods removed.
 - ProgressBarBuilder, overloaded builder() methods removed.
 - ScrollPaneBuilder, overloaded builder() methods removed.
+- ColumnConditionPanel.Builder.ModelBuilder.added.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Builder.EntityTypeBuilder and ConnectionProviderBuilder added.
 ### is.codion.swing.framework.ui

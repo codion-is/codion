@@ -83,9 +83,9 @@ import static javax.swing.SwingConstants.CENTER;
 
 /**
  * A UI implementation for {@link ConditionModel}.
- * For instances use {@link #builder(ConditionModel)}.
+ * For instances use {@link #builder()}.
  * @param <T> the column value type
- * @see #builder(ConditionModel)
+ * @see #builder()
  */
 public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
@@ -252,12 +252,10 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	}
 
 	/**
-	 * @param conditionModel the condition model
-	 * @param <T> the condition value type
 	 * @return a new {@link Builder}
 	 */
-	public static <T> Builder<T> builder(ConditionModel<T> conditionModel) {
-		return new DefaultBuilder<>(conditionModel);
+	public static Builder.ModelBuilder builder() {
+		return DefaultBuilder.MODEL;
 	}
 
 	/**
@@ -265,6 +263,19 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	 * @param <T> the column value type
 	 */
 	public interface Builder<T> {
+
+		/**
+		 * Provides a {@link Builder}
+		 */
+		interface ModelBuilder {
+
+			/**
+			 * @param model the condition model
+			 * @param <T> the condition value type
+			 * @return a new {@link Builder}
+			 */
+			<T> Builder<T> model(ConditionModel<T> model);
+		}
 
 		/**
 		 * @param componentFactory the input component factory
@@ -292,7 +303,17 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		ColumnConditionPanel<T> build();
 	}
 
+	private static final class DefaultModelBuilder implements Builder.ModelBuilder {
+
+		@Override
+		public <T> Builder<T> model(ConditionModel<T> model) {
+			return new DefaultBuilder<>(requireNonNull(model));
+		}
+	}
+
 	private static final class DefaultBuilder<T> implements Builder<T> {
+
+		private static final ModelBuilder MODEL = new DefaultModelBuilder();
 
 		private final ConditionModel<T> conditionModel;
 
@@ -301,7 +322,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		private TableColumn tableColumn;
 
 		private DefaultBuilder(ConditionModel<T> conditionModel) {
-			this.conditionModel = requireNonNull(conditionModel);
+			this.conditionModel = conditionModel;
 		}
 
 		@Override
@@ -415,9 +436,9 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 						.horizontalAlignment(CENTER)
 						.popupMenu(radioButton -> menu()
 										.controls(Controls.builder()
-										.control(Control.builder()
-														.toggle(model().autoEnable())
-														.caption(MESSAGES.getString("auto_enable"))))
+														.control(Control.builder()
+																		.toggle(model().autoEnable())
+																		.caption(MESSAGES.getString("auto_enable"))))
 										.buildPopupMenu())
 						.build();
 		boolean modelLocked = model().locked().get();

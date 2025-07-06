@@ -1522,7 +1522,8 @@ public class EntityTablePanel extends JPanel {
 
 	private <C extends Attribute<?>> ColumnConditionPanel<?> createConditionPanel(ConditionModel<?> conditionModel, C identifier,
 																																								ComponentFactory componentFactory) {
-		return ColumnConditionPanel.builder(conditionModel)
+		return ColumnConditionPanel.builder()
+						.model(conditionModel)
 						.componentFactory(componentFactory)
 						.tableColumn(table.columnModel().column(identifier))
 						.build();

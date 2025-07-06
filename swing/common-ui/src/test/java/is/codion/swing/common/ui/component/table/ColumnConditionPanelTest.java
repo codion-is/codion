@@ -31,12 +31,14 @@ public class ColumnConditionPanelTest {
 		ConditionModel<String> model = ConditionModel.builder()
 						.valueClass(String.class)
 						.build();
-		ColumnConditionPanel<String> panel = ColumnConditionPanel.builder(model).build();
+		ColumnConditionPanel<String> panel = ColumnConditionPanel.builder()
+						.model(model)
+						.build();
 		assertSame(model, panel.model());
 		assertNotNull(panel.operands().equal());
 		assertNotNull(panel.operands().upper());
 		assertNotNull(panel.operands().lower());
-		assertThrows(NullPointerException.class, () -> ColumnConditionPanel.<String>builder(null));
+		assertThrows(NullPointerException.class, () -> ColumnConditionPanel.<String>builder().model(null));
 	}
 
 	@Test
@@ -45,6 +47,6 @@ public class ColumnConditionPanelTest {
 						.valueClass(String.class)
 						.build();
 		model.locked().set(true);
-		ColumnConditionPanel.builder(model).build();
+		ColumnConditionPanel.builder().model(model).build();
 	}
 }

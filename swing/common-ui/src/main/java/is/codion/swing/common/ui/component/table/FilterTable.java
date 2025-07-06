@@ -940,7 +940,8 @@ public final class FilterTable<R, C> extends JTable {
 			ConditionModel<?> condition = entry.getValue();
 			C identifier = entry.getKey();
 			if (columnModel().contains(identifier) && filterComponentFactory.supportsType(condition.valueClass())) {
-				conditionPanels.put(identifier, ColumnConditionPanel.builder(condition)
+				conditionPanels.put(identifier, ColumnConditionPanel.builder()
+								.model(condition)
 								.componentFactory(filterComponentFactory)
 								.tableColumn(columnModel().column(identifier))
 								.build());
