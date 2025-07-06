@@ -21,6 +21,7 @@ package is.codion.swing.common.ui.component.panel;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
+import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -30,16 +31,19 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultBorderLayoutPanelBuilder extends AbstractComponentBuilder<Void, JPanel, BorderLayoutPanelBuilder> implements BorderLayoutPanelBuilder {
 
-	private final BorderLayout layout;
-
+	private BorderLayout layout = Layouts.borderLayout();
 	private JComponent centerComponent;
 	private JComponent northComponent;
 	private JComponent southComponent;
 	private JComponent eastComponent;
 	private JComponent westComponent;
 
-	DefaultBorderLayoutPanelBuilder(BorderLayout layout) {
+	DefaultBorderLayoutPanelBuilder() {}
+
+	@Override
+	public BorderLayoutPanelBuilder layout(BorderLayout layout) {
 		this.layout = requireNonNull(layout);
+		return this;
 	}
 
 	@Override

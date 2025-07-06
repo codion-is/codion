@@ -87,7 +87,7 @@ public final class ProgressDialog extends JDialog {
 	}
 
 	private JPanel createCenterPanel(DefaultBuilder builder) {
-		BorderLayoutPanelBuilder basePanelBuilder = BorderLayoutPanelBuilder.builder(borderLayout());
+		BorderLayoutPanelBuilder basePanelBuilder = BorderLayoutPanelBuilder.builder();
 		if (builder.border != null) {
 			basePanelBuilder.border(builder.border);
 		}

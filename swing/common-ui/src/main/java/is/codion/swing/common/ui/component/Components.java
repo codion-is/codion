@@ -542,14 +542,6 @@ public final class Components {
 	}
 
 	/**
-	 * @param layout the layout to use
-	 * @return a new border layout panel builder
-	 */
-	public static BorderLayoutPanelBuilder borderLayoutPanel(BorderLayout layout) {
-		return BorderLayoutPanelBuilder.builder(layout);
-	}
-
-	/**
 	 * Creates a new {@link PanelBuilder} instance using a new {@link java.awt.GridLayout}
 	 * with the default horizontal and vertical gap.
 	 * @param rows the number of rows

@@ -89,7 +89,8 @@ final class ItemRandomizerPanel<T> extends JPanel {
 	 * @return a control panel for the item weight
 	 */
 	private JPanel createWeightPanel(RandomItem<T> item) {
-		return Components.borderLayoutPanel(borderLayout())
+		return Components.borderLayoutPanel()
+						.layout(borderLayout())
 						.northComponent(new JLabel(item.item().toString()))
 						.westComponent(Components.checkBox()
 										.link(new EnabledModelValue(item.item()))
