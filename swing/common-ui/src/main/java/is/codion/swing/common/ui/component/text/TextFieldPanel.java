@@ -254,7 +254,8 @@ public final class TextFieldPanel extends JPanel {
 	}
 
 	private JButton createButton(DefaultBuilder builder) {
-		return Components.button(controlMap.control(DISPLAY_TEXT_AREA).get())
+		return Components.button()
+						.control(controlMap.control(DISPLAY_TEXT_AREA).get())
 						.focusable(builder.buttonFocusable)
 						.toolTipText(MESSAGES.getString("show_input_dialog"))
 						.preferredSize(new Dimension(textField.getPreferredSize().height, textField.getPreferredSize().height))

@@ -107,7 +107,8 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 										.link(model.loggingEnabled())
 										.text("Logging enabled")
 										.build())
-						.add(button(command(this::updateView))
+						.add(button()
+										.control(command(this::updateView))
 										.text("Refresh log")
 										.build())
 						.build();

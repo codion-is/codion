@@ -231,7 +231,8 @@ public final class DomainGeneratorPanel extends JPanel {
 
 	private static JPanel createSearchCopyPanel(JTextArea textArea) {
 		return borderLayoutPanel()
-						.eastComponent(button(createCopyControl(textArea))
+						.eastComponent(button()
+										.control(createCopyControl(textArea))
 										.build())
 						.build();
 	}
@@ -289,11 +290,12 @@ public final class DomainGeneratorPanel extends JPanel {
 										.build())
 						.eastComponent(gridLayoutPanel(2, 1)
 										.add(label(" ").build())
-										.add(button(Control.builder()
-														.command(this::save)
-														.caption("Save")
-														.mnemonic('S')
-														.enabled(model.saveEnabled()))
+										.add(button()
+														.control(Control.builder()
+																		.command(this::save)
+																		.caption("Save")
+																		.mnemonic('S')
+																		.enabled(model.saveEnabled()))
 														.build())
 										.build())
 						.build();
@@ -315,7 +317,9 @@ public final class DomainGeneratorPanel extends JPanel {
 										.build())
 						.eastComponent(gridLayoutPanel(2, 1)
 										.add(label(" ").build())
-										.add(button(selectSourceDirectoryControl).build())
+										.add(button()
+														.control(selectSourceDirectoryControl)
+														.build())
 										.build())
 						.build();
 	}

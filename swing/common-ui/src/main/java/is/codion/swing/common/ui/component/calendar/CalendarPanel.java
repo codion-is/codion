@@ -645,7 +645,8 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	private JButton createSelectTodayButton() {
-		return button(command(this::selectToday))
+		return button()
+						.control(command(this::selectToday))
 						.text(MESSAGES.getString("today"))
 						.mnemonic(MESSAGES.getString("today_mnemonic").charAt(0))
 						.enabled(todaySelected.not())

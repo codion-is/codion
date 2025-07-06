@@ -78,7 +78,8 @@ public final class DatabaseMonitorPanel extends JPanel {
 										.columns(SPINNER_COLUMNS)
 										.editable(false)
 										.build())
-						.add(button(command(model::clearStatistics))
+						.add(button()
+										.control(command(model::clearStatistics))
 										.text("Clear")
 										.build())
 						.build();

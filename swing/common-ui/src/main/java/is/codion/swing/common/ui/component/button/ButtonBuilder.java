@@ -29,8 +29,6 @@ import javax.swing.JButton;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * Builds buttons.
  * @param <T> the value type
@@ -231,33 +229,6 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
 	 * @return a builder for a JButton
 	 */
 	static <B extends ButtonBuilder<Void, JButton, B>> ButtonBuilder<Void, JButton, B> builder() {
-		return new DefaultButtonBuilder<>(null);
-	}
-
-	/**
-	 * @param <B> the builder type
-	 * @param action the button action
-	 * @return a builder for a JButton
-	 */
-	static <B extends ButtonBuilder<Void, JButton, B>> ButtonBuilder<Void, JButton, B> builder(Action action) {
-		return new DefaultButtonBuilder<>(requireNonNull(action));
-	}
-
-	/**
-	 * @param <B> the builder type
-	 * @param control the button control
-	 * @return a builder for a JButton
-	 */
-	static <B extends ButtonBuilder<Void, JButton, B>> ButtonBuilder<Void, JButton, B> builder(Control control) {
-		return new DefaultButtonBuilder<>(requireNonNull(control));
-	}
-
-	/**
-	 * @param <B> the builder type
-	 * @param controlBuilder the button control builder
-	 * @return a builder for a JButton
-	 */
-	static <B extends ButtonBuilder<Void, JButton, B>> ButtonBuilder<Void, JButton, B> builder(Control.Builder<?, ?> controlBuilder) {
-		return new DefaultButtonBuilder<>(requireNonNull(controlBuilder).build());
+		return new DefaultButtonBuilder<>();
 	}
 }

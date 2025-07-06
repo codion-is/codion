@@ -108,33 +108,6 @@ public final class Components {
 	}
 
 	/**
-	 * @param <B> the builder type
-	 * @param action the button action
-	 * @return a JButton builder
-	 */
-	public static <B extends ButtonBuilder<Void, JButton, B>> ButtonBuilder<Void, JButton, B> button(Action action) {
-		return ButtonBuilder.builder(action);
-	}
-
-	/**
-	 * @param <B> the builder type
-	 * @param control the button control
-	 * @return a JButton builder
-	 */
-	public static <B extends ButtonBuilder<Void, JButton, B>> ButtonBuilder<Void, JButton, B> button(Control control) {
-		return ButtonBuilder.builder(control);
-	}
-
-	/**
-	 * @param <B> the builder type
-	 * @param controlBuilder the button control builder
-	 * @return a JButton builder
-	 */
-	public static <B extends ButtonBuilder<Void, JButton, B>> ButtonBuilder<Void, JButton, B> button(Control.Builder<?, ?> controlBuilder) {
-		return ButtonBuilder.builder(controlBuilder);
-	}
-
-	/**
 	 * @return a JCheckBox builder
 	 */
 	public static CheckBoxBuilder checkBox() {

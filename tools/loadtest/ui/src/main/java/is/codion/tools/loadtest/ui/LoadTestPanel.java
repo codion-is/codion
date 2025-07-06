@@ -199,10 +199,11 @@ public final class LoadTestPanel<T> extends JPanel {
 
 	private JPanel createAddRemoveApplicationPanel() {
 		return borderLayoutPanel()
-						.westComponent(button(Control.builder()
-										.command(loadTest::removeApplicationBatch)
-										.caption("-")
-										.description("Remove application batch"))
+						.westComponent(button()
+										.control(Control.builder()
+														.command(loadTest::removeApplicationBatch)
+														.caption("-")
+														.description("Remove application batch"))
 										.build())
 						.centerComponent(integerField()
 										.editable(false)
@@ -211,10 +212,11 @@ public final class LoadTestPanel<T> extends JPanel {
 										.columns(5)
 										.link(loadTest.applicationCount())
 										.build())
-						.eastComponent(button(Control.builder()
-										.command(loadTest::addApplicationBatch)
-										.caption("+")
-										.description("Add application batch"))
+						.eastComponent(button()
+										.control(Control.builder()
+														.command(loadTest::addApplicationBatch)
+														.caption("+")
+														.description("Add application batch"))
 										.build())
 						.build();
 	}
@@ -489,15 +491,17 @@ public final class LoadTestPanel<T> extends JPanel {
 		JTextArea exceptionsArea = textArea()
 						.editable(false)
 						.build();
-		JButton refreshButton = button(Control.builder()
-						.command(new RefreshExceptionsCommand(exceptionsArea, scenario))
-						.caption("Refresh"))
+		JButton refreshButton = button()
+						.control(Control.builder()
+										.command(new RefreshExceptionsCommand(exceptionsArea, scenario))
+										.caption("Refresh"))
 						.build();
 		refreshButton.doClick();
 
-		JButton clearButton = button(Control.builder()
-						.command(new ClearExceptionsCommand(exceptionsArea, scenario))
-						.caption("Clear"))
+		JButton clearButton = button()
+						.control(Control.builder()
+										.command(new ClearExceptionsCommand(exceptionsArea, scenario))
+										.caption("Clear"))
 						.build();
 
 		return borderLayoutPanel()

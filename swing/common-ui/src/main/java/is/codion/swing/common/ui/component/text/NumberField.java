@@ -40,7 +40,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A text field for numbers.
- * Use {@link #builder(Class)} or {@link #builder(Class)} for {@link Builder} instances.
+ * Use {@link #builder()} for {@link Builder} instances.
  * @param <T> the Number type
  */
 public final class NumberField<T extends Number> extends HintTextField {

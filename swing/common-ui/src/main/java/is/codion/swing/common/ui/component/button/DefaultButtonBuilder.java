@@ -21,15 +21,12 @@ package is.codion.swing.common.ui.component.button;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
-import javax.swing.Action;
 import javax.swing.JButton;
 
 final class DefaultButtonBuilder<B extends ButtonBuilder<Void, JButton, B>> extends AbstractButtonBuilder<Void, JButton, B>
 				implements ButtonBuilder<Void, JButton, B> {
 
-	DefaultButtonBuilder(Action action) {
-		action(action);
-	}
+	DefaultButtonBuilder() {}
 
 	@Override
 	protected JButton createButton() {

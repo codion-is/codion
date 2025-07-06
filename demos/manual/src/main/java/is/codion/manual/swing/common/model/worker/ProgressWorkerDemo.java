@@ -142,7 +142,9 @@ final class ProgressWorkerDemo {
 		// A panel containing the progress bar and cancel button
 		private final JPanel progressPanel = borderLayoutPanel()
 						.centerComponent(progressBar)
-						.eastComponent(button(cancel).build())
+						.eastComponent(button()
+										.control(cancel)
+										.build())
 						.build();
 		// The dialog displaying the progress panel
 		private final JDialog dialog = Dialogs.builder()

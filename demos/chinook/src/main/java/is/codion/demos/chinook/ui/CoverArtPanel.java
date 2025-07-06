@@ -82,14 +82,16 @@ final class CoverArtPanel extends JPanel {
 		this.imageBytes = imageBytes;
 		this.imageSelected = State.state(!imageBytes.isNull());
 		this.imagePanel = createImagePanel();
-		this.addButton = button(Control.builder()
-						.command(this::addCover)
-						.smallIcon(ICONS.get(Foundation.PLUS)))
+		this.addButton = button()
+						.control(Control.builder()
+										.command(this::addCover)
+										.smallIcon(ICONS.get(Foundation.PLUS)))
 						.transferFocusOnEnter(true)
 						.build();
-		this.removeButton = button(Control.builder()
-						.command(this::removeCover)
-						.smallIcon(ICONS.get(Foundation.MINUS)))
+		this.removeButton = button()
+						.control(Control.builder()
+										.command(this::removeCover)
+										.smallIcon(ICONS.get(Foundation.MINUS)))
 						.transferFocusOnEnter(true)
 						.enabled(imageSelected)
 						.build();

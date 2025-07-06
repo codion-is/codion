@@ -63,7 +63,7 @@ public final class DefaultCommandControlTest {
 						.background(Color.BLACK)
 						.font(font)
 						.build();
-		JButton button = button(control).build();
+		JButton button = button().control(control).build();
 		assertFalse(button.isEnabled());
 		SwingUtilities.invokeLater(() -> {
 			enabledState.set(true);

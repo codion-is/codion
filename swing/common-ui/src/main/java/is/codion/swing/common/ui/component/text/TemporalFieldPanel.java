@@ -208,7 +208,8 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 	}
 
 	private JButton createButton(DefaultBuilder<T> builder) {
-		return Components.button(temporalField.calendarControl().orElseThrow(() ->
+		return Components.button()
+						.control(temporalField.calendarControl().orElseThrow(() ->
 										new IllegalArgumentException("TemporalField does not support a calendar for: " +
 														temporalField.temporalClass())))
 						.focusable(builder.buttonFocusable)

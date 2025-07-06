@@ -87,11 +87,12 @@ public final class ApplicationPanel extends JPanel {
 						.transferFocusOnEnter(true)
 						.build(checkBox -> settingsPanel.add(checkBox, BorderLayout.WEST));
 
-		button(Control.builder()
-						.command(model::clear)
-						.enabled(inputEnabledState)
-						.caption("Clear")
-						.mnemonic('L'))
+		button()
+						.control(Control.builder()
+										.command(model::clear)
+										.enabled(inputEnabledState)
+										.caption("Clear")
+										.mnemonic('L'))
 						.transferFocusOnEnter(true)
 						.build(button -> settingsPanel.add(button, BorderLayout.EAST));
 

@@ -53,7 +53,7 @@ public final class ControlComponentIntegrationTest {
 						.build();
 
 		// Create multiple UI components bound to the same control
-		JButton button = Components.button(control).build();
+		JButton button = Components.button().control(control).build();
 		JMenuItem menuItem = Components.menuItem(control).build();
 
 		// Initially disabled
@@ -190,8 +190,8 @@ public final class ControlComponentIntegrationTest {
 						.enabled(sharedEnabled)
 						.build();
 
-		JButton button1 = Components.button(control1).build();
-		JButton button2 = Components.button(control2).build();
+		JButton button1 = Components.button().control(control1).build();
+		JButton button2 = Components.button().control(control2).build();
 
 		// Both enabled
 		assertTrue(button1.isEnabled());
