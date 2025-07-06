@@ -285,7 +285,7 @@ public class DomainTest {
 			throw new IllegalStateException("Neither transaction or connection can be closed during a test");
 		};
 
-		return ProxyBuilder.builder(EntityConnection.class)
+		return ProxyBuilder.of(EntityConnection.class)
 						.delegate(connection)
 						.method("commitTransaction", throwException)
 						.method("rollbackTransaction", throwException)

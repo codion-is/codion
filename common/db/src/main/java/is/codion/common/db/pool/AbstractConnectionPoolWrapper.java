@@ -202,7 +202,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 	private DataSource createDataSourceProxy(DataSource dataSource) {
 		GetConnection getConnection = new GetConnection();
 
-		return ProxyBuilder.builder(DataSource.class)
+		return ProxyBuilder.of(DataSource.class)
 						.delegate(dataSource)
 						.method(GET_CONNECTION, getConnection)
 						.method(GET_CONNECTION, asList(String.class, String.class), getConnection)
@@ -216,7 +216,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 			Connection connection = connectionFactory.createConnection(user);
 			counter.incrementConnectionsCreatedCounter();
 
-			return ProxyBuilder.builder(Connection.class)
+			return ProxyBuilder.of(Connection.class)
 							.delegate(connection)
 							.method(CLOSE, new Close())
 							.build();

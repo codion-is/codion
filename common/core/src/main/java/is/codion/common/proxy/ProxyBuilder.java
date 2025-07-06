@@ -28,7 +28,7 @@ import java.util.List;
  * {@snippet :
  * List<String> list = new ArrayList<>();
  *
- * List<String> listProxy = ProxyBuilder.builder(List.class)
+ * List<String> listProxy = ProxyBuilder.of(List.class)
  *     .delegate(list)
  *     .method("add", Object.class, parameters -> {
  *       Object item = parameters.arguments().get(0);
@@ -56,7 +56,7 @@ import java.util.List;
  *     .build();
  *}
  * @param <T> the proxy type
- * @see #builder(Class)
+ * @see #of(Class)
  */
 public interface ProxyBuilder<T> {
 
@@ -148,7 +148,7 @@ public interface ProxyBuilder<T> {
 	 * @return a new {@link ProxyBuilder} instance.
 	 * @throws IllegalArgumentException in case {@code interfaceToProxy} is not an interface
 	 */
-	static <T> ProxyBuilder<T> builder(Class<T> interfaceToProxy) {
+	static <T> ProxyBuilder<T> of(Class<T> interfaceToProxy) {
 		return new DefaultProxyBuilder<>(interfaceToProxy);
 	}
 }

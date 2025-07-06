@@ -236,7 +236,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	}
 
 	private Entity createNullItem(String nullCaption) {
-		return nullCaption == null ? null : ProxyBuilder.builder(Entity.class)
+		return nullCaption == null ? null : ProxyBuilder.of(Entity.class)
 						.delegate(entityDefinition.entity())
 						.method("toString", parameters -> nullCaption)
 						.build();

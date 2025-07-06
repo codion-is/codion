@@ -31,10 +31,10 @@ public final class DefaultProxyBuilderTest {
 	@Test
 	void test() {
 		//not an interface
-		assertThrows(IllegalArgumentException.class, () -> ProxyBuilder.builder(String.class));
+		assertThrows(IllegalArgumentException.class, () -> ProxyBuilder.of(String.class));
 		try {
 			//non-existing method
-			ProxyBuilder.builder(List.class)
+			ProxyBuilder.of(List.class)
 							.method("nonexistingMethod", parameters -> null);
 			fail();
 		}
@@ -42,7 +42,7 @@ public final class DefaultProxyBuilderTest {
 			assertInstanceOf(NoSuchMethodException.class, e.getCause());
 		}
 
-		List<Object> proxyInstance = ProxyBuilder.builder(List.class)
+		List<Object> proxyInstance = ProxyBuilder.of(List.class)
 						.delegate(emptyList())
 						.method("toString", parameters -> "toStringResult")
 						.method("equals", Object.class, parameters ->
@@ -57,12 +57,12 @@ public final class DefaultProxyBuilderTest {
 		//delegate is an immutable list
 		assertThrows(UnsupportedOperationException.class, () -> proxyInstance.add(new Object()));
 
-		List<Object> proxyInstance2 = ProxyBuilder.builder(List.class)
+		List<Object> proxyInstance2 = ProxyBuilder.of(List.class)
 						.delegate(emptyList())
 						.build();
 		assertEquals(proxyInstance2, proxyInstance2);
 
-		List<Object> proxyInstance3 = ProxyBuilder.builder(List.class)
+		List<Object> proxyInstance3 = ProxyBuilder.of(List.class)
 						.method("size", parameters -> parameters.delegate().size())
 						.build();
 		assertThrows(IllegalStateException.class, proxyInstance3::size);//no delegate
@@ -73,7 +73,7 @@ public final class DefaultProxyBuilderTest {
 	void example() {
 		List<String> list = new ArrayList<>();
 
-		List<String> listProxy = ProxyBuilder.builder(List.class)
+		List<String> listProxy = ProxyBuilder.of(List.class)
 						.delegate(list)
 						.method("add", Object.class, parameters -> {
 							Object item = parameters.arguments().get(0);

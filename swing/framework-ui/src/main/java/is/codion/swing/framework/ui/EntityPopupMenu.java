@@ -189,7 +189,7 @@ final class EntityPopupMenu extends JPopupMenu {
 							.build());
 		}
 		catch (RecordNotFoundException e) {
-			return ProxyBuilder.builder(Entity.class)
+			return ProxyBuilder.of(Entity.class)
 							.delegate(Entity.entity(primaryKey))
 							.method("toString", parameters -> primaryKey + " <RECORD NOT FOUND>")
 							.build();
@@ -197,7 +197,7 @@ final class EntityPopupMenu extends JPopupMenu {
 	}
 
 	private static Entity duplicate(Entity entity) {
-		return ProxyBuilder.builder(Entity.class)
+		return ProxyBuilder.of(Entity.class)
 						.delegate(entity)
 						.method("toString", parameters -> entity + " <DUPLICATE>")
 						.build();

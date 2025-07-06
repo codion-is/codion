@@ -206,7 +206,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 		if (editor().nullable(column)) {
 			builder.includeNull(true);
 			if (column.type().valueClass().isInterface()) {
-				builder.nullItem(ProxyBuilder.builder(column.type().valueClass())
+				builder.nullItem(ProxyBuilder.of(column.type().valueClass())
 								.method("toString", (ProxyMethod<T>) NULL_ITEM_CAPTION)
 								.build());
 			}
