@@ -75,7 +75,8 @@ public final class ClientMonitorPanel extends JPanel {
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.filterView(ConditionView.SIMPLE)
 						.build();
-		clientInstanceScroller = scrollPane(clientInstanceTable)
+		clientInstanceScroller = scrollPane()
+						.view(clientInstanceTable)
 						.border(BorderFactory.createTitledBorder("Clients"))
 						.build();
 		filterScrollPane = createLinkedScrollPane(clientInstanceScroller, clientInstanceTable.filters());
@@ -168,7 +169,8 @@ public final class ClientMonitorPanel extends JPanel {
 	}
 
 	private static JScrollPane createLinkedScrollPane(JScrollPane parentScrollPane, JComponent componentToScroll) {
-		return Components.scrollPane(componentToScroll)
+		return Components.scrollPane()
+						.view(componentToScroll)
 						.horizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER)
 						.verticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER)
 						.onBuild(scrollPane -> link(

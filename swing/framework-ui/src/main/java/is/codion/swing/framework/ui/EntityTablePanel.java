@@ -2883,7 +2883,8 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		private JScrollPane createLinkedScrollPane(JComponent componentToScroll) {
-			return Components.scrollPane(componentToScroll)
+			return Components.scrollPane()
+							.view(componentToScroll)
 							.horizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER)
 							.verticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER)
 							.onBuild(scrollPane -> link(

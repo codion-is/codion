@@ -280,7 +280,9 @@ public final class LoadTestPanel<T> extends JPanel {
 														.text("Automatic refresh")
 														.build())
 										.build())
-						.centerComponent(scrollPane(createApplicationsTable()).build())
+						.centerComponent(scrollPane()
+										.view(createApplicationsTable())
+										.build())
 						.build();
 	}
 
@@ -511,7 +513,9 @@ public final class LoadTestPanel<T> extends JPanel {
 										.add(refreshButton)
 										.add(clearButton)
 										.build())
-						.centerComponent(scrollPane(exceptionsArea).build())
+						.centerComponent(scrollPane()
+										.view(exceptionsArea)
+										.build())
 						.build();
 	}
 

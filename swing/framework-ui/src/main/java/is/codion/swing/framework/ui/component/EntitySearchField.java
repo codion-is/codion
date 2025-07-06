@@ -789,7 +789,9 @@ public final class EntitySearchField extends HintTextField {
 			this.list = createList(searchField);
 			this.stringFactory = searchField.stringFactory;
 			this.selectorPanel = borderLayoutPanel()
-							.centerComponent(scrollPane(list).build())
+							.centerComponent(scrollPane()
+											.view(list)
+											.build())
 							.southComponent(resultLimitLabel)
 							.border(createEmptyBorder(Layouts.GAP.getOrThrow(), Layouts.GAP.getOrThrow(), 0, Layouts.GAP.getOrThrow()))
 							.build();
@@ -885,7 +887,9 @@ public final class EntitySearchField extends HintTextField {
 			this.searchField = requireNonNull(searchField);
 			table = createTable();
 			selectorPanel = borderLayoutPanel()
-							.centerComponent(scrollPane(table).build())
+							.centerComponent(scrollPane()
+											.view(table)
+											.build())
 							.southComponent(borderLayoutPanel()
 											.westComponent(table.searchField())
 											.centerComponent(resultLimitLabel)

@@ -461,11 +461,10 @@ public final class Components {
 	}
 
 	/**
-	 * @param view the view component
 	 * @return a JScrollPane builder
 	 */
-	public static ScrollPaneBuilder scrollPane(JComponent view) {
-		return ScrollPaneBuilder.builder(view);
+	public static ScrollPaneBuilder scrollPane() {
+		return ScrollPaneBuilder.builder();
 	}
 
 	/**

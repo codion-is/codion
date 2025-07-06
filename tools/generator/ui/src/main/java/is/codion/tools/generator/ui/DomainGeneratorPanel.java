@@ -398,7 +398,9 @@ public final class DomainGeneratorPanel extends JPanel {
 
 	private static JPanel createScrollablePanel(JComponent component, String title) {
 		return borderLayoutPanel()
-						.centerComponent(scrollPane(component).build())
+						.centerComponent(scrollPane()
+										.view(component)
+										.build())
 						.border(createCompoundBorder(createTitledBorder(title), createEmptyBorder()))
 						.build();
 	}

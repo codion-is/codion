@@ -452,7 +452,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
 	@Override
 	public final ScrollPaneBuilder scrollPane() {
-		return ScrollPaneBuilder.builder(build());
+		return ScrollPaneBuilder.builder().view(build());
 	}
 
 	@Override

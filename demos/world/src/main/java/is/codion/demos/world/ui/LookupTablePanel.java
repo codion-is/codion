@@ -96,7 +96,8 @@ final class LookupTablePanel extends EntityTablePanel {
 					.smallIcon(ICONS.get(Foundation.MAP))
 					.caption("Show map")
 					.build();
-	private final JScrollPane columnSelectionScrollPane = scrollPane(createColumnSelectionToolBar())
+	private final JScrollPane columnSelectionScrollPane = scrollPane()
+					.view(createColumnSelectionToolBar())
 					.verticalUnitIncrement(16)
 					.build();
 	private final JXMapKit mapKit = Maps.createMapKit();

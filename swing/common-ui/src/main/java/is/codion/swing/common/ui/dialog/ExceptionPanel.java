@@ -89,7 +89,8 @@ final class ExceptionPanel extends JPanel {
 					.editable(false)
 					.tabSize(TAB_SIZE)
 					.build();
-	private final JScrollPane stackTraceScrollPane = ScrollPaneBuilder.builder(stackTraceArea)
+	private final JScrollPane stackTraceScrollPane = ScrollPaneBuilder.builder()
+					.view(stackTraceArea)
 					.visible(false)
 					.preferredSize(new Dimension(SCROLL_PANE_WIDTH, SCROLL_PANE_HEIGHT))
 					.build();
@@ -146,7 +147,8 @@ final class ExceptionPanel extends JPanel {
 										.westComponent(LabelBuilder.builder()
 														.icon(UIManager.getIcon("OptionPane.errorIcon"))
 														.build())
-										.centerComponent(ScrollPaneBuilder.builder(errorMessageArea)
+										.centerComponent(ScrollPaneBuilder.builder()
+														.view(errorMessageArea)
 														.preferredWidth(MESSAGE_AREA_WIDTH)
 														.build())
 										.build())

@@ -78,8 +78,12 @@ final class InsertUpdateQueryInspector extends JPanel {
 	private void initializeUI() {
 		setLayout(new BorderLayout());
 		add(gridLayoutPanel(2, 1)
-						.add(scrollPane(insertTextArea).build())
-						.add(scrollPane(updateTextArea).build())
+						.add(scrollPane()
+										.view(insertTextArea)
+										.build())
+						.add(scrollPane()
+										.view(updateTextArea)
+										.build())
 						.build());
 	}
 

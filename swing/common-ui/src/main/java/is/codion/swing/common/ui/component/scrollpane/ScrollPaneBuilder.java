@@ -30,6 +30,12 @@ import java.awt.LayoutManager;
 public interface ScrollPaneBuilder extends ComponentBuilder<Void, JScrollPane, ScrollPaneBuilder> {
 
 	/**
+	 * @param view the view component
+	 * @return this builder instance
+	 */
+	ScrollPaneBuilder view(JComponent view);
+
+	/**
 	 * @param verticalScrollBarPolicy the vertical scroll bar policy
 	 * @return this builder instance
 	 * @see JScrollPane#setVerticalScrollBarPolicy(int)
@@ -85,10 +91,9 @@ public interface ScrollPaneBuilder extends ComponentBuilder<Void, JScrollPane, S
 	ScrollPaneBuilder layout(LayoutManager layout);
 
 	/**
-	 * @param view the view component
 	 * @return a new {@link ScrollPaneBuilder} instance
 	 */
-	static ScrollPaneBuilder builder(JComponent view) {
-		return new DefaultScrollPaneBuilder(view);
+	static ScrollPaneBuilder builder() {
+		return new DefaultScrollPaneBuilder();
 	}
 }

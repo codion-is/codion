@@ -31,8 +31,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultScrollPaneBuilder extends AbstractComponentBuilder<Void, JScrollPane, ScrollPaneBuilder> implements ScrollPaneBuilder {
 
-	private final JComponent view;
-
+	private JComponent view;
 	private int vsbPolicy = ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
 	private int hsbPolicy = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 	private boolean wheelScrollingEnabled = true;
@@ -42,8 +41,12 @@ final class DefaultScrollPaneBuilder extends AbstractComponentBuilder<Void, JScr
 	private int horizontalBlockIncrement;
 	private LayoutManager layout;
 
-	DefaultScrollPaneBuilder(JComponent view) {
+	DefaultScrollPaneBuilder() {}
+
+	@Override
+	public ScrollPaneBuilder view(JComponent view) {
 		this.view = requireNonNull(view);
+		return this;
 	}
 
 	@Override

@@ -87,7 +87,9 @@ final class SelectQueryInspector extends JPanel {
 
 	private void initializeUI() {
 		setLayout(new BorderLayout());
-		add(scrollPane(textArea).build());
+		add(scrollPane()
+						.view(textArea)
+						.build());
 	}
 
 	private static Condition createCondition(Condition entityCondition, EntityQueryModel.AdditionalCondition additional) {
