@@ -91,13 +91,24 @@ public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBu
 	B hint(String hint);
 
 	/**
-	 * @param <T> the value type
-	 * @param <C> the text field type
-	 * @param <B> the builder type
-	 * @param valueClass the value class
-	 * @return a builder for a component
+	 * Provides a {@link TextFieldBuilder}
 	 */
-	static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> builder(Class<T> valueClass) {
-		return new DefaultTextFieldBuilder<>(valueClass);
+	interface ValueClassBuilder {
+
+		/**
+		 * @param <T> the value type
+		 * @param <C> the text field type
+		 * @param <B> the builder type
+		 * @param valueClass the value class
+		 * @return a builder for a text field
+		 */
+		<T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> valueClass(Class<T> valueClass);
+	}
+
+	/**
+	 * @return a {@link ValueClassBuilder}
+	 */
+	static ValueClassBuilder builder() {
+		return DefaultTextFieldBuilder.VALUE_CLASS;
 	}
 }

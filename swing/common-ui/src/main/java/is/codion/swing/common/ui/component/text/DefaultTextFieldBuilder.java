@@ -33,6 +33,8 @@ import static java.util.Objects.requireNonNull;
 class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> extends AbstractTextComponentBuilder<T, C, B>
 				implements TextFieldBuilder<T, C, B> {
 
+	static final ValueClassBuilder VALUE_CLASS = new DefaultValueClassBuilder();
+
 	private final Class<T> valueClass;
 
 	private int columns = -1;
@@ -130,5 +132,13 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
 
 	protected final Format format() {
 		return format;
+	}
+
+	private static final class DefaultValueClassBuilder implements ValueClassBuilder {
+
+		@Override
+		public <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> valueClass(Class<T> valueClass) {
+			return new DefaultTextFieldBuilder<>(valueClass);
+		}
 	}
 }

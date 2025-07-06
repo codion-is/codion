@@ -329,7 +329,7 @@ public final class Components {
 	 * @return a JTextField builder
 	 */
 	public static <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> stringField() {
-		return TextFieldBuilder.builder(String.class);
+		return TextFieldBuilder.builder().valueClass(String.class);
 	}
 
 	/**
@@ -337,18 +337,14 @@ public final class Components {
 	 * @return a JTextField builder
 	 */
 	public static <B extends TextFieldBuilder<Character, JTextField, B>> TextFieldBuilder<Character, JTextField, B> characterField() {
-		return TextFieldBuilder.builder(Character.class);
+		return TextFieldBuilder.builder().valueClass(Character.class);
 	}
 
 	/**
-	 * @param <T> the value type
-	 * @param <C> the text field type
-	 * @param <B> the builder type
-	 * @param valueClass the value class
 	 * @return a JTextField builder
 	 */
-	public static <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Class<T> valueClass) {
-		return TextFieldBuilder.builder(valueClass);
+	public static TextFieldBuilder.ValueClassBuilder textField() {
+		return TextFieldBuilder.builder();
 	}
 
 	/**

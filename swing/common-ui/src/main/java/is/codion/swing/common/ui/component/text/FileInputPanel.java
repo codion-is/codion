@@ -161,7 +161,8 @@ public final class FileInputPanel extends JPanel {
 
 	private abstract static class AbstractBuilder<T> extends AbstractComponentBuilder<T, FileInputPanel, Builder<T>> implements Builder<T> {
 
-		private final TextFieldBuilder<String, JTextField, ?> pathFieldBuilder = TextFieldBuilder.builder(String.class)
+		private final TextFieldBuilder<String, JTextField, ?> pathFieldBuilder = TextFieldBuilder.builder()
+						.valueClass(String.class)
 						.editable(false);
 
 		private String buttonCaption = "...";

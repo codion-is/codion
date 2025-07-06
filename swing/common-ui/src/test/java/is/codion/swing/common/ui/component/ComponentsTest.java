@@ -951,17 +951,20 @@ public final class ComponentsTest {
 				throw new IllegalArgumentException();
 			}
 		};
-		assertThrows(IllegalArgumentException.class, () -> Components.textField(String.class)
+		assertThrows(IllegalArgumentException.class, () -> Components.textField()
+						.valueClass(String.class)
 						.value("test")
 						.validator(validator)
 						.build());
 
 		Value<String> stringValue = Value.nullable("test");
-		assertThrows(IllegalArgumentException.class, () -> Components.textField(String.class)
+		assertThrows(IllegalArgumentException.class, () -> Components.textField()
+						.valueClass(String.class)
 						.link(stringValue)
 						.validator(validator)
 						.build());
-		assertThrows(IllegalArgumentException.class, () -> Components.textField(String.class)
+		assertThrows(IllegalArgumentException.class, () -> Components.textField()
+						.valueClass(String.class)
 						.link(stringValue.observable())
 						.validator(validator)
 						.build());

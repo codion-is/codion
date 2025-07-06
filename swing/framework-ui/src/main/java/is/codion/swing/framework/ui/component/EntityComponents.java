@@ -255,7 +255,8 @@ public final class EntityComponents {
 	public <B extends TextFieldBuilder<Entity, JTextField, B>> TextFieldBuilder<Entity, JTextField, B> textField(ForeignKey foreignKey) {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
-		return (TextFieldBuilder<Entity, JTextField, B>) Components.textField(Entity.class)
+		return (TextFieldBuilder<Entity, JTextField, B>) Components.textField()
+						.valueClass(Entity.class)
 						.toolTipText(foreignKeyDefinition.description().orElse(null))
 						.format(new EntityReadOnlyFormat())
 						.editable(false)
@@ -356,7 +357,8 @@ public final class EntityComponents {
 		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		if (!attributeDefinition.items().isEmpty()) {
-			return (TextFieldBuilder<T, C, B>) Components.textField(attribute.type().valueClass())
+			return (TextFieldBuilder<T, C, B>) Components.textField()
+							.valueClass(attribute.type().valueClass())
 							.format(new ItemReadOnlyFormat(attributeDefinition))
 							.toolTipText(attributeDefinition.description().orElse(null))
 							.editable(false)
@@ -374,7 +376,8 @@ public final class EntityComponents {
 							.toolTipText(attributeDefinition.description().orElse(null));
 		}
 
-		return (TextFieldBuilder<T, C, B>) Components.textField(attribute.type().valueClass())
+		return (TextFieldBuilder<T, C, B>) Components.textField()
+						.valueClass(attribute.type().valueClass())
 						.format(attributeDefinition.format().orElse(null))
 						.maximumLength(attributeDefinition.maximumLength())
 						.toolTipText(attributeDefinition.description().orElse(null));
