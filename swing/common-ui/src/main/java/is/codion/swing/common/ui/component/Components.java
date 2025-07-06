@@ -274,33 +274,31 @@ public final class Components {
 	}
 
 	/**
-	 * @param <T> the value type
-	 * @param valueClass the value class
-	 * @return a {@link TemporalFieldPanel} builder
+	 * @return a {@link TemporalFieldPanel.Builder.TemporalClassBuilder} builder
 	 */
-	public static <T extends Temporal> TemporalFieldPanel.Builder<T> temporalFieldPanel(Class<T> valueClass) {
-		return TemporalFieldPanel.builder(valueClass);
+	public static TemporalFieldPanel.Builder.TemporalClassBuilder temporalFieldPanel() {
+		return TemporalFieldPanel.builder();
 	}
 
 	/**
 	 * @return a {@link LocalTime} based {@link TemporalFieldPanel} builder
 	 */
 	public static TemporalFieldPanel.Builder<LocalTime> localTimeFieldPanel() {
-		return temporalFieldPanel(LocalTime.class);
+		return temporalFieldPanel().temporalClass(LocalTime.class);
 	}
 
 	/**
 	 * @return a {@link LocalDate} based {@link TemporalFieldPanel} builder
 	 */
 	public static TemporalFieldPanel.Builder<LocalDate> localDateFieldPanel() {
-		return temporalFieldPanel(LocalDate.class);
+		return temporalFieldPanel().temporalClass(LocalDate.class);
 	}
 
 	/**
 	 * @return a {@link LocalDateTime} based {@link TemporalFieldPanel} builder
 	 */
 	public static TemporalFieldPanel.Builder<LocalDateTime> localDateTimeFieldPanel() {
-		return temporalFieldPanel(LocalDateTime.class);
+		return temporalFieldPanel().temporalClass(LocalDateTime.class);
 	}
 
 	/**

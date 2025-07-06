@@ -52,6 +52,8 @@ import static java.util.Objects.requireNonNull;
  */
 public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 
+	private static final Builder.TemporalClassBuilder TEMPORAL_CLASS = new DefaultTemporalClassBuilder();
+
 	private final TemporalField<T> temporalField;
 	private final JButton button;
 
@@ -119,12 +121,10 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 	}
 
 	/**
-	 * @param <T> the value type
-	 * @param valueClass the value class
-	 * @return a builder for a temporal component
+	 * @return a {@link Builder.TemporalClassBuilder}
 	 */
-	public static <T extends Temporal> Builder<T> builder(Class<T> valueClass) {
-		return new DefaultBuilder<>(valueClass);
+	public static Builder.TemporalClassBuilder builder() {
+		return TEMPORAL_CLASS;
 	}
 
 	/**
@@ -132,6 +132,19 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 	 * @param <T> the temporal type
 	 */
 	public interface Builder<T extends Temporal> extends ComponentBuilder<T, TemporalFieldPanel<T>, Builder<T>> {
+
+		/**
+		 * Provides a {@link TemporalFieldPanel.Builder}
+		 */
+		interface TemporalClassBuilder {
+
+			/**
+			 * @param <T> the value type
+			 * @param temporalClass the temporal class
+			 * @return a builder for a temporal panel
+			 */
+			<T extends Temporal> Builder<T> temporalClass(Class<T> temporalClass);
+		}
 
 		/**
 		 * @param dateTimePattern the date time pattern
@@ -201,6 +214,14 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 						.focusable(builder.buttonFocusable)
 						.preferredSize(new Dimension(temporalField.getPreferredSize().height, temporalField.getPreferredSize().height))
 						.build();
+	}
+
+	private static final class DefaultTemporalClassBuilder implements Builder.TemporalClassBuilder {
+
+		@Override
+		public <T extends Temporal> Builder<T> temporalClass(Class<T> temporalClass) {
+			return new DefaultBuilder<>(temporalClass);
+		}
 	}
 
 	private static final class DefaultBuilder<T extends Temporal>

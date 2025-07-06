@@ -240,7 +240,8 @@ public final class ComponentsTest {
 
 		Value<LocalDate> value = Value.nullable();
 		ComponentValue<LocalDate, TemporalFieldPanel<LocalDate>> componentValue =
-						Components.temporalFieldPanel(LocalDate.class)
+						Components.temporalFieldPanel()
+										.temporalClass(LocalDate.class)
 										.link(value)
 										.dateTimePattern("dd-MM-yyyy")
 										.columns(8)

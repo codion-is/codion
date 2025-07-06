@@ -35,7 +35,8 @@ public class TemporalFieldPanelTest {
 
 	@Test
 	void setText() {
-		TemporalFieldPanel<LocalDate> panel = TemporalFieldPanel.builder(LocalDate.class)
+		TemporalFieldPanel<LocalDate> panel = TemporalFieldPanel.builder()
+						.temporalClass(LocalDate.class)
 						.dateTimePattern("dd.MM.yyyy")
 						.build();
 		panel.temporalField().setText("01.03.2010");
@@ -45,7 +46,8 @@ public class TemporalFieldPanelTest {
 	@Test
 	void set() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-		TemporalFieldPanel<LocalDate> panel = TemporalFieldPanel.builder(LocalDate.class)
+		TemporalFieldPanel<LocalDate> panel = TemporalFieldPanel.builder()
+						.temporalClass(LocalDate.class)
 						.dateTimePattern("dd.MM.yyyy")
 						.build();
 		panel.setTemporal(LocalDate.parse("03.04.2010", formatter));
@@ -56,7 +58,8 @@ public class TemporalFieldPanelTest {
 
 	@Test
 	void get() {
-		TemporalFieldPanel<LocalDate> panel = TemporalFieldPanel.builder(LocalDate.class)
+		TemporalFieldPanel<LocalDate> panel = TemporalFieldPanel.builder()
+						.temporalClass(LocalDate.class)
 						.dateTimePattern("dd.MM.yyyy")
 						.build();
 		assertFalse(panel.optional().isPresent());
@@ -70,7 +73,8 @@ public class TemporalFieldPanelTest {
 
 	@Test
 	void unsupportedType() {
-		assertThrows(IllegalArgumentException.class, () -> TemporalFieldPanel.builder(LocalTime.class));
+		assertThrows(IllegalArgumentException.class, () -> TemporalFieldPanel.builder()
+						.temporalClass(LocalTime.class));
 	}
 
 	@Test
@@ -82,7 +86,8 @@ public class TemporalFieldPanelTest {
 	void enabledState() {
 		SwingUtilities.invokeLater(() -> {
 			State enabledState = State.state();
-			TemporalFieldPanel<LocalDate> inputPanel = TemporalFieldPanel.builder(LocalDate.class)
+			TemporalFieldPanel<LocalDate> inputPanel = TemporalFieldPanel.builder()
+							.temporalClass(LocalDate.class)
 							.dateTimePattern("dd.MM.yyyy")
 							.build();
 			enabled(enabledState, inputPanel);

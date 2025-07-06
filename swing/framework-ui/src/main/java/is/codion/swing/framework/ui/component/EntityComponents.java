@@ -308,7 +308,8 @@ public final class EntityComponents {
 	public <T extends Temporal> TemporalFieldPanel.Builder<T> temporalFieldPanel(Attribute<T> attribute) {
 		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
-		return Components.temporalFieldPanel(attribute.type().valueClass())
+		return Components.temporalFieldPanel()
+						.temporalClass(attribute.type().valueClass())
 						.dateTimePattern(attributeDefinition.dateTimePattern().orElse(null))
 						.toolTipText(attributeDefinition.description().orElse(null))
 						.calendarIcon(ICONS.calendar());
