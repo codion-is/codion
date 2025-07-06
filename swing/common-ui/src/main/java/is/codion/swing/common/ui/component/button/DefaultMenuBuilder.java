@@ -42,10 +42,10 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, MenuBuilder> implements MenuBuilder {
 
-	private final ControlsBuilder controlsBuilder;
-
 	private final List<MenuListener> menuListeners = new ArrayList<>();
 	private final List<PopupMenuListener> popupMenuListeners = new ArrayList<>();
+
+	private ControlsBuilder controlsBuilder;
 	private MenuItemBuilder<?, ?> menuItemBuilder = MenuItemBuilder.builder();
 	private ToggleMenuItemBuilder<?, ?> toggleMenuItemBuilder = CheckBoxMenuItemBuilder.builder();
 
@@ -66,12 +66,12 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
 
 	@Override
 	public MenuBuilder controls(Controls controls) {
-		this.controlsBuilder.control(requireNonNull(controls));
+		this.controlsBuilder = controls == null ? Controls.builder() : controls.copy();
 		return this;
 	}
 
 	@Override
-	public MenuBuilder controls(Control.Builder<Controls, ?> controls) {
+	public MenuBuilder controls(ControlsBuilder controls) {
 		return controls(requireNonNull(controls).build());
 	}
 

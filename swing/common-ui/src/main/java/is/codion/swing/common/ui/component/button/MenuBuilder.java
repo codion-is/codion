@@ -21,6 +21,7 @@ package is.codion.swing.common.ui.component.button;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 
 import javax.swing.Action;
 import javax.swing.JMenu;
@@ -47,18 +48,16 @@ public interface MenuBuilder extends ComponentBuilder<Void, JMenu, MenuBuilder> 
 	MenuBuilder control(Control control);
 
 	/**
-	 * Adds all actions from the given {@link Controls} instance
-	 * @param controls the Controls instance
+	 * @param controls the Controls instance on which to base the menu
 	 * @return this builder instance
 	 */
 	MenuBuilder controls(Controls controls);
 
 	/**
-	 * Adds all actions from the given {@link Controls} instance
-	 * @param controls the Controls instance
+	 * @param controls the ControlsBuilder on which to base the menu
 	 * @return this builder instance
 	 */
-	MenuBuilder controls(Control.Builder<Controls, ?> controls);
+	MenuBuilder controls(ControlsBuilder controls);
 
 	/**
 	 * Adds a separator
