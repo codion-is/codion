@@ -396,7 +396,8 @@ public final class EntityComponents {
 	public <T extends Temporal> TemporalField.Builder<T> temporalField(Attribute<T> attribute) {
 		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
-		return Components.temporalField(attributeDefinition.attribute().type().valueClass())
+		return Components.temporalField()
+						.temporalClass(attributeDefinition.attribute().type().valueClass())
 						.dateTimePattern(attributeDefinition.dateTimePattern().orElse(null))
 						.toolTipText(attributeDefinition.description().orElse(null))
 						.calendarIcon(ICONS.calendar());

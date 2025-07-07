@@ -71,7 +71,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
-import java.time.temporal.Temporal;
 
 import static is.codion.swing.common.model.component.combobox.FilterComboBoxModel.booleanItems;
 import static is.codion.swing.common.ui.layout.Layouts.*;
@@ -278,12 +277,10 @@ public final class Components {
 	}
 
 	/**
-	 * @param <T> the temporal type
-	 * @param temporalClass the temporal class
 	 * @return a {@link TemporalField} builder
 	 */
-	public static <T extends Temporal> TemporalField.Builder<T> temporalField(Class<T> temporalClass) {
-		return TemporalField.builder().temporalClass(temporalClass);
+	public static TemporalField.Builder.TemporalClassBuilder temporalField() {
+		return TemporalField.builder();
 	}
 
 	/**
