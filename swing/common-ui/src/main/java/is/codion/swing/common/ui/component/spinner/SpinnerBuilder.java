@@ -22,6 +22,7 @@ import is.codion.common.property.PropertyValue;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
 import javax.swing.JSpinner;
+import javax.swing.SpinnerModel;
 
 import static is.codion.common.Configuration.booleanValue;
 
@@ -39,6 +40,12 @@ public interface SpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends Compo
 	 */
 	PropertyValue<Boolean> MOUSE_WHEEL_SCROLLING =
 					booleanValue(SpinnerBuilder.class.getName() + ".mouseWheelScrolling", true);
+
+	/**
+	 * @param model the spinner model
+	 * @return this builder instance
+	 */
+	B model(SpinnerModel model);
 
 	/**
 	 * @param editable false if the spinner field should not be editable

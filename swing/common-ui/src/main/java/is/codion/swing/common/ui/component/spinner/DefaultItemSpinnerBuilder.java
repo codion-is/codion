@@ -22,12 +22,21 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.JSpinner;
 import javax.swing.SpinnerListModel;
+import javax.swing.SpinnerModel;
 
 final class DefaultItemSpinnerBuilder<T> extends AbstractSpinnerBuilder<T, ItemSpinnerBuilder<T>>
 				implements ItemSpinnerBuilder<T> {
 
-	DefaultItemSpinnerBuilder(SpinnerListModel spinnerModel) {
-		super(spinnerModel);
+	DefaultItemSpinnerBuilder() {
+		model(new SpinnerListModel());
+	}
+
+	@Override
+	public ItemSpinnerBuilder<T> model(SpinnerModel model) {
+		if (!(model instanceof SpinnerListModel)) {
+			throw new IllegalArgumentException("model must be of type SpinnerListModel");
+		}
+		return super.model(model);
 	}
 
 	@Override

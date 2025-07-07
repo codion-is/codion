@@ -33,7 +33,7 @@ import static java.util.Objects.requireNonNull;
 abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends AbstractComponentBuilder<T, JSpinner, B>
 				implements SpinnerBuilder<T, B> {
 
-	protected final SpinnerModel spinnerModel;
+	protected SpinnerModel spinnerModel;
 
 	private boolean editable = true;
 	private int columns = -1;
@@ -41,8 +41,12 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
 	private boolean mouseWheelScrollingReversed = false;
 	private int horizontalAlignment = -1;
 
-	protected AbstractSpinnerBuilder(SpinnerModel spinnerModel) {
-		this.spinnerModel = requireNonNull(spinnerModel);
+	protected AbstractSpinnerBuilder() {}
+
+	@Override
+	public B model(SpinnerModel model) {
+		this.spinnerModel = requireNonNull(model);
+		return self();
 	}
 
 	@Override

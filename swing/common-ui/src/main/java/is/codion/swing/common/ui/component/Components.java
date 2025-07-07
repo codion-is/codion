@@ -69,8 +69,6 @@ import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
-import javax.swing.SpinnerListModel;
-import javax.swing.SpinnerNumberModel;
 import java.awt.BorderLayout;
 import java.math.BigDecimal;
 import java.nio.file.Path;
@@ -370,48 +368,32 @@ public final class Components {
 	 * @return a Double based JSpinner builder
 	 */
 	public static NumberSpinnerBuilder<Double> doubleSpinner() {
-		return NumberSpinnerBuilder.builder(new SpinnerNumberModel(), Double.class);
-	}
-
-	/**
-	 * @param spinnerNumberModel the spinner model
-	 * @return a Double based JSpinner builder
-	 */
-	public static NumberSpinnerBuilder<Double> doubleSpinner(SpinnerNumberModel spinnerNumberModel) {
-		return NumberSpinnerBuilder.builder(spinnerNumberModel, Double.class);
+		return NumberSpinnerBuilder.builder()
+						.numberClass(Double.class);
 	}
 
 	/**
 	 * @return an Integer based JSpinner builder
 	 */
 	public static NumberSpinnerBuilder<Integer> integerSpinner() {
-		return NumberSpinnerBuilder.builder(new SpinnerNumberModel(), Integer.class);
-	}
-
-	/**
-	 * @param spinnerNumberModel the spinner model
-	 * @return an Integer based JSpinner builder
-	 */
-	public static NumberSpinnerBuilder<Integer> integerSpinner(SpinnerNumberModel spinnerNumberModel) {
-		return NumberSpinnerBuilder.builder(spinnerNumberModel, Integer.class);
+		return NumberSpinnerBuilder.builder()
+						.numberClass(Integer.class);
 	}
 
 	/**
 	 * @param <T> the value type
-	 * @param spinnerModel the spinner model
 	 * @return a JSpinner builder
 	 */
-	public static <T> ListSpinnerBuilder<T> listSpinner(SpinnerListModel spinnerModel) {
-		return ListSpinnerBuilder.builder(spinnerModel);
+	public static <T> ListSpinnerBuilder<T> listSpinner() {
+		return ListSpinnerBuilder.builder();
 	}
 
 	/**
 	 * @param <T> the value type
-	 * @param spinnerModel the spinner model
 	 * @return a JSpinner builder
 	 */
-	public static <T> ItemSpinnerBuilder<T> itemSpinner(SpinnerListModel spinnerModel) {
-		return ItemSpinnerBuilder.builder(spinnerModel);
+	public static <T> ItemSpinnerBuilder<T> itemSpinner() {
+		return ItemSpinnerBuilder.builder();
 	}
 
 	/**

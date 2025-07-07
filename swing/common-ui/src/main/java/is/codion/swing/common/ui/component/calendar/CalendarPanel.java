@@ -847,7 +847,8 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	private JSpinner createYearSpinner() {
-		return integerSpinner(new SpinnerNumberModel(0, -9999, 9999, 1))
+		return integerSpinner()
+						.model(new SpinnerNumberModel(0, -9999, 9999, 1))
 						.link(yearValue)
 						.horizontalAlignment(SwingConstants.CENTER)
 						.columns(YEAR_COLUMNS)
@@ -860,7 +861,8 @@ public final class CalendarPanel extends JPanel {
 
 	private JSpinner createMonthSpinner(JSpinner yearSpinner) {
 		List<Item<Month>> monthItems = createMonthItems();
-		JSpinner monthSpinner = Components.<Month>itemSpinner(new SpinnerListModel(monthItems))
+		JSpinner monthSpinner = Components.<Month>itemSpinner()
+						.model(new SpinnerListModel(monthItems))
 						.link(monthValue)
 						.horizontalAlignment(SwingConstants.CENTER)
 						.editable(false)
@@ -884,7 +886,8 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	private JSpinner createHourSpinner() {
-		return integerSpinner(new SpinnerNumberModel(0, 0, 23, 1))
+		return integerSpinner()
+						.model(new SpinnerNumberModel(0, 0, 23, 1))
 						.link(hourValue)
 						.horizontalAlignment(SwingConstants.CENTER)
 						.columns(TIME_COLUMNS)
@@ -896,7 +899,8 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	private JSpinner createMinuteSpinner() {
-		return integerSpinner(new SpinnerNumberModel(0, 0, 59, 1))
+		return integerSpinner()
+						.model(new SpinnerNumberModel(0, 0, 59, 1))
 						.link(minuteValue)
 						.horizontalAlignment(SwingConstants.CENTER)
 						.columns(TIME_COLUMNS)

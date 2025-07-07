@@ -106,6 +106,8 @@ Codion Change Log
 - ScrollPaneBuilder, overloaded builder() methods removed.
 - ColumnConditionPanel.Builder.ModelBuilder.added.
 - DefaultMenuBuilder refactoring bug fixed, captions were missing.
+- NumberSpinnerBuilder.NumberClassBuilder added.
+- SpinnerBuilder.model() added.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Builder.EntityTypeBuilder and ConnectionProviderBuilder added.
 ### is.codion.swing.framework.ui

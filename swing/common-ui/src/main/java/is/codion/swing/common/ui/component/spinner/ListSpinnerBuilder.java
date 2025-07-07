@@ -18,8 +18,6 @@
  */
 package is.codion.swing.common.ui.component.spinner;
 
-import javax.swing.SpinnerListModel;
-
 /**
  * A builder for JSpinner based on a list of values.
  */
@@ -27,10 +25,9 @@ public interface ListSpinnerBuilder<T> extends SpinnerBuilder<T, ListSpinnerBuil
 
 	/**
 	 * @param <T> the value type
-	 * @param spinnerModel the spinner model
 	 * @return a builder for a JSpinner
 	 */
-	static <T> ListSpinnerBuilder<T> builder(SpinnerListModel spinnerModel) {
-		return new DefaultListSpinnerBuilder<>(spinnerModel);
+	static <T> ListSpinnerBuilder<T> builder() {
+		return new DefaultListSpinnerBuilder<>();
 	}
 }

@@ -21,6 +21,7 @@ package is.codion.swing.common.ui.component.spinner;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.JSpinner;
+import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.text.DefaultFormatter;
 
@@ -28,6 +29,8 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinnerBuilder<T, NumberSpinnerBuilder<T>>
 				implements NumberSpinnerBuilder<T> {
+
+	static final NumberClassBuilder NUMBER_CLASS = new DefaultNumberClassBuilder();
 
 	private final Class<T> valueClass;
 
@@ -38,12 +41,20 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinne
 	private String decimalFormatPattern;
 	boolean commitOnValidEdit = true;
 
-	DefaultNumberSpinnerBuilder(SpinnerNumberModel spinnerNumberModel, Class<T> valueClass) {
-		super(spinnerNumberModel);
+	DefaultNumberSpinnerBuilder(Class<T> valueClass) {
 		this.valueClass = requireNonNull(valueClass);
 		if (!valueClass.equals(Integer.class) && !valueClass.equals(Double.class)) {
 			throw new IllegalStateException("NumberSpinnerBuilder not implemented for type: " + valueClass);
 		}
+		model(new SpinnerNumberModel());
+	}
+
+	@Override
+	public NumberSpinnerBuilder<T> model(SpinnerModel model) {
+		if (!(model instanceof SpinnerNumberModel)) {
+			throw new IllegalArgumentException("model must be of type SpinnerNumberModel");
+		}
+		return super.model(model);
 	}
 
 	@Override
@@ -113,5 +124,13 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinne
 		spinner.setEditor(numberEditor);
 
 		return spinner;
+	}
+
+	private static final class DefaultNumberClassBuilder implements NumberClassBuilder {
+
+		@Override
+		public <T extends Number> NumberSpinnerBuilder<T> numberClass(Class<T> numberClass) {
+			return new DefaultNumberSpinnerBuilder<>(numberClass);
+		}
 	}
 }

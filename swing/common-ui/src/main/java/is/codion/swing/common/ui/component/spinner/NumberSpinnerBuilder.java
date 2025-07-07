@@ -18,8 +18,6 @@
  */
 package is.codion.swing.common.ui.component.spinner;
 
-import javax.swing.SpinnerNumberModel;
-
 /**
  * A builder for number based JSpinner
  */
@@ -63,13 +61,22 @@ public interface NumberSpinnerBuilder<T extends Number> extends SpinnerBuilder<T
 	NumberSpinnerBuilder<T> commitOnValidEdit(boolean commitOnValidEdit);
 
 	/**
-	 * @param spinnerNumberModel the spinner model
-	 * @param valueClass the value class
-	 * @param <T> the number type
-	 * @return a new {@link NumberSpinnerBuilder} instance
+	 * Provides a {@link NumberSpinnerBuilder}
 	 */
-	static <T extends Number> NumberSpinnerBuilder<T> builder(SpinnerNumberModel spinnerNumberModel,
-																														Class<T> valueClass) {
-		return new DefaultNumberSpinnerBuilder<>(spinnerNumberModel, valueClass);
+	interface NumberClassBuilder {
+
+		/**
+		 * @param numberClass the number class
+		 * @param <T> the number type
+		 * @return a new {@link NumberSpinnerBuilder} instance
+		 */
+		<T extends Number> NumberSpinnerBuilder<T> numberClass(Class<T> numberClass);
+	}
+
+	/**
+	 * @return a {@link NumberClassBuilder}
+	 */
+	static NumberClassBuilder builder() {
+		return DefaultNumberSpinnerBuilder.NUMBER_CLASS;
 	}
 }

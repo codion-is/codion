@@ -209,7 +209,8 @@ public class NumericalValuesTest {
 	@Test
 	void integerSpinnerUiValue() {
 		SpinnerNumberModel model = new SpinnerNumberModel();
-		ComponentValue<Integer, JSpinner> value = Components.integerSpinner(model)
+		ComponentValue<Integer, JSpinner> value = Components.integerSpinner()
+						.model(model)
 						.buildValue();
 
 		assertEquals(Integer.valueOf(0), value.get());
@@ -242,7 +243,8 @@ public class NumericalValuesTest {
 	@Test
 	void doubleSpinnerUiValue() {
 		SpinnerNumberModel model = new SpinnerNumberModel(0d, 0d, 130d, 1d);
-		Value<Double> value = Components.doubleSpinner(model)
+		Value<Double> value = Components.doubleSpinner()
+						.model(model)
 						.buildValue();
 
 		assertEquals(Double.valueOf(0d), value.get());

@@ -18,8 +18,6 @@
  */
 package is.codion.swing.common.ui.component.spinner;
 
-import javax.swing.SpinnerListModel;
-
 /**
  * A builder for JSpinner based on a list of {@link is.codion.common.item.Item}s.
  */
@@ -27,10 +25,9 @@ public interface ItemSpinnerBuilder<T> extends SpinnerBuilder<T, ItemSpinnerBuil
 
 	/**
 	 * @param <T> the value type
-	 * @param spinnerModel the spinner model
 	 * @return a builder for a JSpinner
 	 */
-	static <T> ItemSpinnerBuilder<T> builder(SpinnerListModel spinnerModel) {
-		return new DefaultItemSpinnerBuilder<>(spinnerModel);
+	static <T> ItemSpinnerBuilder<T> builder() {
+		return new DefaultItemSpinnerBuilder<>();
 	}
 }

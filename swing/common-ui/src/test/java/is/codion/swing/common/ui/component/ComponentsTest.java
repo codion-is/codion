@@ -773,7 +773,8 @@ public final class ComponentsTest {
 	@Test
 	void listSpinner() {
 		Value<String> value = Value.nullable();
-		ComponentValue<String, JSpinner> componentValue = Components.<String>listSpinner(new SpinnerListModel(asList("One", "Two")))
+		ComponentValue<String, JSpinner> componentValue = Components.<String>listSpinner()
+						.model(new SpinnerListModel(asList("One", "Two")))
 						.columns(5)
 						.horizontalAlignment(SwingConstants.CENTER)
 						.mouseWheelScrolling(true)
@@ -790,7 +791,8 @@ public final class ComponentsTest {
 	void itemSpinner() {
 		Value<Integer> value = Value.nullable();
 		SpinnerListModel spinnerModel = new SpinnerListModel(asList(item(1, "One"), item(2, "Two")));
-		ComponentValue<Integer, JSpinner> componentValue = Components.<Integer>itemSpinner(spinnerModel)
+		ComponentValue<Integer, JSpinner> componentValue = Components.<Integer>itemSpinner()
+						.model(spinnerModel)
 						.columns(5)
 						.mouseWheelScrolling(true)
 						.editable(false)

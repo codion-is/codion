@@ -543,7 +543,8 @@ public final class EntityComponents {
 	public <T> ListSpinnerBuilder<T> listSpinner(Attribute<T> attribute, SpinnerListModel listModel) {
 		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
-		return Components.<T>listSpinner(listModel)
+		return Components.<T>listSpinner()
+						.model(listModel)
 						.toolTipText(attributeDefinition.description().orElse(null));
 	}
 
@@ -559,7 +560,8 @@ public final class EntityComponents {
 			throw new IllegalArgumentException("Attribute '" + attributeDefinition.attribute() + "' is not a item based attribute");
 		}
 
-		return Components.<T>itemSpinner(new SpinnerListModel(attributeDefinition.items()))
+		return Components.<T>itemSpinner()
+						.model(new SpinnerListModel(attributeDefinition.items()))
 						.toolTipText(attributeDefinition.description().orElse(null));
 	}
 

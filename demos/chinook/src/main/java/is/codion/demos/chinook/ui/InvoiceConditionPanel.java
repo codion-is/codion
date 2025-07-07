@@ -248,7 +248,8 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 							.columns(4)
 							.horizontalAlignment(SwingConstants.CENTER)
 							.buildValue();
-			private final ComponentValue<Month, JSpinner> monthValue = Components.<Month>itemSpinner(new MonthSpinnerModel())
+			private final ComponentValue<Month, JSpinner> monthValue = Components.<Month>itemSpinner()
+							.model(new MonthSpinnerModel())
 							.listener(this::updateCondition)
 							.editable(false)
 							.columns(3)

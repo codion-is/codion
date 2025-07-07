@@ -287,7 +287,8 @@ public final class ApplicationPanel extends JPanel {
 						.enabled(inputEnabledState)
 						.build(inputPanel::add);
 
-		integerSpinner(model.createIntegerSpinnerModel())
+		integerSpinner()
+						.model(model.createIntegerSpinnerModel())
 						.link(model.integerSpinValue())
 						.columns(4)
 						.mouseWheelScrolling(true)
@@ -311,7 +312,8 @@ public final class ApplicationPanel extends JPanel {
 						.enabled(inputEnabledState)
 						.build(inputPanel::add);
 
-		Components.<String>itemSpinner(model.createItemSpinnerModel())
+		Components.<String>itemSpinner()
+						.model(model.createItemSpinnerModel())
 						.link(model.itemSpinnerValue())
 						.columns(20)
 						.horizontalAlignment(SwingConstants.CENTER)
