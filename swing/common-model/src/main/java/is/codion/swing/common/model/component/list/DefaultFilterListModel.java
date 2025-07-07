@@ -162,7 +162,7 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 
 		@Override
 		public <T> Builder<T> items(Collection<T> items) {
-			return new DefaultBuilder<>(requireNonNull(items), null);
+			return new DefaultBuilder<>(items, null);
 		}
 
 		@Override
