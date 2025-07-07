@@ -108,6 +108,7 @@ Codion Change Log
 - DefaultMenuBuilder refactoring bug fixed, captions were missing.
 - NumberSpinnerBuilder.NumberClassBuilder added.
 - SpinnerBuilder.model() added.
+- SearchHighlighter.Builder.component() added.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Builder.EntityTypeBuilder and ConnectionProviderBuilder added.
 ### is.codion.swing.framework.ui

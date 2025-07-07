@@ -528,7 +528,8 @@ public final class DomainGeneratorPanel extends JPanel {
 	}
 
 	private static SearchHighlighter searchHighlighter(JTextArea textArea) {
-		return SearchHighlighter.builder(textArea)
+		return SearchHighlighter.builder()
+						.component(textArea)
 						.scrollYRatio(0.2)
 						.scrollXRatio(0.5)
 						.build();

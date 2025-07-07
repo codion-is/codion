@@ -80,7 +80,9 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 	public ClientInstanceMonitorPanel(ClientInstanceMonitor model) throws RemoteException {
 		this.model = requireNonNull(model);
 		this.logTextArea = createLogTextArea();
-		this.searchHighlighter = SearchHighlighter.builder(logTextArea).build();
+		this.searchHighlighter = SearchHighlighter.builder()
+						.component(logTextArea)
+						.build();
 		this.searchField = searchHighlighter.createSearchField();
 		KeyEvents.builder()
 						.keyCode(KeyEvent.VK_F)

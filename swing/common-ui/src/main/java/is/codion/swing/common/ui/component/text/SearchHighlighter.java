@@ -58,7 +58,7 @@ import static java.util.ResourceBundle.getBundle;
 /**
  * Highlights search results in a JTextComponent.
  * <p>
- * Instantiate via {@link SearchHighlighter#builder(JTextComponent)}.
+ * Instantiate via {@link SearchHighlighter#builder()}.
  */
 public final class SearchHighlighter {
 
@@ -156,11 +156,10 @@ public final class SearchHighlighter {
 	}
 
 	/**
-	 * @param textComponent the text component
 	 * @return a new {@link Builder} instance
 	 */
-	public static Builder builder(JTextComponent textComponent) {
-		return new DefaultBuilder(requireNonNull(textComponent));
+	public static Builder.ComponentBuilder builder() {
+		return DefaultBuilder.TEXT_COMPONENT;
 	}
 
 	/**
@@ -339,6 +338,18 @@ public final class SearchHighlighter {
 	public interface Builder {
 
 		/**
+		 * Provides a {@link Builder}
+		 */
+		interface ComponentBuilder {
+
+			/**
+			 * @param component the text component
+			 * @return a {@link Builder}
+			 */
+			Builder component(JTextComponent component);
+		}
+
+		/**
 		 * @param highlightColor the highlight color
 		 * @return this builder
 		 */
@@ -377,7 +388,17 @@ public final class SearchHighlighter {
 		SearchHighlighter build();
 	}
 
+	private static final class DefaultComponentBuilder implements Builder.ComponentBuilder {
+
+		@Override
+		public Builder component(JTextComponent component) {
+			return new DefaultBuilder(requireNonNull(component));
+		}
+	}
+
 	private static final class DefaultBuilder implements Builder {
+
+		private static final ComponentBuilder TEXT_COMPONENT = new DefaultComponentBuilder();
 
 		private final JTextComponent textComponent;
 
