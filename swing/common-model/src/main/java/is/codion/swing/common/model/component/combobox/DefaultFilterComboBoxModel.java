@@ -55,6 +55,8 @@ import static java.util.stream.Collectors.toMap;
 
 final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
+	static final DefaultItemsBuilder ITEMS = new DefaultItemsBuilder();
+
 	private static final Function<Object, ?> DEFAULT_SELECTED_ITEM_TRANSLATOR = new DefaultSelectedItemTranslator<>();
 	private static final Comparator<?> DEFAULT_COMPARATOR = new DefaultComparator<>();
 	private static final Comparator<?> NULL_COMPARATOR = new NullComparator<>();
@@ -140,7 +142,25 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 	}
 
-	static final class DefaultBuilder<T> implements Builder<T> {
+	private static final class DefaultItemsBuilder implements Builder.ItemsBuilder {
+
+		@Override
+		public <T> Builder<T> items(Collection<T> items) {
+			return new DefaultFilterComboBoxModel.DefaultBuilder<>(requireNonNull(items), null);
+		}
+
+		@Override
+		public <T> Builder<T> items(Supplier<Collection<T>> items) {
+			return new DefaultFilterComboBoxModel.DefaultBuilder<>(null, requireNonNull(items));
+		}
+
+		@Override
+		public <T> ItemComboBoxModelBuilder<T> items(List<Item<T>> items) {
+			return new DefaultFilterComboBoxModel.DefaultItemComboBoxModelBuilder<>(items);
+		}
+	}
+
+	private static final class DefaultBuilder<T> implements Builder<T> {
 
 		private final Collection<T> items;
 		private final Supplier<Collection<T>> supplier;
@@ -152,7 +172,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		private boolean includeNull;
 		private T nullItem;
 
-		DefaultBuilder(Collection<T> items, Supplier<Collection<T>> supplier) {
+		private DefaultBuilder(Collection<T> items, Supplier<Collection<T>> supplier) {
 			this.items = items;
 			this.supplier = supplier;
 		}

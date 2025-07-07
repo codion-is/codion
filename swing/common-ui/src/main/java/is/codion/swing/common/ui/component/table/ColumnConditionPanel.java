@@ -598,7 +598,8 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	}
 
 	private JComboBox<Item<Operator>> createOperatorComboBox(List<Operator> operators) {
-		FilterComboBoxModel<Item<Operator>> operatorComboBoxModel = FilterComboBoxModel.builder(operators.stream()
+		FilterComboBoxModel<Item<Operator>> operatorComboBoxModel = FilterComboBoxModel.builder()
+						.items(operators.stream()
 										.map(operator -> Item.item(operator, operatorCaptions.apply(operator)))
 										.collect(toList()))
 						.build();

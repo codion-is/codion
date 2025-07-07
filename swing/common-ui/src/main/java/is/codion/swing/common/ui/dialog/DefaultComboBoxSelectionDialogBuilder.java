@@ -53,7 +53,9 @@ final class DefaultComboBoxSelectionDialogBuilder<T> extends AbstractSelectionDi
 
 	@Override
 	public Optional<T> select() {
-		FilterComboBoxModel<T> comboBoxModel = FilterComboBoxModel.builder(values).build();
+		FilterComboBoxModel<T> comboBoxModel = FilterComboBoxModel.builder()
+						.items(values)
+						.build();
 		comboBoxModel.selection().item().set(defaultSelection);
 		JComboBox<T> comboBox = comboBox(comboBoxModel)
 						.build();

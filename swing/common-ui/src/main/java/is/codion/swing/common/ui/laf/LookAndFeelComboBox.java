@@ -281,7 +281,8 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 	}
 
 	private static FilterComboBoxModel<Item<LookAndFeelEnabler>> createLookAndFeelComboBoxModel() {
-		return FilterComboBoxModel.builder(lookAndFeels().stream()
+		return FilterComboBoxModel.builder()
+						.items(lookAndFeels().stream()
 										.map(provider -> item(provider, provider.lookAndFeelInfo().getName()))
 										.collect(toList()))
 						.sorted(true)

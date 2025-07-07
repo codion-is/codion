@@ -389,7 +389,8 @@ public final class InputControls {
 						List.of("One", "Two", "Three");
 
 		FilterComboBoxModel<String> model =
-						FilterComboBoxModel.builder(items)
+						FilterComboBoxModel.builder()
+										.items(items)
 										.nullItem("-")
 										.build();
 
@@ -414,7 +415,8 @@ public final class InputControls {
 	static void comboBoxCompletion() {
 		// tag::comboBoxCompletion[]
 		FilterComboBoxModel<String> model =
-						FilterComboBoxModel.builder(List.of("Jon", "Jón", "Jónsi"))
+						FilterComboBoxModel.builder()
+										.items(List.of("Jon", "Jón", "Jónsi"))
 										.nullItem("-")
 										.build();
 

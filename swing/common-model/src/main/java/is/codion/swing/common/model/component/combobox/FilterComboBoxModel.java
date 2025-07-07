@@ -74,42 +74,10 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	<V> Value<V> createSelector(ItemFinder<T, V> itemFinder);
 
 	/**
-	 * @param <T> the item type
-	 * @return a new {@link FilterComboBoxModel.Builder} instance
+	 * @return a new {@link Builder.ItemsBuilder} instance
 	 */
-	static <T> FilterComboBoxModel.Builder<T> builder() {
-		return new DefaultFilterComboBoxModel.DefaultBuilder<>(null, null);
-	}
-
-	/**
-	 * @param <T> the item type
-	 * @param items the items to add to the model
-	 * @return a new {@link FilterComboBoxModel.Builder} instance
-	 */
-	static <T> FilterComboBoxModel.Builder<T> builder(Collection<T> items) {
-		return new DefaultFilterComboBoxModel.DefaultBuilder<>(requireNonNull(items), null);
-	}
-
-	/**
-	 * @param <T> the item type
-	 * @param supplier the item supplier
-	 * @return a new {@link FilterComboBoxModel.Builder} instance
-	 */
-	static <T> FilterComboBoxModel.Builder<T> builder(Supplier<Collection<T>> supplier) {
-		return new DefaultFilterComboBoxModel.DefaultBuilder<>(null, requireNonNull(supplier));
-	}
-
-	/**
-	 * Returns a {@link ItemComboBoxModelBuilder}, by default unsorted.
-	 * @param items the items to display in the model
-	 * @param <T> the item type
-	 * @return a new {@link ItemComboBoxModelBuilder}
-	 * @see FilterComboBoxModel#booleanItems()
-	 * @see FilterComboBoxModel#booleanItems(String)
-	 * @see FilterComboBoxModel#booleanItems(String, String, String)
-	 */
-	static <T> ItemComboBoxModelBuilder<T> builder(List<Item<T>> items) {
-		return new DefaultFilterComboBoxModel.DefaultItemComboBoxModelBuilder<>(items);
+	static FilterComboBoxModel.Builder.ItemsBuilder builder() {
+		return DefaultFilterComboBoxModel.ITEMS;
 	}
 
 	/**
@@ -150,6 +118,38 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	 * @param <T> the item type
 	 */
 	interface Builder<T> {
+
+		/**
+		 * Provides a {@link Builder}
+		 */
+		interface ItemsBuilder {
+
+			/**
+			 * @param <T> the item type
+			 * @param items the items to add to the model
+			 * @return a new {@link FilterComboBoxModel.Builder} instance
+			 */
+			<T> FilterComboBoxModel.Builder<T> items(Collection<T> items);
+
+			/**
+			 * @param <T> the item type
+			 * @param items the item supplier
+			 * @return a new {@link FilterComboBoxModel.Builder} instance
+			 */
+			<T> FilterComboBoxModel.Builder<T> items(Supplier<Collection<T>> items);
+
+			/**
+			 * Returns a {@link ItemComboBoxModelBuilder}, by default unsorted.
+			 * @param items the items to display in the model
+			 * @param <T> the item type
+			 * @return a new {@link ItemComboBoxModelBuilder}
+			 * @see FilterComboBoxModel#booleanItems()
+			 * @see FilterComboBoxModel#booleanItems(String)
+			 * @see FilterComboBoxModel#booleanItems(String, String, String)
+			 */
+			<T> ItemComboBoxModelBuilder<T> items(List<Item<T>> items);
+		}
+
 		/**
 		 * @param comparator the comparator, null for unsorted
 		 * @return this builder

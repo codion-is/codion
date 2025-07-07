@@ -76,7 +76,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		this.connectionProvider = builder.connectionProvider;
 		this.entityDefinition = builder.entityDefinition;
 		this.attributes = builder.attributes;
-		this.comboBoxModel = FilterComboBoxModel.builder(this::performQuery)
+		this.comboBoxModel = FilterComboBoxModel.builder()
+						.items(this::performQuery)
 						.nullItem(createNullItem(builder.nullCaption))
 						// otherwise the sorting overrides the order by
 						.comparator(builder.orderBy == null ? builder.comparator : null)

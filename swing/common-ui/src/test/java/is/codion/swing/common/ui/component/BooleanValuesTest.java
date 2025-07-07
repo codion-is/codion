@@ -52,7 +52,9 @@ public class BooleanValuesTest {
 
 	@Test
 	void booleanComboBox() {
-		FilterComboBoxModel<Item<Boolean>> model = FilterComboBoxModel.builder(booleanItems()).build();
+		FilterComboBoxModel<Item<Boolean>> model = FilterComboBoxModel.builder()
+						.items(booleanItems())
+						.build();
 		model.setSelectedItem(false);
 		ComponentValue<Boolean, JComboBox<Item<Boolean>>> componentValue = Components.booleanComboBox(model)
 						.buildValue();

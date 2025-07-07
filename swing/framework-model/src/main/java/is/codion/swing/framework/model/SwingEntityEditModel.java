@@ -234,8 +234,10 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 
 	private <T> FilterComboBoxModel.Builder<T> createColumnComboBoxModel(Column<T> column) {
 		return column.type().isEnum() ?
-						FilterComboBoxModel.builder(asList(column.type().valueClass().getEnumConstants())) :
-						FilterComboBoxModel.builder(new ColumnItems<>(connectionProvider(), column));
+						FilterComboBoxModel.builder()
+										.items(asList(column.type().valueClass().getEnumConstants())) :
+						FilterComboBoxModel.builder()
+										.items(new ColumnItems<>(connectionProvider(), column));
 	}
 
 	private static final class ColumnItems<T> implements Supplier<Collection<T>> {

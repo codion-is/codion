@@ -177,7 +177,8 @@ public final class ApplicationModel {
 	}
 
 	public FilterComboBoxModel<Item<Integer>> createIntegerItemComboBoxModel() {
-		return FilterComboBoxModel.builder(List.of(
+		return FilterComboBoxModel.builder()
+						.items(List.of(
 										item(1, "One"), item(2, "Two"), item(3, "Three"),
 										item(4, "Four"), item(5, "Five"), item(6, "Six"),
 										item(7, "Seven"), item(8, "Eight"), item(9, "Nine")))

@@ -662,7 +662,9 @@ public final class EntitySearchField extends HintTextField {
 				items.add(Item.item(entry.getKey(), definition.columns().definition(entry.getKey()).caption()));
 				columnBasePanelBuilder.add(createSettingsPanel(entry.getValue()), entry.getKey().name());
 			}
-			FilterComboBoxModel<Item<Column<String>>> columnComboBoxModel = FilterComboBoxModel.builder(items).build();
+			FilterComboBoxModel<Item<Column<String>>> columnComboBoxModel = FilterComboBoxModel.builder()
+							.items(items)
+							.build();
 			JPanel columnBasePanel = columnBasePanelBuilder.build();
 			if (columnComboBoxModel.getSize() > 0) {
 				columnComboBoxModel.selection().item().addConsumer(selected ->

@@ -596,7 +596,8 @@ public final class EntityComponents {
 	}
 
 	private static <T> FilterComboBoxModel<T> createEnumComboBoxModel(Attribute<T> attribute, boolean nullable) {
-		return FilterComboBoxModel.builder(asList(attribute.type().valueClass().getEnumConstants()))
+		return FilterComboBoxModel.builder()
+						.items(asList(attribute.type().valueClass().getEnumConstants()))
 						.includeNull(nullable)
 						.build();
 	}

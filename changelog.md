@@ -52,6 +52,7 @@ Codion Change Log
 - ProgressWorker.BuilderFactory added, replacing overloaded ProgressWorker.builder() methods.
 - FilterTableModel.Builder.Columns added, replacing the columns parameter in FilterTableModel.builder().
 - FilterTableModel.RowEditor renamed Editor.
+- FilterComboBoxModel.Builder.ItemsBuilder added, replacing overloaded builder() methods.
 ### is.codion.swing.common.ui
 - Unit tests improved.
 - HintTextField.hintForegroundColor() bug fixed, returns null if either foreground or background is unspecified.

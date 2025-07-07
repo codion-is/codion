@@ -197,17 +197,21 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
 			items.add(0, nullItem);
 		}
 		if (comparator != null) {
-			comboBoxModel = FilterComboBoxModel.builder(items)
+			comboBoxModel = FilterComboBoxModel.builder()
+							.items(items)
 							.sorted(comparator)
 							.build();
 		}
 		else if (sorted) {
-			comboBoxModel = FilterComboBoxModel.builder(items)
+			comboBoxModel = FilterComboBoxModel.builder()
+							.items(items)
 							.sorted(true)
 							.build();
 		}
 		else {
-			comboBoxModel = FilterComboBoxModel.builder(items).build();
+			comboBoxModel = FilterComboBoxModel.builder()
+							.items(items)
+							.build();
 		}
 
 		return comboBoxModel;
