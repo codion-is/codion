@@ -340,7 +340,8 @@ public final class ServerMonitorPanel extends JPanel {
 	}
 
 	private JComboBox<Object> createLogLevelField() {
-		return comboBox(new DefaultComboBoxModel<>(model.logLevels().toArray()))
+		return comboBox()
+						.model(new DefaultComboBoxModel<>(model.logLevels().toArray()))
 						.link(model.logLevel())
 						.build();
 	}

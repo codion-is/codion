@@ -550,7 +550,8 @@ public final class ComponentsTest {
 	void comboBox() {
 		DefaultComboBoxModel<String> boxModel = new DefaultComboBoxModel<>(new String[] {"0", "1", "2", "3"});
 		Value<String> value = Value.nullable();
-		ComponentValue<String, JComboBox<String>> componentValue = Components.comboBox(boxModel)
+		ComponentValue<String, JComboBox<String>> componentValue = Components.comboBox()
+						.model(boxModel)
 						.completionMode(Completion.Mode.NONE)//otherwise, a non-existing element can be selected, last test fails
 						.editable(true)
 						.componentOrientation(ComponentOrientation.RIGHT_TO_LEFT)

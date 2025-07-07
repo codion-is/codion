@@ -38,7 +38,8 @@ public class SelectedValuesTest {
 	@Test
 	void selectedItemValueLink() {
 		Value<String> value = Value.nullable();
-		ComponentValue<String, JComboBox<String>> componentValue = Components.comboBox(new DefaultComboBoxModel<>(new String[] {"b", "d", "s"}))
+		ComponentValue<String, JComboBox<String>> componentValue = Components.comboBox()
+						.model(new DefaultComboBoxModel<>(new String[] {"b", "d", "s"}))
 						.link(value)
 						.buildValue();
 		JComboBox<String> box = componentValue.component();
@@ -68,7 +69,8 @@ public class SelectedValuesTest {
 
 	@Test
 	void selectedValue() {
-		ComponentValue<String, JComboBox<String>> value = Components.comboBox(new DefaultComboBoxModel<>(new String[] {null, "one", "two", "three"}))
+		ComponentValue<String, JComboBox<String>> value = Components.comboBox()
+						.model(new DefaultComboBoxModel<>(new String[] {null, "one", "two", "three"}))
 						.buildValue();
 		JComboBox<String> box = value.component();
 

@@ -376,7 +376,8 @@ public final class InputControls {
 						new DefaultComboBoxModel<>(new String[] {"one", "two", "three"});
 
 		JComboBox<String> comboBox =
-						Components.comboBox(comboBoxModel)
+						Components.comboBox()
+										.model(comboBoxModel)
 										.link(stringValue)
 										.preferredWidth(160)
 										.build();
@@ -395,7 +396,8 @@ public final class InputControls {
 										.build();
 
 		JComboBox<String> comboBox =
-						Components.comboBox(model)
+						Components.comboBox()
+										.model(model)
 										.mouseWheelScrolling(true)
 										.build();
 
@@ -421,7 +423,8 @@ public final class InputControls {
 										.build();
 
 		JComboBox<String> comboBox =
-						Components.comboBox(model)
+						Components.comboBox()
+										.model(model)
 										// Auto completion
 										.completionMode(Completion.Mode.AUTOCOMPLETE)
 										// Accented characters not normalized

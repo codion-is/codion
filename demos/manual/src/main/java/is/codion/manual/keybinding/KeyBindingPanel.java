@@ -63,7 +63,8 @@ public final class KeyBindingPanel extends JPanel {
 						.columns(createColumns())
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.build();
-		this.componentComboBox = comboBox(keyBindingModel.componentModel())
+		this.componentComboBox = comboBox()
+						.model(keyBindingModel.componentModel())
 						.preferredWidth(200)
 						.build();
 		setBorder(emptyBorder());

@@ -133,14 +133,25 @@ public interface ComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBu
 	B itemListener(ItemListener itemListener);
 
 	/**
-	 * @param <T> the value type
-	 * @param <C> the component type
-	 * @param <B> the builder type
-	 * @param comboBoxModel the combo box model
-	 * @return a builder for a component
+	 * Provides a {@link ComboBoxBuilder}
 	 */
-	static <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> builder(ComboBoxModel<T> comboBoxModel) {
-		return new DefaultComboBoxBuilder<>(comboBoxModel);
+	interface ModelBuilder {
+
+		/**
+		 * @param <T> the value type
+		 * @param <C> the component type
+		 * @param <B> the builder type
+		 * @param comboBoxModel the combo box model
+		 * @return a builder for a component
+		 */
+		<T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> model(ComboBoxModel<T> comboBoxModel);
+	}
+
+	/**
+	 * @return a {@link ModelBuilder}
+	 */
+	static ModelBuilder builder() {
+		return DefaultComboBoxBuilder.MODEL;
 	}
 
 	/**

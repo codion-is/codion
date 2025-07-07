@@ -60,7 +60,6 @@ import is.codion.swing.common.ui.component.text.TextPaneBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.layout.Layouts;
 
-import javax.swing.ComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -176,14 +175,10 @@ public final class Components {
 	}
 
 	/**
-	 * @param <T> the value type
-	 * @param <C> the component type
-	 * @param <B> the builder type
-	 * @param comboBoxModel the combo box model
-	 * @return a JComboBox builder
+	 * @return a {@link ComboBoxBuilder.ModelBuilder}
 	 */
-	public static <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(ComboBoxModel<T> comboBoxModel) {
-		return ComboBoxBuilder.builder(comboBoxModel);
+	public static ComboBoxBuilder.ModelBuilder comboBox() {
+		return ComboBoxBuilder.builder();
 	}
 
 	/**

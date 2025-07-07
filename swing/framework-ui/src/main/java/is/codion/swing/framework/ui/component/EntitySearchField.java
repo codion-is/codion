@@ -675,7 +675,9 @@ public final class EntitySearchField extends HintTextField {
 
 			return borderLayoutPanel()
 							.border(createTitledBorder(MESSAGES.getString("search_columns")))
-							.northComponent(comboBox(columnComboBoxModel).build())
+							.northComponent(comboBox()
+											.model(columnComboBoxModel)
+											.build())
 							.centerComponent(columnBasePanel)
 							.build();
 		}

@@ -183,7 +183,8 @@ public final class ClientUserMonitorPanel extends JPanel {
 	}
 
 	private JComponent createMaintenanceIntervalComponent() throws RemoteException {
-		return comboBox(new DefaultComboBoxModel<>(MAINTENANCE_INTERVAL_VALUES))
+		return comboBox()
+						.model(new DefaultComboBoxModel<>(MAINTENANCE_INTERVAL_VALUES))
 						.value(model.getMaintenanceInterval())
 						.itemListener(e -> {
 							try {

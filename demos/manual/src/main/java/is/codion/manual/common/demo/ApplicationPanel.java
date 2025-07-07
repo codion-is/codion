@@ -171,7 +171,8 @@ public final class ApplicationPanel extends JPanel {
 						.enabled(inputEnabledState)
 						.build(inputPanel::add);
 
-		comboBox(model.createStringComboBoxModel())
+		comboBox()
+						.model(model.createStringComboBoxModel())
 						.link(model.stringSelectionValue())
 						.editable(true)
 						.mouseWheelScrolling(true)
@@ -301,7 +302,8 @@ public final class ApplicationPanel extends JPanel {
 						.enabled(inputEnabledState)
 						.build(inputPanel::add);
 
-		comboBox(model.createIntegerComboBoxModel())
+		comboBox()
+						.model(model.createIntegerComboBoxModel())
 						.link(model.integerSelectionValue())
 						.editable(true)
 						.mouseWheelScrolling(true)

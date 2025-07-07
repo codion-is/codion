@@ -295,7 +295,8 @@ public final class EntityComponents {
 																																																					 ComboBoxModel<T> comboBoxModel) {
 		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
-		return (ComboBoxBuilder<T, C, B>) Components.comboBox(comboBoxModel)
+		return (ComboBoxBuilder<T, C, B>) Components.comboBox()
+						.model(comboBoxModel)
 						.toolTipText(attributeDefinition.description().orElse(null));
 	}
 

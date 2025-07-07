@@ -281,7 +281,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
 	private static final class DefaultBuilder extends DefaultComboBoxBuilder<Entity, EntityComboBox, Builder> implements Builder {
 
-		private static final ModelBuilder MODEL = new DefaultModelBuilder();
+		private static final Builder.ModelBuilder MODEL = new DefaultModelBuilder();
 
 		private final ControlMap controlMap = controlMap(ControlKeys.class);
 
