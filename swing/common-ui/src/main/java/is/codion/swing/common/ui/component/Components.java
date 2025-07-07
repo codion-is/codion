@@ -18,7 +18,6 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.common.value.ValueSet;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.button.ButtonPanelBuilder;
@@ -60,7 +59,6 @@ import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
@@ -166,14 +164,10 @@ public final class Components {
 	 * <li>{@link java.awt.event.KeyEvent#VK_INSERT} adds the current value to the list
 	 * <li>{@link java.awt.event.KeyEvent#VK_DELETE} deletes the selected item from the list.
 	 * </ul>
-	 * @param itemValue the component value providing the items to add
-	 * @param linkedValue the value to link
-	 * @param <T> the value type
-	 * @return a new {@link ComponentValue}
+	 * @return a new {@link ListBoxBuilder.ItemValueBuilder}
 	 */
-	public static <T> ListBoxBuilder<T> listBox(ComponentValue<T, ? extends JComponent> itemValue,
-																							ValueSet<T> linkedValue) {
-		return ListBoxBuilder.listBox(itemValue, linkedValue);
+	public static ListBoxBuilder.ItemValueBuilder listBox() {
+		return ListBoxBuilder.builder();
 	}
 
 	/**

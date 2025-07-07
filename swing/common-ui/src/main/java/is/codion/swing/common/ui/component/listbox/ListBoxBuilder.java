@@ -41,6 +41,32 @@ public interface ListBoxBuilder<T> extends ComponentBuilder<Set<T>, JComboBox<T>
 	ListBoxBuilder<T> string(Function<Object, String> string);
 
 	/**
+	 * Provides a {@link LinkedValueBuilder}
+	 */
+	interface ItemValueBuilder {
+
+		/**
+		 * @param itemValue supplies new items to add to the list box.
+		 * @return a {@link LinkedValueBuilder}
+		 * @param <T> the item type
+		 */
+		<T> ListBoxBuilder.LinkedValueBuilder<T> itemValue(ComponentValue<T, ? extends JComponent> itemValue);
+	}
+
+	/**
+	 * Provides a {@link ListBoxBuilder}
+	 * @param <T> the item type
+	 */
+	interface LinkedValueBuilder<T> {
+
+		/**
+		 * @param linkedValue the linked value
+		 * @return a {@link ListBoxBuilder}
+		 */
+		ListBoxBuilder<T> linkedValue(ValueSet<T> linkedValue);
+	}
+
+	/**
 	 * Creates a {@link JComboBox} based {@link ComponentValue} instance, represented by the items
 	 * in the combo box (as opposed to the selected item). The provided {@code itemValue} supplies
 	 * new items to add to the combo box.
@@ -48,13 +74,9 @@ public interface ListBoxBuilder<T> extends ComponentBuilder<Set<T>, JComboBox<T>
 	 * <li>{@link java.awt.event.KeyEvent#VK_INSERT} adds the current value whereas
 	 * <li>{@link java.awt.event.KeyEvent#VK_DELETE} deletes the selected item from the list.
 	 * </ul>
-	 * @param itemValue the component value providing the items to add
-	 * @param linkedValue the value to link
-	 * @param <T> the value type
 	 * @return a new {@link ComponentValue}
 	 */
-	static <T> ListBoxBuilder<T> listBox(ComponentValue<T, ? extends JComponent> itemValue,
-																			 ValueSet<T> linkedValue) {
-		return new DefaultListBoxBuilder<>(itemValue, linkedValue);
+	static ListBoxBuilder.ItemValueBuilder builder() {
+		return DefaultListBoxBuilder.ITEM;
 	}
 }

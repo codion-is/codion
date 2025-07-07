@@ -952,7 +952,9 @@ public final class ComponentsTest {
 	void listBox() {
 		Set<String> items = new HashSet<>(asList("one", "two", "three"));
 		ComponentValue<Set<String>, JComboBox<String>> componentValue =
-						Components.listBox(Components.stringField().buildValue(), ValueSet.valueSet(items))
+						Components.listBox()
+										.itemValue(Components.stringField().buildValue())
+										.linkedValue(ValueSet.valueSet(items))
 										.buildValue();
 		assertEquals(items, componentValue.get());
 	}

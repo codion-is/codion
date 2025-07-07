@@ -49,6 +49,8 @@ final class DefaultListBoxBuilder<T>
 				extends AbstractComponentBuilder<Set<T>, JComboBox<T>, ListBoxBuilder<T>>
 				implements ListBoxBuilder<T> {
 
+	static final ItemValueBuilder ITEM = new DefaultItemValue();
+
 	private final ComponentValue<T, ? extends JComponent> itemValue;
 	private final ValueSet<T> linkedValue;
 	private Function<Object, String> string = new DefaultString();
@@ -174,6 +176,28 @@ final class DefaultListBoxBuilder<T>
 		@Override
 		public String apply(Object value) {
 			return value == null ? "" : value.toString();
+		}
+	}
+
+	private static final class DefaultItemValue implements ItemValueBuilder {
+
+		@Override
+		public <T> LinkedValueBuilder<T> itemValue(ComponentValue<T, ? extends JComponent> itemValue) {
+			return new DefaultLinkedValueBuilder<>(requireNonNull(itemValue));
+		}
+	}
+
+	private static final class DefaultLinkedValueBuilder<T> implements LinkedValueBuilder<T> {
+
+		private final ComponentValue<T, ? extends JComponent> itemValue;
+
+		private DefaultLinkedValueBuilder(ComponentValue<T, ? extends JComponent> itemValue) {
+			this.itemValue = requireNonNull(itemValue);
+		}
+
+		@Override
+		public ListBoxBuilder<T> linkedValue(ValueSet<T> linkedValue) {
+			return new DefaultListBoxBuilder<>(itemValue, linkedValue);
 		}
 	}
 }

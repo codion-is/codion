@@ -111,9 +111,10 @@ public class EntityConditionComponentFactory implements ComponentFactory {
 			return createInForeignKeyField((ConditionModel<Entity>) conditionModel);
 		}
 
-		return listBox((ComponentValue<T, JComponent>)
-						inputComponents.component(attribute)
-										.buildValue(), conditionModel.operands().in()).build();
+		return listBox()
+						.itemValue((ComponentValue<T, JComponent>) inputComponents.component(attribute).buildValue())
+						.linkedValue(conditionModel.operands().in())
+						.build();
 	}
 
 	private JComponent createEqualForeignKeyField(ConditionModel<Entity> conditionModel) {

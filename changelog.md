@@ -116,6 +116,7 @@ Codion Change Log
 - ComboBoxBuilder.ModelBuilder added.
 - ItemComboBoxBuilder.BuilderFactory added.
 - Components.temporalField() parameter removed.
+- ListBoxBuilder.ItemValueBuilder and LinkedValueBuilder added.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Builder.EntityTypeBuilder and ConnectionProviderBuilder added.
 ### is.codion.swing.framework.ui

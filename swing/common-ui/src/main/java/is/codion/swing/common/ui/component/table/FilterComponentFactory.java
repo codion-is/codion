@@ -70,7 +70,10 @@ final class FilterComponentFactory implements ComponentFactory {
 
 	@Override
 	public <T> JComponent in(ConditionModel<T> conditionModel) {
-		return listBox(createField(conditionModel).buildValue(), conditionModel.operands().in()).build();
+		return listBox()
+						.itemValue(createField(conditionModel).buildValue())
+						.linkedValue(conditionModel.operands().in())
+						.build();
 	}
 
 	private static <T> ComponentBuilder<T, ? extends JComponent, ?> createField(ConditionModel<T> conditionModel) {
