@@ -269,27 +269,6 @@ public final class NumberField<T extends Number> extends HintTextField {
 		return (NumberDocument<T>) super.getDocument();
 	}
 
-	private static <T extends Number> Builder<T> createBuilder(Class<T> valueClass) {
-		requireNonNull(valueClass);
-		if (valueClass.equals(Short.class)) {
-			return (Builder<T>) new DefaultShortFieldBuilder();
-		}
-		if (valueClass.equals(Integer.class)) {
-			return (Builder<T>) new DefaultIntegerFieldBuilder();
-		}
-		if (valueClass.equals(Long.class)) {
-			return (Builder<T>) new DefaultLongFieldBuilder();
-		}
-		if (valueClass.equals(Double.class)) {
-			return (Builder<T>) new DefaultDoubleFieldBuilder();
-		}
-		if (valueClass.equals(BigDecimal.class)) {
-			return (Builder<T>) new DefaultBigDecimalFieldBuilder();
-		}
-
-		throw new IllegalArgumentException("Unsupported number type: " + valueClass);
-	}
-
 	/**
 	 * Builds a NumberField
 	 * @param <T> the value type
@@ -303,8 +282,8 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 			/**
 			 * @param numberClass the number class
-			 * @return a {@link Builder}
 			 * @param <T> the value type
+			 * @return a {@link Builder}
 			 */
 			<T extends Number> Builder<T> numberClass(Class<T> numberClass);
 		}
@@ -421,7 +400,24 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		@Override
 		public <T extends Number> Builder<T> numberClass(Class<T> numberClass) {
-			return createBuilder(numberClass);
+			requireNonNull(numberClass);
+			if (numberClass.equals(Short.class)) {
+				return (Builder<T>) new DefaultShortFieldBuilder();
+			}
+			if (numberClass.equals(Integer.class)) {
+				return (Builder<T>) new DefaultIntegerFieldBuilder();
+			}
+			if (numberClass.equals(Long.class)) {
+				return (Builder<T>) new DefaultLongFieldBuilder();
+			}
+			if (numberClass.equals(Double.class)) {
+				return (Builder<T>) new DefaultDoubleFieldBuilder();
+			}
+			if (numberClass.equals(BigDecimal.class)) {
+				return (Builder<T>) new DefaultBigDecimalFieldBuilder();
+			}
+
+			throw new IllegalArgumentException("Unsupported number type: " + numberClass);
 		}
 	}
 
