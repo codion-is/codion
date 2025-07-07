@@ -272,7 +272,8 @@ public final class ApplicationPanel extends JPanel {
 						.centerComponent(integerItemComboBox)
 						.build(inputPanel::add);
 
-		slider(model.createIntegerSliderModel())
+		slider()
+						.model(model.createIntegerSliderModel())
 						.link(model.integerSlideValue())
 						.paintTicks(true)
 						.paintTrack(true)

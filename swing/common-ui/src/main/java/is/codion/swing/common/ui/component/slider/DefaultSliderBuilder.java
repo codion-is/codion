@@ -29,6 +29,8 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultSliderBuilder extends AbstractComponentBuilder<Integer, JSlider, SliderBuilder> implements SliderBuilder {
 
+	static final ModelBuilder MODEL = new DefaultModelBuilder();
+
 	private final BoundedRangeModel boundedRangeModel;
 
 	private int minorTickSpacing;
@@ -140,5 +142,13 @@ final class DefaultSliderBuilder extends AbstractComponentBuilder<Integer, JSlid
 	@Override
 	protected ComponentValue<Integer, JSlider> createComponentValue(JSlider component) {
 		return new IntegerSliderValue(component);
+	}
+
+	private static final class DefaultModelBuilder implements ModelBuilder {
+
+		@Override
+		public SliderBuilder model(BoundedRangeModel boundedRangeModel) {
+			return new  DefaultSliderBuilder(boundedRangeModel);
+		}
 	}
 }

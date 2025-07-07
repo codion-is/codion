@@ -60,7 +60,6 @@ import is.codion.swing.common.ui.component.text.TextPaneBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.layout.Layouts;
 
-import javax.swing.BoundedRangeModel;
 import javax.swing.ComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -396,11 +395,10 @@ public final class Components {
 	}
 
 	/**
-	 * @param boundedRangeModel the slider model
 	 * @return a JSlider builder
 	 */
-	public static SliderBuilder slider(BoundedRangeModel boundedRangeModel) {
-		return SliderBuilder.builder(boundedRangeModel);
+	public static SliderBuilder.ModelBuilder slider() {
+		return SliderBuilder.builder();
 	}
 
 	/**

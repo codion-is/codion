@@ -113,10 +113,21 @@ public interface SliderBuilder extends ComponentBuilder<Integer, JSlider, Slider
 	SliderBuilder mouseWheelScrollingReversed(boolean mouseWheelScrollingReversed);
 
 	/**
-	 * @param boundedRangeModel the slider model
+	 * Provides a {@link SliderBuilder}
+	 */
+	interface ModelBuilder {
+
+		/**
+		 * @param boundedRangeModel the model
+		 * @return a {@link SliderBuilder}
+		 */
+		SliderBuilder model(BoundedRangeModel boundedRangeModel);
+	}
+
+	/**
 	 * @return a builder for a component
 	 */
-	static SliderBuilder builder(BoundedRangeModel boundedRangeModel) {
-		return new DefaultSliderBuilder(boundedRangeModel);
+	static ModelBuilder builder() {
+		return DefaultSliderBuilder.MODEL;
 	}
 }

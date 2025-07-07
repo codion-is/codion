@@ -112,6 +112,7 @@ Codion Change Log
 - FilterTableColumn.Builder.IdentifierBuilder and ModelIndexBuilder added.
 - DefaultFilterListModel.DefaultItemsBuilder.items() refactoring bug fixed, now allows null.
 - ListBuilder.ModelBuilder added.
+- SliderBuilder.ModelBuilder added.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Builder.EntityTypeBuilder and ConnectionProviderBuilder added.
 ### is.codion.swing.framework.ui

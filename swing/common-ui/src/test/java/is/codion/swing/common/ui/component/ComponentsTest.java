@@ -807,7 +807,8 @@ public final class ComponentsTest {
 	@Test
 	void slider() {
 		Value<Integer> value = Value.nullable(10);
-		ComponentValue<Integer, JSlider> componentValue = Components.slider(new DefaultBoundedRangeModel(0, 0, 0, 100))
+		ComponentValue<Integer, JSlider> componentValue = Components.slider()
+						.model(new DefaultBoundedRangeModel(0, 0, 0, 100))
 						.snapToTicks(true)
 						.paintTrack(true)
 						.paintTicks(true)

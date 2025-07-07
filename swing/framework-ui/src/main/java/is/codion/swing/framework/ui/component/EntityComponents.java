@@ -497,7 +497,8 @@ public final class EntityComponents {
 	public SliderBuilder slider(Attribute<Integer> attribute, BoundedRangeModel boundedRangeModel) {
 		AttributeDefinition<Integer> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
-		return Components.slider(boundedRangeModel)
+		return Components.slider()
+						.model(boundedRangeModel)
 						.toolTipText(attributeDefinition.description().orElse(null));
 	}
 
