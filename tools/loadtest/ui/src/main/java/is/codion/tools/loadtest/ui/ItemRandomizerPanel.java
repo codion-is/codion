@@ -20,6 +20,7 @@ package is.codion.tools.loadtest.ui;
 
 import is.codion.common.observable.Observable;
 import is.codion.common.value.AbstractValue;
+import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -33,7 +34,6 @@ import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.util.List;
 
-import static is.codion.swing.common.model.component.list.FilterListModel.filterListModel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.util.Objects.requireNonNull;
@@ -52,7 +52,9 @@ final class ItemRandomizerPanel<T> extends JPanel {
 
 	ItemRandomizerPanel(ItemRandomizer<T> itemRandomizer) {
 		this.itemRandomizer = requireNonNull(itemRandomizer);
-		this.listValue = Components.list(filterListModel(itemRandomizer.items()))
+		this.listValue = Components.list(FilterListModel.builder()
+										.items(itemRandomizer.items())
+										.build())
 						.selectedItems()
 						.buildValue();
 		initializeUI();

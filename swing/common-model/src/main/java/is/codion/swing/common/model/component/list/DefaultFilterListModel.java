@@ -26,6 +26,7 @@ import is.codion.common.value.Value;
 import javax.swing.AbstractListModel;
 import javax.swing.SortOrder;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -34,6 +35,8 @@ import static java.util.Objects.requireNonNull;
 import static javax.swing.SortOrder.*;
 
 final class DefaultFilterListModel<T> extends AbstractListModel<T> implements FilterListModel<T> {
+
+	static final Builder.ItemsBuilder ITEMS = new DefaultItemsBuilder();
 
 	private final Items<T> items;
 	private final FilterListSelection<T> selection;
@@ -155,23 +158,31 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 		}
 	}
 
-	static final class DefaultBuilder<T> implements Builder<T> {
+	private static final class DefaultItemsBuilder implements Builder.ItemsBuilder {
+
+		@Override
+		public <T> Builder<T> items(Collection<T> items) {
+			return new DefaultBuilder<>(requireNonNull(items), null);
+		}
+
+		@Override
+		public <T> Builder<T> items(Supplier<Collection<T>> items) {
+			return new DefaultBuilder<>(null, requireNonNull(items));
+		}
+	}
+
+	private static final class DefaultBuilder<T> implements Builder<T> {
 
 		private final Collection<T> items;
+		private final Supplier<? extends Collection<T>> supplier;
 
-		private Supplier<? extends Collection<T>> supplier;
 		private Comparator<T> comparator;
 		private boolean async = ASYNC.getOrThrow();
 		private Predicate<T> visiblePredicate;
 
-		DefaultBuilder(Collection<T> items) {
-			this.items = items;
-		}
-
-		@Override
-		public Builder<T> supplier(Supplier<? extends Collection<T>> supplier) {
-			this.supplier = requireNonNull(supplier);
-			return this;
+		private DefaultBuilder(Collection<T> items, Supplier<? extends Collection<T>> supplier) {
+			this.items = items == null ? Collections.emptyList() : items;
+			this.supplier = supplier;
 		}
 
 		@Override

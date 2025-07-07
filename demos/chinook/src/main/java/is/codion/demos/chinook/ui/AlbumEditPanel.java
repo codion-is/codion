@@ -27,6 +27,7 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.util.Collections;
 import java.util.List;
 
 import static is.codion.demos.chinook.domain.api.Chinook.Album;
@@ -75,7 +76,9 @@ public final class AlbumEditPanel extends EntityEditPanel {
 	private AlbumTagPanel createAlbumTagPanel() {
 		// We create JList based value for the album tags.
 		ComponentValue<List<String>, FilterList<String>> tagsValue =
-						createList(FilterListModel.<String>filterListModel())
+						createList(FilterListModel.builder()
+										.items(Collections.<String>emptyList())
+										.build())
 										// The value should be based on the items in
 										// the list as opposed to the selected items
 										.items(Album.TAGS)

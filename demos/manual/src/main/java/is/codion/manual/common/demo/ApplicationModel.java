@@ -37,7 +37,6 @@ import java.util.List;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.common.value.ValueList.valueList;
-import static is.codion.swing.common.model.component.list.FilterListModel.filterListModel;
 import static java.lang.Thread.setDefaultUncaughtExceptionHandler;
 
 /*
@@ -205,11 +204,13 @@ public final class ApplicationModel {
 	}
 
 	public FilterListModel<String> createStringListModel() {
-		return filterListModel(List.of(
-						"Here", "Are", "A",
-						"Few", "Elements", "To",
-						"Select", "From"
-		));
+		return FilterListModel.builder()
+						.items(List.of(
+										"Here", "Are", "A",
+										"Few", "Elements", "To",
+										"Select", "From"
+						))
+						.build();
 	}
 
 	private void exceptionHandler(Thread thread, Throwable exception) {

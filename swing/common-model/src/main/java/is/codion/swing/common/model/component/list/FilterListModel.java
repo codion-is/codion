@@ -19,7 +19,6 @@
 package is.codion.swing.common.model.component.list;
 
 import is.codion.common.model.filter.FilterModel;
-import is.codion.swing.common.model.component.list.DefaultFilterListModel.DefaultBuilder;
 
 import javax.swing.ListModel;
 import java.util.Collection;
@@ -27,17 +26,11 @@ import java.util.Comparator;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static java.util.Collections.emptyList;
-import static java.util.Objects.requireNonNull;
-
 /**
  * <p>A {@link ListModel} based on {@link FilterModel}.
- * <p>For instances use {@link #filterListModel()} or {@link #builder()}.
+ * <p>For instances use @link #builder()}.
  * @param <T> the item type
- * @see #filterListModel()
- * @see #filterListModel(Collection)
  * @see #builder()
- * @see #builder(Collection)
  */
 public interface FilterListModel<T> extends ListModel<T>, FilterModel<T> {
 
@@ -48,37 +41,10 @@ public interface FilterListModel<T> extends ListModel<T>, FilterModel<T> {
 	FilterListSort<T> sort();
 
 	/**
-	 * @param <T> the item type
-	 * @return a new {@link FilterListModel} instance
+	 * @return a new {@link Builder.ItemsBuilder} instance
 	 */
-	static <T> FilterListModel<T> filterListModel() {
-		return FilterListModel.<T>builder().build();
-	}
-
-	/**
-	 * @param items the items
-	 * @param <T> the item type
-	 * @return a new {@link FilterListModel} instance
-	 */
-	static <T> FilterListModel<T> filterListModel(Collection<T> items) {
-		return FilterListModel.builder(items).build();
-	}
-
-	/**
-	 * @param <T> the item type
-	 * @return a new {@link Builder} instance
-	 */
-	static <T> Builder<T> builder() {
-		return new DefaultBuilder<>(emptyList());
-	}
-
-	/**
-	 * @param items the items
-	 * @param <T> the item type
-	 * @return a new {@link Builder} instance
-	 */
-	static <T> Builder<T> builder(Collection<T> items) {
-		return new DefaultBuilder<>(requireNonNull(items));
+	static Builder.ItemsBuilder builder() {
+		return DefaultFilterListModel.ITEMS;
 	}
 
 	/**
@@ -88,10 +54,24 @@ public interface FilterListModel<T> extends ListModel<T>, FilterModel<T> {
 	interface Builder<T> {
 
 		/**
-		 * @param supplier supplies the items
-		 * @return this builder instance
+		 * Provides a {@link Builder}
 		 */
-		Builder<T> supplier(Supplier<? extends Collection<T>> supplier);
+		interface ItemsBuilder {
+
+			/**
+			 * @param <T> the item type
+			 * @param items the items to add to the model
+			 * @return a new {@link Builder} instance
+			 */
+			<T> FilterListModel.Builder<T> items(Collection<T> items);
+
+			/**
+			 * @param <T> the item type
+			 * @param items the item supplier
+			 * @return a new {@link FilterListModel.Builder} instance
+			 */
+			<T> FilterListModel.Builder<T> items(Supplier<Collection<T>> items);
+		}
 
 		/**
 		 * @param comparator the comparator to use when sorting

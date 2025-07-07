@@ -40,7 +40,8 @@ final class FilterListTest {
 	@Test
 	void test() {
 		List<String> items = asList(ONE, TWO, THREE);
-		FilterListModel<String> model = FilterListModel.builder(items)
+		FilterListModel<String> model = FilterListModel.builder()
+						.items(items)
 						.comparator(Text.collator())
 						.build();
 		model.selection().item().set(TWO);

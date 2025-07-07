@@ -85,7 +85,6 @@ import java.util.List;
 import java.util.Set;
 
 import static is.codion.common.item.Item.item;
-import static is.codion.swing.common.model.component.list.FilterListModel.filterListModel;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -840,7 +839,9 @@ public final class ComponentsTest {
 
 	@Test
 	void listSelectedItems() {
-		FilterListModel<String> listModel = filterListModel(asList("one", "two", "three"));
+		FilterListModel<String> listModel = FilterListModel.builder()
+						.items(asList("one", "two", "three"))
+						.build();
 
 		ValueList<String> textValue = ValueList.valueList(singletonList("two"));
 		ListBuilder.SelectedItems<String> listBuilder = Components.list(listModel)
@@ -864,7 +865,9 @@ public final class ComponentsTest {
 
 	@Test
 	void listSelectedItem() {
-		FilterListModel<String> listModel = filterListModel(asList("one", "two", "three"));
+		FilterListModel<String> listModel = FilterListModel.builder()
+						.items(asList("one", "two", "three"))
+						.build();
 
 		Value<String> textValue = Value.nullable("two");
 		ListBuilder.SelectedItem<String> listBuilder = Components.list(listModel)
@@ -893,8 +896,8 @@ public final class ComponentsTest {
 	@Test
 	void listItems() {
 		ValueList<String> textValue = ValueList.valueList(asList("one", "two", "three"));
-		ListBuilder.Items<String> listBuilder = Components.list(FilterListModel.builder(
-														asList("one", "two", "three"))
+		ListBuilder.Items<String> listBuilder = Components.list(FilterListModel.builder()
+										.items(asList("one", "two", "three"))
 										.build())
 						.items()
 						.visibleRowCount(4)

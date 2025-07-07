@@ -86,6 +86,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -827,7 +828,9 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		private FilterList<Entity> createList(EntitySearchField searchField) {
-			FilterListModel<Entity> listModel = FilterListModel.<Entity>filterListModel();
+			FilterListModel<Entity> listModel = FilterListModel.builder()
+							.items(Collections.<Entity>emptyList())
+							.build();
 			ListBuilder<Entity, ?, ?> listBuilder = searchField.singleSelection() ?
 							Components.list(listModel).selectedItem() : Components.list(listModel).selectedItems();
 

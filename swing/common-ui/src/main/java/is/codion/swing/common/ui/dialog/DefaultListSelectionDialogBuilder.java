@@ -146,7 +146,8 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 	}
 
 	private FilterList<T> createList(boolean singleSelection) {
-		FilterListModel<T> model = FilterListModel.builder(values)
+		FilterListModel<T> model = FilterListModel.builder()
+						.items(values)
 						.comparator(comparator)
 						.build();
 		FilterList<T> list = Components.list(model).items().build();

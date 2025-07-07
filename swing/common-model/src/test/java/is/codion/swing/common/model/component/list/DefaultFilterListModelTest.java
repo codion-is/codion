@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -43,8 +44,8 @@ final class DefaultFilterListModelTest {
 	@Test
 	void test() {
 		List<String> items = asList(ONE, TWO, THREE);
-		FilterListModel<String> unsorted = FilterListModel.<String>builder()
-						.supplier(() -> items)
+		FilterListModel<String> unsorted = FilterListModel.builder()
+						.items(() -> items)
 						.async(false)
 						.comparator(null)
 						.build();
@@ -54,7 +55,8 @@ final class DefaultFilterListModelTest {
 		unsorted.sort().clear();
 		assertFalse(unsorted.sort().sorted());
 
-		FilterListModel<String> model = FilterListModel.builder(items)
+		FilterListModel<String> model = FilterListModel.builder()
+						.items(items)
 						.comparator(Text.collator())
 						.build();
 		model.selection().item().set(TWO);
@@ -89,7 +91,8 @@ final class DefaultFilterListModelTest {
 	@Test
 	void filterPredicate() {
 		List<String> items = asList("apple", "banana", "cherry", "date", "elderberry");
-		FilterListModel<String> model = FilterListModel.builder(items).build();
+		FilterListModel<String> model = FilterListModel.builder()
+						.items(items).build();
 
 		// Initially all visible
 		assertEquals(5, model.items().visible().count());
@@ -119,7 +122,8 @@ final class DefaultFilterListModelTest {
 	@Test
 	void listDataEvents() {
 		List<String> items = new ArrayList<>(asList(ONE, TWO, THREE));
-		FilterListModel<String> model = FilterListModel.builder(items).build();
+		FilterListModel<String> model = FilterListModel.builder()
+						.items(items).build();
 
 		TestListDataListener listener = new TestListDataListener();
 		model.addListDataListener(listener);
@@ -150,7 +154,7 @@ final class DefaultFilterListModelTest {
 	void concurrentModification() throws Exception {
 		List<String> items = new ArrayList<>(asList(ONE, TWO, THREE, FOUR));
 		FilterListModel<String> model = FilterListModel.<String>builder()
-						.supplier(() -> new ArrayList<>(items))
+						.items(() -> new ArrayList<>(items))
 						.async(false)
 						.build();
 
@@ -207,7 +211,8 @@ final class DefaultFilterListModelTest {
 
 	@Test
 	void emptyModel() {
-		FilterListModel<String> model = FilterListModel.<String>builder()
+		FilterListModel<String> model = FilterListModel.builder()
+						.items(Collections.<String>emptyList())
 						.build();
 
 		assertEquals(0, model.getSize());
@@ -228,7 +233,8 @@ final class DefaultFilterListModelTest {
 	@Test
 	void selectionPreservation() {
 		List<String> items = asList(ONE, TWO, THREE, FOUR);
-		FilterListModel<String> model = FilterListModel.builder(items).build();
+		FilterListModel<String> model = FilterListModel.builder()
+						.items(items).build();
 
 		// Select multiple items
 		model.selection().indexes().set(asList(0, 2));
@@ -249,18 +255,21 @@ final class DefaultFilterListModelTest {
 	@Test
 	void builderConfiguration() {
 		// Test various builder configurations
-		FilterListModel<String> asyncModel = FilterListModel.<String>builder()
+		FilterListModel<String> asyncModel = FilterListModel.builder()
+						.items(Collections.<String>emptyList())
 						.async(true)
 						.build();
 		assertTrue(asyncModel.items().refresher().async().get());
 
-		FilterListModel<String> syncModel = FilterListModel.<String>builder()
+		FilterListModel<String> syncModel = FilterListModel.builder()
+						.items(Collections.<String>emptyList())
 						.async(false)
 						.build();
 		assertFalse(syncModel.items().refresher().async().get());
 
 		// With predicate
-		FilterListModel<String> filteredModel = FilterListModel.builder(asList(ONE, TWO, THREE, FOUR))
+		FilterListModel<String> filteredModel = FilterListModel.builder()
+						.items(asList(ONE, TWO, THREE, FOUR))
 						.visible(s -> s.length() > 3)
 						.build();
 		assertEquals(2, filteredModel.items().visible().count()); // THREE and FOUR
@@ -270,7 +279,8 @@ final class DefaultFilterListModelTest {
 	@Test
 	void sortingWithSelection() {
 		List<String> items = asList("Charlie", "Alice", "Bob", "David");
-		FilterListModel<String> model = FilterListModel.builder(items)
+		FilterListModel<String> model = FilterListModel.builder()
+						.items(items)
 						.comparator(String::compareTo)
 						.build();
 
@@ -296,7 +306,8 @@ final class DefaultFilterListModelTest {
 	@Test
 	void removeSelectedItem() {
 		List<String> items = new ArrayList<>(asList(ONE, TWO, THREE));
-		FilterListModel<String> model = FilterListModel.builder(items).build();
+		FilterListModel<String> model = FilterListModel.builder()
+						.items(items).build();
 
 		// Select and remove
 		model.selection().item().set(TWO);
