@@ -175,7 +175,8 @@ public final class ClientUserMonitorPanel extends JPanel {
 	private static FilterTableColumn<UserHistoryColumns.Id> createColumn(UserHistoryColumns.Id identifier,
 																																			 String headerValue,
 																																			 TableCellRenderer cellRenderer) {
-		return FilterTableColumn.builder(identifier)
+		return FilterTableColumn.builder()
+						.identifier(identifier)
 						.headerValue(headerValue)
 						.cellRenderer(cellRenderer)
 						.build();

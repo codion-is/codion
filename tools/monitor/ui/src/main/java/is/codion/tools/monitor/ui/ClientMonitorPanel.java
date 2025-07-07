@@ -181,31 +181,40 @@ public final class ClientMonitorPanel extends JPanel {
 
 	private static List<FilterTableColumn<RemoteClientColumns.Id>> createColumns() {
 		return asList(
-						FilterTableColumn.builder(RemoteClientColumns.Id.USER)
+						FilterTableColumn.builder()
+										.identifier(RemoteClientColumns.Id.USER)
 										.headerValue("User")
 										.build(),
-						FilterTableColumn.builder(RemoteClientColumns.Id.CLIENT_HOST)
+						FilterTableColumn.builder()
+										.identifier(RemoteClientColumns.Id.CLIENT_HOST)
 										.headerValue("Host")
 										.build(),
-						FilterTableColumn.builder(RemoteClientColumns.Id.CLIENT_TYPE)
+						FilterTableColumn.builder()
+										.identifier(RemoteClientColumns.Id.CLIENT_TYPE)
 										.headerValue("Type")
 										.build(),
-						FilterTableColumn.builder(RemoteClientColumns.Id.CLIENT_VERSION)
+						FilterTableColumn.builder()
+										.identifier(RemoteClientColumns.Id.CLIENT_VERSION)
 										.headerValue("Version")
 										.build(),
-						FilterTableColumn.builder(RemoteClientColumns.Id.CODION_VERSION)
+						FilterTableColumn.builder()
+										.identifier(RemoteClientColumns.Id.CODION_VERSION)
 										.headerValue("Framework version")
 										.build(),
-						FilterTableColumn.builder(RemoteClientColumns.Id.CLIENT_ID)
+						FilterTableColumn.builder()
+										.identifier(RemoteClientColumns.Id.CLIENT_ID)
 										.headerValue("Id")
 										.build(),
-						FilterTableColumn.builder(RemoteClientColumns.Id.LOCALE)
+						FilterTableColumn.builder()
+										.identifier(RemoteClientColumns.Id.LOCALE)
 										.headerValue("Locale")
 										.build(),
-						FilterTableColumn.builder(RemoteClientColumns.Id.TIMEZONE)
+						FilterTableColumn.builder()
+										.identifier(RemoteClientColumns.Id.TIMEZONE)
 										.headerValue("Timezone")
 										.build(),
-						FilterTableColumn.builder(RemoteClientColumns.Id.CREATION_TIME)
+						FilterTableColumn.builder()
+										.identifier(RemoteClientColumns.Id.CREATION_TIME)
 										.headerValue("Created")
 										.build()
 		);

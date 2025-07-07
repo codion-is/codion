@@ -40,7 +40,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static is.codion.swing.common.ui.Utilities.parentOfType;
-import static is.codion.swing.common.ui.component.table.FilterTableColumn.filterTableColumn;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
@@ -115,7 +114,9 @@ public class FilterTableTest {
 	}
 
 	private static List<FilterTableColumn<Integer>> createColumns() {
-		return singletonList(FilterTableColumn.builder(0).build());
+		return singletonList(FilterTableColumn.builder()
+						.modelIndex(0)
+						.build());
 	}
 
 	@Test
@@ -159,7 +160,9 @@ public class FilterTableTest {
 
 		FilterTable<List<String>, Integer> filterTable = FilterTable.builder()
 						.model(tableModel)
-						.columns(asList(filterTableColumn(0), filterTableColumn(1)))
+						.columns(asList(
+										FilterTableColumn.builder().modelIndex(0).build(),
+										FilterTableColumn.builder().modelIndex(1).build()))
 						.build();
 		filterTable.columnModel().visible(1).set(false);
 		tableModel.items().refresh();
@@ -212,8 +215,8 @@ public class FilterTableTest {
 			}
 		}
 
-		FilterTableColumn<Integer> columnId = FilterTableColumn.builder(0).build();
-		FilterTableColumn<Integer> columnValue = FilterTableColumn.builder(1).build();
+		FilterTableColumn<Integer> columnId = FilterTableColumn.builder().modelIndex(0).build();
+		FilterTableColumn<Integer> columnValue = FilterTableColumn.builder().modelIndex(1).build();
 
 		List<Row> items = asList(
 						new Row(0, "a"),
@@ -519,8 +522,8 @@ public class FilterTableTest {
 		assertThrows(IllegalArgumentException.class, () -> FilterTable.builder()
 						.model(model)
 						.columns(asList(
-										filterTableColumn(0, 0),
-										filterTableColumn(0, 1)
+										FilterTableColumn.builder().identifier(0).modelIndex(0).build(),
+										FilterTableColumn.builder().identifier(0).modelIndex(1).build()
 						)));
 	}
 
@@ -547,26 +550,26 @@ public class FilterTableTest {
 		assertThrows(IllegalArgumentException.class, () -> FilterTable.builder()
 						.model(model)
 						.columns(asList(
-										filterTableColumn(0, 0),
-										filterTableColumn(1, 1),
-										filterTableColumn(2, 4),
-										filterTableColumn(3, 3)
+										FilterTableColumn.builder().identifier(0).modelIndex(0).build(),
+										FilterTableColumn.builder().identifier(1).modelIndex(1).build(),
+										FilterTableColumn.builder().identifier(2).modelIndex(4).build(),
+										FilterTableColumn.builder().identifier(3).modelIndex(3).build()
 						)));
 		assertThrows(IllegalArgumentException.class, () -> FilterTable.builder()
 						.model(model)
 						.columns(asList(
-										filterTableColumn(0, -1),
-										filterTableColumn(3, 0),
-										filterTableColumn(2, 1),
-										filterTableColumn(1, 2)
+										FilterTableColumn.builder().identifier(0).modelIndex(-1).build(),
+										FilterTableColumn.builder().identifier(3).modelIndex(0).build(),
+										FilterTableColumn.builder().identifier(2).modelIndex(1).build(),
+										FilterTableColumn.builder().identifier(1).modelIndex(2).build()
 						)));
 		assertThrows(IllegalArgumentException.class, () -> FilterTable.builder()
 						.model(model)
 						.columns(asList(
-										filterTableColumn(0, 42),
-										filterTableColumn(1, 0),
-										filterTableColumn(2, 1),
-										filterTableColumn(3, 2)
+										FilterTableColumn.builder().identifier(0).modelIndex(42).build(),
+										FilterTableColumn.builder().identifier(1).modelIndex(0).build(),
+										FilterTableColumn.builder().identifier(2).modelIndex(1).build(),
+										FilterTableColumn.builder().identifier(3).modelIndex(2).build()
 						)));
 	}
 
@@ -589,8 +592,8 @@ public class FilterTableTest {
 			}
 		};
 		List<FilterTableColumn<Integer>> tableColumns = asList(
-						FilterTableColumn.builder(0).build(),
-						FilterTableColumn.builder(1).build());
+						FilterTableColumn.builder().modelIndex(0).build(),
+						FilterTableColumn.builder().modelIndex(1).build());
 
 		FilterTableModel<Object, Integer> model = FilterTableModel.builder()
 						.columns(columns)

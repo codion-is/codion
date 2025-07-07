@@ -498,15 +498,18 @@ public final class DomainGeneratorPanel extends JPanel {
 
 	private static List<FilterTableColumn<SchemaColumns.Id>> createSchemaColumns() {
 		FilterTableColumn<SchemaColumns.Id> catalogColumn =
-						FilterTableColumn.builder(SchemaColumns.Id.CATALOG)
+						FilterTableColumn.builder()
+										.identifier(SchemaColumns.Id.CATALOG)
 										.headerValue("Catalog")
 										.build();
 		FilterTableColumn<SchemaColumns.Id> schemaColumn =
-						FilterTableColumn.builder(SchemaColumns.Id.SCHEMA)
+						FilterTableColumn.builder()
+										.identifier(SchemaColumns.Id.SCHEMA)
 										.headerValue("Schema")
 										.build();
 		FilterTableColumn<SchemaColumns.Id> populatedColumn =
-						FilterTableColumn.builder(SchemaColumns.Id.POPULATED)
+						FilterTableColumn.builder()
+										.identifier(SchemaColumns.Id.POPULATED)
 										.headerValue("Populated")
 										.build();
 
@@ -515,11 +518,13 @@ public final class DomainGeneratorPanel extends JPanel {
 
 	private static List<FilterTableColumn<EntityColumns.Id>> createEntityColumns() {
 		FilterTableColumn<EntityColumns.Id> entityTypeColumn =
-						FilterTableColumn.builder(EntityColumns.Id.ENTITY)
+						FilterTableColumn.builder()
+										.identifier(EntityColumns.Id.ENTITY)
 										.headerValue("Entity")
 										.build();
 		FilterTableColumn<EntityColumns.Id> typeColumn =
-						FilterTableColumn.builder(EntityColumns.Id.TABLE_TYPE)
+						FilterTableColumn.builder()
+										.identifier(EntityColumns.Id.TABLE_TYPE)
 										.headerValue("Type")
 										.preferredWidth(120)
 										.build();

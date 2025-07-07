@@ -428,28 +428,36 @@ public final class LoadTestPanel<T> extends JPanel {
 
 	private static List<FilterTableColumn<ColumnId>> createApplicationTableModelColumns() {
 		return Arrays.asList(
-						FilterTableColumn.builder(ColumnId.NAME)
+						FilterTableColumn.builder()
+										.identifier(ColumnId.NAME)
 										.headerValue("Name")
 										.build(),
-						FilterTableColumn.builder(ColumnId.USERNAME)
+						FilterTableColumn.builder()
+										.identifier(ColumnId.USERNAME)
 										.headerValue("User")
 										.build(),
-						FilterTableColumn.builder(ColumnId.SCENARIO)
+						FilterTableColumn.builder()
+										.identifier(ColumnId.SCENARIO)
 										.headerValue("Scenario")
 										.build(),
-						FilterTableColumn.builder(ColumnId.SUCCESSFUL)
+						FilterTableColumn.builder()
+										.identifier(ColumnId.SUCCESSFUL)
 										.headerValue("Success")
 										.build(),
-						FilterTableColumn.builder(ColumnId.DURATION)
+						FilterTableColumn.builder()
+										.identifier(ColumnId.DURATION)
 										.headerValue("Duration (μs)")
 										.build(),
-						FilterTableColumn.builder(ColumnId.EXCEPTION)
+						FilterTableColumn.builder()
+										.identifier(ColumnId.EXCEPTION)
 										.headerValue("Exception")
 										.build(),
-						FilterTableColumn.builder(ColumnId.MESSAGE)
+						FilterTableColumn.builder()
+										.identifier(ColumnId.MESSAGE)
 										.headerValue("Message")
 										.build(),
-						FilterTableColumn.builder(ColumnId.CREATED)
+						FilterTableColumn.builder()
+										.identifier(ColumnId.CREATED)
 										.headerValue("Created")
 										.build()
 		);

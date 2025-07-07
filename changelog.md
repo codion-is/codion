@@ -109,6 +109,7 @@ Codion Change Log
 - NumberSpinnerBuilder.NumberClassBuilder added.
 - SpinnerBuilder.model() added.
 - SearchHighlighter.Builder.component() added.
+- FilterTableColumn.Builder.IdentifierBuilder and ModelIndexBuilder added.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Builder.EntityTypeBuilder and ConnectionProviderBuilder added.
 ### is.codion.swing.framework.ui

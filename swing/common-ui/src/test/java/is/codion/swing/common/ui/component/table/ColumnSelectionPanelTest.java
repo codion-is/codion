@@ -26,7 +26,7 @@ public final class ColumnSelectionPanelTest {
 
 	@Test
 	void test() {
-		FilterTableColumn<Integer> column = FilterTableColumn.filterTableColumn(0);
+		FilterTableColumn<Integer> column = FilterTableColumn.builder().modelIndex(0).build();
 		column.setHeaderValue("Testing");
 
 		FilterTableColumnModel<Integer> columnModel =

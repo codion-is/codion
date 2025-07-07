@@ -86,16 +86,20 @@ public final class KeyBindingPanel extends JPanel {
 	}
 
 	private static List<FilterTableColumn<ColumnId>> createColumns() {
-		return List.of(FilterTableColumn.builder(ColumnId.ACTION)
+		return List.of(FilterTableColumn.builder()
+										.identifier(ColumnId.ACTION)
 										.headerValue("Action")
 										.build(),
-						FilterTableColumn.builder(ColumnId.WHEN_FOCUSED)
+						FilterTableColumn.builder()
+										.identifier(ColumnId.WHEN_FOCUSED)
 										.headerValue("When Focused")
 										.build(),
-						FilterTableColumn.builder(ColumnId.WHEN_IN_FOCUSED_WINDOW)
+						FilterTableColumn.builder()
+										.identifier(ColumnId.WHEN_IN_FOCUSED_WINDOW)
 										.headerValue("When in Focused Window")
 										.build(),
-						FilterTableColumn.builder(ColumnId.WHEN_ANCESTOR)
+						FilterTableColumn.builder()
+										.identifier(ColumnId.WHEN_ANCESTOR)
 										.headerValue("When Ancestor")
 										.build());
 	}

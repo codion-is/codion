@@ -34,9 +34,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class FilterTableColumnComponentPanelTest {
 
-	private final FilterTableColumn<Integer> column0 = FilterTableColumn.filterTableColumn(0);
-	private final FilterTableColumn<Integer> column1 = FilterTableColumn.filterTableColumn(1);
-	private final FilterTableColumn<Integer> column2 = FilterTableColumn.filterTableColumn(2);
+	private final FilterTableColumn<Integer> column0 = FilterTableColumn.builder().modelIndex(0).build();
+	private final FilterTableColumn<Integer> column1 = FilterTableColumn.builder().modelIndex(1).build();
+	private final FilterTableColumn<Integer> column2 = FilterTableColumn.builder().modelIndex(2).build();
 
 	private final FilterTableModel.TableColumns<Object, Integer> columns = new FilterTableModel.TableColumns<>() {
 		@Override

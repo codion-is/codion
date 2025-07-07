@@ -41,8 +41,14 @@ final class FilterTableDemo {
 
 		// Create the columns, specifying the identifier and the model index
 		List<FilterTableColumn<String>> columns = List.of(
-						FilterTableColumn.builder(Person.NAME, 0).build(),
-						FilterTableColumn.builder(Person.AGE, 1).build());
+						FilterTableColumn.builder()
+										.identifier(Person.NAME)
+										.modelIndex(0)
+										.build(),
+						FilterTableColumn.builder()
+										.identifier(Person.AGE)
+										.modelIndex(1)
+										.build());
 
 		FilterTable<Person, String> table =
 						FilterTable.builder()

@@ -58,7 +58,9 @@ public final class EntityTableColumns {
 	 */
 	private static FilterTableColumn<Attribute<?>> createColumn(AttributeDefinition<?> attributeDefinition, int modelIndex) {
 		FilterTableColumn.Builder<? extends Attribute<?>> columnBuilder =
-						FilterTableColumn.builder(attributeDefinition.attribute(), modelIndex)
+						FilterTableColumn.builder()
+										.identifier(attributeDefinition.attribute())
+										.modelIndex(modelIndex)
 										.headerValue(attributeDefinition.caption())
 										.toolTipText(attributeDefinition.description().orElse(null));
 

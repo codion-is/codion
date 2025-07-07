@@ -27,15 +27,10 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A {@link TableColumn} with a typed identifier.
- * For instances use factory method {@link #filterTableColumn(int)} or {@link #filterTableColumn(Object, int)}
- * or builder methods {@link #builder(int)}, {@link #builder(Enum)}  {@link #builder(Object, int)}.
+ * For instances use {@link #builder()}.
  * Note that the identifier is used as a default header value.
  * @param <C> the column identifier type
- * @see #filterTableColumn(int)
- * @see #filterTableColumn(Object, int)
- * @see #builder(int)
- * @see #builder(Enum)
- * @see #builder(Object, int)
+ * @see #builder()
  */
 public final class FilterTableColumn<C> extends TableColumn {
 
@@ -115,57 +110,10 @@ public final class FilterTableColumn<C> extends TableColumn {
 	}
 
 	/**
-	 * Instantiates a new index based {@link FilterTableColumn}.
-	 * @param modelIndex the column model index, also used as identifier
-	 * @return a new {@link FilterTableColumn} instance
+	 * @return a {@link Builder.IdentifierBuilder}
 	 */
-	public static FilterTableColumn<Integer> filterTableColumn(int modelIndex) {
-		return builder(modelIndex, modelIndex).build();
-	}
-
-	/**
-	 * Instantiates a new {@link FilterTableColumn}.
-	 * @param <C> the column identifier type
-	 * @param identifier the column identifier
-	 * @param modelIndex the column model index
-	 * @return a new {@link FilterTableColumn} instance
-	 * @throws NullPointerException in case {@code identifier} is null
-	 */
-	public static <C> FilterTableColumn<C> filterTableColumn(C identifier, int modelIndex) {
-		return builder(identifier, modelIndex).build();
-	}
-
-	/**
-	 * Instantiates a new enum based {@link FilterTableColumn.Builder}.
-	 * The enum ordinal position is used as the column model index
-	 * @param <C> the column identifier type
-	 * @param identifier the column identifier
-	 * @return a new {@link FilterTableColumn.Builder} instance
-	 * @see Enum#ordinal()
-	 */
-	public static <C extends Enum<C>> FilterTableColumn.Builder<C> builder(C identifier) {
-		return builder(identifier, identifier.ordinal());
-	}
-
-	/**
-	 * Instantiates a new index based {@link FilterTableColumn.Builder}.
-	 * @param modelIndex the column model index, also used as identifier
-	 * @return a new {@link FilterTableColumn.Builder} instance
-	 */
-	public static FilterTableColumn.Builder<Integer> builder(int modelIndex) {
-		return builder(modelIndex, modelIndex);
-	}
-
-	/**
-	 * Instantiates a new {@link FilterTableColumn.Builder}.
-	 * @param <C> the column identifier type
-	 * @param identifier the column identifier
-	 * @param modelIndex the column model index
-	 * @return a new {@link FilterTableColumn} instance
-	 * @throws NullPointerException in case {@code identifier} is null
-	 */
-	public static <C> FilterTableColumn.Builder<C> builder(C identifier, int modelIndex) {
-		return new DefaultBuilder<>(identifier, modelIndex);
+	public static FilterTableColumn.Builder.IdentifierBuilder builder() {
+		return DefaultBuilder.IDENTIFIER;
 	}
 
 	/**
@@ -173,6 +121,52 @@ public final class FilterTableColumn<C> extends TableColumn {
 	 * @param <C> the column identifier type
 	 */
 	public interface Builder<C> {
+
+		/**
+		 * Provides a {@link Builder} or {@link Builder.ModelIndexBuilder}
+		 */
+		interface IdentifierBuilder {
+
+			/**
+			 * Instantiates a new enum based {@link FilterTableColumn.Builder}.
+			 * The enum ordinal position is used as the column model index
+			 * @param <C> the column identifier type
+			 * @param identifier the column identifier
+			 * @return a new {@link FilterTableColumn.Builder} instance
+			 * @see Enum#ordinal()
+			 */
+			<C extends Enum<C>> FilterTableColumn.Builder<C> identifier(C identifier);
+
+			/**
+			 * Instantiates a new {@link Builder.ModelIndexBuilder}.
+			 * @param <C> the column identifier type
+			 * @param identifier the column identifier
+			 * @return a new {@link Builder.ModelIndexBuilder} instance
+			 * @throws NullPointerException in case {@code identifier} is null
+			 */
+			<C> FilterTableColumn.Builder.ModelIndexBuilder<C> identifier(C identifier);
+
+			/**
+			 * @param modelIndex the model index, also used as identifier
+			 * @return a {@link Builder}
+			 */
+			Builder<Integer> modelIndex(int modelIndex);
+		}
+
+		/**
+		 * Provides a {@link Builder}
+		 * @param <C> the column identifier type
+		 */
+		interface ModelIndexBuilder<C> {
+
+			/**
+			 * Instantiates a new {@link FilterTableColumn.Builder}.
+			 * @param modelIndex the column model index
+			 * @return a new {@link FilterTableColumn} instance
+			 * @throws NullPointerException in case {@code identifier} is null
+			 */
+			FilterTableColumn.Builder<C> modelIndex(int modelIndex);
+		}
 
 		/**
 		 * Sets both the minimum and maximum widths.
@@ -249,7 +243,41 @@ public final class FilterTableColumn<C> extends TableColumn {
 		FilterTableColumn<C> build();
 	}
 
+	private static final class DefaultIdentifierBuilder implements Builder.IdentifierBuilder {
+
+		@Override
+		public <C extends Enum<C>> Builder<C> identifier(C identifier) {
+			return new DefaultBuilder<>(identifier, identifier.ordinal());
+		}
+
+		@Override
+		public <C> Builder.ModelIndexBuilder<C> identifier(C identifier) {
+			return new DefaultModelIndexBuilder<>(requireNonNull(identifier));
+		}
+
+		@Override
+		public Builder<Integer> modelIndex(int modelIndex) {
+			return new DefaultBuilder<>(Integer.valueOf(modelIndex), modelIndex);
+		}
+	}
+
+	private static final class DefaultModelIndexBuilder<C> implements Builder.ModelIndexBuilder<C> {
+
+		private final C identifier;
+
+		private DefaultModelIndexBuilder(C identifier) {
+			this.identifier = identifier;
+		}
+
+		@Override
+		public Builder<C> modelIndex(int modelIndex) {
+			return new DefaultBuilder<>(identifier, modelIndex);
+		}
+	}
+
 	private static final class DefaultBuilder<C> implements Builder<C> {
+
+		private static final IdentifierBuilder IDENTIFIER = new DefaultIdentifierBuilder();
 
 		private final C identifier;
 		private final int modelIndex;

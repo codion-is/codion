@@ -398,48 +398,60 @@ public final class ServerMonitorPanel extends JPanel {
 
 	private static List<FilterTableColumn<ReportColumns.Id>> createReportColumns() {
 		return Arrays.asList(
-						FilterTableColumn.builder(ReportColumns.Id.DOMAIN)
+						FilterTableColumn.builder()
+										.identifier(ReportColumns.Id.DOMAIN)
 										.headerValue(DOMAIN)
 										.build(),
-						FilterTableColumn.builder(ReportColumns.Id.REPORT)
+						FilterTableColumn.builder()
+										.identifier(ReportColumns.Id.REPORT)
 										.headerValue("Report")
 										.build(),
-						FilterTableColumn.builder(ReportColumns.Id.TYPE)
+						FilterTableColumn.builder()
+										.identifier(ReportColumns.Id.TYPE)
 										.headerValue("Type")
 										.build(),
-						FilterTableColumn.builder(ReportColumns.Id.PATH)
+						FilterTableColumn.builder()
+										.identifier(ReportColumns.Id.PATH)
 										.headerValue("Path")
 										.build(),
-						FilterTableColumn.builder(ReportColumns.Id.CACHED)
+						FilterTableColumn.builder()
+										.identifier(ReportColumns.Id.CACHED)
 										.headerValue("Cached")
 										.build());
 	}
 
 	private static List<FilterTableColumn<DomainColumns.Id>> createDomainColumns() {
 		return Arrays.asList(
-						FilterTableColumn.builder(DomainColumns.Id.DOMAIN)
+						FilterTableColumn.builder()
+										.identifier(DomainColumns.Id.DOMAIN)
 										.headerValue(DOMAIN)
 										.build(),
-						FilterTableColumn.builder(DomainColumns.Id.ENTITY)
+						FilterTableColumn.builder()
+										.identifier(DomainColumns.Id.ENTITY)
 										.headerValue("Entity")
 										.build(),
-						FilterTableColumn.builder(DomainColumns.Id.TABLE)
+						FilterTableColumn.builder()
+										.identifier(DomainColumns.Id.TABLE)
 										.headerValue("Table")
 										.build());
 	}
 
 	private static List<FilterTableColumn<OperationColumns.Id>> createOperationColumns() {
 		return Arrays.asList(
-						FilterTableColumn.builder(OperationColumns.Id.DOMAIN)
+						FilterTableColumn.builder()
+										.identifier(OperationColumns.Id.DOMAIN)
 										.headerValue(DOMAIN)
 										.build(),
-						FilterTableColumn.builder(OperationColumns.Id.TYPE)
+						FilterTableColumn.builder()
+										.identifier(OperationColumns.Id.TYPE)
 										.headerValue("Type")
 										.build(),
-						FilterTableColumn.builder(OperationColumns.Id.OPERATION)
+						FilterTableColumn.builder()
+										.identifier(OperationColumns.Id.OPERATION)
 										.headerValue("Operation")
 										.build(),
-						FilterTableColumn.builder(OperationColumns.Id.CLASS)
+						FilterTableColumn.builder()
+										.identifier(OperationColumns.Id.CLASS)
 										.headerValue("Class")
 										.build());
 	}
