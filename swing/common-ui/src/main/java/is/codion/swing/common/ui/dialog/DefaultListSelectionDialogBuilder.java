@@ -150,7 +150,10 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 						.items(values)
 						.comparator(comparator)
 						.build();
-		FilterList<T> list = Components.list(model).items().build();
+		FilterList<T> list = Components.list()
+						.model(model)
+						.items()
+						.build();
 		if (singleSelection) {
 			list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		}

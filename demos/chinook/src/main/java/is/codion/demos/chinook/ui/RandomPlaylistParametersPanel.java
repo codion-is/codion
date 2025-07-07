@@ -106,7 +106,8 @@ final class RandomPlaylistParametersPanel extends JPanel {
 	}
 
 	private FilterList<Entity> createGenreList(EntityConnectionProvider connectionProvider) {
-		return Components.list(FilterListModel.builder()
+		return Components.list()
+						.model(FilterListModel.builder()
 										.items(allGenres(connectionProvider))
 										.build())
 						.selectedItems()

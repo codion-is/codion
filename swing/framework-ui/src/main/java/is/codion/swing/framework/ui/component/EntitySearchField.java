@@ -832,7 +832,12 @@ public final class EntitySearchField extends HintTextField {
 							.items(Collections.<Entity>emptyList())
 							.build();
 			ListBuilder<Entity, ?, ?> listBuilder = searchField.singleSelection() ?
-							Components.list(listModel).selectedItem() : Components.list(listModel).selectedItems();
+							Components.list()
+											.model(listModel)
+											.selectedItem() :
+							Components.list()
+											.model(listModel)
+											.selectedItems();
 
 			return listBuilder.mouseListener(new DoubleClickListener())
 							.cellRenderer(new Renderer())

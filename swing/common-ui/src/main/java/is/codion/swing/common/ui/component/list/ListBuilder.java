@@ -31,7 +31,7 @@ import java.util.List;
  * @param <T> the value type
  * @param <V> the component value type
  * @param <B> the builder type
- * @see #factory(FilterListModel)
+ * @see #builder()
  */
 public interface ListBuilder<T, V, B extends ListBuilder<T, V, B>> extends ComponentBuilder<V, FilterList<T>, B> {
 
@@ -104,6 +104,19 @@ public interface ListBuilder<T, V, B extends ListBuilder<T, V, B>> extends Compo
 	interface SelectedItem<T> extends ListBuilder<T, T, SelectedItem<T>> {}
 
 	/**
+	 * Provides a {@link Factory}
+	 */
+	interface ModelBuilder {
+
+		/**
+		 * @param listModel the list model
+		 * @return a {@link Factory}
+		 * @param <T> the list item type
+		 */
+		<T> Factory<T> model(FilterListModel<T> listModel);
+	}
+
+	/**
 	 * A factory for list builders, depending on what the component value should represent.
 	 */
 	interface Factory<T> {
@@ -128,11 +141,9 @@ public interface ListBuilder<T, V, B extends ListBuilder<T, V, B>> extends Compo
 	}
 
 	/**
-	 * @param listModel the list model to base the list on
-	 * @param <T> the list value type
 	 * @return a new list builder factory
 	 */
-	static <T> Factory<T> factory(FilterListModel<T> listModel) {
-		return new DefaultListBuilderFactory<>(listModel);
+	static ModelBuilder builder() {
+		return DefaultListBuilderFactory.MODEL;
 	}
 }

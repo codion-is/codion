@@ -846,7 +846,8 @@ public final class ComponentsTest {
 						.build();
 
 		ValueList<String> textValue = ValueList.valueList(singletonList("two"));
-		ListBuilder.SelectedItems<String> listBuilder = Components.list(listModel)
+		ListBuilder.SelectedItems<String> listBuilder = Components.list()
+						.model(listModel)
 						.selectedItems()
 						.visibleRowCount(4)
 						.layoutOrientation(JList.VERTICAL)
@@ -872,7 +873,8 @@ public final class ComponentsTest {
 						.build();
 
 		Value<String> textValue = Value.nullable("two");
-		ListBuilder.SelectedItem<String> listBuilder = Components.list(listModel)
+		ListBuilder.SelectedItem<String> listBuilder = Components.list()
+						.model(listModel)
 						.selectedItem()
 						.visibleRowCount(4)
 						.layoutOrientation(JList.VERTICAL)
@@ -898,7 +900,8 @@ public final class ComponentsTest {
 	@Test
 	void listItems() {
 		ValueList<String> textValue = ValueList.valueList(asList("one", "two", "three"));
-		ListBuilder.Items<String> listBuilder = Components.list(FilterListModel.builder()
+		ListBuilder.Items<String> listBuilder = Components.list()
+						.model(FilterListModel.builder()
 										.items(asList("one", "two", "three"))
 										.build())
 						.items()

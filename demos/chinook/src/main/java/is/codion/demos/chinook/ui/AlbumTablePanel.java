@@ -115,7 +115,8 @@ public final class AlbumTablePanel extends EntityTablePanel {
 	private static final class TagComponentValue extends AbstractComponentValue<List<String>, AlbumTagPanel> {
 
 		private TagComponentValue(List<String> tags) {
-			super(new AlbumTagPanel(Components.list(FilterListModel.builder()
+			super(new AlbumTagPanel(Components.list()
+							.model(FilterListModel.builder()
 											// The initial tags to display
 											.items(tags)
 											.build())

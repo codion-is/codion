@@ -52,7 +52,8 @@ final class ItemRandomizerPanel<T> extends JPanel {
 
 	ItemRandomizerPanel(ItemRandomizer<T> itemRandomizer) {
 		this.itemRandomizer = requireNonNull(itemRandomizer);
-		this.listValue = Components.list(FilterListModel.builder()
+		this.listValue = Components.list()
+						.model(FilterListModel.builder()
 										.items(itemRandomizer.items())
 										.build())
 						.selectedItems()

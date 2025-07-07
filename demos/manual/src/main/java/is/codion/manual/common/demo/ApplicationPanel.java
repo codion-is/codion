@@ -348,7 +348,8 @@ public final class ApplicationPanel extends JPanel {
 										.build(inputPanel::add))
 						.build(inputPanel::add);
 
-		Components.list(model.createStringListModel())
+		Components.list()
+						.model(model.createStringListModel())
 						.selectedItems()
 						.link(model.stringListValues())
 						.visibleRowCount(4)

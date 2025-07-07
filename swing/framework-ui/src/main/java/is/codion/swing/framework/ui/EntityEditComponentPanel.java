@@ -930,7 +930,7 @@ public class EntityEditComponentPanel extends JPanel {
 		private final ListBuilder.Factory<T> builderFactory;
 
 		private ListBuilderFactory(FilterListModel<T> listModel) {
-			this.builderFactory = Components.list(listModel);
+			this.builderFactory = Components.list().model(listModel);
 		}
 
 		/**

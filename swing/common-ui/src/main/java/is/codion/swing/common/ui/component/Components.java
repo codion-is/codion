@@ -21,7 +21,6 @@ package is.codion.swing.common.ui.component;
 import is.codion.common.item.Item;
 import is.codion.common.value.ValueSet;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
-import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.button.ButtonPanelBuilder;
@@ -405,12 +404,10 @@ public final class Components {
 	}
 
 	/**
-	 * @param listModel the list model to base the list on
-	 * @param <T> the list value type
-	 * @return a new list builder factory
+	 * @return a new list builder
 	 */
-	public static <T> ListBuilder.Factory<T> list(FilterListModel<T> listModel) {
-		return ListBuilder.factory(listModel);
+	public static ListBuilder.ModelBuilder list() {
+		return ListBuilder.builder();
 	}
 
 	/**
