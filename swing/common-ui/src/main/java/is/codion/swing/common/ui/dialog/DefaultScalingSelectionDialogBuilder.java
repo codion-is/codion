@@ -96,7 +96,8 @@ final class DefaultScalingSelectionDialogBuilder implements ScalingSelectionDial
 		private ScalingSelectionPanel(int initialScaling) {
 			super(Layouts.borderLayout());
 			List<Item<Integer>> values = initializeValues();
-			componentValue = ItemComboBoxBuilder.builder(values)
+			componentValue = ItemComboBoxBuilder.builder()
+							.items(values)
 							.value(initialScaling)
 							.renderer(new FontSizeCellRenderer(values, initialScaling))
 							.buildValue();

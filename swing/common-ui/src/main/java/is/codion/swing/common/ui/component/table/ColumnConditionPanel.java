@@ -604,7 +604,8 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 										.collect(toList()))
 						.build();
 
-		return itemComboBox(operatorComboBoxModel)
+		return itemComboBox()
+						.model(operatorComboBoxModel)
 						.link(model().operator())
 						.completionMode(Completion.Mode.NONE)
 						.renderer(new OperatorComboBoxRenderer())

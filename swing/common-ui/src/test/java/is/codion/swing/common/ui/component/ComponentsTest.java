@@ -523,7 +523,8 @@ public final class ComponentsTest {
 		List<Item<Integer>> items = asList(item(0, "0"), item(1, "1"),
 						item(2, "2"), item(3, "3"));
 		Value<Integer> value = Value.nullable();
-		ComponentValue<Integer, JComboBox<Item<Integer>>> componentValue = Components.itemComboBox(items)
+		ComponentValue<Integer, JComboBox<Item<Integer>>> componentValue = Components.itemComboBox()
+						.items(items)
 						.mouseWheelScrollingWithWrapAround(true)
 						.transferFocusOnEnter(true)
 						.sorted(true)

@@ -260,7 +260,8 @@ public final class ApplicationPanel extends JPanel {
 										.build(inputPanel::add))
 						.enabled(inputEnabledState)
 						.build();
-		JComboBox<Item<Integer>> integerItemComboBox = itemComboBox(integerItemComboBoxModel)
+		JComboBox<Item<Integer>> integerItemComboBox = itemComboBox()
+						.model(integerItemComboBoxModel)
 						.link(model.integerItemValue())
 						.completionMode(Completion.Mode.AUTOCOMPLETE)
 						.popupMenuControl(comboBox -> createSelectRandomItemControl(integerItemComboBoxModel))

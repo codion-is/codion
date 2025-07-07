@@ -56,14 +56,13 @@ public class BooleanValuesTest {
 						.items(booleanItems())
 						.build();
 		model.setSelectedItem(false);
-		ComponentValue<Boolean, JComboBox<Item<Boolean>>> componentValue = Components.booleanComboBox(model)
+		ComponentValue<Boolean, JComboBox<Item<Boolean>>> componentValue = Components.itemComboBox()
+						.model(model)
 						.buildValue();
 		assertFalse(componentValue.getOrThrow());
 		componentValue.component().getModel().setSelectedItem(true);
 		assertTrue(componentValue.getOrThrow());
 		componentValue.component().getModel().setSelectedItem(null);
-		assertNull(componentValue.get());
-		componentValue = Components.booleanComboBox().buildValue();
 		assertNull(componentValue.get());
 	}
 

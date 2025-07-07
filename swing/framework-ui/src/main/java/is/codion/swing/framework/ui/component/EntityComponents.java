@@ -277,7 +277,8 @@ public final class EntityComponents {
 			throw new IllegalArgumentException("Attribute '" + attributeDefinition.attribute() + "' is not a item based attribute");
 		}
 
-		return Components.itemComboBox(attributeDefinition.items())
+		return Components.itemComboBox()
+						.items(attributeDefinition.items())
 						.toolTipText(attributeDefinition.description().orElse(null))
 						.nullable(attributeDefinition.nullable());
 	}

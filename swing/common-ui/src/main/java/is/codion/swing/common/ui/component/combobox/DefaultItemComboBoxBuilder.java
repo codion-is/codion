@@ -40,6 +40,8 @@ import static java.util.Objects.requireNonNull;
 final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JComboBox<Item<T>>, ItemComboBoxBuilder<T>>
 				implements ItemComboBoxBuilder<T> {
 
+	static final BuilderFactory FACTORY = new DefaultBuilderFactory();
+
 	private final List<Item<T>> items;
 	private final List<ItemListener> itemListeners = new ArrayList<>();
 
@@ -228,6 +230,19 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
 		@Override
 		public void accept(ItemListener listener) {
 			comboBox.addItemListener(listener);
+		}
+	}
+
+	private static final class DefaultBuilderFactory implements BuilderFactory {
+
+		@Override
+		public <T> ItemComboBoxBuilder<T> model(FilterComboBoxModel<Item<T>> comboBoxModel) {
+			return new DefaultItemComboBoxBuilder<>(comboBoxModel);
+		}
+
+		@Override
+		public <T> ItemComboBoxBuilder<T> items(List<Item<T>> items) {
+			return new DefaultItemComboBoxBuilder<>(items);
 		}
 	}
 }

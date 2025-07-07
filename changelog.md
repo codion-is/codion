@@ -114,6 +114,7 @@ Codion Change Log
 - ListBuilder.ModelBuilder added.
 - SliderBuilder.ModelBuilder added.
 - ComboBoxBuilder.ModelBuilder added.
+- ItemComboBoxBuilder.BuilderFactory added.
 ### is.codion.swing.framework.model
 - EntityComboBoxModel.Builder.EntityTypeBuilder and ConnectionProviderBuilder added.
 ### is.codion.swing.framework.ui

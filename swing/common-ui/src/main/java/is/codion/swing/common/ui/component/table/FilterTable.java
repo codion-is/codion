@@ -480,7 +480,8 @@ public final class FilterTable<R, C> extends JTable {
 	 * Displays a dialog for selecting the column auto-resize mode
 	 */
 	public void selectAutoResizeMode() {
-		ComponentValue<Integer, JComboBox<Item<Integer>>> componentValue = itemComboBox(AUTO_RESIZE_MODES)
+		ComponentValue<Integer, JComboBox<Item<Integer>>> componentValue = itemComboBox()
+						.items(AUTO_RESIZE_MODES)
 						.value(getAutoResizeMode())
 						.buildValue();
 		Dialogs.okCancel()

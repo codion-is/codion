@@ -118,20 +118,29 @@ public interface ItemComboBoxBuilder<T> extends ComponentBuilder<T, JComboBox<It
 	ItemComboBoxBuilder<T> itemListener(ItemListener itemListener);
 
 	/**
-	 * @param comboBoxModel the combo box model
-	 * @param <T> the value type
-	 * @return a builder for a component
+	 * Provides a {@link ItemComboBoxBuilder}
 	 */
-	static <T> ItemComboBoxBuilder<T> builder(FilterComboBoxModel<Item<T>> comboBoxModel) {
-		return new DefaultItemComboBoxBuilder<>(comboBoxModel);
+	interface BuilderFactory {
+
+		/**
+		 * @param comboBoxModel the model
+		 * @return a {@link ItemComboBoxBuilder}
+		 * @param <T> the item type
+		 */
+		<T> ItemComboBoxBuilder<T> model(FilterComboBoxModel<Item<T>> comboBoxModel);
+
+		/**
+		 * @param items the items
+		 * @return a {@link ItemComboBoxBuilder}
+		 * @param <T> the item type
+		 */
+		<T> ItemComboBoxBuilder<T> items(List<Item<T>> items);
 	}
 
 	/**
-	 * @param values the values
-	 * @param <T> the value type
-	 * @return a builder for a component
+	 * @return a {@link BuilderFactory}
 	 */
-	static <T> ItemComboBoxBuilder<T> builder(List<Item<T>> values) {
-		return new DefaultItemComboBoxBuilder<>(values);
+	static BuilderFactory builder() {
+		return DefaultItemComboBoxBuilder.FACTORY;
 	}
 }
