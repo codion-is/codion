@@ -59,15 +59,10 @@ tasks.register("generateI18nValuesPage") {
 
 tasks.asciidoctor {
     dependsOn("copyModuleDependencyGraphs", "generateI18nValuesPage")
-    // since the sources included in the docs may have changed, there"s definitely
-    // a more gradle like way to do this, but it escapes me
-    inputs.dir(file("../demos/chinook/src"))
-    inputs.dir(file("../demos/employees/src"))
-    inputs.dir(file("../demos/manual/src"))
-    inputs.dir(file("../demos/petclinic/src"))
-    inputs.dir(file("../demos/petstore/src"))
-    inputs.dir(file("../demos/world/src"))
-    inputs.dir(file("../framework/server/src/main"))
+    rootProject.subprojects.filter { it.name.startsWith("demo-") }.forEach { demo ->
+        inputs.files(demo.sourceSets.main.get().allSource)
+        inputs.files(demo.sourceSets.test.get().allSource)
+    }
 
     setOutputDir(project.layout.buildDirectory.dir("asciidoc"))
 
