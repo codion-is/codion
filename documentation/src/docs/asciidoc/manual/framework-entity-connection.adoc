@@ -36,11 +36,11 @@ or the {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntit
 LocalEntityConnection.LIMIT_FOREIGN_KEY_REFERENCE_DEPTH.set(false);
 ----
 
-or on a connection instance via {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#setLimitForeignKeyReferenceDepth{opar}boolean{cpar}[setLimitForeignKeyReferenceDepth()]
+or on a connection instance via {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#limitForeignKeyReferenceDepth{opar}boolean{cpar}[limitForeignKeyReferenceDepth(boolean limitForeignKeyReferenceDepth)]
 
 [source,java,]
 ----
-connection.setLimitForeignKeyReferenceDepth(false);
+connection.limitForeignKeyReferenceDepth(false);
 ----
 
 You can specify that the foreign key should not be populated by default by using a reference depth of 0.
@@ -228,11 +228,11 @@ or by using the {url-javadoc}{framework-db-local}/is/codion/framework/db/local/L
 LocalEntityConnection.OPTIMISTIC_LOCKING.set(false);
 ----
 
-or on a connection instance via {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#setOptimisticLocking{opar}boolean{cpar}[setOptimisticLocking()]:
+or on a connection instance via {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#optimisticLocking{opar}boolean{cpar}[optimisticLocking()]:
 
 [source,java,]
 ----
-connection.setOptimisticLocking(false);
+connection.optimisticLocking(false);
 ----
 
 or on a per-entity basis via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.Builder.html#optimisticLocking{opar}boolean{cpar}[EntityDefinition.Builder.optimisticLocking(false)].
