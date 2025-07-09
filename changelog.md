@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.41
+
 ## 0.18.40
 ### is.codion
 - Builder step class names now consistently end with Builder, with one exception.
