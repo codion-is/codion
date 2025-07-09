@@ -20,7 +20,6 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.property.PropertyValue;
 import is.codion.swing.common.model.component.table.FilterTableModel;
-import is.codion.swing.common.ui.component.table.DefaultFilterTableCellRenderer.DefaultBuilder;
 
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
@@ -33,11 +32,10 @@ import java.util.function.Function;
 import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.Configuration.integerValue;
 import static is.codion.swing.common.ui.color.Colors.darker;
-import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.*;
 
 /**
- * A {@link TableCellRenderer} for {@link FilterTable}, instantiated via {@link #builder(Class)}.
+ * A {@link TableCellRenderer} for {@link FilterTable}, instantiated via {@link #builder()}.
  * @param <T> the column type
  */
 public interface FilterTableCellRenderer<T> extends TableCellRenderer {
@@ -133,15 +131,10 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 	int horizontalAlignment();
 
 	/**
-	 * Instantiates a new {@link FilterTableCellRenderer.Builder}.
-	 * @param <R> the row type
-	 * @param <C> the column identifier type
-	 * @param <T> the cell value type
-	 * @param columnClass the column class
-	 * @return a new {@link FilterTableCellRenderer.Builder} instance
+	 * @return a {@link FilterTableCellRenderer.Builder.ColumnClassBuilder} instance
 	 */
-	static <R, C, T> Builder<R, C, T> builder(Class<T> columnClass) {
-		return new DefaultBuilder<>(requireNonNull(columnClass));
+	static Builder.ColumnClassBuilder builder() {
+		return DefaultFilterTableCellRenderer.COLUMN_CLASS;
 	}
 
 	/**
@@ -169,6 +162,21 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 	 * @param <T> the cell value type
 	 */
 	interface Builder<R, C, T> {
+
+		/**
+		 * Provides a {@link Builder}
+		 */
+		interface ColumnClassBuilder {
+
+			/**
+			 * @param <R> the row type
+			 * @param <C> the column identifier type
+			 * @param <T> the cell value type
+			 * @param columnClass the column class
+			 * @return a new {@link Builder} instance
+			 */
+			<R, C, T> Builder<R, C, T> columnClass(Class<T> columnClass);
+		}
 
 		/**
 		 * @param uiSettings the ui settings

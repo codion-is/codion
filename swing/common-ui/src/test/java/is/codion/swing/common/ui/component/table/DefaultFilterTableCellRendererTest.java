@@ -30,10 +30,19 @@ public final class DefaultFilterTableCellRendererTest {
 	@Test
 	void horizontalAlignment() {
 		assertEquals(BOOLEAN_HORIZONTAL_ALIGNMENT.get(),
-						FilterTableCellRenderer.builder(Boolean.class).build().horizontalAlignment());
+						FilterTableCellRenderer.builder()
+										.columnClass(Boolean.class)
+										.build()
+										.horizontalAlignment());
 		assertEquals(TEMPORAL_HORIZONTAL_ALIGNMENT.get(),
-						FilterTableCellRenderer.builder(LocalDate.class).build().horizontalAlignment());
+						FilterTableCellRenderer.builder()
+										.columnClass(LocalDate.class)
+										.build()
+										.horizontalAlignment());
 		assertEquals(NUMERICAL_HORIZONTAL_ALIGNMENT.get(),
-						FilterTableCellRenderer.builder(Double.class).build().horizontalAlignment());
+						FilterTableCellRenderer.builder()
+										.columnClass(Double.class)
+										.build()
+										.horizontalAlignment());
 	}
 }

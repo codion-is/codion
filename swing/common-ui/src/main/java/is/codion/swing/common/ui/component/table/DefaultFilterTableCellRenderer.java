@@ -41,6 +41,8 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRenderer implements FilterTableCellRenderer<T> {
 
+	static final Builder.ColumnClassBuilder COLUMN_CLASS = new DefaultColumnClassBuilder();
+
 	private final Settings<R, C, T> settings;
 	private final Class<T> columnClass;
 
@@ -395,16 +397,24 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 	}
 
+	private static final class DefaultColumnClassBuilder implements Builder.ColumnClassBuilder {
+
+		@Override
+		public <R, C, T> Builder<R, C, T> columnClass(Class<T> columnClass) {
+			return new DefaultBuilder<>(requireNonNull(columnClass));
+		}
+	}
+
 	/**
 	 * A default {@link Builder} implementation.
 	 */
-	static final class DefaultBuilder<R, C, T> implements Builder<R, C, T> {
+	private static final class DefaultBuilder<R, C, T> implements Builder<R, C, T> {
 
 		private final SettingsBuilder<R, C, T> settings;
 		private final Class<T> columnClass;
 		private final boolean useBooleanRenderer;
 
-		DefaultBuilder(Class<T> columnClass) {
+		private DefaultBuilder(Class<T> columnClass) {
 			this.columnClass = requireNonNull(columnClass);
 			this.useBooleanRenderer = Boolean.class.equals(columnClass);
 			this.settings = new SettingsBuilder<>(defaultHorizontalAlignment(columnClass));

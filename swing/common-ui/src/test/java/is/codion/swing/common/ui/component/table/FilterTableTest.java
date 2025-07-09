@@ -600,8 +600,12 @@ public class FilterTableTest {
 						.build();
 		model.items().add(1);
 
-		FilterTableCellRenderer<Object> zeroRenderer = FilterTableCellRenderer.builder(Object.class).build();
-		FilterTableCellRenderer<Object> oneRenderer = FilterTableCellRenderer.builder(Object.class).build();
+		FilterTableCellRenderer<Object> zeroRenderer = FilterTableCellRenderer.builder()
+						.columnClass(Object.class)
+						.build();
+		FilterTableCellRenderer<Object> oneRenderer = FilterTableCellRenderer.builder()
+						.columnClass(Object.class)
+						.build();
 
 		FilterTable<Object, Integer> table = FilterTable.builder()
 						.model(model)

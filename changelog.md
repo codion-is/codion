@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.41
+### is.codion.swing.common.ui
+- FilterTableCellRenderer.Builder.ColumnClassBuilder added.
 
 ## 0.18.40
 ### is.codion
