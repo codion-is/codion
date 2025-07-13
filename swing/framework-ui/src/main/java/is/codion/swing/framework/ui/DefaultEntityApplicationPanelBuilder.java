@@ -128,7 +128,9 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	private Dimension frameSize;
 	private Dimension defaultFrameSize;
 	private User defaultUser;
-	private User user;
+	private User user = EntityApplicationModel.USER.optional()
+					.map(User::parse)
+					.orElse(null);
 
 	DefaultEntityApplicationPanelBuilder(Class<M> applicationModelClass, Class<P> applicationPanelClass) {
 		this.applicationModelClass = requireNonNull(applicationModelClass);

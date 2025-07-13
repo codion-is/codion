@@ -21,6 +21,7 @@
  * <ul>
  * <li>{@link is.codion.framework.model.EntityApplicationModel#USERNAME_PREFIX}
  * <li>{@link is.codion.framework.model.EntityApplicationModel#SAVE_DEFAULT_USERNAME}
+ * <li>{@link is.codion.framework.model.EntityApplicationModel#USER}
  * <li>{@link is.codion.framework.model.EntityEditModel#EDIT_EVENTS}
  * <li>{@link is.codion.framework.model.EntityEditModel.EntityEditor#PERSIST_FOREIGN_KEYS}
  * <li>{@link is.codion.framework.model.EntityQueryModel#LIMIT}

@@ -1359,6 +1359,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		 * <p>If this user is null, {@link #user(Supplier)} is used to fetch a user.
 		 * @param user the application user
 		 * @return this Builder instance
+		 * @see is.codion.framework.model.EntityApplicationModel#USER
 		 */
 		Builder<M, P> user(User user);
 

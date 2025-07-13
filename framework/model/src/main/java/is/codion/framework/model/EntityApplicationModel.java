@@ -60,6 +60,22 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
 	PropertyValue<Boolean> SAVE_DEFAULT_USERNAME = booleanValue("codion.client.saveDefaultUsername", true);
 
 	/**
+	 * Specifies the user for logging into the application on the form {@code user:password}.
+	 * If one is specified no login dialog is presented.
+	 * <p>
+	 * Initialized with the value of the CODION_CLIENT_USER environment variable.
+	 * <p>
+	 * <strong>Warning:</strong> System properties are visible in process listings.
+	 * Use only for development/testing. In production, use secure credential management.
+	 * <ul>
+	 * <li>Value type: String
+	 * <li>Default value: System.getenv("CODION_CLIENT_USER")
+	 * </ul>
+	 * @see User#parse(String)
+	 */
+	PropertyValue<String> USER = stringValue("codion.client.user", System.getenv("CODION_CLIENT_USER"));
+
+	/**
 	 * @return the current user
 	 */
 	User user();
