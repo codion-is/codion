@@ -68,6 +68,8 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -311,6 +313,30 @@ public final class FilterTable<R, C> extends JTable {
 		}
 		if (builder.cellSelectionEnabled) {
 			setCellSelectionEnabled(true);
+		}
+		if (builder.rowHeight > 0) {
+			setRowHeight(builder.rowHeight);
+		}
+		if (builder.rowMargin > 0) {
+			setRowMargin(builder.rowMargin);
+		}
+		if (builder.intercellSpacing != null) {
+			setIntercellSpacing(builder.intercellSpacing);
+		}
+		if (builder.gridColor != null) {
+			setGridColor(builder.gridColor);
+		}
+		if (builder.showGrid != null) {
+			setShowGrid(builder.showGrid);
+		}
+		if (builder.showHorizontalLines != null)  {
+			setShowHorizontalLines(builder.showHorizontalLines);
+		}
+		if (builder.showVerticalLines != null)  {
+			setShowVerticalLines(builder.showVerticalLines);
+		}
+		if (builder.dragEnabled != null) {
+			setDragEnabled(builder.dragEnabled);
 		}
 	}
 
@@ -1299,6 +1325,62 @@ public final class FilterTable<R, C> extends JTable {
 		 * @return this builder instance
 		 */
 		Builder<R, C> keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke);
+
+		/**
+		 * @param rowHeight the row height
+		 * @return this builder instance
+		 * @see JTable#setRowHeight(int)
+		 */
+		Builder<R, C> rowHeight(int rowHeight);
+
+		/**
+		 * @param rowMargin the row margin
+		 * @return this builder instance
+		 * @see JTable#setRowMargin(int)
+		 */
+		Builder<R, C> rowMargin(int rowMargin);
+
+		/**
+		 * @param intercellSpacing the intercell spacing
+		 * @return this builder instance
+		 * @see JTable#setIntercellSpacing(Dimension)
+		 */
+		Builder<R, C> intercellSpacing(Dimension intercellSpacing);
+
+		/**
+		 * @param gridColor the grid color
+		 * @return this builder instance
+		 * @see JTable#setGridColor(Color)
+		 */
+		Builder<R, C> gridColor(Color gridColor);
+
+		/**
+		 * @param showGrid the show grid value
+		 * @return this builder instance
+		 * @see JTable#setShowGrid(boolean)
+		 */
+		Builder<R, C> showGrid(boolean showGrid);
+
+		/**
+		 * @param showHorizontalLines the show horizontal lines value
+		 * @return this builder instance
+		 * @see JTable#setShowHorizontalLines(boolean)
+		 */
+		Builder<R, C> showHorizontalLines(boolean showHorizontalLines);
+
+		/**
+		 * @param showVerticalLines the show vertical lines value
+		 * @return this builder instance
+		 * @see JTable#setShowVerticalLines(boolean)
+		 */
+		Builder<R, C> showVerticalLines(boolean showVerticalLines);
+
+		/**
+		 * @param dragEnabled the drag enabled value
+		 * @return this builder instance
+		 * @see JTable#setDragEnabled(boolean)
+		 */
+		Builder<R, C> dragEnabled(boolean dragEnabled);
 	}
 
 	/**
@@ -1399,6 +1481,14 @@ public final class FilterTable<R, C> extends JTable {
 		private int autoResizeMode = AUTO_RESIZE_MODE.getOrThrow();
 		private boolean resizeRowToFitEditor = RESIZE_ROW_TO_FIT_EDITOR.getOrThrow();
 		private ConditionView filterView = ConditionView.HIDDEN;
+		private int rowHeight = -1;
+		private int rowMargin = -1;
+		private Dimension intercellSpacing;
+		private Color gridColor;
+		private Boolean showGrid;
+		private Boolean showHorizontalLines;
+		private Boolean showVerticalLines;
+		private Boolean dragEnabled;
 
 		private DefaultBuilder(FilterTableModel<R, C> tableModel, List<FilterTableColumn<C>> columns) {
 			this.tableModel = tableModel;
@@ -1541,6 +1631,54 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public Builder<R, C> keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke) {
 			controlMap.keyStroke(controlKey).set(keyStroke);
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> rowHeight(int rowHeight) {
+			this.rowHeight = rowHeight;
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> rowMargin(int rowMargin) {
+			this.rowMargin = rowMargin;
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> intercellSpacing(Dimension intercellSpacing) {
+			this.intercellSpacing = intercellSpacing;
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> gridColor(Color gridColor) {
+			this.gridColor = gridColor;
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> showGrid(boolean showGrid) {
+			this.showGrid = showGrid;
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> showHorizontalLines(boolean showHorizontalLines) {
+			this.showHorizontalLines = showHorizontalLines;
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> showVerticalLines(boolean showVerticalLines) {
+			this.showVerticalLines = showVerticalLines;
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> dragEnabled(boolean dragEnabled) {
+			this.dragEnabled = dragEnabled;
 			return this;
 		}
 
