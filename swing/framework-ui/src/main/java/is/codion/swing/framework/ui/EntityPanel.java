@@ -66,6 +66,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import java.util.prefs.Preferences;
 
 import static is.codion.common.Configuration.*;
 import static is.codion.common.resource.MessageBundle.messageBundle;
@@ -569,13 +570,14 @@ public class EntityPanel extends JPanel {
 
 	/**
 	 * Saves user preferences for this entity panel and its detail panels.
-	 * @see EntityTablePanel#savePreferences()
+	 * @see EntityTablePanel#savePreferences(Preferences)
 	 */
-	public void savePreferences() {
+	public void savePreferences(Preferences preferences) {
+		requireNonNull(preferences);
 		if (containsTablePanel()) {
-			tablePanel.savePreferences();
+			tablePanel.savePreferences(preferences);
 		}
-		detailPanels.get().forEach(EntityPanel::savePreferences);
+		detailPanels.get().forEach(detailPanel -> detailPanel.savePreferences(preferences));
 	}
 
 	/**
@@ -583,11 +585,12 @@ public class EntityPanel extends JPanel {
 	 * for this panel and its detail panels.
 	 * @see EntityTablePanel#applyPreferences()
 	 */
-	public void applyPreferences() {
+	public void applyPreferences(Preferences preferences) {
+		requireNonNull(preferences);
 		if (containsTablePanel()) {
-			tablePanel.applyPreferences();
+			tablePanel.applyPreferences(preferences);
 		}
-		detailPanels.get().forEach(EntityPanel::applyPreferences);
+		detailPanels.get().forEach(detailPanel -> detailPanel.applyPreferences(preferences));
 	}
 
 	/**

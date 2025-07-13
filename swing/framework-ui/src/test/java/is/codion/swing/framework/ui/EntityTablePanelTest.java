@@ -40,6 +40,7 @@ import javax.swing.table.TableColumn;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -113,7 +114,7 @@ public class EntityTablePanelTest {
 		List<Entity> testEntities = initTestEntities(CONNECTION_PROVIDER.entities());
 		SwingEntityTableModel testModel = new SwingEntityTableModel(Detail.TYPE, testEntities, CONNECTION_PROVIDER);
 		EntityTablePanel tablePanel = new EntityTablePanel(testModel);
-		tablePanel.clearPreferences();
+		EntityTablePanelPreferences.clearLegacyPreferences(tablePanel);
 		FilterTableColumnModel<Attribute<?>> columnModel = tablePanel.table().columnModel();
 		assertTrue(columnModel.visible(Detail.STRING).get());
 
@@ -129,10 +130,11 @@ public class EntityTablePanelTest {
 		condition.operands().wildcard().set(Wildcard.PREFIX);
 		condition.caseSensitive().set(false);
 
-		tablePanel.savePreferences();
+		Preferences preferences = UserPreferences.file(EntityTablePanelTest.class.getName());
+		tablePanel.savePreferences(preferences);
 
 		tablePanel = new EntityTablePanel(testModel);
-		tablePanel.applyPreferences();
+		tablePanel.applyPreferences(preferences);
 
 		columnModel = tablePanel.table().columnModel();
 		assertFalse(columnModel.visible(Detail.STRING).get());
@@ -148,7 +150,7 @@ public class EntityTablePanelTest {
 		assertEquals(Wildcard.PREFIX, condition.operands().wildcard().get());
 		assertFalse(condition.caseSensitive().get());
 
-		tablePanel.clearPreferences();
+		EntityTablePanelPreferences.clearLegacyPreferences(tablePanel);
 		UserPreferences.flush();
 	}
 

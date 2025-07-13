@@ -105,6 +105,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.prefs.Preferences;
 import java.util.stream.Stream;
 
 import static is.codion.common.Configuration.booleanValue;
@@ -231,6 +232,15 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 */
 	public static final PropertyValue<Boolean> CACHE_ENTITY_PANELS = booleanValue(EntityApplicationPanel.class.getName() + ".cacheEntityPanels", false);
 
+	/**
+	 * Specifies whether preferences are written and to the default user preferences along with file based preferences
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 */
+	public static final PropertyValue<Boolean> WRITE_LEGACY_PREFERENCES = booleanValue(EntityApplicationPanel.class.getName() + ".writeLegacyPreferences", true);
+
 	private static final int DEFAULT_LOGO_SIZE = 68;
 
 	// Non-static so that Locale.setDefault(...) can be called in the main method of a subclass
@@ -241,6 +251,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	private final Collection<EntityPanel.Builder> lookupPanelBuilders;
 	private final List<EntityPanel> entityPanels;
 	private final ApplicationLayout applicationLayout;
+	private final Preferences preferences;
 
 	private final State alwaysOnTopState = State.builder()
 					.consumer(alwaysOnTop -> parentWindow().ifPresent(parent -> parent.setAlwaysOnTop(alwaysOnTop)))
@@ -281,6 +292,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	public EntityApplicationPanel(M applicationModel, List<EntityPanel> entityPanels,
 																Collection<EntityPanel.Builder> lookupPanelBuilders,
 																Function<EntityApplicationPanel<M>, ApplicationLayout> applicationLayout) {
+		this.preferences = UserPreferences.file(getClass().getName());
 		this.applicationModel = requireNonNull(applicationModel);
 		this.entityPanels = unmodifiableList(new ArrayList<>(requireNonNull(entityPanels)));
 		this.lookupPanelBuilders = requireNonNull(lookupPanelBuilders);
@@ -408,7 +420,8 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		try {
 			if (userPreferencesEnabled) {
 				LOG.debug("Saving user preferences");
-				savePreferences();
+				savePreferences(preferences);
+				preferences.flush();
 				UserPreferences.flush();
 			}
 		}
@@ -881,14 +894,17 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 	/**
 	 * Called during the exit() method, override to save user preferences on program exit,
-	 * remember to call super.savePreferences() when overriding.
-	 * Only called if {@link #USER_PREFERENCES_ENABLED} is set to true.
-	 * @see #USER_PREFERENCES_ENABLED
+	 * remember to call super.savePreferences(preferences) when overriding.
+	 * @param preferences the preferences instance to save the preferences to
 	 */
-	protected void savePreferences() {
-		entityPanels().forEach(EntityPanel::savePreferences);
+	protected void savePreferences(Preferences preferences) {
+		entityPanels().forEach(entityPanel -> entityPanel.savePreferences(preferences));
 		try {
-			createPreferences().save(getClass());
+			ApplicationPreferences applicationPrefs = createPreferences();
+			applicationPrefs.save(preferences);
+			if (WRITE_LEGACY_PREFERENCES.getOrThrow()) {
+				applicationPrefs.saveToUserPreferences(getClass());
+			}
 		}
 		catch (Exception e) {
 			LOG.error("Error while saving application preferences", e);
@@ -946,7 +962,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 			LOG.debug("Restoring default user preferences for EntityPanels: {}", panels);
 			return;
 		}
-		panels.forEach(EntityPanel::applyPreferences);
+		panels.forEach(panel -> panel.applyPreferences(preferences));
 	}
 
 	private static JPanel createEmptyBorderBasePanel(EntityPanel entityPanel) {
@@ -1130,8 +1146,8 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 						.allMatch(foreignKey -> foreignKey.referencedType().equals(entityType));
 	}
 
-	private static void onEntityPanelWindowClosed(EntityPanel entityPanel) {
-		entityPanel.savePreferences();
+	private void onEntityPanelWindowClosed(EntityPanel entityPanel) {
+		entityPanel.savePreferences(preferences);
 		entityPanel.setPreferredSize(entityPanel.getSize());
 	}
 

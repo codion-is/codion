@@ -26,7 +26,6 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.prefs.Preferences;
-import java.util.prefs.PreferencesFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -129,13 +128,6 @@ public final class FilePreferencesTest {
 		prefs.flush();
 		prefs.sync();
 		assertEquals("", prefs.get("empty.key", null));
-	}
-
-	@Test
-	void testUnsupportedOperations() {
-		// System root should throw UnsupportedOperationException
-		PreferencesFactory factory = new FilePreferencesFactory();
-		assertThrows(UnsupportedOperationException.class, factory::systemRoot);
 	}
 
 	private static boolean containsKey(String[] keys, String key) {

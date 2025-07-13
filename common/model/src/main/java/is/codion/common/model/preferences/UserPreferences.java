@@ -20,6 +20,9 @@ package is.codion.common.model.preferences;
 
 import org.jspecify.annotations.Nullable;
 
+import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -29,6 +32,8 @@ import static java.util.Objects.requireNonNull;
  * A utility class for working with user preferences
  */
 public final class UserPreferences {
+
+	private static final Map<String, Preferences> FILE_PREFERENCES = new ConcurrentHashMap<>();
 
 	private static @Nullable Preferences preferences;
 
@@ -74,6 +79,23 @@ public final class UserPreferences {
 	 */
 	public static void flush() throws BackingStoreException {
 		userPreferences().flush();
+	}
+
+	/**
+	 * @param filename the preferences filename
+	 * @return a file based Preferences instance using the given filename
+	 */
+	public static Preferences file(String filename) {
+		requireNonNull(filename);
+
+		return FILE_PREFERENCES.computeIfAbsent(requireNonNull(filename), k -> {
+			try {
+				return new FilePreferences(filename);
+			}
+			catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		});
 	}
 
 	private static synchronized Preferences userPreferences() {

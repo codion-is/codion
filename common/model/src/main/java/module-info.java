@@ -34,7 +34,7 @@
 @org.jspecify.annotations.NullMarked
 module is.codion.common.model {
 	requires transitive org.jspecify;
-	requires java.prefs;
+	requires transitive java.prefs;
 	requires org.slf4j;
 	requires transitive is.codion.common.core;
 	requires org.json;

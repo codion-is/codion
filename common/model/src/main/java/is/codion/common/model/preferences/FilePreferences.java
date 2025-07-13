@@ -23,9 +23,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.prefs.AbstractPreferences;
 import java.util.prefs.BackingStoreException;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A file-based preferences implementation without length restrictions.
@@ -41,15 +42,15 @@ final class FilePreferences extends AbstractPreferences {
 	private final JsonPreferencesStore store;
 	private final String path;
 
-	FilePreferences() throws IOException {
-		this(null, "", createDefaultStore());
-		LOG.info("Created root file preferences with default store");
+	FilePreferences(String filename) throws IOException {
+		this(null, "", createDefaultStore(requireNonNull(filename)));
+		LOG.info("Created file preferences: " + filename);
 	}
 
 	// Package-private constructor for testing
 	FilePreferences(JsonPreferencesStore store) {
 		this(null, "", store);
-		LOG.debug("Created root file preferences with custom store");
+		LOG.debug("Created file preferences with custom store");
 	}
 
 	private FilePreferences(@Nullable FilePreferences parent, String name, JsonPreferencesStore store) {
@@ -58,10 +59,8 @@ final class FilePreferences extends AbstractPreferences {
 		this.path = parent == null ? "" : (parent.path.isEmpty() ? name : parent.path + PATH_SEPARATOR + name);
 	}
 
-	private static JsonPreferencesStore createDefaultStore() throws IOException {
-		Path prefsPath = PreferencesPath.userPreferencesPath();
-
-		return new JsonPreferencesStore(prefsPath);
+	private static JsonPreferencesStore createDefaultStore(String applicationId) throws IOException {
+		return new JsonPreferencesStore(PreferencesPath.userPreferencesPath(applicationId));
 	}
 
 	@Override

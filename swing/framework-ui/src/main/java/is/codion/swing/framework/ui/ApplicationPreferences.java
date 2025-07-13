@@ -25,17 +25,11 @@ import is.codion.common.user.User;
 import org.json.JSONObject;
 
 import java.awt.Dimension;
+import java.util.prefs.Preferences;
 
-import static java.lang.Boolean.parseBoolean;
 import static java.lang.Integer.parseInt;
 
 final class ApplicationPreferences {
-
-	private static final String LEGACY_DEFAULT_USERNAME_PROPERTY = "is.codion.swing.framework.ui.defaultUsername";
-	private static final String LEGACY_LOOK_AND_FEEL_PROPERTY = "is.codion.swing.framework.ui.LookAndFeel";
-	private static final String LEGACY_FONT_SIZE_PROPERTY = "is.codion.swing.framework.ui.FontSize";
-	private static final String LEGACY_FRAME_SIZE_PROPERTY = "is.codion.swing.framework.ui.frameSize";
-	private static final String LEGACY_FRAME_MAXIMIZED_PROPERTY = "is.codion.swing.framework.ui.maximized";
 
 	private static final String PREFERENCES_KEY = "#preferences";
 
@@ -44,6 +38,8 @@ final class ApplicationPreferences {
 	private static final String SCALING_KEY = "scaling";
 	private static final String FRAME_SIZE_KEY = "frameSize";
 	private static final String FRAME_MAXIMIZED_KEY = "maximized";
+	private static final String APPLICATION_PANEL = "applicationPanel";
+	private static final String EMPTY_JSON_OBJECT = "{}";
 
 	private final String defaultUsername;
 	private final String lookAndFeel;
@@ -76,7 +72,11 @@ final class ApplicationPreferences {
 		return frameMaximized;
 	}
 
-	void save(Class<?> applicationClassName) {
+	void save(Preferences preferences) {
+		preferences.put(APPLICATION_PANEL, toJSONObject().toString());
+	}
+
+	void saveToUserPreferences(Class<?> applicationClassName) {
 		UserPreferences.set(applicationClassName.getName() + PREFERENCES_KEY, toJSONObject().toString());
 	}
 
@@ -96,26 +96,16 @@ final class ApplicationPreferences {
 	}
 
 	static ApplicationPreferences load(Class<?> applicationClass) {
-		String preferences = UserPreferences.get(applicationClass.getName() + PREFERENCES_KEY, "");
-		if (preferences.isEmpty()) {
-			String applicationDefaultUsernameProperty = LEGACY_DEFAULT_USERNAME_PROPERTY + "#" + applicationClass.getSimpleName();
-			String applicationLookAndFeelProperty = LEGACY_LOOK_AND_FEEL_PROPERTY + "#" + applicationClass.getSimpleName();
-			String applicationFontSizeProperty = LEGACY_FONT_SIZE_PROPERTY + "#" + applicationClass.getSimpleName();
-			String applicationFrameSizeProperty = LEGACY_FRAME_SIZE_PROPERTY + "#" + applicationClass.getSimpleName();
-			String applicationFrameMaximizedProperty = LEGACY_FRAME_MAXIMIZED_PROPERTY + "#" + applicationClass.getSimpleName();
-
-			return new ApplicationPreferences(
-							UserPreferences.get(applicationDefaultUsernameProperty, System.getProperty("user.name")),
-							UserPreferences.get(applicationLookAndFeelProperty),
-							parseInt(UserPreferences.get(applicationFontSizeProperty, "100")),
-							parseFrameSize(UserPreferences.get(applicationFrameSizeProperty, "")),
-							parseBoolean(UserPreferences.get(applicationFrameMaximizedProperty, "false")));
+		String applicationPanelPrefs = UserPreferences.file(applicationClass.getName()).get(APPLICATION_PANEL, EMPTY_JSON_OBJECT);
+		if (!applicationPanelPrefs.equals(EMPTY_JSON_OBJECT)) {
+			// File based preferences take precedence
+			return fromString(applicationPanelPrefs);
 		}
 
-		return fromString(preferences);
+		return fromString(UserPreferences.get(applicationClass.getName() + PREFERENCES_KEY, EMPTY_JSON_OBJECT));
 	}
 
-	private static ApplicationPreferences fromString(String preferences) {
+	static ApplicationPreferences fromString(String preferences) {
 		JSONObject jsonObject = new JSONObject(preferences);
 
 		return new ApplicationPreferences(

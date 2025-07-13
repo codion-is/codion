@@ -27,14 +27,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class PreferencesPathTest {
 
+	private static final String APPLICATION_ID = "applicationId";
+
 	@Test
 	void testPlatformPath() {
 		// We can't easily test all platforms in a single test run,
 		// but we can verify the current platform returns a reasonable path
-		Path path = PreferencesPath.userPreferencesPath();
+		Path path = PreferencesPath.userPreferencesPath(APPLICATION_ID);
 
 		// Should end with preferences.json
-		assertTrue(path.toString().endsWith("preferences.json"));
+		assertTrue(path.toString().endsWith(APPLICATION_ID + ".json"));
 
 		// Should contain a Codion directory (case may vary by platform)
 		String pathString = path.toString().toLowerCase();
@@ -46,7 +48,7 @@ public final class PreferencesPathTest {
 		// Test Windows path logic by examining the format
 		String osName = System.getProperty("os.name", "").toLowerCase();
 		if (osName.contains("win")) {
-			Path path = PreferencesPath.userPreferencesPath();
+			Path path = PreferencesPath.userPreferencesPath(APPLICATION_ID);
 
 			// On Windows, should use LOCALAPPDATA or APPDATA
 			String pathStr = path.toString();
@@ -60,7 +62,7 @@ public final class PreferencesPathTest {
 		// Test macOS path logic
 		String osName = System.getProperty("os.name", "").toLowerCase();
 		if (osName.contains("mac")) {
-			Path path = PreferencesPath.userPreferencesPath();
+			Path path = PreferencesPath.userPreferencesPath(APPLICATION_ID);
 
 			// On macOS, should use Library/Preferences
 			assertTrue(path.toString().contains("Library/Preferences/Codion"),
@@ -73,7 +75,7 @@ public final class PreferencesPathTest {
 		// Test Linux path logic
 		String osName = System.getProperty("os.name", "").toLowerCase();
 		if (osName.contains("nix") || osName.contains("nux")) {
-			Path path = PreferencesPath.userPreferencesPath();
+			Path path = PreferencesPath.userPreferencesPath(APPLICATION_ID);
 
 			// On Linux, should use .config or XDG_CONFIG_HOME
 			String pathStr = path.toString();
@@ -85,8 +87,8 @@ public final class PreferencesPathTest {
 	@Test
 	void testPathConsistency() {
 		// Multiple calls should return the same path
-		Path path1 = PreferencesPath.userPreferencesPath();
-		Path path2 = PreferencesPath.userPreferencesPath();
+		Path path1 = PreferencesPath.userPreferencesPath(APPLICATION_ID);
+		Path path2 = PreferencesPath.userPreferencesPath(APPLICATION_ID);
 
 		assertEquals(path1, path2, "Path should be consistent across calls");
 	}

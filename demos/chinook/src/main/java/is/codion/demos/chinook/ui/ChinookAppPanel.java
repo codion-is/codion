@@ -19,7 +19,6 @@
 package is.codion.demos.chinook.ui;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.model.preferences.FilePreferencesFactory;
 import is.codion.common.model.preferences.UserPreferences;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
@@ -223,7 +222,6 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 	}
 
 	public static void main(String[] args) throws CancelException {
-		System.setProperty("java.util.prefs.PreferencesFactory", FilePreferencesFactory.class.getName());
 		String language = UserPreferences.get(LANGUAGE_PREFERENCES_KEY, Locale.getDefault().getLanguage());
 		Locale.setDefault(LANGUAGE_IS.equals(language) ? LOCALE_IS : LOCALE_EN);
 		FrameworkIcons.instance().add(Foundation.PLUS, Foundation.MINUS);

@@ -23,7 +23,6 @@ import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
-import is.codion.common.model.preferences.UserPreferences;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.model.summary.SummaryModel;
 import is.codion.common.property.PropertyValue;
@@ -123,6 +122,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
+import java.util.prefs.Preferences;
 
 import static is.codion.common.Configuration.*;
 import static is.codion.common.resource.MessageBundle.messageBundle;
@@ -135,11 +135,10 @@ import static is.codion.swing.common.ui.component.table.FilterTableColumnCompone
 import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
-import static is.codion.swing.framework.ui.ColumnPreferences.columnPreferences;
-import static is.codion.swing.framework.ui.ConditionPreferences.conditionPreferences;
 import static is.codion.swing.framework.ui.EntityDialogs.*;
 import static is.codion.swing.framework.ui.EntityTableColumns.entityTableColumns;
 import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.*;
+import static is.codion.swing.framework.ui.EntityTablePanelPreferences.preferences;
 import static is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
@@ -191,9 +190,6 @@ public class EntityTablePanel extends JPanel {
 	private static final MessageBundle EDIT_PANEL_MESSAGES =
 					messageBundle(EntityEditPanel.class, getBundle(EntityEditPanel.class.getName()));
 	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
-
-	private static final String COLUMN_PREFERENCES = "-columns";
-	private static final String CONDITIONS_PREFERENCES = "-conditions";
 
 	/**
 	 * The Controls available in a {@link EntityTablePanel}
@@ -483,7 +479,7 @@ public class EntityTablePanel extends JPanel {
 	private final List<Controls> additionalPopupControls = new ArrayList<>();
 	private final List<Controls> additionalToolBarControls = new ArrayList<>();
 
-	private final Map<EntityType, Map<Attribute<?>, ColumnPreferences>> dependencyPanelPreferences = new HashMap<>();
+	private final Map<EntityType, EntityTablePanelPreferences> dependencyPanelPreferences = new HashMap<>();
 	private final AtomicReference<Dimension> dependenciesDialogSize = new AtomicReference<>();
 
 	private JScrollPane conditionPanelScrollPane;
@@ -715,41 +711,19 @@ public class EntityTablePanel extends JPanel {
 
 	/**
 	 * Saves user preferences
+	 * @param preferences the preferences instance to save to
 	 * @see #userPreferencesKey()
 	 */
-	public void savePreferences() {
-		try {
-			UserPreferences.set(userPreferencesKey() + COLUMN_PREFERENCES,
-							ColumnPreferences.toString(createColumnPreferences()));
-		}
-		catch (Exception e) {
-			LOG.error("Error while saving column preferences", e);
-		}
-		try {
-			UserPreferences.set(userPreferencesKey() + CONDITIONS_PREFERENCES,
-							ConditionPreferences.toString(createConditionPreferences()));
-		}
-		catch (Exception e) {
-			LOG.error("Error while saving condition preferences", e);
-		}
+	public void savePreferences(Preferences preferences) {
+		EntityTablePanelPreferences.savePreferences(requireNonNull(preferences), this);
 	}
 
 	/**
-	 * Applies any user preferences previously saved via {@link #savePreferences()}
+	 * Applies any user preferences previously saved via {@link #savePreferences(Preferences)}
+	 * @param preferences the preferences instance containing the preferences to apply
 	 */
-	public void applyPreferences() {
-		String columnPreferencesString = UserPreferences.get(userPreferencesKey() + COLUMN_PREFERENCES, "");
-		if (columnPreferencesString.isEmpty()) {//todo remove: see if a legacy one without "-columns" postfix exists
-			columnPreferencesString = UserPreferences.get(userPreferencesKey(), "");
-		}
-		if (!columnPreferencesString.isEmpty()) {
-			applyColumnPreferences(columnPreferencesString);
-		}
-
-		String conditionPreferencesString = UserPreferences.get(userPreferencesKey() + CONDITIONS_PREFERENCES, "");
-		if (!conditionPreferencesString.isEmpty()) {
-			applyConditionPreferences(conditionPreferencesString);
-		}
+	public void applyPreferences(Preferences preferences) {
+		EntityTablePanelPreferences.applyPreferences(requireNonNull(preferences), this);
 	}
 
 	/**
@@ -1053,15 +1027,6 @@ public class EntityTablePanel extends JPanel {
 	 */
 	protected final boolean confirmDelete() {
 		return configuration.deleteConfirmer.confirm(this);
-	}
-
-	/**
-	 * Clears any user preferences saved for this table model
-	 */
-	final void clearPreferences() {
-		String userPreferencesKey = userPreferencesKey();
-		UserPreferences.remove(userPreferencesKey + COLUMN_PREFERENCES);
-		UserPreferences.remove(userPreferencesKey + CONDITIONS_PREFERENCES);
 	}
 
 	/**
@@ -1748,64 +1713,6 @@ public class EntityTablePanel extends JPanel {
 		return editPanel;
 	}
 
-	private Map<Attribute<?>, ColumnPreferences> createColumnPreferences() {
-		Map<Attribute<?>, ColumnPreferences> columnPreferencesMap = new HashMap<>();
-		FilterTableColumnModel<Attribute<?>> columnModel = table.columnModel();
-		for (FilterTableColumn<Attribute<?>> column : columnModel.columns()) {
-			Attribute<?> attribute = column.identifier();
-			int index = columnModel.visible(attribute).get() ? columnModel.getColumnIndex(attribute) : -1;
-			columnPreferencesMap.put(attribute, columnPreferences(attribute, index, column.getWidth()));
-		}
-
-		return columnPreferencesMap;
-	}
-
-	private Map<Attribute<?>, ConditionPreferences> createConditionPreferences() {
-		Map<Attribute<?>, ConditionPreferences> conditionPreferencesMap = new HashMap<>();
-		for (Attribute<?> attribute : tableModel.columns().identifiers()) {
-			tableModel.queryModel().condition().optional(attribute)
-							.ifPresent(condition -> conditionPreferencesMap.put(attribute, conditionPreferences(attribute,
-											condition.autoEnable().get(),
-											condition.caseSensitive().get(),
-											condition.operands().wildcard().get())));
-		}
-
-		return conditionPreferencesMap;
-	}
-
-	private void applyConditionPreferences(String preferencesString) {
-		try {
-			ConditionPreferences.apply(tableModel, tableModel.columns().identifiers(), preferencesString);
-		}
-		catch (Exception e) {
-			LOG.error("Error while applying condition preferences: {}", preferencesString, e);
-		}
-	}
-
-	private void applyColumnPreferences(String preferencesString) {
-		try {
-			Map<Attribute<?>, ColumnPreferences> columnPreferences =
-							ColumnPreferences.fromString(table.columnModel().identifiers(), preferencesString);
-			ColumnPreferences.apply(this, table.columnModel().identifiers(), columnPreferences,
-							(attribute, columnWidth) -> table.columnModel().column(attribute).setPreferredWidth(columnWidth));
-		}
-		catch (Exception e) {
-			LOG.error("Error while applying column preferences: {}", preferencesString, e);
-		}
-	}
-
-	private void applyColumnPreferences(Map<Attribute<?>, ColumnPreferences> columnPreferences) {
-		try {
-			if (columnPreferences != null) {
-				ColumnPreferences.apply(this, table.columnModel().identifiers(), columnPreferences,
-								(attribute, columnWidth) -> table.columnModel().column(attribute).setPreferredWidth(columnWidth));
-			}
-		}
-		catch (Exception e) {
-			LOG.error("Error while applying column preferences: {}", columnPreferences, e);
-		}
-	}
-
 	private void displayDependencies(String noDependenciesMessage) {
 		Map<EntityType, Collection<Entity>> dependencies = selectionDependencies();
 		if (dependencies.isEmpty()) {
@@ -1814,8 +1721,12 @@ public class EntityTablePanel extends JPanel {
 		}
 		else {
 			EntityDependenciesPanel dependenciesPanel = new EntityDependenciesPanel(dependencies, tableModel.connectionProvider());
-			dependenciesPanel.tablePanels().forEach((entityType, dependencyTablePanel) ->
-							dependencyTablePanel.applyColumnPreferences(dependencyPanelPreferences.get(entityType)));
+			dependenciesPanel.tablePanels().forEach((entityType, dependencyTablePanel) -> {
+				EntityTablePanelPreferences preferences = dependencyPanelPreferences.get(entityType);
+				if (preferences != null) {
+					preferences.apply(dependencyTablePanel);
+				}
+			});
 			int gap = Layouts.GAP.getOrThrow();
 			dependenciesPanel.setBorder(createEmptyBorder(0, gap, 0, gap));
 			Dialogs.builder()
@@ -1828,7 +1739,7 @@ public class EntityTablePanel extends JPanel {
 							.onClosed(event -> {
 								dependenciesDialogSize.set(event.getWindow().getSize());
 								dependenciesPanel.tablePanels().forEach((entityType, dependencyTablePanel) ->
-												dependencyPanelPreferences.put(entityType, dependencyTablePanel.createColumnPreferences()));
+												dependencyPanelPreferences.put(entityType, preferences(dependencyTablePanel)));
 							})
 							.show();
 		}

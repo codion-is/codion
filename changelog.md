@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.41
+### is.codion.common.model
+- FilePreferencesFactory removed, UserPreferences.file() added.
 ### is.codion.swing.common.ui
 - FilterTableCellRenderer.Builder.ColumnClassBuilder added.
 

@@ -21,15 +21,17 @@ package is.codion.common.model.preferences;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Provides platform-specific paths for storing preferences.
  */
 final class PreferencesPath {
 
-	private static final String PREFERENCES_FILENAME = "preferences.json";
 	private static final String CODION_DIR = "Codion";
 	private static final String CODION_DIR_LOWERCASE = "codion";
 	private static final String USER_HOME = "user.home";
+	private static final String JSON = ".json";
 
 	private PreferencesPath() {}
 
@@ -37,63 +39,65 @@ final class PreferencesPath {
 	 * Returns the platform-specific path for storing user preferences.
 	 *
 	 * <ul>
-	 * <li>Windows: {@code %LOCALAPPDATA%/Codion/preferences.json}
-	 * <li>macOS: {@code ~/Library/Preferences/Codion/preferences.json}
-	 * <li>Linux: {@code ~/.config/codion/preferences.json} (or {@code $XDG_CONFIG_HOME/codion/preferences.json})
-	 * <li>Other: {@code ~/.codion/preferences.json}
+	 * <li>Windows: {@code %LOCALAPPDATA%/Codion/{filename}.json}
+	 * <li>macOS: {@code ~/Library/Preferences/Codion/{filename}.json}
+	 * <li>Linux: {@code ~/.config/codion/{filename}.json} (or {@code $XDG_CONFIG_HOME/codion/{filename}.json})
+	 * <li>Other: {@code ~/.codion/{filename}.json}
 	 * </ul>
+	 * @param filename the filename
 	 * @return the platform-specific preferences path
 	 */
-	static Path userPreferencesPath() {
+	static Path userPreferencesPath(String filename) {
+		requireNonNull(filename);
 		String osName = System.getProperty("os.name", "").toLowerCase();
 		if (osName.contains("win")) {
-			return windowsPath();
+			return windowsPath(filename + JSON);
 		}
 		else if (osName.contains("mac")) {
-			return macOSPath();
+			return macOSPath(filename + JSON);
 		}
 		else if (osName.contains("nix") || osName.contains("nux") || osName.contains("bsd")) {
-			return linuxPath();
+			return linuxPath(filename + JSON);
 		}
 		else {
-			return defaultPath();
+			return defaultPath(filename + JSON);
 		}
 	}
 
-	private static Path windowsPath() {
+	private static Path windowsPath(String filename) {
 		String localAppData = System.getenv("LOCALAPPDATA");
 		if (localAppData != null) {
-			return Paths.get(localAppData, CODION_DIR, PREFERENCES_FILENAME);
+			return Paths.get(localAppData, CODION_DIR, filename);
 		}
 
 		String appData = System.getenv("APPDATA");
 		if (appData != null) {
-			return Paths.get(appData, CODION_DIR, PREFERENCES_FILENAME);
+			return Paths.get(appData, CODION_DIR, filename);
 		}
 
-		return defaultPath();
+		return defaultPath(filename);
 	}
 
-	private static Path macOSPath() {
+	private static Path macOSPath(String filename) {
 		String home = System.getProperty(USER_HOME);
 
-		return Paths.get(home, "Library", "Preferences", CODION_DIR, PREFERENCES_FILENAME);
+		return Paths.get(home, "Library", "Preferences", CODION_DIR, filename);
 	}
 
-	private static Path linuxPath() {
+	private static Path linuxPath(String filename) {
 		String xdgConfigHome = System.getenv("XDG_CONFIG_HOME");
 		if (xdgConfigHome != null) {
-			return Paths.get(xdgConfigHome, CODION_DIR_LOWERCASE, PREFERENCES_FILENAME);
+			return Paths.get(xdgConfigHome, CODION_DIR_LOWERCASE, filename);
 		}
 
 		String home = System.getProperty(USER_HOME);
 
-		return Paths.get(home, ".config", CODION_DIR_LOWERCASE, PREFERENCES_FILENAME);
+		return Paths.get(home, ".config", CODION_DIR_LOWERCASE, filename);
 	}
 
-	private static Path defaultPath() {
+	private static Path defaultPath(String filename) {
 		String home = System.getProperty(USER_HOME);
 
-		return Paths.get(home, "." + CODION_DIR_LOWERCASE, PREFERENCES_FILENAME);
+		return Paths.get(home, "." + CODION_DIR_LOWERCASE, filename);
 	}
 }
