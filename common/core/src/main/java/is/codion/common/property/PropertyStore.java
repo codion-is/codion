@@ -165,7 +165,7 @@ public interface PropertyStore {
 	 * @return a new {@link PropertyValue} instance
 	 * @throws IllegalStateException in case a value has already been created for the given property
 	 */
-	PropertyValue<String> stringValue(String propertyName, String defaultValue);
+	PropertyValue<String> stringValue(String propertyName, @Nullable String defaultValue);
 
 	/**
 	 * Creates a value for the given enum property
@@ -186,7 +186,7 @@ public interface PropertyStore {
 	 * @return a new {@link PropertyValue} instance
 	 * @throws NullPointerException if {@code propertyName} or {@code enumClass} is null
 	 */
-	<T extends Enum<T>> PropertyValue<T> enumValue(String propertyName, Class<T> enumClass, T defaultValue);
+	<T extends Enum<T>> PropertyValue<T> enumValue(String propertyName, Class<T> enumClass, @Nullable T defaultValue);
 
 	/**
 	 * Creates a value for the given list property.
@@ -234,7 +234,7 @@ public interface PropertyStore {
 	 * @return the configuration value
 	 * @throws NullPointerException if {@code propertyName}, {@code decoder} or {@code encoder} is null
 	 */
-	<T> PropertyValue<T> value(String propertyName, Function<String, T> decoder, Function<T, String> encoder, T defaultValue);
+	<T> PropertyValue<T> value(String propertyName, Function<String, T> decoder, Function<T, String> encoder, @Nullable T defaultValue);
 
 	/**
 	 * Returns the Value associated with the given property, an empty Optional if no such Value has been created.
@@ -257,7 +257,7 @@ public interface PropertyStore {
 	 * @param propertyName the property name
 	 * @return the value or null if no value is present
 	 */
-	String getProperty(String propertyName);
+	@Nullable String getProperty(String propertyName);
 
 	/**
 	 * Returns the values associated with property names fulfilling the given predicate

@@ -142,7 +142,7 @@ final class DefaultPropertyStore implements PropertyStore {
 	}
 
 	@Override
-	public PropertyValue<String> stringValue(String propertyName, String defaultValue) {
+	public PropertyValue<String> stringValue(String propertyName, @Nullable String defaultValue) {
 		return value(propertyName, Objects::toString, Objects::toString, defaultValue);
 	}
 
@@ -154,7 +154,7 @@ final class DefaultPropertyStore implements PropertyStore {
 	}
 
 	@Override
-	public <T extends Enum<T>> PropertyValue<T> enumValue(String propertyName, Class<T> enumClass, T defaultValue) {
+	public <T extends Enum<T>> PropertyValue<T> enumValue(String propertyName, Class<T> enumClass, @Nullable T defaultValue) {
 		requireNonNull(enumClass);
 
 		return value(propertyName, value -> Enum.valueOf(enumClass, value.toUpperCase()), Objects::toString, defaultValue);
@@ -172,19 +172,11 @@ final class DefaultPropertyStore implements PropertyStore {
 
 	@Override
 	public <T> PropertyValue<T> value(String propertyName, Function<String, T> decoder, Function<T, String> encoder) {
-		synchronized (propertyValues) {
-			if (propertyValues.containsKey(requireNonNull(propertyName))) {
-				throw new IllegalStateException("A value has already been created for the property '" + propertyName + "'");
-			}
-			DefaultPropertyValue<T> value = new DefaultPropertyValue<>(propertyName, decoder, encoder);
-			propertyValues.put(propertyName, value);
-
-			return value;
-		}
+		return value(propertyName, decoder, encoder, null);
 	}
 
 	@Override
-	public <T> PropertyValue<T> value(String propertyName, Function<String, T> decoder, Function<T, String> encoder, T defaultValue) {
+	public <T> PropertyValue<T> value(String propertyName, Function<String, T> decoder, Function<T, String> encoder, @Nullable T defaultValue) {
 		synchronized (propertyValues) {
 			if (propertyValues.containsKey(requireNonNull(propertyName))) {
 				throw new IllegalStateException("A value has already been created for the property '" + propertyName + "'");
@@ -214,7 +206,7 @@ final class DefaultPropertyStore implements PropertyStore {
 	}
 
 	@Override
-	public String getProperty(String propertyName) {
+	public @Nullable String getProperty(String propertyName) {
 		return properties.getProperty(requireNonNull(propertyName));
 	}
 
@@ -301,15 +293,8 @@ final class DefaultPropertyStore implements PropertyStore {
 
 		private @Nullable T value;
 
-		private DefaultPropertyValue(String name, Function<String, T> decoder, Function<T, String> encoder) {
-			super(null, Notify.CHANGED);
-			this.name = requireNonNull(name);
-			this.encoder = requireNonNull(encoder);
-			set(getInitialValue(name, requireNonNull(decoder)));
-		}
-
-		private DefaultPropertyValue(String name, Function<String, T> decoder, Function<T, String> encoder, T defaultValue) {
-			super(requireNonNull(defaultValue), Notify.CHANGED);
+		private DefaultPropertyValue(String name, Function<String, T> decoder, Function<T, String> encoder, @Nullable T defaultValue) {
+			super(defaultValue, Notify.CHANGED);
 			this.name = requireNonNull(name);
 			this.encoder = requireNonNull(encoder);
 			set(getInitialValue(name, requireNonNull(decoder)));
