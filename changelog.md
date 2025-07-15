@@ -8,6 +8,8 @@ Codion Change Log
 - PropertyStore now accepts null default values.
 ### is.codion.common.model
 - FilePreferencesFactory removed, UserPreferences.file() added.
+### is.codion.common.rmi
+- Authenticator.type() renamed clientType().
 ### is.codion.swing.common.ui
 - FilterTableCellRenderer.Builder.ColumnClassBuilder added.
 - FilterTable.Builder.rowHeight(), rowMargin(), intercellSpacing(), gridColor(), showGrid(), showHorizontalLines(), showVerticalLines() and dragEnabled() added.

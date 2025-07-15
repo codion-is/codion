@@ -306,7 +306,7 @@ public class AbstractServerTest {
 		static final AtomicInteger CLOSE_COUNTER = new AtomicInteger();
 
 		@Override
-		public Optional<String> type() {
+		public Optional<String> clientType() {
 			return Optional.of(CLIENT_TYPE);
 		}
 

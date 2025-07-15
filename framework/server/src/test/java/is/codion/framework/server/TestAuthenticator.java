@@ -40,7 +40,7 @@ public final class TestAuthenticator implements Authenticator {
 	}
 
 	@Override
-	public Optional<String> type() {
+	public Optional<String> clientType() {
 		return Optional.of("TestAuthenticator");
 	}
 
