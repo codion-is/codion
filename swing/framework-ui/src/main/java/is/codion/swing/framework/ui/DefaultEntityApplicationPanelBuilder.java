@@ -62,7 +62,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.Utilities.systemLookAndFeelClassName;
@@ -552,17 +551,8 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	private static String userInfo(EntityConnectionProvider connectionProvider) {
 		String description = connectionProvider.description();
 
-		return removeUsernamePrefix(connectionProvider.user().username().toUpperCase()) +
+		return connectionProvider.user().username().toUpperCase() +
 						(description != null ? "@" + description.toUpperCase() : "");
-	}
-
-	private static String removeUsernamePrefix(String username) {
-		String usernamePrefix = EntityApplicationModel.USERNAME_PREFIX.get();
-		if (!nullOrEmpty(usernamePrefix) && username.toUpperCase().startsWith(usernamePrefix.toUpperCase())) {
-			return username.substring(usernamePrefix.length());
-		}
-
-		return username;
 	}
 
 	private static void displayExceptionAndExit(Throwable exception, JFrame applicationFrame) {

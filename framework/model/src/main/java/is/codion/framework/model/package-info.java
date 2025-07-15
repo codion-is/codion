@@ -19,7 +19,6 @@
 /**
  * Package configuration values:
  * <ul>
- * <li>{@link is.codion.framework.model.EntityApplicationModel#USERNAME_PREFIX}
  * <li>{@link is.codion.framework.model.EntityApplicationModel#SAVE_DEFAULT_USERNAME}
  * <li>{@link is.codion.framework.model.EntityApplicationModel#USER}
  * <li>{@link is.codion.framework.model.EntityEditModel#EDIT_EVENTS}

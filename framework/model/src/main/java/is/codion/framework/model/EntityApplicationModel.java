@@ -41,15 +41,6 @@ import static is.codion.common.Configuration.stringValue;
 public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
 
 	/**
-	 * Specifies a string to prepend to the username field in the login dialog
-	 * <ul>
-	 * <li>Value type: String
-	 * <li>Default value: [empty string]
-	 * </ul>
-	 */
-	PropertyValue<String> USERNAME_PREFIX = stringValue("codion.client.usernamePrefix", "");
-
-	/**
 	 * Specifies whether the client saves the last successful login username,
 	 * which is then displayed as the default username the next time the application is started
 	 * <ul>

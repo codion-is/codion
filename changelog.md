@@ -13,6 +13,7 @@ Codion Change Log
 - FilterTable.Builder.rowHeight(), rowMargin(), intercellSpacing(), gridColor(), showGrid(), showHorizontalLines(), showVerticalLines() and dragEnabled() added.
 ### is.codion.swing.framework.model
 - EntityApplicationModel.USER configuration value added.
+- EntityApplicationModel.USERNAME_PREFIX configuration value removed, not really used anymore.
 
 ## 0.18.40
 ### is.codion
