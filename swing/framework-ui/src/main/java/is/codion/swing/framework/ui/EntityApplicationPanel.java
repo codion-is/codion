@@ -141,8 +141,8 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * </ul>
 	 * @see #savePreferences()
 	 */
-	public static final PropertyValue<Boolean> USER_PREFERENCES_ENABLED =
-					booleanValue(EntityApplicationPanel.class.getName() + ".userPreferencesEnabled", true);
+	public static final PropertyValue<Boolean> USER_PREFERENCES =
+					booleanValue(EntityApplicationPanel.class.getName() + ".userPreferences", true);
 
 	/**
 	 * Specifies whether the application should restore default preferences, that is, not load any saved user preferences.
@@ -259,7 +259,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	private final Event<?> exiting = Event.event();
 	private final Event<EntityApplicationPanel<?>> initializedEvent = Event.event();
 	private final boolean modifiedWarning = EntityEditPanel.Config.MODIFIED_WARNING.getOrThrow();
-	private final boolean userPreferencesEnabled = USER_PREFERENCES_ENABLED.getOrThrow();
+	private final boolean userPreferences = USER_PREFERENCES.getOrThrow();
 	private final boolean restoreDefaultPreferences = RESTORE_DEFAULT_PREFERENCES.getOrThrow();
 
 	private final Map<EntityPanel.Builder, EntityPanel> cachedEntityPanels = new HashMap<>();
@@ -418,7 +418,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 			LOG.debug("Exception while exiting", e);
 		}
 		try {
-			if (userPreferencesEnabled) {
+			if (userPreferences) {
 				LOG.debug("Saving user preferences");
 				savePreferences(preferences);
 				preferences.flush();
@@ -954,7 +954,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	}
 
 	private void applyUserPreferences(Collection<EntityPanel> panels) {
-		if (!userPreferencesEnabled) {
+		if (!userPreferences) {
 			LOG.debug("User preferences are disabled");
 			return;
 		}

@@ -134,7 +134,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	DefaultEntityApplicationPanelBuilder(Class<M> applicationModelClass, Class<P> applicationPanelClass) {
 		this.applicationModelClass = requireNonNull(applicationModelClass);
 		this.applicationPanelClass = requireNonNull(applicationPanelClass);
-		this.preferences = EntityApplicationPanel.USER_PREFERENCES_ENABLED.getOrThrow() ?
+		this.preferences = EntityApplicationPanel.USER_PREFERENCES.getOrThrow() ?
 						ApplicationPreferences.load(applicationPanelClass) :
 						ApplicationPreferences.fromString("{}");
 		this.defaultUser = preferences.defaultLoginUser();

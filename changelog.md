@@ -14,6 +14,8 @@ Codion Change Log
 ### is.codion.swing.framework.model
 - EntityApplicationModel.USER configuration value added.
 - EntityApplicationModel.USERNAME_PREFIX configuration value removed, not really used anymore.
+### is.codion.swing.framework.ui
+- EntityApplicationPanel.USER_PREFERENCES_ENABLED renamed USER_PREFERENCES.
 
 ## 0.18.40
 ### is.codion
