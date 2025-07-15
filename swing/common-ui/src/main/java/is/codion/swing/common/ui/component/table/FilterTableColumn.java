@@ -110,9 +110,9 @@ public final class FilterTableColumn<C> extends TableColumn {
 	}
 
 	/**
-	 * @return a {@link Builder.IdentifierBuilder}
+	 * @return a {@link Builder.IdentifierStep}
 	 */
-	public static FilterTableColumn.Builder.IdentifierBuilder builder() {
+	public static Builder.IdentifierStep builder() {
 		return DefaultBuilder.IDENTIFIER;
 	}
 
@@ -125,7 +125,7 @@ public final class FilterTableColumn<C> extends TableColumn {
 		/**
 		 * Provides a {@link Builder} or {@link Builder.ModelIndexBuilder}
 		 */
-		interface IdentifierBuilder {
+		interface IdentifierStep {
 
 			/**
 			 * Instantiates a new enum based {@link FilterTableColumn.Builder}.
@@ -243,7 +243,7 @@ public final class FilterTableColumn<C> extends TableColumn {
 		FilterTableColumn<C> build();
 	}
 
-	private static final class DefaultIdentifierBuilder implements Builder.IdentifierBuilder {
+	private static final class DefaultIdentifierStep implements Builder.IdentifierStep {
 
 		@Override
 		public <C extends Enum<C>> Builder<C> identifier(C identifier) {
@@ -277,7 +277,7 @@ public final class FilterTableColumn<C> extends TableColumn {
 
 	private static final class DefaultBuilder<C> implements Builder<C> {
 
-		private static final IdentifierBuilder IDENTIFIER = new DefaultIdentifierBuilder();
+		private static final IdentifierStep IDENTIFIER = new DefaultIdentifierStep();
 
 		private final C identifier;
 		private final int modelIndex;

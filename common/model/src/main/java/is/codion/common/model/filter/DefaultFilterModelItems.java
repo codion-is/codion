@@ -53,8 +53,6 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultFilterModelItems<R> implements Items<R> {
 
-	static final Builder.RefresherBuilder REFRESHER = new DefaultRefresherBuilder();
-
 	private final Lock lock = new Lock() {};
 
 	private final Predicate<R> validator;
@@ -552,7 +550,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 	}
 
-	private static final class DefaultRefresherBuilder implements Builder.RefresherBuilder {
+	private static final class DefaultRefresherStep implements Builder.RefresherStep {
 
 		@Override
 		public <T> Builder.SelectionBuilder<T> refresher(Function<Items<T>, Refresher<T>> refresher) {
@@ -591,7 +589,9 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 	}
 
-	private static final class DefaultBuilder<T> implements Builder<T> {
+	static final class DefaultBuilder<T> implements Builder<T> {
+
+		static final Builder.RefresherStep REFRESHER = new DefaultRefresherStep();
 
 		private final Function<VisibleItems<T>, MultiSelection<T>> selection;
 		private final Function<Items<T>, Refresher<T>> refresher;

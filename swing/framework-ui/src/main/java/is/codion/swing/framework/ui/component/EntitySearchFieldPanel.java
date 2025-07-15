@@ -79,9 +79,9 @@ public final class EntitySearchFieldPanel extends JPanel {
 	}
 
 	/**
-	 * @return a {@link Builder.ModelBuilder}
+	 * @return a {@link Builder.ModelStep}
 	 */
-	public static Builder.ModelBuilder builder() {
+	public static Builder.ModelStep builder() {
 		return DefaultBuilderFactory.MODEL;
 	}
 
@@ -91,21 +91,21 @@ public final class EntitySearchFieldPanel extends JPanel {
 	public interface Builder<T, B extends Builder<T, B>> extends ComponentBuilder<T, EntitySearchFieldPanel, B> {
 
 		/**
-		 * Provides a {@link EditPanelBuilder}
+		 * Provides a {@link EditPanelStep}
 		 */
-		interface ModelBuilder {
+		interface ModelStep {
 
 			/**
 			 * @param model the search model
-			 * @return a {@link EditPanelBuilder}
+			 * @return a {@link EditPanelStep}
 			 */
-			EditPanelBuilder model(EntitySearchModel model);
+			EditPanelStep model(EntitySearchModel model);
 		}
 
 		/**
 		 * Provides a {@link Builder}
 		 */
-		interface EditPanelBuilder {
+		interface EditPanelStep {
 
 			/**
 			 * @param editPanel the edit panel supplier
@@ -299,19 +299,19 @@ public final class EntitySearchFieldPanel extends JPanel {
 		}
 	}
 
-	private static final class DefaultModelBuilder implements Builder.ModelBuilder {
+	private static final class DefaultModelStep implements Builder.ModelStep {
 
 		@Override
-		public Builder.EditPanelBuilder model(EntitySearchModel model) {
-			return new  DefaultEditPanelBuilder(requireNonNull(model));
+		public Builder.EditPanelStep model(EntitySearchModel model) {
+			return new DefaultEditPanelStep(requireNonNull(model));
 		}
 	}
 
-	private static class DefaultEditPanelBuilder implements Builder.EditPanelBuilder {
+	private static class DefaultEditPanelStep implements Builder.EditPanelStep {
 
 		private final EntitySearchModel entitySearchModel;
 
-		private DefaultEditPanelBuilder(EntitySearchModel entitySearchModel) {
+		private DefaultEditPanelStep(EntitySearchModel entitySearchModel) {
 			this.entitySearchModel = entitySearchModel;
 		}
 
@@ -323,7 +323,7 @@ public final class EntitySearchFieldPanel extends JPanel {
 
 	private static final class DefaultBuilderFactory implements Builder.Factory {
 
-		private static final Builder.ModelBuilder MODEL = new DefaultModelBuilder();
+		private static final Builder.ModelStep MODEL = new DefaultModelStep();
 
 		private final EntitySearchModel searchModel;
 		private final Supplier<EntityEditPanel> editPanel;

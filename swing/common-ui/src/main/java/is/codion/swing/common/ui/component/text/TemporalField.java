@@ -72,8 +72,6 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	private static final MessageBundle MESSAGES =
 					messageBundle(TemporalField.class, getBundle(TemporalField.class.getName()));
 
-	private static final Builder.TemporalClassBuilder TEMPORAL_CLASS = new DefaultTemporalClassBuilder();
-
 	/**
 	 * The controls.
 	 */
@@ -192,10 +190,10 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	}
 
 	/**
-	 * @return a {@link Builder.TemporalClassBuilder}
+	 * @return a {@link Builder.TemporalClassStep}
 	 */
-	public static Builder.TemporalClassBuilder builder() {
-		return TEMPORAL_CLASS;
+	public static Builder.TemporalClassStep builder() {
+		return DefaultBuilder.TEMPORAL_CLASS;
 	}
 
 	private void increment() {
@@ -307,7 +305,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		/**
 		 * Provides a {@link Builder}
 		 */
-		interface TemporalClassBuilder {
+		interface TemporalClassStep {
 
 			/**
 			 * A builder for {@link TemporalField}.
@@ -386,7 +384,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		T parse(CharSequence text, DateTimeFormatter formatter);
 	}
 
-	private static final class DefaultTemporalClassBuilder implements Builder.TemporalClassBuilder {
+	private static final class DefaultTemporalClassStep implements Builder.TemporalClassStep {
 
 		@Override
 		public <T extends Temporal> Builder<T> temporalClass(Class<T> temporalClass) {
@@ -396,6 +394,8 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 
 	private static final class DefaultBuilder<T extends Temporal>
 					extends DefaultTextFieldBuilder<T, TemporalField<T>, Builder<T>> implements Builder<T> {
+
+		private static final Builder.TemporalClassStep TEMPORAL_CLASS = new DefaultTemporalClassStep();
 
 		private final Class<T> temporalClass;
 		private final ControlMap controlMap = controlMap(ControlKeys.class);

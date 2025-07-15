@@ -115,7 +115,7 @@ public interface SliderBuilder extends ComponentBuilder<Integer, JSlider, Slider
 	/**
 	 * Provides a {@link SliderBuilder}
 	 */
-	interface ModelBuilder {
+	interface ModelStep {
 
 		/**
 		 * @param boundedRangeModel the model
@@ -127,7 +127,7 @@ public interface SliderBuilder extends ComponentBuilder<Integer, JSlider, Slider
 	/**
 	 * @return a builder for a component
 	 */
-	static ModelBuilder builder() {
+	static ModelStep builder() {
 		return DefaultSliderBuilder.MODEL;
 	}
 }

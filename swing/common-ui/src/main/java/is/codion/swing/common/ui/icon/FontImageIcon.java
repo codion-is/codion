@@ -81,7 +81,7 @@ public interface FontImageIcon {
 		/**
 		 * Provides a {@link Builder}
 		 */
-		interface IkonBuilder {
+		interface IkonStep {
 
 			/**
 			 * @param ikon the ikon
@@ -121,9 +121,9 @@ public interface FontImageIcon {
 	}
 
 	/**
-	 * @return a new {@link FontImageIcon.Builder.IkonBuilder}
+	 * @return an {@link Builder.IkonStep}
 	 */
-	static Builder.IkonBuilder builder() {
-		return DefaultFontImageIcon.IKON;
+	static Builder.IkonStep builder() {
+		return DefaultFontImageIcon.DefaultBuilder.IKON;
 	}
 }

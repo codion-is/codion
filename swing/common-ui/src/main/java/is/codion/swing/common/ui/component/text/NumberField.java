@@ -45,8 +45,6 @@ import static java.util.Objects.requireNonNull;
  */
 public final class NumberField<T extends Number> extends HintTextField {
 
-	private static final Builder.NumberClassBuilder VALUE_CLASS = new DefaultNumberClassBuilder();
-
 	/**
 	 * Specifies whether NumberFields should convert a grouping separator symbol
 	 * to a decimal separator symbol when typed. This solves the problem of locale
@@ -255,10 +253,10 @@ public final class NumberField<T extends Number> extends HintTextField {
 	}
 
 	/**
-	 * @return a {@link Builder.NumberClassBuilder}
+	 * @return a {@link Builder.NumberClassStep}
 	 */
-	public static Builder.NumberClassBuilder builder() {
-		return VALUE_CLASS;
+	public static Builder.NumberClassStep builder() {
+		return AbstractNumberFieldBuilder.VALUE_CLASS;
 	}
 
 	/**
@@ -278,7 +276,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 		/**
 		 * Provides a {@link Builder}
 		 */
-		interface NumberClassBuilder {
+		interface NumberClassStep {
 
 			/**
 			 * @param numberClass the number class
@@ -396,7 +394,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 		}
 	}
 
-	private static final class DefaultNumberClassBuilder implements Builder.NumberClassBuilder {
+	private static final class DefaultNumberClassStep implements Builder.NumberClassStep {
 
 		@Override
 		public <T extends Number> Builder<T> numberClass(Class<T> numberClass) {
@@ -423,6 +421,8 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 	private abstract static class AbstractNumberFieldBuilder<T extends Number>
 					extends DefaultTextFieldBuilder<T, NumberField<T>, Builder<T>> implements Builder<T> {
+
+		private static final Builder.NumberClassStep VALUE_CLASS = new DefaultNumberClassStep();
 
 		protected boolean nullable = true;
 

@@ -106,7 +106,7 @@ public interface ListBuilder<T, V, B extends ListBuilder<T, V, B>> extends Compo
 	/**
 	 * Provides a {@link Factory}
 	 */
-	interface ModelBuilder {
+	interface ModelStep {
 
 		/**
 		 * @param listModel the list model
@@ -143,7 +143,7 @@ public interface ListBuilder<T, V, B extends ListBuilder<T, V, B>> extends Compo
 	/**
 	 * @return a new list builder factory
 	 */
-	static ModelBuilder builder() {
+	static ModelStep builder() {
 		return DefaultListBuilderFactory.MODEL;
 	}
 }

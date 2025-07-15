@@ -41,8 +41,6 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRenderer implements FilterTableCellRenderer<T> {
 
-	static final Builder.ColumnClassBuilder COLUMN_CLASS = new DefaultColumnClassBuilder();
-
 	private final Settings<R, C, T> settings;
 	private final Class<T> columnClass;
 
@@ -397,7 +395,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 	}
 
-	private static final class DefaultColumnClassBuilder implements Builder.ColumnClassBuilder {
+	private static final class DefaultColumnClassStep implements Builder.ColumnClassStep {
 
 		@Override
 		public <R, C, T> Builder<R, C, T> columnClass(Class<T> columnClass) {
@@ -405,10 +403,9 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 	}
 
-	/**
-	 * A default {@link Builder} implementation.
-	 */
-	private static final class DefaultBuilder<R, C, T> implements Builder<R, C, T> {
+	static final class DefaultBuilder<R, C, T> implements Builder<R, C, T> {
+
+		static final Builder.ColumnClassStep COLUMN_CLASS = new DefaultColumnClassStep();
 
 		private final SettingsBuilder<R, C, T> settings;
 		private final Class<T> columnClass;

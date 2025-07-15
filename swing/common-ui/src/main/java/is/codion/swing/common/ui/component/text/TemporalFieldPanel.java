@@ -52,8 +52,6 @@ import static java.util.Objects.requireNonNull;
  */
 public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 
-	private static final Builder.TemporalClassBuilder TEMPORAL_CLASS = new DefaultTemporalClassBuilder();
-
 	private final TemporalField<T> temporalField;
 	private final JButton button;
 
@@ -121,10 +119,10 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 	}
 
 	/**
-	 * @return a {@link Builder.TemporalClassBuilder}
+	 * @return a {@link Builder.TemporalClassStep}
 	 */
-	public static Builder.TemporalClassBuilder builder() {
-		return TEMPORAL_CLASS;
+	public static Builder.TemporalClassStep builder() {
+		return DefaultBuilder.TEMPORAL_CLASS;
 	}
 
 	/**
@@ -136,7 +134,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 		/**
 		 * Provides a {@link TemporalFieldPanel.Builder}
 		 */
-		interface TemporalClassBuilder {
+		interface TemporalClassStep {
 
 			/**
 			 * @param <T> the value type
@@ -218,7 +216,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 						.build();
 	}
 
-	private static final class DefaultTemporalClassBuilder implements Builder.TemporalClassBuilder {
+	private static final class DefaultTemporalClassStep implements Builder.TemporalClassStep {
 
 		@Override
 		public <T extends Temporal> Builder<T> temporalClass(Class<T> temporalClass) {
@@ -229,6 +227,8 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 	private static final class DefaultBuilder<T extends Temporal>
 					extends AbstractComponentBuilder<T, TemporalFieldPanel<T>, Builder<T>>
 					implements Builder<T> {
+
+		private static final Builder.TemporalClassStep TEMPORAL_CLASS = new DefaultTemporalClassStep();
 
 		private final TemporalField.Builder<T> temporalFieldBuilder;
 

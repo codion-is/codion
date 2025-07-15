@@ -55,8 +55,6 @@ import static java.util.stream.Collectors.toMap;
 
 final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
-	static final DefaultItemsBuilder ITEMS = new DefaultItemsBuilder();
-
 	private static final Function<Object, ?> DEFAULT_SELECTED_ITEM_TRANSLATOR = new DefaultSelectedItemTranslator<>();
 	private static final Comparator<?> DEFAULT_COMPARATOR = new DefaultComparator<>();
 	private static final Comparator<?> NULL_COMPARATOR = new NullComparator<>();
@@ -142,7 +140,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 	}
 
-	private static final class DefaultItemsBuilder implements Builder.ItemsBuilder {
+	private static final class DefaultItemsStep implements Builder.ItemsStep {
 
 		@Override
 		public <T> Builder<T> items(Collection<T> items) {
@@ -160,7 +158,9 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 	}
 
-	private static final class DefaultBuilder<T> implements Builder<T> {
+	static final class DefaultBuilder<T> implements Builder<T> {
+
+		static final DefaultItemsStep ITEMS = new DefaultItemsStep();
 
 		private final Collection<T> items;
 		private final Supplier<Collection<T>> supplier;

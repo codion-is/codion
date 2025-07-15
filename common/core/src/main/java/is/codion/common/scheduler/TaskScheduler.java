@@ -24,7 +24,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
-import static is.codion.common.scheduler.TaskScheduler.Builder.TaskBuilder;
+import static is.codion.common.scheduler.TaskScheduler.Builder.TaskStep;
 
 /**
  * A task scheduler based on a {@link ScheduledExecutorService}, scheduled at a fixed rate,
@@ -75,10 +75,10 @@ public interface TaskScheduler {
 	boolean running();
 
 	/**
-	 * @return a new {@link TaskBuilder} instance.
+	 * @return a new {@link TaskStep} instance.
 	 */
-	static TaskBuilder builder() {
-		return DefaultTaskScheduler.TASK;
+	static TaskStep builder() {
+		return DefaultTaskScheduler.DefaultBuilder.TASK;
 	}
 
 	/**
@@ -89,7 +89,7 @@ public interface TaskScheduler {
 		/**
 		 * Provides a {@link Builder}
 		 */
-		interface TaskBuilder {
+		interface TaskStep {
 
 			/**
 			 * @param task the task to run

@@ -36,8 +36,6 @@ import static javax.swing.SortOrder.*;
 
 final class DefaultFilterListModel<T> extends AbstractListModel<T> implements FilterListModel<T> {
 
-	static final Builder.ItemsBuilder ITEMS = new DefaultItemsBuilder();
-
 	private final Items<T> items;
 	private final FilterListSelection<T> selection;
 	private final FilterListSort<T> sort;
@@ -158,7 +156,7 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 		}
 	}
 
-	private static final class DefaultItemsBuilder implements Builder.ItemsBuilder {
+	private static final class DefaultItemsStep implements Builder.ItemsStep {
 
 		@Override
 		public <T> Builder<T> items(Collection<T> items) {
@@ -171,7 +169,9 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 		}
 	}
 
-	private static final class DefaultBuilder<T> implements Builder<T> {
+	static final class DefaultBuilder<T> implements Builder<T> {
+
+		static final Builder.ItemsStep ITEMS = new DefaultItemsStep();
 
 		private final Collection<T> items;
 		private final Supplier<? extends Collection<T>> supplier;

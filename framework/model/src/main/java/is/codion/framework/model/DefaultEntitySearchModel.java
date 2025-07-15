@@ -57,8 +57,6 @@ import static java.util.stream.Collectors.toMap;
 
 final class DefaultEntitySearchModel implements EntitySearchModel {
 
-	static final Builder.EntityTypeBuilder ENTITY_TYPE = new DefaultEntityTypeBuilder();
-
 	private static final Supplier<Condition> NULL_CONDITION = () -> null;
 	private static final String WILDCARD_MULTIPLE = "%";
 	private static final String WILDCARD_SINGLE = "_";
@@ -319,19 +317,19 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		}
 	}
 
-	static class DefaultEntityTypeBuilder implements Builder.EntityTypeBuilder {
+	static class DefaultEntityTypeStep implements Builder.EntityTypeStep {
 
 		@Override
-		public Builder.ConnectionProviderBuilder entityType(EntityType entityType) {
-			return new DefaultConnectionProviderBuilder(requireNonNull(entityType));
+		public Builder.ConnectionProviderStep entityType(EntityType entityType) {
+			return new DefaultConnectionProviderStep(requireNonNull(entityType));
 		}
 	}
 
-	private static class DefaultConnectionProviderBuilder implements Builder.ConnectionProviderBuilder {
+	private static class DefaultConnectionProviderStep implements Builder.ConnectionProviderStep {
 
 		private final EntityType entityType;
 
-		private DefaultConnectionProviderBuilder(EntityType entityType) {
+		private DefaultConnectionProviderStep(EntityType entityType) {
 			this.entityType = entityType;
 		}
 
@@ -342,6 +340,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 	}
 
 	static final class DefaultBuilder implements Builder {
+
+		static final Builder.EntityTypeStep ENTITY_TYPE = new DefaultEntityTypeStep();
 
 		private final EntityDefinition entityDefinition;
 		private final EntityConnectionProvider connectionProvider;

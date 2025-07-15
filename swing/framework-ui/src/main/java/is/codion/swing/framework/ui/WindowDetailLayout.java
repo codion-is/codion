@@ -43,7 +43,7 @@ import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
 import static is.codion.swing.framework.ui.EntityPanel.WindowType.FRAME;
-import static is.codion.swing.framework.ui.WindowDetailLayout.Builder.PanelBuilder;
+import static is.codion.swing.framework.ui.WindowDetailLayout.Builder.PanelStep;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toList;
@@ -87,9 +87,9 @@ public final class WindowDetailLayout implements DetailLayout {
 	}
 
 	/**
-	 * @return a {@link WindowDetailLayout.Builder.PanelBuilder} instance
+	 * @return a {@link PanelStep} instance
 	 */
-	public static Builder.PanelBuilder builder() {
+	public static PanelStep builder() {
 		return DefaultBuilder.PANEL;
 	}
 
@@ -157,7 +157,7 @@ public final class WindowDetailLayout implements DetailLayout {
 		/**
 		 * Provides a {@link WindowDetailLayout.Builder}
 		 */
-		interface PanelBuilder {
+		interface PanelStep {
 
 			/**
 			 * @param panel the entity panel
@@ -241,7 +241,7 @@ public final class WindowDetailLayout implements DetailLayout {
 		}
 	}
 
-	private static final class DefaultPanelBuilder implements PanelBuilder {
+	private static final class DefaultPanelStep implements PanelStep {
 
 		@Override
 		public WindowDetailLayout.Builder panel(EntityPanel panel) {
@@ -251,7 +251,7 @@ public final class WindowDetailLayout implements DetailLayout {
 
 	private static final class DefaultBuilder implements Builder {
 
-		private static final Builder.PanelBuilder PANEL = new DefaultPanelBuilder();
+		private static final PanelStep PANEL = new DefaultPanelStep();
 
 		private final EntityPanel entityPanel;
 

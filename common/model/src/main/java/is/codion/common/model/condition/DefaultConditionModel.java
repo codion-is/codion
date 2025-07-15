@@ -45,8 +45,6 @@ import static java.util.stream.Collectors.joining;
 
 final class DefaultConditionModel<T> implements ConditionModel<T> {
 
-	static final Builder.ValueClassBuilder VALUE_CLASS = new DefaultValueClassBuilder();
-
 	private static final String REGEX_WILDCARD = ".*";
 
 	private final Runnable autoEnableListener = new AutoEnableListener();
@@ -557,7 +555,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		}
 	}
 
-	private static final class DefaultValueClassBuilder implements Builder.ValueClassBuilder {
+	private static final class DefaultValueClassStep implements Builder.ValueClassStep {
 
 		@Override
 		public <T> Builder<T> valueClass(Class<T> valueClass) {
@@ -565,7 +563,9 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		}
 	}
 
-	private static final class DefaultBuilder<T> implements Builder<T> {
+	static final class DefaultBuilder<T> implements Builder<T> {
+
+		static final Builder.ValueClassStep VALUE_CLASS = new DefaultValueClassStep();
 
 		private static final List<Operator> DEFAULT_OPERATORS = asList(Operator.values());
 

@@ -74,10 +74,10 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	<V> Value<V> createSelector(ItemFinder<T, V> itemFinder);
 
 	/**
-	 * @return a new {@link Builder.ItemsBuilder} instance
+	 * @return a new {@link Builder.ItemsStep} instance
 	 */
-	static FilterComboBoxModel.Builder.ItemsBuilder builder() {
-		return DefaultFilterComboBoxModel.ITEMS;
+	static Builder.ItemsStep builder() {
+		return DefaultFilterComboBoxModel.DefaultBuilder.ITEMS;
 	}
 
 	/**
@@ -122,7 +122,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 		/**
 		 * Provides a {@link Builder}
 		 */
-		interface ItemsBuilder {
+		interface ItemsStep {
 
 			/**
 			 * @param <T> the item type

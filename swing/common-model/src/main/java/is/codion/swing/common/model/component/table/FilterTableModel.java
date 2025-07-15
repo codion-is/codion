@@ -92,11 +92,10 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	void fireTableRowsUpdated(int fromIndex, int toIndex);
 
 	/**
-	 * Instantiates a new table model builder.
-	 * @return a new builder instance
+	 * @return a {@link Builder.ColumnsStep} instance
 	 */
-	static Builder.ColumnsBuilder builder() {
-		return new DefaultFilterTableModel.DefaultColumnsBuilder();
+	static Builder.ColumnsStep builder() {
+		return DefaultFilterTableModel.DefaultBuilder.COLUMNS;
 	}
 
 	/**
@@ -150,7 +149,7 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		/**
 		 * Provides a {@link Builder} instance
 		 */
-		interface ColumnsBuilder {
+		interface ColumnsStep {
 
 			/**
 			 * @param <R> the type representing rows

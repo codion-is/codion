@@ -33,7 +33,7 @@ import static java.util.Objects.requireNonNull;
 class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> extends AbstractTextComponentBuilder<T, C, B>
 				implements TextFieldBuilder<T, C, B> {
 
-	static final ValueClassBuilder VALUE_CLASS = new DefaultValueClassBuilder();
+	static final ValueClassStep VALUE_CLASS = new DefaultValueClassStep();
 
 	private final Class<T> valueClass;
 
@@ -134,7 +134,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
 		return format;
 	}
 
-	private static final class DefaultValueClassBuilder implements ValueClassBuilder {
+	private static final class DefaultValueClassStep implements ValueClassStep {
 
 		@Override
 		public <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> valueClass(Class<T> valueClass) {

@@ -131,10 +131,10 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 	int horizontalAlignment();
 
 	/**
-	 * @return a {@link FilterTableCellRenderer.Builder.ColumnClassBuilder} instance
+	 * @return a {@link Builder.ColumnClassStep} instance
 	 */
-	static Builder.ColumnClassBuilder builder() {
-		return DefaultFilterTableCellRenderer.COLUMN_CLASS;
+	static Builder.ColumnClassStep builder() {
+		return DefaultFilterTableCellRenderer.DefaultBuilder.COLUMN_CLASS;
 	}
 
 	/**
@@ -166,7 +166,7 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 		/**
 		 * Provides a {@link Builder}
 		 */
-		interface ColumnClassBuilder {
+		interface ColumnClassStep {
 
 			/**
 			 * @param <R> the row type

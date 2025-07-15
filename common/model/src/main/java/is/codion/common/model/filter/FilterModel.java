@@ -244,10 +244,10 @@ public interface FilterModel<T> {
 		void filter();
 
 		/**
-		 * @return a new {@link Builder.RefresherBuilder} instance
+		 * @return a new {@link Builder.RefresherStep} instance
 		 */
-		static Builder.RefresherBuilder builder() {
-			return DefaultFilterModelItems.REFRESHER;
+		static Builder.RefresherStep builder() {
+			return DefaultFilterModelItems.DefaultBuilder.REFRESHER;
 		}
 
 		/**
@@ -259,7 +259,7 @@ public interface FilterModel<T> {
 			/**
 			 * Provides a {@link SelectionBuilder}
 			 */
-			interface RefresherBuilder {
+			interface RefresherStep {
 
 				/**
 				 * @param refresher the item refresher to use

@@ -74,9 +74,9 @@ public final class EntityComboBoxPanel extends JPanel {
 	}
 
 	/**
-	 * @return a {@link Builder.ModelBuilder}
+	 * @return a {@link Builder.ModelStep}
 	 */
-	public static Builder.ModelBuilder builder() {
+	public static Builder.ModelStep builder() {
 		return DefaultBuilder.MODEL;
 	}
 
@@ -86,21 +86,21 @@ public final class EntityComboBoxPanel extends JPanel {
 	public interface Builder extends ComponentBuilder<Entity, EntityComboBoxPanel, Builder> {
 
 		/**
-		 * Provides a {@link EditPanelBuilder}
+		 * Provides a {@link EditPanelStep}
 		 */
-		interface ModelBuilder {
+		interface ModelStep {
 
 			/**
 			 * @param model the search model
-			 * @return a {@link EntityComboBoxPanel.Builder.EditPanelBuilder}
+			 * @return a {@link EditPanelStep}
 			 */
-			EditPanelBuilder model(EntityComboBoxModel model);
+			EditPanelStep model(EntityComboBoxModel model);
 		}
 
 		/**
 		 * Provides a {@link Builder}
 		 */
-		interface EditPanelBuilder {
+		interface EditPanelStep {
 
 			/**
 			 * @param editPanel the edit panel supplier
@@ -174,19 +174,19 @@ public final class EntityComboBoxPanel extends JPanel {
 		}
 	}
 
-	private static final class DefaultModelBuilder implements EntityComboBoxPanel.Builder.ModelBuilder {
+	private static final class DefaultModelStep implements Builder.ModelStep {
 
 		@Override
-		public EntityComboBoxPanel.Builder.EditPanelBuilder model(EntityComboBoxModel model) {
-			return new EntityComboBoxPanel.DefaultEditPanelBuilder(requireNonNull(model));
+		public Builder.EditPanelStep model(EntityComboBoxModel model) {
+			return new DefaultEditPanelStep(requireNonNull(model));
 		}
 	}
 
-	private static class DefaultEditPanelBuilder implements Builder.EditPanelBuilder {
+	private static class DefaultEditPanelStep implements Builder.EditPanelStep {
 
 		private final EntityComboBoxModel comboBoxModel;
 
-		private DefaultEditPanelBuilder(EntityComboBoxModel comboBoxModel) {
+		private DefaultEditPanelStep(EntityComboBoxModel comboBoxModel) {
 			this.comboBoxModel = comboBoxModel;
 		}
 
@@ -198,7 +198,7 @@ public final class EntityComboBoxPanel extends JPanel {
 
 	private static final class DefaultBuilder extends AbstractComponentBuilder<Entity, EntityComboBoxPanel, Builder> implements Builder {
 
-		private static final ModelBuilder MODEL = new DefaultModelBuilder();
+		private static final ModelStep MODEL = new DefaultModelStep();
 
 		private final EntityComboBox.Builder entityComboBoxBuilder;
 

@@ -29,7 +29,7 @@ import static java.util.Objects.requireNonNull;
 
 final class EntityPanelBuilder implements EntityPanel.Builder {
 
-	static final EntityTypeBuilder ENTITY_TYPE = new DefaultEntityTypeBuilder();
+	static final EntityTypeStep ENTITY_TYPE = new DefaultEntityTypeStep();
 
 	private final EntityType entityType;
 	private final Function<EntityConnectionProvider, EntityPanel> entityPanel;
@@ -86,7 +86,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 		return entityPanel.apply(requireNonNull(connectionProvider));
 	}
 
-	private static final class DefaultEntityTypeBuilder implements EntityTypeBuilder {
+	private static final class DefaultEntityTypeStep implements EntityTypeStep {
 
 		@Override
 		public EntityPanel.Builder.PanelBuilder entityType(EntityType entityType) {

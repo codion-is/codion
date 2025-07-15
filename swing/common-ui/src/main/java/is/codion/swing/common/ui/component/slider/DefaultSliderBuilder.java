@@ -29,7 +29,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultSliderBuilder extends AbstractComponentBuilder<Integer, JSlider, SliderBuilder> implements SliderBuilder {
 
-	static final ModelBuilder MODEL = new DefaultModelBuilder();
+	static final ModelStep MODEL = new DefaultModelStep();
 
 	private final BoundedRangeModel boundedRangeModel;
 
@@ -144,7 +144,7 @@ final class DefaultSliderBuilder extends AbstractComponentBuilder<Integer, JSlid
 		return new IntegerSliderValue(component);
 	}
 
-	private static final class DefaultModelBuilder implements ModelBuilder {
+	private static final class DefaultModelStep implements ModelStep {
 
 		@Override
 		public SliderBuilder model(BoundedRangeModel boundedRangeModel) {

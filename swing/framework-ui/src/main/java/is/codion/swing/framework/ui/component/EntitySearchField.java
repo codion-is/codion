@@ -309,9 +309,9 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	/**
-	 * @return a {@link Builder.ModelBuilder}
+	 * @return a {@link Builder.ModelStep}
 	 */
-	public static Builder.ModelBuilder builder() {
+	public static Builder.ModelStep builder() {
 		return DefaultBuilderFactory.MODEL;
 	}
 
@@ -323,7 +323,7 @@ public final class EntitySearchField extends HintTextField {
 		/**
 		 * Provides a {@link EntitySearchField.Builder.Factory}
 		 */
-		interface ModelBuilder {
+		interface ModelStep {
 
 			/**
 			 * Instantiates a new {@link EntitySearchField.Builder.Factory}
@@ -1115,7 +1115,7 @@ public final class EntitySearchField extends HintTextField {
 		}
 	}
 
-	private static final class DefaultModelBuilder implements Builder.ModelBuilder {
+	private static final class DefaultModelStep implements Builder.ModelStep {
 
 		@Override
 		public Builder.Factory model(EntitySearchModel model) {
@@ -1125,7 +1125,7 @@ public final class EntitySearchField extends HintTextField {
 
 	private static final class DefaultBuilderFactory implements Builder.Factory {
 
-		private static final Builder.ModelBuilder MODEL = new DefaultModelBuilder();
+		private static final Builder.ModelStep MODEL = new DefaultModelStep();
 
 		private final EntitySearchModel searchModel;
 

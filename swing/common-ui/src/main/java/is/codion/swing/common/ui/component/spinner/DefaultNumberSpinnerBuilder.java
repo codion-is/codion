@@ -30,7 +30,7 @@ import static java.util.Objects.requireNonNull;
 final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinnerBuilder<T, NumberSpinnerBuilder<T>>
 				implements NumberSpinnerBuilder<T> {
 
-	static final NumberClassBuilder NUMBER_CLASS = new DefaultNumberClassBuilder();
+	static final NumberClassStep NUMBER_CLASS = new DefaultNumberClassStep();
 
 	private final Class<T> valueClass;
 
@@ -126,7 +126,7 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinne
 		return spinner;
 	}
 
-	private static final class DefaultNumberClassBuilder implements NumberClassBuilder {
+	private static final class DefaultNumberClassStep implements NumberClassStep {
 
 		@Override
 		public <T extends Number> NumberSpinnerBuilder<T> numberClass(Class<T> numberClass) {

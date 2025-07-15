@@ -182,10 +182,10 @@ public interface ConditionModel<T> {
 	Observer<?> changed();
 
 	/**
-	 * @return a new {@link Builder.ValueClassBuilder} instance
+	 * @return a {@link Builder.ValueClassStep} instance
 	 */
-	static Builder.ValueClassBuilder builder() {
-		return DefaultConditionModel.VALUE_CLASS;
+	static Builder.ValueClassStep builder() {
+		return DefaultConditionModel.DefaultBuilder.VALUE_CLASS;
 	}
 
 	/**
@@ -399,7 +399,7 @@ public interface ConditionModel<T> {
 		/**
 		 * Provides a {@link Builder}
 		 */
-		interface ValueClassBuilder {
+		interface ValueClassStep {
 
 			/**
 			 * Returns a new {@link Builder} instance.

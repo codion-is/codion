@@ -205,9 +205,9 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	}
 
 	/**
-	 * @return a {@link EntityComboBox.Builder.ModelBuilder}
+	 * @return a {@link Builder.ModelStep}
 	 */
-	public static Builder.ModelBuilder builder() {
+	public static Builder.ModelStep builder() {
 		return DefaultBuilder.MODEL;
 	}
 
@@ -220,7 +220,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		/**
 		 * Provides a {@link Builder}
 		 */
-		interface ModelBuilder {
+		interface ModelStep {
 
 			/**
 			 * Instantiates a new {@link EntityComboBox.Builder}
@@ -271,7 +271,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		setCursor(refresherActive ? Cursors.WAIT : Cursors.DEFAULT);
 	}
 
-	private static final class DefaultModelBuilder implements Builder.ModelBuilder {
+	private static final class DefaultModelStep implements Builder.ModelStep {
 
 		@Override
 		public Builder model(EntityComboBoxModel model) {
@@ -281,7 +281,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
 	private static final class DefaultBuilder extends DefaultComboBoxBuilder<Entity, EntityComboBox, Builder> implements Builder {
 
-		private static final Builder.ModelBuilder MODEL = new DefaultModelBuilder();
+		private static final Builder.ModelStep MODEL = new DefaultModelStep();
 
 		private final ControlMap controlMap = controlMap(ControlKeys.class);
 

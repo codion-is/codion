@@ -40,7 +40,7 @@ import static java.util.Objects.requireNonNull;
 public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> extends AbstractComponentBuilder<T, C, B>
 				implements ComboBoxBuilder<T, C, B> {
 
-	static final ModelBuilder MODEL = new DefaultModelBuilder();
+	static final ModelStep MODEL = new DefaultModelStep();
 
 	protected final ComboBoxModel<T> comboBoxModel;
 
@@ -217,7 +217,7 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
 		}
 	}
 
-	private static final class DefaultModelBuilder implements ModelBuilder {
+	private static final class DefaultModelStep implements ModelStep {
 
 		@Override
 		public <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> model(ComboBoxModel<T> comboBoxModel) {

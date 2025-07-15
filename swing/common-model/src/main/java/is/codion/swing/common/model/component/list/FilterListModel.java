@@ -41,10 +41,10 @@ public interface FilterListModel<T> extends ListModel<T>, FilterModel<T> {
 	FilterListSort<T> sort();
 
 	/**
-	 * @return a new {@link Builder.ItemsBuilder} instance
+	 * @return a {@link Builder.ItemsStep} instance
 	 */
-	static Builder.ItemsBuilder builder() {
-		return DefaultFilterListModel.ITEMS;
+	static Builder.ItemsStep builder() {
+		return DefaultFilterListModel.DefaultBuilder.ITEMS;
 	}
 
 	/**
@@ -56,7 +56,7 @@ public interface FilterListModel<T> extends ListModel<T>, FilterModel<T> {
 		/**
 		 * Provides a {@link Builder}
 		 */
-		interface ItemsBuilder {
+		interface ItemsStep {
 
 			/**
 			 * @param <T> the item type

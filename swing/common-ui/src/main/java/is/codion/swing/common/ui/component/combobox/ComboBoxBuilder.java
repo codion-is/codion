@@ -135,7 +135,7 @@ public interface ComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBu
 	/**
 	 * Provides a {@link ComboBoxBuilder}
 	 */
-	interface ModelBuilder {
+	interface ModelStep {
 
 		/**
 		 * @param <T> the value type
@@ -148,9 +148,9 @@ public interface ComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBu
 	}
 
 	/**
-	 * @return a {@link ModelBuilder}
+	 * @return a {@link ModelStep}
 	 */
-	static ModelBuilder builder() {
+	static ModelStep builder() {
 		return DefaultComboBoxBuilder.MODEL;
 	}
 

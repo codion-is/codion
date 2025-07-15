@@ -63,7 +63,7 @@ public interface NumberSpinnerBuilder<T extends Number> extends SpinnerBuilder<T
 	/**
 	 * Provides a {@link NumberSpinnerBuilder}
 	 */
-	interface NumberClassBuilder {
+	interface NumberClassStep {
 
 		/**
 		 * @param numberClass the number class
@@ -74,9 +74,9 @@ public interface NumberSpinnerBuilder<T extends Number> extends SpinnerBuilder<T
 	}
 
 	/**
-	 * @return a {@link NumberClassBuilder}
+	 * @return a {@link NumberClassStep}
 	 */
-	static NumberClassBuilder builder() {
+	static NumberClassStep builder() {
 		return DefaultNumberSpinnerBuilder.NUMBER_CLASS;
 	}
 }

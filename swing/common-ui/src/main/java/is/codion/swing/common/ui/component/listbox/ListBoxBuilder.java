@@ -43,7 +43,7 @@ public interface ListBoxBuilder<T> extends ComponentBuilder<Set<T>, JComboBox<T>
 	/**
 	 * Provides a {@link LinkedValueBuilder}
 	 */
-	interface ItemValueBuilder {
+	interface ItemValueStep {
 
 		/**
 		 * @param itemValue supplies new items to add to the list box.
@@ -76,7 +76,7 @@ public interface ListBoxBuilder<T> extends ComponentBuilder<Set<T>, JComboBox<T>
 	 * </ul>
 	 * @return a new {@link ComponentValue}
 	 */
-	static ListBoxBuilder.ItemValueBuilder builder() {
+	static ItemValueStep builder() {
 		return DefaultListBoxBuilder.ITEM;
 	}
 }

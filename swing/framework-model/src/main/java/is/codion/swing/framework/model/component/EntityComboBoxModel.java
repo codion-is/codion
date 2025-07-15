@@ -102,10 +102,10 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	<T> Value<T> createSelectorValue(Attribute<T> attribute);
 
 	/**
-	 * @return a new {@link EntityComboBoxModel.Builder.EntityTypeBuilder} instance
+	 * @return a {@link Builder.EntityTypeStep} instance
 	 */
-	static Builder.EntityTypeBuilder builder() {
-		return DefaultEntityComboBoxModel.ENTITY_TYPE;
+	static Builder.EntityTypeStep builder() {
+		return DefaultEntityComboBoxModel.DefaultBuilder.ENTITY_TYPE;
 	}
 
 	/**
@@ -114,21 +114,21 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	interface Builder {
 
 		/**
-		 * Provides a {@link ConnectionProviderBuilder}
+		 * Provides a {@link ConnectionProviderStep}
 		 */
-		interface EntityTypeBuilder {
+		interface EntityTypeStep {
 
 			/**
 			 * @param entityType the type of the entity this combo box model should represent
-			 * @return a new {@link EntityComboBoxModel.Builder.ConnectionProviderBuilder} instance
+			 * @return a new {@link ConnectionProviderStep} instance
 			 */
-			ConnectionProviderBuilder entityType(EntityType entityType);
+			ConnectionProviderStep entityType(EntityType entityType);
 		}
 
 		/**
 		 * Provides a {@link Builder}
 		 */
-		interface ConnectionProviderBuilder {
+		interface ConnectionProviderStep {
 
 			/**
 			 * @param connectionProvider a EntityConnectionProvider instance

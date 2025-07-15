@@ -189,21 +189,21 @@ public interface EntitySearchModel {
 	interface Builder {
 
 		/**
-		 * Provides a {@link ConnectionProviderBuilder}
+		 * Provides a {@link ConnectionProviderStep}
 		 */
-		interface EntityTypeBuilder {
+		interface EntityTypeStep {
 
 			/**
 			 * @param entityType the type of the entity this combo box model should represent
-			 * @return a new {@link Builder.ConnectionProviderBuilder} instance
+			 * @return a new {@link ConnectionProviderStep} instance
 			 */
-			ConnectionProviderBuilder entityType(EntityType entityType);
+			ConnectionProviderStep entityType(EntityType entityType);
 		}
 
 		/**
 		 * Provides a {@link Builder}
 		 */
-		interface ConnectionProviderBuilder {
+		interface ConnectionProviderStep {
 
 			/**
 			 * @param connectionProvider a EntityConnectionProvider instance
@@ -260,11 +260,10 @@ public interface EntitySearchModel {
 	}
 
 	/**
-	 * Instantiates a new {@link EntitySearchModel.Builder}, initialized with the search columns for the given entity type
-	 * @return a new {@link EntitySearchModel.Builder.EntityTypeBuilder} instance
+	 * @return a {@link Builder.EntityTypeStep} instance
 	 * @see is.codion.framework.domain.entity.EntityDefinition.Columns#searchable()
 	 */
-	static EntitySearchModel.Builder.EntityTypeBuilder builder() {
-		return DefaultEntitySearchModel.ENTITY_TYPE;
+	static Builder.EntityTypeStep builder() {
+		return DefaultEntitySearchModel.DefaultBuilder.ENTITY_TYPE;
 	}
 }

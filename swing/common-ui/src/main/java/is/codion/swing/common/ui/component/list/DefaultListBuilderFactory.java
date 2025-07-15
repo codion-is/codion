@@ -24,7 +24,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultListBuilderFactory<T> implements ListBuilder.Factory<T> {
 
-	static final ListBuilder.ModelBuilder MODEL = new DefaultModelBuilder();
+	static final ListBuilder.ModelStep MODEL = new DefaultModelStep();
 
 	private final FilterListModel<T> listModel;
 
@@ -47,7 +47,7 @@ final class DefaultListBuilderFactory<T> implements ListBuilder.Factory<T> {
 		return new DefaultListSelectedItemBuilder<>(listModel);
 	}
 
-	private static final class DefaultModelBuilder implements ListBuilder.ModelBuilder {
+	private static final class DefaultModelStep implements ListBuilder.ModelStep {
 
 		@Override
 		public <T> ListBuilder.Factory<T> model(FilterListModel<T> listModel) {

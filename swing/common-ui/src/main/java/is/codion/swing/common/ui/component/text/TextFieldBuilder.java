@@ -93,7 +93,7 @@ public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBu
 	/**
 	 * Provides a {@link TextFieldBuilder}
 	 */
-	interface ValueClassBuilder {
+	interface ValueClassStep {
 
 		/**
 		 * @param <T> the value type
@@ -106,9 +106,9 @@ public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBu
 	}
 
 	/**
-	 * @return a {@link ValueClassBuilder}
+	 * @return a {@link ValueClassStep}
 	 */
-	static ValueClassBuilder builder() {
+	static ValueClassStep builder() {
 		return DefaultTextFieldBuilder.VALUE_CLASS;
 	}
 }

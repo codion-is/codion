@@ -254,7 +254,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	/**
 	 * @return a new {@link Builder}
 	 */
-	public static Builder.ModelBuilder builder() {
+	public static Builder.ModelStep builder() {
 		return DefaultBuilder.MODEL;
 	}
 
@@ -267,7 +267,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		/**
 		 * Provides a {@link Builder}
 		 */
-		interface ModelBuilder {
+		interface ModelStep {
 
 			/**
 			 * @param model the condition model
@@ -303,7 +303,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		ColumnConditionPanel<T> build();
 	}
 
-	private static final class DefaultModelBuilder implements Builder.ModelBuilder {
+	private static final class DefaultModelStep implements Builder.ModelStep {
 
 		@Override
 		public <T> Builder<T> model(ConditionModel<T> model) {
@@ -313,7 +313,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
 	private static final class DefaultBuilder<T> implements Builder<T> {
 
-		private static final ModelBuilder MODEL = new DefaultModelBuilder();
+		private static final ModelStep MODEL = new DefaultModelStep();
 
 		private final ConditionModel<T> conditionModel;
 

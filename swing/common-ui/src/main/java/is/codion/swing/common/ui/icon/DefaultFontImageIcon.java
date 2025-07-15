@@ -31,8 +31,6 @@ import static java.util.Objects.requireNonNull;
  */
 final class DefaultFontImageIcon implements FontImageIcon {
 
-	static final Builder.IkonBuilder IKON = new DefaultIkonBuilder();
-
 	private final FontIcon fontIcon;
 	private final ImageIcon imageIcon;
 	private final IconPainter iconPainter;
@@ -55,7 +53,7 @@ final class DefaultFontImageIcon implements FontImageIcon {
 		iconPainter.paintIcon(fontIcon, imageIcon);
 	}
 
-	private static final class DefaultIkonBuilder implements Builder.IkonBuilder {
+	private static final class DefaultIkonStep implements Builder.IkonStep {
 
 		@Override
 		public Builder ikon(Ikon ikon) {
@@ -63,7 +61,9 @@ final class DefaultFontImageIcon implements FontImageIcon {
 		}
 	}
 
-	private static final class DefaultBuilder implements Builder {
+	static final class DefaultBuilder implements Builder {
+
+		static final Builder.IkonStep IKON = new DefaultIkonStep();
 
 		private static final IconPainter DEFAULT_ICON_PAINTER = new DefaultIconPainter();
 		private static final ImageIconFactory DEFAULT_ICON_FACTORY = new DefaultImageIconFactory();

@@ -49,7 +49,7 @@ final class DefaultListBoxBuilder<T>
 				extends AbstractComponentBuilder<Set<T>, JComboBox<T>, ListBoxBuilder<T>>
 				implements ListBoxBuilder<T> {
 
-	static final ItemValueBuilder ITEM = new DefaultItemValue();
+	static final ItemValueStep ITEM = new DefaultItemValueStep();
 
 	private final ComponentValue<T, ? extends JComponent> itemValue;
 	private final ValueSet<T> linkedValue;
@@ -179,7 +179,7 @@ final class DefaultListBoxBuilder<T>
 		}
 	}
 
-	private static final class DefaultItemValue implements ItemValueBuilder {
+	private static final class DefaultItemValueStep implements ItemValueStep {
 
 		@Override
 		public <T> LinkedValueBuilder<T> itemValue(ComponentValue<T, ? extends JComponent> itemValue) {

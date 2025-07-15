@@ -345,7 +345,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 	}
 
-	static final class DefaultColumnsBuilder implements Builder.ColumnsBuilder {
+	static final class DefaultColumnsStep implements Builder.ColumnsStep {
 
 		@Override
 		public <R, C> Builder<R, C> columns(TableColumns<R, C> columns) {
@@ -353,7 +353,9 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 	}
 
-	private static final class DefaultBuilder<R, C> implements Builder<R, C> {
+	static final class DefaultBuilder<R, C> implements Builder<R, C> {
+
+		static final Builder.ColumnsStep COLUMNS = new DefaultColumnsStep();
 
 		private final TableColumns<R, C> columns;
 

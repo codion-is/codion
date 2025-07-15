@@ -201,9 +201,9 @@ public final class TabbedDetailLayout implements DetailLayout {
 	}
 
 	/**
-	 * @return a {@link TabbedDetailLayout.Builder.PanelBuilder} instance
+	 * @return a {@link Builder.PanelStep} instance
 	 */
-	public static Builder.PanelBuilder builder() {
+	public static Builder.PanelStep builder() {
 		return DefaultBuilder.PANEL;
 	}
 
@@ -215,7 +215,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		/**
 		 * Provides a {@link Builder}
 		 */
-		interface PanelBuilder {
+		interface PanelStep {
 
 			/**
 			 * @param panel the entity panel
@@ -649,7 +649,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		}
 	}
 
-	private static final class DefaultPanelBuilder implements Builder.PanelBuilder {
+	private static final class DefaultPanelStep implements Builder.PanelStep {
 
 		@Override
 		public Builder panel(EntityPanel panel) {
@@ -659,7 +659,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 
 	private static final class DefaultBuilder implements Builder {
 
-		private static final PanelBuilder PANEL = new DefaultPanelBuilder();
+		private static final PanelStep PANEL = new DefaultPanelStep();
 
 		private final ControlMap controlMap = controlMap(ControlKeys.class);
 

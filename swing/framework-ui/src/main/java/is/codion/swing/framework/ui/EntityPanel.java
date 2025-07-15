@@ -594,9 +594,9 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * @return a {@link Builder.EntityTypeBuilder}
+	 * @return a {@link Builder.EntityTypeStep}
 	 */
-	public static Builder.EntityTypeBuilder builder() {
+	public static Builder.EntityTypeStep builder() {
 		return EntityPanelBuilder.ENTITY_TYPE;
 	}
 
@@ -1684,7 +1684,7 @@ public class EntityPanel extends JPanel {
 		/**
 		 * Provides a {@link PanelBuilder}
 		 */
-		interface EntityTypeBuilder {
+		interface EntityTypeStep {
 
 			/**
 			 * @param entityType the entity type to base this panel builder on

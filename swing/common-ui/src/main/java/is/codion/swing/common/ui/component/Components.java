@@ -150,9 +150,9 @@ public final class Components {
 	}
 
 	/**
-	 * @return a {@link ComboBoxBuilder.ModelBuilder}
+	 * @return a {@link ComboBoxBuilder.ModelStep}
 	 */
-	public static ComboBoxBuilder.ModelBuilder comboBox() {
+	public static ComboBoxBuilder.ModelStep comboBox() {
 		return ComboBoxBuilder.builder();
 	}
 
@@ -164,16 +164,16 @@ public final class Components {
 	 * <li>{@link java.awt.event.KeyEvent#VK_INSERT} adds the current value to the list
 	 * <li>{@link java.awt.event.KeyEvent#VK_DELETE} deletes the selected item from the list.
 	 * </ul>
-	 * @return a new {@link ListBoxBuilder.ItemValueBuilder}
+	 * @return a new {@link ListBoxBuilder.ItemValueStep}
 	 */
-	public static ListBoxBuilder.ItemValueBuilder listBox() {
+	public static ListBoxBuilder.ItemValueStep listBox() {
 		return ListBoxBuilder.builder();
 	}
 
 	/**
-	 * @return a {@link TemporalFieldPanel.Builder.TemporalClassBuilder} builder
+	 * @return a {@link TemporalFieldPanel.Builder.TemporalClassStep} builder
 	 */
-	public static TemporalFieldPanel.Builder.TemporalClassBuilder temporalFieldPanel() {
+	public static TemporalFieldPanel.Builder.TemporalClassStep temporalFieldPanel() {
 		return TemporalFieldPanel.builder();
 	}
 
@@ -238,7 +238,7 @@ public final class Components {
 	/**
 	 * @return a JTextField builder
 	 */
-	public static TextFieldBuilder.ValueClassBuilder textField() {
+	public static TextFieldBuilder.ValueClassStep textField() {
 		return TextFieldBuilder.builder();
 	}
 
@@ -273,7 +273,7 @@ public final class Components {
 	/**
 	 * @return a {@link TemporalField} builder
 	 */
-	public static TemporalField.Builder.TemporalClassBuilder temporalField() {
+	public static TemporalField.Builder.TemporalClassStep temporalField() {
 		return TemporalField.builder();
 	}
 
@@ -361,14 +361,14 @@ public final class Components {
 	/**
 	 * @return a JSlider builder
 	 */
-	public static SliderBuilder.ModelBuilder slider() {
+	public static SliderBuilder.ModelStep slider() {
 		return SliderBuilder.builder();
 	}
 
 	/**
 	 * @return a new list builder
 	 */
-	public static ListBuilder.ModelBuilder list() {
+	public static ListBuilder.ModelStep list() {
 		return ListBuilder.builder();
 	}
 

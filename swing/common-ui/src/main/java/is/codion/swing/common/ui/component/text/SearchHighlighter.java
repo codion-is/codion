@@ -158,7 +158,7 @@ public final class SearchHighlighter {
 	/**
 	 * @return a new {@link Builder} instance
 	 */
-	public static Builder.ComponentBuilder builder() {
+	public static Builder.ComponentStep builder() {
 		return DefaultBuilder.TEXT_COMPONENT;
 	}
 
@@ -340,7 +340,7 @@ public final class SearchHighlighter {
 		/**
 		 * Provides a {@link Builder}
 		 */
-		interface ComponentBuilder {
+		interface ComponentStep {
 
 			/**
 			 * @param component the text component
@@ -388,7 +388,7 @@ public final class SearchHighlighter {
 		SearchHighlighter build();
 	}
 
-	private static final class DefaultComponentBuilder implements Builder.ComponentBuilder {
+	private static final class DefaultComponentStep implements Builder.ComponentStep {
 
 		@Override
 		public Builder component(JTextComponent component) {
@@ -398,7 +398,7 @@ public final class SearchHighlighter {
 
 	private static final class DefaultBuilder implements Builder {
 
-		private static final ComponentBuilder TEXT_COMPONENT = new DefaultComponentBuilder();
+		private static final ComponentStep TEXT_COMPONENT = new DefaultComponentStep();
 
 		private final JTextComponent textComponent;
 

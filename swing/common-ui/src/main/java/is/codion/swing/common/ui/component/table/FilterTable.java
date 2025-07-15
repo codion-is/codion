@@ -709,11 +709,10 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	/**
-	 * Instantiates a new {@link Builder.ModelBuilder}
-	 * @return a new {@link Builder.ModelBuilder} instance
+	 * @return a {@link Builder.ModelStep} instance
 	 */
-	public static Builder.ModelBuilder builder() {
-		return new DefaultModelBuilder();
+	public static Builder.ModelStep builder() {
+		return DefaultBuilder.MODEL;
 	}
 
 	@Override
@@ -1146,7 +1145,7 @@ public final class FilterTable<R, C> extends JTable {
 		/**
 		 * Provides a {@link Builder} instance based on a given table model
 		 */
-		interface ModelBuilder {
+		interface ModelStep {
 
 			/**
 			 * @param model the table model
@@ -1429,7 +1428,7 @@ public final class FilterTable<R, C> extends JTable {
 		String get();
 	}
 
-	private static class DefaultModelBuilder implements Builder.ModelBuilder {
+	private static class DefaultModelStep implements Builder.ModelStep {
 
 		@Override
 		public <R, C> Builder.ColumnsBuilder<R, C> model(FilterTableModel<R, C> model) {
@@ -1454,6 +1453,8 @@ public final class FilterTable<R, C> extends JTable {
 	private static final class DefaultBuilder<R, C>
 					extends AbstractComponentBuilder<Void, FilterTable<R, C>, Builder<R, C>>
 					implements Builder<R, C> {
+
+		private static final Builder.ModelStep MODEL = new DefaultModelStep();
 
 		private final FilterTableModel<R, C> tableModel;
 		private final List<FilterTableColumn<C>> columns;

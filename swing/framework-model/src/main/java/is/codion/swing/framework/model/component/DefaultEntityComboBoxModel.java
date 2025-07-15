@@ -55,8 +55,6 @@ import static java.util.stream.Collectors.toMap;
 
 final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
-	static final Builder.EntityTypeBuilder ENTITY_TYPE = new DefaultEntityTypeBuilder();
-
 	private final FilterComboBoxModel<Entity> comboBoxModel;
 
 	private final EntityDefinition entityDefinition;
@@ -441,19 +439,19 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 	}
 
-	static class DefaultEntityTypeBuilder implements Builder.EntityTypeBuilder {
+	static class DefaultEntityTypeStep implements Builder.EntityTypeStep {
 
 		@Override
-		public Builder.ConnectionProviderBuilder entityType(EntityType entityType) {
-			return new DefaultConnectionProviderBuilder(requireNonNull(entityType));
+		public Builder.ConnectionProviderStep entityType(EntityType entityType) {
+			return new DefaultConnectionProviderStep(requireNonNull(entityType));
 		}
 	}
 
-	private static class DefaultConnectionProviderBuilder implements Builder.ConnectionProviderBuilder {
+	private static class DefaultConnectionProviderStep implements Builder.ConnectionProviderStep {
 
 		private final EntityType entityType;
 
-		private DefaultConnectionProviderBuilder(EntityType entityType) {
+		private DefaultConnectionProviderStep(EntityType entityType) {
 			this.entityType = entityType;
 		}
 
@@ -463,7 +461,9 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 	}
 
-	private static class DefaultBuilder implements Builder {
+	static class DefaultBuilder implements Builder {
+
+		static final Builder.EntityTypeStep ENTITY_TYPE = new DefaultEntityTypeStep();
 
 		private final EntityDefinition entityDefinition;
 		private final EntityConnectionProvider connectionProvider;
