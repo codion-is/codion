@@ -21,6 +21,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel.USER_PREFERENCES_ENABLED renamed USER_PREFERENCES.
 - EntityApplicationPanel.preferences removed, USER_PREFERENCES and RESTORE_DEFAULT_PREFERENCES moved to EntityApplicationModel.
+- EntityTablePanelPreferences.fromLegacyPreferences() bug fixed, now uses empty json objects.
 
 ## 0.18.40
 ### is.codion

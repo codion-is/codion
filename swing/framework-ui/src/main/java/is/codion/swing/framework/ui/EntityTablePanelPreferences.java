@@ -214,9 +214,9 @@ final class EntityTablePanelPreferences {
 
 		Collection<Attribute<?>> identifiers = tablePanel.table().columnModel().identifiers();
 		Map<Attribute<?>, ColumnPreferences> columnPreferences =
-						ColumnPreferences.fromString(identifiers, UserPreferences.get(columnsKey, ""));
+						ColumnPreferences.fromString(identifiers, UserPreferences.get(columnsKey, EMPTY_JSON_OBJECT));
 		Map<Attribute<?>, ConditionPreferences> conditionPreferences =
-						ConditionPreferences.fromString(identifiers, UserPreferences.get(conditionsKey, ""));
+						ConditionPreferences.fromString(identifiers, UserPreferences.get(conditionsKey, EMPTY_JSON_OBJECT));
 
 		return new EntityTablePanelPreferences(columnPreferences, conditionPreferences, columnsKey, conditionsKey);
 	}
