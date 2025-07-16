@@ -8,6 +8,7 @@ Codion Change Log
 - PropertyStore now accepts null default values.
 ### is.codion.common.model
 - FilePreferencesFactory removed, UserPreferences.file() added.
+- UserPreferences.flush() now flushes all file based preferences as well.
 ### is.codion.common.rmi
 - Authenticator.type() renamed clientType().
 ### is.codion.swing.common.ui
@@ -16,8 +17,10 @@ Codion Change Log
 ### is.codion.swing.framework.model
 - EntityApplicationModel.USER configuration value added.
 - EntityApplicationModel.USERNAME_PREFIX configuration value removed, not really used anymore.
+- EntityApplicationModel.preferences and PREFERENCES_KEY configuration value added, file based preferences now application model based.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanel.USER_PREFERENCES_ENABLED renamed USER_PREFERENCES.
+- EntityApplicationPanel.preferences removed, USER_PREFERENCES and RESTORE_DEFAULT_PREFERENCES moved to EntityApplicationModel.
 
 ## 0.18.40
 ### is.codion

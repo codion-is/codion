@@ -28,6 +28,7 @@ import is.codion.framework.domain.entity.EntityType;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.prefs.Preferences;
 
 import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.Configuration.stringValue;
@@ -67,6 +68,36 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
 	PropertyValue<String> USER = stringValue("codion.client.user", System.getenv("CODION_CLIENT_USER"));
 
 	/**
+	 * Specifies whether the client should apply and save user preferences
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 */
+	PropertyValue<Boolean> USER_PREFERENCES =
+					booleanValue(EntityApplicationModel.class.getName() + ".userPreferences", true);
+
+	/**
+	 * Specifies whether the application should restore default preferences, that is, not load any saved user preferences.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
+	 * </ul>
+	 */
+	PropertyValue<Boolean> RESTORE_DEFAULT_PREFERENCES =
+					booleanValue(EntityApplicationModel.class.getName() + ".restoreDefaultPreferences", false);
+
+	/**
+	 * Specifies the key to use when creating file based application preferences.
+	 * Note that this string may only contain valid filename characters and symbols.
+	 * <ul>
+	 * <li>Value type: String
+	 * <li>Default value: null
+	 * </ul>
+	 */
+	PropertyValue<String> PREFERENCES_KEY = stringValue("codion.client.preferencesKey");
+
+	/**
 	 * @return the current user
 	 */
 	User user();
@@ -97,6 +128,12 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
 	 * @return the {@link EntityModels}
 	 */
 	EntityModels<M, E, T> entityModels();
+
+	/**
+	 * @return the application preferences instance
+	 * @see #PREFERENCES_KEY
+	 */
+	Preferences preferences();
 
 	/**
 	 * Refreshes all data models contained in this application model

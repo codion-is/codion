@@ -18,10 +18,6 @@
  */
 /**
  * <p>Preferences related classes.
- * <p>Package configuration values:
- * <ul>
- * <li>{@link is.codion.common.model.preferences.FilePreferencesFactory#MIGRATE}
- * </ul>
  */
 @org.jspecify.annotations.NullMarked
 package is.codion.common.model.preferences;

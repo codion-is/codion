@@ -570,6 +570,7 @@ public class EntityPanel extends JPanel {
 
 	/**
 	 * Saves user preferences for this entity panel and its detail panels.
+	 * @param preferences the Preferences instance into which to save the preferences
 	 * @see EntityTablePanel#savePreferences(Preferences)
 	 */
 	public void savePreferences(Preferences preferences) {
@@ -581,9 +582,10 @@ public class EntityPanel extends JPanel {
 	}
 
 	/**
-	 * Applies any user preferences previously saved via {@link #savePreferences()}
+	 * Applies any user preferences previously saved via {@link #savePreferences(Preferences)}
 	 * for this panel and its detail panels.
-	 * @see EntityTablePanel#applyPreferences()
+	 * @param preferences the Preferences instance containing the preferences to apply
+	 * @see EntityTablePanel#applyPreferences(Preferences)
 	 */
 	public void applyPreferences(Preferences preferences) {
 		requireNonNull(preferences);

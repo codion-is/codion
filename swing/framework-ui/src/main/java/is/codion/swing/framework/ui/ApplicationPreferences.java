@@ -21,6 +21,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.Text;
 import is.codion.common.model.preferences.UserPreferences;
 import is.codion.common.user.User;
+import is.codion.framework.model.EntityApplicationModel;
 
 import org.json.JSONObject;
 
@@ -95,14 +96,15 @@ final class ApplicationPreferences {
 		return preferences;
 	}
 
-	static ApplicationPreferences load(Class<?> applicationClass) {
-		String applicationPanelPrefs = UserPreferences.file(applicationClass.getName()).get(APPLICATION_PANEL, EMPTY_JSON_OBJECT);
-		if (!applicationPanelPrefs.equals(EMPTY_JSON_OBJECT)) {
+	static ApplicationPreferences load(Class<?> applicationModelClass, Class<?> applicationPanelClass) {
+		String applicationModelPrefs = UserPreferences.file(EntityApplicationModel.PREFERENCES_KEY.optional()
+						.orElse(applicationModelClass.getName())).get(APPLICATION_PANEL, EMPTY_JSON_OBJECT);
+		if (!applicationModelPrefs.equals(EMPTY_JSON_OBJECT)) {
 			// File based preferences take precedence
-			return fromString(applicationPanelPrefs);
+			return fromString(applicationModelPrefs);
 		}
 
-		return fromString(UserPreferences.get(applicationClass.getName() + PREFERENCES_KEY, EMPTY_JSON_OBJECT));
+		return fromString(UserPreferences.get(applicationPanelClass.getName() + PREFERENCES_KEY, EMPTY_JSON_OBJECT));
 	}
 
 	static ApplicationPreferences fromString(String preferences) {

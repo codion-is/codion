@@ -39,6 +39,7 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.i18n.FrameworkMessages;
+import is.codion.framework.model.EntityApplicationModel;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.UIManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
@@ -132,28 +133,6 @@ import static javax.swing.UIManager.getLookAndFeel;
  * @see #builder(Class, Class)
  */
 public class EntityApplicationPanel<M extends SwingEntityApplicationModel> extends JPanel {
-
-	/**
-	 * Specifies whether the client should apply and save user preferences
-	 * <ul>
-	 * <li>Value type: Boolean
-	 * <li>Default value: true
-	 * </ul>
-	 * @see #savePreferences()
-	 */
-	public static final PropertyValue<Boolean> USER_PREFERENCES =
-					booleanValue(EntityApplicationPanel.class.getName() + ".userPreferences", true);
-
-	/**
-	 * Specifies whether the application should restore default preferences, that is, not load any saved user preferences.
-	 * <ul>
-	 * <li>Value type: Boolean
-	 * <li>Default value: false
-	 * </ul>
-	 * @see EntityPanel#applyPreferences()
-	 */
-	public static final PropertyValue<Boolean> RESTORE_DEFAULT_PREFERENCES =
-					booleanValue(EntityApplicationPanel.class.getName() + ".restoreDefaultPreferences", false);
 
 	/**
 	 * Specifies whether the application should call {@link System#exit(int)} when exiting.
@@ -251,7 +230,6 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	private final Collection<EntityPanel.Builder> lookupPanelBuilders;
 	private final List<EntityPanel> entityPanels;
 	private final ApplicationLayout applicationLayout;
-	private final Preferences preferences;
 
 	private final State alwaysOnTopState = State.builder()
 					.consumer(alwaysOnTop -> parentWindow().ifPresent(parent -> parent.setAlwaysOnTop(alwaysOnTop)))
@@ -259,8 +237,8 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	private final Event<?> exiting = Event.event();
 	private final Event<EntityApplicationPanel<?>> initializedEvent = Event.event();
 	private final boolean modifiedWarning = EntityEditPanel.Config.MODIFIED_WARNING.getOrThrow();
-	private final boolean userPreferences = USER_PREFERENCES.getOrThrow();
-	private final boolean restoreDefaultPreferences = RESTORE_DEFAULT_PREFERENCES.getOrThrow();
+	private final boolean userPreferences = EntityApplicationModel.USER_PREFERENCES.getOrThrow();
+	private final boolean restoreDefaultPreferences = EntityApplicationModel.RESTORE_DEFAULT_PREFERENCES.getOrThrow();
 
 	private final Map<EntityPanel.Builder, EntityPanel> cachedEntityPanels = new HashMap<>();
 
@@ -292,7 +270,6 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	public EntityApplicationPanel(M applicationModel, List<EntityPanel> entityPanels,
 																Collection<EntityPanel.Builder> lookupPanelBuilders,
 																Function<EntityApplicationPanel<M>, ApplicationLayout> applicationLayout) {
-		this.preferences = UserPreferences.file(getClass().getName());
 		this.applicationModel = requireNonNull(applicationModel);
 		this.entityPanels = unmodifiableList(new ArrayList<>(requireNonNull(entityPanels)));
 		this.lookupPanelBuilders = requireNonNull(lookupPanelBuilders);
@@ -420,8 +397,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		try {
 			if (userPreferences) {
 				LOG.debug("Saving user preferences");
-				savePreferences(preferences);
-				preferences.flush();
+				savePreferences(applicationModel.preferences());
 				UserPreferences.flush();
 			}
 		}
@@ -962,7 +938,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 			LOG.debug("Restoring default user preferences for EntityPanels: {}", panels);
 			return;
 		}
-		panels.forEach(panel -> panel.applyPreferences(preferences));
+		panels.forEach(panel -> panel.applyPreferences(applicationModel.preferences()));
 	}
 
 	private static JPanel createEmptyBorderBasePanel(EntityPanel entityPanel) {
@@ -1147,7 +1123,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	}
 
 	private void onEntityPanelWindowClosed(EntityPanel entityPanel) {
-		entityPanel.savePreferences(preferences);
+		entityPanel.savePreferences(applicationModel.preferences());
 		entityPanel.setPreferredSize(entityPanel.getSize());
 	}
 

@@ -18,6 +18,7 @@
  */
 package is.codion.framework.model;
 
+import is.codion.common.model.preferences.UserPreferences;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnection;
@@ -30,6 +31,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.prefs.Preferences;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
@@ -46,6 +48,8 @@ public class DefaultEntityApplicationModel<M extends EntityModel<M, E, T>,
 	private final EntityConnectionProvider connectionProvider;
 	private final @Nullable Version version;
 	private final DefaultEntityModels<M, E, T> models;
+
+	private @Nullable Preferences preferences;
 
 	/**
 	 * Instantiates a new DefaultEntityApplicationModel
@@ -107,6 +111,17 @@ public class DefaultEntityApplicationModel<M extends EntityModel<M, E, T>,
 			if (entityModel.containsTableModel()) {
 				entityModel.tableModel().items().refresh();
 			}
+		}
+	}
+
+	@Override
+	public final Preferences preferences() {
+		synchronized (connectionProvider) {
+			if (preferences == null) {
+				preferences = UserPreferences.file(PREFERENCES_KEY.optional().orElse(getClass().getName()));
+			}
+
+			return preferences;
 		}
 	}
 
