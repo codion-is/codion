@@ -94,11 +94,11 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	private static final String CODION_VERSION = "codion.version";
 	private static final int DEFAULT_LOGO_SIZE = 68;
 	private static final String DASH = " - ";
+	private static final String EMPTY_JSON_OBJECT = "{}";
 
 	private final Class<M> applicationModelClass;
 	private final Class<P> applicationPanelClass;
-
-	private final ApplicationPreferences preferences;
+	private final String preferencesLookAndFeel;
 
 	private Function<User, EntityConnectionProvider> connectionProviderFunction;
 	private EntityConnectionProvider connectionProvider;
@@ -134,12 +134,13 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	DefaultEntityApplicationPanelBuilder(Class<M> applicationModelClass, Class<P> applicationPanelClass) {
 		this.applicationModelClass = requireNonNull(applicationModelClass);
 		this.applicationPanelClass = requireNonNull(applicationPanelClass);
-		this.preferences = EntityApplicationModel.USER_PREFERENCES.getOrThrow() ?
+		ApplicationPreferences preferences = EntityApplicationModel.USER_PREFERENCES.getOrThrow() ?
 						ApplicationPreferences.load(applicationModelClass, applicationPanelClass) :
-						ApplicationPreferences.fromString("{}");
+						ApplicationPreferences.fromString(EMPTY_JSON_OBJECT);
 		this.defaultUser = preferences.defaultLoginUser();
 		this.frameSize = preferences.frameSize();
 		this.maximizeFrame = preferences.frameMaximized();
+		this.preferencesLookAndFeel = preferences.lookAndFeel();
 		Scaler.RATIO.set(preferences.scaling());
 	}
 
@@ -375,7 +376,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 			return lookAndFeelClassName;
 		}
 
-		String userPreference = fromFlatLaf(preferences.lookAndFeel());
+		String userPreference = fromFlatLaf(preferencesLookAndFeel);
 
 		return userPreference == null ? defaultLookAndFeelClassName : userPreference;
 	}
@@ -393,8 +394,9 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
 	private void configureIcons() {
 		int logoSize = DEFAULT_LOGO_SIZE;
-		if (preferences.scaling() != 100) {
-			float ratio = preferences.scaling() / 100f;
+		int scaling = Scaler.RATIO.getOrThrow();
+		if (scaling != 100) {
+			float ratio = scaling / 100f;
 			Icons.ICON_SIZE.map(iconSize -> Math.round(iconSize * ratio));
 			logoSize = Math.round(logoSize * ratio);
 		}

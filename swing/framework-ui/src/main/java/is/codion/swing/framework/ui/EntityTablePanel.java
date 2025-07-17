@@ -1007,7 +1007,7 @@ public class EntityTablePanel extends JPanel {
 	 * Returns the key used to identify user preferences for this table panel, that is column positions, widths and such.
 	 * The default implementation is:
 	 * {@snippet :
-	 * return tableModel().getClass().getSimpleName() + "-" + entityType();
+	 * return tableModel().getClass().getSimpleName() + "-" + tableModel().entityType();
 	 *}
 	 * Override in case this key is not unique within the application.
 	 * @return the key used to identify user preferences for this table panel

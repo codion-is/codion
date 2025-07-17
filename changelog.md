@@ -28,6 +28,7 @@ Codion Change Log
 - EntityTablePanelPreferences, CONDITIONS_KEY and COLUMNS_KEY only used in legacy preferences, related refactoring.
 - EntityApplicationPanel.applyPreferences(Preferences) added.
 - EntityApplicationPanel.Builder.setUncaughtExceptionHandler(), includeMainMenu() and displayStartupDialog() renamed uncaughtExceptionHandler(), mainMenu() and startupDialog().
+- DefaultEntityApplicationPanelBuilder minor refactoring.
 
 ## 0.18.40
 ### is.codion
