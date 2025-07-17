@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2010 - 2025, Björn Darri Sigurðsson.
  */
-package is.codion.framework.db.local.logger;
+package is.codion.framework.db.local.tracer;
 
 import is.codion.common.logging.MethodTrace;
 
@@ -30,7 +30,7 @@ import static is.codion.common.logging.MethodTrace.methodTrace;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultMethodLogger implements MethodLogger {
+final class DefaultMethodTracer implements MethodTracer {
 
 	private final Deque<MethodTrace> callStack = new LinkedList<>();
 	private final LinkedList<MethodTrace> entries = new LinkedList<>();
@@ -39,7 +39,7 @@ final class DefaultMethodLogger implements MethodLogger {
 
 	private boolean enabled = false;
 
-	DefaultMethodLogger(int maxSize, ArgumentFormatter formatter) {
+	DefaultMethodTracer(int maxSize, ArgumentFormatter formatter) {
 		this.maxSize = maxSize;
 		this.formatter = requireNonNull(formatter);
 	}
@@ -55,6 +55,13 @@ final class DefaultMethodLogger implements MethodLogger {
 	public synchronized void enter(String method, @Nullable Object argument) {
 		if (enabled) {
 			callStack.push(methodTrace(method, formatter.format(method, argument)));
+		}
+	}
+
+	@Override
+	public synchronized void enter(String method, @Nullable Object... arguments) {
+		if (enabled) {
+			callStack.push(methodTrace(method, formatter.format(method, arguments)));
 		}
 	}
 

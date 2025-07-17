@@ -31,10 +31,11 @@ import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.db.result.ResultIterator;
+import is.codion.common.logging.MethodTrace;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.local.logger.MethodLogger;
+import is.codion.framework.db.local.tracer.MethodTracer;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -90,7 +91,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.*;
 
-final class DefaultLocalEntityConnection implements LocalEntityConnection, MethodLogger.Loggable {
+final class DefaultLocalEntityConnection implements LocalEntityConnection, MethodTracer.Traceable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultLocalEntityConnection.class);
 
@@ -105,6 +106,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	private static final String PACK_RESULT = "packResult";
 	private static final String EXECUTE = "execute";
 	private static final String REPORT = "report";
+	private static final NoOpTracer NO_OP_TRACER = new NoOpTracer();
 	private static final Function<Entity, Entity> IMMUTABLE = Entity::immutable;
 
 	private final Domain domain;
@@ -117,7 +119,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	private final Map<EntityType, List<Attribute<?>>> primaryKeyAndWritableColumnsCache = new HashMap<>();
 	private final Map<Select, List<Entity>> queryCache = new HashMap<>();
 
-	private @Nullable MethodLogger methodLogger = null;
+	private MethodTracer tracer = NO_OP_TRACER;
 
 	private boolean optimisticLocking = LocalEntityConnection.OPTIMISTIC_LOCKING.getOrThrow();
 	private boolean limitForeignKeyReferenceDepth = LocalEntityConnection.LIMIT_FOREIGN_KEY_REFERENCE_DEPTH.getOrThrow();
@@ -181,12 +183,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	@Override
 	public void startTransaction() {
 		synchronized (connection) {
-			logEntry("startTransaction");
+			tracer.enter("startTransaction");
 			try {
 				connection.startTransaction();
 			}
 			finally {
-				logExit("startTransaction");
+				tracer.exit("startTransaction");
 			}
 		}
 	}
@@ -201,7 +203,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	@Override
 	public void rollbackTransaction() {
 		synchronized (connection) {
-			logEntry("rollbackTransaction");
+			tracer.enter("rollbackTransaction");
 			SQLException exception = null;
 			try {
 				connection.rollbackTransaction();
@@ -212,7 +214,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 				throw new DatabaseException(e);
 			}
 			finally {
-				logExit("rollbackTransaction", exception);
+				tracer.exit("rollbackTransaction", exception);
 			}
 		}
 	}
@@ -220,7 +222,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	@Override
 	public void commitTransaction() {
 		synchronized (connection) {
-			logEntry("commitTransaction");
+			tracer.enter("commitTransaction");
 			SQLException exception = null;
 			try {
 				connection.commitTransaction();
@@ -231,7 +233,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 				throw new DatabaseException(e);
 			}
 			finally {
-				logExit("commitTransaction", exception);
+				tracer.exit("commitTransaction", exception);
 			}
 		}
 	}
@@ -596,7 +598,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	public <C extends EntityConnection, T, R> @Nullable R execute(FunctionType<C, T, R> functionType, @Nullable T argument) {
 		requireNonNull(functionType, "functionType may not be null");
 		Exception exception = null;
-		logEntry(EXECUTE, functionType, argument);
+		tracer.enter(EXECUTE, functionType, argument);
 		try {
 			synchronized (connection) {
 				return domain.function(functionType).execute((C) this, argument);
@@ -609,7 +611,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 			throw runtimeException(e);
 		}
 		finally {
-			logExit(EXECUTE, exception);
+			tracer.exit(EXECUTE, exception);
 		}
 	}
 
@@ -622,7 +624,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, @Nullable T argument) {
 		requireNonNull(procedureType, "procedureType may not be null");
 		Exception exception = null;
-		logEntry(EXECUTE, procedureType, argument);
+		tracer.enter(EXECUTE, procedureType, argument);
 		try {
 			synchronized (connection) {
 				domain.procedure(procedureType).execute((C) this, argument);
@@ -636,7 +638,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 			throw runtimeException(e);
 		}
 		finally {
-			logExit(EXECUTE, exception);
+			tracer.exit(EXECUTE, exception);
 		}
 	}
 
@@ -644,7 +646,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	public <T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) {
 		requireNonNull(reportType, "reportType may not be null");
 		Exception exception = null;
-		logEntry(REPORT, reportType, reportParameters);
+		tracer.enter(REPORT, reportType, reportParameters);
 		synchronized (connection) {
 			try {
 				R result = domain.report(reportType).fill(connection.getConnection(), reportParameters);
@@ -660,7 +662,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 				throw runtimeException(e);
 			}
 			finally {
-				logExit(REPORT, exception);
+				tracer.exit(REPORT, exception);
 			}
 		}
 	}
@@ -730,9 +732,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	@Override
-	public void methodLogger(@Nullable MethodLogger methodLogger) {
+	public void tracer(@Nullable MethodTracer tracer) {
 		synchronized (connection) {
-			this.methodLogger = methodLogger;
+			this.tracer = tracer == null ? NO_OP_TRACER : tracer;
 		}
 	}
 
@@ -951,7 +953,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 			if (withinReferenceDepthLimit(currentForeignKeyReferenceDepth, conditionOrForeignKeyReferenceDepthLimit)
 							&& containsReferencedColumns(entities.get(0), foreignKey.references())) {
 				try {
-					logEntry("populateForeignKeys", foreignKeyDefinition);
+					tracer.enter("populateForeignKeys", foreignKeyDefinition);
 					Collection<Key> referencedKeys = Entity.keys(foreignKey, entities);
 					if (referencedKeys.isEmpty()) {
 						entities.forEach(entity -> entity.set(foreignKey, null));
@@ -964,7 +966,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 					}
 				}
 				finally {
-					logExit("populateForeignKeys");
+					tracer.exit("populateForeignKeys");
 				}
 			}
 		}
@@ -1057,7 +1059,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 														List<ColumnDefinition<?>> statementColumns, List<?> statementValues,
 														Operation operation) throws SQLException {
 		SQLException exception = null;
-		logEntry(EXECUTE_UPDATE, statementValues);
+		tracer.enter(EXECUTE_UPDATE, statementValues);
 		try {
 			return setParameterValues(statement, statementColumns, statementValues).executeUpdate();
 		}
@@ -1066,7 +1068,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 			throw e;
 		}
 		finally {
-			logExit(EXECUTE_UPDATE, exception);
+			tracer.exit(EXECUTE_UPDATE, exception);
 			countQuery(operation);
 			if (LOG.isDebugEnabled()) {
 				LOG.debug(createLogMessage(query, statementValues, statementColumns, exception));
@@ -1077,7 +1079,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	private ResultSet executeQuery(PreparedStatement statement, String query,
 																 List<ColumnDefinition<?>> statementColumns, List<?> statementValues) throws SQLException {
 		SQLException exception = null;
-		logEntry(EXECUTE_QUERY, statementValues);
+		tracer.enter(EXECUTE_QUERY, statementValues);
 		try {
 			return setParameterValues(statement, statementColumns, statementValues).executeQuery();
 		}
@@ -1086,7 +1088,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 			throw e;
 		}
 		finally {
-			logExit(EXECUTE_QUERY, exception);
+			tracer.exit(EXECUTE_QUERY, exception);
 			countQuery(SELECT);
 			if (LOG.isDebugEnabled()) {
 				LOG.debug(createLogMessage(query, statementValues, statementColumns, exception));
@@ -1138,7 +1140,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 
 	private PreparedStatement prepareStatement(String query, boolean returnGeneratedKeys,
 																						 int queryTimeout) throws SQLException {
-		logEntry("prepareStatement", query);
+		tracer.enter("prepareStatement", query);
 		try {
 			PreparedStatement statement = returnGeneratedKeys ?
 							connection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS) :
@@ -1148,7 +1150,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 			return statement;
 		}
 		finally {
-			logExit("prepareStatement");
+			tracer.exit("prepareStatement");
 		}
 	}
 
@@ -1171,7 +1173,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	private List<Entity> packResult(ResultIterator<Entity> iterator) throws SQLException {
 		SQLException packingException = null;
 		List<Entity> result = new ArrayList<>();
-		logEntry(PACK_RESULT);
+		tracer.enter(PACK_RESULT);
 		try {
 			while (iterator.hasNext()) {
 				result.add(iterator.next());
@@ -1184,14 +1186,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 			throw e;
 		}
 		finally {
-			logExit(PACK_RESULT, packingException, "row count: " + result.size());
+			tracer.exit(PACK_RESULT, packingException, "row count: " + result.size());
 		}
 	}
 
 	private <T> List<T> packResult(ColumnDefinition<T> columnDefinition, ResultSet resultSet) throws SQLException {
 		SQLException packingException = null;
 		List<T> result = new ArrayList<>();
-		logEntry(PACK_RESULT);
+		tracer.enter(PACK_RESULT);
 		try {
 			while (resultSet.next()) {
 				result.add(columnDefinition.get(resultSet, 1));
@@ -1204,7 +1206,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 			throw e;
 		}
 		finally {
-			logExit(PACK_RESULT, packingException, "row count: " + result.size());
+			tracer.exit(PACK_RESULT, packingException, "row count: " + result.size());
 		}
 	}
 
@@ -1240,7 +1242,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	private void rollbackQuietly() {
-		logEntry("rollback");
+		tracer.enter("rollback");
 		SQLException exception = null;
 		try {
 			connection.rollback();
@@ -1250,13 +1252,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 			LOG.error("Exception while performing a quiet rollback", e);
 		}
 		finally {
-			logExit("rollback", exception);
+			tracer.exit("rollback", exception);
 		}
 	}
 
 	private void commitIfTransactionIsNotOpen() throws SQLException {
 		if (!connection.transactionOpen()) {
-			logEntry("commit");
+			tracer.enter("commit");
 			SQLException exception = null;
 			try {
 				connection.commit();
@@ -1266,7 +1268,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 				throw e;
 			}
 			finally {
-				logExit("commit", exception);
+				tracer.exit("commit", exception);
 			}
 		}
 	}
@@ -1274,38 +1276,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	private void rollbackQuietlyIfTransactionIsNotOpen() {
 		if (!connection.transactionOpen()) {
 			rollbackQuietly();
-		}
-	}
-
-	private void logEntry(String method) {
-		if (methodLogger != null) {
-			methodLogger.enter(method);
-		}
-	}
-
-	private void logEntry(String method, Object argument) {
-		if (methodLogger != null) {
-			methodLogger.enter(method, argument);
-		}
-	}
-
-	private void logEntry(String method, @Nullable Object... arguments) {
-		if (methodLogger != null) {
-			methodLogger.enter(method, arguments);
-		}
-	}
-
-	private void logExit(String method) {
-		logExit(method, null);
-	}
-
-	private void logExit(String method, @Nullable Exception exception) {
-		logExit(method, exception, null);
-	}
-
-	private void logExit(String method, @Nullable Exception exception, @Nullable String exitMessage) {
-		if (methodLogger != null) {
-			methodLogger.exit(method, exception, exitMessage);
 		}
 	}
 
@@ -1641,6 +1611,46 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 					CONFIGURED_DATABASES.add(this);
 				}
 			}
+		}
+	}
+
+	private static final class NoOpTracer implements MethodTracer {
+
+		@Override
+		public void enter(String method) {}
+
+		@Override
+		public void enter(String method, @Nullable Object argument) {}
+
+		@Override
+		public void enter(String method, @Nullable Object... arguments) {}
+
+		@Override
+		public @Nullable MethodTrace exit(String method) {
+			return null;
+		}
+
+		@Override
+		public @Nullable MethodTrace exit(String method, @Nullable Exception exception) {
+			return null;
+		}
+
+		@Override
+		public @Nullable MethodTrace exit(String method, @Nullable Exception exception, @Nullable String exitMessage) {
+			return null;
+		}
+
+		@Override
+		public boolean isEnabled() {
+			return false;
+		}
+
+		@Override
+		public void setEnabled(boolean enabled) {}
+
+		@Override
+		public List<MethodTrace> entries() {
+			return emptyList();
 		}
 	}
 }

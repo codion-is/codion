@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2020 - 2025, Björn Darri Sigurðsson.
  */
-package is.codion.framework.db.local.logger;
+package is.codion.framework.db.local.tracer;
 
 import is.codion.common.logging.MethodTrace;
 
@@ -27,11 +27,13 @@ import java.util.List;
 /**
  * This is an internal class not for general usage.
  */
-public interface MethodLogger {
+public interface MethodTracer {
 
 	void enter(String method);
 
 	void enter(String method, @Nullable Object argument);
+
+	void enter(String method, @Nullable Object... arguments);
 
 	@Nullable MethodTrace exit(String method);
 
@@ -45,13 +47,13 @@ public interface MethodLogger {
 
 	List<MethodTrace> entries();
 
-	static MethodLogger methodLogger(int maxSize, ArgumentFormatter formatter) {
-		return new DefaultMethodLogger(maxSize, formatter);
+	static MethodTracer methodTracer(int maxSize, ArgumentFormatter formatter) {
+		return new DefaultMethodTracer(maxSize, formatter);
 	}
 
-	interface Loggable {
+	interface Traceable {
 
-		void methodLogger(@Nullable MethodLogger methodLogger);
+		void tracer(@Nullable MethodTracer tracer);
 	}
 
 	interface ArgumentFormatter {
