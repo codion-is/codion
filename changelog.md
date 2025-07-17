@@ -18,6 +18,8 @@ Codion Change Log
 ### is.codion.framework.db.local
 - MethodLogger renamed MethodTracer, logger package renamed tracer.
 - DefaultLocalEntityConnection.NoOpTracer added, tracer no longer nullable.
+### is.codion.framework.server
+- LocalConnectionHandler.logExit(), now checks if trace is enabled before calling trace.appendTo().
 ### is.codion.swing.framework.model
 - EntityApplicationModel.USER configuration value added.
 - EntityApplicationModel.USERNAME_PREFIX configuration value removed, not really used anymore.

@@ -161,7 +161,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 
 	private void logExit(String methodName, Exception exception) {
 		MethodTrace trace = tracer.exit(methodName, exception);
-		if (trace != null) {
+		if (trace != null && LOG.isTraceEnabled()) {
 			StringBuilder messageBuilder = new StringBuilder(remoteClient.toString()).append("\n");
 			trace.appendTo(messageBuilder);
 			LOG.trace(messageBuilder.toString());
