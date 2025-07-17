@@ -195,7 +195,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * <li>Default value: true
 	 * </ul>
 	 */
-	public static final PropertyValue<Boolean> SHOW_STARTUP_DIALOG = booleanValue(EntityApplicationPanel.class.getName() + ".showStartupDialog", true);
+	public static final PropertyValue<Boolean> STARTUP_DIALOG = booleanValue(EntityApplicationPanel.class.getName() + ".startupDialog", true);
 
 	/**
 	 * Specifies whether EntityPanels displayed via {@link EntityApplicationPanel#displayEntityPanelDialog(EntityPanel)}
@@ -1425,13 +1425,13 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		Builder<M, P> frameTitle(Observable<String> frameTitle);
 
 		/**
-		 * @param includeMainMenu if true then a main menu is included
+		 * @param mainMenu if true then a main menu is included
 		 * @return this Builder instance
 		 */
-		Builder<M, P> includeMainMenu(boolean includeMainMenu);
+		Builder<M, P> mainMenu(boolean mainMenu);
 
 		/**
-		 * @param maximizeFrame specifies whether the frame should be maximized or use it's preferred size
+		 * @param maximizeFrame specifies whether the frame should be maximized or use its preferred size
 		 * @return this Builder instance
 		 */
 		Builder<M, P> maximizeFrame(boolean maximizeFrame);
@@ -1444,17 +1444,17 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 		/**
 		 * Specifies whether to set the default uncaught exception handler when starting the application, true by default.
-		 * @param setUncaughtExceptionHandler if true the default uncaught exception handler is set on application start
+		 * @param uncaughtExceptionHandler if true the default uncaught exception handler is set on application start
 		 * @return this Builder instance
 		 * @see Thread#setDefaultUncaughtExceptionHandler(Thread.UncaughtExceptionHandler)
 		 */
-		Builder<M, P> setUncaughtExceptionHandler(boolean setUncaughtExceptionHandler);
+		Builder<M, P> uncaughtExceptionHandler(boolean uncaughtExceptionHandler);
 
 		/**
-		 * @param displayStartupDialog if true then a progress dialog is displayed while the application is being initialized
+		 * @param startupDialog if true then a progress dialog is displayed while the application is being initialized
 		 * @return this Builder instance
 		 */
-		Builder<M, P> displayStartupDialog(boolean displayStartupDialog);
+		Builder<M, P> startupDialog(boolean startupDialog);
 
 		/**
 		 * @param frameSize the frame size when not maximized

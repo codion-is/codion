@@ -110,7 +110,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	private DomainType domain = EntityConnectionProvider.CLIENT_DOMAIN_TYPE.get();
 	private Supplier<User> userSupplier = new DefaultUserSupplier();
 	private Supplier<JFrame> frameSupplier = new DefaultFrameSupplier();
-	private boolean displayStartupDialog = EntityApplicationPanel.SHOW_STARTUP_DIALOG.getOrThrow();
+	private boolean startupDialog = EntityApplicationPanel.STARTUP_DIALOG.getOrThrow();
 	private ImageIcon applicationIcon;
 	private Version applicationVersion;
 	private boolean saveDefaultUsername = EntityApplicationModel.SAVE_DEFAULT_USERNAME.getOrThrow();
@@ -120,10 +120,10 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
 	private String defaultLookAndFeelClassName = systemLookAndFeelClassName();
 	private String lookAndFeelClassName;
-	private boolean setUncaughtExceptionHandler = true;
+	private boolean uncaughtExceptionHandler = true;
 	private boolean maximizeFrame = false;
 	private boolean displayFrame = true;
-	private boolean includeMainMenu = true;
+	private boolean mainMenu = true;
 	private Dimension frameSize;
 	private Dimension defaultFrameSize;
 	private User defaultUser;
@@ -243,8 +243,8 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	}
 
 	@Override
-	public EntityApplicationPanel.Builder<M, P> includeMainMenu(boolean includeMainMenu) {
-		this.includeMainMenu = includeMainMenu;
+	public EntityApplicationPanel.Builder<M, P> mainMenu(boolean mainMenu) {
+		this.mainMenu = mainMenu;
 		return this;
 	}
 
@@ -261,14 +261,14 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	}
 
 	@Override
-	public EntityApplicationPanel.Builder<M, P> setUncaughtExceptionHandler(boolean setUncaughtExceptionHandler) {
-		this.setUncaughtExceptionHandler = setUncaughtExceptionHandler;
+	public EntityApplicationPanel.Builder<M, P> uncaughtExceptionHandler(boolean uncaughtExceptionHandler) {
+		this.uncaughtExceptionHandler = uncaughtExceptionHandler;
 		return this;
 	}
 
 	@Override
-	public EntityApplicationPanel.Builder<M, P> displayStartupDialog(boolean displayStartupDialog) {
-		this.displayStartupDialog = displayStartupDialog;
+	public EntityApplicationPanel.Builder<M, P> startupDialog(boolean startupDialog) {
+		this.startupDialog = startupDialog;
 		return this;
 	}
 
@@ -331,7 +331,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
 	private void startApplication() {
 		LOG.debug("{} application starting", applicationName);
-		if (setUncaughtExceptionHandler) {
+		if (uncaughtExceptionHandler) {
 			setDefaultUncaughtExceptionHandler(new DisplayUncaughtExceptionAndExit());
 		}
 		setVersionProperty();
@@ -342,7 +342,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		}
 		EntityConnectionProvider connectionProvider = initializeConnectionProvider();
 		long initializationStarted = currentTimeMillis();
-		if (displayStartupDialog) {
+		if (startupDialog) {
 			Dialogs.progressWorker()
 							.task(new InitializeApplicationModel(connectionProvider))
 							.title(applicationName)
@@ -415,7 +415,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
 	private void startApplication(M applicationModel, long initializationStarted) {
 		JFrame applicationFrame = createFrame();
-		if (setUncaughtExceptionHandler) {
+		if (uncaughtExceptionHandler) {
 			setDefaultUncaughtExceptionHandler(new DisplayUncaughtExceptionHandler(applicationFrame));
 		}
 		if (displayFrame) {
@@ -482,7 +482,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		else {
 			frame.setTitle(createDefaultFrameTitle(applicationPanel.applicationModel()));
 		}
-		if (includeMainMenu) {
+		if (mainMenu) {
 			applicationPanel.createMenuBar().ifPresent(frame::setJMenuBar);
 		}
 		frame.setAlwaysOnTop(applicationPanel.alwaysOnTop().get());

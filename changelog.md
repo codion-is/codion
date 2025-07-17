@@ -27,6 +27,7 @@ Codion Change Log
 - EntityApplicationPanel.WRITE_LEGACY_PREFERENCES renamed LEGACY_PREFERENCES.
 - EntityTablePanelPreferences, CONDITIONS_KEY and COLUMNS_KEY only used in legacy preferences, related refactoring.
 - EntityApplicationPanel.applyPreferences(Preferences) added.
+- EntityApplicationPanel.Builder.setUncaughtExceptionHandler(), includeMainMenu() and displayStartupDialog() renamed uncaughtExceptionHandler(), mainMenu() and startupDialog().
 
 ## 0.18.40
 ### is.codion

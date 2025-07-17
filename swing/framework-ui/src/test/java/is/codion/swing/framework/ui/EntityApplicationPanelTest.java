@@ -82,11 +82,11 @@ public class EntityApplicationPanelTest {
 		EntityApplicationPanel.builder(TestApplicationModel.class, TestApplicationPanel.class)
 						.user(UNIT_TEST_USER)
 						.domain(TestDomain.DOMAIN)
-						.setUncaughtExceptionHandler(false)
+						.uncaughtExceptionHandler(false)
 						.saveDefaultUsername(false)
 						.displayFrame(false)
-						.includeMainMenu(true)
-						.displayStartupDialog(false)
+						.mainMenu(true)
+						.startupDialog(false)
 						.start(false);
 	}
 

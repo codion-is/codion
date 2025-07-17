@@ -46,7 +46,7 @@ public final class DefaultEntityApplicationPanelBuilderTest {
 						.onApplicationStarted(panel -> assertSame(user, panel.applicationModel().connectionProvider().user()))
 						.domain(TestDomain.DOMAIN)
 						.user(user)
-						.displayStartupDialog(false)
+						.startupDialog(false)
 						.displayFrame(false)
 						.start(false);
 		User user2 = User.user("Test2");
@@ -54,7 +54,7 @@ public final class DefaultEntityApplicationPanelBuilderTest {
 						.onApplicationStarted(panel -> assertSame(user2, panel.applicationModel().connectionProvider().user()))
 						.domain(TestDomain.DOMAIN)
 						.user(() -> user2)
-						.displayStartupDialog(false)
+						.startupDialog(false)
 						.displayFrame(false)
 						.start(false);
 		User user3 = User.user("Test3");
@@ -65,7 +65,7 @@ public final class DefaultEntityApplicationPanelBuilderTest {
 										.domain(new TestDomain())
 										.user(usr)
 										.build())
-						.displayStartupDialog(false)
+						.startupDialog(false)
 						.displayFrame(false)
 						.start(false);
 		User user4 = User.user("Test3");
@@ -79,7 +79,7 @@ public final class DefaultEntityApplicationPanelBuilderTest {
 							assertSame(user4, panel.applicationModel().connectionProvider().user());
 						})
 						.connectionProvider(connectionProvider)
-						.displayStartupDialog(false)
+						.startupDialog(false)
 						.displayFrame(false)
 						.start(false);
 	}

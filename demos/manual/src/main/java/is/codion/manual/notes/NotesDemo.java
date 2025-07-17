@@ -263,7 +263,7 @@ public final class NotesDemo {
 						.frameSize(new Dimension(600, 500))
 						.applicationVersion(NotesApplicationModel.VERSION)
 						// No need for a startup dialog since startup is very quick
-						.displayStartupDialog(false)
+						.startupDialog(false)
 						.connectionProvider(LocalEntityConnectionProvider.builder()
 										// Initialize the database schema
 										.database(initializeDatabase())

@@ -21,7 +21,7 @@
  * <ul>
  * <li>{@link is.codion.swing.framework.ui.EntityApplicationPanel#HELP_URL}
  * <li>{@link is.codion.swing.framework.ui.EntityApplicationPanel#CONFIRM_EXIT}
- * <li>{@link is.codion.swing.framework.ui.EntityApplicationPanel#SHOW_STARTUP_DIALOG}
+ * <li>{@link is.codion.swing.framework.ui.EntityApplicationPanel#STARTUP_DIALOG}
  * <li>{@link is.codion.swing.framework.ui.EntityApplicationPanel#CACHE_ENTITY_PANELS}
  * <li>{@link is.codion.swing.framework.ui.EntityApplicationPanel#CALL_SYSTEM_EXIT}
  * <li>{@link is.codion.swing.framework.ui.EntityEditComponentPanel#VALID_INDICATOR}
