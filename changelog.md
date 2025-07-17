@@ -26,6 +26,7 @@ Codion Change Log
 - EntityTablePanelPreferences.LEGACY_PREFERENCES_ENABLED removed.
 - EntityApplicationPanel.WRITE_LEGACY_PREFERENCES renamed LEGACY_PREFERENCES.
 - EntityTablePanelPreferences, CONDITIONS_KEY and COLUMNS_KEY only used in legacy preferences, related refactoring.
+- EntityApplicationPanel.applyPreferences(Preferences) added.
 
 ## 0.18.40
 ### is.codion

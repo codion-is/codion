@@ -115,7 +115,6 @@ import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static java.awt.Frame.MAXIMIZED_BOTH;
-import static java.util.Collections.singleton;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
@@ -458,7 +457,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	public final void initialize() {
 		if (!initialized) {
 			try {
-				applyUserPreferences(entityPanels);
+				applyPreferences();
 				setLayout(new BorderLayout());
 				add(applicationLayout.layout(), BorderLayout.CENTER);
 				bindEvents();
@@ -869,8 +868,8 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	}
 
 	/**
-	 * Called during the exit() method, override to save user preferences on program exit,
-	 * remember to call super.savePreferences(preferences) when overriding.
+	 * <p>Called during the exit() method, override to save custom user preferences on program exit.
+	 * <p>Remember to call super.savePreferences(preferences) when overriding.
 	 * @param preferences the preferences instance to save the preferences to
 	 */
 	protected void savePreferences(Preferences preferences) {
@@ -886,6 +885,16 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		catch (Exception e) {
 			LOG.error("Error while saving application preferences", e);
 		}
+	}
+
+	/**
+	 * <p>Called on application start, override to apply any custom preferences.
+	 * <p>Remember to call super.savePreferences(preferences) when overriding.
+	 * @param preferences the preferences instance containing the preferences to apply
+	 */
+	protected void applyPreferences(Preferences preferences) {
+		requireNonNull(preferences);
+		entityPanels.forEach(panel -> panel.applyPreferences(preferences));
 	}
 
 	private ApplicationPreferences createPreferences() {
@@ -921,7 +930,12 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		}
 
 		EntityPanel entityPanel = panelBuilder.build(applicationModel.connectionProvider());
-		applyUserPreferences(singleton(entityPanel));
+		if (userPreferences) {
+			if (LEGACY_PREFERENCES.getOrThrow()) {
+				entityPanel.applyLegacyPreferences();
+			}
+			entityPanel.applyPreferences(applicationModel.preferences());
+		}
 		entityPanel.initialize();
 		if (CACHE_ENTITY_PANELS.getOrThrow()) {
 			cachedEntityPanels.put(panelBuilder, entityPanel);
@@ -930,19 +944,24 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		return entityPanel;
 	}
 
-	private void applyUserPreferences(Collection<EntityPanel> panels) {
+	private void applyPreferences() {
 		if (!userPreferences) {
 			LOG.debug("User preferences are disabled");
 			return;
 		}
 		if (restoreDefaultPreferences) {
-			LOG.debug("Restoring default user preferences for EntityPanels: {}", panels);
+			LOG.debug("Restoring default user preferences for EntityPanels: {}", entityPanels);
 			return;
 		}
+		LOG.debug("Applying user preferences");
 		if (LEGACY_PREFERENCES.getOrThrow()) {
-			panels.forEach(EntityPanel::applyLegacyPreferences);
+			applyLegacyPreferences();
 		}
-		panels.forEach(panel -> panel.applyPreferences(applicationModel.preferences()));
+		applyPreferences(applicationModel.preferences());
+	}
+
+	private void applyLegacyPreferences() {
+		entityPanels.forEach(EntityPanel::applyLegacyPreferences);
 	}
 
 	private static JPanel createEmptyBorderBasePanel(EntityPanel entityPanel) {
