@@ -32,6 +32,7 @@ Codion Change Log
 - EntityApplicationPanel.applyPreferences(Preferences) added.
 - EntityApplicationPanel.Builder.setUncaughtExceptionHandler(), includeMainMenu() and displayStartupDialog() renamed uncaughtExceptionHandler(), mainMenu() and startupDialog().
 - DefaultEntityApplicationPanelBuilder minor refactoring.
+- DefaultEntityApplicationPanelBuilder.applicationName now has a default value.
 
 ## 0.18.40
 ### is.codion

@@ -18,6 +18,7 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.common.Text;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.common.observable.Observable;
@@ -102,7 +103,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
 	private Function<User, EntityConnectionProvider> connectionProviderFunction;
 	private EntityConnectionProvider connectionProvider;
-	private String applicationName = "";
+	private String applicationName;
 	private Function<EntityConnectionProvider, M> applicationModel = new DefaultApplicationModelFactory();
 	private Function<M, P> applicationPanel = new DefaultApplicationPanelFactory();
 	private Observable<String> frameTitle;
@@ -134,6 +135,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	DefaultEntityApplicationPanelBuilder(Class<M> applicationModelClass, Class<P> applicationPanelClass) {
 		this.applicationModelClass = requireNonNull(applicationModelClass);
 		this.applicationPanelClass = requireNonNull(applicationPanelClass);
+		this.applicationName = applicationPanelClass.getSimpleName();
 		ApplicationPreferences preferences = EntityApplicationModel.USER_PREFERENCES.getOrThrow() ?
 						ApplicationPreferences.load(applicationModelClass, applicationPanelClass) :
 						ApplicationPreferences.fromString(EMPTY_JSON_OBJECT);
@@ -180,7 +182,10 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
 	@Override
 	public EntityApplicationPanel.Builder<M, P> applicationName(String applicationName) {
-		this.applicationName = requireNonNull(applicationName);
+		if (Text.nullOrEmpty(applicationName)) {
+			throw new IllegalArgumentException("Application name cannot be null or empty");
+		}
+		this.applicationName = applicationName;
 		return this;
 	}
 
