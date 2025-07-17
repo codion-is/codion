@@ -24,6 +24,7 @@ Codion Change Log
 - EntityTablePanelPreferences.fromLegacyPreferences() bug fixed, now uses empty json objects.
 - EntityTablePanelPreferences.LEGACY_PREFERENCES_ENABLED removed.
 - EntityApplicationPanel.WRITE_LEGACY_PREFERENCES renamed LEGACY_PREFERENCES.
+- EntityTablePanelPreferences, CONDITIONS_KEY and COLUMNS_KEY only used in legacy preferences, related refactoring.
 
 ## 0.18.40
 ### is.codion

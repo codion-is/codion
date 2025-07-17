@@ -138,7 +138,6 @@ import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.framework.ui.EntityDialogs.*;
 import static is.codion.swing.framework.ui.EntityTableColumns.entityTableColumns;
 import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.*;
-import static is.codion.swing.framework.ui.EntityTablePanelPreferences.preferences;
 import static is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
@@ -716,7 +715,7 @@ public class EntityTablePanel extends JPanel {
 	 */
 	public void savePreferences(Preferences preferences) {
 		requireNonNull(preferences);
-		new EntityTablePanelPreferences(this).savePreferences(preferences);
+		new EntityTablePanelPreferences(this).save(preferences);
 	}
 
 	/**
@@ -724,16 +723,15 @@ public class EntityTablePanel extends JPanel {
 	 * @param preferences the preferences instance containing the preferences to apply
 	 */
 	public void applyPreferences(Preferences preferences) {
-		requireNonNull(preferences);
-		EntityTablePanelPreferences.applyPreferences(preferences, this);
+		EntityTablePanelPreferences.apply(this, requireNonNull(preferences));
 	}
 
-	void saveLegacyPreferences() {
-		new EntityTablePanelPreferences(this).saveLegacyPreferences();
+	final void saveLegacyPreferences() {
+		new EntityTablePanelPreferences(this).saveLegacy();
 	}
 
-	void applyLegacyPreferences() {
-		EntityTablePanelPreferences.applyLegacyPreferences(this);
+	final void applyLegacyPreferences() {
+		EntityTablePanelPreferences.applyLegacy(this);
 	}
 
 	/**
@@ -1749,7 +1747,7 @@ public class EntityTablePanel extends JPanel {
 							.onClosed(event -> {
 								dependenciesDialogSize.set(event.getWindow().getSize());
 								dependenciesPanel.tablePanels().forEach((entityType, dependencyTablePanel) ->
-												dependencyPanelPreferences.put(entityType, preferences(dependencyTablePanel)));
+												dependencyPanelPreferences.put(entityType, new EntityTablePanelPreferences(dependencyTablePanel)));
 							})
 							.show();
 		}

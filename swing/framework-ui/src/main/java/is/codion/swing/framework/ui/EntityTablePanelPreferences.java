@@ -82,71 +82,12 @@ final class EntityTablePanelPreferences {
 	}
 
 	void apply(EntityTablePanel tablePanel) {
-		applyColumnPreferences(tablePanel);
-		applyConditionPreferences(tablePanel);
-	}
-
-	static EntityTablePanelPreferences preferences(EntityTablePanel tablePanel) {
-		return new EntityTablePanelPreferences(tablePanel);
-	}
-
-	void saveLegacyPreferences() {
-		try {
-			UserPreferences.set(columnsKey, ColumnPreferences.toString(columnPreferences));
-		}
-		catch (Exception e) {
-			LOG.error("Error while saving legacy column preferences", e);
-		}
-		try {
-			UserPreferences.set(conditionsKey, ConditionPreferences.toString(conditionPreferences));
-		}
-		catch (Exception e) {
-			LOG.error("Error while saving legacy condition preferences", e);
-		}
-	}
-
-	void savePreferences(Preferences preferences) {
-		try {
-			preferences.put(columnsKey, ColumnPreferences.toString(columnPreferences));
-		}
-		catch (Exception e) {
-			LOG.error("Error while saving column preferences", e);
-		}
-		try {
-			preferences.put(conditionsKey, ConditionPreferences.toString(conditionPreferences));
-		}
-		catch (Exception e) {
-			LOG.error("Error while saving condition preferences", e);
-		}
-	}
-
-	static void applyLegacyPreferences(EntityTablePanel tablePanel) {
-		fromLegacyPreferences(tablePanel).apply(tablePanel);
-	}
-
-	static void applyPreferences(Preferences preferences, EntityTablePanel tablePanel) {
-		new EntityTablePanelPreferences(tablePanel, preferences).apply(tablePanel);
-	}
-
-	/**
-	 * Clears any user preferences saved for this table model
-	 */
-	static void clearLegacyPreferences(EntityTablePanel tablePanel) {
-		String userPreferencesKey = tablePanel.userPreferencesKey();
-		UserPreferences.remove(userPreferencesKey + COLUMN_PREFERENCES);
-		UserPreferences.remove(userPreferencesKey + CONDITIONS_PREFERENCES);
-	}
-
-	private void applyColumnPreferences(EntityTablePanel tablePanel) {
 		try {
 			ColumnPreferences.apply(tablePanel, columnPreferences);
 		}
-		catch (Exception e) {
-			LOG.error("Error while applying column preferences: {}", columnPreferences, e);
+		catch (Exception e1) {
+			LOG.error("Error while applying column preferences: {}", columnPreferences, e1);
 		}
-	}
-
-	private void applyConditionPreferences(EntityTablePanel tablePanel) {
 		try {
 			ConditionPreferences.apply(tablePanel.tableModel(), conditionPreferences);
 		}
@@ -155,12 +96,65 @@ final class EntityTablePanelPreferences {
 		}
 	}
 
+	void saveLegacy() {
+		try {
+			UserPreferences.set(columnsKey, ColumnPreferences.toJsonLegacy(columnPreferences).toString());
+		}
+		catch (Exception e) {
+			LOG.error("Error while saving legacy column preferences", e);
+		}
+		try {
+			UserPreferences.set(conditionsKey, ConditionPreferences.toJsonLegacy(conditionPreferences).toString());
+		}
+		catch (Exception e) {
+			LOG.error("Error while saving legacy condition preferences", e);
+		}
+	}
+
+	void save(Preferences preferences) {
+		try {
+			preferences.put(columnsKey, ColumnPreferences.toJson(columnPreferences).toString());
+		}
+		catch (Exception e) {
+			LOG.error("Error while saving column preferences", e);
+		}
+		try {
+			preferences.put(conditionsKey, ConditionPreferences.toJson(conditionPreferences).toString());
+		}
+		catch (Exception e) {
+			LOG.error("Error while saving condition preferences", e);
+		}
+	}
+
+	static void applyLegacy(EntityTablePanel tablePanel) {
+		String columnsKey = tablePanel.userPreferencesKey() + COLUMN_PREFERENCES;
+		String conditionsKey = tablePanel.userPreferencesKey() + CONDITIONS_PREFERENCES;
+
+		Collection<Attribute<?>> identifiers = tablePanel.table().columnModel().identifiers();
+		Map<Attribute<?>, ColumnPreferences> columnPreferences =
+						ColumnPreferences.fromStringLegacy(identifiers, UserPreferences.get(columnsKey, EMPTY_JSON_OBJECT));
+		Map<Attribute<?>, ConditionPreferences> conditionPreferences =
+						ConditionPreferences.fromStringLegacy(identifiers, UserPreferences.get(conditionsKey, EMPTY_JSON_OBJECT));
+
+		new EntityTablePanelPreferences(columnPreferences, conditionPreferences, columnsKey, conditionsKey).apply(tablePanel);
+	}
+
+	static void apply(EntityTablePanel tablePanel, Preferences preferences) {
+		new EntityTablePanelPreferences(tablePanel, preferences).apply(tablePanel);
+	}
+
+	static void clearLegacyPreferences(EntityTablePanel tablePanel) {
+		String userPreferencesKey = tablePanel.userPreferencesKey();
+		UserPreferences.remove(userPreferencesKey + COLUMN_PREFERENCES);
+		UserPreferences.remove(userPreferencesKey + CONDITIONS_PREFERENCES);
+	}
+
 	private static Map<Attribute<?>, ColumnPreferences> createColumnPreferences(FilterTableColumnModel<Attribute<?>> columnModel) {
 		Map<Attribute<?>, ColumnPreferences> columnPreferencesMap = new HashMap<>();
 		for (FilterTableColumn<Attribute<?>> column : columnModel.columns()) {
 			Attribute<?> attribute = column.identifier();
 			int index = columnModel.visible(attribute).get() ? columnModel.getColumnIndex(attribute) : -1;
-			columnPreferencesMap.put(attribute, ColumnPreferences.columnPreferences(attribute, index, column.getWidth()));
+			columnPreferencesMap.put(attribute, new ColumnPreferences(attribute, index, column.getWidth()));
 		}
 
 		return columnPreferencesMap;
@@ -171,7 +165,7 @@ final class EntityTablePanelPreferences {
 		for (Attribute<?> attribute : tableModel.columns().identifiers()) {
 			tableModel.queryModel().condition().optional(attribute)
 							.ifPresent(condition ->
-											conditionPreferencesMap.put(attribute, ConditionPreferences.conditionPreferences(attribute,
+											conditionPreferencesMap.put(attribute, new ConditionPreferences(attribute,
 															condition.autoEnable().get(),
 															condition.caseSensitive().get(),
 															condition.operands().wildcard().get())));
@@ -180,37 +174,12 @@ final class EntityTablePanelPreferences {
 		return conditionPreferencesMap;
 	}
 
-	private static EntityTablePanelPreferences fromLegacyPreferences(EntityTablePanel tablePanel) {
-		String columnsKey = tablePanel.userPreferencesKey() + COLUMN_PREFERENCES;
-		String conditionsKey = tablePanel.userPreferencesKey() + CONDITIONS_PREFERENCES;
-
-		Collection<Attribute<?>> identifiers = tablePanel.table().columnModel().identifiers();
-		Map<Attribute<?>, ColumnPreferences> columnPreferences =
-						ColumnPreferences.fromString(identifiers, UserPreferences.get(columnsKey, EMPTY_JSON_OBJECT));
-		Map<Attribute<?>, ConditionPreferences> conditionPreferences =
-						ConditionPreferences.fromString(identifiers, UserPreferences.get(conditionsKey, EMPTY_JSON_OBJECT));
-
-		return new EntityTablePanelPreferences(columnPreferences, conditionPreferences, columnsKey, conditionsKey);
-	}
-
 	private static final class ColumnPreferences {
 
 		private static final String LEGACY_COLUMN_INDEX = "index";
 		private static final String LEGACY_COLUMN_WIDTH = "width";
-
-		/**
-		 * The key identifying column preferences
-		 */
 		private static final String COLUMNS_KEY = "columns";
-
-		/**
-		 * The key for the 'width' property
-		 */
 		private static final String WIDTH_KEY = "w";
-
-		/**
-		 * The key for the 'index' property
-		 */
 		private static final String INDEX_KEY = "i";
 
 		private final Attribute<?> attribute;
@@ -248,56 +217,42 @@ final class EntityTablePanelPreferences {
 			return columnObject;
 		}
 
-		/**
-		 * Creates a new {@link ColumnPreferences} instance.
-		 * @param attribute the attribute
-		 * @param index the column index, -1 if not visible
-		 * @param width the column width
-		 * @return a new {@link ColumnPreferences} instance.
-		 */
-		private static ColumnPreferences columnPreferences(Attribute<?> attribute, int index, int width) {
-			return new ColumnPreferences(attribute, index, width);
+		private static JSONObject toJsonLegacy(Map<Attribute<?>, ColumnPreferences> columnPreferences) {
+			JSONObject preferences = new JSONObject();
+			preferences.put(COLUMNS_KEY, toJson(columnPreferences));
+
+			return preferences;
 		}
 
-		/**
-		 * @param columnPreferences the column preferences mapped to their respective attribute
-		 * @return a string encoding of the given preferences
-		 */
-		private static String toString(Map<Attribute<?>, ColumnPreferences> columnPreferences) {
-			requireNonNull(columnPreferences);
-			JSONObject jsonColumnPreferences = new JSONObject();
+		private static JSONObject toJson(Map<Attribute<?>, ColumnPreferences> columnPreferences) {
+			JSONObject json = new JSONObject();
 			columnPreferences.forEach((attribute, preferences) ->
-							jsonColumnPreferences.put(attribute.name(), preferences.toJSONObject()));
-			JSONObject preferencesRoot = new JSONObject();
-			preferencesRoot.put(COLUMNS_KEY, jsonColumnPreferences);
+							json.put(attribute.name(), preferences.toJSONObject()));
 
-			return preferencesRoot.toString();
+			return json;
 		}
 
-		/**
-		 * @param attributes the attributes
-		 * @param preferencesString the preferences encoded as a string
-		 * @return a map containing the {@link ColumnPreferences} instances parsed from the given string
-		 */
-		private static Map<Attribute<?>, ColumnPreferences> fromString(Collection<Attribute<?>> attributes, String preferencesString) {
-			requireNonNull(preferencesString);
-			JSONObject preferences = new JSONObject(preferencesString);
-			if (!preferences.has(COLUMNS_KEY)) {
+		private static Map<Attribute<?>, ColumnPreferences> fromStringLegacy(Collection<Attribute<?>> attributes, String preferencesString) {
+			JSONObject json = new JSONObject(preferencesString);
+			if (!json.has(COLUMNS_KEY)) {
 				return Collections.emptyMap();
 			}
-			JSONObject jsonObject = preferences.getJSONObject(COLUMNS_KEY);
-			return requireNonNull(attributes).stream()
-							.map(attribute -> ColumnPreferences.columnPreferences(attribute, requireNonNull(jsonObject)))
+
+			return fromJson(attributes, json.getJSONObject(COLUMNS_KEY));
+		}
+
+		private static Map<Attribute<?>, ColumnPreferences> fromString(Collection<Attribute<?>> attributes, String preferencesString) {
+			return fromJson(attributes, new JSONObject(preferencesString));
+		}
+
+		private static Map<Attribute<?>, ColumnPreferences> fromJson(Collection<Attribute<?>> attributes, JSONObject preferences) {
+			return attributes.stream()
+							.map(attribute -> ColumnPreferences.fromJson(attribute, preferences))
 							.flatMap(Optional::stream)
 							.collect(toMap(ColumnPreferences::attribute, Function.identity()));
 		}
 
-		/**
-		 * Applies the given column preferences to the given table model
-		 * @param tableModel the table model to apply the preferences to
-		 * @param columnPreferences the column preferences
-		 */
-		static void apply(EntityTablePanel tablePanel, Map<Attribute<?>, ColumnPreferences> columnPreferences) {
+		private static void apply(EntityTablePanel tablePanel, Map<Attribute<?>, ColumnPreferences> columnPreferences) {
 			List<Attribute<?>> columnAttributesWithoutPreferences = new ArrayList<>();
 			for (Attribute<?> attribute : tablePanel.table().columnModel().identifiers()) {
 				ColumnPreferences preferences = columnPreferences.get(attribute);
@@ -317,7 +272,7 @@ final class EntityTablePanelPreferences {
 			tablePanel.table().columnModel().visible().set(visibleColumnAttributes);
 		}
 
-		static Optional<ColumnPreferences> columnPreferences(Attribute<?> attribute, JSONObject preferences) {
+		private static Optional<ColumnPreferences> fromJson(Attribute<?> attribute, JSONObject preferences) {
 			if (preferences.has(attribute.name())) {
 				JSONObject jsonObject = preferences.getJSONObject(attribute.name());
 				return Optional.of(jsonObject.has(LEGACY_COLUMN_INDEX) ?
@@ -343,24 +298,9 @@ final class EntityTablePanelPreferences {
 
 	private static final class ConditionPreferences {
 
-		/**
-		 * The key identifying condition preferences
-		 */
 		private static final String CONDITIONS_KEY = "conditions";
-
-		/**
-		 * The key for the 'autoEnable' property
-		 */
 		private static final String AUTO_ENABLE_KEY = "ae";
-
-		/**
-		 * The key for the 'caseSensitive' property
-		 */
 		private static final String CASE_SENSITIVE_KEY = "cs";
-
-		/**
-		 * The key for the 'wildcard' property
-		 */
 		private static final String WILDCARD_KEY = "w";
 
 		private final Attribute<?> attribute;
@@ -393,43 +333,37 @@ final class EntityTablePanelPreferences {
 			return conditionObject;
 		}
 
-		/**
-		 * Creates a new {@link ConditionPreferences} instance.
-		 * @param attribute the attribute
-		 * @param autoEnable true if auto enable is enabled
-		 * @param caseSensitive true if case-sensitive
-		 * @param wildcard the wildcard state
-		 * @return a new {@link ConditionPreferences} instance.
-		 */
-		private static ConditionPreferences conditionPreferences(Attribute<?> attribute, boolean autoEnable, boolean caseSensitive,
-																														 Wildcard wildcard) {
-			return new ConditionPreferences(attribute, autoEnable, caseSensitive, wildcard);
+		private static JSONObject toJsonLegacy(Map<Attribute<?>, ConditionPreferences> conditionPreferences) {
+			JSONObject preferences = new JSONObject();
+			preferences.put(CONDITIONS_KEY, toJson(conditionPreferences));
+
+			return preferences;
 		}
 
-		/**
-		 * @param conditionPreferences the condition preferences mapped to their respective attribute
-		 * @return a string encoding of the given preferences
-		 */
-		private static String toString(Map<Attribute<?>, ConditionPreferences> conditionPreferences) {
-			requireNonNull(conditionPreferences);
-			JSONObject jsonConditionPreferences = new JSONObject();
+		private static JSONObject toJson(Map<Attribute<?>, ConditionPreferences> conditionPreferences) {
+			JSONObject json = new JSONObject();
 			conditionPreferences.forEach((attribute, preferences) ->
-							jsonConditionPreferences.put(attribute.name(), preferences.toJSONObject()));
-			JSONObject preferencesRoot = new JSONObject();
-			preferencesRoot.put(ConditionPreferences.CONDITIONS_KEY, jsonConditionPreferences);
+							json.put(attribute.name(), preferences.toJSONObject()));
 
-			return preferencesRoot.toString();
+			return json;
+		}
+
+		private static Map<Attribute<?>, ConditionPreferences> fromStringLegacy(Collection<Attribute<?>> attributes, String preferencesString) {
+			JSONObject json = new JSONObject(preferencesString);
+			if (!json.has(CONDITIONS_KEY)) {
+				return Collections.emptyMap();
+			}
+
+			return fromJson(attributes, json.getJSONObject(CONDITIONS_KEY));
 		}
 
 		private static Map<Attribute<?>, ConditionPreferences> fromString(Collection<Attribute<?>> attributes, String preferencesString) {
-			requireNonNull(preferencesString);
-			JSONObject preferences = new JSONObject(preferencesString);
-			if (!preferences.has(ConditionPreferences.CONDITIONS_KEY)) {
-				return Collections.emptyMap();
-			}
-			JSONObject jsonObject = preferences.getJSONObject(ConditionPreferences.CONDITIONS_KEY);
-			return requireNonNull(attributes).stream()
-							.map(attribute -> conditionPreferences(attribute, requireNonNull(jsonObject)))
+			return fromJson(attributes, new JSONObject(preferencesString));
+		}
+
+		private static Map<Attribute<?>, ConditionPreferences> fromJson(Collection<Attribute<?>> attributes, JSONObject jsonObject) {
+			return attributes.stream()
+							.map(attribute -> fromJson(attribute, jsonObject))
 							.flatMap(Optional::stream)
 							.collect(toMap(ConditionPreferences::attribute, Function.identity()));
 		}
@@ -448,7 +382,7 @@ final class EntityTablePanelPreferences {
 			}
 		}
 
-		static Optional<ConditionPreferences> conditionPreferences(Attribute<?> attribute, JSONObject preferences) {
+		private static Optional<ConditionPreferences> fromJson(Attribute<?> attribute, JSONObject preferences) {
 			if (preferences.has(attribute.name())) {
 				return Optional.of(fromJSONObject(attribute, preferences.getJSONObject(attribute.name())));
 			}
