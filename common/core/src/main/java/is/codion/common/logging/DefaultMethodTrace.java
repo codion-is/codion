@@ -94,8 +94,11 @@ final class DefaultMethodTrace implements MethodTrace, Serializable {
 
 	@Override
 	public void appendTo(StringBuilder builder) {
-		requireNonNull(builder).append(this).append(NEWLINE);
-		appendLogEntries(builder, children(), 1);
+		requireNonNull(builder).append(this);
+		if (!childEntries.isEmpty()) {
+			builder.append(NEWLINE);
+			appendLogEntries(builder, childEntries, 1);
+		}
 	}
 
 	@Override
@@ -161,8 +164,12 @@ final class DefaultMethodTrace implements MethodTrace, Serializable {
 	 */
 	private static void appendLogEntries(StringBuilder log, List<MethodTrace> entries, int indentationLevel) {
 		for (MethodTrace entry : entries) {
-			log.append(entry.toString(indentationLevel)).append(NEWLINE);
-			appendLogEntries(log, entry.children(), indentationLevel + 1);
+			List<MethodTrace> children = entry.children();
+			log.append(entry.toString(indentationLevel));
+			if (!children.isEmpty()) {
+				log.append(NEWLINE);
+				appendLogEntries(log, children, indentationLevel + 1);
+			}
 		}
 	}
 

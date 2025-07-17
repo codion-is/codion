@@ -6,6 +6,7 @@ Codion Change Log
 - Builder step suffix now Step instead of Builder.
 ### is.codion.common.core
 - PropertyStore now accepts null default values.
+- DefaultMethodTrace.appendTo(), minor optimization.
 ### is.codion.common.model
 - FilePreferencesFactory removed, UserPreferences.file() added.
 - UserPreferences.flush() now flushes all file based preferences as well.
