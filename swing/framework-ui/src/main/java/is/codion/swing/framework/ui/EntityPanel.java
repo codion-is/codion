@@ -595,6 +595,20 @@ public class EntityPanel extends JPanel {
 		detailPanels.get().forEach(detailPanel -> detailPanel.applyPreferences(preferences));
 	}
 
+	final void saveLegacyPreferences() {
+		if (containsTablePanel()) {
+			tablePanel.saveLegacyPreferences();
+		}
+		detailPanels.get().forEach(EntityPanel::saveLegacyPreferences);
+	}
+
+	final void applyLegacyPreferences() {
+		if (containsTablePanel()) {
+			tablePanel.applyLegacyPreferences();
+		}
+		detailPanels.get().forEach(EntityPanel::applyLegacyPreferences);
+	}
+
 	/**
 	 * @return a {@link Builder.EntityTypeStep}
 	 */

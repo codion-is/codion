@@ -22,6 +22,8 @@ Codion Change Log
 - EntityApplicationPanel.USER_PREFERENCES_ENABLED renamed USER_PREFERENCES.
 - EntityApplicationPanel.preferences removed, USER_PREFERENCES and RESTORE_DEFAULT_PREFERENCES moved to EntityApplicationModel.
 - EntityTablePanelPreferences.fromLegacyPreferences() bug fixed, now uses empty json objects.
+- EntityTablePanelPreferences.LEGACY_PREFERENCES_ENABLED removed.
+- EntityApplicationPanel.WRITE_LEGACY_PREFERENCES renamed LEGACY_PREFERENCES.
 
 ## 0.18.40
 ### is.codion

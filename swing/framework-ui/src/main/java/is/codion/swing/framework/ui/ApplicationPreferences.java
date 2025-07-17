@@ -77,7 +77,7 @@ final class ApplicationPreferences {
 		preferences.put(APPLICATION_PANEL, toJSONObject().toString());
 	}
 
-	void saveToUserPreferences(Class<?> applicationClassName) {
+	void saveLegacyPreferences(Class<?> applicationClassName) {
 		UserPreferences.set(applicationClassName.getName() + PREFERENCES_KEY, toJSONObject().toString());
 	}
 

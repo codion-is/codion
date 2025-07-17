@@ -715,7 +715,8 @@ public class EntityTablePanel extends JPanel {
 	 * @see #userPreferencesKey()
 	 */
 	public void savePreferences(Preferences preferences) {
-		EntityTablePanelPreferences.savePreferences(requireNonNull(preferences), this);
+		requireNonNull(preferences);
+		new EntityTablePanelPreferences(this).savePreferences(preferences);
 	}
 
 	/**
@@ -723,7 +724,16 @@ public class EntityTablePanel extends JPanel {
 	 * @param preferences the preferences instance containing the preferences to apply
 	 */
 	public void applyPreferences(Preferences preferences) {
-		EntityTablePanelPreferences.applyPreferences(requireNonNull(preferences), this);
+		requireNonNull(preferences);
+		EntityTablePanelPreferences.applyPreferences(preferences, this);
+	}
+
+	void saveLegacyPreferences() {
+		new EntityTablePanelPreferences(this).saveLegacyPreferences();
+	}
+
+	void applyLegacyPreferences() {
+		EntityTablePanelPreferences.applyLegacyPreferences(this);
 	}
 
 	/**

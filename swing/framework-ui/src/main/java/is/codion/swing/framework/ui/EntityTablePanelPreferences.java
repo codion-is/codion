@@ -20,9 +20,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.model.condition.ConditionModel.Wildcard;
 import is.codion.common.model.preferences.UserPreferences;
-import is.codion.common.property.PropertyValue;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -39,11 +37,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.prefs.Preferences;
 
-import static is.codion.common.Configuration.booleanValue;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -51,16 +47,6 @@ import static java.util.stream.Collectors.toMap;
 final class EntityTablePanelPreferences {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EntityTablePanelPreferences.class);
-
-	/**
-	 * Specifies whether table preferences are written and read from the default user preferences along with file based preferences
-	 * <ul>
-	 * <li>Value type: Boolean
-	 * <li>Default value: true
-	 * </ul>
-	 */
-	static final PropertyValue<Boolean> LEGACY_PREFERENCES_ENABLED =
-					booleanValue(EntityTablePanelPreferences.class.getName() + ".legacyPreferencesEnabled", true);
 
 	private static final String COLUMN_PREFERENCES = "-columns";
 	private static final String CONDITIONS_PREFERENCES = "-conditions";
@@ -79,11 +65,11 @@ final class EntityTablePanelPreferences {
 		this.conditionPreferences = ConditionPreferences.fromString(identifiers, preferences.get(conditionsKey, EMPTY_JSON_OBJECT));
 	}
 
-	private EntityTablePanelPreferences(EntityTablePanel tablePanel) {
-		this.columnsKey = tablePanel.userPreferencesKey() + COLUMN_PREFERENCES;
-		this.conditionsKey = tablePanel.userPreferencesKey() + CONDITIONS_PREFERENCES;
-		this.columnPreferences = createColumnPreferences(tablePanel.table().columnModel());
-		this.conditionPreferences = createConditionPreferences(tablePanel.tableModel());
+	EntityTablePanelPreferences(EntityTablePanel tablePanel) {
+		this(createColumnPreferences(tablePanel.table().columnModel()),
+						createConditionPreferences(tablePanel.tableModel()),
+						tablePanel.userPreferencesKey() + COLUMN_PREFERENCES,
+						tablePanel.userPreferencesKey() + CONDITIONS_PREFERENCES);
 	}
 
 	private EntityTablePanelPreferences(Map<Attribute<?>, ColumnPreferences> columnPreferences,
@@ -104,30 +90,22 @@ final class EntityTablePanelPreferences {
 		return new EntityTablePanelPreferences(tablePanel);
 	}
 
-	static void savePreferences(Preferences preferences, EntityTablePanel tablePanel) {
-		EntityTablePanelPreferences panelPreferences = new EntityTablePanelPreferences(tablePanel);
-		panelPreferences.saveLegacyPreferences();
-		panelPreferences.savePreferences(preferences);
-	}
-
-	private void saveLegacyPreferences() {
-		if (LEGACY_PREFERENCES_ENABLED.getOrThrow()) {
-			try {
-				UserPreferences.set(columnsKey, ColumnPreferences.toString(columnPreferences));
-			}
-			catch (Exception e) {
-				LOG.error("Error while saving legacy column preferences", e);
-			}
-			try {
-				UserPreferences.set(conditionsKey, ConditionPreferences.toString(conditionPreferences));
-			}
-			catch (Exception e) {
-				LOG.error("Error while saving legacy condition preferences", e);
-			}
+	void saveLegacyPreferences() {
+		try {
+			UserPreferences.set(columnsKey, ColumnPreferences.toString(columnPreferences));
+		}
+		catch (Exception e) {
+			LOG.error("Error while saving legacy column preferences", e);
+		}
+		try {
+			UserPreferences.set(conditionsKey, ConditionPreferences.toString(conditionPreferences));
+		}
+		catch (Exception e) {
+			LOG.error("Error while saving legacy condition preferences", e);
 		}
 	}
 
-	private void savePreferences(Preferences preferences) {
+	void savePreferences(Preferences preferences) {
 		try {
 			preferences.put(columnsKey, ColumnPreferences.toString(columnPreferences));
 		}
@@ -142,10 +120,11 @@ final class EntityTablePanelPreferences {
 		}
 	}
 
+	static void applyLegacyPreferences(EntityTablePanel tablePanel) {
+		fromLegacyPreferences(tablePanel).apply(tablePanel);
+	}
+
 	static void applyPreferences(Preferences preferences, EntityTablePanel tablePanel) {
-		// Start by applying the legacy user preferences based ones, which are
-		// then overwritten by the file based ones in case they exist
-		applyLegacyPreferences(tablePanel);
 		new EntityTablePanelPreferences(tablePanel, preferences).apply(tablePanel);
 	}
 
@@ -160,8 +139,7 @@ final class EntityTablePanelPreferences {
 
 	private void applyColumnPreferences(EntityTablePanel tablePanel) {
 		try {
-			ColumnPreferences.apply(tablePanel, tablePanel.table().columnModel().identifiers(), columnPreferences,
-							(attribute, columnWidth) -> tablePanel.table().columnModel().column(attribute).setPreferredWidth(columnWidth));
+			ColumnPreferences.apply(tablePanel, columnPreferences);
 		}
 		catch (Exception e) {
 			LOG.error("Error while applying column preferences: {}", columnPreferences, e);
@@ -170,7 +148,7 @@ final class EntityTablePanelPreferences {
 
 	private void applyConditionPreferences(EntityTablePanel tablePanel) {
 		try {
-			ConditionPreferences.apply(tablePanel.tableModel(), tablePanel.tableModel().columns().identifiers(), conditionPreferences);
+			ConditionPreferences.apply(tablePanel.tableModel(), conditionPreferences);
 		}
 		catch (Exception e) {
 			LOG.error("Error while applying condition preferences: {}", conditionPreferences, e);
@@ -200,12 +178,6 @@ final class EntityTablePanelPreferences {
 		}
 
 		return conditionPreferencesMap;
-	}
-
-	private static void applyLegacyPreferences(EntityTablePanel tablePanel) {
-		if (LEGACY_PREFERENCES_ENABLED.getOrThrow()) {
-			fromLegacyPreferences(tablePanel).apply(tablePanel);
-		}
 	}
 
 	private static EntityTablePanelPreferences fromLegacyPreferences(EntityTablePanel tablePanel) {
@@ -323,24 +295,17 @@ final class EntityTablePanelPreferences {
 		/**
 		 * Applies the given column preferences to the given table model
 		 * @param tableModel the table model to apply the preferences to
-		 * @param columnAttributes the available column attributes
 		 * @param columnPreferences the column preferences
-		 * @param setColumnWidth sets the column width
 		 */
-		static void apply(EntityTablePanel tablePanel, Collection<Attribute<?>> columnAttributes,
-											Map<Attribute<?>, ColumnPreferences> columnPreferences, BiConsumer<Attribute<?>, Integer> setColumnWidth) {
-			requireNonNull(tablePanel);
-			requireNonNull(columnAttributes);
-			requireNonNull(columnPreferences);
-			requireNonNull(setColumnWidth);
+		static void apply(EntityTablePanel tablePanel, Map<Attribute<?>, ColumnPreferences> columnPreferences) {
 			List<Attribute<?>> columnAttributesWithoutPreferences = new ArrayList<>();
-			for (Attribute<?> attribute : columnAttributes) {
+			for (Attribute<?> attribute : tablePanel.table().columnModel().identifiers()) {
 				ColumnPreferences preferences = columnPreferences.get(attribute);
 				if (preferences == null) {
 					columnAttributesWithoutPreferences.add(attribute);
 				}
 				else {
-					setColumnWidth.accept(attribute, preferences.width);
+					tablePanel.table().columnModel().column(attribute).setPreferredWidth(preferences.width);
 				}
 			}
 			List<Attribute<?>> visibleColumnAttributes = columnPreferences.values().stream()
@@ -456,11 +421,6 @@ final class EntityTablePanelPreferences {
 			return preferencesRoot.toString();
 		}
 
-		/**
-		 * @param attributes the attributes
-		 * @param preferencesString the preferences encoded as a string
-		 * @return a map containing the {@link EntityTablePanel.ColumnPreferences} instances parsed from the given string
-		 */
 		private static Map<Attribute<?>, ConditionPreferences> fromString(Collection<Attribute<?>> attributes, String preferencesString) {
 			requireNonNull(preferencesString);
 			JSONObject preferences = new JSONObject(preferencesString);
@@ -474,17 +434,8 @@ final class EntityTablePanelPreferences {
 							.collect(toMap(ConditionPreferences::attribute, Function.identity()));
 		}
 
-		/**
-		 * Applies the given condition preferences to the given table model
-		 * @param tableModel the table model to apply the preferences to
-		 * @param columnAttributes the available column attributes
-		 * @param preferencesString the condition preferences string
-		 */
-		private static void apply(EntityTableModel<?> tableModel, List<Attribute<?>> columnAttributes, Map<Attribute<?>, ConditionPreferences> conditionPreferences) {
-			requireNonNull(tableModel);
-			requireNonNull(columnAttributes);
-
-			for (Attribute<?> attribute : columnAttributes) {
+		private static void apply(SwingEntityTableModel tableModel, Map<Attribute<?>, ConditionPreferences> conditionPreferences) {
+			for (Attribute<?> attribute : tableModel.columns().identifiers()) {
 				ConditionPreferences preferences = conditionPreferences.get(attribute);
 				if (preferences != null) {
 					tableModel.queryModel().condition().optional(attribute)

@@ -212,13 +212,13 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	public static final PropertyValue<Boolean> CACHE_ENTITY_PANELS = booleanValue(EntityApplicationPanel.class.getName() + ".cacheEntityPanels", false);
 
 	/**
-	 * Specifies whether preferences are written and to the default user preferences along with file based preferences
+	 * Specifies whether legacy preferences are used along with file based preferences
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
 	 * </ul>
 	 */
-	public static final PropertyValue<Boolean> WRITE_LEGACY_PREFERENCES = booleanValue(EntityApplicationPanel.class.getName() + ".writeLegacyPreferences", true);
+	public static final PropertyValue<Boolean> LEGACY_PREFERENCES = booleanValue(EntityApplicationPanel.class.getName() + ".legacyPreferences", true);
 
 	private static final int DEFAULT_LOGO_SIZE = 68;
 
@@ -878,8 +878,9 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		try {
 			ApplicationPreferences applicationPrefs = createPreferences();
 			applicationPrefs.save(preferences);
-			if (WRITE_LEGACY_PREFERENCES.getOrThrow()) {
-				applicationPrefs.saveToUserPreferences(getClass());
+			if (LEGACY_PREFERENCES.getOrThrow()) {
+				entityPanels().forEach(EntityPanel::saveLegacyPreferences);
+				applicationPrefs.saveLegacyPreferences(getClass());
 			}
 		}
 		catch (Exception e) {
@@ -937,6 +938,9 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		if (restoreDefaultPreferences) {
 			LOG.debug("Restoring default user preferences for EntityPanels: {}", panels);
 			return;
+		}
+		if (LEGACY_PREFERENCES.getOrThrow()) {
+			panels.forEach(EntityPanel::applyLegacyPreferences);
 		}
 		panels.forEach(panel -> panel.applyPreferences(applicationModel.preferences()));
 	}
