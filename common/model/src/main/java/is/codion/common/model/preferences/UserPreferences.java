@@ -18,6 +18,8 @@
  */
 package is.codion.common.model.preferences;
 
+import is.codion.common.Text;
+
 import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
@@ -33,7 +35,7 @@ import static java.util.Objects.requireNonNull;
  */
 public final class UserPreferences {
 
-	private static final Map<String, Preferences> FILE_PREFERENCES = new ConcurrentHashMap<>();
+	private static final Map<String, FilePreferences> FILE_PREFERENCES = new ConcurrentHashMap<>();
 
 	private static @Nullable Preferences preferences;
 
@@ -89,8 +91,6 @@ public final class UserPreferences {
 	 * @return a file based Preferences instance using the given filename
 	 */
 	public static Preferences file(String filename) {
-		requireNonNull(filename);
-
 		return FILE_PREFERENCES.computeIfAbsent(requireNonNull(filename), k -> {
 			try {
 				return new FilePreferences(filename);
@@ -99,6 +99,23 @@ public final class UserPreferences {
 				throw new RuntimeException(e);
 			}
 		});
+	}
+
+	/**
+	 * Deletes the preferences file with the given name.
+	 * @param filename the name of the preferences file to delete
+	 * @throws IOException in case of an exception
+	 * @throws IllegalArgumentException in case the given preferences file does not exist
+	 */
+	public static void delete(String filename) throws IOException {
+		if (Text.nullOrEmpty(filename)) {
+			throw  new IllegalArgumentException("Filename cannot be null or empty");
+		}
+		FilePreferences filePreferences = FILE_PREFERENCES.remove(filename);
+		if (filePreferences == null) {
+			throw new IllegalArgumentException("Preferences file with name '" +  filename + "' not found");
+		}
+		filePreferences.delete();
 	}
 
 	private static synchronized Preferences userPreferences() {

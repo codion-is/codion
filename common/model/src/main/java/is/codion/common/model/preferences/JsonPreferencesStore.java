@@ -252,6 +252,15 @@ final class JsonPreferencesStore {
 		}
 	}
 
+	/**
+	 * Deletes the prferences file along with the lock file
+	 * @throws IOException in case of an exception
+	 */
+	void delete() throws IOException {
+		Files.deleteIfExists(filePath);
+		Files.deleteIfExists(lockFilePath);
+	}
+
 	private void loadData() throws IOException {
 		if (Files.exists(filePath)) {
 			LOG.trace("Loading preferences from {}", filePath);

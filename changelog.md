@@ -9,6 +9,7 @@ Codion Change Log
 ### is.codion.common.model
 - FilePreferencesFactory removed, UserPreferences.file() added.
 - UserPreferences.flush() now flushes all file based preferences as well.
+- UserPreferences.delete() added, unit tests now cleanup preferences files.
 ### is.codion.common.rmi
 - Authenticator.type() renamed clientType().
 ### is.codion.swing.common.ui

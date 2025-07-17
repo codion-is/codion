@@ -18,6 +18,7 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.common.model.preferences.UserPreferences;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -27,11 +28,13 @@ import is.codion.swing.framework.ui.TestDomain.Detail;
 import is.codion.swing.framework.ui.TestDomain.Employee;
 import is.codion.swing.framework.ui.TestDomain.Master;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -49,6 +52,11 @@ public class EntityApplicationPanelTest {
 					.domain(new TestDomain())
 					.user(UNIT_TEST_USER)
 					.build();
+
+	@AfterAll
+	static void cleanUp() throws IOException {
+		UserPreferences.delete("is.codion.swing.framework.ui.EntityApplicationPanelTest$TestApplicationModel");
+	}
 
 	@AfterEach
 	void tearDown() {

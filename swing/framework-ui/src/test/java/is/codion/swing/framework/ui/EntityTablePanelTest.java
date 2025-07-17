@@ -34,9 +34,11 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.TestDomain.Detail;
 import is.codion.swing.framework.ui.TestDomain.Employee;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.table.TableColumn;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.BackingStoreException;
@@ -53,6 +55,11 @@ public class EntityTablePanelTest {
 					.user(UNIT_TEST_USER)
 					.domain(new TestDomain())
 					.build();
+
+	@AfterAll
+	static void cleanUp() throws IOException {
+		UserPreferences.delete("is.codion.swing.framework.ui.EntityTablePanelTest");
+	}
 
 	@Test
 	void excludeHiddenColumns() {

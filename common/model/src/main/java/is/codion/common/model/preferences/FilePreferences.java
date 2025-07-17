@@ -145,4 +145,8 @@ final class FilePreferences extends AbstractPreferences {
 			throw new BackingStoreException(e);
 		}
 	}
+
+	void delete() throws IOException {
+		store.delete();
+	}
 }

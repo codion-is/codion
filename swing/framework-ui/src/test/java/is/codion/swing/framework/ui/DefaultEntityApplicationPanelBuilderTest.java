@@ -18,17 +18,26 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.common.model.preferences.UserPreferences;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
 
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 public final class DefaultEntityApplicationPanelBuilderTest {
+
+	@AfterAll
+	static void cleanUp() throws IOException {
+		UserPreferences.delete("is.codion.swing.framework.ui.DefaultEntityApplicationPanelBuilderTest$TestApplicationModel");
+	}
 
 	@Test
 	void connection() {

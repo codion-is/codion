@@ -29,7 +29,6 @@ import static java.util.Objects.requireNonNull;
 final class PreferencesPath {
 
 	private static final String CODION_DIR = "Codion";
-	private static final String CODION_DIR_LOWERCASE = "codion";
 	private static final String USER_HOME = "user.home";
 	private static final String JSON = ".json";
 
@@ -87,17 +86,17 @@ final class PreferencesPath {
 	private static Path linuxPath(String filename) {
 		String xdgConfigHome = System.getenv("XDG_CONFIG_HOME");
 		if (xdgConfigHome != null) {
-			return Paths.get(xdgConfigHome, CODION_DIR_LOWERCASE, filename);
+			return Paths.get(xdgConfigHome, CODION_DIR.toLowerCase(), filename);
 		}
 
 		String home = System.getProperty(USER_HOME);
 
-		return Paths.get(home, ".config", CODION_DIR_LOWERCASE, filename);
+		return Paths.get(home, ".config", CODION_DIR.toLowerCase(), filename);
 	}
 
 	private static Path defaultPath(String filename) {
 		String home = System.getProperty(USER_HOME);
 
-		return Paths.get(home, "." + CODION_DIR_LOWERCASE, filename);
+		return Paths.get(home, "." + CODION_DIR.toLowerCase(), filename);
 	}
 }
