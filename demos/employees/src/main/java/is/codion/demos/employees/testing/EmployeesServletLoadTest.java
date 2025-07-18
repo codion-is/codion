@@ -49,7 +49,9 @@ public final class EmployeesServletLoadTest {
 	private final LoadTest<EntityConnectionProvider> loadTest;
 
 	private EmployeesServletLoadTest(User user) {
-		loadTest = LoadTest.builder(EmployeesServletLoadTest::createApplication, EmployeesServletLoadTest::disconnectApplication)
+		loadTest = LoadTest.builder()
+						.createApplication(EmployeesServletLoadTest::createApplication)
+						.closeApplication(EmployeesServletLoadTest::closeApplication)
 						.user(user)
 						.scenarios(List.of(
 										scenario(new SelectDepartment(), 4),
@@ -64,7 +66,7 @@ public final class EmployeesServletLoadTest {
 						.build();
 	}
 
-	private static void disconnectApplication(EntityConnectionProvider client) {
+	private static void closeApplication(EntityConnectionProvider client) {
 		client.close();
 	}
 

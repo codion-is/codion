@@ -76,8 +76,9 @@ public class StoreLoadTest {
 
 	public static void main(String[] args) {
 		LoadTest<StoreApplicationModel> loadTest =
-						LoadTest.builder(new StoreApplicationModelFactory(),
-														application -> application.connectionProvider().close())
+						LoadTest.builder()
+										.createApplication(new StoreApplicationModelFactory())
+										.closeApplication(application -> application.connectionProvider().close())
 										.user(User.parse("scott:tiger"))
 										.scenarios(List.of(scenario(new StoreScenarioPerformer())))
 										.name("Store LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())

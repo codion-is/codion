@@ -33,7 +33,9 @@ public class LoadTestPanelTest {
 
 	@Test
 	void test() {
-		LoadTest<Object> loadTest = LoadTest.builder(user -> new Object(), object -> {})
+		LoadTest<Object> loadTest = LoadTest.builder()
+						.createApplication(user -> new Object())
+						.closeApplication(object -> {})
 						.user(User.user("test"))
 						.minimumThinkTime(25)
 						.maximumThinkTime(50)

@@ -67,8 +67,9 @@ public final class EmployeesLoadTest {
 
 	public static void main(String[] args) {
 		LoadTest<EmployeesAppModel> loadTest =
-						LoadTest.builder(new EmployeesAppModelFactory(),
-														application -> application.connectionProvider().close())
+						LoadTest.builder()
+										.createApplication(new EmployeesAppModelFactory())
+										.closeApplication(application -> application.connectionProvider().close())
 										.user(UNIT_TEST_USER)
 										.scenarios(List.of(
 														scenario(new InsertDepartment(), 1),

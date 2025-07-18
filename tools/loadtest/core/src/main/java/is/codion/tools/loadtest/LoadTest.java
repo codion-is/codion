@@ -161,13 +161,10 @@ public interface LoadTest<T> {
 	ItemRandomizer<Scenario<T>> scenarioChooser();
 
 	/**
-	 * @param applicationFactory the application factory
-	 * @param closeApplication closes an application
-	 * @param <T> the application type
-	 * @return a new builder
+	 * @return a {@link Builder.CreateApplicationStep} instance
 	 */
-	static <T> Builder<T> builder(Function<User, T> applicationFactory, Consumer<T> closeApplication) {
-		return new DefaultLoadTest.DefaultBuilder<>(applicationFactory, closeApplication);
+	static Builder.CreateApplicationStep builder() {
+		return DefaultLoadTest.DefaultBuilder.CREATE_APPLICATION;
 	}
 
 	/**
@@ -175,6 +172,31 @@ public interface LoadTest<T> {
 	 * @param <T> the load test application type
 	 */
 	interface Builder<T> {
+
+		/**
+		 * Provides an {@link CloseApplicationStep}
+		 */
+		interface CreateApplicationStep {
+
+			/**
+			 * @param createApplication creates the application
+			 * @return a {@link CloseApplicationStep}
+			 * @param <T> the application type
+			 */
+			<T> CloseApplicationStep<T> createApplication(Function<User, T> createApplication);
+		}
+
+		/**
+		 * @param <T> the application type
+		 */
+		interface CloseApplicationStep<T> {
+
+			/**
+			 * @param closeApplication closes the application
+			 * @return a builder instance
+			 */
+			Builder<T> closeApplication(Consumer<T> closeApplication);
+		}
 
 		/**
 		 * @param user the initial application user

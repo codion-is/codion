@@ -60,7 +60,7 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 	private static final Random RANDOM = new Random();
 	private static final int MINIMUM_NUMBER_OF_THREADS = 12;
 
-	private final Function<User, T> applicationFactory;
+	private final Function<User, T> createApplication;
 	private final Consumer<T> closeApplication;
 	private final State paused = State.state();
 
@@ -82,7 +82,7 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 					newScheduledThreadPool(Math.max(MINIMUM_NUMBER_OF_THREADS, Runtime.getRuntime().availableProcessors() * 2));
 
 	DefaultLoadTest(DefaultBuilder<T> builder) {
-		this.applicationFactory = builder.applicationFactory;
+		this.createApplication = builder.createApplication;
 		this.closeApplication = builder.closeApplication;
 		this.name = builder.name;
 		this.user = Value.nonNull(builder.user);
@@ -165,7 +165,7 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 		synchronized (applications) {
 			int batchSize = applicationBatchSize.getOrThrow();
 			for (int i = 0; i < batchSize; i++) {
-				DefaultApplicationRunner applicationRunner = new DefaultApplicationRunner(user.get(), applicationFactory);
+				DefaultApplicationRunner applicationRunner = new DefaultApplicationRunner(user.get(), createApplication);
 				applications.put(applicationRunner, applicationRunner.application);
 				applicationCount.set(applications.size());
 				scheduledExecutor.schedule(applicationRunner, initialDelay(), TimeUnit.MILLISECONDS);
@@ -376,9 +376,33 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 		}
 	}
 
+	private static final class DefaultCreateApplicationStep implements Builder.CreateApplicationStep {
+
+		@Override
+		public <T> Builder.CloseApplicationStep<T> createApplication(Function<User, T> createApplication) {
+			return new DefaultCloseApplicationStep<>(requireNonNull(createApplication));
+		}
+	}
+
+	private static final class DefaultCloseApplicationStep<T>  implements Builder.CloseApplicationStep<T> {
+
+		private final Function<User, T> createApplication;
+
+		private DefaultCloseApplicationStep(Function<User, T> createApplication) {
+			this.createApplication = createApplication;
+		}
+
+		@Override
+		public Builder<T> closeApplication(Consumer<T> closeApplication) {
+			return new DefaultBuilder<>(createApplication, requireNonNull(closeApplication));
+		}
+	}
+
 	static final class DefaultBuilder<T> implements Builder<T> {
 
-		private final Function<User, T> applicationFactory;
+		static final CreateApplicationStep CREATE_APPLICATION = new DefaultCreateApplicationStep();
+
+		private final Function<User, T> createApplication;
 		private final List<Scenario<T>> scenarios = new ArrayList<>();
 		private final Consumer<T> closeApplication;
 
@@ -389,9 +413,9 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 		private int loginDelayFactor = DEFAULT_LOGIN_DELAY_FACTOR;
 		private int applicationBatchSize = DEFAULT_APPLICATION_BATCH_SIZE;
 
-		DefaultBuilder(Function<User, T> applicationFactory, Consumer<T> closeApplication) {
-			this.applicationFactory = requireNonNull(applicationFactory);
-			this.closeApplication = requireNonNull(closeApplication);
+		private DefaultBuilder(Function<User, T> createApplication, Consumer<T> closeApplication) {
+			this.createApplication = createApplication;
+			this.closeApplication = closeApplication;
 		}
 
 		@Override

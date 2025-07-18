@@ -86,8 +86,9 @@ public final class PetstoreLoadTest {
 
 	public static void main(String[] args) {
 		LoadTest<PetstoreAppModel> loadTest =
-						LoadTest.builder(new PetstoreAppModelFactory(),
-														application -> application.connectionProvider().close())
+						LoadTest.builder()
+										.createApplication(new PetstoreAppModelFactory())
+										.closeApplication(application -> application.connectionProvider().close())
 										.user(UNIT_TEST_USER)
 										.scenarios(List.of(Scenario.builder(new PetstoreUsageScenario())
 														.name("selectRecords")

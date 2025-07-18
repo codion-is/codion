@@ -53,7 +53,9 @@ public class DefaultLoadTestModelTest {
 
 	@Test
 	void test() throws Exception {
-		LoadTest<Object> loadTest = LoadTest.builder(user -> new Object(), object -> {})
+		LoadTest<Object> loadTest = LoadTest.builder()
+						.createApplication(user -> new Object())
+						.closeApplication(object -> {})
 						.user(UNIT_TEST_USER)
 						.scenarios(asList(SCENARIO, SCENARIO_II))
 						.minimumThinkTime(25)
@@ -124,7 +126,9 @@ public class DefaultLoadTestModelTest {
 
 	@Test
 	void setUpdateIntervalNegative() {
-		LoadTest<Object> loadTest = LoadTest.builder(user -> new Object(), object -> {})
+		LoadTest<Object> loadTest = LoadTest.builder()
+						.createApplication(user -> new Object())
+						.closeApplication(object -> {})
 						.user(User.user("test"))
 						.build();
 		LoadTestModel<Object> model = loadTestModel(loadTest);

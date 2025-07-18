@@ -78,7 +78,9 @@ public final class ChinookLoadTest {
 
 	public static void main(String[] args) {
 		LoadTest<EntityConnectionProvider> loadTest =
-						LoadTest.builder(new ConnectionProviderFactory(), EntityConnectionProvider::close)
+						LoadTest.builder()
+										.createApplication(new ConnectionProviderFactory())
+										.closeApplication(EntityConnectionProvider::close)
 										.scenarios(SCENARIOS)
 										.user(UNIT_TEST_USER)
 										.name("Chinook LoadTest " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())

@@ -53,7 +53,9 @@ public final class DefaultLoadTestTest {
 
 	@Test
 	void unknownScenario() {
-		LoadTest<Object> model = LoadTest.builder(user -> new Object(), object -> {})
+		LoadTest<Object> model = LoadTest.builder()
+						.createApplication(user -> new Object())
+						.closeApplication(object -> {})
 						.user(User.user("test"))
 						.scenarios(asList(SCENARIO, SCENARIO_II))
 						.minimumThinkTime(25)
@@ -66,7 +68,9 @@ public final class DefaultLoadTestTest {
 
 	@Test
 	void test() throws Exception {
-		LoadTest<Object> model = LoadTest.builder(user -> new Object(), object -> {})
+		LoadTest<Object> model = LoadTest.builder()
+						.createApplication(user -> new Object())
+						.closeApplication(object -> {})
 						.user(UNIT_TEST_USER)
 						.scenarios(asList(SCENARIO, SCENARIO_II))
 						.minimumThinkTime(25)
@@ -119,7 +123,9 @@ public final class DefaultLoadTestTest {
 
 	@Test
 	void setLoginDelayFactorNegative() {
-		LoadTest<Object> model = LoadTest.builder(user -> new Object(), object -> {})
+		LoadTest<Object> model = LoadTest.builder()
+						.createApplication(user -> new Object())
+						.closeApplication(object -> {})
 						.user(User.user("test"))
 						.build();
 		assertThrows(IllegalArgumentException.class, () -> model.loginDelayFactor().set(-1));

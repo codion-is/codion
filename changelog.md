@@ -37,6 +37,10 @@ Codion Change Log
 - DefaultEntityApplicationPanelBuilder minor refactoring.
 - DefaultEntityApplicationPanelBuilder.applicationName now has a default value.
 - EntityApplicationPanel, EntityPanel, EntityTablePanel, savePreferences() renamed writePreferences().
+### is.codion.tools.loadtest.core
+- LoadTest.Builder.CreateApplicationStep and CloseApplicationStep.
+### is.codion.tools.loadtest.model
+- QueryLoadTestModel removed.
 
 ## 0.18.40
 ### is.codion
