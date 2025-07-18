@@ -248,7 +248,8 @@ final class EntityTablePanelPreferences {
 		private static Map<Attribute<?>, ColumnPreferences> fromJson(Collection<Attribute<?>> attributes, JSONObject preferences) {
 			return attributes.stream()
 							.map(attribute -> ColumnPreferences.fromJson(attribute, preferences))
-							.flatMap(Optional::stream)
+							.filter(Optional::isPresent)
+							.map(Optional::get)
 							.collect(toMap(ColumnPreferences::attribute, Function.identity()));
 		}
 
