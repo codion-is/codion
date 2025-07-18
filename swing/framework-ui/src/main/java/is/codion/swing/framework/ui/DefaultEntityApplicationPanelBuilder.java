@@ -91,7 +91,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	 */
 	static final Map<String, String> INTELLIJ_THEMES = new LinkedHashMap<>();
 
-	private static final String CODION_APPLICATION_VERSION = "codion.application.version";
+	private static final String CODION_CLIENT_VERSION = "codion.client.version";
 	private static final String CODION_VERSION = "codion.version";
 	private static final int DEFAULT_LOGO_SIZE = 68;
 	private static final String DASH = " - ";
@@ -415,7 +415,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	 */
 	private void setVersionProperty() {
 		if (applicationVersion != null) {
-			System.setProperty(CODION_APPLICATION_VERSION, applicationVersion.toString());
+			System.setProperty(CODION_CLIENT_VERSION, applicationVersion.toString());
 		}
 		System.setProperty(CODION_VERSION, Version.versionAndMetadataString());
 	}
