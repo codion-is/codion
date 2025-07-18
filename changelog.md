@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.41
 ## is.codion
 - Builder step suffix now Step instead of Builder.
+- Publish config moved from bom build files to root build, revapi plugin removed for now.
 ### is.codion.common.core
 - PropertyStore now accepts null default values.
 - DefaultMethodTrace.appendTo(), minor optimization.

@@ -1,14 +1,6 @@
-plugins {
-    `java-platform`
-    `maven-publish`
-    signing
-}
-
 javaPlatform {
     allowDependencies()
 }
-
-description = "Codion Framework BOM - Bill of Materials for the complete Codion framework including common modules"
 
 dependencies {
     api(platform(project(":codion-common-bom")))
@@ -44,42 +36,4 @@ dependencies {
         api(project(":codion-tools-monitor-model"))
         api(project(":codion-tools-monitor-ui"))
     }
-}
-
-apply(plugin = "maven-publish")
-
-publishing {
-    publications {
-        create<MavenPublication>("bom") {
-            groupId = "is.codion"
-            from(components["javaPlatform"])
-            pom {
-                name = "Codion Framework BOM"
-                description = "Bill of Materials for the complete Codion framework including common modules"
-                url = "https://codion.is"
-                licenses {
-                    license {
-                        name = "GPL-3.0"
-                        url = "https://www.gnu.org/licenses/gpl-3.0.en.html"
-                    }
-                }
-                developers {
-                    developer {
-                        id = "bjorndarri"
-                        name = "Björn Darri Sigurðsson"
-                        email = "bjorndarri@gmail.com"
-                    }
-                }
-                scm {
-                    connection = "scm:git:git://github.com/codion-is/codion.git"
-                    developerConnection = "scm:git:git://github.com/codion-is/codion.git"
-                    url = "https://github.com/codion-is/codion"
-                }
-            }
-        }
-    }
-}
-
-signing {
-    sign(publishing.publications["bom"])
 }

@@ -1,11 +1,5 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 
-buildscript {
-    dependencies {
-        classpath("org.revapi:gradle-revapi:1.8.0")
-    }
-}
-
 plugins {
     id("org.sonarqube") version "6.2.0.5505"
     id("com.github.ben-manes.versions") version "0.52.0"
@@ -29,11 +23,9 @@ nexusPublishing {
 configure(frameworkModules()) {
     apply(plugin = "java-library")
     apply(plugin = "maven-publish")
-    apply(plugin = "com.github.ben-manes.versions")
-    apply(plugin = "project-report")
-    apply(plugin = "com.vanniktech.dependency.graph.generator")
     apply(plugin = "signing")
-//    apply(plugin = "com.palantir.revapi")
+    apply(plugin = "com.github.ben-manes.versions")
+    apply(plugin = "com.vanniktech.dependency.graph.generator")
 
     tasks.clean {
         doLast {
@@ -99,19 +91,6 @@ configure(frameworkModules()) {
                     }
                 }
             }
-            repositories {
-                maven {
-                    credentials {
-                        username = properties["artifactoryUsername"].toString()
-                        password = properties["artifactoryPassword"].toString()
-                    }
-                    url = if (project.version.toString().endsWith("-SNAPSHOT")) {
-                        uri(properties["artifactorySnapshotUrl"].toString())
-                    } else {
-                        uri(properties["artifactoryReleaseUrl"].toString())
-                    }
-                }.isAllowInsecureProtocol = true
-            }
         }
 
         configure<SigningExtension> {
@@ -137,6 +116,50 @@ configure(frameworkModules()) {
     tasks.named("test") {
         dependsOn(tasks.named("createServerKeystore"))
         finalizedBy(tasks.named("jacocoTestReport"))
+    }
+}
+
+configure(bomModules()) {
+    apply(plugin = "java-platform")
+    apply(plugin = "maven-publish")
+    apply(plugin = "signing")
+
+    if (hasPublicationProperties()) {
+        configure<PublishingExtension> {
+            publications {
+                create<MavenPublication>("bom") {
+                    groupId = "is.codion"
+                    from(components["javaPlatform"])
+                    pom {
+                        name = "is.codion:" + project.name
+                        description = "Codion Application Framework BOM"
+                        url = "https://codion.is"
+                        licenses {
+                            license {
+                                name = "GPL-3.0"
+                                url = "https://www.gnu.org/licenses/gpl-3.0.en.html"
+                            }
+                        }
+                        developers {
+                            developer {
+                                id = "bjorndarri"
+                                name = "Björn Darri Sigurðsson"
+                                email = "bjorndarri@gmail.com"
+                            }
+                        }
+                        scm {
+                            connection = "scm:git:git://github.com/codion-is/codion.git"
+                            developerConnection = "scm:git:git://github.com/codion-is/codion.git"
+                            url = "https://github.com/codion-is/codion"
+                        }
+                    }
+                }
+            }
+        }
+
+        configure<SigningExtension> {
+            sign(project.extensions.getByType<PublishingExtension>().publications["bom"])
+        }
     }
 }
 
@@ -258,35 +281,6 @@ tasks.register("tagRelease") {
     }
 }
 
-/**
- * The publishToSonatype task does not distinguish between BOM and mavenJava publications and publishes
- * everything the same way. Publishing the BOM modules that way causes a failure during release, with the
- * following error message:
- * Failed to release staging repository, server at https://ossrh-staging-api.central.sonatype.com/service/local/
- * responded with status code 400, body: Failed to process request: Deployment reached an unexpected status: Failed
- *   common
- *   - Deployment components info not found
- *
- * Solution: Use publishBomPublicationToSonatypeRepository for BOM modules and
- * publishMavenJavaPublicationToSonatypeRepository for regular modules.
- */
-tasks.register("publishCodionToSonatype") {
-    group = "publishing"
-    description = "Publishes all modules, including boms, to Sonatype, closing and releasing on success"
-
-    dependsOn(
-        "publishMavenJavaPublicationToSonatypeRepository",
-        "publishBomPublicationToSonatypeRepository",
-        "closeAndReleaseSonatypeStagingRepository"
-    )
-}
-
-afterEvaluate {
-    tasks.named("closeAndReleaseSonatypeStagingRepository") {
-        mustRunAfter("publishMavenJavaPublicationToSonatypeRepository", "publishBomPublicationToSonatypeRepository")
-    }
-}
-
 fun isNonStable(version: String): Boolean {
     val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.uppercase().contains(it) }
     val regex = "^[0-9,.v-]+(-r)?$".toRegex()
@@ -318,5 +312,11 @@ fun frameworkModules(): Iterable<Project> {
     return subprojects.filter { project ->
         !project.name.startsWith("demo") && project.name != "documentation" &&
                 project.name != "codion-framework-bom" && project.name != "codion-common-bom"
+    }
+}
+
+fun bomModules(): Iterable<Project> {
+    return subprojects.filter { project ->
+        project.name.endsWith("-bom")
     }
 }
