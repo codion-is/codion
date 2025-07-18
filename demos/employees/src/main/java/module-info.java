@@ -44,6 +44,4 @@ module is.codion.demos.employees {
 
 	provides is.codion.framework.domain.Domain
 					with is.codion.demos.employees.domain.Employees;
-	provides is.codion.common.rmi.server.Authenticator
-					with is.codion.demos.employees.server.EmployeesAuthenticator;
 }
