@@ -709,29 +709,23 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
-	 * Saves user preferences
-	 * @param preferences the preferences instance to save to
+	 * Writes user preferences.
+	 * <p>Remember to call {@code super.writePreferences(preferences)} when overriding.
+	 * @param preferences the preferences instance to write to
 	 * @see #userPreferencesKey()
 	 */
-	public void savePreferences(Preferences preferences) {
+	public void writePreferences(Preferences preferences) {
 		requireNonNull(preferences);
 		new EntityTablePanelPreferences(this).save(preferences);
 	}
 
 	/**
-	 * Applies any user preferences previously saved via {@link #savePreferences(Preferences)}
+	 * Applies any user preferences previously written via {@link #writePreferences(Preferences)}
+	 * <p>Remember to call {@code super.applyPreferences(preferences)} when overriding.
 	 * @param preferences the preferences instance containing the preferences to apply
 	 */
 	public void applyPreferences(Preferences preferences) {
 		EntityTablePanelPreferences.apply(this, requireNonNull(preferences));
-	}
-
-	final void saveLegacyPreferences() {
-		new EntityTablePanelPreferences(this).saveLegacy();
-	}
-
-	final void applyLegacyPreferences() {
-		EntityTablePanelPreferences.applyLegacy(this);
 	}
 
 	/**
@@ -1035,6 +1029,14 @@ public class EntityTablePanel extends JPanel {
 	 */
 	protected final boolean confirmDelete() {
 		return configuration.deleteConfirmer.confirm(this);
+	}
+
+	final void writeLegacyPreferences() {
+		new EntityTablePanelPreferences(this).saveLegacy();
+	}
+
+	final void applyLegacyPreferences() {
+		EntityTablePanelPreferences.applyLegacy(this);
 	}
 
 	/**

@@ -570,20 +570,22 @@ public class EntityPanel extends JPanel {
 
 	/**
 	 * Saves user preferences for this entity panel and its detail panels.
+	 * <p>Remember to call {@code super.writePreferences(preferences)} when overriding.
 	 * @param preferences the Preferences instance into which to save the preferences
-	 * @see EntityTablePanel#savePreferences(Preferences)
+	 * @see EntityTablePanel#writePreferences(Preferences)
 	 */
-	public void savePreferences(Preferences preferences) {
+	public void writePreferences(Preferences preferences) {
 		requireNonNull(preferences);
 		if (containsTablePanel()) {
-			tablePanel.savePreferences(preferences);
+			tablePanel.writePreferences(preferences);
 		}
-		detailPanels.get().forEach(detailPanel -> detailPanel.savePreferences(preferences));
+		detailPanels.get().forEach(detailPanel -> detailPanel.writePreferences(preferences));
 	}
 
 	/**
-	 * Applies any user preferences previously saved via {@link #savePreferences(Preferences)}
+	 * Applies any user preferences previously written via {@link #writePreferences(Preferences)}
 	 * for this panel and its detail panels.
+	 * <p>Remember to call {@code super.applyPreferences(preferences)} when overriding.
 	 * @param preferences the Preferences instance containing the preferences to apply
 	 * @see EntityTablePanel#applyPreferences(Preferences)
 	 */
@@ -593,20 +595,6 @@ public class EntityPanel extends JPanel {
 			tablePanel.applyPreferences(preferences);
 		}
 		detailPanels.get().forEach(detailPanel -> detailPanel.applyPreferences(preferences));
-	}
-
-	final void saveLegacyPreferences() {
-		if (containsTablePanel()) {
-			tablePanel.saveLegacyPreferences();
-		}
-		detailPanels.get().forEach(EntityPanel::saveLegacyPreferences);
-	}
-
-	final void applyLegacyPreferences() {
-		if (containsTablePanel()) {
-			tablePanel.applyLegacyPreferences();
-		}
-		detailPanels.get().forEach(EntityPanel::applyLegacyPreferences);
 	}
 
 	/**
@@ -836,6 +824,20 @@ public class EntityPanel extends JPanel {
 	 */
 	protected final DetailController detailController() {
 		return detailController;
+	}
+
+	final void writeLegacyPreferences() {
+		if (containsTablePanel()) {
+			tablePanel.writeLegacyPreferences();
+		}
+		detailPanels.get().forEach(EntityPanel::writeLegacyPreferences);
+	}
+
+	final void applyLegacyPreferences() {
+		if (containsTablePanel()) {
+			tablePanel.applyLegacyPreferences();
+		}
+		detailPanels.get().forEach(EntityPanel::applyLegacyPreferences);
 	}
 
 	private JPanel createEditControlPanel() {

@@ -138,7 +138,7 @@ public class EntityTablePanelTest {
 		condition.caseSensitive().set(false);
 
 		Preferences preferences = UserPreferences.file(EntityTablePanelTest.class.getName());
-		tablePanel.savePreferences(preferences);
+		tablePanel.writePreferences(preferences);
 
 		tablePanel = new EntityTablePanel(testModel);
 		tablePanel.applyPreferences(preferences);

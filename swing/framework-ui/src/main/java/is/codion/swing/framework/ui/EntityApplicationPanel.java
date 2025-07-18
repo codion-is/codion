@@ -395,8 +395,8 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		}
 		try {
 			if (userPreferences) {
-				LOG.debug("Saving user preferences");
-				savePreferences(applicationModel.preferences());
+				LOG.debug("Writing user preferences");
+				writePreferences(applicationModel.preferences());
 				UserPreferences.flush();
 			}
 		}
@@ -868,17 +868,17 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	}
 
 	/**
-	 * <p>Called during the exit() method, override to save custom user preferences on program exit.
-	 * <p>Remember to call super.savePreferences(preferences) when overriding.
-	 * @param preferences the preferences instance to save the preferences to
+	 * <p>Called during the exit() method, override to write custom user preferences on program exit.
+	 * <p>Remember to call super.writePreferences(preferences) when overriding.
+	 * @param preferences the preferences instance to write to
 	 */
-	protected void savePreferences(Preferences preferences) {
-		entityPanels().forEach(entityPanel -> entityPanel.savePreferences(preferences));
+	protected void writePreferences(Preferences preferences) {
+		entityPanels().forEach(entityPanel -> entityPanel.writePreferences(preferences));
 		try {
 			ApplicationPreferences applicationPrefs = createPreferences();
 			applicationPrefs.save(preferences);
 			if (LEGACY_PREFERENCES.getOrThrow()) {
-				entityPanels().forEach(EntityPanel::saveLegacyPreferences);
+				entityPanels().forEach(EntityPanel::writeLegacyPreferences);
 				applicationPrefs.saveLegacyPreferences(getClass());
 			}
 		}
@@ -1146,7 +1146,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	}
 
 	private void onEntityPanelWindowClosed(EntityPanel entityPanel) {
-		entityPanel.savePreferences(applicationModel.preferences());
+		entityPanel.writePreferences(applicationModel.preferences());
 		entityPanel.setPreferredSize(entityPanel.getSize());
 	}
 
