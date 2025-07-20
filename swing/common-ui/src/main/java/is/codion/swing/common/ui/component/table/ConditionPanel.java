@@ -102,7 +102,7 @@ public abstract class ConditionPanel<T> extends JPanel {
 	 * The default implementation returns an empty Optional.
 	 * @return an observer notified when a subcomponent of this condition panel receives focus or an empty Optional if none is available
 	 */
-	public Optional<Observer<?>> focusGainedObserver() {
+	public Optional<Observer<?>> focusGained() {
 		return Optional.empty();
 	}
 

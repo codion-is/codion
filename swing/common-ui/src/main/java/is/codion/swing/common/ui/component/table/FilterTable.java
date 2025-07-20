@@ -982,8 +982,8 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	private void configureFilterPanel(C identifier, ConditionPanel<?> filterPanel) {
-		filterPanel.focusGainedObserver().ifPresent(focusGainedObserver ->
-						focusGainedObserver.addListener(() -> scrollToColumn(identifier)));
+		filterPanel.focusGained().ifPresent(focusGained ->
+						focusGained.addListener(() -> scrollToColumn(identifier)));
 	}
 
 	private void updateCellEditorUI() {

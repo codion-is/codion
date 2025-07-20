@@ -129,7 +129,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	private static final DefaultOperatorCaptions DEFAULT_OPERATOR_CAPTIONS = new DefaultOperatorCaptions();
 
 	private final ComponentFactory componentFactory;
-	private final Event<?> focusGainedEvent = Event.event();
+	private final Event<?> focusGained = Event.event();
 	private final TableColumn tableColumn;
 	private final Function<Operator, String> operatorCaptions;
 	private final OperandComponents operandComponents = new OperandComponents();
@@ -196,8 +196,8 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	}
 
 	@Override
-	public Optional<Observer<?>> focusGainedObserver() {
-		return Optional.of(focusGainedEvent.observer());
+	public Optional<Observer<?>> focusGained() {
+		return Optional.of(focusGained.observer());
 	}
 
 	/**
@@ -779,7 +779,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
 		@Override
 		public void focusGained(FocusEvent e) {
-			focusGainedEvent.run();
+			focusGained.run();
 		}
 	}
 

@@ -1509,8 +1509,8 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void configureConditionPanel(Attribute<?> attribute, ConditionPanel<?> conditionPanel) {
-		conditionPanel.focusGainedObserver().ifPresent(focusGainedObserver ->
-						focusGainedObserver.addListener(() -> table.scrollToColumn(attribute)));
+		conditionPanel.focusGained().ifPresent(focusGained ->
+						focusGained.addListener(() -> table.scrollToColumn(attribute)));
 		conditionPanel.components().forEach(this::enableConditionPanelRefreshOnEnter);
 	}
 
