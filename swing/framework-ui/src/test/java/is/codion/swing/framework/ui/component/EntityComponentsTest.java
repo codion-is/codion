@@ -124,7 +124,7 @@ public final class EntityComponentsTest {
 
 		box.getMouseListeners()[1].mouseClicked(null);
 
-		assertNull(box.model().toggleState().get());
+		assertNull(box.model().state().get());
 		assertNull(editor.value(Detail.BOOLEAN_NULLABLE).get());
 
 		editor.value(Detail.BOOLEAN_NULLABLE).set(false);

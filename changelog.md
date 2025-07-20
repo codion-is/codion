@@ -14,6 +14,8 @@ Codion Change Log
 - UserPreferences.delete() added, unit tests now cleanup preferences files.
 ### is.codion.common.rmi
 - Authenticator.type() renamed clientType().
+### is.codion.swing.common.model
+- NullableToggleButtonModel.toggleState() renamed state().
 ### is.codion.swing.common.ui
 - FilterTableCellRenderer.Builder.ColumnClassBuilder added.
 - FilterTable.Builder.rowHeight(), rowMargin(), intercellSpacing(), gridColor(), showGrid(), showHorizontalLines(), showVerticalLines() and dragEnabled() added.
