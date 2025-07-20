@@ -147,11 +147,11 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 	}
 
 	final void setTracingEnabled(boolean tracingEnabled) {
-		connectionHandler.methodLogger().setEnabled(tracingEnabled);
+		connectionHandler.tracer().setEnabled(tracingEnabled);
 	}
 
 	final boolean isTracingEnabled() {
-		return connectionHandler.methodLogger().isEnabled();
+		return connectionHandler.tracer().isEnabled();
 	}
 
 	/**
@@ -161,7 +161,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 		return connectionHandler.active();
 	}
 
-	final Observer<AbstractRemoteEntityConnection> closedObserver() {
+	final Observer<AbstractRemoteEntityConnection> closed() {
 		return closedEvent.observer();
 	}
 

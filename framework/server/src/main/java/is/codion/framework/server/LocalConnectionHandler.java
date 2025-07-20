@@ -199,7 +199,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 		return lastAccessTime;
 	}
 
-	MethodTracer methodLogger() {
+	MethodTracer tracer() {
 		return tracer;
 	}
 
