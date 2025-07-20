@@ -18,6 +18,7 @@ Codion Change Log
 - FilterTableCellRenderer.Builder.ColumnClassBuilder added.
 - FilterTable.Builder.rowHeight(), rowMargin(), intercellSpacing(), gridColor(), showGrid(), showHorizontalLines(), showVerticalLines() and dragEnabled() added.
 - ConditionPanel.focusGainedObserver() renamed focusGained().
+- Utilities.propertyObserver() renamed observer().
 ### is.codion.framework.db.local
 - MethodLogger renamed MethodTracer, logger package renamed tracer.
 - DefaultLocalEntityConnection.NoOpTracer added, tracer no longer nullable.
