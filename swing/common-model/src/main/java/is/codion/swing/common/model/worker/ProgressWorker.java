@@ -99,9 +99,11 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	protected T doInBackground() throws Exception {
 		if (task instanceof Task) {
 			((Task) task).execute();
+			return null;
 		}
 		else if (task instanceof ProgressTask) {
 			((ProgressTask<V>) task).execute(new TaskProgressReporter());
+			return null;
 		}
 		else if (task instanceof ResultTask) {
 			return ((ResultTask<T>) task).execute();
@@ -110,7 +112,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 			return ((ProgressResultTask<T, V>) task).execute(new TaskProgressReporter());
 		}
 
-		return null;
+		throw new IllegalStateException("Unknown task type: " + task.getClass());
 	}
 
 	@Override

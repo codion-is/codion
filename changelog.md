@@ -16,6 +16,7 @@ Codion Change Log
 - Authenticator.type() renamed clientType().
 ### is.codion.swing.common.model
 - NullableToggleButtonModel.toggleState() renamed state().
+- ProgressWorker now throws exception in case the task is not of the correct type.
 ### is.codion.swing.common.ui
 - FilterTableCellRenderer.Builder.ColumnClassBuilder added.
 - FilterTable.Builder.rowHeight(), rowMargin(), intercellSpacing(), gridColor(), showGrid(), showHorizontalLines(), showVerticalLines() and dragEnabled() added.
