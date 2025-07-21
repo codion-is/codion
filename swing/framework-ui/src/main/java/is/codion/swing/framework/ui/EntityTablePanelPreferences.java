@@ -365,7 +365,8 @@ final class EntityTablePanelPreferences {
 		private static Map<Attribute<?>, ConditionPreferences> fromJson(Collection<Attribute<?>> attributes, JSONObject jsonObject) {
 			return attributes.stream()
 							.map(attribute -> fromJson(attribute, jsonObject))
-							.flatMap(Optional::stream)
+							.filter(Optional::isPresent)
+							.map(Optional::get)
 							.collect(toMap(ConditionPreferences::attribute, Function.identity()));
 		}
 

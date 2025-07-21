@@ -45,6 +45,7 @@ import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.util.List;
+import java.util.function.Function;
 
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_SPACE;
@@ -105,7 +106,7 @@ final class FrameworkUIDemo {
 		EntitySearchField searchField = EntitySearchField.builder()
 						.model(searchModel)
 						.multiSelection()
-						.selectorFactory(EntitySearchField::tableSelector)
+						.selectorFactory(new CustomerSelectorFactory())
 						.build();
 		// end::customTableSelector[]
 	}
@@ -385,7 +386,7 @@ final class FrameworkUIDemo {
 		protected void setComponentValue(Integer value) {}
 	}
 
-	private class CustomerSelectorFactory implements java.util.function.Function<EntitySearchField, EntitySearchField.Selector> {
+	private class CustomerSelectorFactory implements Function<EntitySearchField, EntitySearchField.Selector> {
 		@Override
 		public EntitySearchField.Selector apply(EntitySearchField entitySearchField) {
 			return null;
