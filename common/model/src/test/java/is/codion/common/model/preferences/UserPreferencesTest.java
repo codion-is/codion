@@ -26,6 +26,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -71,8 +72,21 @@ public class UserPreferencesTest {
 		}
 	}
 
+	@Test
+	void file() throws IOException {
+		assertThrows(IllegalArgumentException.class, () -> UserPreferences.file("  "));
+		assertThrows(IllegalArgumentException.class, () -> UserPreferences.delete("  "));
+		try {
+			Preferences preferences = UserPreferences.file("UserPreferencesTest");
+			preferences.put(TEST_KEY, TEST_VALUE);
+		}
+		finally {
+			UserPreferences.delete("UserPreferencesTest");
+		}
+	}
+
 	@Nested
-	@DisplayName("Basic CRUD operations")
+	@DisplayName("Basic operations")
 	class BasicOperationsTest {
 
 		@Test

@@ -18,8 +18,6 @@
  */
 package is.codion.common.model.preferences;
 
-import is.codion.common.Text;
-
 import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
@@ -91,7 +89,8 @@ public final class UserPreferences {
 	 * @return a file based Preferences instance using the given filename
 	 */
 	public static Preferences file(String filename) {
-		return FILE_PREFERENCES.computeIfAbsent(requireNonNull(filename), k -> {
+		validateFilename(filename);
+		return FILE_PREFERENCES.computeIfAbsent(filename, k -> {
 			try {
 				return new FilePreferences(filename);
 			}
@@ -108,9 +107,7 @@ public final class UserPreferences {
 	 * @throws IllegalArgumentException in case the given preferences file does not exist
 	 */
 	public static void delete(String filename) throws IOException {
-		if (Text.nullOrEmpty(filename)) {
-			throw new IllegalArgumentException("Filename cannot be null or empty");
-		}
+		validateFilename(filename);
 		FilePreferences filePreferences = FILE_PREFERENCES.remove(filename);
 		if (filePreferences == null) {
 			throw new IllegalArgumentException("Preferences file with name '" +  filename + "' not found");
@@ -124,5 +121,11 @@ public final class UserPreferences {
 		}
 
 		return preferences;
+	}
+
+	private static void validateFilename(String filename) {
+		if (requireNonNull(filename).trim().isEmpty()) {
+			throw new IllegalArgumentException("Filename must not be empty");
+		}
 	}
 }
