@@ -1406,10 +1406,10 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		Builder<M, P> onApplicationStarted(Consumer<P> onApplicationStarted);
 
 		/**
-		 * @param frameSupplier the frame supplier
+		 * @param frame the supplies the frame to use
 		 * @return this Builder instance
 		 */
-		Builder<M, P> frameSupplier(Supplier<JFrame> frameSupplier);
+		Builder<M, P> frame(Supplier<JFrame> frame);
 
 		/**
 		 * @param frameTitle the frame title

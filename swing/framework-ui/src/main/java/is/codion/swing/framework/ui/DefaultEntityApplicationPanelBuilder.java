@@ -232,8 +232,8 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	}
 
 	@Override
-	public EntityApplicationPanel.Builder<M, P> frameSupplier(Supplier<JFrame> frameSupplier) {
-		this.frameSupplier = requireNonNull(frameSupplier);
+	public EntityApplicationPanel.Builder<M, P> frame(Supplier<JFrame> frame) {
+		this.frameSupplier = requireNonNull(frame);
 		return this;
 	}
 
