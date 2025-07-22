@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.42
+
 ## 0.18.41
 ## is.codion
 - Builder step suffix now Step instead of Builder.
