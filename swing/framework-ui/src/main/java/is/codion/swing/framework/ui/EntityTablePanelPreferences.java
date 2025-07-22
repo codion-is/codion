@@ -82,17 +82,21 @@ final class EntityTablePanelPreferences {
 	}
 
 	void apply(EntityTablePanel tablePanel) {
-		try {
-			ColumnPreferences.apply(tablePanel, columnPreferences);
+		if (!columnPreferences.isEmpty()) {
+			try {
+				ColumnPreferences.apply(tablePanel, columnPreferences);
+			}
+			catch (Exception e) {
+				LOG.error("Error while applying column preferences: {}", columnPreferences, e);
+			}
 		}
-		catch (Exception e1) {
-			LOG.error("Error while applying column preferences: {}", columnPreferences, e1);
-		}
-		try {
-			ConditionPreferences.apply(tablePanel.tableModel(), conditionPreferences);
-		}
-		catch (Exception e) {
-			LOG.error("Error while applying condition preferences: {}", conditionPreferences, e);
+		if (!conditionPreferences.isEmpty()) {
+			try {
+				ConditionPreferences.apply(tablePanel.tableModel(), conditionPreferences);
+			}
+			catch (Exception e) {
+				LOG.error("Error while applying condition preferences: {}", conditionPreferences, e);
+			}
 		}
 	}
 

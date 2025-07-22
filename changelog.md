@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.42
+### is.codion.swing.framework.ui
+- EntityTablePanelPreferences bug fixed, no longer applies empty preferences.
 
 ## 0.18.41
 ## is.codion

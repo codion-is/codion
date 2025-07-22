@@ -109,7 +109,7 @@ public final class UserPreferences {
 	 */
 	public static void delete(String filename) throws IOException {
 		if (Text.nullOrEmpty(filename)) {
-			throw  new IllegalArgumentException("Filename cannot be null or empty");
+			throw new IllegalArgumentException("Filename cannot be null or empty");
 		}
 		FilePreferences filePreferences = FILE_PREFERENCES.remove(filename);
 		if (filePreferences == null) {
