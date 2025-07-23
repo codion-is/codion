@@ -142,14 +142,14 @@ public final class FilterTable<R, C> extends JTable {
 					integerValue(FilterTable.class.getName() + ".autoResizeMode", AUTO_RESIZE_OFF);
 
 	/**
-	 * Specifies whether columns can be rearranged in tables
+	 * Specifies whether columns can be rearranged
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
 	 * </ul>
 	 */
-	public static final PropertyValue<Boolean> ALLOW_COLUMN_REORDERING =
-					booleanValue(FilterTable.class.getName() + ".allowColumnReordering", true);
+	public static final PropertyValue<Boolean> COLUMN_REORDERING =
+					booleanValue(FilterTable.class.getName() + ".columnReordering", true);
 
 	/**
 	 * Specifies whether the table resizes the row being edited to fit the editor component. Only applicable to {@link FilterTableCellEditor}.
@@ -306,8 +306,8 @@ public final class FilterTable<R, C> extends JTable {
 		setSelectionMode(builder.selectionMode);
 		setAutoResizeMode(builder.autoResizeMode);
 		configureColumns(builder.cellRenderers, builder.cellRendererFactory, builder.cellEditors, builder.cellEditorFactory);
-		configureTableHeader(builder.columnReorderingAllowed, builder.columnResizingAllowed);
-		bindEvents(builder.columnReorderingAllowed, builder.columnResizingAllowed);
+		configureTableHeader(builder.columnReordering, builder.columnResizingAllowed);
+		bindEvents(builder.columnReordering, builder.columnResizingAllowed);
 		if (builder.resizeRowToFitEditor) {
 			addPropertyChangeListener(TABLE_CELL_EDITOR, new ResizeRowToFitEditor());
 		}
@@ -1288,10 +1288,10 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> cellSelectionEnabled(boolean cellSelectionEnabled);
 
 		/**
-		 * @param columnReorderingAllowed true if column reordering should be allowed
+		 * @param columnReordering true if column reordering should be allowed
 		 * @return this builder instance
 		 */
-		Builder<R, C> columnReorderingAllowed(boolean columnReorderingAllowed);
+		Builder<R, C> columnReordering(boolean columnReordering);
 
 		/**
 		 * @param columnResizingAllowed true if column resizing should be allowed
@@ -1477,7 +1477,7 @@ public final class FilterTable<R, C> extends JTable {
 		private boolean sortable = true;
 		private int selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
 		private boolean cellSelectionEnabled = false;
-		private boolean columnReorderingAllowed = ALLOW_COLUMN_REORDERING.getOrThrow();
+		private boolean columnReordering = COLUMN_REORDERING.getOrThrow();
 		private boolean columnResizingAllowed = true;
 		private int autoResizeMode = AUTO_RESIZE_MODE.getOrThrow();
 		private boolean resizeRowToFitEditor = RESIZE_ROW_TO_FIT_EDITOR.getOrThrow();
@@ -1600,8 +1600,8 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> columnReorderingAllowed(boolean columnReorderingAllowed) {
-			this.columnReorderingAllowed = columnReorderingAllowed;
+		public Builder<R, C> columnReordering(boolean columnReordering) {
+			this.columnReordering = columnReordering;
 			return this;
 		}
 
