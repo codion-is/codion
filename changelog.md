@@ -8,6 +8,7 @@ Codion Change Log
 - FilterTable.Builder.columnReorderingAllowed() renamed columnReordering().
 - FilterTable.Builder.columnResizingAllowed() renamed columnResizing().
 - FilterTable.COLUMN_RESIZING configuration value added.
+- FilterTable.Builder.cellSelectionEnabled() renamed cellSelection().
 ### is.codion.swing.framework.ui
 - EntityTablePanelPreferences bug fixed, no longer applies empty preferences.
 - EntityApplicationPanel.Builder.frameSupplier() renamed frame().

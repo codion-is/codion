@@ -321,7 +321,7 @@ public final class FilterTable<R, C> extends JTable {
 		if (builder.resizeRowToFitEditor) {
 			addPropertyChangeListener(TABLE_CELL_EDITOR, new ResizeRowToFitEditor());
 		}
-		if (builder.cellSelectionEnabled) {
+		if (builder.cellSelection) {
 			setCellSelectionEnabled(true);
 		}
 		if (builder.rowHeight > 0) {
@@ -1291,11 +1291,11 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> selectionMode(int selectionMode);
 
 		/**
-		 * @param cellSelectionEnabled true if cell selection should be enabled
+		 * @param cellSelection true if cell selection should be enabled
 		 * @return this builder instance
 		 * @see JTable#setCellSelectionEnabled(boolean)
 		 */
-		Builder<R, C> cellSelectionEnabled(boolean cellSelectionEnabled);
+		Builder<R, C> cellSelection(boolean cellSelection);
 
 		/**
 		 * @param columnReordering true if column reordering should be allowed
@@ -1486,7 +1486,7 @@ public final class FilterTable<R, C> extends JTable {
 		private boolean scrollToAddedItem = false;
 		private boolean sortable = true;
 		private int selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
-		private boolean cellSelectionEnabled = false;
+		private boolean cellSelection = false;
 		private boolean columnReordering = COLUMN_REORDERING.getOrThrow();
 		private boolean columnResizing = COLUMN_RESIZING.getOrThrow();
 		private int autoResizeMode = AUTO_RESIZE_MODE.getOrThrow();
@@ -1604,8 +1604,8 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public Builder<R, C> cellSelectionEnabled(boolean cellSelectionEnabled) {
-			this.cellSelectionEnabled = cellSelectionEnabled;
+		public Builder<R, C> cellSelection(boolean cellSelection) {
+			this.cellSelection = cellSelection;
 			return this;
 		}
 
