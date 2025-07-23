@@ -115,7 +115,7 @@ tasks.asciidoctor {
     }
 }
 
-val combinedJavadoc by tasks.registering {
+tasks.register("combinedJavadoc") {
     group = "documentation"
     description = "Generates combined Javadocs for all framework modules"
 
