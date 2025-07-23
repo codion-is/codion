@@ -5,7 +5,9 @@ Codion Change Log
 ### is.codion.common.model
 - UserPreferences.file() and delete() no longer accept empty string for filename.
 ### is.codion.swing.common.ui
-- FilterTable.Builder.columnReorderingAllowed() renamed columnReordering(). 
+- FilterTable.Builder.columnReorderingAllowed() renamed columnReordering().
+- FilterTable.Builder.columnResizingAllowed() renamed columnResizing().
+- FilterTable.COLUMN_RESIZING configuration value added.
 ### is.codion.swing.framework.ui
 - EntityTablePanelPreferences bug fixed, no longer applies empty preferences.
 - EntityApplicationPanel.Builder.frameSupplier() renamed frame().
