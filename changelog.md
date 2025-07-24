@@ -9,6 +9,8 @@ Codion Change Log
 - FilterTable.Builder.columnResizingAllowed() renamed columnResizing().
 - FilterTable.COLUMN_RESIZING configuration value added.
 - FilterTable.Builder.cellSelectionEnabled() renamed cellSelection().
+### is.codion.framework.domain
+- DefaultEntity.validateTypes() performance bug fixed, unnecessary HashMap lookup removed, renamed validate().
 ### is.codion.framework.db.local
 - EntityResultPacker, minor optimization to eliminate HashMap resizing.
 ### is.codion.swing.framework.ui

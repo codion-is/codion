@@ -83,8 +83,8 @@ class DefaultEntity implements Entity, Serializable {
 
 	DefaultEntity(EntityDefinition definition, Map<Attribute<?>, Object> values, Map<Attribute<?>, Object> originalValues) {
 		this(definition);
-		this.values = validateTypes(definition, new HashMap<>(requireNonNull(values)));
-		this.originalValues = requireNonNull(originalValues).isEmpty() ? null : validateTypes(definition, new HashMap<>(originalValues));
+		this.values = validate(new HashMap<>(requireNonNull(values)));
+		this.originalValues = requireNonNull(originalValues).isEmpty() ? null : validate(new HashMap<>(originalValues));
 		this.definition = definition;
 	}
 
@@ -807,10 +807,14 @@ class DefaultEntity implements Entity, Serializable {
 		serializerForDomain((String) stream.readObject()).deserialize(this, stream);
 	}
 
-	private static Map<Attribute<?>, Object> validateTypes(EntityDefinition definition, Map<Attribute<?>, Object> values) {
+	private Map<Attribute<?>, Object> validate(Map<Attribute<?>, Object> values) {
 		if (values != null && !values.isEmpty()) {
 			for (Map.Entry<Attribute<?>, Object> valueEntry : values.entrySet()) {
-				definition.attributes().definition((Attribute<Object>) valueEntry.getKey()).attribute().type().validateType(valueEntry.getValue());
+				Attribute<Object> attribute = (Attribute<Object>) valueEntry.getKey();
+				if (!attribute.entityType().equals(definition.type())) {
+					throw new IllegalArgumentException("Attribute " + attribute + " not found in entity: " + definition.type());
+				}
+				attribute.type().validateType(valueEntry.getValue());
 			}
 		}
 
