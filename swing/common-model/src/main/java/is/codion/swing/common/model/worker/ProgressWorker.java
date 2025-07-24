@@ -20,6 +20,8 @@ package is.codion.swing.common.model.worker;
 
 import is.codion.common.model.CancelException;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.SwingWorker;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -96,7 +98,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	}
 
 	@Override
-	protected T doInBackground() throws Exception {
+	protected @Nullable T doInBackground() throws Exception {
 		if (task instanceof Task) {
 			((Task) task).execute();
 			return null;
@@ -376,7 +378,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 		@Override
 		public void report(int progress) {
-			setProgress(maximum == 0 ? 100 : 100 * progress / maximum);
+			setProgress(maximum == 0 ? DEFAULT_MAXIMUM : DEFAULT_MAXIMUM * progress / maximum);
 			if (onProgress != DefaultBuilder.EMPTY_CONSUMER) {
 				invokeLater(() -> onProgress.accept(progress));
 			}

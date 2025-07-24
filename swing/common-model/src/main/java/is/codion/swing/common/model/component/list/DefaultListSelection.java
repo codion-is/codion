@@ -26,6 +26,8 @@ import is.codion.common.state.State;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.DefaultListSelectionModel;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -322,7 +324,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 	private final class DefaultItem extends AbstractValue<R> {
 
 		@Override
-		protected R getValue() {
+		protected @Nullable R getValue() {
 			int index = selectedIndex.getOrThrow();
 			if (index >= 0 && index < items.count()) {
 				return items.get(index);
@@ -332,7 +334,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		}
 
 		@Override
-		protected void setValue(R item) {
+		protected void setValue(@Nullable R item) {
 			if (item == null) {
 				clearSelection();
 			}

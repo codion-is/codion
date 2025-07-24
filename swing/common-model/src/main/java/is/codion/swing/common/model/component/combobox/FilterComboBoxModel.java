@@ -25,6 +25,8 @@ import is.codion.common.model.selection.SingleSelection;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.value.Value;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.ComboBoxModel;
 import java.util.Collection;
 import java.util.Comparator;
@@ -64,7 +66,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	 * @return the selected item, N.B. this can include the {@code nullItem} in case it has been set
 	 * via {@link Builder#nullItem(Object)}, {@link SingleSelection#item()} is usually what you want
 	 */
-	T getSelectedItem();
+	@Nullable T getSelectedItem();
 
 	/**
 	 * @param itemFinder responsible for finding the item to select
@@ -87,7 +89,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 	 * @see Messages#no()
 	 */
 	static List<Item<Boolean>> booleanItems() {
-		return booleanItems(NULL_CAPTION.get());
+		return booleanItems(NULL_CAPTION.getOrThrow());
 	}
 
 	/**
@@ -154,7 +156,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 		 * @param comparator the comparator, null for unsorted
 		 * @return this builder
 		 */
-		Builder<T> comparator(Comparator<T> comparator);
+		Builder<T> comparator(@Nullable Comparator<T> comparator);
 
 		/**
 		 * @param includeNull true if a null item should be included
@@ -167,7 +169,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 		 * @param nullItem the item representing null
 		 * @return this builder
 		 */
-		Builder<T> nullItem(T nullItem);
+		Builder<T> nullItem(@Nullable T nullItem);
 
 		/**
 		 * Provides a way for a combo box model to translate an item received via {@link SingleSelection#item()} to an actual item to select,
@@ -227,7 +229,7 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 		 * @return this builder
 		 * @throws IllegalArgumentException in case the model does not contain the given item
 		 */
-		ItemComboBoxModelBuilder<T> selected(T selected);
+		ItemComboBoxModelBuilder<T> selected(@Nullable T selected);
 
 		/**
 		 * Sets the initally selected item

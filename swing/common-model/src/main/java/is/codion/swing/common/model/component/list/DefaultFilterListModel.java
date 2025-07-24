@@ -23,6 +23,8 @@ import is.codion.common.model.filter.FilterModel.VisibleItems.ItemsListener;
 import is.codion.common.observable.Observer;
 import is.codion.common.value.Value;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.AbstractListModel;
 import javax.swing.SortOrder;
 import java.util.Collection;
@@ -174,19 +176,19 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 		static final Builder.ItemsStep ITEMS = new DefaultItemsStep();
 
 		private final Collection<T> items;
-		private final Supplier<? extends Collection<T>> supplier;
+		private final @Nullable Supplier<? extends Collection<T>> supplier;
 
-		private Comparator<T> comparator;
+		private @Nullable Comparator<T> comparator;
 		private boolean async = ASYNC.getOrThrow();
-		private Predicate<T> visiblePredicate;
+		private @Nullable Predicate<T> visiblePredicate;
 
-		private DefaultBuilder(Collection<T> items, Supplier<? extends Collection<T>> supplier) {
+		private DefaultBuilder(@Nullable Collection<T> items, @Nullable Supplier<? extends Collection<T>> supplier) {
 			this.items = items == null ? Collections.emptyList() : items;
 			this.supplier = supplier;
 		}
 
 		@Override
-		public Builder<T> comparator(Comparator<T> comparator) {
+		public Builder<T> comparator(@Nullable Comparator<T> comparator) {
 			this.comparator = comparator;
 			return this;
 		}
@@ -216,7 +218,7 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 
 			private final Items<R> items;
 
-			private DefaultRefreshWorker(Supplier<? extends Collection<R>> supplier,
+			private DefaultRefreshWorker(@Nullable Supplier<? extends Collection<R>> supplier,
 																	 Items<R> items, boolean async) {
 				super((Supplier<Collection<R>>) supplier, async);
 				this.items = items;

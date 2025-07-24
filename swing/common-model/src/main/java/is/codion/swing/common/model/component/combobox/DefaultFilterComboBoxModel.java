@@ -29,6 +29,8 @@ import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.list.AbstractRefreshWorker;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import java.util.ArrayList;
@@ -99,7 +101,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public void setSelectedItem(Object item) {
+	public void setSelectedItem(@Nullable Object item) {
 		selection.selected.setSelectedItem(item);
 	}
 
@@ -162,23 +164,23 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		static final DefaultItemsStep ITEMS = new DefaultItemsStep();
 
-		private final Collection<T> items;
-		private final Supplier<Collection<T>> supplier;
+		private final @Nullable Collection<T> items;
+		private final @Nullable Supplier<Collection<T>> supplier;
 
 		private Comparator<T> comparator = (Comparator<T>) DEFAULT_COMPARATOR;
 		private Function<Object, T> translator = (Function<Object, T>) DEFAULT_SELECTED_ITEM_TRANSLATOR;
 		private boolean async = ASYNC.getOrThrow();
 		private boolean filterSelected;
 		private boolean includeNull;
-		private T nullItem;
+		private @Nullable T nullItem;
 
-		private DefaultBuilder(Collection<T> items, Supplier<Collection<T>> supplier) {
+		private DefaultBuilder(@Nullable Collection<T> items, @Nullable Supplier<Collection<T>> supplier) {
 			this.items = items;
 			this.supplier = supplier;
 		}
 
 		@Override
-		public Builder<T> comparator(Comparator<T> comparator) {
+		public Builder<T> comparator(@Nullable Comparator<T> comparator) {
 			this.comparator = comparator == null ? (Comparator<T>) NULL_COMPARATOR : comparator;
 			return this;
 		}
@@ -190,7 +192,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public Builder<T> nullItem(T nullItem) {
+		public Builder<T> nullItem(@Nullable T nullItem) {
 			this.nullItem = nullItem;
 
 			return includeNull(nullItem != null);
@@ -223,11 +225,11 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	static final class DefaultItemComboBoxModelBuilder<T> implements ItemComboBoxModelBuilder<T> {
 
 		private final List<Item<T>> items;
-		private final Item<T> nullItem;
+		private final @Nullable Item<T> nullItem;
 
 		private boolean sorted = false;
-		private Comparator<Item<T>> comparator;
-		private Item<T> selected;
+		private @Nullable Comparator<Item<T>> comparator;
+		private @Nullable Item<T> selected;
 
 		DefaultItemComboBoxModelBuilder(List<Item<T>> modelItems) {
 			items = new ArrayList<>(requireNonNull(modelItems));
@@ -252,7 +254,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public ItemComboBoxModelBuilder<T> selected(T selected) {
+		public ItemComboBoxModelBuilder<T> selected(@Nullable T selected) {
 			return selected(Item.item(selected));
 		}
 
@@ -320,7 +322,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private final boolean filterSelected;
 		private final boolean includeNull;
-		private final T nullItem;
+		private final @Nullable T nullItem;
 
 		private boolean cleared = true;
 
@@ -769,7 +771,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		private final State empty = State.state(true);
 		private final Function<Object, T> translator;
 
-		private T item = null;
+		private @Nullable T item = null;
 
 		private SelectedItem(Function<Object, T> translator) {
 			this.translator = translator;
@@ -777,16 +779,16 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		protected T getValue() {
+		protected @Nullable T getValue() {
 			return item;
 		}
 
 		@Override
-		protected void setValue(T value) {
+		protected void setValue(@Nullable T value) {
 			setSelectedItem(value);
 		}
 
-		private void setSelectedItem(Object item) {
+		private void setSelectedItem(@Nullable Object item) {
 			T toSelect = translator.apply(Objects.equals(modelItems.nullItem, item) ? null : item);
 			if (!Objects.equals(this.item, toSelect)) {
 				changing.accept(toSelect);
@@ -812,23 +814,23 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		protected V getValue() {
+		protected @Nullable V getValue() {
 			if (selection.selected.empty.get()) {
 				return null;
 			}
 
-			return itemFinder.value(selection.item().get());
+			return itemFinder.value(selection.item().getOrThrow());
 		}
 
 		@Override
-		protected void setValue(V value) {
+		protected void setValue(@Nullable V value) {
 			setSelectedItem(value == null ? null : itemFinder.findItem(modelItems.visible.get(), value).orElse(null));
 		}
 	}
 
 	private final class DefaultRefreshWorker extends AbstractRefreshWorker<T> {
 
-		private DefaultRefreshWorker(Supplier<Collection<T>> supplier, boolean async) {
+		private DefaultRefreshWorker(@Nullable Supplier<Collection<T>> supplier, boolean async) {
 			super(supplier, async);
 		}
 
@@ -841,19 +843,19 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	private static final class DefaultVisiblePredicate<R>
 					extends AbstractValue<Predicate<R>> implements VisiblePredicate<R> {
 
-		private Predicate<R> predicate;
+		private @Nullable Predicate<R> predicate;
 
 		private DefaultVisiblePredicate() {
 			super(SET);
 		}
 
 		@Override
-		protected Predicate<R> getValue() {
+		protected @Nullable Predicate<R> getValue() {
 			return predicate;
 		}
 
 		@Override
-		protected void setValue(Predicate<R> predicate) {
+		protected void setValue(@Nullable Predicate<R> predicate) {
 			this.predicate = predicate;
 		}
 	}

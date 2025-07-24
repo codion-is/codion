@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.42
 ### is.codion.common.model
 - UserPreferences.file() and delete() no longer accept empty string for filename.
+### is.codion.swing.common.model
+- JSpecify annotations added.
 ### is.codion.swing.common.ui
 - FilterTable.Builder.columnReorderingAllowed() renamed columnReordering().
 - FilterTable.Builder.columnResizingAllowed() renamed columnResizing().

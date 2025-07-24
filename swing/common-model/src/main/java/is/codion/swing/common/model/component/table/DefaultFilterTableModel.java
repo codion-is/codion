@@ -26,6 +26,8 @@ import is.codion.common.value.AbstractValue;
 import is.codion.swing.common.model.component.list.AbstractRefreshWorker;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -68,7 +70,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	private final Function<FilterTableModel<R, C>, Editor<R, C>> editorFactory;
 	private final RemoveSelectionListener removeSelectionListener;
 
-	private Editor<R, C> editor;
+	private @Nullable Editor<R, C> editor;
 
 	private DefaultFilterTableModel(DefaultBuilder<R, C> builder) {
 		this.columns = builder.columns;
@@ -136,7 +138,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public Object getValueAt(int rowIndex, int columnIndex) {
+	public @Nullable Object getValueAt(int rowIndex, int columnIndex) {
 		return columnValues.valueAt(rowIndex, columnIndex);
 	}
 
@@ -146,7 +148,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	}
 
 	@Override
-	public void setValueAt(Object value, int rowIndex, int columnIndex) {
+	public void setValueAt(@Nullable Object value, int rowIndex, int columnIndex) {
 		editor().set(value, rowIndex, items.visible().get(rowIndex), columns.identifier(columnIndex));
 	}
 
@@ -232,15 +234,15 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
-		public Object value(int rowIndex, C identifier) {
+		public @Nullable Object value(int rowIndex, C identifier) {
 			return columns.value(items.visible().get(rowIndex), identifier);
 		}
 
-		private List<Object> values(Stream<Integer> rowIndexStream, C identifier) {
+		private List<@Nullable Object> values(Stream<Integer> rowIndexStream, C identifier) {
 			return rowIndexStream.map(rowIndex -> value(rowIndex, identifier)).collect(toList());
 		}
 
-		private Object valueAt(int rowIndex, int columnIndex) {
+		private @Nullable Object valueAt(int rowIndex, int columnIndex) {
 			return value(rowIndex, columns.identifier(columnIndex));
 		}
 
@@ -284,7 +286,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		private final TableColumns<R, C> tableColumns;
 		private final TableConditionModel<C> filters;
 
-		private Predicate<R> predicate;
+		private @Nullable Predicate<R> predicate;
 
 		private DefaultVisiblePredicate(TableColumns<R, C> columns, TableConditionModel<C> filters) {
 			super(SET);
@@ -305,17 +307,16 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
-		protected Predicate<R> getValue() {
+		protected @Nullable Predicate<R> getValue() {
 			return predicate;
 		}
 
 		@Override
-		protected void setValue(Predicate<R> predicate) {
+		protected void setValue(@Nullable Predicate<R> predicate) {
 			this.predicate = predicate;
 		}
 
-		private boolean accepts(R item, ConditionModel<?> condition, C identifier,
-														TableColumns<R, C> columns) {
+		private boolean accepts(R item, ConditionModel<?> condition, C identifier, TableColumns<R, C> columns) {
 			if (condition.valueClass().equals(String.class)) {
 				String string = columns.string(item, identifier);
 
@@ -334,7 +335,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
-		public void set(Object value, int rowIndex, R row, C identifier) {}
+		public void set(@Nullable Object value, int rowIndex, R row, C identifier) {}
 	}
 
 	private static final class DefaultEditorFactory<R, C> implements Function<FilterTableModel<R, C>, Editor<R, C>> {
@@ -359,13 +360,13 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		private final TableColumns<R, C> columns;
 
-		private Supplier<? extends Collection<R>> supplier;
+		private @Nullable Supplier<? extends Collection<R>> supplier;
 		private Predicate<R> validator = new ValidPredicate<>();
 		private Supplier<Map<C, ConditionModel<?>>> filters;
 		private RefreshStrategy refreshStrategy = RefreshStrategy.CLEAR;
 		private boolean async = FilterModel.ASYNC.getOrThrow();
 		private Function<FilterTableModel<R, C>, Editor<R, C>> editorFactory = new DefaultEditorFactory<>();
-		private Predicate<R> visiblePredicate;
+		private @Nullable Predicate<R> visiblePredicate;
 
 		private DefaultBuilder(TableColumns<R, C> columns) {
 			if (requireNonNull(columns).identifiers().isEmpty()) {
@@ -438,7 +439,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 			private final Items<R> items;
 
-			private DefaultRefreshWorker(Supplier<? extends Collection<R>> supplier,
+			private DefaultRefreshWorker(@Nullable Supplier<? extends Collection<R>> supplier,
 																	 Items<R> items, boolean async) {
 				super((Supplier<Collection<R>>) supplier, async);
 				this.items = items;

@@ -23,6 +23,8 @@ import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.model.filter.FilterModel;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.table.TableModel;
 import java.util.Collection;
 import java.util.Comparator;
@@ -127,7 +129,7 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		 * @return the value
 		 * @see TableColumns#value(Object, Object)
 		 */
-		Object value(int rowIndex, C identifier);
+		@Nullable Object value(int rowIndex, C identifier);
 
 		/**
 		 * Returns a string representation of the value for the given row and column, an empty string in case of null.
@@ -238,7 +240,7 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		 * @param identifier the column identifier
 		 * @return a value for the given row and column
 		 */
-		Object value(R row, C identifier);
+		@Nullable Object value(R row, C identifier);
 
 		/**
 		 * @param index the identifier index
@@ -270,7 +272,7 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		 * @param identifier the column identifier
 		 * @return a Comparable for the given row and column
 		 */
-		default <T> Comparable<T> comparable(R row, C identifier) {
+		default <T> @Nullable Comparable<T> comparable(R row, C identifier) {
 			Object value = value(row, identifier);
 			if (value instanceof Comparable) {
 				return (Comparable<T>) value;
@@ -316,6 +318,6 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		 * @param identifier the column identifier
 		 * @see TableModel#setValueAt(Object, int, int)
 		 */
-		void set(Object value, int rowIndex, R row, C identifier);
+		void set(@Nullable Object value, int rowIndex, R row, C identifier);
 	}
 }

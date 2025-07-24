@@ -14,14 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2023 - 2025, Björn Darri Sigurðsson.
+ * Copyright (c) 2025, Björn Darri Sigurðsson.
  */
 /**
- * <p>ComboBox model implementations with filtering support and null handling.
- * <p>Package configuration values:
- * <ul>
- * <li>{@link is.codion.swing.common.model.component.combobox.FilterComboBoxModel#NULL_CAPTION}
- * </ul>
+ * <p>SwingWorker-based implementations for executing background tasks with progress reporting.
  */
 @org.jspecify.annotations.NullMarked
-package is.codion.swing.common.model.component.combobox;
+package is.codion.swing.common.model.worker;

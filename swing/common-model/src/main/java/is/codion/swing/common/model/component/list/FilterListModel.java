@@ -20,6 +20,8 @@ package is.codion.swing.common.model.component.list;
 
 import is.codion.common.model.filter.FilterModel;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.ListModel;
 import java.util.Collection;
 import java.util.Comparator;
@@ -77,7 +79,7 @@ public interface FilterListModel<T> extends ListModel<T>, FilterModel<T> {
 		 * @param comparator the comparator to use when sorting
 		 * @return this builder instance
 		 */
-		Builder<T> comparator(Comparator<T> comparator);
+		Builder<T> comparator(@Nullable Comparator<T> comparator);
 
 		/**
 		 * @param async true if async refresh should be enabled

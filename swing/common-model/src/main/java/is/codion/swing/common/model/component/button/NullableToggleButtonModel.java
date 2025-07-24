@@ -22,6 +22,8 @@ import is.codion.common.event.Event;
 import is.codion.common.observable.Observable;
 import is.codion.common.observable.Observer;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.DefaultButtonModel;
 import java.awt.event.ItemEvent;
 import java.util.Objects;
@@ -57,7 +59,7 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
 	 * Instantiates a new {@link NullableToggleButtonModel} with the given initial state.
 	 * @param initialState the initial state
 	 */
-	public NullableToggleButtonModel(Boolean initialState) {
+	public NullableToggleButtonModel(@Nullable Boolean initialState) {
 		state.set(initialState);
 	}
 
@@ -89,19 +91,19 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
 
 		private final Event<Boolean> event = Event.event();
 
-		private Boolean state = null;
+		private @Nullable Boolean state = null;
 
 		private ToggleState() {}
 
 		@Override
-		public Boolean get() {
+		public @Nullable Boolean get() {
 			return state;
 		}
 
 		/**
 		 * @param state the state to set
 		 */
-		public void set(Boolean state) {
+		public void set(@Nullable Boolean state) {
 			this.state = state;
 			fireItemStateChanged(new ItemEvent(NullableToggleButtonModel.this, ItemEvent.ITEM_STATE_CHANGED, this,
 							state == null ? NULL : (state ? ItemEvent.SELECTED : ItemEvent.DESELECTED)));

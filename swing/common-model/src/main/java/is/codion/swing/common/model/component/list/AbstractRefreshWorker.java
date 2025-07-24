@@ -22,6 +22,8 @@ import is.codion.common.model.filter.FilterModel;
 import is.codion.common.model.filter.FilterModel.AbstractRefresher;
 import is.codion.swing.common.model.worker.ProgressWorker;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.SwingUtilities;
 import java.util.Collection;
 import java.util.function.Consumer;
@@ -33,13 +35,13 @@ import java.util.function.Supplier;
  */
 public abstract class AbstractRefreshWorker<T> extends AbstractRefresher<T> {
 
-	private ProgressWorker<Collection<T>, ?> worker;
+	private @Nullable ProgressWorker<Collection<T>, ?> worker;
 
 	/**
 	 * @param supplier supplies the items
 	 * @param async true if async refresh should be used
 	 */
-	protected AbstractRefreshWorker(Supplier<Collection<T>> supplier, boolean async) {
+	protected AbstractRefreshWorker(@Nullable Supplier<Collection<T>> supplier, boolean async) {
 		super(supplier, async);
 	}
 
