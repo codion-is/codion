@@ -273,7 +273,7 @@ class DefaultKey implements Entity.Key, Serializable {
 	}
 
 	static void setSerializer(String domainName, EntitySerializer serializer) {
-		SERIALIZERS.put(requireNonNull(domainName), requireNonNull(serializer));
+		SERIALIZERS.put(domainName, serializer);
 	}
 
 	/**
@@ -283,7 +283,7 @@ class DefaultKey implements Entity.Key, Serializable {
 	 * @throws IllegalArgumentException in case no serializer has been associated with the domain
 	 */
 	static EntitySerializer serializerForDomain(String domainName) {
-		EntitySerializer serializer = SERIALIZERS.get(requireNonNull(domainName));
+		EntitySerializer serializer = SERIALIZERS.get(domainName);
 		if (serializer == null) {
 			throw new IllegalArgumentException("No EntitySerializer found for domain: " + domainName);
 		}

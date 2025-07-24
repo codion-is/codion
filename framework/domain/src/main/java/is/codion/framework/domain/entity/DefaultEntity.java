@@ -83,7 +83,7 @@ class DefaultEntity implements Entity, Serializable {
 
 	DefaultEntity(EntityDefinition definition, Map<Attribute<?>, Object> values, Map<Attribute<?>, Object> originalValues) {
 		this(definition);
-		this.values = validateValues(definition, new HashMap<>(requireNonNull(values)));
+		this.values = validateTypes(definition, new HashMap<>(requireNonNull(values)));
 		this.originalValues = requireNonNull(originalValues).isEmpty() ? null : validateTypes(definition, new HashMap<>(originalValues));
 		this.definition = definition;
 	}
@@ -807,12 +807,6 @@ class DefaultEntity implements Entity, Serializable {
 		serializerForDomain((String) stream.readObject()).deserialize(this, stream);
 	}
 
-	private static Map<Attribute<?>, Object> validateValues(EntityDefinition definition, Map<Attribute<?>, Object> values) {
-		validateTypes(definition, values);
-
-		return values;
-	}
-
 	private static Map<Attribute<?>, Object> validateTypes(EntityDefinition definition, Map<Attribute<?>, Object> values) {
 		if (values != null && !values.isEmpty()) {
 			for (Map.Entry<Attribute<?>, Object> valueEntry : values.entrySet()) {
@@ -871,7 +865,7 @@ class DefaultEntity implements Entity, Serializable {
 		@Override
 		public Entity mutable() {
 			DefaultEntity copy = new DefaultEntity(entity.definition(), EMPTY_MAP, EMPTY_MAP);
-			copy.values.putAll(entity.values);
+			copy.values.putAll(entity.values); // Bypass type validation, already validated
 			if (entity.originalValues != null) {
 				copy.originalValues = new HashMap<>(entity.originalValues);
 			}

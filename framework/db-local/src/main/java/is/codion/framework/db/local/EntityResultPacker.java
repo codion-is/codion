@@ -48,6 +48,8 @@ final class EntityResultPacker implements ResultPacker<Entity> {
 
 	private final EntityDefinition entityDefinition;
 	private final List<ColumnDefinition<?>> columnDefinitions;
+	private final List<TransientAttributeDefinition<?>> nonDerivedTransientAttributes;
+	private final List<ColumnDefinition<?>> nonSelectedColumns;
 
 	/**
 	 * @param entityDefinition the entity definition
@@ -56,11 +58,14 @@ final class EntityResultPacker implements ResultPacker<Entity> {
 	EntityResultPacker(EntityDefinition entityDefinition, List<ColumnDefinition<?>> columnDefinitions) {
 		this.entityDefinition = entityDefinition;
 		this.columnDefinitions = columnDefinitions;
+		this.nonDerivedTransientAttributes = NON_DERIVED_TRANSIENT_ATTRIBUTES.computeIfAbsent(entityDefinition, INIT_NON_DERIVED_TRANSIENT_ATTRIBUTES);
+		this.nonSelectedColumns = NON_SELECTED_COLUMNS.computeIfAbsent(entityDefinition, INIT_NON_SELECTED_COLUMNS);
 	}
 
 	@Override
 	public Entity get(ResultSet resultSet) throws SQLException {
-		Map<Attribute<?>, Object> values = new HashMap<>(columnDefinitions.size());
+		int attributeCount = columnDefinitions.size() + nonDerivedTransientAttributes.size() + nonSelectedColumns.size();
+		Map<Attribute<?>, Object> values = new HashMap<>((int) (attributeCount / 0.75f) + 1);
 		addResultSetValues(resultSet, values);
 		addTransientNullValues(values);
 		addNonSelectedNullValues(values);
@@ -82,21 +87,14 @@ final class EntityResultPacker implements ResultPacker<Entity> {
 	}
 
 	private void addTransientNullValues(Map<Attribute<?>, Object> values) {
-		List<TransientAttributeDefinition<?>> nonDerivedTransientAttributes =
-						NON_DERIVED_TRANSIENT_ATTRIBUTES.computeIfAbsent(entityDefinition, INIT_NON_DERIVED_TRANSIENT_ATTRIBUTES);
-		if (!nonDerivedTransientAttributes.isEmpty()) {
-			for (TransientAttributeDefinition<?> attribute : nonDerivedTransientAttributes) {
-				values.put(attribute.attribute(), null);
-			}
+		for (int i = 0; i < nonDerivedTransientAttributes.size(); i++) {
+			values.put(nonDerivedTransientAttributes.get(i).attribute(), null);
 		}
 	}
 
 	private void addNonSelectedNullValues(Map<Attribute<?>, Object> values) {
-		List<ColumnDefinition<?>> nonSelectedColumns = NON_SELECTED_COLUMNS.computeIfAbsent(entityDefinition, INIT_NON_SELECTED_COLUMNS);
-		if (!nonSelectedColumns.isEmpty()) {
-			for (ColumnDefinition<?> column : nonSelectedColumns) {
-				values.putIfAbsent(column.attribute(), null);
-			}
+		for (int i = 0; i < nonSelectedColumns.size(); i++) {
+			values.putIfAbsent(nonSelectedColumns.get(i).attribute(), null);
 		}
 	}
 
