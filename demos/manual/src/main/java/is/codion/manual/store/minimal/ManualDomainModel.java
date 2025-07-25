@@ -110,7 +110,7 @@ class ManualDomainModel {
 						.with(City.NAME, "Reykjavík")
 						.build();
 
-		Entity.Key customerKey = entities.builder(Customer.TYPE).key()
+		Entity.Key customerKey = entities.key(Customer.TYPE)
 						.with(Customer.ID, 42)
 						.build();
 

@@ -267,7 +267,7 @@ public final class EntitiesTest {
 		@Test
 		@DisplayName("empty key has correct default state")
 		void key_emptyKey_hasCorrectDefaultState() {
-			Entity.Key key = entities.builder(KeyTest.TYPE).key().build();
+			Entity.Key key = entities.key(KeyTest.TYPE).build();
 
 			assertEquals(0, key.hashCode());
 			assertTrue(key.columns().isEmpty());
@@ -277,7 +277,7 @@ public final class EntitiesTest {
 		@Test
 		@DisplayName("empty key operations throw appropriate exceptions")
 		void key_emptyKey_throwsExpectedExceptions() {
-			Entity.Key key = entities.builder(KeyTest.TYPE).key().build();
+			Entity.Key key = entities.key(KeyTest.TYPE).build();
 
 			assertThrows(IllegalStateException.class,
 							() -> entities.primaryKey(KeyTest.TYPE, 1),
@@ -291,7 +291,7 @@ public final class EntitiesTest {
 		@DisplayName("key builder creates and modifies keys correctly")
 		void key_builderOperations_workCorrectly() {
 			// Build composite key
-			Entity.Key key = entities.builder(KeyTest.TYPE).key()
+			Entity.Key key = entities.key(KeyTest.TYPE)
 							.with(KeyTest.ID1, 1)
 							.with(KeyTest.ID2, 2)
 							.with(KeyTest.ID3, 3)
@@ -331,7 +331,7 @@ public final class EntitiesTest {
 		@Test
 		@DisplayName("non-primary key entity has primary() false")
 		void key_nonPrimaryKey_primaryReturnsFalse() {
-			Entity.Key key = entities.builder(NoPk.TYPE).key()
+			Entity.Key key = entities.key(NoPk.TYPE)
 							.with(NoPk.COL1, 1)
 							.build();
 
@@ -341,23 +341,11 @@ public final class EntitiesTest {
 		@Test
 		@DisplayName("accessing undefined column throws exception")
 		void key_undefinedColumn_throwsException() {
-			Entity.Key noPk = entities.builder(NoPk.TYPE).key().build();
+			Entity.Key noPk = entities.key(NoPk.TYPE).build();
 
 			assertThrows(IllegalArgumentException.class,
 							() -> noPk.get(NoPk.COL1),
 							"Should not access undefined column in key");
-		}
-
-		@Test
-		@DisplayName("key extracted from entity contains primary key value")
-		void key_fromEntity_containsPrimaryKeyValue() {
-			Entity.Key key = entities.builder(Employee.TYPE)
-							.with(Employee.ID, 42)
-							.with(Employee.NAME, "Name")
-							.build()
-							.copy().builder().key().build();
-
-			assertEquals(Integer.valueOf(42), key.value());
 		}
 
 		@Test

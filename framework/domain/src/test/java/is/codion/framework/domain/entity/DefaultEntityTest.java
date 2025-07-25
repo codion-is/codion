@@ -1088,7 +1088,7 @@ public class DefaultEntityTest {
 		@DisplayName("key invalid attribute get throws exception")
 		void keyInvalidAttributeGet_throwsException() {
 			assertThrows(IllegalArgumentException.class,
-							() -> ENTITIES.builder(Employee.TYPE).key().build().get(Employee.NAME),
+							() -> ENTITIES.key(Employee.TYPE).build().get(Employee.NAME),
 							"Key should not allow get on non-key attributes");
 		}
 

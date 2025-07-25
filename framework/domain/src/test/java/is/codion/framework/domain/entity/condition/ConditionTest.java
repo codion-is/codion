@@ -273,7 +273,7 @@ public final class ConditionTest {
 		@Test
 		@DisplayName("composite primary key with null values creates valid condition")
 		void compositePrimaryKeyCondition_withNullValues_createsValidCondition() {
-			Entity.Key masterKey = entities.builder(Master2.TYPE).key()
+			Entity.Key masterKey = entities.key(Master2.TYPE)
 							.with(Master2.ID_1, 1)
 							.with(Master2.ID_2, null)
 							.with(Master2.CODE, 3)
@@ -282,7 +282,7 @@ public final class ConditionTest {
 			// Should not throw exception
 			assertDoesNotThrow(() -> Condition.key(masterKey));
 
-			Entity.Key masterKey2 = entities.builder(Master2.TYPE).key()
+			Entity.Key masterKey2 = entities.key(Master2.TYPE)
 							.with(Master2.ID_1, null)
 							.with(Master2.ID_2, null)
 							.with(Master2.CODE, 42)

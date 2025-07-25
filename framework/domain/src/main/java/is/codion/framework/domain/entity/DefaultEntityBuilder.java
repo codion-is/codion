@@ -92,20 +92,6 @@ final class DefaultEntityBuilder implements Entity.Builder {
 	}
 
 	@Override
-	public Key.Builder key() {
-		DefaultKeyBuilder builder = new DefaultKeyBuilder(definition);
-		if (!values.isEmpty()) {
-			definition.primaryKey().columns().forEach(column -> {
-				if (values.containsKey(column)) {
-					builder.with((Column<Object>) column, values.get(column));
-				}
-			});
-		}
-
-		return builder;
-	}
-
-	@Override
 	public Entity build() {
 		Entity entity = definition.entity(values, originalValues);
 		builderValues.forEach((attribute, value) -> entity.set((Attribute<Object>) attribute, value));

@@ -94,6 +94,11 @@ public abstract class DefaultEntities implements Entities, Serializable {
 	}
 
 	@Override
+	public final Entity.Key.Builder key(EntityType entityType) {
+		return new DefaultKeyBuilder(definition(entityType));
+	}
+
+	@Override
 	public final <T> Entity.Key primaryKey(EntityType entityType, T value) {
 		return definition(entityType).primaryKey(value);
 	}

@@ -15,6 +15,7 @@ Codion Change Log
 - DefaultEntity.validateTypes() performance bug fixed, unnecessary HashMap lookup removed, renamed validate().
 - DefaultKey.setSerializer() and serializerForDomain() moved to EntitySerializer. 
 - SingleColumnKey added, DefaultKey renamed CompositeColumnKey.
+- Entity.Builder.key() removed, Entities.key() added.
 ### is.codion.framework.db.local
 - EntityResultPacker, minor optimization to eliminate HashMap resizing.
 ### is.codion.swing.framework.ui

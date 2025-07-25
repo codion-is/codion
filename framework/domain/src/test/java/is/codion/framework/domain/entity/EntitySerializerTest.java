@@ -109,7 +109,7 @@ public final class EntitySerializerTest {
 		assertTrue(manager.entity(Employee.DEPARTMENT_FK).equalValues(deserializedManager.entity(Employee.DEPARTMENT_FK)));
 
 		CompositeColumnKey key = createTestKey();
-		CompositeColumnKey deserializedKey = (CompositeColumnKey) ENTITIES.builder(CompositeMaster.TYPE).key().build();
+		CompositeColumnKey deserializedKey = (CompositeColumnKey) ENTITIES.key(CompositeMaster.TYPE).build();
 		serializeDeserialize(serializer, key, deserializedKey);
 		assertEquals(key.values, deserializedKey.values);
 	}
@@ -167,7 +167,7 @@ public final class EntitySerializerTest {
 	}
 
 	private static CompositeColumnKey createTestKey() {
-		return (CompositeColumnKey) ENTITIES.builder(CompositeMaster.TYPE).key()
+		return (CompositeColumnKey) ENTITIES.key(CompositeMaster.TYPE)
 						.with(CompositeMaster.COMPOSITE_MASTER_ID, 1)
 						.with(CompositeMaster.COMPOSITE_MASTER_ID_2, 2)
 						.with(CompositeMaster.COMPOSITE_MASTER_ID_3, 3)

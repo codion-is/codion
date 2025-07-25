@@ -514,13 +514,6 @@ public interface Entity extends Comparable<Entity> {
 		Builder originalPrimaryKey();
 
 		/**
-		 * Creates a new {@link Entity.Key.Builder} instance, initialized with
-		 * any primary key values found in this builder.
-		 * @return a new {@link Key.Builder}
-		 */
-		Key.Builder key();
-
-		/**
 		 * Builds the Entity instance
 		 * @return a new Entity instance
 		 */

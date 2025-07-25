@@ -168,6 +168,17 @@ public interface Entities {
 	Entity.Builder builder(EntityType entityType);
 
 	/**
+	 * {@snippet :
+	 * Entity.Key customerKey = entities.key(Customer.TYPE)
+	 *     .with(Customer.ID, 42)
+	 *     .build();
+	 *}
+	 * @param entityType the entityType
+	 * @return a new {@link Entity.Key.Builder}
+	 */
+	Entity.Key.Builder key(EntityType entityType);
+
+	/**
 	 * Creates a new {@link Entity.Key} instance of the given entityType, initialised with the given value
 	 * {@snippet :
 	 * Entities entities = domain.entities();

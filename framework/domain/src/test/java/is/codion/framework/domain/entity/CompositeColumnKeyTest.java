@@ -56,7 +56,7 @@ public final class CompositeColumnKeyTest {
 
 	@Test
 	void singleKeyNull() {
-		Entity.Key key = ENTITIES.builder(Detail.TYPE).key().build();
+		Entity.Key key = ENTITIES.key(Detail.TYPE).build();
 		assertTrue(key.isNull());
 		key = key.copy()
 						.with(Detail.ID, null)
@@ -81,7 +81,7 @@ public final class CompositeColumnKeyTest {
 		Entity.Key deptKey = ENTITIES.primaryKey(Department.TYPE, 1);
 		assertNotEquals(empKey1, deptKey);
 
-		Entity.Key compMasterKey = ENTITIES.builder(CompositeMaster.TYPE).key()
+		Entity.Key compMasterKey = ENTITIES.key(CompositeMaster.TYPE)
 						.with(CompositeMaster.COMPOSITE_MASTER_ID, 1)
 						.with(CompositeMaster.COMPOSITE_MASTER_ID_2, 2)
 						.build();
@@ -89,7 +89,7 @@ public final class CompositeColumnKeyTest {
 		assertNotEquals(empKey1, compMasterKey);
 		assertNotEquals(new Object(), compMasterKey);
 
-		Entity.Key compMasterKey2 = ENTITIES.builder(CompositeMaster.TYPE).key()
+		Entity.Key compMasterKey2 = ENTITIES.key(CompositeMaster.TYPE)
 						.with(CompositeMaster.COMPOSITE_MASTER_ID, 1)
 						.build();
 		assertNotEquals(compMasterKey, compMasterKey2);
@@ -157,7 +157,7 @@ public final class CompositeColumnKeyTest {
 
 	@Test
 	void nullKeyEquals() {
-		Entity.Key nullKey = ENTITIES.builder(Employee.TYPE).key().build();
+		Entity.Key nullKey = ENTITIES.key(Employee.TYPE).build();
 		Entity.Key zeroKey = ENTITIES.primaryKey(Employee.TYPE, 0);
 		assertNotEquals(nullKey, zeroKey);
 	}
