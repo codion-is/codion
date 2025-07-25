@@ -45,13 +45,13 @@ public final class EntityTest {
 
 	@Test
 	void equal() {
-		Entity department1 = entities.builder(Department.TYPE)
+		Entity department1 = entities.entity(Department.TYPE)
 						.with(Department.ID, 1)
 						.with(Department.NAME, "name")
 						.with(Department.LOCATION, "loc")
 						.build();
 
-		Entity department2 = entities.builder(Department.TYPE)
+		Entity department2 = entities.entity(Department.TYPE)
 						.with(Department.ID, 2)
 						.with(Department.NAME, "name")
 						.with(Department.LOCATION, "loc")
@@ -64,7 +64,7 @@ public final class EntityTest {
 		department1.remove(Department.LOCATION);
 		assertTrue(department1.equalValues(department2, asList(Department.NAME, Department.LOCATION)));
 
-		Entity employee = entities.builder(Employee.TYPE)
+		Entity employee = entities.entity(Employee.TYPE)
 						.with(Employee.ID, 1)
 						.with(Employee.NAME, "name")
 						.build();
@@ -77,7 +77,7 @@ public final class EntityTest {
 		List<Entity> entityList = new ArrayList<>();
 		List<Object> values = new ArrayList<>();
 		for (int i = 0; i < 10; i++) {
-			entityList.add(entities.builder(Department.TYPE)
+			entityList.add(entities.entity(Department.TYPE)
 							.with(Department.ID, i == 5 ? null : i)
 							.build());
 			if (i != 5) {
@@ -94,25 +94,25 @@ public final class EntityTest {
 		List<Entity> entityList = new ArrayList<>();
 		List<Object> values = new ArrayList<>();
 
-		entityList.add(entities.builder(Department.TYPE)
+		entityList.add(entities.entity(Department.TYPE)
 						.with(Department.ID, null)
 						.build());
-		entityList.add(entities.builder(Department.TYPE)
+		entityList.add(entities.entity(Department.TYPE)
 						.with(Department.ID, 1)
 						.build());
-		entityList.add(entities.builder(Department.TYPE)
+		entityList.add(entities.entity(Department.TYPE)
 						.with(Department.ID, 1)
 						.build());
-		entityList.add(entities.builder(Department.TYPE)
+		entityList.add(entities.entity(Department.TYPE)
 						.with(Department.ID, 2)
 						.build());
-		entityList.add(entities.builder(Department.TYPE)
+		entityList.add(entities.entity(Department.TYPE)
 						.with(Department.ID, 3)
 						.build());
-		entityList.add(entities.builder(Department.TYPE)
+		entityList.add(entities.entity(Department.TYPE)
 						.with(Department.ID, 3)
 						.build());
-		entityList.add(entities.builder(Department.TYPE)
+		entityList.add(entities.entity(Department.TYPE)
 						.with(Department.ID, 4)
 						.build());
 
@@ -128,10 +128,10 @@ public final class EntityTest {
 
 	@Test
 	void originalPrimaryKeys() {
-		Entity dept1 = entities.builder(Department.TYPE)
+		Entity dept1 = entities.entity(Department.TYPE)
 						.with(Department.ID, 1)
 						.build();
-		Entity dept2 = entities.builder(Department.TYPE)
+		Entity dept2 = entities.entity(Department.TYPE)
 						.with(Department.ID, 2)
 						.build();
 		dept1.set(Department.ID, 3);
@@ -144,13 +144,13 @@ public final class EntityTest {
 
 	@Test
 	void primaryKeyMap() {
-		Entity dept = entities.builder(Department.TYPE)
+		Entity dept = entities.entity(Department.TYPE)
 						.with(Department.ID, 1)
 						.build();
-		Entity emp = entities.builder(Employee.TYPE)
+		Entity emp = entities.entity(Employee.TYPE)
 						.with(Employee.ID, 3)
 						.build();
-		Entity emp2 = entities.builder(Employee.TYPE)
+		Entity emp2 = entities.entity(Employee.TYPE)
 						.with(Employee.ID, null)
 						.build();
 		Map<Key, Entity> entityMap = Entity.primaryKeyMap(asList(dept, emp, emp2));
@@ -158,7 +158,7 @@ public final class EntityTest {
 		assertSame(emp, entityMap.get(emp.primaryKey()));
 		assertSame(emp2, entityMap.get(emp2.primaryKey()));
 
-		Entity dept2 = entities.builder(Department.TYPE)
+		Entity dept2 = entities.entity(Department.TYPE)
 						.with(Department.ID, 1)
 						.build();
 		assertThrows(IllegalArgumentException.class, () -> Entity.primaryKeyMap(asList(dept, dept2, emp)));
@@ -179,32 +179,32 @@ public final class EntityTest {
 	void groupByValue() {
 		List<Entity> entityList = new ArrayList<>();
 
-		Entity entityOne = entities.builder(Department.TYPE)
+		Entity entityOne = entities.entity(Department.TYPE)
 						.with(Department.ID, 1)
 						.build();
 		entityList.add(entityOne);
 
-		Entity entityTwo = entities.builder(Department.TYPE)
+		Entity entityTwo = entities.entity(Department.TYPE)
 						.with(Department.ID, 1)
 						.build();
 		entityList.add(entityTwo);
 
-		Entity entityThree = entities.builder(Department.TYPE)
+		Entity entityThree = entities.entity(Department.TYPE)
 						.with(Department.ID, 2)
 						.build();
 		entityList.add(entityThree);
 
-		Entity entityFour = entities.builder(Department.TYPE)
+		Entity entityFour = entities.entity(Department.TYPE)
 						.with(Department.ID, 3)
 						.build();
 		entityList.add(entityFour);
 
-		Entity entityFive = entities.builder(Department.TYPE)
+		Entity entityFive = entities.entity(Department.TYPE)
 						.with(Department.ID, 3)
 						.build();
 		entityList.add(entityFive);
 
-		Entity entitySix = entities.builder(Department.TYPE)
+		Entity entitySix = entities.entity(Department.TYPE)
 						.with(Department.ID, null)
 						.build();
 		entityList.add(entitySix);
@@ -227,10 +227,10 @@ public final class EntityTest {
 
 	@Test
 	void groupByType() {
-		Entity one = entities.entity(Employee.TYPE);
-		Entity two = entities.entity(Department.TYPE);
-		Entity three = entities.entity(Detail.TYPE);
-		Entity four = entities.entity(Employee.TYPE);
+		Entity one = entities.entity(Employee.TYPE).build();
+		Entity two = entities.entity(Department.TYPE).build();
+		Entity three = entities.entity(Detail.TYPE).build();
+		Entity four = entities.entity(Employee.TYPE).build();
 
 		Collection<Entity> entities = asList(one, two, three, four);
 		Map<EntityType, List<Entity>> map = Entity.groupByType(entities);
@@ -248,7 +248,7 @@ public final class EntityTest {
 
 	@Test
 	void setNull() {
-		Entity dept = entities.entity(Department.TYPE);
+		Entity dept = entities.entity(Department.TYPE).build();
 		for (AttributeDefinition<?> definition : entities.definition(Department.TYPE).attributes().definitions()) {
 			assertFalse(dept.contains(definition.attribute()));
 			assertTrue(dept.isNull(definition.attribute()));
@@ -266,23 +266,23 @@ public final class EntityTest {
 
 	@Test
 	void referencedKeys() {
-		Entity dept1 = entities.builder(Department.TYPE)
+		Entity dept1 = entities.entity(Department.TYPE)
 						.with(Department.ID, 1)
 						.build();
-		Entity dept2 = entities.builder(Department.TYPE)
+		Entity dept2 = entities.entity(Department.TYPE)
 						.with(Department.ID, 2)
 						.build();
 
-		Entity emp1 = entities.builder(Employee.TYPE)
+		Entity emp1 = entities.entity(Employee.TYPE)
 						.with(Employee.DEPARTMENT_FK, dept1)
 						.build();
-		Entity emp2 = entities.builder(Employee.TYPE)
+		Entity emp2 = entities.entity(Employee.TYPE)
 						.with(Employee.DEPARTMENT_FK, dept1)
 						.build();
-		Entity emp3 = entities.builder(Employee.TYPE)
+		Entity emp3 = entities.entity(Employee.TYPE)
 						.with(Employee.DEPARTMENT_FK, dept2)
 						.build();
-		Entity emp4 = entities.builder(Employee.TYPE)
+		Entity emp4 = entities.entity(Employee.TYPE)
 						.build();
 
 		Collection<Key> referencedKeys = Entity.keys(Employee.DEPARTMENT_FK, asList(emp1, emp2, emp3, emp4));
@@ -296,7 +296,7 @@ public final class EntityTest {
 
 	@Test
 	void noPkEntity() {
-		Entity noPk = entities.builder(NoPk.TYPE)
+		Entity noPk = entities.entity(NoPk.TYPE)
 						.with(NoPk.COL1, 1)
 						.with(NoPk.COL2, 2)
 						.with(NoPk.COL3, 3)

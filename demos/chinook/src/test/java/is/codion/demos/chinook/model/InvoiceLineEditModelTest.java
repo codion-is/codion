@@ -91,8 +91,8 @@ public final class InvoiceLineEditModelTest {
 	private static Entity createInvoice(EntityConnection connection) {
 		Entities entities = connection.entities();
 
-		return connection.insertSelect(entities.builder(Invoice.TYPE)
-						.with(Invoice.CUSTOMER_FK, connection.insertSelect(entities.builder(Customer.TYPE)
+		return connection.insertSelect(entities.entity(Invoice.TYPE)
+						.with(Invoice.CUSTOMER_FK, connection.insertSelect(entities.entity(Customer.TYPE)
 										.with(Customer.FIRSTNAME, "Björn")
 										.with(Customer.LASTNAME, "Sigurðsson")
 										.with(Customer.EMAIL, "email@email.com")

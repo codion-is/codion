@@ -163,7 +163,7 @@ public interface KeyGenerator {
 	 *     .build();
 	 *
 	 * // Usage - key is generated automatically
-	 * Entity product = entities.builder(Product.TYPE)
+	 * Entity product = entities.entity(Product.TYPE)
 	 *     .with(Product.NAME, "Laptop")
 	 *     .with(Product.PRICE, new BigDecimal("999.99"))
 	 *     .build();
@@ -173,7 +173,7 @@ public interface KeyGenerator {
 	 * Long generatedId = product.get(Product.ID); // e.g., 123
 	 *
 	 * // Manual key override (sequence not used)
-	 * Entity productWithManualId = entities.builder(Product.TYPE)
+	 * Entity productWithManualId = entities.entity(Product.TYPE)
 	 *     .with(Product.ID, 999L) // Explicitly set
 	 *     .with(Product.NAME, "Special Product")
 	 *     .build();
@@ -208,7 +208,7 @@ public interface KeyGenerator {
 	 *     .build();
 	 *
 	 * // Usage
-	 * Entity order = entities.builder(Order.TYPE)
+	 * Entity order = entities.entity(Order.TYPE)
 	 *     .with(Order.CUSTOMER_FK, customer)
 	 *     .with(Order.TOTAL, new BigDecimal("150.00"))
 	 *     .build();
@@ -243,7 +243,7 @@ public interface KeyGenerator {
 	 *     .build();
 	 *
 	 * // Usage - database generates the key
-	 * Entity customer = entities.builder(Customer.TYPE)
+	 * Entity customer = entities.entity(Customer.TYPE)
 	 *     .with(Customer.NAME, "John Doe")
 	 *     .with(Customer.EMAIL, "john@example.com")
 	 *     .build();

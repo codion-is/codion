@@ -335,7 +335,7 @@ public final class DomainSource {
 	}
 
 	private static String entityFromDtoMethodBody(Collection<Attribute<?>> attributes) {
-		StringBuilder builder = new StringBuilder("return entities.builder(TYPE)\n");
+		StringBuilder builder = new StringBuilder("return entities.entity(TYPE)\n");
 		attributes.forEach(attribute -> {
 			if (attribute instanceof Column<?>) {
 				builder.append("\t.with(")

@@ -68,7 +68,7 @@ import static java.util.stream.Collectors.*;
  * <p>
  * {@snippet :
  * // Creating and working with entities
- * Entity customer = entities.builder(Customer.TYPE)
+ * Entity customer = entities.entity(Customer.TYPE)
  *     .with(Customer.ID, 42)
  *     .with(Customer.NAME, "John Doe")
  *     .with(Customer.EMAIL, "john@example.com")
@@ -101,7 +101,7 @@ import static java.util.stream.Collectors.*;
  *}
  * @see EntityDefinition#entity()
  * @see Entities#entity(EntityType)
- * @see Entities#builder(EntityType)
+ * @see Entities#key(EntityType)
  * @see #entity(Key)
  * @see #builder(Key)
  * @see #copy()
@@ -258,7 +258,7 @@ public interface Entity extends Comparable<Entity> {
 	 * Returns true if the value associated with the given attribute has been modified since first set,
 	 * note that this does not apply to attributes based on derived values.
 	 * {@snippet :
-	 * Entity customer = entities.builder(Customer.TYPE)
+	 * Entity customer = entities.entity(Customer.TYPE)
 	 *     .with(Customer.NAME, "John")
 	 *     .with(Customer.EMAIL, "john@example.com")
 	 *     .build();
@@ -294,13 +294,13 @@ public interface Entity extends Comparable<Entity> {
 	 * Compares the values of all attributes in the given entity to the values in this entity instance.
 	 * Returns true if all attribute values available in this entity are available and equal in the comparison entity
 	 * {@snippet :
-	 * Entity customer1 = entities.builder(Customer.TYPE)
+	 * Entity customer1 = entities.entity(Customer.TYPE)
 	 *     .with(Customer.ID, 42)
 	 *     .with(Customer.NAME, "John Doe")
 	 *     .with(Customer.EMAIL, "john@example.com")
 	 *     .build();
 	 *
-	 * Entity customer2 = entities.builder(Customer.TYPE)
+	 * Entity customer2 = entities.entity(Customer.TYPE)
 	 *     .with(Customer.ID, 42)
 	 *     .with(Customer.NAME, "John Doe")
 	 *     .with(Customer.EMAIL, "john@example.com")
@@ -320,13 +320,13 @@ public interface Entity extends Comparable<Entity> {
 	 * Compares the values of the given attributes in the given entity to the values in this entity instance.
 	 * Returns true if these two entities contain values for the given attributes and all the values are equal.
 	 * {@snippet :
-	 * Entity customer1 = entities.builder(Customer.TYPE)
+	 * Entity customer1 = entities.entity(Customer.TYPE)
 	 *     .with(Customer.ID, 42)
 	 *     .with(Customer.NAME, "John Doe")
 	 *     .with(Customer.EMAIL, "john@example.com")
 	 *     .build();
 	 *
-	 * Entity customer2 = entities.builder(Customer.TYPE)
+	 * Entity customer2 = entities.entity(Customer.TYPE)
 	 *     .with(Customer.ID, 42)
 	 *     .with(Customer.NAME, "John Doe")
 	 *     .with(Customer.EMAIL, "different@example.com")
@@ -359,7 +359,7 @@ public interface Entity extends Comparable<Entity> {
 	/**
 	 * Returns a {@link Copy} instance providing ways to create copies of this entity.
 	 * {@snippet :
-	 * Entity customer = entities.builder(Customer.TYPE)
+	 * Entity customer = entities.entity(Customer.TYPE)
 	 *     .with(Customer.ID, 42)
 	 *     .with(Customer.NAME, "John Doe")
 	 *     .with(Customer.EMAIL, "john@example.com")
@@ -471,12 +471,12 @@ public interface Entity extends Comparable<Entity> {
 	 *
 	 * Entities entities = domain.entities();
 	 *
-	 * Entity customer = entities.builder(Customer.TYPE)
+	 * Entity customer = entities.entity(Customer.TYPE)
 	 *     .with(Customer.FIRST_NAME, "John")
 	 *     .with(Customer.LAST_NAME, "Doe")
 	 *     .build();
 	 *}
-	 * @see Entities#builder(EntityType)
+	 * @see Entities#entity(EntityType)
 	 * @see Entity#builder(Key)
 	 * @see Copy#builder()
 	 */

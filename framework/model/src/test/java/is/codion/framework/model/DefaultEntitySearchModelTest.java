@@ -79,7 +79,7 @@ public final class DefaultEntitySearchModelTest {
 
 	@Test
 	void wrongEntityType() {
-		assertThrows(IllegalArgumentException.class, () -> searchModel.selection().entity().set(ENTITIES.entity(Department.TYPE)));
+		assertThrows(IllegalArgumentException.class, () -> searchModel.selection().entity().set(ENTITIES.entity(Department.TYPE).build()));
 	}
 
 	@Test
@@ -248,7 +248,7 @@ public final class DefaultEntitySearchModelTest {
 
 	@Test
 	void editEvents() {
-		Entity temp = ENTITIES.builder(Employee.TYPE)
+		Entity temp = ENTITIES.entity(Employee.TYPE)
 						.with(Employee.ID, -42)
 						.with(Employee.NAME, "Noname")
 						.build();
@@ -290,13 +290,13 @@ public final class DefaultEntitySearchModelTest {
 	}
 
 	private static void setupData() {
-		Entity dept = ENTITIES.builder(Department.TYPE)
+		Entity dept = ENTITIES.entity(Department.TYPE)
 						.with(Department.ID, 88)
 						.with(Department.LOCATION, "TestLoc")
 						.with(Department.NAME, "TestDept")
 						.build();
 
-		Entity emp = ENTITIES.builder(Employee.TYPE)
+		Entity emp = ENTITIES.entity(Employee.TYPE)
 						.with(Employee.DEPARTMENT_FK, dept)
 						.with(Employee.COMMISSION, 1000d)
 						.with(Employee.HIREDATE, LocalDate.now())
@@ -305,7 +305,7 @@ public final class DefaultEntitySearchModelTest {
 						.with(Employee.SALARY, 1000d)
 						.build();
 
-		Entity emp2 = ENTITIES.builder(Employee.TYPE)
+		Entity emp2 = ENTITIES.entity(Employee.TYPE)
 						.with(Employee.DEPARTMENT_FK, dept)
 						.with(Employee.COMMISSION, 1000d)
 						.with(Employee.HIREDATE, LocalDate.now())
@@ -314,7 +314,7 @@ public final class DefaultEntitySearchModelTest {
 						.with(Employee.SALARY, 1000d)
 						.build();
 
-		Entity emp3 = ENTITIES.builder(Employee.TYPE)
+		Entity emp3 = ENTITIES.entity(Employee.TYPE)
 						.with(Employee.DEPARTMENT_FK, dept)
 						.with(Employee.COMMISSION, 1000d)
 						.with(Employee.HIREDATE, LocalDate.now())
@@ -323,7 +323,7 @@ public final class DefaultEntitySearchModelTest {
 						.with(Employee.SALARY, 1000d)
 						.build();
 
-		Entity emp4 = ENTITIES.builder(Employee.TYPE)
+		Entity emp4 = ENTITIES.entity(Employee.TYPE)
 						.with(Employee.DEPARTMENT_FK, dept)
 						.with(Employee.COMMISSION, 1000d)
 						.with(Employee.HIREDATE, LocalDate.now())

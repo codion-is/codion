@@ -478,7 +478,7 @@ public final class ConditionFrameworkEnhancementTest {
 		void singleColumnForeignKey_conditions_workCorrectly() {
 			EntityDefinition empDef = entities.definition(Employee.TYPE);
 
-			Entity department = entities.builder(Department.TYPE)
+			Entity department = entities.entity(Department.TYPE)
 							.with(Department.ID, 10)
 							.with(Department.NAME, "Engineering")
 							.build();
@@ -489,7 +489,7 @@ public final class ConditionFrameworkEnhancementTest {
 			assertEquals(10, condition.values().get(0));
 
 			// IN with entities
-			Entity department2 = entities.builder(Department.TYPE)
+			Entity department2 = entities.entity(Department.TYPE)
 							.with(Department.ID, 20)
 							.build();
 
@@ -508,7 +508,7 @@ public final class ConditionFrameworkEnhancementTest {
 		@DisplayName("composite foreign key conditions work correctly")
 		void compositeForeignKey_conditions_workCorrectly() {
 			// Use existing employee-department relationship as composite-like test
-			Entity department = entities.builder(Department.TYPE)
+			Entity department = entities.entity(Department.TYPE)
 							.with(Department.ID, 10)
 							.with(Department.COMPANY_ID, 1)
 							.build();
@@ -716,7 +716,7 @@ public final class ConditionFrameworkEnhancementTest {
 			// For now, we test the concept with the assignment entity
 			EntityDefinition assignDef = entities.definition(Assignment.TYPE);
 
-			Entity assignment = entities.builder(Assignment.TYPE)
+			Entity assignment = entities.entity(Assignment.TYPE)
 							.with(Assignment.ID, 1)
 							.with(Assignment.EMPLOYEE_ID, 10)
 							.with(Assignment.PROJECT_ID, 20)

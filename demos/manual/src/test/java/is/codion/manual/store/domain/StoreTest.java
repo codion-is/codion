@@ -67,7 +67,7 @@ public class StoreTest extends DomainTest {
 		public Optional<Entity> entity(ForeignKey foreignKey) {
 			// See if the currently running test requires an ADDRESS entity
 			if (foreignKey.referencedType().equals(Address.TYPE)) {
-				return Optional.of(connection().insertSelect(entities().builder(Address.TYPE)
+				return Optional.of(connection().insertSelect(entities().entity(Address.TYPE)
 								.with(Address.ID, 21L)
 								.with(Address.STREET, "One Way")
 								.with(Address.CITY, "Sin City")
@@ -82,7 +82,7 @@ public class StoreTest extends DomainTest {
 			if (entityType.equals(Address.TYPE)) {
 				// Initialize an entity representing a record in the
 				// STORE.ADDRESS table, to use for testing
-				return entities().builder(Address.TYPE)
+				return entities().entity(Address.TYPE)
 								.with(Address.ID, 42L)
 								.with(Address.STREET, "Street")
 								.with(Address.CITY, "City")
@@ -92,7 +92,7 @@ public class StoreTest extends DomainTest {
 			else if (entityType.equals(Customer.TYPE)) {
 				// Initialize an entity representing a record in the
 				// STORE.CUSTOMER table, to use for testing
-				return entities().builder(Customer.TYPE)
+				return entities().entity(Customer.TYPE)
 								.with(Customer.ID, UUID.randomUUID().toString())
 								.with(Customer.FIRST_NAME, "Robert")
 								.with(Customer.LAST_NAME, "Ford")
@@ -100,7 +100,7 @@ public class StoreTest extends DomainTest {
 								.build();
 			}
 			else if (entityType.equals(CustomerAddress.TYPE)) {
-				return entities().builder(CustomerAddress.TYPE)
+				return entities().entity(CustomerAddress.TYPE)
 								.with(CustomerAddress.CUSTOMER_FK, entity(CustomerAddress.CUSTOMER_FK).orElseThrow())
 								.with(CustomerAddress.ADDRESS_FK, entity(CustomerAddress.ADDRESS_FK).orElseThrow())
 								.build();

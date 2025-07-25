@@ -71,14 +71,14 @@ public class StoreDatabase {
 		// The domain model entities, a factory for Entity instances.
 		Entities entities = connection.entities();
 
-		Entity customer = entities.builder(Customer.TYPE)
+		Entity customer = entities.entity(Customer.TYPE)
 						.with(Customer.FIRST_NAME, "Peter")
 						.with(Customer.LAST_NAME, "Jackson")
 						.build();
 
 		customer = connection.insertSelect(customer);
 
-		Entity address = entities.builder(Address.TYPE)
+		Entity address = entities.entity(Address.TYPE)
 						.with(Address.CUSTOMER_FK, customer)
 						.with(Address.STREET, "Elm st.")
 						.with(Address.CITY, "Boston")

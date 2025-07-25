@@ -77,7 +77,7 @@ package is.codion.framework.domain.entity.attribute;
  * }
  *
  * // Usage - audit columns are populated automatically
- * Entity product = entities.builder(Product.TYPE)
+ * Entity product = entities.entity(Product.TYPE)
  *     .with(Product.NAME, "Laptop")
  *     .with(Product.PRICE, new BigDecimal("999.99"))
  *     .build();

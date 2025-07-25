@@ -310,7 +310,7 @@ public final class DerivedAttributeEnhancementTest {
 		@Test
 		@DisplayName("simple calculation derived attribute updates correctly")
 		void derivedAttribute_simpleCalculation_updatesCorrectly() {
-			Entity product = entities.builder(Product.TYPE)
+			Entity product = entities.entity(Product.TYPE)
 							.with(Product.ID, 1)
 							.with(Product.NAME, "Test Product")
 							.with(Product.PRICE, new BigDecimal("10.50"))
@@ -333,7 +333,7 @@ public final class DerivedAttributeEnhancementTest {
 		@Test
 		@DisplayName("derived attribute handles null source values")
 		void derivedAttribute_nullSourceValues_returnsNull() {
-			Entity product = entities.builder(Product.TYPE)
+			Entity product = entities.entity(Product.TYPE)
 							.with(Product.ID, 1)
 							.with(Product.NAME, "Test Product")
 							.with(Product.TAX_RATE, new BigDecimal("0.15"))
@@ -355,7 +355,7 @@ public final class DerivedAttributeEnhancementTest {
 		@Test
 		@DisplayName("string manipulation derived attribute works correctly")
 		void derivedAttribute_stringManipulation_worksCorrectly() {
-			Entity product = entities.builder(Product.TYPE)
+			Entity product = entities.entity(Product.TYPE)
 							.with(Product.ID, 1)
 							.with(Product.NAME, "Laptop")
 							.with(Product.QUANTITY, 3)
@@ -379,7 +379,7 @@ public final class DerivedAttributeEnhancementTest {
 		void derivedAttribute_dateCalculation_computesCorrectly() {
 			LocalDate tenDaysAgo = LocalDate.now().minusDays(10);
 
-			Entity product = entities.builder(Product.TYPE)
+			Entity product = entities.entity(Product.TYPE)
 							.with(Product.ID, 1)
 							.with(Product.NAME, "Test")
 							.with(Product.PRICE, BigDecimal.ONE)
@@ -407,7 +407,7 @@ public final class DerivedAttributeEnhancementTest {
 		@Test
 		@DisplayName("derived from derived attribute updates correctly")
 		void derivedFromDerived_updatesCorrectly() {
-			Entity product = entities.builder(Product.TYPE)
+			Entity product = entities.entity(Product.TYPE)
 							.with(Product.ID, 1)
 							.with(Product.NAME, "Test Product")
 							.with(Product.PRICE, new BigDecimal("100.00"))
@@ -435,7 +435,7 @@ public final class DerivedAttributeEnhancementTest {
 		@Test
 		@DisplayName("complex multi-level derived attributes work correctly")
 		void complexMultiLevel_worksCorrectly() {
-			Entity complex = entities.builder(ComplexEntity.TYPE)
+			Entity complex = entities.entity(ComplexEntity.TYPE)
 							.with(ComplexEntity.ID, 1)
 							.with(ComplexEntity.VALUE1, "Hello")
 							.with(ComplexEntity.VALUE2, "World")
@@ -459,7 +459,7 @@ public final class DerivedAttributeEnhancementTest {
 		@Test
 		@DisplayName("partial null values in multi-level derived")
 		void multiLevel_partialNullValues_handledCorrectly() {
-			Entity complex = entities.builder(ComplexEntity.TYPE)
+			Entity complex = entities.entity(ComplexEntity.TYPE)
 							.with(ComplexEntity.ID, 1)
 							.with(ComplexEntity.VALUE1, "Only One")
 							.with(ComplexEntity.NUMBER1, 42)
@@ -478,13 +478,13 @@ public final class DerivedAttributeEnhancementTest {
 		@Test
 		@DisplayName("derived from foreign key entity updates when FK changes")
 		void derivedFromForeignKey_updatesWhenFKChanges() {
-			Entity order = entities.builder(Order.TYPE)
+			Entity order = entities.entity(Order.TYPE)
 							.with(Order.ID, 1)
 							.with(Order.ORDER_DATE, LocalDateTime.now())
 							.with(Order.STATUS, "PENDING")
 							.build();
 
-			Entity product = entities.builder(Product.TYPE)
+			Entity product = entities.entity(Product.TYPE)
 							.with(Product.ID, 1)
 							.with(Product.NAME, "Laptop")
 							.with(Product.PRICE, new BigDecimal("1000"))
@@ -492,7 +492,7 @@ public final class DerivedAttributeEnhancementTest {
 							.with(Product.TAX_RATE, new BigDecimal("0.15"))
 							.build();
 
-			Entity orderLine = entities.builder(OrderLine.TYPE)
+			Entity orderLine = entities.entity(OrderLine.TYPE)
 							.with(OrderLine.ID, 1)
 							.with(OrderLine.ORDER_FK, order)
 							.with(OrderLine.PRODUCT_FK, product)
@@ -509,7 +509,7 @@ public final class DerivedAttributeEnhancementTest {
 			order.set(Order.STATUS, "SHIPPED");
 
 			// Create a new orderLine with the updated order to test derived attribute
-			Entity updatedOrderLine = entities.builder(OrderLine.TYPE)
+			Entity updatedOrderLine = entities.entity(OrderLine.TYPE)
 							.with(OrderLine.ID, 2)
 							.with(OrderLine.ORDER_ID, order.get(Order.ID))
 							.with(OrderLine.PRODUCT_ID, product.get(Product.ID))
@@ -521,7 +521,7 @@ public final class DerivedAttributeEnhancementTest {
 			assertEquals("SHIPPED", updatedOrderLine.get(OrderLine.ORDER_STATUS));
 
 			// Change foreign key reference
-			Entity newProduct = entities.builder(Product.TYPE)
+			Entity newProduct = entities.entity(Product.TYPE)
 							.with(Product.ID, 2)
 							.with(Product.NAME, "Desktop")
 							.with(Product.PRICE, new BigDecimal("2000"))
@@ -536,7 +536,7 @@ public final class DerivedAttributeEnhancementTest {
 		@Test
 		@DisplayName("derived from null foreign key returns null")
 		void derivedFromForeignKey_nullFK_returnsNull() {
-			Entity orderLine = entities.builder(OrderLine.TYPE)
+			Entity orderLine = entities.entity(OrderLine.TYPE)
 							.with(OrderLine.ID, 1)
 							.with(OrderLine.QUANTITY, 2)
 							.with(OrderLine.UNIT_PRICE, new BigDecimal("1000"))
@@ -550,7 +550,7 @@ public final class DerivedAttributeEnhancementTest {
 		@Test
 		@DisplayName("line total calculation works independently of FK")
 		void lineTotal_worksIndependentlyOfFK() {
-			Entity orderLine = entities.builder(OrderLine.TYPE)
+			Entity orderLine = entities.entity(OrderLine.TYPE)
 							.with(OrderLine.ID, 1)
 							.with(OrderLine.QUANTITY, 5)
 							.with(OrderLine.UNIT_PRICE, new BigDecimal("50.00"))
@@ -596,7 +596,7 @@ public final class DerivedAttributeEnhancementTest {
 			Column<Integer> value = type.integerColumn("value");
 			Attribute<Integer> doubled = type.integerAttribute("doubled");
 
-			Entity entity = countingEntities.builder(type)
+			Entity entity = countingEntities.entity(type)
 							.with(value, 5)
 							.build();
 
@@ -643,7 +643,7 @@ public final class DerivedAttributeEnhancementTest {
 
 			// Create entity successfully
 			EntityDefinition entityDef = circularEntities.definitions().iterator().next();
-			Entity entity = circularEntities.builder(entityDef.type()).build();
+			Entity entity = circularEntities.entity(entityDef.type()).build();
 
 			// Access to circular derived attribute should cause StackOverflowError
 			assertThrows(StackOverflowError.class, () -> {
@@ -687,7 +687,7 @@ public final class DerivedAttributeEnhancementTest {
 			Column<Integer> value = type.integerColumn("value");
 			Attribute<Integer> problematic = type.integerAttribute("problematic");
 
-			Entity entity = exceptionEntities.builder(type)
+			Entity entity = exceptionEntities.entity(type)
 							.with(value, 5)
 							.build();
 
@@ -751,7 +751,7 @@ public final class DerivedAttributeEnhancementTest {
 			EntityType type = manySourceDomain.type().entityType("many_source_entity");
 			Attribute<Integer> sum = type.integerAttribute("sum");
 
-			Entity.Builder entityBuilder = manySourceEntities.builder(type);
+			Entity.Builder entityBuilder = manySourceEntities.entity(type);
 			for (int i = 1; i <= 10; i++) {
 				entityBuilder.with(type.integerColumn("val" + i), i);
 			}

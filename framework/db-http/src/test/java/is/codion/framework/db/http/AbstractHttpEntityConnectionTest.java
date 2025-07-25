@@ -90,7 +90,7 @@ abstract class AbstractHttpEntityConnectionTest {
 
 	@Test
 	void insert() {
-		Entity entity = connection.entities().builder(Department.TYPE)
+		Entity entity = connection.entities().entity(Department.TYPE)
 						.with(Department.ID, 33L)
 						.with(Department.NAME, "name")
 						.with(Department.LOCATION, "loc")

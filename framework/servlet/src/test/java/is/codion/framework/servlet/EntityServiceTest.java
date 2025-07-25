@@ -338,12 +338,12 @@ public class EntityServiceTest {
 	@Test
 	void insert() throws Exception {
 		List<Entity> entities = new ArrayList<>();
-		entities.add(ENTITIES.builder(Department.TYPE)
+		entities.add(ENTITIES.entity(Department.TYPE)
 						.with(Department.ID, -10)
 						.with(Department.NAME, "A name")
 						.with(Department.LOCATION, "loc")
 						.build());
-		entities.add(ENTITIES.builder(Department.TYPE)
+		entities.add(ENTITIES.entity(Department.TYPE)
 						.with(Department.ID, -20)
 						.with(Department.NAME, "Another name")
 						.with(Department.LOCATION, "locat")
@@ -366,12 +366,12 @@ public class EntityServiceTest {
 	@Test
 	void update() throws Exception {
 		List<Entity> entities = new ArrayList<>();
-		entities.add(ENTITIES.builder(Department.TYPE)
+		entities.add(ENTITIES.entity(Department.TYPE)
 						.with(Department.ID, 10)
 						.with(Department.NAME, "ACCOUNTING")
 						.with(Department.LOCATION, "NEW YORK")
 						.build());
-		entities.add(ENTITIES.builder(Department.TYPE)
+		entities.add(ENTITIES.entity(Department.TYPE)
 						.with(Department.ID, 20)
 						.with(Department.NAME, "RESEARCH")
 						.with(Department.LOCATION, "DALLAS")

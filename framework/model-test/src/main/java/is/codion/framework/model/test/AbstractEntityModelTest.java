@@ -463,7 +463,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 		if (!departmentModel.containsTableModel()) {
 			return;
 		}
-		Entity dept = departmentModel.entities().builder(Department.TYPE)
+		Entity dept = departmentModel.entities().entity(Department.TYPE)
 						.with(Department.ID, -42)
 						.with(Department.NAME, "Name")
 						.with(Department.LOCATION, "Loc")

@@ -65,7 +65,7 @@ public final class DefaultEntityComboBoxModelTest {
 						.build();
 		comboBoxModel.items().refresh();
 
-		Entity temp = ENTITIES.builder(Employee.TYPE)
+		Entity temp = ENTITIES.entity(Employee.TYPE)
 						.with(Employee.ID, -42)
 						.with(Employee.NAME, "Noname")
 						.build();

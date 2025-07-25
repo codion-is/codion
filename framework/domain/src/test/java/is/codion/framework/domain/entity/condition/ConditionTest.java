@@ -107,7 +107,7 @@ public final class ConditionTest {
 		@Test
 		@DisplayName("composite foreign key creates compound condition")
 		void foreignKeyCondition_compositeForeignKey_createsCompoundCondition() {
-			Entity master = entities.builder(Master2.TYPE)
+			Entity master = entities.entity(Master2.TYPE)
 							.with(Master2.ID_1, 1)
 							.with(Master2.ID_2, 2)
 							.with(Master2.CODE, 3)
@@ -122,7 +122,7 @@ public final class ConditionTest {
 		@Test
 		@DisplayName("single column foreign key creates simple condition")
 		void foreignKeyCondition_singleColumn_createsSimpleCondition() {
-			Entity master = entities.builder(Master2.TYPE)
+			Entity master = entities.entity(Master2.TYPE)
 							.with(Master2.ID_1, 1)
 							.with(Master2.ID_2, 2)
 							.with(Master2.CODE, 3)
@@ -149,10 +149,10 @@ public final class ConditionTest {
 		@Test
 		@DisplayName("foreign key entity conditions format correctly")
 		void foreignKeyCondition_entity_formatsCorrectly() {
-			Entity department = entities.builder(Department.TYPE)
+			Entity department = entities.entity(Department.TYPE)
 							.with(Department.ID, 10)
 							.build();
-			Entity department2 = entities.builder(Department.TYPE)
+			Entity department2 = entities.entity(Department.TYPE)
 							.with(Department.ID, 11)
 							.build();
 
@@ -174,12 +174,12 @@ public final class ConditionTest {
 		@Test
 		@DisplayName("composite foreign key conditions format correctly")
 		void compositeForeignKey_formatsCorrectly() {
-			Entity master1 = entities.builder(Master2.TYPE)
+			Entity master1 = entities.entity(Master2.TYPE)
 							.with(Master2.ID_1, 1)
 							.with(Master2.ID_2, 2)
 							.build();
 
-			Entity master2 = entities.builder(Master2.TYPE)
+			Entity master2 = entities.entity(Master2.TYPE)
 							.with(Master2.ID_1, 3)
 							.with(Master2.ID_2, 4)
 							.build();
@@ -295,12 +295,12 @@ public final class ConditionTest {
 		@Test
 		@DisplayName("composite key conditions format correctly")
 		void keyCondition_compositeKey_formatsCorrectly() {
-			Entity master1 = entities.builder(Master2.TYPE)
+			Entity master1 = entities.entity(Master2.TYPE)
 							.with(Master2.ID_1, 1)
 							.with(Master2.ID_2, 2)
 							.build();
 
-			Entity master2 = entities.builder(Master2.TYPE)
+			Entity master2 = entities.entity(Master2.TYPE)
 							.with(Master2.ID_1, 3)
 							.with(Master2.ID_2, 4)
 							.build();
@@ -369,7 +369,7 @@ public final class ConditionTest {
 		@Test
 		@DisplayName("composite foreign key with null values formats correctly")
 		void compositeForeignKey_withNullValues_formatsCorrectly() {
-			Entity master1 = entities.builder(Master2.TYPE)
+			Entity master1 = entities.entity(Master2.TYPE)
 							.with(Master2.ID_1, null)
 							.with(Master2.ID_2, null)
 							.build();
@@ -391,7 +391,7 @@ public final class ConditionTest {
 		@Test
 		@DisplayName("foreign key with entity value formats correctly")
 		void foreignKey_withEntityValue_formatsCorrectly() {
-			Entity dept = entities.builder(Department.TYPE)
+			Entity dept = entities.entity(Department.TYPE)
 							.with(Department.ID, 42)
 							.build();
 
@@ -408,11 +408,11 @@ public final class ConditionTest {
 		@Test
 		@DisplayName("keys from different entity types throws exception")
 		void keyMismatch_differentEntityTypes_throwsException() {
-			Entity master1 = entities.builder(Master2.TYPE)
+			Entity master1 = entities.entity(Master2.TYPE)
 							.with(Master2.ID_1, 1)
 							.with(Master2.ID_2, 2)
 							.build();
-			Entity detail = entities.builder(Detail2.TYPE)
+			Entity detail = entities.entity(Detail2.TYPE)
 							.with(Detail2.ID, 3L)
 							.build();
 
@@ -429,7 +429,7 @@ public final class ConditionTest {
 		@Test
 		@DisplayName("various condition types format correctly")
 		void conditionTest_variousTypes_formatCorrectly() {
-			Entity entity = entities.builder(Department.TYPE)
+			Entity entity = entities.entity(Department.TYPE)
 							.with(Department.ID, 10)
 							.build();
 

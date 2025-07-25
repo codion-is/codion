@@ -351,7 +351,7 @@ public final class AbstractEntityEditModelTest {
 			editor.value(Employee.NAME).set("Björn");
 			editor.value(Employee.SALARY).set(1000d);
 
-			Entity tmpDept = ENTITIES.builder(Department.TYPE)
+			Entity tmpDept = ENTITIES.entity(Department.TYPE)
 							.with(Department.ID, 99)
 							.with(Department.LOCATION, "Limbo")
 							.with(Department.NAME, "Judgment")
@@ -557,7 +557,7 @@ public final class AbstractEntityEditModelTest {
 		assertEquals(2, derivedCounter.get());
 		assertEquals(2, derivedEditCounter.get());
 
-		Entity detail = ENTITIES.builder(Detail.TYPE)
+		Entity detail = ENTITIES.entity(Detail.TYPE)
 						.with(Detail.INT, 3)
 						.build();
 		editModel.editor().set(detail);

@@ -45,7 +45,7 @@ public final class InsertDeleteAlbum implements Performer<EntityConnectionProvid
 	public void perform(EntityConnectionProvider connectionProvider) {
 		EntityConnection connection = connectionProvider.connection();
 		Entity artist = connection.selectSingle(Artist.ID.equalTo(randomArtistId()));
-		Entity album = connectionProvider.entities().builder(Album.TYPE)
+		Entity album = connectionProvider.entities().entity(Album.TYPE)
 						.with(Album.ARTIST_FK, artist)
 						.with(Album.TITLE, "Title")
 						.build();
@@ -54,7 +54,7 @@ public final class InsertDeleteAlbum implements Performer<EntityConnectionProvid
 		List<Entity> mediaTypes = connection.select(all(MediaType.TYPE));
 		Collection<Entity> tracks = new ArrayList<>(10);
 		for (int i = 0; i < 10; i++) {
-			Entity track = connectionProvider.entities().builder(Track.TYPE)
+			Entity track = connectionProvider.entities().entity(Track.TYPE)
 							.with(Track.ALBUM_FK, album)
 							.with(Track.NAME, "Track " + i)
 							.with(Track.BYTES, RANDOM.nextInt(1_000_000))

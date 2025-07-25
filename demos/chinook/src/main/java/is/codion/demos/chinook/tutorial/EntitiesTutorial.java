@@ -203,7 +203,7 @@ public final class EntitiesTutorial {
 		Entities entities = connectionProvider.entities();
 
 		// we create a new band
-		Entity myBand = entities.builder(Artist.TYPE)
+		Entity myBand = entities.entity(Artist.TYPE)
 						// and give the band a name
 						.with(Artist.NAME, "My band name")
 						.build();
@@ -212,7 +212,7 @@ public final class EntitiesTutorial {
 		myBand = connection.insertSelect(myBand);
 
 		// now for our first album
-		Entity album = entities.builder(Album.TYPE)
+		Entity album = entities.entity(Album.TYPE)
 						// set the album artist to my band
 						.with(Album.ARTIST_FK, myBand)
 						// and set the title

@@ -116,12 +116,12 @@ EntityConnection connection = connectionProvider.connection();
 EntityConnection.transaction(connection, () -> {
     Entities entities = connection.entities();
 
-    Entity artist = entities.builder(Artist.TYPE)
+    Entity artist = entities.entity(Artist.TYPE)
                     .with(Artist.NAME, "The Band")
                     .build();
     artist = connection.insertSelect(artist);
 
-    Entity album = entities.builder(Album.TYPE)
+    Entity album = entities.entity(Album.TYPE)
                     .with(Album.ARTIST_FK, artist)
                     .with(Album.TITLE, "The Album")
                     .build();
@@ -135,12 +135,12 @@ EntityConnection connection = connectionProvider.connection();
 Entity.Key albumKey = EntityConnection.transaction(connection, () -> {
     Entities entities = connection.entities();
 
-    Entity artist = entities.builder(Artist.TYPE)
+    Entity artist = entities.entity(Artist.TYPE)
                     .with(Artist.NAME, "The Band")
                     .build();
     artist = connection.insertSelect(artist);
 
-    Entity album = entities.builder(Album.TYPE)
+    Entity album = entities.entity(Album.TYPE)
                     .with(Album.ARTIST_FK, artist)
                     .with(Album.TITLE, "The Album")
                     .build();

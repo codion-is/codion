@@ -184,7 +184,7 @@ public class EntityTablePanelTest {
 		List<Entity> testEntities = new ArrayList<>(5);
 		String[] stringValues = new String[] {"a", "b", "c", "d", "e"};
 		for (int i = 0; i < 5; i++) {
-			testEntities.add(entities.builder(Detail.TYPE)
+			testEntities.add(entities.entity(Detail.TYPE)
 							.with(Detail.ID, (long) i + 1)
 							.with(Detail.INT, i + 1)
 							.with(Detail.STRING, stringValues[i])

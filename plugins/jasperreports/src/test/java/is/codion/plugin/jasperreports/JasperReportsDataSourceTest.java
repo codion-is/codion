@@ -39,7 +39,7 @@ public class JasperReportsDataSourceTest {
 
 	@Test
 	void iterator() throws Exception {
-		Entity department = ENTITIES.builder(Department.TYPE)
+		Entity department = ENTITIES.entity(Department.TYPE)
 						.with(Department.ID, 10)
 						.with(Department.NAME, "name")
 						.with(Department.LOCATION, "none")

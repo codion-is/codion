@@ -430,7 +430,7 @@ public final class EntityValidationEnhancementTest {
 		@DisplayName("null validation catches missing required values")
 		void nullValidation_missingRequiredValues_throwsException() {
 			// First create a valid entity
-			Entity customer = entities.builder(Customer.TYPE)
+			Entity customer = entities.entity(Customer.TYPE)
 							.with(Customer.ID, 1)
 							.with(Customer.NAME, "John Doe")
 							.with(Customer.EMAIL, "test@example.com")
@@ -453,7 +453,7 @@ public final class EntityValidationEnhancementTest {
 		@DisplayName("length validation enforces maximum length")
 		void lengthValidation_exceedsMaxLength_throwsException() {
 			// First create a valid entity
-			Entity customer = entities.builder(Customer.TYPE)
+			Entity customer = entities.entity(Customer.TYPE)
 							.with(Customer.ID, 1)
 							.with(Customer.NAME, "Valid Name")
 							.with(Customer.EMAIL, "test@example.com")
@@ -476,7 +476,7 @@ public final class EntityValidationEnhancementTest {
 		@DisplayName("range validation enforces min and max values")
 		void rangeValidation_outsideRange_throwsException() {
 			// First create a valid entity
-			Entity customer = entities.builder(Customer.TYPE)
+			Entity customer = entities.entity(Customer.TYPE)
 							.with(Customer.ID, 1)
 							.with(Customer.NAME, "Test Customer")
 							.with(Customer.EMAIL, "test@example.com")
@@ -523,7 +523,7 @@ public final class EntityValidationEnhancementTest {
 		@DisplayName("email validation enforces format")
 		void emailValidation_invalidFormat_throwsException() {
 			// First create a valid entity
-			Entity customer = entities.builder(Customer.TYPE)
+			Entity customer = entities.entity(Customer.TYPE)
 							.with(Customer.ID, 1)
 							.with(Customer.NAME, "Test Customer")
 							.with(Customer.EMAIL, "valid@example.com")
@@ -547,7 +547,7 @@ public final class EntityValidationEnhancementTest {
 		@DisplayName("phone validation with various formats")
 		@ValueSource(strings = {"+1234567890", "1234567890", "+123456789012345"})
 		void phoneValidation_validFormats_passes(String phone) {
-			Entity customer = entities.builder(Customer.TYPE)
+			Entity customer = entities.entity(Customer.TYPE)
 							.with(Customer.ID, 1)
 							.with(Customer.NAME, "Test Customer")
 							.with(Customer.EMAIL, "test@example.com")
@@ -566,7 +566,7 @@ public final class EntityValidationEnhancementTest {
 		@ValueSource(strings = {"123", "abcd1234567890", "+12345678901234567890"})
 		void phoneValidation_invalidFormats_throwsException(String phone) {
 			// First create a valid entity
-			Entity customer = entities.builder(Customer.TYPE)
+			Entity customer = entities.entity(Customer.TYPE)
 							.with(Customer.ID, 1)
 							.with(Customer.NAME, "Test Customer")
 							.with(Customer.EMAIL, "test@example.com")
@@ -590,7 +590,7 @@ public final class EntityValidationEnhancementTest {
 		@DisplayName("birth date validation prevents future dates")
 		void birthDateValidation_futureDate_throwsException() {
 			// First create a valid entity
-			Entity customer = entities.builder(Customer.TYPE)
+			Entity customer = entities.entity(Customer.TYPE)
 							.with(Customer.ID, 1)
 							.with(Customer.NAME, "Test Customer")
 							.with(Customer.EMAIL, "test@example.com")
@@ -615,7 +615,7 @@ public final class EntityValidationEnhancementTest {
 		@DisplayName("country code validation enforces format")
 		void countryCodeValidation_invalidFormat_throwsException() {
 			// First create a valid entity
-			Entity customer = entities.builder(Customer.TYPE)
+			Entity customer = entities.entity(Customer.TYPE)
 							.with(Customer.ID, 1)
 							.with(Customer.NAME, "Test Customer")
 							.with(Customer.EMAIL, "test@example.com")
@@ -642,7 +642,7 @@ public final class EntityValidationEnhancementTest {
 		@Test
 		@DisplayName("stock quantity validation prevents over-ordering")
 		void stockQuantityValidation_exceedsStock_throwsException() {
-			Entity product = entities.builder(Product.TYPE)
+			Entity product = entities.entity(Product.TYPE)
 							.with(Product.ID, 1)
 							.with(Product.NAME, "Test Product")
 							.with(Product.CODE, "PROD-001")
@@ -652,7 +652,7 @@ public final class EntityValidationEnhancementTest {
 							.with(Product.ACTIVE, true)
 							.build();
 
-			Entity order = entities.builder(Order.TYPE)
+			Entity order = entities.entity(Order.TYPE)
 							.with(Order.ID, 1)
 							.with(Order.CUSTOMER_ID, 1)
 							.with(Order.ORDER_DATE, LocalDateTime.now())
@@ -660,7 +660,7 @@ public final class EntityValidationEnhancementTest {
 							.with(Order.TOTAL, new BigDecimal("500"))
 							.build();
 
-			Entity orderItem = entities.builder(OrderItem.TYPE)
+			Entity orderItem = entities.entity(OrderItem.TYPE)
 							.with(OrderItem.ID, 1)
 							.with(OrderItem.ORDER_FK, order)
 							.with(OrderItem.PRODUCT_FK, product)
@@ -679,7 +679,7 @@ public final class EntityValidationEnhancementTest {
 		@Test
 		@DisplayName("inactive product validation prevents ordering")
 		void inactiveProductValidation_throwsException() {
-			Entity product = entities.builder(Product.TYPE)
+			Entity product = entities.entity(Product.TYPE)
 							.with(Product.ID, 1)
 							.with(Product.NAME, "Test Product")
 							.with(Product.CODE, "PROD-001")
@@ -689,7 +689,7 @@ public final class EntityValidationEnhancementTest {
 							.with(Product.ACTIVE, false) // Inactive
 							.build();
 
-			Entity orderItem = entities.builder(OrderItem.TYPE)
+			Entity orderItem = entities.entity(OrderItem.TYPE)
 							.with(OrderItem.ID, 1)
 							.with(OrderItem.ORDER_ID, 1)
 							.with(OrderItem.PRODUCT_FK, product)
@@ -708,7 +708,7 @@ public final class EntityValidationEnhancementTest {
 		@Test
 		@DisplayName("discount validation based on unit price")
 		void discountValidation_exceedsLimit_throwsException() {
-			Entity orderItem = entities.builder(OrderItem.TYPE)
+			Entity orderItem = entities.entity(OrderItem.TYPE)
 							.with(OrderItem.ID, 1)
 							.with(OrderItem.ORDER_ID, 1)
 							.with(OrderItem.PRODUCT_ID, 1)
@@ -727,7 +727,7 @@ public final class EntityValidationEnhancementTest {
 		@Test
 		@DisplayName("discount validation allows high discount for expensive items")
 		void discountValidation_highPriceHighDiscount_passes() {
-			Entity orderItem = entities.builder(OrderItem.TYPE)
+			Entity orderItem = entities.entity(OrderItem.TYPE)
 							.with(OrderItem.ID, 1)
 							.with(OrderItem.ORDER_ID, 1)
 							.with(OrderItem.PRODUCT_ID, 1)
@@ -749,7 +749,7 @@ public final class EntityValidationEnhancementTest {
 		@DisplayName("food products require expiry date")
 		void foodProductValidation_missingExpiryDate_throwsException() {
 			// First create a valid entity with non-FOOD category
-			Entity product = entities.builder(Product.TYPE)
+			Entity product = entities.entity(Product.TYPE)
 							.with(Product.ID, 1)
 							.with(Product.NAME, "Test Food")
 							.with(Product.CODE, "FOOD-001")
@@ -773,7 +773,7 @@ public final class EntityValidationEnhancementTest {
 		@Test
 		@DisplayName("non-food products can omit expiry date")
 		void nonFoodProductValidation_noExpiryDate_passes() {
-			Entity product = entities.builder(Product.TYPE)
+			Entity product = entities.entity(Product.TYPE)
 							.with(Product.ID, 1)
 							.with(Product.NAME, "Test Electronics")
 							.with(Product.CODE, "ELEC-001")
@@ -796,7 +796,7 @@ public final class EntityValidationEnhancementTest {
 		@Test
 		@DisplayName("delivered orders can only be cancelled")
 		void orderStatusValidation_invalidTransition_throwsException() {
-			Entity order = entities.builder(Order.TYPE)
+			Entity order = entities.entity(Order.TYPE)
 							.with(Order.ID, 1)
 							.with(Order.CUSTOMER_ID, 1)
 							.with(Order.ORDER_DATE, LocalDateTime.now())
@@ -820,7 +820,7 @@ public final class EntityValidationEnhancementTest {
 		@Test
 		@DisplayName("cancelled orders cannot be modified")
 		void cancelledOrderValidation_anyChange_throwsException() {
-			Entity order = entities.builder(Order.TYPE)
+			Entity order = entities.entity(Order.TYPE)
 							.with(Order.ID, 1)
 							.with(Order.CUSTOMER_ID, 1)
 							.with(Order.ORDER_DATE, LocalDateTime.now())
@@ -844,7 +844,7 @@ public final class EntityValidationEnhancementTest {
 		@Test
 		@DisplayName("valid state transitions are allowed")
 		void orderStatusValidation_validTransitions_pass() {
-			Entity order = entities.builder(Order.TYPE)
+			Entity order = entities.entity(Order.TYPE)
 							.with(Order.ID, 1)
 							.with(Order.CUSTOMER_ID, 1)
 							.with(Order.ORDER_DATE, LocalDateTime.now())
@@ -893,7 +893,7 @@ public final class EntityValidationEnhancementTest {
 				}
 			}
 
-			Entity customer = entities.builder(Customer.TYPE)
+			Entity customer = entities.entity(Customer.TYPE)
 							.with(Customer.ID, 1)
 							.with(Customer.NAME, "Test")
 							.with(Customer.EMAIL, "test@example.com")
@@ -929,7 +929,7 @@ public final class EntityValidationEnhancementTest {
 				}
 			}
 
-			Entity customer = entities.builder(Customer.TYPE)
+			Entity customer = entities.entity(Customer.TYPE)
 							.with(Customer.ID, 1)
 							.with(Customer.NAME, "Test")
 							.with(Customer.EMAIL, "test@example.com")
@@ -957,7 +957,7 @@ public final class EntityValidationEnhancementTest {
 		@NullSource
 		@DisplayName("optional fields accept null values")
 		void optionalFields_nullValues_pass(String nullValue) {
-			Entity customer = entities.builder(Customer.TYPE)
+			Entity customer = entities.entity(Customer.TYPE)
 							.with(Customer.ID, 1)
 							.with(Customer.NAME, "Test")
 							.with(Customer.EMAIL, "test@example.com")
@@ -976,7 +976,7 @@ public final class EntityValidationEnhancementTest {
 		@DisplayName("nullable false rejects null values")
 		void nullableFalse_nullValue_throwsException() {
 			// First create a valid entity
-			Entity customer = entities.builder(Customer.TYPE)
+			Entity customer = entities.entity(Customer.TYPE)
 							.with(Customer.ID, 1)
 							.with(Customer.NAME, "Test Customer")
 							.with(Customer.EMAIL, "test@example.com")
@@ -1023,7 +1023,7 @@ public final class EntityValidationEnhancementTest {
 		@Test
 		@DisplayName("validation with derived attributes")
 		void derivedAttributeValidation_worksCorrectly() {
-			Entity customer = entities.builder(Customer.TYPE)
+			Entity customer = entities.entity(Customer.TYPE)
 							.with(Customer.ID, 1)
 							.with(Customer.NAME, "Test")
 							.with(Customer.EMAIL, "test@example.com")
@@ -1046,7 +1046,7 @@ public final class EntityValidationEnhancementTest {
 		@DisplayName("complex business rule validation")
 		void complexBusinessRule_validation() {
 			// Create a product with low price
-			Entity product = entities.builder(Product.TYPE)
+			Entity product = entities.entity(Product.TYPE)
 							.with(Product.ID, 1)
 							.with(Product.NAME, "Cheap Product")
 							.with(Product.CODE, "CHEAP-001")
@@ -1057,7 +1057,7 @@ public final class EntityValidationEnhancementTest {
 							.build();
 
 			// Try to apply high discount
-			Entity orderItem = entities.builder(OrderItem.TYPE)
+			Entity orderItem = entities.entity(OrderItem.TYPE)
 							.with(OrderItem.ID, 1)
 							.with(OrderItem.ORDER_ID, 1)
 							.with(OrderItem.PRODUCT_FK, product)

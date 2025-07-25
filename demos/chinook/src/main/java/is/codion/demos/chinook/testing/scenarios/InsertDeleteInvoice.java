@@ -46,7 +46,7 @@ public final class InsertDeleteInvoice implements Performer<EntityConnectionProv
 		EntityConnection connection = connectionProvider.connection();
 
 		Entity customer = connection.selectSingle(Customer.ID.equalTo(randomCustomerId()));
-		Entity invoice = connection.insertSelect(connection.entities().builder(Invoice.TYPE)
+		Entity invoice = connection.insertSelect(connection.entities().entity(Invoice.TYPE)
 						.with(Invoice.CUSTOMER_FK, customer)
 						.with(Invoice.DATE, LocalDate.now())
 						.with(Invoice.BILLINGADDRESS, customer.get(Customer.ADDRESS))
@@ -62,7 +62,7 @@ public final class InsertDeleteInvoice implements Performer<EntityConnectionProv
 		List<Entity> invoiceLines = new ArrayList<>();
 		for (Entity track : connection.select(Track.ID.in(invoiceTrackIds))) {
 			transaction(connection, () -> {
-				invoiceLines.add(connection.insertSelect(connection.entities().builder(InvoiceLine.TYPE)
+				invoiceLines.add(connection.insertSelect(connection.entities().entity(InvoiceLine.TYPE)
 								.with(InvoiceLine.INVOICE_FK, invoice)
 								.with(InvoiceLine.TRACK_FK, track)
 								.with(InvoiceLine.QUANTITY, 1)

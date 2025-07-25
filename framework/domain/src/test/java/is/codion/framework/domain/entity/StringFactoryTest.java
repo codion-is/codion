@@ -38,14 +38,14 @@ public class StringFactoryTest {
 
 	@Test
 	void builder() {
-		Entity department = entities.builder(Department.TYPE)
+		Entity department = entities.entity(Department.TYPE)
 						.with(Department.ID, -10)
 						.with(Department.LOCATION, "Reykjavik")
 						.with(Department.NAME, "Sales")
 						.build();
 
 		LocalDateTime hiredate = LocalDateTime.now();
-		Entity employee = entities.builder(Employee.TYPE)
+		Entity employee = entities.entity(Employee.TYPE)
 						.with(Employee.DEPARTMENT_FK, department)
 						.with(Employee.NAME, "Darri")
 						.with(Employee.HIREDATE, hiredate)

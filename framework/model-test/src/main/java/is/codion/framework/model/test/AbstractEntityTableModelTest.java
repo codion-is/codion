@@ -115,7 +115,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
 		Entities entities = deptModel.entities();
 		deptModel.onInsert().set(EntityTableModel.OnInsert.APPEND);
-		Entity dept = entities.builder(Department.TYPE)
+		Entity dept = entities.entity(Department.TYPE)
 						.with(Department.ID, -10)
 						.with(Department.LOCATION, "Nowhere1")
 						.with(Department.NAME, "HELLO")
@@ -127,7 +127,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		assertEquals(dept, deptModel.items().visible().get().get(1));
 
 		deptModel.onInsert().set(EntityTableModel.OnInsert.PREPEND);
-		Entity dept2 = entities.builder(Department.TYPE)
+		Entity dept2 = entities.entity(Department.TYPE)
 						.with(Department.ID, -20)
 						.with(Department.LOCATION, "Nowhere2")
 						.with(Department.NAME, "NONAME")
@@ -137,7 +137,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		assertEquals(dept2, deptModel.items().visible().get().get(2));
 
 		deptModel.onInsert().set(EntityTableModel.OnInsert.DO_NOTHING);
-		Entity dept3 = entities.builder(Department.TYPE)
+		Entity dept3 = entities.entity(Department.TYPE)
 						.with(Department.ID, -30)
 						.with(Department.LOCATION, "Nowhere3")
 						.with(Department.NAME, "NONAME2")
@@ -291,7 +291,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 		List<Entity> testEntities = new ArrayList<>(5);
 		String[] stringValues = new String[] {"a", "b", "c", "d", "e"};
 		for (int i = 0; i < 5; i++) {
-			testEntities.add(entities.builder(Detail.TYPE)
+			testEntities.add(entities.entity(Detail.TYPE)
 							.with(Detail.ID, (long) i + 1)
 							.with(Detail.INT, i + 1)
 							.with(Detail.STRING, stringValues[i])

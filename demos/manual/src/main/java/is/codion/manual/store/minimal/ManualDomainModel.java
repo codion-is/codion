@@ -106,7 +106,7 @@ class ManualDomainModel {
 
 		Entities entities = store.entities();
 
-		Entity city = entities.builder(City.TYPE)
+		Entity city = entities.entity(City.TYPE)
 						.with(City.NAME, "Reykjavík")
 						.build();
 

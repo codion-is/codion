@@ -155,21 +155,21 @@ public final class Example {
 
 		Entities entities = domain.entities();
 
-		Entity customer = entities.builder(Customer.TYPE)
+		Entity customer = entities.entity(Customer.TYPE)
 						.with(Customer.FIRST_NAME, "John")
 						.with(Customer.LAST_NAME, "Doe")
 						.build();
 
 		customer = connection.insertSelect(customer);
 
-		Entity address = entities.builder(Address.TYPE)
+		Entity address = entities.entity(Address.TYPE)
 						.with(Address.STREET, "Elm Street 321")
 						.with(Address.CITY, "Syracuse")
 						.build();
 
 		address = connection.insertSelect(address);
 
-		Entity customerAddress = entities.builder(CustomerAddress.TYPE)
+		Entity customerAddress = entities.entity(CustomerAddress.TYPE)
 						.with(CustomerAddress.CUSTOMER_FK, customer)
 						.with(CustomerAddress.ADDRESS_FK, address)
 						.build();

@@ -203,7 +203,7 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("entity with missing optional attributes serializes correctly")
 		void serialization_withMissingOptionalAttributes_preservesState() throws Exception {
-			Entity master = ENTITIES.builder(Master.TYPE)
+			Entity master = ENTITIES.entity(Master.TYPE)
 							.with(Master.ID, 1L)
 							.with(Master.CODE, 11)
 							// NAME is optional and not set
@@ -219,7 +219,7 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("immutable entity serialization preserves immutability")
 		void serialization_immutableEntity_preservesState() throws Exception {
-			Entity master = ENTITIES.builder(Master.TYPE)
+			Entity master = ENTITIES.entity(Master.TYPE)
 							.with(Master.ID, 1L)
 							.with(Master.CODE, 11)
 							.build();
@@ -240,7 +240,7 @@ public class DefaultEntityTest {
 		@DisplayName("set copies all values from another entity")
 		void set_copiesAllValues() {
 			Entity source = createTestDetail();
-			Entity target = ENTITIES.entity(Detail.TYPE);
+			Entity target = ENTITIES.entity(Detail.TYPE).build();
 
 			target.set(source);
 
@@ -261,7 +261,7 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("set clears cached foreign key values correctly")
 		void set_clearsCachedForeignKeyValues() {
-			Entity source = ENTITIES.entity(Detail.TYPE);
+			Entity source = ENTITIES.entity(Detail.TYPE).build();
 			Entity target = createTestDetail();
 
 			// Clear foreign key in source
@@ -288,7 +288,7 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("set preserves read-only attribute modifications")
 		void set_preservesReadOnlyModifications() {
-			Entity entity = ENTITIES.builder(Master.TYPE)
+			Entity entity = ENTITIES.entity(Master.TYPE)
 							.with(Master.ID, 2L)
 							.with(Master.NAME, TEST_MASTER_NAME)
 							.with(Master.CODE, 7)
@@ -297,7 +297,7 @@ public class DefaultEntityTest {
 
 			entity.set(Master.READ_ONLY, 1);
 
-			Entity target = ENTITIES.entity(Master.TYPE);
+			Entity target = ENTITIES.entity(Master.TYPE).build();
 			target.set(entity);
 
 			assertTrue(target.modified(Master.READ_ONLY),
@@ -312,11 +312,11 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("set returns empty when entities have same values")
 		void set_withSameValues_returnsEmpty() {
-			Entity original = ENTITIES.builder(Detail.TYPE)
+			Entity original = ENTITIES.entity(Detail.TYPE)
 							.with(Detail.ID, 1L)
 							.build();
 
-			Entity entity = ENTITIES.builder(Detail.TYPE)
+			Entity entity = ENTITIES.entity(Detail.TYPE)
 							.with(Detail.ID, 1L)
 							.build();
 
@@ -329,10 +329,10 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("set returns single affected attribute")
 		void set_withSingleDifference_returnsSingleAttribute() {
-			Entity original = ENTITIES.builder(Detail.TYPE)
+			Entity original = ENTITIES.entity(Detail.TYPE)
 							.with(Detail.ID, 1L)
 							.build();
-			Entity entity = ENTITIES.builder(Detail.TYPE)
+			Entity entity = ENTITIES.entity(Detail.TYPE)
 							.with(Detail.ID, 1L)
 							.build();
 
@@ -348,10 +348,10 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("set includes derived attributes when source changes")
 		void set_withDerivedAttribute_includesDerived() {
-			Entity original = ENTITIES.builder(Detail.TYPE)
+			Entity original = ENTITIES.entity(Detail.TYPE)
 							.with(Detail.ID, 1L)
 							.build();
-			Entity entity = ENTITIES.builder(Detail.TYPE)
+			Entity entity = ENTITIES.entity(Detail.TYPE)
 							.with(Detail.ID, 1L)
 							.build();
 
@@ -370,10 +370,10 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("set handles multiple differences correctly")
 		void set_withMultipleDifferences_returnsAllAffected() {
-			Entity original = ENTITIES.builder(Detail.TYPE)
+			Entity original = ENTITIES.entity(Detail.TYPE)
 							.with(Detail.ID, 1L)
 							.build();
-			Entity entity = ENTITIES.builder(Detail.TYPE)
+			Entity entity = ENTITIES.entity(Detail.TYPE)
 							.with(Detail.ID, 1L)
 							.build();
 
@@ -391,11 +391,11 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("entities not equal after removing attribute")
 		void set_afterRemovingAttribute_notEqual() {
-			Entity original = ENTITIES.builder(Detail.TYPE)
+			Entity original = ENTITIES.entity(Detail.TYPE)
 							.with(Detail.ID, 1L)
 							.with(Detail.STRING, "test")
 							.build();
-			Entity entity = ENTITIES.builder(Detail.TYPE)
+			Entity entity = ENTITIES.entity(Detail.TYPE)
 							.with(Detail.ID, 1L)
 							.with(Detail.STRING, "test")
 							.build();
@@ -414,7 +414,7 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("derived attribute has correct initial value")
 		void derivedAttribute_initialValue_calculated() {
-			Entity entity = ENTITIES.builder(Detail.TYPE)
+			Entity entity = ENTITIES.entity(Detail.TYPE)
 							.with(Detail.ID, 0L)
 							.with(Detail.INT, 1)
 							.build();
@@ -428,7 +428,7 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("derived attribute updates when source changes")
 		void derivedAttribute_sourceChange_updatesValue() {
-			Entity entity = ENTITIES.builder(Detail.TYPE)
+			Entity entity = ENTITIES.entity(Detail.TYPE)
 							.with(Detail.ID, 0L)
 							.with(Detail.INT, 1)
 							.build();
@@ -444,7 +444,7 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("derived attribute reverts when source reverts")
 		void derivedAttribute_sourceRevert_revertsValue() {
-			Entity entity = ENTITIES.builder(Detail.TYPE)
+			Entity entity = ENTITIES.entity(Detail.TYPE)
 							.with(Detail.ID, 0L)
 							.with(Detail.INT, 1)
 							.build();
@@ -461,7 +461,7 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("invalid derived attribute throws exception")
 		void derivedAttribute_invalid_throwsException() {
-			Entity invalidDerived = ENTITIES.builder(InvalidDerived.TYPE)
+			Entity invalidDerived = ENTITIES.entity(InvalidDerived.TYPE)
 							.with(InvalidDerived.ID, 0)
 							.with(InvalidDerived.INT, 1)
 							.build();
@@ -527,7 +527,7 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("save and revert track original values correctly")
 		void saveRevert_tracksOriginalValues() {
-			Entity entity = ENTITIES.builder(Master.TYPE)
+			Entity entity = ENTITIES.entity(Master.TYPE)
 							.with(Master.NAME, "name")
 							.build();
 
@@ -556,7 +556,7 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("referenced key caching works correctly")
 		void referencedKeyCache_returnsSameInstance() {
-			Entity compositeDetail = ENTITIES.builder(CompositeDetail.TYPE)
+			Entity compositeDetail = ENTITIES.entity(CompositeDetail.TYPE)
 							.with(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID, 1)
 							.with(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_2, 2)
 							.with(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_3, 3)
@@ -567,11 +567,11 @@ public class DefaultEntityTest {
 
 			assertSame(cachedKey, referencedKey, "Should return same cached key instance");
 
-			Entity master = ENTITIES.builder(Master.TYPE)
+			Entity master = ENTITIES.entity(Master.TYPE)
 							.with(Master.CODE, 3)
 							.build();
 
-			Entity detail = ENTITIES.builder(Detail.TYPE)
+			Entity detail = ENTITIES.entity(Detail.TYPE)
 							.with(Detail.MASTER_VIA_CODE_FK, master)
 							.build();
 
@@ -586,13 +586,13 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("composite reference key handles null values correctly")
 		void compositeReferenceKey_handlesNullValues() {
-			Entity master = ENTITIES.builder(CompositeMaster.TYPE)
+			Entity master = ENTITIES.entity(CompositeMaster.TYPE)
 							.with(CompositeMaster.COMPOSITE_MASTER_ID, null)
 							.with(CompositeMaster.COMPOSITE_MASTER_ID_2, 2)
 							.with(CompositeMaster.COMPOSITE_MASTER_ID_3, 3)
 							.build();
 
-			Entity detail = ENTITIES.builder(CompositeDetail.TYPE)
+			Entity detail = ENTITIES.entity(CompositeDetail.TYPE)
 							.with(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_3, 1)
 							.build();
 
@@ -617,7 +617,7 @@ public class DefaultEntityTest {
 			master.set(CompositeMaster.COMPOSITE_MASTER_ID_2, 3);
 			master.set(CompositeMaster.COMPOSITE_MASTER_ID_3, 3);
 
-			Entity detail2 = ENTITIES.builder(CompositeDetail.TYPE)
+			Entity detail2 = ENTITIES.entity(CompositeDetail.TYPE)
 							.with(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_3, 3)
 							.with(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK, master)
 							.build();
@@ -632,10 +632,10 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("foreign key value handles null correctly")
 		void foreignKeyValue_handlesNull() {
-			Entity department = ENTITIES.builder(Department.TYPE)
+			Entity department = ENTITIES.entity(Department.TYPE)
 							.with(Department.ID, -10)
 							.build();
-			Entity employee = ENTITIES.builder(Employee.TYPE)
+			Entity employee = ENTITIES.entity(Employee.TYPE)
 							.with(Employee.ID, -10)
 							.build();
 
@@ -653,11 +653,11 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("foreign key modification propagates correctly")
 		void foreignKeyModification_propagatesValues() {
-			Entity dept = ENTITIES.builder(Department.TYPE)
+			Entity dept = ENTITIES.entity(Department.TYPE)
 							.with(Department.ID, 1)
 							.with(Department.NAME, "Name1")
 							.build();
-			Entity emp = ENTITIES.builder(Employee.TYPE)
+			Entity emp = ENTITIES.entity(Employee.TYPE)
 							.with(Employee.DEPARTMENT_FK, dept)
 							.build();
 
@@ -669,7 +669,7 @@ public class DefaultEntityTest {
 			Entity referencedDept = emp.entity(Employee.DEPARTMENT_FK);
 			assertEquals(Integer.valueOf(2), referencedDept.primaryKey().value());
 
-			Entity dept2 = ENTITIES.builder(Department.TYPE)
+			Entity dept2 = ENTITIES.entity(Department.TYPE)
 							.with(Department.ID, 3)
 							.with(Department.NAME, "Name2")
 							.build();
@@ -694,27 +694,27 @@ public class DefaultEntityTest {
 			ForeignKeyDomain domain = new ForeignKeyDomain();
 			Entities entities = domain.entities();
 
-			Entity cod = entities.builder(Species.TYPE)
+			Entity cod = entities.entity(Species.TYPE)
 							.with(Species.NO, 1)
 							.with(Species.NAME, "Cod")
 							.build();
 
-			Entity codMaturity10 = entities.builder(Maturity.TYPE)
+			Entity codMaturity10 = entities.entity(Maturity.TYPE)
 							.with(Maturity.SPECIES_FK, cod)
 							.with(Maturity.NO, 10)
 							.build();
 
-			Entity haddock = entities.builder(Species.TYPE)
+			Entity haddock = entities.entity(Species.TYPE)
 							.with(Species.NO, 2)
 							.with(Species.NAME, "Haddock")
 							.build();
 
-			Entity haddockMaturity10 = entities.builder(Maturity.TYPE)
+			Entity haddockMaturity10 = entities.entity(Maturity.TYPE)
 							.with(Maturity.SPECIES_FK, haddock)
 							.with(Maturity.NO, 10)
 							.build();
 
-			Entity otolith = entities.builder(Otolith.TYPE)
+			Entity otolith = entities.entity(Otolith.TYPE)
 							.with(Otolith.SPECIES_FK, cod)
 							.build();
 
@@ -748,7 +748,7 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("entity no primary key works correctly")
 		void noPrimaryKey_handledCorrectly() {
-			Entity noPk = ENTITIES.builder(NoPk.TYPE)
+			Entity noPk = ENTITIES.entity(NoPk.TYPE)
 							.with(NoPk.COL1, 1)
 							.with(NoPk.COL2, 2)
 							.with(NoPk.COL3, 3)
@@ -800,7 +800,7 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("copy builder preserves entity state")
 		void copyBuilder_preservesState() {
-			Entity dept = ENTITIES.builder(Department.TYPE)
+			Entity dept = ENTITIES.entity(Department.TYPE)
 							.with(Department.ID, 1)
 							.with(Department.NAME, "Name")
 							.with(Department.LOCATION, "Location")
@@ -848,7 +848,7 @@ public class DefaultEntityTest {
 			assertFalse(testEntity.isNull(Detail.MASTER_ID));
 
 			// Composite key null checks
-			Entity composite = ENTITIES.entity(CompositeDetail.TYPE);
+			Entity composite = ENTITIES.entity(CompositeDetail.TYPE).build();
 			composite.set(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID, null);
 			assertTrue(composite.isNull(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK));
 
@@ -863,7 +863,7 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("remove all clears entity state")
 		void removeAll_clearsState() {
-			Entity referencedEntityValue = ENTITIES.entity(Master.TYPE);
+			Entity referencedEntityValue = ENTITIES.entity(Master.TYPE).build();
 			Entity testEntity = detailEntity(TEST_DETAIL_ID, TEST_DETAIL_INT, TEST_DETAIL_DOUBLE,
 							TEST_DETAIL_STRING, testDetailDate, testDetailTimestamp, TEST_DETAIL_BOOLEAN, referencedEntityValue);
 
@@ -882,7 +882,7 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("exists tracks entity persistence state")
 		void exists_tracksPersistenceState() {
-			Entity emp = ENTITIES.builder(Employee.TYPE)
+			Entity emp = ENTITIES.entity(Employee.TYPE)
 							.with(Employee.ID, null)
 							.build();
 
@@ -939,11 +939,11 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("setValue validates attribute types")
 		void setValue_validatesTypes() {
-			Entity department = ENTITIES.builder(Department.TYPE)
+			Entity department = ENTITIES.entity(Department.TYPE)
 							.with(Department.ID, -10)
 							.build();
 
-			Entity employee = ENTITIES.builder(Employee.TYPE)
+			Entity employee = ENTITIES.entity(Employee.TYPE)
 							.with(Employee.COMMISSION, 1200d)
 							.build();
 
@@ -996,14 +996,14 @@ public class DefaultEntityTest {
 			assertTrue(testEntityOne.equalValues(testEntityTwo));
 
 			assertThrows(IllegalArgumentException.class,
-							() -> testEntityOne.equalValues(ENTITIES.entity(Master.TYPE)),
+							() -> testEntityOne.equalValues(ENTITIES.entity(Master.TYPE).build()),
 							"Should not compare different entity types");
 		}
 
 		@Test
 		@DisplayName("double value respects fraction digits")
 		void doubleValue_respectsFractionDigits() {
-			Entity employee = ENTITIES.builder(Employee.TYPE)
+			Entity employee = ENTITIES.entity(Employee.TYPE)
 							.with(Employee.ID, -10)
 							.build();
 
@@ -1017,17 +1017,17 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("derived value calculates correctly")
 		void derivedValue_calculatesCorrectly() {
-			Entity department = ENTITIES.builder(Department.TYPE)
+			Entity department = ENTITIES.entity(Department.TYPE)
 							.with(Department.NAME, "dname")
 							.build();
-			Entity employee = ENTITIES.builder(Employee.TYPE)
+			Entity employee = ENTITIES.entity(Employee.TYPE)
 							.with(Employee.NAME, "ename")
 							.with(Employee.DEPARTMENT_FK, department)
 							.build();
 
 			assertEquals("ename - dname", employee.get(Employee.DEPARTMENT_NAME));
 
-			Entity detail = ENTITIES.builder(Detail.TYPE)
+			Entity detail = ENTITIES.entity(Detail.TYPE)
 							.with(Detail.INT, 42)
 							.build();
 
@@ -1037,10 +1037,10 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("remove value handles foreign keys correctly")
 		void removeValue_handlesForeignKeys() {
-			Entity department = ENTITIES.builder(Department.TYPE)
+			Entity department = ENTITIES.entity(Department.TYPE)
 							.with(Department.ID, -10)
 							.build();
-			Entity employee = ENTITIES.builder(Employee.TYPE)
+			Entity employee = ENTITIES.entity(Employee.TYPE)
 							.with(Employee.ID, -10)
 							.with(Employee.DEPARTMENT_FK, department)
 							.build();
@@ -1063,7 +1063,7 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("maximum fraction digits enforced")
 		void maximumFractionDigits_enforced() {
-			Entity employee = ENTITIES.builder(Employee.TYPE)
+			Entity employee = ENTITIES.entity(Employee.TYPE)
 							.with(Employee.COMMISSION, 1.1234)
 							.build();
 
@@ -1072,7 +1072,7 @@ public class DefaultEntityTest {
 			employee.set(Employee.COMMISSION, 1.1255);
 			assertEquals(1.13, employee.get(Employee.COMMISSION));
 
-			Entity detail = ENTITIES.builder(Detail.TYPE)
+			Entity detail = ENTITIES.entity(Detail.TYPE)
 							.with(Detail.DOUBLE, 1.123456789567)
 							.build();
 
@@ -1095,7 +1095,7 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("transient attribute modifies entity when configured")
 		void transientAttributeModifiesEntity_whenConfigured() throws IOException, ClassNotFoundException {
-			Entity entity = ENTITIES.builder(TransModifies.TYPE)
+			Entity entity = ENTITIES.entity(TransModifies.TYPE)
 							.with(TransModifies.ID, 42)
 							.with(TransModifies.TRANS, null)
 							.build();
@@ -1108,7 +1108,7 @@ public class DefaultEntityTest {
 			assertTrue(entity.modified());
 
 			// TransModifiesNot - transient that doesn't modify
-			entity = ENTITIES.builder(TransModifiesNot.TYPE)
+			entity = ENTITIES.entity(TransModifiesNot.TYPE)
 							.with(TransModifiesNot.ID, 42)
 							.with(TransModifiesNot.TRANS, null)
 							.build();
@@ -1124,7 +1124,7 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("null string representation works correctly")
 		void nullString_representationCorrect() {
-			Entity entity = ENTITIES.builder(NullString.TYPE)
+			Entity entity = ENTITIES.entity(NullString.TYPE)
 							.with(NullString.ID, 42)
 							.with(NullString.ATTR, null)
 							.build();
@@ -1135,7 +1135,7 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("toString caching works correctly")
 		void cacheToString_worksCorrectly() {
-			Entity employee = ENTITIES.builder(Employee.TYPE)
+			Entity employee = ENTITIES.entity(Employee.TYPE)
 							.with(Employee.ID, 1)
 							.with(Employee.NAME, "Name")
 							.build();
@@ -1143,7 +1143,7 @@ public class DefaultEntityTest {
 			String toString = employee.toString();
 			assertSame(toString, employee.toString(), "Should return cached toString");
 
-			Entity entity = ENTITIES.builder(NonCachedToString.TYPE)
+			Entity entity = ENTITIES.entity(NonCachedToString.TYPE)
 							.with(NonCachedToString.ID, 1)
 							.with(NonCachedToString.STRING, "value")
 							.build();
@@ -1156,10 +1156,10 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("immutable entity prevents modifications")
 		void immutableEntity_preventsModifications() {
-			Entity employee = ENTITIES.builder(Employee.TYPE)
+			Entity employee = ENTITIES.entity(Employee.TYPE)
 							.with(Employee.ID, 1)
 							.with(Employee.NAME, "Name")
-							.with(Employee.DEPARTMENT_FK, ENTITIES.builder(Department.TYPE)
+							.with(Employee.DEPARTMENT_FK, ENTITIES.entity(Department.TYPE)
 											.with(Department.ID, 42)
 											.with(Department.NAME, "Dept name")
 											.build())
@@ -1194,7 +1194,7 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("miscellaneous operations work correctly")
 		void misc_operationsWork() {
-			Entity aron = ENTITIES.builder(Employee.TYPE)
+			Entity aron = ENTITIES.entity(Employee.TYPE)
 							.with(Employee.ID, 42)
 							.with(Employee.NAME, "Aron")
 							.with(Employee.DEPARTMENT_NO, 1)
@@ -1203,7 +1203,7 @@ public class DefaultEntityTest {
 			assertEquals("deptno:1", aron.string(Employee.DEPARTMENT_FK));
 			assertEquals(42, aron.hashCode());
 
-			Entity bjorn = ENTITIES.builder(Employee.TYPE)
+			Entity bjorn = ENTITIES.entity(Employee.TYPE)
 							.with(Employee.ID, 99)
 							.with(Employee.NAME, "Björn")
 							.build();
@@ -1218,7 +1218,7 @@ public class DefaultEntityTest {
 		@Test
 		@DisplayName("trim whitespace from string values")
 		void trim_whitespaceFromStrings() {
-			Entity aron = ENTITIES.builder(Employee.TYPE)
+			Entity aron = ENTITIES.entity(Employee.TYPE)
 							.with(Employee.NAME, " Aron\n ")
 							.build();
 
@@ -1257,7 +1257,7 @@ public class DefaultEntityTest {
 				}
 			}
 
-			Entity entity = new DerivedDomain().entities().entity(type);
+			Entity entity = new DerivedDomain().entities().entity(type).build();
 			entity.set(stringAttribute, "hello");
 
 			String derivedCachedValue = entity.get(derivedAttributeCached);
@@ -1282,7 +1282,7 @@ public class DefaultEntityTest {
 
 	// Helper methods
 	private Entity createTestMaster(Long id, String name, Integer code) {
-		return ENTITIES.builder(Master.TYPE)
+		return ENTITIES.entity(Master.TYPE)
 						.with(Master.ID, id)
 						.with(Master.NAME, name)
 						.with(Master.CODE, code)
@@ -1299,7 +1299,7 @@ public class DefaultEntityTest {
 	private static Entity detailEntity(long id, Integer intValue, Double doubleValue,
 																		 String stringValue, LocalDate dateValue, LocalDateTime timestampValue,
 																		 Boolean booleanValue, Entity entityValue) {
-		return ENTITIES.builder(Detail.TYPE)
+		return ENTITIES.entity(Detail.TYPE)
 						.with(Detail.ID, id)
 						.with(Detail.INT, intValue)
 						.with(Detail.DOUBLE, doubleValue)

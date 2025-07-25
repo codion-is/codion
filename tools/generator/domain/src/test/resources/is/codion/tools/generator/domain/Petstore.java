@@ -414,7 +414,7 @@ public final class Petstore extends DomainModel {
 				Integer zip, Double latitude, Double longitude, Object location, byte[] image,
 				String insertUser, LocalDateTime insertTime, String updateUser, LocalDateTime updateTime) {
 			public Entity entity(Entities entities) {
-				return entities.builder(TYPE)
+				return entities.entity(TYPE)
 					.with(ADDRESS_ID, addressId)
 					.with(STREET1, street1)
 					.with(STREET2, street2)
@@ -461,7 +461,7 @@ public final class Petstore extends DomainModel {
 		record Dto(Integer categoryId, String name, String description, String imageUrl,
 				String insertUser, LocalDateTime insertTime, String updateUser, LocalDateTime updateTime) {
 			public Entity entity(Entities entities) {
-				return entities.builder(TYPE)
+				return entities.entity(TYPE)
 					.with(CATEGORY_ID, categoryId)
 					.with(NAME, name)
 					.with(DESCRIPTION, description)
@@ -502,7 +502,7 @@ public final class Petstore extends DomainModel {
 		record Dto(Integer contactInfoId, String lastName, String firstName, String email,
 				String insertUser, LocalDateTime insertTime, String updateUser, LocalDateTime updateTime) {
 			public Entity entity(Entities entities) {
-				return entities.builder(TYPE)
+				return entities.entity(TYPE)
 					.with(CONTACT_INFO_ID, contactInfoId)
 					.with(LAST_NAME, lastName)
 					.with(FIRST_NAME, firstName)
@@ -530,7 +530,7 @@ public final class Petstore extends DomainModel {
 
 		record Dto(String name, String tag) {
 			public Entity entity(Entities entities) {
-				return entities.builder(TYPE)
+				return entities.entity(TYPE)
 					.with(NAME, name)
 					.with(TAG, tag)
 					.build();
@@ -561,7 +561,7 @@ public final class Petstore extends DomainModel {
 		record Dto(Integer tagId, String tag, String insertUser, LocalDateTime insertTime,
 				String updateUser, LocalDateTime updateTime) {
 			public Entity entity(Entities entities) {
-				return entities.builder(TYPE)
+				return entities.entity(TYPE)
 					.with(TAG_ID, tagId)
 					.with(TAG, tag)
 					.with(INSERT_USER, insertUser)
@@ -605,7 +605,7 @@ public final class Petstore extends DomainModel {
 				String imageUrl, String insertUser, LocalDateTime insertTime, String updateUser,
 				LocalDateTime updateTime) {
 			public Entity entity(Entities entities) {
-				return entities.builder(TYPE)
+				return entities.entity(TYPE)
 					.with(PRODUCT_ID, productId)
 					.with(CATEGORY_FK, category.entity(entities))
 					.with(NAME, name)
@@ -669,7 +669,7 @@ public final class Petstore extends DomainModel {
 				Integer totalScore, Integer numberOfVotes, Integer disabled, String insertUser,
 				LocalDateTime insertTime, String updateUser, LocalDateTime updateTime) {
 			public Entity entity(Entities entities) {
-				return entities.builder(TYPE)
+				return entities.entity(TYPE)
 					.with(ITEM_ID, itemId)
 					.with(PRODUCT_FK, product.entity(entities))
 					.with(NAME, name)
@@ -717,7 +717,7 @@ public final class Petstore extends DomainModel {
 		record Dto(Tag.Dto tag, Item.Dto item, String insertUser, LocalDateTime insertTime,
 				String updateUser, LocalDateTime updateTime) {
 			public Entity entity(Entities entities) {
-				return entities.builder(TYPE)
+				return entities.entity(TYPE)
 					.with(TAG_FK, tag.entity(entities))
 					.with(ITEM_FK, item.entity(entities))
 					.with(INSERT_USER, insertUser)

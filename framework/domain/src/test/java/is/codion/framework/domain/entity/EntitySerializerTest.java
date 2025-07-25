@@ -66,21 +66,21 @@ public final class EntitySerializerTest {
 		EntitySerializer serializer2 = new EntitySerializer(domain2.entities(), true);
 		EntitySerializer serializer3 = new EntitySerializer(domain1.entities(), false);
 
-		DefaultEntity entity = (DefaultEntity) domain1.entities().builder(TestTable.TYPE)
+		DefaultEntity entity = (DefaultEntity) domain1.entities().entity(TestTable.TYPE)
 						.with(TestTable.ID, 1)
 						.with(TestTable.NAME, "name")
 						.build();
-		DefaultEntity deserialized = (DefaultEntity) domain2.entities().entity(TestTable.TYPE);
+		DefaultEntity deserialized = (DefaultEntity) domain2.entities().entity(TestTable.TYPE).build();
 		assertFalse(deserialized.contains(TestTable.EXTRA));
 
 		serializeDeserialize(serializer2, entity, deserialized);
 
-		entity = (DefaultEntity) domain2.entities().builder(TestTable.TYPE)
+		entity = (DefaultEntity) domain2.entities().entity(TestTable.TYPE)
 						.with(TestTable.ID, 1)
 						.with(TestTable.NAME, "name")
 						.with(TestTable.EXTRA, "extra")
 						.build();
-		deserialized = (DefaultEntity) domain1.entities().entity(TestTable.TYPE);
+		deserialized = (DefaultEntity) domain1.entities().entity(TestTable.TYPE).build();
 
 		DefaultEntity toSerialize = entity;
 		DefaultEntity toDeserialize = deserialized;
@@ -90,14 +90,14 @@ public final class EntitySerializerTest {
 		serializeDeserialize(serializer3, toSerialize, toDeserialize);
 		assertFalse(deserialized.contains(TestTable.EXTRA));
 
-		deserialized = (DefaultEntity) domain2.entities().entity(TestTable.TYPE);
+		deserialized = (DefaultEntity) domain2.entities().entity(TestTable.TYPE).build();
 		serializeDeserialize(serializer2, entity, deserialized);
 		assertTrue(deserialized.contains(TestTable.EXTRA));
 	}
 
 	private static void testSerializer(EntitySerializer serializer) throws IOException, ClassNotFoundException {
 		DefaultEntity entity = createTestEntity();
-		DefaultEntity deserializedEntity = (DefaultEntity) ENTITIES.entity(Employee.TYPE);
+		DefaultEntity deserializedEntity = (DefaultEntity) ENTITIES.entity(Employee.TYPE).build();
 		serializeDeserialize(serializer, entity, deserializedEntity);
 		assertTrue(deserializedEntity.modified(Employee.NAME));
 		assertTrue(entity.equalValues(deserializedEntity));
@@ -143,18 +143,18 @@ public final class EntitySerializerTest {
 	}
 
 	private static DefaultEntity createTestEntity(int id) {
-		Entity department = ENTITIES.builder(TestDomain.Department.TYPE)
+		Entity department = ENTITIES.entity(TestDomain.Department.TYPE)
 						.with(TestDomain.Department.ID, 2)
 						.with(TestDomain.Department.NAME, "Dept")
 						.build()
 						.immutable();
 
-		DefaultEntity entity = (DefaultEntity) ENTITIES.builder(Employee.TYPE)
+		DefaultEntity entity = (DefaultEntity) ENTITIES.entity(Employee.TYPE)
 						.with(Employee.ID, id)
 						.with(Employee.NAME, "Björn")
 						.with(Employee.HIREDATE, LocalDateTime.now())
 						.with(Employee.DEPARTMENT_FK, department)
-						.with(Employee.MANAGER_FK, ENTITIES.builder(Employee.TYPE)
+						.with(Employee.MANAGER_FK, ENTITIES.entity(Employee.TYPE)
 										.with(Employee.ID, -id)
 										.with(Employee.NAME, "Darri")
 										.with(Employee.DEPARTMENT_FK, department)

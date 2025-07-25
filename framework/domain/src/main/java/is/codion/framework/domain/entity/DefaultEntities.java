@@ -84,12 +84,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
 	}
 
 	@Override
-	public final Entity entity(EntityType entityType) {
-		return definition(entityType).entity();
-	}
-
-	@Override
-	public final Entity.Builder builder(EntityType entityType) {
+	public final Entity.Builder entity(EntityType entityType) {
 		return new DefaultEntityBuilder(definition(entityType));
 	}
 

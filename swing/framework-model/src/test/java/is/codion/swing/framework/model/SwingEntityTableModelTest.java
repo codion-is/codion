@@ -147,7 +147,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	@Test
 	void validItems() {
 		SwingEntityTableModel tableModel = createTableModel(Employee.TYPE, connectionProvider());
-		Entity dept = tableModel.entities().builder(Department.TYPE)
+		Entity dept = tableModel.entities().entity(Department.TYPE)
 						.with(Department.ID, 1)
 						.with(Department.NAME, "dept")
 						.build();
@@ -283,7 +283,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 //	void replacePerformance() {
 //		Entities entities = testModel.connectionProvider().entities();
 //		List<Entity> items = IntStream.range(0, 100_000)
-//						.mapToObj(i -> entities.builder(Department.TYPE)
+//						.mapToObj(i -> entities.entity(Department.TYPE)
 //										.with(Department.ID, i)
 //										.with(Department.NAME, "dept" + i)
 //										.build())

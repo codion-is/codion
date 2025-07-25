@@ -279,7 +279,7 @@ public final class World extends DomainModel {
 				Integer capital, String code2, byte[] flag, Integer cityid, String cityname, String district,
 				Integer citypopulation) {
 			public Entity entity(Entities entities) {
-				return entities.builder(TYPE)
+				return entities.entity(TYPE)
 					.with(COUNTRYCODE, countrycode)
 					.with(COUNTRYNAME, countryname)
 					.with(CONTINENT, continent)
@@ -330,7 +330,7 @@ public final class World extends DomainModel {
 		record Dto(Integer id, String name, Country.Dto countrycode, String district, Integer population,
 				Object location) {
 			public Entity entity(Entities entities) {
-				return entities.builder(TYPE)
+				return entities.entity(TYPE)
 					.with(ID, id)
 					.with(NAME, name)
 					.with(COUNTRYCODE_FK, countrycode.entity(entities))
@@ -389,7 +389,7 @@ public final class World extends DomainModel {
 				String localname, String governmentform, String headofstate, City.Dto capital, String code2,
 				byte[] flag) {
 			public Entity entity(Entities entities) {
-				return entities.builder(TYPE)
+				return entities.entity(TYPE)
 					.with(CODE, code)
 					.with(NAME, name)
 					.with(CONTINENT, continent)
@@ -431,7 +431,7 @@ public final class World extends DomainModel {
 
 		record Dto(Country.Dto countrycode, String language, Boolean isofficial, Double percentage) {
 			public Entity entity(Entities entities) {
-				return entities.builder(TYPE)
+				return entities.entity(TYPE)
 					.with(COUNTRYCODE_FK, countrycode.entity(entities))
 					.with(LANGUAGE, language)
 					.with(ISOFFICIAL, isofficial)

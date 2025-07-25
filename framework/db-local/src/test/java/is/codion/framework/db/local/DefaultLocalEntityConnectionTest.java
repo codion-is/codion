@@ -173,21 +173,21 @@ public class DefaultLocalEntityConnectionTest {
 		try {
 			List<Entity> departments = new ArrayList<>();
 			// First two will succeed
-			departments.add(ENTITIES.builder(Department.TYPE)
+			departments.add(ENTITIES.entity(Department.TYPE)
 							.with(Department.DEPTNO, 100)
 							.with(Department.DNAME, "DEPT100")
 							.build());
-			departments.add(ENTITIES.builder(Department.TYPE)
+			departments.add(ENTITIES.entity(Department.TYPE)
 							.with(Department.DEPTNO, 101)
 							.with(Department.DNAME, "DEPT101")
 							.build());
 			// This one will fail due to duplicate DEPTNO
-			departments.add(ENTITIES.builder(Department.TYPE)
+			departments.add(ENTITIES.entity(Department.TYPE)
 							.with(Department.DEPTNO, 10) // Already exists
 							.with(Department.DNAME, "DUPLICATE")
 							.build());
 			// This one would succeed if batch continued
-			departments.add(ENTITIES.builder(Department.TYPE)
+			departments.add(ENTITIES.entity(Department.TYPE)
 							.with(Department.DEPTNO, 102)
 							.with(Department.DNAME, "DEPT102")
 							.build());
@@ -262,7 +262,7 @@ public class DefaultLocalEntityConnectionTest {
 
 	@Test
 	void insertUniqueConstraint() {
-		Entity department = ENTITIES.builder(Department.TYPE)
+		Entity department = ENTITIES.entity(Department.TYPE)
 						.with(Department.DEPTNO, 1000)
 						.with(Department.DNAME, "SALES")
 						.build();
@@ -278,7 +278,7 @@ public class DefaultLocalEntityConnectionTest {
 
 	@Test
 	void insertNoParentKey() {
-		Entity emp = ENTITIES.builder(Employee.TYPE)
+		Entity emp = ENTITIES.entity(Employee.TYPE)
 						.with(Employee.ID, -100)
 						.with(Employee.NAME, "Testing")
 						.with(Employee.DEPARTMENT, -1010)//not available
@@ -295,7 +295,7 @@ public class DefaultLocalEntityConnectionTest {
 
 	@Test
 	void insertNoPk() {
-		Entity noPk = ENTITIES.builder(NoPrimaryKey.TYPE)
+		Entity noPk = ENTITIES.entity(NoPrimaryKey.TYPE)
 						.with(NoPrimaryKey.COL_1, 10)
 						.with(NoPrimaryKey.COL_2, "10")
 						.with(NoPrimaryKey.COL_3, "10")
@@ -654,7 +654,7 @@ public class DefaultLocalEntityConnectionTest {
 	void insertOnlyNullValues() {
 		connection.startTransaction();
 		try {
-			Entity department = ENTITIES.entity(Department.TYPE);
+			Entity department = ENTITIES.entity(Department.TYPE).build();
 			assertThrows(DatabaseException.class, () -> connection.insert(department));
 		}
 		finally {
@@ -673,7 +673,7 @@ public class DefaultLocalEntityConnectionTest {
 		Entity sales = connection.selectSingle(Department.DNAME.equalTo("SALES"));
 		final double salary = 1500;
 
-		Entity emp = ENTITIES.builder(Employee.TYPE)
+		Entity emp = ENTITIES.entity(Employee.TYPE)
 						.with(Employee.DEPARTMENT_FK, sales)
 						.with(Employee.NAME, "Nobody")
 						.with(Employee.SALARY, salary)
@@ -699,7 +699,7 @@ public class DefaultLocalEntityConnectionTest {
 		final double salary = 1500;
 		final double defaultCommission = 200;
 
-		Entity emp = ENTITIES.builder(Employee.TYPE)
+		Entity emp = ENTITIES.entity(Employee.TYPE)
 						.with(Employee.DEPARTMENT_FK, sales)
 						.with(Employee.NAME, name)
 						.with(Employee.SALARY, salary)
@@ -1114,7 +1114,7 @@ public class DefaultLocalEntityConnectionTest {
 		assertFalse(closedConnection.connected());
 
 		// Test that all operations throw appropriate exceptions on closed connection
-		Entity testEntity = ENTITIES.builder(Department.TYPE)
+		Entity testEntity = ENTITIES.entity(Department.TYPE)
 						.with(Department.DEPTNO, 999)
 						.with(Department.DNAME, "TEST")
 						.build();
@@ -1188,7 +1188,7 @@ public class DefaultLocalEntityConnectionTest {
 
 	@Test
 	void testUUIDPrimaryKeyColumnWithDefaultValue() {
-		Entity entity = ENTITIES.builder(UUIDTestDefault.TYPE)
+		Entity entity = ENTITIES.entity(UUIDTestDefault.TYPE)
 						.with(UUIDTestDefault.DATA, "test")
 						.build();
 		connection.insert(entity);
@@ -1198,7 +1198,7 @@ public class DefaultLocalEntityConnectionTest {
 
 	@Test
 	void testUUIDPrimaryKeyColumnWithoutDefaultValue() {
-		Entity entity = ENTITIES.builder(UUIDTestNoDefault.TYPE)
+		Entity entity = ENTITIES.entity(UUIDTestNoDefault.TYPE)
 						.with(UUIDTestNoDefault.DATA, "test")
 						.build();
 		connection.insert(entity);
@@ -1311,14 +1311,14 @@ public class DefaultLocalEntityConnectionTest {
 
 	@Test
 	void singleGeneratedColumnInsert() {
-		connection.delete(connection.insert(ENTITIES.builder(Master.TYPE).build()));
+		connection.delete(connection.insert(ENTITIES.entity(Master.TYPE).build()));
 	}
 
 	@Test
 	void transactions() {
 		try (LocalEntityConnection connection1 = createConnection();
 				 LocalEntityConnection connection2 = createConnection()) {
-			Entity department = ENTITIES.builder(Department.TYPE)
+			Entity department = ENTITIES.entity(Department.TYPE)
 							.with(Department.DEPTNO, -42)
 							.with(Department.DNAME, "hello")
 							.build();
@@ -1385,7 +1385,7 @@ public class DefaultLocalEntityConnectionTest {
 			Connection jdbcConnection = testConnection.databaseConnection().getConnection();
 			// Start with a regular transaction to insert test data
 			testConnection.startTransaction();
-			Entity testDept = ENTITIES.builder(Department.TYPE)
+			Entity testDept = ENTITIES.entity(Department.TYPE)
 							.with(Department.DEPTNO, 999)
 							.with(Department.DNAME, "TEST_READONLY")
 							.with(Department.LOC, "TEST_LOC")
@@ -1414,7 +1414,7 @@ public class DefaultLocalEntityConnectionTest {
 			assertFalse(depts.isEmpty());
 
 			// Test if H2 enforces read-only mode for write operations
-			Entity newDept = ENTITIES.builder(Department.TYPE)
+			Entity newDept = ENTITIES.entity(Department.TYPE)
 							.with(Department.DEPTNO, 998)
 							.with(Department.DNAME, "SHOULD_FAIL")
 							.build();
@@ -1458,7 +1458,7 @@ public class DefaultLocalEntityConnectionTest {
 			jdbc2.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 
 			// Create test data
-			Entity testDept = ENTITIES.builder(Department.TYPE)
+			Entity testDept = ENTITIES.entity(Department.TYPE)
 							.with(Department.DEPTNO, 888)
 							.with(Department.DNAME, "ISOLATION_TEST")
 							.with(Department.LOC, "ORIGINAL")
@@ -1485,7 +1485,7 @@ public class DefaultLocalEntityConnectionTest {
 
 			// Test 2: Simple deadlock scenario
 			// Create another entity for deadlock testing
-			Entity testDept2 = ENTITIES.builder(Department.TYPE)
+			Entity testDept2 = ENTITIES.entity(Department.TYPE)
 							.with(Department.DEPTNO, 889)
 							.with(Department.DNAME, "DEADLOCK_TEST")
 							.with(Department.LOC, "ORIGINAL2")
@@ -1610,7 +1610,7 @@ public class DefaultLocalEntityConnectionTest {
 		Entity selected = connection.selectSingle(all(DetailFk.TYPE));
 		assertEquals(1, selected.get(DetailFk.MASTER_FK).get(MasterFk.ID));
 
-		connection.insert(connection.entities().builder(MasterFk.TYPE)
+		connection.insert(connection.entities().entity(MasterFk.TYPE)
 						.with(MasterFk.ID, 2)
 						.with(MasterFk.NAME, "name")
 						.build());
@@ -1619,14 +1619,14 @@ public class DefaultLocalEntityConnectionTest {
 
 	@Test
 	void missingOrModifiedValues() {
-		Entity entity = ENTITIES.builder(Department.TYPE)
+		Entity entity = ENTITIES.entity(Department.TYPE)
 						.with(Department.DEPTNO, 1)
 						.with(Department.LOC, "Location")
 						.with(Department.DNAME, "Name")
 						.with(Department.ACTIVE, true)
 						.build();
 
-		Entity current = ENTITIES.builder(Department.TYPE)
+		Entity current = ENTITIES.entity(Department.TYPE)
 						.with(Department.DEPTNO, 1)
 						.with(Department.LOC, "Location")
 						.with(Department.DNAME, "Name")
@@ -1668,7 +1668,7 @@ public class DefaultLocalEntityConnectionTest {
 
 		assertEquals(2, modifiedColumns(current, entity).size());
 
-		entity = ENTITIES.builder(Department.TYPE)
+		entity = ENTITIES.entity(Department.TYPE)
 						.with(Department.DEPTNO, 1)
 						.with(Department.LOC, null)
 						.with(Department.DNAME, "Name")
@@ -1693,7 +1693,7 @@ public class DefaultLocalEntityConnectionTest {
 		random.nextBytes(modifiedBytes);
 
 		//eagerly loaded blob
-		Entity emp1 = ENTITIES.builder(Employee.TYPE)
+		Entity emp1 = ENTITIES.entity(Employee.TYPE)
 						.with(Employee.ID, 1)
 						.with(Employee.NAME, "name")
 						.with(Employee.SALARY, 1300d)
@@ -1708,7 +1708,7 @@ public class DefaultLocalEntityConnectionTest {
 		assertTrue(modifiedColumns.contains(Employee.DATA));
 
 		//lazy loaded blob
-		Entity dept1 = ENTITIES.builder(Department.TYPE)
+		Entity dept1 = ENTITIES.entity(Department.TYPE)
 						.with(Department.DNAME, "name")
 						.with(Department.LOC, "loc")
 						.with(Department.ACTIVE, true)
@@ -1744,7 +1744,7 @@ public class DefaultLocalEntityConnectionTest {
 
 	@Test
 	void nullConverter() {
-		Entity entity = DOMAIN.entities().builder(NullConverter.TYPE)
+		Entity entity = DOMAIN.entities().entity(NullConverter.TYPE)
 						.with(NullConverter.ID, -1)
 						.with(NullConverter.NAME, null)
 						.build();

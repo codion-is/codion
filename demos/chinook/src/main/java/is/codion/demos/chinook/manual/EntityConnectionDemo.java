@@ -230,17 +230,17 @@ public final class EntityConnectionDemo {
 
 		Entities entities = connection.entities();
 
-		Entity myBand = entities.builder(Artist.TYPE)
+		Entity myBand = entities.entity(Artist.TYPE)
 						.with(Artist.NAME, "My Band")
 						.build();
 
 		myBand = connection.insertSelect(myBand);
 
-		Entity firstAlbum = entities.builder(Album.TYPE)
+		Entity firstAlbum = entities.entity(Album.TYPE)
 						.with(Album.ARTIST_FK, myBand)
 						.with(Album.TITLE, "First album")
 						.build();
-		Entity secondAlbum = entities.builder(Album.TYPE)
+		Entity secondAlbum = entities.entity(Album.TYPE)
 						.with(Album.ARTIST_FK, myBand)
 						.with(Album.TITLE, "Second album")
 						.build();
@@ -396,12 +396,12 @@ public final class EntityConnectionDemo {
 		EntityConnection.transaction(connection, () -> {
 			Entities entities = connection.entities();
 
-			Entity artist = entities.builder(Artist.TYPE)
+			Entity artist = entities.entity(Artist.TYPE)
 							.with(Artist.NAME, "The Band")
 							.build();
 			artist = connection.insertSelect(artist);
 
-			Entity album = entities.builder(Album.TYPE)
+			Entity album = entities.entity(Album.TYPE)
 							.with(Album.ARTIST_FK, artist)
 							.with(Album.TITLE, "The Album")
 							.build();
@@ -421,12 +421,12 @@ public final class EntityConnectionDemo {
 			public void execute() {
 				Entities entities = connection.entities();
 
-				Entity artist = entities.builder(Artist.TYPE)
+				Entity artist = entities.entity(Artist.TYPE)
 								.with(Artist.NAME, "The Band")
 								.build();
 				artist = connection.insertSelect(artist);
 
-				Entity album = entities.builder(Album.TYPE)
+				Entity album = entities.entity(Album.TYPE)
 								.with(Album.ARTIST_FK, artist)
 								.with(Album.TITLE, "The Album")
 								.build();
@@ -446,12 +446,12 @@ public final class EntityConnectionDemo {
 		Entity.Key albumKey = EntityConnection.transaction(connection, () -> {
 			Entities entities = connection.entities();
 
-			Entity artist = entities.builder(Artist.TYPE)
+			Entity artist = entities.entity(Artist.TYPE)
 							.with(Artist.NAME, "The Band")
 							.build();
 			artist = connection.insertSelect(artist);
 
-			Entity album = entities.builder(Album.TYPE)
+			Entity album = entities.entity(Album.TYPE)
 							.with(Album.ARTIST_FK, artist)
 							.with(Album.TITLE, "The Album")
 							.build();
@@ -471,12 +471,12 @@ public final class EntityConnectionDemo {
 			public Entity.Key execute() {
 				Entities entities = connection.entities();
 
-				Entity artist = entities.builder(Artist.TYPE)
+				Entity artist = entities.entity(Artist.TYPE)
 								.with(Artist.NAME, "The Band")
 								.build();
 				artist = connection.insertSelect(artist);
 
-				Entity album = entities.builder(Album.TYPE)
+				Entity album = entities.entity(Album.TYPE)
 								.with(Album.ARTIST_FK, artist)
 								.with(Album.TITLE, "The Album")
 								.build();
@@ -503,12 +503,12 @@ public final class EntityConnectionDemo {
 		// in the Exception catch block, which is probably not what you want.
 		connection.startTransaction();
 		try {
-			Entity artist = entities.builder(Artist.TYPE)
+			Entity artist = entities.entity(Artist.TYPE)
 							.with(Artist.NAME, "The Band")
 							.build();
 			connection.insert(artist);
 
-			Entity album = entities.builder(Album.TYPE)
+			Entity album = entities.entity(Album.TYPE)
 							.with(Album.ARTIST_FK, artist)
 							.with(Album.TITLE, "The Album")
 							.build();

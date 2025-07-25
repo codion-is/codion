@@ -36,7 +36,7 @@ public final class CompositeColumnKeyTest {
 
 	@Test
 	void compositeKeyNull() {
-		Entity master = ENTITIES.entity(CompositeMaster.TYPE);
+		Entity master = ENTITIES.entity(CompositeMaster.TYPE).build();
 		assertTrue(master.primaryKey().isNull());
 
 		master.set(CompositeMaster.COMPOSITE_MASTER_ID_2, 2);
@@ -126,10 +126,10 @@ public final class CompositeColumnKeyTest {
 						.build();
 		assertEquals(detailKey2, detailKey);
 
-		Entity department1 = ENTITIES.builder(Department.TYPE)
+		Entity department1 = ENTITIES.entity(Department.TYPE)
 						.with(Department.ID, 1)
 						.build();
-		Entity department2 = ENTITIES.builder(Department.TYPE)
+		Entity department2 = ENTITIES.entity(Department.TYPE)
 						.with(Department.ID, 1)
 						.build();
 

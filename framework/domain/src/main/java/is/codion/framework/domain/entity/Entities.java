@@ -52,7 +52,7 @@ import static is.codion.common.Configuration.booleanValue;
  * Entities entities = store.entities();
  *
  * // Create entity instances
- * Entity customer = entities.builder(Customer.TYPE)
+ * Entity customer = entities.entity(Customer.TYPE)
  *     .with(Customer.NAME, "John Doe")
  *     .with(Customer.EMAIL, "john@example.com")
  *     .build();
@@ -61,7 +61,7 @@ import static is.codion.common.Configuration.booleanValue;
  * Entity.Key customerKey = entities.primaryKey(Customer.TYPE, 42);
  *}
  * @see #entity(EntityType)
- * @see #builder(EntityType)
+ * @see #key(EntityType)
  * @see #primaryKey(EntityType, Object)
  * @see #primaryKeys(EntityType, Object[])
  */
@@ -123,40 +123,19 @@ public interface Entities {
 	Collection<EntityDefinition> definitions();
 
 	/**
-	 * Creates a new empty {@link Entity} instance of the given entityType
-	 * {@snippet :
-	 * Entities entities = domain.entities();
-	 *
-	 * // Create an empty entity
-	 * Entity customer = entities.entity(Customer.TYPE);
-	 *
-	 * // Set values individually
-	 * customer.set(Customer.NAME, "John Doe");
-	 * customer.set(Customer.EMAIL, "john@example.com");
-	 *
-	 * // The entity is mutable and tracks changes
-	 * customer.set(Customer.NAME, "John Lennon");
-	 * customer.modified(Customer.NAME); // true
-	 *}
-	 * @param entityType the entityType
-	 * @return a new {@link Entity} instance
-	 */
-	Entity entity(EntityType entityType);
-
-	/**
 	 * Creates a new {@link Entity.Builder} instance for the given entityType
 	 * {@snippet :
 	 * Entities entities = domain.entities();
 	 *
 	 * // Build an entity with initial values
-	 * Entity customer = entities.builder(Customer.TYPE)
+	 * Entity customer = entities.entity(Customer.TYPE)
 	 *     .with(Customer.NAME, "John Doe")
 	 *     .with(Customer.EMAIL, "john@example.com")
 	 *     .with(Customer.ACTIVE, true)
 	 *     .build();
 	 *
 	 * // Build with a foreign key reference
-	 * Entity order = entities.builder(Order.TYPE)
+	 * Entity order = entities.entity(Order.TYPE)
 	 *     .with(Order.CUSTOMER_FK, customer)
 	 *     .with(Order.DATE, LocalDate.now())
 	 *     .with(Order.TOTAL, 100.50)
@@ -165,7 +144,7 @@ public interface Entities {
 	 * @param entityType the entityType
 	 * @return a new {@link Entity.Builder}
 	 */
-	Entity.Builder builder(EntityType entityType);
+	Entity.Builder entity(EntityType entityType);
 
 	/**
 	 * {@snippet :

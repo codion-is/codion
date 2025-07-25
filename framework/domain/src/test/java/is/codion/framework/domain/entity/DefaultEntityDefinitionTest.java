@@ -395,7 +395,7 @@ public class DefaultEntityDefinitionTest {
 		}
 		Entities entities = new TestDomain().entities();
 
-		Entity entity = entities.entity(entityType);
+		Entity entity = entities.entity(entityType).build();
 		entity.set(attribute, 1);
 		assertEquals("testDefaultStringProvider: attribute: 1", entity.toString());
 	}
@@ -427,7 +427,7 @@ public class DefaultEntityDefinitionTest {
 		}
 		Entities entities = new TestDomain().entities();
 
-		Entity entity = entities.entity(entityType);
+		Entity entity = entities.entity(entityType).build();
 		assertEquals("test", entity.toString());
 	}
 

@@ -312,7 +312,7 @@ public final class EntityComponentsTest {
 										.link(editor.value(Detail.MASTER_FK))
 										.buildValue();
 		JTextField field = componentValue.component();
-		Entity entity = editModel.entities().builder(Master.TYPE).with(Master.NAME, "name").build();
+		Entity entity = editModel.entities().entity(Master.TYPE).with(Master.NAME, "name").build();
 		editor.value(Detail.MASTER_FK).set(entity);
 		assertEquals("name", field.getText());
 	}

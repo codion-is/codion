@@ -223,7 +223,7 @@ public interface EntityDefinition {
 	 *     .build();
 	 *
 	 * // Usage
-	 * Entity customer = entities.builder(Customer.TYPE)
+	 * Entity customer = entities.entity(Customer.TYPE)
 	 *     .with(Customer.FIRST_NAME, "John")
 	 *     .with(Customer.LAST_NAME, "Doe")
 	 *     .with(Customer.EMAIL, "john@example.com")

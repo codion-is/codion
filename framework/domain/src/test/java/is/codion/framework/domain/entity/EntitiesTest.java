@@ -456,7 +456,7 @@ public final class EntitiesTest {
 		@Test
 		@DisplayName("null validation catches missing required values")
 		void nullValidation_missingRequiredValues_throwsException() {
-			Entity emp = entities.builder(Employee.TYPE)
+			Entity emp = entities.entity(Employee.TYPE)
 							.with(Employee.NAME, "Name")
 							.with(Employee.HIREDATE, LocalDateTime.now())
 							.with(Employee.SALARY, 1200.0)
@@ -485,7 +485,7 @@ public final class EntitiesTest {
 		@Test
 		@DisplayName("length validation enforces maximum length")
 		void maxLengthValidation_exceedsMaxLength_throwsException() {
-			Entity emp = entities.builder(Employee.TYPE)
+			Entity emp = entities.entity(Employee.TYPE)
 							.with(Employee.DEPARTMENT_NO, 1)
 							.with(Employee.NAME, "Name")
 							.with(Employee.HIREDATE, LocalDateTime.now())
@@ -504,7 +504,7 @@ public final class EntitiesTest {
 		@Test
 		@DisplayName("range validation enforces min and max values")
 		void rangeValidation_outsideRange_throwsException() {
-			Entity emp = entities.builder(Employee.TYPE)
+			Entity emp = entities.entity(Employee.TYPE)
 							.with(Employee.DEPARTMENT_NO, 1)
 							.with(Employee.NAME, "Name")
 							.with(Employee.HIREDATE, LocalDateTime.now())
@@ -544,7 +544,7 @@ public final class EntitiesTest {
 		@Test
 		@DisplayName("strict validation validates all values including unmodified")
 		void strictValidation_validatesAllValues() {
-			Entity emp = entities.builder(Employee.TYPE)
+			Entity emp = entities.entity(Employee.TYPE)
 							.with(Employee.NAME, "1234567891000") // Too long
 							.with(Employee.DEPARTMENT_NO, 1)
 							.with(Employee.JOB, "CLERK")
@@ -592,8 +592,8 @@ public final class EntitiesTest {
 		@Test
 		@DisplayName("setting foreign key with wrong entity type throws exception")
 		void validateTypeEntity_wrongEntityType_throwsException() {
-			Entity entity = entities.entity(Detail.TYPE);
-			Entity wrongTypeEntity = entities.entity(Detail.TYPE);
+			Entity entity = entities.entity(Detail.TYPE).build();
+			Entity wrongTypeEntity = entities.entity(Detail.TYPE).build();
 
 			assertThrows(IllegalArgumentException.class,
 							() -> entity.set(Detail.MASTER_FK, wrongTypeEntity),
@@ -603,7 +603,7 @@ public final class EntitiesTest {
 		@Test
 		@DisplayName("setting derived attribute value throws exception")
 		void setValueDerived_throwsException() {
-			Entity entity = entities.entity(Detail.TYPE);
+			Entity entity = entities.entity(Detail.TYPE).build();
 
 			assertThrows(IllegalArgumentException.class,
 							() -> entity.set(Detail.INT_DERIVED, 10),
@@ -613,7 +613,7 @@ public final class EntitiesTest {
 		@Test
 		@DisplayName("setting invalid item value throws exception")
 		void setValueItem_invalidValue_throwsException() {
-			Entity entity = entities.entity(Detail.TYPE);
+			Entity entity = entities.entity(Detail.TYPE).build();
 
 			assertThrows(IllegalArgumentException.class,
 							() -> entity.set(Detail.INT_ITEMS, -10),
@@ -628,12 +628,12 @@ public final class EntitiesTest {
 		@Test
 		@DisplayName("immutable copies create deep copies of entities")
 		void copyEntities_immutableCopies_createDeepCopies() {
-			Entity dept1 = entities.builder(Department.TYPE)
+			Entity dept1 = entities.entity(Department.TYPE)
 							.with(Department.ID, 1)
 							.with(Department.LOCATION, "location")
 							.with(Department.NAME, "name")
 							.build();
-			Entity dept2 = entities.builder(Department.TYPE)
+			Entity dept2 = entities.entity(Department.TYPE)
 							.with(Department.ID, 2)
 							.with(Department.LOCATION, "location2")
 							.with(Department.NAME, "name2")
@@ -659,13 +659,13 @@ public final class EntitiesTest {
 		@Test
 		@DisplayName("mutable copy shares referenced entities")
 		void copyEntities_mutableCopy_sharesReferences() {
-			Entity dept1 = entities.builder(Department.TYPE)
+			Entity dept1 = entities.entity(Department.TYPE)
 							.with(Department.ID, 1)
 							.with(Department.LOCATION, "location")
 							.with(Department.NAME, "name")
 							.build();
 
-			Entity emp1 = entities.builder(Employee.TYPE)
+			Entity emp1 = entities.entity(Employee.TYPE)
 							.with(Employee.DEPARTMENT_FK, dept1)
 							.with(Employee.NAME, "name")
 							.with(Employee.COMMISSION, 130.5)
@@ -681,13 +681,13 @@ public final class EntitiesTest {
 		@Test
 		@DisplayName("immutable copy creates deep copies of referenced entities")
 		void copyEntities_immutableCopy_deepCopiesReferences() {
-			Entity dept1 = entities.builder(Department.TYPE)
+			Entity dept1 = entities.entity(Department.TYPE)
 							.with(Department.ID, 1)
 							.with(Department.LOCATION, "location")
 							.with(Department.NAME, "name")
 							.build();
 
-			Entity emp1 = entities.builder(Employee.TYPE)
+			Entity emp1 = entities.entity(Employee.TYPE)
 							.with(Employee.DEPARTMENT_FK, dept1)
 							.with(Employee.NAME, "name")
 							.with(Employee.COMMISSION, 130.5)

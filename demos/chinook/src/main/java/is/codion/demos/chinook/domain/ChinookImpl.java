@@ -583,7 +583,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 		}
 
 		private Entity createPlaylist(String playlistName) {
-			return entities.builder(Playlist.TYPE)
+			return entities.entity(Playlist.TYPE)
 							.with(Playlist.NAME, playlistName)
 							.build();
 		}
@@ -595,7 +595,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 		}
 
 		private Entity createPlaylistTrack(Long playlistId, Long trackId) {
-			return entities.builder(PlaylistTrack.TYPE)
+			return entities.entity(PlaylistTrack.TYPE)
 							.with(PlaylistTrack.PLAYLIST_ID, playlistId)
 							.with(PlaylistTrack.TRACK_ID, trackId)
 							.build();

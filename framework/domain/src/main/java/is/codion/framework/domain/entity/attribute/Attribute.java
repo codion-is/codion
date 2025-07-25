@@ -92,7 +92,7 @@ import static java.util.Objects.requireNonNull;
  * }
  *
  * // Usage with entities
- * Entity customer = entities.builder(Customer.TYPE)
+ * Entity customer = entities.entity(Customer.TYPE)
  *     .with(Customer.NAME, "John Doe")
  *     .with(Customer.EMAIL, "john@example.com")
  *     .with(Customer.ACTIVE, true)

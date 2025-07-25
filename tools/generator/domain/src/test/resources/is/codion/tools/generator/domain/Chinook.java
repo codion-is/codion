@@ -422,7 +422,7 @@ public final class Chinook extends DomainModel {
 
 		record Dto(Long artistid, String name) {
 			public Entity entity(Entities entities) {
-				return entities.builder(TYPE)
+				return entities.entity(TYPE)
 					.with(ARTISTID, artistid)
 					.with(NAME, name)
 					.build();
@@ -474,7 +474,7 @@ public final class Chinook extends DomainModel {
 				Employee.Dto reportsto, LocalDate birthdate, LocalDate hiredate, String address, String city,
 				String state, String country, String postalcode, String phone, String fax, String email) {
 			public Entity entity(Entities entities) {
-				return entities.builder(TYPE)
+				return entities.entity(TYPE)
 					.with(EMPLOYEEID, employeeid)
 					.with(LASTNAME, lastname)
 					.with(FIRSTNAME, firstname)
@@ -509,7 +509,7 @@ public final class Chinook extends DomainModel {
 
 		record Dto(Long genreid, String name) {
 			public Entity entity(Entities entities) {
-				return entities.builder(TYPE)
+				return entities.entity(TYPE)
 					.with(GENREID, genreid)
 					.with(NAME, name)
 					.build();
@@ -531,7 +531,7 @@ public final class Chinook extends DomainModel {
 
 		record Dto(Long mediatypeid, String name) {
 			public Entity entity(Entities entities) {
-				return entities.builder(TYPE)
+				return entities.entity(TYPE)
 					.with(MEDIATYPEID, mediatypeid)
 					.with(NAME, name)
 					.build();
@@ -553,7 +553,7 @@ public final class Chinook extends DomainModel {
 
 		record Dto(Long playlistid, String name) {
 			public Entity entity(Entities entities) {
-				return entities.builder(TYPE)
+				return entities.entity(TYPE)
 					.with(PLAYLISTID, playlistid)
 					.with(NAME, name)
 					.build();
@@ -577,7 +577,7 @@ public final class Chinook extends DomainModel {
 
 		record Dto(Long userid, String username, Integer passwordhash) {
 			public Entity entity(Entities entities) {
-				return entities.builder(TYPE)
+				return entities.entity(TYPE)
 					.with(USERID, userid)
 					.with(USERNAME, username)
 					.with(PASSWORDHASH, passwordhash)
@@ -608,7 +608,7 @@ public final class Chinook extends DomainModel {
 
 		record Dto(Long albumid, String title, Artist.Dto artistid, byte[] cover, Object tags) {
 			public Entity entity(Entities entities) {
-				return entities.builder(TYPE)
+				return entities.entity(TYPE)
 					.with(ALBUMID, albumid)
 					.with(TITLE, title)
 					.with(ARTISTID_FK, artistid.entity(entities))
@@ -659,7 +659,7 @@ public final class Chinook extends DomainModel {
 				String city, String state, String country, String postalcode, String phone, String fax,
 				String email, Employee.Dto supportrepid) {
 			public Entity entity(Entities entities) {
-				return entities.builder(TYPE)
+				return entities.entity(TYPE)
 					.with(CUSTOMERID, customerid)
 					.with(FIRSTNAME, firstname)
 					.with(LASTNAME, lastname)
@@ -710,7 +710,7 @@ public final class Chinook extends DomainModel {
 				String billingcity, String billingstate, String billingcountry, String billingpostalcode,
 				Double total) {
 			public Entity entity(Entities entities) {
-				return entities.builder(TYPE)
+				return entities.entity(TYPE)
 					.with(INVOICEID, invoiceid)
 					.with(CUSTOMERID_FK, customerid.entity(entities))
 					.with(INVOICEDATE, invoicedate)
@@ -761,7 +761,7 @@ public final class Chinook extends DomainModel {
 				Genre.Dto genreid, String composer, Integer milliseconds, Integer bytes, Integer rating,
 				Integer unitprice) {
 			public Entity entity(Entities entities) {
-				return entities.builder(TYPE)
+				return entities.entity(TYPE)
 					.with(TRACKID, trackid)
 					.with(NAME, name)
 					.with(ALBUMID_FK, albumid.entity(entities))
@@ -801,7 +801,7 @@ public final class Chinook extends DomainModel {
 		record Dto(Long invoicelineid, Invoice.Dto invoiceid, Track.Dto trackid, Integer unitprice,
 				Integer quantity) {
 			public Entity entity(Entities entities) {
-				return entities.builder(TYPE)
+				return entities.entity(TYPE)
 					.with(INVOICELINEID, invoicelineid)
 					.with(INVOICEID_FK, invoiceid.entity(entities))
 					.with(TRACKID_FK, trackid.entity(entities))
@@ -831,7 +831,7 @@ public final class Chinook extends DomainModel {
 
 		record Dto(Long playlisttrackid, Playlist.Dto playlistid, Track.Dto trackid) {
 			public Entity entity(Entities entities) {
-				return entities.builder(TYPE)
+				return entities.entity(TYPE)
 					.with(PLAYLISTTRACKID, playlisttrackid)
 					.with(PLAYLISTID_FK, playlistid.entity(entities))
 					.with(TRACKID_FK, trackid.entity(entities))

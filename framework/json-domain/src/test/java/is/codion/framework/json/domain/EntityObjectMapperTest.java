@@ -56,7 +56,7 @@ public final class EntityObjectMapperTest {
 
 	@Test
 	void entity() throws JsonProcessingException {
-		Entity dept = entities.builder(Department.TYPE)
+		Entity dept = entities.entity(Department.TYPE)
 						.with(Department.DEPTNO, 1)
 						.with(Department.NAME, "Name")
 						.with(Department.LOCATION, "Location")
@@ -71,7 +71,7 @@ public final class EntityObjectMapperTest {
 		Entity readDept = mapper.readValue(jsonString, Entity.class);
 		assertTrue(dept.equalValues(readDept));
 
-		Entity entity = entities.builder(TestEntity.TYPE)
+		Entity entity = entities.entity(TestEntity.TYPE)
 						.with(TestEntity.DECIMAL, BigDecimal.valueOf(1234L))
 						.with(TestEntity.DATE_TIME, LocalDateTime.now())
 						.with(TestEntity.OFFSET_DATE_TIME, OffsetDateTime.now())
@@ -98,14 +98,14 @@ public final class EntityObjectMapperTest {
 	void entityForeignKeys() throws JsonProcessingException {
 		EntityObjectMapper mapper = new EntityObjectMapper(entities).setIncludeForeignKeyValues(true);
 
-		Entity dept = entities.builder(Department.TYPE)
+		Entity dept = entities.entity(Department.TYPE)
 						.with(Department.DEPTNO, 1)
 						.with(Department.NAME, "Name")
 						.with(Department.LOCATION, "Location")
 						.with(Department.LOCATION, "New Location")
 						.build();
 
-		Entity emp = entities.builder(Employee.TYPE)
+		Entity emp = entities.entity(Employee.TYPE)
 						.with(Employee.EMPNO, 2)
 						.with(Employee.NAME, "Emp")
 						.with(Employee.COMMISSION, 134.34)
@@ -162,7 +162,7 @@ public final class EntityObjectMapperTest {
 		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate hiredate = LocalDate.parse("2001-12-20", format);
 
-		Entity dept10 = entities.builder(Department.TYPE)
+		Entity dept10 = entities.entity(Department.TYPE)
 						.with(Department.DEPTNO, -10)
 						.with(Department.NAME, "DEPTNAME")
 						.with(Department.LOCATION, "LOCATION")
@@ -171,7 +171,7 @@ public final class EntityObjectMapperTest {
 		String jsonString = mapper.writeValueAsString(singletonList(dept10));
 		assertTrue(dept10.equalValues(mapper.deserializeEntities(jsonString).get(0)));
 
-		Entity dept20 = entities.builder(Department.TYPE)
+		Entity dept20 = entities.entity(Department.TYPE)
 						.with(Department.DEPTNO, -20)
 						.with(Department.NAME, null)
 						.with(Department.LOCATION, "ALOC")
@@ -183,7 +183,7 @@ public final class EntityObjectMapperTest {
 		String twoDepts = mapper.writeValueAsString(asList(dept10, dept20));
 		mapper.deserializeEntities(twoDepts);
 
-		Entity mgr30 = entities.builder(Employee.TYPE)
+		Entity mgr30 = entities.entity(Employee.TYPE)
 						.with(Employee.COMMISSION, 500.5)
 						.with(Employee.DEPARTMENT_FK, dept20)
 						.with(Employee.HIREDATE, hiredate)
@@ -193,7 +193,7 @@ public final class EntityObjectMapperTest {
 						.with(Employee.SALARY, BigDecimal.valueOf(2500.5))
 						.build();
 
-		Entity mgr50 = entities.builder(Employee.TYPE)
+		Entity mgr50 = entities.entity(Employee.TYPE)
 						.with(Employee.COMMISSION, 500.5)
 						.with(Employee.DEPARTMENT_FK, dept20)
 						.with(Employee.HIREDATE, hiredate)
@@ -203,7 +203,7 @@ public final class EntityObjectMapperTest {
 						.with(Employee.SALARY, BigDecimal.valueOf(2500.5))
 						.build();
 
-		Entity emp1 = entities.builder(Employee.TYPE)
+		Entity emp1 = entities.entity(Employee.TYPE)
 						.with(Employee.COMMISSION, 500.5)
 						.with(Employee.DEPARTMENT_FK, dept10)
 						.with(Employee.HIREDATE, hiredate)
@@ -249,7 +249,7 @@ public final class EntityObjectMapperTest {
 		assertTrue(emp1Deserialized.original(Employee.DEPARTMENT_FK).equalValues(dept10));
 		assertTrue(emp1Deserialized.original(Employee.MGR_FK).equalValues(mgr30));
 
-		Entity emp2 = entities.builder(Employee.TYPE)
+		Entity emp2 = entities.entity(Employee.TYPE)
 						.with(Employee.COMMISSION, 300.5)
 						.with(Employee.DEPARTMENT_FK, dept10)
 						.with(Employee.HIREDATE, hiredate)
@@ -283,7 +283,7 @@ public final class EntityObjectMapperTest {
 		assertTrue(parsedEntity.modified(Employee.SALARY));
 		assertTrue(parsedEntity.modified(Employee.HIREDATE));
 
-		Entity emp3 = entities.builder(Employee.TYPE)
+		Entity emp3 = entities.entity(Employee.TYPE)
 						.with(Employee.COMMISSION, 300.5)
 						.with(Employee.DEPARTMENT_FK, dept10)
 						.with(Employee.HIREDATE, null)
@@ -304,7 +304,7 @@ public final class EntityObjectMapperTest {
 
 	@Test
 	void dependencyMap() throws JsonProcessingException {
-		Entity dept = entities.builder(Department.TYPE)
+		Entity dept = entities.entity(Department.TYPE)
 						.with(Department.DEPTNO, 1)
 						.with(Department.NAME, "Name")
 						.with(Department.LOCATION, "Location")
@@ -330,10 +330,10 @@ public final class EntityObjectMapperTest {
 
 	@Test
 	void condition() throws JsonProcessingException {
-		Entity dept1 = entities.builder(Department.TYPE)
+		Entity dept1 = entities.entity(Department.TYPE)
 						.with(Department.DEPTNO, 1)
 						.build();
-		Entity dept2 = entities.builder(Department.TYPE)
+		Entity dept2 = entities.entity(Department.TYPE)
 						.with(Department.DEPTNO, 2)
 						.build();
 

@@ -117,7 +117,7 @@ public final class EmployeesServletLoadTest {
 		@Override
 		public void perform(EntityConnectionProvider client) {
 			int departmentNo = new Random().nextInt(5000);
-			client.connection().insert(client.entities().builder(Department.TYPE)
+			client.connection().insert(client.entities().entity(Department.TYPE)
 							.with(Department.DEPARTMENT_NO, departmentNo)
 							.with(Department.NAME, randomString(6))
 							.with(Department.LOCATION, randomString(8))
@@ -133,7 +133,7 @@ public final class EmployeesServletLoadTest {
 		public void perform(EntityConnectionProvider client) {
 			List<Entity> departments = client.connection().select(all(Department.TYPE));
 			Entity department = departments.get(random.nextInt(departments.size()));
-			client.connection().insert(client.entities().builder(Employee.TYPE)
+			client.connection().insert(client.entities().entity(Employee.TYPE)
 							.with(Employee.DEPARTMENT_FK, department)
 							.with(Employee.NAME, randomString(8))
 							.with(Employee.JOB, Employee.JOB_ITEMS.get(random.nextInt(Employee.JOB_ITEMS.size())).value())

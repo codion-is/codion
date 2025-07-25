@@ -45,7 +45,7 @@ public final class EntitiesInAction {
 		EntityConnection connection = connectionProvider.connection();
 
 		//populate a new category
-		Entity insects = entities.builder(Category.TYPE)
+		Entity insects = entities.entity(Category.TYPE)
 						.with(Category.NAME, "Insects")
 						.with(Category.DESCRIPTION, "Creepy crawlies")
 						.build();
@@ -53,7 +53,7 @@ public final class EntitiesInAction {
 		insects = connection.insertSelect(insects);
 
 		//populate a new product for the insect category
-		Entity smallBeetles = entities.builder(Product.TYPE)
+		Entity smallBeetles = entities.entity(Product.TYPE)
 						.with(Product.CATEGORY_FK, insects)
 						.with(Product.NAME, "Small Beetles")
 						.with(Product.DESCRIPTION, "Beetles on the smaller side")

@@ -163,7 +163,7 @@ final class MigrationDomain extends DomainModel {
 		// Create a separate connection for entity operations to avoid auto-commit conflicts
 		try (Connection connection = database.createConnection(MIGRATION_USER);
 				 EntityConnection entityConnection = LocalEntityConnection.localEntityConnection(database, this, connection)) {
-			entityConnection.insert(entityConnection.entities().builder(SchemaMigration.TYPE)
+			entityConnection.insert(entityConnection.entities().entity(SchemaMigration.TYPE)
 							.with(SchemaMigration.VERSION, migration.version)
 							.with(SchemaMigration.DESCRIPTION, migration.description)
 							.with(SchemaMigration.SCRIPT, migration.filename)

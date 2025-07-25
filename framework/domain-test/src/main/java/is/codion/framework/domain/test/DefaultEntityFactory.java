@@ -84,7 +84,7 @@ public class DefaultEntityFactory implements EntityFactory {
 
 	@Override
 	public Entity entity(EntityType entityType) {
-		Entity entity = entities.entity(requireNonNull(entityType));
+		Entity entity = entities.entity(requireNonNull(entityType)).build();
 		populate(entity, insertableColumns(entities.definition(entityType)));
 
 		return entity;

@@ -16,6 +16,7 @@ Codion Change Log
 - DefaultKey.setSerializer() and serializerForDomain() moved to EntitySerializer. 
 - SingleColumnKey added, DefaultKey renamed CompositeColumnKey.
 - Entity.Builder.key() removed, Entities.key() added.
+- Entities.builder() renamed entity().
 ### is.codion.framework.db.local
 - EntityResultPacker, minor optimization to eliminate HashMap resizing.
 ### is.codion.swing.framework.ui

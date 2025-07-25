@@ -260,7 +260,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * {@snippet :
 	 * Entities entities = connection.entities();
 	 *
-	 * Entity artist = entities.builder(Artist.TYPE)
+	 * Entity artist = entities.entity(Artist.TYPE)
 	 *     .with(Artist.NAME, "The Beatles")
 	 *     .build();
 	 *
@@ -276,7 +276,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * Inserts the given entity, returning the inserted entity.
 	 * Performs a commit unless a transaction is open.
 	 * {@snippet :
-	 * Entity album = entities.builder(Album.TYPE)
+	 * Entity album = entities.entity(Album.TYPE)
 	 *     .with(Album.ARTIST_FK, artist)
 	 *     .with(Album.TITLE, "Abbey Road")
 	 *     .build();

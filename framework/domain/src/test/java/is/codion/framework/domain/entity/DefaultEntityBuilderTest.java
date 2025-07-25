@@ -37,11 +37,11 @@ public final class DefaultEntityBuilderTest {
 
 	@Test
 	void valueOrder() {
-		Entity department = ENTITIES.builder(Department.TYPE)
+		Entity department = ENTITIES.entity(Department.TYPE)
 						.with(Department.ID, 10)
 						.with(Department.NAME, "Test")
 						.build();
-		Entity employee = ENTITIES.builder(Employee.TYPE)
+		Entity employee = ENTITIES.entity(Employee.TYPE)
 						.with(Employee.DEPARTMENT_NO, 2)
 						//overwrites the department no. value from above
 						//with the one in the department entity
@@ -51,7 +51,7 @@ public final class DefaultEntityBuilderTest {
 		assertEquals(10, employee.get(Employee.DEPARTMENT_NO));
 		assertNotNull(employee.get(Employee.DEPARTMENT_FK));
 
-		employee = ENTITIES.builder(Employee.TYPE)
+		employee = ENTITIES.entity(Employee.TYPE)
 						.with(Employee.DEPARTMENT_FK, department)
 						//overwrites the department no. value from the department entity
 						//with this one and removes the foreign key entity, since it's now invalid
@@ -96,10 +96,10 @@ public final class DefaultEntityBuilderTest {
 		}
 		Entities entities = new TestDomain().entities();
 
-		assertThrows(IllegalArgumentException.class, () -> entities.builder(entityType)
+		assertThrows(IllegalArgumentException.class, () -> entities.entity(entityType)
 						.with(derivedValue, -42));
 
-		Entity entity = entities.builder(entityType)
+		Entity entity = entities.entity(entityType)
 						.withDefaults()
 						.build();
 		assertFalse(entity.contains(id));

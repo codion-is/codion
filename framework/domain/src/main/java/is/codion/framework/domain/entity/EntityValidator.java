@@ -138,7 +138,7 @@ public interface EntityValidator {
 	 * }
 	 *
 	 * // Usage during validation
-	 * Entity order = entities.builder(Order.TYPE)
+	 * Entity order = entities.entity(Order.TYPE)
 	 *     .with(Order.STATUS, "SHIPPED")
 	 *     .build(); // No tracking number
 	 *
@@ -165,7 +165,7 @@ public interface EntityValidator {
 	 * Use the {@link #STRICT_VALIDATION} configuration value to change the default behaviour.
 	 * {@snippet :
 	 * // Validation during entity lifecycle
-	 * Entity customer = entities.builder(Customer.TYPE)
+	 * Entity customer = entities.entity(Customer.TYPE)
 	 *     .with(Customer.NAME, "John Doe")
 	 *     .with(Customer.EMAIL, "invalid-email") // Invalid format
 	 *     .with(Customer.ACTIVE, true)
