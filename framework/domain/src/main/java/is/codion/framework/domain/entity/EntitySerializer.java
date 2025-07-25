@@ -68,14 +68,30 @@ final class EntitySerializer {
 		deserializeValues(entity, stream);
 	}
 
-	static void serialize(DefaultKey key, ObjectOutputStream stream) throws IOException {
+	static void serialize(CompositeColumnKey key, ObjectOutputStream stream) throws IOException {
 		stream.writeObject(key.definition.type().name());
 		serializeValues(key, stream);
 	}
 
-	void deserialize(DefaultKey key, ObjectInputStream stream) throws IOException, ClassNotFoundException {
+	void deserialize(CompositeColumnKey key, ObjectInputStream stream) throws IOException, ClassNotFoundException {
 		key.definition = entities.definition((String) stream.readObject());
 		deserializeValues(key, stream);
+	}
+
+	static void serialize(SingleColumnKey key, ObjectOutputStream stream) throws IOException {
+		stream.writeObject(key.definition.type().name());
+		stream.writeObject(key.column().name());
+		stream.writeObject(key.value);
+		stream.writeBoolean(key.primaryKey);
+		stream.writeInt(key.hashCode);
+	}
+
+	void deserialize(SingleColumnKey key, ObjectInputStream stream) throws IOException, ClassNotFoundException {
+		key.definition = entities.definition((String) stream.readObject());
+		key.column = (Column<Object>) attributeByName(key.definition, (String) stream.readObject());
+		key.value = stream.readObject();
+		key.primaryKey = stream.readBoolean();
+		key.hashCode = stream.readInt();
 	}
 
 	private void deserializeValues(DefaultEntity entity, ObjectInputStream stream) throws IOException, ClassNotFoundException {
@@ -99,7 +115,7 @@ final class EntitySerializer {
 		return map;
 	}
 
-	private void deserializeValues(DefaultKey key, ObjectInputStream stream) throws IOException, ClassNotFoundException {
+	private void deserializeValues(CompositeColumnKey key, ObjectInputStream stream) throws IOException, ClassNotFoundException {
 		key.primary = stream.readBoolean();
 		int valueCount = stream.readInt();
 		key.columns = new ArrayList<>(valueCount);
@@ -144,7 +160,7 @@ final class EntitySerializer {
 		}
 	}
 
-	private static void serializeValues(DefaultKey key, ObjectOutputStream stream) throws IOException {
+	private static void serializeValues(CompositeColumnKey key, ObjectOutputStream stream) throws IOException {
 		stream.writeBoolean(key.primary);
 		stream.writeInt(key.columns.size());
 		for (int i = 0; i < key.columns.size(); i++) {
@@ -154,7 +170,7 @@ final class EntitySerializer {
 		}
 	}
 
-	private static boolean singleIntegerKey(DefaultKey key) {
+	private static boolean singleIntegerKey(CompositeColumnKey key) {
 		return key.columns.size() == 1 && key.columns.get(0).type().isInteger();
 	}
 }

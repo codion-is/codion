@@ -108,8 +108,8 @@ public final class EntitySerializerTest {
 		assertTrue(manager.equalValues(deserializedManager));
 		assertTrue(manager.entity(Employee.DEPARTMENT_FK).equalValues(deserializedManager.entity(Employee.DEPARTMENT_FK)));
 
-		DefaultKey key = createTestKey();
-		DefaultKey deserializedKey = (DefaultKey) ENTITIES.builder(CompositeMaster.TYPE).key().build();
+		CompositeColumnKey key = createTestKey();
+		CompositeColumnKey deserializedKey = (CompositeColumnKey) ENTITIES.builder(CompositeMaster.TYPE).key().build();
 		serializeDeserialize(serializer, key, deserializedKey);
 		assertEquals(key.values, deserializedKey.values);
 	}
@@ -126,7 +126,7 @@ public final class EntitySerializerTest {
 		}
 	}
 
-	private static void serializeDeserialize(EntitySerializer deserializer, DefaultKey toSerialize, DefaultKey toDeserialize)
+	private static void serializeDeserialize(EntitySerializer deserializer, CompositeColumnKey toSerialize, CompositeColumnKey toDeserialize)
 					throws IOException, ClassNotFoundException {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try (ObjectOutputStream out = new ObjectOutputStream(bos)) {
@@ -166,8 +166,8 @@ public final class EntitySerializerTest {
 		return entity;
 	}
 
-	private static DefaultKey createTestKey() {
-		return (DefaultKey) ENTITIES.builder(CompositeMaster.TYPE).key()
+	private static CompositeColumnKey createTestKey() {
+		return (CompositeColumnKey) ENTITIES.builder(CompositeMaster.TYPE).key()
 						.with(CompositeMaster.COMPOSITE_MASTER_ID, 1)
 						.with(CompositeMaster.COMPOSITE_MASTER_ID_2, 2)
 						.with(CompositeMaster.COMPOSITE_MASTER_ID_3, 3)

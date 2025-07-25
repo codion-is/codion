@@ -37,14 +37,12 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static is.codion.framework.domain.entity.EntitySerializer.serializerForDomain;
-import static java.util.Collections.*;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
-/**
- * A class representing a unique key for entities.
- */
-class DefaultKey implements Entity.Key, Serializable {
+final class CompositeColumnKey implements Entity.Key, Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1;
@@ -57,24 +55,7 @@ class DefaultKey implements Entity.Key, Serializable {
 	boolean hashCodeDirty = true;
 	EntityDefinition definition;
 
-	/**
-	 * Instantiates a new DefaultKey for the given entity type, assuming it is a single value key
-	 * @param definition the entity definition
-	 * @param column the column
-	 * @param value the value
-	 * @param primary true if this key represents a primary key
-	 */
-	DefaultKey(EntityDefinition definition, Column<?> column, @Nullable Object value, boolean primary) {
-		this(definition, singletonMap(column, value), primary);
-	}
-
-	/**
-	 * Instantiates a new DefaultKey with the given values
-	 * @param definition the entity definition
-	 * @param values the values associated with their respective attributes
-	 * @param primary true if this key represents a primary key
-	 */
-	DefaultKey(EntityDefinition definition, Map<Column<?>, Object> values, boolean primary) {
+	CompositeColumnKey(EntityDefinition definition, Map<Column<?>, Object> values, boolean primary) {
 		values.forEach((column, value) -> ((Column<Object>) column).type().validateType(value));
 		this.values = unmodifiableMap(values);
 		this.columns = unmodifiableList(new ArrayList<>(values.keySet()));
@@ -161,15 +142,15 @@ class DefaultKey implements Entity.Key, Serializable {
 		if (this == object) {
 			return true;
 		}
-		if (object == null || values.isEmpty()) {
+		if (!(object instanceof Entity.Key)) {
 			return false;
 		}
-		if (object.getClass() == DefaultKey.class) {
-			DefaultKey otherKey = (DefaultKey) object;
-			if (isNull() || otherKey.isNull()) {
-				return false;
-			}
-
+		Entity.Key entityKey = (Entity.Key) object;
+		if (isNull() || entityKey.isNull()) {
+			return false;
+		}
+		if (object instanceof CompositeColumnKey) {
+			CompositeColumnKey otherKey = (CompositeColumnKey) object;
 			if (columns.size() == 1 && otherKey.columns.size() == 1) {
 				Column<?> column = columns.get(0);
 				Column<?> otherColumn = otherKey.columns.get(0);
@@ -178,6 +159,12 @@ class DefaultKey implements Entity.Key, Serializable {
 			}
 
 			return values.equals(otherKey.values);
+		}
+		if (object instanceof SingleColumnKey && columns.size() == 1) {
+			SingleColumnKey singleColumnKey = (SingleColumnKey) object;
+			Column<?> column = columns.get(0);
+
+			return column.equals(singleColumnKey.column) && Objects.equals(values.get(column), singleColumnKey.value);
 		}
 
 		return false;

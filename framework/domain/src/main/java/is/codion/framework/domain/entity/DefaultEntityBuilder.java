@@ -53,7 +53,7 @@ final class DefaultEntityBuilder implements Entity.Builder {
 	DefaultEntityBuilder(EntityDefinition definition, Map<Attribute<?>, Object> values,
 											 @Nullable Map<Attribute<?>, Object> originalValues) {
 		this.definition = definition;
-		this.values = new HashMap<>(requireNonNull(values));
+		this.values = new HashMap<>(values);
 		this.originalValues = originalValues == null ? EMPTY_MAP : new HashMap<>(originalValues);
 	}
 
@@ -94,7 +94,7 @@ final class DefaultEntityBuilder implements Entity.Builder {
 	@Override
 	public Key.Builder key() {
 		DefaultKeyBuilder builder = new DefaultKeyBuilder(definition);
-		if (values != null) {
+		if (!values.isEmpty()) {
 			definition.primaryKey().columns().forEach(column -> {
 				if (values.containsKey(column)) {
 					builder.with((Column<Object>) column, values.get(column));
@@ -114,16 +114,12 @@ final class DefaultEntityBuilder implements Entity.Builder {
 	}
 
 	private void remove(Column<?> column) {
-		if (values != null) {
-			values.remove(column);
-		}
-		if (originalValues != null) {
-			originalValues.remove(column);
-		}
+		values.remove(column);
+		originalValues.remove(column);
 	}
 
 	private void original(Column<?> column) {
-		if (originalValues != null && originalValues.containsKey(column)) {
+		if (originalValues.containsKey(column)) {
 			values.put(column, originalValues.get(column));
 		}
 	}

@@ -30,7 +30,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class DefaultKeyTest {
+public final class CompositeColumnKeyTest {
 
 	private static final Entities ENTITIES = new TestDomain().entities();
 

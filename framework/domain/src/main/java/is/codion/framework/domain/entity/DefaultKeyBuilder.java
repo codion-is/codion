@@ -34,7 +34,7 @@ final class DefaultKeyBuilder implements Entity.Key.Builder {
 	private boolean primary = true;
 
 	DefaultKeyBuilder(Entity.Key key) {
-		this(key.definition());
+		this.definition = key.definition();
 		this.primary = key.primary();
 		key.columns().forEach(column -> values.put(column, key.get(column)));
 	}
@@ -56,7 +56,13 @@ final class DefaultKeyBuilder implements Entity.Key.Builder {
 
 	@Override
 	public Entity.Key build() {
-		return new DefaultKey(definition, initializeValues(new HashMap<>(values)), primary);
+		if (values.size() == 1) {
+			Column<?> column = values.keySet().iterator().next();
+
+			return new SingleColumnKey(definition, column, values.get(column), primary);
+		}
+
+		return new CompositeColumnKey(definition, initializeValues(new HashMap<>(values)), primary);
 	}
 
 	private Map<Column<?>, Object> initializeValues(Map<Column<?>, Object> values) {

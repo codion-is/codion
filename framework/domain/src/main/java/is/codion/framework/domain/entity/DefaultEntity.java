@@ -618,7 +618,7 @@ class DefaultEntity implements Entity, Serializable {
 		List<Column<?>> primaryKeyColumns = referencedEntity.primaryKey().columns();
 		boolean isPrimaryKey = referencedColumns.size() == primaryKeyColumns.size() && referencedColumns.containsAll(primaryKeyColumns);
 
-		return cacheKey(foreignKey, new DefaultKey(referencedEntity, keyValues, isPrimaryKey));
+		return cacheKey(foreignKey, new CompositeColumnKey(referencedEntity, keyValues, isPrimaryKey));
 	}
 
 	private @Nullable Key createAndCacheSingleReferenceKey(ForeignKey foreignKey,
@@ -632,9 +632,8 @@ class DefaultEntity implements Entity, Serializable {
 		List<Column<?>> primaryKeyColumns = referencedEntityDefinition.primaryKey().columns();
 		boolean isPrimaryKey = primaryKeyColumns.size() == 1 && reference.foreign().equals(primaryKeyColumns.get(0));
 
-		return cacheKey(foreignKey,
-						new DefaultKey(definition.foreignKeys().referencedBy(foreignKey),
-										reference.foreign(), value, isPrimaryKey));
+		return cacheKey(foreignKey, new SingleColumnKey(definition.foreignKeys()
+						.referencedBy(foreignKey), reference.foreign(), value, isPrimaryKey));
 	}
 
 	private Key cacheKey(ForeignKey foreignKey, Key key) {
@@ -677,10 +676,10 @@ class DefaultEntity implements Entity, Serializable {
 			return createSingleColumnPrimaryKey(primaryKeyColumns.get(0), originalValues);
 		}
 
-		return createMultiColumnPrimaryKey(primaryKeyColumns, originalValues);
+		return createCompositeColumnPrimaryKey(primaryKeyColumns, originalValues);
 	}
 
-	private DefaultKey createPseudoPrimaryKey(boolean originalValues) {
+	private CompositeColumnKey createPseudoPrimaryKey(boolean originalValues) {
 		Map<Column<?>, Object> allColumnValues = new HashMap<>();
 		values.keySet().stream()
 						.map(attribute -> definition.attributes().definition(attribute))
@@ -691,21 +690,21 @@ class DefaultEntity implements Entity, Serializable {
 														original(columnDefinition.attribute()) :
 														values.get(columnDefinition.attribute())));
 
-		return new DefaultKey(definition, allColumnValues, false);
+		return new CompositeColumnKey(definition, allColumnValues, false);
 	}
 
-	private DefaultKey createSingleColumnPrimaryKey(Column<?> column, boolean originalValues) {
-		return new DefaultKey(definition, column, originalValues ? original(column) : values.get(column), true);
+	private SingleColumnKey createSingleColumnPrimaryKey(Column<?> column, boolean originalValues) {
+		return new SingleColumnKey(definition, column, originalValues ? original(column) : values.get(column), true);
 	}
 
-	private DefaultKey createMultiColumnPrimaryKey(List<Column<?>> primaryKeyColumn, boolean originalValues) {
+	private CompositeColumnKey createCompositeColumnPrimaryKey(List<Column<?>> primaryKeyColumn, boolean originalValues) {
 		Map<Column<?>, Object> keyValues = new HashMap<>(primaryKeyColumn.size());
 		for (int i = 0; i < primaryKeyColumn.size(); i++) {
 			Column<?> column = primaryKeyColumn.get(i);
 			keyValues.put(column, originalValues ? original(column) : values.get(column));
 		}
 
-		return new DefaultKey(definition, keyValues, true);
+		return new CompositeColumnKey(definition, keyValues, true);
 	}
 
 	private <T> T derivedCached(DerivedAttributeDefinition<T> attributeDefinition) {

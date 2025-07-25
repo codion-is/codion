@@ -271,7 +271,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		Column<T> column = (Column<T>) primaryKey.columns().get(0);
 		column.type().validateType(value);
 
-		return new DefaultKey(this, column, value, true);
+		return new SingleColumnKey(this, column, value, true);
 	}
 
 	/**
