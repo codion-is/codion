@@ -27,6 +27,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
@@ -34,12 +35,27 @@ import static java.util.Objects.requireNonNull;
 
 final class EntitySerializer {
 
+	private static final Map<String, EntitySerializer> SERIALIZERS = new ConcurrentHashMap<>();
+
 	private final Entities entities;
 	private final boolean strictDeserialization;
 
 	EntitySerializer(Entities entities, boolean strictDeserialization) {
 		this.entities = requireNonNull(entities);
 		this.strictDeserialization = strictDeserialization;
+	}
+
+	static void setSerializer(String domainName, EntitySerializer serializer) {
+		SERIALIZERS.put(domainName, serializer);
+	}
+
+	static EntitySerializer serializerForDomain(String domainName) {
+		EntitySerializer serializer = SERIALIZERS.get(domainName);
+		if (serializer == null) {
+			throw new IllegalArgumentException("No EntitySerializer found for domain: " + domainName);
+		}
+
+		return serializer;
 	}
 
 	static void serialize(DefaultEntity entity, ObjectOutputStream stream) throws IOException {

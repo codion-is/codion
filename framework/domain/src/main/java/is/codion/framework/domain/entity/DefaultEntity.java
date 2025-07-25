@@ -48,7 +48,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import static is.codion.framework.domain.entity.DefaultKey.serializerForDomain;
+import static is.codion.framework.domain.entity.EntitySerializer.serializerForDomain;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 

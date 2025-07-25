@@ -13,6 +13,7 @@ Codion Change Log
 - FilterTable.Builder.cellSelectionEnabled() renamed cellSelection().
 ### is.codion.framework.domain
 - DefaultEntity.validateTypes() performance bug fixed, unnecessary HashMap lookup removed, renamed validate().
+- DefaultKey.setSerializer() and serializerForDomain() moved to EntitySerializer. 
 ### is.codion.framework.db.local
 - EntityResultPacker, minor optimization to eliminate HashMap resizing.
 ### is.codion.swing.framework.ui

@@ -55,7 +55,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
 	 */
 	protected DefaultEntities(DomainType domainType) {
 		this.domainType = requireNonNull(domainType);
-		DefaultKey.setSerializer(domainType.name(), createSerializer(this));
+		EntitySerializer.setSerializer(domainType.name(), createSerializer(this));
 	}
 
 	@Override
@@ -178,7 +178,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
 	@Serial
 	private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
 		stream.defaultReadObject();
-		DefaultKey.setSerializer(domainType.name(), createSerializer(this));
+		EntitySerializer.setSerializer(domainType.name(), createSerializer(this));
 	}
 
 	private static EntitySerializer createSerializer(Entities entities) {

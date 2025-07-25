@@ -35,8 +35,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
+import static is.codion.framework.domain.entity.EntitySerializer.serializerForDomain;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
@@ -48,8 +48,6 @@ class DefaultKey implements Entity.Key, Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1;
-
-	private static final Map<String, EntitySerializer> SERIALIZERS = new ConcurrentHashMap<>();
 
 	List<Column<?>> columns;
 	boolean primary;
@@ -270,24 +268,5 @@ class DefaultKey implements Entity.Key, Serializable {
 	@Serial
 	private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
 		serializerForDomain((String) stream.readObject()).deserialize(this, stream);
-	}
-
-	static void setSerializer(String domainName, EntitySerializer serializer) {
-		SERIALIZERS.put(domainName, serializer);
-	}
-
-	/**
-	 * Returns the serializer associated with the given domain name
-	 * @param domainName the domain name
-	 * @return the serializer to use for the given domain
-	 * @throws IllegalArgumentException in case no serializer has been associated with the domain
-	 */
-	static EntitySerializer serializerForDomain(String domainName) {
-		EntitySerializer serializer = SERIALIZERS.get(domainName);
-		if (serializer == null) {
-			throw new IllegalArgumentException("No EntitySerializer found for domain: " + domainName);
-		}
-
-		return serializer;
 	}
 }
