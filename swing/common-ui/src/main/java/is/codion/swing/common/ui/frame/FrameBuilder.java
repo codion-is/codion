@@ -94,19 +94,19 @@ public interface FrameBuilder {
 	 * @param onOpened called when the frame has been opened
 	 * @return this builder instance
 	 */
-	FrameBuilder onOpened(@Nullable Consumer<WindowEvent> onOpened);
+	FrameBuilder onOpened(Consumer<WindowEvent> onOpened);
 
 	/**
 	 * @param onClosed called when the frame has been closed
 	 * @return this builder instance
 	 */
-	FrameBuilder onClosed(@Nullable Consumer<WindowEvent> onClosed);
+	FrameBuilder onClosed(Consumer<WindowEvent> onClosed);
 
 	/**
 	 * @param onClosing called when the frame is about to be closed
 	 * @return this builder instance
 	 */
-	FrameBuilder onClosing(@Nullable Consumer<WindowEvent> onClosing);
+	FrameBuilder onClosing(Consumer<WindowEvent> onClosing);
 
 	/**
 	 * Default {@link WindowConstants#DISPOSE_ON_CLOSE}.
@@ -145,7 +145,7 @@ public interface FrameBuilder {
 	 * @param onBuild called when the frame has been built.
 	 * @return this builder instance
 	 */
-	FrameBuilder onBuild(@Nullable Consumer<JFrame> onBuild);
+	FrameBuilder onBuild(Consumer<JFrame> onBuild);
 
 	/**
 	 * @return a JFrame based on this builder

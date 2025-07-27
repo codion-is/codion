@@ -39,6 +39,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -47,14 +48,14 @@ import static java.util.Objects.requireNonNull;
 final class DefaultFrameBuilder implements FrameBuilder {
 
 	private final List<WindowListener> windowListeners = new ArrayList<>(0);
+	private final Collection<Consumer<WindowEvent>> onClosing = new ArrayList<>();
+	private final Collection<Consumer<WindowEvent>> onClosed = new ArrayList<>();
+	private final Collection<Consumer<WindowEvent>> onOpened = new ArrayList<>();
+	private final Collection<Consumer<JFrame>> onBuild = new ArrayList<>();
 
 	private @Nullable JComponent component;
 	private @Nullable ImageIcon icon;
 	private @Nullable Observable<String> title;
-	private @Nullable Consumer<WindowEvent> onClosing;
-	private @Nullable Consumer<WindowEvent> onClosed;
-	private @Nullable Consumer<WindowEvent> onOpened;
-	private @Nullable Consumer<JFrame> onBuild;
 	private @Nullable Dimension size;
 	private boolean resizable = true;
 	private @Nullable Point location;
@@ -118,20 +119,20 @@ final class DefaultFrameBuilder implements FrameBuilder {
 	}
 
 	@Override
-	public FrameBuilder onOpened(@Nullable Consumer<WindowEvent> onOpened) {
-		this.onOpened = onOpened;
+	public FrameBuilder onOpened(Consumer<WindowEvent> onOpened) {
+		this.onOpened.add(requireNonNull(onOpened));
 		return this;
 	}
 
 	@Override
-	public FrameBuilder onClosed(@Nullable Consumer<WindowEvent> onClosed) {
-		this.onClosed = onClosed;
+	public FrameBuilder onClosed(Consumer<WindowEvent> onClosed) {
+		this.onClosed.add(requireNonNull(onClosed));
 		return this;
 	}
 
 	@Override
-	public FrameBuilder onClosing(@Nullable Consumer<WindowEvent> onClosing) {
-		this.onClosing = onClosing;
+	public FrameBuilder onClosing(Consumer<WindowEvent> onClosing) {
+		this.onClosing.add(requireNonNull(onClosing));
 		return this;
 	}
 
@@ -160,8 +161,8 @@ final class DefaultFrameBuilder implements FrameBuilder {
 	}
 
 	@Override
-	public FrameBuilder onBuild(@Nullable Consumer<JFrame> onBuild) {
-		this.onBuild = onBuild;
+	public FrameBuilder onBuild(Consumer<JFrame> onBuild) {
+		this.onBuild.add(requireNonNull(onBuild));
 		return this;
 	}
 
@@ -205,9 +206,7 @@ final class DefaultFrameBuilder implements FrameBuilder {
 			frame.addWindowListener(new FrameListener(onClosing, onClosed, onOpened));
 		}
 		windowListeners.forEach(frame::addWindowListener);
-		if (onBuild != null) {
-			onBuild.accept(frame);
-		}
+		onBuild.forEach(consumer -> consumer.accept(frame));
 
 		return frame;
 	}
@@ -222,11 +221,11 @@ final class DefaultFrameBuilder implements FrameBuilder {
 
 	private static final class FrameListener extends WindowAdapter {
 
-		private final @Nullable Consumer<WindowEvent> onClosing;
-		private final @Nullable Consumer<WindowEvent> onClosed;
-		private final @Nullable Consumer<WindowEvent> onOpened;
+		private final Collection<Consumer<WindowEvent>> onClosing;
+		private final Collection<Consumer<WindowEvent>> onClosed;
+		private final Collection<Consumer<WindowEvent>> onOpened;
 
-		private FrameListener(@Nullable Consumer<WindowEvent> onClosing, @Nullable Consumer<WindowEvent> onClosed, @Nullable Consumer<WindowEvent> onOpened) {
+		private FrameListener(Collection<Consumer<WindowEvent>> onClosing, Collection<Consumer<WindowEvent>> onClosed, Collection<Consumer<WindowEvent>> onOpened) {
 			this.onClosing = onClosing;
 			this.onClosed = onClosed;
 			this.onOpened = onOpened;
@@ -234,23 +233,17 @@ final class DefaultFrameBuilder implements FrameBuilder {
 
 		@Override
 		public void windowOpened(WindowEvent e) {
-			if (onOpened != null) {
-				onOpened.accept(e);
-			}
+			onOpened.forEach(consumer -> consumer.accept(e));
 		}
 
 		@Override
 		public void windowClosing(WindowEvent e) {
-			if (onClosing != null) {
-				onClosing.accept(e);
-			}
+			onClosing.forEach(consumer -> consumer.accept(e));
 		}
 
 		@Override
 		public void windowClosed(WindowEvent e) {
-			if (onClosed != null) {
-				onClosed.accept(e);
-			}
+			onClosed.forEach(consumer -> consumer.accept(e));
 		}
 	}
 }
