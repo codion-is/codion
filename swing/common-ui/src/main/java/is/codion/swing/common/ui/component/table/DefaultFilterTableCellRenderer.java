@@ -20,7 +20,6 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.state.ObservableState;
-import is.codion.swing.common.model.component.button.NullableToggleButtonModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
 
@@ -36,6 +35,7 @@ import java.awt.Component;
 import java.time.temporal.Temporal;
 import java.util.function.Function;
 
+import static is.codion.swing.common.model.component.button.NullableToggleButtonModel.nullableToggleButtonModel;
 import static is.codion.swing.common.ui.color.Colors.darker;
 import static is.codion.swing.common.ui.component.table.FilterTableCellRenderer.DefaultUISettings.DOUBLE_DARKENING_FACTOR;
 import static is.codion.swing.common.ui.component.table.FilterTableCellRenderer.DefaultUISettings.blendColors;
@@ -110,7 +110,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private final Settings<R, C, Boolean> settings;
 
 		BooleanRenderer(Settings<R, C, Boolean> settings) {
-			super(new NullableToggleButtonModel());
+			super(nullableToggleButtonModel());
 			this.settings = requireNonNull(settings);
 			this.settings.update();
 			setHorizontalAlignment(settings.horizontalAlignment);

@@ -48,18 +48,7 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
 
 	private final ToggleState state = new ToggleState();
 
-	/**
-	 * Instantiates a new {@link NullableToggleButtonModel} with a null initial state.
-	 */
-	public NullableToggleButtonModel() {
-		this(null);
-	}
-
-	/**
-	 * Instantiates a new {@link NullableToggleButtonModel} with the given initial state.
-	 * @param initialState the initial state
-	 */
-	public NullableToggleButtonModel(@Nullable Boolean initialState) {
+	private NullableToggleButtonModel(@Nullable Boolean initialState) {
 		state.set(initialState);
 	}
 
@@ -85,6 +74,21 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
 	 */
 	public ToggleState state() {
 		return state;
+	}
+
+	/**
+	 * Instantiates a new {@link NullableToggleButtonModel} with a null initial state.
+	 */
+	public static NullableToggleButtonModel nullableToggleButtonModel() {
+		return new NullableToggleButtonModel(null);
+	}
+
+	/**
+	 * Instantiates a new {@link NullableToggleButtonModel} with the given initial state.
+	 * @param initialState the initial state
+	 */
+	public static NullableToggleButtonModel nullableToggleButtonModel(@Nullable Boolean initialState) {
+		return new NullableToggleButtonModel(initialState);
 	}
 
 	public final class ToggleState implements Observable<Boolean> {

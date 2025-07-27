@@ -18,19 +18,18 @@
  */
 package is.codion.swing.common.ui.component.button;
 
-import is.codion.swing.common.model.component.button.NullableToggleButtonModel;
-
 import org.junit.jupiter.api.Test;
 
 import java.awt.event.MouseListener;
 
+import static is.codion.swing.common.model.component.button.NullableToggleButtonModel.nullableToggleButtonModel;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class NullableCheckBoxTest {
 
 	@Test
 	void test() {
-		NullableCheckBox box = new NullableCheckBox(new NullableToggleButtonModel(false), "Test");
+		NullableCheckBox box = new NullableCheckBox(nullableToggleButtonModel(false), "Test");
 		assertFalse(box.model().state().getOrThrow());
 		MouseListener mouseListener = box.getMouseListeners()[1];
 		mouseListener.mouseClicked(null);
@@ -47,6 +46,6 @@ public class NullableCheckBoxTest {
 		box.model().state().set(null);
 		assertNull(box.model().state().get());
 
-		assertThrows(UnsupportedOperationException.class, () -> box.setModel(new NullableToggleButtonModel()));
+		assertThrows(UnsupportedOperationException.class, () -> box.setModel(nullableToggleButtonModel()));
 	}
 }

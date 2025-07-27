@@ -6,6 +6,7 @@ Codion Change Log
 - UserPreferences.file() and delete() no longer accept empty string for filename.
 ### is.codion.swing.common.model
 - JSpecify annotations added.
+- NullableToggleButtonModel, constructor now private, factory methods added.
 ### is.codion.swing.common.ui
 - FilterTable.Builder.columnReorderingAllowed() renamed columnReordering().
 - FilterTable.Builder.columnResizingAllowed() renamed columnResizing().

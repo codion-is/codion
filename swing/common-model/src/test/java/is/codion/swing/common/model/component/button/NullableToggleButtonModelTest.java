@@ -20,13 +20,14 @@ package is.codion.swing.common.model.component.button;
 
 import org.junit.jupiter.api.Test;
 
+import static is.codion.swing.common.model.component.button.NullableToggleButtonModel.nullableToggleButtonModel;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class NullableToggleButtonModelTest {
 
 	@Test
 	void iterateState() {
-		NullableToggleButtonModel model = new NullableToggleButtonModel();
+		NullableToggleButtonModel model = nullableToggleButtonModel();
 		assertNull(model.state().get());
 		assertFalse(model.isSelected());
 		model.state().next();
@@ -41,7 +42,7 @@ public class NullableToggleButtonModelTest {
 
 	@Test
 	void setNull() {
-		NullableToggleButtonModel model = new NullableToggleButtonModel(true);
+		NullableToggleButtonModel model = nullableToggleButtonModel(true);
 		assertTrue(model.state().getOrThrow());
 		assertTrue(model.isSelected());
 		model.state().clear();
@@ -51,7 +52,7 @@ public class NullableToggleButtonModelTest {
 
 	@Test
 	void setSelected() {
-		NullableToggleButtonModel model = new NullableToggleButtonModel(false);
+		NullableToggleButtonModel model = nullableToggleButtonModel(false);
 		assertFalse(model.state().getOrThrow());
 		model.setSelected(true);
 		assertTrue(model.isSelected());

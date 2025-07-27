@@ -38,6 +38,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Rectangle2D;
 
+import static is.codion.swing.common.model.component.button.NullableToggleButtonModel.nullableToggleButtonModel;
 import static java.awt.event.KeyEvent.VK_SPACE;
 import static java.util.Objects.requireNonNull;
 
@@ -56,7 +57,7 @@ public class NullableCheckBox extends JCheckBox {
 	 * Instantiates a new NullableCheckBox with no caption.
 	 */
 	public NullableCheckBox() {
-		this(new NullableToggleButtonModel());
+		this(nullableToggleButtonModel());
 	}
 
 	/**

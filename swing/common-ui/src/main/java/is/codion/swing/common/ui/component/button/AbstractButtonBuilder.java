@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static is.codion.swing.common.model.component.button.NullableToggleButtonModel.nullableToggleButtonModel;
 import static java.util.Objects.requireNonNull;
 
 abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends ButtonBuilder<T, C, B>>
@@ -327,7 +328,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
 
 	static ButtonModel createButtonModel(ToggleControl toggleControl) {
 		ButtonModel buttonModel = toggleControl.value().isNullable() ?
-						new NullableToggleButtonModel(toggleControl.value().get()) :
+						nullableToggleButtonModel(toggleControl.value().get()) :
 						createToggleButtonModel(toggleControl.value().getOrThrow());
 		buttonModel.setEnabled(toggleControl.enabled().get());
 		toggleControl.enabled().addConsumer(new SetEnabled(buttonModel));
