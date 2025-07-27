@@ -40,7 +40,7 @@ public class TemporalFieldPanelTest {
 						.dateTimePattern("dd.MM.yyyy")
 						.build();
 		panel.temporalField().setText("01.03.2010");
-		assertEquals(LocalDate.parse("01.03.2010", DateTimeFormatter.ofPattern("dd.MM.yyyy")), panel.getTemporal());
+		assertEquals(LocalDate.parse("01.03.2010", DateTimeFormatter.ofPattern("dd.MM.yyyy")), panel.get());
 	}
 
 	@Test
@@ -50,9 +50,9 @@ public class TemporalFieldPanelTest {
 						.temporalClass(LocalDate.class)
 						.dateTimePattern("dd.MM.yyyy")
 						.build();
-		panel.setTemporal(LocalDate.parse("03.04.2010", formatter));
+		panel.set(LocalDate.parse("03.04.2010", formatter));
 		assertEquals("03.04.2010", panel.temporalField().getText());
-		panel.setTemporal(null);
+		panel.set(null);
 		assertEquals("__.__.____", panel.temporalField().getText());
 	}
 
@@ -68,7 +68,7 @@ public class TemporalFieldPanelTest {
 		panel.temporalField().setText("03.04");
 		assertFalse(panel.optional().isPresent());
 		panel.temporalField().setText("03.04.2010");
-		assertNotNull(panel.getTemporal());
+		assertNotNull(panel.get());
 	}
 
 	@Test

@@ -249,7 +249,7 @@ public final class ComponentsTest {
 										.buildValue();
 		assertNull(componentValue.get());
 
-		componentValue.component().setTemporal(date);
+		componentValue.component().set(date);
 
 		assertEquals(value.get(), date);
 

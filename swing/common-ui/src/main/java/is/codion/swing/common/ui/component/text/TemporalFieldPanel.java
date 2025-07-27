@@ -87,7 +87,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 	/**
 	 * @return the Temporal value currently being displayed, null in case of an incomplete/unparseable date
 	 */
-	public @Nullable T getTemporal() {
+	public @Nullable T get() {
 		return temporalField.get();
 	}
 
@@ -95,7 +95,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 	 * Sets the date in the input field, clears the field if {@code date} is null.
 	 * @param temporal the temporal value to set
 	 */
-	public void setTemporal(@Nullable Temporal temporal) {
+	public void set(@Nullable Temporal temporal) {
 		temporalField.set(temporal);
 	}
 
@@ -315,12 +315,12 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 
 		@Override
 		protected @Nullable T getComponentValue() {
-			return component().getTemporal();
+			return component().get();
 		}
 
 		@Override
 		protected void setComponentValue(@Nullable T value) {
-			component().setTemporal(value);
+			component().set(value);
 		}
 
 		private final class NotifyListeners implements Runnable {
