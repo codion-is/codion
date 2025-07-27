@@ -28,6 +28,8 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
+import org.jspecify.annotations.Nullable;
+
 import java.text.Format;
 import java.util.List;
 import java.util.Optional;
@@ -40,8 +42,8 @@ final class DefaultSwingForeignKeyConditionModel implements SwingForeignKeyCondi
 	private static final String EQUAL_SEARCH_MODEL_MESSAGE = "SwingForeignKeyCondition uses a EntityComboBoxModel for the EQUAL operand";
 
 	private final ConditionModel<Entity> condition;
-	private final EntityComboBoxModel equalComboBoxModel;
-	private final EntitySearchModel inSearchModel;
+	private final @Nullable EntityComboBoxModel equalComboBoxModel;
+	private final @Nullable EntitySearchModel inSearchModel;
 
 	private DefaultSwingForeignKeyConditionModel(DefaultBuilder builder) {
 		equalComboBoxModel = builder.equalComboBoxModel;
@@ -159,8 +161,8 @@ final class DefaultSwingForeignKeyConditionModel implements SwingForeignKeyCondi
 
 	static final class DefaultBuilder implements Builder {
 
-		private EntityComboBoxModel equalComboBoxModel;
-		private EntitySearchModel inSearchModel;
+		private @Nullable EntityComboBoxModel equalComboBoxModel;
+		private @Nullable EntitySearchModel inSearchModel;
 
 		@Override
 		public Builder equalComboBoxModel(EntityComboBoxModel equalComboBoxModel) {

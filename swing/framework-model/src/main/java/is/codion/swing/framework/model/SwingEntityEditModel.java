@@ -258,7 +258,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 
 	private static final class NullItemCaption implements ProxyMethod<Object> {
 
-		private final String caption = FilterComboBoxModel.NULL_CAPTION.get();
+		private final String caption = FilterComboBoxModel.NULL_CAPTION.getOrThrow();
 
 		@Override
 		public Object invoke(Parameters<Object> parameters) throws Throwable {

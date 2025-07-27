@@ -24,6 +24,8 @@ Codion Change Log
 - Entities.builder() renamed entity().
 ### is.codion.framework.db.local
 - EntityResultPacker, minor optimization to eliminate HashMap resizing.
+### is.codion.swing.framework.model
+- JSpecify annotations added.
 ### is.codion.swing.framework.ui
 - EntityTablePanelPreferences bug fixed, no longer applies empty preferences.
 - EntityApplicationPanel.Builder.frameSupplier() renamed frame().

@@ -26,6 +26,7 @@
  * <li>{@link is.codion.swing.framework.model.component.EntityComboBoxModel}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.swing.framework.model {
 	requires org.slf4j;
 	requires transitive is.codion.framework.model;

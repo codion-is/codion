@@ -14,13 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2024 - 2025, Björn Darri Sigurðsson.
+ * Copyright (c) 2025, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:
- * <ul>
- * <li>{@link is.codion.swing.framework.model.component.EntityComboBoxModel#EDIT_EVENTS}
- * </ul>
+ * Swing model classes
  */
 @org.jspecify.annotations.NullMarked
-package is.codion.swing.framework.model.component;
+package is.codion.swing.framework.model;

@@ -31,6 +31,8 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Optional;
@@ -143,14 +145,14 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		 * @param orderBy the {@link OrderBy} to use when selecting
 		 * @return this builder instance
 		 */
-		Builder orderBy(OrderBy orderBy);
+		Builder orderBy(@Nullable OrderBy orderBy);
 
 		/**
 		 * Note that this comparator is not used if {@link #orderBy(OrderBy)} has been specified.
 		 * @param comparator the comparator to use, null for unsorted
 		 * @return this builder instance
 		 */
-		Builder comparator(Comparator<Entity> comparator);
+		Builder comparator(@Nullable Comparator<Entity> comparator);
 
 		/**
 		 * <p>If {@code condition} is null, the default condition, specifying all underlying entities is used.
@@ -158,7 +160,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		 * @param condition the condition supplier to use when querying data, may not return null
 		 * @return this builder instance
 		 */
-		Builder condition(Supplier<Condition> condition);
+		Builder condition(@Nullable Supplier<Condition> condition);
 
 		/**
 		 * Specifies the attributes to include when selecting the entities to populate this model with.
@@ -181,7 +183,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		 * @param nullCaption the null item caption
 		 * @return this builder instance
 		 */
-		Builder nullCaption(String nullCaption);
+		Builder nullCaption(@Nullable String nullCaption);
 
 		/**
 		 * @param editEvents controls whether this combo box model should handle entity edit events, by adding inserted items,

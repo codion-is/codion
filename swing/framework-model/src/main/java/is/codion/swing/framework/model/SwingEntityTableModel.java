@@ -37,6 +37,8 @@ import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableSort;
 import is.codion.swing.common.model.component.table.FilterTableSort.ColumnSortOrder;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import java.util.Collection;
@@ -158,7 +160,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	 * @param modelColumnIndex the model index of the column to be changed
 	 */
 	@Override
-	public final void setValueAt(Object value, int rowIndex, int modelColumnIndex) {
+	public final void setValueAt(@Nullable Object value, int rowIndex, int modelColumnIndex) {
 		if (!isCellEditable(rowIndex, modelColumnIndex)) {
 			throw new IllegalStateException("Table model cell is not editable, row: " + rowIndex + ", column: " + modelColumnIndex);
 		}
@@ -180,7 +182,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	}
 
 	@Override
-	public final Object getValueAt(int rowIndex, int columnIndex) {
+	public final @Nullable Object getValueAt(int rowIndex, int columnIndex) {
 		return filterModel().getValueAt(rowIndex, columnIndex);
 	}
 
@@ -312,7 +314,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	private void onTableModelEvent(TableModelEvent tableModelEvent) {
 		//if the selected row is updated via the table model, refresh the one in the edit model
 		if (tableModelEvent.getType() == TableModelEvent.UPDATE && tableModelEvent.getFirstRow() == selection().index()
-						.get()
+						.getOrThrow()
 						.intValue()) {
 			editModel().editor().set(selection().item().get());
 		}
@@ -357,7 +359,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 		}
 
 		@Override
-		public Object value(Entity entity, Attribute<?> attribute) {
+		public @Nullable Object value(Entity entity, Attribute<?> attribute) {
 			return requireNonNull(entity).get(attribute);
 		}
 

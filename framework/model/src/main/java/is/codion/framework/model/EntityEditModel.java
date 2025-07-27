@@ -366,7 +366,7 @@ public interface EntityEditModel {
 	 * @param value the value to apply
 	 * @see Entity#set(Attribute, Object)
 	 */
-	<T> void applyEdit(Collection<Entity> entities, Attribute<T> attribute, T value);
+	<T> void applyEdit(Collection<Entity> entities, Attribute<T> attribute, @Nullable T value);
 
 	/**
 	 * @return the central {@link EditEvents} instance

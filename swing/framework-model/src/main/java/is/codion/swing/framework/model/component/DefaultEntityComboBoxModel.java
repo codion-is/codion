@@ -32,6 +32,8 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.Condition;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.event.ListDataListener;
 import java.util.Collection;
 import java.util.Comparator;
@@ -62,7 +64,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 	private final DefaultFilter filter;
 	private final Value<Supplier<Condition>> condition;
-	private final OrderBy orderBy;
+	private final @Nullable OrderBy orderBy;
 	private final Collection<Attribute<?>> attributes;
 
 	//we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
@@ -234,7 +236,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 						.findFirst();
 	}
 
-	private Entity createNullItem(String nullCaption) {
+	private @Nullable Entity createNullItem(@Nullable String nullCaption) {
 		return nullCaption == null ? null : ProxyBuilder.of(Entity.class)
 						.delegate(entityDefinition.entity())
 						.method("toString", parameters -> nullCaption)
@@ -429,12 +431,12 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 
 		@Override
-		public T value(Entity item) {
+		public @Nullable T value(Entity item) {
 			return item.get(attribute);
 		}
 
 		@Override
-		public Predicate<Entity> predicate(T value) {
+		public Predicate<Entity> predicate(@Nullable T value) {
 			return entity -> Objects.equals(entity.get(attribute), value);
 		}
 	}
@@ -468,12 +470,12 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		private final EntityDefinition entityDefinition;
 		private final EntityConnectionProvider connectionProvider;
 
-		private OrderBy orderBy;
-		private Supplier<Condition> condition;
-		private Comparator<Entity> comparator;
+		private @Nullable OrderBy orderBy;
+		private @Nullable Supplier<Condition> condition;
+		private @Nullable Comparator<Entity> comparator;
 		private Collection<Attribute<?>> attributes = emptyList();
 		private boolean editEvents = EDIT_EVENTS.getOrThrow();
-		private String nullCaption;
+		private @Nullable String nullCaption;
 		private boolean filterSelected = false;
 
 		private DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
@@ -483,19 +485,19 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 
 		@Override
-		public Builder orderBy(OrderBy orderBy) {
-			this.orderBy = requireNonNull(orderBy);
+		public Builder orderBy(@Nullable OrderBy orderBy) {
+			this.orderBy = orderBy;
 			return this;
 		}
 
 		@Override
-		public Builder comparator(Comparator<Entity> comparator) {
+		public Builder comparator(@Nullable Comparator<Entity> comparator) {
 			this.comparator = comparator;
 			return this;
 		}
 
 		@Override
-		public Builder condition(Supplier<Condition> condition) {
+		public Builder condition(@Nullable Supplier<Condition> condition) {
 			this.condition = condition;
 			return this;
 		}
@@ -517,7 +519,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 
 		@Override
-		public Builder nullCaption(String nullCaption) {
+		public Builder nullCaption(@Nullable String nullCaption) {
 			this.nullCaption = nullCaption;
 			return this;
 		}
