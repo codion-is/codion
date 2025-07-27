@@ -53,37 +53,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class NullableCheckBox extends JCheckBox {
 
-	/**
-	 * Instantiates a new NullableCheckBox with no caption.
-	 */
-	public NullableCheckBox() {
-		this(nullableToggleButtonModel());
-	}
-
-	/**
-	 * Instantiates a new NullableCheckBox with no caption.
-	 * @param model the model
-	 */
-	public NullableCheckBox(NullableToggleButtonModel model) {
-		this(model, null);
-	}
-
-	/**
-	 * Instantiates a new NullableCheckBox.
-	 * @param model the model
-	 * @param text the caption text, if any
-	 */
-	public NullableCheckBox(NullableToggleButtonModel model, @Nullable String text) {
-		this(model, text, null);
-	}
-
-	/**
-	 * Instantiates a new NullableCheckBox.
-	 * @param model the model
-	 * @param text the caption text, if any
-	 * @param icon the icon, if any
-	 */
-	public NullableCheckBox(NullableToggleButtonModel model, @Nullable String text, @Nullable Icon icon) {
+	protected NullableCheckBox(NullableToggleButtonModel model, @Nullable String text, @Nullable Icon icon) {
 		super(text, icon);
 		super.setModel(requireNonNull(model));
 		setIcon(new NullableIcon());
@@ -132,6 +102,40 @@ public class NullableCheckBox extends JCheckBox {
 	@Override
 	public final void setIcon(Icon defaultIcon) {
 		super.setIcon(defaultIcon);
+	}
+
+	/**
+	 * Instantiates a new NullableCheckBox with no caption.
+	 */
+	public static NullableCheckBox nullableCheckBox() {
+		return new NullableCheckBox(nullableToggleButtonModel(), null, null);
+	}
+
+	/**
+	 * Instantiates a new NullableCheckBox with no caption.
+	 * @param model the model
+	 */
+	public static NullableCheckBox nullableCheckBox(NullableToggleButtonModel model) {
+		return new NullableCheckBox(model, null, null);
+	}
+
+	/**
+	 * Instantiates a new NullableCheckBox.
+	 * @param model the model
+	 * @param text the caption text, if any
+	 */
+	public static NullableCheckBox nullableCheckBox(NullableToggleButtonModel model, @Nullable String text) {
+		return new NullableCheckBox(model, text, null);
+	}
+
+	/**
+	 * Instantiates a new NullableCheckBox.
+	 * @param model the model
+	 * @param text the caption text, if any
+	 * @param icon the icon, if any
+	 */
+	public static NullableCheckBox nullableCheckBox(NullableToggleButtonModel model, @Nullable String text, @Nullable Icon icon) {
+		return new NullableCheckBox(model, text, icon);
 	}
 
 	private final class NullableMouseListener extends MouseAdapter {

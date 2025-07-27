@@ -110,7 +110,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private final Settings<R, C, Boolean> settings;
 
 		BooleanRenderer(Settings<R, C, Boolean> settings) {
-			super(nullableToggleButtonModel());
+			super(nullableToggleButtonModel(), null, null);
 			this.settings = requireNonNull(settings);
 			this.settings.update();
 			setHorizontalAlignment(settings.horizontalAlignment);

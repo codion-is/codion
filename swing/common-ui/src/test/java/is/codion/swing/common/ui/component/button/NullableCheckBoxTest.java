@@ -23,13 +23,14 @@ import org.junit.jupiter.api.Test;
 import java.awt.event.MouseListener;
 
 import static is.codion.swing.common.model.component.button.NullableToggleButtonModel.nullableToggleButtonModel;
+import static is.codion.swing.common.ui.component.button.NullableCheckBox.nullableCheckBox;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class NullableCheckBoxTest {
 
 	@Test
 	void test() {
-		NullableCheckBox box = new NullableCheckBox(nullableToggleButtonModel(false), "Test");
+		NullableCheckBox box = nullableCheckBox(nullableToggleButtonModel(false), "Test");
 		assertFalse(box.model().state().getOrThrow());
 		MouseListener mouseListener = box.getMouseListeners()[1];
 		mouseListener.mouseClicked(null);

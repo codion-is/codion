@@ -22,7 +22,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 
-import static is.codion.swing.common.model.component.button.NullableToggleButtonModel.nullableToggleButtonModel;
+import static is.codion.swing.common.ui.component.button.NullableCheckBox.nullableCheckBox;
 
 final class DefaultCheckBoxBuilder extends DefaultToggleButtonBuilder<JCheckBox, CheckBoxBuilder> implements CheckBoxBuilder {
 
@@ -40,6 +40,6 @@ final class DefaultCheckBoxBuilder extends DefaultToggleButtonBuilder<JCheckBox,
 
 	@Override
 	protected JToggleButton createToggleButton() {
-		return nullable ? new NullableCheckBox(nullableToggleButtonModel()) : new JCheckBox();
+		return nullable ? nullableCheckBox() : new JCheckBox();
 	}
 }

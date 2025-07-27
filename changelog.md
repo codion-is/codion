@@ -15,6 +15,7 @@ Codion Change Log
 - JSpecify annotations added.
 - TemporalFieldPanel.getTemporal() and setTemporal() renamed get() and set().
 - FrameBuilder, now handles multiple listeners.
+- NullableCheckBox, constructor protected, factory methods added.
 ### is.codion.framework.domain
 - DefaultEntity.validateTypes() performance bug fixed, unnecessary HashMap lookup removed, renamed validate().
 - DefaultKey.setSerializer() and serializerForDomain() moved to EntitySerializer. 
