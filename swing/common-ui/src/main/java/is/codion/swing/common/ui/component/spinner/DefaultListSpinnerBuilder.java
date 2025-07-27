@@ -28,7 +28,7 @@ final class DefaultListSpinnerBuilder<T> extends AbstractSpinnerBuilder<T, ListS
 				implements ListSpinnerBuilder<T> {
 
 	DefaultListSpinnerBuilder() {
-		model(new SpinnerListModel());
+		super(new SpinnerListModel());
 	}
 
 	@Override

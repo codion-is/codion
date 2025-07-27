@@ -22,6 +22,8 @@ import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
@@ -101,14 +103,14 @@ final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<Void, JTab
 
 		private final DefaultTabbedPaneBuilder tabbedPaneBuilder;
 		private final JComponent component;
-		private final String title;
+		private final @Nullable String title;
 
 		private int mnemonic;
-		private String toolTipText;
-		private Icon icon;
-		private JComponent tabComponent;
+		private @Nullable String toolTipText;
+		private @Nullable Icon icon;
+		private @Nullable JComponent tabComponent;
 
-		private DefaultTabBuilder(DefaultTabbedPaneBuilder tabbedPaneBuilder, String title, JComponent component) {
+		private DefaultTabBuilder(DefaultTabbedPaneBuilder tabbedPaneBuilder, @Nullable String title, JComponent component) {
 			this.tabbedPaneBuilder = tabbedPaneBuilder;
 			this.title = title;
 			this.component = requireNonNull(component);
@@ -121,19 +123,19 @@ final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<Void, JTab
 		}
 
 		@Override
-		public TabBuilder toolTipText(String toolTipText) {
+		public TabBuilder toolTipText(@Nullable String toolTipText) {
 			this.toolTipText = toolTipText;
 			return this;
 		}
 
 		@Override
-		public TabBuilder icon(Icon icon) {
+		public TabBuilder icon(@Nullable Icon icon) {
 			this.icon = icon;
 			return this;
 		}
 
 		@Override
-		public TabBuilder tabComponent(JComponent tabComponent) {
+		public TabBuilder tabComponent(@Nullable JComponent tabComponent) {
 			this.tabComponent = tabComponent;
 			return this;
 		}

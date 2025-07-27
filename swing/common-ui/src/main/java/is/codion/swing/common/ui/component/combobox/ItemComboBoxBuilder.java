@@ -22,6 +22,8 @@ import is.codion.common.item.Item;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.ComboBoxEditor;
 import javax.swing.JComboBox;
 import javax.swing.ListCellRenderer;
@@ -52,7 +54,7 @@ public interface ItemComboBoxBuilder<T> extends ComponentBuilder<T, JComboBox<It
 	 * @param comparator if specified the combo box items are sorted using this comparator
 	 * @return this builder instance
 	 */
-	ItemComboBoxBuilder<T> comparator(Comparator<Item<T>> comparator);
+	ItemComboBoxBuilder<T> comparator(@Nullable Comparator<Item<T>> comparator);
 
 	/**
 	 * @param completionMode the completion mode
@@ -101,14 +103,14 @@ public interface ItemComboBoxBuilder<T> extends ComponentBuilder<T, JComboBox<It
 	 * @return this builder instance
 	 * @see JComboBox#setRenderer(ListCellRenderer)
 	 */
-	ItemComboBoxBuilder<T> renderer(ListCellRenderer<Item<T>> renderer);
+	ItemComboBoxBuilder<T> renderer(@Nullable ListCellRenderer<Item<T>> renderer);
 
 	/**
 	 * @param editor the editor for the combo box
 	 * @return this builder instance
 	 * @see JComboBox#setEditor(ComboBoxEditor)
 	 */
-	ItemComboBoxBuilder<T> editor(ComboBoxEditor editor);
+	ItemComboBoxBuilder<T> editor(@Nullable ComboBoxEditor editor);
 
 	/**
 	 * @param itemListener the item listener

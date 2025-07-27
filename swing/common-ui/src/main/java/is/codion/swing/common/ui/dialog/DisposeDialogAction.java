@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.state.State;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.AbstractAction;
 import javax.swing.JDialog;
 import java.awt.event.ActionEvent;
@@ -29,9 +31,9 @@ import java.util.function.Supplier;
 final class DisposeDialogAction extends AbstractAction {
 
 	private final Supplier<JDialog> dialogSupplier;
-	private final Consumer<State> confirmCloseListener;
+	private final @Nullable Consumer<State> confirmCloseListener;
 
-	DisposeDialogAction(Supplier<JDialog> dialogSupplier, Consumer<State> confirmCloseListener) {
+	DisposeDialogAction(Supplier<JDialog> dialogSupplier, @Nullable Consumer<State> confirmCloseListener) {
 		super("DisposeDialogAction");
 		this.dialogSupplier = dialogSupplier;
 		this.confirmCloseListener = confirmCloseListener;
@@ -42,7 +44,7 @@ final class DisposeDialogAction extends AbstractAction {
 		closeIfConfirmed(dialogSupplier.get(), confirmCloseListener);
 	}
 
-	static void closeIfConfirmed(JDialog dialog, Consumer<State> confirmCloseListener) {
+	static void closeIfConfirmed(JDialog dialog, @Nullable Consumer<State> confirmCloseListener) {
 		if (dialog != null) {
 			if (confirmCloseListener == null) {
 				dialog.dispose();

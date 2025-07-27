@@ -28,6 +28,8 @@ import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
@@ -85,7 +87,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 	/**
 	 * @return the Temporal value currently being displayed, null in case of an incomplete/unparseable date
 	 */
-	public T getTemporal() {
+	public @Nullable T getTemporal() {
 		return temporalField.get();
 	}
 
@@ -93,7 +95,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 	 * Sets the date in the input field, clears the field if {@code date} is null.
 	 * @param temporal the temporal value to set
 	 */
-	public void setTemporal(Temporal temporal) {
+	public void setTemporal(@Nullable Temporal temporal) {
 		temporalField.set(temporal);
 	}
 
@@ -104,7 +106,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 	}
 
 	@Override
-	public void setToolTipText(String text) {
+	public void setToolTipText(@Nullable String text) {
 		temporalField.setToolTipText(text);
 	}
 
@@ -312,12 +314,12 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 		}
 
 		@Override
-		protected T getComponentValue() {
+		protected @Nullable T getComponentValue() {
 			return component().getTemporal();
 		}
 
 		@Override
-		protected void setComponentValue(T value) {
+		protected void setComponentValue(@Nullable T value) {
 			component().setTemporal(value);
 		}
 

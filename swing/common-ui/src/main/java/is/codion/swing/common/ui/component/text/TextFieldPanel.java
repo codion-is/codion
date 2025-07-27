@@ -34,6 +34,8 @@ import is.codion.swing.common.ui.control.ControlMap;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -86,9 +88,9 @@ public final class TextFieldPanel extends JPanel {
 	private final JTextField textField;
 	private final JButton button;
 	private final ControlMap controlMap;
-	private final String dialogTitle;
-	private final String caption;
-	private final Dimension textAreaSize;
+	private final @Nullable String dialogTitle;
+	private final @Nullable String caption;
+	private final @Nullable Dimension textAreaSize;
 	private final int maximumLength;
 
 	private TextFieldPanel(DefaultBuilder builder) {
@@ -107,7 +109,7 @@ public final class TextFieldPanel extends JPanel {
 	 * @param text the text to set
 	 * @throws IllegalArgumentException in case the text length exceeds maximum length
 	 */
-	public void setText(String text) {
+	public void setText(@Nullable String text) {
 		if (text != null && maximumLength > 0 && text.length() > maximumLength) {
 			throw new IllegalArgumentException("Maximum allowed text length exceeded");
 		}
@@ -117,7 +119,7 @@ public final class TextFieldPanel extends JPanel {
 	/**
 	 * @return the current input text value
 	 */
-	public String getText() {
+	public @Nullable String getText() {
 		String text = textField.getText();
 
 		return text.isEmpty() ? null : text;
@@ -196,14 +198,14 @@ public final class TextFieldPanel extends JPanel {
 		 * @param dialogTitle the input dialog title
 		 * @return this builder instance
 		 */
-		Builder dialogTitle(String dialogTitle);
+		Builder dialogTitle(@Nullable String dialogTitle);
 
 		/**
 		 * If specified a titled border with the given caption is added to the input field
 		 * @param caption the caption to display
 		 * @return this builder instance
 		 */
-		Builder caption(String caption);
+		Builder caption(@Nullable String caption);
 
 		/**
 		 * @param textAreaSize the input text area siz
@@ -222,7 +224,7 @@ public final class TextFieldPanel extends JPanel {
 		 * @param buttonIcon the button icon
 		 * @return this builder instance
 		 */
-		Builder buttonIcon(ImageIcon buttonIcon);
+		Builder buttonIcon(@Nullable ImageIcon buttonIcon);
 
 		/**
 		 * @param maximumLength the maximum text length
@@ -255,7 +257,7 @@ public final class TextFieldPanel extends JPanel {
 
 	private JButton createButton(DefaultBuilder builder) {
 		return Components.button()
-						.control(controlMap.control(DISPLAY_TEXT_AREA).get())
+						.control(controlMap.control(DISPLAY_TEXT_AREA).getOrThrow())
 						.focusable(builder.buttonFocusable)
 						.toolTipText(MESSAGES.getString("show_input_dialog"))
 						.preferredSize(new Dimension(textField.getPreferredSize().height, textField.getPreferredSize().height))
@@ -306,11 +308,11 @@ public final class TextFieldPanel extends JPanel {
 		private final ControlMap controlMap = controlMap(ControlKeys.class);
 
 		private boolean buttonFocusable;
-		private ImageIcon buttonIcon;
+		private @Nullable ImageIcon buttonIcon;
 		private Dimension textAreaSize = DEFAULT_TEXT_AREA_SIZE;
 		private int maximumLength;
-		private String caption;
-		private String dialogTitle;
+		private @Nullable String caption;
+		private @Nullable String dialogTitle;
 
 		private DefaultBuilder() {}
 
@@ -351,7 +353,7 @@ public final class TextFieldPanel extends JPanel {
 		}
 
 		@Override
-		public Builder buttonIcon(ImageIcon buttonIcon) {
+		public Builder buttonIcon(@Nullable ImageIcon buttonIcon) {
 			this.buttonIcon = buttonIcon;
 			return this;
 		}
@@ -370,13 +372,13 @@ public final class TextFieldPanel extends JPanel {
 		}
 
 		@Override
-		public TextFieldPanel.Builder caption(String caption) {
+		public TextFieldPanel.Builder caption(@Nullable String caption) {
 			this.caption = caption;
 			return this;
 		}
 
 		@Override
-		public TextFieldPanel.Builder dialogTitle(String dialogTitle) {
+		public TextFieldPanel.Builder dialogTitle(@Nullable String dialogTitle) {
 			this.dialogTitle = dialogTitle;
 			return this;
 		}
@@ -418,12 +420,12 @@ public final class TextFieldPanel extends JPanel {
 		}
 
 		@Override
-		protected String getComponentValue() {
+		protected @Nullable String getComponentValue() {
 			return component().getText();
 		}
 
 		@Override
-		protected void setComponentValue(String value) {
+		protected void setComponentValue(@Nullable String value) {
 			component().setText(value);
 		}
 

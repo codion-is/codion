@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.component.splitpane;
 
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JComponent;
 import javax.swing.JSplitPane;
 import java.awt.Component;
@@ -48,28 +50,28 @@ public interface SplitPaneBuilder extends ComponentBuilder<Void, JSplitPane, Spl
 	 * @return this builder instance
 	 * @see JSplitPane#setLeftComponent(Component)
 	 */
-	SplitPaneBuilder leftComponent(JComponent leftComponent);
+	SplitPaneBuilder leftComponent(@Nullable JComponent leftComponent);
 
 	/**
 	 * @param rightComponent the right component
 	 * @return this builder instance
 	 * @see JSplitPane#setRightComponent(Component)
 	 */
-	SplitPaneBuilder rightComponent(JComponent rightComponent);
+	SplitPaneBuilder rightComponent(@Nullable JComponent rightComponent);
 
 	/**
 	 * @param topComponent the top component
 	 * @return this builder instance
 	 * @see JSplitPane#setTopComponent(Component)
 	 */
-	SplitPaneBuilder topComponent(JComponent topComponent);
+	SplitPaneBuilder topComponent(@Nullable JComponent topComponent);
 
 	/**
 	 * @param bottomComponent the bottom component
 	 * @return this builder instance
 	 * @see JSplitPane#setBottomComponent(Component)
 	 */
-	SplitPaneBuilder bottomComponent(JComponent bottomComponent);
+	SplitPaneBuilder bottomComponent(@Nullable JComponent bottomComponent);
 
 	/**
 	 * @param resizeWeight the resize weight

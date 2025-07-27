@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.component.scrollpane;
 
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import java.awt.LayoutManager;
@@ -88,7 +90,7 @@ public interface ScrollPaneBuilder extends ComponentBuilder<Void, JScrollPane, S
 	 * @return this builder instance
 	 * @see JScrollPane#setLayout(LayoutManager)
 	 */
-	ScrollPaneBuilder layout(LayoutManager layout);
+	ScrollPaneBuilder layout(@Nullable LayoutManager layout);
 
 	/**
 	 * @return a new {@link ScrollPaneBuilder} instance

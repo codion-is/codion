@@ -22,6 +22,8 @@ import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.Document;
@@ -54,7 +56,7 @@ public abstract class AbstractTextComponentValue<T, C extends JTextComponent> ex
 	 * @param component the component
 	 * @param nullValue the value to use instead of null
 	 */
-	protected AbstractTextComponentValue(C component, T nullValue) {
+	protected AbstractTextComponentValue(C component, @Nullable T nullValue) {
 		this(component, nullValue, UpdateOn.VALUE_CHANGE);
 	}
 
@@ -65,7 +67,7 @@ public abstract class AbstractTextComponentValue<T, C extends JTextComponent> ex
 	 * @param updateOn the update on policy
 	 * @throws NullPointerException in case component is null
 	 */
-	protected AbstractTextComponentValue(C component, T nullValue, UpdateOn updateOn) {
+	protected AbstractTextComponentValue(C component, @Nullable T nullValue, UpdateOn updateOn) {
 		super(component, nullValue);
 		DocumentFilter documentFilter = ((AbstractDocument) component.getDocument()).getDocumentFilter();
 		if (documentFilter instanceof ValidationDocumentFilter) {

@@ -37,6 +37,8 @@ import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.key.KeyEvents;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -130,19 +132,19 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
 	private final ComponentFactory componentFactory;
 	private final Event<?> focusGained = Event.event();
-	private final TableColumn tableColumn;
+	private final @Nullable TableColumn tableColumn;
 	private final Function<Operator, String> operatorCaptions;
 	private final OperandComponents operandComponents = new OperandComponents();
 
-	private JToggleButton toggleEnabledButton;
-	private JComboBox<Item<Operator>> operatorCombo;
-	private JComponent equalComponent;
-	private JComponent upperComponent;
-	private JComponent lowerComponent;
-	private JComponent inComponent;
-	private JPanel controlPanel;
-	private JPanel inputPanel;
-	private JPanel rangePanel;
+	private @Nullable JToggleButton toggleEnabledButton;
+	private @Nullable JComboBox<Item<Operator>> operatorCombo;
+	private @Nullable JComponent equalComponent;
+	private @Nullable JComponent upperComponent;
+	private @Nullable JComponent lowerComponent;
+	private @Nullable JComponent inComponent;
+	private @Nullable JPanel controlPanel;
+	private @Nullable JPanel inputPanel;
+	private @Nullable JPanel rangePanel;
 
 	private boolean initialized = false;
 
@@ -319,7 +321,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
 		private ComponentFactory componentFactory = new FilterComponentFactory();
 		private Function<Operator, String> operatorCaptions = DEFAULT_OPERATOR_CAPTIONS;
-		private TableColumn tableColumn;
+		private @Nullable TableColumn tableColumn;
 
 		private DefaultBuilder(ConditionModel<T> conditionModel) {
 			this.conditionModel = conditionModel;

@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.key;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.Action;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -178,7 +180,7 @@ public final class KeyEvents {
 
 		private KeyStroke keyStroke;
 		private int condition = WHEN_FOCUSED;
-		private Action action;
+		private @Nullable Action action;
 
 		private DefaultBuilder() {
 			this(getKeyStroke(VK_UNDEFINED, 0, false));

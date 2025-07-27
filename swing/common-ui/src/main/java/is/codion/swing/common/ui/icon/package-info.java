@@ -22,4 +22,5 @@
  * <li>{@link is.codion.swing.common.ui.icon.Icons#ICON_SIZE}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 package is.codion.swing.common.ui.icon;

@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.component.value;
 
 import is.codion.common.value.AbstractValue;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import java.lang.reflect.InvocationTargetException;
@@ -50,7 +52,7 @@ public abstract class AbstractComponentValue<T, C extends JComponent> extends Ab
 	 * @param nullValue the value to use instead of null
 	 * @throws NullPointerException in case component is null
 	 */
-	protected AbstractComponentValue(C component, T nullValue) {
+	protected AbstractComponentValue(C component, @Nullable T nullValue) {
 		super(nullValue);
 		this.component = requireNonNull(component);
 	}

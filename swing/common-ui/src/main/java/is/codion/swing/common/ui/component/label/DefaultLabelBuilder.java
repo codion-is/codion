@@ -23,24 +23,26 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
 final class DefaultLabelBuilder<T> extends AbstractComponentBuilder<T, JLabel, LabelBuilder<T>> implements LabelBuilder<T> {
 
-	private String text;
-	private Icon icon;
+	private @Nullable String text;
+	private @Nullable Icon icon;
 	private int horizontalAlignment = HORIZONTAL_ALIGNMENT.getOrThrow();
-	private Integer displayedMnemonic;
-	private Character displayedMnemonicChar;
+	private @Nullable Integer displayedMnemonic;
+	private @Nullable Character displayedMnemonicChar;
 	private int iconTextGap = -1;
-	private JComponent component;
+	private @Nullable JComponent component;
 
 	DefaultLabelBuilder() {}
 
 	@Override
-	public LabelBuilder<T> text(String text) {
+	public LabelBuilder<T> text(@Nullable String text) {
 		this.text = text;
 		return this;
 	}
@@ -70,13 +72,13 @@ final class DefaultLabelBuilder<T> extends AbstractComponentBuilder<T, JLabel, L
 	}
 
 	@Override
-	public LabelBuilder<T> labelFor(JComponent component) {
+	public LabelBuilder<T> labelFor(@Nullable JComponent component) {
 		this.component = component;
 		return this;
 	}
 
 	@Override
-	public LabelBuilder<T> icon(Icon icon) {
+	public LabelBuilder<T> icon(@Nullable Icon icon) {
 		this.icon = icon;
 		return this;
 	}

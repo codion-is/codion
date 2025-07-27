@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.component.text;
 
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JTextPane;
 import javax.swing.text.StyledDocument;
 
@@ -29,7 +31,7 @@ final class DefaultTextPaneBuilder extends AbstractTextComponentBuilder<String, 
 				implements TextPaneBuilder {
 
 	private boolean autoscrolls = false;
-	private StyledDocument document;
+	private @Nullable StyledDocument document;
 
 	DefaultTextPaneBuilder() {}
 

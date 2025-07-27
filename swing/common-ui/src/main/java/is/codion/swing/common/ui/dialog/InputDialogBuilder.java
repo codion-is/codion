@@ -22,6 +22,8 @@ import is.codion.common.state.ObservableState;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.function.Predicate;
 
 /**
@@ -53,7 +55,7 @@ public interface InputDialogBuilder<T> extends DialogBuilder<InputDialogBuilder<
 	 * @param caption the label caption
 	 * @return this builder instance
 	 */
-	InputDialogBuilder<T> caption(String caption);
+	InputDialogBuilder<T> caption(@Nullable String caption);
 
 	/**
 	 * A {@link ObservableState} indicating whether the input is valid, this state controls the enabled state of the OK button.

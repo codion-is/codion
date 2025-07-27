@@ -26,6 +26,8 @@ import is.codion.swing.common.model.worker.ProgressWorker.ResultTask;
 import is.codion.swing.common.model.worker.ProgressWorker.Task;
 import is.codion.swing.common.ui.control.Control;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import java.awt.Dimension;
@@ -48,7 +50,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 	private final ProgressDialog.Builder progressDialogBuilder = new ProgressDialog.DefaultBuilder();
 
 	private Consumer<T> onResult = (Consumer<T>) EMPTY_CONSUMER;
-	private Consumer<List<V>> onPublish;
+	private @Nullable Consumer<List<V>> onPublish;
 	private Consumer<Exception> onException = new DisplayExceptionInDialog();
 
 	DefaultProgressWorkerDialogBuilder(Task task) {
@@ -89,25 +91,25 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 	}
 
 	@Override
-	public ProgressWorkerDialogBuilder<T, V> border(Border border) {
+	public ProgressWorkerDialogBuilder<T, V> border(@Nullable Border border) {
 		progressDialogBuilder.border(border);
 		return this;
 	}
 
 	@Override
-	public ProgressWorkerDialogBuilder<T, V> northPanel(JPanel northPanel) {
+	public ProgressWorkerDialogBuilder<T, V> northPanel(@Nullable JPanel northPanel) {
 		progressDialogBuilder.northPanel(northPanel);
 		return this;
 	}
 
 	@Override
-	public ProgressWorkerDialogBuilder<T, V> westPanel(JPanel westPanel) {
+	public ProgressWorkerDialogBuilder<T, V> westPanel(@Nullable JPanel westPanel) {
 		progressDialogBuilder.westPanel(westPanel);
 		return this;
 	}
 
 	@Override
-	public ProgressWorkerDialogBuilder<T, V> eastPanel(JPanel eastPanel) {
+	public ProgressWorkerDialogBuilder<T, V> eastPanel(@Nullable JPanel eastPanel) {
 		progressDialogBuilder.eastPanel(eastPanel);
 		return this;
 	}
@@ -125,7 +127,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 	}
 
 	@Override
-	public ProgressWorkerDialogBuilder<T, V> progressBarSize(Dimension progressBarSize) {
+	public ProgressWorkerDialogBuilder<T, V> progressBarSize(@Nullable Dimension progressBarSize) {
 		progressDialogBuilder.progressBarSize(progressBarSize);
 		return this;
 	}
@@ -226,7 +228,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 		}
 	}
 
-	private String message(List<V> chunks) {
+	private @Nullable String message(List<V> chunks) {
 		return chunks.isEmpty() ? null : Objects.toString(chunks.get(chunks.size() - 1));
 	}
 

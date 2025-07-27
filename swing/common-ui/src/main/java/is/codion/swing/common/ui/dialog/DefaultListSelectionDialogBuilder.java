@@ -25,6 +25,8 @@ import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.control.Control;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
@@ -51,8 +53,8 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 
 	private final Collection<T> defaultSelection = new ArrayList<>();
 
-	private Comparator<T> comparator;
-	private Dimension dialogSize;
+	private @Nullable Comparator<T> comparator;
+	private @Nullable Dimension dialogSize;
 
 	DefaultListSelectionDialogBuilder(Collection<T> values) {
 		super(values);
@@ -74,14 +76,14 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 	}
 
 	@Override
-	public ListSelectionDialogBuilder<T> dialogSize(Dimension dialogSize) {
-		this.dialogSize = requireNonNull(dialogSize);
+	public ListSelectionDialogBuilder<T> dialogSize(@Nullable Dimension dialogSize) {
+		this.dialogSize = dialogSize;
 		return this;
 	}
 
 	@Override
-	public ListSelectionDialogBuilder<T> comparator(Comparator<T> comparator) {
-		this.comparator = requireNonNull(comparator);
+	public ListSelectionDialogBuilder<T> comparator(@Nullable Comparator<T> comparator) {
+		this.comparator = comparator;
 		return this;
 	}
 
@@ -95,7 +97,7 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 		return select(false, dialogSize);
 	}
 
-	private Optional<T> selectSingle(Dimension dialogSize) {
+	private Optional<T> selectSingle(@Nullable Dimension dialogSize) {
 		List<T> selected = select(true, dialogSize);
 		if (selected.isEmpty()) {
 			return Optional.empty();
@@ -104,7 +106,7 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 		return Optional.of(selected.get(0));
 	}
 
-	private List<T> select(boolean singleSelection, Dimension dialogSize) {
+	private List<T> select(boolean singleSelection, @Nullable Dimension dialogSize) {
 		FilterList<T> list = createList(singleSelection);
 		Control okControl = Control.builder()
 						.command(() -> disposeParentWindow(list))
@@ -173,7 +175,7 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 		return list;
 	}
 
-	private String createTitle(boolean singleSelection) {
+	private @Nullable String createTitle(boolean singleSelection) {
 		if (singleSelection) {
 			return title == null ? MESSAGES.getString("select_value") : title.get();
 		}

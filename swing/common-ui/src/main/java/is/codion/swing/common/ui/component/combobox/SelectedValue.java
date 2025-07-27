@@ -21,6 +21,8 @@ package is.codion.swing.common.ui.component.combobox;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import java.awt.event.ItemEvent;
@@ -40,7 +42,7 @@ final class SelectedValue<T, C extends JComboBox<T>> extends AbstractComponentVa
 	}
 
 	@Override
-	protected T getComponentValue() {
+	protected @Nullable T getComponentValue() {
 		ComboBoxModel<T> comboBoxModel = component().getModel();
 		if (comboBoxModel instanceof FilterComboBoxModel) {
 			return ((FilterComboBoxModel<T>) comboBoxModel).selection().item().get();
@@ -50,7 +52,7 @@ final class SelectedValue<T, C extends JComboBox<T>> extends AbstractComponentVa
 	}
 
 	@Override
-	protected void setComponentValue(T value) {
+	protected void setComponentValue(@Nullable T value) {
 		component().getModel().setSelectedItem(value);
 	}
 

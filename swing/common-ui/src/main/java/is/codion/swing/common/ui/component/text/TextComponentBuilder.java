@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.component.text;
 
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.event.CaretListener;
 import javax.swing.text.JTextComponent;
 import java.awt.Color;
@@ -83,7 +85,7 @@ public interface TextComponentBuilder<T, C extends JTextComponent, B extends Tex
 	 * @return this builder instance
 	 * @see JTextComponent#setMargin(Insets)
 	 */
-	B margin(Insets margin);
+	B margin(@Nullable Insets margin);
 
 	/**
 	 * @param controlDeleteWord true if CTRL-DEL and CTRL-BACKSPACE should delete the next/previous word
@@ -96,21 +98,21 @@ public interface TextComponentBuilder<T, C extends JTextComponent, B extends Tex
 	 * @return this builder instance
 	 * @see JTextComponent#setDisabledTextColor(Color)
 	 */
-	B disabledTextColor(Color disabledTextColor);
+	B disabledTextColor(@Nullable Color disabledTextColor);
 
 	/**
 	 * @param selectedTextColor the color used to render selected text
 	 * @return this builder instance
 	 * @see JTextComponent#setSelectedTextColor(Color)
 	 */
-	B selectedTextColor(Color selectedTextColor);
+	B selectedTextColor(@Nullable Color selectedTextColor);
 
 	/**
 	 * @param selectionColor the color used to render selected text background
 	 * @return this builder instance
 	 * @see JTextComponent#setSelectionColor(Color)
 	 */
-	B selectionColor(Color selectionColor);
+	B selectionColor(@Nullable Color selectionColor);
 
 	/**
 	 * Makes the text component select all when it gains focus

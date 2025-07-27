@@ -31,4 +31,5 @@
  * <li>{@link is.codion.swing.common.ui.component.table.FilterTable#COLUMN_RESIZING}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 package is.codion.swing.common.ui.component.table;

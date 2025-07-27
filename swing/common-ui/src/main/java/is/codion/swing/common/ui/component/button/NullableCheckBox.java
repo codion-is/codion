@@ -21,6 +21,8 @@ package is.codion.swing.common.ui.component.button;
 import is.codion.swing.common.model.component.button.NullableToggleButtonModel;
 import is.codion.swing.common.ui.key.KeyEvents;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.AbstractAction;
 import javax.swing.ButtonModel;
 import javax.swing.Icon;
@@ -70,7 +72,7 @@ public class NullableCheckBox extends JCheckBox {
 	 * @param model the model
 	 * @param text the caption text, if any
 	 */
-	public NullableCheckBox(NullableToggleButtonModel model, String text) {
+	public NullableCheckBox(NullableToggleButtonModel model, @Nullable String text) {
 		this(model, text, null);
 	}
 
@@ -80,7 +82,7 @@ public class NullableCheckBox extends JCheckBox {
 	 * @param text the caption text, if any
 	 * @param icon the icon, if any
 	 */
-	public NullableCheckBox(NullableToggleButtonModel model, String text, Icon icon) {
+	public NullableCheckBox(NullableToggleButtonModel model, @Nullable String text, @Nullable Icon icon) {
 		super(text, icon);
 		super.setModel(requireNonNull(model));
 		setIcon(new NullableIcon());

@@ -26,6 +26,8 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -76,7 +78,7 @@ public final class ProgressDialog extends JDialog {
 	 * Sets the message displayed on the JProgress bar
 	 * @param message the message
 	 */
-	public void setMessage(String message) {
+	public void setMessage(@Nullable String message) {
 		progressBar.setString(message);
 	}
 
@@ -162,19 +164,19 @@ public final class ProgressDialog extends JDialog {
 		 * @param northPanel if specified this panel is added to the {@link BorderLayout#NORTH} position
 		 * @return this ProgressDialogBuilder instance
 		 */
-		Builder northPanel(JPanel northPanel);
+		Builder northPanel(@Nullable JPanel northPanel);
 
 		/**
 		 * @param westPanel if specified this panel is added to the {@link BorderLayout#WEST} position
 		 * @return this ProgressDialogBuilder instance
 		 */
-		Builder westPanel(JPanel westPanel);
+		Builder westPanel(@Nullable JPanel westPanel);
 
 		/**
 		 * @param eastPanel if specified this panel is added to the {@link BorderLayout#EAST} position
 		 * @return this ProgressDialogBuilder instance
 		 */
-		Builder eastPanel(JPanel eastPanel);
+		Builder eastPanel(@Nullable JPanel eastPanel);
 
 		/**
 		 * Adds a button based on the given control to the {@link BorderLayout#SOUTH} position
@@ -194,13 +196,13 @@ public final class ProgressDialog extends JDialog {
 		 * @param progressBarSize the progress bar size
 		 * @return this ProgressDialogBuilder instance
 		 */
-		Builder progressBarSize(Dimension progressBarSize);
+		Builder progressBarSize(@Nullable Dimension progressBarSize);
 
 		/**
 		 * @param border the border to add around the progress bar
 		 * @return this ProgressDialogBuilder instance
 		 */
-		Builder border(Border border);
+		Builder border(@Nullable Border border);
 
 		/**
 		 * @return a new ProgressDialog
@@ -215,11 +217,11 @@ public final class ProgressDialog extends JDialog {
 		private int maximum = 100;
 		private boolean indeterminate = true;
 		private boolean stringPainted = false;
-		private JPanel northPanel;
-		private JPanel westPanel;
-		private JPanel eastPanel;
-		private Dimension progressBarSize;
-		private Border border;
+		private @Nullable JPanel northPanel;
+		private @Nullable JPanel westPanel;
+		private @Nullable JPanel eastPanel;
+		private @Nullable Dimension progressBarSize;
+		private @Nullable Border border;
 
 		@Override
 		public Builder indeterminate(boolean indeterminate) {
@@ -243,19 +245,19 @@ public final class ProgressDialog extends JDialog {
 		}
 
 		@Override
-		public Builder northPanel(JPanel northPanel) {
+		public Builder northPanel(@Nullable JPanel northPanel) {
 			this.northPanel = northPanel;
 			return this;
 		}
 
 		@Override
-		public Builder westPanel(JPanel westPanel) {
+		public Builder westPanel(@Nullable JPanel westPanel) {
 			this.westPanel = westPanel;
 			return this;
 		}
 
 		@Override
-		public Builder eastPanel(JPanel eastPanel) {
+		public Builder eastPanel(@Nullable JPanel eastPanel) {
 			this.eastPanel = eastPanel;
 			return this;
 		}
@@ -272,13 +274,13 @@ public final class ProgressDialog extends JDialog {
 		}
 
 		@Override
-		public Builder progressBarSize(Dimension progressBarSize) {
+		public Builder progressBarSize(@Nullable Dimension progressBarSize) {
 			this.progressBarSize = progressBarSize;
 			return this;
 		}
 
 		@Override
-		public Builder border(Border border) {
+		public Builder border(@Nullable Border border) {
 			this.border = border;
 			return this;
 		}

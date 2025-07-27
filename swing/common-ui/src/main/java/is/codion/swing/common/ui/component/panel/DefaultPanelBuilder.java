@@ -22,6 +22,8 @@ import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.awt.LayoutManager;
@@ -37,20 +39,20 @@ final class DefaultPanelBuilder extends AbstractComponentBuilder<Void, JPanel, P
 
 	private final List<ComponentConstraints> componentConstraints = new ArrayList<>();
 
-	private JPanel panel;
-	private LayoutManager layout;
+	private @Nullable JPanel panel;
+	private @Nullable LayoutManager layout;
 
 	DefaultPanelBuilder() {}
 
 	@Override
-	public PanelBuilder panel(JPanel panel) {
-		this.panel = requireNonNull(panel);
+	public PanelBuilder panel(@Nullable JPanel panel) {
+		this.panel = panel;
 		return this;
 	}
 
 	@Override
-	public PanelBuilder layout(LayoutManager layoutManager) {
-		layout = requireNonNull(layoutManager);
+	public PanelBuilder layout(@Nullable LayoutManager layoutManager) {
+		layout = layoutManager;
 		return this;
 	}
 

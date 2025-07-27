@@ -53,6 +53,8 @@ import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.Action;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
@@ -278,8 +280,8 @@ public final class FilterTable<R, C> extends JTable {
 
 	private final ControlMap controlMap;
 
-	private TableConditionPanel<C> filterPanel;
-	private JTextField searchField;
+	private @Nullable TableConditionPanel<C> filterPanel;
+	private @Nullable JTextField searchField;
 
 	private FilterTable(DefaultBuilder<R, C> builder) {
 		super(builder.tableModel,

@@ -21,6 +21,8 @@ package is.codion.swing.common.ui.component.button;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.control.Control;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
@@ -42,7 +44,7 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
 	 * @return this builder instance
 	 * @see JButton#setText(String)
 	 */
-	B text(String text);
+	B text(@Nullable String text);
 
 	/**
 	 * @param mnemonic the mnemonic
@@ -91,49 +93,49 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
 	 * @return this builder instance
 	 * @see JButton#setIcon(Icon)
 	 */
-	B icon(Icon icon);
+	B icon(@Nullable Icon icon);
 
 	/**
 	 * @param pressedIcon the icon
 	 * @return this builder instance
 	 * @see JButton#setPressedIcon(Icon)
 	 */
-	B pressedIcon(Icon pressedIcon);
+	B pressedIcon(@Nullable Icon pressedIcon);
 
 	/**
 	 * @param selectedIcon the icon
 	 * @return this builder instance
 	 * @see JButton#setSelectedIcon(Icon)
 	 */
-	B selectedIcon(Icon selectedIcon);
+	B selectedIcon(@Nullable Icon selectedIcon);
 
 	/**
 	 * @param rolloverIcon the icon
 	 * @return this builder instance
 	 * @see JButton#setRolloverIcon(Icon)
 	 */
-	B rolloverIcon(Icon rolloverIcon);
+	B rolloverIcon(@Nullable Icon rolloverIcon);
 
 	/**
 	 * @param rolloverSelectedIcon the icon
 	 * @return this builder instance
 	 * @see JButton#setRolloverSelectedIcon(Icon)
 	 */
-	B rolloverSelectedIcon(Icon rolloverSelectedIcon);
+	B rolloverSelectedIcon(@Nullable Icon rolloverSelectedIcon);
 
 	/**
 	 * @param disabledIcon the icon
 	 * @return this builder instance
 	 * @see JButton#setDisabledIcon(Icon)
 	 */
-	B disabledIcon(Icon disabledIcon);
+	B disabledIcon(@Nullable Icon disabledIcon);
 
 	/**
 	 * @param disabledSelectedIcon the icon
 	 * @return this builder instance
 	 * @see JButton#setIcon(Icon)
 	 */
-	B disabledSelectedIcon(Icon disabledSelectedIcon);
+	B disabledSelectedIcon(@Nullable Icon disabledSelectedIcon);
 
 	/**
 	 * @param iconTextGap the icon text gap
@@ -147,7 +149,7 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
 	 * @return this builder instance
 	 * @see JButton#setMargin(Insets)
 	 */
-	B margin(Insets insets);
+	B margin(@Nullable Insets insets);
 
 	/**
 	 * @param borderPainted true if the border should be painted
@@ -188,7 +190,7 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
 	 * @param buttonGroup the group to add the button to
 	 * @return this builder instance
 	 */
-	B buttonGroup(ButtonGroup buttonGroup);
+	B buttonGroup(@Nullable ButtonGroup buttonGroup);
 
 	/**
 	 * Sets the inital selected status of the button, overridden by initial value.
@@ -203,7 +205,7 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
 	 * @return this builder instance
 	 * @see AbstractButton#setAction(Action)
 	 */
-	B action(Action action);
+	B action(@Nullable Action action);
 
 	/**
 	 * @param control the control to base the button on

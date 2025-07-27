@@ -21,6 +21,8 @@ package is.codion.swing.common.ui.component.spinner;
 import is.codion.common.item.Item;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JSpinner;
 import javax.swing.SpinnerListModel;
 import java.util.Objects;
@@ -36,14 +38,14 @@ final class SpinnerItemValue<T> extends AbstractComponentValue<T, JSpinner> {
 	}
 
 	@Override
-	protected T getComponentValue() {
+	protected @Nullable T getComponentValue() {
 		Item<T> selectedItem = (Item<T>) component().getModel().getValue();
 
 		return selectedItem == null ? null : selectedItem.value();
 	}
 
 	@Override
-	protected void setComponentValue(T value) {
+	protected void setComponentValue(@Nullable T value) {
 		SpinnerListModel model = (SpinnerListModel) component().getModel();
 		model.getList().stream()
 						.map(Item.class::cast)

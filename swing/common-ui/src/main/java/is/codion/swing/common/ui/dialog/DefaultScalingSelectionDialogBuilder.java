@@ -25,6 +25,8 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -45,12 +47,12 @@ import static javax.swing.BorderFactory.createEmptyBorder;
 
 final class DefaultScalingSelectionDialogBuilder implements ScalingSelectionDialogBuilder {
 
-	private JComponent owner;
+	private @Nullable JComponent owner;
 	private int initialSelection = 100;
 
 	@Override
-	public ScalingSelectionDialogBuilder owner(JComponent owner) {
-		this.owner = requireNonNull(owner);
+	public ScalingSelectionDialogBuilder owner(@Nullable JComponent owner) {
+		this.owner = owner;
 		return this;
 	}
 

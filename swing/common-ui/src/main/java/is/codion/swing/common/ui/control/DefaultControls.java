@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.control;
 
 import is.codion.common.value.Value;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.Action;
 import javax.swing.KeyStroke;
 import java.awt.event.ActionEvent;
@@ -213,11 +215,23 @@ final class DefaultControls extends AbstractControl implements Controls {
 
 		@Override
 		public Layout defaults() {
-			return defaults(null);
+			return doDefaults(null);
 		}
 
 		@Override
 		public Layout defaults(ControlKey<?> stopAt) {
+			return doDefaults(stopAt);
+		}
+
+		@Override
+		public Controls create(ControlMap controlMap) {
+			ControlsBuilder builder = Controls.builder();
+			items.forEach(item -> item.addTo(builder, controlMap));
+
+			return builder.build();
+		}
+
+		private Layout doDefaults(@Nullable ControlKey<?> stopAt) {
 			for (ControlKey<?> control : defaults) {
 				if (control == null) {
 					separator();
@@ -231,14 +245,6 @@ final class DefaultControls extends AbstractControl implements Controls {
 			}
 
 			return this;
-		}
-
-		@Override
-		public Controls create(ControlMap controlMap) {
-			ControlsBuilder builder = Controls.builder();
-			items.forEach(item -> item.addTo(builder, controlMap));
-
-			return builder.build();
 		}
 
 		private void add(ControlKey<?> controlKey) {

@@ -28,6 +28,8 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.layout.Layouts;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -52,7 +54,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 	private final OkCancelDialogBuilder okCancelDialogBuilder = new DefaultOkCancelDialogBuilder()
 					.component(basePanel);
 
-	private String caption;
+	private @Nullable String caption;
 
 	DefaultInputDialogBuilder(ComponentValue<T, ?> componentValue) {
 		this.componentValue = requireNonNull(componentValue);
@@ -62,49 +64,49 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 	}
 
 	@Override
-	public InputDialogBuilder<T> owner(Window owner) {
+	public InputDialogBuilder<T> owner(@Nullable Window owner) {
 		okCancelDialogBuilder.owner(owner);
 		return this;
 	}
 
 	@Override
-	public InputDialogBuilder<T> owner(Component owner) {
+	public InputDialogBuilder<T> owner(@Nullable Component owner) {
 		okCancelDialogBuilder.owner(owner);
 		return this;
 	}
 
 	@Override
-	public InputDialogBuilder<T> locationRelativeTo(Component component) {
+	public InputDialogBuilder<T> locationRelativeTo(@Nullable Component component) {
 		okCancelDialogBuilder.locationRelativeTo(component);
 		return this;
 	}
 
 	@Override
-	public InputDialogBuilder<T> location(Point location) {
+	public InputDialogBuilder<T> location(@Nullable Point location) {
 		okCancelDialogBuilder.location(location);
 		return this;
 	}
 
 	@Override
-	public InputDialogBuilder<T> title(Observable<String> title) {
+	public InputDialogBuilder<T> title(@Nullable Observable<String> title) {
 		okCancelDialogBuilder.title(title);
 		return this;
 	}
 
 	@Override
-	public InputDialogBuilder<T> icon(ImageIcon icon) {
+	public InputDialogBuilder<T> icon(@Nullable ImageIcon icon) {
 		okCancelDialogBuilder.icon(icon);
 		return this;
 	}
 
 	@Override
-	public InputDialogBuilder<T> title(String title) {
+	public InputDialogBuilder<T> title(@Nullable String title) {
 		okCancelDialogBuilder.title(title);
 		return this;
 	}
 
 	@Override
-	public InputDialogBuilder<T> caption(String caption) {
+	public InputDialogBuilder<T> caption(@Nullable String caption) {
 		this.caption = caption;
 		return this;
 	}
@@ -146,7 +148,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 	}
 
 	@Override
-	public T show() {
+	public @Nullable T show() {
 		State okPressed = State.state();
 		if (caption != null) {
 			basePanel.add(new JLabel(caption), BorderLayout.NORTH);

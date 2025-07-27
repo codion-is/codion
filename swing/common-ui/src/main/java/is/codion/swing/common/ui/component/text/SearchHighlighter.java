@@ -26,6 +26,8 @@ import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.key.KeyEvents;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.text.BadLocationException;
@@ -197,7 +199,7 @@ public final class SearchHighlighter {
 	/**
 	 * @return the index of the selected search position within the document, null if none is selected.
 	 */
-	Integer selectedHighlightPosition() {
+	@Nullable Integer selectedHighlightPosition() {
 		return selectedSearchTextPosition.get();
 	}
 

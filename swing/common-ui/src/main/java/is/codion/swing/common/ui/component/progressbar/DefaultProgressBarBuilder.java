@@ -22,6 +22,8 @@ import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.BoundedRangeModel;
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.JProgressBar;
@@ -35,7 +37,7 @@ final class DefaultProgressBarBuilder extends AbstractComponentBuilder<Integer, 
 	private boolean stringPainted;
 	private int orientation;
 	private boolean indeterminate = true;
-	private String string;
+	private @Nullable String string;
 
 	DefaultProgressBarBuilder() {}
 
@@ -46,7 +48,7 @@ final class DefaultProgressBarBuilder extends AbstractComponentBuilder<Integer, 
 	}
 
 	@Override
-	public ProgressBarBuilder string(String string) {
+	public ProgressBarBuilder string(@Nullable String string) {
 		this.string = string;
 		return this;
 	}

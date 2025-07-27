@@ -23,6 +23,8 @@ import is.codion.common.state.State;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.control.Control;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import java.awt.Dimension;
@@ -36,7 +38,7 @@ import static java.util.Objects.requireNonNull;
 final class DefaultComboBoxSelectionDialogBuilder<T> extends AbstractSelectionDialogBuilder<T, ComboBoxSelectionDialogBuilder<T>>
 				implements ComboBoxSelectionDialogBuilder<T> {
 
-	private T defaultSelection;
+	private @Nullable T defaultSelection;
 
 	DefaultComboBoxSelectionDialogBuilder(Collection<T> values) {
 		super(values);
@@ -90,7 +92,7 @@ final class DefaultComboBoxSelectionDialogBuilder<T> extends AbstractSelectionDi
 		return Optional.ofNullable(comboBoxModel.selection().item().get());
 	}
 
-	private String createTitle() {
+	private @Nullable String createTitle() {
 		return title == null ? MESSAGES.getString("select_values") : title.get();
 	}
 }

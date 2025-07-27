@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.component.text;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JTextField;
 
 final class CharacterFieldValue extends AbstractTextComponentValue<Character, JTextField> {
@@ -27,14 +29,14 @@ final class CharacterFieldValue extends AbstractTextComponentValue<Character, JT
 	}
 
 	@Override
-	protected Character getComponentValue() {
+	protected @Nullable Character getComponentValue() {
 		String string = component().getText();
 
 		return string.isEmpty() ? null : string.charAt(0);
 	}
 
 	@Override
-	protected void setComponentValue(Character value) {
+	protected void setComponentValue(@Nullable Character value) {
 		component().setText(value == null ? "" : String.valueOf(value));
 	}
 }

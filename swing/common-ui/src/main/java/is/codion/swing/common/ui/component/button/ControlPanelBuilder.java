@@ -22,6 +22,8 @@ import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.Action;
 import javax.swing.JComponent;
 import java.awt.Dimension;
@@ -81,7 +83,7 @@ public interface ControlPanelBuilder<C extends JComponent, B extends ControlPane
 	 * @param preferredButtonSize the preferred button size
 	 * @return this builder instance
 	 */
-	B preferredButtonSize(Dimension preferredButtonSize);
+	B preferredButtonSize(@Nullable Dimension preferredButtonSize);
 
 	/**
 	 * @param buttonsFocusable whether the buttons should be focusable, default is {@code true}

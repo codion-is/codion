@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.component.progressbar;
 
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.BoundedRangeModel;
 import javax.swing.JProgressBar;
 
@@ -41,7 +43,7 @@ public interface ProgressBarBuilder extends ComponentBuilder<Integer, JProgressB
 	 * @return this builder
 	 * @see JProgressBar#setString(String)
 	 */
-	ProgressBarBuilder string(String string);
+	ProgressBarBuilder string(@Nullable String string);
 
 	/**
 	 * @param borderPainted true if a border should be painted

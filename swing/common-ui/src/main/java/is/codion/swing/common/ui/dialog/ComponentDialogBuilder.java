@@ -21,6 +21,8 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.common.observable.Observer;
 import is.codion.common.state.State;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -39,7 +41,7 @@ public interface ComponentDialogBuilder extends DialogBuilder<ComponentDialogBui
 	 * @param component the component to display
 	 * @return this builder instance
 	 */
-	ComponentDialogBuilder component(JComponent component);
+	ComponentDialogBuilder component(@Nullable JComponent component);
 
 	/**
 	 * @param modal true if the dialog should be modal, default true
@@ -57,7 +59,7 @@ public interface ComponentDialogBuilder extends DialogBuilder<ComponentDialogBui
 	 * @param size the size of the dialog
 	 * @return this DialogBuilder instance
 	 */
-	ComponentDialogBuilder size(Dimension size);
+	ComponentDialogBuilder size(@Nullable Dimension size);
 
 	/**
 	 * @param enterAction the action to associate with the ENTER key
@@ -71,7 +73,7 @@ public interface ComponentDialogBuilder extends DialogBuilder<ComponentDialogBui
 	 * @param closeObserver if specified the dialog will be disposed of when and only when this observer is notified
 	 * @return this DialogBuilder instance
 	 */
-	ComponentDialogBuilder closeObserver(Observer<?> closeObserver);
+	ComponentDialogBuilder closeObserver(@Nullable Observer<?> closeObserver);
 
 	/**
 	 * @param confirmCloseListener this listener, if specified, will be queried for confirmation before
@@ -79,7 +81,7 @@ public interface ComponentDialogBuilder extends DialogBuilder<ComponentDialogBui
 	 * will only be closed if that state is active after a call to {@link Consumer#accept(Object)}
 	 * @return this DialogBuilder instance
 	 */
-	ComponentDialogBuilder confirmCloseListener(Consumer<State> confirmCloseListener);
+	ComponentDialogBuilder confirmCloseListener(@Nullable Consumer<State> confirmCloseListener);
 
 	/**
 	 * @param disposeOnEscape if yes then the dialog is disposed when the ESC button is pressed,

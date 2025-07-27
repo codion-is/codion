@@ -22,6 +22,8 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.ui.control.Controls.ControlsKey;
 import is.codion.swing.common.ui.control.Controls.Layout;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.KeyStroke;
 import java.util.Optional;
 
@@ -31,9 +33,9 @@ final class DefaultControlsKey implements ControlsKey {
 
 	private final String name;
 	private final Value<KeyStroke> defaultKeyStroke;
-	private final Layout defaultLayout;
+	private final @Nullable Layout defaultLayout;
 
-	DefaultControlsKey(String name, KeyStroke defaultKeyStroke, Layout defaultLayout) {
+	DefaultControlsKey(String name, @Nullable KeyStroke defaultKeyStroke, @Nullable Layout defaultLayout) {
 		this.name = requireNonNull(name);
 		this.defaultKeyStroke = Value.nullable(defaultKeyStroke);
 		this.defaultLayout = defaultLayout;

@@ -23,6 +23,8 @@ import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -33,9 +35,9 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
 
 	private static final int DEFAULT_FIELD_COLUMNS = 8;
 
-	private User defaultUser;
+	private @Nullable User defaultUser;
 	private LoginValidator validator = new NoLoginValidation();
-	private JComponent southComponent;
+	private @Nullable JComponent southComponent;
 	private int inputFieldColumns = DEFAULT_FIELD_COLUMNS;
 
 	DefaultLoginDialogBuilder() {
@@ -43,7 +45,7 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
 	}
 
 	@Override
-	public LoginDialogBuilder defaultUser(User defaultUser) {
+	public LoginDialogBuilder defaultUser(@Nullable User defaultUser) {
 		this.defaultUser = defaultUser;
 		return this;
 	}
@@ -55,7 +57,7 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
 	}
 
 	@Override
-	public LoginDialogBuilder southComponent(JComponent southComponent) {
+	public LoginDialogBuilder southComponent(@Nullable JComponent southComponent) {
 		this.southComponent = southComponent;
 		return this;
 	}
@@ -97,7 +99,7 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
 		return user;
 	}
 
-	private static JFrame createDummyFrame(String title, ImageIcon icon) {
+	private static JFrame createDummyFrame(@Nullable String title, @Nullable ImageIcon icon) {
 		JFrame frame = new JFrame(title);
 		frame.setUndecorated(true);
 		frame.setVisible(true);

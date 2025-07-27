@@ -33,6 +33,8 @@ import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.control.ControlMap;
 import is.codion.swing.common.ui.dialog.Dialogs;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.ImageIcon;
 import javax.swing.JFormattedTextField;
 import javax.swing.KeyStroke;
@@ -109,7 +111,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	private final Value<T> value = Value.nullable();
 	private final State valueNull = State.state();
 	private final String dateTimePattern;
-	private final ImageIcon calendarIcon;
+	private final @Nullable ImageIcon calendarIcon;
 	private final ControlMap controlMap;
 
 	private TemporalField(DefaultBuilder<T> builder) {
@@ -165,7 +167,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	/**
 	 * @return the Temporal value currently being displayed, null in case of an incomplete/unparseable date
 	 */
-	public T get() {
+	public @Nullable T get() {
 		try {
 			return dateTimeParser.parse(getText(), formatter);
 		}
@@ -178,7 +180,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	 * Sets the temporal value in this field, clears the field if {@code temporal} is null.
 	 * @param temporal the temporal value to set
 	 */
-	public void set(Temporal temporal) {
+	public void set(@Nullable Temporal temporal) {
 		setText(temporal == null ? "" : formatter.format(temporal));
 	}
 
@@ -219,7 +221,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		}
 	}
 
-	private static ChronoUnit chronoUnit(char patternCharacter) {
+	private static @Nullable ChronoUnit chronoUnit(char patternCharacter) {
 		switch (patternCharacter) {
 			case DAY:
 				return ChronoUnit.DAYS;
@@ -238,7 +240,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		}
 	}
 
-	private CommandControl createCalendarControl() {
+	private @Nullable CommandControl createCalendarControl() {
 		if (CalendarPanel.supportedTypes().contains(temporalClass)) {
 			return Control.builder()
 							.command(this::displayCalendar)
@@ -405,7 +407,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		private String mask;
 		private DateTimeParser<T> dateTimeParser;
 		private int focusLostBehaviour = JFormattedTextField.COMMIT;
-		private ImageIcon calendarIcon;
+		private @Nullable ImageIcon calendarIcon;
 		private boolean incrementDecrementEnabled = true;
 
 		private DefaultBuilder(Class<T> temporalClass) {
@@ -504,7 +506,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 				return (DateTimeParser<T>) new OffsetDateTimeParser();
 			}
 
-			return null;
+			throw new IllegalArgumentException("Unsupported temporal class: " + valueClass);
 		}
 
 		/**

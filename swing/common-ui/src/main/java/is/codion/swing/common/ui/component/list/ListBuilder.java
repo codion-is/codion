@@ -21,6 +21,8 @@ package is.codion.swing.common.ui.component.list;
 import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.event.ListSelectionListener;
@@ -68,7 +70,7 @@ public interface ListBuilder<T, V, B extends ListBuilder<T, V, B>> extends Compo
 	 * @return this builder instance
 	 * @see JList#setCellRenderer(ListCellRenderer)
 	 */
-	B cellRenderer(ListCellRenderer<T> cellRenderer);
+	B cellRenderer(@Nullable ListCellRenderer<T> cellRenderer);
 
 	/**
 	 * @param listSelectionListener the list selection listener

@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.dialog;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -37,7 +39,7 @@ public interface ActionDialogBuilder<B extends ActionDialogBuilder<B>> extends D
 	 * @param component the component to display
 	 * @return this builder instance
 	 */
-	B component(JComponent component);
+	B component(@Nullable JComponent component);
 
 	/**
 	 * @param action the action to add
@@ -75,7 +77,7 @@ public interface ActionDialogBuilder<B extends ActionDialogBuilder<B>> extends D
 	 * @param size the size of the dialog
 	 * @return this builder instance
 	 */
-	B size(Dimension size);
+	B size(@Nullable Dimension size);
 
 	/**
 	 * Default {@link FlowLayout#TRAILING}
@@ -88,7 +90,7 @@ public interface ActionDialogBuilder<B extends ActionDialogBuilder<B>> extends D
 	 * @param buttonPanelBorder the button panel border
 	 * @return this builder instance
 	 */
-	B buttonPanelBorder(Border buttonPanelBorder);
+	B buttonPanelBorder(@Nullable Border buttonPanelBorder);
 
 	/**
 	 * @param onShown called each time the dialog is shown

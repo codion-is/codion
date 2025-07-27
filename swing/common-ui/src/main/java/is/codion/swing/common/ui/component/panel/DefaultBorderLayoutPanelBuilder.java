@@ -23,6 +23,8 @@ import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.layout.Layouts;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
@@ -32,11 +34,11 @@ import static java.util.Objects.requireNonNull;
 final class DefaultBorderLayoutPanelBuilder extends AbstractComponentBuilder<Void, JPanel, BorderLayoutPanelBuilder> implements BorderLayoutPanelBuilder {
 
 	private BorderLayout layout = Layouts.borderLayout();
-	private JComponent centerComponent;
-	private JComponent northComponent;
-	private JComponent southComponent;
-	private JComponent eastComponent;
-	private JComponent westComponent;
+	private @Nullable JComponent centerComponent;
+	private @Nullable JComponent northComponent;
+	private @Nullable JComponent southComponent;
+	private @Nullable JComponent eastComponent;
+	private @Nullable JComponent westComponent;
 
 	DefaultBorderLayoutPanelBuilder() {}
 

@@ -23,6 +23,8 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.key.KeyEvents;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import java.awt.Component;
@@ -43,14 +45,14 @@ public abstract class AbstractDialogBuilder<B extends DialogBuilder<B>> implemen
 	protected final List<KeyEvents.Builder> keyEventBuilders = new ArrayList<>(1);
 	protected final List<Consumer<JDialog>> onBuildConsumers = new ArrayList<>(1);
 
-	protected Window owner;
-	protected Component locationRelativeTo;
-	protected Point location;
-	protected Observable<String> title;
-	protected ImageIcon icon;
+	protected @Nullable Window owner;
+	protected @Nullable Component locationRelativeTo;
+	protected @Nullable Point location;
+	protected @Nullable Observable<String> title;
+	protected @Nullable ImageIcon icon;
 
 	@Override
-	public final B owner(Window owner) {
+	public final B owner(@Nullable Window owner) {
 		this.owner = owner;
 		if (locationRelativeTo == null) {
 			locationRelativeTo = owner;
@@ -59,7 +61,7 @@ public abstract class AbstractDialogBuilder<B extends DialogBuilder<B>> implemen
 	}
 
 	@Override
-	public final B owner(Component owner) {
+	public final B owner(@Nullable Component owner) {
 		this.owner = owner == null ? null : Utilities.parentWindow(owner);
 		if (locationRelativeTo == null) {
 			locationRelativeTo = owner;
@@ -68,30 +70,30 @@ public abstract class AbstractDialogBuilder<B extends DialogBuilder<B>> implemen
 	}
 
 	@Override
-	public final B locationRelativeTo(Component locationRelativeTo) {
+	public final B locationRelativeTo(@Nullable Component locationRelativeTo) {
 		this.locationRelativeTo = locationRelativeTo;
 		return self();
 	}
 
 	@Override
-	public final B location(Point location) {
+	public final B location(@Nullable Point location) {
 		this.location = location;
 		return self();
 	}
 
 	@Override
-	public final B title(String title) {
+	public final B title(@Nullable String title) {
 		return title(Value.nullable(title));
 	}
 
 	@Override
-	public final B title(Observable<String> title) {
+	public final B title(@Nullable Observable<String> title) {
 		this.title = title;
 		return self();
 	}
 
 	@Override
-	public final B icon(ImageIcon icon) {
+	public final B icon(@Nullable ImageIcon icon) {
 		this.icon = icon;
 		return self();
 	}

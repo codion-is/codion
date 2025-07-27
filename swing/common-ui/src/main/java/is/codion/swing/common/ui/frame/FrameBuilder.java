@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.frame;
 
 import is.codion.common.observable.Observable;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -43,31 +45,31 @@ public interface FrameBuilder {
 	 * @param component the component to display
 	 * @return this builder instance
 	 */
-	FrameBuilder component(JComponent component);
+	FrameBuilder component(@Nullable JComponent component);
 
 	/**
 	 * @param title the title
 	 * @return this builder instance
 	 */
-	FrameBuilder title(String title);
+	FrameBuilder title(@Nullable String title);
 
 	/**
 	 * @param title an observable for a dynamic dialog title
 	 * @return this builder instance
 	 */
-	FrameBuilder title(Observable<String> title);
+	FrameBuilder title(@Nullable Observable<String> title);
 
 	/**
 	 * @param icon the icon
 	 * @return this builder instance
 	 */
-	FrameBuilder icon(ImageIcon icon);
+	FrameBuilder icon(@Nullable ImageIcon icon);
 
 	/**
 	 * @param size the size
 	 * @return this builder instance
 	 */
-	FrameBuilder size(Dimension size);
+	FrameBuilder size(@Nullable Dimension size);
 
 	/**
 	 * @param resizable true if the frame should be resizable
@@ -80,31 +82,31 @@ public interface FrameBuilder {
 	 * @param location the frame location
 	 * @return this builder instance
 	 */
-	FrameBuilder location(Point location);
+	FrameBuilder location(@Nullable Point location);
 
 	/**
 	 * @param locationRelativeTo the component to which the location should be relative
 	 * @return this builder instance
 	 */
-	FrameBuilder locationRelativeTo(Component locationRelativeTo);
+	FrameBuilder locationRelativeTo(@Nullable Component locationRelativeTo);
 
 	/**
 	 * @param onOpened called when the frame has been opened
 	 * @return this builder instance
 	 */
-	FrameBuilder onOpened(Consumer<WindowEvent> onOpened);
+	FrameBuilder onOpened(@Nullable Consumer<WindowEvent> onOpened);
 
 	/**
 	 * @param onClosed called when the frame has been closed
 	 * @return this builder instance
 	 */
-	FrameBuilder onClosed(Consumer<WindowEvent> onClosed);
+	FrameBuilder onClosed(@Nullable Consumer<WindowEvent> onClosed);
 
 	/**
 	 * @param onClosing called when the frame is about to be closed
 	 * @return this builder instance
 	 */
-	FrameBuilder onClosing(Consumer<WindowEvent> onClosing);
+	FrameBuilder onClosing(@Nullable Consumer<WindowEvent> onClosing);
 
 	/**
 	 * Default {@link WindowConstants#DISPOSE_ON_CLOSE}.
@@ -117,7 +119,7 @@ public interface FrameBuilder {
 	 * @param menuBar the main menu bar
 	 * @return this builder instance
 	 */
-	FrameBuilder menuBar(JMenuBar menuBar);
+	FrameBuilder menuBar(@Nullable JMenuBar menuBar);
 
 	/**
 	 * @param extendedState the extends state
@@ -143,7 +145,7 @@ public interface FrameBuilder {
 	 * @param onBuild called when the frame has been built.
 	 * @return this builder instance
 	 */
-	FrameBuilder onBuild(Consumer<JFrame> onBuild);
+	FrameBuilder onBuild(@Nullable Consumer<JFrame> onBuild);
 
 	/**
 	 * @return a JFrame based on this builder

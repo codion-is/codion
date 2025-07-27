@@ -22,6 +22,8 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.value.Value;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
 import java.io.FileNotFoundException;
@@ -41,13 +43,13 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
 
 	private static final int MAXIMUM_MESSAGE_LENGTH = 50;
 
-	private Collection<Class<? extends Throwable>> unwrapExceptions = WRAPPER_EXCEPTIONS.get();
-	private String message;
+	private Collection<Class<? extends Throwable>> unwrapExceptions = WRAPPER_EXCEPTIONS.getOrThrow();
+	private @Nullable String message;
 	private boolean unwrap = true;
 	private boolean systemProperties = SYSTEM_PROPERTIES.getOrThrow();
 
 	@Override
-	public ExceptionDialogBuilder message(String message) {
+	public ExceptionDialogBuilder message(@Nullable String message) {
 		this.message = message;
 		return this;
 	}
@@ -128,7 +130,7 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
 		return Messages.error();
 	}
 
-	private static String trimMessage(Throwable e) {
+	private static @Nullable String trimMessage(Throwable e) {
 		String message = e.getMessage();
 		if (message != null && message.length() > MAXIMUM_MESSAGE_LENGTH) {
 			return message.substring(0, MAXIMUM_MESSAGE_LENGTH) + "...";

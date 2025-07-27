@@ -24,6 +24,8 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.ComboBoxEditor;
 import javax.swing.JComboBox;
 import javax.swing.ListCellRenderer;
@@ -45,18 +47,18 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
 	private final List<Item<T>> items;
 	private final List<ItemListener> itemListeners = new ArrayList<>();
 
-	private FilterComboBoxModel<Item<T>> comboBoxModel;
-	private Comparator<Item<T>> comparator;
+	private @Nullable FilterComboBoxModel<Item<T>> comboBoxModel;
+	private @Nullable Comparator<Item<T>> comparator;
 	private boolean sorted = false;
 	private boolean nullable;
-	private Completion.Mode completionMode = Completion.COMPLETION_MODE.get();
+	private Completion.Mode completionMode = Completion.COMPLETION_MODE.getOrThrow();
 	private boolean normalize = true;
 	private boolean mouseWheelScrolling = ComboBoxBuilder.MOUSE_WHEEL_SCROLLING.getOrThrow();
 	private boolean mouseWheelScrollingWithWrapAround = false;
 	private int maximumRowCount = -1;
 	private int popupWidth = 0;
-	private ListCellRenderer<Item<T>> renderer;
-	private ComboBoxEditor editor;
+	private @Nullable ListCellRenderer<Item<T>> renderer;
+	private @Nullable ComboBoxEditor editor;
 
 	DefaultItemComboBoxBuilder(List<Item<T>> items) {
 		this.items = new ArrayList<>(requireNonNull(items));
@@ -86,7 +88,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
 	}
 
 	@Override
-	public ItemComboBoxBuilder<T> comparator(Comparator<Item<T>> comparator) {
+	public ItemComboBoxBuilder<T> comparator(@Nullable Comparator<Item<T>> comparator) {
 		if (comboBoxModel != null) {
 			throw new IllegalStateException("ComboBoxModel has been set, which controls the sorting comparator");
 		}
@@ -137,14 +139,14 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
 	}
 
 	@Override
-	public ItemComboBoxBuilder<T> renderer(ListCellRenderer<Item<T>> renderer) {
-		this.renderer = requireNonNull(renderer);
+	public ItemComboBoxBuilder<T> renderer(@Nullable ListCellRenderer<Item<T>> renderer) {
+		this.renderer = renderer;
 		return this;
 	}
 
 	@Override
-	public ItemComboBoxBuilder<T> editor(ComboBoxEditor editor) {
-		this.editor = requireNonNull(editor);
+	public ItemComboBoxBuilder<T> editor(@Nullable ComboBoxEditor editor) {
+		this.editor = editor;
 		return this;
 	}
 

@@ -25,6 +25,8 @@ import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
@@ -47,10 +49,10 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
 	private final List<ItemListener> itemListeners = new ArrayList<>();
 
 	private boolean editable = false;
-	private Completion.Mode completionMode = Completion.COMPLETION_MODE.get();
+	private Completion.Mode completionMode = Completion.COMPLETION_MODE.getOrThrow();
 	private boolean normalize = true;
-	private ListCellRenderer<T> renderer;
-	private ComboBoxEditor editor;
+	private @Nullable ListCellRenderer<T> renderer;
+	private @Nullable ComboBoxEditor editor;
 	private boolean mouseWheelScrolling = MOUSE_WHEEL_SCROLLING.getOrThrow();
 	private boolean mouseWheelScrollingWithWrapAround = false;
 	private int maximumRowCount = -1;
@@ -88,13 +90,13 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
 	}
 
 	@Override
-	public final B renderer(ListCellRenderer<T> renderer) {
+	public final B renderer(@Nullable ListCellRenderer<T> renderer) {
 		this.renderer = renderer;
 		return self();
 	}
 
 	@Override
-	public final B editor(ComboBoxEditor editor) {
+	public final B editor(@Nullable ComboBoxEditor editor) {
 		this.editor = editor;
 		return self();
 	}

@@ -21,6 +21,8 @@ package is.codion.swing.common.ui.component.text;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.value.Value;
 
+import org.jspecify.annotations.Nullable;
+
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static java.util.ResourceBundle.getBundle;
 
@@ -56,7 +58,7 @@ final class StringLengthValidator implements Value.Validator<String> {
 	}
 
 	@Override
-	public void validate(String text) {
+	public void validate(@Nullable String text) {
 		if (text != null && maximumLength >= 0 && text.length() > maximumLength) {
 			throw new IllegalArgumentException(MESSAGES.getString("length_exceeds_maximum") + ": " + maximumLength);
 		}

@@ -21,6 +21,8 @@ package is.codion.swing.common.ui.control;
 import is.codion.swing.common.ui.control.DefaultControls.DefaultControlsBuilder;
 import is.codion.swing.common.ui.control.DefaultControls.DefaultLayout;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.Action;
 import java.util.Collection;
 import java.util.List;
@@ -97,7 +99,7 @@ public interface Controls extends Control {
 	 * @param defaultLayout the default controls layout
 	 * @return a new {@link ControlsKey} for identifying a {@link Controls} instance
 	 */
-	static ControlsKey key(String name, Layout defaultLayout) {
+	static ControlsKey key(String name, @Nullable Layout defaultLayout) {
 		return new DefaultControlsKey(name, null, defaultLayout);
 	}
 

@@ -26,6 +26,8 @@ import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -45,12 +47,12 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 
 	private static final int PADDING = 10;
 
-	private JComponent owner;
+	private @Nullable JComponent owner;
 	private boolean enableOnSelection = LookAndFeelComboBox.ENABLE_ON_SELECTION.getOrThrow();
 
 	@Override
-	public LookAndFeelSelectionDialogBuilder owner(JComponent owner) {
-		this.owner = requireNonNull(owner);
+	public LookAndFeelSelectionDialogBuilder owner(@Nullable JComponent owner) {
+		this.owner = owner;
 		return this;
 	}
 

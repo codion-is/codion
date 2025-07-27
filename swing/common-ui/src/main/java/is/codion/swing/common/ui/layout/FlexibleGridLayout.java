@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.layout;
 
+import org.jspecify.annotations.Nullable;
+
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -25,6 +27,8 @@ import java.awt.Insets;
 import java.awt.LayoutManager2;
 import java.util.Arrays;
 import java.util.function.Function;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A layout manager similar to GridLayout, but allows components to maintain their preferred size.
@@ -47,8 +51,8 @@ public final class FlexibleGridLayout implements LayoutManager2 {
 	private final int verticalGap;
 	private final boolean fixRowHeights;
 	private final boolean fixColumnWidths;
-	private final Integer fixedRowHeight;
-	private final Integer fixedColumnWidth;
+	private final @Nullable Integer fixedRowHeight;
+	private final @Nullable Integer fixedColumnWidth;
 
 	private FlexibleGridLayout(DefaultBuilder defaultBuilder) {
 		this.rows = defaultBuilder.rows;
@@ -71,6 +75,7 @@ public final class FlexibleGridLayout implements LayoutManager2 {
 
 	@Override
 	public void layoutContainer(Container parent) {
+		requireNonNull(parent);
 		synchronized (parent.getTreeLock()) {
 			int componentCount = parent.getComponentCount();
 			if (componentCount == 0) {
@@ -131,6 +136,7 @@ public final class FlexibleGridLayout implements LayoutManager2 {
 	}
 
 	private Dimension calculateLayoutSize(Container parent, Function<Component, Dimension> dimension) {
+		requireNonNull(parent);
 		int componentCount = parent.getComponentCount();
 		if (componentCount == 0) {
 			return new Dimension(0, 0);
@@ -299,8 +305,8 @@ public final class FlexibleGridLayout implements LayoutManager2 {
 		private int verticalGap = 0;
 		private boolean fixRowHeights = false;
 		private boolean fixColumnWidths = false;
-		private Integer fixedRowHeight = null;
-		private Integer fixedColumnWidth = null;
+		private @Nullable Integer fixedRowHeight = null;
+		private @Nullable Integer fixedColumnWidth = null;
 
 		public Builder rows(int rows) {
 			this.rows = rows;

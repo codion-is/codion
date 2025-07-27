@@ -22,6 +22,8 @@ import is.codion.common.model.condition.TableConditionModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 
+import org.jspecify.annotations.Nullable;
+
 import java.awt.BorderLayout;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +46,7 @@ public final class FilterTableConditionPanel<C> extends TableConditionPanel<C> {
 	private final FilterTableColumnModel<C> columnModel;
 	private final Consumer<TableConditionPanel<C>> onPanelInitialized;
 
-	private FilterTableColumnComponentPanel<C> componentPanel;
+	private @Nullable FilterTableColumnComponentPanel<C> componentPanel;
 	private boolean initialized;
 
 	private FilterTableConditionPanel(TableConditionModel<C> tableConditionModel,

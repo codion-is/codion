@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.component.text;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Parses a value from a string
  * @param <T> the value type
@@ -45,7 +47,7 @@ public interface Parser<T> {
 		/**
 		 * @return the parsed value
 		 */
-		T value();
+		@Nullable T value();
 
 		/**
 		 * @return true if the parsing was successful

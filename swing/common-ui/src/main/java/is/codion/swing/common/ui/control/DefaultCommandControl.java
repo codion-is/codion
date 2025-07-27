@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.control;
 
 import is.codion.common.model.CancelException;
 
+import org.jspecify.annotations.Nullable;
+
 import java.awt.event.ActionEvent;
 import java.util.function.Consumer;
 
@@ -29,11 +31,11 @@ final class DefaultCommandControl extends AbstractControl implements CommandCont
 
 	private static final Consumer<Exception> DEFAULT_EXCEPTION_HANDLER = new DefaultExceptionHandler();
 
-	private final Command command;
-	private final ActionCommand actionCommand;
+	private final @Nullable Command command;
+	private final @Nullable ActionCommand actionCommand;
 	private final Consumer<Exception> onException;
 
-	private DefaultCommandControl(Command command, ActionCommand actionCommand, DefaultCommandControlBuilder builder) {
+	private DefaultCommandControl(@Nullable Command command, @Nullable ActionCommand actionCommand, DefaultCommandControlBuilder builder) {
 		super(builder);
 		this.command = command;
 		this.actionCommand = actionCommand;
@@ -46,7 +48,7 @@ final class DefaultCommandControl extends AbstractControl implements CommandCont
 			if (command != null) {
 				command.execute();
 			}
-			else {
+			else if (actionCommand != null) {
 				actionCommand.execute(e);
 			}
 		}
@@ -70,7 +72,7 @@ final class DefaultCommandControl extends AbstractControl implements CommandCont
 		return copyBuilder(null, actionCommand);
 	}
 
-	private CommandControlBuilder copyBuilder(Command command, ActionCommand actionCommand) {
+	private CommandControlBuilder copyBuilder(@Nullable Command command, @Nullable ActionCommand actionCommand) {
 		if (command == null && actionCommand == null) {
 			throw new NullPointerException("Command or ActionCommand must be specified");
 		}
@@ -84,12 +86,12 @@ final class DefaultCommandControl extends AbstractControl implements CommandCont
 
 	static final class DefaultCommandControlBuilder extends AbstractControlBuilder<CommandControl, CommandControlBuilder> implements CommandControlBuilder {
 
-		private final Command command;
-		private final ActionCommand actionCommand;
+		private final @Nullable Command command;
+		private final @Nullable ActionCommand actionCommand;
 
 		private Consumer<Exception> onException = DEFAULT_EXCEPTION_HANDLER;
 
-		DefaultCommandControlBuilder(Command command, ActionCommand actionCommand) {
+		DefaultCommandControlBuilder(@Nullable Command command, @Nullable ActionCommand actionCommand) {
 			this.command = command;
 			this.actionCommand = actionCommand;
 		}

@@ -194,7 +194,7 @@ final class ExceptionPanel extends JPanel {
 	}
 
 	private Optional<JDialog> parentDialog() {
-		return Optional.of(Utilities.parentDialog(this));
+		return Optional.ofNullable(Utilities.parentDialog(this));
 	}
 
 	private void saveDetails() throws IOException {

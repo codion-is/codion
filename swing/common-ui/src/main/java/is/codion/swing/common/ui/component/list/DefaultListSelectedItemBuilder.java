@@ -22,6 +22,8 @@ import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.ListSelectionModel;
 
 final class DefaultListSelectedItemBuilder<T> extends AbstractListBuilder<T, T, ListBuilder.SelectedItem<T>> implements ListBuilder.SelectedItem<T> {
@@ -51,12 +53,12 @@ final class DefaultListSelectedItemBuilder<T> extends AbstractListBuilder<T, T, 
 		}
 
 		@Override
-		protected T getComponentValue() {
+		protected @Nullable T getComponentValue() {
 			return component().model().selection().item().get();
 		}
 
 		@Override
-		protected void setComponentValue(T value) {
+		protected void setComponentValue(@Nullable T value) {
 			component().model().selection().item().set(value);
 		}
 	}

@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.component.text;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JTextField;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.Document;
@@ -28,7 +30,7 @@ import java.awt.Dimension;
  */
 public final class TextComponents {
 
-	private static Dimension preferredTextFieldSize;
+	private static @Nullable Dimension preferredTextFieldSize;
 
 	private TextComponents() {}
 

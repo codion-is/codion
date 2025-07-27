@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.component.label;
 
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JLabel;
 
 final class LabelComponentValue<T> extends AbstractComponentValue<T, JLabel> {
@@ -29,12 +31,12 @@ final class LabelComponentValue<T> extends AbstractComponentValue<T, JLabel> {
 	}
 
 	@Override
-	protected T getComponentValue() {
+	protected @Nullable T getComponentValue() {
 		return null;
 	}
 
 	@Override
-	protected void setComponentValue(T value) {
+	protected void setComponentValue(@Nullable T value) {
 		component().setText(value == null ? "" : value.toString());
 	}
 }

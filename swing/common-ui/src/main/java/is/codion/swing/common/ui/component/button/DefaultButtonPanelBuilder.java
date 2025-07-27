@@ -25,6 +25,8 @@ import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
 import is.codion.swing.common.ui.layout.Layouts;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
@@ -39,7 +41,7 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 
 	private int buttonGap = Layouts.GAP.getOrThrow();
 	private boolean fixedButtonSize = true;
-	private ButtonGroup buttonGroup;
+	private @Nullable ButtonGroup buttonGroup;
 
 	DefaultButtonPanelBuilder() {}
 
@@ -56,7 +58,7 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 	}
 
 	@Override
-	public ButtonPanelBuilder buttonGroup(ButtonGroup buttonGroup) {
+	public ButtonPanelBuilder buttonGroup(@Nullable ButtonGroup buttonGroup) {
 		this.buttonGroup = buttonGroup;
 		return this;
 	}

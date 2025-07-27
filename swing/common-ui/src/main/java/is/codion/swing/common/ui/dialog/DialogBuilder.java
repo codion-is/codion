@@ -21,6 +21,8 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.common.observable.Observable;
 import is.codion.swing.common.ui.key.KeyEvents;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import java.awt.Component;
@@ -40,7 +42,7 @@ public interface DialogBuilder<B extends DialogBuilder<B>> {
 	 * @param owner the dialog owner
 	 * @return this DialogBuilder instance
 	 */
-	B owner(Window owner);
+	B owner(@Nullable Window owner);
 
 	/**
 	 * Sets the dialog owner as the parent window of the given component.
@@ -48,38 +50,38 @@ public interface DialogBuilder<B extends DialogBuilder<B>> {
 	 * @param owner the dialog parent component
 	 * @return this builder instance
 	 */
-	B owner(Component owner);
+	B owner(@Nullable Component owner);
 
 	/**
 	 * @param component the component for the relative location
 	 * @return this builder instance
 	 */
-	B locationRelativeTo(Component component);
+	B locationRelativeTo(@Nullable Component component);
 
 	/**
 	 * Overrides {@link #locationRelativeTo(Component)}.
 	 * @param location the location of the dialog
 	 * @return this builder instance
 	 */
-	B location(Point location);
+	B location(@Nullable Point location);
 
 	/**
 	 * @param title the dialog title
 	 * @return this builder instance
 	 */
-	B title(String title);
+	B title(@Nullable String title);
 
 	/**
 	 * @param title an observable for a dynamic dialog title
 	 * @return this builder instance
 	 */
-	B title(Observable<String> title);
+	B title(@Nullable Observable<String> title);
 
 	/**
 	 * @param icon the dialog icon
 	 * @return this builder instance
 	 */
-	B icon(ImageIcon icon);
+	B icon(@Nullable ImageIcon icon);
 
 	/**
 	 * Enables the key event defined by the given {@link KeyEvents.Builder} on the dialog root pane.

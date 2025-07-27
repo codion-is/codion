@@ -18,13 +18,15 @@
  */
 package is.codion.swing.common.ui.component.text;
 
+import org.jspecify.annotations.Nullable;
+
 class DefaultParseResult<T> implements Parser.ParseResult<T> {
 
 	private final String text;
-	private final T value;
+	private final @Nullable T value;
 	private final boolean successful;
 
-	DefaultParseResult(String text, T value, boolean successful) {
+	DefaultParseResult(String text, @Nullable T value, boolean successful) {
 		this.text = text;
 		this.value = value;
 		this.successful = successful;
@@ -36,7 +38,7 @@ class DefaultParseResult<T> implements Parser.ParseResult<T> {
 	}
 
 	@Override
-	public final T value() {
+	public final @Nullable T value() {
 		return value;
 	}
 

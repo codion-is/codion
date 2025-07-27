@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.property.PropertyValue;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.Action;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
@@ -75,7 +77,7 @@ public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBu
 	 * @param format the format
 	 * @return this builder instance
 	 */
-	B format(Format format);
+	B format(@Nullable Format format);
 
 	/**
 	 * @param horizontalAlignment the horizontal text alignment

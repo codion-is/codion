@@ -24,6 +24,8 @@ import is.codion.swing.common.model.component.button.NullableToggleButtonModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.border.Border;
@@ -170,7 +172,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 
 		private final UISettings uiSettings;
 
-		private ObservableState filterEnabled;
+		private @Nullable ObservableState filterEnabled;
 		private boolean filterEnabledSet = false;
 
 		private Settings(SettingsBuilder<R, C, T> builder) {

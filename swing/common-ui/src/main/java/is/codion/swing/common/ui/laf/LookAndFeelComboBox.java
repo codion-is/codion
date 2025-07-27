@@ -24,6 +24,8 @@ import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
@@ -175,13 +177,13 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 		 * @param enabled the enabled observer
 		 * @return this builder
 		 */
-		Builder enabled(ObservableState enabled);
+		Builder enabled(@Nullable ObservableState enabled);
 
 		/**
 		 * @param onSelection called when the selection changes
 		 * @return this builcer
 		 */
-		Builder onSelection(Consumer<LookAndFeelEnabler> onSelection);
+		Builder onSelection(@Nullable Consumer<LookAndFeelEnabler> onSelection);
 
 		/**
 		 * @return a new {@link LookAndFeelComboBox}
@@ -191,10 +193,10 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 
 	private static final class DefaultBuilder implements Builder {
 
-		private ObservableState enabled;
+		private @Nullable ObservableState enabled;
 		private boolean includeInstalled = INCLUDE_INSTALLED_LOOK_AND_FEELS.getOrThrow();
 		private boolean enableOnSelection = ENABLE_ON_SELECTION.getOrThrow();
-		private Consumer<LookAndFeelEnabler> onSelection;
+		private @Nullable Consumer<LookAndFeelEnabler> onSelection;
 
 		@Override
 		public Builder enableOnSelection(boolean enableOnSelection) {
@@ -209,13 +211,13 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 		}
 
 		@Override
-		public Builder enabled(ObservableState enabled) {
+		public Builder enabled(@Nullable ObservableState enabled) {
 			this.enabled = enabled;
 			return this;
 		}
 
 		@Override
-		public Builder onSelection(Consumer<LookAndFeelEnabler> onSelection) {
+		public Builder onSelection(@Nullable Consumer<LookAndFeelEnabler> onSelection) {
 			this.onSelection = onSelection;
 			return this;
 		}
@@ -230,7 +232,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 
 		private final LookAndFeelPanel panel;
 
-		private Item<LookAndFeelEnabler> item;
+		private @Nullable Item<LookAndFeelEnabler> item;
 
 		private LookAndFeelEditor(Map<LookAndFeelEnabler, Map<String, Object>> lookAndFeelDefaults) {
 			panel = new LookAndFeelPanel(lookAndFeelDefaults);
@@ -242,12 +244,12 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 		}
 
 		@Override
-		public Object getItem() {
+		public @Nullable Object getItem() {
 			return item;
 		}
 
 		@Override
-		public void setItem(Object item) {
+		public void setItem(@Nullable Object item) {
 			this.item = (Item<LookAndFeelEnabler>) item;
 			if (this.item != null) {
 				panel.setLookAndFeel(this.item.value(), false);

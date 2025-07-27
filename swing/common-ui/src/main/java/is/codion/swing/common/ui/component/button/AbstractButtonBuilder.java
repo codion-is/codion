@@ -24,6 +24,8 @@ import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
@@ -54,7 +56,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
 
 	private final List<ActionListener> actionListeners = new ArrayList<>();
 
-	private String text;
+	private @Nullable String text;
 	private int mnemonic;
 	private boolean includeText = true;
 	private int horizontalAlignment = SwingConstants.CENTER;
@@ -65,24 +67,24 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
 	private boolean contentAreaFilled = true;
 	private boolean focusPainted = true;
 	private boolean rolloverEnabled = false;
-	private Long multiClickThreshold;
-	private Icon icon;
-	private Icon pressedIcon;
-	private Icon selectedIcon;
-	private Icon rolloverIcon;
-	private Icon rolloverSelectedIcon;
-	private Icon disabledIcon;
-	private Icon disabledSelectedIcon;
-	private Integer iconTextGap;
-	private Insets insets;
-	private ButtonGroup buttonGroup;
+	private @Nullable Long multiClickThreshold;
+	private @Nullable Icon icon;
+	private @Nullable Icon pressedIcon;
+	private @Nullable Icon selectedIcon;
+	private @Nullable Icon rolloverIcon;
+	private @Nullable Icon rolloverSelectedIcon;
+	private @Nullable Icon disabledIcon;
+	private @Nullable Icon disabledSelectedIcon;
+	private @Nullable Integer iconTextGap;
+	private @Nullable Insets insets;
+	private @Nullable ButtonGroup buttonGroup;
 	private boolean selected = false;
-	private Action action;
+	private @Nullable Action action;
 
 	protected AbstractButtonBuilder() {}
 
 	@Override
-	public final B text(String text) {
+	public final B text(@Nullable String text) {
 		this.text = text;
 		return self();
 	}
@@ -154,43 +156,43 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
 	}
 
 	@Override
-	public final B icon(Icon icon) {
+	public final B icon(@Nullable Icon icon) {
 		this.icon = icon;
 		return self();
 	}
 
 	@Override
-	public final B pressedIcon(Icon pressedIcon) {
+	public final B pressedIcon(@Nullable Icon pressedIcon) {
 		this.pressedIcon = pressedIcon;
 		return self();
 	}
 
 	@Override
-	public final B selectedIcon(Icon selectedIcon) {
+	public final B selectedIcon(@Nullable Icon selectedIcon) {
 		this.selectedIcon = selectedIcon;
 		return self();
 	}
 
 	@Override
-	public final B rolloverIcon(Icon rolloverIcon) {
+	public final B rolloverIcon(@Nullable Icon rolloverIcon) {
 		this.rolloverIcon = rolloverIcon;
 		return self();
 	}
 
 	@Override
-	public final B rolloverSelectedIcon(Icon rolloverSelectedIcon) {
+	public final B rolloverSelectedIcon(@Nullable Icon rolloverSelectedIcon) {
 		this.rolloverSelectedIcon = rolloverSelectedIcon;
 		return self();
 	}
 
 	@Override
-	public final B disabledIcon(Icon disabledIcon) {
+	public final B disabledIcon(@Nullable Icon disabledIcon) {
 		this.disabledIcon = disabledIcon;
 		return self();
 	}
 
 	@Override
-	public final B disabledSelectedIcon(Icon disabledSelectedIcon) {
+	public final B disabledSelectedIcon(@Nullable Icon disabledSelectedIcon) {
 		this.disabledSelectedIcon = disabledSelectedIcon;
 		return self();
 	}
@@ -202,14 +204,14 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
 	}
 
 	@Override
-	public final B margin(Insets insets) {
-		this.insets = requireNonNull(insets);
+	public final B margin(@Nullable Insets insets) {
+		this.insets = insets;
 		return self();
 	}
 
 	@Override
-	public final B buttonGroup(ButtonGroup buttonGroup) {
-		this.buttonGroup = requireNonNull(buttonGroup);
+	public final B buttonGroup(@Nullable ButtonGroup buttonGroup) {
+		this.buttonGroup = buttonGroup;
 		return self();
 	}
 
@@ -220,7 +222,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
 	}
 
 	@Override
-	public final B action(Action action) {
+	public final B action(@Nullable Action action) {
 		this.action = action;
 		return self();
 	}
@@ -351,7 +353,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
 		}
 
 		@Override
-		protected Boolean getValue() {
+		protected @Nullable Boolean getValue() {
 			if (buttonModel instanceof NullableToggleButtonModel) {
 				return ((NullableToggleButtonModel) buttonModel).state().get();
 			}
@@ -360,7 +362,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
 		}
 
 		@Override
-		protected void setValue(Boolean value) {
+		protected void setValue(@Nullable Boolean value) {
 			if (SwingUtilities.isEventDispatchThread()) {
 				setModelValue(value);
 			}
@@ -386,7 +388,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
 			}
 		}
 
-		private void setModelValue(Boolean value) {
+		private void setModelValue(@Nullable Boolean value) {
 			if (buttonModel instanceof NullableToggleButtonModel) {
 				((NullableToggleButtonModel) buttonModel).state().set(value);
 			}

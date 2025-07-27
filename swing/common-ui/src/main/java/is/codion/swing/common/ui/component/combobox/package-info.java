@@ -23,4 +23,5 @@
  * <li>{@link is.codion.swing.common.ui.component.combobox.Completion#NORMALIZE}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 package is.codion.swing.common.ui.component.combobox;

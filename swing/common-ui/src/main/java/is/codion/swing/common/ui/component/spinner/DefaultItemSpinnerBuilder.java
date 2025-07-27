@@ -28,7 +28,7 @@ final class DefaultItemSpinnerBuilder<T> extends AbstractSpinnerBuilder<T, ItemS
 				implements ItemSpinnerBuilder<T> {
 
 	DefaultItemSpinnerBuilder() {
-		model(new SpinnerListModel());
+		super(new SpinnerListModel());
 	}
 
 	@Override

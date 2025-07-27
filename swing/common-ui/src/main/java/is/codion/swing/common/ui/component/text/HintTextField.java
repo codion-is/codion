@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.value.Value;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JTextField;
 import javax.swing.text.Document;
 import java.awt.Color;
@@ -44,7 +46,7 @@ public class HintTextField extends JTextField {
 
 	private final Value<String> hint;
 
-	private Color hintColor;
+	private @Nullable Color hintColor;
 
 	/**
 	 * @param document the document
@@ -64,7 +66,7 @@ public class HintTextField extends JTextField {
 	 * @param document the document
 	 * @param hint the hint text
 	 */
-	public HintTextField(Document document, String hint) {
+	public HintTextField(@Nullable Document document, @Nullable String hint) {
 		super(document, null, 0);
 		this.hint = Value.builder()
 						.nonNull("")
@@ -125,7 +127,7 @@ public class HintTextField extends JTextField {
 		repaint();
 	}
 
-	private Color hintForegroundColor() {
+	private @Nullable Color hintForegroundColor() {
 		Color foreground = getForeground();
 		Color background = getBackground();
 		if (foreground == null || background == null) {

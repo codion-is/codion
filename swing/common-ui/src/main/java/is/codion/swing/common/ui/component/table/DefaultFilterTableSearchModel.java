@@ -25,6 +25,8 @@ import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableColumnModelEvent;
@@ -115,7 +117,7 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 		tableModel.items().visible().addListener(this::performSearch);
 	}
 
-	private Predicate<String> predicate(String searchText) {
+	private @Nullable Predicate<String> predicate(String searchText) {
 		if (searchText.isEmpty()) {
 			return null;
 		}

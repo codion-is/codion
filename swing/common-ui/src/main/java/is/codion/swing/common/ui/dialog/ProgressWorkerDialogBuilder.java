@@ -21,6 +21,8 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.control.Control;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import java.awt.Dimension;
@@ -99,25 +101,25 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
 	 * @param border the border to add around the progress bar
 	 * @return this Builder instance
 	 */
-	ProgressWorkerDialogBuilder<T, V> border(Border border);
+	ProgressWorkerDialogBuilder<T, V> border(@Nullable Border border);
 
 	/**
 	 * @param northPanel if specified this panel will be added to the BorderLayout.NORTH position of the dialog
 	 * @return this Builder instance
 	 */
-	ProgressWorkerDialogBuilder<T, V> northPanel(JPanel northPanel);
+	ProgressWorkerDialogBuilder<T, V> northPanel(@Nullable JPanel northPanel);
 
 	/**
 	 * @param westPanel if specified this panel will be added to the BorderLayout.WEST position of the dialog
 	 * @return this Builder instance
 	 */
-	ProgressWorkerDialogBuilder<T, V> westPanel(JPanel westPanel);
+	ProgressWorkerDialogBuilder<T, V> westPanel(@Nullable JPanel westPanel);
 
 	/**
 	 * @param eastPanel if specified this panel will be added to the BorderLayout.EAST position of the dialog
 	 * @return this Builder instance
 	 */
-	ProgressWorkerDialogBuilder<T, V> eastPanel(JPanel eastPanel);
+	ProgressWorkerDialogBuilder<T, V> eastPanel(@Nullable JPanel eastPanel);
 
 	/**
 	 * @param controlBuilder the control built by this builder will be added to the dialog as a button
@@ -135,7 +137,7 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
 	 * @param progressBarSize the size of the progress bar
 	 * @return this Builder instance
 	 */
-	ProgressWorkerDialogBuilder<T, V> progressBarSize(Dimension progressBarSize);
+	ProgressWorkerDialogBuilder<T, V> progressBarSize(@Nullable Dimension progressBarSize);
 
 	/**
 	 * @param onPublish called on the Event Dispatch Thread when chunks are available for publishing

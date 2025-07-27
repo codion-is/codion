@@ -21,6 +21,8 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JComponent;
 
 /**
@@ -32,7 +34,7 @@ public interface LoginDialogBuilder extends DialogBuilder<LoginDialogBuilder> {
 	 * @param defaultUser the default user credentials to display
 	 * @return this LoginDialogBuilder instance
 	 */
-	LoginDialogBuilder defaultUser(User defaultUser);
+	LoginDialogBuilder defaultUser(@Nullable User defaultUser);
 
 	/**
 	 * @param validator the login validator to use
@@ -44,7 +46,7 @@ public interface LoginDialogBuilder extends DialogBuilder<LoginDialogBuilder> {
 	 * @param southComponent a component to add to the south of the credentials input fields
 	 * @return this LoginDialogBuilder instance
 	 */
-	LoginDialogBuilder southComponent(JComponent southComponent);
+	LoginDialogBuilder southComponent(@Nullable JComponent southComponent);
 
 	/**
 	 * @param inputFieldColumns the number of columns to display in the input fields (username/password), 8 by default

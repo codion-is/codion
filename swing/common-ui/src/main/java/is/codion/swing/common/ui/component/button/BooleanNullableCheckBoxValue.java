@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.component.button;
 
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 
+import org.jspecify.annotations.Nullable;
+
 final class BooleanNullableCheckBoxValue extends AbstractComponentValue<Boolean, NullableCheckBox> {
 
 	BooleanNullableCheckBoxValue(NullableCheckBox checkBox) {
@@ -28,12 +30,12 @@ final class BooleanNullableCheckBoxValue extends AbstractComponentValue<Boolean,
 	}
 
 	@Override
-	protected Boolean getComponentValue() {
+	protected @Nullable Boolean getComponentValue() {
 		return component().model().state().get();
 	}
 
 	@Override
-	protected void setComponentValue(Boolean value) {
+	protected void setComponentValue(@Nullable Boolean value) {
 		component().model().state().set(value);
 	}
 }

@@ -21,6 +21,8 @@ package is.codion.swing.common.ui.control;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.AbstractAction;
 import javax.swing.Icon;
 import javax.swing.KeyStroke;
@@ -75,7 +77,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
 	}
 
 	@Override
-	public final void putValue(String key, Object newValue) {
+	public final void putValue(String key, @Nullable Object newValue) {
 		if (initialized) {
 			throw new UnsupportedOperationException();
 		}
@@ -83,7 +85,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
 	}
 
 	@Override
-	public final Object getValue(String key) {
+	public final @Nullable Object getValue(String key) {
 		if (ENABLED.equals(key)) {
 			return enabledObservable.get();
 		}
@@ -168,18 +170,18 @@ abstract class AbstractControl extends AbstractAction implements Control {
 
 	abstract static class AbstractControlBuilder<C extends Control, B extends Builder<C, B>> implements Builder<C, B> {
 
-		private final Map<String, Object> values = new HashMap<>();
+		private final Map<String, @Nullable Object> values = new HashMap<>();
 
-		private ObservableState enabled;
+		private @Nullable ObservableState enabled;
 
 		@Override
-		public final B caption(String caption) {
+		public final B caption(@Nullable String caption) {
 			values.put(NAME, caption);
 			return self();
 		}
 
 		@Override
-		public final B enabled(ObservableState enabled) {
+		public final B enabled(@Nullable ObservableState enabled) {
 			this.enabled = enabled;
 			return self();
 		}
@@ -191,49 +193,49 @@ abstract class AbstractControl extends AbstractAction implements Control {
 		}
 
 		@Override
-		public final B smallIcon(Icon smallIcon) {
+		public final B smallIcon(@Nullable Icon smallIcon) {
 			values.put(SMALL_ICON, smallIcon);
 			return self();
 		}
 
 		@Override
-		public final B largeIcon(Icon largeIcon) {
+		public final B largeIcon(@Nullable Icon largeIcon) {
 			values.put(LARGE_ICON_KEY, largeIcon);
 			return self();
 		}
 
 		@Override
-		public final B description(String description) {
+		public final B description(@Nullable String description) {
 			values.put(SHORT_DESCRIPTION, description);
 			return self();
 		}
 
 		@Override
-		public final B foreground(Color foreground) {
+		public final B foreground(@Nullable Color foreground) {
 			values.put(FOREGROUND, foreground);
 			return self();
 		}
 
 		@Override
-		public final B background(Color background) {
+		public final B background(@Nullable Color background) {
 			values.put(BACKGROUND, background);
 			return self();
 		}
 
 		@Override
-		public final B font(Font font) {
+		public final B font(@Nullable Font font) {
 			values.put(FONT, font);
 			return self();
 		}
 
 		@Override
-		public final B keyStroke(KeyStroke keyStroke) {
+		public final B keyStroke(@Nullable KeyStroke keyStroke) {
 			values.put(ACCELERATOR_KEY, keyStroke);
 			return self();
 		}
 
 		@Override
-		public final B value(String key, Object value) {
+		public final B value(String key, @Nullable Object value) {
 			requireNonNull(key);
 			if (ENABLED.equals(key)) {
 				throw new IllegalArgumentException("Can not set the enabled property of a Control");

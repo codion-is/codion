@@ -22,6 +22,8 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JMenuItem;
 import javax.swing.SwingConstants;
 
@@ -30,8 +32,8 @@ import static java.util.Objects.requireNonNull;
 abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends ToggleMenuItemBuilder<C, B>> extends AbstractButtonBuilder<Boolean, C, B>
 				implements ToggleMenuItemBuilder<C, B> {
 
-	private ToggleControl toggleControl;
-	private PersistMenu persistMenu = PERSIST_MENU.get();
+	private @Nullable ToggleControl toggleControl;
+	private PersistMenu persistMenu = PERSIST_MENU.getOrThrow();
 
 	AbstractToggleMenuItemBuilder() {
 		value(false);

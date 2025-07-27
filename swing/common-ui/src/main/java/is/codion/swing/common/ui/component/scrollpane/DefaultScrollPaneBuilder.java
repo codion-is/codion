@@ -22,6 +22,8 @@ import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
@@ -31,7 +33,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultScrollPaneBuilder extends AbstractComponentBuilder<Void, JScrollPane, ScrollPaneBuilder> implements ScrollPaneBuilder {
 
-	private JComponent view;
+	private @Nullable JComponent view;
 	private int vsbPolicy = ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
 	private int hsbPolicy = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 	private boolean wheelScrollingEnabled = true;
@@ -39,7 +41,7 @@ final class DefaultScrollPaneBuilder extends AbstractComponentBuilder<Void, JScr
 	private int horizontalUnitIncrement;
 	private int verticalBlockIncrement;
 	private int horizontalBlockIncrement;
-	private LayoutManager layout;
+	private @Nullable LayoutManager layout;
 
 	DefaultScrollPaneBuilder() {}
 
@@ -92,7 +94,7 @@ final class DefaultScrollPaneBuilder extends AbstractComponentBuilder<Void, JScr
 	}
 
 	@Override
-	public ScrollPaneBuilder layout(LayoutManager layout) {
+	public ScrollPaneBuilder layout(@Nullable LayoutManager layout) {
 		this.layout = layout;
 		return this;
 	}

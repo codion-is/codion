@@ -17,9 +17,11 @@
  * Copyright (c) 2023 - 2025, Björn Darri Sigurðsson.
  */
 /**
- * Package configuration values:
+ * <p>UI scaling utilities for high DPI support.
+ * <p>Package configuration values:
  * <ul>
  * <li>{@link is.codion.swing.common.ui.scaler.Scaler#RATIO}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 package is.codion.swing.common.ui.scaler;

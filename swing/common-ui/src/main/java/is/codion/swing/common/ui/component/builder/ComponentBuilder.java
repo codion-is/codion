@@ -31,6 +31,8 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPopupMenu;
@@ -83,14 +85,14 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 * @return this builder instance
 	 * @see Component#setName(String)
 	 */
-	B name(String name);
+	B name(@Nullable String name);
 
 	/**
 	 * @param label the label for the component
 	 * @return this builder instance
 	 * @see JLabel#setLabelFor(Component)
 	 */
-	B label(JLabel label);
+	B label(@Nullable JLabel label);
 
 	/**
 	 * @param focusable false if the component should not be focusable
@@ -116,7 +118,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 * @return this builder instance
 	 * @see JComponent#setPreferredSize(Dimension)
 	 */
-	B preferredSize(Dimension preferredSize);
+	B preferredSize(@Nullable Dimension preferredSize);
 
 	/**
 	 * @param maximumHeight the maximum component height
@@ -135,7 +137,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 * @return this builder instance
 	 * @see JComponent#setMaximumSize(Dimension)
 	 */
-	B maximumSize(Dimension maximumSize);
+	B maximumSize(@Nullable Dimension maximumSize);
 
 	/**
 	 * @param minimumHeight the minimum component height
@@ -154,14 +156,14 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 * @return this builder instance
 	 * @see JComponent#setMinimumSize(Dimension)
 	 */
-	B minimumSize(Dimension minimumSize);
+	B minimumSize(@Nullable Dimension minimumSize);
 
 	/**
 	 * @param border the component border
 	 * @return this builder instance
 	 * @see JComponent#setBorder(Border)
 	 */
-	B border(Border border);
+	B border(@Nullable Border border);
 
 	/**
 	 * <p>Note that in case of {@link JTextArea} the {@link java.awt.event.InputEvent#CTRL_DOWN_MASK}
@@ -185,7 +187,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 * @see #toolTipText(Observable)
 	 * @see JComponent#setToolTipText(String)
 	 */
-	B toolTipText(String toolTipText);
+	B toolTipText(@Nullable String toolTipText);
 
 	/**
 	 * Overrides {@link #toolTipText(String)}
@@ -193,7 +195,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 * @return this builder instance
 	 * @see JComponent#setToolTipText(String)
 	 */
-	B toolTipText(Observable<String> toolTipText);
+	B toolTipText(@Nullable Observable<String> toolTipText);
 
 	/**
 	 * Sets the enabled state of the component, for a dynamic enabled state use {@link #enabled(ObservableState)}.
@@ -208,14 +210,14 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 * @param enabled the state observer controlling the component enabled status
 	 * @return this builder instance
 	 */
-	B enabled(ObservableState enabled);
+	B enabled(@Nullable ObservableState enabled);
 
 	/**
 	 * @param validIndicatorFactory the {@link ValidIndicatorFactory} to use, null for none
 	 * @return this builder instance
 	 * @see ValidIndicatorFactory#instance()
 	 */
-	B validIndicatorFactory(ValidIndicatorFactory validIndicatorFactory);
+	B validIndicatorFactory(@Nullable ValidIndicatorFactory validIndicatorFactory);
 
 	/**
 	 * Enables a valid indicator based on the given valid state.
@@ -224,7 +226,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 * @see #validIndicatorFactory(ValidIndicatorFactory)
 	 * @see is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory
 	 */
-	B validIndicator(ObservableState valid);
+	B validIndicator(@Nullable ObservableState valid);
 
 	/**
 	 * <p>Enables a valid indicator based on the given validator. Note that this
@@ -236,14 +238,14 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 * @see #validIndicatorFactory(ValidIndicatorFactory)
 	 * @see is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory
 	 */
-	B validIndicator(Predicate<T> validator);
+	B validIndicator(@Nullable Predicate<T> validator);
 
 	/**
 	 * By default {@link is.codion.swing.common.ui.component.indicator.UnderlineModifiedIndicatorFactory}.
 	 * @param modifiedIndicatorFactory the {@link ModifiedIndicatorFactory} to use, null for none
 	 * @return this builder instance
 	 */
-	B modifiedIndicatorFactory(ModifiedIndicatorFactory modifiedIndicatorFactory);
+	B modifiedIndicatorFactory(@Nullable ModifiedIndicatorFactory modifiedIndicatorFactory);
 
 	/**
 	 * Enables a modified indicator based on the given modified state.
@@ -251,47 +253,47 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 * @return this builder instance
 	 * @see #modifiedIndicatorFactory(ModifiedIndicatorFactory)
 	 */
-	B modifiedIndicator(ObservableState modified);
+	B modifiedIndicator(@Nullable ObservableState modified);
 
 	/**
 	 * @param popupMenuControl a function, receiving the component being built, providing the control to base a popup menu on
 	 * @return this builder instance
 	 */
-	B popupMenuControl(Function<C, Control> popupMenuControl);
+	B popupMenuControl(@Nullable Function<C, Control> popupMenuControl);
 
 	/**
 	 * @param popupMenuControls a function, receiving the component being built, providing the controls to base a popup menu on
 	 * @return this builder instance
 	 */
-	B popupMenuControls(Function<C, Controls> popupMenuControls);
+	B popupMenuControls(@Nullable Function<C, Controls> popupMenuControls);
 
 	/**
 	 * @param popupMenu a function, receiving the component being built, providing the popup menu
 	 * @return this builder instance
 	 * @see JComponent#setComponentPopupMenu(JPopupMenu)
 	 */
-	B popupMenu(Function<C, JPopupMenu> popupMenu);
+	B popupMenu(@Nullable Function<C, JPopupMenu> popupMenu);
 
 	/**
 	 * @param font the component font
 	 * @return this builder instance
 	 * @see JComponent#setFont(Font)
 	 */
-	B font(Font font);
+	B font(@Nullable Font font);
 
 	/**
 	 * @param foreground the foreground color
 	 * @return this builder instance
 	 * @see JComponent#setForeground(Color)
 	 */
-	B foreground(Color foreground);
+	B foreground(@Nullable Color foreground);
 
 	/**
 	 * @param background the background color
 	 * @return this builder instance
 	 * @see JComponent#setBackground(Color)
 	 */
-	B background(Color background);
+	B background(@Nullable Color background);
 
 	/**
 	 * @param opaque true if the component should be opaque
@@ -312,7 +314,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 * @return this builder instance
 	 * @see JComponent#setComponentOrientation(ComponentOrientation)
 	 */
-	B componentOrientation(ComponentOrientation orientation);
+	B componentOrientation(@Nullable ComponentOrientation orientation);
 
 	/**
 	 * @param validator the validator to use
@@ -336,7 +338,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 * @return this builder instance
 	 * @see JComponent#putClientProperty(Object, Object)
 	 */
-	B clientProperty(Object key, Object value);
+	B clientProperty(Object key, @Nullable Object value);
 
 	/**
 	 * @param focusListener the focus listener
@@ -400,7 +402,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 * @return this builder instance
 	 * @see JComponent#setTransferHandler(TransferHandler)
 	 */
-	B transferHandler(TransferHandler transferHandler);
+	B transferHandler(@Nullable TransferHandler transferHandler);
 
 	/**
 	 * @param focusCycleRoot true if the component should be the root of a focus traversal cycle
@@ -448,7 +450,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 * @param value the initial value
 	 * @return this builder instance
 	 */
-	B value(T value);
+	B value(@Nullable T value);
 
 	/**
 	 * @return a {@link ScrollPaneBuilder} using this component as the view
@@ -478,7 +480,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 * @param onBuild called after the component is built.
 	 * @return the component
 	 */
-	C build(Consumer<C> onBuild);
+	C build(@Nullable Consumer<C> onBuild);
 
 	/**
 	 * Builds and returns the component value.
@@ -491,5 +493,5 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 * @param onBuild called after the component value is built.
 	 * @return the component value
 	 */
-	ComponentValue<T, C> buildValue(Consumer<ComponentValue<T, C>> onBuild);
+	ComponentValue<T, C> buildValue(@Nullable Consumer<ComponentValue<T, C>> onBuild);
 }

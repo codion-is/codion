@@ -35,6 +35,7 @@
  * <li>{@link is.codion.swing.common.ui.layout.Layouts}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.swing.common.ui {
 	requires java.rmi;
 	requires transitive is.codion.swing.common.model;

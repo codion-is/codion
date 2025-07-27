@@ -22,4 +22,5 @@
  * <li>{@link is.codion.swing.common.ui.component.indicator.UnderlineModifiedIndicatorFactory#UNDERLINE_STYLE}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 package is.codion.swing.common.ui.component.indicator;

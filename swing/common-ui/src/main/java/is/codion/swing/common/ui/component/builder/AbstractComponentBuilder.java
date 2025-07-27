@@ -35,6 +35,8 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPopupMenu;
@@ -85,8 +87,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	private final List<Runnable> listeners = new ArrayList<>();
 	private final List<Consumer<T>> consumers = new ArrayList<>();
 
-	private String name;
-	private JLabel label;
+	private @Nullable String name;
+	private @Nullable JLabel label;
 	private boolean focusable = true;
 	private int preferredHeight = -1;
 	private int preferredWidth = -1;
@@ -96,39 +98,39 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	private int maximumWidth = -1;
 	private boolean opaque = false;
 	private boolean visible = true;
-	private Border border;
-	private TransferFocusOnEnter transferFocusOnEnter;
-	private String toolTipText;
-	private Observable<String> toolTipTextObservable;
-	private Font font;
-	private Color foreground;
-	private Color background;
-	private ComponentOrientation componentOrientation;
-	private ValidIndicatorFactory validIndicatorFactory =
+	private @Nullable Border border;
+	private @Nullable TransferFocusOnEnter transferFocusOnEnter;
+	private @Nullable String toolTipText;
+	private @Nullable Observable<String> toolTipTextObservable;
+	private @Nullable Font font;
+	private @Nullable Color foreground;
+	private @Nullable Color background;
+	private @Nullable ComponentOrientation componentOrientation;
+	private @Nullable ValidIndicatorFactory validIndicatorFactory =
 					ValidIndicatorFactory.instance().orElse(null);
-	private ObservableState enabledObservable;
-	private ObservableState validObservable;
-	private ModifiedIndicatorFactory modifiedIndicatorFactory = new UnderlineModifiedIndicatorFactory();
-	private ObservableState modifiedObservable;
-	private Predicate<T> validator;
+	private @Nullable ObservableState enabledObservable;
+	private @Nullable ObservableState validObservable;
+	private @Nullable ModifiedIndicatorFactory modifiedIndicatorFactory = new UnderlineModifiedIndicatorFactory();
+	private @Nullable ObservableState modifiedObservable;
+	private @Nullable Predicate<T> validator;
 	private boolean enabled = true;
-	private Function<C, JPopupMenu> popupMenu;
-	private T value;
+	private @Nullable Function<C, JPopupMenu> popupMenu;
+	private @Nullable T value;
 	private boolean valueSet = false;
-	private Consumer<C> onSetVisible;
-	private TransferHandler transferHandler;
+	private @Nullable Consumer<C> onSetVisible;
+	private @Nullable TransferHandler transferHandler;
 	private boolean focusCycleRoot = false;
 
 	protected AbstractComponentBuilder() {}
 
 	@Override
-	public final B name(String name) {
+	public final B name(@Nullable String name) {
 		this.name = name;
 		return self();
 	}
 
 	@Override
-	public final B label(JLabel label) {
+	public final B label(@Nullable JLabel label) {
 		this.label = label;
 		return self();
 	}
@@ -152,7 +154,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	}
 
 	@Override
-	public final B preferredSize(Dimension preferredSize) {
+	public final B preferredSize(@Nullable Dimension preferredSize) {
 		this.preferredHeight = preferredSize == null ? -1 : preferredSize.height;
 		this.preferredWidth = preferredSize == null ? -1 : preferredSize.width;
 		return self();
@@ -171,7 +173,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	}
 
 	@Override
-	public final B maximumSize(Dimension maximumSize) {
+	public final B maximumSize(@Nullable Dimension maximumSize) {
 		this.maximumHeight = maximumSize == null ? -1 : maximumSize.height;
 		this.maximumWidth = maximumSize == null ? -1 : maximumSize.width;
 		return self();
@@ -190,14 +192,14 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	}
 
 	@Override
-	public final B minimumSize(Dimension minimumSize) {
+	public final B minimumSize(@Nullable Dimension minimumSize) {
 		this.minimumHeight = minimumSize == null ? -1 : minimumSize.height;
 		this.minimumWidth = minimumSize == null ? -1 : minimumSize.width;
 		return self();
 	}
 
 	@Override
-	public final B border(Border border) {
+	public final B border(@Nullable Border border) {
 		this.border = border;
 		return self();
 	}
@@ -224,37 +226,37 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	}
 
 	@Override
-	public final B enabled(ObservableState enabled) {
+	public final B enabled(@Nullable ObservableState enabled) {
 		this.enabledObservable = enabled;
 		return self();
 	}
 
 	@Override
-	public final B validIndicatorFactory(ValidIndicatorFactory validIndicatorFactory) {
+	public final B validIndicatorFactory(@Nullable ValidIndicatorFactory validIndicatorFactory) {
 		this.validIndicatorFactory = validIndicatorFactory;
 		return self();
 	}
 
 	@Override
-	public final B validIndicator(ObservableState valid) {
+	public final B validIndicator(@Nullable ObservableState valid) {
 		this.validObservable = valid;
 		return self();
 	}
 
 	@Override
-	public final B validIndicator(Predicate<T> validator) {
+	public final B validIndicator(@Nullable Predicate<T> validator) {
 		this.validator = validator;
 		return self();
 	}
 
 	@Override
-	public final B modifiedIndicatorFactory(ModifiedIndicatorFactory modifiedIndicatorFactory) {
+	public final B modifiedIndicatorFactory(@Nullable ModifiedIndicatorFactory modifiedIndicatorFactory) {
 		this.modifiedIndicatorFactory = modifiedIndicatorFactory;
 		return self();
 	}
 
 	@Override
-	public final B modifiedIndicator(ObservableState modified) {
+	public final B modifiedIndicator(@Nullable ObservableState modified) {
 		this.modifiedObservable = modified;
 		return self();
 	}
@@ -276,37 +278,37 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	}
 
 	@Override
-	public final B popupMenu(Function<C, JPopupMenu> popupMenu) {
+	public final B popupMenu(@Nullable Function<C, JPopupMenu> popupMenu) {
 		this.popupMenu = popupMenu;
 		return self();
 	}
 
 	@Override
-	public final B toolTipText(String toolTipText) {
+	public final B toolTipText(@Nullable String toolTipText) {
 		this.toolTipText = toolTipText;
 		return self();
 	}
 
 	@Override
-	public final B toolTipText(Observable<String> toolTipText) {
+	public final B toolTipText(@Nullable Observable<String> toolTipText) {
 		this.toolTipTextObservable = toolTipText;
 		return self();
 	}
 
 	@Override
-	public final B font(Font font) {
+	public final B font(@Nullable Font font) {
 		this.font = font;
 		return self();
 	}
 
 	@Override
-	public final B foreground(Color foreground) {
+	public final B foreground(@Nullable Color foreground) {
 		this.foreground = foreground;
 		return self();
 	}
 
 	@Override
-	public final B background(Color background) {
+	public final B background(@Nullable Color background) {
 		this.background = background;
 		return self();
 	}
@@ -324,8 +326,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	}
 
 	@Override
-	public final B componentOrientation(ComponentOrientation componentOrientation) {
-		this.componentOrientation = requireNonNull(componentOrientation);
+	public final B componentOrientation(@Nullable ComponentOrientation componentOrientation) {
+		this.componentOrientation = componentOrientation;
 		return self();
 	}
 
@@ -342,7 +344,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	}
 
 	@Override
-	public final B clientProperty(Object key, Object value) {
+	public final B clientProperty(Object key, @Nullable Object value) {
 		this.clientProperties.put(requireNonNull(key), value);
 		return self();
 	}
@@ -396,7 +398,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	}
 
 	@Override
-	public final B transferHandler(TransferHandler transferHandler) {
+	public final B transferHandler(@Nullable TransferHandler transferHandler) {
 		this.transferHandler = transferHandler;
 		return self();
 	}
@@ -444,7 +446,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	}
 
 	@Override
-	public final B value(T value) {
+	public final B value(@Nullable T value) {
 		this.valueSet = true;
 		this.value = value;
 		return self();
@@ -473,7 +475,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	}
 
 	@Override
-	public final C build(Consumer<C> onBuild) {
+	public final C build(@Nullable Consumer<C> onBuild) {
 		ComponentValue<T, C> componentValue = createComponentValue(createComponent());
 		C component = configureComponent(componentValue);
 		if (onBuild != null) {
@@ -489,7 +491,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	}
 
 	@Override
-	public final ComponentValue<T, C> buildValue(Consumer<ComponentValue<T, C>> onBuild) {
+	public final ComponentValue<T, C> buildValue(@Nullable Consumer<ComponentValue<T, C>> onBuild) {
 		ComponentValue<T, C> componentValue = createComponentValue(createComponent());
 		configureComponent(componentValue);
 		if (onBuild != null) {

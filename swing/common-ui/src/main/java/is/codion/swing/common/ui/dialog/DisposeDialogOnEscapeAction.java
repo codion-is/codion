@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.state.State;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.AbstractAction;
 import javax.swing.JDialog;
 import javax.swing.JPopupMenu;
@@ -37,9 +39,9 @@ import static java.util.stream.Collectors.toList;
 final class DisposeDialogOnEscapeAction extends AbstractAction {
 
 	private final JDialog dialog;
-	private final Consumer<State> confirmCloseListener;
+	private final @Nullable Consumer<State> confirmCloseListener;
 
-	DisposeDialogOnEscapeAction(JDialog dialog, Consumer<State> confirmCloseListener) {
+	DisposeDialogOnEscapeAction(JDialog dialog, @Nullable Consumer<State> confirmCloseListener) {
 		super("DisposeDialogOnEscapeAction");
 		this.dialog = dialog;
 		this.confirmCloseListener = confirmCloseListener;

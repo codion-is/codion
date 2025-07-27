@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.value.Value;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.text.DocumentFilter;
 import java.util.Collection;
 import java.util.Collections;
@@ -58,7 +60,7 @@ public class ValidationDocumentFilter<T> extends DocumentFilter {
 	 * @throws IllegalArgumentException in case of an invalid value
 	 * @see #addValidator(Value.Validator)
 	 */
-	protected final void validate(T value) {
+	protected final void validate(@Nullable T value) {
 		validators.forEach(validator -> validator.validate(value));
 	}
 }

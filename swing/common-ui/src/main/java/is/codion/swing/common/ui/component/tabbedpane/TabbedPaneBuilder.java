@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.component.tabbedpane;
 
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
@@ -115,20 +117,20 @@ public interface TabbedPaneBuilder extends ComponentBuilder<Void, JTabbedPane, T
 		 * @param toolTipText the tab tool tip text
 		 * @return this builder instance
 		 */
-		TabBuilder toolTipText(String toolTipText);
+		TabBuilder toolTipText(@Nullable String toolTipText);
 
 		/**
 		 * @param icon the tab icon
 		 * @return this builder instance
 		 */
-		TabBuilder icon(Icon icon);
+		TabBuilder icon(@Nullable Icon icon);
 
 		/**
 		 * @param tabComponent the tab component
 		 * @return this builder instance
 		 * @see JTabbedPane#setTabComponentAt(int, Component)
 		 */
-		TabBuilder tabComponent(JComponent tabComponent);
+		TabBuilder tabComponent(@Nullable JComponent tabComponent);
 
 		/**
 		 * Adds this tab and returns the {@link TabbedPaneBuilder}

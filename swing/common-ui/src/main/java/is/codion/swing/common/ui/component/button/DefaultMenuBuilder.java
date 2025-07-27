@@ -26,6 +26,8 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 import is.codion.swing.common.ui.control.ToggleControl;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -49,7 +51,7 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
 	private MenuItemBuilder<?, ?> menuItemBuilder = MenuItemBuilder.builder();
 	private ToggleMenuItemBuilder<?, ?> toggleMenuItemBuilder = CheckBoxMenuItemBuilder.builder();
 
-	DefaultMenuBuilder(Controls controls) {
+	DefaultMenuBuilder(@Nullable Controls controls) {
 		this.controlsBuilder = controls == null ? Controls.builder() : controls.copy();
 	}
 
@@ -65,7 +67,7 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
 	}
 
 	@Override
-	public MenuBuilder controls(Controls controls) {
+	public MenuBuilder controls(@Nullable Controls controls) {
 		this.controlsBuilder = controls == null ? Controls.builder() : controls.copy();
 		return this;
 	}

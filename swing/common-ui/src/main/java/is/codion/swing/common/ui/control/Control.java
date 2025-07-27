@@ -24,6 +24,8 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.ui.control.CommandControl.CommandControlBuilder;
 import is.codion.swing.common.ui.control.ToggleControl.ToggleControlBuilder;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -227,13 +229,13 @@ public interface Control extends Action {
 		 * @param caption the caption for the control
 		 * @return this Builder instance
 		 */
-		B caption(String caption);
+		B caption(@Nullable String caption);
 
 		/**
 		 * @param enabled the state observer which controls the enabled state of the control
 		 * @return this Builder instance
 		 */
-		B enabled(ObservableState enabled);
+		B enabled(@Nullable ObservableState enabled);
 
 		/**
 		 * @param mnemonic the control mnemonic
@@ -245,43 +247,43 @@ public interface Control extends Action {
 		 * @param smallIcon the small control icon
 		 * @return this Builder instance
 		 */
-		B smallIcon(Icon smallIcon);
+		B smallIcon(@Nullable Icon smallIcon);
 
 		/**
 		 * @param largeIcon the large control icon
 		 * @return this Builder instance
 		 */
-		B largeIcon(Icon largeIcon);
+		B largeIcon(@Nullable Icon largeIcon);
 
 		/**
 		 * @param description a string describing the control
 		 * @return this Builder instance
 		 */
-		B description(String description);
+		B description(@Nullable String description);
 
 		/**
 		 * @param foreground the foreground color
 		 * @return this Builder instance
 		 */
-		B foreground(Color foreground);
+		B foreground(@Nullable Color foreground);
 
 		/**
 		 * @param background the background color
 		 * @return this Builder instance
 		 */
-		B background(Color background);
+		B background(@Nullable Color background);
 
 		/**
 		 * @param font the font
 		 * @return this Builder instance
 		 */
-		B font(Font font);
+		B font(@Nullable Font font);
 
 		/**
 		 * @param keyStroke the keystroke to associate with the control
 		 * @return this Builder instance
 		 */
-		B keyStroke(KeyStroke keyStroke);
+		B keyStroke(@Nullable KeyStroke keyStroke);
 
 		/**
 		 * Note that any values added will overwrite the property, if already present,
@@ -292,7 +294,7 @@ public interface Control extends Action {
 		 * @return this builder
 		 * @see Action#putValue(String, Object)
 		 */
-		B value(String key, Object value);
+		B value(String key, @Nullable Object value);
 
 		/**
 		 * @return a new Control instance

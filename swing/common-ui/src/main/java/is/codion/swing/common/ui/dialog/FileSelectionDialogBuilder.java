@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.model.CancelException;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.filechooser.FileFilter;
 import java.io.File;
 import java.util.List;
@@ -33,7 +35,7 @@ public interface FileSelectionDialogBuilder extends DialogBuilder<FileSelectionD
 	 * @param startDirectory the start directory
 	 * @return this builder instance
 	 */
-	FileSelectionDialogBuilder startDirectory(String startDirectory);
+	FileSelectionDialogBuilder startDirectory(@Nullable String startDirectory);
 
 	/**
 	 * Only applies for {@link #selectDirectory()} and {@link #selectDirectories()}.
@@ -101,5 +103,5 @@ public interface FileSelectionDialogBuilder extends DialogBuilder<FileSelectionD
 	 * @return the selected file
 	 * @throws CancelException in case the user cancels
 	 */
-	File selectFileToSave(String defaultFileName);
+	File selectFileToSave(@Nullable String defaultFileName);
 }

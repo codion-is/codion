@@ -23,6 +23,8 @@ import is.codion.common.resource.MessageBundle;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.text.NumberDocument.NumberParser.NumberParseResult;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
@@ -315,11 +317,11 @@ class NumberDocument<T extends Number> extends PlainDocument {
 
 			private final int charetOffset;
 
-			private DefaultNumberParseResult(String text, T value) {
+			private DefaultNumberParseResult(String text, @Nullable T value) {
 				this(text, value, 0, true);
 			}
 
-			DefaultNumberParseResult(String text, T value, int charetOffset,
+			DefaultNumberParseResult(String text, @Nullable T value, int charetOffset,
 															 boolean successful) {
 				super(text, value, successful);
 				this.charetOffset = charetOffset;
@@ -341,7 +343,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
 		private final NumberParser<T> parser;
 		private final Value<T> value = Value.nullable();
 
-		private JTextComponent textComponent;
+		private @Nullable JTextComponent textComponent;
 		private boolean convertGroupingToDecimalSeparator = true;
 		private boolean silentValidation = false;
 
@@ -364,7 +366,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
 
 		@Override
 		public void replace(FilterBypass filterBypass, int offset, int length, String text,
-												AttributeSet attributeSet) throws BadLocationException {
+												@Nullable AttributeSet attributeSet) throws BadLocationException {
 			if (text != null) {
 				text = convertSingleGroupingToDecimalSeparator(text);
 				Document document = filterBypass.getDocument();
@@ -382,19 +384,19 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			return parser;
 		}
 
-		void setMaximumValue(Number maximumValue) {
+		void setMaximumValue(@Nullable Number maximumValue) {
 			rangeValidator.maximumValue = maximumValue;
 		}
 
-		Number getMaximumValue() {
+		@Nullable Number getMaximumValue() {
 			return rangeValidator.maximumValue;
 		}
 
-		void setMinimumValue(Number minimumValue) {
+		void setMinimumValue(@Nullable Number minimumValue) {
 			rangeValidator.minimumValue = minimumValue;
 		}
 
-		Number getMinimumValue() {
+		@Nullable Number getMinimumValue() {
 			return rangeValidator.minimumValue;
 		}
 
@@ -439,7 +441,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
 		}
 
 		private void validateReplace(NumberParseResult<T> parseResult, FilterBypass filterBypass,
-																 AttributeSet attributeSet, int dotLocation) throws BadLocationException {
+																 @Nullable AttributeSet attributeSet, int dotLocation) throws BadLocationException {
 			if (parseResult.value() != null) {
 				try {
 					validate(parseResult.value());
@@ -460,8 +462,8 @@ class NumberDocument<T extends Number> extends PlainDocument {
 
 		private static final class NumberRangeValidator<T extends Number> implements Value.Validator<T> {
 
-			private Number minimumValue;
-			private Number maximumValue;
+			private @Nullable Number minimumValue;
+			private @Nullable Number maximumValue;
 
 			@Override
 			public void validate(T value) {

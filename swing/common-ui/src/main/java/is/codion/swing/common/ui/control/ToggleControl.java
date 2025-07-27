@@ -23,6 +23,8 @@ import is.codion.common.value.Value;
 
 import javax.swing.KeyStroke;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A Control for toggling a boolean value.
  */
@@ -59,7 +61,7 @@ public interface ToggleControl extends Control {
 	 * @return a new {@link ControlKey} for identifying a {@link ToggleControl} instance
 	 */
 	static ControlKey<ToggleControl> key(String name) {
-		return key(name, null);
+		return new DefaultControlKey<>(name, ToggleControl.class, null);
 	}
 
 	/**
@@ -68,7 +70,7 @@ public interface ToggleControl extends Control {
 	 * @return a new {@link ControlKey} for identifying a {@link ToggleControl} instance
 	 */
 	static ControlKey<ToggleControl> key(String name, KeyStroke defaultKeyStroke) {
-		return new DefaultControlKey<>(name, ToggleControl.class, defaultKeyStroke);
+		return new DefaultControlKey<>(name, ToggleControl.class, requireNonNull(defaultKeyStroke));
 	}
 
 	/**

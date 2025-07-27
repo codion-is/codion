@@ -30,6 +30,8 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -167,7 +169,7 @@ public final class FileInputPanel extends JPanel {
 						.editable(false);
 
 		private String buttonCaption = "...";
-		private Icon buttonIcon;
+		private @Nullable Icon buttonIcon;
 
 		@Override
 		public final Builder<T> buttonCaption(String buttonCaption) {

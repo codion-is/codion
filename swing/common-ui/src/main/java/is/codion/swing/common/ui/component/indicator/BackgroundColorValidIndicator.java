@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.component.indicator;
 
 import is.codion.common.state.ObservableState;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -32,9 +34,9 @@ final class BackgroundColorValidIndicator {
 	private final JComponent component;
 	private final String uiComponentKey;
 
-	private Color backgroundColor;
-	private Color inactiveBackgroundColor;
-	private Color invalidBackgroundColor;
+	private @Nullable Color backgroundColor;
+	private @Nullable Color inactiveBackgroundColor;
+	private @Nullable Color invalidBackgroundColor;
 
 	BackgroundColorValidIndicator(JComponent component, ObservableState valid) {
 		this.component = component;

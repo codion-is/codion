@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.dialog;
 
+import org.jspecify.annotations.Nullable;
+
 import java.awt.Window;
 
 /**
@@ -103,7 +105,7 @@ public final class Dialogs {
 	 * @param exception the exception
 	 * @param dialogParent the dialog parent window
 	 */
-	public static void displayException(Throwable exception, Window dialogParent) {
+	public static void displayException(Throwable exception, @Nullable Window dialogParent) {
 		new DefaultExceptionDialogBuilder()
 						.owner(dialogParent)
 						.show(exception);

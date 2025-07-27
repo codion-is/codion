@@ -22,6 +22,8 @@ import is.codion.common.event.Event;
 import is.codion.common.observable.Observer;
 import is.codion.common.state.ObservableState;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
 import javax.swing.ImageIcon;
@@ -66,7 +68,7 @@ public final class Utilities {
 	 * Calls {@link JComponent#updateUI()} for the given components, ignores null components.
 	 * @param components the components to update the UI for
 	 */
-	public static void updateUI(JComponent... components) {
+	public static void updateUI(@Nullable JComponent... components) {
 		if (components != null) {
 			updateUI(Arrays.asList(components));
 		}
@@ -90,7 +92,7 @@ public final class Utilities {
 	 * Calls {@link SwingUtilities#updateComponentTreeUI(Component)} for the given components, ignores null components.
 	 * @param components the components to update the UI for
 	 */
-	public static void updateComponentTreeUI(JComponent... components) {
+	public static void updateComponentTreeUI(@Nullable JComponent... components) {
 		if (components != null) {
 			updateComponentTreeUI(Arrays.asList(components));
 		}
@@ -126,7 +128,7 @@ public final class Utilities {
 	 * @param enabledState the {@link ObservableState} with which to link the actions
 	 * @param actions the actions
 	 */
-	public static void enabled(ObservableState enabledState, Action... actions) {
+	public static void enabled(ObservableState enabledState, @Nullable Action... actions) {
 		requireNonNull(enabledState);
 		for (Action action : requireNonNull(actions)) {
 			if (action != null) {
@@ -141,7 +143,7 @@ public final class Utilities {
 	 * @param enabledState the {@link ObservableState} with which to link the components
 	 * @param components the components
 	 */
-	public static void enabled(ObservableState enabledState, JComponent... components) {
+	public static void enabled(ObservableState enabledState, @Nullable JComponent... components) {
 		requireNonNull(enabledState);
 		for (JComponent component : requireNonNull(components)) {
 			if (component != null) {
@@ -234,7 +236,7 @@ public final class Utilities {
 	 * Sets the given string as clipboard contents
 	 * @param string the string to put on the clipboard
 	 */
-	public static void setClipboard(String string) {
+	public static void setClipboard(@Nullable String string) {
 		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(string), null);
 	}
 
@@ -246,7 +248,7 @@ public final class Utilities {
 	 * @param component the component
 	 * @return the parent of the given component of the given type, null if none is found
 	 */
-	public static <T> T parentOfType(Class<T> clazz, Component component) {
+	public static <T> @Nullable T parentOfType(Class<T> clazz, @Nullable Component component) {
 		return (T) SwingUtilities.getAncestorOfClass(clazz, component);
 	}
 
@@ -256,7 +258,7 @@ public final class Utilities {
 	 * @param component the component
 	 * @return the parent Window of the given component, null if none is found
 	 */
-	public static Window parentWindow(Component component) {
+	public static @Nullable Window parentWindow(@Nullable Component component) {
 		if (component instanceof Window) {
 			return (Window) component;
 		}
@@ -270,7 +272,7 @@ public final class Utilities {
 	 * @param component the component
 	 * @return the parent JFrame of the given component, null if none is found
 	 */
-	public static JFrame parentFrame(Component component) {
+	public static @Nullable JFrame parentFrame(@Nullable Component component) {
 		if (component instanceof JFrame) {
 			return (JFrame) component;
 		}
@@ -284,7 +286,7 @@ public final class Utilities {
 	 * @param component the component
 	 * @return the parent JDialog of the given component, null if none is found
 	 */
-	public static JDialog parentDialog(Component component) {
+	public static @Nullable JDialog parentDialog(@Nullable Component component) {
 		if (component instanceof JDialog) {
 			return (JDialog) component;
 		}
@@ -297,7 +299,7 @@ public final class Utilities {
 	 * @param component the component which parent Window should be disposed
 	 * @return true if a parent Window was found and disposed
 	 */
-	public static boolean disposeParentWindow(Component component) {
+	public static boolean disposeParentWindow(@Nullable Component component) {
 		Window parentWindow = parentWindow(component);
 		if (parentWindow != null) {
 			parentWindow.dispose();

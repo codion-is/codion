@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.dialog;
 
+import org.jspecify.annotations.Nullable;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -31,13 +33,13 @@ public interface CalendarDialogBuilder extends DialogBuilder<CalendarDialogBuild
 	 * @param value the initial value
 	 * @return this builder instance
 	 */
-	CalendarDialogBuilder value(LocalDate value);
+	CalendarDialogBuilder value(@Nullable LocalDate value);
 
 	/**
 	 * @param value the initial value
 	 * @return this builder instance
 	 */
-	CalendarDialogBuilder value(LocalDateTime value);
+	CalendarDialogBuilder value(@Nullable LocalDateTime value);
 
 	/**
 	 * Retrieves a LocalDate from the user.

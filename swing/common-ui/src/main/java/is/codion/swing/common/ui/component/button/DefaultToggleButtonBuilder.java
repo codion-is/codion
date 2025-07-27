@@ -22,6 +22,8 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JToggleButton;
 
 import static java.util.Objects.requireNonNull;
@@ -29,7 +31,7 @@ import static java.util.Objects.requireNonNull;
 class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButtonBuilder<C, B>>
 				extends AbstractButtonBuilder<Boolean, C, B> implements ToggleButtonBuilder<C, B> {
 
-	private ToggleControl toggleControl;
+	private @Nullable ToggleControl toggleControl;
 
 	DefaultToggleButtonBuilder() {
 		value(false);

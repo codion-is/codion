@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.component.panel;
 
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.awt.Component;
@@ -35,14 +37,14 @@ public interface PanelBuilder extends ComponentBuilder<Void, JPanel, PanelBuilde
 	 * @param panel the panel
 	 * @return this builder instancwe
 	 */
-	PanelBuilder panel(JPanel panel);
+	PanelBuilder panel(@Nullable JPanel panel);
 
 	/**
 	 * @param layoutManager the layout manager
 	 * @return this builder instance
 	 * @see JPanel#setLayout(LayoutManager)
 	 */
-	PanelBuilder layout(LayoutManager layoutManager);
+	PanelBuilder layout(@Nullable LayoutManager layoutManager);
 
 	/**
 	 * @param component the component to add

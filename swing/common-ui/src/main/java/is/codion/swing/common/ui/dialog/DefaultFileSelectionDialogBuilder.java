@@ -22,6 +22,8 @@ import is.codion.common.model.CancelException;
 import is.codion.common.resource.MessageBundle;
 import is.codion.swing.common.ui.cursor.Cursors;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -48,12 +50,12 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 	/**
 	 * Caching the file chooser instances since the constructor is quite slow, especially on Win. with many mapped network drives
 	 */
-	private static JFileChooser fileChooserOpen;
-	private static JFileChooser fileChooserSave;
+	private static @Nullable JFileChooser fileChooserOpen;
+	private static @Nullable JFileChooser fileChooserSave;
 
 	private final List<FileFilter> fileFilters = new ArrayList<>();
 
-	private String startDirectory;
+	private @Nullable String startDirectory;
 	private boolean confirmOverwrite = true;
 	private boolean selectStartDirectory = false;
 
@@ -62,7 +64,7 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 	}
 
 	@Override
-	public FileSelectionDialogBuilder startDirectory(String startDirectory) {
+	public FileSelectionDialogBuilder startDirectory(@Nullable String startDirectory) {
 		this.startDirectory = startDirectory;
 		return this;
 	}
@@ -121,7 +123,7 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 	}
 
 	@Override
-	public File selectFileToSave(String defaultFileName) {
+	public File selectFileToSave(@Nullable String defaultFileName) {
 		synchronized (DefaultFileSelectionDialogBuilder.class) {
 			if (fileChooserSave == null) {
 				if (owner != null) {

@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.dialog;
 
+import org.jspecify.annotations.Nullable;
+
 import java.awt.Dimension;
 import java.util.Collection;
 import java.util.Comparator;
@@ -47,13 +49,13 @@ public interface ListSelectionDialogBuilder<T> extends SelectionDialogBuilder<T,
 	 * @param dialogSize the preferred dialog size
 	 * @return this builder instance
 	 */
-	ListSelectionDialogBuilder<T> dialogSize(Dimension dialogSize);
+	ListSelectionDialogBuilder<T> dialogSize(@Nullable Dimension dialogSize);
 
 	/**
 	 * @param comparator the comparator to use to sort the items
 	 * @return this builder instance
 	 */
-	ListSelectionDialogBuilder<T> comparator(Comparator<T> comparator);
+	ListSelectionDialogBuilder<T> comparator(@Nullable Comparator<T> comparator);
 
 	/**
 	 * @return the selected value, {@link Optional#empty()} if none was selected

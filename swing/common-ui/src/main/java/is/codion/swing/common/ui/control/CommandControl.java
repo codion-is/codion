@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.control;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.KeyStroke;
 import java.util.function.Consumer;
 
@@ -60,7 +62,7 @@ public interface CommandControl extends Control {
 	 * @param defaultKeyStroke the default keystroke
 	 * @return a new {@link ControlKey} for identifying a {@link CommandControl} instance
 	 */
-	static ControlKey<CommandControl> key(String name, KeyStroke defaultKeyStroke) {
+	static ControlKey<CommandControl> key(String name, @Nullable KeyStroke defaultKeyStroke) {
 		return new DefaultControlKey<>(name, CommandControl.class, defaultKeyStroke);
 	}
 

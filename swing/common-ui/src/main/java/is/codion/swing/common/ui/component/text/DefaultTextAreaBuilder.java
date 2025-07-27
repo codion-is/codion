@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.component.text;
 
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JTextArea;
 import javax.swing.text.Document;
 
@@ -33,7 +35,7 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
 	private boolean lineWrap = false;
 	private boolean wrapStyleWord = false;
 	private boolean autoscrolls = false;
-	private Document document;
+	private @Nullable Document document;
 
 	DefaultTextAreaBuilder() {}
 

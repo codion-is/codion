@@ -22,6 +22,8 @@ import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.swing.common.ui.component.calendar.CalendarPanel;
 
+import org.jspecify.annotations.Nullable;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -34,11 +36,11 @@ final class DefaultCalendarDialogBuilder extends AbstractDialogBuilder<CalendarD
 	private static final MessageBundle MESSAGES =
 					messageBundle(DefaultCalendarDialogBuilder.class, getBundle(DefaultCalendarDialogBuilder.class.getName()));
 
-	private LocalDate initialDate;
-	private LocalDateTime initialDateTime;
+	private @Nullable LocalDate initialDate;
+	private @Nullable LocalDateTime initialDateTime;
 
 	@Override
-	public CalendarDialogBuilder value(LocalDate value) {
+	public CalendarDialogBuilder value(@Nullable LocalDate value) {
 		this.initialDate = value;
 		if (value != null) {
 			this.initialDateTime = value.atStartOfDay();
@@ -47,7 +49,7 @@ final class DefaultCalendarDialogBuilder extends AbstractDialogBuilder<CalendarD
 	}
 
 	@Override
-	public CalendarDialogBuilder value(LocalDateTime value) {
+	public CalendarDialogBuilder value(@Nullable LocalDateTime value) {
 		this.initialDateTime = value;
 		if (value != null) {
 			this.initialDate = value.toLocalDate();

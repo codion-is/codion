@@ -22,6 +22,8 @@ import is.codion.common.property.PropertyValue;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
@@ -75,14 +77,14 @@ public interface ComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBu
 	 * @return this builder instance
 	 * @see JComboBox#setRenderer(ListCellRenderer)
 	 */
-	B renderer(ListCellRenderer<T> renderer);
+	B renderer(@Nullable ListCellRenderer<T> renderer);
 
 	/**
 	 * @param editor the editor for the combo box
 	 * @return this builder instance
 	 * @see JComboBox#setEditor(ComboBoxEditor)
 	 */
-	B editor(ComboBoxEditor editor);
+	B editor(@Nullable ComboBoxEditor editor);
 
 	/**
 	 * Enable mouse wheel scrolling on the combo box

@@ -43,6 +43,7 @@ final class ComboBoxMouseWheelListener implements MouseWheelListener {
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent event) {
+		requireNonNull(event);
 		if (comboBox.isEnabled()) {
 			if (comboBoxModel.getSize() == 0) {
 				return;

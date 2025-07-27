@@ -24,6 +24,8 @@ import is.codion.swing.common.ui.component.text.NumberDocument.DecimalDocument;
 import is.codion.swing.common.ui.component.text.NumberDocument.NumberParsingDocumentFilter;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import java.awt.event.KeyAdapter;
@@ -299,19 +301,19 @@ public final class NumberField<T extends Number> extends HintTextField {
 		 * @param maximumValue the maximum value
 		 * @return this builder instance
 		 */
-		Builder<T> valueRange(Number minimumValue, Number maximumValue);
+		Builder<T> valueRange(@Nullable Number minimumValue, @Nullable Number maximumValue);
 
 		/**
 		 * @param minimumValue the minimum numerical value
 		 * @return this builder instance
 		 */
-		Builder<T> minimumValue(Number minimumValue);
+		Builder<T> minimumValue(@Nullable Number minimumValue);
 
 		/**
 		 * @param maximumValue the maximum numerical value
 		 * @return this builder instance
 		 */
-		Builder<T> maximumValue(Number maximumValue);
+		Builder<T> maximumValue(@Nullable Number maximumValue);
 
 		/**
 		 * @param silentValidation true if invalid input should be silently prevented instead of throwing validation exceptions
@@ -426,11 +428,11 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		protected boolean nullable = true;
 
-		private Number maximumValue;
-		private Number minimumValue;
+		private @Nullable Number maximumValue;
+		private @Nullable Number minimumValue;
 		private boolean silentValidation = false;
 		private char groupingSeparator = 0;
-		private Boolean groupingUsed;
+		private @Nullable Boolean groupingUsed;
 		private char decimalSeparator = 0;
 		private int maximumFractionDigits = -1;
 		private boolean convertGroupingToDecimalSeparator = CONVERT_GROUPING_TO_DECIMAL_SEPARATOR.getOrThrow();
@@ -446,20 +448,20 @@ public final class NumberField<T extends Number> extends HintTextField {
 		}
 
 		@Override
-		public final Builder<T> valueRange(Number minimumValue, Number maximumValue) {
+		public final Builder<T> valueRange(@Nullable Number minimumValue, @Nullable Number maximumValue) {
 			minimumValue(minimumValue);
 			maximumValue(maximumValue);
 			return this;
 		}
 
 		@Override
-		public final Builder<T> minimumValue(Number minimumValue) {
+		public final Builder<T> minimumValue(@Nullable Number minimumValue) {
 			this.minimumValue = minimumValue;
 			return this;
 		}
 
 		@Override
-		public final Builder<T> maximumValue(Number maximumValue) {
+		public final Builder<T> maximumValue(@Nullable Number maximumValue) {
 			this.maximumValue = maximumValue;
 			return this;
 		}

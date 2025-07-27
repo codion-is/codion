@@ -23,4 +23,5 @@
  * <li>{@link is.codion.swing.common.ui.laf.LookAndFeelComboBox#INCLUDE_INSTALLED_LOOK_AND_FEELS}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 package is.codion.swing.common.ui.dialog;

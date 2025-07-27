@@ -22,4 +22,5 @@
  * <li>{@link is.codion.swing.common.ui.component.label.LabelBuilder#HORIZONTAL_ALIGNMENT}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 package is.codion.swing.common.ui.component.label;

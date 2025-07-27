@@ -21,6 +21,8 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.common.model.CancelException;
 import is.codion.common.property.PropertyValue;
 
+import org.jspecify.annotations.Nullable;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Collection;
@@ -70,7 +72,7 @@ public interface ExceptionDialogBuilder extends DialogBuilder<ExceptionDialogBui
 	 * @param message the message to display
 	 * @return this builder instance
 	 */
-	ExceptionDialogBuilder message(String message);
+	ExceptionDialogBuilder message(@Nullable String message);
 
 	/**
 	 * @param unwrap false if exception unwrapping should not be performed
@@ -104,7 +106,7 @@ public interface ExceptionDialogBuilder extends DialogBuilder<ExceptionDialogBui
 	 * @return the unwrapped exception
 	 */
 	static Throwable unwrap(Throwable exception) {
-		return unwrap(exception, WRAPPER_EXCEPTIONS.get());
+		return unwrap(exception, WRAPPER_EXCEPTIONS.getOrThrow());
 	}
 
 	/**

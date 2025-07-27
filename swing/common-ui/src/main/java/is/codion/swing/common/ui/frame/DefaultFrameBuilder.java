@@ -23,6 +23,8 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.window.Windows;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -46,47 +48,47 @@ final class DefaultFrameBuilder implements FrameBuilder {
 
 	private final List<WindowListener> windowListeners = new ArrayList<>(0);
 
-	private JComponent component;
-	private ImageIcon icon;
-	private Observable<String> title;
-	private Consumer<WindowEvent> onClosing;
-	private Consumer<WindowEvent> onClosed;
-	private Consumer<WindowEvent> onOpened;
-	private Consumer<JFrame> onBuild;
-	private Dimension size;
+	private @Nullable JComponent component;
+	private @Nullable ImageIcon icon;
+	private @Nullable Observable<String> title;
+	private @Nullable Consumer<WindowEvent> onClosing;
+	private @Nullable Consumer<WindowEvent> onClosed;
+	private @Nullable Consumer<WindowEvent> onOpened;
+	private @Nullable Consumer<JFrame> onBuild;
+	private @Nullable Dimension size;
 	private boolean resizable = true;
-	private Point location;
-	private Component locationRelativeTo;
+	private @Nullable Point location;
+	private @Nullable Component locationRelativeTo;
 	private int defaultCloseOperation = WindowConstants.HIDE_ON_CLOSE;
-	private JMenuBar menuBar;
+	private @Nullable JMenuBar menuBar;
 	private int extendedState = Frame.NORMAL;
 	private boolean centerFrame;
 
 	@Override
-	public FrameBuilder component(JComponent component) {
+	public FrameBuilder component(@Nullable JComponent component) {
 		this.component = component;
 		return this;
 	}
 
 	@Override
-	public FrameBuilder title(String title) {
+	public FrameBuilder title(@Nullable String title) {
 		return title(Value.nullable(title));
 	}
 
 	@Override
-	public FrameBuilder title(Observable<String> title) {
-		this.title = requireNonNull(title);
+	public FrameBuilder title(@Nullable Observable<String> title) {
+		this.title = title;
 		return this;
 	}
 
 	@Override
-	public FrameBuilder icon(ImageIcon icon) {
+	public FrameBuilder icon(@Nullable ImageIcon icon) {
 		this.icon = icon;
 		return this;
 	}
 
 	@Override
-	public FrameBuilder size(Dimension size) {
+	public FrameBuilder size(@Nullable Dimension size) {
 		this.size = size;
 		return this;
 	}
@@ -98,13 +100,13 @@ final class DefaultFrameBuilder implements FrameBuilder {
 	}
 
 	@Override
-	public FrameBuilder location(Point location) {
+	public FrameBuilder location(@Nullable Point location) {
 		this.location = location;
 		return this;
 	}
 
 	@Override
-	public FrameBuilder locationRelativeTo(Component locationRelativeTo) {
+	public FrameBuilder locationRelativeTo(@Nullable Component locationRelativeTo) {
 		this.locationRelativeTo = locationRelativeTo;
 		return this;
 	}
@@ -116,25 +118,25 @@ final class DefaultFrameBuilder implements FrameBuilder {
 	}
 
 	@Override
-	public FrameBuilder onOpened(Consumer<WindowEvent> onOpened) {
+	public FrameBuilder onOpened(@Nullable Consumer<WindowEvent> onOpened) {
 		this.onOpened = onOpened;
 		return this;
 	}
 
 	@Override
-	public FrameBuilder onClosed(Consumer<WindowEvent> onClosed) {
+	public FrameBuilder onClosed(@Nullable Consumer<WindowEvent> onClosed) {
 		this.onClosed = onClosed;
 		return this;
 	}
 
 	@Override
-	public FrameBuilder onClosing(Consumer<WindowEvent> onClosing) {
+	public FrameBuilder onClosing(@Nullable Consumer<WindowEvent> onClosing) {
 		this.onClosing = onClosing;
 		return this;
 	}
 
 	@Override
-	public FrameBuilder menuBar(JMenuBar menuBar) {
+	public FrameBuilder menuBar(@Nullable JMenuBar menuBar) {
 		this.menuBar = menuBar;
 		return this;
 	}
@@ -158,7 +160,7 @@ final class DefaultFrameBuilder implements FrameBuilder {
 	}
 
 	@Override
-	public FrameBuilder onBuild(Consumer<JFrame> onBuild) {
+	public FrameBuilder onBuild(@Nullable Consumer<JFrame> onBuild) {
 		this.onBuild = onBuild;
 		return this;
 	}
@@ -220,11 +222,11 @@ final class DefaultFrameBuilder implements FrameBuilder {
 
 	private static final class FrameListener extends WindowAdapter {
 
-		private final Consumer<WindowEvent> onClosing;
-		private final Consumer<WindowEvent> onClosed;
-		private final Consumer<WindowEvent> onOpened;
+		private final @Nullable Consumer<WindowEvent> onClosing;
+		private final @Nullable Consumer<WindowEvent> onClosed;
+		private final @Nullable Consumer<WindowEvent> onOpened;
 
-		private FrameListener(Consumer<WindowEvent> onClosing, Consumer<WindowEvent> onClosed, Consumer<WindowEvent> onOpened) {
+		private FrameListener(@Nullable Consumer<WindowEvent> onClosing, @Nullable Consumer<WindowEvent> onClosed, @Nullable Consumer<WindowEvent> onOpened) {
 			this.onClosing = onClosing;
 			this.onClosed = onClosed;
 			this.onOpened = onOpened;

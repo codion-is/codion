@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.component.combobox;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.ActionMap;
 import javax.swing.ComboBoxEditor;
 import javax.swing.InputMap;
@@ -28,7 +30,7 @@ import java.util.Arrays;
 
 final class CopyEditorActionsListener implements PropertyChangeListener {
 
-	private JComponent previousEditor;
+	private @Nullable JComponent previousEditor;
 
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {

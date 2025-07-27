@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.component.text;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JFormattedTextField;
 import javax.swing.text.MaskFormatter;
 import java.text.ParseException;
@@ -45,7 +47,7 @@ final class DefaultMaskFormatter extends MaskFormatter {
 	}
 
 	@Override
-	public Object stringToValue(String value) throws ParseException {
+	public @Nullable Object stringToValue(String value) throws ParseException {
 		if (emptyStringToNullValue && Objects.equals(value, valueToString(""))) {
 			return null;
 		}
@@ -89,14 +91,14 @@ final class DefaultMaskFormatter extends MaskFormatter {
 
 	static final class DefaultMaskFormatterBuilder implements MaskFormatterBuilder {
 
-		private String mask;
+		private @Nullable String mask;
 		private boolean valueContainsLiteralCharacters = true;
-		private String placeholder;
+		private @Nullable String placeholder;
 		private char placeholderCharacter = ' ';
 		private boolean allowsInvalid = false;
 		private boolean commitsOnValidEdit = true;
-		private String validCharacters;
-		private String invalidCharacters;
+		private @Nullable String validCharacters;
+		private @Nullable String invalidCharacters;
 		private boolean overwriteMode = true;
 		private boolean emptyStringToNullValue = true;
 		private boolean invalidStringToNullValue = false;

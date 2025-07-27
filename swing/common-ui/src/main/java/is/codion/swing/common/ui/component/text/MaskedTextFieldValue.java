@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.component.text;
 
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JFormattedTextField;
 
 final class MaskedTextFieldValue<T> extends AbstractComponentValue<T, JFormattedTextField> {
@@ -30,12 +32,12 @@ final class MaskedTextFieldValue<T> extends AbstractComponentValue<T, JFormatted
 	}
 
 	@Override
-	protected T getComponentValue() {
+	protected @Nullable T getComponentValue() {
 		return (T) component().getValue();
 	}
 
 	@Override
-	protected void setComponentValue(T value) {
+	protected void setComponentValue(@Nullable T value) {
 		if (value == null) {
 			// otherwise the caret goes all the way to the
 			// end the next time the field gains focus

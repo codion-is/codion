@@ -22,6 +22,8 @@ import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.text.CaseDocumentFilter.DocumentCase;
 import is.codion.swing.common.ui.key.KeyEvents;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.event.CaretListener;
 import javax.swing.text.Caret;
 import javax.swing.text.DefaultCaret;
@@ -47,17 +49,17 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
 	private boolean upperCase;
 	private boolean lowerCase;
 	private int maximumLength = -1;
-	private Insets margin;
+	private @Nullable Insets margin;
 	private boolean controlDeleteWord = true;
-	private Color disabledTextColor;
-	private Color selectedTextColor;
-	private Color selectionColor;
+	private @Nullable Color disabledTextColor;
+	private @Nullable Color selectedTextColor;
+	private @Nullable Color selectionColor;
 	private boolean selectAllOnFocusGained;
 	private boolean moveCaretToEndOnFocusGained;
 	private boolean moveCaretToStartOnFocusGained;
-	private Consumer<String> onTextChanged;
+	private @Nullable Consumer<String> onTextChanged;
 	private boolean dragEnabled = false;
-	private Character focusAcceleratorKey;
+	private @Nullable Character focusAcceleratorKey;
 	private CaretPosition caretPosition = CaretPosition.START;
 	private int caretUpdatePolicy = DefaultCaret.UPDATE_WHEN_ON_EDT;
 
@@ -103,7 +105,7 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
 	}
 
 	@Override
-	public final B margin(Insets margin) {
+	public final B margin(@Nullable Insets margin) {
 		this.margin = margin;
 		return self();
 	}
@@ -115,19 +117,19 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
 	}
 
 	@Override
-	public final B disabledTextColor(Color disabledTextColor) {
+	public final B disabledTextColor(@Nullable Color disabledTextColor) {
 		this.disabledTextColor = disabledTextColor;
 		return self();
 	}
 
 	@Override
-	public final B selectedTextColor(Color selectedTextColor) {
+	public final B selectedTextColor(@Nullable Color selectedTextColor) {
 		this.selectedTextColor = selectedTextColor;
 		return self();
 	}
 
 	@Override
-	public final B selectionColor(Color selectionColor) {
+	public final B selectionColor(@Nullable Color selectionColor) {
 		this.selectionColor = selectionColor;
 		return self();
 	}
@@ -182,7 +184,7 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
 
 	@Override
 	public final B caretPosition(CaretPosition caretPosition) {
-		this.caretPosition = caretPosition;
+		this.caretPosition = requireNonNull(caretPosition);
 		return self();
 	}
 

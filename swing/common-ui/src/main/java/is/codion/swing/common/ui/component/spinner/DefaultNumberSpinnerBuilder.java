@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.component.spinner;
 
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JSpinner;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
@@ -34,19 +36,19 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinne
 
 	private final Class<T> valueClass;
 
-	private T minimum;
-	private T maximum;
-	private T stepSize;
+	private @Nullable T minimum;
+	private @Nullable T maximum;
+	private @Nullable T stepSize;
 	private boolean groupingUsed = true;
-	private String decimalFormatPattern;
+	private @Nullable String decimalFormatPattern;
 	boolean commitOnValidEdit = true;
 
 	DefaultNumberSpinnerBuilder(Class<T> valueClass) {
+		super(new  SpinnerNumberModel());
 		this.valueClass = requireNonNull(valueClass);
 		if (!valueClass.equals(Integer.class) && !valueClass.equals(Double.class)) {
 			throw new IllegalStateException("NumberSpinnerBuilder not implemented for type: " + valueClass);
 		}
-		model(new SpinnerNumberModel());
 	}
 
 	@Override
@@ -58,19 +60,19 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinne
 	}
 
 	@Override
-	public NumberSpinnerBuilder<T> minimum(T minimum) {
+	public NumberSpinnerBuilder<T> minimum(@Nullable T minimum) {
 		this.minimum = minimum;
 		return this;
 	}
 
 	@Override
-	public NumberSpinnerBuilder<T> maximum(T maximum) {
+	public NumberSpinnerBuilder<T> maximum(@Nullable T maximum) {
 		this.maximum = maximum;
 		return this;
 	}
 
 	@Override
-	public NumberSpinnerBuilder<T> stepSize(T stepSize) {
+	public NumberSpinnerBuilder<T> stepSize(@Nullable T stepSize) {
 		this.stepSize = stepSize;
 		return this;
 	}
@@ -82,8 +84,8 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinne
 	}
 
 	@Override
-	public NumberSpinnerBuilder<T> decimalFormatPattern(String decimalFormatPattern) {
-		this.decimalFormatPattern = requireNonNull(decimalFormatPattern);
+	public NumberSpinnerBuilder<T> decimalFormatPattern(@Nullable String decimalFormatPattern) {
+		this.decimalFormatPattern = decimalFormatPattern;
 		return this;
 	}
 

@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.component.button;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 
@@ -45,7 +47,7 @@ public interface ButtonPanelBuilder extends ControlPanelBuilder<JPanel, ButtonPa
 	 * @param buttonGroup the button group to add all buttons to
 	 * @return this builder instance
 	 */
-	ButtonPanelBuilder buttonGroup(ButtonGroup buttonGroup);
+	ButtonPanelBuilder buttonGroup(@Nullable ButtonGroup buttonGroup);
 
 	/**
 	 * @return a new button panel builder

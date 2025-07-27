@@ -21,6 +21,8 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JComponent;
 import java.util.function.Consumer;
 
@@ -33,7 +35,7 @@ public interface LookAndFeelSelectionDialogBuilder {
 	 * @param owner the dialog owner
 	 * @return this builder
 	 */
-	LookAndFeelSelectionDialogBuilder owner(JComponent owner);
+	LookAndFeelSelectionDialogBuilder owner(@Nullable JComponent owner);
 
 	/**
 	 * @param enableOnSelection true if the Look and Feel should be enabled dynamically when selecting

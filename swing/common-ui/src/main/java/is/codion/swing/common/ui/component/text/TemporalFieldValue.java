@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.component.text;
 
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 
+import org.jspecify.annotations.Nullable;
+
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.time.temporal.Temporal;
@@ -37,12 +39,12 @@ final class TemporalFieldValue<T extends Temporal> extends AbstractComponentValu
 	}
 
 	@Override
-	protected T getComponentValue() {
+	protected @Nullable T getComponentValue() {
 		return component().get();
 	}
 
 	@Override
-	protected void setComponentValue(T value) {
+	protected void setComponentValue(@Nullable T value) {
 		component().set(value);
 	}
 

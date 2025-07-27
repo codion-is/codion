@@ -33,6 +33,8 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
 import is.codion.swing.common.ui.layout.Layouts;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -66,12 +68,12 @@ final class LoginPanel extends JPanel {
 	private final JPasswordField passwordField;
 	private final Value<User> user = Value.nullable();
 	private final LoginValidator loginValidator;
-	private final ImageIcon icon;
+	private final @Nullable ImageIcon icon;
 	private final Control okControl;
 	private final Control cancelControl;
 	private final State validating = State.state();
 
-	LoginPanel(User defaultUser, LoginValidator loginValidator, ImageIcon icon, JComponent southComponent, int inputFieldColumns) {
+	LoginPanel(@Nullable User defaultUser, LoginValidator loginValidator, @Nullable ImageIcon icon, @Nullable JComponent southComponent, int inputFieldColumns) {
 		Value<String> usernameValue = Value.nullable(defaultUser == null ? null : defaultUser.username());
 		this.usernameField = TextFieldBuilder.builder()
 						.valueClass(String.class)
@@ -102,7 +104,7 @@ final class LoginPanel extends JPanel {
 		initializeUI(southComponent);
 	}
 
-	User user() {
+	@Nullable User user() {
 		return user.get();
 	}
 
@@ -123,7 +125,7 @@ final class LoginPanel extends JPanel {
 		}
 	}
 
-	private void initializeUI(JComponent southComponent) {
+	private void initializeUI(@Nullable JComponent southComponent) {
 		setLayout(new GridBagLayout());
 		setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
 
@@ -134,7 +136,7 @@ final class LoginPanel extends JPanel {
 		add(createCredentialsBasePanel(southComponent), constraints);
 	}
 
-	private JPanel createCredentialsBasePanel(JComponent southComponent) {
+	private JPanel createCredentialsBasePanel(@Nullable JComponent southComponent) {
 		JPanel credentialsBasePanel = new JPanel(Layouts.borderLayout());
 		credentialsBasePanel.add(createCredentialsPanel(), BorderLayout.CENTER);
 		if (southComponent != null) {

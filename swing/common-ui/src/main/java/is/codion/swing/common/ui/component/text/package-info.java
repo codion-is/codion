@@ -23,4 +23,5 @@
  * <li>{@link is.codion.swing.common.ui.component.text.TextFieldBuilder#SELECT_ALL_ON_FOCUS_GAINED}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 package is.codion.swing.common.ui.component.text;

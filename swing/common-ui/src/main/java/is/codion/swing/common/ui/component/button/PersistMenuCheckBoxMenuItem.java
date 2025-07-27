@@ -23,12 +23,14 @@ import is.codion.swing.common.ui.component.button.ToggleMenuItemBuilder.PersistM
 import javax.swing.JCheckBoxMenuItem;
 import java.awt.event.MouseEvent;
 
+import static java.util.Objects.requireNonNull;
+
 final class PersistMenuCheckBoxMenuItem extends JCheckBoxMenuItem {
 
 	private final PersistMenu persistMenu;
 
 	PersistMenuCheckBoxMenuItem(PersistMenu persistMenu) {
-		this.persistMenu = persistMenu;
+		this.persistMenu = requireNonNull(persistMenu);
 	}
 
 	@Override

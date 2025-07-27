@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.swing.common.ui.control.Control;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JComponent;
 import java.util.function.Consumer;
 
@@ -32,7 +34,7 @@ public interface ScalingSelectionDialogBuilder {
 	 * @param owner the dialog owner
 	 * @return this builder
 	 */
-	ScalingSelectionDialogBuilder owner(JComponent owner);
+	ScalingSelectionDialogBuilder owner(@Nullable JComponent owner);
 
 	/**
 	 * @param initialSelection the initally selected font size ratio, default 100%

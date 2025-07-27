@@ -41,7 +41,9 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
 	private boolean mouseWheelScrollingReversed = false;
 	private int horizontalAlignment = -1;
 
-	protected AbstractSpinnerBuilder() {}
+	protected AbstractSpinnerBuilder(SpinnerModel model) {
+		this.spinnerModel = requireNonNull(model);
+	}
 
 	@Override
 	public B model(SpinnerModel model) {

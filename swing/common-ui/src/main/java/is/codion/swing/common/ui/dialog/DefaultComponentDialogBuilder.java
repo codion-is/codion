@@ -24,6 +24,8 @@ import is.codion.common.state.State;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.layout.Layouts;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -56,17 +58,17 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 	private final Collection<Consumer<WindowEvent>> onOpenedConsumers = new ArrayList<>(1);
 	private final Collection<Consumer<WindowEvent>> onClosedConsumers = new ArrayList<>(1);
 
-	private JComponent component;
+	private @Nullable JComponent component;
 	private boolean modal = true;
 	private boolean resizable = true;
-	private Dimension size;
-	private Action enterAction;
-	private Observer<?> closeObserver;
-	private Consumer<State> confirmCloseListener;
+	private @Nullable Dimension size;
+	private @Nullable Action enterAction;
+	private @Nullable Observer<?> closeObserver;
+	private @Nullable Consumer<State> confirmCloseListener;
 	private boolean disposeOnEscape = true;
 
 	@Override
-	public ComponentDialogBuilder component(JComponent component) {
+	public ComponentDialogBuilder component(@Nullable JComponent component) {
 		this.component = component;
 		return this;
 	}
@@ -84,7 +86,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 	}
 
 	@Override
-	public ComponentDialogBuilder size(Dimension size) {
+	public ComponentDialogBuilder size(@Nullable Dimension size) {
 		this.size = size;
 		return this;
 	}
@@ -96,13 +98,13 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 	}
 
 	@Override
-	public ComponentDialogBuilder closeObserver(Observer<?> closeObserver) {
+	public ComponentDialogBuilder closeObserver(@Nullable Observer<?> closeObserver) {
 		this.closeObserver = closeObserver;
 		return this;
 	}
 
 	@Override
-	public ComponentDialogBuilder confirmCloseListener(Consumer<State> confirmCloseListener) {
+	public ComponentDialogBuilder confirmCloseListener(@Nullable Consumer<State> confirmCloseListener) {
 		this.confirmCloseListener = confirmCloseListener;
 		return this;
 	}
@@ -171,9 +173,9 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 		return dialog;
 	}
 
-	static JDialog createDialog(Window owner, Observable<String> title, ImageIcon icon,
-															JComponent component, Dimension size, Component locationRelativeTo,
-															Point location, boolean modal, boolean resizable,
+	static JDialog createDialog(@Nullable Window owner, @Nullable Observable<String> title, @Nullable ImageIcon icon,
+															@Nullable JComponent component, @Nullable Dimension size, @Nullable Component locationRelativeTo,
+															@Nullable Point location, boolean modal, boolean resizable,
 															Collection<Consumer<JDialog>> onShownConsumers,
 															List<KeyEvents.Builder> keyEventBuilders) {
 		JDialog dialog = new JDialog(owner);

@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.component.table;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -34,7 +36,7 @@ import static java.util.Objects.requireNonNull;
  */
 public final class FilterTableColumn<C> extends TableColumn {
 
-	private final String toolTipText;
+	private final @Nullable String toolTipText;
 
 	private FilterTableColumn(DefaultBuilder<C> builder) {
 		super(builder.modelIndex);
@@ -211,31 +213,31 @@ public final class FilterTableColumn<C> extends TableColumn {
 		 * @param headerValue the header value
 		 * @return this builder instance
 		 */
-		Builder<C> headerValue(Object headerValue);
+		Builder<C> headerValue(@Nullable Object headerValue);
 
 		/**
 		 * @param headerRenderer the header renderer
 		 * @return this builder instance
 		 */
-		Builder<C> headerRenderer(TableCellRenderer headerRenderer);
+		Builder<C> headerRenderer(@Nullable TableCellRenderer headerRenderer);
 
 		/**
 		 * @param toolTipText the column tool tip text
 		 * @return this builder instance
 		 */
-		Builder<C> toolTipText(String toolTipText);
+		Builder<C> toolTipText(@Nullable String toolTipText);
 
 		/**
 		 * @param cellEditor the cell editor
 		 * @return this builder instance
 		 */
-		Builder<C> cellEditor(TableCellEditor cellEditor);
+		Builder<C> cellEditor(@Nullable TableCellEditor cellEditor);
 
 		/**
 		 * @param cellRenderer the cell renderer
 		 * @return this builder instance
 		 */
-		Builder<C> cellRenderer(TableCellRenderer cellRenderer);
+		Builder<C> cellRenderer(@Nullable TableCellRenderer cellRenderer);
 
 		/**
 		 * @return a new {@link FilterTableColumn} based on this builder
@@ -287,11 +289,11 @@ public final class FilterTableColumn<C> extends TableColumn {
 		private int minWidth;
 		private int width;
 		private boolean resizable = true;
-		private Object headerValue;
-		private String toolTipText;
-		private TableCellRenderer headerRenderer;
-		private TableCellEditor cellEditor;
-		private TableCellRenderer cellRenderer;
+		private @Nullable Object headerValue;
+		private @Nullable String toolTipText;
+		private @Nullable TableCellRenderer headerRenderer;
+		private @Nullable TableCellEditor cellEditor;
+		private @Nullable TableCellRenderer cellRenderer;
 
 		private DefaultBuilder(C identifier, int modelIndex) {
 			if (modelIndex < 0) {
@@ -340,31 +342,31 @@ public final class FilterTableColumn<C> extends TableColumn {
 		}
 
 		@Override
-		public Builder<C> headerValue(Object headerValue) {
-			this.headerValue = requireNonNull(headerValue);
+		public Builder<C> headerValue(@Nullable Object headerValue) {
+			this.headerValue = headerValue;
 			return this;
 		}
 
 		@Override
-		public Builder<C> headerRenderer(TableCellRenderer headerRenderer) {
-			this.headerRenderer = requireNonNull(headerRenderer);
+		public Builder<C> headerRenderer(@Nullable TableCellRenderer headerRenderer) {
+			this.headerRenderer = headerRenderer;
 			return this;
 		}
 
 		@Override
-		public Builder<C> toolTipText(String toolTipText) {
+		public Builder<C> toolTipText(@Nullable String toolTipText) {
 			this.toolTipText = toolTipText;
 			return this;
 		}
 
 		@Override
-		public Builder<C> cellEditor(TableCellEditor cellEditor) {
+		public Builder<C> cellEditor(@Nullable TableCellEditor cellEditor) {
 			this.cellEditor = cellEditor;
 			return this;
 		}
 
 		@Override
-		public Builder<C> cellRenderer(TableCellRenderer cellRenderer) {
+		public Builder<C> cellRenderer(@Nullable TableCellRenderer cellRenderer) {
 			this.cellRenderer = cellRenderer;
 			return this;
 		}

@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.AbstractAction;
 import javax.swing.AbstractCellEditor;
 import javax.swing.Action;
@@ -43,7 +45,7 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 
 	private final Supplier<ComponentValue<T, ? extends JComponent>> inputComponent;
 
-	private ComponentValue<T, ? extends JComponent> componentValue;
+	private @Nullable ComponentValue<T, ? extends JComponent> componentValue;
 
 	int editedRow = -1;
 
@@ -83,7 +85,7 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 	}
 
 	@Override
-	public Object getCellEditorValue() {
+	public @Nullable Object getCellEditorValue() {
 		return componentValue().get();
 	}
 

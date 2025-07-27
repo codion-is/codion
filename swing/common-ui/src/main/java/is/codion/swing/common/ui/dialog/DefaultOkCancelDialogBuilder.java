@@ -23,6 +23,8 @@ import is.codion.common.state.ObservableState;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.control.Control;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -31,12 +33,12 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCancelDialogBuilder> implements OkCancelDialogBuilder {
 
-	private ObservableState okEnabled;
-	private ObservableState cancelEnabled;
-	private Runnable onOk;
-	private Runnable onCancel;
-	private Action okAction;
-	private Action cancelAction;
+	private @Nullable ObservableState okEnabled;
+	private @Nullable ObservableState cancelEnabled;
+	private @Nullable Runnable onOk;
+	private @Nullable Runnable onCancel;
+	private @Nullable Action okAction;
+	private @Nullable Action cancelAction;
 
 	@Override
 	public OkCancelDialogBuilder action(Action action) {
@@ -159,9 +161,9 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
 	private static final class PerformAndCloseCommand implements Control.Command {
 
 		private final Runnable command;
-		private final JComponent component;
+		private final @Nullable JComponent component;
 
-		private PerformAndCloseCommand(Runnable command, JComponent component) {
+		private PerformAndCloseCommand(Runnable command, @Nullable JComponent component) {
 			this.command = command;
 			this.component = component;
 		}
@@ -175,9 +177,9 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
 
 	private static final class DefaultOkCommand implements Control.Command {
 
-		private final JComponent component;
+		private final @Nullable JComponent component;
 
-		private DefaultOkCommand(JComponent component) {
+		private DefaultOkCommand(@Nullable JComponent component) {
 			this.component = component;
 		}
 
@@ -189,9 +191,9 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
 
 	private static final class DefaultCancelCommand implements Control.Command {
 
-		private final JComponent component;
+		private final @Nullable JComponent component;
 
-		private DefaultCancelCommand(JComponent component) {
+		private DefaultCancelCommand(@Nullable JComponent component) {
 			this.component = component;
 		}
 

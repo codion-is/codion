@@ -25,8 +25,9 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.layout.Layouts;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.Action;
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -50,6 +51,7 @@ import java.util.function.Predicate;
 import static is.codion.swing.common.ui.dialog.DefaultComponentDialogBuilder.createDialog;
 import static java.awt.event.KeyEvent.VK_ESCAPE;
 import static java.util.Objects.requireNonNull;
+import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 
 class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends AbstractDialogBuilder<B> implements ActionDialogBuilder<B> {
@@ -57,17 +59,17 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 	private final List<Action> actions = new ArrayList<>();
 	private final Collection<Consumer<JDialog>> onShownConsumers = new ArrayList<>(1);
 
-	private JComponent component;
-	private Action defaultAction;
-	private Action escapeAction;
-	private Border buttonPanelBorder = BorderFactory.createEmptyBorder(10, 10, 5, 10);
+	private @Nullable JComponent component;
+	private @Nullable Action defaultAction;
+	private @Nullable Action escapeAction;
+	private @Nullable Border buttonPanelBorder = createEmptyBorder(10, 10, 5, 10);
 	private int buttonPanelConstraints = FlowLayout.TRAILING;
 	private boolean modal = true;
 	private boolean resizable = true;
-	private Dimension size;
+	private @Nullable Dimension size;
 
 	@Override
-	public B component(JComponent component) {
+	public final B component(@Nullable JComponent component) {
 		this.component = component;
 		return self();
 	}
@@ -109,7 +111,7 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 	}
 
 	@Override
-	public final B size(Dimension size) {
+	public final B size(@Nullable Dimension size) {
 		this.size = size;
 		return self();
 	}
@@ -121,8 +123,8 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 	}
 
 	@Override
-	public final B buttonPanelBorder(Border buttonPanelBorder) {
-		this.buttonPanelBorder = requireNonNull(buttonPanelBorder);
+	public final B buttonPanelBorder(@Nullable Border buttonPanelBorder) {
+		this.buttonPanelBorder = buttonPanelBorder;
 		return self();
 	}
 
@@ -195,7 +197,7 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 		return actions;
 	}
 
-	protected final JComponent component() {
+	protected final @Nullable JComponent component() {
 		return component;
 	}
 

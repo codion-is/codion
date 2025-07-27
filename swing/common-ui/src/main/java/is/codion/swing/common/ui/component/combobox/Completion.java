@@ -121,7 +121,7 @@ public final class Completion {
 
 	private static final class DefaultBuilder implements Builder {
 
-		private Mode mode = COMPLETION_MODE.get();
+		private Mode mode = COMPLETION_MODE.getOrThrow();
 		private boolean normalize = NORMALIZE.getOrThrow();
 
 		@Override

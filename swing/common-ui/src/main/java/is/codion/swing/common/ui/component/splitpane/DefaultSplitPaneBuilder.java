@@ -22,6 +22,8 @@ import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JComponent;
 import javax.swing.JSplitPane;
 
@@ -29,8 +31,8 @@ final class DefaultSplitPaneBuilder extends AbstractComponentBuilder<Void, JSpli
 
 	private int orientation = JSplitPane.HORIZONTAL_SPLIT;
 	private boolean oneTouchExpandable = false;
-	private JComponent leftTopComponent;
-	private JComponent rightBottomComponent;
+	private @Nullable JComponent leftTopComponent;
+	private @Nullable JComponent rightBottomComponent;
 	private double resizeWeight;
 	private boolean continuousLayout;
 	private int dividerSize;
@@ -48,25 +50,25 @@ final class DefaultSplitPaneBuilder extends AbstractComponentBuilder<Void, JSpli
 	}
 
 	@Override
-	public SplitPaneBuilder leftComponent(JComponent leftComponent) {
+	public SplitPaneBuilder leftComponent(@Nullable JComponent leftComponent) {
 		this.leftTopComponent = leftComponent;
 		return this;
 	}
 
 	@Override
-	public SplitPaneBuilder rightComponent(JComponent rightComponent) {
+	public SplitPaneBuilder rightComponent(@Nullable JComponent rightComponent) {
 		this.rightBottomComponent = rightComponent;
 		return this;
 	}
 
 	@Override
-	public SplitPaneBuilder topComponent(JComponent topComponent) {
+	public SplitPaneBuilder topComponent(@Nullable JComponent topComponent) {
 		this.leftTopComponent = topComponent;
 		return this;
 	}
 
 	@Override
-	public SplitPaneBuilder bottomComponent(JComponent bottomComponent) {
+	public SplitPaneBuilder bottomComponent(@Nullable JComponent bottomComponent) {
 		this.rightBottomComponent = bottomComponent;
 		return this;
 	}

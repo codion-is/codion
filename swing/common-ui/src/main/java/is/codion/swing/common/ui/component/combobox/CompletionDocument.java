@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.component.combobox;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
@@ -162,13 +164,13 @@ class CompletionDocument extends PlainDocument {
 		editorComponent.moveCaretPosition(start);
 	}
 
-	protected final void setSelectedItem(Object item) {
+	protected final void setSelectedItem(@Nullable Object item) {
 		selecting = true;
 		comboBoxModel.setSelectedItem(item);
 		selecting = false;
 	}
 
-	protected final Object lookupItem(String startsWith) {
+	protected final @Nullable Object lookupItem(String startsWith) {
 		Object selectedItem = comboBoxModel.getSelectedItem();
 		// only search for a different item if the currently selected does not match
 		if (selectedItem != null && startsWithIgnoreCase(selectedItem.toString(), startsWith, normalize)) {

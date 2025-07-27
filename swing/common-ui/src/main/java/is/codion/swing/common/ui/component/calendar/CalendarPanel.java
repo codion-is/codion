@@ -33,6 +33,8 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.control.ControlMap;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
@@ -373,7 +375,7 @@ public final class CalendarPanel extends JPanel {
 		 * @param value the initial value
 		 * @return this builder instance
 		 */
-		Builder value(LocalDate value);
+		Builder value(@Nullable LocalDate value);
 
 		/**
 		 * Note that calling this method also sets {@link #includeTime(boolean)} to true.
@@ -381,7 +383,7 @@ public final class CalendarPanel extends JPanel {
 		 * @param value the initial value
 		 * @return this builder instance
 		 */
-		Builder value(LocalDateTime value);
+		Builder value(@Nullable LocalDateTime value);
 
 		/**
 		 * @param includeTime if true then time fields are included (hours, minutes)
@@ -428,7 +430,7 @@ public final class CalendarPanel extends JPanel {
 		}
 
 		@Override
-		public LocalDate get() {
+		public @Nullable LocalDate get() {
 			return localDate.get();
 		}
 
@@ -458,7 +460,7 @@ public final class CalendarPanel extends JPanel {
 		}
 
 		@Override
-		public LocalDateTime get() {
+		public @Nullable LocalDateTime get() {
 			return localDateTime.get();
 		}
 
@@ -474,7 +476,7 @@ public final class CalendarPanel extends JPanel {
 
 		private Locale locale = Locale.getDefault();
 		private DayOfWeek firstDayOfWeek = WeekFields.of(locale).getFirstDayOfWeek();
-		private LocalDateTime value;
+		private @Nullable LocalDateTime value;
 		private boolean includeTime = false;
 		private boolean includeTodayButton = false;
 		private ObservableState enabled = State.state(true);
@@ -492,13 +494,13 @@ public final class CalendarPanel extends JPanel {
 		}
 
 		@Override
-		public Builder value(LocalDate value) {
+		public Builder value(@Nullable LocalDate value) {
 			this.value = value == null ? LocalDate.now().atStartOfDay() : value.atStartOfDay();
 			return includeTime(false);
 		}
 
 		@Override
-		public Builder value(LocalDateTime value) {
+		public Builder value(@Nullable LocalDateTime value) {
 			this.value = value == null ? LocalDateTime.now() : value;
 			return includeTime(true);
 		}

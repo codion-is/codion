@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.window;
 
+import org.jspecify.annotations.Nullable;
+
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Window;
@@ -78,7 +80,7 @@ public final class Windows {
 	 * @param maximumSize the maximum size, may be null
 	 * @throws IllegalArgumentException in case ratio is not between 0 and 1
 	 */
-	public static void resize(Window window, double screenSizeRatio, Dimension minimumSize, Dimension maximumSize) {
+	public static void resize(Window window, double screenSizeRatio, @Nullable Dimension minimumSize, @Nullable Dimension maximumSize) {
 		Dimension ratioSize = screenSizeRatio(screenSizeRatio);
 		if (minimumSize != null) {
 			ratioSize.setSize(Math.max(minimumSize.width, ratioSize.width), Math.max(minimumSize.height, ratioSize.height));

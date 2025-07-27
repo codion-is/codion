@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.component.text;
 
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.Action;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -38,11 +40,11 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
 	private final Class<T> valueClass;
 
 	private int columns = -1;
-	private Action action;
-	private ActionListener actionListener;
-	private Format format;
+	private @Nullable Action action;
+	private @Nullable ActionListener actionListener;
+	private @Nullable Format format;
 	private int horizontalAlignment = SwingConstants.LEADING;
-	private String hint;
+	private @Nullable String hint;
 
 	DefaultTextFieldBuilder(Class<T> valueClass) {
 		this.valueClass = requireNonNull(valueClass);
@@ -73,7 +75,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
 	}
 
 	@Override
-	public final B format(Format format) {
+	public final B format(@Nullable Format format) {
 		this.format = format;
 		return self();
 	}
@@ -130,7 +132,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
 		return new DefaultTextComponentValue<>(component, format, updateOn());
 	}
 
-	protected final Format format() {
+	protected final @Nullable Format format() {
 		return format;
 	}
 

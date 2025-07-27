@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.component.spinner;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * A builder for number based JSpinner
  */
@@ -27,19 +29,19 @@ public interface NumberSpinnerBuilder<T extends Number> extends SpinnerBuilder<T
 	 * @param minimum the minimum value
 	 * @return this builder instance
 	 */
-	NumberSpinnerBuilder<T> minimum(T minimum);
+	NumberSpinnerBuilder<T> minimum(@Nullable T minimum);
 
 	/**
 	 * @param maximum the maximum value
 	 * @return this builder instance
 	 */
-	NumberSpinnerBuilder<T> maximum(T maximum);
+	NumberSpinnerBuilder<T> maximum(@Nullable T maximum);
 
 	/**
 	 * @param stepSize the step size
 	 * @return this builder instance
 	 */
-	NumberSpinnerBuilder<T> stepSize(T stepSize);
+	NumberSpinnerBuilder<T> stepSize(@Nullable T stepSize);
 
 	/**
 	 * @param groupingUsed true if number format grouping should be used
@@ -51,7 +53,7 @@ public interface NumberSpinnerBuilder<T extends Number> extends SpinnerBuilder<T
 	 * @param decimalFormatPattern the decimal format pattern
 	 * @return this builder instance
 	 */
-	NumberSpinnerBuilder<T> decimalFormatPattern(String decimalFormatPattern);
+	NumberSpinnerBuilder<T> decimalFormatPattern(@Nullable String decimalFormatPattern);
 
 	/**
 	 * @param commitOnValidEdit true if the spinner should commit on a valid edit

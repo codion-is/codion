@@ -25,6 +25,8 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.SwingConstants;
@@ -96,7 +98,7 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 	}
 
 	@Override
-	public final B preferredButtonSize(Dimension preferredButtonSize) {
+	public final B preferredButtonSize(@Nullable Dimension preferredButtonSize) {
 		buttonBuilder.preferredSize(preferredButtonSize);
 		toggleButtonBuilder.preferredSize(preferredButtonSize);
 		checkBoxBuilder.preferredSize(preferredButtonSize);

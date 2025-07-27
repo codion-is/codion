@@ -22,6 +22,8 @@ import is.codion.common.observable.Observable;
 import is.codion.common.property.PropertyValue;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -51,7 +53,7 @@ public interface LabelBuilder<T> extends ComponentBuilder<T, JLabel, LabelBuilde
 	 * @return this builder instance
 	 * @see JLabel#setText(String)
 	 */
-	LabelBuilder<T> text(String text);
+	LabelBuilder<T> text(@Nullable String text);
 
 	/**
 	 * @param text the label text
@@ -87,14 +89,14 @@ public interface LabelBuilder<T> extends ComponentBuilder<T, JLabel, LabelBuilde
 	 * @return this builder instance
 	 * @see JLabel#setLabelFor(Component)
 	 */
-	LabelBuilder<T> labelFor(JComponent component);
+	LabelBuilder<T> labelFor(@Nullable JComponent component);
 
 	/**
 	 * @param icon the label icon
 	 * @return this builder instance
 	 * @see JLabel#setIcon(Icon)
 	 */
-	LabelBuilder<T> icon(Icon icon);
+	LabelBuilder<T> icon(@Nullable Icon icon);
 
 	/**
 	 * @param iconTextGap the icon text gap
