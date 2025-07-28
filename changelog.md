@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.43
+
 ## 0.18.42
 ### is.codion.common.model
 - UserPreferences.file() and delete() no longer accept empty string for filename.
