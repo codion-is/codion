@@ -142,7 +142,7 @@ public class ValueSetTest {
 		assertEquals(3, valueSetEventCounter.get());
 	}
 
-	private static void assertUnmodifiable(ObservableValues<Integer, Set<Integer>> observer) {
+	private static void assertUnmodifiable(ObservableValueCollection<Integer, Set<Integer>> observer) {
 		assertThrows(UnsupportedOperationException.class, () -> observer.get().remove(1));
 	}
 }

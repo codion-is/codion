@@ -30,32 +30,32 @@ import java.util.Collection;
  * @param <T> the values type
  * @param <C> the collection type
  */
-public interface ObservableValues<T, C extends Collection<T>> extends Observable<C>, Iterable<T> {
+public interface ObservableValueCollection<T, C extends Collection<T>> extends Observable<C>, Iterable<T> {
 
 	@Override
 	@NonNull C get();
 
 	/**
-	 * Returns true if this {@link Values} instance contains the specified element
+	 * Returns true if this {@link ValueCollection} instance contains the specified element
 	 * @param value the element
-	 * @return true if this {@link Values} instance contains the specified element
+	 * @return true if this {@link ValueCollection} instance contains the specified element
 	 */
 	boolean contains(@Nullable T value);
 
 	/**
-	 * Returns true if this {@link Values} instance contains all the elements of the specified collection
+	 * Returns true if this {@link ValueCollection} instance contains all the elements of the specified collection
 	 * @param values the elements to check
-	 * @return true if this {@link Values} instance contains all the elements of the specified collection
+	 * @return true if this {@link ValueCollection} instance contains all the elements of the specified collection
 	 */
 	boolean containsAll(Collection<T> values);
 
 	/**
-	 * @return true if this {@link Values} instance is empty
+	 * @return true if this {@link ValueCollection} instance is empty
 	 */
 	boolean isEmpty();
 
 	/**
-	 * @return the number of elements in this {@link Values} instance
+	 * @return the number of elements in this {@link ValueCollection} instance
 	 */
 	int size();
 }

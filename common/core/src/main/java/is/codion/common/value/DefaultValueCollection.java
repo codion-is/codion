@@ -31,14 +31,14 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
 
-class DefaultValues<T, C extends Collection<T>> extends DefaultValue<C> implements Values<T, C> {
+class DefaultValueCollection<T, C extends Collection<T>> extends DefaultValue<C> implements ValueCollection<T, C> {
 
 	private final Supplier<? extends C> create;
 	private final Function<C, C> unmodifiable;
 
 	private @Nullable Value<T> singleValue;
 
-	DefaultValues(DefaultBuilder<C, T, ?> builder) {
+	DefaultValueCollection(DefaultBuilder<C, T, ?> builder) {
 		super(builder);
 		this.create = builder.create;
 		this.unmodifiable = builder.unmodifiable;
@@ -167,36 +167,36 @@ class DefaultValues<T, C extends Collection<T>> extends DefaultValue<C> implemen
 	}
 
 	@Override
-	public synchronized ObservableValues<T, C> observable() {
-		return (ObservableValues<T, C>) super.observable();
+	public synchronized ObservableValueCollection<T, C> observable() {
+		return (ObservableValueCollection<T, C>) super.observable();
 	}
 
 	@Override
-	protected ObservableValues<T, C> createObservable() {
-		return new DefaultObservableValues<>(this);
+	protected ObservableValueCollection<T, C> createObservable() {
+		return new DefaultObservableValueCollection<>(this);
 	}
 
 	private final class SingleValue extends AbstractValue<T> {
 
 		private SingleValue() {
-			DefaultValues.this.addListener(this::notifyListeners);
+			DefaultValueCollection.this.addListener(this::notifyListeners);
 		}
 
 		@Override
 		protected synchronized @Nullable T getValue() {
-			C collection = DefaultValues.this.getOrThrow();
+			C collection = DefaultValueCollection.this.getOrThrow();
 
 			return collection.isEmpty() ? null : collection.iterator().next();
 		}
 
 		@Override
 		protected synchronized void setValue(@Nullable T value) {
-			DefaultValues.this.set(value == null ? emptyList() : singleton(value));
+			DefaultValueCollection.this.set(value == null ? emptyList() : singleton(value));
 		}
 	}
 
-	static class DefaultBuilder<C extends Collection<T>, T, B extends Values.Builder<T, C, B>>
-					extends DefaultValue.DefaultBuilder<C, B> implements Values.Builder<T, C, B> {
+	static class DefaultBuilder<C extends Collection<T>, T, B extends ValueCollection.Builder<T, C, B>>
+					extends DefaultValue.DefaultBuilder<C, B> implements ValueCollection.Builder<T, C, B> {
 
 		private final Supplier<C> create;
 		private final UnaryOperator<C> unmodifiable;
@@ -208,8 +208,8 @@ class DefaultValues<T, C extends Collection<T>> extends DefaultValue<C> implemen
 		}
 
 		@Override
-		public Values<T, C> build() {
-			return new DefaultValues<>(this);
+		public ValueCollection<T, C> build() {
+			return new DefaultValueCollection<>(this);
 		}
 
 		@Override
@@ -218,11 +218,11 @@ class DefaultValues<T, C extends Collection<T>> extends DefaultValue<C> implemen
 		}
 	}
 
-	protected static class DefaultObservableValues<T, C extends Collection<T>>
-					extends ObservableValue<C, Values<T, C>>
-					implements ObservableValues<T, C> {
+	protected static class DefaultObservableValueCollection<T, C extends Collection<T>>
+					extends ObservableValue<C, ValueCollection<T, C>>
+					implements ObservableValueCollection<T, C> {
 
-		protected DefaultObservableValues(Values<T, C> values) {
+		protected DefaultObservableValueCollection(ValueCollection<T, C> values) {
 			super(values);
 		}
 

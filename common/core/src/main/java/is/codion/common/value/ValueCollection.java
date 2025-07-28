@@ -31,7 +31,7 @@ import java.util.Collection;
  * @see ValueSet
  * @see ValueList
  */
-public interface Values<T, C extends Collection<T>> extends Value<C>, ObservableValues<T, C> {
+public interface ValueCollection<T, C extends Collection<T>> extends Value<C>, ObservableValueCollection<T, C> {
 
 	@Override
 	@NonNull C get();
@@ -48,7 +48,7 @@ public interface Values<T, C extends Collection<T>> extends Value<C>, Observable
 	void set(@Nullable Collection<T> values);
 
 	/**
-	 * Adds a value to this Values instance.
+	 * Adds a value to this {@link ValueCollection} instance.
 	 * @param value the value to add
 	 * @return true if the value was added
 	 * @see Collection#add(Object)
@@ -56,7 +56,7 @@ public interface Values<T, C extends Collection<T>> extends Value<C>, Observable
 	boolean add(@Nullable T value);
 
 	/**
-	 * Adds the given values to this Values instance.
+	 * Adds the given values to this {@link ValueCollection} instance.
 	 * @param values the values to add
 	 * @return true if a value was added
 	 * @see Collection#addAll(Collection)
@@ -64,7 +64,7 @@ public interface Values<T, C extends Collection<T>> extends Value<C>, Observable
 	boolean addAll(T... values);
 
 	/**
-	 * Adds the given values to this Values instance.
+	 * Adds the given values to this {@link ValueCollection} instance.
 	 * @param values the values to add
 	 * @return true if a value was added
 	 * @see Collection#addAll(Collection)
@@ -72,7 +72,7 @@ public interface Values<T, C extends Collection<T>> extends Value<C>, Observable
 	boolean addAll(Collection<T> values);
 
 	/**
-	 * Removes a single instance of the given value from this Values instance.
+	 * Removes a single instance of the given value from this {@link ValueCollection} instance.
 	 * @param value the value to remove
 	 * @return true if the value was removed
 	 * @see Collection#remove(Object)
@@ -80,7 +80,7 @@ public interface Values<T, C extends Collection<T>> extends Value<C>, Observable
 	boolean remove(@Nullable T value);
 
 	/**
-	 * Removes the given values from this Values instance.
+	 * Removes the given values from this {@link ValueCollection} instance.
 	 * @param values the values to remove
 	 * @return true if a value was removed
 	 * @see Collection#removeAll(Collection)
@@ -88,7 +88,7 @@ public interface Values<T, C extends Collection<T>> extends Value<C>, Observable
 	boolean removeAll(T... values);
 
 	/**
-	 * Removes the given values from this Values instance.
+	 * Removes the given values from this {@link ValueCollection} instance.
 	 * @param values the values to remove
 	 * @return true if a value was removed
 	 * @see Collection#removeAll(Collection)
@@ -96,23 +96,23 @@ public interface Values<T, C extends Collection<T>> extends Value<C>, Observable
 	boolean removeAll(Collection<T> values);
 
 	/**
-	 * Returns a {@link Value} instance based on this {@link Values}.
+	 * Returns a {@link Value} instance based on this {@link ValueCollection}.
 	 * Setting this value to null clears the values.
 	 * This value consistently returns the first value from the
-	 * underlying {@link Values} in case it is sequenced and contains multiple items.
+	 * underlying {@link ValueCollection} in case it is sequenced and contains multiple items.
 	 * @return a single item value based on this values instance
 	 */
 	Value<T> value();
 
 	/**
-	 * Returns an {@link ObservableValues} notified each time this value changes.
-	 * @return an {@link ObservableValues} for this value
+	 * Returns an {@link ObservableValueCollection} notified each time this value changes.
+	 * @return an {@link ObservableValueCollection} for this value
 	 */
 	@Override
-	ObservableValues<T, C> observable();
+	ObservableValueCollection<T, C> observable();
 
 	/**
-	 * Builds a {@link Values} instance.
+	 * Builds a {@link ValueCollection} instance.
 	 * @param <T> the value type
 	 * @param <C> the Collection type
 	 * @param <B> the builder type
@@ -120,8 +120,8 @@ public interface Values<T, C extends Collection<T>> extends Value<C>, Observable
 	interface Builder<T, C extends Collection<T>, B extends Builder<T, C, B>> extends Value.Builder<C, B> {
 
 		/**
-		 * @return a new {@link Values} instance based on this builder
+		 * @return a new {@link ValueCollection} instance based on this builder
 		 */
-		Values<T, C> build();
+		ValueCollection<T, C> build();
 	}
 }

@@ -33,13 +33,13 @@ import java.util.function.Consumer;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ValuesTest {
+public class ValueCollectionTest {
 
 	@Test
 	@DisplayName("ValueSet basic operations")
 	void valueSet_basicOperations_shouldWorkAsExpected() {
-		Values<Integer, Set<Integer>> set = ValueSet.valueSet();
-		ObservableValues<Integer, Set<Integer>> observer = set.observable();
+		ValueCollection<Integer, Set<Integer>> set = ValueSet.valueSet();
+		ObservableValueCollection<Integer, Set<Integer>> observer = set.observable();
 		assertTrue(observer.isEmpty());
 		assertUnmodifiable(observer);
 
@@ -61,10 +61,10 @@ public class ValuesTest {
 		initialValues.add(1);
 		initialValues.add(2);
 
-		Values<Integer, Set<Integer>> set = ValueSet.<Integer>builder()
+		ValueCollection<Integer, Set<Integer>> set = ValueSet.<Integer>builder()
 						.value(initialValues)
 						.build();
-		ObservableValues<Integer, Set<Integer>> observer = set.observable();
+		ObservableValueCollection<Integer, Set<Integer>> observer = set.observable();
 		assertFalse(observer.isEmpty());
 		assertEquals(initialValues, observer.get());
 		assertUnmodifiable(observer);
@@ -80,7 +80,7 @@ public class ValuesTest {
 	@Test
 	@DisplayName("ValueSet null handling")
 	void valueSet_nullHandling_shouldAllowNullValues() {
-		Values<Integer, Set<Integer>> set = ValueSet.valueSet();
+		ValueCollection<Integer, Set<Integer>> set = ValueSet.valueSet();
 		assertTrue(set.add(null));
 		assertFalse(set.add(null));
 		assertTrue(set.remove(null));
@@ -89,8 +89,8 @@ public class ValuesTest {
 	@Test
 	@DisplayName("ValueSet single value view")
 	void valueSet_singleValueView_shouldReflectChanges() {
-		Values<Integer, Set<Integer>> set = ValueSet.valueSet();
-		ObservableValues<Integer, Set<Integer>> observer = set.observable();
+		ValueCollection<Integer, Set<Integer>> set = ValueSet.valueSet();
+		ObservableValueCollection<Integer, Set<Integer>> observer = set.observable();
 		Value<Integer> value = set.value();
 
 		value.set(1);
@@ -108,8 +108,8 @@ public class ValuesTest {
 	@Test
 	@DisplayName("ValueSet bulk operations")
 	void valueSet_bulkOperations_shouldWorkCorrectly() {
-		Values<Integer, Set<Integer>> set = ValueSet.valueSet();
-		ObservableValues<Integer, Set<Integer>> observer = set.observable();
+		ValueCollection<Integer, Set<Integer>> set = ValueSet.valueSet();
+		ObservableValueCollection<Integer, Set<Integer>> observer = set.observable();
 
 		assertTrue(set.addAll(1, 2, 3));
 		assertEquals(3, observer.size());
@@ -128,7 +128,7 @@ public class ValuesTest {
 
 	@Test
 	void setEvents() {
-		Values<Integer, Set<Integer>> set = ValueSet.valueSet();
+		ValueCollection<Integer, Set<Integer>> set = ValueSet.valueSet();
 		Value<Integer> singleValue = set.value();
 
 		AtomicInteger valueEventCounter = new AtomicInteger();
@@ -158,8 +158,8 @@ public class ValuesTest {
 	@Test
 	@DisplayName("ValueList basic operations")
 	void valueList_basicOperations_shouldWorkAsExpected() {
-		Values<Integer, List<Integer>> list = ValueList.valueList();
-		ObservableValues<Integer, List<Integer>> observable = list.observable();
+		ValueCollection<Integer, List<Integer>> list = ValueList.valueList();
+		ObservableValueCollection<Integer, List<Integer>> observable = list.observable();
 		assertTrue(observable.isEmpty());
 		assertUnmodifiable(observable);
 
@@ -181,10 +181,10 @@ public class ValuesTest {
 		initialValues.add(1);
 		initialValues.add(2);
 
-		Values<Integer, List<Integer>> list = ValueList.<Integer>builder()
+		ValueCollection<Integer, List<Integer>> list = ValueList.<Integer>builder()
 						.value(initialValues)
 						.build();
-		ObservableValues<Integer, List<Integer>> observable = list.observable();
+		ObservableValueCollection<Integer, List<Integer>> observable = list.observable();
 		assertFalse(observable.isEmpty());
 		assertEquals(initialValues, observable.get());
 		assertUnmodifiable(observable);
@@ -200,7 +200,7 @@ public class ValuesTest {
 	@Test
 	@DisplayName("ValueList duplicate and null handling")
 	void valueList_duplicatesAndNull_shouldAllowBoth() {
-		Values<Integer, List<Integer>> list = ValueList.valueList();
+		ValueCollection<Integer, List<Integer>> list = ValueList.valueList();
 		// Lists allow duplicates
 		assertTrue(list.add(1));
 		assertTrue(list.add(1));
@@ -216,8 +216,8 @@ public class ValuesTest {
 	@Test
 	@DisplayName("ValueList single value view")
 	void valueList_singleValueView_shouldReflectChanges() {
-		Values<Integer, List<Integer>> list = ValueList.valueList();
-		ObservableValues<Integer, List<Integer>> observable = list.observable();
+		ValueCollection<Integer, List<Integer>> list = ValueList.valueList();
+		ObservableValueCollection<Integer, List<Integer>> observable = list.observable();
 		Value<Integer> value = list.value();
 
 		value.set(1);
@@ -235,8 +235,8 @@ public class ValuesTest {
 	@Test
 	@DisplayName("ValueList bulk operations")
 	void valueList_bulkOperations_shouldWorkCorrectly() {
-		Values<Integer, List<Integer>> list = ValueList.valueList();
-		ObservableValues<Integer, List<Integer>> observable = list.observable();
+		ValueCollection<Integer, List<Integer>> list = ValueList.valueList();
+		ObservableValueCollection<Integer, List<Integer>> observable = list.observable();
 
 		assertTrue(list.addAll(1, 2, 3));
 		assertEquals(3, observable.size());
@@ -255,7 +255,7 @@ public class ValuesTest {
 
 	@Test
 	void listEvents() {
-		Values<Integer, List<Integer>> list = ValueList.valueList();
+		ValueCollection<Integer, List<Integer>> list = ValueList.valueList();
 		Value<Integer> singleValue = list.value();
 
 		AtomicInteger valueEventCounter = new AtomicInteger();
@@ -282,7 +282,7 @@ public class ValuesTest {
 		assertEquals(3, valueListEventCounter.get());
 	}
 
-	private static void assertUnmodifiable(ObservableValues<Integer, ? extends Collection<Integer>> observable) {
+	private static void assertUnmodifiable(ObservableValueCollection<Integer, ? extends Collection<Integer>> observable) {
 		assertThrows(UnsupportedOperationException.class, () -> observable.get().remove(1));
 	}
 }

@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.43
+### is.codion.common.core
+- Values renamed ValueCollection.
 ### is.codion.framework.db
 - EntityConnection.Update.set() value parameter now @Nullable.
 

@@ -24,4 +24,4 @@ import java.util.List;
  * A read only value list observable
  * @param <T> the value type
  */
-public interface ObservableValueList<T> extends ObservableValues<T, List<T>> {}
+public interface ObservableValueList<T> extends ObservableValueCollection<T, List<T>> {}

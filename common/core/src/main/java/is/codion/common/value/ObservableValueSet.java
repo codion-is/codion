@@ -24,4 +24,4 @@ import java.util.Set;
  * A read only value set observable
  * @param <T> the value type
  */
-public interface ObservableValueSet<T> extends ObservableValues<T, Set<T>> {}
+public interface ObservableValueSet<T> extends ObservableValueCollection<T, Set<T>> {}

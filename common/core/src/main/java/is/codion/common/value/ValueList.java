@@ -31,7 +31,7 @@ import static java.util.Objects.requireNonNull;
  * <p>All implementations are thread-safe and support concurrent access.
  * @param <T> the value type
  */
-public interface ValueList<T> extends Values<T, List<T>> {
+public interface ValueList<T> extends ValueCollection<T, List<T>> {
 
 	@Override
 	ObservableValueList<T> observable();
@@ -83,7 +83,7 @@ public interface ValueList<T> extends Values<T, List<T>> {
 	 * Builds a {@link ValueList} instance.
 	 * @param <T> the value type
 	 */
-	interface Builder<T> extends Values.Builder<T, List<T>, Builder<T>> {
+	interface Builder<T> extends ValueCollection.Builder<T, List<T>, Builder<T>> {
 
 		/**
 		 * @return a new {@link ValueList} instance based on this builder

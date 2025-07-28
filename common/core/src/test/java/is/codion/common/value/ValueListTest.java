@@ -35,7 +35,7 @@ public class ValueListTest {
 	@Test
 	void list() {
 		ValueList<Integer> values = ValueList.valueList();
-		ObservableValues<Integer, List<Integer>> observer = values.observable();
+		ObservableValueCollection<Integer, List<Integer>> observer = values.observable();
 		assertTrue(observer.isEmpty());
 		assertUnmodifiable(observer);
 
@@ -143,7 +143,7 @@ public class ValueListTest {
 		assertEquals(3, valueListEventCounter.get());
 	}
 
-	private static void assertUnmodifiable(ObservableValues<Integer, ? extends Collection<Integer>> observer) {
+	private static void assertUnmodifiable(ObservableValueCollection<Integer, ? extends Collection<Integer>> observer) {
 		assertThrows(UnsupportedOperationException.class, () -> observer.get().remove(1));
 	}
 }
