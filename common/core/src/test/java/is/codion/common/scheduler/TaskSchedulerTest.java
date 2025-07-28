@@ -36,7 +36,9 @@ public class TaskSchedulerTest {
 
 	@Test
 	void constructorNegativeInitialDelay() {
-		assertThrows(IllegalArgumentException.class, () -> TaskScheduler.builder().task(runnable).initialDelay(-1));
+		assertThrows(IllegalArgumentException.class, () -> TaskScheduler.builder().task(runnable)
+						.interval(1, TimeUnit.SECONDS)
+						.initialDelay(-1));
 	}
 
 	@Test
@@ -46,12 +48,15 @@ public class TaskSchedulerTest {
 
 	@Test
 	void constructorNullTimUnit() {
-		assertThrows(NullPointerException.class, () -> TaskScheduler.builder().task(runnable).interval(1, null));
+		assertThrows(NullPointerException.class, () -> TaskScheduler.builder().task(runnable)
+						.interval(1, null));
 	}
 
 	@Test
 	void constructorNullThreadFactory() {
-		assertThrows(NullPointerException.class, () -> TaskScheduler.builder().task(runnable).threadFactory(null));
+		assertThrows(NullPointerException.class, () -> TaskScheduler.builder().task(runnable)
+						.interval(1, TimeUnit.SECONDS)
+						.threadFactory(null));
 	}
 
 	@Test

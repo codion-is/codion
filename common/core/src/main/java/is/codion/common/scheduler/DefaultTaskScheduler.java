@@ -51,7 +51,7 @@ final class DefaultTaskScheduler implements TaskScheduler {
 						.listener(this::onIntervalChanged)
 						.build();
 		this.initialDelay = builder.initialDelay;
-		this.timeUnit = builder.timeUnit();
+		this.timeUnit = builder.timeUnit;
 		this.threadFactory = builder.threadFactory;
 	}
 
@@ -104,8 +104,22 @@ final class DefaultTaskScheduler implements TaskScheduler {
 	private static final class DefaultTaskStep implements Builder.TaskStep {
 
 		@Override
-		public Builder task(Runnable task) {
-			return new DefaultBuilder(task);
+		public Builder.IntervalStep task(Runnable task) {
+			return new DefaultIntervalStep(requireNonNull(task));
+		}
+	}
+
+	private static final class DefaultIntervalStep implements Builder.IntervalStep {
+
+		private final Runnable task;
+
+		private DefaultIntervalStep(Runnable task) {
+			this.task = task;
+		}
+
+		@Override
+		public Builder interval(int interval, TimeUnit timeUnit) {
+			return new DefaultBuilder(task, interval, requireNonNull(timeUnit));
 		}
 	}
 
@@ -114,24 +128,19 @@ final class DefaultTaskScheduler implements TaskScheduler {
 		static final Builder.TaskStep TASK = new DefaultTaskStep();
 
 		private final Runnable task;
+		private final int interval;
+		private final TimeUnit timeUnit;
 
-		private int interval;
 		private int initialDelay;
-		private @Nullable TimeUnit timeUnit;
 		private ThreadFactory threadFactory = new DaemonThreadFactory();
 
-		private DefaultBuilder(Runnable task) {
-			this.task = requireNonNull(task);
-		}
-
-		@Override
-		public Builder interval(int interval, TimeUnit timeUnit) {
+		private DefaultBuilder(Runnable task, int interval, TimeUnit timeUnit) {
 			if (interval <= 0) {
 				throw new IllegalArgumentException("Interval must be a positive integer");
 			}
+			this.task = task;
 			this.interval = interval;
-			this.timeUnit = requireNonNull(timeUnit);
-			return this;
+			this.timeUnit = timeUnit;
 		}
 
 		@Override
@@ -159,19 +168,7 @@ final class DefaultTaskScheduler implements TaskScheduler {
 
 		@Override
 		public TaskScheduler build() {
-			if (interval == 0) {
-				throw new IllegalStateException("An interval > 0 is required for building a TaskScheduler");
-			}
-
 			return new DefaultTaskScheduler(this);
-		}
-
-		private TimeUnit timeUnit() {
-			if (timeUnit == null) {
-				throw new IllegalStateException("A time unit is required for building a TaskScheduler");
-			}
-
-			return timeUnit;
 		}
 	}
 

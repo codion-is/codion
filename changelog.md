@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.43
 ### is.codion.common.core
 - Values renamed ValueCollection.
+- TaskScheduler.Builder.IntervalStep added.
 ### is.codion.framework.db
 - EntityConnection.Update.set() value parameter now @Nullable.
 

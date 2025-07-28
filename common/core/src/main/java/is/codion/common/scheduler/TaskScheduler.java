@@ -87,23 +87,29 @@ public interface TaskScheduler {
 	interface Builder {
 
 		/**
-		 * Provides a {@link Builder}
+		 * Provides a {@link Builder.IntervalStep}
 		 */
 		interface TaskStep {
 
 			/**
 			 * @param task the task to run
-			 * @return a new {@link Builder} instance.
+			 * @return a new {@link Builder.IntervalStep} instance.
 			 */
-			Builder task(Runnable task);
+			IntervalStep task(Runnable task);
 		}
 
 		/**
-		 * @param interval the interval
-		 * @param timeUnit the time unit
-		 * @return this builder instance
+		 * Provides a {@link Builder}
 		 */
-		Builder interval(int interval, TimeUnit timeUnit);
+		interface IntervalStep {
+
+			/**
+			 * @param interval the interval
+			 * @param timeUnit the time unit
+			 * @return a builder instance
+			 */
+			Builder interval(int interval, TimeUnit timeUnit);
+		}
 
 		/**
 		 * @param initialDelay the initial start delay, used on restarts as well
