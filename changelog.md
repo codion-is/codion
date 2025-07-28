@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.43
+### is.codion.framework.db
+- EntityConnection.Update.set() value parameter now @Nullable.
 
 ## 0.18.42
 ### is.codion.common.model

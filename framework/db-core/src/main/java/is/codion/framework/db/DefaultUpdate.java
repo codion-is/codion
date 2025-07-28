@@ -22,6 +22,8 @@ import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.condition.Condition;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
@@ -82,14 +84,14 @@ final class DefaultUpdate implements Update, Serializable {
 	static final class DefaultBuilder implements Update.Builder {
 
 		private final Condition where;
-		private final Map<Column<?>, Object> values = new LinkedHashMap<>();
+		private final Map<Column<?>, @Nullable Object> values = new LinkedHashMap<>();
 
 		DefaultBuilder(Condition where) {
 			this.where = requireNonNull(where);
 		}
 
 		@Override
-		public <T> Builder set(Column<?> column, T value) {
+		public <T> Builder set(Column<?> column, @Nullable T value) {
 			if (values.containsKey(requireNonNull(column))) {
 				throw new IllegalStateException("Update already contains a value for column: " + column);
 			}

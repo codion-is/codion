@@ -1026,7 +1026,7 @@ public interface EntityConnection extends AutoCloseable {
 			 * @return this builder
 			 * @throws IllegalStateException in case a value has already been added for the given column
 			 */
-			<T> Builder set(Column<?> column, T value);
+			<T> Builder set(Column<?> column, @Nullable T value);
 
 			/**
 			 * @return a new {@link Update} instance based on this builder
