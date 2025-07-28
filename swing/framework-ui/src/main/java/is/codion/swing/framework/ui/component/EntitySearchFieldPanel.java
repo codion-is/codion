@@ -29,6 +29,8 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.JComponent;
@@ -257,12 +259,12 @@ public final class EntitySearchFieldPanel extends JPanel {
 		}
 
 		@Override
-		protected Entity getComponentValue() {
+		protected @Nullable Entity getComponentValue() {
 			return component().searchField.model().selection().entity().get();
 		}
 
 		@Override
-		protected void setComponentValue(Entity entity) {
+		protected void setComponentValue(@Nullable Entity entity) {
 			component().searchField.model().selection().entity().set(entity);
 		}
 	}

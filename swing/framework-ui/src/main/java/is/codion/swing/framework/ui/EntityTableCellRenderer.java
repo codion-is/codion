@@ -29,6 +29,8 @@ import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer.ColorProvider;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
+import org.jspecify.annotations.Nullable;
+
 import java.awt.Color;
 
 import static is.codion.swing.common.ui.color.Colors.darker;
@@ -112,12 +114,12 @@ public final class EntityTableCellRenderer {
 
 	private static final class EntityUISettings extends FilterTableCellRenderer.DefaultUISettings {
 
-		private final ConditionModel<?> queryCondition;
+		private final @Nullable ConditionModel<?> queryCondition;
 
-		private Color filteredConditionBackground;
-		private Color alternateFilteredConditionBackground;
+		private @Nullable Color filteredConditionBackground;
+		private @Nullable Color alternateFilteredConditionBackground;
 
-		private EntityUISettings(ConditionModel<?> queryCondition) {
+		private EntityUISettings(@Nullable ConditionModel<?> queryCondition) {
 			this.queryCondition = queryCondition;
 		}
 

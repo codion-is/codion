@@ -172,7 +172,7 @@ final class EntityTablePanelPreferences {
 											conditionPreferencesMap.put(attribute, new ConditionPreferences(attribute,
 															condition.autoEnable().get(),
 															condition.caseSensitive().get(),
-															condition.operands().wildcard().get())));
+															condition.operands().wildcard().getOrThrow())));
 		}
 
 		return conditionPreferencesMap;

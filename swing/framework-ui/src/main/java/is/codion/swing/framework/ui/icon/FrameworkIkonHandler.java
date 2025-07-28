@@ -18,6 +18,7 @@
  */
 package is.codion.swing.framework.ui.icon;
 
+import org.jspecify.annotations.Nullable;
 import org.kordamp.ikonli.AbstractIkonHandler;
 import org.kordamp.ikonli.Ikon;
 
@@ -47,12 +48,12 @@ public final class FrameworkIkonHandler extends AbstractIkonHandler {
 	}
 
 	@Override
-	public URL getFontResource() {
+	public @Nullable URL getFontResource() {
 		return FrameworkIkonHandler.class.getClassLoader().getResource(FONT_RESOURCE);
 	}
 
 	@Override
-	public InputStream getFontResourceAsStream() {
+	public @Nullable InputStream getFontResourceAsStream() {
 		return FrameworkIkonHandler.class.getClassLoader().getResourceAsStream(FONT_RESOURCE);
 	}
 

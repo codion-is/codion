@@ -39,6 +39,7 @@ import is.codion.swing.common.ui.window.Windows;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,36 +100,36 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
 	private final Class<M> applicationModelClass;
 	private final Class<P> applicationPanelClass;
-	private final String preferencesLookAndFeel;
+	private final @Nullable String preferencesLookAndFeel;
 
-	private Function<User, EntityConnectionProvider> connectionProviderFunction;
-	private EntityConnectionProvider connectionProvider;
+	private @Nullable Function<User, EntityConnectionProvider> connectionProviderFunction;
+	private @Nullable EntityConnectionProvider connectionProvider;
 	private String applicationName;
 	private Function<EntityConnectionProvider, M> applicationModel = new DefaultApplicationModelFactory();
 	private Function<M, P> applicationPanel = new DefaultApplicationPanelFactory();
-	private Observable<String> frameTitle;
+	private @Nullable Observable<String> frameTitle;
 
-	private DomainType domain = EntityConnectionProvider.CLIENT_DOMAIN_TYPE.get();
+	private @Nullable DomainType domain = EntityConnectionProvider.CLIENT_DOMAIN_TYPE.get();
 	private Supplier<User> userSupplier = new DefaultUserSupplier();
 	private Supplier<JFrame> frameSupplier = new DefaultFrameSupplier();
 	private boolean startupDialog = EntityApplicationPanel.STARTUP_DIALOG.getOrThrow();
-	private ImageIcon applicationIcon;
-	private Version applicationVersion;
+	private @Nullable ImageIcon applicationIcon;
+	private @Nullable Version applicationVersion;
 	private boolean saveDefaultUsername = EntityApplicationModel.SAVE_DEFAULT_USERNAME.getOrThrow();
 	private Supplier<JComponent> loginPanelSouthComponentSupplier = new DefaultSouthComponentSupplier();
-	private Runnable beforeApplicationStarted;
-	private Consumer<P> onApplicationStarted;
+	private @Nullable Runnable beforeApplicationStarted;
+	private @Nullable Consumer<P> onApplicationStarted;
 
 	private String defaultLookAndFeelClassName = systemLookAndFeelClassName();
-	private String lookAndFeelClassName;
+	private @Nullable String lookAndFeelClassName;
 	private boolean uncaughtExceptionHandler = true;
 	private boolean maximizeFrame = false;
 	private boolean displayFrame = true;
 	private boolean mainMenu = true;
-	private Dimension frameSize;
-	private Dimension defaultFrameSize;
-	private User defaultUser;
-	private User user = EntityApplicationModel.USER.optional()
+	private @Nullable Dimension frameSize;
+	private @Nullable Dimension defaultFrameSize;
+	private @Nullable User defaultUser;
+	private @Nullable User user = EntityApplicationModel.USER.optional()
 					.map(User::parse)
 					.orElse(null);
 
@@ -208,13 +209,13 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	}
 
 	@Override
-	public EntityApplicationPanel.Builder<M, P> defaultUser(User defaultUser) {
+	public EntityApplicationPanel.Builder<M, P> defaultUser(@Nullable User defaultUser) {
 		this.defaultUser = defaultUser;
 		return this;
 	}
 
 	@Override
-	public EntityApplicationPanel.Builder<M, P> user(User user) {
+	public EntityApplicationPanel.Builder<M, P> user(@Nullable User user) {
 		this.user = user;
 		return this;
 	}
@@ -279,13 +280,13 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	}
 
 	@Override
-	public EntityApplicationPanel.Builder<M, P> frameSize(Dimension frameSize) {
+	public EntityApplicationPanel.Builder<M, P> frameSize(@Nullable Dimension frameSize) {
 		this.frameSize = frameSize;
 		return this;
 	}
 
 	@Override
-	public EntityApplicationPanel.Builder<M, P> defaultFrameSize(Dimension defaultFrameSize) {
+	public EntityApplicationPanel.Builder<M, P> defaultFrameSize(@Nullable Dimension defaultFrameSize) {
 		this.defaultFrameSize = defaultFrameSize;
 		return this;
 	}
@@ -297,13 +298,13 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	}
 
 	@Override
-	public EntityApplicationPanel.Builder<M, P> beforeApplicationStarted(Runnable beforeApplicationStarted) {
+	public EntityApplicationPanel.Builder<M, P> beforeApplicationStarted(@Nullable Runnable beforeApplicationStarted) {
 		this.beforeApplicationStarted = beforeApplicationStarted;
 		return this;
 	}
 
 	@Override
-	public EntityApplicationPanel.Builder<M, P> onApplicationStarted(Consumer<P> onApplicationStarted) {
+	public EntityApplicationPanel.Builder<M, P> onApplicationStarted(@Nullable Consumer<P> onApplicationStarted) {
 		this.onApplicationStarted = onApplicationStarted;
 		return this;
 	}
@@ -386,7 +387,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		return userPreference == null ? defaultLookAndFeelClassName : userPreference;
 	}
 
-	private static String fromFlatLaf(String lookAndFeelClassName) {
+	private static @Nullable String fromFlatLaf(@Nullable String lookAndFeelClassName) {
 		if (lookAndFeelClassName == null) {
 			return null;
 		}
@@ -451,7 +452,9 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		JFrame frame = frameSupplier.get();
 		frame.getContentPane().setLayout(new BorderLayout());
 		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-		frame.setIconImage(applicationIcon.getImage());
+		if (applicationIcon != null) {
+			frame.setIconImage(applicationIcon.getImage());
+		}
 		if (frameSize != null) {
 			frame.setSize(frameSize);
 		}
@@ -562,7 +565,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 						(description != null ? "@" + description.toUpperCase() : "");
 	}
 
-	private static void displayExceptionAndExit(Throwable exception, JFrame applicationFrame) {
+	private static void displayExceptionAndExit(Throwable exception, @Nullable JFrame applicationFrame) {
 		Throwable unwrapped = ExceptionDialogBuilder.unwrap(exception);
 		if (unwrapped instanceof CancelException) {
 			System.exit(0);
@@ -573,7 +576,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		}
 	}
 
-	private static void displayException(Throwable exception, JFrame applicationFrame) {
+	private static void displayException(Throwable exception, @Nullable JFrame applicationFrame) {
 		if (!(exception instanceof CancelException)) {
 			Window focusOwnerParentWindow = parentWindow(getCurrentKeyboardFocusManager().getFocusOwner());
 			Dialogs.displayException(exception, focusOwnerParentWindow == null ? applicationFrame : focusOwnerParentWindow);
@@ -610,7 +613,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
 	private final class DefaultLoginValidator implements LoginValidator {
 
-		private EntityConnectionProvider connectionProvider;
+		private @Nullable EntityConnectionProvider connectionProvider;
 
 		@Override
 		public void validate(User user) {
@@ -705,7 +708,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	private static final class DefaultSouthComponentSupplier implements Supplier<JComponent> {
 
 		@Override
-		public JComponent get() {
+		public @Nullable JComponent get() {
 			return null;
 		}
 	}

@@ -40,6 +40,8 @@ import is.codion.swing.framework.ui.EntityPanel.PanelState;
 import is.codion.swing.framework.ui.EntityPanel.WindowType;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -159,9 +161,9 @@ public final class TabbedDetailLayout implements DetailLayout {
 	private final ControlMap controlMap;
 	private final WindowType windowType;
 
-	private JTabbedPane tabbedPane;
-	private JSplitPane splitPane;
-	private Window panelWindow;
+	private @Nullable JTabbedPane tabbedPane;
+	private @Nullable JSplitPane splitPane;
+	private @Nullable Window panelWindow;
 
 	private TabbedDetailLayout(DefaultBuilder builder) {
 		this.entityPanel = builder.entityPanel;

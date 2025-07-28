@@ -33,6 +33,8 @@ import is.codion.swing.common.ui.cursor.Cursors;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
@@ -242,7 +244,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		 * @param keyStroke the keyStroke to assign to the given control
 		 * @return this builder instance
 		 */
-		Builder keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke);
+		Builder keyStroke(ControlKey<?> controlKey, @Nullable KeyStroke keyStroke);
 
 		/**
 		 * @param confirmAdd true if adding an item should be confirmed
@@ -259,11 +261,11 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		Builder confirmEdit(boolean confirmEdit);
 	}
 
-	private CommandControl createAddControl(Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke, boolean confirm) {
+	private @Nullable CommandControl createAddControl(@Nullable Supplier<EntityEditPanel> editPanel, @Nullable KeyStroke keyStroke, boolean confirm) {
 		return editPanel == null ? null : EntityControls.createAddControl(this, editPanel, keyStroke, confirm);
 	}
 
-	private CommandControl createEditControl(Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke, boolean confirm) {
+	private @Nullable CommandControl createEditControl(@Nullable Supplier<EntityEditPanel> editPanel, @Nullable KeyStroke keyStroke, boolean confirm) {
 		return editPanel == null ? null : EntityControls.createEditControl(this, editPanel, keyStroke, confirm);
 	}
 
@@ -285,7 +287,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
 		private final ControlMap controlMap = controlMap(ControlKeys.class);
 
-		private Supplier<EntityEditPanel> editPanel;
+		private @Nullable Supplier<EntityEditPanel> editPanel;
 		private boolean confirmAdd;
 		private boolean confirmEdit;
 
@@ -305,7 +307,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		}
 
 		@Override
-		public Builder keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke) {
+		public Builder keyStroke(ControlKey<?> controlKey, @Nullable KeyStroke keyStroke) {
 			controlMap.keyStroke(controlKey).set(keyStroke);
 			return this;
 		}

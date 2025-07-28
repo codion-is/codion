@@ -29,6 +29,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityTablePanelPreferences bug fixed, no longer applies empty preferences.
 - EntityApplicationPanel.Builder.frameSupplier() renamed frame().
+- JSpecify annotations added.
 
 ## 0.18.41
 ### is.codion

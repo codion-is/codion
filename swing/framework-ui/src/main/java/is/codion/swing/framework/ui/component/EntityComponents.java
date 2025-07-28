@@ -48,6 +48,8 @@ import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.BoundedRangeModel;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultBoundedRangeModel;
@@ -77,6 +79,8 @@ import static java.util.Objects.requireNonNull;
 public final class EntityComponents {
 
 	private static final FrameworkIcons ICONS = FrameworkIcons.instance();
+	private static final Supplier<IllegalStateException> DATE_TIME_PATTERN_MISSING =
+					() -> new IllegalStateException("Attribute has no dateTimePattern defined");
 
 	private final EntityDefinition entityDefinition;
 
@@ -312,7 +316,7 @@ public final class EntityComponents {
 
 		return Components.temporalFieldPanel()
 						.temporalClass(attribute.type().valueClass())
-						.dateTimePattern(attributeDefinition.dateTimePattern().orElse(null))
+						.dateTimePattern(attributeDefinition.dateTimePattern().orElseThrow(DATE_TIME_PATTERN_MISSING))
 						.toolTipText(attributeDefinition.description().orElse(null))
 						.calendarIcon(ICONS.calendar());
 	}
@@ -369,7 +373,7 @@ public final class EntityComponents {
 		}
 		if (attribute.type().isTemporal()) {
 			return (TextFieldBuilder<T, C, B>) temporalField((Attribute<Temporal>) attribute)
-							.dateTimePattern(attributeDefinition.dateTimePattern().orElse(null))
+							.dateTimePattern(attributeDefinition.dateTimePattern().orElseThrow(DATE_TIME_PATTERN_MISSING))
 							.toolTipText(attributeDefinition.description().orElse(null))
 							.calendarIcon(ICONS.calendar());
 		}
@@ -398,7 +402,7 @@ public final class EntityComponents {
 
 		return Components.temporalField()
 						.temporalClass(attributeDefinition.attribute().type().valueClass())
-						.dateTimePattern(attributeDefinition.dateTimePattern().orElse(null))
+						.dateTimePattern(attributeDefinition.dateTimePattern().orElseThrow(DATE_TIME_PATTERN_MISSING))
 						.toolTipText(attributeDefinition.description().orElse(null))
 						.calendarIcon(ICONS.calendar());
 	}
@@ -685,7 +689,7 @@ public final class EntityComponents {
 		}
 
 		@Override
-		public Object parseObject(String source, ParsePosition pos) {
+		public @Nullable Object parseObject(String source, ParsePosition pos) {
 			pos.setErrorIndex(0);
 
 			return null;
@@ -705,7 +709,7 @@ public final class EntityComponents {
 		}
 
 		@Override
-		public Object parseObject(String source, ParsePosition pos) {
+		public @Nullable Object parseObject(String source, ParsePosition pos) {
 			pos.setErrorIndex(0);
 
 			return null;

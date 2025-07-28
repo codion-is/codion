@@ -31,6 +31,8 @@ import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.swing.common.ui.control.Control;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -132,7 +134,7 @@ final class EntityPopupMenu extends JPopupMenu {
 		return builder.toString();
 	}
 
-	private static String createValueString(Object value, AttributeDefinition<Object> attributeDefinition) {
+	private static String createValueString(@Nullable Object value, AttributeDefinition<Object> attributeDefinition) {
 		String valueAsString = value == null ? "<null>" : attributeDefinition.string(value);
 		if (valueAsString.length() > MAXIMUM_VALUE_LENGTH) {
 			valueAsString = valueAsString.substring(0, MAXIMUM_VALUE_LENGTH) + "...";
@@ -166,7 +168,7 @@ final class EntityPopupMenu extends JPopupMenu {
 	private static Entity populateEntityGraph(Entity entity, EntityConnection connection, Set<ForeignKeyEntity> visited) {
 		for (ForeignKey foreignKey : entity.definition().foreignKeys().get()) {
 			Entity.Key key = entity.key(foreignKey);
-			if (!entity.isNull(foreignKey)) {
+			if (key != null) {
 				ForeignKeyEntity foreignKeyEntity = new ForeignKeyEntity(foreignKey, select(key, connection));
 				if (visited.contains(foreignKeyEntity)) {
 					entity.set(foreignKey, duplicate(foreignKeyEntity.entity));

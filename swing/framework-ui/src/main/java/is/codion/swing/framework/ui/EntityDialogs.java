@@ -40,6 +40,7 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.component.DefaultEditComponentFactory;
 import is.codion.swing.framework.ui.component.EditComponentFactory;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -344,7 +345,7 @@ public final class EntityDialogs {
 		private final class DefaultValue implements Function<Collection<Entity>, T> {
 
 			@Override
-			public T apply(Collection<Entity> entities) {
+			public @Nullable T apply(Collection<Entity> entities) {
 				Collection<T> values = entities.stream()
 								.map(entity -> entity.get(attribute))
 								.collect(toSet());
@@ -499,8 +500,8 @@ public final class EntityDialogs {
 
 		private final EntityTablePanel tablePanel;
 
-		private EntitySearchDialog(EntityTablePanel tablePanel, Window owner, Point location,
-															 Component locationRelativeTo, Observable<String> title, ImageIcon icon,
+		private EntitySearchDialog(EntityTablePanel tablePanel, @Nullable Window owner, @Nullable Point location,
+															 @Nullable Component locationRelativeTo, @Nullable Observable<String> title, @Nullable ImageIcon icon,
 															 boolean singleSelection, boolean includeSearchButton) {
 			this.tablePanel = requireNonNull(tablePanel).initialize();
 			Control okControl = Control.builder()
@@ -685,7 +686,7 @@ public final class EntityDialogs {
 		private final EntityEditPanel editPanel;
 		private final Collection<Consumer<EntityEditPanel>> onShownConsumers = new ArrayList<>(1);
 
-		private Supplier<Entity> entity;
+		private @Nullable Supplier<Entity> entity;
 		private Consumer<Entity> onUpdate = emptyConsumer();
 		private boolean confirm = false;
 

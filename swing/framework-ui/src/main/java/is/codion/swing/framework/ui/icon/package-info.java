@@ -22,4 +22,5 @@
  * <li>{@link is.codion.swing.framework.ui.icon.FrameworkIcons#FRAMEWORK_ICONS_CLASSNAME}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 package is.codion.swing.framework.ui.icon;

@@ -24,6 +24,7 @@ import is.codion.common.user.User;
 import is.codion.framework.model.EntityApplicationModel;
 
 import org.json.JSONObject;
+import org.jspecify.annotations.Nullable;
 
 import java.awt.Dimension;
 import java.util.prefs.Preferences;
@@ -42,14 +43,14 @@ final class ApplicationPreferences {
 	private static final String APPLICATION_PANEL = "applicationPanel";
 	private static final String EMPTY_JSON_OBJECT = "{}";
 
-	private final String defaultUsername;
-	private final String lookAndFeel;
+	private final @Nullable String defaultUsername;
+	private final @Nullable String lookAndFeel;
 	private final int scaling;
-	private final Dimension frameSize;
+	private final @Nullable Dimension frameSize;
 	private final boolean frameMaximized;
 
-	ApplicationPreferences(String defaultUsername, String lookAndFeel, int scaling,
-												 Dimension frameSize, boolean frameMaximized) {
+	ApplicationPreferences(@Nullable String defaultUsername, @Nullable String lookAndFeel, int scaling,
+												 @Nullable Dimension frameSize, boolean frameMaximized) {
 		this.defaultUsername = defaultUsername;
 		this.lookAndFeel = lookAndFeel;
 		this.scaling = scaling;
@@ -57,7 +58,7 @@ final class ApplicationPreferences {
 		this.frameMaximized = frameMaximized;
 	}
 
-	String lookAndFeel() {
+	@Nullable String lookAndFeel() {
 		return lookAndFeel;
 	}
 
@@ -65,7 +66,7 @@ final class ApplicationPreferences {
 		return scaling;
 	}
 
-	Dimension frameSize() {
+	@Nullable Dimension frameSize() {
 		return frameSize;
 	}
 
@@ -81,7 +82,7 @@ final class ApplicationPreferences {
 		UserPreferences.set(applicationClassName.getName() + PREFERENCES_KEY, toJSONObject().toString());
 	}
 
-	User defaultLoginUser() {
+	@Nullable User defaultLoginUser() {
 		return defaultUsername == null || defaultUsername.isEmpty() ? null : User.user(defaultUsername);
 	}
 
@@ -90,7 +91,7 @@ final class ApplicationPreferences {
 		preferences.put(DEFAULT_USERNAME_KEY, defaultUsername);
 		preferences.put(LOOK_AND_FEEL_KEY, lookAndFeel);
 		preferences.put(SCALING_KEY, scaling);
-		preferences.put(FRAME_SIZE_KEY, frameSize.width + "x" + frameSize.height);
+		preferences.put(FRAME_SIZE_KEY, frameSize == null ? null : (frameSize.width + "x" + frameSize.height));
 		preferences.put(FRAME_MAXIMIZED_KEY, frameMaximized);
 
 		return preferences;
@@ -118,7 +119,7 @@ final class ApplicationPreferences {
 						jsonObject.has(FRAME_MAXIMIZED_KEY) && jsonObject.getBoolean(FRAME_MAXIMIZED_KEY));
 	}
 
-	private static Dimension parseFrameSize(String userPreference) {
+	private static @Nullable Dimension parseFrameSize(String userPreference) {
 		if (Text.nullOrEmpty(userPreference)) {
 			return null;
 		}

@@ -33,6 +33,8 @@ import is.codion.swing.framework.ui.EntityPanel.PanelState;
 import is.codion.swing.framework.ui.EntityPanel.WindowType;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JComponent;
 import java.awt.Window;
 import java.util.HashMap;
@@ -188,7 +190,7 @@ public final class WindowDetailLayout implements DetailLayout {
 						.build();
 		private final EntityPanel detailPanel;
 
-		private Window window;
+		private @Nullable Window window;
 		private boolean initialized = false;
 
 		private DetailWindow(EntityPanel detailPanel) {

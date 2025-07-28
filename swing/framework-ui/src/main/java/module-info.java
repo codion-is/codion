@@ -31,6 +31,7 @@
  * @provides is.codion.swing.framework.ui.icon.FrameworkIcons
  * @provides org.kordamp.ikonli.IkonHandler
  */
+@org.jspecify.annotations.NullMarked
 module is.codion.swing.framework.ui {
 	requires org.slf4j;
 	requires org.json;

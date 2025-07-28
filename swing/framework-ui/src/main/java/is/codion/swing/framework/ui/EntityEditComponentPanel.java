@@ -59,6 +59,8 @@ import is.codion.swing.framework.ui.component.EntityComponents;
 import is.codion.swing.framework.ui.component.EntitySearchField;
 import is.codion.swing.framework.ui.component.EntitySearchFieldPanel;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -692,7 +694,7 @@ public class EntityEditComponentPanel extends JPanel {
 		return componentBuilder;
 	}
 
-	private JComponent getComponentOrThrow(Attribute<?> attribute) {
+	private @Nullable JComponent getComponentOrThrow(Attribute<?> attribute) {
 		Value<JComponent> component = component(attribute);
 		if (component.isNull()) {
 			throw new IllegalArgumentException("No component associated with attribute: " + attribute);
@@ -726,7 +728,7 @@ public class EntityEditComponentPanel extends JPanel {
 		}
 	}
 
-	private static boolean sameOrParentOf(JComponent parent, JComponent component) {
+	private static boolean sameOrParentOf(JComponent parent, @Nullable JComponent component) {
 		if (parent == component) {
 			return true;
 		}
@@ -908,7 +910,7 @@ public class EntityEditComponentPanel extends JPanel {
 		 */
 		public final class AfterUpdate {
 
-			private JComponent focusedInputComponent;
+			private @Nullable JComponent focusedInputComponent;
 
 			private AfterUpdate() {}
 

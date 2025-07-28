@@ -42,6 +42,8 @@ import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -219,9 +221,9 @@ public class EntityPanel extends JPanel {
 
 	private final SwingEntityModel entityModel;
 	private final DetailPanels detailPanels = new DetailPanels();
-	private final EntityEditPanel editPanel;
-	private final EntityTablePanel tablePanel;
-	private final JPanel editControlPanel;
+	private final @Nullable EntityEditPanel editPanel;
+	private final @Nullable EntityTablePanel tablePanel;
+	private final @Nullable JPanel editControlPanel;
 	private final JPanel mainPanel;
 	private final DetailLayout detailLayout;
 	private final DetailController detailController;
@@ -232,10 +234,10 @@ public class EntityPanel extends JPanel {
 	private final Config configuration;
 	private final Controls.Layout controlsLayout;
 
-	private EntityPanel parentPanel;
-	private EntityPanel previousPanel;
-	private EntityPanel nextPanel;
-	private Window editWindow;
+	private @Nullable EntityPanel parentPanel;
+	private @Nullable EntityPanel previousPanel;
+	private @Nullable EntityPanel nextPanel;
+	private @Nullable Window editWindow;
 
 	private boolean initialized = false;
 
@@ -261,7 +263,7 @@ public class EntityPanel extends JPanel {
 	 * @param entityModel the EntityModel
 	 * @param editPanel the edit panel
 	 */
-	public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel) {
+	public EntityPanel(SwingEntityModel entityModel, @Nullable EntityEditPanel editPanel) {
 		this(requireNonNull(entityModel), editPanel, NO_CONFIGURATION);
 	}
 
@@ -271,7 +273,7 @@ public class EntityPanel extends JPanel {
 	 * @param editPanel the edit panel
 	 * @param config provides access to the panel configuration
 	 */
-	public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel, Consumer<Config> config) {
+	public EntityPanel(SwingEntityModel entityModel, @Nullable EntityEditPanel editPanel, Consumer<Config> config) {
 		this(requireNonNull(entityModel), editPanel, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null, config);
 	}
 
@@ -280,7 +282,7 @@ public class EntityPanel extends JPanel {
 	 * @param entityModel the EntityModel
 	 * @param tablePanel the table panel
 	 */
-	public EntityPanel(SwingEntityModel entityModel, EntityTablePanel tablePanel) {
+	public EntityPanel(SwingEntityModel entityModel, @Nullable EntityTablePanel tablePanel) {
 		this(entityModel, tablePanel, NO_CONFIGURATION);
 	}
 
@@ -290,7 +292,7 @@ public class EntityPanel extends JPanel {
 	 * @param tablePanel the table panel
 	 * @param config provides access to the panel configuration
 	 */
-	public EntityPanel(SwingEntityModel entityModel, EntityTablePanel tablePanel, Consumer<Config> config) {
+	public EntityPanel(SwingEntityModel entityModel, @Nullable EntityTablePanel tablePanel, Consumer<Config> config) {
 		this(entityModel, null, tablePanel, config);
 	}
 
@@ -300,7 +302,7 @@ public class EntityPanel extends JPanel {
 	 * @param editPanel the edit panel
 	 * @param tablePanel the table panel
 	 */
-	public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel, EntityTablePanel tablePanel) {
+	public EntityPanel(SwingEntityModel entityModel, @Nullable EntityEditPanel editPanel, @Nullable EntityTablePanel tablePanel) {
 		this(entityModel, editPanel, tablePanel, NO_CONFIGURATION);
 	}
 
@@ -311,7 +313,7 @@ public class EntityPanel extends JPanel {
 	 * @param tablePanel the table panel
 	 * @param config provides access to the panel configuration
 	 */
-	public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel, EntityTablePanel tablePanel,
+	public EntityPanel(SwingEntityModel entityModel, @Nullable EntityEditPanel editPanel, @Nullable EntityTablePanel tablePanel,
 										 Consumer<Config> config) {
 		this.entityModel = requireNonNull(entityModel);
 		this.editPanel = editPanel;
@@ -840,7 +842,7 @@ public class EntityPanel extends JPanel {
 		detailPanels.get().forEach(EntityPanel::applyLegacyPreferences);
 	}
 
-	private JPanel createEditControlPanel() {
+	private @Nullable JPanel createEditControlPanel() {
 		if (editPanel == null) {
 			return null;
 		}
@@ -1299,15 +1301,15 @@ public class EntityPanel extends JPanel {
 		private boolean toolbarControls = TOOLBAR_CONTROLS.getOrThrow();
 		private boolean includeToggleEditPanelControl = INCLUDE_TOGGLE_EDIT_PANEL_CONTROL.getOrThrow();
 		private String controlComponentConstraints = TOOLBAR_CONTROLS.getOrThrow() ?
-						CONTROL_TOOLBAR_CONSTRAINTS.get() : CONTROL_PANEL_CONSTRAINTS.get();
+						CONTROL_TOOLBAR_CONSTRAINTS.getOrThrow() : CONTROL_PANEL_CONSTRAINTS.getOrThrow();
 		private boolean includeControls = INCLUDE_CONTROLS.getOrThrow();
 		private boolean useKeyboardNavigation = USE_KEYBOARD_NAVIGATION.getOrThrow();
-		private WindowType windowType = WINDOW_TYPE.get();
+		private WindowType windowType = WINDOW_TYPE.getOrThrow();
 		private PanelState initialEditState = EMBEDDED;
-		private String editPanelContstraints = EDIT_PANEL_CONSTRAINTS.get();
+		private String editPanelContstraints = EDIT_PANEL_CONSTRAINTS.getOrThrow();
 		private String caption;
-		private String description;
-		private ImageIcon icon;
+		private @Nullable String description;
+		private @Nullable ImageIcon icon;
 
 		private Config(EntityPanel entityPanel) {
 			this.entityPanel = entityPanel;
@@ -1732,7 +1734,7 @@ public class EntityPanel extends JPanel {
 		 * @param caption the panel caption
 		 * @return this builder instance
 		 */
-		Builder caption(String caption);
+		Builder caption(@Nullable String caption);
 
 		/**
 		 * @return the caption, an empty Optional if none has been set
@@ -1743,7 +1745,7 @@ public class EntityPanel extends JPanel {
 		 * @param description the panel description
 		 * @return this builder instance
 		 */
-		Builder description(String description);
+		Builder description(@Nullable String description);
 
 		/**
 		 * @return the description, an empty Optional if none has been set
@@ -1754,7 +1756,7 @@ public class EntityPanel extends JPanel {
 		 * @param icon the panel icon
 		 * @return this builder instance
 		 */
-		Builder icon(ImageIcon icon);
+		Builder icon(@Nullable ImageIcon icon);
 
 		/**
 		 * @return the icon, an empty Optional if none has been set

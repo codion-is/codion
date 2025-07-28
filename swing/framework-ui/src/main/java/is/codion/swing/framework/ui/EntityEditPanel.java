@@ -51,6 +51,7 @@ import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -169,7 +170,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	private final Controls.Layout controlsLayout;
 	private final State active;
 
-	private InsertUpdateQueryInspector queryInspector;
+	private @Nullable InsertUpdateQueryInspector queryInspector;
 
 	final Config configuration;
 
@@ -690,7 +691,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		onException(exception);
 	}
 
-	private static boolean componentSelectable(JComponent component) {
+	private static boolean componentSelectable(@Nullable JComponent component) {
 		return component != null &&
 						component.isDisplayable() &&
 						component.isVisible() &&
@@ -783,7 +784,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		private boolean includeQueryInspector = INCLUDE_QUERY_INSPECTOR.getOrThrow();
 		private boolean modifiedWarning = MODIFIED_WARNING.getOrThrow();
 		private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling =
-						ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get();
+						ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.getOrThrow();
 		private Confirmer insertConfirmer = DEFAULT_INSERT_CONFIRMER;
 		private Confirmer deleteConfirmer = DEFAULT_DELETE_CONFIRMER;
 		private Confirmer updateConfirmer = DEFAULT_UPDATE_CONFIRMER;
@@ -1316,7 +1317,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			}
 		}
 
-		private static EntityPanel entityPanel(Component focusedComponent) {
+		private static @Nullable EntityPanel entityPanel(Component focusedComponent) {
 			if (focusedComponent instanceof JTabbedPane) {
 				Component selectedComponent = ((JTabbedPane) focusedComponent).getSelectedComponent();
 				if (selectedComponent instanceof EntityPanel) {

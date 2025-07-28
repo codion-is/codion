@@ -61,6 +61,7 @@ import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.ui.EntityPanel.WindowType;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1360,7 +1361,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		 * @return this Builder instance
 		 * @see is.codion.framework.model.EntityApplicationModel#USER
 		 */
-		Builder<M, P> user(User user);
+		Builder<M, P> user(@Nullable User user);
 
 		/**
 		 * <p>Supplies the {@link User} to use to connect to the database, this user is then propagated to {@link #connectionProvider(Function)}.
@@ -1375,7 +1376,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		 * @param defaultUser the default user credentials to display in a login dialog
 		 * @return this Builder instance
 		 */
-		Builder<M, P> defaultUser(User defaultUser);
+		Builder<M, P> defaultUser(@Nullable User defaultUser);
 
 		/**
 		 * @param saveDefaultUsername true if the username should be saved in user preferences after a successful login
@@ -1397,13 +1398,13 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		 * @param beforeApplicationStarted run before the application is started
 		 * @return this Builder instance
 		 */
-		Builder<M, P> beforeApplicationStarted(Runnable beforeApplicationStarted);
+		Builder<M, P> beforeApplicationStarted(@Nullable Runnable beforeApplicationStarted);
 
 		/**
 		 * @param onApplicationStarted called after a successful application start
 		 * @return this Builder instance
 		 */
-		Builder<M, P> onApplicationStarted(Consumer<P> onApplicationStarted);
+		Builder<M, P> onApplicationStarted(@Nullable Consumer<P> onApplicationStarted);
 
 		/**
 		 * @param frame the supplies the frame to use
@@ -1460,13 +1461,13 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		 * @param frameSize the frame size when not maximized
 		 * @return this Builder instance
 		 */
-		Builder<M, P> frameSize(Dimension frameSize);
+		Builder<M, P> frameSize(@Nullable Dimension frameSize);
 
 		/**
 		 * @param defaultFrameSize the default frame size when no previous size is available in user preferences
 		 * @return this Builder instance
 		 */
-		Builder<M, P> defaultFrameSize(Dimension defaultFrameSize);
+		Builder<M, P> defaultFrameSize(@Nullable Dimension defaultFrameSize);
 
 		/**
 		 * Starts the application on the Event Dispatch Thread.

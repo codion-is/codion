@@ -29,6 +29,8 @@ import is.codion.swing.common.ui.key.TransferFocusOnEnter;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.JComponent;
@@ -289,12 +291,12 @@ public final class EntityComboBoxPanel extends JPanel {
 			}
 
 			@Override
-			protected Entity getComponentValue() {
+			protected @Nullable Entity getComponentValue() {
 				return component().comboBox.model().selection().item().get();
 			}
 
 			@Override
-			protected void setComponentValue(Entity entity) {
+			protected void setComponentValue(@Nullable Entity entity) {
 				component().comboBox.model().selection().item().set(entity);
 			}
 		}

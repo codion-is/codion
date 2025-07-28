@@ -21,6 +21,8 @@ package is.codion.swing.framework.ui;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.ImageIcon;
 import java.util.Optional;
 import java.util.function.Function;
@@ -34,9 +36,9 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 	private final EntityType entityType;
 	private final Function<EntityConnectionProvider, EntityPanel> entityPanel;
 
-	private String caption;
-	private String description;
-	private ImageIcon icon;
+	private @Nullable String caption;
+	private @Nullable String description;
+	private @Nullable ImageIcon icon;
 
 	EntityPanelBuilder(EntityType entityType, Function<EntityConnectionProvider, EntityPanel> entityPanel) {
 		this.entityType = requireNonNull(entityType);
@@ -49,7 +51,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 	}
 
 	@Override
-	public EntityPanelBuilder caption(String caption) {
+	public EntityPanelBuilder caption(@Nullable String caption) {
 		this.caption = caption;
 		return this;
 	}
@@ -60,7 +62,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 	}
 
 	@Override
-	public EntityPanelBuilder description(String description) {
+	public EntityPanelBuilder description(@Nullable String description) {
 		this.description = description;
 		return this;
 	}
@@ -71,7 +73,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 	}
 
 	@Override
-	public EntityPanel.Builder icon(ImageIcon icon) {
+	public EntityPanel.Builder icon(@Nullable ImageIcon icon) {
 		this.icon = icon;
 		return this;
 	}

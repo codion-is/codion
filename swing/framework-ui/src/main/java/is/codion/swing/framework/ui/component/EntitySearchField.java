@@ -60,6 +60,8 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityTableCellRenderer;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -203,9 +205,9 @@ public final class EntitySearchField extends HintTextField {
 	private final Function<EntitySearchField, Selector> selectorFactory;
 	private final ControlMap controlMap;
 
-	private SettingsPanel settingsPanel;
-	private ProgressWorker<List<Entity>, ?> searchWorker;
-	private Control searchControl;
+	private @Nullable SettingsPanel settingsPanel;
+	private @Nullable ProgressWorker<List<Entity>, ?> searchWorker;
+	private @Nullable Control searchControl;
 
 	private Color backgroundColor;
 	private Color searchBackgroundColor;
@@ -244,11 +246,11 @@ public final class EntitySearchField extends HintTextField {
 		bindEvents();
 	}
 
-	private CommandControl createAddControl(Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke, boolean confirm) {
+	private @Nullable CommandControl createAddControl(@Nullable Supplier<EntityEditPanel> editPanel, @Nullable KeyStroke keyStroke, boolean confirm) {
 		return editPanel == null ? null : EntityControls.createAddControl(this, editPanel, keyStroke, confirm);
 	}
 
-	private CommandControl createEditControl(Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke, boolean confirm) {
+	private @Nullable CommandControl createEditControl(@Nullable Supplier<EntityEditPanel> editPanel, @Nullable KeyStroke keyStroke, boolean confirm) {
 		return editPanel == null ? null : EntityControls.createEditControl(this, editPanel, keyStroke, confirm);
 	}
 
@@ -531,7 +533,7 @@ public final class EntitySearchField extends HintTextField {
 		}
 	}
 
-	private String createSelectionToolTip() {
+	private @Nullable String createSelectionToolTip() {
 		return model.selection().empty().get() ? null : strings()
 						.map(EntitySearchField::escape)
 						.collect(joining("<br>", "<html>", "</html"));
@@ -1006,12 +1008,12 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		@Override
-		protected Entity getComponentValue() {
+		protected @Nullable Entity getComponentValue() {
 			return component().model().selection().entity().get();
 		}
 
 		@Override
-		protected void setComponentValue(Entity value) {
+		protected void setComponentValue(@Nullable Entity value) {
 			component().model().selection().entity().set(value);
 		}
 	}
@@ -1184,11 +1186,11 @@ public final class EntitySearchField extends HintTextField {
 		private boolean searchOnFocusLost = true;
 		private boolean selectionToolTip = true;
 		private boolean singleSelection = false;
-		private SearchIndicator searchIndicator = SEARCH_INDICATOR.get();
+		private SearchIndicator searchIndicator = SEARCH_INDICATOR.getOrThrow();
 		private Function<EntitySearchField, Selector> selectorFactory = new ListSelectorFactory();
 		private Function<Entity, String> stringFactory = DEFAULT_TO_STRING;
 		private String separator = DEFAULT_SEPARATOR;
-		private Supplier<EntityEditPanel> editPanel;
+		private @Nullable Supplier<EntityEditPanel> editPanel;
 		private boolean confirmAdd;
 		private boolean confirmEdit;
 
@@ -1285,7 +1287,7 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		@Override
-		public B keyStroke(ControlKey<?> controlKey, KeyStroke keyStroke) {
+		public B keyStroke(ControlKey<?> controlKey, @Nullable KeyStroke keyStroke) {
 			controlMap.keyStroke(controlKey).set(keyStroke);
 			return (B) this;
 		}

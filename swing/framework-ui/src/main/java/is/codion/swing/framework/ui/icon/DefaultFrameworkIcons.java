@@ -23,6 +23,7 @@ import is.codion.swing.common.ui.icon.FontImageIcon.IconPainter;
 import is.codion.swing.common.ui.icon.FontImageIcon.ImageIconFactory;
 import is.codion.swing.common.ui.icon.Icons;
 
+import org.jspecify.annotations.Nullable;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.swing.FontIcon;
 
@@ -63,7 +64,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 		}
 	};
 
-	private static FrameworkIcons instance;
+	private static @Nullable FrameworkIcons instance;
 
 	private final OnIconSizeChanged onIconSizeChanged = new OnIconSizeChanged();
 

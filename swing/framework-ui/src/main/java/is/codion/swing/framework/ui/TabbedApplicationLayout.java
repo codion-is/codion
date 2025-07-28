@@ -22,6 +22,8 @@ import is.codion.common.property.PropertyValue;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.layout.Layouts;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
@@ -51,7 +53,7 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
 
 	private final EntityApplicationPanel<?> applicationPanel;
 
-	private JTabbedPane tabbedPane;
+	private @Nullable JTabbedPane tabbedPane;
 
 	/**
 	 * @param applicationPanel the application panel to layout
@@ -100,8 +102,13 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
 
 	/**
 	 * @return the application tabbed pane
+	 * @throws IllegalStateException in case the application panel has not been laid out
 	 */
 	public final JTabbedPane tabbedPane() {
+		if (tabbedPane == null) {
+			throw new IllegalStateException("EntityApplicationPanel has not been laid out: " + applicationPanel);
+		}
+
 		return tabbedPane;
 	}
 

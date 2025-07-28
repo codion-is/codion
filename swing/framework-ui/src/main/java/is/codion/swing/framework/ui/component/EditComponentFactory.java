@@ -22,6 +22,8 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JComponent;
 import java.util.Optional;
 
@@ -40,7 +42,7 @@ public interface EditComponentFactory<T, C extends JComponent> {
 	 * @param value the initial value to display
 	 * @return a new {@link ComponentValue} instance handling input for {@code attribute}
 	 */
-	ComponentValue<T, C> component(SwingEntityEditModel editModel, T value);
+	ComponentValue<T, C> component(SwingEntityEditModel editModel, @Nullable T value);
 
 	/**
 	 * Provides a way to override the default attribute caption, when presenting the component to the user.

@@ -32,6 +32,8 @@ import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.JComponent;
@@ -69,7 +71,7 @@ final class EntityControls {
 	 * @param confirm true if the insert should be confirmed
 	 * @return the add Control
 	 */
-	static CommandControl createAddControl(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke, boolean confirm) {
+	static CommandControl createAddControl(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanel, @Nullable KeyStroke keyStroke, boolean confirm) {
 		return createAddControl(() -> addEntityDialog(requireNonNull(editPanel).get())
 						.owner(comboBox)
 						.confirm(confirm)
@@ -87,7 +89,7 @@ final class EntityControls {
 	 * @param confirm true if the insert should be confirmed
 	 * @return the add Control
 	 */
-	static CommandControl createAddControl(EntitySearchField searchField, Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke, boolean confirm) {
+	static CommandControl createAddControl(EntitySearchField searchField, Supplier<EntityEditPanel> editPanel, @Nullable KeyStroke keyStroke, boolean confirm) {
 		return createAddControl(() -> addEntityDialog(requireNonNull(editPanel).get())
 						.owner(searchField)
 						.confirm(confirm)
@@ -105,7 +107,7 @@ final class EntityControls {
 	 * @param confirm true if the update should be confirmed
 	 * @return the edit Control
 	 */
-	static CommandControl createEditControl(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke, boolean confirm) {
+	static CommandControl createEditControl(EntityComboBox comboBox, Supplier<EntityEditPanel> editPanel, @Nullable KeyStroke keyStroke, boolean confirm) {
 		return createEditControl(() -> editEntityDialog(requireNonNull(editPanel).get())
 						.owner(comboBox)
 						.confirm(confirm)
@@ -124,7 +126,7 @@ final class EntityControls {
 	 * @param confirm true if the update should be confirmed
 	 * @return the edit Control
 	 */
-	static CommandControl createEditControl(EntitySearchField searchField, Supplier<EntityEditPanel> editPanel, KeyStroke keyStroke, boolean confirm) {
+	static CommandControl createEditControl(EntitySearchField searchField, Supplier<EntityEditPanel> editPanel, @Nullable KeyStroke keyStroke, boolean confirm) {
 		return createEditControl(() -> editEntityDialog(requireNonNull(editPanel).get())
 						.owner(searchField)
 						.confirm(confirm)
@@ -166,7 +168,7 @@ final class EntityControls {
 		return getOrientation(Locale.getDefault()) == ComponentOrientation.LEFT_TO_RIGHT ? BorderLayout.EAST : BorderLayout.WEST;
 	}
 
-	private static CommandControl createAddControl(Command addEntityCommand, JComponent component, KeyStroke keyStroke) {
+	private static CommandControl createAddControl(Command addEntityCommand, JComponent component, @Nullable KeyStroke keyStroke) {
 		CommandControl control = Control.builder()
 						.command(addEntityCommand)
 						.smallIcon(ICONS.add())
@@ -184,7 +186,7 @@ final class EntityControls {
 	}
 
 	private static CommandControl createEditControl(Command editEntityCommand, JComponent component,
-																									ObservableState selectionNonEmptyState, KeyStroke keyStroke) {
+																									ObservableState selectionNonEmptyState, @Nullable KeyStroke keyStroke) {
 		CommandControl control = Control.builder()
 						.command(editEntityCommand)
 						.smallIcon(ICONS.edit())

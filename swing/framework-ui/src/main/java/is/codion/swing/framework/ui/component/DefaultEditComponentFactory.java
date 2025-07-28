@@ -30,6 +30,8 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JComponent;
 import java.time.temporal.Temporal;
 
@@ -66,7 +68,7 @@ public class DefaultEditComponentFactory<T, C extends JComponent> implements Edi
 	}
 
 	@Override
-	public ComponentValue<T, C> component(SwingEntityEditModel editModel, T value) {
+	public ComponentValue<T, C> component(SwingEntityEditModel editModel, @Nullable T value) {
 		requireNonNull(editModel);
 		if (attribute instanceof ForeignKey) {
 			return createForeignKeyComponentValue((ForeignKey) attribute, editModel, (Entity) value);
@@ -120,7 +122,7 @@ public class DefaultEditComponentFactory<T, C extends JComponent> implements Edi
 						.searchOnFocusLost(false);
 	}
 
-	private ComponentValue<T, C> createForeignKeyComponentValue(ForeignKey foreignKey, SwingEntityEditModel editModel, Entity value) {
+	private ComponentValue<T, C> createForeignKeyComponentValue(ForeignKey foreignKey, SwingEntityEditModel editModel, @Nullable Entity value) {
 		if (editModel.entities().definition(foreignKey.referencedType()).smallDataset()) {
 			return (ComponentValue<T, C>) comboBox(foreignKey, editModel.entityDefinition(), editModel.createComboBoxModel(foreignKey))
 							.value(value)
@@ -133,7 +135,7 @@ public class DefaultEditComponentFactory<T, C extends JComponent> implements Edi
 						.buildValue();
 	}
 
-	private static <T, A extends Attribute<T>, C extends JComponent> ComponentValue<T, C> createTemporalComponentValue(A attribute, Temporal value,
+	private static <T, A extends Attribute<T>, C extends JComponent> ComponentValue<T, C> createTemporalComponentValue(A attribute, @Nullable Temporal value,
 																																																										 EntityComponents inputComponents) {
 		if (TemporalFieldPanel.supports((Class<Temporal>) attribute.type().valueClass())) {
 			return (ComponentValue<T, C>) inputComponents.temporalFieldPanel((Attribute<Temporal>) attribute)
@@ -146,7 +148,7 @@ public class DefaultEditComponentFactory<T, C extends JComponent> implements Edi
 						.buildValue();
 	}
 
-	private static int textFieldColumns(AttributeDefinition<String> definition, String value) {
+	private static int textFieldColumns(AttributeDefinition<String> definition, @Nullable String value) {
 		int defaultTextFieldColumns = DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow();
 		if (definition.maximumLength() > defaultTextFieldColumns ||
 						(value != null && value.length() > defaultTextFieldColumns)) {

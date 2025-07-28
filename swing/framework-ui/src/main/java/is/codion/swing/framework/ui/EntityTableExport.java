@@ -40,6 +40,8 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JTree;
@@ -87,7 +89,7 @@ final class EntityTableExport {
 	private final State selectedRows;
 	private final EntityTablePanel tablePanel;
 
-	private ConfigurationPanel configurationPanel;
+	private @Nullable ConfigurationPanel configurationPanel;
 
 	EntityTableExport(EntityTablePanel tablePanel, FilterTableColumnModel<Attribute<?>> columnModel) {
 		this.tablePanel = tablePanel;

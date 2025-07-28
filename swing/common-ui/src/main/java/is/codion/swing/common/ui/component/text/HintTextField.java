@@ -58,7 +58,7 @@ public class HintTextField extends JTextField {
 	/**
 	 * @param hint the hint text
 	 */
-	public HintTextField(String hint) {
+	public HintTextField(@Nullable String hint) {
 		this(null, hint);
 	}
 

@@ -58,4 +58,5 @@
  * <li>{@link is.codion.swing.framework.ui.TabbedDetailLayout#INCLUDE_CONTROLS}
  * </ul>
  */
+@org.jspecify.annotations.NullMarked
 package is.codion.swing.framework.ui;
