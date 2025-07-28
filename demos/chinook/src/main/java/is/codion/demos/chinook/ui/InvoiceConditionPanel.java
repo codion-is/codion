@@ -212,7 +212,6 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 				super(conditionModel);
 				setLayout(new BorderLayout());
 				setBorder(createTitledBorder(createEmptyBorder(), definition.attributes().definition(Invoice.CUSTOMER_FK).caption()));
-				conditionModel.operands().in().value().link(conditionModel.operands().equal());
 				searchField = EntitySearchField.builder()
 								.model(conditionModel.inSearchModel())
 								.multiSelection()
