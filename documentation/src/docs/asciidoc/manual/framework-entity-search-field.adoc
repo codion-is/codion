@@ -36,8 +36,6 @@ The search field operates as follows:
    - **Single result**: That entity is automatically selected
    - **Multiple results**: A selection dialog appears
 
-NOTE: Multi-selection is the default mode for `EntitySearchModel`. The `.singleSelection(false)` call in examples is shown for clarity but is not required.
-
 === Single Selection
 
 For selecting one entity at a time:
@@ -156,15 +154,3 @@ class TrackEditComponentFactory extends DefaultEditComponentFactory<Entity, Enti
 2. **Consider Performance**: Use result limits in the search model for large datasets
 3. **Keyboard Support**: Leverage the built-in keyboard shortcuts (INSERT for add, CTRL+INSERT for edit)
 4. **Custom Selectors**: Create custom selectors for complex selection scenarios
-
-== Common Pitfalls
-
-=== Missing Search Configuration
-
-Ensure the search model has searchable columns configured:
-
-[source,java]
-.Proper search configuration
-----
-include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.java[tags=searchFieldProperConfiguration]
-----

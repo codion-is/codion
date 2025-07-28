@@ -68,13 +68,8 @@ final class FrameworkUIDemo {
 		// end::basicSearchField[]
 	}
 
-	void singleSelectionSearchField(EntityConnectionProvider connectionProvider) {
+	void singleSelectionSearchField(EntitySearchModel searchModel) {
 		// tag::singleSelectionSearchField[]
-		EntitySearchModel searchModel = EntitySearchModel.builder()
-						.entityType(Customer.TYPE)
-						.connectionProvider(connectionProvider)
-						.build();
-
 		EntitySearchField searchField = EntitySearchField.builder()
 						.model(searchModel)
 						.singleSelection()
@@ -82,13 +77,8 @@ final class FrameworkUIDemo {
 		// end::singleSelectionSearchField[]
 	}
 
-	void multiSelectionSearchField(EntityConnectionProvider connectionProvider) {
+	void multiSelectionSearchField(EntitySearchModel searchModel) {
 		// tag::multiSelectionSearchField[]
-		EntitySearchModel searchModel = EntitySearchModel.builder()
-						.entityType(Track.TYPE)
-						.connectionProvider(connectionProvider)
-						.build();
-
 		EntitySearchField searchField = EntitySearchField.builder()
 						.model(searchModel)
 						.multiSelection()
@@ -96,13 +86,8 @@ final class FrameworkUIDemo {
 		// end::multiSelectionSearchField[]
 	}
 
-	void customTableSelector(EntityConnectionProvider connectionProvider) {
+	void customTableSelector(EntitySearchModel searchModel) {
 		// tag::customTableSelector[]
-		EntitySearchModel searchModel = EntitySearchModel.builder()
-						.entityType(Customer.TYPE)
-						.connectionProvider(connectionProvider)
-						.build();
-
 		EntitySearchField searchField = EntitySearchField.builder()
 						.model(searchModel)
 						.multiSelection()
@@ -111,12 +96,8 @@ final class FrameworkUIDemo {
 		// end::customTableSelector[]
 	}
 
-	void searchFieldWithAddEdit(EntityConnectionProvider connectionProvider) {
+	void searchFieldWithAddEdit(EntitySearchModel searchModel, EntityConnectionProvider connectionProvider) {
 		// tag::searchFieldWithAddEdit[]
-		EntitySearchModel searchModel = EntitySearchModel.builder()
-						.entityType(Customer.TYPE)
-						.connectionProvider(connectionProvider)
-						.build();
 		SwingEntityEditModel editModel = new SwingEntityEditModel(Customer.TYPE, connectionProvider);
 
 		EntitySearchField searchField = EntitySearchField.builder()
@@ -133,13 +114,8 @@ final class FrameworkUIDemo {
 		// end::searchFieldWithAddEdit[]
 	}
 
-	void searchFieldConfiguration(EntityConnectionProvider connectionProvider) {
+	void searchFieldConfiguration(EntitySearchModel searchModel) {
 		// tag::searchFieldConfiguration[]
-		EntitySearchModel searchModel = EntitySearchModel.builder()
-						.entityType(Customer.TYPE)
-						.connectionProvider(connectionProvider)
-						.build();
-
 		EntitySearchField searchField = EntitySearchField.builder()
 						.model(searchModel)
 						.singleSelection()
@@ -156,12 +132,8 @@ final class FrameworkUIDemo {
 		// end::searchFieldConfiguration[]
 	}
 
-	void searchFieldProgrammaticControl(EntityConnectionProvider connectionProvider) {
+	void searchFieldProgrammaticControl(EntitySearchModel searchModel) {
 		// tag::searchFieldProgrammaticControl[]
-		EntitySearchModel searchModel = EntitySearchModel.builder()
-						.entityType(Customer.TYPE)
-						.connectionProvider(connectionProvider)
-						.build();
 		EntitySearchField searchField = EntitySearchField.builder()
 						.model(searchModel)
 						.multiSelection()
@@ -177,12 +149,8 @@ final class FrameworkUIDemo {
 		// end::searchFieldProgrammaticControl[]
 	}
 
-	void searchFieldReactiveBinding(EntityConnectionProvider connectionProvider) {
+	void searchFieldReactiveBinding(EntitySearchModel searchModel, EntityConnectionProvider connectionProvider) {
 		// tag::searchFieldReactiveBinding[]
-		EntitySearchModel searchModel = EntitySearchModel.builder()
-						.entityType(Customer.TYPE)
-						.connectionProvider(connectionProvider)
-						.build();
 		SwingEntityEditModel editModel = new SwingEntityEditModel(Invoice.TYPE, connectionProvider);
 
 		ComponentValue<Entity, EntitySearchField> searchFieldValue =
@@ -201,29 +169,14 @@ final class FrameworkUIDemo {
 		// end::searchFieldReactiveBinding[]
 	}
 
-	void searchFieldProgressBar(EntityConnectionProvider connectionProvider) {
+	void searchFieldProgressBar(EntitySearchModel searchModel) {
 		// tag::searchFieldProgressBar[]
-		EntitySearchModel searchModel = EntitySearchModel.builder()
-						.entityType(Customer.TYPE)
-						.connectionProvider(connectionProvider)
-						.build();
-
 		EntitySearchField searchField = EntitySearchField.builder()
 						.model(searchModel)
 						.multiSelection()
 						.searchIndicator(SearchIndicator.PROGRESS_BAR)
 						.build();
 		// end::searchFieldProgressBar[]
-	}
-
-	void searchFieldProperConfiguration(EntityConnectionProvider connectionProvider) {
-		// tag::searchFieldProperConfiguration[]
-		EntitySearchModel model = EntitySearchModel.builder()
-						.entityType(Customer.TYPE)
-						.connectionProvider(connectionProvider)
-						.searchColumns(List.of(Customer.LASTNAME, Customer.EMAIL, Customer.PHONE))
-						.build();
-		// end::searchFieldProperConfiguration[]
 	}
 
 	// EntityEditPanel examples
