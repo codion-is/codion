@@ -52,7 +52,7 @@ https://codion.is/doc/{version}/index.html[Codion v{version} documentation]
 
 NOTE: Snapshot versions are not automatically published, feel free to create an issue asking for a snapshot version.
 
-Snapshots will be available in link:https://s01.oss.sonatype.org/content/repositories/snapshots[Sonatype's snapshots repository].
+Snapshots will be available in link:https://central.sonatype.com/repository/maven-snapshots/[Sonatype's snapshots repository].
 
 [source,groovy]
 ----
