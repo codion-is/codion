@@ -5,6 +5,8 @@ Codion Change Log
 ### is.codion.common.core
 - Values renamed ValueCollection.
 - TaskScheduler.Builder.IntervalStep added.
+### is.codion.swing.common.ui
+- FilterTableCellEditor.Builder added, cellEditable now configurable.
 ### is.codion.framework.db
 - EntityConnection.Update.set() value parameter now @Nullable.
 

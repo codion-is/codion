@@ -30,7 +30,6 @@ import javax.swing.JComponent;
 import javax.swing.table.TableCellEditor;
 import java.util.Optional;
 
-import static is.codion.swing.common.ui.component.table.FilterTableCellEditor.filterTableCellEditor;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -56,8 +55,9 @@ final class EntityTableCellEditorFactory implements FilterTableCellEditor.Factor
 		EditComponentFactory<Object, JComponent> componentFactory =
 						new DefaultEditComponentFactory<>((Attribute<Object>) attribute);
 
-		return Optional.of(filterTableCellEditor(() ->
-						componentFactory.component(editModel, null)));
+		return Optional.of(FilterTableCellEditor.builder()
+						.component(() -> componentFactory.component(editModel, null))
+						.build());
 	}
 
 	private boolean nonUpdatableForeignKey(Attribute<?> attribute) {

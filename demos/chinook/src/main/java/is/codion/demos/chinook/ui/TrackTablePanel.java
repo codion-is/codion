@@ -45,7 +45,6 @@ import static is.codion.common.Text.rightPad;
 import static is.codion.demos.chinook.ui.DurationComponentValue.minutes;
 import static is.codion.demos.chinook.ui.DurationComponentValue.seconds;
 import static is.codion.swing.common.ui.component.Components.bigDecimalField;
-import static is.codion.swing.common.ui.component.table.FilterTableCellEditor.filterTableCellEditor;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.awt.event.KeyEvent.VK_INSERT;
@@ -118,7 +117,9 @@ public final class TrackTablePanel extends EntityTablePanel {
 	}
 
 	private static FilterTableCellEditor<Integer> durationEditor() {
-		return filterTableCellEditor(() -> new DurationComponentValue(true));
+		return FilterTableCellEditor.builder()
+						.component(() -> new DurationComponentValue(true))
+						.build();
 	}
 
 	private static FilterTableCellRenderer<Integer> ratingRenderer(SwingEntityTableModel tableModel) {
@@ -129,7 +130,9 @@ public final class TrackTablePanel extends EntityTablePanel {
 	}
 
 	private static FilterTableCellEditor<Integer> ratingEditor(EntityDefinition entityDefinition) {
-		return filterTableCellEditor(() -> ratingSpinner(entityDefinition).buildValue());
+		return FilterTableCellEditor.builder()
+						.component(() -> ratingSpinner(entityDefinition).buildValue())
+						.build();
 	}
 
 	private static NumberSpinnerBuilder<Integer> ratingSpinner(EntityDefinition entityDefinition) {

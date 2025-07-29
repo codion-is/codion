@@ -36,6 +36,7 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.util.EventObject;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static is.codion.swing.common.ui.control.Control.command;
@@ -44,13 +45,15 @@ import static java.util.Objects.requireNonNull;
 final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implements FilterTableCellEditor<T> {
 
 	private final Supplier<ComponentValue<T, ? extends JComponent>> inputComponent;
+	private final Function<EventObject, Boolean> cellEditable;
 
 	private @Nullable ComponentValue<T, ? extends JComponent> componentValue;
 
 	int editedRow = -1;
 
-	DefaultFilterTableCellEditor(Supplier<ComponentValue<T, ? extends JComponent>> inputComponent) {
-		this.inputComponent = requireNonNull(inputComponent);
+	DefaultFilterTableCellEditor(DefaultBuilder<T> builder) {
+		this.inputComponent = builder.component;
+		this.cellEditable = builder.cellEditable;
 	}
 
 	@Override
@@ -91,11 +94,7 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 
 	@Override
 	public boolean isCellEditable(EventObject event) {
-		if (event instanceof MouseEvent) {
-			return ((MouseEvent) event).getClickCount() >= 2;
-		}
-
-		return true;
+		return cellEditable.apply(event);
 	}
 
 	void updateUI() {
@@ -117,6 +116,38 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 		}
 
 		return value;
+	}
+
+	private static final class DefaultComponentStep implements Builder.ComponentStep {
+
+		@Override
+		public <T> Builder<T> component(Supplier<ComponentValue<T, ? extends JComponent>> component) {
+			return new DefaultBuilder<>(requireNonNull(component));
+		}
+	}
+
+	static final class DefaultBuilder<T> implements Builder<T> {
+
+		static final ComponentStep COMPONENT = new DefaultComponentStep();
+
+		private final Supplier<ComponentValue<T, ? extends JComponent>> component;
+
+		private Function<EventObject, Boolean> cellEditable = new DefaultCellEditable();
+
+		private DefaultBuilder(Supplier<ComponentValue<T, ? extends JComponent>> component) {
+			this.component = component;
+		}
+
+		@Override
+		public Builder<T> cellEditable(Function<EventObject, Boolean> cellEditable) {
+			this.cellEditable = requireNonNull(cellEditable);
+			return this;
+		}
+
+		@Override
+		public FilterTableCellEditor<T> build() {
+			return new DefaultFilterTableCellEditor<>(this);
+		}
 	}
 
 	private static final class ComboBoxEnterPressedAction extends AbstractAction {
@@ -142,6 +173,18 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 			else if (action.isEnabled()) {
 				action.actionPerformed(e);
 			}
+		}
+	}
+
+	private static final class DefaultCellEditable implements Function<EventObject, Boolean> {
+
+		@Override
+		public Boolean apply(EventObject event) {
+			if (event instanceof MouseEvent) {
+				return ((MouseEvent) event).getClickCount() == 2;
+			}
+
+			return true;
 		}
 	}
 }
