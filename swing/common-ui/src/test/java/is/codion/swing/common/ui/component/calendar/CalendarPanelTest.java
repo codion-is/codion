@@ -20,6 +20,7 @@ package is.codion.swing.common.ui.component.calendar;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -128,5 +129,35 @@ public final class CalendarPanelTest {
 		panel.dateTime().set(startDate);
 
 		assertEquals(startDate.withHour(0).withMinute(0), panel.dateTime().get());
+	}
+
+	@Test
+	void weekNumbers() {
+		LocalDateTime startDate = LocalDateTime.of(2022, 6, 14, 0, 0);
+
+		CalendarPanel panel = CalendarPanel.builder()
+						.value(startDate)
+						.includeWeekNumbers(true)
+						.build();
+
+		assertEquals(startDate, panel.dateTime().get());
+
+		panel.dateTime().set(startDate.withMonth(1));
+		assertEquals(startDate.withMonth(1), panel.dateTime().get());
+	}
+
+	@Test
+	void customWeekConfiguration() {
+		LocalDateTime startDate = LocalDateTime.of(2022, 1, 1, 0, 0);
+
+		// Test custom week configuration
+		CalendarPanel panel = CalendarPanel.builder()
+						.value(startDate)
+						.firstDayOfWeek(DayOfWeek.SUNDAY)
+						.minimalDaysInFirstWeek(1)
+						.includeWeekNumbers(true)
+						.build();
+
+		assertEquals(startDate, panel.dateTime().get());
 	}
 }

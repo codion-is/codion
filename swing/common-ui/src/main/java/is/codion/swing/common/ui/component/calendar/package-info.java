@@ -18,6 +18,10 @@
  */
 /**
  * <p>Calendar panel component.
+ * Package configuration values:
+ * <ul>
+ * <li>{@link is.codion.swing.common.ui.component.calendar.CalendarPanel#WEEK_NUMBERS}
+ * </ul>
  */
 @org.jspecify.annotations.NullMarked
 package is.codion.swing.common.ui.component.calendar;

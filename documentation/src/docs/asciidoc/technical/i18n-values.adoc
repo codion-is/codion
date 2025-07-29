@@ -435,6 +435,7 @@ is/codion/swing/common/ui/component/calendar/CalendarPanel_is_IS.properties
 
 |today|Today|Í dag
 |today_mnemonic|T|D
+|week|Week|Vika
 |===
 
 === is/codion/swing/common/ui/component/table/ColumnConditionPanel.java

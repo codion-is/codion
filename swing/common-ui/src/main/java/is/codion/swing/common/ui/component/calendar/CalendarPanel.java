@@ -22,6 +22,7 @@ import is.codion.common.event.Event;
 import is.codion.common.item.Item;
 import is.codion.common.observable.Observable;
 import is.codion.common.observable.Observer;
+import is.codion.common.property.PropertyValue;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
@@ -73,6 +74,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.IntStream;
 
+import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
@@ -115,6 +117,15 @@ public final class CalendarPanel extends JPanel {
 
 	private static final MessageBundle MESSAGES =
 					messageBundle(CalendarPanel.class, getBundle(CalendarPanel.class.getName()));
+
+	/**
+	 * Specifies whether CalendarPanel displays week numbers by default.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
+	 * </ul>
+	 */
+	public static final PropertyValue<Boolean> WEEK_NUMBERS = booleanValue(CalendarPanel.class.getName() + ".weekNumbers", false);
 
 	/**
 	 * The available controls.
@@ -198,6 +209,7 @@ public final class CalendarPanel extends JPanel {
 
 	private final Locale selectedLocale;
 	private final DayOfWeek firstDayOfWeek;
+	private final int minimalDaysInFirstWeek;
 	private final DateTimeFormatter dateFormatter;
 	private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
@@ -219,8 +231,10 @@ public final class CalendarPanel extends JPanel {
 	private final JLabel formattedDateLabel;
 	private final boolean includeTime;
 	private final boolean includeTodayButton;
+	private final boolean includeWeekNumbers;
 	private final ObservableState enabledState;
 	private final Event<Integer> doubleClicked = Event.event();
+	private @Nullable JPanel weekNumberPanel;
 
 	CalendarPanel(DefaultBuilder builder) {
 		this.includeTime = builder.includeTime;
@@ -228,6 +242,8 @@ public final class CalendarPanel extends JPanel {
 		this.controlMap = builder.controlMap;
 		this.selectedLocale = builder.locale;
 		this.firstDayOfWeek = builder.firstDayOfWeek;
+		this.minimalDaysInFirstWeek = builder.minimalDaysInFirstWeek;
+		this.includeWeekNumbers = builder.includeWeekNumbers;
 		this.dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(selectedLocale);
 		this.enabledState = builder.enabled;
 		LocalDateTime localDateTime = builder.value == null ? LocalDateTime.now() : builder.value;
@@ -356,7 +372,8 @@ public final class CalendarPanel extends JPanel {
 
 		/**
 		 * Specifies the locale, controlling the start of week day and the full date display format.
-		 * Note that setting the locale also sets {@link #firstDayOfWeek(DayOfWeek)} according to the given locale.
+		 * Note that setting the locale also sets {@link #firstDayOfWeek(DayOfWeek)}
+		 * and {@link #minimalDaysInFirstWeek(int)} according to the given locale.
 		 * @param locale the locale
 		 * @return this builder instance
 		 */
@@ -368,6 +385,12 @@ public final class CalendarPanel extends JPanel {
 		 * @return this builder instance
 		 */
 		Builder firstDayOfWeek(DayOfWeek firstDayOfWeek);
+
+		/**
+		 * @param minimalDaysInFirstWeek the minimal number of days in the first week of the year
+		 * @return this builder instance
+		 */
+		Builder minimalDaysInFirstWeek(int minimalDaysInFirstWeek);
 
 		/**
 		 * Note that calling this method also sets {@link #includeTime(boolean)} to false.
@@ -396,6 +419,12 @@ public final class CalendarPanel extends JPanel {
 		 * @return this builder instance
 		 */
 		Builder includeTodayButton(boolean includeTodayButton);
+
+		/**
+		 * @param includeWeekNumbers true if week numbers should be displayed
+		 * @return this builder instance
+		 */
+		Builder includeWeekNumbers(boolean includeWeekNumbers);
 
 		/**
 		 * @param controlKey the control key
@@ -476,20 +505,34 @@ public final class CalendarPanel extends JPanel {
 
 		private Locale locale = Locale.getDefault();
 		private DayOfWeek firstDayOfWeek = WeekFields.of(locale).getFirstDayOfWeek();
+		private int minimalDaysInFirstWeek = WeekFields.of(locale).getMinimalDaysInFirstWeek();
 		private @Nullable LocalDateTime value;
 		private boolean includeTime = false;
 		private boolean includeTodayButton = false;
+		private boolean includeWeekNumbers = WEEK_NUMBERS.getOrThrow();
 		private ObservableState enabled = State.state(true);
 
 		@Override
 		public Builder locale(Locale locale) {
 			this.locale = requireNonNull(locale);
-			return firstDayOfWeek(WeekFields.of(locale).getFirstDayOfWeek());
+			WeekFields localeWeekFields = WeekFields.of(locale);
+			this.minimalDaysInFirstWeek = localeWeekFields.getMinimalDaysInFirstWeek();
+			this.firstDayOfWeek = localeWeekFields.getFirstDayOfWeek();
+			return this;
 		}
 
 		@Override
 		public Builder firstDayOfWeek(DayOfWeek firstDayOfWeek) {
 			this.firstDayOfWeek = requireNonNull(firstDayOfWeek);
+			return this;
+		}
+
+		@Override
+		public Builder minimalDaysInFirstWeek(int minimalDaysInFirstWeek) {
+			if (minimalDaysInFirstWeek < 1 || minimalDaysInFirstWeek > 7) {
+				throw new IllegalArgumentException("Minimal number of days is invalid");
+			}
+			this.minimalDaysInFirstWeek = minimalDaysInFirstWeek;
 			return this;
 		}
 
@@ -514,6 +557,12 @@ public final class CalendarPanel extends JPanel {
 		@Override
 		public Builder includeTodayButton(boolean includeTodayButton) {
 			this.includeTodayButton = includeTodayButton;
+			return this;
+		}
+
+		@Override
+		public Builder includeWeekNumbers(boolean includeWeekNumbers) {
+			this.includeWeekNumbers = includeWeekNumbers;
 			return this;
 		}
 
@@ -656,10 +705,33 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	private JPanel createDayPanel() {
-		return borderLayoutPanel()
+		JPanel dayPanel = borderLayoutPanel()
 						.northComponent(createDayHeaderPanel())
 						.centerComponent(dayGridPanel)
 						.border(createTitledBorder(""))
+						.build();
+		if (!includeWeekNumbers) {
+			return dayPanel;
+		}
+
+		weekNumberPanel = createWeekNumberPanel();
+
+		JPanel weekPanel = borderLayoutPanel()
+						.northComponent(gridLayoutPanel(1, 1)
+										.add(label()
+														.text(MESSAGES.getString("week"))
+														.horizontalAlignment(SwingConstants.CENTER)
+														.border(emptyBorder())
+														.enabled(enabledState)
+														.build())
+										.build())
+						.centerComponent(weekNumberPanel)
+						.border(createTitledBorder(""))
+						.build();
+
+		return borderLayoutPanel()
+						.westComponent(weekPanel)
+						.centerComponent(dayPanel)
 						.build();
 	}
 
@@ -679,9 +751,47 @@ public final class CalendarPanel extends JPanel {
 						.build();
 	}
 
+	private JPanel createWeekNumberPanel() {
+		JPanel weekPanel = new JPanel(new GridLayout(DAY_GRID_ROWS, 1));
+		addWeekNumbers(weekPanel);
+
+		return weekPanel;
+	}
+
+	private LocalDate getFirstVisibleDate() {
+		LocalDate firstOfMonth = LocalDate.of(yearValue.getOrThrow(), monthValue.getOrThrow(), 1);
+
+		return firstOfMonth.minusDays(dayColumns.indexOf(firstOfMonth.getDayOfWeek()));
+	}
+
+	private void updateWeekNumbers() {
+		if (weekNumberPanel != null) {
+			weekNumberPanel.removeAll();
+			addWeekNumbers(weekNumberPanel);
+		}
+	}
+
+	private void addWeekNumbers(JPanel panel) {
+		WeekFields weekFields = WeekFields.of(firstDayOfWeek, minimalDaysInFirstWeek);
+		LocalDate firstVisibleDate = getFirstVisibleDate();
+		for (int row = 0; row < DAY_GRID_ROWS; row++) {
+			LocalDate weekDate = firstVisibleDate.plusWeeks(row);
+			int weekNumber = weekDate.get(weekFields.weekOfWeekBasedYear());
+			panel.add(label()
+							.text(String.valueOf(weekNumber))
+							.horizontalAlignment(SwingConstants.CENTER)
+							.border(createEtchedBorder())
+							.enabled(enabledState)
+							.build());
+		}
+	}
+
 	private void layoutDayPanel() {
 		getCurrentKeyboardFocusManager().clearFocusOwner();
 		dayGridPanel.removeAll();
+
+		updateWeekNumbers();
+
 		DayOfWeek dayOfWeek = date.getOrThrow().withDayOfMonth(1).getDayOfWeek();
 		Iterator<JLabel> paddingIterator = paddingLabels.iterator();
 		int dayOfWeekColumn = dayColumns.indexOf(dayOfWeek);
