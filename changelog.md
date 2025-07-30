@@ -11,6 +11,7 @@ Codion Change Log
 - FilterTableCellEditor.Builder added, cellEditable now configurable.
 - CalendarPanel.Builder.includeWeekNumbers added along with WEEK_NUMBERS configuration value.
 - NumberField, minimum and maximum values now Value based.
+- NumberDocument.getNumber(), setNumber() and getFormat() renamed get(), set() and format() respectively.
 ### is.codion.framework.domain
 - EntityDefinition.Attributes.getOrThrow(attributeName) added.
 ### is.codion.framework.db

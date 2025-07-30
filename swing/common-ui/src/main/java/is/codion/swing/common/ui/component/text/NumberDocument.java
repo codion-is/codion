@@ -71,15 +71,15 @@ class NumberDocument<T extends Number> extends PlainDocument {
 		return (NumberParsingDocumentFilter<T>) super.getDocumentFilter();
 	}
 
-	protected final NumberFormat getFormat() {
-		return ((NumberParser<T>) getDocumentFilter().parser()).getFormat();
+	protected final NumberFormat format() {
+		return ((NumberParser<T>) getDocumentFilter().parser()).format();
 	}
 
-	protected final void setNumber(@Nullable T number) {
-		setText(number == null ? "" : getFormat().format(number));
+	protected final void set(@Nullable T number) {
+		setText(number == null ? "" : format().format(number));
 	}
 
-	protected final @Nullable T getNumber() {
+	protected final @Nullable T get() {
 		try {
 			return getDocumentFilter().parser().parse(getText(0, getLength())).value();
 		}
@@ -109,43 +109,43 @@ class NumberDocument<T extends Number> extends PlainDocument {
 	}
 
 	void setGroupingUsed(boolean groupingUsed) {
-		T value = getNumber();
-		getFormat().setGroupingUsed(groupingUsed);
-		setNumber(value);
+		T value = get();
+		format().setGroupingUsed(groupingUsed);
+		set(value);
 	}
 
 	void setSeparators(char decimalSeparator, char groupingSeparator) {
 		if (decimalSeparator == groupingSeparator) {
 			throw new IllegalArgumentException("Decimal separator must not be the same as grouping separator");
 		}
-		DecimalFormatSymbols symbols = ((DecimalFormat) getFormat()).getDecimalFormatSymbols();
+		DecimalFormatSymbols symbols = ((DecimalFormat) format()).getDecimalFormatSymbols();
 		symbols.setDecimalSeparator(decimalSeparator);
 		symbols.setGroupingSeparator(groupingSeparator);
-		T value = getNumber();
-		((DecimalFormat) getFormat()).setDecimalFormatSymbols(symbols);
-		setNumber(value);
+		T value = get();
+		((DecimalFormat) format()).setDecimalFormatSymbols(symbols);
+		set(value);
 	}
 
 	void setDecimalSeparator(char decimalSeparator) {
-		DecimalFormatSymbols symbols = ((DecimalFormat) getFormat()).getDecimalFormatSymbols();
+		DecimalFormatSymbols symbols = ((DecimalFormat) format()).getDecimalFormatSymbols();
 		if (decimalSeparator == symbols.getGroupingSeparator()) {
 			symbols.setGroupingSeparator(symbols.getDecimalSeparator());
 		}
 		symbols.setDecimalSeparator(decimalSeparator);
-		T value = getNumber();
-		((DecimalFormat) getFormat()).setDecimalFormatSymbols(symbols);
-		setNumber(value);
+		T value = get();
+		((DecimalFormat) format()).setDecimalFormatSymbols(symbols);
+		set(value);
 	}
 
 	void setGroupingSeparator(char groupingSeparator) {
-		DecimalFormatSymbols symbols = ((DecimalFormat) getFormat()).getDecimalFormatSymbols();
+		DecimalFormatSymbols symbols = ((DecimalFormat) format()).getDecimalFormatSymbols();
 		if (groupingSeparator == symbols.getDecimalSeparator()) {
 			symbols.setDecimalSeparator(symbols.getGroupingSeparator());
 		}
 		symbols.setGroupingSeparator(groupingSeparator);
-		T value = getNumber();
-		((DecimalFormat) getFormat()).setDecimalFormatSymbols(symbols);
-		setNumber(value);
+		T value = get();
+		((DecimalFormat) format()).setDecimalFormatSymbols(symbols);
+		set(value);
 	}
 
 	static class NumberParser<T extends Number> implements Parser<T> {
@@ -193,7 +193,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
 		/**
 		 * @return the underlying format
 		 */
-		protected final NumberFormat getFormat() {
+		protected final NumberFormat format() {
 			return format;
 		}
 
@@ -490,7 +490,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
 		}
 
 		int getMaximumFractionDigits() {
-			int maximumFractionDigits = getFormat().getMaximumFractionDigits();
+			int maximumFractionDigits = format().getMaximumFractionDigits();
 
 			return maximumFractionDigits == MAXIMUM_FRACTION_DIGITS ? -1 : maximumFractionDigits;
 		}
@@ -499,7 +499,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			if (maximumFractionDigits < -1) {
 				throw new IllegalArgumentException("Maximum fraction digits must be => 0, or -1 for no maximum");
 			}
-			getFormat().setMaximumFractionDigits(maximumFractionDigits == -1 ? MAXIMUM_FRACTION_DIGITS : maximumFractionDigits);
+			format().setMaximumFractionDigits(maximumFractionDigits == -1 ? MAXIMUM_FRACTION_DIGITS : maximumFractionDigits);
 			setText("");
 		}
 
@@ -512,11 +512,11 @@ class NumberDocument<T extends Number> extends PlainDocument {
 
 			@Override
 			public NumberParseResult<T> parse(String string) {
-				char decimalSeparator = ((DecimalFormat) getFormat()).getDecimalFormatSymbols().getDecimalSeparator();
+				char decimalSeparator = ((DecimalFormat) format()).getDecimalFormatSymbols().getDecimalSeparator();
 				if (string.equals(Character.toString(decimalSeparator))) {
 					try {
 						//use the format for the correct type
-						return new DefaultNumberParseResult<>("0" + decimalSeparator, (T) getFormat().parse("0"), 1, true);
+						return new DefaultNumberParseResult<>("0" + decimalSeparator, (T) format().parse("0"), 1, true);
 					}
 					catch (ParseException e) {/*Won't happen*/}
 				}

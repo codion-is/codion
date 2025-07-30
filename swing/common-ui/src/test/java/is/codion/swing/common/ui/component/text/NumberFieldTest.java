@@ -66,7 +66,7 @@ public final class NumberFieldTest {
 
 		integerField.valueRange(0, Integer.MAX_VALUE);
 
-		DecimalFormat decimalFormat = (DecimalFormat) ((NumberDocument<Integer>) integerField.getDocument()).getFormat();
+		DecimalFormat decimalFormat = (DecimalFormat) ((NumberDocument<Integer>) integerField.getDocument()).format();
 		decimalFormat.setGroupingSize(3);
 		decimalFormat.setGroupingUsed(true);
 		integerField.setSeparators(',', '.');

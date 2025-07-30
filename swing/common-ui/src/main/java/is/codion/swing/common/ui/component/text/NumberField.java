@@ -69,7 +69,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 		documentFilter.maximumValue().set(builder.maximumValue);
 		documentFilter.setSilentValidation(builder.silentValidation);
 		documentFilter.setConvertGroupingToDecimalSeparator(builder.convertGroupingToDecimalSeparator);
-		if (document.getFormat() instanceof DecimalFormat) {
+		if (document.format() instanceof DecimalFormat) {
 			addKeyListener(new GroupingSkipAdapter());
 		}
 		if (builder.groupingUsed != null) {
@@ -224,14 +224,14 @@ public final class NumberField<T extends Number> extends HintTextField {
 	 * @param number the number to set
 	 */
 	public void set(T number) {
-		document().setNumber(number);
+		document().set(number);
 	}
 
 	/**
 	 * @return the number
 	 */
 	public T get() {
-		return document().getNumber();
+		return document().get();
 	}
 
 	/**
@@ -363,7 +363,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		private void skipGroupingSeparator(boolean forward) {
 			NumberDocument<?> numberDocument = document();
-			char groupingSeparator = ((DecimalFormat) numberDocument.getFormat()).getDecimalFormatSymbols().getGroupingSeparator();
+			char groupingSeparator = ((DecimalFormat) numberDocument.format()).getDecimalFormatSymbols().getGroupingSeparator();
 			try {
 				int caretPosition = getCaretPosition();
 				if (forward && caretPosition < getDocument().getLength() - 1) {
