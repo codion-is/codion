@@ -384,20 +384,12 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			return parser;
 		}
 
-		void setMaximumValue(@Nullable Number maximumValue) {
-			rangeValidator.maximumValue = maximumValue;
-		}
-
-		@Nullable Number getMaximumValue() {
-			return rangeValidator.maximumValue;
-		}
-
-		void setMinimumValue(@Nullable Number minimumValue) {
-			rangeValidator.minimumValue = minimumValue;
-		}
-
-		@Nullable Number getMinimumValue() {
+		Value<Number> minimumValue() {
 			return rangeValidator.minimumValue;
+		}
+
+		Value<Number> maximumValue() {
+			return rangeValidator.maximumValue;
 		}
 
 		void setConvertGroupingToDecimalSeparator(boolean convertGroupingToDecimalSeparator) {
@@ -462,8 +454,8 @@ class NumberDocument<T extends Number> extends PlainDocument {
 
 		private static final class NumberRangeValidator<T extends Number> implements Value.Validator<T> {
 
-			private @Nullable Number minimumValue;
-			private @Nullable Number maximumValue;
+			private final Value<Number> minimumValue = Value.nullable();
+			private final Value<Number> maximumValue = Value.nullable();
 
 			@Override
 			public void validate(T value) {
@@ -477,11 +469,11 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			}
 
 			private boolean greaterThanMinimum(T value) {
-				return minimumValue == null || value.doubleValue() >= minimumValue.doubleValue();
+				return minimumValue.isNull() || value.doubleValue() >= minimumValue.getOrThrow().doubleValue();
 			}
 
 			private boolean lessThanMaximum(T value) {
-				return maximumValue == null || value.doubleValue() <= maximumValue.doubleValue();
+				return maximumValue.isNull() || value.doubleValue() <= maximumValue.getOrThrow().doubleValue();
 			}
 		}
 	}

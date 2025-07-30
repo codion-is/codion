@@ -20,6 +20,7 @@ package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.observable.Observable;
 import is.codion.common.property.PropertyValue;
+import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.text.NumberDocument.DecimalDocument;
 import is.codion.swing.common.ui.component.text.NumberDocument.NumberParsingDocumentFilter;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -64,8 +65,8 @@ public final class NumberField<T extends Number> extends HintTextField {
 		NumberDocument<T> document = document();
 		document.setTextComponent(this);
 		NumberParsingDocumentFilter<T> documentFilter = document.getDocumentFilter();
-		documentFilter.setMinimumValue(builder.minimumValue);
-		documentFilter.setMaximumValue(builder.maximumValue);
+		documentFilter.minimumValue().set(builder.minimumValue);
+		documentFilter.maximumValue().set(builder.maximumValue);
 		documentFilter.setSilentValidation(builder.silentValidation);
 		documentFilter.setConvertGroupingToDecimalSeparator(builder.convertGroupingToDecimalSeparator);
 		if (document.getFormat() instanceof DecimalFormat) {
@@ -108,37 +109,23 @@ public final class NumberField<T extends Number> extends HintTextField {
 	 * @param minimumValue the minimum value
 	 * @param maximumValue the maximum value
 	 */
-	public void setValueRange(Number minimumValue, Number maximumValue) {
-		document().getDocumentFilter().setMinimumValue(minimumValue);
-		document().getDocumentFilter().setMaximumValue(maximumValue);
-	}
-
-	/**
-	 * @param minimumValue the minimum value
-	 */
-	public void setMinimumValue(Number minimumValue) {
-		document().getDocumentFilter().setMinimumValue(minimumValue);
+	public void valueRange(Number minimumValue, Number maximumValue) {
+		document().getDocumentFilter().minimumValue().set(minimumValue);
+		document().getDocumentFilter().maximumValue().set(maximumValue);
 	}
 
 	/**
 	 * @return the minimum value this field should accept
 	 */
-	public Number getMinimumValue() {
-		return document().getDocumentFilter().getMinimumValue();
-	}
-
-	/**
-	 * @param maximumValue the maximum value
-	 */
-	public void setMaximumValue(Number maximumValue) {
-		document().getDocumentFilter().setMaximumValue(maximumValue);
+	public Value<Number> minimumValue() {
+		return document().getDocumentFilter().minimumValue();
 	}
 
 	/**
 	 * @return the maximum value this field should accept
 	 */
-	public Number getMaximumValue() {
-		return document().getDocumentFilter().getMaximumValue();
+	public Value<Number> maximumValue() {
+		return document().getDocumentFilter().maximumValue();
 	}
 
 	/**

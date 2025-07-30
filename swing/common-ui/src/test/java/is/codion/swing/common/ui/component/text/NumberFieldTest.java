@@ -48,9 +48,9 @@ public final class NumberFieldTest {
 		integerField.set(100000000);
 		assertEquals("100000000", integerField.getText());
 
-		integerField.setValueRange(0, 10);
-		assertEquals(0, (int) integerField.getMinimumValue());
-		assertEquals(10, (int) integerField.getMaximumValue());
+		integerField.valueRange(0, 10);
+		assertEquals(0, (int) integerField.minimumValue().getOrThrow());
+		assertEquals(10, (int) integerField.maximumValue().getOrThrow());
 
 		assertThrows(IllegalArgumentException.class, () -> integerField.set(100));
 		assertEquals("", integerField.getText());
@@ -64,7 +64,7 @@ public final class NumberFieldTest {
 		assertThrows(IllegalStateException.class, integerField::getMaximumFractionDigits);
 		assertThrows(IllegalStateException.class, () -> integerField.setMaximumFractionDigits(2));
 
-		integerField.setValueRange(0, Integer.MAX_VALUE);
+		integerField.valueRange(0, Integer.MAX_VALUE);
 
 		DecimalFormat decimalFormat = (DecimalFormat) ((NumberDocument<Integer>) integerField.getDocument()).getFormat();
 		decimalFormat.setGroupingSize(3);
@@ -126,9 +126,9 @@ public final class NumberFieldTest {
 		assertEquals("1,000,000,000", longField.getText());
 		longField.setGroupingUsed(false);
 
-		longField.setValueRange(0, 10);
-		assertEquals(0, (int) longField.getMinimumValue());
-		assertEquals(10, (int) longField.getMaximumValue());
+		longField.valueRange(0, 10);
+		assertEquals(0, (int) longField.minimumValue().getOrThrow());
+		assertEquals(10, (int) longField.maximumValue().getOrThrow());
 
 		longField.setText("");
 		assertThrows(IllegalArgumentException.class, () -> longField.set(100L));
