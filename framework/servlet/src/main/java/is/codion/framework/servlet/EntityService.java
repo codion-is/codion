@@ -573,7 +573,7 @@ public final class EntityService implements AuxiliaryServer {
 				ObjectMapper objectMapper = objectMapper(entities);
 				JsonNode jsonNode = objectMapper.readTree(context.req().getInputStream());
 				EntityType entityType = entities.domainType().entityType(jsonNode.get("entityType").asText());
-				Column<?> column = (Column<?>) entities.definition(entityType).attributes().get(jsonNode.get("column").textValue());
+				Column<?> column = (Column<?>) entities.definition(entityType).attributes().getOrThrow(jsonNode.get("column").textValue());
 				Select select = null;
 				JsonNode conditionNode = jsonNode.get("condition");
 				if (conditionNode != null) {

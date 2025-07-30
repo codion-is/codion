@@ -114,7 +114,7 @@ final class SelectDeserializer extends StdDeserializer<Select> {
 		OrderBy.Builder builder = OrderBy.builder();
 		for (JsonNode node : jsonNode) {
 			String[] split = node.asText().split(":");
-			Column<?> column = (Column<?>) definition.attributes().get(split[0]);
+			Column<?> column = (Column<?>) definition.attributes().getOrThrow(split[0]);
 			String order = split[1];
 			NullOrder nullOrder = NullOrder.valueOf(split[2]);
 			boolean ignoreCase = Boolean.parseBoolean(split[3]);
@@ -142,7 +142,7 @@ final class SelectDeserializer extends StdDeserializer<Select> {
 	private static List<Attribute<?>> deserializeAttributes(EntityDefinition definition, JsonNode jsonNode) {
 		List<Attribute<?>> attributes = new ArrayList<>(jsonNode.size());
 		for (JsonNode node : jsonNode) {
-			attributes.add(definition.attributes().get(node.asText()));
+			attributes.add(definition.attributes().getOrThrow(node.asText()));
 		}
 
 		return attributes;

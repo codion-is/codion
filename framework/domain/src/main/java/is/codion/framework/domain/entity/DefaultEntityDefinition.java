@@ -334,6 +334,16 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		}
 
 		@Override
+		public <T> Attribute<T> getOrThrow(String attributeName) {
+			Attribute<T> attribute = get(attributeName);
+			if (attribute == null) {
+				throw new IllegalArgumentException("Attribute " + attributeName + " not found in entity: " + entityType);
+			}
+
+			return attribute;
+		}
+
+		@Override
 		public Collection<Attribute<?>> selected() {
 			return entityAttributes.defaultSelectAttributes;
 		}

@@ -56,7 +56,7 @@ final class EntityKeyDeserializer extends StdDeserializer<Entity.Key> {
 		Entity.Key.Builder builder = entityObjectMapper.entities().key(definition.type());
 		for (Map.Entry<String, JsonNode> field : values.properties()) {
 			ColumnDefinition<Object> columnDefinition =
-							definition.columns().definition((Column<Object>) definition.attributes().get(field.getKey()));
+							definition.columns().definition((Column<Object>) definition.attributes().getOrThrow(field.getKey()));
 			builder.with(columnDefinition.attribute(),
 							entityObjectMapper.readValue(field.getValue().toString(),
 											columnDefinition.attribute().type().valueClass()));

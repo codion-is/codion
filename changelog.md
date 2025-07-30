@@ -10,6 +10,8 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - FilterTableCellEditor.Builder added, cellEditable now configurable.
 - CalendarPanel.Builder.includeWeekNumbers added along with WEEK_NUMBERS configuration value.
+### is.codion.framework.domain
+- EntityDefinition.Attributes.getOrThrow(attributeName) added.
 ### is.codion.framework.db
 - EntityConnection.Update.set() value parameter now @Nullable.
 

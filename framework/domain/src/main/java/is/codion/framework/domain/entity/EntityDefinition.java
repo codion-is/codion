@@ -493,6 +493,15 @@ public interface EntityDefinition {
 		<T> @Nullable Attribute<T> get(String attributeName);
 
 		/**
+		 * Returns the attribute with the given name.
+		 * @param attributeName the name of the attribute to fetch
+		 * @param <T> the attribute type
+		 * @return the attribute with the given name
+		 * @throws IllegalArgumentException in case the attribute was not found
+		 */
+		<T> Attribute<T> getOrThrow(String attributeName);
+
+		/**
 		 * Returns the attributes selected by default for this entity type.
 		 * Contains the selectable columns and foreign keys, excluding lazy loaded columns
 		 * and foreign key values based on lazy loaded columns.
