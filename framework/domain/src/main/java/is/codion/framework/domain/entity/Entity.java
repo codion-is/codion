@@ -578,7 +578,7 @@ public interface Entity extends Comparable<Entity> {
 	 * @return the attribute values of the given keys
 	 * @throws IllegalStateException in case of a composite key
 	 */
-	static <T> Collection<T> values(Collection<Key> keys) {
+	static <T> Collection<@Nullable T> values(Collection<Key> keys) {
 		return requireNonNull(keys).stream()
 						.map(key -> (T) key.value())
 						.collect(toList());
@@ -659,8 +659,8 @@ public interface Entity extends Comparable<Entity> {
 	 * @param entities the entities to map by attribute value
 	 * @return a {@link LinkedHashMap} of the given entities mapped to the attribute value
 	 */
-	static <T> LinkedHashMap<T, List<Entity>> groupByValue(Attribute<T> attribute, Collection<Entity> entities) {
-		LinkedHashMap<T, List<Entity>> result = new LinkedHashMap<>();
+	static <T> LinkedHashMap<@Nullable T, List<Entity>> groupByValue(Attribute<T> attribute, Collection<Entity> entities) {
+		LinkedHashMap<@Nullable T, List<Entity>> result = new LinkedHashMap<>();
 		requireNonNull(entities).forEach(entity -> result.computeIfAbsent(entity.get(attribute), k -> new ArrayList<>()).add(entity));
 
 		return result;

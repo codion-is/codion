@@ -251,7 +251,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	}
 
 	private static <T> ColumnCondition<T> singleStringEqualCondition(ConditionModel<T> conditionModel,
-																																	 Column<T> column, String value) {
+																																	 Column<T> column, @Nullable String value) {
 		boolean caseSensitive = conditionModel.caseSensitive().get();
 		if (containsWildcards(value)) {
 			return (ColumnCondition<T>) (caseSensitive ? column.like(value) : column.likeIgnoreCase(value));
@@ -266,7 +266,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	}
 
 	private static <T> ColumnCondition<T> singleStringNotEqualCondition(ConditionModel<T> conditionModel,
-																																			Column<T> column, String value) {
+																																			Column<T> column, @Nullable String value) {
 		boolean caseSensitive = conditionModel.caseSensitive().get();
 		if (containsWildcards(value)) {
 			return (ColumnCondition<T>) (caseSensitive ? column.notLike(value) : column.notLikeIgnoreCase(value));
@@ -358,7 +358,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 		return column.notIn(operands);
 	}
 
-	private static boolean containsWildcards(String value) {
+	private static boolean containsWildcards(@Nullable String value) {
 		return value != null && (value.contains("%") || value.contains("_"));
 	}
 

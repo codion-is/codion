@@ -229,7 +229,7 @@ public final class FileInputPanel extends JPanel {
 		}
 
 		@Override
-		protected Path getComponentValue() {
+		protected @Nullable Path getComponentValue() {
 			String filePath = component().filePathField.getText();
 			if (filePath.isEmpty()) {
 				return null;
@@ -252,7 +252,7 @@ public final class FileInputPanel extends JPanel {
 		}
 
 		@Override
-		protected byte[] getComponentValue() {
+		protected byte @Nullable [] getComponentValue() {
 			String filePath = component().filePathField.getText();
 			if (filePath.isEmpty()) {
 				return null;

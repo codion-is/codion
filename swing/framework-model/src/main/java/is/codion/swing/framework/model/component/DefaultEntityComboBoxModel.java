@@ -167,7 +167,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	}
 
 	@Override
-	public Entity getSelectedItem() {
+	public @Nullable Entity getSelectedItem() {
 		return comboBoxModel.getSelectedItem();
 	}
 
@@ -311,7 +311,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 						.listener(items()::filter)
 						.build();
 
-		private Set<Entity.Key> foreignKeys;
+		private @Nullable Set<Entity.Key> foreignKeys;
 
 		private DefaultForeignKeyFilter(ForeignKey foreignKey) {
 			this.foreignKey = foreignKey;
@@ -378,13 +378,13 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 			filterModel.items().refresher().result().addListener(() -> select(filterModel, getSelectedItem()));
 		}
 
-		private void select(EntityComboBoxModel filterModel, Entity selected) {
+		private void select(EntityComboBoxModel filterModel, @Nullable Entity selected) {
 			if (selected != null && !selected.isNull(foreignKey)) {
 				filterModel.select(selected.key(foreignKey));
 			}
 		}
 
-		private void set(Entity selected) {
+		private void set(@Nullable Entity selected) {
 			if (selected != null) {
 				set(selected.primaryKey());
 			}

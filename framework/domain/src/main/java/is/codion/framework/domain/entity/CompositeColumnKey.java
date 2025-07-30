@@ -49,7 +49,7 @@ final class CompositeColumnKey implements Entity.Key, Serializable {
 
 	List<Column<?>> columns;
 	boolean primary;
-	Map<Column<?>, Object> values;
+	Map<Column<?>, @Nullable Object> values;
 	boolean singleIntegerKey;
 	private @Nullable Integer cachedHashCode = null;
 	boolean hashCodeDirty = true;

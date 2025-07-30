@@ -74,7 +74,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	private final List<Value<T>> linkedValues = new ArrayList<>(1);
 	private final List<Observable<T>> linkedObservables = new ArrayList<>(1);
 	private final List<KeyEvents.Builder> keyEventBuilders = new ArrayList<>(1);
-	private final Map<Object, Object> clientProperties = new HashMap<>();
+	private final Map<Object, @Nullable Object> clientProperties = new HashMap<>();
 	private final List<FocusListener> focusListeners = new ArrayList<>();
 	private final List<MouseListener> mouseListeners = new ArrayList<>();
 	private final List<MouseMotionListener> mouseMotionListeners = new ArrayList<>();
@@ -688,17 +688,17 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
 	private static final class ValidationConsumer<T> implements Consumer<T> {
 
-		private final Predicate<T> validator;
+		private final Predicate<@Nullable T> validator;
 		private final State valid;
 
-		private ValidationConsumer(T initialValue, Predicate<T> validator) {
+		private ValidationConsumer(@Nullable T initialValue, Predicate<T> validator) {
 			this.validator = validator;
 			this.valid = State.state();
 			accept(initialValue);
 		}
 
 		@Override
-		public void accept(T value) {
+		public void accept(@Nullable T value) {
 			valid.set(validator.test(value));
 		}
 	}

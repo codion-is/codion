@@ -794,7 +794,7 @@ public class EntityEditComponentPanel extends JPanel {
 			return afterUpdate;
 		}
 
-		private void requestFocus(JComponent component) {
+		private void requestFocus(@Nullable JComponent component) {
 			if (component != null && component.isFocusable()) {
 				component.requestFocus();
 			}
@@ -816,7 +816,7 @@ public class EntityEditComponentPanel extends JPanel {
 		 */
 		public final class Initial {
 
-			private Supplier<JComponent> component = () -> null;
+			private Supplier<@Nullable JComponent> component = () -> null;
 
 			private Initial() {}
 
@@ -843,7 +843,7 @@ public class EntityEditComponentPanel extends JPanel {
 			 * <p>Sets the {@link Supplier} supplying the component that should receive the focus when this edit panel is cleared or activated.
 			 * @param component supplies the component that should receive the focus when this edit panel is cleared or activated
 			 */
-			public void set(Supplier<JComponent> component) {
+			public void set(Supplier<@Nullable JComponent> component) {
 				this.component = requireNonNull(component);
 			}
 
@@ -865,7 +865,7 @@ public class EntityEditComponentPanel extends JPanel {
 		 */
 		public final class AfterInsert {
 
-			private Supplier<JComponent> component = () -> initial.component.get();
+			private Supplier<@Nullable JComponent> component = () -> initial.component.get();
 
 			private AfterInsert() {}
 
@@ -893,7 +893,7 @@ public class EntityEditComponentPanel extends JPanel {
 			 * Takes precedence over the one set via {@link #set(Attribute)}
 			 * @param component supplies the component that should receive the focus after an insert has been performed
 			 */
-			public void set(Supplier<JComponent> component) {
+			public void set(Supplier<@Nullable JComponent> component) {
 				this.component = requireNonNull(component);
 			}
 

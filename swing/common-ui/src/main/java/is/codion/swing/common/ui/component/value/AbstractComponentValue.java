@@ -63,12 +63,12 @@ public abstract class AbstractComponentValue<T, C extends JComponent> extends Ab
 	}
 
 	@Override
-	protected final T getValue() {
+	protected final @Nullable T getValue() {
 		return getComponentValue();
 	}
 
 	@Override
-	protected final void setValue(T value) {
+	protected final void setValue(@Nullable T value) {
 		if (SwingUtilities.isEventDispatchThread()) {
 			setComponentValue(value);
 			return;
@@ -86,14 +86,14 @@ public abstract class AbstractComponentValue<T, C extends JComponent> extends Ab
 	 * @return the value from the underlying component
 	 * @see #component()
 	 */
-	protected abstract T getComponentValue();
+	protected abstract @Nullable T getComponentValue();
 
 	/**
 	 * Sets the given value in the underlying component. Note that this method is called on the Event Dispatch Thread.
 	 * @param value the value to display in the underlying component
 	 * @see #component()
 	 */
-	protected abstract void setComponentValue(T value);
+	protected abstract void setComponentValue(@Nullable T value);
 
 	private static void handleInvokeAndWaitException(Exception exception) {
 		Throwable cause = exception;

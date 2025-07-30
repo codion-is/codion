@@ -57,7 +57,7 @@ import static java.util.stream.Collectors.toMap;
 
 final class DefaultEntitySearchModel implements EntitySearchModel {
 
-	private static final Supplier<Condition> NULL_CONDITION = () -> null;
+	private static final Supplier<@Nullable Condition> NULL_CONDITION = () -> null;
 	private static final String WILDCARD_MULTIPLE = "%";
 	private static final String WILDCARD_SINGLE = "_";
 

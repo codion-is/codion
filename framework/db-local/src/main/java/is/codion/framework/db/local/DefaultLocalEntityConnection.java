@@ -892,7 +892,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	private String createUpdateQuery(Update update, List<ColumnDefinition<?>> statementColumns,
-																	 List<Object> statementValues) throws UpdateException {
+																	 List<@Nullable Object> statementValues) throws UpdateException {
 		EntityDefinition entityDefinition = definition(update.where().entityType());
 		for (Map.Entry<Column<?>, Object> columnValue : update.values().entrySet()) {
 			ColumnDefinition<Object> columnDefinition = entityDefinition.columns().definition((Column<Object>) columnValue.getKey());
@@ -1192,7 +1192,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 
 	private <T> List<T> packResult(ColumnDefinition<T> columnDefinition, ResultSet resultSet) throws SQLException {
 		SQLException packingException = null;
-		List<T> result = new ArrayList<>();
+		List<@Nullable T> result = new ArrayList<>();
 		tracer.enter(PACK_RESULT);
 		try {
 			while (resultSet.next()) {
@@ -1457,7 +1457,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	private static void populateColumnsAndValues(Entity entity,
 																							 List<ColumnDefinition<?>> columnDefinitions,
 																							 List<ColumnDefinition<?>> statementColumns,
-																							 List<Object> statementValues,
+																							 List<@Nullable Object> statementValues,
 																							 Predicate<ColumnDefinition<?>> includeIf) {
 		for (int i = 0; i < columnDefinitions.size(); i++) {
 			ColumnDefinition<?> columnDefinition = columnDefinitions.get(i);

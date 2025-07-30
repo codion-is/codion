@@ -346,7 +346,7 @@ public final class EntityDialogs {
 
 			@Override
 			public @Nullable T apply(Collection<Entity> entities) {
-				Collection<T> values = entities.stream()
+				Collection<@Nullable T> values = entities.stream()
 								.map(entity -> entity.get(attribute))
 								.collect(toSet());
 

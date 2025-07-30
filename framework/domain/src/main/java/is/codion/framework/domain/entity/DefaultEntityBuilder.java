@@ -35,9 +35,9 @@ import static java.util.Objects.requireNonNull;
 final class DefaultEntityBuilder implements Entity.Builder {
 
 	private final EntityDefinition definition;
-	private final Map<Attribute<?>, Object> values;
-	private final Map<Attribute<?>, Object> originalValues;
-	private final Map<Attribute<?>, Object> builderValues = new LinkedHashMap<>();
+	private final Map<Attribute<?>, @Nullable Object> values;
+	private final Map<Attribute<?>, @Nullable Object> originalValues;
+	private final Map<Attribute<?>, @Nullable Object> builderValues = new LinkedHashMap<>();
 
 	DefaultEntityBuilder(Key key) {
 		this(requireNonNull(key).definition());

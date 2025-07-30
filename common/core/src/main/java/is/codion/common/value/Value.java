@@ -109,7 +109,7 @@ public interface Value<T> extends Observable<T> {
 	 * @param mapper maps from the current value to a new value
 	 * @throws NullPointerException in case {@code mapper} is null
 	 */
-	default void map(UnaryOperator<T> mapper) {
+	default void map(UnaryOperator<@Nullable T> mapper) {
 		set(requireNonNull(mapper).apply(get()));
 	}
 

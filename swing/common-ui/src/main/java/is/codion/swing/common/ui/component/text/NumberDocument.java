@@ -75,11 +75,11 @@ class NumberDocument<T extends Number> extends PlainDocument {
 		return ((NumberParser<T>) getDocumentFilter().parser()).getFormat();
 	}
 
-	protected final void setNumber(T number) {
+	protected final void setNumber(@Nullable T number) {
 		setText(number == null ? "" : getFormat().format(number));
 	}
 
-	protected final T getNumber() {
+	protected final @Nullable T getNumber() {
 		try {
 			return getDocumentFilter().parser().parse(getText(0, getLength())).value();
 		}
@@ -201,7 +201,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
 		 * @param text the text to parse
 		 * @return a number if the format can parse it, null otherwise
 		 */
-		private T parseNumber(String text) {
+		private @Nullable T parseNumber(String text) {
 			if (text.isEmpty()) {
 				return null;
 			}

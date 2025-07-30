@@ -438,7 +438,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	private static Map<Entity, Entity> originalEntityMap(Collection<Entity> entitiesBeforeUpdate,
 																											 Collection<Entity> entitiesAfterUpdate) {
 		List<Entity> entitiesAfterUpdateCopy = new ArrayList<>(entitiesAfterUpdate);
-		Map<Entity, Entity> keyMap = new HashMap<>(entitiesBeforeUpdate.size());
+		Map<Entity, @Nullable Entity> keyMap = new HashMap<>(entitiesBeforeUpdate.size());
 		for (Entity entity : entitiesBeforeUpdate) {
 			keyMap.put(entity.immutable(), findAndRemove(entity.primaryKey(), entitiesAfterUpdateCopy.listIterator()));
 		}

@@ -66,7 +66,7 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
 
 	static final class DefaultToggleControlBuilder extends AbstractControlBuilder<ToggleControl, ToggleControlBuilder> implements ToggleControlBuilder {
 
-		final Value<Boolean> value;
+		private final Value<Boolean> value;
 
 		DefaultToggleControlBuilder(Value<Boolean> value) {
 			this.value = requireNonNull(value);

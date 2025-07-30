@@ -406,7 +406,7 @@ public final class LoadTestPanel<T> extends JPanel {
 						.scrollToSelectedItem(false)
 						.cellRenderer(ColumnId.DURATION, FilterTableCellRenderer.builder()
 										.columnClass(Integer.class)
-										.string(duration -> duration == null ? null : DURATION_FORMAT.format(duration))
+										.string(duration -> duration == null ? "" : DURATION_FORMAT.format(duration))
 										.build())
 						.popupMenuControls(table -> Controls.builder()
 										.control(Control.builder()

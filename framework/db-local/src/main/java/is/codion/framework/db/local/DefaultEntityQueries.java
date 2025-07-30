@@ -27,6 +27,8 @@ import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.condition.Condition;
 
+import org.jspecify.annotations.Nullable;
+
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -112,8 +114,8 @@ final class DefaultEntityQueries implements EntityQueries {
 		return parameterValues(entity, columnDefinitions, null);
 	}
 
-	private static List<?> parameterValues(Entity entity, List<ColumnDefinition<?>> columnDefinitions, Condition condition) {
-		List<Object> values = columnDefinitions.stream()
+	private static List<?> parameterValues(Entity entity, List<ColumnDefinition<?>> columnDefinitions, @Nullable Condition condition) {
+		List<@Nullable Object> values = columnDefinitions.stream()
 						.map(columnDefinition -> entity.get(columnDefinition.attribute()))
 						.collect(Collectors.toCollection(ArrayList::new));
 		if (condition != null) {
@@ -136,7 +138,7 @@ final class DefaultEntityQueries implements EntityQueries {
 						.collect(toList());
 	}
 
-	private static Object addSingleQuotes(Object value) {
+	private static @Nullable Object addSingleQuotes(@Nullable Object value) {
 		if (value instanceof String || value instanceof Temporal) {
 			return "'" + value + "'";
 		}
@@ -144,7 +146,7 @@ final class DefaultEntityQueries implements EntityQueries {
 		return value;
 	}
 
-	private static Object formatDecimal(Object value) {
+	private static @Nullable Object formatDecimal(@Nullable Object value) {
 		if (value instanceof Number) {
 			return NUMBER_FORMAT.format(value);
 		}

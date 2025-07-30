@@ -789,7 +789,7 @@ public final class FilterTable<R, C> extends JTable {
 			if (!addToSelection) {
 				setColumnSelectionInterval(rowColumn.column(), rowColumn.column());
 			}
-			scrollToRowColumn(rowColumn.row(), rowColumn.column(), centerOnScroll.get());
+			scrollToRowColumn(rowColumn.row(), rowColumn.column(), centerOnScroll.getOrThrow());
 		});
 	}
 
@@ -880,7 +880,7 @@ public final class FilterTable<R, C> extends JTable {
 	private void configureColumns(Map<C, FilterTableCellRenderer<?>> cellRenderers,
 																FilterTableCellRenderer.Factory<R, C> cellRendererFactory,
 																Map<C, FilterTableCellEditor<?>> cellEditors,
-																FilterTableCellEditor.Factory<C> cellEditorFactory) {
+																FilterTableCellEditor.@Nullable Factory<C> cellEditorFactory) {
 		columnModel().columns().stream()
 						.filter(column -> column.getCellRenderer() == null)
 						.forEach(column -> column.setCellRenderer(cellRenderers.getOrDefault(column.identifier(),
@@ -1066,7 +1066,7 @@ public final class FilterTable<R, C> extends JTable {
 			if (viewport != null && scrollToSelectedItem.get() && !selectedRows.isEmpty()) {
 				int column = getSelectedColumn();
 				if (noCellVisible(viewport, selectedRows, column)) {
-					scrollToRowColumn(selectedRows.get(0), column, centerOnScroll.get());
+					scrollToRowColumn(selectedRows.get(0), column, centerOnScroll.getOrThrow());
 				}
 			}
 		}
@@ -1475,15 +1475,15 @@ public final class FilterTable<R, C> extends JTable {
 		private final Map<C, FilterTableCellEditor<?>> cellEditors = new HashMap<>();
 		private final Collection<KeyStroke> startEditKeyStrokes = new ArrayList<>();
 
-		private SummaryValues.Factory<C> summaryValuesFactory;
+		private SummaryValues.@Nullable Factory<C> summaryValuesFactory;
 		private TableConditionPanel.Factory<C> filterPanelFactory = new DefaultFilterPanelFactory<>();
 		private ComponentFactory filterComponentFactory = new FilterComponentFactory();
 		private FilterTableCellRenderer.Factory<R, C> cellRendererFactory;
-		private FilterTableCellEditor.Factory<C> cellEditorFactory;
+		private FilterTableCellEditor.@Nullable Factory<C> cellEditorFactory;
 		private boolean autoStartsEdit = false;
 		private boolean surrendersFocusOnKeystroke = false;
 		private CenterOnScroll centerOnScroll = CenterOnScroll.NEITHER;
-		private Action doubleClick;
+		private @Nullable Action doubleClick;
 		private boolean scrollToSelectedItem = true;
 		private boolean scrollToAddedItem = false;
 		private boolean sortable = true;
@@ -1496,12 +1496,12 @@ public final class FilterTable<R, C> extends JTable {
 		private ConditionView filterView = ConditionView.HIDDEN;
 		private int rowHeight = -1;
 		private int rowMargin = -1;
-		private Dimension intercellSpacing;
-		private Color gridColor;
-		private Boolean showGrid;
-		private Boolean showHorizontalLines;
-		private Boolean showVerticalLines;
-		private Boolean dragEnabled;
+		private @Nullable Dimension intercellSpacing;
+		private @Nullable Color gridColor;
+		private @Nullable Boolean showGrid;
+		private @Nullable Boolean showHorizontalLines;
+		private @Nullable Boolean showVerticalLines;
+		private @Nullable Boolean dragEnabled;
 
 		private DefaultBuilder(FilterTableModel<R, C> tableModel, List<FilterTableColumn<C>> columns) {
 			this.tableModel = tableModel;
@@ -1901,10 +1901,10 @@ public final class FilterTable<R, C> extends JTable {
 		private final boolean columnResizingAllowed;
 		private final boolean columnReorderingAllowed;
 
-		private final KeyStroke moveLeft;
-		private final KeyStroke moveRight;
-		private final KeyStroke increaseSize;
-		private final KeyStroke decreaseSize;
+		private final @Nullable KeyStroke moveLeft;
+		private final @Nullable KeyStroke moveRight;
+		private final @Nullable KeyStroke increaseSize;
+		private final @Nullable KeyStroke decreaseSize;
 
 		private MoveResizeColumnKeyListener(boolean columnReorderingAllowed,
 																				boolean columnResizingAllowed) {
@@ -2008,7 +2008,7 @@ public final class FilterTable<R, C> extends JTable {
 		}
 
 		@Override
-		public String getToolTipText(MouseEvent event) {
+		public @Nullable String getToolTipText(MouseEvent event) {
 			int index = columnModel.getColumnIndexAtX(event.getPoint().x);
 			if (index != -1) {
 				return ((FilterTableColumn<?>) columnModel.getColumn(index)).toolTipText().orElse(null);

@@ -463,7 +463,7 @@ public class EntityPanel extends JPanel {
 	 */
 	public final void addKeyEvent(KeyEvents.Builder keyEventBuilder) {
 		requireNonNull(keyEventBuilder).enable(this);
-		if (containsEditPanel()) {
+		if (editControlPanel != null) {
 			keyEventBuilder.enable(editControlPanel);
 		}
 	}
@@ -474,7 +474,7 @@ public class EntityPanel extends JPanel {
 	 */
 	public final void removeKeyEvent(KeyEvents.Builder keyEventBuilder) {
 		requireNonNull(keyEventBuilder).disable(this);
-		if (containsEditPanel()) {
+		if (editControlPanel != null) {
 			keyEventBuilder.disable(editControlPanel);
 		}
 	}
@@ -662,7 +662,7 @@ public class EntityPanel extends JPanel {
 	 * @return the main panel containing the table, edit and control panels
 	 */
 	protected final JPanel mainPanel() {
-		if (editPanel != null && editControlPanel.getComponents().length == 0) {
+		if (editControlPanel != null && editControlPanel.getComponents().length == 0) {
 			editControlPanel.add(configuration.editBasePanel.apply(editPanel), BorderLayout.CENTER);
 		}
 		if (tablePanel != null && mainPanel.getComponents().length == 0) {
@@ -708,7 +708,7 @@ public class EntityPanel extends JPanel {
 			tablePanel.configuration.controlMap.keyEvent(REQUEST_SEARCH_FIELD_FOCUS).ifPresent(keyEvent ->
 							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 											.enable(this));
-			if (containsEditPanel()) {
+			if (editControlPanel != null) {
 				tablePanel.configuration.controlMap.keyEvent(REQUEST_TABLE_FOCUS).ifPresent(keyEvent ->
 								keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 												.enable(editControlPanel));
@@ -726,7 +726,7 @@ public class EntityPanel extends JPanel {
 												.enable(editControlPanel));
 			}
 		}
-		if (containsEditPanel()) {
+		if (editControlPanel != null && editPanel != null) {
 			configuration.controlMap.keyEvent(REQUEST_EDIT_PANEL_FOCUS).ifPresent(keyEvent ->
 							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 											.enable(this, editControlPanel));

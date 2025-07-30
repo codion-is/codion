@@ -92,7 +92,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public T getSelectedItem() {
+	public @Nullable T getSelectedItem() {
 		if (selection.selected.item == null) {
 			return modelItems.nullItem;
 		}
@@ -116,7 +116,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 	}
 
 	@Override
-	public T getElementAt(int index) {
+	public @Nullable T getElementAt(int index) {
 		T element = modelItems.visible.items.get(index);
 		if (element == null) {
 			return modelItems.nullItem;
@@ -584,7 +584,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		private final class DefaultVisibleItems implements VisibleItems<T> {
 
 			private final VisiblePredicate<T> predicate = new DefaultVisiblePredicate<>();
-			private final List<T> items = new ArrayList<>();
+			private final List<@Nullable T> items = new ArrayList<>();
 			private final Event<List<T>> event = Event.event();
 			private final Event<Collection<T>> added = Event.event();
 
@@ -769,7 +769,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private final Event<T> changing = Event.event();
 		private final State empty = State.state(true);
-		private final Function<Object, T> translator;
+		private final Function<@Nullable Object, T> translator;
 
 		private @Nullable T item = null;
 

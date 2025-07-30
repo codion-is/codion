@@ -25,6 +25,8 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.TransientAttributeDefinition;
 
+import org.jspecify.annotations.Nullable;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -73,7 +75,7 @@ final class EntityResultPacker implements ResultPacker<Entity> {
 		return entityDefinition.entity(values);
 	}
 
-	private void addResultSetValues(ResultSet resultSet, Map<Attribute<?>, Object> values) throws SQLException {
+	private void addResultSetValues(ResultSet resultSet, Map<Attribute<?>, @Nullable Object> values) throws SQLException {
 		for (int i = 0; i < columnDefinitions.size(); i++) {
 			ColumnDefinition<Object> columnDefinition = (ColumnDefinition<Object>) columnDefinitions.get(i);
 			try {
@@ -86,13 +88,13 @@ final class EntityResultPacker implements ResultPacker<Entity> {
 		}
 	}
 
-	private void addTransientNullValues(Map<Attribute<?>, Object> values) {
+	private void addTransientNullValues(Map<Attribute<?>, @Nullable Object> values) {
 		for (int i = 0; i < nonDerivedTransientAttributes.size(); i++) {
 			values.put(nonDerivedTransientAttributes.get(i).attribute(), null);
 		}
 	}
 
-	private void addNonSelectedNullValues(Map<Attribute<?>, Object> values) {
+	private void addNonSelectedNullValues(Map<Attribute<?>, @Nullable Object> values) {
 		for (int i = 0; i < nonSelectedColumns.size(); i++) {
 			values.putIfAbsent(nonSelectedColumns.get(i).attribute(), null);
 		}

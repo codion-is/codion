@@ -21,6 +21,8 @@ package is.codion.swing.common.ui.component.table;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.swing.common.model.component.table.FilterTableSort.ColumnSortOrder;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.AbstractButton;
 import javax.swing.Icon;
 import javax.swing.JLabel;
@@ -79,7 +81,7 @@ final class FilterTableHeaderRenderer<R, C> implements TableCellRenderer {
 		return component;
 	}
 
-	private Icon sortArrowIcon(C identifier, int iconSizePixels) {
+	private @Nullable Icon sortArrowIcon(C identifier, int iconSizePixels) {
 		ColumnSortOrder<C> columnSortOrder = filterTable.model().sort().columns().get(identifier);
 
 		return columnSortOrder.sortOrder() == SortOrder.UNSORTED ? null : new Arrow(columnSortOrder.sortOrder() == SortOrder.DESCENDING, iconSizePixels, columnSortOrder.priority());

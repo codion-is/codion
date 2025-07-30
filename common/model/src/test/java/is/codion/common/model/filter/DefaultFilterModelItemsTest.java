@@ -901,12 +901,12 @@ public class DefaultFilterModelItemsTest {
 		@Override
 		public void adjusting(boolean adjusting) {}
 
-		private class TestIndexes implements Indexes {
+		private static class TestIndexes implements Indexes {
 			private final Value<List<Integer>> indexes = Value.nonNull(new ArrayList<Integer>());
 
 			@Override
 			public List<Integer> get() {
-				return indexes.get();
+				return indexes.getOrThrow();
 			}
 
 			@Override

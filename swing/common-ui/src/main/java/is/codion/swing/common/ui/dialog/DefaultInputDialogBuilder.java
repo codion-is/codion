@@ -118,7 +118,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 	}
 
 	@Override
-	public InputDialogBuilder<T> validator(Predicate<T> validator) {
+	public InputDialogBuilder<T> validator(Predicate<@Nullable T> validator) {
 		return valid(createInputValidObserver(requireNonNull(validator)));
 	}
 
@@ -135,7 +135,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 	}
 
 	@Override
-	public void show(Predicate<T> closeDialog) {
+	public void show(Predicate<@Nullable T> closeDialog) {
 		requireNonNull(closeDialog);
 		if (caption != null) {
 			basePanel.add(new JLabel(caption), BorderLayout.NORTH);
@@ -161,7 +161,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 		throw new CancelException();
 	}
 
-	private ObservableState createInputValidObserver(Predicate<T> inputValidator) {
+	private ObservableState createInputValidObserver(Predicate<@Nullable T> inputValidator) {
 		State validInputState = State.state(inputValidator.test(componentValue.get()));
 		componentValue.addListener(new InputValidStateListener<>(validInputState, inputValidator, componentValue));
 
@@ -201,10 +201,10 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 	private static final class InputValidStateListener<T> implements Runnable {
 
 		private final State validInputState;
-		private final Predicate<T> validInputPredicate;
+		private final Predicate<@Nullable T> validInputPredicate;
 		private final Value<T> componentValue;
 
-		private InputValidStateListener(State validInputState, Predicate<T> validInputPredicate, Value<T> componentValue) {
+		private InputValidStateListener(State validInputState, Predicate<@Nullable T> validInputPredicate, Value<T> componentValue) {
 			this.validInputState = validInputState;
 			this.validInputPredicate = validInputPredicate;
 			this.componentValue = componentValue;

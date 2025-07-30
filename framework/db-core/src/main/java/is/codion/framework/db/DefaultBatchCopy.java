@@ -24,6 +24,8 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.condition.Condition;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -72,7 +74,7 @@ final class DefaultBatchCopy implements BatchCopy {
 
 		private final EntityConnection source;
 		private final EntityConnection destination;
-		private final Map<EntityType, Condition> entityTypeConditions = new LinkedHashMap<>();
+		private final Map<EntityType, @Nullable Condition> entityTypeConditions = new LinkedHashMap<>();
 
 		private boolean includePrimaryKeys = true;
 		private int batchSize = 100;

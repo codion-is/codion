@@ -516,19 +516,19 @@ final class DefaultEntityEditor implements EntityEditor {
 			return dependingValues;
 		}
 
-		private void addDependingDerivedAttributes(Attribute<?> attribute, Map<Attribute<?>, Object> dependingValues) {
+		private void addDependingDerivedAttributes(Attribute<?> attribute, Map<Attribute<?>, @Nullable Object> dependingValues) {
 			entityDefinition.attributes().derivedFrom(attribute).forEach(derivedAttribute -> {
 				dependingValues.put(derivedAttribute, entity.get(derivedAttribute));
 				addDependingDerivedAttributes(derivedAttribute, dependingValues);
 			});
 		}
 
-		private void addDependingForeignKeys(Column<?> column, Map<Attribute<?>, Object> dependingValues) {
+		private void addDependingForeignKeys(Column<?> column, Map<Attribute<?>, @Nullable Object> dependingValues) {
 			entityDefinition.foreignKeys().definitions(column).forEach(foreignKeyDefinition ->
 							dependingValues.put(foreignKeyDefinition.attribute(), entity.get(foreignKeyDefinition.attribute())));
 		}
 
-		private void addDependingReferencedColumns(ForeignKey foreignKey, Map<Attribute<?>, Object> dependingValues) {
+		private void addDependingReferencedColumns(ForeignKey foreignKey, Map<Attribute<?>, @Nullable Object> dependingValues) {
 			foreignKey.references().forEach(reference ->
 							dependingValues.put(reference.column(), entity.get(reference.column())));
 		}
@@ -541,7 +541,7 @@ final class DefaultEntityEditor implements EntityEditor {
 			return toolTip.observable();
 		}
 
-		private @Nullable String createMessage(String description) {
+		private @Nullable String createMessage(@Nullable String description) {
 			return createToolTipText(validationString(), description);
 		}
 

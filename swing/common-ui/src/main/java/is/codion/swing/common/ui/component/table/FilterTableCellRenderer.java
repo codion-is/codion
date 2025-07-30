@@ -21,6 +21,8 @@ package is.codion.swing.common.ui.component.table;
 import is.codion.common.property.PropertyValue;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
@@ -152,7 +154,7 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 		 * @param value the cell value
 		 * @return the Color for the given cell, null for the default color
 		 */
-		Color color(FilterTable<R, C> table, R row, C identifier, T value);
+		@Nullable Color color(FilterTable<R, C> table, R row, C identifier, T value);
 	}
 
 	/**

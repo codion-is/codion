@@ -52,7 +52,7 @@ import static java.util.stream.Collectors.toList;
 
 final class DefaultEntityQueryModel implements EntityQueryModel {
 
-	private static final Supplier<Condition> NULL_CONDITION_SUPPLIER = () -> null;
+	private static final Supplier<@Nullable Condition> NULL_CONDITION_SUPPLIER = () -> null;
 
 	private final EntityTableConditionModel conditionModel;
 	private final EntityDefinition entityDefinition;

@@ -29,7 +29,7 @@ import java.util.Map;
 final class DefaultKeyBuilder implements Entity.Key.Builder {
 
 	private final EntityDefinition definition;
-	private final Map<Column<?>, Object> values = new HashMap<>();
+	private final Map<Column<?>, @Nullable Object> values = new HashMap<>();
 
 	private boolean primary = true;
 
@@ -65,7 +65,7 @@ final class DefaultKeyBuilder implements Entity.Key.Builder {
 		return new CompositeColumnKey(definition, initializeValues(new HashMap<>(values)), primary);
 	}
 
-	private Map<Column<?>, Object> initializeValues(Map<Column<?>, Object> values) {
+	private Map<Column<?>, @Nullable Object> initializeValues(Map<Column<?>, @Nullable Object> values) {
 		if (primary && !values.isEmpty()) {
 			//populate any missing primary key attributes with null values,
 			//DefaultKey.equals() relies on the key attributes being present

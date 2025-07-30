@@ -163,7 +163,7 @@ final class DefaultForeignKeyConditionFactory implements ForeignKeyCondition.Fac
 		return compositeKeyCondition(firstKey.columns().stream()
 						.collect(toMap(identity(), identity())), EQUAL, keys.stream()
 						.map(key -> {//can't use stream and toMap() due to possible null values
-							Map<Column<?>, Object> valueMap = new HashMap<>();
+							Map<Column<?>, @Nullable Object> valueMap = new HashMap<>();
 							key.columns().forEach(column -> valueMap.put(column, key.get(column)));
 
 							return valueMap;

@@ -24,6 +24,8 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -171,7 +173,7 @@ public interface Condition {
 		if (requireNonNull(key).columns().size() > 1) {
 			Map<Column<?>, Column<?>> columnMap = key.columns().stream()
 							.collect(toMap(identity(), identity()));
-			Map<Column<?>, Object> valueMap = new HashMap<>();
+			Map<Column<?>, @Nullable Object> valueMap = new HashMap<>();
 			key.columns().forEach(column -> valueMap.put(column, key.get(column)));
 
 			return compositeEqualCondition(columnMap, EQUAL, valueMap);

@@ -106,14 +106,14 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 
 	private class DefaultListSort implements FilterListSort<T> {
 
-		private final Comparator<T> comparator;
+		private final @Nullable Comparator<T> comparator;
 		private final Event<Boolean> changed = Event.event();
 		private final Value<SortOrder> sortOrder = Value.builder()
 						.nonNull(ASCENDING)
 						.consumer(order -> changed.accept(order != UNSORTED))
 						.build();
 
-		private DefaultListSort(Comparator<T> comparator) {
+		private DefaultListSort(@Nullable Comparator<T> comparator) {
 			this.comparator = comparator;
 		}
 

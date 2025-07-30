@@ -63,8 +63,8 @@ class DefaultEntity implements Entity, Serializable {
 	static final Predicate<Entity> DEFAULT_EXISTS = new DefaultEntityExists();
 
 	protected EntityDefinition definition;
-	protected Map<Attribute<?>, Object> values = EMPTY_MAP;
-	protected @Nullable Map<Attribute<?>, Object> originalValues;
+	protected Map<Attribute<?>, @Nullable Object> values = EMPTY_MAP;
+	protected @Nullable Map<Attribute<?>, @Nullable Object> originalValues;
 
 	private @Nullable String toStringCache;
 	private @Nullable Map<ForeignKey, Key> foreignKeyCache;
@@ -604,7 +604,7 @@ class DefaultEntity implements Entity, Serializable {
 	private @Nullable Key createAndCacheCompositeReferenceKey(ForeignKey foreignKey,
 																														List<ForeignKey.Reference<?>> references,
 																														EntityDefinition referencedEntity) {
-		Map<Column<?>, Object> keyValues = new HashMap<>(references.size());
+		Map<Column<?>, @Nullable Object> keyValues = new HashMap<>(references.size());
 		for (int i = 0; i < references.size(); i++) {
 			ForeignKey.Reference<?> reference = references.get(i);
 			ColumnDefinition<?> referencedColumn = referencedEntity.columns().definition(reference.foreign());
@@ -680,7 +680,7 @@ class DefaultEntity implements Entity, Serializable {
 	}
 
 	private CompositeColumnKey createPseudoPrimaryKey(boolean originalValues) {
-		Map<Column<?>, Object> allColumnValues = new HashMap<>();
+		Map<Column<?>, @Nullable Object> allColumnValues = new HashMap<>();
 		values.keySet().stream()
 						.map(attribute -> definition.attributes().definition(attribute))
 						.filter(ColumnDefinition.class::isInstance)
@@ -698,7 +698,7 @@ class DefaultEntity implements Entity, Serializable {
 	}
 
 	private CompositeColumnKey createCompositeColumnPrimaryKey(List<Column<?>> primaryKeyColumn, boolean originalValues) {
-		Map<Column<?>, Object> keyValues = new HashMap<>(primaryKeyColumn.size());
+		Map<Column<?>, @Nullable Object> keyValues = new HashMap<>(primaryKeyColumn.size());
 		for (int i = 0; i < primaryKeyColumn.size(); i++) {
 			Column<?> column = primaryKeyColumn.get(i);
 			keyValues.put(column, originalValues ? original(column) : values.get(column));
@@ -707,7 +707,7 @@ class DefaultEntity implements Entity, Serializable {
 		return new CompositeColumnKey(definition, keyValues, true);
 	}
 
-	private <T> T derivedCached(DerivedAttributeDefinition<T> attributeDefinition) {
+	private <T> @Nullable T derivedCached(DerivedAttributeDefinition<T> attributeDefinition) {
 		if (values.containsKey(attributeDefinition.attribute())) {
 			return (T) values.get(attributeDefinition.attribute());
 		}
@@ -738,12 +738,12 @@ class DefaultEntity implements Entity, Serializable {
 		return new DefaultSourceValues(derivedDefinition.attribute(), createMultiAttributeSourceValueMap(sources, originalValue));
 	}
 
-	private Map<Attribute<?>, Object> createSingleAttributeSourceValueMap(Attribute<?> source, boolean originalValue) {
+	private Map<Attribute<?>, @Nullable Object> createSingleAttributeSourceValueMap(Attribute<?> source, boolean originalValue) {
 		return singletonMap(source, originalValue ? original(source) : get(source));
 	}
 
-	private Map<Attribute<?>, Object> createMultiAttributeSourceValueMap(List<Attribute<?>> sources, boolean originalValue) {
-		Map<Attribute<?>, Object> valueMap = new HashMap<>(sources.size());
+	private Map<Attribute<?>, @Nullable Object> createMultiAttributeSourceValueMap(List<Attribute<?>> sources, boolean originalValue) {
+		Map<Attribute<?>, @Nullable Object> valueMap = new HashMap<>(sources.size());
 		for (int i = 0; i < sources.size(); i++) {
 			Attribute<?> source = sources.get(i);
 			valueMap.put(source, originalValue ? original(source) : get(source));
@@ -822,7 +822,7 @@ class DefaultEntity implements Entity, Serializable {
 
 	private static Map<Attribute<?>, Object> createValueMap(Key key) {
 		Collection<Column<?>> columns = key.columns();
-		Map<Attribute<?>, Object> values = new HashMap<>(columns.size());
+		Map<Attribute<?>, @Nullable Object> values = new HashMap<>(columns.size());
 		for (Column<?> column : columns) {
 			values.put(column, key.get(column));
 		}

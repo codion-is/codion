@@ -102,13 +102,13 @@ final class DefaultPanelBuilder extends AbstractComponentBuilder<Void, JPanel, P
 	private static final class ComponentConstraints {
 
 		private final JComponent component;
-		private final Object constraints;
+		private final @Nullable Object constraints;
 
 		private ComponentConstraints(JComponent component) {
 			this(component, null);
 		}
 
-		private ComponentConstraints(JComponent component, Object constraints) {
+		private ComponentConstraints(JComponent component, @Nullable Object constraints) {
 			this.component = component;
 			this.constraints = constraints;
 		}

@@ -287,7 +287,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 					setSelectionInterval(lastIndex, lastIndex);
 				}
 				else {
-					selectedIndexes.set(selectedIndexes.get().stream()
+					selectedIndexes.set(selectedIndexes.getOrThrow().stream()
 									.map(index -> index == 0 ? lastIndex : index - 1)
 									.collect(toList()));
 				}
@@ -302,7 +302,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 					setSelectionInterval(0, 0);
 				}
 				else {
-					selectedIndexes.set(selectedIndexes.get().stream()
+					selectedIndexes.set(selectedIndexes.getOrThrow().stream()
 									.map(index -> index == filteredSize - 1 ? 0 : index + 1)
 									.collect(toList()));
 				}

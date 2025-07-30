@@ -24,6 +24,8 @@ import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.ComboBoxEditor;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
@@ -111,7 +113,7 @@ final class DefaultListBoxBuilder<T>
 		}
 
 		@Override
-		public Object getItem() {
+		public @Nullable Object getItem() {
 			return itemValue.get();
 		}
 

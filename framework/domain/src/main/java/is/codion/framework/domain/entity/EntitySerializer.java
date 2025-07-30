@@ -21,6 +21,8 @@ package is.codion.framework.domain.entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -103,7 +105,7 @@ final class EntitySerializer {
 
 	private Map<Attribute<?>, Object> deserializeValues(EntityDefinition definition, int valueCount,
 																											ObjectInputStream stream) throws IOException, ClassNotFoundException {
-		Map<Attribute<?>, Object> map = new HashMap<>(valueCount);
+		Map<Attribute<?>, @Nullable Object> map = new HashMap<>(valueCount);
 		for (int i = 0; i < valueCount; i++) {
 			Attribute<Object> attribute = attributeByName(definition, (String) stream.readObject());
 			Object value = stream.readObject();
@@ -134,7 +136,7 @@ final class EntitySerializer {
 		key.hashCodeDirty = true;
 	}
 
-	private Attribute<Object> attributeByName(EntityDefinition definition, String attributeName) throws IOException {
+	private @Nullable Attribute<Object> attributeByName(EntityDefinition definition, String attributeName) throws IOException {
 		Attribute<Object> attribute = definition.attributes().get(attributeName);
 		if (attribute == null && strictDeserialization) {
 			throw new IOException("Attribute '" + attributeName + "' not found in entity '" + definition.type().name() + "'");

@@ -71,14 +71,14 @@ public interface InputDialogBuilder<T> extends DialogBuilder<InputDialogBuilder<
 	 * @param validator the valididator predicate
 	 * @return this builder instance
 	 */
-	InputDialogBuilder<T> validator(Predicate<T> validator);
+	InputDialogBuilder<T> validator(Predicate<@Nullable T> validator);
 
 	/**
 	 * Shows the input dialog and calls {@code closeDialog} with the current
 	 * input when OK is pressed, closing the dialog if the predicate returns true.
 	 * @param closeDialog called with the current input to determine if the dialog should be closed
 	 */
-	void show(Predicate<T> closeDialog);
+	void show(Predicate<@Nullable T> closeDialog);
 
 	/**
 	 * Shows the input dialog and returns the value if the user presses OK

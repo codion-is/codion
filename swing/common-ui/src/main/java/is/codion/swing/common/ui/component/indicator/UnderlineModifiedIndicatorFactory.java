@@ -22,6 +22,8 @@ import is.codion.common.property.PropertyValue;
 import is.codion.common.state.ObservableState;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
@@ -77,7 +79,7 @@ public final class UnderlineModifiedIndicatorFactory implements ModifiedIndicato
 
 		private static void setModifiedIndicator(JLabel label, boolean modified) {
 			Font font = label.getFont();
-			Map<TextAttribute, Object> attributes = (Map<TextAttribute, Object>) font.getAttributes();
+			Map<TextAttribute, @Nullable Object> attributes = (Map<TextAttribute, Object>) font.getAttributes();
 			attributes.put(TextAttribute.INPUT_METHOD_UNDERLINE, modified ? UNDERLINE_STYLE : null);
 			label.setFont(font.deriveFont(attributes));
 		}
