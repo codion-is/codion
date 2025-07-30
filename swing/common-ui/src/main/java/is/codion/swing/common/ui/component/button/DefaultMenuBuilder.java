@@ -27,8 +27,10 @@ import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.Action;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.event.MenuListener;
 import javax.swing.event.PopupMenuListener;
@@ -49,8 +51,9 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
 
 	private final Controls controls;
 
-	private MenuItemBuilder<?, ?> menuItemBuilder = MenuItemBuilder.builder();
-	private ToggleMenuItemBuilder<?, ?> toggleMenuItemBuilder = CheckBoxMenuItemBuilder.builder();
+	private Function<Action, JMenuItem> actionMenuItem = new DefaultActionMenuItem();
+	private Function<Control, JMenuItem> controlMenuItem = new DefaultControlMenuItem();
+	private Function<ToggleControl, JCheckBoxMenuItem> toggleControlMenuItem = new DefaultToggleControlMenuItem();
 
 	DefaultMenuBuilder(Controls controls) {
 		this.controls = controls;
@@ -69,14 +72,20 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
 	}
 
 	@Override
-	public MenuBuilder menuItemBuilder(MenuItemBuilder<?, ?> menuItemBuilder) {
-		this.menuItemBuilder = requireNonNull(menuItemBuilder);
+	public MenuBuilder actionMenuItem(Function<Action, JMenuItem> menuItem) {
+		this.actionMenuItem = requireNonNull(menuItem);
 		return this;
 	}
 
 	@Override
-	public MenuBuilder toggleMenuItemBuilder(ToggleMenuItemBuilder<?, ?> toggleMenuItemBuilder) {
-		this.toggleMenuItemBuilder = requireNonNull(toggleMenuItemBuilder);
+	public MenuBuilder controlMenuItem(Function<Control, JMenuItem> controlMenuItem) {
+		this.controlMenuItem = requireNonNull(controlMenuItem);
+		return this;
+	}
+
+	@Override
+	public MenuBuilder toggleControlMenuItem(Function<ToggleControl, JCheckBoxMenuItem> toggleControlMenuItem) {
+		this.toggleControlMenuItem = requireNonNull(toggleControlMenuItem);
 		return this;
 	}
 
@@ -104,7 +113,7 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
 	protected JMenu createComponent() {
 		JMenu menu = new JMenu(controls);
 		menuListeners.forEach(new AddMenuListener(menu));
-		new MenuControlHandler(menu, controls, menuItemBuilder, toggleMenuItemBuilder);
+		new MenuControlHandler(menu, controls, actionMenuItem, controlMenuItem, toggleControlMenuItem);
 
 		return menu;
 	}
@@ -112,6 +121,30 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
 	@Override
 	protected ComponentValue<Void, JMenu> createComponentValue(JMenu component) {
 		return new MenuComponentValue(component);
+	}
+
+	private static final class DefaultActionMenuItem implements Function<Action, JMenuItem> {
+
+		@Override
+		public JMenuItem apply(Action action) {
+			return MenuItemBuilder.builder().action(action).build();
+		}
+	}
+
+	private static final class DefaultControlMenuItem implements Function<Control, JMenuItem> {
+
+		@Override
+		public JMenuItem apply(Control control) {
+			return MenuItemBuilder.builder().control(control).build();
+		}
+	}
+
+	private static final class DefaultToggleControlMenuItem implements Function<ToggleControl, JCheckBoxMenuItem> {
+
+		@Override
+		public JCheckBoxMenuItem apply(ToggleControl toggleControl) {
+			return CheckBoxMenuItemBuilder.builder().toggleControl(toggleControl).build();
+		}
 	}
 
 	private static final class DefaultControlsStep implements ControlsStep {
@@ -217,15 +250,18 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
 	private static final class MenuControlHandler extends ControlHandler {
 
 		private final JMenu menu;
-		private final MenuItemBuilder<?, ?> menuItemBuilder;
-		private final ToggleMenuItemBuilder<?, ?> toggleMenuItemBuilder;
+		private final Function<Action, JMenuItem> actionMenuItem;
+		private final Function<Control, JMenuItem> controlMenuItem;
+		private final Function<ToggleControl, JCheckBoxMenuItem> toggleControlMenuItem;
 
 		private MenuControlHandler(JMenu menu, Controls controls,
-															 MenuItemBuilder<?, ?> menuItemBuilder,
-															 ToggleMenuItemBuilder<?, ?> toggleMenuItemBuilder) {
+															 Function<Action, JMenuItem> actionMenuItem,
+															 Function<Control, JMenuItem> controlMenuItem,
+															 Function<ToggleControl, JCheckBoxMenuItem> toggleControlMenuItem) {
 			this.menu = menu;
-			this.menuItemBuilder = menuItemBuilder;
-			this.toggleMenuItemBuilder = toggleMenuItemBuilder;
+			this.actionMenuItem = actionMenuItem;
+			this.controlMenuItem = controlMenuItem;
+			this.toggleControlMenuItem = toggleControlMenuItem;
 			cleanupSeparators(new ArrayList<>(controls.actions())).forEach(this);
 		}
 
@@ -236,24 +272,24 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
 
 		@Override
 		void onControl(Control control) {
-			menu.add(menuItemBuilder.control(control).build());
+			menu.add(controlMenuItem.apply(control));
 		}
 
 		@Override
 		void onToggleControl(ToggleControl toggleControl) {
-			menu.add(toggleMenuItemBuilder.toggleControl(toggleControl).build());
+			menu.add(toggleControlMenuItem.apply(toggleControl));
 		}
 
 		@Override
 		void onControls(Controls controls) {
 			JMenu subMenu = new JMenu(controls);
-			new MenuControlHandler(subMenu, controls, menuItemBuilder, toggleMenuItemBuilder);
+			new MenuControlHandler(subMenu, controls, actionMenuItem, controlMenuItem, toggleControlMenuItem);
 			this.menu.add(subMenu);
 		}
 
 		@Override
 		void onAction(Action action) {
-			menu.add(action);
+			menu.add(actionMenuItem.apply(action));
 		}
 	}
 

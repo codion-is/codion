@@ -14,6 +14,7 @@ Codion Change Log
 - NumberDocument.getNumber(), setNumber() and getFormat() renamed get(), set() and format() respectively.
 - MenuBuilder.ControlsStep added, simplified, now only Controls based.
 - ControlPanelBuilder.ControlsStep added, related refactoring.
+- MenuBuilder.menuItemBuilder() and toggleMenuItemBuilder() renamed controlMenuItem() and toggleControlMenuItem(), now take Function instead of builder, actionMenuItem() added.
 ### is.codion.framework.domain
 - EntityDefinition.Attributes.getOrThrow(attributeName) added.
 ### is.codion.framework.db

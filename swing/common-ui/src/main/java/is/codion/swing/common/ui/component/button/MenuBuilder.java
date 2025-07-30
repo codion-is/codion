@@ -22,13 +22,17 @@ import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
+import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.Action;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.event.MenuListener;
 import javax.swing.event.PopupMenuListener;
+import java.util.function.Function;
 
 /**
  * A builder for menus.
@@ -52,16 +56,22 @@ public interface MenuBuilder extends ComponentBuilder<Void, JMenu, MenuBuilder> 
 	MenuBuilder popupMenuListener(PopupMenuListener popupMenuListener);
 
 	/**
-	 * @param menuItemBuilder the menu item builder to use when creating menu items
+	 * @param actionMenuItem the function to use when creating action based menu items
 	 * @return this builder instance
 	 */
-	MenuBuilder menuItemBuilder(MenuItemBuilder<?, ?> menuItemBuilder);
+	MenuBuilder actionMenuItem(Function<Action, JMenuItem> actionMenuItem);
 
 	/**
-	 * @param toggleMenuItemBuilder the toggle menu item builder to use when creating toggle menu items
+	 * @param controlMenuItem the function to use when creating control based menu items
 	 * @return this builder instance
 	 */
-	MenuBuilder toggleMenuItemBuilder(ToggleMenuItemBuilder<?, ?> toggleMenuItemBuilder);
+	MenuBuilder controlMenuItem(Function<Control, JMenuItem> controlMenuItem);
+
+	/**
+	 * @param toggleControlMenuItem the function to use when creating toggle control based menu items
+	 * @return this builder instance
+	 */
+	MenuBuilder toggleControlMenuItem(Function<ToggleControl, JCheckBoxMenuItem> toggleControlMenuItem);
 
 	/**
 	 * @return a new JPopupMenu based on this menu builder
