@@ -42,38 +42,6 @@ public interface ControlPanelBuilder<C extends JComponent, B extends ControlPane
 	B orientation(int orientation);
 
 	/**
-	 * @param action the action to add
-	 * @return this builder instance
-	 */
-	B action(Action action);
-
-	/**
-	 * @param actions the actions to add
-	 * @return this builder instance
-	 */
-	B actions(Action... actions);
-
-	/**
-	 * Adds all actions from the given {@link Controls} instance
-	 * @param controls the Controls instance
-	 * @return this builder instance
-	 */
-	B controls(Controls controls);
-
-	/**
-	 * Adds all actions from the given {@link Controls} instance
-	 * @param controls the Controls.Builder instance
-	 * @return this builder instance
-	 */
-	B controls(Control.Builder<Controls, ?> controls);
-
-	/**
-	 * Adds a separator
-	 * @return this builder instance
-	 */
-	B separator();
-
-	/**
 	 * @param includeButtonText true if buttons should include text
 	 * @return this builder instance
 	 */
@@ -126,4 +94,42 @@ public interface ControlPanelBuilder<C extends JComponent, B extends ControlPane
 	 * @return this builder instance
 	 */
 	B radioButton(Consumer<RadioButtonBuilder> builder);
+
+	/**
+	 * Provides a {@link ControlPanelBuilder}
+	 * @param <C> the component type
+	 * @param <B> the builder type
+	 */
+	interface ControlsStep<C extends JComponent, B extends ControlPanelBuilder<C, B>> {
+
+		/**
+		 * @param action the action to base the panel on
+		 * @return this builder instance
+		 */
+		B action(Action action);
+
+		/**
+		 * @param control the control to base the panel on
+		 * @return this builder instance
+		 */
+		B control(Control control);
+
+		/**
+		 * @param control the control to base the panel on
+		 * @return this builder instance
+		 */
+		B control(Control.Builder<?, ?> control);
+
+		/**
+		 * @param controls the controls to base the panel on
+		 * @return this builder instance
+		 */
+		B controls(Controls controls);
+
+		/**
+		 * @param controls the controls to base the panel on
+		 * @return this builder instance
+		 */
+		B controls(Controls.ControlsBuilder controls);
+	}
 }

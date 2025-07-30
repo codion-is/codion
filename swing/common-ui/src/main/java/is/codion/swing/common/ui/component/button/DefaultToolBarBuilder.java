@@ -26,13 +26,20 @@ import javax.swing.Action;
 import javax.swing.JToolBar;
 import java.util.ArrayList;
 
+import static java.util.Objects.requireNonNull;
+
 final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, ToolBarBuilder> implements ToolBarBuilder {
+
+	static final ControlsStep<JToolBar, ToolBarBuilder> CONTROLS = new ButtonPanelControlsStep();
+
+	private final Controls controls;
 
 	private boolean floatable = true;
 	private boolean rollover = false;
 	private boolean borderPainted = true;
 
-	DefaultToolBarBuilder() {
+	DefaultToolBarBuilder(Controls controls) {
+		this.controls = controls;
 		includeButtonText(false);
 	}
 
@@ -62,7 +69,7 @@ final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, 
 		toolBar.setRollover(rollover);
 		toolBar.setBorderPainted(borderPainted);
 
-		new ToolBarControlHandler(toolBar, controls(), buttonBuilder(), toggleButtonBuilder());
+		new ToolBarControlHandler(toolBar, controls, buttonBuilder(), toggleButtonBuilder());
 
 		return toolBar;
 	}
@@ -109,6 +116,40 @@ final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, 
 			toolBar.add(buttonBuilder
 							.action(action)
 							.build());
+		}
+	}
+
+	private static final class ButtonPanelControlsStep implements ControlsStep<JToolBar, ToolBarBuilder> {
+
+		@Override
+		public ToolBarBuilder action(Action action) {
+			return controls(Controls.builder()
+							.action(requireNonNull(action))
+							.build());
+		}
+
+		@Override
+		public ToolBarBuilder control(Control control) {
+			return controls(Controls.builder()
+							.control(requireNonNull(control))
+							.build());
+		}
+
+		@Override
+		public ToolBarBuilder control(Control.Builder<?, ?> control) {
+			return controls(Controls.builder()
+							.control(requireNonNull(control))
+							.build());
+		}
+
+		@Override
+		public ToolBarBuilder controls(Controls controls) {
+			return new DefaultToolBarBuilder(requireNonNull(controls));
+		}
+
+		@Override
+		public ToolBarBuilder controls(Controls.ControlsBuilder controls) {
+			return new DefaultToolBarBuilder(requireNonNull(controls).build());
 		}
 	}
 }

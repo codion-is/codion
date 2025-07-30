@@ -52,7 +52,7 @@ public interface ButtonPanelBuilder extends ControlPanelBuilder<JPanel, ButtonPa
 	/**
 	 * @return a new button panel builder
 	 */
-	static ButtonPanelBuilder builder() {
-		return new DefaultButtonPanelBuilder();
+	static ControlsStep<JPanel, ButtonPanelBuilder> builder() {
+		return DefaultButtonPanelBuilder.CONTROLS;
 	}
 }

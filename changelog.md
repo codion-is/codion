@@ -13,6 +13,7 @@ Codion Change Log
 - NumberField, minimum and maximum values now Value based.
 - NumberDocument.getNumber(), setNumber() and getFormat() renamed get(), set() and format() respectively.
 - MenuBuilder.ControlsStep added, simplified, now only Controls based.
+- ControlPanelBuilder.ControlsStep added, related refactoring.
 ### is.codion.framework.domain
 - EntityDefinition.Attributes.getOrThrow(attributeName) added.
 ### is.codion.framework.db

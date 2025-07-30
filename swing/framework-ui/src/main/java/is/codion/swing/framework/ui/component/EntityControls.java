@@ -27,6 +27,7 @@ import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Control.Command;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -155,7 +156,7 @@ final class EntityControls {
 						.layout(new BorderLayout())
 						.add(centerComponent, BorderLayout.CENTER)
 						.add(Components.buttonPanel()
-										.actions(buttonActions)
+										.controls(Controls.builder().actions(buttonActions))
 										.buttonsFocusable(buttonFocusable)
 										.preferredButtonSize(new Dimension(preferredSize.height, preferredSize.height))
 										.buttonGap(0)

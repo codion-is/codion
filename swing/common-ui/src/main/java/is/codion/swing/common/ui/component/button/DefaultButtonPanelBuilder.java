@@ -36,14 +36,22 @@ import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import java.util.stream.Stream;
 
+import static java.util.Objects.requireNonNull;
+
 final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel, ButtonPanelBuilder>
 				implements ButtonPanelBuilder {
+
+	static final ControlsStep<JPanel, ButtonPanelBuilder> CONTROLS = new ButtonPanelControlsStep();
+
+	private final Controls controls;
 
 	private int buttonGap = Layouts.GAP.getOrThrow();
 	private boolean fixedButtonSize = true;
 	private @Nullable ButtonGroup buttonGroup;
 
-	DefaultButtonPanelBuilder() {}
+	DefaultButtonPanelBuilder(Controls controls) {
+		this.controls = controls;
+	}
 
 	@Override
 	public ButtonPanelBuilder buttonGap(int buttonGap) {
@@ -66,7 +74,7 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 	@Override
 	protected JPanel createComponent() {
 		JPanel panel = createPanel();
-		new ButtonControlHandler(panel, controls(), buttonBuilder(), toggleButtonBuilder());
+		new ButtonControlHandler(panel, controls, buttonBuilder(), toggleButtonBuilder());
 
 		return panel;
 	}
@@ -143,6 +151,40 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 				buttonGroup.add(button);
 			}
 			panel.add(button);
+		}
+	}
+
+	private static final class ButtonPanelControlsStep implements ControlsStep<JPanel, ButtonPanelBuilder> {
+
+		@Override
+		public ButtonPanelBuilder action(Action action) {
+			return controls(Controls.builder()
+							.action(requireNonNull(action))
+							.build());
+		}
+
+		@Override
+		public ButtonPanelBuilder control(Control control) {
+			return controls(Controls.builder()
+							.control(requireNonNull(control))
+							.build());
+		}
+
+		@Override
+		public ButtonPanelBuilder control(Control.Builder<?, ?> control) {
+			return controls(Controls.builder()
+							.control(requireNonNull(control))
+							.build());
+		}
+
+		@Override
+		public ButtonPanelBuilder controls(Controls controls) {
+			return new DefaultButtonPanelBuilder(requireNonNull(controls));
+		}
+
+		@Override
+		public ButtonPanelBuilder controls(Controls.ControlsBuilder controls) {
+			return new DefaultButtonPanelBuilder(requireNonNull(controls).build());
 		}
 	}
 }

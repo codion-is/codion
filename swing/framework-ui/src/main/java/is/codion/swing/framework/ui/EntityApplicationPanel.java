@@ -744,10 +744,10 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		versionMemoryPanel.add(DISPLAY_SYSTEM_PROPERTIES.getOrThrow() ? borderLayoutPanel()
 						.centerComponent(memoryLabel)
 						.eastComponent(toolBar()
+										.action(createDisplaySystemPropertiesControl())
 										.floatable(false)
 										.includeButtonText(true)
 										.preferredHeight(memoryLabel.getHeight())
-										.action(createDisplaySystemPropertiesControl())
 										.build())
 						.build() : memoryLabel);
 

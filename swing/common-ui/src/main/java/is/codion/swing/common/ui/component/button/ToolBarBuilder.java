@@ -49,7 +49,7 @@ public interface ToolBarBuilder extends ControlPanelBuilder<JToolBar, ToolBarBui
 	/**
 	 * @return a new {@link ToolBarBuilder}
 	 */
-	static ToolBarBuilder builder() {
-		return new DefaultToolBarBuilder();
+	static ControlsStep<JToolBar, ToolBarBuilder> builder() {
+		return DefaultToolBarBuilder.CONTROLS;
 	}
 }

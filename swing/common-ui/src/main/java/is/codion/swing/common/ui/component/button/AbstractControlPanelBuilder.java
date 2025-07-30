@@ -21,13 +21,9 @@ package is.codion.swing.common.ui.component.button;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
-import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 
 import org.jspecify.annotations.Nullable;
 
-import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.SwingConstants;
 import java.awt.Dimension;
@@ -37,8 +33,6 @@ import static java.util.Objects.requireNonNull;
 
 abstract class AbstractControlPanelBuilder<C extends JComponent, B extends ControlPanelBuilder<C, B>>
 				extends AbstractComponentBuilder<Void, C, B> implements ControlPanelBuilder<C, B> {
-
-	private final ControlsBuilder builder = Controls.builder();
 
 	private final ButtonBuilder<?, ?, ?> buttonBuilder = ButtonBuilder.builder();
 	private final ToggleButtonBuilder<?, ?> toggleButtonBuilder = ToggleButtonBuilder.builder();
@@ -56,35 +50,6 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 			throw new IllegalArgumentException("Unknown orientation value: " + orientation);
 		}
 		this.orientation = orientation;
-		return self();
-	}
-
-	@Override
-	public final B action(Action action) {
-		builder.action(requireNonNull(action));
-		return self();
-	}
-
-	@Override
-	public final B actions(Action... actions) {
-		builder.actions(requireNonNull(actions));
-		return self();
-	}
-
-	@Override
-	public final B controls(Controls controls) {
-		builder.actions(requireNonNull(controls).actions());
-		return self();
-	}
-
-	@Override
-	public final B controls(Control.Builder<Controls, ?> controls) {
-		return controls(requireNonNull(controls).build());
-	}
-
-	@Override
-	public final B separator() {
-		builder.separator();
 		return self();
 	}
 
@@ -148,10 +113,6 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 	@Override
 	protected final ComponentValue<Void, C> createComponentValue(C component) {
 		return new PanelComponentValue<>(component);
-	}
-
-	protected final Controls controls() {
-		return builder.build();
 	}
 
 	protected final int orientation() {

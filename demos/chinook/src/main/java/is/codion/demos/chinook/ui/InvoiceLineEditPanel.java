@@ -61,8 +61,8 @@ public final class InvoiceLineEditPanel extends EntityEditPanel {
 						.action(control(INSERT).get());
 
 		JToolBar updateToolBar = toolBar()
-						.floatable(false)
 						.action(control(UPDATE).get())
+						.floatable(false)
 						.preferredHeight(preferredTextFieldHeight())
 						.build();
 

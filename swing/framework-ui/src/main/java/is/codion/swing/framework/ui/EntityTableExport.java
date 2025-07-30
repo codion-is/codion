@@ -35,6 +35,7 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
@@ -242,7 +243,8 @@ final class EntityTableExport {
 															.build())
 											.southComponent(borderLayoutPanel()
 															.eastComponent(buttonPanel()
-																			.actions(selectDefaultsControl, selectAllControl, selectNoneControl)
+																			.controls(Controls.builder()
+																							.actions(selectDefaultsControl, selectAllControl, selectNoneControl))
 																			.transferFocusOnEnter(true)
 																			.build())
 															.build())
@@ -251,7 +253,8 @@ final class EntityTableExport {
 											.border(createTitledBorder(MESSAGES.getString("rows")))
 											.centerComponent(borderLayoutPanel()
 															.eastComponent(buttonPanel()
-																			.actions(allRowsControl, selectedRowsControl)
+																			.controls(Controls.builder()
+																							.actions(allRowsControl, selectedRowsControl))
 																			.toggleButtonType(RADIO_BUTTON)
 																			.buttonGroup(new ButtonGroup())
 																			.fixedButtonSize(false)

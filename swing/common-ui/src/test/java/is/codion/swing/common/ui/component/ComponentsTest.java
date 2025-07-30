@@ -994,15 +994,14 @@ public final class ComponentsTest {
 	@Test
 	void toolBar() {
 		Components.toolBar()
-						.borderPainted(true)
-						.floatable(true)
-						.rollover(true)
-						.orientation(SwingConstants.VERTICAL)
 						.action(new AbstractAction() {
 							@Override
 							public void actionPerformed(ActionEvent e) {}
 						})
-						.separator()
+						.borderPainted(true)
+						.floatable(true)
+						.rollover(true)
+						.orientation(SwingConstants.VERTICAL)
 						.build();
 	}
 
