@@ -493,7 +493,7 @@ public final class Components {
 	/**
 	 * @return a new menu builder
 	 */
-	public static MenuBuilder menu() {
+	public static MenuBuilder.ControlsStep menu() {
 		return MenuBuilder.builder();
 	}
 }

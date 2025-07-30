@@ -36,37 +36,6 @@ import javax.swing.event.PopupMenuListener;
 public interface MenuBuilder extends ComponentBuilder<Void, JMenu, MenuBuilder> {
 
 	/**
-	 * @param action the action to add
-	 * @return this builder instance
-	 */
-	MenuBuilder action(Action action);
-
-	/**
-	 * @param control the control to add
-	 * @return this builder instance
-	 */
-	MenuBuilder control(Control control);
-
-	/**
-	 * @param controls the Controls instance on which to base the menu
-	 * @return this builder instance
-	 */
-	MenuBuilder controls(Controls controls);
-
-	/**
-	 * @param controls the ControlsBuilder on which to base the menu
-	 * @return this builder instance
-	 */
-	MenuBuilder controls(ControlsBuilder controls);
-
-	/**
-	 * Adds a separator
-	 * @return this builder instance
-	 * @see JMenu#addSeparator()
-	 */
-	MenuBuilder separator();
-
-	/**
 	 * @param menuListener the menu listener
 	 * @return this builder instance
 	 * @see JMenu#addMenuListener(MenuListener)
@@ -105,9 +74,45 @@ public interface MenuBuilder extends ComponentBuilder<Void, JMenu, MenuBuilder> 
 	JMenuBar buildMenuBar();
 
 	/**
+	 * Provides a {@link MenuBuilder}
+	 */
+	interface ControlsStep {
+
+		/**
+		 * @param action the action to base the menu on
+		 * @return a builder instance
+		 */
+		MenuBuilder action(Action action);
+
+		/**
+		 * @param control the control to base the menu on
+		 * @return a builder instance
+		 */
+		MenuBuilder control(Control control);
+
+		/**
+		 * @param control the control to base the menu on
+		 * @return a builder instance
+		 */
+		MenuBuilder control(Control.Builder<?, ?> control);
+
+		/**
+		 * @param controls the controls to base the menu on
+		 * @return a builder instance
+		 */
+		MenuBuilder controls(Controls controls);
+
+		/**
+		 * @param controls the controls to base the menu on
+		 * @return a builder instance
+		 */
+		MenuBuilder controls(ControlsBuilder controls);
+	}
+
+	/**
 	 * @return a new MenuBuilder
 	 */
-	static MenuBuilder builder() {
-		return new DefaultMenuBuilder(null);
+	static MenuBuilder.ControlsStep builder() {
+		return DefaultMenuBuilder.CONTROLS;
 	}
 }

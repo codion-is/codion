@@ -26,8 +26,6 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 import is.codion.swing.common.ui.control.ToggleControl;
 
-import org.jspecify.annotations.Nullable;
-
 import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -44,43 +42,18 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, MenuBuilder> implements MenuBuilder {
 
+	static final ControlsStep CONTROLS = new DefaultControlsStep();
+
 	private final List<MenuListener> menuListeners = new ArrayList<>();
 	private final List<PopupMenuListener> popupMenuListeners = new ArrayList<>();
 
-	private ControlsBuilder controlsBuilder;
+	private final Controls controls;
+
 	private MenuItemBuilder<?, ?> menuItemBuilder = MenuItemBuilder.builder();
 	private ToggleMenuItemBuilder<?, ?> toggleMenuItemBuilder = CheckBoxMenuItemBuilder.builder();
 
-	DefaultMenuBuilder(@Nullable Controls controls) {
-		this.controlsBuilder = controls == null ? Controls.builder() : controls.copy();
-	}
-
-	@Override
-	public MenuBuilder action(Action action) {
-		controlsBuilder.action(requireNonNull(action));
-		return this;
-	}
-
-	@Override
-	public MenuBuilder control(Control control) {
-		return action(requireNonNull(control));
-	}
-
-	@Override
-	public MenuBuilder controls(@Nullable Controls controls) {
-		this.controlsBuilder = controls == null ? Controls.builder() : controls.copy();
-		return this;
-	}
-
-	@Override
-	public MenuBuilder controls(ControlsBuilder controls) {
-		return controls(requireNonNull(controls).build());
-	}
-
-	@Override
-	public MenuBuilder separator() {
-		this.controlsBuilder.separator();
-		return this;
+	DefaultMenuBuilder(Controls controls) {
+		this.controls = controls;
 	}
 
 	@Override
@@ -118,7 +91,7 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
 	@Override
 	public JMenuBar buildMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
-		controlsBuilder.build().actions().stream()
+		controls.actions().stream()
 						.filter(new IsControlsInstance())
 						.map(new CastToControls())
 						.filter(new IsNotEmptyControls())
@@ -129,7 +102,6 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
 
 	@Override
 	protected JMenu createComponent() {
-		Controls controls = controlsBuilder.build();
 		JMenu menu = new JMenu(controls);
 		menuListeners.forEach(new AddMenuListener(menu));
 		new MenuControlHandler(menu, controls, menuItemBuilder, toggleMenuItemBuilder);
@@ -140,6 +112,40 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
 	@Override
 	protected ComponentValue<Void, JMenu> createComponentValue(JMenu component) {
 		return new MenuComponentValue(component);
+	}
+
+	private static final class DefaultControlsStep implements ControlsStep {
+
+		@Override
+		public MenuBuilder action(Action action) {
+			return controls(Controls.builder()
+							.action(requireNonNull(action))
+							.build());
+		}
+
+		@Override
+		public MenuBuilder control(Control control) {
+			return controls(Controls.builder()
+							.control(requireNonNull(control))
+							.build());
+		}
+
+		@Override
+		public MenuBuilder control(Control.Builder<?, ?> control) {
+			return controls(Controls.builder()
+							.control(requireNonNull(control))
+							.build());
+		}
+
+		@Override
+		public MenuBuilder controls(Controls controls) {
+			return new DefaultMenuBuilder(requireNonNull(controls));
+		}
+
+		@Override
+		public MenuBuilder controls(ControlsBuilder controls) {
+			return new DefaultMenuBuilder(requireNonNull(controls).build());
+		}
 	}
 
 	private static final class IsControlsInstance implements Predicate<Action> {
