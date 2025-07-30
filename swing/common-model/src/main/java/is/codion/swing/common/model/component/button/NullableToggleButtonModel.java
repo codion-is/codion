@@ -18,15 +18,12 @@
  */
 package is.codion.swing.common.model.component.button;
 
-import is.codion.common.event.Event;
-import is.codion.common.observable.Observable;
-import is.codion.common.observable.Observer;
+import is.codion.common.value.Value;
 
 import org.jspecify.annotations.Nullable;
 
 import javax.swing.DefaultButtonModel;
 import java.awt.event.ItemEvent;
-import java.util.Objects;
 
 /**
  * A ToggleButtonModel implementation, which allows the null state.
@@ -46,10 +43,13 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
 	 */
 	public static final int NULL = 3;
 
-	private final ToggleState state = new ToggleState();
+	private final Value<Boolean> value;
 
 	private NullableToggleButtonModel(@Nullable Boolean initialState) {
-		state.set(initialState);
+		value = Value.builder()
+						.nullable(initialState)
+						.consumer(this::onStateChanged)
+						.build();
 	}
 
 	/**
@@ -57,7 +57,7 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
 	 */
 	@Override
 	public boolean isSelected() {
-		return Objects.equals(state.get(), Boolean.TRUE);
+		return value.isEqualTo(true);
 	}
 
 	/**
@@ -66,14 +66,37 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
 	 */
 	@Override
 	public void setSelected(boolean selected) {
-		state.set(selected);
+		value.set(selected);
 	}
 
 	/**
 	 * @return the toggle state
 	 */
-	public ToggleState state() {
-		return state;
+	public @Nullable Boolean get() {
+		return value.get();
+	}
+
+	/**
+	 * @param state the toggle state
+	 */
+	public void set(@Nullable Boolean state) {
+		this.value.set(state);
+	}
+
+	/**
+	 * Iterates between the states: null -&gt; false -&gt; true
+	 */
+	public void next() {
+		Boolean state = value.get();
+		if (state == null) {
+			value.set(false);
+		}
+		else if (!state) {
+			value.set(true);
+		}
+		else {
+			value.set(null);
+		}
 	}
 
 	/**
@@ -91,55 +114,9 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
 		return new NullableToggleButtonModel(initialState);
 	}
 
-	public final class ToggleState implements Observable<Boolean> {
-
-		private final Event<Boolean> event = Event.event();
-
-		private @Nullable Boolean state = null;
-
-		private ToggleState() {}
-
-		@Override
-		public @Nullable Boolean get() {
-			return state;
-		}
-
-		/**
-		 * @param state the state to set
-		 */
-		public void set(@Nullable Boolean state) {
-			this.state = state;
-			fireItemStateChanged(new ItemEvent(NullableToggleButtonModel.this, ItemEvent.ITEM_STATE_CHANGED, this,
-							state == null ? NULL : (state ? ItemEvent.SELECTED : ItemEvent.DESELECTED)));
-			fireStateChanged();
-			event.accept(state);
-		}
-
-		/**
-		 * Clears this toggle state
-		 */
-		public void clear() {
-			set(null);
-		}
-
-		@Override
-		public Observer<Boolean> observer() {
-			return event.observer();
-		}
-
-		/**
-		 * Iterates between the states: null -&gt; false -&gt; true
-		 */
-		public void next() {
-			if (state == null) {
-				set(false);
-			}
-			else if (!state) {
-				set(true);
-			}
-			else {
-				set(null);
-			}
-		}
+	private void onStateChanged(Boolean state) {
+		fireItemStateChanged(new ItemEvent(NullableToggleButtonModel.this, ItemEvent.ITEM_STATE_CHANGED, this,
+						state == null ? NULL : (state ? ItemEvent.SELECTED : ItemEvent.DESELECTED)));
+		fireStateChanged();
 	}
 }

@@ -5,6 +5,8 @@ Codion Change Log
 ### is.codion.common.core
 - Values renamed ValueCollection.
 - TaskScheduler.Builder.IntervalStep added.
+### is.codion.swing.common.model
+- NullableToggleButtonModel.ToggleState removed, get() and set() added, related refactoring.
 ### is.codion.swing.common.ui
 - FilterTableCellEditor.Builder added, cellEditable now configurable.
 - CalendarPanel.Builder.includeWeekNumbers added along with WEEK_NUMBERS configuration value.

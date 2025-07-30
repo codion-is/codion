@@ -142,7 +142,7 @@ public class NullableCheckBox extends JCheckBox {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			if (isEnabled() && (e == null || notModified(e))) {
-				model().state().next();
+				model().next();
 			}
 		}
 
@@ -159,7 +159,7 @@ public class NullableCheckBox extends JCheckBox {
 		@Override
 		public void paintIcon(Component component, Graphics graphics, int x, int y) {
 			icon.paintIcon(component, graphics, x, y);
-			if (model().state().get() != null) {
+			if (model().get() != null) {
 				return;
 			}
 
@@ -202,7 +202,7 @@ public class NullableCheckBox extends JCheckBox {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			model.state().next();
+			model.next();
 		}
 	}
 }

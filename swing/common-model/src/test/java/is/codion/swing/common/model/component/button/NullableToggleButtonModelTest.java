@@ -28,37 +28,37 @@ public class NullableToggleButtonModelTest {
 	@Test
 	void iterateState() {
 		NullableToggleButtonModel model = nullableToggleButtonModel();
-		assertNull(model.state().get());
+		assertNull(model.get());
 		assertFalse(model.isSelected());
-		model.state().next();
-		assertFalse(model.state().get());
+		model.next();
+		assertFalse(model.get());
 		assertFalse(model.isSelected());
-		model.state().next();
-		assertTrue(model.state().get());
+		model.next();
+		assertTrue(model.get());
 		assertTrue(model.isSelected());
-		model.state().next();
-		assertNull(model.state().get());
+		model.next();
+		assertNull(model.get());
 	}
 
 	@Test
 	void setNull() {
 		NullableToggleButtonModel model = nullableToggleButtonModel(true);
-		assertTrue(model.state().getOrThrow());
+		assertTrue(model.get());
 		assertTrue(model.isSelected());
-		model.state().clear();
-		assertNull(model.state().get());
+		model.set(null);
+		assertNull(model.get());
 		assertFalse(model.isSelected());
 	}
 
 	@Test
 	void setSelected() {
 		NullableToggleButtonModel model = nullableToggleButtonModel(false);
-		assertFalse(model.state().getOrThrow());
+		assertFalse(model.get());
 		model.setSelected(true);
 		assertTrue(model.isSelected());
 		model.setSelected(false);
 		assertFalse(model.isSelected());
-		model.state().clear();
+		model.set(null);
 		assertFalse(model.isSelected());
 	}
 }

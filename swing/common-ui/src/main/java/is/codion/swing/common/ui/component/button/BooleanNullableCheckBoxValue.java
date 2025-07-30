@@ -22,20 +22,30 @@ import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 
 import org.jspecify.annotations.Nullable;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+
 final class BooleanNullableCheckBoxValue extends AbstractComponentValue<Boolean, NullableCheckBox> {
 
 	BooleanNullableCheckBoxValue(NullableCheckBox checkBox) {
 		super(checkBox);
-		checkBox.model().state().addListener(this::notifyListeners);
+		checkBox.getModel().addItemListener(new NotifyOnItemEvent());
 	}
 
 	@Override
 	protected @Nullable Boolean getComponentValue() {
-		return component().model().state().get();
+		return component().model().get();
 	}
 
 	@Override
 	protected void setComponentValue(@Nullable Boolean value) {
-		component().model().state().set(value);
+		component().model().set(value);
+	}
+
+	private final class NotifyOnItemEvent implements ItemListener {
+		@Override
+		public void itemStateChanged(ItemEvent itemEvent) {
+			notifyListeners();
+		}
 	}
 }

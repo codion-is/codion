@@ -148,7 +148,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 																									 boolean hasFocus, int row, int column) {
-			model().state().set((Boolean) value);
+			model().set((Boolean) value);
 			settings.configure((FilterTable<R, C>) table, this, (Boolean) value, isSelected, hasFocus, row, column);
 			if (settings.toolTipData) {
 				setToolTipText(value == null ? "" : value.toString());

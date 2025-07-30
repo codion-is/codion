@@ -356,7 +356,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
 		@Override
 		protected @Nullable Boolean getValue() {
 			if (buttonModel instanceof NullableToggleButtonModel) {
-				return ((NullableToggleButtonModel) buttonModel).state().get();
+				return ((NullableToggleButtonModel) buttonModel).get();
 			}
 
 			return buttonModel.isSelected();
@@ -391,7 +391,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
 
 		private void setModelValue(@Nullable Boolean value) {
 			if (buttonModel instanceof NullableToggleButtonModel) {
-				((NullableToggleButtonModel) buttonModel).state().set(value);
+				((NullableToggleButtonModel) buttonModel).set(value);
 			}
 			else {
 				buttonModel.setSelected(value != null && value);

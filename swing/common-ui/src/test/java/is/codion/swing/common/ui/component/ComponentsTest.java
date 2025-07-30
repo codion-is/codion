@@ -492,7 +492,7 @@ public final class ComponentsTest {
 
 		box.getMouseListeners()[1].mouseClicked(null);
 
-		assertNull(box.model().state().get());
+		assertNull(box.model().get());
 		assertNull(value.get());
 
 		value.set(false);
