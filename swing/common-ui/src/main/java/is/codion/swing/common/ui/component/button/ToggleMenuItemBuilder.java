@@ -64,13 +64,13 @@ public interface ToggleMenuItemBuilder<C extends JMenuItem, B extends ToggleMenu
 	 * @param toggleControl the toggle control to base this toggle menu item on
 	 * @return this builder instance
 	 */
-	B toggleControl(ToggleControl toggleControl);
+	B toggle(ToggleControl toggleControl);
 
 	/**
 	 * @param toggleControlBuilder the builder for the toggle control to base this toggle menu on
 	 * @return this builder instance
 	 */
-	B toggleControl(Control.Builder<ToggleControl, ?> toggleControlBuilder);
+	B toggle(Control.Builder<ToggleControl, ?> toggleControlBuilder);
 
 	/**
 	 * @param persistMenu specifies when a menu persists after a toggle button click

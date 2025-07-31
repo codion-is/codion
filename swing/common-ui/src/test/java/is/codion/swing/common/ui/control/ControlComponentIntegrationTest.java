@@ -95,14 +95,14 @@ public final class ControlComponentIntegrationTest {
 
 		// Create different toggle components
 		JCheckBox checkBox = Components.checkBox()
-						.toggleControl(toggleControl)
+						.toggle(toggleControl)
 						.build();
 		JToggleButton toggleButton = Components.toggleButton()
-						.toggleControl(toggleControl)
+						.toggle(toggleControl)
 						.build();
 		// Note: CheckBoxMenuItem doesn't support nullable values, so we use a different approach
 		JRadioButton radioButton = Components.radioButton()
-						.toggleControl(toggleControl)
+						.toggle(toggleControl)
 						.build();
 
 		// All should be unselected initially

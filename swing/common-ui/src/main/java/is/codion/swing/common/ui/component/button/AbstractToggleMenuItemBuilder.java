@@ -41,7 +41,7 @@ abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends Togg
 	}
 
 	@Override
-	public final B toggleControl(ToggleControl toggleControl) {
+	public final B toggle(ToggleControl toggleControl) {
 		if (requireNonNull(toggleControl).value().isNullable()) {
 			throw new IllegalArgumentException("A toggle menu item does not support a nullable value");
 		}
@@ -52,8 +52,8 @@ abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends Togg
 	}
 
 	@Override
-	public final B toggleControl(Control.Builder<ToggleControl, ?> toggleControlBuilder) {
-		return toggleControl(requireNonNull(toggleControlBuilder).build());
+	public final B toggle(Control.Builder<ToggleControl, ?> toggleControlBuilder) {
+		return toggle(requireNonNull(toggleControlBuilder).build());
 	}
 
 	@Override

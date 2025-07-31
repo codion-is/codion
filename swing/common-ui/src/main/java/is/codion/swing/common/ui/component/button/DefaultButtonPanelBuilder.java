@@ -130,7 +130,7 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 
 		@Override
 		void onToggleControl(ToggleControl toggleControl) {
-			JToggleButton button = toggleButtonBuilder.toggleControl(toggleControl).build();
+			JToggleButton button = toggleButtonBuilder.toggle(toggleControl).build();
 			if (buttonGroup != null) {
 				buttonGroup.add(button);
 			}

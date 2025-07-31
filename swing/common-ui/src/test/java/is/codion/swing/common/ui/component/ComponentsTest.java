@@ -303,7 +303,7 @@ public final class ComponentsTest {
 						.enabled(enabledState)
 						.build();
 		JCheckBox checkBox = Components.checkBox()
-						.toggleControl(toggleControl)
+						.toggle(toggleControl)
 						.build();
 		state.set(true);
 		assertTrue(toggleControl.value().getOrThrow());
@@ -349,7 +349,7 @@ public final class ComponentsTest {
 						.enabled(enabledState)
 						.build();
 		JToggleButton toggleButton = Components.toggleButton()
-						.toggleControl(toggleControl)
+						.toggle(toggleControl)
 						.buildValue()
 						.component();
 		state.set(true);
@@ -399,7 +399,7 @@ public final class ComponentsTest {
 						.enabled(enabledState)
 						.build();
 		JRadioButton radioButton = Components.radioButton()
-						.toggleControl(toggleControl)
+						.toggle(toggleControl)
 						.buildValue()
 						.component();
 		state.set(true);
@@ -433,7 +433,7 @@ public final class ComponentsTest {
 						.enabled(enabledState)
 						.build();
 		JCheckBoxMenuItem checkBox = Components.checkBoxMenuItem()
-						.toggleControl(toggleControl)
+						.toggle(toggleControl)
 						.build();
 		assertTrue(toggleControl.value().getOrThrow());
 		toggleControl.value().set(false);
@@ -461,7 +461,7 @@ public final class ComponentsTest {
 						.enabled(enabledState)
 						.build();
 		JRadioButtonMenuItem button = Components.radioButtonMenuItem()
-						.toggleControl(toggleControl)
+						.toggle(toggleControl)
 						.buildValue()
 						.component();
 		assertTrue(toggleControl.value().getOrThrow());

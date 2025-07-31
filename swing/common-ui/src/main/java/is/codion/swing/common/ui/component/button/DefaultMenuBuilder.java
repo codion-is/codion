@@ -143,7 +143,7 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
 
 		@Override
 		public JCheckBoxMenuItem apply(ToggleControl toggleControl) {
-			return CheckBoxMenuItemBuilder.builder().toggleControl(toggleControl).build();
+			return CheckBoxMenuItemBuilder.builder().toggle(toggleControl).build();
 		}
 	}
 

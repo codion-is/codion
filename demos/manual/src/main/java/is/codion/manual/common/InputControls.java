@@ -94,7 +94,7 @@ public final class InputControls {
 						.build();
 
 		JToggleButton toggleButton = Components.toggleButton()
-						.toggleControl(toggleStateControl)
+						.toggle(toggleStateControl)
 						.text("Change state")
 						.mnemonic('C')
 						.build();
@@ -106,7 +106,7 @@ public final class InputControls {
 						.build();
 
 		JCheckBox checkBox = Components.checkBox()
-						.toggleControl(toggleValueControl)
+						.toggle(toggleValueControl)
 						.text("Change value")
 						.mnemonic('V')
 						.build();

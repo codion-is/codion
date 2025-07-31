@@ -15,6 +15,7 @@ Codion Change Log
 - MenuBuilder.ControlsStep added, simplified, now only Controls based.
 - ControlPanelBuilder.ControlsStep added, related refactoring.
 - MenuBuilder.menuItemBuilder() and toggleMenuItemBuilder() renamed controlMenuItem() and toggleControlMenuItem(), now take Function instead of builder, actionMenuItem() added.
+- ToggleButtonBuilder, ToggleMenuItemBuilder.toggleControl() renamed toggle().
 ### is.codion.framework.domain
 - EntityDefinition.Attributes.getOrThrow(attributeName) added.
 ### is.codion.framework.db

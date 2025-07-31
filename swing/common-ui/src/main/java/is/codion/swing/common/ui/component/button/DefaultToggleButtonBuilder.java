@@ -38,7 +38,7 @@ class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButton
 	}
 
 	@Override
-	public final B toggleControl(ToggleControl toggleControl) {
+	public final B toggle(ToggleControl toggleControl) {
 		if (requireNonNull(toggleControl).value().isNullable() && !supportsNull()) {
 			throw new IllegalArgumentException("This toggle button builder does not support a nullable value");
 		}
@@ -49,8 +49,8 @@ class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButton
 	}
 
 	@Override
-	public final B toggleControl(Control.Builder<ToggleControl, ?> toggleControlBuilder) {
-		return toggleControl(requireNonNull(toggleControlBuilder).build());
+	public final B toggle(Control.Builder<ToggleControl, ?> toggleControlBuilder) {
+		return toggle(requireNonNull(toggleControlBuilder).build());
 	}
 
 	protected JToggleButton createToggleButton() {
