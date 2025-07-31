@@ -26,6 +26,7 @@ import is.codion.common.model.condition.ConditionModel.Wildcard;
 import is.codion.common.observable.Observer;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
+import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.combobox.Completion;
@@ -63,10 +64,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static is.codion.common.Operator.*;
+import static is.codion.common.model.condition.ConditionModel.Wildcard.*;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.enabled;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
@@ -716,50 +719,60 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	}
 
 	private Controls createWildcardControls() {
-		Wildcard wildcard = model().operands().wildcard().getOrThrow();
+		Value<Wildcard> wildcard = model().operands().wildcard();
 
-		State wildcardNoneState = State.state(wildcard.equals(Wildcard.NONE));
-		State wildcardPostfixState = State.state(wildcard.equals(Wildcard.POSTFIX));
-		State wildcardPrefixState = State.state(wildcard.equals(Wildcard.PREFIX));
-		State wildcardPrefixAndPostfixState = State.state(wildcard.equals(Wildcard.PREFIX_AND_POSTFIX));
+		State wildcardNone = State.builder()
+						.value(wildcard.isEqualTo(NONE))
+						.consumer(new EnableWildcard(NONE))
+						.build();
+		State wildcardPostfix = State.builder()
+						.value(wildcard.isEqualTo(POSTFIX))
+						.consumer(new EnableWildcard(POSTFIX))
+						.build();
+		State wildcardPrefix = State.builder()
+						.value(wildcard.isEqualTo(PREFIX))
+						.consumer(new EnableWildcard(PREFIX))
+						.build();
+		State wildcardPrefixAndPostfix = State.builder()
+						.value(wildcard.isEqualTo(PREFIX_AND_POSTFIX))
+						.consumer(new EnableWildcard(PREFIX_AND_POSTFIX))
+						.build();
 
-		State.group(wildcardNoneState, wildcardPostfixState, wildcardPrefixState, wildcardPrefixAndPostfixState);
+		State.group(wildcardNone, wildcardPostfix, wildcardPrefix, wildcardPrefixAndPostfix);
 
-		wildcardNoneState.addConsumer(enabled -> {
-			if (enabled) {
-				model().operands().wildcard().set(Wildcard.NONE);
-			}
-		});
-		wildcardPostfixState.addConsumer(enabled -> {
-			if (enabled) {
-				model().operands().wildcard().set(Wildcard.POSTFIX);
-			}
-		});
-		wildcardPrefixState.addConsumer(enabled -> {
-			if (enabled) {
-				model().operands().wildcard().set(Wildcard.PREFIX);
-			}
-		});
-		wildcardPrefixAndPostfixState.addConsumer(enabled -> {
-			if (enabled) {
-				model().operands().wildcard().set(Wildcard.PREFIX_AND_POSTFIX);
+		wildcard.addConsumer(newWildcard -> {
+			switch (newWildcard) {
+				case NONE:
+					wildcardNone.set(true);
+					break;
+				case POSTFIX:
+					wildcardPostfix.set(true);
+					break;
+				case PREFIX:
+					wildcardPrefix.set(true);
+					break;
+				case PREFIX_AND_POSTFIX:
+					wildcardPrefixAndPostfix.set(true);
+					break;
+				default:
+					throw new IllegalStateException("Unknown wildcard: " + newWildcard);
 			}
 		});
 
 		return Controls.builder()
 						.caption(MESSAGES.getString("wildcard"))
 						.control(Control.builder()
-										.toggle(wildcardNoneState)
-										.caption(Wildcard.NONE.description()))
+										.toggle(wildcardNone)
+										.caption(NONE.description()))
 						.control(Control.builder()
-										.toggle(wildcardPostfixState)
-										.caption(Wildcard.POSTFIX.description()))
+										.toggle(wildcardPostfix)
+										.caption(POSTFIX.description()))
 						.control(Control.builder()
-										.toggle(wildcardPrefixState)
-										.caption(Wildcard.PREFIX.description()))
+										.toggle(wildcardPrefix)
+										.caption(PREFIX.description()))
 						.control(Control.builder()
-										.toggle(wildcardPrefixAndPostfixState)
-										.caption(Wildcard.PREFIX_AND_POSTFIX.description()))
+										.toggle(wildcardPrefixAndPostfix)
+										.caption(PREFIX_AND_POSTFIX.description()))
 						.build();
 	}
 
@@ -775,6 +788,22 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		}
 
 		return false;
+	}
+
+	private final class EnableWildcard implements Consumer<Boolean> {
+
+		private final Wildcard wildcard;
+
+		private EnableWildcard(Wildcard wildcard) {
+			this.wildcard = wildcard;
+		}
+
+		@Override
+		public void accept(Boolean enabled) {
+			if (enabled) {
+				model().operands().wildcard().set(wildcard);
+			}
+		}
 	}
 
 	private final class FocusGained extends FocusAdapter {
