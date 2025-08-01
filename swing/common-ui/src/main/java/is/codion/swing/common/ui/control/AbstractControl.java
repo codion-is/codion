@@ -62,7 +62,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
 		initialized = true;
 		enabledObservable = builder.enabled == null ? State.state(true).observable() : builder.enabled;
 		enabledObservable.addWeakConsumer(enabler);
-		super.setEnabled(enabledObservable.get());
+		super.setEnabled(enabledObservable.is());
 		builder.values.forEach(super::putValue);
 	}
 
@@ -87,7 +87,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
 	@Override
 	public final @Nullable Object getValue(String key) {
 		if (ENABLED.equals(key)) {
-			return enabledObservable.get();
+			return enabledObservable.is();
 		}
 
 		return super.getValue(key);

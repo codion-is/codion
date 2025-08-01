@@ -297,14 +297,14 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 
 		private <C> boolean filterEnabled(FilterTable<?, C> filterTable, C identifier) {
 			if (filterEnabledSet) {
-				return filterEnabled != null && filterEnabled.get();
+				return filterEnabled != null && filterEnabled.is();
 			}
 
 			ConditionModel<?> filter = filterTable.model().filters().get().get(identifier);
 			filterEnabled = filter == null ? null : filter.enabled();
 			filterEnabledSet = true;
 
-			return filterEnabled != null && filterEnabled.get();
+			return filterEnabled != null && filterEnabled.is();
 		}
 
 		private static boolean isSearchResult(FilterTableSearchModel searchModel, int rowIndex, int columnIndex) {

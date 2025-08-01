@@ -610,7 +610,7 @@ public interface FilterModel<T> {
 
 		@Override
 		public final void refresh(@Nullable Consumer<Collection<T>> onResult) {
-			if (async.get() && isUserInterfaceThread()) {
+			if (async.is() && isUserInterfaceThread()) {
 				refreshAsync(onResult);
 			}
 			else {

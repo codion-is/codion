@@ -204,7 +204,7 @@ final class AlbumTagPanel extends JPanel {
 
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
-			if (!movingTags.get()) {
+			if (!movingTags.is()) {
 				selectionEmpty.set(tagsValue.component().isSelectionEmpty());
 			}
 		}

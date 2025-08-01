@@ -156,13 +156,13 @@ public final class NotesDemo {
 
 		private void insertDeleteOrUpdate() {
 			EntityEditor editor = editModel().editor();
-			if (editor.exists().not().get() && !editor.value(Note.NOTE).isNull()) {
+			if (editor.exists().not().is() && !editor.value(Note.NOTE).isNull()) {
 				// A new note with a non-null text
 				insertCommand()
 								.build()
 								.execute();
 			}
-			else if (editor.modified().get()) {
+			else if (editor.modified().is()) {
 				if (editor.value(Note.NOTE).isNull()) {
 					// An existing note with no text
 					deleteCommand()

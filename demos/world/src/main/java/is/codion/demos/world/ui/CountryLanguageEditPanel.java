@@ -60,7 +60,7 @@ final class CountryLanguageEditPanel extends EntityEditPanel {
 	}
 
 	private void updateIfValid() {
-		if (editModel().editor().valid().get()) {
+		if (editModel().editor().valid().is()) {
 			editModel().update();
 		}
 	}

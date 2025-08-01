@@ -75,19 +75,19 @@ public class FilterListSelectionTest {
 
 	@Test
 	void singleSelection() {
-		assertFalse(testModel.singleSelection().get());
+		assertFalse(testModel.singleSelection().is());
 		testModel.setSelectionMode(SINGLE_SELECTION);
-		assertTrue(testModel.singleSelection().get());
+		assertTrue(testModel.singleSelection().is());
 		testModel.setSelectionMode(SINGLE_INTERVAL_SELECTION);
-		assertFalse(testModel.singleSelection().get());
+		assertFalse(testModel.singleSelection().is());
 		testModel.setSelectionMode(MULTIPLE_INTERVAL_SELECTION);
-		assertFalse(testModel.singleSelection().get());
+		assertFalse(testModel.singleSelection().is());
 		testModel.setSelectionMode(SINGLE_SELECTION);
-		assertTrue(testModel.singleSelection().get());
+		assertTrue(testModel.singleSelection().is());
 		testModel.singleSelection().set(false);
 		assertEquals(MULTIPLE_INTERVAL_SELECTION, testModel.getSelectionMode());
 		testModel.setSelectionMode(SINGLE_SELECTION);
-		assertTrue(testModel.singleSelection().get());
+		assertTrue(testModel.singleSelection().is());
 		assertEquals(SINGLE_SELECTION, testModel.getSelectionMode());
 	}
 
@@ -132,7 +132,7 @@ public class FilterListSelectionTest {
 
 		testModel.indexes().remove(asList(0, 2));
 		assertEquals(0, testModel.count());
-		assertTrue(testModel.empty().get());
+		assertTrue(testModel.empty().is());
 	}
 
 	@Test
@@ -156,7 +156,7 @@ public class FilterListSelectionTest {
 		assertEquals(asList(0, 2), testModel.indexes().get());
 
 		testModel.items().remove(asList("A", "C"));
-		assertTrue(testModel.empty().get());
+		assertTrue(testModel.empty().is());
 	}
 
 	@Test
@@ -222,7 +222,7 @@ public class FilterListSelectionTest {
 
 		// Change to single selection - should clear selection
 		testModel.setSelectionMode(SINGLE_SELECTION);
-		assertTrue(testModel.empty().get());
+		assertTrue(testModel.empty().is());
 
 		// In single selection mode, adding multiple should only keep last
 		testModel.index().set(0);
@@ -266,7 +266,7 @@ public class FilterListSelectionTest {
 	void nullHandling() {
 		// Test null item selection
 		testModel.item().set(null);
-		assertTrue(testModel.empty().get());
+		assertTrue(testModel.empty().is());
 
 		// Test null in collections
 		assertThrows(NullPointerException.class, () -> testModel.items().add((String) null));
@@ -291,21 +291,21 @@ public class FilterListSelectionTest {
 	@Test
 	void stateObservables() {
 		// Test empty state
-		assertTrue(testModel.empty().get());
+		assertTrue(testModel.empty().is());
 		testModel.index().set(0);
-		assertFalse(testModel.empty().get());
+		assertFalse(testModel.empty().is());
 
 		// Test single state
-		assertTrue(testModel.single().get());
+		assertTrue(testModel.single().is());
 		testModel.indexes().add(1);
-		assertFalse(testModel.single().get());
+		assertFalse(testModel.single().is());
 
 		// Test multiple state
-		assertTrue(testModel.multiple().get());
+		assertTrue(testModel.multiple().is());
 		testModel.clearSelection();
-		assertFalse(testModel.multiple().get());
+		assertFalse(testModel.multiple().is());
 		testModel.index().set(0);
-		assertFalse(testModel.multiple().get());
+		assertFalse(testModel.multiple().is());
 	}
 
 	@Test

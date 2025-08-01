@@ -132,7 +132,7 @@ public final class EntityTableCellRenderer {
 
 		@Override
 		public Color background(boolean filterEnabled, boolean alternateRow, Color cellBackgroundColor) {
-			boolean conditionEnabled = queryCondition != null && queryCondition.enabled().get();
+			boolean conditionEnabled = queryCondition != null && queryCondition.enabled().is();
 			if (conditionEnabled || filterEnabled) {
 				return filteredConditionBackground(alternateRow, conditionEnabled && filterEnabled, cellBackgroundColor);
 			}

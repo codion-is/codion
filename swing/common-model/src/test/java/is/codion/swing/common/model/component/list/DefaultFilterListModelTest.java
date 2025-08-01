@@ -259,13 +259,13 @@ final class DefaultFilterListModelTest {
 						.items(Collections.<String>emptyList())
 						.async(true)
 						.build();
-		assertTrue(asyncModel.items().refresher().async().get());
+		assertTrue(asyncModel.items().refresher().async().is());
 
 		FilterListModel<String> syncModel = FilterListModel.builder()
 						.items(Collections.<String>emptyList())
 						.async(false)
 						.build();
-		assertFalse(syncModel.items().refresher().async().get());
+		assertFalse(syncModel.items().refresher().async().is());
 
 		// With predicate
 		FilterListModel<String> filteredModel = FilterListModel.builder()
@@ -317,7 +317,7 @@ final class DefaultFilterListModelTest {
 		// Selection might move to another item or be cleared
 		assertEquals(2, model.getSize());
 		// If selection moved, it should be to a remaining item
-		if (!model.selection().empty().get()) {
+		if (!model.selection().empty().is()) {
 			assertTrue(model.items().visible().contains(model.selection().item().get()));
 		}
 	}

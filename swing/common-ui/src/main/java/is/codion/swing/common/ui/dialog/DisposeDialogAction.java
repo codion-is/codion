@@ -52,7 +52,7 @@ final class DisposeDialogAction extends AbstractAction {
 			else {
 				State confirmClose = State.state();
 				confirmCloseListener.accept(confirmClose);
-				if (confirmClose.get()) {
+				if (confirmClose.is()) {
 					dialog.dispose();
 				}
 			}

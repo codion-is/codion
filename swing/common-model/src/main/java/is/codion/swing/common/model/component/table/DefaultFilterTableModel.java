@@ -302,7 +302,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			}
 
 			return filters.get().entrySet().stream()
-							.filter(entry -> entry.getValue().enabled().get())
+							.filter(entry -> entry.getValue().enabled().is())
 							.allMatch(entry -> accepts(item, entry.getValue(), entry.getKey(), tableColumns));
 		}
 

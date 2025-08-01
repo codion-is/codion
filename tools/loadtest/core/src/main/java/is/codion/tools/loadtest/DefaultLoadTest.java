@@ -312,7 +312,7 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 				return;
 			}
 			try {
-				if (!paused.get()) {
+				if (!paused.is()) {
 					if (application == null && !stopped.get()) {
 						application = initializeApplication();
 					}

@@ -78,7 +78,7 @@ public class DefaultConditionModelTest {
 
 		operands.upper().set("hello");
 		assertEquals(1, conditionChangedCounter.get());
-		assertFalse(model.enabled().get());
+		assertFalse(model.enabled().is());
 		assertEquals(1, upperCounter.get());
 		assertEquals("hello", operands.upper().get());
 		operands.lower().set("hello");
@@ -158,11 +158,11 @@ public class DefaultConditionModelTest {
 	void test() {
 		ConditionModel<String> model = ConditionModel.builder()
 						.valueClass(String.class).build();
-		assertTrue(model.autoEnable().get());
+		assertTrue(model.autoEnable().is());
 		model.operands().equal().set("test");
-		assertTrue(model.enabled().get());
+		assertTrue(model.enabled().is());
 		model.caseSensitive().set(false);
-		assertFalse(model.caseSensitive().get());
+		assertFalse(model.caseSensitive().is());
 		assertEquals(String.class, model.valueClass());
 
 		model.operands().wildcard().set(Wildcard.PREFIX_AND_POSTFIX);
@@ -175,10 +175,6 @@ public class DefaultConditionModelTest {
 		assertEquals(2, enabledCounter.get());
 
 		model.enabled().removeListener(enabledListener);
-
-		model.locked().set(true);
-		assertTrue(model.locked().get());
-		assertTrue(model.locked().get());
 	}
 
 	@Test
@@ -217,17 +213,17 @@ public class DefaultConditionModelTest {
 		condition.operator().set(Operator.EQUAL);
 		Operands<Integer> operands = condition.operands();
 
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 		operands.equal().set(TEST_VALUE_1);
-		assertTrue(condition.enabled().get());
+		assertTrue(condition.enabled().is());
 		operands.equal().set(null);
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 
 		// Setting other operands should not affect auto-enable for EQUAL
 		condition.enabled().set(false);
 		operands.upper().set(TEST_VALUE_1);
 		operands.lower().set(TEST_VALUE_1);
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 	}
 
 	@Test
@@ -238,17 +234,17 @@ public class DefaultConditionModelTest {
 		condition.operator().set(Operator.NOT_EQUAL);
 		Operands<Integer> operands = condition.operands();
 
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 		operands.equal().set(TEST_VALUE_1);
-		assertTrue(condition.enabled().get());
+		assertTrue(condition.enabled().is());
 		operands.equal().set(null);
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 
 		// Setting other operands should not affect auto-enable for NOT_EQUAL
 		condition.enabled().set(false);
 		operands.upper().set(TEST_VALUE_1);
 		operands.lower().set(TEST_VALUE_1);
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 	}
 
 	@Test
@@ -259,15 +255,15 @@ public class DefaultConditionModelTest {
 		condition.operator().set(Operator.LESS_THAN);
 		Operands<Integer> operands = condition.operands();
 
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 		operands.upper().set(TEST_VALUE_1);
-		assertTrue(condition.enabled().get());
+		assertTrue(condition.enabled().is());
 		operands.upper().set(null);
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 
 		// Setting lower operand should not affect auto-enable for LESS_THAN
 		operands.lower().set(TEST_VALUE_1);
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 	}
 
 	@Test
@@ -278,15 +274,15 @@ public class DefaultConditionModelTest {
 		condition.operator().set(Operator.LESS_THAN_OR_EQUAL);
 		Operands<Integer> operands = condition.operands();
 
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 		operands.upper().set(TEST_VALUE_1);
-		assertTrue(condition.enabled().get());
+		assertTrue(condition.enabled().is());
 		operands.upper().set(null);
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 
 		// Setting lower operand should not affect auto-enable for LESS_THAN_OR_EQUAL
 		operands.lower().set(TEST_VALUE_1);
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 	}
 
 	@Test
@@ -297,15 +293,15 @@ public class DefaultConditionModelTest {
 		condition.operator().set(Operator.GREATER_THAN);
 		Operands<Integer> operands = condition.operands();
 
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 		operands.lower().set(TEST_VALUE_1);
-		assertTrue(condition.enabled().get());
+		assertTrue(condition.enabled().is());
 		operands.lower().set(null);
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 
 		// Setting upper operand should not affect auto-enable for GREATER_THAN
 		operands.upper().set(TEST_VALUE_1);
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 	}
 
 	@Test
@@ -316,15 +312,15 @@ public class DefaultConditionModelTest {
 		condition.operator().set(Operator.GREATER_THAN_OR_EQUAL);
 		Operands<Integer> operands = condition.operands();
 
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 		operands.lower().set(TEST_VALUE_1);
-		assertTrue(condition.enabled().get());
+		assertTrue(condition.enabled().is());
 		operands.lower().set(null);
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 
 		// Setting upper operand should not affect auto-enable for GREATER_THAN_OR_EQUAL
 		operands.upper().set(TEST_VALUE_1);
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 	}
 
 	@Test
@@ -335,26 +331,26 @@ public class DefaultConditionModelTest {
 		condition.operator().set(Operator.BETWEEN);
 		Operands<Integer> operands = condition.operands();
 
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 
 		// Equal operand should not affect auto-enable for BETWEEN
 		operands.equal().set(TEST_VALUE_1);
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 		operands.equal().set(null);
 
 		// Single bound is not sufficient
 		operands.lower().set(TEST_VALUE_1);
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 
 		// Both bounds required for auto-enable
 		operands.upper().set(TEST_VALUE_2);
-		assertTrue(condition.enabled().get());
+		assertTrue(condition.enabled().is());
 
 		// Removing either bound disables
 		operands.lower().set(null);
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 		operands.lower().set(TEST_VALUE_1);
-		assertTrue(condition.enabled().get());
+		assertTrue(condition.enabled().is());
 	}
 
 	@Test
@@ -365,26 +361,26 @@ public class DefaultConditionModelTest {
 		condition.operator().set(Operator.BETWEEN_EXCLUSIVE);
 		Operands<Integer> operands = condition.operands();
 
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 
 		// Equal operand should not affect auto-enable for BETWEEN_EXCLUSIVE
 		operands.equal().set(TEST_VALUE_1);
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 		operands.equal().set(null);
 
 		// Single bound is not sufficient
 		operands.lower().set(TEST_VALUE_1);
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 
 		// Both bounds required for auto-enable
 		operands.upper().set(TEST_VALUE_2);
-		assertTrue(condition.enabled().get());
+		assertTrue(condition.enabled().is());
 
 		// Removing either bound disables
 		operands.lower().set(null);
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 		operands.lower().set(TEST_VALUE_1);
-		assertTrue(condition.enabled().get());
+		assertTrue(condition.enabled().is());
 	}
 
 	@Test
@@ -395,26 +391,26 @@ public class DefaultConditionModelTest {
 		condition.operator().set(Operator.NOT_BETWEEN);
 		Operands<Integer> operands = condition.operands();
 
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 
 		// Equal operand should not affect auto-enable for NOT_BETWEEN
 		operands.equal().set(TEST_VALUE_1);
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 		operands.equal().set(null);
 
 		// Single bound is not sufficient
 		operands.lower().set(TEST_VALUE_1);
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 
 		// Both bounds required for auto-enable
 		operands.upper().set(TEST_VALUE_2);
-		assertTrue(condition.enabled().get());
+		assertTrue(condition.enabled().is());
 
 		// Removing either bound disables
 		operands.lower().set(null);
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 		operands.lower().set(TEST_VALUE_1);
-		assertTrue(condition.enabled().get());
+		assertTrue(condition.enabled().is());
 	}
 
 	@Test
@@ -425,26 +421,26 @@ public class DefaultConditionModelTest {
 		condition.operator().set(Operator.NOT_BETWEEN_EXCLUSIVE);
 		Operands<Integer> operands = condition.operands();
 
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 
 		// Equal operand should not affect auto-enable for NOT_BETWEEN_EXCLUSIVE
 		operands.equal().set(TEST_VALUE_1);
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 		operands.equal().set(null);
 
 		// Single bound is not sufficient
 		operands.lower().set(TEST_VALUE_1);
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 
 		// Both bounds required for auto-enable
 		operands.upper().set(TEST_VALUE_2);
-		assertTrue(condition.enabled().get());
+		assertTrue(condition.enabled().is());
 
 		// Removing either bound disables
 		operands.lower().set(null);
-		assertFalse(condition.enabled().get());
+		assertFalse(condition.enabled().is());
 		operands.lower().set(TEST_VALUE_1);
-		assertTrue(condition.enabled().get());
+		assertTrue(condition.enabled().is());
 	}
 
 	@Test
@@ -690,7 +686,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().isNull();
 
 				assertFalse(changed);
-				assertTrue(condition.enabled().get());
+				assertTrue(condition.enabled().is());
 			}
 
 			@Test
@@ -699,7 +695,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().isNotNull();
 
 				assertTrue(changed);
-				assertTrue(condition.enabled().get());
+				assertTrue(condition.enabled().is());
 			}
 		}
 
@@ -713,7 +709,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().equalTo(TEST_VALUE_1);
 
 				assertTrue(changed);
-				assertTrue(condition.enabled().get());
+				assertTrue(condition.enabled().is());
 			}
 
 			@Test
@@ -725,7 +721,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().equalTo(null);
 
 				assertTrue(changed);
-				assertFalse(condition.enabled().get());
+				assertFalse(condition.enabled().is());
 			}
 
 			@Test
@@ -734,7 +730,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().notEqualTo(TEST_VALUE_1);
 
 				assertTrue(changed);
-				assertTrue(condition.enabled().get());
+				assertTrue(condition.enabled().is());
 			}
 
 			@Test
@@ -746,7 +742,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().notEqualTo(null);
 
 				assertTrue(changed);
-				assertFalse(condition.enabled().get());
+				assertFalse(condition.enabled().is());
 			}
 		}
 
@@ -760,7 +756,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().greaterThan(TEST_VALUE_1);
 
 				assertTrue(changed);
-				assertTrue(condition.enabled().get());
+				assertTrue(condition.enabled().is());
 			}
 
 			@Test
@@ -772,7 +768,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().greaterThan(null);
 
 				assertTrue(changed);
-				assertFalse(condition.enabled().get());
+				assertFalse(condition.enabled().is());
 			}
 
 			@Test
@@ -781,7 +777,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().greaterThanOrEqualTo(TEST_VALUE_1);
 
 				assertTrue(changed);
-				assertTrue(condition.enabled().get());
+				assertTrue(condition.enabled().is());
 			}
 
 			@Test
@@ -793,7 +789,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().greaterThanOrEqualTo(null);
 
 				assertTrue(changed);
-				assertFalse(condition.enabled().get());
+				assertFalse(condition.enabled().is());
 			}
 
 			@Test
@@ -802,7 +798,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().lessThan(TEST_VALUE_1);
 
 				assertTrue(changed);
-				assertTrue(condition.enabled().get());
+				assertTrue(condition.enabled().is());
 			}
 
 			@Test
@@ -814,7 +810,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().lessThan(null);
 
 				assertTrue(changed);
-				assertFalse(condition.enabled().get());
+				assertFalse(condition.enabled().is());
 			}
 
 			@Test
@@ -823,7 +819,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().lessThanOrEqualTo(TEST_VALUE_1);
 
 				assertTrue(changed);
-				assertTrue(condition.enabled().get());
+				assertTrue(condition.enabled().is());
 			}
 
 			@Test
@@ -835,7 +831,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().lessThanOrEqualTo(null);
 
 				assertTrue(changed);
-				assertFalse(condition.enabled().get());
+				assertFalse(condition.enabled().is());
 			}
 		}
 
@@ -849,7 +845,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().in(TEST_VALUE_1, TEST_VALUE_2);
 
 				assertTrue(changed);
-				assertTrue(condition.enabled().get());
+				assertTrue(condition.enabled().is());
 			}
 
 			@Test
@@ -858,7 +854,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().in(emptyList());
 
 				assertTrue(changed);
-				assertFalse(condition.enabled().get());
+				assertFalse(condition.enabled().is());
 			}
 
 			@Test
@@ -867,7 +863,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().notIn(TEST_VALUE_1, TEST_VALUE_2);
 
 				assertTrue(changed);
-				assertTrue(condition.enabled().get());
+				assertTrue(condition.enabled().is());
 			}
 
 			@Test
@@ -876,7 +872,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().notIn(emptyList());
 
 				assertTrue(changed);
-				assertFalse(condition.enabled().get());
+				assertFalse(condition.enabled().is());
 			}
 		}
 
@@ -890,7 +886,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().betweenExclusive(TEST_VALUE_1, TEST_VALUE_2);
 
 				assertTrue(changed);
-				assertTrue(condition.enabled().get());
+				assertTrue(condition.enabled().is());
 			}
 
 			@Test
@@ -902,7 +898,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().betweenExclusive(TEST_VALUE_1, null);
 
 				assertTrue(changed);
-				assertFalse(condition.enabled().get());
+				assertFalse(condition.enabled().is());
 			}
 
 			@Test
@@ -914,7 +910,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().betweenExclusive(null, TEST_VALUE_2);
 
 				assertTrue(changed);
-				assertFalse(condition.enabled().get());
+				assertFalse(condition.enabled().is());
 			}
 
 			@Test
@@ -926,7 +922,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().betweenExclusive(null, null);
 
 				assertTrue(changed);
-				assertFalse(condition.enabled().get());
+				assertFalse(condition.enabled().is());
 			}
 
 			@Test
@@ -935,7 +931,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().notBetweenExclusive(TEST_VALUE_1, TEST_VALUE_2);
 
 				assertTrue(changed);
-				assertTrue(condition.enabled().get());
+				assertTrue(condition.enabled().is());
 			}
 
 			@Test
@@ -947,7 +943,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().notBetweenExclusive(TEST_VALUE_1, null);
 
 				assertTrue(changed);
-				assertFalse(condition.enabled().get());
+				assertFalse(condition.enabled().is());
 			}
 
 			@Test
@@ -959,7 +955,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().notBetweenExclusive(null, TEST_VALUE_2);
 
 				assertTrue(changed);
-				assertFalse(condition.enabled().get());
+				assertFalse(condition.enabled().is());
 			}
 
 			@Test
@@ -971,7 +967,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().notBetweenExclusive(null, null);
 
 				assertTrue(changed);
-				assertFalse(condition.enabled().get());
+				assertFalse(condition.enabled().is());
 			}
 
 			@Test
@@ -980,7 +976,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().between(TEST_VALUE_1, TEST_VALUE_2);
 
 				assertTrue(changed);
-				assertTrue(condition.enabled().get());
+				assertTrue(condition.enabled().is());
 			}
 
 			@Test
@@ -992,7 +988,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().between(TEST_VALUE_1, null);
 
 				assertTrue(changed);
-				assertFalse(condition.enabled().get());
+				assertFalse(condition.enabled().is());
 			}
 
 			@Test
@@ -1004,7 +1000,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().between(null, TEST_VALUE_2);
 
 				assertTrue(changed);
-				assertFalse(condition.enabled().get());
+				assertFalse(condition.enabled().is());
 			}
 
 			@Test
@@ -1016,7 +1012,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().between(null, null);
 
 				assertTrue(changed);
-				assertFalse(condition.enabled().get());
+				assertFalse(condition.enabled().is());
 			}
 
 			@Test
@@ -1025,7 +1021,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().notBetween(TEST_VALUE_1, TEST_VALUE_2);
 
 				assertTrue(changed);
-				assertTrue(condition.enabled().get());
+				assertTrue(condition.enabled().is());
 			}
 
 			@Test
@@ -1037,7 +1033,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().notBetween(TEST_VALUE_1, null);
 
 				assertTrue(changed);
-				assertFalse(condition.enabled().get());
+				assertFalse(condition.enabled().is());
 			}
 
 			@Test
@@ -1049,7 +1045,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().notBetween(null, TEST_VALUE_2);
 
 				assertTrue(changed);
-				assertFalse(condition.enabled().get());
+				assertFalse(condition.enabled().is());
 			}
 
 			@Test
@@ -1061,7 +1057,7 @@ public class DefaultConditionModelTest {
 				boolean changed = condition.set().notBetween(null, null);
 
 				assertTrue(changed);
-				assertFalse(condition.enabled().get());
+				assertFalse(condition.enabled().is());
 			}
 		}
 	}
@@ -1078,8 +1074,8 @@ public class DefaultConditionModelTest {
 						})
 						.build();
 		conditionModel.operands().equal().set(true);
-		assertTrue(conditionModel.enabled().get());
+		assertTrue(conditionModel.enabled().is());
 		conditionModel.clear();
-		assertFalse(conditionModel.enabled().get());
+		assertFalse(conditionModel.enabled().is());
 	}
 }

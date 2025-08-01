@@ -52,7 +52,7 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
 
 	@Override
 	public ToggleControlBuilder copy(Value<Boolean> value) {
-		ToggleControlBuilder builder = new DefaultToggleControlBuilder(value)
+		ToggleControlBuilder builder = new DefaultToggleControlBuilder(requireNonNull(value))
 						.enabled(enabled());
 		keys().forEach(key -> builder.value(key, getValue(key)));
 
@@ -61,7 +61,7 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
 
 	@Override
 	public ToggleControlBuilder copy(State state) {
-		return copy((Value<Boolean>) state);
+		return copy(state.value());
 	}
 
 	static final class DefaultToggleControlBuilder extends AbstractControlBuilder<ToggleControl, ToggleControlBuilder> implements ToggleControlBuilder {
@@ -69,7 +69,7 @@ final class DefaultToggleControl extends AbstractControl implements ToggleContro
 		private final Value<Boolean> value;
 
 		DefaultToggleControlBuilder(Value<Boolean> value) {
-			this.value = requireNonNull(value);
+			this.value = value;
 		}
 
 		@Override

@@ -176,25 +176,25 @@ public final class DomainGeneratorModel {
 	}
 
 	public void saveApiImpl() throws IOException {
-		if (schemaTableModel.selection().empty().not().get()) {
+		if (schemaTableModel.selection().empty().not().is()) {
 			SchemaDomain domain = selectedDomain();
 			if (domain != null) {
 				domainSource(domain)
 								.writeApiImpl(domainPackageValue.optional()
 												.filter(DomainGeneratorModel::validPackageName)
-												.orElse(""), includeDto.get(), savePath(Path.of(sourceDirectoryValue.getOrThrow())));
+												.orElse(""), includeDto.is(), savePath(Path.of(sourceDirectoryValue.getOrThrow())));
 			}
 		}
 	}
 
 	public void saveCombined() throws IOException {
-		if (schemaTableModel.selection().empty().not().get()) {
+		if (schemaTableModel.selection().empty().not().is()) {
 			SchemaDomain domain = selectedDomain();
 			if (domain != null) {
 				domainSource(domain)
 								.writeCombined(domainPackageValue.optional()
 												.filter(DomainGeneratorModel::validPackageName)
-												.orElse(""), includeDto.get(), savePath(Path.of(sourceDirectoryValue.getOrThrow())));
+												.orElse(""), includeDto.is(), savePath(Path.of(sourceDirectoryValue.getOrThrow())));
 			}
 		}
 	}
@@ -269,9 +269,9 @@ public final class DomainGeneratorModel {
 			String domainPackage = domainPackageValue.optional()
 							.filter(DomainGeneratorModel::validPackageName)
 							.orElse("");
-			domainApiValue.set(domainSource.api(domainPackage, includeDto.get()));
+			domainApiValue.set(domainSource.api(domainPackage, includeDto.is()));
 			domainImplValue.set(domainSource.implementation(domainPackage));
-			domainCombinedValue.set(domainSource.combined(domainPackage, includeDto.get()));
+			domainCombinedValue.set(domainSource.combined(domainPackage, includeDto.is()));
 		}
 		else {
 			domainApiValue.clear();

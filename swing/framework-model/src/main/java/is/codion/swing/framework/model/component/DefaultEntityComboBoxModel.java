@@ -325,7 +325,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 			}
 			Entity.Key key = item.key(foreignKey);
 			if (key == null || foreignKeys.isEmpty()) {
-				return !strict.get();
+				return !strict.is();
 			}
 
 			return foreignKeys.isEmpty() || foreignKeys.contains(key);
@@ -388,7 +388,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 			if (selected != null) {
 				set(selected.primaryKey());
 			}
-			else if (strict.get()) {
+			else if (strict.is()) {
 				set(emptyList());
 			}
 			else {

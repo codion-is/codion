@@ -48,11 +48,11 @@ final class DefaultControlBuilderFactory implements BuilderFactory {
 
 	@Override
 	public ToggleControlBuilder toggle(Value<Boolean> value) {
-		return new DefaultToggleControlBuilder(value);
+		return new DefaultToggleControlBuilder(requireNonNull(value));
 	}
 
 	@Override
 	public ToggleControlBuilder toggle(State state) {
-		return new DefaultToggleControlBuilder(state);
+		return new DefaultToggleControlBuilder(requireNonNull(state).value());
 	}
 }

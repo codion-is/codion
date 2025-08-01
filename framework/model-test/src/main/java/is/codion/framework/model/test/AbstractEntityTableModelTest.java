@@ -196,7 +196,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 	public void testTheRest() {
 		assertNotNull(testModel.connectionProvider());
 		assertNotNull(testModel.editModel());
-		assertFalse(testModel.editModel().readOnly().get());
+		assertFalse(testModel.editModel().readOnly().is());
 		testModel.items().refresh();
 	}
 
@@ -256,17 +256,17 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 	@Test
 	public void testSearchState() {
 		TableModel empModel = createTableModel(Employee.TYPE, connectionProvider);
-		assertFalse(empModel.queryModel().conditionChanged().get());
+		assertFalse(empModel.queryModel().conditionChanged().is());
 		ConditionModel<String> jobModel =
 						empModel.queryModel().condition().get(Employee.JOB);
 		jobModel.operands().equal().set("job");
-		assertTrue(empModel.queryModel().conditionChanged().get());
+		assertTrue(empModel.queryModel().conditionChanged().is());
 		jobModel.enabled().set(false);
-		assertFalse(empModel.queryModel().conditionChanged().get());
+		assertFalse(empModel.queryModel().conditionChanged().is());
 		jobModel.enabled().set(true);
-		assertTrue(empModel.queryModel().conditionChanged().get());
+		assertTrue(empModel.queryModel().conditionChanged().is());
 		empModel.items().refresh();
-		assertFalse(empModel.queryModel().conditionChanged().get());
+		assertFalse(empModel.queryModel().conditionChanged().is());
 	}
 
 	protected final EntityConnectionProvider connectionProvider() {

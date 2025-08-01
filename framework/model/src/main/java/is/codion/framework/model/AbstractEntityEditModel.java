@@ -156,7 +156,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 	@Override
 	public final void refresh() {
-		if (editor.exists().get()) {
+		if (editor.exists().is()) {
 			editor.set(connectionProvider.connection().select(editor.getOrThrow().originalPrimaryKey()));
 		}
 	}
@@ -686,14 +686,14 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		private void notifyInserted(Collection<Entity> insertedEntities) {
-			if (states.editEvents.get()) {
+			if (states.editEvents.is()) {
 				groupByType(insertedEntities).forEach((entityType, entities) ->
 								events().inserted(entityType).accept(entities));
 			}
 		}
 
 		private void notifyUpdated(Map<Entity, Entity> updatedEntities) {
-			if (states.editEvents.get()) {
+			if (states.editEvents.is()) {
 				updatedEntities.entrySet()
 								.stream()
 								.collect(groupingBy(entry -> entry.getKey().type(), LinkedHashMap::new,
@@ -704,7 +704,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		private void notifyDeleted(Collection<Entity> deletedEntities) {
-			if (states.editEvents.get()) {
+			if (states.editEvents.is()) {
 				groupByType(deletedEntities).forEach((entityType, entities) ->
 								events().deleted(entityType).accept(entities));
 			}
@@ -725,22 +725,22 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 
 		private void verifyInsertEnabled() {
-			if (readOnly.get() || !insertEnabled.get()) {
+			if (readOnly.is() || !insertEnabled.is()) {
 				throw new IllegalStateException("Edit model is readOnly or inserting is not enabled!");
 			}
 		}
 
 		private void verifyUpdateEnabled(int entityCount) {
-			if (readOnly.get() || !updateEnabled.get()) {
+			if (readOnly.is() || !updateEnabled.is()) {
 				throw new IllegalStateException("Edit model is readOnly or updating is not enabled!");
 			}
-			if (entityCount > 1 && !updateMultipleEnabled.get()) {
+			if (entityCount > 1 && !updateMultipleEnabled.is()) {
 				throw new IllegalStateException("Updating multiple entities is not enabled");
 			}
 		}
 
 		private void verifyDeleteEnabled() {
-			if (readOnly.get() || !deleteEnabled.get()) {
+			if (readOnly.is() || !deleteEnabled.is()) {
 				throw new IllegalStateException("Edit model is readOnly or deleting is not enabled!");
 			}
 		}

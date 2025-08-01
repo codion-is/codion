@@ -123,7 +123,7 @@ public class EntityTablePanelTest {
 		EntityTablePanel tablePanel = new EntityTablePanel(testModel);
 		EntityTablePanelPreferences.clearLegacyPreferences(tablePanel);
 		FilterTableColumnModel<Attribute<?>> columnModel = tablePanel.table().columnModel();
-		assertTrue(columnModel.visible(Detail.STRING).get());
+		assertTrue(columnModel.visible(Detail.STRING).is());
 
 		columnModel.visible(Detail.STRING).set(false);
 		columnModel.moveColumn(1, 0);//double to 0, int to 1
@@ -144,7 +144,7 @@ public class EntityTablePanelTest {
 		tablePanel.applyPreferences(preferences);
 
 		columnModel = tablePanel.table().columnModel();
-		assertFalse(columnModel.visible(Detail.STRING).get());
+		assertFalse(columnModel.visible(Detail.STRING).is());
 		assertEquals(0, columnModel.getColumnIndex(Detail.DOUBLE));
 		assertEquals(1, columnModel.getColumnIndex(Detail.INT));
 		column = columnModel.getColumn(3);
@@ -153,9 +153,9 @@ public class EntityTablePanelTest {
 		column = columnModel.getColumn(5);
 		assertEquals(170, column.getPreferredWidth());
 		condition = testModel.queryModel().condition().get(Detail.STRING);
-		assertFalse(condition.autoEnable().get());
+		assertFalse(condition.autoEnable().is());
 		assertEquals(Wildcard.PREFIX, condition.operands().wildcard().get());
-		assertFalse(condition.caseSensitive().get());
+		assertFalse(condition.caseSensitive().is());
 
 		EntityTablePanelPreferences.clearLegacyPreferences(tablePanel);
 		UserPreferences.flush();

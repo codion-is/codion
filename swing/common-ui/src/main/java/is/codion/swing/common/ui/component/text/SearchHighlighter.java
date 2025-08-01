@@ -214,7 +214,7 @@ public final class SearchHighlighter {
 	}
 
 	private void searchAndHighlightResults(String searchString) {
-		Pattern pattern = Pattern.compile(searchString, caseSensitiveState.get() ? 0 : Pattern.CASE_INSENSITIVE);
+		Pattern pattern = Pattern.compile(searchString, caseSensitiveState.is() ? 0 : Pattern.CASE_INSENSITIVE);
 		try {
 			Matcher matcher = pattern.matcher(textComponent.getDocument().getText(0, textComponent.getDocument().getLength()));
 			int searchFrom = 0;

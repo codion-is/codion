@@ -18,14 +18,16 @@
  */
 package is.codion.common.state;
 
-import is.codion.common.observable.Observable;
 import is.codion.common.observable.Observer;
 import is.codion.common.value.Value;
+import is.codion.common.value.Value.Notify;
+import is.codion.common.value.Value.Validator;
 
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
-import java.util.function.UnaryOperator;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Thread-safe implementation of State.
@@ -43,32 +45,27 @@ final class DefaultState implements State {
 
 	@Override
 	public String toString() {
-		return Boolean.toString(value.getOrThrow());
+		return Boolean.toString(is());
 	}
 
 	@Override
-	public Boolean get() {
+	public boolean is() {
 		synchronized (this.value) {
 			return this.value.getOrThrow();
 		}
 	}
 
 	@Override
-	public void set(@Nullable Boolean value) {
+	public void set(boolean value) {
 		synchronized (this.value) {
 			this.value.set(value);
 		}
 	}
 
 	@Override
-	public void clear() {
-		set(null);
-	}
-
-	@Override
-	public void map(UnaryOperator<Boolean> mapper) {
+	public void toggle() {
 		synchronized (this.value) {
-			this.value.map(mapper);
+			this.value.set(!this.value.getOrThrow());
 		}
 	}
 
@@ -94,23 +91,18 @@ final class DefaultState implements State {
 	}
 
 	@Override
-	public void link(Value<Boolean> originalValue) {
-		this.value.link(originalValue);
+	public Value<Boolean> value() {
+		return value;
 	}
 
 	@Override
-	public void unlink(Value<Boolean> originalValue) {
-		this.value.unlink(originalValue);
+	public void link(State originalState) {
+		value.link(requireNonNull(originalState).value());
 	}
 
 	@Override
-	public void link(Observable<Boolean> observable) {
-		this.value.link(observable);
-	}
-
-	@Override
-	public void unlink(Observable<Boolean> observable) {
-		this.value.unlink(observable);
+	public void unlink(State originalState) {
+		value.unlink(requireNonNull(originalState).value());
 	}
 
 	@Override
@@ -121,11 +113,6 @@ final class DefaultState implements State {
 	@Override
 	public boolean removeValidator(Validator<? super Boolean> validator) {
 		return this.value.removeValidator(validator);
-	}
-
-	@Override
-	public void validate(Boolean value) {
-		this.value.validate(value);
 	}
 
 	private final class Notifier implements Consumer<Boolean> {
@@ -147,8 +134,8 @@ final class DefaultState implements State {
 		DefaultBuilder() {}
 
 		@Override
-		public Builder value(@Nullable Boolean value) {
-			valueBuilder.value(value);
+		public Builder value(boolean value) {
+			this.valueBuilder.value(value);
 			return this;
 		}
 
@@ -165,14 +152,8 @@ final class DefaultState implements State {
 		}
 
 		@Override
-		public Builder link(Value<Boolean> originalState) {
-			valueBuilder.link(originalState);
-			return this;
-		}
-
-		@Override
-		public Builder link(Observable<Boolean> observable) {
-			valueBuilder.link(observable);
+		public Builder link(State originalState) {
+			valueBuilder.link(requireNonNull(originalState).value());
 			return this;
 		}
 

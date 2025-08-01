@@ -132,7 +132,7 @@ public final class Utilities {
 		requireNonNull(enabledState);
 		for (Action action : requireNonNull(actions)) {
 			if (action != null) {
-				action.setEnabled(enabledState.get());
+				action.setEnabled(enabledState.is());
 				enabledState.addConsumer(new ActionEnabled(action));
 			}
 		}
@@ -147,7 +147,7 @@ public final class Utilities {
 		requireNonNull(enabledState);
 		for (JComponent component : requireNonNull(components)) {
 			if (component != null) {
-				component.setEnabled(enabledState.get());
+				component.setEnabled(enabledState.is());
 				enabledState.addConsumer(new ComponentEnabled(component));
 			}
 		}

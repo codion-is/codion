@@ -197,7 +197,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		createControls();
 		setupFocusActivation();
 		setupKeyboardActions();
-		if (editModel.editor().exists().not().get()) {
+		if (editModel.editor().exists().not().is()) {
 			editModel.editor().defaults();
 		}
 	}
@@ -495,14 +495,14 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		};
 		ControlMap controlMap = configuration.controlMap;
 		controlMap.controls().forEach(control -> control.addValidator(controlValueValidator));
-		if (!editModel().readOnly().get()) {
-			if (editModel().insertEnabled().get()) {
+		if (!editModel().readOnly().is()) {
+			if (editModel().insertEnabled().is()) {
 				controlMap.control(INSERT).set(createInsertControl());
 			}
-			if (editModel().updateEnabled().get()) {
+			if (editModel().updateEnabled().is()) {
 				controlMap.control(UPDATE).set(createUpdateControl());
 			}
-			if (editModel().deleteEnabled().get()) {
+			if (editModel().deleteEnabled().is()) {
 				controlMap.control(DELETE).set(createDeleteControl());
 			}
 		}
@@ -608,7 +608,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	private void beforeEntity(Entity entity) {
 		if (configuration.modifiedWarning
-						&& editModel().editor().modified().get()
+						&& editModel().editor().modified().is()
 						&& !Objects.equals(editModel().editor(), entity)
 						&& showConfirmDialog(this,
 						FrameworkMessages.modifiedWarning(), FrameworkMessages.modifiedWarningTitle(),

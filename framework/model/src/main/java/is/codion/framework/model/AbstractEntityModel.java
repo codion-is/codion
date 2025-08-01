@@ -153,10 +153,10 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 	}
 
 	private List<Entity> activeEntities() {
-		if (tableModel != null && tableModel.selection().empty().not().get()) {
+		if (tableModel != null && tableModel.selection().empty().not().is()) {
 			return tableModel.selection().items().get();
 		}
-		else if (editModel.editor().exists().not().get()) {
+		else if (editModel.editor().exists().not().is()) {
 			return emptyList();
 		}
 
@@ -218,7 +218,7 @@ public abstract class AbstractEntityModel<M extends EntityModel<M, E, T>, E exte
 				throw new IllegalArgumentException("Detail model " + modelLink.model() + " has already been added");
 			}
 			models.put(modelLink.model(), modelLink);
-			if (modelLink.active().get()) {
+			if (modelLink.active().is()) {
 				active.add(modelLink.model());
 				modelLink.onSelection(activeEntities());
 			}

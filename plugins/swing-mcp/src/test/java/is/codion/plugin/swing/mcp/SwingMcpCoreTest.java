@@ -154,8 +154,8 @@ public class SwingMcpCoreTest {
 		assertNotSame(state1, state2); // Should be different instances
 
 		// Initially stopped
-		assertFalse(state1.get());
-		assertFalse(state2.get());
+		assertFalse(state1.is());
+		assertFalse(state2.is());
 
 		// Test state manipulation without starting actual servers (to avoid port conflicts)
 		// We can't easily test the actual HTTP server in a unit test without complex setup

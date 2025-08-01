@@ -228,7 +228,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 		orderQuery.addConsumer(enabled ->
 						queryModel.orderBy().set(enabled ? orderBy().orElse(null) : null));
 		sort().observer().addListener(() ->
-						queryModel.orderBy().set(orderQuery.get() ? orderBy().orElse(null) : null));
+						queryModel.orderBy().set(orderQuery.is() ? orderBy().orElse(null) : null));
 		entityDefinition().foreignKeys().get().stream()
 						.map(ForeignKey::referencedType)
 						.distinct()
@@ -253,7 +253,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	}
 
 	private void onDelete(Collection<Entity> deletedEntities) {
-		if (removeDeleted.get()) {
+		if (removeDeleted.is()) {
 			items().remove(deletedEntities);
 		}
 	}

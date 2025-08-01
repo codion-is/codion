@@ -18,8 +18,6 @@
  */
 package is.codion.common.state;
 
-import is.codion.common.observable.Observable;
-
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -52,7 +50,7 @@ final class DefaultStateGroup implements State.Group {
 		synchronized (members) {
 			if (!members.contains(state)) {
 				members.add(state);
-				if (state.get()) {
+				if (state.is()) {
 					stateChanged(state);
 				}
 			}
@@ -70,7 +68,7 @@ final class DefaultStateGroup implements State.Group {
 	}
 
 	private void stateChanged(State state) {
-		if (state.get()) {
+		if (state.is()) {
 			disableOthers(state);
 		}
 		else if (!disablingStates) {
@@ -83,7 +81,7 @@ final class DefaultStateGroup implements State.Group {
 		disablingStates = true;
 		members.stream()
 						.filter(state -> state != current)
-						.filter(Observable::get)
+						.filter(ObservableState::is)
 						.forEach(state -> state.set(false));
 		disablingStates = false;
 	}
@@ -103,7 +101,7 @@ final class DefaultStateGroup implements State.Group {
 	private @Nullable State previousState(State current) {
 		return members.stream()
 						.filter(state -> state != current)
-						.filter(Observable::get)
+						.filter(ObservableState::is)
 						.findFirst()
 						.orElse(null);
 	}

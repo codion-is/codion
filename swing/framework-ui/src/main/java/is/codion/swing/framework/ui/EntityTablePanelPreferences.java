@@ -157,7 +157,7 @@ final class EntityTablePanelPreferences {
 		Map<Attribute<?>, ColumnPreferences> columnPreferencesMap = new HashMap<>();
 		for (FilterTableColumn<Attribute<?>> column : columnModel.columns()) {
 			Attribute<?> attribute = column.identifier();
-			int index = columnModel.visible(attribute).get() ? columnModel.getColumnIndex(attribute) : -1;
+			int index = columnModel.visible(attribute).is() ? columnModel.getColumnIndex(attribute) : -1;
 			columnPreferencesMap.put(attribute, new ColumnPreferences(attribute, index, column.getWidth()));
 		}
 
@@ -170,8 +170,8 @@ final class EntityTablePanelPreferences {
 			tableModel.queryModel().condition().optional(attribute)
 							.ifPresent(condition ->
 											conditionPreferencesMap.put(attribute, new ConditionPreferences(attribute,
-															condition.autoEnable().get(),
-															condition.caseSensitive().get(),
+															condition.autoEnable().is(),
+															condition.caseSensitive().is(),
 															condition.operands().wildcard().getOrThrow())));
 		}
 

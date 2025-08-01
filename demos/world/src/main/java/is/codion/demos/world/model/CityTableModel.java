@@ -104,7 +104,7 @@ public final class CityTableModel extends SwingEntityTableModel {
 			Collection<Entity> updatedCities = new ArrayList<>();
 			CityEditModel editModel = (CityEditModel) editModel();
 			Iterator<Entity> citiesIterator = cities.iterator();
-			while (citiesIterator.hasNext() && !cancelled.get()) {
+			while (citiesIterator.hasNext() && !cancelled.is()) {
 				Entity city = citiesIterator.next();
 				progressReporter.publish(city.get(City.COUNTRY_FK).get(Country.NAME) + " - " + city.get(City.NAME));
 				editModel.populateLocation(city);

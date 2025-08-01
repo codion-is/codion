@@ -1002,7 +1002,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		Collection<EntityPanel> modifiedPanels = new ArrayList<>();
 		for (EntityPanel panel : panels) {
 			EntityEditModel editModel = panel.editModel();
-			if (editModel.editor().modified().get()) {
+			if (editModel.editor().modified().is()) {
 				modifiedPanels.add(panel);
 			}
 			modifiedPanels.addAll(modified(panel.detailPanels().get()));

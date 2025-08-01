@@ -308,7 +308,7 @@ public final class ComponentsTest {
 		state.set(true);
 		assertTrue(toggleControl.value().getOrThrow());
 		toggleControl.value().set(false);
-		assertFalse(state.get());
+		assertFalse(state.is());
 
 		SwingUtilities.invokeLater(() -> {
 			enabledState.set(false);
@@ -355,7 +355,7 @@ public final class ComponentsTest {
 		state.set(true);
 		assertTrue(toggleControl.value().getOrThrow());
 		toggleControl.value().set(false);
-		assertFalse(state.get());
+		assertFalse(state.is());
 
 		SwingUtilities.invokeLater(() -> {
 			enabledState.set(false);
@@ -405,7 +405,7 @@ public final class ComponentsTest {
 		state.set(true);
 		assertTrue(toggleControl.value().getOrThrow());
 		toggleControl.value().set(false);
-		assertFalse(state.get());
+		assertFalse(state.is());
 
 		SwingUtilities.invokeLater(() -> {
 			enabledState.set(false);
@@ -437,9 +437,9 @@ public final class ComponentsTest {
 						.build();
 		assertTrue(toggleControl.value().getOrThrow());
 		toggleControl.value().set(false);
-		assertFalse(state.get());
+		assertFalse(state.is());
 		checkBox.setSelected(true);
-		assertTrue(state.get());
+		assertTrue(state.is());
 
 		SwingUtilities.invokeLater(() -> {
 			enabledState.set(false);
@@ -466,9 +466,9 @@ public final class ComponentsTest {
 						.component();
 		assertTrue(toggleControl.value().getOrThrow());
 		toggleControl.value().set(false);
-		assertFalse(state.get());
+		assertFalse(state.is());
 		button.setSelected(true);
-		assertTrue(state.get());
+		assertTrue(state.is());
 
 		SwingUtilities.invokeLater(() -> {
 			enabledState.set(false);

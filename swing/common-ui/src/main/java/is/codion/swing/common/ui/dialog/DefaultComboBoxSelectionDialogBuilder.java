@@ -85,7 +85,7 @@ final class DefaultComboBoxSelectionDialogBuilder<T> extends AbstractSelectionDi
 			dialog.setSize(new Dimension(MAX_SELECT_VALUE_DIALOG_WIDTH, dialog.getSize().height));
 		}
 		dialog.setVisible(true);
-		if (cancelledState.get()) {
+		if (cancelledState.is()) {
 			throw new CancelException();
 		}
 

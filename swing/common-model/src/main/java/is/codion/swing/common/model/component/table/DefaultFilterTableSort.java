@@ -194,7 +194,7 @@ final class DefaultFilterTableSort<R, C> implements FilterTableSort<R, C> {
 	}
 
 	private void throwIfLocked(C identifier) {
-		if (locked.containsKey(identifier) && locked.get(identifier).get()) {
+		if (locked.containsKey(identifier) && locked.get(identifier).is()) {
 			throw new IllegalStateException("Sorting is locked for column: " + identifier);
 		}
 	}

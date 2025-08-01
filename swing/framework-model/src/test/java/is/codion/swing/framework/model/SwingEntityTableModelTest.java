@@ -164,13 +164,13 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		tableModel.items().refresh();
 		ConditionModel<String> nameCondition = tableModel.queryModel().condition().get(Employee.NAME);
 		nameCondition.operands().equal().set("JONES");
-		assertTrue(tableModel.queryModel().conditionChanged().get());
+		assertTrue(tableModel.queryModel().conditionChanged().is());
 		tableModel.items().refresh();
-		assertFalse(tableModel.queryModel().conditionChanged().get());
+		assertFalse(tableModel.queryModel().conditionChanged().is());
 		nameCondition.enabled().set(false);
-		assertTrue(tableModel.queryModel().conditionChanged().get());
+		assertTrue(tableModel.queryModel().conditionChanged().is());
 		nameCondition.enabled().set(true);
-		assertFalse(tableModel.queryModel().conditionChanged().get());
+		assertFalse(tableModel.queryModel().conditionChanged().is());
 	}
 
 	@Test

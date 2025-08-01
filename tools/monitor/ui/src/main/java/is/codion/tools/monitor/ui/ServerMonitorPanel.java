@@ -351,7 +351,7 @@ public final class ServerMonitorPanel extends JPanel {
 	}
 
 	private void resetZoom() {
-		boolean isSync = synchronizedZoomState.get();
+		boolean isSync = synchronizedZoomState.is();
 		synchronizedZoomState.set(false);
 		requestsPerSecondChartPanel.restoreAutoBounds();
 		memoryUsageChartPanel.restoreAutoBounds();
@@ -383,7 +383,7 @@ public final class ServerMonitorPanel extends JPanel {
 
 		@Override
 		public void axisChanged(AxisChangeEvent event) {
-			if (synchronizedZoomState.get()) {
+			if (synchronizedZoomState.is()) {
 				DateAxis dateAxis = (DateAxis) event.getAxis();
 				performanceCharts.forEach(chart -> {
 					if (!chart.equals(event.getChart())) {

@@ -62,7 +62,7 @@ final class DefaultModelLink<M extends EntityModel<M, E, T>, E extends EntityEdi
 
 	@Override
 	public void onSelection(Collection<Entity> selectedEntities) {
-		if (active.get()) {
+		if (active.is()) {
 			onSelection.accept(selectedEntities);
 		}
 	}

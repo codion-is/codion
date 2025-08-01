@@ -19,8 +19,6 @@
 package is.codion.common.state;
 
 import is.codion.common.Conjunction;
-import is.codion.common.observable.Observable;
-import is.codion.common.value.Value;
 
 import org.junit.jupiter.api.Test;
 
@@ -76,40 +74,35 @@ public class StateTest {
 		state.addListener(listener);
 		not.addListener(notListener);
 		notNot.addListener(notNotListener);
-		assertNotEquals(not.get(), state.get());
-		assertEquals(state.get(), notNot.get());
+		assertNotEquals(not.is(), state.is());
+		assertEquals(state.is(), notNot.is());
 		state.set(true);
-		assertFalse(not.getOrThrow());
 		assertEquals(1, stateCounter.get());
 		assertEquals(1, notStateCounter.get());
 		assertEquals(1, notNotStateCounter.get());
-		assertNotEquals(state.get(), not.get());
-		assertEquals(state.get(), notNot.get());
+		assertNotEquals(state.is(), not.is());
+		assertEquals(state.is(), notNot.is());
 		state.set(false);
 		assertEquals(2, stateCounter.get());
 		assertEquals(2, notStateCounter.get());
 		assertEquals(2, notNotStateCounter.get());
-		assertNotEquals(state.get(), not.get());
-		assertEquals(state.get(), notNot.get());
+		assertNotEquals(state.is(), not.is());
+		assertEquals(state.is(), notNot.is());
 	}
 
 	@Test
 	void state_basicOperations_shouldWorkAsExpected() {
 		State state = State.state();
-		assertFalse(state.get(), "State should be inactive when initialized");
-		assertFalse(state.isNull());
-		assertFalse(state.isNullable());
-		assertFalse(state.isEqualTo(true));
-		assertTrue(state.optional().isPresent());
+		assertFalse(state.is(), "State should be inactive when initialized");
 		state.set(true);
-		assertTrue(state.get(), "State should be active after activation");
+		assertTrue(state.is(), "State should be active after activation");
 		assertEquals(Boolean.TRUE.toString(), state.toString());
-		assertFalse(state.not().get(), "Not state should be inactive after activation");
+		assertFalse(state.not().is(), "Not state should be inactive after activation");
 		state.set(true);
 		state.set(false);
-		assertFalse(state.get(), "State should be inactive after deactivation");
+		assertFalse(state.is(), "State should be inactive after deactivation");
 		assertEquals(Boolean.FALSE.toString(), state.toString());
-		assertTrue(state.not().get(), "Not state should be active after deactivation");
+		assertTrue(state.not().is(), "Not state should be active after deactivation");
 	}
 
 	@Test
@@ -121,16 +114,16 @@ public class StateTest {
 
 		stateGroup.add(stateOne);//has no effect
 		stateGroup.add(stateTwo);
-		assertFalse(stateOne.get());
-		assertTrue(stateTwo.get());
+		assertFalse(stateOne.is());
+		assertTrue(stateTwo.is());
 		stateGroup.add(stateThree);
-		assertFalse(stateOne.get());
-		assertFalse(stateTwo.get());
-		assertTrue(stateThree.get());
+		assertFalse(stateOne.is());
+		assertFalse(stateTwo.is());
+		assertTrue(stateThree.is());
 
 		stateOne.set(true);
-		assertFalse(stateTwo.get());
-		assertFalse(stateThree.get());
+		assertFalse(stateTwo.is());
+		assertFalse(stateThree.is());
 
 		stateGroup = State.group(asList(stateOne, stateTwo));
 		stateGroup.add(Collections.singletonList(stateThree));
@@ -143,41 +136,41 @@ public class StateTest {
 		State three = State.state(true);
 
 		State.group(one, two, three);
-		assertFalse(one.get());
-		assertFalse(two.get());
-		assertTrue(three.get());
+		assertFalse(one.is());
+		assertFalse(two.is());
+		assertTrue(three.is());
 
 		// three to one
 		one.set(true);
-		assertTrue(one.get());
-		assertFalse(two.get());
-		assertFalse(three.get());
+		assertTrue(one.is());
+		assertFalse(two.is());
+		assertFalse(three.is());
 
 		//one to three
 		one.set(false);
-		assertFalse(one.get());
-		assertFalse(two.get());
-		assertTrue(three.get());
+		assertFalse(one.is());
+		assertFalse(two.is());
+		assertTrue(three.is());
 
 		three.set(false);
-		assertTrue(one.get());
-		assertFalse(two.get());
-		assertFalse(three.get());
+		assertTrue(one.is());
+		assertFalse(two.is());
+		assertFalse(three.is());
 
 		one.set(false);
-		assertFalse(one.get());
-		assertFalse(two.get());
-		assertTrue(three.get());
+		assertFalse(one.is());
+		assertFalse(two.is());
+		assertTrue(three.is());
 
 		two.set(true);
-		assertFalse(one.get());
-		assertTrue(two.get());
-		assertFalse(three.get());
+		assertFalse(one.is());
+		assertTrue(two.is());
+		assertFalse(three.is());
 
 		two.set(false);
-		assertFalse(one.get());
-		assertFalse(two.get());
-		assertTrue(three.get());
+		assertFalse(one.is());
+		assertFalse(two.is());
+		assertTrue(three.is());
 	}
 
 	@Test
@@ -188,13 +181,13 @@ public class StateTest {
 		State.group(one, two);
 		one.set(true);
 		one.set(false);
-		assertTrue(two.get());
+		assertTrue(two.is());
 
 		one = State.state();
 		State.group(one);
 		one.set(true);
 		one.set(false);
-		assertFalse(one.get());
+		assertFalse(one.is());
 	}
 
 	@Test
@@ -208,33 +201,33 @@ public class StateTest {
 		assertEquals(Conjunction.AND, andState.conjunction());
 		assertEquals(CONJUNCTION_AND_PATTERN, andState.toString());
 
-		assertFalse(orState.get(), "Or state should be inactive");
-		assertFalse(andState.get(), "And state should be inactive");
-		assertTrue(orState.not().get(), "Reversed Or state should be active");
-		assertTrue(andState.not().get(), "Reversed And state should be active");
+		assertFalse(orState.is(), "Or state should be inactive");
+		assertFalse(andState.is(), "And state should be inactive");
+		assertTrue(orState.not().is(), "Reversed Or state should be active");
+		assertTrue(andState.not().is(), "Reversed And state should be active");
 
 		stateOne.set(true);
 
-		assertTrue(orState.get(), "Or state should be active when one component state is active");
-		assertFalse(andState.get(), "And state should be inactive when only one component state is active");
+		assertTrue(orState.is(), "Or state should be active when one component state is active");
+		assertFalse(andState.is(), "And state should be inactive when only one component state is active");
 
 		stateTwo.set(true);
 
-		assertTrue(orState.get(), "Or state should be active when two component states are active");
-		assertFalse(andState.get(), "And state should be inactive when only two of three component states is active");
+		assertTrue(orState.is(), "Or state should be active when two component states are active");
+		assertFalse(andState.is(), "And state should be inactive when only two of three component states is active");
 
 		stateThree.set(true);
 
-		assertTrue(orState.get(), "Or state should be active when all component states are active");
-		assertTrue(andState.get(), "And state should be active when all component states are active");
+		assertTrue(orState.is(), "Or state should be active when all component states are active");
+		assertTrue(andState.is(), "And state should be active when all component states are active");
 
 		stateOne.set(false);
 
-		assertTrue(orState.get(), "Or state should be active when two component states are active");
-		assertFalse(andState.get(), "And state should be inactive when only two of three component states is active");
+		assertTrue(orState.is(), "Or state should be active when two component states are active");
+		assertFalse(andState.is(), "And state should be inactive when only two of three component states is active");
 
 		andState.remove(stateOne);
-		assertTrue(andState.get());
+		assertTrue(andState.is());
 	}
 
 	@Test
@@ -250,41 +243,38 @@ public class StateTest {
 		assertEquals(CONJUNCTION_AND_PATTERN, andState.toString());
 		assertEquals(CONJUNCTION_OR_PATTERN, orState.toString());
 
-		assertFalse(orState.get(), "Or state should be inactive");
-		assertFalse(andState.get(), "And state should be inactive");
+		assertFalse(orState.is(), "Or state should be inactive");
+		assertFalse(andState.is(), "And state should be inactive");
 
 		stateOne.set(true);
 
-		assertTrue(orState.get(), "Or state should be active when one component state is active");
-		assertFalse(andState.get(), "And state should be inactive when only one component state is active");
+		assertTrue(orState.is(), "Or state should be active when one component state is active");
+		assertFalse(andState.is(), "And state should be inactive when only one component state is active");
 
 		stateTwo.set(true);
 
-		assertTrue(orState.get(), "Or state should be active when two component states are active");
-		assertFalse(andState.get(), "And state should be inactive when only two of three component states is active");
+		assertTrue(orState.is(), "Or state should be active when two component states are active");
+		assertFalse(andState.is(), "And state should be inactive when only two of three component states is active");
 
 		stateThree.set(true);
 
-		assertTrue(orState.get(), "Or state should be active when all component states are active");
-		assertTrue(andState.get(), "And state should be active when all component states are active");
+		assertTrue(orState.is(), "Or state should be active when all component states are active");
+		assertTrue(andState.is(), "And state should be active when all component states are active");
 
 		stateOne.set(false);
 
-		assertTrue(orState.get(), "Or state should be active when two component states are active");
-		assertFalse(andState.get(), "And state should be inactive when only two of three component states is active");
+		assertTrue(orState.is(), "Or state should be active when two component states are active");
+		assertFalse(andState.is(), "And state should be inactive when only two of three component states is active");
 
 		andState.remove(stateOne);
-		assertTrue(andState.get());
+		assertTrue(andState.is());
 
 		stateTwo.set(false);
-		assertTrue(orState.get(), "Or state should be active when one component state is active");
+		assertTrue(orState.is(), "Or state should be active when one component state is active");
 		stateThree.set(false);
-		assertFalse(orState.get(), "Or state should be inactive when no component state is active");
+		assertFalse(orState.is(), "Or state should be inactive when no component state is active");
 		stateTwo.set(true);
-		assertTrue(orState.get(), "Or state should be active when one component state is active");
-
-		assertFalse(orState.isNull());
-		assertFalse(orState.isNullable());
+		assertTrue(orState.is(), "Or state should be active when one component state is active");
 	}
 
 	@Test
@@ -295,7 +285,7 @@ public class StateTest {
 
 		ObservableState combinationAnd = State.combination(Conjunction.AND, one, two, three);
 		Runnable listener = () -> {};
-		Consumer<Boolean> consumer = newValue -> assertEquals(combinationAnd.get(), newValue);
+		Consumer<Boolean> consumer = newValue -> assertEquals(combinationAnd.is(), newValue);
 		combinationAnd.addListener(listener);
 		combinationAnd.addConsumer(consumer);
 		one.set(true);
@@ -308,7 +298,7 @@ public class StateTest {
 		combinationAnd.removeConsumer(consumer);
 
 		ObservableState combinationOr = State.combination(Conjunction.OR, one, two, three);
-		consumer = newValue -> assertEquals(combinationOr.get(), newValue);
+		consumer = newValue -> assertEquals(combinationOr.is(), newValue);
 		combinationOr.addConsumer(consumer);
 		one.set(true);
 		one.set(false);
@@ -326,58 +316,42 @@ public class StateTest {
 		State.Combination combination = State.or(stateOne, stateTwo);
 		AtomicInteger stateChangeEvents = new AtomicInteger();
 		combination.addListener(stateChangeEvents::incrementAndGet);
-		assertTrue(combination.get());
+		assertTrue(combination.is());
 
 		combination.remove(stateTwo);
 
-		assertFalse(combination.get());
+		assertFalse(combination.is());
 		assertEquals(1, stateChangeEvents.get());
 
 		combination.add(stateTwo);
-		assertTrue(combination.get());
+		assertTrue(combination.is());
 		assertEquals(2, stateChangeEvents.get());
 
 		combination.remove(stateOne);
-		assertTrue(combination.get());
+		assertTrue(combination.is());
 		assertEquals(2, stateChangeEvents.get());
 
 		combination.add(stateOne);
 		stateTwo.set(false);
-		assertFalse(combination.get());
+		assertFalse(combination.is());
 		assertEquals(3, stateChangeEvents.get());
 	}
 
 	@Test
 	void linking() {
 		State state = State.state();
-		Value<Boolean> value = Value.builder()
-						.nullable(true)
-						.link(state)
-						.build();
+		State linked = State.state();
+		linked.link(state);
 
-		assertFalse(value.getOrThrow());
+		assertFalse(linked.is());
 		state.set(true);
-		assertTrue(value.getOrThrow());
+		assertTrue(linked.is());
+		linked.set(false);
+		assertFalse(state.is());
 
-		value.unlink(state);
-		state.set(false);
-		assertTrue(value.getOrThrow());
-
-		Observable<Boolean> Observable = value.observable();
-		state.link(Observable);
-		assertTrue(state.getOrThrow());
-		value.set(false);
-		assertFalse(Observable.getOrThrow());
-
-		state.unlink(Observable);
-		value.set(true);
-		assertFalse(state.get());
-
-		state.link(value);
-		assertTrue(state.get());
-		state.unlink(value);
-		value.set(false);
-		assertTrue(state.get());
+		linked.unlink(state);
+		state.set(true);
+		assertFalse(linked.is());
 	}
 
 	@Test

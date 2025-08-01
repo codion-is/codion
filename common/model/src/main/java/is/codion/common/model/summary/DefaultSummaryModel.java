@@ -45,7 +45,7 @@ final class DefaultSummaryModel<T extends Number> implements SummaryModel {
 	DefaultSummaryModel(SummaryValues<T> summaryValues) {
 		this.summaryValues = requireNonNull(summaryValues);
 		this.summary.addValidator(summary -> {
-			if (locked.get()) {
+			if (locked.is()) {
 				throw new IllegalStateException("Summary model is locked");
 			}
 		});

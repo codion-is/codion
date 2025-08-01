@@ -815,7 +815,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		@Override
 		protected @Nullable V getValue() {
-			if (selection.selected.empty.get()) {
+			if (selection.selected.empty.is()) {
 				return null;
 			}
 

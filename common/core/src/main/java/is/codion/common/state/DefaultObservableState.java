@@ -41,13 +41,13 @@ final class DefaultObservableState implements ObservableState {
 
 	@Override
 	public String toString() {
-		return Boolean.toString(get());
+		return Boolean.toString(is());
 	}
 
 	@Override
-	public Boolean get() {
+	public boolean is() {
 		synchronized (lock) {
-			return not ? !state.get() : state.get();
+			return not ? !state.is() : state.is();
 		}
 	}
 

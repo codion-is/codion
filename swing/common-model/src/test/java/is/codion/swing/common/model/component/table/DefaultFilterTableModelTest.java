@@ -357,14 +357,14 @@ public final class DefaultFilterTableModelTest {
 		tableModel.items().visible().set(tableModel.items().visible().indexOf(B), h);
 		assertEquals(2, dataChangedEvents.get());
 		assertEquals(h, tableModel.selection().item().get());
-		assertTrue(selectionChangedState.get());
+		assertTrue(selectionChangedState.is());
 		tableModel.items().visible().set(tableModel.items().visible().indexOf(h), B);
 		assertEquals(3, dataChangedEvents.get());
 
 		selectionChangedState.set(false);
 		TestRow newB = new TestRow("b");
 		tableModel.items().visible().set(tableModel.items().visible().indexOf(B), newB);
-		assertFalse(selectionChangedState.get());
+		assertFalse(selectionChangedState.is());
 		assertEquals(newB, tableModel.selection().item().get());
 		tableModel.items().visible().removeListener(listener);
 	}
@@ -431,16 +431,16 @@ public final class DefaultFilterTableModelTest {
 		selection.item().addConsumer(consumer);
 		selection.items().addConsumer(consumer);
 
-		assertFalse(selection.single().get());
-		assertTrue(selection.empty().get());
-		assertFalse(selection.multiple().get());
+		assertFalse(selection.single().is());
+		assertTrue(selection.empty().is());
+		assertFalse(selection.multiple().is());
 
 		tableModel.items().refresh();
 		selection.index().set(2);
 		assertEquals(4, events.get());
-		assertTrue(selection.single().get());
-		assertFalse(selection.empty().get());
-		assertFalse(selection.multiple().get());
+		assertTrue(selection.single().is());
+		assertFalse(selection.empty().is());
+		assertFalse(selection.multiple().is());
 		assertEquals(2, selection.index().get());
 		selection.indexes().increment();
 		assertEquals(8, events.get());
@@ -473,24 +473,24 @@ public final class DefaultFilterTableModelTest {
 		selection.selectAll();
 		assertEquals(5, selection.items().get().size());
 		selection.clearSelection();
-		assertFalse(selection.single().get());
-		assertTrue(selection.empty().get());
-		assertFalse(selection.multiple().get());
+		assertFalse(selection.single().is());
+		assertTrue(selection.empty().is());
+		assertFalse(selection.multiple().is());
 		assertEquals(0, selection.items().get().size());
 
 		selection.item().set(ITEMS.get(0));
-		assertFalse(selection.multiple().get());
+		assertFalse(selection.multiple().is());
 		assertEquals(ITEMS.get(0), selection.item().get());
 		assertEquals(0, selection.index().get());
 		assertEquals(1, selection.count());
 		assertFalse(selection.isSelectionEmpty());
 		selection.indexes().add(1);
-		assertTrue(selection.multiple().get());
+		assertTrue(selection.multiple().is());
 		assertEquals(ITEMS.get(0), selection.item().get());
 		assertEquals(asList(0, 1), selection.indexes().get());
 		assertEquals(0, selection.index().get());
 		selection.indexes().add(4);
-		assertTrue(selection.multiple().get());
+		assertTrue(selection.multiple().is());
 		assertEquals(asList(0, 1, 4), selection.indexes().get());
 		selection.removeIndexInterval(1, 4);
 		assertEquals(singletonList(0), selection.indexes().get());
@@ -550,7 +550,7 @@ public final class DefaultFilterTableModelTest {
 		assertEquals(0, selection.getMinSelectionIndex());
 
 		tableModel.items().clear();
-		assertTrue(selection.empty().get());
+		assertTrue(selection.empty().is());
 		assertNull(selection.item().get());
 
 		selection.clearSelection();
@@ -619,7 +619,7 @@ public final class DefaultFilterTableModelTest {
 
 		assertFalse(tableModel.items().visible().contains(B));
 		assertTrue(tableModel.items().contains(B));
-		assertTrue(tableModel.filters().get(0).enabled().get());
+		assertTrue(tableModel.filters().get(0).enabled().is());
 		assertEquals(4, tableModel.items().filtered().count());
 		assertFalse(tableModelContainsAll(ITEMS, false, tableModel));
 		assertTrue(tableModelContainsAll(ITEMS, true, tableModel));
@@ -629,18 +629,18 @@ public final class DefaultFilterTableModelTest {
 		assertFalse(tableModel.items().get().isEmpty());
 
 		tableModel.filters().get(0).enabled().set(false);
-		assertFalse(tableModel.filters().get(0).enabled().get());
+		assertFalse(tableModel.filters().get(0).enabled().is());
 
 		assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
 
 		tableModel.filters().get(0).operands().equal().set("t"); // ekki til
-		assertTrue(tableModel.filters().get(0).enabled().get());
+		assertTrue(tableModel.filters().get(0).enabled().is());
 		assertEquals(5, tableModel.items().filtered().count());
 		assertFalse(tableModelContainsAll(ITEMS, false, tableModel));
 		assertTrue(tableModelContainsAll(ITEMS, true, tableModel));
 		tableModel.filters().get(0).enabled().set(false);
 		assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
-		assertFalse(tableModel.filters().get(0).enabled().get());
+		assertFalse(tableModel.filters().get(0).enabled().is());
 
 		tableModel.filters().get(0).operands().equal().set("b");
 		int rowCount = tableModel.items().visible().count();
@@ -652,11 +652,11 @@ public final class DefaultFilterTableModelTest {
 
 	@Test
 	void clearFilterModels() {
-		assertFalse(tableModel.filters().get(0).enabled().get());
+		assertFalse(tableModel.filters().get(0).enabled().is());
 		tableModel.filters().get(0).operands().equal().set("SCOTT");
-		assertTrue(tableModel.filters().get(0).enabled().get());
+		assertTrue(tableModel.filters().get(0).enabled().is());
 		tableModel.filters().clear();
-		assertFalse(tableModel.filters().get(0).enabled().get());
+		assertFalse(tableModel.filters().get(0).enabled().is());
 	}
 
 	@Test

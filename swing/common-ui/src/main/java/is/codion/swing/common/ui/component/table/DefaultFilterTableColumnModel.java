@@ -297,7 +297,7 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 	}
 
 	private void checkIfLocked() {
-		if (locked.get()) {
+		if (locked.is()) {
 			throw new IllegalStateException("Column model is locked");
 		}
 	}

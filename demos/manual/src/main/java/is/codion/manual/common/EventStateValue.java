@@ -80,7 +80,7 @@ public final class EventStateValue {
 
 		observable.addConsumer(value -> System.out.println("State: " + value));
 
-		state.set(null);//output: 'State: false'
+		state.set(false);//output: 'State: false'
 
 		// State extends ObservableState so listeners can be added
 		// directly without referring to the ObservableState

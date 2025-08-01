@@ -684,10 +684,10 @@ public class EntityEditComponentPanel extends JPanel {
 		EditorValue<T> editorValue = editModel.editor().value(attribute);
 		componentBuilders.put(attribute, componentBuilder
 						.name(attribute.toString())
-						.transferFocusOnEnter(inputFocus.transferOnEnter.get())
+						.transferFocusOnEnter(inputFocus.transferOnEnter.is())
 						.toolTipText(editorValue.message())
-						.validIndicator(validIndicator.get() ? editorValue.valid() : null)
-						.modifiedIndicator(modifiedIndicator.get() ? editorValue.modified() : null)
+						.validIndicator(validIndicator.is() ? editorValue.valid() : null)
+						.modifiedIndicator(modifiedIndicator.is() ? editorValue.modified() : null)
 						.link(editorValue)
 						.onBuild(new SetComponent<>(attribute)));
 

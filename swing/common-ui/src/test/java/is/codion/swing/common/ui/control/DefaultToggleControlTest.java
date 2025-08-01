@@ -118,9 +118,9 @@ public class DefaultToggleControlTest {
 			state.set(false);
 			assertFalse(control.value().getOrThrow());
 			control.value().set(true);
-			assertTrue(state.get());
+			assertTrue(state.is());
 			control.value().set(false);
-			assertFalse(state.get());
+			assertFalse(state.is());
 
 			enabledState.set(false);
 			assertFalse(control.isEnabled());

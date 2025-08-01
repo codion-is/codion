@@ -496,7 +496,7 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	private void updateSearchEnabled() {
-		searchEnabled.set(getText().isEmpty() && model.selection().empty().not().get() || !getText().equals(selectionString()));
+		searchEnabled.set(getText().isEmpty() && model.selection().empty().not().is() || !getText().equals(selectionString()));
 	}
 
 	private void onSelectionChanged() {
@@ -529,12 +529,12 @@ public final class EntitySearchField extends HintTextField {
 
 	private void updateColors() {
 		if (isEnabled()) {
-			setBackground(searchEnabled.get() ? searchBackgroundColor : backgroundColor);
+			setBackground(searchEnabled.is() ? searchBackgroundColor : backgroundColor);
 		}
 	}
 
 	private @Nullable String createSelectionToolTip() {
-		return model.selection().empty().get() ? null : strings()
+		return model.selection().empty().is() ? null : strings()
 						.map(EntitySearchField::escape)
 						.collect(joining("<br>", "<html>", "</html"));
 	}
@@ -557,7 +557,7 @@ public final class EntitySearchField extends HintTextField {
 		if (model.search().strings().isEmpty()) {
 			model.selection().clear();
 		}
-		else if (searchEnabled.get()) {
+		else if (searchEnabled.is()) {
 			cancelCurrentSearch();
 			searching.set(true);
 			searchWorker = ProgressWorker.builder()
@@ -1059,14 +1059,14 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		private boolean shouldPerformSearch() {
-			return searchOnFocusLost && !searching.get() && searchEnabled.get();
+			return searchOnFocusLost && !searching.is() && searchEnabled.is();
 		}
 	}
 
 	private final class EnterEscapeListener extends KeyAdapter {
 		@Override
 		public void keyPressed(KeyEvent e) {
-			if (searchEnabled.get()) {
+			if (searchEnabled.is()) {
 				if (e.getKeyCode() == VK_ENTER) {
 					e.consume();
 					performSearch(true);

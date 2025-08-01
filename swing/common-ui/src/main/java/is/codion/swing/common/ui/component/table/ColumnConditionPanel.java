@@ -446,7 +446,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 																		.caption(MESSAGES.getString("auto_enable"))))
 										.buildPopupMenu())
 						.build();
-		boolean modelLocked = model().locked().get();
+		boolean modelLocked = model().locked().is();
 		model().locked().set(false);//otherwise, the validator checking the locked state kicks in during value linking
 		if (equalIncluded()) {
 			equalComponent = componentFactory.equal(model());
@@ -635,7 +635,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	}
 
 	private void toggleEnabled() {
-		model().enabled().set(!model().enabled().get());
+		model().enabled().set(!model().enabled().is());
 	}
 
 	private void selectPreviousOperator() {

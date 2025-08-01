@@ -495,7 +495,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		if (mainMenu) {
 			applicationPanel.createMenuBar().ifPresent(frame::setJMenuBar);
 		}
-		frame.setAlwaysOnTop(applicationPanel.alwaysOnTop().get());
+		frame.setAlwaysOnTop(applicationPanel.alwaysOnTop().is());
 		frame.getContentPane().add(applicationPanel, BorderLayout.CENTER);
 		if (frameSize == null && defaultFrameSize == null) {
 			frame.pack();

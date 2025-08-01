@@ -142,7 +142,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	private Condition createCondition(Conjunction conjunction, Predicate<Attribute<?>> columnType) {
 		List<Condition> conditions = tableConditionModel.get().entrySet().stream()
 						.filter(entry -> columnType.test(entry.getKey()))
-						.filter(entry -> entry.getValue().enabled().get())
+						.filter(entry -> entry.getValue().enabled().is())
 						.map(entry -> condition(entry.getValue(), entry.getKey()))
 						.collect(toList());
 		switch (conditions.size()) {
@@ -252,7 +252,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 
 	private static <T> ColumnCondition<T> singleStringEqualCondition(ConditionModel<T> conditionModel,
 																																	 Column<T> column, @Nullable String value) {
-		boolean caseSensitive = conditionModel.caseSensitive().get();
+		boolean caseSensitive = conditionModel.caseSensitive().is();
 		if (containsWildcards(value)) {
 			return (ColumnCondition<T>) (caseSensitive ? column.like(value) : column.likeIgnoreCase(value));
 		}
@@ -262,12 +262,12 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 
 	private static <T> ColumnCondition<T> singleCharacterEqualCondition(ConditionModel<T> conditionModel,
 																																			Column<T> column, Character value) {
-		return conditionModel.caseSensitive().get() ? column.equalTo((T) value) : (ColumnCondition<T>) column.equalToIgnoreCase(value);
+		return conditionModel.caseSensitive().is() ? column.equalTo((T) value) : (ColumnCondition<T>) column.equalToIgnoreCase(value);
 	}
 
 	private static <T> ColumnCondition<T> singleStringNotEqualCondition(ConditionModel<T> conditionModel,
 																																			Column<T> column, @Nullable String value) {
-		boolean caseSensitive = conditionModel.caseSensitive().get();
+		boolean caseSensitive = conditionModel.caseSensitive().is();
 		if (containsWildcards(value)) {
 			return (ColumnCondition<T>) (caseSensitive ? column.notLike(value) : column.notLikeIgnoreCase(value));
 		}
@@ -277,7 +277,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 
 	private static <T> ColumnCondition<T> singleCharacterNotEqualCondition(ConditionModel<T> conditionModel,
 																																				 Column<T> column, Character value) {
-		return conditionModel.caseSensitive().get() ? column.notEqualTo((T) value) : (ColumnCondition<T>) column.notEqualToIgnoreCase(value);
+		return conditionModel.caseSensitive().is() ? column.notEqualTo((T) value) : (ColumnCondition<T>) column.notEqualToIgnoreCase(value);
 	}
 
 	private static <T> ColumnCondition<T> betweenExclusiveCondition(@Nullable T lower, @Nullable T upper, Column<T> column) {
@@ -333,7 +333,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 			Column<String> stringColumn = (Column<String>) column;
 			Collection<String> inOperands = (Collection<String>) operands;
 
-			return (ColumnCondition<T>) (conditionModel.caseSensitive().get() ?
+			return (ColumnCondition<T>) (conditionModel.caseSensitive().is() ?
 							stringColumn.in(inOperands) :
 							stringColumn.inIgnoreCase(inOperands));
 		}
@@ -350,7 +350,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 			Column<String> stringColumn = (Column<String>) column;
 			Collection<String> inOperands = (Collection<String>) operands;
 
-			return (ColumnCondition<T>) (conditionModel.caseSensitive().get() ?
+			return (ColumnCondition<T>) (conditionModel.caseSensitive().is() ?
 							stringColumn.notIn(inOperands) :
 							stringColumn.notInIgnoreCase(inOperands));
 		}

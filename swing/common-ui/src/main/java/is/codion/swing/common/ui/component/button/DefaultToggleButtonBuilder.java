@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.component.button;
 
+import is.codion.common.state.ObservableState;
+import is.codion.common.state.State;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -25,11 +27,17 @@ import is.codion.swing.common.ui.control.ToggleControl;
 import org.jspecify.annotations.Nullable;
 
 import javax.swing.JToggleButton;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
 class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButtonBuilder<C, B>>
 				extends AbstractButtonBuilder<Boolean, C, B> implements ToggleButtonBuilder<C, B> {
+
+	private final List<State> linkedStates = new ArrayList<>(1);
+	private final List<ObservableState> linkedObservableStates = new ArrayList<>(1);
 
 	private @Nullable ToggleControl toggleControl;
 
@@ -53,6 +61,18 @@ class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButton
 		return toggle(requireNonNull(toggleControlBuilder).build());
 	}
 
+	@Override
+	public final B link(State linkedState) {
+		linkedStates.add(requireNonNull(linkedState));
+		return (B) this;
+	}
+
+	@Override
+	public final B link(ObservableState linkedState) {
+		linkedObservableStates.add(requireNonNull(linkedState));
+		return (B) this;
+	}
+
 	protected JToggleButton createToggleButton() {
 		return new JToggleButton();
 	}
@@ -69,10 +89,26 @@ class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButton
 
 	@Override
 	protected final ComponentValue<Boolean, C> createComponentValue(JToggleButton component) {
-		if (component instanceof NullableCheckBox) {
-			return (ComponentValue<Boolean, C>) new BooleanNullableCheckBoxValue((NullableCheckBox) component);
+		ComponentValue<Boolean, ?> componentValue = component instanceof NullableCheckBox ?
+						new BooleanNullableCheckBoxValue((NullableCheckBox) component) :
+						new BooleanToggleButtonValue<>(component);
+		linkedStates.forEach(state -> componentValue.link(state.value()));
+		linkedObservableStates.forEach(state -> state.addConsumer(new SetComponentValue(componentValue)));
+
+		return (ComponentValue<Boolean, C>) componentValue;
+	}
+
+	private static final class SetComponentValue implements Consumer<Boolean> {
+
+		private final ComponentValue<Boolean, ?> componentValue;
+
+		private SetComponentValue(ComponentValue<Boolean, ?> componentValue) {
+			this.componentValue = componentValue;
 		}
 
-		return (ComponentValue<Boolean, C>) new BooleanToggleButtonValue<>(component);
+		@Override
+		public void accept(Boolean value) {
+			componentValue.set(value);
+		}
 	}
 }

@@ -151,8 +151,8 @@ The `not()` method creates an inverse view of a state:
 State enabled = State.state(true);
 ObservableState disabled = enabled.not();
 
-enabled.get();   // true
-disabled.get();  // false
+enabled.is();   // true
+disabled.is();  // false
 
 enabled.set(false);
 disabled.get();  // true

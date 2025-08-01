@@ -397,10 +397,10 @@ void editModel() {
     SwingEntityEditModel editModel = new SwingEntityEditModel(Artist.TYPE, connection);
     
     editModel.editor().value(Artist.NAME).set("Led Zeppelin");
-    assertTrue(editModel.editor().modified().get());
+    assertTrue(editModel.editor().modified().is());
     
     editModel.insert();
-    assertFalse(editModel.editor().modified().get());
+    assertFalse(editModel.editor().modified().is());
 }
 ```
 

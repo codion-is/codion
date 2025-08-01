@@ -179,7 +179,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 	}
 
 	private boolean valueAccepted(@Nullable Comparable<T> comparable) {
-		if (!caseSensitive.get()) {
+		if (!caseSensitive.is()) {
 			comparable = stringOrCharacterToLowerCase(comparable);
 		}
 		switch (operator.getOrThrow()) {
@@ -214,7 +214,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 	private boolean isEqual(@Nullable Comparable<T> comparable) {
 		T equalOperand = operands.equal().get();
-		if (!caseSensitive.get()) {
+		if (!caseSensitive.is()) {
 			equalOperand = stringOrCharacterToLowerCase(equalOperand);
 		}
 		if (comparable == null) {
@@ -235,7 +235,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 	private boolean isNotEqual(@Nullable Comparable<T> comparable) {
 		T equalOperand = operands.equal().get();
-		if (!caseSensitive.get()) {
+		if (!caseSensitive.is()) {
 			equalOperand = stringOrCharacterToLowerCase(equalOperand);
 		}
 		if (comparable == null) {
@@ -433,7 +433,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 	}
 
 	private void checkLock() {
-		if (locked.get()) {
+		if (locked.is()) {
 			throw new IllegalStateException("Condition model is locked");
 		}
 	}
@@ -465,7 +465,7 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 		@Override
 		public void run() {
-			if (autoEnable.get()) {
+			if (autoEnable.is()) {
 				switch (operator.getOrThrow()) {
 					case EQUAL:
 					case NOT_EQUAL:

@@ -115,12 +115,12 @@ public class DefaultFilterComboBoxModelTest {
 		assertEquals(3, selectionChangedCounter.get());
 		assertEquals(BJORN, testModel.getSelectedItem());
 		assertEquals(BJORN, testModel.selection().item().get());
-		assertFalse(testModel.selection().empty().get());
+		assertFalse(testModel.selection().empty().is());
 		testModel.setSelectedItem(null);
-		assertTrue(testModel.selection().empty().get());
+		assertTrue(testModel.selection().empty().is());
 		assertEquals(4, selectionChangedCounter.get());
 		assertEquals(NULL, testModel.getSelectedItem());
-		assertTrue(testModel.selection().empty().get());
+		assertTrue(testModel.selection().empty().is());
 		assertNull(testModel.selection().item().get());
 		testModel.setSelectedItem(SIGGI);
 		testModel.items().clear();

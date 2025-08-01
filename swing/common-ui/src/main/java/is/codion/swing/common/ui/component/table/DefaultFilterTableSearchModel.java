@@ -121,7 +121,7 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 		if (searchText.isEmpty()) {
 			return null;
 		}
-		if (regularExpression.get()) {
+		if (regularExpression.is()) {
 			try {
 				return new RegexSearchCondition(searchText);
 			}
@@ -330,8 +330,8 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 
 		@Override
 		public boolean test(String item) {
-			return item != null && (caseSensitiveSearch.get() ? item : item.toLowerCase())
-							.contains((caseSensitiveSearch.get() ? searchText : searchText.toLowerCase()));
+			return item != null && (caseSensitiveSearch.is() ? item : item.toLowerCase())
+							.contains((caseSensitiveSearch.is() ? searchText : searchText.toLowerCase()));
 		}
 	}
 }

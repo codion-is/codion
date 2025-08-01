@@ -42,9 +42,9 @@ public final class DefaultTableConditionModelTest {
 		three.enabled().set(true);
 
 		model.clear();
-		assertFalse(one.enabled().get());
-		assertFalse(two.enabled().get());
-		assertFalse(three.enabled().get());
+		assertFalse(one.enabled().is());
+		assertFalse(two.enabled().is());
+		assertFalse(three.enabled().is());
 
 		assertThrows(IllegalArgumentException.class, () -> model.persist().add("four"));
 
@@ -55,8 +55,8 @@ public final class DefaultTableConditionModelTest {
 		three.enabled().set(true);
 
 		model.clear();
-		assertFalse(one.enabled().get());
-		assertTrue(two.enabled().get());
-		assertFalse(three.enabled().get());
+		assertFalse(one.enabled().is());
+		assertTrue(two.enabled().is());
+		assertFalse(three.enabled().is());
 	}
 }

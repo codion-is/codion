@@ -97,7 +97,7 @@ final class DefaultEntityQueryModel implements EntityQueryModel {
 
 	@Override
 	public List<Entity> query() {
-		if (conditionRequired.get() && !conditionEnabled.getOrThrow().get()) {
+		if (conditionRequired.is() && !conditionEnabled.getOrThrow().is()) {
 			resetConditionChanged();
 
 			return emptyList();

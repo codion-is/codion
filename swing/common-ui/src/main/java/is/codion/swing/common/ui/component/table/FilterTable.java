@@ -808,9 +808,9 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	private void toggleColumnSort(int selectedColumn, boolean previous, boolean add) {
-		if (sortable.get() && selectedColumn != -1) {
+		if (sortable.is() && selectedColumn != -1) {
 			C identifier = columnModel().getColumn(selectedColumn).identifier();
-			if (!tableModel.sort().order(identifier).locked().get()) {
+			if (!tableModel.sort().order(identifier).locked().is()) {
 				toggleColumnSort(identifier, previous, add);
 			}
 		}
@@ -1063,7 +1063,7 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public void accept(List<Integer> selectedRows) {
 			JViewport viewport = parentOfType(JViewport.class, FilterTable.this);
-			if (viewport != null && scrollToSelectedItem.get() && !selectedRows.isEmpty()) {
+			if (viewport != null && scrollToSelectedItem.is() && !selectedRows.isEmpty()) {
 				int column = getSelectedColumn();
 				if (noCellVisible(viewport, selectedRows, column)) {
 					scrollToRowColumn(selectedRows.get(0), column, centerOnScroll.getOrThrow());
@@ -1109,7 +1109,7 @@ public final class FilterTable<R, C> extends JTable {
 	private final class MouseSortHandler extends MouseAdapter {
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			if (!sortable.get() || e.getButton() != MouseEvent.BUTTON1 || e.isControlDown()) {
+			if (!sortable.is() || e.getButton() != MouseEvent.BUTTON1 || e.isControlDown()) {
 				return;
 			}
 
@@ -1117,7 +1117,7 @@ public final class FilterTable<R, C> extends JTable {
 			int index = columnModel.getColumnIndexAtX(e.getX());
 			if (index >= 0) {
 				C identifier = columnModel.getColumn(index).identifier();
-				if (!tableModel.sort().order(identifier).locked().get()) {
+				if (!tableModel.sort().order(identifier).locked().is()) {
 					if (!getSelectionModel().isSelectionEmpty()) {
 						setColumnSelectionInterval(index, index);//otherwise, the focus jumps to the selected column after sorting
 					}
@@ -1789,7 +1789,7 @@ public final class FilterTable<R, C> extends JTable {
 		public boolean subset() {
 			FilterListSelection<?> selection = tableModel.selection();
 
-			return selection.empty().not().get() &&
+			return selection.empty().not().is() &&
 							selection.count() != tableModel.items().visible().count();
 		}
 	}

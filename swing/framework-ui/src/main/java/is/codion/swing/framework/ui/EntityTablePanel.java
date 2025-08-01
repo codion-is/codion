@@ -658,7 +658,7 @@ public class EntityTablePanel extends JPanel {
 	 */
 	public final void editSelected(Attribute<?> attributeToEdit) {
 		requireNonNull(attributeToEdit);
-		if (!tableModel.selection().empty().get()) {
+		if (!tableModel.selection().empty().is()) {
 			editDialogBuilder(attributeToEdit)
 							.edit(tableModel.selection().items().get());
 		}
@@ -668,7 +668,7 @@ public class EntityTablePanel extends JPanel {
 	 * Displays a dialog containing tables of entities depending on the selected entities via non-soft foreign keys
 	 */
 	public final void viewDependencies() {
-		if (!tableModel.selection().empty().get()) {
+		if (!tableModel.selection().empty().is()) {
 			displayDependencies(EDIT_PANEL_MESSAGES.getString("no_dependencies"));
 		}
 	}
@@ -743,7 +743,7 @@ public class EntityTablePanel extends JPanel {
 				addTablePopupMenu();
 				addDoubleClickAction();
 				layoutPanel(tablePanel, configuration.includeSouthPanel ? initializeSouthPanel() : null);
-				setSummaryPanelVisible(summaryPanelVisibleState.get());
+				setSummaryPanelVisible(summaryPanelVisibleState.is());
 				bindEvents();
 				setupKeyboardActions();
 				updateComponentTreeUI(this);
@@ -1404,8 +1404,8 @@ public class EntityTablePanel extends JPanel {
 
 	private boolean includeAddControl() {
 		return editPanel != null && configuration.includeAddControl &&
-						!tableModel.editModel().readOnly().get() &&
-						tableModel.editModel().insertEnabled().get();
+						!tableModel.editModel().readOnly().is() &&
+						tableModel.editModel().insertEnabled().is();
 	}
 
 	private boolean includeEditControl() {
@@ -1419,12 +1419,12 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private boolean updatable() {
-		return !tableModel.editModel().readOnly().get() &&
-						tableModel.editModel().updateEnabled().get();
+		return !tableModel.editModel().readOnly().is() &&
+						tableModel.editModel().updateEnabled().is();
 	}
 
 	private boolean includeDeleteControl() {
-		return !tableModel.editModel().readOnly().get() && tableModel.editModel().deleteEnabled().get();
+		return !tableModel.editModel().readOnly().is() && tableModel.editModel().deleteEnabled().is();
 	}
 
 	private boolean includeViewDependenciesControl() {
@@ -1930,7 +1930,7 @@ public class EntityTablePanel extends JPanel {
 			boolean useBoldFont = renderer instanceof FilterTableCellRenderer
 							&& ((FilterTableCellRenderer<?>) renderer).filterIndicator()
 							&& tableModel.queryModel().condition().optional(tableColumn.identifier())
-							.map(conditionModel -> conditionModel.enabled().get()).orElse(false);
+							.map(conditionModel -> conditionModel.enabled().is()).orElse(false);
 			Font defaultFont = component.getFont();
 			component.setFont(useBoldFont ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);
 

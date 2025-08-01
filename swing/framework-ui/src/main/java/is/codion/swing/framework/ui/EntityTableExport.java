@@ -98,7 +98,7 @@ final class EntityTableExport {
 		this.connectionProvider = tableModel.connectionProvider();
 		this.entityNode = new EntityNode(tableModel.entityDefinition(), connectionProvider.entities());
 		this.columnModel = columnModel;
-		this.selectedRows = State.state(!tableModel.selection().empty().get());
+		this.selectedRows = State.state(!tableModel.selection().empty().is());
 		tableModel.selection().empty().addConsumer(selectionEmpty ->
 						selectedRows.set(!selectionEmpty));
 	}
@@ -144,7 +144,7 @@ final class EntityTableExport {
 	}
 
 	private List<Entity> entities(SwingEntityTableModel tableModel) {
-		return selectedRows.get() ?
+		return selectedRows.is() ?
 						tableModel.selection().items().get() :
 						tableModel.items().visible().get();
 	}
@@ -163,7 +163,7 @@ final class EntityTableExport {
 			AttributeNode node = (AttributeNode) nodes.nextElement();
 			String caption = node.definition.caption();
 			String columnHeader = prefix.isEmpty() ? caption : (prefix + SPACE + caption);
-			if (node.selected.get()) {
+			if (node.selected.is()) {
 				header.add(columnHeader);
 			}
 			if (node.definition.attribute() instanceof ForeignKey) {
@@ -180,7 +180,7 @@ final class EntityTableExport {
 		while (attributeNodes.hasMoreElements()) {
 			AttributeNode node = (AttributeNode) attributeNodes.nextElement();
 			Attribute<?> attribute = node.definition.attribute();
-			if (node.selected.get()) {
+			if (node.selected.is()) {
 				row.add(replaceNewlinesAndTabs(entity.string(attribute)));
 			}
 			if (attribute instanceof ForeignKey) {
@@ -283,7 +283,7 @@ final class EntityTableExport {
 			while (children.hasMoreElements()) {
 				TreeNode child = children.nextElement();
 				if (child instanceof AttributeNode &&
-								columnModel.visible(((AttributeNode) child).definition.attribute()).get()) {
+								columnModel.visible(((AttributeNode) child).definition.attribute()).is()) {
 					((AttributeNode) child).selected.set(true);
 				}
 			}
@@ -305,7 +305,7 @@ final class EntityTableExport {
 								.filter(exportTree::isPathSelected)
 								.map(TreePath::getLastPathComponent)
 								.map(AttributeNode.class::cast)
-								.forEach(node -> node.selected.set(!node.selected.get()));
+								.forEach(node -> node.selected.set(!node.selected.is()));
 				exportTree.repaint();
 			}
 		}
@@ -363,7 +363,7 @@ final class EntityTableExport {
 
 		@Override
 		public String toString() {
-			return selected.get() ? "+" + definition.caption() : definition.caption() + "  ";
+			return selected.is() ? "+" + definition.caption() : definition.caption() + "  ";
 		}
 	}
 }

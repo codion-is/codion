@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.component.button;
 
+import is.codion.common.state.ObservableState;
+import is.codion.common.state.State;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
 
@@ -41,6 +43,20 @@ public interface ToggleButtonBuilder<C extends JToggleButton, B extends ToggleBu
 	 * @return this builder instance
 	 */
 	B toggle(Control.Builder<ToggleControl, ?> toggleControlBuilder);
+
+	/**
+	 * Creates a bidirectional link to the given state. Overrides any initial value set.
+	 * @param linkedState a state to link to the component value
+	 * @return this builder instance
+	 */
+	B link(State linkedState);
+
+	/**
+	 * Creates a read-only link to the given {@link ObservableState}.
+	 * @param linkedState a state to link to the component value
+	 * @return this builder instance
+	 */
+	B link(ObservableState linkedState);
 
 	/**
 	 * @param <C> the component type

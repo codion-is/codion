@@ -20,6 +20,8 @@ package is.codion.swing.common.ui.component.button;
 
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.AbstractButton;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -37,7 +39,7 @@ final class BooleanToggleButtonValue<C extends AbstractButton> extends AbstractC
 	}
 
 	@Override
-	protected void setComponentValue(Boolean value) {
+	protected void setComponentValue(@Nullable Boolean value) {
 		component().setSelected(value != null && value);
 	}
 

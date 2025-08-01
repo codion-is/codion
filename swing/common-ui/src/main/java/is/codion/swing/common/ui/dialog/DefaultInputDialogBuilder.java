@@ -154,7 +154,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 			basePanel.add(new JLabel(caption), BorderLayout.NORTH);
 		}
 		okCancelDialogBuilder.onOk(new OnOk(componentValue, okPressed)).show();
-		if (okPressed.get()) {
+		if (okPressed.is()) {
 			return componentValue.get();
 		}
 

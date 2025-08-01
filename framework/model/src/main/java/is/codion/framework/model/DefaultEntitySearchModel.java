@@ -172,7 +172,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 				for (String rawSearchString : strings.get()) {
 					String preparedSearchString = prepareSearchString(rawSearchString, columnSettings);
 					boolean containsWildcards = containsWildcards(preparedSearchString);
-					if (columnSettings.caseSensitive().get()) {
+					if (columnSettings.caseSensitive().is()) {
 						conditions.add(containsWildcards ? column.like(preparedSearchString) : column.equalTo(preparedSearchString));
 					}
 					else {
@@ -189,9 +189,9 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 		}
 
 		private String prepareSearchString(String rawSearchString, Settings settings) {
-			boolean wildcardPrefix = settings.wildcardPrefix().get();
-			boolean wildcardPostfix = settings.wildcardPostfix().get();
-			rawSearchString = settings.spaceAsWildcard().get() ? rawSearchString.replace(' ', '%') : rawSearchString;
+			boolean wildcardPrefix = settings.wildcardPrefix().is();
+			boolean wildcardPostfix = settings.wildcardPostfix().is();
+			rawSearchString = settings.spaceAsWildcard().is() ? rawSearchString.replace(' ', '%') : rawSearchString;
 
 			return rawSearchString.equals(WILDCARD_MULTIPLE) ? WILDCARD_MULTIPLE :
 							((wildcardPrefix ? WILDCARD_MULTIPLE : "") + rawSearchString.trim() + (wildcardPostfix ? WILDCARD_MULTIPLE : ""));

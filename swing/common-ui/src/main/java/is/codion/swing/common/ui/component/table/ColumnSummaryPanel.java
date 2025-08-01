@@ -64,7 +64,7 @@ public final class ColumnSummaryPanel extends JPanel {
 						.mouseListener(new MouseAdapter() {
 							@Override
 							public void mouseReleased(MouseEvent e) {
-								if (!model.locked().get()) {
+								if (!model.locked().is()) {
 									popupMenu.show(e.getComponent(), e.getX(), e.getY() - popupMenu.getPreferredSize().height);
 								}
 							}

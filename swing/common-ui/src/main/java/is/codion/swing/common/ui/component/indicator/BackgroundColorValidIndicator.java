@@ -42,9 +42,9 @@ final class BackgroundColorValidIndicator {
 		this.component = component;
 		this.uiComponentKey = initializeUiComponentKey();
 		if (componentSupported(uiComponentKey)) {
-			component.addPropertyChangeListener("UI", event -> configureColors(valid.get()));
+			component.addPropertyChangeListener("UI", event -> configureColors(valid.is()));
 			valid.addConsumer(this::update);
-			update(valid.get());
+			update(valid.is());
 		}
 	}
 

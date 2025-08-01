@@ -32,7 +32,7 @@ final class FlatLafValidIndicator {
 	FlatLafValidIndicator(JComponent component, ObservableState valid) {
 		this.component = component;
 		valid.addConsumer(this::update);
-		update(valid.get());
+		update(valid.is());
 	}
 
 	private void update(boolean valid) {

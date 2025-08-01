@@ -322,7 +322,7 @@ public final class CalendarPanel extends JPanel {
 	 * Requests input focus for this calendar panel
 	 */
 	public void requestInputFocus() {
-		if (enabledState.get()) {
+		if (enabledState.is()) {
 			dayLabels.get(dayValue.get()).requestFocusInWindow();
 		}
 	}
@@ -1047,7 +1047,7 @@ public final class CalendarPanel extends JPanel {
 			this.day = day.intValue();
 			setHorizontalAlignment(CENTER);
 			setFocusable(true);
-			setEnabled(enabledState.get());
+			setEnabled(enabledState.is());
 			addMouseListener(new DayMouseAdapter());
 		}
 
@@ -1074,7 +1074,7 @@ public final class CalendarPanel extends JPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (enabledState.get()) {
+				if (enabledState.is()) {
 					dayValue.set(day);
 					if (e.getClickCount() == 2) {
 						doubleClicked.accept(day);

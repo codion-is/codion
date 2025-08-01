@@ -20,13 +20,14 @@ package is.codion.common.state;
 
 import is.codion.common.Conjunction;
 import is.codion.common.value.Value;
-
-import org.jspecify.annotations.NonNull;
+import is.codion.common.value.Value.Notify;
+import is.codion.common.value.Value.Validator;
 
 import java.util.Collection;
+import java.util.function.Consumer;
 
 /**
- * A class encapsulating a boolean state, non-nullable with null values translated to false.
+ * A class encapsulating a boolean state.
  * {@snippet :
  * State state = State.state();
  *
@@ -36,25 +37,71 @@ import java.util.Collection;
  *
  * state.set(true);
  * state.set(false);
- * state.set(null); //translates to false
+ *
+ * boolean value = state.is();
  *}
  * A factory for {@link State} instances.
- * <p><b>Thread Safety:</b> Listener management (add/remove) is thread-safe and supports concurrent access.
- * However, state modifications via {@link #set(Object)} are NOT thread-safe and should be
- * performed from a single thread (such as an application UI thread).</p>
+ * <p>Listener management (add/remove) and state modifications are thread-safe
  * @see #state()
+ * @see #state(boolean)
  * @see #builder()
  */
-public interface State extends ObservableState, Value<Boolean> {
+public interface State extends ObservableState {
 
-	@Override
-	@NonNull Boolean get();
+	/**
+	 * Sets the value
+	 * @param value the new value
+	 */
+	void set(boolean value);
+
+	/**
+	 * Toggles this state
+	 */
+	void toggle();
 
 	/**
 	 * Returns an {@link ObservableState} notified each time the state changes
 	 * @return an {@link ObservableState} notified each time the state changes
 	 */
 	ObservableState observable();
+
+	/**
+	 * @return a {@link Value} instance representing this state
+	 */
+	Value<Boolean> value();
+
+	/**
+	 * Creates a bidirectional link between this and the given original state,
+	 * so that changes in one are reflected in the other.
+	 * Note that after a call to this method this state is the same as {@code originalState}.
+	 * @param originalState the original state to link this state to
+	 * @throws IllegalStateException in case the states are already linked or if a cycle is detected
+	 * @throws IllegalArgumentException in case the original state is not valid according to this states validators
+	 */
+	void link(State originalState);
+
+	/**
+	 * Unlinks this state from the given original state
+	 * @param originalState the original value to unlink from this one
+	 * @throws IllegalStateException in case the states are not linked
+	 */
+	void unlink(State originalState);
+
+	/**
+	 * Adds a validator to this {@link State}.
+	 * Adding the same validator again has no effect.
+	 * @param validator the validator
+	 * @return true if this value did not already contain the specified validator
+	 * @throws IllegalArgumentException in case the current value is invalid according to the validator
+	 */
+	boolean addValidator(Validator<? super Boolean> validator);
+
+	/**
+	 * Removes the given validator from this value
+	 * @param validator the validator
+	 * @return true if this value contained the specified validator
+	 */
+	boolean removeValidator(Validator<? super Boolean> validator);
 
 	/**
 	 * A state which combines a number of states, either ANDing or ORing those together
@@ -205,7 +252,58 @@ public interface State extends ObservableState, Value<Boolean> {
 	/**
 	 * Builds a {@link State} instance.
 	 */
-	interface Builder extends Value.Builder<Boolean, Builder> {
+	interface Builder {
+
+		/**
+		 * @param value the initial value
+		 * @return this builder instance
+		 */
+		Builder value(boolean value);
+
+		/**
+		 * @param notify the notify policy for this state, default {@link Notify#CHANGED}
+		 * @return this builder instance
+		 */
+		Builder notify(Notify notify);
+
+		/**
+		 * Adds a validator to the resulting value
+		 * @param validator the validator to add
+		 * @return this builder instance
+		 */
+		Builder validator(Validator<? super Boolean> validator);
+
+		/**
+		 * Links the given state to the resulting state
+		 * @param originalState the original state to link
+		 * @return this builder instance
+		 * @see Value#link(Value)
+		 */
+		Builder link(State originalState);
+
+		/**
+		 * @param listener a listener to add
+		 * @return this builder instance
+		 */
+		Builder listener(Runnable listener);
+
+		/**
+		 * @param consumer a consumer to add
+		 * @return this builder instance
+		 */
+		Builder consumer(Consumer<? super Boolean> consumer);
+
+		/**
+		 * @param weakListener a weak listener to add
+		 * @return this builder instance
+		 */
+		Builder weakListener(Runnable weakListener);
+
+		/**
+		 * @param weakConsumer a weak consumer to add
+		 * @return this builder instance
+		 */
+		Builder weakConsumer(Consumer<? super Boolean> weakConsumer);
 
 		/**
 		 * @return a new {@link State} instance based on this builder

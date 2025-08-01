@@ -207,7 +207,7 @@ final class DefaultEntityEditor implements EntityEditor {
 	}
 
 	private <T> @Nullable T defaultValue(AttributeDefinition<T> attributeDefinition) {
-		if (value(attributeDefinition.attribute()).persist().get()) {
+		if (value(attributeDefinition.attribute()).persist().is()) {
 			if (attributeDefinition instanceof ForeignKeyDefinition) {
 				return (T) entity.entity((ForeignKey) attributeDefinition.attribute());
 			}
@@ -377,8 +377,8 @@ final class DefaultEntityEditor implements EntityEditor {
 		}
 
 		@Override
-		public Boolean get() {
-			return exists.get();
+		public boolean is() {
+			return exists.is();
 		}
 
 		@Override
@@ -410,8 +410,8 @@ final class DefaultEntityEditor implements EntityEditor {
 		}
 
 		@Override
-		public Boolean get() {
-			return modified.get();
+		public boolean is() {
+			return modified.is();
 		}
 
 		@Override
@@ -442,7 +442,7 @@ final class DefaultEntityEditor implements EntityEditor {
 
 		@Override
 		public void revert() {
-			if (modified().get()) {
+			if (modified().is()) {
 				super.set(entity.original(attribute));
 			}
 		}
@@ -473,7 +473,7 @@ final class DefaultEntityEditor implements EntityEditor {
 		@Override
 		public ObservableState modified() {
 			return attributeModified.computeIfAbsent(attribute,
-							k -> State.state(exists.get() && entity.modified(attribute))).observable();
+							k -> State.state(exists.is() && entity.modified(attribute))).observable();
 		}
 
 		@Override

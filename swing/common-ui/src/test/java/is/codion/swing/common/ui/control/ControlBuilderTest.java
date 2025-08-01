@@ -73,7 +73,7 @@ public final class ControlBuilderTest {
 		ToggleControl stateToggle = Control.toggle(state);
 		assertTrue(stateToggle.value().get());
 		stateToggle.value().set(false);
-		assertFalse(state.get());
+		assertFalse(state.is());
 
 		// Value-based factory
 		Value<Boolean> value = Value.nullable(false);
@@ -116,7 +116,7 @@ public final class ControlBuilderTest {
 		assertEquals("Save the document", control.description().orElse(null));
 		assertEquals('S', control.mnemonic().orElse(' '));
 		assertFalse(control.isEnabled());
-		assertEquals(enabledState.get(), control.enabled().get());
+		assertEquals(enabledState.is(), control.enabled().is());
 		assertSame(icon, control.smallIcon().orElse(null));
 		assertSame(icon, control.largeIcon().orElse(null));
 		assertSame(font, control.font().orElse(null));
@@ -213,7 +213,7 @@ public final class ControlBuilderTest {
 		assertEquals("Copy", copy.caption().orElse(null));
 		assertEquals("Original description", copy.description().orElse(null)); // Inherited
 		assertEquals('O', copy.mnemonic().orElse(' ')); // Inherited
-		assertEquals(enabled.get(), copy.enabled().get()); // Same enabled state value
+		assertEquals(enabled.is(), copy.enabled().is()); // Same enabled state value
 		assertSame(icon, copy.smallIcon().orElse(null)); // Inherited
 		assertEquals(Color.RED, copy.foreground().orElse(null)); // Inherited
 		assertEquals("value", copy.getValue("key")); // Inherited

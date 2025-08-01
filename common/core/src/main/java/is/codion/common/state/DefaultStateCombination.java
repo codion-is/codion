@@ -74,9 +74,9 @@ final class DefaultStateCombination implements State.Combination {
 		requireNonNull(state);
 		synchronized (observableState) {
 			if (!findConsumer(state).isPresent()) {
-				boolean previousValue = get();
+				boolean previousValue = is();
 				stateListeners.add(new StateCombinationConsumer(state));
-				observableState.notifyObservers(get(), previousValue);
+				observableState.notifyObservers(is(), previousValue);
 			}
 		}
 	}
@@ -85,17 +85,17 @@ final class DefaultStateCombination implements State.Combination {
 	public void remove(ObservableState state) {
 		requireNonNull(state);
 		synchronized (observableState) {
-			boolean previousValue = get();
+			boolean previousValue = is();
 			findConsumer(state).ifPresent(consumer -> {
 				state.removeConsumer(consumer);
 				stateListeners.remove(consumer);
-				observableState.notifyObservers(get(), previousValue);
+				observableState.notifyObservers(is(), previousValue);
 			});
 		}
 	}
 
 	@Override
-	public Boolean get() {
+	public boolean is() {
 		synchronized (observableState) {
 			return get(conjunction, null, false);
 		}
@@ -114,7 +114,7 @@ final class DefaultStateCombination implements State.Combination {
 	private boolean get(Conjunction conjunction, @Nullable ObservableState exclude, boolean excludeReplacement) {
 		for (StateCombinationConsumer listener : stateListeners) {
 			ObservableState state = listener.state;
-			boolean value = state.equals(exclude) ? excludeReplacement : state.get();
+			boolean value = state.equals(exclude) ? excludeReplacement : state.is();
 			if (conjunction == Conjunction.AND) {
 				if (!value) {
 					return false;
@@ -144,7 +144,7 @@ final class DefaultStateCombination implements State.Combination {
 
 		@Override
 		public void accept(Boolean newValue) {
-			observableState.notifyObservers(get(), previousState(state, !newValue));
+			observableState.notifyObservers(is(), previousState(state, !newValue));
 		}
 
 		private boolean previousState(ObservableState excludeState, boolean previousValue) {
