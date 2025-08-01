@@ -4,19 +4,33 @@
 
 == Overview
 
-The Observable pattern is the foundation of Codion's reactive architecture. It provides a unified approach to change notification throughout the framework, from UI components to domain models. The pattern consists of four core abstractions:
+The Observable pattern is the foundation of Codion's reactive architecture. It provides a unified approach to change notification throughout the framework, from UI components to domain models. At its core is a single primitive from which all reactive types derive:
 
-* **Observer** - Manages listeners and consumers for change notifications
-* **Observable** - Combines a value accessor with change observation
+* **Observer** - The root reactive interface that manages listeners and consumers
+* **Observable** - Extends Observer, adding a value accessor
 * **Value** - Mutable observable wrapper for any object
-* **State** - Specialized boolean observable with null-to-false coercion
-* **Event** - Push-only notification mechanism
+* **State** - Specialized mutable boolean state
+* **Event** - Push-only notification mechanism implementing Observer
 
 == Core Architecture
 
+=== The Type Hierarchy
+
+[source]
+----
+Observer<T>                   (root reactive primitive)
+├── Observable<T>             (adds get() method)
+│   └── Value<T>              (mutable observable)
+├── ObservableState           (Observer<Boolean>)
+│   └── State                 (mutable boolean state)
+└── Event<T>                  (implements Observer<T>)
+----
+
+This hierarchy enables type-based discovery: any type that extends or implements `Observer` is reactive by definition.
+
 === Observer Interface
 
-The {url-javadoc}{common-core}/is/codion/common/observable/Observer.html[Observer] interface is the foundation for all change notification:
+The {url-javadoc}{common-core}/is/codion/common/observer/Observer.html[Observer] interface is the foundation for all change notification:
 
 [source,java]
 ----
@@ -45,11 +59,12 @@ Key design decisions:
 
 === Observable Interface
 
-{url-javadoc}{common-core}/is/codion/common/observable/Observable.html[Observable] combines value access with observation:
+{url-javadoc}{common-core}/is/codion/common/observer/Observable.html[Observable] combines value access with observation:
 
 [source,java]
 ----
 public interface Observable<T> extends Observer<T> {
+
     @Nullable T get();
     
     default T getOrThrow() {
@@ -81,7 +96,9 @@ public interface Value<T> extends Observable<T> {
     }
     
     void set(@Nullable T value);
+
     void clear();
+
     void map(UnaryOperator<T> mapper);
     
     // Linking support
@@ -135,8 +152,16 @@ display.link(source);  // display follows source changes
 
 [source,java]
 ----
-public interface State extends ObservableState, Value<Boolean> {
-    @NonNull Boolean get();  // Never null
+public interface State extends ObservableState {
+
+    void set(boolean value);
+
+    boolean is();
+
+    void toggle();
+
+    // Access to underlying Value
+    Value<Boolean> value();
     
     ObservableState observable();  // Read-only view
 }
@@ -155,7 +180,7 @@ enabled.is();   // true
 disabled.is();  // false
 
 enabled.set(false);
-disabled.get();  // true
+disabled.is();  // true
 
 // Common UI patterns
 State processing = State.state();
@@ -249,10 +274,30 @@ progress.accept(75);  // Both are called
 
 == Thread Safety
 
-1. **Listener Management**: Adding/removing listeners is synchronized
-2. **Value Updates**: Setting values is NOT thread safe
-3. **Notification Order**: Listeners are notified in registration order
-4. **Exception Handling**: Unhandled exceptions in listeners prevent further notifications
+The reactive components in Codion have a carefully designed thread safety model:
+
+=== Thread-Safe Components
+
+1. **State** - All operations are synchronized on an internal lock
+2. **ValueCollection** (ValueList, ValueSet) - All operations are synchronized on an internal lock
+3. **Listener Management** - Adding/removing listeners is always thread-safe across all components
+
+=== NOT Thread-Safe Components
+
+1. **Value** - The basic Value implementation is NOT thread-safe for mutations
+2. **Event Triggering** - Calling run() or accept() should be done from a single thread
+3. **Observable Access** - Reading values via get() while another thread is writing is not safe
+
+=== Design Rationale
+
+The decision to keep Value non-thread-safe was deliberate:
+
+1. **Performance** - Most UI applications perform mutations on a single thread (EDT in Swing)
+2. **Flexibility** - AbstractValue allows custom implementations that may have their own concurrency strategies
+3. **Notification Complexity** - Calling listeners inside synchronized blocks risks deadlocks and performance issues
+4. **Opt-in Safety** - Thread safety can be added where needed without forcing the cost on all users
+
+=== Exception Handling
 
 **Important**: If a listener throws an exception, subsequent listeners will not be notified. Always handle exceptions within your listeners:
 
@@ -428,10 +473,10 @@ public class Application {
 
 Codion's Observable pattern provides:
 
-1. **Unified change notification** across the framework
+1. **Single root primitive** - All reactive types derive from Observer<T>
 2. **Type-safe value observation** with validation
 3. **Memory-safe weak references** for UI components
-4. **Thread-safe implementation** for concurrent access
+4. **Selective thread safety** - State and collections are thread-safe, basic Values are not
 5. **Composable state management** for complex UI logic
 
-This pattern is fundamental to Codion's reactive architecture, enabling automatic UI updates, clean separation of concerns, and maintainable application state management.
+The threading model is designed for typical UI applications where mutations happen on a single thread (like Swing's EDT), while still providing thread-safe options (State, ValueCollection) where concurrency is common. This pragmatic approach avoids the complexity and performance costs of full thread safety while supporting concurrent scenarios where needed.

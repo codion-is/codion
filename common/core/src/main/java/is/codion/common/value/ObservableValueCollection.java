@@ -18,7 +18,7 @@
  */
 package is.codion.common.value;
 
-import is.codion.common.observable.Observable;
+import is.codion.common.observer.Observable;
 
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;

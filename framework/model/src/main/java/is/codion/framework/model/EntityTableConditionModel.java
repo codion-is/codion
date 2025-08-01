@@ -21,7 +21,7 @@ package is.codion.framework.model;
 import is.codion.common.Conjunction;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
-import is.codion.common.observable.Observer;
+import is.codion.common.observer.Observer;
 import is.codion.common.state.ObservableState;
 import is.codion.common.value.ValueSet;
 import is.codion.framework.db.EntityConnectionProvider;

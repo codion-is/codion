@@ -18,7 +18,7 @@
  */
 package is.codion.tools.loadtest.ui;
 
-import is.codion.common.observable.Observable;
+import is.codion.common.observer.Observable;
 import is.codion.common.value.AbstractValue;
 import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.ui.component.Components;

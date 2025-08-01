@@ -19,8 +19,8 @@
 package is.codion.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.observable.Observable;
-import is.codion.common.observable.Observer;
+import is.codion.common.observer.Observable;
+import is.codion.common.observer.Observer;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;

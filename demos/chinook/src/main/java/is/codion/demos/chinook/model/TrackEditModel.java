@@ -19,7 +19,7 @@
 package is.codion.demos.chinook.model;
 
 import is.codion.common.event.Event;
-import is.codion.common.observable.Observer;
+import is.codion.common.observer.Observer;
 import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;

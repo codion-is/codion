@@ -20,7 +20,7 @@ package is.codion.swing.common.model.component.list;
 
 import is.codion.common.event.Event;
 import is.codion.common.model.filter.FilterModel.VisibleItems.ItemsListener;
-import is.codion.common.observable.Observer;
+import is.codion.common.observer.Observer;
 import is.codion.common.value.Value;
 
 import org.jspecify.annotations.Nullable;

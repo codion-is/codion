@@ -18,7 +18,7 @@
  */
 package is.codion.common.state;
 
-import is.codion.common.observable.Observer;
+import is.codion.common.observer.Observer;
 import is.codion.common.value.Value;
 import is.codion.common.value.Value.Notify;
 import is.codion.common.value.Value.Validator;

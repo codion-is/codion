@@ -19,7 +19,7 @@
 package is.codion.common.state;
 
 import is.codion.common.Conjunction;
-import is.codion.common.observable.Observer;
+import is.codion.common.observer.Observer;
 
 import org.jspecify.annotations.Nullable;
 

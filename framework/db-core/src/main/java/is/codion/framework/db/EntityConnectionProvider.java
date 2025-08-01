@@ -18,7 +18,7 @@
  */
 package is.codion.framework.db;
 
-import is.codion.common.observable.Observer;
+import is.codion.common.observer.Observer;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;

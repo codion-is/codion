@@ -28,7 +28,7 @@ import is.codion.common.model.filter.FilterModel.VisibleItems;
 import is.codion.common.model.filter.FilterModel.VisibleItems.ItemsListener;
 import is.codion.common.model.filter.FilterModel.VisiblePredicate;
 import is.codion.common.model.selection.MultiSelection;
-import is.codion.common.observable.Observer;
+import is.codion.common.observer.Observer;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
 

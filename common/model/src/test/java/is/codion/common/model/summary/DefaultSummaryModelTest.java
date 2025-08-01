@@ -20,7 +20,7 @@ package is.codion.common.model.summary;
 
 import is.codion.common.event.Event;
 import is.codion.common.model.summary.SummaryModel.SummaryValues;
-import is.codion.common.observable.Observer;
+import is.codion.common.observer.Observer;
 
 import org.junit.jupiter.api.Test;
 

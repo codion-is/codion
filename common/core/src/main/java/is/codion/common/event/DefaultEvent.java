@@ -18,7 +18,7 @@
  */
 package is.codion.common.event;
 
-import is.codion.common.observable.Observer;
+import is.codion.common.observer.Observer;
 
 import org.jspecify.annotations.Nullable;
 

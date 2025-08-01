@@ -22,7 +22,7 @@ import is.codion.common.db.database.Database;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.preferences.UserPreferences;
-import is.codion.common.observable.Observable;
+import is.codion.common.observer.Observable;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 import is.codion.swing.common.ui.Utilities;

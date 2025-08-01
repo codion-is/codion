@@ -19,7 +19,7 @@
 package is.codion.common.model.condition;
 
 import is.codion.common.Operator;
-import is.codion.common.observable.Observer;
+import is.codion.common.observer.Observer;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;

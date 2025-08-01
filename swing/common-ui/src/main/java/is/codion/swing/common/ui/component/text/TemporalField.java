@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.format.LocaleDateTimePattern;
-import is.codion.common.observable.Observable;
+import is.codion.common.observer.Observable;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;

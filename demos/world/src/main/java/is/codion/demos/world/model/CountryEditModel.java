@@ -18,7 +18,7 @@
  */
 package is.codion.demos.world.model;
 
-import is.codion.common.observable.Observable;
+import is.codion.common.observer.Observable;
 import is.codion.common.value.Value;
 import is.codion.demos.world.domain.api.World.City;
 import is.codion.demos.world.domain.api.World.Country;

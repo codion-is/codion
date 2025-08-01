@@ -18,7 +18,7 @@
  */
 package is.codion.common.model.summary;
 
-import is.codion.common.observable.Observable;
+import is.codion.common.observer.Observable;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 
