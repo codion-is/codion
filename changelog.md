@@ -29,6 +29,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EditComponentFactory.component(), value parameter removed.
 - EntityDialogs.EntitySelectionDialogBuilder.SelectionStep added.
+- EntityDialogs.EntitySelectionDialogBuilder now throws CancelException when selection is cancelled.
 
 ## 0.18.42
 ### is.codion.common.model

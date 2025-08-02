@@ -19,8 +19,10 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.i18n.Messages;
+import is.codion.common.model.CancelException;
 import is.codion.common.observer.Observable;
 import is.codion.common.resource.MessageBundle;
+import is.codion.common.state.State;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Entity.Copy;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -270,12 +272,14 @@ public final class EntityDialogs {
 			/**
 			 * Displays the {@link EntityTablePanel} for selecting one or more entities
 			 * @return a List containing the selected entities or an empty list in case the selection was cancelled
+			 * @throws CancelException in case the selection was cancelled
 			 */
 			List<Entity> multiple();
 
 			/**
 			 * Displays the {@link EntityTablePanel} for selecting a single entity
-			 * @return the selected entity or {@link Optional#empty()} in case the selection was cancelled
+			 * @return the selected entity or {@link Optional#empty()}
+			 * @throws CancelException in case the selection was cancelled
 			 */
 			Optional<Entity> single();
 		}
@@ -519,6 +523,7 @@ public final class EntityDialogs {
 	private static final class EntitySearchDialog {
 
 		private final EntityTablePanel tablePanel;
+		private final State cancelled = State.state();
 
 		private EntitySearchDialog(EntityTablePanel tablePanel, @Nullable Window owner, @Nullable Point location,
 															 @Nullable Component locationRelativeTo, @Nullable Observable<String> title, @Nullable ImageIcon icon,
@@ -572,6 +577,7 @@ public final class EntityDialogs {
 		private void cancel() {
 			tablePanel.tableModel().selection().clear();
 			disposeParentWindow(tablePanel);
+			cancelled.set(true);
 		}
 
 		private void search() {
@@ -588,6 +594,10 @@ public final class EntityDialogs {
 		}
 
 		private List<Entity> selectedEntities() {
+			if (cancelled.is()) {
+				throw new CancelException();
+			}
+
 			return tablePanel.tableModel().selection().items().get();
 		}
 	}
