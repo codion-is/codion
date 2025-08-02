@@ -64,7 +64,8 @@ public final class ArtistTablePanel extends EntityTablePanel {
 						.owner(this)
 						.title("Select the artist to keep")
 						.comparator(Text.collator())
-						.selectSingle()
+						.select()
+						.single()
 						.orElseThrow(CancelException::new);
 
 		List<Entity> artistsToDelete = new ArrayList<>(selectedArtists);

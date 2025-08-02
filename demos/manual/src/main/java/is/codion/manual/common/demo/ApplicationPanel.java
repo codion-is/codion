@@ -389,7 +389,8 @@ public final class ApplicationPanel extends JPanel {
 						.list(List.of("a", "few", "short", "strings", "to", "choose", "from"))
 						.owner(stringField)
 						.defaultSelection("strings")
-						.selectSingle()
+						.select()
+						.single()
 						.ifPresent(stringField::setText);
 	}
 

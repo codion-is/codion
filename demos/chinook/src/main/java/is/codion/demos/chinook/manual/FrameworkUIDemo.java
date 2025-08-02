@@ -291,7 +291,8 @@ final class FrameworkUIDemo {
 				Dialogs.select()
 								.list(editModel().connection().select(Customer.STATE))
 								.owner(stateField)
-								.selectSingle()
+								.select()
+								.single()
 								.ifPresent(stateField::setText);
 			}
 		}

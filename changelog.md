@@ -21,12 +21,14 @@ Codion Change Log
 - MenuBuilder.menuItemBuilder() and toggleMenuItemBuilder() renamed controlMenuItem() and toggleControlMenuItem(), now take Function instead of builder, actionMenuItem() added.
 - ToggleButtonBuilder, ToggleMenuItemBuilder.toggleControl() renamed toggle().
 - ColumnConditionPanel bug fixed, changes to wildcards in the model now reflected in the popup menu.
+- ListSelectionDialogBuilder.SelectionStep added.
 ### is.codion.framework.domain
 - EntityDefinition.Attributes.getOrThrow(attributeName) added.
 ### is.codion.framework.db
 - EntityConnection.Update.set() value parameter now @Nullable.
 ### is.codion.swing.framework.ui
 - EditComponentFactory.component(), value parameter removed.
+- EntityDialogs.EntitySelectionDialogBuilder.SelectionStep added.
 
 ## 0.18.42
 ### is.codion.common.model

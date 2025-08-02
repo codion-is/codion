@@ -258,16 +258,27 @@ public final class EntityDialogs {
 		EntitySelectionDialogBuilder includeSearchButton(boolean includeSearchButton);
 
 		/**
-		 * Displays the {@link EntityTablePanel} for selecting one or more entities
-		 * @return a List containing the selected entities or an empty list in case the selection was cancelled
+		 * @return a {@link SelectionStep}
 		 */
-		List<Entity> select();
+		SelectionStep select();
 
 		/**
-		 * Displays the {@link EntityTablePanel} for selecting a single entity
-		 * @return the selected entity or {@link Optional#empty()} in case the selection was cancelled
+		 * Provides selection for single or multiple entities.
 		 */
-		Optional<Entity> selectSingle();
+		interface SelectionStep {
+
+			/**
+			 * Displays the {@link EntityTablePanel} for selecting one or more entities
+			 * @return a List containing the selected entities or an empty list in case the selection was cancelled
+			 */
+			List<Entity> multiple();
+
+			/**
+			 * Displays the {@link EntityTablePanel} for selecting a single entity
+			 * @return the selected entity or {@link Optional#empty()} in case the selection was cancelled
+			 */
+			Optional<Entity> single();
+		}
 	}
 
 	private static final class DefaultEditAttributeDialogBuilder<T> extends AbstractDialogBuilder<EditAttributeDialogBuilder<T>>
@@ -483,17 +494,25 @@ public final class EntityDialogs {
 		}
 
 		@Override
-		public List<Entity> select() {
-			return new EntitySearchDialog(tablePanel, owner, location,
-							locationRelativeTo, title, icon, false, includeSearchButton).selectedEntities();
+		public SelectionStep select() {
+			return new DefaultSelectionStep();
 		}
 
-		@Override
-		public Optional<Entity> selectSingle() {
-			List<Entity> entities = new EntitySearchDialog(tablePanel, owner, location,
-							locationRelativeTo, title, icon, true, includeSearchButton).selectedEntities();
+		private final class DefaultSelectionStep implements SelectionStep {
 
-			return entities.isEmpty() ? Optional.empty() : Optional.of(entities.get(0));
+			@Override
+			public List<Entity> multiple() {
+				return new EntitySearchDialog(tablePanel, owner, location,
+								locationRelativeTo, title, icon, false, includeSearchButton).selectedEntities();
+			}
+
+			@Override
+			public Optional<Entity> single() {
+				List<Entity> entities = new EntitySearchDialog(tablePanel, owner, location,
+								locationRelativeTo, title, icon, true, includeSearchButton).selectedEntities();
+
+				return entities.isEmpty() ? Optional.empty() : Optional.of(entities.get(0));
+			}
 		}
 	}
 

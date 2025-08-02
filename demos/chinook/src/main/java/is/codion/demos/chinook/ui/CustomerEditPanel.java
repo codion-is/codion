@@ -110,7 +110,8 @@ public final class CustomerEditPanel extends EntityEditPanel {
 		Dialogs.select()
 						.list(editModel().connection().select(Customer.STATE))
 						.owner(stateField)
-						.selectSingle()
+						.select()
+						.single()
 						.ifPresent(stateField::setText);
 	}
 }

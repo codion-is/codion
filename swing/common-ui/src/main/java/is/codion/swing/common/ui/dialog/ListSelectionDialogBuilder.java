@@ -58,14 +58,25 @@ public interface ListSelectionDialogBuilder<T> extends SelectionDialogBuilder<T,
 	ListSelectionDialogBuilder<T> comparator(@Nullable Comparator<T> comparator);
 
 	/**
-	 * @return the selected value, {@link Optional#empty()} if none was selected
-	 * @throws is.codion.common.model.CancelException in case the user cancelled
+	 * @return a {@link SelectionStep}
 	 */
-	Optional<T> selectSingle();
+	SelectionStep<T> select();
 
 	/**
-	 * @return the selected values, an empty Collection if none was selected
-	 * @throws is.codion.common.model.CancelException in case the user cancelled
+	 * Provides selection for single or multiple items.
 	 */
-	Collection<T> select();
+	interface SelectionStep<T> {
+
+		/**
+		 * @return the selected value, {@link Optional#empty()} if none was selected
+		 * @throws is.codion.common.model.CancelException in case the user cancelled
+		 */
+		Optional<T> single();
+
+		/**
+		 * @return the selected values, an empty Collection if none was selected
+		 * @throws is.codion.common.model.CancelException in case the user cancelled
+		 */
+		Collection<T> multiple();
+	}
 }

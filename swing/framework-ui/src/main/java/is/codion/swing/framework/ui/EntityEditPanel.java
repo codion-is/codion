@@ -252,7 +252,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 							.list(sortedDefinitions)
 							.owner(this)
 							.title(FrameworkMessages.selectInputField())
-							.selectSingle()
+							.select()
+							.single()
 							.ifPresent(attributeDefinition -> focus().request(attributeDefinition.attribute()));
 		}
 	}

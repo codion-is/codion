@@ -645,7 +645,8 @@ public class EntityTablePanel extends JPanel {
 		Dialogs.select()
 						.list(sortedDefinitions)
 						.owner(this)
-						.selectSingle()
+						.select()
+						.single()
 						.map(AttributeDefinition::attribute)
 						.ifPresent(this::editSelected);
 	}

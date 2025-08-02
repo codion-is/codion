@@ -154,7 +154,8 @@ public abstract class TableConditionPanel<C> extends JPanel {
 							.list(panelItems)
 							.owner(dialogOwner)
 							.title(MESSAGES.getString("select_condition"))
-							.selectSingle()
+							.select()
+							.single()
 							.map(Item::get)
 							.ifPresent(conditionPanel -> {
 								view().map(conditionView -> conditionView == HIDDEN ? SIMPLE : conditionView);

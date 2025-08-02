@@ -39,13 +39,13 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static is.codion.swing.common.ui.Utilities.disposeParentWindow;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.util.Collections.reverseOrder;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 
 final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialogBuilder<T, ListSelectionDialogBuilder<T>>
@@ -88,105 +88,109 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 	}
 
 	@Override
-	public Optional<T> selectSingle() {
-		return selectSingle(dialogSize);
+	public SelectionStep<T> select() {
+		return new DefaultSelectionStep();
 	}
 
-	@Override
-	public Collection<T> select() {
-		return select(false, dialogSize);
-	}
+	private final class DefaultSelectionStep implements SelectionStep<T> {
 
-	private Optional<T> selectSingle(@Nullable Dimension dialogSize) {
-		List<T> selected = select(true, dialogSize);
-		if (selected.isEmpty()) {
-			return Optional.empty();
-		}
-
-		return Optional.of(selected.get(0));
-	}
-
-	private List<T> select(boolean singleSelection, @Nullable Dimension dialogSize) {
-		FilterList<T> list = createList(singleSelection);
-		Control okControl = Control.builder()
-						.command(() -> disposeParentWindow(list))
-						.enabled(allowEmptySelection ? null : createSelectionNonEmptyState(list))
-						.build();
-		list.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 2) {
-					okControl.actionPerformed(null);
-				}
+		@Override
+		public Optional<T> single() {
+			List<T> selected = select(true, dialogSize);
+			if (selected.isEmpty()) {
+				return Optional.empty();
 			}
-		});
-		State cancelledState = State.state();
-		Runnable onCancel = () -> {
-			list.clearSelection();
-			cancelledState.set(true);
-		};
-		OkCancelDialogBuilder dialogBuilder = new DefaultOkCancelDialogBuilder()
-						.component(new JScrollPane(list))
-						.owner(owner)
-						.locationRelativeTo(locationRelativeTo)
-						.title(createTitle(singleSelection))
-						.size(dialogSize)
-						.okAction(okControl)
-						.onCancel(onCancel);
-		onBuildConsumers.forEach(dialogBuilder::onBuild);
 
-		JDialog dialog = dialogBuilder.build();
-		if (dialog.getSize().width > MAX_SELECT_VALUE_DIALOG_WIDTH) {
-			dialog.setSize(new Dimension(MAX_SELECT_VALUE_DIALOG_WIDTH, dialog.getSize().height));
-		}
-		dialog.setVisible(true);
-		if (cancelledState.is()) {
-			throw new CancelException();
+			return Optional.of(selected.get(0));
 		}
 
-		return list.getSelectedValuesList();
-	}
-
-	private FilterList<T> createList(boolean singleSelection) {
-		FilterListModel<T> model = FilterListModel.builder()
-						.items(values)
-						.comparator(comparator)
-						.build();
-		FilterList<T> list = Components.list()
-						.model(model)
-						.items()
-						.build();
-		if (singleSelection) {
-			list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		}
-		list.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(VK_ENTER, 0), "none");
-
-		List<Integer> sortedDefaultSelectedIndexes = defaultSelection.stream()
-						.mapToInt(model.items().visible()::indexOf)
-						.boxed()
-						.sorted(reverseOrder())//reverse order so that topmost item is selected last
-						.collect(Collectors.toList());
-		sortedDefaultSelectedIndexes.forEach(model.selection().indexes()::add);
-		sortedDefaultSelectedIndexes.stream()
-						.mapToInt(Integer::intValue)
-						.min()
-						.ifPresent(list::ensureIndexIsVisible);
-
-		return list;
-	}
-
-	private @Nullable String createTitle(boolean singleSelection) {
-		if (singleSelection) {
-			return title == null ? MESSAGES.getString("select_value") : title.get();
+		@Override
+		public Collection<T> multiple() {
+			return select(false, dialogSize);
 		}
 
-		return title == null ? MESSAGES.getString("select_values") : title.get();
-	}
+		private List<T> select(boolean singleSelection, @Nullable Dimension dialogSize) {
+			FilterList<T> list = createList(singleSelection);
+			Control okControl = Control.builder()
+							.command(() -> disposeParentWindow(list))
+							.enabled(allowEmptySelection ? null : createSelectionNonEmptyState(list))
+							.build();
+			list.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					if (e.getClickCount() == 2) {
+						okControl.actionPerformed(null);
+					}
+				}
+			});
+			State cancelledState = State.state();
+			Runnable onCancel = () -> {
+				list.clearSelection();
+				cancelledState.set(true);
+			};
+			OkCancelDialogBuilder dialogBuilder = new DefaultOkCancelDialogBuilder()
+							.component(new JScrollPane(list))
+							.owner(owner)
+							.locationRelativeTo(locationRelativeTo)
+							.title(createTitle(singleSelection))
+							.size(dialogSize)
+							.okAction(okControl)
+							.onCancel(onCancel);
+			onBuildConsumers.forEach(dialogBuilder::onBuild);
 
-	private static State createSelectionNonEmptyState(FilterList<?> list) {
-		State selectionNonEmptyState = State.state(!list.getSelectionModel().isSelectionEmpty());
-		list.addListSelectionListener(e -> selectionNonEmptyState.set(!list.getSelectionModel().isSelectionEmpty()));
+			JDialog dialog = dialogBuilder.build();
+			if (dialog.getSize().width > MAX_SELECT_VALUE_DIALOG_WIDTH) {
+				dialog.setSize(new Dimension(MAX_SELECT_VALUE_DIALOG_WIDTH, dialog.getSize().height));
+			}
+			dialog.setVisible(true);
+			if (cancelledState.is()) {
+				throw new CancelException();
+			}
 
-		return selectionNonEmptyState;
+			return list.getSelectedValuesList();
+		}
+
+		private FilterList<T> createList(boolean singleSelection) {
+			FilterListModel<T> model = FilterListModel.builder()
+							.items(values)
+							.comparator(comparator)
+							.build();
+			FilterList<T> list = Components.list()
+							.model(model)
+							.items()
+							.build();
+			if (singleSelection) {
+				list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			}
+			list.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(VK_ENTER, 0), "none");
+
+			List<Integer> sortedDefaultSelectedIndexes = defaultSelection.stream()
+							.mapToInt(model.items().visible()::indexOf)
+							.boxed()
+							.sorted(reverseOrder())//reverse order so that topmost item is selected last
+							.collect(toList());
+			sortedDefaultSelectedIndexes.forEach(model.selection().indexes()::add);
+			sortedDefaultSelectedIndexes.stream()
+							.mapToInt(Integer::intValue)
+							.min()
+							.ifPresent(list::ensureIndexIsVisible);
+
+			return list;
+		}
+
+		private @Nullable String createTitle(boolean singleSelection) {
+			if (singleSelection) {
+				return title == null ? MESSAGES.getString("select_value") : title.get();
+			}
+
+			return title == null ? MESSAGES.getString("select_values") : title.get();
+		}
+
+		private static State createSelectionNonEmptyState(FilterList<?> list) {
+			State selectionNonEmptyState = State.state(!list.getSelectionModel().isSelectionEmpty());
+			list.addListSelectionListener(e -> selectionNonEmptyState.set(!list.getSelectionModel().isSelectionEmpty()));
+
+			return selectionNonEmptyState;
+		}
 	}
 }
