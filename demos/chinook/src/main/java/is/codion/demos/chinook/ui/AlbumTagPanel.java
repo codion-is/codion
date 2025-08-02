@@ -83,8 +83,12 @@ final class AlbumTagPanel extends JPanel {
 		setupKeyEvents();
 	}
 
-	ComponentValue<List<String>, FilterList<String>> tagsValue() {
-		return tagsValue;
+	List<String> get() {
+		return tagsValue.get();
+	}
+
+	void set(List<String> value) {
+		tagsValue.set(value);
 	}
 
 	private JPanel createCenterPanel() {

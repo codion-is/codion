@@ -126,12 +126,12 @@ public final class AlbumTablePanel extends EntityTablePanel {
 
 		@Override
 		protected List<String> getComponentValue() {
-			return component().tagsValue().get();
+			return component().get();
 		}
 
 		@Override
 		protected void setComponentValue(List<String> value) {
-			component().tagsValue().set(value);
+			component().set(value);
 		}
 	}
 }
