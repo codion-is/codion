@@ -56,7 +56,7 @@ final class EntityTableCellEditorFactory implements FilterTableCellEditor.Factor
 						new DefaultEditComponentFactory<>((Attribute<Object>) attribute);
 
 		return Optional.of(FilterTableCellEditor.builder()
-						.component(() -> componentFactory.component(editModel, null))
+						.component(() -> componentFactory.component(editModel))
 						.build());
 	}
 

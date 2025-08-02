@@ -19,7 +19,6 @@
 package is.codion.swing.framework.ui.component;
 
 import is.codion.common.property.PropertyValue;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
@@ -29,8 +28,6 @@ import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
-
-import org.jspecify.annotations.Nullable;
 
 import javax.swing.JComponent;
 import java.time.temporal.Temporal;
@@ -68,26 +65,23 @@ public class DefaultEditComponentFactory<T, C extends JComponent> implements Edi
 	}
 
 	@Override
-	public ComponentValue<T, C> component(SwingEntityEditModel editModel, @Nullable T value) {
+	public ComponentValue<T, C> component(SwingEntityEditModel editModel) {
 		requireNonNull(editModel);
 		if (attribute instanceof ForeignKey) {
-			return createForeignKeyComponentValue((ForeignKey) attribute, editModel, (Entity) value);
+			return createForeignKeyComponentValue((ForeignKey) attribute, editModel);
 		}
 		if (attribute.type().isTemporal()) {
-			return createTemporalComponentValue(attribute, (Temporal) value, entityComponents(editModel.entityDefinition()));
+			return createTemporalComponentValue(attribute, entityComponents(editModel.entityDefinition()));
 		}
 		EntityComponents components = entityComponents(editModel.entityDefinition());
 		AttributeDefinition<T> definition = editModel.entityDefinition().attributes().definition(attribute);
 		if (attribute.type().isString() && definition.items().isEmpty()) {
 			return (ComponentValue<T, C>) components.textFieldPanel((Attribute<String>) attribute)
-							.value((String) value)
-							.columns(textFieldColumns((AttributeDefinition<String>) definition, (String) value))
+							.columns(textFieldColumns((AttributeDefinition<String>) definition))
 							.buildValue();
 		}
 
-		return (ComponentValue<T, C>) components.component(attribute)
-						.value(value)
-						.buildValue();
+		return (ComponentValue<T, C>) components.component(attribute).buildValue();
 	}
 
 	/**
@@ -122,36 +116,29 @@ public class DefaultEditComponentFactory<T, C extends JComponent> implements Edi
 						.searchOnFocusLost(false);
 	}
 
-	private ComponentValue<T, C> createForeignKeyComponentValue(ForeignKey foreignKey, SwingEntityEditModel editModel, @Nullable Entity value) {
+	private ComponentValue<T, C> createForeignKeyComponentValue(ForeignKey foreignKey, SwingEntityEditModel editModel) {
 		if (editModel.entities().definition(foreignKey.referencedType()).smallDataset()) {
 			return (ComponentValue<T, C>) comboBox(foreignKey, editModel.entityDefinition(), editModel.createComboBoxModel(foreignKey))
-							.value(value)
 							.onSetVisible(comboBox -> comboBox.getModel().items().refresh())
 							.buildValue();
 		}
 
 		return (ComponentValue<T, C>) searchField(foreignKey, editModel.entityDefinition(), editModel.createSearchModel(foreignKey))
-						.value(value)
 						.buildValue();
 	}
 
-	private static <T, A extends Attribute<T>, C extends JComponent> ComponentValue<T, C> createTemporalComponentValue(A attribute, @Nullable Temporal value,
+	private static <T, A extends Attribute<T>, C extends JComponent> ComponentValue<T, C> createTemporalComponentValue(A attribute,
 																																																										 EntityComponents inputComponents) {
 		if (TemporalFieldPanel.supports((Class<Temporal>) attribute.type().valueClass())) {
-			return (ComponentValue<T, C>) inputComponents.temporalFieldPanel((Attribute<Temporal>) attribute)
-							.value(value)
-							.buildValue();
+			return (ComponentValue<T, C>) inputComponents.temporalFieldPanel((Attribute<Temporal>) attribute).buildValue();
 		}
 
-		return (ComponentValue<T, C>) inputComponents.temporalField((Attribute<Temporal>) attribute)
-						.value(value)
-						.buildValue();
+		return (ComponentValue<T, C>) inputComponents.temporalField((Attribute<Temporal>) attribute).buildValue();
 	}
 
-	private static int textFieldColumns(AttributeDefinition<String> definition, @Nullable String value) {
+	private static int textFieldColumns(AttributeDefinition<String> definition) {
 		int defaultTextFieldColumns = DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow();
-		if (definition.maximumLength() > defaultTextFieldColumns ||
-						(value != null && value.length() > defaultTextFieldColumns)) {
+		if (definition.maximumLength() > defaultTextFieldColumns) {
 			return MAXIMUM_TEXT_FIELD_COLUMNS;
 		}
 

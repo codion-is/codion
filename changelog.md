@@ -23,6 +23,8 @@ Codion Change Log
 - EntityDefinition.Attributes.getOrThrow(attributeName) added.
 ### is.codion.framework.db
 - EntityConnection.Update.set() value parameter now @Nullable.
+### is.codion.swing.framework.ui
+- EditComponentFactory.component(), value parameter removed.
 
 ## 0.18.42
 ### is.codion.common.model

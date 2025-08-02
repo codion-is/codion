@@ -41,10 +41,10 @@ public final class DefaultEditComponentFactoryTest {
 
 	@Test
 	void test() {
-		new DefaultEditComponentFactory<>(Detail.MASTER_FK).component(editModel, null);
-		new DefaultEditComponentFactory<>(Detail.DETAIL_FK).component(editModel, null);
+		new DefaultEditComponentFactory<>(Detail.MASTER_FK).component(editModel);
+		new DefaultEditComponentFactory<>(Detail.DETAIL_FK).component(editModel);
 
-		new DefaultEditComponentFactory<>(Detail.INT).component(editModel, null);
-		new DefaultEditComponentFactory<>(Detail.INT_DERIVED).component(editModel, null);
+		new DefaultEditComponentFactory<>(Detail.INT).component(editModel);
+		new DefaultEditComponentFactory<>(Detail.INT_DERIVED).component(editModel);
 	}
 }

@@ -39,6 +39,7 @@ import javax.swing.JDialog;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import static is.codion.demos.chinook.ui.TrackTablePanel.RATINGS;
@@ -106,19 +107,17 @@ public final class AlbumTablePanel extends EntityTablePanel {
 					implements EditComponentFactory<List<String>, AlbumTagPanel> {
 
 		@Override
-		public ComponentValue<List<String>, AlbumTagPanel> component(SwingEntityEditModel editModel,
-																																 List<String> value) {
-			return new TagComponentValue(value);
+		public ComponentValue<List<String>, AlbumTagPanel> component(SwingEntityEditModel editModel) {
+			return new TagComponentValue();
 		}
 	}
 
 	private static final class TagComponentValue extends AbstractComponentValue<List<String>, AlbumTagPanel> {
 
-		private TagComponentValue(List<String> tags) {
+		private TagComponentValue() {
 			super(new AlbumTagPanel(Components.list()
 							.model(FilterListModel.builder()
-											// The initial tags to display
-											.items(tags)
+											.items(Collections.<String>emptyList())
 											.build())
 							// A list component value based on the items in
 							// the model, as opposed to the selected items

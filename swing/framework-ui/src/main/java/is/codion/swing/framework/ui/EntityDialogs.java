@@ -330,7 +330,8 @@ public final class EntityDialogs {
 				throw new IllegalArgumentException("All entities must be of the same type when editing");
 			}
 
-			ComponentValue<T, ?> componentValue = editComponentFactory.component(editModel, defaultValue.apply(entities));
+			ComponentValue<T, ?> componentValue = editComponentFactory.component(editModel);
+			componentValue.set(defaultValue.apply(entities));
 			Dialogs.input()
 							.component(componentValue)
 							.owner(owner)

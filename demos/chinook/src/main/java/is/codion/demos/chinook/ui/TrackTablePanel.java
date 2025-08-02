@@ -143,11 +143,8 @@ public final class TrackTablePanel extends EntityTablePanel {
 					implements EditComponentFactory<Integer, JSpinner> {
 
 		@Override
-		public ComponentValue<Integer, JSpinner> component(SwingEntityEditModel editModel,
-																											 Integer value) {
-			return ratingSpinner(editModel.entityDefinition())
-							.value(value)
-							.buildValue();
+		public ComponentValue<Integer, JSpinner> component(SwingEntityEditModel editModel) {
+			return ratingSpinner(editModel.entityDefinition()).buildValue();
 		}
 	}
 
@@ -160,11 +157,8 @@ public final class TrackTablePanel extends EntityTablePanel {
 		}
 
 		@Override
-		public ComponentValue<Integer, DurationPanel> component(SwingEntityEditModel editModel, Integer value) {
-			DurationComponentValue durationValue = new DurationComponentValue(false);
-			durationValue.set(value);
-
-			return durationValue;
+		public ComponentValue<Integer, DurationPanel> component(SwingEntityEditModel editModel) {
+			return new DurationComponentValue(false);
 		}
 	}
 }
