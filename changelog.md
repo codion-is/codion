@@ -9,6 +9,7 @@ Codion Change Log
 - package is.codion.common.observable renamed observer.
 ### is.codion.swing.common.model
 - NullableToggleButtonModel.ToggleState removed, get() and set() added, related refactoring.
+- FilterListModel.Builder.ItemsStep.items() parameterless overload added.
 ### is.codion.swing.common.ui
 - FilterTableCellEditor.Builder added, cellEditable now configurable.
 - CalendarPanel.Builder.includeWeekNumbers added along with WEEK_NUMBERS configuration value.

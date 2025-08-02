@@ -28,11 +28,11 @@ import org.jspecify.annotations.Nullable;
 import javax.swing.AbstractListModel;
 import javax.swing.SortOrder;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.SortOrder.*;
 
@@ -161,13 +161,18 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 	private static final class DefaultItemsStep implements Builder.ItemsStep {
 
 		@Override
+		public <T> Builder<T> items() {
+			return new DefaultBuilder<>(emptyList(), null);
+		}
+
+		@Override
 		public <T> Builder<T> items(Collection<T> items) {
-			return new DefaultBuilder<>(items, null);
+			return new DefaultBuilder<>(requireNonNull(items), null);
 		}
 
 		@Override
 		public <T> Builder<T> items(Supplier<Collection<T>> items) {
-			return new DefaultBuilder<>(null, requireNonNull(items));
+			return new DefaultBuilder<>(emptyList(), requireNonNull(items));
 		}
 	}
 
@@ -182,8 +187,8 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 		private boolean async = ASYNC.getOrThrow();
 		private @Nullable Predicate<T> visiblePredicate;
 
-		private DefaultBuilder(@Nullable Collection<T> items, @Nullable Supplier<? extends Collection<T>> supplier) {
-			this.items = items == null ? Collections.emptyList() : items;
+		private DefaultBuilder(Collection<T> items, @Nullable Supplier<? extends Collection<T>> supplier) {
+			this.items = items;
 			this.supplier = supplier;
 		}
 

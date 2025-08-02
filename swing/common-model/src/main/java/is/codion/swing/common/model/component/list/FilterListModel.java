@@ -62,6 +62,12 @@ public interface FilterListModel<T> extends ListModel<T>, FilterModel<T> {
 
 			/**
 			 * @param <T> the item type
+			 * @return a new {@link Builder} instance
+			 */
+			<T> FilterListModel.Builder<T> items();
+
+			/**
+			 * @param <T> the item type
 			 * @param items the items to add to the model
 			 * @return a new {@link Builder} instance
 			 */

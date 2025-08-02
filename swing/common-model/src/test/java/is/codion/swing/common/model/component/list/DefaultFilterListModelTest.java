@@ -25,7 +25,6 @@ import org.junit.jupiter.api.Test;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -212,7 +211,7 @@ final class DefaultFilterListModelTest {
 	@Test
 	void emptyModel() {
 		FilterListModel<String> model = FilterListModel.builder()
-						.items(Collections.<String>emptyList())
+						.<String>items()
 						.build();
 
 		assertEquals(0, model.getSize());
@@ -256,13 +255,13 @@ final class DefaultFilterListModelTest {
 	void builderConfiguration() {
 		// Test various builder configurations
 		FilterListModel<String> asyncModel = FilterListModel.builder()
-						.items(Collections.<String>emptyList())
+						.<String>items()
 						.async(true)
 						.build();
 		assertTrue(asyncModel.items().refresher().async().is());
 
 		FilterListModel<String> syncModel = FilterListModel.builder()
-						.items(Collections.<String>emptyList())
+						.<String>items()
 						.async(false)
 						.build();
 		assertFalse(syncModel.items().refresher().async().is());

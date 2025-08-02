@@ -39,7 +39,6 @@ import javax.swing.JDialog;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 import static is.codion.demos.chinook.ui.TrackTablePanel.RATINGS;
@@ -117,7 +116,7 @@ public final class AlbumTablePanel extends EntityTablePanel {
 		private TagComponentValue() {
 			super(new AlbumTagPanel(Components.list()
 							.model(FilterListModel.builder()
-											.items(Collections.<String>emptyList())
+											.<String>items()
 											.build())
 							// A list component value based on the items in
 							// the model, as opposed to the selected items
