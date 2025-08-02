@@ -312,6 +312,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 						.filter(item -> !itemSet.contains(item))
 						.forEach(this::remove);
 		items.forEach(this::merge);
+		visible.sort();
 	}
 
 	private void merge(R item) {

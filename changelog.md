@@ -11,6 +11,7 @@ Codion Change Log
 ### is.codion.swing.common.model
 - NullableToggleButtonModel.ToggleState removed, get() and set() added, related refactoring.
 - FilterListModel.Builder.ItemsStep.items() parameterless overload added.
+- DefaultListSelection.SelectedIndexes no longer clears the selection when set, preventing an empty selection event.
 ### is.codion.swing.common.ui
 - FilterTableCellEditor.Builder added, cellEditable now configurable.
 - CalendarPanel.Builder.includeWeekNumbers added along with WEEK_NUMBERS configuration value.

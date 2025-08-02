@@ -329,4 +329,66 @@ public class FilterListSelectionTest {
 		testModel.removeIndexInterval(0, 1);
 		assertEquals(5, changingCounter.get());
 	}
+
+	@Test
+	void surgicalSelectionUpdate() {
+		// Test that setting the same selection doesn't trigger unnecessary events
+		AtomicInteger emptyEventCount = new AtomicInteger();
+		AtomicInteger changeEventCount = new AtomicInteger();
+		
+		testModel.empty().addConsumer(empty -> {
+			if (empty) {
+				emptyEventCount.incrementAndGet();
+			}
+		});
+		
+		testModel.addListSelectionListener(e -> {
+			if (!e.getValueIsAdjusting()) {
+				changeEventCount.incrementAndGet();
+			}
+		});
+		
+		// Set initial selection
+		testModel.indexes().set(asList(0, 1, 2));
+		assertEquals(1, changeEventCount.get());
+		assertEquals(0, emptyEventCount.get());
+		
+		// Set same selection - should not trigger any events
+		testModel.indexes().set(asList(0, 1, 2));
+		assertEquals(1, changeEventCount.get());
+		assertEquals(0, emptyEventCount.get());
+		
+		// Set overlapping selection - should only trigger change, not empty
+		testModel.indexes().set(asList(1, 2));
+		assertEquals(2, changeEventCount.get());
+		assertEquals(0, emptyEventCount.get());
+		
+		// Set different selection - should only trigger change, not empty
+		testModel.indexes().set(asList(0));
+		assertEquals(3, changeEventCount.get());
+		assertEquals(0, emptyEventCount.get());
+		
+		// Clear selection - should trigger both change and empty
+		testModel.indexes().set(emptyList());
+		assertEquals(4, changeEventCount.get());
+		assertEquals(1, emptyEventCount.get());
+		
+		// Clear already empty selection - should not trigger any events
+		testModel.indexes().set(emptyList());
+		assertEquals(4, changeEventCount.get());
+		assertEquals(1, emptyEventCount.get());
+		
+		// Test with items as well
+		testModel.items().set(asList("A", "B"));
+		assertEquals(5, changeEventCount.get());
+		
+		// Set same items - should not trigger events
+		testModel.items().set(asList("A", "B"));
+		assertEquals(5, changeEventCount.get());
+		
+		// Set overlapping items
+		testModel.items().set(asList("B", "C"));
+		assertEquals(6, changeEventCount.get());
+		assertEquals(1, emptyEventCount.get()); // Still 1, no new empty event
+	}
 }

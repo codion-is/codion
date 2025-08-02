@@ -31,7 +31,9 @@ import org.jspecify.annotations.Nullable;
 import javax.swing.DefaultListSelectionModel;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
@@ -61,7 +63,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 	@Override
 	public void setSelectionMode(int selectionMode) {
 		if (getSelectionMode() != selectionMode) {
-			clear();
+			super.clearSelection();
 			super.setSelectionMode(selectionMode);
 			singleSelection.set(selectionMode == SINGLE_SELECTION);
 		}
@@ -168,6 +170,12 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 	}
 
 	@Override
+	public void clearSelection() {
+		changing.run();
+		super.clearSelection();
+	}
+
+	@Override
 	protected void fireValueChanged(int firstIndex, int lastIndex, boolean isAdjusting) {
 		super.fireValueChanged(firstIndex, lastIndex, isAdjusting);
 		if (!isAdjusting) {
@@ -234,9 +242,34 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		@Override
 		protected void setValue(List<Integer> indexes) {
 			checkIndexes(indexes);
+			
+			Set<Integer> currentIndexes = new HashSet<>(getValue());
+			if (currentIndexes.isEmpty() && indexes.isEmpty()) {
+				return;
+			}
+			if (indexes.isEmpty()) {
+				clearSelection();
+				return;
+			}
+
+			Set<Integer> indexesToSelect = new HashSet<>(indexes);
+			Set<Integer> indexesToRemove = new HashSet<>(currentIndexes);
+			indexesToRemove.removeAll(indexesToSelect);
+
+			Set<Integer> indexesToAdd = new HashSet<>(indexesToSelect);
+			indexesToAdd.removeAll(currentIndexes);
+			if (indexesToRemove.isEmpty() && indexesToAdd.isEmpty()) {
+				return;
+			}
+			
+			changing.run();
 			setValueIsAdjusting(true);
-			clearSelection();
-			add(indexes);
+			for (Integer index : indexesToRemove) {
+				DefaultListSelection.super.removeSelectionInterval(index, index);
+			}
+			for (Integer index : indexesToAdd) {
+				DefaultListSelection.super.addSelectionInterval(index, index);
+			}
 			setValueIsAdjusting(false);
 		}
 
@@ -370,8 +403,11 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		@Override
 		protected void setValue(List<R> items) {
 			rejectNulls(items);
-			clearSelection();
-			addInternal(items);
+			selectedIndexes.set(items.stream()
+					.mapToInt(DefaultListSelection.this.items::indexOf)
+					.filter(index -> index >= 0)
+					.boxed()
+					.collect(toList()));
 		}
 
 		@Override

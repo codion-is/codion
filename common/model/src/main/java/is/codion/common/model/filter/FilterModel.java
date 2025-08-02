@@ -66,8 +66,6 @@ public interface FilterModel<T> {
 		 * by removing items that are missing, replacing existing items and adding new ones.
 		 * This strategy does not cause an empty selection event to be triggered
 		 * but at a considerable performance cost.
-		 * Note that sorting is not performed using this strategy, since that would
-		 * cause an empty selection event as well.
 		 */
 		MERGE
 	}
