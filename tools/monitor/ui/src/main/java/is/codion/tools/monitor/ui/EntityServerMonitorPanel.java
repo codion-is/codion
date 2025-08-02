@@ -71,13 +71,12 @@ public final class EntityServerMonitorPanel extends JPanel {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EntityServerMonitorPanel.class);
 
-	private static final String JDK_PREFERENCE_KEY = EntityServerMonitorPanel.class.getSimpleName() + ".jdkPathPreferenceKey";
 	private static final String LOOK_AND_FEEL_PROPERTY = ".lookAndFeel";
 	private static final double SCREEN_SIZE_RATIO = 0.75;
 	private static final int MEMORY_USAGE_UPDATE_INTERVAL_MS = 2000;
 	private static final NumberFormat MEMORY_USAGE_FORMAT = NumberFormat.getIntegerInstance();
 	private static final Runtime RUNTIME = Runtime.getRuntime();
-	private static String jdkDir = UserPreferences.get(JDK_PREFERENCE_KEY);
+	private static String jdkDir = System.getProperty("java.home");
 
 	private final State alwaysOnTopState = State.state();
 	private final EntityServerMonitor model;
@@ -150,7 +149,6 @@ public final class EntityServerMonitorPanel extends JPanel {
 							.title("Set JDK home")
 							.selectDirectory()
 							.getAbsolutePath();
-			UserPreferences.set(JDK_PREFERENCE_KEY, jdkDir);
 		}
 		catch (CancelException ignored) {/*ignored*/}
 	}
