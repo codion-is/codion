@@ -40,7 +40,16 @@ abstract class AbstractItem<T> implements Item<T>, Serializable {
 	}
 
 	@Override
-	public final @Nullable T value() {
+	public final @Nullable T get() {
+		return value;
+	}
+
+	@Override
+	public final T getOrThrow() {
+		if (value == null) {
+			throw new IllegalStateException("Item is null");
+		}
+
 		return value;
 	}
 
@@ -54,7 +63,7 @@ abstract class AbstractItem<T> implements Item<T>, Serializable {
 
 	@Override
 	public final boolean equals(Object obj) {
-		return this == obj || obj instanceof Item && Objects.equals(value, ((Item<?>) obj).value());
+		return this == obj || obj instanceof Item && Objects.equals(value, ((Item<?>) obj).get());
 	}
 
 	@Override

@@ -68,7 +68,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
 	DefaultItemComboBoxBuilder(FilterComboBoxModel<Item<T>> comboBoxModel) {
 		this.comboBoxModel = requireNonNull(comboBoxModel);
 		this.items = Collections.emptyList();
-		value(comboBoxModel.getSelectedItem() == null ? null : comboBoxModel.getSelectedItem().value());
+		value(comboBoxModel.getSelectedItem() == null ? null : comboBoxModel.getSelectedItem().get());
 		preferredHeight(preferredTextFieldHeight());
 	}
 

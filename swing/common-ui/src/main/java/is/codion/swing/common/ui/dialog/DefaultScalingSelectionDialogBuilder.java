@@ -137,7 +137,7 @@ final class DefaultScalingSelectionDialogBuilder implements ScalingSelectionDial
 				Component component = defaultListCellRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 				if (index >= 0) {
 					Font font = component.getFont();
-					int newSize = Math.round(font.getSize() * (values.get(index).value() / (float) currentFontSize.doubleValue()));
+					int newSize = Math.round(font.getSize() * (values.get(index).getOrThrow() / (float) currentFontSize.doubleValue()));
 					component.setFont(new Font(font.getName(), font.getStyle(), newSize));
 				}
 

@@ -7,6 +7,7 @@ Codion Change Log
 - TaskScheduler.Builder.IntervalStep added.
 - State no longer extends Value, State.is(), toggle() and value() added, ObservableState no longer extends Observable.
 - package is.codion.common.observable renamed observer.
+- Item.value() renamed back to get(), getOrThrow() added.
 ### is.codion.swing.common.model
 - NullableToggleButtonModel.ToggleState removed, get() and set() added, related refactoring.
 - FilterListModel.Builder.ItemsStep.items() parameterless overload added.

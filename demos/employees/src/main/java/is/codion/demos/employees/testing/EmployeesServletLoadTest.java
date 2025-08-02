@@ -136,7 +136,7 @@ public final class EmployeesServletLoadTest {
 			client.connection().insert(client.entities().entity(Employee.TYPE)
 							.with(Employee.DEPARTMENT_FK, department)
 							.with(Employee.NAME, randomString(8))
-							.with(Employee.JOB, Employee.JOB_ITEMS.get(random.nextInt(Employee.JOB_ITEMS.size())).value())
+							.with(Employee.JOB, Employee.JOB_ITEMS.get(random.nextInt(Employee.JOB_ITEMS.size())).get())
 							.with(Employee.SALARY, BigDecimal.valueOf(random.nextInt(1000) + 1000))
 							.with(Employee.HIREDATE, LocalDate.now())
 							.with(Employee.COMMISSION, random.nextDouble() * 500)

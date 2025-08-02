@@ -20,12 +20,15 @@ package is.codion.common.item;
 
 import org.jspecify.annotations.Nullable;
 
+import java.util.NoSuchElementException;
+
 /**
  * A class encapsulating a constant value and a caption representing the value.
  * {@link Item}s equality is based on their values only.
  * Factory for {@link Item} instances.
  * @param <T> the type of the value
- * @see #value()
+ * @see #get()
+ * @see #getOrThrow()
  * @see Item#item(Object)
  * @see Item#item(Object, String)
  * @see Item#i18n(Object, String, String)
@@ -40,7 +43,20 @@ public interface Item<T> {
 	/**
 	 * @return the item value
 	 */
-	@Nullable T value();
+	@Nullable T get();
+
+	/**
+	 * @return the item value
+	 * @throws NoSuchElementException if no value is present
+	 */
+	default T getOrThrow() {
+		T value = get();
+		if (value == null) {
+			throw new NoSuchElementException("No value present");
+		}
+
+		return value;
+	}
 
 	/**
 	 * Returns an {@link Item}, with the caption as item.toString() or an empty string in case of a null value

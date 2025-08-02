@@ -670,7 +670,7 @@ public final class EntitySearchField extends HintTextField {
 			JPanel columnBasePanel = columnBasePanelBuilder.build();
 			if (columnComboBoxModel.getSize() > 0) {
 				columnComboBoxModel.selection().item().addConsumer(selected ->
-								cardLayout.show(columnBasePanel, selected.value().name()));
+								cardLayout.show(columnBasePanel, selected.getOrThrow().name()));
 				columnComboBoxModel.selection().item().set(columnComboBoxModel.getElementAt(0));
 			}
 

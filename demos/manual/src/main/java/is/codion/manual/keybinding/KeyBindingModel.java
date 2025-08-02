@@ -133,7 +133,7 @@ final class KeyBindingModel {
 		@Override
 		public Collection<String> get() {
 			return lookAndFeelModel.selection().item().optional()
-							.map(Item::value)
+							.map(Item::get)
 							.map(LookAndFeelEnabler::lookAndFeel)
 							.map(LookAndFeel::getDefaults)
 							.map(Hashtable::keySet)

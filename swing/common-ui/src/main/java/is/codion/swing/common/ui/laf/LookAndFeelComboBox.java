@@ -97,14 +97,14 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 						.listener(getModel().items()::filter)
 						.build();
 		getModel().items().visible().predicate()
-						.set(item -> includeInstalled.is() || !item.value().installed());
+						.set(item -> includeInstalled.is() || !item.getOrThrow().installed());
 		if (builder.onSelection != null) {
 			getModel().selection().item().addConsumer(item ->
-							builder.onSelection.accept(item.value()));
+							builder.onSelection.accept(item.getOrThrow()));
 		}
 		if (builder.enableOnSelection) {
 			getModel().selection().item().addConsumer(lookAndFeelProvider ->
-							SwingUtilities.invokeLater(() -> lookAndFeelProvider.value().enable()));
+							SwingUtilities.invokeLater(() -> lookAndFeelProvider.getOrThrow().enable()));
 		}
 	}
 
@@ -124,7 +124,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 	 * @return the currently selected look and feel
 	 */
 	public LookAndFeelEnabler selectedLookAndFeel() {
-		return getModel().selection().item().getOrThrow().value();
+		return getModel().selection().item().getOrThrow().getOrThrow();
 	}
 
 	/**
@@ -252,7 +252,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 		public void setItem(@Nullable Object item) {
 			this.item = (Item<LookAndFeelEnabler>) item;
 			if (this.item != null) {
-				panel.setLookAndFeel(this.item.value(), false);
+				panel.setLookAndFeel(this.item.getOrThrow(), false);
 			}
 		}
 	}
@@ -269,7 +269,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 		public Component getListCellRendererComponent(JList<? extends Item<LookAndFeelEnabler>> list, Item<LookAndFeelEnabler> value,
 																									int index, boolean isSelected, boolean cellHasFocus) {
 			if (value != null) {
-				panel.setLookAndFeel(value.value(), isSelected);
+				panel.setLookAndFeel(value.getOrThrow(), isSelected);
 			}
 
 			return panel;

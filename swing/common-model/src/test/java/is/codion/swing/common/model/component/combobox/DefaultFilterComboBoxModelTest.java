@@ -437,17 +437,17 @@ public class DefaultFilterComboBoxModelTest {
 		assertEquals(2, model.items().visible().indexOf(bTwo));
 		assertEquals(3, model.items().visible().indexOf(cThree));
 		assertEquals(4, model.items().visible().indexOf(dFour));
-		assertEquals(3, model.selection().item().get().value());
+		assertEquals(3, model.selection().item().get().get());
 
 		model.setSelectedItem(1);
 		assertEquals(model.getSelectedItem(), aOne);
-		assertEquals(1, model.selection().item().getOrThrow().value());
+		assertEquals(1, model.selection().item().getOrThrow().get());
 		assertEquals("AOne", model.selection().item().getOrThrow().toString());
 		model.setSelectedItem(2);
-		assertEquals(2, model.selection().item().getOrThrow().value());
+		assertEquals(2, model.selection().item().getOrThrow().get());
 		assertEquals(model.getSelectedItem(), bTwo);
 		model.setSelectedItem(4);
-		assertEquals(4, model.selection().item().getOrThrow().value());
+		assertEquals(4, model.selection().item().getOrThrow().get());
 		assertEquals(model.getSelectedItem(), dFour);
 		model.setSelectedItem(null);
 		assertNull(model.selection().item().get());
@@ -481,9 +481,9 @@ public class DefaultFilterComboBoxModelTest {
 		assertSame(items.get(0), model.getSelectedItem());
 		assertNull(model.selection().item().get());
 		model.setSelectedItem(false);
-		assertEquals(false, model.selection().item().getOrThrow().value());
+		assertEquals(false, model.selection().item().getOrThrow().get());
 		model.setSelectedItem(true);
-		assertEquals(true, model.selection().item().getOrThrow().value());
+		assertEquals(true, model.selection().item().getOrThrow().get());
 		model.setSelectedItem(null);
 		assertNull(model.selection().item().get());
 	}

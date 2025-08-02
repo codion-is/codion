@@ -618,7 +618,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 						.mouseWheelScrollingWithWrapAround(true)
 						.toolTipText(model().operator().getOrThrow().description())
 						.onBuild(comboBox -> operatorComboBoxModel.selection().item().addConsumer(selectedOperator ->
-										comboBox.setToolTipText(selectedOperator.value().description())))
+										comboBox.setToolTipText(selectedOperator.getOrThrow().description())))
 						.build();
 	}
 

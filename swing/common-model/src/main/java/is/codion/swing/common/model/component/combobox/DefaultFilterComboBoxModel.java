@@ -874,13 +874,13 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private SelectedItemTranslator(List<Item<T>> items) {
 			itemMap = items.stream()
-							.collect(toMap(Item::value, Function.identity()));
+							.collect(toMap(Item::get, Function.identity()));
 		}
 
 		@Override
 		public Item<T> apply(Object item) {
 			if (item instanceof Item) {
-				return itemMap.get(((Item<T>) item).value());
+				return itemMap.get(((Item<T>) item).get());
 			}
 
 			return itemMap.get(item);

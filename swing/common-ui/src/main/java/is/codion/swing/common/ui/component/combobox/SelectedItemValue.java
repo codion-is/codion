@@ -38,7 +38,7 @@ final class SelectedItemValue<T, C extends JComboBox<Item<T>>> extends AbstractC
 	protected @Nullable T getComponentValue() {
 		Item<T> selectedItem = (Item<T>) component().getModel().getSelectedItem();
 
-		return selectedItem == null ? null : selectedItem.value();
+		return selectedItem == null ? null : selectedItem.get();
 	}
 
 	@Override

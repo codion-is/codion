@@ -147,7 +147,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 						.collect(toList());
 		if (panelItems.size() == 1) {
 			view().map(conditionView -> conditionView == HIDDEN ? SIMPLE : conditionView);
-			panelItems.get(0).value().requestInputFocus();
+			panelItems.get(0).getOrThrow().requestInputFocus();
 		}
 		else if (!panelItems.isEmpty()) {
 			Dialogs.select()
@@ -155,7 +155,7 @@ public abstract class TableConditionPanel<C> extends JPanel {
 							.owner(dialogOwner)
 							.title(MESSAGES.getString("select_condition"))
 							.selectSingle()
-							.map(Item::value)
+							.map(Item::get)
 							.ifPresent(conditionPanel -> {
 								view().map(conditionView -> conditionView == HIDDEN ? SIMPLE : conditionView);
 								conditionPanel.requestInputFocus();
