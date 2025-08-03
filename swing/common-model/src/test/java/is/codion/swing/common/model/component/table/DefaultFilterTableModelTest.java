@@ -269,6 +269,88 @@ public final class DefaultFilterTableModelTest {
 	}
 
 	@Test
+	void refreshWithClearStrategyPreservesSelectionWhenItemsRemain() {
+		AtomicInteger emptySelectionEvents = new AtomicInteger();
+		AtomicInteger selectionChangeEvents = new AtomicInteger();
+
+		List<TestRow> items = new ArrayList<>(ITEMS);
+		FilterTableModel<TestRow, Integer> testModel =
+						FilterTableModel.builder()
+										.columns(new TestColumns())
+										.supplier(() -> items)
+										.build();
+
+		testModel.selection().empty().addConsumer(empty -> {
+			if (empty) {
+				emptySelectionEvents.incrementAndGet();
+			}
+		});
+
+		testModel.selection().indexes().addListener(selectionChangeEvents::incrementAndGet);
+
+		testModel.items().refresh();
+		testModel.selection().items().set(asList(B, D));
+
+		assertEquals(1, selectionChangeEvents.get());
+		assertEquals(0, emptySelectionEvents.get());
+		assertEquals(asList(B, D), testModel.selection().items().get());
+
+		// Test 1: Refresh with same data - should preserve selection without empty event
+		testModel.items().refresh();
+		
+		assertEquals(asList(B, D), testModel.selection().items().get());
+		assertEquals(0, emptySelectionEvents.get()); // No empty selection event!
+		// Note: We may get an extra selection event due to the surgical update process,
+		// but the important thing is that selection is preserved without empty events
+		assertTrue(selectionChangeEvents.get() <= 2);
+
+		// Test 2: Refresh with partial data - only D remains, selection should update but not go empty
+		items.clear();
+		items.addAll(asList(A, D, E)); // B is removed, D remains
+		testModel.items().refresh();
+
+		assertEquals(asList(D), testModel.selection().items().get());
+		assertEquals(0, emptySelectionEvents.get()); // Still no empty event!
+		assertTrue(selectionChangeEvents.get() >= 2); // Selection changed from [B,D] to [D]
+
+		// Test 3: Refresh removing all selected items - should trigger empty selection
+		int changeEventsBefore = selectionChangeEvents.get();
+		items.clear();
+		items.addAll(asList(A, B, C)); // D is removed
+		testModel.items().refresh();
+
+		assertTrue(testModel.selection().empty().is());
+		assertEquals(1, emptySelectionEvents.get()); // Now we get empty event
+		assertTrue(selectionChangeEvents.get() > changeEventsBefore); // Selection cleared
+
+		// Test 4: Select multiple items and refresh with reordered data
+		testModel.selection().items().set(asList(A, C));
+		assertEquals(1, emptySelectionEvents.get()); // Still just one
+
+		items.clear();
+		items.addAll(asList(C, B, A)); // Same items, different order
+		testModel.items().refresh();
+
+		// Selection should be preserved even with different order
+		assertEquals(2, testModel.selection().items().get().size());
+		assertTrue(testModel.selection().items().get().contains(A));
+		assertTrue(testModel.selection().items().get().contains(C));
+		assertEquals(1, emptySelectionEvents.get()); // No new empty event
+
+		// Test 5: With sorting enabled
+		testModel.sort().ascending(0);
+		testModel.selection().items().set(asList(A, B));
+
+		items.clear();
+		items.addAll(asList(E, D, C, B, A)); // Reverse order
+		testModel.items().refresh();
+
+		// After sort, A and B should still be selected
+		assertEquals(asList(A, B), testModel.selection().items().get());
+		assertEquals(1, emptySelectionEvents.get()); // Still no new empty event
+	}
+
+	@Test
 	void addItems() {
 		tableModel.sort().ascending(0);
 		Items<TestRow> items = tableModel.items();

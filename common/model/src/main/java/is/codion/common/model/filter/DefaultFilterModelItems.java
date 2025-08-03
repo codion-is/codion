@@ -338,9 +338,15 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 
 	private void clearAndAdd(Collection<R> items) {
 		List<R> selectedItems = selection.items().get();
-		clear();
-		addInternal(0, items);
-		selection.items().set(selectedItems);
+		selection.adjusting(true);
+		try {
+			clear();
+			addInternal(0, items);
+			selection.items().set(selectedItems);
+		}
+		finally {
+			selection.adjusting(false);
+		}
 	}
 
 	private boolean addInternal(int index, Collection<R> items) {

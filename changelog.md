@@ -12,6 +12,7 @@ Codion Change Log
 - NullableToggleButtonModel.ToggleState removed, get() and set() added, related refactoring.
 - FilterListModel.Builder.ItemsStep.items() parameterless overload added.
 - DefaultListSelection.SelectedIndexes no longer clears the selection when set, preventing an empty selection event.
+- DefaultFilterModelItems.clearAndAdd() no longer triggers an empty selection event if selection before and after overlaps.
 ### is.codion.swing.common.ui
 - FilterTableCellEditor.Builder added, cellEditable now configurable.
 - CalendarPanel.Builder.includeWeekNumbers added along with WEEK_NUMBERS configuration value.
