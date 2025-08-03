@@ -19,7 +19,6 @@
 package is.codion.common.model.filter;
 
 import is.codion.common.model.filter.FilterModel.Items;
-import is.codion.common.model.filter.FilterModel.RefreshStrategy;
 import is.codion.common.model.filter.FilterModel.Sort;
 import is.codion.common.model.filter.FilterModel.VisibleItems;
 import is.codion.common.model.filter.FilterModel.VisiblePredicate;
@@ -292,8 +291,8 @@ public class DefaultFilterModelItemsTest {
 	}
 
 	@Nested
-	@DisplayName("Refresh strategies")
-	class RefreshStrategiesTest {
+	@DisplayName("Refresh")
+	class RefreshTest {
 
 		private Items<String> items;
 		private TestRefresher refresher;
@@ -306,7 +305,6 @@ public class DefaultFilterModelItemsTest {
 							.<String>refresher(i -> refresher)
 							.selection(visible -> new TestMultiSelection())
 							.sort(new TestSort())
-							.refreshStrategy(RefreshStrategy.CLEAR)
 							.build();
 
 			refresher.setTargetItems(items);
@@ -331,22 +329,6 @@ public class DefaultFilterModelItemsTest {
 		}
 
 		@Test
-		@DisplayName("Merge refresh strategy updates existing and adds new")
-		void refresh_mergeStrategy_mergesItems() {
-			items.refreshStrategy().set(RefreshStrategy.MERGE);
-			items.add(asList("keep1", "remove1", "keep2"));
-
-			refresher.setItems(asList("keep1", "keep2", "new1"));
-			items.refresh();
-
-			assertEquals(3, items.count());
-			assertTrue(items.contains("keep1"));
-			assertTrue(items.contains("keep2"));
-			assertTrue(items.contains("new1"));
-			assertFalse(items.contains("remove1"));
-		}
-
-		@Test
 		@DisplayName("Refresh with callback")
 		void refresh_withCallback_shouldNotifyResult() {
 			refresher.setItems(asList("a", "b", "c"));
@@ -366,27 +348,6 @@ public class DefaultFilterModelItemsTest {
 			catch (InterruptedException e) {
 				fail("Refresh callback was not called");
 			}
-		}
-
-		@Test
-		@DisplayName("Set operation respects refresh strategy")
-		void set_respectsRefreshStrategy() {
-			items.add(asList("old1", "old2"));
-
-			// With CLEAR strategy
-			items.refreshStrategy().set(RefreshStrategy.CLEAR);
-			items.set(asList("new1", "new2"));
-			assertEquals(2, items.count());
-			assertTrue(items.contains("new1"));
-			assertFalse(items.contains("old1"));
-
-			// With MERGE strategy
-			items.refreshStrategy().set(RefreshStrategy.MERGE);
-			items.set(asList("new1", "new3"));
-			assertEquals(2, items.count());
-			assertTrue(items.contains("new1"));
-			assertTrue(items.contains("new3"));
-			assertFalse(items.contains("new2"));
 		}
 	}
 

@@ -83,7 +83,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 						.sort(sort)
 						.validator(builder.validator)
 						.visiblePredicate(new DefaultVisiblePredicate<>(builder.columns, filters))
-						.refreshStrategy(builder.refreshStrategy)
 						.listener(new TableModelAdapter())
 						.build();
 		this.items.visible().predicate().set(builder.visiblePredicate);
@@ -363,7 +362,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		private @Nullable Supplier<? extends Collection<R>> supplier;
 		private Predicate<R> validator = new ValidPredicate<>();
 		private Supplier<Map<C, ConditionModel<?>>> filters;
-		private RefreshStrategy refreshStrategy = RefreshStrategy.CLEAR;
 		private boolean async = FilterModel.ASYNC.getOrThrow();
 		private Function<FilterTableModel<R, C>, Editor<R, C>> editorFactory = new DefaultEditorFactory<>();
 		private @Nullable Predicate<R> visiblePredicate;
@@ -391,12 +389,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		@Override
 		public Builder<R, C> validator(Predicate<R> validator) {
 			this.validator = requireNonNull(validator);
-			return this;
-		}
-
-		@Override
-		public Builder<R, C> refreshStrategy(RefreshStrategy refreshStrategy) {
-			this.refreshStrategy = requireNonNull(refreshStrategy);
 			return this;
 		}
 

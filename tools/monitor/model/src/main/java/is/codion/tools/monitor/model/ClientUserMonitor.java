@@ -39,7 +39,6 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-import static is.codion.common.model.filter.FilterModel.RefreshStrategy.MERGE;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
@@ -60,7 +59,6 @@ public final class ClientUserMonitor {
 					FilterTableModel.builder()
 									.columns(new UserHistoryColumns())
 									.supplier(new UserHistoryItems())
-									.refreshStrategy(MERGE)
 									.build();
 
 	private final TaskScheduler updateScheduler;

@@ -357,11 +357,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public Value<RefreshStrategy> refreshStrategy() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
 		public Collection<T> get() {
 			synchronized (lock) {
 				List<T> visibleItems = visible.get();

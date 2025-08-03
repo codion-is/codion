@@ -19,7 +19,6 @@
 package is.codion.swing.common.model.component.table;
 
 import is.codion.common.model.filter.FilterModel.Items;
-import is.codion.common.model.filter.FilterModel.RefreshStrategy;
 import is.codion.common.state.State;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
@@ -215,57 +214,11 @@ public final class DefaultFilterTableModelTest {
 		assertEquals(1, done.get());
 
 		done.set(0);
-		tableModel.items().refreshStrategy().set(RefreshStrategy.MERGE);
 		tableModel.items().refresh();
 		assertEquals(1, done.get());
 
 		tableModel.items().refresher().result().removeListener(onResult);
 		tableModel.items().refresher().exception().removeConsumer(onException);
-	}
-
-	@Test
-	void mergeOnRefresh() {
-		AtomicInteger selectionEvents = new AtomicInteger();
-		List<TestRow> items = new ArrayList<>(ITEMS);
-		FilterTableModel<TestRow, Integer> testModel =
-						FilterTableModel.builder()
-										.columns(new TestColumns())
-										.supplier(() -> items)
-										.build();
-		testModel.selection().indexes().addListener(selectionEvents::incrementAndGet);
-		testModel.items().refreshStrategy().set(RefreshStrategy.MERGE);
-		testModel.sort().ascending(0);
-		testModel.items().refresh();
-		testModel.selection().index().set(1);//b
-
-		assertEquals(1, selectionEvents.get());
-		assertSame(B, testModel.selection().item().get());
-
-		assertTrue(items.remove(C));
-		testModel.items().refresh();
-		assertEquals(1, selectionEvents.get());
-
-		assertTrue(items.remove(B));
-		testModel.items().refresh();
-		assertTrue(testModel.selection().isSelectionEmpty());
-		assertEquals(2, selectionEvents.get());
-
-		testModel.selection().item().set(E);
-		assertEquals(3, selectionEvents.get());
-
-		testModel.items().visible().predicate().set(item -> !item.equals(E));
-		assertEquals(4, selectionEvents.get());
-
-		assertTrue(items.add(B));
-
-		testModel.items().refresh();
-		//merge does not sort new items
-		testModel.items().visible().sort();
-
-		testModel.selection().index().set(1);//b
-
-		assertEquals(5, selectionEvents.get());
-		assertSame(B, testModel.selection().item().get());
 	}
 
 	@Test
@@ -468,10 +421,9 @@ public final class DefaultFilterTableModelTest {
 		assertTrue(tableModel.items().contains(D));
 		assertTrue(tableModel.items().contains(E));
 
-		tableModel.items().refreshStrategy().set(RefreshStrategy.MERGE);
 		events.set(0);
 		tableModel.items().refresh();
-		assertEquals(5, events.get());
+		assertEquals(2, events.get());
 
 		tableModel.items().visible().removeListener(listener);
 	}

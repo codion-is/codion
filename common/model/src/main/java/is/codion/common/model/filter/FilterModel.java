@@ -50,27 +50,6 @@ import static is.codion.common.Configuration.booleanValue;
 public interface FilterModel<T> {
 
 	/**
-	 * Specifies how the data in a table model is refreshed.
-	 */
-	enum RefreshStrategy {
-
-		/**
-		 * Clear the model before populating it with the refreshed data.
-		 * This causes an empty selection event to be triggered, since the
-		 * selection is cleared when the model is cleared.
-		 */
-		CLEAR,
-
-		/**
-		 * Merges the refreshed data with the data already in the model,
-		 * by removing items that are missing, replacing existing items and adding new ones.
-		 * This strategy does not cause an empty selection event to be triggered
-		 * but at a considerable performance cost.
-		 */
-		MERGE
-	}
-
-	/**
 	 * Specifies whether data models should refresh data asynchronously or on the UI thread
 	 * <ul>
 	 * <li>Value type: Boolean
@@ -107,15 +86,16 @@ public interface FilterModel<T> {
 		Refresher<T> refresher();
 
 		/**
-		 * Refreshes the items in this model using its {@link Refresher}.
+		 * <p>Refreshes the data in this model using its {@link Refresher}.
+		 * <p>Note that this method only throws exceptions when run synchronously off the user interface thread.
+		 * Use {@link Refresher#exception()} to listen for exceptions that happen during asynchronous refresh.
 		 * <br><br>
-		 * Retains the selection and filtering. Sorts the refreshed data unless merging on refresh is enabled.
-		 * Note that an empty selection event will be triggered during a normal refresh, since the model is cleared
-		 * before it is repopulated, during which the selection is cleared as well. Using merge on refresh
-		 * ({@link #refreshStrategy()}) will prevent that at a considerable performance cost.
+		 * Retains the selection and filtering. Sorts the refreshed data.
 		 * @throws RuntimeException in case of an exception when running refresh synchronously
-		 * @see #refreshStrategy()
-		 * @see RefreshStrategy
+		 * @see Refresher#active()
+		 * @see Refresher#result()
+		 * @see Refresher#exception()
+		 * @see Refresher#async()
 		 */
 		void refresh();
 
@@ -124,10 +104,7 @@ public interface FilterModel<T> {
 		 * <p>Note that this method only throws exceptions when run synchronously off the user interface thread.
 		 * Use {@link Refresher#exception()} to listen for exceptions that happen during asynchronous refresh.
 		 * <br><br>
-		 * Retains the selection and filtering. Sorts the refreshed data unless merging on refresh is enabled.
-		 * Note that an empty selection event will be triggered during a normal refresh, since the model is cleared
-		 * before it is repopulated, during which the selection is cleared as well. Using merge on refresh
-		 * ({@link #refreshStrategy()}) will prevent that at a considerable performance cost.
+		 * Retains the selection and filtering. Sorts the refreshed data.
 		 * @param onResult called after a successful refresh
 		 * @throws RuntimeException in case of an exception when running refresh synchronously
 		 * @see Refresher#active()
@@ -136,12 +113,6 @@ public interface FilterModel<T> {
 		 * @see Refresher#async()
 		 */
 		void refresh(Consumer<Collection<T>> onResult);
-
-		/**
-		 * Default {@link RefreshStrategy#CLEAR}
-		 * @return the {@link Value} controlling the refresh strategy
-		 */
-		Value<RefreshStrategy> refreshStrategy();
 
 		/**
 		 * @return all items, visible and filtered, in no particular order
@@ -302,12 +273,6 @@ public interface FilterModel<T> {
 			 * @return this builder
 			 */
 			Builder<T> visiblePredicate(VisiblePredicate<T> visiblePredicate);
-
-			/**
-			 * @param refreshStrategy the {@link RefreshStrategy} to use
-			 * @return this builder
-			 */
-			Builder<T> refreshStrategy(RefreshStrategy refreshStrategy);
 
 			/**
 			 * @param itemsListener the {@link VisibleItems.ItemsListener}

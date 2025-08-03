@@ -183,13 +183,6 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		Builder<R, C> validator(Predicate<R> validator);
 
 		/**
-		 * @param refreshStrategy the refresh strategy to use
-		 * @return this builder instance
-		 * @see FilterTableModel.Items#refresh()
-		 */
-		Builder<R, C> refreshStrategy(RefreshStrategy refreshStrategy);
-
-		/**
 		 * @param async true if async refresh should be enabled
 		 * @return this builder instance
 		 */

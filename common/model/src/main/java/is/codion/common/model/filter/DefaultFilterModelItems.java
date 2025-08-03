@@ -21,7 +21,6 @@ package is.codion.common.model.filter;
 import is.codion.common.event.Event;
 import is.codion.common.model.filter.FilterModel.FilteredItems;
 import is.codion.common.model.filter.FilterModel.Items;
-import is.codion.common.model.filter.FilterModel.RefreshStrategy;
 import is.codion.common.model.filter.FilterModel.Refresher;
 import is.codion.common.model.filter.FilterModel.Sort;
 import is.codion.common.model.filter.FilterModel.VisibleItems;
@@ -30,7 +29,6 @@ import is.codion.common.model.filter.FilterModel.VisiblePredicate;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.observer.Observer;
 import is.codion.common.value.AbstractValue;
-import is.codion.common.value.Value;
 
 import org.jspecify.annotations.Nullable;
 
@@ -63,7 +61,6 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	private final MultiSelection<R> selection;
 	private final Sort<R> sort;
 	private final Refresher<R> refresher;
-	private final Value<RefreshStrategy> refreshStrategy;
 
 	private DefaultFilterModelItems(DefaultBuilder<R> builder) {
 		this.sort = builder.sort;
@@ -73,10 +70,6 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		this.refresher = builder.refresher.apply(this);
 		this.selection = builder.selection.apply(visible);
 		this.itemsListener = builder.itemsListener;
-		this.refreshStrategy = Value.builder()
-						.nonNull(RefreshStrategy.CLEAR)
-						.value(builder.refreshStrategy)
-						.build();
 		this.visible.predicate.addListener(DefaultFilterModelItems.this::filter);
 		this.sort.observer().addListener(visible::sort);
 	}
@@ -97,11 +90,6 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	}
 
 	@Override
-	public Value<RefreshStrategy> refreshStrategy() {
-		return refreshStrategy;
-	}
-
-	@Override
 	public Collection<R> get() {
 		synchronized (lock) {
 			if (filtered.items.isEmpty()) {
@@ -119,11 +107,15 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	public void set(Collection<R> items) {
 		rejectNulls(items);
 		synchronized (lock) {
-			if (refreshStrategy.isEqualTo(RefreshStrategy.MERGE) && !items.isEmpty()) {
-				merge(items);
+			List<R> selectedItems = selection.items().get();
+			selection.adjusting(true);
+			try {
+				clear();
+				addInternal(0, items);
+				selection.items().set(selectedItems);
 			}
-			else {
-				clearAndAdd(items);
+			finally {
+				selection.adjusting(false);
 			}
 		}
 	}
@@ -303,50 +295,6 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 
 			return false; // Keep in visible
 		});
-	}
-
-	private void merge(Collection<R> items) {
-		items.forEach(this::validate);
-		Set<R> itemSet = new HashSet<>(items);
-		get().stream()
-						.filter(item -> !itemSet.contains(item))
-						.forEach(this::remove);
-		items.forEach(this::merge);
-		visible.sort();
-	}
-
-	private void merge(R item) {
-		int index = visible.indexOf(item);
-		if (index == -1) {
-			int visibleCount = visible.count();
-			if (visible.predicate.test(item)) {
-				visible.items.add(visibleCount, item);
-				itemsListener.inserted(visibleCount, visibleCount);
-				visible.notifyChanges();
-				visible.notifyAdded(singleton(item));
-
-				return;
-			}
-			filtered.items.add(item);
-		}
-		else if (visible.predicate.test(item)) {
-			visible.items.set(index, item);
-			itemsListener.updated(index, index);
-			visible.notifyChanges();
-		}
-	}
-
-	private void clearAndAdd(Collection<R> items) {
-		List<R> selectedItems = selection.items().get();
-		selection.adjusting(true);
-		try {
-			clear();
-			addInternal(0, items);
-			selection.items().set(selectedItems);
-		}
-		finally {
-			selection.adjusting(false);
-		}
 	}
 
 	private boolean addInternal(int index, Collection<R> items) {
@@ -606,7 +554,6 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 
 		private VisiblePredicate<T> visiblePredicate = new DefaultVisiblePredicate<>();
 		private Predicate<T> validator = new ValidPredicate<>();
-		private RefreshStrategy refreshStrategy = RefreshStrategy.CLEAR;
 		private ItemsListener itemsListener = new DefaultItemsListener();
 
 		private DefaultBuilder(Function<VisibleItems<T>, MultiSelection<T>> selection,
@@ -625,12 +572,6 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		@Override
 		public Builder<T> visiblePredicate(VisiblePredicate<T> visiblePredicate) {
 			this.visiblePredicate = requireNonNull(visiblePredicate);
-			return this;
-		}
-
-		@Override
-		public Builder<T> refreshStrategy(RefreshStrategy refreshStrategy) {
-			this.refreshStrategy = requireNonNull(refreshStrategy);
 			return this;
 		}
 
