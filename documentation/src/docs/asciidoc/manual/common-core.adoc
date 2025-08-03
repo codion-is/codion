@@ -5,7 +5,7 @@
 [#_core_classes]
 == Core classes
 
-Three common classes used throughout the framework are {url-javadoc}{common-core}/is/codion/common/event/Event.html[Event], {url-javadoc}{common-core}/is/codion/common/state/State.html[State] and {url-javadoc}{common-core}/is/codion/common/value/Value.html[Value] and their respective observers {url-javadoc}{common-core}/is/codion/common/observable/Observer.html[Observer] and {url-javadoc}{common-core}/is/codion/common/state/ObservableState.html[ObservableState].
+Three common classes used throughout the framework are {url-javadoc}{common-core}/is/codion/common/event/Event.html[Event], {url-javadoc}{common-core}/is/codion/common/state/State.html[State] and {url-javadoc}{common-core}/is/codion/common/value/Value.html[Value] and their respective observers {url-javadoc}{common-core}/is/codion/common/observer/Observer.html[Observer] and {url-javadoc}{common-core}/is/codion/common/state/ObservableState.html[ObservableState].
 
 === Event
 
@@ -39,7 +39,7 @@ The {url-javadoc}{common-core}/is/codion/common/event/Event.html[Event] class is
 Classes typically expose observers for their events via public accessors.
 Events are triggered by calling the *run* method in case no data is associated with the event or *accept* in case data should be propogated to consumers.
 
-The associated {url-javadoc}{common-core}/is/codion/common/observable/Observer.html[Observer] instance can not trigger the event and can be safely passed around.
+The associated {url-javadoc}{common-core}/is/codion/common/observer/Observer.html[Observer] instance can not trigger the event and can be safely passed around.
 
 Event listeners must implement either https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Runnable.html[Runnable] or https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Consumer.html[Consumer], depending on whether they are interested in the data associated with the event.
 
