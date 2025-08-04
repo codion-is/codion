@@ -21,6 +21,7 @@ package is.codion.swing.common.ui.control;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.button.NullableToggleButtonModel;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.button.CheckBoxMenuItemBuilder;
 import is.codion.swing.common.ui.component.button.ToggleButtonBuilder;
@@ -49,9 +50,10 @@ public class DefaultToggleControlTest {
 		booleanValue.set(true);
 		assertTrue(control.value().getOrThrow());
 
-		Value<Boolean> nullableValue = Value.nullable(true);
+		Value<Boolean> nullableValue = Value.nonNull(false);
+		nullableValue.set(true);
 		ToggleControl nullableControl = Control.builder().toggle(nullableValue).build();
-		NullableToggleButtonModel toggleButtonModel = (NullableToggleButtonModel) toggleButton()
+		JToggleButton.ToggleButtonModel toggleButtonModel = (JToggleButton.ToggleButtonModel) toggleButton()
 						.toggle(nullableControl)
 						.build()
 						.getModel();
@@ -64,7 +66,6 @@ public class DefaultToggleControlTest {
 		nullableValue.set(false);
 		assertFalse(nullableControl.value().getOrThrow());
 		nullableValue.clear();
-		assertNull(toggleButtonModel.get());
 		assertFalse(toggleButtonModel.isSelected());
 
 		Value<Boolean> nonNullableValue = Value.builder()
@@ -133,7 +134,7 @@ public class DefaultToggleControlTest {
 	void nullableToggleControl() {
 		Value<Boolean> value = Value.nullable();
 		ToggleControl toggleControl = Control.builder().toggle(value).build();
-		NullableToggleButtonModel buttonModel = (NullableToggleButtonModel) toggleButton()
+		NullableToggleButtonModel buttonModel = (NullableToggleButtonModel) Components.checkBox()
 						.toggle(toggleControl)
 						.build()
 						.getModel();

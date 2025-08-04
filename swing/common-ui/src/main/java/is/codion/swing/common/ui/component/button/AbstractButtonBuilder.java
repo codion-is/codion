@@ -18,34 +18,26 @@
  */
 package is.codion.swing.common.ui.component.button;
 
-import is.codion.common.value.AbstractValue;
-import is.codion.swing.common.model.component.button.NullableToggleButtonModel;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ToggleControl;
 
 import org.jspecify.annotations.Nullable;
 
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
-import javax.swing.ButtonModel;
 import javax.swing.Icon;
-import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static is.codion.swing.common.model.component.button.NullableToggleButtonModel.nullableToggleButtonModel;
 import static java.util.Objects.requireNonNull;
 
 abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends ButtonBuilder<T, C, B>>
@@ -326,79 +318,6 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
 
 	protected abstract C createButton();
 
-	static ButtonModel createButtonModel(ToggleControl toggleControl) {
-		ButtonModel buttonModel = toggleControl.value().isNullable() ?
-						nullableToggleButtonModel(toggleControl.value().get()) :
-						createToggleButtonModel(toggleControl.value().getOrThrow());
-		buttonModel.setEnabled(toggleControl.enabled().is());
-		toggleControl.enabled().addConsumer(new SetEnabled(buttonModel));
-		new BooleanButtonModelValue(buttonModel).link(toggleControl.value());
-
-		return buttonModel;
-	}
-
-	private static JToggleButton.ToggleButtonModel createToggleButtonModel(boolean selected) {
-		JToggleButton.ToggleButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
-		buttonModel.setSelected(selected);
-
-		return buttonModel;
-	}
-
-	private static final class BooleanButtonModelValue extends AbstractValue<Boolean> {
-
-		private final ButtonModel buttonModel;
-
-		private BooleanButtonModelValue(ButtonModel buttonModel) {
-			this.buttonModel = buttonModel;
-			buttonModel.addItemListener(itemEvent -> notifyListeners());
-		}
-
-		@Override
-		protected @Nullable Boolean getValue() {
-			if (buttonModel instanceof NullableToggleButtonModel) {
-				return ((NullableToggleButtonModel) buttonModel).get();
-			}
-
-			return buttonModel.isSelected();
-		}
-
-		@Override
-		protected void setValue(@Nullable Boolean value) {
-			if (SwingUtilities.isEventDispatchThread()) {
-				setModelValue(value);
-			}
-			else {
-				try {
-					SwingUtilities.invokeAndWait(() -> setModelValue(value));
-				}
-				catch (InterruptedException ex) {
-					Thread.currentThread().interrupt();
-					throw new RuntimeException(ex);
-				}
-				catch (InvocationTargetException e) {
-					Throwable cause = e.getCause();
-					if (cause instanceof RuntimeException) {
-						throw (RuntimeException) cause;
-					}
-
-					throw new RuntimeException(cause);
-				}
-				catch (RuntimeException e) {
-					throw e;
-				}
-			}
-		}
-
-		private void setModelValue(@Nullable Boolean value) {
-			if (buttonModel instanceof NullableToggleButtonModel) {
-				((NullableToggleButtonModel) buttonModel).set(value);
-			}
-			else {
-				buttonModel.setSelected(value != null && value);
-			}
-		}
-	}
-
 	private static final class ActionPropertyChangeListener implements PropertyChangeListener {
 
 		private final AbstractButton button;
@@ -430,7 +349,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
 		}
 	}
 
-	private static final class AddActionListener implements java.util.function.Consumer<ActionListener> {
+	private static final class AddActionListener implements Consumer<ActionListener> {
 
 		private final AbstractButton button;
 
@@ -441,20 +360,6 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
 		@Override
 		public void accept(ActionListener actionListener) {
 			button.addActionListener(actionListener);
-		}
-	}
-
-	private static final class SetEnabled implements Consumer<Boolean> {
-
-		private final ButtonModel buttonModel;
-
-		private SetEnabled(ButtonModel buttonModel) {
-			this.buttonModel = buttonModel;
-		}
-
-		@Override
-		public void accept(Boolean enabled) {
-			buttonModel.setEnabled(enabled);
 		}
 	}
 }

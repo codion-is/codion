@@ -18,25 +18,27 @@
  */
 package is.codion.swing.common.ui.component.button;
 
+import is.codion.common.state.ObservableState;
+import is.codion.common.state.State;
+import is.codion.swing.common.ui.component.button.DefaultToggleButtonBuilder.SetComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
 
-import org.jspecify.annotations.Nullable;
-
 import javax.swing.JMenuItem;
 import javax.swing.SwingConstants;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
 abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends ToggleMenuItemBuilder<C, B>> extends AbstractButtonBuilder<Boolean, C, B>
 				implements ToggleMenuItemBuilder<C, B> {
 
-	private @Nullable ToggleControl toggleControl;
+	private final List<ObservableState> linkedObservableStates = new ArrayList<>(1);
 	private PersistMenu persistMenu = PERSIST_MENU.getOrThrow();
 
 	AbstractToggleMenuItemBuilder() {
-		value(false);
 		horizontalAlignment(SwingConstants.LEADING);
 	}
 
@@ -45,15 +47,14 @@ abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends Togg
 		if (requireNonNull(toggleControl).value().isNullable()) {
 			throw new IllegalArgumentException("A toggle menu item does not support a nullable value");
 		}
-		this.toggleControl = toggleControl;
-		value(toggleControl.value().get());
+		link(toggleControl.value());
 		action(toggleControl);
 		return self();
 	}
 
 	@Override
-	public final B toggle(Control.Builder<ToggleControl, ?> toggleControlBuilder) {
-		return toggle(requireNonNull(toggleControlBuilder).build());
+	public final B toggle(Control.Builder<ToggleControl, ?> toggleControl) {
+		return toggle(requireNonNull(toggleControl).build());
 	}
 
 	@Override
@@ -62,21 +63,31 @@ abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends Togg
 		return self();
 	}
 
+	@Override
+	public final B link(State linkedState) {
+		link(requireNonNull(linkedState).value());
+		return (B) this;
+	}
+
+	@Override
+	public final B link(ObservableState linkedState) {
+		linkedObservableStates.add(requireNonNull(linkedState));
+		return (B) this;
+	}
+
 	protected abstract JMenuItem createMenuItem(PersistMenu persistMenu);
 
 	@Override
 	protected final C createButton() {
-		JMenuItem menuItem = createMenuItem(persistMenu);
-		if (toggleControl != null) {
-			menuItem.setModel(createButtonModel(toggleControl));
-		}
-
-		return (C) menuItem;
+		return (C) createMenuItem(persistMenu);
 	}
 
 	@Override
 	protected final ComponentValue<Boolean, C> createComponentValue(C component) {
-		return new BooleanToggleButtonValue<>(component);
+		ToggleButtonValue<C> componentValue = new ToggleButtonValue<>(component);
+		linkedObservableStates.forEach(state -> state.addConsumer(new SetComponentValue(componentValue)));
+
+		return componentValue;
 	}
 
 	@Override

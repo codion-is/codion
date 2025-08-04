@@ -27,6 +27,7 @@ Codion Change Log
 - ToggleButtonBuilder, ToggleMenuItemBuilder.toggleControl() renamed toggle().
 - ColumnConditionPanel bug fixed, changes to wildcards in the model now reflected in the popup menu.
 - ListSelectionDialogBuilder.SelectionStep added.
+- ToggleButtonBuilder, ToggleMenuItemBuilder and subclasses refactored and simplified.
 ### is.codion.framework.domain
 - EntityDefinition.Attributes.getOrThrow(attributeName) added.
 ### is.codion.framework.model

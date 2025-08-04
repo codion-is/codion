@@ -24,8 +24,6 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
 
-import org.jspecify.annotations.Nullable;
-
 import javax.swing.JToggleButton;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,34 +34,28 @@ import static java.util.Objects.requireNonNull;
 class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButtonBuilder<C, B>>
 				extends AbstractButtonBuilder<Boolean, C, B> implements ToggleButtonBuilder<C, B> {
 
-	private final List<State> linkedStates = new ArrayList<>(1);
-	private final List<ObservableState> linkedObservableStates = new ArrayList<>(1);
+	final List<ObservableState> linkedObservableStates = new ArrayList<>(1);
 
-	private @Nullable ToggleControl toggleControl;
-
-	DefaultToggleButtonBuilder() {
-		value(false);
-	}
+	DefaultToggleButtonBuilder() {}
 
 	@Override
-	public final B toggle(ToggleControl toggleControl) {
+	public B toggle(ToggleControl toggleControl) {
 		if (requireNonNull(toggleControl).value().isNullable() && !supportsNull()) {
 			throw new IllegalArgumentException("This toggle button builder does not support a nullable value");
 		}
-		this.toggleControl = toggleControl;
-		value(toggleControl.value().get());
+		link(toggleControl.value());
 		action(toggleControl);
 		return self();
 	}
 
 	@Override
-	public final B toggle(Control.Builder<ToggleControl, ?> toggleControlBuilder) {
-		return toggle(requireNonNull(toggleControlBuilder).build());
+	public final B toggle(Control.Builder<ToggleControl, ?> toggleControl) {
+		return toggle(requireNonNull(toggleControl).build());
 	}
 
 	@Override
 	public final B link(State linkedState) {
-		linkedStates.add(requireNonNull(linkedState));
+		link(requireNonNull(linkedState).value());
 		return (B) this;
 	}
 
@@ -73,36 +65,29 @@ class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButton
 		return (B) this;
 	}
 
-	protected JToggleButton createToggleButton() {
-		return new JToggleButton();
+	@Override
+	protected C createButton() {
+		return (C) new JToggleButton();
 	}
 
 	@Override
-	protected final C createButton() {
-		JToggleButton toggleButton = createToggleButton();
-		if (toggleControl != null) {
-			toggleButton.setModel(createButtonModel(toggleControl));
-		}
-
-		return (C) toggleButton;
-	}
-
-	@Override
-	protected final ComponentValue<Boolean, C> createComponentValue(JToggleButton component) {
-		ComponentValue<Boolean, ?> componentValue = component instanceof NullableCheckBox ?
-						new BooleanNullableCheckBoxValue((NullableCheckBox) component) :
-						new BooleanToggleButtonValue<>(component);
-		linkedStates.forEach(state -> componentValue.link(state.value()));
+	protected ComponentValue<Boolean, C> createComponentValue(JToggleButton component) {
+		ComponentValue<Boolean, ?> componentValue = new ToggleButtonValue<>(component);
 		linkedObservableStates.forEach(state -> state.addConsumer(new SetComponentValue(componentValue)));
 
 		return (ComponentValue<Boolean, C>) componentValue;
 	}
 
-	private static final class SetComponentValue implements Consumer<Boolean> {
+	@Override
+	protected boolean supportsNull() {
+		return false;
+	}
+
+	static final class SetComponentValue implements Consumer<Boolean> {
 
 		private final ComponentValue<Boolean, ?> componentValue;
 
-		private SetComponentValue(ComponentValue<Boolean, ?> componentValue) {
+		SetComponentValue(ComponentValue<Boolean, ?> componentValue) {
 			this.componentValue = componentValue;
 		}
 

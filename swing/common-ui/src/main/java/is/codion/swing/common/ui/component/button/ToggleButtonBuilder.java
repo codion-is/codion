@@ -39,10 +39,10 @@ public interface ToggleButtonBuilder<C extends JToggleButton, B extends ToggleBu
 	B toggle(ToggleControl toggleControl);
 
 	/**
-	 * @param toggleControlBuilder the builder for the toggle control to base this toggle button on
+	 * @param toggleControl the builder for the toggle control to base this toggle button on
 	 * @return this builder instance
 	 */
-	B toggle(Control.Builder<ToggleControl, ?> toggleControlBuilder);
+	B toggle(Control.Builder<ToggleControl, ?> toggleControl);
 
 	/**
 	 * Creates a bidirectional link to the given state. Overrides any initial value set.

@@ -19,7 +19,6 @@
 package is.codion.swing.common.ui.component.button;
 
 import javax.swing.JRadioButton;
-import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 
 final class DefaultRadioButtonBuilder extends DefaultToggleButtonBuilder<JRadioButton, RadioButtonBuilder> implements RadioButtonBuilder {
@@ -29,12 +28,7 @@ final class DefaultRadioButtonBuilder extends DefaultToggleButtonBuilder<JRadioB
 	}
 
 	@Override
-	protected JToggleButton createToggleButton() {
+	protected JRadioButton createButton() {
 		return new JRadioButton();
-	}
-
-	@Override
-	protected boolean supportsNull() {
-		return false;
 	}
 }

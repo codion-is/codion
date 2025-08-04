@@ -19,6 +19,8 @@
 package is.codion.swing.common.ui.component.button;
 
 import is.codion.common.property.PropertyValue;
+import is.codion.common.state.ObservableState;
+import is.codion.common.state.State;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
 
@@ -67,10 +69,24 @@ public interface ToggleMenuItemBuilder<C extends JMenuItem, B extends ToggleMenu
 	B toggle(ToggleControl toggleControl);
 
 	/**
-	 * @param toggleControlBuilder the builder for the toggle control to base this toggle menu on
+	 * @param toggleControl the builder for the toggle control to base this toggle menu on
 	 * @return this builder instance
 	 */
-	B toggle(Control.Builder<ToggleControl, ?> toggleControlBuilder);
+	B toggle(Control.Builder<ToggleControl, ?> toggleControl);
+
+	/**
+	 * Creates a bidirectional link to the given state. Overrides any initial value set.
+	 * @param linkedState a state to link to the component value
+	 * @return this builder instance
+	 */
+	B link(State linkedState);
+
+	/**
+	 * Creates a read-only link to the given {@link ObservableState}.
+	 * @param linkedState a state to link to the component value
+	 * @return this builder instance
+	 */
+	B link(ObservableState linkedState);
 
 	/**
 	 * @param persistMenu specifies when a menu persists after a toggle button click

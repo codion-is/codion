@@ -22,24 +22,25 @@ import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 
 import org.jspecify.annotations.Nullable;
 
+import javax.swing.AbstractButton;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-final class BooleanNullableCheckBoxValue extends AbstractComponentValue<Boolean, NullableCheckBox> {
+final class ToggleButtonValue<C extends AbstractButton> extends AbstractComponentValue<Boolean, C> {
 
-	BooleanNullableCheckBoxValue(NullableCheckBox checkBox) {
-		super(checkBox);
-		checkBox.getModel().addItemListener(new NotifyOnItemEvent());
+	ToggleButtonValue(C button) {
+		super(button, false);
+		button.getModel().addItemListener(new NotifyOnItemEvent());
 	}
 
 	@Override
-	protected @Nullable Boolean getComponentValue() {
-		return component().model().get();
+	protected Boolean getComponentValue() {
+		return component().isSelected();
 	}
 
 	@Override
 	protected void setComponentValue(@Nullable Boolean value) {
-		component().model().set(value);
+		component().setSelected(value != null && value);
 	}
 
 	private final class NotifyOnItemEvent implements ItemListener {

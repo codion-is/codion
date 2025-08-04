@@ -319,6 +319,16 @@ public final class ComponentsTest {
 	}
 
 	@Test
+	void checkBoxLinkState() {
+		State state = State.state(true);
+		JCheckBox checkBox = Components.checkBox()
+						.link(state)
+						.build();
+		assertTrue(state.is());
+		assertTrue(checkBox.isSelected());
+	}
+
+	@Test
 	void toggleButton() {
 		Value<Boolean> value = Value.builder()
 						.nonNull(false)
