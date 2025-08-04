@@ -24,7 +24,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.logging.MethodTrace;
 import is.codion.common.rmi.server.RemoteClient;
-import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.tracer.MethodTracer;
 import is.codion.framework.domain.Domain;
@@ -51,7 +50,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
 import static is.codion.framework.db.local.tracer.MethodTracer.methodTracer;
+import static java.lang.System.currentTimeMillis;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 
@@ -74,12 +75,12 @@ final class LocalConnectionHandler implements InvocationHandler {
 	private final MethodTracer tracer;
 	private final String logIdentifier;
 	private final String userDescription;
-	private final long creationTime = System.currentTimeMillis();
+	private final long creationTime = currentTimeMillis();
 	private final AtomicBoolean active = new AtomicBoolean(false);
-	private LocalEntityConnection localEntityConnection;
-	private LocalEntityConnection poolEntityConnection;
+	private final LocalEntityConnection entityConnection;
+
 	private long lastAccessTime = creationTime;
-	private boolean closed = false;
+	private volatile boolean closed = false;
 
 	LocalConnectionHandler(Domain domain, RemoteClient remoteClient, Database database) {
 		this.domain = domain;
@@ -90,36 +91,23 @@ final class LocalConnectionHandler implements InvocationHandler {
 		this.tracer = methodTracer(LocalEntityConnection.CONNECTION_LOG_SIZE.getOrThrow(), new EntityArgumentToString());
 		this.logIdentifier = remoteClient.user().username().toLowerCase() + "@" + remoteClient.clientType();
 		this.userDescription = "Remote user: " + remoteClient.user().username() + ", database user: " + databaseUsername;
-		try {
-			if (connectionPool == null) {
-				localEntityConnection = LocalEntityConnection.localEntityConnection(database, domain, remoteClient.databaseUser());
-				((MethodTracer.Traceable) localEntityConnection).tracer(tracer);
-			}
-			else {
-				poolEntityConnection = LocalEntityConnection.localEntityConnection(database, domain, connectionPool.connection(remoteClient.databaseUser()));
-				rollbackSilently(poolEntityConnection.databaseConnection());
-				returnConnectionToPool();
-			}
-		}
-		catch (DatabaseException e) {
-			close();
-			throw e;
-		}
+		this.entityConnection = initializeConnection();
 	}
 
 	@Override
 	public synchronized Object invoke(Object proxy, Method method, Object[] args) throws Exception {
-		if (method.getName().equals(ENTITIES)) {
+		String methodName = method.getName();
+		if (methodName.equals(ENTITIES)) {
 			return entities();
 		}
 		active.set(true);
-		lastAccessTime = System.currentTimeMillis();
-		String methodName = method.getName();
+		lastAccessTime = currentTimeMillis();
 		Exception exception = null;
+		logEntry(methodName, args);
 		try {
-			logEntry(methodName, args);
+			prepareConnection();
 
-			return method.invoke(connection(), args);
+			return method.invoke(entityConnection, args);
 		}
 		catch (InvocationTargetException e) {
 			//Wrapped exception has already been logged during the actual method call
@@ -139,7 +127,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 
 	private Entities entities() {
 		active.set(true);
-		lastAccessTime = System.currentTimeMillis();
+		lastAccessTime = currentTimeMillis();
 		try {
 			logEntry(ENTITIES, null);
 
@@ -174,7 +162,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 			return !closed;
 		}
 
-		return !closed && localEntityConnection != null && localEntityConnection.connected();
+		return !closed && entityConnection.connected();
 	}
 
 	void close() {
@@ -182,7 +170,13 @@ final class LocalConnectionHandler implements InvocationHandler {
 			return;
 		}
 		closed = true;
-		cleanupLocalConnections();
+		rollbackIfRequired(entityConnection);
+		if (connectionPool != null) {
+			returnToPool(entityConnection.databaseConnection());
+		}
+		else {
+			entityConnection.close();
+		}
 	}
 
 	List<MethodTrace> methodTraces() {
@@ -211,69 +205,56 @@ final class LocalConnectionHandler implements InvocationHandler {
 		return closed;
 	}
 
-	private EntityConnection connection() {
-		if (connectionPool != null) {
-			return pooledEntityConnection();
+	private void prepareConnection() {
+		if (connectionPool == null) {
+			prepareLocalConnection();
 		}
-
-		return localEntityConnection();
+		else {
+			preparePooledConnection();
+		}
 	}
 
-	private EntityConnection pooledEntityConnection() {
-		if (poolEntityConnection.transactionOpen()) {
-			return poolEntityConnection;
+	private void preparePooledConnection() {
+		if (entityConnection.transactionOpen()) {
+			return;
 		}
 		DatabaseException exception = null;
 		try {
-			if (tracer.isEnabled()) {
-				tracer.enter(FETCH_CONNECTION, userDescription);
-			}
-			poolEntityConnection.databaseConnection().setConnection(connectionPool.connection(remoteClient.databaseUser()));
-			((MethodTracer.Traceable) poolEntityConnection).tracer(tracer);
+			tracer.enter(FETCH_CONNECTION, userDescription);
+			entityConnection.databaseConnection().setConnection(connectionPool.connection(remoteClient.databaseUser()));
 		}
 		catch (DatabaseException ex) {
 			exception = ex;
 			throw ex;
 		}
 		finally {
-			if (tracer.isEnabled()) {
-				tracer.exit(FETCH_CONNECTION, exception);
-			}
+			tracer.exit(FETCH_CONNECTION, exception);
 		}
-
-		return poolEntityConnection;
 	}
 
-	private EntityConnection localEntityConnection() {
-		if (!localEntityConnection.connected()) {
-			localEntityConnection.close();//just in case
+	private void prepareLocalConnection() {
+		if (!entityConnection.connected()) {
+			entityConnection.close();//just in case
 			DatabaseException exception = null;
 			try {
-				if (tracer.isEnabled()) {
-					tracer.enter(CREATE_CONNECTION, userDescription);
-				}
-				localEntityConnection = LocalEntityConnection.localEntityConnection(database, domain, remoteClient.databaseUser());
-				((MethodTracer.Traceable) localEntityConnection).tracer(tracer);
+				tracer.enter(CREATE_CONNECTION, userDescription);
+				entityConnection.databaseConnection().setConnection(database.createConnection(remoteClient.databaseUser()));
 			}
 			catch (DatabaseException ex) {
 				exception = ex;
 				throw ex;
 			}
 			finally {
-				if (tracer.isEnabled()) {
-					tracer.exit(CREATE_CONNECTION, exception);
-				}
+				tracer.exit(CREATE_CONNECTION, exception);
 			}
 		}
-
-		return localEntityConnection;
 	}
 
 	/**
 	 * Returns the pooled connection to a connection pool if the connection is not within an open transaction
 	 */
 	private void returnConnection() {
-		if (poolEntityConnection == null || poolEntityConnection.transactionOpen()) {
+		if (connectionPool == null || entityConnection.transactionOpen()) {
 			return;
 		}
 		Exception exception = null;
@@ -281,8 +262,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 			if (tracer.isEnabled()) {
 				tracer.enter(RETURN_CONNECTION, userDescription);
 			}
-			((MethodTracer.Traceable) poolEntityConnection).tracer(null);
-			returnConnectionToPool();
+			returnToPool(entityConnection.databaseConnection());
 		}
 		catch (Exception e) {
 			exception = e;
@@ -295,24 +275,10 @@ final class LocalConnectionHandler implements InvocationHandler {
 		}
 	}
 
-	private void returnConnectionToPool() {
-		DatabaseConnection connection = poolEntityConnection.databaseConnection();
+	private static void returnToPool(DatabaseConnection connection) {
 		if (connection.connected()) {
 			closeSilently(connection.getConnection());
 			connection.setConnection(null);
-		}
-	}
-
-	private void cleanupLocalConnections() {
-		if (poolEntityConnection != null) {
-			rollbackIfRequired(poolEntityConnection);
-			returnConnectionToPool();
-			poolEntityConnection = null;
-		}
-		if (localEntityConnection != null) {
-			rollbackIfRequired(localEntityConnection);
-			localEntityConnection.close();
-			localEntityConnection = null;
 		}
 	}
 
@@ -326,6 +292,19 @@ final class LocalConnectionHandler implements InvocationHandler {
 				LOG.error("Rollback on disconnect failed: " + remoteClient, e);
 			}
 		}
+	}
+
+	private LocalEntityConnection initializeConnection() {
+		LocalEntityConnection connection = localEntityConnection(database, domain, connectionPool == null ?
+						database.createConnection(remoteClient.databaseUser()) :
+						connectionPool.connection(remoteClient.databaseUser()));
+		((MethodTracer.Traceable) connection).tracer(tracer);
+		if (connectionPool != null) {
+			rollbackSilently(connection.databaseConnection());
+			returnToPool(connection.databaseConnection());
+		}
+
+		return connection;
 	}
 
 	private static void rollbackSilently(DatabaseConnection databaseConnection) {
@@ -351,7 +330,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 
 		private final ScheduledExecutorService executorService =
 						Executors.newSingleThreadScheduledExecutor(new DaemonThreadFactory());
-		private final AtomicLong requestsPerSecondTime = new AtomicLong(System.currentTimeMillis());
+		private final AtomicLong requestsPerSecondTime = new AtomicLong(currentTimeMillis());
 		private final AtomicInteger requestsPerSecond = new AtomicInteger();
 		private final AtomicInteger requestsPerSecondCounter = new AtomicInteger();
 
@@ -365,7 +344,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 		}
 
 		private void updateRequestsPerSecond() {
-			long current = System.currentTimeMillis();
+			long current = currentTimeMillis();
 			double seconds = (current - requestsPerSecondTime.getAndSet(current)) / THOUSAND;
 			if (seconds > 0) {
 				requestsPerSecond.set((int) (requestsPerSecondCounter.getAndSet(0) / seconds));

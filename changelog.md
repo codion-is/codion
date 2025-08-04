@@ -34,6 +34,8 @@ Codion Change Log
 - EditComponentFactory.component(), value parameter removed.
 - EntityDialogs.EntitySelectionDialogBuilder.SelectionStep added.
 - EntityDialogs.EntitySelectionDialogBuilder now throws CancelException when selection is cancelled.
+### is.codion.framework.server
+- LocalConnectionHandler, now uses a single final entityConnection field, related refactoring.
 
 ## 0.18.42
 ### is.codion.common.model
