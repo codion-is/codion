@@ -8,6 +8,7 @@ Codion Change Log
 - State no longer extends Value, State.is(), toggle() and value() added, ObservableState no longer extends Observable.
 - package is.codion.common.observable renamed observer.
 - Item.value() renamed back to get(), getOrThrow() added.
+- DefaultMethodTrace bug fixed, missing newline.
 ### is.codion.common.model
 - FilterModel.RefreshStrategy removed, no longer necessary after recent refresh related selection improvements.
 ### is.codion.swing.common.model

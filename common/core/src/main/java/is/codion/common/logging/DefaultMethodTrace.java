@@ -94,11 +94,8 @@ final class DefaultMethodTrace implements MethodTrace, Serializable {
 
 	@Override
 	public void appendTo(StringBuilder builder) {
-		requireNonNull(builder).append(this);
-		if (!childEntries.isEmpty()) {
-			builder.append(NEWLINE);
-			appendLogEntries(builder, childEntries, 1);
-		}
+		requireNonNull(builder).append(this).append(NEWLINE);
+		appendLogEntries(builder, childEntries, 1);
 	}
 
 	@Override
@@ -158,18 +155,14 @@ final class DefaultMethodTrace implements MethodTrace, Serializable {
 
 	/**
 	 * Appends the given log entries to the log
-	 * @param log the log
-	 * @param entries the List containing the entries to append
+	 * @param builder the log builder
+	 * @param entries the entries to append
 	 * @param indentationLevel the indentation to use for the given log entries
 	 */
-	private static void appendLogEntries(StringBuilder log, List<MethodTrace> entries, int indentationLevel) {
+	private static void appendLogEntries(StringBuilder builder, List<MethodTrace> entries, int indentationLevel) {
 		for (MethodTrace entry : entries) {
-			List<MethodTrace> children = entry.children();
-			log.append(entry.toString(indentationLevel));
-			if (!children.isEmpty()) {
-				log.append(NEWLINE);
-				appendLogEntries(log, children, indentationLevel + 1);
-			}
+			builder.append(entry.toString(indentationLevel)).append(NEWLINE);
+			appendLogEntries(builder, entry.children(), indentationLevel + 1);
 		}
 	}
 
