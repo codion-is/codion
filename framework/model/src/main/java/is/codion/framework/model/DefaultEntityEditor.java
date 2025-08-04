@@ -431,6 +431,7 @@ final class DefaultEntityEditor implements EntityEditor {
 		private final Value<Supplier<T>> defaultValue;
 
 		private DefaultEditorValue(Attribute<T> attribute) {
+			super(nullValue(entityDefinition.attributes().definition(attribute)));
 			this.attribute = attribute;
 			this.defaultValue = Value.nonNull(new Supplier<T>() {
 				@Override
@@ -571,5 +572,13 @@ final class DefaultEntityEditor implements EntityEditor {
 		private void valueChanged() {
 			notifyListeners();
 		}
+	}
+
+	private static <T> @Nullable T nullValue(AttributeDefinition<T> attributeDefinition) {
+		if (attributeDefinition.attribute().type().isBoolean() && !attributeDefinition.nullable()) {
+			return (T) Boolean.FALSE;
+		}
+
+		return null;
 	}
 }

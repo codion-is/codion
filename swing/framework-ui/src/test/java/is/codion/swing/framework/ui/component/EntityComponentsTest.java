@@ -134,18 +134,18 @@ public final class EntityComponentsTest {
 	@Test
 	void booleanComboBox() {
 		editor.defaults();
-		editor.value(Detail.BOOLEAN).set(true);
+		editor.value(Detail.BOOLEAN_NULLABLE).set(true);
 		ComponentValue<Boolean, JComboBox<Item<Boolean>>> componentValue =
-						entityComponents.booleanComboBox(Detail.BOOLEAN)
+						entityComponents.booleanComboBox(Detail.BOOLEAN_NULLABLE)
 										.transferFocusOnEnter(true)
-										.link(editor.value(Detail.BOOLEAN))
+										.link(editor.value(Detail.BOOLEAN_NULLABLE))
 										.buildValue();
 		FilterComboBoxModel<Item<Boolean>> boxModel = (FilterComboBoxModel<Item<Boolean>>) componentValue.component().getModel();
 		assertTrue(boxModel.selection().item().getOrThrow().getOrThrow());
 		boxModel.setSelectedItem(null);
-		assertNull(editor.value(Detail.BOOLEAN).get());
+		assertNull(editor.value(Detail.BOOLEAN_NULLABLE).get());
 
-		editor.value(Detail.BOOLEAN).set(false);
+		editor.value(Detail.BOOLEAN_NULLABLE).set(false);
 		assertFalse(boxModel.selection().item().getOrThrow().getOrThrow());
 	}
 

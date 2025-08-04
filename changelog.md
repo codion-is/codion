@@ -29,6 +29,8 @@ Codion Change Log
 - ListSelectionDialogBuilder.SelectionStep added.
 ### is.codion.framework.domain
 - EntityDefinition.Attributes.getOrThrow(attributeName) added.
+### is.codion.framework.model
+- DefaultEntityEditor.DefaultEditorValue no longer nullable in case of non-null boolean attributes.
 ### is.codion.framework.db
 - EntityConnection.Update.set() value parameter now @Nullable.
 ### is.codion.swing.framework.ui
