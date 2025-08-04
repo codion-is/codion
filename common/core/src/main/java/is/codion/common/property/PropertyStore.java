@@ -343,18 +343,18 @@ public interface PropertyStore {
 
 	/**
 	 * Returns a String containing all system properties, sorted by name, written by the given {@link PropertyFormatter}.
-	 * @param propertyFormatter for specific property formatting or exclusions
+	 * @param formatter for specific property formatting or exclusions
 	 * @return a String containing all system properties, one per line
 	 */
-	static String systemProperties(PropertyFormatter propertyFormatter) {
-		requireNonNull(propertyFormatter);
+	static String systemProperties(PropertyFormatter formatter) {
+		requireNonNull(formatter);
 		Properties properties = System.getProperties();
 
 		return Collections.list(properties.propertyNames()).stream()
 						.filter(String.class::isInstance)
 						.map(String.class::cast)
 						.sorted()
-						.map(property -> property + ": " + propertyFormatter.formatValue(property, properties.getProperty(property)))
+						.map(property -> property + ": " + formatter.formatValue(property, properties.getProperty(property)))
 						.collect(joining("\n"));
 	}
 

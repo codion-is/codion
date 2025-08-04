@@ -42,6 +42,7 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
@@ -389,7 +390,8 @@ final class DefaultPropertyStore implements PropertyStore {
 		@Override
 		public String formatValue(String property, String value) {
 			if (classOrModulePath(property) && !value.isEmpty()) {
-				return "\n" + String.join("\n", value.split(File.pathSeparator));
+				return Stream.of(value.split(File.pathSeparator))
+								.collect(joining("\n", "\n", ""));
 			}
 
 			return value;

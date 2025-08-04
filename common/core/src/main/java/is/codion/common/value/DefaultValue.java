@@ -78,12 +78,12 @@ class DefaultValue<T> extends AbstractValue<T> {
 
 		@Override
 		public <T> Builder<T, ?> nonNull(T nullValue) {
-			return new DefaultValue.DefaultBuilder<>(nullValue);
+			return new DefaultBuilder<>(nullValue);
 		}
 
 		@Override
 		public <T> Builder<T, ?> nullable() {
-			return new DefaultValue.DefaultBuilder<>();
+			return new DefaultBuilder<>();
 		}
 
 		@Override

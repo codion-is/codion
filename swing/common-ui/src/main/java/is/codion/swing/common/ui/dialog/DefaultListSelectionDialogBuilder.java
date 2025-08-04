@@ -186,7 +186,7 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 			return title == null ? MESSAGES.getString("select_values") : title.get();
 		}
 
-		private static State createSelectionNonEmptyState(FilterList<?> list) {
+		private State createSelectionNonEmptyState(FilterList<?> list) {
 			State selectionNonEmptyState = State.state(!list.getSelectionModel().isSelectionEmpty());
 			list.addListSelectionListener(e -> selectionNonEmptyState.set(!list.getSelectionModel().isSelectionEmpty()));
 

@@ -29,9 +29,8 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A wrapper for a value, providing a change observer.
- * <p><b>Thread Safety:</b> Listener management is thread-safe, but the underlying value
- * access is not. In multi-threaded environments, external synchronization is required
- * for value modifications.</p>
+ * <p><b>Thread Safety:</b> Listener management is thread-safe,
+ * value access thread-safety is implementation dependent.
  * {@snippet :
  *   class Person {
  *       private final Event<String> nameChanged = Event.event();
