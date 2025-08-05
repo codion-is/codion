@@ -350,7 +350,8 @@ Choose the appropriate notification strategy:
 // CHANGED: Only when value changes (default)
 Value<Integer> counter = Value.builder()
     .nonNull(0)
-    .build();  // Uses CHANGED by default
+    .notify(Notify.CHANGED) // This is the default
+    .build();
 
 counter.set(1);  // Notifies
 counter.set(1);  // No notification
