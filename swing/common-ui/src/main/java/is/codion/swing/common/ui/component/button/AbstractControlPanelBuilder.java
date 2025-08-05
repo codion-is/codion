@@ -24,6 +24,7 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import org.jspecify.annotations.Nullable;
 
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.SwingConstants;
 import java.awt.Dimension;
@@ -34,13 +35,18 @@ import static java.util.Objects.requireNonNull;
 abstract class AbstractControlPanelBuilder<C extends JComponent, B extends ControlPanelBuilder<C, B>>
 				extends AbstractComponentBuilder<Void, C, B> implements ControlPanelBuilder<C, B> {
 
-	private final ButtonBuilder<?, ?, ?> buttonBuilder = ButtonBuilder.builder();
-	private final ToggleButtonBuilder<?, ?> toggleButtonBuilder = ToggleButtonBuilder.builder();
-	private final CheckBoxBuilder checkBoxBuilder = CheckBoxBuilder.builder();
-	private final RadioButtonBuilder radioButtonBuilder = RadioButtonBuilder.builder();
+	private static final EmptyConsumer<?> EMPTY_CONSUMER = new EmptyConsumer<>();
+
+	private Consumer<ButtonBuilder<?, ?, ?>> button = (Consumer<ButtonBuilder<?, ?, ?>>) EMPTY_CONSUMER;
+	private Consumer<ToggleButtonBuilder<?, ?>> toggleButton = (Consumer<ToggleButtonBuilder<?, ?>>) EMPTY_CONSUMER;
+	private Consumer<CheckBoxBuilder> checkBox = (Consumer<CheckBoxBuilder>) EMPTY_CONSUMER;
+	private Consumer<RadioButtonBuilder> radioButton = (Consumer<RadioButtonBuilder>) EMPTY_CONSUMER;
 
 	private int orientation = SwingConstants.HORIZONTAL;
 	private ToggleButtonType toggleButtonType = ToggleButtonType.BUTTON;
+	private boolean includeButtonText = true;
+	private @Nullable Dimension preferredButtonSize;
+	private boolean buttonsFocusable = true;
 
 	protected AbstractControlPanelBuilder() {}
 
@@ -55,28 +61,19 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 
 	@Override
 	public final B includeButtonText(boolean includeButtonText) {
-		buttonBuilder.includeText(includeButtonText);
-		toggleButtonBuilder.includeText(includeButtonText);
-		checkBoxBuilder.includeText(includeButtonText);
-		radioButtonBuilder.includeText(includeButtonText);
+		this.includeButtonText = includeButtonText;
 		return self();
 	}
 
 	@Override
 	public final B preferredButtonSize(@Nullable Dimension preferredButtonSize) {
-		buttonBuilder.preferredSize(preferredButtonSize);
-		toggleButtonBuilder.preferredSize(preferredButtonSize);
-		checkBoxBuilder.preferredSize(preferredButtonSize);
-		radioButtonBuilder.preferredSize(preferredButtonSize);
+		this.preferredButtonSize = preferredButtonSize;
 		return self();
 	}
 
 	@Override
 	public final B buttonsFocusable(boolean buttonsFocusable) {
-		buttonBuilder.focusable(buttonsFocusable);
-		toggleButtonBuilder.focusable(buttonsFocusable);
-		checkBoxBuilder.focusable(buttonsFocusable);
-		radioButtonBuilder.focusable(buttonsFocusable);
+		this.buttonsFocusable = buttonsFocusable;
 		return self();
 	}
 
@@ -88,25 +85,25 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 
 	@Override
 	public final B button(Consumer<ButtonBuilder<?, ?, ?>> builder) {
-		requireNonNull(builder).accept(this.buttonBuilder);
+		this.button = requireNonNull(builder);
 		return self();
 	}
 
 	@Override
 	public final B toggleButton(Consumer<ToggleButtonBuilder<?, ?>> builder) {
-		requireNonNull(builder).accept(this.toggleButtonBuilder);
+		this.toggleButton = requireNonNull(builder);
 		return self();
 	}
 
 	@Override
 	public final B checkBox(Consumer<CheckBoxBuilder> builder) {
-		requireNonNull(builder).accept(this.checkBoxBuilder);
+		this.checkBox = requireNonNull(builder);
 		return self();
 	}
 
 	@Override
 	public final B radioButton(Consumer<RadioButtonBuilder> builder) {
-		requireNonNull(builder).accept(this.radioButtonBuilder);
+		this.radioButton = requireNonNull(builder);
 		return self();
 	}
 
@@ -120,20 +117,38 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 	}
 
 	protected final ButtonBuilder<?, ?, ?> buttonBuilder() {
+		ButtonBuilder<Void, JButton, ?> buttonBuilder = set(ButtonBuilder.builder());
+		button.accept(buttonBuilder);
+
 		return buttonBuilder;
 	}
 
 	protected final ToggleButtonBuilder<?, ?> toggleButtonBuilder() {
 		switch (toggleButtonType) {
 			case CHECKBOX:
+				CheckBoxBuilder checkBoxBuilder = set(CheckBoxBuilder.builder());
+				checkBox.accept(checkBoxBuilder);
+
 				return checkBoxBuilder;
 			case BUTTON:
+				ToggleButtonBuilder<?, ?> toggleButtonBuilder = set(ToggleButtonBuilder.builder());
+				toggleButton.accept(toggleButtonBuilder);
+
 				return toggleButtonBuilder;
 			case RADIO_BUTTON:
+				RadioButtonBuilder radioButtonBuilder = set(RadioButtonBuilder.builder());
+				radioButton.accept(radioButtonBuilder);
+
 				return radioButtonBuilder;
 			default:
 				throw new IllegalArgumentException("Unknown toggle button type: " + toggleButtonType);
 		}
+	}
+
+	private <T extends ButtonBuilder<?, ?, ?>> T set(T builder) {
+		return (T) builder.includeText(includeButtonText)
+						.preferredSize(preferredButtonSize)
+						.focusable(buttonsFocusable);
 	}
 
 	private static final class PanelComponentValue<C extends JComponent> extends AbstractComponentValue<Void, C> {
@@ -151,5 +166,11 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 		protected void setComponentValue(Void value) {
 			throw new UnsupportedOperationException();
 		}
+	}
+
+	private static final class EmptyConsumer<T> implements Consumer<T> {
+
+		@Override
+		public void accept(T result) {}
 	}
 }

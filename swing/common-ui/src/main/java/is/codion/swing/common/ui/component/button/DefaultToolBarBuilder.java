@@ -69,23 +69,17 @@ final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, 
 		toolBar.setRollover(rollover);
 		toolBar.setBorderPainted(borderPainted);
 
-		new ToolBarControlHandler(toolBar, controls, buttonBuilder(), toggleButtonBuilder());
+		new ToolBarControlHandler(toolBar, controls);
 
 		return toolBar;
 	}
 
-	private static final class ToolBarControlHandler extends ControlHandler {
+	private final class ToolBarControlHandler extends ControlHandler {
 
 		private final JToolBar toolBar;
-		private final ButtonBuilder<?, ?, ?> buttonBuilder;
-		private final ToggleButtonBuilder<?, ?> toggleButtonBuilder;
 
-		private ToolBarControlHandler(JToolBar toolBar, Controls controls,
-																	ButtonBuilder<?, ?, ?> buttonBuilder,
-																	ToggleButtonBuilder<?, ?> toggleButtonBuilder) {
+		private ToolBarControlHandler(JToolBar toolBar, Controls controls) {
 			this.toolBar = toolBar;
-			this.buttonBuilder = buttonBuilder;
-			this.toggleButtonBuilder = toggleButtonBuilder;
 			cleanupSeparators(new ArrayList<>(controls.actions())).forEach(this);
 		}
 
@@ -101,19 +95,19 @@ final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, 
 
 		@Override
 		void onToggleControl(ToggleControl toggleControl) {
-			toolBar.add(toggleButtonBuilder
+			toolBar.add(toggleButtonBuilder()
 							.toggle(toggleControl)
 							.build());
 		}
 
 		@Override
 		void onControls(Controls controls) {
-			new ToolBarControlHandler(toolBar, controls, buttonBuilder, toggleButtonBuilder);
+			new ToolBarControlHandler(toolBar, controls);
 		}
 
 		@Override
 		void onAction(Action action) {
-			toolBar.add(buttonBuilder
+			toolBar.add(buttonBuilder()
 							.action(action)
 							.build());
 		}

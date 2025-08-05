@@ -27,6 +27,7 @@ import is.codion.common.value.ValueSet;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
+import is.codion.swing.common.ui.component.button.ToggleButtonType;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.component.list.ListBuilder;
@@ -1064,5 +1065,18 @@ public final class ComponentsTest {
 										.build())
 						.orientation(SwingConstants.VERTICAL)
 						.build());
+
+		// Regression v0.18.43, shared button builders in AbstractControlPanelBuilder
+		ToggleControl toggle1 = Control.toggle(Value.nonNull(false));
+		ToggleControl toggle2 = Control.toggle(Value.nonNull(false));
+		ToggleControl toggle3 = Control.toggle(Value.nonNull(false));
+
+		Controls controls = Controls.builder()
+						.actions(toggle1, toggle2, toggle3)
+						.build();
+		Components.buttonPanel()
+						.controls(controls)
+						.toggleButtonType(ToggleButtonType.CHECKBOX)
+						.build();
 	}
 }

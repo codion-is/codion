@@ -74,7 +74,7 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 	@Override
 	protected JPanel createComponent() {
 		JPanel panel = createPanel();
-		new ButtonControlHandler(panel, controls, buttonBuilder(), toggleButtonBuilder());
+		new ButtonControlHandler(panel, controls);
 
 		return panel;
 	}
@@ -106,15 +106,9 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 	private final class ButtonControlHandler extends ControlHandler {
 
 		private final JPanel panel;
-		private final ButtonBuilder<?, ?, ?> buttonBuilder;
-		private final ToggleButtonBuilder<?, ?> toggleButtonBuilder;
 
-		private ButtonControlHandler(JPanel panel, Controls controls,
-																 ButtonBuilder<?, ?, ?> buttonBuilder,
-																 ToggleButtonBuilder<?, ?> toggleButtonBuilder) {
+		private ButtonControlHandler(JPanel panel, Controls controls) {
 			this.panel = panel;
-			this.buttonBuilder = buttonBuilder;
-			this.toggleButtonBuilder = toggleButtonBuilder;
 			controls.actions().forEach(this);
 		}
 
@@ -130,7 +124,7 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 
 		@Override
 		void onToggleControl(ToggleControl toggleControl) {
-			JToggleButton button = toggleButtonBuilder.toggle(toggleControl).build();
+			JToggleButton button = toggleButtonBuilder().toggle(toggleControl).build();
 			if (buttonGroup != null) {
 				buttonGroup.add(button);
 			}
@@ -140,13 +134,13 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 		@Override
 		void onControls(Controls controls) {
 			JPanel controlPanel = createPanel();
-			new ButtonControlHandler(controlPanel, controls, buttonBuilder, toggleButtonBuilder);
+			new ButtonControlHandler(controlPanel, controls);
 			panel.add(controlPanel);
 		}
 
 		@Override
 		void onAction(Action action) {
-			AbstractButton button = buttonBuilder.action(action).build();
+			AbstractButton button = buttonBuilder().action(action).build();
 			if (buttonGroup != null) {
 				buttonGroup.add(button);
 			}
