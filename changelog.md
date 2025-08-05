@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.44
+
 ## 0.18.43
 ### is.codion.common.core
 - Values renamed ValueCollection.
