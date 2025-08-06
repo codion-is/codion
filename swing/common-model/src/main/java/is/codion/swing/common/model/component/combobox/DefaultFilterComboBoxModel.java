@@ -49,10 +49,12 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static is.codion.common.value.Value.Notify.SET;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
@@ -434,6 +436,16 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 				for (T item : requireNonNull(items)) {
 					remove(item);
 				}
+			}
+		}
+
+		@Override
+		public void remove(Predicate<T> predicate) {
+			requireNonNull(predicate);
+			synchronized (lock) {
+				remove(Stream.concat(visible.items.stream(), filtered.items.stream())
+								.filter(predicate)
+								.collect(toList()));
 			}
 		}
 

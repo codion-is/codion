@@ -200,6 +200,15 @@ public class DefaultFilterComboBoxModelTest {
 	}
 
 	@Test
+	void removeByPredicate() {
+		testModel.items().visible().predicate().set(item -> !item.startsWith("t"));
+		testModel.items().remove(item -> item != null && item.contains("n"));
+		assertEquals(3, testModel.items().count());
+		assertEquals(1, testModel.items().filtered().count());
+		assertEquals(2, testModel.items().visible().count());
+	}
+
+	@Test
 	void add() {
 		testModel.items().clear();
 		//add filtered item

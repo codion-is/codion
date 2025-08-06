@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.44
+### is.codion.common.model
+- FilterModel.Items.remove(Predicate) added.
 ### is.codion.swing.common.ui
 - AbstractControlPanelBuilder bug fixed, button builders no longer shared, stack overflow during value linking, same button linked to multiple values.
 ### is.codion.framework.model

@@ -44,10 +44,12 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static is.codion.common.value.Value.Notify.SET;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 final class DefaultFilterModelItems<R> implements Items<R> {
 
@@ -168,6 +170,16 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 			if (visibleRemoved) {
 				visible.notifyChanges();
 			}
+		}
+	}
+
+	@Override
+	public void remove(Predicate<R> predicate) {
+		requireNonNull(predicate);
+		synchronized (lock) {
+			remove(Stream.concat(visible.items.stream(), filtered.items.stream())
+							.filter(predicate)
+							.collect(toList()));
 		}
 	}
 

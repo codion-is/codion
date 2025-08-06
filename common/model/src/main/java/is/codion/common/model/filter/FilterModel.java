@@ -158,6 +158,12 @@ public interface FilterModel<T> {
 		void remove(Collection<T> items);
 
 		/**
+		 * <p>Removes the items fulfilling the given predicate from this model.
+		 * @param predicate the {@link Predicate} specifying the items to remove from the model
+		 */
+		void remove(Predicate<T> predicate);
+
+		/**
 		 * <p>Replaces the first occurrence of the given item. If the item is not found this method has no effect.
 		 * <p>Note that this method respects the visible predicate, so a
 		 * currently filtered item may be replaced with a visible item and vice verse.

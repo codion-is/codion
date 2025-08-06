@@ -35,6 +35,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -145,6 +146,17 @@ public class DefaultFilterModelItemsTest {
 
 			assertEquals(0, items.count());
 			assertFalse(items.contains(ITEM_PREFIX + "1"));
+		}
+
+		@Test
+		@DisplayName("Remove by predicate")
+		void removeByPredicate() {
+			items.add(Arrays.asList("One", "Two", "Three", "Four", "Five"));
+			items.visible().predicate().set(item -> !item.startsWith("T"));
+			items.remove(item -> item.length() == 3);
+			assertEquals(3, items.count());
+			assertEquals(1, items.filtered().count());
+			assertEquals(2, items.visible().count());
 		}
 
 		@Test
