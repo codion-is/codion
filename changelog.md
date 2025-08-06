@@ -2,6 +2,9 @@ Codion Change Log
 =================
 
 ## 0.18.44
+### is.codion.common.core
+- State.Combination.add() and remove() removed.
+- DefaultStateCombination refactored, no longer locks on read.
 ### is.codion.common.model
 - FilterModel.Items.remove(Predicate) added.
 ### is.codion.swing.common.ui

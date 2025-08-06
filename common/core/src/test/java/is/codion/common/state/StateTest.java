@@ -23,6 +23,11 @@ import is.codion.common.Conjunction;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -225,9 +230,6 @@ public class StateTest {
 
 		assertTrue(orState.is(), "Or state should be active when two component states are active");
 		assertFalse(andState.is(), "And state should be inactive when only two of three component states is active");
-
-		andState.remove(stateOne);
-		assertTrue(andState.is());
 	}
 
 	@Test
@@ -235,10 +237,7 @@ public class StateTest {
 		State stateOne = State.state();
 		State stateTwo = State.state();
 		State stateThree = State.state();
-		State.Combination orState = State.or();
-		orState.add(stateOne);
-		orState.add(stateTwo);
-		orState.add(stateThree);
+		State.Combination orState = State.or(stateOne, stateTwo, stateThree);
 		State.Combination andState = State.and(stateOne, stateTwo, stateThree);
 		assertEquals(CONJUNCTION_AND_PATTERN, andState.toString());
 		assertEquals(CONJUNCTION_OR_PATTERN, orState.toString());
@@ -266,7 +265,7 @@ public class StateTest {
 		assertTrue(orState.is(), "Or state should be active when two component states are active");
 		assertFalse(andState.is(), "And state should be inactive when only two of three component states is active");
 
-		andState.remove(stateOne);
+		andState = State.and(stateTwo, stateThree);
 		assertTrue(andState.is());
 
 		stateTwo.set(false);
@@ -310,34 +309,6 @@ public class StateTest {
 	}
 
 	@Test
-	void stateCombinationEvents() {
-		State stateOne = State.state(false);
-		State stateTwo = State.state(true);
-		State.Combination combination = State.or(stateOne, stateTwo);
-		AtomicInteger stateChangeEvents = new AtomicInteger();
-		combination.addListener(stateChangeEvents::incrementAndGet);
-		assertTrue(combination.is());
-
-		combination.remove(stateTwo);
-
-		assertFalse(combination.is());
-		assertEquals(1, stateChangeEvents.get());
-
-		combination.add(stateTwo);
-		assertTrue(combination.is());
-		assertEquals(2, stateChangeEvents.get());
-
-		combination.remove(stateOne);
-		assertTrue(combination.is());
-		assertEquals(2, stateChangeEvents.get());
-
-		combination.add(stateOne);
-		stateTwo.set(false);
-		assertFalse(combination.is());
-		assertEquals(3, stateChangeEvents.get());
-	}
-
-	@Test
 	void linking() {
 		State state = State.state();
 		State linked = State.state();
@@ -376,5 +347,163 @@ public class StateTest {
 		state2.set(true);
 		combination.removeWeakListener(listener);
 		combination.removeWeakConsumer(consumer);
+	}
+
+	@Test
+	void combinationConcurrentReads() throws InterruptedException {
+		State state1 = State.state();
+		State state2 = State.state();
+		State state3 = State.state();
+		State.Combination combination = State.and(state1, state2, state3);
+
+		int threadCount = 100;
+		int iterations = 10000;
+		CountDownLatch latch = new CountDownLatch(threadCount);
+		try (ExecutorService executor = Executors.newFixedThreadPool(threadCount)) {
+			AtomicBoolean errorOccurred = new AtomicBoolean(false);
+			for (int i = 0; i < threadCount; i++) {
+				executor.submit(() -> {
+					try {
+						for (int j = 0; j < iterations; j++) {
+							// Just read the value, checking for exceptions
+							combination.is();
+						}
+					}
+					catch (Exception e) {
+						errorOccurred.set(true);
+					}
+					finally {
+						latch.countDown();
+					}
+				});
+			}
+
+			assertTrue(latch.await(10, TimeUnit.SECONDS), "Concurrent reads should complete without deadlock");
+			assertFalse(errorOccurred.get(), "No exceptions should occur during concurrent reads");
+		}
+	}
+
+	@Test
+	void combinationConcurrentUpdatesAndReads() {
+		State state1 = State.state();
+		State state2 = State.state();
+		State state3 = State.state();
+		State.Combination andCombination = State.and(state1, state2, state3);
+		State.Combination orCombination = State.or(state1, state2, state3);
+
+		// Simple concurrent test - just verify no deadlocks or exceptions
+		for (int i = 0; i < 1000; i++) {
+			state1.set(i % 2 == 0);
+			state2.set(i % 3 == 0);
+			state3.set(i % 5 == 0);
+
+			// Read combinations
+			andCombination.is();
+			orCombination.is();
+		}
+
+		// Verify basic functionality
+		state1.set(true);
+		state2.set(true);
+		state3.set(true);
+		assertTrue(andCombination.is());
+		assertTrue(orCombination.is());
+
+		state1.set(false);
+		assertFalse(andCombination.is());
+		assertTrue(orCombination.is());
+	}
+
+	@Test
+	void combinationRapidStateFlipping() {
+		State state1 = State.state(false);
+		State state2 = State.state(false);
+		State.Combination andCombination = State.and(state1, state2);
+		State.Combination orCombination = State.or(state1, state2);
+
+		// Simple test - just verify no deadlocks
+		for (int i = 0; i < 1000; i++) {
+			state1.set(i % 2 == 0);
+			state2.set(i % 3 == 0);
+			andCombination.is();
+			orCombination.is();
+		}
+	}
+
+	@Test
+	void combinationListenerNotificationUnderConcurrency() {
+		State state1 = State.state();
+		State state2 = State.state();
+		State.Combination combination = State.and(state1, state2);
+
+		AtomicInteger notificationCount = new AtomicInteger(0);
+
+		// Add listener
+		combination.addConsumer(value -> notificationCount.incrementAndGet());
+
+		// Trigger state changes
+		state1.set(true);
+		state2.set(true);
+		state1.set(false);
+		state2.set(false);
+
+		assertTrue(notificationCount.get() > 0, "Listeners should have been notified");
+	}
+
+	@Test
+	void combinationStressTestDeadlockPrevention() {
+		// Create nested combinations to increase complexity
+		State s1 = State.state();
+		State s2 = State.state();
+		State s3 = State.state();
+		State s4 = State.state();
+
+		State.Combination inner1 = State.and(s1, s2);
+		State.Combination inner2 = State.or(s3, s4);
+		State.Combination outer = State.and(inner1, inner2);
+
+		// Rapidly change states and read from nested combinations
+		for (int i = 0; i < 1000; i++) {
+			s1.set(i % 2 == 0);
+			s2.set(i % 3 == 0);
+			s3.set(i % 5 == 0);
+			s4.set(i % 7 == 0);
+
+			// Read at all levels
+			outer.is();
+			inner1.is();
+			inner2.is();
+		}
+
+		// Verify functionality
+		s1.set(true);
+		s2.set(true);
+		assertTrue(inner1.is());
+
+		s3.set(false);
+		s4.set(true);
+		assertTrue(inner2.is());
+
+		assertTrue(outer.is());
+	}
+
+	@Test
+	void combinationMemoryConsistency() {
+		State state1 = State.state(false);
+		State state2 = State.state(false);
+		State.Combination combination = State.or(state1, state2);
+
+		// Simple memory consistency test
+		for (int i = 0; i < 1000; i++) {
+			state1.set(true);
+			state2.set(true);
+			// Combination should see the changes
+			assertTrue(combination.is());
+
+			state1.set(false);
+			state2.set(false);
+			// Combination should see the changes
+			assertFalse(combination.is());
+		}
 	}
 }

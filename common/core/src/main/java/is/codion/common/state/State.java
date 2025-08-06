@@ -114,18 +114,6 @@ public interface State extends ObservableState {
 		 * @return the conjunction of this state combination
 		 */
 		Conjunction conjunction();
-
-		/**
-		 * Adds a state to this state combination
-		 * @param state the state to add to this state combination
-		 */
-		void add(ObservableState state);
-
-		/**
-		 * Removes a state from this state combination
-		 * @param state the state to remove from this state combination
-		 */
-		void remove(ObservableState state);
 	}
 
 	/**

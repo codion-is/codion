@@ -21,47 +21,46 @@ package is.codion.common.state;
 import is.codion.common.Conjunction;
 import is.codion.common.observer.Observer;
 
-import org.jspecify.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Consumer;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 final class DefaultStateCombination implements State.Combination {
 
 	private final DefaultObservableState observableState;
-	private final List<StateCombinationConsumer> stateListeners = new ArrayList<>();
+	private final List<StateCombinationConsumer> stateListeners;
 	private final Conjunction conjunction;
 
+	private final Lock updateLock = new Lock() {};
+	private volatile boolean value;
+
 	DefaultStateCombination(Conjunction conjunction, ObservableState... states) {
-		this(conjunction, states == null ? Collections.emptyList() : Arrays.asList(states));
+		this(conjunction, states == null ? emptyList() : asList(states));
 	}
 
 	DefaultStateCombination(Conjunction conjunction, Collection<? extends ObservableState> states) {
-		this.observableState = new DefaultObservableState(this, false);
 		this.conjunction = requireNonNull(conjunction);
-		for (ObservableState state : requireNonNull(states)) {
-			add(state);
-		}
+		this.observableState = new DefaultObservableState(this, false);
+		this.stateListeners = states.stream() // Create consumers but don't register them yet
+						.map(state -> new StateCombinationConsumer(requireNonNull(state)))
+						.collect(toList());
+		this.value = calculateValue(); // Calculate initial value before registering listeners
+		this.stateListeners.forEach(StateCombinationConsumer::registerListener);
 	}
 
 	@Override
 	public String toString() {
-		synchronized (observableState) {
-			StringBuilder stringBuilder = new StringBuilder("Combination");
-			stringBuilder.append(toString(conjunction)).append(observableState);
-			for (StateCombinationConsumer listener : stateListeners) {
-				stringBuilder.append(", ").append(listener.state);
-			}
-
-			return stringBuilder.toString();
+		StringBuilder stringBuilder = new StringBuilder("Combination");
+		stringBuilder.append(toString(conjunction)).append(value);
+		for (StateCombinationConsumer listener : stateListeners) {
+			stringBuilder.append(", ").append(listener.state);
 		}
+
+		return stringBuilder.toString();
 	}
 
 	@Override
@@ -70,35 +69,8 @@ final class DefaultStateCombination implements State.Combination {
 	}
 
 	@Override
-	public void add(ObservableState state) {
-		requireNonNull(state);
-		synchronized (observableState) {
-			if (!findConsumer(state).isPresent()) {
-				boolean previousValue = is();
-				stateListeners.add(new StateCombinationConsumer(state));
-				observableState.notifyObservers(is(), previousValue);
-			}
-		}
-	}
-
-	@Override
-	public void remove(ObservableState state) {
-		requireNonNull(state);
-		synchronized (observableState) {
-			boolean previousValue = is();
-			findConsumer(state).ifPresent(consumer -> {
-				state.removeConsumer(consumer);
-				stateListeners.remove(consumer);
-				observableState.notifyObservers(is(), previousValue);
-			});
-		}
-	}
-
-	@Override
 	public boolean is() {
-		synchronized (observableState) {
-			return get(conjunction, null, false);
-		}
+		return value;
 	}
 
 	@Override
@@ -111,16 +83,18 @@ final class DefaultStateCombination implements State.Combination {
 		return observableState.observer();
 	}
 
-	private boolean get(Conjunction conjunction, @Nullable ObservableState exclude, boolean excludeReplacement) {
+	private boolean calculateValue() {
+		if (stateListeners.isEmpty()) {
+			return false;
+		}
 		for (StateCombinationConsumer listener : stateListeners) {
-			ObservableState state = listener.state;
-			boolean value = state.equals(exclude) ? excludeReplacement : state.is();
+			boolean is = listener.state.is();
 			if (conjunction == Conjunction.AND) {
-				if (!value) {
+				if (!is) {
 					return false;
 				}
 			}
-			else if (value) {
+			else if (is) {
 				return true;
 			}
 		}
@@ -128,29 +102,28 @@ final class DefaultStateCombination implements State.Combination {
 		return conjunction == Conjunction.AND;
 	}
 
-	private Optional<StateCombinationConsumer> findConsumer(ObservableState state) {
-		return stateListeners.stream()
-						.filter(listener -> listener.state.equals(state))
-						.findFirst();
-	}
+	private final class StateCombinationConsumer implements Runnable {
 
-	private final class StateCombinationConsumer implements Consumer<Boolean> {
 		private final ObservableState state;
 
 		private StateCombinationConsumer(ObservableState state) {
 			this.state = state;
-			this.state.addConsumer(this);
 		}
 
 		@Override
-		public void accept(Boolean newValue) {
-			observableState.notifyObservers(is(), previousState(state, !newValue));
+		public void run() {
+			boolean oldValue = value;
+			boolean newValue = calculateValue();
+			if (oldValue != newValue) {
+				synchronized (updateLock) {
+					value = newValue;
+				}
+				observableState.notifyObservers(newValue, oldValue);
+			}
 		}
 
-		private boolean previousState(ObservableState excludeState, boolean previousValue) {
-			synchronized (observableState) {
-				return get(conjunction, excludeState, previousValue);
-			}
+		private void registerListener() {
+			state.addListener(this);
 		}
 	}
 
@@ -164,4 +137,6 @@ final class DefaultStateCombination implements State.Combination {
 				throw new IllegalArgumentException("Unknown conjunction: " + conjunction);
 		}
 	}
+
+	private interface Lock {}
 }
