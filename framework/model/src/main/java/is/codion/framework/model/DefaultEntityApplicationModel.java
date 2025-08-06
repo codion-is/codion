@@ -106,15 +106,6 @@ public class DefaultEntityApplicationModel<M extends EntityModel<M, E, T>,
 	}
 
 	@Override
-	public final void refresh() {
-		for (M entityModel : models.entityModels) {
-			if (entityModel.containsTableModel()) {
-				entityModel.tableModel().items().refresh();
-			}
-		}
-	}
-
-	@Override
 	public final Preferences preferences() {
 		synchronized (connectionProvider) {
 			if (preferences == null) {

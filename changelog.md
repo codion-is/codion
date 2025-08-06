@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.44
 ### is.codion.swing.common.ui
 - AbstractControlPanelBuilder bug fixed, button builders no longer shared, stack overflow during value linking, same button linked to multiple values.
+### is.codion.framework.model
+- EntityApplicationModel.refresh() removed.
 
 ## 0.18.43
 ### is.codion.common.core

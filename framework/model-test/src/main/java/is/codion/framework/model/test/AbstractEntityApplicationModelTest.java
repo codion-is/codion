@@ -69,12 +69,6 @@ public abstract class AbstractEntityApplicationModelTest<M extends AbstractEntit
 		assertEquals(UNIT_TEST_USER, model.user());
 
 		assertThrows(IllegalArgumentException.class, () -> model.entityModels().get(Employee.TYPE));
-		if (!deptModel.containsTableModel()) {
-			return;
-		}
-		deptModel.detailModels().get(Employee.TYPE).tableModel().queryModel().conditionRequired().set(false);
-		model.refresh();
-		assertTrue(deptModel.tableModel().items().visible().count() > 0);
 	}
 
 	@Test

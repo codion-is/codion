@@ -136,11 +136,6 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
 	Preferences preferences();
 
 	/**
-	 * Refreshes all data models contained in this application model
-	 */
-	void refresh();
-
-	/**
 	 * Manages the {@link EntityModel}s for a {@link EntityApplicationModel}
 	 * @param <M> the type of {@link EntityModel} this application model is based on
 	 * @param <E> the type of {@link EntityEditModel} used by this {@link EntityModel}
