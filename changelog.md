@@ -9,6 +9,7 @@ Codion Change Log
 - FilterModel.Items.remove(Predicate) added.
 ### is.codion.swing.common.ui
 - AbstractControlPanelBuilder bug fixed, button builders no longer shared, stack overflow during value linking, same button linked to multiple values.
+- ComponentBuilder.visible() and focusable() overloaded with ObservableState.
 ### is.codion.framework.model
 - EntityApplicationModel.refresh() removed.
 

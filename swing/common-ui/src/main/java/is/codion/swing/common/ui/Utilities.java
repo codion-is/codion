@@ -154,6 +154,36 @@ public final class Utilities {
 	}
 
 	/**
+	 * Links the given components to the given {@link ObservableState}, so that each component is visible only when the observed state is active
+	 * @param visibleState the {@link ObservableState} with which to link the components
+	 * @param components the components
+	 */
+	public static void visible(ObservableState visibleState, JComponent... components) {
+		requireNonNull(visibleState);
+		for (JComponent component : requireNonNull(components)) {
+			if (component != null) {
+				component.setVisible(visibleState.is());
+				visibleState.addConsumer(new ComponentVisible(component));
+			}
+		}
+	}
+
+	/**
+	 * Links the given components to the given {@link ObservableState}, so that each component is focusable only when the observed state is active
+	 * @param focusableState the {@link ObservableState} with which to link the components
+	 * @param components the components
+	 */
+	public static void focusable(ObservableState focusableState, JComponent... components) {
+		requireNonNull(focusableState);
+		for (JComponent component : requireNonNull(components)) {
+			if (component != null) {
+				component.setFocusable(focusableState.is());
+				focusableState.addConsumer(new ComponentFocusable(component));
+			}
+		}
+	}
+
+	/**
 	 * Returns a {@link Observer} notified each time the value of the given property changes in the given component.
 	 * @param component the component
 	 * @param property the property to listen to changes for
@@ -400,6 +430,44 @@ public final class Utilities {
 			}
 			else {
 				SwingUtilities.invokeLater(() -> component.setEnabled(enabled));
+			}
+		}
+	}
+
+	private static final class ComponentVisible implements Consumer<Boolean> {
+
+		private final JComponent component;
+
+		private ComponentVisible(JComponent component) {
+			this.component = component;
+		}
+
+		@Override
+		public void accept(Boolean visible) {
+			if (SwingUtilities.isEventDispatchThread()) {
+				component.setVisible(visible);
+			}
+			else {
+				SwingUtilities.invokeLater(() -> component.setVisible(visible));
+			}
+		}
+	}
+
+	private static final class ComponentFocusable implements Consumer<Boolean> {
+
+		private final JComponent component;
+
+		private ComponentFocusable(JComponent component) {
+			this.component = component;
+		}
+
+		@Override
+		public void accept(Boolean focusable) {
+			if (SwingUtilities.isEventDispatchThread()) {
+				component.setFocusable(focusable);
+			}
+			else {
+				SwingUtilities.invokeLater(() -> component.setFocusable(focusable));
 			}
 		}
 	}

@@ -95,11 +95,20 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	B label(@Nullable JLabel label);
 
 	/**
-	 * @param focusable false if the component should not be focusable
+	 * Sets the focusable state of the component, for a dynamic focusable state use {@link #focusable(ObservableState)}.
+	 * Overridden by {@link #focusable(ObservableState)}.
+	 * @param focusable the initial component focusability, default true
 	 * @return this builder instance
 	 * @see JComponent#setFocusable(boolean)
 	 */
 	B focusable(boolean focusable);
+
+	/**
+	 * @param focusable the state controlling the component focusable state
+	 * @return this builder instance
+	 * @see JComponent#setFocusable(boolean)
+	 */
+	B focusable(@Nullable ObservableState focusable);
 
 	/**
 	 * @param preferredHeight the preferred component height
@@ -207,7 +216,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	B enabled(boolean enabled);
 
 	/**
-	 * @param enabled the state observer controlling the component enabled status
+	 * @param enabled the state controlling the component enabled status
 	 * @return this builder instance
 	 */
 	B enabled(@Nullable ObservableState enabled);
@@ -303,11 +312,20 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	B opaque(boolean opaque);
 
 	/**
+	 * Sets the visible state of the component, for a dynamic visible state use {@link #visible(ObservableState)}.
+	 * Overridden by {@link #visible(ObservableState)}.
 	 * @param visible the initial component visibility, default true
 	 * @return this builder instance
 	 * @see JComponent#setVisible(boolean)
 	 */
 	B visible(boolean visible);
+
+	/**
+	 * @param visible the state controlling the component visible state
+	 * @return this builder instance
+	 * @see JComponent#setVisible(boolean)
+	 */
+	B visible(@Nullable ObservableState visible);
 
 	/**
 	 * @param orientation the component orientation

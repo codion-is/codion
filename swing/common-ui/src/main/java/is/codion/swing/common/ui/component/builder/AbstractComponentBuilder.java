@@ -109,6 +109,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	private @Nullable ValidIndicatorFactory validIndicatorFactory =
 					ValidIndicatorFactory.instance().orElse(null);
 	private @Nullable ObservableState enabledObservable;
+	private @Nullable ObservableState focusableObservable;
+	private @Nullable ObservableState visibleObservable;
 	private @Nullable ObservableState validObservable;
 	private @Nullable ModifiedIndicatorFactory modifiedIndicatorFactory = new UnderlineModifiedIndicatorFactory();
 	private @Nullable ObservableState modifiedObservable;
@@ -138,6 +140,12 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	@Override
 	public final B focusable(boolean focusable) {
 		this.focusable = focusable;
+		return self();
+	}
+
+	@Override
+	public final B focusable(@Nullable ObservableState focusable) {
+		this.focusableObservable = focusable;
 		return self();
 	}
 
@@ -322,6 +330,12 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	@Override
 	public final B visible(boolean visible) {
 		this.visible = visible;
+		return self();
+	}
+
+	@Override
+	public final B visible(@Nullable ObservableState visible) {
+		this.visibleObservable = visible;
 		return self();
 	}
 
@@ -551,6 +565,9 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		if (component.isFocusable() && !focusable) {
 			component.setFocusable(false);
 		}
+		if (focusableObservable != null) {
+			Utilities.focusable(focusableObservable, component);
+		}
 		if (name != null) {
 			component.setName(name);
 		}
@@ -586,7 +603,12 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		if (opaque) {
 			component.setOpaque(true);
 		}
-		component.setVisible(visible);
+		if (!visible) {
+			component.setVisible(visible);
+		}
+		if (visibleObservable != null) {
+			Utilities.visible(visibleObservable, component);
+		}
 		if (componentOrientation != null) {
 			component.setComponentOrientation(componentOrientation);
 		}
