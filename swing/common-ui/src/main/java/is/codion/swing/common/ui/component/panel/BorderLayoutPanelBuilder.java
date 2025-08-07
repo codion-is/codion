@@ -37,6 +37,13 @@ public interface BorderLayoutPanelBuilder extends ComponentBuilder<Void, JPanel,
 	BorderLayoutPanelBuilder layout(BorderLayout layout);
 
 	/**
+	 * @param component the component
+	 * @param constraints the constraints
+	 * @return this builder instance
+	 */
+	BorderLayoutPanelBuilder add(JComponent component, String constraints);
+
+	/**
 	 * @param centerComponent the {@link BorderLayout#CENTER} component
 	 * @return this builder instance
 	 */
