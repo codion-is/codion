@@ -67,7 +67,6 @@ import java.time.temporal.WeekFields;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -203,7 +202,6 @@ public final class CalendarPanel extends JPanel {
 	private static final int TIME_COLUMNS = 2;
 	private static final int DAYS_IN_WEEK = 7;
 	private static final int MAX_DAYS_IN_MONTH = 31;
-	private static final int MAX_DAY_FILLERS = 14;
 	private static final int DAY_GRID_ROWS = 6;
 	private static final int DAY_GRID_CELLS = 42;
 
@@ -227,7 +225,6 @@ public final class CalendarPanel extends JPanel {
 	private final List<DayOfWeek> dayColumns;
 	private final Map<Integer, DayLabel> dayLabels;
 	private final JPanel dayGridPanel;
-	private final List<JLabel> paddingLabels;
 	private final JLabel formattedDateLabel;
 	private final boolean includeTime;
 	private final boolean includeTodayButton;
@@ -282,7 +279,6 @@ public final class CalendarPanel extends JPanel {
 						.mapToObj(firstDayOfWeek::plus)
 						.collect(toList());
 		dayLabels = createDayLabels();
-		paddingLabels = IntStream.range(0, MAX_DAY_FILLERS).mapToObj(counter -> new JLabel()).collect(toList());
 		dayGridPanel = new JPanel(new GridLayout(DAY_GRID_ROWS, DAYS_IN_WEEK));
 		formattedDateLabel = label()
 						.horizontalAlignment(SwingConstants.CENTER)
@@ -793,19 +789,22 @@ public final class CalendarPanel extends JPanel {
 		updateWeekNumbers();
 
 		DayOfWeek dayOfWeek = date.getOrThrow().withDayOfMonth(1).getDayOfWeek();
-		Iterator<JLabel> paddingIterator = paddingLabels.iterator();
 		int dayOfWeekColumn = dayColumns.indexOf(dayOfWeek);
-		for (int i = 0; i < dayOfWeekColumn; i++) {
-			dayGridPanel.add(paddingIterator.next());
+		YearMonth previousMonth = YearMonth.of(yearValue.getOrThrow(), monthValue.getOrThrow()).minusMonths(1);
+		int previousMonthLength = previousMonth.lengthOfMonth();
+		for (int i = dayOfWeekColumn - 1; i >= 0; i--) {
+			dayGridPanel.add(new FillerLabel(previousMonth.getMonth(), previousMonthLength - i));
 		}
-		int counter = dayOfWeekColumn + 1;
+		int counter = dayOfWeekColumn;
 		YearMonth yearMonth = YearMonth.of(yearValue.getOrThrow(), monthValue.getOrThrow());
 		for (int dayOfMonth = 1; dayOfMonth <= yearMonth.lengthOfMonth(); dayOfMonth++) {
 			dayGridPanel.add(dayLabels.get(dayOfMonth));
 			counter++;
 		}
+		YearMonth nextMonth = yearMonth.plusMonths(1);
+		int nextMonthDay = 1;
 		while (counter++ < DAY_GRID_CELLS) {
-			dayGridPanel.add(paddingIterator.next());
+			dayGridPanel.add(new FillerLabel(nextMonth.getMonth(), nextMonthDay++));
 		}
 		requestInputFocus();
 		validate();
@@ -1079,6 +1078,33 @@ public final class CalendarPanel extends JPanel {
 					if (e.getClickCount() == 2) {
 						doubleClicked.accept(day);
 					}
+				}
+			}
+		}
+	}
+
+	private final class FillerLabel extends JLabel {
+
+		private final Month month;
+		private final int day;
+
+		private FillerLabel(Month month, int day) {
+			super(String.valueOf(day));
+			this.month = month;
+			this.day = day;
+			setEnabled(false);
+			setHorizontalAlignment(SwingConstants.CENTER);
+			setBorder(createEtchedBorder());
+			addMouseListener(new PaddingLabelMouseAdapter());
+		}
+
+		private final class PaddingLabelMouseAdapter extends MouseAdapter {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (enabledState.is()) {
+					monthValue.set(month);
+					dayValue.set(day);
 				}
 			}
 		}

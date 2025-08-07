@@ -12,6 +12,7 @@ Codion Change Log
 - ComponentBuilder.visible() and focusable() overloaded with ObservableState.
 - AbstractComponentBuilder.configureComponent(), set label for component moved to top, so it's available during component configuration.
 - BorderLayoutPanelBuilder.add() added.
+- CalendarPanel now displays the last days of previous month and first days of next month.
 ### is.codion.framework.model
 - EntityApplicationModel.refresh() removed.
 
