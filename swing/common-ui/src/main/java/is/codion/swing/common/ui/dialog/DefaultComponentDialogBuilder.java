@@ -58,7 +58,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 	private final Collection<Consumer<WindowEvent>> onOpenedConsumers = new ArrayList<>(1);
 	private final Collection<Consumer<WindowEvent>> onClosedConsumers = new ArrayList<>(1);
 
-	private @Nullable JComponent component;
+	private @Nullable Supplier<? extends JComponent> component;
 	private boolean modal = true;
 	private boolean resizable = true;
 	private @Nullable Dimension size;
@@ -68,8 +68,13 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 	private boolean disposeOnEscape = true;
 
 	@Override
-	public ComponentDialogBuilder component(@Nullable JComponent component) {
-		this.component = component;
+	public ComponentDialogBuilder component(JComponent component) {
+		return component(() -> requireNonNull(component));
+	}
+
+	@Override
+	public ComponentDialogBuilder component(Supplier<? extends JComponent> component) {
+		this.component = requireNonNull(component);
 		return this;
 	}
 
@@ -143,7 +148,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 
 	@Override
 	public JDialog build() {
-		JDialog dialog = createDialog(owner, title, icon, component, size, locationRelativeTo,
+		JDialog dialog = createDialog(owner, title, icon, component.get(), size, locationRelativeTo,
 						location, modal, resizable, onShownConsumers, keyEventBuilders);
 		if (enterAction != null) {
 			KeyEvents.builder()

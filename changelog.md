@@ -16,6 +16,7 @@ Codion Change Log
 - ComponentBuilder.label() overloaded with Consumer<LabelBuilder> parameter.
 - ComponentBuilder now extends Supplier.
 - PanelBuilder and BorderLayoutPanelBuilder now accept Supplier when adding components.
+- ComponentDialogBuilder.component() overloaded with Supplier.
 ### is.codion.framework.model
 - EntityApplicationModel.refresh() removed.
 ### is.codion.swing.framework.ui

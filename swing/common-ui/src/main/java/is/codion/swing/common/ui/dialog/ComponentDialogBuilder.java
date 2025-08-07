@@ -29,6 +29,7 @@ import javax.swing.JDialog;
 import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * A builder for JDialog containing a single component.
@@ -41,7 +42,15 @@ public interface ComponentDialogBuilder extends DialogBuilder<ComponentDialogBui
 	 * @param component the component to display
 	 * @return this builder instance
 	 */
-	ComponentDialogBuilder component(@Nullable JComponent component);
+	ComponentDialogBuilder component(JComponent component);
+
+	/**
+	 * Note: sets the layout to {@link java.awt.BorderLayout} and
+	 * adds the component at location {@link java.awt.BorderLayout#CENTER}
+	 * @param component the component to display
+	 * @return this builder instance
+	 */
+	ComponentDialogBuilder component(Supplier<? extends JComponent> component);
 
 	/**
 	 * @param modal true if the dialog should be modal, default true
