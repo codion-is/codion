@@ -24,6 +24,7 @@ import is.codion.swing.common.ui.layout.Layouts;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.util.function.Supplier;
 
 /**
  * Builds a JPanel instance using a BorderLayout.
@@ -44,10 +45,23 @@ public interface BorderLayoutPanelBuilder extends ComponentBuilder<Void, JPanel,
 	BorderLayoutPanelBuilder add(JComponent component, String constraints);
 
 	/**
+	 * @param component the component
+	 * @param constraints the constraints
+	 * @return this builder instance
+	 */
+	BorderLayoutPanelBuilder add(Supplier<? extends JComponent> component, String constraints);
+
+	/**
 	 * @param centerComponent the {@link BorderLayout#CENTER} component
 	 * @return this builder instance
 	 */
 	BorderLayoutPanelBuilder centerComponent(JComponent centerComponent);
+
+	/**
+	 * @param centerComponent the {@link BorderLayout#CENTER} component
+	 * @return this builder instance
+	 */
+	BorderLayoutPanelBuilder centerComponent(Supplier<? extends JComponent> centerComponent);
 
 	/**
 	 * @param northComponent the {@link BorderLayout#NORTH} component
@@ -56,10 +70,22 @@ public interface BorderLayoutPanelBuilder extends ComponentBuilder<Void, JPanel,
 	BorderLayoutPanelBuilder northComponent(JComponent northComponent);
 
 	/**
+	 * @param northComponent the {@link BorderLayout#NORTH} component
+	 * @return this builder instance
+	 */
+	BorderLayoutPanelBuilder northComponent(Supplier<? extends JComponent> northComponent);
+
+	/**
 	 * @param southComponent the {@link BorderLayout#SOUTH} component
 	 * @return this builder instance
 	 */
 	BorderLayoutPanelBuilder southComponent(JComponent southComponent);
+
+	/**
+	 * @param southComponent the {@link BorderLayout#SOUTH} component
+	 * @return this builder instance
+	 */
+	BorderLayoutPanelBuilder southComponent(Supplier<? extends JComponent> southComponent);
 
 	/**
 	 * @param eastComponent the {@link BorderLayout#EAST} component
@@ -68,10 +94,22 @@ public interface BorderLayoutPanelBuilder extends ComponentBuilder<Void, JPanel,
 	BorderLayoutPanelBuilder eastComponent(JComponent eastComponent);
 
 	/**
+	 * @param eastComponent the {@link BorderLayout#EAST} component
+	 * @return this builder instance
+	 */
+	BorderLayoutPanelBuilder eastComponent(Supplier<? extends JComponent> eastComponent);
+
+	/**
 	 * @param westComponent the {@link BorderLayout#WEST} component
 	 * @return this builder instance
 	 */
 	BorderLayoutPanelBuilder westComponent(JComponent westComponent);
+
+	/**
+	 * @param westComponent the {@link BorderLayout#WEST} component
+	 * @return this builder instance
+	 */
+	BorderLayoutPanelBuilder westComponent(Supplier<? extends JComponent> westComponent);
 
 	/**
 	 * Creates a new {@link BorderLayoutPanelBuilder} instance using a new

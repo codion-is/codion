@@ -55,6 +55,7 @@ import java.beans.PropertyChangeListener;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * Use {@link #build} to build a JComponent instance or {@link #buildValue()} to build a {@link ComponentValue} instance.<br>
@@ -64,7 +65,7 @@ import java.util.function.Predicate;
  * @param <C> the component type
  * @param <B> the builder type
  */
-public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBuilder<T, C, B>> {
+public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBuilder<T, C, B>> extends Supplier<C> {
 
 	/**
 	 * The client property key for the associated {@link ComponentValue}
@@ -522,4 +523,9 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 * @return the component value
 	 */
 	ComponentValue<T, C> buildValue(@Nullable Consumer<ComponentValue<T, C>> onBuild);
+
+	@Override
+	default C get() {
+		return build();
+	}
 }

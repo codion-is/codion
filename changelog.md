@@ -14,6 +14,8 @@ Codion Change Log
 - BorderLayoutPanelBuilder.add() added.
 - CalendarPanel now displays the last days of previous month and first days of next month.
 - ComponentBuilder.label() overloaded with Consumer<LabelBuilder> parameter.
+- ComponentBuilder now extends Supplier.
+- PanelBuilder and BorderLayoutPanelBuilder now accept Supplier when adding components.
 ### is.codion.framework.model
 - EntityApplicationModel.refresh() removed.
 
