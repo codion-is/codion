@@ -562,6 +562,9 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	private C configureComponent(ComponentValue<T, C> componentValue) {
 		C component = componentValue.component();
 		component.putClientProperty(COMPONENT_VALUE, componentValue);
+		if (label != null) {
+			label.setLabelFor(component);
+		}
 		if (component.isFocusable() && !focusable) {
 			component.setFocusable(false);
 		}
@@ -633,9 +636,6 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		linkedObservables.forEach(componentValue::link);
 		listeners.forEach(componentValue::addListener);
 		consumers.forEach(componentValue::addConsumer);
-		if (label != null) {
-			label.setLabelFor(component);
-		}
 		configureValidIndicator(componentValue);
 		configureModifiedIndicator(component);
 		keyEventBuilders.forEach(keyEventBuilder -> keyEventBuilder.enable(component));
