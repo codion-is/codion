@@ -13,6 +13,7 @@ Codion Change Log
 - AbstractComponentBuilder.configureComponent(), set label for component moved to top, so it's available during component configuration.
 - BorderLayoutPanelBuilder.add() added.
 - CalendarPanel now displays the last days of previous month and first days of next month.
+- ComponentBuilder.label() overloaded with Consumer<LabelBuilder> parameter.
 ### is.codion.framework.model
 - EntityApplicationModel.refresh() removed.
 

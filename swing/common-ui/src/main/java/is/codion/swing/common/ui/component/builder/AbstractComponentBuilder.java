@@ -28,6 +28,7 @@ import is.codion.swing.common.ui.component.button.MenuBuilder;
 import is.codion.swing.common.ui.component.indicator.ModifiedIndicatorFactory;
 import is.codion.swing.common.ui.component.indicator.UnderlineModifiedIndicatorFactory;
 import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
+import is.codion.swing.common.ui.component.label.LabelBuilder;
 import is.codion.swing.common.ui.component.scrollpane.ScrollPaneBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
@@ -89,6 +90,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
 	private @Nullable String name;
 	private @Nullable JLabel label;
+	private @Nullable LabelBuilder<String> labelBuilder;
 	private boolean focusable = true;
 	private int preferredHeight = -1;
 	private int preferredWidth = -1;
@@ -133,7 +135,18 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
 	@Override
 	public final B label(@Nullable JLabel label) {
+		this.labelBuilder = null;
 		this.label = label;
+		return self();
+	}
+
+	@Override
+	public final B label(Consumer<LabelBuilder<String>> label) {
+		requireNonNull(label);
+		if (labelBuilder == null) {
+			labelBuilder = LabelBuilder.builder();
+		}
+		label.accept(labelBuilder);
 		return self();
 	}
 
@@ -564,6 +577,10 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		component.putClientProperty(COMPONENT_VALUE, componentValue);
 		if (label != null) {
 			label.setLabelFor(component);
+		}
+		else if (labelBuilder != null) {
+			labelBuilder.build()
+							.setLabelFor(component);
 		}
 		if (component.isFocusable() && !focusable) {
 			component.setFocusable(false);

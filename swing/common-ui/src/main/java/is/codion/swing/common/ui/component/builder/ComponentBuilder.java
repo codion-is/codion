@@ -24,6 +24,7 @@ import is.codion.common.value.Value;
 import is.codion.common.value.Value.Validator;
 import is.codion.swing.common.ui.component.indicator.ModifiedIndicatorFactory;
 import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
+import is.codion.swing.common.ui.component.label.LabelBuilder;
 import is.codion.swing.common.ui.component.scrollpane.ScrollPaneBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
@@ -88,11 +89,20 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	B name(@Nullable String name);
 
 	/**
+	 * Clears any label builder previously configured via {@link #label(Consumer)}.
 	 * @param label the label for the component
 	 * @return this builder instance
 	 * @see JLabel#setLabelFor(Component)
 	 */
 	B label(@Nullable JLabel label);
+
+	/**
+	 * Is overridden by {@link #label(JLabel)}.
+	 * @param label configures the component label builder
+	 * @return this builder instance
+	 * @see JLabel#setLabelFor(Component)
+	 */
+	B label(Consumer<LabelBuilder<String>> label);
 
 	/**
 	 * Sets the focusable state of the component, for a dynamic focusable state use {@link #focusable(ObservableState)}.
