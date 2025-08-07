@@ -28,8 +28,7 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import java.awt.BorderLayout;
 
-import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutPanel;
-import static is.codion.swing.common.ui.component.Components.toolBar;
+import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.text.TextComponents.preferredTextFieldHeight;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.INSERT;
@@ -69,8 +68,12 @@ public final class InvoiceLineEditPanel extends EntityEditPanel {
 		JPanel centerPanel = flexibleGridLayoutPanel(1, 0)
 						.add(createInputPanel(InvoiceLine.TRACK_FK))
 						.add(createInputPanel(InvoiceLine.QUANTITY))
-						.add(createInputPanel(new JLabel(" "), updateToolBar))
-						.add(createInputPanel(new JLabel(" "), tableSearchField))
+						.add(borderLayoutPanel()
+										.northComponent(new JLabel(" "))
+										.centerComponent(updateToolBar))
+						.add(borderLayoutPanel()
+										.northComponent(new JLabel(" "))
+										.centerComponent(tableSearchField))
 						.build();
 
 		setLayout(borderLayout());

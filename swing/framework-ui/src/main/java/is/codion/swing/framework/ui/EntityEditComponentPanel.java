@@ -37,7 +37,6 @@ import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
-import is.codion.swing.common.ui.component.label.LabelBuilder;
 import is.codion.swing.common.ui.component.list.ListBuilder;
 import is.codion.swing.common.ui.component.slider.SliderBuilder;
 import is.codion.swing.common.ui.component.spinner.ItemSpinnerBuilder;
@@ -69,7 +68,7 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerListModel;
-import javax.swing.SwingConstants;
+import javax.swing.border.Border;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.KeyboardFocusManager;
@@ -90,7 +89,7 @@ import java.util.function.Supplier;
 import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.Configuration.integerValue;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
-import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
@@ -137,6 +136,8 @@ public class EntityEditComponentPanel extends JPanel {
 						.addPropertyChangeListener("focusOwner", new FocusedInputComponentListener());
 	}
 
+	private static final String LABELED_BY = "labeledBy";
+
 	private final SwingEntityEditModel editModel;
 	private final EntityComponents entityComponents;
 	private final Map<Attribute<?>, Value<JComponent>> components = new HashMap<>();
@@ -175,6 +176,74 @@ public class EntityEditComponentPanel extends JPanel {
 	}
 
 	/**
+	 * @param component the component to add
+	 * @see #add(Component)
+	 */
+	protected void add(Supplier<? extends JComponent> component) {
+		super.add(requireNonNull(component).get());
+	}
+
+	/**
+	 * @param component the component to add
+	 * @param constraints the constraints
+	 * @see #add(Component, Object)
+	 */
+	protected void add(Supplier<? extends JComponent> component, Object constraints) {
+		super.add(requireNonNull(component).get(), constraints);
+	}
+
+	/**
+	 * Builds an input panel.
+	 */
+	protected interface InputPanelBuilder extends Supplier<JPanel> {
+
+		/**
+		 * @param border the input panel border
+		 * @return this builder instance
+		 */
+		InputPanelBuilder border(@Nullable Border border);
+
+		/**
+		 * @param labelComponent the label component
+		 * @return this builder instance
+		 */
+		InputPanelBuilder label(JComponent labelComponent);
+
+		/**
+		 * @param labelComponent the label component
+		 * @param constraints the label constraints
+		 * @return this builder instance
+		 */
+		InputPanelBuilder label(JComponent labelComponent, String constraints);
+
+		/**
+		 * @param constraints the label constraints
+		 * @return this builder instance
+		 */
+		InputPanelBuilder labelConstraints(String constraints);
+
+		/**
+		 * @param component the input component
+		 * @return this builder instance
+		 */
+		InputPanelBuilder component(JComponent component);
+
+		/**
+		 * @return the input panel
+		 */
+		JPanel build();
+
+		/**
+		 * Builds the component
+		 * @return the component
+		 */
+		@Override
+		default JPanel get() {
+			return build();
+		}
+	}
+
+	/**
 	 * Handles the given exception, simply displays the error message to the user by default.
 	 * Note that this method does nothing in case of a {@link CancelException}.
 	 * @param exception the exception to handle
@@ -198,6 +267,23 @@ public class EntityEditComponentPanel extends JPanel {
 		}
 
 		return components.computeIfAbsent(attribute, k -> Value.nullable());
+	}
+
+	/**
+	 * Returns the label associated with the component for the given attribute
+	 * @param attribute the attribute
+	 * @return the label
+	 * @throws IllegalArgumentException in case no component has been associated with the attribute
+	 * @throws IllegalStateException in case no label has been associated with the component
+	 */
+	protected final JLabel label(Attribute<?> attribute) {
+		JComponent component = getComponentOrThrow(attribute);
+		JLabel label = (JLabel) component.getClientProperty(LABELED_BY);
+		if (label == null) {
+			throw new IllegalStateException("No label associated with component: " + attribute);
+		}
+
+		return label;
 	}
 
 	/**
@@ -259,27 +345,6 @@ public class EntityEditComponentPanel extends JPanel {
 	}
 
 	/**
-	 * Adds a panel for the given attribute to this panel
-	 * @param attribute the attribute
-	 * @param inputComponent a component bound to {@code attribute}
-	 * @see #createInputPanel(Attribute, JComponent)
-	 */
-	protected final void addInputPanel(Attribute<?> attribute, JComponent inputComponent) {
-		add(createInputPanel(attribute, inputComponent));
-	}
-
-	/**
-	 * Adds a panel for the given attribute to this panel using the given layout constraints
-	 * @param attribute the attribute
-	 * @param inputComponent a component bound to {@code attribute}
-	 * @param constraints the layout constraints
-	 * @see #createInputPanel(Attribute, JComponent)
-	 */
-	protected final void addInputPanel(Attribute<?> attribute, JComponent inputComponent, Object constraints) {
-		add(createInputPanel(attribute, inputComponent), constraints);
-	}
-
-	/**
 	 * Creates a panel containing a label and the component associated with the given attribute.
 	 * The label text is the caption defined for {@code attribute}.
 	 * The default layout of the resulting panel is with the label on top and inputComponent below.
@@ -287,91 +352,8 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return a panel containing a label and a component
 	 * @throws IllegalArgumentException in case no component has been associated with the given attribute
 	 */
-	protected final JPanel createInputPanel(Attribute<?> attribute) {
-		return createInputPanel(attribute, getComponentOrThrow(attribute));
-	}
-
-	/**
-	 * Creates a panel containing a label and the component associated with the given attribute.
-	 * The label text is the caption defined for {@code attribute}.
-	 * The default layout of the resulting panel is with the label on top and {@code inputComponent} below.
-	 * @param attribute the attribute from which definition to retrieve the label caption
-	 * @param inputComponent a component bound to the value of {@code attribute}
-	 * @return a panel containing a label and a component
-	 */
-	protected final JPanel createInputPanel(Attribute<?> attribute, JComponent inputComponent) {
-		return createInputPanel(attribute, inputComponent, BorderLayout.NORTH);
-	}
-
-	/**
-	 * Creates a panel containing a label and the component associated with the given attribute.
-	 * The label text is the caption defined for on {@code attribute}.
-	 * @param attribute the attribute from which definition to retrieve the label caption
-	 * @param inputComponent a component bound to the value of {@code attribute}
-	 * @param labelBorderLayoutConstraints {@link BorderLayout#NORTH}, {@link BorderLayout#SOUTH},
-	 * {@link BorderLayout#EAST} or {@link BorderLayout#WEST}
-	 * @return a panel containing a label and a component
-	 */
-	protected final JPanel createInputPanel(Attribute<?> attribute, JComponent inputComponent,
-																					String labelBorderLayoutConstraints) {
-		return createInputPanel(attribute, inputComponent, labelBorderLayoutConstraints, SwingConstants.LEADING);
-	}
-
-	/**
-	 * Creates a panel containing a label and the given component.
-	 * The label text is the caption of {@code attribute}.
-	 * @param attribute the attribute from which definition to retrieve the label caption
-	 * @param inputComponent a component bound to the value of {@code attribute}
-	 * @param labelBorderLayoutConstraints {@link BorderLayout#NORTH}, {@link BorderLayout#SOUTH},
-	 * {@link BorderLayout#EAST} or {@link BorderLayout#WEST}
-	 * @param labelAlignment the label alignment
-	 * @return a panel containing a label and a component
-	 */
-	protected final JPanel createInputPanel(Attribute<?> attribute, JComponent inputComponent,
-																					String labelBorderLayoutConstraints, int labelAlignment) {
-		return createInputPanel(createLabel(attribute).horizontalAlignment(labelAlignment).build(),
-						inputComponent, labelBorderLayoutConstraints);
-	}
-
-	/**
-	 * Creates a panel containing a label component and the {@code inputComponent} with the label
-	 * component positioned above the input component.
-	 * @param labelComponent the label component
-	 * @param inputComponent a input component
-	 * @return a panel containing a label and a component
-	 */
-	protected final JPanel createInputPanel(JComponent labelComponent, JComponent inputComponent) {
-		return createInputPanel(labelComponent, inputComponent, BorderLayout.NORTH);
-	}
-
-	/**
-	 * Creates a panel with a BorderLayout, with the {@code inputComponent} at {@link BorderLayout#CENTER}
-	 * and the {@code labelComponent} at a specified location.
-	 * @param labelComponent the label component
-	 * @param inputComponent a input component
-	 * @param labelBorderLayoutConstraints {@link BorderLayout#NORTH}, {@link BorderLayout#SOUTH},
-	 * {@link BorderLayout#EAST} or {@link BorderLayout#WEST}
-	 * @return a panel containing a label and a component
-	 */
-	protected final JPanel createInputPanel(JComponent labelComponent, JComponent inputComponent,
-																					String labelBorderLayoutConstraints) {
-		requireNonNull(labelComponent);
-		requireNonNull(inputComponent);
-		if (labelComponent instanceof JLabel) {
-			// we need to be a bit clever here, since the input component argument isn't necessarily the actual input
-			// component, f.ex. this could be a text area wrapped in a scroll pane or a combobox on a panel with
-			// a new instance button, we assume that this input component at least contains the actual component
-			components.values().stream()
-							.map(Value::get)
-							.filter(component -> sameOrParentOf(inputComponent, component))
-							.findAny()
-							.ifPresent(component -> setLabelForComponent((JLabel) labelComponent, component));
-		}
-		return Components.panel()
-						.layout(borderLayout())
-						.add(inputComponent, BorderLayout.CENTER)
-						.add(labelComponent, labelBorderLayoutConstraints)
-						.build();
+	protected final InputPanelBuilder createInputPanel(Attribute<?> attribute) {
+		return new DefaultInputPanelBuilder(requireNonNull(attribute));
 	}
 
 	/**
@@ -655,22 +637,6 @@ public class EntityEditComponentPanel extends JPanel {
 		return new ListBuilderFactory<>(listModel);
 	}
 
-	/**
-	 * Creates a builder for a label using the caption and mnemonic associated with {@code attribute}. If an input component exists
-	 * for the given attribute the label is associated with it via {@link JLabel#setLabelFor(Component)}.
-	 * @param attribute the attribute from which to retrieve the caption
-	 * @param <T> the attribute type
-	 * @return a label builder for the given attribute
-	 */
-	protected final <T> LabelBuilder<T> createLabel(Attribute<T> attribute) {
-		AttributeDefinition<T> attributeDefinition = editModel().entities()
-						.definition(requireNonNull(attribute).entityType()).attributes().definition(attribute);
-		return (LabelBuilder<T>) Components.label()
-						.text(attributeDefinition.caption())
-						.displayedMnemonic(attributeDefinition.mnemonic())
-						.labelFor(component(attribute).get());
-	}
-
 	protected final Map<Attribute<?>, Value<JComponent>> components() {
 		return unmodifiableMap(components);
 	}
@@ -681,9 +647,14 @@ public class EntityEditComponentPanel extends JPanel {
 		if (componentBuilders.containsKey(attribute) || !component(attribute).isNull()) {
 			throw new IllegalStateException("Component has already been created for attribute: " + attribute);
 		}
+		AttributeDefinition<T> attributeDefinition = editModel().entities()
+						.definition(requireNonNull(attribute).entityType()).attributes().definition(attribute);
 		EditorValue<T> editorValue = editModel.editor().value(attribute);
 		componentBuilders.put(attribute, componentBuilder
 						.name(attribute.toString())
+						.label(label -> label
+										.text(attributeDefinition.caption())
+										.displayedMnemonic(attributeDefinition.mnemonic()))
 						.transferFocusOnEnter(inputFocus.transferOnEnter.is())
 						.toolTipText(editorValue.message())
 						.validIndicator(validIndicator.is() ? editorValue.valid() : null)
@@ -694,13 +665,13 @@ public class EntityEditComponentPanel extends JPanel {
 		return componentBuilder;
 	}
 
-	private @Nullable JComponent getComponentOrThrow(Attribute<?> attribute) {
+	private JComponent getComponentOrThrow(Attribute<?> attribute) {
 		Value<JComponent> component = component(attribute);
 		if (component.isNull()) {
 			throw new IllegalArgumentException("No component associated with attribute: " + attribute);
 		}
 
-		return component.get();
+		return component.getOrThrow();
 	}
 
 	private boolean isInputComponent(JComponent component) {
@@ -920,6 +891,70 @@ public class EntityEditComponentPanel extends JPanel {
 			public void request() {
 				requestFocus(focusedInputComponent == null ? initial.component.get() : focusedInputComponent);
 			}
+		}
+	}
+
+	private final class DefaultInputPanelBuilder implements InputPanelBuilder {
+
+		private JComponent component;
+		private JComponent label;
+		private String labelConstraints = BorderLayout.NORTH;
+		private @Nullable Border border;
+
+		private DefaultInputPanelBuilder(Attribute<?> attribute) {
+			this.component = EntityEditComponentPanel.this.getComponentOrThrow(attribute);
+			this.label = (JComponent) component.getClientProperty(LABELED_BY);
+			if (this.label == null) {
+				AttributeDefinition<?> attributeDefinition = editModel().entities()
+								.definition(requireNonNull(attribute).entityType()).attributes().definition(attribute);
+				this.label = Components.label()
+								.text(attributeDefinition.caption())
+								.displayedMnemonic(attributeDefinition.mnemonic())
+								.labelFor(component)
+								.build();
+			}
+		}
+
+		@Override
+		public InputPanelBuilder border(@Nullable Border border) {
+			this.border = border;
+			return this;
+		}
+
+		@Override
+		public InputPanelBuilder label(JComponent labelComponent) {
+			return label(labelComponent, BorderLayout.NORTH);
+		}
+
+		@Override
+		public InputPanelBuilder label(JComponent label, String constraints) {
+			labelConstraints(constraints);
+			this.label = requireNonNull(label);
+			return this;
+		}
+
+		@Override
+		public InputPanelBuilder labelConstraints(String constraints) {
+			if (requireNonNull(constraints).equals(BorderLayout.CENTER)) {
+				throw new IllegalArgumentException("BorderLayout.CENTER is reserved for the input component");
+			}
+			this.labelConstraints = requireNonNull(constraints);
+			return this;
+		}
+
+		@Override
+		public InputPanelBuilder component(JComponent component) {
+			this.component = requireNonNull(component);
+			return this;
+		}
+
+		@Override
+		public JPanel build() {
+			return borderLayoutPanel()
+							.centerComponent(component)
+							.add(label, labelConstraints)
+							.border(border)
+							.build();
 		}
 	}
 

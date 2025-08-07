@@ -23,6 +23,7 @@ import is.codion.demos.world.domain.api.World.City;
 import is.codion.demos.world.domain.api.World.Country;
 import is.codion.demos.world.model.CountryEditModel;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -124,10 +125,11 @@ final class CountryEditPanel extends EntityEditPanel {
 		add(gnpPanel);
 		addInputPanel(Country.GOVERNMENTFORM);
 		addInputPanel(Country.HEADOFSTATE);
-		add(createInputPanel(label()
-						.text("Avg. city population")
-						.horizontalAlignment(SwingConstants.CENTER)
-						.build(), averageCityPopulationField));
+		add(borderLayoutPanel()
+						.northComponent(Components.label()
+										.text("Avg. city population")
+										.horizontalAlignment(SwingConstants.CENTER))
+						.centerComponent(averageCityPopulationField));
 	}
 
 	private EntityEditPanel createCapitalEditPanel() {

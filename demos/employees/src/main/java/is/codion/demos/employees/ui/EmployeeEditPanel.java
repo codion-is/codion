@@ -58,14 +58,14 @@ public class EmployeeEditPanel extends EntityEditPanel {
 		setLayout(flexibleGridLayout(0, 3));
 
 		addInputPanel(Employee.NAME);
-		addInputPanel(Employee.DEPARTMENT_FK, createDepartmentPanel());
+		add(createInputPanel(Employee.DEPARTMENT_FK)
+						.component(createDepartmentPanel()));
 		addInputPanel(Employee.JOB);
 
 		addInputPanel(Employee.MANAGER_FK);
 		add(gridLayoutPanel(1, 2)
 						.add(createInputPanel(Employee.SALARY))
-						.add(createInputPanel(Employee.COMMISSION))
-						.build());
+						.add(createInputPanel(Employee.COMMISSION)));
 		addInputPanel(Employee.HIREDATE);
 	}
 

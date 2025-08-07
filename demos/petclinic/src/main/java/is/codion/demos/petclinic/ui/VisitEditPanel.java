@@ -48,13 +48,15 @@ public final class VisitEditPanel extends EntityEditPanel {
 		JPanel northPanel = gridLayoutPanel(2, 1)
 						.add(gridLayoutPanel(1, 2)
 										.add(createInputPanel(Visit.PET_FK))
-										.add(createInputPanel(Visit.VISIT_DATE))
-										.build())
+										.add(createInputPanel(Visit.VISIT_DATE)))
 						.add(createInputPanel(Visit.VET_FK))
 						.build();
 
 		setLayout(borderLayout());
 		add(northPanel, BorderLayout.NORTH);
-		addInputPanel(Visit.DESCRIPTION, new JScrollPane(component(Visit.DESCRIPTION).get()), BorderLayout.CENTER);
+		add(createInputPanel(Visit.DESCRIPTION)
+						.component(new JScrollPane(component(Visit.DESCRIPTION).get())), BorderLayout.CENTER);
+		add(createInputPanel(Visit.DESCRIPTION)
+						.component(new JScrollPane(component(Visit.DESCRIPTION).get())), BorderLayout.CENTER);
 	}
 }

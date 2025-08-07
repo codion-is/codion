@@ -26,7 +26,6 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.BorderLayout;
 
-import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 
 final class PlaylistEditPanel extends EntityEditPanel {
@@ -41,14 +40,13 @@ final class PlaylistEditPanel extends EntityEditPanel {
 	protected void initializeUI() {
 		focus().initial().set(Playlist.NAME);
 
+		createTextField(Playlist.NAME)
+						.transferFocusOnEnter(false)
+						.columns(20);
+
 		setLayout(borderLayout());
-		add(borderLayoutPanel()
-						.westComponent(createLabel(Playlist.NAME).build())
-						.centerComponent(createTextField(Playlist.NAME)
-										.transferFocusOnEnter(false)
-										.columns(20)
-										.build())
-						.border(new EmptyBorder(Layouts.GAP.get(), Layouts.GAP.get(), 0, Layouts.GAP.get()))
-						.build(), BorderLayout.CENTER);
+		add(createInputPanel(Playlist.NAME)
+						.labelConstraints(BorderLayout.WEST)
+						.border(new EmptyBorder(Layouts.GAP.get(), Layouts.GAP.get(), 0, Layouts.GAP.get())), BorderLayout.CENTER);
 	}
 }

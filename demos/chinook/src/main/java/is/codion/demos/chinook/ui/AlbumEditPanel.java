@@ -64,7 +64,8 @@ public final class AlbumEditPanel extends EntityEditPanel {
 		JPanel centerPanel = flexibleGridLayoutPanel(2, 2)
 						.add(createInputPanel(Album.ARTIST_FK))
 						.add(createInputPanel(Album.TITLE))
-						.add(createInputPanel(Album.TAGS, albumTagPanel))
+						.add(createInputPanel(Album.TAGS)
+										.component(albumTagPanel))
 						.add(createInputPanel(Album.COVER))
 						.build();
 

@@ -18,6 +18,9 @@ Codion Change Log
 - PanelBuilder and BorderLayoutPanelBuilder now accept Supplier when adding components.
 ### is.codion.framework.model
 - EntityApplicationModel.refresh() removed.
+### is.codion.swing.framework.ui
+- EntityEditComponentPanel.createLabel() removed, label(attribute) added, setComponentBuilder() now initializes a default label.
+- EntityEditComponentPanel.InputPanelBuilder added.
 
 ## 0.18.43
 ### is.codion.common.core
