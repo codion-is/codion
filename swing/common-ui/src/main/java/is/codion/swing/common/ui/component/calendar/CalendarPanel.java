@@ -777,7 +777,7 @@ public final class CalendarPanel extends JPanel {
 							.text(String.valueOf(weekNumber))
 							.horizontalAlignment(SwingConstants.CENTER)
 							.border(createEtchedBorder())
-							.enabled(enabledState)
+							.enabled(false)
 							.build());
 		}
 	}
@@ -1095,10 +1095,10 @@ public final class CalendarPanel extends JPanel {
 			setEnabled(false);
 			setHorizontalAlignment(SwingConstants.CENTER);
 			setBorder(createEtchedBorder());
-			addMouseListener(new PaddingLabelMouseAdapter());
+			addMouseListener(new FillerLabelMouseAdapter());
 		}
 
-		private final class PaddingLabelMouseAdapter extends MouseAdapter {
+		private final class FillerLabelMouseAdapter extends MouseAdapter {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {

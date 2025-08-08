@@ -18,6 +18,7 @@ Codion Change Log
 - PanelBuilder and BorderLayoutPanelBuilder now accept Supplier when adding components.
 - ComponentDialogBuilder.component() overloaded with Supplier.
 - ScrollPaneBuilder.view() overloaded with Supplier.
+- CalendarPanel week number labels now styled like day filler labels, as in, disabled.
 ### is.codion.framework.model
 - EntityApplicationModel.refresh() removed.
 ### is.codion.swing.framework.ui
