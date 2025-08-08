@@ -17,6 +17,7 @@ Codion Change Log
 - ComponentBuilder now extends Supplier.
 - PanelBuilder and BorderLayoutPanelBuilder now accept Supplier when adding components.
 - ComponentDialogBuilder.component() overloaded with Supplier.
+- ScrollPaneBuilder.view() overloaded with Supplier.
 ### is.codion.framework.model
 - EntityApplicationModel.refresh() removed.
 ### is.codion.swing.framework.ui

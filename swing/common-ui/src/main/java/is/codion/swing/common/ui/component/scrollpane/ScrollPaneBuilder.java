@@ -25,6 +25,7 @@ import org.jspecify.annotations.Nullable;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import java.awt.LayoutManager;
+import java.util.function.Supplier;
 
 /**
  * A builder for JScrollPane
@@ -36,6 +37,12 @@ public interface ScrollPaneBuilder extends ComponentBuilder<Void, JScrollPane, S
 	 * @return this builder instance
 	 */
 	ScrollPaneBuilder view(JComponent view);
+
+	/**
+	 * @param view the view component
+	 * @return this builder instance
+	 */
+	ScrollPaneBuilder view(Supplier<? extends JComponent> view);
 
 	/**
 	 * @param verticalScrollBarPolicy the vertical scroll bar policy

@@ -28,12 +28,13 @@ import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import java.awt.LayoutManager;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
 final class DefaultScrollPaneBuilder extends AbstractComponentBuilder<Void, JScrollPane, ScrollPaneBuilder> implements ScrollPaneBuilder {
 
-	private @Nullable JComponent view;
+	private @Nullable Supplier<? extends JComponent> view;
 	private int vsbPolicy = ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
 	private int hsbPolicy = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 	private boolean wheelScrollingEnabled = true;
@@ -47,6 +48,11 @@ final class DefaultScrollPaneBuilder extends AbstractComponentBuilder<Void, JScr
 
 	@Override
 	public ScrollPaneBuilder view(JComponent view) {
+		return view(() -> requireNonNull(view));
+	}
+
+	@Override
+	public ScrollPaneBuilder view(Supplier<? extends JComponent> view) {
 		this.view = requireNonNull(view);
 		return this;
 	}
@@ -101,7 +107,7 @@ final class DefaultScrollPaneBuilder extends AbstractComponentBuilder<Void, JScr
 
 	@Override
 	protected JScrollPane createComponent() {
-		JScrollPane scrollPane = new JScrollPane(view, vsbPolicy, hsbPolicy);
+		JScrollPane scrollPane = new JScrollPane(view != null ? view.get() : null, vsbPolicy, hsbPolicy);
 		scrollPane.setWheelScrollingEnabled(wheelScrollingEnabled);
 		if (verticalUnitIncrement > 0) {
 			scrollPane.getVerticalScrollBar().setUnitIncrement(verticalUnitIncrement);
