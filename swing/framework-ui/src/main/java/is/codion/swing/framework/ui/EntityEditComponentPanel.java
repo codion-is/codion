@@ -37,6 +37,7 @@ import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
+import is.codion.swing.common.ui.component.label.LabelBuilder;
 import is.codion.swing.common.ui.component.list.ListBuilder;
 import is.codion.swing.common.ui.component.slider.SliderBuilder;
 import is.codion.swing.common.ui.component.spinner.ItemSpinnerBuilder;
@@ -545,6 +546,16 @@ public class EntityEditComponentPanel extends JPanel {
 	 */
 	protected final <T> ItemComboBoxBuilder<T> createItemComboBox(Attribute<T> attribute) {
 		return setComponentBuilder(attribute, entityComponents.itemComboBox(attribute));
+	}
+
+	/**
+	 * Creates a builder for labels.
+	 * @param attribute the attribute for which to build a label
+	 * @param <T> the value type
+	 * @return a label builder
+	 */
+	protected final <T> LabelBuilder<T> createLabel(Attribute<T> attribute) {
+		return setComponentBuilder(attribute, Components.label());
 	}
 
 	/**

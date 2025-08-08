@@ -24,6 +24,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntityEditComponentPanel.createLabel() removed, label(attribute) added, setComponentBuilder() now initializes a default label.
 - EntityEditComponentPanel.InputPanelBuilder added.
+- EntityEditComponentPanel.createLabel() added for read-only value linking.
 
 ## 0.18.43
 ### is.codion.common.core
