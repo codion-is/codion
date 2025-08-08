@@ -57,6 +57,8 @@ final class DefaultBorderLayoutPanelBuilder extends AbstractComponentBuilder<Voi
 	@Override
 	public BorderLayoutPanelBuilder add(Supplier<? extends JComponent> component, String constraints) {
 		switch (requireNonNull(constraints)) {
+			case BorderLayout.CENTER:
+				return centerComponent(component);
 			case BorderLayout.NORTH:
 				return northComponent(component);
 			case BorderLayout.SOUTH:

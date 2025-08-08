@@ -21,6 +21,7 @@ Codion Change Log
 - CalendarPanel week number labels now styled like day filler labels, as in, disabled.
 - ActionDialogBuilder.component() overloaded with Supplier.
 - SplitPaneBuilder, component methods overloaded with Supplier.
+- DefaultBorderLayoutPanelBuilder.add() bug fixed, BorderLayout.CENTER was missing.
 ### is.codion.framework.model
 - EntityApplicationModel.refresh() removed.
 ### is.codion.swing.framework.ui
