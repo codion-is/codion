@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static is.codion.swing.common.ui.dialog.DefaultComponentDialogBuilder.createDialog;
 import static java.awt.event.KeyEvent.VK_ESCAPE;
@@ -72,6 +73,11 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 	public final B component(@Nullable JComponent component) {
 		this.component = component;
 		return self();
+	}
+
+	@Override
+	public final B component(Supplier<? extends JComponent> component) {
+		return component(requireNonNull(component).get());
 	}
 
 	@Override

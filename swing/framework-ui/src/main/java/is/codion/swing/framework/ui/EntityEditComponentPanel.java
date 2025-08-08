@@ -212,10 +212,23 @@ public class EntityEditComponentPanel extends JPanel {
 
 		/**
 		 * @param labelComponent the label component
+		 * @return this builder instance
+		 */
+		InputPanelBuilder label(Supplier<? extends JComponent> labelComponent);
+
+		/**
+		 * @param labelComponent the label component
 		 * @param constraints the label constraints
 		 * @return this builder instance
 		 */
 		InputPanelBuilder label(JComponent labelComponent, String constraints);
+
+		/**
+		 * @param labelComponent the label component
+		 * @param constraints the label constraints
+		 * @return this builder instance
+		 */
+		InputPanelBuilder label(Supplier<? extends JComponent> labelComponent, String constraints);
 
 		/**
 		 * @param constraints the label constraints
@@ -228,6 +241,12 @@ public class EntityEditComponentPanel extends JPanel {
 		 * @return this builder instance
 		 */
 		InputPanelBuilder component(JComponent component);
+
+		/**
+		 * @param component the input component
+		 * @return this builder instance
+		 */
+		InputPanelBuilder component(Supplier<? extends JComponent> component);
 
 		/**
 		 * @return the input panel
@@ -938,10 +957,20 @@ public class EntityEditComponentPanel extends JPanel {
 		}
 
 		@Override
+		public InputPanelBuilder label(Supplier<? extends JComponent> labelComponent) {
+			return label(requireNonNull(labelComponent).get());
+		}
+
+		@Override
 		public InputPanelBuilder label(JComponent label, String constraints) {
 			labelConstraints(constraints);
 			this.label = requireNonNull(label);
 			return this;
+		}
+
+		@Override
+		public InputPanelBuilder label(Supplier<? extends JComponent> labelComponent, String constraints) {
+			return label(requireNonNull(labelComponent).get(), constraints);
 		}
 
 		@Override
@@ -957,6 +986,11 @@ public class EntityEditComponentPanel extends JPanel {
 		public InputPanelBuilder component(JComponent component) {
 			this.component = requireNonNull(component);
 			return this;
+		}
+
+		@Override
+		public InputPanelBuilder component(Supplier<? extends JComponent> component) {
+			return component(requireNonNull(component).get());
 		}
 
 		@Override

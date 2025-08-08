@@ -27,6 +27,7 @@ import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * Builds a dialog with a button panel based on actions.
@@ -39,7 +40,15 @@ public interface ActionDialogBuilder<B extends ActionDialogBuilder<B>> extends D
 	 * @param component the component to display
 	 * @return this builder instance
 	 */
-	B component(@Nullable JComponent component);
+	B component(JComponent component);
+
+	/**
+	 * Note: sets the layout to {@link java.awt.BorderLayout} and
+	 * adds the component at location {@link java.awt.BorderLayout#CENTER}
+	 * @param component the component to display
+	 * @return this builder instance
+	 */
+	B component(Supplier<? extends JComponent> component);
 
 	/**
 	 * @param action the action to add

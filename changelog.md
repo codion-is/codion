@@ -19,12 +19,14 @@ Codion Change Log
 - ComponentDialogBuilder.component() overloaded with Supplier.
 - ScrollPaneBuilder.view() overloaded with Supplier.
 - CalendarPanel week number labels now styled like day filler labels, as in, disabled.
+- ActionDialogBuilder.component() overloaded with Supplier.
 ### is.codion.framework.model
 - EntityApplicationModel.refresh() removed.
 ### is.codion.swing.framework.ui
 - EntityEditComponentPanel.createLabel() removed, label(attribute) added, setComponentBuilder() now initializes a default label.
 - EntityEditComponentPanel.InputPanelBuilder added.
 - EntityEditComponentPanel.createLabel() added for read-only value linking.
+- EntityEditComponentPanel.InputPanelBuilder.label() and component() overloaded with Supplier parameter.
 
 ## 0.18.43
 ### is.codion.common.core
