@@ -20,6 +20,7 @@ Codion Change Log
 - ScrollPaneBuilder.view() overloaded with Supplier.
 - CalendarPanel week number labels now styled like day filler labels, as in, disabled.
 - ActionDialogBuilder.component() overloaded with Supplier.
+- SplitPaneBuilder, component methods overloaded with Supplier.
 ### is.codion.framework.model
 - EntityApplicationModel.refresh() removed.
 ### is.codion.swing.framework.ui

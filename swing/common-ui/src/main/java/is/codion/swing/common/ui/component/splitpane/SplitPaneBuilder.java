@@ -25,6 +25,7 @@ import org.jspecify.annotations.Nullable;
 import javax.swing.JComponent;
 import javax.swing.JSplitPane;
 import java.awt.Component;
+import java.util.function.Supplier;
 
 /**
  * A builder for JSplitPane.
@@ -53,11 +54,25 @@ public interface SplitPaneBuilder extends ComponentBuilder<Void, JSplitPane, Spl
 	SplitPaneBuilder leftComponent(@Nullable JComponent leftComponent);
 
 	/**
+	 * @param leftComponent the left component
+	 * @return this builder instance
+	 * @see JSplitPane#setLeftComponent(Component)
+	 */
+	SplitPaneBuilder leftComponent(Supplier<? extends JComponent> leftComponent);
+
+	/**
 	 * @param rightComponent the right component
 	 * @return this builder instance
 	 * @see JSplitPane#setRightComponent(Component)
 	 */
 	SplitPaneBuilder rightComponent(@Nullable JComponent rightComponent);
+
+	/**
+	 * @param rightComponent the right component
+	 * @return this builder instance
+	 * @see JSplitPane#setRightComponent(Component)
+	 */
+	SplitPaneBuilder rightComponent(Supplier<? extends JComponent> rightComponent);
 
 	/**
 	 * @param topComponent the top component
@@ -67,11 +82,25 @@ public interface SplitPaneBuilder extends ComponentBuilder<Void, JSplitPane, Spl
 	SplitPaneBuilder topComponent(@Nullable JComponent topComponent);
 
 	/**
+	 * @param topComponent the top component
+	 * @return this builder instance
+	 * @see JSplitPane#setTopComponent(Component)
+	 */
+	SplitPaneBuilder topComponent(Supplier<? extends JComponent> topComponent);
+
+	/**
 	 * @param bottomComponent the bottom component
 	 * @return this builder instance
 	 * @see JSplitPane#setBottomComponent(Component)
 	 */
 	SplitPaneBuilder bottomComponent(@Nullable JComponent bottomComponent);
+
+	/**
+	 * @param bottomComponent the bottom component
+	 * @return this builder instance
+	 * @see JSplitPane#setBottomComponent(Component)
+	 */
+	SplitPaneBuilder bottomComponent(Supplier<? extends JComponent> bottomComponent);
 
 	/**
 	 * @param resizeWeight the resize weight

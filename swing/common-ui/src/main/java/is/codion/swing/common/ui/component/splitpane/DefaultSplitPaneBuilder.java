@@ -26,6 +26,9 @@ import org.jspecify.annotations.Nullable;
 
 import javax.swing.JComponent;
 import javax.swing.JSplitPane;
+import java.util.function.Supplier;
+
+import static java.util.Objects.requireNonNull;
 
 final class DefaultSplitPaneBuilder extends AbstractComponentBuilder<Void, JSplitPane, SplitPaneBuilder> implements SplitPaneBuilder {
 
@@ -56,9 +59,19 @@ final class DefaultSplitPaneBuilder extends AbstractComponentBuilder<Void, JSpli
 	}
 
 	@Override
+	public SplitPaneBuilder leftComponent(Supplier<? extends JComponent> leftComponent) {
+		return leftComponent(requireNonNull(leftComponent).get());
+	}
+
+	@Override
 	public SplitPaneBuilder rightComponent(@Nullable JComponent rightComponent) {
 		this.rightBottomComponent = rightComponent;
 		return this;
+	}
+
+	@Override
+	public SplitPaneBuilder rightComponent(Supplier<? extends JComponent> rightComponent) {
+		return rightComponent(requireNonNull(rightComponent).get());
 	}
 
 	@Override
@@ -68,9 +81,19 @@ final class DefaultSplitPaneBuilder extends AbstractComponentBuilder<Void, JSpli
 	}
 
 	@Override
+	public SplitPaneBuilder topComponent(Supplier<? extends JComponent> topComponent) {
+		return topComponent(requireNonNull(topComponent).get());
+	}
+
+	@Override
 	public SplitPaneBuilder bottomComponent(@Nullable JComponent bottomComponent) {
 		this.rightBottomComponent = bottomComponent;
 		return this;
+	}
+
+	@Override
+	public SplitPaneBuilder bottomComponent(Supplier<? extends JComponent> bottomComponent) {
+		return bottomComponent(requireNonNull(bottomComponent).get());
 	}
 
 	@Override
