@@ -59,27 +59,27 @@ final class DefaultPanelBuilder extends AbstractComponentBuilder<Void, JPanel, P
 
 	@Override
 	public PanelBuilder add(JComponent component) {
-		return add(() -> component);
-	}
-
-	@Override
-	public PanelBuilder add(Supplier<? extends JComponent> component) {
 		componentConstraints.add(new ComponentConstraints(requireNonNull(component)));
 		return this;
 	}
 
 	@Override
-	public PanelBuilder add(JComponent component, Object constraints) {
-		return add(() -> requireNonNull(component), constraints);
+	public PanelBuilder add(Supplier<? extends JComponent> component) {
+		return add(requireNonNull(component).get());
 	}
 
 	@Override
-	public PanelBuilder add(Supplier<? extends JComponent> component, Object constraints) {
+	public PanelBuilder add(JComponent component, Object constraints) {
 		if (constraints instanceof JComponent) {
 			throw new IllegalArgumentException("Use addAll() when adding multiple components");
 		}
 		componentConstraints.add(new ComponentConstraints(requireNonNull(component), requireNonNull(constraints)));
 		return this;
+	}
+
+	@Override
+	public PanelBuilder add(Supplier<? extends JComponent> component, Object constraints) {
+		return add(requireNonNull(component).get(), constraints);
 	}
 
 	@Override
@@ -112,14 +112,14 @@ final class DefaultPanelBuilder extends AbstractComponentBuilder<Void, JPanel, P
 
 	private static final class ComponentConstraints {
 
-		private final Supplier<? extends JComponent> component;
+		private final JComponent component;
 		private final @Nullable Object constraints;
 
-		private ComponentConstraints(Supplier<? extends JComponent> component) {
+		private ComponentConstraints(JComponent component) {
 			this(component, null);
 		}
 
-		private ComponentConstraints(Supplier<? extends JComponent> component, @Nullable Object constraints) {
+		private ComponentConstraints(JComponent component, @Nullable Object constraints) {
 			this.component = component;
 			this.constraints = constraints;
 		}
@@ -152,7 +152,7 @@ final class DefaultPanelBuilder extends AbstractComponentBuilder<Void, JPanel, P
 
 		@Override
 		public void accept(JComponent component) {
-			componentConstraints.add(new ComponentConstraints(() -> requireNonNull(component)));
+			componentConstraints.add(new ComponentConstraints(requireNonNull(component)));
 		}
 	}
 
@@ -167,10 +167,10 @@ final class DefaultPanelBuilder extends AbstractComponentBuilder<Void, JPanel, P
 		@Override
 		public void accept(ComponentConstraints componentConstraint) {
 			if (componentConstraint.constraints != null) {
-				panel.add(componentConstraint.component.get(), componentConstraint.constraints);
+				panel.add(componentConstraint.component, componentConstraint.constraints);
 			}
 			else {
-				panel.add(componentConstraint.component.get());
+				panel.add(componentConstraint.component);
 			}
 		}
 	}

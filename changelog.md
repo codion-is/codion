@@ -22,6 +22,7 @@ Codion Change Log
 - ActionDialogBuilder.component() overloaded with Supplier.
 - SplitPaneBuilder, component methods overloaded with Supplier.
 - DefaultBorderLayoutPanelBuilder.add() bug fixed, BorderLayout.CENTER was missing.
+- DefaultBorderLayoutPanelBuilder and DefaultPanelBuilder refactored.
 ### is.codion.framework.model
 - EntityApplicationModel.refresh() removed.
 ### is.codion.swing.framework.ui
