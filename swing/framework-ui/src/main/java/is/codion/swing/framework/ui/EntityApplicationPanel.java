@@ -47,7 +47,7 @@ import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
+import is.codion.swing.common.ui.control.ControlsBuilder;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.frame.Frames;

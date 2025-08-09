@@ -24,7 +24,7 @@ import is.codion.swing.common.ui.component.panel.BorderLayoutPanelBuilder;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
+import is.codion.swing.common.ui.control.ControlsBuilder;
 
 import org.jspecify.annotations.Nullable;
 

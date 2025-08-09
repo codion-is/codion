@@ -34,7 +34,7 @@ import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
+import is.codion.swing.common.ui.control.ControlsBuilder;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.key.KeyEvents;
 

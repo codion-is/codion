@@ -24,7 +24,6 @@ import is.codion.swing.common.ui.control.DefaultControls.DefaultLayout;
 import org.jspecify.annotations.Nullable;
 
 import javax.swing.Action;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -113,106 +112,6 @@ public interface Controls extends Control {
 		 * @return the default layout config, if available
 		 */
 		Optional<Layout> defaultLayout();
-	}
-
-	/**
-	 * A builder for Controls
-	 */
-	interface ControlsBuilder extends ControlBuilder<Controls, ControlsBuilder> {
-
-		/**
-		 * @param control the control to add to this controls instance
-		 * @return this Builder instance
-		 */
-		ControlsBuilder control(Control control);
-
-		/**
-		 * @param control the control to add to this controls instance
-		 * @return this Builder instance
-		 */
-		ControlsBuilder control(Supplier<? extends Control> control);
-
-		/**
-		 * @param index the index at which to add the control
-		 * @param control the control to add to this controls instance
-		 * @return this Builder instance
-		 */
-		ControlsBuilder controlAt(int index, Control control);
-
-		/**
-		 * @param index the index at which to add the control
-		 * @param control the control to add to this controls instance
-		 * @return this Builder instance
-		 */
-		ControlsBuilder controlAt(int index, Supplier<? extends Control> control);
-
-		/**
-		 * @param controls the controls to add
-		 * @return this Builder instance
-		 */
-		ControlsBuilder controls(Control... controls);
-
-		/**
-		 * @param controls the controls to add
-		 * @return this Builder instance
-		 */
-		ControlsBuilder controls(Collection<? extends Control> controls);
-
-		/**
-		 * @param controls the controls to add
-		 * @return this Builder instance
-		 */
-		ControlsBuilder controls(Supplier<? extends Control>... controls);
-
-		/**
-		 * @param action the Action to add to this controls instance
-		 * @return this Builder instance
-		 */
-		ControlsBuilder action(Action action);
-
-		/**
-		 * @param index the index at which to add the action
-		 * @param action the Action to add to this controls instance
-		 * @return this Builder instance
-		 */
-		ControlsBuilder actionAt(int index, Action action);
-
-		/**
-		 * @param actions the Actions to add to this controls instance
-		 * @return this Builder instance
-		 */
-		ControlsBuilder actions(Action... actions);
-
-		/**
-		 * @param actions the Actions to add to this controls instance
-		 * @return this Builder instance
-		 */
-		ControlsBuilder actions(Collection<Action> actions);
-
-		/**
-		 * Adds a separator to the Controls
-		 * @return this Builder instance
-		 */
-		ControlsBuilder separator();
-
-		/**
-		 * Adds a separator to the Controls
-		 * @param index the index at which to insert the separator
-		 * @return this Builder instance
-		 */
-		ControlsBuilder separatorAt(int index);
-
-		/**
-		 * @param action the action to remove
-		 * @return this Builder instance
-		 */
-		ControlsBuilder remove(Action action);
-
-		/**
-		 * Removes all actions from this controls builder instance
-		 * @return this Builder instance
-		 */
-		ControlsBuilder removeAll();
 	}
 
 	/**

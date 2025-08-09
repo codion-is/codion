@@ -26,7 +26,6 @@ import is.codion.swing.common.ui.control.Control.BuilderFactory;
 import is.codion.swing.common.ui.control.Control.Command;
 import is.codion.swing.common.ui.control.DefaultCommandControl.DefaultCommandControlBuilder;
 import is.codion.swing.common.ui.control.DefaultToggleControl.DefaultToggleControlBuilder;
-import is.codion.swing.common.ui.control.ToggleControl.ToggleControlBuilder;
 
 import static java.util.Objects.requireNonNull;
 

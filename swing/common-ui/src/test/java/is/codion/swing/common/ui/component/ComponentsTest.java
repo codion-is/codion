@@ -42,7 +42,7 @@ import is.codion.swing.common.ui.component.text.UpdateOn;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
+import is.codion.swing.common.ui.control.ControlsBuilder;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.icon.Logos;
 
