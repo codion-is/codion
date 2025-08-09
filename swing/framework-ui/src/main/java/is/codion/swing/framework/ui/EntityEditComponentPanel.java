@@ -32,6 +32,8 @@ import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
@@ -69,7 +71,6 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerListModel;
-import javax.swing.border.Border;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.KeyboardFocusManager;
@@ -196,13 +197,7 @@ public class EntityEditComponentPanel extends JPanel {
 	/**
 	 * Builds an input panel.
 	 */
-	protected interface InputPanelBuilder extends Supplier<JPanel> {
-
-		/**
-		 * @param border the input panel border
-		 * @return this builder instance
-		 */
-		InputPanelBuilder border(@Nullable Border border);
+	protected interface InputPanelBuilder extends ComponentBuilder<JPanel, InputPanelBuilder> {
 
 		/**
 		 * @param labelComponent the label component
@@ -247,20 +242,6 @@ public class EntityEditComponentPanel extends JPanel {
 		 * @return this builder instance
 		 */
 		InputPanelBuilder component(Supplier<? extends JComponent> component);
-
-		/**
-		 * @return the input panel
-		 */
-		JPanel build();
-
-		/**
-		 * Builds the component
-		 * @return the component
-		 */
-		@Override
-		default JPanel get() {
-			return build();
-		}
 	}
 
 	/**
@@ -924,12 +905,11 @@ public class EntityEditComponentPanel extends JPanel {
 		}
 	}
 
-	private final class DefaultInputPanelBuilder implements InputPanelBuilder {
+	private final class DefaultInputPanelBuilder extends AbstractComponentBuilder<JPanel, InputPanelBuilder> implements InputPanelBuilder {
 
 		private JComponent component;
 		private JComponent label;
 		private String labelConstraints = BorderLayout.NORTH;
-		private @Nullable Border border;
 
 		private DefaultInputPanelBuilder(Attribute<?> attribute) {
 			this.component = EntityEditComponentPanel.this.getComponentOrThrow(attribute);
@@ -943,12 +923,6 @@ public class EntityEditComponentPanel extends JPanel {
 								.labelFor(component)
 								.build();
 			}
-		}
-
-		@Override
-		public InputPanelBuilder border(@Nullable Border border) {
-			this.border = border;
-			return this;
 		}
 
 		@Override
@@ -994,11 +968,10 @@ public class EntityEditComponentPanel extends JPanel {
 		}
 
 		@Override
-		public JPanel build() {
+		protected JPanel createComponent() {
 			return borderLayoutPanel()
-							.centerComponent(component)
+							.add(component, BorderLayout.CENTER)
 							.add(label, labelConstraints)
-							.border(border)
 							.build();
 		}
 	}

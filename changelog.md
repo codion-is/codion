@@ -31,6 +31,7 @@ Codion Change Log
 - EntityEditComponentPanel.InputPanelBuilder added.
 - EntityEditComponentPanel.createLabel() added for read-only value linking.
 - EntityEditComponentPanel.InputPanelBuilder.label() and component() overloaded with Supplier parameter.
+- EntityEditComponentPanel.InputPanelBuilder now extends ComponentBuilder.
 
 ## 0.18.43
 ### is.codion.common.core
