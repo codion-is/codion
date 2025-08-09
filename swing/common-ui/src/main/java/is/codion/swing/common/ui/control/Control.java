@@ -108,18 +108,18 @@ public interface Control extends Action {
 	 * Unsupported, the enabled state of Controls is based on their {@code enabled} state observer
 	 * @param enabled the enabled status
 	 * @throws UnsupportedOperationException always
-	 * @see Builder#enabled(ObservableState)
+	 * @see ControlBuilder#enabled(ObservableState)
 	 */
 	@Override
 	void setEnabled(boolean enabled);
 
 	/**
-	 * Returns a new {@link Control.Builder} instance, based on a copy of this control.
+	 * Returns a new {@link ControlBuilder} instance, based on a copy of this control.
 	 * @param <C> the control type
 	 * @param <B> the builder type
 	 * @return a new builder
 	 */
-	<C extends Control, B extends Builder<C, B>> Builder<C, B> copy();
+	<C extends Control, B extends ControlBuilder<C, B>> ControlBuilder<C, B> copy();
 
 	/**
 	 * A command interface, allowing Controls based on method references
@@ -224,7 +224,7 @@ public interface Control extends Action {
 	 * @param <C> the Control type
 	 * @param <B> the builder type
 	 */
-	interface Builder<C extends Control, B extends Builder<C, B>> extends Supplier<C>  {
+	interface ControlBuilder<C extends Control, B extends ControlBuilder<C, B>> extends Supplier<C>  {
 
 		/**
 		 * @param caption the caption for the control

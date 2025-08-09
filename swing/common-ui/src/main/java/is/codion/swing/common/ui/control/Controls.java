@@ -118,7 +118,7 @@ public interface Controls extends Control {
 	/**
 	 * A builder for Controls
 	 */
-	interface ControlsBuilder extends Control.Builder<Controls, ControlsBuilder> {
+	interface ControlsBuilder extends ControlBuilder<Controls, ControlsBuilder> {
 
 		/**
 		 * @param control the control to add to this controls instance

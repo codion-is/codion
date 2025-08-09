@@ -168,7 +168,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
 		}
 	}
 
-	abstract static class AbstractControlBuilder<C extends Control, B extends Builder<C, B>> implements Builder<C, B> {
+	abstract static class AbstractControlBuilder<C extends Control, B extends ControlBuilder<C, B>> implements ControlBuilder<C, B> {
 
 		private final Map<String, @Nullable Object> values = new HashMap<>();
 

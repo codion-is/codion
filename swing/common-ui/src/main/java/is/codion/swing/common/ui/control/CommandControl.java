@@ -69,7 +69,7 @@ public interface CommandControl extends Control {
 	/**
 	 * Builds a {@link CommandControl}
 	 */
-	interface CommandControlBuilder extends Builder<CommandControl, CommandControlBuilder> {
+	interface CommandControlBuilder extends ControlBuilder<CommandControl, CommandControlBuilder> {
 
 		/**
 		 * @param onException the exception handler for this control

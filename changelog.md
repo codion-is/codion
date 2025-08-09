@@ -28,6 +28,7 @@ Codion Change Log
 - LabelBuilder.builder() overloaded with text parameter.
 - BorderLayoutPanelBuilder methods renamed, Component suffix removed.
 - Control.Builder now extends Supplier, builder parameters replaced.
+- Control.Builder renamed ControlBuilder.
 ### is.codion.framework.model
 - EntityApplicationModel.refresh() removed.
 ### is.codion.swing.framework.ui

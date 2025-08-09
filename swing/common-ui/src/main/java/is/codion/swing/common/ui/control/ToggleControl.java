@@ -76,5 +76,5 @@ public interface ToggleControl extends Control {
 	/**
 	 * Builds a {@link ToggleControl}
 	 */
-	interface ToggleControlBuilder extends Builder<ToggleControl, ToggleControlBuilder> {}
+	interface ToggleControlBuilder extends ControlBuilder<ToggleControl, ToggleControlBuilder> {}
 }
