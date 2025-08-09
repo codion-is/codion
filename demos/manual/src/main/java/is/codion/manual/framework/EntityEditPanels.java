@@ -36,6 +36,8 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import java.math.BigDecimal;
@@ -200,6 +202,17 @@ public final class EntityEditPanels {
 							createItemComboBox(Demo.ITEM_LIST)
 											.build();
 			// end::item[]
+		}
+
+		private void panelLabel() {
+			// tag::panelLabel[]
+			JLabel label = createLabel(Demo.TEXT)
+							.build();
+
+			JPanel inputPanel = createInputPanel(Demo.TEXT)
+							.label(new JLabel("Label"))
+							.build();
+			// end::panelLabel[]
 		}
 	}
 }
