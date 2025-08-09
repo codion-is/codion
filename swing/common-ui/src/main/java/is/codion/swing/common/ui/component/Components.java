@@ -385,6 +385,15 @@ public final class Components {
 	}
 
 	/**
+	 * @param <T> the type to display in the label (using value.toString() or "" for null).
+	 * @param text the label text
+	 * @return a JLabel builder
+	 */
+	public static <T> LabelBuilder<T> label(String text) {
+		return LabelBuilder.builder(text);
+	}
+
+	/**
 	 * @return a JPanel builder
 	 */
 	public static PanelBuilder panel() {

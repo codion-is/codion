@@ -712,8 +712,7 @@ public final class CalendarPanel extends JPanel {
 
 		JPanel weekPanel = borderLayoutPanel()
 						.northComponent(gridLayoutPanel(1, 1)
-										.add(label()
-														.text(MESSAGES.getString("week"))
+										.add(label(MESSAGES.getString("week"))
 														.horizontalAlignment(SwingConstants.CENTER)
 														.border(emptyBorder())
 														.enabled(enabledState)))
@@ -735,8 +734,7 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	private JLabel createDayLabel(DayOfWeek dayOfWeek) {
-		return label()
-						.text(dayOfWeek.getDisplayName(TextStyle.SHORT, selectedLocale))
+		return label(dayOfWeek.getDisplayName(TextStyle.SHORT, selectedLocale))
 						.horizontalAlignment(SwingConstants.CENTER)
 						.border(emptyBorder())
 						.enabled(enabledState)
@@ -769,8 +767,7 @@ public final class CalendarPanel extends JPanel {
 		for (int row = 0; row < DAY_GRID_ROWS; row++) {
 			LocalDate weekDate = firstVisibleDate.plusWeeks(row);
 			int weekNumber = weekDate.get(weekFields.weekOfWeekBasedYear());
-			panel.add(label()
-							.text(String.valueOf(weekNumber))
+			panel.add(label(String.valueOf(weekNumber))
 							.horizontalAlignment(SwingConstants.CENTER)
 							.border(createEtchedBorder())
 							.enabled(false)

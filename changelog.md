@@ -25,6 +25,7 @@ Codion Change Log
 - DefaultBorderLayoutPanelBuilder and DefaultPanelBuilder refactored.
 - ComponentValueBuilder split from ComponentBuilder, for components that don't have an associated value, such as panels.
 - InputPanelLayout and InputPanelBorderLayoutBuilder added.
+- LabelBuilder.builder() overloaded with text parameter.
 ### is.codion.framework.model
 - EntityApplicationModel.refresh() removed.
 ### is.codion.swing.framework.ui

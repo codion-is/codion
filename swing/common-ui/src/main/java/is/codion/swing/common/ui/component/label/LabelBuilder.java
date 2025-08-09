@@ -111,4 +111,12 @@ public interface LabelBuilder<T> extends ComponentValueBuilder<T, JLabel, LabelB
 	static <T> LabelBuilder<T> builder() {
 		return new DefaultLabelBuilder<>();
 	}
+
+	/**
+	 * @param text the label text
+	 * @return a new builder
+	 */
+	static <T> LabelBuilder<T> builder(@Nullable String text) {
+		return new DefaultLabelBuilder<T>().text(text);
+	}
 }
