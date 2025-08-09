@@ -205,21 +205,18 @@ public final class LoadTestPanel<T> extends JPanel {
 										.control(Control.builder()
 														.command(loadTest::removeApplicationBatch)
 														.caption("-")
-														.description("Remove application batch"))
-										.build())
+														.description("Remove application batch")))
 						.centerComponent(integerField()
 										.editable(false)
 										.focusable(false)
 										.horizontalAlignment(SwingConstants.CENTER)
 										.columns(5)
-										.link(loadTest.applicationCount())
-										.build())
+										.link(loadTest.applicationCount()))
 						.eastComponent(button()
 										.control(Control.builder()
 														.command(loadTest::addApplicationBatch)
 														.caption("+")
-														.description("Add application batch"))
-										.build())
+														.description("Add application batch")))
 						.build();
 	}
 
@@ -239,8 +236,7 @@ public final class LoadTestPanel<T> extends JPanel {
 																		.bottomComponent(createSouthChartPanel())
 																		.resizeWeight(RESIZE_WEIGHT)
 																		.build())
-														.build())
-										.build())
+														.build()))
 						.build();
 	}
 
@@ -253,36 +249,28 @@ public final class LoadTestPanel<T> extends JPanel {
 																		.link(loadTest.applicationBatchSize())
 																		.editable(false)
 																		.columns(SMALL_TEXT_FIELD_COLUMNS)
-																		.toolTipText("Application batch size")
-																		.build())
+																		.toolTipText("Application batch size"))
 														.add(createAddRemoveApplicationPanel())
 														.add(createUserPanel())
 														.add(new JLabel("Min. think time", SwingConstants.CENTER))
 														.add(integerSpinner()
 																		.link(loadTest.minimumThinkTime())
 																		.stepSize(SPINNER_STEP_SIZE)
-																		.columns(SMALL_TEXT_FIELD_COLUMNS)
-																		.build())
+																		.columns(SMALL_TEXT_FIELD_COLUMNS))
 														.add(new JLabel("Max. think time", SwingConstants.CENTER))
 														.add(integerSpinner()
 																		.link(loadTest.maximumThinkTime())
 																		.stepSize(SPINNER_STEP_SIZE)
-																		.columns(SMALL_TEXT_FIELD_COLUMNS)
-																		.build())
+																		.columns(SMALL_TEXT_FIELD_COLUMNS))
 														.add(toggleButton()
 																		.link(loadTest.paused())
 																		.text("Pause")
-																		.mnemonic('P')
-																		.build())
-														.build())
+																		.mnemonic('P')))
 										.eastComponent(checkBox()
 														.link(loadTestModel.autoRefreshApplications())
-														.text("Automatic refresh")
-														.build())
-										.build())
+														.text("Automatic refresh")))
 						.centerComponent(scrollPane()
-										.view(createApplicationsTable())
-										.build())
+										.view(createApplicationsTable()))
 						.build();
 	}
 
@@ -298,11 +286,11 @@ public final class LoadTestPanel<T> extends JPanel {
 		return flexibleGridLayoutPanel(1, 3)
 						.add(new JLabel("User"))
 						.add(usernameField)
-						.add(new JButton(Control.builder()
+						.add(button()
+										.control(Control.builder()
 										.command(this::setUser)
 										.caption("...")
-										.description("Set the application user")
-										.build()))
+										.description("Set the application user")))
 						.build();
 	}
 
@@ -481,8 +469,7 @@ public final class LoadTestPanel<T> extends JPanel {
 		return borderLayoutPanel()
 						.centerComponent(tabbedPane()
 										.tab("Duration", createScenarioDurationChartPanel(item))
-										.tab("Exceptions", createScenarioExceptionsPanel(item))
-										.build())
+										.tab("Exceptions", createScenarioExceptionsPanel(item)))
 						.build();
 	}
 
@@ -520,11 +507,9 @@ public final class LoadTestPanel<T> extends JPanel {
 		return borderLayoutPanel()
 						.northComponent(flowLayoutPanel(FlowLayout.LEADING)
 										.add(refreshButton)
-										.add(clearButton)
-										.build())
+										.add(clearButton))
 						.centerComponent(scrollPane()
-										.view(exceptionsArea)
-										.build())
+										.view(exceptionsArea))
 						.build();
 	}
 
@@ -564,8 +549,7 @@ public final class LoadTestPanel<T> extends JPanel {
 										.onBuild(memoryUsageField -> TaskScheduler.builder()
 														.task(() -> SwingUtilities.invokeLater(() -> memoryUsageField.setText(memoryUsage())))
 														.interval(DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS)
-														.start())
-										.build())
+														.start()))
 						.build();
 	}
 

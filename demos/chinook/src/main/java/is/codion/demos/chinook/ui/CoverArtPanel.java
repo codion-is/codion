@@ -114,9 +114,7 @@ final class CoverArtPanel extends JPanel {
 						.southComponent(borderLayoutPanel()
 										.eastComponent(panel()
 														.layout(new GridLayout(1, 2, 0, 0))
-														.addAll(addButton, removeButton)
-														.build())
-										.build())
+														.addAll(addButton, removeButton)))
 						.build();
 	}
 

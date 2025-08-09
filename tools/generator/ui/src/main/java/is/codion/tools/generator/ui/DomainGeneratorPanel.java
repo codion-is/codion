@@ -149,9 +149,7 @@ public final class DomainGeneratorPanel extends JPanel {
 														.orientation(JSplitPane.VERTICAL_SPLIT)
 														.resizeWeight(RESIZE_WEIGHT)
 														.topComponent(createScrollablePanel(schemaTable, "Schemas (Alt-1)"))
-														.bottomComponent(createScrollablePanel(entityTable, "Entities (Alt-2)"))
-														.build())
-										.build())
+														.bottomComponent(createScrollablePanel(entityTable, "Entities (Alt-2)"))))
 						.build();
 
 		JPanel sourcePackagePanel = borderLayoutPanel()
@@ -211,12 +209,10 @@ public final class DomainGeneratorPanel extends JPanel {
 						.resizeWeight(0.5)
 						.topComponent(borderLayoutPanel()
 										.centerComponent(createScrollablePanel(apiTextArea, "API (Alt-3)"))
-										.southComponent(createSearchCopyPanel(apiTextArea))
-										.build())
+										.southComponent(createSearchCopyPanel(apiTextArea)))
 						.bottomComponent(borderLayoutPanel()
 										.centerComponent(createScrollablePanel(implementationTextArea, "Implementation (Alt-4)"))
-										.southComponent(createSearchCopyPanel(implementationTextArea))
-										.build())
+										.southComponent(createSearchCopyPanel(implementationTextArea)))
 						.continuousLayout(true)
 						.oneTouchExpandable(true)
 						.build();
@@ -232,8 +228,7 @@ public final class DomainGeneratorPanel extends JPanel {
 	private static JPanel createSearchCopyPanel(JTextArea textArea) {
 		return borderLayoutPanel()
 						.eastComponent(button()
-										.control(createCopyControl(textArea))
-										.build())
+										.control(createCopyControl(textArea)))
 						.build();
 	}
 
@@ -282,25 +277,19 @@ public final class DomainGeneratorPanel extends JPanel {
 						.centerComponent(borderLayoutPanel()
 										.westComponent(gridLayoutPanel(2, 1)
 														.add(new JLabel(" "))
-														.add(createDtoCheckBox())
-														.build())
+														.add(createDtoCheckBox()))
 										.centerComponent(gridLayoutPanel(2, 1)
 														.add(packageLabel)
-														.add(createPackageField(packageLabel))
-														.build())
-										.build())
+														.add(createPackageField(packageLabel))))
 						.eastComponent(gridLayoutPanel(2, 1)
 										.add(label()
-														.text(" ")
-														.build())
+														.text(" "))
 										.add(button()
 														.control(Control.builder()
 																		.command(this::save)
 																		.caption("Save")
 																		.mnemonic('S')
-																		.enabled(model.saveEnabled()))
-														.build())
-										.build())
+																		.enabled(model.saveEnabled()))))
 						.build();
 	}
 
@@ -317,16 +306,12 @@ public final class DomainGeneratorPanel extends JPanel {
 		return borderLayoutPanel()
 						.centerComponent(gridLayoutPanel(2, 1)
 										.add(sourceDirectoryLabel)
-										.add(createSourceDirectoryField(sourceDirectoryLabel, selectSourceDirectoryControl))
-										.build())
+										.add(createSourceDirectoryField(sourceDirectoryLabel, selectSourceDirectoryControl)))
 						.eastComponent(gridLayoutPanel(2, 1)
 										.add(label()
-														.text(" ")
-														.build())
+														.text(" "))
 										.add(button()
-														.control(selectSourceDirectoryControl)
-														.build())
-										.build())
+														.control(selectSourceDirectoryControl)))
 						.build();
 	}
 
@@ -399,8 +384,7 @@ public final class DomainGeneratorPanel extends JPanel {
 	private static JPanel createScrollablePanel(JComponent component, String title) {
 		return borderLayoutPanel()
 						.centerComponent(scrollPane()
-										.view(component)
-										.build())
+										.view(component))
 						.border(createCompoundBorder(createTitledBorder(title), createEmptyBorder()))
 						.build();
 	}

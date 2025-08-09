@@ -952,8 +952,7 @@ public class EntityPanel extends JPanel {
 		editWindow = Dialogs.builder()
 						.component(borderLayoutPanel()
 										.centerComponent(editControlPanel)
-										.border(Borders.emptyBorder())
-										.build())
+										.border(Borders.emptyBorder()))
 						.owner(this)
 						.locationRelativeTo(tablePanel == null ? this : tablePanel)
 						.title(configuration.caption)
@@ -1607,8 +1606,7 @@ public class EntityPanel extends JPanel {
 				if (horizontalControlLayout()) {
 					return flowLayoutPanel(FlowLayout.CENTER)
 									.add(buttonPanel()
-													.controls(controls)
-													.build())
+													.controls(controls))
 									.build();
 				}
 
@@ -1616,8 +1614,7 @@ public class EntityPanel extends JPanel {
 								.northComponent(buttonPanel()
 												.controls(controls)
 												.orientation(VERTICAL)
-												.button(button -> button.horizontalAlignment(SwingConstants.LEADING))
-												.build())
+												.button(button -> button.horizontalAlignment(SwingConstants.LEADING)))
 								.build();
 			}
 		}

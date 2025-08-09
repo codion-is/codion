@@ -248,8 +248,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 
 		Dialogs.okCancel()
 						.component(flowLayoutPanel(FlowLayout.CENTER)
-										.add(field)
-										.build())
+										.add(field))
 						.owner(this)
 						.title("Update interval (s)")
 						.onOk(() -> model().setUpdateInterval(field.get()))
@@ -283,8 +282,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 										.onBuild(memoryUsageField -> TaskScheduler.builder()
 														.task(() -> SwingUtilities.invokeLater(() -> memoryUsageField.setText(memoryUsage())))
 														.interval(MEMORY_USAGE_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS)
-														.start())
-										.build())
+														.start()))
 						.build();
 	}
 

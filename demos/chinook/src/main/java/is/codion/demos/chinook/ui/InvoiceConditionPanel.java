@@ -179,8 +179,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 			add(borderLayoutPanel()
 							.westComponent(borderLayoutPanel()
 											.westComponent(customerConditionPanel)
-											.centerComponent(dateConditionPanel)
-											.build())
+											.centerComponent(dateConditionPanel))
 							.build(), BorderLayout.CENTER);
 		}
 
@@ -279,13 +278,11 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 								.add(borderLayoutPanel()
 												.centerComponent(yearValue.component())
 												.border(createTitledBorder(createEmptyBorder(),
-																BUNDLE.getString("year"), CENTER, DEFAULT_POSITION))
-												.build())
+																BUNDLE.getString("year"), CENTER, DEFAULT_POSITION)))
 								.add(borderLayoutPanel()
 												.centerComponent(monthValue.component())
 												.border(createTitledBorder(createEmptyBorder(),
-																BUNDLE.getString("month")))
-												.build())
+																BUNDLE.getString("month"))))
 								.build(), BorderLayout.CENTER);
 			}
 

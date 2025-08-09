@@ -747,14 +747,13 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 										.action(createDisplaySystemPropertiesControl())
 										.floatable(false)
 										.includeButtonText(true)
-										.preferredHeight(memoryLabel.getHeight())
-										.build())
+										.preferredHeight(memoryLabel.getHeight()))
 						.build() : memoryLabel);
 
 		return borderLayoutPanel()
 						.border(emptyBorder())
 						.westComponent(new JLabel(FrameworkIcons.instance().logo(DEFAULT_LOGO_SIZE)))
-						.centerComponent(versionMemoryPanel.build())
+						.centerComponent(versionMemoryPanel)
 						.build();
 	}
 
@@ -1087,8 +1086,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 																		.caption(Messages.copy())
 																		.smallIcon(FrameworkIcons.instance().copy())
 																		.build())
-														.scrollPane()
-														.build())
+														.scrollPane())
 										.owner(this)
 										.size(Windows.screenSizeRatio(0.33))
 										.title(resourceBundle.getString("system_properties"))

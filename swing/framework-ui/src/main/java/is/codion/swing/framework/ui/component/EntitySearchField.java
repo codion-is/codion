@@ -677,8 +677,7 @@ public final class EntitySearchField extends HintTextField {
 			return borderLayoutPanel()
 							.border(createTitledBorder(MESSAGES.getString("search_columns")))
 							.northComponent(comboBox()
-											.model(columnComboBoxModel)
-											.build())
+											.model(columnComboBoxModel))
 							.centerComponent(columnBasePanel)
 							.build();
 		}
@@ -694,8 +693,7 @@ public final class EntitySearchField extends HintTextField {
 							.westComponent(new JLabel(MESSAGES.getString("result_limit")))
 							.centerComponent(integerField()
 											.link(searchModel.limit())
-											.columns(4)
-											.build())
+											.columns(4))
 							.build();
 		}
 
@@ -703,20 +701,16 @@ public final class EntitySearchField extends HintTextField {
 			return gridLayoutPanel(4, 1)
 							.add(checkBox()
 											.link(settings.caseSensitive())
-											.text(MESSAGES.getString("case_sensitive"))
-											.build())
+											.text(MESSAGES.getString("case_sensitive")))
 							.add(checkBox()
 											.link(settings.wildcardPrefix())
-											.text(MESSAGES.getString("prefix_wildcard"))
-											.build())
+											.text(MESSAGES.getString("prefix_wildcard")))
 							.add(checkBox()
 											.link(settings.wildcardPostfix())
-											.text(MESSAGES.getString("postfix_wildcard"))
-											.build())
+											.text(MESSAGES.getString("postfix_wildcard")))
 							.add(checkBox()
 											.link(settings.spaceAsWildcard())
-											.text(MESSAGES.getString("space_as_wildcard"))
-											.build())
+											.text(MESSAGES.getString("space_as_wildcard")))
 							.build();
 		}
 	}
@@ -796,8 +790,7 @@ public final class EntitySearchField extends HintTextField {
 			this.stringFactory = searchField.stringFactory;
 			this.selectorPanel = borderLayoutPanel()
 							.centerComponent(scrollPane()
-											.view(list)
-											.build())
+											.view(list))
 							.southComponent(resultLimitLabel)
 							.border(createEmptyBorder(Layouts.GAP.getOrThrow(), Layouts.GAP.getOrThrow(), 0, Layouts.GAP.getOrThrow()))
 							.build();
@@ -901,12 +894,10 @@ public final class EntitySearchField extends HintTextField {
 			table = createTable();
 			selectorPanel = borderLayoutPanel()
 							.centerComponent(scrollPane()
-											.view(table)
-											.build())
+											.view(table))
 							.southComponent(borderLayoutPanel()
 											.westComponent(table.searchField())
-											.centerComponent(resultLimitLabel)
-											.build())
+											.centerComponent(resultLimitLabel))
 							.border(createEmptyBorder(Layouts.GAP.getOrThrow(), Layouts.GAP.getOrThrow(), 0, Layouts.GAP.getOrThrow()))
 							.build();
 		}

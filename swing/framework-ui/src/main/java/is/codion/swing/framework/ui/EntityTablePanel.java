@@ -2863,8 +2863,7 @@ public class EntityTablePanel extends JPanel {
 							.continuousLayout(true)
 							.leftComponent(Components.panel()
 											.layout(new GridBagLayout())
-											.add(table.searchField(), createHorizontalFillConstraints())
-											.build())
+											.add(table.searchField(), createHorizontalFillConstraints()))
 							.rightComponent(statusPanel())
 							.build(), BorderLayout.CENTER);
 			add(refreshButtonToolBar, BorderLayout.WEST);

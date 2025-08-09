@@ -98,18 +98,15 @@ public final class ClientUserMonitorPanel extends JPanel {
 						.add(integerSpinner()
 										.model(new SpinnerNumberModel())
 										.link(model.idleConnectionTimeout())
-										.columns(4)
-										.build())
+										.columns(4))
 						.add(button()
 										.control(command(model::disconnectTimedOut))
 										.text("Disconnect idle")
-										.toolTipText("Disconnect those that have exceeded the allowed idle time")
-										.build())
+										.toolTipText("Disconnect those that have exceeded the allowed idle time"))
 						.add(button()
 										.control(command(this::disconnectAll))
 										.text("Disconnect all")
-										.toolTipText("Disconnect all clients")
-										.build())
+										.toolTipText("Disconnect all clients"))
 						.build();
 
 		return borderLayoutPanel()
@@ -125,16 +122,14 @@ public final class ClientUserMonitorPanel extends JPanel {
 										.link(model.updateInterval())
 										.minimum(1)
 										.columns(SPINNER_COLUMNS)
-										.editable(false)
-										.build())
+										.editable(false))
 						.build();
 
 		JPanel configBase = borderLayoutPanel()
 						.centerComponent(configPanel)
 						.eastComponent(button()
 										.control(command(model::resetHistory))
-										.text("Reset")
-										.build())
+										.text("Reset"))
 						.build();
 
 		FilterTable<?, ?> userHistoryTable = FilterTable.builder()

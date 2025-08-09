@@ -76,12 +76,10 @@ public final class DatabaseMonitorPanel extends JPanel {
 										.link(model.updateInterval())
 										.minimum(1)
 										.columns(SPINNER_COLUMNS)
-										.editable(false)
-										.build())
+										.editable(false))
 						.add(button()
 										.control(command(model::clearStatistics))
-										.text("Clear")
-										.build())
+										.text("Clear"))
 						.build();
 
 		queriesPerSecondChartPanel.setBorder(createEtchedBorder());
@@ -89,8 +87,7 @@ public final class DatabaseMonitorPanel extends JPanel {
 		return borderLayoutPanel()
 						.centerComponent(queriesPerSecondChartPanel)
 						.southComponent(borderLayoutPanel()
-										.westComponent(chartConfig)
-										.build())
+										.westComponent(chartConfig))
 						.build();
 	}
 }

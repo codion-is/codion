@@ -94,8 +94,7 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 											.link(lookAndFeelComboBox.includeInstalled())
 											.text(MESSAGES.getString("include_installed"))
 											.mnemonic(MESSAGES.getString("include_installed_mnemonic").charAt(0))
-											.includeText(true)
-											.build())
+											.includeText(true))
 							.build(), BorderLayout.SOUTH);
 		}
 		new DefaultOkCancelDialogBuilder()

@@ -139,8 +139,7 @@ public final class ServerMonitorPanel extends JPanel {
 						.add(new JLabel("limit", SwingConstants.RIGHT))
 						.add(integerSpinner()
 										.link(model.connectionLimit())
-										.columns(SPINNER_COLUMNS)
-										.build())
+										.columns(SPINNER_COLUMNS))
 						.add(new JLabel("Mem. usage", SwingConstants.RIGHT))
 						.add(createMemoryField())
 						.add(new JLabel("Logging", SwingConstants.RIGHT))
@@ -152,8 +151,7 @@ public final class ServerMonitorPanel extends JPanel {
 						.centerComponent(serverPanel)
 						.eastComponent(button()
 										.control(command(this::shutdownServer))
-										.text("Shutdown")
-										.build())
+										.text("Shutdown"))
 						.build();
 
 		JTabbedPane tabbedPane = tabbedPane()
@@ -175,27 +173,23 @@ public final class ServerMonitorPanel extends JPanel {
 										.link(model.updateInterval())
 										.minimum(1)
 										.columns(SPINNER_COLUMNS)
-										.editable(false)
-										.build())
+										.editable(false))
 						.build();
 
 		JPanel chartsPanel = borderLayoutPanel()
 						.centerComponent(intervalPanel)
 						.eastComponent(button()
 										.control(command(model::clearStatistics))
-										.text("Clear")
-										.build())
+										.text("Clear"))
 						.build();
 
 		JPanel zoomPanel = borderLayoutPanel()
 						.centerComponent(checkBox()
 										.link(synchronizedZoomState)
-										.text("Synchronize zoom")
-										.build())
+										.text("Synchronize zoom"))
 						.eastComponent(button()
 										.control(command(this::resetZoom))
-										.text("Reset zoom")
-										.build())
+										.text("Reset zoom"))
 						.build();
 
 		JPanel controlPanel = flexibleGridLayoutPanel(1, 2)
@@ -254,8 +248,7 @@ public final class ServerMonitorPanel extends JPanel {
 		JPanel refreshPanel = flowLayoutPanel(FlowLayout.RIGHT)
 						.add(button()
 										.control(command(model::refreshOperationList))
-										.text("Refresh")
-										.build())
+										.text("Refresh"))
 						.build();
 
 		return borderLayoutPanel()
@@ -275,12 +268,10 @@ public final class ServerMonitorPanel extends JPanel {
 		JPanel clearCacheAndRefreshPanel = flowLayoutPanel(FlowLayout.RIGHT)
 						.add(button()
 										.control(command(model::clearReportCache))
-										.text("Clear Cache")
-										.build())
+										.text("Clear Cache"))
 						.add(button()
 										.control(command(model::refreshReportList))
-										.text("Refresh")
-										.build())
+										.text("Refresh"))
 						.build();
 
 		return borderLayoutPanel()
@@ -300,8 +291,7 @@ public final class ServerMonitorPanel extends JPanel {
 		JPanel refreshPanel = flowLayoutPanel(FlowLayout.RIGHT)
 						.add(button()
 										.control(command(model::refreshDomainList))
-										.text("Refresh")
-										.build())
+										.text("Refresh"))
 						.build();
 
 		return borderLayoutPanel()

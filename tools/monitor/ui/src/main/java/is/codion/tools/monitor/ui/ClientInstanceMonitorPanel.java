@@ -107,12 +107,10 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 		JPanel settingsPanel = flowLayoutPanel(FlowLayout.LEFT)
 						.add(checkBox()
 										.link(model.loggingEnabled())
-										.text("Logging enabled")
-										.build())
+										.text("Logging enabled"))
 						.add(button()
 										.control(command(this::updateView))
-										.text("Refresh log")
-										.build())
+										.text("Refresh log"))
 						.build();
 
 		JPanel northPanel = borderLayoutPanel()

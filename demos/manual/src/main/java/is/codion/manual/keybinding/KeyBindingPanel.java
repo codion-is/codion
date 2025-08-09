@@ -72,14 +72,12 @@ public final class KeyBindingPanel extends JPanel {
 						.add(label()
 										.text("Look & Feel")
 										.horizontalAlignment(SwingConstants.RIGHT)
-										.preferredWidth(100)
-										.build())
+										.preferredWidth(100))
 						.add(lookAndFeelComboBox)
 						.add(label()
 										.text("Component")
 										.horizontalAlignment(SwingConstants.RIGHT)
-										.preferredWidth(100)
-										.build())
+										.preferredWidth(100))
 						.add(componentComboBox)
 						.build(), BorderLayout.NORTH);
 		add(new JScrollPane(table), BorderLayout.CENTER);

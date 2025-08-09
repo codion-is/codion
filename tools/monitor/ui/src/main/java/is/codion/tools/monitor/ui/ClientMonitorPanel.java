@@ -101,15 +101,10 @@ public final class ClientMonitorPanel extends JPanel {
 														.eastComponent(flexibleGridLayoutPanel(1, 2)
 																		.add(checkBox()
 																						.link(advancedFilterState)
-																						.text("Advanced filters")
-																						.build())
+																						.text("Advanced filters"))
 																		.add(button()
 																						.control(command(this::refresh))
-																						.text("Refresh")
-																						.build())
-																		.build())
-														.build())
-										.build())
+																						.text("Refresh")))))
 						.build();
 
 		JPanel clientInstancePanel = borderLayoutPanel().build();

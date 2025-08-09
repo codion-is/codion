@@ -160,8 +160,7 @@ final class EntityControls {
 										.buttonsFocusable(buttonFocusable)
 										.preferredButtonSize(new Dimension(preferredSize.height, preferredSize.height))
 										.buttonGap(0)
-										.button(button -> button.onBuild(buttons::add))
-										.build(), borderLayoutConstraints)
+										.button(button -> button.onBuild(buttons::add)), borderLayoutConstraints)
 						.build();
 	}
 

@@ -663,12 +663,10 @@ public final class CalendarPanel extends JPanel {
 		return borderLayoutPanel()
 						.northComponent(borderLayoutPanel()
 										.centerComponent(formattedDateLabel)
-										.border(createTitledBorder(""))
-										.build())
+										.border(createTitledBorder("")))
 						.centerComponent(flowLayoutPanel(FlowLayout.CENTER)
 										.add(createYearMonthHourMinutePanel())
-										.border(createTitledBorder(""))
-										.build())
+										.border(createTitledBorder("")))
 						.build();
 	}
 
@@ -718,9 +716,7 @@ public final class CalendarPanel extends JPanel {
 														.text(MESSAGES.getString("week"))
 														.horizontalAlignment(SwingConstants.CENTER)
 														.border(emptyBorder())
-														.enabled(enabledState)
-														.build())
-										.build())
+														.enabled(enabledState)))
 						.centerComponent(weekNumberPanel)
 						.border(createTitledBorder(""))
 						.build();

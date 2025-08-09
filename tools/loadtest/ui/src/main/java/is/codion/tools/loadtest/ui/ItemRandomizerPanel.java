@@ -97,18 +97,15 @@ final class ItemRandomizerPanel<T> extends JPanel {
 						.northComponent(new JLabel(item.item().toString()))
 						.westComponent(Components.checkBox()
 										.link(new EnabledModelValue(item.item()))
-										.text("Enabled")
-										.build())
+										.text("Enabled"))
 						.centerComponent(Components.label()
 										.text("Weight")
-										.horizontalAlignment(SwingConstants.RIGHT)
-										.build())
+										.horizontalAlignment(SwingConstants.RIGHT))
 						.eastComponent(Components.integerSpinner()
 										.link(new WeightModelValue(item.item()))
 										.minimum(0)
 										.columns(SPINNER_COLUMNS)
-										.toolTipText(item.item().toString())
-										.build())
+										.toolTipText(item.item().toString()))
 						.build();
 	}
 

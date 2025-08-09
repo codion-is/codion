@@ -177,13 +177,11 @@ final class DurationComponentValue extends AbstractComponentValue<Integer, Durat
 							.northComponent(gridLayoutPanel(1, 0)
 											.add(minLabel)
 											.add(secLabel)
-											.add(msLabel)
-											.build())
+											.add(msLabel))
 							.centerComponent(gridLayoutPanel(1, 0)
 											.add(minutesField)
 											.add(secondsField)
-											.add(millisecondsField)
-											.build())
+											.add(millisecondsField))
 							.build());
 		}
 	}
