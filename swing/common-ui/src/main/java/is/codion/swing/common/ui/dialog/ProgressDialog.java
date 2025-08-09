@@ -36,6 +36,7 @@ import javax.swing.border.Border;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.util.function.Supplier;
 
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
@@ -178,10 +179,10 @@ public final class ProgressDialog extends JDialog {
 
 		/**
 		 * Adds a button based on the given control to the {@link BorderLayout#SOUTH} position
-		 * @param controlBuilder the builder for the control to add
+		 * @param control the control to add
 		 * @return this ProgressDialogBuilder instance
 		 */
-		Builder control(Control.Builder<?, ?> controlBuilder);
+		Builder control(Supplier<? extends Control> control);
 
 		/**
 		 * Adds a button based on the given control to the {@link BorderLayout#SOUTH} position
@@ -261,8 +262,8 @@ public final class ProgressDialog extends JDialog {
 		}
 
 		@Override
-		public Builder control(Control.Builder<?, ?> controlBuilder) {
-			return control(requireNonNull(controlBuilder).build());
+		public Builder control(Supplier<? extends Control> control) {
+			return control(requireNonNull(control).get());
 		}
 
 		@Override

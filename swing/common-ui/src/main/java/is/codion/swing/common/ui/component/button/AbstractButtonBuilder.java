@@ -37,6 +37,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -226,8 +227,8 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
 	}
 
 	@Override
-	public final B control(Control.Builder<?, ?> controlBuilder) {
-		return control(requireNonNull(controlBuilder).build());
+	public final B control(Supplier<? extends Control> control) {
+		return control(requireNonNull(control).get());
 	}
 
 	@Override

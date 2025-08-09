@@ -25,6 +25,7 @@ import is.codion.swing.common.ui.control.ToggleControl;
 import javax.swing.Action;
 import javax.swing.JToolBar;
 import java.util.ArrayList;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -130,7 +131,7 @@ final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, 
 		}
 
 		@Override
-		public ToolBarBuilder control(Control.Builder<?, ?> control) {
+		public ToolBarBuilder control(Supplier<? extends Control> control) {
 			return controls(Controls.builder()
 							.control(requireNonNull(control))
 							.build());
@@ -142,8 +143,8 @@ final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, 
 		}
 
 		@Override
-		public ToolBarBuilder controls(Controls.ControlsBuilder controls) {
-			return new DefaultToolBarBuilder(requireNonNull(controls).build());
+		public ToolBarBuilder controls(Supplier<Controls> controls) {
+			return new DefaultToolBarBuilder(requireNonNull(controls).get());
 		}
 	}
 }

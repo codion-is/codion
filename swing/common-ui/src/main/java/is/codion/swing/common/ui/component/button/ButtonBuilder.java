@@ -30,6 +30,7 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
+import java.util.function.Supplier;
 
 /**
  * Builds buttons.
@@ -214,10 +215,10 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
 	B control(Control control);
 
 	/**
-	 * @param controlBuilder the builder for the control to base the button on
+	 * @param control the control to base the button on
 	 * @return this builder instance
 	 */
-	B control(Control.Builder<?, ?> controlBuilder);
+	B control(Supplier<? extends Control> control);
 
 	/**
 	 * @param actionListener the action listener

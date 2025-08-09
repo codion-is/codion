@@ -28,6 +28,7 @@ import javax.swing.Action;
 import javax.swing.JComponent;
 import java.awt.Dimension;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * Builds panels with controls.
@@ -118,7 +119,7 @@ public interface ControlPanelBuilder<C extends JComponent, B extends ControlPane
 		 * @param control the control to base the panel on
 		 * @return this builder instance
 		 */
-		B control(Control.Builder<?, ?> control);
+		B control(Supplier<? extends Control> control);
 
 		/**
 		 * @param controls the controls to base the panel on
@@ -130,6 +131,6 @@ public interface ControlPanelBuilder<C extends JComponent, B extends ControlPane
 		 * @param controls the controls to base the panel on
 		 * @return this builder instance
 		 */
-		B controls(Controls.ControlsBuilder controls);
+		B controls(Supplier<Controls> controls);
 	}
 }

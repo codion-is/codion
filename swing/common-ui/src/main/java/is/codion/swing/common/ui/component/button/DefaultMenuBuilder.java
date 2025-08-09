@@ -21,7 +21,6 @@ package is.codion.swing.common.ui.component.button;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.Action;
@@ -37,6 +36,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -157,7 +157,7 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<JMenu, MenuBuild
 		}
 
 		@Override
-		public MenuBuilder control(Control.Builder<?, ?> control) {
+		public MenuBuilder control(Supplier<? extends Control> control) {
 			return controls(Controls.builder()
 							.control(requireNonNull(control))
 							.build());
@@ -169,8 +169,8 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<JMenu, MenuBuild
 		}
 
 		@Override
-		public MenuBuilder controls(ControlsBuilder controls) {
-			return new DefaultMenuBuilder(requireNonNull(controls).build());
+		public MenuBuilder controls(Supplier<Controls> controls) {
+			return new DefaultMenuBuilder(requireNonNull(controls).get());
 		}
 	}
 

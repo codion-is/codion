@@ -28,6 +28,7 @@ import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * A builder for a {@link ProgressWorker} implementation which displays a progress bar in a modal dialog
@@ -122,10 +123,10 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
 	ProgressWorkerDialogBuilder<T, V> eastPanel(@Nullable JPanel eastPanel);
 
 	/**
-	 * @param controlBuilder the control built by this builder will be added to the dialog as a button
+	 * @param control the control to be added to the dialog as a button
 	 * @return this Builder instance
 	 */
-	ProgressWorkerDialogBuilder<T, V> control(Control.Builder<?, ?> controlBuilder);
+	ProgressWorkerDialogBuilder<T, V> control(Supplier<? extends Control> control);
 
 	/**
 	 * @param control this control will be added to the dialog as a button

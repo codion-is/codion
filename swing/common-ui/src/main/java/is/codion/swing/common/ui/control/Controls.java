@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * A collection of controls and separators, note that these can be nested controls.
@@ -126,10 +127,10 @@ public interface Controls extends Control {
 		ControlsBuilder control(Control control);
 
 		/**
-		 * @param controlBuilder the control builder to add to this controls instance
+		 * @param control the control to add to this controls instance
 		 * @return this Builder instance
 		 */
-		ControlsBuilder control(Control.Builder<?, ?> controlBuilder);
+		ControlsBuilder control(Supplier<? extends Control> control);
 
 		/**
 		 * @param index the index at which to add the control
@@ -140,10 +141,10 @@ public interface Controls extends Control {
 
 		/**
 		 * @param index the index at which to add the control
-		 * @param controlBuilder the control builder to add to this controls instance
+		 * @param control the control to add to this controls instance
 		 * @return this Builder instance
 		 */
-		ControlsBuilder controlAt(int index, Control.Builder<?, ?> controlBuilder);
+		ControlsBuilder controlAt(int index, Supplier<? extends Control> control);
 
 		/**
 		 * @param controls the controls to add
@@ -158,10 +159,10 @@ public interface Controls extends Control {
 		ControlsBuilder controls(Collection<? extends Control> controls);
 
 		/**
-		 * @param controlBuilders the control builder to add
+		 * @param controls the controls to add
 		 * @return this Builder instance
 		 */
-		ControlsBuilder controls(Control.Builder<?, ?>... controlBuilders);
+		ControlsBuilder controls(Supplier<? extends Control>... controls);
 
 		/**
 		 * @param action the Action to add to this controls instance
@@ -239,10 +240,10 @@ public interface Controls extends Control {
 		Layout control(Control control);
 
 		/**
-		 * @param controlBuilder the builder for the control to add
+		 * @param control the control to add
 		 * @return this layout instance
 		 */
-		Layout control(Control.Builder<?, ?> controlBuilder);
+		Layout control(Supplier<? extends Control> control);
 
 		/**
 		 * Adds standard controls

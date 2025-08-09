@@ -36,6 +36,7 @@ import java.awt.event.ActionEvent;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.function.Supplier;
 
 /**
  * A beefed up Action.
@@ -223,7 +224,7 @@ public interface Control extends Action {
 	 * @param <C> the Control type
 	 * @param <B> the builder type
 	 */
-	interface Builder<C extends Control, B extends Builder<C, B>> {
+	interface Builder<C extends Control, B extends Builder<C, B>> extends Supplier<C>  {
 
 		/**
 		 * @param caption the caption for the control
@@ -301,5 +302,10 @@ public interface Control extends Action {
 		 * @throws IllegalStateException in case no command has been set
 		 */
 		C build();
+
+		@Override
+		default C get() {
+			return build();
+		}
 	}
 }

@@ -21,10 +21,10 @@ package is.codion.swing.common.ui.component.button;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
-import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.JMenuItem;
+import java.util.function.Supplier;
 
 import static is.codion.common.Configuration.enumValue;
 
@@ -69,10 +69,10 @@ public interface ToggleMenuItemBuilder<C extends JMenuItem, B extends ToggleMenu
 	B toggle(ToggleControl toggleControl);
 
 	/**
-	 * @param toggleControl the builder for the toggle control to base this toggle menu on
+	 * @param toggleControl the toggle control to base this toggle menu on
 	 * @return this builder instance
 	 */
-	B toggle(Control.Builder<ToggleControl, ?> toggleControl);
+	B toggle(Supplier<ToggleControl> toggleControl);
 
 	/**
 	 * Creates a bidirectional link to the given state. Overrides any initial value set.

@@ -20,10 +20,10 @@ package is.codion.swing.common.ui.component.button;
 
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
-import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.JToggleButton;
+import java.util.function.Supplier;
 
 /**
  * Builds a JToggleButton.
@@ -39,10 +39,10 @@ public interface ToggleButtonBuilder<C extends JToggleButton, B extends ToggleBu
 	B toggle(ToggleControl toggleControl);
 
 	/**
-	 * @param toggleControl the builder for the toggle control to base this toggle button on
+	 * @param toggleControl the toggle control to base this toggle button on
 	 * @return this builder instance
 	 */
-	B toggle(Control.Builder<ToggleControl, ?> toggleControl);
+	B toggle(Supplier<ToggleControl> toggleControl);
 
 	/**
 	 * Creates a bidirectional link to the given state. Overrides any initial value set.

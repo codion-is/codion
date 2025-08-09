@@ -21,7 +21,6 @@ package is.codion.swing.common.ui.component.button;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
 import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.Action;
@@ -33,6 +32,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.event.MenuListener;
 import javax.swing.event.PopupMenuListener;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * A builder for menus.
@@ -104,7 +104,7 @@ public interface MenuBuilder extends ComponentBuilder<JMenu, MenuBuilder> {
 		 * @param control the control to base the menu on
 		 * @return a builder instance
 		 */
-		MenuBuilder control(Control.Builder<?, ?> control);
+		MenuBuilder control(Supplier<? extends Control> control);
 
 		/**
 		 * @param controls the controls to base the menu on
@@ -116,7 +116,7 @@ public interface MenuBuilder extends ComponentBuilder<JMenu, MenuBuilder> {
 		 * @param controls the controls to base the menu on
 		 * @return a builder instance
 		 */
-		MenuBuilder controls(ControlsBuilder controls);
+		MenuBuilder controls(Supplier<Controls> controls);
 	}
 
 	/**

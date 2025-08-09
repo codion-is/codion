@@ -27,6 +27,7 @@ Codion Change Log
 - InputPanelLayout and InputPanelBorderLayoutBuilder added.
 - LabelBuilder.builder() overloaded with text parameter.
 - BorderLayoutPanelBuilder methods renamed, Component suffix removed.
+- Control.Builder now extends Supplier, builder parameters replaced.
 ### is.codion.framework.model
 - EntityApplicationModel.refresh() removed.
 ### is.codion.swing.framework.ui

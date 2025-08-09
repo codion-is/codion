@@ -34,6 +34,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
@@ -165,7 +166,7 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 		}
 
 		@Override
-		public ButtonPanelBuilder control(Control.Builder<?, ?> control) {
+		public ButtonPanelBuilder control(Supplier<? extends Control> control) {
 			return controls(Controls.builder()
 							.control(requireNonNull(control))
 							.build());
@@ -177,8 +178,8 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 		}
 
 		@Override
-		public ButtonPanelBuilder controls(Controls.ControlsBuilder controls) {
-			return new DefaultButtonPanelBuilder(requireNonNull(controls).build());
+		public ButtonPanelBuilder controls(Supplier<Controls> controls) {
+			return new DefaultButtonPanelBuilder(requireNonNull(controls).get());
 		}
 	}
 }

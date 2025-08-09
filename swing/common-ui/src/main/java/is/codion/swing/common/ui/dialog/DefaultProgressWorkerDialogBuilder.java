@@ -34,6 +34,7 @@ import java.awt.Dimension;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
@@ -115,8 +116,8 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 	}
 
 	@Override
-	public ProgressWorkerDialogBuilder<T, V> control(Control.Builder<?, ?> controlBuilder) {
-		progressDialogBuilder.control(controlBuilder);
+	public ProgressWorkerDialogBuilder<T, V> control(Supplier<? extends Control> control) {
+		progressDialogBuilder.control(control);
 		return this;
 	}
 

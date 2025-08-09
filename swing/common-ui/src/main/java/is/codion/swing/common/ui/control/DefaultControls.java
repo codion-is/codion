@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -177,8 +178,8 @@ final class DefaultControls extends AbstractControl implements Controls {
 		}
 
 		@Override
-		public Layout control(Control.Builder<?, ?> controlBuilder) {
-			return control(requireNonNull(controlBuilder).build());
+		public Layout control(Supplier<? extends Control> control) {
+			return control(requireNonNull(control).get());
 		}
 
 		@Override
@@ -373,8 +374,8 @@ final class DefaultControls extends AbstractControl implements Controls {
 		}
 
 		@Override
-		public ControlsBuilder control(Control.Builder<?, ?> controlBuilder) {
-			return controlAt(actions.size(), controlBuilder);
+		public ControlsBuilder control(Supplier<? extends Control> control) {
+			return controlAt(actions.size(), control);
 		}
 
 		@Override
@@ -383,8 +384,8 @@ final class DefaultControls extends AbstractControl implements Controls {
 		}
 
 		@Override
-		public ControlsBuilder controlAt(int index, Control.Builder<?, ?> controlBuilder) {
-			return actionAt(index, requireNonNull(controlBuilder).build());
+		public ControlsBuilder controlAt(int index, Supplier<? extends Control> control) {
+			return actionAt(index, requireNonNull(control).get());
 		}
 
 		@Override
@@ -399,9 +400,9 @@ final class DefaultControls extends AbstractControl implements Controls {
 		}
 
 		@Override
-		public ControlsBuilder controls(Control.Builder<?, ?>... controlBuilders) {
-			actions.addAll(Arrays.stream(controlBuilders)
-							.map(Builder::build)
+		public ControlsBuilder controls(Supplier<? extends Control>... controls) {
+			actions.addAll(Arrays.stream(controls)
+							.map(Supplier::get)
 							.collect(Collectors.toList()));
 			return this;
 		}
