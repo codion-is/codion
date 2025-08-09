@@ -40,6 +40,7 @@ Codion Change Log
 - EntityEditComponentPanel.label(attribute) removed.
 - EntityEditComponentPanel.EditComponent added, components can no longer be replaced once set.
 - EntityEditComponentPanel.EditComponent no longer extends Value.
+- EntityEditComponentPanel.EditComponent renamed EditorComponent.
 
 ## 0.18.43
 ### is.codion.common.core

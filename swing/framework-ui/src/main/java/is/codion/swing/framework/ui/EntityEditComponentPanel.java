@@ -141,7 +141,7 @@ public class EntityEditComponentPanel extends JPanel {
 
 	private final SwingEntityEditModel editModel;
 	private final EntityComponents entityComponents;
-	private final Map<Attribute<?>, EditComponent> components = new HashMap<>();
+	private final Map<Attribute<?>, EditorComponent> components = new HashMap<>();
 	private final Map<Attribute<?>, ComponentValueBuilder<?, ?, ?>> componentBuilders = new HashMap<>();
 	private final InputFocus inputFocus;
 
@@ -210,13 +210,13 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @param attribute the attribute
 	 * @return the {@link Value} containing the component associated with the given attribute
 	 */
-	protected final EditComponent component(Attribute<?> attribute) {
+	protected final EditorComponent component(Attribute<?> attribute) {
 		ComponentValueBuilder<?, ?, ?> componentBuilder = componentBuilders.get(requireNonNull(attribute));
 		if (componentBuilder != null) {
 			componentBuilder.build();
 		}
 
-		return components.computeIfAbsent(attribute, k -> new DefaultEditComponent(attribute));
+		return components.computeIfAbsent(attribute, k -> new DefaultEditorComponent(attribute));
 	}
 
 	/**
@@ -593,14 +593,14 @@ public class EntityEditComponentPanel extends JPanel {
 		return new ListBuilderFactory<>(listModel);
 	}
 
-	protected final Map<Attribute<?>, EditComponent> components() {
+	protected final Map<Attribute<?>, EditorComponent> components() {
 		return unmodifiableMap(components);
 	}
 
 	/**
 	 * Species the component used to edit an attribute
 	 */
-	protected interface EditComponent {
+	protected interface EditorComponent {
 
 		/**
 		 * @return the component
@@ -653,7 +653,7 @@ public class EntityEditComponentPanel extends JPanel {
 
 	private boolean isInputComponent(JComponent component) {
 		return components.values().stream()
-						.map(EditComponent::optional)
+						.map(EditorComponent::optional)
 						.filter(Optional::isPresent)
 						.map(Optional::get)
 						.anyMatch(comp -> sameOrParentOf(comp, component));
@@ -928,12 +928,12 @@ public class EntityEditComponentPanel extends JPanel {
 		}
 	}
 
-	private static final class DefaultEditComponent implements EditComponent {
+	private static final class DefaultEditorComponent implements EditorComponent {
 
 		private final Attribute<?> attribute;
 		private final Value<JComponent> component;
 
-		private DefaultEditComponent(Attribute<?> attribute) {
+		private DefaultEditorComponent(Attribute<?> attribute) {
 			this.component = Value.builder()
 							.<JComponent>nullable()
 							.notify(Notify.CHANGED)
