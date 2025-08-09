@@ -19,11 +19,10 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.observer.Observable;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
-import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
+import is.codion.common.value.Value.Notify;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
@@ -85,7 +84,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -287,7 +286,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @throws IllegalArgumentException in case no component has been associated with the given attribute
 	 */
 	protected final InputPanelBuilder createInputPanel(Attribute<?> attribute) {
-		JComponent component = EntityEditComponentPanel.this.getComponentOrThrow(attribute);
+		JComponent component = component(attribute).get();
 		JComponent label = (JComponent) component.getClientProperty(LABELED_BY);
 		if (label == null) {
 			AttributeDefinition<?> attributeDefinition = editModel().entities()
@@ -601,7 +600,18 @@ public class EntityEditComponentPanel extends JPanel {
 	/**
 	 * Species the component used to edit an attribute
 	 */
-	protected interface EditComponent extends Observable<JComponent> {
+	protected interface EditComponent {
+
+		/**
+		 * @return the component
+		 * @throws IllegalStateException in case no component has been set
+		 */
+		JComponent get();
+
+		/**
+		 * @return the component or an empty Optional in case none has been set
+		 */
+		Optional<JComponent> optional();
 
 		/**
 		 * @param component the component
@@ -611,8 +621,8 @@ public class EntityEditComponentPanel extends JPanel {
 
 		/**
 		 * @return the label associated with the component
-		 * @see ComponentBuilder#label(JLabel)
 		 * @throws IllegalStateException in case no component has been set or if no label is associated with it
+		 * @see ComponentBuilder#label(JLabel)
 		 */
 		JLabel label();
 	}
@@ -620,7 +630,7 @@ public class EntityEditComponentPanel extends JPanel {
 	private <T, B extends ComponentValueBuilder<T, ?, ?>> B setComponentBuilder(Attribute<T> attribute, B componentBuilder) {
 		requireNonNull(attribute);
 		requireNonNull(componentBuilder);
-		if (componentBuilders.containsKey(attribute) || !component(attribute).isNull()) {
+		if (componentBuilders.containsKey(attribute) || component(attribute).optional().isPresent()) {
 			throw new IllegalStateException("Component has already been created for attribute: " + attribute);
 		}
 		AttributeDefinition<T> attributeDefinition = editModel().entities()
@@ -641,19 +651,11 @@ public class EntityEditComponentPanel extends JPanel {
 		return componentBuilder;
 	}
 
-	private JComponent getComponentOrThrow(Attribute<?> attribute) {
-		EditComponent component = component(attribute);
-		if (component.isNull()) {
-			throw new IllegalArgumentException("No component associated with attribute: " + attribute);
-		}
-
-		return component.getOrThrow();
-	}
-
 	private boolean isInputComponent(JComponent component) {
 		return components.values().stream()
-						.map(EditComponent::get)
-						.filter(Objects::nonNull)
+						.map(EditComponent::optional)
+						.filter(Optional::isPresent)
+						.map(Optional::get)
 						.anyMatch(comp -> sameOrParentOf(comp, component));
 	}
 
@@ -926,41 +928,50 @@ public class EntityEditComponentPanel extends JPanel {
 		}
 	}
 
-	private static final class DefaultEditComponent extends AbstractValue<JComponent> implements EditComponent {
+	private static final class DefaultEditComponent implements EditComponent {
 
 		private final Attribute<?> attribute;
-
-		private @Nullable JComponent component;
+		private final Value<JComponent> component;
 
 		private DefaultEditComponent(Attribute<?> attribute) {
-			super(Notify.CHANGED);
+			this.component = Value.builder()
+							.<JComponent>nullable()
+							.notify(Notify.CHANGED)
+							.build();
 			this.attribute = attribute;
 		}
 
 		@Override
-		public JLabel label() {
-			if (component == null) {
+		public JComponent get() {
+			if (component.isNull()) {
 				throw new IllegalStateException("Component has not been set for: " + attribute);
 			}
-			JLabel label = (JLabel) component.getClientProperty(LABELED_BY);
+
+			return component.getOrThrow();
+		}
+
+		@Override
+		public void set(JComponent component) {
+			requireNonNull(component);
+			if (!this.component.isNull()) {
+				throw new IllegalStateException("Component has already been set for: " + attribute);
+			}
+			this.component.set(component);
+		}
+
+		@Override
+		public Optional<JComponent> optional() {
+			return component.optional();
+		}
+
+		@Override
+		public JLabel label() {
+			JLabel label = (JLabel) get().getClientProperty(LABELED_BY);
 			if (label == null) {
 				throw new IllegalStateException("No label associated with component: " + attribute);
 			}
 
 			return label;
-		}
-
-		@Override
-		protected @Nullable JComponent getValue() {
-			return component;
-		}
-
-		@Override
-		protected void setValue(@Nullable JComponent component) {
-			if (this.component != null) {
-				throw new IllegalStateException("Component has already been set");
-			}
-			this.component = component;
 		}
 	}
 

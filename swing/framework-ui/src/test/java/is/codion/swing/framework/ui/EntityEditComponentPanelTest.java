@@ -50,7 +50,7 @@ public final class EntityEditComponentPanelTest {
 		JTextField nameField = (JTextField) componentPanel.component(Employee.NAME).get();
 		assertNotNull(nameField);
 		assertThrows(IllegalStateException.class, () -> componentPanel.createTextField(Employee.NAME));
-		assertTrue(componentPanel.component(Employee.JOB).isNull());
+		assertFalse(componentPanel.component(Employee.JOB).optional().isPresent());
 		assertThrows(IllegalStateException.class, () -> componentPanel.component(Employee.NAME).set(new JLabel()));
 	}
 }

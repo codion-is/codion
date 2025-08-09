@@ -38,6 +38,7 @@ Codion Change Log
 - EntityEditComponentPanel.InputPanelBuilder moved to package is.codion.swing.common.ui.component.panel.
 - EntityEditComponentPanel.label(attribute) removed.
 - EntityEditComponentPanel.EditComponent added, components can no longer be replaced once set.
+- EntityEditComponentPanel.EditComponent no longer extends Value.
 
 ## 0.18.43
 ### is.codion.common.core

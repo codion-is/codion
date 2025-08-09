@@ -56,9 +56,9 @@ public final class VisitEditPanel extends EntityEditPanel {
 		add(northPanel, BorderLayout.NORTH);
 		add(createInputPanel(Visit.DESCRIPTION)
 						.component(scrollPane()
-										.view(component(Visit.DESCRIPTION).getOrThrow())), BorderLayout.CENTER);
+										.view(component(Visit.DESCRIPTION).get())), BorderLayout.CENTER);
 		add(createInputPanel(Visit.DESCRIPTION)
 						.component(scrollPane()
-										.view(component(Visit.DESCRIPTION).getOrThrow())), BorderLayout.CENTER);
+										.view(component(Visit.DESCRIPTION).get())), BorderLayout.CENTER);
 	}
 }
