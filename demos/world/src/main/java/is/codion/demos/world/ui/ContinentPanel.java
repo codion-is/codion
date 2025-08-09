@@ -66,8 +66,8 @@ final class ContinentPanel extends EntityPanel {
 						.build();
 
 		JPanel chartPanel = borderLayoutPanel()
-						.northComponent(lifeExpectancyChartPanel)
-						.centerComponent(pieChartChartPanel)
+						.north(lifeExpectancyChartPanel)
+						.center(pieChartChartPanel)
 						.build();
 
 		EntityTablePanel countryTablePanel =

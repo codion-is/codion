@@ -56,73 +56,73 @@ final class DefaultBorderLayoutPanelBuilder extends AbstractComponentBuilder<JPa
 	public BorderLayoutPanelBuilder add(Supplier<? extends JComponent> component, String constraints) {
 		switch (requireNonNull(constraints)) {
 			case BorderLayout.CENTER:
-				return centerComponent(component);
+				return center(component);
 			case BorderLayout.NORTH:
-				return northComponent(component);
+				return north(component);
 			case BorderLayout.SOUTH:
-				return southComponent(component);
+				return south(component);
 			case BorderLayout.EAST:
-				return eastComponent(component);
+				return east(component);
 			case BorderLayout.WEST:
-				return westComponent(component);
+				return west(component);
 			default:
 				throw new IllegalArgumentException("Unknown BorderLayout constraints: " + constraints);
 		}
 	}
 
 	@Override
-	public BorderLayoutPanelBuilder centerComponent(JComponent centerComponent) {
+	public BorderLayoutPanelBuilder center(JComponent centerComponent) {
 		this.centerComponent = requireNonNull(centerComponent);
 		return this;
 	}
 
 	@Override
-	public BorderLayoutPanelBuilder centerComponent(Supplier<? extends JComponent> centerComponent) {
-		return centerComponent(requireNonNull(centerComponent).get());
+	public BorderLayoutPanelBuilder center(Supplier<? extends JComponent> centerComponent) {
+		return center(requireNonNull(centerComponent).get());
 	}
 
 	@Override
-	public BorderLayoutPanelBuilder northComponent(JComponent northComponent) {
+	public BorderLayoutPanelBuilder north(JComponent northComponent) {
 		this.northComponent = requireNonNull(northComponent);
 		return this;
 	}
 
 	@Override
-	public BorderLayoutPanelBuilder northComponent(Supplier<? extends JComponent> northComponent) {
-		return northComponent(requireNonNull(northComponent).get());
+	public BorderLayoutPanelBuilder north(Supplier<? extends JComponent> northComponent) {
+		return north(requireNonNull(northComponent).get());
 	}
 
 	@Override
-	public BorderLayoutPanelBuilder southComponent(JComponent southComponent) {
+	public BorderLayoutPanelBuilder south(JComponent southComponent) {
 		this.southComponent = requireNonNull(southComponent);
 		return this;
 	}
 
 	@Override
-	public BorderLayoutPanelBuilder southComponent(Supplier<? extends JComponent> southComponent) {
-		return southComponent(requireNonNull(southComponent).get());
+	public BorderLayoutPanelBuilder south(Supplier<? extends JComponent> southComponent) {
+		return south(requireNonNull(southComponent).get());
 	}
 
 	@Override
-	public BorderLayoutPanelBuilder eastComponent(JComponent eastComponent) {
+	public BorderLayoutPanelBuilder east(JComponent eastComponent) {
 		this.eastComponent = requireNonNull(eastComponent);
 		return this;
 	}
 
 	@Override
-	public BorderLayoutPanelBuilder eastComponent(Supplier<? extends JComponent> eastComponent) {
-		return eastComponent(requireNonNull(eastComponent).get());
+	public BorderLayoutPanelBuilder east(Supplier<? extends JComponent> eastComponent) {
+		return east(requireNonNull(eastComponent).get());
 	}
 
 	@Override
-	public BorderLayoutPanelBuilder westComponent(JComponent westComponent) {
+	public BorderLayoutPanelBuilder west(JComponent westComponent) {
 		this.westComponent = requireNonNull(westComponent);
 		return this;
 	}
 
 	@Override
-	public BorderLayoutPanelBuilder westComponent(Supplier<? extends JComponent> westComponent) {
-		return westComponent(requireNonNull(westComponent).get());
+	public BorderLayoutPanelBuilder west(Supplier<? extends JComponent> westComponent) {
+		return west(requireNonNull(westComponent).get());
 	}
 
 	@Override

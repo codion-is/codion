@@ -676,22 +676,22 @@ public final class EntitySearchField extends HintTextField {
 
 			return borderLayoutPanel()
 							.border(createTitledBorder(MESSAGES.getString("search_columns")))
-							.northComponent(comboBox()
+							.north(comboBox()
 											.model(columnComboBoxModel))
-							.centerComponent(columnBasePanel)
+							.center(columnBasePanel)
 							.build();
 		}
 
 		private static JPanel createSouthPanel(EntitySearchModel searchModel) {
 			return borderLayoutPanel()
-							.eastComponent(createLimitPanel(searchModel))
+							.east(createLimitPanel(searchModel))
 							.build();
 		}
 
 		private static JPanel createLimitPanel(EntitySearchModel searchModel) {
 			return borderLayoutPanel()
-							.westComponent(new JLabel(MESSAGES.getString("result_limit")))
-							.centerComponent(integerField()
+							.west(new JLabel(MESSAGES.getString("result_limit")))
+							.center(integerField()
 											.link(searchModel.limit())
 											.columns(4))
 							.build();
@@ -789,9 +789,9 @@ public final class EntitySearchField extends HintTextField {
 			this.list = createList(searchField);
 			this.stringFactory = searchField.stringFactory;
 			this.selectorPanel = borderLayoutPanel()
-							.centerComponent(scrollPane()
+							.center(scrollPane()
 											.view(list))
-							.southComponent(resultLimitLabel)
+							.south(resultLimitLabel)
 							.border(createEmptyBorder(Layouts.GAP.getOrThrow(), Layouts.GAP.getOrThrow(), 0, Layouts.GAP.getOrThrow()))
 							.build();
 		}
@@ -893,11 +893,11 @@ public final class EntitySearchField extends HintTextField {
 			this.searchField = requireNonNull(searchField);
 			table = createTable();
 			selectorPanel = borderLayoutPanel()
-							.centerComponent(scrollPane()
+							.center(scrollPane()
 											.view(table))
-							.southComponent(borderLayoutPanel()
-											.westComponent(table.searchField())
-											.centerComponent(resultLimitLabel))
+							.south(borderLayoutPanel()
+											.west(table.searchField())
+											.center(resultLimitLabel))
 							.border(createEmptyBorder(Layouts.GAP.getOrThrow(), Layouts.GAP.getOrThrow(), 0, Layouts.GAP.getOrThrow()))
 							.build();
 		}

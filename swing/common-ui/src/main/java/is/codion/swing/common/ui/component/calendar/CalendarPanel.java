@@ -661,10 +661,10 @@ public final class CalendarPanel extends JPanel {
 
 	private JPanel createNorthPanel() {
 		return borderLayoutPanel()
-						.northComponent(borderLayoutPanel()
-										.centerComponent(formattedDateLabel)
+						.north(borderLayoutPanel()
+										.center(formattedDateLabel)
 										.border(createTitledBorder("")))
-						.centerComponent(flowLayoutPanel(FlowLayout.CENTER)
+						.center(flowLayoutPanel(FlowLayout.CENTER)
 										.add(createYearMonthHourMinutePanel())
 										.border(createTitledBorder("")))
 						.build();
@@ -700,8 +700,8 @@ public final class CalendarPanel extends JPanel {
 
 	private JPanel createDayPanel() {
 		JPanel dayPanel = borderLayoutPanel()
-						.northComponent(createDayHeaderPanel())
-						.centerComponent(dayGridPanel)
+						.north(createDayHeaderPanel())
+						.center(dayGridPanel)
 						.border(createTitledBorder(""))
 						.build();
 		if (!includeWeekNumbers) {
@@ -711,18 +711,18 @@ public final class CalendarPanel extends JPanel {
 		weekNumberPanel = createWeekNumberPanel();
 
 		JPanel weekPanel = borderLayoutPanel()
-						.northComponent(gridLayoutPanel(1, 1)
+						.north(gridLayoutPanel(1, 1)
 										.add(label(MESSAGES.getString("week"))
 														.horizontalAlignment(SwingConstants.CENTER)
 														.border(emptyBorder())
 														.enabled(enabledState)))
-						.centerComponent(weekNumberPanel)
+						.center(weekNumberPanel)
 						.border(createTitledBorder(""))
 						.build();
 
 		return borderLayoutPanel()
-						.westComponent(weekPanel)
-						.centerComponent(dayPanel)
+						.west(weekPanel)
+						.center(dayPanel)
 						.build();
 	}
 

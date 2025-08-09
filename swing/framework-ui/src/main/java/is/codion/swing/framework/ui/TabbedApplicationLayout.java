@@ -83,7 +83,7 @@ public class TabbedApplicationLayout implements EntityApplicationPanel.Applicati
 		//tab pane added to a base panel for correct Look&Feel rendering
 		return borderLayoutPanel()
 						.layout(new BorderLayout())
-						.centerComponent(tabbedPane)
+						.center(tabbedPane)
 						.border(createEmptyBorder(0, Layouts.GAP.getOrThrow(), 0, Layouts.GAP.getOrThrow()))
 						.build();
 	}

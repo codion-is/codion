@@ -62,15 +62,15 @@ final class RandomPlaylistParametersPanel extends JPanel {
 		noOfTracksField = createNoOfTracksField();
 		genreList = createGenreList(connectionProvider);
 		add(borderLayoutPanel()
-						.northComponent(gridLayoutPanel(1, 2)
+						.north(gridLayoutPanel(1, 2)
 										.add(new JLabel(BUNDLE.getString("playlist_name")))
 										.add(new JLabel(BUNDLE.getString("no_of_tracks"))))
-						.centerComponent(gridLayoutPanel(1, 2)
+						.center(gridLayoutPanel(1, 2)
 										.add(playlistNameField)
 										.add(noOfTracksField))
-						.southComponent(borderLayoutPanel()
-										.northComponent(new JLabel(BUNDLE.getString("genres")))
-										.centerComponent(new JScrollPane(genreList)))
+						.south(borderLayoutPanel()
+										.north(new JLabel(BUNDLE.getString("genres")))
+										.center(new JScrollPane(genreList)))
 						.build(), BorderLayout.CENTER);
 	}
 

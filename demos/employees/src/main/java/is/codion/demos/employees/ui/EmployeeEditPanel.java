@@ -79,8 +79,8 @@ public class EmployeeEditPanel extends EntityEditPanel {
 		component(Employee.DEPARTMENT_FK).set(departmentNumberField);
 
 		return Components.borderLayoutPanel()
-						.westComponent(departmentNumberField)
-						.centerComponent(departmentBox)
+						.west(departmentNumberField)
+						.center(departmentBox)
 						.build();
 	}
 }

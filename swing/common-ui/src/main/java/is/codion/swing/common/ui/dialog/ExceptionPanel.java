@@ -143,23 +143,23 @@ final class ExceptionPanel extends JPanel {
 	private JPanel createMainPanel() {
 		return BorderLayoutPanelBuilder.builder()
 						.border(emptyBorder())
-						.northComponent(BorderLayoutPanelBuilder.builder()
-										.westComponent(LabelBuilder.builder()
+						.north(BorderLayoutPanelBuilder.builder()
+										.west(LabelBuilder.builder()
 														.icon(UIManager.getIcon("OptionPane.errorIcon")))
-										.centerComponent(ScrollPaneBuilder.builder()
+										.center(ScrollPaneBuilder.builder()
 														.view(errorMessageArea)
 														.preferredWidth(MESSAGE_AREA_WIDTH)))
-						.centerComponent(stackTraceScrollPane)
-						.southComponent(createButtonPanel())
+						.center(stackTraceScrollPane)
+						.south(createButtonPanel())
 						.build();
 	}
 
 	private JPanel createButtonPanel() {
 		return BorderLayoutPanelBuilder.builder()
-						.westComponent(PanelBuilder.builder()
+						.west(PanelBuilder.builder()
 										.layout(flowLayout(FlowLayout.LEFT))
 										.add(detailsCheckBox))
-						.centerComponent(PanelBuilder.builder()
+						.center(PanelBuilder.builder()
 										.layout(flowLayout(FlowLayout.RIGHT))
 										.addAll(copyButton, printButton, saveButton, closeButton))
 						.build();

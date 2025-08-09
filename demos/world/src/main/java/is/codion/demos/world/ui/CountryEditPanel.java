@@ -125,9 +125,9 @@ final class CountryEditPanel extends EntityEditPanel {
 		addInputPanel(Country.GOVERNMENTFORM);
 		addInputPanel(Country.HEADOFSTATE);
 		add(borderLayoutPanel()
-						.northComponent(label("Avg. city population")
+						.north(label("Avg. city population")
 										.horizontalAlignment(SwingConstants.CENTER))
-						.centerComponent(averageCityPopulationField));
+						.center(averageCityPopulationField));
 	}
 
 	private EntityEditPanel createCapitalEditPanel() {

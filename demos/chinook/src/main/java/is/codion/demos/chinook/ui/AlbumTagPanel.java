@@ -93,12 +93,12 @@ final class AlbumTagPanel extends JPanel {
 
 	private JPanel createCenterPanel() {
 		return borderLayoutPanel()
-						.centerComponent(scrollPane()
+						.center(scrollPane()
 										.view(tagsValue.component())
 										.preferredWidth(120))
-						.southComponent(borderLayoutPanel()
-										.westComponent(createButtonPanel(moveSelectionDownControl, moveSelectionUpControl))
-										.eastComponent(createButtonPanel(addTagControl, removeTagControl)))
+						.south(borderLayoutPanel()
+										.west(createButtonPanel(moveSelectionDownControl, moveSelectionUpControl))
+										.east(createButtonPanel(addTagControl, removeTagControl)))
 						.build();
 	}
 

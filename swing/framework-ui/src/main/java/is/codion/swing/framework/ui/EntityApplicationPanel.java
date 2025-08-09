@@ -742,8 +742,8 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 		JLabel memoryLabel = new JLabel(MEMORY_USAGE_FORMAT.format((RUNTIME.totalMemory() - RUNTIME.freeMemory()) / 1024) + " KB");
 		versionMemoryPanel.add(DISPLAY_SYSTEM_PROPERTIES.getOrThrow() ? borderLayoutPanel()
-						.centerComponent(memoryLabel)
-						.eastComponent(toolBar()
+						.center(memoryLabel)
+						.east(toolBar()
 										.action(createDisplaySystemPropertiesControl())
 										.floatable(false)
 										.includeButtonText(true)
@@ -752,8 +752,8 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 		return borderLayoutPanel()
 						.border(emptyBorder())
-						.westComponent(new JLabel(FrameworkIcons.instance().logo(DEFAULT_LOGO_SIZE)))
-						.centerComponent(versionMemoryPanel)
+						.west(new JLabel(FrameworkIcons.instance().logo(DEFAULT_LOGO_SIZE)))
+						.center(versionMemoryPanel)
 						.build();
 	}
 
@@ -967,7 +967,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	private static JPanel createEmptyBorderBasePanel(EntityPanel entityPanel) {
 		int gap = Layouts.GAP.getOrThrow();
 		return Components.borderLayoutPanel()
-						.centerComponent(entityPanel)
+						.center(entityPanel)
 						.border(createEmptyBorder(gap, gap, 0, gap))
 						.build();
 	}

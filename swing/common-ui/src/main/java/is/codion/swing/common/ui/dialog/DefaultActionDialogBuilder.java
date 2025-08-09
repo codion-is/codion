@@ -194,8 +194,8 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
 
 		return BorderLayoutPanelBuilder.builder()
 						.layout(new BorderLayout())
-						.centerComponent(component)
-						.southComponent(buttonBasePanel)
+						.center(component)
+						.south(buttonBasePanel)
 						.build();
 	}
 

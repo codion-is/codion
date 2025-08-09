@@ -177,9 +177,9 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 
 		private void initializeUI() {
 			add(borderLayoutPanel()
-							.westComponent(borderLayoutPanel()
-											.westComponent(customerConditionPanel)
-											.centerComponent(dateConditionPanel))
+							.west(borderLayoutPanel()
+											.west(customerConditionPanel)
+											.center(dateConditionPanel))
 							.build(), BorderLayout.CENTER);
 		}
 
@@ -276,11 +276,11 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 				setLayout(new BorderLayout());
 				add(flexibleGridLayoutPanel(1, 2)
 								.add(borderLayoutPanel()
-												.centerComponent(yearValue.component())
+												.center(yearValue.component())
 												.border(createTitledBorder(createEmptyBorder(),
 																BUNDLE.getString("year"), CENTER, DEFAULT_POSITION)))
 								.add(borderLayoutPanel()
-												.centerComponent(monthValue.component())
+												.center(monthValue.component())
 												.border(createTitledBorder(createEmptyBorder(),
 																BUNDLE.getString("month"))))
 								.build(), BorderLayout.CENTER);

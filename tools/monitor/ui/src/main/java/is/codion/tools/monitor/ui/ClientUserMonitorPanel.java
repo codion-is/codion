@@ -110,8 +110,8 @@ public final class ClientUserMonitorPanel extends JPanel {
 						.build();
 
 		return borderLayoutPanel()
-						.northComponent(actionBase)
-						.centerComponent(clientTypeMonitorPanel)
+						.north(actionBase)
+						.center(clientTypeMonitorPanel)
 						.build();
 	}
 
@@ -126,8 +126,8 @@ public final class ClientUserMonitorPanel extends JPanel {
 						.build();
 
 		JPanel configBase = borderLayoutPanel()
-						.centerComponent(configPanel)
-						.eastComponent(button()
+						.center(configPanel)
+						.east(button()
 										.control(command(model::resetHistory))
 										.text("Reset"))
 						.build();
@@ -146,8 +146,8 @@ public final class ClientUserMonitorPanel extends JPanel {
 						.build();
 
 		return borderLayoutPanel()
-						.centerComponent(new JScrollPane(userHistoryTable))
-						.southComponent(configBase)
+						.center(new JScrollPane(userHistoryTable))
+						.south(configBase)
 						.build();
 	}
 

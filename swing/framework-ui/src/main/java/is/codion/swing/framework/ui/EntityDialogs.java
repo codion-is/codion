@@ -538,7 +538,7 @@ public final class EntityDialogs {
 			configureTable(tablePanel.table(), okControl, singleSelection);
 			ActionDialogBuilder<?> builder = Dialogs.action()
 							.component(borderLayoutPanel()
-											.centerComponent(tablePanel)
+											.center(tablePanel)
 											.border(emptyBorder()))
 							.owner(owner)
 							.location(location)
@@ -645,7 +645,7 @@ public final class EntityDialogs {
 			Runnable disposeDialog = new DisposeDialog(editPanel);
 			Dialogs.action()
 							.component(borderLayoutPanel()
-											.centerComponent(editPanel.initialize())
+											.center(editPanel.initialize())
 											.border(emptyBorder()))
 							.owner(owner)
 							.location(location)
@@ -752,7 +752,7 @@ public final class EntityDialogs {
 			initializeEditModel(editModel);
 			Dialogs.action()
 							.component(borderLayoutPanel()
-											.centerComponent(editPanel.initialize())
+											.center(editPanel.initialize())
 											.border(emptyBorder()))
 							.owner(owner)
 							.location(location)

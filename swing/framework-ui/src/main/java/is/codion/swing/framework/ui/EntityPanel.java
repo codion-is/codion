@@ -937,7 +937,7 @@ public class EntityPanel extends JPanel {
 	private void displayEditFrame(JPanel editControlPanel) {
 		editWindow = Frames.builder()
 						.component(borderLayoutPanel()
-										.centerComponent(editControlPanel)
+										.center(editControlPanel)
 										.border(Borders.emptyBorder())
 										.build())
 						.locationRelativeTo(tablePanel == null ? this : tablePanel)
@@ -951,7 +951,7 @@ public class EntityPanel extends JPanel {
 	private void displayEditDialog(JPanel editControlPanel) {
 		editWindow = Dialogs.builder()
 						.component(borderLayoutPanel()
-										.centerComponent(editControlPanel)
+										.center(editControlPanel)
 										.border(Borders.emptyBorder()))
 						.owner(this)
 						.locationRelativeTo(tablePanel == null ? this : tablePanel)
@@ -1611,7 +1611,7 @@ public class EntityPanel extends JPanel {
 				}
 
 				return borderLayoutPanel()
-								.northComponent(buttonPanel()
+								.north(buttonPanel()
 												.controls(controls)
 												.orientation(VERTICAL)
 												.button(button -> button.horizontalAlignment(SwingConstants.LEADING)))

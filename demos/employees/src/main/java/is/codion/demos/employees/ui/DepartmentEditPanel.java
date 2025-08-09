@@ -54,10 +54,10 @@ public class DepartmentEditPanel extends EntityEditPanel {
 
 		setLayout(borderLayout());
 		add(borderLayoutPanel()
-						.northComponent(borderLayoutPanel()
-										.westComponent(createInputPanel(Department.DEPARTMENT_NO))
-										.centerComponent(createInputPanel(Department.NAME)))
-						.centerComponent(createInputPanel(Department.LOCATION))
+						.north(borderLayoutPanel()
+										.west(createInputPanel(Department.DEPARTMENT_NO))
+										.center(createInputPanel(Department.NAME)))
+						.center(createInputPanel(Department.LOCATION))
 						.build(), BorderLayout.CENTER);
 	}
 }

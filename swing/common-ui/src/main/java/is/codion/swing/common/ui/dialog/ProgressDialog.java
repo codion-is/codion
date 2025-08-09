@@ -94,18 +94,18 @@ public final class ProgressDialog extends JDialog {
 			basePanelBuilder.border(builder.border);
 		}
 		if (builder.northPanel != null) {
-			basePanelBuilder.northComponent(builder.northPanel);
+			basePanelBuilder.north(builder.northPanel);
 		}
 		if (builder.westPanel != null) {
-			basePanelBuilder.westComponent(builder.westPanel);
+			basePanelBuilder.west(builder.westPanel);
 		}
 		if (builder.eastPanel != null) {
-			basePanelBuilder.eastComponent(builder.eastPanel);
+			basePanelBuilder.east(builder.eastPanel);
 		}
-		basePanelBuilder.centerComponent(progressBar);
+		basePanelBuilder.center(progressBar);
 		Controls controls = builder.controls.build();
 		if (controls.size() > 0) {
-			basePanelBuilder.southComponent(PanelBuilder.builder()
+			basePanelBuilder.south(PanelBuilder.builder()
 							.layout(flowLayout(FlowLayout.TRAILING))
 							.add(ButtonPanelBuilder.builder()
 											.controls(controls)));

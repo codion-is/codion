@@ -645,7 +645,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 		private static JPanel createEmptyBorderBasePanel(JComponent component) {
 			int gap = Layouts.GAP.getOrThrow();
 			return Components.borderLayoutPanel()
-							.centerComponent(component)
+							.center(component)
 							.border(createEmptyBorder(gap, gap, 0, gap))
 							.build();
 		}

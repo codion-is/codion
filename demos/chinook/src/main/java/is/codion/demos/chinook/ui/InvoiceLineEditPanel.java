@@ -69,11 +69,11 @@ public final class InvoiceLineEditPanel extends EntityEditPanel {
 						.add(createInputPanel(InvoiceLine.TRACK_FK))
 						.add(createInputPanel(InvoiceLine.QUANTITY))
 						.add(borderLayoutPanel()
-										.northComponent(new JLabel(" "))
-										.centerComponent(updateToolBar))
+										.north(new JLabel(" "))
+										.center(updateToolBar))
 						.add(borderLayoutPanel()
-										.northComponent(new JLabel(" "))
-										.centerComponent(tableSearchField))
+										.north(new JLabel(" "))
+										.center(tableSearchField))
 						.build();
 
 		setLayout(borderLayout());

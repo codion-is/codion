@@ -201,18 +201,18 @@ public final class LoadTestPanel<T> extends JPanel {
 
 	private JPanel createAddRemoveApplicationPanel() {
 		return borderLayoutPanel()
-						.westComponent(button()
+						.west(button()
 										.control(Control.builder()
 														.command(loadTest::removeApplicationBatch)
 														.caption("-")
 														.description("Remove application batch")))
-						.centerComponent(integerField()
+						.center(integerField()
 										.editable(false)
 										.focusable(false)
 										.horizontalAlignment(SwingConstants.CENTER)
 										.columns(5)
 										.link(loadTest.applicationCount()))
-						.eastComponent(button()
+						.east(button()
 										.control(Control.builder()
 														.command(loadTest::addApplicationBatch)
 														.caption("+")
@@ -222,14 +222,14 @@ public final class LoadTestPanel<T> extends JPanel {
 
 	private JPanel createCenterPanel() {
 		return borderLayoutPanel()
-						.centerComponent(tabbedPane()
+						.center(tabbedPane()
 										.tab("Applications", createApplicationsPanel())
 										.tab("Scenarios", borderLayoutPanel()
-														.westComponent(createScenarioPanel())
-														.centerComponent(scenarioBase)
+														.west(createScenarioPanel())
+														.center(scenarioBase)
 														.build())
 										.tab("Overview", borderLayoutPanel()
-														.centerComponent(splitPane()
+														.center(splitPane()
 																		.orientation(JSplitPane.VERTICAL_SPLIT)
 																		.oneTouchExpandable(true)
 																		.topComponent(createScenarioOverviewChartPanel())
@@ -242,8 +242,8 @@ public final class LoadTestPanel<T> extends JPanel {
 
 	private JPanel createApplicationsPanel() {
 		return borderLayoutPanel()
-						.northComponent(borderLayoutPanel()
-										.centerComponent(flowLayoutPanel(FlowLayout.LEADING)
+						.north(borderLayoutPanel()
+										.center(flowLayoutPanel(FlowLayout.LEADING)
 														.add(new JLabel("Batch size"))
 														.add(integerSpinner()
 																		.link(loadTest.applicationBatchSize())
@@ -266,10 +266,10 @@ public final class LoadTestPanel<T> extends JPanel {
 																		.link(loadTest.paused())
 																		.text("Pause")
 																		.mnemonic('P')))
-										.eastComponent(checkBox()
+										.east(checkBox()
 														.link(loadTestModel.autoRefreshApplications())
 														.text("Automatic refresh")))
-						.centerComponent(scrollPane()
+						.center(scrollPane()
 										.view(createApplicationsTable()))
 						.build();
 	}
@@ -467,7 +467,7 @@ public final class LoadTestPanel<T> extends JPanel {
 
 	private JPanel createScenarioPanel(Scenario<T> item) {
 		return borderLayoutPanel()
-						.centerComponent(tabbedPane()
+						.center(tabbedPane()
 										.tab("Duration", createScenarioDurationChartPanel(item))
 										.tab("Exceptions", createScenarioExceptionsPanel(item)))
 						.build();
@@ -505,10 +505,10 @@ public final class LoadTestPanel<T> extends JPanel {
 						.build();
 
 		return borderLayoutPanel()
-						.northComponent(flowLayoutPanel(FlowLayout.LEADING)
+						.north(flowLayoutPanel(FlowLayout.LEADING)
 										.add(refreshButton)
 										.add(clearButton))
-						.centerComponent(scrollPane()
+						.center(scrollPane()
 										.view(exceptionsArea))
 						.build();
 	}

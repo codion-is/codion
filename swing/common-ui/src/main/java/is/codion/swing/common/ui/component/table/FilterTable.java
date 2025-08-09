@@ -523,7 +523,7 @@ public final class FilterTable<R, C> extends JTable {
 						.buildValue();
 		Dialogs.okCancel()
 						.component(borderLayoutPanel()
-										.centerComponent(componentValue.component())
+										.center(componentValue.component())
 										.border(Borders.emptyBorder()))
 						.owner(getParent())
 						.title(MESSAGES.getString(AUTO_RESIZE))

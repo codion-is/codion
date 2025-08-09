@@ -143,9 +143,9 @@ public final class DomainGeneratorPanel extends JPanel {
 
 	private void initializeUI() {
 		JPanel schemaSourceDirPanel = borderLayoutPanel()
-						.northComponent(createSourceDirectoryPanel())
-						.centerComponent(borderLayoutPanel()
-										.centerComponent(splitPane()
+						.north(createSourceDirectoryPanel())
+						.center(borderLayoutPanel()
+										.center(splitPane()
 														.orientation(JSplitPane.VERTICAL_SPLIT)
 														.resizeWeight(RESIZE_WEIGHT)
 														.topComponent(createScrollablePanel(schemaTable, "Schemas (Alt-1)"))
@@ -153,8 +153,8 @@ public final class DomainGeneratorPanel extends JPanel {
 						.build();
 
 		JPanel sourcePackagePanel = borderLayoutPanel()
-						.northComponent(createPackageSavePanel())
-						.centerComponent(sourceTabbedPane)
+						.north(createPackageSavePanel())
+						.center(sourceTabbedPane)
 						.build();
 
 		JSplitPane splitPane = splitPane()
@@ -208,11 +208,11 @@ public final class DomainGeneratorPanel extends JPanel {
 						.orientation(JSplitPane.VERTICAL_SPLIT)
 						.resizeWeight(0.5)
 						.topComponent(borderLayoutPanel()
-										.centerComponent(createScrollablePanel(apiTextArea, "API (Alt-3)"))
-										.southComponent(createSearchCopyPanel(apiTextArea)))
+										.center(createScrollablePanel(apiTextArea, "API (Alt-3)"))
+										.south(createSearchCopyPanel(apiTextArea)))
 						.bottomComponent(borderLayoutPanel()
-										.centerComponent(createScrollablePanel(implementationTextArea, "Implementation (Alt-4)"))
-										.southComponent(createSearchCopyPanel(implementationTextArea)))
+										.center(createScrollablePanel(implementationTextArea, "Implementation (Alt-4)"))
+										.south(createSearchCopyPanel(implementationTextArea)))
 						.continuousLayout(true)
 						.oneTouchExpandable(true)
 						.build();
@@ -220,14 +220,14 @@ public final class DomainGeneratorPanel extends JPanel {
 
 	private JPanel createCombinedPanel() {
 		return borderLayoutPanel()
-						.centerComponent(createScrollablePanel(combinedTextArea, "Combined (Alt-5)"))
-						.southComponent(createSearchCopyPanel(combinedTextArea))
+						.center(createScrollablePanel(combinedTextArea, "Combined (Alt-5)"))
+						.south(createSearchCopyPanel(combinedTextArea))
 						.build();
 	}
 
 	private static JPanel createSearchCopyPanel(JTextArea textArea) {
 		return borderLayoutPanel()
-						.eastComponent(button()
+						.east(button()
 										.control(createCopyControl(textArea)))
 						.build();
 	}
@@ -273,14 +273,14 @@ public final class DomainGeneratorPanel extends JPanel {
 						.build();
 
 		return borderLayoutPanel()
-						.centerComponent(borderLayoutPanel()
-										.westComponent(gridLayoutPanel(2, 1)
+						.center(borderLayoutPanel()
+										.west(gridLayoutPanel(2, 1)
 														.add(new JLabel(" "))
 														.add(createDtoCheckBox()))
-										.centerComponent(gridLayoutPanel(2, 1)
+										.center(gridLayoutPanel(2, 1)
 														.add(packageLabel)
 														.add(createPackageField(packageLabel))))
-						.eastComponent(gridLayoutPanel(2, 1)
+						.east(gridLayoutPanel(2, 1)
 										.add(label(" "))
 										.add(button()
 														.control(Control.builder()
@@ -301,10 +301,10 @@ public final class DomainGeneratorPanel extends JPanel {
 						.build();
 
 		return borderLayoutPanel()
-						.centerComponent(gridLayoutPanel(2, 1)
+						.center(gridLayoutPanel(2, 1)
 										.add(sourceDirectoryLabel)
 										.add(createSourceDirectoryField(sourceDirectoryLabel, selectSourceDirectoryControl)))
-						.eastComponent(gridLayoutPanel(2, 1)
+						.east(gridLayoutPanel(2, 1)
 										.add(label(" "))
 										.add(button()
 														.control(selectSourceDirectoryControl)))
@@ -379,7 +379,7 @@ public final class DomainGeneratorPanel extends JPanel {
 
 	private static JPanel createScrollablePanel(JComponent component, String title) {
 		return borderLayoutPanel()
-						.centerComponent(scrollPane()
+						.center(scrollPane()
 										.view(component))
 						.border(createCompoundBorder(createTitledBorder(title), createEmptyBorder()))
 						.build();
@@ -393,7 +393,7 @@ public final class DomainGeneratorPanel extends JPanel {
 	public void showFrame() {
 		Frames.builder()
 						.component(borderLayoutPanel()
-										.centerComponent(this)
+										.center(this)
 										.border(createEmptyBorder())
 										.build())
 						.title("Codion Domain Generator")
@@ -409,7 +409,7 @@ public final class DomainGeneratorPanel extends JPanel {
 	private void populateSchema() {
 		JLabel schemaLabel = new JLabel("Testing", SwingConstants.CENTER);
 		JPanel northPanel = borderLayoutPanel()
-						.centerComponent(schemaLabel)
+						.center(schemaLabel)
 						.build();
 		Consumer<String> schemaNotifier = schema -> SwingUtilities.invokeLater(() -> schemaLabel.setText(schema));
 		Dialogs.progressWorker()

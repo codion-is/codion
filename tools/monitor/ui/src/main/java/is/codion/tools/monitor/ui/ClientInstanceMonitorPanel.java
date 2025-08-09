@@ -115,13 +115,13 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 
 		JPanel northPanel = borderLayoutPanel()
 						.border(createTitledBorder("Connection info"))
-						.centerComponent(creationDatePanel)
-						.eastComponent(settingsPanel)
+						.center(creationDatePanel)
+						.east(settingsPanel)
 						.build();
 
 		JPanel textLogPanel = borderLayoutPanel()
-						.centerComponent(new JScrollPane(logTextArea))
-						.southComponent(searchField)
+						.center(new JScrollPane(logTextArea))
+						.south(searchField)
 						.build();
 
 		JTabbedPane centerPane = tabbedPane()

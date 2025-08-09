@@ -110,9 +110,9 @@ final class CoverArtPanel extends JPanel {
 	private JPanel createCenterPanel() {
 		return borderLayoutPanel()
 						.preferredSize(EMBEDDED_SIZE)
-						.centerComponent(imagePanel)
-						.southComponent(borderLayoutPanel()
-										.eastComponent(panel()
+						.center(imagePanel)
+						.south(borderLayoutPanel()
+										.east(panel()
 														.layout(new GridLayout(1, 2, 0, 0))
 														.addAll(addButton, removeButton)))
 						.build();

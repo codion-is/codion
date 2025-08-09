@@ -93,12 +93,12 @@ public final class ClientMonitorPanel extends JPanel {
 
 	private void initializeUI() {
 		JPanel clientInstanceBase = borderLayoutPanel()
-						.northComponent(filterScrollPane)
-						.centerComponent(clientInstanceScroller)
-						.southComponent(borderLayoutPanel()
-										.southComponent(borderLayoutPanel()
-														.centerComponent(clientInstanceTable.searchField())
-														.eastComponent(flexibleGridLayoutPanel(1, 2)
+						.north(filterScrollPane)
+						.center(clientInstanceScroller)
+						.south(borderLayoutPanel()
+										.south(borderLayoutPanel()
+														.center(clientInstanceTable.searchField())
+														.east(flexibleGridLayoutPanel(1, 2)
 																		.add(checkBox()
 																						.link(advancedFilterState)
 																						.text("Advanced filters"))

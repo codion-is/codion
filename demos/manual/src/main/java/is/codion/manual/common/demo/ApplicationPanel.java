@@ -260,8 +260,8 @@ public final class ApplicationPanel extends JPanel {
 						.enabled(inputEnabledState)
 						.build();
 		borderLayoutPanel()
-						.westComponent(integerItemSelectorField)
-						.centerComponent(integerItemComboBox)
+						.west(integerItemSelectorField)
+						.center(integerItemComboBox)
 						.build(inputPanel::add);
 
 		slider()
