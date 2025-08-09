@@ -24,6 +24,7 @@ Codion Change Log
 - DefaultBorderLayoutPanelBuilder.add() bug fixed, BorderLayout.CENTER was missing.
 - DefaultBorderLayoutPanelBuilder and DefaultPanelBuilder refactored.
 - ComponentValueBuilder split from ComponentBuilder, for components that don't have an associated value, such as panels.
+- InputPanelLayout and InputPanelBorderLayoutBuilder added.
 ### is.codion.framework.model
 - EntityApplicationModel.refresh() removed.
 ### is.codion.swing.framework.ui
@@ -33,6 +34,7 @@ Codion Change Log
 - EntityEditComponentPanel.InputPanelBuilder.label() and component() overloaded with Supplier parameter.
 - EntityEditComponentPanel.InputPanelBuilder now extends ComponentBuilder.
 - EntityEditComponentPanel.InputPanelBuilder.label() overloads with constraints removed.
+- EntityEditComponentPanel.InputPanelBuilder moved to package is.codion.swing.common.ui.component.panel.
 
 ## 0.18.43
 ### is.codion.common.core

@@ -19,6 +19,7 @@
 package is.codion.demos.chinook.ui;
 
 import is.codion.demos.chinook.domain.api.Chinook.Playlist;
+import is.codion.swing.common.ui.component.panel.InputPanelLayout;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -46,7 +47,9 @@ final class PlaylistEditPanel extends EntityEditPanel {
 
 		setLayout(borderLayout());
 		add(createInputPanel(Playlist.NAME)
-						.labelConstraints(BorderLayout.WEST)
+						.layout(InputPanelLayout.border()
+										.labelConstraints(BorderLayout.WEST)
+										.build())
 						.border(new EmptyBorder(Layouts.GAP.get(), Layouts.GAP.get(), 0, Layouts.GAP.get())), BorderLayout.CENTER);
 	}
 }

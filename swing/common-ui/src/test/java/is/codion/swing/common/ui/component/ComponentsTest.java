@@ -31,6 +31,7 @@ import is.codion.swing.common.ui.component.button.ToggleButtonType;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.component.list.ListBuilder;
+import is.codion.swing.common.ui.component.panel.InputPanelLayout;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
@@ -69,6 +70,7 @@ import javax.swing.JToggleButton;
 import javax.swing.SpinnerListModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
@@ -1078,5 +1080,15 @@ public final class ComponentsTest {
 						.controls(controls)
 						.toggleButtonType(ToggleButtonType.CHECKBOX)
 						.build();
+	}
+
+	@Test
+	void inputPanel() {
+		assertThrows(IllegalArgumentException.class, () -> InputPanelLayout.border()
+						.labelConstraints(BorderLayout.WEST)
+						.componentConstraints(BorderLayout.WEST));
+		assertThrows(IllegalArgumentException.class, () -> InputPanelLayout.border()
+						.componentConstraints(BorderLayout.WEST)
+						.labelConstraints(BorderLayout.WEST));
 	}
 }

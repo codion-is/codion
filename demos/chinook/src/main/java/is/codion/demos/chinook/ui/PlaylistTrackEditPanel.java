@@ -19,6 +19,7 @@
 package is.codion.demos.chinook.ui;
 
 import is.codion.demos.chinook.domain.api.Chinook.PlaylistTrack;
+import is.codion.swing.common.ui.component.panel.InputPanelLayout;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -26,7 +27,6 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.BorderLayout;
 
-import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 
 final class PlaylistTrackEditPanel extends EntityEditPanel {
@@ -40,15 +40,17 @@ final class PlaylistTrackEditPanel extends EntityEditPanel {
 	@Override
 	protected void initializeUI() {
 		focus().initial().set(PlaylistTrack.TRACK_FK);
+
 		createSearchField(PlaylistTrack.TRACK_FK)
 						.selectorFactory(new TrackSelectorFactory())
 						.transferFocusOnEnter(false)
 						.columns(25);
 
 		setLayout(borderLayout());
-		add(borderLayoutPanel()
-						.westComponent(label(PlaylistTrack.TRACK_FK))
-						.centerComponent(component(PlaylistTrack.TRACK_FK).get())
+		add(createInputPanel(PlaylistTrack.TRACK_FK)
+						.layout(InputPanelLayout.border()
+										.labelConstraints(BorderLayout.WEST)
+										.build())
 						.border(new EmptyBorder(Layouts.GAP.get(), Layouts.GAP.get(), 0, Layouts.GAP.get())), BorderLayout.CENTER);
 	}
 }

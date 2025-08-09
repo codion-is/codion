@@ -36,6 +36,7 @@ import is.codion.swing.common.ui.component.label.LabelBuilder;
 import is.codion.swing.common.ui.component.list.ListBuilder;
 import is.codion.swing.common.ui.component.listbox.ListBoxBuilder;
 import is.codion.swing.common.ui.component.panel.BorderLayoutPanelBuilder;
+import is.codion.swing.common.ui.component.panel.InputPanelBuilder;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.component.progressbar.ProgressBarBuilder;
 import is.codion.swing.common.ui.component.scrollpane.ScrollPaneBuilder;
@@ -388,6 +389,13 @@ public final class Components {
 	 */
 	public static PanelBuilder panel() {
 		return PanelBuilder.builder();
+	}
+
+	/**
+	 * @return a {@link InputPanelBuilder}
+	 */
+	public static InputPanelBuilder inputPanel() {
+		return InputPanelBuilder.builder();
 	}
 
 	/**
