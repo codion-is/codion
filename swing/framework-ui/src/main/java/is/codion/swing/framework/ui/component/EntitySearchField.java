@@ -36,8 +36,8 @@ import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.SwingMessages;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
-import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
+import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.component.list.ListBuilder;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
@@ -319,7 +319,7 @@ public final class EntitySearchField extends HintTextField {
 	/**
 	 * Builds an entity search field.
 	 */
-	public interface Builder<T, B extends Builder<T, B>> extends ComponentBuilder<T, EntitySearchField, B> {
+	public interface Builder<T, B extends Builder<T, B>> extends ComponentValueBuilder<T, EntitySearchField, B> {
 
 		/**
 		 * Provides a {@link EntitySearchField.Builder.Factory}
@@ -1172,7 +1172,7 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	private abstract static class AbstractBuilder<T, B extends Builder<T, B>>
-					extends AbstractComponentBuilder<T, EntitySearchField, B> implements Builder<T, B> {
+					extends AbstractComponentValueBuilder<T, EntitySearchField, B> implements Builder<T, B> {
 
 		private final EntitySearchModel searchModel;
 		private final ControlMap controlMap = controlMap(ControlKeys.class);

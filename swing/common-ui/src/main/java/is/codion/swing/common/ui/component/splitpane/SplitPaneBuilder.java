@@ -30,7 +30,7 @@ import java.util.function.Supplier;
 /**
  * A builder for JSplitPane.
  */
-public interface SplitPaneBuilder extends ComponentBuilder<Void, JSplitPane, SplitPaneBuilder> {
+public interface SplitPaneBuilder extends ComponentBuilder<JSplitPane, SplitPaneBuilder> {
 
 	/**
 	 * @param orientation the orientation

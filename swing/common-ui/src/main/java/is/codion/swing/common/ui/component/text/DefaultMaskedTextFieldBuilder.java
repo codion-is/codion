@@ -18,14 +18,14 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.JFormattedTextField;
 import java.text.ParseException;
 
 final class DefaultMaskedTextFieldBuilder
-				extends AbstractComponentBuilder<String, JFormattedTextField, MaskedTextFieldBuilder>
+				extends AbstractComponentValueBuilder<String, JFormattedTextField, MaskedTextFieldBuilder>
 				implements MaskedTextFieldBuilder {
 
 	private final MaskFormatterBuilder maskFormatterBuilder = MaskFormatterBuilder.builder();

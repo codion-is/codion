@@ -22,8 +22,8 @@ import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.ObservableState;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
-import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
+import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -161,7 +161,7 @@ public final class TextFieldPanel extends JPanel {
 	/**
 	 * A builder for {@link TextFieldPanel}.
 	 */
-	public interface Builder extends ComponentBuilder<String, TextFieldPanel, Builder> {
+	public interface Builder extends ComponentValueBuilder<String, TextFieldPanel, Builder> {
 
 		/**
 		 * @param updateOn specifies when the underlying value should be updated
@@ -300,7 +300,7 @@ public final class TextFieldPanel extends JPanel {
 						.show();
 	}
 
-	private static final class DefaultBuilder extends AbstractComponentBuilder<String, TextFieldPanel, Builder> implements Builder {
+	private static final class DefaultBuilder extends AbstractComponentValueBuilder<String, TextFieldPanel, Builder> implements Builder {
 
 		private static final Dimension DEFAULT_TEXT_AREA_SIZE = new Dimension(500, 300);
 

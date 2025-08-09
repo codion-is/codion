@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.slider;
 
 import is.codion.common.property.PropertyValue;
-import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.JSlider;
@@ -29,7 +29,7 @@ import static is.codion.common.Configuration.booleanValue;
 /**
  * A builder for JSpinner
  */
-public interface SliderBuilder extends ComponentBuilder<Integer, JSlider, SliderBuilder> {
+public interface SliderBuilder extends ComponentValueBuilder<Integer, JSlider, SliderBuilder> {
 
 	/**
 	 * Specifies whether mouse wheel scrolling in sliders is enabled by default.

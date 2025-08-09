@@ -19,8 +19,6 @@
 package is.codion.swing.common.ui.component.button;
 
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
-import is.codion.swing.common.ui.component.value.AbstractComponentValue;
-import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.Controls.ControlsBuilder;
@@ -42,7 +40,7 @@ import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, MenuBuilder> implements MenuBuilder {
+final class DefaultMenuBuilder extends AbstractComponentBuilder<JMenu, MenuBuilder> implements MenuBuilder {
 
 	static final ControlsStep CONTROLS = new DefaultControlsStep();
 
@@ -116,11 +114,6 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
 		new MenuControlHandler(menu, controls, actionMenuItem, controlMenuItem, toggleControlMenuItem);
 
 		return menu;
-	}
-
-	@Override
-	protected ComponentValue<Void, JMenu> createComponentValue(JMenu component) {
-		return new MenuComponentValue(component);
 	}
 
 	private static final class DefaultActionMenuItem implements Function<Action, JMenuItem> {
@@ -290,23 +283,6 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
 		@Override
 		void onAction(Action action) {
 			menu.add(actionMenuItem.apply(action));
-		}
-	}
-
-	private static final class MenuComponentValue extends AbstractComponentValue<Void, JMenu> {
-
-		private MenuComponentValue(JMenu component) {
-			super(component);
-		}
-
-		@Override
-		protected Void getComponentValue() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		protected void setComponentValue(Void value) {
-			throw new UnsupportedOperationException();
 		}
 	}
 }

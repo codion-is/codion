@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.button;
 
-import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.control.Control;
 
 import org.jspecify.annotations.Nullable;
@@ -41,7 +41,7 @@ import java.util.function.Consumer;
 import static java.util.Objects.requireNonNull;
 
 abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends ButtonBuilder<T, C, B>>
-				extends AbstractComponentBuilder<T, C, B> implements ButtonBuilder<T, C, B> {
+				extends AbstractComponentValueBuilder<T, C, B> implements ButtonBuilder<T, C, B> {
 
 	private static final String FONT = "Font";
 	private static final String BACKGROUND = "Background";

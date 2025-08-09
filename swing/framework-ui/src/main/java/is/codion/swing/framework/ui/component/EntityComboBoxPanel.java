@@ -20,8 +20,8 @@ package is.codion.swing.framework.ui.component;
 
 import is.codion.common.state.ObservableState;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
-import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
+import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -85,7 +85,7 @@ public final class EntityComboBoxPanel extends JPanel {
 	/**
 	 * A builder for a {@link EntityComboBoxPanel}
 	 */
-	public interface Builder extends ComponentBuilder<Entity, EntityComboBoxPanel, Builder> {
+	public interface Builder extends ComponentValueBuilder<Entity, EntityComboBoxPanel, Builder> {
 
 		/**
 		 * Provides a {@link EditPanelStep}
@@ -198,7 +198,7 @@ public final class EntityComboBoxPanel extends JPanel {
 		}
 	}
 
-	private static final class DefaultBuilder extends AbstractComponentBuilder<Entity, EntityComboBoxPanel, Builder> implements Builder {
+	private static final class DefaultBuilder extends AbstractComponentValueBuilder<Entity, EntityComboBoxPanel, Builder> implements Builder {
 
 		private static final ModelStep MODEL = new DefaultModelStep();
 

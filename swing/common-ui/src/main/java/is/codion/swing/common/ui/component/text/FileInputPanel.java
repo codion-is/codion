@@ -19,8 +19,8 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.swing.common.model.component.text.DocumentAdapter;
-import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
-import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
+import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -127,7 +127,7 @@ public final class FileInputPanel extends JPanel {
 	/**
 	 * Builds a {@link FileInputPanel}
 	 */
-	public interface Builder<T> extends ComponentBuilder<T, FileInputPanel, Builder<T>> {
+	public interface Builder<T> extends ComponentValueBuilder<T, FileInputPanel, Builder<T>> {
 
 		/**
 		 * @param buttonCaption the browse button caption
@@ -162,7 +162,7 @@ public final class FileInputPanel extends JPanel {
 		}
 	}
 
-	private abstract static class AbstractBuilder<T> extends AbstractComponentBuilder<T, FileInputPanel, Builder<T>> implements Builder<T> {
+	private abstract static class AbstractBuilder<T> extends AbstractComponentValueBuilder<T, FileInputPanel, Builder<T>> implements Builder<T> {
 
 		private final TextFieldBuilder<String, JTextField, ?> pathFieldBuilder = TextFieldBuilder.builder()
 						.valueClass(String.class)

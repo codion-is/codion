@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.list;
 
 import is.codion.swing.common.model.component.list.FilterListModel;
-import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 
 import org.jspecify.annotations.Nullable;
 
@@ -31,7 +31,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-abstract class AbstractListBuilder<T, V, B extends ListBuilder<T, V, B>> extends AbstractComponentBuilder<V, FilterList<T>, B> implements ListBuilder<T, V, B> {
+abstract class AbstractListBuilder<T, V, B extends ListBuilder<T, V, B>> extends AbstractComponentValueBuilder<V, FilterList<T>, B> implements ListBuilder<T, V, B> {
 
 	private final FilterListModel<T> listModel;
 	private final List<ListSelectionListener> listSelectionListeners = new ArrayList<>();

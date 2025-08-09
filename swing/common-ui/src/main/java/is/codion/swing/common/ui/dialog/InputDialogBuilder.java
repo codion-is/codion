@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.state.ObservableState;
-import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import org.jspecify.annotations.Nullable;
@@ -41,7 +41,7 @@ public interface InputDialogBuilder<T> extends DialogBuilder<InputDialogBuilder<
 		 * @param <T> the value type
 		 * @return a builder for an input dialog
 		 */
-		<T> InputDialogBuilder<T> component(ComponentBuilder<T, ?, ?> componentBuilder);
+		<T> InputDialogBuilder<T> component(ComponentValueBuilder<T, ?, ?> componentBuilder);
 
 		/**
 		 * @param componentValue the value which component to display

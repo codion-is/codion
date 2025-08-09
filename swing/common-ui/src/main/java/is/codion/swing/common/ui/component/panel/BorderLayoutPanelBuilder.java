@@ -29,7 +29,7 @@ import java.util.function.Supplier;
 /**
  * Builds a JPanel instance using a BorderLayout.
  */
-public interface BorderLayoutPanelBuilder extends ComponentBuilder<Void, JPanel, BorderLayoutPanelBuilder> {
+public interface BorderLayoutPanelBuilder extends ComponentBuilder<JPanel, BorderLayoutPanelBuilder> {
 
 	/**
 	 * @param layout the {@link BorderLayout} to use

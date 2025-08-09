@@ -30,7 +30,7 @@ import java.util.function.Supplier;
 /**
  * A builder for JScrollPane
  */
-public interface ScrollPaneBuilder extends ComponentBuilder<Void, JScrollPane, ScrollPaneBuilder> {
+public interface ScrollPaneBuilder extends ComponentBuilder<JScrollPane, ScrollPaneBuilder> {
 
 	/**
 	 * @param view the view component

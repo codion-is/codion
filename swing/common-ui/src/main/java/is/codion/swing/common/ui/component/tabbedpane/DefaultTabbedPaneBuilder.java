@@ -19,8 +19,6 @@
 package is.codion.swing.common.ui.component.tabbedpane;
 
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
-import is.codion.swing.common.ui.component.value.AbstractComponentValue;
-import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import org.jspecify.annotations.Nullable;
 
@@ -35,7 +33,7 @@ import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<Void, JTabbedPane, TabbedPaneBuilder> implements TabbedPaneBuilder {
+final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<JTabbedPane, TabbedPaneBuilder> implements TabbedPaneBuilder {
 
 	private int tabPlacement = SwingConstants.TOP;
 	private int tabLayoutPolicy = JTabbedPane.WRAP_TAB_LAYOUT;
@@ -92,11 +90,6 @@ final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<Void, JTab
 		changeListeners.forEach(new AddChangeListener(tabbedPane));
 
 		return tabbedPane;
-	}
-
-	@Override
-	protected ComponentValue<Void, JTabbedPane> createComponentValue(JTabbedPane component) {
-		return new TabbedPaneComponentValue(component);
 	}
 
 	private static final class DefaultTabBuilder implements TabBuilder {
@@ -159,23 +152,6 @@ final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<Void, JTab
 		@Override
 		public void accept(ChangeListener listener) {
 			tabbedPane.addChangeListener(listener);
-		}
-	}
-
-	private static final class TabbedPaneComponentValue extends AbstractComponentValue<Void, JTabbedPane> {
-
-		private TabbedPaneComponentValue(JTabbedPane component) {
-			super(component);
-		}
-
-		@Override
-		protected Void getComponentValue() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		protected void setComponentValue(Void value) {
-			throw new UnsupportedOperationException();
 		}
 	}
 }

@@ -20,13 +20,8 @@ package is.codion.swing.common.ui.component.builder;
 
 import is.codion.common.observer.Observable;
 import is.codion.common.state.ObservableState;
-import is.codion.common.value.Value;
-import is.codion.common.value.Value.Validator;
-import is.codion.swing.common.ui.component.indicator.ModifiedIndicatorFactory;
-import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
 import is.codion.swing.common.ui.component.label.LabelBuilder;
 import is.codion.swing.common.ui.component.scrollpane.ScrollPaneBuilder;
-import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.key.KeyEvents;
@@ -54,33 +49,16 @@ import java.awt.event.MouseWheelListener;
 import java.beans.PropertyChangeListener;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
- * Use {@link #build} to build a JComponent instance or {@link #buildValue()} to build a {@link ComponentValue} instance.<br>
- * The component is available via {@link ComponentValue#component()} and the associated {@link ComponentValue} instance
- * is available via the {@link #COMPONENT_VALUE} client property.
- * @param <T> the type of the value the component represents
+ * Builds a component.
  * @param <C> the component type
  * @param <B> the builder type
+ * @see #build()
+ * @see #build(Consumer)
  */
-public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBuilder<T, C, B>> extends Supplier<C> {
-
-	/**
-	 * The client property key for the associated {@link ComponentValue}
-	 * {@snippet :
-	 *   JTextField textField =
-	 *            Components.stringField()
-	 *                    .build();
-	 *
-	 *   ComponentValue<String, JTextField> componentValue =
-	 *            (ComponentValue<String, JTextField>)
-	 *                    textField.getClientProperty(COMPONENT_VALUE);
-	 *}
-	 * @see JComponent#getClientProperty(Object)
-	 */
-	String COMPONENT_VALUE = "componentValue";
+public interface ComponentBuilder<C extends JComponent, B extends ComponentBuilder<C, B>> extends Supplier<C> {
 
 	/**
 	 * @param name the name to assign to the component
@@ -233,49 +211,6 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	B enabled(@Nullable ObservableState enabled);
 
 	/**
-	 * @param validIndicatorFactory the {@link ValidIndicatorFactory} to use, null for none
-	 * @return this builder instance
-	 * @see ValidIndicatorFactory#instance()
-	 */
-	B validIndicatorFactory(@Nullable ValidIndicatorFactory validIndicatorFactory);
-
-	/**
-	 * Enables a valid indicator based on the given valid state.
-	 * @param valid the valid state
-	 * @return this builder instance
-	 * @see #validIndicatorFactory(ValidIndicatorFactory)
-	 * @see is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory
-	 */
-	B validIndicator(@Nullable ObservableState valid);
-
-	/**
-	 * <p>Enables a valid indicator based on the given validator. Note that this
-	 * is overridden by {@link #validIndicator(ObservableState)}.
-	 * <p>The validator gets called each time the value changes and
-	 * should return true as long as the value is valid.
-	 * @param validator called each time the component value changes
-	 * @return this builder instance
-	 * @see #validIndicatorFactory(ValidIndicatorFactory)
-	 * @see is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory
-	 */
-	B validIndicator(@Nullable Predicate<T> validator);
-
-	/**
-	 * By default {@link is.codion.swing.common.ui.component.indicator.UnderlineModifiedIndicatorFactory}.
-	 * @param modifiedIndicatorFactory the {@link ModifiedIndicatorFactory} to use, null for none
-	 * @return this builder instance
-	 */
-	B modifiedIndicatorFactory(@Nullable ModifiedIndicatorFactory modifiedIndicatorFactory);
-
-	/**
-	 * Enables a modified indicator based on the given modified state.
-	 * @param modified the modified state
-	 * @return this builder instance
-	 * @see #modifiedIndicatorFactory(ModifiedIndicatorFactory)
-	 */
-	B modifiedIndicator(@Nullable ObservableState modified);
-
-	/**
 	 * @param popupMenuControl a function, receiving the component being built, providing the control to base a popup menu on
 	 * @return this builder instance
 	 */
@@ -344,12 +279,6 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 * @see JComponent#setComponentOrientation(ComponentOrientation)
 	 */
 	B componentOrientation(@Nullable ComponentOrientation orientation);
-
-	/**
-	 * @param validator the validator to use
-	 * @return this builder instance
-	 */
-	B validator(Validator<T> validator);
 
 	/**
 	 * Enables the key event defined by the given {@link KeyEvents.Builder} on the component.
@@ -447,41 +376,6 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	B onSetVisible(Consumer<C> onSetVisible);
 
 	/**
-	 * Creates a bidirectional link to the given value. Overrides any initial value set.
-	 * @param linkedValue a value to link to the component value
-	 * @return this builder instance
-	 */
-	B link(Value<T> linkedValue);
-
-	/**
-	 * Creates a read-only link to the given {@link Observable}.
-	 * @param linkedValue a value to link to the component value
-	 * @return this builder instance
-	 */
-	B link(Observable<T> linkedValue);
-
-	/**
-	 * @param listener a listener to add to the resulting component value
-	 * @return this builder instance
-	 */
-	B listener(Runnable listener);
-
-	/**
-	 * @param consumer a consumer to add to the resulting component value
-	 * @return this builder instance
-	 */
-	B consumer(Consumer<T> consumer);
-
-	/**
-	 * Sets the initial value for the component, unless value(s) have been linked via {@link #link(Value)}
-	 * or {@link #link(Observable)}, which then control the inital value.
-	 * The initial value is set before any listeners are added, so no events are triggered.
-	 * @param value the initial value
-	 * @return this builder instance
-	 */
-	B value(@Nullable T value);
-
-	/**
 	 * @return a {@link ScrollPaneBuilder} using this component as the view
 	 */
 	ScrollPaneBuilder scrollPane();
@@ -491,12 +385,6 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 * @return this builder instance
 	 */
 	B onBuild(Consumer<C> onBuild);
-
-	/**
-	 * @param onBuildValue called when the component value has been built.
-	 * @return this builder instance
-	 */
-	B onBuildValue(Consumer<ComponentValue<T, C>> onBuildValue);
 
 	/**
 	 * Builds a new component instance.
@@ -510,19 +398,6 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 	 * @return the component
 	 */
 	C build(@Nullable Consumer<C> onBuild);
-
-	/**
-	 * Builds and returns the component value.
-	 * @return the component value
-	 */
-	ComponentValue<T, C> buildValue();
-
-	/**
-	 * Builds and returns the component value.
-	 * @param onBuild called after the component value is built.
-	 * @return the component value
-	 */
-	ComponentValue<T, C> buildValue(@Nullable Consumer<ComponentValue<T, C>> onBuild);
 
 	@Override
 	default C get() {

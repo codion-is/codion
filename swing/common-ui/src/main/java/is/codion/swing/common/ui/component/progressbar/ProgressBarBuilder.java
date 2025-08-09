@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.progressbar;
 
-import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 
 import org.jspecify.annotations.Nullable;
 
@@ -28,7 +28,7 @@ import javax.swing.JProgressBar;
 /**
  * Builds a JProgressBar.
  */
-public interface ProgressBarBuilder extends ComponentBuilder<Integer, JProgressBar, ProgressBarBuilder> {
+public interface ProgressBarBuilder extends ComponentValueBuilder<Integer, JProgressBar, ProgressBarBuilder> {
 
 	/**
 	 * Note: setting the model also sets {@link #indeterminate(boolean)} to false

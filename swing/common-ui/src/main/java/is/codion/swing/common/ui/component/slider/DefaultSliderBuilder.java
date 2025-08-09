@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.slider;
 
-import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.BoundedRangeModel;
@@ -27,7 +27,7 @@ import javax.swing.SwingConstants;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultSliderBuilder extends AbstractComponentBuilder<Integer, JSlider, SliderBuilder> implements SliderBuilder {
+final class DefaultSliderBuilder extends AbstractComponentValueBuilder<Integer, JSlider, SliderBuilder> implements SliderBuilder {
 
 	static final ModelStep MODEL = new DefaultModelStep();
 

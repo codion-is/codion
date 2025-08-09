@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.progressbar;
 
-import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
@@ -30,7 +30,7 @@ import javax.swing.JProgressBar;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultProgressBarBuilder extends AbstractComponentBuilder<Integer, JProgressBar, ProgressBarBuilder> implements ProgressBarBuilder {
+final class DefaultProgressBarBuilder extends AbstractComponentValueBuilder<Integer, JProgressBar, ProgressBarBuilder> implements ProgressBarBuilder {
 
 	private BoundedRangeModel boundedRangeModel = new DefaultBoundedRangeModel();
 	private boolean borderPainted;

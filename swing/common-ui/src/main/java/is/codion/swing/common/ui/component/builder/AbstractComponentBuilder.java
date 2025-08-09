@@ -20,17 +20,12 @@ package is.codion.swing.common.ui.component.builder;
 
 import is.codion.common.observer.Observable;
 import is.codion.common.state.ObservableState;
-import is.codion.common.state.State;
-import is.codion.common.value.Value;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Sizes;
 import is.codion.swing.common.ui.component.button.MenuBuilder;
-import is.codion.swing.common.ui.component.indicator.ModifiedIndicatorFactory;
-import is.codion.swing.common.ui.component.indicator.UnderlineModifiedIndicatorFactory;
 import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
 import is.codion.swing.common.ui.component.label.LabelBuilder;
 import is.codion.swing.common.ui.component.scrollpane.ScrollPaneBuilder;
-import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.key.KeyEvents;
@@ -62,18 +57,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import static is.codion.swing.common.ui.key.TransferFocusOnEnter.FORWARD_BACKWARD;
 import static java.util.Objects.requireNonNull;
 
-public abstract class AbstractComponentBuilder<T, C extends JComponent, B extends ComponentBuilder<T, C, B>>
-				implements ComponentBuilder<T, C, B> {
+public abstract class AbstractComponentBuilder<C extends JComponent, B extends ComponentBuilder<C, B>>
+				implements ComponentBuilder<C, B> {
 
 	private final List<Consumer<C>> buildConsumers = new ArrayList<>(1);
-	private final List<Consumer<ComponentValue<T, C>>> buildValueConsumers = new ArrayList<>(1);
-	private final List<Value<T>> linkedValues = new ArrayList<>(1);
-	private final List<Observable<T>> linkedObservables = new ArrayList<>(1);
 	private final List<KeyEvents.Builder> keyEventBuilders = new ArrayList<>(1);
 	private final Map<Object, @Nullable Object> clientProperties = new HashMap<>();
 	private final List<FocusListener> focusListeners = new ArrayList<>();
@@ -84,9 +75,6 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	private final List<ComponentListener> componentListeners = new ArrayList<>();
 	private final List<PropertyChangeListener> propertyChangeListeners = new ArrayList<>();
 	private final Map<String, PropertyChangeListener> propertyChangeListenerMap = new HashMap<>();
-	private final List<Value.Validator<T>> validators = new ArrayList<>();
-	private final List<Runnable> listeners = new ArrayList<>();
-	private final List<Consumer<T>> consumers = new ArrayList<>();
 
 	private @Nullable String name;
 	private @Nullable JLabel label;
@@ -108,19 +96,11 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	private @Nullable Color foreground;
 	private @Nullable Color background;
 	private @Nullable ComponentOrientation componentOrientation;
-	private @Nullable ValidIndicatorFactory validIndicatorFactory =
-					ValidIndicatorFactory.instance().orElse(null);
 	private @Nullable ObservableState enabledObservable;
 	private @Nullable ObservableState focusableObservable;
 	private @Nullable ObservableState visibleObservable;
-	private @Nullable ObservableState validObservable;
-	private @Nullable ModifiedIndicatorFactory modifiedIndicatorFactory = new UnderlineModifiedIndicatorFactory();
-	private @Nullable ObservableState modifiedObservable;
-	private @Nullable Predicate<T> validator;
 	private boolean enabled = true;
 	private @Nullable Function<C, JPopupMenu> popupMenu;
-	private @Nullable T value;
-	private boolean valueSet = false;
 	private @Nullable Consumer<C> onSetVisible;
 	private @Nullable TransferHandler transferHandler;
 	private boolean focusCycleRoot = false;
@@ -253,36 +233,6 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	}
 
 	@Override
-	public final B validIndicatorFactory(@Nullable ValidIndicatorFactory validIndicatorFactory) {
-		this.validIndicatorFactory = validIndicatorFactory;
-		return self();
-	}
-
-	@Override
-	public final B validIndicator(@Nullable ObservableState valid) {
-		this.validObservable = valid;
-		return self();
-	}
-
-	@Override
-	public final B validIndicator(@Nullable Predicate<T> validator) {
-		this.validator = validator;
-		return self();
-	}
-
-	@Override
-	public final B modifiedIndicatorFactory(@Nullable ModifiedIndicatorFactory modifiedIndicatorFactory) {
-		this.modifiedIndicatorFactory = modifiedIndicatorFactory;
-		return self();
-	}
-
-	@Override
-	public final B modifiedIndicator(@Nullable ObservableState modified) {
-		this.modifiedObservable = modified;
-		return self();
-	}
-
-	@Override
 	public final B popupMenuControl(Function<C, Control> popupMenuControl) {
 		requireNonNull(popupMenuControl);
 
@@ -355,12 +305,6 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	@Override
 	public final B componentOrientation(@Nullable ComponentOrientation componentOrientation) {
 		this.componentOrientation = componentOrientation;
-		return self();
-	}
-
-	@Override
-	public final B validator(Value.Validator<T> validator) {
-		this.validators.add(requireNonNull(validator));
 		return self();
 	}
 
@@ -443,43 +387,6 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	}
 
 	@Override
-	public final B link(Value<T> linkedValue) {
-		if (requireNonNull(linkedValue).isNullable() && !supportsNull()) {
-			throw new IllegalArgumentException("Component does not support a nullable value");
-		}
-		this.linkedValues.add(linkedValue);
-		return self();
-	}
-
-	@Override
-	public final B link(Observable<T> linkedObservable) {
-		if (requireNonNull(linkedObservable).isNullable() && !supportsNull()) {
-			throw new IllegalArgumentException("Component does not support a nullable value");
-		}
-		this.linkedObservables.add(linkedObservable);
-		return self();
-	}
-
-	@Override
-	public final B listener(Runnable listener) {
-		this.listeners.add(requireNonNull(listener));
-		return self();
-	}
-
-	@Override
-	public final B consumer(Consumer<T> consumer) {
-		this.consumers.add(requireNonNull(consumer));
-		return self();
-	}
-
-	@Override
-	public final B value(@Nullable T value) {
-		this.valueSet = true;
-		this.value = value;
-		return self();
-	}
-
-	@Override
 	public final ScrollPaneBuilder scrollPane() {
 		return ScrollPaneBuilder.builder().view(build());
 	}
@@ -491,41 +398,19 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	}
 
 	@Override
-	public final B onBuildValue(Consumer<ComponentValue<T, C>> onBuildValue) {
-		buildValueConsumers.add(requireNonNull(onBuildValue));
-		return self();
-	}
-
-	@Override
 	public final C build() {
 		return build(null);
 	}
 
 	@Override
 	public final C build(@Nullable Consumer<C> onBuild) {
-		ComponentValue<T, C> componentValue = createComponentValue(createComponent());
-		C component = configureComponent(componentValue);
+		C component = configureComponent(createComponent());
 		if (onBuild != null) {
 			onBuild.accept(component);
 		}
+		buildConsumers.forEach(consumer -> consumer.accept(component));
 
 		return component;
-	}
-
-	@Override
-	public final ComponentValue<T, C> buildValue() {
-		return buildValue(null);
-	}
-
-	@Override
-	public final ComponentValue<T, C> buildValue(@Nullable Consumer<ComponentValue<T, C>> onBuild) {
-		ComponentValue<T, C> componentValue = createComponentValue(createComponent());
-		configureComponent(componentValue);
-		if (onBuild != null) {
-			onBuild.accept(componentValue);
-		}
-
-		return componentValue;
 	}
 
 	/**
@@ -533,13 +418,6 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 	 * @return a new component instance
 	 */
 	protected abstract C createComponent();
-
-	/**
-	 * Creates the component value
-	 * @param component the component
-	 * @return a component value based on the component
-	 */
-	protected abstract ComponentValue<T, C> createComponentValue(C component);
 
 	/**
 	 * @return true if this component can be linked with a nullable value
@@ -572,9 +450,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		return (B) this;
 	}
 
-	private C configureComponent(ComponentValue<T, C> componentValue) {
-		C component = componentValue.component();
-		component.putClientProperty(COMPONENT_VALUE, componentValue);
+	protected C configureComponent(C component) {
 		if (label != null) {
 			label.setLabelFor(component);
 		}
@@ -645,16 +521,6 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		if (focusCycleRoot) {
 			component.setFocusCycleRoot(true);
 		}
-		validators.forEach(componentValue::addValidator);
-		if (valueSet && linkedValues.isEmpty() && linkedObservables.isEmpty()) {
-			componentValue.set(value);
-		}
-		linkedValues.forEach(componentValue::link);
-		linkedObservables.forEach(componentValue::link);
-		listeners.forEach(componentValue::addListener);
-		consumers.forEach(componentValue::addConsumer);
-		configureValidIndicator(componentValue);
-		configureModifiedIndicator(component);
 		keyEventBuilders.forEach(keyEventBuilder -> keyEventBuilder.enable(component));
 		focusListeners.forEach(component::addFocusListener);
 		mouseListeners.forEach(component::addMouseListener);
@@ -664,28 +530,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		componentListeners.forEach(component::addComponentListener);
 		propertyChangeListeners.forEach(component::addPropertyChangeListener);
 		propertyChangeListenerMap.forEach(component::addPropertyChangeListener);
-		buildConsumers.forEach(consumer -> consumer.accept(component));
-		buildValueConsumers.forEach(consumer -> consumer.accept(componentValue));
 
 		return component;
-	}
-
-	private void configureValidIndicator(ComponentValue<T, C> componentValue) {
-		if (validIndicatorFactory == null) {
-			return;
-		}
-		if (validObservable != null) {
-			enableValidIndicator(validIndicatorFactory, componentValue.component(), validObservable);
-		}
-		else if (validator != null) {
-			enableValidIndicator(validIndicatorFactory, componentValue.component(), createValidState(componentValue, validator));
-		}
-	}
-
-	private void configureModifiedIndicator(C component) {
-		if (modifiedIndicatorFactory != null && modifiedObservable != null) {
-			modifiedIndicatorFactory.enable(component, modifiedObservable);
-		}
 	}
 
 	private void setSizes(C component) {
@@ -715,31 +561,6 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 		}
 
 		return value;
-	}
-
-	private static <T, C extends JComponent> ObservableState createValidState(ComponentValue<T, C> componentValue,
-																																						Predicate<T> validator) {
-		ValidationConsumer<T> validationConsumer = new ValidationConsumer<>(componentValue.get(), validator);
-		componentValue.addConsumer(validationConsumer);
-
-		return validationConsumer.valid.observable();
-	}
-
-	private static final class ValidationConsumer<T> implements Consumer<T> {
-
-		private final Predicate<@Nullable T> validator;
-		private final State valid;
-
-		private ValidationConsumer(@Nullable T initialValue, Predicate<T> validator) {
-			this.validator = validator;
-			this.valid = State.state();
-			accept(initialValue);
-		}
-
-		@Override
-		public void accept(@Nullable T value) {
-			valid.set(validator.test(value));
-		}
 	}
 
 	private static final class SetToolTipText implements Consumer<String> {

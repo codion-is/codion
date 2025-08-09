@@ -37,7 +37,7 @@ import java.util.function.Function;
 /**
  * A builder for menus.
  */
-public interface MenuBuilder extends ComponentBuilder<Void, JMenu, MenuBuilder> {
+public interface MenuBuilder extends ComponentBuilder<JMenu, MenuBuilder> {
 
 	/**
 	 * @param menuListener the menu listener

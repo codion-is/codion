@@ -33,7 +33,7 @@ import java.util.function.Consumer;
  * Builds panels with controls.
  */
 public interface ControlPanelBuilder<C extends JComponent, B extends ControlPanelBuilder<C, B>>
-				extends ComponentBuilder<Void, C, B> {
+				extends ComponentBuilder<C, B> {
 
 	/**
 	 * @param orientation the panel orientation, default {@link javax.swing.SwingConstants#HORIZONTAL}

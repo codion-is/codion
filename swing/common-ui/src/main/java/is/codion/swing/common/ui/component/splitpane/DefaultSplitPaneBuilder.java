@@ -19,8 +19,6 @@
 package is.codion.swing.common.ui.component.splitpane;
 
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
-import is.codion.swing.common.ui.component.value.AbstractComponentValue;
-import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import org.jspecify.annotations.Nullable;
 
@@ -30,7 +28,7 @@ import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultSplitPaneBuilder extends AbstractComponentBuilder<Void, JSplitPane, SplitPaneBuilder> implements SplitPaneBuilder {
+final class DefaultSplitPaneBuilder extends AbstractComponentBuilder<JSplitPane, SplitPaneBuilder> implements SplitPaneBuilder {
 
 	private int orientation = JSplitPane.HORIZONTAL_SPLIT;
 	private boolean oneTouchExpandable = false;
@@ -127,27 +125,5 @@ final class DefaultSplitPaneBuilder extends AbstractComponentBuilder<Void, JSpli
 		}
 
 		return splitPane;
-	}
-
-	@Override
-	protected ComponentValue<Void, JSplitPane> createComponentValue(JSplitPane component) {
-		return new SplitPaneComponentValue(component);
-	}
-
-	private static final class SplitPaneComponentValue extends AbstractComponentValue<Void, JSplitPane> {
-
-		private SplitPaneComponentValue(JSplitPane component) {
-			super(component);
-		}
-
-		@Override
-		protected Void getComponentValue() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		protected void setComponentValue(Void value) {
-			throw new UnsupportedOperationException();
-		}
 	}
 }

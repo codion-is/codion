@@ -20,7 +20,7 @@ package is.codion.swing.common.ui.component.label;
 
 import is.codion.common.observer.Observable;
 import is.codion.common.property.PropertyValue;
-import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 
 import org.jspecify.annotations.Nullable;
 
@@ -36,7 +36,7 @@ import static is.codion.common.Configuration.integerValue;
  * A builder for JLabel.
  * @param <T> the type to display in the label (using value.toString() or "" for null).
  */
-public interface LabelBuilder<T> extends ComponentBuilder<T, JLabel, LabelBuilder<T>> {
+public interface LabelBuilder<T> extends ComponentValueBuilder<T, JLabel, LabelBuilder<T>> {
 
 	/**
 	 * Specifies the default horizontal alignment used in labels

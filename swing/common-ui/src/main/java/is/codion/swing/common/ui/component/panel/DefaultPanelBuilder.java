@@ -19,8 +19,6 @@
 package is.codion.swing.common.ui.component.panel;
 
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
-import is.codion.swing.common.ui.component.value.AbstractComponentValue;
-import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import org.jspecify.annotations.Nullable;
 
@@ -36,7 +34,7 @@ import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultPanelBuilder extends AbstractComponentBuilder<Void, JPanel, PanelBuilder> implements PanelBuilder {
+final class DefaultPanelBuilder extends AbstractComponentBuilder<JPanel, PanelBuilder> implements PanelBuilder {
 
 	private final List<ComponentConstraints> componentConstraints = new ArrayList<>();
 
@@ -105,11 +103,6 @@ final class DefaultPanelBuilder extends AbstractComponentBuilder<Void, JPanel, P
 		return component;
 	}
 
-	@Override
-	protected ComponentValue<Void, JPanel> createComponentValue(JPanel component) {
-		return new PanelComponentValue(component);
-	}
-
 	private static final class ComponentConstraints {
 
 		private final JComponent component;
@@ -122,23 +115,6 @@ final class DefaultPanelBuilder extends AbstractComponentBuilder<Void, JPanel, P
 		private ComponentConstraints(JComponent component, @Nullable Object constraints) {
 			this.component = component;
 			this.constraints = constraints;
-		}
-	}
-
-	private static final class PanelComponentValue extends AbstractComponentValue<Void, JPanel> {
-
-		private PanelComponentValue(JPanel component) {
-			super(component);
-		}
-
-		@Override
-		protected Void getComponentValue() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		protected void setComponentValue(Void value) {
-			throw new UnsupportedOperationException();
 		}
 	}
 

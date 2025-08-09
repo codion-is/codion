@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 
 import org.jspecify.annotations.Nullable;
 
@@ -32,7 +32,7 @@ import java.util.function.Consumer;
  * A builder for text components.
  */
 public interface TextComponentBuilder<T, C extends JTextComponent, B extends TextComponentBuilder<T, C, B>>
-				extends ComponentBuilder<T, C, B> {
+				extends ComponentValueBuilder<T, C, B> {
 
 	/**
 	 * Specifies the possible initial caret positions in case text component has an initial value.

@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.text.CaseDocumentFilter.DocumentCase;
 import is.codion.swing.common.ui.key.KeyEvents;
 
@@ -40,7 +40,7 @@ import static java.awt.event.KeyEvent.VK_DELETE;
 import static java.util.Objects.requireNonNull;
 
 abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B extends TextComponentBuilder<T, C, B>>
-				extends AbstractComponentBuilder<T, C, B> implements TextComponentBuilder<T, C, B> {
+				extends AbstractComponentValueBuilder<T, C, B> implements TextComponentBuilder<T, C, B> {
 
 	private final List<CaretListener> caretListeners = new ArrayList<>();
 

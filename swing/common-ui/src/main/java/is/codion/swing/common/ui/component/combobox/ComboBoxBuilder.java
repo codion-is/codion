@@ -20,7 +20,7 @@ package is.codion.swing.common.ui.component.combobox;
 
 import is.codion.common.property.PropertyValue;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
-import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 
 import org.jspecify.annotations.Nullable;
 
@@ -39,7 +39,7 @@ import static java.util.Objects.requireNonNull;
  * @param <C> the component type
  * @param <B> the builder type
  */
-public interface ComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> extends ComponentBuilder<T, C, B> {
+public interface ComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> extends ComponentValueBuilder<T, C, B> {
 
 	/**
 	 * Specifies whether mouse wheel scrolling is enabled in combo boxes by default.

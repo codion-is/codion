@@ -21,7 +21,7 @@ package is.codion.swing.common.ui.component.combobox;
 import is.codion.common.i18n.Messages;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 
@@ -39,7 +39,7 @@ import java.util.function.Consumer;
 import static is.codion.swing.common.ui.component.text.TextComponents.preferredTextFieldHeight;
 import static java.util.Objects.requireNonNull;
 
-public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> extends AbstractComponentBuilder<T, C, B>
+public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> extends AbstractComponentValueBuilder<T, C, B>
 				implements ComboBoxBuilder<T, C, B> {
 
 	static final ModelStep MODEL = new DefaultModelStep();

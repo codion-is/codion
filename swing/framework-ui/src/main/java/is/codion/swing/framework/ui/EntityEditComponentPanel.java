@@ -32,7 +32,7 @@ import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
@@ -142,7 +142,7 @@ public class EntityEditComponentPanel extends JPanel {
 	private final SwingEntityEditModel editModel;
 	private final EntityComponents entityComponents;
 	private final Map<Attribute<?>, Value<JComponent>> components = new HashMap<>();
-	private final Map<Attribute<?>, ComponentBuilder<?, ?, ?>> componentBuilders = new HashMap<>();
+	private final Map<Attribute<?>, ComponentValueBuilder<?, ?, ?>> componentBuilders = new HashMap<>();
 	private final InputFocus inputFocus;
 
 	private final State modifiedIndicator = State.state(MODIFIED_INDICATOR.getOrThrow());
@@ -281,7 +281,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @return the {@link Value} containing the component associated with the given attribute
 	 */
 	protected final Value<JComponent> component(Attribute<?> attribute) {
-		ComponentBuilder<?, ?, ?> componentBuilder = componentBuilders.get(requireNonNull(attribute));
+		ComponentValueBuilder<?, ?, ?> componentBuilder = componentBuilders.get(requireNonNull(attribute));
 		if (componentBuilder != null) {
 			componentBuilder.build();
 		}
@@ -671,7 +671,7 @@ public class EntityEditComponentPanel extends JPanel {
 		return unmodifiableMap(components);
 	}
 
-	private <T, B extends ComponentBuilder<T, ?, ?>> B setComponentBuilder(Attribute<T> attribute, B componentBuilder) {
+	private <T, B extends ComponentValueBuilder<T, ?, ?>> B setComponentBuilder(Attribute<T> attribute, B componentBuilder) {
 		requireNonNull(attribute);
 		requireNonNull(componentBuilder);
 		if (componentBuilders.containsKey(attribute) || !component(attribute).isNull()) {

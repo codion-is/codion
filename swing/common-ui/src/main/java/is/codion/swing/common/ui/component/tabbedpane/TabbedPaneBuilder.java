@@ -52,7 +52,7 @@ import java.awt.Component;
  *         .build();
  *}
  */
-public interface TabbedPaneBuilder extends ComponentBuilder<Void, JTabbedPane, TabbedPaneBuilder> {
+public interface TabbedPaneBuilder extends ComponentBuilder<JTabbedPane, TabbedPaneBuilder> {
 
 	/**
 	 * @param tabPlacement the tab placement

@@ -21,7 +21,7 @@ package is.codion.swing.common.ui.component.combobox;
 import is.codion.common.item.Item;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import org.jspecify.annotations.Nullable;
@@ -39,7 +39,7 @@ import java.util.function.Consumer;
 import static is.codion.swing.common.ui.component.text.TextComponents.preferredTextFieldHeight;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JComboBox<Item<T>>, ItemComboBoxBuilder<T>>
+final class DefaultItemComboBoxBuilder<T> extends AbstractComponentValueBuilder<T, JComboBox<Item<T>>, ItemComboBoxBuilder<T>>
 				implements ItemComboBoxBuilder<T> {
 
 	static final BuilderFactory FACTORY = new DefaultBuilderFactory();

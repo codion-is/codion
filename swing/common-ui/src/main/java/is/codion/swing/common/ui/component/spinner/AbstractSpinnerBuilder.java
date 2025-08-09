@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.spinner;
 
-import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 
 import javax.swing.JComponent;
 import javax.swing.JSpinner;
@@ -30,7 +30,7 @@ import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
-abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends AbstractComponentBuilder<T, JSpinner, B>
+abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends AbstractComponentValueBuilder<T, JSpinner, B>
 				implements SpinnerBuilder<T, B> {
 
 	protected SpinnerModel spinnerModel;

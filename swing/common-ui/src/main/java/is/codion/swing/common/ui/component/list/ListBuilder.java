@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.list;
 
 import is.codion.swing.common.model.component.list.FilterListModel;
-import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 
 import org.jspecify.annotations.Nullable;
 
@@ -35,7 +35,7 @@ import java.util.List;
  * @param <B> the builder type
  * @see #builder()
  */
-public interface ListBuilder<T, V, B extends ListBuilder<T, V, B>> extends ComponentBuilder<V, FilterList<T>, B> {
+public interface ListBuilder<T, V, B extends ListBuilder<T, V, B>> extends ComponentValueBuilder<V, FilterList<T>, B> {
 
 	/**
 	 * @param visibleRowCount the visible row count

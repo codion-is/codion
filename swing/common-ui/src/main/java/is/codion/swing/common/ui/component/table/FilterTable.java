@@ -41,7 +41,6 @@ import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ComponentFactory;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColumn;
-import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
@@ -1152,7 +1151,7 @@ public final class FilterTable<R, C> extends JTable {
 	 * @param <R> the type representing rows
 	 * @param <C> the type used to identify columns
 	 */
-	public interface Builder<R, C> extends ComponentBuilder<Void, FilterTable<R, C>, Builder<R, C>> {
+	public interface Builder<R, C> extends ComponentBuilder<FilterTable<R, C>, Builder<R, C>> {
 
 		/**
 		 * Provides a {@link Builder} instance based on a given table model
@@ -1463,7 +1462,7 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	private static final class DefaultBuilder<R, C>
-					extends AbstractComponentBuilder<Void, FilterTable<R, C>, Builder<R, C>>
+					extends AbstractComponentBuilder<FilterTable<R, C>, Builder<R, C>>
 					implements Builder<R, C> {
 
 		private static final Builder.ModelStep MODEL = new DefaultModelStep();
@@ -1698,11 +1697,6 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		protected FilterTable<R, C> createComponent() {
 			return new FilterTable<>(this);
-		}
-
-		@Override
-		protected ComponentValue<Void, FilterTable<R, C>> createComponentValue(FilterTable<R, C> component) {
-			return new FilterTableComponentValue<>(component);
 		}
 
 		private Collection<FilterTableColumn<C>> validateColumns(List<FilterTableColumn<C>> columns) {
@@ -1981,23 +1975,6 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public int compare(TableColumn col1, TableColumn col2) {
 			return collator.compare(String.valueOf(col1.getHeaderValue()), String.valueOf(col2.getHeaderValue()));
-		}
-	}
-
-	private static final class FilterTableComponentValue<R, C> extends AbstractComponentValue<Void, FilterTable<R, C>> {
-
-		private FilterTableComponentValue(FilterTable<R, C> table) {
-			super(table);
-		}
-
-		@Override
-		protected Void getComponentValue() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		protected void setComponentValue(Void value) {
-			throw new UnsupportedOperationException();
 		}
 	}
 

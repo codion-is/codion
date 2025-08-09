@@ -21,8 +21,8 @@ package is.codion.swing.framework.ui.component;
 import is.codion.common.state.ObservableState;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntitySearchModel;
-import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
-import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
+import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -90,7 +90,7 @@ public final class EntitySearchFieldPanel extends JPanel {
 	/**
 	 * A builder for a {@link EntitySearchFieldPanel}
 	 */
-	public interface Builder<T, B extends Builder<T, B>> extends ComponentBuilder<T, EntitySearchFieldPanel, B> {
+	public interface Builder<T, B extends Builder<T, B>> extends ComponentValueBuilder<T, EntitySearchFieldPanel, B> {
 
 		/**
 		 * Provides a {@link EditPanelStep}
@@ -377,7 +377,7 @@ public final class EntitySearchFieldPanel extends JPanel {
 	}
 
 	private abstract static class AbstractBuilder<T, B extends Builder<T, B>>
-					extends AbstractComponentBuilder<T, EntitySearchFieldPanel, B> implements Builder<T, B> {
+					extends AbstractComponentValueBuilder<T, EntitySearchFieldPanel, B> implements Builder<T, B> {
 
 		private final EntitySearchField.Builder<?, ?> searchFieldBuilder;
 

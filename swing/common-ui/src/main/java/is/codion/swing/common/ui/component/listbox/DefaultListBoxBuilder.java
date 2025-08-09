@@ -20,7 +20,7 @@ package is.codion.swing.common.ui.component.listbox;
 
 import is.codion.common.value.ValueSet;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
-import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
@@ -48,7 +48,7 @@ import static java.util.stream.Collectors.toCollection;
 import static javax.swing.SwingConstants.CENTER;
 
 final class DefaultListBoxBuilder<T>
-				extends AbstractComponentBuilder<Set<T>, JComboBox<T>, ListBoxBuilder<T>>
+				extends AbstractComponentValueBuilder<Set<T>, JComboBox<T>, ListBoxBuilder<T>>
 				implements ListBoxBuilder<T> {
 
 	static final ItemValueStep ITEM = new DefaultItemValueStep();

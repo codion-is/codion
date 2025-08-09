@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.listbox;
 
 import is.codion.common.value.ValueSet;
-import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.JComboBox;
@@ -32,7 +32,7 @@ import java.util.function.Function;
  * in the combo box (as opposed to the selected item)
  * @param <T> the value type
  */
-public interface ListBoxBuilder<T> extends ComponentBuilder<Set<T>, JComboBox<T>, ListBoxBuilder<T>> {
+public interface ListBoxBuilder<T> extends ComponentValueBuilder<Set<T>, JComboBox<T>, ListBoxBuilder<T>> {
 
 	/**
 	 * @param string provides a String to display in the list for a given value, formatted or otherwise

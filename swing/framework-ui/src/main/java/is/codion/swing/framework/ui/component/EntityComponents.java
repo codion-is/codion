@@ -28,6 +28,7 @@ import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
@@ -108,44 +109,44 @@ public final class EntityComponents {
 	 * @return the component builder handling input for {@code attribute}
 	 * @throws IllegalArgumentException in case the given attribute is not supported
 	 */
-	public <T, C extends JComponent, B extends ComponentBuilder<T, C, B>> ComponentBuilder<T, C, B> component(Attribute<T> attribute) {
+	public <T, C extends JComponent, B extends ComponentValueBuilder<T, C, B>> ComponentValueBuilder<T, C, B> component(Attribute<T> attribute) {
 		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 		if (!attributeDefinition.items().isEmpty()) {
-			return (ComponentBuilder<T, C, B>) itemComboBox(attribute);
+			return (ComponentValueBuilder<T, C, B>) itemComboBox(attribute);
 		}
 		if (attribute instanceof ForeignKey) {
-			return (ComponentBuilder<T, C, B>) textField((ForeignKey) attribute);
+			return (ComponentValueBuilder<T, C, B>) textField((ForeignKey) attribute);
 		}
 		Attribute.Type<T> type = attribute.type();
 		if (type.isTemporal()) {
-			return (ComponentBuilder<T, C, B>) temporalField((Attribute<Temporal>) attribute);
+			return (ComponentValueBuilder<T, C, B>) temporalField((Attribute<Temporal>) attribute);
 		}
 		if (type.isString() || type.isCharacter()) {
-			return (ComponentBuilder<T, C, B>) textField(attribute);
+			return (ComponentValueBuilder<T, C, B>) textField(attribute);
 		}
 		if (type.isBoolean()) {
-			return (ComponentBuilder<T, C, B>) checkBox((Attribute<Boolean>) attribute);
+			return (ComponentValueBuilder<T, C, B>) checkBox((Attribute<Boolean>) attribute);
 		}
 		if (type.isShort()) {
-			return (ComponentBuilder<T, C, B>) shortField((Attribute<Short>) attribute);
+			return (ComponentValueBuilder<T, C, B>) shortField((Attribute<Short>) attribute);
 		}
 		if (type.isInteger()) {
-			return (ComponentBuilder<T, C, B>) integerField((Attribute<Integer>) attribute);
+			return (ComponentValueBuilder<T, C, B>) integerField((Attribute<Integer>) attribute);
 		}
 		if (type.isLong()) {
-			return (ComponentBuilder<T, C, B>) longField((Attribute<Long>) attribute);
+			return (ComponentValueBuilder<T, C, B>) longField((Attribute<Long>) attribute);
 		}
 		if (type.isDouble()) {
-			return (ComponentBuilder<T, C, B>) doubleField((Attribute<Double>) attribute);
+			return (ComponentValueBuilder<T, C, B>) doubleField((Attribute<Double>) attribute);
 		}
 		if (type.isBigDecimal()) {
-			return (ComponentBuilder<T, C, B>) bigDecimalField((Attribute<BigDecimal>) attribute);
+			return (ComponentValueBuilder<T, C, B>) bigDecimalField((Attribute<BigDecimal>) attribute);
 		}
 		if (type.isEnum()) {
-			return (ComponentBuilder<T, C, B>) comboBox(attribute, createEnumComboBoxModel(attribute, attributeDefinition.nullable()));
+			return (ComponentValueBuilder<T, C, B>) comboBox(attribute, createEnumComboBoxModel(attribute, attributeDefinition.nullable()));
 		}
 		if (attribute.type().isByteArray()) {
-			return (ComponentBuilder<T, C, B>) byteArrayInputPanel((Attribute<byte[]>) attribute);
+			return (ComponentValueBuilder<T, C, B>) byteArrayInputPanel((Attribute<byte[]>) attribute);
 		}
 
 		throw new IllegalArgumentException("Attribute: " + attribute + " (type: " + type.valueClass() + ") not supported");
@@ -590,7 +591,7 @@ public final class EntityComponents {
 	 * @param attribute the attribute
 	 * @return a {@link FileInputPanel.Builder}
 	 */
-	public ComponentBuilder<byte[], FileInputPanel, FileInputPanel.Builder<byte[]>> byteArrayInputPanel(Attribute<byte[]> attribute) {
+	public ComponentValueBuilder<byte[], FileInputPanel, FileInputPanel.Builder<byte[]>> byteArrayInputPanel(Attribute<byte[]> attribute) {
 		AttributeDefinition<byte[]> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.byteArrayInputPanel()

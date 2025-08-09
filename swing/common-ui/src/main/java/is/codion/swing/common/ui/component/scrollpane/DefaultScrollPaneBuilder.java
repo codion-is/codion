@@ -19,8 +19,6 @@
 package is.codion.swing.common.ui.component.scrollpane;
 
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
-import is.codion.swing.common.ui.component.value.AbstractComponentValue;
-import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import org.jspecify.annotations.Nullable;
 
@@ -32,7 +30,7 @@ import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultScrollPaneBuilder extends AbstractComponentBuilder<Void, JScrollPane, ScrollPaneBuilder> implements ScrollPaneBuilder {
+final class DefaultScrollPaneBuilder extends AbstractComponentBuilder<JScrollPane, ScrollPaneBuilder> implements ScrollPaneBuilder {
 
 	private @Nullable Supplier<? extends JComponent> view;
 	private int vsbPolicy = ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
@@ -126,27 +124,5 @@ final class DefaultScrollPaneBuilder extends AbstractComponentBuilder<Void, JScr
 		}
 
 		return scrollPane;
-	}
-
-	@Override
-	protected ComponentValue<Void, JScrollPane> createComponentValue(JScrollPane component) {
-		return new ScrollPaneComponentValue(component);
-	}
-
-	private static final class ScrollPaneComponentValue extends AbstractComponentValue<Void, JScrollPane> {
-
-		private ScrollPaneComponentValue(JScrollPane component) {
-			super(component);
-		}
-
-		@Override
-		protected Void getComponentValue() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		protected void setComponentValue(Void value) {
-			throw new UnsupportedOperationException();
-		}
 	}
 }

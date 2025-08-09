@@ -23,7 +23,7 @@ import is.codion.common.observer.Observable;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -171,7 +171,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 	private static final class DefaultComponentStep implements ComponentStep {
 
 		@Override
-		public <T> InputDialogBuilder<T> component(ComponentBuilder<T, ?, ?> componentBuilder) {
+		public <T> InputDialogBuilder<T> component(ComponentValueBuilder<T, ?, ?> componentBuilder) {
 			return new DefaultInputDialogBuilder<>(requireNonNull(componentBuilder).buildValue());
 		}
 

@@ -20,8 +20,8 @@ package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.state.ObservableState;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
-import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
+import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import is.codion.swing.common.ui.component.calendar.CalendarPanel;
 import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
@@ -131,7 +131,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 	 * Builds a {@link TemporalFieldPanel}
 	 * @param <T> the temporal type
 	 */
-	public interface Builder<T extends Temporal> extends ComponentBuilder<T, TemporalFieldPanel<T>, Builder<T>> {
+	public interface Builder<T extends Temporal> extends ComponentValueBuilder<T, TemporalFieldPanel<T>, Builder<T>> {
 
 		/**
 		 * Provides a {@link TemporalFieldPanel.Builder}
@@ -227,7 +227,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 	}
 
 	private static final class DefaultBuilder<T extends Temporal>
-					extends AbstractComponentBuilder<T, TemporalFieldPanel<T>, Builder<T>>
+					extends AbstractComponentValueBuilder<T, TemporalFieldPanel<T>, Builder<T>>
 					implements Builder<T> {
 
 		private static final Builder.TemporalClassStep TEMPORAL_CLASS = new DefaultTemporalClassStep();

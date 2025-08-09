@@ -18,14 +18,14 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 
 import javax.swing.JFormattedTextField;
 
 /**
  * Builds a formatted text field.
  */
-public interface MaskedTextFieldBuilder extends ComponentBuilder<String, JFormattedTextField, MaskedTextFieldBuilder> {
+public interface MaskedTextFieldBuilder extends ComponentValueBuilder<String, JFormattedTextField, MaskedTextFieldBuilder> {
 
 	/**
 	 * @param mask the format mask string

@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component.spinner;
 
 import is.codion.common.property.PropertyValue;
-import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 
 import javax.swing.JSpinner;
 import javax.swing.SpinnerModel;
@@ -29,7 +29,7 @@ import static is.codion.common.Configuration.booleanValue;
 /**
  * A builder for JSpinner.
  */
-public interface SpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends ComponentBuilder<T, JSpinner, B> {
+public interface SpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends ComponentValueBuilder<T, JSpinner, B> {
 
 	/**
 	 * Specifies whether mouse wheel scrolling is enabled in spinners by default.

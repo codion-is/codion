@@ -19,8 +19,6 @@
 package is.codion.swing.common.ui.component.button;
 
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
-import is.codion.swing.common.ui.component.value.AbstractComponentValue;
-import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import org.jspecify.annotations.Nullable;
 
@@ -33,7 +31,7 @@ import java.util.function.Consumer;
 import static java.util.Objects.requireNonNull;
 
 abstract class AbstractControlPanelBuilder<C extends JComponent, B extends ControlPanelBuilder<C, B>>
-				extends AbstractComponentBuilder<Void, C, B> implements ControlPanelBuilder<C, B> {
+				extends AbstractComponentBuilder<C, B> implements ControlPanelBuilder<C, B> {
 
 	private static final EmptyConsumer<?> EMPTY_CONSUMER = new EmptyConsumer<>();
 
@@ -107,11 +105,6 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 		return self();
 	}
 
-	@Override
-	protected final ComponentValue<Void, C> createComponentValue(C component) {
-		return new PanelComponentValue<>(component);
-	}
-
 	protected final int orientation() {
 		return orientation;
 	}
@@ -149,23 +142,6 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 		return (T) builder.includeText(includeButtonText)
 						.preferredSize(preferredButtonSize)
 						.focusable(buttonsFocusable);
-	}
-
-	private static final class PanelComponentValue<C extends JComponent> extends AbstractComponentValue<Void, C> {
-
-		private PanelComponentValue(C component) {
-			super(component);
-		}
-
-		@Override
-		protected Void getComponentValue() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		protected void setComponentValue(Void value) {
-			throw new UnsupportedOperationException();
-		}
 	}
 
 	private static final class EmptyConsumer<T> implements Consumer<T> {

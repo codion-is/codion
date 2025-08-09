@@ -18,7 +18,7 @@
  */
 package is.codion.swing.common.ui.component.button;
 
-import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import is.codion.swing.common.ui.control.Control;
 
 import org.jspecify.annotations.Nullable;
@@ -37,7 +37,7 @@ import java.awt.event.ActionListener;
  * @param <C> the button type
  * @param <B> the builder type
  */
-public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuilder<T, C, B>> extends ComponentBuilder<T, C, B> {
+public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuilder<T, C, B>> extends ComponentValueBuilder<T, C, B> {
 
 	/**
 	 * @param text the button caption text

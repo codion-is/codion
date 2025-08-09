@@ -20,7 +20,7 @@ package is.codion.swing.common.ui.component.label;
 
 import is.codion.common.observer.Observable;
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.builder.AbstractComponentValueBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import org.jspecify.annotations.Nullable;
@@ -29,7 +29,7 @@ import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
-final class DefaultLabelBuilder<T> extends AbstractComponentBuilder<T, JLabel, LabelBuilder<T>> implements LabelBuilder<T> {
+final class DefaultLabelBuilder<T> extends AbstractComponentValueBuilder<T, JLabel, LabelBuilder<T>> implements LabelBuilder<T> {
 
 	private @Nullable String text;
 	private @Nullable Icon icon;

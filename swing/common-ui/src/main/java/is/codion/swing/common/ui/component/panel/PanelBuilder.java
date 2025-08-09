@@ -32,7 +32,7 @@ import java.util.function.Supplier;
 /**
  * Builds a JPanel instance.
  */
-public interface PanelBuilder extends ComponentBuilder<Void, JPanel, PanelBuilder> {
+public interface PanelBuilder extends ComponentBuilder<JPanel, PanelBuilder> {
 
 	/**
 	 * @param panel the panel

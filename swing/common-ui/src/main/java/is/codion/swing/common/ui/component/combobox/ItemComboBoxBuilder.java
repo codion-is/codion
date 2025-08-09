@@ -20,7 +20,7 @@ package is.codion.swing.common.ui.component.combobox;
 
 import is.codion.common.item.Item;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
-import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 
 import org.jspecify.annotations.Nullable;
 
@@ -35,7 +35,7 @@ import java.util.List;
  * Builds a item combo box.
  * @param <T> the value type
  */
-public interface ItemComboBoxBuilder<T> extends ComponentBuilder<T, JComboBox<Item<T>>, ItemComboBoxBuilder<T>> {
+public interface ItemComboBoxBuilder<T> extends ComponentValueBuilder<T, JComboBox<Item<T>>, ItemComboBoxBuilder<T>> {
 
 	/**
 	 * @param nullable true if a null value should be added to the model if missing
