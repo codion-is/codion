@@ -43,7 +43,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityConnectionProvider.class);
 
 	private final Lock lock = new Lock() {};
-	private final Event<EntityConnection> connectedEvent = Event.event();
+	private final Event<EntityConnection> connected = Event.event();
 
 	private final User user;
 	private final DomainType domain;
@@ -122,7 +122,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
 	@Override
 	public final Observer<EntityConnection> connected() {
-		return connectedEvent.observer();
+		return connected.observer();
 	}
 
 	@Override
@@ -182,7 +182,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 	private void doConnect() {
 		entityConnection = connect();
 		entities = entityConnection.entities();
-		connectedEvent.accept(entityConnection);
+		connected.accept(entityConnection);
 	}
 
 	/**

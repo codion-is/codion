@@ -353,7 +353,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 
 		private final List<R> items = new ArrayList<>();
 		private final VisiblePredicate<R> predicate;
-		private final Event<List<R>> event = Event.event();
+		private final Event<List<R>> changed = Event.event();
 		private final Event<Collection<R>> added = Event.event();
 
 		private DefaultVisibleItems(VisiblePredicate<R> predicate) {
@@ -374,7 +374,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 
 		@Override
 		public Observer<List<R>> observer() {
-			return event.observer();
+			return changed.observer();
 		}
 
 		@Override
@@ -487,7 +487,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 
 		private void notifyChanges() {
-			event.accept(get());
+			changed.accept(get());
 		}
 	}
 

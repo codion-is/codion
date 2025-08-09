@@ -653,14 +653,6 @@ public class EntityEditComponentPanel extends JPanel {
 						.anyMatch(comp -> sameOrParentOf(comp, component));
 	}
 
-	private static JLabel setLabelForComponent(JLabel label, JComponent component) {
-		if (component != null && label.getLabelFor() != component) {
-			label.setLabelFor(component);
-		}
-
-		return label;
-	}
-
 	private static void refreshIfCleared(JComboBox<?> comboBox) {
 		ComboBoxModel<?> model = comboBox.getModel();
 		if (model instanceof FilterComboBoxModel) {

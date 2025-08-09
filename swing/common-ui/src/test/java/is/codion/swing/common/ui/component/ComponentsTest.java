@@ -1073,11 +1073,10 @@ public final class ComponentsTest {
 		ToggleControl toggle2 = Control.toggle(Value.nonNull(false));
 		ToggleControl toggle3 = Control.toggle(Value.nonNull(false));
 
-		Controls controls = Controls.builder()
-						.actions(toggle1, toggle2, toggle3)
-						.build();
 		Components.buttonPanel()
-						.controls(controls)
+						.controls(Controls.builder()
+										.actions(toggle1, toggle2, toggle3)
+										.build())
 						.toggleButtonType(ToggleButtonType.CHECKBOX)
 						.build();
 	}

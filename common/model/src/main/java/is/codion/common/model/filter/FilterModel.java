@@ -105,7 +105,7 @@ public interface FilterModel<T> {
 		 * Use {@link Refresher#exception()} to listen for exceptions that happen during asynchronous refresh.
 		 * <br><br>
 		 * Retains the selection and filtering. Sorts the refreshed data.
-		 * @param onResult called after a successful refresh
+		 * @param onResult called on the EDT after a successful refresh
 		 * @throws RuntimeException in case of an exception when running refresh synchronously
 		 * @see Refresher#active()
 		 * @see Refresher#result()
@@ -509,7 +509,7 @@ public interface FilterModel<T> {
 		 * <p>Refreshes the data. Note that this method only throws exceptions when run synchronously.
 		 * <p>Use {@link #exception()} to listen for exceptions that happen during asynchronous refresh.
 		 * <p>Async refresh is performed when it is enabled ({@link #async()}) and this method is called on the UI thread.
-		 * @param onResult called with the result after a successful refresh, may be null
+		 * @param onResult called on the EDT with the result after a successful refresh, may be null
 		 * @throws RuntimeException in case of an exception when running synchronously.
 		 * @see #active()
 		 * @see #result()
@@ -631,7 +631,7 @@ public interface FilterModel<T> {
 		/**
 		 * <p>Performes an async refresh
 		 * <p>This method must be called on the UI thread.
-		 * @param onResult if specified will be called with the result after a successful refresh
+		 * @param onResult if specified will be called on the EDT with the result after a successful refresh
 		 */
 		protected abstract void refreshAsync(@Nullable Consumer<Collection<T>> onResult);
 

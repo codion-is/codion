@@ -592,7 +592,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 			private final VisiblePredicate<T> predicate = new DefaultVisiblePredicate<>();
 			private final List<@Nullable T> items = new ArrayList<>();
-			private final Event<List<T>> event = Event.event();
+			private final Event<List<T>> changed = Event.event();
 			private final Event<Collection<T>> added = Event.event();
 
 			@Override
@@ -616,7 +616,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 			@Override
 			public Observer<List<T>> observer() {
-				return event.observer();
+				return changed.observer();
 			}
 
 			@Override
@@ -712,7 +712,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 			private void notifyChanges() {
 				fireContentsChanged();
-				event.accept(get());
+				changed.accept(get());
 			}
 		}
 

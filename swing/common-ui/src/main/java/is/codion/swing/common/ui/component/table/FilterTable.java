@@ -340,10 +340,10 @@ public final class FilterTable<R, C> extends JTable {
 		if (builder.showGrid != null) {
 			setShowGrid(builder.showGrid);
 		}
-		if (builder.showHorizontalLines != null)  {
+		if (builder.showHorizontalLines != null) {
 			setShowHorizontalLines(builder.showHorizontalLines);
 		}
-		if (builder.showVerticalLines != null)  {
+		if (builder.showVerticalLines != null) {
 			setShowVerticalLines(builder.showVerticalLines);
 		}
 		if (builder.dragEnabled != null) {

@@ -64,7 +64,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 	/**
 	 * An event triggered when this connection is closed
 	 */
-	private final transient Event<AbstractRemoteEntityConnection> closedEvent = Event.event();
+	private final transient Event<AbstractRemoteEntityConnection> closed = Event.event();
 
 	/**
 	 * Instantiates a new AbstractRemoteEntityConnection and exports it on the given port number
@@ -121,7 +121,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 			}
 			connectionHandler.close();
 		}
-		closedEvent.accept(this);
+		closed.accept(this);
 	}
 
 	/**
@@ -162,7 +162,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 	}
 
 	final Observer<AbstractRemoteEntityConnection> closed() {
-		return closedEvent.observer();
+		return closed.observer();
 	}
 
 	static int requestsPerSecond() {
