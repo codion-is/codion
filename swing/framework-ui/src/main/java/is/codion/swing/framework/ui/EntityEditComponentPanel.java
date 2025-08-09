@@ -212,22 +212,10 @@ public class EntityEditComponentPanel extends JPanel {
 		InputPanelBuilder label(Supplier<? extends JComponent> labelComponent);
 
 		/**
-		 * @param labelComponent the label component
+		 * Defaults to {@link BorderLayout#NORTH}
 		 * @param constraints the label constraints
 		 * @return this builder instance
-		 */
-		InputPanelBuilder label(JComponent labelComponent, String constraints);
-
-		/**
-		 * @param labelComponent the label component
-		 * @param constraints the label constraints
-		 * @return this builder instance
-		 */
-		InputPanelBuilder label(Supplier<? extends JComponent> labelComponent, String constraints);
-
-		/**
-		 * @param constraints the label constraints
-		 * @return this builder instance
+		 * @throws IllegalArgumentException in case the given constraints are the same as {@link #componentConstraints(String)}
 		 */
 		InputPanelBuilder labelConstraints(String constraints);
 
@@ -242,6 +230,14 @@ public class EntityEditComponentPanel extends JPanel {
 		 * @return this builder instance
 		 */
 		InputPanelBuilder component(Supplier<? extends JComponent> component);
+
+		/**
+		 * Defaults to {@link BorderLayout#CENTER}
+		 * @param constraints the component constraints
+		 * @return this builder instance
+		 * @throws IllegalArgumentException in case the given constraints are the same as {@link #labelConstraints(String)}
+		 */
+		InputPanelBuilder componentConstraints(String constraints);
 	}
 
 	/**
@@ -909,6 +905,7 @@ public class EntityEditComponentPanel extends JPanel {
 
 		private JComponent component;
 		private JComponent label;
+		private String componentConstraints = BorderLayout.CENTER;
 		private String labelConstraints = BorderLayout.NORTH;
 
 		private DefaultInputPanelBuilder(Attribute<?> attribute) {
@@ -927,7 +924,8 @@ public class EntityEditComponentPanel extends JPanel {
 
 		@Override
 		public InputPanelBuilder label(JComponent labelComponent) {
-			return label(labelComponent, BorderLayout.NORTH);
+			this.label = requireNonNull(labelComponent);
+			return this;
 		}
 
 		@Override
@@ -936,21 +934,9 @@ public class EntityEditComponentPanel extends JPanel {
 		}
 
 		@Override
-		public InputPanelBuilder label(JComponent label, String constraints) {
-			labelConstraints(constraints);
-			this.label = requireNonNull(label);
-			return this;
-		}
-
-		@Override
-		public InputPanelBuilder label(Supplier<? extends JComponent> labelComponent, String constraints) {
-			return label(requireNonNull(labelComponent).get(), constraints);
-		}
-
-		@Override
 		public InputPanelBuilder labelConstraints(String constraints) {
-			if (requireNonNull(constraints).equals(BorderLayout.CENTER)) {
-				throw new IllegalArgumentException("BorderLayout.CENTER is reserved for the input component");
+			if (requireNonNull(constraints).equals(componentConstraints)) {
+				throw new IllegalArgumentException("labelConstraints must differ from componentConstraints");
 			}
 			this.labelConstraints = requireNonNull(constraints);
 			return this;
@@ -968,9 +954,18 @@ public class EntityEditComponentPanel extends JPanel {
 		}
 
 		@Override
+		public InputPanelBuilder componentConstraints(String constraints) {
+			if (requireNonNull(constraints).equals(labelConstraints)) {
+				throw new IllegalArgumentException("componentConstraints must differ from labelConstraints");
+			}
+			this.componentConstraints = requireNonNull(constraints);
+			return this;
+		}
+
+		@Override
 		protected JPanel createComponent() {
 			return borderLayoutPanel()
-							.add(component, BorderLayout.CENTER)
+							.add(component, componentConstraints)
 							.add(label, labelConstraints)
 							.build();
 		}

@@ -27,6 +27,7 @@ import is.codion.swing.framework.ui.TestDomain.Employee;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.JTextField;
+import java.awt.BorderLayout;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -50,5 +51,21 @@ public final class EntityEditComponentPanelTest {
 		assertNotNull(nameField);
 		assertThrows(IllegalStateException.class, () -> componentPanel.createTextField(Employee.NAME));
 		assertTrue(componentPanel.component(Employee.JOB).isNull());
+	}
+
+	@Test
+	void inputPanel() {
+		SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
+		EntityEditComponentPanel componentPanel = new EntityEditComponentPanel(editModel);
+		componentPanel.createTextField(Employee.NAME);
+		assertThrows(IllegalArgumentException.class, () -> componentPanel.createInputPanel(Employee.NAME)
+						.labelConstraints(BorderLayout.WEST)
+						.componentConstraints(BorderLayout.WEST));
+		assertThrows(IllegalArgumentException.class, () -> componentPanel.createInputPanel(Employee.NAME)
+						.labelConstraints("bla")
+						.build());
+		assertThrows(IllegalArgumentException.class, () -> componentPanel.createInputPanel(Employee.NAME)
+						.componentConstraints("bla")
+						.build());
 	}
 }
