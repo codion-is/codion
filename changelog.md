@@ -36,6 +36,8 @@ Codion Change Log
 - EntityEditComponentPanel.InputPanelBuilder now extends ComponentBuilder.
 - EntityEditComponentPanel.InputPanelBuilder.label() overloads with constraints removed.
 - EntityEditComponentPanel.InputPanelBuilder moved to package is.codion.swing.common.ui.component.panel.
+- EntityEditComponentPanel.label(attribute) removed.
+- EntityEditComponentPanel.EditComponent added, components can no longer be replaced once set.
 
 ## 0.18.43
 ### is.codion.common.core

@@ -26,6 +26,7 @@ import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
+import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -50,5 +51,6 @@ public final class EntityEditComponentPanelTest {
 		assertNotNull(nameField);
 		assertThrows(IllegalStateException.class, () -> componentPanel.createTextField(Employee.NAME));
 		assertTrue(componentPanel.component(Employee.JOB).isNull());
+		assertThrows(IllegalStateException.class, () -> componentPanel.component(Employee.NAME).set(new JLabel()));
 	}
 }
