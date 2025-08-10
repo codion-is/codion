@@ -831,7 +831,6 @@ public class EntityEditComponentPanel extends JPanel {
 
 			/**
 			 * Sets the {@link Supplier} supplying the component that should receive the focus after an insert has been performed.
-			 * Takes precedence over the one set via {@link #set(Attribute)}
 			 * @param component supplies the component that should receive the focus after an insert has been performed
 			 */
 			public void set(Supplier<@Nullable JComponent> component) {

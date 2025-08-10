@@ -68,6 +68,7 @@ public final class ServerMonitorPanel extends JPanel {
 
 	private static final int SPINNER_COLUMNS = 3;
 	private static final String DOMAIN = "Domain";
+	private static final String REFRESH = "Refresh";
 
 	private final ServerMonitor model;
 
@@ -248,7 +249,7 @@ public final class ServerMonitorPanel extends JPanel {
 		JPanel refreshPanel = flowLayoutPanel(FlowLayout.RIGHT)
 						.add(button()
 										.control(command(model::refreshOperationList))
-										.text("Refresh"))
+										.text(REFRESH))
 						.build();
 
 		return borderLayoutPanel()
@@ -271,7 +272,7 @@ public final class ServerMonitorPanel extends JPanel {
 										.text("Clear Cache"))
 						.add(button()
 										.control(command(model::refreshReportList))
-										.text("Refresh"))
+										.text(REFRESH))
 						.build();
 
 		return borderLayoutPanel()
@@ -291,7 +292,7 @@ public final class ServerMonitorPanel extends JPanel {
 		JPanel refreshPanel = flowLayoutPanel(FlowLayout.RIGHT)
 						.add(button()
 										.control(command(model::refreshDomainList))
-										.text("Refresh"))
+										.text(REFRESH))
 						.build();
 
 		return borderLayoutPanel()
