@@ -22,7 +22,6 @@ import is.codion.demos.chinook.domain.api.Chinook.InvoiceLine;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
@@ -69,10 +68,10 @@ public final class InvoiceLineEditPanel extends EntityEditPanel {
 						.add(createInputPanel(InvoiceLine.TRACK_FK))
 						.add(createInputPanel(InvoiceLine.QUANTITY))
 						.add(borderLayoutPanel()
-										.north(new JLabel(" "))
+										.north(label(" "))
 										.center(updateToolBar))
 						.add(borderLayoutPanel()
-										.north(new JLabel(" "))
+										.north(label(" "))
 										.center(tableSearchField))
 						.build();
 

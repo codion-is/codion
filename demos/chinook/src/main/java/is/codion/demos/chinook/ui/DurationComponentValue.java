@@ -112,9 +112,9 @@ final class DurationComponentValue extends AbstractComponentValue<Integer, Durat
 		private final NumberField<Integer> secondsField;
 		private final NumberField<Integer> millisecondsField;
 
-		private final JLabel minLabel = new JLabel(BUNDLE.getString("min"));
-		private final JLabel secLabel = new JLabel(BUNDLE.getString("sec"));
-		private final JLabel msLabel = new JLabel(BUNDLE.getString("ms"));
+		private final JLabel minLabel = label(BUNDLE.getString("min")).build();
+		private final JLabel secLabel = label(BUNDLE.getString("sec")).build();
+		private final JLabel msLabel = label(BUNDLE.getString("ms")).build();
 
 		private DurationPanel(boolean cellEditor) {
 			this(cellEditor, null, null);

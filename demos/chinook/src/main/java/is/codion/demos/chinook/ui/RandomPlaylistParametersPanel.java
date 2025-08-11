@@ -31,9 +31,7 @@ import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.list.FilterList;
 import is.codion.swing.common.ui.component.text.NumberField;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.util.Collection;
@@ -63,14 +61,15 @@ final class RandomPlaylistParametersPanel extends JPanel {
 		genreList = createGenreList(connectionProvider);
 		add(borderLayoutPanel()
 						.north(gridLayoutPanel(1, 2)
-										.add(new JLabel(BUNDLE.getString("playlist_name")))
-										.add(new JLabel(BUNDLE.getString("no_of_tracks"))))
+										.add(label(BUNDLE.getString("playlist_name")))
+										.add(label(BUNDLE.getString("no_of_tracks"))))
 						.center(gridLayoutPanel(1, 2)
 										.add(playlistNameField)
 										.add(noOfTracksField))
 						.south(borderLayoutPanel()
-										.north(new JLabel(BUNDLE.getString("genres")))
-										.center(new JScrollPane(genreList)))
+										.north(label(BUNDLE.getString("genres")))
+										.center(scrollPane()
+														.view(genreList)))
 						.build(), BorderLayout.CENTER);
 	}
 

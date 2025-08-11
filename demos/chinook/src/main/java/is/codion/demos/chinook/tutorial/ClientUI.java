@@ -34,7 +34,6 @@ import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.component.EntityComboBox;
 
 import javax.swing.BorderFactory;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -84,7 +83,7 @@ public final class ClientUI {
 										"Inserted: " + insertedEntities.iterator().next()));
 
 		JPanel artistPanel = Components.gridLayoutPanel(2, 1)
-						.add(new JLabel("Artist name"))
+						.add(Components.label("Artist name"))
 						.add(artistNameTextField)
 						.border(BorderFactory.createEmptyBorder(10, 10, 10, 10))
 						.build();
@@ -154,9 +153,9 @@ public final class ClientUI {
 										"Inserted: " + insertedEntities.iterator().next()));
 
 		JPanel albumPanel = Components.gridLayoutPanel(4, 1)
-						.add(new JLabel("Artist"))
+						.add(Components.label("Artist"))
 						.add(artistComboBox)
-						.add(new JLabel("Title"))
+						.add(Components.label("Title"))
 						.add(titleTextField)
 						.border(BorderFactory.createEmptyBorder(10, 10, 10, 10))
 						.build();
