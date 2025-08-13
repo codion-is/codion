@@ -11,6 +11,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - FilterTableColumn.setFixedWidth() added.
 - FilterTableColumn.Builder.ModelIndexBuilder renamed ModelIndexStep.
+- TabbedPaneBuilder refactored, methods overloaded with Supplier.
 ### is.codion.framework.domain
 - ColumnDefinition.get(ResultSet) overloaded without index, fetches value by column name.
 - KeyGenerator.returnGeneratedKeys() renamed generatedKeys().

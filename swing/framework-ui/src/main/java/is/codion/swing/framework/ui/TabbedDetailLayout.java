@@ -349,7 +349,9 @@ public final class TabbedDetailLayout implements DetailLayout {
 						.changeListener(e -> selectedDetailPanel().activate())
 						.minimumSize(new Dimension(0, 0))
 						.focusCycleRoot(true);
-		detailPanels.forEach(detailPanel -> builder.tabBuilder(detailPanel.caption(), detailPanel)
+		detailPanels.forEach(detailPanel -> builder
+						.tab(detailPanel.caption())
+						.component(detailPanel)
 						.toolTipText(detailPanel.description().orElse(null))
 						.icon(detailPanel.icon().orElse(null))
 						.add());

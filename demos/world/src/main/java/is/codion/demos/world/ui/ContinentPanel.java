@@ -78,10 +78,12 @@ final class ContinentPanel extends EntityPanel {
 		preferredHeight(countryTablePanel, 300);
 
 		JTabbedPane tabbedPane = tabbedPane()
-						.tabBuilder("Charts", chartPanel)
+						.tab("Charts")
+						.component(chartPanel)
 						.mnemonic(VK_1)
 						.add()
-						.tabBuilder("Countries", countryTablePanel.initialize())
+						.tab("Countries")
+						.component(countryTablePanel.initialize())
 						.mnemonic(VK_2)
 						.add()
 						.build();

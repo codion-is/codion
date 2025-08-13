@@ -30,6 +30,7 @@ import javax.swing.event.ChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -60,18 +61,20 @@ final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<JTabbedPan
 
 	@Override
 	public TabbedPaneBuilder tab(String title, JComponent component) {
-		new DefaultTabBuilder(this, requireNonNull(title), component).add();
+		new DefaultTabBuilder(this, title)
+						.component(component)
+						.add();
 		return this;
 	}
 
 	@Override
-	public TabBuilder tabBuilder(JComponent component) {
-		return new DefaultTabBuilder(this, null, component);
+	public TabbedPaneBuilder tab(String title, Supplier<? extends JComponent> component) {
+		return tab(title, requireNonNull(component).get());
 	}
 
 	@Override
-	public TabBuilder tabBuilder(String title, JComponent component) {
-		return new DefaultTabBuilder(this, requireNonNull(title), component);
+	public TabBuilder tab(String title) {
+		return new DefaultTabBuilder(this, title);
 	}
 
 	@Override
@@ -95,18 +98,28 @@ final class DefaultTabbedPaneBuilder extends AbstractComponentBuilder<JTabbedPan
 	private static final class DefaultTabBuilder implements TabBuilder {
 
 		private final DefaultTabbedPaneBuilder tabbedPaneBuilder;
-		private final JComponent component;
-		private final @Nullable String title;
+		private final String title;
 
+		private @Nullable JComponent component;
 		private int mnemonic;
 		private @Nullable String toolTipText;
 		private @Nullable Icon icon;
 		private @Nullable JComponent tabComponent;
 
-		private DefaultTabBuilder(DefaultTabbedPaneBuilder tabbedPaneBuilder, @Nullable String title, JComponent component) {
+		private DefaultTabBuilder(DefaultTabbedPaneBuilder tabbedPaneBuilder, String title) {
 			this.tabbedPaneBuilder = tabbedPaneBuilder;
-			this.title = title;
-			this.component = requireNonNull(component);
+			this.title = requireNonNull(title);
+		}
+
+		@Override
+		public TabBuilder component(@Nullable JComponent component) {
+			this.component = component;
+			return this;
+		}
+
+		@Override
+		public TabBuilder component(Supplier<? extends JComponent> component) {
+			return component(requireNonNull(component).get());
 		}
 
 		@Override

@@ -226,17 +226,14 @@ public final class LoadTestPanel<T> extends JPanel {
 										.tab("Applications", createApplicationsPanel())
 										.tab("Scenarios", borderLayoutPanel()
 														.west(createScenarioPanel())
-														.center(scenarioBase)
-														.build())
+														.center(scenarioBase))
 										.tab("Overview", borderLayoutPanel()
 														.center(splitPane()
 																		.orientation(JSplitPane.VERTICAL_SPLIT)
 																		.oneTouchExpandable(true)
 																		.topComponent(createScenarioOverviewChartPanel())
 																		.bottomComponent(createSouthChartPanel())
-																		.resizeWeight(RESIZE_WEIGHT)
-																		.build())
-														.build()))
+																		.resizeWeight(RESIZE_WEIGHT))))
 						.build();
 	}
 

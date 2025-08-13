@@ -27,6 +27,7 @@ import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeListener;
 import java.awt.Component;
+import java.util.function.Supplier;
 
 /**
  * A builder for a JTabbedPane.
@@ -39,12 +40,16 @@ import java.awt.Component;
  * Components.tabbedPane()
  *         .tabPlacement(SwingConstants.TOP)
  *         .tabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT)
- *         .tabBuilder("First Tab", new JLabel("First"))
+ *         .tab()
+ *         .title("First Tab")
+ *         .component(new JLabel("First"))
  *         .mnemonic(KeyEvent.VK_1)
  *         .toolTipText("This is the first tab")
  *         .icon(firstTabIcon)
  *         .add()
- *         .tabBuilder("Second Tab", new JLabel("Second"))
+ *         .tab()
+ *         .title("Second Tab")
+ *         .component(new JLabel("Second"))
  *         .mnemonic(KeyEvent.VK_2)
  *         .toolTipText("This is the second tab")
  *         .icon(secondTabIcon)
@@ -77,7 +82,7 @@ public interface TabbedPaneBuilder extends ComponentBuilder<JTabbedPane, TabbedP
 
 	/**
 	 * Adds a tab to this tabbed pane builder.
-	 * For further tab configuration use {@link #tabBuilder(JComponent)}.
+	 * For further tab configuration use {@link #tab(String)}.
 	 * @param title the tab title
 	 * @param component the component to display in the tab
 	 * @return this builder instance
@@ -86,26 +91,38 @@ public interface TabbedPaneBuilder extends ComponentBuilder<JTabbedPane, TabbedP
 	TabbedPaneBuilder tab(String title, JComponent component);
 
 	/**
-	 * Returns a new {@link TabBuilder} for adding a tab
+	 * Adds a tab to this tabbed pane builder.
+	 * For further tab configuration use {@link #tab(String)}.
+	 * @param title the tab title
 	 * @param component the component to display in the tab
-	 * @return a new {@link TabBuilder} instance
+	 * @return this builder instance
 	 * @see JTabbedPane#addTab(String, Component)
 	 */
-	TabBuilder tabBuilder(JComponent component);
+	TabbedPaneBuilder tab(String title, Supplier<? extends JComponent> component);
 
 	/**
 	 * Returns a new {@link TabBuilder} for adding a tab
 	 * @param title the tab title
-	 * @param component the component to display in the tab
 	 * @return a new {@link TabBuilder} instance
-	 * @see JTabbedPane#addTab(String, Component)
 	 */
-	TabBuilder tabBuilder(String title, JComponent component);
+	TabBuilder tab(String title);
 
 	/**
 	 * Builds a Tab for a {@link TabbedPaneBuilder}.
 	 */
 	interface TabBuilder {
+
+		/**
+		 * @param component the component
+		 * @return this builder instance
+		 */
+		TabBuilder component(@Nullable JComponent component);
+
+		/**
+		 * @param component the component
+		 * @return this builder instance
+		 */
+		TabBuilder component(Supplier<? extends JComponent> component);
 
 		/**
 		 * @param mnemonic the tab mnemonic

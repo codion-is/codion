@@ -252,10 +252,12 @@ public final class DomainGeneratorPanel extends JPanel {
 
 	private JTabbedPane createSourceTabbedPane() {
 		return tabbedPane()
-						.tabBuilder("API/Impl", createApiImplPanel())
+						.tab("API/Impl")
+						.component(createApiImplPanel())
 						.mnemonic('A')
 						.add()
-						.tabBuilder("Combined", createCombinedPanel())
+						.tab("Combined")
+						.component(createCombinedPanel())
 						.mnemonic('C')
 						.add()
 						.build();
