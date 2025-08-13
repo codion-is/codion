@@ -77,8 +77,8 @@ final class SelectSerializer extends StdSerializer<Select> {
 		if (select.forUpdate()) {
 			generator.writeObjectField("forUpdate", select.forUpdate());
 		}
-		if (select.queryTimeout() != 0) {
-			generator.writeObjectField("queryTimeout", select.queryTimeout());
+		if (select.timeout() != 0) {
+			generator.writeObjectField("timeout", select.timeout());
 		}
 		int conditionReferenceDepth = select.referenceDepth().orElse(-1);
 		if (conditionReferenceDepth != -1) {

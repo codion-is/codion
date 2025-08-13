@@ -1043,7 +1043,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		List<Object> statementValues = statementValues(select.where(), select.having());
 		List<ColumnDefinition<?>> statementColumns = statementColumns(select.where(), select.having());
 		try {
-			statement = prepareStatement(selectQuery, false, select.queryTimeout());
+			statement = prepareStatement(selectQuery, false, select.timeout());
 			resultSet = executeQuery(statement, selectQuery, statementColumns, statementValues);
 
 			return new EntityResultIterator(statement, resultSet,
@@ -1140,13 +1140,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		return prepareStatement(query, generatedKeys, defaultQueryTimeout);
 	}
 
-	private PreparedStatement prepareStatement(String query, boolean generatedKeys, int queryTimeout) throws SQLException {
+	private PreparedStatement prepareStatement(String query, boolean generatedKeys, int timeout) throws SQLException {
 		tracer.enter("prepareStatement", query);
 		try {
 			PreparedStatement statement = generatedKeys ?
 							connection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS) :
 							connection.getConnection().prepareStatement(query);
-			statement.setQueryTimeout(queryTimeout);
+			statement.setQueryTimeout(timeout);
 
 			return statement;
 		}

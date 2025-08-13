@@ -113,18 +113,18 @@ public final class SelectTest {
 		void select_queryTimeout_validatesAndConfigures() {
 			// Negative timeout should throw
 			assertThrows(IllegalArgumentException.class,
-							() -> Select.all(Department.TYPE).queryTimeout(-1));
+							() -> Select.all(Department.TYPE).timeout(-1));
 
 			// Valid timeout should work
 			Select select = Select.all(Department.TYPE)
-							.queryTimeout(30)
+							.timeout(30)
 							.build();
 
-			assertEquals(30, select.queryTimeout());
+			assertEquals(30, select.timeout());
 
 			// Default timeout
 			select = Select.all(Department.TYPE).build();
-			assertEquals(EntityConnection.DEFAULT_QUERY_TIMEOUT_SECONDS, select.queryTimeout());
+			assertEquals(EntityConnection.DEFAULT_QUERY_TIMEOUT_SECONDS, select.timeout());
 		}
 	}
 
@@ -365,7 +365,7 @@ public final class SelectTest {
 							.offset(5)
 							.forUpdate()
 							.attributes(Employee.ID, Employee.NAME)
-							.queryTimeout(30)
+							.timeout(30)
 							.build();
 
 			String toString = select.toString();
@@ -375,7 +375,7 @@ public final class SelectTest {
 			assertTrue(toString.contains("offset=5"));
 			assertTrue(toString.contains("forUpdate=true"));
 			assertTrue(toString.contains("attributes="));
-			assertTrue(toString.contains("queryTimeout=30"));
+			assertTrue(toString.contains("timeout=30"));
 		}
 	}
 }

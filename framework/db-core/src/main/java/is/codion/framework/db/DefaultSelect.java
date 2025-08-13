@@ -54,7 +54,7 @@ final class DefaultSelect implements Select, Serializable {
 	private final boolean forUpdate;
 	private final @Nullable Integer limit;
 	private final @Nullable Integer offset;
-	private final int queryTimeout;
+	private final int timeout;
 
 	private DefaultSelect(DefaultBuilder builder) {
 		this.where = builder.where;
@@ -68,7 +68,7 @@ final class DefaultSelect implements Select, Serializable {
 		this.forUpdate = builder.forUpdate;
 		this.limit = builder.limit;
 		this.offset = builder.offset;
-		this.queryTimeout = builder.queryTimeout;
+		this.timeout = builder.timeout;
 	}
 
 	@Override
@@ -122,8 +122,8 @@ final class DefaultSelect implements Select, Serializable {
 	}
 
 	@Override
-	public int queryTimeout() {
-		return queryTimeout;
+	public int timeout() {
+		return timeout;
 	}
 
 	@Override
@@ -168,7 +168,7 @@ final class DefaultSelect implements Select, Serializable {
 						", forUpdate=" + forUpdate +
 						", limit=" + limit +
 						", offset=" + offset +
-						", queryTimeout=" + queryTimeout + "}";
+						", timeout=" + timeout + "}";
 	}
 
 	static final class DefaultBuilder implements Select.Builder {
@@ -184,7 +184,7 @@ final class DefaultSelect implements Select, Serializable {
 		private boolean forUpdate;
 		private @Nullable Integer limit;
 		private @Nullable Integer offset;
-		private int queryTimeout = EntityConnection.DEFAULT_QUERY_TIMEOUT_SECONDS;
+		private int timeout = EntityConnection.DEFAULT_QUERY_TIMEOUT_SECONDS;
 
 		DefaultBuilder(Condition where) {
 			this.where = requireNonNull(where);
@@ -245,11 +245,11 @@ final class DefaultSelect implements Select, Serializable {
 		}
 
 		@Override
-		public Builder queryTimeout(int queryTimeout) {
-			if (queryTimeout < 0) {
+		public Builder timeout(int timeout) {
+			if (timeout < 0) {
 				throw new IllegalArgumentException("Query timeout must be greater than or equal to 0");
 			}
-			this.queryTimeout = queryTimeout;
+			this.timeout = timeout;
 			return this;
 		}
 

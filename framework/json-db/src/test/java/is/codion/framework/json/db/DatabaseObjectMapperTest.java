@@ -54,7 +54,7 @@ public final class DatabaseObjectMapperTest {
 						.limit(2)
 						.offset(1)
 						.forUpdate()
-						.queryTimeout(42)
+						.timeout(42)
 						.referenceDepth(2)
 						.referenceDepth(Employee.DEPARTMENT_FK, 0)
 						.attributes(Employee.COMMISSION, Employee.DEPARTMENT)
@@ -74,7 +74,7 @@ public final class DatabaseObjectMapperTest {
 		}
 		assertEquals(select.attributes(), readCondition.attributes());
 		assertTrue(readCondition.forUpdate());
-		assertEquals(42, readCondition.queryTimeout());
+		assertEquals(42, readCondition.timeout());
 		assertEquals(select, readCondition);
 
 		select = Select.where(Employee.EMPNO.equalTo(1)).build();

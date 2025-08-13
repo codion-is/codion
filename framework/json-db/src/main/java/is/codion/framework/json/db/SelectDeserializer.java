@@ -98,9 +98,9 @@ final class SelectDeserializer extends StdDeserializer<Select> {
 		if (attributes != null && !attributes.isNull()) {
 			selectBuilder.attributes(deserializeAttributes(definition, attributes));
 		}
-		JsonNode queryTimeout = jsonNode.get("queryTimeout");
-		if (queryTimeout != null && !queryTimeout.isNull()) {
-			selectBuilder.queryTimeout(queryTimeout.asInt());
+		JsonNode timeout = jsonNode.get("timeout");
+		if (timeout != null && !timeout.isNull()) {
+			selectBuilder.timeout(timeout.asInt());
 		}
 
 		return selectBuilder.build();

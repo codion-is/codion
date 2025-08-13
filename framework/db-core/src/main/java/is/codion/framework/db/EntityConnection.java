@@ -853,7 +853,7 @@ public interface EntityConnection extends AutoCloseable {
 		/**
 		 * @return the query timeout
 		 */
-		int queryTimeout();
+		int timeout();
 
 		/**
 		 * @return the global reference depth limit for this condition, an empty Optional if none has been specified
@@ -959,10 +959,10 @@ public interface EntityConnection extends AutoCloseable {
 			Builder attributes(Collection<? extends Attribute<?>> attributes);
 
 			/**
-			 * @param queryTimeout the query timeout, 0 for no timeout
+			 * @param timeout the query timeout, 0 for no timeout
 			 * @return this builder instance
 			 */
-			Builder queryTimeout(int queryTimeout);
+			Builder timeout(int timeout);
 
 			/**
 			 * The HAVING condition. Note that this condition
