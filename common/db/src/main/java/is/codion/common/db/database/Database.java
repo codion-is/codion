@@ -70,7 +70,7 @@ public interface Database extends ConnectionFactory {
 	/**
 	 * Specifies the jdbc url of the database.
 	 */
-	PropertyValue<String> DATABASE_URL = stringValue("codion.db.url");
+	PropertyValue<String> URL = stringValue("codion.db.url");
 
 	/**
 	 * Specifies whether {@link #instance()} should create a new instance each time the database URL has changed.
@@ -79,7 +79,7 @@ public interface Database extends ConnectionFactory {
 	 * <li>Value type: Boolean
 	 * <li>Default value: false
 	 * </ul>
-	 * @see #DATABASE_URL
+	 * @see #URL
 	 */
 	PropertyValue<Boolean> URL_SCOPED_INSTANCE = booleanValue("codion.db.urlScopedInstance", false);
 
@@ -308,14 +308,14 @@ public interface Database extends ConnectionFactory {
 	void connectionProvider(ConnectionProvider connectionProvider);
 
 	/**
-	 * Returns a {@link Database} instance based on the currently configured JDBC URL ({@link Database#DATABASE_URL}).
-	 * Subsequent changes to {@link Database#DATABASE_URL} will cause an exception to be thrown
+	 * Returns a {@link Database} instance based on the currently configured JDBC URL ({@link Database#URL}).
+	 * Subsequent changes to {@link Database#URL} will cause an exception to be thrown
 	 * unless {@link #URL_SCOPED_INSTANCE} is enabled, then a new instance is created and returned.
 	 * @return a Database instance based on the current jdbc url
 	 * @throws IllegalArgumentException in case an unsupported database type is specified
 	 * @throws RuntimeException in case of an exception occurring while instantiating the database implementation
-	 * @throws DatabaseException in case {@link Database#DATABASE_URL} has changed and {@link #URL_SCOPED_INSTANCE} is not enabled
-	 * @see Database#DATABASE_URL
+	 * @throws DatabaseException in case {@link Database#URL} has changed and {@link #URL_SCOPED_INSTANCE} is not enabled
+	 * @see Database#URL
 	 */
 	static Database instance() {
 		return AbstractDatabase.instance();

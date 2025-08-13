@@ -20,7 +20,7 @@
  * <p>Database related classes.
  * <p>Package configuration values:
  * <ul>
- * <li>{@link is.codion.common.db.database.Database#DATABASE_URL}
+ * <li>{@link is.codion.common.db.database.Database#URL}
  * <li>{@link is.codion.common.db.database.Database#URL_SCOPED_INSTANCE}
  * <li>{@link is.codion.common.db.database.Database#INIT_SCRIPTS}
  * <li>{@link is.codion.common.db.database.Database#COUNT_QUERIES}

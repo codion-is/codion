@@ -271,7 +271,7 @@ public abstract class AbstractDatabase implements Database {
 	}
 
 	static Database instance() {
-		String databaseUrl = DATABASE_URL.getOrThrow();
+		String databaseUrl = URL.getOrThrow();
 		try {
 			synchronized (AbstractDatabase.class) {
 				if (AbstractDatabase.instance == null) {

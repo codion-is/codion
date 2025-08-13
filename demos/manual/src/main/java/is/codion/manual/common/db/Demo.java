@@ -39,7 +39,7 @@ public final class Demo {
 
 	private void databaseFromConfiguration() {
 		// tag::configuration[]
-		Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
+		Database.URL.set("jdbc:h2:mem:h2db");
 
 		Database database = Database.instance();
 		// end::configuration[]
@@ -67,7 +67,7 @@ public final class Demo {
 
 	private void connection() {
 		// tag::connection[]
-		Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
+		Database.URL.set("jdbc:h2:mem:h2db");
 
 		Database database = Database.instance();
 
@@ -79,7 +79,7 @@ public final class Demo {
 
 	private void databaseConnection() throws SQLException {
 		// tag::databaseConnection[]
-		Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
+		Database.URL.set("jdbc:h2:mem:h2db");
 
 		Database database = Database.instance();
 
