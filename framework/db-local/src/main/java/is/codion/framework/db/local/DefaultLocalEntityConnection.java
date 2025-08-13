@@ -761,7 +761,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 					}
 
 					insertQuery = insertQuery(entityDefinition.table(), statementColumns);
-					try (PreparedStatement statement = prepareStatement(insertQuery, keyGenerator.returnGeneratedKeys())) {
+					try (PreparedStatement statement = prepareStatement(insertQuery, keyGenerator.generatedKeys())) {
 						executeUpdate(statement, insertQuery, statementColumns, statementValues, INSERT);
 						keyGenerator.afterInsert(entity, connection, statement);
 					}
@@ -1136,15 +1136,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		return prepareStatement(query, false);
 	}
 
-	private PreparedStatement prepareStatement(String query, boolean returnGeneratedKeys) throws SQLException {
-		return prepareStatement(query, returnGeneratedKeys, defaultQueryTimeout);
+	private PreparedStatement prepareStatement(String query, boolean generatedKeys) throws SQLException {
+		return prepareStatement(query, generatedKeys, defaultQueryTimeout);
 	}
 
-	private PreparedStatement prepareStatement(String query, boolean returnGeneratedKeys,
-																						 int queryTimeout) throws SQLException {
+	private PreparedStatement prepareStatement(String query, boolean generatedKeys, int queryTimeout) throws SQLException {
 		tracer.enter("prepareStatement", query);
 		try {
-			PreparedStatement statement = returnGeneratedKeys ?
+			PreparedStatement statement = generatedKeys ?
 							connection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS) :
 							connection.getConnection().prepareStatement(query);
 			statement.setQueryTimeout(queryTimeout);

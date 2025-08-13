@@ -337,7 +337,7 @@ public final class TestDomain extends DomainModel {
 			}
 
 			@Override
-			public boolean returnGeneratedKeys() {
+			public boolean generatedKeys() {
 				return true;
 			}
 		};

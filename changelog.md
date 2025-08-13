@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.45
 ### is.codion.framework.domain
 - ColumnDefinition.get(ResultSet) overloaded without index, fetches value by column name.
+- KeyGenerator.returnGeneratedKeys() renamed generatedKeys().
 ### is.codion.framework.db
 - DefaultLocalEntityConnection, selecting single values of entities with custom query columns now supported.
 - EntityResultPacker now fetches values by column name when the entity query has custom columns, query column order no longer has to match the attribute definition order.

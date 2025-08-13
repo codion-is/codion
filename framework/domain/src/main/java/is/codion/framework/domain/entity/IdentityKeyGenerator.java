@@ -37,7 +37,7 @@ final class IdentityKeyGenerator implements KeyGenerator.Identity {
 	}
 
 	@Override
-	public boolean returnGeneratedKeys() {
+	public boolean generatedKeys() {
 		return true;
 	}
 
