@@ -40,13 +40,13 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
 
 	private final Domain domain;
 	private final Database database;
-	private final int defaultQueryTimeout;
+	private final int queryTimeout;
 
 	DefaultLocalEntityConnectionProvider(DefaultLocalEntityConnectionProviderBuilder builder) {
 		super(builder);
 		this.domain = builder.domain == null ? initializeDomain(domainType()) : builder.domain;
 		this.database = builder.database == null ? Database.instance() : builder.database;
-		this.defaultQueryTimeout = builder.defaultQueryTimeout;
+		this.queryTimeout = builder.queryTimeout;
 	}
 
 	@Override
@@ -78,7 +78,7 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
 	protected LocalEntityConnection connect() {
 		LOG.debug("Initializing connection for {}", user());
 		LocalEntityConnection connection = localEntityConnection(database(), domain(), user());
-		connection.defaultQueryTimeout(defaultQueryTimeout);
+		connection.queryTimeout(queryTimeout);
 
 		return connection;
 	}

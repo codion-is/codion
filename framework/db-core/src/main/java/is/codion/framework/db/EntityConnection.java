@@ -103,16 +103,6 @@ import static java.util.Objects.requireNonNull;
 public interface EntityConnection extends AutoCloseable {
 
 	/**
-	 * The default query timeout in seconds
-	 */
-	int DEFAULT_QUERY_TIMEOUT_SECONDS = 120;
-
-	/**
-	 * The default maximum batch operation size
-	 */
-	int DEFAULT_MAXIMUM_BATCH_SIZE = 10_000;
-
-	/**
 	 * Specifies the maximum batch operation size for insert and copy operations.
 	 * This prevents memory exhaustion from excessively large batch operations.
 	 * <ul>
@@ -122,7 +112,7 @@ public interface EntityConnection extends AutoCloseable {
 	 * <li>Valid range: 1-1,000,000 (typically 1,000-50,000 for most applications)
 	 * </ul>
 	 */
-	PropertyValue<Integer> MAXIMUM_BATCH_SIZE = integerValue("codion.db.maximumBatchSize", DEFAULT_MAXIMUM_BATCH_SIZE);
+	PropertyValue<Integer> MAXIMUM_BATCH_SIZE = integerValue("codion.db.maximumBatchSize", 10_000);
 
 	/**
 	 * @return the underlying domain entities
@@ -959,6 +949,7 @@ public interface EntityConnection extends AutoCloseable {
 			Builder attributes(Collection<? extends Attribute<?>> attributes);
 
 			/**
+			 * Default 120 seconds.
 			 * @param timeout the query timeout, 0 for no timeout
 			 * @return this builder instance
 			 */

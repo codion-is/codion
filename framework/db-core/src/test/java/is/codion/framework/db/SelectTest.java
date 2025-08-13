@@ -124,7 +124,7 @@ public final class SelectTest {
 
 			// Default timeout
 			select = Select.all(Department.TYPE).build();
-			assertEquals(EntityConnection.DEFAULT_QUERY_TIMEOUT_SECONDS, select.timeout());
+			assertEquals(120, select.timeout());
 		}
 	}
 

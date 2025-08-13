@@ -67,9 +67,9 @@ public interface LocalEntityConnectionProvider extends EntityConnectionProvider 
 		Builder domain(Domain domain);
 
 		/**
-		 * @param defaultQueryTimeout the default query timeout
+		 * @param queryTimeout the default query timeout
 		 * @return this builder instance
 		 */
-		Builder defaultQueryTimeout(int defaultQueryTimeout);
+		Builder queryTimeout(int queryTimeout);
 	}
 }

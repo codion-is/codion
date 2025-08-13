@@ -16,6 +16,7 @@ Codion Change Log
 - DefaultLocalEntityConnection, selecting single values of entities with custom query columns now supported.
 - EntityResultPacker now fetches values by column name when the entity query has custom columns, query column order no longer has to match the attribute definition order.
 - EntityConnection.Select.queryTimeout() renamed timeout().
+- LocalEntityConnection.defaultQueryTimeout() renamed queryTimeout(), QUERY_TIMEOUT_SECONDS renamed QUERY_TIMEOUT.
 
 ## 0.18.44
 ### is.codion.common.core

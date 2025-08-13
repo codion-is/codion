@@ -121,9 +121,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 
 	private MethodTracer tracer = NO_OP_TRACER;
 
-	private boolean optimisticLocking = LocalEntityConnection.OPTIMISTIC_LOCKING.getOrThrow();
-	private boolean limitForeignKeyReferenceDepth = LocalEntityConnection.LIMIT_FOREIGN_KEY_REFERENCE_DEPTH.getOrThrow();
-	private int defaultQueryTimeout = LocalEntityConnection.QUERY_TIMEOUT_SECONDS.getOrThrow();
+	private boolean optimisticLocking = OPTIMISTIC_LOCKING.getOrThrow();
+	private boolean limitForeignKeyReferenceDepth = LIMIT_FOREIGN_KEY_REFERENCE_DEPTH.getOrThrow();
+	private int queryTimeout = QUERY_TIMEOUT.getOrThrow();
 	private boolean queryCacheEnabled = false;
 
 	/**
@@ -720,16 +720,19 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	@Override
-	public int defaultQueryTimeout() {
+	public int queryTimeout() {
 		synchronized (connection) {
-			return defaultQueryTimeout;
+			return queryTimeout;
 		}
 	}
 
 	@Override
-	public void defaultQueryTimeout(int defaultQueryTimeout) {
+	public void queryTimeout(int queryTimeout) {
+		if (queryTimeout < 0) {
+			throw new IllegalArgumentException("queryTimeout must be >= 0");
+		}
 		synchronized (connection) {
-			this.defaultQueryTimeout = defaultQueryTimeout;
+			this.queryTimeout = queryTimeout;
 		}
 	}
 
@@ -1137,16 +1140,16 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	private PreparedStatement prepareStatement(String query, boolean generatedKeys) throws SQLException {
-		return prepareStatement(query, generatedKeys, defaultQueryTimeout);
+		return prepareStatement(query, generatedKeys, queryTimeout);
 	}
 
-	private PreparedStatement prepareStatement(String query, boolean generatedKeys, int timeout) throws SQLException {
+	private PreparedStatement prepareStatement(String query, boolean generatedKeys, int queryTimeout) throws SQLException {
 		tracer.enter("prepareStatement", query);
 		try {
 			PreparedStatement statement = generatedKeys ?
 							connection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS) :
 							connection.getConnection().prepareStatement(query);
-			statement.setQueryTimeout(timeout);
+			statement.setQueryTimeout(queryTimeout);
 
 			return statement;
 		}

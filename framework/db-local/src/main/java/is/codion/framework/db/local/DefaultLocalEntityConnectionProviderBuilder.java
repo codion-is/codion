@@ -37,7 +37,7 @@ public final class DefaultLocalEntityConnectionProviderBuilder
 
 	@Nullable Domain domain;
 	@Nullable Database database;
-	int defaultQueryTimeout = LocalEntityConnection.QUERY_TIMEOUT_SECONDS.getOrThrow();
+	int queryTimeout = LocalEntityConnection.QUERY_TIMEOUT.getOrThrow();
 
 	/**
 	 * Instantiates a new {@link DefaultLocalEntityConnectionProviderBuilder}
@@ -59,8 +59,11 @@ public final class DefaultLocalEntityConnectionProviderBuilder
 	}
 
 	@Override
-	public LocalEntityConnectionProvider.Builder defaultQueryTimeout(int defaultQueryTimeout) {
-		this.defaultQueryTimeout = defaultQueryTimeout;
+	public LocalEntityConnectionProvider.Builder queryTimeout(int queryTimeout) {
+		if (queryTimeout < 0) {
+			throw new IllegalArgumentException("queryTimeout must be >= 0");
+		}
+		this.queryTimeout = queryTimeout;
 		return this;
 	}
 

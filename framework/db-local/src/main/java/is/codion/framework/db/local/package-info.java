@@ -20,7 +20,7 @@
  * Package configuration values:
  * <ul>
  * <li>{@link is.codion.framework.db.local.LocalEntityConnection#CONNECTION_LOG_SIZE}
- * <li>{@link is.codion.framework.db.local.LocalEntityConnection#QUERY_TIMEOUT_SECONDS}
+ * <li>{@link is.codion.framework.db.local.LocalEntityConnection#QUERY_TIMEOUT}
  * <li>{@link is.codion.framework.db.local.LocalEntityConnection#OPTIMISTIC_LOCKING}
  * <li>{@link is.codion.framework.db.local.LocalEntityConnection#LIMIT_FOREIGN_KEY_REFERENCE_DEPTH}
  * </ul>

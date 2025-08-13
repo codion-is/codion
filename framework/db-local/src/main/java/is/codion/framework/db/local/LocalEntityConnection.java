@@ -70,7 +70,7 @@ public interface LocalEntityConnection extends EntityConnection {
 	 * <li>Default value: 120
 	 * </ul>
 	 */
-	PropertyValue<Integer> QUERY_TIMEOUT_SECONDS = integerValue("codion.db.queryTimeoutSeconds", DEFAULT_QUERY_TIMEOUT_SECONDS);
+	PropertyValue<Integer> QUERY_TIMEOUT = integerValue("codion.db.queryTimeout", 120);
 
 	/**
 	 * Specifies whether optimistic locking should be performed, that is, if entities should
@@ -139,12 +139,12 @@ public interface LocalEntityConnection extends EntityConnection {
 	/**
 	 * @return the default query timeout being used
 	 */
-	int defaultQueryTimeout();
+	int queryTimeout();
 
 	/**
 	 * @param queryTimeout the query timeout in seconds
 	 */
-	void defaultQueryTimeout(int queryTimeout);
+	void queryTimeout(int queryTimeout);
 
 	/**
 	 * Constructs a new LocalEntityConnection instance

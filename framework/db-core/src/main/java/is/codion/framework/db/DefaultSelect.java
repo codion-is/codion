@@ -184,7 +184,7 @@ final class DefaultSelect implements Select, Serializable {
 		private boolean forUpdate;
 		private @Nullable Integer limit;
 		private @Nullable Integer offset;
-		private int timeout = EntityConnection.DEFAULT_QUERY_TIMEOUT_SECONDS;
+		private int timeout = 120;
 
 		DefaultBuilder(Condition where) {
 			this.where = requireNonNull(where);
