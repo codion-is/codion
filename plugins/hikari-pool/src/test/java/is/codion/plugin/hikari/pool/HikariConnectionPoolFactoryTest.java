@@ -38,7 +38,7 @@ public class HikariConnectionPoolFactoryTest {
 		HikariConnectionPoolFactory provider = new HikariConnectionPoolFactory();
 		ConnectionPoolWrapper pool = provider.createConnectionPool(
 						H2DatabaseFactory.createDatabase("jdbc:h2:mem:HikariConnectionPoolFactoryTest",
-										Database.DATABASE_INIT_SCRIPTS.get()), UNIT_TEST_USER);
+										Database.INIT_SCRIPTS.get()), UNIT_TEST_USER);
 		pool.setCollectSnapshotStatistics(true);
 		assertTrue(pool.isCollectSnapshotStatistics());
 		pool.connection(UNIT_TEST_USER).close();

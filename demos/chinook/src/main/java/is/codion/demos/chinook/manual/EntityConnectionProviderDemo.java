@@ -39,7 +39,7 @@ public final class EntityConnectionProviderDemo {
 	static void localConnectionProvider() {
 		// tag::local[]
 		Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
-		Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
+		Database.INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
 
 		Database database = Database.instance();
 

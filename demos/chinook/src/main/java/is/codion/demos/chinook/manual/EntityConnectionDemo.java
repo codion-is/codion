@@ -543,7 +543,7 @@ public final class EntityConnectionDemo {
 
 	public static void main(String[] args) {
 		Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
-		Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
+		Database.INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
 
 		LocalEntityConnectionProvider connectionProvider =
 						LocalEntityConnectionProvider.builder()

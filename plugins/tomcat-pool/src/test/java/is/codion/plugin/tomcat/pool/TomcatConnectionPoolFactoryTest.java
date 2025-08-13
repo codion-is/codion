@@ -37,7 +37,7 @@ public class TomcatConnectionPoolFactoryTest {
 		TomcatConnectionPoolFactory provider = new TomcatConnectionPoolFactory();
 		ConnectionPoolWrapper pool = provider.createConnectionPool(
 						H2DatabaseFactory.createDatabase("jdbc:h2:mem:TomcatConnectionPoolFactoryTest",
-										Database.DATABASE_INIT_SCRIPTS.get()), UNIT_TEST_USER);
+										Database.INIT_SCRIPTS.get()), UNIT_TEST_USER);
 		pool.setCollectSnapshotStatistics(true);
 		assertTrue(pool.isCollectSnapshotStatistics());
 		pool.connection(UNIT_TEST_USER).close();

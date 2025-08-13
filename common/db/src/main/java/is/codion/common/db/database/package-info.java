@@ -22,7 +22,7 @@
  * <ul>
  * <li>{@link is.codion.common.db.database.Database#DATABASE_URL}
  * <li>{@link is.codion.common.db.database.Database#URL_SCOPED_INSTANCE}
- * <li>{@link is.codion.common.db.database.Database#DATABASE_INIT_SCRIPTS}
+ * <li>{@link is.codion.common.db.database.Database#INIT_SCRIPTS}
  * <li>{@link is.codion.common.db.database.Database#COUNT_QUERIES}
  * <li>{@link is.codion.common.db.database.Database#SELECT_FOR_UPDATE_NOWAIT}
  * <li>{@link is.codion.common.db.database.Database#LOGIN_TIMEOUT}
