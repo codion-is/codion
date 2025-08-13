@@ -737,7 +737,7 @@ public class EntityPanel extends JPanel {
 							keyEvent.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 											.enable(this, editControlPanel));
 		}
-		if (configuration.useKeyboardNavigation) {
+		if (configuration.keyboardNavigation) {
 			setupNavigation();
 		}
 	}
@@ -1204,8 +1204,8 @@ public class EntityPanel extends JPanel {
 		 * <li>Default value: true
 		 * </ul>
 		 */
-		public static final PropertyValue<Boolean> USE_KEYBOARD_NAVIGATION =
-						booleanValue(EntityPanel.class.getName() + ".useKeyboardNavigation", true);
+		public static final PropertyValue<Boolean> KEYBOARD_NAVIGATION =
+						booleanValue(EntityPanel.class.getName() + ".keyboardNavigation", true);
 
 		/**
 		 * Indicates whether entity edit panel dialogs should be closed on escape
@@ -1302,7 +1302,7 @@ public class EntityPanel extends JPanel {
 		private String controlComponentConstraints = TOOLBAR_CONTROLS.getOrThrow() ?
 						CONTROL_TOOLBAR_CONSTRAINTS.getOrThrow() : CONTROL_PANEL_CONSTRAINTS.getOrThrow();
 		private boolean includeControls = INCLUDE_CONTROLS.getOrThrow();
-		private boolean useKeyboardNavigation = USE_KEYBOARD_NAVIGATION.getOrThrow();
+		private boolean keyboardNavigation = KEYBOARD_NAVIGATION.getOrThrow();
 		private WindowType windowType = WINDOW_TYPE.getOrThrow();
 		private PanelState initialEditState = EMBEDDED;
 		private String editPanelContstraints = EDIT_PANEL_CONSTRAINTS.getOrThrow();
@@ -1329,7 +1329,7 @@ public class EntityPanel extends JPanel {
 			this.includeToggleEditPanelControl = config.includeToggleEditPanelControl;
 			this.controlComponentConstraints = config.controlComponentConstraints;
 			this.includeControls = config.includeControls;
-			this.useKeyboardNavigation = config.useKeyboardNavigation;
+			this.keyboardNavigation = config.keyboardNavigation;
 			this.initialEditState = config.initialEditState;
 			this.caption = config.caption;
 			this.description = config.description;
@@ -1480,11 +1480,11 @@ public class EntityPanel extends JPanel {
 		}
 
 		/**
-		 * @param useKeyboardNavigation true if keyboard navigation should be enabled
+		 * @param keyboardNavigation true if keyboard navigation should be enabled
 		 * @return this Config instance
 		 */
-		public Config useKeyboardNavigation(boolean useKeyboardNavigation) {
-			this.useKeyboardNavigation = useKeyboardNavigation;
+		public Config keyboardNavigation(boolean keyboardNavigation) {
+			this.keyboardNavigation = keyboardNavigation;
 			return this;
 		}
 

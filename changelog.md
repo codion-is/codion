@@ -17,6 +17,8 @@ Codion Change Log
 - EntityResultPacker now fetches values by column name when the entity query has custom columns, query column order no longer has to match the attribute definition order.
 - EntityConnection.Select.queryTimeout() renamed timeout().
 - LocalEntityConnection.defaultQueryTimeout() renamed queryTimeout(), QUERY_TIMEOUT_SECONDS renamed QUERY_TIMEOUT.
+### is.codion.swing.framework.ui
+- EntityPanel.USE_KEYBOARD_NAVIGATION renamed KEYBOARD_NAVIGATION, Config.useKeyboardNavigation renamed keyboardNavigation.
 
 ## 0.18.44
 ### is.codion.common.core

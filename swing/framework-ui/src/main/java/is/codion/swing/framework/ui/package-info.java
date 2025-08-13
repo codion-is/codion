@@ -31,7 +31,7 @@
  * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#USE_FOCUS_ACTIVATION}
  * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#INCLUDE_ENTITY_MENU}
  * <li>{@link is.codion.swing.framework.ui.EntityEditPanel.Config#MODIFIED_WARNING}
- * <li>{@link is.codion.swing.framework.ui.EntityPanel.Config#USE_KEYBOARD_NAVIGATION}
+ * <li>{@link is.codion.swing.framework.ui.EntityPanel.Config#KEYBOARD_NAVIGATION}
  * <li>{@link is.codion.swing.framework.ui.EntityPanel.Config#DISPOSE_EDIT_DIALOG_ON_ESCAPE}
  * <li>{@link is.codion.swing.framework.ui.EntityPanel.Config#INCLUDE_TOGGLE_EDIT_PANEL_CONTROL}
  * <li>{@link is.codion.swing.framework.ui.EntityPanel.Config#TOOLBAR_CONTROLS}
