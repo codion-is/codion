@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.45
+
 ## 0.18.44
 ### is.codion.common.core
 - State.Combination.add() and remove() removed.
