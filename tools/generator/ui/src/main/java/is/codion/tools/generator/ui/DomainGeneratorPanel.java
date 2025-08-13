@@ -361,7 +361,7 @@ public final class DomainGeneratorPanel extends JPanel {
 	private void selectSourceDirectory() {
 		model.sourceDirectory().set(Dialogs.select()
 						.files()
-						.startDirectory(DomainGeneratorModel.DEFAULT_SOURCE_DIRECTORY.get())
+						.startDirectory(DomainGeneratorModel.SOURCE_DIRECTORY.get())
 						.selectDirectory()
 						.getAbsolutePath());
 	}

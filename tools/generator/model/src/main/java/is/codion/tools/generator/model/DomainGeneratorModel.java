@@ -59,16 +59,16 @@ import static java.util.stream.Collectors.toList;
 public final class DomainGeneratorModel {
 
 	/**
-	 * The default package.
+	 * The default domain package.
 	 */
-	public static final PropertyValue<String> DEFAULT_DOMAIN_PACKAGE =
-					stringValue("codion.domain.generator.defaultDomainPackage", "");
+	public static final PropertyValue<String> DOMAIN_PACKAGE =
+					stringValue("codion.domain.generator.domainPackage", "");
 
 	/**
 	 * The default source directory.
 	 */
-	public static final PropertyValue<String> DEFAULT_SOURCE_DIRECTORY =
-					stringValue("codion.domain.generator.defaultSourceDirectory", System.getProperty("user.dir"));
+	public static final PropertyValue<String> SOURCE_DIRECTORY =
+					stringValue("codion.domain.generator.sourceDirectory", System.getProperty("user.dir"));
 
 	private static final Pattern PACKAGE_PATTERN =
 					Pattern.compile("^[A-Za-z_][A-Za-z0-9_]*(?:\\.[A-Za-z_][A-Za-z0-9_]*)*$");
@@ -91,12 +91,12 @@ public final class DomainGeneratorModel {
 					.build();
 	private final State domainPackageSpecified = State.state();
 	private final Value<String> domainPackageValue = Value.builder()
-					.nonNull(DEFAULT_DOMAIN_PACKAGE.getOrThrow())
+					.nonNull(DOMAIN_PACKAGE.getOrThrow())
 					.listener(this::domainPackageChanged)
 					.build();
 	private final State sourceDirectorySpecified = State.state();
 	private final Value<String> sourceDirectoryValue = Value.builder()
-					.nonNull(DEFAULT_SOURCE_DIRECTORY.getOrThrow())
+					.nonNull(SOURCE_DIRECTORY.getOrThrow())
 					.listener(this::sourceDirectoryChanged)
 					.build();
 	private final Value<String> domainImplValue = Value.builder()
