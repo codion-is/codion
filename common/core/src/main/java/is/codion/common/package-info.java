@@ -20,7 +20,7 @@
  * <p>Common classes.
  * <p>Package configuration values:
  * <ul>
- * <li>{@link is.codion.common.Text#DEFAULT_COLLATOR_LANGUAGE}
+ * <li>{@link is.codion.common.Text#COLLATOR_LANGUAGE}
  * </ul>
  */
 @org.jspecify.annotations.NullMarked

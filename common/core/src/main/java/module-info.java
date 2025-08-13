@@ -29,7 +29,7 @@
  * <p>
  * Configuration values:
  * <ul>
- * <li>{@link is.codion.common.Text#DEFAULT_COLLATOR_LANGUAGE}
+ * <li>{@link is.codion.common.Text#COLLATOR_LANGUAGE}
  * </ul>
  * @uses is.codion.common.logging.LoggerProxy
  * @uses is.codion.common.resource.Resources

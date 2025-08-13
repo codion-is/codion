@@ -50,8 +50,8 @@ public final class Text {
 	 * @see #collate(List)
 	 * @see Locale#toLanguageTag()
 	 */
-	public static final PropertyValue<String> DEFAULT_COLLATOR_LANGUAGE =
-					stringValue("codion.defaultCollatorLanguage", Locale.getDefault().getLanguage());
+	public static final PropertyValue<String> COLLATOR_LANGUAGE =
+					stringValue("codion.collatorLanguage", Locale.getDefault().getLanguage());
 
 	private Text() {}
 
@@ -73,10 +73,10 @@ public final class Text {
 	 * using the default Collator, taking spaces into account.
 	 * @param <T> the type of the objects to compare
 	 * @return a space aware collator
-	 * @see #DEFAULT_COLLATOR_LANGUAGE
+	 * @see #COLLATOR_LANGUAGE
 	 */
 	public static <T> Comparator<T> collator() {
-		return collator(new Locale(DEFAULT_COLLATOR_LANGUAGE.getOrThrow()));
+		return collator(new Locale(COLLATOR_LANGUAGE.getOrThrow()));
 	}
 
 	/**
@@ -85,7 +85,7 @@ public final class Text {
 	 * @param <T> the type of the objects to compare
 	 * @param locale the collator locale
 	 * @return a space aware collator
-	 * @see #DEFAULT_COLLATOR_LANGUAGE
+	 * @see #COLLATOR_LANGUAGE
 	 */
 	public static <T> Comparator<T> collator(Locale locale) {
 		return new SpaceAwareComparator<>(requireNonNull(locale));

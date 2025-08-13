@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.45
+### is.codion.common.core
+- Text.DEFAULT_COLLATOR_LANGUAGE renamed COLLATOR_LANGUAGE.
 ### is.codion.framework.domain
 - ColumnDefinition.get(ResultSet) overloaded without index, fetches value by column name.
 - KeyGenerator.returnGeneratedKeys() renamed generatedKeys().
