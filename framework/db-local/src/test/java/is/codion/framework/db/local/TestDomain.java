@@ -445,19 +445,27 @@ public final class TestDomain extends DomainModel {
 	public interface EmpnoDeptno {
 		EntityType TYPE = DOMAIN.entityType("joinedQueryEntityType");
 
-		Column<Integer> DEPTNO = TYPE.integerColumn("d.deptno");
-		Column<Integer> EMPNO = TYPE.integerColumn("e.empno");
+		Column<Integer> DEPTNO = TYPE.integerColumn("deptno");
+		Column<String> DEPARTMENT_NAME = TYPE.stringColumn("dname");
+		Column<Integer> EMPNO = TYPE.integerColumn("empno");
+		Column<String> EMPLOYEE_NAME = TYPE.stringColumn("ename");
 
 		ConditionType CONDITION = EmpnoDeptno.TYPE.conditionType("condition");
 	}
 
 	private void empnoDeptno() {
 		add(EmpnoDeptno.TYPE.define(
-										EmpnoDeptno.DEPTNO.define()
+										EmpnoDeptno.EMPLOYEE_NAME.define()
 														.column(),
+										EmpnoDeptno.DEPTNO.define()
+														.column()
+														.expression("d.deptno"),
 										EmpnoDeptno.EMPNO.define()
-														.primaryKey())
+														.primaryKey(),
+										EmpnoDeptno.DEPARTMENT_NAME.define()
+														.column())
 						.selectQuery(EntitySelectQuery.builder()
+										.columns("empno as empno, dname, d.deptno as deptno, ename")// different order than attribute definitions
 										.from("employees.employee e, employees.department d")
 										.where("e.deptno = d.deptno")
 										.orderBy("e.deptno, e.ename")

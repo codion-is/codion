@@ -173,6 +173,11 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 	}
 
 	@Override
+	public final @Nullable T get(ResultSet resultSet) throws SQLException {
+		return get(resultSet, resultSet.findColumn(name));
+	}
+
+	@Override
 	public final void set(PreparedStatement statement, int index, @Nullable T value) throws SQLException {
 		setParameter.set(statement, index, columnValue(statement, value));
 	}

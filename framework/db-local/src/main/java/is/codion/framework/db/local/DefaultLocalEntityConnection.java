@@ -501,7 +501,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 							" does not match Column entity type " + column.entityType());
 		}
 		ColumnDefinition<T> columnDefinition = entityDefinition.columns().definition(column);
-		verifyColumnIsSelectable(columnDefinition, entityDefinition);
+		if (columnDefinition.aggregate()) {
+			throw new UnsupportedOperationException("Selecting column values is not implemented for aggregate function values");
+		}
 		Condition combinedCondition = and(select.where(), column.isNotNull());
 		String selectQuery = selectQueries.builder(entityDefinition)
 						.select(select, false)
@@ -1543,17 +1545,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 			default:
 				return string;
 		}
-	}
-
-	private static void verifyColumnIsSelectable(ColumnDefinition<?> columnDefinition, EntityDefinition entityDefinition) {
-		if (columnDefinition.aggregate()) {
-			throw new UnsupportedOperationException("Selecting column values is not implemented for aggregate function values");
-		}
-		entityDefinition.selectQuery().ifPresent(selectQuery -> {
-			if (selectQuery.columns() != null) {
-				throw new UnsupportedOperationException("Selecting column values is not implemented for entities with custom column clauses");
-			}
-		});
 	}
 
 	private static void closeSilently(@Nullable AutoCloseable closeable) {

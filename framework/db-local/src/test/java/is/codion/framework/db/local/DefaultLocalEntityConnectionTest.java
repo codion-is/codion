@@ -591,6 +591,15 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
+	void selectCustomColumnsDifferentOrder() {
+		Entity king = connection.selectSingle(EmpnoDeptno.EMPNO.equalTo(8));
+		assertEquals(8, king.get(EmpnoDeptno.EMPNO));
+		assertEquals("KING", king.get(EmpnoDeptno.EMPLOYEE_NAME));
+		assertEquals(10, king.get(EmpnoDeptno.DEPTNO));
+		assertEquals("ACCOUNTING", king.get(EmpnoDeptno.DEPARTMENT_NAME));
+	}
+
+	@Test
 	void count() {
 		int rowCount = connection.count(Count.all(Department.TYPE));
 		assertEquals(4, rowCount);
@@ -850,6 +859,9 @@ public class DefaultLocalEntityConnectionTest {
 	@Test
 	void selectValuesCustomQuery() {
 		connection.select(EmpnoDeptno.DEPTNO);
+		connection.select(EmpnoDeptno.EMPLOYEE_NAME);
+		connection.select(EmpnoDeptno.EMPNO);
+		connection.select(EmpnoDeptno.DEPARTMENT_NAME);
 	}
 
 	@Test

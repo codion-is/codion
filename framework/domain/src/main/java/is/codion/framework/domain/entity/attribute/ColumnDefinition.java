@@ -175,6 +175,14 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
 	@Nullable T get(ResultSet resultSet, int index) throws SQLException;
 
 	/**
+	 * Fetches a value for this column from a {@link ResultSet} by name
+	 * @param resultSet the {@link ResultSet}
+	 * @return a single value fetched from the given {@link ResultSet}
+	 * @throws SQLException in case of an exception
+	 */
+	@Nullable T get(ResultSet resultSet) throws SQLException;
+
+	/**
 	 * Sets a parameter for this column in a {@link PreparedStatement}
 	 * @param statement the statement
 	 * @param index the parameter index

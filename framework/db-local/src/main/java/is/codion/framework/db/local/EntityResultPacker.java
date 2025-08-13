@@ -52,16 +52,20 @@ final class EntityResultPacker implements ResultPacker<Entity> {
 	private final List<ColumnDefinition<?>> columnDefinitions;
 	private final List<TransientAttributeDefinition<?>> nonDerivedTransientAttributes;
 	private final List<ColumnDefinition<?>> nonSelectedColumns;
+	private final boolean customSelectColumns;
 
 	/**
 	 * @param entityDefinition the entity definition
-	 * @param columnDefinitions the column definitions in the same order as they appear in the ResultSet
+	 * @param columnDefinitions the column definitions
 	 */
 	EntityResultPacker(EntityDefinition entityDefinition, List<ColumnDefinition<?>> columnDefinitions) {
 		this.entityDefinition = entityDefinition;
 		this.columnDefinitions = columnDefinitions;
 		this.nonDerivedTransientAttributes = NON_DERIVED_TRANSIENT_ATTRIBUTES.computeIfAbsent(entityDefinition, INIT_NON_DERIVED_TRANSIENT_ATTRIBUTES);
 		this.nonSelectedColumns = NON_SELECTED_COLUMNS.computeIfAbsent(entityDefinition, INIT_NON_SELECTED_COLUMNS);
+		this.customSelectColumns = entityDefinition.selectQuery()
+						.map(query -> query.columns() != null)
+						.orElse(false);
 	}
 
 	@Override
@@ -79,7 +83,9 @@ final class EntityResultPacker implements ResultPacker<Entity> {
 		for (int i = 0; i < columnDefinitions.size(); i++) {
 			ColumnDefinition<Object> columnDefinition = (ColumnDefinition<Object>) columnDefinitions.get(i);
 			try {
-				values.put(columnDefinition.attribute(), columnDefinition.get(resultSet, i + 1));
+				values.put(columnDefinition.attribute(), customSelectColumns ?
+								columnDefinition.get(resultSet) :
+								columnDefinition.get(resultSet, i + 1));
 			}
 			catch (Exception e) {
 				throw new SQLException("Exception fetching: " + columnDefinition + ", entity: " +
