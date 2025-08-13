@@ -7,6 +7,7 @@ Codion Change Log
 ### is.codion.common.db
 - Database.DATABASE_INIT_SCRIPTS renamed INIT_SCRIPTS.
 - Database.DATABASE_URL renamed URL.
+- ConnectionPoolWrapper, configuration values renamed, DEFAULT prefix removed.
 ### is.codion.framework.domain
 - ColumnDefinition.get(ResultSet) overloaded without index, fetches value by column name.
 - KeyGenerator.returnGeneratedKeys() renamed generatedKeys().

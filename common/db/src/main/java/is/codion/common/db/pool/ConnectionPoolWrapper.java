@@ -32,12 +32,6 @@ import static is.codion.common.Configuration.integerValue;
  */
 public interface ConnectionPoolWrapper {
 
-	int DEFAULT_MAX_POOL_SIZE_VALUE = 8;
-	int DEFAULT_MIN_POOL_SIZE_VALUE = 4;
-
-	int DEFAULT_IDLE_TIMEOUT_MS = 60_000;      // 1 minute
-	int DEFAULT_CHECK_OUT_TIMEOUT_MS = 30_000; // 30 seconds
-
 	/**
 	 * Specifies the default maximum connection pool size.
 	 * This determines the maximum number of concurrent database connections that can be created.
@@ -45,11 +39,11 @@ public interface ConnectionPoolWrapper {
 	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 8
-	 * <li>Property name: codion.db.pool.defaultMaximumPoolSize
+	 * <li>Property name: codion.db.pool.maximumPoolSize
 	 * <li>Valid range: 1-1000 (typically 5-50 for most applications)
 	 * </ul>
 	 */
-	PropertyValue<Integer> DEFAULT_MAXIMUM_POOL_SIZE = integerValue("codion.db.pool.defaultMaximumPoolSize", DEFAULT_MAX_POOL_SIZE_VALUE);
+	PropertyValue<Integer> MAXIMUM_POOL_SIZE = integerValue("codion.db.pool.maximumPoolSize", 8);
 
 	/**
 	 * Specifies the default minimum connection pool size.
@@ -58,11 +52,11 @@ public interface ConnectionPoolWrapper {
 	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 4
-	 * <li>Property name: codion.db.pool.defaultMinimumPoolSize
+	 * <li>Property name: codion.db.pool.minimumPoolSize
 	 * <li>Valid range: 0 to maximum pool size (typically 2-10 for most applications)
 	 * </ul>
 	 */
-	PropertyValue<Integer> DEFAULT_MINIMUM_POOL_SIZE = integerValue("codion.db.pool.defaultMinimumPoolSize", DEFAULT_MIN_POOL_SIZE_VALUE);
+	PropertyValue<Integer> MINIMUM_POOL_SIZE = integerValue("codion.db.pool.minimumPoolSize", 4);
 
 	/**
 	 * Specifies the default idle timeout in milliseconds.
@@ -71,11 +65,11 @@ public interface ConnectionPoolWrapper {
 	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 60.000 (1 minute)
-	 * <li>Property name: codion.db.pool.defaultIdleTimeout
+	 * <li>Property name: codion.db.pool.idleTimeout
 	 * <li>Valid range: 1000-3600000 (1 second to 1 hour, typically 30-300 seconds)
 	 * </ul>
 	 */
-	PropertyValue<Integer> DEFAULT_IDLE_TIMEOUT = integerValue("codion.db.pool.defaultIdleTimeout", DEFAULT_IDLE_TIMEOUT_MS);
+	PropertyValue<Integer> IDLE_TIMEOUT = integerValue("codion.db.pool.idleTimeout", 60_000);
 
 	/**
 	 * Specifies the default maximum connection check out timeout in milliseconds.
@@ -84,11 +78,11 @@ public interface ConnectionPoolWrapper {
 	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 30.000 (30 seconds)
-	 * <li>Property name: codion.db.pool.defaultCheckOutTimeout
+	 * <li>Property name: codion.db.pool.checkOutTimeout
 	 * <li>Valid range: 1000-300000 (1 second to 5 minutes, typically 10-60 seconds)
 	 * </ul>
 	 */
-	PropertyValue<Integer> DEFAULT_CHECK_OUT_TIMEOUT = integerValue("codion.db.pool.defaultCheckOutTimeout", DEFAULT_CHECK_OUT_TIMEOUT_MS);
+	PropertyValue<Integer> CHECK_OUT_TIMEOUT = integerValue("codion.db.pool.checkOutTimeout", 30_000);
 
 	/**
 	 * Specifies whether connections should be validated when checked out from the pool.

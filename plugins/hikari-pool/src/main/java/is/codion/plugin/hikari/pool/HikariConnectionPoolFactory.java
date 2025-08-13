@@ -53,10 +53,10 @@ public final class HikariConnectionPoolFactory implements ConnectionPoolFactory 
 		config.setJdbcUrl(connectionFactory.url());
 		config.setAutoCommit(false);
 		config.setUsername(user.username());
-		config.setMaximumPoolSize(ConnectionPoolWrapper.DEFAULT_MAXIMUM_POOL_SIZE.getOrThrow());
-		config.setMinimumIdle(ConnectionPoolWrapper.DEFAULT_MINIMUM_POOL_SIZE.getOrThrow());
-		config.setIdleTimeout(ConnectionPoolWrapper.DEFAULT_IDLE_TIMEOUT.getOrThrow());
-		config.setConnectionTimeout(ConnectionPoolWrapper.DEFAULT_CHECK_OUT_TIMEOUT.getOrThrow());
+		config.setMaximumPoolSize(ConnectionPoolWrapper.MAXIMUM_POOL_SIZE.getOrThrow());
+		config.setMinimumIdle(ConnectionPoolWrapper.MINIMUM_POOL_SIZE.getOrThrow());
+		config.setIdleTimeout(ConnectionPoolWrapper.IDLE_TIMEOUT.getOrThrow());
+		config.setConnectionTimeout(ConnectionPoolWrapper.CHECK_OUT_TIMEOUT.getOrThrow());
 
 		return config;
 	}

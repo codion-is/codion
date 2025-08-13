@@ -20,9 +20,10 @@
  * <p>Connection pool related classes.
  * <p>Package configuration values:
  * <ul>
- * <li>{@link is.codion.common.db.pool.ConnectionPoolWrapper#DEFAULT_MAXIMUM_POOL_SIZE}
- * <li>{@link is.codion.common.db.pool.ConnectionPoolWrapper#DEFAULT_MINIMUM_POOL_SIZE}
- * <li>{@link is.codion.common.db.pool.ConnectionPoolWrapper#DEFAULT_IDLE_TIMEOUT}
+ * <li>{@link is.codion.common.db.pool.ConnectionPoolWrapper#MAXIMUM_POOL_SIZE}
+ * <li>{@link is.codion.common.db.pool.ConnectionPoolWrapper#MINIMUM_POOL_SIZE}
+ * <li>{@link is.codion.common.db.pool.ConnectionPoolWrapper#IDLE_TIMEOUT}
+ * <li>{@link is.codion.common.db.pool.ConnectionPoolWrapper#CHECK_OUT_TIMEOUT}
  * </ul>
  */
 @org.jspecify.annotations.NullMarked
