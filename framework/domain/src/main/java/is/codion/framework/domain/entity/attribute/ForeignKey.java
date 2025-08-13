@@ -182,9 +182,9 @@ public interface ForeignKey extends Attribute<Entity>, ForeignKeyCondition.Facto
 
 		/**
 		 * Instantiates a {@link ForeignKeyDefinition.Builder} instance, using the reference depth
-		 * specified by {@link ForeignKeyDefinition#FOREIGN_KEY_REFERENCE_DEPTH}
+		 * specified by {@link ForeignKeyDefinition#REFERENCE_DEPTH}
 		 * @return a new {@link ForeignKeyDefinition.Builder}
-		 * @see ForeignKeyDefinition#FOREIGN_KEY_REFERENCE_DEPTH
+		 * @see ForeignKeyDefinition#REFERENCE_DEPTH
 		 */
 		ForeignKeyDefinition.Builder foreignKey();
 	}

@@ -85,19 +85,15 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
 					implements ForeignKeyDefinition.Builder {
 
 		private final Set<Column<?>> readOnlyColumns = new HashSet<>(1);
-		private final EntityType referencedEntityType;
+		private final EntityType referencedType;
 
 		private List<Attribute<?>> attributes = emptyList();
 		private boolean soft = false;
-		private int referenceDepth;
+		private int referenceDepth = REFERENCE_DEPTH.getOrThrow();
 
-		DefaultForeignKeyDefinitionBuilder(ForeignKey foreignKey, int referenceDepth) {
+		DefaultForeignKeyDefinitionBuilder(ForeignKey foreignKey) {
 			super(foreignKey);
-			if (referenceDepth < -1) {
-				throw new IllegalArgumentException("Reference depth must be at least -1: " + foreignKey);
-			}
-			this.referencedEntityType = foreignKey.referencedType();
-			this.referenceDepth = referenceDepth;
+			this.referencedType = foreignKey.referencedType();
 		}
 
 		@Override
@@ -124,7 +120,7 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
 		public ForeignKeyDefinition.Builder attributes(Attribute<?>... attributes) {
 			Set<Attribute<?>> attributeSet = new HashSet<>();
 			for (Attribute<?> attribute : requireNonNull(attributes)) {
-				if (!attribute.entityType().equals(referencedEntityType)) {
+				if (!attribute.entityType().equals(referencedType)) {
 					throw new IllegalArgumentException("Attribute must be part of the referenced entity");
 				}
 				attributeSet.add(attribute);

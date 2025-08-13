@@ -138,18 +138,13 @@ import static is.codion.common.Configuration.integerValue;
 public interface ForeignKeyDefinition extends AttributeDefinition<Entity> {
 
 	/**
-	 * The default number of levels of foreign keys to fetch
-	 */
-	int DEFAULT_FOREIGN_KEY_REFERENCE_DEPTH = 1;
-
-	/**
 	 * Specifies the default foreign key reference depth
 	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 1
 	 * </ul>
 	 */
-	PropertyValue<Integer> FOREIGN_KEY_REFERENCE_DEPTH = integerValue("codion.domain.foreignKeyReferenceDepth", DEFAULT_FOREIGN_KEY_REFERENCE_DEPTH);
+	PropertyValue<Integer> REFERENCE_DEPTH = integerValue("codion.domain.referenceDepth", 1);
 
 	/**
 	 * @return the foreign key attribute this foreign key is based on.
