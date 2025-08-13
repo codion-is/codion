@@ -10,6 +10,7 @@ Codion Change Log
 - ConnectionPoolWrapper, configuration values renamed, DEFAULT prefix removed.
 ### is.codion.swing.common.ui
 - FilterTableColumn.setFixedWidth() added.
+- FilterTableColumn.Builder.ModelIndexBuilder renamed ModelIndexStep.
 ### is.codion.framework.domain
 - ColumnDefinition.get(ResultSet) overloaded without index, fetches value by column name.
 - KeyGenerator.returnGeneratedKeys() renamed generatedKeys().

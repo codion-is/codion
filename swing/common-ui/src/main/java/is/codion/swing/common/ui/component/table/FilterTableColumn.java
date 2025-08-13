@@ -134,7 +134,7 @@ public final class FilterTableColumn<C> extends TableColumn {
 	public interface Builder<C> {
 
 		/**
-		 * Provides a {@link Builder} or {@link Builder.ModelIndexBuilder}
+		 * Provides a {@link Builder} or {@link ModelIndexStep}
 		 */
 		interface IdentifierStep {
 
@@ -149,13 +149,13 @@ public final class FilterTableColumn<C> extends TableColumn {
 			<C extends Enum<C>> FilterTableColumn.Builder<C> identifier(C identifier);
 
 			/**
-			 * Instantiates a new {@link Builder.ModelIndexBuilder}.
+			 * Instantiates a new {@link ModelIndexStep}.
 			 * @param <C> the column identifier type
 			 * @param identifier the column identifier
-			 * @return a new {@link Builder.ModelIndexBuilder} instance
+			 * @return a new {@link ModelIndexStep} instance
 			 * @throws NullPointerException in case {@code identifier} is null
 			 */
-			<C> FilterTableColumn.Builder.ModelIndexBuilder<C> identifier(C identifier);
+			<C> ModelIndexStep<C> identifier(C identifier);
 
 			/**
 			 * @param modelIndex the model index, also used as identifier
@@ -168,7 +168,7 @@ public final class FilterTableColumn<C> extends TableColumn {
 		 * Provides a {@link Builder}
 		 * @param <C> the column identifier type
 		 */
-		interface ModelIndexBuilder<C> {
+		interface ModelIndexStep<C> {
 
 			/**
 			 * Instantiates a new {@link FilterTableColumn.Builder}.
@@ -262,8 +262,8 @@ public final class FilterTableColumn<C> extends TableColumn {
 		}
 
 		@Override
-		public <C> Builder.ModelIndexBuilder<C> identifier(C identifier) {
-			return new DefaultModelIndexBuilder<>(requireNonNull(identifier));
+		public <C> Builder.ModelIndexStep<C> identifier(C identifier) {
+			return new DefaultModelIndexStep<>(requireNonNull(identifier));
 		}
 
 		@Override
@@ -272,11 +272,11 @@ public final class FilterTableColumn<C> extends TableColumn {
 		}
 	}
 
-	private static final class DefaultModelIndexBuilder<C> implements Builder.ModelIndexBuilder<C> {
+	private static final class DefaultModelIndexStep<C> implements Builder.ModelIndexStep<C> {
 
 		private final C identifier;
 
-		private DefaultModelIndexBuilder(C identifier) {
+		private DefaultModelIndexStep(C identifier) {
 			this.identifier = identifier;
 		}
 
