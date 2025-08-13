@@ -93,6 +93,15 @@ public final class FilterTableColumn<C> extends TableColumn {
 	}
 
 	/**
+	 * Sets both minimum and maximum widths to the given fixed width.
+	 * @param fixedWidth the fixed column width
+	 */
+	public void setFixedWidth(int fixedWidth) {
+		setMinWidth(fixedWidth);
+		setMaxWidth(fixedWidth);
+	}
+
+	/**
 	 * @return the column identifier
 	 */
 	public C identifier() {
