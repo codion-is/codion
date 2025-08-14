@@ -33,7 +33,6 @@ import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.ExceptionDialogBuilder;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
-import is.codion.swing.common.ui.icon.Icons;
 import is.codion.swing.common.ui.scaler.Scaler;
 import is.codion.swing.common.ui.window.Windows;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
@@ -403,7 +402,6 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		int scaling = Scaler.RATIO.getOrThrow();
 		if (scaling != 100) {
 			float ratio = scaling / 100f;
-			Icons.ICON_SIZE.map(iconSize -> Math.round(iconSize * ratio));
 			logoSize = Math.round(logoSize * ratio);
 		}
 		if (applicationIcon == null) {

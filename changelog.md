@@ -12,6 +12,7 @@ Codion Change Log
 - FilterTableColumn.setFixedWidth() added.
 - FilterTableColumn.Builder.ModelIndexBuilder renamed ModelIndexStep.
 - TabbedPaneBuilder refactored, methods overloaded with Supplier.
+- DefaultIcons is now scaling aware.
 ### is.codion.framework.domain
 - ColumnDefinition.get(ResultSet) overloaded without index, fetches value by column name.
 - KeyGenerator.returnGeneratedKeys() renamed generatedKeys().

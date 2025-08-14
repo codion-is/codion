@@ -22,6 +22,7 @@ import is.codion.swing.common.ui.icon.FontImageIcon;
 import is.codion.swing.common.ui.icon.FontImageIcon.IconPainter;
 import is.codion.swing.common.ui.icon.FontImageIcon.ImageIconFactory;
 import is.codion.swing.common.ui.icon.Icons;
+import is.codion.swing.common.ui.scaler.Scaler;
 
 import org.jspecify.annotations.Nullable;
 import org.kordamp.ikonli.Ikon;
@@ -74,7 +75,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 
 	private ImageIcon refreshRequired = FontImageIcon.builder()
 					.ikon(REFRESH)
-					.size(Icons.ICON_SIZE.getOrThrow())
+					.size(scaledSize())
 					.color(Color.RED.darker())
 					.build().imageIcon();
 
@@ -84,8 +85,9 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 	public DefaultFrameworkIcons() {
 		add(LOGO, FILTER, SEARCH, ADD, DELETE, UPDATE, COPY, REFRESH, CLEAR, UP, DOWN, DETAIL,
 						PRINT, EDIT, SUMMARY, EDIT_PANEL, DEPENDENCIES, SETTINGS, CALENDAR, EDIT_TEXT, COLUMNS);
-		Icons.ICON_SIZE.addWeakConsumer(onIconSizeChanged);
+		Icons.ICON_SIZE.addWeakListener(onIconSizeChanged);
 		Icons.ICON_COLOR.addWeakConsumer(onIconColorChanged);
+		Scaler.RATIO.addWeakListener(onIconSizeChanged);
 	}
 
 	@Override
@@ -231,6 +233,15 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 		return instance;
 	}
 
+	private static int scaledSize() {
+		int scaling = Scaler.RATIO.getOrThrow();
+		if (scaling != 100) {
+			return Math.round(Icons.ICON_SIZE.getOrThrow() * (scaling / 100f));
+		}
+
+		return Icons.ICON_SIZE.getOrThrow();
+	}
+
 	private static FrameworkIcons createInstance() {
 		String iconsClassName = FRAMEWORK_ICONS_CLASSNAME.get();
 		try {
@@ -258,13 +269,13 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 		}
 	}
 
-	private final class OnIconSizeChanged implements Consumer<Integer> {
+	private final class OnIconSizeChanged implements Runnable {
 
 		@Override
-		public void accept(Integer size) {
+		public void run() {
 			refreshRequired = FontImageIcon.builder()
 							.ikon(REFRESH)
-							.size(size)
+							.size(scaledSize())
 							.color(Color.RED.darker())
 							.build().imageIcon();
 		}

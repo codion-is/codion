@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.icon;
 
+import is.codion.swing.common.ui.scaler.Scaler;
+
 import org.kordamp.ikonli.Ikon;
 
 import javax.swing.ImageIcon;
@@ -45,11 +47,13 @@ final class DefaultIcons implements Icons {
 
 	DefaultIcons() {
 		ICON_COLOR.addWeakConsumer(onIconColorChanged);
-		ICON_SIZE.addWeakConsumer(onIconSizeChanged);
+		ICON_SIZE.addWeakListener(onIconSizeChanged);
+		Scaler.RATIO.addWeakListener(onIconSizeChanged);
 	}
 
 	@Override
 	public void add(Ikon... ikons) {
+		int iconSize = scaledSize();
 		synchronized (icons) {
 			for (Ikon ikon : requireNonNull(ikons)) {
 				if (icons.containsKey(requireNonNull(ikon))) {
@@ -59,7 +63,7 @@ final class DefaultIcons implements Icons {
 			for (Ikon ikon : ikons) {
 				icons.put(ikon, FontImageIcon.builder()
 								.ikon(ikon)
-								.size(ICON_SIZE.getOrThrow())
+								.size(iconSize)
 								.build());
 			}
 		}
@@ -76,6 +80,15 @@ final class DefaultIcons implements Icons {
 		}
 	}
 
+	private static int scaledSize() {
+		int scaling = Scaler.RATIO.getOrThrow();
+		if (scaling != 100) {
+			return Math.round(Icons.ICON_SIZE.getOrThrow() * (scaling / 100f));
+		}
+
+		return Icons.ICON_SIZE.getOrThrow();
+	}
+
 	private final class OnIconColorChanged implements Consumer<Color> {
 
 		@Override
@@ -86,14 +99,15 @@ final class DefaultIcons implements Icons {
 		}
 	}
 
-	private final class OnIconSizeChanged implements Consumer<Integer> {
+	private final class OnIconSizeChanged implements Runnable {
 
 		@Override
-		public void accept(Integer size) {
+		public void run() {
 			synchronized (icons) {
+				int iconSize = scaledSize();
 				icons.replaceAll((ikon, fontImageIcon) -> FontImageIcon.builder()
 								.ikon(ikon)
-								.size(size)
+								.size(iconSize)
 								.build());
 			}
 		}
