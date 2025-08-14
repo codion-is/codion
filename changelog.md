@@ -23,6 +23,7 @@ Codion Change Log
 - LocalEntityConnection.defaultQueryTimeout() renamed queryTimeout(), QUERY_TIMEOUT_SECONDS renamed QUERY_TIMEOUT.
 ### is.codion.swing.framework.ui
 - EntityPanel.USE_KEYBOARD_NAVIGATION renamed KEYBOARD_NAVIGATION, Config.useKeyboardNavigation renamed keyboardNavigation.
+- DefaultFrameworkIcons bug fixed, logo color now updated along with other icons, related refactoring.
 ### is.codion.tools.generator.model
 - DomainGeneratorModel.DEFAULT_DOMAIN_PACKAGE and DEFAULT_SOURCE_DIRECTORY renamed DOMAIN_PACKAGE and SOURCE_DIRECTORY.
 

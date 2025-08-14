@@ -18,8 +18,6 @@
  */
 package is.codion.swing.common.ui.icon;
 
-import is.codion.common.value.Value;
-
 import org.kordamp.ikonli.Ikon;
 
 import javax.swing.ImageIcon;
@@ -32,12 +30,9 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
+import static javax.swing.UIManager.getColor;
 
 final class DefaultIcons implements Icons {
-
-	private static final String BUTTON_FOREGROUND_PROPERTY = "Button.foreground";
-
-	static final Value<Color> ICON_COLOR = Value.nonNull(UIManager.getColor(BUTTON_FOREGROUND_PROPERTY));
 
 	private final Map<Ikon, FontImageIcon> icons = new HashMap<>();
 
@@ -111,7 +106,7 @@ final class DefaultIcons implements Icons {
 		@Override
 		public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
 			if (propertyChangeEvent.getPropertyName().equals(LOOK_AND_FEEL_PROPERTY) && ICON_COLOR != null) {
-				ICON_COLOR.set(UIManager.getColor(BUTTON_FOREGROUND_PROPERTY));
+				ICON_COLOR.set(getColor("Button.foreground"));
 			}
 		}
 	}

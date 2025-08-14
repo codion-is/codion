@@ -18,17 +18,20 @@
  */
 package is.codion.swing.common.ui.icon;
 
+import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 
 import org.kordamp.ikonli.Ikon;
 
 import javax.swing.ImageIcon;
+import java.awt.Color;
 
 import static is.codion.common.Configuration.integerValue;
+import static javax.swing.UIManager.getColor;
 
 /**
  * Provides icons for ui components.
- * The icon color follows the 'Button.foreground' color of the current Look and feel.
+ * {@link #ICON_COLOR} follows the 'Button.foreground' color of the current Look and feel.
  * Add icons via {@link #add(Ikon...)} and retrieve them via {@link #get(Ikon)}.
  * @see #icons()
  */
@@ -43,7 +46,16 @@ public interface Icons {
 	 * <li>Default value: 16
 	 * </ul>
 	 */
-	PropertyValue<Integer> ICON_SIZE = integerValue(Icons.class.getName() + ".iconSize", DEFAULT_ICON_SIZE);
+	PropertyValue<Integer> ICON_SIZE = integerValue(Icons.class.getName() + ".size", DEFAULT_ICON_SIZE);
+
+	/**
+	 * The icon color, follows the "Button.foreground" color of the current Look and feel.
+	 * <ul>
+	 * <li>Value type: Color
+	 * <li>Default value: UIManager.getColor("Button.foreground")
+	 * </ul>
+	 */
+	PropertyValue<Color> ICON_COLOR = Configuration.value(Icons.class.getName() + ".color", Color::decode, getColor("Button.foreground"));
 
 	/**
 	 * Adds the given ikons to this FrameworkIcons instance. Retrieve an icon via {@link #get(Ikon)}.

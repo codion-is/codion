@@ -66,6 +66,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 
 	private static @Nullable FrameworkIcons instance;
 
+	private final OnIconColorChanged onIconColorChanged = new OnIconColorChanged();
 	private final OnIconSizeChanged onIconSizeChanged = new OnIconSizeChanged();
 
 	private final Icons icons = Icons.icons();
@@ -84,6 +85,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 		add(LOGO, FILTER, SEARCH, ADD, DELETE, UPDATE, COPY, REFRESH, CLEAR, UP, DOWN, DETAIL,
 						PRINT, EDIT, SUMMARY, EDIT_PANEL, DEPENDENCIES, SETTINGS, CALENDAR, EDIT_TEXT, COLUMNS);
 		Icons.ICON_SIZE.addWeakConsumer(onIconSizeChanged);
+		Icons.ICON_COLOR.addWeakConsumer(onIconColorChanged);
 	}
 
 	@Override
@@ -243,6 +245,16 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 				throw (RuntimeException) cause;
 			}
 			throw new RuntimeException(cause);
+		}
+	}
+
+	private final class OnIconColorChanged implements Consumer<Color> {
+
+		@Override
+		public void accept(Color color) {
+			if (color != null) {
+				logos.values().forEach(icon -> icon.color(color));
+			}
 		}
 	}
 
