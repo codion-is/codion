@@ -46,8 +46,8 @@ final class DefaultIcons implements Icons {
 	}
 
 	DefaultIcons() {
-		ICON_COLOR.addWeakConsumer(onIconColorChanged);
-		ICON_SIZE.addWeakListener(onIconSizeChanged);
+		COLOR.addWeakConsumer(onIconColorChanged);
+		SIZE.addWeakListener(onIconSizeChanged);
 		Scaler.RATIO.addWeakListener(onIconSizeChanged);
 	}
 
@@ -83,10 +83,10 @@ final class DefaultIcons implements Icons {
 	private static int scaledSize() {
 		int scaling = Scaler.RATIO.getOrThrow();
 		if (scaling != 100) {
-			return Math.round(Icons.ICON_SIZE.getOrThrow() * (scaling / 100f));
+			return Math.round(Icons.SIZE.getOrThrow() * (scaling / 100f));
 		}
 
-		return Icons.ICON_SIZE.getOrThrow();
+		return Icons.SIZE.getOrThrow();
 	}
 
 	private final class OnIconColorChanged implements Consumer<Color> {
@@ -119,8 +119,8 @@ final class DefaultIcons implements Icons {
 
 		@Override
 		public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-			if (propertyChangeEvent.getPropertyName().equals(LOOK_AND_FEEL_PROPERTY) && ICON_COLOR != null) {
-				ICON_COLOR.set(getColor("Button.foreground"));
+			if (propertyChangeEvent.getPropertyName().equals(LOOK_AND_FEEL_PROPERTY) && COLOR != null) {
+				COLOR.set(getColor("Button.foreground"));
 			}
 		}
 	}

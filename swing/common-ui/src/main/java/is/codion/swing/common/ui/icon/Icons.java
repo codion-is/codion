@@ -31,13 +31,11 @@ import static javax.swing.UIManager.getColor;
 
 /**
  * Provides icons for ui components.
- * {@link #ICON_COLOR} follows the 'Button.foreground' color of the current Look and feel.
+ * {@link #COLOR} follows the 'Button.foreground' color of the current Look and feel.
  * Add icons via {@link #add(Ikon...)} and retrieve them via {@link #get(Ikon)}.
  * @see #icons()
  */
 public interface Icons {
-
-	int DEFAULT_ICON_SIZE = 16;
 
 	/**
 	 * The icon size, note that this will affect the size of buttons
@@ -46,7 +44,7 @@ public interface Icons {
 	 * <li>Default value: 16
 	 * </ul>
 	 */
-	PropertyValue<Integer> ICON_SIZE = integerValue(Icons.class.getName() + ".size", DEFAULT_ICON_SIZE);
+	PropertyValue<Integer> SIZE = integerValue(Icons.class.getName() + ".size", 16);
 
 	/**
 	 * The icon color, follows the "Button.foreground" color of the current Look and feel.
@@ -55,7 +53,7 @@ public interface Icons {
 	 * <li>Default value: UIManager.getColor("Button.foreground")
 	 * </ul>
 	 */
-	PropertyValue<Color> ICON_COLOR = Configuration.value(Icons.class.getName() + ".color", Color::decode, getColor("Button.foreground"));
+	PropertyValue<Color> COLOR = Configuration.value(Icons.class.getName() + ".color", Color::decode, getColor("Button.foreground"));
 
 	/**
 	 * Adds the given ikons to this FrameworkIcons instance. Retrieve an icon via {@link #get(Ikon)}.

@@ -85,8 +85,8 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 	public DefaultFrameworkIcons() {
 		add(LOGO, FILTER, SEARCH, ADD, DELETE, UPDATE, COPY, REFRESH, CLEAR, UP, DOWN, DETAIL,
 						PRINT, EDIT, SUMMARY, EDIT_PANEL, DEPENDENCIES, SETTINGS, CALENDAR, EDIT_TEXT, COLUMNS);
-		Icons.ICON_SIZE.addWeakListener(onIconSizeChanged);
-		Icons.ICON_COLOR.addWeakConsumer(onIconColorChanged);
+		Icons.SIZE.addWeakListener(onIconSizeChanged);
+		Icons.COLOR.addWeakConsumer(onIconColorChanged);
 		Scaler.RATIO.addWeakListener(onIconSizeChanged);
 	}
 
@@ -236,10 +236,10 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 	private static int scaledSize() {
 		int scaling = Scaler.RATIO.getOrThrow();
 		if (scaling != 100) {
-			return Math.round(Icons.ICON_SIZE.getOrThrow() * (scaling / 100f));
+			return Math.round(Icons.SIZE.getOrThrow() * (scaling / 100f));
 		}
 
-		return Icons.ICON_SIZE.getOrThrow();
+		return Icons.SIZE.getOrThrow();
 	}
 
 	private static FrameworkIcons createInstance() {
