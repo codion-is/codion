@@ -75,7 +75,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 
 	private ImageIcon refreshRequired = FontImageIcon.builder()
 					.ikon(REFRESH)
-					.size(scaledSize())
+					.size(Scaler.scale(Icons.SIZE.getOrThrow()))
 					.color(Color.RED.darker())
 					.build().imageIcon();
 
@@ -233,15 +233,6 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 		return instance;
 	}
 
-	private static int scaledSize() {
-		int scaling = Scaler.RATIO.getOrThrow();
-		if (scaling != 100) {
-			return Math.round(Icons.SIZE.getOrThrow() * (scaling / 100f));
-		}
-
-		return Icons.SIZE.getOrThrow();
-	}
-
 	private static FrameworkIcons createInstance() {
 		String iconsClassName = FRAMEWORK_ICONS_CLASSNAME.get();
 		try {
@@ -275,7 +266,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 		public void run() {
 			refreshRequired = FontImageIcon.builder()
 							.ikon(REFRESH)
-							.size(scaledSize())
+							.size(Scaler.scale(Icons.SIZE.getOrThrow()))
 							.color(Color.RED.darker())
 							.build().imageIcon();
 		}

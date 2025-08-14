@@ -398,14 +398,8 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	}
 
 	private void configureIcons() {
-		int logoSize = DEFAULT_LOGO_SIZE;
-		int scaling = Scaler.RATIO.getOrThrow();
-		if (scaling != 100) {
-			float ratio = scaling / 100f;
-			logoSize = Math.round(logoSize * ratio);
-		}
 		if (applicationIcon == null) {
-			applicationIcon = FrameworkIcons.instance().logo(logoSize);
+			applicationIcon = FrameworkIcons.instance().logo(Scaler.scale(DEFAULT_LOGO_SIZE));
 		}
 	}
 

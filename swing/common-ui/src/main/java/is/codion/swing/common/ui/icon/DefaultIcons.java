@@ -53,7 +53,7 @@ final class DefaultIcons implements Icons {
 
 	@Override
 	public void add(Ikon... ikons) {
-		int iconSize = scaledSize();
+		int iconSize = Scaler.scale(Icons.SIZE.getOrThrow());
 		synchronized (icons) {
 			for (Ikon ikon : requireNonNull(ikons)) {
 				if (icons.containsKey(requireNonNull(ikon))) {
@@ -80,15 +80,6 @@ final class DefaultIcons implements Icons {
 		}
 	}
 
-	private static int scaledSize() {
-		int scaling = Scaler.RATIO.getOrThrow();
-		if (scaling != 100) {
-			return Math.round(Icons.SIZE.getOrThrow() * (scaling / 100f));
-		}
-
-		return Icons.SIZE.getOrThrow();
-	}
-
 	private final class OnIconColorChanged implements Consumer<Color> {
 
 		@Override
@@ -104,7 +95,7 @@ final class DefaultIcons implements Icons {
 		@Override
 		public void run() {
 			synchronized (icons) {
-				int iconSize = scaledSize();
+				int iconSize = Scaler.scale(Icons.SIZE.getOrThrow());
 				icons.replaceAll((ikon, fontImageIcon) -> FontImageIcon.builder()
 								.ikon(ikon)
 								.size(iconSize)

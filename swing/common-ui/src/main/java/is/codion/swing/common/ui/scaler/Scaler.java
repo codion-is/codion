@@ -56,6 +56,19 @@ public interface Scaler {
 	boolean supports(String lookAndFeelClassName);
 
 	/**
+	 * @param size the size to scale
+	 * @return the size scaled according to {@link #RATIO}
+	 */
+	static int scale(int size) {
+		int scaling = Scaler.RATIO.getOrThrow();
+		if (scaling != 100) {
+			return Math.round(size * (scaling / 100f));
+		}
+
+		return size;
+	}
+
+	/**
 	 * @param lookAndFeelClassName the look and feel classname
 	 * @return the first available {@link Scaler} supporting the given look and feel
 	 */
