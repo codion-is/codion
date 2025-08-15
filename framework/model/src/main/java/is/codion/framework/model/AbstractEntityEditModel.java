@@ -547,7 +547,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			entities = singleton(editor.getOrThrow().copy().mutable());
 			states.verifyUpdateEnabled(entities.size());
 			editor.validate(entities);
-			verifyModified(entities);
+			verifyModified();
 		}
 
 		private DefaultUpdateEntities(Collection<Entity> entities) {
@@ -562,6 +562,12 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			notifyBeforeUpdate(entities);
 
 			return new UpdateTask();
+		}
+
+		private void verifyModified() {
+			if (!editor.modified().is()) {
+				throw new IllegalStateException("Entity is not modified: " + editor.modified());
+			}
 		}
 
 		private void verifyModified(Collection<Entity> entities) {

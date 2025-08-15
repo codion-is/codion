@@ -18,6 +18,7 @@
  */
 package is.codion.framework.model;
 
+import is.codion.common.db.exception.UpdateException;
 import is.codion.common.model.CancelException;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
@@ -703,6 +704,19 @@ public final class AbstractEntityEditModelTest {
 		assertTrue(editor.modified().is());
 		editor.revert();
 		assertFalse(editor.modified().is());
+	}
+
+	@Test
+	public void modified() {
+		State extraModified = State.builder()
+						.listener(editor.modified()::update)
+						.build();
+		editor.modified().predicate().map(modified -> modified.or(entity -> extraModified.is()));
+
+		editor.set(employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("MARTIN")));
+		extraModified.set(true);
+		// UpdateException from the EntityConnection since the entity isn't really modified
+		assertThrows(UpdateException.class, () -> employeeEditModel.update());
 	}
 
 	private static final class TestEntityEditModel extends AbstractEntityEditModel {
