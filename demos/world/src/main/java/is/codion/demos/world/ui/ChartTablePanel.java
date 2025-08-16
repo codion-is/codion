@@ -48,7 +48,7 @@ abstract class ChartTablePanel extends EntityTablePanel {
 														String chartTitle, Consumer<Config> config) {
 		super(tableModel, config);
 		setPreferredSize(new Dimension(200, 200));
-		chartPanel = createPieChartPanel(this, chartDataset, chartTitle);
+		chartPanel = createPieChartPanel(chartDataset, chartTitle);
 	}
 
 	@Override

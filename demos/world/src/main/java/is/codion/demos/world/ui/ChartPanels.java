@@ -27,10 +27,11 @@ import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.general.PieDataset;
 
-import javax.swing.JComponent;
-import javax.swing.UIManager;
 import java.awt.Color;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
+import static javax.swing.UIManager.getColor;
 import static org.jfree.chart.ChartFactory.createBarChart;
 import static org.jfree.chart.ChartFactory.createPieChart;
 
@@ -38,48 +39,56 @@ final class ChartPanels {
 
 	private ChartPanels() {}
 
-	static ChartPanel createPieChartPanel(JComponent parent, PieDataset<String> dataset, String title) {
-		JFreeChart chart = createPieChart(title, dataset);
-		chart.removeLegend();
-		linkColors(parent, chart);
-
-		return new ChartPanel(chart);
+	static ChartPanel createPieChartPanel(PieDataset<String> dataset, String title) {
+		return new ColorChartPanel(createPieChart(title, dataset, false, false, false));
 	}
 
-	static ChartPanel createBarChartPanel(JComponent parent, CategoryDataset dataset, String title,
+	static ChartPanel createBarChartPanel(CategoryDataset dataset, String title,
 																				String categoryLabel, String valueLabel) {
-		JFreeChart chart = createBarChart(title, categoryLabel, valueLabel, dataset);
-		linkColors(parent, chart);
-
-		return new ChartPanel(chart);
+		return new ColorChartPanel(createBarChart(title, categoryLabel, valueLabel, dataset));
 	}
 
-	private static void linkColors(JComponent parent, JFreeChart chart) {
-		setColors(chart, parent.getBackground());
-		parent.addPropertyChangeListener("background", evt ->
-						setColors(chart, (Color) evt.getNewValue()));
-	}
+	private static final class ColorChartPanel extends ChartPanel {
 
-	private static void setColors(JFreeChart chart, Color backgroundColor) {
-		chart.setBackgroundPaint(backgroundColor);
-		Plot plot = chart.getPlot();
-		plot.setBackgroundPaint(backgroundColor);
-		Color textFieldForeground = UIManager.getColor("TextField.foreground");
-		if (plot instanceof PiePlot<?> piePlot) {
-			piePlot.setLabelBackgroundPaint(textFieldForeground);
-			piePlot.setLabelPaint(backgroundColor);
+		private ColorChartPanel(JFreeChart chart) {
+			super(chart);
+			addPropertyChangeListener(new BackgroundListener());
+			setColors();
 		}
-		if (plot instanceof CategoryPlot categoryPlot) {
-			categoryPlot.getDomainAxis().setLabelPaint(textFieldForeground);
-			categoryPlot.getRangeAxis().setLabelPaint(textFieldForeground);
-			categoryPlot.getDomainAxis().setTickLabelPaint(textFieldForeground);
-			categoryPlot.getRangeAxis().setTickLabelPaint(textFieldForeground);
+
+		private void setColors() {
+			Color background = getBackground();
+			Color foreground = getColor("TextField.foreground");
+			JFreeChart chart = getChart();
+			chart.setBackgroundPaint(background);
+			chart.getTitle().setPaint(foreground);
+			Plot plot = chart.getPlot();
+			plot.setBackgroundPaint(background);
+			if (plot instanceof PiePlot<?> piePlot) {
+				piePlot.setLabelPaint(background);
+				piePlot.setLabelBackgroundPaint(foreground);
+			}
+			if (plot instanceof CategoryPlot categoryPlot) {
+				categoryPlot.getDomainAxis().setLabelPaint(foreground);
+				categoryPlot.getDomainAxis().setTickLabelPaint(foreground);
+				categoryPlot.getRangeAxis().setLabelPaint(foreground);
+				categoryPlot.getRangeAxis().setTickLabelPaint(foreground);
+			}
+			LegendTitle legend = chart.getLegend();
+			if (legend != null) {
+				legend.setBackgroundPaint(background);
+				legend.setItemPaint(foreground);
+			}
 		}
-		LegendTitle legend = chart.getLegend();
-		if (legend != null) {
-			legend.setBackgroundPaint(backgroundColor);
-			legend.setItemPaint(textFieldForeground);
+
+		private final class BackgroundListener implements PropertyChangeListener {
+
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				if (event.getPropertyName().equals("background")) {
+					setColors();
+				}
+			}
 		}
-		chart.getTitle().setPaint(textFieldForeground);
 	}
 }
