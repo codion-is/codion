@@ -19,11 +19,9 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.item.Item;
-import is.codion.common.resource.MessageBundle;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
-import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.common.ui.scaler.Scaler;
 
 import org.jspecify.annotations.Nullable;
 
@@ -31,24 +29,15 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JList;
-import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
-
-import static is.codion.common.resource.MessageBundle.messageBundle;
-import static java.util.Objects.requireNonNull;
-import static java.util.ResourceBundle.getBundle;
-import static javax.swing.BorderFactory.createEmptyBorder;
 
 final class DefaultScalingSelectionDialogBuilder implements ScalingSelectionDialogBuilder {
 
 	private @Nullable JComponent owner;
-	private int initialSelection = 100;
 
 	@Override
 	public ScalingSelectionDialogBuilder owner(@Nullable JComponent owner) {
@@ -57,59 +46,19 @@ final class DefaultScalingSelectionDialogBuilder implements ScalingSelectionDial
 	}
 
 	@Override
-	public Control createControl(Consumer<Integer> scalingSelected) {
-		requireNonNull(scalingSelected);
-		MessageBundle resourceBundle =
-						messageBundle(DefaultScalingSelectionDialogBuilder.class,
-										getBundle(DefaultScalingSelectionDialogBuilder.class.getName()));
-		String caption = resourceBundle.getString("scaling");
+	public int show(String title) {
+		List<Item<Integer>> values = initializeValues();
+		ComponentValue<Integer, JComboBox<Item<Integer>>> componentValue = ItemComboBoxBuilder.builder()
+						.items(values)
+						.value(Scaler.SCALING.getOrThrow())
+						.renderer(new FontSizeCellRenderer(values, Scaler.SCALING.getOrThrow()))
+						.buildValue();
 
-		return Control.builder()
-						.command(() -> selectScaling(scalingSelected))
-						.caption(caption)
-						.build();
-	}
-
-	@Override
-	public ScalingSelectionDialogBuilder initialSelection(int initialSelection) {
-		this.initialSelection = initialSelection;
-		return this;
-	}
-
-	@Override
-	public void selectScaling(Consumer<Integer> scalingSelected) {
-		requireNonNull(scalingSelected);
-		MessageBundle resourceBundle =
-						messageBundle(DefaultFileSelectionDialogBuilder.class,
-										getBundle(DefaultScalingSelectionDialogBuilder.class.getName()));
-		ScalingSelectionPanel scalingSelectionPanel = new ScalingSelectionPanel(initialSelection);
-		new DefaultOkCancelDialogBuilder()
-						.component(scalingSelectionPanel)
+		return new DefaultInputDialogBuilder<Integer>(componentValue)
 						.owner(owner)
-						.title(resourceBundle.getString("scaling"))
-						.onOk(() -> scalingSelected.accept(scalingSelectionPanel.selectedScaling()))
+						.title(title)
 						.show();
 	}
-
-	private static final class ScalingSelectionPanel extends JPanel {
-
-		private final ComponentValue<Integer, JComboBox<Item<Integer>>> componentValue;
-
-		private ScalingSelectionPanel(int initialScaling) {
-			super(Layouts.borderLayout());
-			List<Item<Integer>> values = initializeValues();
-			componentValue = ItemComboBoxBuilder.builder()
-							.items(values)
-							.value(initialScaling)
-							.renderer(new FontSizeCellRenderer(values, initialScaling))
-							.buildValue();
-			add(componentValue.component(), BorderLayout.CENTER);
-			setBorder(createEmptyBorder(10, 10, 0, 10));
-		}
-
-		private int selectedScaling() {
-			return componentValue.getOrThrow();
-		}
 
 		private static List<Item<Integer>> initializeValues() {
 			List<Item<Integer>> values = new ArrayList<>();
@@ -144,5 +93,4 @@ final class DefaultScalingSelectionDialogBuilder implements ScalingSelectionDial
 				return component;
 			}
 		}
-	}
 }

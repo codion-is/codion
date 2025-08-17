@@ -664,21 +664,6 @@ is/codion/swing/common/ui/dialog/DefaultLookAndFeelSelectionDialogBuilder_is_IS.
 |look_and_feel|Look & Feel|Útlit
 |===
 
-=== is/codion/swing/common/ui/dialog/DefaultScalingSelectionDialogBuilder.java
-
-[source]
-----
-is/codion/swing/common/ui/dialog/DefaultScalingSelectionDialogBuilder.properties
-is/codion/swing/common/ui/dialog/DefaultScalingSelectionDialogBuilder_is_IS.properties
-----
-
-[cols="1,1,1"]
-|===
-|key|default|is_IS
-
-|scaling|Scaling|Skölun
-|===
-
 === is/codion/swing/common/ui/dialog/ExceptionPanel.java
 
 [source]
@@ -764,6 +749,7 @@ is/codion/swing/framework/ui/EntityApplicationPanel_is_IS.properties
 |open_log|Open Log|Opna Log
 |open_log_file|File|Skrá
 |open_log_folder|Folder|Möppu
+|scaling|Scaling|Skölun
 |scaling_selected_message|The selected scaling will be activated on next application start|Valin skölun virkjast við næstu ræsingu
 |system_properties|System properties|Kerfisstillingar
 |tools|Tools|Tól

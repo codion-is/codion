@@ -19,6 +19,7 @@ Codion Change Log
 - Icons.size() and color() added, SIZE and COLOR property values no longer used for dynamic update.
 - FontImageIcon.Builder refactored.
 - Scaler.RATIO renamed SCALING.
+- ScalingSelectionDialogBuilder.createControl() removed, related refactoring.
 ### is.codion.framework.domain
 - ColumnDefinition.get(ResultSet) overloaded without index, fetches value by column name.
 - KeyGenerator.returnGeneratedKeys() renamed generatedKeys().

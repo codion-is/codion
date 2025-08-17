@@ -659,14 +659,10 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * @return a Control for selecting the scaling
 	 */
 	protected final Control createSelectScalingControl() {
-		return Dialogs.select()
-						.scaling()
-						.owner(this)
-						.initialSelection(Scaler.SCALING.getOrThrow())
-						.createControl(selectedScaling -> {
-							Scaler.SCALING.set(selectedScaling);
-							showMessageDialog(this, resourceBundle.getString("scaling_selected_message"));
-						});
+		return Control.builder()
+						.command(this::selectScaling)
+						.caption(resourceBundle.getString("scaling"))
+						.build();
 	}
 
 	/**
@@ -987,6 +983,15 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 			throw new CancelException();
 		}
+	}
+
+	private void selectScaling() {
+		Scaler.SCALING.set(Dialogs.select()
+						.scaling()
+						.owner(this)
+						.show(resourceBundle.getString("scaling")));
+
+		showMessageDialog(this, resourceBundle.getString("scaling_selected_message"));
 	}
 
 	private boolean confirmExit() {
