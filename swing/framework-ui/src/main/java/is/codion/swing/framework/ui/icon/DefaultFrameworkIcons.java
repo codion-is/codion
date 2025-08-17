@@ -18,6 +18,7 @@
  */
 package is.codion.swing.framework.ui.icon;
 
+import is.codion.common.value.Value;
 import is.codion.swing.common.ui.icon.FontImageIcon;
 import is.codion.swing.common.ui.icon.FontImageIcon.IconPainter;
 import is.codion.swing.common.ui.icon.FontImageIcon.ImageIconFactory;
@@ -35,7 +36,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
-import java.util.function.Consumer;
 
 import static is.codion.swing.framework.ui.icon.FrameworkIkon.*;
 import static java.util.stream.StreamSupport.stream;
@@ -67,17 +67,10 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 
 	private static @Nullable FrameworkIcons instance;
 
-	private final OnIconColorChanged onIconColorChanged = new OnIconColorChanged();
-	private final OnIconSizeChanged onIconSizeChanged = new OnIconSizeChanged();
-
 	private final Icons icons = Icons.icons();
 	private final Map<Integer, FontImageIcon> logos = new HashMap<>();
 
-	private ImageIcon refreshRequired = FontImageIcon.builder()
-					.ikon(REFRESH)
-					.size(Scaler.scale(Icons.SIZE.getOrThrow()))
-					.color(Color.RED.darker())
-					.build().imageIcon();
+	private ImageIcon refreshRequired = createRefreshRequiredIcon();
 
 	/**
 	 * Instantiates a new {@link DefaultFrameworkIcons} instance
@@ -85,9 +78,18 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 	public DefaultFrameworkIcons() {
 		add(LOGO, FILTER, SEARCH, ADD, DELETE, UPDATE, COPY, REFRESH, CLEAR, UP, DOWN, DETAIL,
 						PRINT, EDIT, SUMMARY, EDIT_PANEL, DEPENDENCIES, SETTINGS, CALENDAR, EDIT_TEXT, COLUMNS);
-		Icons.SIZE.addWeakListener(onIconSizeChanged);
-		Icons.COLOR.addWeakConsumer(onIconColorChanged);
-		Scaler.RATIO.addWeakListener(onIconSizeChanged);
+		icons.color().addConsumer(this::onColorChanged);
+		Scaler.RATIO.addWeakListener(this::onScalingChanged);
+	}
+
+	@Override
+	public Value<Color> color() {
+		return icons.color();
+	}
+
+	@Override
+	public int size() {
+		return icons.size();
 	}
 
 	@Override
@@ -220,6 +222,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 		return logos.computeIfAbsent(size, k -> FontImageIcon.builder()
 						.ikon(LOGO)
 						.size(size)
+						.color(icons.color().getOrThrow())
 						.iconPainter(LOGO_ICON_PAINTER)
 						.imageIconFactory(LOGO_ICON_FACTORY)
 						.build()).imageIcon();
@@ -231,6 +234,15 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 		}
 
 		return instance;
+	}
+
+	private ImageIcon createRefreshRequiredIcon() {
+		return FontImageIcon.builder()
+						.ikon(REFRESH)
+						.size(Scaler.scale(icons.size()))
+						.color(Color.RED.darker())
+						.build()
+						.imageIcon();
 	}
 
 	private static FrameworkIcons createInstance() {
@@ -250,25 +262,13 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 		}
 	}
 
-	private final class OnIconColorChanged implements Consumer<Color> {
-
-		@Override
-		public void accept(Color color) {
-			if (color != null) {
-				logos.values().forEach(icon -> icon.color(color));
-			}
+	private void onColorChanged(Color color) {
+		synchronized (logos) {
+			logos.values().forEach(icon -> icon.color(color));
 		}
 	}
 
-	private final class OnIconSizeChanged implements Runnable {
-
-		@Override
-		public void run() {
-			refreshRequired = FontImageIcon.builder()
-							.ikon(REFRESH)
-							.size(Scaler.scale(Icons.SIZE.getOrThrow()))
-							.color(Color.RED.darker())
-							.build().imageIcon();
-		}
+	private void onScalingChanged() {
+		refreshRequired = createRefreshRequiredIcon();
 	}
 }

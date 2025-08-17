@@ -18,6 +18,9 @@
  */
 package is.codion.swing.common.ui.icon;
 
+import is.codion.swing.common.ui.icon.FontImageIcon.Builder.ColorStep;
+import is.codion.swing.common.ui.icon.FontImageIcon.Builder.SizeStep;
+
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.swing.FontIcon;
 
@@ -56,8 +59,38 @@ final class DefaultFontImageIcon implements FontImageIcon {
 	private static final class DefaultIkonStep implements Builder.IkonStep {
 
 		@Override
-		public Builder ikon(Ikon ikon) {
-			return new DefaultBuilder(requireNonNull(ikon));
+		public SizeStep ikon(Ikon ikon) {
+			return new DefaultSizeStep(requireNonNull(ikon));
+		}
+	}
+
+	private static final class DefaultSizeStep implements SizeStep {
+
+		private final Ikon ikon;
+
+		private DefaultSizeStep(Ikon ikon) {
+			this.ikon = ikon;
+		}
+
+		@Override
+		public ColorStep size(int size) {
+			return new DefaultColorStep(ikon, size);
+		}
+	}
+
+	private static final class DefaultColorStep implements ColorStep {
+
+		private final Ikon ikon;
+		private final int size;
+
+		private DefaultColorStep(Ikon ikon, int size) {
+			this.ikon = ikon;
+			this.size = size;
+		}
+
+		@Override
+		public Builder color(Color color) {
+			return new DefaultBuilder(ikon, size, requireNonNull(color));
 		}
 	}
 
@@ -69,26 +102,16 @@ final class DefaultFontImageIcon implements FontImageIcon {
 		private static final ImageIconFactory DEFAULT_ICON_FACTORY = new DefaultImageIconFactory();
 
 		private final Ikon ikon;
+		private final int size;
+		private final Color color;
 
-		private int size = Icons.SIZE.getOrThrow();
-		private Color color = Icons.COLOR.getOrThrow();
 		private IconPainter iconPainter = DEFAULT_ICON_PAINTER;
 		private ImageIconFactory imageIconFactory = DEFAULT_ICON_FACTORY;
 
-		private DefaultBuilder(Ikon ikon) {
-			this.ikon = requireNonNull(ikon);
-		}
-
-		@Override
-		public Builder size(int size) {
+		private DefaultBuilder(Ikon ikon, int size, Color color) {
+			this.ikon = ikon;
 			this.size = size;
-			return this;
-		}
-
-		@Override
-		public Builder color(Color color) {
-			this.color = requireNonNull(color);
-			return this;
+			this.color = color;
 		}
 
 		@Override

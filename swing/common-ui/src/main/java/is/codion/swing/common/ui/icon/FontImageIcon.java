@@ -79,28 +79,40 @@ public interface FontImageIcon {
 	interface Builder {
 
 		/**
-		 * Provides a {@link Builder}
+		 * Provides a {@link SizeStep}
 		 */
 		interface IkonStep {
 
 			/**
 			 * @param ikon the ikon
-			 * @return a new {@link Builder}
+			 * @return a new {@link SizeStep}
 			 */
-			Builder ikon(Ikon ikon);
+			SizeStep ikon(Ikon ikon);
 		}
 
 		/**
-		 * @param size the font size
-		 * @return this builder
+		 * Provides a {@link ColorStep}
 		 */
-		Builder size(int size);
+		interface SizeStep {
+
+			/**
+			 * @param size the size
+			 * @return a new {@link ColorStep}
+			 */
+			ColorStep size(int size);
+		}
 
 		/**
-		 * @param color the font color
-		 * @return this builder
+		 * Provides a {@link Builder}
 		 */
-		Builder color(Color color);
+		interface ColorStep {
+
+			/**
+			 * @param color the color
+			 * @return a new {@link Builder}
+			 */
+			Builder color(Color color);
+		}
 
 		/**
 		 * @param iconPainter the font painter

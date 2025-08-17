@@ -69,8 +69,8 @@ public final class FlatLookAndFeelProvider implements LookAndFeelProvider {
 		@Override
 		public void accept(LookAndFeelInfo lookAndFeelInfo) {
 			try {
-				Scaler.instance(lookAndFeelInfo.getClassName()).ifPresent(Scaler::apply);
-				UIManager.setLookAndFeel(requireNonNull(lookAndFeelInfo).getClassName());
+				Scaler.instance(requireNonNull(lookAndFeelInfo).getClassName()).ifPresent(Scaler::apply);
+				UIManager.setLookAndFeel(lookAndFeelInfo.getClassName());
 				Utilities.updateComponentTreeForAllWindows();
 			}
 			catch (Exception e) {

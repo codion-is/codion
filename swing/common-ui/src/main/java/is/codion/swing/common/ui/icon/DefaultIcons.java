@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.ui.icon;
 
+import is.codion.common.value.Value;
 import is.codion.swing.common.ui.scaler.Scaler;
 
 import org.kordamp.ikonli.Ikon;
@@ -29,7 +30,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 import static javax.swing.UIManager.getColor;
@@ -38,22 +38,34 @@ final class DefaultIcons implements Icons {
 
 	private final Map<Ikon, FontImageIcon> icons = new HashMap<>();
 
-	private final OnIconColorChanged onIconColorChanged = new OnIconColorChanged();
-	private final OnIconSizeChanged onIconSizeChanged = new OnIconSizeChanged();
+	private final OnLookAndFeelChanged onLookAndFeelChanged = new OnLookAndFeelChanged();
+	private final OnScalingChanged onScalingChanged = new OnScalingChanged();
 
-	static {
-		UIManager.addPropertyChangeListener(new OnLookAndFeelChanged());
-	}
+	private final int size = SIZE.getOrThrow();
+	private final Value<Color> color = Value.builder()
+					.nonNull(COLOR.getOrThrow())
+					.consumer(this::onColorChanged)
+					.build();
 
 	DefaultIcons() {
-		COLOR.addWeakConsumer(onIconColorChanged);
-		SIZE.addWeakListener(onIconSizeChanged);
-		Scaler.RATIO.addWeakListener(onIconSizeChanged);
+		UIManager.addPropertyChangeListener(onLookAndFeelChanged);
+		Scaler.RATIO.addWeakListener(onScalingChanged);
+	}
+
+	@Override
+	public Value<Color> color() {
+		return color;
+	}
+
+	@Override
+	public int size() {
+		return size;
 	}
 
 	@Override
 	public void add(Ikon... ikons) {
-		int iconSize = Scaler.scale(Icons.SIZE.getOrThrow());
+		int iconSize = Scaler.scale(size);
+		Color iconColor = color.getOrThrow();
 		synchronized (icons) {
 			for (Ikon ikon : requireNonNull(ikons)) {
 				if (icons.containsKey(requireNonNull(ikon))) {
@@ -64,6 +76,7 @@ final class DefaultIcons implements Icons {
 				icons.put(ikon, FontImageIcon.builder()
 								.ikon(ikon)
 								.size(iconSize)
+								.color(iconColor)
 								.build());
 			}
 		}
@@ -80,38 +93,36 @@ final class DefaultIcons implements Icons {
 		}
 	}
 
-	private final class OnIconColorChanged implements Consumer<Color> {
-
-		@Override
-		public void accept(Color color) {
-			if (color != null) {
-				icons.values().forEach(icon -> icon.color(color));
-			}
+	private void onColorChanged(Color color) {
+		synchronized (icons) {
+			icons.values().forEach(icon -> icon.color(color));
 		}
 	}
 
-	private final class OnIconSizeChanged implements Runnable {
+	private final class OnScalingChanged implements Runnable {
 
 		@Override
 		public void run() {
+			int iconSize = Scaler.scale(size);
+			Color iconColor = color.getOrThrow();
 			synchronized (icons) {
-				int iconSize = Scaler.scale(Icons.SIZE.getOrThrow());
 				icons.replaceAll((ikon, fontImageIcon) -> FontImageIcon.builder()
 								.ikon(ikon)
 								.size(iconSize)
+								.color(iconColor)
 								.build());
 			}
 		}
 	}
 
-	private static final class OnLookAndFeelChanged implements PropertyChangeListener {
+	private final class OnLookAndFeelChanged implements PropertyChangeListener {
 
 		private static final String LOOK_AND_FEEL_PROPERTY = "lookAndFeel";
 
 		@Override
 		public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-			if (propertyChangeEvent.getPropertyName().equals(LOOK_AND_FEEL_PROPERTY) && COLOR != null) {
-				COLOR.set(getColor("Button.foreground"));
+			if (propertyChangeEvent.getPropertyName().equals(LOOK_AND_FEEL_PROPERTY)) {
+				color.set(getColor("Button.foreground"));
 			}
 		}
 	}

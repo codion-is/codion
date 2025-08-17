@@ -20,6 +20,7 @@ package is.codion.swing.common.ui.icon;
 
 import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
+import is.codion.common.value.Value;
 
 import org.kordamp.ikonli.Ikon;
 
@@ -31,14 +32,14 @@ import static javax.swing.UIManager.getColor;
 
 /**
  * Provides icons for ui components.
- * {@link #COLOR} follows the 'Button.foreground' color of the current Look and feel.
+ * {@link #color()} follows the 'Button.foreground' color of the current Look and feel.
  * Add icons via {@link #add(Ikon...)} and retrieve them via {@link #get(Ikon)}.
  * @see #icons()
  */
 public interface Icons {
 
 	/**
-	 * The icon size, note that this will affect the size of buttons
+	 * The default icon size, note that this will affect the size of buttons
 	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 16
@@ -47,7 +48,7 @@ public interface Icons {
 	PropertyValue<Integer> SIZE = integerValue(Icons.class.getName() + ".size", 16);
 
 	/**
-	 * The icon color, follows the "Button.foreground" color of the current Look and feel.
+	 * The default icon color.
 	 * <ul>
 	 * <li>Value type: Color
 	 * <li>Default value: UIManager.getColor("Button.foreground")
@@ -56,14 +57,25 @@ public interface Icons {
 	PropertyValue<Color> COLOR = Configuration.value(Icons.class.getName() + ".color", Color::decode, getColor("Button.foreground"));
 
 	/**
-	 * Adds the given ikons to this FrameworkIcons instance. Retrieve an icon via {@link #get(Ikon)}.
+	 * Follows the 'Button.foreground' color of the current Look and feel.
+	 * @return the {@link Value} controlling the icon color
+	 */
+	Value<Color> color();
+
+	/**
+	 * @return the icon size
+	 */
+	int size();
+
+	/**
+	 * Adds the given ikons to this Icons instance. Retrieve an icon via {@link #get(Ikon)}.
 	 * @param ikons the ikons to add
 	 * @throws IllegalArgumentException in case an icon has already been associated with any of the given ikons
 	 */
 	void add(Ikon... ikons);
 
 	/**
-	 * Retrieves the ImageIcon associated with the given ikon from this FrameworkIcons instance.
+	 * Retrieves the ImageIcon associated with the given ikon from this Icons instance.
 	 * @param ikon the ikon
 	 * @return the ImageIcon associated with the given ikon
 	 * @throws IllegalArgumentException in case no icon has been associated with the given ikon
