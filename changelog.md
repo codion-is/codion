@@ -15,6 +15,7 @@ Codion Change Log
 - DefaultIcons is now scaling aware.
 - Icons.ICON_SIZE and ICON_COLOR renamed SIZE and COLOR.
 - Scaler.scale() added.
+- FontSizeScaler now uses Scaler.scale().
 ### is.codion.framework.domain
 - ColumnDefinition.get(ResultSet) overloaded without index, fetches value by column name.
 - KeyGenerator.returnGeneratedKeys() renamed generatedKeys().

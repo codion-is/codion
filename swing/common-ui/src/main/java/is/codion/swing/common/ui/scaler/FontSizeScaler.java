@@ -60,14 +60,13 @@ public final class FontSizeScaler implements Scaler {
 	 */
 	private static void updateFontSize() {
 		UIDefaults defaults = getLookAndFeelDefaults();
-		float multiplier = RATIO.getOrThrow() / 100f;
 		Enumeration<Object> enumeration = defaults.keys();
 		while (enumeration.hasMoreElements()) {
 			Object key = enumeration.nextElement();
 			Object defaultValue = defaults.get(key);
 			if (defaultValue instanceof Font) {
 				Font font = (Font) defaultValue;
-				Font derived = font.deriveFont((float) Math.round(font.getSize() * multiplier));
+				Font derived = font.deriveFont((float) Scaler.scale(font.getSize()));
 				if (defaultValue instanceof FontUIResource) {
 					defaults.put(key, new FontUIResource(derived));
 				}
