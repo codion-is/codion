@@ -77,11 +77,6 @@ public interface FrameworkIcons extends Icons, Logos {
 	ImageIcon refresh();
 
 	/**
-	 * @return icon for the 'refresh' action.
-	 */
-	ImageIcon refreshRequired();
-
-	/**
 	 * @return icon for the 'clear' action.
 	 */
 	ImageIcon clear();

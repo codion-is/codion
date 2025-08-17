@@ -1443,7 +1443,7 @@ public class EntityTablePanel extends JPanel {
 		return Control.builder()
 						.command(tableModel.items()::refresh)
 						.enabled(tableModel.queryModel().conditionChanged())
-						.smallIcon(ICONS.refreshRequired())
+						.smallIcon(ICONS.refresh())
 						.build();
 	}
 

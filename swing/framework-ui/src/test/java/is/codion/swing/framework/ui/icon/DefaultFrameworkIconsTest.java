@@ -36,7 +36,6 @@ public final class DefaultFrameworkIconsTest {
 		assertNotNull(icons.update());
 		assertNotNull(icons.copy());
 		assertNotNull(icons.refresh());
-		assertNotNull(icons.refreshRequired());
 		assertNotNull(icons.clear());
 		assertNotNull(icons.up());
 		assertNotNull(icons.down());

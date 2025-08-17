@@ -32,8 +32,6 @@ import org.kordamp.ikonli.swing.FontIcon;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
@@ -70,16 +68,14 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 	private static @Nullable FrameworkIcons instance;
 
 	private final Icons icons = Icons.icons();
-	private final Map<Integer, FontImageIcon> logos = new HashMap<>();
 
-	private ImageIcon logo = createLogo();
-	private ImageIcon refreshRequired = createRefreshRequiredIcon();
+	private FontImageIcon logo = createLogo();
 
 	/**
 	 * Instantiates a new {@link DefaultFrameworkIcons} instance
 	 */
 	public DefaultFrameworkIcons() {
-		add(LOGO, FILTER, SEARCH, ADD, DELETE, UPDATE, COPY, REFRESH, CLEAR, UP, DOWN, DETAIL,
+		add(FILTER, SEARCH, ADD, DELETE, UPDATE, COPY, REFRESH, CLEAR, UP, DOWN, DETAIL,
 						PRINT, EDIT, SUMMARY, EDIT_PANEL, DEPENDENCIES, SETTINGS, CALENDAR, EDIT_TEXT, COLUMNS);
 		icons.color().addConsumer(this::onColorChanged);
 		Scaler.SCALING.addWeakListener(this::onScalingChanged);
@@ -138,11 +134,6 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 	@Override
 	public ImageIcon refresh() {
 		return get(REFRESH);
-	}
-
-	@Override
-	public ImageIcon refreshRequired() {
-		return refreshRequired;
 	}
 
 	@Override
@@ -217,7 +208,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 
 	@Override
 	public ImageIcon logo() {
-		return logo;
+		return logo.imageIcon();
 	}
 
 	static FrameworkIcons instance() {
@@ -228,24 +219,14 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 		return instance;
 	}
 
-	private ImageIcon createLogo() {
+	private FontImageIcon createLogo() {
 		return FontImageIcon.builder()
 						.ikon(LOGO)
 						.size(Scaler.scale(LOGO_SIZE))
 						.color(icons.color().getOrThrow())
 						.iconPainter(LOGO_ICON_PAINTER)
 						.imageIconFactory(LOGO_ICON_FACTORY)
-						.build()
-						.imageIcon();
-	}
-
-	private ImageIcon createRefreshRequiredIcon() {
-		return FontImageIcon.builder()
-						.ikon(REFRESH)
-						.size(Scaler.scale(icons.size()))
-						.color(Color.RED.darker())
-						.build()
-						.imageIcon();
+						.build();
 	}
 
 	private static FrameworkIcons createInstance() {
@@ -266,13 +247,10 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 	}
 
 	private void onColorChanged(Color color) {
-		synchronized (logos) {
-			logos.values().forEach(icon -> icon.color(color));
-		}
+		logo.color(color);
 	}
 
 	private void onScalingChanged() {
 		logo = createLogo();
-		refreshRequired = createRefreshRequiredIcon();
 	}
 }
