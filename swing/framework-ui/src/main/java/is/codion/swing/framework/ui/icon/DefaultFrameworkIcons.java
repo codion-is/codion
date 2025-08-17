@@ -45,6 +45,8 @@ import static java.util.stream.StreamSupport.stream;
  */
 public final class DefaultFrameworkIcons implements FrameworkIcons {
 
+	private static final int LOGO_SIZE = 68;
+
 	private static final IconPainter LOGO_ICON_PAINTER = new IconPainter() {
 
 		@Override
@@ -70,6 +72,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 	private final Icons icons = Icons.icons();
 	private final Map<Integer, FontImageIcon> logos = new HashMap<>();
 
+	private ImageIcon logo = createLogo();
 	private ImageIcon refreshRequired = createRefreshRequiredIcon();
 
 	/**
@@ -214,18 +217,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 
 	@Override
 	public ImageIcon logo() {
-		return get(LOGO);
-	}
-
-	@Override
-	public ImageIcon logo(int size) {
-		return logos.computeIfAbsent(size, k -> FontImageIcon.builder()
-						.ikon(LOGO)
-						.size(size)
-						.color(icons.color().getOrThrow())
-						.iconPainter(LOGO_ICON_PAINTER)
-						.imageIconFactory(LOGO_ICON_FACTORY)
-						.build()).imageIcon();
+		return logo;
 	}
 
 	static FrameworkIcons instance() {
@@ -234,6 +226,17 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 		}
 
 		return instance;
+	}
+
+	private ImageIcon createLogo() {
+		return FontImageIcon.builder()
+						.ikon(LOGO)
+						.size(Scaler.scale(LOGO_SIZE))
+						.color(icons.color().getOrThrow())
+						.iconPainter(LOGO_ICON_PAINTER)
+						.imageIconFactory(LOGO_ICON_FACTORY)
+						.build()
+						.imageIcon();
 	}
 
 	private ImageIcon createRefreshRequiredIcon() {
@@ -269,6 +272,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 	}
 
 	private void onScalingChanged() {
+		logo = createLogo();
 		refreshRequired = createRefreshRequiredIcon();
 	}
 }

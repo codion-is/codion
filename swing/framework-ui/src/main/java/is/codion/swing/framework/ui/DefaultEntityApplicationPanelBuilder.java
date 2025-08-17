@@ -93,7 +93,6 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
 	private static final String CODION_CLIENT_VERSION = "codion.client.version";
 	private static final String CODION_VERSION = "codion.version";
-	private static final int DEFAULT_LOGO_SIZE = 68;
 	private static final String DASH = " - ";
 	private static final String EMPTY_JSON_OBJECT = "{}";
 
@@ -399,7 +398,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
 	private void configureIcons() {
 		if (applicationIcon == null) {
-			applicationIcon = FrameworkIcons.instance().logo(Scaler.scale(DEFAULT_LOGO_SIZE));
+			applicationIcon = FrameworkIcons.instance().logo();
 		}
 	}
 

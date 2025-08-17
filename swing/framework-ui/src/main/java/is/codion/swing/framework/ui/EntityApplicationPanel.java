@@ -220,8 +220,6 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 */
 	public static final PropertyValue<Boolean> LEGACY_PREFERENCES = booleanValue(EntityApplicationPanel.class.getName() + ".legacyPreferences", true);
 
-	private static final int DEFAULT_LOGO_SIZE = 68;
-
 	// Non-static so that Locale.setDefault(...) can be called in the main method of a subclass
 	private final MessageBundle resourceBundle =
 					messageBundle(EntityApplicationPanel.class, getBundle(EntityApplicationPanel.class.getName()));
@@ -752,7 +750,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 		return borderLayoutPanel()
 						.border(emptyBorder())
-						.west(new JLabel(FrameworkIcons.instance().logo(DEFAULT_LOGO_SIZE)))
+						.west(new JLabel(FrameworkIcons.instance().logo()))
 						.center(versionMemoryPanel)
 						.build();
 	}
