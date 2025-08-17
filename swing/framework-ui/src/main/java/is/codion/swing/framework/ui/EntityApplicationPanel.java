@@ -662,9 +662,9 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		return Dialogs.select()
 						.scaling()
 						.owner(this)
-						.initialSelection(Scaler.RATIO.getOrThrow())
+						.initialSelection(Scaler.SCALING.getOrThrow())
 						.createControl(selectedScaling -> {
-							Scaler.RATIO.set(selectedScaling);
+							Scaler.SCALING.set(selectedScaling);
 							showMessageDialog(this, resourceBundle.getString("scaling_selected_message"));
 						});
 	}
@@ -900,7 +900,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 		return new ApplicationPreferences(
 						saveDefaultUsername ? applicationModel.connectionProvider().user().username() : null,
-						getLookAndFeel().getClass().getName(), Scaler.RATIO.getOrThrow(),
+						getLookAndFeel().getClass().getName(), Scaler.SCALING.getOrThrow(),
 						parentFrame == null ? null : parentFrame.getSize(),
 						parentFrame != null && (parentFrame.getExtendedState() & MAXIMIZED_BOTH) == MAXIMIZED_BOTH);
 	}

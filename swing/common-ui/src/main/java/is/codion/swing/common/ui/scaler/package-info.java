@@ -20,7 +20,7 @@
  * <p>UI scaling utilities for high DPI support.
  * <p>Package configuration values:
  * <ul>
- * <li>{@link is.codion.swing.common.ui.scaler.Scaler#RATIO}
+ * <li>{@link is.codion.swing.common.ui.scaler.Scaler#SCALING}
  * </ul>
  */
 @org.jspecify.annotations.NullMarked

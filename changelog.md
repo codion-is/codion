@@ -18,6 +18,7 @@ Codion Change Log
 - FontSizeScaler now uses Scaler.scale().
 - Icons.size() and color() added, SIZE and COLOR property values no longer used for dynamic update.
 - FontImageIcon.Builder refactored.
+- Scaler.RATIO renamed SCALING.
 ### is.codion.framework.domain
 - ColumnDefinition.get(ResultSet) overloaded without index, fetches value by column name.
 - KeyGenerator.returnGeneratedKeys() renamed generatedKeys().

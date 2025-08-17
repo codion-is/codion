@@ -49,7 +49,7 @@ final class DefaultIcons implements Icons {
 
 	DefaultIcons() {
 		UIManager.addPropertyChangeListener(onLookAndFeelChanged);
-		Scaler.RATIO.addWeakListener(onScalingChanged);
+		Scaler.SCALING.addWeakListener(onScalingChanged);
 	}
 
 	@Override

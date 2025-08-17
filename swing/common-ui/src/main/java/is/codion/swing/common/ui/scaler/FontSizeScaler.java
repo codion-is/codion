@@ -44,7 +44,7 @@ public final class FontSizeScaler implements Scaler {
 
 	@Override
 	public void apply() {
-		if (RATIO.isNotEqualTo(DEFAULT_RATIO)) {
+		if (SCALING.isNotEqualTo(100)) {
 			updateFontSize();
 		}
 	}
@@ -55,7 +55,7 @@ public final class FontSizeScaler implements Scaler {
 	}
 
 	/**
-	 * Updates the font sizes for the current {@link UIDefaults} using the ratio from {@link #RATIO}.
+	 * Updates the font sizes for the current {@link UIDefaults} using the current value of {@link #SCALING}.
 	 * Note that this must be done before the UI is initialized, dynamic scaling is not supported.
 	 */
 	private static void updateFontSize() {

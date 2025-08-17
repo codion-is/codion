@@ -142,7 +142,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		this.frameSize = preferences.frameSize();
 		this.maximizeFrame = preferences.frameMaximized();
 		this.preferencesLookAndFeel = preferences.lookAndFeel();
-		Scaler.RATIO.set(preferences.scaling());
+		Scaler.SCALING.set(preferences.scaling());
 	}
 
 	@Override

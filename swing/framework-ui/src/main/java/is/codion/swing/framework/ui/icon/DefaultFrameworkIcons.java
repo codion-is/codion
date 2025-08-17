@@ -82,7 +82,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 		add(LOGO, FILTER, SEARCH, ADD, DELETE, UPDATE, COPY, REFRESH, CLEAR, UP, DOWN, DETAIL,
 						PRINT, EDIT, SUMMARY, EDIT_PANEL, DEPENDENCIES, SETTINGS, CALENDAR, EDIT_TEXT, COLUMNS);
 		icons.color().addConsumer(this::onColorChanged);
-		Scaler.RATIO.addWeakListener(this::onScalingChanged);
+		Scaler.SCALING.addWeakListener(this::onScalingChanged);
 	}
 
 	@Override

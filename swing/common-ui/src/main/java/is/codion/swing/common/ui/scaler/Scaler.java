@@ -33,19 +33,16 @@ import static java.util.stream.StreamSupport.stream;
  */
 public interface Scaler {
 
-	int DEFAULT_RATIO = 100;
-
 	/**
-	 * Specifies the global UI scaling ratio.<br>
+	 * Specifies the global UI scaling ratio in percentages, with 100 meaning no scaling.<br>
 	 * 85 = decrease the default size by 15%<br>
 	 * 100 = use the default size<br>
 	 * 125 = increase the default size by 25%<br>
-	 * <p>Note that this does not support dynamic updates, application must be restarted for changes to take effect.
 	 */
-	PropertyValue<Integer> RATIO = Configuration.integerValue(Scaler.class.getName() + ".ratio", DEFAULT_RATIO);
+	PropertyValue<Integer> SCALING = Configuration.integerValue(Scaler.class.getName() + ".scaling", 100);
 
 	/**
-	 * Applies the scale ratio specified by {@link #RATIO}
+	 * Applies the scale ratio specified by {@link #SCALING}
 	 */
 	void apply();
 
@@ -57,10 +54,10 @@ public interface Scaler {
 
 	/**
 	 * @param size the size to scale
-	 * @return the size scaled according to {@link #RATIO}
+	 * @return the size scaled according to {@link #SCALING}
 	 */
 	static int scale(int size) {
-		int scaling = Scaler.RATIO.getOrThrow();
+		int scaling = Scaler.SCALING.getOrThrow();
 		if (scaling != 100) {
 			return Math.round(size * (scaling / 100f));
 		}
