@@ -20,6 +20,7 @@ Codion Change Log
 - FontImageIcon.Builder refactored.
 - Scaler.RATIO renamed SCALING.
 - ScalingSelectionDialogBuilder.createControl() removed, related refactoring.
+- FileInputPanel, button caption not used if icon is specified, layout fix.
 ### is.codion.framework.domain
 - ColumnDefinition.get(ResultSet) overloaded without index, fetches value by column name.
 - KeyGenerator.returnGeneratedKeys() renamed generatedKeys().

@@ -45,7 +45,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.function.Consumer;
 
-import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -62,7 +61,7 @@ public final class FileInputPanel extends JPanel {
 	private FileInputPanel(AbstractBuilder<?> builder) {
 		CommandControl browseControl = Control.builder()
 						.command(this::browseFile)
-						.caption(builder.buttonCaption)
+						.caption(builder.buttonIcon == null ? builder.buttonCaption : null)
 						.smallIcon(builder.buttonIcon)
 						.build();
 		filePathField = builder.pathFieldBuilder
@@ -74,7 +73,7 @@ public final class FileInputPanel extends JPanel {
 						.control(browseControl)
 						.preferredSize(new Dimension(filePathField.getPreferredSize().height, filePathField.getPreferredSize().height))
 						.build();
-		setLayout(borderLayout());
+		setLayout(new BorderLayout());
 		add(filePathField, BorderLayout.CENTER);
 		add(browseButton, BorderLayout.EAST);
 	}
@@ -130,7 +129,8 @@ public final class FileInputPanel extends JPanel {
 	public interface Builder<T> extends ComponentValueBuilder<T, FileInputPanel, Builder<T>> {
 
 		/**
-		 * @param buttonCaption the browse button caption
+		 * Note that the button caption is not used if a {@link #buttonIcon(Icon)} is specified
+		 * @param buttonCaption the browse button caption, used in case no icon is specified
 		 * @return this builder instance
 		 */
 		Builder<T> buttonCaption(String buttonCaption);
