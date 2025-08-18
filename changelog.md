@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.46
+
 ## 0.18.45
 ### is.codion.common.core
 - Text.DEFAULT_COLLATOR_LANGUAGE renamed COLLATOR_LANGUAGE.
