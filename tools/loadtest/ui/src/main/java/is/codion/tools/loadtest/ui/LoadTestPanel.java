@@ -27,7 +27,6 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
-import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -62,7 +61,6 @@ import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.text.NumberFormat;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -385,7 +383,6 @@ public final class LoadTestPanel<T> extends JPanel {
 
 		return FilterTable.builder()
 						.model(tableModel)
-						.columns(createApplicationTableModelColumns())
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.doubleClick(command(this::viewException))
 						.scrollToSelectedItem(false)
@@ -410,43 +407,6 @@ public final class LoadTestPanel<T> extends JPanel {
 														.control(table.createSelectAutoResizeModeControl()))
 										.build())
 						.build();
-	}
-
-	private static List<FilterTableColumn<ColumnId>> createApplicationTableModelColumns() {
-		return Arrays.asList(
-						FilterTableColumn.builder()
-										.identifier(ColumnId.NAME)
-										.headerValue("Name")
-										.build(),
-						FilterTableColumn.builder()
-										.identifier(ColumnId.USERNAME)
-										.headerValue("User")
-										.build(),
-						FilterTableColumn.builder()
-										.identifier(ColumnId.SCENARIO)
-										.headerValue("Scenario")
-										.build(),
-						FilterTableColumn.builder()
-										.identifier(ColumnId.SUCCESSFUL)
-										.headerValue("Success")
-										.build(),
-						FilterTableColumn.builder()
-										.identifier(ColumnId.DURATION)
-										.headerValue("Duration (μs)")
-										.build(),
-						FilterTableColumn.builder()
-										.identifier(ColumnId.EXCEPTION)
-										.headerValue("Exception")
-										.build(),
-						FilterTableColumn.builder()
-										.identifier(ColumnId.MESSAGE)
-										.headerValue("Message")
-										.build(),
-						FilterTableColumn.builder()
-										.identifier(ColumnId.CREATED)
-										.headerValue("Created")
-										.build()
-		);
 	}
 
 	private void viewException() {

@@ -32,6 +32,7 @@ import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.FilterTableModel;
+import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.swing.common.model.component.table.FilterTableSort.ColumnSortOrder;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.border.Borders;
@@ -92,7 +93,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -113,6 +113,7 @@ import static java.awt.event.InputEvent.*;
 import static java.awt.event.KeyEvent.*;
 import static java.lang.String.join;
 import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.joining;
@@ -284,7 +285,7 @@ public final class FilterTable<R, C> extends JTable {
 
 	private FilterTable(DefaultBuilder<R, C> builder) {
 		super(builder.tableModel,
-						new DefaultFilterTableColumnModel<>(builder.columns),
+						new DefaultFilterTableColumnModel<>(createColumns(builder.columns, builder.tableModel)),
 						builder.tableModel.selection());
 		this.tableModel = builder.tableModel;
 		this.searchModel = new DefaultFilterTableSearchModel<>(tableModel, columnModel());
@@ -1043,6 +1044,23 @@ public final class FilterTable<R, C> extends JTable {
 		}
 	}
 
+	private static <R, C> List<FilterTableColumn<C>> createColumns(Consumer<FilterTableColumn.Builder<C>> configure,
+																																 FilterTableModel<R, C> tableModel) {
+		TableColumns<R, C> tableColumns = tableModel.columns();
+		List<C> identifiers = tableColumns.identifiers();
+		List<FilterTableColumn<C>> columns = new ArrayList<>(identifiers.size());
+		for (int i = 0; i < identifiers.size(); i++) {
+			FilterTableColumn.Builder<C> builder = FilterTableColumn.builder()
+							.identifier(identifiers.get(i))
+							.modelIndex(i)
+							.headerValue(tableColumns.caption(identifiers.get(i)));
+			configure.accept(builder);
+			columns.add(builder.build());
+		}
+
+		return unmodifiableList(columns);
+	}
+
 	private final class FilterTableMouseListener extends MouseAdapter {
 
 		@Override
@@ -1161,22 +1179,14 @@ public final class FilterTable<R, C> extends JTable {
 			 * @param model the table model
 			 * @return a {@link Builder} based on the given columns
 			 */
-			<R, C> ColumnsBuilder<R, C> model(FilterTableModel<R, C> model);
+			<R, C> Builder<R, C> model(FilterTableModel<R, C> model);
 		}
 
 		/**
-		 * @param <R> the type representing rows
-		 * @param <C> the type used to identify columns
+		 * @param columns called to configure each column builder
+		 * @return this builder instance
 		 */
-		interface ColumnsBuilder<R, C> {
-
-			/**
-			 * @param columns the columns
-			 * @return a {@link Builder} based on the given columns
-			 * @throws IllegalArgumentException in case the column identifiers are not unique
-			 */
-			Builder<R, C> columns(List<FilterTableColumn<C>> columns);
-		}
+		Builder<R, C> columns(Consumer<FilterTableColumn.Builder<C>> columns);
 
 		/**
 		 * @param summaryValuesFactory the column summary values factory
@@ -1441,22 +1451,8 @@ public final class FilterTable<R, C> extends JTable {
 	private static class DefaultModelStep implements Builder.ModelStep {
 
 		@Override
-		public <R, C> Builder.ColumnsBuilder<R, C> model(FilterTableModel<R, C> model) {
-			return new DefaultColumnsBuilder<>(requireNonNull(model));
-		}
-	}
-
-	private static class DefaultColumnsBuilder<R, C> implements Builder.ColumnsBuilder<R, C> {
-
-		private final FilterTableModel<R, C> tableModel;
-
-		private DefaultColumnsBuilder(FilterTableModel<R, C> tableModel) {
-			this.tableModel = tableModel;
-		}
-
-		@Override
-		public Builder<R, C> columns(List<FilterTableColumn<C>> columns) {
-			return new DefaultBuilder<>(tableModel, requireNonNull(columns));
+		public <R, C> Builder<R, C> model(FilterTableModel<R, C> model) {
+			return new DefaultBuilder<>(requireNonNull(model));
 		}
 	}
 
@@ -1467,12 +1463,12 @@ public final class FilterTable<R, C> extends JTable {
 		private static final Builder.ModelStep MODEL = new DefaultModelStep();
 
 		private final FilterTableModel<R, C> tableModel;
-		private final List<FilterTableColumn<C>> columns;
 		private final ControlMap controlMap = controlMap(ControlKeys.class);
 		private final Map<C, FilterTableCellRenderer<?>> cellRenderers = new HashMap<>();
 		private final Map<C, FilterTableCellEditor<?>> cellEditors = new HashMap<>();
 		private final Collection<KeyStroke> startEditKeyStrokes = new ArrayList<>();
 
+		private Consumer<FilterTableColumn.Builder<C>> columns = new EmptyConsumer<>();
 		private SummaryValues.@Nullable Factory<C> summaryValuesFactory;
 		private TableConditionPanel.Factory<C> filterPanelFactory = new DefaultFilterPanelFactory<>();
 		private ComponentFactory filterComponentFactory = new FilterComponentFactory();
@@ -1501,10 +1497,15 @@ public final class FilterTable<R, C> extends JTable {
 		private @Nullable Boolean showVerticalLines;
 		private @Nullable Boolean dragEnabled;
 
-		private DefaultBuilder(FilterTableModel<R, C> tableModel, List<FilterTableColumn<C>> columns) {
+		private DefaultBuilder(FilterTableModel<R, C> tableModel) {
 			this.tableModel = tableModel;
-			this.columns = new ArrayList<>(validateColumns(columns));
 			this.cellRendererFactory = FilterTableCellRenderer.factory();
+		}
+
+		@Override
+		public Builder<R, C> columns(Consumer<FilterTableColumn.Builder<C>> columns) {
+			this.columns = requireNonNull(columns);
+			return this;
 		}
 
 		@Override
@@ -1697,42 +1698,6 @@ public final class FilterTable<R, C> extends JTable {
 		protected FilterTable<R, C> createComponent() {
 			return new FilterTable<>(this);
 		}
-
-		private Collection<FilterTableColumn<C>> validateColumns(List<FilterTableColumn<C>> columns) {
-			if (columns.stream()
-							.map(new ColumnIdentifier<>())
-							.distinct()
-							.count() != columns.size()) {
-				throw new IllegalArgumentException("Column identifiers are not unique");
-			}
-			List<Integer> modelIndexes = columns.stream()
-							.map(new ModelIndex())
-							.sorted()
-							.collect(toList());
-			for (int i = 0; i < modelIndexes.size(); i++) {
-				if (modelIndexes.get(i) != i) {
-					throw new IllegalArgumentException("Column model indexes should start with zero, be unique and continuous");
-				}
-			}
-
-			return columns;
-		}
-
-		private static final class ColumnIdentifier<C> implements Function<FilterTableColumn<C>, C> {
-
-			@Override
-			public C apply(FilterTableColumn<C> column) {
-				return column.identifier();
-			}
-		}
-
-		private static final class ModelIndex implements Function<FilterTableColumn<?>, Integer> {
-
-			@Override
-			public Integer apply(FilterTableColumn<?> column) {
-				return column.getModelIndex();
-			}
-		}
 	}
 
 	private final class DefaultSummaryValuesFactory implements SummaryValues.Factory<C> {
@@ -1746,6 +1711,12 @@ public final class FilterTable<R, C> extends JTable {
 
 			return Optional.empty();
 		}
+	}
+
+	private static final class EmptyConsumer<T> implements Consumer<T> {
+
+		@Override
+		public void accept(T result) {}
 	}
 
 	private static final class DefaultSummaryValues<T extends Number, C> implements SummaryValues<T> {

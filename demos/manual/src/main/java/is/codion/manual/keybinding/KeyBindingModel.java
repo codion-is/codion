@@ -111,6 +111,22 @@ final class KeyBindingModel {
 		}
 
 		@Override
+		public String caption(ColumnId identifier) {
+			switch (identifier) {
+				case ACTION:
+					return "Action";
+				case WHEN_FOCUSED:
+					return "When Focused";
+				case WHEN_IN_FOCUSED_WINDOW:
+					return "When in Focused Window";
+				case WHEN_ANCESTOR:
+					return "When Ancestor";
+				default:
+					throw new IllegalArgumentException();
+			}
+		}
+
+		@Override
 		public Class<?> columnClass(ColumnId columnId) {
 			return String.class;
 		}

@@ -75,7 +75,7 @@ public class FilterTableTest {
 	}
 
 	private static FilterTable<TestRow, Integer> createTestTable(Comparator<String> customComparator) {
-		return FilterTable.builder().model(createTestModel(customComparator)).columns(createColumns()).build();
+		return FilterTable.builder().model(createTestModel(customComparator)).build();
 	}
 
 	private static FilterTableModel<TestRow, Integer> createTestModel(Comparator<String> customComparator) {
@@ -113,20 +113,9 @@ public class FilterTableTest {
 						.build();
 	}
 
-	private static List<FilterTableColumn<Integer>> createColumns() {
-		return singletonList(FilterTableColumn.builder()
-						.modelIndex(0)
-						.build());
-	}
-
 	@Test
 	void builderNullTableModel() {
 		assertThrows(Exception.class, () -> FilterTable.builder().model(null));
-	}
-
-	@Test
-	void builderNullColumns() {
-		assertThrows(Exception.class, () -> FilterTable.builder().model(createTestModel(null)).columns(null));
 	}
 
 	@Test
@@ -160,9 +149,6 @@ public class FilterTableTest {
 
 		FilterTable<List<String>, Integer> filterTable = FilterTable.builder()
 						.model(tableModel)
-						.columns(asList(
-										FilterTableColumn.builder().modelIndex(0).build(),
-										FilterTableColumn.builder().modelIndex(1).build()))
 						.build();
 		filterTable.columnModel().visible(1).set(false);
 		tableModel.items().refresh();
@@ -215,9 +201,6 @@ public class FilterTableTest {
 			}
 		}
 
-		FilterTableColumn<Integer> columnId = FilterTableColumn.builder().modelIndex(0).build();
-		FilterTableColumn<Integer> columnValue = FilterTableColumn.builder().modelIndex(1).build();
-
 		List<Row> items = asList(
 						new Row(0, "a"),
 						new Row(1, "b"),
@@ -251,7 +234,6 @@ public class FilterTableTest {
 
 		FilterTable<Row, Integer> table = FilterTable.builder()
 						.model(testModel)
-						.columns(asList(columnId, columnValue))
 						.build();
 		testModel.items().refresh();
 
@@ -500,80 +482,6 @@ public class FilterTableTest {
 	}
 
 	@Test
-	void nonUniqueColumnIdentifiers() {
-		FilterTableModel<Object, Integer> model = FilterTableModel.builder()
-						.columns(new FilterTableModel.TableColumns<Object, Integer>() {
-							@Override
-							public List<Integer> identifiers() {
-								return List.of(0, 1);
-							}
-
-							@Override
-							public Class<?> columnClass(Integer identifier) {
-								return Object.class;
-							}
-
-							@Override
-							public Object value(Object row, Integer identifier) {
-								return null;
-							}
-						})
-						.build();
-		assertThrows(IllegalArgumentException.class, () -> FilterTable.builder()
-						.model(model)
-						.columns(asList(
-										FilterTableColumn.builder().identifier(0).modelIndex(0).build(),
-										FilterTableColumn.builder().identifier(0).modelIndex(1).build()
-						)));
-	}
-
-	@Test
-	void invalidColumnModelIndexes() {
-		FilterTableModel<Object, Integer> model = FilterTableModel.builder()
-						.columns(new FilterTableModel.TableColumns<Object, Integer>() {
-							@Override
-							public List<Integer> identifiers() {
-								return List.of(0, 1, 2, 3);
-							}
-
-							@Override
-							public Class<?> columnClass(Integer identifier) {
-								return Object.class;
-							}
-
-							@Override
-							public Object value(Object row, Integer identifier) {
-								return null;
-							}
-						})
-						.build();
-		assertThrows(IllegalArgumentException.class, () -> FilterTable.builder()
-						.model(model)
-						.columns(asList(
-										FilterTableColumn.builder().identifier(0).modelIndex(0).build(),
-										FilterTableColumn.builder().identifier(1).modelIndex(1).build(),
-										FilterTableColumn.builder().identifier(2).modelIndex(4).build(),
-										FilterTableColumn.builder().identifier(3).modelIndex(3).build()
-						)));
-		assertThrows(IllegalArgumentException.class, () -> FilterTable.builder()
-						.model(model)
-						.columns(asList(
-										FilterTableColumn.builder().identifier(0).modelIndex(-1).build(),
-										FilterTableColumn.builder().identifier(3).modelIndex(0).build(),
-										FilterTableColumn.builder().identifier(2).modelIndex(1).build(),
-										FilterTableColumn.builder().identifier(1).modelIndex(2).build()
-						)));
-		assertThrows(IllegalArgumentException.class, () -> FilterTable.builder()
-						.model(model)
-						.columns(asList(
-										FilterTableColumn.builder().identifier(0).modelIndex(42).build(),
-										FilterTableColumn.builder().identifier(1).modelIndex(0).build(),
-										FilterTableColumn.builder().identifier(2).modelIndex(1).build(),
-										FilterTableColumn.builder().identifier(3).modelIndex(2).build()
-						)));
-	}
-
-	@Test
 	void cellRenderers() {
 		FilterTableModel.TableColumns<Object, Integer> columns = new FilterTableModel.TableColumns<>() {
 			@Override
@@ -591,9 +499,6 @@ public class FilterTableTest {
 				return 1;
 			}
 		};
-		List<FilterTableColumn<Integer>> tableColumns = asList(
-						FilterTableColumn.builder().modelIndex(0).build(),
-						FilterTableColumn.builder().modelIndex(1).build());
 
 		FilterTableModel<Object, Integer> model = FilterTableModel.builder()
 						.columns(columns)
@@ -609,7 +514,6 @@ public class FilterTableTest {
 
 		FilterTable<Object, Integer> table = FilterTable.builder()
 						.model(model)
-						.columns(tableColumns)
 						.cellRenderer(0, zeroRenderer)
 						.cellRendererFactory((identifier, tableModel) -> oneRenderer)
 						.build();
@@ -625,7 +529,6 @@ public class FilterTableTest {
 	void scrollToAdded() {
 		FilterTable<TestRow, Integer> table = FilterTable.builder()
 						.model(createTestModel(null))
-						.columns(createColumns())
 						.scrollToAddedItem(true)
 						.build();
 		JScrollPane scrollPane = new JScrollPane(table);

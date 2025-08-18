@@ -579,7 +579,31 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 				case CREATED:
 					return LocalDateTime.class;
 				default:
-					throw new IllegalArgumentException("Unknown column: " + identifier);
+					throw new IllegalArgumentException();
+			}
+		}
+
+		@Override
+		public String caption(ApplicationRow.ColumnId identifier) {
+			switch (identifier) {
+				case NAME:
+					return "Name";
+				case USERNAME:
+					return "User";
+				case SCENARIO:
+					return "Scenario";
+				case SUCCESSFUL:
+					return "Success";
+				case DURATION:
+					return "Duration (μs)";
+				case EXCEPTION:
+					return "Exception";
+				case MESSAGE:
+					return "Message";
+				case CREATED:
+					return "Created";
+				default:
+					throw new IllegalArgumentException();
 			}
 		}
 
@@ -606,7 +630,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 				case CREATED:
 					return application.created();
 				default:
-					throw new IllegalArgumentException("Unknown column: " + identifier);
+					throw new IllegalArgumentException();
 			}
 		}
 	}

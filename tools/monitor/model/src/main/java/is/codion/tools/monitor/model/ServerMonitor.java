@@ -69,6 +69,7 @@ public final class ServerMonitor {
 	private static final Format MEMORY_USAGE_FORMAT = NumberFormat.getIntegerInstance();
 	private static final double K = 1024;
 	private static final String GC_EVENT_PREFIX = "GC ";
+	private static final String DOMAIN = "Domain";
 
 	private final Event<?> serverShutDownEvent = Event.event();
 	private final Value<Object> logLevelValue;
@@ -575,6 +576,22 @@ public final class ServerMonitor {
 		}
 
 		@Override
+		public String caption(Id identifier) {
+			switch (identifier) {
+				case DOMAIN:
+					return DOMAIN;
+				case TYPE:
+					return "Type";
+				case OPERATION:
+					return "Operation";
+				case CLASS:
+					return "Class";
+				default:
+					throw new IllegalArgumentException();
+			}
+		}
+
+		@Override
 		public Object value(DomainOperation row, Id identifier) {
 			switch (identifier) {
 				case DOMAIN:
@@ -633,6 +650,24 @@ public final class ServerMonitor {
 		}
 
 		@Override
+		public String caption(Id identifier) {
+			switch (identifier) {
+				case DOMAIN:
+					return DOMAIN;
+				case REPORT:
+					return "Report";
+				case TYPE:
+					return "Type";
+				case PATH:
+					return "Path";
+				case CACHED:
+					return "Cached";
+				default:
+					throw new IllegalArgumentException();
+			}
+		}
+
+		@Override
 		public Object value(DomainReport row, Id identifier) {
 			switch (identifier) {
 				case DOMAIN:
@@ -683,6 +718,20 @@ public final class ServerMonitor {
 		@Override
 		public Class<?> columnClass(Id identifier) {
 			return String.class;
+		}
+
+		@Override
+		public String caption(Id identifier) {
+			switch (identifier) {
+				case DOMAIN:
+					return DOMAIN;
+				case ENTITY:
+					return "Entity";
+				case TABLE:
+					return "Table";
+				default:
+					throw new IllegalArgumentException();
+			}
 		}
 
 		@Override

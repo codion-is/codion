@@ -20,7 +20,7 @@ package is.codion.tools.monitor.ui;
 
 import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.swing.common.ui.component.table.FilterTable;
-import is.codion.swing.common.ui.component.table.FilterTableColumn;
+import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.tools.monitor.model.ClientUserMonitor;
@@ -35,18 +35,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.rmi.RemoteException;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.Temporal;
-import java.util.List;
+import java.util.function.Function;
 
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
-import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createTitledBorder;
 import static javax.swing.JOptionPane.showConfirmDialog;
@@ -134,7 +131,10 @@ public final class ClientUserMonitorPanel extends JPanel {
 
 		FilterTable<?, ?> userHistoryTable = FilterTable.builder()
 						.model(model.userHistoryTableModel())
-						.columns(createUserHistoryColumns())
+						.cellRenderer(UserHistoryColumns.Id.LAST_SEEN_COLUMN, FilterTableCellRenderer.builder()
+										.columnClass(LocalDateTime.class)
+										.string(new LastSeenToString())
+										.build())
 						.popupMenuControls(table -> Controls.builder()
 										.control(Controls.builder()
 														.caption("Columns")
@@ -148,32 +148,6 @@ public final class ClientUserMonitorPanel extends JPanel {
 		return borderLayoutPanel()
 						.center(new JScrollPane(userHistoryTable))
 						.south(configBase)
-						.build();
-	}
-
-	private static List<FilterTableColumn<UserHistoryColumns.Id>> createUserHistoryColumns() {
-		return asList(
-						createColumn(UserHistoryColumns.Id.USERNAME_COLUMN, "Username"),
-						createColumn(UserHistoryColumns.Id.CLIENT_TYPE_COLUMN, "Client type"),
-						createColumn(UserHistoryColumns.Id.CLIENT_VERSION_COLUMN, "Client version"),
-						createColumn(UserHistoryColumns.Id.FRAMEWORK_VERSION_COLUMN, "Framework version"),
-						createColumn(UserHistoryColumns.Id.CLIENT_HOST_COLUMN, "Host"),
-						createColumn(UserHistoryColumns.Id.LAST_SEEN_COLUMN, "Last seen", new LastSeenRenderer()),
-						createColumn(UserHistoryColumns.Id.CONNECTION_COUNT_COLUMN, "Connections"));
-	}
-
-	private static FilterTableColumn<UserHistoryColumns.Id> createColumn(UserHistoryColumns.Id identifier,
-																																			 String headerValue) {
-		return createColumn(identifier, headerValue, null);
-	}
-
-	private static FilterTableColumn<UserHistoryColumns.Id> createColumn(UserHistoryColumns.Id identifier,
-																																			 String headerValue,
-																																			 TableCellRenderer cellRenderer) {
-		return FilterTableColumn.builder()
-						.identifier(identifier)
-						.headerValue(headerValue)
-						.cellRenderer(cellRenderer)
 						.build();
 	}
 
@@ -197,20 +171,15 @@ public final class ClientUserMonitorPanel extends JPanel {
 						.show(exception);
 	}
 
-	private static final class LastSeenRenderer extends DefaultTableCellRenderer {
+	private static class LastSeenToString implements Function<LocalDateTime, String> {
 
 		private final DateTimeFormatter formatter = LocaleDateTimePattern.builder()
 						.delimiterDash().yearFourDigits().hoursMinutesSeconds()
 						.build().createFormatter();
 
 		@Override
-		protected void setValue(Object value) {
-			if (value instanceof Temporal) {
-				super.setValue(formatter.format((Temporal) value));
-			}
-			else {
-				super.setValue(value);
-			}
+		public String apply(LocalDateTime lastSeen) {
+			return lastSeen == null ? null : formatter.format(lastSeen);
 		}
 	}
 }

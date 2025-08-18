@@ -42,7 +42,8 @@ public final class FilterTableModelDemo {
 	// Define a record representing the table rows
 	public record Person(String name, int age) {
 
-		// Constants identifying the table columns
+		// Constants identifying the table columns,
+		// used as column header captions by default.
 		public static final String NAME = "Name";
 		public static final String AGE = "Age";
 	}

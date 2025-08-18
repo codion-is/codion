@@ -354,6 +354,11 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 		}
 
 		@Override
+		public String caption(Attribute<?> identifier) {
+			return entityDefinition.attributes().definition(identifier).caption();
+		}
+
+		@Override
 		public Class<?> columnClass(Attribute<?> identifier) {
 			return requireNonNull(identifier).type().valueClass();
 		}

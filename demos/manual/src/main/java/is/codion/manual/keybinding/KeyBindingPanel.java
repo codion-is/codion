@@ -22,7 +22,6 @@ import is.codion.manual.keybinding.KeyBindingModel.KeyBindingColumns.ColumnId;
 import is.codion.manual.keybinding.KeyBindingModel.KeyBindingRow;
 import is.codion.plugin.flatlaf.intellij.themes.monokaipro.MonokaiPro;
 import is.codion.swing.common.ui.component.table.FilterTable;
-import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.frame.Frames;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
@@ -35,7 +34,6 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
-import java.util.List;
 
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
@@ -60,7 +58,6 @@ public final class KeyBindingPanel extends JPanel {
 		this.keyBindingModel = new KeyBindingModel(lookAndFeelComboBox.getModel());
 		this.table = FilterTable.builder()
 						.model(keyBindingModel.tableModel())
-						.columns(createColumns())
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.build();
 		this.componentComboBox = comboBox()
@@ -80,25 +77,6 @@ public final class KeyBindingPanel extends JPanel {
 						.build(), BorderLayout.NORTH);
 		add(new JScrollPane(table), BorderLayout.CENTER);
 		add(table.searchField(), BorderLayout.SOUTH);
-	}
-
-	private static List<FilterTableColumn<ColumnId>> createColumns() {
-		return List.of(FilterTableColumn.builder()
-										.identifier(ColumnId.ACTION)
-										.headerValue("Action")
-										.build(),
-						FilterTableColumn.builder()
-										.identifier(ColumnId.WHEN_FOCUSED)
-										.headerValue("When Focused")
-										.build(),
-						FilterTableColumn.builder()
-										.identifier(ColumnId.WHEN_IN_FOCUSED_WINDOW)
-										.headerValue("When in Focused Window")
-										.build(),
-						FilterTableColumn.builder()
-										.identifier(ColumnId.WHEN_ANCESTOR)
-										.headerValue("When Ancestor")
-										.build());
 	}
 
 	public static void main(String[] args) {

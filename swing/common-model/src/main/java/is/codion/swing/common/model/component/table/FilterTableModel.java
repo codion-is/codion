@@ -36,6 +36,7 @@ import java.util.function.Supplier;
 
 import static is.codion.swing.common.model.component.table.DefaultFilterTableModel.COMPARABLE_COMPARATOR;
 import static is.codion.swing.common.model.component.table.DefaultFilterTableModel.STRING_COMPARATOR;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Specifies a table model supporting selection as well as filtering.
@@ -234,6 +235,15 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		 * @return a value for the given row and column
 		 */
 		@Nullable Object value(R row, C identifier);
+
+		/**
+		 * The default implementation simply returns {@code identifier.toString()}
+		 * @param identifier the column identifier
+		 * @return the caption for the given column
+		 */
+		default String caption(C identifier) {
+			return requireNonNull(identifier).toString();
+		}
 
 		/**
 		 * @param index the identifier index

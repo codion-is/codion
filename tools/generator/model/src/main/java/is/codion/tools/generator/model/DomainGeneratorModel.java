@@ -377,7 +377,21 @@ public final class DomainGeneratorModel {
 				case POPULATED:
 					return row.populated();
 				default:
-					throw new IllegalArgumentException("Unknown column: " + identifier);
+					throw new IllegalArgumentException();
+			}
+		}
+
+		@Override
+		public String caption(Id identifier) {
+			switch (identifier) {
+				case CATALOG:
+					return "Catalog";
+				case SCHEMA:
+					return "Schema";
+				case POPULATED:
+					return "Populated";
+				default:
+					throw new IllegalArgumentException();
 			}
 		}
 	}
@@ -409,7 +423,19 @@ public final class DomainGeneratorModel {
 				case TABLE_TYPE:
 					return row.tableType;
 				default:
-					throw new IllegalArgumentException("Unknown column: " + identifier);
+					throw new IllegalArgumentException();
+			}
+		}
+
+		@Override
+		public String caption(Id identifier) {
+			switch (identifier) {
+				case ENTITY:
+					return "Entity";
+				case TABLE_TYPE:
+					return "Type";
+				default:
+					throw new IllegalArgumentException();
 			}
 		}
 	}

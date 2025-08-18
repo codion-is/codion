@@ -23,47 +23,33 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
 
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
 /**
- * Provides table columns based on an entity definition.
+ * Configures table columns based on an entity definition.
  */
-public final class EntityTableColumns {
+public final class EntityTableColumns implements Consumer<FilterTableColumn.Builder<Attribute<?>>> {
 
-	private EntityTableColumns() {}
+	private final EntityDefinition entityDefinition;
 
-	/**
-	 * Creates columns based on the given entity definition.
-	 * All attributes except hidden ones are included.
-	 * @param entityDefinition the entity definition
-	 * @return the columns
-	 */
-	public static List<FilterTableColumn<Attribute<?>>> entityTableColumns(EntityDefinition entityDefinition) {
-		AtomicInteger index = new AtomicInteger();
-		return requireNonNull(entityDefinition).attributes().definitions().stream()
-						.filter(attributeDefinition -> !attributeDefinition.hidden())
-						.map(attributeDefinition -> createColumn(attributeDefinition, index.getAndIncrement()))
-						.collect(Collectors.toList());
+	private EntityTableColumns(EntityDefinition entityDefinition) {
+		this.entityDefinition = entityDefinition;
 	}
 
 	/**
-	 * Creates a column for the given attribute.
-	 * @param attributeDefinition the attribute definition
-	 * @param modelIndex the column model index
-	 * @return the column or an empty Optional in case no column should be created for the given attribute
+	 * @param entityDefinition the entity definition
+	 * @return a new {@link EntityTableColumns} instance
 	 */
-	private static FilterTableColumn<Attribute<?>> createColumn(AttributeDefinition<?> attributeDefinition, int modelIndex) {
-		FilterTableColumn.Builder<? extends Attribute<?>> columnBuilder =
-						FilterTableColumn.builder()
-										.identifier(attributeDefinition.attribute())
-										.modelIndex(modelIndex)
-										.headerValue(attributeDefinition.caption())
-										.toolTipText(attributeDefinition.description().orElse(null));
+	public static EntityTableColumns entityTableColumns(EntityDefinition entityDefinition) {
+		return new EntityTableColumns(requireNonNull(entityDefinition));
+	}
 
-		return (FilterTableColumn<Attribute<?>>) columnBuilder.build();
+	@Override
+	public void accept(FilterTableColumn.Builder<Attribute<?>> builder) {
+		AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(builder.identifier());
+
+		builder.toolTipText(attributeDefinition.description().orElse(null));
 	}
 }

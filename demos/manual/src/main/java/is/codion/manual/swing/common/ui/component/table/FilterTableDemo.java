@@ -21,14 +21,12 @@ package is.codion.manual.swing.common.ui.component.table;
 import is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.Person;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.component.table.FilterTable;
-import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColumn;
 import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.JTable;
-import java.util.List;
 
 import static is.codion.manual.swing.common.model.component.table.FilterTableModelDemo.createFilterTableModel;
 
@@ -39,21 +37,9 @@ final class FilterTableDemo {
 		// See FilterTableModel example
 		FilterTableModel<Person, String> tableModel = createFilterTableModel();
 
-		// Create the columns, specifying the identifier and the model index
-		List<FilterTableColumn<String>> columns = List.of(
-						FilterTableColumn.builder()
-										.identifier(Person.NAME)
-										.modelIndex(0)
-										.build(),
-						FilterTableColumn.builder()
-										.identifier(Person.AGE)
-										.modelIndex(1)
-										.build());
-
 		FilterTable<Person, String> table =
 						FilterTable.builder()
 										.model(tableModel)
-										.columns(columns)
 										.doubleClick(Control.command(() ->
 														tableModel.selection().item().optional()
 																		.ifPresent(System.out::println)))

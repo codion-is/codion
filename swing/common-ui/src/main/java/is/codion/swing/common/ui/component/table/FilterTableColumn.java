@@ -139,16 +139,6 @@ public final class FilterTableColumn<C> extends TableColumn {
 		interface IdentifierStep {
 
 			/**
-			 * Instantiates a new enum based {@link FilterTableColumn.Builder}.
-			 * The enum ordinal position is used as the column model index
-			 * @param <C> the column identifier type
-			 * @param identifier the column identifier
-			 * @return a new {@link FilterTableColumn.Builder} instance
-			 * @see Enum#ordinal()
-			 */
-			<C extends Enum<C>> FilterTableColumn.Builder<C> identifier(C identifier);
-
-			/**
 			 * Instantiates a new {@link ModelIndexStep}.
 			 * @param <C> the column identifier type
 			 * @param identifier the column identifier
@@ -174,7 +164,6 @@ public final class FilterTableColumn<C> extends TableColumn {
 			 * Instantiates a new {@link FilterTableColumn.Builder}.
 			 * @param modelIndex the column model index
 			 * @return a new {@link FilterTableColumn} instance
-			 * @throws NullPointerException in case {@code identifier} is null
 			 */
 			FilterTableColumn.Builder<C> modelIndex(int modelIndex);
 		}
@@ -249,17 +238,17 @@ public final class FilterTableColumn<C> extends TableColumn {
 		Builder<C> cellRenderer(@Nullable TableCellRenderer cellRenderer);
 
 		/**
+		 * @return the column identifier this builder is based on
+		 */
+		C identifier();
+
+		/**
 		 * @return a new {@link FilterTableColumn} based on this builder
 		 */
 		FilterTableColumn<C> build();
 	}
 
 	private static final class DefaultIdentifierStep implements Builder.IdentifierStep {
-
-		@Override
-		public <C extends Enum<C>> Builder<C> identifier(C identifier) {
-			return new DefaultBuilder<>(identifier, identifier.ordinal());
-		}
 
 		@Override
 		public <C> Builder.ModelIndexStep<C> identifier(C identifier) {
@@ -378,6 +367,11 @@ public final class FilterTableColumn<C> extends TableColumn {
 		public Builder<C> cellRenderer(@Nullable TableCellRenderer cellRenderer) {
 			this.cellRenderer = cellRenderer;
 			return this;
+		}
+
+		@Override
+		public C identifier() {
+			return identifier;
 		}
 
 		@Override

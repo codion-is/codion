@@ -117,6 +117,32 @@ public final class ClientMonitor {
 		}
 
 		@Override
+		public String caption(Id identifier) {
+			switch (identifier) {
+				case USER:
+					return "User";
+				case CLIENT_HOST:
+					return "Host";
+				case CLIENT_TYPE:
+					return "Type";
+				case CLIENT_VERSION:
+					return "Version";
+				case CODION_VERSION:
+					return "Framework version";
+				case CLIENT_ID:
+					return "Id";
+				case LOCALE:
+					return "Locale";
+				case TIMEZONE:
+					return "Timezone";
+				case CREATION_TIME:
+					return "Created";
+				default:
+					throw new IllegalArgumentException("Unknown column");
+			}
+		}
+
+		@Override
 		public Object value(RemoteClient row, Id identifier) {
 			switch (identifier) {
 				case USER:

@@ -2,6 +2,10 @@ Codion Change Log
 =================
 
 ## 0.18.46
+### is.codion.swing.common.model
+- FilterTableModel.TableColumns.caption() added.
+### is.codion.swing.common.ui
+- FilterTable now automatically creates columns, Builder.columns() now allows column builder configuration.
 
 ## 0.18.45
 ### is.codion.common.core

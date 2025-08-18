@@ -23,7 +23,6 @@ import is.codion.framework.server.EntityServerAdmin.DomainEntityDefinition;
 import is.codion.framework.server.EntityServerAdmin.DomainOperation;
 import is.codion.framework.server.EntityServerAdmin.DomainReport;
 import is.codion.swing.common.ui.component.table.FilterTable;
-import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.tools.monitor.model.ServerMonitor;
 import is.codion.tools.monitor.model.ServerMonitor.DomainColumns;
 import is.codion.tools.monitor.model.ServerMonitor.OperationColumns;
@@ -51,7 +50,6 @@ import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.rmi.RemoteException;
-import java.util.Arrays;
 import java.util.List;
 
 import static is.codion.swing.common.ui.component.Components.*;
@@ -67,7 +65,6 @@ import static javax.swing.BorderFactory.createTitledBorder;
 public final class ServerMonitorPanel extends JPanel {
 
 	private static final int SPINNER_COLUMNS = 3;
-	private static final String DOMAIN = "Domain";
 	private static final String REFRESH = "Refresh";
 
 	private final ServerMonitor model;
@@ -242,7 +239,6 @@ public final class ServerMonitorPanel extends JPanel {
 		FilterTable<DomainOperation, OperationColumns.Id> table =
 						FilterTable.builder()
 										.model(model.operationTableModel())
-										.columns(createOperationColumns())
 										.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 										.build();
 
@@ -262,7 +258,6 @@ public final class ServerMonitorPanel extends JPanel {
 		FilterTable<DomainReport, ReportColumns.Id> table =
 						FilterTable.builder()
 										.model(model.reportTableModel())
-										.columns(createReportColumns())
 										.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 										.build();
 
@@ -285,7 +280,6 @@ public final class ServerMonitorPanel extends JPanel {
 		FilterTable<DomainEntityDefinition, DomainColumns.Id> table =
 						FilterTable.builder()
 										.model(model.domainTableModel())
-										.columns(createDomainColumns())
 										.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 										.build();
 
@@ -386,65 +380,5 @@ public final class ServerMonitorPanel extends JPanel {
 				});
 			}
 		}
-	}
-
-	private static List<FilterTableColumn<ReportColumns.Id>> createReportColumns() {
-		return Arrays.asList(
-						FilterTableColumn.builder()
-										.identifier(ReportColumns.Id.DOMAIN)
-										.headerValue(DOMAIN)
-										.build(),
-						FilterTableColumn.builder()
-										.identifier(ReportColumns.Id.REPORT)
-										.headerValue("Report")
-										.build(),
-						FilterTableColumn.builder()
-										.identifier(ReportColumns.Id.TYPE)
-										.headerValue("Type")
-										.build(),
-						FilterTableColumn.builder()
-										.identifier(ReportColumns.Id.PATH)
-										.headerValue("Path")
-										.build(),
-						FilterTableColumn.builder()
-										.identifier(ReportColumns.Id.CACHED)
-										.headerValue("Cached")
-										.build());
-	}
-
-	private static List<FilterTableColumn<DomainColumns.Id>> createDomainColumns() {
-		return Arrays.asList(
-						FilterTableColumn.builder()
-										.identifier(DomainColumns.Id.DOMAIN)
-										.headerValue(DOMAIN)
-										.build(),
-						FilterTableColumn.builder()
-										.identifier(DomainColumns.Id.ENTITY)
-										.headerValue("Entity")
-										.build(),
-						FilterTableColumn.builder()
-										.identifier(DomainColumns.Id.TABLE)
-										.headerValue("Table")
-										.build());
-	}
-
-	private static List<FilterTableColumn<OperationColumns.Id>> createOperationColumns() {
-		return Arrays.asList(
-						FilterTableColumn.builder()
-										.identifier(OperationColumns.Id.DOMAIN)
-										.headerValue(DOMAIN)
-										.build(),
-						FilterTableColumn.builder()
-										.identifier(OperationColumns.Id.TYPE)
-										.headerValue("Type")
-										.build(),
-						FilterTableColumn.builder()
-										.identifier(OperationColumns.Id.OPERATION)
-										.headerValue("Operation")
-										.build(),
-						FilterTableColumn.builder()
-										.identifier(OperationColumns.Id.CLASS)
-										.headerValue("Class")
-										.build());
 	}
 }

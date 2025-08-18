@@ -34,10 +34,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class FilterTableColumnComponentPanelTest {
 
-	private final FilterTableColumn<Integer> column0 = FilterTableColumn.builder().modelIndex(0).build();
-	private final FilterTableColumn<Integer> column1 = FilterTableColumn.builder().modelIndex(1).build();
-	private final FilterTableColumn<Integer> column2 = FilterTableColumn.builder().modelIndex(2).build();
-
 	private final FilterTableModel.TableColumns<Object, Integer> columns = new FilterTableModel.TableColumns<>() {
 		@Override
 		public List<Integer> identifiers() {
@@ -64,7 +60,6 @@ public class FilterTableColumnComponentPanelTest {
 		FilterTable<Object, Integer> table =
 						FilterTable.builder()
 										.model(tableModel)
-										.columns(asList(column0, column1, column2))
 										.build();
 		FilterTableColumnModel<Integer> columnModel = table.columnModel();
 		Map<Integer, JPanel> columnComponents = createColumnComponents(columnModel);
@@ -81,7 +76,6 @@ public class FilterTableColumnComponentPanelTest {
 		FilterTable<Object, Integer> table =
 						FilterTable.builder()
 										.model(tableModel)
-										.columns(asList(column0, column1, column2))
 										.build();
 		FilterTableColumnModel<Integer> columnModel = table.columnModel();
 
@@ -108,16 +102,15 @@ public class FilterTableColumnComponentPanelTest {
 		FilterTable<Object, Integer> table =
 						FilterTable.builder()
 										.model(tableModel)
-										.columns(asList(column0, column1, column2))
 										.build();
 		FilterTableColumnModel<Integer> columnModel = table.columnModel();
 
 		FilterTableColumnComponentPanel<Integer> panel = filterTableColumnComponentPanel(columnModel, createColumnComponents(columnModel));
-		column0.setWidth(100);
+		columnModel.column(0).setWidth(100);
 		assertEquals(100, panel.components().get(0).getPreferredSize().width);
-		column1.setWidth(90);
+		columnModel.column(1).setWidth(90);
 		assertEquals(90, panel.components().get(1).getPreferredSize().width);
-		column2.setWidth(80);
+		columnModel.column(2).setWidth(80);
 		assertEquals(80, panel.components().get(2).getPreferredSize().width);
 	}
 

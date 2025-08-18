@@ -27,7 +27,6 @@ import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.table.FilterTable;
-import is.codion.swing.common.ui.component.table.FilterTableColumn;
 import is.codion.swing.common.ui.component.text.SearchHighlighter;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -67,7 +66,6 @@ import java.awt.Font;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.util.List;
 import java.util.function.Consumer;
 
 import static is.codion.common.Configuration.booleanValue;
@@ -79,7 +77,6 @@ import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.enableLookAndFeel
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.tools.generator.model.DomainGeneratorModel.domainGeneratorModel;
 import static java.awt.event.KeyEvent.VK_ENTER;
-import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createCompoundBorder;
 import static javax.swing.BorderFactory.createTitledBorder;
@@ -176,7 +173,6 @@ public final class DomainGeneratorPanel extends JPanel {
 
 		return FilterTable.builder()
 						.model(model.schemaModel())
-						.columns(createSchemaColumns())
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.doubleClick(populateSchemaControl)
 						.selectionMode(ListSelectionModel.SINGLE_SELECTION)
@@ -197,7 +193,11 @@ public final class DomainGeneratorPanel extends JPanel {
 	private FilterTable<EntityRow, EntityColumns.Id> createEntityTable() {
 		return FilterTable.builder()
 						.model(model.entityModel())
-						.columns(createEntityColumns())
+						.columns(builder -> {
+							if (builder.identifier().equals(EntityColumns.Id.TABLE_TYPE)) {
+								builder.preferredWidth(120);
+							}
+						})
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.popupMenuControl(FilterTable::createToggleAutoResizeModeControls)
 						.build();
@@ -476,42 +476,6 @@ public final class DomainGeneratorPanel extends JPanel {
 
 	private void displayException(Exception e) {
 		Dialogs.displayException(e, parentWindow(this));
-	}
-
-	private static List<FilterTableColumn<SchemaColumns.Id>> createSchemaColumns() {
-		FilterTableColumn<SchemaColumns.Id> catalogColumn =
-						FilterTableColumn.builder()
-										.identifier(SchemaColumns.Id.CATALOG)
-										.headerValue("Catalog")
-										.build();
-		FilterTableColumn<SchemaColumns.Id> schemaColumn =
-						FilterTableColumn.builder()
-										.identifier(SchemaColumns.Id.SCHEMA)
-										.headerValue("Schema")
-										.build();
-		FilterTableColumn<SchemaColumns.Id> populatedColumn =
-						FilterTableColumn.builder()
-										.identifier(SchemaColumns.Id.POPULATED)
-										.headerValue("Populated")
-										.build();
-
-		return asList(catalogColumn, schemaColumn, populatedColumn);
-	}
-
-	private static List<FilterTableColumn<EntityColumns.Id>> createEntityColumns() {
-		FilterTableColumn<EntityColumns.Id> entityTypeColumn =
-						FilterTableColumn.builder()
-										.identifier(EntityColumns.Id.ENTITY)
-										.headerValue("Entity")
-										.build();
-		FilterTableColumn<EntityColumns.Id> typeColumn =
-						FilterTableColumn.builder()
-										.identifier(EntityColumns.Id.TABLE_TYPE)
-										.headerValue("Type")
-										.preferredWidth(120)
-										.build();
-
-		return asList(entityTypeColumn, typeColumn);
 	}
 
 	private static SearchHighlighter searchHighlighter(JTextArea textArea) {

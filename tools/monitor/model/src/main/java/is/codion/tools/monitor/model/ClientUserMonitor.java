@@ -264,6 +264,28 @@ public final class ClientUserMonitor {
 		}
 
 		@Override
+		public String caption(Id identifier) {
+			switch (identifier) {
+				case USERNAME_COLUMN:
+					return "Username";
+				case CLIENT_TYPE_COLUMN:
+					return "Client type";
+				case CLIENT_VERSION_COLUMN:
+					return "Client version";
+				case FRAMEWORK_VERSION_COLUMN:
+					return "Framework version";
+				case CLIENT_HOST_COLUMN:
+					return "Host";
+				case LAST_SEEN_COLUMN:
+					return "Last seen";
+				case CONNECTION_COUNT_COLUMN:
+					return "Connections";
+				default:
+					throw new IllegalArgumentException(identifier.toString());
+			}
+		}
+
+		@Override
 		public Object value(UserInfo row, Id identifier) {
 			switch (identifier) {
 				case USERNAME_COLUMN:
