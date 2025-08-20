@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.component.table;
 
+import is.codion.swing.common.ui.component.table.FilterTableColumn.DefaultFilterTableColumnBuilder;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -76,18 +78,10 @@ public class DefaultFilterTableColumnModelTest {
 
 	@Test
 	void setColumns() {
-		FilterTableColumn<Integer> column0 = FilterTableColumn.builder()
-						.modelIndex(0)
-						.build();
-		FilterTableColumn<Integer> column1 = FilterTableColumn.builder()
-						.modelIndex(1)
-						.build();
-		FilterTableColumn<Integer> column2 = FilterTableColumn.builder()
-						.modelIndex(2)
-						.build();
-		FilterTableColumn<Integer> column3 = FilterTableColumn.builder()
-						.modelIndex(3)
-						.build();
+		FilterTableColumn<Integer> column0 = new DefaultFilterTableColumnBuilder<>(0, 0).build();
+		FilterTableColumn<Integer> column1 = new DefaultFilterTableColumnBuilder<>(1, 1).build();
+		FilterTableColumn<Integer> column2 = new DefaultFilterTableColumnBuilder<>(2, 2).build();
+		FilterTableColumn<Integer> column3 = new DefaultFilterTableColumnBuilder<>(3, 3).build();
 
 		DefaultFilterTableColumnModel<Integer> columnModel =
 						new DefaultFilterTableColumnModel<>(asList(column0, column1, column2, column3));
@@ -136,18 +130,10 @@ public class DefaultFilterTableColumnModelTest {
 
 	@Test
 	void lock() {
-		FilterTableColumn<Integer> column0 = FilterTableColumn.builder()
-						.modelIndex(0)
-						.build();
-		FilterTableColumn<Integer> column1 = FilterTableColumn.builder()
-						.modelIndex(1)
-						.build();
-		FilterTableColumn<Integer> column2 = FilterTableColumn.builder()
-						.modelIndex(2)
-						.build();
-		FilterTableColumn<Integer> column3 = FilterTableColumn.builder()
-						.modelIndex(3)
-						.build();
+		FilterTableColumn<Integer> column0 = new DefaultFilterTableColumnBuilder<>(0, 0).build();
+		FilterTableColumn<Integer> column1 = new DefaultFilterTableColumnBuilder<>(1, 1).build();
+		FilterTableColumn<Integer> column2 = new DefaultFilterTableColumnBuilder<>(2, 2).build();
+		FilterTableColumn<Integer> column3 = new DefaultFilterTableColumnBuilder<>(3, 3).build();
 
 		FilterTableColumnModel<Integer> columnModel =
 						new DefaultFilterTableColumnModel<>(asList(column0, column1, column2, column3));
@@ -176,39 +162,19 @@ public class DefaultFilterTableColumnModelTest {
 	@Test
 	void nonUniqueColumns() {
 		assertThrows(IllegalArgumentException.class, () -> new DefaultFilterTableColumnModel<>(asList(
-						FilterTableColumn.builder()
-										.identifier(0)
-										.modelIndex(0)
-										.build(),
-						FilterTableColumn.builder()
-										.identifier(1)
-										.modelIndex(0)
-										.build())));
+						new DefaultFilterTableColumnBuilder<>(0, 0).build(),
+						new DefaultFilterTableColumnBuilder<>(1, 0).build())));
 		assertThrows(IllegalArgumentException.class, () -> new DefaultFilterTableColumnModel<>(asList(
-						FilterTableColumn.builder()
-										.identifier(0)
-										.modelIndex(0)
-										.build(),
-						FilterTableColumn.builder()
-										.identifier(0)
-										.modelIndex(1)
-										.build())));
+						new DefaultFilterTableColumnBuilder<>(0, 0).build(),
+						new DefaultFilterTableColumnBuilder<>(0, 1).build())));
 	}
 
 	@Test
 	void events() {
-		FilterTableColumn<Integer> column0 = FilterTableColumn.builder()
-						.modelIndex(0)
-						.build();
-		FilterTableColumn<Integer> column1 = FilterTableColumn.builder()
-						.modelIndex(1)
-						.build();
-		FilterTableColumn<Integer> column2 = FilterTableColumn.builder()
-						.modelIndex(2)
-						.build();
-		FilterTableColumn<Integer> column3 = FilterTableColumn.builder()
-						.modelIndex(3)
-						.build();
+		FilterTableColumn<Integer> column0 = new DefaultFilterTableColumnBuilder<>(0, 0).build();
+		FilterTableColumn<Integer> column1 = new DefaultFilterTableColumnBuilder<>(1, 1).build();
+		FilterTableColumn<Integer> column2 = new DefaultFilterTableColumnBuilder<>(2, 2).build();
+		FilterTableColumn<Integer> column3 = new DefaultFilterTableColumnBuilder<>(3, 3).build();
 
 		DefaultFilterTableColumnModel<Integer> columnModel =
 						new DefaultFilterTableColumnModel<>(asList(column0, column1, column2, column3));
@@ -235,8 +201,6 @@ public class DefaultFilterTableColumnModelTest {
 	}
 
 	private static FilterTableColumnModel<Integer> createTestModel() {
-		return new DefaultFilterTableColumnModel<>(singletonList(FilterTableColumn.builder()
-						.modelIndex(0)
-						.build()));
+		return new DefaultFilterTableColumnModel<>(singletonList(new DefaultFilterTableColumnBuilder<>(0, 0).build()));
 	}
 }

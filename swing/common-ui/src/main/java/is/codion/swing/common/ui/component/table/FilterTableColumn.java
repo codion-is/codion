@@ -24,21 +24,20 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
 /**
- * A {@link TableColumn} with a typed identifier.
- * For instances use {@link #builder()}.
- * Note that the identifier is used as a default header value.
+ * <p>A {@link TableColumn} with a typed identifier.
+ * <p>{@link FilterTable} instantiates columns and provides configuration via {@link FilterTable.Builder#columns(Consumer)}.
  * @param <C> the column identifier type
- * @see #builder()
  */
 public final class FilterTableColumn<C> extends TableColumn {
 
 	private final @Nullable String toolTipText;
 
-	private FilterTableColumn(DefaultBuilder<C> builder) {
+	private FilterTableColumn(DefaultFilterTableColumnBuilder<C> builder) {
 		super(builder.modelIndex);
 		super.setIdentifier(builder.identifier);
 		this.toolTipText = builder.toolTipText;
@@ -121,52 +120,10 @@ public final class FilterTableColumn<C> extends TableColumn {
 	}
 
 	/**
-	 * @return a {@link Builder.IdentifierStep}
-	 */
-	public static Builder.IdentifierStep builder() {
-		return DefaultBuilder.IDENTIFIER;
-	}
-
-	/**
 	 * A builder for {@link FilterTableColumn} instances.
 	 * @param <C> the column identifier type
 	 */
 	public interface Builder<C> {
-
-		/**
-		 * Provides a {@link Builder} or {@link ModelIndexStep}
-		 */
-		interface IdentifierStep {
-
-			/**
-			 * Instantiates a new {@link ModelIndexStep}.
-			 * @param <C> the column identifier type
-			 * @param identifier the column identifier
-			 * @return a new {@link ModelIndexStep} instance
-			 * @throws NullPointerException in case {@code identifier} is null
-			 */
-			<C> ModelIndexStep<C> identifier(C identifier);
-
-			/**
-			 * @param modelIndex the model index, also used as identifier
-			 * @return a {@link Builder}
-			 */
-			Builder<Integer> modelIndex(int modelIndex);
-		}
-
-		/**
-		 * Provides a {@link Builder}
-		 * @param <C> the column identifier type
-		 */
-		interface ModelIndexStep<C> {
-
-			/**
-			 * Instantiates a new {@link FilterTableColumn.Builder}.
-			 * @param modelIndex the column model index
-			 * @return a new {@link FilterTableColumn} instance
-			 */
-			FilterTableColumn.Builder<C> modelIndex(int modelIndex);
-		}
 
 		/**
 		 * Sets both the minimum and maximum widths.
@@ -241,43 +198,9 @@ public final class FilterTableColumn<C> extends TableColumn {
 		 * @return the column identifier this builder is based on
 		 */
 		C identifier();
-
-		/**
-		 * @return a new {@link FilterTableColumn} based on this builder
-		 */
-		FilterTableColumn<C> build();
 	}
 
-	private static final class DefaultIdentifierStep implements Builder.IdentifierStep {
-
-		@Override
-		public <C> Builder.ModelIndexStep<C> identifier(C identifier) {
-			return new DefaultModelIndexStep<>(requireNonNull(identifier));
-		}
-
-		@Override
-		public Builder<Integer> modelIndex(int modelIndex) {
-			return new DefaultBuilder<>(Integer.valueOf(modelIndex), modelIndex);
-		}
-	}
-
-	private static final class DefaultModelIndexStep<C> implements Builder.ModelIndexStep<C> {
-
-		private final C identifier;
-
-		private DefaultModelIndexStep(C identifier) {
-			this.identifier = identifier;
-		}
-
-		@Override
-		public Builder<C> modelIndex(int modelIndex) {
-			return new DefaultBuilder<>(identifier, modelIndex);
-		}
-	}
-
-	private static final class DefaultBuilder<C> implements Builder<C> {
-
-		private static final IdentifierStep IDENTIFIER = new DefaultIdentifierStep();
+	static final class DefaultFilterTableColumnBuilder<C> implements Builder<C> {
 
 		private final C identifier;
 		private final int modelIndex;
@@ -293,7 +216,7 @@ public final class FilterTableColumn<C> extends TableColumn {
 		private @Nullable TableCellEditor cellEditor;
 		private @Nullable TableCellRenderer cellRenderer;
 
-		private DefaultBuilder(C identifier, int modelIndex) {
+		DefaultFilterTableColumnBuilder(C identifier, int modelIndex) {
 			if (modelIndex < 0) {
 				throw new IllegalArgumentException("Model index must be positive: " + modelIndex);
 			}
@@ -374,8 +297,7 @@ public final class FilterTableColumn<C> extends TableColumn {
 			return identifier;
 		}
 
-		@Override
-		public FilterTableColumn<C> build() {
+		FilterTableColumn<C> build() {
 			return new FilterTableColumn<>(this);
 		}
 	}

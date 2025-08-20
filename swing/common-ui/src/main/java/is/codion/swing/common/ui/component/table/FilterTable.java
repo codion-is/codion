@@ -41,6 +41,7 @@ import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ComponentFactory;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
+import is.codion.swing.common.ui.component.table.FilterTableColumn.DefaultFilterTableColumnBuilder;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColumn;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.CommandControl;
@@ -1050,10 +1051,8 @@ public final class FilterTable<R, C> extends JTable {
 		List<C> identifiers = tableColumns.identifiers();
 		List<FilterTableColumn<C>> columns = new ArrayList<>(identifiers.size());
 		for (int i = 0; i < identifiers.size(); i++) {
-			FilterTableColumn.Builder<C> builder = FilterTableColumn.builder()
-							.identifier(identifiers.get(i))
-							.modelIndex(i)
-							.headerValue(tableColumns.caption(identifiers.get(i)));
+			DefaultFilterTableColumnBuilder<C> builder = new DefaultFilterTableColumnBuilder<>(identifiers.get(i), i);
+			builder.headerValue(tableColumns.caption(identifiers.get(i)));
 			configure.accept(builder);
 			columns.add(builder.build());
 		}

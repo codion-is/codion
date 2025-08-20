@@ -18,6 +18,8 @@
  */
 package is.codion.swing.common.ui.component.table;
 
+import is.codion.swing.common.ui.component.table.FilterTableColumn.DefaultFilterTableColumnBuilder;
+
 import org.junit.jupiter.api.Test;
 
 import static java.util.Collections.singletonList;
@@ -26,7 +28,7 @@ public final class ColumnSelectionPanelTest {
 
 	@Test
 	void test() {
-		FilterTableColumn<Integer> column = FilterTableColumn.builder().modelIndex(0).build();
+		FilterTableColumn<Integer> column = new DefaultFilterTableColumnBuilder<>(0, 0).build();
 		column.setHeaderValue("Testing");
 
 		FilterTableColumnModel<Integer> columnModel =
