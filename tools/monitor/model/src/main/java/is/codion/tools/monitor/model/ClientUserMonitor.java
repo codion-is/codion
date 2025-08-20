@@ -55,7 +55,7 @@ public final class ClientUserMonitor {
 	private final EntityServerAdmin server;
 	private final Value<Integer> idleConnectionTimeoutValue;
 	private final ClientMonitor clientMonitor;
-	private final FilterTableModel<UserInfo, UserHistoryColumns.Id> userHistoryTableModel =
+	private final FilterTableModel<UserInfo, String> userHistoryTableModel =
 					FilterTableModel.builder()
 									.columns(new UserHistoryColumns())
 									.supplier(new UserHistoryItems())
@@ -96,7 +96,7 @@ public final class ClientUserMonitor {
 	/**
 	 * @return a TableModel for displaying the user connection history
 	 */
-	public FilterTableModel<?, UserHistoryColumns.Id> userHistoryTableModel() {
+	public FilterTableModel<?, String> userHistoryTableModel() {
 		return userHistoryTableModel;
 	}
 
@@ -222,88 +222,66 @@ public final class ClientUserMonitor {
 		}
 	}
 
-	public static final class UserHistoryColumns implements TableColumns<UserInfo, UserHistoryColumns.Id> {
+	public static final class UserHistoryColumns implements TableColumns<UserInfo, String> {
 
-		public enum Id {
-			USERNAME_COLUMN,
-			CLIENT_TYPE_COLUMN,
-			CLIENT_VERSION_COLUMN,
-			FRAMEWORK_VERSION_COLUMN,
-			CLIENT_HOST_COLUMN,
-			LAST_SEEN_COLUMN,
-			CONNECTION_COUNT_COLUMN
-		}
+		public static final String USERNAME = "Username";
+		public static final String CLIENT_TYPE = "Client type";
+		public static final String CLIENT_VERSION = "Client version";
+		public static final String FRAMEWORK_VERSION = "Framework version";
+		public static final String CLIENT_HOST = "Host";
+		public static final String LAST_SEEN = "Last seen";
+		public static final String CONNECTION_COUNT = "Connections";
 
-		private static final List<Id> IDENTIFIERS = unmodifiableList(asList(Id.values()));
+		private static final List<String> IDENTIFIERS = unmodifiableList(asList(
+						USERNAME, CLIENT_TYPE, CLIENT_VERSION, FRAMEWORK_VERSION, CLIENT_HOST, LAST_SEEN, CONNECTION_COUNT
+		));
 
 		@Override
-		public List<Id> identifiers() {
+		public List<String> identifiers() {
 			return IDENTIFIERS;
 		}
 
 		@Override
-		public Class<?> columnClass(Id identifier) {
+		public Class<?> columnClass(String identifier) {
 			switch (identifier) {
-				case USERNAME_COLUMN:
+				case USERNAME:
 					return String.class;
-				case CLIENT_TYPE_COLUMN:
+				case CLIENT_TYPE:
 					return String.class;
-				case CLIENT_VERSION_COLUMN:
+				case CLIENT_VERSION:
 					return Version.class;
-				case FRAMEWORK_VERSION_COLUMN:
+				case FRAMEWORK_VERSION:
 					return Version.class;
-				case CLIENT_HOST_COLUMN:
+				case CLIENT_HOST:
 					return String.class;
-				case LAST_SEEN_COLUMN:
+				case LAST_SEEN:
 					return LocalDateTime.class;
-				case CONNECTION_COUNT_COLUMN:
+				case CONNECTION_COUNT:
 					return Integer.class;
 				default:
-					throw new IllegalArgumentException(identifier.toString());
+					throw new IllegalArgumentException(identifier);
 			}
 		}
 
 		@Override
-		public String caption(Id identifier) {
+		public Object value(UserInfo row, String identifier) {
 			switch (identifier) {
-				case USERNAME_COLUMN:
-					return "Username";
-				case CLIENT_TYPE_COLUMN:
-					return "Client type";
-				case CLIENT_VERSION_COLUMN:
-					return "Client version";
-				case FRAMEWORK_VERSION_COLUMN:
-					return "Framework version";
-				case CLIENT_HOST_COLUMN:
-					return "Host";
-				case LAST_SEEN_COLUMN:
-					return "Last seen";
-				case CONNECTION_COUNT_COLUMN:
-					return "Connections";
-				default:
-					throw new IllegalArgumentException(identifier.toString());
-			}
-		}
-
-		@Override
-		public Object value(UserInfo row, Id identifier) {
-			switch (identifier) {
-				case USERNAME_COLUMN:
+				case USERNAME:
 					return row.user().username();
-				case CLIENT_TYPE_COLUMN:
+				case CLIENT_TYPE:
 					return row.clientType();
-				case CLIENT_VERSION_COLUMN:
+				case CLIENT_VERSION:
 					return row.clientVersion();
-				case FRAMEWORK_VERSION_COLUMN:
+				case FRAMEWORK_VERSION:
 					return row.frameworkVersion();
-				case CLIENT_HOST_COLUMN:
+				case CLIENT_HOST:
 					return row.clientHost();
-				case LAST_SEEN_COLUMN:
+				case LAST_SEEN:
 					return row.getLastSeen();
-				case CONNECTION_COUNT_COLUMN:
+				case CONNECTION_COUNT:
 					return row.connectionCount();
 				default:
-					throw new IllegalArgumentException(identifier.toString());
+					throw new IllegalArgumentException(identifier);
 			}
 		}
 	}

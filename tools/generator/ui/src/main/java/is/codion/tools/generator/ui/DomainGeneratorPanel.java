@@ -38,7 +38,6 @@ import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.tools.generator.model.DomainGeneratorModel;
 import is.codion.tools.generator.model.DomainGeneratorModel.EntityColumns;
-import is.codion.tools.generator.model.DomainGeneratorModel.SchemaColumns;
 import is.codion.tools.generator.model.EntityRow;
 import is.codion.tools.generator.model.SchemaRow;
 
@@ -108,8 +107,8 @@ public final class DomainGeneratorPanel extends JPanel {
 	private static final String LOOK_AND_FEEL_PROPERTY = ".lookAndFeel";
 
 	private final DomainGeneratorModel model;
-	private final FilterTable<SchemaRow, SchemaColumns.Id> schemaTable;
-	private final FilterTable<EntityRow, EntityColumns.Id> entityTable;
+	private final FilterTable<SchemaRow, String> schemaTable;
+	private final FilterTable<EntityRow, String> entityTable;
 	private final JTextArea apiTextArea;
 	private final JTextArea implementationTextArea;
 	private final JTextArea combinedTextArea;
@@ -164,7 +163,7 @@ public final class DomainGeneratorPanel extends JPanel {
 		add(splitPane, BorderLayout.CENTER);
 	}
 
-	private FilterTable<SchemaRow, SchemaColumns.Id> createSchemaTable() {
+	private FilterTable<SchemaRow, String> createSchemaTable() {
 		Control populateSchemaControl = Control.builder()
 						.command(this::populateSchema)
 						.caption("Populate")
@@ -190,11 +189,11 @@ public final class DomainGeneratorPanel extends JPanel {
 						.build();
 	}
 
-	private FilterTable<EntityRow, EntityColumns.Id> createEntityTable() {
+	private FilterTable<EntityRow, String> createEntityTable() {
 		return FilterTable.builder()
 						.model(model.entityModel())
 						.columns(builder -> {
-							if (builder.identifier().equals(EntityColumns.Id.TABLE_TYPE)) {
+							if (builder.identifier().equals(EntityColumns.TABLE_TYPE)) {
 								builder.preferredWidth(120);
 							}
 						})

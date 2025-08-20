@@ -18,7 +18,6 @@
  */
 package is.codion.manual.keybinding;
 
-import is.codion.manual.keybinding.KeyBindingModel.KeyBindingColumns.ColumnId;
 import is.codion.manual.keybinding.KeyBindingModel.KeyBindingRow;
 import is.codion.plugin.flatlaf.intellij.themes.monokaipro.MonokaiPro;
 import is.codion.swing.common.ui.component.table.FilterTable;
@@ -50,7 +49,7 @@ public final class KeyBindingPanel extends JPanel {
 
 	private final LookAndFeelComboBox lookAndFeelComboBox = LookAndFeelComboBox.builder().build();
 	private final KeyBindingModel keyBindingModel;
-	private final FilterTable<KeyBindingRow, ColumnId> table;
+	private final FilterTable<KeyBindingRow, String> table;
 	private final JComboBox<String> componentComboBox;
 
 	public KeyBindingPanel() {

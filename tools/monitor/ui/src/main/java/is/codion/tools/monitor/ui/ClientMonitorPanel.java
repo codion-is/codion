@@ -27,7 +27,6 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.tools.monitor.model.ClientInstanceMonitor;
 import is.codion.tools.monitor.model.ClientMonitor;
-import is.codion.tools.monitor.model.ClientMonitor.RemoteClientColumns;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
@@ -52,7 +51,7 @@ import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
 public final class ClientMonitorPanel extends JPanel {
 
 	private final ClientMonitor model;
-	private final FilterTable<RemoteClient, RemoteClientColumns.Id> clientInstanceTable;
+	private final FilterTable<RemoteClient, String> clientInstanceTable;
 	private final JScrollPane filterScrollPane;
 	private final JScrollPane clientInstanceScroller;
 	private final State advancedFilterState = State.builder()
@@ -130,7 +129,7 @@ public final class ClientMonitorPanel extends JPanel {
 		add(splitPane, BorderLayout.CENTER);
 	}
 
-	private JPopupMenu createPopupMenu(FilterTable<RemoteClient, RemoteClientColumns.Id> table) {
+	private JPopupMenu createPopupMenu(FilterTable<RemoteClient, String> table) {
 		return menu()
 						.controls(Controls.builder()
 										.control(Control.builder()

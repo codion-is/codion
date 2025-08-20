@@ -66,7 +66,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
 	private final LoadTest<T> loadTest;
 
-	private final FilterTableModel<ApplicationRow, ApplicationRow.ColumnId> applicationTableModel;
+	private final FilterTableModel<ApplicationRow, String> applicationTableModel;
 	private final Counter counter = new Counter();
 
 	private final State collectChartData = State.state();
@@ -133,7 +133,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 	}
 
 	@Override
-	public FilterTableModel<ApplicationRow, ApplicationRow.ColumnId> applicationTableModel() {
+	public FilterTableModel<ApplicationRow, String> applicationTableModel() {
 		return applicationTableModel;
 	}
 
@@ -550,33 +550,37 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 		}
 	}
 
-	public static final class ApplicationColumns implements TableColumns<ApplicationRow, ApplicationRow.ColumnId> {
+	public static final class ApplicationColumns implements TableColumns<ApplicationRow, String> {
 
-		private static final List<ApplicationRow.ColumnId> IDENTIFIERS = unmodifiableList(Arrays.asList(ApplicationRow.ColumnId.values()));
+		private static final List<String> IDENTIFIERS = unmodifiableList(Arrays.asList(
+						ApplicationRow.NAME, ApplicationRow.USERNAME, ApplicationRow.SCENARIO,
+						ApplicationRow.SUCCESSFUL, ApplicationRow.DURATION, ApplicationRow.EXCEPTION,
+						ApplicationRow.MESSAGE, ApplicationRow.CREATED
+		));
 
 		@Override
-		public List<ApplicationRow.ColumnId> identifiers() {
+		public List<String> identifiers() {
 			return IDENTIFIERS;
 		}
 
 		@Override
-		public Class<?> columnClass(ApplicationRow.ColumnId identifier) {
+		public Class<?> columnClass(String identifier) {
 			switch (identifier) {
-				case NAME:
+				case ApplicationRow.NAME:
 					return String.class;
-				case USERNAME:
+				case ApplicationRow.USERNAME:
 					return String.class;
-				case SCENARIO:
+				case ApplicationRow.SCENARIO:
 					return String.class;
-				case SUCCESSFUL:
+				case ApplicationRow.SUCCESSFUL:
 					return Boolean.class;
-				case DURATION:
+				case ApplicationRow.DURATION:
 					return Integer.class;
-				case EXCEPTION:
+				case ApplicationRow.EXCEPTION:
 					return String.class;
-				case MESSAGE:
+				case ApplicationRow.MESSAGE:
 					return String.class;
-				case CREATED:
+				case ApplicationRow.CREATED:
 					return LocalDateTime.class;
 				default:
 					throw new IllegalArgumentException();
@@ -584,50 +588,26 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 		}
 
 		@Override
-		public String caption(ApplicationRow.ColumnId identifier) {
-			switch (identifier) {
-				case NAME:
-					return "Name";
-				case USERNAME:
-					return "User";
-				case SCENARIO:
-					return "Scenario";
-				case SUCCESSFUL:
-					return "Success";
-				case DURATION:
-					return "Duration (μs)";
-				case EXCEPTION:
-					return "Exception";
-				case MESSAGE:
-					return "Message";
-				case CREATED:
-					return "Created";
-				default:
-					throw new IllegalArgumentException();
-			}
-		}
-
-		@Override
-		public Object value(ApplicationRow application, ApplicationRow.ColumnId identifier) {
+		public Object value(ApplicationRow application, String identifier) {
 			List<Result> results = application.results();
 			Result result = results.isEmpty() ? null : results.get(results.size() - 1);
 			Throwable exception = result == null ? null : result.exception().orElse(null);
 			switch (identifier) {
-				case NAME:
+				case ApplicationRow.NAME:
 					return application.name();
-				case USERNAME:
+				case ApplicationRow.USERNAME:
 					return application.username();
-				case SCENARIO:
+				case ApplicationRow.SCENARIO:
 					return result == null ? null : result.scenario();
-				case SUCCESSFUL:
+				case ApplicationRow.SUCCESSFUL:
 					return result == null ? null : result.successful();
-				case DURATION:
+				case ApplicationRow.DURATION:
 					return result == null ? null : result.duration();
-				case EXCEPTION:
+				case ApplicationRow.EXCEPTION:
 					return exception;
-				case MESSAGE:
+				case ApplicationRow.MESSAGE:
 					return exception == null ? null : exception.getMessage();
-				case CREATED:
+				case ApplicationRow.CREATED:
 					return application.created();
 				default:
 					throw new IllegalArgumentException();

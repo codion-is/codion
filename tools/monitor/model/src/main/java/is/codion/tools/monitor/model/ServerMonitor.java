@@ -92,17 +92,17 @@ public final class ServerMonitor {
 
 	private final Value<Integer> connectionCountValue = Value.nullable(0);
 	private final Value<String> memoryUsageValue = Value.nullable("");
-	private final FilterTableModel<DomainEntityDefinition, DomainColumns.Id> domainTableModel =
+	private final FilterTableModel<DomainEntityDefinition, String> domainTableModel =
 					FilterTableModel.builder()
 									.columns(new DomainColumns())
 									.supplier(new DomainTableItems())
 									.build();
-	private final FilterTableModel<DomainReport, ReportColumns.Id> reportTableModel =
+	private final FilterTableModel<DomainReport, String> reportTableModel =
 					FilterTableModel.builder()
 									.columns(new ReportColumns())
 									.supplier(new ReportTableItems())
 									.build();
-	private final FilterTableModel<DomainOperation, OperationColumns.Id> operationTableModel =
+	private final FilterTableModel<DomainOperation, String> operationTableModel =
 					FilterTableModel.builder()
 									.columns(new OperationColumns())
 									.supplier(new OperationTableItems())
@@ -358,21 +358,21 @@ public final class ServerMonitor {
 	/**
 	 * @return the table model for viewing the domain models
 	 */
-	public FilterTableModel<DomainEntityDefinition, DomainColumns.Id> domainTableModel() {
+	public FilterTableModel<DomainEntityDefinition, String> domainTableModel() {
 		return domainTableModel;
 	}
 
 	/**
 	 * @return the table model for viewing reports
 	 */
-	public FilterTableModel<DomainReport, ReportColumns.Id> reportTableModel() {
+	public FilterTableModel<DomainReport, String> reportTableModel() {
 		return reportTableModel;
 	}
 
 	/**
 	 * @return the table model for viewing operations
 	 */
-	public FilterTableModel<DomainOperation, OperationColumns.Id> operationTableModel() {
+	public FilterTableModel<DomainOperation, String> operationTableModel() {
 		return operationTableModel;
 	}
 
@@ -554,45 +554,26 @@ public final class ServerMonitor {
 		}
 	}
 
-	public static final class OperationColumns implements TableColumns<DomainOperation, OperationColumns.Id> {
+	public static final class OperationColumns implements TableColumns<DomainOperation, String> {
 
-		public enum Id {
-			DOMAIN,
-			TYPE,
-			OPERATION,
-			CLASS
-		}
+		public static final String TYPE = "Type";
+		public static final String OPERATION = "Operation";
+		public static final String CLASS = "Class";
 
-		private static final List<Id> IDENTIFIERS = unmodifiableList(asList(Id.values()));
+		private static final List<String> IDENTIFIERS = unmodifiableList(asList(TYPE, OPERATION, CLASS));
 
 		@Override
-		public List<Id> identifiers() {
+		public List<String> identifiers() {
 			return IDENTIFIERS;
 		}
 
 		@Override
-		public Class<?> columnClass(Id identifier) {
+		public Class<?> columnClass(String identifier) {
 			return String.class;
 		}
 
 		@Override
-		public String caption(Id identifier) {
-			switch (identifier) {
-				case DOMAIN:
-					return DOMAIN;
-				case TYPE:
-					return "Type";
-				case OPERATION:
-					return "Operation";
-				case CLASS:
-					return "Class";
-				default:
-					throw new IllegalArgumentException();
-			}
-		}
-
-		@Override
-		public Object value(DomainOperation row, Id identifier) {
+		public Object value(DomainOperation row, String identifier) {
 			switch (identifier) {
 				case DOMAIN:
 					return row.domain();
@@ -623,26 +604,25 @@ public final class ServerMonitor {
 		}
 	}
 
-	public static final class ReportColumns implements TableColumns<DomainReport, ReportColumns.Id> {
+	public static final class ReportColumns implements TableColumns<DomainReport, String> {
 
-		public enum Id {
-			DOMAIN,
-			REPORT,
-			TYPE,
-			PATH,
-			CACHED
-		}
+		public static final String REPORT = "Report";
+		public static final String TYPE = "Type";
+		public static final String PATH = "Path";
+		public static final String CACHED = "Cached";
 
-		private static final List<Id> IDENTIFIERS = unmodifiableList(asList(Id.values()));
+		private static final List<String> IDENTIFIERS = unmodifiableList(asList(
+						REPORT, TYPE, PATH, CACHED
+		));
 
 		@Override
-		public List<Id> identifiers() {
+		public List<String> identifiers() {
 			return IDENTIFIERS;
 		}
 
 		@Override
-		public Class<?> columnClass(Id identifier) {
-			if (identifier == Id.CACHED) {
+		public Class<?> columnClass(String identifier) {
+			if (identifier.equals(CACHED)) {
 				return Boolean.class;
 			}
 
@@ -650,25 +630,7 @@ public final class ServerMonitor {
 		}
 
 		@Override
-		public String caption(Id identifier) {
-			switch (identifier) {
-				case DOMAIN:
-					return DOMAIN;
-				case REPORT:
-					return "Report";
-				case TYPE:
-					return "Type";
-				case PATH:
-					return "Path";
-				case CACHED:
-					return "Cached";
-				default:
-					throw new IllegalArgumentException();
-			}
-		}
-
-		@Override
-		public Object value(DomainReport row, Id identifier) {
+		public Object value(DomainReport row, String identifier) {
 			switch (identifier) {
 				case DOMAIN:
 					return row.domain();
@@ -700,42 +662,25 @@ public final class ServerMonitor {
 		}
 	}
 
-	public static final class DomainColumns implements TableColumns<DomainEntityDefinition, DomainColumns.Id> {
+	public static final class DomainColumns implements TableColumns<DomainEntityDefinition, String> {
 
-		public enum Id {
-			DOMAIN,
-			ENTITY,
-			TABLE
-		}
+		public static final String ENTITY = "Entity";
+		public static final String TABLE = "Table";
 
-		private static final List<Id> IDENTIFIERS = unmodifiableList(asList(Id.values()));
+		private static final List<String> IDENTIFIERS = unmodifiableList(asList(DOMAIN, ENTITY, TABLE));
 
 		@Override
-		public List<Id> identifiers() {
+		public List<String> identifiers() {
 			return IDENTIFIERS;
 		}
 
 		@Override
-		public Class<?> columnClass(Id identifier) {
+		public Class<?> columnClass(String identifier) {
 			return String.class;
 		}
 
 		@Override
-		public String caption(Id identifier) {
-			switch (identifier) {
-				case DOMAIN:
-					return DOMAIN;
-				case ENTITY:
-					return "Entity";
-				case TABLE:
-					return "Table";
-				default:
-					throw new IllegalArgumentException();
-			}
-		}
-
-		@Override
-		public Object value(DomainEntityDefinition row, Id identifier) {
+		public Object value(DomainEntityDefinition row, String identifier) {
 			switch (identifier) {
 				case DOMAIN:
 					return row.domain();

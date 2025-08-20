@@ -40,7 +40,6 @@ import java.awt.FlowLayout;
 import java.rmi.RemoteException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.function.Function;
 
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
@@ -55,6 +54,10 @@ public final class ClientUserMonitorPanel extends JPanel {
 
 	private static final int SPINNER_COLUMNS = 3;
 	private static final Integer[] MAINTENANCE_INTERVAL_VALUES = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 120, 180, 340, 6000, 10000};
+	private static final DateTimeFormatter LAST_SEEN_FORMATTER = LocaleDateTimePattern.builder()
+					.delimiterDash().yearFourDigits().hoursMinutesSeconds()
+					.build()
+					.createFormatter();
 
 	private final ClientUserMonitor model;
 
@@ -131,9 +134,9 @@ public final class ClientUserMonitorPanel extends JPanel {
 
 		FilterTable<?, ?> userHistoryTable = FilterTable.builder()
 						.model(model.userHistoryTableModel())
-						.cellRenderer(UserHistoryColumns.Id.LAST_SEEN_COLUMN, FilterTableCellRenderer.builder()
+						.cellRenderer(UserHistoryColumns.LAST_SEEN, FilterTableCellRenderer.builder()
 										.columnClass(LocalDateTime.class)
-										.string(new LastSeenToString())
+										.string(lastSeen -> lastSeen == null ? null : LAST_SEEN_FORMATTER.format(lastSeen))
 										.build())
 						.popupMenuControls(table -> Controls.builder()
 										.control(Controls.builder()
@@ -169,17 +172,5 @@ public final class ClientUserMonitorPanel extends JPanel {
 		Dialogs.exception()
 						.owner(this)
 						.show(exception);
-	}
-
-	private static class LastSeenToString implements Function<LocalDateTime, String> {
-
-		private final DateTimeFormatter formatter = LocaleDateTimePattern.builder()
-						.delimiterDash().yearFourDigits().hoursMinutesSeconds()
-						.build().createFormatter();
-
-		@Override
-		public String apply(LocalDateTime lastSeen) {
-			return lastSeen == null ? null : formatter.format(lastSeen);
-		}
 	}
 }

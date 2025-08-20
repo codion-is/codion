@@ -73,13 +73,13 @@ public final class DomainGeneratorModel {
 	private static final Pattern PACKAGE_PATTERN =
 					Pattern.compile("^[A-Za-z_][A-Za-z0-9_]*(?:\\.[A-Za-z_][A-Za-z0-9_]*)*$");
 
-	private final FilterTableModel<SchemaRow, SchemaColumns.Id> schemaTableModel =
+	private final FilterTableModel<SchemaRow, String> schemaTableModel =
 					FilterTableModel.builder()
 									.columns(new SchemaColumns())
 									.supplier(new SchemaItems())
 									.build();
 	private final State populatedSchemaSelected = State.state();
-	private final FilterTableModel<EntityRow, EntityColumns.Id> entityTableModel =
+	private final FilterTableModel<EntityRow, String> entityTableModel =
 					FilterTableModel.builder()
 									.columns(new EntityColumns())
 									.supplier(new EntityItems())
@@ -119,17 +119,17 @@ public final class DomainGeneratorModel {
 		this.user = user;
 		sourceDirectoryChanged();
 		domainPackageChanged();
-		schemaTableModel.sort().ascending(SchemaColumns.Id.SCHEMA);
-		entityTableModel.sort().ascending(EntityColumns.Id.ENTITY);
+		schemaTableModel.sort().ascending(SchemaColumns.SCHEMA);
+		entityTableModel.sort().ascending(EntityColumns.ENTITY);
 		schemaTableModel.items().refresh();
 		bindEvents();
 	}
 
-	public FilterTableModel<SchemaRow, SchemaColumns.Id> schemaModel() {
+	public FilterTableModel<SchemaRow, String> schemaModel() {
 		return schemaTableModel;
 	}
 
-	public FilterTableModel<EntityRow, EntityColumns.Id> entityModel() {
+	public FilterTableModel<EntityRow, String> entityModel() {
 		return entityTableModel;
 	}
 
@@ -343,24 +343,22 @@ public final class DomainGeneratorModel {
 		}
 	}
 
-	public static final class SchemaColumns implements TableColumns<SchemaRow, SchemaColumns.Id> {
+	public static final class SchemaColumns implements TableColumns<SchemaRow, String> {
 
-		public enum Id {
-			CATALOG,
-			SCHEMA,
-			POPULATED
-		}
+		public static final String CATALOG = "Catalog";
+		public static final String SCHEMA = "Schema";
+		public static final String POPULATED = "Populated";
 
-		private static final List<Id> IDENTIFIERS = unmodifiableList(asList(Id.values()));
+		private static final List<String> IDENTIFIERS = unmodifiableList(asList(CATALOG, SCHEMA, POPULATED));
 
 		@Override
-		public List<Id> identifiers() {
+		public List<String> identifiers() {
 			return IDENTIFIERS;
 		}
 
 		@Override
-		public Class<?> columnClass(Id identifier) {
-			if (identifier == Id.POPULATED) {
+		public Class<?> columnClass(String identifier) {
+			if (identifier.equals(POPULATED)) {
 				return Boolean.class;
 			}
 
@@ -368,7 +366,7 @@ public final class DomainGeneratorModel {
 		}
 
 		@Override
-		public Object value(SchemaRow row, Id identifier) {
+		public Object value(SchemaRow row, String identifier) {
 			switch (identifier) {
 				case CATALOG:
 					return row.catalog();
@@ -380,60 +378,32 @@ public final class DomainGeneratorModel {
 					throw new IllegalArgumentException();
 			}
 		}
-
-		@Override
-		public String caption(Id identifier) {
-			switch (identifier) {
-				case CATALOG:
-					return "Catalog";
-				case SCHEMA:
-					return "Schema";
-				case POPULATED:
-					return "Populated";
-				default:
-					throw new IllegalArgumentException();
-			}
-		}
 	}
 
-	public static final class EntityColumns implements TableColumns<EntityRow, EntityColumns.Id> {
+	public static final class EntityColumns implements TableColumns<EntityRow, String> {
 
-		public enum Id {
-			ENTITY,
-			TABLE_TYPE
-		}
+		public static final String ENTITY = "Entity";
+		public static final String TABLE_TYPE = "Type";
 
-		private static final List<Id> IDENTIFIERS = unmodifiableList(asList(Id.values()));
+		private static final List<String> IDENTIFIERS = unmodifiableList(asList(ENTITY, TABLE_TYPE));
 
 		@Override
-		public List<Id> identifiers() {
+		public List<String> identifiers() {
 			return IDENTIFIERS;
 		}
 
 		@Override
-		public Class<?> columnClass(Id identifier) {
+		public Class<?> columnClass(String identifier) {
 			return String.class;
 		}
 
 		@Override
-		public Object value(EntityRow row, Id identifier) {
+		public Object value(EntityRow row, String identifier) {
 			switch (identifier) {
 				case ENTITY:
 					return row.definition.type().name();
 				case TABLE_TYPE:
 					return row.tableType;
-				default:
-					throw new IllegalArgumentException();
-			}
-		}
-
-		@Override
-		public String caption(Id identifier) {
-			switch (identifier) {
-				case ENTITY:
-					return "Entity";
-				case TABLE_TYPE:
-					return "Type";
 				default:
 					throw new IllegalArgumentException();
 			}

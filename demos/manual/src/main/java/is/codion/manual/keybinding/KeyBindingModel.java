@@ -19,7 +19,6 @@
 package is.codion.manual.keybinding;
 
 import is.codion.common.item.Item;
-import is.codion.manual.keybinding.KeyBindingModel.KeyBindingColumns.ColumnId;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
@@ -51,7 +50,7 @@ final class KeyBindingModel {
 	private static final String RELEASED = "released ";
 
 	private final FilterComboBoxModel<String> componentModel;
-	private final FilterTableModel<KeyBindingRow, ColumnId> tableModel;
+	private final FilterTableModel<KeyBindingRow, String> tableModel;
 
 	KeyBindingModel(FilterComboBoxModel<Item<LookAndFeelEnabler>> lookAndFeelModel) {
 		this.componentModel = FilterComboBoxModel.builder()
@@ -69,7 +68,7 @@ final class KeyBindingModel {
 		return componentModel;
 	}
 
-	FilterTableModel<KeyBindingRow, ColumnId> tableModel() {
+	FilterTableModel<KeyBindingRow, String> tableModel() {
 		return tableModel;
 	}
 
@@ -84,55 +83,38 @@ final class KeyBindingModel {
 
 	record KeyBindingRow(String action, String whenFocused, String whenInFocusedWindow, String whenAncestor) {
 
-		Object value(ColumnId columnId) {
+		Object value(String columnId) {
 			return switch (columnId) {
-				case ACTION -> action;
-				case WHEN_FOCUSED -> whenFocused;
-				case WHEN_IN_FOCUSED_WINDOW -> whenInFocusedWindow;
-				case WHEN_ANCESTOR -> whenAncestor;
+				case KeyBindingColumns.ACTION -> action;
+				case KeyBindingColumns.WHEN_FOCUSED -> whenFocused;
+				case KeyBindingColumns.WHEN_IN_FOCUSED_WINDOW -> whenInFocusedWindow;
+				case KeyBindingColumns.WHEN_ANCESTOR -> whenAncestor;
+				default -> throw new IllegalStateException(columnId);
 			};
 		}
 	}
 
-	static final class KeyBindingColumns implements TableColumns<KeyBindingRow, ColumnId> {
+	static final class KeyBindingColumns implements TableColumns<KeyBindingRow, String> {
 
-		enum ColumnId {
-			ACTION,
-			WHEN_FOCUSED,
-			WHEN_IN_FOCUSED_WINDOW,
-			WHEN_ANCESTOR
-		}
+		static final String ACTION = "Action";
+		static final String WHEN_FOCUSED = "When focused";
+		static final String WHEN_IN_FOCUSED_WINDOW = "When in focused window";
+		static final String WHEN_ANCESTOR = "When ancestor";
 
-		private static final List<ColumnId> IDENTIFIERS = List.of(ColumnId.values());
+		private static final List<String> IDENTIFIERS = List.of(ACTION, WHEN_FOCUSED, WHEN_IN_FOCUSED_WINDOW, WHEN_ANCESTOR);
 
 		@Override
-		public List<ColumnId> identifiers() {
+		public List<String> identifiers() {
 			return IDENTIFIERS;
 		}
 
 		@Override
-		public String caption(ColumnId identifier) {
-			switch (identifier) {
-				case ACTION:
-					return "Action";
-				case WHEN_FOCUSED:
-					return "When Focused";
-				case WHEN_IN_FOCUSED_WINDOW:
-					return "When in Focused Window";
-				case WHEN_ANCESTOR:
-					return "When Ancestor";
-				default:
-					throw new IllegalArgumentException();
-			}
-		}
-
-		@Override
-		public Class<?> columnClass(ColumnId columnId) {
+		public Class<?> columnClass(String columnId) {
 			return String.class;
 		}
 
 		@Override
-		public Object value(KeyBindingRow row, ColumnId columnId) {
+		public Object value(KeyBindingRow row, String columnId) {
 			return row.value(columnId);
 		}
 	}

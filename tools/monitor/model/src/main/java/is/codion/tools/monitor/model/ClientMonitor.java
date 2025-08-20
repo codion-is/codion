@@ -40,7 +40,7 @@ public final class ClientMonitor {
 
 	private final EntityServerAdmin server;
 
-	private final FilterTableModel<RemoteClient, RemoteClientColumns.Id> clientInstanceTableModel =
+	private final FilterTableModel<RemoteClient, String> clientInstanceTableModel =
 					FilterTableModel.builder()
 									.columns(new RemoteClientColumns())
 									.supplier(new RemoteClientItems())
@@ -65,7 +65,7 @@ public final class ClientMonitor {
 	/**
 	 * @return the TableModel for displaying the client instances
 	 */
-	public FilterTableModel<RemoteClient, RemoteClientColumns.Id> clientInstanceTableModel() {
+	public FilterTableModel<RemoteClient, String> clientInstanceTableModel() {
 		return clientInstanceTableModel;
 	}
 
@@ -86,30 +86,30 @@ public final class ClientMonitor {
 		}
 	}
 
-	public static final class RemoteClientColumns implements TableColumns<RemoteClient, RemoteClientColumns.Id> {
+	public static final class RemoteClientColumns implements TableColumns<RemoteClient, String> {
 
-		public enum Id {
-			USER,
-			CLIENT_HOST,
-			CLIENT_TYPE,
-			CLIENT_VERSION,
-			CODION_VERSION,
-			CLIENT_ID,
-			LOCALE,
-			TIMEZONE,
-			CREATION_TIME
-		}
+		public static final String USER = "User";
+		public static final String CLIENT_HOST = "Host";
+		public static final String CLIENT_TYPE = "Type";
+		public static final String CLIENT_VERSION = "Version";
+		public static final String CODION_VERSION = "Framework version";
+		public static final String CLIENT_ID = "Id";
+		public static final String LOCALE = "Locale";
+		public static final String TIMEZONE = "Timezone";
+		public static final String CREATION_TIME = "Created";
 
-		private static final List<Id> IDENTIFIERS = unmodifiableList(asList(Id.values()));
+		private static final List<String> IDENTIFIERS = unmodifiableList(asList(
+						USER, CLIENT_HOST, CLIENT_TYPE, CLIENT_VERSION, CODION_VERSION, CLIENT_ID, LOCALE, TIMEZONE, CREATION_TIME
+		));
 
 		@Override
-		public List<Id> identifiers() {
+		public List<String> identifiers() {
 			return IDENTIFIERS;
 		}
 
 		@Override
-		public Class<?> columnClass(Id identifier) {
-			if (identifier.equals(Id.CREATION_TIME)) {
+		public Class<?> columnClass(String identifier) {
+			if (identifier.equals(CREATION_TIME)) {
 				return LocalDateTime.class;
 			}
 
@@ -117,33 +117,7 @@ public final class ClientMonitor {
 		}
 
 		@Override
-		public String caption(Id identifier) {
-			switch (identifier) {
-				case USER:
-					return "User";
-				case CLIENT_HOST:
-					return "Host";
-				case CLIENT_TYPE:
-					return "Type";
-				case CLIENT_VERSION:
-					return "Version";
-				case CODION_VERSION:
-					return "Framework version";
-				case CLIENT_ID:
-					return "Id";
-				case LOCALE:
-					return "Locale";
-				case TIMEZONE:
-					return "Timezone";
-				case CREATION_TIME:
-					return "Created";
-				default:
-					throw new IllegalArgumentException("Unknown column");
-			}
-		}
-
-		@Override
-		public Object value(RemoteClient row, Id identifier) {
+		public Object value(RemoteClient row, String identifier) {
 			switch (identifier) {
 				case USER:
 					return row.user().username();

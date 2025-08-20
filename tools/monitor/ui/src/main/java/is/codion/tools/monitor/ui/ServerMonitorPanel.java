@@ -24,9 +24,6 @@ import is.codion.framework.server.EntityServerAdmin.DomainOperation;
 import is.codion.framework.server.EntityServerAdmin.DomainReport;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.tools.monitor.model.ServerMonitor;
-import is.codion.tools.monitor.model.ServerMonitor.DomainColumns;
-import is.codion.tools.monitor.model.ServerMonitor.OperationColumns;
-import is.codion.tools.monitor.model.ServerMonitor.ReportColumns;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -236,7 +233,7 @@ public final class ServerMonitorPanel extends JPanel {
 	}
 
 	private JPanel createOperationPanel() {
-		FilterTable<DomainOperation, OperationColumns.Id> table =
+		FilterTable<DomainOperation, String> table =
 						FilterTable.builder()
 										.model(model.operationTableModel())
 										.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
@@ -255,7 +252,7 @@ public final class ServerMonitorPanel extends JPanel {
 	}
 
 	private JPanel createReportPanel() {
-		FilterTable<DomainReport, ReportColumns.Id> table =
+		FilterTable<DomainReport, String> table =
 						FilterTable.builder()
 										.model(model.reportTableModel())
 										.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
@@ -277,7 +274,7 @@ public final class ServerMonitorPanel extends JPanel {
 	}
 
 	private JPanel createEntityPanel() {
-		FilterTable<DomainEntityDefinition, DomainColumns.Id> table =
+		FilterTable<DomainEntityDefinition, String> table =
 						FilterTable.builder()
 										.model(model.domainTableModel())
 										.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)

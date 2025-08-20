@@ -37,7 +37,6 @@ import is.codion.tools.loadtest.LoadTest;
 import is.codion.tools.loadtest.LoadTest.Scenario;
 import is.codion.tools.loadtest.model.LoadTestModel;
 import is.codion.tools.loadtest.model.LoadTestModel.ApplicationRow;
-import is.codion.tools.loadtest.model.LoadTestModel.ApplicationRow.ColumnId;
 import is.codion.tools.loadtest.randomizer.ItemRandomizer.RandomItem;
 
 import com.formdev.flatlaf.FlatDarculaLaf;
@@ -378,15 +377,15 @@ public final class LoadTestPanel<T> extends JPanel {
 		return numberOfApplicationsChartPanel;
 	}
 
-	private FilterTable<ApplicationRow, ColumnId> createApplicationsTable() {
-		FilterTableModel<ApplicationRow, ColumnId> tableModel = model().applicationTableModel();
+	private FilterTable<ApplicationRow, String> createApplicationsTable() {
+		FilterTableModel<ApplicationRow, String> tableModel = model().applicationTableModel();
 
 		return FilterTable.builder()
 						.model(tableModel)
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.doubleClick(command(this::viewException))
 						.scrollToSelectedItem(false)
-						.cellRenderer(ColumnId.DURATION, FilterTableCellRenderer.builder()
+						.cellRenderer(ApplicationRow.DURATION, FilterTableCellRenderer.builder()
 										.columnClass(Integer.class)
 										.string(duration -> duration == null ? "" : DURATION_FORMAT.format(duration))
 										.build())

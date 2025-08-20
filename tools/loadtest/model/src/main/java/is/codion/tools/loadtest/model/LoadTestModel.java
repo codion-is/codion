@@ -22,7 +22,6 @@ import is.codion.common.state.State;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.tools.loadtest.LoadTest;
 import is.codion.tools.loadtest.LoadTest.Scenario.Result;
-import is.codion.tools.loadtest.model.LoadTestModel.ApplicationRow.ColumnId;
 
 import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataset;
@@ -45,7 +44,7 @@ public interface LoadTestModel<T> {
 	/**
 	 * @return a table model for displaying the active application instances
 	 */
-	FilterTableModel<ApplicationRow, ColumnId> applicationTableModel();
+	FilterTableModel<ApplicationRow, String> applicationTableModel();
 
 	/**
 	 * @return the chart data update interval in milliseconds
@@ -165,16 +164,14 @@ public interface LoadTestModel<T> {
 		/**
 		 * Identifies the application table columns
 		 */
-		enum ColumnId {
-			NAME,
-			USERNAME,
-			SCENARIO,
-			SUCCESSFUL,
-			DURATION,
-			EXCEPTION,
-			MESSAGE,
-			CREATED
-		}
+		String NAME = "Name";
+		String USERNAME = "User";
+		String SCENARIO = "Scenario";
+		String SUCCESSFUL = "Succes";
+		String DURATION = "Duration (μs)";
+		String EXCEPTION = "Exception";
+		String MESSAGE = "Message";
+		String CREATED = "Created";
 
 		/**
 		 * @return the name of the application

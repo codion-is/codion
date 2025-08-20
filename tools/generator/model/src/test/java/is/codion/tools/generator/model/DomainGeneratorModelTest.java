@@ -34,7 +34,7 @@ public final class DomainGeneratorModelTest {
 	@Test
 	void petstore() {
 		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
-		model.schemaModel().sort().ascending(SchemaColumns.Id.SCHEMA);
+		model.schemaModel().sort().ascending(SchemaColumns.SCHEMA);
 		model.schemaModel().items().refresh();
 		model.schemaModel().selection().items().set(row -> row.schema().equals("PETSTORE"));
 		model.populateSelected(s -> {});
@@ -47,7 +47,7 @@ public final class DomainGeneratorModelTest {
 	@Test
 	void chinook() {
 		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
-		model.schemaModel().sort().ascending(SchemaColumns.Id.SCHEMA);
+		model.schemaModel().sort().ascending(SchemaColumns.SCHEMA);
 		model.schemaModel().items().refresh();
 		model.schemaModel().selection().items().set(row -> row.schema().equals("CHINOOK"));
 		model.populateSelected(s -> {});
@@ -60,7 +60,7 @@ public final class DomainGeneratorModelTest {
 	@Test
 	void world() {
 		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
-		model.schemaModel().sort().ascending(SchemaColumns.Id.SCHEMA);
+		model.schemaModel().sort().ascending(SchemaColumns.SCHEMA);
 		model.schemaModel().items().refresh();
 		model.schemaModel().selection().items().set(row -> row.schema().equals("WORLD"));
 		model.populateSelected(s -> {});
