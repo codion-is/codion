@@ -26,12 +26,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -100,9 +100,14 @@ public abstract class DefaultEntities implements Entities, Serializable {
 
 	@Override
 	public final <T> List<Entity.Key> primaryKeys(EntityType entityType, T... values) {
+		return primaryKeys(entityType, asList(values));
+	}
+
+	@Override
+	public <T> List<Entity.Key> primaryKeys(EntityType entityType, Collection<T> values) {
 		EntityDefinition definition = definition(entityType);
 
-		return Arrays.stream(requireNonNull(values))
+		return requireNonNull(values).stream()
 						.map(definition::primaryKey)
 						.collect(toList());
 	}

@@ -7,6 +7,8 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - FilterTable now automatically creates columns, Builder.columns() now allows column builder configuration.
 - FilterTableColumn can no longer be instantiated outside FilterTable, Builder.build() removed, related refactoring.
+### is.codion.framework.domain
+- Entities.primaryKeys() overloaded with Collection.
 
 ## 0.18.45
 ### is.codion.common.core

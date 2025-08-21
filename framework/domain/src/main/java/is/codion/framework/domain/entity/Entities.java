@@ -209,4 +209,22 @@ public interface Entities {
 	 * @throws NullPointerException in case entityType or values is null
 	 */
 	<T> List<Entity.Key> primaryKeys(EntityType entityType, T... values);
+
+	/**
+	 * Creates new {@link Entity.Key} instances of the given entityType, initialised with the given values
+	 * {@snippet :
+	 * Entities entities = domain.entities();
+	 *
+	 * // Create multiple keys at once
+	 * List<Entity.Key> customerKeys = entities.primaryKeys(Customer.TYPE, List.of(1, 2, 3, 4, 5));
+	 *}
+	 * @param entityType the entityType
+	 * @param values the key values, assumes a single value key
+	 * @param <T> the key value type
+	 * @return new {@link Entity.Key} instances
+	 * @throws IllegalStateException in case the given primary key is a composite key
+	 * @throws IllegalArgumentException in case any of the values is not of the correct type
+	 * @throws NullPointerException in case entityType or values is null
+	 */
+	<T> List<Entity.Key> primaryKeys(EntityType entityType, Collection<T> values);
 }
