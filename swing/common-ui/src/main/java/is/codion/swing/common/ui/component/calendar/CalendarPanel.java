@@ -786,7 +786,7 @@ public final class CalendarPanel extends JPanel {
 		YearMonth previousMonth = YearMonth.of(yearValue.getOrThrow(), monthValue.getOrThrow()).minusMonths(1);
 		int previousMonthLength = previousMonth.lengthOfMonth();
 		for (int i = dayOfWeekColumn - 1; i >= 0; i--) {
-			dayGridPanel.add(new FillerLabel(previousMonth.getMonth(), previousMonthLength - i));
+			dayGridPanel.add(new FillerLabel(LocalDate.of(previousMonth.getYear(), previousMonth.getMonth(), previousMonthLength - i)));
 		}
 		int counter = dayOfWeekColumn;
 		YearMonth yearMonth = YearMonth.of(yearValue.getOrThrow(), monthValue.getOrThrow());
@@ -797,7 +797,7 @@ public final class CalendarPanel extends JPanel {
 		YearMonth nextMonth = yearMonth.plusMonths(1);
 		int nextMonthDay = 1;
 		while (counter++ < DAY_GRID_CELLS) {
-			dayGridPanel.add(new FillerLabel(nextMonth.getMonth(), nextMonthDay++));
+			dayGridPanel.add(new FillerLabel(LocalDate.of(nextMonth.getYear(), nextMonth.getMonth(), nextMonthDay++)));
 		}
 		requestInputFocus();
 		validate();
@@ -1078,13 +1078,11 @@ public final class CalendarPanel extends JPanel {
 
 	private final class FillerLabel extends JLabel {
 
-		private final Month month;
-		private final int day;
+		private final LocalDate localDate;
 
-		private FillerLabel(Month month, int day) {
-			super(String.valueOf(day));
-			this.month = month;
-			this.day = day;
+		private FillerLabel(LocalDate localDate) {
+			super(String.valueOf(localDate.getDayOfMonth()));
+			this.localDate = localDate;
 			setEnabled(false);
 			setHorizontalAlignment(SwingConstants.CENTER);
 			setBorder(createEtchedBorder());
@@ -1096,8 +1094,9 @@ public final class CalendarPanel extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (enabledState.is()) {
-					monthValue.set(month);
-					dayValue.set(day);
+					yearValue.set(localDate.getYear());
+					monthValue.set(localDate.getMonth());
+					dayValue.set(localDate.getDayOfMonth());
 				}
 			}
 		}
