@@ -18,8 +18,6 @@
  */
 package is.codion.demos.chinook.model;
 
-import is.codion.common.event.Event;
-import is.codion.common.observer.Observer;
 import is.codion.demos.chinook.domain.api.Chinook.Invoice;
 import is.codion.demos.chinook.domain.api.Chinook.InvoiceLine;
 import is.codion.demos.chinook.domain.api.Chinook.Track;
@@ -36,16 +34,10 @@ import static is.codion.framework.domain.entity.Entity.primaryKeys;
 
 public final class InvoiceLineEditModel extends SwingEntityEditModel {
 
-	private final Event<Collection<Entity>> totalsUpdatedEvent = Event.event();
-
 	public InvoiceLineEditModel(EntityConnectionProvider connectionProvider) {
 		super(InvoiceLine.TYPE, connectionProvider);
 		// We populate the unit price when the track is edited
 		editor().value(InvoiceLine.TRACK_FK).edited().addConsumer(this::setUnitPrice);
-	}
-
-	Observer<Collection<Entity>> totalsUpdated() {
-		return totalsUpdatedEvent.observer();
 	}
 
 	@Override
@@ -73,13 +65,11 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 		editor().value(InvoiceLine.UNITPRICE).set(track == null ? null : track.get(Track.UNITPRICE));
 	}
 
-	private Collection<Entity> updateTotals(Collection<Entity> invoiceLines, EntityConnection connection) {
+	private static Collection<Entity> updateTotals(Collection<Entity> invoiceLines, EntityConnection connection) {
 		// Get the IDs of the invoices that need their totals updated
 		Collection<Long> invoiceIds = distinct(InvoiceLine.INVOICE_ID, invoiceLines);
-		// Execute the UPDATE_TOTALS function, which returns the updated invoices
-		Collection<Entity> updatedInvoices = connection.execute(Invoice.UPDATE_TOTALS, invoiceIds);
-		// Trigger the update totals event with the updated invoices, see InvoiceModel
-		totalsUpdatedEvent.accept(updatedInvoices);
+		// Execute the UPDATE_TOTALS procedure
+		connection.execute(Invoice.UPDATE_TOTALS, invoiceIds);
 
 		return invoiceLines;
 	}

@@ -19,6 +19,7 @@
 package is.codion.demos.chinook.domain.api;
 
 import is.codion.common.db.operation.FunctionType;
+import is.codion.common.db.operation.ProcedureType;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.DefaultEntityValidator;
@@ -52,6 +53,7 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import static is.codion.common.db.operation.FunctionType.functionType;
+import static is.codion.common.db.operation.ProcedureType.procedureType;
 import static is.codion.framework.domain.DomainType.domainType;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
@@ -202,7 +204,7 @@ public interface Chinook {
 
 		ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
 
-		FunctionType<EntityConnection, Collection<Long>, Collection<Entity>> UPDATE_TOTALS = functionType("chinook.update_totals");
+		ProcedureType<EntityConnection, Collection<Long>> UPDATE_TOTALS = procedureType("chinook.update_totals");
 
 		ValueSupplier<LocalDate> DATE_DEFAULT_VALUE = LocalDate::now;
 	}

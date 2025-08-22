@@ -21,6 +21,7 @@ package is.codion.demos.chinook.domain;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.operation.DatabaseFunction;
+import is.codion.common.db.operation.DatabaseProcedure;
 import is.codion.common.db.result.ResultPacker;
 import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.demos.chinook.domain.api.Chinook;
@@ -59,9 +60,9 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 		add(artist(), album(), employee(), customer(), genre(), preferences(), mediaType(),
 						track(), invoice(), invoiceLine(), playlist(), playlistTrack());
 		add(Customer.REPORT, classPathReport(ChinookImpl.class, "customer_report.jasper"));
-		add(Track.RAISE_PRICE, new RaisePriceFunction());
-		add(Invoice.UPDATE_TOTALS, new UpdateTotalsFunction());
-		add(Playlist.RANDOM_PLAYLIST, new CreateRandomPlaylistFunction(entities()));
+		add(Track.RAISE_PRICE, new RaisePrice());
+		add(Invoice.UPDATE_TOTALS, new UpdateTotals());
+		add(Playlist.RANDOM_PLAYLIST, new CreateRandomPlaylist(entities()));
 	}
 
 	@Override
@@ -534,18 +535,18 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 		}
 	}
 
-	private static final class UpdateTotalsFunction implements DatabaseFunction<EntityConnection, Collection<Long>, Collection<Entity>> {
+	private static final class UpdateTotals implements DatabaseProcedure<EntityConnection, Collection<Long>> {
 
 		@Override
-		public Collection<Entity> execute(EntityConnection connection,
-																			Collection<Long> invoiceIds) {
+		public void execute(EntityConnection connection,
+												Collection<Long> invoiceIds) {
 			Collection<Entity> invoices =
 							connection.select(where(Invoice.ID.in(invoiceIds))
 											.forUpdate()
 											.build());
 
-			return connection.updateSelect(invoices.stream()
-							.map(UpdateTotalsFunction::updateTotal)
+			connection.update(invoices.stream()
+							.map(UpdateTotals::updateTotal)
 							.filter(Entity::modified)
 							.toList());
 		}
@@ -557,11 +558,11 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 		}
 	}
 
-	private static final class CreateRandomPlaylistFunction implements DatabaseFunction<EntityConnection, RandomPlaylistParameters, Entity> {
+	private static final class CreateRandomPlaylist implements DatabaseFunction<EntityConnection, RandomPlaylistParameters, Entity> {
 
 		private final Entities entities;
 
-		private CreateRandomPlaylistFunction(Entities entities) {
+		private CreateRandomPlaylist(Entities entities) {
 			this.entities = entities;
 		}
 
@@ -611,7 +612,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 		}
 	}
 
-	private static final class RaisePriceFunction implements DatabaseFunction<EntityConnection, RaisePriceParameters, Collection<Entity>> {
+	private static final class RaisePrice implements DatabaseFunction<EntityConnection, RaisePriceParameters, Collection<Entity>> {
 
 		@Override
 		public Collection<Entity> execute(EntityConnection entityConnection,

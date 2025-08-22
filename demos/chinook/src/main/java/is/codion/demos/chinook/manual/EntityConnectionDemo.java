@@ -365,9 +365,6 @@ public final class EntityConnectionDemo {
 						connection.execute(Track.RAISE_PRICE,
 										new RaisePriceParameters(trackIds, priceIncrease));
 
-		Collection<Entity> updatedInvoices =
-						connection.execute(Invoice.UPDATE_TOTALS, List.of(1234L, 3412L));
-
 		String playlistName = "Random playlist";
 		int numberOfTracks = 100;
 		Collection<Entity> playlistGenres = connection.select(
@@ -376,6 +373,14 @@ public final class EntityConnectionDemo {
 		Entity playlist = connection.execute(Playlist.RANDOM_PLAYLIST,
 						new RandomPlaylistParameters(playlistName, numberOfTracks, playlistGenres));
 		// end::function[]
+	}
+
+	static void procedure(EntityConnectionProvider connectionProvider) {
+		// tag::procedure[]
+		EntityConnection connection = connectionProvider.connection();
+
+		connection.execute(Invoice.UPDATE_TOTALS, List.of(1234L, 3412L));
+		// end::procedure[]
 	}
 
 	static void report(EntityConnectionProvider connectionProvider) {

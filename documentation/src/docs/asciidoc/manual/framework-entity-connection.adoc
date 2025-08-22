@@ -287,6 +287,11 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDem
 ** {url-entity-connection}#execute{opar}is.codion.common.db.operation.ProcedureType{cpar}[execute(ProcedureType procedureType)]
 ** {url-entity-connection}#execute{opar}is.codion.common.db.operation.ProcedureType{comma}T{cpar}[execute(ProcedureType procedureType, T argument)]
 
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=procedure]
+----
+
 == Reporting
 
 === report
