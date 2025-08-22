@@ -107,7 +107,6 @@ import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.framework.ui.EntityTableColumns.entityTableColumns;
 import static is.codion.swing.framework.ui.component.EntitySearchField.ControlKeys.ADD;
 import static is.codion.swing.framework.ui.component.EntitySearchField.ControlKeys.EDIT;
 import static is.codion.swing.framework.ui.component.EntitySearchField.SearchIndicator.WAIT_CURSOR;
@@ -938,7 +937,6 @@ public final class EntitySearchField extends HintTextField {
 
 			FilterTable<Entity, Attribute<?>> filterTable = FilterTable.builder()
 							.model(tableModel)
-							.columns(entityTableColumns(tableModel.entityDefinition()))
 							.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 							.cellRendererFactory(EntityTableCellRenderer.factory())
 							.selectionMode(searchField.singleSelection() ?

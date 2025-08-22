@@ -137,7 +137,6 @@ import static is.codion.swing.common.ui.component.table.FilterTableConditionPane
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.framework.ui.EntityDialogs.*;
-import static is.codion.swing.framework.ui.EntityTableColumns.entityTableColumns;
 import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.*;
 import static is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
@@ -2237,7 +2236,6 @@ public class EntityTablePanel extends JPanel {
 			this.entityDefinition = tablePanel.tableModel.entityDefinition();
 			this.tableBuilder = FilterTable.builder()
 							.model(tablePanel.tableModel)
-							.columns(entityTableColumns(entityDefinition))
 							.summaryValuesFactory(new EntitySummaryValuesFactory(entityDefinition, tablePanel.tableModel))
 							.cellRendererFactory(EntityTableCellRenderer.factory())
 							.cellEditorFactory(new EntityTableCellEditorFactory(tablePanel.tableModel.editModel()))

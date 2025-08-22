@@ -1051,8 +1051,10 @@ public final class FilterTable<R, C> extends JTable {
 		List<C> identifiers = tableColumns.identifiers();
 		List<FilterTableColumn<C>> columns = new ArrayList<>(identifiers.size());
 		for (int i = 0; i < identifiers.size(); i++) {
-			DefaultFilterTableColumnBuilder<C> builder = new DefaultFilterTableColumnBuilder<>(identifiers.get(i), i);
-			builder.headerValue(tableColumns.caption(identifiers.get(i)));
+			C identifier = identifiers.get(i);
+			DefaultFilterTableColumnBuilder<C> builder = new DefaultFilterTableColumnBuilder<>(identifier, i);
+			builder.headerValue(tableColumns.caption(identifier));
+			tableColumns.description(identifier).ifPresent(builder::toolTipText);
 			configure.accept(builder);
 			columns.add(builder.build());
 		}

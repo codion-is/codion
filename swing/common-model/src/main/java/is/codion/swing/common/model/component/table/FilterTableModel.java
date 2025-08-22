@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -243,6 +244,17 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		 */
 		default String caption(C identifier) {
 			return requireNonNull(identifier).toString();
+		}
+
+		/**
+		 * The default implementation returns an empty {@link Optional}.
+		 * @param identifier the column identifier
+		 * @return the description for the given column
+		 */
+		default Optional<String> description(C identifier) {
+			requireNonNull(identifier);
+
+			return Optional.empty();
 		}
 
 		/**

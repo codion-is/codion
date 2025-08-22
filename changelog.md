@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.46
 ### is.codion.swing.common.model
 - FilterTableModel.TableColumns.caption() added.
+- FilterTableModel.TableColumns.description() added.
 ### is.codion.swing.common.ui
 - FilterTable now automatically creates columns, Builder.columns() now allows column builder configuration.
 - FilterTableColumn can no longer be instantiated outside FilterTable, Builder.build() removed, related refactoring.
@@ -12,6 +13,8 @@ Codion Change Log
 ### is.codion.framework.model
 - AbstractEntityEditModel.afterInsertUpdateOrDelete() now includes the entities involved, related refactoring.
 - EntityEditModel.events() now takes entityType parameter, related refactoring.
+### is.codion.framework.ui
+- EntityTableColumns removed.
 
 ## 0.18.45
 ### is.codion.common.core
