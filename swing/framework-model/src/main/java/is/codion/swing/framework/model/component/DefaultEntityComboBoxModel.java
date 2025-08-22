@@ -96,9 +96,9 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 						.build();
 		this.orderBy = builder.orderBy;
 		if (builder.editEvents) {
-			events().inserted(entityDefinition.type()).addWeakConsumer(insertListener);
-			events().updated(entityDefinition.type()).addWeakConsumer(updateListener);
-			events().deleted(entityDefinition.type()).addWeakConsumer(deleteListener);
+			events(entityDefinition.type()).inserted().addWeakConsumer(insertListener);
+			events(entityDefinition.type()).updated().addWeakConsumer(updateListener);
+			events(entityDefinition.type()).deleted().addWeakConsumer(deleteListener);
 		}
 	}
 

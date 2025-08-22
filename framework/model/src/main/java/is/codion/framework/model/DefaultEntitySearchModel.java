@@ -92,8 +92,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 						.collect(toMap(Function.identity(), column -> new DefaultSettings())));
 		this.limit = Value.nullable(builder.limit);
 		if (builder.editEvents) {
-			events().updated(entityDefinition.type()).addWeakConsumer(updateListener);
-			events().deleted(entityDefinition.type()).addWeakConsumer(deleteListener);
+			events(entityDefinition.type()).updated().addWeakConsumer(updateListener);
+			events(entityDefinition.type()).deleted().addWeakConsumer(deleteListener);
 		}
 	}
 

@@ -93,9 +93,9 @@ public final class AbstractEntityEditModelTest {
 		Consumer<Map<Entity, Entity>> updateListener = updated -> updateEvents.incrementAndGet();
 		Consumer<Collection<Entity>> deleteListener = deleted -> deleteEvents.incrementAndGet();
 
-		events().inserted(Employee.TYPE).addWeakConsumer(insertListener);
-		events().updated(Employee.TYPE).addWeakConsumer(updateListener);
-		events().deleted(Employee.TYPE).addWeakConsumer(deleteListener);
+		events(Employee.TYPE).inserted().addWeakConsumer(insertListener);
+		events(Employee.TYPE).updated().addWeakConsumer(updateListener);
+		events(Employee.TYPE).deleted().addWeakConsumer(deleteListener);
 
 		employeeEditModel.editEvents().set(true);
 
@@ -117,9 +117,9 @@ public final class AbstractEntityEditModelTest {
 			connection.rollbackTransaction();
 		}
 
-		events().inserted(Employee.TYPE).removeWeakConsumer(insertListener);
-		events().updated(Employee.TYPE).removeWeakConsumer(updateListener);
-		events().deleted(Employee.TYPE).removeWeakConsumer(deleteListener);
+		events(Employee.TYPE).inserted().removeWeakConsumer(insertListener);
+		events(Employee.TYPE).updated().removeWeakConsumer(updateListener);
+		events(Employee.TYPE).deleted().removeWeakConsumer(deleteListener);
 	}
 
 	@Test

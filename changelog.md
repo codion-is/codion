@@ -11,6 +11,7 @@ Codion Change Log
 - Entities.primaryKeys() overloaded with Collection.
 ### is.codion.framework.model
 - AbstractEntityEditModel.afterInsertUpdateOrDelete() now includes the entities involved, related refactoring.
+- EntityEditModel.events() now takes entityType parameter, related refactoring.
 
 ## 0.18.45
 ### is.codion.common.core
