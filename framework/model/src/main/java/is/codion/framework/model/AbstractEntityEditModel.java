@@ -47,7 +47,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 import static is.codion.framework.domain.entity.Entity.groupByType;
-import static is.codion.framework.model.EntityEditModel.events;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.groupingBy;
@@ -60,7 +59,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityEditModel.class);
 
-	static final EditEvents EVENTS = new DefaultEditEvents();
+	static final DefaultEditEvents EVENTS = new DefaultEditEvents();
 
 	private final EntityDefinition entityDefinition;
 	private final EntityConnectionProvider connectionProvider;
@@ -284,7 +283,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final Observer<?> afterInsertUpdateOrDelete() {
+	public final Observer<Collection<Entity>> afterInsertUpdateOrDelete() {
 		return events.afterInsertUpdateOrDelete.observer();
 	}
 
@@ -390,7 +389,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	 * @see #afterInsert()
 	 */
 	protected final void notifyAfterInsert(Collection<Entity> insertedEntities) {
-		events.afterInsert.accept(requireNonNull(insertedEntities));
+		events.notifyInserted(requireNonNull(insertedEntities));
 	}
 
 	/**
@@ -408,7 +407,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	 * @see #afterUpdate()
 	 */
 	protected final void notifyAfterUpdate(Map<Entity, Entity> updatedEntities) {
-		events.afterUpdate.accept(requireNonNull(updatedEntities));
+		events.notifyUpdated(requireNonNull(updatedEntities));
 	}
 
 	/**
@@ -426,7 +425,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	 * @see #afterDelete()
 	 */
 	protected final void notifyAfterDelete(Collection<Entity> deletedEntities) {
-		events.afterDelete.accept(requireNonNull(deletedEntities));
+		events.notifyDeleted(requireNonNull(deletedEntities));
 	}
 
 	/**
@@ -438,15 +437,15 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	private static Map<Entity, Entity> originalEntityMap(Collection<Entity> entitiesBeforeUpdate,
 																											 Collection<Entity> entitiesAfterUpdate) {
 		List<Entity> entitiesAfterUpdateCopy = new ArrayList<>(entitiesAfterUpdate);
-		Map<Entity, @Nullable Entity> keyMap = new HashMap<>(entitiesBeforeUpdate.size());
+		Map<Entity, Entity> entityMap = new HashMap<>(entitiesBeforeUpdate.size());
 		for (Entity entity : entitiesBeforeUpdate) {
-			keyMap.put(entity.immutable(), findAndRemove(entity.primaryKey(), entitiesAfterUpdateCopy.listIterator()));
+			entityMap.put(entity.immutable(), findAndRemove(entity.primaryKey(), entitiesAfterUpdateCopy.listIterator()));
 		}
 
-		return unmodifiableMap(keyMap);
+		return unmodifiableMap(entityMap);
 	}
 
-	private static @Nullable Entity findAndRemove(Entity.Key primaryKey, ListIterator<Entity> iterator) {
+	private static Entity findAndRemove(Entity.Key primaryKey, ListIterator<Entity> iterator) {
 		while (iterator.hasNext()) {
 			Entity current = iterator.next();
 			if (current.primaryKey().equals(primaryKey)) {
@@ -456,7 +455,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			}
 		}
 
-		return null;
+		throw new IllegalStateException("Updated entity not found");
 	}
 
 	private void addEditListeners() {
@@ -464,9 +463,9 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 						.map(ForeignKey::referencedType)
 						.distinct()
 						.forEach(entityType -> {
-							events().inserted(entityType).addWeakConsumer(insertListener);
-							events().updated(entityType).addWeakConsumer(updateListener);
-							events().deleted(entityType).addWeakConsumer(deleteListener);
+							EVENTS.inserted(entityType).addWeakConsumer(insertListener);
+							EVENTS.updated(entityType).addWeakConsumer(updateListener);
+							EVENTS.deleted(entityType).addWeakConsumer(deleteListener);
 						});
 	}
 
@@ -680,39 +679,29 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private final Event<Map<Entity, Entity>> afterUpdate = Event.event();
 		private final Event<Collection<Entity>> beforeDelete = Event.event();
 		private final Event<Collection<Entity>> afterDelete = Event.event();
-		private final Event<?> afterInsertUpdateOrDelete = Event.event();
+		private final Event<Collection<Entity>> afterInsertUpdateOrDelete = Event.event();
 
-		private Events() {
-			afterInsert.addListener(afterInsertUpdateOrDelete);
-			afterUpdate.addListener(afterInsertUpdateOrDelete);
-			afterDelete.addListener(afterInsertUpdateOrDelete);
-			afterInsert.addConsumer(this::notifyInserted);
-			afterUpdate.addConsumer(this::notifyUpdated);
-			afterDelete.addConsumer(this::notifyDeleted);
-		}
-
-		private void notifyInserted(Collection<Entity> insertedEntities) {
+		private void notifyInserted(Collection<Entity> inserted) {
+			afterInsert.accept(inserted);
+			afterInsertUpdateOrDelete.accept(inserted);
 			if (states.editEvents.is()) {
-				groupByType(insertedEntities).forEach((entityType, entities) ->
-								events().inserted(entityType).accept(entities));
+				EVENTS.notifyInserted(inserted);
 			}
 		}
 
-		private void notifyUpdated(Map<Entity, Entity> updatedEntities) {
+		private void notifyUpdated(Map<Entity, Entity> updated) {
+			afterUpdate.accept(updated);
+			afterInsertUpdateOrDelete.accept(updated.values());
 			if (states.editEvents.is()) {
-				updatedEntities.entrySet()
-								.stream()
-								.collect(groupingBy(entry -> entry.getKey().type(), LinkedHashMap::new,
-												toMap(Map.Entry::getKey, Map.Entry::getValue)))
-								.forEach((entityType, entities) ->
-												events().updated(entityType).accept(entities));
+				EVENTS.notifyUpdated(updated);
 			}
 		}
 
-		private void notifyDeleted(Collection<Entity> deletedEntities) {
+		private void notifyDeleted(Collection<Entity> deleted) {
+			afterDelete.accept(deleted);
+			afterInsertUpdateOrDelete.accept(deleted);
 			if (states.editEvents.is()) {
-				groupByType(deletedEntities).forEach((entityType, entities) ->
-								events().deleted(entityType).accept(entities));
+				EVENTS.notifyDeleted(deleted);
 			}
 		}
 	}
@@ -817,6 +806,25 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		@Override
 		public EditEvent<Collection<Entity>> deleted(EntityType entityType) {
 			return deleteEvents.computeIfAbsent(entityType, k -> new DefaultEntityEditEvent<>());
+		}
+
+		private void notifyInserted(Collection<Entity> inserted) {
+				groupByType(inserted).forEach((entityType, entities) ->
+								inserted(entityType).accept(entities));
+		}
+
+		private void notifyUpdated(Map<Entity, Entity> updated) {
+			updated.entrySet()
+								.stream()
+								.collect(groupingBy(entry -> entry.getKey().type(), LinkedHashMap::new,
+												toMap(Map.Entry::getKey, Map.Entry::getValue)))
+								.forEach((entityType, entities) ->
+												updated(entityType).accept(entities));
+		}
+
+		private void notifyDeleted(Collection<Entity> deleted) {
+			groupByType(deleted).forEach((entityType, entities) ->
+								deleted(entityType).accept(entities));
 		}
 	}
 

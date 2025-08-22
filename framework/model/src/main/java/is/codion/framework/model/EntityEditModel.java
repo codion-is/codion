@@ -324,7 +324,7 @@ public interface EntityEditModel {
 	Observer<Collection<Entity>> beforeUpdate();
 
 	/**
-	 * @return an observer notified after update is performed
+	 * @return an observer notified after update is performed, with the updated entities, mapped to their state before the update
 	 */
 	Observer<Map<Entity, Entity>> afterUpdate();
 
@@ -341,7 +341,7 @@ public interface EntityEditModel {
 	/**
 	 * @return an observer notified each time one or more entities have been inserted, updated or deleted via this model
 	 */
-	Observer<?> afterInsertUpdateOrDelete();
+	Observer<Collection<Entity>> afterInsertUpdateOrDelete();
 
 	/**
 	 * <p>Applies the given value to the given entities. This method can be used by components

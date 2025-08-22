@@ -9,6 +9,8 @@ Codion Change Log
 - FilterTableColumn can no longer be instantiated outside FilterTable, Builder.build() removed, related refactoring.
 ### is.codion.framework.domain
 - Entities.primaryKeys() overloaded with Collection.
+### is.codion.framework.model
+- AbstractEntityEditModel.afterInsertUpdateOrDelete() now includes the entities involved, related refactoring.
 
 ## 0.18.45
 ### is.codion.common.core
