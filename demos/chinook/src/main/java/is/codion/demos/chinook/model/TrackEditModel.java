@@ -18,48 +18,16 @@
  */
 package is.codion.demos.chinook.model;
 
-import is.codion.common.event.Event;
-import is.codion.common.observer.Observer;
 import is.codion.demos.chinook.domain.api.Chinook.Track;
-import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
-import java.util.Collection;
-import java.util.Set;
-
-import static java.util.stream.Collectors.toSet;
-
 public final class TrackEditModel extends SwingEntityEditModel {
-
-	private final Event<Collection<Entity.Key>> ratingUpdated = Event.event();
 
 	public TrackEditModel(EntityConnectionProvider connectionProvider) {
 		super(Track.TYPE, connectionProvider);
 		// Creates and populates the combo box models for the given foreign keys, otherwise this
 		// would happen when the associated combo boxes are created, as the UI is initialized.
 		initializeComboBoxModels(Track.MEDIATYPE_FK, Track.GENRE_FK);
-	}
-
-	Observer<Collection<Entity.Key>> ratingUpdated() {
-		return ratingUpdated.observer();
-	}
-
-	@Override
-	protected Collection<Entity> update(Collection<Entity> entities, EntityConnection connection) {
-		// Find tracks which rating has been modified and collect the
-		// album keys, in order to propagate to the ratingUpdated event
-		Set<Entity.Key> albumKeys = entities.stream()
-						.filter(entity -> entity.type().equals(Track.TYPE))
-						.filter(track -> track.modified(Track.RATING))
-						.map(track -> track.key(Track.ALBUM_FK))
-						.collect(toSet());
-		Collection<Entity> updated = super.update(entities, connection);
-		if (!albumKeys.isEmpty()) {
-			ratingUpdated.accept(albumKeys);
-		}
-
-		return updated;
 	}
 }

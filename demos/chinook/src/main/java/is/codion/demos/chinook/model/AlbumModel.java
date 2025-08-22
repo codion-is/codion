@@ -21,7 +21,13 @@ package is.codion.demos.chinook.model;
 import is.codion.demos.chinook.domain.api.Chinook.Album;
 import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityModel;
+
+import java.util.Collection;
+import java.util.Map;
+
+import static java.util.stream.Collectors.toSet;
 
 public final class AlbumModel extends SwingEntityModel {
 
@@ -31,7 +37,20 @@ public final class AlbumModel extends SwingEntityModel {
 		detailModels().add(trackModel);
 		TrackEditModel trackEditModel = (TrackEditModel) trackModel.editModel();
 		trackEditModel.initializeComboBoxModels(Track.MEDIATYPE_FK, Track.GENRE_FK);
-		// We refresh albums which rating may have changed, due to a track rating being updated
-		trackEditModel.ratingUpdated().addConsumer(tableModel()::refresh);
+		// We refresh albums when tracks are modified, to display the updated rating
+		trackEditModel.afterInsert().addConsumer(this::tracksInsertedOrDeleted);
+		trackEditModel.afterDelete().addConsumer(this::tracksInsertedOrDeleted);
+		trackEditModel.afterUpdate().addConsumer(this::tracksUpdated);
+	}
+
+	private void tracksInsertedOrDeleted(Collection<Entity> tracks) {
+		tableModel().refresh(Entity.keys(Track.ALBUM_FK, tracks));
+	}
+
+	private void tracksUpdated(Map<Entity, Entity> tracks) {
+		tableModel().refresh(tracks.keySet().stream()
+						.filter(track -> track.modified(Track.RATING))
+						.map(track -> track.key(Track.ALBUM_FK))
+						.collect(toSet()));
 	}
 }
