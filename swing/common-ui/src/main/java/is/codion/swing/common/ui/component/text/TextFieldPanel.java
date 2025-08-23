@@ -161,7 +161,7 @@ public final class TextFieldPanel extends JPanel {
 	/**
 	 * A builder for {@link TextFieldPanel}.
 	 */
-	public interface Builder extends ComponentValueBuilder<String, TextFieldPanel, Builder> {
+	public interface Builder extends ComponentValueBuilder<TextFieldPanel, String, Builder> {
 
 		/**
 		 * @param updateOn specifies when the underlying value should be updated
@@ -300,11 +300,11 @@ public final class TextFieldPanel extends JPanel {
 						.show();
 	}
 
-	private static final class DefaultBuilder extends AbstractComponentValueBuilder<String, TextFieldPanel, Builder> implements Builder {
+	private static final class DefaultBuilder extends AbstractComponentValueBuilder<TextFieldPanel, String, Builder> implements Builder {
 
 		private static final Dimension DEFAULT_TEXT_AREA_SIZE = new Dimension(500, 300);
 
-		private final TextFieldBuilder<String, JTextField, ?> textFieldBuilder = new DefaultTextFieldBuilder<>(String.class);
+		private final TextFieldBuilder<JTextField, String, ?> textFieldBuilder = new DefaultTextFieldBuilder<>(String.class);
 		private final ControlMap controlMap = controlMap(ControlKeys.class);
 
 		private boolean buttonFocusable;

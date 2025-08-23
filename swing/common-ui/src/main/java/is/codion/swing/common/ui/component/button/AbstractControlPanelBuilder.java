@@ -110,7 +110,7 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 	}
 
 	protected final ButtonBuilder<?, ?, ?> buttonBuilder() {
-		ButtonBuilder<Void, JButton, ?> buttonBuilder = set(ButtonBuilder.builder());
+		ButtonBuilder<JButton, Void, ?> buttonBuilder = set(ButtonBuilder.builder());
 		button.accept(buttonBuilder);
 
 		return buttonBuilder;

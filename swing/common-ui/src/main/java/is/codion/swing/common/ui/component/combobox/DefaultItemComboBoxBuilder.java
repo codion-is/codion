@@ -39,7 +39,7 @@ import java.util.function.Consumer;
 import static is.codion.swing.common.ui.component.text.TextComponents.preferredTextFieldHeight;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultItemComboBoxBuilder<T> extends AbstractComponentValueBuilder<T, JComboBox<Item<T>>, ItemComboBoxBuilder<T>>
+final class DefaultItemComboBoxBuilder<T> extends AbstractComponentValueBuilder<JComboBox<Item<T>>, T, ItemComboBoxBuilder<T>>
 				implements ItemComboBoxBuilder<T> {
 
 	static final BuilderFactory FACTORY = new DefaultBuilderFactory();

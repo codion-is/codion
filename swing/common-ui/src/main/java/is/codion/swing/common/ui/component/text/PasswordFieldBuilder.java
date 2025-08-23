@@ -23,7 +23,7 @@ import javax.swing.JPasswordField;
 /**
  * Builds a JPasswordField.
  */
-public interface PasswordFieldBuilder extends TextFieldBuilder<String, JPasswordField, PasswordFieldBuilder> {
+public interface PasswordFieldBuilder extends TextFieldBuilder<JPasswordField, String, PasswordFieldBuilder> {
 
 	/**
 	 * @param echoChar the echo char

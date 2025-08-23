@@ -31,8 +31,8 @@ import java.util.function.Consumer;
 /**
  * A builder for text components.
  */
-public interface TextComponentBuilder<T, C extends JTextComponent, B extends TextComponentBuilder<T, C, B>>
-				extends ComponentValueBuilder<T, C, B> {
+public interface TextComponentBuilder<C extends JTextComponent, T, B extends TextComponentBuilder<C, T, B>>
+				extends ComponentValueBuilder<C, T, B> {
 
 	/**
 	 * Specifies the possible initial caret positions in case text component has an initial value.

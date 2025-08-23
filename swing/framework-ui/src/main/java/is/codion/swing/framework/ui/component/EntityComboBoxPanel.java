@@ -85,7 +85,7 @@ public final class EntityComboBoxPanel extends JPanel {
 	/**
 	 * A builder for a {@link EntityComboBoxPanel}
 	 */
-	public interface Builder extends ComponentValueBuilder<Entity, EntityComboBoxPanel, Builder> {
+	public interface Builder extends ComponentValueBuilder<EntityComboBoxPanel, Entity, Builder> {
 
 		/**
 		 * Provides a {@link EditPanelStep}
@@ -198,7 +198,7 @@ public final class EntityComboBoxPanel extends JPanel {
 		}
 	}
 
-	private static final class DefaultBuilder extends AbstractComponentValueBuilder<Entity, EntityComboBoxPanel, Builder> implements Builder {
+	private static final class DefaultBuilder extends AbstractComponentValueBuilder<EntityComboBoxPanel, Entity, Builder> implements Builder {
 
 		private static final ModelStep MODEL = new DefaultModelStep();
 

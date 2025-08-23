@@ -171,7 +171,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 	private static final class DefaultComponentStep implements ComponentStep {
 
 		@Override
-		public <T> InputDialogBuilder<T> component(ComponentValueBuilder<T, ?, ?> componentBuilder) {
+		public <T> InputDialogBuilder<T> component(ComponentValueBuilder<?, T, ?> componentBuilder) {
 			return new DefaultInputDialogBuilder<>(requireNonNull(componentBuilder).buildValue());
 		}
 

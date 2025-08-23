@@ -31,7 +31,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-abstract class AbstractListBuilder<T, V, B extends ListBuilder<T, V, B>> extends AbstractComponentValueBuilder<V, FilterList<T>, B> implements ListBuilder<T, V, B> {
+abstract class AbstractListBuilder<V, T, B extends ListBuilder<V, T, B>> extends AbstractComponentValueBuilder<FilterList<T>, V, B> implements ListBuilder<V, T, B> {
 
 	private final FilterListModel<T> listModel;
 	private final List<ListSelectionListener> listSelectionListeners = new ArrayList<>();

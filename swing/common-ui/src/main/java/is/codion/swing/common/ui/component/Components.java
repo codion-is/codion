@@ -88,7 +88,7 @@ public final class Components {
 	 * @param <B> the builder type
 	 * @return a JButton builder
 	 */
-	public static <B extends ButtonBuilder<Void, JButton, B>> ButtonBuilder<Void, JButton, B> button() {
+	public static <B extends ButtonBuilder<JButton, Void, B>> ButtonBuilder<JButton, Void, B> button() {
 		return ButtonBuilder.builder();
 	}
 
@@ -227,7 +227,7 @@ public final class Components {
 	 * @param <B> the builder type
 	 * @return a JTextField builder
 	 */
-	public static <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> stringField() {
+	public static <B extends TextFieldBuilder<JTextField, String, B>> TextFieldBuilder<JTextField, String, B> stringField() {
 		return TextFieldBuilder.builder().valueClass(String.class);
 	}
 
@@ -235,7 +235,7 @@ public final class Components {
 	 * @param <B> the builder type
 	 * @return a JTextField builder
 	 */
-	public static <B extends TextFieldBuilder<Character, JTextField, B>> TextFieldBuilder<Character, JTextField, B> characterField() {
+	public static <B extends TextFieldBuilder<JTextField, Character, B>> TextFieldBuilder<JTextField, Character, B> characterField() {
 		return TextFieldBuilder.builder().valueClass(Character.class);
 	}
 

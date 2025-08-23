@@ -36,11 +36,11 @@ import java.util.function.Supplier;
  * Use {@link #build} to build a JComponent instance or {@link #buildValue()} to build a {@link ComponentValue} instance.<br>
  * The component is available via {@link ComponentValue#component()} and the associated {@link ComponentValue} instance
  * is available via the {@link #COMPONENT_VALUE} client property.
- * @param <T> the type of the value the component represents
  * @param <C> the component type
+ * @param <T> the type of the value the component represents
  * @param <B> the builder type
  */
-public interface ComponentValueBuilder<T, C extends JComponent, B extends ComponentValueBuilder<T, C, B>>
+public interface ComponentValueBuilder<C extends JComponent, T, B extends ComponentValueBuilder<C, T, B>>
 				extends ComponentBuilder<C, B>, Supplier<C> {
 
 	/**

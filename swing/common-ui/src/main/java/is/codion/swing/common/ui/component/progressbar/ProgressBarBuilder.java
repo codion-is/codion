@@ -28,7 +28,7 @@ import javax.swing.JProgressBar;
 /**
  * Builds a JProgressBar.
  */
-public interface ProgressBarBuilder extends ComponentValueBuilder<Integer, JProgressBar, ProgressBarBuilder> {
+public interface ProgressBarBuilder extends ComponentValueBuilder<JProgressBar, Integer, ProgressBarBuilder> {
 
 	/**
 	 * Note: setting the model also sets {@link #indeterminate(boolean)} to false

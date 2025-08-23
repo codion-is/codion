@@ -13,6 +13,7 @@ Codion Change Log
 - ControlIcon added along with ControlBuilder.icon(ControlIcon).
 - FrameworkIcons now ControlIcon based.
 - ComponentValue type parameters reordered.
+- ComponentValueBuilder type parameters reordered.
 ### is.codion.framework.domain
 - Entities.primaryKeys() overloaded with Collection.
 ### is.codion.framework.model

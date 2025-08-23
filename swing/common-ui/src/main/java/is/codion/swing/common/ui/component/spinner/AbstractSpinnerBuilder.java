@@ -30,7 +30,7 @@ import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
-abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends AbstractComponentValueBuilder<T, JSpinner, B>
+abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends AbstractComponentValueBuilder<JSpinner, T, B>
 				implements SpinnerBuilder<T, B> {
 
 	protected SpinnerModel spinnerModel;

@@ -30,7 +30,7 @@ import java.util.function.Supplier;
  * @param <C> the component type
  * @param <B> the builder type
  */
-public interface ToggleButtonBuilder<C extends JToggleButton, B extends ToggleButtonBuilder<C, B>> extends ButtonBuilder<Boolean, C, B> {
+public interface ToggleButtonBuilder<C extends JToggleButton, B extends ToggleButtonBuilder<C, B>> extends ButtonBuilder<C, Boolean, B> {
 
 	/**
 	 * @param toggleControl the toggle control to base this toggle button on

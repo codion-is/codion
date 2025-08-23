@@ -302,7 +302,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	 * A builder for {@link TemporalField}.
 	 * @param <T> the temporal type
 	 */
-	public interface Builder<T extends Temporal> extends TextFieldBuilder<T, TemporalField<T>, Builder<T>> {
+	public interface Builder<T extends Temporal> extends TextFieldBuilder<TemporalField<T>, T, Builder<T>> {
 
 		/**
 		 * Provides a {@link Builder}
@@ -395,7 +395,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	}
 
 	private static final class DefaultBuilder<T extends Temporal>
-					extends DefaultTextFieldBuilder<T, TemporalField<T>, Builder<T>> implements Builder<T> {
+					extends DefaultTextFieldBuilder<TemporalField<T>, T, Builder<T>> implements Builder<T> {
 
 		private static final Builder.TemporalClassStep TEMPORAL_CLASS = new DefaultTemporalClassStep();
 

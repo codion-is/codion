@@ -35,11 +35,11 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Builds a {@link JComboBox}.
- * @param <T> the value type
  * @param <C> the component type
+ * @param <T> the value type
  * @param <B> the builder type
  */
-public interface ComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> extends ComponentValueBuilder<T, C, B> {
+public interface ComboBoxBuilder<C extends JComboBox<T>, T, B extends ComboBoxBuilder<C, T, B>> extends ComponentValueBuilder<C, T, B> {
 
 	/**
 	 * Specifies whether mouse wheel scrolling is enabled in combo boxes by default.
@@ -146,7 +146,7 @@ public interface ComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBu
 		 * @param comboBoxModel the combo box model
 		 * @return a builder for a component
 		 */
-		<T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> model(ComboBoxModel<T> comboBoxModel);
+		<T, C extends JComboBox<T>, B extends ComboBoxBuilder<C, T, B>> ComboBoxBuilder<C, T, B> model(ComboBoxModel<T> comboBoxModel);
 	}
 
 	/**

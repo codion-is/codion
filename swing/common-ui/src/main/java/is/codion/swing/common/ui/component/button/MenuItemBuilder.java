@@ -23,7 +23,7 @@ import javax.swing.JMenuItem;
 /**
  * Builds a JMenuItem.
  */
-public interface MenuItemBuilder<C extends JMenuItem, B extends MenuItemBuilder<C, B>> extends ButtonBuilder<Void, C, B> {
+public interface MenuItemBuilder<C extends JMenuItem, B extends MenuItemBuilder<C, B>> extends ButtonBuilder<C, Void, B> {
 
 	/**
 	 * @param <B> the builder type

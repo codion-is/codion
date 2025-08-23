@@ -25,7 +25,7 @@ import javax.swing.JFormattedTextField;
 import java.text.ParseException;
 
 final class DefaultMaskedTextFieldBuilder
-				extends AbstractComponentValueBuilder<String, JFormattedTextField, MaskedTextFieldBuilder>
+				extends AbstractComponentValueBuilder<JFormattedTextField, String, MaskedTextFieldBuilder>
 				implements MaskedTextFieldBuilder {
 
 	private final MaskFormatterBuilder maskFormatterBuilder = MaskFormatterBuilder.builder();

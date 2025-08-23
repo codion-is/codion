@@ -37,8 +37,8 @@ import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
 
-public abstract class AbstractComponentValueBuilder<T, C extends JComponent, B extends ComponentValueBuilder<T, C, B>>
-	extends AbstractComponentBuilder<C, B> implements ComponentValueBuilder<T, C, B> {
+public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B extends ComponentValueBuilder<C, T, B>>
+	extends AbstractComponentBuilder<C, B> implements ComponentValueBuilder<C, T, B> {
 
 	private final List<Consumer<ComponentValue<C, T>>> buildConsumers = new ArrayList<>(1);
 	private final List<Value<T>> linkedValues = new ArrayList<>(1);

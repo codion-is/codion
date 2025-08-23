@@ -334,13 +334,13 @@ public class EntityEditComponentPanel extends JPanel {
 	/**
 	 * Creates a builder for text fields.
 	 * @param attribute the attribute for which to build a text field
-	 * @param <T> the value type
 	 * @param <C> the text field type
+	 * @param <T> the value type
 	 * @param <B> the builder type
 	 * @return a text field builder
 	 */
-	protected final <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> createTextField(Attribute<T> attribute) {
-		return setComponentBuilder(attribute, (TextFieldBuilder<T, C, B>) entityComponents.textField(attribute)
+	protected final <T, C extends JTextField, B extends TextFieldBuilder<C, T, B>> TextFieldBuilder<C, T, B> createTextField(Attribute<T> attribute) {
+		return setComponentBuilder(attribute, (TextFieldBuilder<C, T, B>) entityComponents.textField(attribute)
 						.columns(DEFAULT_TEXT_FIELD_COLUMNS.getOrThrow()));
 	}
 
@@ -474,12 +474,12 @@ public class EntityEditComponentPanel extends JPanel {
 	 * Creates a builder for combo boxes.
 	 * @param attribute the attribute for which to build combo box
 	 * @param comboBoxModel the combo box model
-	 * @param <T> the value type
 	 * @param <C> the component type
+	 * @param <T> the value type
 	 * @param <B> the builder type
 	 * @return a combo box builder
 	 */
-	protected final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> createComboBox(Attribute<T> attribute, ComboBoxModel<T> comboBoxModel) {
+	protected final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<C, T, B>> ComboBoxBuilder<C, T, B> createComboBox(Attribute<T> attribute, ComboBoxModel<T> comboBoxModel) {
 		return setComponentBuilder(attribute, entityComponents.comboBox(attribute, comboBoxModel));
 	}
 
@@ -506,16 +506,16 @@ public class EntityEditComponentPanel extends JPanel {
 	/**
 	 * Creates a builder for a combo boxe, containing the values of the given column.
 	 * @param column the column for which to build a combo box
-	 * @param <T> the value type
 	 * @param <C> the component type
+	 * @param <T> the value type
 	 * @param <B> the builder type
 	 * @return a combo box builder
 	 */
-	protected final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> createComboBox(Column<T> column) {
+	protected final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<C, T, B>> ComboBoxBuilder<C, T, B> createComboBox(Column<T> column) {
 		FilterComboBoxModel<T> comboBoxModel = editModel().comboBoxModel(column);
 		comboBoxModel.items().refresher().exception().addConsumer(this::onException);
 
-		return (ComboBoxBuilder<T, C, B>) setComponentBuilder(column, entityComponents.comboBox(column, comboBoxModel)
+		return (ComboBoxBuilder<C, T, B>) setComponentBuilder(column, entityComponents.comboBox(column, comboBoxModel)
 						.onSetVisible(EntityEditComponentPanel::refreshIfCleared));
 	}
 
@@ -579,7 +579,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @param <B> the builder type
 	 * @return a foreign key text field builder
 	 */
-	protected final <B extends TextFieldBuilder<Entity, JTextField, B>> TextFieldBuilder<Entity, JTextField, B> createTextField(ForeignKey foreignKey) {
+	protected final <B extends TextFieldBuilder<JTextField, Entity, B>> TextFieldBuilder<JTextField, Entity, B> createTextField(ForeignKey foreignKey) {
 		return setComponentBuilder(foreignKey, entityComponents.textField(foreignKey));
 	}
 
@@ -627,7 +627,7 @@ public class EntityEditComponentPanel extends JPanel {
 		JLabel label();
 	}
 
-	private <T, B extends ComponentValueBuilder<T, ?, ?>> B setComponentBuilder(Attribute<T> attribute, B componentBuilder) {
+	private <T, B extends ComponentValueBuilder<?, T, ?>> B setComponentBuilder(Attribute<T> attribute, B componentBuilder) {
 		requireNonNull(attribute);
 		requireNonNull(componentBuilder);
 		if (componentBuilders.containsKey(attribute) || component(attribute).optional().isPresent()) {

@@ -152,7 +152,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	 * @param <B> the builder type
 	 * @return a {@link NumberField} builder bound to the selected value
 	 */
-	public <B extends TextFieldBuilder<Integer, NumberField<Integer>, B>> TextFieldBuilder<Integer, NumberField<Integer>, B> integerSelectorField(
+	public <B extends TextFieldBuilder<NumberField<Integer>, Integer, B>> TextFieldBuilder<NumberField<Integer>, Integer, B> integerSelectorField(
 					Attribute<Integer> attribute) {
 		requireNonNull(attribute);
 		return (B) Components.integerField()
@@ -167,7 +167,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	 * @param <B> the builder type
 	 * @return a {@link NumberField} builder bound to the selected value
 	 */
-	public <B extends TextFieldBuilder<Integer, NumberField<Integer>, B>> TextFieldBuilder<Integer, NumberField<Integer>, B> integerSelectorField(
+	public <B extends TextFieldBuilder<NumberField<Integer>, Integer, B>> TextFieldBuilder<NumberField<Integer>, Integer, B> integerSelectorField(
 					ItemFinder<Entity, Integer> itemFinder) {
 		requireNonNull(itemFinder);
 		return (B) Components.integerField()
@@ -182,7 +182,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	 * @param <B> the builder type
 	 * @return a {@link JTextField} builder bound to the selected value
 	 */
-	public <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> stringSelectorField(
+	public <B extends TextFieldBuilder<JTextField, String, B>> TextFieldBuilder<JTextField, String, B> stringSelectorField(
 					Attribute<String> attribute) {
 		requireNonNull(attribute);
 		return (B) Components.stringField()
@@ -197,7 +197,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	 * @param <B> the builder type
 	 * @return a {@link JTextField} builder bound to the selected value
 	 */
-	public <B extends TextFieldBuilder<String, JTextField, B>> TextFieldBuilder<String, JTextField, B> stringSelectorField(
+	public <B extends TextFieldBuilder<JTextField, String, B>> TextFieldBuilder<JTextField, String, B> stringSelectorField(
 					ItemFinder<Entity, String> itemFinder) {
 		requireNonNull(itemFinder);
 		return (B) Components.stringField()
@@ -217,7 +217,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	 * Builds a {@link EntityComboBox} instance.
 	 * @see Builder#editPanel(Supplier)
 	 */
-	public interface Builder extends ComboBoxBuilder<Entity, EntityComboBox, Builder> {
+	public interface Builder extends ComboBoxBuilder<EntityComboBox, Entity, Builder> {
 
 		/**
 		 * Provides a {@link Builder}
@@ -281,7 +281,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		}
 	}
 
-	private static final class DefaultBuilder extends DefaultComboBoxBuilder<Entity, EntityComboBox, Builder> implements Builder {
+	private static final class DefaultBuilder extends DefaultComboBoxBuilder<EntityComboBox, Entity, Builder> implements Builder {
 
 		private static final Builder.ModelStep MODEL = new DefaultModelStep();
 

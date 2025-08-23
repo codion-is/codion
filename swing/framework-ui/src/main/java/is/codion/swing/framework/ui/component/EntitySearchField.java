@@ -318,7 +318,7 @@ public final class EntitySearchField extends HintTextField {
 	/**
 	 * Builds an entity search field.
 	 */
-	public interface Builder<T, B extends Builder<T, B>> extends ComponentValueBuilder<T, EntitySearchField, B> {
+	public interface Builder<T, B extends Builder<T, B>> extends ComponentValueBuilder<EntitySearchField, T, B> {
 
 		/**
 		 * Provides a {@link EntitySearchField.Builder.Factory}
@@ -826,7 +826,7 @@ public final class EntitySearchField extends HintTextField {
 			FilterListModel<Entity> listModel = FilterListModel.builder()
 							.<Entity>items()
 							.build();
-			ListBuilder<Entity, ?, ?> listBuilder = searchField.singleSelection() ?
+			ListBuilder<?, Entity, ?> listBuilder = searchField.singleSelection() ?
 							Components.list()
 											.model(listModel)
 											.selectedItem() :
@@ -1161,7 +1161,7 @@ public final class EntitySearchField extends HintTextField {
 	}
 
 	private abstract static class AbstractBuilder<T, B extends Builder<T, B>>
-					extends AbstractComponentValueBuilder<T, EntitySearchField, B> implements Builder<T, B> {
+					extends AbstractComponentValueBuilder<EntitySearchField, T, B> implements Builder<T, B> {
 
 		private final EntitySearchModel searchModel;
 		private final ControlMap controlMap = controlMap(ControlKeys.class);

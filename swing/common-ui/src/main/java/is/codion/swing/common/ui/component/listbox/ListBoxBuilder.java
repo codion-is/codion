@@ -32,7 +32,7 @@ import java.util.function.Function;
  * in the combo box (as opposed to the selected item)
  * @param <T> the value type
  */
-public interface ListBoxBuilder<T> extends ComponentValueBuilder<Set<T>, JComboBox<T>, ListBoxBuilder<T>> {
+public interface ListBoxBuilder<T> extends ComponentValueBuilder<JComboBox<T>, Set<T>, ListBoxBuilder<T>> {
 
 	/**
 	 * @param string provides a String to display in the list for a given value, formatted or otherwise

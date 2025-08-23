@@ -30,7 +30,7 @@ import javax.swing.JProgressBar;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultProgressBarBuilder extends AbstractComponentValueBuilder<Integer, JProgressBar, ProgressBarBuilder> implements ProgressBarBuilder {
+final class DefaultProgressBarBuilder extends AbstractComponentValueBuilder<JProgressBar, Integer, ProgressBarBuilder> implements ProgressBarBuilder {
 
 	private BoundedRangeModel boundedRangeModel = new DefaultBoundedRangeModel();
 	private boolean borderPainted;

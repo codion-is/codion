@@ -35,7 +35,7 @@ import java.util.List;
  * Builds a item combo box.
  * @param <T> the value type
  */
-public interface ItemComboBoxBuilder<T> extends ComponentValueBuilder<T, JComboBox<Item<T>>, ItemComboBoxBuilder<T>> {
+public interface ItemComboBoxBuilder<T> extends ComponentValueBuilder<JComboBox<Item<T>>, T, ItemComboBoxBuilder<T>> {
 
 	/**
 	 * @param nullable true if a null value should be added to the model if missing

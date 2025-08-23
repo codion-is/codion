@@ -27,7 +27,7 @@ import javax.swing.SwingConstants;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultSliderBuilder extends AbstractComponentValueBuilder<Integer, JSlider, SliderBuilder> implements SliderBuilder {
+final class DefaultSliderBuilder extends AbstractComponentValueBuilder<JSlider, Integer, SliderBuilder> implements SliderBuilder {
 
 	static final ModelStep MODEL = new DefaultModelStep();
 

@@ -31,11 +31,11 @@ import static is.codion.common.Configuration.booleanValue;
 
 /**
  * Builds a JTextField.
- * @param <T> the type the text field represents
  * @param <C> the text field type
+ * @param <T> the type the text field represents
  * @param <B> the builder type
  */
-public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> extends TextComponentBuilder<T, C, B> {
+public interface TextFieldBuilder<C extends JTextField, T, B extends TextFieldBuilder<C, T, B>> extends TextComponentBuilder<C, T, B> {
 
 
 	/**
@@ -104,7 +104,7 @@ public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBu
 		 * @param valueClass the value class
 		 * @return a builder for a text field
 		 */
-		<T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> valueClass(Class<T> valueClass);
+		<T, C extends JTextField, B extends TextFieldBuilder<C, T, B>> TextFieldBuilder<C, T, B> valueClass(Class<T> valueClass);
 	}
 
 	/**

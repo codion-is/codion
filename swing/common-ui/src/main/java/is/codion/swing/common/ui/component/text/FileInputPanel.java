@@ -126,7 +126,7 @@ public final class FileInputPanel extends JPanel {
 	/**
 	 * Builds a {@link FileInputPanel}
 	 */
-	public interface Builder<T> extends ComponentValueBuilder<T, FileInputPanel, Builder<T>> {
+	public interface Builder<T> extends ComponentValueBuilder<FileInputPanel, T, Builder<T>> {
 
 		/**
 		 * Note that the button caption is not used if a {@link #buttonIcon(Icon)} is specified
@@ -146,7 +146,7 @@ public final class FileInputPanel extends JPanel {
 		 * @param filePathField the file path field builder
 		 * @return this builder instance
 		 */
-		Builder<T> filePathField(Consumer<TextFieldBuilder<String, JTextField, ?>> filePathField);
+		Builder<T> filePathField(Consumer<TextFieldBuilder<JTextField, String, ?>> filePathField);
 	}
 
 	private static final class DefaultBuilderFactory implements BuilderFactory {
@@ -162,9 +162,9 @@ public final class FileInputPanel extends JPanel {
 		}
 	}
 
-	private abstract static class AbstractBuilder<T> extends AbstractComponentValueBuilder<T, FileInputPanel, Builder<T>> implements Builder<T> {
+	private abstract static class AbstractBuilder<T> extends AbstractComponentValueBuilder<FileInputPanel, T, Builder<T>> implements Builder<T> {
 
-		private final TextFieldBuilder<String, JTextField, ?> pathFieldBuilder = TextFieldBuilder.builder()
+		private final TextFieldBuilder<JTextField, String, ?> pathFieldBuilder = TextFieldBuilder.builder()
 						.valueClass(String.class)
 						.editable(false);
 
@@ -184,7 +184,7 @@ public final class FileInputPanel extends JPanel {
 		}
 
 		@Override
-		public final Builder<T> filePathField(Consumer<TextFieldBuilder<String, JTextField, ?>> filePathField) {
+		public final Builder<T> filePathField(Consumer<TextFieldBuilder<JTextField, String, ?>> filePathField) {
 			requireNonNull(filePathField).accept(pathFieldBuilder);
 			return this;
 		}

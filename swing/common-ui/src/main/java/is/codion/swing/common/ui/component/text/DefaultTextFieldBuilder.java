@@ -32,8 +32,8 @@ import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.swing.common.ui.component.text.SizedDocument.sizedDocument;
 import static java.util.Objects.requireNonNull;
 
-class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> extends AbstractTextComponentBuilder<T, C, B>
-				implements TextFieldBuilder<T, C, B> {
+class DefaultTextFieldBuilder<C extends JTextField, T, B extends TextFieldBuilder<C, T, B>> extends AbstractTextComponentBuilder<C, T, B>
+				implements TextFieldBuilder<C, T, B> {
 
 	static final ValueClassStep VALUE_CLASS = new DefaultValueClassStep();
 
@@ -139,7 +139,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
 	private static final class DefaultValueClassStep implements ValueClassStep {
 
 		@Override
-		public <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> valueClass(Class<T> valueClass) {
+		public <T, C extends JTextField, B extends TextFieldBuilder<C, T, B>> TextFieldBuilder<C, T, B> valueClass(Class<T> valueClass) {
 			return new DefaultTextFieldBuilder<>(valueClass);
 		}
 	}

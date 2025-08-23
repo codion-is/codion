@@ -41,8 +41,8 @@ import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
-abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends ButtonBuilder<T, C, B>>
-				extends AbstractComponentValueBuilder<T, C, B> implements ButtonBuilder<T, C, B> {
+abstract class AbstractButtonBuilder<C extends AbstractButton, T, B extends ButtonBuilder<C, T, B>>
+				extends AbstractComponentValueBuilder<C, T, B> implements ButtonBuilder<C, T, B> {
 
 	private static final String FONT = "Font";
 	private static final String BACKGROUND = "Background";

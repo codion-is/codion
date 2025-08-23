@@ -260,7 +260,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 	 * Builds a NumberField
 	 * @param <T> the value type
 	 */
-	public interface Builder<T extends Number> extends TextFieldBuilder<T, NumberField<T>, Builder<T>> {
+	public interface Builder<T extends Number> extends TextFieldBuilder<NumberField<T>, T, Builder<T>> {
 
 		/**
 		 * Provides a {@link Builder}
@@ -409,7 +409,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 	}
 
 	private abstract static class AbstractNumberFieldBuilder<T extends Number>
-					extends DefaultTextFieldBuilder<T, NumberField<T>, Builder<T>> implements Builder<T> {
+					extends DefaultTextFieldBuilder<NumberField<T>, T, Builder<T>> implements Builder<T> {
 
 		private static final Builder.NumberClassStep VALUE_CLASS = new DefaultNumberClassStep();
 

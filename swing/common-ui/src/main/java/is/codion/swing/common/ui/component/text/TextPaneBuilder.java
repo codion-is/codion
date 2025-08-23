@@ -26,7 +26,7 @@ import javax.swing.text.StyledDocument;
 /**
  * Builds a JTextPane.
  */
-public interface TextPaneBuilder extends TextComponentBuilder<String, JTextPane, TextPaneBuilder> {
+public interface TextPaneBuilder extends TextComponentBuilder<JTextPane, String, TextPaneBuilder> {
 
 	/**
 	 * @param autoscrolls true if autoscrolling should be enabled

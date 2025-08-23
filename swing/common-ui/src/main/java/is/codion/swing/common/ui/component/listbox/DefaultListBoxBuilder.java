@@ -48,7 +48,7 @@ import static java.util.stream.Collectors.toCollection;
 import static javax.swing.SwingConstants.CENTER;
 
 final class DefaultListBoxBuilder<T>
-				extends AbstractComponentValueBuilder<Set<T>, JComboBox<T>, ListBoxBuilder<T>>
+				extends AbstractComponentValueBuilder<JComboBox<T>, Set<T>, ListBoxBuilder<T>>
 				implements ListBoxBuilder<T> {
 
 	static final ItemValueStep ITEM = new DefaultItemValueStep();

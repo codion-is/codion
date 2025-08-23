@@ -27,7 +27,7 @@ import javax.swing.text.StyledDocument;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultTextPaneBuilder extends AbstractTextComponentBuilder<String, JTextPane, TextPaneBuilder>
+final class DefaultTextPaneBuilder extends AbstractTextComponentBuilder<JTextPane, String, TextPaneBuilder>
 				implements TextPaneBuilder {
 
 	private boolean autoscrolls = false;

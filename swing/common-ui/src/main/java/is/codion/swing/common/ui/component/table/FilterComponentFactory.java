@@ -76,54 +76,54 @@ final class FilterComponentFactory implements ComponentFactory {
 						.build();
 	}
 
-	private static <T> ComponentValueBuilder<T, ? extends JComponent, ?> createField(ConditionModel<T> conditionModel) {
+	private static <T> ComponentValueBuilder<? extends JComponent, T, ?> createField(ConditionModel<T> conditionModel) {
 		Class<T> columnClass = conditionModel.valueClass();
 		if (columnClass.equals(Boolean.class)) {
-			return (ComponentValueBuilder<T, ? extends JComponent, ?>) checkBox()
+			return (ComponentValueBuilder<? extends JComponent, T, ?>) checkBox()
 							.nullable(true)
 							.horizontalAlignment(CENTER);
 		}
 		if (columnClass.equals(Short.class)) {
-			return (ComponentValueBuilder<T, ? extends JComponent, ?>) shortField()
+			return (ComponentValueBuilder<? extends JComponent, T, ?>) shortField()
 							.format(conditionModel.format().orElse(null));
 		}
 		if (columnClass.equals(Integer.class)) {
-			return (ComponentValueBuilder<T, ? extends JComponent, ?>) integerField()
+			return (ComponentValueBuilder<? extends JComponent, T, ?>) integerField()
 							.format(conditionModel.format().orElse(null));
 		}
 		else if (columnClass.equals(Double.class)) {
-			return (ComponentValueBuilder<T, ? extends JComponent, ?>) doubleField()
+			return (ComponentValueBuilder<? extends JComponent, T, ?>) doubleField()
 							.format(conditionModel.format().orElse(null));
 		}
 		else if (columnClass.equals(BigDecimal.class)) {
-			return (ComponentValueBuilder<T, ? extends JComponent, ?>) bigDecimalField()
+			return (ComponentValueBuilder<? extends JComponent, T, ?>) bigDecimalField()
 							.format(conditionModel.format().orElse(null));
 		}
 		else if (columnClass.equals(Long.class)) {
-			return (ComponentValueBuilder<T, ? extends JComponent, ?>) longField()
+			return (ComponentValueBuilder<? extends JComponent, T, ?>) longField()
 							.format(conditionModel.format().orElse(null));
 		}
 		else if (columnClass.equals(LocalTime.class)) {
-			return (ComponentValueBuilder<T, ? extends JComponent, ?>) localTimeField()
+			return (ComponentValueBuilder<? extends JComponent, T, ?>) localTimeField()
 							.dateTimePattern(conditionModel.dateTimePattern().orElseThrow());
 		}
 		else if (columnClass.equals(LocalDate.class)) {
-			return (ComponentValueBuilder<T, ? extends JComponent, ?>) localDateField()
+			return (ComponentValueBuilder<? extends JComponent, T, ?>) localDateField()
 							.dateTimePattern(conditionModel.dateTimePattern().orElseThrow());
 		}
 		else if (columnClass.equals(LocalDateTime.class)) {
-			return (ComponentValueBuilder<T, ? extends JComponent, ?>) localDateTimeField()
+			return (ComponentValueBuilder<? extends JComponent, T, ?>) localDateTimeField()
 							.dateTimePattern(conditionModel.dateTimePattern().orElseThrow());
 		}
 		else if (columnClass.equals(OffsetDateTime.class)) {
-			return (ComponentValueBuilder<T, ? extends JComponent, ?>) offsetDateTimeField()
+			return (ComponentValueBuilder<? extends JComponent, T, ?>) offsetDateTimeField()
 							.dateTimePattern(conditionModel.dateTimePattern().orElseThrow());
 		}
 		else if (columnClass.equals(String.class)) {
-			return (ComponentValueBuilder<T, ? extends JComponent, ?>) stringField();
+			return (ComponentValueBuilder<? extends JComponent, T, ?>) stringField();
 		}
 		else if (columnClass.equals(Character.class)) {
-			return (ComponentValueBuilder<T, ? extends JComponent, ?>) characterField();
+			return (ComponentValueBuilder<? extends JComponent, T, ?>) characterField();
 		}
 
 		throw new IllegalArgumentException("Unsupported type: " + columnClass);

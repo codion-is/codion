@@ -131,7 +131,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 	 * Builds a {@link TemporalFieldPanel}
 	 * @param <T> the temporal type
 	 */
-	public interface Builder<T extends Temporal> extends ComponentValueBuilder<T, TemporalFieldPanel<T>, Builder<T>> {
+	public interface Builder<T extends Temporal> extends ComponentValueBuilder<TemporalFieldPanel<T>, T, Builder<T>> {
 
 		/**
 		 * Provides a {@link TemporalFieldPanel.Builder}
@@ -227,7 +227,7 @@ public final class TemporalFieldPanel<T extends Temporal> extends JPanel {
 	}
 
 	private static final class DefaultBuilder<T extends Temporal>
-					extends AbstractComponentValueBuilder<T, TemporalFieldPanel<T>, Builder<T>>
+					extends AbstractComponentValueBuilder<TemporalFieldPanel<T>, T, Builder<T>>
 					implements Builder<T> {
 
 		private static final Builder.TemporalClassStep TEMPORAL_CLASS = new DefaultTemporalClassStep();

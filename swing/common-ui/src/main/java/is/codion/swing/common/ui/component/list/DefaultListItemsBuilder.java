@@ -30,7 +30,7 @@ import java.util.List;
 
 import static java.util.Collections.emptyList;
 
-final class DefaultListItemsBuilder<T> extends AbstractListBuilder<T, List<T>, ListBuilder.Items<T>> implements ListBuilder.Items<T> {
+final class DefaultListItemsBuilder<T> extends AbstractListBuilder<List<T>, T, ListBuilder.Items<T>> implements ListBuilder.Items<T> {
 
 	private int selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
 

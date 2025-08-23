@@ -103,50 +103,50 @@ public final class EntityComponents {
 	 * <p>Input components for {@link ForeignKey}s ({@link EntityComboBox} or {@link EntitySearchField}) require a data model,
 	 * use {@link #comboBox(Attribute, ComboBoxModel)} or {@link #searchField(ForeignKey, EntitySearchModel)}.
 	 * @param attribute the attribute for which to create the input component
-	 * @param <T> the attribute type
 	 * @param <C> the component type
+	 * @param <T> the attribute type
 	 * @param <B> the builder type
 	 * @return the component builder handling input for {@code attribute}
 	 * @throws IllegalArgumentException in case the given attribute is not supported
 	 */
-	public <T, C extends JComponent, B extends ComponentValueBuilder<T, C, B>> ComponentValueBuilder<T, C, B> component(Attribute<T> attribute) {
+	public <T, C extends JComponent, B extends ComponentValueBuilder<C, T, B>> ComponentValueBuilder<C, T, B> component(Attribute<T> attribute) {
 		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 		if (!attributeDefinition.items().isEmpty()) {
-			return (ComponentValueBuilder<T, C, B>) itemComboBox(attribute);
+			return (ComponentValueBuilder<C, T, B>) itemComboBox(attribute);
 		}
 		if (attribute instanceof ForeignKey) {
-			return (ComponentValueBuilder<T, C, B>) textField((ForeignKey) attribute);
+			return (ComponentValueBuilder<C, T, B>) textField((ForeignKey) attribute);
 		}
 		Attribute.Type<T> type = attribute.type();
 		if (type.isTemporal()) {
-			return (ComponentValueBuilder<T, C, B>) temporalField((Attribute<Temporal>) attribute);
+			return (ComponentValueBuilder<C, T, B>) temporalField((Attribute<Temporal>) attribute);
 		}
 		if (type.isString() || type.isCharacter()) {
-			return (ComponentValueBuilder<T, C, B>) textField(attribute);
+			return (ComponentValueBuilder<C, T, B>) textField(attribute);
 		}
 		if (type.isBoolean()) {
-			return (ComponentValueBuilder<T, C, B>) checkBox((Attribute<Boolean>) attribute);
+			return (ComponentValueBuilder<C, T, B>) checkBox((Attribute<Boolean>) attribute);
 		}
 		if (type.isShort()) {
-			return (ComponentValueBuilder<T, C, B>) shortField((Attribute<Short>) attribute);
+			return (ComponentValueBuilder<C, T, B>) shortField((Attribute<Short>) attribute);
 		}
 		if (type.isInteger()) {
-			return (ComponentValueBuilder<T, C, B>) integerField((Attribute<Integer>) attribute);
+			return (ComponentValueBuilder<C, T, B>) integerField((Attribute<Integer>) attribute);
 		}
 		if (type.isLong()) {
-			return (ComponentValueBuilder<T, C, B>) longField((Attribute<Long>) attribute);
+			return (ComponentValueBuilder<C, T, B>) longField((Attribute<Long>) attribute);
 		}
 		if (type.isDouble()) {
-			return (ComponentValueBuilder<T, C, B>) doubleField((Attribute<Double>) attribute);
+			return (ComponentValueBuilder<C, T, B>) doubleField((Attribute<Double>) attribute);
 		}
 		if (type.isBigDecimal()) {
-			return (ComponentValueBuilder<T, C, B>) bigDecimalField((Attribute<BigDecimal>) attribute);
+			return (ComponentValueBuilder<C, T, B>) bigDecimalField((Attribute<BigDecimal>) attribute);
 		}
 		if (type.isEnum()) {
-			return (ComponentValueBuilder<T, C, B>) comboBox(attribute, createEnumComboBoxModel(attribute, attributeDefinition.nullable()));
+			return (ComponentValueBuilder<C, T, B>) comboBox(attribute, createEnumComboBoxModel(attribute, attributeDefinition.nullable()));
 		}
 		if (attribute.type().isByteArray()) {
-			return (ComponentValueBuilder<T, C, B>) byteArrayInputPanel((Attribute<byte[]>) attribute);
+			return (ComponentValueBuilder<C, T, B>) byteArrayInputPanel((Attribute<byte[]>) attribute);
 		}
 
 		throw new IllegalArgumentException("Attribute: " + attribute + " (type: " + type.valueClass() + ") not supported");
@@ -173,10 +173,10 @@ public final class EntityComponents {
 	 * @param <B> the builder type
 	 * @return a JToggleButton builder
 	 */
-	public <B extends ButtonBuilder<Boolean, JToggleButton, B>> ButtonBuilder<Boolean, JToggleButton, B> toggleButton(Attribute<Boolean> attribute) {
+	public <B extends ButtonBuilder<JToggleButton, Boolean, B>> ButtonBuilder<JToggleButton, Boolean, B> toggleButton(Attribute<Boolean> attribute) {
 		AttributeDefinition<Boolean> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
-		return (ButtonBuilder<Boolean, JToggleButton, B>) Components.toggleButton()
+		return (ButtonBuilder<JToggleButton, Boolean, B>) Components.toggleButton()
 						.toolTipText(attributeDefinition.description().orElse(null))
 						.text(attributeDefinition.caption())
 						.includeText(false);
@@ -257,10 +257,10 @@ public final class EntityComponents {
 	 * @param <B> the builder type
 	 * @return a {@link Entity} JTextField builder
 	 */
-	public <B extends TextFieldBuilder<Entity, JTextField, B>> TextFieldBuilder<Entity, JTextField, B> textField(ForeignKey foreignKey) {
+	public <B extends TextFieldBuilder<JTextField, Entity, B>> TextFieldBuilder<JTextField, Entity, B> textField(ForeignKey foreignKey) {
 		ForeignKeyDefinition foreignKeyDefinition = entityDefinition.foreignKeys().definition(foreignKey);
 
-		return (TextFieldBuilder<Entity, JTextField, B>) Components.textField()
+		return (TextFieldBuilder<JTextField, Entity, B>) Components.textField()
 						.valueClass(Entity.class)
 						.toolTipText(foreignKeyDefinition.description().orElse(null))
 						.format(new EntityReadOnlyFormat())
@@ -297,11 +297,11 @@ public final class EntityComponents {
 	 * @param <B> the builder type
 	 * @return a JComboBox builder
 	 */
-	public <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> comboBox(Attribute<T> attribute,
+	public <T, C extends JComboBox<T>, B extends ComboBoxBuilder<C, T, B>> ComboBoxBuilder<C, T, B> comboBox(Attribute<T> attribute,
 																																																					 ComboBoxModel<T> comboBoxModel) {
 		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
-		return (ComboBoxBuilder<T, C, B>) Components.comboBox()
+		return (ComboBoxBuilder<C, T, B>) Components.comboBox()
 						.model(comboBoxModel)
 						.toolTipText(attributeDefinition.description().orElse(null));
 	}
@@ -361,11 +361,11 @@ public final class EntityComponents {
 	 * @param <B> the builder type
 	 * @return a JTextField builder
 	 */
-	public <T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> TextFieldBuilder<T, C, B> textField(Attribute<T> attribute) {
+	public <T, C extends JTextField, B extends TextFieldBuilder<C, T, B>> TextFieldBuilder<C, T, B> textField(Attribute<T> attribute) {
 		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		if (!attributeDefinition.items().isEmpty()) {
-			return (TextFieldBuilder<T, C, B>) Components.textField()
+			return (TextFieldBuilder<C, T, B>) Components.textField()
 							.valueClass(attribute.type().valueClass())
 							.format(new ItemReadOnlyFormat(attributeDefinition))
 							.toolTipText(attributeDefinition.description().orElse(null))
@@ -373,19 +373,19 @@ public final class EntityComponents {
 							.focusable(false);
 		}
 		if (attribute.type().isTemporal()) {
-			return (TextFieldBuilder<T, C, B>) temporalField((Attribute<Temporal>) attribute)
+			return (TextFieldBuilder<C, T, B>) temporalField((Attribute<Temporal>) attribute)
 							.dateTimePattern(attributeDefinition.dateTimePattern().orElseThrow(DATE_TIME_PATTERN_MISSING))
 							.toolTipText(attributeDefinition.description().orElse(null))
 							.calendarIcon(ICONS.calendar().large());
 		}
 		if (attribute.type().isNumerical()) {
-			return (TextFieldBuilder<T, C, B>) NumberField.builder()
+			return (TextFieldBuilder<C, T, B>) NumberField.builder()
 							.numberClass((Class<Number>) attribute.type().valueClass())
 							.format(attributeDefinition.format().orElse(null))
 							.toolTipText(attributeDefinition.description().orElse(null));
 		}
 
-		return (TextFieldBuilder<T, C, B>) Components.textField()
+		return (TextFieldBuilder<C, T, B>) Components.textField()
 						.valueClass(attribute.type().valueClass())
 						.format(attributeDefinition.format().orElse(null))
 						.maximumLength(attributeDefinition.maximumLength())
@@ -591,7 +591,7 @@ public final class EntityComponents {
 	 * @param attribute the attribute
 	 * @return a {@link FileInputPanel.Builder}
 	 */
-	public ComponentValueBuilder<byte[], FileInputPanel, FileInputPanel.Builder<byte[]>> byteArrayInputPanel(Attribute<byte[]> attribute) {
+	public ComponentValueBuilder<FileInputPanel, byte[], FileInputPanel.Builder<byte[]>> byteArrayInputPanel(Attribute<byte[]> attribute) {
 		AttributeDefinition<byte[]> attributeDefinition = entityDefinition.attributes().definition(attribute);
 
 		return Components.byteArrayInputPanel()

@@ -29,7 +29,7 @@ import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
-final class DefaultLabelBuilder<T> extends AbstractComponentValueBuilder<T, JLabel, LabelBuilder<T>> implements LabelBuilder<T> {
+final class DefaultLabelBuilder<T> extends AbstractComponentValueBuilder<JLabel, T, LabelBuilder<T>> implements LabelBuilder<T> {
 
 	private @Nullable String text;
 	private @Nullable Icon icon;

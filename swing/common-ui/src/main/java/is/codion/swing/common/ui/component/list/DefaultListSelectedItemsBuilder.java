@@ -27,7 +27,7 @@ import java.util.List;
 
 import static java.util.Collections.emptyList;
 
-final class DefaultListSelectedItemsBuilder<T> extends AbstractListBuilder<T, List<T>, ListBuilder.SelectedItems<T>>
+final class DefaultListSelectedItemsBuilder<T> extends AbstractListBuilder<List<T>, T, ListBuilder.SelectedItems<T>>
 				implements ListBuilder.SelectedItems<T> {
 
 	DefaultListSelectedItemsBuilder(FilterListModel<T> listModel) {

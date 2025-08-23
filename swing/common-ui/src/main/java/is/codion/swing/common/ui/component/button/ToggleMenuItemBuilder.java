@@ -31,7 +31,7 @@ import static is.codion.common.Configuration.enumValue;
 /**
  * Builds a toggle menu item.
  */
-public interface ToggleMenuItemBuilder<C extends JMenuItem, B extends ToggleMenuItemBuilder<C, B>> extends ButtonBuilder<Boolean, C, B> {
+public interface ToggleMenuItemBuilder<C extends JMenuItem, B extends ToggleMenuItemBuilder<C, B>> extends ButtonBuilder<C, Boolean, B> {
 
 	/**
 	 * Specifies whether a menu is kept open after a toggle menu item has been toggled.

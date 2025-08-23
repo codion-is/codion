@@ -27,7 +27,7 @@ import javax.swing.text.Document;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, JTextArea, TextAreaBuilder> implements TextAreaBuilder {
+final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<JTextArea, String, TextAreaBuilder> implements TextAreaBuilder {
 
 	private int columns;
 	private int rows;

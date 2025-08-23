@@ -20,7 +20,7 @@ package is.codion.swing.common.ui.component.text;
 
 import javax.swing.JPasswordField;
 
-final class DefaultPasswordFieldBuilder extends DefaultTextFieldBuilder<String, JPasswordField, PasswordFieldBuilder>
+final class DefaultPasswordFieldBuilder extends DefaultTextFieldBuilder<JPasswordField, String, PasswordFieldBuilder>
 				implements PasswordFieldBuilder {
 
 	private char echoChar;

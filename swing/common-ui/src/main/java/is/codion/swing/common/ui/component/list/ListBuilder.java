@@ -30,12 +30,12 @@ import java.util.List;
 
 /**
  * Builds a JList instance.
- * @param <T> the value type
  * @param <V> the component value type
+ * @param <T> the value type
  * @param <B> the builder type
  * @see #builder()
  */
-public interface ListBuilder<T, V, B extends ListBuilder<T, V, B>> extends ComponentValueBuilder<V, FilterList<T>, B> {
+public interface ListBuilder<V, T, B extends ListBuilder<V, T, B>> extends ComponentValueBuilder<FilterList<T>, V, B> {
 
 	/**
 	 * @param visibleRowCount the visible row count
@@ -83,7 +83,7 @@ public interface ListBuilder<T, V, B extends ListBuilder<T, V, B>> extends Compo
 	 * Builds a JList, where the value is represented by the list items.
 	 * @param <T> the value type
 	 */
-	interface Items<T> extends ListBuilder<T, List<T>, Items<T>> {
+	interface Items<T> extends ListBuilder<List<T>, T, Items<T>> {
 
 		/**
 		 * @param selectionMode the list selection model
@@ -97,7 +97,7 @@ public interface ListBuilder<T, V, B extends ListBuilder<T, V, B>> extends Compo
 	 * Builds a multi-selection JList, where the value is represented by the selected items.
 	 * @param <T> the value type
 	 */
-	interface SelectedItems<T> extends ListBuilder<T, List<T>, SelectedItems<T>> {}
+	interface SelectedItems<T> extends ListBuilder<List<T>, T, SelectedItems<T>> {}
 
 	/**
 	 * Builds a single-selection JList, where the value is represented by the selected item.

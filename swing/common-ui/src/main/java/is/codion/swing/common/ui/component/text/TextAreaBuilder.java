@@ -24,7 +24,7 @@ import javax.swing.text.Document;
 /**
  * Builds a JTextArea.
  */
-public interface TextAreaBuilder extends TextComponentBuilder<String, JTextArea, TextAreaBuilder> {
+public interface TextAreaBuilder extends TextComponentBuilder<JTextArea, String, TextAreaBuilder> {
 
 	/**
 	 * @param rows the number of rows in the text area

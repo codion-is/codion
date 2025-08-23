@@ -90,7 +90,7 @@ public final class EntitySearchFieldPanel extends JPanel {
 	/**
 	 * A builder for a {@link EntitySearchFieldPanel}
 	 */
-	public interface Builder<T, B extends Builder<T, B>> extends ComponentValueBuilder<T, EntitySearchFieldPanel, B> {
+	public interface Builder<T, B extends Builder<T, B>> extends ComponentValueBuilder<EntitySearchFieldPanel, T, B> {
 
 		/**
 		 * Provides a {@link EditPanelStep}
@@ -377,7 +377,7 @@ public final class EntitySearchFieldPanel extends JPanel {
 	}
 
 	private abstract static class AbstractBuilder<T, B extends Builder<T, B>>
-					extends AbstractComponentValueBuilder<T, EntitySearchFieldPanel, B> implements Builder<T, B> {
+					extends AbstractComponentValueBuilder<EntitySearchFieldPanel, T, B> implements Builder<T, B> {
 
 		private final EntitySearchField.Builder<?, ?> searchFieldBuilder;
 

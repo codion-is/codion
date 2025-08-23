@@ -24,7 +24,7 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 import javax.swing.JMenuItem;
 import javax.swing.SwingConstants;
 
-class DefaultMenuItemBuilder<C extends JMenuItem, B extends MenuItemBuilder<C, B>> extends AbstractButtonBuilder<Void, C, B>
+class DefaultMenuItemBuilder<C extends JMenuItem, B extends MenuItemBuilder<C, B>> extends AbstractButtonBuilder<C, Void, B>
 				implements MenuItemBuilder<C, B> {
 
 	DefaultMenuItemBuilder() {

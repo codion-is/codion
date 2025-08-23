@@ -34,11 +34,11 @@ import java.util.function.Supplier;
 
 /**
  * Builds buttons.
- * @param <T> the value type
  * @param <C> the button type
+ * @param <T> the value type
  * @param <B> the builder type
  */
-public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuilder<T, C, B>> extends ComponentValueBuilder<T, C, B> {
+public interface ButtonBuilder<C extends AbstractButton, T, B extends ButtonBuilder<C, T, B>> extends ComponentValueBuilder<C, T, B> {
 
 	/**
 	 * @param text the button caption text
@@ -231,7 +231,7 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
 	 * @param <B> the builder type
 	 * @return a builder for a JButton
 	 */
-	static <B extends ButtonBuilder<Void, JButton, B>> ButtonBuilder<Void, JButton, B> builder() {
+	static <B extends ButtonBuilder<JButton, Void, B>> ButtonBuilder<JButton, Void, B> builder() {
 		return new DefaultButtonBuilder<>();
 	}
 }

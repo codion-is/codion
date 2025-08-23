@@ -36,7 +36,7 @@ import static is.codion.common.Configuration.integerValue;
  * A builder for JLabel.
  * @param <T> the type to display in the label (using value.toString() or "" for null).
  */
-public interface LabelBuilder<T> extends ComponentValueBuilder<T, JLabel, LabelBuilder<T>> {
+public interface LabelBuilder<T> extends ComponentValueBuilder<JLabel, T, LabelBuilder<T>> {
 
 	/**
 	 * Specifies the default horizontal alignment used in labels

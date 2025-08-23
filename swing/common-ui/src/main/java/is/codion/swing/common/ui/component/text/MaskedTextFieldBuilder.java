@@ -25,7 +25,7 @@ import javax.swing.JFormattedTextField;
 /**
  * Builds a formatted text field.
  */
-public interface MaskedTextFieldBuilder extends ComponentValueBuilder<String, JFormattedTextField, MaskedTextFieldBuilder> {
+public interface MaskedTextFieldBuilder extends ComponentValueBuilder<JFormattedTextField, String, MaskedTextFieldBuilder> {
 
 	/**
 	 * @param mask the format mask string

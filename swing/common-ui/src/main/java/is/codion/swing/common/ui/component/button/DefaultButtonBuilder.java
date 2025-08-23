@@ -23,8 +23,8 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.JButton;
 
-final class DefaultButtonBuilder<B extends ButtonBuilder<Void, JButton, B>> extends AbstractButtonBuilder<Void, JButton, B>
-				implements ButtonBuilder<Void, JButton, B> {
+final class DefaultButtonBuilder<B extends ButtonBuilder<JButton, Void, B>> extends AbstractButtonBuilder<JButton, Void, B>
+				implements ButtonBuilder<JButton, Void, B> {
 
 	DefaultButtonBuilder() {}
 

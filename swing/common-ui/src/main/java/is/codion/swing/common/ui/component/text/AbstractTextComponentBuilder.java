@@ -39,8 +39,8 @@ import static java.awt.event.KeyEvent.VK_BACK_SPACE;
 import static java.awt.event.KeyEvent.VK_DELETE;
 import static java.util.Objects.requireNonNull;
 
-abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B extends TextComponentBuilder<T, C, B>>
-				extends AbstractComponentValueBuilder<T, C, B> implements TextComponentBuilder<T, C, B> {
+abstract class AbstractTextComponentBuilder<C extends JTextComponent, T, B extends TextComponentBuilder<C, T, B>>
+				extends AbstractComponentValueBuilder<C, T, B> implements TextComponentBuilder<C, T, B> {
 
 	private final List<CaretListener> caretListeners = new ArrayList<>();
 

@@ -29,7 +29,7 @@ import static is.codion.common.Configuration.booleanValue;
 /**
  * A builder for JSpinner.
  */
-public interface SpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends ComponentValueBuilder<T, JSpinner, B> {
+public interface SpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends ComponentValueBuilder<JSpinner, T, B> {
 
 	/**
 	 * Specifies whether mouse wheel scrolling is enabled in spinners by default.

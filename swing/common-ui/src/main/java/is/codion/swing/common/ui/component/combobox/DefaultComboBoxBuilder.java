@@ -39,8 +39,8 @@ import java.util.function.Consumer;
 import static is.codion.swing.common.ui.component.text.TextComponents.preferredTextFieldHeight;
 import static java.util.Objects.requireNonNull;
 
-public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> extends AbstractComponentValueBuilder<T, C, B>
-				implements ComboBoxBuilder<T, C, B> {
+public class DefaultComboBoxBuilder<C extends JComboBox<T>, T, B extends ComboBoxBuilder<C, T, B>> extends AbstractComponentValueBuilder<C, T, B>
+				implements ComboBoxBuilder<C, T, B> {
 
 	static final ModelStep MODEL = new DefaultModelStep();
 
@@ -222,7 +222,7 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
 	private static final class DefaultModelStep implements ModelStep {
 
 		@Override
-		public <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> model(ComboBoxModel<T> comboBoxModel) {
+		public <T, C extends JComboBox<T>, B extends ComboBoxBuilder<C, T, B>> ComboBoxBuilder<C, T, B> model(ComboBoxModel<T> comboBoxModel) {
 			return new DefaultComboBoxBuilder<>(comboBoxModel);
 		}
 	}

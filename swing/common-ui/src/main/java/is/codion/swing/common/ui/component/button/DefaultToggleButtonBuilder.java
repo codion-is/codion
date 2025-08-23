@@ -32,7 +32,7 @@ import java.util.function.Supplier;
 import static java.util.Objects.requireNonNull;
 
 class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButtonBuilder<C, B>>
-				extends AbstractButtonBuilder<Boolean, C, B> implements ToggleButtonBuilder<C, B> {
+				extends AbstractButtonBuilder<C, Boolean, B> implements ToggleButtonBuilder<C, B> {
 
 	final List<ObservableState> linkedObservableStates = new ArrayList<>(1);
 
