@@ -141,7 +141,7 @@ public final class EntityDialogs {
 		 * @param editComponentFactory the component factory
 		 * @return this builder
 		 */
-		EditAttributeDialogBuilder<T> editComponentFactory(EditComponentFactory<T, ?> editComponentFactory);
+		EditAttributeDialogBuilder<T> editComponentFactory(EditComponentFactory<?, T> editComponentFactory);
 
 		/**
 		 * @param onValidationException called on validation exception
@@ -293,7 +293,7 @@ public final class EntityDialogs {
 		private final SwingEntityEditModel editModel;
 		private final Attribute<T> attribute;
 
-		private EditComponentFactory<T, ?> editComponentFactory;
+		private EditComponentFactory<?, T> editComponentFactory;
 		private Consumer<ValidationException> onValidationException = new DefaultValidationExceptionHandler();
 		private Consumer<Exception> onException = new DefaultExceptionHandler();
 		private Function<Collection<Entity>, T> defaultValue = new DefaultValue();
@@ -305,7 +305,7 @@ public final class EntityDialogs {
 		}
 
 		@Override
-		public EditAttributeDialogBuilder<T> editComponentFactory(EditComponentFactory<T, ?> editComponentFactory) {
+		public EditAttributeDialogBuilder<T> editComponentFactory(EditComponentFactory<?, T> editComponentFactory) {
 			this.editComponentFactory = requireNonNull(editComponentFactory);
 			return this;
 		}

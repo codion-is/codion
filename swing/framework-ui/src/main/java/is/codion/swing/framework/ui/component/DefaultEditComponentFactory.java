@@ -38,10 +38,10 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A default {@link EditComponentFactory} implementation.
- * @param <T> the attribute type
  * @param <C> the component type
+ * @param <T> the attribute type
  */
-public class DefaultEditComponentFactory<T, C extends JComponent> implements EditComponentFactory<T, C> {
+public class DefaultEditComponentFactory<C extends JComponent, T> implements EditComponentFactory<C, T> {
 
 	/**
 	 * Specifies the default number of text field columns

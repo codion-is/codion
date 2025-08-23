@@ -140,7 +140,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 	}
 
 	private static final class RatingEditComponentFactory
-					implements EditComponentFactory<Integer, JSpinner> {
+					implements EditComponentFactory<JSpinner, Integer> {
 
 		@Override
 		public ComponentValue<JSpinner, Integer> component(SwingEntityEditModel editModel) {
@@ -149,7 +149,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 	}
 
 	private static final class DurationEditComponentFactory
-					implements EditComponentFactory<Integer, DurationPanel> {
+					implements EditComponentFactory<DurationPanel, Integer> {
 
 		@Override
 		public Optional<String> caption(AttributeDefinition<Integer> attributeDefinition) {

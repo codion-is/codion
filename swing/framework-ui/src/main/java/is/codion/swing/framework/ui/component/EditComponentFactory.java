@@ -29,10 +29,10 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A factory for {@link ComponentValue} instances.
- * @param <T> the value type
  * @param <C> the component type
+ * @param <T> the value type
  */
-public interface EditComponentFactory<T, C extends JComponent> {
+public interface EditComponentFactory<C extends JComponent, T> {
 
 	/**
 	 * Provides an input {@link ComponentValue} for editing a single attribute value for one or more entities.

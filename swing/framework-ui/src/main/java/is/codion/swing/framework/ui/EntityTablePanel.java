@@ -994,7 +994,7 @@ public class EntityTablePanel extends JPanel {
 	protected <T> EditAttributeDialogBuilder<T> editDialogBuilder(Attribute<T> attribute) {
 		return editAttributeDialog(tableModel.editModel(), attribute)
 						.owner(this)
-						.editComponentFactory((EditComponentFactory<T, ?>) configuration.editComponentFactories
+						.editComponentFactory((EditComponentFactory<?, T>) configuration.editComponentFactories
 										.getOrDefault(attribute, new DefaultEditComponentFactory<>(attribute)));
 	}
 
@@ -2538,7 +2538,7 @@ public class EntityTablePanel extends JPanel {
 		 * @return this Config instance
 		 */
 		public <T, A extends Attribute<T>, C extends JComponent> Config editComponentFactory(A attribute,
-																																												 EditComponentFactory<T, C> editComponentFactory) {
+																																												 EditComponentFactory<C, T> editComponentFactory) {
 			entityDefinition.attributes().definition(attribute);
 			editComponentFactories.put(attribute, requireNonNull(editComponentFactory));
 			return this;

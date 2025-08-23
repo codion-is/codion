@@ -52,7 +52,7 @@ final class EntityTableCellEditorFactory implements FilterTableCellEditor.Factor
 			return Optional.empty();
 		}
 
-		EditComponentFactory<Object, JComponent> componentFactory =
+		EditComponentFactory<JComponent, Object> componentFactory =
 						new DefaultEditComponentFactory<>((Attribute<Object>) attribute);
 
 		return Optional.of(FilterTableCellEditor.builder()

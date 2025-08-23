@@ -22,6 +22,7 @@ Codion Change Log
 ### is.codion.framework.ui
 - EntityTableColumns removed.
 - FrameworkIcons.SIZE added.
+- EditComponentFactory type parameters reordered.
 
 ## 0.18.45
 ### is.codion.common.core
