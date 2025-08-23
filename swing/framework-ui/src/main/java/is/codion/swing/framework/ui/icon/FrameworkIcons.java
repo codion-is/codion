@@ -26,6 +26,7 @@ import org.kordamp.ikonli.Ikon;
 
 import javax.swing.ImageIcon;
 
+import static is.codion.common.Configuration.integerValue;
 import static is.codion.common.Configuration.stringValue;
 
 /**
@@ -35,6 +36,15 @@ import static is.codion.common.Configuration.stringValue;
  * @see #instance()
  */
 public interface FrameworkIcons extends Icons, Logos {
+
+	/**
+	 * The default icon size, note that this will affect the size of buttons
+	 * <ul>
+	 * <li>Value type: Integer
+	 * <li>Default value: 16
+	 * </ul>
+	 */
+	PropertyValue<Integer> SIZE = integerValue(FrameworkIcons.class.getName() + ".size", 16);
 
 	/**
 	 * Specifies the name of the {@link FrameworkIcons} implementation class to use.

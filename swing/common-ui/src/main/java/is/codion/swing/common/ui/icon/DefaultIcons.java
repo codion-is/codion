@@ -41,13 +41,14 @@ final class DefaultIcons implements Icons {
 	private final OnLookAndFeelChanged onLookAndFeelChanged = new OnLookAndFeelChanged();
 	private final OnScalingChanged onScalingChanged = new OnScalingChanged();
 
-	private final int size = SIZE.getOrThrow();
+	private final int size;
 	private final Value<Color> color = Value.builder()
 					.nonNull(COLOR.getOrThrow())
 					.consumer(this::onColorChanged)
 					.build();
 
-	DefaultIcons() {
+	DefaultIcons(int size) {
+		this.size = size;
 		UIManager.addPropertyChangeListener(onLookAndFeelChanged);
 		Scaler.SCALING.addWeakListener(onScalingChanged);
 	}

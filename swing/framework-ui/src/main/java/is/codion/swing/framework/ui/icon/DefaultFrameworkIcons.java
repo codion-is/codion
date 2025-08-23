@@ -67,7 +67,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 
 	private static @Nullable FrameworkIcons instance;
 
-	private final Icons icons = Icons.icons();
+	private final Icons icons = Icons.icons(SIZE.getOrThrow());
 
 	private FontImageIcon logo = createLogo();
 

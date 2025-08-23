@@ -27,7 +27,6 @@ import org.kordamp.ikonli.Ikon;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 
-import static is.codion.common.Configuration.integerValue;
 import static javax.swing.UIManager.getColor;
 
 /**
@@ -37,15 +36,6 @@ import static javax.swing.UIManager.getColor;
  * @see #icons()
  */
 public interface Icons {
-
-	/**
-	 * The default icon size, note that this will affect the size of buttons
-	 * <ul>
-	 * <li>Value type: Integer
-	 * <li>Default value: 16
-	 * </ul>
-	 */
-	PropertyValue<Integer> SIZE = integerValue(Icons.class.getName() + ".size", 16);
 
 	/**
 	 * The default icon color.
@@ -84,9 +74,10 @@ public interface Icons {
 	ImageIcon get(Ikon ikon);
 
 	/**
+	 * @param size the icon size
 	 * @return a new {@link Icons} instance
 	 */
-	static Icons icons() {
-		return new DefaultIcons();
+	static Icons icons(int size) {
+		return new DefaultIcons(size);
 	}
 }

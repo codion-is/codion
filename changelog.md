@@ -9,6 +9,7 @@ Codion Change Log
 - FilterTable now automatically creates columns, Builder.columns() now allows column builder configuration.
 - FilterTableColumn can no longer be instantiated outside FilterTable, Builder.build() removed, related refactoring.
 - CalendarPanel bug fixed, clicking day filler labels now sets the year as well as the month.
+- Icons.icons() size parameter added, Icons.SIZE removed.
 ### is.codion.framework.domain
 - Entities.primaryKeys() overloaded with Collection.
 ### is.codion.framework.model
@@ -16,6 +17,7 @@ Codion Change Log
 - EntityEditModel.events() now takes entityType parameter, related refactoring.
 ### is.codion.framework.ui
 - EntityTableColumns removed.
+- FrameworkIcons.SIZE added.
 
 ## 0.18.45
 ### is.codion.common.core

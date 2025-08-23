@@ -28,7 +28,7 @@ public final class IconsTest {
 
 	@Test
 	void test() {
-		Icons icons = Icons.icons();
+		Icons icons = Icons.icons(16);
 		assertThrows(IllegalArgumentException.class, () -> icons.get(Foundation.ALERT));
 		icons.add(Foundation.ALERT, Foundation.FOUNDATION);
 		assertThrows(IllegalArgumentException.class, () -> icons.add(Foundation.FOUNDATION));
