@@ -110,7 +110,7 @@ public final class ComponentsTest {
 	@Test
 	void testDoubleLink() {
 		Value<Long> value = Value.nullable();
-		ComponentValue<Long, NumberField<Long>> componentValue = Components.longField()
+		ComponentValue<NumberField<Long>, Long> componentValue = Components.longField()
 						.link(value)
 						.buildValue();
 		assertThrows(IllegalStateException.class, () -> componentValue.link(value));
@@ -119,7 +119,7 @@ public final class ComponentsTest {
 	@Test
 	void shortField() {
 		Value<Short> value = Value.nullable((short) 42);
-		ComponentValue<Short, NumberField<Short>> componentValue = Components.shortField()
+		ComponentValue<NumberField<Short>, Short> componentValue = Components.shortField()
 						.valueRange(0, 100)
 						.font(Font.getFont("arial"))
 						.minimumHeight(10)
@@ -134,7 +134,7 @@ public final class ComponentsTest {
 	@Test
 	void integerField() {
 		Value<Integer> value = Value.nullable(42);
-		ComponentValue<Integer, NumberField<Integer>> componentValue = Components.integerField()
+		ComponentValue<NumberField<Integer>, Integer> componentValue = Components.integerField()
 						.valueRange(0, 100)
 						.font(Font.getFont("arial"))
 						.minimumHeight(10)
@@ -149,7 +149,7 @@ public final class ComponentsTest {
 	@Test
 	void longField() {
 		Value<Long> value = Value.nullable(42L);
-		ComponentValue<Long, NumberField<Long>> componentValue = Components.longField()
+		ComponentValue<NumberField<Long>, Long> componentValue = Components.longField()
 						.valueRange(0, 100)
 						.groupingSeparator('.')
 						.maximumHeight(10)
@@ -162,7 +162,7 @@ public final class ComponentsTest {
 	@Test
 	void doubleField() {
 		Value<Double> value = Value.nullable(42.2);
-		ComponentValue<Double, NumberField<Double>> componentValue = Components.doubleField()
+		ComponentValue<NumberField<Double>, Double> componentValue = Components.doubleField()
 						.valueRange(0, 100)
 						.maximumFractionDigits(2)
 						.groupingSeparator('.')
@@ -177,7 +177,7 @@ public final class ComponentsTest {
 	@Test
 	void bigDecimalField() {
 		Value<BigDecimal> value = Value.nullable(BigDecimal.valueOf(42.2));
-		ComponentValue<BigDecimal, NumberField<BigDecimal>> componentValue = Components.bigDecimalField()
+		ComponentValue<NumberField<BigDecimal>, BigDecimal> componentValue = Components.bigDecimalField()
 						.maximumFractionDigits(2)
 						.groupingSeparator('.')
 						.decimalSeparator(',')
@@ -190,7 +190,7 @@ public final class ComponentsTest {
 	@Test
 	void localTimeField() {
 		Value<LocalTime> value = Value.nullable(LocalTime.now());
-		ComponentValue<LocalTime, TemporalField<LocalTime>> componentValue =
+		ComponentValue<TemporalField<LocalTime>, LocalTime> componentValue =
 						Components.localTimeField()
 										.dateTimePattern("HH:mm")
 										.focusLostBehaviour(JFormattedTextField.COMMIT)
@@ -202,7 +202,7 @@ public final class ComponentsTest {
 	@Test
 	void localDateField() {
 		Value<LocalDate> value = Value.nullable(LocalDate.now());
-		ComponentValue<LocalDate, TemporalField<LocalDate>> componentValue =
+		ComponentValue<TemporalField<LocalDate>, LocalDate> componentValue =
 						Components.localDateField()
 										.dateTimePattern("dd-MM-yyyy")
 										.focusLostBehaviour(JFormattedTextField.COMMIT)
@@ -214,7 +214,7 @@ public final class ComponentsTest {
 	@Test
 	void localDateTimeField() {
 		Value<LocalDateTime> value = Value.nullable(LocalDateTime.now());
-		ComponentValue<LocalDateTime, TemporalField<LocalDateTime>> componentValue =
+		ComponentValue<TemporalField<LocalDateTime>, LocalDateTime> componentValue =
 						Components.localDateTimeField()
 										.dateTimePattern("dd-MM-yyyy HH:mm")
 										.focusLostBehaviour(JFormattedTextField.COMMIT)
@@ -227,7 +227,7 @@ public final class ComponentsTest {
 	void offsetDateTimeField() {
 		OffsetDateTime now = OffsetDateTime.now();
 		Value<OffsetDateTime> value = Value.nullable(now);
-		ComponentValue<OffsetDateTime, TemporalField<OffsetDateTime>> componentValue =
+		ComponentValue<TemporalField<OffsetDateTime>, OffsetDateTime> componentValue =
 						Components.offsetDateTimeField()
 										.dateTimePattern("dd-MM-yyyy HH:mm.ss")
 										.focusLostBehaviour(JFormattedTextField.COMMIT)
@@ -241,7 +241,7 @@ public final class ComponentsTest {
 		LocalDate date = LocalDate.now();
 
 		Value<LocalDate> value = Value.nullable();
-		ComponentValue<LocalDate, TemporalFieldPanel<LocalDate>> componentValue =
+		ComponentValue<TemporalFieldPanel<LocalDate>, LocalDate> componentValue =
 						Components.temporalFieldPanel()
 										.temporalClass(LocalDate.class)
 										.link(value)
@@ -280,7 +280,7 @@ public final class ComponentsTest {
 						.nonNull(false)
 						.value(true)
 						.build();
-		ComponentValue<Boolean, JCheckBox> componentValue = Components.checkBox()
+		ComponentValue<JCheckBox, Boolean> componentValue = Components.checkBox()
 						.link(value)
 						.text("caption")
 						.horizontalAlignment(SwingConstants.CENTER)
@@ -337,7 +337,7 @@ public final class ComponentsTest {
 						.nonNull(false)
 						.value(true)
 						.build();
-		ComponentValue<Boolean, JToggleButton> componentValue = Components.toggleButton()
+		ComponentValue<JToggleButton, Boolean> componentValue = Components.toggleButton()
 						.link(value)
 						.text("caption")
 						.includeText(true)
@@ -387,7 +387,7 @@ public final class ComponentsTest {
 						.nonNull(false)
 						.value(true)
 						.build();
-		ComponentValue<Boolean, JRadioButton> componentValue = Components.radioButton()
+		ComponentValue<JRadioButton, Boolean> componentValue = Components.radioButton()
 						.link(value)
 						.text("caption")
 						.includeText(true)
@@ -494,7 +494,7 @@ public final class ComponentsTest {
 	@Test
 	void nullableCheckBox() {
 		Value<Boolean> value = Value.nullable(true);
-		ComponentValue<Boolean, JCheckBox> componentValue = Components.checkBox()
+		ComponentValue<JCheckBox, Boolean> componentValue = Components.checkBox()
 						.link(value)
 						.transferFocusOnEnter(true)
 						.nullable(true)
@@ -515,7 +515,7 @@ public final class ComponentsTest {
 	@Test
 	void booleanComboBox() {
 		Value<Boolean> value = Value.nullable(true);
-		ComponentValue<Boolean, JComboBox<Item<Boolean>>> componentValue =
+		ComponentValue<JComboBox<Item<Boolean>>, Boolean> componentValue =
 						Components.booleanComboBox()
 										.maximumRowCount(5)
 										.transferFocusOnEnter(true)
@@ -536,7 +536,7 @@ public final class ComponentsTest {
 		List<Item<Integer>> items = asList(item(0, "0"), item(1, "1"),
 						item(2, "2"), item(3, "3"));
 		Value<Integer> value = Value.nullable();
-		ComponentValue<Integer, JComboBox<Item<Integer>>> componentValue = Components.itemComboBox()
+		ComponentValue<JComboBox<Item<Integer>>, Integer> componentValue = Components.itemComboBox()
 						.items(items)
 						.mouseWheelScrollingWithWrapAround(true)
 						.transferFocusOnEnter(true)
@@ -564,7 +564,7 @@ public final class ComponentsTest {
 	void comboBox() {
 		DefaultComboBoxModel<String> boxModel = new DefaultComboBoxModel<>(new String[] {"0", "1", "2", "3"});
 		Value<String> value = Value.nullable();
-		ComponentValue<String, JComboBox<String>> componentValue = Components.comboBox()
+		ComponentValue<JComboBox<String>, String> componentValue = Components.comboBox()
 						.model(boxModel)
 						.completionMode(Completion.Mode.NONE)//otherwise, a non-existing element can be selected, last test fails
 						.editable(true)
@@ -590,7 +590,7 @@ public final class ComponentsTest {
 	@Test
 	void stringField() {
 		Value<String> value = Value.nullable();
-		ComponentValue<String, JTextField> componentValue = Components.stringField()
+		ComponentValue<JTextField, String> componentValue = Components.stringField()
 						.columns(10)
 						.upperCase(true)
 						.selectAllOnFocusGained(true)
@@ -615,7 +615,7 @@ public final class ComponentsTest {
 						.lineWrap(true)
 						.wrapStyleWord(true)
 						.link(value);
-		ComponentValue<String, JTextArea> componentValue = builder
+		ComponentValue<JTextArea, String> componentValue = builder
 						.buildValue();
 		JTextArea textArea = componentValue.component();
 		textArea.setText("hello");
@@ -648,7 +648,7 @@ public final class ComponentsTest {
 	@Test
 	void textFieldPanel() {
 		Value<String> value = Value.nullable();
-		ComponentValue<String, TextFieldPanel> componentValue = Components.textFieldPanel()
+		ComponentValue<TextFieldPanel, String> componentValue = Components.textFieldPanel()
 						.transferFocusOnEnter(true)
 						.columns(10)
 						.buttonFocusable(true)
@@ -684,7 +684,7 @@ public final class ComponentsTest {
 	@Test
 	void formattedTextField() {
 		Value<String> value = Value.nullable();
-		ComponentValue<String, JFormattedTextField> componentValue = Components.maskedTextField()
+		ComponentValue<JFormattedTextField, String> componentValue = Components.maskedTextField()
 						.mask("##:##")
 						.valueContainsLiteralCharacters(true)
 						.columns(6)
@@ -706,7 +706,7 @@ public final class ComponentsTest {
 	@Test
 	void integerSpinner() {
 		Value<Integer> value = Value.nullable(10);
-		ComponentValue<Integer, JSpinner> componentValue = Components.integerSpinner()
+		ComponentValue<JSpinner, Integer> componentValue = Components.integerSpinner()
 						.minimum(0)
 						.maximum(100)
 						.stepSize(10)
@@ -744,7 +744,7 @@ public final class ComponentsTest {
 	@Test
 	void doubleSpinner() {
 		Value<Double> value = Value.nullable(10d);
-		ComponentValue<Double, JSpinner> componentValue = Components.doubleSpinner()
+		ComponentValue<JSpinner, Double> componentValue = Components.doubleSpinner()
 						.minimum(0d)
 						.maximum(100d)
 						.stepSize(10d)
@@ -788,7 +788,7 @@ public final class ComponentsTest {
 	@Test
 	void listSpinner() {
 		Value<String> value = Value.nullable();
-		ComponentValue<String, JSpinner> componentValue = Components.<String>listSpinner()
+		ComponentValue<JSpinner, String> componentValue = Components.<String>listSpinner()
 						.model(new SpinnerListModel(asList("One", "Two")))
 						.columns(5)
 						.horizontalAlignment(SwingConstants.CENTER)
@@ -806,7 +806,7 @@ public final class ComponentsTest {
 	void itemSpinner() {
 		Value<Integer> value = Value.nullable();
 		SpinnerListModel spinnerModel = new SpinnerListModel(asList(item(1, "One"), item(2, "Two")));
-		ComponentValue<Integer, JSpinner> componentValue = Components.<Integer>itemSpinner()
+		ComponentValue<JSpinner, Integer> componentValue = Components.<Integer>itemSpinner()
 						.model(spinnerModel)
 						.columns(5)
 						.mouseWheelScrolling(true)
@@ -822,7 +822,7 @@ public final class ComponentsTest {
 	@Test
 	void slider() {
 		Value<Integer> value = Value.nullable(10);
-		ComponentValue<Integer, JSlider> componentValue = Components.slider()
+		ComponentValue<JSlider, Integer> componentValue = Components.slider()
 						.model(new DefaultBoundedRangeModel(0, 0, 0, 100))
 						.snapToTicks(true)
 						.paintTrack(true)
@@ -843,7 +843,7 @@ public final class ComponentsTest {
 	@Test
 	void label() {
 		Value<String> textValue = Value.nullable("label");
-		ComponentValue<String, JLabel> componentValue = Components.<String>label()
+		ComponentValue<JLabel, String> componentValue = Components.<String>label()
 						.text(textValue)
 						.icon(Logos.logoTransparent())
 						.iconTextGap(5)
@@ -870,7 +870,7 @@ public final class ComponentsTest {
 						.fixedCellHeight(10)
 						.fixedCellWidth(10)
 						.link(textValue);
-		ComponentValue<List<String>, FilterList<String>> componentValue = listBuilder
+		ComponentValue<FilterList<String>, List<String>> componentValue = listBuilder
 						.buildValue();
 		VisibleItems<String> visibleItems = listModel.items().visible();
 		assertTrue(componentValue.component().isSelectedIndex(visibleItems.indexOf("two")));
@@ -897,7 +897,7 @@ public final class ComponentsTest {
 						.fixedCellHeight(10)
 						.fixedCellWidth(10)
 						.link(textValue);
-		ComponentValue<String, FilterList<String>> componentValue = listBuilder
+		ComponentValue<FilterList<String>, String> componentValue = listBuilder
 						.buildValue();
 		VisibleItems<String> visibleItems = listModel.items().visible();
 		assertTrue(componentValue.component().isSelectedIndex(visibleItems.indexOf("two")));
@@ -926,7 +926,7 @@ public final class ComponentsTest {
 						.fixedCellHeight(10)
 						.fixedCellWidth(10)
 						.link(textValue);
-		ComponentValue<List<String>, FilterList<String>> componentValue = listBuilder.buildValue();
+		ComponentValue<FilterList<String>, List<String>> componentValue = listBuilder.buildValue();
 		assertEquals(asList("one", "two", "three"), componentValue.get());
 		textValue.add("four");
 		assertEquals(asList("one", "two", "three", "four"), componentValue.get());
@@ -964,7 +964,7 @@ public final class ComponentsTest {
 	@Test
 	void listBox() {
 		Set<String> items = new HashSet<>(asList("one", "two", "three"));
-		ComponentValue<Set<String>, JComboBox<String>> componentValue =
+		ComponentValue<JComboBox<String>, Set<String>> componentValue =
 						Components.listBox()
 										.itemValue(Components.stringField().buildValue())
 										.linkedValue(ValueSet.valueSet(items))

@@ -26,7 +26,7 @@ import java.text.ParseException;
 
 import static is.codion.common.Text.nullOrEmpty;
 
-final class DefaultTextComponentValue<T, C extends JTextComponent> extends AbstractTextComponentValue<T, C> {
+final class DefaultTextComponentValue<T, C extends JTextComponent> extends AbstractTextComponentValue<C, T> {
 
 	private final @Nullable Format format;
 

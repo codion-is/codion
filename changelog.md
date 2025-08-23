@@ -12,6 +12,7 @@ Codion Change Log
 - Icons.icons() size parameter added, Icons.SIZE removed.
 - ControlIcon added along with ControlBuilder.icon(ControlIcon).
 - FrameworkIcons now ControlIcon based.
+- ComponentValue type parameters reordered.
 ### is.codion.framework.domain
 - Entities.primaryKeys() overloaded with Collection.
 ### is.codion.framework.model

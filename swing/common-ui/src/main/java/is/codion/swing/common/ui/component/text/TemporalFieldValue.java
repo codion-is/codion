@@ -26,7 +26,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.time.temporal.Temporal;
 
-final class TemporalFieldValue<T extends Temporal> extends AbstractComponentValue<T, TemporalField<T>> {
+final class TemporalFieldValue<T extends Temporal> extends AbstractComponentValue<TemporalField<T>, T> {
 
 	TemporalFieldValue(TemporalField<T> component, UpdateOn updateOn) {
 		super(component);

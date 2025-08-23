@@ -23,7 +23,7 @@ import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
-final class SpinnerNumberValue<T extends Number> extends AbstractComponentValue<T, JSpinner> {
+final class SpinnerNumberValue<T extends Number> extends AbstractComponentValue<JSpinner, T> {
 
 	SpinnerNumberValue(JSpinner spinner, Class<T> valueClass) {
 		super(spinner, nullValue((SpinnerNumberModel) spinner.getModel(), valueClass));

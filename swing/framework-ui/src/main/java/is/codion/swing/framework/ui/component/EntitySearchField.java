@@ -988,7 +988,7 @@ public final class EntitySearchField extends HintTextField {
 		label.setVisible(resultLimitReached);
 	}
 
-	private static final class SingleSelectionValue extends AbstractComponentValue<Entity, EntitySearchField> {
+	private static final class SingleSelectionValue extends AbstractComponentValue<EntitySearchField, Entity> {
 
 		private SingleSelectionValue(EntitySearchField searchField) {
 			super(searchField);
@@ -1006,7 +1006,7 @@ public final class EntitySearchField extends HintTextField {
 		}
 	}
 
-	private static final class MultiSelectionValue extends AbstractComponentValue<Set<Entity>, EntitySearchField> {
+	private static final class MultiSelectionValue extends AbstractComponentValue<EntitySearchField, Set<Entity>> {
 
 		private MultiSelectionValue(EntitySearchField searchField) {
 			super(searchField);
@@ -1142,7 +1142,7 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		@Override
-		protected ComponentValue<Set<Entity>, EntitySearchField> createComponentValue(EntitySearchField component) {
+		protected ComponentValue<EntitySearchField, Set<Entity>> createComponentValue(EntitySearchField component) {
 			return new MultiSelectionValue(component);
 		}
 	}
@@ -1155,7 +1155,7 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		@Override
-		protected ComponentValue<Entity, EntitySearchField> createComponentValue(EntitySearchField component) {
+		protected ComponentValue<EntitySearchField, Entity> createComponentValue(EntitySearchField component) {
 			return new SingleSelectionValue(component);
 		}
 	}

@@ -50,8 +50,8 @@ public interface ComponentValueBuilder<T, C extends JComponent, B extends Compon
 	 *            Components.stringField()
 	 *                    .build();
 	 *
-	 *   ComponentValue<String, JTextField> componentValue =
-	 *            (ComponentValue<String, JTextField>)
+	 *   ComponentValue<JTextField, String > componentValue =
+	 *            (ComponentValue<JTextField, String >)
 	 *                    textField.getClientProperty(COMPONENT_VALUE);
 	 *}
 	 * @see JComponent#getClientProperty(Object)
@@ -146,18 +146,18 @@ public interface ComponentValueBuilder<T, C extends JComponent, B extends Compon
 	 * @param onBuildValue called when the component value has been built.
 	 * @return this builder instance
 	 */
-	B onBuildValue(Consumer<ComponentValue<T, C>> onBuildValue);
+	B onBuildValue(Consumer<ComponentValue<C, T>> onBuildValue);
 
 	/**
 	 * Builds and returns the component value.
 	 * @return the component value
 	 */
-	ComponentValue<T, C> buildValue();
+	ComponentValue<C, T> buildValue();
 
 	/**
 	 * Builds and returns the component value.
 	 * @param onBuild called after the component value is built.
 	 * @return the component value
 	 */
-	ComponentValue<T, C> buildValue(@Nullable Consumer<ComponentValue<T, C>> onBuild);
+	ComponentValue<C, T> buildValue(@Nullable Consumer<ComponentValue<C, T>> onBuild);
 }

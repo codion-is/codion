@@ -48,7 +48,7 @@ final class ItemRandomizerPanel<T> extends JPanel {
 
 	private final ItemRandomizer<T> itemRandomizer;
 	private final JPanel configPanel = new JPanel(gridLayout(0, 1));
-	private final ComponentValue<List<RandomItem<T>>, FilterList<RandomItem<T>>> listValue;
+	private final ComponentValue<FilterList<RandomItem<T>>, List<RandomItem<T>>> listValue;
 
 	ItemRandomizerPanel(ItemRandomizer<T> itemRandomizer) {
 		this.itemRandomizer = requireNonNull(itemRandomizer);

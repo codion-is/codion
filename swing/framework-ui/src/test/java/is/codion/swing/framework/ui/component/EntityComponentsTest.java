@@ -70,7 +70,7 @@ public final class EntityComponentsTest {
 	@Test
 	void checkBox() {
 		editor.defaults();
-		ComponentValue<Boolean, JCheckBox> componentValue =
+		ComponentValue<JCheckBox, Boolean> componentValue =
 						entityComponents.checkBox(Detail.BOOLEAN)
 										.transferFocusOnEnter(true)
 										.link(editor.value(Detail.BOOLEAN))
@@ -91,7 +91,7 @@ public final class EntityComponentsTest {
 	@Test
 	void toggleButton() {
 		editor.defaults();
-		ComponentValue<Boolean, JToggleButton> componentValue =
+		ComponentValue<JToggleButton, Boolean> componentValue =
 						entityComponents.toggleButton(Detail.BOOLEAN)
 										.transferFocusOnEnter(true)
 										.link(editor.value(Detail.BOOLEAN))
@@ -112,7 +112,7 @@ public final class EntityComponentsTest {
 	@Test
 	void nullableCheckBox() {
 		editor.defaults();
-		ComponentValue<Boolean, JCheckBox> componentValue =
+		ComponentValue<JCheckBox, Boolean> componentValue =
 						entityComponents.checkBox(Detail.BOOLEAN_NULLABLE)
 										.transferFocusOnEnter(true)
 										.nullable(true)
@@ -135,7 +135,7 @@ public final class EntityComponentsTest {
 	void booleanComboBox() {
 		editor.defaults();
 		editor.value(Detail.BOOLEAN_NULLABLE).set(true);
-		ComponentValue<Boolean, JComboBox<Item<Boolean>>> componentValue =
+		ComponentValue<JComboBox<Item<Boolean>>, Boolean> componentValue =
 						entityComponents.booleanComboBox(Detail.BOOLEAN_NULLABLE)
 										.transferFocusOnEnter(true)
 										.link(editor.value(Detail.BOOLEAN_NULLABLE))
@@ -151,7 +151,7 @@ public final class EntityComponentsTest {
 
 	@Test
 	void itemComboBox() {
-		ComponentValue<Integer, JComboBox<Item<Integer>>> componentValue =
+		ComponentValue<JComboBox<Item<Integer>>, Integer> componentValue =
 						entityComponents.itemComboBox(Detail.INT_ITEMS)
 										.transferFocusOnEnter(true)
 										.link(editor.value(Detail.INT_ITEMS))
@@ -175,7 +175,7 @@ public final class EntityComponentsTest {
 
 	@Test
 	void nullableUnsortedItemComboBox() {
-		ComponentValue<Integer, JComboBox<Item<Integer>>> componentValue =
+		ComponentValue<JComboBox<Item<Integer>>, Integer> componentValue =
 						entityComponents.itemComboBox(Detail.INT_ITEMS)
 										.sorted(false)
 										.buildValue();
@@ -188,7 +188,7 @@ public final class EntityComponentsTest {
 	@Test
 	void comboBox() {
 		DefaultComboBoxModel<Integer> boxModel = new DefaultComboBoxModel<>(new Integer[] {0, 1, 2, 3});
-		ComponentValue<Integer, JComboBox<Integer>> componentValue =
+		ComponentValue<JComboBox<Integer>, Integer> componentValue =
 						entityComponents.comboBox(Detail.INT, boxModel)
 										.completionMode(Completion.Mode.NONE)//otherwise a non-existing element can be selected, last test fails
 										.transferFocusOnEnter(true)
@@ -220,7 +220,7 @@ public final class EntityComponentsTest {
 
 	@Test
 	void textField() {
-		ComponentValue<String, JTextField> componentValue =
+		ComponentValue<JTextField, String> componentValue =
 						entityComponents.textField(Detail.STRING)
 										.columns(10)
 										.upperCase(true)
@@ -247,7 +247,7 @@ public final class EntityComponentsTest {
 
 	@Test
 	void itemTextField() {
-		ComponentValue<Integer, JTextField> componentValue = entityComponents.textField(Detail.INT_ITEMS).buildValue();
+		ComponentValue<JTextField, Integer> componentValue = entityComponents.textField(Detail.INT_ITEMS).buildValue();
 		assertFalse(componentValue.component().isEditable());
 		assertFalse(componentValue.component().isFocusable());
 		componentValue.set(1);
@@ -260,7 +260,7 @@ public final class EntityComponentsTest {
 
 	@Test
 	void textArea() {
-		ComponentValue<String, JTextArea> componentValue =
+		ComponentValue<JTextArea, String> componentValue =
 						entityComponents.textArea(Detail.STRING)
 										.transferFocusOnEnter(true)
 										.rowsColumns(4, 2)
@@ -276,7 +276,7 @@ public final class EntityComponentsTest {
 
 	@Test
 	void textFieldPanel() {
-		ComponentValue<String, TextFieldPanel> componentValue =
+		ComponentValue<TextFieldPanel, String> componentValue =
 						entityComponents.textFieldPanel(Detail.STRING)
 										.transferFocusOnEnter(true)
 										.columns(10)
@@ -291,7 +291,7 @@ public final class EntityComponentsTest {
 
 	@Test
 	void maskedTextField() {
-		ComponentValue<String, JFormattedTextField> componentValue =
+		ComponentValue<JFormattedTextField, String> componentValue =
 						entityComponents.maskedTextField(Detail.STRING)
 										.mask("##:##")
 										.valueContainsLiteralCharacters(true)
@@ -307,7 +307,7 @@ public final class EntityComponentsTest {
 
 	@Test
 	void entityTextField() {
-		ComponentValue<Entity, JTextField> componentValue =
+		ComponentValue<JTextField, Entity> componentValue =
 						entityComponents.textField(Detail.MASTER_FK)
 										.link(editor.value(Detail.MASTER_FK))
 										.buildValue();
@@ -338,7 +338,7 @@ public final class EntityComponentsTest {
 	@Test
 	void integerSpinner() {
 		Value<Integer> value = Value.nullable();
-		ComponentValue<Integer, JSpinner> componentValue =
+		ComponentValue<JSpinner, Integer> componentValue =
 						entityComponents.integerSpinner(Detail.INT)
 										.link(value)
 										.buildValue();
@@ -352,7 +352,7 @@ public final class EntityComponentsTest {
 	@Test
 	void doubleSpinner() {
 		Value<Double> value = Value.nullable();
-		ComponentValue<Double, JSpinner> componentValue =
+		ComponentValue<JSpinner, Double> componentValue =
 						entityComponents.doubleSpinner(Detail.DOUBLE)
 										.link(value)
 										.buildValue();
@@ -366,7 +366,7 @@ public final class EntityComponentsTest {
 	@Test
 	void slider() {
 		Value<Integer> value = Value.nullable();
-		ComponentValue<Integer, JSlider> componentValue =
+		ComponentValue<JSlider, Integer> componentValue =
 						entityComponents.slider(Detail.INT)
 										.link(value)
 										.buildValue();

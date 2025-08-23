@@ -106,12 +106,12 @@ public final class AlbumTablePanel extends EntityTablePanel {
 					implements EditComponentFactory<List<String>, AlbumTagPanel> {
 
 		@Override
-		public ComponentValue<List<String>, AlbumTagPanel> component(SwingEntityEditModel editModel) {
+		public ComponentValue<AlbumTagPanel, List<String>> component(SwingEntityEditModel editModel) {
 			return new TagComponentValue();
 		}
 	}
 
-	private static final class TagComponentValue extends AbstractComponentValue<List<String>, AlbumTagPanel> {
+	private static final class TagComponentValue extends AbstractComponentValue<AlbumTagPanel, List<String>> {
 
 		private TagComponentValue() {
 			super(new AlbumTagPanel(Components.list()

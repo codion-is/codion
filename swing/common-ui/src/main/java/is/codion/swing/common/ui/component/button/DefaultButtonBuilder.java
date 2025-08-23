@@ -34,11 +34,11 @@ final class DefaultButtonBuilder<B extends ButtonBuilder<Void, JButton, B>> exte
 	}
 
 	@Override
-	protected ComponentValue<Void, JButton> createComponentValue(JButton component) {
+	protected ComponentValue<JButton, Void> createComponentValue(JButton component) {
 		return new ButtonComponentValue(component);
 	}
 
-	private static final class ButtonComponentValue extends AbstractComponentValue<Void, JButton> {
+	private static final class ButtonComponentValue extends AbstractComponentValue<JButton, Void> {
 
 		private ButtonComponentValue(JButton component) {
 			super(component);

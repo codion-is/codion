@@ -24,7 +24,7 @@ import org.jspecify.annotations.Nullable;
 
 import javax.swing.JLabel;
 
-final class LabelComponentValue<T> extends AbstractComponentValue<T, JLabel> {
+final class LabelComponentValue<T> extends AbstractComponentValue<JLabel, T> {
 
 	LabelComponentValue(JLabel component) {
 		super(component);

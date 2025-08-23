@@ -26,7 +26,7 @@ import javax.swing.AbstractButton;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-final class ToggleButtonValue<C extends AbstractButton> extends AbstractComponentValue<Boolean, C> {
+final class ToggleButtonValue<C extends AbstractButton> extends AbstractComponentValue<C, Boolean> {
 
 	ToggleButtonValue(C button) {
 		super(button, false);

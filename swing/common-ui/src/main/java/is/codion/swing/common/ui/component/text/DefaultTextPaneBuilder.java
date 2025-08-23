@@ -59,7 +59,7 @@ final class DefaultTextPaneBuilder extends AbstractTextComponentBuilder<String, 
 	}
 
 	@Override
-	protected ComponentValue<String, JTextPane> createComponentValue(JTextPane component) {
+	protected ComponentValue<JTextPane, String> createComponentValue(JTextPane component) {
 		return new DefaultTextComponentValue<>(component, null, updateOn());
 	}
 }

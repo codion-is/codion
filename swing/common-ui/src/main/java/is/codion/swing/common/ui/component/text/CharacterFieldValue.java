@@ -22,7 +22,7 @@ import org.jspecify.annotations.Nullable;
 
 import javax.swing.JTextField;
 
-final class CharacterFieldValue extends AbstractTextComponentValue<Character, JTextField> {
+final class CharacterFieldValue extends AbstractTextComponentValue<JTextField, Character> {
 
 	CharacterFieldValue(JTextField textField, UpdateOn updateOn) {
 		super(textField, null, updateOn);

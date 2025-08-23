@@ -48,7 +48,7 @@ public final class EntitySearchFieldPanelTest {
 						.entityType(Department.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
 						.build();
-		ComponentValue<Entity, EntitySearchFieldPanel> value = EntitySearchFieldPanel.builder()
+		ComponentValue<EntitySearchFieldPanel, Entity> value = EntitySearchFieldPanel.builder()
 						.model(model)
 						.editPanel(() -> null)
 						.singleSelection()

@@ -26,7 +26,7 @@ import javax.swing.JCheckBox;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-final class NullableCheckBoxValue extends AbstractComponentValue<Boolean, JCheckBox> {
+final class NullableCheckBoxValue extends AbstractComponentValue<JCheckBox, Boolean> {
 
 	NullableCheckBoxValue(NullableCheckBox checkBox) {
 		super(checkBox);

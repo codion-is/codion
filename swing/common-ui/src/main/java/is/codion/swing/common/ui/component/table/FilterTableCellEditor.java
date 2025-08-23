@@ -38,7 +38,7 @@ public interface FilterTableCellEditor<T> extends TableCellEditor {
 	/**
 	 * @return the underlying component value
 	 */
-	ComponentValue<T, ? extends JComponent> componentValue();
+	ComponentValue<? extends JComponent, T> componentValue();
 
 	/**
 	 * @return a {@link Builder.ComponentStep} instance.
@@ -75,7 +75,7 @@ public interface FilterTableCellEditor<T> extends TableCellEditor {
 			 * @param <T> the cell value type
 			 * @return a new {@link FilterTableCellEditor.Builder} instance
 			 */
-			<T> Builder<T> component(Supplier<ComponentValue<T, ? extends JComponent>> component);
+			<T> Builder<T> component(Supplier<ComponentValue<? extends JComponent, T>> component);
 		}
 
 		/**

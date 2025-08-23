@@ -28,7 +28,7 @@ import javax.swing.JComboBox;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-final class SelectedValue<T, C extends JComboBox<T>> extends AbstractComponentValue<T, C> {
+final class SelectedValue<T, C extends JComboBox<T>> extends AbstractComponentValue<C, T> {
 
 	SelectedValue(C comboBox) {
 		super(comboBox);

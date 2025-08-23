@@ -112,7 +112,7 @@ public class EntityConditionComponentFactory implements ComponentFactory {
 		}
 
 		return listBox()
-						.itemValue((ComponentValue<T, JComponent>) inputComponents.component(attribute).buildValue())
+						.itemValue((ComponentValue<JComponent, T>) inputComponents.component(attribute).buildValue())
 						.linkedValue(conditionModel.operands().in())
 						.build();
 	}

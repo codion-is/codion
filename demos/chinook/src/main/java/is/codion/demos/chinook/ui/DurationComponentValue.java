@@ -36,7 +36,7 @@ import static java.time.Duration.ofMillis;
 import static java.time.Duration.ofMinutes;
 import static java.util.ResourceBundle.getBundle;
 
-final class DurationComponentValue extends AbstractComponentValue<Integer, DurationComponentValue.DurationPanel> {
+final class DurationComponentValue extends AbstractComponentValue<DurationComponentValue.DurationPanel, Integer> {
 
 	DurationComponentValue(EditorValue<Integer> millisecondsValue) {
 		this(new DurationPanel(false, millisecondsValue.valid(), millisecondsValue.modified()));

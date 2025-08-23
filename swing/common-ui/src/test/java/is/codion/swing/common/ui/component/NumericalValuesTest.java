@@ -56,7 +56,7 @@ public class NumericalValuesTest {
 	void testLongPrimitive() {
 		Value<Long> longPrimitivePropertyValue = Value.nonNull(0L);
 		assertFalse(longPrimitivePropertyValue.isNullable());
-		ComponentValue<Long, NumberField<Long>> componentValue = Components.longField()
+		ComponentValue<NumberField<Long>, Long> componentValue = Components.longField()
 						.link(longPrimitivePropertyValue)
 						.buildValue();
 		NumberField<Long> longField = componentValue.component();
@@ -88,7 +88,7 @@ public class NumericalValuesTest {
 	@Test
 	void testInt() {
 		Value<Integer> integerPropertyValue = Value.nonNull(0);
-		ComponentValue<Integer, NumberField<Integer>> componentValue = Components.integerField()
+		ComponentValue<NumberField<Integer>, Integer> componentValue = Components.integerField()
 						.link(integerPropertyValue)
 						.buildValue();
 		NumberField<Integer> integerField = componentValue.component();
@@ -139,7 +139,7 @@ public class NumericalValuesTest {
 	@Test
 	void testDoublePrimitive() {
 		Value<Double> doublePrimitivePropertyValue = Value.nonNull(0d);
-		ComponentValue<Double, NumberField<Double>> componentValue = Components.doubleField()
+		ComponentValue<NumberField<Double>, Double> componentValue = Components.doubleField()
 						.decimalSeparator('.')
 						.groupingSeparator(',')
 						.buildValue();
@@ -157,7 +157,7 @@ public class NumericalValuesTest {
 
 	@Test
 	void parseDouble() {
-		ComponentValue<Double, NumberField<Double>> componentValue = Components.doubleField()
+		ComponentValue<NumberField<Double>, Double> componentValue = Components.doubleField()
 						.buildValue();
 		assertNull(componentValue.get());
 
@@ -193,7 +193,7 @@ public class NumericalValuesTest {
 	@Test
 	void integerValueField() {
 		final Integer value = 10;
-		ComponentValue<Integer, NumberField<Integer>> componentValue = Components.integerField()
+		ComponentValue<NumberField<Integer>, Integer> componentValue = Components.integerField()
 						.value(value)
 						.buildValue();
 		assertEquals(value, componentValue.get());
@@ -209,7 +209,7 @@ public class NumericalValuesTest {
 	@Test
 	void integerSpinnerUiValue() {
 		SpinnerNumberModel model = new SpinnerNumberModel();
-		ComponentValue<Integer, JSpinner> value = Components.integerSpinner()
+		ComponentValue<JSpinner, Integer> value = Components.integerSpinner()
 						.model(model)
 						.buildValue();
 
@@ -226,7 +226,7 @@ public class NumericalValuesTest {
 	@Test
 	void integerBoundedRangeModelUiValue() {
 		BoundedRangeModel model = new DefaultBoundedRangeModel(0, 0, 0, 150);
-		ComponentValue<Integer, JProgressBar> value = Components.progressBar()
+		ComponentValue<JProgressBar, Integer> value = Components.progressBar()
 						.model(model)
 						.buildValue();
 
@@ -259,7 +259,7 @@ public class NumericalValuesTest {
 
 	@Test
 	void integerTextUiValue() {
-		ComponentValue<Integer, NumberField<Integer>> value = Components.integerField()
+		ComponentValue<NumberField<Integer>, Integer> value = Components.integerField()
 						.buildValue();
 		NumberField<Integer> integerField = value.component();
 
@@ -276,7 +276,7 @@ public class NumericalValuesTest {
 	@Test
 	void longValue() {
 		final Long value = 10L;
-		ComponentValue<Long, NumberField<Long>> componentValue = Components.longField()
+		ComponentValue<NumberField<Long>, Long> componentValue = Components.longField()
 						.buildValue();
 		componentValue.set(value);
 		assertEquals(value, componentValue.get());
@@ -291,7 +291,7 @@ public class NumericalValuesTest {
 
 	@Test
 	void longTextUiValue() {
-		ComponentValue<Long, NumberField<Long>> value = Components.longField()
+		ComponentValue<NumberField<Long>, Long> value = Components.longField()
 						.buildValue();
 		NumberField<Long> longField = value.component();
 
@@ -307,7 +307,7 @@ public class NumericalValuesTest {
 
 	@Test
 	void bigDecimalTextUiValue() {
-		ComponentValue<BigDecimal, NumberField<BigDecimal>> value = Components.bigDecimalField()
+		ComponentValue<NumberField<BigDecimal>, BigDecimal> value = Components.bigDecimalField()
 						.decimalSeparator('.')
 						.groupingSeparator(',')
 						.buildValue();

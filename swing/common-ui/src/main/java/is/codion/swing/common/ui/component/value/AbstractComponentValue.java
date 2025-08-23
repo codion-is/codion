@@ -30,10 +30,10 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * An abstract base implementation of {@link ComponentValue}.
- * @param <T> the value type
  * @param <C> the component type
+ * @param <T> the value type
  */
-public abstract class AbstractComponentValue<T, C extends JComponent> extends AbstractValue<T> implements ComponentValue<T, C> {
+public abstract class AbstractComponentValue<C extends JComponent, T> extends AbstractValue<T> implements ComponentValue<C, T> {
 
 	private final C component;
 

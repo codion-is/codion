@@ -27,10 +27,10 @@ import javax.swing.JComponent;
  * A {@link Value} represented by an input component of some sort.
  * <p>
  * {@link Components} is a factory for {@link ComponentValue} implementations.
- * @param <T> the value type
  * @param <C> the component type
+ * @param <T> the value type
  */
-public interface ComponentValue<T, C extends JComponent> extends Value<T> {
+public interface ComponentValue<C extends JComponent, T> extends Value<T> {
 
 	/**
 	 * @return the input component representing the value

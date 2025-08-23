@@ -50,7 +50,7 @@ public interface ListBoxBuilder<T> extends ComponentValueBuilder<Set<T>, JComboB
 		 * @return a {@link LinkedValueBuilder}
 		 * @param <T> the item type
 		 */
-		<T> ListBoxBuilder.LinkedValueBuilder<T> itemValue(ComponentValue<T, ? extends JComponent> itemValue);
+		<T> ListBoxBuilder.LinkedValueBuilder<T> itemValue(ComponentValue<? extends JComponent, T> itemValue);
 	}
 
 	/**

@@ -68,8 +68,8 @@ final class EditPanelDemo extends EntityEditPanel {
 		component(Customer.FIRST_NAME).set(firstNameField);
 
 		//wrap the text field in a ComponentValue
-		ComponentValue<String, JTextField> firstNameFieldValue =
-						new AbstractTextComponentValue<String, JTextField>(firstNameField) {
+		ComponentValue<JTextField, String> firstNameFieldValue =
+						new AbstractTextComponentValue<JTextField, String>(firstNameField) {
 							@Override
 							protected String getComponentValue() {
 								return component().getText();

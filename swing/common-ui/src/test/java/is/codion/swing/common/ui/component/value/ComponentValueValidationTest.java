@@ -45,7 +45,7 @@ public final class ComponentValueValidationTest {
 		};
 
 		// For number fields, we need to use value() to set initial value before validation
-		ComponentValue<Integer, NumberField<Integer>> numberValue = Components.integerField()
+		ComponentValue<NumberField<Integer>, Integer> numberValue = Components.integerField()
 						.value(50)
 						.validator(rangeValidator)
 						.buildValue();
@@ -84,11 +84,11 @@ public final class ComponentValueValidationTest {
 			}
 		};
 
-		ComponentValue<Integer, NumberField<Integer>> minField = Components.integerField()
+		ComponentValue<NumberField<Integer>, Integer> minField = Components.integerField()
 						.link(minValue)
 						.buildValue();
 
-		ComponentValue<Integer, NumberField<Integer>> maxField = Components.integerField()
+		ComponentValue<NumberField<Integer>, Integer> maxField = Components.integerField()
 						.link(maxValue)
 						.validator(maxValidator)
 						.buildValue();
@@ -118,7 +118,7 @@ public final class ComponentValueValidationTest {
 			}
 		};
 
-		ComponentValue<String, JTextField> emailField = Components.stringField()
+		ComponentValue<JTextField, String> emailField = Components.stringField()
 						.validator(emailValidator)
 						.buildValue();
 
@@ -153,7 +153,7 @@ public final class ComponentValueValidationTest {
 	void nullValueValidation() {
 		// For integer fields, we need to test with a non-null value first
 		// since the validator runs during component creation
-		ComponentValue<Integer, NumberField<Integer>> field = Components.integerField()
+		ComponentValue<NumberField<Integer>, Integer> field = Components.integerField()
 						.value(50)
 						.valueRange(0, 100)
 						.buildValue();
@@ -183,7 +183,7 @@ public final class ComponentValueValidationTest {
 	@Test
 	void validatorExceptionTypes() {
 		// Test that different exception types are properly propagated
-		ComponentValue<String, JTextField> field = Components.stringField()
+		ComponentValue<JTextField, String> field = Components.stringField()
 						.validator(value -> {
 							if ("runtime".equals(value)) {
 								throw new RuntimeException("Runtime error");

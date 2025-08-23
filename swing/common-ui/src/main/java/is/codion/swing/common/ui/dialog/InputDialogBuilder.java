@@ -48,7 +48,7 @@ public interface InputDialogBuilder<T> extends DialogBuilder<InputDialogBuilder<
 		 * @param <T> the value type
 		 * @return a builder for an input dialog
 		 */
-		<T> InputDialogBuilder<T> component(ComponentValue<T, ?> componentValue);
+		<T> InputDialogBuilder<T> component(ComponentValue<?, T> componentValue);
 	}
 
 	/**

@@ -153,7 +153,7 @@ final class FrameworkUIDemo {
 		// tag::searchFieldReactiveBinding[]
 		SwingEntityEditModel editModel = new SwingEntityEditModel(Invoice.TYPE, connectionProvider);
 
-		ComponentValue<Entity, EntitySearchField> searchFieldValue =
+		ComponentValue<EntitySearchField, Entity> searchFieldValue =
 						EntitySearchField.builder()
 										.model(searchModel)
 										.singleSelection()
@@ -325,7 +325,7 @@ final class FrameworkUIDemo {
 		// end::editPanelDetailIntegration[]
 	}
 
-	static class DurationComponentValue extends AbstractComponentValue<Integer, JPanel> {
+	static class DurationComponentValue extends AbstractComponentValue<JPanel, Integer> {
 
 		DurationComponentValue() {
 			super(new JPanel());

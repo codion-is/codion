@@ -345,7 +345,7 @@ public final class EntityDialogs {
 				throw new IllegalArgumentException("All entities must be of the same type when editing");
 			}
 
-			ComponentValue<T, ?> componentValue = editComponentFactory.component(editModel);
+			ComponentValue<?, T> componentValue = editComponentFactory.component(editModel);
 			componentValue.set(defaultValue.apply(entities));
 			Dialogs.input()
 							.component(componentValue)
@@ -449,9 +449,9 @@ public final class EntityDialogs {
 
 		private final class InputValidator implements Predicate<T> {
 
-			private final ComponentValue<T, ?> componentValue;
+			private final ComponentValue<?, T> componentValue;
 
-			private InputValidator(ComponentValue<T, ?> componentValue) {
+			private InputValidator(ComponentValue<?, T> componentValue) {
 				this.componentValue = componentValue;
 			}
 

@@ -40,7 +40,7 @@ import static java.util.Objects.requireNonNull;
 public abstract class AbstractComponentValueBuilder<T, C extends JComponent, B extends ComponentValueBuilder<T, C, B>>
 	extends AbstractComponentBuilder<C, B> implements ComponentValueBuilder<T, C, B> {
 
-	private final List<Consumer<ComponentValue<T, C>>> buildConsumers = new ArrayList<>(1);
+	private final List<Consumer<ComponentValue<C, T>>> buildConsumers = new ArrayList<>(1);
 	private final List<Value<T>> linkedValues = new ArrayList<>(1);
 	private final List<Observable<T>> linkedObservables = new ArrayList<>(1);
 	private final List<Value.Validator<T>> validators = new ArrayList<>();
@@ -133,20 +133,20 @@ public abstract class AbstractComponentValueBuilder<T, C extends JComponent, B e
 	}
 
 	@Override
-	public final B onBuildValue(Consumer<ComponentValue<T, C>> onBuildValue) {
+	public final B onBuildValue(Consumer<ComponentValue<C, T>> onBuildValue) {
 		buildConsumers.add(requireNonNull(onBuildValue));
 		return (B) this;
 	}
 
 	@Override
-	public final ComponentValue<T, C> buildValue() {
+	public final ComponentValue<C, T> buildValue() {
 		return buildValue(null);
 	}
 
 	@Override
-	public final ComponentValue<T, C> buildValue(@Nullable Consumer<ComponentValue<T, C>> onBuild) {
+	public final ComponentValue<C, T> buildValue(@Nullable Consumer<ComponentValue<C, T>> onBuild) {
 		C component = build();
-		ComponentValue<T, C> componentValue = (ComponentValue<T, C>) component.getClientProperty(COMPONENT_VALUE);
+		ComponentValue<C, T> componentValue = (ComponentValue<C, T>) component.getClientProperty(COMPONENT_VALUE);
 		if (onBuild != null) {
 			onBuild.accept(componentValue);
 		}
@@ -167,9 +167,9 @@ public abstract class AbstractComponentValueBuilder<T, C extends JComponent, B e
 	 * @param component the component
 	 * @return a component value based on the component
 	 */
-	protected abstract ComponentValue<T, C> createComponentValue(C component);
+	protected abstract ComponentValue<C, T> createComponentValue(C component);
 
-	private void configureValue(ComponentValue<T, C> componentValue) {
+	private void configureValue(ComponentValue<C, T> componentValue) {
 		C component = componentValue.component();
 		component.putClientProperty(COMPONENT_VALUE, componentValue);
 		validators.forEach(componentValue::addValidator);
@@ -184,7 +184,7 @@ public abstract class AbstractComponentValueBuilder<T, C extends JComponent, B e
 		configureModifiedIndicator(component);
 	}
 
-	private void configureValidIndicator(ComponentValue<T, C> componentValue) {
+	private void configureValidIndicator(ComponentValue<C, T> componentValue) {
 		if (validIndicatorFactory == null) {
 			return;
 		}
@@ -202,7 +202,7 @@ public abstract class AbstractComponentValueBuilder<T, C extends JComponent, B e
 		}
 	}
 
-	private static <T, C extends JComponent> ObservableState createValidState(ComponentValue<T, C> componentValue,
+	private static <T, C extends JComponent> ObservableState createValidState(ComponentValue<C, T> componentValue,
 																																						Predicate<T> validator) {
 		ValidationConsumer<T> validationConsumer = new ValidationConsumer<>(componentValue.get(), validator);
 		componentValue.addConsumer(validationConsumer);

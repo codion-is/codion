@@ -48,7 +48,7 @@ final class DefaultScalingSelectionDialogBuilder implements ScalingSelectionDial
 	@Override
 	public int show(String title) {
 		List<Item<Integer>> values = initializeValues();
-		ComponentValue<Integer, JComboBox<Item<Integer>>> componentValue = ItemComboBoxBuilder.builder()
+		ComponentValue<JComboBox<Item<Integer>>, Integer> componentValue = ItemComboBoxBuilder.builder()
 						.items(values)
 						.value(Scaler.SCALING.getOrThrow())
 						.renderer(new FontSizeCellRenderer(values, Scaler.SCALING.getOrThrow()))

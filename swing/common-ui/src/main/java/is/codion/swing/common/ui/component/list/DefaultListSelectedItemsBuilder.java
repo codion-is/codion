@@ -43,11 +43,11 @@ final class DefaultListSelectedItemsBuilder<T> extends AbstractListBuilder<T, Li
 	}
 
 	@Override
-	protected ComponentValue<List<T>, FilterList<T>> createComponentValue(FilterList<T> component) {
+	protected ComponentValue<FilterList<T>, List<T>> createComponentValue(FilterList<T> component) {
 		return new ListSelectedItemsValue<>(component);
 	}
 
-	private static final class ListSelectedItemsValue<T> extends AbstractComponentValue<List<T>, FilterList<T>> {
+	private static final class ListSelectedItemsValue<T> extends AbstractComponentValue<FilterList<T>, List<T>> {
 
 		private ListSelectedItemsValue(FilterList<T> list) {
 			super(list, emptyList());

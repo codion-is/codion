@@ -251,7 +251,7 @@ public final class EntitySearchFieldPanel extends JPanel {
 	 */
 	public interface SingleSelectionBuilder extends Builder<Entity, SingleSelectionBuilder> {}
 
-	private static class SingleSelectionValue extends AbstractComponentValue<Entity, EntitySearchFieldPanel> {
+	private static class SingleSelectionValue extends AbstractComponentValue<EntitySearchFieldPanel, Entity> {
 
 		private SingleSelectionValue(EntitySearchFieldPanel component) {
 			super(component);
@@ -269,7 +269,7 @@ public final class EntitySearchFieldPanel extends JPanel {
 		}
 	}
 
-	private static final class MultiSelectionValue extends AbstractComponentValue<Set<Entity>, EntitySearchFieldPanel> {
+	private static final class MultiSelectionValue extends AbstractComponentValue<EntitySearchFieldPanel, Set<Entity>> {
 
 		private MultiSelectionValue(EntitySearchFieldPanel searchFieldPanel) {
 			super(searchFieldPanel);
@@ -356,7 +356,7 @@ public final class EntitySearchFieldPanel extends JPanel {
 		}
 
 		@Override
-		protected ComponentValue<Set<Entity>, EntitySearchFieldPanel> createComponentValue(EntitySearchFieldPanel component) {
+		protected ComponentValue<EntitySearchFieldPanel, Set<Entity>> createComponentValue(EntitySearchFieldPanel component) {
 			return new MultiSelectionValue(component);
 		}
 	}
@@ -371,7 +371,7 @@ public final class EntitySearchFieldPanel extends JPanel {
 		}
 
 		@Override
-		protected ComponentValue<Entity, EntitySearchFieldPanel> createComponentValue(EntitySearchFieldPanel component) {
+		protected ComponentValue<EntitySearchFieldPanel, Entity> createComponentValue(EntitySearchFieldPanel component) {
 			return new SingleSelectionValue(component);
 		}
 	}

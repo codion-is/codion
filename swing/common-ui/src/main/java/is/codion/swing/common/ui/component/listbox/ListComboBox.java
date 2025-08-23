@@ -47,7 +47,7 @@ final class ListComboBox<T> extends JComboBox<T> {
 	private final Value<T> itemValue;
 	private final ValueSet<T> linkedValue;
 
-	ListComboBox(FilterComboBoxModel<T> comboBoxModel, ComponentValue<T, ? extends JComponent> itemValue,
+	ListComboBox(FilterComboBoxModel<T> comboBoxModel, ComponentValue<? extends JComponent, T> itemValue,
 							 ValueSet<T> linkedValue) {
 		super(comboBoxModel);
 		this.itemValue = itemValue;

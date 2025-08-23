@@ -81,7 +81,7 @@ public final class PlaylistTablePanel extends EntityTablePanel {
 	}
 
 	private static final class RandomPlaylistParametersValue
-					extends AbstractComponentValue<RandomPlaylistParameters, RandomPlaylistParametersPanel> {
+					extends AbstractComponentValue<RandomPlaylistParametersPanel, RandomPlaylistParameters> {
 
 		private RandomPlaylistParametersValue(EntityConnectionProvider connectionProvider) {
 			super(new RandomPlaylistParametersPanel(connectionProvider));

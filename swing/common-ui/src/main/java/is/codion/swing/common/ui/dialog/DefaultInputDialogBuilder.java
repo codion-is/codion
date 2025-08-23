@@ -50,13 +50,13 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 	static final ComponentStep COMPONENT = new DefaultComponentStep();
 
 	private final JPanel basePanel = new JPanel(Layouts.borderLayout());
-	private final ComponentValue<T, ?> componentValue;
+	private final ComponentValue<?, T> componentValue;
 	private final OkCancelDialogBuilder okCancelDialogBuilder = new DefaultOkCancelDialogBuilder()
 					.component(basePanel);
 
 	private @Nullable String caption;
 
-	DefaultInputDialogBuilder(ComponentValue<T, ?> componentValue) {
+	DefaultInputDialogBuilder(ComponentValue<?, T> componentValue) {
 		this.componentValue = requireNonNull(componentValue);
 		this.basePanel.add(componentValue.component(), BorderLayout.CENTER);
 		int gap = Layouts.GAP.getOrThrow();
@@ -176,7 +176,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 		}
 
 		@Override
-		public <T> InputDialogBuilder<T> component(ComponentValue<T, ?> componentValue) {
+		public <T> InputDialogBuilder<T> component(ComponentValue<?, T> componentValue) {
 			return new DefaultInputDialogBuilder<>(componentValue);
 		}
 	}

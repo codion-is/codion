@@ -90,11 +90,11 @@ final class DefaultProgressBarBuilder extends AbstractComponentValueBuilder<Inte
 	}
 
 	@Override
-	protected ComponentValue<Integer, JProgressBar> createComponentValue(JProgressBar component) {
+	protected ComponentValue<JProgressBar, Integer> createComponentValue(JProgressBar component) {
 		return new IntegerProgressBarValue(component);
 	}
 
-	private static final class IntegerProgressBarValue extends AbstractComponentValue<Integer, JProgressBar> {
+	private static final class IntegerProgressBarValue extends AbstractComponentValue<JProgressBar, Integer> {
 
 		private IntegerProgressBarValue(JProgressBar progressBar) {
 			super(progressBar, 0);

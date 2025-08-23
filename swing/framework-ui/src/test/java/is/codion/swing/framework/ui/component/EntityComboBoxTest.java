@@ -57,7 +57,7 @@ public class EntityComboBoxTest {
 		model.items().refresh();
 		Entity operations = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME.equalTo("OPERATIONS"));
 		model.selection().item().set(operations);
-		ComponentValue<Entity, EntityComboBox> value = EntityComboBox.builder()
+		ComponentValue<EntityComboBox, Entity> value = EntityComboBox.builder()
 						.model(model)
 						.buildValue();
 

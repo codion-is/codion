@@ -183,7 +183,7 @@ public final class InputControls {
 
 		//create a NumberField component value, basically doing the same as
 		//the above, with an extra step to expose the underlying ComponentValue
-		ComponentValue<Integer, NumberField<Integer>> numberFieldValue =
+		ComponentValue<NumberField<Integer>, Integer> numberFieldValue =
 						Components.integerField()
 										//linked to the same value
 										.link(integerValue)
@@ -463,7 +463,7 @@ public final class InputControls {
 			}
 		}
 
-		class PersonPanelValue extends AbstractComponentValue<Person, PersonPanel> {
+		class PersonPanelValue extends AbstractComponentValue<PersonPanel, Person> {
 
 			public PersonPanelValue(PersonPanel component) {
 				super(component);

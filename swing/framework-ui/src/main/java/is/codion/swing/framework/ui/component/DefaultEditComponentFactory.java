@@ -65,7 +65,7 @@ public class DefaultEditComponentFactory<T, C extends JComponent> implements Edi
 	}
 
 	@Override
-	public ComponentValue<T, C> component(SwingEntityEditModel editModel) {
+	public ComponentValue<C, T> component(SwingEntityEditModel editModel) {
 		requireNonNull(editModel);
 		if (attribute instanceof ForeignKey) {
 			return createForeignKeyComponentValue((ForeignKey) attribute, editModel);
@@ -76,12 +76,12 @@ public class DefaultEditComponentFactory<T, C extends JComponent> implements Edi
 		EntityComponents components = entityComponents(editModel.entityDefinition());
 		AttributeDefinition<T> definition = editModel.entityDefinition().attributes().definition(attribute);
 		if (attribute.type().isString() && definition.items().isEmpty()) {
-			return (ComponentValue<T, C>) components.textFieldPanel((Attribute<String>) attribute)
+			return (ComponentValue<C, T>) components.textFieldPanel((Attribute<String>) attribute)
 							.columns(textFieldColumns((AttributeDefinition<String>) definition))
 							.buildValue();
 		}
 
-		return (ComponentValue<T, C>) components.component(attribute).buildValue();
+		return (ComponentValue<C, T>) components.component(attribute).buildValue();
 	}
 
 	/**
@@ -116,24 +116,24 @@ public class DefaultEditComponentFactory<T, C extends JComponent> implements Edi
 						.searchOnFocusLost(false);
 	}
 
-	private ComponentValue<T, C> createForeignKeyComponentValue(ForeignKey foreignKey, SwingEntityEditModel editModel) {
+	private ComponentValue<C, T> createForeignKeyComponentValue(ForeignKey foreignKey, SwingEntityEditModel editModel) {
 		if (editModel.entities().definition(foreignKey.referencedType()).smallDataset()) {
-			return (ComponentValue<T, C>) comboBox(foreignKey, editModel.entityDefinition(), editModel.createComboBoxModel(foreignKey))
+			return (ComponentValue<C, T>) comboBox(foreignKey, editModel.entityDefinition(), editModel.createComboBoxModel(foreignKey))
 							.onSetVisible(comboBox -> comboBox.getModel().items().refresh())
 							.buildValue();
 		}
 
-		return (ComponentValue<T, C>) searchField(foreignKey, editModel.entityDefinition(), editModel.createSearchModel(foreignKey))
+		return (ComponentValue<C, T>) searchField(foreignKey, editModel.entityDefinition(), editModel.createSearchModel(foreignKey))
 						.buildValue();
 	}
 
-	private static <T, A extends Attribute<T>, C extends JComponent> ComponentValue<T, C> createTemporalComponentValue(A attribute,
+	private static <T, A extends Attribute<T>, C extends JComponent> ComponentValue<C, T> createTemporalComponentValue(A attribute,
 																																																										 EntityComponents inputComponents) {
 		if (TemporalFieldPanel.supports((Class<Temporal>) attribute.type().valueClass())) {
-			return (ComponentValue<T, C>) inputComponents.temporalFieldPanel((Attribute<Temporal>) attribute).buildValue();
+			return (ComponentValue<C, T>) inputComponents.temporalFieldPanel((Attribute<Temporal>) attribute).buildValue();
 		}
 
-		return (ComponentValue<T, C>) inputComponents.temporalField((Attribute<Temporal>) attribute).buildValue();
+		return (ComponentValue<C, T>) inputComponents.temporalField((Attribute<Temporal>) attribute).buildValue();
 	}
 
 	private static int textFieldColumns(AttributeDefinition<String> definition) {

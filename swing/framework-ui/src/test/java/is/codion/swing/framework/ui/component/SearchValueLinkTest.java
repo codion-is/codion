@@ -51,7 +51,7 @@ public class SearchValueLinkTest {
 
 	@Test
 	void test() {
-		ComponentValue<Entity, EntitySearchField> componentValue =
+		ComponentValue<EntitySearchField, Entity> componentValue =
 						inputComponents.searchField(Employee.DEPARTMENT_FK,
 														model.searchModel(Employee.DEPARTMENT_FK))
 										.singleSelection()

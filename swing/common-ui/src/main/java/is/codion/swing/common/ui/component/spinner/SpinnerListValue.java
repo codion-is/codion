@@ -24,7 +24,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerListModel;
 import java.util.List;
 
-final class SpinnerListValue<T> extends AbstractComponentValue<T, JSpinner> {
+final class SpinnerListValue<T> extends AbstractComponentValue<JSpinner, T> {
 
 	SpinnerListValue(JSpinner spinner) {
 		super(spinner);

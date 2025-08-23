@@ -53,11 +53,11 @@ final class DefaultListBoxBuilder<T>
 
 	static final ItemValueStep ITEM = new DefaultItemValueStep();
 
-	private final ComponentValue<T, ? extends JComponent> itemValue;
+	private final ComponentValue<? extends JComponent, T> itemValue;
 	private final ValueSet<T> linkedValue;
 	private Function<Object, String> string = new DefaultString();
 
-	DefaultListBoxBuilder(ComponentValue<T, ? extends JComponent> itemValue, ValueSet<T> linkedValue) {
+	DefaultListBoxBuilder(ComponentValue<? extends JComponent, T> itemValue, ValueSet<T> linkedValue) {
 		this.itemValue = requireNonNull(itemValue);
 		this.linkedValue = requireNonNull(linkedValue);
 	}
@@ -82,7 +82,7 @@ final class DefaultListBoxBuilder<T>
 	}
 
 	@Override
-	protected ComponentValue<Set<T>, JComboBox<T>> createComponentValue(JComboBox<T> comboBox) {
+	protected ComponentValue<JComboBox<T>, Set<T>> createComponentValue(JComboBox<T> comboBox) {
 		return new ListBoxComponentValue<>((ListComboBox<T>) comboBox);
 	}
 
@@ -96,9 +96,9 @@ final class DefaultListBoxBuilder<T>
 
 	private static final class Editor<T> implements ComboBoxEditor {
 
-		private final ComponentValue<T, ? extends JComponent> itemValue;
+		private final ComponentValue<? extends JComponent, T> itemValue;
 
-		private Editor(ComponentValue<T, ? extends JComponent> itemValue) {
+		private Editor(ComponentValue<? extends JComponent, T> itemValue) {
 			this.itemValue = itemValue;
 		}
 
@@ -146,8 +146,8 @@ final class DefaultListBoxBuilder<T>
 	}
 
 	private static final class ListBoxComponentValue<T>
-					extends AbstractComponentValue<Set<T>, JComboBox<T>>
-					implements ComponentValue<Set<T>, JComboBox<T>> {
+					extends AbstractComponentValue<JComboBox<T>, Set<T>>
+					implements ComponentValue<JComboBox<T>, Set<T>> {
 
 		public ListBoxComponentValue(ListComboBox<T> comboBox) {
 			super(comboBox, emptySet());
@@ -184,16 +184,16 @@ final class DefaultListBoxBuilder<T>
 	private static final class DefaultItemValueStep implements ItemValueStep {
 
 		@Override
-		public <T> LinkedValueBuilder<T> itemValue(ComponentValue<T, ? extends JComponent> itemValue) {
+		public <T> LinkedValueBuilder<T> itemValue(ComponentValue<? extends JComponent, T> itemValue) {
 			return new DefaultLinkedValueBuilder<>(requireNonNull(itemValue));
 		}
 	}
 
 	private static final class DefaultLinkedValueBuilder<T> implements LinkedValueBuilder<T> {
 
-		private final ComponentValue<T, ? extends JComponent> itemValue;
+		private final ComponentValue<? extends JComponent, T> itemValue;
 
-		private DefaultLinkedValueBuilder(ComponentValue<T, ? extends JComponent> itemValue) {
+		private DefaultLinkedValueBuilder(ComponentValue<? extends JComponent, T> itemValue) {
 			this.itemValue = requireNonNull(itemValue);
 		}
 

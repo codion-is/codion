@@ -37,11 +37,11 @@ class DefaultMenuItemBuilder<C extends JMenuItem, B extends MenuItemBuilder<C, B
 	}
 
 	@Override
-	protected final ComponentValue<Void, C> createComponentValue(C component) {
+	protected final ComponentValue<C, Void> createComponentValue(C component) {
 		return new MenuItemComponentValue<>(component);
 	}
 
-	private static final class MenuItemComponentValue<C extends JMenuItem> extends AbstractComponentValue<Void, C> {
+	private static final class MenuItemComponentValue<C extends JMenuItem> extends AbstractComponentValue<C, Void> {
 
 		private MenuItemComponentValue(C component) {
 			super(component);

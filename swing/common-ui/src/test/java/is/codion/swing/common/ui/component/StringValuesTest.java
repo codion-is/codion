@@ -39,7 +39,7 @@ public class StringValuesTest {
 							}
 						})
 						.build();
-		ComponentValue<String, JTextField> textFieldValue = Components.stringField()
+		ComponentValue<JTextField, String> textFieldValue = Components.stringField()
 						.link(textValue)
 						.buildValue();
 
@@ -97,7 +97,7 @@ public class StringValuesTest {
 
 	@Test
 	void textValue() {
-		ComponentValue<String, JTextField> value = Components.stringField()
+		ComponentValue<JTextField, String> value = Components.stringField()
 						.buildValue();
 		JTextField textField = value.component();
 
@@ -113,7 +113,7 @@ public class StringValuesTest {
 
 	@Test
 	void characterValue() {
-		ComponentValue<Character, JTextField> value = Components.textField()
+		ComponentValue<JTextField, Character> value = Components.textField()
 						.valueClass(Character.class)
 						.buildValue();
 		assertNull(value.get());

@@ -44,10 +44,10 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implements FilterTableCellEditor<T> {
 
-	private final Supplier<ComponentValue<T, ? extends JComponent>> inputComponent;
+	private final Supplier<ComponentValue<? extends JComponent, T>> inputComponent;
 	private final Function<EventObject, Boolean> cellEditable;
 
-	private @Nullable ComponentValue<T, ? extends JComponent> componentValue;
+	private @Nullable ComponentValue<? extends JComponent, T> componentValue;
 
 	int editedRow = -1;
 
@@ -57,7 +57,7 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 	}
 
 	@Override
-	public ComponentValue<T, ? extends JComponent> componentValue() {
+	public ComponentValue<? extends JComponent, T> componentValue() {
 		if (componentValue == null) {
 			componentValue = initializeComponentValue();
 		}
@@ -103,8 +103,8 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 		}
 	}
 
-	private ComponentValue<T, ? extends JComponent> initializeComponentValue() {
-		ComponentValue<T, ? extends JComponent> value = inputComponent.get();
+	private ComponentValue<? extends JComponent, T> initializeComponentValue() {
+		ComponentValue<? extends JComponent, T> value = inputComponent.get();
 		JComponent editorComponent = value.component();
 		if (editorComponent instanceof JCheckBox) {
 			((JCheckBox) editorComponent).setHorizontalAlignment(SwingConstants.CENTER);
@@ -121,7 +121,7 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 	private static final class DefaultComponentStep implements Builder.ComponentStep {
 
 		@Override
-		public <T> Builder<T> component(Supplier<ComponentValue<T, ? extends JComponent>> component) {
+		public <T> Builder<T> component(Supplier<ComponentValue<? extends JComponent, T>> component) {
 			return new DefaultBuilder<>(requireNonNull(component));
 		}
 	}
@@ -130,11 +130,11 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 
 		static final ComponentStep COMPONENT = new DefaultComponentStep();
 
-		private final Supplier<ComponentValue<T, ? extends JComponent>> component;
+		private final Supplier<ComponentValue<? extends JComponent, T>> component;
 
 		private Function<EventObject, Boolean> cellEditable = new DefaultCellEditable();
 
-		private DefaultBuilder(Supplier<ComponentValue<T, ? extends JComponent>> component) {
+		private DefaultBuilder(Supplier<ComponentValue<? extends JComponent, T>> component) {
 			this.component = component;
 		}
 

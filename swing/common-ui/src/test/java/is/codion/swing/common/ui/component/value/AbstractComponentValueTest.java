@@ -160,7 +160,7 @@ public final class AbstractComponentValueTest {
 	}
 
 	// Test implementation of AbstractComponentValue
-	private static class TestComponentValue extends AbstractComponentValue<String, JTextField> {
+	private static class TestComponentValue extends AbstractComponentValue<JTextField, String> {
 
 		TestComponentValue(JTextField textField) {
 			super(textField);

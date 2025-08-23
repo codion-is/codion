@@ -60,7 +60,7 @@ public class EntitySearchFieldTest {
 						.entityType(Department.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
 						.build();
-		ComponentValue<Entity, EntitySearchField> singleSelectionValue = EntitySearchField.builder()
+		ComponentValue<EntitySearchField, Entity> singleSelectionValue = EntitySearchField.builder()
 						.model(singleSelectionSearchModel)
 						.singleSelection()
 						.buildValue();
@@ -86,7 +86,7 @@ public class EntitySearchFieldTest {
 						.entityType(Department.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)
 						.build();
-		ComponentValue<Set<Entity>, EntitySearchField> multiSelectionValue = EntitySearchField.builder()
+		ComponentValue<EntitySearchField, Set<Entity>> multiSelectionValue = EntitySearchField.builder()
 						.model(multiSelectionSearchModel)
 						.multiSelection()
 						.buildValue();

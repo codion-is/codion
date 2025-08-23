@@ -36,10 +36,10 @@ import java.util.function.Consumer;
 /**
  * An abstract {@link ComponentValue} implementation for a text component.
  * Handles value notification.
- * @param <T> the value type
  * @param <C> the component type
+ * @param <T> the value type
  */
-public abstract class AbstractTextComponentValue<T, C extends JTextComponent> extends AbstractComponentValue<T, C> {
+public abstract class AbstractTextComponentValue<C extends JTextComponent, T> extends AbstractComponentValue<C, T> {
 
 	/**
 	 * Instantiates a new {@link AbstractTextComponentValue}, with the {@link UpdateOn#VALUE_CHANGE}

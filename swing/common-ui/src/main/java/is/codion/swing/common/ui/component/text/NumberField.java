@@ -544,7 +544,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 		}
 
 		@Override
-		protected ComponentValue<BigDecimal, NumberField<BigDecimal>> createComponentValue(NumberField<BigDecimal> component) {
+		protected ComponentValue<NumberField<BigDecimal>, BigDecimal> createComponentValue(NumberField<BigDecimal> component) {
 			return new BigDecimalFieldValue(component, nullable, updateOn());
 		}
 	}
@@ -561,7 +561,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 		}
 
 		@Override
-		protected ComponentValue<Double, NumberField<Double>> createComponentValue(NumberField<Double> component) {
+		protected ComponentValue<NumberField<Double>, Double> createComponentValue(NumberField<Double> component) {
 			return new DoubleFieldValue(component, nullable, updateOn());
 		}
 	}
@@ -578,7 +578,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 		}
 
 		@Override
-		protected ComponentValue<Short, NumberField<Short>> createComponentValue(NumberField<Short> component) {
+		protected ComponentValue<NumberField<Short>, Short> createComponentValue(NumberField<Short> component) {
 			return new ShortFieldValue(component, nullable, updateOn());
 		}
 	}
@@ -595,7 +595,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 		}
 
 		@Override
-		protected ComponentValue<Integer, NumberField<Integer>> createComponentValue(NumberField<Integer> component) {
+		protected ComponentValue<NumberField<Integer>, Integer> createComponentValue(NumberField<Integer> component) {
 			return new IntegerFieldValue(component, nullable, updateOn());
 		}
 	}
@@ -612,12 +612,12 @@ public final class NumberField<T extends Number> extends HintTextField {
 		}
 
 		@Override
-		protected ComponentValue<Long, NumberField<Long>> createComponentValue(NumberField<Long> component) {
+		protected ComponentValue<NumberField<Long>, Long> createComponentValue(NumberField<Long> component) {
 			return new LongFieldValue(component, nullable, updateOn());
 		}
 	}
 
-	private static final class ShortFieldValue extends AbstractTextComponentValue<Short, NumberField<Short>> {
+	private static final class ShortFieldValue extends AbstractTextComponentValue<NumberField<Short>, Short> {
 
 		private ShortFieldValue(NumberField<Short> shortField, boolean nullable, UpdateOn updateOn) {
 			super(shortField, nullable ? null : (short) 0, updateOn);
@@ -639,7 +639,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 		}
 	}
 
-	private static final class DoubleFieldValue extends AbstractTextComponentValue<Double, NumberField<Double>> {
+	private static final class DoubleFieldValue extends AbstractTextComponentValue<NumberField<Double>, Double> {
 
 		private DoubleFieldValue(NumberField<Double> doubleField, boolean nullable, UpdateOn updateOn) {
 			super(doubleField, nullable ? null : 0d, updateOn);
@@ -661,7 +661,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 		}
 	}
 
-	private static final class IntegerFieldValue extends AbstractTextComponentValue<Integer, NumberField<Integer>> {
+	private static final class IntegerFieldValue extends AbstractTextComponentValue<NumberField<Integer>, Integer> {
 
 		private IntegerFieldValue(NumberField<Integer> integerField, boolean nullable, UpdateOn updateOn) {
 			super(integerField, nullable ? null : 0, updateOn);
@@ -683,7 +683,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 		}
 	}
 
-	private static final class LongFieldValue extends AbstractTextComponentValue<Long, NumberField<Long>> {
+	private static final class LongFieldValue extends AbstractTextComponentValue<NumberField<Long>, Long> {
 
 		private LongFieldValue(NumberField<Long> longField, boolean nullable, UpdateOn updateOn) {
 			super(longField, nullable ? null : 0L, updateOn);
@@ -705,7 +705,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 		}
 	}
 
-	private static final class BigDecimalFieldValue extends AbstractTextComponentValue<BigDecimal, NumberField<BigDecimal>> {
+	private static final class BigDecimalFieldValue extends AbstractTextComponentValue<NumberField<BigDecimal>, BigDecimal> {
 
 		private BigDecimalFieldValue(NumberField<BigDecimal> doubleField, boolean nullable, UpdateOn updateOn) {
 			super(doubleField, nullable ? null : BigDecimal.ZERO, updateOn);

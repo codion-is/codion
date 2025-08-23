@@ -24,7 +24,7 @@ import org.jspecify.annotations.Nullable;
 
 import javax.swing.JFormattedTextField;
 
-final class MaskedTextFieldValue<T> extends AbstractComponentValue<T, JFormattedTextField> {
+final class MaskedTextFieldValue<T> extends AbstractComponentValue<JFormattedTextField, T> {
 
 	MaskedTextFieldValue(JFormattedTextField component) {
 		super(component);

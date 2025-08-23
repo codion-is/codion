@@ -239,14 +239,14 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 
 		private static final class DateConditionPanel extends ConditionPanel<LocalDate> {
 
-			private final ComponentValue<Integer, NumberField<Integer>> yearValue = Components.integerField()
+			private final ComponentValue<NumberField<Integer>, Integer> yearValue = Components.integerField()
 							.value(LocalDate.now().getYear())
 							.listener(this::updateCondition)
 							.focusable(false)
 							.columns(4)
 							.horizontalAlignment(SwingConstants.CENTER)
 							.buildValue();
-			private final ComponentValue<Month, JSpinner> monthValue = Components.<Month>itemSpinner()
+			private final ComponentValue<JSpinner, Month> monthValue = Components.<Month>itemSpinner()
 							.model(new MonthSpinnerModel())
 							.listener(this::updateCondition)
 							.editable(false)

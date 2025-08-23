@@ -39,7 +39,7 @@ public interface EditComponentFactory<T, C extends JComponent> {
 	 * @param editModel the edit model used to create foreign key input models
 	 * @return a new {@link ComponentValue} instance
 	 */
-	ComponentValue<T, C> component(SwingEntityEditModel editModel);
+	ComponentValue<C, T> component(SwingEntityEditModel editModel);
 
 	/**
 	 * Provides a way to override the default attribute caption, when presenting the component to the user.

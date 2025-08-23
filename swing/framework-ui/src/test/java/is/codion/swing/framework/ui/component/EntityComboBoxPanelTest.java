@@ -49,7 +49,7 @@ public final class EntityComboBoxPanelTest {
 						.connectionProvider(CONNECTION_PROVIDER)
 						.build();
 		model.items().refresh();
-		ComponentValue<Entity, EntityComboBoxPanel> value = EntityComboBoxPanel.builder()
+		ComponentValue<EntityComboBoxPanel, Entity> value = EntityComboBoxPanel.builder()
 						.model(model)
 						.editPanel(() -> null)
 						.buildValue();

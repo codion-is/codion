@@ -22,7 +22,7 @@ import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 
 import javax.swing.JSlider;
 
-final class IntegerSliderValue extends AbstractComponentValue<Integer, JSlider> {
+final class IntegerSliderValue extends AbstractComponentValue<JSlider, Integer> {
 
 	IntegerSliderValue(JSlider slider) {
 		super(slider, 0);

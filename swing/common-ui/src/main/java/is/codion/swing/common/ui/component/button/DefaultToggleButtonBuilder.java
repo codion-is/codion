@@ -71,11 +71,11 @@ class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButton
 	}
 
 	@Override
-	protected ComponentValue<Boolean, C> createComponentValue(JToggleButton component) {
-		ComponentValue<Boolean, ?> componentValue = new ToggleButtonValue<>(component);
+	protected ComponentValue<C, Boolean> createComponentValue(JToggleButton component) {
+		ComponentValue<?, Boolean> componentValue = new ToggleButtonValue<>(component);
 		linkedObservableStates.forEach(state -> state.addConsumer(new SetComponentValue(componentValue)));
 
-		return (ComponentValue<Boolean, C>) componentValue;
+		return (ComponentValue<C, Boolean>) componentValue;
 	}
 
 	@Override
@@ -85,9 +85,9 @@ class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButton
 
 	static final class SetComponentValue implements Consumer<Boolean> {
 
-		private final ComponentValue<Boolean, ?> componentValue;
+		private final ComponentValue<?, Boolean> componentValue;
 
-		SetComponentValue(ComponentValue<Boolean, ?> componentValue) {
+		SetComponentValue(ComponentValue<?, Boolean> componentValue) {
 			this.componentValue = componentValue;
 		}
 

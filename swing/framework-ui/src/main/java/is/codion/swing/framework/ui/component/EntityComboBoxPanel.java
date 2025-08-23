@@ -263,7 +263,7 @@ public final class EntityComboBoxPanel extends JPanel {
 		}
 
 		@Override
-		protected ComponentValue<Entity, EntityComboBoxPanel> createComponentValue(EntityComboBoxPanel component) {
+		protected ComponentValue<EntityComboBoxPanel, Entity> createComponentValue(EntityComboBoxPanel component) {
 			return new EntityComboBoxPanelValue(component);
 		}
 
@@ -283,7 +283,7 @@ public final class EntityComboBoxPanel extends JPanel {
 			return entityComboBoxBuilder.build();
 		}
 
-		private static class EntityComboBoxPanelValue extends AbstractComponentValue<Entity, EntityComboBoxPanel> {
+		private static class EntityComboBoxPanelValue extends AbstractComponentValue<EntityComboBoxPanel, Entity> {
 
 			private EntityComboBoxPanelValue(EntityComboBoxPanel component) {
 				super(component);
