@@ -171,7 +171,7 @@ final class EntityControls {
 	private static CommandControl createAddControl(Command addEntityCommand, JComponent component, @Nullable KeyStroke keyStroke) {
 		CommandControl control = Control.builder()
 						.command(addEntityCommand)
-						.smallIcon(ICONS.add())
+						.icon(ICONS.add())
 						.description(MESSAGES.getString("add_new"))
 						.enabled(createComponentEnabledState(component))
 						.build();
@@ -189,7 +189,7 @@ final class EntityControls {
 																									ObservableState selectionNonEmptyState, @Nullable KeyStroke keyStroke) {
 		CommandControl control = Control.builder()
 						.command(editEntityCommand)
-						.smallIcon(ICONS.edit())
+						.icon(ICONS.edit())
 						.description(MESSAGES.getString("edit_selected"))
 						.enabled(State.and(createComponentEnabledState(component), selectionNonEmptyState))
 						.build();

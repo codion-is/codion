@@ -14,15 +14,31 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2023 - 2025, Björn Darri Sigurðsson.
+ * Copyright (c) 2025, Björn Darri Sigurðsson.
  */
-/**
- * Package configuration values:
- * <ul>
- * <li>{@link is.codion.swing.framework.ui.icon.FrameworkIcons#SMALL_SIZE}
- * <li>{@link is.codion.swing.framework.ui.icon.FrameworkIcons#LARGE_SIZE}
- * <li>{@link is.codion.swing.framework.ui.icon.FrameworkIcons#FRAMEWORK_ICONS_CLASSNAME}
- * </ul>
- */
-@org.jspecify.annotations.NullMarked
-package is.codion.swing.framework.ui.icon;
+package is.codion.swing.common.ui.control;
+
+import javax.swing.ImageIcon;
+
+import static java.util.Objects.requireNonNull;
+
+final class DefaultControlIcon implements ControlIcon {
+
+	private final ImageIcon small;
+	private final ImageIcon large;
+
+	DefaultControlIcon(ImageIcon small, ImageIcon large) {
+		this.small = requireNonNull(small);
+		this.large = requireNonNull(large);
+	}
+
+	@Override
+	public ImageIcon small() {
+		return small;
+	}
+
+	@Override
+	public ImageIcon large() {
+		return large;
+	}
+}

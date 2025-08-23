@@ -58,7 +58,7 @@ final class CityTablePanel extends ChartTablePanel {
 						.command(this::populateLocation)
 						.caption("Populate location")
 						.enabled(cityTableModel.cityWithoutLocationSelected())
-						.smallIcon(FrameworkIcons.instance().get(Foundation.MAP))
+						.icon(FrameworkIcons.instance().get(Foundation.MAP))
 						.build();
 	}
 

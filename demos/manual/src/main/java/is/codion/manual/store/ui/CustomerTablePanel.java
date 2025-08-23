@@ -48,7 +48,7 @@ public class CustomerTablePanel extends EntityTablePanel {
 		control(PRINT).set(Control.builder()
 						.command(this::viewCustomerReport)
 						.caption("Customer report")
-						.smallIcon(FrameworkIcons.instance().print())
+						.icon(FrameworkIcons.instance().print())
 						.enabled(tableModel().selection().empty().not())
 						.build());
 	}

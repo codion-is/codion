@@ -19,6 +19,7 @@
 package is.codion.swing.framework.ui.icon;
 
 import is.codion.common.value.Value;
+import is.codion.swing.common.ui.control.ControlIcon;
 import is.codion.swing.common.ui.icon.FontImageIcon;
 import is.codion.swing.common.ui.icon.FontImageIcon.IconPainter;
 import is.codion.swing.common.ui.icon.FontImageIcon.ImageIconFactory;
@@ -35,6 +36,7 @@ import java.awt.image.BufferedImage;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
+import static is.codion.swing.common.ui.control.ControlIcon.controlIcon;
 import static is.codion.swing.framework.ui.icon.FrameworkIkon.*;
 import static java.util.stream.StreamSupport.stream;
 
@@ -67,7 +69,8 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 
 	private static @Nullable FrameworkIcons instance;
 
-	private final Icons icons = Icons.icons(SIZE.getOrThrow());
+	private final Icons smallIcons = Icons.icons(SMALL_SIZE.getOrThrow());
+	private final Icons largeIcons = Icons.icons(LARGE_SIZE.getOrThrow());
 
 	private FontImageIcon logo = createLogo();
 
@@ -77,132 +80,129 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 	public DefaultFrameworkIcons() {
 		add(FILTER, SEARCH, ADD, DELETE, UPDATE, COPY, REFRESH, CLEAR, UP, DOWN, DETAIL,
 						PRINT, EDIT, SUMMARY, EDIT_PANEL, DEPENDENCIES, SETTINGS, CALENDAR, EDIT_TEXT, COLUMNS);
-		icons.color().addConsumer(this::onColorChanged);
+		largeIcons.color().link(smallIcons.color());
+		smallIcons.color().addConsumer(this::onColorChanged);
 		Scaler.SCALING.addWeakListener(this::onScalingChanged);
 	}
 
 	@Override
 	public Value<Color> color() {
-		return icons.color();
-	}
-
-	@Override
-	public int size() {
-		return icons.size();
+		return smallIcons.color();
 	}
 
 	@Override
 	public void add(Ikon... ikons) {
-		icons.add(ikons);
+		smallIcons.add(ikons);
+		largeIcons.add(ikons);
 	}
 
 	@Override
-	public ImageIcon get(Ikon ikon) {
-		return icons.get(ikon);
+	public ControlIcon get(Ikon ikon) {
+		return controlIcon(smallIcons.get(ikon), largeIcons.get(ikon));
 	}
 
 	@Override
-	public ImageIcon filter() {
+	public ControlIcon filter() {
 		return get(FILTER);
 	}
 
 	@Override
-	public ImageIcon search() {
+	public ControlIcon search() {
 		return get(SEARCH);
 	}
 
 	@Override
-	public ImageIcon add() {
+	public ControlIcon add() {
 		return get(ADD);
 	}
 
 	@Override
-	public ImageIcon delete() {
+	public ControlIcon delete() {
 		return get(DELETE);
 	}
 
 	@Override
-	public ImageIcon update() {
+	public ControlIcon update() {
 		return get(UPDATE);
 	}
 
 	@Override
-	public ImageIcon copy() {
+	public ControlIcon copy() {
 		return get(COPY);
 	}
 
 	@Override
-	public ImageIcon refresh() {
+	public ControlIcon refresh() {
 		return get(REFRESH);
 	}
 
 	@Override
-	public ImageIcon clear() {
+	public ControlIcon clear() {
 		return get(CLEAR);
 	}
 
 	@Override
-	public ImageIcon up() {
+	public ControlIcon up() {
 		return get(UP);
 	}
 
 	@Override
-	public ImageIcon down() {
+	public ControlIcon down() {
 		return get(DOWN);
 	}
 
 	@Override
-	public ImageIcon detail() {
+	public ControlIcon detail() {
 		return get(DETAIL);
 	}
 
 	@Override
-	public ImageIcon print() {
+	public ControlIcon print() {
 		return get(PRINT);
 	}
 
 	@Override
-	public ImageIcon clearSelection() {
+	public ControlIcon clearSelection() {
 		return get(CLEAR);
 	}
 
 	@Override
-	public ImageIcon edit() {
+	public ControlIcon edit() {
 		return get(EDIT);
 	}
 
 	@Override
-	public ImageIcon summary() {
+	public ControlIcon summary() {
 		return get(SUMMARY);
 	}
 
 	@Override
-	public ImageIcon editPanel() {
+	public ControlIcon editPanel() {
 		return get(EDIT_PANEL);
 	}
 
 	@Override
-	public ImageIcon dependencies() {
+	public ControlIcon dependencies() {
 		return get(DEPENDENCIES);
 	}
 
 	@Override
-	public ImageIcon settings() {
+	public ControlIcon settings() {
 		return get(SETTINGS);
 	}
 
 	@Override
-	public ImageIcon calendar() {
+	public ControlIcon calendar() {
 		return get(CALENDAR);
 	}
 
 	@Override
-	public ImageIcon editText() {
+	public ControlIcon editText() {
 		return get(EDIT_TEXT);
 	}
 
 	@Override
-	public ImageIcon columns() {
+	public ControlIcon columns() {
 		return get(COLUMNS);
 	}
 
@@ -223,7 +223,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 		return FontImageIcon.builder()
 						.ikon(LOGO)
 						.size(Scaler.scale(LOGO_SIZE))
-						.color(icons.color().getOrThrow())
+						.color(smallIcons.color().getOrThrow())
 						.iconPainter(LOGO_ICON_PAINTER)
 						.imageIconFactory(LOGO_ICON_FACTORY)
 						.build();

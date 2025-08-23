@@ -19,7 +19,6 @@
 /**
  * Package configuration values:
  * <ul>
- * <li>{@link is.codion.swing.common.ui.icon.Icons#SIZE}
  * <li>{@link is.codion.swing.common.ui.icon.Icons#COLOR}
  * </ul>
  */

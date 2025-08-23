@@ -55,6 +55,15 @@ public interface ControlBuilder<C extends Control, B extends ControlBuilder<C, B
 	B mnemonic(int mnemonic);
 
 	/**
+	 * Sets both the small and large icons.
+	 * @param icon the control icon
+	 * @return this Builder instance
+	 * @see #smallIcon(Icon)
+	 * @see #largeIcon(Icon)
+	 */
+	B icon(ControlIcon icon);
+
+	/**
 	 * @param smallIcon the small control icon
 	 * @return this Builder instance
 	 */

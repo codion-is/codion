@@ -277,7 +277,7 @@ public final class EntitySearchField extends HintTextField {
 		if (searchControl == null) {
 			searchControl = Control.builder()
 							.command(this::performSearch)
-							.smallIcon(ICONS.search())
+							.icon(ICONS.search())
 							.enabled(searchEnabled)
 							.build();
 		}
@@ -621,10 +621,10 @@ public final class EntitySearchField extends HintTextField {
 														.component(settingsPanel())
 														.owner(EntitySearchField.this)
 														.title(FrameworkMessages.settings())
-														.icon(ICONS.settings())
+														.icon(ICONS.settings().small())
 														.show())
 										.caption(FrameworkMessages.settings())
-										.smallIcon(ICONS.settings())
+										.icon(ICONS.settings())
 										.build()))
 						.buildPopupMenu();
 	}

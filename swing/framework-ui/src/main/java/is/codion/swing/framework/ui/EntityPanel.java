@@ -773,7 +773,7 @@ public class EntityPanel extends JPanel {
 	private CommandControl createToggleEditPanelControl() {
 		return Control.builder()
 						.command(this::toggleEditPanelState)
-						.smallIcon(ICONS.editPanel())
+						.icon(ICONS.editPanel())
 						.description(MESSAGES.getString("toggle_edit"))
 						.build();
 	}
@@ -788,7 +788,7 @@ public class EntityPanel extends JPanel {
 						.enabled(editPanel == null ? null : editPanel.active())
 						.description(Messages.refreshTip() + " (ALT-" + Messages.refreshMnemonic() + ")")
 						.mnemonic(Messages.refreshMnemonic())
-						.smallIcon(ICONS.refresh())
+						.icon(ICONS.refresh())
 						.build();
 	}
 

@@ -33,7 +33,7 @@ import static javax.swing.UIManager.getColor;
  * Provides icons for ui components.
  * {@link #color()} follows the 'Button.foreground' color of the current Look and feel.
  * Add icons via {@link #add(Ikon...)} and retrieve them via {@link #get(Ikon)}.
- * @see #icons()
+ * @see #icons(int)
  */
 public interface Icons {
 

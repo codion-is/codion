@@ -54,7 +54,7 @@ public final class PlaylistTablePanel extends EntityTablePanel {
 						.control(Control.builder()
 										.command(this::randomPlaylist)
 										.caption(BUNDLE.getString("random_playlist"))
-										.smallIcon(FrameworkIcons.instance().add()))
+										.icon(FrameworkIcons.instance().add()))
 						// and a separator
 						.separator()
 						// and the remaining default controls

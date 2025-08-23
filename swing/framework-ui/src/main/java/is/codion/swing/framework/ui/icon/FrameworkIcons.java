@@ -19,12 +19,14 @@
 package is.codion.swing.framework.ui.icon;
 
 import is.codion.common.property.PropertyValue;
-import is.codion.swing.common.ui.icon.Icons;
+import is.codion.common.value.Value;
+import is.codion.swing.common.ui.control.ControlIcon;
 import is.codion.swing.common.ui.icon.Logos;
 
 import org.kordamp.ikonli.Ikon;
 
 import javax.swing.ImageIcon;
+import java.awt.Color;
 
 import static is.codion.common.Configuration.integerValue;
 import static is.codion.common.Configuration.stringValue;
@@ -35,16 +37,25 @@ import static is.codion.common.Configuration.stringValue;
  * Add custom icons via {@link #add(Ikon...)} and retrieve them via {@link #get(Ikon)}.
  * @see #instance()
  */
-public interface FrameworkIcons extends Icons, Logos {
+public interface FrameworkIcons extends Logos {
 
 	/**
-	 * The default icon size, note that this will affect the size of buttons
+	 * The default small icon size, note that this will affect the size of buttons
 	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 16
 	 * </ul>
 	 */
-	PropertyValue<Integer> SIZE = integerValue(FrameworkIcons.class.getName() + ".size", 16);
+	PropertyValue<Integer> SMALL_SIZE = integerValue(FrameworkIcons.class.getName() + ".smallSize", 16);
+
+	/**
+	 * The default large icon size, note that this will affect the size of buttons
+	 * <ul>
+	 * <li>Value type: Integer
+	 * <li>Default value: 20
+	 * </ul>
+	 */
+	PropertyValue<Integer> LARGE_SIZE = integerValue(FrameworkIcons.class.getName() + ".largeSize", 20);
 
 	/**
 	 * Specifies the name of the {@link FrameworkIcons} implementation class to use.
@@ -52,109 +63,131 @@ public interface FrameworkIcons extends Icons, Logos {
 	PropertyValue<String> FRAMEWORK_ICONS_CLASSNAME = stringValue(FrameworkIcons.class.getName() + ".frameworkIconsClassName", DefaultFrameworkIcons.class.getName());
 
 	/**
+	 * Follows the 'Button.foreground' color of the current Look and feel.
+	 * @return the {@link Value} controlling the icon color
+	 */
+	Value<Color> color();
+
+	/**
+	 * Adds the given ikons. Retrieve an icon via {@link #get(Ikon)}.
+	 * @param ikons the ikons to add
+	 * @throws IllegalArgumentException in case an icon has already been associated with any of the given ikons
+	 */
+	void add(Ikon... ikons);
+
+	/**
+	 * Retrieves the {@link ControlIcon} associated with the given ikon.
+	 * @param ikon the ikon
+	 * @return the {@link ControlIcon} associated with the given ikon
+	 * @throws IllegalArgumentException in case no icon has been associated with the given ikon
+	 * @see #add(Ikon...)
+	 */
+	ControlIcon get(Ikon ikon);
+
+	/**
 	 * @return icon for the 'filter' action.
 	 */
-	ImageIcon filter();
+	ControlIcon filter();
 
 	/**
 	 * @return icon for the 'search' action.
 	 */
-	ImageIcon search();
+	ControlIcon search();
 
 	/**
 	 * @return icon for the 'add' action.
 	 */
-	ImageIcon add();
+	ControlIcon add();
 
 	/**
 	 * @return icon for the 'delete' action.
 	 */
-	ImageIcon delete();
+	ControlIcon delete();
 
 	/**
 	 * @return icon for the 'update' action.
 	 */
-	ImageIcon update();
+	ControlIcon update();
 
 	/**
 	 * @return icon for the 'copy' action.
 	 */
-	ImageIcon copy();
+	ControlIcon copy();
 
 	/**
 	 * @return icon for the 'refresh' action.
 	 */
-	ImageIcon refresh();
+	ControlIcon refresh();
 
 	/**
 	 * @return icon for the 'clear' action.
 	 */
-	ImageIcon clear();
+	ControlIcon clear();
 
 	/**
 	 * @return icon for the 'up' action.
 	 */
-	ImageIcon up();
+	ControlIcon up();
 
 	/**
 	 * @return icon for the 'down' action.
 	 */
-	ImageIcon down();
+	ControlIcon down();
 
 	/**
 	 * @return icon for the 'detail' action.
 	 */
-	ImageIcon detail();
+	ControlIcon detail();
 
 	/**
 	 * @return icon for the 'print' action.
 	 */
-	ImageIcon print();
+	ControlIcon print();
 
 	/**
 	 * @return icon for the 'clear selection' action.
 	 */
-	ImageIcon clearSelection();
+	ControlIcon clearSelection();
 
 	/**
 	 * @return icon for the 'edit' action.
 	 */
-	ImageIcon edit();
+	ControlIcon edit();
 
 	/**
 	 * @return icon for the 'summary' action.
 	 */
-	ImageIcon summary();
+	ControlIcon summary();
 
 	/**
 	 * @return icon for the 'edit panel' action.
 	 */
-	ImageIcon editPanel();
+	ControlIcon editPanel();
 
 	/**
 	 * @return icon for the 'dependencies' action.
 	 */
-	ImageIcon dependencies();
+	ControlIcon dependencies();
 
 	/**
 	 * @return icon for a 'settings' action.
 	 */
-	ImageIcon settings();
+	ControlIcon settings();
 
 	/**
 	 * @return icon for a 'calendar' action
 	 */
-	ImageIcon calendar();
+	ControlIcon calendar();
 
 	/**
 	 * @return icon for a 'editText' action
 	 */
-	ImageIcon editText();
+	ControlIcon editText();
 
 	/**
 	 * @return icon for a 'columns' action
 	 */
-	ImageIcon columns();
+	ControlIcon columns();
 
 	/**
 	 * @return the logo icon.

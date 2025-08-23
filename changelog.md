@@ -10,6 +10,8 @@ Codion Change Log
 - FilterTableColumn can no longer be instantiated outside FilterTable, Builder.build() removed, related refactoring.
 - CalendarPanel bug fixed, clicking day filler labels now sets the year as well as the month.
 - Icons.icons() size parameter added, Icons.SIZE removed.
+- ControlIcon added along with ControlBuilder.icon(ControlIcon).
+- FrameworkIcons now ControlIcon based.
 ### is.codion.framework.domain
 - Entities.primaryKeys() overloaded with Collection.
 ### is.codion.framework.model

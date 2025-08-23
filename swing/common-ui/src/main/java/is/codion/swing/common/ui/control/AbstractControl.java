@@ -193,6 +193,13 @@ abstract class AbstractControl extends AbstractAction implements Control {
 		}
 
 		@Override
+		public final B icon(ControlIcon icon) {
+			smallIcon(requireNonNull(icon.small()));
+			largeIcon(requireNonNull(icon.large()));
+			return self();
+		}
+
+		@Override
 		public final B smallIcon(@Nullable Icon smallIcon) {
 			values.put(SMALL_ICON, smallIcon);
 			return self();

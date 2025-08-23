@@ -104,7 +104,7 @@ public final class WindowDetailLayout implements DetailLayout {
 		if (entityPanel.containsTablePanel()) {
 			entityPanel.tablePanel().addPopupMenuControls(Controls.builder()
 							.caption(MESSAGES.getString(DETAIL_TABLES))
-							.smallIcon(FrameworkIcons.instance().detail())
+							.icon(FrameworkIcons.instance().detail())
 							.controls(entityPanel.detailPanels().get().stream()
 											.map(detailPanel -> Control.builder()
 															.command(windowCommand(detailPanel))

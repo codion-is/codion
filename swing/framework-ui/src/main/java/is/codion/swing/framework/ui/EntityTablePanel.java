@@ -1049,7 +1049,7 @@ public class EntityTablePanel extends JPanel {
 						.command(new AddCommand())
 						.caption(FrameworkMessages.add())
 						.mnemonic(FrameworkMessages.addMnemonic())
-						.smallIcon(ICONS.add())
+						.icon(ICONS.add())
 						.build();
 	}
 
@@ -1062,7 +1062,7 @@ public class EntityTablePanel extends JPanel {
 						.command(new EditCommand())
 						.caption(FrameworkMessages.edit())
 						.mnemonic(FrameworkMessages.editMnemonic())
-						.smallIcon(ICONS.edit())
+						.icon(ICONS.edit())
 						.enabled(tableModel().selection().single())
 						.build();
 	}
@@ -1080,7 +1080,7 @@ public class EntityTablePanel extends JPanel {
 						.command(this::editSelected)
 						.caption(FrameworkMessages.edit())
 						.enabled(createEditAttributeEnabledState())
-						.smallIcon(ICONS.edit())
+						.icon(ICONS.edit())
 						.description(FrameworkMessages.editSelectedTip())
 						.build();
 	}
@@ -1098,7 +1098,7 @@ public class EntityTablePanel extends JPanel {
 		ControlsBuilder builder = Controls.builder()
 						.caption(FrameworkMessages.edit())
 						.enabled(enabled)
-						.smallIcon(ICONS.edit())
+						.icon(ICONS.edit())
 						.description(FrameworkMessages.editSelectedTip());
 		configuration.editable.get().stream()
 						.map(attribute -> tableModel.entityDefinition().attributes().definition(attribute))
@@ -1137,7 +1137,7 @@ public class EntityTablePanel extends JPanel {
 						.caption(FrameworkMessages.dependencies())
 						.enabled(tableModel.selection().empty().not())
 						.description(FrameworkMessages.dependenciesTip())
-						.smallIcon(ICONS.dependencies())
+						.icon(ICONS.dependencies())
 						.build();
 	}
 
@@ -1153,7 +1153,7 @@ public class EntityTablePanel extends JPanel {
 										tableModel.editModel().deleteEnabled(),
 										tableModel.selection().empty().not()))
 						.description(FrameworkMessages.deleteSelectedTip())
-						.smallIcon(ICONS.delete())
+						.icon(ICONS.delete())
 						.build();
 	}
 
@@ -1166,7 +1166,7 @@ public class EntityTablePanel extends JPanel {
 						.caption(Messages.refresh())
 						.description(Messages.refreshTip())
 						.mnemonic(Messages.refreshMnemonic())
-						.smallIcon(ICONS.refresh())
+						.icon(ICONS.refresh())
 						.enabled(tableModel.items().refresher().active().not())
 						.build();
 	}
@@ -1180,7 +1180,7 @@ public class EntityTablePanel extends JPanel {
 						.caption(Messages.clear())
 						.description(Messages.clearTip())
 						.mnemonic(Messages.clearMnemonic())
-						.smallIcon(ICONS.clear())
+						.icon(ICONS.clear())
 						.build();
 	}
 
@@ -1188,7 +1188,7 @@ public class EntityTablePanel extends JPanel {
 		ControlsBuilder builder = Controls.builder()
 						.caption(Messages.print())
 						.mnemonic(Messages.printMnemonic())
-						.smallIcon(ICONS.print());
+						.icon(ICONS.print());
 		control(PRINT).optional().ifPresent(builder::control);
 
 		Controls printControls = builder.build();
@@ -1229,7 +1229,7 @@ public class EntityTablePanel extends JPanel {
 	private CommandControl createToggleConditionViewControl() {
 		return Control.builder()
 						.command(this::toggleConditionView)
-						.smallIcon(ICONS.search())
+						.icon(ICONS.search())
 						.description(MESSAGES.getString("show_condition_panel"))
 						.build();
 	}
@@ -1245,7 +1245,7 @@ public class EntityTablePanel extends JPanel {
 
 		return tableConditionPanel.controls().copy()
 						.caption(FrameworkMessages.searchNoun())
-						.smallIcon(ICONS.search())
+						.icon(ICONS.search())
 						.separator()
 						.control(Control.builder()
 										.toggle(tableModel.queryModel().conditionRequired())
@@ -1257,7 +1257,7 @@ public class EntityTablePanel extends JPanel {
 	private CommandControl createToggleFilterViewControl() {
 		return Control.builder()
 						.command(this::toggleFilterView)
-						.smallIcon(ICONS.filter())
+						.icon(ICONS.filter())
 						.description(MESSAGES.getString("show_filter_panel"))
 						.build();
 	}
@@ -1294,7 +1294,7 @@ public class EntityTablePanel extends JPanel {
 		}
 		ControlsBuilder builder = Controls.builder()
 						.caption(FrameworkMessages.filterNoun())
-						.smallIcon(ICONS.filter());
+						.icon(ICONS.filter());
 		Controls filterPanelControls = table.filters().controls();
 		if (filterPanelControls.size() > 0) {
 			builder.actions(filterPanelControls.actions());
@@ -1307,7 +1307,7 @@ public class EntityTablePanel extends JPanel {
 	private ToggleControl createToggleSummariesControl() {
 		return Control.builder()
 						.toggle(summaryPanelVisibleState)
-						.smallIcon(ICONS.summary())
+						.icon(ICONS.summary())
 						.description(MESSAGES.getString("toggle_summary_tip"))
 						.build();
 	}
@@ -1316,7 +1316,7 @@ public class EntityTablePanel extends JPanel {
 		return Control.builder()
 						.command(tableModel.selection()::clear)
 						.enabled(tableModel.selection().empty().not())
-						.smallIcon(ICONS.clearSelection())
+						.icon(ICONS.clearSelection())
 						.description(MESSAGES.getString("clear_selection_tip"))
 						.build();
 	}
@@ -1324,7 +1324,7 @@ public class EntityTablePanel extends JPanel {
 	private CommandControl createIncrementSelectionControl() {
 		return Control.builder()
 						.command(tableModel.selection().indexes()::increment)
-						.smallIcon(ICONS.down())
+						.icon(ICONS.down())
 						.description(MESSAGES.getString("increment_selection_tip"))
 						.build();
 	}
@@ -1332,7 +1332,7 @@ public class EntityTablePanel extends JPanel {
 	private CommandControl createDecrementSelectionControl() {
 		return Control.builder()
 						.command(tableModel.selection().indexes()::decrement)
-						.smallIcon(ICONS.up())
+						.icon(ICONS.up())
 						.description(MESSAGES.getString("decrement_selection_tip"))
 						.build();
 	}
@@ -1348,7 +1348,7 @@ public class EntityTablePanel extends JPanel {
 	private @Nullable Controls createColumnControls() {
 		ControlsBuilder builder = Controls.builder()
 						.caption(MESSAGES.getString("columns"))
-						.smallIcon(ICONS.columns());
+						.icon(ICONS.columns());
 		if (configuration.columnSelection == ColumnSelection.DIALOG) {
 			control(SELECT_COLUMNS).optional().ifPresent(builder::control);
 		}
@@ -1371,7 +1371,7 @@ public class EntityTablePanel extends JPanel {
 	private @Nullable Controls createCopyControls() {
 		ControlsBuilder builder = Controls.builder()
 						.caption(Messages.copy())
-						.smallIcon(ICONS.copy());
+						.icon(ICONS.copy());
 		control(COPY_CELL).optional().ifPresent(builder::control);
 		control(COPY_ROWS).optional().ifPresent(builder::control);
 		control(COPY_EXPANDED).optional().ifPresent(builder::control);
@@ -1442,7 +1442,7 @@ public class EntityTablePanel extends JPanel {
 		return Control.builder()
 						.command(tableModel.items()::refresh)
 						.enabled(tableModel.queryModel().conditionChanged())
-						.smallIcon(ICONS.refresh())
+						.icon(ICONS.refresh())
 						.build();
 	}
 

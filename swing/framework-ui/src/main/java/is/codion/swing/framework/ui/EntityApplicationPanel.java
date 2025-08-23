@@ -1087,7 +1087,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 																			Utilities.setClipboard(text);
 																		})
 																		.caption(Messages.copy())
-																		.smallIcon(FrameworkIcons.instance().copy())
+																		.icon(FrameworkIcons.instance().copy())
 																		.build())
 														.scrollPane())
 										.owner(this)

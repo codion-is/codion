@@ -161,7 +161,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 */
 	private static final State.Group ACTIVE_STATE_GROUP = State.group();
 
-	private static final Consumer<Config> NO_CONFIGURATION = emptyConsumer();
+	private static final Consumer<Config> NO_CONFIGURATION = (Consumer<Config>) EMPTY_CONSUMER;
 
 	private final InsertCommand insertCommand = insertCommand().build();
 	private final UpdateCommand updateCommand = updateCommand().build();
@@ -526,7 +526,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 										editModel().editor().exists()))
 						.description(FrameworkMessages.deleteCurrentTip() + ALT_PREFIX + FrameworkMessages.deleteMnemonic() + ")")
 						.mnemonic(FrameworkMessages.deleteMnemonic())
-						.smallIcon(ICONS.delete())
+						.icon(ICONS.delete())
 						.onException(this::onException)
 						.build();
 	}
@@ -538,7 +538,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 						.enabled(active)
 						.description(Messages.clearTip() + ALT_PREFIX + Messages.clearMnemonic() + ")")
 						.mnemonic(Messages.clearMnemonic())
-						.smallIcon(ICONS.clear())
+						.icon(ICONS.clear())
 						.build();
 	}
 
@@ -576,7 +576,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 										editModel().editor().modified()))
 						.description(FrameworkMessages.updateTip() + ALT_PREFIX + FrameworkMessages.updateMnemonic() + ")")
 						.mnemonic(FrameworkMessages.updateMnemonic())
-						.smallIcon(ICONS.update())
+						.icon(ICONS.update())
 						.onException(this::onException)
 						.build();
 	}
@@ -591,7 +591,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 						.enabled(State.and(active, editModel().insertEnabled()))
 						.description(FrameworkMessages.insertTip() + ALT_PREFIX + mnemonic + ")")
 						.mnemonic(mnemonic)
-						.smallIcon(ICONS.add())
+						.icon(ICONS.add())
 						.onException(this::onException)
 						.build();
 	}
@@ -1290,10 +1290,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 				return new DefaultDeleteCommand(this);
 			}
 		}
-	}
-
-	private static <T> Consumer<T> emptyConsumer() {
-		return (Consumer<T>) EMPTY_CONSUMER;
 	}
 
 	private static final class FocusActivationListener implements PropertyChangeListener {

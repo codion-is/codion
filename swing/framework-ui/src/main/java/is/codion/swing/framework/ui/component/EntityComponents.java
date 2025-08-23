@@ -319,7 +319,7 @@ public final class EntityComponents {
 						.temporalClass(attribute.type().valueClass())
 						.dateTimePattern(attributeDefinition.dateTimePattern().orElseThrow(DATE_TIME_PATTERN_MISSING))
 						.toolTipText(attributeDefinition.description().orElse(null))
-						.calendarIcon(ICONS.calendar());
+						.calendarIcon(ICONS.calendar().large());
 	}
 
 	/**
@@ -334,7 +334,7 @@ public final class EntityComponents {
 						.toolTipText(attributeDefinition.description().orElse(null))
 						.maximumLength(attributeDefinition.maximumLength())
 						.dialogTitle(attributeDefinition.caption())
-						.buttonIcon(ICONS.editText());
+						.buttonIcon(ICONS.editText().large());
 	}
 
 	/**
@@ -376,7 +376,7 @@ public final class EntityComponents {
 			return (TextFieldBuilder<T, C, B>) temporalField((Attribute<Temporal>) attribute)
 							.dateTimePattern(attributeDefinition.dateTimePattern().orElseThrow(DATE_TIME_PATTERN_MISSING))
 							.toolTipText(attributeDefinition.description().orElse(null))
-							.calendarIcon(ICONS.calendar());
+							.calendarIcon(ICONS.calendar().large());
 		}
 		if (attribute.type().isNumerical()) {
 			return (TextFieldBuilder<T, C, B>) NumberField.builder()
@@ -405,7 +405,7 @@ public final class EntityComponents {
 						.temporalClass(attributeDefinition.attribute().type().valueClass())
 						.dateTimePattern(attributeDefinition.dateTimePattern().orElseThrow(DATE_TIME_PATTERN_MISSING))
 						.toolTipText(attributeDefinition.description().orElse(null))
-						.calendarIcon(ICONS.calendar());
+						.calendarIcon(ICONS.calendar().large());
 	}
 
 	/**
