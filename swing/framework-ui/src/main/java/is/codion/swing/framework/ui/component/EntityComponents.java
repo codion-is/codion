@@ -109,7 +109,7 @@ public final class EntityComponents {
 	 * @return the component builder handling input for {@code attribute}
 	 * @throws IllegalArgumentException in case the given attribute is not supported
 	 */
-	public <T, C extends JComponent, B extends ComponentValueBuilder<C, T, B>> ComponentValueBuilder<C, T, B> component(Attribute<T> attribute) {
+	public <C extends JComponent, T, B extends ComponentValueBuilder<C, T, B>> ComponentValueBuilder<C, T, B> component(Attribute<T> attribute) {
 		AttributeDefinition<T> attributeDefinition = entityDefinition.attributes().definition(attribute);
 		if (!attributeDefinition.items().isEmpty()) {
 			return (ComponentValueBuilder<C, T, B>) itemComboBox(attribute);

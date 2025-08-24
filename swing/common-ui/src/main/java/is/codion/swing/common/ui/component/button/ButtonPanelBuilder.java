@@ -37,7 +37,7 @@ public interface ButtonPanelBuilder extends ControlPanelBuilder<JPanel, ButtonPa
 
 	/**
 	 * Specifies whether the button grid sizing should be fixed according
-	 * to the largest button or flexible. Default false.
+	 * to the largest button or flexible. Default true.
 	 * @param fixedButtonSize true if the button grid sizing should be fixed
 	 * @return this builder instance
 	 */

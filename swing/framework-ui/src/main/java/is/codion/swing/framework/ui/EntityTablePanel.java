@@ -1744,6 +1744,7 @@ public class EntityTablePanel extends JPanel {
 							.modal(false)
 							.size(dependenciesDialogSize.get())
 							.title(FrameworkMessages.dependencies())
+							.icon(ICONS.dependencies().small())
 							.onShown(dialog -> dependenciesPanel.requestSelectedTableFocus())
 							.onClosed(event -> {
 								dependenciesDialogSize.set(event.getWindow().getSize());
@@ -2531,12 +2532,12 @@ public class EntityTablePanel extends JPanel {
 		 * Sets the component factory for the given attribute, used when editing entities via {@link EntityTablePanel#editSelected(Attribute)}.
 		 * @param attribute the attribute
 		 * @param editComponentFactory the edit component factory
+		 * @param <C> the component type
 		 * @param <T> the value type
 		 * @param <A> the attribute type
-		 * @param <C> the component type
 		 * @return this Config instance
 		 */
-		public <T, A extends Attribute<T>, C extends JComponent> Config editComponentFactory(A attribute,
+		public <C extends JComponent, T, A extends Attribute<T>> Config editComponentFactory(A attribute,
 																																												 EditComponentFactory<C, T> editComponentFactory) {
 			entityDefinition.attributes().definition(attribute);
 			editComponentFactories.put(attribute, requireNonNull(editComponentFactory));

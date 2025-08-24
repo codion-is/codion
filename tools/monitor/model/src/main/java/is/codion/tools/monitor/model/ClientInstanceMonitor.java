@@ -29,6 +29,7 @@ import javax.swing.text.Document;
 import javax.swing.text.StyledDocument;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
 import java.rmi.RemoteException;
 import java.text.NumberFormat;
 import java.util.List;
@@ -108,7 +109,7 @@ public final class ClientInstanceMonitor {
 	/**
 	 * @return the TreeModel for displaying the log in a Tree view
 	 */
-	public DefaultTreeModel logTreeModel() {
+	public TreeModel logTreeModel() {
 		return logTreeModel;
 	}
 

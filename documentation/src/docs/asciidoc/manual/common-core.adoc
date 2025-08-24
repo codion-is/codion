@@ -108,18 +108,15 @@ skinparam genericDisplay old
 
 interface State {
     +void set(Boolean value)
-    +ObservableState observer()
-    +void link(Value<Boolean> value)
+    +ObservableState observable()
+    +Value<Boolean> value()
 }
 
 interface ObservableState {
-    +Boolean get()
+    +boolean is()
     +ObservableState not()
 }
 
-interface Value<Boolean> {}
-
-State -|> Value
 State -|> ObservableState
 -------------------------------------------
 
@@ -138,7 +135,7 @@ include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=state]
 include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=observers]
 ----
 
-Any *Action* object can be linked to a *State* instance via the *Utilities.linkToEnabledState* method, where the action's *enabled* status is updated according to the state.
+Any *Action* or *JComponent* enabled status can be linked to a *State* instance via the *Utilities.enabled()* method.
 
 [source,java,indent=0]
 ----

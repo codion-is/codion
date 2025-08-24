@@ -29,8 +29,11 @@ import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
 import is.codion.swing.common.ui.component.text.TextFieldPanel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditComponentPanel;
+import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.component.EntityComboBox;
+import is.codion.swing.framework.ui.component.EntityComboBoxPanel;
 import is.codion.swing.framework.ui.component.EntitySearchField;
+import is.codion.swing.framework.ui.component.EntitySearchFieldPanel;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
@@ -98,8 +101,22 @@ public final class EntityEditPanels {
 							createComboBox(Demo.FOREIGN_KEY)
 											.build();
 
+			// Include add/edit buttons
+			EntityComboBoxPanel comboBoxPanel =
+							createComboBoxPanel(Demo.FOREIGN_KEY, this::createEditPanel)
+											.includeAddButton(true)
+											.includeEditButton(true)
+											.build();
+
 			EntitySearchField searchField =
 							createSearchField(Demo.FOREIGN_KEY)
+											.build();
+
+			// Include add/edit buttons
+			EntitySearchFieldPanel searchFieldPanel =
+							createSearchFieldPanel(Demo.FOREIGN_KEY, this::createEditPanel)
+											.includeAddButton(true)
+											.includeEditButton(true)
 											.build();
 
 			//readOnly
@@ -213,6 +230,10 @@ public final class EntityEditPanels {
 							.label(new JLabel("Label"))
 							.build();
 			// end::panelLabel[]
+		}
+
+		private EntityEditPanel createEditPanel() {
+			return null;
 		}
 	}
 }

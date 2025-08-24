@@ -202,7 +202,7 @@ public abstract class AbstractComponentValueBuilder<C extends JComponent, T, B e
 		}
 	}
 
-	private static <T, C extends JComponent> ObservableState createValidState(ComponentValue<C, T> componentValue,
+	private static <C extends JComponent, T> ObservableState createValidState(ComponentValue<C, T> componentValue,
 																																						Predicate<T> validator) {
 		ValidationConsumer<T> validationConsumer = new ValidationConsumer<>(componentValue.get(), validator);
 		componentValue.addConsumer(validationConsumer);

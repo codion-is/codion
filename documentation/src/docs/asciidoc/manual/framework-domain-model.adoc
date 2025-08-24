@@ -227,7 +227,7 @@ An *Attribute* can be configured three ways, as transient, derived or denormaliz
 
 === Transient
 
-Transient attributes are nullable by default and behave like regular fields, but do not map to any underlying column. Transient attributes are always initialized with a null value. Changing the value of a transient attribute does not render the Entity instance modified by default, but can be configured to do so.
+Transient attributes are nullable by default and behave like regular fields, but do not map to any underlying column. Transient attributes are always initialized with a null value. Changing the value of a transient attribute renders the Entity instance modified by default, but can be configured to not do so.
 
 === Denormalized
 
@@ -281,7 +281,7 @@ It is recommended that entities have a primary key defined, that is, one or more
 The primary key defined in the domain model does not have to correspond to an actual table primary (or unique) key, although that is of course preferable.
 
 If no primary key columns are specified, *equals()* will not work (since it is based on the primary key).
-You can still use the *Entity.columnValuesEqual()* method to check if all column based values are equal in two entities without primary keys.
+You can still use the *Entity.equalValues()* method to check if all values are equal in two entities without primary keys.
 
 [source,java,indent=0]
 ----
@@ -444,6 +444,8 @@ include::{dir-source}/is/codion/manual/store/domain/Store.java[tags=keyGenerator
 
 The {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/StringFactory.html[StringFactory] class provides a builder for a *Function<Entity, String>* instance, which is then used to provide the *toString()* implementations for entities.
 This value is used wherever entities are displayed, for example in a ComboBox or as foreign key values in table views.
+
+*Entity.toString()* values are cached by default and invalidated each time an attribute value changes. This caching can be turned off via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.Builder.html#cacheToString{opar}boolean{cpar}[EntityDefinition.Builder.cacheToString(boolean)]
 
 [source,java,indent=0]
 ----

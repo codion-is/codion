@@ -420,17 +420,11 @@ public class Model {
 [source,java]
 ----
 // Swing component binding
-JTextField textField = new JTextField();
-Value<String> model = Value.value("");
+ComponentValue<JTextField, String> textFieldValue = Components.stringField().build();
+Value<String> modelValue = Value.value("");
 
 // Bidirectional binding
-textField.getDocument().addDocumentListener(new DocumentAdapter() {
-    protected void documentChanged() {
-        model.set(textField.getText());
-    }
-});
-
-model.addConsumer(textField::setText);
+textFieldValue.link(modelValue);
 ----
 
 === Model State Management

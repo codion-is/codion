@@ -160,7 +160,7 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.jav
 
 === Custom Component Integration
 
-Replace default components with custom ones:
+Using custom components:
 
 [source,java]
 ----

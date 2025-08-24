@@ -236,6 +236,7 @@ public interface EntityDefinition {
 	Function<Entity, String> stringFactory();
 
 	/**
+	 * True by default.
 	 * @return true if the result of toString() is cached
 	 */
 	boolean cacheToString();

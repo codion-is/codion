@@ -32,16 +32,10 @@ import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
-/**
- * A default {@link FilterTableCellEditor.Factory} implementation.
- */
 final class EntityTableCellEditorFactory implements FilterTableCellEditor.Factory<Attribute<?>> {
 
 	private final SwingEntityEditModel editModel;
 
-	/**
-	 * @param editModel the edit model
-	 */
 	EntityTableCellEditorFactory(SwingEntityEditModel editModel) {
 		this.editModel = requireNonNull(editModel);
 	}

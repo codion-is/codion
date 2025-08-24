@@ -39,7 +39,7 @@ import static javax.swing.KeyStroke.getKeyStroke;
  * JTextField textField = new JTextField();
  *
  * KeyEvents.builder()
- * 					.keyCode(VK_DOWN)
+ *          .keyCode(VK_DOWN)
  *          .onKeyRelease(false)
  *          .modifiers(CTRL_DOWN_MASK)
  *          .condition(WHEN_FOCUSED)
