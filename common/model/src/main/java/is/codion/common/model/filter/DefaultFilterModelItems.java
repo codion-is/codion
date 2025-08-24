@@ -520,32 +520,32 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	private static final class DefaultRefresherStep implements Builder.RefresherStep {
 
 		@Override
-		public <T> Builder.SelectionBuilder<T> refresher(Function<Items<T>, Refresher<T>> refresher) {
-			return new DefaultSelectionBuilder<>(requireNonNull(refresher));
+		public <T> Builder.SelectionStep<T> refresher(Function<Items<T>, Refresher<T>> refresher) {
+			return new DefaultSelectionStep<>(requireNonNull(refresher));
 		}
 	}
 
-	private static final class DefaultSelectionBuilder<T> implements Builder.SelectionBuilder<T> {
+	private static final class DefaultSelectionStep<T> implements Builder.SelectionStep<T> {
 
 		private final Function<Items<T>, Refresher<T>> refresher;
 
-		private DefaultSelectionBuilder(Function<Items<T>, Refresher<T>> refresher) {
+		private DefaultSelectionStep(Function<Items<T>, Refresher<T>> refresher) {
 			this.refresher = refresher;
 		}
 
 		@Override
-		public Builder.SortBuilder<T> selection(Function<VisibleItems<T>, MultiSelection<T>> selection) {
-			return new DefaultSortBuilder<>(refresher, requireNonNull(selection));
+		public Builder.SortStep<T> selection(Function<VisibleItems<T>, MultiSelection<T>> selection) {
+			return new DefaultSortStep<>(refresher, requireNonNull(selection));
 		}
 	}
 
-	private static final class DefaultSortBuilder<T> implements Builder.SortBuilder<T> {
+	private static final class DefaultSortStep<T> implements Builder.SortStep<T> {
 
 		private final Function<Items<T>, Refresher<T>> refresher;
 		private final Function<VisibleItems<T>, MultiSelection<T>> selectionFunction;
 
-		private DefaultSortBuilder(Function<Items<T>, Refresher<T>> refresher,
-															 Function<VisibleItems<T>, MultiSelection<T>> selection) {
+		private DefaultSortStep(Function<Items<T>, Refresher<T>> refresher,
+														Function<VisibleItems<T>, MultiSelection<T>> selection) {
 			this.refresher = refresher;
 			this.selectionFunction = selection;
 		}

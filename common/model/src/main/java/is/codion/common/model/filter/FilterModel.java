@@ -232,34 +232,34 @@ public interface FilterModel<T> {
 		interface Builder<T> {
 
 			/**
-			 * Provides a {@link SelectionBuilder}
+			 * Provides a {@link SelectionStep}
 			 */
 			interface RefresherStep {
 
 				/**
 				 * @param refresher the item refresher to use
 				 * @param <T> the item type
-				 * @return a new {@link SelectionBuilder} instance
+				 * @return a new {@link SelectionStep} instance
 				 */
-				<T> SelectionBuilder<T> refresher(Function<Items<T>, Refresher<T>> refresher);
+				<T> SelectionStep<T> refresher(Function<Items<T>, Refresher<T>> refresher);
 			}
 
 			/**
 			 * @param <T> the item type
 			 */
-			interface SelectionBuilder<T> {
+			interface SelectionStep<T> {
 
 				/**
 				 * @param selection provides the {@link MultiSelection} instance to use
 				 * @return the next stage
 				 */
-				SortBuilder<T> selection(Function<VisibleItems<T>, MultiSelection<T>> selection);
+				SortStep<T> selection(Function<VisibleItems<T>, MultiSelection<T>> selection);
 			}
 
 			/**
 			 * @param <T> the item type
 			 */
-			interface SortBuilder<T> {
+			interface SortStep<T> {
 
 				/**
 				 * @param sort the {@link Sort} instance to use
