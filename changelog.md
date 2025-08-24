@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.swing.common.model
 - FilterTableModel.TableColumns.caption() added.
 - FilterTableModel.TableColumns.description() added.
+- FilterTableModel.Builder.supplier() renamed items().
 ### is.codion.swing.common.ui
 - FilterTable now automatically creates columns, Builder.columns() now allows column builder configuration.
 - FilterTableColumn can no longer be instantiated outside FilterTable, Builder.build() removed, related refactoring.

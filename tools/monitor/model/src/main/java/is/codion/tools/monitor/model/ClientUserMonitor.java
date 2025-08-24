@@ -58,7 +58,7 @@ public final class ClientUserMonitor {
 	private final FilterTableModel<UserInfo, String> userHistoryTableModel =
 					FilterTableModel.builder()
 									.columns(new UserHistoryColumns())
-									.supplier(new UserHistoryItems())
+									.items(new UserHistoryItems())
 									.build();
 
 	private final TaskScheduler updateScheduler;

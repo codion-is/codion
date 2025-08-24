@@ -95,17 +95,17 @@ public final class ServerMonitor {
 	private final FilterTableModel<DomainEntityDefinition, String> domainTableModel =
 					FilterTableModel.builder()
 									.columns(new DomainColumns())
-									.supplier(new DomainTableItems())
+									.items(new DomainTableItems())
 									.build();
 	private final FilterTableModel<DomainReport, String> reportTableModel =
 					FilterTableModel.builder()
 									.columns(new ReportColumns())
-									.supplier(new ReportTableItems())
+									.items(new ReportTableItems())
 									.build();
 	private final FilterTableModel<DomainOperation, String> operationTableModel =
 					FilterTableModel.builder()
 									.columns(new OperationColumns())
-									.supplier(new OperationTableItems())
+									.items(new OperationTableItems())
 									.build();
 	private final XYSeries connectionRequestsPerSecondSeries = new XYSeries("Service requests per second");
 	private final XYSeriesCollection connectionRequestsPerSecondCollection = new XYSeriesCollection();

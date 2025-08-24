@@ -127,7 +127,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	 */
 	public SwingEntityTableModel(SwingEntityEditModel editModel, EntityQueryModel queryModel) {
 		super(requireNonNull(editModel), tableModelBuilder(editModel.entityDefinition())
-						.supplier(requireNonNull(queryModel)::query)
+						.items(requireNonNull(queryModel)::query)
 						.build(), queryModel);
 		addTableModelListener(this::onTableModelEvent);
 	}

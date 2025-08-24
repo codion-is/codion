@@ -287,7 +287,7 @@ The table model provides sophisticated data management without entities:
 ```java
 FilterTableModel<RowType, ColumnEnum> tableModel = 
     FilterTableModel.builder(new TableColumns())
-        .supplier(new DataSupplier())       // Provides that data when refreshed
+        .items(new ItemSupplier())       // Provides that data when refreshed
         .visible(new VisibilityPredicate()) // Row filtering
         .build();
 ```

@@ -359,7 +359,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		private final TableColumns<R, C> columns;
 
-		private @Nullable Supplier<? extends Collection<R>> supplier;
+		private @Nullable Supplier<? extends Collection<R>> itemSupplier;
 		private Predicate<R> validator = new ValidPredicate<>();
 		private Supplier<Map<C, ConditionModel<?>>> filters;
 		private boolean async = FilterModel.ASYNC.getOrThrow();
@@ -381,8 +381,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
-		public Builder<R, C> supplier(Supplier<? extends Collection<R>> supplier) {
-			this.supplier = requireNonNull(supplier);
+		public Builder<R, C> items(Supplier<? extends Collection<R>> items) {
+			this.itemSupplier = requireNonNull(items);
 			return this;
 		}
 
@@ -424,7 +424,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		private Refresher<R> createRefresher(Items<R> items) {
-			return new DefaultRefreshWorker<>(supplier, items, async);
+			return new DefaultRefreshWorker<>(itemSupplier, items, async);
 		}
 
 		private static final class DefaultRefreshWorker<R> extends AbstractRefreshWorker<R> {

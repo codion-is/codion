@@ -109,7 +109,7 @@ public class FilterTableTest {
 								return FilterTableModel.TableColumns.super.comparator(integer);
 							}
 						})
-						.supplier(() -> ITEMS)
+						.items(() -> ITEMS)
 						.build();
 	}
 
@@ -140,7 +140,7 @@ public class FilterTableTest {
 		FilterTableModel<List<String>, Integer> tableModel =
 						FilterTableModel.builder()
 										.columns(columns)
-										.supplier(() -> asList(
+										.items(() -> asList(
 														asList("darri", "hidden"),
 														asList("dac", "hidden"),
 														asList("dansinn", "hidden"),
@@ -230,7 +230,7 @@ public class FilterTableTest {
 
 												return row.value;
 											}
-										}).supplier(() -> items).build();
+										}).items(() -> items).build();
 
 		FilterTable<Row, Integer> table = FilterTable.builder()
 						.model(testModel)

@@ -56,7 +56,7 @@ public class FilterListSelectionTest {
 												return row;
 											}
 										})
-										.supplier(() -> data)
+										.items(() -> data)
 										.build();
 		tableModel.items().refresh();
 

@@ -107,7 +107,7 @@ public final class DefaultFilterTableModelTest {
 	private static FilterTableModel<TestRow, Integer> createTestModel() {
 		return FilterTableModel.builder()
 						.columns(new TestColumns())
-						.supplier(() -> ITEMS)
+						.items(() -> ITEMS)
 						.build();
 	}
 
@@ -230,7 +230,7 @@ public final class DefaultFilterTableModelTest {
 		FilterTableModel<TestRow, Integer> testModel =
 						FilterTableModel.builder()
 										.columns(new TestColumns())
-										.supplier(() -> items)
+										.items(() -> items)
 										.build();
 
 		testModel.selection().empty().addConsumer(empty -> {
@@ -834,7 +834,7 @@ public final class DefaultFilterTableModelTest {
 		}
 		FilterTableModel<TestRow, Integer> model = FilterTableModel.builder()
 						.columns(new TestColumns())
-						.supplier(() -> ITEMS)
+						.items(() -> ITEMS)
 						.editor(ItemEditor::new)
 						.build();
 

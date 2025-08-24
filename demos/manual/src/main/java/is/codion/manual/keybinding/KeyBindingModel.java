@@ -59,7 +59,7 @@ final class KeyBindingModel {
 		this.componentModel.items().refresh();
 		this.tableModel = FilterTableModel.builder()
 						.columns(new KeyBindingColumns())
-						.supplier(new KeyBindingItems())
+						.items(new KeyBindingItems())
 						.build();
 		bindEvents(lookAndFeelModel);
 	}

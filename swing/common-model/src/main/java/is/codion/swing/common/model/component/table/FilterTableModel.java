@@ -172,10 +172,10 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		Builder<R, C> filters(Supplier<Map<C, ConditionModel<?>>> filters);
 
 		/**
-		 * @param supplier supplies the items
+		 * @param items supplies the items
 		 * @return this builder instance
 		 */
-		Builder<R, C> supplier(Supplier<? extends Collection<R>> supplier);
+		Builder<R, C> items(Supplier<? extends Collection<R>> items);
 
 		/**
 		 * Items failing validation can not be added to the model.

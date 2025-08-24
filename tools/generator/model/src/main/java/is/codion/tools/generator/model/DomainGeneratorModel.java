@@ -76,13 +76,13 @@ public final class DomainGeneratorModel {
 	private final FilterTableModel<SchemaRow, String> schemaTableModel =
 					FilterTableModel.builder()
 									.columns(new SchemaColumns())
-									.supplier(new SchemaItems())
+									.items(new SchemaItems())
 									.build();
 	private final State populatedSchemaSelected = State.state();
 	private final FilterTableModel<EntityRow, String> entityTableModel =
 					FilterTableModel.builder()
 									.columns(new EntityColumns())
-									.supplier(new EntityItems())
+									.items(new EntityItems())
 									.build();
 	private final Database database;
 	private final User user;
