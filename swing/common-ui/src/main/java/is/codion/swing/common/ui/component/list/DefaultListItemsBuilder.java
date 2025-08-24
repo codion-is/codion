@@ -22,10 +22,13 @@ import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
@@ -33,6 +36,7 @@ import static java.util.Collections.emptyList;
 final class DefaultListItemsBuilder<T> extends AbstractListBuilder<List<T>, T, ListBuilder.Items<T>> implements ListBuilder.Items<T> {
 
 	private int selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
+	private boolean nullable = false;
 
 	DefaultListItemsBuilder(FilterListModel<T> listModel) {
 		super(listModel);
@@ -41,6 +45,12 @@ final class DefaultListItemsBuilder<T> extends AbstractListBuilder<List<T>, T, L
 	@Override
 	public Items<T> selectionMode(int selectionMode) {
 		this.selectionMode = selectionMode;
+		return this;
+	}
+
+	@Override
+	public Items<T> nullable(boolean nullable) {
+		this.nullable = nullable;
 		return this;
 	}
 
@@ -54,19 +64,27 @@ final class DefaultListItemsBuilder<T> extends AbstractListBuilder<List<T>, T, L
 
 	@Override
 	protected ComponentValue<FilterList<T>, List<T>> createComponentValue(FilterList<T> component) {
-		return new ListItemsValue<>(component);
+		return new ListItemsValue<>(component, nullable);
 	}
 
 	private static final class ListItemsValue<T> extends AbstractComponentValue<FilterList<T>, List<T>> {
 
-		private ListItemsValue(FilterList<T> list) {
+		private final boolean nullable;
+
+		private ListItemsValue(FilterList<T> list, boolean nullable) {
 			super(list, emptyList());
+			this.nullable = nullable;
 			list.model().addListDataListener(new DefaultListDataNotifier());
 		}
 
 		@Override
-		protected List<T> getComponentValue() {
-			return new ArrayList<>(component().model().items().get());
+		protected @Nullable List<T> getComponentValue() {
+			Collection<T> collection = component().model().items().get();
+			if (nullable && collection.isEmpty()) {
+				return null;
+			}
+
+			return new ArrayList<>(collection);
 		}
 
 		@Override

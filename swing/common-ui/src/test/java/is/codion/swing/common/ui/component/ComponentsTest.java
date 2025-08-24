@@ -89,6 +89,7 @@ import java.util.Set;
 
 import static is.codion.common.item.Item.item;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -879,7 +880,22 @@ public final class ComponentsTest {
 		assertTrue(componentValue.component().isSelectedIndex(visibleItems.indexOf("two")));
 		assertTrue(componentValue.component().isSelectedIndex(visibleItems.indexOf("three")));
 		assertEquals(asList("two", "three"), componentValue.get());
+		listModel.selection().clear();
+		assertNotNull(componentValue.get());
 		listBuilder.scrollPane().build();
+
+		componentValue = Components.list()
+						.model(FilterListModel.builder()
+										.items(asList("one", "two", "three"))
+										.build())
+						.selectedItems()
+						.nullable(true)
+						.buildValue();
+		assertNull(componentValue.get());
+		componentValue.set(asList("one", "two"));
+		assertNotNull(componentValue.get());
+		componentValue.set(emptyList());
+		assertNull(componentValue.get());
 	}
 
 	@Test
@@ -935,7 +951,23 @@ public final class ComponentsTest {
 		assertEquals(asList("one", "three", "four"), componentValue.get());
 		listModel.items().remove("one");
 		assertEquals(asList("three", "four"), componentValue.get());
+		listModel.items().clear();
+		assertNotNull(componentValue.get());
 		listBuilder.scrollPane().build();
+
+		// Nullable
+		componentValue = Components.list()
+						.model(FilterListModel.builder()
+										.<String>items()
+										.build())
+						.items()
+						.nullable(true)
+						.buildValue();
+		assertNull(componentValue.get());
+		componentValue.set(asList("one", "two", "three"));
+		assertNotNull(componentValue.get());
+		componentValue.set(emptyList());
+		assertNull(componentValue.get());
 	}
 
 	@Test

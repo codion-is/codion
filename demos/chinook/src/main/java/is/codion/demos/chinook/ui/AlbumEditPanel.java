@@ -82,6 +82,9 @@ public final class AlbumEditPanel extends EntityEditPanel {
 										// The value should be based on the items in
 										// the list as opposed to the selected items
 										.items(Album.TAGS)
+										// Use null instead of an empty list, in
+										// order to match the null column value.
+										.nullable(true)
 										.buildValue();
 		// We then base the custom AlbumTagPanel component
 		// on the above component value

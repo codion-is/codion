@@ -22,6 +22,8 @@ import is.codion.swing.common.model.component.list.FilterListModel;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
+import org.jspecify.annotations.Nullable;
+
 import javax.swing.ListSelectionModel;
 import java.util.List;
 
@@ -30,8 +32,17 @@ import static java.util.Collections.emptyList;
 final class DefaultListSelectedItemsBuilder<T> extends AbstractListBuilder<List<T>, T, ListBuilder.SelectedItems<T>>
 				implements ListBuilder.SelectedItems<T> {
 
+	private boolean nullable = false;
+
 	DefaultListSelectedItemsBuilder(FilterListModel<T> listModel) {
 		super(listModel);
+	}
+
+
+	@Override
+	public SelectedItems<T> nullable(boolean nullable) {
+		this.nullable = nullable;
+		return this;
 	}
 
 	@Override
@@ -44,19 +55,27 @@ final class DefaultListSelectedItemsBuilder<T> extends AbstractListBuilder<List<
 
 	@Override
 	protected ComponentValue<FilterList<T>, List<T>> createComponentValue(FilterList<T> component) {
-		return new ListSelectedItemsValue<>(component);
+		return new ListSelectedItemsValue<>(component, nullable);
 	}
 
 	private static final class ListSelectedItemsValue<T> extends AbstractComponentValue<FilterList<T>, List<T>> {
 
-		private ListSelectedItemsValue(FilterList<T> list) {
+		private final boolean nullable;
+
+		private ListSelectedItemsValue(FilterList<T> list, boolean nullable) {
 			super(list, emptyList());
+			this.nullable = nullable;
 			list.model().selection().indexes().addListener(this::notifyListeners);
 		}
 
 		@Override
-		protected List<T> getComponentValue() {
-			return component().model().selection().items().get();
+		protected @Nullable List<T> getComponentValue() {
+			List<T> items = component().model().selection().items().get();
+			if (nullable && items.isEmpty()) {
+				return null;
+			}
+
+			return items;
 		}
 
 		@Override

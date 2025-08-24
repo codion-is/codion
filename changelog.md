@@ -14,6 +14,7 @@ Codion Change Log
 - FrameworkIcons now ControlIcon based.
 - ComponentValue type parameters reordered.
 - ComponentValueBuilder type parameters reordered.
+- ListBuilder.Items and SelectedItems.nullable() added.
 ### is.codion.framework.domain
 - Entities.primaryKeys() overloaded with Collection.
 ### is.codion.framework.model

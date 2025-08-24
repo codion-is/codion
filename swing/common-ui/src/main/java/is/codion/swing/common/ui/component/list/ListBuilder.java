@@ -91,13 +91,28 @@ public interface ListBuilder<V, T, B extends ListBuilder<V, T, B>> extends Compo
 		 * @see JList#setSelectionMode(int)
 		 */
 		Items<T> selectionMode(int selectionMode);
+
+		/**
+		 * Default false.
+		 * @param nullable if true then null is used instead of an empty list
+		 * @return this builder instance
+		 */
+		Items<T> nullable(boolean nullable);
 	}
 
 	/**
 	 * Builds a multi-selection JList, where the value is represented by the selected items.
 	 * @param <T> the value type
 	 */
-	interface SelectedItems<T> extends ListBuilder<List<T>, T, SelectedItems<T>> {}
+	interface SelectedItems<T> extends ListBuilder<List<T>, T, SelectedItems<T>> {
+
+		/**
+		 * Default false.
+		 * @param nullable if true then null is used instead of an empty list
+		 * @return this builder instance
+		 */
+		SelectedItems<T> nullable(boolean nullable);
+	}
 
 	/**
 	 * Builds a single-selection JList, where the value is represented by the selected item.
