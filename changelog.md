@@ -23,6 +23,8 @@ Codion Change Log
 - EntityTableColumns removed.
 - FrameworkIcons.SIZE added.
 - EditComponentFactory type parameters reordered.
+- EntityTablePanel.userPreferencesKey() renamed preferencesKey(), EntityPanel.preferencesKey() added.
+- EntityEditPanel.writePreference() and applyPreferences() added along with preferencesKey().
 
 ## 0.18.45
 ### is.codion.common.core

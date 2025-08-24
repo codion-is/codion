@@ -73,6 +73,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.prefs.Preferences;
 
 import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.resource.MessageBundle.messageBundle;
@@ -277,6 +278,27 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		}
 
 		return this;
+	}
+
+	/**
+	 * Writes user preferences associated with this edit panel.
+	 * Override to write application specific preferences.
+	 * <p>Remember to call {@code super.writePreferences(preferences)} when overriding.
+	 * @param preferences the preferences instance to write to
+	 * @see #preferencesKey()
+	 */
+	public void writePreferences(Preferences preferences) {
+		requireNonNull(preferences);
+	}
+
+	/**
+	 * Applies any user preferences previously written via {@link #writePreferences(Preferences)}
+	 * Override to apply application specific preferences.
+	 * <p>Remember to call {@code super.applyPreferences(preferences)} when overriding.
+	 * @param preferences the preferences instance containing the preferences to apply
+	 */
+	public void applyPreferences(Preferences preferences) {
+		requireNonNull(preferences);
 	}
 
 	/**
@@ -486,6 +508,19 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		}
 
 		return controlsLayout.create(configuration.controlMap);
+	}
+
+	/**
+	 * Returns the key used to identify user preferences for this edit panel
+	 * The default implementation is:
+	 * {@snippet :
+	 * return editModel().getClass().getSimpleName() + "-" + editModel().entityType();
+	 *}
+	 * Override in case this key is not unique within the application.
+	 * @return the key used to identify user preferences for this edit panel
+	 */
+	protected String preferencesKey() {
+		return editModel().getClass().getSimpleName() + "-" + editModel().entityType();
 	}
 
 	private void createControls() {

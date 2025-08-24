@@ -58,8 +58,8 @@ final class EntityTablePanelPreferences {
 	private final String conditionsKey;
 
 	private EntityTablePanelPreferences(EntityTablePanel tablePanel, Preferences preferences) {
-		this.columnsKey = tablePanel.userPreferencesKey() + COLUMN_PREFERENCES;
-		this.conditionsKey = tablePanel.userPreferencesKey() + CONDITIONS_PREFERENCES;
+		this.columnsKey = tablePanel.preferencesKey() + COLUMN_PREFERENCES;
+		this.conditionsKey = tablePanel.preferencesKey() + CONDITIONS_PREFERENCES;
 		Collection<Attribute<?>> identifiers = tablePanel.table().columnModel().identifiers();
 		this.columnPreferences = ColumnPreferences.fromString(identifiers, preferences.get(columnsKey, EMPTY_JSON_OBJECT));
 		this.conditionPreferences = ConditionPreferences.fromString(identifiers, preferences.get(conditionsKey, EMPTY_JSON_OBJECT));
@@ -68,8 +68,8 @@ final class EntityTablePanelPreferences {
 	EntityTablePanelPreferences(EntityTablePanel tablePanel) {
 		this(createColumnPreferences(tablePanel.table().columnModel()),
 						createConditionPreferences(tablePanel.tableModel()),
-						tablePanel.userPreferencesKey() + COLUMN_PREFERENCES,
-						tablePanel.userPreferencesKey() + CONDITIONS_PREFERENCES);
+						tablePanel.preferencesKey() + COLUMN_PREFERENCES,
+						tablePanel.preferencesKey() + CONDITIONS_PREFERENCES);
 	}
 
 	private EntityTablePanelPreferences(Map<Attribute<?>, ColumnPreferences> columnPreferences,
@@ -131,8 +131,8 @@ final class EntityTablePanelPreferences {
 	}
 
 	static void applyLegacy(EntityTablePanel tablePanel) {
-		String columnsKey = tablePanel.userPreferencesKey() + COLUMN_PREFERENCES;
-		String conditionsKey = tablePanel.userPreferencesKey() + CONDITIONS_PREFERENCES;
+		String columnsKey = tablePanel.preferencesKey() + COLUMN_PREFERENCES;
+		String conditionsKey = tablePanel.preferencesKey() + CONDITIONS_PREFERENCES;
 
 		Collection<Attribute<?>> identifiers = tablePanel.table().columnModel().identifiers();
 		Map<Attribute<?>, ColumnPreferences> columnPreferences =
@@ -143,14 +143,18 @@ final class EntityTablePanelPreferences {
 		new EntityTablePanelPreferences(columnPreferences, conditionPreferences, columnsKey, conditionsKey).apply(tablePanel);
 	}
 
+	static void save(EntityTablePanel tablePanel, Preferences preferences) {
+		new EntityTablePanelPreferences(tablePanel).save(preferences);
+	}
+
 	static void apply(EntityTablePanel tablePanel, Preferences preferences) {
 		new EntityTablePanelPreferences(tablePanel, preferences).apply(tablePanel);
 	}
 
 	static void clearLegacyPreferences(EntityTablePanel tablePanel) {
-		String userPreferencesKey = tablePanel.userPreferencesKey();
-		UserPreferences.remove(userPreferencesKey + COLUMN_PREFERENCES);
-		UserPreferences.remove(userPreferencesKey + CONDITIONS_PREFERENCES);
+		String preferencesKey = tablePanel.preferencesKey();
+		UserPreferences.remove(preferencesKey + COLUMN_PREFERENCES);
+		UserPreferences.remove(preferencesKey + CONDITIONS_PREFERENCES);
 	}
 
 	private static Map<Attribute<?>, ColumnPreferences> createColumnPreferences(FilterTableColumnModel<Attribute<?>> columnModel) {

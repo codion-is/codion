@@ -713,11 +713,10 @@ public class EntityTablePanel extends JPanel {
 	 * Writes user preferences.
 	 * <p>Remember to call {@code super.writePreferences(preferences)} when overriding.
 	 * @param preferences the preferences instance to write to
-	 * @see #userPreferencesKey()
+	 * @see #preferencesKey()
 	 */
 	public void writePreferences(Preferences preferences) {
-		requireNonNull(preferences);
-		new EntityTablePanelPreferences(this).save(preferences);
+		EntityTablePanelPreferences.save(this, requireNonNull(preferences));
 	}
 
 	/**
@@ -1007,7 +1006,7 @@ public class EntityTablePanel extends JPanel {
 	 * Override in case this key is not unique within the application.
 	 * @return the key used to identify user preferences for this table panel
 	 */
-	protected String userPreferencesKey() {
+	protected String preferencesKey() {
 		return tableModel.getClass().getSimpleName() + "-" + tableModel.entityType();
 	}
 

@@ -574,10 +574,15 @@ public class EntityPanel extends JPanel {
 	 * Saves user preferences for this entity panel and its detail panels.
 	 * <p>Remember to call {@code super.writePreferences(preferences)} when overriding.
 	 * @param preferences the Preferences instance into which to save the preferences
+	 * @see #preferencesKey()
+	 * @see EntityEditPanel#writePreferences(Preferences)
 	 * @see EntityTablePanel#writePreferences(Preferences)
 	 */
 	public void writePreferences(Preferences preferences) {
 		requireNonNull(preferences);
+		if (containsEditPanel()) {
+			editPanel.writePreferences(preferences);
+		}
 		if (containsTablePanel()) {
 			tablePanel.writePreferences(preferences);
 		}
@@ -589,10 +594,15 @@ public class EntityPanel extends JPanel {
 	 * for this panel and its detail panels.
 	 * <p>Remember to call {@code super.applyPreferences(preferences)} when overriding.
 	 * @param preferences the Preferences instance containing the preferences to apply
+	 * @see #preferencesKey()
+	 * @see EntityEditPanel#applyPreferences(Preferences)
 	 * @see EntityTablePanel#applyPreferences(Preferences)
 	 */
 	public void applyPreferences(Preferences preferences) {
 		requireNonNull(preferences);
+		if (containsEditPanel()) {
+			editPanel.applyPreferences(preferences);
+		}
 		if (containsTablePanel()) {
 			tablePanel.applyPreferences(preferences);
 		}
@@ -627,6 +637,19 @@ public class EntityPanel extends JPanel {
 	 * @see #control(ControlKey)
 	 */
 	protected void setupControls() {}
+
+	/**
+	 * Returns the key used to identify user preferences for this panel
+	 * The default implementation is:
+	 * {@snippet :
+	 * return model().getClass().getSimpleName() + "-" + model().entityType();
+	 *}
+	 * Override in case this key is not unique within the application.
+	 * @return the key used to identify user preferences for this panel
+	 */
+	protected String preferencesKey() {
+		return model().getClass().getSimpleName() + "-" + model().entityType();
+	}
 
 	/**
 	 * Configures the controls layout.<br>
