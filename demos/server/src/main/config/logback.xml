@@ -1,37 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-  <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
-    <discriminator>
-      <key>logIdentifier</key>
-      <defaultValue>codion_server</defaultValue>
-    </discriminator>
-    <sift>
-      <appender name="FILE-${logIdentifier}" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${user.dir}/logs/${logIdentifier}.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-          <fileNamePattern>${user.dir}/logs/${logIdentifier}.%i.log.zip</fileNamePattern>
-          <minIndex>1</minIndex>
-          <maxIndex>3</maxIndex>
-        </rollingPolicy>
-
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-          <maxFileSize>1MB</maxFileSize>
-        </triggeringPolicy>
-        <encoder>
-          <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
-      </appender>
-<!--      <appender name="STDOUT-${logIdentifier}" class="ch.qos.logback.core.ConsoleAppender">-->
-<!--        <encoder>-->
-<!--          <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>-->
-<!--        </encoder>-->
-<!--      </appender>-->
-    </sift>
-  </appender>
-
-  <logger name="org.eclipse.jetty" level="ERROR"/>
-
-  <root level="ERROR">
-    <appender-ref ref="SIFT" />
-  </root>
+    <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+        <discriminator>
+            <key>logIdentifier</key>
+            <defaultValue>codion_server</defaultValue>
+        </discriminator>
+        <sift>
+            <appender name="FILE-${logIdentifier}" class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <file>${user.dir}/logs/${logIdentifier}.log</file>
+                <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                    <fileNamePattern>${user.dir}/logs/${logIdentifier}.%d{yyyy-MM-dd_HH}.log.zip</fileNamePattern>
+                    <maxHistory>12</maxHistory>
+                    <totalSizeCap>5MB</totalSizeCap>
+                </rollingPolicy>
+                <encoder>
+                    <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+                </encoder>
+            </appender>
+        </sift>
+    </appender>
+    <appender name="TRACER" class="ch.qos.logback.classic.sift.SiftingAppender">
+        <discriminator>
+            <key>logIdentifier</key>
+            <defaultValue>codion_server</defaultValue>
+        </discriminator>
+        <sift>
+            <appender name="TRACER-${logIdentifier}" class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <file>${user.dir}/logs/${logIdentifier}.trace.log</file>
+                <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                    <fileNamePattern>${user.dir}/logs/${logIdentifier}.trace.%d{yyyy-MM-dd_HH}.log.zip
+                    </fileNamePattern>
+                    <maxHistory>12</maxHistory>
+                    <totalSizeCap>5MB</totalSizeCap>
+                </rollingPolicy>
+                <encoder>
+                    <pattern>%msg%n</pattern>
+                </encoder>
+            </appender>
+        </sift>
+    </appender>
+    <logger name="org.eclipse.jetty" level="ERROR"/>
+    <root level="ERROR">
+        <appender-ref ref="SIFT"/>
+    </root>
+    <logger name="tracer" level="TRACE" additivity="false">
+        <appender-ref ref="TRACER"/>
+    </logger>
 </configuration>

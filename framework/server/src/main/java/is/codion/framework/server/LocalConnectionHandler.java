@@ -59,6 +59,7 @@ import static java.util.stream.Collectors.joining;
 final class LocalConnectionHandler implements InvocationHandler {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LocalConnectionHandler.class);
+	private static final Logger TRACER = LoggerFactory.getLogger("tracer");
 
 	private static final String LOG_IDENTIFIER_PROPERTY = "logIdentifier";
 	private static final String FETCH_CONNECTION = "fetchConnection";
@@ -149,10 +150,10 @@ final class LocalConnectionHandler implements InvocationHandler {
 
 	private void logExit(String methodName, Exception exception) {
 		MethodTrace trace = tracer.exit(methodName, exception);
-		if (trace != null && LOG.isTraceEnabled()) {
+		if (trace != null) {
 			StringBuilder messageBuilder = new StringBuilder(remoteClient.toString()).append("\n");
 			trace.appendTo(messageBuilder);
-			LOG.trace(messageBuilder.toString());
+			TRACER.trace(messageBuilder.toString());
 		}
 		MDC.remove(LOG_IDENTIFIER_PROPERTY);
 	}
