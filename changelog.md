@@ -36,6 +36,8 @@ Codion Change Log
 - DefaultLoadTest.user() now nullable, defaultUncaughtExceptionHandler set.
 ### is.codion.tools.loadtest.ui
 - LoadTestPanel, multiple user handling improved.
+### is.codion.tools.monitor.model
+- ClientUserMonitor bug fixed, user history now correctly counts multiple user connections.
 
 ## 0.18.45
 ### is.codion.common.core

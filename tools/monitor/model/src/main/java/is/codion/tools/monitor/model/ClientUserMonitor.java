@@ -34,7 +34,9 @@ import java.rmi.RemoteException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
@@ -195,7 +197,7 @@ public final class ClientUserMonitor {
 		@Override
 		public Collection<UserInfo> get() {
 			try {
-				List<UserInfo> items = new ArrayList<>(userHistoryTableModel.items().get());
+				List<UserInfo> items = new ArrayList<>(userHistoryTableModel.items().visible().get());
 				for (RemoteClient remoteClient : server.clients()) {
 					UserInfo newUserInfo = new UserInfo(remoteClient.user(), remoteClient.clientType(),
 									remoteClient.clientHost(), LocalDateTime.now(), remoteClient.clientId(),
@@ -206,11 +208,8 @@ public final class ClientUserMonitor {
 					}
 					else {
 						UserInfo currentUserInfo = items.get(index);
-						currentUserInfo.setLastSeen(newUserInfo.getLastSeen());
-						if (currentUserInfo.isNewConnection(newUserInfo.getClientId())) {
-							currentUserInfo.incrementConnectionCount();
-							currentUserInfo.setClientID(newUserInfo.getClientId());
-						}
+						currentUserInfo.setLastSeen(newUserInfo.lastSeen());
+						currentUserInfo.addClientId(remoteClient.clientId());
 					}
 				}
 
@@ -277,7 +276,7 @@ public final class ClientUserMonitor {
 				case CLIENT_HOST:
 					return row.clientHost();
 				case LAST_SEEN:
-					return row.getLastSeen();
+					return row.lastSeen();
 				case CONNECTION_COUNT:
 					return row.connectionCount();
 				default:
@@ -293,9 +292,8 @@ public final class ClientUserMonitor {
 		private final String clientHost;
 		private final Version clientVersion;
 		private final Version frameworkVersion;
+		private final Set<UUID> clientIds = new HashSet<>();
 		private LocalDateTime lastSeen;
-		private UUID clientId;
-		private int connectionCount = 1;
 
 		private UserInfo(User user, String clientType, String clientHost, LocalDateTime lastSeen,
 										 UUID clientId, Version clientVersion, Version frameworkVersion) {
@@ -303,7 +301,7 @@ public final class ClientUserMonitor {
 			this.clientType = clientType;
 			this.clientHost = clientHost;
 			this.lastSeen = lastSeen;
-			this.clientId = clientId;
+			this.clientIds.add(clientId);
 			this.clientVersion = clientVersion;
 			this.frameworkVersion = frameworkVersion;
 		}
@@ -320,12 +318,8 @@ public final class ClientUserMonitor {
 			return clientHost;
 		}
 
-		public LocalDateTime getLastSeen() {
+		public LocalDateTime lastSeen() {
 			return lastSeen;
-		}
-
-		public UUID getClientId() {
-			return clientId;
 		}
 
 		public Version clientVersion() {
@@ -337,19 +331,15 @@ public final class ClientUserMonitor {
 		}
 
 		public int connectionCount() {
-			return connectionCount;
+			return clientIds.size();
 		}
 
 		public void setLastSeen(LocalDateTime lastSeen) {
 			this.lastSeen = lastSeen;
 		}
 
-		public void setClientID(UUID clientId) {
-			this.clientId = clientId;
-		}
-
-		public void incrementConnectionCount() {
-			connectionCount++;
+		public void addClientId(UUID clientId) {
+			this.clientIds.add(clientId);
 		}
 
 		@Override
@@ -374,10 +364,6 @@ public final class ClientUserMonitor {
 			result = 31 * result + clientHost.hashCode();
 
 			return result;
-		}
-
-		public boolean isNewConnection(UUID clientId) {
-			return !this.clientId.equals(clientId);
 		}
 	}
 }
