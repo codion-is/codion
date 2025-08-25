@@ -32,6 +32,10 @@ Codion Change Log
 - EntityEditPanel.writePreference() and applyPreferences() added along with preferencesKey().
 ### is.codion.framework.server
 - LocalConnectionHandler.TRACER logger added, handling client method traces.
+### is.codion.tools.loadtest.core
+- DefaultLoadTest.user() now nullable, defaultUncaughtExceptionHandler set.
+### is.codion.tools.loadtest.ui
+- LoadTestPanel, multiple user handling improved.
 
 ## 0.18.45
 ### is.codion.common.core

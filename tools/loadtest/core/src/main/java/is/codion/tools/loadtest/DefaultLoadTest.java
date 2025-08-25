@@ -85,7 +85,7 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 		this.createApplication = builder.createApplication;
 		this.closeApplication = builder.closeApplication;
 		this.name = builder.name;
-		this.user = Value.nonNull(builder.user);
+		this.user = Value.nullable(builder.user);
 		this.loginDelayFactor = Value.builder()
 						.nonNull(builder.loginDelayFactor)
 						.validator(new MinimumValidator(1))
@@ -162,6 +162,9 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 
 	@Override
 	public void addApplicationBatch() {
+		if (user.isNull()) {
+			throw new IllegalStateException("User must be specified to add an application batch");
+		}
 		synchronized (applications) {
 			int batchSize = applicationBatchSize.getOrThrow();
 			for (int i = 0; i < batchSize; i++) {
@@ -179,6 +182,7 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 			if (!applications.isEmpty()) {
 				applications.keySet().stream()
 								.filter(applicationRunner -> !applicationRunner.stopped())
+								.filter(applicationRunner -> user.isNull() || applicationRunner.user().equals(user.get()))
 								.limit(applicationBatchSize.getOrThrow())
 								.collect(toList())
 								.forEach(this::stop);

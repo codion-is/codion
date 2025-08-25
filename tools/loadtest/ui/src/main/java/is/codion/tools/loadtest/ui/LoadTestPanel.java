@@ -18,10 +18,11 @@
  */
 package is.codion.tools.loadtest.ui;
 
-import is.codion.common.model.CancelException;
+import is.codion.common.item.Item;
 import is.codion.common.model.preferences.UserPreferences;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.user.User;
+import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
@@ -46,6 +47,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.xy.DeviationRenderer;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -53,16 +55,17 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.text.NumberFormat;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static is.codion.common.item.Item.item;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
@@ -84,7 +87,6 @@ public final class LoadTestPanel<T> extends JPanel {
 
 	private static final int DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS = 2000;
 	private static final double DEFAULT_SCREEN_SIZE_RATIO = 0.75;
-	private static final int USER_COLUMNS = 6;
 	private static final int SMALL_TEXT_FIELD_COLUMNS = 3;
 	private static final int SPINNER_STEP_SIZE = 10;
 	private static final double RESIZE_WEIGHT = 0.8;
@@ -95,6 +97,15 @@ public final class LoadTestPanel<T> extends JPanel {
 	private static final Runtime RUNTIME = Runtime.getRuntime();
 
 	private final LoadTestModel<T> loadTestModel;
+	private final FilterComboBoxModel<Item<User>> userComboBoxModel = FilterComboBoxModel.builder()
+					.<Item<User>>items(Collections::emptyList)
+					.nullItem(item(null, "-"))
+					.build();
+	private final JComboBox<Item<User>> userComboBox = comboBox()
+					.model(userComboBoxModel)
+					.consumer(this::setUser)
+					.preferredWidth(120)
+					.build();
 	private final LoadTest<T> loadTest;
 	private final JPanel scenarioBase = gridLayoutPanel(0, 1).build();
 
@@ -109,6 +120,11 @@ public final class LoadTestPanel<T> extends JPanel {
 		this.loadTestModel = requireNonNull(loadTestModel);
 		this.loadTest = loadTestModel.loadTest();
 		this.loadTestModel.applicationTableModel().items().refresher().exception().addConsumer(this::displayException);
+		loadTest.user().optional().ifPresent(user -> {
+			Item<User> item = item(user, user.username());
+			userComboBoxModel.items().add(item);
+			userComboBoxModel.selection().item().set(item);
+		});
 		initializeUI();
 	}
 
@@ -123,6 +139,8 @@ public final class LoadTestPanel<T> extends JPanel {
 	 * Displays this LoadTestPanel in a frame on the Event Dispatch Thread.
 	 */
 	public void run() {
+		Thread.setDefaultUncaughtExceptionHandler((t, e) ->
+						Dialogs.displayException(e, Utilities.parentWindow(LoadTestPanel.this)));
 		SwingUtilities.invokeLater(this::showFrame);
 	}
 
@@ -213,6 +231,7 @@ public final class LoadTestPanel<T> extends JPanel {
 										.control(Control.builder()
 														.command(loadTest::addApplicationBatch)
 														.caption("+")
+														.enabled(userComboBoxModel.selection().empty().not())
 														.description("Add application batch")))
 						.build();
 	}
@@ -269,35 +288,29 @@ public final class LoadTestPanel<T> extends JPanel {
 	}
 
 	private JPanel createUserPanel() {
-		User user = loadTest.user().get();
-		JTextField usernameField = stringField()
-						.value(user == null ? null : user.username())
-						.columns(USER_COLUMNS)
-						.editable(false)
-						.build();
-		loadTest.user().addConsumer(u -> usernameField.setText(u.username()));
-
-		return flexibleGridLayoutPanel(1, 3)
-						.add(new JLabel("User"))
-						.add(usernameField)
-						.add(button()
+		return borderLayoutPanel()
+						.west(new JLabel("User"))
+						.center(userComboBox)
+						.east(button()
 										.control(Control.builder()
-										.command(this::setUser)
-										.caption("...")
-										.description("Set the application user")))
+														.command(this::addUser)
+														.caption("+")
+														.description("Set the application user")))
 						.build();
 	}
 
-	private void setUser() {
-		User user = loadTest.user().get();
-		try {
-			loadTest.user().set(Dialogs.login()
-							.owner(LoadTestPanel.this)
-							.title("User")
-							.defaultUser(user == null ? null : User.user(user.username()))
-							.show());
-		}
-		catch (CancelException ignored) {/**/}
+	private void addUser() {
+		User user = Dialogs.login()
+						.owner(LoadTestPanel.this)
+						.title("Add user")
+						.show();
+		Item<User> item = item(user, user.username());
+		userComboBoxModel.items().add(item);
+		userComboBoxModel.selection().item().set(item);
+	}
+
+	private void setUser(Item<User> item) {
+		loadTest.user().set(item == null ? null : item.get());
 	}
 
 	private JTabbedPane createScenarioOverviewChartPanel() {
