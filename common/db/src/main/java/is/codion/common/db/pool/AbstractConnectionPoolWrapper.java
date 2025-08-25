@@ -31,6 +31,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import static java.util.Arrays.asList;
@@ -44,7 +45,6 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 
 	private static final String GET_CONNECTION = "getConnection";
 	private static final String CLOSE = "close";
-	private static final int NANOS_TO_MILLIS = 1_000_000;
 
 	private static final boolean VALIDATE = VALIDATE_CONNECTIONS_ON_CHECKOUT.getOrThrow();
 
@@ -93,7 +93,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
 		}
 		finally {
 			if (counter.isCollectCheckOutTimes() && startTime > 0L) {
-				counter.addCheckOutTime((int) (System.nanoTime() - startTime) / NANOS_TO_MILLIS);
+				counter.addCheckOutTime((int) TimeUnit.NANOSECONDS.toMicros(System.nanoTime() - startTime));
 			}
 		}
 	}

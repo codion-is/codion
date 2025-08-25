@@ -68,7 +68,7 @@ public final class ConnectionPoolMonitor {
 	private final XYSeries failedRequestsPerSecond = new XYSeries("Failed requests/sec");
 	private final XYSeries connectionRequestsPerSecond = new XYSeries("Requests/sec");
 	private final XYSeriesCollection connectionRequestsPerSecondCollection = new XYSeriesCollection();
-	private final YIntervalSeries averageTime = new YIntervalSeries("Average check out time (ms)");
+	private final YIntervalSeries averageTime = new YIntervalSeries("Average check out time (μs)");
 	private final YIntervalSeriesCollection checkOutTimeCollection = new YIntervalSeriesCollection();
 
 	private final TaskScheduler updateScheduler;

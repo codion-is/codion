@@ -97,17 +97,17 @@ public interface ConnectionPoolStatistics {
 	int failedRequestsPerSecond();
 
 	/**
-	 * @return the average check-out time in ms
+	 * @return the average check-out time in microseconds
 	 */
 	long averageTime();
 
 	/**
-	 * @return the minimum check-out time in ms
+	 * @return the minimum check-out time in microseconds
 	 */
 	long minimumTime();
 
 	/**
-	 * @return the maximum check-out time in ms
+	 * @return the maximum check-out time in microseconds
 	 */
 	long maximumTime();
 }
