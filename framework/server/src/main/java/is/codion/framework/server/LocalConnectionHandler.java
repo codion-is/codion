@@ -26,10 +26,9 @@ import is.codion.common.logging.MethodTrace;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.tracer.MethodTracer;
+import is.codion.framework.db.local.tracer.MethodTracer.ArgumentFormatter;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entities;
-import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -40,7 +39,6 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -53,8 +51,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
 import static is.codion.framework.db.local.tracer.MethodTracer.methodTracer;
 import static java.lang.System.currentTimeMillis;
-import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.joining;
 
 final class LocalConnectionHandler implements InvocationHandler {
 
@@ -371,114 +367,15 @@ final class LocalConnectionHandler implements InvocationHandler {
 	/**
 	 * An implementation tailored for EntityConnections.
 	 */
-	private static final class EntityArgumentToString implements MethodTracer.ArgumentFormatter {
-
-		private static final String BRACKET_OPEN = "[";
-		private static final String BRACKET_CLOSE = "]";
-
-		private static final String PREPARE_STATEMENT = "prepareStatement";
+	private static final class EntityArgumentToString implements ArgumentFormatter {
 
 		@Override
-		public String format(String methodName, @Nullable Object object) {
-			return toString(methodName, object);
-		}
-
-		private String toString(String methodName, Object object) {
+		public String format(String methodName, @Nullable Object argument) {
 			if (ENTITIES.equals(methodName)) {
 				return "";
 			}
-			if (PREPARE_STATEMENT.equals(methodName)) {
-				return (String) object;
-			}
 
-			return toString(object);
-		}
-
-		private String toString(Object object) {
-			if (object == null) {
-				return "null";
-			}
-			if (object instanceof String) {
-				return "'" + object + "'";
-			}
-			if (object instanceof Entity) {
-				return entityToString((Entity) object);
-			}
-			else if (object instanceof Entity.Key) {
-				return entityKeyToString((Entity.Key) object);
-			}
-			if (object instanceof List) {
-				return toString((List<?>) object);
-			}
-			if (object instanceof Collection) {
-				return toString((Collection<?>) object);
-			}
-			if (object instanceof byte[]) {
-				return "byte[" + ((byte[]) object).length + "]";
-			}
-			if (object.getClass().isArray()) {
-				return toString((Object[]) object);
-			}
-
-			return object.toString();
-		}
-
-		private static String entityToString(Entity entity) {
-			StringBuilder builder = new StringBuilder(entity.type().name()).append(" {");
-			for (ColumnDefinition<?> columnDefinition : entity.definition().columns().definitions()) {
-				boolean modified = entity.modified(columnDefinition.attribute());
-				if (columnDefinition.primaryKey() || modified) {
-					StringBuilder valueString = new StringBuilder();
-					if (modified) {
-						valueString.append(entity.original(columnDefinition.attribute())).append("->");
-					}
-					valueString.append(entity.string(columnDefinition.attribute()));
-					builder.append(columnDefinition.attribute()).append(":").append(valueString).append(",");
-				}
-			}
-			builder.deleteCharAt(builder.length() - 1);
-
-			return builder.append("}").toString();
-		}
-
-		private String toString(List<?> arguments) {
-			if (arguments.isEmpty()) {
-				return "";
-			}
-			if (arguments.size() == 1) {
-				return toString(arguments.get(0));
-			}
-
-			return arguments.stream()
-							.map(this::toString)
-							.collect(joining(", ", BRACKET_OPEN, BRACKET_CLOSE));
-		}
-
-		private String toString(Collection<?> arguments) {
-			if (arguments.isEmpty()) {
-				return "";
-			}
-
-			return arguments.stream()
-							.map(this::toString)
-							.collect(joining(", ", BRACKET_OPEN, BRACKET_CLOSE));
-		}
-
-		private String toString(Object[] arguments) {
-			if (arguments.length == 0) {
-				return "";
-			}
-			if (arguments.length == 1) {
-				return toString(arguments[0]);
-			}
-
-			return stream(arguments)
-							.map(this::toString)
-							.collect(joining(", ", BRACKET_OPEN, BRACKET_CLOSE));
-		}
-
-		private static String entityKeyToString(Entity.Key key) {
-			return key.type() + " {" + key + "}";
+			return ArgumentFormatter.super.format(methodName, argument);
 		}
 	}
 }

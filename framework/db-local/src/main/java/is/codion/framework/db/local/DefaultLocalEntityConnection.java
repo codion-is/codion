@@ -31,7 +31,6 @@ import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.db.result.ResultIterator;
-import is.codion.common.logging.MethodTrace;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
@@ -106,7 +105,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	private static final String PACK_RESULT = "packResult";
 	private static final String EXECUTE = "execute";
 	private static final String REPORT = "report";
-	private static final NoOpTracer NO_OP_TRACER = new NoOpTracer();
 	private static final Function<Entity, Entity> IMMUTABLE = Entity::immutable;
 
 	private final Domain domain;
@@ -119,7 +117,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	private final Map<EntityType, List<Attribute<?>>> primaryKeyAndWritableColumnsCache = new HashMap<>();
 	private final Map<Select, List<Entity>> queryCache = new HashMap<>();
 
-	private MethodTracer tracer = NO_OP_TRACER;
+	private MethodTracer tracer = MethodTracer.NO_OP;
 
 	private boolean optimisticLocking = OPTIMISTIC_LOCKING.getOrThrow();
 	private boolean limitForeignKeyReferenceDepth = LIMIT_FOREIGN_KEY_REFERENCE_DEPTH.getOrThrow();
@@ -737,9 +735,17 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	@Override
-	public void tracer(@Nullable MethodTracer tracer) {
+	public MethodTracer tracer() {
 		synchronized (connection) {
-			this.tracer = tracer == null ? NO_OP_TRACER : tracer;
+			return tracer;
+		}
+	}
+
+	@Override
+	public void tracer(MethodTracer tracer) {
+		requireNonNull(tracer);
+		synchronized (connection) {
+			this.tracer = tracer;
 		}
 	}
 
@@ -1604,46 +1610,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 					CONFIGURED_DATABASES.add(this);
 				}
 			}
-		}
-	}
-
-	private static final class NoOpTracer implements MethodTracer {
-
-		@Override
-		public void enter(String method) {}
-
-		@Override
-		public void enter(String method, @Nullable Object argument) {}
-
-		@Override
-		public void enter(String method, @Nullable Object... arguments) {}
-
-		@Override
-		public @Nullable MethodTrace exit(String method) {
-			return null;
-		}
-
-		@Override
-		public @Nullable MethodTrace exit(String method, @Nullable Exception exception) {
-			return null;
-		}
-
-		@Override
-		public @Nullable MethodTrace exit(String method, @Nullable Exception exception, @Nullable String exitMessage) {
-			return null;
-		}
-
-		@Override
-		public boolean isEnabled() {
-			return false;
-		}
-
-		@Override
-		public void setEnabled(boolean enabled) {}
-
-		@Override
-		public List<MethodTrace> entries() {
-			return emptyList();
 		}
 	}
 }

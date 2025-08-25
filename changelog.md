@@ -22,6 +22,8 @@ Codion Change Log
 - CalendarPanel refactored to reduce number of mouse listeners.
 ### is.codion.framework.domain
 - Entities.primaryKeys() overloaded with Collection.
+### is.codion.framework.db.local
+- LocalEntityConnectionProvider.tracing() and traces() added, related refactoring.
 ### is.codion.framework.model
 - AbstractEntityEditModel.afterInsertUpdateOrDelete() now includes the entities involved, related refactoring.
 - EntityEditModel.events() now takes entityType parameter, related refactoring.

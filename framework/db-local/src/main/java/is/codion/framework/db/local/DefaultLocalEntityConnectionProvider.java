@@ -19,15 +19,22 @@
 package is.codion.framework.db.local;
 
 import is.codion.common.db.database.Database;
+import is.codion.common.logging.MethodTrace;
+import is.codion.common.state.State;
 import is.codion.framework.db.AbstractEntityConnectionProvider;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.local.tracer.MethodTracer;
+import is.codion.framework.db.local.tracer.MethodTracer.Traceable;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
+import static is.codion.framework.db.local.tracer.MethodTracer.methodTracer;
 
 /**
  * A class responsible for managing a local EntityConnection.
@@ -41,6 +48,11 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
 	private final Domain domain;
 	private final Database database;
 	private final int queryTimeout;
+
+	private final State tracing = State.builder()
+					.value(TRACING.getOrThrow())
+					.consumer(this::tracingChanged)
+					.build();
 
 	DefaultLocalEntityConnectionProvider(DefaultLocalEntityConnectionProviderBuilder builder) {
 		super(builder);
@@ -75,9 +87,22 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
 	}
 
 	@Override
+	public State tracing() {
+		return tracing;
+	}
+
+	@Override
+	public List<MethodTrace> traces() {
+		return ((Traceable) connection()).tracer().entries();
+	}
+
+	@Override
 	protected LocalEntityConnection connect() {
 		LOG.debug("Initializing connection for {}", user());
 		LocalEntityConnection connection = localEntityConnection(database(), domain(), user());
+		if (tracing.is()) {
+			setMethodTracer(methodTracer(TRACES.getOrThrow()), (Traceable) connection);
+		}
 		connection.queryTimeout(queryTimeout);
 
 		return connection;
@@ -86,6 +111,14 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
 	@Override
 	protected void close(EntityConnection connection) {
 		connection.close();
+	}
+
+	private void tracingChanged(boolean trace) {
+		setMethodTracer(trace ? methodTracer(TRACES.getOrThrow()) : MethodTracer.NO_OP, (Traceable) connection());
+	}
+
+	private static void setMethodTracer(MethodTracer methodTracer, Traceable traceable) {
+		traceable.tracer(methodTracer);
 	}
 
 	private static Domain initializeDomain(DomainType domainType) {

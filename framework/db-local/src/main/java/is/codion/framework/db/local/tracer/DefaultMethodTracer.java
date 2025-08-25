@@ -22,6 +22,7 @@ import is.codion.common.logging.MethodTrace;
 
 import org.jspecify.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -119,6 +120,6 @@ final class DefaultMethodTracer implements MethodTracer {
 
 	@Override
 	public synchronized List<MethodTrace> entries() {
-		return unmodifiableList(entries);
+		return unmodifiableList(new ArrayList<>(entries));
 	}
 }
