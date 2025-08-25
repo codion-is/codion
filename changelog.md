@@ -19,6 +19,7 @@ Codion Change Log
 - ComponentValue type parameters reordered.
 - ComponentValueBuilder type parameters reordered.
 - ListBuilder.Items and SelectedItems.nullable() added.
+- CalendarPanel refactored to reduce number of mouse listeners.
 ### is.codion.framework.domain
 - Entities.primaryKeys() overloaded with Collection.
 ### is.codion.framework.model

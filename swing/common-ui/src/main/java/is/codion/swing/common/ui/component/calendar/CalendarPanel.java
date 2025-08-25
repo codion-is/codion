@@ -38,6 +38,7 @@ import org.jspecify.annotations.Nullable;
 
 import javax.swing.InputMap;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -221,6 +222,7 @@ public final class CalendarPanel extends JPanel {
 	private final Value<Integer> minuteValue;
 	private final State todaySelected;
 
+	private final DayMouseListener dayMouseListener = new DayMouseListener();
 	private final ControlMap controlMap;
 	private final List<DayOfWeek> dayColumns;
 	private final Map<Integer, DayLabel> dayLabels;
@@ -786,7 +788,7 @@ public final class CalendarPanel extends JPanel {
 		YearMonth previousMonth = YearMonth.of(yearValue.getOrThrow(), monthValue.getOrThrow()).minusMonths(1);
 		int previousMonthLength = previousMonth.lengthOfMonth();
 		for (int i = dayOfWeekColumn - 1; i >= 0; i--) {
-			dayGridPanel.add(new FillerLabel(LocalDate.of(previousMonth.getYear(), previousMonth.getMonth(), previousMonthLength - i)));
+			dayGridPanel.add(new FillerDayLabel(LocalDate.of(previousMonth.getYear(), previousMonth.getMonth(), previousMonthLength - i)));
 		}
 		int counter = dayOfWeekColumn;
 		YearMonth yearMonth = YearMonth.of(yearValue.getOrThrow(), monthValue.getOrThrow());
@@ -797,7 +799,7 @@ public final class CalendarPanel extends JPanel {
 		YearMonth nextMonth = yearMonth.plusMonths(1);
 		int nextMonthDay = 1;
 		while (counter++ < DAY_GRID_CELLS) {
-			dayGridPanel.add(new FillerLabel(LocalDate.of(nextMonth.getYear(), nextMonth.getMonth(), nextMonthDay++)));
+			dayGridPanel.add(new FillerDayLabel(LocalDate.of(nextMonth.getYear(), nextMonth.getMonth(), nextMonthDay++)));
 		}
 		requestInputFocus();
 		validate();
@@ -1040,7 +1042,7 @@ public final class CalendarPanel extends JPanel {
 			setHorizontalAlignment(CENTER);
 			setFocusable(true);
 			setEnabled(enabledState.is());
-			addMouseListener(new DayMouseAdapter());
+			addMouseListener(dayMouseListener);
 		}
 
 		@Override
@@ -1061,42 +1063,40 @@ public final class CalendarPanel extends JPanel {
 			Color foreground = isEnabled() ? getForeground() : UIManager.getColor("Label.disabledForeground");
 			setBorder(dayValue.isEqualTo(day) ? createEtchedBorder(foreground, foreground) : createEtchedBorder());
 		}
-
-		private final class DayMouseAdapter extends MouseAdapter {
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (enabledState.is()) {
-					dayValue.set(day);
-					if (e.getClickCount() == 2) {
-						doubleClicked.accept(day);
-					}
-				}
-			}
-		}
 	}
 
-	private final class FillerLabel extends JLabel {
+	private final class FillerDayLabel extends JLabel {
 
 		private final LocalDate localDate;
 
-		private FillerLabel(LocalDate localDate) {
+		private FillerDayLabel(LocalDate localDate) {
 			super(String.valueOf(localDate.getDayOfMonth()));
 			this.localDate = localDate;
 			setEnabled(false);
 			setHorizontalAlignment(SwingConstants.CENTER);
 			setBorder(createEtchedBorder());
-			addMouseListener(new FillerLabelMouseAdapter());
+			addMouseListener(dayMouseListener);
 		}
+	}
 
-		private final class FillerLabelMouseAdapter extends MouseAdapter {
+	private final class DayMouseListener extends MouseAdapter {
 
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (enabledState.is()) {
-					yearValue.set(localDate.getYear());
-					monthValue.set(localDate.getMonth());
-					dayValue.set(localDate.getDayOfMonth());
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			if (enabledState.is()) {
+				JComponent component = (JComponent) e.getSource();
+				if (component instanceof DayLabel) {
+					DayLabel label = (DayLabel) component;
+					dayValue.set(label.day);
+					if (e.getClickCount() == 2) {
+						doubleClicked.accept(label.day);
+					}
+				}
+				else if (component instanceof FillerDayLabel) {
+					FillerDayLabel label = (FillerDayLabel) component;
+					yearValue.set(label.localDate.getYear());
+					monthValue.set(label.localDate.getMonth());
+					dayValue.set(label.localDate.getDayOfMonth());
 				}
 			}
 		}
