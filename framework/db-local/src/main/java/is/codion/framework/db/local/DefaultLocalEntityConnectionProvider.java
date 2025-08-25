@@ -101,7 +101,7 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
 		LOG.debug("Initializing connection for {}", user());
 		LocalEntityConnection connection = localEntityConnection(database(), domain(), user());
 		if (tracing.is()) {
-			setMethodTracer(methodTracer(TRACES.getOrThrow()), (Traceable) connection);
+			setMethodTracer(createMethodTracer(), (Traceable) connection);
 		}
 		connection.queryTimeout(queryTimeout);
 
@@ -114,11 +114,18 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
 	}
 
 	private void tracingChanged(boolean trace) {
-		setMethodTracer(trace ? methodTracer(TRACES.getOrThrow()) : MethodTracer.NO_OP, (Traceable) connection());
+		setMethodTracer(trace ? createMethodTracer() : MethodTracer.NO_OP, (Traceable) connection());
 	}
 
 	private static void setMethodTracer(MethodTracer methodTracer, Traceable traceable) {
 		traceable.tracer(methodTracer);
+	}
+
+	private static MethodTracer createMethodTracer() {
+		MethodTracer methodTracer = methodTracer(TRACES.getOrThrow());
+		methodTracer.setEnabled(true);
+
+		return methodTracer;
 	}
 
 	private static Domain initializeDomain(DomainType domainType) {

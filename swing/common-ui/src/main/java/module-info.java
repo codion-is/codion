@@ -51,6 +51,7 @@ module is.codion.swing.common.ui {
 	exports is.codion.swing.common.ui.component.label;
 	exports is.codion.swing.common.ui.component.list;
 	exports is.codion.swing.common.ui.component.listbox;
+	exports is.codion.swing.common.ui.component.logging;
 	exports is.codion.swing.common.ui.component.panel;
 	exports is.codion.swing.common.ui.component.progressbar;
 	exports is.codion.swing.common.ui.component.scrollpane;

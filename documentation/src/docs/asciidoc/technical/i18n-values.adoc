@@ -438,6 +438,22 @@ is/codion/swing/common/ui/component/calendar/CalendarPanel_is_IS.properties
 |week|Week|Vika
 |===
 
+=== is/codion/swing/common/ui/component/logging/LogViewerPanel.java
+
+[source]
+----
+is/codion/swing/common/ui/component/logging/LogViewerPanel.properties
+is/codion/swing/common/ui/component/logging/LogViewerPanel_is_IS.properties
+----
+
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|line_wrap|Line wrap|Skipta línum
+|save_to_file|Save to file|Vista í skrá
+|===
+
 === is/codion/swing/common/ui/component/table/ColumnConditionPanel.java
 
 [source]
@@ -754,7 +770,10 @@ is/codion/swing/framework/ui/EntityApplicationPanel_is_IS.properties
 |system_properties|System properties|Kerfisstillingar
 |tools|Tools|Tól
 |tools_mnemonic|T|T
+|tracing|Tracing|Rakning
+|tracing_enabled|Enabled|Virk
 |view_application_tree|Application Tree|Yfirlitsmynd
+|view_trace|View|Skoða
 |===
 
 === is/codion/swing/framework/ui/EntityEditPanel.java

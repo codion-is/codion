@@ -22,6 +22,7 @@ import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.i18n.Messages;
 import is.codion.common.logging.LoggerProxy;
+import is.codion.common.logging.MethodTrace;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.preferences.UserPreferences;
 import is.codion.common.observer.Observable;
@@ -33,6 +34,7 @@ import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnectionTracer;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -44,6 +46,7 @@ import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.UIManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.logging.LogViewerPanel;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -56,7 +59,6 @@ import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.scaler.Scaler;
-import is.codion.swing.common.ui.window.Windows;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.ui.EntityPanel.WindowType;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
@@ -78,6 +80,9 @@ import javax.swing.LookAndFeel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.Document;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
@@ -115,6 +120,8 @@ import static is.codion.common.Configuration.stringValue;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
+import static is.codion.swing.common.ui.component.logging.LogViewerPanel.logViewerPanel;
+import static is.codion.swing.common.ui.window.Windows.screenSizeRatio;
 import static java.awt.Frame.MAXIMIZED_BOTH;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
@@ -155,6 +162,16 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 */
 	public static final PropertyValue<Boolean> DISPLAY_SYSTEM_PROPERTIES =
 					booleanValue(EntityApplicationPanel.class.getName() + ".displaySystemProperties", true);
+
+	/**
+	 * Specifies whether to include tracing related controls in the log menu.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: false
+	 * </ul>
+	 */
+	public static final PropertyValue<Boolean> TRACING =
+					booleanValue(EntityApplicationPanel.class.getName() + ".tracing", false);
 
 	private static final String LOG_LEVEL = "log_level";
 	private static final String LOG_LEVEL_DESC = "log_level_desc";
@@ -241,6 +258,8 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	private final Map<EntityPanel.Builder, EntityPanel> cachedEntityPanels = new HashMap<>();
 
 	private final Map<Object, State> logLevelStates = createLogLevelStateMap();
+
+	private LogViewerPanel traceViewerPanel;
 
 	private boolean saveDefaultUsername = true;
 	private boolean initialized = false;
@@ -428,7 +447,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 */
 	public final void displayKeyboardShortcuts() {
 		KeyboardShortcutsPanel shortcutsPanel = new KeyboardShortcutsPanel();
-		shortcutsPanel.setPreferredSize(new Dimension(shortcutsPanel.getPreferredSize().width, Windows.screenSizeRatio(0.5).height));
+		shortcutsPanel.setPreferredSize(new Dimension(shortcutsPanel.getPreferredSize().width, screenSizeRatio(0.5).height));
 		Dialogs.builder()
 						.component(shortcutsPanel)
 						.owner(this)
@@ -706,6 +725,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 			builder.control(createLogLevelControl());
 		}
 		createOpenLogControls().ifPresent(builder::control);
+		createTracingControls().ifPresent(builder::control);
 
 		return builder.build();
 	}
@@ -1050,6 +1070,25 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		return Optional.of(builder.build());
 	}
 
+	private Optional<Controls> createTracingControls() {
+		EntityConnectionProvider connectionProvider = applicationModel.connectionProvider();
+		if (connectionProvider instanceof EntityConnectionTracer && TRACING.getOrThrow()) {
+			EntityConnectionTracer tracer = (EntityConnectionTracer) connectionProvider;
+
+			return Optional.of(Controls.builder()
+							.caption(resourceBundle.getString("tracing"))
+							.control(Control.builder()
+											.toggle(tracer.tracing())
+											.caption(resourceBundle.getString("tracing_enabled")))
+							.control(Control.builder()
+											.command(() -> viewTrace(tracer.traces()))
+											.caption(resourceBundle.getString("view_trace") + "..."))
+							.build());
+		}
+
+		return Optional.empty();
+	}
+
 	private Optional<Control> createLogFileControl() {
 		return firstLogFile()
 						.map(firstLogFile -> Control.builder()
@@ -1091,7 +1130,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 																		.build())
 														.scrollPane())
 										.owner(this)
-										.size(Windows.screenSizeRatio(0.33))
+										.size(screenSizeRatio(0.33))
 										.title(resourceBundle.getString("system_properties"))
 										.show())
 						.caption("ⓘ")
@@ -1103,6 +1142,31 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		Font font = UIManager.getFont("TextArea.font");
 
 		return new Font(Font.MONOSPACED, font.getStyle(), font.getSize());
+	}
+
+	private void viewTrace(List<MethodTrace> traces) {
+		if (traceViewerPanel == null) {
+			traceViewerPanel = logViewerPanel(new DefaultStyledDocument());
+		}
+		StringBuilder logBuilder = new StringBuilder();
+		traces.forEach(trace -> trace.appendTo(logBuilder));
+		Document document = traceViewerPanel.document();
+		try {
+			document.remove(0, document.getLength());
+			document.insertString(0, logBuilder.toString(), null);
+		}
+		catch (BadLocationException e) {
+			throw new RuntimeException(e);
+		}
+		if (!traceViewerPanel.isShowing()) {
+			Dialogs.builder()
+							.component(traceViewerPanel)
+							.owner(this)
+							.title(resourceBundle.getString("tracing"))
+							.size(screenSizeRatio(0.5))
+							.modal(false)
+							.show();
+		}
 	}
 
 	private static Optional<File> firstLogFile() {

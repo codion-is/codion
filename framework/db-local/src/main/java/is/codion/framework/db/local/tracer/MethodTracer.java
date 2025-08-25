@@ -122,7 +122,7 @@ public interface MethodTracer {
 		}
 
 		/**
-		 * @param argument the argument to format
+		 * @param arguments the arguments to format
 		 * @return the formatted argument
 		 */
 		default String format(List<?> arguments) {
@@ -139,7 +139,7 @@ public interface MethodTracer {
 		}
 
 		/**
-		 * @param argument the argument to format
+		 * @param arguments the arguments to format
 		 * @return the formatted argument
 		 */
 		default String format(Collection<?> arguments) {
@@ -153,7 +153,7 @@ public interface MethodTracer {
 		}
 
 		/**
-		 * @param argument the argument to format
+		 * @param arguments the argument to format
 		 * @return the formatted argument
 		 */
 		default String format(Object[] arguments) {
