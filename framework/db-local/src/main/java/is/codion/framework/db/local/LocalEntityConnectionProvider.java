@@ -19,22 +19,18 @@
 package is.codion.framework.db.local;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.logging.MethodTrace;
 import is.codion.common.property.PropertyValue;
-import is.codion.common.state.State;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnectionTracer;
 import is.codion.framework.domain.Domain;
 
-import java.util.List;
-
 import static is.codion.common.Configuration.booleanValue;
-import static is.codion.common.Configuration.integerValue;
 
 /**
  * A class responsible for managing a local EntityConnection.
  * @see LocalEntityConnectionProvider#builder()
  */
-public interface LocalEntityConnectionProvider extends EntityConnectionProvider {
+public interface LocalEntityConnectionProvider extends EntityConnectionProvider, EntityConnectionTracer {
 
 	/**
 	 * Specifies whether method tracing is enabled by default.
@@ -44,15 +40,6 @@ public interface LocalEntityConnectionProvider extends EntityConnectionProvider 
 	 * </ul>
 	 */
 	PropertyValue<Boolean> TRACING = booleanValue("codion.db.local.tracing", false);
-
-	/**
-	 * Specifies the default maximum number of method traces to keep for a local connection.
-	 * <ul>
-	 * <li>Value type: Integer
-	 * <li>Default value: 50
-	 * </ul>
-	 */
-	PropertyValue<Integer> TRACES = integerValue("codion.db.local.traces", 50);
 
 	/**
 	 * @return the underlying domain model
@@ -66,16 +53,6 @@ public interface LocalEntityConnectionProvider extends EntityConnectionProvider 
 
 	@Override
 	LocalEntityConnection connection();
-
-	/**
-	 * @return the {@link State} controlling whether method tracing is enabled
-	 */
-	State tracing();
-
-	/**
-	 * @return the collected method traces
-	 */
-	List<MethodTrace> traces();
 
 	/**
 	 * Instantiates a new builder instance.

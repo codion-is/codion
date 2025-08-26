@@ -14,16 +14,26 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2023 - 2025, Björn Darri Sigurðsson.
+ * Copyright (c) 2025, Björn Darri Sigurðsson.
  */
+package is.codion.framework.db;
+
+import is.codion.common.logging.MethodTrace;
+import is.codion.common.observer.Observer;
+import is.codion.common.state.State;
+
 /**
- * Package configuration values:
- * <ul>
- * <li>{@link is.codion.framework.db.local.LocalEntityConnection#TRACES}
- * <li>{@link is.codion.framework.db.local.LocalEntityConnection#QUERY_TIMEOUT}
- * <li>{@link is.codion.framework.db.local.LocalEntityConnection#OPTIMISTIC_LOCKING}
- * <li>{@link is.codion.framework.db.local.LocalEntityConnection#LIMIT_FOREIGN_KEY_REFERENCE_DEPTH}
- * </ul>
+ * Provides method tracing for entity connection.
  */
-@org.jspecify.annotations.NullMarked
-package is.codion.framework.db.local;
+public interface EntityConnectionTracer {
+
+	/**
+	 * @return the {@link State} controlling whether method tracing is enabled
+	 */
+	State tracing();
+
+	/**
+	 * @return an {@link Observer} notified each time a trace is added
+	 */
+	Observer<MethodTrace> trace();
+}

@@ -19,35 +19,31 @@
 package is.codion.tools.monitor.ui;
 
 import is.codion.common.format.LocaleDateTimePattern;
-import is.codion.common.state.State;
+import is.codion.common.logging.MethodTrace;
 import is.codion.common.user.User;
-import is.codion.swing.common.ui.component.text.SearchHighlighter;
-import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.key.KeyEvents;
+import is.codion.swing.common.ui.component.logging.LogViewer;
 import is.codion.tools.monitor.model.ClientInstanceMonitor;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
-import javax.swing.text.DefaultCaret;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.rmi.RemoteException;
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 import static is.codion.swing.common.ui.component.Components.*;
+import static is.codion.swing.common.ui.component.logging.LogViewer.logViewer;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.util.Objects.requireNonNull;
@@ -62,11 +58,12 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 					.delimiterDash().yearFourDigits().hoursMinutesSeconds()
 					.build().createFormatter();
 	private static final DateTimeFormatter DATE_TIME_FILENAME_FORMATTER = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss");
+	private static final NumberFormat MICROSECOND_FORMAT = NumberFormat.getIntegerInstance();
 
 	private final ClientInstanceMonitor model;
-	private final JTextArea logTextArea;
-	private final SearchHighlighter searchHighlighter;
-	private final JTextField searchField;
+	private final LogViewer logViewer;
+	private final DefaultMutableTreeNode logRootNode = new DefaultMutableTreeNode();
+	private final DefaultTreeModel logTreeModel = new DefaultTreeModel(logRootNode);
 
 	private final JTextField creationDateField = stringField()
 					.editable(false)
@@ -79,23 +76,14 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 	 */
 	public ClientInstanceMonitorPanel(ClientInstanceMonitor model) throws RemoteException {
 		this.model = requireNonNull(model);
-		this.logTextArea = createLogTextArea();
-		this.searchHighlighter = SearchHighlighter.builder()
-						.component(logTextArea)
-						.build();
-		this.searchField = searchHighlighter.createSearchField();
-		KeyEvents.builder()
-						.keyCode(KeyEvent.VK_F)
-						.modifiers(InputEvent.CTRL_DOWN_MASK)
-						.action(command(searchField::requestFocusInWindow))
-						.enable(logTextArea);
+		this.logViewer = logViewer(new FilenameSupplier());
 		initializeUI();
 		updateView();
 	}
 
 	public void updateView() throws RemoteException {
 		creationDateField.setText(DATE_TIME_FORMATTER.format(model.remoteClient().creationTime()));
-		model.refreshLog();
+		refreshLog();
 	}
 
 	private void initializeUI() {
@@ -119,13 +107,8 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 						.east(settingsPanel)
 						.build();
 
-		JPanel textLogPanel = borderLayoutPanel()
-						.center(new JScrollPane(logTextArea))
-						.south(searchField)
-						.build();
-
 		JTabbedPane centerPane = tabbedPane()
-						.tab("Text", textLogPanel)
+						.tab("Text", logViewer)
 						.tab("Tree", new JScrollPane(createLogTree()))
 						.build();
 
@@ -135,50 +118,59 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 	}
 
 	private JTree createLogTree() {
-		JTree treeLog = new JTree(model.logTreeModel());
+		JTree treeLog = new JTree(logTreeModel);
 		treeLog.setRootVisible(false);
 
 		return treeLog;
 	}
 
-	private JTextArea createLogTextArea() {
-		JTextArea textArea = textArea()
-						.document(model.logDocument())
-						.editable(false)
-						.wrapStyleWord(true)
-						.caretUpdatePolicy(DefaultCaret.NEVER_UPDATE)
-						.build();
-		Font font = textArea.getFont();
-		textArea.setFont(new Font(Font.MONOSPACED, font.getStyle(), font.getSize()));
-		State lineWrapState = State.builder()
-						.consumer(textArea::setLineWrap)
-						.build();
-		textArea.setComponentPopupMenu(menu()
-						.controls(Controls.builder()
-										.control(Control.builder()
-														.command(() -> saveLogToFile(textArea))
-														.caption("Save to file..."))
-										.separator()
-										.control(Control.builder()
-														.toggle(lineWrapState)
-														.caption("Line wrap")))
-						.buildPopupMenu());
-
-		return textArea;
+	private void refreshLog() {
+		List<MethodTrace> methodTraces = model.methodTraces();
+		StringBuilder logBuilder = new StringBuilder();
+		for (MethodTrace trace : methodTraces) {
+			trace.appendTo(logBuilder);
+			DefaultMutableTreeNode traceNode = new DefaultMutableTreeNode(traceString(trace));
+			addChildTraces(traceNode, trace.children());
+			logRootNode.add(traceNode);
+		}
+		logViewer.clear();
+		logViewer.append(logBuilder.toString());
+		logRootNode.removeAllChildren();
+		logTreeModel.setRoot(logRootNode);
 	}
 
-	private void saveLogToFile(JTextArea logArea) throws IOException {
-		if (creationDateField.getText().isEmpty()) {
-			throw new IllegalStateException("No client selected");
+	private static void addChildTraces(DefaultMutableTreeNode traceNode, List<MethodTrace> childTraces) {
+		for (MethodTrace trace : childTraces) {
+			DefaultMutableTreeNode subEntry = new DefaultMutableTreeNode(traceString(trace));
+			addChildTraces(subEntry, trace.children());
+			traceNode.add(subEntry);
+		}
+	}
+
+	private static String traceString(MethodTrace trace) {
+		StringBuilder builder = new StringBuilder(trace.method()).append(" [")
+						.append(MICROSECOND_FORMAT.format(TimeUnit.NANOSECONDS.toMicros(trace.duration())))
+						.append(" μs").append("]");
+		String enterMessage = trace.message();
+		if (enterMessage != null) {
+			builder.append(": ").append(enterMessage.replace('\n', ' '));
 		}
 
-		User user = model.remoteClient().user();
-		LocalDateTime creationDate = LocalDateTime.parse(creationDateField.getText(), DATE_TIME_FORMATTER);
-		String filename = user.username() + "@" + DATE_TIME_FILENAME_FORMATTER.format(creationDate) + ".log";
+		return builder.toString();
+	}
 
-		Files.write(Dialogs.select()
-						.files()
-						.owner(this)
-						.selectFileToSave(filename).toPath(), logArea.getText().getBytes());
+	private final class FilenameSupplier implements Supplier<String> {
+
+		@Override
+		public String get() {
+			if (creationDateField.getText().isEmpty()) {
+				throw new IllegalStateException("No client selected");
+			}
+
+			User user = model.remoteClient().user();
+			LocalDateTime creationDate = LocalDateTime.parse(creationDateField.getText(), DATE_TIME_FORMATTER);
+
+			return user.username() + "@" + DATE_TIME_FILENAME_FORMATTER.format(creationDate) + ".log";
+		}
 	}
 }

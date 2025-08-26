@@ -23,6 +23,7 @@ import is.codion.common.logging.MethodTrace;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import static java.util.Collections.emptyList;
 
@@ -53,12 +54,7 @@ final class NoOpMethodTracer implements MethodTracer {
 	}
 
 	@Override
-	public boolean isEnabled() {
-		return false;
-	}
-
-	@Override
-	public void setEnabled(boolean enabled) {}
+	public void onTrace(Consumer<MethodTrace> consumer) {}
 
 	@Override
 	public List<MethodTrace> entries() {

@@ -50,18 +50,13 @@ import static is.codion.common.Configuration.integerValue;
 public interface LocalEntityConnection extends EntityConnection {
 
 	/**
-	 * The default number of log entries to keep.
-	 */
-	int DEFAULT_CONNECTION_LOG_SIZE = 40;
-
-	/**
-	 * Specifies the size of the (circular) log that is kept in memory for each connection
+	 * Specifies the number of log traces to keep while tracing is enabled.
 	 * <ul>
 	 * <li>Value type: Integer
-	 * <li>Default value: 40
+	 * <li>Default value: 50
 	 * </ul>
 	 */
-	PropertyValue<Integer> CONNECTION_LOG_SIZE = integerValue("codion.db.connectionLogSize", DEFAULT_CONNECTION_LOG_SIZE);
+	PropertyValue<Integer> TRACES = integerValue("codion.db.traces", 50);
 
 	/**
 	 * Specifies the query timeout in seconds

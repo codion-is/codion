@@ -19,68 +19,63 @@
 package is.codion.framework.db.local.tracer;
 
 import is.codion.common.logging.MethodTrace;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static is.codion.common.logging.MethodTrace.methodTrace;
+import static java.util.Arrays.stream;
 import static java.util.Collections.unmodifiableList;
-import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.joining;
 
 final class DefaultMethodTracer implements MethodTracer {
 
 	private final Deque<MethodTrace> callStack = new LinkedList<>();
 	private final LinkedList<MethodTrace> entries = new LinkedList<>();
-	private final ArgumentFormatter formatter;
+	private final ArgumentFormatter formatter = new ArgumentFormatter();
 	private final int maxSize;
 
-	private boolean enabled = false;
+	private @Nullable Consumer<MethodTrace> onTrace;
 
-	DefaultMethodTracer(int maxSize, ArgumentFormatter formatter) {
+	DefaultMethodTracer(int maxSize) {
 		this.maxSize = maxSize;
-		this.formatter = requireNonNull(formatter);
 	}
 
 	@Override
 	public synchronized void enter(String method) {
-		if (enabled) {
-			callStack.push(methodTrace(method, null));
-		}
+		callStack.push(methodTrace(method, null));
 	}
 
 	@Override
 	public synchronized void enter(String method, @Nullable Object argument) {
-		if (enabled) {
-			callStack.push(methodTrace(method, formatter.format(method, argument)));
-		}
+		callStack.push(methodTrace(method, formatter.format(method, argument)));
 	}
 
 	@Override
 	public synchronized void enter(String method, @Nullable Object... arguments) {
-		if (enabled) {
-			callStack.push(methodTrace(method, formatter.format(method, arguments)));
-		}
+		callStack.push(methodTrace(method, formatter.format(method, arguments)));
 	}
 
 	@Override
-	public @Nullable MethodTrace exit(String method) {
+	public MethodTrace exit(String method) {
 		return exit(method, null);
 	}
 
 	@Override
-	public @Nullable MethodTrace exit(String method, @Nullable Exception exception) {
+	public MethodTrace exit(String method, @Nullable Exception exception) {
 		return exit(method, exception, null);
 	}
 
 	@Override
-	public synchronized @Nullable MethodTrace exit(String method, @Nullable Exception exception, @Nullable String exitMessage) {
-		if (!enabled) {
-			return null;
-		}
+	public synchronized MethodTrace exit(String method, @Nullable Exception exception, @Nullable String exitMessage) {
 		if (callStack.isEmpty()) {
 			throw new IllegalStateException("Call stack is empty when trying to log method exit: " + method);
 		}
@@ -94,6 +89,9 @@ final class DefaultMethodTracer implements MethodTracer {
 				entries.removeFirst();
 			}
 			entries.addLast(entry);
+			if (onTrace != null) {
+				onTrace.accept(entry);
+			}
 		}
 		else {
 			callStack.peek().addChild(entry);
@@ -103,23 +101,113 @@ final class DefaultMethodTracer implements MethodTracer {
 	}
 
 	@Override
-	public synchronized boolean isEnabled() {
-		return enabled;
-	}
-
-	@Override
-	public synchronized void setEnabled(boolean enabled) {
-		if (this.enabled != enabled) {
-			this.enabled = enabled;
-			if (!enabled) {
-				entries.clear();
-				callStack.clear();
-			}
-		}
+	public synchronized void onTrace(Consumer<MethodTrace> consumer) {
+		this.onTrace = consumer;
 	}
 
 	@Override
 	public synchronized List<MethodTrace> entries() {
 		return unmodifiableList(new ArrayList<>(entries));
+	}
+
+	private static final class ArgumentFormatter {
+
+		private static final String BRACKET_OPEN = "[";
+		private static final String BRACKET_CLOSE = "]";
+
+		private String format(String methodName, @Nullable Object argument) {
+			if ("prepareStatement".equals(methodName)) {
+				return (String) argument;
+			}
+
+			return format(argument);
+		}
+
+		private String format(@Nullable Object argument) {
+			if (argument == null) {
+				return "null";
+			}
+			if (argument instanceof String) {
+				return "'" + argument + "'";
+			}
+			if (argument instanceof Entity) {
+				return entityToString((Entity) argument);
+			}
+			else if (argument instanceof Entity.Key) {
+				return entityKeyToString((Entity.Key) argument);
+			}
+			if (argument instanceof List) {
+				return format((List<?>) argument);
+			}
+			if (argument instanceof Collection) {
+				return format((Collection<?>) argument);
+			}
+			if (argument instanceof byte[]) {
+				return "byte[" + ((byte[]) argument).length + "]";
+			}
+			if (argument.getClass().isArray()) {
+				return format((Object[]) argument);
+			}
+
+			return argument.toString();
+		}
+
+		private String format(List<?> arguments) {
+			if (arguments.isEmpty()) {
+				return "";
+			}
+			if (arguments.size() == 1) {
+				return format(arguments.get(0));
+			}
+
+			return arguments.stream()
+							.map(this::format)
+							.collect(joining(", ", BRACKET_OPEN, BRACKET_CLOSE));
+		}
+
+		private String format(Collection<?> arguments) {
+			if (arguments.isEmpty()) {
+				return "";
+			}
+
+			return arguments.stream()
+							.map(this::format)
+							.collect(joining(", ", BRACKET_OPEN, BRACKET_CLOSE));
+		}
+
+		private String format(Object[] arguments) {
+			if (arguments.length == 0) {
+				return "";
+			}
+			if (arguments.length == 1) {
+				return format(arguments[0]);
+			}
+
+			return stream(arguments)
+							.map(this::format)
+							.collect(joining(", ", BRACKET_OPEN, BRACKET_CLOSE));
+		}
+
+		private static String entityToString(Entity entity) {
+			StringBuilder builder = new StringBuilder(entity.type().name()).append(" {");
+			for (ColumnDefinition<?> columnDefinition : entity.definition().columns().definitions()) {
+				boolean modified = entity.modified(columnDefinition.attribute());
+				if (columnDefinition.primaryKey() || modified) {
+					StringBuilder valueString = new StringBuilder();
+					if (modified) {
+						valueString.append(entity.original(columnDefinition.attribute())).append("->");
+					}
+					valueString.append(entity.string(columnDefinition.attribute()));
+					builder.append(columnDefinition.attribute()).append(":").append(valueString).append(",");
+				}
+			}
+			builder.deleteCharAt(builder.length() - 1);
+
+			return builder.append("}").toString();
+		}
+
+		private static String entityKeyToString(Entity.Key key) {
+			return key.type() + " {" + key + "}";
+		}
 	}
 }

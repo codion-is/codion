@@ -23,17 +23,8 @@ import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.state.State;
 import is.codion.framework.server.EntityServerAdmin;
 
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.Document;
-import javax.swing.text.StyledDocument;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
 import java.rmi.RemoteException;
-import java.text.NumberFormat;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static java.util.Objects.requireNonNull;
 
@@ -42,14 +33,9 @@ import static java.util.Objects.requireNonNull;
  */
 public final class ClientInstanceMonitor {
 
-	private static final NumberFormat MICROSECOND_FORMAT = NumberFormat.getIntegerInstance();
-
 	private final RemoteClient remoteClient;
 	private final EntityServerAdmin server;
 	private final State loggingEnabled;
-	private final StyledDocument logDocument = new DefaultStyledDocument();
-	private final DefaultMutableTreeNode logRootNode = new DefaultMutableTreeNode();
-	private final DefaultTreeModel logTreeModel = new DefaultTreeModel(logRootNode);
 
 	/**
 	 * Instantiates a new {@link ClientInstanceMonitor}, monitoring the given client
@@ -78,39 +64,13 @@ public final class ClientInstanceMonitor {
 		return loggingEnabled;
 	}
 
-	/**
-	 * Refreshes the log document and tree model with the most recent method traces from the server
-	 * @throws RemoteException in case of an exception
-	 */
-	public void refreshLog() throws RemoteException {
-		List<MethodTrace> methodTraces = server.methodTraces(remoteClient.clientId());
+	public List<MethodTrace> methodTraces() {
 		try {
-			logDocument.remove(0, logDocument.getLength());
-			logRootNode.removeAllChildren();
-			StringBuilder logBuilder = new StringBuilder();
-			for (MethodTrace trace : methodTraces) {
-				trace.appendTo(logBuilder);
-				DefaultMutableTreeNode traceNode = new DefaultMutableTreeNode(traceString(trace));
-				addChildTraces(traceNode, trace.children());
-				logRootNode.add(traceNode);
-			}
-			logDocument.insertString(0, logBuilder.toString(), null);
-			logTreeModel.setRoot(logRootNode);
+			return server.methodTraces(remoteClient.clientId());
 		}
-		catch (BadLocationException e) {
+		catch (RemoteException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	public Document logDocument() {
-		return logDocument;
-	}
-
-	/**
-	 * @return the TreeModel for displaying the log in a Tree view
-	 */
-	public TreeModel logTreeModel() {
-		return logTreeModel;
 	}
 
 	@Override
@@ -132,25 +92,5 @@ public final class ClientInstanceMonitor {
 
 	private void bindEvents() {
 		loggingEnabled.addConsumer(this::setLoggingEnabled);
-	}
-
-	private static void addChildTraces(DefaultMutableTreeNode traceNode, List<MethodTrace> childTraces) {
-		for (MethodTrace trace : childTraces) {
-			DefaultMutableTreeNode subEntry = new DefaultMutableTreeNode(traceString(trace));
-			addChildTraces(subEntry, trace.children());
-			traceNode.add(subEntry);
-		}
-	}
-
-	private static String traceString(MethodTrace trace) {
-		StringBuilder builder = new StringBuilder(trace.method()).append(" [")
-						.append(MICROSECOND_FORMAT.format(TimeUnit.NANOSECONDS.toMicros(trace.duration())))
-						.append(" μs").append("]");
-		String enterMessage = trace.message();
-		if (enterMessage != null) {
-			builder.append(": ").append(enterMessage.replace('\n', ' '));
-		}
-
-		return builder.toString();
 	}
 }

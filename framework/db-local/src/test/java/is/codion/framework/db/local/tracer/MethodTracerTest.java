@@ -36,24 +36,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class MethodTracerTest {
 
 	@Test
-	void test() {
-		MethodTracer tracer = methodTracer(10);
-		assertFalse(tracer.isEnabled());
-		tracer.setEnabled(true);
-
-		String methodName = "test";
-		tracer.enter(methodName);
-		tracer.exit(methodName);
-
-		assertEquals(1, tracer.entries().size());
-		tracer.setEnabled(false);
-		assertEquals(0, tracer.entries().size());
-	}
-
-	@Test
 	void serialize() throws IOException, ClassNotFoundException {
 		MethodTracer tracer = methodTracer(10);
-		tracer.setEnabled(true);
 		tracer.enter("method");
 		tracer.enter("method2");
 		tracer.exit("method2");
@@ -65,27 +49,8 @@ public class MethodTracerTest {
 	}
 
 	@Test
-	void enableDisable() {
-		MethodTracer tracer = methodTracer(10);
-		assertFalse(tracer.isEnabled());
-		tracer.enter("method");
-
-		assertEquals(0, tracer.entries().size());
-
-		tracer.setEnabled(true);
-		tracer.enter("method2");
-		tracer.exit("method2");
-
-		assertEquals(1, tracer.entries().size());
-
-		tracer.setEnabled(false);
-		assertEquals(0, tracer.entries().size());
-	}
-
-	@Test
 	void singleLevelTracing() {
 		MethodTracer tracer = methodTracer(10);
-		tracer.setEnabled(true);
 		tracer.enter("method");
 		tracer.exit("method");
 
@@ -106,7 +71,6 @@ public class MethodTracerTest {
 	@Test
 	void twoLevelTracing() {
 		MethodTracer tracer = methodTracer(10);
-		tracer.setEnabled(true);
 		tracer.enter("method", new Object[] {"param1", "param2"});
 		tracer.enter("subMethod");
 		tracer.exit("subMethod");
@@ -129,7 +93,6 @@ public class MethodTracerTest {
 	@Test
 	void twoLevelLoggingSameMethodName() {
 		MethodTracer tracer = methodTracer(10);
-		tracer.setEnabled(true);
 		tracer.enter("method");
 		tracer.enter("method");
 		tracer.exit("method");
@@ -152,7 +115,6 @@ public class MethodTracerTest {
 	@Test
 	void threeLevelTracing() {
 		MethodTracer tracer = methodTracer(10);
-		tracer.setEnabled(true);
 		tracer.enter("one");
 		tracer.enter("two");
 		tracer.enter("three");
@@ -191,7 +153,6 @@ public class MethodTracerTest {
 	@Test
 	void exitBeforeEnter() {
 		MethodTracer tracer = methodTracer(10);
-		tracer.setEnabled(true);
 		tracer.enter("method");
 		tracer.exit("method");
 		assertThrows(IllegalStateException.class, () -> tracer.exit("method"));
@@ -200,7 +161,6 @@ public class MethodTracerTest {
 	@Test
 	void wrongMethodName() {
 		MethodTracer tracer = methodTracer(10);
-		tracer.setEnabled(true);
 		tracer.enter("method");
 		assertThrows(IllegalStateException.class, () -> tracer.exit("anotherMethod"));
 	}
@@ -208,7 +168,6 @@ public class MethodTracerTest {
 	@Test
 	void appendLogEntry() {
 		MethodTracer tracer = methodTracer(10);
-		tracer.setEnabled(true);
 		tracer.enter("one");
 		tracer.enter("two");
 		tracer.enter("three");

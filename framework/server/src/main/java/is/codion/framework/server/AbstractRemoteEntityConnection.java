@@ -147,11 +147,11 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 	}
 
 	final void setTracingEnabled(boolean tracingEnabled) {
-		connectionHandler.tracer().setEnabled(tracingEnabled);
+		connectionHandler.setTracingEnabled(tracingEnabled);
 	}
 
 	final boolean isTracingEnabled() {
-		return connectionHandler.tracer().isEnabled();
+		return connectionHandler.isTracingEnabled();
 	}
 
 	/**

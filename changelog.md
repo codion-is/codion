@@ -20,10 +20,14 @@ Codion Change Log
 - ComponentValueBuilder type parameters reordered.
 - ListBuilder.Items and SelectedItems.nullable() added.
 - CalendarPanel refactored to reduce number of mouse listeners.
+- LogViewer added, extracted from ClientInstanceMonitorPanel.
 ### is.codion.framework.domain
 - Entities.primaryKeys() overloaded with Collection.
+### is.codion.framework.db.core
+- EntityConnectionTracer added.
 ### is.codion.framework.db.local
 - LocalEntityConnectionProvider.tracing() and traces() added, related refactoring.
+- LocalEntityConnectionProvider now implements EntityConnectionTracer.
 ### is.codion.framework.model
 - AbstractEntityEditModel.afterInsertUpdateOrDelete() now includes the entities involved, related refactoring.
 - EntityEditModel.events() now takes entityType parameter, related refactoring.
@@ -33,6 +37,7 @@ Codion Change Log
 - EditComponentFactory type parameters reordered.
 - EntityTablePanel.userPreferencesKey() renamed preferencesKey(), EntityPanel.preferencesKey() added.
 - EntityEditPanel.writePreference() and applyPreferences() added along with preferencesKey().
+- EntityApplicationPanel, log menu now contains controls for tracing, in case of a EntityConnectionTracer enabled connection provider.
 ### is.codion.framework.server
 - LocalConnectionHandler.TRACER logger added, handling client method traces.
 ### is.codion.tools.loadtest.core

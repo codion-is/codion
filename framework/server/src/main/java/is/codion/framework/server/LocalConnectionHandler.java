@@ -26,11 +26,10 @@ import is.codion.common.logging.MethodTrace;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.tracer.MethodTracer;
-import is.codion.framework.db.local.tracer.MethodTracer.ArgumentFormatter;
+import is.codion.framework.db.local.tracer.MethodTracer.Traceable;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entities;
 
-import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -48,6 +47,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static is.codion.framework.db.local.LocalEntityConnection.TRACES;
 import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
 import static is.codion.framework.db.local.tracer.MethodTracer.methodTracer;
 import static java.lang.System.currentTimeMillis;
@@ -69,13 +69,13 @@ final class LocalConnectionHandler implements InvocationHandler {
 	private final RemoteClient remoteClient;
 	private final Database database;
 	private final ConnectionPoolWrapper connectionPool;
-	private final MethodTracer tracer;
 	private final String logIdentifier;
 	private final String userDescription;
 	private final long creationTime = currentTimeMillis();
 	private final AtomicBoolean active = new AtomicBoolean(false);
 	private final LocalEntityConnection entityConnection;
 
+	private MethodTracer tracer = MethodTracer.NO_OP;
 	private long lastAccessTime = creationTime;
 	private volatile boolean closed = false;
 
@@ -85,7 +85,6 @@ final class LocalConnectionHandler implements InvocationHandler {
 		String databaseUsername = remoteClient.databaseUser().username();
 		this.connectionPool = database.containsConnectionPool(databaseUsername) ? database.connectionPool(databaseUsername) : null;
 		this.database = database;
-		this.tracer = methodTracer(LocalEntityConnection.CONNECTION_LOG_SIZE.getOrThrow(), new EntityArgumentToString());
 		this.logIdentifier = remoteClient.user().username().toLowerCase() + "@" + remoteClient.clientType();
 		this.userDescription = "Remote user: " + remoteClient.user().username() + ", database user: " + databaseUsername;
 		this.entityConnection = initializeConnection();
@@ -139,7 +138,11 @@ final class LocalConnectionHandler implements InvocationHandler {
 	private void logEntry(String methodName, Object[] args) {
 		MDC.put(LOG_IDENTIFIER_PROPERTY, logIdentifier);
 		REQUEST_COUNTER.incrementRequestsPerSecondCounter();
-		if (tracer.isEnabled()) {
+		if (ENTITIES.equals(methodName)) {
+			// Just to prevent the null argument output
+			tracer.enter(methodName);
+		}
+		else {
 			tracer.enter(methodName, args);
 		}
 	}
@@ -188,10 +191,6 @@ final class LocalConnectionHandler implements InvocationHandler {
 
 	long lastAccessTime() {
 		return lastAccessTime;
-	}
-
-	MethodTracer tracer() {
-		return tracer;
 	}
 
 	boolean active() {
@@ -256,9 +255,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 		}
 		Exception exception = null;
 		try {
-			if (tracer.isEnabled()) {
-				tracer.enter(RETURN_CONNECTION, userDescription);
-			}
+			tracer.enter(RETURN_CONNECTION, userDescription);
 			returnToPool(entityConnection.databaseConnection());
 		}
 		catch (Exception e) {
@@ -266,9 +263,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 			LOG.info("Exception while returning connection to pool", e);
 		}
 		finally {
-			if (tracer.isEnabled()) {
-				tracer.exit(RETURN_CONNECTION, exception);
-			}
+			tracer.exit(RETURN_CONNECTION, exception);
 		}
 	}
 
@@ -295,7 +290,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 		LocalEntityConnection connection = localEntityConnection(database, domain, connectionPool == null ?
 						database.createConnection(remoteClient.databaseUser()) :
 						connectionPool.connection(remoteClient.databaseUser()));
-		((MethodTracer.Traceable) connection).tracer(tracer);
+		((Traceable) connection).tracer(tracer);
 		if (connectionPool != null) {
 			rollbackSilently(connection.databaseConnection());
 			returnToPool(connection.databaseConnection());
@@ -317,6 +312,15 @@ final class LocalConnectionHandler implements InvocationHandler {
 			closeable.close();
 		}
 		catch (Exception ignored) {/*ignored*/}
+	}
+
+	synchronized void setTracingEnabled(boolean enabled) {
+		tracer = enabled ? methodTracer(TRACES.getOrThrow()) : MethodTracer.NO_OP;
+		((Traceable) entityConnection).tracer(tracer);
+	}
+
+	synchronized boolean isTracingEnabled() {
+		return tracer != MethodTracer.NO_OP;
 	}
 
 	static final class RequestCounter {
@@ -361,21 +365,6 @@ final class LocalConnectionHandler implements InvocationHandler {
 			thread.setDaemon(true);
 
 			return thread;
-		}
-	}
-
-	/**
-	 * An implementation tailored for EntityConnections.
-	 */
-	private static final class EntityArgumentToString implements ArgumentFormatter {
-
-		@Override
-		public String format(String methodName, @Nullable Object argument) {
-			if (ENTITIES.equals(methodName)) {
-				return "";
-			}
-
-			return ArgumentFormatter.super.format(methodName, argument);
 		}
 	}
 }

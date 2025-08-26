@@ -19,7 +19,9 @@
 package is.codion.framework.db.local;
 
 import is.codion.common.db.database.Database;
+import is.codion.common.event.Event;
 import is.codion.common.logging.MethodTrace;
+import is.codion.common.observer.Observer;
 import is.codion.common.state.State;
 import is.codion.framework.db.AbstractEntityConnectionProvider;
 import is.codion.framework.db.EntityConnection;
@@ -31,8 +33,7 @@ import is.codion.framework.domain.DomainType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-
+import static is.codion.framework.db.local.LocalEntityConnection.TRACES;
 import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
 import static is.codion.framework.db.local.tracer.MethodTracer.methodTracer;
 
@@ -49,6 +50,7 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
 	private final Database database;
 	private final int queryTimeout;
 
+	private final Event<MethodTrace> traceEvent = Event.event();
 	private final State tracing = State.builder()
 					.value(TRACING.getOrThrow())
 					.consumer(this::tracingChanged)
@@ -92,8 +94,8 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
 	}
 
 	@Override
-	public List<MethodTrace> traces() {
-		return ((Traceable) connection()).tracer().entries();
+	public Observer<MethodTrace> trace() {
+		return traceEvent.observer();
 	}
 
 	@Override
@@ -101,7 +103,7 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
 		LOG.debug("Initializing connection for {}", user());
 		LocalEntityConnection connection = localEntityConnection(database(), domain(), user());
 		if (tracing.is()) {
-			setMethodTracer(methodTracer(TRACES.getOrThrow()), (Traceable) connection);
+			setMethodTracer(createMethodTracer(), (Traceable) connection);
 		}
 		connection.queryTimeout(queryTimeout);
 
@@ -114,11 +116,18 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
 	}
 
 	private void tracingChanged(boolean trace) {
-		setMethodTracer(trace ? methodTracer(TRACES.getOrThrow()) : MethodTracer.NO_OP, (Traceable) connection());
+		setMethodTracer(trace ? createMethodTracer() : MethodTracer.NO_OP, (Traceable) connection());
 	}
 
 	private static void setMethodTracer(MethodTracer methodTracer, Traceable traceable) {
 		traceable.tracer(methodTracer);
+	}
+
+	private MethodTracer createMethodTracer() {
+		MethodTracer methodTracer = methodTracer(TRACES.getOrThrow());
+		methodTracer.onTrace(traceEvent);
+
+		return methodTracer;
 	}
 
 	private static Domain initializeDomain(DomainType domainType) {

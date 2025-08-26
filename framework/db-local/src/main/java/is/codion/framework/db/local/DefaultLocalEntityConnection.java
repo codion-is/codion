@@ -735,13 +735,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	@Override
-	public MethodTracer tracer() {
-		synchronized (connection) {
-			return tracer;
-		}
-	}
-
-	@Override
 	public void tracer(MethodTracer tracer) {
 		requireNonNull(tracer);
 		synchronized (connection) {
