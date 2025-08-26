@@ -438,12 +438,12 @@ is/codion/swing/common/ui/component/calendar/CalendarPanel_is_IS.properties
 |week|Week|Vika
 |===
 
-=== is/codion/swing/common/ui/component/logging/LogViewerPanel.java
+=== is/codion/swing/common/ui/component/logging/LogViewer.java
 
 [source]
 ----
-is/codion/swing/common/ui/component/logging/LogViewerPanel.properties
-is/codion/swing/common/ui/component/logging/LogViewerPanel_is_IS.properties
+is/codion/swing/common/ui/component/logging/LogViewer.properties
+is/codion/swing/common/ui/component/logging/LogViewer_is_IS.properties
 ----
 
 [cols="1,1,1"]
@@ -756,7 +756,6 @@ is/codion/swing/framework/ui/EntityApplicationPanel_is_IS.properties
 |codion_version|Codion Version|Codion Útgáfa
 |help|Help|Hjálp
 |help_mnemonic|H|H
-|keyboard_shortcuts|Keyboard shortcuts|Flýtilyklar
 |log|Log|Loggur
 |log_level|Level|Nákvæmni
 |log_level_desc|Set the logging level for the application|Stilla nákvæmni logs
@@ -767,13 +766,14 @@ is/codion/swing/framework/ui/EntityApplicationPanel_is_IS.properties
 |open_log_folder|Folder|Möppu
 |scaling|Scaling|Skölun
 |scaling_selected_message|The selected scaling will be activated on next application start|Valin skölun virkjast við næstu ræsingu
+|shortcuts|Shortcuts|Flýtilyklar
+|sql_tracing|SQL Trace|SQL Rakning
+|sql_tracing_enabled|Enabled|Virk
 |system_properties|System properties|Kerfisstillingar
 |tools|Tools|Tól
 |tools_mnemonic|T|T
-|tracing|Tracing|Rakning
-|tracing_enabled|Enabled|Virk
 |view_application_tree|Application Tree|Yfirlitsmynd
-|view_trace|View|Skoða
+|view_sql_trace|View|Skoða
 |===
 
 === is/codion/swing/framework/ui/EntityEditPanel.java

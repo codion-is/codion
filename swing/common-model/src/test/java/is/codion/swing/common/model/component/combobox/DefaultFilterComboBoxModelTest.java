@@ -431,12 +431,11 @@ public class DefaultFilterComboBoxModelTest {
 		List<Item<Integer>> items = asList(nullItem, cThree, bTwo, aOne, dFour);
 
 		assertThrows(IllegalArgumentException.class, () -> FilterComboBoxModel.builder()
-						.items(items).
-						selected(5));
+						.items(items)
+						.selected(5));
 
 		FilterComboBoxModel<Item<Integer>> model = FilterComboBoxModel.builder()
-										.
-						items(items)
+						.items(items)
 						.sorted(true)
 						.selected(3)
 						.build();
