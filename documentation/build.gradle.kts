@@ -1,7 +1,7 @@
 import java.util.*
 
 plugins {
-    id("org.asciidoctor.jvm.convert") version "4.0.4"
+    id("org.asciidoctor.jvm.convert") version "4.0.5"
 }
 
 val documentationVersion = project.version.toString().replace("-SNAPSHOT", "")
