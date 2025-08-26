@@ -38,6 +38,7 @@ Codion Change Log
 - EntityTablePanel.userPreferencesKey() renamed preferencesKey(), EntityPanel.preferencesKey() added.
 - EntityEditPanel.writePreference() and applyPreferences() added along with preferencesKey().
 - EntityApplicationPanel, log menu now contains controls for tracing, in case of a EntityConnectionTracer enabled connection provider.
+- EntityApplicationPanel, Keyboard shortcuts menu caption now Shortcuts.
 ### is.codion.framework.server
 - LocalConnectionHandler.TRACER logger added, handling client method traces.
 ### is.codion.tools.loadtest.core

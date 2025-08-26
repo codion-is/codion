@@ -171,7 +171,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	private static final String LOG_LEVEL = "log_level";
 	private static final String LOG_LEVEL_DESC = "log_level_desc";
 	private static final String HELP = "help";
-	private static final String KEYBOARD_SHORTCUTS = "keyboard_shortcuts";
+	private static final String SHORTCUTS = "shortcuts";
 	private static final String ABOUT = "about";
 	private static final String ALWAYS_ON_TOP = "always_on_top";
 	private static final String APPLICATION_VERSION = "application_version";
@@ -447,7 +447,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		Dialogs.builder()
 						.component(shortcutsPanel)
 						.owner(this)
-						.title(resourceBundle.getString(KEYBOARD_SHORTCUTS))
+						.title(resourceBundle.getString(SHORTCUTS))
 						.modal(false)
 						.show();
 	}
@@ -732,7 +732,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	protected final Control createViewKeyboardShortcutsControl() {
 		return Control.builder()
 						.command(this::displayKeyboardShortcuts)
-						.caption(resourceBundle.getString(KEYBOARD_SHORTCUTS) + "...")
+						.caption(resourceBundle.getString(SHORTCUTS) + "...")
 						.build();
 	}
 
