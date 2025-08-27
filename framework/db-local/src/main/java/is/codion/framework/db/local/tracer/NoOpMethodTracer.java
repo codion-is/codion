@@ -39,18 +39,18 @@ final class NoOpMethodTracer implements MethodTracer {
 	public void enter(String method, @Nullable Object... arguments) {}
 
 	@Override
-	public @Nullable MethodTrace exit(String method) {
-		return null;
+	public MethodTrace exit(String method) {
+		return NO_OP_TRACE;
 	}
 
 	@Override
-	public @Nullable MethodTrace exit(String method, @Nullable Exception exception) {
-		return null;
+	public MethodTrace exit(String method, @Nullable Exception exception) {
+		return NO_OP_TRACE;
 	}
 
 	@Override
-	public @Nullable MethodTrace exit(String method, @Nullable Exception exception, @Nullable String exitMessage) {
-		return null;
+	public MethodTrace exit(String method, @Nullable Exception exception, @Nullable String exitMessage) {
+		return NO_OP_TRACE;
 	}
 
 	@Override

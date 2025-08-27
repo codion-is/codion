@@ -76,6 +76,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 	private final LocalEntityConnection entityConnection;
 
 	private MethodTracer tracer = MethodTracer.NO_OP;
+	private boolean traceToFile = false;
 	private long lastAccessTime = creationTime;
 	private volatile boolean closed = false;
 
@@ -149,7 +150,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 
 	private void logExit(String methodName, Exception exception) {
 		MethodTrace trace = tracer.exit(methodName, exception);
-		if (trace != null) {
+		if (tracer != MethodTracer.NO_OP && traceToFile) {
 			StringBuilder messageBuilder = new StringBuilder(remoteClient.toString()).append("\n");
 			trace.appendTo(messageBuilder);
 			TRACER.trace(messageBuilder.toString());
@@ -312,6 +313,14 @@ final class LocalConnectionHandler implements InvocationHandler {
 			closeable.close();
 		}
 		catch (Exception ignored) {/*ignored*/}
+	}
+
+	synchronized void setTraceToFile(boolean traceToFile) {
+		this.traceToFile = traceToFile;
+	}
+
+	synchronized boolean isTraceToFile() {
+		return traceToFile;
 	}
 
 	synchronized void setTracingEnabled(boolean enabled) {

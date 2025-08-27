@@ -207,6 +207,17 @@ final class DefaultEntityServerAdmin extends DefaultServerAdmin implements Entit
 	}
 
 	@Override
+	public boolean isTraceToFile(UUID clientId) {
+		return server.isTraceToFile(clientId);
+	}
+
+	@Override
+	public void setTraceToFile(UUID clientId, boolean traceToFile) {
+		LOG.info("setTraceToFile({}, {})", clientId, traceToFile);
+		server.setTraceToFile(clientId, traceToFile);
+	}
+
+	@Override
 	public boolean isTracingEnabled(UUID clientId) {
 		return server.isTracingEnabled(clientId);
 	}

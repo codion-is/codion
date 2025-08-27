@@ -30,7 +30,17 @@ import java.util.function.Consumer;
  */
 public interface MethodTracer {
 
+	/**
+	 * A {@link MethodTracer} which does nothing, {@link #entries()} always returns
+	 * an empty list and {@link #exit(String)} returns {@link #NO_OP_TRACE}.
+	 */
 	MethodTracer NO_OP = new NoOpMethodTracer();
+
+	/**
+	 * The {@link MethodTrace} returned from all {@link #exit(String)} methods of the {@link #NO_OP} tracer.
+	 * Note that this trace is incomplete.
+	 */
+	MethodTrace NO_OP_TRACE = MethodTrace.methodTrace("", null);
 
 	void enter(String method);
 
@@ -38,11 +48,11 @@ public interface MethodTracer {
 
 	void enter(String method, @Nullable Object... arguments);
 
-	@Nullable MethodTrace exit(String method);
+	MethodTrace exit(String method);
 
-	@Nullable MethodTrace exit(String method, @Nullable Exception exception);
+	MethodTrace exit(String method, @Nullable Exception exception);
 
-	@Nullable MethodTrace exit(String method, @Nullable Exception exception, @Nullable String exitMessage);
+	MethodTrace exit(String method, @Nullable Exception exception, @Nullable String exitMessage);
 
 	List<MethodTrace> entries();
 

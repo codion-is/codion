@@ -34,7 +34,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.rmi.RemoteException;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -72,16 +71,15 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 	/**
 	 * Instantiates a new ClientInstanceMonitorPanel
 	 * @param model the model
-	 * @throws RemoteException in case of an exception
 	 */
-	public ClientInstanceMonitorPanel(ClientInstanceMonitor model) throws RemoteException {
+	public ClientInstanceMonitorPanel(ClientInstanceMonitor model) {
 		this.model = requireNonNull(model);
 		this.logViewer = logViewer(new FilenameSupplier());
 		initializeUI();
 		updateView();
 	}
 
-	public void updateView() throws RemoteException {
+	public void updateView() {
 		creationDateField.setText(DATE_TIME_FORMATTER.format(model.remoteClient().creationTime()));
 		refreshLog();
 	}
@@ -94,11 +92,14 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 
 		JPanel settingsPanel = flowLayoutPanel(FlowLayout.LEFT)
 						.add(checkBox()
-										.link(model.loggingEnabled())
-										.text("Logging enabled"))
+										.link(model.tracingEnabled())
+										.text("Tracing enabled"))
+						.add(checkBox()
+										.link(model.traceToFileEnabled())
+										.text("Trace to file"))
 						.add(button()
 										.control(command(this::updateView))
-										.text("Refresh log"))
+										.text("Refresh"))
 						.build();
 
 		JPanel northPanel = borderLayoutPanel()

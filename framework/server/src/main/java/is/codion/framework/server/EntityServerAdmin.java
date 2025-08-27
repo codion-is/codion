@@ -62,6 +62,20 @@ public interface EntityServerAdmin extends ServerAdmin {
 	List<MethodTrace> methodTraces(UUID clientId) throws RemoteException;
 
 	/**
+	 * @param clientId the client id
+	 * @return true if method traces are written to file for the given client
+	 * @throws RemoteException in case of a communication error
+	 */
+	boolean isTraceToFile(UUID clientId) throws RemoteException;
+
+	/**
+	 * @param clientId the client id
+	 * @param traceToFile true if method traces should be written to file
+	 * @throws RemoteException in case of a communication error
+	 */
+	void setTraceToFile(UUID clientId, boolean traceToFile) throws RemoteException;
+
+	/**
 	 * Returns true if logging is enabled for the given connection
 	 * @param clientId the id of the client
 	 * @return true if method tracing is enabled for the given connection

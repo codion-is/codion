@@ -2,8 +2,14 @@ Codion Change Log
 =================
 
 ## 0.18.47
+### is.codion.framework.db.local
+- MethodTracer.NO_OP_TRACE added, exit() no longer returns null.
+### is.codion.framework.server
+- EntityServer.setTraceToFile() and isTraceToFile() added along with associated methods in EntityServerAdmin.
 ### is.codion.framework.ui
 - EntityApplicationPanel.TRACING renamed SQL_TRACING.
+### is.codion.tools.monitor.ui
+- ClientUserMonitorPanel, trace to file checkbox added.
 
 ## 0.18.46
 ### is.codion.common.db

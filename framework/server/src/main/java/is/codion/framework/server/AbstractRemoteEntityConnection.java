@@ -146,6 +146,14 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 		return System.currentTimeMillis() - connectionHandler.lastAccessTime() > timeout;
 	}
 
+	final void setTraceToFile(boolean traceToFile) {
+		connectionHandler.setTraceToFile(traceToFile);
+	}
+
+	final boolean isTraceToFile() {
+		return connectionHandler.isTraceToFile();
+	}
+
 	final void setTracingEnabled(boolean tracingEnabled) {
 		connectionHandler.setTracingEnabled(tracingEnabled);
 	}

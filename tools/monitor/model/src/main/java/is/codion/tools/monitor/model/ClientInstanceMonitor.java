@@ -35,7 +35,8 @@ public final class ClientInstanceMonitor {
 
 	private final RemoteClient remoteClient;
 	private final EntityServerAdmin server;
-	private final State loggingEnabled;
+	private final State tracingEnabled;
+	private final State traceToFileEnabled;
 
 	/**
 	 * Instantiates a new {@link ClientInstanceMonitor}, monitoring the given client
@@ -46,8 +47,14 @@ public final class ClientInstanceMonitor {
 	public ClientInstanceMonitor(EntityServerAdmin server, RemoteClient remoteClient) throws RemoteException {
 		this.remoteClient = requireNonNull(remoteClient);
 		this.server = requireNonNull(server);
-		this.loggingEnabled = State.state(server.isTracingEnabled(remoteClient.clientId()));
-		bindEvents();
+		this.tracingEnabled = State.builder()
+						.value(server.isTracingEnabled(remoteClient.clientId()))
+						.consumer(this::setTracingEnabled)
+						.build();
+		this.traceToFileEnabled = State.builder()
+						.value(server.isTraceToFile(remoteClient.clientId()))
+						.consumer(this::setTraceToFile)
+						.build();
 	}
 
 	/**
@@ -58,10 +65,17 @@ public final class ClientInstanceMonitor {
 	}
 
 	/**
-	 * @return the {@link State} for controlling whether logging is enabled
+	 * @return the {@link State} for controlling whether method tracing is enabled
 	 */
-	public State loggingEnabled() {
-		return loggingEnabled;
+	public State tracingEnabled() {
+		return tracingEnabled;
+	}
+
+	/**
+	 * @return the {@link State} for controlling whether method traces are written to file
+	 */
+	public State traceToFileEnabled() {
+		return traceToFileEnabled;
 	}
 
 	public List<MethodTrace> methodTraces() {
@@ -78,10 +92,7 @@ public final class ClientInstanceMonitor {
 		return remoteClient.toString();
 	}
 
-	/**
-	 * @param status true if method tracing should be enabled, false otherwise
-	 */
-	private void setLoggingEnabled(boolean status) {
+	private void setTracingEnabled(boolean status) {
 		try {
 			server.setTracingEnabled(remoteClient.clientId(), status);
 		}
@@ -90,7 +101,12 @@ public final class ClientInstanceMonitor {
 		}
 	}
 
-	private void bindEvents() {
-		loggingEnabled.addConsumer(this::setLoggingEnabled);
+	private void setTraceToFile(boolean traceToFile) {
+		try {
+			server.setTraceToFile(remoteClient.clientId(), traceToFile);
+		}
+		catch (RemoteException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

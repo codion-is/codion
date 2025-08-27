@@ -298,6 +298,22 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
 	/**
 	 * @param clientId the client id
+	 * @return true if method traces are written to file for the given client
+	 */
+	final boolean isTraceToFile(UUID clientId) {
+		return connection(clientId).isTraceToFile();
+	}
+
+	/**
+	 * @param clientId the client id
+	 * @param traceToFile true if method traces should be written to file
+	 */
+	final void setTraceToFile(UUID clientId, boolean traceToFile) {
+		connection(clientId).setTraceToFile(traceToFile);
+	}
+
+	/**
+	 * @param clientId the client id
 	 * @return true if method tracing is enabled for the given client
 	 */
 	final boolean isTracingEnabled(UUID clientId) {
