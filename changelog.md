@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.47
+
 ## 0.18.46
 ### is.codion.common.db
 - AbstractConnectionPoolWrapper now logs check out times in microseconds.
