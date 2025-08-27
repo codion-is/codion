@@ -228,7 +228,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 		FrameworkIcons.instance().add(Foundation.PLUS, Foundation.MINUS);
 		Completion.COMPLETION_MODE.set(Completion.Mode.AUTOCOMPLETE);
 		EntityApplicationPanel.CACHE_ENTITY_PANELS.set(true);
-		EntityApplicationPanel.TRACING.set(true);
+		EntityApplicationPanel.SQL_TRACING.set(true);
 		EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
 		EntityPanel.Config.WINDOW_TYPE.set(WindowType.FRAME);
 		EntityEditPanel.Config.MODIFIED_WARNING.set(true);

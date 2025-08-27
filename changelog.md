@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.47
+### is.codion.framework.ui
+- EntityApplicationPanel.TRACING renamed SQL_TRACING.
 
 ## 0.18.46
 ### is.codion.common.db

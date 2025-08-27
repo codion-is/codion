@@ -159,14 +159,14 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 					booleanValue(EntityApplicationPanel.class.getName() + ".displaySystemProperties", true);
 
 	/**
-	 * Specifies whether to include tracing related controls in the log menu.
+	 * Specifies whether to include sql tracing related controls in the log menu.
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: false
 	 * </ul>
 	 */
-	public static final PropertyValue<Boolean> TRACING =
-					booleanValue(EntityApplicationPanel.class.getName() + ".tracing", false);
+	public static final PropertyValue<Boolean> SQL_TRACING =
+					booleanValue(EntityApplicationPanel.class.getName() + ".sqlTracing", false);
 
 	private static final String LOG_LEVEL = "log_level";
 	private static final String LOG_LEVEL_DESC = "log_level_desc";
@@ -254,7 +254,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 	private final Map<Object, State> logLevelStates = createLogLevelStateMap();
 
-	private LogViewer traceViewer;
+	private LogViewer sqlTraceViewer;
 
 	private boolean saveDefaultUsername = true;
 	private boolean initialized = false;
@@ -1068,7 +1068,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 	private Optional<Controls> createTracingControls() {
 		EntityConnectionProvider connectionProvider = applicationModel.connectionProvider();
-		if (connectionProvider instanceof EntityConnectionTracer && TRACING.getOrThrow()) {
+		if (connectionProvider instanceof EntityConnectionTracer && SQL_TRACING.getOrThrow()) {
 			EntityConnectionTracer tracer = (EntityConnectionTracer) connectionProvider;
 
 			return Optional.of(Controls.builder()
@@ -1142,15 +1142,15 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	}
 
 	private void viewTrace(EntityConnectionTracer tracer) {
-		if (traceViewer == null) {
-			traceViewer = createTraceViewer(tracer);
+		if (sqlTraceViewer == null) {
+			sqlTraceViewer = createTraceViewer(tracer);
 		}
-		if (traceViewer.isShowing()) {
-			Utilities.parentWindow(traceViewer).toFront();
+		if (sqlTraceViewer.isShowing()) {
+			Utilities.parentWindow(sqlTraceViewer).toFront();
 		}
 		else {
 			Dialogs.builder()
-							.component(traceViewer)
+							.component(sqlTraceViewer)
 							.owner(this)
 							.title(resourceBundle.getString("sql_tracing"))
 							.size(screenSizeRatio(0.5))
@@ -1160,12 +1160,12 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	}
 
 	private void setupTracing() {
-		if (TRACING.getOrThrow()) {
+		if (SQL_TRACING.getOrThrow()) {
 			EntityConnectionProvider connectionProvider = applicationModel.connectionProvider();
 			if (connectionProvider instanceof EntityConnectionTracer) {
 				EntityConnectionTracer tracer = (EntityConnectionTracer) connectionProvider;
 				if (tracer.tracing().is()) {
-					traceViewer = createTraceViewer(tracer);
+					sqlTraceViewer = createTraceViewer(tracer);
 				}
 				tracer.tracing().addConsumer(this::tracingChanged);
 			}
@@ -1176,12 +1176,12 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		EntityConnectionProvider connectionProvider = applicationModel.connectionProvider();
 		if (connectionProvider instanceof EntityConnectionTracer) {
 			if (tracing) {
-				if (traceViewer == null) {
-					traceViewer = createTraceViewer((EntityConnectionTracer) connectionProvider);
+				if (sqlTraceViewer == null) {
+					sqlTraceViewer = createTraceViewer((EntityConnectionTracer) connectionProvider);
 				}
 			}
-			else if (traceViewer != null) {
-				traceViewer.clear();
+			else if (sqlTraceViewer != null) {
+				sqlTraceViewer.clear();
 			}
 		}
 	}
@@ -1192,7 +1192,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		tracer.trace().addConsumer(trace -> {
 			StringBuilder logBuilder = new StringBuilder();
 			trace.appendTo(logBuilder);
-			traceViewer.append(logBuilder.toString());
+			sqlTraceViewer.append(logBuilder.toString());
 		});
 
 		return logViewer;
