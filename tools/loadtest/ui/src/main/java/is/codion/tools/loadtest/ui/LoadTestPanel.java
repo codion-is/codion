@@ -60,6 +60,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.List;
@@ -216,23 +217,26 @@ public final class LoadTestPanel<T> extends JPanel {
 
 	private JPanel createAddRemoveApplicationPanel() {
 		return borderLayoutPanel()
-						.west(button()
-										.control(Control.builder()
-														.command(loadTest::removeApplicationBatch)
-														.caption("-")
-														.description("Remove application batch")))
+						.layout(new BorderLayout(0, 0))
 						.center(integerField()
 										.editable(false)
 										.focusable(false)
 										.horizontalAlignment(SwingConstants.CENTER)
 										.columns(5)
 										.link(loadTest.applicationCount()))
-						.east(button()
-										.control(Control.builder()
-														.command(loadTest::addApplicationBatch)
-														.caption("+")
-														.enabled(userComboBoxModel.selection().empty().not())
-														.description("Add application batch")))
+						.east(gridLayoutPanel(1, 2)
+										.layout(new GridLayout(1, 2, 0, 0))
+										.add(button()
+														.control(Control.builder()
+																		.command(loadTest::addApplicationBatch)
+																		.caption("+")
+																		.enabled(userComboBoxModel.selection().empty().not())
+																		.description("Add application batch")))
+										.add(button()
+														.control(Control.builder()
+																		.command(loadTest::removeApplicationBatch)
+																		.caption("-")
+																		.description("Remove application batch"))))
 						.build();
 	}
 
@@ -289,13 +293,22 @@ public final class LoadTestPanel<T> extends JPanel {
 
 	private JPanel createUserPanel() {
 		return borderLayoutPanel()
+						.layout(new BorderLayout(0, 0))
 						.west(new JLabel("User"))
 						.center(userComboBox)
-						.east(button()
-										.control(Control.builder()
-														.command(this::addUser)
-														.caption("+")
-														.description("Set the application user")))
+						.east(gridLayoutPanel(1, 2)
+										.layout(new GridLayout(1, 2, 0, 0))
+										.add(button()
+														.control(Control.builder()
+																		.command(this::addUser)
+																		.caption("+")
+																		.description("Add an application user")))
+										.add(button()
+														.control(Control.builder()
+																		.command(this::removeUser)
+																		.caption("-")
+																		.description("Remove the selected application user")
+																		.enabled(userComboBoxModel.selection().empty().not()))))
 						.build();
 	}
 
@@ -307,6 +320,10 @@ public final class LoadTestPanel<T> extends JPanel {
 		Item<User> item = item(user, user.username());
 		userComboBoxModel.items().add(item);
 		userComboBoxModel.selection().item().set(item);
+	}
+
+	private void removeUser() {
+		userComboBoxModel.selection().item().optional().ifPresent(userComboBoxModel.items()::remove);
 	}
 
 	private void setUser(Item<User> item) {

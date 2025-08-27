@@ -10,6 +10,8 @@ Codion Change Log
 - EntityApplicationPanel.TRACING renamed SQL_TRACING.
 ### is.codion.tools.monitor.ui
 - ClientUserMonitorPanel, trace to file checkbox added.
+### is.codion.tools.loadtest.ui
+- LoadTestPanel, user can now be removed, minor ui improvements.
 
 ## 0.18.46
 ### is.codion.common.db
