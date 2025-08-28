@@ -255,59 +255,59 @@ public interface EntityEditModel {
 	Collection<Entity> delete(Collection<Entity> entities);
 
 	/**
-	 * Creates a new {@link InsertEntities} instance for inserting the active entity.
-	 * @return a new {@link InsertEntities} instance
+	 * Creates a new {@link EditTask} instance for inserting the active entity.
+	 * @return a new {@link EditTask} instance
 	 * @throws IllegalStateException in inserting is not enabled
 	 * @throws ValidationException in case validation fails
 	 * @see #insertEnabled()
 	 */
-	InsertEntities createInsert();
+	EditTask createInsert();
 
 	/**
-	 * Creates a new {@link InsertEntities} instance for inserting the given entities.
+	 * Creates a new {@link EditTask} instance for inserting the given entities.
 	 * @param entities the entities to insert
-	 * @return a new {@link InsertEntities} instance
+	 * @return a new {@link EditTask} instance
 	 * @throws IllegalStateException in inserting is not enabled
 	 * @throws ValidationException in case validation fails
 	 * @see #insertEnabled()
 	 */
-	InsertEntities createInsert(Collection<Entity> entities);
+	EditTask createInsert(Collection<Entity> entities);
 
 	/**
-	 * Creates a new {@link UpdateEntities} instance for updating the active entity.
-	 * @return a new {@link UpdateEntities} instance
+	 * Creates a new {@link EditTask} instance for updating the active entity.
+	 * @return a new {@link EditTask} instance
 	 * @throws IllegalStateException in case the active entity is unmodified or if updating is not enabled
 	 * @throws ValidationException in case validation fails
 	 * @see #updateEnabled()
 	 */
-	UpdateEntities createUpdate();
+	EditTask createUpdate();
 
 	/**
-	 * Creates a new {@link UpdateEntities} instance for updating the given entities.
+	 * Creates a new {@link EditTask} instance for updating the given entities.
 	 * @param entities the entities to update
-	 * @return a new {@link UpdateEntities} instance
+	 * @return a new {@link EditTask} instance
 	 * @throws IllegalStateException in case any of the given entities are unmodified or if updating is not enabled
 	 * @throws ValidationException in case validation fails
 	 * @see #updateEnabled()
 	 */
-	UpdateEntities createUpdate(Collection<Entity> entities);
+	EditTask createUpdate(Collection<Entity> entities);
 
 	/**
-	 * Creates a new {@link DeleteEntities} instance for deleting the active entity.
-	 * @return a new {@link DeleteEntities} instance
+	 * Creates a new {@link EditTask} instance for deleting the active entity.
+	 * @return a new {@link EditTask} instance
 	 * @throws IllegalStateException in deleting is not enabled
 	 * @see #deleteEnabled()
 	 */
-	DeleteEntities createDelete();
+	EditTask createDelete();
 
 	/**
-	 * Creates a new {@link DeleteEntities} instance for deleting the given entities.
+	 * Creates a new {@link EditTask} instance for deleting the given entities.
 	 * @param entities the entities to delete
-	 * @return a new {@link DeleteEntities} instance
+	 * @return a new {@link EditTask} instance
 	 * @throws IllegalStateException in deleting is not enabled
 	 * @see #deleteEnabled()
 	 */
-	DeleteEntities createDelete(Collection<Entity> entities);
+	EditTask createDelete(Collection<Entity> entities);
 
 	/**
 	 * @return an observer notified before insert is performed, after validation
@@ -614,7 +614,7 @@ public interface EntityEditModel {
 		/**
 		 * <p>Returns the {@link Value} instance controlling the default value supplier for the given attribute.
 		 * <p>Used when the underlying value is not persistent.
-		 * <p>Use {@link EntityEditor#defaults()} to populate the model with the default values.
+		 * <p>Use {@link EntityEditor#defaults()} to populate the editor with default values.
 		 * @return the {@link Value} instance controlling the default value supplier
 		 * @see #persist()
 		 */
@@ -622,31 +622,31 @@ public interface EntityEditModel {
 	}
 
 	/**
-	 * Represents a task for inserting entities, split up for use with a background thread.
+	 * Represents a task for inserting, updating or deleting entities, split up for use with a background thread.
 	 * {@snippet :
-	 *   InsertEntities insert = editModel.createInsert();
+	 *   EditTask insert = editModel.createInsert();
 	 *
-	 *   InsertEntities.Task task = insert.prepare();
+	 *   EditTask.Task task = insert.prepare();
 	 *
 	 *   // Can safely be called in a background thread
-	 *   InsertEntities.Result result = task.perform();
+	 *   EditTask.Result result = task.perform();
 	 *
 	 *   Collection<Entity> insertedEntities = result.handle();
 	 *}
-	 * {@link Task#perform()} may be called on a background thread while {@link InsertEntities#prepare()}
+	 * {@link Task#perform()} may be called on a background thread while {@link EditTask#prepare()}
 	 * and {@link Result#handle()} must be called on the UI thread.
 	 */
-	interface InsertEntities {
+	interface EditTask {
 
 		/**
-		 * Notifies listeners that an insert is about to be performed.
+		 * Notifies listeners that an operation is about to be performed.
 		 * Must be called on the UI thread if this model has a panel based on it.
-		 * @return the insert task
+		 * @return the task
 		 */
 		Task prepare();
 
 		/**
-		 * The task performing the insert operation
+		 * The task performing the operation
 		 */
 		interface Task {
 
@@ -658,114 +658,14 @@ public interface EntityEditModel {
 		}
 
 		/**
-		 * The insert task result
+		 * The task result
 		 */
 		interface Result {
 
 			/**
-			 * Notifies listeners that an insert has been performed.
+			 * Notifies listeners that the task has been performed.
 			 * Must be called on the UI thread if this model has a panel based on it.
-			 * @return the inserted entities
-			 */
-			Collection<Entity> handle();
-		}
-	}
-
-	/**
-	 * Represents a task for updating entities, split up for use with a background thread.
-	 * {@snippet :
-	 *   UpdateEntities update = editModel.createUpdate();
-	 *
-	 *   UpdateEntities.Task task = update.prepare();
-	 *
-	 *   // Can safely be called in a background thread
-	 *   UpdateEntities.Result result = task.perform();
-	 *
-	 *   Collection<Entity> updatedEntities = result.handle();
-	 *}
-	 * {@link Task#perform()} may be called on a background thread while {@link UpdateEntities#prepare()}
-	 * and {@link Result#handle()} must be called on the UI thread.
-	 */
-	interface UpdateEntities {
-
-		/**
-		 * Notifies listeners that an update is about to be performed.
-		 * Must be called on the UI thread if this model has a panel based on it.
-		 * @return the update task
-		 */
-		Task prepare();
-
-		/**
-		 * The task performing the update operation
-		 */
-		interface Task {
-
-			/**
-			 * May be called in a background thread.
-			 * @return the update result
-			 */
-			Result perform();
-		}
-
-		/**
-		 * The update task result
-		 */
-		interface Result {
-
-			/**
-			 * Notifies listeners that an update has been performed.
-			 * Must be called on the UI thread if this model has a panel based on it.
-			 * @return the updated entities
-			 */
-			Collection<Entity> handle();
-		}
-	}
-
-	/**
-	 * Represents a task for deleting entities, split up for use with a background thread.
-	 * {@snippet :
-	 *   DeleteEntities delete = editModel.createDelete();
-	 *
-	 *   DeleteEntities.Task task = delete.prepare();
-	 *
-	 *   // Can safely be called in a background thread
-	 *   DeleteEntities.Result result = task.perform();
-	 *
-	 *   Collection<Entity> deletedEntities = result.handle();
-	 *}
-	 * {@link Task#perform()} may be called on a background thread while {@link DeleteEntities#prepare()}
-	 * and {@link Result#handle()} must be called on the UI thread.
-	 */
-	interface DeleteEntities {
-
-		/**
-		 * Notifies listeners that delete is about to be performed.
-		 * Must be called on the UI thread if this model has a panel based on it.
-		 * @return the delete task
-		 */
-		Task prepare();
-
-		/**
-		 * The task performing the delete operation
-		 */
-		interface Task {
-
-			/**
-			 * May be called in a background thread.
-			 * @return the delete result
-			 */
-			Result perform();
-		}
-
-		/**
-		 * The delete task result
-		 */
-		interface Result {
-
-			/**
-			 * Notifies listeners that delete has been performed.
-			 * Must be called on the UI thread if this model has a panel based on it.
-			 * @return the deleted entities
+			 * @return the entities involved
 			 */
 			Collection<Entity> handle();
 		}

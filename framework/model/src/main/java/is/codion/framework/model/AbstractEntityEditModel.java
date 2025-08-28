@@ -191,32 +191,32 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final InsertEntities createInsert() {
+	public final EditTask createInsert() {
 		return new DefaultInsertEntities();
 	}
 
 	@Override
-	public final InsertEntities createInsert(Collection<Entity> entities) {
+	public final EditTask createInsert(Collection<Entity> entities) {
 		return new DefaultInsertEntities(entities);
 	}
 
 	@Override
-	public final UpdateEntities createUpdate() {
+	public final EditTask createUpdate() {
 		return new DefaultUpdateEntities();
 	}
 
 	@Override
-	public final UpdateEntities createUpdate(Collection<Entity> entities) {
+	public final EditTask createUpdate(Collection<Entity> entities) {
 		return new DefaultUpdateEntities(entities);
 	}
 
 	@Override
-	public final DeleteEntities createDelete() {
+	public final EditTask createDelete() {
 		return new DefaultDeleteEntities();
 	}
 
 	@Override
-	public final DeleteEntities createDelete(Collection<Entity> entities) {
+	public final EditTask createDelete(Collection<Entity> entities) {
 		return new DefaultDeleteEntities(entities);
 	}
 
@@ -469,7 +469,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 						});
 	}
 
-	private final class DefaultInsertEntities implements InsertEntities {
+	private final class DefaultInsertEntities implements EditTask {
 
 		private final Collection<Entity> entities;
 		private final boolean activeEntity;
@@ -538,7 +538,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 	}
 
-	private final class DefaultUpdateEntities implements UpdateEntities {
+	private final class DefaultUpdateEntities implements EditTask {
 
 		private final Collection<Entity> entities;
 
@@ -609,7 +609,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 	}
 
-	private final class DefaultDeleteEntities implements DeleteEntities {
+	private final class DefaultDeleteEntities implements EditTask {
 
 		private final Collection<Entity> entities;
 		private final boolean activeEntity;

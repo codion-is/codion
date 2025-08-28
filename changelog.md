@@ -13,6 +13,8 @@ Codion Change Log
 - MethodTracer.NO_OP_TRACE added, exit() no longer returns null.
 ### is.codion.framework.server
 - EntityServer.setTraceToFile() and isTraceToFile() added along with associated methods in EntityServerAdmin.
+### is.codion.framework.model
+- EntityEditModel.InsertTask, UpdateTask and DeleteTask merged into EditTask.
 ### is.codion.framework.ui
 - EntityApplicationPanel.TRACING renamed SQL_TRACING.
 ### is.codion.tools.monitor.ui

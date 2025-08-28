@@ -35,9 +35,7 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
-import is.codion.framework.model.EntityEditModel.DeleteEntities;
-import is.codion.framework.model.EntityEditModel.InsertEntities;
-import is.codion.framework.model.EntityEditModel.UpdateEntities;
+import is.codion.framework.model.EntityEditModel.EditTask;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
@@ -1145,7 +1143,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			}
 		}
 
-		private void handleResult(InsertEntities.Result result) {
+		private void handleResult(EditTask.Result result) {
 			Collection<Entity> inserted = result.handle();
 			onInsert.forEach(consumer -> consumer.accept(inserted));
 			if (editPanel.configuration.clearAfterInsert) {
@@ -1218,7 +1216,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			}
 		}
 
-		private void handleResult(UpdateEntities.Result result) {
+		private void handleResult(EditTask.Result result) {
 			Collection<Entity> updated = result.handle();
 			onUpdate.forEach(consumer -> consumer.accept(updated));
 			editPanel.focus().afterUpdate().request();
@@ -1285,7 +1283,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			}
 		}
 
-		private void handleResult(DeleteEntities.Result result) {
+		private void handleResult(EditTask.Result result) {
 			Collection<Entity> deleted = result.handle();
 			onDelete.forEach(consumer -> consumer.accept(deleted));
 			editPanel.focus().initial().request();
