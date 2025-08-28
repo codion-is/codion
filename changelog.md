@@ -10,6 +10,7 @@ Codion Change Log
 - FilterTable.Builder.rowSelection() and columnSelection() added.
 - ControlBuilder.icon() parameter now nullable.
 - FilterTable.DefaultBuilder refactored, nulls used instead of defaults.
+- AbstractComponentBuilder, AbstractButtonBuilder and AbstractTextComponentBuilder refactored, nulls used instead of defaults.
 ### is.codion.framework.db.local
 - MethodTracer.NO_OP_TRACE added, exit() no longer returns null.
 ### is.codion.framework.server

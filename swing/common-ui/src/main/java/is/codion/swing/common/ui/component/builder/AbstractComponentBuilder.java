@@ -79,15 +79,15 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 	private @Nullable String name;
 	private @Nullable JLabel label;
 	private @Nullable LabelBuilder<String> labelBuilder;
-	private boolean focusable = true;
-	private int preferredHeight = -1;
-	private int preferredWidth = -1;
-	private int minimumHeight = -1;
-	private int minimumWidth = -1;
-	private int maximumHeight = -1;
-	private int maximumWidth = -1;
-	private boolean opaque = false;
-	private boolean visible = true;
+	private @Nullable Boolean focusable;
+	private @Nullable Integer preferredHeight;
+	private @Nullable Integer preferredWidth;
+	private @Nullable Integer minimumHeight;
+	private @Nullable Integer minimumWidth;
+	private @Nullable Integer maximumHeight;
+	private @Nullable Integer maximumWidth;
+	private @Nullable Boolean opaque;
+	private @Nullable Boolean visible;
 	private @Nullable Border border;
 	private @Nullable TransferFocusOnEnter transferFocusOnEnter;
 	private @Nullable String toolTipText;
@@ -99,7 +99,7 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 	private @Nullable ObservableState enabledObservable;
 	private @Nullable ObservableState focusableObservable;
 	private @Nullable ObservableState visibleObservable;
-	private boolean enabled = true;
+	private @Nullable Boolean enabled;
 	private @Nullable Function<C, JPopupMenu> popupMenu;
 	private @Nullable Consumer<C> onSetVisible;
 	private @Nullable TransferHandler transferHandler;
@@ -156,8 +156,8 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 
 	@Override
 	public final B preferredSize(@Nullable Dimension preferredSize) {
-		this.preferredHeight = preferredSize == null ? -1 : preferredSize.height;
-		this.preferredWidth = preferredSize == null ? -1 : preferredSize.width;
+		this.preferredHeight = preferredSize == null ? null : preferredSize.height;
+		this.preferredWidth = preferredSize == null ? null : preferredSize.width;
 		return self();
 	}
 
@@ -175,8 +175,8 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 
 	@Override
 	public final B maximumSize(@Nullable Dimension maximumSize) {
-		this.maximumHeight = maximumSize == null ? -1 : maximumSize.height;
-		this.maximumWidth = maximumSize == null ? -1 : maximumSize.width;
+		this.maximumHeight = maximumSize == null ? null : maximumSize.height;
+		this.maximumWidth = maximumSize == null ? null : maximumSize.width;
 		return self();
 	}
 
@@ -458,8 +458,8 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 			labelBuilder.build()
 							.setLabelFor(component);
 		}
-		if (component.isFocusable() && !focusable) {
-			component.setFocusable(false);
+		if (focusable != null) {
+			component.setFocusable(focusable);
 		}
 		if (focusableObservable != null) {
 			Utilities.focusable(focusableObservable, component);
@@ -471,8 +471,8 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 		if (border != null) {
 			component.setBorder(border);
 		}
-		if (!enabled) {
-			component.setEnabled(false);
+		if (enabled != null) {
+			component.setEnabled(enabled);
 		}
 		if (enabledObservable != null) {
 			Utilities.enabled(enabledObservable, component);
@@ -496,10 +496,10 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 		if (background != null) {
 			component.setBackground(background);
 		}
-		if (opaque) {
-			component.setOpaque(true);
+		if (opaque != null) {
+			component.setOpaque(opaque);
 		}
-		if (!visible) {
+		if (visible != null) {
 			component.setVisible(visible);
 		}
 		if (visibleObservable != null) {
@@ -535,22 +535,22 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 	}
 
 	private void setSizes(C component) {
-		if (minimumHeight != -1) {
+		if (minimumHeight != null) {
 			Sizes.minimumHeight(component, minimumHeight);
 		}
-		if (minimumWidth != -1) {
+		if (minimumWidth != null) {
 			Sizes.minimumWidth(component, minimumWidth);
 		}
-		if (maximumHeight != -1) {
+		if (maximumHeight != null) {
 			Sizes.maximumHeight(component, maximumHeight);
 		}
-		if (maximumWidth != -1) {
+		if (maximumWidth != null) {
 			Sizes.maximumWidth(component, maximumWidth);
 		}
-		if (preferredHeight != -1) {
+		if (preferredHeight != null) {
 			Sizes.preferredHeight(component, preferredHeight);
 		}
-		if (preferredWidth != -1) {
+		if (preferredWidth != null) {
 			Sizes.preferredWidth(component, preferredWidth);
 		}
 	}

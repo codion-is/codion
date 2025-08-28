@@ -45,10 +45,10 @@ abstract class AbstractTextComponentBuilder<C extends JTextComponent, T, B exten
 	private final List<CaretListener> caretListeners = new ArrayList<>();
 
 	private UpdateOn updateOn = UpdateOn.VALUE_CHANGE;
-	private boolean editable = true;
+	private @Nullable Boolean editable;
 	private boolean upperCase;
 	private boolean lowerCase;
-	private int maximumLength = -1;
+	private @Nullable Integer maximumLength;
 	private @Nullable Insets margin;
 	private boolean controlDeleteWord = true;
 	private @Nullable Color disabledTextColor;
@@ -58,7 +58,7 @@ abstract class AbstractTextComponentBuilder<C extends JTextComponent, T, B exten
 	private boolean moveCaretToEndOnFocusGained;
 	private boolean moveCaretToStartOnFocusGained;
 	private @Nullable Consumer<String> onTextChanged;
-	private boolean dragEnabled = false;
+	private @Nullable Boolean dragEnabled;
 	private @Nullable Character focusAcceleratorKey;
 	private CaretPosition caretPosition = CaretPosition.START;
 	private int caretUpdatePolicy = DefaultCaret.UPDATE_WHEN_ON_EDT;
@@ -197,8 +197,12 @@ abstract class AbstractTextComponentBuilder<C extends JTextComponent, T, B exten
 	@Override
 	protected final C createComponent() {
 		C textComponent = createTextComponent();
-		textComponent.setEditable(editable);
-		textComponent.setDragEnabled(dragEnabled);
+		if (editable != null) {
+			textComponent.setEditable(editable);
+		}
+		if (dragEnabled != null) {
+			textComponent.setDragEnabled(dragEnabled);
+		}
 		caretListeners.forEach(new AddCaretListener(textComponent));
 		if (focusAcceleratorKey != null) {
 			textComponent.setFocusAccelerator(focusAcceleratorKey);
@@ -212,7 +216,7 @@ abstract class AbstractTextComponentBuilder<C extends JTextComponent, T, B exten
 		if (lowerCase) {
 			new TextFieldDocumentCase(textComponent.getDocument(), DocumentCase.LOWERCASE);
 		}
-		if (maximumLength > 0) {
+		if (maximumLength != null) {
 			new MaximumTextFieldLength(textComponent.getDocument(), maximumLength);
 		}
 		if (controlDeleteWord) {

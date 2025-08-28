@@ -27,7 +27,6 @@ import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
-import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Insets;
@@ -51,16 +50,16 @@ abstract class AbstractButtonBuilder<C extends AbstractButton, T, B extends Butt
 	private final List<ActionListener> actionListeners = new ArrayList<>();
 
 	private @Nullable String text;
-	private int mnemonic;
-	private boolean includeText = true;
-	private int horizontalAlignment = SwingConstants.CENTER;
-	private int verticalAlignment = SwingConstants.CENTER;
-	private int horizontalTextPosition = SwingConstants.TRAILING;
-	private int verticalTextPosition = SwingConstants.CENTER;
-	private boolean borderPainted = true;
-	private boolean contentAreaFilled = true;
-	private boolean focusPainted = true;
-	private boolean rolloverEnabled = false;
+	private @Nullable Integer mnemonic;
+	private @Nullable Boolean includeText;
+	private @Nullable Integer horizontalAlignment;
+	private @Nullable Integer verticalAlignment;
+	private @Nullable Integer horizontalTextPosition;
+	private @Nullable Integer verticalTextPosition;
+	private @Nullable Boolean borderPainted;
+	private @Nullable Boolean contentAreaFilled;
+	private @Nullable Boolean focusPainted;
+	private @Nullable Boolean rolloverEnabled;
 	private @Nullable Long multiClickThreshold;
 	private @Nullable Icon icon;
 	private @Nullable Icon pressedIcon;
@@ -72,7 +71,7 @@ abstract class AbstractButtonBuilder<C extends AbstractButton, T, B extends Butt
 	private @Nullable Integer iconTextGap;
 	private @Nullable Insets insets;
 	private @Nullable ButtonGroup buttonGroup;
-	private boolean selected = false;
+	private @Nullable Boolean selected;
 	private @Nullable Action action;
 
 	protected AbstractButtonBuilder() {}
@@ -251,33 +250,41 @@ abstract class AbstractButtonBuilder<C extends AbstractButton, T, B extends Butt
 			action.addPropertyChangeListener(new ActionPropertyChangeListener(button));
 		}
 		actionListeners.forEach(new AddActionListener(button));
-		if (!includeText) {
+		if (includeText != null && !includeText) {
 			button.setText(null);
 			button.setHideActionText(true);
 		}
 		else if (text != null) {
 			button.setText(text);
 		}
-		button.setHorizontalAlignment(horizontalAlignment);
-		button.setVerticalAlignment(verticalAlignment);
-		button.setVerticalTextPosition(verticalTextPosition);
-		button.setHorizontalTextPosition(horizontalTextPosition);
-		if (!borderPainted) {
-			button.setBorderPainted(false);
+		if (horizontalAlignment != null) {
+			button.setHorizontalAlignment(horizontalAlignment);
 		}
-		if (!contentAreaFilled) {
-			button.setContentAreaFilled(false);
+		if (verticalAlignment != null) {
+			button.setVerticalAlignment(verticalAlignment);
 		}
-		if (!focusPainted) {
-			button.setFocusPainted(false);
+		if (verticalTextPosition != null) {
+			button.setVerticalTextPosition(verticalTextPosition);
 		}
-		if (rolloverEnabled) {
-			button.setRolloverEnabled(true);
+		if (horizontalTextPosition != null) {
+			button.setHorizontalTextPosition(horizontalTextPosition);
+		}
+		if (borderPainted != null) {
+			button.setBorderPainted(borderPainted);
+		}
+		if (contentAreaFilled != null) {
+			button.setContentAreaFilled(contentAreaFilled);
+		}
+		if (focusPainted != null) {
+			button.setFocusPainted(focusPainted);
+		}
+		if (rolloverEnabled != null) {
+			button.setRolloverEnabled(rolloverEnabled);
 		}
 		if (multiClickThreshold != null) {
 			button.setMultiClickThreshhold(multiClickThreshold);
 		}
-		if (mnemonic != 0) {
+		if (mnemonic != null) {
 			button.setMnemonic(mnemonic);
 		}
 		if (icon != null) {
@@ -310,8 +317,8 @@ abstract class AbstractButtonBuilder<C extends AbstractButton, T, B extends Butt
 		if (buttonGroup != null) {
 			buttonGroup.add(button);
 		}
-		if (selected) {
-			button.setSelected(true);
+		if (selected != null) {
+			button.setSelected(selected);
 		}
 
 		return button;
