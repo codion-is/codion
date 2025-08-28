@@ -164,7 +164,7 @@ public final class FrameworkModelDemo {
 		Entity customer = getCustomer(connectionProvider);
 		customerModel.tableModel().selection().item().set(customer);
 		// Invoices for selected customer are loaded
-		Entity invoice = invoiceModel.tableModel().items().visible().get(0);
+		Entity invoice = invoiceModel.tableModel().items().included().get(0);
 		invoiceModel.tableModel().selection().item().set(invoice);
 		// Invoice lines for selected invoice are loaded
 		// end::masterDetail[]

@@ -180,14 +180,14 @@ final class LookupTablePanel extends EntityTablePanel {
 	}
 
 	private void bindEvents() {
-		tableModel().items().visible().addListener(this::displayCityLocations);
+		tableModel().items().included().addListener(this::displayCityLocations);
 		tableModel().selection().indexes().addListener(this::displayCityLocations);
 	}
 
 	private void displayCityLocations() {
 		if (mapKit.isShowing()) {
 			Collection<Entity> entities = tableModel().selection().empty().is() ?
-							tableModel().items().visible().get() :
+							tableModel().items().included().get() :
 							tableModel().selection().items().get();
 			Maps.paintWaypoints(entities.stream()
 							.map(entity -> entity.optional(Lookup.CITY_LOCATION))
@@ -274,7 +274,7 @@ final class LookupTablePanel extends EntityTablePanel {
 		List<Entity> entities = objectMapper.deserializeEntities(
 						String.join("\n", Files.readAllLines(file.toPath())));
 		clearTableAndCondition();
-		tableModel().items().visible().add(0, entities);
+		tableModel().items().included().add(0, entities);
 	}
 
 	private JToolBar createColumnSelectionToolBar() {

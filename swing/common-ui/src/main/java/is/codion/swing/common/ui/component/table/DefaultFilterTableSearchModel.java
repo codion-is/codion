@@ -97,12 +97,12 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 
 	private void performSearch() {
 		results.clear();
-		if (predicate.isNull() || tableModel.items().visible().count() == 0 || tableModel.getColumnCount() == 0) {
+		if (predicate.isNull() || tableModel.items().included().count() == 0 || tableModel.getColumnCount() == 0) {
 			return;
 		}
 		Predicate<String> searchPredicate = predicate.getOrThrow();
 		List<FilterTableColumn<C>> visibleColumns = columnModel.visible().columns();
-		for (int row = 0; row < tableModel.items().visible().count(); row++) {
+		for (int row = 0; row < tableModel.items().included().count(); row++) {
 			for (int columnIndex = 0; columnIndex < visibleColumns.size(); columnIndex++) {
 				FilterTableColumn<C> column = visibleColumns.get(columnIndex);
 				if (searchPredicate.test(tableModel.values().string(row, column.identifier()))) {
@@ -114,7 +114,7 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 
 	private void bindEvents() {
 		columnModel.addColumnModelListener(new ClearSearchListener());
-		tableModel.items().visible().addListener(this::performSearch);
+		tableModel.items().included().addListener(this::performSearch);
 	}
 
 	private @Nullable Predicate<String> predicate(String searchText) {

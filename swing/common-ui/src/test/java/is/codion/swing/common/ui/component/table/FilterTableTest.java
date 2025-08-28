@@ -346,35 +346,35 @@ public class FilterTableTest {
 		FilterTableSort<TestRow, Integer> sortModel = table.model().sort();
 		sortModel.order(0).set(SortOrder.DESCENDING);
 		assertEquals(SortOrder.DESCENDING, sortModel.columns().get(0).sortOrder());
-		assertEquals(E, tableModel.items().visible().get(0));
+		assertEquals(E, tableModel.items().included().get(0));
 		assertEquals(1, actionsPerformed.get());
 		sortModel.order(0).set(SortOrder.ASCENDING);
 		assertEquals(SortOrder.ASCENDING, sortModel.columns().get(0).sortOrder());
-		assertEquals(A, tableModel.items().visible().get(0));
+		assertEquals(A, tableModel.items().included().get(0));
 		assertEquals(0, sortModel.columns().get().get(0).identifier());
 		assertEquals(2, actionsPerformed.get());
 
 		sortModel.order(0).set(SortOrder.DESCENDING);
 		tableModel.items().refresh();
-		assertEquals(A, tableModel.items().visible().get(4));
-		assertEquals(E, tableModel.items().visible().get(0));
+		assertEquals(A, tableModel.items().included().get(4));
+		assertEquals(E, tableModel.items().included().get(0));
 		sortModel.order(0).set(SortOrder.ASCENDING);
 
 		List<TestRow> items = new ArrayList<>();
 		items.add(NULL);
-		tableModel.items().visible().add(0, items);
+		tableModel.items().included().add(0, items);
 		sortModel.order(0).set(SortOrder.ASCENDING);
-		assertEquals(0, tableModel.items().visible().indexOf(NULL));
+		assertEquals(0, tableModel.items().included().indexOf(NULL));
 		sortModel.order(0).set(SortOrder.DESCENDING);
-		assertEquals(tableModel.items().visible().count() - 1, tableModel.items().visible().indexOf(NULL));
+		assertEquals(tableModel.items().included().count() - 1, tableModel.items().included().indexOf(NULL));
 
 		tableModel.items().refresh();
 		items.add(NULL);
-		tableModel.items().visible().add(0, items);
+		tableModel.items().included().add(0, items);
 		sortModel.order(0).set(SortOrder.ASCENDING);
-		assertEquals(0, tableModel.items().visible().indexOf(NULL));
+		assertEquals(0, tableModel.items().included().indexOf(NULL));
 		sortModel.order(0).set(SortOrder.DESCENDING);
-		assertEquals(tableModel.items().visible().count() - 2, tableModel.items().visible().indexOf(NULL));
+		assertEquals(tableModel.items().included().count() - 2, tableModel.items().included().indexOf(NULL));
 		sortModel.order(0).set(SortOrder.UNSORTED);
 		table.model().sort().observer().removeListener(consumer);
 	}
@@ -386,9 +386,9 @@ public class FilterTableTest {
 		tableModel.items().refresh();
 		FilterTableSort<TestRow, Integer> sortModel = table.model().sort();
 		sortModel.order(0).set(SortOrder.ASCENDING);
-		assertEquals(E, tableModel.items().visible().get(0));
+		assertEquals(E, tableModel.items().included().get(0));
 		sortModel.order(0).set(SortOrder.DESCENDING);
-		assertEquals(A, tableModel.items().visible().get(0));
+		assertEquals(A, tableModel.items().included().get(0));
 	}
 
 	@Test
@@ -544,7 +544,7 @@ public class FilterTableTest {
 
 		JViewport viewport = parentOfType(JViewport.class, table);
 		int row = table.rowAtPoint(viewport.getViewPosition());
-		TestRow testRow = model.items().visible().get(row);
+		TestRow testRow = model.items().included().get(row);
 		assertEquals("200", testRow.value);
 
 		rows = IntStream.range(301, 350)
@@ -553,20 +553,20 @@ public class FilterTableTest {
 
 		model.items().add(rows);
 		row = table.rowAtPoint(viewport.getViewPosition());
-		testRow = model.items().visible().get(row);
+		testRow = model.items().included().get(row);
 		assertEquals("301", testRow.value);
 
 		model.sort().clear();
 
-		model.items().visible().add(0, new TestRow("400"));
+		model.items().included().add(0, new TestRow("400"));
 		row = table.rowAtPoint(viewport.getViewPosition());
-		testRow = model.items().visible().get(row);
+		testRow = model.items().included().get(row);
 		assertEquals(0, row);
 		assertEquals("400", testRow.value);
 
-		model.items().visible().add(20, new TestRow("401"));
+		model.items().included().add(20, new TestRow("401"));
 		row = table.rowAtPoint(viewport.getViewPosition());
-		testRow = model.items().visible().get(row);
+		testRow = model.items().included().get(row);
 		assertEquals(20, row);
 		assertEquals("401", testRow.value);
 	}
@@ -579,7 +579,7 @@ public class FilterTableTest {
 					return false;
 				}
 			}
-			else if (!model.items().visible().contains(row)) {
+			else if (!model.items().included().contains(row)) {
 				return false;
 			}
 		}

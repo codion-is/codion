@@ -19,7 +19,7 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.item.Item;
-import is.codion.common.model.filter.FilterModel.VisibleItems;
+import is.codion.common.model.filter.FilterModel.IncludedItems;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueList;
@@ -547,7 +547,7 @@ public final class ComponentsTest {
 						.buildValue();
 		JComboBox<Item<Integer>> comboBox = componentValue.component();
 		FilterComboBoxModel<Item<Integer>> model = (FilterComboBoxModel<Item<Integer>>) comboBox.getModel();
-		assertEquals(0, model.items().visible().indexOf(null));
+		assertEquals(0, model.items().included().indexOf(null));
 		assertTrue(model.items().contains(null));
 
 		assertNull(value.get());
@@ -873,12 +873,12 @@ public final class ComponentsTest {
 						.link(textValue);
 		ComponentValue<FilterList<String>, List<String>> componentValue = listBuilder
 						.buildValue();
-		VisibleItems<String> visibleItems = listModel.items().visible();
-		assertTrue(componentValue.component().isSelectedIndex(visibleItems.indexOf("two")));
+		IncludedItems<String> includedItems = listModel.items().included();
+		assertTrue(componentValue.component().isSelectedIndex(includedItems.indexOf("two")));
 		assertEquals(singletonList("two"), componentValue.get());
 		textValue.add("three");
-		assertTrue(componentValue.component().isSelectedIndex(visibleItems.indexOf("two")));
-		assertTrue(componentValue.component().isSelectedIndex(visibleItems.indexOf("three")));
+		assertTrue(componentValue.component().isSelectedIndex(includedItems.indexOf("two")));
+		assertTrue(componentValue.component().isSelectedIndex(includedItems.indexOf("three")));
 		assertEquals(asList("two", "three"), componentValue.get());
 		listModel.selection().clear();
 		assertNotNull(componentValue.get());
@@ -915,17 +915,17 @@ public final class ComponentsTest {
 						.link(textValue);
 		ComponentValue<FilterList<String>, String> componentValue = listBuilder
 						.buildValue();
-		VisibleItems<String> visibleItems = listModel.items().visible();
-		assertTrue(componentValue.component().isSelectedIndex(visibleItems.indexOf("two")));
+		IncludedItems<String> includedItems = listModel.items().included();
+		assertTrue(componentValue.component().isSelectedIndex(includedItems.indexOf("two")));
 		assertEquals("two", componentValue.get());
 		textValue.set("three");
-		assertFalse(componentValue.component().isSelectedIndex(visibleItems.indexOf("two")));
-		assertTrue(componentValue.component().isSelectedIndex(visibleItems.indexOf("three")));
+		assertFalse(componentValue.component().isSelectedIndex(includedItems.indexOf("two")));
+		assertTrue(componentValue.component().isSelectedIndex(includedItems.indexOf("three")));
 		assertEquals("three", componentValue.get());
 		componentValue.set("one");
-		assertTrue(componentValue.component().isSelectedIndex(visibleItems.indexOf("one")));
-		assertFalse(componentValue.component().isSelectedIndex(visibleItems.indexOf("two")));
-		assertFalse(componentValue.component().isSelectedIndex(visibleItems.indexOf("three")));
+		assertTrue(componentValue.component().isSelectedIndex(includedItems.indexOf("one")));
+		assertFalse(componentValue.component().isSelectedIndex(includedItems.indexOf("two")));
+		assertFalse(componentValue.component().isSelectedIndex(includedItems.indexOf("three")));
 		listBuilder.scrollPane().build();
 	}
 

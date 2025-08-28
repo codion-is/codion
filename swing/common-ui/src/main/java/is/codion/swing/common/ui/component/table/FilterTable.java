@@ -937,7 +937,7 @@ public final class FilterTable<R, C> extends JTable {
 													boolean columnResizingAllowed) {
 		columnModel().columnHidden().addConsumer(this::onColumnHidden);
 		tableModel.selection().indexes().addConsumer(new ScrollToSelected());
-		tableModel.items().visible().added().addConsumer(new ScrollToAdded());
+		tableModel.items().included().added().addConsumer(new ScrollToAdded());
 		tableModel.filters().changed().addListener(getTableHeader()::repaint);
 		searchModel.results().current().addListener(this::repaint);
 		tableModel.sort().observer().addListener(getTableHeader()::repaint);
@@ -1104,9 +1104,9 @@ public final class FilterTable<R, C> extends JTable {
 			JViewport viewport = parentOfType(JViewport.class, FilterTable.this);
 			if (viewport != null && scrollToAddedItem && !addedItems.isEmpty()) {
 				Set<R> items = new HashSet<>(addedItems);
-				List<R> visibleItems = tableModel.items().visible().get();
-				for (int row = 0; row < visibleItems.size(); row++) {
-					if (items.contains(visibleItems.get(row))) {
+				List<R> includedItems = tableModel.items().included().get();
+				for (int row = 0; row < includedItems.size(); row++) {
+					if (items.contains(includedItems.get(row))) {
 						scrollToAddedRow(viewport, row);
 						return;
 					}
@@ -1731,7 +1731,7 @@ public final class FilterTable<R, C> extends JTable {
 			this.identifier = requireNonNull(identifier);
 			this.tableModel = requireNonNull(tableModel);
 			this.format = requireNonNull(format);
-			this.tableModel.items().visible().addListener(valuesChanged);
+			this.tableModel.items().included().addListener(valuesChanged);
 			this.tableModel.selection().indexes().addListener(valuesChanged);
 		}
 
@@ -1755,7 +1755,7 @@ public final class FilterTable<R, C> extends JTable {
 			FilterListSelection<?> selection = tableModel.selection();
 
 			return selection.empty().not().is() &&
-							selection.count() != tableModel.items().visible().count();
+							selection.count() != tableModel.items().included().count();
 		}
 	}
 
@@ -1801,7 +1801,7 @@ public final class FilterTable<R, C> extends JTable {
 		public String get() {
 			List<Integer> rows = selected ?
 							tableModel.selection().indexes().get() :
-							IntStream.range(0, tableModel.items().visible().count())
+							IntStream.range(0, tableModel.items().included().count())
 											.boxed()
 											.collect(toList());
 

@@ -44,7 +44,7 @@ import java.util.function.Supplier;
 import static is.codion.common.Configuration.booleanValue;
 
 /**
- * Specifies a data model that can be filtered to hide some or all of the items it contains.
+ * Specifies a data model that can be filtered to exclude some or all of the items it contains.
  * @param <T> the type of items in the model.
  */
 public interface FilterModel<T> {
@@ -115,32 +115,32 @@ public interface FilterModel<T> {
 		void refresh(Consumer<Collection<T>> onResult);
 
 		/**
-		 * @return all items, visible and filtered, in no particular order
+		 * @return all items, included and excluded, in no particular order
 		 */
 		Collection<T> get();
 
 		/**
-		 * It is up to the implementation whether the visible items are sorted when the items are set.
+		 * It is up to the implementation whether the included items are sorted when the items are set.
 		 * @param items the items
 		 */
 		void set(Collection<T> items);
 
 		/**
 		 * <p>Adds the given item to this model.
-		 * <p>If the item passes the {@link VisibleItems#predicate()} it is appended
-		 * to the visible items, which are then sorted if sorting is enabled.
-		 * <p>If the item does not pass the {@link VisibleItems#predicate()},
-		 * it will be filtered right away.
+		 * <p>If the item passes the {@link IncludedItems#predicate()} it is appended
+		 * to the included items, which are then sorted if sorting is enabled.
+		 * <p>If the item does not pass the {@link IncludedItems#predicate()},
+		 * it will be excluded right away.
 		 * @param item the item to add
 		 */
 		void add(T item);
 
 		/**
 		 * <p>Adds the given items to this model.
-		 * <p>Items that pass the {@link VisibleItems#predicate()} are is appended
-		 * to the visible items, which are then sorted if sorting is enabled.
-		 * <p>If no items pass the {@link VisibleItems#predicate()}, they will
-		 * be filtered right away.
+		 * <p>Items that pass the {@link IncludedItems#predicate()} are is appended
+		 * to the included items, which are then sorted if sorting is enabled.
+		 * <p>If no items pass the {@link IncludedItems#predicate()}, they will
+		 * be excluded right away.
 		 * @param items the items to add
 		 */
 		void add(Collection<T> items);
@@ -165,20 +165,20 @@ public interface FilterModel<T> {
 
 		/**
 		 * <p>Replaces the first occurrence of the given item. If the item is not found this method has no effect.
-		 * <p>Note that this method respects the visible predicate, so a
-		 * currently filtered item may be replaced with a visible item and vice verse.
-		 * <p>If the visible items change they are sorted if sorting is enabled.
+		 * <p>Note that this method respects the include predicate, so a
+		 * currently excluded item may be replaced with an included item and vice verse.
+		 * <p>If the included items change they are sorted if sorting is enabled.
 		 * @param item the item to replace
 		 * @param replacement the replacement item
-		 * @see VisibleItems#predicate()
+		 * @see IncludedItems#predicate()
 		 */
 		void replace(T item, T replacement);
 
 		/**
 		 * <p>Replaces the given map keys with their respective values.
-		 * <p>Note that this method respects the visible predicate, so a
-		 * currently filtered item may be replaced with a visible item and vice verse.
-		 * <p>If the visible items change they are sorted if sorting is enabled.
+		 * <p>Note that this method respects the include predicate, so a
+		 * currently excluded item may be replaced with an included item and vice verse.
+		 * <p>If the included items change they are sorted if sorting is enabled.
 		 * @param replacements
 		 */
 		void replace(Map<T, T> replacements);
@@ -189,32 +189,32 @@ public interface FilterModel<T> {
 		void clear();
 
 		/**
-		 * @return a {@link VisibleItems} providing access to the visible items, in the order they appear in the model
+		 * @return a {@link IncludedItems} providing access to the included items, in the order they appear in the model
 		 */
-		VisibleItems<T> visible();
+		IncludedItems<T> included();
 
 		/**
-		 * @return a {@link FilteredItems} providing access to the filtered items
+		 * @return a {@link ExcludedItems} providing access to the excluded items
 		 */
-		FilteredItems<T> filtered();
+		ExcludedItems<T> excluded();
 
 		/**
-		 * Returns true if the model contain the given item, as visible or filtered.
+		 * Returns true if the model contain the given item, as included or excluded.
 		 * @param item the item
 		 * @return true if this model contains the item
 		 */
 		boolean contains(T item);
 
 		/**
-		 * @return the total number of items, visible and filtered
+		 * @return the total number of items, included and excluded
 		 */
 		int count();
 
 		/**
-		 * <p>Filters the items according to the {@link VisibleItems#predicate()}.
+		 * <p>Filters the items according to the {@link IncludedItems#predicate()}.
 		 * <p>If no predicate is specified calling this method has no effect.
-		 * <p>This method does not interfere with the internal ordering of the visible items.
-		 * @see VisibleItems#predicate()
+		 * <p>This method does not interfere with the internal ordering of the included items.
+		 * @see IncludedItems#predicate()
 		 */
 		void filter();
 
@@ -253,7 +253,7 @@ public interface FilterModel<T> {
 				 * @param selection provides the {@link MultiSelection} instance to use
 				 * @return the next stage
 				 */
-				SortStep<T> selection(Function<VisibleItems<T>, MultiSelection<T>> selection);
+				SortStep<T> selection(Function<IncludedItems<T>, MultiSelection<T>> selection);
 			}
 
 			/**
@@ -275,16 +275,16 @@ public interface FilterModel<T> {
 			Builder<T> validator(Predicate<T> validator);
 
 			/**
-			 * @param visible the visible predicate
+			 * @param include the include predicate
 			 * @return this builder
 			 */
-			Builder<T> visible(VisiblePredicate<T> visible);
+			Builder<T> include(IncludePredicate<T> include);
 
 			/**
-			 * @param itemsListener the {@link VisibleItems.ItemsListener}
+			 * @param itemsListener the {@link IncludedItems.ItemsListener}
 			 * @return this builder
 			 */
-			Builder<T> listener(VisibleItems.ItemsListener itemsListener);
+			Builder<T> listener(IncludedItems.ItemsListener itemsListener);
 
 			/**
 			 * @return a new {@link Items} instance
@@ -294,14 +294,14 @@ public interface FilterModel<T> {
 	}
 
 	/**
-	 * Controls which items should be visible.
+	 * Controls which items should be included.
 	 * Tests the predicate set as its value, but subclasses may provide additional tests.
 	 */
-	interface VisiblePredicate<T> extends Value<Predicate<T>>, Predicate<T> {
+	interface IncludePredicate<T> extends Value<Predicate<T>>, Predicate<T> {
 
 		/**
 		 * @param item the item to test
-		 * @return true if the given item should be visible
+		 * @return true if the given item should be included
 		 */
 		default boolean test(T item) {
 			Predicate<T> predicate = get();
@@ -313,18 +313,18 @@ public interface FilterModel<T> {
 	/**
 	 * @param <T> the item type
 	 */
-	interface VisibleItems<T> extends Observable<List<T>> {
+	interface IncludedItems<T> extends Observable<List<T>> {
 
 		/**
-		 * @return the visible items or an empty list if no item is visible
+		 * @return the included items or an empty list if all items are excluded
 		 */
 		@Override
 		@NonNull List<T> get();
 
 		/**
-		 * @return the {@link VisiblePredicate} controlling which items should be visible
+		 * @return the {@link IncludePredicate} controlling which items should be included
 		 */
-		VisiblePredicate<T> predicate();
+		IncludePredicate<T> predicate();
 
 		/**
 		 * @return an {@link Observer} notified when items have been added
@@ -337,15 +337,15 @@ public interface FilterModel<T> {
 		SingleSelection<T> selection();
 
 		/**
-		 * Returns true if the given item is visible
+		 * Returns true if the given item is included
 		 * @param item the item
-		 * @return true if the item is visible
+		 * @return true if the item is included
 		 */
 		boolean contains(T item);
 
 		/**
 		 * @param item the item
-		 * @return the index of the item in this model, -1 if it is not visible
+		 * @return the index of the item in this model, -1 if it is not included
 		 */
 		int indexOf(T item);
 
@@ -357,38 +357,38 @@ public interface FilterModel<T> {
 		T get(int index);
 
 		/**
-		 * <p>Adds the given item at the given index and sorts the visible items if sorting is enabled.
-		 * <p>Note that if the item does not pass the {@link VisibleItems#predicate()} it is filtered right away and the method returns false.
+		 * <p>Adds the given item at the given index and sorts the included items if sorting is enabled.
+		 * <p>Note that if the item does not pass the {@link IncludedItems#predicate()} it is excluded right away and the method returns false.
 		 * @param index the index
 		 * @param item the item to add
-		 * @return true if the item was added to the visible items
+		 * @return true if the item was added to the included items
 		 * @throws IndexOutOfBoundsException in case the index is out of bounds
 		 */
 		boolean add(int index, T item);
 
 		/**
-		 * <p>Adds the given items at the given index and sorts the visible items if sorting is enabled.
-		 * <p>Note that if an item does not pass the {@link VisibleItems#predicate()} it is filtered right away.
+		 * <p>Adds the given items at the given index and sorts the included items if sorting is enabled.
+		 * <p>Note that if an item does not pass the {@link IncludedItems#predicate()} it is excluded right away.
 		 * @param index the index at which to add the items
 		 * @param items the items to add
-		 * @return true if one or more of the items was added to the visible items
+		 * @return true if one or more of the items was added to the included items
 		 * @throws IndexOutOfBoundsException in case the index is out of bounds
 		 */
 		boolean add(int index, Collection<T> items);
 
 		/**
 		 * <p>Sets the item at the given index. Note that sorting is NOT performed after the item has been set.
-		 * <p>Note that if the item does not pass the {@link VisibleItems#predicate()} this method has no effect.
+		 * <p>Note that if the item does not pass the {@link IncludedItems#predicate()} this method has no effect.
 		 * @param index the index
 		 * @param item the item
-		 * @return true if the item was set, false if it did not pass the {@link VisibleItems#predicate()}
+		 * @return true if the item was set, false if it did not pass the {@link IncludedItems#predicate()}
 		 * @throws IndexOutOfBoundsException in case the index is out of bounds
-		 * @see VisibleItems#predicate()
+		 * @see IncludedItems#predicate()
 		 */
 		boolean set(int index, T item);
 
 		/**
-		 * <p>Removes from this model the visible element at the given index
+		 * <p>Removes from this model the included element at the given index
 		 * @param index the index of the row to be removed
 		 * @return the removed item
 		 * @throws IndexOutOfBoundsException in case the index is out of bounds
@@ -396,7 +396,7 @@ public interface FilterModel<T> {
 		T remove(int index);
 
 		/**
-		 * <p>Removes from this model all visible elements whose index is between {@code fromIndex}, inclusive and {@code toIndex}, exclusive
+		 * <p>Removes from this model all included elements whose index is between {@code fromIndex}, inclusive and {@code toIndex}, exclusive
 		 * @param fromIndex index of first row to be removed
 		 * @param toIndex index after last row to be removed
 		 * @return the removed items
@@ -405,37 +405,37 @@ public interface FilterModel<T> {
 		List<T> remove(int fromIndex, int toIndex);
 
 		/**
-		 * @return the number of visible items
+		 * @return the number of included items
 		 */
 		int count();
 
 		/**
-		 * Sorts the visible items using this {@link Sort} instance, preserving the selection.
+		 * Sorts the included items using this {@link Sort} instance, preserving the selection.
 		 * @see FilterModel#sort()
 		 */
 		void sort();
 
 		/**
-		 * Provides a way to respond to changes to the visible items
+		 * Provides a way to respond to changes to the included items
 		 */
 		interface ItemsListener {
 
 			/**
-			 * Called when visible items are inserted
+			 * Called when included items are inserted
 			 * @param firstIndex the first index
 			 * @param lastIndex the last index
 			 */
 			void inserted(int firstIndex, int lastIndex);
 
 			/**
-			 * Called when visible items are updated
+			 * Called when included items are updated
 			 * @param firstIndex the first index
 			 * @param lastIndex the last index
 			 */
 			void updated(int firstIndex, int lastIndex);
 
 			/**
-			 * Called when visible items are deleted
+			 * Called when included items are deleted
 			 * @param firstIndex the first index
 			 * @param lastIndex the last index
 			 */
@@ -451,22 +451,22 @@ public interface FilterModel<T> {
 	/**
 	 * @param <T> the item type
 	 */
-	interface FilteredItems<T> {
+	interface ExcludedItems<T> {
 
 		/**
-		 * @return the filtered items or an empty collection in case of no filtered items
+		 * @return the excluded items or an empty collection in case of no excluded items
 		 */
 		@NonNull Collection<T> get();
 
 		/**
-		 * Returns true if the given item is filtered.
+		 * Returns true if the given item is excluded.
 		 * @param item the item
-		 * @return true if the item is filtered
+		 * @return true if the item is excluded
 		 */
 		boolean contains(T item);
 
 		/**
-		 * @return the number of filtered items
+		 * @return the number of excluded items
 		 */
 		int count();
 	}

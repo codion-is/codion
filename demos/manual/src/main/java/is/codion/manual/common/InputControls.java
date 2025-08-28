@@ -402,7 +402,7 @@ public final class InputControls {
 										.build();
 
 		// Hides the 'Two' item.
-		model.items().visible().predicate()
+		model.items().included().predicate()
 						.set(item -> !item.equals("Two"));
 
 		// Prints the selected item

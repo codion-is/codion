@@ -77,7 +77,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	Optional<Entity> find(Entity.Key primaryKey);
 
 	/**
-	 * Selects the entity with the given primary key, whether filtered or visible.
+	 * Selects the entity with the given primary key, whether included or excluded.
 	 * If the entity is not available in the model this method returns silently without changing the selection.
 	 * @param primaryKey the primary key of the entity to select
 	 */
@@ -197,11 +197,11 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		 * Specifies whether filtering the model affects the currently selected item.
 		 * If true, the selection is cleared when the selected item is filtered from
 		 * the model, otherwise the selected item can potentially represent a value
-		 * which is not currently visible in the model
+		 * which is not currently included in the model
 		 * This is false by default.
 		 * @param filterSelected if true then the selected item is cleared when filtered
 		 * @return this builder instance
-		 * @see VisibleItems#predicate()
+		 * @see IncludedItems#predicate()
 		 */
 		Builder filterSelected(boolean filterSelected);
 
@@ -236,14 +236,14 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	interface ForeignKeyFilter {
 
 		/**
-		 * Filters the combo box model so that only items referencing the given key are visible.
+		 * Filters the combo box model so that only items referencing the given key are included.
 		 * @param key the key to filter by
 		 */
 		void set(Entity.Key key);
 
 		/**
-		 * Filters the combo box model so that only items referencing the given keys are visible.
-		 * If {@code keys} is empty and {@link #strict()} filtering is enabled, all entities are filtered.
+		 * Filters the combo box model so that only items referencing the given keys are included.
+		 * If {@code keys} is empty and {@link #strict()} filtering is enabled, all entities are excluded.
 		 * @param keys the keys to filter by
 		 */
 		void set(Collection<Entity.Key> keys);

@@ -166,7 +166,7 @@ final class AlbumTagPanel extends JPanel {
 		movingTags.set(true);
 		try {
 			int[] selected = tagsValue.component().getSelectedIndices();
-			if (selected.length > 0 && selected[selected.length - 1] != tagItems.visible().count() - 1) {
+			if (selected.length > 0 && selected[selected.length - 1] != tagItems.included().count() - 1) {
 				moveTagsDown(selected);
 				moveSelectionDown(selected);
 			}
@@ -178,13 +178,13 @@ final class AlbumTagPanel extends JPanel {
 
 	private void moveTagsUp(int[] selected) {
 		for (int i = 0; i < selected.length; i++) {
-			tagItems.visible().add(selected[i] - 1, tagItems.visible().remove(selected[i]));
+			tagItems.included().add(selected[i] - 1, tagItems.included().remove(selected[i]));
 		}
 	}
 
 	private void moveTagsDown(int[] selected) {
 		for (int i = selected.length - 1; i >= 0; i--) {
-			tagItems.visible().add(selected[i] + 1, tagItems.visible().remove(selected[i]));
+			tagItems.included().add(selected[i] + 1, tagItems.included().remove(selected[i]));
 		}
 	}
 

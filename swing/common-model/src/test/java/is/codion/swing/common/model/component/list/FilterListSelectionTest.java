@@ -60,7 +60,7 @@ public class FilterListSelectionTest {
 										.build();
 		tableModel.items().refresh();
 
-		testModel = filterListSelection(tableModel.items().visible());
+		testModel = filterListSelection(tableModel.items().included());
 	}
 
 	@Test

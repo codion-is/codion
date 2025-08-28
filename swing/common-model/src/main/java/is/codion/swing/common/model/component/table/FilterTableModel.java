@@ -111,7 +111,7 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		/**
 		 * @param identifier the identifier of the column for which to retrieve the values
 		 * @param <T> the value type
-		 * @return the values (including nulls) of the column identified by the given identifier from the visible rows in the table model
+		 * @return the values (including nulls) of the column identified by the given identifier from the included rows in the table model
 		 * @throws IllegalArgumentException in case of an unknown identifier
 		 */
 		<T> List<T> get(C identifier);
@@ -197,10 +197,10 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		Builder<R, C> editor(Function<FilterTableModel<R, C>, Editor<R, C>> editor);
 
 		/**
-		 * @param visible the {@link Predicate} controlling which items should be visible
+		 * @param include the {@link Predicate} controlling which items should be included
 		 * @return this builder instance
 		 */
-		Builder<R, C> visible(Predicate<R> visible);
+		Builder<R, C> include(Predicate<R> include);
 
 		/**
 		 * @return a new {@link FilterTableModel} instance.

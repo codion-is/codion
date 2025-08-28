@@ -146,7 +146,7 @@ final class EntityTableExport {
 	private List<Entity> entities(SwingEntityTableModel tableModel) {
 		return selectedRows.is() ?
 						tableModel.selection().items().get() :
-						tableModel.items().visible().get();
+						tableModel.items().included().get();
 	}
 
 	private List<String> createHeader() {

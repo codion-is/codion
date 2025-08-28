@@ -19,7 +19,7 @@
 package is.codion.swing.common.model.component.list;
 
 import is.codion.common.event.Event;
-import is.codion.common.model.filter.FilterModel.VisibleItems;
+import is.codion.common.model.filter.FilterModel.IncludedItems;
 import is.codion.common.observer.Observer;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
@@ -53,9 +53,9 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 	private final State single = State.state(false);
 	private final ObservableState multiple = State.and(empty.not(), single.not());
 
-	private final VisibleItems<R> items;
+	private final IncludedItems<R> items;
 
-	DefaultListSelection(VisibleItems<R> items) {
+	DefaultListSelection(IncludedItems<R> items) {
 		this.items = requireNonNull(items);
 		bindEvents();
 	}
@@ -313,9 +313,9 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 
 		@Override
 		public void decrement() {
-			int visibleSize = items.count();
-			if (visibleSize > 0) {
-				int lastIndex = visibleSize - 1;
+			int includedSize = items.count();
+			if (includedSize > 0) {
+				int lastIndex = includedSize - 1;
 				if (isSelectionEmpty()) {
 					setSelectionInterval(lastIndex, lastIndex);
 				}
@@ -329,14 +329,14 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 
 		@Override
 		public void increment() {
-			int filteredSize = items.count();
-			if (filteredSize > 0) {
+			int includedSize = items.count();
+			if (includedSize > 0) {
 				if (isSelectionEmpty()) {
 					setSelectionInterval(0, 0);
 				}
 				else {
 					selectedIndexes.set(selectedIndexes.getOrThrow().stream()
-									.map(index -> index == filteredSize - 1 ? 0 : index + 1)
+									.map(index -> index == includedSize - 1 ? 0 : index + 1)
 									.collect(toList()));
 				}
 			}
@@ -456,9 +456,9 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 
 		private List<Integer> indexesToSelect(Predicate<R> predicate) {
 			List<Integer> indexes = new ArrayList<>();
-			List<R> visibleItems = items.get();
-			for (int i = 0; i < visibleItems.size(); i++) {
-				R item = visibleItems.get(i);
+			List<R> includedItems = items.get();
+			for (int i = 0; i < includedItems.size(); i++) {
+				R item = includedItems.get(i);
 				if (predicate.test(item)) {
 					indexes.add(i);
 				}

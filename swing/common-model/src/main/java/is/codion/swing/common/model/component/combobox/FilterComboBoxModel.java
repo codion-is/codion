@@ -45,7 +45,7 @@ import static java.util.Objects.requireNonNull;
  * A combo box model based on {@link FilterModel}.
  * @param <T> the type of values in this combo box model
  * @see #builder()
- * @see VisibleItems#predicate()
+ * @see IncludedItems#predicate()
  */
 public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T> {
 
@@ -181,12 +181,12 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 
 		/**
 		 * <p>Specifies whether filtering the model affects the currently selected item.
-		 * If true, the selection is cleared when the selected item is filtered from
+		 * If true, the selection is cleared when the selected item is excluded from
 		 * the model, otherwise the selected item can potentially represent a value
-		 * which is not currently visible in the model
+		 * which is not currently included in the model
 		 * <p>This is false by default.
 		 * @param filterSelected true if the select item should be filtered
-		 * @see VisibleItems#predicate()
+		 * @see IncludedItems#predicate()
 		 */
 		Builder<T> filterSelected(boolean filterSelected);
 

@@ -202,14 +202,14 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	 * @param entities the updated entities, mapped to their original primary key
 	 */
 	protected void updated(ForeignKey foreignKey, Map<Entity.Key, Entity> entities) {
-		for (Entity entity : items().filtered().get()) {
+		for (Entity entity : items().excluded().get()) {
 			for (Map.Entry<Entity.Key, Entity> entry : entities.entrySet()) {
 				replace(foreignKey, entity, entry.getKey(), entry.getValue());
 			}
 		}
-		List<Entity> visibleItems = items().visible().get();
-		for (int i = 0; i < visibleItems.size(); i++) {
-			Entity entity = visibleItems.get(i);
+		List<Entity> includedItems = items().included().get();
+		for (int i = 0; i < includedItems.size(); i++) {
+			Entity entity = includedItems.get(i);
 			for (Map.Entry<Entity.Key, Entity> entry : entities.entrySet()) {
 				if (replace(foreignKey, entity, entry.getKey(), entry.getValue())) {
 					onRowsUpdated(i, i);
@@ -243,7 +243,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 		OnInsert onInsertAction = onInsert.getOrThrow();
 		if (onInsertAction != OnInsert.DO_NOTHING && !entitiesToAdd.isEmpty()) {
 			selection().clear();
-			items().visible().add(onInsertAction == OnInsert.PREPEND ? 0 : items().visible().count(), entitiesToAdd);
+			items().included().add(onInsertAction == OnInsert.PREPEND ? 0 : items().included().count(), entitiesToAdd);
 		}
 	}
 
@@ -266,17 +266,17 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 
 	private void replaceEntities(Map<Entity.Key, Entity> entities) {
 		Map<Entity.Key, Entity> replacements = new HashMap<>(entities);
-		VisibleItems<Entity> visibleItems = items().visible();
-		List<Entity> visible = visibleItems.get();
-		for (int i = 0; i < visible.size() && !replacements.isEmpty(); i++) {
-			Entity replacement = replacements.remove(visible.get(i).primaryKey());
+		IncludedItems<Entity> includedItems = items().included();
+		List<Entity> included = includedItems.get();
+		for (int i = 0; i < included.size() && !replacements.isEmpty(); i++) {
+			Entity replacement = replacements.remove(included.get(i).primaryKey());
 			if (replacement != null) {
-				visibleItems.set(i, replacement);
+				includedItems.set(i, replacement);
 			}
 		}
-		Iterator<Entity> filtered = items().filtered().get().iterator();
-		while (filtered.hasNext() && !replacements.isEmpty()) {
-			Entity entity = filtered.next();
+		Iterator<Entity> excluded = items().excluded().get().iterator();
+		while (excluded.hasNext() && !replacements.isEmpty()) {
+			Entity entity = excluded.next();
 			Entity replacement = replacements.remove(entity.primaryKey());
 			if (replacement != null) {
 				entity.set(replacement);

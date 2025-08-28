@@ -21,7 +21,7 @@ package is.codion.swing.common.model.component.table;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
 import is.codion.common.model.filter.FilterModel;
-import is.codion.common.model.filter.FilterModel.VisibleItems.ItemsListener;
+import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
 import is.codion.common.value.AbstractValue;
 import is.codion.swing.common.model.component.list.AbstractRefreshWorker;
 import is.codion.swing.common.model.component.list.FilterListSelection;
@@ -82,11 +82,11 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 						.selection(FilterListSelection::filterListSelection)
 						.sort(sort)
 						.validator(builder.validator)
-						.visible(new DefaultVisiblePredicate<>(builder.columns, filters))
+						.include(new DefaultIncludePredicate<>(builder.columns, filters))
 						.listener(new TableModelAdapter())
 						.build();
-		this.items.visible().predicate().set(builder.visiblePredicate);
-		this.selection = (FilterListSelection<R>) items.visible().selection();
+		this.items.included().predicate().set(builder.includePredicate);
+		this.selection = (FilterListSelection<R>) items.included().selection();
 		this.removeSelectionListener = new RemoveSelectionListener();
 		addTableModelListener(removeSelectionListener);
 	}
@@ -108,7 +108,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public int getRowCount() {
-		return items.visible().count();
+		return items.included().count();
 	}
 
 	@Override
@@ -143,12 +143,12 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
-		return editor().editable(items.visible().get(rowIndex), columns.identifier(columnIndex));
+		return editor().editable(items.included().get(rowIndex), columns.identifier(columnIndex));
 	}
 
 	@Override
 	public void setValueAt(@Nullable Object value, int rowIndex, int columnIndex) {
-		editor().set(value, rowIndex, items.visible().get(rowIndex), columns.identifier(columnIndex));
+		editor().set(value, rowIndex, items.included().get(rowIndex), columns.identifier(columnIndex));
 	}
 
 	@Override
@@ -219,7 +219,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		@Override
 		public <T> List<T> get(C identifier) {
-			return (List<T>) values(IntStream.range(0, items.visible().count()).boxed(), validateIdentifier(identifier));
+			return (List<T>) values(IntStream.range(0, items.included().count()).boxed(), validateIdentifier(identifier));
 		}
 
 		@Override
@@ -229,12 +229,12 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		@Override
 		public String string(int rowIndex, C identifier) {
-			return columns.string(items.visible().get(rowIndex), requireNonNull(identifier));
+			return columns.string(items.included().get(rowIndex), requireNonNull(identifier));
 		}
 
 		@Override
 		public @Nullable Object value(int rowIndex, C identifier) {
-			return columns.value(items.visible().get(rowIndex), identifier);
+			return columns.value(items.included().get(rowIndex), identifier);
 		}
 
 		private List<@Nullable Object> values(Stream<Integer> rowIndexStream, C identifier) {
@@ -279,15 +279,15 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 	}
 
-	private static final class DefaultVisiblePredicate<R, C>
-					extends AbstractValue<Predicate<R>> implements VisiblePredicate<R> {
+	private static final class DefaultIncludePredicate<R, C>
+					extends AbstractValue<Predicate<R>> implements IncludePredicate<R> {
 
 		private final TableColumns<R, C> tableColumns;
 		private final TableConditionModel<C> filters;
 
 		private @Nullable Predicate<R> predicate;
 
-		private DefaultVisiblePredicate(TableColumns<R, C> columns, TableConditionModel<C> filters) {
+		private DefaultIncludePredicate(TableColumns<R, C> columns, TableConditionModel<C> filters) {
 			super(SET);
 			this.tableColumns = columns;
 			this.filters = filters;
@@ -296,7 +296,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		@Override
 		public boolean test(R item) {
-			if (!VisiblePredicate.super.test(item)) {
+			if (!IncludePredicate.super.test(item)) {
 				return false;
 			}
 
@@ -364,7 +364,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		private Supplier<Map<C, ConditionModel<?>>> filters;
 		private boolean async = FilterModel.ASYNC.getOrThrow();
 		private Function<FilterTableModel<R, C>, Editor<R, C>> editorFactory = new DefaultEditorFactory<>();
-		private @Nullable Predicate<R> visiblePredicate;
+		private @Nullable Predicate<R> includePredicate;
 
 		private DefaultBuilder(TableColumns<R, C> columns) {
 			if (requireNonNull(columns).identifiers().isEmpty()) {
@@ -405,8 +405,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
-		public Builder<R, C> visible(Predicate<R> visible) {
-			this.visiblePredicate = requireNonNull(visible);
+		public Builder<R, C> include(Predicate<R> include) {
+			this.includePredicate = requireNonNull(include);
 			return this;
 		}
 

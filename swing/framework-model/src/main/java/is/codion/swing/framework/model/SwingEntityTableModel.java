@@ -150,7 +150,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 			return false;
 		}
 
-		return editable(items().visible().get(rowIndex), columns().identifier(modelColumnIndex));
+		return editable(items().included().get(rowIndex), columns().identifier(modelColumnIndex));
 	}
 
 	/**
@@ -164,7 +164,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 		if (!isCellEditable(rowIndex, modelColumnIndex)) {
 			throw new IllegalStateException("Table model cell is not editable, row: " + rowIndex + ", column: " + modelColumnIndex);
 		}
-		Entity entity = items().visible().get(rowIndex).copy().mutable();
+		Entity entity = items().included().get(rowIndex).copy().mutable();
 		editModel().applyEdit(singleton(entity), (Attribute<Object>) columns().identifier(modelColumnIndex), value);
 		try {
 			if (entity.modified()) {

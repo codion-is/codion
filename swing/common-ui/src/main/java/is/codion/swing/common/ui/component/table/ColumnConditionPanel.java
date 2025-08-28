@@ -624,13 +624,13 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
 	private void selectNextOperator() {
 		FilterComboBoxModel<Item<Operator>> itemComboBoxModel = (FilterComboBoxModel<Item<Operator>>) operatorCombo.getModel();
-		List<Item<Operator>> visibleItems = itemComboBoxModel.items().visible().get();
-		int index = visibleItems.indexOf(itemComboBoxModel.getSelectedItem());
-		if (index < itemComboBoxModel.items().visible().count() - 1) {
-			itemComboBoxModel.setSelectedItem(visibleItems.get(index + 1));
+		List<Item<Operator>> includedItems = itemComboBoxModel.items().included().get();
+		int index = includedItems.indexOf(itemComboBoxModel.getSelectedItem());
+		if (index < itemComboBoxModel.items().included().count() - 1) {
+			itemComboBoxModel.setSelectedItem(includedItems.get(index + 1));
 		}
 		else {
-			itemComboBoxModel.setSelectedItem(visibleItems.get(0));
+			itemComboBoxModel.setSelectedItem(includedItems.get(0));
 		}
 	}
 
@@ -640,13 +640,13 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
 	private void selectPreviousOperator() {
 		FilterComboBoxModel<Item<Operator>> itemComboBoxModel = (FilterComboBoxModel<Item<Operator>>) operatorCombo.getModel();
-		List<Item<Operator>> visibleItems = itemComboBoxModel.items().visible().get();
-		int index = visibleItems.indexOf(itemComboBoxModel.getSelectedItem());
+		List<Item<Operator>> includedItems = itemComboBoxModel.items().included().get();
+		int index = includedItems.indexOf(itemComboBoxModel.getSelectedItem());
 		if (index > 0) {
-			itemComboBoxModel.setSelectedItem(visibleItems.get(index - 1));
+			itemComboBoxModel.setSelectedItem(includedItems.get(index - 1));
 		}
 		else {
-			itemComboBoxModel.setSelectedItem(visibleItems.get(visibleItems.size() - 1));
+			itemComboBoxModel.setSelectedItem(includedItems.get(includedItems.size() - 1));
 		}
 	}
 

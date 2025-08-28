@@ -96,7 +96,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelEnabler
 						.value(builder.includeInstalled)
 						.listener(getModel().items()::filter)
 						.build();
-		getModel().items().visible().predicate()
+		getModel().items().included().predicate()
 						.set(item -> includeInstalled.is() || !item.getOrThrow().installed());
 		if (builder.onSelection != null) {
 			getModel().selection().item().addConsumer(item ->

@@ -19,13 +19,13 @@
 package is.codion.common.model.filter;
 
 import is.codion.common.event.Event;
-import is.codion.common.model.filter.FilterModel.FilteredItems;
+import is.codion.common.model.filter.FilterModel.ExcludedItems;
+import is.codion.common.model.filter.FilterModel.IncludePredicate;
+import is.codion.common.model.filter.FilterModel.IncludedItems;
+import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
 import is.codion.common.model.filter.FilterModel.Items;
 import is.codion.common.model.filter.FilterModel.Refresher;
 import is.codion.common.model.filter.FilterModel.Sort;
-import is.codion.common.model.filter.FilterModel.VisibleItems;
-import is.codion.common.model.filter.FilterModel.VisibleItems.ItemsListener;
-import is.codion.common.model.filter.FilterModel.VisiblePredicate;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.observer.Observer;
 import is.codion.common.value.AbstractValue;
@@ -56,8 +56,8 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	private final Lock lock = new Lock() {};
 
 	private final Predicate<R> validator;
-	private final DefaultVisibleItems visible;
-	private final DefaultFilteredItems filtered;
+	private final DefaultIncludedItems included;
+	private final DefaultExcludedItems excluded;
 	private final ItemsListener itemsListener;
 
 	private final MultiSelection<R> selection;
@@ -67,13 +67,13 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	private DefaultFilterModelItems(DefaultBuilder<R> builder) {
 		this.sort = builder.sort;
 		this.validator = builder.validator;
-		this.visible = new DefaultVisibleItems(builder.visiblePredicate);
-		this.filtered = new DefaultFilteredItems();
+		this.included = new DefaultIncludedItems(builder.includePredicate);
+		this.excluded = new DefaultExcludedItems();
 		this.refresher = builder.refresher.apply(this);
-		this.selection = builder.selection.apply(visible);
+		this.selection = builder.selection.apply(included);
 		this.itemsListener = builder.itemsListener;
-		this.visible.predicate.addListener(DefaultFilterModelItems.this::filter);
-		this.sort.observer().addListener(visible::sort);
+		this.included.predicate.addListener(DefaultFilterModelItems.this::filter);
+		this.sort.observer().addListener(included::sort);
 	}
 
 	@Override
@@ -94,12 +94,12 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	@Override
 	public Collection<R> get() {
 		synchronized (lock) {
-			if (filtered.items.isEmpty()) {
-				return unmodifiableCollection(new ArrayList<>(visible.items));
+			if (excluded.items.isEmpty()) {
+				return unmodifiableCollection(new ArrayList<>(included.items));
 			}
-			List<R> entities = new ArrayList<>(visible.items.size() + filtered.items.size());
-			entities.addAll(visible.items);
-			entities.addAll(filtered.items);
+			List<R> entities = new ArrayList<>(included.items.size() + excluded.items.size());
+			entities.addAll(included.items);
+			entities.addAll(excluded.items);
 
 			return unmodifiableList(entities);
 		}
@@ -125,7 +125,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	@Override
 	public void add(Collection<R> items) {
 		synchronized (lock) {
-			addInternal(visible.items.size(), rejectNulls(items));
+			addInternal(included.items.size(), rejectNulls(items));
 		}
 	}
 
@@ -133,12 +133,12 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	public void remove(R item) {
 		requireNonNull(item);
 		synchronized (lock) {
-			if (!filtered.items.remove(item)) {
-				int index = visible.items.indexOf(item);
+			if (!excluded.items.remove(item)) {
+				int index = included.items.indexOf(item);
 				if (index >= 0) {
-					visible.items.remove(index);
+					included.items.remove(index);
 					itemsListener.deleted(index, index);
-					visible.notifyChanges();
+					included.notifyChanges();
 				}
 			}
 		}
@@ -150,25 +150,25 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		synchronized (lock) {
 			Set<R> toRemove = new HashSet<>(items);
 			for (R itemToRemove : items) {
-				if (filtered.items.remove(itemToRemove)) {
+				if (excluded.items.remove(itemToRemove)) {
 					toRemove.remove(itemToRemove);
 				}
 			}
-			boolean visibleRemoved = false;
+			boolean includedRemoved = false;
 			selection.adjusting(true);
-			ListIterator<R> iterator = visible.items.listIterator(visible.items.size());
+			ListIterator<R> iterator = included.items.listIterator(included.items.size());
 			while (!toRemove.isEmpty() && iterator.hasPrevious()) {
 				int index = iterator.previousIndex();
 				R item = iterator.previous();
 				if (toRemove.remove(item)) {
 					iterator.remove();
 					itemsListener.deleted(index, index);
-					visibleRemoved = true;
+					includedRemoved = true;
 				}
 			}
 			selection.adjusting(false);
-			if (visibleRemoved) {
-				visible.notifyChanges();
+			if (includedRemoved) {
+				included.notifyChanges();
 			}
 		}
 	}
@@ -177,7 +177,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	public void remove(Predicate<R> predicate) {
 		requireNonNull(predicate);
 		synchronized (lock) {
-			remove(Stream.concat(visible.items.stream(), filtered.items.stream())
+			remove(Stream.concat(included.items.stream(), excluded.items.stream())
 							.filter(predicate)
 							.collect(toList()));
 		}
@@ -197,60 +197,60 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		synchronized (lock) {
 			Map<R, R> toReplace = new HashMap<>(items);
 			for (R itemToReplace : items.keySet()) {
-				if (filtered.items.remove(itemToReplace)) {
+				if (excluded.items.remove(itemToReplace)) {
 					R replacement = toReplace.remove(itemToReplace);
-					if (visible.predicate.test(replacement)) {
-						visible.items.add(replacement);
+					if (included.predicate.test(replacement)) {
+						included.items.add(replacement);
 					}
 					else {
-						filtered.items.add(replacement);
+						excluded.items.add(replacement);
 					}
 				}
 			}
-			ListIterator<R> iterator = visible.items.listIterator();
+			ListIterator<R> iterator = included.items.listIterator();
 			while (!toReplace.isEmpty() && iterator.hasNext()) {
 				R item = iterator.next();
 				R replacement = toReplace.remove(item);
 				if (replacement != null) {
-					if (visible.predicate.test(replacement)) {
+					if (included.predicate.test(replacement)) {
 						iterator.set(replacement);
 					}
 					else {
 						iterator.remove();
-						filtered.items.add(replacement);
+						excluded.items.add(replacement);
 					}
 				}
 			}
 			itemsListener.changed();
-			visible.sort();
+			included.sort();
 		}
 	}
 
 	@Override
 	public void add(R item) {
 		synchronized (lock) {
-			addInternal(visible.items.size(), singleton(requireNonNull(item)));
+			addInternal(included.items.size(), singleton(requireNonNull(item)));
 		}
 	}
 
 	@Override
-	public VisibleItems<R> visible() {
-		return visible;
+	public IncludedItems<R> included() {
+		return included;
 	}
 
 	@Override
-	public FilteredItems<R> filtered() {
-		return filtered;
+	public ExcludedItems<R> excluded() {
+		return excluded;
 	}
 
 	@Override
 	public boolean contains(R item) {
-		return visible.contains(requireNonNull(item)) || filtered.contains(item);
+		return included.contains(requireNonNull(item)) || excluded.contains(item);
 	}
 
 	@Override
 	public int count() {
-		return visible.count() + filtered.count();
+		return included.count() + excluded.count();
 	}
 
 	@Override
@@ -259,10 +259,10 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		synchronized (lock) {
 			filterIncremental();
 			if (sort.sorted()) {
-				visible.items.sort(sort);
+				included.items.sort(sort);
 			}
 			itemsListener.changed();
-			visible.notifyChanges();
+			included.notifyChanges();
 		}
 		selection.items().set(selectedItems);
 	}
@@ -270,69 +270,69 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	@Override
 	public void clear() {
 		synchronized (lock) {
-			filtered.items.clear();
-			int visibleSize = visible.items.size();
-			visible.items.clear();
-			if (visibleSize > 0) {
-				itemsListener.deleted(0, visibleSize - 1);
-				visible.notifyChanges();
+			excluded.items.clear();
+			int includedSize = included.items.size();
+			included.items.clear();
+			if (includedSize > 0) {
+				itemsListener.deleted(0, includedSize - 1);
+				included.notifyChanges();
 			}
 		}
 	}
 
 	/**
-	 * Performs incremental filtering by only moving items between visible and filtered collections
-	 * instead of rebuilding the entire visible list. This optimizes performance for large datasets
+	 * Performs incremental filtering by only moving items between included and excluded collections
+	 * instead of rebuilding the entire included list. This optimizes performance for large datasets
 	 * by avoiding unnecessary operations on items that are already in the correct collection.
 	 */
 	private void filterIncremental() {
-		// First pass: move items from filtered to visible if they now pass the predicate
-		filtered.items.removeIf(item -> {
-			if (visible.predicate.test(item)) {
-				visible.items.add(item);
+		// First pass: move items from excluded to included if they now pass the predicate
+		excluded.items.removeIf(item -> {
+			if (included.predicate.test(item)) {
+				included.items.add(item);
 
-				return true; // Remove from filtered
+				return true; // Remove from excluded
 			}
 
-			return false; // Keep in filtered
+			return false; // Keep in excluded
 		});
 
-		// Second pass: move items from visible to filtered if they no longer pass the predicate
-		visible.items.removeIf(item -> {
-			if (!visible.predicate.test(item)) {
-				filtered.items.add(item);
+		// Second pass: move items from included to excluded if they no longer pass the predicate
+		included.items.removeIf(item -> {
+			if (!included.predicate.test(item)) {
+				excluded.items.add(item);
 
-				return true; // Remove from visible
+				return true; // Remove from included
 			}
 
-			return false; // Keep in visible
+			return false; // Keep in included
 		});
 	}
 
 	private boolean addInternal(int index, Collection<R> items) {
-		Collection<R> visibleItems = new ArrayList<>(items.size());
-		Collection<R> filteredItems = new ArrayList<>(items.size());
+		Collection<R> includedItems = new ArrayList<>(items.size());
+		Collection<R> excludedItems = new ArrayList<>(items.size());
 		for (R item : items) {
 			validate(item);
-			if (visible.predicate.test(item)) {
-				visibleItems.add(item);
+			if (included.predicate.test(item)) {
+				includedItems.add(item);
 			}
 			else {
-				filteredItems.add(item);
+				excludedItems.add(item);
 			}
 		}
-		if (!visibleItems.isEmpty()) {
-			visible.items.addAll(index, visibleItems);
-			itemsListener.inserted(index, index + visibleItems.size());
-			visible.notifyChanges();
-			visible.sort();
-			visible.notifyAdded(visibleItems);
+		if (!includedItems.isEmpty()) {
+			included.items.addAll(index, includedItems);
+			itemsListener.inserted(index, index + includedItems.size());
+			included.notifyChanges();
+			included.sort();
+			included.notifyAdded(includedItems);
 		}
-		if (!filteredItems.isEmpty()) {
-			filtered.items.addAll(filteredItems);
+		if (!excludedItems.isEmpty()) {
+			excluded.items.addAll(excludedItems);
 		}
 
-		return !visibleItems.isEmpty();
+		return !includedItems.isEmpty();
 	}
 
 	private void validate(R item) {
@@ -349,19 +349,19 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		return items;
 	}
 
-	private final class DefaultVisibleItems implements VisibleItems<R> {
+	private final class DefaultIncludedItems implements IncludedItems<R> {
 
 		private final List<R> items = new ArrayList<>();
-		private final VisiblePredicate<R> predicate;
+		private final IncludePredicate<R> predicate;
 		private final Event<List<R>> changed = Event.event();
 		private final Event<Collection<R>> added = Event.event();
 
-		private DefaultVisibleItems(VisiblePredicate<R> predicate) {
+		private DefaultIncludedItems(IncludePredicate<R> predicate) {
 			this.predicate = predicate;
 		}
 
 		@Override
-		public VisiblePredicate<R> predicate() {
+		public IncludePredicate<R> predicate() {
 			return predicate;
 		}
 
@@ -429,7 +429,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 				if (predicate.test(item)) {
 					items.set(index, item);
 					itemsListener.updated(index, index);
-					visible.notifyChanges();
+					included.notifyChanges();
 
 					return true;
 				}
@@ -491,7 +491,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 	}
 
-	private final class DefaultFilteredItems implements FilteredItems<R> {
+	private final class DefaultExcludedItems implements ExcludedItems<R> {
 
 		private final Set<R> items = new LinkedHashSet<>();
 
@@ -534,7 +534,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 
 		@Override
-		public Builder.SortStep<T> selection(Function<VisibleItems<T>, MultiSelection<T>> selection) {
+		public Builder.SortStep<T> selection(Function<IncludedItems<T>, MultiSelection<T>> selection) {
 			return new DefaultSortStep<>(refresher, requireNonNull(selection));
 		}
 	}
@@ -542,10 +542,10 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	private static final class DefaultSortStep<T> implements Builder.SortStep<T> {
 
 		private final Function<Items<T>, Refresher<T>> refresher;
-		private final Function<VisibleItems<T>, MultiSelection<T>> selectionFunction;
+		private final Function<IncludedItems<T>, MultiSelection<T>> selectionFunction;
 
 		private DefaultSortStep(Function<Items<T>, Refresher<T>> refresher,
-														Function<VisibleItems<T>, MultiSelection<T>> selection) {
+														Function<IncludedItems<T>, MultiSelection<T>> selection) {
 			this.refresher = refresher;
 			this.selectionFunction = selection;
 		}
@@ -560,15 +560,15 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 
 		static final Builder.RefresherStep REFRESHER = new DefaultRefresherStep();
 
-		private final Function<VisibleItems<T>, MultiSelection<T>> selection;
+		private final Function<IncludedItems<T>, MultiSelection<T>> selection;
 		private final Function<Items<T>, Refresher<T>> refresher;
 		private final Sort<T> sort;
 
-		private VisiblePredicate<T> visiblePredicate = new DefaultVisiblePredicate<>();
+		private IncludePredicate<T> includePredicate = new DefaultIncludePredicate<>();
 		private Predicate<T> validator = new ValidPredicate<>();
 		private ItemsListener itemsListener = new DefaultItemsListener();
 
-		private DefaultBuilder(Function<VisibleItems<T>, MultiSelection<T>> selection,
+		private DefaultBuilder(Function<IncludedItems<T>, MultiSelection<T>> selection,
 													 Function<Items<T>, Refresher<T>> refresher, Sort<T> sort) {
 			this.selection = requireNonNull(selection);
 			this.refresher = requireNonNull(refresher);
@@ -582,8 +582,8 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 
 		@Override
-		public Builder<T> visible(VisiblePredicate<T> visible) {
-			this.visiblePredicate = requireNonNull(visible);
+		public Builder<T> include(IncludePredicate<T> include) {
+			this.includePredicate = requireNonNull(include);
 			return this;
 		}
 
@@ -622,12 +622,12 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 	}
 
-	private static final class DefaultVisiblePredicate<R>
-					extends AbstractValue<Predicate<R>> implements VisiblePredicate<R> {
+	private static final class DefaultIncludePredicate<R>
+					extends AbstractValue<Predicate<R>> implements IncludePredicate<R> {
 
 		private @Nullable Predicate<R> predicate;
 
-		private DefaultVisiblePredicate() {
+		private DefaultIncludePredicate() {
 			super(SET);
 		}
 

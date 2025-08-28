@@ -165,7 +165,7 @@ final class DefaultListSelectionDialogBuilder<T> extends AbstractSelectionDialog
 			list.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(VK_ENTER, 0), "none");
 
 			List<Integer> sortedDefaultSelectedIndexes = defaultSelection.stream()
-							.mapToInt(model.items().visible()::indexOf)
+							.mapToInt(model.items().included()::indexOf)
 							.boxed()
 							.sorted(reverseOrder())//reverse order so that topmost item is selected last
 							.collect(toList());

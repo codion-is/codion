@@ -910,7 +910,7 @@ public final class EntitySearchField extends HintTextField {
 
 		@Override
 		public void select(List<Entity> entities) {
-			table.model().items().visible().add(0, entities);
+			table.model().items().included().add(0, entities);
 			table.scrollRectToVisible(table.getCellRect(0, 0, true));
 			initializeResultLimitMessage(resultLimitLabel, searchField.model.limit().optional().orElse(-1), entities.size());
 

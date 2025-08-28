@@ -19,7 +19,7 @@
 package is.codion.swing.common.model.component.list;
 
 import is.codion.common.event.Event;
-import is.codion.common.model.filter.FilterModel.VisibleItems.ItemsListener;
+import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
 import is.codion.common.observer.Observer;
 import is.codion.common.value.Value;
 
@@ -50,10 +50,10 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 						.sort(sort)
 						.listener(new ListModelAdapter())
 						.build();
-		this.items.visible().predicate().set(builder.visiblePredicate);
-		this.selection = (FilterListSelection<T>) items.visible().selection();
+		this.items.included().predicate().set(builder.includePredicate);
+		this.selection = (FilterListSelection<T>) items.included().selection();
 		this.items.set(builder.items);
-		this.items.visible().sort();
+		this.items.included().sort();
 	}
 
 	@Override
@@ -73,12 +73,12 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 
 	@Override
 	public int getSize() {
-		return items.visible().count();
+		return items.included().count();
 	}
 
 	@Override
 	public T getElementAt(int index) {
-		return items.visible().get(index);
+		return items.included().get(index);
 	}
 
 	private class ListModelAdapter implements ItemsListener {
@@ -185,7 +185,7 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 
 		private @Nullable Comparator<T> comparator;
 		private boolean async = ASYNC.getOrThrow();
-		private @Nullable Predicate<T> visiblePredicate;
+		private @Nullable Predicate<T> includePredicate;
 
 		private DefaultBuilder(Collection<T> items, @Nullable Supplier<? extends Collection<T>> supplier) {
 			this.items = items;
@@ -205,8 +205,8 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 		}
 
 		@Override
-		public Builder<T> visible(Predicate<T> predicate) {
-			this.visiblePredicate = requireNonNull(predicate);
+		public Builder<T> include(Predicate<T> predicate) {
+			this.includePredicate = requireNonNull(predicate);
 			return this;
 		}
 

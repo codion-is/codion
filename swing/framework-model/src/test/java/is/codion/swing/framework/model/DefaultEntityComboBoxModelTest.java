@@ -71,7 +71,7 @@ public final class DefaultEntityComboBoxModelTest {
 						.build();
 
 		EntityEditModel.events(Employee.TYPE).inserted().accept(singletonList(temp));
-		assertTrue(comboBoxModel.items().visible().contains(temp));
+		assertTrue(comboBoxModel.items().included().contains(temp));
 
 		temp.set(Employee.NAME, "Newname");
 		Entity tempUpdated = temp.copy().mutable();
@@ -84,7 +84,7 @@ public final class DefaultEntityComboBoxModelTest {
 		assertEquals("Newname", comboBoxModel.find(temp.primaryKey()).orElseThrow().get(Employee.NAME));
 
 		EntityEditModel.events(Employee.TYPE).deleted().accept(singletonList(temp));
-		assertFalse(comboBoxModel.items().visible().contains(temp));
+		assertFalse(comboBoxModel.items().included().contains(temp));
 	}
 
 	@Test
@@ -123,40 +123,40 @@ public final class DefaultEntityComboBoxModelTest {
 		managerComboBoxModel.selection().clear();
 		employeeComboBoxModel.items().refresh();
 		employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).strict().set(true);
-		assertEquals(0, employeeComboBoxModel.items().visible().count());
-		assertEquals(16, employeeComboBoxModel.items().filtered().count());
-		assertTrue(managerComboBoxModel.items().visible().contains(null));
-		assertEquals(0, managerComboBoxModel.items().visible().count());
-		assertEquals(4, managerComboBoxModel.items().filtered().count());
-		assertFalse(departmentComboBoxModel.items().visible().contains(null));
-		assertEquals(4, departmentComboBoxModel.items().visible().count());
-		assertEquals(0, departmentComboBoxModel.items().filtered().count());
+		assertEquals(0, employeeComboBoxModel.items().included().count());
+		assertEquals(16, employeeComboBoxModel.items().excluded().count());
+		assertTrue(managerComboBoxModel.items().included().contains(null));
+		assertEquals(0, managerComboBoxModel.items().included().count());
+		assertEquals(4, managerComboBoxModel.items().excluded().count());
+		assertFalse(departmentComboBoxModel.items().included().contains(null));
+		assertEquals(4, departmentComboBoxModel.items().included().count());
+		assertEquals(0, departmentComboBoxModel.items().excluded().count());
 
 		departmentComboBoxModel.select(entities.primaryKey(Department.TYPE, 10));
 		//three managers in the accounting department
-		assertEquals(3, managerComboBoxModel.items().visible().count());
-		assertEquals(1, managerComboBoxModel.items().filtered().count());
+		assertEquals(3, managerComboBoxModel.items().included().count());
+		assertEquals(1, managerComboBoxModel.items().excluded().count());
 
 		managerComboBoxModel.select(entities.primaryKey(Employee.TYPE, 5));//Blake, Manager, Accounting
-		assertEquals(5, employeeComboBoxModel.items().visible().count());
-		assertEquals(11, employeeComboBoxModel.items().filtered().count());
+		assertEquals(5, employeeComboBoxModel.items().included().count());
+		assertEquals(11, employeeComboBoxModel.items().excluded().count());
 
 		employeeComboBoxModel.select(entities.primaryKey(Employee.TYPE, 7));//Scott, Analyst, Research
 		assertEquals(3, managerComboBoxModel.selection().item().getOrThrow().get(Employee.ID));//Jones, Manager, Research
 		assertEquals(20, departmentComboBoxModel.selection().item().getOrThrow().get(Department.ID));// Research
 		//one manager in the research department
-		assertEquals(1, managerComboBoxModel.items().visible().count());
-		assertEquals(3, managerComboBoxModel.items().filtered().count());
+		assertEquals(1, managerComboBoxModel.items().included().count());
+		assertEquals(3, managerComboBoxModel.items().excluded().count());
 		//six employees under Jones
-		assertEquals(6, employeeComboBoxModel.items().visible().count());
-		assertEquals(10, employeeComboBoxModel.items().filtered().count());
+		assertEquals(6, employeeComboBoxModel.items().included().count());
+		assertEquals(10, employeeComboBoxModel.items().excluded().count());
 
 		departmentComboBoxModel.select(entities.primaryKey(Department.TYPE, 40));// Operations
 		//no managers or employees in the Operations department
-		assertEquals(0, managerComboBoxModel.items().visible().count());
-		assertEquals(4, managerComboBoxModel.items().filtered().count());
-		assertEquals(0, employeeComboBoxModel.items().visible().count());
-		assertEquals(16, employeeComboBoxModel.items().filtered().count());
+		assertEquals(0, managerComboBoxModel.items().included().count());
+		assertEquals(4, managerComboBoxModel.items().excluded().count());
+		assertEquals(0, employeeComboBoxModel.items().included().count());
+		assertEquals(16, employeeComboBoxModel.items().excluded().count());
 	}
 
 	@Test
@@ -171,7 +171,7 @@ public final class DefaultEntityComboBoxModelTest {
 						.connectionProvider(CONNECTION_PROVIDER).build();
 		employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).link(departmentComboBoxModel);
 		employeeComboBoxModel.items().refresh();//refreshes both
-		assertFalse(departmentComboBoxModel.items().visible().contains(null));
+		assertFalse(departmentComboBoxModel.items().included().contains(null));
 		assertEquals(1, employeeComboBoxModel.getSize());
 		Entity.Key accountingKey = CONNECTION_PROVIDER.entities().primaryKey(Department.TYPE, 10);
 		departmentComboBoxModel.select(accountingKey);
@@ -181,7 +181,7 @@ public final class DefaultEntityComboBoxModelTest {
 		Entity.Key salesKey = CONNECTION_PROVIDER.entities().primaryKey(Department.TYPE, 30);
 		departmentComboBoxModel.select(salesKey);
 		assertEquals(5, employeeComboBoxModel.getSize());
-		employeeComboBoxModel.setSelectedItem(employeeComboBoxModel.items().visible().get().get(1));
+		employeeComboBoxModel.setSelectedItem(employeeComboBoxModel.items().included().get().get(1));
 		employeeComboBoxModel.setSelectedItem(null);
 	}
 
@@ -360,7 +360,7 @@ public final class DefaultEntityComboBoxModelTest {
 		assertThrows(IllegalArgumentException.class, comboBoxModel.items()::refresh);
 		comboBoxModel.condition().set(Employee.ENAME_CLARK::get);
 		comboBoxModel.filter().get(Employee.DEPARTMENT_FK).set(singleton(ENTITIES.primaryKey(Department.TYPE, 10)));//accounting
-		assertThrows(UnsupportedOperationException.class, () -> comboBoxModel.items().visible().predicate().set(entity -> false));
+		assertThrows(UnsupportedOperationException.class, () -> comboBoxModel.items().included().predicate().set(entity -> false));
 
 		comboBoxModel.items().refresh();
 		assertEquals(1, comboBoxModel.getSize());
@@ -401,10 +401,10 @@ public final class DefaultEntityComboBoxModelTest {
 
 		EntityConnection connection = CONNECTION_PROVIDER.connection();
 
-		assertEquals(0, comboBoxModel.items().visible().indexOf(connection.selectSingle(Department.NAME.equalTo("ACCOUNTING"))));
-		assertEquals(1, comboBoxModel.items().visible().indexOf(connection.selectSingle(Department.NAME.equalTo("RESEARCH"))));
-		assertEquals(2, comboBoxModel.items().visible().indexOf(connection.selectSingle(Department.NAME.equalTo("SALES"))));
-		assertEquals(3, comboBoxModel.items().visible().indexOf(connection.selectSingle(Department.NAME.equalTo("OPERATIONS"))));
+		assertEquals(0, comboBoxModel.items().included().indexOf(connection.selectSingle(Department.NAME.equalTo("ACCOUNTING"))));
+		assertEquals(1, comboBoxModel.items().included().indexOf(connection.selectSingle(Department.NAME.equalTo("RESEARCH"))));
+		assertEquals(2, comboBoxModel.items().included().indexOf(connection.selectSingle(Department.NAME.equalTo("SALES"))));
+		assertEquals(3, comboBoxModel.items().included().indexOf(connection.selectSingle(Department.NAME.equalTo("OPERATIONS"))));
 	}
 
 	@Test

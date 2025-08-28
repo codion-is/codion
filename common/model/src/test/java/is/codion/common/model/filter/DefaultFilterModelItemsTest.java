@@ -18,10 +18,10 @@
  */
 package is.codion.common.model.filter;
 
+import is.codion.common.model.filter.FilterModel.IncludePredicate;
+import is.codion.common.model.filter.FilterModel.IncludedItems;
 import is.codion.common.model.filter.FilterModel.Items;
 import is.codion.common.model.filter.FilterModel.Sort;
-import is.codion.common.model.filter.FilterModel.VisibleItems;
-import is.codion.common.model.filter.FilterModel.VisiblePredicate;
 import is.codion.common.model.selection.MultiSelection;
 import is.codion.common.observer.Observable;
 import is.codion.common.observer.Observer;
@@ -57,77 +57,77 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DefaultFilterModelItemsTest {
 
 	private static final String ITEM_PREFIX = "item";
-	private static final String FILTERED_PREFIX = "filtered";
-	private static final String VISIBLE_PREFIX = "visible";
+	private static final String EXCLUDED_PREFIX = "excluded";
+	private static final String INCLUDED_PREFIX = "included";
 
 	@Nested
 	@DisplayName("Basic operations")
 	class BasicOperationsTest {
 
 		private Items<String> items;
-		private TestPredicate visiblePredicate;
+		private TestPredicate includePredicate;
 		private TestMultiSelection selection;
 
 		@BeforeEach
 		void setUp() {
-			visiblePredicate = new TestPredicate();
+			includePredicate = new TestPredicate();
 			selection = new TestMultiSelection();
 
 			items = Items.builder()
 							.<String>refresher(i -> new TestRefresher())
-							.selection(visible -> selection)
+							.selection(included -> selection)
 							.sort(new TestSort())
-							.visible(visiblePredicate)
+							.include(includePredicate)
 							.build();
 		}
 
 		@Test
-		@DisplayName("Add single item to visible")
+		@DisplayName("Add single item to included")
 		void add_singleItem_shouldAddToVisible() {
 			items.add(ITEM_PREFIX + "1");
 
 			assertEquals(1, items.count());
-			assertEquals(1, items.visible().count());
-			assertEquals(0, items.filtered().count());
+			assertEquals(1, items.included().count());
+			assertEquals(0, items.excluded().count());
 			assertTrue(items.contains(ITEM_PREFIX + "1"));
 		}
 
 		@Test
-		@DisplayName("Add single item to filtered")
-		void add_singleItem_shouldAddToFiltered() {
-			visiblePredicate.setPredicate(item -> !item.startsWith(ITEM_PREFIX));
+		@DisplayName("Add single item to excluded")
+		void add_singleItem_shouldAddToExcluded() {
+			includePredicate.setPredicate(item -> !item.startsWith(ITEM_PREFIX));
 			items.add(ITEM_PREFIX + "1");
 
 			assertEquals(1, items.count());
-			assertEquals(0, items.visible().count());
-			assertEquals(1, items.filtered().count());
+			assertEquals(0, items.included().count());
+			assertEquals(1, items.excluded().count());
 			assertTrue(items.contains(ITEM_PREFIX + "1"));
 		}
 
 		@Test
-		@DisplayName("Add multiple items mixed visibility")
+		@DisplayName("Add multiple items mixed inclusion")
 		void add_multipleItems_shouldSplitByVisibility() {
-			visiblePredicate.setPredicate(item -> item.startsWith(VISIBLE_PREFIX));
+			includePredicate.setPredicate(item -> item.startsWith(INCLUDED_PREFIX));
 			List<String> itemsToAdd = asList(
-							VISIBLE_PREFIX + "1",
-							FILTERED_PREFIX + "1",
-							VISIBLE_PREFIX + "2",
-							FILTERED_PREFIX + "2"
+							INCLUDED_PREFIX + "1",
+							EXCLUDED_PREFIX + "1",
+							INCLUDED_PREFIX + "2",
+							EXCLUDED_PREFIX + "2"
 			);
 
 			items.add(itemsToAdd);
 
 			assertEquals(4, items.count());
-			assertEquals(2, items.visible().count());
-			assertEquals(2, items.filtered().count());
-			assertTrue(items.visible().contains(VISIBLE_PREFIX + "1"));
-			assertTrue(items.visible().contains(VISIBLE_PREFIX + "2"));
-			assertTrue(items.filtered().contains(FILTERED_PREFIX + "1"));
-			assertTrue(items.filtered().contains(FILTERED_PREFIX + "2"));
+			assertEquals(2, items.included().count());
+			assertEquals(2, items.excluded().count());
+			assertTrue(items.included().contains(INCLUDED_PREFIX + "1"));
+			assertTrue(items.included().contains(INCLUDED_PREFIX + "2"));
+			assertTrue(items.excluded().contains(EXCLUDED_PREFIX + "1"));
+			assertTrue(items.excluded().contains(EXCLUDED_PREFIX + "2"));
 		}
 
 		@Test
-		@DisplayName("Remove single item from visible")
+		@DisplayName("Remove single item from included")
 		void remove_singleItem_shouldRemoveFromVisible() {
 			items.add(ITEM_PREFIX + "1");
 			items.remove(ITEM_PREFIX + "1");
@@ -137,9 +137,9 @@ public class DefaultFilterModelItemsTest {
 		}
 
 		@Test
-		@DisplayName("Remove single item from filtered")
-		void remove_singleItem_shouldRemoveFromFiltered() {
-			visiblePredicate.setPredicate(item -> false);
+		@DisplayName("Remove single item from excluded")
+		void remove_singleItem_shouldRemoveFromExcluded() {
+			includePredicate.setPredicate(item -> false);
 			items.add(ITEM_PREFIX + "1");
 
 			items.remove(ITEM_PREFIX + "1");
@@ -152,15 +152,15 @@ public class DefaultFilterModelItemsTest {
 		@DisplayName("Remove by predicate")
 		void removeByPredicate() {
 			items.add(Arrays.asList("One", "Two", "Three", "Four", "Five"));
-			items.visible().predicate().set(item -> !item.startsWith("T"));
+			items.included().predicate().set(item -> !item.startsWith("T"));
 			items.remove(item -> item.length() == 3);
 			assertEquals(3, items.count());
-			assertEquals(1, items.filtered().count());
-			assertEquals(2, items.visible().count());
+			assertEquals(1, items.excluded().count());
+			assertEquals(2, items.included().count());
 		}
 
 		@Test
-		@DisplayName("Replace item in visible")
+		@DisplayName("Replace item in included")
 		void replace_itemInVisible_shouldUpdateInPlace() {
 			items.add(ITEM_PREFIX + "1");
 
@@ -172,31 +172,31 @@ public class DefaultFilterModelItemsTest {
 		}
 
 		@Test
-		@DisplayName("Replace item moving from visible to filtered")
-		void replace_itemMovingToFiltered_shouldMoveCorrectly() {
-			visiblePredicate.setPredicate(item -> !item.contains("replaced"));
+		@DisplayName("Replace item moving from included to excluded")
+		void replace_itemMovingToExcluded_shouldMoveCorrectly() {
+			includePredicate.setPredicate(item -> !item.contains("replaced"));
 			items.add(ITEM_PREFIX + "1");
 
 			items.replace(ITEM_PREFIX + "1", ITEM_PREFIX + "1_replaced");
 
 			assertEquals(1, items.count());
-			assertEquals(0, items.visible().count());
-			assertEquals(1, items.filtered().count());
-			assertTrue(items.filtered().contains(ITEM_PREFIX + "1_replaced"));
+			assertEquals(0, items.included().count());
+			assertEquals(1, items.excluded().count());
+			assertTrue(items.excluded().contains(ITEM_PREFIX + "1_replaced"));
 		}
 
 		@Test
 		@DisplayName("Clear all items")
 		void clear_shouldRemoveAll() {
 			items.add(asList("a", "b", "c"));
-			visiblePredicate.setPredicate(item -> false);
-			items.add(asList("d", "e", "f")); // These go to filtered
+			includePredicate.setPredicate(item -> false);
+			items.add(asList("d", "e", "f")); // These go to excluded
 
 			items.clear();
 
 			assertEquals(0, items.count());
-			assertEquals(0, items.visible().count());
-			assertEquals(0, items.filtered().count());
+			assertEquals(0, items.included().count());
+			assertEquals(0, items.excluded().count());
 		}
 
 		@Test
@@ -233,50 +233,50 @@ public class DefaultFilterModelItemsTest {
 	class FilteringOperationsTest {
 
 		private Items<String> items;
-		private TestPredicate visiblePredicate;
+		private TestPredicate includePredicate;
 
 		@BeforeEach
 		void setUp() {
-			visiblePredicate = new TestPredicate();
+			includePredicate = new TestPredicate();
 			TestMultiSelection selection = new TestMultiSelection();
 
 			items = Items.builder()
 							.<String>refresher(i -> new TestRefresher())
-							.selection(visible -> selection)
+							.selection(included -> selection)
 							.sort(new TestSort())
-							.visible(visiblePredicate)
+							.include(includePredicate)
 							.build();
 		}
 
 		@Test
-		@DisplayName("Filter moves items from visible to filtered")
-		void filter_movesItemsToFiltered() {
+		@DisplayName("Filter moves items from included to excluded")
+		void filter_movesItemsToExcluded() {
 			items.add(asList("keep1", "filter1", "keep2", "filter2"));
-			visiblePredicate.setPredicate(item -> item.startsWith("keep"));
+			includePredicate.setPredicate(item -> item.startsWith("keep"));
 
 			items.filter();
 
 			assertEquals(4, items.count());
-			assertEquals(2, items.visible().count());
-			assertEquals(2, items.filtered().count());
-			assertTrue(items.visible().contains("keep1"));
-			assertTrue(items.visible().contains("keep2"));
-			assertTrue(items.filtered().contains("filter1"));
-			assertTrue(items.filtered().contains("filter2"));
+			assertEquals(2, items.included().count());
+			assertEquals(2, items.excluded().count());
+			assertTrue(items.included().contains("keep1"));
+			assertTrue(items.included().contains("keep2"));
+			assertTrue(items.excluded().contains("filter1"));
+			assertTrue(items.excluded().contains("filter2"));
 		}
 
 		@Test
-		@DisplayName("Filter moves items from filtered to visible")
+		@DisplayName("Filter moves items from excluded to included")
 		void filter_movesItemsToVisible() {
-			visiblePredicate.setPredicate(item -> false);
+			includePredicate.setPredicate(item -> false);
 			items.add(asList("item1", "item2", "item3"));
-			assertEquals(3, items.filtered().count());
+			assertEquals(3, items.excluded().count());
 
-			visiblePredicate.setPredicate(item -> true);
+			includePredicate.setPredicate(item -> true);
 			items.filter();
 
-			assertEquals(3, items.visible().count());
-			assertEquals(0, items.filtered().count());
+			assertEquals(3, items.included().count());
+			assertEquals(0, items.excluded().count());
 		}
 
 		@Test
@@ -287,18 +287,18 @@ public class DefaultFilterModelItemsTest {
 
 			items = Items.builder()
 							.<String>refresher(i -> new TestRefresher())
-							.selection(visible -> new TestMultiSelection())
+							.selection(included -> new TestMultiSelection())
 							.sort(sort)
-							.visible(visiblePredicate)
+							.include(includePredicate)
 							.build();
 
 			items.add(asList("a", "b", "c", "d"));
 
-			visiblePredicate.setPredicate(item -> item.compareTo("c") <= 0);
+			includePredicate.setPredicate(item -> item.compareTo("c") <= 0);
 			items.filter();
 
-			List<String> visible = items.visible().get();
-			assertEquals(asList("c", "b", "a"), visible);
+			List<String> included = items.included().get();
+			assertEquals(asList("c", "b", "a"), included);
 		}
 	}
 
@@ -315,7 +315,7 @@ public class DefaultFilterModelItemsTest {
 
 			items = Items.builder()
 							.<String>refresher(i -> refresher)
-							.selection(visible -> new TestMultiSelection())
+							.selection(included -> new TestMultiSelection())
 							.sort(new TestSort())
 							.build();
 
@@ -376,18 +376,18 @@ public class DefaultFilterModelItemsTest {
 
 			items = Items.builder()
 							.<String>refresher(i -> new TestRefresher())
-							.selection(visible -> new TestMultiSelection())
+							.selection(included -> new TestMultiSelection())
 							.sort(sort)
 							.build();
 		}
 
 		@Test
-		@DisplayName("Sort visible items on add")
+		@DisplayName("Sort included items on add")
 		void add_withSorting_shouldSortVisible() {
 			sort.setComparator(Comparator.naturalOrder());
 			items.add(asList("c", "a", "b"));
 
-			assertEquals(asList("a", "b", "c"), items.visible().get());
+			assertEquals(asList("a", "b", "c"), items.included().get());
 		}
 
 		@Test
@@ -396,9 +396,9 @@ public class DefaultFilterModelItemsTest {
 			items.add(asList("c", "a", "b"));
 
 			sort.setComparator(Comparator.naturalOrder());
-			items.visible().sort();
+			items.included().sort();
 
-			assertEquals(asList("a", "b", "c"), items.visible().get());
+			assertEquals(asList("a", "b", "c"), items.included().get());
 		}
 
 		@Test
@@ -407,16 +407,16 @@ public class DefaultFilterModelItemsTest {
 			sort.setSorted(false);
 			items.add(asList("c", "a", "b"));
 
-			assertEquals(asList("c", "a", "b"), items.visible().get());
+			assertEquals(asList("c", "a", "b"), items.included().get());
 		}
 	}
 
 	@Nested
 	@DisplayName("Visible items operations")
-	class VisibleItemsOperationsTest {
+	class IncludedItemsOperationsTest {
 
 		private Items<String> items;
-		private VisibleItems<String> visible;
+		private IncludedItems<String> included;
 
 		@BeforeEach
 		void setUp() {
@@ -426,26 +426,26 @@ public class DefaultFilterModelItemsTest {
 							.sort(new TestSort())
 							.build();
 
-			visible = items.visible();
+			included = items.included();
 		}
 
 		@Test
 		@DisplayName("Add at specific index")
 		void add_atIndex_shouldInsertCorrectly() {
 			items.add(asList("a", "c"));
-			visible.add(1, "b");
+			included.add(1, "b");
 
-			assertEquals(asList("a", "b", "c"), visible.get());
-			assertEquals(1, visible.indexOf("b"));
+			assertEquals(asList("a", "b", "c"), included.get());
+			assertEquals(1, included.indexOf("b"));
 		}
 
 		@Test
 		@DisplayName("Set at specific index")
 		void set_atIndex_shouldReplace() {
 			items.add(asList("a", "b", "c"));
-			visible.set(1, "B");
+			included.set(1, "B");
 
-			assertEquals(asList("a", "B", "c"), visible.get());
+			assertEquals(asList("a", "B", "c"), included.get());
 		}
 
 		@Test
@@ -453,10 +453,10 @@ public class DefaultFilterModelItemsTest {
 		void remove_atIndex_shouldRemove() {
 			items.add(asList("a", "b", "c"));
 
-			String removed = visible.remove(1);
+			String removed = included.remove(1);
 
 			assertEquals("b", removed);
-			assertEquals(asList("a", "c"), visible.get());
+			assertEquals(asList("a", "c"), included.get());
 		}
 
 		@Test
@@ -464,9 +464,9 @@ public class DefaultFilterModelItemsTest {
 		void get_atIndex_shouldReturnItem() {
 			items.add(asList("a", "b", "c"));
 
-			assertEquals("a", visible.get(0));
-			assertEquals("b", visible.get(1));
-			assertEquals("c", visible.get(2));
+			assertEquals("a", included.get(0));
+			assertEquals("b", included.get(1));
+			assertEquals("c", included.get(2));
 		}
 
 		@Test
@@ -474,10 +474,10 @@ public class DefaultFilterModelItemsTest {
 		void indexOperations_boundsChecking() {
 			items.add(asList("a", "b", "c"));
 
-			assertThrows(IndexOutOfBoundsException.class, () -> visible.get(-1));
-			assertThrows(IndexOutOfBoundsException.class, () -> visible.get(3));
-			assertThrows(IndexOutOfBoundsException.class, () -> visible.remove(-1));
-			assertThrows(IndexOutOfBoundsException.class, () -> visible.set(3, "d"));
+			assertThrows(IndexOutOfBoundsException.class, () -> included.get(-1));
+			assertThrows(IndexOutOfBoundsException.class, () -> included.get(3));
+			assertThrows(IndexOutOfBoundsException.class, () -> included.remove(-1));
+			assertThrows(IndexOutOfBoundsException.class, () -> included.set(3, "d"));
 		}
 	}
 
@@ -492,7 +492,7 @@ public class DefaultFilterModelItemsTest {
 
 			Items<String> items = Items.builder()
 							.<String>refresher(i -> new TestRefresher())
-							.selection(visible -> new TestMultiSelection())
+							.selection(included -> new TestMultiSelection())
 							.sort(new TestSort())
 							.validator(validator)
 							.build();
@@ -509,7 +509,7 @@ public class DefaultFilterModelItemsTest {
 		void defaultValidator_acceptsAll() {
 			Items<String> items = Items.builder()
 							.<String>refresher(i -> new TestRefresher())
-							.selection(visible -> new TestMultiSelection())
+							.selection(included -> new TestMultiSelection())
 							.sort(new TestSort())
 							.build();
 
@@ -536,7 +536,7 @@ public class DefaultFilterModelItemsTest {
 		void setUp() {
 			items = Items.builder()
 							.<String>refresher(i -> new TestRefresher())
-							.selection(visible -> new TestMultiSelection())
+							.selection(included -> new TestMultiSelection())
 							.sort(new TestSort())
 							.build();
 			executor = Executors.newFixedThreadPool(THREAD_COUNT);
@@ -575,7 +575,7 @@ public class DefaultFilterModelItemsTest {
 
 	// Test implementations
 
-	private static class TestPredicate implements VisiblePredicate<String> {
+	private static class TestPredicate implements IncludePredicate<String> {
 		private final Value<Predicate<String>> predicate = Value.nullable(item -> true);
 
 		void setPredicate(Predicate<String> newPredicate) {

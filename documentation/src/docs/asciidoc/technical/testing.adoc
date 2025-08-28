@@ -177,7 +177,7 @@ void albumRefreshedWhenTrackRatingIsUpdated() {
         albumModel.detailModels().get(Track.TYPE).editModel().update(tracks);
         
         // Verify album rating was updated
-        assertEquals(10, albumTableModel.items().visible().get(0).get(Album.RATING));
+        assertEquals(10, albumTableModel.items().included().get(0).get(Album.RATING));
         
         connection.rollbackTransaction();
     }

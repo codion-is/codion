@@ -196,7 +196,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 													 boolean isSelected, boolean hasFocus, int rowIndex, int columnIndex) {
 			requireNonNull(cellRenderer);
 			requireNonNull(filterTable);
-			R row = filterTable.model().items().visible().get(rowIndex);
+			R row = filterTable.model().items().included().get(rowIndex);
 			C identifier = filterTable.columnModel().getColumn(columnIndex).identifier();
 			boolean alternateRow = alternateRow(rowIndex);
 			Color foreground = foregroundColor(filterTable, row, identifier, value, isSelected);

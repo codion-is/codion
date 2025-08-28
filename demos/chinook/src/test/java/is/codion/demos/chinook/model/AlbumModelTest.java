@@ -71,7 +71,7 @@ public final class AlbumModelTest {
 
 			// Which should trigger the refresh of the album in the Album model
 			// now with the new rating as the average of the track ratings
-			assertEquals(10, albumTableModel.items().visible().get(0).get(Album.RATING));
+			assertEquals(10, albumTableModel.items().included().get(0).get(Album.RATING));
 
 			connection.rollbackTransaction();
 		}

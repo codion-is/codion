@@ -47,7 +47,7 @@ final class FilterListTest {
 		model.selection().item().set(TWO);
 		FilterList<String> list = ListBuilder.builder().model(model).items().build();
 		assertEquals(TWO, list.getSelectedValue());
-		assertEquals(1, list.model().items().visible().indexOf(THREE));
+		assertEquals(1, list.model().items().included().indexOf(THREE));
 		assertThrows(IllegalStateException.class, () -> list.setSelectionModel(new DefaultListSelectionModel()));
 		assertThrows(IllegalStateException.class, () -> list.setModel(new DefaultListModel<>()));
 	}

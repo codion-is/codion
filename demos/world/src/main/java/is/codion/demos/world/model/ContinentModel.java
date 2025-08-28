@@ -45,7 +45,7 @@ public final class ContinentModel extends SwingEntityModel {
 
 	ContinentModel(EntityConnectionProvider connectionProvider) {
 		super(Continent.TYPE, connectionProvider);
-		tableModel().items().visible().addConsumer(this::refreshChartDatasets);
+		tableModel().items().included().addConsumer(this::refreshChartDatasets);
 		detailModels().add(ModelLink.builder(new CountryModel(connectionProvider))
 						.onSelection(new OnContinentsSelected())
 						.active(true)

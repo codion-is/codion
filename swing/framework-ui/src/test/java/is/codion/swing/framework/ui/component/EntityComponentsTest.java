@@ -159,7 +159,7 @@ public final class EntityComponentsTest {
 		JComboBox<Item<Integer>> comboBox = componentValue.component();
 
 		FilterComboBoxModel<Item<Integer>> model = (FilterComboBoxModel<Item<Integer>>) comboBox.getModel();
-		assertEquals(0, model.items().visible().indexOf(null));
+		assertEquals(0, model.items().included().indexOf(null));
 		assertTrue(model.items().contains(null));
 
 		assertNull(editor.value(Detail.INT_ITEMS).get());
@@ -182,7 +182,7 @@ public final class EntityComponentsTest {
 		FilterComboBoxModel<Item<Integer>> model = (FilterComboBoxModel<Item<Integer>>) componentValue.component().getModel();
 
 		//null item should be first, regardless of sorting
-		assertEquals(0, model.items().visible().indexOf(null));
+		assertEquals(0, model.items().included().indexOf(null));
 	}
 
 	@Test

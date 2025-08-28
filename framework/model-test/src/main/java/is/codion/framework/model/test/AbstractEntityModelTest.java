@@ -82,7 +82,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 		Entity operations = deptTableModel.selection().item().get();
 		assertEquals(80, operations.get(Department.ID));
 
-		deptTableModel.items().visible().predicate().set(item ->
+		deptTableModel.items().included().predicate().set(item ->
 						!Objects.equals(80, item.get(Department.ID)));
 
 		deptEditModel.editor().set(operations);
@@ -91,7 +91,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 
 		deptTableModel.items().filter();
 
-		assertTrue(deptTableModel.items().filtered().get().isEmpty());
+		assertTrue(deptTableModel.items().excluded().get().isEmpty());
 	}
 
 	@Test
@@ -116,17 +116,17 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 			return;
 		}
 		departmentModel.tableModel().items().refresh();
-		assertTrue(departmentModel.tableModel().items().visible().count() > 0);
+		assertTrue(departmentModel.tableModel().items().included().count() > 0);
 
 		M employeeModel = departmentModel.detailModels().get(Employee.TYPE);
 		employeeModel.tableModel().items().refresh();
-		assertTrue(employeeModel.tableModel().items().visible().count() > 0);
+		assertTrue(employeeModel.tableModel().items().included().count() > 0);
 
 		departmentModel.detailModels().get().keySet().forEach(detailModel -> detailModel.tableModel().items().clear());
-		assertEquals(0, employeeModel.tableModel().items().visible().count());
+		assertEquals(0, employeeModel.tableModel().items().included().count());
 
 		departmentModel.tableModel().items().clear();
-		assertEquals(0, departmentModel.tableModel().items().visible().count());
+		assertEquals(0, departmentModel.tableModel().items().included().count());
 	}
 
 	@Test
@@ -170,7 +170,7 @@ public abstract class AbstractEntityModelTest<M extends EntityModel<M, E, T>,
 
 		departmentModel.tableModel().items().refresh();
 		departmentModel.detailModels().get(Employee.TYPE).tableModel().items().refresh();
-		assertTrue(departmentModel.detailModels().get(Employee.TYPE).tableModel().items().visible().count() > 0);
+		assertTrue(departmentModel.detailModels().get(Employee.TYPE).tableModel().items().included().count() > 0);
 
 		EntityConnection connection = departmentModel.connection();
 		Entity department = connection.selectSingle(Department.NAME.equalTo("SALES"));

@@ -197,7 +197,7 @@ public final class ClientUserMonitor {
 		@Override
 		public Collection<UserInfo> get() {
 			try {
-				List<UserInfo> items = new ArrayList<>(userHistoryTableModel.items().visible().get());
+				List<UserInfo> items = new ArrayList<>(userHistoryTableModel.items().included().get());
 				for (RemoteClient remoteClient : server.clients()) {
 					UserInfo newUserInfo = new UserInfo(remoteClient.user(), remoteClient.clientType(),
 									remoteClient.clientHost(), LocalDateTime.now(), remoteClient.clientId(),

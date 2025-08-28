@@ -20,7 +20,7 @@ package is.codion.manual.swing.common.model.component.table;
 
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.model.condition.TableConditionModel;
-import is.codion.common.model.filter.FilterModel.VisibleItems;
+import is.codion.common.model.filter.FilterModel.IncludedItems;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.Editor;
@@ -85,12 +85,12 @@ public final class FilterTableModelDemo {
 	// Implement a Editor for handling row edits
 	private static final class PersonEditor implements Editor<Person, String> {
 
-		// We need the underlying VisibleItems instance to replace the edited
+		// We need the underlying IncludedItems instance to replace the edited
 		// row since the row objects are records and thereby immutable
-		private final VisibleItems<Person> items;
+		private final IncludedItems<Person> items;
 
 		private PersonEditor(FilterTableModel<Person, String> tableModel) {
-			this.items = tableModel.items().visible();
+			this.items = tableModel.items().included();
 		}
 
 		@Override

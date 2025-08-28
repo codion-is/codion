@@ -145,35 +145,35 @@ public final class DefaultFilterTableModelTest {
 	@Test
 	void filterItems() {
 		tableModel.items().refresh();
-		tableModel.items().visible().predicate().set(item -> !item.equals(B) && !item.equals(F));
-		assertFalse(tableModel.items().visible().contains(B));
+		tableModel.items().included().predicate().set(item -> !item.equals(B) && !item.equals(F));
+		assertFalse(tableModel.items().included().contains(B));
 		assertTrue(tableModel.items().contains(B));
-		assertFalse(tableModel.items().visible().add(0, Collections.singletonList(F)));
-		assertFalse(tableModel.items().visible().contains(F));
+		assertFalse(tableModel.items().included().add(0, Collections.singletonList(F)));
+		assertFalse(tableModel.items().included().contains(F));
 		assertTrue(tableModel.items().contains(F));
-		tableModel.items().visible().predicate().clear();
-		assertTrue(tableModel.items().visible().contains(B));
-		assertTrue(tableModel.items().visible().contains(F));
+		tableModel.items().included().predicate().clear();
+		assertTrue(tableModel.items().included().contains(B));
+		assertTrue(tableModel.items().included().contains(F));
 	}
 
 	@Test
 	void conditionModel() {
 		tableModel.items().refresh();
-		assertEquals(5, tableModel.items().visible().count());
+		assertEquals(5, tableModel.items().included().count());
 		tableModel.filters().get(0).operands().equal().set("a");
-		assertEquals(1, tableModel.items().visible().count());
+		assertEquals(1, tableModel.items().included().count());
 		tableModel.filters().get(0).operands().equal().set("b");
-		assertEquals(1, tableModel.items().visible().count());
+		assertEquals(1, tableModel.items().included().count());
 		tableModel.filters().get(0).clear();
 	}
 
 	@Test
 	void addItemsAt() {
 		tableModel.items().refresh();
-		assertTrue(tableModel.items().visible().add(2, asList(F, G)));
-		assertEquals(2, tableModel.items().visible().indexOf(F));
-		assertEquals(3, tableModel.items().visible().indexOf(G));
-		assertEquals(4, tableModel.items().visible().indexOf(C));
+		assertTrue(tableModel.items().included().add(2, asList(F, G)));
+		assertEquals(2, tableModel.items().included().indexOf(F));
+		assertEquals(3, tableModel.items().included().indexOf(G));
+		assertEquals(4, tableModel.items().included().indexOf(C));
 	}
 
 	@Test
@@ -210,7 +210,7 @@ public final class DefaultFilterTableModelTest {
 		tableModel.items().refresher().result().addListener(onResult);
 		tableModel.items().refresher().exception().addConsumer(onException);
 		tableModel.items().refresh();
-		assertFalse(tableModel.items().visible().get().isEmpty());
+		assertFalse(tableModel.items().included().get().isEmpty());
 		assertEquals(1, done.get());
 
 		done.set(0);
@@ -309,109 +309,109 @@ public final class DefaultFilterTableModelTest {
 		Items<TestRow> items = tableModel.items();
 		items.add(asList(A, B));
 		// sorts
-		assertTrue(items.visible().add(0, C));
-		assertEquals(2, items.visible().indexOf(C));
+		assertTrue(items.included().add(0, C));
+		assertEquals(2, items.included().indexOf(C));
 
 		items.remove(C);
 		// sorts
 		items.add(C);
-		assertEquals(2, items.visible().indexOf(C));
-		items.visible().predicate().set(item -> !item.equals(C));
-		// not visible when removed
+		assertEquals(2, items.included().indexOf(C));
+		items.included().predicate().set(item -> !item.equals(C));
+		// not included when removed
 		items.remove(C);
 
 		items.add(C);
-		items.visible().predicate().clear();
-		assertEquals(2, items.visible().indexOf(C));
+		items.included().predicate().clear();
+		assertEquals(2, items.included().indexOf(C));
 
 		// sorts
-		assertTrue(items.visible().add(0, asList(D, E)));
-		assertEquals(3, items.visible().indexOf(D));
-		assertEquals(4, items.visible().indexOf(E));
+		assertTrue(items.included().add(0, asList(D, E)));
+		assertEquals(3, items.included().indexOf(D));
+		assertEquals(4, items.included().indexOf(E));
 
-		items.visible().predicate().set(item -> !item.equals(E));
-		assertEquals(3, items.visible().indexOf(D));
-		assertEquals(-1, items.visible().indexOf(E));
+		items.included().predicate().set(item -> !item.equals(E));
+		assertEquals(3, items.included().indexOf(D));
+		assertEquals(-1, items.included().indexOf(E));
 
 		// not visible when removed
 		items.remove(E);
 
-		items.visible().predicate().clear();
-		assertEquals(asList(A, B, C, D), items.visible().get());
+		items.included().predicate().clear();
+		assertEquals(asList(A, B, C, D), items.included().get());
 
 		items.set(asList(B, A, D, C));
-		assertEquals(asList(A, B, C, D), items.visible().get());
+		assertEquals(asList(A, B, C, D), items.included().get());
 	}
 
 	@Test
 	void removeItems() {
 		AtomicInteger events = new AtomicInteger();
 		Runnable listener = events::incrementAndGet;
-		tableModel.items().visible().addListener(listener);
+		tableModel.items().included().addListener(listener);
 		tableModel.items().refresh();
 		assertEquals(1, events.get());
 		tableModel.filters().get(0).operands().equal().set("a");
 		tableModel.items().remove(B);
 		assertEquals(3, events.get());
-		assertFalse(tableModel.items().visible().contains(B));
+		assertFalse(tableModel.items().included().contains(B));
 		assertTrue(tableModel.items().contains(A));
 		tableModel.items().remove(A);
 		assertEquals(4, events.get());
 		assertFalse(tableModel.items().contains(A));
 		tableModel.items().remove(asList(D, E));
 		assertEquals(4, events.get());//no change event when removing filtered items
-		assertFalse(tableModel.items().visible().contains(D));
-		assertFalse(tableModel.items().visible().contains(E));
-		assertFalse(tableModel.items().filtered().contains(D));
-		assertFalse(tableModel.items().filtered().contains(E));
+		assertFalse(tableModel.items().included().contains(D));
+		assertFalse(tableModel.items().included().contains(E));
+		assertFalse(tableModel.items().excluded().contains(D));
+		assertFalse(tableModel.items().excluded().contains(E));
 		tableModel.filters().get(0).operands().equal().set(null);
 		tableModel.items().refresh();//two events, clear and add
 		assertEquals(8, events.get());
-		tableModel.items().visible().remove(0, 2);
+		tableModel.items().included().remove(0, 2);
 		assertEquals(9, events.get());//just a single event when removing multiple items
-		tableModel.items().visible().remove(0);
+		tableModel.items().included().remove(0);
 		assertEquals(10, events.get());
 		tableModel.items().refresh();
 		assertEquals(12, events.get());
 		tableModel.items().remove(asList(B, D, E, G));//does not contain G
 		assertEquals(13, events.get());//just a single event when removing multiple items
-		tableModel.items().visible().removeListener(listener);
+		tableModel.items().included().removeListener(listener);
 	}
 
 	@Test
 	void setItemAt() {
 		AtomicInteger dataChangedEvents = new AtomicInteger();
 		Runnable listener = dataChangedEvents::incrementAndGet;
-		tableModel.items().visible().addListener(listener);
+		tableModel.items().included().addListener(listener);
 		State selectionChangedState = State.state();
 		tableModel.selection().item().addConsumer(item -> selectionChangedState.set(true));
 		tableModel.items().refresh();
 		assertEquals(1, dataChangedEvents.get());
 		tableModel.selection().item().set(B);
 		TestRow h = new TestRow("h");
-		tableModel.items().visible().set(tableModel.items().visible().indexOf(B), h);
+		tableModel.items().included().set(tableModel.items().included().indexOf(B), h);
 		assertEquals(2, dataChangedEvents.get());
 		assertEquals(h, tableModel.selection().item().get());
 		assertTrue(selectionChangedState.is());
-		tableModel.items().visible().set(tableModel.items().visible().indexOf(h), B);
+		tableModel.items().included().set(tableModel.items().included().indexOf(h), B);
 		assertEquals(3, dataChangedEvents.get());
 
 		selectionChangedState.set(false);
 		TestRow newB = new TestRow("b");
-		tableModel.items().visible().set(tableModel.items().visible().indexOf(B), newB);
+		tableModel.items().included().set(tableModel.items().included().indexOf(B), newB);
 		assertFalse(selectionChangedState.is());
 		assertEquals(newB, tableModel.selection().item().get());
-		tableModel.items().visible().removeListener(listener);
+		tableModel.items().included().removeListener(listener);
 	}
 
 	@Test
 	void removeItemsRange() {
 		AtomicInteger events = new AtomicInteger();
 		Runnable listener = events::incrementAndGet;
-		tableModel.items().visible().addListener(listener);
+		tableModel.items().included().addListener(listener);
 		tableModel.items().refresh();
 		assertEquals(1, events.get());
-		List<TestRow> removed = tableModel.items().visible().remove(1, 3);
+		List<TestRow> removed = tableModel.items().included().remove(1, 3);
 		assertEquals(2, events.get());
 		assertTrue(tableModel.items().contains(A));
 		assertFalse(tableModel.items().contains(B));
@@ -425,15 +425,15 @@ public final class DefaultFilterTableModelTest {
 		tableModel.items().refresh();
 		assertEquals(2, events.get());
 
-		tableModel.items().visible().removeListener(listener);
+		tableModel.items().included().removeListener(listener);
 	}
 
 	@Test
 	void clear() {
 		tableModel.items().refresh();
-		assertTrue(tableModel.items().visible().count() > 0);
+		assertTrue(tableModel.items().included().count() > 0);
 		tableModel.items().clear();
-		assertEquals(0, tableModel.items().visible().count());
+		assertEquals(0, tableModel.items().included().count());
 	}
 
 	@Test
@@ -490,15 +490,15 @@ public final class DefaultFilterTableModelTest {
 
 		selection.index().set(0);
 		selection.indexes().decrement();
-		assertEquals(tableModel.items().visible().count() - 1, selection.index().get());
+		assertEquals(tableModel.items().included().count() - 1, selection.index().get());
 
-		selection.index().set(tableModel.items().visible().count() - 1);
+		selection.index().set(tableModel.items().included().count() - 1);
 		selection.indexes().increment();
 		assertEquals(0, selection.index().get());
 
 		selection.clearSelection();
 		selection.indexes().decrement();
-		assertEquals(tableModel.items().visible().count() - 1, selection.index().get());
+		assertEquals(tableModel.items().included().count() - 1, selection.index().get());
 
 		selection.clearSelection();
 		selection.indexes().increment();
@@ -609,10 +609,10 @@ public final class DefaultFilterTableModelTest {
 	}
 
 	@Test
-	void visiblePredicate() {
+	void includePredicate() {
 		tableModel.items().refresh();
-		tableModel.items().visible().predicate().set(item -> false);
-		assertEquals(0, tableModel.items().visible().count());
+		tableModel.items().included().predicate().set(item -> false);
+		assertEquals(0, tableModel.items().included().count());
 	}
 
 	@Test
@@ -635,31 +635,31 @@ public final class DefaultFilterTableModelTest {
 	void filtering() {
 		tableModel.items().refresh();
 		assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
-		assertTrue(tableModel.items().visible().predicate().isNull());
+		assertTrue(tableModel.items().included().predicate().isNull());
 
 		//test filters
 		assertNotNull(tableModel.filters().get(0));
-		assertTrue(tableModel.items().visible().contains(B));
+		assertTrue(tableModel.items().included().contains(B));
 		tableModel.filters().get(0).operands().equal().set("a");
-		assertTrue(tableModel.items().visible().contains(A));
-		assertFalse(tableModel.items().visible().contains(B));
-		assertTrue(tableModel.items().filtered().contains(D));
+		assertTrue(tableModel.items().included().contains(A));
+		assertFalse(tableModel.items().included().contains(B));
+		assertTrue(tableModel.items().excluded().contains(D));
 
-		tableModel.items().visible().predicate().set(strings -> !strings.equals(A));
-		assertFalse(tableModel.items().visible().predicate().isNull());
-		assertFalse(tableModel.items().visible().contains(A));
-		tableModel.items().visible().predicate().clear();
-		assertTrue(tableModel.items().visible().contains(A));
+		tableModel.items().included().predicate().set(strings -> !strings.equals(A));
+		assertFalse(tableModel.items().included().predicate().isNull());
+		assertFalse(tableModel.items().included().contains(A));
+		tableModel.items().included().predicate().clear();
+		assertTrue(tableModel.items().included().contains(A));
 
-		assertFalse(tableModel.items().visible().contains(B));
+		assertFalse(tableModel.items().included().contains(B));
 		assertTrue(tableModel.items().contains(B));
 		assertTrue(tableModel.filters().get(0).enabled().is());
-		assertEquals(4, tableModel.items().filtered().count());
+		assertEquals(4, tableModel.items().excluded().count());
 		assertFalse(tableModelContainsAll(ITEMS, false, tableModel));
 		assertTrue(tableModelContainsAll(ITEMS, true, tableModel));
 
-		assertFalse(tableModel.items().visible().get().isEmpty());
-		assertFalse(tableModel.items().filtered().get().isEmpty());
+		assertFalse(tableModel.items().included().get().isEmpty());
+		assertFalse(tableModel.items().excluded().get().isEmpty());
 		assertFalse(tableModel.items().get().isEmpty());
 
 		tableModel.filters().get(0).enabled().set(false);
@@ -669,7 +669,7 @@ public final class DefaultFilterTableModelTest {
 
 		tableModel.filters().get(0).operands().equal().set("t"); // ekki til
 		assertTrue(tableModel.filters().get(0).enabled().is());
-		assertEquals(5, tableModel.items().filtered().count());
+		assertEquals(5, tableModel.items().excluded().count());
 		assertFalse(tableModelContainsAll(ITEMS, false, tableModel));
 		assertTrue(tableModelContainsAll(ITEMS, true, tableModel));
 		tableModel.filters().get(0).enabled().set(false);
@@ -677,9 +677,9 @@ public final class DefaultFilterTableModelTest {
 		assertFalse(tableModel.filters().get(0).enabled().is());
 
 		tableModel.filters().get(0).operands().equal().set("b");
-		int rowCount = tableModel.items().visible().count();
-		tableModel.items().visible().add(0, singletonList(new TestRow("x")));
-		assertEquals(rowCount, tableModel.items().visible().count());
+		int rowCount = tableModel.items().included().count();
+		tableModel.items().included().add(0, singletonList(new TestRow("x")));
+		assertEquals(rowCount, tableModel.items().included().count());
 
 		assertThrows(IllegalArgumentException.class, () -> tableModel.filters().get(1));
 	}
@@ -731,15 +731,15 @@ public final class DefaultFilterTableModelTest {
 		assertThrows(NullPointerException.class, () -> tableModel.items().remove(singleNull));
 		assertThrows(NullPointerException.class, () -> tableModel.items().contains(null));
 
-		assertThrows(NullPointerException.class, () -> tableModel.items().visible().add(0, (TestRow) null));
-		assertThrows(NullPointerException.class, () -> tableModel.items().visible().add(0, (List<TestRow>) null));
-		assertThrows(NullPointerException.class, () -> tableModel.items().visible().add(0, singleNull));
-		assertThrows(NullPointerException.class, () -> tableModel.items().visible().contains(null));
-		assertThrows(NullPointerException.class, () -> tableModel.items().visible().indexOf(null));
+		assertThrows(NullPointerException.class, () -> tableModel.items().included().add(0, (TestRow) null));
+		assertThrows(NullPointerException.class, () -> tableModel.items().included().add(0, (List<TestRow>) null));
+		assertThrows(NullPointerException.class, () -> tableModel.items().included().add(0, singleNull));
+		assertThrows(NullPointerException.class, () -> tableModel.items().included().contains(null));
+		assertThrows(NullPointerException.class, () -> tableModel.items().included().indexOf(null));
 		tableModel.items().add(new TestRow("test"));
-		assertThrows(NullPointerException.class, () -> tableModel.items().visible().set(0, null));
+		assertThrows(NullPointerException.class, () -> tableModel.items().included().set(0, null));
 
-		assertThrows(NullPointerException.class, () -> tableModel.items().filtered().contains(null));
+		assertThrows(NullPointerException.class, () -> tableModel.items().excluded().contains(null));
 
 		FilterListSelection<TestRow> selection = tableModel.selection();
 		assertThrows(NullPointerException.class, () -> selection.items().remove((TestRow) null));
@@ -758,31 +758,31 @@ public final class DefaultFilterTableModelTest {
 		//replace d with f
 		tableModel.items().replace(D, F);
 		assertTrue(tableModel.items().contains(F));
-		assertTrue(tableModel.items().visible().contains(F));
-		assertEquals(4, tableModel.items().visible().indexOf(F));
+		assertTrue(tableModel.items().included().contains(F));
+		assertEquals(4, tableModel.items().included().indexOf(F));
 		assertFalse(tableModel.items().contains(D));
-		assertFalse(tableModel.items().visible().contains(D));
+		assertFalse(tableModel.items().included().contains(D));
 		//filter f and replace with d
-		tableModel.items().visible().predicate().set(testRow -> testRow != F);
+		tableModel.items().included().predicate().set(testRow -> testRow != F);
 		tableModel.items().replace(F, D);
 		assertTrue(tableModel.items().contains(D));
-		assertTrue(tableModel.items().visible().contains(D));
-		assertEquals(3, tableModel.items().visible().indexOf(D));
+		assertTrue(tableModel.items().included().contains(D));
+		assertEquals(3, tableModel.items().included().indexOf(D));
 		assertFalse(tableModel.items().contains(F));
-		assertFalse(tableModel.items().filtered().contains(F));
+		assertFalse(tableModel.items().excluded().contains(F));
 		//replace d with f
 		tableModel.items().replace(D, F);
 		assertFalse(tableModel.items().contains(D));
-		assertFalse(tableModel.items().visible().contains(D));
+		assertFalse(tableModel.items().included().contains(D));
 		assertTrue(tableModel.items().contains(F));
-		assertTrue(tableModel.items().filtered().contains(F));
+		assertTrue(tableModel.items().excluded().contains(F));
 		//filter both d and f and replace f with d
-		tableModel.items().visible().predicate().set(testRow -> testRow != F && testRow != D);
+		tableModel.items().included().predicate().set(testRow -> testRow != F && testRow != D);
 		tableModel.items().replace(F, D);
 		assertFalse(tableModel.items().contains(F));
-		assertFalse(tableModel.items().filtered().contains(F));
+		assertFalse(tableModel.items().excluded().contains(F));
 		assertTrue(tableModel.items().contains(D));
-		assertTrue(tableModel.items().filtered().contains(D));
+		assertTrue(tableModel.items().excluded().contains(D));
 
 		tableModel.items().refresh();
 		//a, b, c, d, e
@@ -798,17 +798,17 @@ public final class DefaultFilterTableModelTest {
 		assertTrue(tableModel.items().contains(G));
 
 		//filter f and b and replace f and g with d an b
-		tableModel.items().visible().predicate().set(testRow -> testRow != F && testRow != B);
+		tableModel.items().included().predicate().set(testRow -> testRow != F && testRow != B);
 		replacements.clear();
 		replacements.put(F, D);
 		replacements.put(G, B);
 
 		tableModel.items().replace(replacements);
 		assertTrue(tableModel.items().contains(D));
-		assertTrue(tableModel.items().visible().contains(D));
+		assertTrue(tableModel.items().included().contains(D));
 		assertFalse(tableModel.items().contains(F));
 		assertTrue(tableModel.items().contains(B));
-		assertTrue(tableModel.items().filtered().contains(B));
+		assertTrue(tableModel.items().excluded().contains(B));
 		assertFalse(tableModel.items().contains(G));
 	}
 
@@ -847,7 +847,7 @@ public final class DefaultFilterTableModelTest {
 		model.setValueAt("g", 0, 0);
 		assertFalse(model.items().contains(A));
 		assertTrue(model.items().contains(G));
-		assertEquals(4, model.items().visible().indexOf(G));
+		assertEquals(4, model.items().included().indexOf(G));
 	}
 
 	private static boolean tableModelContainsAll(List<TestRow> rows, boolean includeFiltered,
@@ -858,7 +858,7 @@ public final class DefaultFilterTableModelTest {
 					return false;
 				}
 			}
-			else if (!model.items().visible().contains(row)) {
+			else if (!model.items().included().contains(row)) {
 				return false;
 			}
 		}

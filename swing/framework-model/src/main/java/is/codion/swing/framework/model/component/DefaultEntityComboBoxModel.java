@@ -84,10 +84,10 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 						.filterSelected(builder.filterSelected)
 						.build();
 		this.filter = new DefaultFilter();
-		this.comboBoxModel.items().visible().predicate().set(filter);
-		this.comboBoxModel.items().visible().predicate().addValidator(predicate -> {
+		this.comboBoxModel.items().included().predicate().set(filter);
+		this.comboBoxModel.items().included().predicate().addValidator(predicate -> {
 			if (predicate != filter) {
-				throw new UnsupportedOperationException("EntityComboBoxModel visible item predicate can only be set via filter().predicate().set()");
+				throw new UnsupportedOperationException("EntityComboBoxModel include item predicate can only be set via filter().predicate().set()");
 			}
 		});
 		this.condition = Value.builder()
@@ -134,7 +134,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 			setSelectedItem(entity.get());
 		}
 		else {
-			filteredEntity(primaryKey).ifPresent(this::setSelectedItem);
+			excludedEntity(primaryKey).ifPresent(this::setSelectedItem);
 		}
 	}
 
@@ -230,8 +230,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		return queryCondition;
 	}
 
-	private Optional<Entity> filteredEntity(Entity.Key primaryKey) {
-		return items().filtered().get().stream()
+	private Optional<Entity> excludedEntity(Entity.Key primaryKey) {
+		return items().excluded().get().stream()
 						.filter(entity -> entity.primaryKey().equals(primaryKey))
 						.findFirst();
 	}
