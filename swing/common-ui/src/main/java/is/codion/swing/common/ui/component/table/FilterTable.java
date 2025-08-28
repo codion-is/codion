@@ -324,6 +324,12 @@ public final class FilterTable<R, C> extends JTable {
 		if (builder.resizeRowToFitEditor) {
 			addPropertyChangeListener(TABLE_CELL_EDITOR, new ResizeRowToFitEditor());
 		}
+		if (builder.rowSelection) {
+			setRowSelectionAllowed(true);
+		}
+		if (builder.columnSelection) {
+			setColumnSelectionAllowed(true);
+		}
 		if (builder.cellSelection) {
 			setCellSelectionEnabled(true);
 		}
@@ -1302,6 +1308,20 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> selectionMode(int selectionMode);
 
 		/**
+		 * @param rowSelection true if row selection should be enabled
+		 * @return this builder instance
+		 * @see JTable#setRowSelectionAllowed(boolean)
+		 */
+		Builder<R, C> rowSelection(boolean rowSelection);
+
+		/**
+		 * @param columnSelection true if column selection should be enabled
+		 * @return this builder instance
+		 * @see JTable#setColumnSelectionAllowed(boolean)
+		 */
+		Builder<R, C> columnSelection(boolean columnSelection);
+
+		/**
 		 * @param cellSelection true if cell selection should be enabled
 		 * @return this builder instance
 		 * @see JTable#setCellSelectionEnabled(boolean)
@@ -1483,6 +1503,8 @@ public final class FilterTable<R, C> extends JTable {
 		private boolean scrollToAddedItem = false;
 		private boolean sortable = true;
 		private int selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
+		private boolean rowSelection = false;
+		private boolean columnSelection = false;
 		private boolean cellSelection = false;
 		private boolean columnReordering = COLUMN_REORDERING.getOrThrow();
 		private boolean columnResizing = COLUMN_RESIZING.getOrThrow();
@@ -1602,6 +1624,18 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public Builder<R, C> selectionMode(int selectionMode) {
 			this.selectionMode = selectionMode;
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> rowSelection(boolean rowSelection) {
+			this.rowSelection = rowSelection;
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> columnSelection(boolean columnSelection) {
+			this.columnSelection = columnSelection;
 			return this;
 		}
 
