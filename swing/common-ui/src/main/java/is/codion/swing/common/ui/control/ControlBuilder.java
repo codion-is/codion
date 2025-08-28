@@ -61,7 +61,7 @@ public interface ControlBuilder<C extends Control, B extends ControlBuilder<C, B
 	 * @see #smallIcon(Icon)
 	 * @see #largeIcon(Icon)
 	 */
-	B icon(ControlIcon icon);
+	B icon(@Nullable ControlIcon icon);
 
 	/**
 	 * @param smallIcon the small control icon

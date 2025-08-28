@@ -38,7 +38,7 @@ public interface ControlIcon {
 	/**
 	 * @param small the small version of the icon
 	 * @param large the large version of the icon
-	 * @return
+	 * @return a new {@link ControlIcon} instance
 	 */
 	static ControlIcon controlIcon(ImageIcon small, ImageIcon large) {
 		return new DefaultControlIcon(small, large);

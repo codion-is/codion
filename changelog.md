@@ -8,6 +8,7 @@ Codion Change Log
 - FilterModel.AbstractRefresher.supplier() renamed items().
 ### is.codion.swing.common.ui
 - FilterTable.Builder.rowSelection() and columnSelection() added.
+- ControlBuilder.icon() parameter now nullable.
 ### is.codion.framework.db.local
 - MethodTracer.NO_OP_TRACE added, exit() no longer returns null.
 ### is.codion.framework.server
