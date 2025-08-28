@@ -545,15 +545,15 @@ public interface FilterModel<T> {
 		private final Event<Collection<T>> onResult = Event.event();
 		private final Event<Exception> onException = Event.event();
 		private final State active = State.state();
-		private final @Nullable Supplier<Collection<T>> supplier;
+		private final @Nullable Supplier<Collection<T>> items;
 		private final State async;
 
 		/**
-		 * @param supplier supplies the items when refreshing
+		 * @param items supplies the items when refreshing
 		 * @param async true if async refresh should be used
 		 */
-		protected AbstractRefresher(@Nullable Supplier<Collection<T>> supplier, boolean async) {
-			this.supplier = supplier;
+		protected AbstractRefresher(@Nullable Supplier<Collection<T>> items, boolean async) {
+			this.items = items;
 			this.async = State.state(async);
 		}
 
@@ -590,8 +590,8 @@ public interface FilterModel<T> {
 		/**
 		 * @return the item supplier for this refresher instance
 		 */
-		protected final Optional<Supplier<Collection<T>>> supplier() {
-			return Optional.ofNullable(supplier);
+		protected final Optional<Supplier<Collection<T>>> items() {
+			return Optional.ofNullable(items);
 		}
 
 		/**

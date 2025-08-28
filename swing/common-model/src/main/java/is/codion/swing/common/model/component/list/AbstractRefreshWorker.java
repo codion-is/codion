@@ -38,11 +38,11 @@ public abstract class AbstractRefreshWorker<T> extends AbstractRefresher<T> {
 	private @Nullable ProgressWorker<Collection<T>, ?> worker;
 
 	/**
-	 * @param supplier supplies the items
+	 * @param items supplies the items
 	 * @param async true if async refresh should be used
 	 */
-	protected AbstractRefreshWorker(@Nullable Supplier<Collection<T>> supplier, boolean async) {
-		super(supplier, async);
+	protected AbstractRefreshWorker(@Nullable Supplier<Collection<T>> items, boolean async) {
+		super(items, async);
 	}
 
 	@Override
@@ -51,22 +51,22 @@ public abstract class AbstractRefreshWorker<T> extends AbstractRefresher<T> {
 	}
 
 	protected final void refreshAsync(Consumer<Collection<T>> onResult) {
-		supplier().ifPresent(supplier -> {
+		items().ifPresent(items -> {
 			cancelCurrentRefresh();
 			worker = ProgressWorker.builder()
-							.task(supplier::get)
+							.task(items::get)
 							.onStarted(this::onRefreshStarted)
-							.onResult(items -> onRefreshResult(items, onResult))
+							.onResult(result -> onRefreshResult(result, onResult))
 							.onException(this::onRefreshFailedAsync)
 							.execute();
 		});
 	}
 
 	protected final void refreshSync(Consumer<Collection<T>> onResult) {
-		supplier().ifPresent(supplier -> {
+		items().ifPresent(items -> {
 			onRefreshStarted();
 			try {
-				onRefreshResult(supplier.get(), onResult);
+				onRefreshResult(items.get(), onResult);
 			}
 			catch (Exception e) {
 				onRefreshFailedSync(e);

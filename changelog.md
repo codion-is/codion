@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.common.model
 - FilterModel.Builder.visiblePredicate() renamed visible().
 - FilterModel.visible() and filtered() renamed included() and excluded(), related renaming.
+- FilterModel.AbstractRefresher.supplier() renamed items().
 ### is.codion.framework.db.local
 - MethodTracer.NO_OP_TRACE added, exit() no longer returns null.
 ### is.codion.framework.server
