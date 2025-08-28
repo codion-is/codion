@@ -314,29 +314,33 @@ public final class FilterTable<R, C> extends JTable {
 						.action(startEditing)
 						.enable(this));
 		filters().view().set(builder.filterView);
-		autoStartsEdit(builder.autoStartsEdit);
-		setSurrendersFocusOnKeystroke(builder.surrendersFocusOnKeystroke);
+		if (builder.autoStartsEdit != null) {
+			autoStartsEdit(builder.autoStartsEdit);
+		}
+		if (builder.surrendersFocusOnKeystroke != null) {
+			setSurrendersFocusOnKeystroke(builder.surrendersFocusOnKeystroke);
+		}
 		setSelectionMode(builder.selectionMode);
 		setAutoResizeMode(builder.autoResizeMode);
-		configureColumns(builder.cellRenderers, builder.cellRendererFactory, builder.cellEditors, builder.cellEditorFactory);
+		configureColumns(builder);
 		configureTableHeader(builder.columnReordering, builder.columnResizing);
 		bindEvents(builder.columnReordering, builder.columnResizing);
 		if (builder.resizeRowToFitEditor) {
 			addPropertyChangeListener(TABLE_CELL_EDITOR, new ResizeRowToFitEditor());
 		}
-		if (builder.rowSelection) {
-			setRowSelectionAllowed(true);
+		if (builder.rowSelection != null) {
+			setRowSelectionAllowed(builder.rowSelection);
 		}
-		if (builder.columnSelection) {
-			setColumnSelectionAllowed(true);
+		if (builder.columnSelection != null) {
+			setColumnSelectionAllowed(builder.columnSelection);
 		}
-		if (builder.cellSelection) {
-			setCellSelectionEnabled(true);
+		if (builder.cellSelection != null) {
+			setCellSelectionEnabled(builder.cellSelection);
 		}
-		if (builder.rowHeight > 0) {
+		if (builder.rowHeight != null) {
 			setRowHeight(builder.rowHeight);
 		}
-		if (builder.rowMargin > 0) {
+		if (builder.rowMargin != null) {
 			setRowMargin(builder.rowMargin);
 		}
 		if (builder.intercellSpacing != null) {
@@ -883,26 +887,23 @@ public final class FilterTable<R, C> extends JTable {
 						.build();
 	}
 
-	private void configureColumns(Map<C, FilterTableCellRenderer<?>> cellRenderers,
-																FilterTableCellRenderer.Factory<R, C> cellRendererFactory,
-																Map<C, FilterTableCellEditor<?>> cellEditors,
-																FilterTableCellEditor.@Nullable Factory<C> cellEditorFactory) {
+	private void configureColumns(DefaultBuilder<R, C> builder) {
 		columnModel().columns().stream()
 						.filter(column -> column.getCellRenderer() == null)
-						.forEach(column -> column.setCellRenderer(cellRenderers.getOrDefault(column.identifier(),
-										cellRendererFactory.create(column.identifier(), tableModel))));
+						.forEach(column -> column.setCellRenderer(builder.cellRenderers.getOrDefault(column.identifier(),
+										builder.cellRendererFactory.create(column.identifier(), tableModel))));
 		columnModel().columns().stream()
 						.filter(column -> column.getHeaderRenderer() == null)
 						.forEach(column -> column.setHeaderRenderer(new FilterTableHeaderRenderer<>(this, column)));
 		columnModel().columns().stream()
 						.filter(column -> column.getCellEditor() == null)
 						.forEach(column -> {
-							FilterTableCellEditor<?> cellEditor = cellEditors.get(column.identifier());
+							FilterTableCellEditor<?> cellEditor = builder.cellEditors.get(column.identifier());
 							if (cellEditor != null) {
 								column.setCellEditor(cellEditor);
 							}
-							else if (cellEditorFactory != null) {
-								cellEditorFactory.create(column.identifier()).ifPresent(column::setCellEditor);
+							else if (builder.cellEditorFactory != null) {
+								builder.cellEditorFactory.create(column.identifier()).ifPresent(column::setCellEditor);
 							}
 						});
 	}
@@ -1495,24 +1496,24 @@ public final class FilterTable<R, C> extends JTable {
 		private ComponentFactory filterComponentFactory = new FilterComponentFactory();
 		private FilterTableCellRenderer.Factory<R, C> cellRendererFactory;
 		private FilterTableCellEditor.@Nullable Factory<C> cellEditorFactory;
-		private boolean autoStartsEdit = false;
-		private boolean surrendersFocusOnKeystroke = false;
+		private @Nullable Boolean autoStartsEdit;
+		private @Nullable Boolean surrendersFocusOnKeystroke;
 		private CenterOnScroll centerOnScroll = CenterOnScroll.NEITHER;
 		private @Nullable Action doubleClick;
 		private boolean scrollToSelectedItem = true;
 		private boolean scrollToAddedItem = false;
 		private boolean sortable = true;
 		private int selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
-		private boolean rowSelection = false;
-		private boolean columnSelection = false;
-		private boolean cellSelection = false;
+		private @Nullable Boolean rowSelection;
+		private @Nullable Boolean columnSelection;
+		private @Nullable Boolean cellSelection;
 		private boolean columnReordering = COLUMN_REORDERING.getOrThrow();
 		private boolean columnResizing = COLUMN_RESIZING.getOrThrow();
 		private int autoResizeMode = AUTO_RESIZE_MODE.getOrThrow();
 		private boolean resizeRowToFitEditor = RESIZE_ROW_TO_FIT_EDITOR.getOrThrow();
 		private ConditionView filterView = ConditionView.HIDDEN;
-		private int rowHeight = -1;
-		private int rowMargin = -1;
+		private @Nullable Integer rowHeight;
+		private @Nullable Integer rowMargin;
 		private @Nullable Dimension intercellSpacing;
 		private @Nullable Color gridColor;
 		private @Nullable Boolean showGrid;
