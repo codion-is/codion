@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.47
+### is.codion.common.model
+- FilterModel.Builder.visiblePredicate() renamed visible().
 ### is.codion.framework.db.local
 - MethodTracer.NO_OP_TRACE added, exit() no longer returns null.
 ### is.codion.framework.server

@@ -582,8 +582,8 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 
 		@Override
-		public Builder<T> visiblePredicate(VisiblePredicate<T> visiblePredicate) {
-			this.visiblePredicate = requireNonNull(visiblePredicate);
+		public Builder<T> visible(VisiblePredicate<T> visible) {
+			this.visiblePredicate = requireNonNull(visible);
 			return this;
 		}
 

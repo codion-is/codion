@@ -197,10 +197,10 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		Builder<R, C> editor(Function<FilterTableModel<R, C>, Editor<R, C>> editor);
 
 		/**
-		 * @param predicate the {@link Predicate} controlling which items should be visible
+		 * @param visible the {@link Predicate} controlling which items should be visible
 		 * @return this builder instance
 		 */
-		Builder<R, C> visible(Predicate<R> predicate);
+		Builder<R, C> visible(Predicate<R> visible);
 
 		/**
 		 * @return a new {@link FilterTableModel} instance.

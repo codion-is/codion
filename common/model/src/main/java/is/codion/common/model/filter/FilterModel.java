@@ -275,10 +275,10 @@ public interface FilterModel<T> {
 			Builder<T> validator(Predicate<T> validator);
 
 			/**
-			 * @param visiblePredicate the visible predicate
+			 * @param visible the visible predicate
 			 * @return this builder
 			 */
-			Builder<T> visiblePredicate(VisiblePredicate<T> visiblePredicate);
+			Builder<T> visible(VisiblePredicate<T> visible);
 
 			/**
 			 * @param itemsListener the {@link VisibleItems.ItemsListener}

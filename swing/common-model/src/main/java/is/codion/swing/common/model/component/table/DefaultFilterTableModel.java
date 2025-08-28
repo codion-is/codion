@@ -82,7 +82,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 						.selection(FilterListSelection::filterListSelection)
 						.sort(sort)
 						.validator(builder.validator)
-						.visiblePredicate(new DefaultVisiblePredicate<>(builder.columns, filters))
+						.visible(new DefaultVisiblePredicate<>(builder.columns, filters))
 						.listener(new TableModelAdapter())
 						.build();
 		this.items.visible().predicate().set(builder.visiblePredicate);
@@ -405,8 +405,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
-		public Builder<R, C> visible(Predicate<R> predicate) {
-			this.visiblePredicate = requireNonNull(predicate);
+		public Builder<R, C> visible(Predicate<R> visible) {
+			this.visiblePredicate = requireNonNull(visible);
 			return this;
 		}
 

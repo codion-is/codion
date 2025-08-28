@@ -77,7 +77,7 @@ public class DefaultFilterModelItemsTest {
 							.<String>refresher(i -> new TestRefresher())
 							.selection(visible -> selection)
 							.sort(new TestSort())
-							.visiblePredicate(visiblePredicate)
+							.visible(visiblePredicate)
 							.build();
 		}
 
@@ -244,7 +244,7 @@ public class DefaultFilterModelItemsTest {
 							.<String>refresher(i -> new TestRefresher())
 							.selection(visible -> selection)
 							.sort(new TestSort())
-							.visiblePredicate(visiblePredicate)
+							.visible(visiblePredicate)
 							.build();
 		}
 
@@ -289,7 +289,7 @@ public class DefaultFilterModelItemsTest {
 							.<String>refresher(i -> new TestRefresher())
 							.selection(visible -> new TestMultiSelection())
 							.sort(sort)
-							.visiblePredicate(visiblePredicate)
+							.visible(visiblePredicate)
 							.build();
 
 			items.add(asList("a", "b", "c", "d"));
