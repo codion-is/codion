@@ -197,10 +197,10 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		Builder<R, C> editor(Function<FilterTableModel<R, C>, Editor<R, C>> editor);
 
 		/**
-		 * @param include the {@link Predicate} controlling which items should be included
+		 * @param included the {@link Predicate} controlling which items should be included
 		 * @return this builder instance
 		 */
-		Builder<R, C> include(Predicate<R> include);
+		Builder<R, C> included(Predicate<R> included);
 
 		/**
 		 * @return a new {@link FilterTableModel} instance.

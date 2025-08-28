@@ -94,10 +94,10 @@ public interface FilterListModel<T> extends ListModel<T>, FilterModel<T> {
 		Builder<T> async(boolean async);
 
 		/**
-		 * @param predicate the {@link Predicate} controlling which items should be included
+		 * @param included the {@link Predicate} controlling which items should be included
 		 * @return this builder instance
 		 */
-		Builder<T> include(Predicate<T> predicate);
+		Builder<T> included(Predicate<T> included);
 
 		/**
 		 * @return a new {@link FilterListModel} instance

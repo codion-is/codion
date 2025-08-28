@@ -269,7 +269,7 @@ final class DefaultFilterListModelTest {
 		// With predicate
 		FilterListModel<String> filteredModel = FilterListModel.builder()
 						.items(asList(ONE, TWO, THREE, FOUR))
-						.include(s -> s.length() > 3)
+						.included(s -> s.length() > 3)
 						.build();
 		assertEquals(2, filteredModel.items().included().count()); // THREE and FOUR
 		assertEquals(2, filteredModel.items().excluded().count()); // ONE and TWO

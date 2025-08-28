@@ -82,10 +82,10 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 						.selection(FilterListSelection::filterListSelection)
 						.sort(sort)
 						.validator(builder.validator)
-						.include(new DefaultIncludePredicate<>(builder.columns, filters))
+						.included(new DefaultIncluded<>(builder.columns, filters))
 						.listener(new TableModelAdapter())
 						.build();
-		this.items.included().predicate().set(builder.includePredicate);
+		this.items.included().predicate().set(builder.included);
 		this.selection = (FilterListSelection<R>) items.included().selection();
 		this.removeSelectionListener = new RemoveSelectionListener();
 		addTableModelListener(removeSelectionListener);
@@ -279,15 +279,15 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 	}
 
-	private static final class DefaultIncludePredicate<R, C>
-					extends AbstractValue<Predicate<R>> implements IncludePredicate<R> {
+	private static final class DefaultIncluded<R, C>
+					extends AbstractValue<Predicate<R>> implements IncludedPredicate<R> {
 
 		private final TableColumns<R, C> tableColumns;
 		private final TableConditionModel<C> filters;
 
 		private @Nullable Predicate<R> predicate;
 
-		private DefaultIncludePredicate(TableColumns<R, C> columns, TableConditionModel<C> filters) {
+		private DefaultIncluded(TableColumns<R, C> columns, TableConditionModel<C> filters) {
 			super(SET);
 			this.tableColumns = columns;
 			this.filters = filters;
@@ -296,7 +296,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		@Override
 		public boolean test(R item) {
-			if (!IncludePredicate.super.test(item)) {
+			if (!IncludedPredicate.super.test(item)) {
 				return false;
 			}
 
@@ -364,7 +364,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		private Supplier<Map<C, ConditionModel<?>>> filters;
 		private boolean async = FilterModel.ASYNC.getOrThrow();
 		private Function<FilterTableModel<R, C>, Editor<R, C>> editorFactory = new DefaultEditorFactory<>();
-		private @Nullable Predicate<R> includePredicate;
+		private @Nullable Predicate<R> included;
 
 		private DefaultBuilder(TableColumns<R, C> columns) {
 			if (requireNonNull(columns).identifiers().isEmpty()) {
@@ -405,8 +405,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
-		public Builder<R, C> include(Predicate<R> include) {
-			this.includePredicate = requireNonNull(include);
+		public Builder<R, C> included(Predicate<R> included) {
+			this.included = requireNonNull(included);
 			return this;
 		}
 

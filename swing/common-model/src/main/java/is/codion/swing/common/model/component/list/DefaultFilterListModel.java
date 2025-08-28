@@ -50,7 +50,7 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 						.sort(sort)
 						.listener(new ListModelAdapter())
 						.build();
-		this.items.included().predicate().set(builder.includePredicate);
+		this.items.included().predicate().set(builder.included);
 		this.selection = (FilterListSelection<T>) items.included().selection();
 		this.items.set(builder.items);
 		this.items.included().sort();
@@ -185,7 +185,7 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 
 		private @Nullable Comparator<T> comparator;
 		private boolean async = ASYNC.getOrThrow();
-		private @Nullable Predicate<T> includePredicate;
+		private @Nullable Predicate<T> included;
 
 		private DefaultBuilder(Collection<T> items, @Nullable Supplier<? extends Collection<T>> supplier) {
 			this.items = items;
@@ -205,8 +205,8 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 		}
 
 		@Override
-		public Builder<T> include(Predicate<T> predicate) {
-			this.includePredicate = requireNonNull(predicate);
+		public Builder<T> included(Predicate<T> included) {
+			this.included = requireNonNull(included);
 			return this;
 		}
 

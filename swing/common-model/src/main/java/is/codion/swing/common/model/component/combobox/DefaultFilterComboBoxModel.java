@@ -590,13 +590,13 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private final class DefaultVisibleItems implements IncludedItems<T> {
 
-			private final IncludePredicate<T> predicate = new DefaultIncludePredicate<>();
+			private final IncludedPredicate<T> predicate = new DefaultIncludedPredicate<>();
 			private final List<@Nullable T> items = new ArrayList<>();
 			private final Event<List<T>> changed = Event.event();
 			private final Event<Collection<T>> added = Event.event();
 
 			@Override
-			public IncludePredicate<T> predicate() {
+			public IncludedPredicate<T> predicate() {
 				return predicate;
 			}
 
@@ -847,12 +847,12 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 	}
 
-	private static final class DefaultIncludePredicate<R>
-					extends AbstractValue<Predicate<R>> implements IncludePredicate<R> {
+	private static final class DefaultIncludedPredicate<R>
+					extends AbstractValue<Predicate<R>> implements IncludedPredicate<R> {
 
 		private @Nullable Predicate<R> predicate;
 
-		private DefaultIncludePredicate() {
+		private DefaultIncludedPredicate() {
 			super(SET);
 		}
 

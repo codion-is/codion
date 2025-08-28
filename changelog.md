@@ -6,6 +6,7 @@ Codion Change Log
 - FilterModel.Builder.visiblePredicate() renamed visible().
 - FilterModel.visible() and filtered() renamed included() and excluded(), related renaming.
 - FilterModel.AbstractRefresher.supplier() renamed items().
+- FilterModel.Builder.include() renamed included(), related renaming.
 ### is.codion.swing.common.ui
 - FilterTable.Builder.rowSelection() and columnSelection() added.
 - ControlBuilder.icon() parameter now nullable.

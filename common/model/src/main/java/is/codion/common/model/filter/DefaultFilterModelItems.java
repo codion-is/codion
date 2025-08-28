@@ -20,9 +20,9 @@ package is.codion.common.model.filter;
 
 import is.codion.common.event.Event;
 import is.codion.common.model.filter.FilterModel.ExcludedItems;
-import is.codion.common.model.filter.FilterModel.IncludePredicate;
 import is.codion.common.model.filter.FilterModel.IncludedItems;
 import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
+import is.codion.common.model.filter.FilterModel.IncludedPredicate;
 import is.codion.common.model.filter.FilterModel.Items;
 import is.codion.common.model.filter.FilterModel.Refresher;
 import is.codion.common.model.filter.FilterModel.Sort;
@@ -67,7 +67,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	private DefaultFilterModelItems(DefaultBuilder<R> builder) {
 		this.sort = builder.sort;
 		this.validator = builder.validator;
-		this.included = new DefaultIncludedItems(builder.includePredicate);
+		this.included = new DefaultIncludedItems(builder.included);
 		this.excluded = new DefaultExcludedItems();
 		this.refresher = builder.refresher.apply(this);
 		this.selection = builder.selection.apply(included);
@@ -352,16 +352,16 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	private final class DefaultIncludedItems implements IncludedItems<R> {
 
 		private final List<R> items = new ArrayList<>();
-		private final IncludePredicate<R> predicate;
+		private final IncludedPredicate<R> predicate;
 		private final Event<List<R>> changed = Event.event();
 		private final Event<Collection<R>> added = Event.event();
 
-		private DefaultIncludedItems(IncludePredicate<R> predicate) {
+		private DefaultIncludedItems(IncludedPredicate<R> predicate) {
 			this.predicate = predicate;
 		}
 
 		@Override
-		public IncludePredicate<R> predicate() {
+		public IncludedPredicate<R> predicate() {
 			return predicate;
 		}
 
@@ -564,7 +564,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		private final Function<Items<T>, Refresher<T>> refresher;
 		private final Sort<T> sort;
 
-		private IncludePredicate<T> includePredicate = new DefaultIncludePredicate<>();
+		private IncludedPredicate<T> included = new DefaultIncludedPredicate<>();
 		private Predicate<T> validator = new ValidPredicate<>();
 		private ItemsListener itemsListener = new DefaultItemsListener();
 
@@ -582,8 +582,8 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 
 		@Override
-		public Builder<T> include(IncludePredicate<T> include) {
-			this.includePredicate = requireNonNull(include);
+		public Builder<T> included(IncludedPredicate<T> included) {
+			this.included = requireNonNull(included);
 			return this;
 		}
 
@@ -622,12 +622,12 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 	}
 
-	private static final class DefaultIncludePredicate<R>
-					extends AbstractValue<Predicate<R>> implements IncludePredicate<R> {
+	private static final class DefaultIncludedPredicate<R>
+					extends AbstractValue<Predicate<R>> implements IncludedPredicate<R> {
 
 		private @Nullable Predicate<R> predicate;
 
-		private DefaultIncludePredicate() {
+		private DefaultIncludedPredicate() {
 			super(SET);
 		}
 
