@@ -60,13 +60,15 @@ public interface OkCancelDialogBuilder extends ActionDialogBuilder<OkCancelDialo
 	OkCancelDialogBuilder onCancel(Runnable onCancel);
 
 	/**
+	 * Note that this action is responsible for closing the dialog.
 	 * @param okAction the action for the OK button, this action must dispose the dialog
 	 * @return this builder instance
 	 */
 	OkCancelDialogBuilder okAction(Action okAction);
 
 	/**
-	 * @param cancelAction the action for the Cancel button
+	 * Note that this action is responsible for closing the dialog.
+	 * @param cancelAction the action for the Cancel button, this action must dispose the dialog
 	 * @return this builder instance
 	 */
 	OkCancelDialogBuilder cancelAction(Action cancelAction);

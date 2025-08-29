@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.ui.dialog;
 
+import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.common.observer.Observable;
 import is.codion.common.state.ObservableState;
@@ -25,6 +26,8 @@ import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
+import is.codion.swing.common.ui.control.CommandControl;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.layout.Layouts;
 
@@ -55,6 +58,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 					.component(basePanel);
 
 	private @Nullable String caption;
+	private @Nullable ObservableState valid;
 
 	DefaultInputDialogBuilder(ComponentValue<?, T> componentValue) {
 		this.componentValue = requireNonNull(componentValue);
@@ -113,6 +117,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 
 	@Override
 	public InputDialogBuilder<T> valid(ObservableState valid) {
+		this.valid = valid;
 		okCancelDialogBuilder.okEnabled(valid);
 		return this;
 	}
@@ -140,11 +145,18 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 		if (caption != null) {
 			basePanel.add(new JLabel(caption), BorderLayout.NORTH);
 		}
-		okCancelDialogBuilder.onOk(() -> {
-			if (closeDialog.test(componentValue.get())) {
-				disposeParentWindow(componentValue.component());
-			}
-		}).show();
+		CommandControl okControl = Control.builder()
+						.command(() -> {
+							if (closeDialog.test(componentValue.get())) {
+								disposeParentWindow(componentValue.component());
+							}
+						})
+						.caption(Messages.ok())
+						.mnemonic(Messages.okMnemonic())
+						.enabled(valid)
+						.build();
+
+		okCancelDialogBuilder.okAction(okControl).show();
 	}
 
 	@Override
