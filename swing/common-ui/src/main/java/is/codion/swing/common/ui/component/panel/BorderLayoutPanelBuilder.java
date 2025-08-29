@@ -18,38 +18,16 @@
  */
 package is.codion.swing.common.ui.component.panel;
 
-import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.util.function.Supplier;
 
 /**
- * Builds a JPanel instance using a BorderLayout.
+ * Builds a {@link BorderLayout} based panel.
  */
-public interface BorderLayoutPanelBuilder extends ComponentBuilder<JPanel, BorderLayoutPanelBuilder> {
-
-	/**
-	 * @param layout the {@link BorderLayout} to use
-	 * @return this builder instance
-	 */
-	BorderLayoutPanelBuilder layout(BorderLayout layout);
-
-	/**
-	 * @param component the component
-	 * @param constraints the constraints
-	 * @return this builder instance
-	 */
-	BorderLayoutPanelBuilder add(JComponent component, String constraints);
-
-	/**
-	 * @param component the component
-	 * @param constraints the constraints
-	 * @return this builder instance
-	 */
-	BorderLayoutPanelBuilder add(Supplier<? extends JComponent> component, String constraints);
+public interface BorderLayoutPanelBuilder extends PanelBuilder<BorderLayout, BorderLayoutPanelBuilder> {
 
 	/**
 	 * @param centerComponent the {@link BorderLayout#CENTER} component

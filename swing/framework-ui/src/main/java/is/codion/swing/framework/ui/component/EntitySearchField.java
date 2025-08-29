@@ -656,7 +656,7 @@ public final class EntitySearchField extends HintTextField {
 
 		private static JPanel createSearchColumnPanel(EntitySearchModel searchModel) {
 			CardLayout cardLayout = new CardLayout(5, 5);
-			PanelBuilder columnBasePanelBuilder = panel().layout(cardLayout);
+			PanelBuilder<CardLayout, ?> columnBasePanelBuilder = panel().layout(cardLayout);
 			List<Item<Column<String>>> items = new ArrayList<>();
 			EntityDefinition definition = searchModel.entityDefinition();
 			for (Map.Entry<Column<String>, EntitySearchModel.Settings> entry : searchModel.settings().entrySet()) {

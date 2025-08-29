@@ -84,19 +84,10 @@ public final class Layouts {
 	 * @see #GAP
 	 */
 	public static FlexibleGridLayout flexibleGridLayout(int rows, int columns) {
-		return flexibleGridLayout()
-						.rowsColumns(rows, columns)
-						.build();
-	}
-
-	/**
-	 * Creates a FlexibleGridLayout.Builder using the default vertical and horizontal gap value
-	 * @return a FlexibleGridLayout.Builder instance
-	 * @see #GAP
-	 */
-	public static FlexibleGridLayout.Builder flexibleGridLayout() {
 		return FlexibleGridLayout.builder()
+						.rowsColumns(rows, columns)
 						.horizontalGap(GAP.getOrThrow())
-						.verticalGap(GAP.getOrThrow());
+						.verticalGap(GAP.getOrThrow())
+						.build();
 	}
 }

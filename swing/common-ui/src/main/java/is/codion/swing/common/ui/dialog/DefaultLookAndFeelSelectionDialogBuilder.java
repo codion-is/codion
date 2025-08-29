@@ -89,7 +89,7 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 		basePanel.add(lookAndFeelComboBox, BorderLayout.CENTER);
 		if (auxiliaryLookAndFeelsAvailable()) {
 			basePanel.add(PanelBuilder.builder()
-							.layout(new FlowLayout(FlowLayout.TRAILING))
+							.flowLayout(FlowLayout.TRAILING)
 							.add(CheckBoxBuilder.builder()
 											.link(lookAndFeelComboBox.includeInstalled())
 											.text(MESSAGES.getString("include_installed"))

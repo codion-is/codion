@@ -28,7 +28,8 @@ import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.panel.PanelBuilder;
+import is.codion.swing.common.ui.component.panel.FlexibleGridLayoutPanelBuilder;
+import is.codion.swing.common.ui.component.panel.GridLayoutPanelBuilder;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlKey;
@@ -678,7 +679,7 @@ public final class CalendarPanel extends JPanel {
 		JSpinner hourSpinner = createHourSpinner();
 		JSpinner minuteSpinner = createMinuteSpinner();
 
-		PanelBuilder yearMonthHourMinutePanel = flexibleGridLayoutPanel(1, 0)
+		FlexibleGridLayoutPanelBuilder yearMonthHourMinutePanel = flexibleGridLayoutPanel(1, 0)
 						.add(monthSpinner)
 						.add(yearSpinner);
 		if (includeTime) {
@@ -729,7 +730,7 @@ public final class CalendarPanel extends JPanel {
 	}
 
 	private JPanel createDayHeaderPanel() {
-		PanelBuilder panelBuilder = gridLayoutPanel(1, DAYS_IN_WEEK);
+		GridLayoutPanelBuilder panelBuilder = gridLayoutPanel(1, DAYS_IN_WEEK);
 		dayColumns.forEach(dayOfWeek -> panelBuilder.add(createDayLabel(dayOfWeek)));
 
 		return panelBuilder.build();

@@ -74,6 +74,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.math.BigDecimal;
@@ -1033,6 +1034,7 @@ public final class ComponentsTest {
 	@Test
 	void addConstraintsComponent() {
 		assertThrows(IllegalArgumentException.class, () -> Components.panel()
+						.flowLayout(FlowLayout.LEFT)
 						.add(new JLabel(), new JLabel()));
 	}
 

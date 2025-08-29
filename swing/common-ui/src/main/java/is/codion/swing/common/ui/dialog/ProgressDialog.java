@@ -39,7 +39,6 @@ import java.awt.FlowLayout;
 import java.util.function.Supplier;
 
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -107,7 +106,7 @@ public final class ProgressDialog extends JDialog {
 		Controls controls = builder.controls.build();
 		if (controls.size() > 0) {
 			basePanelBuilder.south(PanelBuilder.builder()
-							.layout(flowLayout(FlowLayout.TRAILING))
+							.flowLayout(FlowLayout.TRAILING)
 							.add(ButtonPanelBuilder.builder()
 											.controls(controls)));
 		}

@@ -19,12 +19,17 @@
 package is.codion.swing.common.ui.component.panel;
 
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.layout.FlexibleGridLayout;
+import is.codion.swing.common.ui.layout.Layouts;
 
 import org.jspecify.annotations.Nullable;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.util.Collection;
 import java.util.function.Supplier;
@@ -32,42 +37,34 @@ import java.util.function.Supplier;
 /**
  * Builds a JPanel instance.
  */
-public interface PanelBuilder extends ComponentBuilder<JPanel, PanelBuilder> {
+public interface PanelBuilder<L extends LayoutManager, B extends PanelBuilder<L, B>> extends ComponentBuilder<JPanel, B> {
 
 	/**
 	 * @param panel the panel
 	 * @return this builder instancwe
 	 */
-	PanelBuilder panel(@Nullable JPanel panel);
+  B panel(@Nullable JPanel panel);
 
 	/**
 	 * @param layoutManager the layout manager
 	 * @return this builder instance
 	 * @see JPanel#setLayout(LayoutManager)
 	 */
-	PanelBuilder layout(@Nullable LayoutManager layoutManager);
+  B layout(@Nullable L layoutManager);
 
 	/**
 	 * @param component the component to add
 	 * @return this builder instance
 	 * @see JPanel#add(Component)
 	 */
-	PanelBuilder add(JComponent component);
+  B add(JComponent component);
 
 	/**
 	 * @param component the component to add
 	 * @return this builder instance
 	 * @see JPanel#add(Component)
 	 */
-	PanelBuilder add(Supplier<? extends JComponent> component);
-
-	/**
-	 * @param component the component to add
-	 * @param constraints the layout constraints
-	 * @return this builder instance
-	 * @see JPanel#add(Component, Object)
-	 */
-	PanelBuilder add(JComponent component, Object constraints);
+  B add(Supplier<? extends JComponent> component);
 
 	/**
 	 * @param component the component to add
@@ -75,26 +72,105 @@ public interface PanelBuilder extends ComponentBuilder<JPanel, PanelBuilder> {
 	 * @return this builder instance
 	 * @see JPanel#add(Component, Object)
 	 */
-	PanelBuilder add(Supplier<? extends JComponent> component, Object constraints);
+  B add(JComponent component, Object constraints);
+
+	/**
+	 * @param component the component to add
+	 * @param constraints the layout constraints
+	 * @return this builder instance
+	 * @see JPanel#add(Component, Object)
+	 */
+  B add(Supplier<? extends JComponent> component, Object constraints);
 
 	/**
 	 * @param components the components to add
 	 * @return this builder instance
 	 * @see JPanel#add(Component)
 	 */
-	PanelBuilder addAll(JComponent... components);
+  B addAll(JComponent... components);
 
 	/**
 	 * @param components the components to add
 	 * @return this builder instance
 	 * @see JPanel#add(Component)
 	 */
-	PanelBuilder addAll(Collection<? extends JComponent> components);
+  B addAll(Collection<? extends JComponent> components);
 
 	/**
-	 * @return a panel builder
+	 * Provides panel builders.
 	 */
-	static PanelBuilder builder() {
-		return new DefaultPanelBuilder();
+	interface PanelBuilderFactory {
+
+		/**
+		 * @param layout the layout
+		 * @return a new panel builder
+		 * @param <L> the layout type
+		 * @param <B> the builder type
+		 */
+		<L extends LayoutManager, B extends PanelBuilder<L, B>> PanelBuilder<L, B> layout(L layout);
+
+		/**
+		 * Uses the default vertical and horizontal gap value
+		 * @return a new panel builder
+		 * @see Layouts#GAP
+		 */
+		BorderLayoutPanelBuilder borderLayout();
+
+		/**
+		 * @param layout the layout
+		 * @return a new panel builder
+		 */
+		BorderLayoutPanelBuilder borderLayout(BorderLayout layout);
+
+		/**
+		 * Uses the default vertical and horizontal gap value
+		 * @param align the layout alignment
+		 * @return a new panel builder
+		 * @see Layouts#GAP
+		 */
+		FlowLayoutPanelBuilder flowLayout(int align);
+
+		/**
+		 * @param layout the layout
+		 * @return a new panel builder
+		 */
+		FlowLayoutPanelBuilder flowLayout(FlowLayout layout);
+
+		/**
+		 * Uses the default vertical and horizontal gap value
+		 * @param rows the number of rows
+		 * @param columns the number of columns
+		 * @return a new panel builder
+		 * @see Layouts#GAP
+		 */
+		GridLayoutPanelBuilder gridLayout(int rows, int columns);
+
+		/**
+		 * @param layout the layout
+		 * @return a new panel builder
+		 */
+		GridLayoutPanelBuilder gridLayout(GridLayout layout);
+
+		/**
+		 * Uses the default vertical and horizontal gap value
+		 * @param rows the number of rows
+		 * @param columns the number of columns
+		 * @return a new panel builder
+		 * @see Layouts#GAP
+		 */
+		FlexibleGridLayoutPanelBuilder flexibleGridLayout(int rows, int columns);
+
+		/**
+		 * @param layout the layout
+		 * @return a new panel builder
+		 */
+		FlexibleGridLayoutPanelBuilder flexibleGridLayout(FlexibleGridLayout layout);
+	}
+
+	/**
+	 * @return a panel builder factory
+	 */
+	static PanelBuilderFactory builder() {
+		return DefaultPanelBuilder.FACTORY;
 	}
 }

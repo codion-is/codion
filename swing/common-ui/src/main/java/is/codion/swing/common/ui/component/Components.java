@@ -36,8 +36,12 @@ import is.codion.swing.common.ui.component.label.LabelBuilder;
 import is.codion.swing.common.ui.component.list.ListBuilder;
 import is.codion.swing.common.ui.component.listbox.ListBoxBuilder;
 import is.codion.swing.common.ui.component.panel.BorderLayoutPanelBuilder;
+import is.codion.swing.common.ui.component.panel.FlexibleGridLayoutPanelBuilder;
+import is.codion.swing.common.ui.component.panel.FlowLayoutPanelBuilder;
+import is.codion.swing.common.ui.component.panel.GridLayoutPanelBuilder;
 import is.codion.swing.common.ui.component.panel.InputPanelBuilder;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
+import is.codion.swing.common.ui.component.panel.PanelBuilder.PanelBuilderFactory;
 import is.codion.swing.common.ui.component.progressbar.ProgressBarBuilder;
 import is.codion.swing.common.ui.component.scrollpane.ScrollPaneBuilder;
 import is.codion.swing.common.ui.component.slider.SliderBuilder;
@@ -75,7 +79,6 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 
 import static is.codion.swing.common.model.component.combobox.FilterComboBoxModel.booleanItems;
-import static is.codion.swing.common.ui.layout.Layouts.*;
 
 /**
  * A factory for {@link ComponentBuilder} instances.
@@ -394,9 +397,9 @@ public final class Components {
 	}
 
 	/**
-	 * @return a JPanel builder
+	 * @return a JPanel builder factory
 	 */
-	public static PanelBuilder panel() {
+	public static PanelBuilderFactory panel() {
 		return PanelBuilder.builder();
 	}
 
@@ -472,7 +475,7 @@ public final class Components {
 	 * @see Layouts#GAP
 	 */
 	public static BorderLayoutPanelBuilder borderLayoutPanel() {
-		return BorderLayoutPanelBuilder.builder();
+		return panel().borderLayout();
 	}
 
 	/**
@@ -483,8 +486,8 @@ public final class Components {
 	 * @return a grid layout panel builder
 	 * @see Layouts#GAP
 	 */
-	public static PanelBuilder gridLayoutPanel(int rows, int columns) {
-		return panel().layout(gridLayout(rows, columns));
+	public static GridLayoutPanelBuilder gridLayoutPanel(int rows, int columns) {
+		return panel().gridLayout(rows, columns);
 	}
 
 	/**
@@ -495,8 +498,8 @@ public final class Components {
 	 * @return a flexible grid layout panel builder
 	 * @see Layouts#GAP
 	 */
-	public static PanelBuilder flexibleGridLayoutPanel(int rows, int columns) {
-		return panel().layout(flexibleGridLayout(rows, columns));
+	public static FlexibleGridLayoutPanelBuilder flexibleGridLayoutPanel(int rows, int columns) {
+		return panel().flexibleGridLayout(rows, columns);
 	}
 
 	/**
@@ -506,8 +509,8 @@ public final class Components {
 	 * @return a flow layout panel builder
 	 * @see Layouts#GAP
 	 */
-	public static PanelBuilder flowLayoutPanel(int alignment) {
-		return panel().layout(flowLayout(alignment));
+	public static FlowLayoutPanelBuilder flowLayoutPanel(int alignment) {
+		return panel().flowLayout(alignment);
 	}
 
 	/**

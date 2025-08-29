@@ -12,6 +12,7 @@ Codion Change Log
 - ControlBuilder.icon() parameter now nullable.
 - FilterTable.DefaultBuilder refactored, nulls used instead of defaults.
 - AbstractComponentBuilder, AbstractButtonBuilder and AbstractTextComponentBuilder refactored, nulls used instead of defaults.
+- Layout specific panel builders added.
 ### is.codion.framework.db.local
 - MethodTracer.NO_OP_TRACE added, exit() no longer returns null.
 ### is.codion.framework.server

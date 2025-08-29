@@ -54,7 +54,6 @@ import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static java.awt.event.KeyEvent.VK_ESCAPE;
 import static java.util.ResourceBundle.getBundle;
 
@@ -157,10 +156,10 @@ final class ExceptionPanel extends JPanel {
 	private JPanel createButtonPanel() {
 		return BorderLayoutPanelBuilder.builder()
 						.west(PanelBuilder.builder()
-										.layout(flowLayout(FlowLayout.LEFT))
+										.flowLayout(FlowLayout.LEFT)
 										.add(detailsCheckBox))
 						.center(PanelBuilder.builder()
-										.layout(flowLayout(FlowLayout.RIGHT))
+										.flowLayout(FlowLayout.RIGHT)
 										.addAll(copyButton, printButton, saveButton, closeButton))
 						.build();
 	}

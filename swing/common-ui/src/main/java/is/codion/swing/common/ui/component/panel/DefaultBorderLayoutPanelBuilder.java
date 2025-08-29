@@ -18,62 +18,37 @@
  */
 package is.codion.swing.common.ui.component.panel;
 
-import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
-import is.codion.swing.common.ui.layout.Layouts;
-
-import org.jspecify.annotations.Nullable;
-
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Supplier;
 
+import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultBorderLayoutPanelBuilder extends AbstractComponentBuilder<JPanel, BorderLayoutPanelBuilder> implements BorderLayoutPanelBuilder {
+final class DefaultBorderLayoutPanelBuilder extends DefaultPanelBuilder<BorderLayout, BorderLayoutPanelBuilder> implements BorderLayoutPanelBuilder {
 
-	private BorderLayout layout = Layouts.borderLayout();
-	private @Nullable JComponent centerComponent;
-	private @Nullable JComponent northComponent;
-	private @Nullable JComponent southComponent;
-	private @Nullable JComponent eastComponent;
-	private @Nullable JComponent westComponent;
+	private static final Set<String> CONSTRAINTS = new HashSet<>(Arrays.asList(
+					BorderLayout.CENTER,
+					BorderLayout.NORTH,
+					BorderLayout.SOUTH,
+					BorderLayout.EAST,
+					BorderLayout.WEST
+	));
 
-	DefaultBorderLayoutPanelBuilder() {}
-
-	@Override
-	public BorderLayoutPanelBuilder layout(BorderLayout layout) {
-		this.layout = requireNonNull(layout);
-		return this;
+	DefaultBorderLayoutPanelBuilder() {
+		this(borderLayout());
 	}
 
-	@Override
-	public BorderLayoutPanelBuilder add(JComponent component, String constraints) {
-		return add(() -> requireNonNull(component), constraints);
-	}
-
-	@Override
-	public BorderLayoutPanelBuilder add(Supplier<? extends JComponent> component, String constraints) {
-		switch (requireNonNull(constraints)) {
-			case BorderLayout.CENTER:
-				return center(component);
-			case BorderLayout.NORTH:
-				return north(component);
-			case BorderLayout.SOUTH:
-				return south(component);
-			case BorderLayout.EAST:
-				return east(component);
-			case BorderLayout.WEST:
-				return west(component);
-			default:
-				throw new IllegalArgumentException("Unknown BorderLayout constraints: " + constraints);
-		}
+	DefaultBorderLayoutPanelBuilder(BorderLayout layout) {
+		layout(layout);
 	}
 
 	@Override
 	public BorderLayoutPanelBuilder center(JComponent centerComponent) {
-		this.centerComponent = requireNonNull(centerComponent);
-		return this;
+		return add(centerComponent, BorderLayout.CENTER);
 	}
 
 	@Override
@@ -83,8 +58,7 @@ final class DefaultBorderLayoutPanelBuilder extends AbstractComponentBuilder<JPa
 
 	@Override
 	public BorderLayoutPanelBuilder north(JComponent northComponent) {
-		this.northComponent = requireNonNull(northComponent);
-		return this;
+		return add(northComponent, BorderLayout.NORTH);
 	}
 
 	@Override
@@ -94,8 +68,7 @@ final class DefaultBorderLayoutPanelBuilder extends AbstractComponentBuilder<JPa
 
 	@Override
 	public BorderLayoutPanelBuilder south(JComponent southComponent) {
-		this.southComponent = requireNonNull(southComponent);
-		return this;
+		return add(southComponent, BorderLayout.SOUTH);
 	}
 
 	@Override
@@ -105,8 +78,7 @@ final class DefaultBorderLayoutPanelBuilder extends AbstractComponentBuilder<JPa
 
 	@Override
 	public BorderLayoutPanelBuilder east(JComponent eastComponent) {
-		this.eastComponent = requireNonNull(eastComponent);
-		return this;
+		return add(eastComponent, BorderLayout.EAST);
 	}
 
 	@Override
@@ -116,8 +88,7 @@ final class DefaultBorderLayoutPanelBuilder extends AbstractComponentBuilder<JPa
 
 	@Override
 	public BorderLayoutPanelBuilder west(JComponent westComponent) {
-		this.westComponent = requireNonNull(westComponent);
-		return this;
+		return add(westComponent, BorderLayout.WEST);
 	}
 
 	@Override
@@ -126,24 +97,10 @@ final class DefaultBorderLayoutPanelBuilder extends AbstractComponentBuilder<JPa
 	}
 
 	@Override
-	protected JPanel createComponent() {
-		JPanel component = new JPanel(layout);
-		if (centerComponent != null) {
-			component.add(centerComponent, BorderLayout.CENTER);
+	protected void validateConstraints(Object constraints) {
+		super.validateConstraints(constraints);
+		if (!CONSTRAINTS.contains(constraints)) {
+			throw new IllegalArgumentException("Unknown BorderLayout constraints: " + constraints);
 		}
-		if (northComponent != null) {
-			component.add(northComponent, BorderLayout.NORTH);
-		}
-		if (southComponent != null) {
-			component.add(southComponent, BorderLayout.SOUTH);
-		}
-		if (eastComponent != null) {
-			component.add(eastComponent, BorderLayout.EAST);
-		}
-		if (westComponent != null) {
-			component.add(westComponent, BorderLayout.WEST);
-		}
-
-		return component;
 	}
 }

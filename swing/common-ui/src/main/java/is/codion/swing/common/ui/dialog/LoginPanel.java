@@ -148,7 +148,7 @@ final class LoginPanel extends JPanel {
 
 	private JPanel createCredentialsPanel() {
 		return PanelBuilder.builder()
-						.layout(Layouts.flexibleGridLayout(2, 2))
+						.flexibleGridLayout(2, 2)
 						.add(new JLabel(Messages.username(), SwingConstants.RIGHT))
 						.add(usernameField)
 						.add(new JLabel(Messages.password(), SwingConstants.RIGHT))

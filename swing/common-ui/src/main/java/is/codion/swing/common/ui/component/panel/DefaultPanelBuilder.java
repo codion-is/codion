@@ -19,11 +19,15 @@
 package is.codion.swing.common.ui.component.panel;
 
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
+import is.codion.swing.common.ui.layout.FlexibleGridLayout;
 
 import org.jspecify.annotations.Nullable;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,62 +38,63 @@ import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultPanelBuilder extends AbstractComponentBuilder<JPanel, PanelBuilder> implements PanelBuilder {
+class DefaultPanelBuilder<L extends LayoutManager, B extends PanelBuilder<L, B>>
+				extends AbstractComponentBuilder<JPanel, B> implements PanelBuilder<L, B> {
+
+	static final PanelBuilderFactory FACTORY = new DefaultPanelBuilderFactory();
 
 	private final List<ComponentConstraints> componentConstraints = new ArrayList<>();
 
 	private @Nullable JPanel panel;
-	private @Nullable LayoutManager layout;
+	private @Nullable L layout;
 
 	DefaultPanelBuilder() {}
 
 	@Override
-	public PanelBuilder panel(@Nullable JPanel panel) {
+	public final B panel(@Nullable JPanel panel) {
 		this.panel = panel;
-		return this;
+		return (B) this;
 	}
 
 	@Override
-	public PanelBuilder layout(@Nullable LayoutManager layoutManager) {
+	public final B layout(@Nullable L layoutManager) {
 		layout = layoutManager;
-		return this;
+		return (B) this;
 	}
 
 	@Override
-	public PanelBuilder add(JComponent component) {
+	public final B add(JComponent component) {
 		componentConstraints.add(new ComponentConstraints(requireNonNull(component)));
-		return this;
+		return (B) this;
 	}
 
 	@Override
-	public PanelBuilder add(Supplier<? extends JComponent> component) {
+	public final B add(Supplier<? extends JComponent> component) {
 		return add(requireNonNull(component).get());
 	}
 
 	@Override
-	public PanelBuilder add(JComponent component, Object constraints) {
-		if (constraints instanceof JComponent) {
-			throw new IllegalArgumentException("Use addAll() when adding multiple components");
-		}
+	public final B add(JComponent component, Object constraints) {
+		validateConstraints(constraints);
 		componentConstraints.add(new ComponentConstraints(requireNonNull(component), requireNonNull(constraints)));
-		return this;
+		return (B) this;
 	}
 
 	@Override
-	public PanelBuilder add(Supplier<? extends JComponent> component, Object constraints) {
+	public final B add(Supplier<? extends JComponent> component, Object constraints) {
 		return add(requireNonNull(component).get(), constraints);
 	}
 
 	@Override
-	public PanelBuilder addAll(JComponent... components) {
+	public final B addAll(JComponent... components) {
 		addAll(Arrays.asList(components));
-		return this;
+		return (B) this;
 	}
 
 	@Override
-	public PanelBuilder addAll(Collection<? extends JComponent> components) {
+	public final B addAll(Collection<? extends JComponent> components) {
 		requireNonNull(components).forEach(new AddComponents(componentConstraints));
-		return this;
+		return (B) this;
 	}
 
 	@Override
@@ -101,6 +106,64 @@ final class DefaultPanelBuilder extends AbstractComponentBuilder<JPanel, PanelBu
 		componentConstraints.forEach(new AddToPanel(component));
 
 		return component;
+	}
+
+	/**
+	 * @param constraints the constraints to validate
+	 * @throws IllegalArgumentException in case the constraints don't match the layout
+	 */
+	protected void validateConstraints(Object constraints) {
+		if (constraints instanceof JComponent) {
+			throw new IllegalArgumentException("Use addAll() when adding multiple components");
+		}
+	}
+
+	private static final class DefaultPanelBuilderFactory implements PanelBuilderFactory {
+
+		@Override
+		public <L extends LayoutManager, B extends PanelBuilder<L, B>> PanelBuilder<L, B> layout(L layout) {
+			return (PanelBuilder<L, B>) new DefaultPanelBuilder<>().layout(layout);
+		}
+
+		@Override
+		public BorderLayoutPanelBuilder borderLayout() {
+			return new DefaultBorderLayoutPanelBuilder();
+		}
+
+		@Override
+		public BorderLayoutPanelBuilder borderLayout(BorderLayout layout) {
+			return new DefaultBorderLayoutPanelBuilder(requireNonNull(layout));
+		}
+
+		@Override
+		public FlowLayoutPanelBuilder flowLayout(int align) {
+			return new DefaultFlowLayoutPanelBuilder(align);
+		}
+
+		@Override
+		public FlowLayoutPanelBuilder flowLayout(FlowLayout layout) {
+			return new DefaultFlowLayoutPanelBuilder(requireNonNull(layout));
+		}
+
+		@Override
+		public GridLayoutPanelBuilder gridLayout(int rows, int columns) {
+			return new DefaultGridLayoutPanelBuilder(rows, columns);
+		}
+
+		@Override
+		public GridLayoutPanelBuilder gridLayout(GridLayout layout) {
+			return new DefaultGridLayoutPanelBuilder(requireNonNull(layout));
+		}
+
+		@Override
+		public FlexibleGridLayoutPanelBuilder flexibleGridLayout(int rows, int columns) {
+			return new DefaultFlexibleGridLayoutPanelBuilder(rows, columns);
+		}
+
+		@Override
+		public FlexibleGridLayoutPanelBuilder flexibleGridLayout(FlexibleGridLayout layout) {
+			return new DefaultFlexibleGridLayoutPanelBuilder(requireNonNull(layout));
+		}
 	}
 
 	private static final class ComponentConstraints {
