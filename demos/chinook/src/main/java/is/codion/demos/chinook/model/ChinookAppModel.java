@@ -19,10 +19,7 @@
 package is.codion.demos.chinook.model;
 
 import is.codion.common.version.Version;
-import is.codion.demos.chinook.domain.api.Chinook.Customer;
-import is.codion.demos.chinook.domain.api.Chinook.Invoice;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.model.ForeignKeyConditionModel;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 
@@ -47,28 +44,14 @@ public final class ChinookAppModel extends SwingEntityApplicationModel {
 	}
 
 	private static SwingEntityModel createPlaylistModel(EntityConnectionProvider connectionProvider) {
-		SwingEntityModel playlistModel = new SwingEntityModel(new PlaylistTableModel(connectionProvider));
-		SwingEntityModel playlistTrackModel = new SwingEntityModel(new PlaylistTrackEditModel(connectionProvider));
-
-		playlistModel.detailModels().add(playlistModel.link(playlistTrackModel)
-						.clearValueOnEmptySelection(true)
-						.active(true)
-						.build());
-
+		PlaylistModel playlistModel = new PlaylistModel(connectionProvider);
 		playlistModel.tableModel().items().refresh();
 
 		return playlistModel;
 	}
 
 	private static SwingEntityModel createCustomerModel(EntityConnectionProvider connectionProvider) {
-		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
-		customerModel.editModel().initializeComboBoxModels(Customer.SUPPORTREP_FK);
-		SwingEntityModel invoiceModel = new InvoiceModel(connectionProvider);
-		ForeignKeyConditionModel customerConditionModel =
-						invoiceModel.tableModel().queryModel().condition().get(Invoice.CUSTOMER_FK);
-		customerConditionModel.operands().in().value().link(customerConditionModel.operands().equal());
-		customerModel.detailModels().add(invoiceModel);
-
+		CustomerModel customerModel = new CustomerModel(connectionProvider);
 		customerModel.tableModel().items().refresh();
 
 		return customerModel;

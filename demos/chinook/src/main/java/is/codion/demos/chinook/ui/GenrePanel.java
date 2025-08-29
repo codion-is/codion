@@ -14,21 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2004 - 2025, Björn Darri Sigurðsson.
+ * Copyright (c) 2025, Björn Darri Sigurðsson.
  */
 package is.codion.demos.chinook.ui;
 
-import is.codion.demos.chinook.domain.api.Chinook.Invoice;
-import is.codion.demos.chinook.model.CustomerModel;
+import is.codion.demos.chinook.domain.api.Chinook.Track;
+import is.codion.demos.chinook.model.GenreModel;
 import is.codion.swing.framework.ui.EntityPanel;
+import is.codion.swing.framework.ui.TabbedDetailLayout;
 
-public final class CustomerPanel extends EntityPanel {
+import static is.codion.swing.framework.ui.EntityPanel.PanelState.HIDDEN;
 
-	public CustomerPanel(CustomerModel customerModel) {
-		super(customerModel,
-						new CustomerEditPanel(customerModel.editModel()),
-						new CustomerTablePanel(customerModel.tableModel()));
+public final class GenrePanel extends EntityPanel {
 
-		detailPanels().add(new InvoicePanel(customerModel.detailModels().get(Invoice.TYPE)));
+	public GenrePanel(GenreModel genreModel) {
+		super(genreModel, new GenreEditPanel(genreModel.editModel()), config ->
+						config.detailLayout(entityPanel -> TabbedDetailLayout.builder()
+										.panel(entityPanel)
+										.initialDetailState(HIDDEN)
+										.build()));
+		detailPanels().add(new EntityPanel(genreModel.detailModels().get(Track.TYPE)));
 	}
 }

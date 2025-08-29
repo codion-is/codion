@@ -14,21 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (c) 2004 - 2025, Björn Darri Sigurðsson.
+ * Copyright (c) 2025, Björn Darri Sigurðsson.
  */
-package is.codion.demos.chinook.ui;
+package is.codion.demos.chinook.model;
 
-import is.codion.demos.chinook.domain.api.Chinook.Invoice;
-import is.codion.demos.chinook.model.CustomerModel;
-import is.codion.swing.framework.ui.EntityPanel;
+import is.codion.demos.chinook.domain.api.Chinook.Genre;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.swing.framework.model.SwingEntityModel;
 
-public final class CustomerPanel extends EntityPanel {
+public final class GenreModel extends SwingEntityModel {
 
-	public CustomerPanel(CustomerModel customerModel) {
-		super(customerModel,
-						new CustomerEditPanel(customerModel.editModel()),
-						new CustomerTablePanel(customerModel.tableModel()));
-
-		detailPanels().add(new InvoicePanel(customerModel.detailModels().get(Invoice.TYPE)));
+	public GenreModel(EntityConnectionProvider connectionProvider) {
+		super(Genre.TYPE, connectionProvider);
+		detailModels().add(new SwingEntityModel(new TrackTableModel(connectionProvider)));
 	}
 }

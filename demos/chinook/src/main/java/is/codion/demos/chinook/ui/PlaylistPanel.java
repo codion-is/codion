@@ -19,6 +19,7 @@
 package is.codion.demos.chinook.ui;
 
 import is.codion.demos.chinook.domain.api.Chinook.PlaylistTrack;
+import is.codion.demos.chinook.model.PlaylistModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel;
 
@@ -29,7 +30,7 @@ import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 
 public final class PlaylistPanel extends EntityPanel {
 
-	public PlaylistPanel(SwingEntityModel playlistModel) {
+	public PlaylistPanel(PlaylistModel playlistModel) {
 		super(playlistModel,
 						new PlaylistTablePanel(playlistModel.tableModel()),
 						// We override initializeUI(), so we don't need a detail layout

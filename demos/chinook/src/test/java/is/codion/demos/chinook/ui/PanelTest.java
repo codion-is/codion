@@ -20,16 +20,16 @@ package is.codion.demos.chinook.ui;
 
 import is.codion.common.user.User;
 import is.codion.demos.chinook.domain.ChinookImpl;
-import is.codion.demos.chinook.domain.api.Chinook.Customer;
-import is.codion.demos.chinook.domain.api.Chinook.Employee;
-import is.codion.demos.chinook.domain.api.Chinook.Genre;
 import is.codion.demos.chinook.domain.api.Chinook.MediaType;
 import is.codion.demos.chinook.domain.api.Chinook.Preferences;
 import is.codion.demos.chinook.model.AlbumModel;
 import is.codion.demos.chinook.model.ArtistTableModel;
+import is.codion.demos.chinook.model.CustomerModel;
+import is.codion.demos.chinook.model.EmployeeModel;
+import is.codion.demos.chinook.model.GenreModel;
 import is.codion.demos.chinook.model.InvoiceLineEditModel;
 import is.codion.demos.chinook.model.InvoiceModel;
-import is.codion.demos.chinook.model.PlaylistEditModel;
+import is.codion.demos.chinook.model.PlaylistModel;
 import is.codion.demos.chinook.model.PlaylistTrackEditModel;
 import is.codion.demos.chinook.model.TrackEditModel;
 import is.codion.demos.chinook.model.TrackTableModel;
@@ -70,20 +70,17 @@ public final class PanelTest {
 
 	@Test
 	void customer() {
-		SwingEntityModel model = new SwingEntityModel(Customer.TYPE, connectionProvider);
-		model.detailModels().add(new InvoiceModel(connectionProvider));
-		new CustomerPanel(model).initialize();
+		new CustomerPanel(new CustomerModel(connectionProvider)).initialize();
 	}
 
 	@Test
 	void employee() {
-		SwingEntityModel model = new SwingEntityModel(Employee.TYPE, connectionProvider);
-		new EntityPanel(model, new EmployeeEditPanel(model.editModel()), new EmployeeTablePanel(model.tableModel())).initialize();
+		new EmployeePanel(new EmployeeModel(connectionProvider)).initialize();
 	}
 
 	@Test
 	void genre() {
-		new GenreEditPanel(new SwingEntityEditModel(Genre.TYPE, connectionProvider)).initialize();
+		new GenrePanel(new GenreModel(connectionProvider)).initialize();
 	}
 
 	@Test
@@ -104,7 +101,7 @@ public final class PanelTest {
 
 	@Test
 	void playlist() {
-		SwingEntityModel model = new SwingEntityModel(new PlaylistEditModel(connectionProvider));
+		SwingEntityModel model = new PlaylistModel(connectionProvider);
 		new EntityPanel(model, new PlaylistEditPanel(model.editModel()), new PlaylistTablePanel(model.tableModel())).initialize();
 	}
 
