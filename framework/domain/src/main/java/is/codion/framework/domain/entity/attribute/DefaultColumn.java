@@ -32,7 +32,7 @@ import java.util.Objects;
 
 import static is.codion.framework.domain.entity.attribute.AuditAction.INSERT;
 import static is.codion.framework.domain.entity.attribute.AuditAction.UPDATE;
-import static is.codion.framework.domain.entity.condition.ColumnCondition.factory;
+import static is.codion.framework.domain.entity.condition.ColumnConditionFactory.factory;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultColumn<T> implements Column<T>, Serializable {

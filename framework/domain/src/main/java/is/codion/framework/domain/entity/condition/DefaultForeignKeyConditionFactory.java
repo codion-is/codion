@@ -42,7 +42,7 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
-final class DefaultForeignKeyConditionFactory implements ForeignKeyCondition.Factory {
+final class DefaultForeignKeyConditionFactory implements ForeignKeyConditionFactory {
 
 	private final ForeignKey foreignKey;
 

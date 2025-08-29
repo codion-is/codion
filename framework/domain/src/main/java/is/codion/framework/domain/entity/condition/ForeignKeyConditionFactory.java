@@ -86,82 +86,76 @@ import java.util.Collection;
  *     Album.ARTIST_FK.equalTo(specificArtist),
  *     Album.ARTIST_FK.isNull()));
  *}
- * @see Factory
+ * @see #factory(ForeignKey)
  * @see ForeignKey
  * @see Entity
  */
-public interface ForeignKeyCondition extends Condition {
+public interface ForeignKeyConditionFactory {
 
 	/**
-	 * Creates {@link ForeignKeyCondition}s.
+	 * Returns a 'equalTo' {@link Condition} or 'isNull' in case {@code value} is null.
+	 * @param value the value to use in the condition
+	 * @return a {@link Condition}
 	 */
-	interface Factory {
-
-		/**
-		 * Returns a 'equalTo' {@link Condition} or 'isNull' in case {@code value} is null.
-		 * @param value the value to use in the condition
-		 * @return a {@link Condition}
-		 */
-		Condition equalTo(@Nullable Entity value);
-
-		/**
-		 * Returns a 'notEqualTo' {@link Condition} or 'isNotNull' in case {@code value} is null.
-		 * @param value the value to use in the condition
-		 * @return a {@link Condition}
-		 */
-		Condition notEqualTo(@Nullable Entity value);
-
-		/**
-		 * Returns an 'in' {@link Condition}.
-		 * @param values the values to use in the condition
-		 * @return a {@link Condition}
-		 * @throws NullPointerException in case {@code values} is null
-		 */
-		Condition in(Entity... values);
-
-		/**
-		 * Returns a 'notIn' {@link Condition}.
-		 * @param values the values to use in the condition
-		 * @return a {@link Condition}
-		 * @throws NullPointerException in case {@code values} is null
-		 */
-		Condition notIn(Entity... values);
-
-		/**
-		 * Returns an 'in' {@link Condition}.
-		 * @param values the values to use in the condition
-		 * @return a {@link Condition}
-		 * @throws NullPointerException in case {@code values} is null
-		 */
-		Condition in(Collection<Entity> values);
-
-		/**
-		 * Returns a 'notIn' condition.
-		 * @param values the values to use in the condition
-		 * @return a {@link Condition}
-		 * @throws IllegalArgumentException in case {@code values} is null
-		 */
-		Condition notIn(Collection<Entity> values);
-
-		/**
-		 * Returns a 'isNull' {@link Condition}.
-		 * @return a {@link Condition}
-		 */
-		Condition isNull();
-
-		/**
-		 * Returns a 'isNotNull' {@link Condition}.
-		 * @return a {@link Condition}
-		 */
-		Condition isNotNull();
-	}
+	Condition equalTo(@Nullable Entity value);
 
 	/**
-	 * Instantiates a new {@link Factory} instance
+	 * Returns a 'notEqualTo' {@link Condition} or 'isNotNull' in case {@code value} is null.
+	 * @param value the value to use in the condition
+	 * @return a {@link Condition}
+	 */
+	Condition notEqualTo(@Nullable Entity value);
+
+	/**
+	 * Returns an 'in' {@link Condition}.
+	 * @param values the values to use in the condition
+	 * @return a {@link Condition}
+	 * @throws NullPointerException in case {@code values} is null
+	 */
+	Condition in(Entity... values);
+
+	/**
+	 * Returns a 'notIn' {@link Condition}.
+	 * @param values the values to use in the condition
+	 * @return a {@link Condition}
+	 * @throws NullPointerException in case {@code values} is null
+	 */
+	Condition notIn(Entity... values);
+
+	/**
+	 * Returns an 'in' {@link Condition}.
+	 * @param values the values to use in the condition
+	 * @return a {@link Condition}
+	 * @throws NullPointerException in case {@code values} is null
+	 */
+	Condition in(Collection<Entity> values);
+
+	/**
+	 * Returns a 'notIn' condition.
+	 * @param values the values to use in the condition
+	 * @return a {@link Condition}
+	 * @throws IllegalArgumentException in case {@code values} is null
+	 */
+	Condition notIn(Collection<Entity> values);
+
+	/**
+	 * Returns a 'isNull' {@link Condition}.
+	 * @return a {@link Condition}
+	 */
+	Condition isNull();
+
+	/**
+	 * Returns a 'isNotNull' {@link Condition}.
+	 * @return a {@link Condition}
+	 */
+	Condition isNotNull();
+
+	/**
+	 * Instantiates a new {@link ForeignKeyConditionFactory} instance
 	 * @param foreignKey the foreign key
-	 * @return a new {@link Factory} instance
+	 * @return a new {@link ForeignKeyConditionFactory} instance
 	 */
-	static Factory factory(ForeignKey foreignKey) {
+	static ForeignKeyConditionFactory factory(ForeignKey foreignKey) {
 		return new DefaultForeignKeyConditionFactory(foreignKey);
 	}
 }

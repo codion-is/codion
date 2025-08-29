@@ -104,8 +104,8 @@ import static java.util.stream.Collectors.toMap;
  * @see #and(Condition...)
  * @see #or(Condition...)
  * @see #combination(Conjunction, Condition...)
- * @see ColumnCondition.Factory
- * @see ForeignKeyCondition.Factory
+ * @see ColumnConditionFactory
+ * @see ForeignKeyConditionFactory
  */
 public interface Condition {
 

@@ -28,7 +28,7 @@ import static is.codion.common.Operator.*;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultColumnConditionFactory<T> implements ColumnCondition.Factory<T> {
+final class DefaultColumnConditionFactory<T> implements ColumnConditionFactory<T> {
 
 	private final Column<T> column;
 

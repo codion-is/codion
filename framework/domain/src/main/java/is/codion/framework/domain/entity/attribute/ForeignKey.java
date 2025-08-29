@@ -20,7 +20,7 @@ package is.codion.framework.domain.entity.attribute;
 
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.condition.ForeignKeyCondition;
+import is.codion.framework.domain.entity.condition.ForeignKeyConditionFactory;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ import java.util.List;
  * to related entities. They represent database foreign key constraints and enable automatic
  * loading of referenced entities based on reference depth configuration.
  * <p>
- * Foreign keys inherit from {@link ForeignKeyCondition.Factory} to provide condition creation methods:
+ * Foreign keys inherit from {@link ForeignKeyConditionFactory} to provide condition creation methods:
  * {@snippet :
  * public class Store extends DefaultDomain {
  *
@@ -106,12 +106,12 @@ import java.util.List;
  * List<Entity> ordersFromActiveCustomers = connection.select(
  *     Order.CUSTOMER_FK.in(connection.select(Customer.ACTIVE.equalTo(true))));
  *}
- * @see ForeignKeyCondition.Factory
+ * @see ForeignKeyConditionFactory
  * @see #define()
  * @see #referencedType()
  * @see #references()
  */
-public interface ForeignKey extends Attribute<Entity>, ForeignKeyCondition.Factory {
+public interface ForeignKey extends Attribute<Entity>, ForeignKeyConditionFactory {
 
 	/**
 	 * @return a {@link ForeignKeyDefiner} for this foreign key

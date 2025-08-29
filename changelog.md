@@ -16,6 +16,8 @@ Codion Change Log
 - DefaultInputDialogBuilder.show(Predicate) bug fixed, no longer closes dialog on ok, regardless of the close predicate.
 ### is.codion.framework.domain
 - DerivedAttribute removed, DerivedValue added instead, related renaming.
+- ForeignKeyCondition removed, Factory moved up to package level as ForeignKeyConditionFactory.
+- ColumnCondition.Factory moved up to package level as ColumnConditionFactory.
 ### is.codion.framework.db.local
 - MethodTracer.NO_OP_TRACE added, exit() no longer returns null.
 ### is.codion.framework.server

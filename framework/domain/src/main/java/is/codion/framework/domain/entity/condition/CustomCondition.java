@@ -24,7 +24,7 @@ import java.util.List;
  * A custom {@link Condition} based on a {@link ConditionProvider}.
  * <p>
  * Custom conditions are used to create query conditions that cannot be created with the
- * standard {@link Condition}, {@link ColumnCondition} or {@link ForeignKeyCondition} APIs.
+ * standard {@link Condition}, {@link ColumnConditionFactory} or {@link ForeignKeyConditionFactory} APIs.
  * They enable complex SQL constructs such as subqueries, JOINs, window functions, and
  * database-specific functionality.
  * <p>

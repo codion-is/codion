@@ -30,7 +30,8 @@
  * <li>{@link is.codion.framework.domain.entity.attribute.ForeignKeyDefinition}
  * <li>{@link is.codion.framework.domain.entity.condition.Condition}
  * <li>{@link is.codion.framework.domain.entity.condition.ColumnCondition}
- * <li>{@link is.codion.framework.domain.entity.condition.ForeignKeyCondition}
+ * <li>{@link is.codion.framework.domain.entity.condition.ColumnConditionFactory}
+ * <li>{@link is.codion.framework.domain.entity.condition.ForeignKeyConditionFactory}
  * </ul>
  * @uses is.codion.framework.domain.Domain
  */

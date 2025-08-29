@@ -32,7 +32,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static is.codion.framework.domain.entity.condition.ForeignKeyCondition.factory;
+import static is.codion.framework.domain.entity.condition.ForeignKeyConditionFactory.factory;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultForeignKey implements ForeignKey, Serializable {
