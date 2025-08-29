@@ -19,8 +19,9 @@ Codion Change Log
 - EntityServer.setTraceToFile() and isTraceToFile() added along with associated methods in EntityServerAdmin.
 ### is.codion.framework.model
 - EntityEditModel.InsertTask, UpdateTask and DeleteTask merged into EditTask.
-### is.codion.framework.ui
+### is.codion.swing.framework.ui
 - EntityApplicationPanel.TRACING renamed SQL_TRACING.
+- EntityEditComponentPanel.EditorComponent.replace() added.
 ### is.codion.tools.monitor.ui
 - ClientUserMonitorPanel, trace to file checkbox added.
 ### is.codion.tools.loadtest.ui
@@ -56,7 +57,7 @@ Codion Change Log
 ### is.codion.framework.model
 - AbstractEntityEditModel.afterInsertUpdateOrDelete() now includes the entities involved, related refactoring.
 - EntityEditModel.events() now takes entityType parameter, related refactoring.
-### is.codion.framework.ui
+### is.codion.swing.framework.ui
 - EntityTableColumns removed.
 - FrameworkIcons.SIZE added.
 - EditComponentFactory type parameters reordered.

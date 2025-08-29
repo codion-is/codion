@@ -620,6 +620,13 @@ public class EntityEditComponentPanel extends JPanel {
 		void set(JComponent component);
 
 		/**
+		 * Replaces an already set component
+		 * @param component the component
+		 * @throws IllegalStateException in case no component has been previously set
+		 */
+		void replace(JComponent component);
+
+		/**
 		 * @return the label associated with the component
 		 * @throws IllegalStateException in case no component has been set or if no label is associated with it
 		 * @see ComponentBuilder#label(JLabel)
@@ -954,6 +961,15 @@ public class EntityEditComponentPanel extends JPanel {
 			requireNonNull(component);
 			if (!this.component.isNull()) {
 				throw new IllegalStateException("Component has already been set for: " + attribute);
+			}
+			this.component.set(component);
+		}
+
+		@Override
+		public void replace(JComponent component) {
+			requireNonNull(component);
+			if (this.component.isNull()) {
+				throw new IllegalStateException("No component has been set for: " + attribute);
 			}
 			this.component.set(component);
 		}

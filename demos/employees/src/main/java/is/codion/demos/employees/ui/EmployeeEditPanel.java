@@ -46,6 +46,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
 
 		createTextField(Employee.NAME)
 						.columns(8);
+		createComboBox(Employee.DEPARTMENT_FK);
 		createItemComboBox(Employee.JOB);
 		createComboBox(Employee.MANAGER_FK);
 		createTextField(Employee.SALARY)
@@ -70,13 +71,13 @@ public class EmployeeEditPanel extends EntityEditPanel {
 	}
 
 	private JPanel createDepartmentPanel() {
-		EntityComboBox departmentBox = createComboBox(Employee.DEPARTMENT_FK).build();
+		EntityComboBox departmentBox = (EntityComboBox) component(Employee.DEPARTMENT_FK).get();
 		NumberField<Integer> departmentNumberField = departmentBox.integerSelectorField(Department.DEPARTMENT_NO)
 						.transferFocusOnEnter(true)
 						.validIndicator(editModel().editor().value(Employee.DEPARTMENT_FK).valid())
 						.build();
 
-		component(Employee.DEPARTMENT_FK).set(departmentNumberField);
+		component(Employee.DEPARTMENT_FK).replace(departmentNumberField);
 
 		return Components.borderLayoutPanel()
 						.west(departmentNumberField)
