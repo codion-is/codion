@@ -20,7 +20,7 @@ package is.codion.framework.domain.entity.attribute;
 
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultProviderBuilder;
+import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDerivedValueStep;
 import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefinition.DefaultTransientAttributeDefinitionBuilder;
 import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition.Builder;
 
@@ -241,13 +241,13 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 		@Override
 		public final <B extends DerivedAttributeDefinition.Builder<T, B>> DerivedAttributeDefinition.Builder<T, B> denormalized(Attribute<Entity> entityAttribute,
 																																																														Attribute<T> denormalizedAttribute) {
-			return (DerivedAttributeDefinition.Builder<T, B>) new DefaultProviderBuilder<>(attribute, singletonList(entityAttribute))
-							.provider(new DenormalizedValueProvider<>(entityAttribute, denormalizedAttribute));
+			return (DerivedAttributeDefinition.Builder<T, B>) new DefaultDerivedValueStep<>(attribute, singletonList(entityAttribute))
+							.value(new DenormalizedValue<>(entityAttribute, denormalizedAttribute));
 		}
 
 		@Override
-		public final <B extends DerivedAttributeDefinition.Builder<T, B>> Builder.ProviderBuilder<T, B> derived(Attribute<?>... from) {
-			return new DefaultProviderBuilder<>(attribute, asList(from));
+		public final <B extends DerivedAttributeDefinition.Builder<T, B>> Builder.DerivedValueStep<T, B> derived(Attribute<?>... from) {
+			return new DefaultDerivedValueStep<>(attribute, asList(from));
 		}
 	}
 }

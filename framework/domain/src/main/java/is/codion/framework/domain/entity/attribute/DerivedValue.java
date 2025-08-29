@@ -24,7 +24,7 @@ import java.io.Serializable;
 import java.util.Optional;
 
 /**
- * An attribute which value is derived from one or more source attributes.
+ * Responsible for providing values derived from other attribute values.
  * <p>
  * Derived attributes compute their values from other attributes within the same entity
  * or from related entities. They provide calculated fields, formatting, concatenation,
@@ -65,9 +65,9 @@ import java.util.Optional;
  *                 Customer.FULL_NAME.define()
  *                     .attribute()
  *                     .derived(Customer.FIRST_NAME, Customer.LAST_NAME)
- *                     .provider(values -> {
- *                         String first = values.get(Customer.FIRST_NAME);
- *                         String last = values.get(Customer.LAST_NAME);
+ *                     .value(source -> {
+ *                         String first = source.get(Customer.FIRST_NAME);
+ *                         String last = source.get(Customer.LAST_NAME);
  *                         return (first != null ? first : "") + " " + (last != null ? last : "");
  *                     }),
  *
@@ -75,9 +75,9 @@ import java.util.Optional;
  *                 Customer.DISPLAY_NAME.define()
  *                     .attribute()
  *                     .derived(Customer.FULL_NAME, Customer.EMAIL)
- *                     .provider(values -> {
- *                         String fullName = values.get(Customer.FULL_NAME);
- *                         String email = values.get(Customer.EMAIL);
+ *                     .value(source -> {
+ *                         String fullName = source.get(Customer.FULL_NAME);
+ *                         String email = source.get(Customer.EMAIL);
  *                         return fullName + " (" + email + ")";
  *                     }),
  *
@@ -85,8 +85,8 @@ import java.util.Optional;
  *                 Customer.AGE.define()
  *                     .attribute()
  *                     .derived(Customer.BIRTH_DATE)
- *                     .provider(values -> {
- *                         LocalDate birthDate = values.get(Customer.BIRTH_DATE);
+ *                     .value(source -> {
+ *                         LocalDate birthDate = source.get(Customer.BIRTH_DATE);
  *                         return birthDate != null ?
  *                             Period.between(birthDate, LocalDate.now()).getYears() : null;
  *                     }),
@@ -95,9 +95,9 @@ import java.util.Optional;
  *                 Customer.INITIALS.define()
  *                     .attribute()
  *                     .derived(Customer.FIRST_NAME, Customer.LAST_NAME)
- *                     .provider(values -> {
- *                         String first = values.get(Customer.FIRST_NAME);
- *                         String last = values.get(Customer.LAST_NAME);
+ *                     .value(source -> {
+ *                         String first = source.get(Customer.FIRST_NAME);
+ *                         String last = source.get(Customer.LAST_NAME);
  *                         String firstInitial = first != null && !first.isEmpty() ?
  *                             first.substring(0, 1).toUpperCase() : "";
  *                         String lastInitial = last != null && !last.isEmpty() ?
@@ -123,13 +123,19 @@ import java.util.Optional;
  * String initials = customer.get(Customer.INITIALS);       // "JD"
  *}
  * @param <T> the value type
- * @see Provider
- * @see SourceValues
+ * @see DerivedValue.SourceValues
  */
-public interface DerivedAttribute<T> extends Attribute<T> {
+public interface DerivedValue<T> extends Serializable {
 
 	/**
-	 * Provides the source values from which to derive the value.
+	 * @param source the source values, mapped to their respective attributes
+	 * @return the derived value
+	 */
+	@Nullable
+	T get(SourceValues source);
+
+	/**
+	 * Provides the source values from which to derive a value.
 	 */
 	interface SourceValues {
 
@@ -140,7 +146,8 @@ public interface DerivedAttribute<T> extends Attribute<T> {
 		 * @return the value associated with the given source attribute
 		 * @throws IllegalArgumentException in case the given attribute is not a source attribute
 		 */
-		@Nullable <T> T get(Attribute<T> attribute);
+		@Nullable
+		<T> T get(Attribute<T> attribute);
 
 		/**
 		 * Returns the source value associated with the given attribute or an empty {@link Optional}
@@ -150,18 +157,5 @@ public interface DerivedAttribute<T> extends Attribute<T> {
 		 * @return the value associated with attribute
 		 */
 		<T> Optional<T> optional(Attribute<T> attribute);
-	}
-
-	/**
-	 * Responsible for providing values derived from other values
-	 * @param <T> the underlying type
-	 */
-	interface Provider<T> extends Serializable {
-
-		/**
-		 * @param values the source values, mapped to their respective attributes
-		 * @return the derived value
-		 */
-		@Nullable T get(SourceValues values);
 	}
 }

@@ -22,8 +22,8 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
-import is.codion.framework.domain.entity.attribute.DerivedAttribute;
 import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition;
+import is.codion.framework.domain.entity.attribute.DerivedValue;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.domain.entity.attribute.TransientAttributeDefinition;
@@ -271,7 +271,7 @@ class DefaultEntity implements Entity, Serializable {
 	}
 
 	@Override
-	public boolean equalValues(Entity entity) {
+	public final boolean equalValues(Entity entity) {
 		return equalValues(entity, definition.attributes().get());
 	}
 
@@ -718,15 +718,15 @@ class DefaultEntity implements Entity, Serializable {
 	}
 
 	private @Nullable <T> T derived(DerivedAttributeDefinition<T> derivedDefinition) {
-		return derivedDefinition.provider().get(sourceValues(derivedDefinition, false));
+		return derivedDefinition.value().get(sourceValues(derivedDefinition, false));
 	}
 
 	private @Nullable <T> T derivedOriginal(DerivedAttributeDefinition<T> derivedDefinition) {
-		return derivedDefinition.provider().get(sourceValues(derivedDefinition, true));
+		return derivedDefinition.value().get(sourceValues(derivedDefinition, true));
 	}
 
-	private DerivedAttribute.SourceValues sourceValues(DerivedAttributeDefinition<?> derivedDefinition,
-																										 boolean originalValue) {
+	private DerivedValue.SourceValues sourceValues(DerivedAttributeDefinition<?> derivedDefinition,
+																								 boolean originalValue) {
 		List<Attribute<?>> sources = derivedDefinition.sources();
 		if (sources.isEmpty()) {
 			return new DefaultSourceValues(derivedDefinition.attribute(), EMPTY_MAP);
@@ -882,7 +882,7 @@ class DefaultEntity implements Entity, Serializable {
 		}
 	}
 
-	private static final class DefaultSourceValues implements DerivedAttribute.SourceValues {
+	private static final class DefaultSourceValues implements DerivedValue.SourceValues {
 
 		private final Attribute<?> derivedAttribute;
 		private final Map<Attribute<?>, Object> values;

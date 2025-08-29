@@ -272,9 +272,9 @@ Attribute<Integer> NO_OF_SPEAKERS = TYPE.integerAttribute("noOfSpeakers");
 
 NO_OF_SPEAKERS.define()
     .derived(CountryLanguage.COUNTRY_FK, CountryLanguage.PERCENTAGE)
-    .provider(sourceValues -> {
-        Double percentage = sourceValues.get(CountryLanguage.PERCENTAGE);
-        Entity country = sourceValues.get(CountryLanguage.COUNTRY_FK);
+    .value(source -> {
+        Double percentage = source.get(CountryLanguage.PERCENTAGE);
+        Entity country = source.get(CountryLanguage.COUNTRY_FK);
         if (percentage != null && country != null) {
             Integer population = country.get(Country.POPULATION);
             return (int)(population * (percentage / 100));

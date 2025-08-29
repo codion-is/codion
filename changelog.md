@@ -14,6 +14,8 @@ Codion Change Log
 - AbstractComponentBuilder, AbstractButtonBuilder and AbstractTextComponentBuilder refactored, nulls used instead of defaults.
 - Layout specific panel builders added.
 - DefaultInputDialogBuilder.show(Predicate) bug fixed, no longer closes dialog on ok, regardless of the close predicate.
+### is.codion.framework.domain
+- DerivedAttribute removed, DerivedValue added instead, related renaming.
 ### is.codion.framework.db.local
 - MethodTracer.NO_OP_TRACE added, exit() no longer returns null.
 ### is.codion.framework.server

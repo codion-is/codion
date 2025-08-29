@@ -30,20 +30,20 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefini
 	@Serial
 	private static final long serialVersionUID = 1;
 
-	private final DerivedAttribute.Provider<T> provider;
+	private final DerivedValue<T> value;
 	private final List<Attribute<?>> sources;
 	private final boolean cached;
 
 	private DefaultDerivedAttributeDefinition(DefaultDerivedAttributeDefinitionBuilder<T, ?> builder) {
 		super(builder);
-		this.provider = builder.provider;
+		this.value = builder.derivedValue;
 		this.sources = builder.sources;
 		this.cached = builder.cached;
 	}
 
 	@Override
-	public DerivedAttribute.Provider<T> provider() {
-		return provider;
+	public DerivedValue<T> value() {
+		return value;
 	}
 
 	@Override
@@ -61,36 +61,36 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefini
 		return true;
 	}
 
-	static final class DefaultProviderBuilder<T, B extends DerivedAttributeDefinition.Builder<T, B>>
-					implements DerivedAttributeDefinition.Builder.ProviderBuilder<T, B> {
+	static final class DefaultDerivedValueStep<T, B extends DerivedAttributeDefinition.Builder<T, B>>
+					implements DerivedAttributeDefinition.Builder.DerivedValueStep<T, B> {
 
 		private final Attribute<T> attribute;
 		private final List<Attribute<?>> sources;
 
-		DefaultProviderBuilder(Attribute<T> attribute, List<Attribute<?>> sources) {
+		DefaultDerivedValueStep(Attribute<T> attribute, List<Attribute<?>> sources) {
 			this.attribute = requireNonNull(attribute);
 			this.sources = requireNonNull(sources);
 		}
 
 		@Override
-		public DerivedAttributeDefinition.Builder<T, B> provider(DerivedAttribute.Provider<T> provider) {
-			return new DefaultDerivedAttributeDefinitionBuilder<>(attribute, sources, provider);
+		public DerivedAttributeDefinition.Builder<T, B> value(DerivedValue<T> value) {
+			return new DefaultDerivedAttributeDefinitionBuilder<>(attribute, sources, value);
 		}
 	}
 
 	static final class DefaultDerivedAttributeDefinitionBuilder<T, B extends DerivedAttributeDefinition.Builder<T, B>>
 					extends AbstractAttributeDefinitionBuilder<T, B> implements DerivedAttributeDefinition.Builder<T, B> {
 
-		private final DerivedAttribute.Provider<T> provider;
+		private final DerivedValue<T> derivedValue;
 		private final List<Attribute<?>> sources;
 
 		private boolean cached;
 
 		DefaultDerivedAttributeDefinitionBuilder(Attribute<T> attribute,
 																						 List<Attribute<?>> sources,
-																						 DerivedAttribute.Provider<T> provider) {
+																						 DerivedValue<T> derivedValue) {
 			super(attribute);
-			this.provider = requireNonNull(provider);
+			this.derivedValue = requireNonNull(derivedValue);
 			for (Attribute<?> sourceAttribute : sources) {
 				if (!attribute.entityType().equals(sourceAttribute.entityType())) {
 					throw new IllegalArgumentException("Source attribute must be from same entity as the derived attribute");
@@ -100,12 +100,12 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefini
 				}
 			}
 			this.sources = unmodifiableList(new ArrayList<>(sources));
-			this.cached = !denormalized(provider) && !this.sources.isEmpty();
+			this.cached = !denormalized(derivedValue) && !this.sources.isEmpty();
 		}
 
 		@Override
 		public DerivedAttributeDefinition.Builder<T, B> cached(boolean cached) {
-			if (cached && denormalized(provider)) {
+			if (cached && denormalized(derivedValue)) {
 				throw new IllegalArgumentException("Denormalized attribute values can not be cached");
 			}
 			this.cached = cached;
@@ -137,8 +137,8 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefini
 			return new DefaultDerivedAttributeDefinition<>(this);
 		}
 
-		private static boolean denormalized(DerivedAttribute.Provider<?> valueProvider) {
-			return valueProvider instanceof DenormalizedValueProvider<?>;
+		private static boolean denormalized(DerivedValue<?> derivedValue) {
+			return derivedValue instanceof DenormalizedValue<?>;
 		}
 	}
 }

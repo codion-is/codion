@@ -28,8 +28,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition.ValueSupplier;
 import is.codion.framework.domain.entity.attribute.Column;
-import is.codion.framework.domain.entity.attribute.DerivedAttribute;
-import is.codion.framework.domain.entity.attribute.DerivedAttribute.SourceValues;
+import is.codion.framework.domain.entity.attribute.DerivedValue;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.TypeReference;
 import is.codion.framework.domain.entity.condition.ConditionType;
@@ -247,16 +246,16 @@ public interface Chinook {
 		ForeignKey TRACK_FK = TYPE.foreignKey("track_fk", TRACK_ID, Track.ID);
 	}
 
-	final class InvoiceLineTotalProvider
-					implements DerivedAttribute.Provider<BigDecimal> {
+	final class InvoiceLineTotal
+					implements DerivedValue<BigDecimal> {
 
 		@Serial
 		private static final long serialVersionUID = 1;
 
 		@Override
-		public BigDecimal get(SourceValues values) {
-			Integer quantity = values.get(InvoiceLine.QUANTITY);
-			BigDecimal unitPrice = values.get(InvoiceLine.UNITPRICE);
+		public BigDecimal get(SourceValues source) {
+			Integer quantity = source.get(InvoiceLine.QUANTITY);
+			BigDecimal unitPrice = source.get(InvoiceLine.UNITPRICE);
 			if (unitPrice == null || quantity == null) {
 				return null;
 			}

@@ -590,11 +590,11 @@ CountryLanguage.NO_OF_SPEAKERS.define()
      .caption("No. of speakers")
      .numberFormatGrouping(true)
 
-class NoOfSpeakersProvider implements DerivedAttribute.Provider<Integer> {
+class NoOfSpeakers implements DerivedValue<Integer> {
     @Override
-    public Integer get(SourceValues values) {
-        Double percentage = values.get(CountryLanguage.PERCENTAGE);
-        Entity country = values.get(CountryLanguage.COUNTRY_FK);
+    public Integer get(SourceValues source) {
+        Double percentage = source.get(CountryLanguage.PERCENTAGE);
+        Entity country = source.get(CountryLanguage.COUNTRY_FK);
         if (percentage != null && country != null) {
             Integer population = country.get(Country.POPULATION);
             return (int)(population * (percentage / 100));
@@ -606,7 +606,7 @@ class NoOfSpeakersProvider implements DerivedAttribute.Provider<Integer> {
 //Derived values do not need to have source values
 SomeEntity.RANDOM.define()
      .derived()
-     .provider(sourceValues -> randomNumber())
+     .value(source -> randomNumber())
 ```
 
 ### Database Functions and Procedures

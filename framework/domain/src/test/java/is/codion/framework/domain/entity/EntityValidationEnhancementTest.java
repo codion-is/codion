@@ -167,8 +167,8 @@ public final class EntityValidationEnhancementTest {
 											.minimumValue(0),
 							Customer.AGE.define()
 											.derived(Customer.BIRTH_DATE)
-											.provider(values -> {
-												LocalDate birthDate = values.get(Customer.BIRTH_DATE);
+											.value(source -> {
+												LocalDate birthDate = source.get(Customer.BIRTH_DATE);
 												if (birthDate != null) {
 													return LocalDate.now().getYear() - birthDate.getYear();
 												}
@@ -266,10 +266,10 @@ public final class EntityValidationEnhancementTest {
 															.attributes(Product.STOCK_QUANTITY, Product.ACTIVE),
 											OrderItem.LINE_TOTAL.define()
 															.derived(OrderItem.QUANTITY, OrderItem.UNIT_PRICE, OrderItem.DISCOUNT)
-															.provider(values -> {
-																Integer quantity = values.get(OrderItem.QUANTITY);
-																BigDecimal unitPrice = values.get(OrderItem.UNIT_PRICE);
-																BigDecimal discount = values.get(OrderItem.DISCOUNT);
+															.value(source -> {
+																Integer quantity = source.get(OrderItem.QUANTITY);
+																BigDecimal unitPrice = source.get(OrderItem.UNIT_PRICE);
+																BigDecimal discount = source.get(OrderItem.DISCOUNT);
 																if (quantity != null && unitPrice != null && discount != null) {
 																	BigDecimal subtotal = unitPrice.multiply(BigDecimal.valueOf(quantity));
 																	BigDecimal discountAmount = subtotal.multiply(discount.divide(new BigDecimal("100")));

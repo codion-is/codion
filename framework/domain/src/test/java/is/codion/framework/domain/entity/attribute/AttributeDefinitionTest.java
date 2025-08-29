@@ -45,26 +45,26 @@ public final class AttributeDefinitionTest {
 	@Test
 	void derivedAttribute() {
 		Attribute<Integer> derived = ENTITY_TYPE.integerAttribute("derived");
-		Attribute<Integer> source = ENTITY_TYPE.integerColumn("source");
+		Attribute<Integer> attribute = ENTITY_TYPE.integerColumn("source");
 		assertThrows(UnsupportedOperationException.class, () -> derived.define()
-						.derived(source)
-						.provider(values -> null)
+						.derived(attribute)
+						.value(source -> null)
 						.nullable(false));
 		assertThrows(UnsupportedOperationException.class, () -> derived.define()
-						.derived(source)
-						.provider(values -> null)
+						.derived(attribute)
+						.value(source -> null)
 						.defaultValue(10));
 		assertThrows(UnsupportedOperationException.class, () -> derived.define()
-						.derived(source)
-						.provider(values -> null)
+						.derived(attribute)
+						.value(source -> null)
 						.maximumLength(10));
 		assertThrows(UnsupportedOperationException.class, () -> derived.define()
-						.derived(source)
-						.provider(values -> null)
+						.derived(attribute)
+						.value(source -> null)
 						.minimumValue(10));
 		assertThrows(UnsupportedOperationException.class, () -> derived.define()
-						.derived(source)
-						.provider(values -> null)
+						.derived(attribute)
+						.value(source -> null)
 						.valueRange(10, 20));
 	}
 

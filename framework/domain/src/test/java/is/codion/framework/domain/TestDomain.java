@@ -25,7 +25,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
-import is.codion.framework.domain.entity.attribute.DerivedAttribute;
+import is.codion.framework.domain.entity.attribute.DerivedValue;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.ConditionType;
 import is.codion.framework.domain.entity.query.EntitySelectQuery;
@@ -257,8 +257,8 @@ public final class TestDomain extends DomainModel {
 														.caption(Detail2.INT_ITEMS.name()),
 										Detail2.INT_DERIVED.define()
 														.derived(Detail2.INT)
-														.provider(values -> {
-															Integer intValue = values.get(Detail2.INT);
+														.value(source -> {
+															Integer intValue = source.get(Detail2.INT);
 															if (intValue == null) {
 																return null;
 															}
@@ -364,8 +364,8 @@ public final class TestDomain extends DomainModel {
 														.caption(Detail.INT_ITEMS.name()),
 										Detail.INT_DERIVED.define()
 														.derived(Detail.INT)
-														.provider(values -> {
-															Integer intValue = values.get(Detail.INT);
+														.value(source -> {
+															Integer intValue = source.get(Detail.INT);
 															if (intValue == null) {
 
 																return null;
@@ -513,7 +513,7 @@ public final class TestDomain extends DomainModel {
 														.caption(Department.LOCATION.name()),
 										Employee.DEPARTMENT_NAME.define()
 														.derived(Employee.NAME, Employee.DEPARTMENT_FK)
-														.provider(new DepartmentNameProvider()),
+														.value(new DepartmentName()),
 										Employee.DATA.define()
 														.column()
 														.caption("Data"))
@@ -528,15 +528,15 @@ public final class TestDomain extends DomainModel {
 						.build());
 	}
 
-	private static final class DepartmentNameProvider implements DerivedAttribute.Provider<String>, Serializable {
+	private static final class DepartmentName implements DerivedValue<String>, Serializable {
 
 		@Serial
 		private static final long serialVersionUID = 1;
 
 		@Override
-		public String get(DerivedAttribute.SourceValues values) {
-			String name = values.get(Employee.NAME);
-			Entity department = values.get(Employee.DEPARTMENT_FK);
+		public String get(SourceValues source) {
+			String name = source.get(Employee.NAME);
+			Entity department = source.get(Employee.DEPARTMENT_FK);
 			if (name == null || department == null) {
 				return null;
 			}
@@ -651,7 +651,7 @@ public final class TestDomain extends DomainModel {
 														.column(),
 										InvalidDerived.INVALID_DERIVED.define()
 														.derived(InvalidDerived.ID)
-														.provider(values -> values.get(InvalidDerived.INT).intValue()))
+														.value(source -> source.get(InvalidDerived.INT).intValue()))
 						.caption(InvalidDerived.INVALID_DERIVED.name())//incorrect source value, trigger exception
 						.stringFactory(entity -> null)
 						.build());

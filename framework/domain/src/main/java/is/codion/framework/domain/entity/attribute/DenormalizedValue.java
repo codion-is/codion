@@ -27,7 +27,7 @@ import java.io.Serial;
 
 import static java.util.Objects.requireNonNull;
 
-final class DenormalizedValueProvider<T> implements DerivedAttribute.Provider<T> {
+final class DenormalizedValue<T> implements DerivedValue<T> {
 
 	@Serial
 	private static final long serialVersionUID = 1;
@@ -35,7 +35,7 @@ final class DenormalizedValueProvider<T> implements DerivedAttribute.Provider<T>
 	private final Attribute<Entity> entityAttribute;
 	private final Attribute<T> denormalizedAttribute;
 
-	DenormalizedValueProvider(Attribute<Entity> entityAttribute, Attribute<T> denormalizedAttribute) {
+	DenormalizedValue(Attribute<Entity> entityAttribute, Attribute<T> denormalizedAttribute) {
 		requireNonNull(entityAttribute);
 		requireNonNull(denormalizedAttribute);
 		if (entityAttribute instanceof ForeignKey) {
@@ -49,8 +49,8 @@ final class DenormalizedValueProvider<T> implements DerivedAttribute.Provider<T>
 	}
 
 	@Override
-	public @Nullable T get(DerivedAttribute.SourceValues values) {
-		Entity foreignKeyValue = values.get(entityAttribute);
+	public @Nullable T get(SourceValues source) {
+		Entity foreignKeyValue = source.get(entityAttribute);
 
 		return foreignKeyValue == null ? null : foreignKeyValue.get(denormalizedAttribute);
 	}

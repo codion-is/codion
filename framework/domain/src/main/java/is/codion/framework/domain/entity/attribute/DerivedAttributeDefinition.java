@@ -63,9 +63,9 @@ import java.util.List;
  *                 // Simple derived attribute (cached by default)
  *                 Customer.FULL_NAME.define()
  *                     .derived(Customer.FIRST_NAME, Customer.LAST_NAME)
- *                     .provider(values -> {
- *                         String first = values.get(Customer.FIRST_NAME);
- *                         String last = values.get(Customer.LAST_NAME);
+ *                     .value(source -> {
+ *                         String first = source.get(Customer.FIRST_NAME);
+ *                         String last = source.get(Customer.LAST_NAME);
  *                         if (first == null && last == null) {
  *                             return null;
  *                         }
@@ -77,10 +77,10 @@ import java.util.List;
  *                 // Multi-source derived attribute with caching disabled
  *                 Customer.CONTACT_INFO.define()
  *                     .derived(Customer.FULL_NAME, Customer.EMAIL, Customer.PHONE)
- *                     .provider(values -> {
- *                         String name = values.get(Customer.FULL_NAME);
- *                         String email = values.get(Customer.EMAIL);
- *                         String phone = values.get(Customer.PHONE);
+ *                     .value(source -> {
+ *                         String name = source.get(Customer.FULL_NAME);
+ *                         String email = source.get(Customer.EMAIL);
+ *                         String phone = source.get(Customer.PHONE);
  *
  *                         StringBuilder contact = new StringBuilder();
  *                         if (name != null) contact.append(name);
@@ -100,8 +100,8 @@ import java.util.List;
  *                 // Time-dependent derived attribute (not cached)
  *                 Customer.AGE.define()
  *                     .derived(Customer.BIRTH_DATE)
- *                     .provider(values -> {
- *                         LocalDate birthDate = values.get(Customer.BIRTH_DATE);
+ *                     .value(source -> {
+ *                         LocalDate birthDate = source.get(Customer.BIRTH_DATE);
  *                         return birthDate != null ?
  *                             Period.between(birthDate, LocalDate.now()).getYears() : null;
  *                     })
@@ -111,8 +111,8 @@ import java.util.List;
  *                 // Formatting derived attribute
  *                 Customer.NAME_UPPER.define()
  *                     .derived(Customer.FULL_NAME)
- *                     .provider(values -> {
- *                         String fullName = values.get(Customer.FULL_NAME);
+ *                     .value(source -> {
+ *                         String fullName = source.get(Customer.FULL_NAME);
  *                         return fullName != null ? fullName.toUpperCase() : null;
  *                     })
  *                     .caption("Name (Uppercase)"))
@@ -139,7 +139,7 @@ import java.util.List;
  * String newFullName = customer.get(Customer.FULL_NAME);      // "Jane Doe"
  *}
  * @param <T> the underlying type
- * @see DerivedAttribute.Provider
+ * @see DerivedValue
  * @see #sources()
  * @see #cached()
  */
@@ -151,9 +151,9 @@ public interface DerivedAttributeDefinition<T> extends AttributeDefinition<T> {
 	List<Attribute<?>> sources();
 
 	/**
-	 * @return the value provider, providing the derived value
+	 * @return the derived value
 	 */
-	DerivedAttribute.Provider<T> provider();
+	DerivedValue<T> value();
 
 	/**
 	 * Note that cached attributes are included when an entity is serialized.
@@ -180,13 +180,13 @@ public interface DerivedAttributeDefinition<T> extends AttributeDefinition<T> {
 		 * The first step in building a {@link DerivedAttributeDefinition}
 		 * @param <T> the attribute value type
 		 */
-		interface ProviderBuilder<T, B extends Builder<T, B>> {
+		interface DerivedValueStep<T, B extends Builder<T, B>> {
 
 			/**
-			 * @param provider a {@link DerivedAttribute.Provider} instance responsible for providing the derived value
+			 * @param value a {@link DerivedValue} instance responsible for providing the derived value
 			 * @return a {@link Builder} instance
 			 */
-			Builder<T, B> provider(DerivedAttribute.Provider<T> provider);
+			Builder<T, B> value(DerivedValue<T> value);
 		}
 	}
 }
