@@ -18,6 +18,7 @@
  */
 package is.codion.demos.chinook.ui;
 
+import is.codion.demos.chinook.model.TrackEditModel;
 import is.codion.demos.chinook.ui.DurationComponentValue.DurationPanel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.model.component.list.FilterListSelection;
@@ -38,18 +39,18 @@ import static java.awt.event.KeyEvent.VK_UP;
 
 public final class TrackEditPanel extends EntityEditPanel {
 
-	private final FilterListSelection<Entity> tableSelection;
+	private final FilterListSelection<Entity> trackSelection;
 	private final UpdateCommand updateAndDecrementSelectedIndexes;
 	private final UpdateCommand updateAndIncrementSelectedIndexes;
 
-	public TrackEditPanel(SwingEntityEditModel editModel, FilterListSelection<Entity> tableSelection) {
+	public TrackEditPanel(TrackEditModel editModel, FilterListSelection<Entity> trackSelection) {
 		super(editModel);
-		this.tableSelection = tableSelection;
+		this.trackSelection = trackSelection;
 		this.updateAndDecrementSelectedIndexes = updateCommand()
-						.onUpdate(tableSelection.indexes()::decrement)
+						.onUpdate(trackSelection.indexes()::decrement)
 						.build();
 		this.updateAndIncrementSelectedIndexes = updateCommand()
-						.onUpdate(tableSelection.indexes()::increment)
+						.onUpdate(trackSelection.indexes()::increment)
 						.build();
 		addKeyEvents();
 	}
@@ -150,7 +151,7 @@ public final class TrackEditPanel extends EntityEditPanel {
 			updateAndDecrementSelectedIndexes.execute();
 		}
 		else {
-			tableSelection.indexes().decrement();
+			trackSelection.indexes().decrement();
 		}
 	}
 
@@ -159,7 +160,7 @@ public final class TrackEditPanel extends EntityEditPanel {
 			updateAndIncrementSelectedIndexes.execute();
 		}
 		else {
-			tableSelection.indexes().increment();
+			trackSelection.indexes().increment();
 		}
 	}
 }

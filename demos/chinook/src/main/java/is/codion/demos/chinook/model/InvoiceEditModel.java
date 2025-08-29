@@ -41,7 +41,7 @@ public final class InvoiceEditModel extends SwingEntityEditModel {
 	}
 
 	// Override to update the billing address when the invoice customer is changed.
-	// This method is called when editing happens outside of the edit model,
+	// This method is called when editing happens outside the edit model,
 	// such as in a table, via an editable table cell or multi item editing
 	@Override
 	public <T> void applyEdit(Collection<Entity> invoices, Attribute<T> attribute, T value) {
