@@ -55,7 +55,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toMap;
 
-sealed abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>, Serializable
+abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinition<T>, Serializable
 				permits DefaultColumnDefinition, DefaultForeignKeyDefinition, DefaultDerivedAttributeDefinition, DefaultTransientAttributeDefinition {
 
 	@Serial
