@@ -19,19 +19,23 @@
 package is.codion.common.scheduler;
 
 import is.codion.common.value.Value;
+import is.codion.common.value.Value.Validator;
 
+import org.jspecify.annotations.Nullable;
+
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
-import static is.codion.common.scheduler.TaskScheduler.Builder.TaskStep;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A task scheduler based on a {@link ScheduledExecutorService}, scheduled at a fixed rate,
  * using a daemon thread by default.
  * A TaskScheduler can be stopped and restarted.
  * {@snippet :
- * TaskScheduler scheduler = TaskScheduler.builder()
+ * TaskScheduler scheduler = builder()
  *     .task(() -> System.out.println("Running wild..."))
  *     .interval(2, TimeUnit.SECONDS)
  *     .build();
@@ -44,64 +48,110 @@ import static is.codion.common.scheduler.TaskScheduler.Builder.TaskStep;
  *}
  * @see TaskScheduler#builder()
  */
-public interface TaskScheduler {
+public final class TaskScheduler {
+
+	private static final Validator<Integer> INTERVAL_VALIDATOR = new IntervalValidator();
+
+	private final Lock lock = new Lock() {};
+	private final Runnable task;
+	private final Value<Integer> interval;
+	private final int initialDelay;
+	private final TimeUnit timeUnit;
+	private final ThreadFactory threadFactory;
+
+	private @Nullable ScheduledExecutorService executorService;
+
+	private TaskScheduler(DefaultBuilder builder) {
+		this.task = builder.task;
+		this.interval = Value.builder()
+						.nonNull(builder.interval)
+						.validator(INTERVAL_VALIDATOR)
+						.listener(this::onIntervalChanged)
+						.build();
+		this.initialDelay = builder.initialDelay;
+		this.timeUnit = builder.timeUnit;
+		this.threadFactory = builder.threadFactory;
+	}
 
 	/**
 	 * Controls the task interval and when set, in case this scheduler was running, re-schedules the task.
 	 * If the scheduler was stopped it will remain so, the new interval coming into effect on next start.
 	 * @return the {@link Value} controlling the interval
 	 */
-	Value<Integer> interval();
+	public Value<Integer> interval() {
+		return interval;
+	}
 
 	/**
 	 * @return the time unit
 	 */
-	TimeUnit timeUnit();
+	public TimeUnit timeUnit() {
+		return timeUnit;
+	}
 
 	/**
 	 * Starts this TaskScheduler, if it is running it is restarted, using the initial delay specified during construction.
 	 * @return this TaskScheduler instance
 	 */
-	TaskScheduler start();
+	public TaskScheduler start() {
+		synchronized (lock) {
+			stop();
+			executorService = Executors.newSingleThreadScheduledExecutor(threadFactory);
+			executorService.scheduleAtFixedRate(task, initialDelay, interval.getOrThrow(), timeUnit);
+
+			return this;
+		}
+	}
 
 	/**
 	 * Stops this TaskScheduler, if it is not running calling this method has no effect.
 	 */
-	void stop();
+	public void stop() {
+		synchronized (lock) {
+			if (running() && executorService != null) {
+				executorService.shutdownNow();
+				executorService = null;
+			}
+		}
+	}
 
 	/**
 	 * @return true if this TaskScheduler is running
 	 */
-	boolean running();
+	public boolean running() {
+		synchronized (lock) {
+			return executorService != null && !executorService.isShutdown();
+		}
+	}
 
 	/**
-	 * @return a new {@link TaskStep} instance.
+	 * @return a new {@link Builder.TaskStep} instance.
 	 */
-	static TaskStep builder() {
-		return DefaultTaskScheduler.DefaultBuilder.TASK;
+	public static Builder.TaskStep builder() {
+		return DefaultBuilder.TASK;
 	}
 
 	/**
 	 * A builder for {@link TaskScheduler}
 	 */
-	interface Builder {
+	public sealed interface Builder {
 
 		/**
 		 * Provides a {@link Builder.IntervalStep}
 		 */
-		interface TaskStep {
+		sealed interface TaskStep {
 
 			/**
 			 * @param task the task to run
 			 * @return a new {@link Builder.IntervalStep} instance.
 			 */
-			IntervalStep task(Runnable task);
+			Builder.IntervalStep task(Runnable task);
 		}
 
 		/**
 		 * Provides a {@link Builder}
 		 */
-		interface IntervalStep {
+		sealed interface IntervalStep {
 
 			/**
 			 * @param interval the interval
@@ -134,4 +184,106 @@ public interface TaskScheduler {
 		 */
 		TaskScheduler build();
 	}
+
+	private void onIntervalChanged() {
+		synchronized (lock) {
+			if (running()) {
+				start();
+			}
+		}
+	}
+
+	private static final class DefaultTaskStep implements Builder.TaskStep {
+
+		@Override
+		public Builder.IntervalStep task(Runnable task) {
+			return new DefaultIntervalStep(requireNonNull(task));
+		}
+	}
+
+	private static final class DefaultIntervalStep implements Builder.IntervalStep {
+
+		private final Runnable task;
+
+		private DefaultIntervalStep(Runnable task) {
+			this.task = task;
+		}
+
+		@Override
+		public Builder interval(int interval, TimeUnit timeUnit) {
+			return new DefaultBuilder(task, interval, requireNonNull(timeUnit));
+		}
+	}
+
+	private static final class DefaultBuilder implements Builder {
+
+		private static final Builder.TaskStep TASK = new DefaultTaskStep();
+
+		private final Runnable task;
+		private final int interval;
+		private final TimeUnit timeUnit;
+
+		private int initialDelay;
+		private ThreadFactory threadFactory = new DaemonThreadFactory();
+
+		private DefaultBuilder(Runnable task, int interval, TimeUnit timeUnit) {
+			if (interval <= 0) {
+				throw new IllegalArgumentException("Interval must be a positive integer");
+			}
+			this.task = task;
+			this.interval = interval;
+			this.timeUnit = timeUnit;
+		}
+
+		@Override
+		public Builder initialDelay(int initialDelay) {
+			if (initialDelay < 0) {
+				throw new IllegalArgumentException("Initial delay can not be negative");
+			}
+			this.initialDelay = initialDelay;
+			return this;
+		}
+
+		@Override
+		public Builder threadFactory(ThreadFactory threadFactory) {
+			this.threadFactory = requireNonNull(threadFactory);
+			return this;
+		}
+
+		@Override
+		public TaskScheduler start() {
+			TaskScheduler taskScheduler = build();
+			taskScheduler.start();
+
+			return taskScheduler;
+		}
+
+		@Override
+		public TaskScheduler build() {
+			return new TaskScheduler(this);
+		}
+	}
+
+	private static final class DaemonThreadFactory implements ThreadFactory {
+
+		@Override
+		public Thread newThread(Runnable runnable) {
+			Thread thread = new Thread(runnable);
+			thread.setDaemon(true);
+
+			return thread;
+		}
+	}
+
+	private static final class IntervalValidator implements Validator<Integer> {
+
+		@Override
+		public void validate(@Nullable Integer interval) {
+			if (interval == null || interval <= 0) {
+				throw new IllegalArgumentException("Interval must be a positive integer");
+			}
+		}
+	}
+
+	private interface Lock {}
 }
