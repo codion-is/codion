@@ -319,8 +319,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		private final Lock lock = new Lock() {};
 
 		private final AbstractRefresher<T> refresher;
-		private final DefaultVisibleItems included;
-		private final DefaultFilteredItems excluded = new DefaultFilteredItems();
+		private final DefaultIncludedItems included;
+		private final DefaultExcludedItems excluded = new DefaultExcludedItems();
 
 		private final boolean filterSelected;
 		private final boolean includeNull;
@@ -332,7 +332,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			this.includeNull = builder.includeNull;
 			this.nullItem = builder.nullItem;
 			this.filterSelected = builder.filterSelected;
-			this.included = new DefaultVisibleItems();
+			this.included = new DefaultIncludedItems();
 			if (includeNull) {
 				included.items.add(null);
 			}
@@ -588,7 +588,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			return included.predicate.isNull() || included.predicate.getOrThrow().test(item);
 		}
 
-		private final class DefaultVisibleItems implements IncludedItems<T> {
+		private final class DefaultIncludedItems implements IncludedItems<T> {
 
 			private final IncludedPredicate<T> predicate = new DefaultIncludedPredicate<>();
 			private final List<@Nullable T> items = new ArrayList<>();
@@ -647,7 +647,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			}
 
 			@Override
-			public T get(int index) {
+			public @Nullable T get(int index) {
 				synchronized (lock) {
 					return items.get(index);
 				}
@@ -716,7 +716,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			}
 		}
 
-		private final class DefaultFilteredItems implements ExcludedItems<T> {
+		private final class DefaultExcludedItems implements ExcludedItems<T> {
 
 			private final Set<T> items = new LinkedHashSet<>();
 

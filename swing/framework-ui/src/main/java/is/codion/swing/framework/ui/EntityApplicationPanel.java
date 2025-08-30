@@ -254,7 +254,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 	private final Map<Object, State> logLevelStates = createLogLevelStateMap();
 
-	private LogViewer sqlTraceViewer;
+	private @Nullable LogViewer sqlTraceViewer;
 
 	private boolean saveDefaultUsername = true;
 	private boolean initialized = false;
