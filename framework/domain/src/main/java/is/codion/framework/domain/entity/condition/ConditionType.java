@@ -39,7 +39,7 @@ import java.util.List;
  * </ul>
  * <p>
  * A {@link ConditionType} is created on an {@link EntityType} and serves as a named identifier
- * for a custom condition. The actual SQL generation logic is provided via a {@link ConditionProvider}
+ * for a custom condition. The actual SQL generation logic is provided via a {@link ConditionString}
  * when defining the entity.
  * <p>
  * {@snippet :
@@ -118,9 +118,9 @@ import java.util.List;
  *     Location.WITHIN_RADIUS.get(List.of(40.7128, -74.0060, 10.0)));
  *}
  * @see CustomCondition
- * @see ConditionProvider
+ * @see ConditionString
  * @see EntityDefinition#condition(ConditionType)
- * @see EntityDefinition.Builder#condition(ConditionType, ConditionProvider)
+ * @see EntityDefinition.Builder#condition(ConditionType, ConditionString)
  */
 public interface ConditionType {
 
@@ -135,16 +135,16 @@ public interface ConditionType {
 	String name();
 
 	/**
-	 * Returns a {@link CustomCondition} based on the {@link ConditionProvider} associated with this {@link ConditionType}
+	 * Returns a {@link CustomCondition} based on the {@link ConditionString} associated with this {@link ConditionType}
 	 * @return a {@link CustomCondition} instance
 	 * @see EntityDefinition#condition(ConditionType)
 	 */
 	CustomCondition get();
 
 	/**
-	 * <p>Returns a {@link CustomCondition} based on the {@link ConditionProvider} associated with this {@link ConditionType}
-	 * <p>This method assumes that the {@link ConditionProvider} is not based on any columns or has no need for them when creating the condition string.
-	 * <p>Note that {@link ConditionProvider#toString(List, List)} will receive an empty column list.
+	 * <p>Returns a {@link CustomCondition} based on the {@link ConditionString} associated with this {@link ConditionType}
+	 * <p>This method assumes that the {@link ConditionString} is not based on any columns or has no need for them when creating the condition string.
+	 * <p>Note that {@link ConditionString#toString(List, List)} will receive an empty column list.
 	 * @param values the values used by this condition
 	 * @return a {@link CustomCondition} instance
 	 * @see EntityDefinition#condition(ConditionType)
@@ -152,7 +152,7 @@ public interface ConditionType {
 	CustomCondition get(List<?> values);
 
 	/**
-	 * Returns a {@link CustomCondition} based on the {@link ConditionProvider} associated with this {@link ConditionType}
+	 * Returns a {@link CustomCondition} based on the {@link ConditionString} associated with this {@link ConditionType}
 	 * @param column the column representing the value used by this condition
 	 * @param value the value used by this condition string
 	 * @param <T> the column type
@@ -162,7 +162,7 @@ public interface ConditionType {
 	<T> CustomCondition get(Column<T> column, @Nullable T value);
 
 	/**
-	 * Returns a {@link CustomCondition} based on the {@link ConditionProvider} associated with this {@link ConditionType}
+	 * Returns a {@link CustomCondition} based on the {@link ConditionString} associated with this {@link ConditionType}
 	 * @param column the column representing the values used by this condition, assuming all the values are for the same column
 	 * @param values the values used by this condition string
 	 * @param <T> the column type
@@ -172,7 +172,7 @@ public interface ConditionType {
 	<T> CustomCondition get(Column<T> column, List<T> values);
 
 	/**
-	 * Returns a {@link CustomCondition} based on the {@link ConditionProvider} associated with this {@link ConditionType}
+	 * Returns a {@link CustomCondition} based on the {@link ConditionString} associated with this {@link ConditionType}
 	 * @param columns the columns representing the values used by this condition, in the same order as their respective values
 	 * @param values the values used by this condition string in the same order as their respective columns
 	 * @return a {@link CustomCondition} instance

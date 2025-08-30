@@ -18,6 +18,7 @@ Codion Change Log
 - DerivedAttribute removed, DerivedValue added instead, related renaming.
 - ForeignKeyCondition removed, Factory moved up to package level as ForeignKeyConditionFactory.
 - ColumnCondition.Factory moved up to package level as ColumnConditionFactory.
+- ConditionProvider renamed ConditionString.
 ### is.codion.framework.db.local
 - MethodTracer.NO_OP_TRACE added, exit() no longer returns null.
 ### is.codion.framework.server

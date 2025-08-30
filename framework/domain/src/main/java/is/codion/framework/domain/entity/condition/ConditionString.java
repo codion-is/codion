@@ -23,9 +23,9 @@ import is.codion.framework.domain.entity.attribute.Column;
 import java.util.List;
 
 /**
- * Provides condition strings for where clauses
+ * Provides condition strings for custom conditions
  */
-public interface ConditionProvider {
+public interface ConditionString {
 
 	/**
 	 * Creates a query condition string for the given values

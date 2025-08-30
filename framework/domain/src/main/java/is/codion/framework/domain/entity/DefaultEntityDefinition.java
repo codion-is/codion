@@ -27,7 +27,7 @@ import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKey.Reference;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
-import is.codion.framework.domain.entity.condition.ConditionProvider;
+import is.codion.framework.domain.entity.condition.ConditionString;
 import is.codion.framework.domain.entity.condition.ConditionType;
 import is.codion.framework.domain.entity.query.EntitySelectQuery;
 
@@ -89,7 +89,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 	private final transient KeyGenerator keyGenerator;
 	private final transient boolean optimisticLocking;
 	private final transient @Nullable EntitySelectQuery selectQuery;
-	private final transient @Nullable Map<ConditionType, ConditionProvider> conditionProviders;
+	private final transient @Nullable Map<ConditionType, ConditionString> conditionStrings;
 	private final Map<ForeignKey, EntityDefinition> referencedEntities = new HashMap<>();
 	private final EntityAttributes entityAttributes;
 	private final PrimaryKey primaryKey = new DefaultPrimaryKey();
@@ -116,7 +116,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		this.table = builder.table;
 		this.selectTable = builder.selectTable;
 		this.selectQuery = builder.selectQuery;
-		this.conditionProviders = builder.conditionProviders == null ? null : new HashMap<>(builder.conditionProviders);
+		this.conditionStrings = builder.conditionStrings == null ? null : new HashMap<>(builder.conditionStrings);
 		this.entityAttributes = builder.attributes;
 	}
 
@@ -131,16 +131,16 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 	}
 
 	@Override
-	public ConditionProvider condition(ConditionType conditionType) {
+	public ConditionString condition(ConditionType conditionType) {
 		requireNonNull(conditionType);
-		if (conditionProviders != null) {
-			ConditionProvider conditionProvider = conditionProviders.get(conditionType);
-			if (conditionProvider != null) {
-				return conditionProvider;
+		if (conditionStrings != null) {
+			ConditionString conditionString = conditionStrings.get(conditionType);
+			if (conditionString != null) {
+				return conditionString;
 			}
 		}
 
-		throw new IllegalArgumentException("ConditionProvider for type " + conditionType + " not found");
+		throw new IllegalArgumentException("ConditionString for condition " + conditionType + " not found");
 	}
 
 	@Override
@@ -780,7 +780,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		private final EntityAttributes attributes;
 
 		private String table;
-		private @Nullable Map<ConditionType, ConditionProvider> conditionProviders;
+		private @Nullable Map<ConditionType, ConditionString> conditionStrings;
 		private @Nullable String caption;
 		private String captionResourceKey;
 		private @Nullable String description;
@@ -814,16 +814,16 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		}
 
 		@Override
-		public Builder condition(ConditionType conditionType, ConditionProvider conditionProvider) {
+		public Builder condition(ConditionType conditionType, ConditionString conditionString) {
 			requireNonNull(conditionType);
-			requireNonNull(conditionProvider);
-			if (this.conditionProviders == null) {
-				this.conditionProviders = new HashMap<>();
+			requireNonNull(conditionString);
+			if (this.conditionStrings == null) {
+				this.conditionStrings = new HashMap<>();
 			}
-			if (this.conditionProviders.containsKey(conditionType)) {
-				throw new IllegalStateException("ConditionProvider for condition type  " + conditionType + " has already been added");
+			if (this.conditionStrings.containsKey(conditionType)) {
+				throw new IllegalStateException("ConditionString for condition  " + conditionType + " has already been added");
 			}
-			this.conditionProviders.put(conditionType, conditionProvider);
+			this.conditionStrings.put(conditionType, conditionString);
 			return this;
 		}
 

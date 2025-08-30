@@ -21,15 +21,15 @@ package is.codion.framework.domain.entity.condition;
 import java.util.List;
 
 /**
- * A custom {@link Condition} based on a {@link ConditionProvider}.
+ * A custom {@link Condition} based on a {@link ConditionString}.
  * <p>
  * Custom conditions are used to create query conditions that cannot be created with the
  * standard {@link Condition}, {@link ColumnConditionFactory} or {@link ForeignKeyConditionFactory} APIs.
  * They enable complex SQL constructs such as subqueries, JOINs, window functions, and
  * database-specific functionality.
  * <p>
- * A {@link ConditionType} is associated with a {@link ConditionProvider}, which is responsible
- * for creating the condition string via {@link ConditionProvider#toString(List, List)}.
+ * A {@link ConditionType} is associated with a {@link ConditionString}, which is responsible
+ * for creating the condition string via {@link ConditionString#toString(List, List)}.
  * The {@code ?} substitute character is replaced with condition values when the statement is prepared.
  * <p>
  * Custom conditions provide the flexibility to use any SQL construct while maintaining
@@ -112,7 +112,7 @@ import java.util.List;
  *         .build());
  *}
  * @see ConditionType
- * @see ConditionProvider
+ * @see ConditionString
  * @see #conditionType()
  */
 public interface CustomCondition extends Condition {

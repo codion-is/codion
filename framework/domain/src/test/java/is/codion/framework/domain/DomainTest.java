@@ -159,20 +159,20 @@ public class DomainTest {
 
 	@Test
 	void condition() {
-		EntityType nullConditionProvider1 = DOMAIN.entityType("nullConditionProvider1");
+		EntityType nullConditionString1 = DOMAIN.entityType("nullConditionString1");
 		assertThrows(NullPointerException.class, () ->
-						domain.add(nullConditionProvider1.define(nullConditionProvider1.integerColumn("id").define().primaryKey())
+						domain.add(nullConditionString1.define(nullConditionString1.integerColumn("id").define().primaryKey())
 										.condition(null, (columns, values) -> null)
 										.build()));
-		EntityType nullConditionProvider2 = DOMAIN.entityType("nullConditionProvider2");
+		EntityType nullConditionString2 = DOMAIN.entityType("nullConditionString2");
 		assertThrows(NullPointerException.class, () ->
-						domain.add(nullConditionProvider2.define(nullConditionProvider2.integerColumn("id").define().primaryKey())
-										.condition(nullConditionProvider2.conditionType("id"), null)
+						domain.add(nullConditionString2.define(nullConditionString2.integerColumn("id").define().primaryKey())
+										.condition(nullConditionString2.conditionType("id"), null)
 										.build()));
-		EntityType nullConditionProvider3 = DOMAIN.entityType("nullConditionProvider3");
-		ConditionType nullConditionType = nullConditionProvider3.conditionType("id");
+		EntityType nullConditionString3 = DOMAIN.entityType("nullConditionString3");
+		ConditionType nullConditionType = nullConditionString3.conditionType("id");
 		assertThrows(IllegalStateException.class, () ->
-						domain.add(nullConditionProvider3.define(nullConditionProvider3.integerColumn("id").define().primaryKey())
+						domain.add(nullConditionString3.define(nullConditionString3.integerColumn("id").define().primaryKey())
 										.condition(nullConditionType, (columns, values) -> null)
 										.condition(nullConditionType, (columns, values) -> null)
 										.build()));

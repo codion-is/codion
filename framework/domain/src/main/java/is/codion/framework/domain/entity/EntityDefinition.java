@@ -25,7 +25,7 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
-import is.codion.framework.domain.entity.condition.ConditionProvider;
+import is.codion.framework.domain.entity.condition.ConditionString;
 import is.codion.framework.domain.entity.condition.ConditionType;
 import is.codion.framework.domain.entity.query.EntitySelectQuery;
 
@@ -113,43 +113,13 @@ public interface EntityDefinition {
 	String table();
 
 	/**
-	 * Returns the {@link ConditionProvider} associated with the given type
-	 * {@snippet :
-	 * // Define custom condition types in entity definition
-	 * interface Customer {
-	 *     EntityType TYPE = DOMAIN.entityType("customer");
-	 *     Column<String> STATUS = TYPE.stringColumn("status");
-	 *     Column<LocalDate> LAST_ORDER_DATE = TYPE.localDateColumn("last_order_date");
-	 *
-	 *     // Custom condition for active customers
-	 *     ConditionType ACTIVE = ConditionType.custom("activeCustomers");
-	 * }
-	 *
-	 * // In domain definition
-	 * Customer.TYPE.define(
-	 *         Customer.STATUS.define()
-	 *             .column(),
-	 *         Customer.LAST_ORDER_DATE.define()
-	 *             .column())
-	 *     .condition(Customer.ACTIVE, (columns, values) ->
-	 *         // Returns customers with active status and recent activity
-	 *         Condition.and(
-	 *             Customer.STATUS.equalTo("ACTIVE"),
-	 *             Customer.LAST_ORDER_DATE.greaterThanOrEqualTo(LocalDate.now().minusMonths(6))
-	 *         ))
-	 *     .build();
-	 *
-	 * // Usage
-	 * Condition activeCondition = Customer.ACTIVE.get();
-	 *
-	 * List<Entity> activeCustomers = connection.select(activeCondition);
-	 *}
+	 * Returns the {@link ConditionString} associated with the given type
 	 * @param conditionType the condition type
-	 * @return the condition provider associated with the given type
-	 * @throws IllegalArgumentException in case no ConditionProvider is associated with the given conditionType
-	 * @see EntityDefinition.Builder#condition(ConditionType, ConditionProvider)
+	 * @return the ConditionString associated with the given condition
+	 * @throws IllegalArgumentException in case no ConditionString is associated with the given conditionType
+	 * @see EntityDefinition.Builder#condition(ConditionType, ConditionString)
 	 */
-	ConditionProvider condition(ConditionType conditionType);
+	ConditionString condition(ConditionType conditionType);
 
 	/**
 	 * @return the validator for this entity type
@@ -319,14 +289,14 @@ public interface EntityDefinition {
 		Builder validator(EntityValidator validator);
 
 		/**
-		 * Adds a {@link ConditionProvider} which provides a dynamic query condition string.
+		 * Adds a {@link ConditionString} which provides a dynamic query condition string.
 		 * The condition string should not include the WHERE keyword and use the ?
 		 * substitution character where values should be inserted.
 		 * @param conditionType the condition type
-		 * @param conditionProvider the condition provider
+		 * @param conditionString the condition string provider
 		 * @return this {@link Builder} instance
 		 */
-		Builder condition(ConditionType conditionType, ConditionProvider conditionProvider);
+		Builder condition(ConditionType conditionType, ConditionString conditionString);
 
 		/**
 		 * Sets the caption for this entity type
