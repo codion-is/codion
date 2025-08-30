@@ -20,7 +20,20 @@ package is.codion.common.proxy;
 
 import org.jspecify.annotations.Nullable;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.Collections.*;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Builds a dynamic proxy for a single interface.
@@ -28,7 +41,7 @@ import java.util.List;
  * This builder is reusable and thread-safe. Each call to {@link #build()} creates a new proxy instance
  * based on the current builder state. Subsequent changes to the builder do not affect previously built proxies.
  * <p>
- * Methods can be replaced by calling {@link #method(String, ProxyMethod)} again with the same method signature,
+ * Methods can be replaced by calling {@link #method(String, ProxyBuilder.ProxyMethod)} again with the same method signature,
  * but once added, methods cannot be removed from the builder.
  * <p>
  * Note that if the {@link Object#equals(Object)} method is not proxied the resulting proxy is equal only to itself.
@@ -50,7 +63,7 @@ import java.util.List;
  *     });
  *
  * List<String> proxy1 = builder.build();
- * 
+ *
  * // Builder can be reused and modified
  * builder.method("remove", Object.class, parameters -> {
  *   Object item = parameters.arguments().get(0);
@@ -65,7 +78,19 @@ import java.util.List;
  * @param <T> the proxy type
  * @see #of(Class)
  */
-public interface ProxyBuilder<T> {
+public final class ProxyBuilder<T> {
+
+	private final Map<MethodKey, ProxyMethod<T>> methodMap = new HashMap<>();
+	private final Class<T> interfaceToProxy;
+
+	private @Nullable T delegate;
+
+	private ProxyBuilder(Class<T> interfaceToProxy) {
+		if (!requireNonNull(interfaceToProxy).isInterface()) {
+			throw new IllegalArgumentException(interfaceToProxy + " is not an interface");
+		}
+		this.interfaceToProxy = interfaceToProxy;
+	}
 
 	/**
 	 * Sets the delegate instance to forward non-proxied method calls to.
@@ -76,7 +101,14 @@ public interface ProxyBuilder<T> {
 	 * @param delegate the delegate instance to receive all non-proxied method calls
 	 * @return this proxy builder
 	 */
-	ProxyBuilder<T> delegate(T delegate);
+	public ProxyBuilder<T> delegate(T delegate) {
+		requireNonNull(delegate);
+		synchronized (methodMap) {
+			this.delegate = delegate;
+		}
+		return this;
+	}
+
 
 	/**
 	 * Proxy the given no-argument method with the given proxy method.
@@ -87,19 +119,9 @@ public interface ProxyBuilder<T> {
 	 * @param method the proxy replacement method
 	 * @return this proxy builder
 	 */
-	ProxyBuilder<T> method(String name, ProxyMethod<T> method);
-
-	/**
-	 * Proxy the given single-argument method with the given proxy method.
-	 * <p>
-	 * If a proxy method has already been defined for this method signature,
-	 * it will be replaced with the new one.
-	 * @param name the method name
-	 * @param parameterType the method parameter type
-	 * @param method the proxy method
-	 * @return this proxy builder
-	 */
-	ProxyBuilder<T> method(String name, Class<?> parameterType, ProxyMethod<T> method);
+	public ProxyBuilder<T> method(String name, ProxyMethod<T> method) {
+		return method(name, emptyList(), method);
+	}
 
 	/**
 	 * Proxy the given method with the given proxy method.
@@ -111,7 +133,35 @@ public interface ProxyBuilder<T> {
 	 * @param method the proxy method
 	 * @return this proxy builder
 	 */
-	ProxyBuilder<T> method(String name, List<Class<?>> parameterTypes, ProxyMethod<T> method);
+	public ProxyBuilder<T> method(String name, Class<?> parameterType, ProxyMethod<T> method) {
+		return method(name, singletonList(requireNonNull(parameterType)), method);
+	}
+
+	/**
+	 * Proxy the given method with the given proxy method.
+	 * <p>
+	 * If a proxy method has already been defined for this method signature,
+	 * it will be replaced with the new one.
+	 * @param name the method name
+	 * @param parameterTypes the method parameter types
+	 * @param method the proxy method
+	 * @return this proxy builder
+	 */
+	public ProxyBuilder<T> method(String name, List<Class<?>> parameterTypes, ProxyMethod<T> method) {
+		requireNonNull(name);
+		requireNonNull(parameterTypes);
+		requireNonNull(method);
+		try {
+			synchronized (methodMap) {
+				methodMap.put(findMethod(singletonList(interfaceToProxy), name, parameterTypes), method);
+			}
+
+			return this;
+		}
+		catch (NoSuchMethodException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	/**
 	 * Builds the Proxy instance.
@@ -121,13 +171,18 @@ public interface ProxyBuilder<T> {
 	 * changes to the builder.
 	 * @return a new proxy instance
 	 */
-	T build();
+	public T build() {
+		synchronized (methodMap) {
+			return (T) Proxy.newProxyInstance(interfaceToProxy.getClassLoader(),
+							new Class[] {interfaceToProxy}, new DefaultHandler<>(new HashMap<>(methodMap), delegate));
+		}
+	}
 
 	/**
 	 * A proxy method.
 	 * @param <T> the proxy type
 	 */
-	interface ProxyMethod<T> {
+	public interface ProxyMethod<T> {
 
 		/**
 		 * Invokes this proxy method.
@@ -141,7 +196,7 @@ public interface ProxyBuilder<T> {
 		 * Parameters available to the invocation handler when calling a proxy method.
 		 * @param <T> the proxy type
 		 */
-		interface Parameters<T> {
+		sealed interface Parameters<T> {
 
 			/**
 			 * @return the proxy instance
@@ -171,7 +226,145 @@ public interface ProxyBuilder<T> {
 	 * @return a new {@link ProxyBuilder} instance.
 	 * @throws IllegalArgumentException in case {@code interfaceToProxy} is not an interface
 	 */
-	static <T> ProxyBuilder<T> of(Class<T> interfaceToProxy) {
-		return new DefaultProxyBuilder<>(interfaceToProxy);
+	public static <T> ProxyBuilder<T> of(Class<T> interfaceToProxy) {
+		return new ProxyBuilder<>(interfaceToProxy);
+	}
+
+	private static MethodKey findMethod(List<Class<?>> interfaces, String methodName, List<Class<?>> parameterTypes) throws NoSuchMethodException {
+		Method method = null;
+		for (Class<?> anInterface : interfaces) {
+			try {
+				method = anInterface.getMethod(methodName, parameterTypes.toArray(new Class[0]));
+			}
+			catch (NoSuchMethodException e) {/**/}
+		}
+		if (method != null) {
+			return new MethodKey(method);
+		}
+
+		List<Class<?>> superInterfaces = interfaces.stream()
+						.flatMap(new GetSuperInterfaces())
+						.collect(Collectors.toList());
+		if (superInterfaces.isEmpty()) {
+			return new MethodKey(Object.class.getMethod(methodName, parameterTypes.toArray(new Class[0])));
+		}
+
+		return findMethod(superInterfaces, methodName, parameterTypes);
+	}
+
+	private static final class GetSuperInterfaces implements Function<Class<?>, Stream<Class<?>>> {
+
+		@Override
+		public Stream<Class<?>> apply(Class<?> anInterface) {
+			return Arrays.stream(anInterface.getInterfaces());
+		}
+	}
+
+	private static final class DefaultHandler<T> implements InvocationHandler {
+
+		private static final String EQUALS = "equals";
+
+		private final Map<MethodKey, ProxyMethod<T>> methodMap;
+		private final @Nullable T delegate;
+
+		private DefaultHandler(Map<MethodKey, ProxyMethod<T>> methodMap, @Nullable T delegate) {
+			this.methodMap = methodMap;
+			this.delegate = delegate;
+		}
+
+		@Override
+		public @Nullable Object invoke(Object proxy, Method method, @Nullable Object[] args) throws Throwable {
+			ProxyMethod<T> proxyMethod = methodMap.get(new MethodKey(method));
+			if (proxyMethod != null) {
+				return proxyMethod.invoke(new DefaultProxyMethodParameters<>((T) proxy, delegate, args));
+			}
+			if (isEqualsMethod(method)) {
+				return proxy == args[0];
+			}
+			if (delegate != null) {
+				try {
+					return method.invoke(delegate, args);
+				}
+				catch (InvocationTargetException e) {
+					throw e.getTargetException();
+				}
+			}
+
+			throw new UnsupportedOperationException(method.toString());
+		}
+
+		private static boolean isEqualsMethod(Method method) {
+			return EQUALS.equals(method.getName()) &&
+							method.getParameterCount() == 1 &&
+							method.getParameterTypes()[0].equals(Object.class);
+		}
+	}
+
+	private static final class DefaultProxyMethodParameters<T> implements ProxyMethod.Parameters<T> {
+
+		private final T proxy;
+		private final @Nullable T delegate;
+		private final List<?> arguments;
+
+		private DefaultProxyMethodParameters(T proxy, @Nullable T delegate, @Nullable Object[] arguments) {
+			this.proxy = requireNonNull(proxy);
+			this.delegate = delegate;
+			this.arguments = arguments == null ? emptyList() : unmodifiableList(Arrays.asList(arguments));
+		}
+
+		@Override
+		public T proxy() {
+			return proxy;
+		}
+
+		@Override
+		public T delegate() {
+			if (delegate == null) {
+				throw new IllegalStateException("No delegate specified for proxy");
+			}
+
+			return delegate;
+		}
+
+		@Override
+		public List<?> arguments() {
+			return arguments;
+		}
+	}
+
+	private static final class MethodKey {
+
+		private final String methodName;
+		private final Class<?>[] parameterTypes;
+		private final int hashCode;
+
+		private MethodKey(Method method) {
+			this.methodName = method.getName();
+			this.parameterTypes = method.getParameterTypes();
+			this.hashCode = createHashCode();
+		}
+
+		@Override
+		public boolean equals(Object object) {
+			if (this == object) {
+				return true;
+			}
+			if (object == null || getClass() != object.getClass()) {
+				return false;
+			}
+			MethodKey methodKey = (MethodKey) object;
+
+			return methodName.equals(methodKey.methodName) &&
+							Arrays.equals(parameterTypes, methodKey.parameterTypes);
+		}
+
+		@Override
+		public int hashCode() {
+			return hashCode;
+		}
+
+		private int createHashCode() {
+			return 31 * methodName.hashCode() + Arrays.hashCode(parameterTypes);
+		}
 	}
 }
