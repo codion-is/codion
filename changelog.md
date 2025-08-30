@@ -6,6 +6,7 @@ Codion Change Log
 - ProxyBuilder no longer an interface.
 - TaskScheduler no longer an interface.
 - MessageBundle no longer an interface.
+- PropertyStore no longer an interface.
 ### is.codion.common.model
 - FilterModel.Builder.visiblePredicate() renamed visible().
 - FilterModel.visible() and filtered() renamed included() and excluded(), related renaming.

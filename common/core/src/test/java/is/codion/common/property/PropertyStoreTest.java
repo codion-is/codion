@@ -37,12 +37,13 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static is.codion.common.property.PropertyStore.propertyStore;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class DefaultPropertyStoreTest {
+public final class PropertyStoreTest {
 
 	private static final String LINE_SEPARATOR = System.lineSeparator();
 
@@ -69,7 +70,7 @@ public final class DefaultPropertyStoreTest {
 						.append("double.property=").append(DOUBLE_VALUE).append(LINE_SEPARATOR)
 						.append("boolean.property=true");
 		Files.write(configFile, singletonList(configBuilder.toString()));
-		DefaultPropertyStore store = new DefaultPropertyStore(configFile);
+		PropertyStore store = propertyStore(configFile);
 
 		// String property operations
 		AtomicInteger counter = new AtomicInteger();
@@ -168,7 +169,7 @@ public final class DefaultPropertyStoreTest {
 	void propertyValue_withDefaultValue_shouldUseDefaultWhenNull() throws IOException {
 		File configFile = File.createTempFile("PropertyStoreTest.testDefaultValues", "properties");
 		configFile.deleteOnExit();
-		DefaultPropertyStore store = new DefaultPropertyStore(configFile.toPath());
+		PropertyStore store = propertyStore(configFile.toPath());
 
 		// String default value
 		PropertyValue<String> stringValue = store.stringValue("string.property.default", "value");
@@ -214,7 +215,7 @@ public final class DefaultPropertyStoreTest {
 	@Test
 	@DisplayName("Properties without default values")
 	void propertyValue_withoutDefaultValue_shouldReturnNull() {
-		DefaultPropertyStore store = new DefaultPropertyStore(new Properties());
+		PropertyStore store = propertyStore(new Properties());
 
 		// String without default
 		PropertyValue<String> stringValue = store.stringValue("string.property.noDefault");
@@ -238,9 +239,9 @@ public final class DefaultPropertyStoreTest {
 	@Test
 	@DisplayName("Exception handling")
 	void propertyStore_invalidOperations_shouldThrowExceptions() {
-		assertThrows(FileNotFoundException.class, () -> new DefaultPropertyStore(Path.of("test.file")));
+		assertThrows(FileNotFoundException.class, () -> propertyStore(Path.of("test.file")));
 
-		PropertyStore store = PropertyStore.propertyStore();
+		PropertyStore store = propertyStore();
 		store.stringValue("test", "test");
 		assertThrows(IllegalStateException.class, () -> store.stringValue("test"));
 		store.listValue("testList", Objects::toString, Objects::toString);
@@ -259,19 +260,19 @@ public final class DefaultPropertyStoreTest {
 		Properties properties = new Properties();
 		properties.put("property", "properties");
 
-		DefaultPropertyStore store = new DefaultPropertyStore(properties);
+		PropertyStore store = propertyStore(properties);
 		PropertyValue<String> value = store.stringValue("property", "def");
 		assertEquals("properties", value.get());
 
 		System.clearProperty("property");
-		store = new DefaultPropertyStore(properties);
+		store = propertyStore(properties);
 		value = store.stringValue("property", "def");
 		assertEquals("properties", value.get());
 
 		System.clearProperty("property");
 		properties.clear();
 
-		store = new DefaultPropertyStore(properties);
+		store = propertyStore(properties);
 		value = store.stringValue("property", "def");
 		assertEquals("def", value.get());
 	}
@@ -281,7 +282,7 @@ public final class DefaultPropertyStoreTest {
 	void getOrThrow_withNullValue_shouldThrowNoSuchElementException() {
 		Properties properties = new Properties();
 		properties.put("property", "");
-		DefaultPropertyStore store = new DefaultPropertyStore(properties);
+		PropertyStore store = propertyStore(properties);
 		PropertyValue<String> propertyValue = store.stringValue("property");
 		propertyValue.set(null);
 		assertThrows(NoSuchElementException.class, propertyValue::getOrThrow);
