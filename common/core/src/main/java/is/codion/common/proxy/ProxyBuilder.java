@@ -129,7 +129,7 @@ public final class ProxyBuilder<T> {
 	 * If a proxy method has already been defined for this method signature,
 	 * it will be replaced with the new one.
 	 * @param name the method name
-	 * @param parameterTypes the method parameter types
+	 * @param parameterType the method parameter type
 	 * @param method the proxy method
 	 * @return this proxy builder
 	 */

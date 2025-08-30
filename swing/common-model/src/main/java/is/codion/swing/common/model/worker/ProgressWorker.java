@@ -168,7 +168,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	/**
 	 * Provides builders for a given task type.
 	 */
-	public interface BuilderFactory {
+	public sealed interface BuilderFactory {
 
 		/**
 		 * @param task the task to run
@@ -293,7 +293,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	 * @param <T> the worker result type
 	 * @param <V> the intermediate result type
 	 */
-	public interface Builder<T, V> {
+	public sealed interface Builder<T, V> {
 
 		/**
 		 * Overrides any maximum progress specified by the task itself.
@@ -393,7 +393,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		}
 	}
 
-	private static class DefaultBuilderFactory implements BuilderFactory {
+	private static final class DefaultBuilderFactory implements BuilderFactory {
 
 		@Override
 		public Builder<?, ?> task(Task task) {
