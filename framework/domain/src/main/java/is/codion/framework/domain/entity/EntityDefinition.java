@@ -19,6 +19,11 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.common.property.PropertyValue;
+import is.codion.framework.domain.entity.DefaultEntityDefinition.DefaultAttributes;
+import is.codion.framework.domain.entity.DefaultEntityDefinition.DefaultBuilder;
+import is.codion.framework.domain.entity.DefaultEntityDefinition.DefaultColumns;
+import is.codion.framework.domain.entity.DefaultEntityDefinition.DefaultForeignKeys;
+import is.codion.framework.domain.entity.DefaultEntityDefinition.DefaultPrimaryKey;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -91,7 +96,7 @@ import static is.codion.common.Configuration.booleanValue;
  * @see EntityType#define(AttributeDefinition.Builder[])
  * @see Builder
  */
-public interface EntityDefinition {
+public sealed interface EntityDefinition permits DefaultEntityDefinition {
 
 	/**
 	 * Specifies whether optimistic locking should be enabled by default for entities
@@ -274,7 +279,7 @@ public interface EntityDefinition {
 	 * @see EntityType#define(AttributeDefinition.Builder[])
 	 * @see EntityType#define(List)
 	 */
-	interface Builder {
+	sealed interface Builder permits DefaultBuilder {
 
 		/**
 		 * @param table the table name
@@ -428,7 +433,7 @@ public interface EntityDefinition {
 	/**
 	 * Holds the attribute definitions for an entity type
 	 */
-	interface Attributes {
+	sealed interface Attributes permits DefaultAttributes {
 
 		/**
 		 * @return all attributes for this entity type
@@ -498,7 +503,7 @@ public interface EntityDefinition {
 	/**
 	 * Holds the column definitions for an entity type
 	 */
-	interface Columns {
+	sealed interface Columns permits DefaultColumns {
 
 		/**
 		 * @return all columns for this entity type
@@ -529,7 +534,7 @@ public interface EntityDefinition {
 	/**
 	 * Holds the foreign key definitions for an entity type
 	 */
-	interface ForeignKeys {
+	sealed interface ForeignKeys permits DefaultForeignKeys {
 
 		/**
 		 * @return a list containing the foreign key definitions for this entity type
@@ -585,7 +590,7 @@ public interface EntityDefinition {
 	/**
 	 * Holds the primary key definition for an entity type
 	 */
-	interface PrimaryKey {
+	sealed interface PrimaryKey permits DefaultPrimaryKey {
 
 		/**
 		 * Returns a list containing all primary key columns associated with this entity type.

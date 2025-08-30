@@ -21,6 +21,7 @@ package is.codion.framework.domain.entity.attribute;
 import is.codion.common.property.PropertyValue;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.attribute.DefaultForeignKeyDefinition.DefaultForeignKeyDefinitionBuilder;
 
 import java.util.List;
 
@@ -135,7 +136,7 @@ import static is.codion.common.Configuration.integerValue;
  * @see #attributes()
  * @see Entities#VALIDATE_FOREIGN_KEYS
  */
-public interface ForeignKeyDefinition extends AttributeDefinition<Entity> {
+public sealed interface ForeignKeyDefinition extends AttributeDefinition<Entity> permits DefaultForeignKeyDefinition {
 
 	/**
 	 * Specifies the default foreign key reference depth
@@ -182,7 +183,7 @@ public interface ForeignKeyDefinition extends AttributeDefinition<Entity> {
 	/**
 	 * Builds a {@link ForeignKeyDefinition}.
 	 */
-	interface Builder extends AttributeDefinition.Builder<Entity, Builder> {
+	sealed interface Builder extends AttributeDefinition.Builder<Entity, Builder> permits DefaultForeignKeyDefinitionBuilder {
 
 		/**
 		 * Marks this foreign key as being soft, that is, not based on a physical (table) foreign key and should not prevent deletion

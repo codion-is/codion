@@ -107,7 +107,7 @@ import static java.util.stream.Collectors.toMap;
  * @see ColumnConditionFactory
  * @see ForeignKeyConditionFactory
  */
-public interface Condition {
+public sealed interface Condition permits Condition.All, Condition.Combination, ColumnCondition, CustomCondition, AbstractCondition {
 
 	/**
 	 * @return the entity type
@@ -137,13 +137,13 @@ public interface Condition {
 	/**
 	 * A condition specifying all entities of a given type, a no-condition.
 	 */
-	interface All extends Condition {}
+	sealed interface All extends Condition permits DefaultAllCondition {}
 
 	/**
 	 * An interface encapsulating a combination of Condition instances,
 	 * that should be either AND'ed or OR'ed together in a query context
 	 */
-	interface Combination extends Condition {
+	sealed interface Combination extends Condition permits DefaultConditionCombination {
 
 		/**
 		 * @return the condition comprising this Combination

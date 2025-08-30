@@ -1,0 +1,50 @@
+/*
+ * This file is part of Codion.
+ *
+ * Codion is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Codion is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Codion.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Copyright (c) 2025, Björn Darri Sigurðsson.
+ */
+package is.codion.framework.domain.entity.attribute;
+
+import org.jspecify.annotations.Nullable;
+
+import java.util.Map;
+import java.util.Optional;
+
+final class DefaultSourceValues implements DerivedValue.SourceValues {
+
+	private final Attribute<?> derivedAttribute;
+	private final Map<Attribute<?>, Object> values;
+
+	DefaultSourceValues(Attribute<?> derivedAttribute, Map<Attribute<?>, Object> values) {
+		this.derivedAttribute = derivedAttribute;
+		this.values = values;
+	}
+
+	@Override
+	public @Nullable <T> T get(Attribute<T> attribute) {
+		if (!values.containsKey(attribute)) {
+			throw new IllegalArgumentException("Attribute " + attribute +
+							" is not specified as a source attribute for derived attribute: " + derivedAttribute);
+		}
+
+		return (T) values.get(attribute);
+	}
+
+	@Override
+	public <T> Optional<T> optional(Attribute<T> attribute) {
+		return Optional.ofNullable((T) values.get(attribute));
+	}
+}

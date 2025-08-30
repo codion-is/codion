@@ -18,13 +18,15 @@
  */
 package is.codion.framework.domain.entity.query;
 
+import is.codion.framework.domain.entity.query.DefaultEntitySelectQuery.DefaultBuilder;
+
 import org.jspecify.annotations.Nullable;
 
 /**
  * Defines a select query or parts of a select query, that is, from, columns, where, groupBy, having and orderBy clauses.
  * {@link Builder} provided by {@link #builder()}.
  */
-public interface EntitySelectQuery {
+public sealed interface EntitySelectQuery permits DefaultEntitySelectQuery {
 
 	/**
 	 * @return the COLUMNS clause
@@ -61,13 +63,13 @@ public interface EntitySelectQuery {
 	 * @return a new {@link EntitySelectQuery.Builder} instance.
 	 */
 	static Builder builder() {
-		return new DefaultEntitySelectQuery.DefaultBuilder();
+		return new DefaultBuilder();
 	}
 
 	/**
 	 * Builds a {@link EntitySelectQuery}.
 	 */
-	interface Builder {
+	sealed interface Builder permits DefaultBuilder {
 
 		/**
 		 * Specifies the columns clause to use, without the SELECT keyword.

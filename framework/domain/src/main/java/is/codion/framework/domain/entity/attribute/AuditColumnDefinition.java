@@ -103,7 +103,7 @@ package is.codion.framework.domain.entity.attribute;
  * @see AuditAction
  * @see #auditAction()
  */
-public interface AuditColumnDefinition<T> extends ColumnDefinition<T> {
+public sealed interface AuditColumnDefinition<T> extends ColumnDefinition<T> permits DefaultAuditColumnDefinition {
 
 	/**
 	 * @return the audit action this column represents

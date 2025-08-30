@@ -301,7 +301,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		referencedEntities.put(foreignKey, definition);
 	}
 
-	private final class DefaultAttributes implements Attributes, Serializable {
+	final class DefaultAttributes implements Attributes, Serializable {
 
 		@Serial
 		private static final long serialVersionUID = 1;
@@ -376,7 +376,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		}
 	}
 
-	private final class DefaultColumns implements Columns, Serializable {
+	final class DefaultColumns implements Columns, Serializable {
 
 		@Serial
 		private static final long serialVersionUID = 1;
@@ -413,7 +413,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		}
 	}
 
-	private final class DefaultForeignKeys implements ForeignKeys, Serializable {
+	final class DefaultForeignKeys implements ForeignKeys, Serializable {
 
 		@Serial
 		private static final long serialVersionUID = 1;
@@ -478,7 +478,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		}
 	}
 
-	private final class DefaultPrimaryKey implements PrimaryKey, Serializable {
+	final class DefaultPrimaryKey implements PrimaryKey, Serializable {
 
 		@Serial
 		private static final long serialVersionUID = 1;

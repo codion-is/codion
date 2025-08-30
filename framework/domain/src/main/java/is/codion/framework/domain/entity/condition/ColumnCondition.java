@@ -90,7 +90,7 @@ import is.codion.framework.domain.entity.attribute.Column;
  * @see Column
  * @see Operator
  */
-public interface ColumnCondition<T> extends Condition {
+public sealed interface ColumnCondition<T> extends Condition permits AbstractColumnCondition {
 
 	/**
 	 * @return the attribute

@@ -269,5 +269,5 @@ public interface KeyGenerator {
 	/**
 	 * Marker interface indicating that a key generator is based on an identity column.
 	 */
-	interface Identity extends KeyGenerator {}
+	sealed interface Identity extends KeyGenerator permits IdentityKeyGenerator {}
 }

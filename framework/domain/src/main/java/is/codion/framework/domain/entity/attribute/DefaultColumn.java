@@ -85,7 +85,7 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
 	}
 
 	@Override
-	public Column.ColumnDefiner<T> define() {
+	public ColumnDefiner<T> define() {
 		return new DefaultColumnDefiner<>(this);
 	}
 
@@ -264,7 +264,7 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
 		}
 	}
 
-	private final class DefaultColumnDefiner<T> extends DefaultAttributeDefiner<T> implements Column.ColumnDefiner<T> {
+	final class DefaultColumnDefiner<T> extends DefaultAttributeDefiner<T> implements ColumnDefiner<T> {
 
 		private final Column<T> column;
 
@@ -314,7 +314,7 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
 		}
 	}
 
-	private final class DefaultAuditColumnDefiner<T> implements AuditColumnDefiner<T> {
+	final class DefaultAuditColumnDefiner<T> implements AuditColumnDefiner<T> {
 
 		private static final String COLUMN_CAPTION = "Column";
 

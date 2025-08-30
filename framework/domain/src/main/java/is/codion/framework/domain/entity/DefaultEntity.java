@@ -52,7 +52,7 @@ import static is.codion.framework.domain.entity.EntitySerializer.serializerForDo
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
-class DefaultEntity implements Entity, Serializable {
+sealed class DefaultEntity implements Entity, Serializable permits ImmutableEntity {
 
 	@Serial
 	private static final long serialVersionUID = 1;
@@ -729,13 +729,13 @@ class DefaultEntity implements Entity, Serializable {
 																								 boolean originalValue) {
 		List<Attribute<?>> sources = derivedDefinition.sources();
 		if (sources.isEmpty()) {
-			return new DefaultSourceValues(derivedDefinition.attribute(), EMPTY_MAP);
+			return DerivedValue.sourceValues(derivedDefinition.attribute(), EMPTY_MAP);
 		}
 		else if (sources.size() == 1) {
-			return new DefaultSourceValues(derivedDefinition.attribute(), createSingleAttributeSourceValueMap(sources.get(0), originalValue));
+			return DerivedValue.sourceValues(derivedDefinition.attribute(), createSingleAttributeSourceValueMap(sources.get(0), originalValue));
 		}
 
-		return new DefaultSourceValues(derivedDefinition.attribute(), createMultiAttributeSourceValueMap(sources, originalValue));
+		return DerivedValue.sourceValues(derivedDefinition.attribute(), createMultiAttributeSourceValueMap(sources, originalValue));
 	}
 
 	private Map<Attribute<?>, @Nullable Object> createSingleAttributeSourceValueMap(Attribute<?> source, boolean originalValue) {
@@ -857,7 +857,7 @@ class DefaultEntity implements Entity, Serializable {
 		}
 	}
 
-	private static final class DefaultCopy implements Copy {
+	static final class DefaultCopy implements Copy {
 
 		private final DefaultEntity entity;
 
@@ -879,32 +879,6 @@ class DefaultEntity implements Entity, Serializable {
 		@Override
 		public Builder builder() {
 			return new DefaultEntityBuilder(entity.definition, entity.values, entity.originalValues);
-		}
-	}
-
-	private static final class DefaultSourceValues implements DerivedValue.SourceValues {
-
-		private final Attribute<?> derivedAttribute;
-		private final Map<Attribute<?>, Object> values;
-
-		private DefaultSourceValues(Attribute<?> derivedAttribute, Map<Attribute<?>, Object> values) {
-			this.derivedAttribute = derivedAttribute;
-			this.values = values;
-		}
-
-		@Override
-		public @Nullable <T> T get(Attribute<T> attribute) {
-			if (!values.containsKey(attribute)) {
-				throw new IllegalArgumentException("Attribute " + attribute +
-								" is not specified as a source attribute for derived attribute: " + derivedAttribute);
-			}
-
-			return (T) values.get(attribute);
-		}
-
-		@Override
-		public <T> Optional<T> optional(Attribute<T> attribute) {
-			return Optional.ofNullable((T) values.get(attribute));
 		}
 	}
 }

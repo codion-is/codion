@@ -85,7 +85,7 @@ public final class StringFactory {
 	/**
 	 * A Builder for a string function, which provides toString() values for entities.
 	 */
-	public interface Builder {
+	public sealed interface Builder permits DefaultStringFactoryBuilder {
 
 		/**
 		 * Adds the value mapped to the given key to this {@link Builder}

@@ -39,7 +39,7 @@ final class DefaultAuditColumnDefinition<T> extends DefaultColumnDefinition<T> i
 		return auditAction;
 	}
 
-	static class DefaultAuditColumnDefinitionBuilder<T, B extends ColumnDefinition.Builder<T, B>>
+	static final class DefaultAuditColumnDefinitionBuilder<T, B extends ColumnDefinition.Builder<T, B>>
 					extends AbstractReadOnlyColumnDefinitionBuilder<T, B> {
 
 		private final AuditAction auditAction;

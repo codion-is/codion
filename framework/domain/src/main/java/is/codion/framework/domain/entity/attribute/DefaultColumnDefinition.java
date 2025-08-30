@@ -21,6 +21,7 @@ package is.codion.framework.domain.entity.attribute;
 import is.codion.framework.domain.entity.attribute.Column.Converter;
 import is.codion.framework.domain.entity.attribute.Column.GetValue;
 import is.codion.framework.domain.entity.attribute.Column.SetParameter;
+import is.codion.framework.domain.entity.attribute.DefaultAuditColumnDefinition.DefaultAuditColumnDefinitionBuilder;
 
 import org.jspecify.annotations.Nullable;
 
@@ -44,7 +45,8 @@ import java.util.Map;
 import static is.codion.common.Text.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
-class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implements ColumnDefinition<T> {
+sealed class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implements ColumnDefinition<T>
+				permits DefaultAuditColumnDefinition {
 
 	@Serial
 	private static final long serialVersionUID = 1;
@@ -265,7 +267,7 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		return getters;
 	}
 
-	static class DefaultColumnDefinitionBuilder<T, B extends ColumnDefinition.Builder<T, B>>
+	static sealed class DefaultColumnDefinitionBuilder<T, B extends ColumnDefinition.Builder<T, B>>
 					extends AbstractAttributeDefinitionBuilder<T, B> implements ColumnDefinition.Builder<T, B> {
 
 		private final int keyIndex;
@@ -443,8 +445,9 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
 		}
 	}
 
-	abstract static class AbstractReadOnlyColumnDefinitionBuilder<T, B extends ColumnDefinition.Builder<T, B>>
-					extends DefaultColumnDefinitionBuilder<T, B> implements AttributeDefinition.Builder<T, B> {
+	abstract static sealed class AbstractReadOnlyColumnDefinitionBuilder<T, B extends ColumnDefinition.Builder<T, B>>
+					extends DefaultColumnDefinitionBuilder<T, B> implements AttributeDefinition.Builder<T, B>
+					permits DefaultAuditColumnDefinitionBuilder, DefaultSubqueryColumnDefinitionBuilder {
 
 		protected AbstractReadOnlyColumnDefinitionBuilder(Column<T> column) {
 			super(column);

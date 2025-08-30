@@ -33,7 +33,8 @@ import static java.util.Objects.requireNonNull;
 /**
  * A base class for Condition implementations.
  */
-public abstract class AbstractCondition implements Condition, Serializable {
+sealed abstract class AbstractCondition implements Condition, Serializable
+				permits AbstractColumnCondition, DefaultAllCondition, DefaultConditionCombination, DefaultCustomCondition {
 
 	private final EntityType entityType;
 	private final List<Column<?>> columns;

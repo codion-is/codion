@@ -115,7 +115,7 @@ import java.util.List;
  * @see ConditionString
  * @see #conditionType()
  */
-public interface CustomCondition extends Condition {
+public sealed interface CustomCondition extends Condition permits DefaultCustomCondition {
 
 	/**
 	 * @return the condition type

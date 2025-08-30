@@ -22,6 +22,10 @@ import is.codion.common.Text;
 import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.DefaultColumnDefinition.DefaultColumnDefinitionBuilder;
+import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDerivedAttributeDefinitionBuilder;
+import is.codion.framework.domain.entity.attribute.DefaultForeignKeyDefinition.DefaultForeignKeyDefinitionBuilder;
+import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefinition.DefaultTransientAttributeDefinitionBuilder;
 
 import org.jspecify.annotations.Nullable;
 
@@ -51,7 +55,8 @@ import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toMap;
 
-abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>, Serializable {
+sealed abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>, Serializable
+				permits DefaultColumnDefinition, DefaultForeignKeyDefinition, DefaultDerivedAttributeDefinition, DefaultTransientAttributeDefinition {
 
 	@Serial
 	private static final long serialVersionUID = 1;
@@ -416,7 +421,8 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 		}
 	}
 
-	abstract static class AbstractAttributeDefinitionBuilder<T, B extends AttributeDefinition.Builder<T, B>> implements AttributeDefinition.Builder<T, B> {
+	abstract static sealed class AbstractAttributeDefinitionBuilder<T, B extends AttributeDefinition.Builder<T, B>> implements AttributeDefinition.Builder<T, B>
+					permits DefaultColumnDefinitionBuilder, DefaultDerivedAttributeDefinitionBuilder, DefaultForeignKeyDefinitionBuilder, DefaultTransientAttributeDefinitionBuilder {
 
 		private final Attribute<T> attribute;
 

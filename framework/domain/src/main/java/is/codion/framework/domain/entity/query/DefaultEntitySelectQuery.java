@@ -70,7 +70,7 @@ final class DefaultEntitySelectQuery implements EntitySelectQuery {
 		return orderBy;
 	}
 
-	static class DefaultBuilder implements Builder {
+	static final class DefaultBuilder implements Builder {
 
 		private @Nullable String from;
 		private @Nullable String columns;

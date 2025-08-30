@@ -19,6 +19,7 @@ Codion Change Log
 - ForeignKeyCondition removed, Factory moved up to package level as ForeignKeyConditionFactory.
 - ColumnCondition.Factory moved up to package level as ColumnConditionFactory.
 - ConditionProvider renamed ConditionString.
+- Interfaces sealed where applicable, related refactoring.
 ### is.codion.framework.db.local
 - MethodTracer.NO_OP_TRACE added, exit() no longer returns null.
 ### is.codion.framework.server

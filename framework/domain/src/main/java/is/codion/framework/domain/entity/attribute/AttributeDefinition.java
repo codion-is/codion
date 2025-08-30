@@ -22,6 +22,9 @@ import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.common.property.PropertyValue;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.AbstractAttributeDefinition.AbstractAttributeDefinitionBuilder;
+import is.codion.framework.domain.entity.attribute.DefaultColumnDefinition.AbstractReadOnlyColumnDefinitionBuilder;
+import is.codion.framework.domain.entity.attribute.DefaultColumnDefinition.DefaultSubqueryColumnDefinitionBuilder;
 
 import org.jspecify.annotations.Nullable;
 
@@ -123,7 +126,8 @@ import static is.codion.common.Configuration.*;
  * @see Attribute#define()
  * @see Builder
  */
-public interface AttributeDefinition<T> {
+public sealed interface AttributeDefinition<T>
+				permits ColumnDefinition, ForeignKeyDefinition, DerivedAttributeDefinition, TransientAttributeDefinition, AbstractAttributeDefinition {
 
 	/**
 	 * The suffix used for the mnemonic resource key.
@@ -407,7 +411,7 @@ public interface AttributeDefinition<T> {
 	 * @param <T> the value type
 	 * @param <B> the builder type
 	 */
-	interface Builder<T, B extends Builder<T, B>> {
+	sealed interface Builder<T, B extends Builder<T, B>> permits AbstractAttributeDefinitionBuilder, ColumnDefinition.Builder, AbstractReadOnlyColumnDefinitionBuilder, DefaultSubqueryColumnDefinitionBuilder, DerivedAttributeDefinition.Builder, ForeignKeyDefinition.Builder, TransientAttributeDefinition.Builder {
 
 		/**
 		 * @return the underying attribute

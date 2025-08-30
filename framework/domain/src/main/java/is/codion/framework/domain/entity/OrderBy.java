@@ -18,6 +18,8 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.framework.domain.entity.DefaultOrderBy.DefaultOrderByBuilder;
+import is.codion.framework.domain.entity.DefaultOrderBy.DefaultOrderByColumn;
 import is.codion.framework.domain.entity.attribute.Column;
 
 import java.util.List;
@@ -86,7 +88,7 @@ import java.util.List;
  * @see #descending(Column[])
  * @see #builder()
  */
-public interface OrderBy {
+public sealed interface OrderBy permits DefaultOrderBy {
 
 	/**
 	 * @return the order by columns comprising this order by clause
@@ -96,7 +98,7 @@ public interface OrderBy {
 	/**
 	 * Specifies an order by column and whether it's ascending or descending
 	 */
-	interface OrderByColumn {
+	sealed interface OrderByColumn permits DefaultOrderByColumn {
 
 		/**
 		 * @return the column to order by
@@ -169,7 +171,7 @@ public interface OrderBy {
 	 * OrderBy dynamicOrder = orderBuilder.build();
 	 *}
 	 */
-	interface Builder {
+	sealed interface Builder permits DefaultOrderByBuilder {
 
 		/**
 		 * Adds an 'ascending' order by for the given columns
@@ -250,7 +252,7 @@ public interface OrderBy {
 	 * @return a {@link OrderBy.Builder} instance
 	 */
 	static OrderBy.Builder builder() {
-		return new DefaultOrderBy.DefaultOrderByBuilder();
+		return new DefaultOrderByBuilder();
 	}
 
 	/**

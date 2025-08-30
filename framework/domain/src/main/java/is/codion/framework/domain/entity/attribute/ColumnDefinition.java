@@ -21,6 +21,7 @@ package is.codion.framework.domain.entity.attribute;
 import is.codion.framework.domain.entity.attribute.Column.Converter;
 import is.codion.framework.domain.entity.attribute.Column.GetValue;
 import is.codion.framework.domain.entity.attribute.Column.SetParameter;
+import is.codion.framework.domain.entity.attribute.DefaultColumnDefinition.DefaultColumnDefinitionBuilder;
 
 import org.jspecify.annotations.Nullable;
 
@@ -84,7 +85,7 @@ import java.sql.SQLException;
  * @see AttributeDefinition
  * @see Column#define()
  */
-public interface ColumnDefinition<T> extends AttributeDefinition<T> {
+public sealed interface ColumnDefinition<T> extends AttributeDefinition<T> permits DefaultColumnDefinition, AuditColumnDefinition {
 
 	@Override
 	Column<T> attribute();
@@ -196,7 +197,8 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
 	 * @param <T> the underlying type
 	 * @param <B> the builder type
 	 */
-	interface Builder<T, B extends Builder<T, B>> extends AttributeDefinition.Builder<T, B> {
+	sealed interface Builder<T, B extends Builder<T, B>> extends AttributeDefinition.Builder<T, B>
+					permits DefaultColumnDefinitionBuilder {
 
 		/**
 		 * Sets the actual column type, and the required {@link Converter}.

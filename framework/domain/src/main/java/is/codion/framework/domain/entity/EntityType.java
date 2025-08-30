@@ -86,7 +86,7 @@ import static java.util.Objects.requireNonNull;
  * @see #define(AttributeDefinition.Builder...)
  * @see DomainType#entityType(String)
  */
-public interface EntityType {
+public sealed interface EntityType permits DefaultEntityType {
 
 	/**
 	 * @return the domain type this entity type is associated with

@@ -90,7 +90,7 @@ import java.util.Collection;
  * @see ForeignKey
  * @see Entity
  */
-public interface ForeignKeyConditionFactory {
+public sealed interface ForeignKeyConditionFactory permits ForeignKey, DefaultForeignKeyConditionFactory {
 
 	/**
 	 * Returns a 'equalTo' {@link Condition} or 'isNull' in case {@code value} is null.

@@ -69,7 +69,7 @@ final class DefaultOrderBy implements OrderBy, Serializable {
 						'}';
 	}
 
-	private static final class DefaultOrderByColumn implements OrderByColumn, Serializable {
+	static final class DefaultOrderByColumn implements OrderByColumn, Serializable {
 
 		@Serial
 		private static final long serialVersionUID = 1;

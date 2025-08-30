@@ -20,7 +20,9 @@ package is.codion.framework.domain.entity.attribute;
 
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.DefaultColumn.DefaultColumnDefiner;
 import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDerivedValueStep;
+import is.codion.framework.domain.entity.attribute.DefaultForeignKey.DefaultForeignKeyDefiner;
 import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefinition.DefaultTransientAttributeDefinitionBuilder;
 import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition.Builder;
 
@@ -102,7 +104,7 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 		return type.entityType.name() + "." + name;
 	}
 
-	private final class DefaultType<T> implements Type<T>, Serializable {
+	final class DefaultType<T> implements Type<T>, Serializable {
 
 		@Serial
 		private static final long serialVersionUID = 1;
@@ -225,7 +227,8 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 		}
 	}
 
-	static class DefaultAttributeDefiner<T> implements AttributeDefiner<T> {
+	static sealed class DefaultAttributeDefiner<T> implements AttributeDefiner<T>
+					permits DefaultColumnDefiner, DefaultForeignKeyDefiner {
 
 		private final Attribute<T> attribute;
 

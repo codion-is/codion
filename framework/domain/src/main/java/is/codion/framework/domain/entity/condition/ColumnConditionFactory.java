@@ -28,7 +28,7 @@ import java.util.Collection;
  * Creates {@link ColumnCondition}s.
  * @param <T> the attribute value type
  */
-public interface ColumnConditionFactory<T> {
+public sealed interface ColumnConditionFactory<T> permits DefaultColumnConditionFactory, Column {
 
 	/**
 	 * Returns a 'equalTo' {@link ColumnCondition} or 'isNull' in case {@code value} is null.

@@ -18,6 +18,9 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
+import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDerivedAttributeDefinitionBuilder;
+import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDerivedValueStep;
+
 import java.util.List;
 
 /**
@@ -143,7 +146,7 @@ import java.util.List;
  * @see #sources()
  * @see #cached()
  */
-public interface DerivedAttributeDefinition<T> extends AttributeDefinition<T> {
+public sealed interface DerivedAttributeDefinition<T> extends AttributeDefinition<T> permits DefaultDerivedAttributeDefinition {
 
 	/**
 	 * @return the source attributes this attribute derives from.
@@ -165,7 +168,7 @@ public interface DerivedAttributeDefinition<T> extends AttributeDefinition<T> {
 	 * Builds a derived AttributeDefinition instance
 	 * @param <T> the attribute value type
 	 */
-	interface Builder<T, B extends Builder<T, B>> extends AttributeDefinition.Builder<T, B> {
+	sealed interface Builder<T, B extends Builder<T, B>> extends AttributeDefinition.Builder<T, B> permits DefaultDerivedAttributeDefinitionBuilder {
 
 		/**
 		 * Default true unless no source attributes are specified or this is a denormalized attribute.
@@ -180,7 +183,7 @@ public interface DerivedAttributeDefinition<T> extends AttributeDefinition<T> {
 		 * The first step in building a {@link DerivedAttributeDefinition}
 		 * @param <T> the attribute value type
 		 */
-		interface DerivedValueStep<T, B extends Builder<T, B>> {
+		sealed interface DerivedValueStep<T, B extends Builder<T, B>> permits DefaultDerivedValueStep {
 
 			/**
 			 * @param value a {@link DerivedValue} instance responsible for providing the derived value

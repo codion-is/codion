@@ -20,6 +20,8 @@ package is.codion.framework.domain.entity.attribute;
 
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.DefaultForeignKey.DefaultForeignKeyDefiner;
+import is.codion.framework.domain.entity.attribute.DefaultForeignKey.DefaultReference;
 import is.codion.framework.domain.entity.condition.ForeignKeyConditionFactory;
 
 import java.util.List;
@@ -111,7 +113,7 @@ import java.util.List;
  * @see #referencedType()
  * @see #references()
  */
-public interface ForeignKey extends Attribute<Entity>, ForeignKeyConditionFactory {
+public sealed interface ForeignKey extends Attribute<Entity>, ForeignKeyConditionFactory permits DefaultForeignKey {
 
 	/**
 	 * @return a {@link ForeignKeyDefiner} for this foreign key
@@ -139,7 +141,7 @@ public interface ForeignKey extends Attribute<Entity>, ForeignKeyConditionFactor
 	 * Represents a foreign key reference between columns.
 	 * @param <T> the attribute type
 	 */
-	interface Reference<T> {
+	sealed interface Reference<T> permits DefaultReference {
 
 		/**
 		 * @return the column in the child entity
@@ -160,7 +162,7 @@ public interface ForeignKey extends Attribute<Entity>, ForeignKeyConditionFactor
 	 * @return a new {@link Reference} based on the given columns
 	 */
 	static <T> Reference<T> reference(Column<T> column, Column<T> foreign) {
-		return new DefaultForeignKey.DefaultReference<>(column, foreign);
+		return new DefaultReference<>(column, foreign);
 	}
 
 	/**
@@ -178,7 +180,7 @@ public interface ForeignKey extends Attribute<Entity>, ForeignKeyConditionFactor
 	/**
 	 * Provides {@link ForeignKeyDefinition.Builder} instances.
 	 */
-	interface ForeignKeyDefiner extends AttributeDefiner<Entity> {
+	sealed interface ForeignKeyDefiner extends AttributeDefiner<Entity> permits DefaultForeignKeyDefiner {
 
 		/**
 		 * Instantiates a {@link ForeignKeyDefinition.Builder} instance, using the reference depth

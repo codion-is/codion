@@ -26,7 +26,7 @@ import static java.util.Objects.requireNonNull;
  * Identifies a domain model and serves as a factory for {@link EntityType}
  * instances associated with this domain model type.
  */
-public interface DomainType {
+public sealed interface DomainType permits DefaultDomainType {
 
 	/**
 	 * @return the domain name

@@ -122,7 +122,7 @@ import java.util.List;
  * @see EntityDefinition#condition(ConditionType)
  * @see EntityDefinition.Builder#condition(ConditionType, ConditionString)
  */
-public interface ConditionType {
+public sealed interface ConditionType permits DefaultConditionType {
 
 	/**
 	 * @return the entity type

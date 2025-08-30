@@ -19,6 +19,8 @@
 package is.codion.framework.domain.entity.attribute;
 
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.DefaultColumn.DefaultAuditColumnDefiner;
+import is.codion.framework.domain.entity.attribute.DefaultColumn.DefaultColumnDefiner;
 import is.codion.framework.domain.entity.condition.ColumnConditionFactory;
 
 import org.jspecify.annotations.Nullable;
@@ -109,7 +111,7 @@ import static java.util.Objects.requireNonNull;
  * @see ColumnConditionFactory
  * @see #define()
  */
-public interface Column<T> extends Attribute<T>, ColumnConditionFactory<T> {
+public sealed interface Column<T> extends Attribute<T>, ColumnConditionFactory<T> permits DefaultColumn {
 
 	/**
 	 * @return a {@link ColumnDefiner} for this column
@@ -144,7 +146,7 @@ public interface Column<T> extends Attribute<T>, ColumnConditionFactory<T> {
 	 * Provides {@link ColumnDefinition.Builder} instances.
 	 * @param <T> the column type
 	 */
-	interface ColumnDefiner<T> extends AttributeDefiner<T> {
+	sealed interface ColumnDefiner<T> extends AttributeDefiner<T> permits DefaultColumnDefiner {
 
 		/**
 		 * Creates a new {@link ColumnDefinition.Builder} instance.
@@ -235,7 +237,7 @@ public interface Column<T> extends Attribute<T>, ColumnConditionFactory<T> {
 	 * Provides {@link ColumnDefinition.Builder} instances for audit columns.
 	 * @param <T> the column type
 	 */
-	interface AuditColumnDefiner<T> {
+	sealed interface AuditColumnDefiner<T> permits DefaultAuditColumnDefiner {
 
 		/**
 		 * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a row was inserted.

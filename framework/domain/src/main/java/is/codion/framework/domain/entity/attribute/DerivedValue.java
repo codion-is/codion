@@ -21,7 +21,10 @@ package is.codion.framework.domain.entity.attribute;
 import org.jspecify.annotations.Nullable;
 
 import java.io.Serializable;
+import java.util.Map;
 import java.util.Optional;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Responsible for providing values derived from other attribute values.
@@ -123,6 +126,7 @@ import java.util.Optional;
  * String initials = customer.get(Customer.INITIALS);       // "JD"
  *}
  * @param <T> the value type
+ * @see #sourceValues(Attribute, Map)
  * @see DerivedValue.SourceValues
  */
 public interface DerivedValue<T> extends Serializable {
@@ -137,7 +141,7 @@ public interface DerivedValue<T> extends Serializable {
 	/**
 	 * Provides the source values from which to derive a value.
 	 */
-	interface SourceValues {
+	sealed interface SourceValues permits DefaultSourceValues {
 
 		/**
 		 * Returns the value associated with the given source attribute.
@@ -157,5 +161,14 @@ public interface DerivedValue<T> extends Serializable {
 		 * @return the value associated with attribute
 		 */
 		<T> Optional<T> optional(Attribute<T> attribute);
+	}
+
+	/**
+	 * @param derivedAttribute the derived attribute
+	 * @param values the values
+	 * @return a new {@link SourceValues} instance
+	 */
+	static SourceValues sourceValues(Attribute<?> derivedAttribute, Map<Attribute<?>, Object> values) {
+		return new DefaultSourceValues(requireNonNull(derivedAttribute), requireNonNull(values));
 	}
 }

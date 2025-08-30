@@ -206,7 +206,7 @@ final class DefaultForeignKey implements ForeignKey, Serializable {
 		}
 	}
 
-	private static final class DefaultForeignKeyDefiner extends DefaultAttributeDefiner<Entity> implements ForeignKeyDefiner {
+	static final class DefaultForeignKeyDefiner extends DefaultAttributeDefiner<Entity> implements ForeignKeyDefiner {
 
 		private final ForeignKey foreignKey;
 

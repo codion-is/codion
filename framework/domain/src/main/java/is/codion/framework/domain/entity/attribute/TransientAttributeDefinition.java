@@ -18,6 +18,8 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
+import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefinition.DefaultTransientAttributeDefinitionBuilder;
+
 /**
  * An attribute that does not map to an underlying database column.
  * <p>
@@ -122,7 +124,8 @@ package is.codion.framework.domain.entity.attribute;
  * @see #modifies()
  * @see DerivedAttributeDefinition
  */
-public interface TransientAttributeDefinition<T> extends AttributeDefinition<T> {
+public sealed interface TransientAttributeDefinition<T> extends AttributeDefinition<T>
+				permits DefaultTransientAttributeDefinition {
 
 	/**
 	 * @return true if the value of this attribute being modified should result in a modified entity
@@ -133,7 +136,8 @@ public interface TransientAttributeDefinition<T> extends AttributeDefinition<T> 
 	 * Builds a transient AttributeDefinition instance
 	 * @param <T> the attribute value type
 	 */
-	interface Builder<T, B extends Builder<T, B>> extends AttributeDefinition.Builder<T, B> {
+	sealed interface Builder<T, B extends Builder<T, B>> extends AttributeDefinition.Builder<T, B>
+					permits DefaultTransientAttributeDefinitionBuilder {
 
 		/**
 		 * Default true.

@@ -20,7 +20,7 @@ package is.codion.framework.domain.entity.attribute;
 
 import java.io.Serial;
 
-class DefaultTransientAttributeDefinition<T> extends AbstractAttributeDefinition<T> implements TransientAttributeDefinition<T> {
+final class DefaultTransientAttributeDefinition<T> extends AbstractAttributeDefinition<T> implements TransientAttributeDefinition<T> {
 
 	@Serial
 	private static final long serialVersionUID = 1;
@@ -33,11 +33,11 @@ class DefaultTransientAttributeDefinition<T> extends AbstractAttributeDefinition
 	}
 
 	@Override
-	public final boolean modifies() {
+	public boolean modifies() {
 		return modifies;
 	}
 
-	static class DefaultTransientAttributeDefinitionBuilder<T, B extends TransientAttributeDefinition.Builder<T, B>>
+	static final class DefaultTransientAttributeDefinitionBuilder<T, B extends TransientAttributeDefinition.Builder<T, B>>
 					extends AbstractAttributeDefinitionBuilder<T, B> implements TransientAttributeDefinition.Builder<T, B> {
 
 		private boolean modifies = true;
@@ -52,7 +52,7 @@ class DefaultTransientAttributeDefinition<T> extends AbstractAttributeDefinition
 		}
 
 		@Override
-		public final TransientAttributeDefinition.Builder<T, B> modifies(boolean modifies) {
+		public TransientAttributeDefinition.Builder<T, B> modifies(boolean modifies) {
 			this.modifies = modifies;
 			return this;
 		}

@@ -18,6 +18,7 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.framework.domain.entity.DefaultEntity.DefaultCopy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -449,7 +450,7 @@ public interface Entity extends Comparable<Entity> {
 	 *   <li>{@link #builder()} returns a {@link Builder} instance initialized with the values of the entity being copied
 	 * </ul>
 	 */
-	interface Copy {
+	sealed interface Copy permits DefaultCopy {
 
 		/**
 		 * Returns a mutable copy of this entity.
@@ -480,7 +481,7 @@ public interface Entity extends Comparable<Entity> {
 	 * @see Entity#builder(Key)
 	 * @see Copy#builder()
 	 */
-	interface Builder {
+	sealed interface Builder permits DefaultEntityBuilder {
 
 		/**
 		 * Adds the given attribute value to this builder
@@ -680,7 +681,7 @@ public interface Entity extends Comparable<Entity> {
 	/**
 	 * Represents a unique column combination for a given entity.
 	 */
-	interface Key {
+	sealed interface Key permits SingleColumnKey, CompositeColumnKey {
 
 		/**
 		 * @return the entity type
@@ -783,7 +784,7 @@ public interface Entity extends Comparable<Entity> {
 		 * Note that the resulting key is assumed to be a primary key
 		 * if any of the values is associated with a primary key column.
 		 */
-		interface Builder {
+		sealed interface Builder permits DefaultKeyBuilder {
 
 			/**
 			 * Adds the given column value to this builder

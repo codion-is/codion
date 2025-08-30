@@ -20,7 +20,11 @@ package is.codion.framework.domain.entity.attribute;
 
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.Column.ColumnDefiner;
+import is.codion.framework.domain.entity.attribute.DefaultAttribute.DefaultAttributeDefiner;
+import is.codion.framework.domain.entity.attribute.DefaultAttribute.DefaultType;
 import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition.Builder;
+import is.codion.framework.domain.entity.attribute.ForeignKey.ForeignKeyDefiner;
 
 import org.jspecify.annotations.Nullable;
 
@@ -113,7 +117,7 @@ import static java.util.Objects.requireNonNull;
  * @see #type()
  * @see EntityType
  */
-public interface Attribute<T> {
+public sealed interface Attribute<T> permits Column, DefaultAttribute, ForeignKey {
 
 	/**
 	 * @return a {@link AttributeDefiner} for this attribute
@@ -163,7 +167,7 @@ public interface Attribute<T> {
 	 * Defines the data-type of an Attribute
 	 * @param <T> the attribute data type
 	 */
-	interface Type<T> {
+	sealed interface Type<T> permits DefaultType {
 
 		/**
 		 * @return the Class representing the attribute value
@@ -273,7 +277,7 @@ public interface Attribute<T> {
 	 * Provides {@link AttributeDefinition.Builder} instances.
 	 * @param <T> the column type
 	 */
-	interface AttributeDefiner<T> {
+	sealed interface AttributeDefiner<T> permits ColumnDefiner, DefaultAttributeDefiner, ForeignKeyDefiner {
 
 		/**
 		 * Creates a new {@link TransientAttributeDefinition.Builder} instance, which does not map to an underlying table column.

@@ -29,7 +29,8 @@ import java.util.Objects;
 import static java.util.Collections.nCopies;
 import static java.util.Objects.requireNonNull;
 
-abstract class AbstractColumnCondition<T> extends AbstractCondition implements ColumnCondition<T> {
+sealed abstract class AbstractColumnCondition<T> extends AbstractCondition implements ColumnCondition<T>
+				permits SingleValueColumnCondition, DualValueColumnCondition, MultiValueColumnCondition {
 
 	@Serial
 	private static final long serialVersionUID = 1;
