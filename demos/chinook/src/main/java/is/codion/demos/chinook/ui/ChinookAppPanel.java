@@ -23,6 +23,7 @@ import is.codion.common.model.preferences.UserPreferences;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.demos.chinook.domain.api.Chinook;
+import is.codion.demos.chinook.model.AlbumModel;
 import is.codion.demos.chinook.model.ArtistTableModel;
 import is.codion.demos.chinook.model.ChinookAppModel;
 import is.codion.demos.chinook.model.CustomerModel;
@@ -89,7 +90,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 	private static List<EntityPanel> createPanels(ChinookAppModel applicationModel) {
 		return List.of(
 						new CustomerPanel((CustomerModel) applicationModel.entityModels().get(Customer.TYPE)),
-						new AlbumPanel(applicationModel.entityModels().get(Album.TYPE)),
+						new AlbumPanel((AlbumModel) applicationModel.entityModels().get(Album.TYPE)),
 						new PlaylistPanel((PlaylistModel) applicationModel.entityModels().get(Playlist.TYPE)));
 	}
 

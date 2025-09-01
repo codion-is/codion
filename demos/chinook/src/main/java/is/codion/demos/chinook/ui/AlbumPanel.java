@@ -19,6 +19,7 @@
 package is.codion.demos.chinook.ui;
 
 import is.codion.demos.chinook.domain.api.Chinook.Track;
+import is.codion.demos.chinook.model.AlbumModel;
 import is.codion.demos.chinook.model.TrackEditModel;
 import is.codion.demos.chinook.model.TrackTableModel;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -26,7 +27,7 @@ import is.codion.swing.framework.ui.EntityPanel;
 
 public final class AlbumPanel extends EntityPanel {
 
-	public AlbumPanel(SwingEntityModel albumModel) {
+	public AlbumPanel(AlbumModel albumModel) {
 		super(albumModel,
 						new AlbumEditPanel(albumModel.editModel()),
 						new AlbumTablePanel(albumModel.tableModel()));
