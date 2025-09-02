@@ -18,27 +18,15 @@
  */
 package is.codion.demos.chinook.ui;
 
-import is.codion.demos.chinook.domain.api.Chinook.Customer;
-import is.codion.demos.chinook.model.CustomerModel;
 import is.codion.demos.chinook.model.EmployeeModel;
 import is.codion.swing.framework.ui.EntityPanel;
-import is.codion.swing.framework.ui.TabbedDetailLayout;
 
 import java.awt.Dimension;
-
-import static is.codion.swing.framework.ui.EntityPanel.PanelState.HIDDEN;
 
 public final class EmployeePanel extends EntityPanel {
 
 	public EmployeePanel(EmployeeModel employeeModel) {
-		super(employeeModel, new EmployeeTablePanel(employeeModel.tableModel()), config -> config
-						.detailLayout(entityPanel -> TabbedDetailLayout.builder()
-										.panel(entityPanel)
-										.initialDetailState(HIDDEN)
-										.build()));
-		CustomerPanel customerPanel =
-						new CustomerPanel((CustomerModel) employeeModel.detailModels().get(Customer.TYPE));
-		detailPanels().add(customerPanel);
+		super(employeeModel, new EmployeeTablePanel(employeeModel.tableModel()));
 		setPreferredSize(new Dimension(1000, 500));
 	}
 }

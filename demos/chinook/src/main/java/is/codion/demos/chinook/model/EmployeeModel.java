@@ -26,6 +26,5 @@ public final class EmployeeModel extends SwingEntityModel {
 
 	public EmployeeModel(EntityConnectionProvider connectionProvider) {
 		super(Employee.TYPE, connectionProvider);
-		detailModels().add(new CustomerModel(connectionProvider));
 	}
 }
