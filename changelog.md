@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.48
+
 ## 0.18.47
 ### is.codion.common.core
 - ProxyBuilder no longer an interface.
