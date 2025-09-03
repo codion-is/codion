@@ -102,7 +102,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
 	private @Nullable Function<User, EntityConnectionProvider> connectionProviderFunction;
 	private @Nullable EntityConnectionProvider connectionProvider;
-	private String applicationName;
+	private @Nullable String applicationName;
 	private Function<EntityConnectionProvider, M> applicationModel = new DefaultApplicationModelFactory();
 	private Function<M, P> applicationPanel = new DefaultApplicationPanelFactory();
 	private @Nullable Observable<String> frameTitle;
@@ -134,7 +134,6 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	DefaultEntityApplicationPanelBuilder(Class<M> applicationModelClass, Class<P> applicationPanelClass) {
 		this.applicationModelClass = requireNonNull(applicationModelClass);
 		this.applicationPanelClass = requireNonNull(applicationPanelClass);
-		this.applicationName = applicationPanelClass.getSimpleName();
 		ApplicationPreferences preferences = EntityApplicationModel.USER_PREFERENCES.getOrThrow() ?
 						ApplicationPreferences.load(applicationModelClass, applicationPanelClass) :
 						ApplicationPreferences.fromString(EMPTY_JSON_OBJECT);
@@ -335,7 +334,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	}
 
 	private void startApplication() {
-		LOG.debug("{} application starting", applicationName);
+		LOG.debug("{} application starting", applicationName());
 		if (uncaughtExceptionHandler) {
 			setDefaultUncaughtExceptionHandler(new DisplayUncaughtExceptionAndExit());
 		}
@@ -350,7 +349,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		if (startupDialog) {
 			Dialogs.progressWorker()
 							.task(new InitializeApplicationModel(connectionProvider))
-							.title(applicationName)
+							.title(applicationName())
 							.icon(applicationIcon)
 							.border(emptyBorder())
 							.westPanel(createStartupIconPanel())
@@ -361,6 +360,17 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		else {
 			startApplication(initializeApplicationModel(connectionProvider), initializationStarted);
 		}
+	}
+
+	private String applicationName() {
+		if (applicationName != null) {
+			return applicationName;
+		}
+		if (domain != null) {
+			return domain.name();
+		}
+
+		return applicationPanelClass.getSimpleName();
 	}
 
 	private void enableLookAndFeel() {
@@ -418,7 +428,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 			setDefaultUncaughtExceptionHandler(new DisplayUncaughtExceptionHandler(applicationFrame));
 		}
 		if (displayFrame) {
-			applicationFrame.setTitle(MESSAGES.getString("initializing") + " " + applicationName);
+			applicationFrame.setTitle(MESSAGES.getString("initializing") + " " + applicationName());
 			applicationFrame.setVisible(true);
 		}
 		try {
@@ -496,7 +506,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	}
 
 	private String createDefaultFrameTitle(M applicationModel) {
-		StringBuilder builder = new StringBuilder(applicationName);
+		StringBuilder builder = new StringBuilder(applicationName());
 		if (applicationVersion != null) {
 			if (builder.length() > 0) {
 				builder.append(DASH);
@@ -544,7 +554,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		return EntityConnectionProvider.builder()
 						.user(user)
 						.domain(domain)
-						.clientType(applicationName)
+						.clientType(applicationName())
 						.clientVersion(applicationVersion)
 						.build();
 	}
@@ -590,7 +600,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 		}
 
 		private String loginDialogTitle() {
-			StringBuilder builder = new StringBuilder(applicationName);
+			StringBuilder builder = new StringBuilder(applicationName());
 			if (builder.length() > 0 && applicationVersion != null) {
 				builder.append(DASH).append(applicationVersion);
 			}

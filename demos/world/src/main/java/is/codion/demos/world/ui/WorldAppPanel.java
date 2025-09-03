@@ -79,7 +79,6 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 						.set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
 		EntityApplicationPanel.builder(WorldAppModel.class, WorldAppPanel.class)
 						.domain(World.DOMAIN)
-						.applicationName("World")
 						.applicationVersion(WorldAppModel.VERSION)
 						.defaultLookAndFeel(MonokaiPro.class)
 						.defaultUser(User.parse("scott:tiger"))

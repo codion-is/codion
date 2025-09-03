@@ -1374,6 +1374,9 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		Builder<M, P> domain(DomainType domain);
 
 		/**
+		 * <p>Sets the application name, used as frame title and client type identifier when using remote connnections.
+		 * <p>If no application name is set, {@link DomainType#name()} is used or
+		 * {@code applicationPanelClass.getSimpleName()} in case of no domain model.
 		 * @param applicationName the application name
 		 * @return this Builder instance
 		 */

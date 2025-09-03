@@ -227,7 +227,6 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 						.set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
 		EntityApplicationPanel.builder(ChinookAppModel.class, ChinookAppPanel.class)
 						.domain(Chinook.DOMAIN)
-						.applicationName("Chinook")
 						.applicationVersion(ChinookAppModel.VERSION)
 						.defaultLookAndFeel(MaterialTheme.class)
 						.defaultUser(User.parse("scott:tiger"))

@@ -57,7 +57,7 @@ public sealed interface DomainType permits DefaultDomainType {
 	boolean contains(EntityType entityType);
 
 	/**
-	 * Returns a new {@link DomainType} using the given classes simple name as domain name.
+	 * Returns a new {@link DomainType} using {@code domainClass.getSimpleName()} as domain name.
 	 * @param domainClass the domain class
 	 * @return a {@link DomainType}
 	 */
