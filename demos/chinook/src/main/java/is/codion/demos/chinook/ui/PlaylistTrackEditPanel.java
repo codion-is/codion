@@ -42,7 +42,7 @@ final class PlaylistTrackEditPanel extends EntityEditPanel {
 		focus().initial().set(PlaylistTrack.TRACK_FK);
 
 		createSearchField(PlaylistTrack.TRACK_FK)
-						.selectorFactory(new TrackSelectorFactory())
+						.selector(new TrackSelector())
 						.transferFocusOnEnter(false)
 						.columns(25);
 

@@ -59,7 +59,7 @@ public final class InvoiceEditPanel extends EntityEditPanel {
 						.columns(14)
 						// We add a custom selector factory, creating a selector which
 						// displays a table instead of a list when selecting a customer
-						.selectorFactory(new CustomerSelectorFactory());
+						.selector(new CustomerSelector());
 		createTemporalFieldPanel(Invoice.DATE)
 						.columns(6);
 
@@ -135,7 +135,7 @@ public final class InvoiceEditPanel extends EntityEditPanel {
 						config.includeControls(false));
 	}
 
-	private static final class CustomerSelectorFactory implements Function<EntitySearchField, Selector> {
+	private static final class CustomerSelector implements Function<EntitySearchField, Selector> {
 
 		@Override
 		public Selector apply(EntitySearchField searchField) {

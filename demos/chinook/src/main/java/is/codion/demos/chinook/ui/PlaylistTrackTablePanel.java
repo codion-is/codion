@@ -69,7 +69,7 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 			return EntitySearchField.builder()
 							.model(((ForeignKeyConditionModel) conditionModel).equalSearchModel())
 							.singleSelection()
-							.selectorFactory(new TrackSelectorFactory())
+							.selector(new TrackSelector())
 							.build();
 		}
 
@@ -78,7 +78,7 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 			return EntitySearchField.builder()
 							.model(((ForeignKeyConditionModel) conditionModel).inSearchModel())
 							.multiSelection()
-							.selectorFactory(new TrackSelectorFactory())
+							.selector(new TrackSelector())
 							.build();
 		}
 	}

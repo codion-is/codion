@@ -91,7 +91,7 @@ final class FrameworkUIDemo {
 		EntitySearchField searchField = EntitySearchField.builder()
 						.model(searchModel)
 						.multiSelection()
-						.selectorFactory(new CustomerSelectorFactory())
+						.selector(new CustomerSelector())
 						.build();
 		// end::customTableSelector[]
 	}
@@ -340,7 +340,7 @@ final class FrameworkUIDemo {
 		protected void setComponentValue(Integer value) {}
 	}
 
-	private class CustomerSelectorFactory implements Function<EntitySearchField, EntitySearchField.Selector> {
+	private class CustomerSelector implements Function<EntitySearchField, EntitySearchField.Selector> {
 		@Override
 		public EntitySearchField.Selector apply(EntitySearchField entitySearchField) {
 			return null;

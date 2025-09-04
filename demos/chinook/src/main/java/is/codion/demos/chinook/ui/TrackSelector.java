@@ -32,7 +32,7 @@ import static is.codion.swing.framework.ui.component.EntitySearchField.tableSele
  * Provides a {@link TableSelector} for selecting tracks,
  * displaying columns for the artist, album and track name.
  */
-final class TrackSelectorFactory implements Function<EntitySearchField, Selector> {
+final class TrackSelector implements Function<EntitySearchField, Selector> {
 
 	@Override
 	public TableSelector apply(EntitySearchField searchField) {

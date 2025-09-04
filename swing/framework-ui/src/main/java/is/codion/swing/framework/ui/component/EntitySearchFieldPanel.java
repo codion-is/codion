@@ -206,10 +206,10 @@ public final class EntitySearchFieldPanel extends JPanel {
 		Builder<T, B> searchIndicator(EntitySearchField.SearchIndicator searchIndicator);
 
 		/**
-		 * @param selectorFactory the selector factory to use
+		 * @param selector the selector factory to use
 		 * @return this builder instance
 		 */
-		Builder<T, B> selectorFactory(Function<EntitySearchField, EntitySearchField.Selector> selectorFactory);
+		Builder<T, B> selector(Function<EntitySearchField, EntitySearchField.Selector> selector);
 
 		/**
 		 * @param limit the search result limit
@@ -477,8 +477,8 @@ public final class EntitySearchFieldPanel extends JPanel {
 		}
 
 		@Override
-		public Builder<T, B> selectorFactory(Function<EntitySearchField, EntitySearchField.Selector> selectorFactory) {
-			searchFieldBuilder.selectorFactory(selectorFactory);
+		public Builder<T, B> selector(Function<EntitySearchField, EntitySearchField.Selector> selector) {
+			searchFieldBuilder.selector(selector);
 			return this;
 		}
 

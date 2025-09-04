@@ -134,7 +134,7 @@ import static javax.swing.BorderFactory.createTitledBorder;
  * Use {@link EntitySearchField#builder()} for a builder instance.
  * @see EntitySearchModel
  * @see #builder()
- * @see Builder#selectorFactory(Function)
+ * @see Builder#selector(Function)
  */
 public final class EntitySearchField extends HintTextField {
 
@@ -200,7 +200,7 @@ public final class EntitySearchField extends HintTextField {
 	private final boolean singleSelection;
 	private final State searching = State.state();
 	private final Consumer<Boolean> searchIndicator;
-	private final Function<EntitySearchField, Selector> selectorFactory;
+	private final Function<EntitySearchField, Selector> selector;
 	private final ControlMap controlMap;
 
 	private @Nullable SettingsPanel settingsPanel;
@@ -235,7 +235,7 @@ public final class EntitySearchField extends HintTextField {
 		singleSelection = builder.singleSelection;
 		searchIndicator = createSearchIndicator(builder.searchIndicator);
 		searching.addConsumer(searchIndicator);
-		selectorFactory = builder.selectorFactory;
+		selector = builder.selector;
 		stringFactory = builder.stringFactory;
 		separator = builder.separator;
 		setComponentPopupMenu(createPopupMenu());
@@ -407,10 +407,10 @@ public final class EntitySearchField extends HintTextField {
 		B searchIndicator(SearchIndicator searchIndicator);
 
 		/**
-		 * @param selectorFactory the selector factory to use
+		 * @param selector the selector factory to use
 		 * @return this builder instance
 		 */
-		B selectorFactory(Function<EntitySearchField, Selector> selectorFactory);
+		B selector(Function<EntitySearchField, Selector> selector);
 
 		/**
 		 * An edit panel is required for the add and edit controls.
@@ -591,7 +591,7 @@ public final class EntitySearchField extends HintTextField {
 							SwingMessages.get("OptionPane.messageDialogTitle"), JOptionPane.INFORMATION_MESSAGE);
 		}
 		else {
-			selectorFactory.apply(this).select(searchResult);
+			selector.apply(this).select(searchResult);
 		}
 	}
 
@@ -1175,7 +1175,7 @@ public final class EntitySearchField extends HintTextField {
 		private boolean selectionToolTip = true;
 		private boolean singleSelection = false;
 		private SearchIndicator searchIndicator = SEARCH_INDICATOR.getOrThrow();
-		private Function<EntitySearchField, Selector> selectorFactory = new ListSelectorFactory();
+		private Function<EntitySearchField, Selector> selector = new ListSelectorFactory();
 		private Function<Entity, String> stringFactory = DEFAULT_TO_STRING;
 		private String separator = DEFAULT_SEPARATOR;
 		private @Nullable Supplier<EntityEditPanel> editPanel;
@@ -1263,8 +1263,8 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		@Override
-		public B selectorFactory(Function<EntitySearchField, Selector> selectorFactory) {
-			this.selectorFactory = requireNonNull(selectorFactory);
+		public B selector(Function<EntitySearchField, Selector> selector) {
+			this.selector = requireNonNull(selector);
 			return (B) this;
 		}
 

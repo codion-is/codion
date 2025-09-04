@@ -26,7 +26,7 @@ import is.codion.swing.framework.ui.component.DefaultEditComponentFactory;
 import is.codion.swing.framework.ui.component.EntitySearchField;
 
 /**
- * Provides a {@link EntitySearchField} using the {@link TrackSelectorFactory}.
+ * Provides a {@link EntitySearchField} using the {@link TrackSelector}.
  */
 final class TrackEditComponentFactory extends DefaultEditComponentFactory<EntitySearchField, Entity> {
 
@@ -39,6 +39,6 @@ final class TrackEditComponentFactory extends DefaultEditComponentFactory<Entity
 																																 EntityDefinition entityDefinition,
 																																 EntitySearchModel searchModel) {
 		return super.searchField(foreignKey, entityDefinition, searchModel)
-						.selectorFactory(new TrackSelectorFactory());
+						.selector(new TrackSelector());
 	}
 }
