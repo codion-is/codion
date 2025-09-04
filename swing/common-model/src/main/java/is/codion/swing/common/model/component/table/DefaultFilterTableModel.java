@@ -368,7 +368,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		private DefaultBuilder(TableColumns<R, C> columns) {
 			if (requireNonNull(columns).identifiers().isEmpty()) {
-				throw new IllegalArgumentException("No columns specified");
+				throw new IllegalArgumentException("TableColumns does not specify any column identifiers");
 			}
 			this.columns = validateIdentifiers(columns);
 			this.filters = new DefaultColumnFilterFactory<>(columns);

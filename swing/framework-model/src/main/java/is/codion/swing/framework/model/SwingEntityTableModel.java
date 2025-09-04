@@ -346,6 +346,12 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 							.filter(attributeDefinition -> !attributeDefinition.hidden())
 							.map(AttributeDefinition::attribute)
 							.collect(toList()));
+			if (this.identifiers.isEmpty()) {
+				throw new IllegalArgumentException("No visible attributes found for entity '" +
+								entityDefinition.type() + "'. Ensure at least one attribute has a caption() " +
+								"defined to make it visible in table views. Attributes without captions are " +
+								"hidden by default.");
+			}
 		}
 
 		@Override
