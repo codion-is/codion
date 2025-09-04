@@ -1389,10 +1389,10 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		Builder<M, P> applicationIcon(ImageIcon applicationIcon);
 
 		/**
-		 * @param applicationVersion the application version
+		 * @param version the application version
 		 * @return this Builder instance
 		 */
-		Builder<M, P> applicationVersion(Version applicationVersion);
+		Builder<M, P> version(Version version);
 
 		/**
 		 * Sets the default look and feel class, used in case no look and feel settings are found in user preferences.

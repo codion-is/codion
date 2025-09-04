@@ -6,6 +6,7 @@ Codion Change Log
 - SwingEntityTableModel.EntityTableColumns, improved error message when no attributes are visible.
 ### is.codion.swing.framework.ui
 - EntityApplicationPanelBuilder, domainType.name() now used as application name by default.
+- EntityApplicationPanelBuilder.applicationVersion() renamed version().
 
 ## 0.18.47
 ### is.codion.common.core

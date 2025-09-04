@@ -261,7 +261,7 @@ public final class NotesDemo {
 		EntityApplicationPanel.builder(NotesApplicationModel.class, NotesApplicationPanel.class)
 						.frameTitle("Notes")
 						.frameSize(new Dimension(600, 500))
-						.applicationVersion(NotesApplicationModel.VERSION)
+						.version(NotesApplicationModel.VERSION)
 						// No need for a startup dialog since startup is very quick
 						.startupDialog(false)
 						.connectionProvider(LocalEntityConnectionProvider.builder()

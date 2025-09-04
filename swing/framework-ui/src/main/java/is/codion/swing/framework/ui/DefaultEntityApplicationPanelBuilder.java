@@ -112,7 +112,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	private Supplier<JFrame> frameSupplier = new DefaultFrameSupplier();
 	private boolean startupDialog = EntityApplicationPanel.STARTUP_DIALOG.getOrThrow();
 	private @Nullable ImageIcon applicationIcon;
-	private @Nullable Version applicationVersion;
+	private @Nullable Version version;
 	private boolean saveDefaultUsername = EntityApplicationModel.SAVE_DEFAULT_USERNAME.getOrThrow();
 	private Supplier<JComponent> loginPanelSouthComponentSupplier = new DefaultSouthComponentSupplier();
 	private @Nullable Runnable beforeApplicationStarted;
@@ -188,8 +188,8 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	}
 
 	@Override
-	public EntityApplicationPanel.Builder<M, P> applicationVersion(Version applicationVersion) {
-		this.applicationVersion = requireNonNull(applicationVersion);
+	public EntityApplicationPanel.Builder<M, P> version(Version version) {
+		this.version = requireNonNull(version);
 		return this;
 	}
 
@@ -416,8 +416,8 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 	 * Sets the application and framework versions as a system properties, so that they appear automatically in exception dialogs.
 	 */
 	private void setVersionProperty() {
-		if (applicationVersion != null) {
-			System.setProperty(CODION_CLIENT_VERSION, applicationVersion.toString());
+		if (version != null) {
+			System.setProperty(CODION_CLIENT_VERSION, version.toString());
 		}
 		System.setProperty(CODION_VERSION, Version.versionAndMetadataString());
 	}
@@ -507,11 +507,11 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
 	private String createDefaultFrameTitle(M applicationModel) {
 		StringBuilder builder = new StringBuilder(applicationName());
-		if (applicationVersion != null) {
+		if (version != null) {
 			if (builder.length() > 0) {
 				builder.append(DASH);
 			}
-			builder.append(applicationVersion);
+			builder.append(version);
 		}
 		if (builder.length() > 0) {
 			builder.append(DASH);
@@ -555,7 +555,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 						.user(user)
 						.domain(domain)
 						.clientType(applicationName())
-						.clientVersion(applicationVersion)
+						.clientVersion(version)
 						.build();
 	}
 
@@ -601,8 +601,8 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
 		private String loginDialogTitle() {
 			StringBuilder builder = new StringBuilder(applicationName());
-			if (builder.length() > 0 && applicationVersion != null) {
-				builder.append(DASH).append(applicationVersion);
+			if (builder.length() > 0 && version != null) {
+				builder.append(DASH).append(version);
 			}
 			if (builder.length() > 0) {
 				builder.append(DASH);
