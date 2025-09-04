@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.48
+### is.codion.swing.common.ui
+- FilterTable.ScrollToSelected bug fixed, no longer jumps to start of selection when a row is deselected.
 ### is.codion.swing.framework.model
 - SwingEntityTableModel.EntityTableColumns, improved error message when no attributes are visible.
 ### is.codion.swing.framework.ui

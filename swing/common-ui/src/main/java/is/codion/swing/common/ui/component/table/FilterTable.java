@@ -1088,7 +1088,7 @@ public final class FilterTable<R, C> extends JTable {
 		public void accept(List<Integer> selectedRows) {
 			JViewport viewport = parentOfType(JViewport.class, FilterTable.this);
 			if (viewport != null && scrollToSelectedItem.is() && !selectedRows.isEmpty()) {
-				int column = getSelectedColumn();
+				int column = columnModel.getSelectionModel().getLeadSelectionIndex();
 				if (noCellVisible(viewport, selectedRows, column)) {
 					scrollToRowColumn(selectedRows.get(0), column, centerOnScroll.getOrThrow());
 				}
