@@ -197,13 +197,13 @@ public final class ClientTutorial {
 		EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
 		FilterTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		EntityApplication.builder(ApplicationModel.class, ApplicationPanel.class)
-						.applicationModel(ApplicationModel::new)
-						.applicationPanel(ApplicationPanel::new)
+						.model(ApplicationModel::new)
+						.panel(ApplicationPanel::new)
 						.connectionProvider(LocalEntityConnectionProvider.builder()
 										.domain(new Chinook())
 										.build())
 						.defaultLookAndFeel(MaterialTheme.class)
-						.applicationName("Artists and Albums")
+						.name("Artists and Albums")
 						.start();
 	}
 }

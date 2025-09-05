@@ -126,7 +126,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
 		EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
 		EntityApplication.builder(PetstoreAppModel.class, PetstoreAppPanel.class)
 						.domain(DOMAIN)
-						.applicationName("The Pet Store")
+						.name("The Pet Store")
 						.defaultUser(User.parse("scott:tiger"))
 						.start();
 	}

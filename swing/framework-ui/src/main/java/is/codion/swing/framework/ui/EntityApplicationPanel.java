@@ -196,15 +196,6 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	public static final PropertyValue<Boolean> CONFIRM_EXIT = booleanValue(EntityApplicationPanel.class.getName() + ".confirmExit", false);
 
 	/**
-	 * Specifies whether a startup dialog should be shown
-	 * <ul>
-	 * <li>Value type: Boolean
-	 * <li>Default value: true
-	 * </ul>
-	 */
-	public static final PropertyValue<Boolean> STARTUP_DIALOG = booleanValue(EntityApplicationPanel.class.getName() + ".startupDialog", true);
-
-	/**
 	 * Specifies whether EntityPanels displayed via {@link EntityApplicationPanel#displayEntityPanelDialog(EntityPanel)}
 	 * or {@link EntityApplicationPanel#displayEntityPanelFrame(EntityPanel)} should be cached,
 	 * instead of being created each time the dialog/frame is shown.

@@ -102,21 +102,21 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 
 	private @Nullable Function<User, EntityConnectionProvider> connectionProviderFunction;
 	private @Nullable EntityConnectionProvider connectionProvider;
-	private @Nullable String applicationName;
-	private Function<EntityConnectionProvider, M> applicationModel = new DefaultApplicationModelFactory();
-	private Function<M, P> applicationPanel = new DefaultApplicationPanelFactory();
+	private @Nullable String name;
+	private Function<EntityConnectionProvider, M> model = new DefaultApplicationModelFactory();
+	private Function<M, P> panel = new DefaultApplicationPanelFactory();
 	private @Nullable Observable<String> frameTitle;
 
 	private @Nullable DomainType domain = EntityConnectionProvider.CLIENT_DOMAIN_TYPE.get();
 	private Supplier<User> userSupplier = new DefaultUserSupplier();
 	private Supplier<JFrame> frameSupplier = new DefaultFrameSupplier();
-	private boolean startupDialog = EntityApplicationPanel.STARTUP_DIALOG.getOrThrow();
-	private @Nullable ImageIcon applicationIcon;
+	private boolean startupDialog = STARTUP_DIALOG.getOrThrow();
+	private @Nullable ImageIcon icon;
 	private @Nullable Version version;
-	private boolean saveDefaultUsername = EntityApplicationModel.SAVE_DEFAULT_USERNAME.getOrThrow();
+	private boolean saveDefaultUsername = SAVE_DEFAULT_USERNAME.getOrThrow();
 	private Supplier<JComponent> loginPanelSouthComponentSupplier = new DefaultSouthComponentSupplier();
-	private @Nullable Runnable beforeApplicationStarted;
-	private @Nullable Consumer<P> onApplicationStarted;
+	private @Nullable Runnable onStarting;
+	private @Nullable Consumer<P> onStarted;
 
 	private String defaultLookAndFeelClassName = systemLookAndFeelClassName();
 	private @Nullable String lookAndFeelClassName;
@@ -127,7 +127,7 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 	private @Nullable Dimension frameSize;
 	private @Nullable Dimension defaultFrameSize;
 	private @Nullable User defaultUser;
-	private @Nullable User user = EntityApplicationModel.USER.optional()
+	private @Nullable User user = USER.optional()
 					.map(User::parse)
 					.orElse(null);
 
@@ -151,8 +151,8 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 	}
 
 	@Override
-	public EntityApplication<M, P> applicationIcon(ImageIcon applicationIcon) {
-		this.applicationIcon = requireNonNull(applicationIcon);
+	public EntityApplication<M, P> icon(ImageIcon icon) {
+		this.icon = requireNonNull(icon);
 		return this;
 	}
 
@@ -179,11 +179,11 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 	}
 
 	@Override
-	public EntityApplication<M, P> applicationName(String applicationName) {
-		if (Text.nullOrEmpty(applicationName)) {
+	public EntityApplication<M, P> name(String name) {
+		if (Text.nullOrEmpty(name)) {
 			throw new IllegalArgumentException("Application name cannot be null or empty");
 		}
-		this.applicationName = applicationName;
+		this.name = name;
 		return this;
 	}
 
@@ -194,14 +194,14 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 	}
 
 	@Override
-	public EntityApplication<M, P> applicationModel(Function<EntityConnectionProvider, M> applicationModel) {
-		this.applicationModel = requireNonNull(applicationModel);
+	public EntityApplication<M, P> model(Function<EntityConnectionProvider, M> model) {
+		this.model = requireNonNull(model);
 		return this;
 	}
 
 	@Override
-	public EntityApplication<M, P> applicationPanel(Function<M, P> applicationPanel) {
-		this.applicationPanel = requireNonNull(applicationPanel);
+	public EntityApplication<M, P> panel(Function<M, P> panel) {
+		this.panel = requireNonNull(panel);
 		return this;
 	}
 
@@ -295,14 +295,14 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 	}
 
 	@Override
-	public EntityApplication<M, P> beforeApplicationStarted(@Nullable Runnable beforeApplicationStarted) {
-		this.beforeApplicationStarted = beforeApplicationStarted;
+	public EntityApplication<M, P> onStarting(@Nullable Runnable onStarting) {
+		this.onStarting = onStarting;
 		return this;
 	}
 
 	@Override
-	public EntityApplication<M, P> onApplicationStarted(@Nullable Consumer<P> onApplicationStarted) {
-		this.onApplicationStarted = onApplicationStarted;
+	public EntityApplication<M, P> onStarted(@Nullable Consumer<P> onStarted) {
+		this.onStarted = onStarted;
 		return this;
 	}
 
@@ -341,8 +341,8 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 		setVersionProperty();
 		enableLookAndFeel();
 		configureIcons();
-		if (beforeApplicationStarted != null) {
-			beforeApplicationStarted.run();
+		if (onStarting != null) {
+			onStarting.run();
 		}
 		EntityConnectionProvider connectionProvider = initializeConnectionProvider();
 		long initializationStarted = currentTimeMillis();
@@ -350,7 +350,7 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 			Dialogs.progressWorker()
 							.task(new InitializeApplicationModel(connectionProvider))
 							.title(applicationName())
-							.icon(applicationIcon)
+							.icon(icon)
 							.border(emptyBorder())
 							.westPanel(createStartupIconPanel())
 							.onResult(new StartApplication(initializationStarted))
@@ -363,8 +363,8 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 	}
 
 	private String applicationName() {
-		if (applicationName != null) {
-			return applicationName;
+		if (name != null) {
+			return name;
 		}
 		if (domain != null) {
 			return domain.name();
@@ -407,8 +407,8 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 	}
 
 	private void configureIcons() {
-		if (applicationIcon == null) {
-			applicationIcon = FrameworkIcons.instance().logo();
+		if (icon == null) {
+			icon = FrameworkIcons.instance().logo();
 		}
 	}
 
@@ -440,8 +440,8 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 				applicationFrame.setVisible(true);
 			}
 			panel.requestInitialFocus();
-			if (onApplicationStarted != null) {
-				onApplicationStarted.accept(panel);
+			if (onStarted != null) {
+				onStarted.accept(panel);
 			}
 		}
 		catch (Exception e) {
@@ -453,8 +453,8 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 		JFrame frame = frameSupplier.get();
 		frame.getContentPane().setLayout(new BorderLayout());
 		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-		if (applicationIcon != null) {
-			frame.setIconImage(applicationIcon.getImage());
+		if (icon != null) {
+			frame.setIconImage(icon.getImage());
 		}
 		if (frameSize != null) {
 			frame.setSize(frameSize);
@@ -474,7 +474,7 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 	}
 
 	private M initializeApplicationModel(EntityConnectionProvider connectionProvider) {
-		return applicationModel.apply(connectionProvider);
+		return model.apply(connectionProvider);
 	}
 
 	private P initializeApplicationPanel(M applicationModel) {
@@ -523,8 +523,8 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 
 	private JPanel createStartupIconPanel() {
 		JPanel panel = new JPanel(new BorderLayout());
-		if (applicationIcon != null) {
-			panel.add(new JLabel(applicationIcon), BorderLayout.CENTER);
+		if (icon != null) {
+			panel.add(new JLabel(icon), BorderLayout.CENTER);
 		}
 
 		return panel;
@@ -594,7 +594,7 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 							.defaultUser(defaultUser)
 							.validator(loginValidator)
 							.title(loginDialogTitle())
-							.icon(applicationIcon)
+							.icon(icon)
 							.southComponent(loginPanelSouthComponentSupplier.get())
 							.show();
 		}

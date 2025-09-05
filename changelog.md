@@ -12,6 +12,7 @@ Codion Change Log
 - EntityApplicationPanelBuilder.applicationVersion() renamed version().
 - EntitySearchField.Builder and EntitySearchFieldPanel.Builder.selectorFactory() renamed selector().
 - EntityApplicationPanel.Builder renamed EntityApplication and moved up to package level.
+- EntityApplication, builder methods renamed, removing redundant prefixes, related refactoring.
 
 ## 0.18.47
 ### is.codion.common.core

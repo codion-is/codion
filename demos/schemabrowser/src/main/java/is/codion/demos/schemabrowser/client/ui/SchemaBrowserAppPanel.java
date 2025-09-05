@@ -95,7 +95,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 		)));
 		EntityApplication.builder(SchemaBrowserApplicationModel.class, SchemaBrowserAppPanel.class)
 						.domain(SchemaBrowser.DOMAIN)
-						.applicationName("Schema Browser")
+						.name("Schema Browser")
 						.defaultUser(User.parse("scott:tiger"))
 						.start();
 	}

@@ -20,6 +20,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.observer.Observable;
+import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -39,6 +40,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static is.codion.common.Configuration.booleanValue;
+import static is.codion.common.Configuration.stringValue;
+
 /**
  * Builds a and starts an application.
  * @param <M> the application model type
@@ -47,6 +51,41 @@ import java.util.function.Supplier;
  * @see #start()
  */
 public interface EntityApplication<M extends SwingEntityApplicationModel, P extends EntityApplicationPanel<M>> {
+
+	/**
+	 * Specifies the user for logging into the application on the form {@code user:password}.
+	 * If one is specified no login dialog is presented.
+	 * <p>
+	 * Initialized with the value of the CODION_CLIENT_USER environment variable.
+	 * <p>
+	 * <strong>Warning:</strong> System properties are visible in process listings.
+	 * Use only for development/testing. In production, use secure credential management.
+	 * <ul>
+	 * <li>Value type: String
+	 * <li>Default value: System.getenv("CODION_CLIENT_USER")
+	 * </ul>
+	 * @see User#parse(String)
+	 */
+	PropertyValue<String> USER = stringValue("codion.client.user", System.getenv("CODION_CLIENT_USER"));
+
+	/**
+	 * Specifies whether the client saves the last successful login username,
+	 * which is then displayed as the default username the next time the application is started
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 */
+	PropertyValue<Boolean> SAVE_DEFAULT_USERNAME = booleanValue("codion.client.saveDefaultUsername", true);
+
+	/**
+	 * Specifies whether a startup dialog should be shown
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 */
+	PropertyValue<Boolean> STARTUP_DIALOG = booleanValue("codion.client.startupDialog", true);
 
 	/**
 	 * @param domain the domain type
@@ -58,16 +97,16 @@ public interface EntityApplication<M extends SwingEntityApplicationModel, P exte
 	 * <p>Sets the application name, used as frame title and client type identifier when using remote connnections.
 	 * <p>If no application name is set, {@link DomainType#name()} is used or
 	 * {@code applicationPanelClass.getSimpleName()} in case of no domain model.
-	 * @param applicationName the application name
+	 * @param name the application name
 	 * @return this Builder instance
 	 */
-	EntityApplication<M, P> applicationName(String applicationName);
+	EntityApplication<M, P> name(String name);
 
 	/**
-	 * @param applicationIcon the application icon
+	 * @param icon the application icon
 	 * @return this Builder instance
 	 */
-	EntityApplication<M, P> applicationIcon(ImageIcon applicationIcon);
+	EntityApplication<M, P> icon(ImageIcon icon);
 
 	/**
 	 * @param version the application version
@@ -121,23 +160,23 @@ public interface EntityApplication<M extends SwingEntityApplicationModel, P exte
 	EntityApplication<M, P> connectionProvider(Function<User, EntityConnectionProvider> connectionProvider);
 
 	/**
-	 * @param applicationModel the application model factory
+	 * @param model the application model factory
 	 * @return this Builder instance
 	 */
-	EntityApplication<M, P> applicationModel(Function<EntityConnectionProvider, M> applicationModel);
+	EntityApplication<M, P> model(Function<EntityConnectionProvider, M> model);
 
 	/**
-	 * @param applicationPanel the application panel factory
+	 * @param panel the application panel factory
 	 * @return this Builder instance
 	 */
-	EntityApplication<M, P> applicationPanel(Function<M, P> applicationPanel);
+	EntityApplication<M, P> panel(Function<M, P> panel);
 
 	/**
 	 * <p>The {@link User} to use to connect to the database, this user is propagated to {@link #connectionProvider(Function)}.
 	 * <p>If this user is null, {@link #user(Supplier)} is used to fetch a user.
 	 * @param user the application user
 	 * @return this Builder instance
-	 * @see is.codion.framework.model.EntityApplicationModel#USER
+	 * @see #USER
 	 */
 	EntityApplication<M, P> user(@Nullable User user);
 
@@ -171,18 +210,18 @@ public interface EntityApplication<M extends SwingEntityApplicationModel, P exte
 	EntityApplication<M, P> loginPanelSouthComponent(Supplier<JComponent> loginPanelSouthComponentSupplier);
 
 	/**
-	 * Runs before the application is started, but after Look and Feel initialization.
+	 * Runs as the application is starting, but after Look and Feel initialization.
 	 * Throw {@link CancelException} in order to cancel the application startup.
-	 * @param beforeApplicationStarted run before the application is started
+	 * @param onStarting run before the application is started
 	 * @return this Builder instance
 	 */
-	EntityApplication<M, P> beforeApplicationStarted(@Nullable Runnable beforeApplicationStarted);
+	EntityApplication<M, P> onStarting(@Nullable Runnable onStarting);
 
 	/**
-	 * @param onApplicationStarted called after a successful application start
+	 * @param onStarted called after a successful application start
 	 * @return this Builder instance
 	 */
-	EntityApplication<M, P> onApplicationStarted(@Nullable Consumer<P> onApplicationStarted);
+	EntityApplication<M, P> onStarted(@Nullable Consumer<P> onStarted);
 
 	/**
 	 * @param frame the supplies the frame to use
