@@ -478,10 +478,7 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 	}
 
 	private P initializeApplicationPanel(M applicationModel) {
-		P panel = applicationPanel.apply(applicationModel);
-		panel.initialize();
-
-		return panel;
+		return (P) panel.apply(applicationModel).initialize();
 	}
 
 	private void configureFrame(JFrame frame, P applicationPanel) {

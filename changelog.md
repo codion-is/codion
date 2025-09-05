@@ -13,6 +13,7 @@ Codion Change Log
 - EntitySearchField.Builder and EntitySearchFieldPanel.Builder.selectorFactory() renamed selector().
 - EntityApplicationPanel.Builder renamed EntityApplication and moved up to package level.
 - EntityApplication, builder methods renamed, removing redundant prefixes, related refactoring.
+- EntityApplicationPanel.initialize() now returns the panel, consistent with other panels.
 
 ## 0.18.47
 ### is.codion.common.core

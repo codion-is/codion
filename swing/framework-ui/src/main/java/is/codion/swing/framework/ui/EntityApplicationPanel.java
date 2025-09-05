@@ -452,8 +452,9 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 
 	/**
 	 * Initializes this panel and marks is as initialized, subsequent calls have no effect.
+	 * @return this application panel
 	 */
-	public final void initialize() {
+	public final EntityApplicationPanel<M> initialize() {
 		if (!initialized) {
 			try {
 				applyPreferences();
@@ -466,6 +467,8 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 				initialized = true;
 			}
 		}
+
+		return this;
 	}
 
 	/**
