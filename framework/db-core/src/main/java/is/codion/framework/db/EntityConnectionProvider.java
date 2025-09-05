@@ -206,7 +206,6 @@ public interface EntityConnectionProvider extends AutoCloseable {
 	 * // Create builder based on configuration
 	 * EntityConnectionProvider provider = EntityConnectionProvider.builder()
 	 *     .user(User.parse("scott:tiger"))
-	 *     .clientType("MyApp")
 	 *     .build();
 	 *}
 	 * @return an unconfigured {@link Builder} instance, based on the
@@ -288,8 +287,10 @@ public interface EntityConnectionProvider extends AutoCloseable {
 		B clientId(UUID clientId);
 
 		/**
+		 * If no client type is specified, {@link DomainType#name()} is used.
 		 * @param clientType a String identifying the client type for this connection provider
 		 * @return this builder instance
+		 * @see #domain(DomainType)
 		 */
 		B clientType(String clientType);
 

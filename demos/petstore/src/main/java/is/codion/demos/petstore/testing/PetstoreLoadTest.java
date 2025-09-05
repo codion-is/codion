@@ -48,7 +48,7 @@ public final class PetstoreLoadTest {
 			PetstoreAppModel applicationModel = new PetstoreAppModel(
 							EntityConnectionProvider.builder()
 											.domain(Petstore.DOMAIN)
-											.clientType(getClass().getSimpleName())
+											.clientType(PetstoreLoadTest.class.getSimpleName())
 											.user(user)
 											.build());
 			SwingEntityModel categoryModel = applicationModel.entityModels().get().iterator().next();
