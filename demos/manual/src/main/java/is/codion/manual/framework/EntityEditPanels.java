@@ -59,6 +59,7 @@ public final class EntityEditPanels {
 	interface Demo {
 		EntityType TYPE = domainType("domainType").entityType("entityType");
 		Column<Boolean> BOOLEAN = TYPE.booleanColumn("boolean");
+		Column<Boolean> BOOLEAN_NULLABLE = TYPE.booleanColumn("boolean");
 		Column<Integer> FOREIGN_ATTRIBUTE = TYPE.integerColumn("foreign_id");
 		ForeignKey FOREIGN_KEY = TYPE.foreignKey("foreign_key", FOREIGN_ATTRIBUTE, DemoMaster.ID);
 		Column<LocalDate> LOCAL_DATE = TYPE.localDateColumn("local_date");
@@ -85,12 +86,11 @@ public final class EntityEditPanels {
 											.build();
 
 			NullableCheckBox nullableCheckBox =
-							(NullableCheckBox) createCheckBox(Demo.BOOLEAN)
-											.nullable(true)
+							createNullableCheckBox(Demo.BOOLEAN_NULLABLE)
 											.build();
 
 			JComboBox<Item<Boolean>> comboBox =
-							createBooleanComboBox(Demo.BOOLEAN)
+							createBooleanComboBox(Demo.BOOLEAN_NULLABLE)
 											.build();
 			// end::booleanValue[]
 		}

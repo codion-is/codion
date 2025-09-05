@@ -24,7 +24,9 @@ public final class InputControlsTest {
 
 	@Test
 	void test() {
+		new InputControls().controls();
 		InputControls.basics();
+		InputControls.control();
 		InputControls.checkBox();
 		InputControls.nullableCheckBox();
 		InputControls.booleanComboBox();

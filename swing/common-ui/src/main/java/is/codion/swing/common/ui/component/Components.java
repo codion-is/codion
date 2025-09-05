@@ -26,6 +26,7 @@ import is.codion.swing.common.ui.component.button.CheckBoxMenuItemBuilder;
 import is.codion.swing.common.ui.component.button.ControlPanelBuilder;
 import is.codion.swing.common.ui.component.button.MenuBuilder;
 import is.codion.swing.common.ui.component.button.MenuItemBuilder;
+import is.codion.swing.common.ui.component.button.NullableCheckBoxBuilder;
 import is.codion.swing.common.ui.component.button.RadioButtonBuilder;
 import is.codion.swing.common.ui.component.button.RadioButtonMenuItemBuilder;
 import is.codion.swing.common.ui.component.button.ToggleButtonBuilder;
@@ -100,6 +101,13 @@ public final class Components {
 	 */
 	public static CheckBoxBuilder checkBox() {
 		return CheckBoxBuilder.builder();
+	}
+
+	/**
+	 * @return a NullableCheckBox builder
+	 */
+	public static NullableCheckBoxBuilder nullableCheckBox() {
+		return NullableCheckBoxBuilder.builder();
 	}
 
 	/**

@@ -110,6 +110,16 @@ public final class InputControls {
 						.text("Change value")
 						.mnemonic('V')
 						.build();
+
+		Value<Boolean> nullableBooleanValue = Value.nullable();
+
+		ToggleControl nullableToggleControl = Control.builder()
+						.toggle(nullableBooleanValue)
+						.build();
+
+		NullableCheckBox nullableCheckBox = Components.nullableCheckBox()
+						.toggle(nullableToggleControl)
+						.build();
 		// end::toggleControl[]
 	}
 
@@ -221,10 +231,9 @@ public final class InputControls {
 		Value<Boolean> booleanValue = Value.nullable();
 
 		NullableCheckBox checkBox =
-						(NullableCheckBox) Components.checkBox()
+						Components.nullableCheckBox()
 										.link(booleanValue)
 										.text("Check")
-										.nullable(true)
 										.build();
 		// end::nullableCheckBox[]
 	}

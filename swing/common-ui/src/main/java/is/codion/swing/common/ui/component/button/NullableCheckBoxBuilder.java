@@ -18,18 +18,16 @@
  */
 package is.codion.swing.common.ui.component.button;
 
-import javax.swing.JCheckBox;
-
 /**
- * Builds a JCheckBox that can be linked to non-nullable values.
- * Use {@link NullableCheckBoxBuilder} for nullable boolean values.
+ * Builds a NullableCheckBox for nullable boolean values.
+ * NullableCheckBox supports tri-state: checked (true), unchecked (false), and indeterminate (null).
  */
-public interface CheckBoxBuilder extends ToggleButtonBuilder<JCheckBox, CheckBoxBuilder> {
+public interface NullableCheckBoxBuilder extends ToggleButtonBuilder<NullableCheckBox, NullableCheckBoxBuilder> {
 
 	/**
 	 * @return a builder for a component
 	 */
-	static CheckBoxBuilder builder() {
-		return new DefaultCheckBoxBuilder();
+	static NullableCheckBoxBuilder builder() {
+		return new DefaultNullableCheckBoxBuilder();
 	}
 }

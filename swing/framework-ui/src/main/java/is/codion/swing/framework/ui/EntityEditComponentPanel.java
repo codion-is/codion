@@ -36,7 +36,7 @@ import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
-import is.codion.swing.common.ui.component.button.NullableCheckBox;
+import is.codion.swing.common.ui.component.button.NullableCheckBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.label.LabelBuilder;
@@ -452,13 +452,21 @@ public class EntityEditComponentPanel extends JPanel {
 	}
 
 	/**
-	 * Creates a builder for check boxes. If {@link CheckBoxBuilder#nullable(boolean)} is set to true,
-	 * a {@link NullableCheckBox} is built.
+	 * Creates a builder for check boxes for non-nullable attributes.
 	 * @param attribute the attribute for which to build a check-box
 	 * @return a check-box builder
 	 */
 	protected final CheckBoxBuilder createCheckBox(Attribute<Boolean> attribute) {
 		return setComponentBuilder(attribute, entityComponents.checkBox(attribute));
+	}
+
+	/**
+	 * Creates a builder for nullable check boxes.
+	 * @param attribute the attribute for which to build a check-box
+	 * @return a check-box builder
+	 */
+	protected final NullableCheckBoxBuilder createNullableCheckBox(Attribute<Boolean> attribute) {
+		return setComponentBuilder(attribute, entityComponents.nullableCheckBox(attribute));
 	}
 
 	/**

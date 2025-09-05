@@ -31,6 +31,7 @@ import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
+import is.codion.swing.common.ui.component.button.NullableCheckBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.slider.SliderBuilder;
@@ -125,6 +126,10 @@ public final class EntityComponents {
 			return (ComponentValueBuilder<C, T, B>) textField(attribute);
 		}
 		if (type.isBoolean()) {
+			if (attributeDefinition.nullable()) {
+				return (ComponentValueBuilder<C, T, B>) nullableCheckBox((Attribute<Boolean>) attribute);
+			}
+
 			return (ComponentValueBuilder<C, T, B>) checkBox((Attribute<Boolean>) attribute);
 		}
 		if (type.isShort()) {
@@ -156,13 +161,30 @@ public final class EntityComponents {
 	 * Creates a CheckBox builder based on the given attribute.
 	 * @param attribute the attribute
 	 * @return a JCheckBox builder
+	 * @throws IllegalArgumentException in case the attribute is nullable
 	 */
 	public CheckBoxBuilder checkBox(Attribute<Boolean> attribute) {
 		AttributeDefinition<Boolean> attributeDefinition = entityDefinition.attributes().definition(attribute);
+		if (attributeDefinition.nullable()) {
+			throw new IllegalArgumentException("Attribute: " + attribute + " is nullable, use nullableCheckBox()");
+		}
 
 		return Components.checkBox()
 						.toolTipText(attributeDefinition.description().orElse(null))
-						.nullable(attributeDefinition.nullable())
+						.text(attributeDefinition.caption())
+						.includeText(false);
+	}
+
+	/**
+	 * Creates a NullableCheckBox builder based on the given attribute.
+	 * @param attribute the attribute
+	 * @return a NullableCheckBox builder
+	 */
+	public NullableCheckBoxBuilder nullableCheckBox(Attribute<Boolean> attribute) {
+		AttributeDefinition<Boolean> attributeDefinition = entityDefinition.attributes().definition(attribute);
+
+		return Components.nullableCheckBox()
+						.toolTipText(attributeDefinition.description().orElse(null))
 						.text(attributeDefinition.caption())
 						.includeText(false);
 	}

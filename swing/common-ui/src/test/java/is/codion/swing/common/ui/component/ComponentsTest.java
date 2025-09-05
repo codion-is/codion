@@ -321,6 +321,9 @@ public final class ComponentsTest {
 			enabledState.set(true);
 			assertTrue(checkBox.isEnabled());
 		});
+
+		assertThrows(IllegalArgumentException.class, () -> Components.checkBox()
+						.link(Value.nullable()));
 	}
 
 	@Test
@@ -496,12 +499,11 @@ public final class ComponentsTest {
 	@Test
 	void nullableCheckBox() {
 		Value<Boolean> value = Value.nullable(true);
-		ComponentValue<JCheckBox, Boolean> componentValue = Components.checkBox()
+		ComponentValue<NullableCheckBox, Boolean> componentValue = Components.nullableCheckBox()
 						.link(value)
 						.transferFocusOnEnter(true)
-						.nullable(true)
 						.buildValue();
-		NullableCheckBox box = (NullableCheckBox) componentValue.component();
+		NullableCheckBox box = componentValue.component();
 		assertTrue(box.isSelected());
 		assertTrue(value.getOrThrow());
 

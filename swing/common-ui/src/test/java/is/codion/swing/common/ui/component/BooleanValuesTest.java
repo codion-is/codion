@@ -87,12 +87,11 @@ public class BooleanValuesTest {
 	@Test
 	void booleanNullableToggleButton() {
 		Value<Boolean> nullableBooleanValue = Value.nullable();
-		ComponentValue<JCheckBox, Boolean> value = Components.checkBox()
+		ComponentValue<NullableCheckBox, Boolean> value = Components.nullableCheckBox()
 						.link(nullableBooleanValue)
-						.nullable(true)
 						.buildValue();
 
-		NullableCheckBox checkBox = (NullableCheckBox) value.component();
+		NullableCheckBox checkBox = value.component();
 		NullableToggleButtonModel model = checkBox.model();
 
 		assertNull(value.get());

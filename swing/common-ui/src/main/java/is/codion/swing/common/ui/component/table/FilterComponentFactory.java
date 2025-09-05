@@ -79,8 +79,7 @@ final class FilterComponentFactory implements ComponentFactory {
 	private static <T> ComponentValueBuilder<? extends JComponent, T, ?> createField(ConditionModel<T> conditionModel) {
 		Class<T> columnClass = conditionModel.valueClass();
 		if (columnClass.equals(Boolean.class)) {
-			return (ComponentValueBuilder<? extends JComponent, T, ?>) checkBox()
-							.nullable(true)
+			return (ComponentValueBuilder<? extends JComponent, T, ?>) nullableCheckBox()
 							.horizontalAlignment(CENTER);
 		}
 		if (columnClass.equals(Short.class)) {

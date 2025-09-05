@@ -86,6 +86,8 @@ public final class EntityComponentsTest {
 
 		editor.value(Detail.BOOLEAN).set(true);
 		assertTrue(box.isSelected());
+
+		assertThrows(IllegalArgumentException.class, () -> entityComponents.checkBox(Detail.BOOLEAN_NULLABLE));
 	}
 
 	@Test
@@ -112,13 +114,12 @@ public final class EntityComponentsTest {
 	@Test
 	void nullableCheckBox() {
 		editor.defaults();
-		ComponentValue<JCheckBox, Boolean> componentValue =
-						entityComponents.checkBox(Detail.BOOLEAN_NULLABLE)
+		ComponentValue<NullableCheckBox, Boolean> componentValue =
+						entityComponents.nullableCheckBox(Detail.BOOLEAN_NULLABLE)
 										.transferFocusOnEnter(true)
-										.nullable(true)
 										.link(editor.value(Detail.BOOLEAN_NULLABLE))
 										.buildValue();
-		NullableCheckBox box = (NullableCheckBox) componentValue.component();
+		NullableCheckBox box = componentValue.component();
 		assertTrue(box.isSelected());//default value is true
 		assertTrue(editor.value(Detail.BOOLEAN_NULLABLE).getOrThrow());
 

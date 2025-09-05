@@ -20,26 +20,32 @@ package is.codion.swing.common.ui.component.button;
 
 import is.codion.swing.common.ui.component.value.ComponentValue;
 
-import javax.swing.JCheckBox;
 import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 
-final class DefaultCheckBoxBuilder extends DefaultToggleButtonBuilder<JCheckBox, CheckBoxBuilder> implements CheckBoxBuilder {
+import static is.codion.swing.common.ui.component.button.NullableCheckBox.nullableCheckBox;
 
-	DefaultCheckBoxBuilder() {
+final class DefaultNullableCheckBoxBuilder extends DefaultToggleButtonBuilder<NullableCheckBox, NullableCheckBoxBuilder> implements NullableCheckBoxBuilder {
+
+	DefaultNullableCheckBoxBuilder() {
 		horizontalAlignment(SwingConstants.LEADING);
 	}
 
 	@Override
-	protected JCheckBox createButton() {
-		return new JCheckBox();
+	protected NullableCheckBox createButton() {
+		return nullableCheckBox();
 	}
 
 	@Override
-	protected ComponentValue<JCheckBox, Boolean> createComponentValue(JToggleButton component) {
-		ComponentValue<JCheckBox, Boolean> componentValue = new CheckBoxValue((JCheckBox) component);
+	protected ComponentValue<NullableCheckBox, Boolean> createComponentValue(JToggleButton component) {
+		ComponentValue<NullableCheckBox, Boolean> componentValue = new NullableCheckBoxValue((NullableCheckBox) component);
 		linkedObservableStates.forEach(state -> state.addConsumer(new SetComponentValue(componentValue)));
 
 		return componentValue;
+	}
+
+	@Override
+	protected boolean supportsNull() {
+		return true;
 	}
 }

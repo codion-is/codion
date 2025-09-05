@@ -134,10 +134,10 @@ public class DefaultToggleControlTest {
 	void nullableToggleControl() {
 		Value<Boolean> value = Value.nullable();
 		ToggleControl toggleControl = Control.builder().toggle(value).build();
-		NullableToggleButtonModel buttonModel = (NullableToggleButtonModel) Components.checkBox()
+		NullableToggleButtonModel buttonModel = Components.nullableCheckBox()
 						.toggle(toggleControl)
 						.build()
-						.getModel();
+						.model();
 		buttonModel.set(null);
 		assertNull(value.get());
 		buttonModel.setSelected(false);

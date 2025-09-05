@@ -316,7 +316,7 @@ public final class ApplicationPanel extends JPanel {
 						.enabled(inputEnabledState)
 						.build(inputPanel::add);
 
-		checkBox()
+		nullableCheckBox()
 						.link(model.booleanValue())
 						.horizontalAlignment(SwingConstants.CENTER)
 						.transferFocusOnEnter(true)
