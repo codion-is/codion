@@ -34,12 +34,7 @@ public interface ControlKey<T extends Control> {
 	String name();
 
 	/**
-	 * @return the class of the control identified by this key
-	 */
-	Class<T> controlClass();
-
-	/**
-	 * Note that changing the default keystroke has no effect on already initialized components.
+	 * Note that changing the default keystroke has no effect on already initialized controls.
 	 * @return the default keystroke for this shortcut, an empty {@link Value} if none is available
 	 */
 	Value<KeyStroke> defaultKeystroke();

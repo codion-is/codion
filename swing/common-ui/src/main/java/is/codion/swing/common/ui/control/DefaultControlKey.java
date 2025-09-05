@@ -29,23 +29,16 @@ import static java.util.Objects.requireNonNull;
 final class DefaultControlKey<T extends Control> implements ControlKey<T> {
 
 	private final String name;
-	private final Class<T> controlClass;
 	private final Value<KeyStroke> defaultKeyStroke;
 
-	DefaultControlKey(String name, Class<T> controlClass, @Nullable KeyStroke defaultKeyStroke) {
+	DefaultControlKey(String name, @Nullable KeyStroke defaultKeyStroke) {
 		this.name = requireNonNull(name);
-		this.controlClass = requireNonNull(controlClass);
 		this.defaultKeyStroke = Value.nullable(defaultKeyStroke);
 	}
 
 	@Override
 	public String name() {
 		return name;
-	}
-
-	@Override
-	public Class<T> controlClass() {
-		return controlClass;
 	}
 
 	@Override

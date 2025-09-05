@@ -61,7 +61,7 @@ public interface ToggleControl extends Control {
 	 * @return a new {@link ControlKey} for identifying a {@link ToggleControl} instance
 	 */
 	static ControlKey<ToggleControl> key(String name) {
-		return new DefaultControlKey<>(name, ToggleControl.class, null);
+		return new DefaultControlKey<>(name, null);
 	}
 
 	/**
@@ -70,6 +70,6 @@ public interface ToggleControl extends Control {
 	 * @return a new {@link ControlKey} for identifying a {@link ToggleControl} instance
 	 */
 	static ControlKey<ToggleControl> key(String name, KeyStroke defaultKeyStroke) {
-		return new DefaultControlKey<>(name, ToggleControl.class, requireNonNull(defaultKeyStroke));
+		return new DefaultControlKey<>(name, requireNonNull(defaultKeyStroke));
 	}
 }

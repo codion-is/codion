@@ -47,11 +47,6 @@ final class DefaultControlsKey implements ControlsKey {
 	}
 
 	@Override
-	public Class<Controls> controlClass() {
-		return Controls.class;
-	}
-
-	@Override
 	public Value<KeyStroke> defaultKeystroke() {
 		return defaultKeyStroke;
 	}

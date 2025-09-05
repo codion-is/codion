@@ -63,7 +63,7 @@ public interface CommandControl extends Control {
 	 * @return a new {@link ControlKey} for identifying a {@link CommandControl} instance
 	 */
 	static ControlKey<CommandControl> key(String name, @Nullable KeyStroke defaultKeyStroke) {
-		return new DefaultControlKey<>(name, CommandControl.class, defaultKeyStroke);
+		return new DefaultControlKey<>(name, defaultKeyStroke);
 	}
 
 	/**

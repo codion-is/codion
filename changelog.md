@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - FilterTable.ScrollToSelected bug fixed, no longer jumps to start of selection when a row is deselected.
 - NullableCheckBoxBuilder split from CheckBoxBuilder, related refactoring.
+- ControlKey.controlClass() removed, unused.
 ### is.codion.framework.db.core
 - EntityConnectionProvider.Builder, domainType.name() now used as clientType if none is specified.
 ### is.codion.swing.framework.model

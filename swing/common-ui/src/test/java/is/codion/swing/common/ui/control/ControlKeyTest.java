@@ -38,7 +38,6 @@ public final class ControlKeyTest {
 		// Without keystroke
 		ControlKey<CommandControl> saveKey = CommandControl.key("save");
 		assertEquals("save", saveKey.name());
-		assertEquals(CommandControl.class, saveKey.controlClass());
 		assertNotNull(saveKey.defaultKeystroke());
 		assertNull(saveKey.defaultKeystroke().get());
 
@@ -46,7 +45,6 @@ public final class ControlKeyTest {
 		KeyStroke ctrlS = getKeyStroke("ctrl S");
 		ControlKey<CommandControl> saveWithKey = CommandControl.key("save", ctrlS);
 		assertEquals("save", saveWithKey.name());
-		assertEquals(CommandControl.class, saveWithKey.controlClass());
 		assertEquals(ctrlS, saveWithKey.defaultKeystroke().get());
 
 		// Null name should throw
@@ -59,7 +57,6 @@ public final class ControlKeyTest {
 		// Without keystroke
 		ControlKey<ToggleControl> toggleKey = ToggleControl.key("toggleView");
 		assertEquals("toggleView", toggleKey.name());
-		assertEquals(ToggleControl.class, toggleKey.controlClass());
 		assertNotNull(toggleKey.defaultKeystroke());
 		assertNull(toggleKey.defaultKeystroke().get());
 
@@ -67,7 +64,6 @@ public final class ControlKeyTest {
 		KeyStroke f2 = getKeyStroke("F2");
 		ControlKey<ToggleControl> toggleWithKey = ToggleControl.key("toggleView", f2);
 		assertEquals("toggleView", toggleWithKey.name());
-		assertEquals(ToggleControl.class, toggleWithKey.controlClass());
 		assertEquals(f2, toggleWithKey.defaultKeystroke().get());
 
 		// Null name should throw
@@ -81,7 +77,6 @@ public final class ControlKeyTest {
 		// Without layout
 		Controls.ControlsKey controlsKey = Controls.key("menu");
 		assertEquals("menu", controlsKey.name());
-		assertEquals(Controls.class, controlsKey.controlClass());
 		assertNotNull(controlsKey.defaultKeystroke());
 		assertNull(controlsKey.defaultKeystroke().get());
 		assertFalse(controlsKey.defaultLayout().isPresent());
@@ -90,7 +85,6 @@ public final class ControlKeyTest {
 		Controls.Layout layout = Controls.layout(emptyList());
 		Controls.ControlsKey controlsWithLayout = Controls.key("menu", layout);
 		assertEquals("menu", controlsWithLayout.name());
-		assertEquals(Controls.class, controlsWithLayout.controlClass());
 		assertTrue(controlsWithLayout.defaultLayout().isPresent());
 		assertEquals(layout, controlsWithLayout.defaultLayout().get());
 
@@ -137,29 +131,9 @@ public final class ControlKeyTest {
 
 		// But same properties
 		assertEquals(save1.name(), save2.name());
-		assertEquals(save1.controlClass(), save2.controlClass());
 
 		// And independent default keystrokes
 		save1.defaultKeystroke().set(getKeyStroke("ctrl S"));
 		assertNull(save2.defaultKeystroke().get());
-	}
-
-	@Test
-	void differentControlTypesWithSameName() {
-		// Same name can be used for different control types
-		String name = "action";
-		ControlKey<CommandControl> commandKey = CommandControl.key(name);
-		ControlKey<ToggleControl> toggleKey = ToggleControl.key(name);
-		Controls.ControlsKey controlsKey = Controls.key(name);
-
-		// Same name
-		assertEquals(name, commandKey.name());
-		assertEquals(name, toggleKey.name());
-		assertEquals(name, controlsKey.name());
-
-		// Different control classes
-		assertEquals(CommandControl.class, commandKey.controlClass());
-		assertEquals(ToggleControl.class, toggleKey.controlClass());
-		assertEquals(Controls.class, controlsKey.controlClass());
 	}
 }
