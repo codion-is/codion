@@ -425,7 +425,8 @@ public interface Entity extends Comparable<Entity> {
 
 	/**
 	 * Returns the primary key of this entity, in its original state.
-	 * If the entity has no primary key attributes defined, this key contains no values.
+	 * If the entity has no defined primary key, this key contains
+	 * all original column values and {@link Key#primary()} returns false.
 	 * @return the primary key of this entity in its original state
 	 */
 	Key originalPrimaryKey();
