@@ -542,7 +542,7 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 		}
 	}
 
-	private <T> void updateRelatedKeys(ColumnDefinition<T> columnDefinition, T newValue) {
+	private <T> void updateRelatedKeys(ColumnDefinition<T> columnDefinition, @Nullable T newValue) {
 		if (columnDefinition.primaryKey()) {
 			primaryKey = null;
 		}
@@ -551,7 +551,7 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 		}
 	}
 
-	private <T> void removeInvalidForeignKeyValues(Column<T> column, T value) {
+	private <T> void removeInvalidForeignKeyValues(Column<T> column, @Nullable T value) {
 		for (ForeignKeyDefinition foreignKeyDefinition : definition.foreignKeys().definitions(column)) {
 			Entity foreignKeyEntity = get(foreignKeyDefinition);
 			if (foreignKeyEntity != null) {
@@ -574,7 +574,7 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 	 * @param foreignKeyDefinition the foreign key definition
 	 * @param referencedEntity the referenced entity
 	 */
-	private void updateReferencedColumns(ForeignKeyDefinition foreignKeyDefinition, Entity referencedEntity) {
+	private void updateReferencedColumns(ForeignKeyDefinition foreignKeyDefinition, @Nullable Entity referencedEntity) {
 		removeCachedKey(foreignKeyDefinition.attribute());
 		List<ForeignKey.Reference<?>> references = foreignKeyDefinition.references();
 		for (int i = 0; i < references.size(); i++) {
