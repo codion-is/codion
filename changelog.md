@@ -11,6 +11,7 @@ Codion Change Log
 - EntityApplicationPanelBuilder, domainType.name() now used as application name by default.
 - EntityApplicationPanelBuilder.applicationVersion() renamed version().
 - EntitySearchField.Builder and EntitySearchFieldPanel.Builder.selectorFactory() renamed selector().
+- EntityApplicationPanel.Builder renamed EntityApplication and moved up to package level.
 
 ## 0.18.47
 ### is.codion.common.core

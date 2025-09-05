@@ -31,6 +31,7 @@ import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
+import is.codion.swing.framework.ui.EntityApplication;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
@@ -313,7 +314,7 @@ public final class EmployeesMinimalApp {
 		Clients.TRUSTSTORE.set("resources/config/truststore.jks");
 
 		//we create an instance of our application panel and start it
-		EntityApplicationPanel.builder(EmployeesApplicationModel.class, EmployeesApplicationPanel.class)
+		EntityApplication.builder(EmployeesApplicationModel.class, EmployeesApplicationPanel.class)
 						.domain(DOMAIN)
 						.applicationName("Employees Minimal")
 						.defaultUser(User.parse("scott:tiger"))

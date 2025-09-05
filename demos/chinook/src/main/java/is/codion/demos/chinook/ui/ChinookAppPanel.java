@@ -41,6 +41,7 @@ import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.ui.EntityApplication;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
@@ -225,7 +226,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 		CalendarPanel.WEEK_NUMBERS.set(true);
 		ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
 						.set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
-		EntityApplicationPanel.builder(ChinookAppModel.class, ChinookAppPanel.class)
+		EntityApplication.builder(ChinookAppModel.class, ChinookAppPanel.class)
 						.domain(Chinook.DOMAIN)
 						.version(ChinookAppModel.VERSION)
 						.defaultLookAndFeel(MaterialTheme.class)

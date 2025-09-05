@@ -31,6 +31,7 @@ import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.ui.EntityApplication;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
@@ -92,7 +93,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 						null,
 						ControlKeys.COPY_CONTROLS
 		)));
-		EntityApplicationPanel.builder(SchemaBrowserApplicationModel.class, SchemaBrowserAppPanel.class)
+		EntityApplication.builder(SchemaBrowserApplicationModel.class, SchemaBrowserAppPanel.class)
 						.domain(SchemaBrowser.DOMAIN)
 						.applicationName("Schema Browser")
 						.defaultUser(User.parse("scott:tiger"))

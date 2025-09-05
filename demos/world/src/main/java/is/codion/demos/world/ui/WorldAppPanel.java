@@ -30,6 +30,7 @@ import is.codion.demos.world.model.WorldAppModel;
 import is.codion.plugin.flatlaf.intellij.themes.monokaipro.MonokaiPro;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.ui.EntityApplication;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
@@ -77,7 +78,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 		FilterTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
 		ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
 						.set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
-		EntityApplicationPanel.builder(WorldAppModel.class, WorldAppPanel.class)
+		EntityApplication.builder(WorldAppModel.class, WorldAppPanel.class)
 						.domain(World.DOMAIN)
 						.version(WorldAppModel.VERSION)
 						.defaultLookAndFeel(MonokaiPro.class)

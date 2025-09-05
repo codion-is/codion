@@ -32,6 +32,7 @@ import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.ui.EntityApplication;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
@@ -195,7 +196,7 @@ public final class ClientTutorial {
 		Database.INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
 		EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
 		FilterTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
-		EntityApplicationPanel.builder(ApplicationModel.class, ApplicationPanel.class)
+		EntityApplication.builder(ApplicationModel.class, ApplicationPanel.class)
 						.applicationModel(ApplicationModel::new)
 						.applicationPanel(ApplicationPanel::new)
 						.connectionProvider(LocalEntityConnectionProvider.builder()

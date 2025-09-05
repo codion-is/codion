@@ -42,6 +42,7 @@ import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.ui.EntityApplication;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
@@ -258,7 +259,7 @@ public final class NotesDemo {
 		// Change the default horizontal alignment for temporal table columns
 		FilterTableCellRenderer.TEMPORAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
 
-		EntityApplicationPanel.builder(NotesApplicationModel.class, NotesApplicationPanel.class)
+		EntityApplication.builder(NotesApplicationModel.class, NotesApplicationPanel.class)
 						.frameTitle("Notes")
 						.frameSize(new Dimension(600, 500))
 						.version(NotesApplicationModel.VERSION)

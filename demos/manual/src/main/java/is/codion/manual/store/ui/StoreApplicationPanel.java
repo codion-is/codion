@@ -27,6 +27,7 @@ import is.codion.manual.store.model.CustomerAddressModel;
 import is.codion.manual.store.model.CustomerModel;
 import is.codion.manual.store.model.StoreApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.ui.EntityApplication;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
@@ -79,7 +80,7 @@ public class StoreApplicationPanel extends EntityApplicationPanel<StoreApplicati
 		EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
 		ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
 						.set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
-		EntityApplicationPanel.builder(StoreApplicationModel.class, StoreApplicationPanel.class)
+		EntityApplication.builder(StoreApplicationModel.class, StoreApplicationPanel.class)
 						.domain(Store.DOMAIN)
 						.defaultUser(User.parse("scott:tiger"))
 						.start();

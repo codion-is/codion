@@ -30,6 +30,7 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.ui.EntityApplication;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
@@ -113,7 +114,7 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 	// tag::main[]
 	public static void main(String[] args) {
 		EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
-		EntityApplicationPanel.builder(EmployeesAppModel.class, EmployeesAppPanel.class)
+		EntityApplication.builder(EmployeesAppModel.class, EmployeesAppPanel.class)
 						.domain(Employees.DOMAIN)
 						.defaultLookAndFeel(Arc.class)
 						.defaultUser(User.parse("scott:tiger"))

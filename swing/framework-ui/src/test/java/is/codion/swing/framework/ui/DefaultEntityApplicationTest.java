@@ -32,34 +32,34 @@ import java.io.IOException;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
-public final class DefaultEntityApplicationPanelBuilderTest {
+public final class DefaultEntityApplicationTest {
 
 	@AfterAll
 	static void cleanUp() throws IOException {
-		UserPreferences.delete("is.codion.swing.framework.ui.DefaultEntityApplicationPanelBuilderTest$TestApplicationModel");
+		UserPreferences.delete("is.codion.swing.framework.ui.DefaultEntityApplicationTest$TestApplicationModel");
 	}
 
 	@Test
 	void connection() {
 		User user = User.user("Test");
-		EntityApplicationPanel.builder(TestApplicationModel.class, TestApplicationPanel.class)
-						.onApplicationStarted(panel -> assertSame(user, panel.applicationModel().connectionProvider().user()))
+		EntityApplication.builder(TestApplicationModel.class, TestApplicationPanel.class)
+						.onStarted(panel -> assertSame(user, panel.applicationModel().connectionProvider().user()))
 						.domain(TestDomain.DOMAIN)
 						.user(user)
 						.startupDialog(false)
 						.displayFrame(false)
 						.start(false);
 		User user2 = User.user("Test2");
-		EntityApplicationPanel.builder(TestApplicationModel.class, TestApplicationPanel.class)
-						.onApplicationStarted(panel -> assertSame(user2, panel.applicationModel().connectionProvider().user()))
+		EntityApplication.builder(TestApplicationModel.class, TestApplicationPanel.class)
+						.onStarted(panel -> assertSame(user2, panel.applicationModel().connectionProvider().user()))
 						.domain(TestDomain.DOMAIN)
 						.user(() -> user2)
 						.startupDialog(false)
 						.displayFrame(false)
 						.start(false);
 		User user3 = User.user("Test3");
-		EntityApplicationPanel.builder(TestApplicationModel.class, TestApplicationPanel.class)
-						.onApplicationStarted(panel -> assertSame(user3, panel.applicationModel().connectionProvider().user()))
+		EntityApplication.builder(TestApplicationModel.class, TestApplicationPanel.class)
+						.onStarted(panel -> assertSame(user3, panel.applicationModel().connectionProvider().user()))
 						.user(user3)
 						.connectionProvider(usr -> LocalEntityConnectionProvider.builder()
 										.domain(new TestDomain())
@@ -73,8 +73,8 @@ public final class DefaultEntityApplicationPanelBuilderTest {
 						.domain(new TestDomain())
 						.user(user4)
 						.build();
-		EntityApplicationPanel.builder(TestApplicationModel.class, TestApplicationPanel.class)
-						.onApplicationStarted(panel -> {
+		EntityApplication.builder(TestApplicationModel.class, TestApplicationPanel.class)
+						.onStarted(panel -> {
 							assertSame(connectionProvider, panel.applicationModel().connectionProvider());
 							assertSame(user4, panel.applicationModel().connectionProvider().user());
 						})

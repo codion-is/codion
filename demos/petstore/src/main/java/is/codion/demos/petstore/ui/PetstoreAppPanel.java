@@ -22,6 +22,7 @@ import is.codion.common.user.User;
 import is.codion.demos.petstore.model.PetstoreAppModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.ui.EntityApplication;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.TabbedDetailLayout;
@@ -123,7 +124,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
 	public static void main(String[] args) {
 		Locale.setDefault(new Locale("en"));
 		EntityPanel.Config.TOOLBAR_CONTROLS.set(true);
-		EntityApplicationPanel.builder(PetstoreAppModel.class, PetstoreAppPanel.class)
+		EntityApplication.builder(PetstoreAppModel.class, PetstoreAppPanel.class)
 						.domain(DOMAIN)
 						.applicationName("The Pet Store")
 						.defaultUser(User.parse("scott:tiger"))

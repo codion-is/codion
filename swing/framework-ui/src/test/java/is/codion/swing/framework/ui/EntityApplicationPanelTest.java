@@ -79,7 +79,7 @@ public class EntityApplicationPanelTest {
 	@Test
 	void test() {
 		EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
-		EntityApplicationPanel.builder(TestApplicationModel.class, TestApplicationPanel.class)
+		EntityApplication.builder(TestApplicationModel.class, TestApplicationPanel.class)
 						.user(UNIT_TEST_USER)
 						.domain(TestDomain.DOMAIN)
 						.uncaughtExceptionHandler(false)
