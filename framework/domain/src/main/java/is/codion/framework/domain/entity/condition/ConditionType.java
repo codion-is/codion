@@ -144,7 +144,7 @@ public sealed interface ConditionType permits DefaultConditionType {
 	/**
 	 * <p>Returns a {@link CustomCondition} based on the {@link ConditionString} associated with this {@link ConditionType}
 	 * <p>This method assumes that the {@link ConditionString} is not based on any columns or has no need for them when creating the condition string.
-	 * <p>Note that {@link ConditionString#toString(List, List)} will receive an empty column list.
+	 * <p>Note that {@link ConditionString#get(List, List)} will receive an empty column list.
 	 * @param values the values used by this condition
 	 * @return a {@link CustomCondition} instance
 	 * @see EntityDefinition#condition(ConditionType)

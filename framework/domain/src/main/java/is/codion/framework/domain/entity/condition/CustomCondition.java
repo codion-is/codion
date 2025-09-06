@@ -29,7 +29,7 @@ import java.util.List;
  * database-specific functionality.
  * <p>
  * A {@link ConditionType} is associated with a {@link ConditionString}, which is responsible
- * for creating the condition string via {@link ConditionString#toString(List, List)}.
+ * for creating the condition string via {@link ConditionString#get(List, List)}.
  * The {@code ?} substitute character is replaced with condition values when the statement is prepared.
  * <p>
  * Custom conditions provide the flexibility to use any SQL construct while maintaining
