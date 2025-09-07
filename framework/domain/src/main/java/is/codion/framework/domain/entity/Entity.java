@@ -161,7 +161,7 @@ public interface Entity extends Comparable<Entity> {
 	 * @param <T> the value type
 	 * @return a String representation of the value associated with {@code attribute}
 	 */
-	<T> String string(Attribute<T> attribute);
+	<T> String format(Attribute<T> attribute);
 
 	/**
 	 * Reverts the value associated with the given attribute to its original value.

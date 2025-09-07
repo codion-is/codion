@@ -197,7 +197,7 @@ final class DefaultMethodTracer implements MethodTracer {
 					if (modified) {
 						valueString.append(entity.original(columnDefinition.attribute())).append("->");
 					}
-					valueString.append(entity.string(columnDefinition.attribute()));
+					valueString.append(entity.format(columnDefinition.attribute()));
 					builder.append(columnDefinition.attribute()).append(":").append(valueString).append(",");
 				}
 			}

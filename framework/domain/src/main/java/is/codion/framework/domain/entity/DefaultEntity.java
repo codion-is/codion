@@ -177,7 +177,7 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 	}
 
 	@Override
-	public final <T> String string(Attribute<T> attribute) {
+	public final <T> String format(Attribute<T> attribute) {
 		AttributeDefinition<T> attributeDefinition = definition.attributes().definition(attribute);
 		if (attribute instanceof ForeignKey && values.get(attribute) == null) {
 			Key key = key((ForeignKey) attribute);

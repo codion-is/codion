@@ -204,7 +204,7 @@ public final class StringFactory {
 				return "";
 			}
 
-			return entity.entity(foreignKey).string(attribute);
+			return entity.entity(foreignKey).format(attribute);
 		}
 	}
 
@@ -221,7 +221,7 @@ public final class StringFactory {
 
 		@Override
 		public String apply(Entity entity) {
-			return entity.string(attribute);
+			return entity.format(attribute);
 		}
 	}
 
