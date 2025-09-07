@@ -35,7 +35,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
 /**
- * Factory class for building functions for String representations of {@link Entity} instances.
+ * Factory class for building formatters for {@link Entity} instances.
  * {@snippet :
  *  interface Department {
  *  		EntityType TYPE = DOMAIN.entityType("employees.department");
@@ -50,7 +50,7 @@ import static java.util.stream.Collectors.joining;
  *  		ForeignKey DEPARTMENT_FK = TYPE.foreignKey("department_fk", DEPARTMENT_ID, Department.ID);
  *  }
  *
- *  void testStringFactory() {
+ *  void testFormatter() {
  * 			Entity department = createDepartment();// With name: Accounting
  *  		Entity employee = createEmployee(department);// With name: John and the above department
  *

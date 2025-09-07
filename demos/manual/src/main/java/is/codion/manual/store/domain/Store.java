@@ -109,9 +109,9 @@ public final class Store extends DomainModel {
 														.hasDatabaseDefault(true)
 														.defaultValue(true))
 						.keyGenerator(new UUIDKeyGenerator())
-						// tag::customerStringFactory[]
-						.stringFactory(new CustomerToString())
-						// end::customerStringFactory[]
+						// tag::customerFormatter[]
+						.formatter(new CustomerFormatter())
+						// end::customerFormatter[]
 						.caption("Customer")
 						.build();
 		// end::customer[]
@@ -138,7 +138,7 @@ public final class Store extends DomainModel {
 														.hasDatabaseDefault(true)
 														.defaultValue(true)
 														.nullable(false))
-						.stringFactory(EntityFormatter.builder()
+						.formatter(EntityFormatter.builder()
 										.value(Address.STREET)
 										.text(", ")
 										.value(Address.CITY)
@@ -173,8 +173,8 @@ public final class Store extends DomainModel {
 		// end::customerAddress[]
 	}
 
-	// tag::toString[]
-	private static final class CustomerToString implements Function<Entity, String>, Serializable {
+	// tag::customerFormatter[]
+	private static final class CustomerFormatter implements Function<Entity, String>, Serializable {
 
 		@Serial
 		private static final long serialVersionUID = 1;
@@ -191,7 +191,7 @@ public final class Store extends DomainModel {
 							.toString();
 		}
 	}
-	// end::toString[]
+	// end::customerFormatter[]
 
 	// tag::keyGenerator[]
 	private static final class UUIDKeyGenerator implements KeyGenerator {

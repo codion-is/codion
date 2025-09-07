@@ -132,7 +132,7 @@ public final class TestDomain extends DomainModel {
 										Department.DATA.define()
 														.attribute())
 						.smallDataset(true)
-						.stringFactory(Department.DNAME)
+						.formatter(Department.DNAME)
 						.condition(Department.DEPARTMENT_CONDITION_TYPE, (attributes, values) -> {
 							StringBuilder builder = new StringBuilder("deptno in (");
 							values.forEach(value -> builder.append("?,"));
@@ -222,7 +222,7 @@ public final class TestDomain extends DomainModel {
 														.selected(false),
 										Employee.DATA.define()
 														.column())
-						.stringFactory(Employee.NAME)
+						.formatter(Employee.NAME)
 						.keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
 						.condition(Employee.NAME_IS_BLAKE_CONDITION, (attributes, values) -> "ename = 'BLAKE'")
 						.condition(Employee.MGR_GREATER_THAN_CONDITION, (attributes, values) -> "mgr > ?")
@@ -250,7 +250,7 @@ public final class TestDomain extends DomainModel {
 														.column()
 														.caption(DepartmentFk.LOC.name()))
 						.table("employees.department")
-						.stringFactory(DepartmentFk.DNAME)
+						.formatter(DepartmentFk.DNAME)
 						.build());
 	}
 
@@ -312,7 +312,7 @@ public final class TestDomain extends DomainModel {
 														.column()
 														.caption(EmployeeFk.HIRETIME.name()))
 						.table("employees.employee")
-						.stringFactory(EmployeeFk.NAME)
+						.formatter(EmployeeFk.NAME)
 						.keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
 						.caption("Employee")
 						.build());

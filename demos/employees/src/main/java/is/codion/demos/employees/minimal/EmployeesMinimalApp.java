@@ -108,7 +108,7 @@ public final class EmployeesMinimalApp {
 															.caption("Department location")
 															.maximumLength(13))
 							.caption("Departments")
-							.stringFactory(Department.NAME)
+							.formatter(Department.NAME)
 							.build());
 			/*
 			 * We then define the entity based on the EMPLOYEES.EMPLOYEE table,
@@ -156,7 +156,7 @@ public final class EmployeesMinimalApp {
 															.nullable(false))
 							.keyGenerator(KeyGenerator.sequence("employees.emp_seq"))
 							.caption("Employees")
-							.stringFactory(Employee.NAME)
+							.formatter(Employee.NAME)
 							.build());
 		}
 	}

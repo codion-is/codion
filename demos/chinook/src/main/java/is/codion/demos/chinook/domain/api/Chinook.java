@@ -264,7 +264,7 @@ public interface Chinook {
 		}
 	}
 
-	final class CustomerStringFactory
+	final class CustomerFormatter
 					implements Function<Entity, String>, Serializable {
 
 		@Serial

@@ -27,10 +27,7 @@ import java.util.function.Function;
 
 import static java.util.stream.Collectors.joining;
 
-/**
- * A ToString implementation using the entityType plus available attribute values.
- */
-final class DefaultStringFactory implements Function<Entity, String>, Serializable {
+final class DefaultFormatter implements Function<Entity, String>, Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1;

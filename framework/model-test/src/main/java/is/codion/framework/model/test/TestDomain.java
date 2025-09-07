@@ -69,7 +69,7 @@ public final class TestDomain extends DomainModel {
 
 							return code1.compareTo(code2);
 						})
-						.stringFactory(Master.NAME)
+						.formatter(Master.NAME)
 						.build();
 	}
 
@@ -157,7 +157,7 @@ public final class TestDomain extends DomainModel {
 						.selectTable(DETAIL_SELECT_TABLE_NAME)
 						.orderBy(ascending(Detail.STRING))
 						.smallDataset(true)
-						.stringFactory(Detail.STRING)
+						.formatter(Detail.STRING)
 						.build();
 	}
 
@@ -188,7 +188,7 @@ public final class TestDomain extends DomainModel {
 														.maximumLength(13))
 						.smallDataset(true)
 						.orderBy(ascending(Department.NAME))
-						.stringFactory(Department.NAME)
+						.formatter(Department.NAME)
 						.caption("Department")
 						.build();
 	}
@@ -264,7 +264,7 @@ public final class TestDomain extends DomainModel {
 										Employee.DATA.define()
 														.column()
 														.selected(false))
-						.stringFactory(Employee.NAME)
+						.formatter(Employee.NAME)
 						.keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
 						.orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
 						.condition(Employee.CONDITION_1_TYPE, (attributes, values) -> "1 = 2")

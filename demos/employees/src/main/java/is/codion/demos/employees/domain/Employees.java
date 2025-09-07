@@ -125,7 +125,7 @@ public final class Employees extends DomainModel {
 														.maximumLength(13))
 						.smallDataset(true)
 						.orderBy(ascending(Department.NAME))
-						.stringFactory(Department.NAME)
+						.formatter(Department.NAME)
 						.caption("Department")
 						.build();
 	}
@@ -183,7 +183,7 @@ public final class Employees extends DomainModel {
 														.caption("Location"))
 						.keyGenerator(sequence("employees.employee_seq"))
 						.orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
-						.stringFactory(Employee.NAME)
+						.formatter(Employee.NAME)
 						.caption("Employee")
 						.build();
 	}

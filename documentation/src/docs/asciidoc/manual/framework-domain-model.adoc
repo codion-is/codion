@@ -440,9 +440,9 @@ You can provide a custom key generator strategy by implementing a {url-javadoc}{
 include::{dir-source}/is/codion/manual/store/domain/Store.java[tags=keyGenerator]
 ----
 
-== StringFactory
+== EntityFormatter
 
-The {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/StringFactory.html[StringFactory] class provides a builder for a *Function<Entity, String>* instance, which is then used to provide the *toString()* implementations for entities.
+The {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityFormatter.html[EntityFormatter] class provides a builder for a *Function<Entity, String>* instance, which is then used to provide the *toString()* implementations for entities.
 This value is used wherever entities are displayed, for example in a ComboBox or as foreign key values in table views.
 
 *Entity.toString()* values are cached by default and invalidated each time an attribute value changes. This caching can be turned off via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.Builder.html#cacheToString{opar}boolean{cpar}[EntityDefinition.Builder.cacheToString(boolean)]
@@ -456,12 +456,12 @@ For more complex toString() implementations you can implement a custom *Function
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/store/domain/Store.java[tags=customerStringFactory]
+include::{dir-source}/is/codion/manual/store/domain/Store.java[tags=customerFormatter]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/store/domain/Store.java[tags=toString]
+include::{dir-source}/is/codion/manual/store/domain/Store.java[tags=customerFormatter]
 ----
 
 == Validation

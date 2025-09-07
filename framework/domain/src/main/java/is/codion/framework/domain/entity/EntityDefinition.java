@@ -179,7 +179,7 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 	Optional<EntitySelectQuery> selectQuery();
 
 	/**
-	 * Returns the function responsible for providing toString values for this entity type.
+	 * Returns the formatter responsible for providing toString values for this entity type.
 	 * {@snippet :
 	 * // Define custom string representation
 	 * Customer.TYPE.define(
@@ -191,7 +191,7 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 	 *             .column(),
 	 *         Customer.EMAIL.define()
 	 *             .column())
-	 *     .stringFactory(customer ->
+	 *     .formatter(customer ->
 	 *         customer.get(Customer.LAST_NAME) + ", " +
 	 *         customer.get(Customer.FIRST_NAME) +
 	 *         " (" + customer.get(Customer.EMAIL) + ")")
@@ -206,9 +206,9 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 	 *
 	 * System.out.println(customer); // "Doe, John (john@example.com)"
 	 *}
-	 * @return the function responsible for providing toString values for this entity type
+	 * @return the function responsible for formatting entities of this type
 	 */
-	Function<Entity, String> stringFactory();
+	Function<Entity, String> formatter();
 
 	/**
 	 * True by default.
@@ -381,26 +381,26 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 		Builder selectQuery(EntitySelectQuery selectQuery);
 
 		/**
-		 * Sets the string factory, using the value of the given attribute. Shortcut for:
+		 * Sets the formatter, based the value of the given attribute. Shortcut for:
 		 * {@snippet :
-		 * stringFactory(EntityFormatter.builder()
+		 * formatter(EntityFormatter.builder()
 		 *           .value(attribute)
 		 *           .build())
 		 *}
-		 * @param attribute the attribute which value to use
+		 * @param attribute the attribute which value to use when formatting
 		 * @return this {@link Builder} instance
 		 */
-		Builder stringFactory(Attribute<?> attribute);
+		Builder formatter(Attribute<?> attribute);
 
 		/**
-		 * Sets the string factory, that is, the function responsible for creating toString() values for this entity type.
-		 * Note that if for some reason this function returns null, the default string factory is used as fallback,
+		 * Sets the formatter, that is, the function responsible for creating toString() values for this entity type.
+		 * Note that if for some reason this formatter returns null, the default formatter is used as fallback,
 		 * which simply returns the entity type name and primary key value.
-		 * @param stringFactory the string factory function
+		 * @param formatter the formatter
 		 * @return this {@link Builder} instance
 		 * @see #cacheToString(boolean)
 		 */
-		Builder stringFactory(Function<Entity, String> stringFactory);
+		Builder formatter(Function<Entity, String> formatter);
 
 		/**
 		 * @param cacheToString true if the result of toString() should be cached

@@ -79,7 +79,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 	private final boolean readOnly;
 	private final boolean smallDataset;
 	private final boolean keyGenerated;
-	private final Function<Entity, String> stringFactory;
+	private final Function<Entity, String> formatter;
 	private final boolean cacheToString;
 	private final Comparator<Entity> comparator;
 	private final EntityValidator validator;
@@ -108,7 +108,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		this.keyGenerator = builder.keyGenerator;
 		this.keyGenerated = builder.keyGenerated;
 		this.optimisticLocking = builder.optimisticLocking;
-		this.stringFactory = builder.stringFactory;
+		this.formatter = builder.formatter;
 		this.cacheToString = builder.cacheToString;
 		this.comparator = builder.comparator;
 		this.validator = builder.validator;
@@ -196,8 +196,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 	}
 
 	@Override
-	public Function<Entity, String> stringFactory() {
-		return stringFactory;
+	public Function<Entity, String> formatter() {
+		return formatter;
 	}
 
 	@Override
@@ -792,7 +792,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		private @Nullable OrderBy orderBy;
 		private @Nullable String selectTable;
 		private @Nullable EntitySelectQuery selectQuery;
-		private Function<Entity, String> stringFactory = DefaultEntity.DEFAULT_STRING_FACTORY;
+		private Function<Entity, String> formatter = DefaultEntity.DEFAULT_FORMATTER;
 		private boolean cacheToString = true;
 		private Comparator<Entity> comparator = Text.collator();
 		private EntityValidator validator = DefaultEntity.DEFAULT_VALIDATOR;
@@ -901,15 +901,15 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		}
 
 		@Override
-		public Builder stringFactory(Attribute<?> attribute) {
-			return stringFactory(EntityFormatter.builder()
+		public Builder formatter(Attribute<?> attribute) {
+			return formatter(EntityFormatter.builder()
 							.value(attribute)
 							.build());
 		}
 
 		@Override
-		public Builder stringFactory(Function<Entity, String> stringFactory) {
-			this.stringFactory = requireNonNull(stringFactory);
+		public Builder formatter(Function<Entity, String> formatter) {
+			this.formatter = requireNonNull(formatter);
 			return this;
 		}
 

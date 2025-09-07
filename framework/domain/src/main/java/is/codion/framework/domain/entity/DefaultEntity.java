@@ -58,7 +58,7 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 	private static final long serialVersionUID = 1;
 
 	static final DefaultKeyGenerator DEFAULT_KEY_GENERATOR = new DefaultKeyGenerator();
-	static final DefaultStringFactory DEFAULT_STRING_FACTORY = new DefaultStringFactory();
+	static final DefaultFormatter DEFAULT_FORMATTER = new DefaultFormatter();
 	static final EntityValidator DEFAULT_VALIDATOR = new DefaultEntityValidator();
 	static final Predicate<Entity> DEFAULT_EXISTS = new DefaultEntityExists();
 
@@ -317,9 +317,9 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 	 * <p>Note that if this entitys {@link EntityFormatter} returns null for some reason, the default formatter is used instead.
 	 * <p>The result of this method call is cached by default.
 	 * @return a string representation of this entity
-	 * @see EntityDefinition.Builder#stringFactory(java.util.function.Function)
+	 * @see EntityDefinition.Builder#formatter(java.util.function.Function)
 	 * @see EntityDefinition.Builder#cacheToString(boolean)
-	 * @see EntityDefinition#stringFactory()
+	 * @see EntityDefinition#formatter()
 	 * @see EntityDefinition#cacheToString()
 	 */
 	@Override
@@ -366,9 +366,9 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 	}
 
 	private String createToString() {
-		String string = definition.stringFactory().apply(this);
+		String string = definition.formatter().apply(this);
 		if (string == null) {
-			return DEFAULT_STRING_FACTORY.apply(this);
+			return DEFAULT_FORMATTER.apply(this);
 		}
 
 		return string;

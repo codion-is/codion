@@ -92,7 +92,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 																		WHERE album.artist_id = artist.id"""))
 						.keyGenerator(identity())
 						.orderBy(ascending(Artist.NAME))
-						.stringFactory(Artist.NAME)
+						.formatter(Artist.NAME)
 						.build();
 	}
 
@@ -127,7 +127,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 																		WHERE track.album_id = album.id"""))
 						.keyGenerator(identity())
 						.orderBy(ascending(Album.ARTIST_ID, Album.TITLE))
-						.stringFactory(Album.TITLE)
+						.formatter(Album.TITLE)
 						.build();
 	}
 
@@ -190,7 +190,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 						.keyGenerator(identity())
 						.validator(new EmailValidator(Employee.EMAIL))
 						.orderBy(ascending(Employee.LASTNAME, Employee.FIRSTNAME))
-						.stringFactory(EntityFormatter.builder()
+						.formatter(EntityFormatter.builder()
 										.value(Employee.LASTNAME)
 										.text(", ")
 										.value(Employee.FIRSTNAME)
@@ -249,7 +249,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 						.keyGenerator(identity())
 						.validator(new EmailValidator(Customer.EMAIL))
 						.orderBy(ascending(Customer.LASTNAME, Customer.FIRSTNAME))
-						.stringFactory(new CustomerStringFactory())
+						.formatter(new CustomerFormatter())
 						.build();
 	}
 
@@ -283,7 +283,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.maximumLength(120))
 						.keyGenerator(identity())
 						.orderBy(ascending(Genre.NAME))
-						.stringFactory(Genre.NAME)
+						.formatter(Genre.NAME)
 						.smallDataset(true)
 						.build();
 	}
@@ -297,7 +297,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.nullable(false)
 														.maximumLength(120))
 						.keyGenerator(identity())
-						.stringFactory(MediaType.NAME)
+						.formatter(MediaType.NAME)
 						.smallDataset(true)
 						.build();
 	}
@@ -381,7 +381,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 												FROM chinook.playlisttrack
 												WHERE playlist_id = ?
 										)""")
-						.stringFactory(Track.NAME)
+						.formatter(Track.NAME)
 						.build();
 	}
 
@@ -434,7 +434,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 										.ascending(Invoice.CUSTOMER_ID)
 										.descending(Invoice.DATE)
 										.build())
-						.stringFactory(Invoice.ID)
+						.formatter(Invoice.ID)
 						.build();
 	}
 
@@ -482,7 +482,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.maximumLength(120))
 						.keyGenerator(identity())
 						.orderBy(ascending(Playlist.NAME))
-						.stringFactory(Playlist.NAME)
+						.formatter(Playlist.NAME)
 						.build();
 	}
 
@@ -506,7 +506,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 										PlaylistTrack.ALBUM.define()
 														.denormalized(PlaylistTrack.TRACK_FK, Track.ALBUM_FK))
 						.keyGenerator(identity())
-						.stringFactory(EntityFormatter.builder()
+						.formatter(EntityFormatter.builder()
 										.value(PlaylistTrack.PLAYLIST_FK)
 										.text(" - ")
 										.value(PlaylistTrack.TRACK_FK)

@@ -63,7 +63,7 @@ public final class PetclinicImpl extends DomainModel {
 														.nullable(false))
 						.keyGenerator(identity())
 						.caption("Vets")
-						.stringFactory(EntityFormatter.builder()
+						.formatter(EntityFormatter.builder()
 										.value(Vet.LAST_NAME)
 										.text(", ")
 										.value(Vet.FIRST_NAME)
@@ -85,7 +85,7 @@ public final class PetclinicImpl extends DomainModel {
 														.nullable(false))
 						.keyGenerator(identity())
 						.caption("Specialties")
-						.stringFactory(Specialty.NAME)
+						.formatter(Specialty.NAME)
 						.smallDataset(true)
 						.build();
 	}
@@ -105,7 +105,7 @@ public final class PetclinicImpl extends DomainModel {
 														.foreignKey()
 														.caption("Specialty"))
 						.caption("Vet specialties")
-						.stringFactory(EntityFormatter.builder()
+						.formatter(EntityFormatter.builder()
 										.value(VetSpecialty.VET_FK)
 										.text(" - ")
 										.value(VetSpecialty.SPECIALTY_FK)
@@ -125,7 +125,7 @@ public final class PetclinicImpl extends DomainModel {
 														.nullable(false))
 						.keyGenerator(identity())
 						.caption("Pet types")
-						.stringFactory(PetType.NAME)
+						.formatter(PetType.NAME)
 						.orderBy(ascending(PetType.NAME))
 						.smallDataset(true)
 						.build();
@@ -167,7 +167,7 @@ public final class PetclinicImpl extends DomainModel {
 														.converter(String.class, new PhoneTypeConverter()))
 						.keyGenerator(identity())
 						.caption("Owners")
-						.stringFactory(EntityFormatter.builder()
+						.formatter(EntityFormatter.builder()
 										.value(Owner.LAST_NAME)
 										.text(", ")
 										.value(Owner.FIRST_NAME)
@@ -217,7 +217,7 @@ public final class PetclinicImpl extends DomainModel {
 														.caption("Owner"))
 						.keyGenerator(identity())
 						.caption("Pets")
-						.stringFactory(Pet.NAME)
+						.formatter(Pet.NAME)
 						.orderBy(ascending(Pet.NAME))
 						.build();
 	}

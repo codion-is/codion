@@ -98,7 +98,7 @@ public final class EntitiesTutorial {
 			// define an entity based on the table 'chinook.artist', with the above columns
 			EntityDefinition artist = Artist.TYPE.define(artistId, artistName)
 							.keyGenerator(identity())
-							.stringFactory(Artist.NAME)
+							.formatter(Artist.NAME)
 							.smallDataset(true)
 							.caption("Artist")
 							.build();
@@ -131,7 +131,7 @@ public final class EntitiesTutorial {
 			// define an entity based on the table 'chinook.album', with the above columns and foreign key
 			EntityDefinition album = Album.TYPE.define(albumId, albumTitle, albumArtistId, albumArtist)
 							.keyGenerator(identity())
-							.stringFactory(EntityFormatter.builder()
+							.formatter(EntityFormatter.builder()
 											.value(Album.ARTIST_FK)
 											.text(" - ")
 											.value(Album.TITLE)

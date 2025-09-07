@@ -147,7 +147,7 @@ public final class TestDomain extends DomainModel {
 														.column()
 														.readOnly(true))
 						.comparator(new MasterComparator())
-						.stringFactory(Master.NAME)
+						.formatter(Master.NAME)
 						.build());
 	}
 
@@ -173,7 +173,7 @@ public final class TestDomain extends DomainModel {
 										Master2.NAME.define().column(),
 										Master2.CODE.define().column())
 						.comparator(Comparator.comparing(o -> o.get(Master2.CODE)))
-						.stringFactory(Master2.NAME)
+						.formatter(Master2.NAME)
 						.build());
 	}
 
@@ -269,7 +269,7 @@ public final class TestDomain extends DomainModel {
 						.selectTable(DETAIL_SELECT_TABLE_NAME.name())
 						.orderBy(ascending(Detail2.STRING))
 						.smallDataset(true)
-						.stringFactory(Detail2.STRING)
+						.formatter(Detail2.STRING)
 						.build());
 	}
 
@@ -382,7 +382,7 @@ public final class TestDomain extends DomainModel {
 						.orderBy(ascending(Detail.STRING))
 						.selectTable(DETAIL_SELECT_TABLE_NAME.name())
 						.smallDataset(true)
-						.stringFactory(Detail.STRING)
+						.formatter(Detail.STRING)
 						.build());
 	}
 
@@ -426,7 +426,7 @@ public final class TestDomain extends DomainModel {
 						.table("employees.department")
 						.smallDataset(true)
 						.orderBy(ascending(Department.NAME))
-						.stringFactory(Department.NAME)
+						.formatter(Department.NAME)
 						.condition(Department.CONDITION, (columns, values) -> {
 							StringBuilder builder = new StringBuilder("deptno in (");
 							values.forEach(value -> builder.append("?,"));
@@ -521,7 +521,7 @@ public final class TestDomain extends DomainModel {
 						.selectTable("employees.employee")
 						.keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
 						.orderBy(ascending(Employee.DEPARTMENT_NO, Employee.NAME))
-						.stringFactory(Employee.NAME)
+						.formatter(Employee.NAME)
 						.selectQuery(EntitySelectQuery.builder().build())
 						.condition(Employee.CONDITION, (columns, values) -> "")
 						.caption("Employee")
@@ -631,7 +631,7 @@ public final class TestDomain extends DomainModel {
 														.column(),
 										NullString.ATTR2.define()
 														.column())
-						.stringFactory(entity -> null)
+						.formatter(entity -> null)
 						.build());
 	}
 
@@ -653,7 +653,7 @@ public final class TestDomain extends DomainModel {
 														.derived(InvalidDerived.ID)
 														.value(source -> source.get(InvalidDerived.INT).intValue()))
 						.caption(InvalidDerived.INVALID_DERIVED.name())//incorrect source value, trigger exception
-						.stringFactory(entity -> null)
+						.formatter(entity -> null)
 						.build());
 	}
 
@@ -691,7 +691,7 @@ public final class TestDomain extends DomainModel {
 														.primaryKey(),
 										NonCachedToString.STRING.define()
 														.column())
-						.stringFactory(entity -> entity.format(NonCachedToString.ID) + "." + entity.get(NonCachedToString.STRING))
+						.formatter(entity -> entity.format(NonCachedToString.ID) + "." + entity.get(NonCachedToString.STRING))
 						.cacheToString(false)
 						.build());
 	}

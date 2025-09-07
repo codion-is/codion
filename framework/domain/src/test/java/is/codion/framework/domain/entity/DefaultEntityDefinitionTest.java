@@ -54,7 +54,7 @@ public class DefaultEntityDefinitionTest {
 		EntityType entityType = DOMAIN_TYPE.entityType("test");
 		Column<Integer> id = entityType.integerColumn("id");
 		Column<String> name = entityType.stringColumn("name");
-		Function<Entity, String> stringFactory = EntityFormatter.builder().value(name).build();
+		Function<Entity, String> formatter = EntityFormatter.builder().value(name).build();
 		Comparator<Entity> comparator = (o1, o2) -> 0;
 		class TestDomain extends DomainModel {
 			public TestDomain() {
@@ -74,7 +74,7 @@ public class DefaultEntityDefinitionTest {
 								.orderBy(OrderBy.descending(name))
 								.readOnly(true)
 								.selectTable("selectTableName")
-								.stringFactory(stringFactory)
+								.formatter(formatter)
 								.comparator(comparator)
 								.build());
 			}
@@ -93,7 +93,7 @@ public class DefaultEntityDefinitionTest {
 		assertFalse(definition.smallDataset());
 		assertTrue(definition.readOnly());
 		assertEquals("selectTableName", definition.selectTable());
-		assertEquals(stringFactory, definition.stringFactory());
+		assertEquals(formatter, definition.formatter());
 		assertEquals(comparator, definition.comparator());
 	}
 
@@ -401,13 +401,13 @@ public class DefaultEntityDefinitionTest {
 	}
 
 	@Test
-	void nullStringFactory() {
-		EntityType entityType = DOMAIN_TYPE.entityType("nullStringFactory");
+	void nullFormatter() {
+		EntityType entityType = DOMAIN_TYPE.entityType("nullFormatter");
 		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
 				add(entityType.define(entityType.integerColumn("attribute").define().primaryKey())
-								.stringFactory((Function<Entity, String>) null)
+								.formatter((Function<Entity, String>) null)
 								.build());
 			}
 		}
@@ -415,13 +415,13 @@ public class DefaultEntityDefinitionTest {
 	}
 
 	@Test
-	void stringFactory() {
-		EntityType entityType = DOMAIN_TYPE.entityType("stringFactory");
+	void formatter() {
+		EntityType entityType = DOMAIN_TYPE.entityType("formatter");
 		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
 				add(entityType.define(entityType.integerColumn("attribute").define().primaryKey())
-								.stringFactory(entity -> "test")
+								.formatter(entity -> "test")
 								.build());
 			}
 		}

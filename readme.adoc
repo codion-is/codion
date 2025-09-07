@@ -254,7 +254,7 @@ public class Store extends DomainModel {
                             .nullable(false)
                             .defaultValue(true))
             .keyGenerator(identity())
-            .stringFactory(StringFactory.builder()
+            .formatter(EntityFormatter.builder()
                     .value(Customer.LAST_NAME)
                     .text(", ")
                     .value(Customer.FIRST_NAME)
@@ -285,7 +285,7 @@ public class Store extends DomainModel {
                             .nullable(false)
                             .maximumLength(50))
             .keyGenerator(identity())
-            .stringFactory(StringFactory.builder()
+            .formatter(EntityFormatter.builder()
                     .value(Address.STREET)
                     .text(", ")
                     .value(Address.CITY)
@@ -337,7 +337,7 @@ ColumnDefinition.Builder<String, ?> city =
 
 KeyGenerator keyGenerator = KeyGenerator.identity();
 
-Function<Entity, String> stringFactory = StringFactory.builder()
+Function<Entity, String> formatter = EntityFormatter.builder()
         .value(Address.STREET)
         .text(", ")
         .value(Address.CITY)
@@ -346,7 +346,7 @@ Function<Entity, String> stringFactory = StringFactory.builder()
 EntityDefinition.Builder address =
         Address.TYPE.define(id, customerId, customerFk, street, city)
                 .keyGenerator(keyGenerator)
-                .stringFactory(stringFactory)
+                .formatter(formatter)
                 .caption("Address");
 
 add(address.build());

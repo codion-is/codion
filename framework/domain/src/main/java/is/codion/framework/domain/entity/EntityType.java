@@ -141,7 +141,7 @@ public sealed interface EntityType permits DefaultEntityType {
 	 *     .caption("Customer")
 	 *     .description("Customer information")
 	 *     .orderBy(ascending(Customer.NAME))
-	 *     .stringFactory(customer ->
+	 *     .formatter(customer ->
 	 *         customer.get(Customer.NAME) + " (" + customer.get(Customer.EMAIL) + ")")
 	 *     .build();
 	 *}

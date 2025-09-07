@@ -65,7 +65,7 @@ public final class TestDomain extends DomainModel {
 														.caption(Department.LOCATION.name())
 														.maximumLength(13))
 						.smallDataset(true)
-						.stringFactory(Department.NAME)
+						.formatter(Department.NAME)
 						.caption("Department")
 						.build());
 	}
@@ -131,7 +131,7 @@ public final class TestDomain extends DomainModel {
 										Employee.DEPARTMENT_LOCATION.define()
 														.denormalized(Employee.DEPARTMENT_FK, Department.LOCATION)
 														.caption(Department.LOCATION.name()))
-						.stringFactory(Employee.NAME)
+						.formatter(Employee.NAME)
 						.keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
 						.caption("Employee")
 						.build());

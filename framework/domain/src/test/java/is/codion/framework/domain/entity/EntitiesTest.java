@@ -173,9 +173,9 @@ public final class EntitiesTest {
 		}
 
 		@Test
-		@DisplayName("stringFactory exists for Department entity")
-		void stringFactory_exists() {
-			assertNotNull(entities.definition(Department.TYPE).stringFactory());
+		@DisplayName("formatter exists for Department entity")
+		void formatter_exists() {
+			assertNotNull(entities.definition(Department.TYPE).formatter());
 		}
 	}
 

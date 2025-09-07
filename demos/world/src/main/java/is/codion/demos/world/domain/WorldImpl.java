@@ -101,7 +101,7 @@ public final class WorldImpl extends DomainModel {
 						.validator(new CityValidator())
 						// end::validator[]
 						.orderBy(ascending(City.NAME))
-						.stringFactory(City.NAME)
+						.formatter(City.NAME)
 						.description("Cities of the World")
 						.caption("City")
 						.build();
@@ -224,7 +224,7 @@ public final class WorldImpl extends DomainModel {
 														.nullable(false)
 														.maximumLength(2))
 						.orderBy(ascending(Country.NAME))
-						.stringFactory(Country.NAME)
+						.formatter(Country.NAME)
 						.description("Countries of the World")
 						.caption("Country")
 						.build();

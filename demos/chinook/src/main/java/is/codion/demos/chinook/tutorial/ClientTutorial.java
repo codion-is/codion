@@ -94,7 +94,7 @@ public final class ClientTutorial {
 																			WHERE album.artistid = artist.artistid""")
 															.caption("Albums"))
 							.keyGenerator(automatic("chinook.artist"))
-							.stringFactory(Artist.NAME)
+							.formatter(Artist.NAME)
 							.caption("Artists")
 							.build());
 
@@ -113,7 +113,7 @@ public final class ClientTutorial {
 															.nullable(false)
 															.maximumLength(160))
 							.keyGenerator(automatic("chinook.artist"))
-							.stringFactory(EntityFormatter.builder()
+							.formatter(EntityFormatter.builder()
 											.value(Album.ARTIST_FK)
 											.text(" - ")
 											.value(Album.TITLE)

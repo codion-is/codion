@@ -127,7 +127,7 @@ public class EntitySearchFieldTest {
 	}
 
 	@Test
-	void stringFactory() {
+	void formatter() {
 		EntitySearchModel model = EntitySearchModel.builder()
 						.entityType(Employee.TYPE)
 						.connectionProvider(CONNECTION_PROVIDER)

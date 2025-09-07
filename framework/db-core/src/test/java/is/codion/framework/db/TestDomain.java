@@ -67,7 +67,7 @@ public final class TestDomain extends DomainModel {
 						.table("employees.department")
 						.smallDataset(true)
 						.orderBy(ascending(Department.NAME))
-						.stringFactory(Department.NAME)
+						.formatter(Department.NAME)
 						.caption("Department")
 						.build());
 	}
@@ -138,7 +138,7 @@ public final class TestDomain extends DomainModel {
 														.caption(Department.LOCATION.name()))
 						.table("employees.employee")
 						.orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
-						.stringFactory(Employee.NAME)
+						.formatter(Employee.NAME)
 						.caption("Employee")
 						.build());
 	}
