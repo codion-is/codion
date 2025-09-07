@@ -54,7 +54,7 @@ public final class AlbumTablePanel extends EntityTablePanel {
 						// Custom cell renderer for Album.RATING
 						// rendering the rating as stars, i.e. *****
 						.cellRenderer(Album.RATING, EntityTableCellRenderer.builder(Album.RATING, tableModel)
-										.string(RATINGS::get)
+										.formatter(RATINGS::get)
 										.toolTipData(true)
 										.build()));
 		coverPanel = new NavigableImagePanel();

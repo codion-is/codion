@@ -223,10 +223,11 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 		Builder<R, C, T> rightPadding(int rightPadding);
 
 		/**
-		 * @param string provides a String to display for a given cell value, formatted or otherwise
+		 * The default formatter returns {@code value.toString()} and an empty string in case of null.
+		 * @param formatter provides a String to display for a given cell value, formatted or otherwise
 		 * @return this builder instance
 		 */
-		Builder<R, C, T> string(Function<T, String> string);
+		Builder<R, C, T> formatter(Function<T, String> formatter);
 
 		/**
 		 * @param background provides the background color

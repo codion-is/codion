@@ -136,7 +136,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 						.model(model.userHistoryTableModel())
 						.cellRenderer(UserHistoryColumns.LAST_SEEN, FilterTableCellRenderer.builder()
 										.columnClass(LocalDateTime.class)
-										.string(lastSeen -> lastSeen == null ? null : LAST_SEEN_FORMATTER.format(lastSeen))
+										.formatter(lastSeen -> lastSeen == null ? null : LAST_SEEN_FORMATTER.format(lastSeen))
 										.build())
 						.popupMenuControls(table -> Controls.builder()
 										.control(Controls.builder()

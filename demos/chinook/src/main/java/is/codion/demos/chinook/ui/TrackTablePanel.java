@@ -111,7 +111,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 
 	private static FilterTableCellRenderer<Integer> durationRenderer(SwingEntityTableModel tableModel) {
 		return EntityTableCellRenderer.builder(Track.MILLISECONDS, tableModel)
-						.string(milliseconds -> minutes(milliseconds) + " min " + seconds(milliseconds) + " sec")
+						.formatter(milliseconds -> minutes(milliseconds) + " min " + seconds(milliseconds) + " sec")
 						.toolTipData(true)
 						.build();
 	}
@@ -124,7 +124,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 
 	private static FilterTableCellRenderer<Integer> ratingRenderer(SwingEntityTableModel tableModel) {
 		return EntityTableCellRenderer.builder(Track.RATING, tableModel)
-						.string(RATINGS::get)
+						.formatter(RATINGS::get)
 						.toolTipData(true)
 						.build();
 	}

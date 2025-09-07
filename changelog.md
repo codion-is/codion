@@ -6,6 +6,7 @@ Codion Change Log
 - FilterTable.ScrollToSelected bug fixed, no longer jumps to start of selection when a row is deselected.
 - NullableCheckBoxBuilder split from CheckBoxBuilder, related refactoring.
 - ControlKey.controlClass() removed, unused.
+- FilterTableCellRenderer.Builder.string() renamed formatter().
 ### is.codion.framework.domain
 - ConditionString.toString() renamed get().
 ### is.codion.framework.db.core

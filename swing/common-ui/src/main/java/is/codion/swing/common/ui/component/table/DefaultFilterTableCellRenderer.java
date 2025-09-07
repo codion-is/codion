@@ -86,7 +86,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 		settings.configure((FilterTable<R, C>) table, this, (T) value, isSelected, hasFocus, row, column);
 		if (settings.toolTipData) {
-			setToolTipText(settings.string.apply((T) value));
+			setToolTipText(settings.formatter.apply((T) value));
 		}
 
 		return this;
@@ -94,7 +94,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 
 	@Override
 	protected void setValue(Object value) {
-		setText(settings.string.apply((T) value));
+		setText(settings.formatter.apply((T) value));
 	}
 
 	UISettings settings() {
@@ -168,7 +168,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private final ColorProvider<R, C, T> foregroundColor;
 		private final int horizontalAlignment;
 		private final boolean toolTipData;
-		private final Function<T, String> string;
+		private final Function<T, String> formatter;
 
 		private final UISettings uiSettings;
 
@@ -185,7 +185,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			this.backgroundColor = builder.backgroundColor;
 			this.horizontalAlignment = builder.horizontalAlignment;
 			this.toolTipData = builder.toolTipData;
-			this.string = builder.string;
+			this.formatter = builder.formatter;
 		}
 
 		private void update() {
@@ -328,7 +328,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private ColorProvider<R, C, T> backgroundColor = (ColorProvider<R, C, T>) NULL_COLOR_PROVIDER;
 		private ColorProvider<R, C, T> foregroundColor = (ColorProvider<R, C, T>) NULL_COLOR_PROVIDER;
 		private boolean toolTipData = false;
-		private Function<T, String> string = new DefaultString<>();
+		private Function<T, String> formatter = new DefaultFormatter<>();
 		private int horizontalAlignment;
 
 		private SettingsBuilder(int defaultHorizontalAlignment) {
@@ -380,8 +380,8 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			return this;
 		}
 
-		SettingsBuilder<R, C, T> string(Function<T, String> string) {
-			this.string = requireNonNull(string);
+		SettingsBuilder<R, C, T> formatter(Function<T, String> formatter) {
+			this.formatter = requireNonNull(formatter);
 			return this;
 		}
 
@@ -390,7 +390,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 	}
 
-	private static final class DefaultString<T> implements Function<T, String> {
+	private static final class DefaultFormatter<T> implements Function<T, String> {
 		@Override
 		public String apply(T value) {
 			return value == null ? "" : value.toString();
@@ -462,8 +462,8 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		@Override
-		public Builder<R, C, T> string(Function<T, String> string) {
-			this.settings.string(string);
+		public Builder<R, C, T> formatter(Function<T, String> formatter) {
+			this.settings.formatter(formatter);
 			return this;
 		}
 
