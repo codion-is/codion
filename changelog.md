@@ -9,6 +9,7 @@ Codion Change Log
 - FilterTableCellRenderer.Builder.string() renamed formatter().
 ### is.codion.framework.domain
 - ConditionString.toString() renamed get().
+- AttributeDefinition.string(value) renamed format().
 ### is.codion.framework.db.core
 - EntityConnectionProvider.Builder, domainType.name() now used as clientType if none is specified.
 ### is.codion.swing.framework.model

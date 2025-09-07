@@ -135,12 +135,12 @@ final class EntityPopupMenu extends JPopupMenu {
 	}
 
 	private static String createValueString(@Nullable Object value, AttributeDefinition<Object> attributeDefinition) {
-		String valueAsString = value == null ? "<null>" : attributeDefinition.string(value);
-		if (valueAsString.length() > MAXIMUM_VALUE_LENGTH) {
-			valueAsString = valueAsString.substring(0, MAXIMUM_VALUE_LENGTH) + "...";
+		String formatted = value == null ? "<null>" : attributeDefinition.format(value);
+		if (formatted.length() > MAXIMUM_VALUE_LENGTH) {
+			formatted = formatted.substring(0, MAXIMUM_VALUE_LENGTH) + "...";
 		}
 
-		return valueAsString;
+		return formatted;
 	}
 
 	private static void configureMenuItem(JMenuItem menuItem, Entity entity, Attribute<?> attribute, String toolTipText) {

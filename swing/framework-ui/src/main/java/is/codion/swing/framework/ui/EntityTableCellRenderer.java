@@ -61,7 +61,7 @@ public final class EntityTableCellRenderer {
 		FilterTableCellRenderer.Builder<Entity, Attribute<?>, T> builder = FilterTableCellRenderer.builder()
 						.<Entity, Attribute<?>, T>columnClass(attributeDefinition.attribute().type().valueClass())
 						.uiSettings(new EntityUISettings(queryCondition))
-						.formatter(attributeDefinition::string);
+						.formatter(attributeDefinition::format);
 		if (!attributeDefinition.items().isEmpty()) {
 			// Otherwise the horizontal aligment is based on the Item value type
 			builder.horizontalAlignment(FilterTableCellRenderer.HORIZONTAL_ALIGNMENT.getOrThrow());

@@ -288,7 +288,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	}
 
 	@Override
-	public final String string(T value) {
+	public final String format(T value) {
 		if (itemMap != null) {
 			Item<T> item = itemMap.get(value);
 

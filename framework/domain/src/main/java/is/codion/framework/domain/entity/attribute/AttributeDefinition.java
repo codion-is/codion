@@ -283,7 +283,7 @@ public sealed interface AttributeDefinition<T>
 	 * @see Builder#format(Format)
 	 * @see Builder#dateTimePattern(String)
 	 */
-	String string(@Nullable T value);
+	String format(@Nullable T value);
 
 	/**
 	 * @return true if a default value has been set for this attribute

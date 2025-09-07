@@ -186,7 +186,7 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 			}
 		}
 
-		return attributeDefinition.string(cached(attributeDefinition));
+		return attributeDefinition.format(cached(attributeDefinition));
 	}
 
 	@Override
