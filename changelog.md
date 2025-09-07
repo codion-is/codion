@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.48
+### is.codion.swing.common.model
+- FilterTableModel.TableColumns, ColumnValues.string(row, identifier) renamed format().
 ### is.codion.swing.common.ui
 - FilterTable.ScrollToSelected bug fixed, no longer jumps to start of selection when a row is deselected.
 - NullableCheckBoxBuilder split from CheckBoxBuilder, related refactoring.

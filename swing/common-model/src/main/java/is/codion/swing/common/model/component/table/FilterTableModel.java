@@ -138,9 +138,9 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		 * @param rowIndex the row index
 		 * @param identifier the column identifier
 		 * @return the string value or an empty string in case of null
-		 * @see TableColumns#string(Object, Object)
+		 * @see TableColumns#format(Object, Object)
 		 */
-		String string(int rowIndex, C identifier);
+		String format(int rowIndex, C identifier);
 	}
 
 	/**
@@ -272,7 +272,7 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		 * @param identifier the column identifier
 		 * @return a String representation of the value for the given row and column, an empty String in case of null
 		 */
-		default String string(R row, C identifier) {
+		default String format(R row, C identifier) {
 			Object columnValue = value(row, identifier);
 
 			return columnValue == null ? "" : columnValue.toString();
