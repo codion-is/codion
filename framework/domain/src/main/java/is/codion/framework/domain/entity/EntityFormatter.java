@@ -54,15 +54,15 @@ import static java.util.stream.Collectors.joining;
  * 			Entity department = createDepartment();// With name: Accounting
  *  		Entity employee = createEmployee(department);// With name: John and the above department
  *
- * 			Function<Entity, String> stringFactory =
- * 					StringFactory.builder()
+ * 			Function<Entity, String> formatter =
+ * 					EntityFormatter.builder()
  *             .text("Name=")
  *             .value(Employee.NAME)
  *             .text(", Department='")
  *             .value(Employee.DEPARTMENT_FK, Department.NAME)
  *             .text("'");
  *
- *  		System.out.println(stringFactory.apply(employee));
+ *  		System.out.println(formatter.apply(employee));
  * }
  *}
  * Outputs the following String:
@@ -71,21 +71,21 @@ import static java.util.stream.Collectors.joining;
  * given the entities above.
  * </p>
  */
-public final class StringFactory {
+public final class EntityFormatter {
 
-	private StringFactory() {}
+	private EntityFormatter() {}
 
 	/**
-	 * @return a {@link Builder} instance for configuring a string factory {@link Function} for entities.
+	 * @return a {@link Builder} instance for configuring a formatter {@link Function} for entities.
 	 */
 	public static Builder builder() {
-		return new DefaultStringFactoryBuilder();
+		return new DefaultEntityFormatterBuilder();
 	}
 
 	/**
-	 * A Builder for a string function, which provides toString() values for entities.
+	 * A Builder for a formatter function, which provides toString() values for entities.
 	 */
-	public sealed interface Builder permits DefaultStringFactoryBuilder {
+	public sealed interface Builder permits DefaultEntityFormatterBuilder {
 
 		/**
 		 * Adds the value mapped to the given key to this {@link Builder}
@@ -119,12 +119,12 @@ public final class StringFactory {
 		Builder text(String text);
 
 		/**
-		 * @return a new string factory function based on this builder
+		 * @return a new string formatter based on this builder
 		 */
 		Function<Entity, String> build();
 	}
 
-	private static final class DefaultStringFactory implements Function<Entity, String>, Serializable {
+	private static final class DefaultEntityFormatter implements Function<Entity, String>, Serializable {
 
 		@Serial
 		private static final long serialVersionUID = 1;
@@ -135,9 +135,9 @@ public final class StringFactory {
 		private final List<Function<Entity, String>> valueProviders;
 
 		/**
-		 * Instantiates a new {@link StringFactory} instance
+		 * Instantiates a new {@link EntityFormatter} instance
 		 */
-		private DefaultStringFactory(DefaultStringFactoryBuilder builder) {
+		private DefaultEntityFormatter(DefaultEntityFormatterBuilder builder) {
 			this.valueProviders = unmodifiableList(builder.valueProviders);
 		}
 
@@ -242,7 +242,7 @@ public final class StringFactory {
 		}
 	}
 
-	private static final class DefaultStringFactoryBuilder implements Builder {
+	private static final class DefaultEntityFormatterBuilder implements Builder {
 
 		private final List<Function<Entity, String>> valueProviders = new ArrayList<>();
 
@@ -275,7 +275,7 @@ public final class StringFactory {
 
 		@Override
 		public Function<Entity, String> build() {
-			return new DefaultStringFactory(this);
+			return new DefaultEntityFormatter(this);
 		}
 
 		private void validateEntityType(Attribute<?> attribute) {

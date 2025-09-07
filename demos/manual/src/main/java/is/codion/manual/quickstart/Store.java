@@ -21,8 +21,8 @@ package is.codion.manual.quickstart;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityFormatter;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.StringFactory;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
@@ -68,7 +68,7 @@ public class Store extends DomainModel {
 														.nullable(false)
 														.maximumLength(40))
 						.keyGenerator(identity())
-						.stringFactory(StringFactory.builder()
+						.stringFactory(EntityFormatter.builder()
 										.value(Customer.LAST_NAME)
 										.text(", ")
 										.value(Customer.FIRST_NAME)
@@ -101,7 +101,7 @@ public class Store extends DomainModel {
 														.nullable(false)
 														.maximumLength(50))
 						.keyGenerator(automatic("store.address"))
-						.stringFactory(StringFactory.builder()
+						.stringFactory(EntityFormatter.builder()
 										.value(Address.STREET)
 										.text(", ")
 										.value(Address.CITY)

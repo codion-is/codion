@@ -29,8 +29,8 @@ import is.codion.demos.petclinic.domain.api.VetSpecialty;
 import is.codion.demos.petclinic.domain.api.Visit;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityFormatter;
 import is.codion.framework.domain.entity.OrderBy;
-import is.codion.framework.domain.entity.StringFactory;
 import is.codion.framework.domain.entity.attribute.Column.Converter;
 
 import java.sql.Statement;
@@ -63,7 +63,7 @@ public final class PetclinicImpl extends DomainModel {
 														.nullable(false))
 						.keyGenerator(identity())
 						.caption("Vets")
-						.stringFactory(StringFactory.builder()
+						.stringFactory(EntityFormatter.builder()
 										.value(Vet.LAST_NAME)
 										.text(", ")
 										.value(Vet.FIRST_NAME)
@@ -105,7 +105,7 @@ public final class PetclinicImpl extends DomainModel {
 														.foreignKey()
 														.caption("Specialty"))
 						.caption("Vet specialties")
-						.stringFactory(StringFactory.builder()
+						.stringFactory(EntityFormatter.builder()
 										.value(VetSpecialty.VET_FK)
 										.text(" - ")
 										.value(VetSpecialty.SPECIALTY_FK)
@@ -167,7 +167,7 @@ public final class PetclinicImpl extends DomainModel {
 														.converter(String.class, new PhoneTypeConverter()))
 						.keyGenerator(identity())
 						.caption("Owners")
-						.stringFactory(StringFactory.builder()
+						.stringFactory(EntityFormatter.builder()
 										.value(Owner.LAST_NAME)
 										.text(", ")
 										.value(Owner.FIRST_NAME)

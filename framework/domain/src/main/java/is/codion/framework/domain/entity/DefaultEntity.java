@@ -314,7 +314,7 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 
 	/**
 	 * <p>Returns a String representation of this entity.
-	 * <p>Note that if this entitys {@link StringFactory} returns null for some reason, the default String factory is used instead.
+	 * <p>Note that if this entitys {@link EntityFormatter} returns null for some reason, the default formatter is used instead.
 	 * <p>The result of this method call is cached by default.
 	 * @return a string representation of this entity
 	 * @see EntityDefinition.Builder#stringFactory(java.util.function.Function)

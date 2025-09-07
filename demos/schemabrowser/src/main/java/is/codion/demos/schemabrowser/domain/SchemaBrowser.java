@@ -22,8 +22,8 @@ import is.codion.common.db.database.DatabaseFactory;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityFormatter;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.StringFactory;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.query.EntitySelectQuery;
@@ -99,7 +99,7 @@ public final class SchemaBrowser extends DomainModel {
 						.table(bundle.getString("t_table"))
 						.orderBy(ascending(Table.SCHEMA, Table.NAME))
 						.readOnly(true)
-						.stringFactory(StringFactory.builder()
+						.stringFactory(EntityFormatter.builder()
 										.value(Table.SCHEMA_FK)
 										.text(".")
 										.value(Table.NAME)
@@ -151,7 +151,7 @@ public final class SchemaBrowser extends DomainModel {
 						.table(bundle.getString("t_column"))
 						.orderBy(ascending(TableColumn.SCHEMA, TableColumn.TABLE_NAME, TableColumn.NAME))
 						.readOnly(true)
-						.stringFactory(StringFactory.builder()
+						.stringFactory(EntityFormatter.builder()
 										.value(TableColumn.TABLE_FK)
 										.text(".")
 										.value(TableColumn.NAME)
@@ -192,7 +192,7 @@ public final class SchemaBrowser extends DomainModel {
 						.table(bundle.getString("t_constraint"))
 						.orderBy(ascending(Constraint.SCHEMA, Constraint.TABLE_NAME, Constraint.NAME))
 						.readOnly(true)
-						.stringFactory(StringFactory.builder()
+						.stringFactory(EntityFormatter.builder()
 										.value(Constraint.TABLE_FK)
 										.text(".")
 										.value(Constraint.NAME)

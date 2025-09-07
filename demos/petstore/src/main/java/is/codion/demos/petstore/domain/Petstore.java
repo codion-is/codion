@@ -21,8 +21,8 @@ package is.codion.demos.petstore.domain;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityFormatter;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.StringFactory;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
@@ -102,7 +102,7 @@ public final class Petstore extends DomainModel {
 						.table("petstore.address")
 						.keyGenerator(sequence("petstore.address_seq"))
 						.orderBy(ascending(Address.CITY, Address.STREET_1, Address.STREET_2))
-						.stringFactory(StringFactory.builder()
+						.stringFactory(EntityFormatter.builder()
 										.value(Address.STREET_1).text(" ")
 										.value(Address.STREET_2).text(", ")
 										.value(Address.CITY).text(" ")
@@ -197,7 +197,7 @@ public final class Petstore extends DomainModel {
 						.table("petstore.product")
 						.keyGenerator(sequence("petstore.product_seq"))
 						.orderBy(ascending(Product.NAME))
-						.stringFactory(StringFactory.builder()
+						.stringFactory(EntityFormatter.builder()
 										.value(Product.CATEGORY_FK)
 										.text(" - ")
 										.value(Product.NAME)
@@ -243,7 +243,7 @@ public final class Petstore extends DomainModel {
 						.table("petstore.sellercontactinfo")
 						.keyGenerator(sequence("petstore.sellercontactinfo_seq"))
 						.orderBy(ascending(SellerContactInfo.LAST_NAME, SellerContactInfo.FIRST_NAME))
-						.stringFactory(StringFactory.builder()
+						.stringFactory(EntityFormatter.builder()
 										.value(SellerContactInfo.LAST_NAME)
 										.text(", ")
 										.value(SellerContactInfo.FIRST_NAME)
@@ -337,7 +337,7 @@ public final class Petstore extends DomainModel {
 						.table("petstore.item")
 						.keyGenerator(sequence("petstore.item_seq"))
 						.orderBy(ascending(Item.NAME))
-						.stringFactory(StringFactory.builder()
+						.stringFactory(EntityFormatter.builder()
 										.value(Item.PRODUCT_FK)
 										.text(" - ")
 										.value(Item.NAME)
@@ -407,7 +407,7 @@ public final class Petstore extends DomainModel {
 														.foreignKey()
 														.caption(TagItem.TAG_FK.name()))
 						.table("petstore.tag_item")
-						.stringFactory(StringFactory.builder()
+						.stringFactory(EntityFormatter.builder()
 										.value(TagItem.ITEM_FK)
 										.text(" - ")
 										.value(TagItem.TAG_FK)

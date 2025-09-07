@@ -24,9 +24,9 @@ import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityFormatter;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
-import is.codion.framework.domain.entity.StringFactory;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.plugin.jasperreports.JasperReports;
@@ -138,7 +138,7 @@ public final class Store extends DomainModel {
 														.hasDatabaseDefault(true)
 														.defaultValue(true)
 														.nullable(false))
-						.stringFactory(StringFactory.builder()
+						.stringFactory(EntityFormatter.builder()
 										.value(Address.STREET)
 										.text(", ")
 										.value(Address.CITY)

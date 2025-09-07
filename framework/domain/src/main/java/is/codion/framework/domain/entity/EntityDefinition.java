@@ -383,7 +383,7 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 		/**
 		 * Sets the string factory, using the value of the given attribute. Shortcut for:
 		 * {@snippet :
-		 * stringFactory(StringFactory.builder()
+		 * stringFactory(EntityFormatter.builder()
 		 *           .value(attribute)
 		 *           .build())
 		 *}

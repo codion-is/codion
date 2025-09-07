@@ -22,9 +22,9 @@ import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityFormatter;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
-import is.codion.framework.domain.entity.StringFactory;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
@@ -97,7 +97,7 @@ public class Store extends DomainModel {
 														.nullable(false)
 														.defaultValue(true))
 						.keyGenerator(identity())
-						.stringFactory(StringFactory.builder()
+						.stringFactory(EntityFormatter.builder()
 										.value(Customer.LAST_NAME)
 										.text(", ")
 										.value(Customer.FIRST_NAME)
@@ -128,7 +128,7 @@ public class Store extends DomainModel {
 														.nullable(false)
 														.maximumLength(50))
 						.keyGenerator(identity())
-						.stringFactory(StringFactory.builder()
+						.stringFactory(EntityFormatter.builder()
 										.value(Address.STREET)
 										.text(", ")
 										.value(Address.CITY)
@@ -168,7 +168,7 @@ public class Store extends DomainModel {
 
 		KeyGenerator keyGenerator = KeyGenerator.identity();
 
-		Function<Entity, String> stringFactory = StringFactory.builder()
+		Function<Entity, String> stringFactory = EntityFormatter.builder()
 						.value(Address.STREET)
 						.text(", ")
 						.value(Address.CITY)

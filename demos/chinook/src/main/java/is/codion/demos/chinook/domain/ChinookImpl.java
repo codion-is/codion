@@ -34,8 +34,8 @@ import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityFormatter;
 import is.codion.framework.domain.entity.OrderBy;
-import is.codion.framework.domain.entity.StringFactory;
 import is.codion.framework.domain.entity.attribute.Column.Converter;
 import is.codion.framework.domain.entity.query.EntitySelectQuery;
 
@@ -190,7 +190,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 						.keyGenerator(identity())
 						.validator(new EmailValidator(Employee.EMAIL))
 						.orderBy(ascending(Employee.LASTNAME, Employee.FIRSTNAME))
-						.stringFactory(StringFactory.builder()
+						.stringFactory(EntityFormatter.builder()
 										.value(Employee.LASTNAME)
 										.text(", ")
 										.value(Employee.FIRSTNAME)
@@ -506,7 +506,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 										PlaylistTrack.ALBUM.define()
 														.denormalized(PlaylistTrack.TRACK_FK, Track.ALBUM_FK))
 						.keyGenerator(identity())
-						.stringFactory(StringFactory.builder()
+						.stringFactory(EntityFormatter.builder()
 										.value(PlaylistTrack.PLAYLIST_FK)
 										.text(" - ")
 										.value(PlaylistTrack.TRACK_FK)

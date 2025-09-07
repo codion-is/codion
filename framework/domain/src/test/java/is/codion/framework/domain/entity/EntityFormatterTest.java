@@ -31,7 +31,7 @@ import java.util.function.Function;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class StringFactoryTest {
+public class EntityFormatterTest {
 
 	private final TestDomain domain = new TestDomain();
 	private final Entities entities = domain.entities();
@@ -53,7 +53,7 @@ public class StringFactoryTest {
 
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yy HH:mm");
 
-		Function<Entity, String> employeeToString = StringFactory.builder()
+		Function<Entity, String> employeeToString = EntityFormatter.builder()
 						.value(Employee.NAME)
 						.text(" (department: ")
 						.value(Employee.DEPARTMENT_FK)
@@ -73,7 +73,7 @@ public class StringFactoryTest {
 		employee.set(Employee.NAME, null);
 		employee.set(Employee.HIREDATE, null);
 
-		employeeToString = StringFactory.builder()
+		employeeToString = EntityFormatter.builder()
 						.value(Employee.NAME)
 						.text(" (department: ")
 						.value(Employee.DEPARTMENT_FK)
@@ -89,7 +89,7 @@ public class StringFactoryTest {
 
 	@Test
 	void entityTypeMismatch() {
-		assertThrows(IllegalArgumentException.class, () -> StringFactory.builder()
+		assertThrows(IllegalArgumentException.class, () -> EntityFormatter.builder()
 						.value(Department.NAME)
 						.value(Employee.HIREDATE));
 	}

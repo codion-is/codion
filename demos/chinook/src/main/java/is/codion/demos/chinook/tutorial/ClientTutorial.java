@@ -23,8 +23,8 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
+import is.codion.framework.domain.entity.EntityFormatter;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.StringFactory;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.plugin.flatlaf.intellij.themes.materialtheme.MaterialTheme;
@@ -113,7 +113,7 @@ public final class ClientTutorial {
 															.nullable(false)
 															.maximumLength(160))
 							.keyGenerator(automatic("chinook.artist"))
-							.stringFactory(StringFactory.builder()
+							.stringFactory(EntityFormatter.builder()
 											.value(Album.ARTIST_FK)
 											.text(" - ")
 											.value(Album.TITLE)

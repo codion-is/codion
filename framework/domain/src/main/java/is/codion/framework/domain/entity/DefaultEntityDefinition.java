@@ -902,7 +902,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 		@Override
 		public Builder stringFactory(Attribute<?> attribute) {
-			return stringFactory(StringFactory.builder()
+			return stringFactory(EntityFormatter.builder()
 							.value(attribute)
 							.build());
 		}

@@ -29,9 +29,9 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityFormatter;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
-import is.codion.framework.domain.entity.StringFactory;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
@@ -131,7 +131,7 @@ public final class EntitiesTutorial {
 			// define an entity based on the table 'chinook.album', with the above columns and foreign key
 			EntityDefinition album = Album.TYPE.define(albumId, albumTitle, albumArtistId, albumArtist)
 							.keyGenerator(identity())
-							.stringFactory(StringFactory.builder()
+							.stringFactory(EntityFormatter.builder()
 											.value(Album.ARTIST_FK)
 											.text(" - ")
 											.value(Album.TITLE)
