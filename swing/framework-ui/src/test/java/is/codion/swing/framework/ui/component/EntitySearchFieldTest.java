@@ -135,7 +135,7 @@ public class EntitySearchFieldTest {
 		EntitySearchField field = EntitySearchField.builder()
 						.model(model)
 						.multiSelection()
-						.stringFactory(entity -> entity.format(Employee.JOB))
+						.formatter(entity -> entity.format(Employee.JOB))
 						.build();
 		Entity employee = CONNECTION_PROVIDER.entities().entity(Employee.TYPE)
 						.with(Employee.NAME, "Darri")

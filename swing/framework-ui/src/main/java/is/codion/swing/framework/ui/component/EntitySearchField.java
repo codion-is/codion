@@ -186,14 +186,14 @@ public final class EntitySearchField extends HintTextField {
 		private ControlKeys() {}
 	}
 
-	private static final Function<Entity, String> DEFAULT_TO_STRING = Object::toString;
+	private static final Function<Entity, String> DEFAULT_FORMATTER = Object::toString;
 	private static final String DEFAULT_SEPARATOR = ", ";
 
 	private final EntitySearchModel model;
 	private final State searchEnabled = State.builder()
 					.listener(this::updateColors)
 					.build();
-	private final Function<Entity, String> stringFactory;
+	private final Function<Entity, String> formatter;
 	private final String separator;
 	private final boolean searchOnFocusLost;
 	private final boolean selectionToolTip;
@@ -236,7 +236,7 @@ public final class EntitySearchField extends HintTextField {
 		searchIndicator = createSearchIndicator(builder.searchIndicator);
 		searching.addConsumer(searchIndicator);
 		selector = builder.selector;
-		stringFactory = builder.stringFactory;
+		formatter = builder.formatter;
 		separator = builder.separator;
 		setComponentPopupMenu(createPopupMenu());
 		onSelectionChanged();
@@ -360,11 +360,11 @@ public final class EntitySearchField extends HintTextField {
 		B editable(boolean editable);
 
 		/**
-		 * Overrides the default toString() for search elements when displayed in a field based on this model
-		 * @param stringFactory the function providing the toString() functionality
+		 * Overrides the default formatter for search elements when displayed in a field based on this field
+		 * @param formatter the formatter
 		 * @return this builder
 		 */
-		B stringFactory(Function<Entity, String> stringFactory);
+		B formatter(Function<Entity, String> formatter);
 
 		/**
 		 * Default ", "
@@ -544,7 +544,7 @@ public final class EntitySearchField extends HintTextField {
 	private Stream<String> strings() {
 		return model.selection().entities().get().stream()
 						.sorted()
-						.map(stringFactory);
+						.map(formatter);
 	}
 
 	private void performSearch() {
@@ -776,7 +776,7 @@ public final class EntitySearchField extends HintTextField {
 
 		private final EntitySearchField searchField;
 		private final FilterList<Entity> list;
-		private final Function<Entity, String> stringFactory;
+		private final Function<Entity, String> formatter;
 		private final JPanel selectorPanel;
 		private final JLabel resultLimitLabel = label()
 						.horizontalAlignment(SwingConstants.RIGHT)
@@ -786,7 +786,7 @@ public final class EntitySearchField extends HintTextField {
 		private DefaultListSelector(EntitySearchField searchField) {
 			this.searchField = requireNonNull(searchField);
 			this.list = createList(searchField);
-			this.stringFactory = searchField.stringFactory;
+			this.formatter = searchField.formatter;
 			this.selectorPanel = borderLayoutPanel()
 							.center(scrollPane()
 											.view(list))
@@ -848,7 +848,7 @@ public final class EntitySearchField extends HintTextField {
 			public Component getListCellRendererComponent(JList<? extends Entity> list, Entity value,
 																										int index, boolean isSelected, boolean cellHasFocus) {
 				return listCellRenderer.getListCellRendererComponent(list,
-								stringFactory.apply(value), index, isSelected, cellHasFocus);
+								formatter.apply(value), index, isSelected, cellHasFocus);
 			}
 		}
 
@@ -1176,7 +1176,7 @@ public final class EntitySearchField extends HintTextField {
 		private boolean singleSelection = false;
 		private SearchIndicator searchIndicator = SEARCH_INDICATOR.getOrThrow();
 		private Function<EntitySearchField, Selector> selector = new ListSelectorFactory();
-		private Function<Entity, String> stringFactory = DEFAULT_TO_STRING;
+		private Function<Entity, String> formatter = DEFAULT_FORMATTER;
 		private String separator = DEFAULT_SEPARATOR;
 		private @Nullable Supplier<EntityEditPanel> editPanel;
 		private boolean confirmAdd;
@@ -1217,8 +1217,8 @@ public final class EntitySearchField extends HintTextField {
 		}
 
 		@Override
-		public B stringFactory(Function<Entity, String> stringFactory) {
-			this.stringFactory = requireNonNull(stringFactory);
+		public B formatter(Function<Entity, String> formatter) {
+			this.formatter = requireNonNull(formatter);
 			return (B) this;
 		}
 

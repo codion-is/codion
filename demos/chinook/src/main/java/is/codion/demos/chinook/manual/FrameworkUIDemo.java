@@ -125,7 +125,7 @@ final class FrameworkUIDemo {
 						.searchOnFocusLost(true)          // Auto-search when focus lost
 						.selectionToolTip(true)           // Show selection as tooltip
 						.editable(false)                  // Make read-only
-						.stringFactory(entity ->    // Custom display text
+						.formatter(entity ->        // Custom display text
 										entity.get(Customer.LASTNAME) + " - " + entity.get(Customer.CITY))
 						.separator(" | ")                 // Multi-selection separator
 						.build();
