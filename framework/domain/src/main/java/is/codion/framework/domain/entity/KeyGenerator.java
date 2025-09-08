@@ -171,14 +171,6 @@ public interface KeyGenerator {
 	 * // Primary key will be fetched from sequence before insert
 	 * connection.insert(product);
 	 * Long generatedId = product.get(Product.ID); // e.g., 123
-	 *
-	 * // Manual key override (sequence not used)
-	 * Entity productWithManualId = entities.entity(Product.TYPE)
-	 *     .with(Product.ID, 999L) // Explicitly set
-	 *     .with(Product.NAME, "Special Product")
-	 *     .build();
-	 *
-	 * connection.insert(productWithManualId); // Uses ID 999, not sequence
 	 *}
 	 * @param sequenceName the sequence name
 	 * @return a sequence based primary key generator
