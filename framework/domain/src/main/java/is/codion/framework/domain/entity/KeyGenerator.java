@@ -250,12 +250,7 @@ public interface KeyGenerator {
 	 * @return a generated primary key generator
 	 * @see Statement#getGeneratedKeys()
 	 */
-	static Identity identity() {
+	static KeyGenerator identity() {
 		return IdentityKeyGenerator.INSTANCE;
 	}
-
-	/**
-	 * Marker interface indicating that a key generator is based on an identity column.
-	 */
-	sealed interface Identity extends KeyGenerator permits IdentityKeyGenerator {}
 }

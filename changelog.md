@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.49
+### is.codion.framework.domain
+- KeyGenerator.Identity removed.
 
 ## 0.18.48
 ### is.codion.swing.common.model

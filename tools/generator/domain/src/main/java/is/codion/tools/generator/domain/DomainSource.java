@@ -727,7 +727,7 @@ public final class DomainSource {
 	private boolean identityKeyGeneratorUsed() {
 		return sortedDefinitions.stream()
 						.map(entityDefinition -> entityDefinition.primaryKey().generator())
-						.anyMatch(KeyGenerator.Identity.class::isInstance);
+						.anyMatch(generator -> generator == KeyGenerator.identity());
 	}
 
 	static String underscoreToCamelCase(String text) {

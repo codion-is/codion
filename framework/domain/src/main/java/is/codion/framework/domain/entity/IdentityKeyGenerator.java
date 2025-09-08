@@ -25,9 +25,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-final class IdentityKeyGenerator implements KeyGenerator.Identity {
+final class IdentityKeyGenerator implements KeyGenerator {
 
-	static final Identity INSTANCE = new IdentityKeyGenerator();
+	static final KeyGenerator INSTANCE = new IdentityKeyGenerator();
 
 	private IdentityKeyGenerator() {}
 
