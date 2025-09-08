@@ -104,7 +104,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
 	}
 
 	@Override
-	public <T> List<Entity.Key> primaryKeys(EntityType entityType, Collection<T> values) {
+	public final <T> List<Entity.Key> primaryKeys(EntityType entityType, Collection<T> values) {
 		EntityDefinition definition = definition(entityType);
 
 		return requireNonNull(values).stream()
