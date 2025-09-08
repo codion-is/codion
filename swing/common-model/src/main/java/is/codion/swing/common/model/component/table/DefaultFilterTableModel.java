@@ -228,8 +228,8 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		}
 
 		@Override
-		public String format(int rowIndex, C identifier) {
-			return columns.format(items.included().get(rowIndex), requireNonNull(identifier));
+		public String formatted(int rowIndex, C identifier) {
+			return columns.formatted(items.included().get(rowIndex), requireNonNull(identifier));
 		}
 
 		@Override
@@ -317,7 +317,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		private boolean accepts(R item, ConditionModel<?> condition, C identifier, TableColumns<R, C> columns) {
 			if (condition.valueClass().equals(String.class)) {
-				String formatted = columns.format(item, identifier);
+				String formatted = columns.formatted(item, identifier);
 
 				return ((ConditionModel<String>) condition).accepts(formatted.isEmpty() ? null : formatted);
 			}
