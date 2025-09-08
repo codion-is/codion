@@ -15,6 +15,7 @@ Codion Change Log
 - Entity.string(attribute) renamed format.
 - StringFactory renamed EntityFormatter.
 - EntityDefinition.Builder.stringFactory() renamed formatter().
+- Entity.format(attribute) renamed formatted.
 ### is.codion.framework.db.core
 - EntityConnectionProvider.Builder, domainType.name() now used as clientType if none is specified.
 ### is.codion.swing.framework.model

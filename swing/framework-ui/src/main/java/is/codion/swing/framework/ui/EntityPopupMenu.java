@@ -221,7 +221,7 @@ final class EntityPopupMenu extends JPopupMenu {
 
 		@Override
 		public void execute() {
-			setClipboard(entity.format(attribute));
+			setClipboard(entity.formatted(attribute));
 		}
 	}
 

@@ -381,7 +381,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 
 		@Override
 		public String format(Entity entity, Attribute<?> attribute) {
-			return requireNonNull(entity).format(attribute);
+			return requireNonNull(entity).formatted(attribute);
 		}
 
 		@Override

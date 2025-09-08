@@ -1031,7 +1031,7 @@ public class DefaultEntityTest {
 							.with(Detail.INT, 42)
 							.build();
 
-			assertEquals("420", detail.format(Detail.INT_DERIVED));
+			assertEquals("420", detail.formatted(Detail.INT_DERIVED));
 		}
 
 		@Test
@@ -1200,7 +1200,7 @@ public class DefaultEntityTest {
 							.with(Employee.DEPARTMENT_NO, 1)
 							.build();
 
-			assertEquals("deptno:1", aron.format(Employee.DEPARTMENT_FK));
+			assertEquals("deptno:1", aron.formatted(Employee.DEPARTMENT_FK));
 			assertEquals(42, aron.hashCode());
 
 			Entity bjorn = ENTITIES.entity(Employee.TYPE)

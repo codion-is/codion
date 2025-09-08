@@ -204,7 +204,7 @@ public final class EntityFormatter {
 				return "";
 			}
 
-			return entity.entity(foreignKey).format(attribute);
+			return entity.entity(foreignKey).formatted(attribute);
 		}
 	}
 
@@ -221,7 +221,7 @@ public final class EntityFormatter {
 
 		@Override
 		public String apply(Entity entity) {
-			return entity.format(attribute);
+			return entity.formatted(attribute);
 		}
 	}
 

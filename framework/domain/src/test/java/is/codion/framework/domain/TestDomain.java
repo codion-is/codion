@@ -691,7 +691,7 @@ public final class TestDomain extends DomainModel {
 														.primaryKey(),
 										NonCachedToString.STRING.define()
 														.column())
-						.formatter(entity -> entity.format(NonCachedToString.ID) + "." + entity.get(NonCachedToString.STRING))
+						.formatter(entity -> entity.formatted(NonCachedToString.ID) + "." + entity.get(NonCachedToString.STRING))
 						.cacheToString(false)
 						.build());
 	}

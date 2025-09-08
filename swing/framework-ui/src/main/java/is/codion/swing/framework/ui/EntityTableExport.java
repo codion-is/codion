@@ -181,7 +181,7 @@ final class EntityTableExport {
 			AttributeNode node = (AttributeNode) attributeNodes.nextElement();
 			Attribute<?> attribute = node.definition.attribute();
 			if (node.selected.is()) {
-				row.add(replaceNewlinesAndTabs(entity.format(attribute)));
+				row.add(replaceNewlinesAndTabs(entity.formatted(attribute)));
 			}
 			if (attribute instanceof ForeignKey) {
 				Entity.Key referencedKey = entity.key((ForeignKey) attribute);

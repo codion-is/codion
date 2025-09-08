@@ -44,6 +44,6 @@ final class DefaultFormatter implements Function<Entity, String>, Serializable {
 	}
 
 	private static String toString(Entity entity, Attribute<?> attribute) {
-		return attribute.name() + ": " + (entity.isNull(attribute) ? "null" : entity.format(attribute));
+		return attribute.name() + ": " + (entity.isNull(attribute) ? "null" : entity.formatted(attribute));
 	}
 }
