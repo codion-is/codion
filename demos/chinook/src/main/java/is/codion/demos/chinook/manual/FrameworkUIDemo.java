@@ -18,9 +18,9 @@
  */
 package is.codion.demos.chinook.manual;
 
-import is.codion.demos.chinook.domain.api.Chinook;
 import is.codion.demos.chinook.domain.api.Chinook.Customer;
 import is.codion.demos.chinook.domain.api.Chinook.Invoice;
+import is.codion.demos.chinook.domain.api.Chinook.MediaType;
 import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.demos.chinook.ui.CustomerEditPanel;
 import is.codion.demos.chinook.ui.MediaTypeEditPanel;
@@ -237,7 +237,7 @@ final class FrameworkUIDemo {
 			}
 
 			private EntityEditPanel createMediaTypeEditPanel() {
-				return new MediaTypeEditPanel(new SwingEntityEditModel(Chinook.MediaType.TYPE, editModel().connectionProvider()));
+				return new MediaTypeEditPanel(new SwingEntityEditModel(MediaType.TYPE, editModel().connectionProvider()));
 			}
 		}
 		// end::editPanelComboBoxPanel[]

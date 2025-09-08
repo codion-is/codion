@@ -8,6 +8,7 @@
 :dir-chinook-source: ../../../../../demos/chinook/src/main/java
 :url-javadoc: link:../api
 
+[#_domain_modelling]
 == Domain modelling
 
 * Declarative, not magical

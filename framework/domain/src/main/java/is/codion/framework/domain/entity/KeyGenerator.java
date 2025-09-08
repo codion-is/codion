@@ -154,8 +154,6 @@ public interface KeyGenerator {
 
 	/**
 	 * Instantiates a primary key generator which fetches primary key values from a sequence prior to insert.
-	 * Note that if the primary key value of the entity being inserted is already populated this key
-	 * generator does nothing, that is, it does not overwrite a manually set primary key value.
 	 * {@snippet :
 	 * // Oracle or PostgreSQL sequence
 	 * Product.TYPE.define(
@@ -191,8 +189,6 @@ public interface KeyGenerator {
 
 	/**
 	 * Instantiates a primary key generator which fetches primary key values using the given query prior to insert.
-	 * Note that if the primary key value of the entity being inserted is already populated this key
-	 * generator does nothing, that is, it does not overwrite a manually set primary key value.
 	 * {@snippet :
 	 * // Custom query-based key generation
 	 * Order.TYPE.define(

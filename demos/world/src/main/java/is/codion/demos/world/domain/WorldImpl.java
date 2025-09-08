@@ -57,7 +57,7 @@ public final class WorldImpl extends DomainModel {
 		validateForeignKeys(false);
 
 		add(city(), country(), countryLanguage(), lookup(), continent());
-		add(Country.AVERAGE_CITY_POPULATION, new AverageCityPopulationFunction());
+		add(Country.AVERAGE_CITY_POPULATION, new AverageCityPopulation());
 	}
 
 	// tag::defineCity[]
@@ -428,7 +428,7 @@ public final class WorldImpl extends DomainModel {
 	}
 	// end::converter[]
 
-	private static final class AverageCityPopulationFunction implements DatabaseFunction<EntityConnection, String, Double> {
+	private static final class AverageCityPopulation implements DatabaseFunction<EntityConnection, String, Double> {
 
 		@Override
 		public Double execute(EntityConnection connection, String countryCode) {

@@ -177,10 +177,12 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditionFactory<T
 		 * Note that this renders this column non-null and non-updatable by default, this can be
 		 * reverted by setting it as updatable and/or nullable after defining a primary key column.
 		 * {@snippet :
-		 * Employee.ID.define()
-		 *   .primaryKey()
-		 *   .nullable(true)
-		 *   .updatable(true)
+		 * CountryLanguage.COUNTRY_CODE.define()
+		 *   .primaryKey(0)
+		 *   .updatable(true),
+		 * CountryLanguage.LANGUAGE.define()
+		 *   .primaryKey(1)
+		 *   .updatable(true),
 		 *}
 		 * @param index the zero-based index of this column in the primary key
 		 * @param <B> the builder type
@@ -302,10 +304,8 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditionFactory<T
 
 	/**
 	 * Converts to and from SQL values, such as integers being used to represent booleans in a database.
-	 * <p>
-	 * By default, a {@link Converter} is not expected to handle null values, with null values automatically converted to/from null column values.
-	 * <p>
-	 * If a {@link Converter} needs to handle null values as well as non-null values {@link #handlesNull()} must be overridden to return true.
+	 * <p> By default, a {@link Converter} is not expected to handle null values, with null values automatically converted to/from null column values.
+	 * <p> If a {@link Converter} needs to handle null values as well as non-null values {@link #handlesNull()} must be overridden to return true.
 	 * @param <T> the type of the value
 	 * @param <C> the type of the underlying column
 	 */
