@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.49
+
 ## 0.18.48
 ### is.codion.swing.common.model
 - FilterTableModel.TableColumns, ColumnValues.string(row, identifier) renamed format().
