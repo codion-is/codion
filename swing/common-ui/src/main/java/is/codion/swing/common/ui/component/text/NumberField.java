@@ -71,8 +71,8 @@ public final class NumberField<T extends Number> extends HintTextField {
 		if (document.format() instanceof DecimalFormat) {
 			addKeyListener(new GroupingSkipAdapter());
 		}
-		if (builder.groupingUsed != null) {
-			document.setGroupingUsed(builder.groupingUsed);
+		if (builder.grouping != null) {
+			document.setGroupingUsed(builder.grouping);
 		}
 		if (builder.groupingSeparator != 0) {
 			document.setGroupingSeparator(builder.groupingSeparator);
@@ -198,10 +198,11 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		/**
 		 * Note that this is overridden by {@link #format(java.text.Format)}.
-		 * @param groupingUsed true if grouping should be used
+		 * @param grouping true if grouping should be used
 		 * @return this builder instance
+		 * @see NumberFormat#setGroupingUsed(boolean)
 		 */
-		Builder<T> groupingUsed(boolean groupingUsed);
+		Builder<T> grouping(boolean grouping);
 
 		/**
 		 * @param maximumFractionDigits the maximum fraction digits
@@ -301,7 +302,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 		private @Nullable Number minimum;
 		private boolean silentValidation = false;
 		private char groupingSeparator = 0;
-		private @Nullable Boolean groupingUsed;
+		private @Nullable Boolean grouping;
 		private char decimalSeparator = 0;
 		private int maximumFractionDigits = -1;
 		private boolean convertGroupingToDecimalSeparator = CONVERT_GROUPING_TO_DECIMAL_SEPARATOR.getOrThrow();
@@ -357,8 +358,8 @@ public final class NumberField<T extends Number> extends HintTextField {
 		}
 
 		@Override
-		public final Builder<T> groupingUsed(boolean groupingUsed) {
-			this.groupingUsed = groupingUsed;
+		public final Builder<T> grouping(boolean grouping) {
+			this.grouping = grouping;
 			return this;
 		}
 

@@ -297,7 +297,7 @@ public final class InputControls {
 						Components.integerField()
 										.link(integerValue)
 										.range(0, 10_000)
-										.groupingUsed(false)
+										.grouping(false)
 										.build();
 		// end::integerField[]
 	}
@@ -309,7 +309,7 @@ public final class InputControls {
 		NumberField<Long> longField =
 						Components.longField()
 										.link(longValue)
-										.groupingUsed(true)
+										.grouping(true)
 										.build();
 		// end::longField[]
 	}

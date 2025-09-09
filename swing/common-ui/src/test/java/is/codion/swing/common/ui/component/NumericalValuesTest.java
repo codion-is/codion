@@ -161,7 +161,7 @@ public class NumericalValuesTest {
 		ComponentValue<NumberField<Double>, Double> componentValue = Components.doubleField()
 						.decimalSeparator('.')
 						.groupingSeparator(',')
-						.groupingUsed(false)
+						.grouping(false)
 						.buildValue();
 		assertNull(componentValue.get());
 
@@ -174,7 +174,7 @@ public class NumericalValuesTest {
 						.value(15.5)
 						.decimalSeparator(',')
 						.groupingSeparator('.')
-						.groupingUsed(false)
+						.grouping(false)
 						.buildValue();
 
 		componentValue.component().setText("15.7");
@@ -185,7 +185,7 @@ public class NumericalValuesTest {
 		componentValue = Components.doubleField()
 						.decimalSeparator('.')
 						.groupingSeparator(',')
-						.groupingUsed(true)
+						.grouping(true)
 						.buildValue();
 
 		componentValue.component().setText("15.5");

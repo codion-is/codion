@@ -36,7 +36,7 @@ public final class NumberFieldTest {
 	void integerFieldTest() {
 		NumberField<Integer> integerField = NumberField.builder()
 						.numberClass(Integer.class)
-						.groupingUsed(false)
+						.grouping(false)
 						.build();
 		integerField.set(42);
 		assertEquals("42", integerField.getText());
@@ -93,7 +93,7 @@ public final class NumberFieldTest {
 						.numberClass(Integer.class)
 						.decimalSeparator(',')
 						.groupingSeparator('.')
-						.groupingUsed(true)
+						.grouping(true)
 						.build();
 		KeyListener keyListener = integerField.getKeyListeners()[0];
 		integerField.set(123456);
@@ -111,7 +111,7 @@ public final class NumberFieldTest {
 	void longFieldTest() {
 		NumberField<Long> longField = NumberField.builder()
 						.numberClass(Long.class)
-						.groupingUsed(false)
+						.grouping(false)
 						.build();
 		longField.set(42L);
 		assertEquals("42", longField.getText());
@@ -125,17 +125,11 @@ public final class NumberFieldTest {
 
 		longField = NumberField.builder()
 						.numberClass(Long.class)
-						.groupingUsed(true)
+						.grouping(true)
 						.groupingSeparator(',')
 						.build();
 		longField.set(1_000_000_000L);
 		assertEquals("1,000,000,000", longField.getText());
-
-		longField = NumberField.builder()
-						.numberClass(Long.class)
-						.groupingUsed(false)
-						.groupingSeparator(',')
-						.build();
 
 		NumberField<Long> rangedField = NumberField.builder()
 						.numberClass(Long.class)
@@ -158,7 +152,7 @@ public final class NumberFieldTest {
 						.numberClass(Double.class)
 						.decimalSeparator(',')
 						.groupingSeparator('.')
-						.groupingUsed(false)
+						.grouping(false)
 						.build();
 		doubleField.setText(",");
 		assertEquals("0,", doubleField.getText());
@@ -177,7 +171,7 @@ public final class NumberFieldTest {
 						.numberClass(Double.class)
 						.decimalSeparator('.')
 						.groupingSeparator(',')
-						.groupingUsed(false)
+						.grouping(false)
 						.build();
 
 		doubleField.set(42.2);
@@ -200,7 +194,7 @@ public final class NumberFieldTest {
 						.format(decimalFormat)
 						.decimalSeparator(',')
 						.groupingSeparator('.')
-						.groupingUsed(true)
+						.grouping(true)
 						.build();
 		assertEquals(0, doubleField.getCaretPosition());
 		doubleField.setText(",");
@@ -226,7 +220,7 @@ public final class NumberFieldTest {
 						.format(decimalFormat)
 						.decimalSeparator('.')
 						.groupingSeparator(',')
-						.groupingUsed(true)
+						.grouping(true)
 						.build();
 
 		doubleField.set(42.2);
@@ -259,7 +253,7 @@ public final class NumberFieldTest {
 						.numberClass(Double.class)
 						.decimalSeparator(',')
 						.groupingSeparator('.')
-						.groupingUsed(true)
+						.grouping(true)
 						.build();
 		NumberDocument<Double> document = doubleField.document();
 
@@ -381,7 +375,7 @@ public final class NumberFieldTest {
 	void decimalSeparators() {
 		NumberField<Double> doubleField = NumberField.builder()
 						.numberClass(Double.class)
-						.groupingUsed(false)
+						.grouping(false)
 						.decimalSeparator('.')
 						.build();
 		doubleField.setText("1.5");
@@ -396,7 +390,7 @@ public final class NumberFieldTest {
 
 		doubleField = NumberField.builder()
 						.numberClass(Double.class)
-						.groupingUsed(false)
+						.grouping(false)
 						.decimalSeparator(',')
 						.build();
 		doubleField.setText("1,6");
@@ -427,7 +421,7 @@ public final class NumberFieldTest {
 	void setSeparators() {
 		NumberField<Double> doubleField = NumberField.builder()
 						.numberClass(Double.class)
-						.groupingUsed(true)
+						.grouping(true)
 						.decimalSeparator('.')
 						.groupingSeparator(',')
 						.build();
@@ -437,7 +431,7 @@ public final class NumberFieldTest {
 		doubleField = NumberField.builder()
 						.numberClass(Double.class)
 						.value(12345678.9)
-						.groupingUsed(true)
+						.grouping(true)
 						.decimalSeparator(',')
 						.groupingSeparator('.')
 						.build();
@@ -445,7 +439,7 @@ public final class NumberFieldTest {
 
 		doubleField = NumberField.builder()
 						.numberClass(Double.class)
-						.groupingUsed(true)
+						.grouping(true)
 						.decimalSeparator('.')
 						.groupingSeparator(',')
 						.build();
