@@ -114,18 +114,6 @@ class NumberDocument<T extends Number> extends PlainDocument {
 		set(value);
 	}
 
-	void setSeparators(char decimalSeparator, char groupingSeparator) {
-		if (decimalSeparator == groupingSeparator) {
-			throw new IllegalArgumentException("Decimal separator must not be the same as grouping separator");
-		}
-		DecimalFormatSymbols symbols = ((DecimalFormat) format()).getDecimalFormatSymbols();
-		symbols.setDecimalSeparator(decimalSeparator);
-		symbols.setGroupingSeparator(groupingSeparator);
-		T value = get();
-		((DecimalFormat) format()).setDecimalFormatSymbols(symbols);
-		set(value);
-	}
-
 	void setDecimalSeparator(char decimalSeparator) {
 		DecimalFormatSymbols symbols = ((DecimalFormat) format()).getDecimalFormatSymbols();
 		if (decimalSeparator == symbols.getGroupingSeparator()) {
@@ -396,16 +384,8 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			this.convertGroupingToDecimalSeparator = convertGroupingToDecimalSeparator;
 		}
 
-		boolean isConvertGroupingToDecimalSeparator() {
-			return convertGroupingToDecimalSeparator;
-		}
-
 		void setSilentValidation(boolean silentValidation) {
 			this.silentValidation = silentValidation;
-		}
-
-		boolean isSilentValidation() {
-			return silentValidation;
 		}
 
 		/**
@@ -487,12 +467,6 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			if (parseBigDecimal) {
 				format.setParseBigDecimal(true);
 			}
-		}
-
-		int getMaximumFractionDigits() {
-			int maximumFractionDigits = format().getMaximumFractionDigits();
-
-			return maximumFractionDigits == MAXIMUM_FRACTION_DIGITS ? -1 : maximumFractionDigits;
 		}
 
 		void setMaximumFractionDigits(int maximumFractionDigits) {

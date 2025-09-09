@@ -296,7 +296,7 @@ public final class InputControls {
 		NumberField<Integer> integerField =
 						Components.integerField()
 										.link(integerValue)
-										.valueRange(0, 10_000)
+										.range(0, 10_000)
 										.groupingUsed(false)
 										.build();
 		// end::integerField[]

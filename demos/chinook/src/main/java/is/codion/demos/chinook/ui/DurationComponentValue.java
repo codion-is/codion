@@ -131,7 +131,7 @@ final class DurationComponentValue extends AbstractComponentValue<DurationCompon
 							.columns(2)
 							.build();
 			secondsField = integerField()
-							.valueRange(0, 59)
+							.range(0, 59)
 							.transferFocusOnEnter(true)
 							.selectAllOnFocusGained(true)
 							.silentValidation(true)
@@ -141,7 +141,7 @@ final class DurationComponentValue extends AbstractComponentValue<DurationCompon
 							.columns(2)
 							.build();
 			millisecondsField = integerField()
-							.valueRange(0, 999)
+							.range(0, 999)
 							.transferFocusOnEnter(!cellEditor)
 							.selectAllOnFocusGained(true)
 							.silentValidation(true)

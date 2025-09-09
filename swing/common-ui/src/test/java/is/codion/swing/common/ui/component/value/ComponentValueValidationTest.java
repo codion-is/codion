@@ -155,7 +155,7 @@ public final class ComponentValueValidationTest {
 		// since the validator runs during component creation
 		ComponentValue<NumberField<Integer>, Integer> field = Components.integerField()
 						.value(50)
-						.valueRange(0, 100)
+						.range(0, 100)
 						.buildValue();
 
 		// Add validator after creation to avoid initial validation

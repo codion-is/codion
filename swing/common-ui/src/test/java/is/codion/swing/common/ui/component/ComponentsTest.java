@@ -122,7 +122,7 @@ public final class ComponentsTest {
 	void shortField() {
 		Value<Short> value = Value.nullable((short) 42);
 		ComponentValue<NumberField<Short>, Short> componentValue = Components.shortField()
-						.valueRange(0, 100)
+						.range(0, 100)
 						.font(Font.getFont("arial"))
 						.minimumHeight(10)
 						.minimumWidth(10)
@@ -137,7 +137,7 @@ public final class ComponentsTest {
 	void integerField() {
 		Value<Integer> value = Value.nullable(42);
 		ComponentValue<NumberField<Integer>, Integer> componentValue = Components.integerField()
-						.valueRange(0, 100)
+						.range(0, 100)
 						.font(Font.getFont("arial"))
 						.minimumHeight(10)
 						.minimumWidth(10)
@@ -152,7 +152,7 @@ public final class ComponentsTest {
 	void longField() {
 		Value<Long> value = Value.nullable(42L);
 		ComponentValue<NumberField<Long>, Long> componentValue = Components.longField()
-						.valueRange(0, 100)
+						.range(0, 100)
 						.groupingSeparator('.')
 						.maximumHeight(10)
 						.maximumWidth(10)
@@ -165,7 +165,7 @@ public final class ComponentsTest {
 	void doubleField() {
 		Value<Double> value = Value.nullable(42.2);
 		ComponentValue<NumberField<Double>, Double> componentValue = Components.doubleField()
-						.valueRange(0, 100)
+						.range(0, 100)
 						.maximumFractionDigits(2)
 						.groupingSeparator('.')
 						.decimalSeparator(',')

@@ -2950,7 +2950,7 @@ public class EntityTablePanel extends JPanel {
 											.value(tableModel.queryModel().limit().get())
 											.selectAllOnFocusGained(true)
 											.groupingUsed(true)
-											.minimumValue(0)
+											.minimum(0)
 											.columns(6))
 							.title(MESSAGES.getString("row_limit"))
 							.owner(EntityTablePanel.this)

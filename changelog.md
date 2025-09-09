@@ -8,6 +8,7 @@ Codion Change Log
 - NumberDocument.NumberRangeValidator bug fixed, values now included correctly in error message.
 - NumberField.valueRange(), minimumValue() and maximumValue() removed, accessible via builder, builder validation improved, related refactoring.
 - NumberField, setters removed, only used in tests, accessible via builder.
+- NumberField.Builder.valueRange(), minimumValue() and maximumValue() renamed range(), minimum() and maximum().
 ### is.codion.framework.domain
 - KeyGenerator.Identity removed.
 

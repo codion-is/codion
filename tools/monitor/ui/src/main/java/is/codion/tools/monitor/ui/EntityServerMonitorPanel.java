@@ -241,7 +241,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 		NumberField<Integer> field = integerField()
 						.value(5)
 						.columns(6)
-						.minimumValue(1d)
+						.minimum(1)
 						.horizontalAlignment(SwingConstants.CENTER)
 						.selectAllOnFocusGained(true)
 						.build();

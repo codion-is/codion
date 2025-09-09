@@ -64,8 +64,8 @@ public final class NumberField<T extends Number> extends HintTextField {
 		NumberDocument<T> document = document();
 		document.setTextComponent(this);
 		NumberParsingDocumentFilter<T> documentFilter = document.getDocumentFilter();
-		documentFilter.setMinimumValue(builder.minimumValue);
-		documentFilter.setMaximumValue(builder.maximumValue);
+		documentFilter.setMinimumValue(builder.minimum);
+		documentFilter.setMaximumValue(builder.maximum);
 		documentFilter.setSilentValidation(builder.silentValidation);
 		documentFilter.setConvertGroupingToDecimalSeparator(builder.convertGroupingToDecimalSeparator);
 		if (document.format() instanceof DecimalFormat) {
@@ -166,23 +166,23 @@ public final class NumberField<T extends Number> extends HintTextField {
 		Builder<T> nullable(boolean nullable);
 
 		/**
-		 * @param minimumValue the minimum value
-		 * @param maximumValue the maximum value
+		 * @param minimum the minimum value
+		 * @param maximum the maximum value
 		 * @return this builder instance
 		 */
-		Builder<T> valueRange(@Nullable Number minimumValue, @Nullable Number maximumValue);
+		Builder<T> range(@Nullable Number minimum, @Nullable Number maximum);
 
 		/**
-		 * @param minimumValue the minimum numerical value
+		 * @param minimum the minimum numerical value
 		 * @return this builder instance
 		 */
-		Builder<T> minimumValue(@Nullable Number minimumValue);
+		Builder<T> minimum(@Nullable Number minimum);
 
 		/**
-		 * @param maximumValue the maximum numerical value
+		 * @param maximum the maximum numerical value
 		 * @return this builder instance
 		 */
-		Builder<T> maximumValue(@Nullable Number maximumValue);
+		Builder<T> maximum(@Nullable Number maximum);
 
 		/**
 		 * @param silentValidation true if invalid input should be silently prevented instead of throwing validation exceptions
@@ -297,8 +297,8 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		protected boolean nullable = true;
 
-		private @Nullable Number maximumValue;
-		private @Nullable Number minimumValue;
+		private @Nullable Number maximum;
+		private @Nullable Number minimum;
 		private boolean silentValidation = false;
 		private char groupingSeparator = 0;
 		private @Nullable Boolean groupingUsed;
@@ -317,27 +317,27 @@ public final class NumberField<T extends Number> extends HintTextField {
 		}
 
 		@Override
-		public final Builder<T> valueRange(@Nullable Number minimumValue, @Nullable Number maximumValue) {
-			minimumValue(minimumValue);
-			maximumValue(maximumValue);
+		public final Builder<T> range(@Nullable Number minimum, @Nullable Number maximum) {
+			minimum(minimum);
+			maximum(maximum);
 			return this;
 		}
 
 		@Override
-		public final Builder<T> minimumValue(@Nullable Number minimumValue) {
-			if (maximumValue != null &&  minimumValue != null && minimumValue.doubleValue() > maximumValue.doubleValue()) {
-				throw new IllegalArgumentException("minimumValue can't be greater than maximumValue");
+		public final Builder<T> minimum(@Nullable Number minimum) {
+			if (maximum != null &&  minimum != null && minimum.doubleValue() > maximum.doubleValue()) {
+				throw new IllegalArgumentException("minimum can't be greater than maximum");
 			}
-			this.minimumValue = minimumValue;
+			this.minimum = minimum;
 			return this;
 		}
 
 		@Override
-		public final Builder<T> maximumValue(@Nullable Number maximumValue) {
-			if (maximumValue != null &&  minimumValue != null && maximumValue.doubleValue() < minimumValue.doubleValue()) {
-				throw new IllegalArgumentException("maximumValue can't be greater than minimumValue");
+		public final Builder<T> maximum(@Nullable Number maximum) {
+			if (maximum != null &&  minimum != null && maximum.doubleValue() < minimum.doubleValue()) {
+				throw new IllegalArgumentException("maximum can't be greater than minimum");
 			}
-			this.maximumValue = maximumValue;
+			this.maximum = maximum;
 			return this;
 		}
 

@@ -102,7 +102,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 		return Dialogs.input()
 						.component(bigDecimalField()
 										.nullable(false)
-										.minimumValue(0))
+										.minimum(0))
 						.owner(this)
 						.title(BUNDLE.getString("amount"))
 						.validator(amount -> amount.compareTo(BigDecimal.ZERO) > 0)

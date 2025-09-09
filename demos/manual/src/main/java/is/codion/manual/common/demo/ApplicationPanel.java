@@ -211,7 +211,7 @@ public final class ApplicationPanel extends JPanel {
 
 		integerField()
 						.link(model.integerValue())
-						.valueRange(0, 10_000)
+						.range(0, 10_000)
 						.groupingUsed(true)
 						.groupingSeparator('.')
 						.transferFocusOnEnter(true)
@@ -224,7 +224,7 @@ public final class ApplicationPanel extends JPanel {
 		doubleField()
 						.link(model.doubleValue())
 						.nullable(false)
-						.valueRange(0, 1_000_000)
+						.range(0, 1_000_000)
 						.groupingUsed(true)
 						.maximumFractionDigits(2)
 						.decimalSeparator(',')

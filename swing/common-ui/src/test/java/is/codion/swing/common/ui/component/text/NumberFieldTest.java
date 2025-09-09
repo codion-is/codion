@@ -50,7 +50,7 @@ public final class NumberFieldTest {
 
 		NumberField<Integer> zeroToTen = NumberField.builder()
 						.numberClass(Integer.class)
-						.valueRange(0, 10)
+						.range(0, 10)
 						.build();
 
 		assertThrows(IllegalArgumentException.class, () -> zeroToTen.set(100));
@@ -64,7 +64,7 @@ public final class NumberFieldTest {
 
 		NumberField<Integer> zeroToMax = NumberField.builder()
 						.numberClass(Integer.class)
-						.valueRange(0, Integer.MAX_VALUE)
+						.range(0, Integer.MAX_VALUE)
 						.decimalSeparator(',')
 						.groupingSeparator('.')
 						.build();
@@ -139,7 +139,7 @@ public final class NumberFieldTest {
 
 		NumberField<Long> rangedField = NumberField.builder()
 						.numberClass(Long.class)
-						.valueRange(0, 10)
+						.range(0, 10)
 						.build();
 
 		rangedField.setText("");
@@ -504,7 +504,7 @@ public final class NumberFieldTest {
 		NumberField<Integer> integerField = NumberField.builder()
 						.numberClass(Integer.class)
 						.value(10)
-						.valueRange(0, 100)
+						.range(0, 100)
 						.build();
 		assertEquals(10, integerField.get());
 		assertThrows(IllegalArgumentException.class, () -> integerField.set(101));
@@ -512,7 +512,7 @@ public final class NumberFieldTest {
 		NumberField<Integer> silentField = NumberField.builder()
 						.numberClass(Integer.class)
 						.value(10)
-						.valueRange(0, 100)
+						.range(0, 100)
 						.silentValidation(true)
 						.build();
 		silentField.set(50);

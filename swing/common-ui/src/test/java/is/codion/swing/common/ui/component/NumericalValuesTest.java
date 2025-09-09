@@ -341,12 +341,12 @@ public class NumericalValuesTest {
 	@Test
 	void builderValidation() {
 		assertThrows(IllegalArgumentException.class, () -> Components.doubleField()
-						.valueRange(10, 0));
+						.range(10, 0));
 		assertThrows(IllegalArgumentException.class, () -> Components.doubleField()
-						.minimumValue(10)
-						.maximumValue(8));
+						.minimum(10)
+						.maximum(8));
 		assertThrows(IllegalArgumentException.class, () -> Components.doubleField()
-						.maximumValue(10)
-						.minimumValue(12));
+						.maximum(10)
+						.minimum(12));
 	}
 }

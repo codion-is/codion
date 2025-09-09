@@ -94,7 +94,7 @@ final class RandomPlaylistParametersPanel extends JPanel {
 	private NumberField<Integer> createNoOfTracksField() {
 		return integerField()
 						.link(model.noOfTracks)
-						.valueRange(1, 5000)
+						.range(1, 5000)
 						.transferFocusOnEnter(true)
 						.selectAllOnFocusGained(true)
 						.columns(3)
