@@ -268,44 +268,44 @@ public class DefaultEntityFactory implements EntityFactory {
 	}
 
 	private static int randomInteger(AttributeDefinition<?> attributeDefinition) {
-		int min = attributeDefinition.minimumValue()
-						.map(minimumValue -> Math.max(minimumValue.intValue(), MININUM_RANDOM_NUMBER))
+		int min = attributeDefinition.minimum()
+						.map(minimum -> Math.max(minimum.intValue(), MININUM_RANDOM_NUMBER))
 						.orElse(MININUM_RANDOM_NUMBER);
-		int max = attributeDefinition.maximumValue()
-						.map(maximumValue -> Math.min(maximumValue.intValue(), MAXIMUM_RANDOM_NUMBER))
+		int max = attributeDefinition.maximum()
+						.map(maximum -> Math.min(maximum.intValue(), MAXIMUM_RANDOM_NUMBER))
 						.orElse(MAXIMUM_RANDOM_NUMBER);
 
 		return RANDOM.nextInt((max - min) + 1) + min;
 	}
 
 	private static long randomLong(AttributeDefinition<?> attributeDefinition) {
-		long min = attributeDefinition.minimumValue()
-						.map(minimumValue -> Math.max(minimumValue.longValue(), MININUM_RANDOM_NUMBER))
+		long min = attributeDefinition.minimum()
+						.map(minimum -> Math.max(minimum.longValue(), MININUM_RANDOM_NUMBER))
 						.orElse((long) MININUM_RANDOM_NUMBER);
-		long max = attributeDefinition.maximumValue()
-						.map(maximumValue -> Math.min(maximumValue.longValue(), MAXIMUM_RANDOM_NUMBER))
+		long max = attributeDefinition.maximum()
+						.map(maximum -> Math.min(maximum.longValue(), MAXIMUM_RANDOM_NUMBER))
 						.orElse((long) MAXIMUM_RANDOM_NUMBER);
 
 		return RANDOM.nextLong() % (max - min) + min;
 	}
 
 	private static short randomShort(AttributeDefinition<?> attributeDefinition) {
-		short min = attributeDefinition.minimumValue()
-						.map(minimumValue -> (short) Math.max(minimumValue.intValue(), MININUM_RANDOM_NUMBER))
+		short min = attributeDefinition.minimum()
+						.map(minimum -> (short) Math.max(minimum.intValue(), MININUM_RANDOM_NUMBER))
 						.orElse((short) MININUM_RANDOM_NUMBER);
-		short max = attributeDefinition.maximumValue()
-						.map(maximumValue -> (short) Math.min(maximumValue.intValue(), MAXIMUM_RANDOM_NUMBER))
+		short max = attributeDefinition.maximum()
+						.map(maximum -> (short) Math.min(maximum.intValue(), MAXIMUM_RANDOM_NUMBER))
 						.orElse((short) MAXIMUM_RANDOM_NUMBER);
 
 		return (short) (RANDOM.nextInt((max - min) + 1) + min);
 	}
 
 	private static double randomDouble(AttributeDefinition<?> attributeDefinition) {
-		double min = attributeDefinition.minimumValue()
-						.map(minimumValue -> Math.max(minimumValue.doubleValue(), MININUM_RANDOM_NUMBER))
+		double min = attributeDefinition.minimum()
+						.map(minimum -> Math.max(minimum.doubleValue(), MININUM_RANDOM_NUMBER))
 						.orElse((double) MININUM_RANDOM_NUMBER);
-		double max = attributeDefinition.maximumValue()
-						.map(maximumValue -> Math.min(maximumValue.doubleValue(), MAXIMUM_RANDOM_NUMBER))
+		double max = attributeDefinition.maximum()
+						.map(maximum -> Math.min(maximum.doubleValue(), MAXIMUM_RANDOM_NUMBER))
 						.orElse((double) MAXIMUM_RANDOM_NUMBER);
 
 		return RANDOM.nextDouble() * (max - min) + min;

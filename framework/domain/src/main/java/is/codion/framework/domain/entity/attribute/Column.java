@@ -82,8 +82,8 @@ import static java.util.Objects.requireNonNull;
  *                 Customer.CREDIT_LIMIT.define()
  *                     .column()
  *                     .nullable(true)
- *                     .minimumValue(BigDecimal.ZERO)
- *                     .maximumValue(new BigDecimal("50000"))
+ *                     .minimum(BigDecimal.ZERO)
+ *                     .maximum(new BigDecimal("50000"))
  *                     .caption("Credit Limit"))
  *             .build();
  *     }

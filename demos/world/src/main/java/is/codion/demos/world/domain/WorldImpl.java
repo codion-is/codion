@@ -145,7 +145,7 @@ public final class WorldImpl extends DomainModel {
 										Country.INDEPYEAR.define()
 														.column()
 														.caption("Indep. year")
-														.valueRange(-2000, 2500),
+														.range(-2000, 2500),
 										Country.INDEPYEAR_SEARCHABLE.define()
 														.column()
 														.expression("to_char(indepyear)")
@@ -160,7 +160,7 @@ public final class WorldImpl extends DomainModel {
 														.column()
 														.caption("Life expectancy")
 														.maximumFractionDigits(1)
-														.valueRange(0, 99),
+														.range(0, 99),
 										// end::column[]
 										Country.GNP.define()
 														.column()
@@ -263,7 +263,7 @@ public final class WorldImpl extends DomainModel {
 														.caption("Percentage")
 														.nullable(false)
 														.maximumFractionDigits(1)
-														.valueRange(0, 100))
+														.range(0, 100))
 						.orderBy(OrderBy.builder()
 										.ascending(CountryLanguage.LANGUAGE)
 										.descending(CountryLanguage.PERCENTAGE)

@@ -117,12 +117,12 @@ public final class TestDomain extends DomainModel {
 														.column()
 														.caption(Employee.SALARY.name())
 														.nullable(false)
-														.valueRange(1000, 10000)
+														.range(1000, 10000)
 														.maximumFractionDigits(2),
 										Employee.COMMISSION.define()
 														.column()
 														.caption(Employee.COMMISSION.name())
-														.valueRange(100, 2000)
+														.range(100, 2000)
 														.maximumFractionDigits(2),
 										Employee.MGR.define()
 														.column(),

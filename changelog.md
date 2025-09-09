@@ -11,6 +11,7 @@ Codion Change Log
 - NumberField.Builder.valueRange(), minimumValue() and maximumValue() renamed range(), minimum() and maximum().
 ### is.codion.framework.domain
 - KeyGenerator.Identity removed.
+- AttributeDefinition.Builder.valueRange(), minimumValue() and maximumValue() renamed range(), minimum() and maximum().
 
 ## 0.18.48
 ### is.codion.swing.common.model

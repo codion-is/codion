@@ -79,8 +79,8 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	private final boolean hidden;
 	private final int maximumLength;
 	private final boolean trim;
-	private final @Nullable Number maximumValue;
-	private final @Nullable Number minimumValue;
+	private final @Nullable Number maximum;
+	private final @Nullable Number minimum;
 	private final @Nullable String description;
 	private final char mnemonic;
 	private final @Nullable Format format;
@@ -105,8 +105,8 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		this.hidden = builder.hidden;
 		this.maximumLength = builder.maximumLength;
 		this.trim = builder.trim;
-		this.maximumValue = builder.maximumValue;
-		this.minimumValue = builder.minimumValue;
+		this.maximum = builder.maximum;
+		this.minimum = builder.minimum;
 		this.description = builder.description;
 		this.mnemonic = builder.mnemonic;
 		this.format = builder.format;
@@ -171,13 +171,13 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	}
 
 	@Override
-	public final Optional<Number> maximumValue() {
-		return Optional.ofNullable(maximumValue);
+	public final Optional<Number> maximum() {
+		return Optional.ofNullable(maximum);
 	}
 
 	@Override
-	public final Optional<Number> minimumValue() {
-		return Optional.ofNullable(minimumValue);
+	public final Optional<Number> minimum() {
+		return Optional.ofNullable(minimum);
 	}
 
 	@Override
@@ -434,8 +434,8 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		private boolean hidden;
 		private int maximumLength;
 		private boolean trim;
-		private @Nullable Number maximumValue;
-		private @Nullable Number minimumValue;
+		private @Nullable Number maximum;
+		private @Nullable Number minimum;
 		private @Nullable String description;
 		private char mnemonic;
 		private @Nullable Format format;
@@ -458,8 +458,8 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 			trim = TRIM_STRINGS.getOrThrow();
 			defaultValueSupplier = (ValueSupplier<T>) DEFAULT_VALUE_SUPPLIER;
 			decimalRoundingMode = DECIMAL_ROUNDING_MODE.getOrThrow();
-			minimumValue = defaultMinimumValue();
-			maximumValue = defaultMaximumValue();
+			minimum = defaultMinimum();
+			maximum = defaultMaximum();
 		}
 
 		@Override
@@ -555,25 +555,25 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		}
 
 		@Override
-		public final B minimumValue(Number minimumValue) {
-			return valueRange(requireNonNull(minimumValue), null);
+		public final B minimum(Number minimum) {
+			return range(requireNonNull(minimum), null);
 		}
 
 		@Override
-		public final B maximumValue(Number maximumValue) {
-			return valueRange(null, requireNonNull(maximumValue));
+		public final B maximum(Number maximum) {
+			return range(null, requireNonNull(maximum));
 		}
 
 		@Override
-		public B valueRange(@Nullable Number minimumValue, @Nullable Number maximumValue) {
+		public B range(@Nullable Number minimum, @Nullable Number maximum) {
 			if (!attribute.type().isNumerical()) {
-				throw new IllegalStateException("valueRange is only applicable to numerical attributes");
+				throw new IllegalStateException("range is only applicable to numerical attributes");
 			}
-			if (maximumValue != null && minimumValue != null && maximumValue.doubleValue() < minimumValue.doubleValue()) {
+			if (maximum != null && minimum != null && maximum.doubleValue() < minimum.doubleValue()) {
 				throw new IllegalArgumentException("minimum value must be smaller than maximum value: " + attribute);
 			}
-			this.minimumValue = minimumValue;
-			this.maximumValue = maximumValue;
+			this.minimum = minimum;
+			this.maximum = maximum;
 			return self();
 		}
 
@@ -762,7 +762,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 			return (Comparator<T>) TO_STRING_COMPARATOR;
 		}
 
-		private @Nullable Number defaultMinimumValue() {
+		private @Nullable Number defaultMinimum() {
 			if (attribute.type().isNumerical()) {
 				if (attribute.type().isShort()) {
 					return Short.MIN_VALUE;
@@ -781,7 +781,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 			return null;
 		}
 
-		private @Nullable Number defaultMaximumValue() {
+		private @Nullable Number defaultMaximum() {
 			if (attribute.type().isNumerical()) {
 				if (attribute.type().isShort()) {
 					return Short.MAX_VALUE;

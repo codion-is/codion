@@ -46,7 +46,9 @@ import static java.util.ResourceBundle.getBundle;
  * specified and string length validation based on the specified max length.
  * This Validator can be extended to provide further validation.
  * @see AttributeDefinition.Builder#nullable(boolean)
- * @see AttributeDefinition.Builder#valueRange(Number, Number)
+ * @see AttributeDefinition.Builder#minimum(Number)
+ * @see AttributeDefinition.Builder#maximum(Number)
+ * @see AttributeDefinition.Builder#range(Number, Number)
  * @see AttributeDefinition.Builder#maximumLength(int)
  */
 public class DefaultEntityValidator implements EntityValidator, Serializable {
@@ -176,15 +178,15 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 			return;
 		}
 
-		Number minimumValue = definition.minimumValue().orElse(null);
-		if (minimumValue != null && value.doubleValue() < minimumValue.doubleValue()) {
+		Number minimum = definition.minimum().orElse(null);
+		if (minimum != null && value.doubleValue() < minimum.doubleValue()) {
 			throw new RangeValidationException(definition.attribute(), value, "'" + definition.caption() + "' " +
-							MESSAGES.getString("value_too_small") + " " + minimumValue);
+							MESSAGES.getString("value_too_small") + " " + minimum);
 		}
-		Number maximumValue = definition.maximumValue().orElse(null);
-		if (maximumValue != null && value.doubleValue() > maximumValue.doubleValue()) {
+		Number maximum = definition.maximum().orElse(null);
+		if (maximum != null && value.doubleValue() > maximum.doubleValue()) {
 			throw new RangeValidationException(definition.attribute(), value, "'" + definition.caption() + "' " +
-							MESSAGES.getString("value_too_large") + " " + maximumValue);
+							MESSAGES.getString("value_too_large") + " " + maximum);
 		}
 	}
 

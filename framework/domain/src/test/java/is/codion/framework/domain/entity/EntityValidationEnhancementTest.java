@@ -151,7 +151,7 @@ public final class EntityValidationEnhancementTest {
 							Customer.CREDIT_LIMIT.define()
 											.column()
 											.nullable(false)
-											.valueRange(BigDecimal.ZERO, new BigDecimal("1000000")),
+											.range(BigDecimal.ZERO, new BigDecimal("1000000")),
 							Customer.STATUS.define()
 											.column()
 											.nullable(false)
@@ -164,7 +164,7 @@ public final class EntityValidationEnhancementTest {
 											.column()
 											.nullable(false)
 											.defaultValue(0)
-											.minimumValue(0),
+											.minimum(0),
 							Customer.AGE.define()
 											.derived(Customer.BIRTH_DATE)
 											.value(source -> {
@@ -190,11 +190,11 @@ public final class EntityValidationEnhancementTest {
 							Product.PRICE.define()
 											.column()
 											.nullable(false)
-											.minimumValue(BigDecimal.ZERO),
+											.minimum(BigDecimal.ZERO),
 							Product.STOCK_QUANTITY.define()
 											.column()
 											.nullable(false)
-											.minimumValue(0),
+											.minimum(0),
 							Product.CATEGORY.define()
 											.column()
 											.nullable(false)
@@ -207,7 +207,7 @@ public final class EntityValidationEnhancementTest {
 											.defaultValue(true),
 							Product.WEIGHT.define()
 											.column()
-											.valueRange(0.0, 1000.0),
+											.range(0.0, 1000.0),
 							Product.BARCODE.define()
 											.column()
 											.maximumLength(13)
@@ -229,7 +229,7 @@ public final class EntityValidationEnhancementTest {
 							Order.TOTAL.define()
 											.column()
 											.nullable(false)
-											.minimumValue(BigDecimal.ZERO),
+											.minimum(BigDecimal.ZERO),
 							Order.NOTES.define()
 											.column()
 											.maximumLength(1000),
@@ -249,16 +249,16 @@ public final class EntityValidationEnhancementTest {
 											OrderItem.QUANTITY.define()
 															.column()
 															.nullable(false)
-															.valueRange(1, 1000),
+															.range(1, 1000),
 											OrderItem.UNIT_PRICE.define()
 															.column()
 															.nullable(false)
-															.minimumValue(BigDecimal.ZERO),
+															.minimum(BigDecimal.ZERO),
 											OrderItem.DISCOUNT.define()
 															.column()
 															.nullable(false)
 															.defaultValue(BigDecimal.ZERO)
-															.valueRange(BigDecimal.ZERO, new BigDecimal("100")),
+															.range(BigDecimal.ZERO, new BigDecimal("100")),
 											OrderItem.ORDER_FK.define()
 															.foreignKey(),
 											OrderItem.PRODUCT_FK.define()

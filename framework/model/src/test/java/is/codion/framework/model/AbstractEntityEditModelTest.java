@@ -307,7 +307,7 @@ public final class AbstractEntityEditModelTest {
 			assertEquals(50d, e.value());
 			AttributeDefinition<?> attributeDefinition = ENTITIES.definition(Employee.TYPE).attributes().definition(e.attribute());
 			assertTrue(e.getMessage().contains(attributeDefinition.toString()));
-			assertTrue(e.getMessage().contains(attributeDefinition.minimumValue().map(Objects::toString).get()));
+			assertTrue(e.getMessage().contains(attributeDefinition.minimum().map(Objects::toString).get()));
 		}
 
 		editor.defaults();

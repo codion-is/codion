@@ -64,8 +64,8 @@ import java.sql.SQLException;
  *         Product.PRICE.define()
  *             .column()
  *             .nullable(false)
- *             .minimumValue(BigDecimal.ZERO)
- *             .maximumValue(new BigDecimal("99999.99"))
+ *             .minimum(BigDecimal.ZERO)
+ *             .maximum(new BigDecimal("99999.99"))
  *             .maximumFractionDigits(2),
  *
  *         // Boolean column with database mapping

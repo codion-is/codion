@@ -140,7 +140,7 @@ public final class EmployeesMinimalApp {
 															.caption("Salary")
 															.nullable(false)
 															.maximumFractionDigits(2)
-															.valueRange(1000, 10000),
+															.range(1000, 10000),
 											Employee.COMMISSION.define()
 															.column()
 															.caption("Commission")

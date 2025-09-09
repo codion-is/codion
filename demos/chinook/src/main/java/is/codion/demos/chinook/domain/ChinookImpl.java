@@ -349,11 +349,11 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.column()
 														.nullable(false)
 														.defaultValue(5)
-														.valueRange(1, 10),
+														.range(1, 10),
 										Track.UNITPRICE.define()
 														.column()
 														.nullable(false)
-														.minimumValue(0)
+														.minimum(0)
 														.maximumFractionDigits(2),
 										Track.PLAY_COUNT.define()
 														.column()

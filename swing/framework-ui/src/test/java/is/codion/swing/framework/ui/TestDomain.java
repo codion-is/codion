@@ -115,11 +115,11 @@ public final class TestDomain extends DomainModel {
 										Detail.INT.define()
 														.column()
 														.caption(Detail.INT.name())
-														.valueRange(-10_000, 10_000),
+														.range(-10_000, 10_000),
 										Detail.DOUBLE.define()
 														.column()
 														.caption(Detail.DOUBLE.name())
-														.valueRange(-10_000, 10_000),
+														.range(-10_000, 10_000),
 										Detail.BIG_DECIMAL.define()
 														.column()
 														.caption(Detail.BIG_DECIMAL.name()),
@@ -263,12 +263,12 @@ public final class TestDomain extends DomainModel {
 														.column()
 														.caption(Employee.SALARY.name())
 														.nullable(false)
-														.valueRange(1000, 10000)
+														.range(1000, 10000)
 														.maximumFractionDigits(2),
 										Employee.COMMISSION.define()
 														.column()
 														.caption(Employee.COMMISSION.name())
-														.valueRange(100, 2000)
+														.range(100, 2000)
 														.maximumFractionDigits(2),
 										Employee.MGR.define()
 														.column(),

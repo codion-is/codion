@@ -91,8 +91,8 @@ import static is.codion.common.Configuration.*;
  *                     .column()
  *                     .caption("Price")
  *                     .nullable(false)
- *                     .minimumValue(BigDecimal.ZERO)
- *                     .maximumValue(new BigDecimal("99999.99"))
+ *                     .minimum(BigDecimal.ZERO)
+ *                     .maximum(new BigDecimal("99999.99"))
  *                     .maximumFractionDigits(2)
  *                     .defaultValue(BigDecimal.ZERO),
  *
@@ -305,13 +305,13 @@ public sealed interface AttributeDefinition<T>
 	 * @return the maximum allowed value for this attribute, an empty Optional if none is defined,
 	 * only applicable to numerical attributes
 	 */
-	Optional<Number> maximumValue();
+	Optional<Number> maximum();
 
 	/**
 	 * @return the minimum allowed value for this attribute, an empty Optional if none is defined,
 	 * only applicable to numerical attributes
 	 */
-	Optional<Number> minimumValue();
+	Optional<Number> minimum();
 
 	/**
 	 * @return the maximum number of fraction digits to use for this attribute value,
@@ -411,7 +411,9 @@ public sealed interface AttributeDefinition<T>
 	 * @param <T> the value type
 	 * @param <B> the builder type
 	 */
-	sealed interface Builder<T, B extends Builder<T, B>> permits AbstractAttributeDefinitionBuilder, ColumnDefinition.Builder, AbstractReadOnlyColumnDefinitionBuilder, DefaultSubqueryColumnDefinitionBuilder, DerivedAttributeDefinition.Builder, ForeignKeyDefinition.Builder, TransientAttributeDefinition.Builder {
+	sealed interface Builder<T, B extends Builder<T, B>> permits AbstractAttributeDefinitionBuilder, ColumnDefinition.Builder,
+					AbstractReadOnlyColumnDefinitionBuilder, DefaultSubqueryColumnDefinitionBuilder, DerivedAttributeDefinition.Builder,
+					ForeignKeyDefinition.Builder, TransientAttributeDefinition.Builder {
 
 		/**
 		 * @return the underying attribute
@@ -476,28 +478,28 @@ public sealed interface AttributeDefinition<T>
 
 		/**
 		 * Only applicable to numerical attributes
-		 * @param minimumValue the minimum allowed value for this attribute
+		 * @param minimum the minimum allowed value for this attribute
 		 * @return this builder instance
 		 * @throws IllegalStateException in case this is not a numerical attribute
 		 */
-		B minimumValue(Number minimumValue);
+		B minimum(Number minimum);
 
 		/**
 		 * Only applicable to numerical attributes
-		 * @param maximumValue the maximum allowed value for this attribute
+		 * @param maximum the maximum allowed value for this attribute
 		 * @return this builder instance
 		 * @throws IllegalStateException in case this is not a numerical attribute
 		 */
-		B maximumValue(Number maximumValue);
+		B maximum(Number maximum);
 
 		/**
 		 * Only applicable to numerical attributes
-		 * @param minimumValue the minimum allowed value for this attribute
-		 * @param maximumValue the maximum allowed value for this attribute
+		 * @param minimum the minimum allowed value for this attribute
+		 * @param maximum the maximum allowed value for this attribute
 		 * @return this builder instance
 		 * @throws IllegalStateException in case this is not a numerical attribute
 		 */
-		B valueRange(Number minimumValue, Number maximumValue);
+		B range(Number minimum, Number maximum);
 
 		/**
 		 * Sets the maximum fraction digits to show for this attribute, only applicable to attributes based on decimal types.

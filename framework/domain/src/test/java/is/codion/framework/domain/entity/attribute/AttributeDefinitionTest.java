@@ -61,11 +61,11 @@ public final class AttributeDefinitionTest {
 		assertThrows(UnsupportedOperationException.class, () -> derived.define()
 						.derived(attribute)
 						.value(source -> null)
-						.minimumValue(10));
+						.minimum(10));
 		assertThrows(UnsupportedOperationException.class, () -> derived.define()
 						.derived(attribute)
 						.value(source -> null)
-						.valueRange(10, 20));
+						.range(10, 20));
 	}
 
 	@Test
@@ -174,7 +174,7 @@ public final class AttributeDefinitionTest {
 
 	@Test
 	void setRangeNonNumerical() {
-		assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.localDateColumn("attribute").define().column().valueRange(5, 6));
+		assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.localDateColumn("attribute").define().column().range(5, 6));
 	}
 
 	@Test
@@ -188,9 +188,9 @@ public final class AttributeDefinitionTest {
 	}
 
 	@Test
-	void minimumMaximumValue() {
+	void minimumMaximum() {
 		ColumnDefinition.Builder<Double, ?> builder = ENTITY_TYPE.doubleColumn("attribute").define().column();
-		assertThrows(IllegalArgumentException.class, () -> builder.valueRange(5, 4));
+		assertThrows(IllegalArgumentException.class, () -> builder.range(5, 4));
 	}
 
 	@Test

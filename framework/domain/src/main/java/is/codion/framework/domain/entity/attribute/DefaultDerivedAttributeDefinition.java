@@ -128,7 +128,7 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefini
 		}
 
 		@Override
-		public B valueRange(Number minimumValue, Number maximumValue) {
+		public B range(Number minimum, Number maximum) {
 			throw new UnsupportedOperationException("Can not set minimum or maximum value of a derived attribute");
 		}
 

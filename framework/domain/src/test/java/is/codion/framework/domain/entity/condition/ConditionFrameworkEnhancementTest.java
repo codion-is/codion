@@ -212,7 +212,7 @@ public final class ConditionFrameworkEnhancementTest {
 											Project.START_DATE.define().column().nullable(false),
 											Project.END_DATE.define().column(),
 											Project.BUDGET.define().column(),
-											Project.PRIORITY.define().column().nullable(false).valueRange(1, 5),
+											Project.PRIORITY.define().column().nullable(false).range(1, 5),
 											Project.LEAD_FK.define().foreignKey()
 															.attributes(Employee.NAME, Employee.EMAIL)
 							).condition(Project.ACTIVE_PROJECTS,
@@ -229,7 +229,7 @@ public final class ConditionFrameworkEnhancementTest {
 											Assignment.EMPLOYEE_ID.define().column().nullable(false),
 											Assignment.PROJECT_ID.define().column().nullable(false),
 											Assignment.ROLE.define().column().nullable(false),
-											Assignment.ALLOCATION_PERCENT.define().column().nullable(false).valueRange(1, 100),
+											Assignment.ALLOCATION_PERCENT.define().column().nullable(false).range(1, 100),
 											Assignment.START_DATE.define().column().nullable(false),
 											Assignment.END_DATE.define().column(),
 											Assignment.EMPLOYEE_FK.define().foreignKey()
