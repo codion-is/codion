@@ -323,4 +323,16 @@ public class NumericalValuesTest {
 		value.set(BigDecimal.valueOf(42.2));
 		assertEquals("42.2", bigDecimalField.getText());
 	}
+
+	@Test
+	void builderValidation() {
+		assertThrows(IllegalArgumentException.class, () -> Components.doubleField()
+						.valueRange(10, 0));
+		assertThrows(IllegalArgumentException.class, () -> Components.doubleField()
+						.minimumValue(10)
+						.maximumValue(8));
+		assertThrows(IllegalArgumentException.class, () -> Components.doubleField()
+						.maximumValue(10)
+						.minimumValue(12));
+	}
 }

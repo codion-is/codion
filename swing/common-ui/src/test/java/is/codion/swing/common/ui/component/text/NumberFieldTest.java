@@ -48,41 +48,45 @@ public final class NumberFieldTest {
 		integerField.set(100000000);
 		assertEquals("100000000", integerField.getText());
 
-		integerField.valueRange(0, 10);
-		assertEquals(0, (int) integerField.minimumValue().getOrThrow());
-		assertEquals(10, (int) integerField.maximumValue().getOrThrow());
+		NumberField<Integer> zeroToTen = NumberField.builder()
+						.numberClass(Integer.class)
+						.valueRange(0, 10)
+						.build();
 
-		assertThrows(IllegalArgumentException.class, () -> integerField.set(100));
-		assertEquals("", integerField.getText());
-		integerField.set(9);
-		assertEquals("9", integerField.getText());
-		assertThrows(IllegalArgumentException.class, () -> integerField.set(-1));
-		assertEquals("", integerField.getText());
-		assertThrows(IllegalArgumentException.class, () -> integerField.set(-10));
-		assertEquals("", integerField.getText());
+		assertThrows(IllegalArgumentException.class, () -> zeroToTen.set(100));
+		assertEquals("", zeroToTen.getText());
+		zeroToTen.set(9);
+		assertEquals("9", zeroToTen.getText());
+		assertThrows(IllegalArgumentException.class, () -> zeroToTen.set(-1));
+		assertEquals("", zeroToTen.getText());
+		assertThrows(IllegalArgumentException.class, () -> zeroToTen.set(-10));
+		assertEquals("", zeroToTen.getText());
 
 		assertThrows(IllegalStateException.class, integerField::getMaximumFractionDigits);
 		assertThrows(IllegalStateException.class, () -> integerField.setMaximumFractionDigits(2));
 
-		integerField.valueRange(0, Integer.MAX_VALUE);
+		NumberField<Integer> zeroToMax = NumberField.builder()
+						.numberClass(Integer.class)
+						.valueRange(0, Integer.MAX_VALUE)
+						.build();
 
-		DecimalFormat decimalFormat = (DecimalFormat) ((NumberDocument<Integer>) integerField.getDocument()).format();
+		DecimalFormat decimalFormat = (DecimalFormat) ((NumberDocument<Integer>) zeroToMax.getDocument()).format();
 		decimalFormat.setGroupingSize(3);
 		decimalFormat.setGroupingUsed(true);
-		integerField.setSeparators(',', '.');
-		integerField.setText("100.000.000");
-		assertEquals(100000000, (int) integerField.get());
-		integerField.setText("10.00.000");
-		assertEquals("1.000.000", integerField.getText());
-		assertEquals(1000000, (int) integerField.get());
-		integerField.set(123456789);
-		assertEquals("123.456.789", integerField.getText());
-		integerField.setText("987654321");
-		assertEquals(987654321, (int) integerField.get());
+		zeroToMax.setSeparators(',', '.');
+		zeroToMax.setText("100.000.000");
+		assertEquals(100000000, (int) zeroToMax.get());
+		zeroToMax.setText("10.00.000");
+		assertEquals("1.000.000", zeroToMax.getText());
+		assertEquals(1000000, (int) zeroToMax.get());
+		zeroToMax.set(123456789);
+		assertEquals("123.456.789", zeroToMax.getText());
+		zeroToMax.setText("987654321");
+		assertEquals(987654321, (int) zeroToMax.get());
 
-		integerField.set(null);
-		integerField.observable().addConsumer(value -> assertEquals(42, value));
-		integerField.set(42);
+		zeroToMax.set(null);
+		zeroToMax.observable().addConsumer(value -> assertEquals(42, value));
+		zeroToMax.set(42);
 	}
 
 	@Test
@@ -126,18 +130,19 @@ public final class NumberFieldTest {
 		assertEquals("1,000,000,000", longField.getText());
 		longField.setGroupingUsed(false);
 
-		longField.valueRange(0, 10);
-		assertEquals(0, (int) longField.minimumValue().getOrThrow());
-		assertEquals(10, (int) longField.maximumValue().getOrThrow());
+		NumberField<Long> rangedField = NumberField.builder()
+						.numberClass(Long.class)
+						.valueRange(0, 10)
+						.build();
 
-		longField.setText("");
-		assertThrows(IllegalArgumentException.class, () -> longField.set(100L));
-		assertEquals("", longField.getText());
-		longField.set(9L);
-		assertEquals("9", longField.getText());
-		longField.setText("");
-		assertThrows(IllegalArgumentException.class, () -> longField.set(-1L));
-		assertEquals("", longField.getText());
+		rangedField.setText("");
+		assertThrows(IllegalArgumentException.class, () -> rangedField.set(100L));
+		assertEquals("", rangedField.getText());
+		rangedField.set(9L);
+		assertEquals("9", rangedField.getText());
+		rangedField.setText("");
+		assertThrows(IllegalArgumentException.class, () -> rangedField.set(-1L));
+		assertEquals("", rangedField.getText());
 	}
 
 	@Test
@@ -452,6 +457,7 @@ public final class NumberFieldTest {
 		assertThrows(IllegalArgumentException.class, () -> integerField.set(101));
 		integerField.setSilentValidation(true);
 		integerField.set(50);
+		assertNotNull(integerField.get());
 		integerField.set(110);
 		assertNull(integerField.get());
 	}

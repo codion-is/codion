@@ -20,7 +20,6 @@ package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.observer.Observable;
 import is.codion.common.property.PropertyValue;
-import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.text.NumberDocument.DecimalDocument;
 import is.codion.swing.common.ui.component.text.NumberDocument.NumberParsingDocumentFilter;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -65,8 +64,8 @@ public final class NumberField<T extends Number> extends HintTextField {
 		NumberDocument<T> document = document();
 		document.setTextComponent(this);
 		NumberParsingDocumentFilter<T> documentFilter = document.getDocumentFilter();
-		documentFilter.minimumValue().set(builder.minimumValue);
-		documentFilter.maximumValue().set(builder.maximumValue);
+		documentFilter.setMinimumValue(builder.minimumValue);
+		documentFilter.setMaximumValue(builder.maximumValue);
 		documentFilter.setSilentValidation(builder.silentValidation);
 		documentFilter.setConvertGroupingToDecimalSeparator(builder.convertGroupingToDecimalSeparator);
 		if (document.format() instanceof DecimalFormat) {
@@ -102,30 +101,6 @@ public final class NumberField<T extends Number> extends HintTextField {
 	 */
 	public void setGroupingUsed(boolean groupingUsed) {
 		document().setGroupingUsed(groupingUsed);
-	}
-
-	/**
-	 * Sets the range of values this field should allow
-	 * @param minimumValue the minimum value
-	 * @param maximumValue the maximum value
-	 */
-	public void valueRange(Number minimumValue, Number maximumValue) {
-		document().getDocumentFilter().minimumValue().set(minimumValue);
-		document().getDocumentFilter().maximumValue().set(maximumValue);
-	}
-
-	/**
-	 * @return the minimum value this field should accept
-	 */
-	public Value<Number> minimumValue() {
-		return document().getDocumentFilter().minimumValue();
-	}
-
-	/**
-	 * @return the maximum value this field should accept
-	 */
-	public Value<Number> maximumValue() {
-		return document().getDocumentFilter().maximumValue();
 	}
 
 	/**
@@ -223,14 +198,14 @@ public final class NumberField<T extends Number> extends HintTextField {
 	/**
 	 * @param number the number to set
 	 */
-	public void set(T number) {
+	public void set(@Nullable T number) {
 		document().set(number);
 	}
 
 	/**
 	 * @return the number
 	 */
-	public T get() {
+	public @Nullable T get() {
 		return document().get();
 	}
 
@@ -429,7 +404,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 		}
 
 		@Override
-		public Builder<T> nullable(boolean nullable) {
+		public final Builder<T> nullable(boolean nullable) {
 			this.nullable = nullable;
 			return this;
 		}
@@ -443,24 +418,33 @@ public final class NumberField<T extends Number> extends HintTextField {
 
 		@Override
 		public final Builder<T> minimumValue(@Nullable Number minimumValue) {
+			if (maximumValue != null &&  minimumValue != null && minimumValue.doubleValue() > maximumValue.doubleValue()) {
+				throw new IllegalArgumentException("minimumValue can't be greater than maximumValue");
+			}
 			this.minimumValue = minimumValue;
 			return this;
 		}
 
 		@Override
 		public final Builder<T> maximumValue(@Nullable Number maximumValue) {
+			if (maximumValue != null &&  minimumValue != null && maximumValue.doubleValue() < minimumValue.doubleValue()) {
+				throw new IllegalArgumentException("maximumValue can't be greater than minimumValue");
+			}
 			this.maximumValue = maximumValue;
 			return this;
 		}
 
 		@Override
-		public Builder<T> silentValidation(boolean silentValidation) {
+		public final Builder<T> silentValidation(boolean silentValidation) {
 			this.silentValidation = silentValidation;
 			return this;
 		}
 
 		@Override
 		public final Builder<T> groupingSeparator(char groupingSeparator) {
+			if (groupingSeparator == decimalSeparator) {
+				throw new IllegalArgumentException("Grouping separator must not be the same as decimal separator");
+			}
 			this.groupingSeparator = groupingSeparator;
 			return this;
 		}

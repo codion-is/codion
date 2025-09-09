@@ -6,6 +6,7 @@ Codion Change Log
 - AbstractValue bug fixed, get() now guaranteed to return a non-null value if a nullValue is specified, as promised by javadoc. 
 ### is.codion.swing.common.ui
 - NumberDocument.NumberRangeValidator bug fixed, values now included correctly in error message.
+- NumberField.valueRange(), minimumValue() and maximumValue() removed, accessible via builder, builder validation improved, related refactoring.
 ### is.codion.framework.domain
 - KeyGenerator.Identity removed.
 

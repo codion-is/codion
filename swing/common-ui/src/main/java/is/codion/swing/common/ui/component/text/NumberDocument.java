@@ -384,12 +384,12 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			return parser;
 		}
 
-		Value<Number> minimumValue() {
-			return rangeValidator.minimumValue;
+		void setMinimumValue(@Nullable Number minimumValue) {
+			this.rangeValidator.minimumValue = minimumValue;
 		}
 
-		Value<Number> maximumValue() {
-			return rangeValidator.maximumValue;
+		void setMaximumValue(@Nullable Number maximumValue) {
+			this.rangeValidator.maximumValue = maximumValue;
 		}
 
 		void setConvertGroupingToDecimalSeparator(boolean convertGroupingToDecimalSeparator) {
@@ -454,13 +454,13 @@ class NumberDocument<T extends Number> extends PlainDocument {
 
 		private static final class NumberRangeValidator<T extends Number> implements Value.Validator<T> {
 
-			private final Value<Number> minimumValue = Value.nullable();
-			private final Value<Number> maximumValue = Value.nullable();
+			private @Nullable Number minimumValue;
+			private @Nullable Number maximumValue;
 
 			@Override
 			public void validate(T value) {
 				if (!withinRange(value)) {
-					throw new IllegalArgumentException(MESSAGES.getString("value_outside_range") + ": " + minimumValue.get() + " - " + maximumValue.get());
+					throw new IllegalArgumentException(MESSAGES.getString("value_outside_range") + ": " + minimumValue + " - " + maximumValue);
 				}
 			}
 
@@ -469,11 +469,11 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			}
 
 			private boolean greaterThanMinimum(T value) {
-				return minimumValue.isNull() || value.doubleValue() >= minimumValue.getOrThrow().doubleValue();
+				return minimumValue == null || value.doubleValue() >= minimumValue.doubleValue();
 			}
 
 			private boolean lessThanMaximum(T value) {
-				return maximumValue.isNull() || value.doubleValue() <= maximumValue.getOrThrow().doubleValue();
+				return maximumValue == null || value.doubleValue() <= maximumValue.doubleValue();
 			}
 		}
 	}
