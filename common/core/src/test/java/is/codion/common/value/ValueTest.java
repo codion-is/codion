@@ -35,7 +35,6 @@ public class ValueTest {
 	private static final String NULL_STRING = "null";
 	private static final String TEST_STRING = "test";
 	private static final String HELLO_STRING = "hello";
-	private static final String ANOTHER_STRING = "another";
 	private static final int VALUE_42 = 42;
 	private static final int VALUE_20 = 20;
 	private static final int VALUE_22 = 22;
@@ -384,5 +383,23 @@ public class ValueTest {
 		assertTrue(value.isNull());
 		value.map(currentValue -> VALUE_42);
 		assertFalse(value.isNull());
+	}
+
+	@Test
+	void initialNullValue() {
+		Value<Integer> value = new AbstractValue<Integer>(0) {
+			Integer value;
+
+			@Override
+			protected Integer getValue() {
+				return value;
+			}
+
+			@Override
+			protected void setValue(Integer value) {
+				this.value = value;
+			}
+		};
+		assertNotNull(value.get());
 	}
 }

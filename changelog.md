@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.49
+### is.codion.common.core
+- AbstractValue bug fixed, get() now guaranteed to return a non-null value if a nullValue is specified, as promised by javadoc. 
 ### is.codion.swing.common.ui
 - NumberDocument.NumberRangeValidator bug fixed, values now included correctly in error message.
 ### is.codion.framework.domain

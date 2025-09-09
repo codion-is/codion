@@ -63,7 +63,7 @@ final class DefaultListSelectedItemsBuilder<T> extends AbstractListBuilder<List<
 		private final boolean nullable;
 
 		private ListSelectedItemsValue(FilterList<T> list, boolean nullable) {
-			super(list, emptyList());
+			super(list, nullable ? null : emptyList());
 			this.nullable = nullable;
 			list.model().selection().indexes().addListener(this::notifyListeners);
 		}
@@ -80,7 +80,7 @@ final class DefaultListSelectedItemsBuilder<T> extends AbstractListBuilder<List<
 
 		@Override
 		protected void setComponentValue(List<T> value) {
-			component().model().selection().items().set(value);
+			component().model().selection().items().set(value == null ? emptyList() : value);
 		}
 	}
 }

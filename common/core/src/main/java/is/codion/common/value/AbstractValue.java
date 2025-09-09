@@ -103,7 +103,9 @@ public abstract class AbstractValue<T> implements Value<T> {
 
 	@Override
 	public final @Nullable T get() {
-		return getValue();
+		T value = getValue();
+
+		return value == null ? nullValue : value;
 	}
 
 	@Override

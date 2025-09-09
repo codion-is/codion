@@ -72,7 +72,7 @@ final class DefaultListItemsBuilder<T> extends AbstractListBuilder<List<T>, T, L
 		private final boolean nullable;
 
 		private ListItemsValue(FilterList<T> list, boolean nullable) {
-			super(list, emptyList());
+			super(list, nullable ? null : emptyList());
 			this.nullable = nullable;
 			list.model().addListDataListener(new DefaultListDataNotifier());
 		}
@@ -89,7 +89,7 @@ final class DefaultListItemsBuilder<T> extends AbstractListBuilder<List<T>, T, L
 
 		@Override
 		protected void setComponentValue(List<T> value) {
-			component().model().items().set(value);
+			component().model().items().set(value == null ? emptyList() : value);
 		}
 
 		private final class DefaultListDataNotifier implements ListDataListener {

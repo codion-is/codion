@@ -60,7 +60,7 @@ import static java.util.Objects.requireNonNull;
  * <p>A factory for {@link Value} instances.</p>
  * <p><b>Thread Safety:</b> Listener management (add/remove) is thread-safe and supports concurrent access.
  * However, value modifications via {@link #set(Object)} are NOT thread-safe and should be
- * performed from a single thread (such as an application UI thread). Sublasses may provide thread-safety.</p>
+ * performed from a single thread (such as an application UI thread). Subclasses may provide thread-safety.</p>
  * @param <T> the type of the wrapped value
  * @see #nullable()
  * @see #nullable(Object)
