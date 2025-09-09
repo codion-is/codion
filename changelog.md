@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.49
+### is.codion.swing.common.ui
+- NumberDocument.NumberRangeValidator bug fixed, values now included correctly in error message.
 ### is.codion.framework.domain
 - KeyGenerator.Identity removed.
 
