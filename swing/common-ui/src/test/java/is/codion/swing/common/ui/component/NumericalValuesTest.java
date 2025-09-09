@@ -109,8 +109,9 @@ public class NumericalValuesTest {
 
 		NumberField<BigDecimal> bigDecimalField = Components.bigDecimalField()
 						.format(format)
+						.decimalSeparator('.')
+						.groupingSeparator(',')
 						.build();
-		bigDecimalField.setSeparators('.', ',');
 
 		bigDecimalField.set(BigDecimal.valueOf(3.14));
 		assertEquals("3.14", bigDecimalField.getText());
@@ -158,32 +159,45 @@ public class NumericalValuesTest {
 	@Test
 	void parseDouble() {
 		ComponentValue<NumberField<Double>, Double> componentValue = Components.doubleField()
+						.decimalSeparator('.')
+						.groupingSeparator(',')
+						.groupingUsed(false)
 						.buildValue();
 		assertNull(componentValue.get());
 
-		componentValue.component().setGroupingUsed(false);
-
-		componentValue.component().setSeparators('.', ',');
 		componentValue.component().setText("15.5");
 		assertEquals(Double.valueOf(15.5), componentValue.get());
 		componentValue.component().setText("15,6");
 		assertEquals(Double.valueOf(15.5), componentValue.get());
 
-		componentValue.component().setSeparators(',', '.');
+		componentValue = Components.doubleField()
+						.value(15.5)
+						.decimalSeparator(',')
+						.groupingSeparator('.')
+						.groupingUsed(false)
+						.buildValue();
+
 		componentValue.component().setText("15.7");
 		assertEquals(Double.valueOf(15.5), componentValue.get());
 		componentValue.component().setText("15,7");
 		assertEquals(Double.valueOf(15.7), componentValue.get());
 
-		componentValue.component().setGroupingUsed(true);
+		componentValue = Components.doubleField()
+						.decimalSeparator('.')
+						.groupingSeparator(',')
+						.groupingUsed(true)
+						.buildValue();
 
-		componentValue.component().setSeparators('.', ',');
 		componentValue.component().setText("15.5");
 		assertEquals(Double.valueOf(15.5), componentValue.get());
 		componentValue.component().setText("15,6");
 		assertEquals(Double.valueOf(156), componentValue.get());
 
-		componentValue.component().setSeparators(',', '.');
+		componentValue = Components.doubleField()
+						.decimalSeparator(',')
+						.groupingSeparator('.')
+						.buildValue();
+
 		componentValue.component().setText("15.7");
 		assertEquals(Double.valueOf(157), componentValue.get());
 		componentValue.component().setText("15,7");
