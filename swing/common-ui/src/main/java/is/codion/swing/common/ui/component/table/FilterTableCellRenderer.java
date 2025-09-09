@@ -66,21 +66,21 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 	 * The default horizontal alignment for numerical columns.
 	 * <ul>
 	 * <li>Value type: Integer
-	 * <li>Default value: {@link SwingConstants#RIGHT}
+	 * <li>Default value: {@link SwingConstants#TRAILING}
 	 * </ul>
 	 */
 	PropertyValue<Integer> NUMERICAL_HORIZONTAL_ALIGNMENT =
-					integerValue(FilterTableCellRenderer.class.getName() + ".numericalHorizontalAlignment", SwingConstants.RIGHT);
+					integerValue(FilterTableCellRenderer.class.getName() + ".numericalHorizontalAlignment", SwingConstants.TRAILING);
 
 	/**
 	 * The default horizontal alignment for temporal columns.
 	 * <ul>
 	 * <li>Value type: Integer
-	 * <li>Default value: {@link SwingConstants#RIGHT}
+	 * <li>Default value: {@link SwingConstants#TRAILING}
 	 * </ul>
 	 */
 	PropertyValue<Integer> TEMPORAL_HORIZONTAL_ALIGNMENT =
-					integerValue(FilterTableCellRenderer.class.getName() + ".temporalHorizontalAlignment", SwingConstants.RIGHT);
+					integerValue(FilterTableCellRenderer.class.getName() + ".temporalHorizontalAlignment", SwingConstants.TRAILING);
 
 	/**
 	 * The default horizontal alignment for boolean columns.

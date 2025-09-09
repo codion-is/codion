@@ -66,11 +66,11 @@ public final class KeyBindingPanel extends JPanel {
 		setBorder(emptyBorder());
 		add(flexibleGridLayoutPanel(1, 4)
 						.add(label("Look & Feel")
-										.horizontalAlignment(SwingConstants.RIGHT)
+										.horizontalAlignment(SwingConstants.TRAILING)
 										.preferredWidth(100))
 						.add(lookAndFeelComboBox)
 						.add(label("Component")
-										.horizontalAlignment(SwingConstants.RIGHT)
+										.horizontalAlignment(SwingConstants.TRAILING)
 										.preferredWidth(100))
 						.add(componentComboBox)
 						.build(), BorderLayout.NORTH);

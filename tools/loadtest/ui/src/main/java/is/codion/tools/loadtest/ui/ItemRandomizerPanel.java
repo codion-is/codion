@@ -30,7 +30,6 @@ import is.codion.tools.loadtest.randomizer.ItemRandomizer.RandomItem;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.util.List;
 
@@ -98,8 +97,7 @@ final class ItemRandomizerPanel<T> extends JPanel {
 						.west(Components.checkBox()
 										.link(new EnabledModelValue(item.item()))
 										.text("Enabled"))
-						.center(Components.label("Weight")
-										.horizontalAlignment(SwingConstants.RIGHT))
+						.center(Components.label("Weight"))
 						.east(Components.integerSpinner()
 										.link(new WeightModelValue(item.item()))
 										.minimum(0)

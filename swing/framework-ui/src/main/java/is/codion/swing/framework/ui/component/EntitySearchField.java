@@ -779,7 +779,7 @@ public final class EntitySearchField extends HintTextField {
 		private final Function<Entity, String> formatter;
 		private final JPanel selectorPanel;
 		private final JLabel resultLimitLabel = label()
-						.horizontalAlignment(SwingConstants.RIGHT)
+						.horizontalAlignment(SwingConstants.TRAILING)
 						.build();
 		private final Control selectControl = command(new SelectCommand());
 
@@ -884,7 +884,7 @@ public final class EntitySearchField extends HintTextField {
 		private final FilterTable<Entity, Attribute<?>> table;
 		private final JPanel selectorPanel;
 		private final JLabel resultLimitLabel = label()
-						.horizontalAlignment(SwingConstants.RIGHT)
+						.horizontalAlignment(SwingConstants.TRAILING)
 						.build();
 		private final Control selectControl = command(new SelectCommand());
 

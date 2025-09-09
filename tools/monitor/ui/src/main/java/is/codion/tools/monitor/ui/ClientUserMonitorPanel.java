@@ -34,7 +34,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.rmi.RemoteException;
@@ -92,9 +91,9 @@ public final class ClientUserMonitorPanel extends JPanel {
 	private JPanel createCurrentConnectionsPanel() throws RemoteException {
 		JPanel actionBase = flowLayoutPanel(FlowLayout.LEFT)
 						.border(createTitledBorder("Remote connection controls"))
-						.add(new JLabel("Reaper interval (s)", SwingConstants.RIGHT))
+						.add(label("Reaper interval (s)"))
 						.add(createMaintenanceIntervalComponent())
-						.add(new JLabel("Idle connection timeout (s)"))
+						.add(label("Idle connection timeout (s)"))
 						.add(integerSpinner()
 										.model(new SpinnerNumberModel())
 										.link(model.idleConnectionTimeout())

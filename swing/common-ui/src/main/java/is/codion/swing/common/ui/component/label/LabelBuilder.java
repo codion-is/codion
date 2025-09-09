@@ -41,7 +41,7 @@ public interface LabelBuilder<T> extends ComponentValueBuilder<JLabel, T, LabelB
 	/**
 	 * Specifies the default horizontal alignment used in labels
 	 * <ul>
-	 * <li>Value type: Integer (SwingConstants.LEFT, SwingConstants.RIGHT, SwingConstants.CENTER)
+	 * <li>Value type: Integer (SwingConstants.LEFT, SwingConstants.TRALING, SwingConstants.RIGHT, SwingConstants.LEADING, SwingConstants.CENTER)
 	 * <li>Default value: {@link SwingConstants#LEADING}
 	 * </ul>
 	 */

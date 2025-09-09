@@ -32,6 +32,7 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -49,7 +50,6 @@ import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createEtchedBorder;
 import static javax.swing.BorderFactory.createTitledBorder;
 import static javax.swing.SwingConstants.CENTER;
-import static javax.swing.SwingConstants.RIGHT;
 
 /**
  * A ConnectionPoolMonitorPanel
@@ -214,7 +214,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 														.editable(false)))
 						.build();
 
-		return flowLayoutPanel(RIGHT)
+		return flowLayoutPanel(SwingConstants.LEADING)
 						.add(configBase)
 						.build();
 	}

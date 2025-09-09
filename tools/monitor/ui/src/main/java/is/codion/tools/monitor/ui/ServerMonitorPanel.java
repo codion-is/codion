@@ -129,15 +129,15 @@ public final class ServerMonitorPanel extends JPanel {
 
 	private void initializeUI() throws RemoteException {
 		JPanel serverPanel = flowLayoutPanel(FlowLayout.LEFT)
-						.add(new JLabel("Connections", SwingConstants.RIGHT))
+						.add(label("Connections"))
 						.add(createConnectionCountField())
-						.add(new JLabel("limit", SwingConstants.RIGHT))
+						.add(label("limit"))
 						.add(integerSpinner()
 										.link(model.connectionLimit())
 										.columns(SPINNER_COLUMNS))
-						.add(new JLabel("Mem. usage", SwingConstants.RIGHT))
+						.add(label("Mem. usage"))
 						.add(createMemoryField())
-						.add(new JLabel("Logging", SwingConstants.RIGHT))
+						.add(label("Logging"))
 						.add(createLogLevelField())
 						.build();
 

@@ -251,7 +251,7 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 							.listener(this::updateCondition)
 							.editable(false)
 							.columns(3)
-							.horizontalAlignment(SwingConstants.LEFT)
+							.horizontalAlignment(SwingConstants.TRAILING)
 							.keyEvent(KeyEvents.builder()
 											.keyCode(KeyEvent.VK_UP)
 											.modifiers(InputEvent.CTRL_DOWN_MASK)

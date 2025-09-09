@@ -79,9 +79,9 @@ public class UtilitiesTest {
 		Observer<Integer> alignmentObserver =
 						Utilities.observer(textField, "horizontalAlignment");
 		alignmentObserver.addListener(counter::incrementAndGet);
-		textField.setHorizontalAlignment(SwingConstants.RIGHT);
+		textField.setHorizontalAlignment(SwingConstants.TRAILING);
 		assertEquals(1, counter.get());
-		textField.setHorizontalAlignment(SwingConstants.LEFT);
+		textField.setHorizontalAlignment(SwingConstants.LEADING);
 		assertEquals(2, counter.get());
 	}
 }
