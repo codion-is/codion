@@ -48,6 +48,7 @@ module is.codion.plugin.flatlaf.intellij.themes {
 	exports is.codion.plugin.flatlaf.intellij.themes.gradianto;
 	exports is.codion.plugin.flatlaf.intellij.themes.gray;
 	exports is.codion.plugin.flatlaf.intellij.themes.gruvbox;
+	exports is.codion.plugin.flatlaf.intellij.themes.halcyon;
 	exports is.codion.plugin.flatlaf.intellij.themes.hiberbee;
 	exports is.codion.plugin.flatlaf.intellij.themes.highcontrast;
 	exports is.codion.plugin.flatlaf.intellij.themes.lightflat;

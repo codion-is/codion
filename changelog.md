@@ -20,6 +20,7 @@ Codion Change Log
 ### is.codion.plugin.flatlaf.intellij
 - Catppuccin themes added.
 - VSCode themes added.
+- Halcyon theme added.
 
 ## 0.18.48
 ### is.codion.swing.common.model

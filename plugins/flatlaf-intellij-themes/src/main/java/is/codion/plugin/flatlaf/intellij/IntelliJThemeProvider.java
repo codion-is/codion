@@ -72,6 +72,7 @@ import is.codion.plugin.flatlaf.intellij.themes.gruvbox.GruvboxDarkSoft;
 import is.codion.plugin.flatlaf.intellij.themes.gruvbox.GruvboxMaterialLightHard;
 import is.codion.plugin.flatlaf.intellij.themes.gruvbox.GruvboxMaterialLightMedium;
 import is.codion.plugin.flatlaf.intellij.themes.gruvbox.GruvboxMaterialLightSoft;
+import is.codion.plugin.flatlaf.intellij.themes.halcyon.Halcyon;
 import is.codion.plugin.flatlaf.intellij.themes.hiberbee.HiberbeeDark;
 import is.codion.plugin.flatlaf.intellij.themes.highcontrast.HighContrast;
 import is.codion.plugin.flatlaf.intellij.themes.lightflat.LightFlat;
@@ -236,6 +237,7 @@ public final class IntelliJThemeProvider implements LookAndFeelProvider {
 						lookAndFeelEnabler(new LookAndFeelInfo("VSCode Dark", VSCodeDark.class.getName()), ENABLER),
 						lookAndFeelEnabler(new LookAndFeelInfo("VSCode Dark Modern", VSCodeDarkModern.class.getName()), ENABLER),
 						lookAndFeelEnabler(new LookAndFeelInfo("VSCode Light", VSCodeLight.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Halcyon", Halcyon.class.getName()), ENABLER),
 
 						// From FlatLaf
 						lookAndFeelEnabler(new LookAndFeelInfo("Arc Dark (Material)", ArcDarkMaterial.class.getName()), ENABLER),
