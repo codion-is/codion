@@ -28,12 +28,13 @@ import org.jspecify.annotations.Nullable;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 final class DefaultLabelBuilder<T> extends AbstractComponentValueBuilder<JLabel, T, LabelBuilder<T>> implements LabelBuilder<T> {
 
 	private @Nullable String text;
 	private @Nullable Icon icon;
-	private int horizontalAlignment = HORIZONTAL_ALIGNMENT.getOrThrow();
+	private int horizontalAlignment = SwingConstants.LEADING;
 	private @Nullable Integer displayedMnemonic;
 	private @Nullable Character displayedMnemonicChar;
 	private int iconTextGap = -1;

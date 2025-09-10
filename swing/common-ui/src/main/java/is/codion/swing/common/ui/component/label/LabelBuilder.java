@@ -19,7 +19,6 @@
 package is.codion.swing.common.ui.component.label;
 
 import is.codion.common.observer.Observable;
-import is.codion.common.property.PropertyValue;
 import is.codion.swing.common.ui.component.builder.ComponentValueBuilder;
 
 import org.jspecify.annotations.Nullable;
@@ -27,26 +26,13 @@ import org.jspecify.annotations.Nullable;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.SwingConstants;
 import java.awt.Component;
-
-import static is.codion.common.Configuration.integerValue;
 
 /**
  * A builder for JLabel.
  * @param <T> the type to display in the label (using value.toString() or "" for null).
  */
 public interface LabelBuilder<T> extends ComponentValueBuilder<JLabel, T, LabelBuilder<T>> {
-
-	/**
-	 * Specifies the default horizontal alignment used in labels
-	 * <ul>
-	 * <li>Value type: Integer (SwingConstants.LEFT, SwingConstants.TRALING, SwingConstants.RIGHT, SwingConstants.LEADING, SwingConstants.CENTER)
-	 * <li>Default value: {@link SwingConstants#LEADING}
-	 * </ul>
-	 */
-	PropertyValue<Integer> HORIZONTAL_ALIGNMENT =
-					integerValue(LabelBuilder.class.getName() + ".horizontalAlignment", SwingConstants.LEADING);
 
 	/**
 	 * @param text the label text
@@ -63,6 +49,7 @@ public interface LabelBuilder<T> extends ComponentValueBuilder<JLabel, T, LabelB
 	LabelBuilder<T> text(Observable<String> text);
 
 	/**
+	 * Default {@link javax.swing.SwingConstants#LEADING}
 	 * @param horizontalAlignment the horizontal text alignment
 	 * @return this builder instance
 	 * @see JLabel#setHorizontalAlignment(int)

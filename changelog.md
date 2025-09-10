@@ -11,6 +11,7 @@ Codion Change Log
 - NumberField.Builder.valueRange(), minimumValue() and maximumValue() renamed range(), minimum() and maximum().
 - NumberField.Builder.groupingUsed() renamed grouping().
 - Remaining usages of SwingConstants.LEFT and RIGHT replaced with LEADING and TRAILING.
+- LabelBuilder.HORIZONTAL_ALIGNMENT removed.
 ### is.codion.framework.domain
 - KeyGenerator.Identity removed.
 - AttributeDefinition.Builder.valueRange(), minimumValue() and maximumValue() renamed range(), minimum() and maximum().
