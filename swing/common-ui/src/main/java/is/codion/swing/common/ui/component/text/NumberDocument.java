@@ -200,10 +200,10 @@ class NumberDocument<T extends Number> extends PlainDocument {
 				return null;
 			}
 
-			return toType(number);
+			return (T) toType(clazz, number);
 		}
 
-		private T toType(T number) {
+		private static Number toType(Class<? extends Number> clazz, Number number) {
 			if (clazz.equals(Short.class)) {
 				return toShort(number);
 			}
@@ -223,44 +223,44 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			throw new IllegalArgumentException("Unsupported type class: " + clazz);
 		}
 
-		private T toShort(T number) {
+		private static Number toShort(Number number) {
 			if (number instanceof Short) {
 				return number;
 			}
 
-			return (T) Short.valueOf(number.shortValue());
+			return Short.valueOf(number.shortValue());
 		}
 
-		private T toInteger(T number) {
+		private static Number toInteger(Number number) {
 			if (number instanceof Integer) {
 				return number;
 			}
 
-			return (T) Integer.valueOf(number.intValue());
+			return Integer.valueOf(number.intValue());
 		}
 
-		private T toLong(T number) {
+		private static Number toLong(Number number) {
 			if (number instanceof Long) {
 				return number;
 			}
 
-			return (T) Long.valueOf(number.longValue());
+			return Long.valueOf(number.longValue());
 		}
 
-		private T toDouble(T number) {
+		private static Number toDouble(Number number) {
 			if (number instanceof Double) {
 				return number;
 			}
 
-			return (T) Double.valueOf(number.doubleValue());
+			return Double.valueOf(number.doubleValue());
 		}
 
-		private T toBigDecimal(T number) {
+		private static Number toBigDecimal(Number number) {
 			if (number instanceof BigDecimal) {
 				return number;
 			}
 
-			return (T) BigDecimal.valueOf(number.doubleValue());
+			return BigDecimal.valueOf(number.doubleValue());
 		}
 
 		private int countAddedGroupingSeparators(String currentNumber, String newNumber) {
@@ -440,7 +440,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
 			@Override
 			public void validate(T value) {
 				if (!withinRange(value)) {
-					throw new IllegalArgumentException(MESSAGES.getString("value_outside_range") + ": " + minimumValue + " - " + maximumValue);
+					throw new IllegalArgumentException(MESSAGES.getString("value_outside_range") + ": " + value + " [" + minimumValue + " - " + maximumValue + "]");
 				}
 			}
 
