@@ -180,7 +180,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @param component the component to add
 	 * @see #add(Component)
 	 */
-	protected void add(Supplier<? extends JComponent> component) {
+	protected final void add(Supplier<? extends JComponent> component) {
 		super.add(requireNonNull(component).get());
 	}
 
@@ -189,7 +189,7 @@ public class EntityEditComponentPanel extends JPanel {
 	 * @param constraints the constraints
 	 * @see #add(Component, Object)
 	 */
-	protected void add(Supplier<? extends JComponent> component, Object constraints) {
+	protected final void add(Supplier<? extends JComponent> component, Object constraints) {
 		super.add(requireNonNull(component).get(), constraints);
 	}
 

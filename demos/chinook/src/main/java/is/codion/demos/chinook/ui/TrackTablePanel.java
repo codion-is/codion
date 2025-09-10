@@ -48,6 +48,7 @@ import static is.codion.swing.common.ui.component.Components.bigDecimalField;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.framework.ui.component.EntityComponents.entityComponents;
 import static java.awt.event.KeyEvent.VK_INSERT;
+import static java.math.BigDecimal.ZERO;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
@@ -102,10 +103,13 @@ public final class TrackTablePanel extends EntityTablePanel {
 		return Dialogs.input()
 						.component(bigDecimalField()
 										.nullable(false)
-										.minimum(0))
+										.minimum(0)
+										// Silently prevent invalid input
+										.silentValidation(true))
 						.owner(this)
 						.title(BUNDLE.getString("amount"))
-						.validator(amount -> amount.compareTo(BigDecimal.ZERO) > 0)
+						// The field is not nullable so the amount is never null
+						.validator(amount -> amount.compareTo(ZERO) > 0)
 						.show();
 	}
 

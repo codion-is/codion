@@ -22,7 +22,7 @@ import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.plugin.flatlaf.intellij.themes.monokaipro.MonokaiPro;
+import is.codion.plugin.flatlaf.intellij.themes.dracula.Dracula;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.combobox.FilterComboBoxModel.ItemFinder;
 import is.codion.swing.common.ui.component.Components;
@@ -211,7 +211,7 @@ public final class ApplicationPanel extends JPanel {
 
 		integerField()
 						.link(model.integerValue())
-						.range(0, 10_000)
+						.range(-10_000, 10_000)
 						.grouping(true)
 						.groupingSeparator('.')
 						.transferFocusOnEnter(true)
@@ -352,16 +352,15 @@ public final class ApplicationPanel extends JPanel {
 		add(settingsPanel, BorderLayout.NORTH);
 		add(inputPanel, BorderLayout.CENTER);
 
-		flexibleGridLayoutPanel(2, 1)
-						.add(stringField()
+		borderLayoutPanel()
+						.north(stringField()
 										.columns(20)
 										.editable(false)
 										.focusable(false)
 										.border(createTitledBorder("Message"))
 										.enabled(inputEnabledState)
-										.link(model.message())
-										.build(component -> add(component, BorderLayout.SOUTH)))
-						.add(LookAndFeelComboBox.builder().build())
+										.link(model.message()))
+						.center(LookAndFeelComboBox.builder().build())
 						.build(southPanel -> add(southPanel, BorderLayout.SOUTH));
 	}
 
@@ -449,7 +448,7 @@ public final class ApplicationPanel extends JPanel {
 	}
 
 	public static void main(String[] args) {
-		findLookAndFeel(MonokaiPro.class)
+		findLookAndFeel(Dracula.class)
 						.ifPresent(LookAndFeelEnabler::enable);
 
 		ValidIndicatorFactory.FACTORY_CLASS.set("is.codion.plugin.flatlaf.indicator.FlatLafValidIndicatorFactory");

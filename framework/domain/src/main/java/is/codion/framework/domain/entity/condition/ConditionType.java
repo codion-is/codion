@@ -70,11 +70,6 @@ import java.util.List;
  * Long playlistId = 42L;
  * List<Entity> tracks = connection.select(
  *     Track.NOT_IN_PLAYLIST.get(Playlist.ID, playlistId));
- *
- * // Or with multiple playlists
- * List<Long> playlistIds = List.of(42L, 43L, 44L);
- * List<Entity> tracks = connection.select(
- *     Track.NOT_IN_PLAYLIST.get(Playlist.ID, playlistIds));
  *}
  * <p>
  * Example with multiple columns:
