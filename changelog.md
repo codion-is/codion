@@ -19,6 +19,7 @@ Codion Change Log
 - AttributeDefinition.Builder.valueRange(), minimumValue() and maximumValue() renamed range(), minimum() and maximum().
 ### is.codion.plugin.flatlaf.intellij
 - Catppuccin themes added.
+- VSCode themes added.
 
 ## 0.18.48
 ### is.codion.swing.common.model

@@ -123,6 +123,9 @@ import is.codion.plugin.flatlaf.intellij.themes.trashpanda.TrashPandaDawnlight;
 import is.codion.plugin.flatlaf.intellij.themes.trashpanda.TrashPandaDaylight;
 import is.codion.plugin.flatlaf.intellij.themes.trashpanda.TrashPandaMoonlight;
 import is.codion.plugin.flatlaf.intellij.themes.trashpanda.TrashPandaStarlight;
+import is.codion.plugin.flatlaf.intellij.themes.vscode.VSCodeDark;
+import is.codion.plugin.flatlaf.intellij.themes.vscode.VSCodeDarkModern;
+import is.codion.plugin.flatlaf.intellij.themes.vscode.VSCodeLight;
 import is.codion.plugin.flatlaf.intellij.themes.vuesion.Vuesion;
 import is.codion.plugin.flatlaf.intellij.themes.xcodedark.XcodeDark;
 import is.codion.swing.common.ui.Utilities;
@@ -230,6 +233,9 @@ public final class IntelliJThemeProvider implements LookAndFeelProvider {
 						lookAndFeelEnabler(new LookAndFeelInfo("Catppuccin Latte", CatppuccinLatte.class.getName()), ENABLER),
 						lookAndFeelEnabler(new LookAndFeelInfo("Catppuccin Macchiato", CatppuccinMacchiato.class.getName()), ENABLER),
 						lookAndFeelEnabler(new LookAndFeelInfo("Catppuccin Mocha", CatppuccinMocha.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("VSCode Dark", VSCodeDark.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("VSCode Dark Modern", VSCodeDarkModern.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("VSCode Light", VSCodeLight.class.getName()), ENABLER),
 
 						// From FlatLaf
 						lookAndFeelEnabler(new LookAndFeelInfo("Arc Dark (Material)", ArcDarkMaterial.class.getName()), ENABLER),

@@ -68,6 +68,7 @@ module is.codion.plugin.flatlaf.intellij.themes {
 	exports is.codion.plugin.flatlaf.intellij.themes.srcery;
 	exports is.codion.plugin.flatlaf.intellij.themes.tayviscon;
 	exports is.codion.plugin.flatlaf.intellij.themes.trashpanda;
+	exports is.codion.plugin.flatlaf.intellij.themes.vscode;
 	exports is.codion.plugin.flatlaf.intellij.themes.vuesion;
 	exports is.codion.plugin.flatlaf.intellij.themes.xcodedark;
 
