@@ -29,6 +29,7 @@ module is.codion.plugin.flatlaf.intellij.themes {
 	exports is.codion.plugin.flatlaf.intellij.themes.akusan;
 	exports is.codion.plugin.flatlaf.intellij.themes.arc;
 	exports is.codion.plugin.flatlaf.intellij.themes.carbon;
+	exports is.codion.plugin.flatlaf.intellij.themes.catppuccin;
 	exports is.codion.plugin.flatlaf.intellij.themes.cobalt2;
 	exports is.codion.plugin.flatlaf.intellij.themes.codely;
 	exports is.codion.plugin.flatlaf.intellij.themes.cutepink;

@@ -26,6 +26,10 @@ import is.codion.plugin.flatlaf.intellij.themes.arc.ArcDark;
 import is.codion.plugin.flatlaf.intellij.themes.arc.ArcDarkOrange;
 import is.codion.plugin.flatlaf.intellij.themes.arc.ArcOrange;
 import is.codion.plugin.flatlaf.intellij.themes.carbon.Carbon;
+import is.codion.plugin.flatlaf.intellij.themes.catppuccin.CatppuccinFrappe;
+import is.codion.plugin.flatlaf.intellij.themes.catppuccin.CatppuccinLatte;
+import is.codion.plugin.flatlaf.intellij.themes.catppuccin.CatppuccinMacchiato;
+import is.codion.plugin.flatlaf.intellij.themes.catppuccin.CatppuccinMocha;
 import is.codion.plugin.flatlaf.intellij.themes.cobalt2.Cobalt2;
 import is.codion.plugin.flatlaf.intellij.themes.codely.Codely;
 import is.codion.plugin.flatlaf.intellij.themes.codely.CodelyBlue;
@@ -222,6 +226,10 @@ public final class IntelliJThemeProvider implements LookAndFeelProvider {
 						lookAndFeelEnabler(new LookAndFeelInfo("Elegant Light", ElegantLight.class.getName()), ENABLER),
 						lookAndFeelEnabler(new LookAndFeelInfo("Espresso Light", EspressoLight.class.getName()), ENABLER),
 						lookAndFeelEnabler(new LookAndFeelInfo("Dracula", Dracula.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Catppuccin Frappe", CatppuccinFrappe.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Catppuccin Latte", CatppuccinLatte.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Catppuccin Macchiato", CatppuccinMacchiato.class.getName()), ENABLER),
+						lookAndFeelEnabler(new LookAndFeelInfo("Catppuccin Mocha", CatppuccinMocha.class.getName()), ENABLER),
 
 						// From FlatLaf
 						lookAndFeelEnabler(new LookAndFeelInfo("Arc Dark (Material)", ArcDarkMaterial.class.getName()), ENABLER),
