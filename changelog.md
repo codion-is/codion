@@ -13,6 +13,7 @@ Codion Change Log
 - Remaining usages of SwingConstants.LEFT and RIGHT replaced with LEADING and TRAILING.
 - LabelBuilder.HORIZONTAL_ALIGNMENT removed.
 - NumberDocument, value included in range validation exception message.
+- NumberDocument, translate single minus sign to -1, in order to prevent minus sign input when negative numbers are not valid.
 ### is.codion.framework.domain
 - KeyGenerator.Identity removed.
 - AttributeDefinition.Builder.valueRange(), minimumValue() and maximumValue() renamed range(), minimum() and maximum().

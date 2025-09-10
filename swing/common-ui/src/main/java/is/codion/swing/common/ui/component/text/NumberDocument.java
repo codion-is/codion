@@ -151,8 +151,11 @@ class NumberDocument<T extends Number> extends PlainDocument {
 
 		@Override
 		public NumberParseResult<T> parse(String string) {
-			if (string.isEmpty() || MINUS_SIGN.equals(string)) {
+			if (string.isEmpty()) {
 				return new DefaultNumberParseResult<>(string, null);
+			}
+			if (MINUS_SIGN.equals(string)) {
+				return new DefaultNumberParseResult<>(string, (T) toType(clazz, -1));
 			}
 
 			T parsedNumber = parseNumber(string);
