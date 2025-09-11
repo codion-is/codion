@@ -92,13 +92,13 @@ public final class Petstore extends DomainModel {
 														.caption(Address.LATITUDE.name())
 														.name("latitude")
 														.nullable(false)
-														.maximumFractionDigits(2),
+														.fractionDigits(2),
 										Address.LONGITUDE.define()
 														.column()
 														.caption(Address.LONGITUDE.name())
 														.name("longitude")
 														.nullable(false)
-														.maximumFractionDigits(2))
+														.fractionDigits(2))
 						.table("petstore.address")
 						.keyGenerator(sequence("petstore.address_seq"))
 						.orderBy(ascending(Address.CITY, Address.STREET_1, Address.STREET_2))
@@ -313,7 +313,7 @@ public final class Petstore extends DomainModel {
 														.caption(Item.PRICE.name())
 														.name("price")
 														.nullable(false)
-														.maximumFractionDigits(2),
+														.fractionDigits(2),
 										Item.CONTACT_INFO_ID.define()
 														.column()
 														.name("contactinfo_contactinfoid")

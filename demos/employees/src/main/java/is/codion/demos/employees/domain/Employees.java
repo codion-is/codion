@@ -159,12 +159,12 @@ public final class Employees extends DomainModel {
 														.caption("Salary")
 														.nullable(false)
 														.range(900, 10000)
-														.maximumFractionDigits(2),
+														.fractionDigits(2),
 										Employee.COMMISSION.define()
 														.column()
 														.caption("Commission")
 														.range(100, 2000)
-														.maximumFractionDigits(2),
+														.fractionDigits(2),
 										Employee.MANAGER_ID.define()
 														.column(),
 										Employee.MANAGER_FK.define()

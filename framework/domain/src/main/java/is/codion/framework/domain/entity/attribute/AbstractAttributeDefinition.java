@@ -85,7 +85,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	private final char mnemonic;
 	private final @Nullable Format format;
 	private final @Nullable LocaleDateTimePattern localeDateTimePattern;
-	private final RoundingMode decimalRoundingMode;
+	private final RoundingMode roundingMode;
 	private final Comparator<T> comparator;
 	private final @Nullable List<Item<T>> items;
 	private final @Nullable Map<T, Item<T>> itemMap;
@@ -111,7 +111,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		this.mnemonic = builder.mnemonic;
 		this.format = builder.format;
 		this.localeDateTimePattern = builder.localeDateTimePattern;
-		this.decimalRoundingMode = builder.decimalRoundingMode;
+		this.roundingMode = builder.roundingMode;
 		this.comparator = builder.comparator;
 		this.dateTimePattern = builder.dateTimePattern;
 		this.dateTimeFormatter = builder.dateTimeFormatter;
@@ -216,7 +216,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	}
 
 	@Override
-	public final int maximumFractionDigits() {
+	public final int fractionDigits() {
 		if (!(format instanceof NumberFormat)) {
 			return -1;
 		}
@@ -225,8 +225,8 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	}
 
 	@Override
-	public final RoundingMode decimalRoundingMode() {
-		return decimalRoundingMode;
+	public final RoundingMode roundingMode() {
+		return roundingMode;
 	}
 
 	@Override
@@ -440,7 +440,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		private char mnemonic;
 		private @Nullable Format format;
 		private @Nullable LocaleDateTimePattern localeDateTimePattern;
-		private RoundingMode decimalRoundingMode;
+		private RoundingMode roundingMode;
 		private Comparator<T> comparator;
 		private @Nullable String dateTimePattern;
 		private @Nullable DateTimeFormatter dateTimeFormatter;
@@ -457,7 +457,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 			maximumLength = attribute.type().isCharacter() ? 1 : -1;
 			trim = TRIM_STRINGS.getOrThrow();
 			defaultValueSupplier = (ValueSupplier<T>) DEFAULT_VALUE_SUPPLIER;
-			decimalRoundingMode = DECIMAL_ROUNDING_MODE.getOrThrow();
+			roundingMode = ROUNDING_MODE.getOrThrow();
 			minimum = defaultMinimum();
 			maximum = defaultMaximum();
 		}
@@ -642,21 +642,21 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		}
 
 		@Override
-		public final B maximumFractionDigits(int maximumFractionDigits) {
+		public final B fractionDigits(int fractionDigits) {
 			if (!attribute.type().isDecimal()) {
-				throw new IllegalStateException("maximumFractionDigits is only applicable to decimal attributes: " + attribute);
+				throw new IllegalStateException("fractionDigits is only applicable to decimal attributes: " + attribute);
 			}
 			requireNonNull(format);
-			((NumberFormat) format).setMaximumFractionDigits(maximumFractionDigits);
+			((NumberFormat) format).setMaximumFractionDigits(fractionDigits);
 			return self();
 		}
 
 		@Override
-		public final B decimalRoundingMode(RoundingMode decimalRoundingMode) {
+		public final B roundingMode(RoundingMode roundingMode) {
 			if (!attribute.type().isDecimal()) {
-				throw new IllegalStateException("decimalRoundingMode is only applicable to decimal attributes: " + attribute);
+				throw new IllegalStateException("roundingMode is only applicable to decimal attributes: " + attribute);
 			}
-			this.decimalRoundingMode = requireNonNull(decimalRoundingMode);
+			this.roundingMode = requireNonNull(roundingMode);
 			return self();
 		}
 
@@ -704,7 +704,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 				NumberFormat numberFormat = defaultNumberFormat(attribute);
 				if (attribute.type().isDecimal()) {
 					((DecimalFormat) numberFormat).setParseBigDecimal(attribute.type().isBigDecimal());
-					numberFormat.setMaximumFractionDigits(AttributeDefinition.MAXIMUM_FRACTION_DIGITS.getOrThrow());
+					numberFormat.setMaximumFractionDigits(AttributeDefinition.FRACTION_DIGITS.getOrThrow());
 				}
 
 				return numberFormat;

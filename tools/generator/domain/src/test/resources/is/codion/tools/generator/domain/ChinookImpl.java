@@ -292,7 +292,7 @@ public final class ChinookImpl extends DomainModel {
 				Invoice.TOTAL.define()
 					.column()
 					.caption("Total")
-					.maximumFractionDigits(2))
+					.fractionDigits(2))
 			.keyGenerator(identity())
 			.caption("Invoice")
 			.build();

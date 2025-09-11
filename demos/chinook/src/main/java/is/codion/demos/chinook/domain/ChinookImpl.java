@@ -354,7 +354,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.column()
 														.nullable(false)
 														.minimum(0)
-														.maximumFractionDigits(2),
+														.fractionDigits(2),
 										Track.PLAY_COUNT.define()
 														.column()
 														.nullable(false)
@@ -420,13 +420,13 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.maximumLength(10),
 										Invoice.TOTAL.define()
 														.column()
-														.maximumFractionDigits(2),
+														.fractionDigits(2),
 										Invoice.CALCULATED_TOTAL.define()
 														.subquery("""
 																		SELECT SUM(unitprice * quantity)
 																		FROM chinook.invoiceline
 																		WHERE invoice_id = invoice.id""")
-														.maximumFractionDigits(2))
+														.fractionDigits(2))
 						// tag::identity[]
 						.keyGenerator(identity())
 						// end::identity[]

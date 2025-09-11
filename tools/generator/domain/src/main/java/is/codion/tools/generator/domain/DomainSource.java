@@ -552,9 +552,9 @@ public final class DomainSource {
 				builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".maximumLength(")
 								.append(column.maximumLength()).append(")");
 			}
-			if (column.attribute().type().isDecimal() && column.maximumFractionDigits() >= 1) {
-				builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".maximumFractionDigits(")
-								.append(column.maximumFractionDigits()).append(")");
+			if (column.attribute().type().isDecimal() && column.fractionDigits() >= 1) {
+				builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".fractionDigits(")
+								.append(column.fractionDigits()).append(")");
 			}
 		}
 		column.description()

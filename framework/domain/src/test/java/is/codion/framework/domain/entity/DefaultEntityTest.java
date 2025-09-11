@@ -1061,8 +1061,8 @@ public class DefaultEntityTest {
 		}
 
 		@Test
-		@DisplayName("maximum fraction digits enforced")
-		void maximumFractionDigits_enforced() {
+		@DisplayName("fraction digits enforced")
+		void fractionDigits_enforced() {
 			Entity employee = ENTITIES.entity(Employee.TYPE)
 							.with(Employee.COMMISSION, 1.1234)
 							.build();

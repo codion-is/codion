@@ -479,7 +479,7 @@ public final class EntityComponents {
 
 		return Components.doubleField()
 						.format(attributeDefinition.format().orElse(null))
-						.maximumFractionDigits(attributeDefinition.maximumFractionDigits())
+						.maximumFractionDigits(attributeDefinition.fractionDigits())
 						.toolTipText(attributeDefinition.description().orElse(null));
 	}
 
@@ -493,7 +493,7 @@ public final class EntityComponents {
 
 		return Components.bigDecimalField()
 						.format(attributeDefinition.format().orElse(null))
-						.maximumFractionDigits(attributeDefinition.maximumFractionDigits())
+						.maximumFractionDigits(attributeDefinition.fractionDigits())
 						.toolTipText(attributeDefinition.description().orElse(null));
 	}
 

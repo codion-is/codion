@@ -140,7 +140,7 @@ public final class WorldImpl extends DomainModel {
 					.column()
 					.caption("Surfacearea")
 					.nullable(false)
-					.maximumFractionDigits(2),
+					.fractionDigits(2),
 				Country.INDEPYEAR.define()
 					.column()
 					.caption("Indepyear"),
@@ -151,15 +151,15 @@ public final class WorldImpl extends DomainModel {
 				Country.LIFEEXPECTANCY.define()
 					.column()
 					.caption("Lifeexpectancy")
-					.maximumFractionDigits(1),
+					.fractionDigits(1),
 				Country.GNP.define()
 					.column()
 					.caption("Gnp")
-					.maximumFractionDigits(2),
+					.fractionDigits(2),
 				Country.GNPOLD.define()
 					.column()
 					.caption("Gnpold")
-					.maximumFractionDigits(2),
+					.fractionDigits(2),
 				Country.LOCALNAME.define()
 					.column()
 					.caption("Localname")
@@ -211,7 +211,7 @@ public final class WorldImpl extends DomainModel {
 					.column()
 					.caption("Percentage")
 					.nullable(false)
-					.maximumFractionDigits(1))
+					.fractionDigits(1))
 			.caption("Countrylanguage")
 			.build();
 	}

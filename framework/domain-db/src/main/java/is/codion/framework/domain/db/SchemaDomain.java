@@ -185,7 +185,7 @@ public final class SchemaDomain extends DomainModel {
 			builder.maximumLength(metadataColumn.columnSize());
 		}
 		if (column.type().isDecimal() && metadataColumn.decimalDigits() >= 1) {
-			builder.maximumFractionDigits(metadataColumn.decimalDigits());
+			builder.fractionDigits(metadataColumn.decimalDigits());
 		}
 		if (!metadataColumn.primaryKeyColumn() && metadataColumn.defaultValue() != null) {
 			builder.hasDatabaseDefault(true);

@@ -139,12 +139,12 @@ public final class EmployeesMinimalApp {
 															.column()
 															.caption("Salary")
 															.nullable(false)
-															.maximumFractionDigits(2)
+															.fractionDigits(2)
 															.range(1000, 10000),
 											Employee.COMMISSION.define()
 															.column()
 															.caption("Commission")
-															.maximumFractionDigits(2),
+															.fractionDigits(2),
 											Employee.MANAGER_ID.define()
 															.column(),
 											Employee.MANAGER_FK.define()

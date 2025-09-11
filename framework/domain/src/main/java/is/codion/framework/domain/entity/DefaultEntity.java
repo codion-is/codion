@@ -832,12 +832,12 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 
 	private static <T> T adjustDecimalFractionDigits(AttributeDefinition<T> attributeDefinition, T value) {
 		if (value instanceof Double) {
-			return (T) round((Double) value, attributeDefinition.maximumFractionDigits(),
-							attributeDefinition.decimalRoundingMode());
+			return (T) round((Double) value, attributeDefinition.fractionDigits(),
+							attributeDefinition.roundingMode());
 		}
 		if (value instanceof BigDecimal) {
-			return (T) ((BigDecimal) value).setScale(attributeDefinition.maximumFractionDigits(),
-											attributeDefinition.decimalRoundingMode())
+			return (T) ((BigDecimal) value).setScale(attributeDefinition.fractionDigits(),
+											attributeDefinition.roundingMode())
 							.stripTrailingZeros();
 		}
 

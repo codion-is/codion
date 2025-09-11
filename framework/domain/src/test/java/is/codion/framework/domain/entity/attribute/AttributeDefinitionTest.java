@@ -138,7 +138,7 @@ public final class AttributeDefinitionTest {
 		assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.integerColumn("attribute")
 						.define()
 						.column()
-						.decimalRoundingMode(RoundingMode.CEILING));
+						.roundingMode(RoundingMode.CEILING));
 	}
 
 	@Test
@@ -158,13 +158,13 @@ public final class AttributeDefinitionTest {
 	}
 
 	@Test
-	void setMaximumFractionDigitsNotNumerical() {
-		assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.localDateColumn("attribute").define().column().maximumFractionDigits(5));
+	void setFractionDigitsNotNumerical() {
+		assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.localDateColumn("attribute").define().column().fractionDigits(5));
 	}
 
 	@Test
-	void maximumFractionDigitsNotNumerical() {
-		assertEquals(-1, ENTITY_TYPE.localDateColumn("attribute").define().column().build().maximumFractionDigits());
+	void fractionDigitsNotNumerical() {
+		assertEquals(-1, ENTITY_TYPE.localDateColumn("attribute").define().column().build().fractionDigits());
 	}
 
 	@Test
@@ -179,7 +179,7 @@ public final class AttributeDefinitionTest {
 
 	@Test
 	void setMaximumLengthNonString() {
-		assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.stringColumn("attribute").define().column().maximumFractionDigits(5));
+		assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.stringColumn("attribute").define().column().fractionDigits(5));
 	}
 
 	@Test

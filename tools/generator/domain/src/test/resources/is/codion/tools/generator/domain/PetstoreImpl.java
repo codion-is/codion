@@ -53,12 +53,12 @@ public final class PetstoreImpl extends DomainModel {
 					.column()
 					.caption("Latitude")
 					.nullable(false)
-					.maximumFractionDigits(2),
+					.fractionDigits(2),
 				Address.LONGITUDE.define()
 					.column()
 					.caption("Longitude")
 					.nullable(false)
-					.maximumFractionDigits(2),
+					.fractionDigits(2),
 				Address.LOCATION.define()
 					.column()
 					.caption("Location"),
@@ -287,7 +287,7 @@ public final class PetstoreImpl extends DomainModel {
 					.column()
 					.caption("Price")
 					.nullable(false)
-					.maximumFractionDigits(2),
+					.fractionDigits(2),
 				Item.ADDRESS_ID.define()
 					.column()
 					.nullable(false),

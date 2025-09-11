@@ -93,7 +93,7 @@ import static is.codion.common.Configuration.*;
  *                     .nullable(false)
  *                     .minimum(BigDecimal.ZERO)
  *                     .maximum(new BigDecimal("99999.99"))
- *                     .maximumFractionDigits(2)
+ *                     .fractionDigits(2)
  *                     .defaultValue(BigDecimal.ZERO),
  *
  *                 Product.CATEGORY.define()
@@ -141,7 +141,7 @@ public sealed interface AttributeDefinition<T>
 	/**
 	 * The default maximum fraction digits for floating point numbers
 	 */
-	int DEFAULT_MAXIMUM_FRACTION_DIGITS = 10;
+	int DEFAULT_FRACTION_DIGITS = 10;
 
 	/**
 	 * Specifies the default maximum number of fraction digits for double property values<br>
@@ -151,7 +151,7 @@ public sealed interface AttributeDefinition<T>
 	 * <li>Default value: 10
 	 * </ul>
 	 */
-	PropertyValue<Integer> MAXIMUM_FRACTION_DIGITS = integerValue("codion.domain.maximumFractionDigits", DEFAULT_MAXIMUM_FRACTION_DIGITS);
+	PropertyValue<Integer> FRACTION_DIGITS = integerValue("codion.domain.fractionDigits", DEFAULT_FRACTION_DIGITS);
 
 	/**
 	 * Specifies the default rounding mode used for decimal property values
@@ -159,10 +159,10 @@ public sealed interface AttributeDefinition<T>
 	 * <li>Value type: {@link RoundingMode}
 	 * <li>Default value: {@link RoundingMode#HALF_EVEN}
 	 * </ul>
-	 * @see #MAXIMUM_FRACTION_DIGITS
-	 * @see Builder#decimalRoundingMode(RoundingMode)
+	 * @see #FRACTION_DIGITS
+	 * @see Builder#roundingMode(RoundingMode)
 	 */
-	PropertyValue<RoundingMode> DECIMAL_ROUNDING_MODE = enumValue("codion.domain.decimalRoundingMode", RoundingMode.class, RoundingMode.HALF_EVEN);
+	PropertyValue<RoundingMode> ROUNDING_MODE = enumValue("codion.domain.roundingMode", RoundingMode.class, RoundingMode.HALF_EVEN);
 
 	/**
 	 * The default date format pattern to use when showing time values in tables and when creating default time input fields
@@ -316,16 +316,16 @@ public sealed interface AttributeDefinition<T>
 	/**
 	 * @return the maximum number of fraction digits to use for this attribute value,
 	 * -1 if this attribute is not based on Types.DOUBLE or Types.DECIMAL
-	 * @see #decimalRoundingMode()
+	 * @see #roundingMode()
 	 */
-	int maximumFractionDigits();
+	int fractionDigits();
 
 	/**
 	 * @return the rounding mode to use when working with decimal values
-	 * @see #DECIMAL_ROUNDING_MODE
-	 * @see #maximumFractionDigits()
+	 * @see #ROUNDING_MODE
+	 * @see #fractionDigits()
 	 */
-	RoundingMode decimalRoundingMode();
+	RoundingMode roundingMode();
 
 	/**
 	 * @return true if null is a valid value for this attribute
@@ -504,22 +504,22 @@ public sealed interface AttributeDefinition<T>
 		/**
 		 * Sets the maximum fraction digits to show for this attribute, only applicable to attributes based on decimal types.
 		 * This setting is overridden during subsequent calls to {@link #format(Format)}.
-		 * Note that values associated with this attribute are automatically rounded to {@code maximumFractionDigits} digits.
-		 * @param maximumFractionDigits the maximum fraction digits
+		 * Note that values associated with this attribute are automatically rounded to {@link #fractionDigits()} digits.
+		 * @param fractionDigits the maximum fraction digits
 		 * @return this builder instance
 		 * @throws IllegalStateException in case this is not a decimal attribute
-		 * @see #decimalRoundingMode(RoundingMode)
+		 * @see #roundingMode(RoundingMode)
 		 */
-		B maximumFractionDigits(int maximumFractionDigits);
+		B fractionDigits(int fractionDigits);
 
 		/**
 		 * Sets the rounding mode to use when working with decimals
-		 * @param decimalRoundingMode the rounding mode
+		 * @param roundingMode the rounding mode
 		 * @return this builder instance
 		 * @throws IllegalStateException in case this is not a decimal attribute
-		 * @see #maximumFractionDigits(int)
+		 * @see #fractionDigits(int)
 		 */
-		B decimalRoundingMode(RoundingMode decimalRoundingMode);
+		B roundingMode(RoundingMode roundingMode);
 
 		/**
 		 * Specifies whether to use number grouping when presenting the value associated with this attribute.

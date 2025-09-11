@@ -66,7 +66,7 @@ import java.sql.SQLException;
  *             .nullable(false)
  *             .minimum(BigDecimal.ZERO)
  *             .maximum(new BigDecimal("99999.99"))
- *             .maximumFractionDigits(2),
+ *             .fractionDigits(2),
  *
  *         // Boolean column with database mapping
  *         Product.ACTIVE.define()
