@@ -78,8 +78,8 @@ public final class NumberField<T extends Number> extends HintTextField {
 			document.setGroupingSeparator(builder.groupingSeparator);
 		}
 		if (document instanceof DecimalDocument) {
-			if (builder.maximumFractionDigits != -1) {
-				((DecimalDocument<?>) document).setMaximumFractionDigits(builder.maximumFractionDigits);
+			if (builder.fractionDigits != -1) {
+				((DecimalDocument<?>) document).setMaximumFractionDigits(builder.fractionDigits);
 			}
 			if (builder.decimalSeparator != 0) {
 				document.setDecimalSeparator(builder.decimalSeparator);
@@ -205,10 +205,10 @@ public final class NumberField<T extends Number> extends HintTextField {
 		Builder<T> grouping(boolean grouping);
 
 		/**
-		 * @param maximumFractionDigits the maximum fraction digits
+		 * @param fractionDigits the maximum fraction digits
 		 * @return this builder instance
 		 */
-		Builder<T> maximumFractionDigits(int maximumFractionDigits);
+		Builder<T> fractionDigits(int fractionDigits);
 
 		/**
 		 * Set the decimal separator for this field
@@ -304,7 +304,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 		private char groupingSeparator = 0;
 		private @Nullable Boolean grouping;
 		private char decimalSeparator = 0;
-		private int maximumFractionDigits = -1;
+		private int fractionDigits = -1;
 		private boolean convertGroupingToDecimalSeparator = CONVERT_GROUPING_TO_DECIMAL_SEPARATOR.getOrThrow();
 
 		protected AbstractNumberFieldBuilder(Class<T> type) {
@@ -364,8 +364,8 @@ public final class NumberField<T extends Number> extends HintTextField {
 		}
 
 		@Override
-		public final Builder<T> maximumFractionDigits(int maximumFractionDigits) {
-			this.maximumFractionDigits = maximumFractionDigits;
+		public final Builder<T> fractionDigits(int fractionDigits) {
+			this.fractionDigits = fractionDigits;
 			return this;
 		}
 

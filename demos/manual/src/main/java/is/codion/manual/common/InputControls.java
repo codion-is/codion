@@ -321,7 +321,7 @@ public final class InputControls {
 		NumberField<Double> doubleField =
 						Components.doubleField()
 										.link(doubleValue)
-										.maximumFractionDigits(3)
+										.fractionDigits(3)
 										.decimalSeparator('.')
 										.build();
 		// end::doubleField[]
@@ -334,7 +334,7 @@ public final class InputControls {
 		NumberField<BigDecimal> bigDecimalField =
 						Components.bigDecimalField()
 										.link(bigDecimalValue)
-										.maximumFractionDigits(2)
+										.fractionDigits(2)
 										.groupingSeparator('.')
 										.decimalSeparator(',')
 										.build();

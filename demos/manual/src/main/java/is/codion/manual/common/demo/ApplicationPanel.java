@@ -226,7 +226,7 @@ public final class ApplicationPanel extends JPanel {
 						.nullable(false)
 						.range(0, 1_000_000)
 						.grouping(true)
-						.maximumFractionDigits(2)
+						.fractionDigits(2)
 						.decimalSeparator(',')
 						.groupingSeparator('.')
 						.convertGroupingToDecimalSeparator(true)

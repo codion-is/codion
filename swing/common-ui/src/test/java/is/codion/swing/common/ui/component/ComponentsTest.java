@@ -166,7 +166,7 @@ public final class ComponentsTest {
 		Value<Double> value = Value.nullable(42.2);
 		ComponentValue<NumberField<Double>, Double> componentValue = Components.doubleField()
 						.range(0, 100)
-						.maximumFractionDigits(2)
+						.fractionDigits(2)
 						.groupingSeparator('.')
 						.decimalSeparator(',')
 						.minimumSize(new Dimension(10, 10))
@@ -180,7 +180,7 @@ public final class ComponentsTest {
 	void bigDecimalField() {
 		Value<BigDecimal> value = Value.nullable(BigDecimal.valueOf(42.2));
 		ComponentValue<NumberField<BigDecimal>, BigDecimal> componentValue = Components.bigDecimalField()
-						.maximumFractionDigits(2)
+						.fractionDigits(2)
 						.groupingSeparator('.')
 						.decimalSeparator(',')
 						.maximumSize(new Dimension(10, 10))

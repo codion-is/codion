@@ -337,12 +337,12 @@ public final class NumberFieldTest {
 	}
 
 	@Test
-	void maximumFractionDigits() throws BadLocationException {
+	void fractionDigits() throws BadLocationException {
 		NumberField<Double> doubleField = NumberField.builder()
 						.numberClass(Double.class)
 						.decimalSeparator(',')
 						.groupingSeparator('.')
-						.maximumFractionDigits(2)
+						.fractionDigits(2)
 						.build();
 		doubleField.set(5.1254);
 		assertEquals("5,12", doubleField.getText());
@@ -357,7 +357,7 @@ public final class NumberFieldTest {
 						.numberClass(Double.class)
 						.decimalSeparator(',')
 						.groupingSeparator('.')
-						.maximumFractionDigits(3)
+						.fractionDigits(3)
 						.build();
 		doubleField.setText("5,12378");
 		assertEquals("5,123", doubleField.getText());//no rounding should occur
