@@ -205,13 +205,13 @@ public sealed interface AttributeDefinition<T>
 					.datePattern());
 
 	/**
-	 * Specifies whether number format grouping is used by default
+	 * Specifies whether number grouping is used by default
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: false
 	 * </ul>
 	 */
-	PropertyValue<Boolean> NUMBER_FORMAT_GROUPING = booleanValue("codion.domain.numberFormatGrouping", false);
+	PropertyValue<Boolean> NUMBER_GROUPING = booleanValue("codion.domain.numberGrouping", false);
 
 	/**
 	 * Specifies the default number grouping separator
@@ -527,11 +527,11 @@ public sealed interface AttributeDefinition<T>
 		 * By default, grouping is not used.
 		 * Only applicable to numerical attributes.
 		 * This setting is overridden during subsequent calls to {@link #format(Format)}
-		 * @param numberFormatGrouping if true then number grouping is used
+		 * @param numberGrouping if true then number grouping is used
 		 * @return this builder instance
 		 * @throws IllegalStateException in case this is not a numerical attribute
 		 */
-		B numberFormatGrouping(boolean numberFormatGrouping);
+		B numberGrouping(boolean numberGrouping);
 
 		/**
 		 * Specifies whether this attribute is nullable. Note that this will not prevent

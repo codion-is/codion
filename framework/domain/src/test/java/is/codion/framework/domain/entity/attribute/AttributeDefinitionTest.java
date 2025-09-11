@@ -168,8 +168,8 @@ public final class AttributeDefinitionTest {
 	}
 
 	@Test
-	void setNumberFormatGroupingNotNumerical() {
-		assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.localDateColumn("attribute").define().column().numberFormatGrouping(false));
+	void setNumberGroupingNotNumerical() {
+		assertThrows(IllegalStateException.class, () -> ENTITY_TYPE.localDateColumn("attribute").define().column().numberGrouping(false));
 	}
 
 	@Test

@@ -22,6 +22,7 @@ Codion Change Log
 - KeyGenerator.Identity removed.
 - AttributeDefinition.Builder.valueRange(), minimumValue() and maximumValue() renamed range(), minimum() and maximum().
 - AttributeDefinition.maximumFractionDigits() and decimalRoundingMode() renamed to fractionDigits() and roundingMode().
+- AttributeDefinition.Builder.numberFormatGrouping() renamed numberGrouping().
 ### is.codion.plugin.flatlaf.intellij
 - Catppuccin themes added.
 - VSCode themes added.

@@ -578,12 +578,12 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		}
 
 		@Override
-		public final B numberFormatGrouping(boolean numberFormatGrouping) {
+		public final B numberGrouping(boolean numberGrouping) {
 			if (!attribute.type().isNumerical()) {
-				throw new IllegalStateException("numberFormatGrouping is only applicable to numerical attributes: " + attribute);
+				throw new IllegalStateException("numberGrouping is only applicable to numerical attributes: " + attribute);
 			}
 			requireNonNull(format);
-			((NumberFormat) format).setGroupingUsed(numberFormatGrouping);
+			((NumberFormat) format).setGroupingUsed(numberGrouping);
 			return self();
 		}
 
@@ -714,7 +714,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		}
 
 		private static NumberFormat defaultNumberFormat(Attribute<?> attribute) {
-			boolean grouping = NUMBER_FORMAT_GROUPING.getOrThrow();
+			boolean grouping = NUMBER_GROUPING.getOrThrow();
 			if (attribute.type().isInteger() || attribute.type().isLong()) {
 				return setSeparators(grouping ? NumberFormat.getIntegerInstance() : nonGroupingIntegerFormat());
 			}
