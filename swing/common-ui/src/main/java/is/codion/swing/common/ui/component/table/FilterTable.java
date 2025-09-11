@@ -94,7 +94,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static is.codion.common.Configuration.booleanValue;
@@ -112,12 +111,10 @@ import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static java.awt.event.ActionEvent.ACTION_PERFORMED;
 import static java.awt.event.InputEvent.*;
 import static java.awt.event.KeyEvent.*;
-import static java.lang.String.join;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
-import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static javax.swing.KeyStroke.getKeyStrokeForEvent;
 
@@ -596,31 +593,16 @@ public final class FilterTable<R, C> extends JTable {
 	}
 
 	/**
-	 * Copies the table data as a TAB delimited string, with header, to the clipboard.
-	 * If the selection is empty, all rows are included, otherwise only selected ones.
+	 * <p>Copies the table data as a TAB delimited string, with header, to the clipboard.
+	 * <p>Only visible columns are included.
+	 * <p>If the selection is empty, all rows are included, otherwise only selected ones.
 	 */
 	public void copyToClipboard() {
-		Utilities.setClipboard(export()
+		Utilities.setClipboard(tableModel.export()
+						.columns(columnModel().visible().get())
 						.delimiter('\t')
 						.selected(!selectionModel.isSelectionEmpty())
 						.get());
-	}
-
-	/**
-	 * Copies the selected table rows as a TAB delimited string, with header, to the clipboard.
-	 */
-	public void copySelectedToClipboard() {
-		Utilities.setClipboard(export()
-						.delimiter('\t')
-						.selected(true)
-						.get());
-	}
-
-	/**
-	 * @return a {@link Export} instance for exporting the table model data
-	 */
-	public Export export() {
-		return new DefaultExport();
 	}
 
 	/**
@@ -1424,52 +1406,6 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> dragEnabled(boolean dragEnabled);
 	}
 
-	/**
-	 * Exports the table data to a String.
-	 */
-	public interface Export {
-
-		/**
-		 * @param delimiter the column delimiter, TAB by default
-		 * @return this Export instance
-		 */
-		Export delimiter(char delimiter);
-
-		/**
-		 * @param header include a column header, default true
-		 * @return this Export instance
-		 */
-		Export header(boolean header);
-
-		/**
-		 * @param hidden include hidden columns, default false
-		 * @return this Export instance
-		 */
-		Export hidden(boolean hidden);
-
-		/**
-		 * @param selected include only selected rows, default false
-		 * @return this Export instance
-		 */
-		Export selected(boolean selected);
-
-		/**
-		 * <p>Replaces newlines inside strings.
-		 * <p>Note that strings are always trimmed so newlines at the
-		 * beginning and end of strings are trimmed before replacement is performed.
-		 * <p>Default replacement is a single whitespace (" ").
-		 * <p>Set to null to keep newlines in place.
-		 * @param replacement the string to use when replacing newlines
-		 * @return this Export instance
-		 */
-		Export replaceNewline(String replacement);
-
-		/**
-		 * @return the table data exported to a String
-		 */
-		String get();
-	}
-
 	private static class DefaultModelStep implements Builder.ModelStep {
 
 		@Override
@@ -1791,89 +1727,6 @@ public final class FilterTable<R, C> extends JTable {
 
 			return selection.empty().not().is() &&
 							selection.count() != tableModel.items().included().count();
-		}
-	}
-
-	private final class DefaultExport implements Export {
-
-		private char delimiter = '\t';
-		private boolean header = true;
-		private boolean hidden = false;
-		private boolean selected = false;
-		private String newlineReplacement = " ";
-
-		@Override
-		public Export delimiter(char delimiter) {
-			this.delimiter = delimiter;
-			return this;
-		}
-
-		@Override
-		public Export header(boolean header) {
-			this.header = header;
-			return this;
-		}
-
-		@Override
-		public Export hidden(boolean hidden) {
-			this.hidden = hidden;
-			return this;
-		}
-
-		@Override
-		public Export selected(boolean selected) {
-			this.selected = selected;
-			return this;
-		}
-
-		@Override
-		public Export replaceNewline(String replacement) {
-			this.newlineReplacement = replacement;
-			return this;
-		}
-
-		@Override
-		public String get() {
-			List<Integer> rows = selected ?
-							tableModel.selection().indexes().get() :
-							IntStream.range(0, tableModel.items().included().count())
-											.boxed()
-											.collect(toList());
-
-			List<FilterTableColumn<C>> columns = new ArrayList<>(columnModel().visible().columns());
-			if (hidden) {
-				columns.addAll(columnModel().hidden().columns());
-			}
-
-			List<List<String>> lines = new ArrayList<>();
-			if (header) {
-				lines.add(columns.stream()
-								.map(column -> String.valueOf(column.getHeaderValue()))
-								.collect(toList()));
-			}
-			lines.addAll(rows.stream()
-							.map(row -> stringValues(row, columns))
-							.collect(toList()));
-
-			return lines.stream()
-							.map(line -> join(String.valueOf(delimiter), line))
-							.collect(joining(System.lineSeparator()));
-		}
-
-		private List<String> stringValues(int row, List<FilterTableColumn<C>> columns) {
-			return columns.stream()
-							.map(column -> tableModel.values().formatted(row, column.identifier()))
-							.map(String::trim)
-							.map(this::replaceNewlines)
-							.collect(toList());
-		}
-
-		private String replaceNewlines(String string) {
-			if (newlineReplacement != null) {
-				return string.replace("\r\n", newlineReplacement).replace("\n", newlineReplacement).replace("\r", newlineReplacement);
-			}
-
-			return string;
 		}
 	}
 

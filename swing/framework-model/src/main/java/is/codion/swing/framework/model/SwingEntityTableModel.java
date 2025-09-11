@@ -257,6 +257,11 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	}
 
 	@Override
+	public final Export<Attribute<?>> export() {
+		return filterModel().export();
+	}
+
+	@Override
 	protected final FilterTableModel<Entity, Attribute<?>> filterModel() {
 		return (FilterTableModel<Entity, Attribute<?>>) super.filterModel();
 	}

@@ -249,7 +249,7 @@ final class LookupTablePanel extends EntityTablePanel {
 	}
 
 	private void exportCSV(File file) throws IOException {
-		Files.write(file.toPath(), List.of(table().export()
+		Files.write(file.toPath(), List.of(tableModel().export()
 						.delimiter(',')
 						.selected(true)
 						.get()));

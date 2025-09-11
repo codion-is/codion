@@ -90,19 +90,4 @@ final class FilterTableDemo {
 		columns.reset();
 		// end::columns[]
 	}
-
-	static void export(FilterTable<Person, String> table) {
-		// tag::export[]
-		String tabDelimited = table.export()
-						// Tab delimited
-						.delimiter('\t')
-						// Include hidden columns
-						.hidden(true)
-						// Include header
-						.header(true)
-						// Only selected rows
-						.selected(true)
-						.get();
-		// end::export[]
-	}
 }

@@ -16,6 +16,7 @@ Codion Change Log
 - NumberDocument, value included in range validation exception message.
 - NumberDocument, translate single minus sign to -1, in order to prevent minus sign input when negative numbers are not valid.
 - ColumnConditionPanel, now displays the selected operator in a tooltip when changed via the keyboard, if the view is SIMPLE and the operator combo box hidden.
+- FilterTable.Export moved to FilterTableModel, related refactoring.
 ### is.codion.framework.domain
 - KeyGenerator.Identity removed.
 - AttributeDefinition.Builder.valueRange(), minimumValue() and maximumValue() renamed range(), minimum() and maximum().

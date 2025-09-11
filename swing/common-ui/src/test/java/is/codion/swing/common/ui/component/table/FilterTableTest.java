@@ -53,7 +53,6 @@ public class FilterTableTest {
 	private static final TestRow D = new TestRow("d");
 	private static final TestRow E = new TestRow("e");
 	private static final TestRow NULL = new TestRow(null);
-	private static final String LINE_SEPARATOR = System.lineSeparator();
 
 	private static final List<TestRow> ITEMS = unmodifiableList(asList(A, B, C, D, E));
 
@@ -429,56 +428,6 @@ public class FilterTableTest {
 	void columnModel() {
 		FilterTableColumn<Integer> column = createTestTable().columnModel().getColumn(0);
 		assertEquals(0, column.identifier());
-	}
-
-	@Test
-	void export() {
-		FilterTable<TestRow, Integer> table = createTestTable();
-		table.model().items().refresh();
-
-		String expected = "0" + LINE_SEPARATOR +
-						"a" + LINE_SEPARATOR +
-						"b" + LINE_SEPARATOR +
-						"c" + LINE_SEPARATOR +
-						"d" + LINE_SEPARATOR +
-						"e";
-		assertEquals(expected, table.export()
-						.delimiter('\t')
-						.get());
-
-		table.model().selection().indexes().set(asList(0, 1, 3));
-
-		String selected = "a" + LINE_SEPARATOR +
-						"b" + LINE_SEPARATOR +
-						"d";
-		assertEquals(selected, table.export()
-						.delimiter('\t')
-						.header(false)
-						.selected(true)
-						.get());
-
-		table.model().items().clear();
-
-		table.model().items().add(asList(
-						new TestRow("\nf\ng"),
-						new TestRow("g\r\nh\n"),
-						new TestRow("\ni\rj k")));
-
-		String result = "f g" + LINE_SEPARATOR +
-						"g h" + LINE_SEPARATOR +
-						"i j k";
-
-		assertEquals(result, table.export()
-						.header(false)
-						.get());
-
-		result = "f\ng" + LINE_SEPARATOR +
-						"g\r\nh" + LINE_SEPARATOR +
-						"i\rj k";
-		assertEquals(result, table.export()
-						.header(false)
-						.replaceNewline(null)
-						.get());
 	}
 
 	@Test

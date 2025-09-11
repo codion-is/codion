@@ -218,4 +218,19 @@ public final class FilterTableModelDemo {
 		sort.clear();
 		// end::sort[]
 	}
+
+	static void export(FilterTableModel<Person, String> tableModel) {
+		// tag::export[]
+		String tabDelimited = tableModel.export()
+						// Specify columns (default all, so not really necessary here)
+						.columns(List.of(Person.NAME, Person.AGE))
+						// Tab delimited
+						.delimiter('\t')
+						// Include header
+						.header(true)
+						// Only selected rows
+						.selected(true)
+						.get();
+		// end::export[]
+	}
 }

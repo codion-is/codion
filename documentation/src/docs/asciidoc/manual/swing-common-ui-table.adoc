@@ -53,10 +53,3 @@ include::{dir-source}/is/codion/manual/swing/common/ui/component/table/FilterTab
 ----
 include::{dir-source}/is/codion/manual/swing/common/ui/component/table/FilterTableDemo.java[tags=search]
 ----
-
-=== Export
-
-[source,java,indent=0]
-----
-include::{dir-source}/is/codion/manual/swing/common/ui/component/table/FilterTableDemo.java[tags=export]
-----

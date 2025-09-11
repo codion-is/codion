@@ -82,6 +82,11 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 	FilterTableSort<R, C> sort();
 
 	/**
+	 * @return a {@link Export} instance for exporting the table model data
+	 */
+	Export<C> export();
+
+	/**
 	 * Notifies all listeners that all cell values in the table's rows may have changed.
 	 * The number of rows may also have changed and the JTable should redraw the table from scratch.
 	 * The structure of the table (as in the order of the columns) is assumed to be the same.
@@ -334,5 +339,51 @@ public interface FilterTableModel<R, C> extends TableModel, FilterModel<R> {
 		 * @see TableModel#setValueAt(Object, int, int)
 		 */
 		void set(@Nullable Object value, int rowIndex, R row, C identifier);
+	}
+
+	/**
+	 * Exports the table model data as a String.
+	 */
+	interface Export<C> {
+
+		/**
+		 * @param columns the columns to export, default all
+		 * @return this Export instance
+		 */
+		Export<C> columns(List<C> columns);
+
+		/**
+		 * @param delimiter the column delimiter, TAB by default
+		 * @return this Export instance
+		 */
+		Export<C> delimiter(char delimiter);
+
+		/**
+		 * @param header include a column header, default true
+		 * @return this Export instance
+		 */
+		Export<C> header(boolean header);
+
+		/**
+		 * @param selected include only selected rows, default false
+		 * @return this Export instance
+		 */
+		Export<C> selected(boolean selected);
+
+		/**
+		 * <p>Replaces newlines inside strings.
+		 * <p>Note that strings are always trimmed so newlines at the
+		 * beginning and end of strings are trimmed before replacement is performed.
+		 * <p>Default replacement is a single whitespace (" ").
+		 * <p>Set to null to keep newlines in place.
+		 * @param replacement the string to use when replacing newlines
+		 * @return this Export instance
+		 */
+		Export<C> replaceNewline(String replacement);
+
+		/**
+		 * @return the exported table data as a String
+		 */
+		String get();
 	}
 }

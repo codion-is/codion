@@ -32,6 +32,7 @@ import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -46,7 +47,9 @@ import java.util.stream.Stream;
 
 import static is.codion.common.model.condition.TableConditionModel.tableConditionModel;
 import static is.codion.common.value.Value.Notify.SET;
+import static java.lang.String.join;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements FilterTableModel<R, C> {
@@ -154,6 +157,11 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 	@Override
 	public TableColumns<R, C> columns() {
 		return columns;
+	}
+
+	@Override
+	public Export<C> export() {
+		return new DefaultExport();
 	}
 
 	@Override
@@ -449,6 +457,84 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 			public boolean test(R r) {
 				return true;
 			}
+		}
+	}
+
+	private final class DefaultExport implements Export<C> {
+
+		private List<C> exportColumns = columns.identifiers();
+		private char delimiter = '\t';
+		private boolean header = true;
+		private boolean selected = false;
+		private String newlineReplacement = " ";
+
+		@Override
+		public Export<C> columns(List<C> columns) {
+			this.exportColumns = requireNonNull(columns);
+			return this;
+		}
+
+		@Override
+		public Export<C> delimiter(char delimiter) {
+			this.delimiter = delimiter;
+			return this;
+		}
+
+		@Override
+		public Export<C> header(boolean header) {
+			this.header = header;
+			return this;
+		}
+
+		@Override
+		public Export<C> selected(boolean selected) {
+			this.selected = selected;
+			return this;
+		}
+
+		@Override
+		public Export<C> replaceNewline(String replacement) {
+			this.newlineReplacement = replacement;
+			return this;
+		}
+
+		@Override
+		public String get() {
+			List<Integer> rows = selected ?
+							selection().indexes().get() :
+							IntStream.range(0, items().included().count())
+											.boxed()
+											.collect(toList());
+
+			List<List<String>> lines = new ArrayList<>();
+			if (header) {
+				lines.add(exportColumns.stream()
+								.map(columns::caption)
+								.collect(toList()));
+			}
+			lines.addAll(rows.stream()
+							.map(row -> stringValues(row, exportColumns))
+							.collect(toList()));
+
+			return lines.stream()
+							.map(line -> join(String.valueOf(delimiter), line))
+							.collect(joining(System.lineSeparator()));
+		}
+
+		private List<String> stringValues(int row, List<C> columns) {
+			return columns.stream()
+							.map(column -> columnValues.formatted(row, column))
+							.map(String::trim)
+							.map(this::replaceNewlines)
+							.collect(toList());
+		}
+
+		private String replaceNewlines(String string) {
+			if (newlineReplacement != null) {
+				return string.replace("\r\n", newlineReplacement).replace("\n", newlineReplacement).replace("\r", newlineReplacement);
+			}
+
+			return string;
 		}
 	}
 }
