@@ -37,6 +37,7 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ControlsBuilder;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.key.KeyEvents;
+import is.codion.swing.common.ui.layout.Layouts;
 
 import org.jspecify.annotations.Nullable;
 
@@ -49,7 +50,11 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.JToolTip;
 import javax.swing.ListCellRenderer;
+import javax.swing.Popup;
+import javax.swing.PopupFactory;
+import javax.swing.Timer;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -75,6 +80,7 @@ import static is.codion.swing.common.ui.Utilities.enabled;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ControlKeys.*;
+import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView.SIMPLE;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
@@ -82,6 +88,7 @@ import static java.awt.event.KeyEvent.*;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.toList;
 import static javax.swing.FocusManager.getCurrentManager;
 import static javax.swing.SwingConstants.CENTER;
@@ -632,6 +639,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		else {
 			itemComboBoxModel.setSelectedItem(includedItems.get(0));
 		}
+		displayOperator();
 	}
 
 	private void toggleEnabled() {
@@ -648,6 +656,20 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		else {
 			itemComboBoxModel.setSelectedItem(includedItems.get(includedItems.size() - 1));
 		}
+		displayOperator();
+	}
+
+	private void displayOperator() {
+		if (view().is(SIMPLE)) {
+			JToolTip operatorTip = new JToolTip();
+			operatorTip.setTipText(operatorCaptions.apply(model().operator().getOrThrow()));
+			Popup popup = PopupFactory.getSharedInstance().getPopup(this, operatorTip,
+							getLocationOnScreen().x, getLocationOnScreen().y - getHeight() - Layouts.GAP.getOrThrow());
+			popup.show();
+			Timer timer = new Timer((int) SECONDS.toMillis(1), e -> popup.hide());
+			timer.setRepeats(false);
+			timer.start();
+		}
 	}
 
 	private void singleValuePanel(JComponent component) {
@@ -655,7 +677,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 			boolean operandHasFocus = operandHasFocus();
 			clearInputPanel(operandHasFocus);
 			inputPanel.add(component, BorderLayout.CENTER);
-			if (view().is(ConditionView.SIMPLE)) {
+			if (view().is(SIMPLE)) {
 				inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
 			}
 			if (operandHasFocus) {
@@ -671,7 +693,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 			rangePanel.add(lowerComponent);
 			rangePanel.add(upperComponent);
 			inputPanel.add(rangePanel, BorderLayout.CENTER);
-			if (view().is(ConditionView.SIMPLE)) {
+			if (view().is(SIMPLE)) {
 				inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
 			}
 			if (operandHasFocus) {
