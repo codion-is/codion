@@ -157,7 +157,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.column(),
 										Employee.HIREDATE.define()
 														.column()
-														.localeDateTimePattern(LocaleDateTimePattern.builder()
+														.dateTimePattern(LocaleDateTimePattern.builder()
 																		.delimiterDot()
 																		.yearFourDigits()
 																		.build()),
@@ -399,7 +399,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.column()
 														.nullable(false)
 														.defaultValue(Invoice.DATE_DEFAULT_VALUE)
-														.localeDateTimePattern(LocaleDateTimePattern.builder()
+														.dateTimePattern(LocaleDateTimePattern.builder()
 																		.delimiterDot()
 																		.yearFourDigits()
 																		.build()),

@@ -627,17 +627,17 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		}
 
 		@Override
-		public final B localeDateTimePattern(LocaleDateTimePattern localeDateTimePattern) {
-			requireNonNull(localeDateTimePattern);
+		public final B dateTimePattern(LocaleDateTimePattern dateTimePattern) {
+			requireNonNull(dateTimePattern);
 			if (!attribute.type().isTemporal()) {
-				throw new IllegalStateException("localeDateTimePattern is only applicable to temporal attributes: " + attribute);
+				throw new IllegalStateException("dateTimePattern is only applicable to temporal attributes: " + attribute);
 			}
 			if (this.dateTimePattern != null) {
 				throw new IllegalStateException("dateTimePattern has already been set for attribute: " + attribute);
 			}
-			this.localeDateTimePattern = localeDateTimePattern;
-			this.dateTimePattern = localeDateTimePattern.dateTimePattern();
-			this.dateTimeFormatter = localeDateTimePattern.createFormatter();
+			this.localeDateTimePattern = dateTimePattern;
+			this.dateTimePattern = dateTimePattern.dateTimePattern();
+			this.dateTimeFormatter = dateTimePattern.createFormatter();
 			return self();
 		}
 

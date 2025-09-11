@@ -174,7 +174,7 @@ public final class Employees extends DomainModel {
 														.column()
 														.caption("Hiredate")
 														.nullable(false)
-														.localeDateTimePattern(LocaleDateTimePattern.builder()
+														.dateTimePattern(LocaleDateTimePattern.builder()
 																		.delimiterDash()
 																		.yearFourDigits()
 																		.build()),

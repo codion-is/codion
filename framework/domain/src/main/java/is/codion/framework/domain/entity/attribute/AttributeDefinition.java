@@ -586,7 +586,7 @@ public sealed interface AttributeDefinition<T>
 		 * @throws NullPointerException in case format is null
 		 * @throws IllegalArgumentException in case this is a numerical attribute and the given format is not a NumberFormat.
 		 * @throws IllegalStateException if the underlying attribute is temporal, in which case
-		 * {@link #dateTimePattern(String)} or {@link #localeDateTimePattern(LocaleDateTimePattern)} should be used.
+		 * {@link #dateTimePattern(String)} or {@link #dateTimePattern(LocaleDateTimePattern)} should be used.
 		 */
 		B format(Format format);
 
@@ -596,18 +596,18 @@ public sealed interface AttributeDefinition<T>
 		 * @return this builder instance
 		 * @throws IllegalArgumentException in case the pattern is invalid
 		 * @throws IllegalStateException in case this is not a temporal attribute
-		 * @throws IllegalStateException in case {@link #localeDateTimePattern(LocaleDateTimePattern)} has been set
+		 * @throws IllegalStateException in case {@link #dateTimePattern(LocaleDateTimePattern)} has been set
 		 */
 		B dateTimePattern(String dateTimePattern);
 
 		/**
 		 * Sets the locale aware date/time format pattern used when presenting and inputting values
-		 * @param localeDateTimePattern the format pattern
+		 * @param dateTimePattern the format pattern
 		 * @return this builder instance
 		 * @throws IllegalStateException in case this is not a temporal attribute
 		 * @throws IllegalStateException in case {@link #dateTimePattern(String)} has been set
 		 */
-		B localeDateTimePattern(LocaleDateTimePattern localeDateTimePattern);
+		B dateTimePattern(LocaleDateTimePattern dateTimePattern);
 
 		/**
 		 * Note that by default items are sorted by to their caption, not their value.

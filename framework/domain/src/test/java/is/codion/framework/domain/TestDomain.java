@@ -503,7 +503,7 @@ public final class TestDomain extends DomainModel {
 														.column()
 														.caption(Employee.HIREDATE.name())
 														.updatable(false)
-														.localeDateTimePattern(LocaleDateTimePattern.builder()
+														.dateTimePattern(LocaleDateTimePattern.builder()
 																		.delimiterDot()
 																		.yearFourDigits()
 																		.build())
