@@ -791,21 +791,21 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		}
 
 		private static boolean set(Operator operator, Value<Operator> value) {
-			boolean changed = value.isNotEqualTo(operator);
+			boolean changed = value.isNot(operator);
 			value.set(operator);
 
 			return changed;
 		}
 
 		private static <T> boolean set(Collection<T> value, ValueSet<T> operand) {
-			boolean changed = operand.isNotEqualTo(new HashSet<>(requireNonNull(value)));
+			boolean changed = operand.isNot(new HashSet<>(requireNonNull(value)));
 			operand.set(value);
 
 			return changed;
 		}
 
 		private static <T> boolean set(@Nullable T value, Value<T> operand) {
-			boolean changed = operand.isNotEqualTo(value);
+			boolean changed = operand.isNot(value);
 			operand.set(value);
 
 			return changed;

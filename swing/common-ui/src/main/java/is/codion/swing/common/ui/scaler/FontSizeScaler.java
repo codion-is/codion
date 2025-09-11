@@ -44,7 +44,7 @@ public final class FontSizeScaler implements Scaler {
 
 	@Override
 	public void apply() {
-		if (SCALING.isNotEqualTo(100)) {
+		if (SCALING.isNot(100)) {
 			updateFontSize();
 		}
 	}

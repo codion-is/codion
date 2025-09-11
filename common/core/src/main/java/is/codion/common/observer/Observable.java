@@ -131,7 +131,7 @@ public interface Observable<T> extends Observer<T> {
 	 * @param value the value
 	 * @return true if the underlying value is equal to the given one
 	 */
-	default boolean isEqualTo(@Nullable T value) {
+	default boolean is(@Nullable T value) {
 		return Objects.equals(get(), value);
 	}
 
@@ -140,8 +140,8 @@ public interface Observable<T> extends Observer<T> {
 	 * @param value the value
 	 * @return true if the underlying value is NOT equal to the given one
 	 */
-	default boolean isNotEqualTo(@Nullable T value) {
-		return !isEqualTo(value);
+	default boolean isNot(@Nullable T value) {
+		return !is(value);
 	}
 
 	/**

@@ -382,7 +382,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 
 		@Override
 		public void execute() {
-			if (detailController.panelState.isEqualTo(HIDDEN)) {
+			if (detailController.panelState.is(HIDDEN)) {
 				detailController.panelState.set(detailController.panelStateMapper.apply(HIDDEN));
 			}
 			detailPanel.activate();
@@ -512,7 +512,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 			if (splitPane.getDividerLocation() == splitPane.getMaximumDividerLocation()) {
 				splitPane.resetToPreferredSizes();
 			}
-			if (detailController.panelState.isEqualTo(HIDDEN)) {
+			if (detailController.panelState.is(HIDDEN)) {
 				panelState.set(panelStateMapper.apply(HIDDEN));
 			}
 		}
@@ -621,7 +621,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 								.location(location)
 								.onClosed(windowEvent -> {
 									//the frame can be closed when embedding the panel, don't hide if that's the case
-									if (panelState.isNotEqualTo(EMBEDDED)) {
+									if (panelState.isNot(EMBEDDED)) {
 										panelState.set(HIDDEN);
 									}
 								})
@@ -637,7 +637,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 							.location(location)
 							.onClosed(windowEvent -> {
 								//the dialog can be closed when embedding the panel, don't hide if that's the case
-								if (panelState.isNotEqualTo(EMBEDDED)) {
+								if (panelState.isNot(EMBEDDED)) {
 									panelState.set(HIDDEN);
 								}
 							})

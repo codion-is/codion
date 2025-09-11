@@ -1062,7 +1062,7 @@ public final class CalendarPanel extends JPanel {
 
 		private void updateBorder() {
 			Color foreground = isEnabled() ? getForeground() : UIManager.getColor("Label.disabledForeground");
-			setBorder(dayValue.isEqualTo(day) ? createEtchedBorder(foreground, foreground) : createEtchedBorder());
+			setBorder(dayValue.is(day) ? createEtchedBorder(foreground, foreground) : createEtchedBorder());
 		}
 	}
 

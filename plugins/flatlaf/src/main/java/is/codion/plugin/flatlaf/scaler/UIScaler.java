@@ -28,7 +28,7 @@ public final class UIScaler implements Scaler {
 
 	@Override
 	public void apply() {
-		if (SCALING.isNotEqualTo(100)) {
+		if (SCALING.isNot(100)) {
 			System.setProperty("flatlaf.uiScale", String.valueOf(SCALING.getOrThrow() / 100f));
 		}
 	}

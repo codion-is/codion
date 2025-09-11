@@ -83,11 +83,11 @@ public class ValueTest {
 						.build();
 		assertFalse(intValue.isNullable());
 		assertTrue(intValue.optional().isPresent());
-		assertTrue(intValue.isEqualTo(VALUE_42));
+		assertTrue(intValue.is(VALUE_42));
 		Observable<Integer> observable = intValue.observable();
 		assertFalse(observable.isNullable());
 		assertTrue(observable.optional().isPresent());
-		assertTrue(observable.isEqualTo(VALUE_42));
+		assertTrue(observable.is(VALUE_42));
 		Runnable listener = eventCounter::incrementAndGet;
 		assertTrue(observable.addListener(listener));
 		assertFalse(observable.addListener(listener));
@@ -99,9 +99,9 @@ public class ValueTest {
 		assertEquals(0, eventCounter.get());
 		intValue.set(VALUE_20);
 		assertEquals(1, eventCounter.get());
-		assertTrue(intValue.isEqualTo(VALUE_20));
+		assertTrue(intValue.is(VALUE_20));
 		intValue.clear();
-		assertTrue(intValue.isEqualTo(VALUE_NEGATIVE_1));
+		assertTrue(intValue.is(VALUE_NEGATIVE_1));
 		assertFalse(intValue.isNull());
 		assertTrue(intValue.optional().isPresent());
 		assertEquals(VALUE_NEGATIVE_1, intValue.get());
@@ -174,7 +174,7 @@ public class ValueTest {
 		uiValue.clear();
 		assertNull(modelValue.get());
 		assertTrue(modelValue.isNull());
-		assertTrue(modelValue.isEqualTo(null));
+		assertTrue(modelValue.is(null));
 		assertNull(uiValue.get());
 		assertTrue(uiValue.isNull());
 		assertEquals(3, modelValueEventCounter.get());

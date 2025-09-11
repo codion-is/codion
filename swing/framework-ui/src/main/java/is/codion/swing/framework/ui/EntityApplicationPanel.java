@@ -767,7 +767,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * @see #displayEntityPanelDialog(EntityPanel)
 	 */
 	protected final void displayEntityPanelWindow(EntityPanel entityPanel) {
-		if (EntityPanel.Config.WINDOW_TYPE.isEqualTo(WindowType.FRAME)) {
+		if (EntityPanel.Config.WINDOW_TYPE.is(WindowType.FRAME)) {
 			displayEntityPanelFrame(entityPanel);
 		}
 		else {

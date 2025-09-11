@@ -917,14 +917,14 @@ public class EntityPanel extends JPanel {
 	//#############################################################################################
 
 	private void requestEditPanelFocus() {
-		if (editPanelState.isEqualTo(HIDDEN)) {
+		if (editPanelState.is(HIDDEN)) {
 			editPanelState.map(editPanelStateMapper);
 		}
 		editPanel().focus().initial().request();
 	}
 
 	private void selectInputComponent() {
-		if (editPanelState.isEqualTo(HIDDEN)) {
+		if (editPanelState.is(HIDDEN)) {
 			editPanelState.map(editPanelStateMapper);
 		}
 		editPanel().selectInputComponent();
@@ -1031,7 +1031,7 @@ public class EntityPanel extends JPanel {
 
 		@Override
 		public void execute() {
-			if (containsEditPanel() && editPanelState.isEqualTo(HIDDEN)) {
+			if (containsEditPanel() && editPanelState.is(HIDDEN)) {
 				editPanelState.map(editPanelStateMapper);
 			}
 			Window editPanelWindow = parentWindow(editControlPanel);

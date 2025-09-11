@@ -57,7 +57,7 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
 	 */
 	@Override
 	public boolean isSelected() {
-		return value.isEqualTo(true);
+		return value.is(true);
 	}
 
 	/**

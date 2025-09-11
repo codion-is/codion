@@ -56,7 +56,7 @@ public class ValueSetTest {
 		assertFalse(observer.isEmpty());
 		assertEquals(initialValues, observer.get());
 		assertUnmodifiable(observer);
-		assertTrue(observer.isEqualTo(initialValues));
+		assertTrue(observer.is(initialValues));
 
 		assertFalse(valueSet.add(1));
 		assertFalse(valueSet.add(2));

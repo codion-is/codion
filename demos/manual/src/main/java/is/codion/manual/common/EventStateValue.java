@@ -141,11 +141,17 @@ public final class EventStateValue {
 		// linked to the value above
 		value.link(otherValue);
 
-		System.out.println(otherValue.get());// output: 4
+		System.out.println(otherValue.get());// output: 0
 
 		otherValue.set(3);
 
 		System.out.println(value.get());// output: 3
+
+		System.out.println(value.is(3));// output: true
+
+		value.set(null);
+
+		System.out.println(otherValue.get());// output: 0
 
 		value.addConsumer(System.out::println);
 
@@ -170,6 +176,8 @@ public final class EventStateValue {
 		System.out.println(value.get());// output: 42
 
 		value.set(null); //or value.clear();
+
+		value.isNull(); //output: false;
 
 		System.out.println(value.get());//output: 0
 		// end::nullValue[]

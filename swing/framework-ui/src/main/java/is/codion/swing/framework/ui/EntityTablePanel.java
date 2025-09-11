@@ -1457,7 +1457,7 @@ public class EntityTablePanel extends JPanel {
 						.floatable(false)
 						.rollover(false)
 						.visible(configuration.refreshButtonVisible == RefreshButtonVisible.ALWAYS ||
-										(tableConditionPanel != null && tableConditionPanel.view().isNotEqualTo(HIDDEN)))
+										(tableConditionPanel != null && tableConditionPanel.view().isNot(HIDDEN)))
 						.build();
 	}
 
@@ -2729,7 +2729,7 @@ public class EntityTablePanel extends JPanel {
 			}
 			int selectionCount = tableModel.selection().count();
 			StringBuilder builder = new StringBuilder();
-			if (tableModel.queryModel().limit().isEqualTo(rowCount)) {
+			if (tableModel.queryModel().limit().is(rowCount)) {
 				builder.append(MESSAGES.getString("limited_to")).append(" ");
 			}
 			builder.append(STATUS_MESSAGE_NUMBER_FORMAT.format(rowCount));
@@ -2773,7 +2773,7 @@ public class EntityTablePanel extends JPanel {
 			if (configuration.includeFilters) {
 				filterPanelScrollPane = createLinkedScrollPane(table.filters());
 				table.filters().view().addConsumer(this::filterViewChanged);
-				if (table.filters().view().isNotEqualTo(HIDDEN)) {
+				if (table.filters().view().isNot(HIDDEN)) {
 					tableSouthPanel.add(filterPanelScrollPane, BorderLayout.SOUTH);
 				}
 			}
@@ -2795,11 +2795,11 @@ public class EntityTablePanel extends JPanel {
 		private void initializeConditionPanel() {
 			if (conditionPanelScrollPane == null) {
 				conditionPanelScrollPane = createLinkedScrollPane(tableConditionPanel);
-				if (tableConditionPanel.view().isNotEqualTo(HIDDEN)) {
+				if (tableConditionPanel.view().isNot(HIDDEN)) {
 					tablePanel.add(conditionPanelScrollPane, BorderLayout.NORTH);
 				}
 				refreshButtonToolBar.setVisible(configuration.refreshButtonVisible == RefreshButtonVisible.ALWAYS
-								|| tableConditionPanel.view().isNotEqualTo(HIDDEN));
+								|| tableConditionPanel.view().isNot(HIDDEN));
 			}
 		}
 

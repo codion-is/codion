@@ -57,7 +57,7 @@ public class ValueListTest {
 		assertFalse(observer.isEmpty());
 		assertEquals(initialValues, observer.get());
 		assertUnmodifiable(observer);
-		assertTrue(observer.isEqualTo(initialValues));
+		assertTrue(observer.is(initialValues));
 
 		assertTrue(values.add(1));
 		assertTrue(values.add(2));

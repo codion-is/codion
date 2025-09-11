@@ -3,7 +3,8 @@ Codion Change Log
 
 ## 0.18.49
 ### is.codion.common.core
-- AbstractValue bug fixed, get() now guaranteed to return a non-null value if a nullValue is specified, as promised by javadoc. 
+- AbstractValue bug fixed, get() now guaranteed to return a non-null value if a nullValue is specified, as promised by javadoc.
+- Observable.isEqualTo() and isNotEqualTo() renamed is() and isNot(), to not be confused with equals().
 ### is.codion.swing.common.ui
 - NumberDocument.NumberRangeValidator bug fixed, values now included correctly in error message.
 - NumberField.valueRange(), minimumValue() and maximumValue() removed, accessible via builder, builder validation improved, related refactoring.

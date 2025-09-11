@@ -68,7 +68,7 @@ public class ValueCollectionTest {
 		assertFalse(observer.isEmpty());
 		assertEquals(initialValues, observer.get());
 		assertUnmodifiable(observer);
-		assertTrue(observer.isEqualTo(initialValues));
+		assertTrue(observer.is(initialValues));
 
 		assertFalse(set.add(1));
 		assertFalse(set.add(2));
@@ -188,7 +188,7 @@ public class ValueCollectionTest {
 		assertFalse(observable.isEmpty());
 		assertEquals(initialValues, observable.get());
 		assertUnmodifiable(observable);
-		assertTrue(observable.isEqualTo(initialValues));
+		assertTrue(observable.is(initialValues));
 
 		assertTrue(list.add(1));
 		assertTrue(list.add(2));

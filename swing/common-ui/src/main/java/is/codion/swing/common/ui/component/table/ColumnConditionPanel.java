@@ -655,7 +655,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 			boolean operandHasFocus = operandHasFocus();
 			clearInputPanel(operandHasFocus);
 			inputPanel.add(component, BorderLayout.CENTER);
-			if (view().isEqualTo(ConditionView.SIMPLE)) {
+			if (view().is(ConditionView.SIMPLE)) {
 				inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
 			}
 			if (operandHasFocus) {
@@ -671,7 +671,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 			rangePanel.add(lowerComponent);
 			rangePanel.add(upperComponent);
 			inputPanel.add(rangePanel, BorderLayout.CENTER);
-			if (view().isEqualTo(ConditionView.SIMPLE)) {
+			if (view().is(ConditionView.SIMPLE)) {
 				inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
 			}
 			if (operandHasFocus) {
@@ -722,19 +722,19 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		Value<Wildcard> wildcard = model().operands().wildcard();
 
 		State wildcardNone = State.builder()
-						.value(wildcard.isEqualTo(NONE))
+						.value(wildcard.is(NONE))
 						.consumer(new EnableWildcard(NONE))
 						.build();
 		State wildcardPostfix = State.builder()
-						.value(wildcard.isEqualTo(POSTFIX))
+						.value(wildcard.is(POSTFIX))
 						.consumer(new EnableWildcard(POSTFIX))
 						.build();
 		State wildcardPrefix = State.builder()
-						.value(wildcard.isEqualTo(PREFIX))
+						.value(wildcard.is(PREFIX))
 						.consumer(new EnableWildcard(PREFIX))
 						.build();
 		State wildcardPrefixAndPostfix = State.builder()
-						.value(wildcard.isEqualTo(PREFIX_AND_POSTFIX))
+						.value(wildcard.is(PREFIX_AND_POSTFIX))
 						.consumer(new EnableWildcard(PREFIX_AND_POSTFIX))
 						.build();
 
