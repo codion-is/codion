@@ -789,24 +789,24 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 	static final class DefaultEditEvents implements EditEvents {
 
-		private final EditEvent<Collection<Entity>> inserted = new DefaultEntityEditEvent<>();
-		private final EditEvent<Map<Entity, Entity>> updated = new DefaultEntityEditEvent<>();
-		private final EditEvent<Collection<Entity>> deleted = new DefaultEntityEditEvent<>();
+		private final Event<Collection<Entity>> inserted = Event.event();
+		private final Event<Map<Entity, Entity>> updated = Event.event();
+		private final Event<Collection<Entity>> deleted = Event.event();
 
 		DefaultEditEvents() {}
 
 		@Override
-		public EditEvent<Collection<Entity>> inserted() {
+		public Event<Collection<Entity>> inserted() {
 			return inserted;
 		}
 
 		@Override
-		public EditEvent<Map<Entity, Entity>> updated() {
+		public Event<Map<Entity, Entity>> updated() {
 			return updated;
 		}
 
 		@Override
-		public EditEvent<Collection<Entity>> deleted() {
+		public Event<Collection<Entity>> deleted() {
 			return deleted;
 		}
 
@@ -827,56 +827,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private static void notifyDeleted(Collection<Entity> deleted) {
 			groupByType(deleted).forEach((entityType, entities) ->
 								EntityEditModel.events(entityType).deleted().accept(entities));
-		}
-	}
-
-	private static final class DefaultEntityEditEvent<T> implements EditEvent<T> {
-
-		private final Event<T> event = Event.event();
-
-		@Override
-		public boolean addListener(Runnable listener) {
-			return event.addListener(listener);
-		}
-
-		@Override
-		public boolean removeListener(Runnable listener) {
-			return event.removeListener(listener);
-		}
-
-		@Override
-		public boolean addConsumer(Consumer<? super T> consumer) {
-			return event.addConsumer(consumer);
-		}
-
-		@Override
-		public boolean removeConsumer(Consumer<? super T> consumer) {
-			return event.removeConsumer(consumer);
-		}
-
-		@Override
-		public boolean addWeakListener(Runnable listener) {
-			return event.addWeakListener(listener);
-		}
-
-		@Override
-		public boolean removeWeakListener(Runnable listener) {
-			return event.removeWeakListener(listener);
-		}
-
-		@Override
-		public boolean addWeakConsumer(Consumer<? super T> consumer) {
-			return event.addWeakConsumer(consumer);
-		}
-
-		@Override
-		public boolean removeWeakConsumer(Consumer<? super T> consumer) {
-			return event.removeWeakConsumer(consumer);
-		}
-
-		@Override
-		public void accept(T entities) {
-			event.accept(requireNonNull(entities));
 		}
 	}
 }

@@ -19,6 +19,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.event.Event;
 import is.codion.common.observer.Observable;
 import is.codion.common.observer.Observer;
 import is.codion.common.property.PropertyValue;
@@ -672,19 +673,6 @@ public interface EntityEditModel {
 	}
 
 	/**
-	 * Represents an edit event
-	 * @param <T> the event data
-	 */
-	interface EditEvent<T> extends Observer<T> {
-
-		/**
-		 * Triggers this event
-		 * @param entities the edited entities
-		 */
-		void accept(T entities);
-	}
-
-	/**
 	 * @see EntityEditModel#EDIT_EVENTS
 	 * @see EntityEditModel#editEvents()
 	 * @see #events(EntityType)
@@ -692,21 +680,21 @@ public interface EntityEditModel {
 	interface EditEvents {
 
 		/**
-		 * Returns an insert {@link EditEvent}, notified each time entities are inserted.
-		 * @return the insert {@link EditEvent}
+		 * Returns an insert {@link Event}, notified each time entities are inserted.
+		 * @return the insert {@link Event}
 		 */
-		EditEvent<Collection<Entity>> inserted();
+		Event<Collection<Entity>> inserted();
 
 		/**
-		 * Returns an update {@link EditEvent}, notified each time entities are updated.
-		 * @return the update {@link EditEvent}
+		 * Returns an update {@link Event}, notified each time entities are updated.
+		 * @return the update {@link Event}
 		 */
-		EditEvent<Map<Entity, Entity>> updated();
+		Event<Map<Entity, Entity>> updated();
 
 		/**
-		 * Returns delete {@link EditEvent}, notified each time entities are deleted.
-		 * @return the delete {@link EditEvent}
+		 * Returns delete {@link Event}, notified each time entities are deleted.
+		 * @return the delete {@link Event}
 		 */
-		EditEvent<Collection<Entity>> deleted();
+		Event<Collection<Entity>> deleted();
 	}
 }
