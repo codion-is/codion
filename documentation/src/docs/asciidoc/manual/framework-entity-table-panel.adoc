@@ -16,3 +16,16 @@ For more complex cases, where multiple print controls are required, custom contr
 ----
 include::{dir-source}/is/codion/manual/store/ui/CustomerTablePanel.java[tags=customerTablePanel]
 ----
+
+== Query Inspector
+
+A *Query Inspector* can be enabled globally via the {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityTablePanel.Config.html#INCLUDE_QUERY_INSPECTOR[EntityTablePanel.Config.INCLUDE_QUERY_INSPECTOR] configuration value or for a single panel via the panel configuration.
+
+The *Query Inspector* displays the SELECT query, dynamically updated according to the underlying query conditions.
+
+[source,java]
+----
+EntityTablePanel.Config.INCLUDE_QUERY_INSPECTOR.set(true);
+----
+
+The *Query Inspector* can be opened using the CTRL-ALT-Q keyboard shortcut, when the table panel is focused.

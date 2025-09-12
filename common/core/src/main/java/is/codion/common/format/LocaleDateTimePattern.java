@@ -78,7 +78,7 @@ public final class LocaleDateTimePattern implements Serializable {
 	private final @Nullable String timePattern;
 
 	private LocaleDateTimePattern(Builder builder) {
-		this.delimiter = requireNonNull(builder.delimiter, "delimiter must be specified");
+		this.delimiter = builder.delimiter;
 		this.fourDigitYear = builder.fourDigitYear;
 		this.timePattern = builder.timePattern;
 	}

@@ -141,7 +141,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public @Nullable Object getValueAt(int rowIndex, int columnIndex) {
-		return columnValues.valueAt(rowIndex, columnIndex);
+		return columnValues.value(rowIndex, columns.identifier(columnIndex));
 	}
 
 	@Override
@@ -247,10 +247,6 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		private List<@Nullable Object> values(Stream<Integer> rowIndexStream, C identifier) {
 			return rowIndexStream.map(rowIndex -> value(rowIndex, identifier)).collect(toList());
-		}
-
-		private @Nullable Object valueAt(int rowIndex, int columnIndex) {
-			return value(rowIndex, columns.identifier(columnIndex));
 		}
 
 		private C validateIdentifier(C identifier) {

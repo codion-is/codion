@@ -12,6 +12,21 @@ When extending this class you must provide a constructor with a single applicati
 include::{dir-source}/is/codion/manual/store/ui/StoreApplicationPanel.java[tags=storeAppPanel]
 ----
 
+== SQL Tracing
+
+NOTE: SQL Tracing is only available when using a local EntityConnection.
+
+Application *SQL Tracing* can be enabled via the {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityApplicationPanel.html#SQL_TRACING[EntityApplicationPanel.SQL_TRACING] configuration value.
+
+This configures the underlying EntityConnection to trace its queries and adds a *SQL Trace* item under *Help* -> *Log* main menu, with actions to enable tracing and view the trace log.
+
+Disabling SQL Tracing clears the trace log.
+
+[source,java]
+----
+EntityApplicationPanel.SQL_TRACING.set(true);
+----
+
 == Examples
 
 * <<{dir-tutorials}/employees/employees.adoc#_main_application_panel, Employees application panel>>

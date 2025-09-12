@@ -618,11 +618,6 @@ public final class DefaultFilterTableModelTest {
 	}
 
 	@Test
-	void columns() {
-		assertEquals(1, tableModel.getColumnCount());
-	}
-
-	@Test
 	void filterAndRemove() {
 		tableModel.items().refresh();
 		tableModel.filters().get(0).operands().equal().set("a");
