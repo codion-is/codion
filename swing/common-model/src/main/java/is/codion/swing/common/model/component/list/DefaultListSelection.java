@@ -101,7 +101,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 
 	@Override
 	public void selectAll() {
-		setSelectionInterval(0, items.count() - 1);
+		setSelectionInterval(0, items.size() - 1);
 	}
 
 	@Override
@@ -212,7 +212,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 
 		@Override
 		protected void setValue(Integer index) {
-			checkIndex(index, items.count());
+			checkIndex(index, items.size());
 			setSelectionInterval(index, index);
 		}
 
@@ -275,20 +275,20 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 
 		@Override
 		public void add(int index) {
-			checkIndex(index, items.count());
+			checkIndex(index, items.size());
 			addSelectionInterval(index, index);
 		}
 
 		@Override
 		public void remove(int index) {
-			checkIndex(index, items.count());
+			checkIndex(index, items.size());
 			removeSelectionInterval(index, index);
 		}
 
 		@Override
 		public void remove(Collection<Integer> indexes) {
 			indexes.forEach(index -> {
-				checkIndex(index, items.count());
+				checkIndex(index, items.size());
 				removeSelectionInterval(index, index);
 			});
 		}
@@ -313,7 +313,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 
 		@Override
 		public void decrement() {
-			int includedSize = items.count();
+			int includedSize = items.size();
 			if (includedSize > 0) {
 				int lastIndex = includedSize - 1;
 				if (isSelectionEmpty()) {
@@ -329,7 +329,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 
 		@Override
 		public void increment() {
-			int includedSize = items.count();
+			int includedSize = items.size();
 			if (includedSize > 0) {
 				if (isSelectionEmpty()) {
 					setSelectionInterval(0, 0);
@@ -343,7 +343,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		}
 
 		private void checkIndexes(Collection<Integer> indexes) {
-			int size = items.count();
+			int size = items.size();
 			for (Integer index : indexes) {
 				checkIndex(index, size);
 			}
@@ -359,7 +359,7 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		@Override
 		protected @Nullable R getValue() {
 			int index = selectedIndex.getOrThrow();
-			if (index >= 0 && index < items.count()) {
+			if (index >= 0 && index < items.size()) {
 				return items.get(index);
 			}
 

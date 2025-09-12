@@ -93,7 +93,7 @@ public class DefaultFilterComboBoxModelTest {
 	@Test
 	void testRefreshClear() {
 		testModel.items().refresh();
-		assertEquals(5, testModel.items().included().count());
+		assertEquals(5, testModel.items().included().size());
 		testModel.items().clear();
 		assertEquals(1, testModel.getSize());//null item
 		assertTrue(testModel.items().cleared());
@@ -169,13 +169,13 @@ public class DefaultFilterComboBoxModelTest {
 		assertEquals(2, testModel.getSize());
 		assertTrue(testModel.items().included().contains(ANNA));
 
-		assertEquals(1, testModel.items().included().count());
-		assertEquals(4, testModel.items().excluded().count());
-		assertEquals(1, testModel.items().included().count());
+		assertEquals(1, testModel.items().included().size());
+		assertEquals(4, testModel.items().excluded().size());
+		assertEquals(1, testModel.items().included().size());
 		assertEquals(5, testModel.items().get().size());
 
 		testModel.items().add(BJORN);//already contained
-		assertEquals(4, testModel.items().excluded().count());
+		assertEquals(4, testModel.items().excluded().size());
 
 		assertFalse(testModel.items().included().contains(BJORN));
 		assertTrue(testModel.items().contains(BJORN));
@@ -203,9 +203,9 @@ public class DefaultFilterComboBoxModelTest {
 	void removeByPredicate() {
 		testModel.items().included().predicate().set(item -> !item.startsWith("t"));
 		testModel.items().remove(item -> item != null && item.contains("n"));
-		assertEquals(3, testModel.items().count());
-		assertEquals(1, testModel.items().excluded().count());
-		assertEquals(2, testModel.items().included().count());
+		assertEquals(3, testModel.items().size());
+		assertEquals(1, testModel.items().excluded().size());
+		assertEquals(2, testModel.items().included().size());
 	}
 
 	@Test
@@ -314,7 +314,7 @@ public class DefaultFilterComboBoxModelTest {
 	void setNullValueString() {
 		assertTrue(testModel.items().included().contains(null));
 		testModel.items().refresh();
-		assertEquals(5, testModel.items().included().count());
+		assertEquals(5, testModel.items().included().size());
 		assertEquals(NULL, testModel.getElementAt(0));
 		testModel.setSelectedItem(null);
 		assertEquals(NULL, testModel.getSelectedItem());

@@ -2722,8 +2722,8 @@ public class EntityTablePanel extends JPanel {
 
 		@Override
 		public String apply(SwingEntityTableModel tableModel) {
-			int rowCount = tableModel.items().included().count();
-			int excludedCount = tableModel.items().excluded().count();
+			int rowCount = tableModel.items().included().size();
+			int excludedCount = tableModel.items().excluded().size();
 			if (rowCount == 0 && excludedCount == 0) {
 				return "";
 			}

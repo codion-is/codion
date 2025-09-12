@@ -633,7 +633,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		FilterComboBoxModel<Item<Operator>> itemComboBoxModel = (FilterComboBoxModel<Item<Operator>>) operatorCombo.getModel();
 		List<Item<Operator>> includedItems = itemComboBoxModel.items().included().get();
 		int index = includedItems.indexOf(itemComboBoxModel.getSelectedItem());
-		if (index < itemComboBoxModel.items().included().count() - 1) {
+		if (index < itemComboBoxModel.items().included().size() - 1) {
 			itemComboBoxModel.setSelectedItem(includedItems.get(index + 1));
 		}
 		else {

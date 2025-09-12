@@ -111,7 +111,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 	@Override
 	public int getRowCount() {
-		return items.included().count();
+		return items.included().size();
 	}
 
 	@Override
@@ -227,7 +227,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 		@Override
 		public <T> List<T> get(C identifier) {
-			return (List<T>) values(IntStream.range(0, items.included().count()).boxed(), validateIdentifier(identifier));
+			return (List<T>) values(IntStream.range(0, items.included().size()).boxed(), validateIdentifier(identifier));
 		}
 
 		@Override
@@ -502,7 +502,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 		public String get() {
 			List<Integer> rows = selected ?
 							selection().indexes().get() :
-							IntStream.range(0, items().included().count())
+							IntStream.range(0, items().included().size())
 											.boxed()
 											.collect(toList());
 

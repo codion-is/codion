@@ -243,7 +243,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 		OnInsert onInsertAction = onInsert.getOrThrow();
 		if (onInsertAction != OnInsert.DO_NOTHING && !entitiesToAdd.isEmpty()) {
 			selection().clear();
-			items().included().add(onInsertAction == OnInsert.PREPEND ? 0 : items().included().count(), entitiesToAdd);
+			items().included().add(onInsertAction == OnInsert.PREPEND ? 0 : items().included().size(), entitiesToAdd);
 		}
 	}
 

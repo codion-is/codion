@@ -161,11 +161,11 @@ public final class DefaultFilterTableModelTest {
 	@Test
 	void conditionModel() {
 		tableModel.items().refresh();
-		assertEquals(5, tableModel.items().included().count());
+		assertEquals(5, tableModel.items().included().size());
 		tableModel.filters().get(0).operands().equal().set("a");
-		assertEquals(1, tableModel.items().included().count());
+		assertEquals(1, tableModel.items().included().size());
 		tableModel.filters().get(0).operands().equal().set("b");
-		assertEquals(1, tableModel.items().included().count());
+		assertEquals(1, tableModel.items().included().size());
 		tableModel.filters().get(0).clear();
 	}
 
@@ -433,9 +433,9 @@ public final class DefaultFilterTableModelTest {
 	@Test
 	void clear() {
 		tableModel.items().refresh();
-		assertTrue(tableModel.items().included().count() > 0);
+		assertTrue(tableModel.items().included().size() > 0);
 		tableModel.items().clear();
-		assertEquals(0, tableModel.items().included().count());
+		assertEquals(0, tableModel.items().included().size());
 	}
 
 	@Test
@@ -492,15 +492,15 @@ public final class DefaultFilterTableModelTest {
 
 		selection.index().set(0);
 		selection.indexes().decrement();
-		assertEquals(tableModel.items().included().count() - 1, selection.index().get());
+		assertEquals(tableModel.items().included().size() - 1, selection.index().get());
 
-		selection.index().set(tableModel.items().included().count() - 1);
+		selection.index().set(tableModel.items().included().size() - 1);
 		selection.indexes().increment();
 		assertEquals(0, selection.index().get());
 
 		selection.clearSelection();
 		selection.indexes().decrement();
-		assertEquals(tableModel.items().included().count() - 1, selection.index().get());
+		assertEquals(tableModel.items().included().size() - 1, selection.index().get());
 
 		selection.clearSelection();
 		selection.indexes().increment();
@@ -614,7 +614,7 @@ public final class DefaultFilterTableModelTest {
 	void includePredicate() {
 		tableModel.items().refresh();
 		tableModel.items().included().predicate().set(item -> false);
-		assertEquals(0, tableModel.items().included().count());
+		assertEquals(0, tableModel.items().included().size());
 	}
 
 	@Test
@@ -656,7 +656,7 @@ public final class DefaultFilterTableModelTest {
 		assertFalse(tableModel.items().included().contains(B));
 		assertTrue(tableModel.items().contains(B));
 		assertTrue(tableModel.filters().get(0).enabled().is());
-		assertEquals(4, tableModel.items().excluded().count());
+		assertEquals(4, tableModel.items().excluded().size());
 		assertFalse(tableModelContainsAll(ITEMS, false, tableModel));
 		assertTrue(tableModelContainsAll(ITEMS, true, tableModel));
 
@@ -671,7 +671,7 @@ public final class DefaultFilterTableModelTest {
 
 		tableModel.filters().get(0).operands().equal().set("t"); // ekki til
 		assertTrue(tableModel.filters().get(0).enabled().is());
-		assertEquals(5, tableModel.items().excluded().count());
+		assertEquals(5, tableModel.items().excluded().size());
 		assertFalse(tableModelContainsAll(ITEMS, false, tableModel));
 		assertTrue(tableModelContainsAll(ITEMS, true, tableModel));
 		tableModel.filters().get(0).enabled().set(false);
@@ -679,9 +679,9 @@ public final class DefaultFilterTableModelTest {
 		assertFalse(tableModel.filters().get(0).enabled().is());
 
 		tableModel.filters().get(0).operands().equal().set("b");
-		int rowCount = tableModel.items().included().count();
+		int rowCount = tableModel.items().included().size();
 		tableModel.items().included().add(0, singletonList(new TestRow("x")));
-		assertEquals(rowCount, tableModel.items().included().count());
+		assertEquals(rowCount, tableModel.items().included().size());
 
 		assertThrows(IllegalArgumentException.class, () -> tableModel.filters().get(1));
 	}

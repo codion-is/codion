@@ -249,8 +249,8 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	}
 
 	@Override
-	public int count() {
-		return included.count() + excluded.count();
+	public int size() {
+		return included.size() + excluded.size();
 	}
 
 	@Override
@@ -463,7 +463,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 
 		@Override
-		public int count() {
+		public int size() {
 			synchronized (lock) {
 				return items.size();
 			}
@@ -510,7 +510,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 
 		@Override
-		public int count() {
+		public int size() {
 			synchronized (lock) {
 				return items.size();
 			}

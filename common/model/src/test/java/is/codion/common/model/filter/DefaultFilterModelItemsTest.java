@@ -86,9 +86,9 @@ public class DefaultFilterModelItemsTest {
 		void add_singleItem_shouldAddToVisible() {
 			items.add(ITEM_PREFIX + "1");
 
-			assertEquals(1, items.count());
-			assertEquals(1, items.included().count());
-			assertEquals(0, items.excluded().count());
+			assertEquals(1, items.size());
+			assertEquals(1, items.included().size());
+			assertEquals(0, items.excluded().size());
 			assertTrue(items.contains(ITEM_PREFIX + "1"));
 		}
 
@@ -98,9 +98,9 @@ public class DefaultFilterModelItemsTest {
 			includedPredicate.setPredicate(item -> !item.startsWith(ITEM_PREFIX));
 			items.add(ITEM_PREFIX + "1");
 
-			assertEquals(1, items.count());
-			assertEquals(0, items.included().count());
-			assertEquals(1, items.excluded().count());
+			assertEquals(1, items.size());
+			assertEquals(0, items.included().size());
+			assertEquals(1, items.excluded().size());
 			assertTrue(items.contains(ITEM_PREFIX + "1"));
 		}
 
@@ -117,9 +117,9 @@ public class DefaultFilterModelItemsTest {
 
 			items.add(itemsToAdd);
 
-			assertEquals(4, items.count());
-			assertEquals(2, items.included().count());
-			assertEquals(2, items.excluded().count());
+			assertEquals(4, items.size());
+			assertEquals(2, items.included().size());
+			assertEquals(2, items.excluded().size());
 			assertTrue(items.included().contains(INCLUDED_PREFIX + "1"));
 			assertTrue(items.included().contains(INCLUDED_PREFIX + "2"));
 			assertTrue(items.excluded().contains(EXCLUDED_PREFIX + "1"));
@@ -132,7 +132,7 @@ public class DefaultFilterModelItemsTest {
 			items.add(ITEM_PREFIX + "1");
 			items.remove(ITEM_PREFIX + "1");
 
-			assertEquals(0, items.count());
+			assertEquals(0, items.size());
 			assertFalse(items.contains(ITEM_PREFIX + "1"));
 		}
 
@@ -144,7 +144,7 @@ public class DefaultFilterModelItemsTest {
 
 			items.remove(ITEM_PREFIX + "1");
 
-			assertEquals(0, items.count());
+			assertEquals(0, items.size());
 			assertFalse(items.contains(ITEM_PREFIX + "1"));
 		}
 
@@ -154,9 +154,9 @@ public class DefaultFilterModelItemsTest {
 			items.add(Arrays.asList("One", "Two", "Three", "Four", "Five"));
 			items.included().predicate().set(item -> !item.startsWith("T"));
 			items.remove(item -> item.length() == 3);
-			assertEquals(3, items.count());
-			assertEquals(1, items.excluded().count());
-			assertEquals(2, items.included().count());
+			assertEquals(3, items.size());
+			assertEquals(1, items.excluded().size());
+			assertEquals(2, items.included().size());
 		}
 
 		@Test
@@ -166,7 +166,7 @@ public class DefaultFilterModelItemsTest {
 
 			items.replace(ITEM_PREFIX + "1", ITEM_PREFIX + "1_replaced");
 
-			assertEquals(1, items.count());
+			assertEquals(1, items.size());
 			assertFalse(items.contains(ITEM_PREFIX + "1"));
 			assertTrue(items.contains(ITEM_PREFIX + "1_replaced"));
 		}
@@ -179,9 +179,9 @@ public class DefaultFilterModelItemsTest {
 
 			items.replace(ITEM_PREFIX + "1", ITEM_PREFIX + "1_replaced");
 
-			assertEquals(1, items.count());
-			assertEquals(0, items.included().count());
-			assertEquals(1, items.excluded().count());
+			assertEquals(1, items.size());
+			assertEquals(0, items.included().size());
+			assertEquals(1, items.excluded().size());
 			assertTrue(items.excluded().contains(ITEM_PREFIX + "1_replaced"));
 		}
 
@@ -194,9 +194,9 @@ public class DefaultFilterModelItemsTest {
 
 			items.clear();
 
-			assertEquals(0, items.count());
-			assertEquals(0, items.included().count());
-			assertEquals(0, items.excluded().count());
+			assertEquals(0, items.size());
+			assertEquals(0, items.included().size());
+			assertEquals(0, items.excluded().size());
 		}
 
 		@Test
@@ -256,9 +256,9 @@ public class DefaultFilterModelItemsTest {
 
 			items.filter();
 
-			assertEquals(4, items.count());
-			assertEquals(2, items.included().count());
-			assertEquals(2, items.excluded().count());
+			assertEquals(4, items.size());
+			assertEquals(2, items.included().size());
+			assertEquals(2, items.excluded().size());
 			assertTrue(items.included().contains("keep1"));
 			assertTrue(items.included().contains("keep2"));
 			assertTrue(items.excluded().contains("filter1"));
@@ -270,13 +270,13 @@ public class DefaultFilterModelItemsTest {
 		void filter_movesItemsToVisible() {
 			includePredicate.setPredicate(item -> false);
 			items.add(asList("item1", "item2", "item3"));
-			assertEquals(3, items.excluded().count());
+			assertEquals(3, items.excluded().size());
 
 			includePredicate.setPredicate(item -> true);
 			items.filter();
 
-			assertEquals(3, items.included().count());
-			assertEquals(0, items.excluded().count());
+			assertEquals(3, items.included().size());
+			assertEquals(0, items.excluded().size());
 		}
 
 		@Test
@@ -330,7 +330,7 @@ public class DefaultFilterModelItemsTest {
 			refresher.setItems(asList("new1", "new2", "new3", "new4"));
 			items.refresh();
 
-			assertEquals(4, items.count());
+			assertEquals(4, items.size());
 			assertTrue(items.contains("new1"));
 			assertTrue(items.contains("new2"));
 			assertTrue(items.contains("new3"));
@@ -498,10 +498,10 @@ public class DefaultFilterModelItemsTest {
 							.build();
 
 			items.add("valid");
-			assertEquals(1, items.count());
+			assertEquals(1, items.size());
 
 			assertThrows(IllegalArgumentException.class, () -> items.add("invalid_item"));
-			assertEquals(1, items.count());
+			assertEquals(1, items.size());
 		}
 
 		@Test
@@ -518,7 +518,7 @@ public class DefaultFilterModelItemsTest {
 			items.add("123456789012345678901234567890");
 			items.add("");
 
-			assertEquals(3, items.count());
+			assertEquals(3, items.size());
 		}
 	}
 
@@ -569,7 +569,7 @@ public class DefaultFilterModelItemsTest {
 			startLatch.countDown();
 			assertTrue(doneLatch.await(5, TimeUnit.SECONDS));
 
-			assertEquals(THREAD_COUNT * OPERATIONS_PER_THREAD, items.count());
+			assertEquals(THREAD_COUNT * OPERATIONS_PER_THREAD, items.size());
 		}
 	}
 

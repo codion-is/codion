@@ -467,16 +467,16 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public int count() {
+		public int size() {
 			synchronized (lock) {
-				return included.count() + excluded.count();
+				return included.size() + excluded.size();
 			}
 		}
 
 		@Override
 		public void filter() {
 			synchronized (lock) {
-				if (count() > 0) {
+				if (size() > 0) {
 					included.items.addAll(excluded.items);
 					excluded.items.clear();
 					filterInternal();
@@ -679,7 +679,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			}
 
 			@Override
-			public int count() {
+			public int size() {
 				synchronized (lock) {
 					if (items.isEmpty()) {
 						return 0;
@@ -702,7 +702,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			}
 
 			private boolean sortInternal() {
-				if (sort.sorted() && count() > 0) {
+				if (sort.sorted() && size() > 0) {
 					items.subList(includeNull ? 1 : 0, items.size()).sort(sort);
 					return true;
 				}
@@ -735,7 +735,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			}
 
 			@Override
-			public int count() {
+			public int size() {
 				synchronized (lock) {
 					return items.size();
 				}

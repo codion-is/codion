@@ -97,12 +97,12 @@ final class DefaultFilterTableSearchModel<C> implements FilterTableSearchModel {
 
 	private void performSearch() {
 		results.clear();
-		if (predicate.isNull() || tableModel.items().included().count() == 0 || tableModel.getColumnCount() == 0) {
+		if (predicate.isNull() || tableModel.items().included().size() == 0 || tableModel.getColumnCount() == 0) {
 			return;
 		}
 		Predicate<String> searchPredicate = predicate.getOrThrow();
 		List<FilterTableColumn<C>> visibleColumns = columnModel.visible().columns();
-		for (int row = 0; row < tableModel.items().included().count(); row++) {
+		for (int row = 0; row < tableModel.items().included().size(); row++) {
 			for (int columnIndex = 0; columnIndex < visibleColumns.size(); columnIndex++) {
 				FilterTableColumn<C> column = visibleColumns.get(columnIndex);
 				if (searchPredicate.test(tableModel.values().formatted(row, column.identifier()))) {

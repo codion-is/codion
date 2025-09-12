@@ -166,7 +166,7 @@ final class AlbumTagPanel extends JPanel {
 		movingTags.set(true);
 		try {
 			int[] selected = tagsValue.component().getSelectedIndices();
-			if (selected.length > 0 && selected[selected.length - 1] != tagItems.included().count() - 1) {
+			if (selected.length > 0 && selected[selected.length - 1] != tagItems.included().size() - 1) {
 				moveTagsDown(selected);
 				moveSelectionDown(selected);
 			}

@@ -1726,7 +1726,7 @@ public final class FilterTable<R, C> extends JTable {
 			FilterListSelection<?> selection = tableModel.selection();
 
 			return selection.empty().not().is() &&
-							selection.count() != tableModel.items().included().count();
+							selection.count() != tableModel.items().included().size();
 		}
 	}
 

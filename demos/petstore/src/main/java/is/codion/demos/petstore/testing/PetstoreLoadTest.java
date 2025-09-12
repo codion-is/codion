@@ -78,8 +78,8 @@ public final class PetstoreLoadTest {
 		}
 
 		private static void selectRandomRow(EntityTableModel<?> tableModel) {
-			if (tableModel.items().included().count() > 0) {
-				tableModel.selection().index().set(RANDOM.nextInt(tableModel.items().included().count()));
+			if (tableModel.items().included().size() > 0) {
+				tableModel.selection().index().set(RANDOM.nextInt(tableModel.items().included().size()));
 			}
 		}
 	}

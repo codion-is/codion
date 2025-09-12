@@ -208,7 +208,7 @@ public interface FilterModel<T> {
 		/**
 		 * @return the total number of items, included and excluded
 		 */
-		int count();
+		int size();
 
 		/**
 		 * <p>Filters the items according to the {@link IncludedItems#predicate()}.
@@ -407,7 +407,7 @@ public interface FilterModel<T> {
 		/**
 		 * @return the number of included items
 		 */
-		int count();
+		int size();
 
 		/**
 		 * Sorts the included items using this {@link Sort} instance, preserving the selection.
@@ -468,7 +468,7 @@ public interface FilterModel<T> {
 		/**
 		 * @return the number of excluded items
 		 */
-		int count();
+		int size();
 	}
 
 	/**

@@ -74,11 +74,11 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 	@Test
 	void refreshOnForeignKeyConditionValuesSet() {
 		SwingEntityTableModel employeeTableModel = createTableModel(Employee.TYPE, connectionProvider());
-		assertEquals(0, employeeTableModel.items().included().count());
+		assertEquals(0, employeeTableModel.items().included().size());
 		Entity accounting = connectionProvider().connection().selectSingle(Department.ID.equalTo(10));
 		employeeTableModel.queryModel().condition().get(Employee.DEPARTMENT_FK).set().in(accounting);
 		employeeTableModel.items().refresh();
-		assertEquals(7, employeeTableModel.items().included().count());
+		assertEquals(7, employeeTableModel.items().included().size());
 	}
 
 	@Test
@@ -93,7 +93,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 						testModel.filters().get(Detail.STRING);
 		filterModel.operands().equal().set("a");
 		testModel.items().filter();
-		assertEquals(4, testModel.items().excluded().count());
+		assertEquals(4, testModel.items().excluded().size());
 		testModel.filters().get(Detail.MASTER_FK);
 	}
 
@@ -179,18 +179,18 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 		EntityQueryModel queryModel = tableModel.queryModel();
 		queryModel.conditionEnabled().set(queryModel.condition().get(Employee.MGR_FK).enabled());
 		tableModel.items().refresh();
-		assertEquals(16, tableModel.items().included().count());
+		assertEquals(16, tableModel.items().included().size());
 		queryModel.conditionRequired().set(true);
 		tableModel.items().refresh();
-		assertEquals(0, tableModel.items().included().count());
+		assertEquals(0, tableModel.items().included().size());
 		ConditionModel<Entity> mgrCondition = queryModel.condition().get(Employee.MGR_FK);
 		mgrCondition.operands().equal().set(null);
 		mgrCondition.enabled().set(true);
 		tableModel.items().refresh();
-		assertEquals(1, tableModel.items().included().count());
+		assertEquals(1, tableModel.items().included().size());
 		mgrCondition.enabled().set(false);
 		tableModel.items().refresh();
-		assertEquals(0, tableModel.items().included().count());
+		assertEquals(0, tableModel.items().included().size());
 	}
 
 	@Test

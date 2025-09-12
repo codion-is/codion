@@ -59,7 +59,7 @@ final class DefaultFilterListModelTest {
 						.comparator(Text.collator())
 						.build();
 		model.selection().item().set(TWO);
-		assertEquals(items.size(), model.items().count());
+		assertEquals(items.size(), model.items().size());
 		assertEquals(items.size(), model.getSize());
 		assertTrue(model.sort().sorted());
 		model.sort().descending();
@@ -80,8 +80,8 @@ final class DefaultFilterListModelTest {
 		assertEquals(FOUR, model.selection().item().get());
 
 		model.items().included().predicate().set(string -> !string.startsWith("T"));
-		assertEquals(2, model.items().included().count());
-		assertEquals(1, model.items().excluded().count());
+		assertEquals(2, model.items().included().size());
+		assertEquals(1, model.items().excluded().size());
 		assertTrue(model.items().included().contains(ONE));
 		assertTrue(model.items().included().contains(FOUR));
 		assertTrue(model.items().excluded().contains(THREE));
@@ -94,13 +94,13 @@ final class DefaultFilterListModelTest {
 						.items(items).build();
 
 		// Initially all included
-		assertEquals(5, model.items().included().count());
-		assertEquals(0, model.items().excluded().count());
+		assertEquals(5, model.items().included().size());
+		assertEquals(0, model.items().excluded().size());
 
 		// Filter items containing 'e' - apple, cherry, date, elderberry
 		model.items().included().predicate().set(s -> s.contains("e"));
-		assertEquals(4, model.items().included().count());
-		assertEquals(1, model.items().excluded().count()); // only banana
+		assertEquals(4, model.items().included().size());
+		assertEquals(1, model.items().excluded().size()); // only banana
 		assertTrue(model.items().included().contains("apple"));
 		assertTrue(model.items().included().contains("cherry"));
 		assertTrue(model.items().included().contains("date"));
@@ -108,14 +108,14 @@ final class DefaultFilterListModelTest {
 
 		// Chain filters - only items with 'e' and length > 5
 		model.items().included().predicate().set(s -> s.contains("e") && s.length() > 5);
-		assertEquals(2, model.items().included().count());
+		assertEquals(2, model.items().included().size());
 		assertTrue(model.items().included().contains("cherry"));
 		assertTrue(model.items().included().contains("elderberry"));
 
 		// Clear filter
 		model.items().included().predicate().clear();
-		assertEquals(5, model.items().included().count());
-		assertEquals(0, model.items().excluded().count());
+		assertEquals(5, model.items().included().size());
+		assertEquals(0, model.items().excluded().size());
 	}
 
 	@Test
@@ -215,9 +215,9 @@ final class DefaultFilterListModelTest {
 						.build();
 
 		assertEquals(0, model.getSize());
-		assertEquals(0, model.items().count());
-		assertEquals(0, model.items().included().count());
-		assertEquals(0, model.items().excluded().count());
+		assertEquals(0, model.items().size());
+		assertEquals(0, model.items().included().size());
+		assertEquals(0, model.items().excluded().size());
 
 		// Operations on empty model should not throw
 		model.items().included().predicate().set(s -> true);
@@ -271,8 +271,8 @@ final class DefaultFilterListModelTest {
 						.items(asList(ONE, TWO, THREE, FOUR))
 						.included(s -> s.length() > 3)
 						.build();
-		assertEquals(2, filteredModel.items().included().count()); // THREE and FOUR
-		assertEquals(2, filteredModel.items().excluded().count()); // ONE and TWO
+		assertEquals(2, filteredModel.items().included().size()); // THREE and FOUR
+		assertEquals(2, filteredModel.items().excluded().size()); // ONE and TWO
 	}
 
 	@Test

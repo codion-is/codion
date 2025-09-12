@@ -73,7 +73,7 @@ final class DefaultFilterListModel<T> extends AbstractListModel<T> implements Fi
 
 	@Override
 	public int getSize() {
-		return items.included().count();
+		return items.included().size();
 	}
 
 	@Override

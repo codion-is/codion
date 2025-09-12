@@ -60,7 +60,7 @@ public final class AlbumModelTest {
 			SwingEntityTableModel albumTableModel = albumModel.tableModel();
 			albumTableModel.queryModel().condition().get(Album.TITLE).set().equalTo(MASTER_OF_PUPPETS);
 			albumTableModel.items().refresh();
-			assertEquals(1, albumTableModel.items().count());
+			assertEquals(1, albumTableModel.items().size());
 
 			List<Entity> modifiedTracks = connection.select(Track.ALBUM_FK.equalTo(masterOfPuppets)).stream()
 							.peek(track -> track.set(Track.RATING, 10))

@@ -45,7 +45,7 @@ public final class TrackTableModelTest {
 						.get(Track.ALBUM_FK).set().equalTo(masterOfPuppets);
 
 			trackTableModel.items().refresh();
-			assertEquals(8, trackTableModel.items().included().count());
+			assertEquals(8, trackTableModel.items().included().size());
 
 			trackTableModel.selection().selectAll();
 			trackTableModel.raisePriceOfSelected(BigDecimal.ONE);
