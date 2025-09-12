@@ -349,13 +349,6 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 		Color background(boolean filterEnabled, boolean alternateRow, Color cellBackgroundColor);
 
 		/**
-		 * @param alternateRow true if this is an alternate row number
-		 * @param cellBackgroundColor the cell specific background color, if any
-		 * @return the filtered cell background
-		 */
-		Color filteredBackground(boolean alternateRow, Color cellBackgroundColor);
-
-		/**
 		 * @return the alternate selection background color
 		 */
 		Color alternateSelectionBackground();
@@ -477,8 +470,7 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 			return cellBackgroundColor;
 		}
 
-		@Override
-		public final Color filteredBackground(boolean alternateRow, Color cellBackgroundColor) {
+		private Color filteredBackground(boolean alternateRow, Color cellBackgroundColor) {
 			if (cellBackgroundColor != null) {
 				return darker(cellBackgroundColor, DARKENING_FACTOR);
 			}

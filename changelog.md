@@ -20,6 +20,7 @@ Codion Change Log
 - ColumnConditionPanel, now displays the selected operator in a tooltip when changed via the keyboard, if the view is SIMPLE and the operator combo box hidden.
 - FilterTable.Export moved to FilterTableModel, related refactoring.
 - NumberField.Builder.maximumFractionDigits() renamed fractionDigits().
+- FilterTableCellRenderer.UISettings.filteredBackground() removed.
 ### is.codion.framework.domain
 - KeyGenerator.Identity removed.
 - AttributeDefinition.Builder.valueRange(), minimumValue() and maximumValue() renamed range(), minimum() and maximum().
