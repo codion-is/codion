@@ -9,6 +9,7 @@ Codion Change Log
 - FilterModel, count() renamed to size().
 ### is.codion.swing.common.model
 - FilterComboBoxModel.Builder.onSelection() added.
+- FilterComboBoxModel.Builder.refresh() added, related refactoring.
 ### is.codion.swing.common.ui
 - NumberDocument.NumberRangeValidator bug fixed, values now included correctly in error message.
 - NumberField.valueRange(), minimumValue() and maximumValue() removed, accessible via builder, builder validation improved, related refactoring.

@@ -178,6 +178,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		private boolean filterSelected;
 		private boolean includeNull;
 		private @Nullable T nullItem;
+		private boolean refresh = false;
 
 		private DefaultBuilder(@Nullable Collection<T> items, @Nullable Supplier<Collection<T>> supplier) {
 			this.items = items;
@@ -224,6 +225,12 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		public Builder<T> async(boolean async) {
 			this.async = async;
+			return this;
+		}
+
+		@Override
+		public Builder<T> refresh(boolean refresh) {
+			this.refresh = refresh;
 			return this;
 		}
 
@@ -350,6 +357,9 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 				set(builder.items);
 			}
 			refresher = new DefaultRefreshWorker(builder.supplier, builder.async);
+			if (builder.items == null && builder.refresh) {
+				refresher.refresh(null);
+			}
 		}
 
 		@Override
@@ -597,6 +607,18 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			return included.predicate.isNull() || included.predicate.getOrThrow().test(item);
 		}
 
+		private final class DefaultRefreshWorker extends AbstractRefreshWorker<T> {
+
+			private DefaultRefreshWorker(@Nullable Supplier<Collection<T>> supplier, boolean async) {
+				super(supplier, async);
+			}
+
+			@Override
+			protected void processResult(Collection<T> result) {
+				set(result);
+			}
+		}
+
 		private final class DefaultIncludedItems implements IncludedItems<T> {
 
 			private final IncludedPredicate<T> predicate = new DefaultIncludedPredicate<>();
@@ -841,18 +863,6 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		@Override
 		protected void setValue(@Nullable V value) {
 			setSelectedItem(value == null ? null : itemFinder.findItem(modelItems.included.get(), value).orElse(null));
-		}
-	}
-
-	private final class DefaultRefreshWorker extends AbstractRefreshWorker<T> {
-
-		private DefaultRefreshWorker(@Nullable Supplier<Collection<T>> supplier, boolean async) {
-			super(supplier, async);
-		}
-
-		@Override
-		protected void processResult(Collection<T> result) {
-			modelItems.set(result);
 		}
 	}
 
