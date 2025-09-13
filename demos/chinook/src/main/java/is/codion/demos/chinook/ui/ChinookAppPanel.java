@@ -76,12 +76,13 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 	private static final String LANGUAGE_PREFERENCES_KEY = ChinookAppPanel.class.getSimpleName() + ".language";
 	private static final String LANGUAGE_IS = "is";
 	private static final String LANGUAGE_EN = "en";
-	private static final Locale LOCALE_IS = new Locale(LANGUAGE_IS, "IS");
-	private static final Locale LOCALE_EN = new Locale(LANGUAGE_EN, "EN");
+	private static final Locale LOCALE_IS = Locale.of(LANGUAGE_IS, "IS");
+	private static final Locale LOCALE_EN = Locale.of(LANGUAGE_EN, "EN");
 
 	/* Non-static so this is not initialized before main(), which sets the locale */
 	private final ResourceBundle bundle = getBundle(ChinookAppPanel.class.getName());
 
+	private final AnalyticsPanel analyticsPanel = new AnalyticsPanel(this);
 	private final State mcpServerController = SwingMcpPlugin.mcpServer(this);
 
 	public ChinookAppPanel(ChinookAppModel applicationModel) {
@@ -162,6 +163,8 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 	protected Optional<Controls> createToolsMenuControls() {
 		return super.createToolsMenuControls()
 						.map(controls -> controls.copy()
+										.control(analyticsPanel.display())
+										.separator()
 										.control(Control.builder()
 														.toggle(mcpServerController)
 														.caption("MCP Server"))
@@ -204,7 +207,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 	public static void main(String[] args) throws CancelException {
 		String language = UserPreferences.get(LANGUAGE_PREFERENCES_KEY, Locale.getDefault().getLanguage());
 		Locale.setDefault(LANGUAGE_IS.equals(language) ? LOCALE_IS : LOCALE_EN);
-		FrameworkIcons.instance().add(Foundation.PLUS, Foundation.MINUS);
+		FrameworkIcons.instance().add(Foundation.PLUS, Foundation.MINUS, Foundation.GRAPH_PIE);
 		Completion.COMPLETION_MODE.set(Completion.Mode.AUTOCOMPLETE);
 		EntityApplicationPanel.CACHE_ENTITY_PANELS.set(true);
 		EntityApplicationPanel.SQL_TRACING.set(true);

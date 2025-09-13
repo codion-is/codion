@@ -77,8 +77,9 @@ public final class TrackTablePanel extends EntityTablePanel {
 						// Custom cell editor for track durations (min:sec:ms)
 						.cellEditor(Track.MILLISECONDS, durationEditor())
 						// Start editing when the INSERT key is pressed
-						.table(table ->
-										table.startEditing(keyStroke(VK_INSERT)))
+						.table(table -> table
+										.autoStartsEdit(false)
+										.startEditing(keyStroke(VK_INSERT)))
 						.includeLimitMenu(true));
 		// Add a custom control to the top of the table popup menu.
 		// Start by clearing the popup menu layout

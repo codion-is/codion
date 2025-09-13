@@ -29,11 +29,18 @@ public final class ChinookAppModel extends SwingEntityApplicationModel {
 
 	public static final Version VERSION = Version.parse(ChinookAppModel.class, "/version.properties");
 
+	private final AnalyticsModel analytics;
+
 	public ChinookAppModel(EntityConnectionProvider connectionProvider) {
 		super(connectionProvider, List.of(
 						createAlbumModel(connectionProvider),
 						createPlaylistModel(connectionProvider),
 						createCustomerModel(connectionProvider)), VERSION);
+		this.analytics = new AnalyticsModel(connectionProvider);
+	}
+
+	public AnalyticsModel analytics() {
+		return analytics;
 	}
 
 	private static SwingEntityModel createAlbumModel(EntityConnectionProvider connectionProvider) {

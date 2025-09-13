@@ -14,6 +14,7 @@ dependencies {
     implementation(project(":codion-plugin-jasperreports")) {
         exclude(group = "org.apache.xmlgraphics")
     }
+    implementation(libs.jfreechart)
 
     runtimeOnly(project(":codion-plugin-logback-proxy"))
 
