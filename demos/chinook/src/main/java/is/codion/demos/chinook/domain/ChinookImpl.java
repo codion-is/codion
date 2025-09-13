@@ -420,7 +420,9 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.maximumLength(10),
 										Invoice.TOTAL.define()
 														.column()
-														.fractionDigits(2),
+														.fractionDigits(2)
+														.nullable(false)
+														.hasDatabaseDefault(true),
 										Invoice.CALCULATED_TOTAL.define()
 														.subquery("""
 																		SELECT SUM(unitprice * quantity)

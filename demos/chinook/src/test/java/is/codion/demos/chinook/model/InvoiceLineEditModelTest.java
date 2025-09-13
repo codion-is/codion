@@ -38,7 +38,6 @@ import java.time.LocalDate;
 
 import static is.codion.framework.domain.entity.condition.Condition.key;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 public final class InvoiceLineEditModelTest {
 
@@ -48,7 +47,7 @@ public final class InvoiceLineEditModelTest {
 			EntityConnection connection = connectionProvider.connection();
 
 			Entity invoice = createInvoice(connection);
-			assertNull(invoice.get(Invoice.TOTAL));
+			assertEquals(BigDecimal.ZERO, invoice.get(Invoice.TOTAL));
 
 			Entity battery = connection.selectSingle(Track.NAME.equalToIgnoreCase("battery"));
 
