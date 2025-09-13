@@ -213,6 +213,13 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		Builder onSelection(Consumer<@Nullable Entity> onSelection);
 
 		/**
+		 * Default false.
+		 * @param refresh true if the model items should be refreshed on initialization
+		 * @return this builder instance
+		 */
+		Builder refresh(boolean refresh);
+
+		/**
 		 * @return a new {@link EntityComboBoxModel} instance
 		 */
 		EntityComboBoxModel build();

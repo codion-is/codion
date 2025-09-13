@@ -276,6 +276,16 @@ public final class DefaultEntityComboBoxModelTest {
 	}
 
 	@Test
+	void refresh() {
+		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder()
+						.entityType(Employee.TYPE)
+						.connectionProvider(CONNECTION_PROVIDER)
+						.refresh(true)
+						.build();
+		assertEquals(16, comboBoxModel.items().size());
+	}
+
+	@Test
 	void selectorValue() {
 		EntityComboBoxModel comboBoxModel = EntityComboBoxModel.builder()
 						.entityType(Employee.TYPE)

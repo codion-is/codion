@@ -35,6 +35,7 @@ Codion Change Log
 ### is.codion.swing.framework.model
 - DefaultEntityCombBoxModel refactored.
 - EntityComboBoxModel.Builder.onSelection() added.
+- EntityComboBoxModel.Builder.refresh() added.
 ### is.codion.plugin.flatlaf.intellij
 - Catppuccin themes added.
 - VSCode themes added.

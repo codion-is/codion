@@ -542,6 +542,12 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 
 		@Override
+		public Builder refresh(boolean refresh) {
+			modelBuilder.refresh(refresh);
+			return this;
+		}
+
+		@Override
 		public EntityComboBoxModel build() {
 			return new DefaultEntityComboBoxModel(this);
 		}
