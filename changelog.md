@@ -7,6 +7,8 @@ Codion Change Log
 - Observable.isEqualTo() and isNotEqualTo() renamed is() and isNot(), to not be confused with equals().
 ### is.codion.common.model
 - FilterModel, count() renamed to size().
+### is.codion.swing.common.model
+- FilterComboBoxModel.Builder.onSelection() added.
 ### is.codion.swing.common.ui
 - NumberDocument.NumberRangeValidator bug fixed, values now included correctly in error message.
 - NumberField.valueRange(), minimumValue() and maximumValue() removed, accessible via builder, builder validation improved, related refactoring.

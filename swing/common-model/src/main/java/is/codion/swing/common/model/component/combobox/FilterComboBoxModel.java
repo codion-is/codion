@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -189,6 +190,12 @@ public interface FilterComboBoxModel<T> extends FilterModel<T>, ComboBoxModel<T>
 		 * @see IncludedItems#predicate()
 		 */
 		Builder<T> filterSelected(boolean filterSelected);
+
+		/**
+		 * @param onSelection called when an item is selected, note that this item may be null
+		 * @return this builder instance
+		 */
+		Builder<T> onSelection(Consumer<@Nullable T> onSelection);
 
 		/**
 		 * @param async true if async refresh should be enabled
