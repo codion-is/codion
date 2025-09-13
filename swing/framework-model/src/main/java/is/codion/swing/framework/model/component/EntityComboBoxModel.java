@@ -36,6 +36,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -204,6 +205,12 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 		 * @see IncludedItems#predicate()
 		 */
 		Builder filterSelected(boolean filterSelected);
+
+		/**
+		 * @param onSelection called when an item is selected, note that this item may be null
+		 * @return this builder instance
+		 */
+		Builder onSelection(Consumer<@Nullable Entity> onSelection);
 
 		/**
 		 * @return a new {@link EntityComboBoxModel} instance

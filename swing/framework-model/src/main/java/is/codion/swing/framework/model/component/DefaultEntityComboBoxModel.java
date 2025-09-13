@@ -536,6 +536,12 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 
 		@Override
+		public Builder onSelection(Consumer<@Nullable Entity> onSelection) {
+			modelBuilder.onSelection(onSelection);
+			return this;
+		}
+
+		@Override
 		public EntityComboBoxModel build() {
 			return new DefaultEntityComboBoxModel(this);
 		}

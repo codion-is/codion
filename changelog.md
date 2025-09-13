@@ -33,6 +33,7 @@ Codion Change Log
 - EntityEditModel.EditEvent removed.
 ### is.codion.swing.framework.model
 - DefaultEntityCombBoxModel refactored.
+- EntityComboBoxModel.Builder.onSelection() added.
 ### is.codion.plugin.flatlaf.intellij
 - Catppuccin themes added.
 - VSCode themes added.
