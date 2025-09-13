@@ -29,6 +29,8 @@ Codion Change Log
 - AttributeDefinition.Builder.localeDateTimePattern() renamed dateTimePattern().
 ### is.codion.framework.model
 - EntityEditModel.EditEvent removed.
+### is.codion.swing.framework.model
+- DefaultEntityCombBoxModel refactored.
 ### is.codion.plugin.flatlaf.intellij
 - Catppuccin themes added.
 - VSCode themes added.

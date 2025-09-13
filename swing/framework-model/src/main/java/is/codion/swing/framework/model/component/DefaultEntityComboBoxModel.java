@@ -59,13 +59,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 	private final FilterComboBoxModel<Entity> comboBoxModel;
 
-	private final EntityDefinition entityDefinition;
-	private final EntityConnectionProvider connectionProvider;
-
 	private final DefaultFilter filter;
-	private final Value<Supplier<Condition>> condition;
-	private final @Nullable OrderBy orderBy;
-	private final Collection<Attribute<?>> attributes;
+	private final EntityItems entityItems;
 
 	//we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
 	private final Consumer<Collection<Entity>> insertListener = new InsertListener();
@@ -73,14 +68,10 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	private final Consumer<Collection<Entity>> deleteListener = new DeleteListener();
 
 	DefaultEntityComboBoxModel(DefaultBuilder builder) {
-		this.connectionProvider = builder.connectionProvider;
-		this.entityDefinition = builder.entityDefinition;
-		this.attributes = builder.attributes;
-		this.comboBoxModel = FilterComboBoxModel.builder()
-						.items(this::performQuery)
-						.nullItem(createNullItem(builder.nullCaption))
+		this.entityItems = builder.items;
+		this.comboBoxModel = builder.modelBuilder
 						// otherwise the sorting overrides the order by
-						.comparator(builder.orderBy == null ? builder.comparator : null)
+						.comparator(entityItems.orderBy == null ? builder.comparator : null)
 						.filterSelected(builder.filterSelected)
 						.build();
 		this.filter = new DefaultFilter();
@@ -90,31 +81,26 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 				throw new UnsupportedOperationException("EntityComboBoxModel include item predicate can only be set via filter().predicate().set()");
 			}
 		});
-		this.condition = Value.builder()
-						.<Supplier<Condition>>nonNull(new DefaultConditionSupplier(entityDefinition.type()))
-						.value(builder.condition)
-						.build();
-		this.orderBy = builder.orderBy;
 		if (builder.editEvents) {
-			events(entityDefinition.type()).inserted().addWeakConsumer(insertListener);
-			events(entityDefinition.type()).updated().addWeakConsumer(updateListener);
-			events(entityDefinition.type()).deleted().addWeakConsumer(deleteListener);
+			events(entityItems.entityDefinition.type()).inserted().addWeakConsumer(insertListener);
+			events(entityItems.entityDefinition.type()).updated().addWeakConsumer(updateListener);
+			events(entityItems.entityDefinition.type()).deleted().addWeakConsumer(deleteListener);
 		}
 	}
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + " [entityType: " + entityDefinition.type() + "]";
+		return getClass().getSimpleName() + " [entityType: " + entityItems.entityDefinition.type() + "]";
 	}
 
 	@Override
 	public EntityConnectionProvider connectionProvider() {
-		return connectionProvider;
+		return entityItems.connectionProvider;
 	}
 
 	@Override
 	public EntityDefinition entityDefinition() {
-		return entityDefinition;
+		return entityItems.entityDefinition;
 	}
 
 	@Override
@@ -144,7 +130,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 	 */
 	@Override
 	public Value<Supplier<Condition>> condition() {
-		return condition;
+		return entityItems.condition;
 	}
 
 	@Override
@@ -154,8 +140,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 	@Override
 	public <T> Value<T> createSelectorValue(Attribute<T> attribute) {
-		if (!entityDefinition.attributes().contains(attribute)) {
-			throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityDefinition.type());
+		if (!entityItems.entityDefinition.attributes().contains(attribute)) {
+			throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityItems.entityDefinition.type());
 		}
 
 		return createSelector(new EntityFinder<>(attribute));
@@ -211,36 +197,10 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		comboBoxModel.removeListDataListener(listener);
 	}
 
-	private Collection<Entity> performQuery() {
-		return connectionProvider.connection().select(where(validate(condition.getOrThrow().get()))
-						.attributes(attributes)
-						.orderBy(orderBy)
-						.build());
-	}
-
-	private Condition validate(Condition queryCondition) {
-		if (queryCondition == null) {
-			throw new IllegalArgumentException(format("EntityComboBoxModel condition supplier returned null: {0}", entityDefinition.type()));
-		}
-		if (!queryCondition.entityType().equals(entityDefinition.type())) {
-			throw new IllegalArgumentException(format("EntityComboBoxModel condition supplier returned a condition for the incorrect type {0}, expecting: {1}",
-							queryCondition.entityType(), entityDefinition.type()));
-		}
-
-		return queryCondition;
-	}
-
 	private Optional<Entity> excludedEntity(Entity.Key primaryKey) {
 		return items().excluded().get().stream()
 						.filter(entity -> entity.primaryKey().equals(primaryKey))
 						.findFirst();
-	}
-
-	private @Nullable Entity createNullItem(@Nullable String nullCaption) {
-		return nullCaption == null ? null : ProxyBuilder.of(Entity.class)
-						.delegate(entityDefinition.entity())
-						.method("toString", parameters -> nullCaption)
-						.build();
 	}
 
 	private final class InsertListener implements Consumer<Collection<Entity>> {
@@ -286,7 +246,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 		@Override
 		public ForeignKeyFilter get(ForeignKey foreignKey) {
-			entityDefinition.foreignKeys().definition(foreignKey);
+			entityItems.entityDefinition.foreignKeys().definition(foreignKey);
 
 			return foreignKeyFilters.computeIfAbsent(foreignKey, DefaultForeignKeyFilter::new);
 		}
@@ -360,7 +320,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 		@Override
 		public void link(EntityComboBoxModel filterModel) {
-			entityDefinition.foreignKeys().definition(foreignKey);
+			entityItems.entityDefinition.foreignKeys().definition(foreignKey);
 			if (!foreignKey.referencedType().equals(filterModel.entityDefinition().type())) {
 				throw new IllegalArgumentException("EntityComboBoxModel is of type: " + filterModel.entityDefinition().type()
 								+ ", should be: " + foreignKey.referencedType());
@@ -405,6 +365,49 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 			}
 
 			return keys;
+		}
+	}
+
+	private static @Nullable Entity createNullItem(@Nullable String nullCaption, EntityDefinition entityDefinition) {
+		return nullCaption == null ? null : ProxyBuilder.of(Entity.class)
+						.delegate(entityDefinition.entity())
+						.method("toString", parameters -> nullCaption)
+						.build();
+	}
+
+	private static final class EntityItems implements Supplier<Collection<Entity>> {
+
+		private final EntityDefinition entityDefinition;
+		private final EntityConnectionProvider connectionProvider;
+		private final Value<Supplier<Condition>> condition;
+
+		private @Nullable OrderBy orderBy;
+		private Collection<Attribute<?>> attributes = emptyList();
+
+		private EntityItems(EntityDefinition entityDefinition, EntityConnectionProvider connectionProvider) {
+			this.entityDefinition = entityDefinition;
+			this.connectionProvider = connectionProvider;
+			this.condition = Value.nonNull(new DefaultConditionSupplier(entityDefinition.type()));
+		}
+
+		@Override
+		public Collection<Entity> get() {
+			return connectionProvider.connection().select(where(validate(condition.getOrThrow().get()))
+							.attributes(attributes)
+							.orderBy(orderBy)
+							.build());
+		}
+
+		private Condition validate(Condition queryCondition) {
+			if (queryCondition == null) {
+				throw new IllegalArgumentException(format("EntityComboBoxModel condition supplier returned null: {0}", entityDefinition.type()));
+			}
+			if (!queryCondition.entityType().equals(entityDefinition.type())) {
+				throw new IllegalArgumentException(format("EntityComboBoxModel condition supplier returned a condition for the incorrect type {0}, expecting: {1}",
+								queryCondition.entityType(), entityDefinition.type()));
+			}
+
+			return queryCondition;
 		}
 	}
 
@@ -467,26 +470,22 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 		static final Builder.EntityTypeStep ENTITY_TYPE = new DefaultEntityTypeStep();
 
-		private final EntityDefinition entityDefinition;
-		private final EntityConnectionProvider connectionProvider;
+		private final FilterComboBoxModel.Builder<Entity> modelBuilder;
+		private final EntityItems items;
 
-		private @Nullable OrderBy orderBy;
-		private @Nullable Supplier<Condition> condition;
 		private @Nullable Comparator<Entity> comparator;
-		private Collection<Attribute<?>> attributes = emptyList();
 		private boolean editEvents = EDIT_EVENTS.getOrThrow();
-		private @Nullable String nullCaption;
 		private boolean filterSelected = false;
 
 		private DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
-			this.connectionProvider = requireNonNull(connectionProvider);
-			this.entityDefinition = connectionProvider.entities().definition(entityType);
+			this.items = new EntityItems(connectionProvider.entities().definition(entityType), requireNonNull(connectionProvider));
 			this.comparator = connectionProvider.entities().definition(entityType).comparator();
+			this.modelBuilder = FilterComboBoxModel.builder().items(items);
 		}
 
 		@Override
 		public Builder orderBy(@Nullable OrderBy orderBy) {
-			this.orderBy = orderBy;
+			items.orderBy = orderBy;
 			return this;
 		}
 
@@ -498,18 +497,18 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 		@Override
 		public Builder condition(@Nullable Supplier<Condition> condition) {
-			this.condition = condition;
+			items.condition.set(condition);
 			return this;
 		}
 
 		@Override
 		public Builder attributes(Collection<Attribute<?>> attributes) {
 			for (Attribute<?> attribute : requireNonNull(attributes)) {
-				if (!attribute.entityType().equals(entityDefinition.type())) {
-					throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityDefinition.type());
+				if (!attribute.entityType().equals(items.entityDefinition.type())) {
+					throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + items.entityDefinition.type());
 				}
 			}
-			this.attributes = attributes;
+			items.attributes = attributes;
 			return this;
 		}
 
@@ -520,7 +519,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 
 		@Override
 		public Builder nullCaption(@Nullable String nullCaption) {
-			this.nullCaption = nullCaption;
+			modelBuilder.nullItem(createNullItem(nullCaption, items.entityDefinition));
 			return this;
 		}
 
