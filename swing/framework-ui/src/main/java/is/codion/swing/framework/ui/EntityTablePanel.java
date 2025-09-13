@@ -511,7 +511,7 @@ public class EntityTablePanel extends JPanel {
 		this.editPanel = null;
 		this.conditionRefreshControl = createConditionRefreshControl();
 		this.configuration = configure(config);
-		this.table = configuration.tableBuilder.build();
+		this.table = configuration.buildTable();
 		this.tableConditionPanel = createTableConditionPanel();
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
 		this.popupMenuLayout = createPopupMenuLayout();
@@ -541,7 +541,7 @@ public class EntityTablePanel extends JPanel {
 		this.editPanel = validateEditModel(requireNonNull(editPanel));
 		this.conditionRefreshControl = createConditionRefreshControl();
 		this.configuration = configure(config);
-		this.table = configuration.tableBuilder.build();
+		this.table = configuration.buildTable();
 		this.tableConditionPanel = createTableConditionPanel();
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
 		this.popupMenuLayout = createPopupMenuLayout();
@@ -2199,9 +2199,9 @@ public class EntityTablePanel extends JPanel {
 		private final EntityDefinition entityDefinition;
 		private final ValueSet<Attribute<?>> editable;
 		private final Map<Attribute<?>, EditComponentFactory<?, ?>> editComponentFactories;
-		private final FilterTable.Builder<Entity, Attribute<?>> tableBuilder;
 		private final Map<Attribute<?>, ComponentFactory> conditionComponentFactories;
 
+		private FilterTable.@Nullable Builder<Entity, Attribute<?>> tableBuilder;
 		private TableConditionPanel.Factory<Attribute<?>> conditionPanelFactory = new DefaultConditionPanelFactory();
 		private boolean includeSouthPanel = true;
 		private boolean includeConditions = INCLUDE_CONDITIONS.getOrThrow();
@@ -2647,6 +2647,13 @@ public class EntityTablePanel extends JPanel {
 			return editAttributeSelection == EditAttributeSelection.MENU ?
 							EDIT_ATTRIBUTE_CONTROLS :
 							EDIT_SELECTED_ATTRIBUTE;
+		}
+
+		private FilterTable<Entity, Attribute<?>> buildTable() {
+			FilterTable<Entity, Attribute<?>> filterTable = tableBuilder.build();
+			tableBuilder = null;
+
+			return filterTable;
 		}
 
 		private static final class DefaultConditionPanelFactory
