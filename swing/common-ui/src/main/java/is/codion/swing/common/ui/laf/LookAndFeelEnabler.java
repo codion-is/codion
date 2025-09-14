@@ -22,6 +22,7 @@ import is.codion.common.model.preferences.UserPreferences;
 import is.codion.swing.common.ui.Utilities;
 
 import javax.swing.LookAndFeel;
+import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import java.util.Optional;
@@ -56,6 +57,13 @@ public interface LookAndFeelEnabler {
 	 * @return true if the look and feel enabled by this enabler is an installed platform Look and Feel
 	 */
 	boolean installed();
+
+	/**
+	 * @return the {@link UIDefaults} for the look and feel this enabler represents
+	 */
+	default UIDefaults uiDefaults() {
+		return lookAndFeel().getDefaults();
+	}
 
 	/**
 	 * Instantiates a new {@link LookAndFeelEnabler}, using {@link UIManager#setLookAndFeel(String)} to enable.

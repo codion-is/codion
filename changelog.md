@@ -24,6 +24,7 @@ Codion Change Log
 - FilterTable.Export moved to FilterTableModel, related refactoring.
 - NumberField.Builder.maximumFractionDigits() renamed fractionDigits().
 - FilterTableCellRenderer.UISettings.filteredBackground() removed.
+- LookAndFeelEnabler.uiDefaults() added.
 ### is.codion.framework.domain
 - KeyGenerator.Identity removed.
 - AttributeDefinition.Builder.valueRange(), minimumValue() and maximumValue() renamed range(), minimum() and maximum().

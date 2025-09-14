@@ -84,7 +84,7 @@ final class LookAndFeelPanel extends JPanel {
 
 	private static Map<String, Object> initializeLookAndFeelDefaults(LookAndFeelEnabler lookAndFeelEnabler) {
 		try {
-			UIDefaults uiDefaults = lookAndFeelEnabler.lookAndFeel().getDefaults();
+			UIDefaults uiDefaults = lookAndFeelEnabler.uiDefaults();
 			Map<String, Object> defaults = new HashMap<>();
 			defaults.put(TEXT_FIELD_FONT, uiDefaults.getFont(TEXT_FIELD_FONT));
 			defaults.put(TEXT_FIELD_SELECTION_FOREGROUND, uiDefaults.getColor(TEXT_FIELD_SELECTION_FOREGROUND));
