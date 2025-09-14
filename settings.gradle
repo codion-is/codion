@@ -228,7 +228,7 @@ dependencyResolutionManagement {
             version("jasperreports", "7.0.3")
             version("jspecify", "1.0.0")
 
-            version("mcp", "0.12.0")
+            version("mcp", "0.12.1")
             version("aws.lambda.core", "1.4.0")
             version("aws.lambda.events", "3.16.1")
 
