@@ -25,6 +25,7 @@ Codion Change Log
 - NumberField.Builder.maximumFractionDigits() renamed fractionDigits().
 - FilterTableCellRenderer.UISettings.filteredBackground() removed.
 - LookAndFeelEnabler.uiDefaults() added.
+- ConditionPanel.focusGained() event now with JComponent parameter.
 ### is.codion.framework.domain
 - KeyGenerator.Identity removed.
 - AttributeDefinition.Builder.valueRange(), minimumValue() and maximumValue() renamed range(), minimum() and maximum().

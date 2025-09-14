@@ -141,7 +141,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	private static final DefaultOperatorCaptions DEFAULT_OPERATOR_CAPTIONS = new DefaultOperatorCaptions();
 
 	private final ComponentFactory componentFactory;
-	private final Event<?> focusGained = Event.event();
+	private final Event<JComponent> focusGained = Event.event();
 	private final @Nullable TableColumn tableColumn;
 	private final Function<Operator, String> operatorCaptions;
 	private final OperandComponents operandComponents = new OperandComponents();
@@ -208,7 +208,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 	}
 
 	@Override
-	public Optional<Observer<?>> focusGained() {
+	public Optional<Observer<JComponent>> focusGained() {
 		return Optional.of(focusGained.observer());
 	}
 
@@ -832,7 +832,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
 		@Override
 		public void focusGained(FocusEvent e) {
-			focusGained.run();
+			focusGained.accept((JComponent) e.getComponent());
 		}
 	}
 
