@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.50
+
 ## 0.18.49
 ### is.codion.common.core
 - AbstractValue bug fixed, get() now guaranteed to return a non-null value if a nullValue is specified, as promised by javadoc.
