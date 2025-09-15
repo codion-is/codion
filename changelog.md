@@ -6,6 +6,7 @@ Codion Change Log
 - ControlIcon.controlIcon(icon) factory method added, when all you have is a single icon.
 ### is.codion.swing.framework.ui
 - EntitySearchField bug fixed, now clears selection when an empty field loses focus, only if the selection isn't empty, selection uses Notify.SET, did not play well with ConditionModel.autoEnable.
+- EntityPanel.Builder.icon() now ControlIcon based.
 
 ## 0.18.49
 ### is.codion.common.core

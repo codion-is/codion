@@ -898,7 +898,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 						.command(() -> displayEntityPanelWindow(panelBuilder))
 						.caption(panelBuilder.caption().orElse(applicationModel.entities().definition(panelBuilder.entityType()).caption()))
 						.description(panelBuilder.description().orElse(null))
-						.smallIcon(panelBuilder.icon().orElse(null))
+						.icon(panelBuilder.icon().orElse(null))
 						.build();
 	}
 

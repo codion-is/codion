@@ -39,7 +39,7 @@ public interface ControlIcon {
 
 	/**
 	 * Creates a new {@link ControlIcon} using the same icon for both small and large.
-	 * @param the icon, used as both small and large
+	 * @param icon the icon, used as both small and large
 	 * @return a new {@link ControlIcon} instance
 	 */
 	static ControlIcon controlIcon(ImageIcon icon) {

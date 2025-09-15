@@ -31,6 +31,7 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.border.Borders;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.ControlIcon;
 import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.control.ControlMap;
 import is.codion.swing.common.ui.control.Controls;
@@ -1776,12 +1777,12 @@ public class EntityPanel extends JPanel {
 		 * @param icon the panel icon
 		 * @return this builder instance
 		 */
-		Builder icon(@Nullable ImageIcon icon);
+		Builder icon(@Nullable ControlIcon icon);
 
 		/**
 		 * @return the icon, an empty Optional if none has been set
 		 */
-		Optional<ImageIcon> icon();
+		Optional<ControlIcon> icon();
 
 		/**
 		 * Builds an {@link EntityPanel} based on this builder configuration.
