@@ -35,10 +35,10 @@ import java.util.function.Function;
 public interface ListBoxBuilder<T> extends ComponentValueBuilder<JComboBox<T>, Set<T>, ListBoxBuilder<T>> {
 
 	/**
-	 * @param string provides a String to display in the list for a given value, formatted or otherwise
+	 * @param formatter formats an item for display in the list
 	 * @return this builder instance
 	 */
-	ListBoxBuilder<T> string(Function<Object, String> string);
+	ListBoxBuilder<T> formatter(Function<Object, String> formatter);
 
 	/**
 	 * Provides a {@link LinkedValueBuilder}

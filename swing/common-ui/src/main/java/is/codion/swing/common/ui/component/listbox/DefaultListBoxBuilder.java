@@ -55,7 +55,8 @@ final class DefaultListBoxBuilder<T>
 
 	private final ComponentValue<? extends JComponent, T> itemValue;
 	private final ValueSet<T> linkedValue;
-	private Function<Object, String> string = new DefaultString();
+
+	private Function<Object, String> formatter = new DefaultFormatter();
 
 	DefaultListBoxBuilder(ComponentValue<? extends JComponent, T> itemValue, ValueSet<T> linkedValue) {
 		this.itemValue = requireNonNull(itemValue);
@@ -63,8 +64,8 @@ final class DefaultListBoxBuilder<T>
 	}
 
 	@Override
-	public ListBoxBuilder<T> string(Function<Object, String> string) {
-		this.string = requireNonNull(string);
+	public ListBoxBuilder<T> formatter(Function<Object, String> formatter) {
+		this.formatter = requireNonNull(formatter);
 		return this;
 	}
 
@@ -76,7 +77,7 @@ final class DefaultListBoxBuilder<T>
 		ListComboBox<T> comboBox = new ListComboBox<>(comboBoxModel, itemValue, linkedValue);
 		comboBox.setEditor(new Editor<>(itemValue));
 		comboBox.setEditable(true);
-		comboBox.setRenderer(new Renderer<>(horizontalAlignment(itemValue.component()), string));
+		comboBox.setRenderer(new Renderer<>(horizontalAlignment(itemValue.component()), formatter));
 
 		return comboBox;
 	}
@@ -129,19 +130,19 @@ final class DefaultListBoxBuilder<T>
 
 	private static final class Renderer<T> implements ListCellRenderer<T> {
 
-		private final Function<Object, String> string;
+		private final Function<Object, String> formatter;
 
 		private final DefaultListCellRenderer listCellRenderer = new DefaultListCellRenderer();
 
-		private Renderer(int horizontalAlignment, Function<Object, String> string) {
-			this.string = string;
+		private Renderer(int horizontalAlignment, Function<Object, String> formatter) {
+			this.formatter = formatter;
 			listCellRenderer.setHorizontalAlignment(horizontalAlignment);
 		}
 
 		@Override
 		public Component getListCellRendererComponent(JList<? extends T> list, T value,
 																									int index, boolean isSelected, boolean cellHasFocus) {
-			return listCellRenderer.getListCellRendererComponent(list, string.apply(value), index, isSelected, cellHasFocus);
+			return listCellRenderer.getListCellRendererComponent(list, formatter.apply(value), index, isSelected, cellHasFocus);
 		}
 	}
 
@@ -174,7 +175,7 @@ final class DefaultListBoxBuilder<T>
 		}
 	}
 
-	private static final class DefaultString implements Function<Object, String> {
+	private static final class DefaultFormatter implements Function<Object, String> {
 		@Override
 		public String apply(Object value) {
 			return value == null ? "" : value.toString();

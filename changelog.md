@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.50
 ### is.codion.swing.common.ui
 - ControlIcon.controlIcon(icon) factory method added, when all you have is a single icon.
+- ListBoxBuilder.string() renamed formatter().
 ### is.codion.framework.domain
 - ColumnDefinition.Builder.hasDatabaseDefault() renamed withDefault().
 ### is.codion.swing.framework.ui
