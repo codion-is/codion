@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.50
+### is.codion.swing.framework.ui
+- EntitySearchField bug fixed, now clears selection when an empty field loses focus, only if the selection isn't empty, selection uses Notify.SET, did not play well with ConditionModel.autoEnable.
 
 ## 0.18.49
 ### is.codion.common.core

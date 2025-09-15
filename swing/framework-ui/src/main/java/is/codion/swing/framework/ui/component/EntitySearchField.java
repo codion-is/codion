@@ -395,6 +395,11 @@ public final class EntitySearchField extends HintTextField {
 		B singleSelection(boolean singleSelection);
 
 		/**
+		 * <p>Specifies whether a search should be performed when the field loses focus.
+		 * <p>Note that the focus lost search only selects an item in case of a single result,
+		 * multiple results are ignored in order to not display a result selection
+		 * dialog during focus traversal.
+		 * <p>Default true.
 		 * @param searchOnFocusLost true if search should be performed on focus lost
 		 * @return this builder instance
 		 */
@@ -1037,7 +1042,8 @@ public final class EntitySearchField extends HintTextField {
 		@Override
 		public void focusLost(FocusEvent e) {
 			if (!e.isTemporary()) {
-				if (getText().isEmpty()) {
+				// Selection uses Notify.SET, so no unnecessary clear() calls
+				if (getText().isEmpty() && !model().selection().empty().is()) {
 					model().selection().clear();
 				}
 				else if (shouldPerformSearch()) {
