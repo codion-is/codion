@@ -704,6 +704,13 @@ public class DefaultConditionModelTest {
 		class EqualityOperationsTest {
 
 			@Test
+			@DisplayName("equals and hashCode throw exceptions")
+			void use_equals_instead_of_equalTo_throwsException() {
+				assertThrows(UnsupportedOperationException.class, () -> condition.set().equals(TEST_VALUE_1));
+				assertThrows(UnsupportedOperationException.class, () -> condition.set().hashCode());
+			}
+
+			@Test
 			@DisplayName("equalTo with value enables condition")
 			void set_equalToWithValue_enablesCondition() {
 				boolean changed = condition.set().equalTo(TEST_VALUE_1);

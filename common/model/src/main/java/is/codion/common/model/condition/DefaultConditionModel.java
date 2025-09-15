@@ -790,6 +790,16 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 			return changed;
 		}
 
+		@Override
+		public boolean equals(Object object) {
+			throw new UnsupportedOperationException("equals() is not supported on SetCondition. Use equalTo() to set the equal operand");
+		}
+
+		@Override
+		public int hashCode() {
+			throw new UnsupportedOperationException("hashCode() is not supported on SetCondition");
+		}
+
 		private static boolean set(Operator operator, Value<Operator> value) {
 			boolean changed = value.isNot(operator);
 			value.set(operator);
