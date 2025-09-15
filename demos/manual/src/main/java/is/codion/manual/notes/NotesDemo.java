@@ -106,7 +106,7 @@ public final class NotesDemo {
 															.caption("Created")
 															.nullable(false)
 															.updatable(false)
-															.hasDatabaseDefault(true),
+															.withDefault(true),
 											Note.UPDATED.define()
 															.column()
 															.caption("Updated"))

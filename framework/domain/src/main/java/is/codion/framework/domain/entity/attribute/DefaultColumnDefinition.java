@@ -57,7 +57,7 @@ sealed class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> i
 
 	private final int type;
 	private final int keyIndex;
-	private final boolean hasDatabaseDefault;
+	private final boolean withDefault;
 	private final boolean insertable;
 	private final boolean updatable;
 	private final boolean searchable;
@@ -75,7 +75,7 @@ sealed class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> i
 		super(builder);
 		this.type = builder.type;
 		this.keyIndex = builder.keyIndex;
-		this.hasDatabaseDefault = builder.hasDatabaseDefault;
+		this.withDefault = builder.withDefault;
 		this.insertable = builder.insertable;
 		this.updatable = builder.updatable;
 		this.searchable = builder.searchable;
@@ -115,8 +115,8 @@ sealed class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> i
 	}
 
 	@Override
-	public final boolean hasDatabaseDefault() {
-		return hasDatabaseDefault;
+	public final boolean withDefault() {
+		return withDefault;
 	}
 
 	@Override
@@ -273,7 +273,7 @@ sealed class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> i
 		private final int keyIndex;
 
 		private int type;
-		private boolean hasDatabaseDefault;
+		private boolean withDefault;
 		private boolean insertable;
 		private boolean updatable;
 		private boolean searchable;
@@ -294,7 +294,7 @@ sealed class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> i
 			super(column);
 			this.keyIndex = keyIndex;
 			this.type = sqlType(column.type().valueClass());
-			this.hasDatabaseDefault = false;
+			this.withDefault = false;
 			this.insertable = true;
 			nullable(keyIndex < 0);
 			this.updatable = keyIndex < 0;
@@ -370,8 +370,8 @@ sealed class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> i
 		}
 
 		@Override
-		public final B hasDatabaseDefault(boolean hasDatabaseDefault) {
-			this.hasDatabaseDefault = hasDatabaseDefault;
+		public final B withDefault(boolean withDefault) {
+			this.withDefault = withDefault;
 			return self();
 		}
 

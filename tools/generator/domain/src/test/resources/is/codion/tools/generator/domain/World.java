@@ -215,7 +215,7 @@ public final class World extends DomainModel {
 					.column()
 					.caption("Isofficial")
 					.nullable(false)
-					.hasDatabaseDefault(true),
+					.withDefault(true),
 				Countrylanguage.PERCENTAGE.define()
 					.column()
 					.caption("Percentage")

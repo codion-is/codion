@@ -116,7 +116,7 @@ import static is.codion.common.Configuration.*;
  *                     .column()
  *                     .caption("Created")
  *                     .nullable(false)
- *                     .hasDatabaseDefault(true) // Database sets this
+ *                     .withDefault(true) // Database sets this
  *                     .updatable(false))
  *             .build();
  *     }

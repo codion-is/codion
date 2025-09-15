@@ -320,7 +320,7 @@ public final class Petstore extends DomainModel {
 					.column()
 					.caption("Disabled")
 					.nullable(false)
-					.hasDatabaseDefault(true),
+					.withDefault(true),
 				Item.INSERT_USER.define()
 					.auditColumn()
 					.insertUser()

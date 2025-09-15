@@ -188,7 +188,7 @@ public final class SchemaDomain extends DomainModel {
 			builder.fractionDigits(metadataColumn.decimalDigits());
 		}
 		if (!metadataColumn.primaryKeyColumn() && metadataColumn.defaultValue() != null) {
-			builder.hasDatabaseDefault(true);
+			builder.withDefault(true);
 		}
 		if (!nullOrEmpty(metadataColumn.comment())) {
 			builder.description(metadataColumn.comment());

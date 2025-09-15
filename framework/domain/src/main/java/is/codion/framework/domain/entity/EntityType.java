@@ -117,8 +117,7 @@ public sealed interface EntityType permits DefaultEntityType {
 	 * {@snippet :
 	 * EntityDefinition definition = Customer.TYPE.define(
 	 *         Customer.ID.define()
-	 *             .primaryKey()
-	 *             .hasDatabaseDefault(true),
+	 *             .primaryKey(),
 	 *         Customer.NAME.define()
 	 *             .column()
 	 *             .caption("Customer Name")

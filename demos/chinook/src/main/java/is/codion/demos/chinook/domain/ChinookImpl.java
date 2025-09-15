@@ -422,7 +422,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.column()
 														.fractionDigits(2)
 														.nullable(false)
-														.hasDatabaseDefault(true),
+														.withDefault(true),
 										Invoice.CALCULATED_TOTAL.define()
 														.subquery("""
 																		SELECT SUM(unitprice * quantity)
