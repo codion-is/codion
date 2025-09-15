@@ -21,7 +21,9 @@ package is.codion.swing.common.ui.control;
 import javax.swing.ImageIcon;
 
 /**
- * Provides small and large versions of an icon.
+ * <p>Provides small and large versions of an icon.
+ * <p>For instances use the {@link #controlIcon(ImageIcon, ImageIcon)} factory
+ * method or {@link #controlIcon(ImageIcon)} in case of a single icon size.
  */
 public interface ControlIcon {
 
@@ -34,6 +36,15 @@ public interface ControlIcon {
 	 * @return the large version of the icon
 	 */
 	ImageIcon large();
+
+	/**
+	 * Creates a new {@link ControlIcon} using the same icon for both small and large.
+	 * @param the icon, used as both small and large
+	 * @return a new {@link ControlIcon} instance
+	 */
+	static ControlIcon controlIcon(ImageIcon icon) {
+		return new DefaultControlIcon(icon, icon);
+	}
 
 	/**
 	 * @param small the small version of the icon
