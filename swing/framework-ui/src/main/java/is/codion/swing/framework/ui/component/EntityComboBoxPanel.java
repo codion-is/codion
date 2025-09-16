@@ -151,10 +151,10 @@ public final class EntityComboBoxPanel extends JPanel {
 		Builder buttonLocation(String buttonLocation);
 
 		/**
-		 * @param comboBoxPreferredWidth the preferred combo box width
+		 * @param preferredComboBoxWidth the preferred combo box width
 		 * @return this builder instance
 		 */
-		Builder comboBoxPreferredWidth(int comboBoxPreferredWidth);
+		Builder preferredComboBoxWidth(int preferredComboBoxWidth);
 
 		/**
 		 * @return a new {@link EntityComboBoxPanel} based on this builder
@@ -252,8 +252,8 @@ public final class EntityComboBoxPanel extends JPanel {
 		}
 
 		@Override
-		public Builder comboBoxPreferredWidth(int comboBoxPreferredWidth) {
-			entityComboBoxBuilder.preferredWidth(comboBoxPreferredWidth);
+		public Builder preferredComboBoxWidth(int preferredComboBoxWidth) {
+			entityComboBoxBuilder.preferredWidth(preferredComboBoxWidth);
 			return this;
 		}
 
