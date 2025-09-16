@@ -1095,4 +1095,15 @@ public class DefaultConditionModelTest {
 		conditionModel.set().equalTo("B%");
 		assertTrue(conditionModel.accepts("Brazil"));
 	}
+
+	@Test
+	void inCaseInsensitive() {
+		ConditionModel<String> conditionModel = ConditionModel.builder()
+						.valueClass(String.class)
+						.build();
+		conditionModel.caseSensitive().set(false);
+		conditionModel.set().in(asList("Brazil", "USA"));
+		assertTrue(conditionModel.accepts("braZil"));
+		assertTrue(conditionModel.accepts("uSa"));
+	}
 }

@@ -42,6 +42,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toSet;
 
 final class DefaultConditionModel<T> implements ConditionModel<T> {
 
@@ -425,7 +426,10 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 	}
 
 	private boolean isIn(@Nullable Comparable<T> comparable) {
-		return operands.in.get().contains(comparable);
+		return operands.in.get().stream()
+						.map(operand -> caseSensitive.is() ? operand : stringOrCharacterToLowerCase(operand))
+						.collect(toSet())
+						.contains(comparable);
 	}
 
 	private boolean isNotIn(@Nullable Comparable<T> comparable) {

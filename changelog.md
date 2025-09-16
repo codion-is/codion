@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.common.model
 - DefaultConditionModel.DefaultSetCondition.equals() and hashCode() now throw UnsupportedOperationException, in case equalTo() is confused with equals().
 - DefaultConditionModel bug fixed, adding wildards no longer breaks case-insensitivity.
+- DefaultConditionModel bug fixed, in now works when case-insensitive.
 ### is.codion.swing.common.ui
 - ControlIcon.controlIcon(icon) factory method added, when all you have is a single icon.
 - ListBoxBuilder.string() renamed formatter().
