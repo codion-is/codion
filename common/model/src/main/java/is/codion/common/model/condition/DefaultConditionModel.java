@@ -214,9 +214,6 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 
 	private boolean isEqual(@Nullable Comparable<T> comparable) {
 		T equalOperand = operands.equal().get();
-		if (!caseSensitive.is()) {
-			equalOperand = stringOrCharacterToLowerCase(equalOperand);
-		}
 		if (comparable == null) {
 			return equalOperand == null;
 		}
@@ -225,6 +222,9 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		}
 		if (equalOperand instanceof String) {
 			equalOperand = (T) operands.equalWithWildcards();
+		}
+		if (!caseSensitive.is()) {
+			equalOperand = stringOrCharacterToLowerCase(equalOperand);
 		}
 		if (comparable instanceof String && ((String) equalOperand).contains(WILDCARD_CHARACTER)) {
 			return isEqualWildcard((String) comparable, (String) equalOperand);

@@ -1085,4 +1085,14 @@ public class DefaultConditionModelTest {
 		conditionModel.clear();
 		assertFalse(conditionModel.enabled().is());
 	}
+
+	@Test
+	void caseInsensitiveWithWildcard() {
+		ConditionModel<String> conditionModel = ConditionModel.builder()
+						.valueClass(String.class)
+						.build();
+		conditionModel.caseSensitive().set(false);
+		conditionModel.set().equalTo("B%");
+		assertTrue(conditionModel.accepts("Brazil"));
+	}
 }
