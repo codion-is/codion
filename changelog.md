@@ -9,6 +9,8 @@ Codion Change Log
 - ListBoxBuilder.string() renamed formatter().
 ### is.codion.framework.domain
 - ColumnDefinition.Builder.hasDatabaseDefault() renamed withDefault().
+### is.codion.framework.model
+- DefaultEntityTableConditionModel bug fixed, now handles column and dateTimeFormat precision mismatch, by using ranges when precision is lacking.
 ### is.codion.swing.framework.ui
 - EntitySearchField bug fixed, now clears selection when an empty field loses focus, only if the selection isn't empty, selection uses Notify.SET, did not play well with ConditionModel.autoEnable.
 - EntityPanel.Builder.icon() now ControlIcon based.

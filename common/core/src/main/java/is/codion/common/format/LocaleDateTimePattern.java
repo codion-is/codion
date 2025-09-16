@@ -146,6 +146,7 @@ public final class LocaleDateTimePattern implements Serializable {
 		private Builder() {}
 
 		/**
+		 * Default "."
 		 * @param delimiter the date delimiter
 		 * @return this Builder instance
 		 */

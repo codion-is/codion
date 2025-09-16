@@ -32,6 +32,7 @@ import is.codion.framework.domain.entity.query.EntitySelectQuery;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import static is.codion.common.item.Item.item;
@@ -44,7 +45,7 @@ public final class TestDomain extends DomainModel {
 
 	public TestDomain() {
 		super(DOMAIN);
-		add(master(), detail(), department(), employee(), enumEntity(), derived(), job());
+		add(master(), detail(), department(), employee(), enumEntity(), derived(), job(), dateTimeTest());
 	}
 
 	public interface Master {
@@ -363,6 +364,25 @@ public final class TestDomain extends DomainModel {
 										.having("job <> 'PRESIDENT'")
 										.build())
 						.condition(Job.ADDITIONAL_HAVING, (attributes, values) -> "count(*) > 1")
+						.build();
+	}
+
+	public interface DateTimeTest {
+		EntityType TYPE = DOMAIN.entityType("domain.date_time_test");
+
+		Column<Integer> ID = TYPE.integerColumn("id");
+		Column<LocalTime> TIME = TYPE.localTimeColumn("time");
+		Column<LocalDateTime> DATE_TIME = TYPE.localDateTimeColumn("date_time");
+	}
+
+	EntityDefinition dateTimeTest() {
+		return DateTimeTest.TYPE.define(
+						DateTimeTest.ID.define()
+										.primaryKey(),
+						DateTimeTest.TIME.define()
+										.column(),
+						DateTimeTest.DATE_TIME.define()
+										.column())
 						.build();
 	}
 }

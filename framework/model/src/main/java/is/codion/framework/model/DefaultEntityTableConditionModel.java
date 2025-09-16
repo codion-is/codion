@@ -38,6 +38,7 @@ import is.codion.framework.domain.entity.condition.Condition;
 
 import org.jspecify.annotations.Nullable;
 
+import java.time.temporal.Temporal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,7 @@ import java.util.function.Supplier;
 import static is.codion.common.model.condition.TableConditionModel.tableConditionModel;
 import static is.codion.framework.domain.entity.condition.Condition.all;
 import static is.codion.framework.domain.entity.condition.Condition.combination;
+import static java.time.temporal.ChronoField.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -56,6 +58,9 @@ import static java.util.stream.Collectors.toList;
  * A default {@link EntityTableConditionModel} implementation
  */
 final class DefaultEntityTableConditionModel implements EntityTableConditionModel {
+
+	private static final int MAX_MILLIS = 999;
+	private static final int MAX_SECONDS_MINUTES = 59;
 
 	private final EntityDefinition entityDefinition;
 	private final EntityConnectionProvider connectionProvider;
@@ -230,6 +235,9 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 		if (column.type().isCharacter()) {
 			return singleCharacterEqualCondition(conditionModel, column, (Character) equalOperand);
 		}
+		if (column.type().isTemporal()) {
+			return temporalEqualCondition(conditionModel, column, (Temporal) equalOperand, false);
+		}
 
 		return column.equalTo(equalOperand);
 	}
@@ -245,6 +253,9 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 		}
 		if (column.type().isCharacter()) {
 			return singleCharacterNotEqualCondition(conditionModel, column, (Character) equalOperand);
+		}
+		if (column.type().isTemporal()) {
+			return temporalEqualCondition(conditionModel, column, (Temporal) equalOperand, true);
 		}
 
 		return column.notEqualTo(equalOperand);
@@ -278,6 +289,47 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 	private static <T> ColumnCondition<T> singleCharacterNotEqualCondition(ConditionModel<T> conditionModel,
 																																				 Column<T> column, Character value) {
 		return conditionModel.caseSensitive().is() ? column.notEqualTo((T) value) : (ColumnCondition<T>) column.notEqualToIgnoreCase(value);
+	}
+
+	private static <T> ColumnCondition<T> temporalEqualCondition(ConditionModel<T> conditionModel, Column<T> column,
+																															 Temporal value, boolean notEqual) {
+		String dateTimePattern = conditionModel.dateTimePattern().orElse(null);
+		if (dateTimePattern != null && containsTime(column.type())) {
+			// we assume the Temporal value is the result of parsing with the given dateTimePattern
+			Temporal upperBound = createTemporalUpperBound(value, dateTimePattern);
+			if (upperBound != null) {
+				return notEqual ? notBetweenExclusiveCondition((T) value, (T) upperBound, column) : betweenCondition((T) value, (T) upperBound, column);
+			}
+		}
+
+		return notEqual ? column.notEqualTo((T) value) : column.equalTo((T) value);
+	}
+
+	private static @Nullable Temporal createTemporalUpperBound(Temporal value, String dateTimePattern) {
+		if (dateTimePattern.contains("SSS")) {//millisecond
+			return null;// no need, same precision as column
+		}
+		else if (dateTimePattern.contains("ss")) {//second
+			// between second.000 and second.999
+			return value.with(MILLI_OF_SECOND, MAX_MILLIS);
+		}
+		else if (dateTimePattern.contains("mm")) {//minute
+			// between minute.00 and minute.59.999
+			return value.with(SECOND_OF_MINUTE, MAX_SECONDS_MINUTES)
+							.with(MILLI_OF_SECOND, MAX_MILLIS);
+		}
+		else if (dateTimePattern.contains("HH")) {//hour
+			// between hour.00 and hour.59.59.999
+			return value.with(MINUTE_OF_HOUR, MAX_SECONDS_MINUTES)
+							.with(SECOND_OF_MINUTE, MAX_SECONDS_MINUTES)
+							.with(MILLI_OF_SECOND, MAX_MILLIS);
+		}
+
+		return null;
+	}
+
+	private static <T> boolean containsTime(Attribute.Type<T> type) {
+		return type.isLocalTime() || type.isLocalDateTime() || type.isOffsetDateTime();
 	}
 
 	private static <T> ColumnCondition<T> betweenExclusiveCondition(@Nullable T lower, @Nullable T upper, Column<T> column) {

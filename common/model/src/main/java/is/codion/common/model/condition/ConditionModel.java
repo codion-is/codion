@@ -451,6 +451,7 @@ public interface ConditionModel<T> {
 		Builder<T> caseSensitive(boolean caseSensitive);
 
 		/**
+		 * Default true.
 		 * @param autoEnable true if the model should auto-enable
 		 * @return this builder instance
 		 */
