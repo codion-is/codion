@@ -319,7 +319,8 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	private void onTableModelEvent(TableModelEvent tableModelEvent) {
 		//if the selected row is updated via the table model, refresh the one in the edit model
 		if (tableModelEvent.getType() == TableModelEvent.UPDATE && tableModelEvent.getFirstRow() == selection().index()
-						.getOrThrow()
+						.optional()
+						.orElse(-1)
 						.intValue()) {
 			editModel().editor().set(selection().item().get());
 		}

@@ -202,19 +202,22 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 
 	private final class SelectedIndex extends AbstractValue<Integer> {
 
-		private SelectedIndex() {
-			super(-1);
-		}
-
 		@Override
-		protected Integer getValue() {
-			return getMinSelectionIndex();
+		protected @Nullable Integer getValue() {
+			int index = getMinSelectionIndex();
+
+			return index == -1 ? null : index;
 		}
 
 		@Override
 		protected void setValue(Integer index) {
-			checkIndex(index, items.size());
-			setSelectionInterval(index, index);
+			if (index == null) {
+				clearSelection();
+			}
+			else {
+				checkIndex(index, items.size());
+				setSelectionInterval(index, index);
+			}
 		}
 
 		private void onChanged() {
@@ -369,8 +372,8 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 
 		@Override
 		protected @Nullable R getValue() {
-			int index = selectedIndex.getOrThrow();
-			if (index >= 0 && index < items.size()) {
+			Integer index = selectedIndex.get();
+			if (index != null && index < items.size()) {
 				return items.get(index);
 			}
 

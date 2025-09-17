@@ -11,6 +11,7 @@ Codion Change Log
 - DefaultConditionModel bug fixed, in now works when case-insensitive.
 ### is.codion.swing.common.model
 - DefaultListSelection.SelectedIndexes and DefaultItems.optional() now return an empty Optional in case of empty selection.
+- DefaultListSelection.SelectedIndex no longer non-null, returns null instead of -1 in case of empty selection.
 ### is.codion.swing.common.ui
 - ControlIcon.controlIcon(icon) factory method added, when all you have is a single icon.
 - ListBoxBuilder.string() renamed formatter().

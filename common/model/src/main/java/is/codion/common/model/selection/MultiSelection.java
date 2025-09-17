@@ -63,11 +63,10 @@ public interface MultiSelection<T> extends SingleSelection<T> {
 
 	/**
 	 * Returns the {@link Value} controlling the selected index.
-	 * <p>
-	 * In a multi-selection context, this represents the minimum selected index.
+	 * <p>In a multi-selection context, this represents the minimum selected index.
 	 * When multiple items are selected, this value tracks the lowest index among
-	 * the selected items. The value's {@code get()} method returns -1 if the selection is empty.
-	 * @return the {@link Value} controlling the minimum selected index, whose {@code get()} method returns -1 if selection is empty
+	 * the selected items. The value's {@code get()} method returns null if the selection is empty.
+	 * @return the {@link Value} controlling the minimum selected index, whose {@code get()} method returns null if selection is empty
 	 */
 	Value<Integer> index();
 
