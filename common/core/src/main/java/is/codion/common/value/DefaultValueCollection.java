@@ -22,6 +22,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
@@ -47,6 +48,18 @@ class DefaultValueCollection<T, C extends Collection<T>> extends DefaultValue<C>
 	@Override
 	public final Iterator<T> iterator() {
 		return getOrThrow().iterator();
+	}
+
+	@Override
+	public Optional<C> optional() {
+		synchronized (lock) {
+			C values = getOrThrow();
+			if (values.isEmpty()) {
+				return Optional.empty();
+			}
+
+			return Optional.of(values);
+		}
 	}
 
 	@Override
@@ -249,6 +262,11 @@ class DefaultValueCollection<T, C extends Collection<T>> extends DefaultValue<C>
 		@Override
 		public final int size() {
 			return super.value().size();
+		}
+
+		@Override
+		public final Optional<C> optional() {
+			return super.value().optional();
 		}
 	}
 }

@@ -40,9 +40,10 @@ public class ValueSetTest {
 
 		assertFalse(observer.isNullable());
 		assertFalse(observer.isNull());
-		assertTrue(observer.optional().isPresent());
+		assertFalse(observer.optional().isPresent());
 
 		assertTrue(valueSet.add(1));
+		assertTrue(observer.optional().isPresent());
 		assertFalse(valueSet.add(1));
 		assertTrue(valueSet.remove(1));
 		assertFalse(valueSet.remove(1));

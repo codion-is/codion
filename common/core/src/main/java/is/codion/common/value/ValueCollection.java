@@ -22,6 +22,7 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * <p>An observable wrapper for one or more values.
@@ -103,6 +104,12 @@ public interface ValueCollection<T, C extends Collection<T>> extends Value<C>, O
 	 * @return a single item value based on this values instance
 	 */
 	Value<T> value();
+
+	/**
+	 * @return the values or an empty Optional if the collection is empty.
+	 */
+	@Override
+	Optional<C> optional();
 
 	/**
 	 * Returns an {@link ObservableValueCollection} notified each time this value changes.

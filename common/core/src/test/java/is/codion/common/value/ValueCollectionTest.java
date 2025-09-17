@@ -45,13 +45,13 @@ public class ValueCollectionTest {
 
 		assertFalse(observer.isNullable());
 		assertFalse(observer.isNull());
-		assertTrue(observer.optional().isPresent());
+		assertFalse(observer.optional().isPresent());//empty
 
 		assertTrue(set.add(1));
+		assertTrue(observer.optional().isPresent());
 		assertFalse(set.add(1));
 		assertTrue(set.remove(1));
 		assertFalse(set.remove(1));
-
 	}
 
 	@Test
@@ -165,9 +165,10 @@ public class ValueCollectionTest {
 
 		assertFalse(observable.isNullable());
 		assertFalse(observable.isNull());
-		assertTrue(observable.optional().isPresent());
+		assertFalse(observable.optional().isPresent());
 
 		assertTrue(list.add(1));
+		assertTrue(observable.optional().isPresent());
 		assertTrue(list.add(1));
 		assertTrue(list.remove(1));
 		assertTrue(list.remove(1));

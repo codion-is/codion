@@ -24,6 +24,7 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * A read only values observable
@@ -58,4 +59,10 @@ public interface ObservableValueCollection<T, C extends Collection<T>> extends O
 	 * @return the number of elements in this {@link ValueCollection} instance
 	 */
 	int size();
+
+	/**
+	 * @return the values or an empty Optional if the collection is empty.
+	 */
+	@Override
+	Optional<C> optional();
 }

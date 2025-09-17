@@ -41,9 +41,10 @@ public class ValueListTest {
 
 		assertFalse(observer.isNullable());
 		assertFalse(observer.isNull());
-		assertTrue(observer.optional().isPresent());
+		assertFalse(observer.optional().isPresent());
 
 		assertTrue(values.add(1));
+		assertTrue(observer.optional().isPresent());
 		assertTrue(values.add(1));
 		assertTrue(values.remove(1));
 		assertTrue(values.remove(1));
