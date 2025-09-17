@@ -19,6 +19,7 @@
 package is.codion.common.state;
 
 import is.codion.common.Conjunction;
+import is.codion.common.observer.Observable;
 import is.codion.common.value.Value;
 import is.codion.common.value.Value.Notify;
 import is.codion.common.value.Value.Validator;
@@ -162,11 +163,12 @@ public interface State extends ObservableState {
 	}
 
 	/**
-	 * @return an {@link ObservableState} active when the given value is present, based on {@link Value#optional()}.
+	 * @return an {@link ObservableState} active when the given observable
+	 * has a value present, determined by {@link Observable#optional()}.
 	 */
-	static <T> ObservableState present(Value<T> value) {
-		State state = state(requireNonNull(value).optional().isPresent());
-		value.addListener(() -> state.set(value.optional().isPresent()));
+	static <T> ObservableState present(Observable<T> observable) {
+		State state = state(requireNonNull(observable).optional().isPresent());
+		observable.addListener(() -> state.set(observable.optional().isPresent()));
 
 		return state;
 	}

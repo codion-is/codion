@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.common.core
 - ValueCollection.optional() now returns an empty Optional if the collection is empty.
 - State.present(value) added.
+- State.present() parameter now Observable.
 ### is.codion.common.model
 - DefaultConditionModel.DefaultSetCondition.equals() and hashCode() now throw UnsupportedOperationException, in case equalTo() is confused with equals().
 - DefaultConditionModel bug fixed, adding wildards no longer breaks case-insensitivity.
