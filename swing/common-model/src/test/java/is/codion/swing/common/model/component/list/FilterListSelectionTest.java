@@ -114,8 +114,13 @@ public class FilterListSelectionTest {
 		// Test multiple selection mode operations
 		testModel.setSelectionMode(MULTIPLE_INTERVAL_SELECTION);
 
+		assertFalse(testModel.indexes().optional().isPresent());
+		assertFalse(testModel.items().optional().isPresent());
+
 		// Test selectAll
 		testModel.selectAll();
+		assertTrue(testModel.indexes().optional().isPresent());
+		assertTrue(testModel.items().optional().isPresent());
 		assertEquals(3, testModel.count());
 		assertEquals(asList(0, 1, 2), testModel.indexes().get());
 
@@ -132,6 +137,8 @@ public class FilterListSelectionTest {
 
 		testModel.indexes().remove(asList(0, 2));
 		assertEquals(0, testModel.count());
+		assertFalse(testModel.indexes().optional().isPresent());
+		assertFalse(testModel.items().optional().isPresent());
 		assertTrue(testModel.empty().is());
 	}
 

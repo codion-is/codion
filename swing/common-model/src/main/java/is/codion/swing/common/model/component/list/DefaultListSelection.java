@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
@@ -342,6 +343,16 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 			}
 		}
 
+		@Override
+		public Optional<List<Integer>> optional() {
+			List<Integer> indexes = getOrThrow();
+			if (indexes.isEmpty()) {
+				return Optional.empty();
+			}
+
+			return Optional.of(indexes);
+		}
+
 		private void checkIndexes(Collection<Integer> indexes) {
 			int size = items.size();
 			for (Integer index : indexes) {
@@ -444,6 +455,16 @@ final class DefaultListSelection<R> extends DefaultListSelectionModel implements
 		@Override
 		public boolean contains(R item) {
 			return isSelectedIndex(items.indexOf(requireNonNull(item)));
+		}
+
+		@Override
+		public Optional<List<R>> optional() {
+			List<R> selected = getOrThrow();
+			if (selected.isEmpty()) {
+				return Optional.empty();
+			}
+
+			return Optional.of(selected);
 		}
 
 		private void addInternal(Collection<R> itemsToAdd) {
