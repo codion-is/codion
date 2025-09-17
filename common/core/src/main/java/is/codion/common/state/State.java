@@ -26,6 +26,8 @@ import is.codion.common.value.Value.Validator;
 import java.util.Collection;
 import java.util.function.Consumer;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A class encapsulating a boolean state.
  * {@snippet :
@@ -157,6 +159,16 @@ public interface State extends ObservableState {
 	 */
 	static Builder builder() {
 		return new DefaultState.DefaultBuilder();
+	}
+
+	/**
+	 * @return an {@link ObservableState} active when the given value is present, based on {@link Value#optional()}.
+	 */
+	static <T> ObservableState present(Value<T> value) {
+		State state = state(requireNonNull(value).optional().isPresent());
+		value.addListener(() -> state.set(value.optional().isPresent()));
+
+		return state;
 	}
 
 	/**

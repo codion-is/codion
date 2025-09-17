@@ -18,6 +18,7 @@
  */
 package is.codion.demos.chinook.ui;
 
+import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.plugin.imagepanel.NavigableImagePanel;
@@ -47,6 +48,7 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import static is.codion.common.state.State.present;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.util.ResourceBundle.getBundle;
@@ -71,7 +73,7 @@ final class CoverArtPanel extends JPanel {
 	private final JPanel centerPanel;
 	private final NavigableImagePanel imagePanel;
 	private final Value<byte[]> imageBytes;
-	private final State imageSelected;
+	private final ObservableState imageSelected;
 	private final State embedded = State.state(true);
 
 	/**
@@ -80,7 +82,7 @@ final class CoverArtPanel extends JPanel {
 	CoverArtPanel(Value<byte[]> imageBytes) {
 		super(borderLayout());
 		this.imageBytes = imageBytes;
-		this.imageSelected = State.state(!imageBytes.isNull());
+		this.imageSelected = present(imageBytes);
 		this.imagePanel = createImagePanel();
 		this.addButton = button()
 						.control(Control.builder()
@@ -120,7 +122,6 @@ final class CoverArtPanel extends JPanel {
 
 	private void bindEvents() {
 		imageBytes.addConsumer(bytes -> imagePanel.setImage(readImage(bytes)));
-		imageBytes.addConsumer(bytes -> imageSelected.set(bytes != null));
 		embedded.addConsumer(this::setEmbedded);
 		imagePanel.addMouseListener(new EmbeddingMouseListener());
 	}

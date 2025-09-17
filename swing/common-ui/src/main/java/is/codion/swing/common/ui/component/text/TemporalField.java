@@ -55,6 +55,7 @@ import java.time.temporal.Temporal;
 import java.util.Optional;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
+import static is.codion.common.state.State.present;
 import static is.codion.swing.common.ui.component.text.TemporalField.ControlKeys.*;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
@@ -109,7 +110,6 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 	private final DateTimeFormatter formatter;
 	private final DateTimeParser<T> dateTimeParser;
 	private final Value<T> value = Value.nullable();
-	private final State valueNull = State.state();
 	private final String dateTimePattern;
 	private final @Nullable ImageIcon calendarIcon;
 	private final ControlMap controlMap;
@@ -123,13 +123,14 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		this.dateTimePattern = builder.dateTimePattern;
 		this.calendarIcon = builder.calendarIcon;
 		this.controlMap = builder.controlMap;
+		ObservableState valuePresent = present(value);
 		this.controlMap.control(INCREMENT).set(Control.builder()
 						.command(this::increment)
-						.enabled(valueNull.not())
+						.enabled(valuePresent)
 						.build());
 		this.controlMap.control(DECREMENT).set(Control.builder()
 						.command(this::decrement)
-						.enabled(valueNull.not())
+						.enabled(valuePresent)
 						.build());
 		this.controlMap.control(DISPLAY_CALENDAR).set(createCalendarControl());
 		if (builder.incrementDecrementEnabled) {
@@ -293,7 +294,6 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 			// so we only set the value to null on insert
 			if (temporal != null || e.getType() == EventType.INSERT) {
 				value.set(temporal);
-				valueNull.set(temporal == null);
 			}
 		}
 	}

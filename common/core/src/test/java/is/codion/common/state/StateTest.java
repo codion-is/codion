@@ -19,6 +19,7 @@
 package is.codion.common.state;
 
 import is.codion.common.Conjunction;
+import is.codion.common.value.Value;
 
 import org.junit.jupiter.api.Test;
 
@@ -505,5 +506,16 @@ public class StateTest {
 			// Combination should see the changes
 			assertFalse(combination.is());
 		}
+	}
+
+	@Test
+	void valuePresent() {
+		Value<Integer> value = Value.nullable();
+		ObservableState present = State.present(value);
+		assertFalse(present.is());
+		value.set(0);
+		assertTrue(present.is());
+		value.clear();
+		assertFalse(present.is());
 	}
 }

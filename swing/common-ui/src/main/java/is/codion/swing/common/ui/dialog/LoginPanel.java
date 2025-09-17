@@ -49,6 +49,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
+import static is.codion.common.state.State.present;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -74,10 +75,10 @@ final class LoginPanel extends JPanel {
 	private final State validating = State.state();
 
 	LoginPanel(@Nullable User defaultUser, LoginValidator loginValidator, @Nullable ImageIcon icon, @Nullable JComponent southComponent, int inputFieldColumns) {
-		Value<String> usernameValue = Value.nullable(defaultUser == null ? null : defaultUser.username());
+		Value<String> username = Value.nullable(defaultUser == null ? null : defaultUser.username());
 		this.usernameField = TextFieldBuilder.builder()
 						.valueClass(String.class)
-						.link(usernameValue)
+						.link(username)
 						.columns(inputFieldColumns)
 						.selectAllOnFocusGained(true)
 						.enabled(validating.not())
@@ -92,7 +93,7 @@ final class LoginPanel extends JPanel {
 						.command(this::onOkPressed)
 						.caption(Messages.ok())
 						.mnemonic(Messages.okMnemonic())
-						.enabled(State.and(usernameSpecifiedState(usernameValue), validating.not()))
+						.enabled(State.and(present(username), validating.not()))
 						.build();
 		this.cancelControl = Control.builder()
 						.command(this::closeDialog)
@@ -208,13 +209,6 @@ final class LoginPanel extends JPanel {
 
 	private void closeDialog() {
 		Utilities.disposeParentWindow(this);
-	}
-
-	private static State usernameSpecifiedState(Value<String> usernameValue) {
-		State usernameSpecified = State.state(!usernameValue.isNull());
-		usernameValue.addConsumer(username -> usernameSpecified.set(username != null));
-
-		return usernameSpecified;
 	}
 
 	private static GridBagConstraints createGridBagConstraints() {
