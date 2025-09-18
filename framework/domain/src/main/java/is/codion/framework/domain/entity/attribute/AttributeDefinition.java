@@ -441,7 +441,18 @@ public sealed interface AttributeDefinition<T>
 		 * @throws IllegalStateException in case the caption resource is not found in the entity resource bundle
 		 * @see EntityType#resourceBundleName()
 		 */
-		B captionResourceKey(String captionResourceKey);
+		B captionResource(String captionResourceKey);
+
+		/**
+		 * Specifies the key to use when retrieving the caption for this attribute from the given resource bundle.
+		 * Note that this configures the attribute to not be hidden.
+		 * @param resourceBundleName the resource bundle name
+		 * @param captionResourceKey the caption resource bundle key
+		 * @return this builder instance
+		 * @throws IllegalStateException in case the caption has already been set
+		 * @throws IllegalStateException in case the caption resource is not found in the given resource bundle
+		 */
+		B captionResource(String resourceBundleName, String captionResourceKey);
 
 		/**
 		 * Specifies the key to use when retrieving the mnemonic for this attribute from the entity resource bundle,
@@ -453,7 +464,17 @@ public sealed interface AttributeDefinition<T>
 		 * @throws IllegalStateException in case the mnemonic resource is not found in the entity resource bundle
 		 * @see EntityType#resourceBundleName()
 		 */
-		B mnemonicResourceKey(String mnemonicResourceKey);
+		B mnemonicResource(String mnemonicResourceKey);
+
+		/**
+		 * Specifies the key to use when retrieving the mnemonic for this attribute from the given resource bundle.
+		 * @param resourceBundleName the resource bundle name
+		 * @param mnemonicResourceKey the mnemonic resource bundle key
+		 * @return this builder instance
+		 * @throws IllegalStateException in case the mnemonic has already been set
+		 * @throws IllegalStateException in case the mnemonic resource is not found in the given resource bundle
+		 */
+		B mnemonicResource(String resourceBundleName, String mnemonicResourceKey);
 
 		/**
 		 * Sets the default value for this attribute, overrides the underlying column default value, if any

@@ -24,6 +24,7 @@ import is.codion.common.db.operation.DatabaseFunction;
 import is.codion.common.db.operation.DatabaseProcedure;
 import is.codion.common.db.result.ResultPacker;
 import is.codion.common.format.LocaleDateTimePattern;
+import is.codion.demos.chinook.domain.api.Chinook;
 import is.codion.demos.chinook.domain.api.Chinook.Playlist.RandomPlaylistParameters;
 import is.codion.demos.chinook.domain.api.Chinook.Track.RaisePriceParameters;
 import is.codion.demos.chinook.migration.MigrationManager;
@@ -48,18 +49,14 @@ import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import static is.codion.demos.chinook.domain.api.Chinook.*;
 import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.plugin.jasperreports.JasperReports.classPathReport;
-import static java.util.ResourceBundle.getBundle;
 
 public final class ChinookImpl extends DomainModel {
-
-	private static final ResourceBundle BUNDLE = getBundle(ChinookImpl.class.getName());
 
 	private static final ColumnTemplate<String> REQUIRED_SEARCHABLE =
 					column -> column.define()
@@ -70,12 +67,12 @@ public final class ChinookImpl extends DomainModel {
 					column -> column.define()
 									.column()
 									.readOnly(true)
-									.caption(BUNDLE.getString("insert_time"));
+									.captionResource(Chinook.class.getName(), "insert_time");
 	private static final ColumnTemplate<String> INSERT_USER =
 					column -> column.define()
 									.column()
 									.readOnly(true)
-									.caption(BUNDLE.getString("insert_user"));
+									.captionResource(Chinook.class.getName(), "insert_user");
 
 	public ChinookImpl() {
 		super(DOMAIN);

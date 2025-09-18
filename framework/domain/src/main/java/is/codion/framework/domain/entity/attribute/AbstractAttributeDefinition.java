@@ -72,6 +72,8 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 
 	private final Attribute<T> attribute;
 	private final @Nullable String caption;
+	private final @Nullable String captionResourceBundleName;
+	private final @Nullable String mnemonicResourceBundleName;
 	private final String captionResourceKey;
 	private final String mnemonicResourceKey;
 	private final ValueSupplier<T> defaultValueSupplier;
@@ -98,6 +100,8 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		requireNonNull(builder);
 		this.attribute = builder.attribute;
 		this.caption = builder.caption;
+		this.captionResourceBundleName = builder.captionResourceBundleName;
+		this.mnemonicResourceBundleName = builder.mnemonicResourceBundleName;
 		this.captionResourceKey = builder.captionResourceKey;
 		this.mnemonicResourceKey = builder.mnemonicResourceKey;
 		this.defaultValueSupplier = builder.defaultValueSupplier;
@@ -231,10 +235,9 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 
 	@Override
 	public final String caption() {
-		String resourceBundleName = attribute.entityType().resourceBundleName().orElse(null);
-		if (resourceBundleName != null) {
+		if (captionResourceBundleName != null) {
 			if (resourceCaption == null) {
-				ResourceBundle bundle = getBundle(resourceBundleName);
+				ResourceBundle bundle = getBundle(captionResourceBundleName);
 				resourceCaption = bundle.containsKey(captionResourceKey) ? bundle.getString(captionResourceKey) : "";
 			}
 
@@ -248,10 +251,9 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 
 	@Override
 	public final char mnemonic() {
-		String resourceBundleName = attribute.entityType().resourceBundleName().orElse(null);
-		if (resourceBundleName != null) {
+		if (mnemonicResourceBundleName != null) {
 			if (resourceMnemonic == null) {
-				ResourceBundle bundle = getBundle(resourceBundleName);
+				ResourceBundle bundle = getBundle(mnemonicResourceBundleName);
 				String mnemonicResource = bundle.containsKey(mnemonicResourceKey) ? bundle.getString(mnemonicResourceKey) : "";
 				if (!mnemonicResource.isEmpty()) {
 					resourceMnemonic = mnemonicResource.charAt(0);
@@ -428,6 +430,8 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 
 		private @Nullable String caption;
 		private ValueSupplier<T> defaultValueSupplier;
+		private @Nullable String captionResourceBundleName;
+		private @Nullable String mnemonicResourceBundleName;
 		private String captionResourceKey;
 		private String mnemonicResourceKey;
 		private boolean nullable;
@@ -450,9 +454,11 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 			this.attribute = requireNonNull(attribute);
 			format = defaultFormat(attribute);
 			comparator = defaultComparator(attribute);
+			captionResourceBundleName = attribute.entityType().resourceBundleName().orElse(null);
+			mnemonicResourceBundleName = captionResourceBundleName;
 			captionResourceKey = attribute.name();
 			mnemonicResourceKey = captionResourceKey + MNEMONIC_RESOURCE_SUFFIX;
-			hidden = resourceNotFound(attribute.entityType().resourceBundleName().orElse(null), captionResourceKey);
+			hidden = resourceNotFound(captionResourceBundleName, captionResourceKey);
 			nullable = true;
 			maximumLength = attribute.type().isCharacter() ? 1 : -1;
 			trim = TRIM_STRINGS.getOrThrow();
@@ -475,34 +481,42 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		}
 
 		@Override
-		public final B captionResourceKey(String captionResourceKey) {
+		public final B captionResource(String captionResourceKey) {
+			return captionResource(attribute.entityType().resourceBundleName().orElseThrow(() ->
+							new IllegalStateException("No resource bundle specified for entity: " + attribute.entityType())), captionResourceKey);
+		}
+
+		@Override
+		public final B captionResource(String resourceBundleName, String captionResourceKey) {
 			if (caption != null) {
 				throw new IllegalStateException("Caption has already been set for attribute: " + attribute);
 			}
-			String resourceBundleName = attribute.entityType().resourceBundleName().orElse(null);
-			if (resourceBundleName == null) {
-				throw new IllegalStateException("No resource bundle specified for entity: " + attribute.entityType());
-			}
-			if (resourceNotFound(resourceBundleName, requireNonNull(captionResourceKey))) {
+			requireNonNull(captionResourceKey);
+			if (resourceNotFound(requireNonNull(resourceBundleName), requireNonNull(captionResourceKey))) {
 				throw new IllegalArgumentException("Resource " + captionResourceKey + " not found in bundle: " + resourceBundleName);
 			}
+			this.captionResourceBundleName = resourceBundleName;
 			this.captionResourceKey = captionResourceKey;
 			this.hidden = false;
 			return self();
 		}
 
 		@Override
-		public final B mnemonicResourceKey(String mnemonicResourceKey) {
+		public final B mnemonicResource(String mnemonicResourceKey) {
+			return mnemonicResource(attribute.entityType().resourceBundleName().orElseThrow(() ->
+							new IllegalStateException("No resource bundle specified for entity: " + attribute.entityType())), mnemonicResourceKey);
+		}
+
+		@Override
+		public final B mnemonicResource(String resourceBundleName, String mnemonicResourceKey) {
 			if (mnemonic != 0) {
 				throw new IllegalStateException("Mnemonic has already been set for attribute: " + attribute);
 			}
-			String resourceBundleName = attribute.entityType().resourceBundleName().orElse(null);
-			if (resourceBundleName == null) {
-				throw new IllegalStateException("No resource bundle specified for entity: " + attribute.entityType());
-			}
-			if (resourceNotFound(resourceBundleName, requireNonNull(mnemonicResourceKey))) {
+			requireNonNull(captionResourceKey);
+			if (resourceNotFound(requireNonNull(resourceBundleName), requireNonNull(mnemonicResourceKey))) {
 				throw new IllegalArgumentException("Resource " + mnemonicResourceKey + " not found in bundle: " + resourceBundleName);
 			}
+			this.mnemonicResourceBundleName = resourceBundleName;
 			this.mnemonicResourceKey = mnemonicResourceKey;
 			return self();
 		}

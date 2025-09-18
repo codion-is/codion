@@ -22,6 +22,8 @@ Codion Change Log
 - Column.ColumnDefiner.column(Function<Column, ColumnDefinition.Builder) added, for shared column definition policies.
 - Column.ColumnDefiner.auditColumn() and booleanColumn() removed.
 - Column.ColumnTemplate moved up to package level.
+- AttributeDefinition.Builder.captionResourceKey() and mnemonicResourceKey() renamed to captionResource() and mnemonicResource().
+- AttributeDefinition.Builder.captionResource() and mnemonicResource() overloaded to use a specified resource bundle instead of the entity bundle.
 ### is.codion.framework.model
 - DefaultEntityTableConditionModel bug fixed, now handles column and dateTimeFormat precision mismatch, by using ranges when precision is lacking.
 ### is.codion.swing.framework.ui
