@@ -19,6 +19,7 @@ Codion Change Log
 - ListBoxBuilder.string() renamed formatter().
 ### is.codion.framework.domain
 - ColumnDefinition.Builder.hasDatabaseDefault() renamed withDefault().
+- Column.ColumnDefiner.column(Function<Column, ColumnDefinition.Builder) added, for shared column definition policies.
 ### is.codion.framework.model
 - DefaultEntityTableConditionModel bug fixed, now handles column and dateTimeFormat precision mismatch, by using ranges when precision is lacking.
 ### is.codion.swing.framework.ui

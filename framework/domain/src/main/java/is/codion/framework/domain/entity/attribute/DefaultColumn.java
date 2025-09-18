@@ -29,6 +29,7 @@ import java.io.Serializable;
 import java.sql.Statement;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.function.Function;
 
 import static is.codion.framework.domain.entity.attribute.AuditAction.INSERT;
 import static is.codion.framework.domain.entity.attribute.AuditAction.UPDATE;
@@ -276,6 +277,11 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
 		@Override
 		public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> column() {
 			return new DefaultColumnDefinition.DefaultColumnDefinitionBuilder<>(column);
+		}
+
+		@Override
+		public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> column(Function<Column<T>, ColumnDefinition.Builder<T, ?>> definer) {
+			return (ColumnDefinition.Builder<T, B>) requireNonNull(definer).apply(column);
 		}
 
 		@Override

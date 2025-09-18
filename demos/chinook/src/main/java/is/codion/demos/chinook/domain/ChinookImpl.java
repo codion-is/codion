@@ -36,6 +36,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityFormatter;
 import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.entity.attribute.Column.ColumnTemplate;
 import is.codion.framework.domain.entity.attribute.Column.Converter;
 import is.codion.framework.domain.entity.query.EntitySelectQuery;
 
@@ -54,6 +55,13 @@ import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.plugin.jasperreports.JasperReports.classPathReport;
 
 public final class ChinookImpl extends DomainModel implements Chinook {
+
+	// A column definition template
+	private static final ColumnTemplate<String> REQUIRED_SEARCHABLE =
+					column -> column.define()
+									.column()
+									.nullable(false)
+									.searchable(true);
 
 	public ChinookImpl() {
 		super(DOMAIN);
@@ -75,9 +83,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 										Artist.ID.define()
 														.primaryKey(),
 										Artist.NAME.define()
-														.column()
-														.searchable(true)
-														.nullable(false)
+														.column(REQUIRED_SEARCHABLE)
 														.maximumLength(120),
 										Artist.NUMBER_OF_ALBUMS.define()
 														.subquery("""
@@ -107,9 +113,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.foreignKey()
 														.attributes(Artist.NAME),
 										Album.TITLE.define()
-														.column()
-														.searchable(true)
-														.nullable(false)
+														.column(REQUIRED_SEARCHABLE)
 														.maximumLength(160),
 										Album.COVER.define()
 														.column()
@@ -136,14 +140,10 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 										Employee.ID.define()
 														.primaryKey(),
 										Employee.LASTNAME.define()
-														.column()
-														.searchable(true)
-														.nullable(false)
+														.column(REQUIRED_SEARCHABLE)
 														.maximumLength(20),
 										Employee.FIRSTNAME.define()
-														.column()
-														.searchable(true)
-														.nullable(false)
+														.column(REQUIRED_SEARCHABLE)
 														.maximumLength(20),
 										Employee.TITLE.define()
 														.column()
@@ -183,9 +183,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.column()
 														.maximumLength(24),
 										Employee.EMAIL.define()
-														.column()
-														.searchable(true)
-														.nullable(false)
+														.column(REQUIRED_SEARCHABLE)
 														.maximumLength(60))
 						.keyGenerator(identity())
 						.validator(new EmailValidator(Employee.EMAIL))
@@ -203,14 +201,10 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 										Customer.ID.define()
 														.primaryKey(),
 										Customer.LASTNAME.define()
-														.column()
-														.searchable(true)
-														.nullable(false)
+														.column(REQUIRED_SEARCHABLE)
 														.maximumLength(20),
 										Customer.FIRSTNAME.define()
-														.column()
-														.searchable(true)
-														.nullable(false)
+														.column(REQUIRED_SEARCHABLE)
 														.maximumLength(40),
 										Customer.COMPANY.define()
 														.column()
@@ -237,9 +231,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.column()
 														.maximumLength(24),
 										Customer.EMAIL.define()
-														.column()
-														.searchable(true)
-														.nullable(false)
+														.column(REQUIRED_SEARCHABLE)
 														.maximumLength(60),
 										Customer.SUPPORTREP_ID.define()
 														.column(),
@@ -277,9 +269,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 										Genre.ID.define()
 														.primaryKey(),
 										Genre.NAME.define()
-														.column()
-														.searchable(true)
-														.nullable(false)
+														.column(REQUIRED_SEARCHABLE)
 														.maximumLength(120))
 						.keyGenerator(identity())
 						.orderBy(ascending(Genre.NAME))
@@ -321,10 +311,8 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 														.expression("artist.name")
 														.readOnly(true),
 										Track.NAME.define()
-														.column()
+														.column(REQUIRED_SEARCHABLE)
 														.expression("track.name")
-														.searchable(true)
-														.nullable(false)
 														.maximumLength(200),
 										Track.GENRE_ID.define()
 														.column(),
@@ -478,9 +466,7 @@ public final class ChinookImpl extends DomainModel implements Chinook {
 										Playlist.ID.define()
 														.primaryKey(),
 										Playlist.NAME.define()
-														.column()
-														.searchable(true)
-														.nullable(false)
+														.column(REQUIRED_SEARCHABLE)
 														.maximumLength(120))
 						.keyGenerator(identity())
 						.orderBy(ascending(Playlist.NAME))

@@ -29,6 +29,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
 
@@ -143,6 +144,12 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditionFactory<T
 	}
 
 	/**
+	 * A convenience interface for defining column templates.
+	 * @param <T> the column type
+	 */
+	interface ColumnTemplate<T> extends Function<Column<T>, ColumnDefinition.Builder<T, ?>> {}
+
+	/**
 	 * Provides {@link ColumnDefinition.Builder} instances.
 	 * @param <T> the column type
 	 */
@@ -154,6 +161,14 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditionFactory<T
 		 * @return a new {@link ColumnDefinition.Builder}
 		 */
 		<B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> column();
+
+		/**
+		 * Creates a new {@link ColumnDefinition.Builder} instance.
+		 * @param <B> the builder type
+		 * @param definer a column definer
+		 * @return a new {@link ColumnDefinition.Builder}
+		 */
+		<B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> column(Function<Column<T>, ColumnDefinition.Builder<T, ?>> definer);
 
 		/**
 		 * Returns a new {@link ColumnDefinition.Builder} instance, with the primary key index 0.
