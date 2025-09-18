@@ -44,6 +44,7 @@ import java.text.Format;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -81,6 +82,9 @@ public interface Chinook {
 		Column<List<String>> TAGS = TYPE.column("tags", new TypeReference<>() {});
 		Column<Integer> RATING = TYPE.integerColumn("rating");
 
+		Column<LocalDateTime> INSERT_TIME = TYPE.localDateTimeColumn("insert_time");
+		Column<String> INSERT_USER = TYPE.stringColumn("insert_user");
+
 		ForeignKey ARTIST_FK = TYPE.foreignKey("artist_fk", ARTIST_ID, Artist.ID);
 	}
 
@@ -103,6 +107,9 @@ public interface Chinook {
 		Column<String> FAX = TYPE.stringColumn("fax");
 		Column<String> EMAIL = TYPE.stringColumn("email");
 
+		Column<LocalDateTime> INSERT_TIME = TYPE.localDateTimeColumn("insert_time");
+		Column<String> INSERT_USER = TYPE.stringColumn("insert_user");
+
 		ForeignKey REPORTSTO_FK = TYPE.foreignKey("reportsto_fk", REPORTSTO, Employee.ID);
 	}
 
@@ -122,6 +129,9 @@ public interface Chinook {
 		Column<String> FAX = TYPE.stringColumn("fax");
 		Column<String> EMAIL = TYPE.stringColumn("email");
 		Column<Long> SUPPORTREP_ID = TYPE.longColumn("supportrep_id");
+
+		Column<LocalDateTime> INSERT_TIME = TYPE.localDateTimeColumn("insert_time");
+		Column<String> INSERT_USER = TYPE.stringColumn("insert_user");
 
 		ForeignKey SUPPORTREP_FK = TYPE.foreignKey("supportrep_fk", SUPPORTREP_ID, Employee.ID);
 
@@ -170,6 +180,9 @@ public interface Chinook {
 		Column<Integer> PLAY_COUNT = TYPE.integerColumn("play_count");
 		Column<Void> RANDOM = TYPE.column("random()", Void.class);
 
+		Column<LocalDateTime> INSERT_TIME = TYPE.localDateTimeColumn("insert_time");
+		Column<String> INSERT_USER = TYPE.stringColumn("insert_user");
+
 		ForeignKey ALBUM_FK = TYPE.foreignKey("album_fk", ALBUM_ID, Album.ID);
 		ForeignKey MEDIATYPE_FK = TYPE.foreignKey("mediatype_fk", MEDIATYPE_ID, MediaType.ID);
 		ForeignKey GENRE_FK = TYPE.foreignKey("genre_fk", GENRE_ID, Genre.ID);
@@ -201,6 +214,9 @@ public interface Chinook {
 		Column<BigDecimal> TOTAL = TYPE.bigDecimalColumn("total");
 		Column<BigDecimal> CALCULATED_TOTAL = TYPE.bigDecimalColumn("calculated_total");
 
+		Column<LocalDateTime> INSERT_TIME = TYPE.localDateTimeColumn("insert_time");
+		Column<String> INSERT_USER = TYPE.stringColumn("insert_user");
+
 		ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
 
 		ProcedureType<EntityConnection, Collection<Long>> UPDATE_TOTALS = procedureType("chinook.update_totals");
@@ -217,6 +233,9 @@ public interface Chinook {
 		Column<BigDecimal> UNITPRICE = TYPE.bigDecimalColumn("unitprice");
 		Column<Integer> QUANTITY = TYPE.integerColumn("quantity");
 		Attribute<BigDecimal> TOTAL = TYPE.bigDecimalAttribute("total");
+
+		Column<LocalDateTime> INSERT_TIME = TYPE.localDateTimeColumn("insert_time");
+		Column<String> INSERT_USER = TYPE.stringColumn("insert_user");
 
 		ForeignKey INVOICE_FK = TYPE.foreignKey("invoice_fk", INVOICE_ID, Invoice.ID);
 		ForeignKey TRACK_FK = TYPE.foreignKey("track_fk", TRACK_ID, Track.ID);
