@@ -19,7 +19,6 @@
 package is.codion.framework.domain.entity.attribute;
 
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.attribute.DefaultColumn.DefaultAuditColumnDefiner;
 import is.codion.framework.domain.entity.attribute.DefaultColumn.DefaultColumnDefiner;
 import is.codion.framework.domain.entity.condition.ColumnConditionFactory;
 
@@ -215,74 +214,6 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditionFactory<T
 		 * @return a new {@link ColumnDefinition.Builder}
 		 */
 		<B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> subquery(String subquery);
-
-		/**
-		 * Creates a new {@link ColumnDefinition.Builder} instance representing a Boolean value.
-		 * @param <C> the column type
-		 * @param <B> the builder type
-		 * @param columnClass the underlying column data type class
-		 * @param trueValue the value representing 'true' in the underlying column
-		 * @param falseValue the value representing 'false' in the underlying column
-		 * @return a new {@link ColumnDefinition.Builder}
-		 * @throws NullPointerException in case either the true or false value is null
-		 * @throws IllegalStateException in case this column is not a boolean column
-		 * @throws IllegalArgumentException in case the values representing true and false are equal
-		 */
-		<C, B extends ColumnDefinition.Builder<Boolean, B>> ColumnDefinition.Builder<Boolean, B> booleanColumn(Class<C> columnClass,
-																																																					 C trueValue, C falseValue);
-
-		/**
-		 * @return a new {@link AuditColumnDefiner} instance
-		 */
-		AuditColumnDefiner<T> auditColumn();
-
-		/**
-		 * A convenience method for a {@link Converter} for boolean columns
-		 * @param <C> the actual column type
-		 * @param trueValue the true value
-		 * @param falseValue the false value
-		 * @return a boolean value converter
-		 * @throws NullPointerException in case either the true or false value is null
-		 * @throws IllegalArgumentException in case the values representing true and false are equal
-		 */
-		static <C> Converter<Boolean, C> booleanConverter(C trueValue, C falseValue) {
-			return new DefaultColumn.BooleanConverter<>(trueValue, falseValue);
-		}
-	}
-
-	/**
-	 * Provides {@link ColumnDefinition.Builder} instances for audit columns.
-	 * @param <T> the column type
-	 */
-	sealed interface AuditColumnDefiner<T> permits DefaultAuditColumnDefiner {
-
-		/**
-		 * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a row was inserted.
-		 * @param <B> the builder type
-		 * @return a new {@link ColumnDefinition.Builder}
-		 */
-		<B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> insertTime();
-
-		/**
-		 * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a row was updated.
-		 * @param <B> the builder type
-		 * @return a new {@link ColumnDefinition.Builder}
-		 */
-		<B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> updateTime();
-
-		/**
-		 * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who inserted a row.
-		 * @param <B> the builder type
-		 * @return a new {@link ColumnDefinition.Builder}
-		 */
-		<B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> insertUser();
-
-		/**
-		 * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who updated a row.
-		 * @param <B> the builder type
-		 * @return a new {@link ColumnDefinition.Builder}
-		 */
-		<B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> updateUser();
 	}
 
 	/**

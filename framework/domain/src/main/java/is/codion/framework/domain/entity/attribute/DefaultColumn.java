@@ -26,13 +26,9 @@ import org.jspecify.annotations.Nullable;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.sql.Statement;
 import java.util.Collection;
-import java.util.Objects;
 import java.util.function.Function;
 
-import static is.codion.framework.domain.entity.attribute.AuditAction.INSERT;
-import static is.codion.framework.domain.entity.attribute.AuditAction.UPDATE;
 import static is.codion.framework.domain.entity.condition.ColumnConditionFactory.factory;
 import static java.util.Objects.requireNonNull;
 
@@ -230,41 +226,6 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
 		return factory(this).isNotNull();
 	}
 
-	static final class BooleanConverter<T> implements Converter<Boolean, T> {
-
-		private final T trueValue;
-		private final T falseValue;
-
-		BooleanConverter(T trueValue, T falseValue) {
-			if (Objects.equals(trueValue, falseValue)) {
-				throw new IllegalArgumentException("The values representing true and false are equal: " + trueValue);
-			}
-			this.trueValue = requireNonNull(trueValue);
-			this.falseValue = requireNonNull(falseValue);
-		}
-
-		@Override
-		public Boolean fromColumnValue(T columnValue) {
-			if (Objects.equals(trueValue, columnValue)) {
-				return true;
-			}
-			if (Objects.equals(falseValue, columnValue)) {
-				return false;
-			}
-
-			throw new IllegalArgumentException("Unrecognized boolean value: " + columnValue);
-		}
-
-		@Override
-		public T toColumnValue(Boolean value, Statement statement) {
-			if (value) {
-				return trueValue;
-			}
-
-			return falseValue;
-		}
-	}
-
 	final class DefaultColumnDefiner<T> extends DefaultAttributeDefiner<T> implements ColumnDefiner<T> {
 
 		private final Column<T> column;
@@ -301,93 +262,6 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
 		@Override
 		public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> subquery(String subquery) {
 			return new DefaultColumnDefinition.DefaultSubqueryColumnDefinitionBuilder<>(column, subquery);
-		}
-
-		@Override
-		public <C, B extends ColumnDefinition.Builder<Boolean, B>> ColumnDefinition.Builder<Boolean, B> booleanColumn(Class<C> columnClass,
-																																																									C trueValue, C falseValue) {
-			if (!type().isBoolean()) {
-				throw new IllegalStateException(column + " is not a boolean column");
-			}
-
-			return (ColumnDefinition.Builder<Boolean, B>) new DefaultColumnDefinition.DefaultColumnDefinitionBuilder<>(column)
-							.converter(columnClass, (Converter<T, C>) new BooleanConverter<>(trueValue, falseValue));
-		}
-
-		@Override
-		public AuditColumnDefiner<T> auditColumn() {
-			return new DefaultAuditColumnDefiner<>(column);
-		}
-	}
-
-	final class DefaultAuditColumnDefiner<T> implements AuditColumnDefiner<T> {
-
-		private static final String COLUMN_CAPTION = "Column";
-
-		private final Column<T> column;
-
-		private DefaultAuditColumnDefiner(Column<T> column) {
-			this.column = column;
-		}
-
-		/**
-		 * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a row was inserted.
-		 * @param column the column
-		 * @param <T> the Temporal type to base the column on
-		 * @param <B> the builder type
-		 * @return a new {@link ColumnDefinition.Builder}
-		 */
-		public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> insertTime() {
-			if (!type().isTemporal()) {
-				throw new IllegalArgumentException(COLUMN_CAPTION + " " + column + " is not a temporal column");
-			}
-
-			return new DefaultAuditColumnDefinition.DefaultAuditColumnDefinitionBuilder<>(column, INSERT);
-		}
-
-		/**
-		 * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a row was updated.
-		 * @param column the column
-		 * @param <T> the Temporal type to base the column on
-		 * @param <B> the builder type
-		 * @return a new {@link ColumnDefinition.Builder}
-		 */
-		public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> updateTime() {
-			if (!type().isTemporal()) {
-				throw new IllegalArgumentException(COLUMN_CAPTION + " " + column + " is not a temporal column");
-			}
-
-			return new DefaultAuditColumnDefinition.DefaultAuditColumnDefinitionBuilder<>(column, UPDATE);
-		}
-
-		/**
-		 * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who inserted a row.
-		 * @param column the column
-		 * @param <B> the builder type
-		 * @return a new {@link ColumnDefinition.Builder}
-		 * @throws IllegalArgumentException in case column is not a string attribute
-		 */
-		public <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> insertUser() {
-			if (!type().isString()) {
-				throw new IllegalArgumentException(COLUMN_CAPTION + " " + column + " is not a string column");
-			}
-
-			return new DefaultAuditColumnDefinition.DefaultAuditColumnDefinitionBuilder<>((Column<String>) column, INSERT);
-		}
-
-		/**
-		 * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who updated a row.
-		 * @param column the column
-		 * @param <B> the builder type
-		 * @return a new {@link ColumnDefinition.Builder}
-		 * @throws IllegalArgumentException in case column is not a string attribute
-		 */
-		public <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> updateUser() {
-			if (!type().isString()) {
-				throw new IllegalArgumentException(COLUMN_CAPTION + " " + column + " is not a string column");
-			}
-
-			return new DefaultAuditColumnDefinition.DefaultAuditColumnDefinitionBuilder<>((Column<String>) column, UPDATE);
 		}
 	}
 }

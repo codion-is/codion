@@ -314,24 +314,16 @@ For databases supporting *Types.BOOLEAN* you simply specify a column.
 include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=booleanColumn]
 ----
 
-For databases lacking native boolean support we can define a boolean column, specifying the underlying type and the true/false values.
+For databases lacking native boolean support we can define a boolean column and provide a converter.
 
-[source,java]
+[source,java,indent=0]
 ----
-Customer.ACTIVE.define()
-        .booleanColumn("Is active", Integer.class, 1, 0)
-----
-
-[source,java]
-----
-Customer.ACTIVE.define()
-        .booleanColumn("Is active", String.class, "true", "false")
+include::{dir-petstore-source}/is/codion/demos/petstore/domain/Petstore.java[tags=booleanColumn]
 ----
 
-[source,java]
+[source,java,indent=0]
 ----
-Customer.ACTIVE.define()
-        .booleanColumn("Is active", Character.class, 'T', 'F')
+include::{dir-petstore-source}/is/codion/demos/petstore/domain/Petstore.java[tags=booleanConverter]
 ----
 
 Note that boolean attributes always use the boolean Java type, the framework handles translating to and from the actual column values.

@@ -28,7 +28,6 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
-import is.codion.framework.domain.entity.attribute.AuditColumnDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
@@ -530,11 +529,6 @@ public final class DomainSource {
 						.append(interfaceName).append(".").append(column.name().toUpperCase()).append(".define()")
 						.append(LINE_SEPARATOR).append(TRIPLE_INDENT)
 						.append(".").append(definitionType(column, compositePrimaryKey));
-		if (auditColumn(column)) {
-			return builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT)
-							.append(".caption(").append("\"").append(column.caption()).append("\")")
-							.toString();
-		}
 		if (!foreignKeyColumn && !column.primaryKey()) {
 			builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".caption(").append("\"").append(column.caption()).append("\")");
 		}
@@ -578,25 +572,8 @@ public final class DomainSource {
 		if (column.primaryKey()) {
 			return compositePrimaryKey ? "primaryKey(" + column.keyIndex() + ")" : "primaryKey()";
 		}
-		if (auditColumn(column)) {
-			AuditColumnDefinition<?> auditColumnDefinition = (AuditColumnDefinition<?>) column;
-			switch (auditColumnDefinition.auditAction()) {
-				case INSERT:
-					return new StringBuilder("auditColumn()").append(LINE_SEPARATOR)
-									.append(TRIPLE_INDENT).append(column.attribute().type().isString() ? ".insertUser()" : ".insertTime()").toString();
-				case UPDATE:
-					return new StringBuilder("auditColumn()").append(LINE_SEPARATOR)
-									.append(TRIPLE_INDENT).append(column.attribute().type().isString() ? ".updateUser()" : ".updateTime()").toString();
-				default:
-					throw new IllegalArgumentException("Uknown audit action: " + auditColumnDefinition.auditAction());
-			}
-		}
 
 		return "column()";
-	}
-
-	private static boolean auditColumn(ColumnDefinition<?> column) {
-		return column instanceof AuditColumnDefinition<?>;
 	}
 
 	private static String interfaceName(String tableName, boolean uppercase) {

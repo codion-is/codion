@@ -416,7 +416,7 @@ public final class TestDomain extends DomainModel {
 														.caption(Department.LOCATION.name())
 														.maximumLength(13),
 										Department.ACTIVE.define()
-														.booleanColumn(Integer.class, 1, 0)
+														.column()
 														.readOnly(true),
 										Department.DATA.define()
 														.column()

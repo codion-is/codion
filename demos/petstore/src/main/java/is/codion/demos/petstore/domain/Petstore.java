@@ -24,9 +24,12 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityFormatter;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.Column.Converter;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerator.sequence;
@@ -328,13 +331,16 @@ public final class Petstore extends DomainModel {
 										Item.ADDRESS_FK.define()
 														.foreignKey()
 														.caption("Address"),
+										// tag::booleanColumn[]
 										Item.DISABLED.define()
-														.booleanColumn(Integer.class, 1, 0)
+														.column()
+														.converter(Integer.class, new BooleanConverter())
 														.caption(Item.DISABLED.name())
 														.name("disabled")
 														.defaultValue(false)
-														.nullable(false))
-						.table("petstore.item")
+														.nullable(false)
+										// end::booleanColumn[]
+						).table("petstore.item")
 						.keyGenerator(sequence("petstore.item_seq"))
 						.orderBy(ascending(Item.NAME))
 						.formatter(EntityFormatter.builder()
@@ -415,4 +421,19 @@ public final class Petstore extends DomainModel {
 						.caption("Item tags")
 						.build();
 	}
+
+	// tag::booleanConverter[]
+	private static final class BooleanConverter implements Converter<Boolean, Integer> {
+
+		@Override
+		public Integer toColumnValue(Boolean value, Statement statement) throws SQLException {
+			return value ? 1 : 0;
+		}
+
+		@Override
+		public Boolean fromColumnValue(Integer columnValue) throws SQLException {
+			return columnValue.intValue() == 1;
+		}
+	}
+	// end::booleanConverter[]
 }

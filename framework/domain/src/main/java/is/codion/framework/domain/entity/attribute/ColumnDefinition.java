@@ -85,7 +85,7 @@ import java.sql.SQLException;
  * @see AttributeDefinition
  * @see Column#define()
  */
-public sealed interface ColumnDefinition<T> extends AttributeDefinition<T> permits DefaultColumnDefinition, AuditColumnDefinition {
+public sealed interface ColumnDefinition<T> extends AttributeDefinition<T> permits DefaultColumnDefinition {
 
 	@Override
 	Column<T> attribute();

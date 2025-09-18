@@ -20,7 +20,6 @@ import is.codion.petstore.domain.Petstore.TagItem;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import java.time.LocalDateTime;
 
 public final class Petstore extends DomainModel {
 	public static final DomainType DOMAIN = domainType(Petstore.class);
@@ -74,23 +73,7 @@ public final class Petstore extends DomainModel {
 					.caption("Location"),
 				Address.IMAGE.define()
 					.column()
-					.caption("Image"),
-				Address.INSERT_USER.define()
-					.auditColumn()
-					.insertUser()
-					.caption("Insert user"),
-				Address.INSERT_TIME.define()
-					.auditColumn()
-					.insertTime()
-					.caption("Insert time"),
-				Address.UPDATE_USER.define()
-					.auditColumn()
-					.updateUser()
-					.caption("Update user"),
-				Address.UPDATE_TIME.define()
-					.auditColumn()
-					.updateTime()
-					.caption("Update time"))
+					.caption("Image"))
 			.keyGenerator(identity())
 			.caption("Address")
 			.build();
@@ -113,23 +96,7 @@ public final class Petstore extends DomainModel {
 				Category.IMAGE_URL.define()
 					.column()
 					.caption("Image url")
-					.maximumLength(55),
-				Category.INSERT_USER.define()
-					.auditColumn()
-					.insertUser()
-					.caption("Insert user"),
-				Category.INSERT_TIME.define()
-					.auditColumn()
-					.insertTime()
-					.caption("Insert time"),
-				Category.UPDATE_USER.define()
-					.auditColumn()
-					.updateUser()
-					.caption("Update user"),
-				Category.UPDATE_TIME.define()
-					.auditColumn()
-					.updateTime()
-					.caption("Update time"))
+					.maximumLength(55))
 			.keyGenerator(identity())
 			.caption("Category")
 			.build();
@@ -153,23 +120,7 @@ public final class Petstore extends DomainModel {
 					.column()
 					.caption("Email")
 					.nullable(false)
-					.maximumLength(24),
-				ContactInfo.INSERT_USER.define()
-					.auditColumn()
-					.insertUser()
-					.caption("Insert user"),
-				ContactInfo.INSERT_TIME.define()
-					.auditColumn()
-					.insertTime()
-					.caption("Insert time"),
-				ContactInfo.UPDATE_USER.define()
-					.auditColumn()
-					.updateUser()
-					.caption("Update user"),
-				ContactInfo.UPDATE_TIME.define()
-					.auditColumn()
-					.updateTime()
-					.caption("Update time"))
+					.maximumLength(24))
 			.keyGenerator(identity())
 			.caption("Contact info")
 			.build();
@@ -196,23 +147,7 @@ public final class Petstore extends DomainModel {
 					.column()
 					.caption("Tag")
 					.nullable(false)
-					.maximumLength(30),
-				Tag.INSERT_USER.define()
-					.auditColumn()
-					.insertUser()
-					.caption("Insert user"),
-				Tag.INSERT_TIME.define()
-					.auditColumn()
-					.insertTime()
-					.caption("Insert time"),
-				Tag.UPDATE_USER.define()
-					.auditColumn()
-					.updateUser()
-					.caption("Update user"),
-				Tag.UPDATE_TIME.define()
-					.auditColumn()
-					.updateTime()
-					.caption("Update time"))
+					.maximumLength(30))
 			.keyGenerator(identity())
 			.caption("Tag")
 			.build();
@@ -242,23 +177,7 @@ public final class Petstore extends DomainModel {
 				Product.IMAGE_URL.define()
 					.column()
 					.caption("Image url")
-					.maximumLength(55),
-				Product.INSERT_USER.define()
-					.auditColumn()
-					.insertUser()
-					.caption("Insert user"),
-				Product.INSERT_TIME.define()
-					.auditColumn()
-					.insertTime()
-					.caption("Insert time"),
-				Product.UPDATE_USER.define()
-					.auditColumn()
-					.updateUser()
-					.caption("Update user"),
-				Product.UPDATE_TIME.define()
-					.auditColumn()
-					.updateTime()
-					.caption("Update time"))
+					.maximumLength(55))
 			.keyGenerator(identity())
 			.caption("Product")
 			.description("The available products")
@@ -320,23 +239,7 @@ public final class Petstore extends DomainModel {
 					.column()
 					.caption("Disabled")
 					.nullable(false)
-					.withDefault(true),
-				Item.INSERT_USER.define()
-					.auditColumn()
-					.insertUser()
-					.caption("Insert user"),
-				Item.INSERT_TIME.define()
-					.auditColumn()
-					.insertTime()
-					.caption("Insert time"),
-				Item.UPDATE_USER.define()
-					.auditColumn()
-					.updateUser()
-					.caption("Update user"),
-				Item.UPDATE_TIME.define()
-					.auditColumn()
-					.updateTime()
-					.caption("Update time"))
+					.withDefault(true))
 			.keyGenerator(identity())
 			.caption("Item")
 			.build();
@@ -353,23 +256,7 @@ public final class Petstore extends DomainModel {
 					.primaryKey(1),
 				TagItem.ITEM_FK.define()
 					.foreignKey()
-					.caption("Item"),
-				TagItem.INSERT_USER.define()
-					.auditColumn()
-					.insertUser()
-					.caption("Insert user"),
-				TagItem.INSERT_TIME.define()
-					.auditColumn()
-					.insertTime()
-					.caption("Insert time"),
-				TagItem.UPDATE_USER.define()
-					.auditColumn()
-					.updateUser()
-					.caption("Update user"),
-				TagItem.UPDATE_TIME.define()
-					.auditColumn()
-					.updateTime()
-					.caption("Update time"))
+					.caption("Item"))
 			.caption("Tag item")
 			.build();
 	}
@@ -387,10 +274,6 @@ public final class Petstore extends DomainModel {
 		Column<Double> LONGITUDE = TYPE.doubleColumn("longitude");
 		Column<Object> LOCATION = TYPE.column("location", Object.class);
 		Column<byte[]> IMAGE = TYPE.byteArrayColumn("image");
-		Column<String> INSERT_USER = TYPE.stringColumn("insert_user");
-		Column<LocalDateTime> INSERT_TIME = TYPE.localDateTimeColumn("insert_time");
-		Column<String> UPDATE_USER = TYPE.stringColumn("update_user");
-		Column<LocalDateTime> UPDATE_TIME = TYPE.localDateTimeColumn("update_time");
 
 		static Dto dto(Entity address) {
 			return address == null ? null :
@@ -403,16 +286,11 @@ public final class Petstore extends DomainModel {
 					address.get(LATITUDE),
 					address.get(LONGITUDE),
 					address.get(LOCATION),
-					address.get(IMAGE),
-					address.get(INSERT_USER),
-					address.get(INSERT_TIME),
-					address.get(UPDATE_USER),
-					address.get(UPDATE_TIME));
+					address.get(IMAGE));
 		}
 
 		record Dto(Integer addressId, String street1, String street2, String city, String state,
-				Integer zip, Double latitude, Double longitude, Object location, byte[] image,
-				String insertUser, LocalDateTime insertTime, String updateUser, LocalDateTime updateTime) {
+				Integer zip, Double latitude, Double longitude, Object location, byte[] image) {
 			public Entity entity(Entities entities) {
 				return entities.entity(TYPE)
 					.with(ADDRESS_ID, addressId)
@@ -425,10 +303,6 @@ public final class Petstore extends DomainModel {
 					.with(LONGITUDE, longitude)
 					.with(LOCATION, location)
 					.with(IMAGE, image)
-					.with(INSERT_USER, insertUser)
-					.with(INSERT_TIME, insertTime)
-					.with(UPDATE_USER, updateUser)
-					.with(UPDATE_TIME, updateTime)
 					.build();
 			}
 		}
@@ -441,35 +315,22 @@ public final class Petstore extends DomainModel {
 		Column<String> NAME = TYPE.stringColumn("name");
 		Column<String> DESCRIPTION = TYPE.stringColumn("description");
 		Column<String> IMAGE_URL = TYPE.stringColumn("image_url");
-		Column<String> INSERT_USER = TYPE.stringColumn("insert_user");
-		Column<LocalDateTime> INSERT_TIME = TYPE.localDateTimeColumn("insert_time");
-		Column<String> UPDATE_USER = TYPE.stringColumn("update_user");
-		Column<LocalDateTime> UPDATE_TIME = TYPE.localDateTimeColumn("update_time");
 
 		static Dto dto(Entity category) {
 			return category == null ? null :
 				new Dto(category.get(CATEGORY_ID),
 					category.get(NAME),
 					category.get(DESCRIPTION),
-					category.get(IMAGE_URL),
-					category.get(INSERT_USER),
-					category.get(INSERT_TIME),
-					category.get(UPDATE_USER),
-					category.get(UPDATE_TIME));
+					category.get(IMAGE_URL));
 		}
 
-		record Dto(Integer categoryId, String name, String description, String imageUrl,
-				String insertUser, LocalDateTime insertTime, String updateUser, LocalDateTime updateTime) {
+		record Dto(Integer categoryId, String name, String description, String imageUrl) {
 			public Entity entity(Entities entities) {
 				return entities.entity(TYPE)
 					.with(CATEGORY_ID, categoryId)
 					.with(NAME, name)
 					.with(DESCRIPTION, description)
 					.with(IMAGE_URL, imageUrl)
-					.with(INSERT_USER, insertUser)
-					.with(INSERT_TIME, insertTime)
-					.with(UPDATE_USER, updateUser)
-					.with(UPDATE_TIME, updateTime)
 					.build();
 			}
 		}
@@ -482,35 +343,22 @@ public final class Petstore extends DomainModel {
 		Column<String> LAST_NAME = TYPE.stringColumn("last_name");
 		Column<String> FIRST_NAME = TYPE.stringColumn("first_name");
 		Column<String> EMAIL = TYPE.stringColumn("email");
-		Column<String> INSERT_USER = TYPE.stringColumn("insert_user");
-		Column<LocalDateTime> INSERT_TIME = TYPE.localDateTimeColumn("insert_time");
-		Column<String> UPDATE_USER = TYPE.stringColumn("update_user");
-		Column<LocalDateTime> UPDATE_TIME = TYPE.localDateTimeColumn("update_time");
 
 		static Dto dto(Entity contactInfo) {
 			return contactInfo == null ? null :
 				new Dto(contactInfo.get(CONTACT_INFO_ID),
 					contactInfo.get(LAST_NAME),
 					contactInfo.get(FIRST_NAME),
-					contactInfo.get(EMAIL),
-					contactInfo.get(INSERT_USER),
-					contactInfo.get(INSERT_TIME),
-					contactInfo.get(UPDATE_USER),
-					contactInfo.get(UPDATE_TIME));
+					contactInfo.get(EMAIL));
 		}
 
-		record Dto(Integer contactInfoId, String lastName, String firstName, String email,
-				String insertUser, LocalDateTime insertTime, String updateUser, LocalDateTime updateTime) {
+		record Dto(Integer contactInfoId, String lastName, String firstName, String email) {
 			public Entity entity(Entities entities) {
 				return entities.entity(TYPE)
 					.with(CONTACT_INFO_ID, contactInfoId)
 					.with(LAST_NAME, lastName)
 					.with(FIRST_NAME, firstName)
 					.with(EMAIL, email)
-					.with(INSERT_USER, insertUser)
-					.with(INSERT_TIME, insertTime)
-					.with(UPDATE_USER, updateUser)
-					.with(UPDATE_TIME, updateTime)
 					.build();
 			}
 		}
@@ -543,31 +391,18 @@ public final class Petstore extends DomainModel {
 
 		Column<Integer> TAG_ID = TYPE.integerColumn("tag_id");
 		Column<String> TAG = TYPE.stringColumn("tag");
-		Column<String> INSERT_USER = TYPE.stringColumn("insert_user");
-		Column<LocalDateTime> INSERT_TIME = TYPE.localDateTimeColumn("insert_time");
-		Column<String> UPDATE_USER = TYPE.stringColumn("update_user");
-		Column<LocalDateTime> UPDATE_TIME = TYPE.localDateTimeColumn("update_time");
 
 		static Dto dto(Entity tag) {
 			return tag == null ? null :
 				new Dto(tag.get(TAG_ID),
-					tag.get(TAG),
-					tag.get(INSERT_USER),
-					tag.get(INSERT_TIME),
-					tag.get(UPDATE_USER),
-					tag.get(UPDATE_TIME));
+					tag.get(TAG));
 		}
 
-		record Dto(Integer tagId, String tag, String insertUser, LocalDateTime insertTime,
-				String updateUser, LocalDateTime updateTime) {
+		record Dto(Integer tagId, String tag) {
 			public Entity entity(Entities entities) {
 				return entities.entity(TYPE)
 					.with(TAG_ID, tagId)
 					.with(TAG, tag)
-					.with(INSERT_USER, insertUser)
-					.with(INSERT_TIME, insertTime)
-					.with(UPDATE_USER, updateUser)
-					.with(UPDATE_TIME, updateTime)
 					.build();
 			}
 		}
@@ -581,10 +416,6 @@ public final class Petstore extends DomainModel {
 		Column<String> NAME = TYPE.stringColumn("name");
 		Column<String> DESCRIPTION = TYPE.stringColumn("description");
 		Column<String> IMAGE_URL = TYPE.stringColumn("image_url");
-		Column<String> INSERT_USER = TYPE.stringColumn("insert_user");
-		Column<LocalDateTime> INSERT_TIME = TYPE.localDateTimeColumn("insert_time");
-		Column<String> UPDATE_USER = TYPE.stringColumn("update_user");
-		Column<LocalDateTime> UPDATE_TIME = TYPE.localDateTimeColumn("update_time");
 
 		ForeignKey CATEGORY_FK = TYPE.foreignKey("category_fk", CATEGORY_ID, Category.CATEGORY_ID);
 
@@ -594,16 +425,11 @@ public final class Petstore extends DomainModel {
 					Category.dto(product.get(CATEGORY_FK)),
 					product.get(NAME),
 					product.get(DESCRIPTION),
-					product.get(IMAGE_URL),
-					product.get(INSERT_USER),
-					product.get(INSERT_TIME),
-					product.get(UPDATE_USER),
-					product.get(UPDATE_TIME));
+					product.get(IMAGE_URL));
 		}
 
 		record Dto(Integer productId, Category.Dto category, String name, String description,
-				String imageUrl, String insertUser, LocalDateTime insertTime, String updateUser,
-				LocalDateTime updateTime) {
+				String imageUrl) {
 			public Entity entity(Entities entities) {
 				return entities.entity(TYPE)
 					.with(PRODUCT_ID, productId)
@@ -611,10 +437,6 @@ public final class Petstore extends DomainModel {
 					.with(NAME, name)
 					.with(DESCRIPTION, description)
 					.with(IMAGE_URL, imageUrl)
-					.with(INSERT_USER, insertUser)
-					.with(INSERT_TIME, insertTime)
-					.with(UPDATE_USER, updateUser)
-					.with(UPDATE_TIME, updateTime)
 					.build();
 			}
 		}
@@ -635,10 +457,6 @@ public final class Petstore extends DomainModel {
 		Column<Integer> TOTAL_SCORE = TYPE.integerColumn("total_score");
 		Column<Integer> NUMBER_OF_VOTES = TYPE.integerColumn("number_of_votes");
 		Column<Integer> DISABLED = TYPE.integerColumn("disabled");
-		Column<String> INSERT_USER = TYPE.stringColumn("insert_user");
-		Column<LocalDateTime> INSERT_TIME = TYPE.localDateTimeColumn("insert_time");
-		Column<String> UPDATE_USER = TYPE.stringColumn("update_user");
-		Column<LocalDateTime> UPDATE_TIME = TYPE.localDateTimeColumn("update_time");
 
 		ForeignKey PRODUCT_FK = TYPE.foreignKey("product_fk", PRODUCT_ID, Product.PRODUCT_ID);
 		ForeignKey ADDRESS_FK = TYPE.foreignKey("address_fk", ADDRESS_ID, Address.ADDRESS_ID);
@@ -657,17 +475,12 @@ public final class Petstore extends DomainModel {
 					ContactInfo.dto(item.get(CONTACT_INFO_FK)),
 					item.get(TOTAL_SCORE),
 					item.get(NUMBER_OF_VOTES),
-					item.get(DISABLED),
-					item.get(INSERT_USER),
-					item.get(INSERT_TIME),
-					item.get(UPDATE_USER),
-					item.get(UPDATE_TIME));
+					item.get(DISABLED));
 		}
 
 		record Dto(Integer itemId, Product.Dto product, String name, String description, String imageUrl,
 				String imageThumbUrl, Double price, Address.Dto address, ContactInfo.Dto contactInfo,
-				Integer totalScore, Integer numberOfVotes, Integer disabled, String insertUser,
-				LocalDateTime insertTime, String updateUser, LocalDateTime updateTime) {
+				Integer totalScore, Integer numberOfVotes, Integer disabled) {
 			public Entity entity(Entities entities) {
 				return entities.entity(TYPE)
 					.with(ITEM_ID, itemId)
@@ -682,10 +495,6 @@ public final class Petstore extends DomainModel {
 					.with(TOTAL_SCORE, totalScore)
 					.with(NUMBER_OF_VOTES, numberOfVotes)
 					.with(DISABLED, disabled)
-					.with(INSERT_USER, insertUser)
-					.with(INSERT_TIME, insertTime)
-					.with(UPDATE_USER, updateUser)
-					.with(UPDATE_TIME, updateTime)
 					.build();
 			}
 		}
@@ -696,10 +505,6 @@ public final class Petstore extends DomainModel {
 
 		Column<Integer> TAG_ID = TYPE.integerColumn("tag_id");
 		Column<Integer> ITEM_ID = TYPE.integerColumn("item_id");
-		Column<String> INSERT_USER = TYPE.stringColumn("insert_user");
-		Column<LocalDateTime> INSERT_TIME = TYPE.localDateTimeColumn("insert_time");
-		Column<String> UPDATE_USER = TYPE.stringColumn("update_user");
-		Column<LocalDateTime> UPDATE_TIME = TYPE.localDateTimeColumn("update_time");
 
 		ForeignKey TAG_FK = TYPE.foreignKey("tag_fk", TAG_ID, Tag.TAG_ID);
 		ForeignKey ITEM_FK = TYPE.foreignKey("item_fk", ITEM_ID, Item.ITEM_ID);
@@ -707,23 +512,14 @@ public final class Petstore extends DomainModel {
 		static Dto dto(Entity tagItem) {
 			return tagItem == null ? null :
 				new Dto(Tag.dto(tagItem.get(TAG_FK)),
-					Item.dto(tagItem.get(ITEM_FK)),
-					tagItem.get(INSERT_USER),
-					tagItem.get(INSERT_TIME),
-					tagItem.get(UPDATE_USER),
-					tagItem.get(UPDATE_TIME));
+					Item.dto(tagItem.get(ITEM_FK)));
 		}
 
-		record Dto(Tag.Dto tag, Item.Dto item, String insertUser, LocalDateTime insertTime,
-				String updateUser, LocalDateTime updateTime) {
+		record Dto(Tag.Dto tag, Item.Dto item) {
 			public Entity entity(Entities entities) {
 				return entities.entity(TYPE)
 					.with(TAG_FK, tag.entity(entities))
 					.with(ITEM_FK, item.entity(entities))
-					.with(INSERT_USER, insertUser)
-					.with(INSERT_TIME, insertTime)
-					.with(UPDATE_USER, updateUser)
-					.with(UPDATE_TIME, updateTime)
 					.build();
 			}
 		}

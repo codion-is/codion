@@ -204,13 +204,6 @@ public class DomainTest {
 	}
 
 	@Test
-	void booleanColumn() {
-		EntityType ref = DOMAIN.entityType("fkCompRef");
-		Column<Integer> id = ref.integerColumn("id");
-		assertThrows(IllegalStateException.class, () -> id.define().booleanColumn(Integer.class, 1, 0));
-	}
-
-	@Test
 	void itemComparator() {
 		List<Integer> integers = new ArrayList<>();
 		integers.add(0);

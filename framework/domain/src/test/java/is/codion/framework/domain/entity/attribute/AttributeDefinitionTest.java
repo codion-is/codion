@@ -288,10 +288,4 @@ public final class AttributeDefinitionTest {
 		assertTrue(attribute.validItem(null));
 		assertTrue(attribute.validItem(2));
 	}
-
-	@Test
-	void booleanColumn() {
-		Column<Boolean> booleanColumn = ENTITY_TYPE.booleanColumn("boolean");
-		assertThrows(IllegalArgumentException.class, () -> booleanColumn.define().booleanColumn(String.class, "0", "0"));
-	}
 }

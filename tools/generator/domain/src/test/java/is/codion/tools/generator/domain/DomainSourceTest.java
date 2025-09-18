@@ -44,10 +44,6 @@ public final class DomainSourceTest {
 		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
 			SchemaDomain schemaDomain = SchemaDomain.schemaDomain(connection.getMetaData(), "PETSTORE", SchemaSettings.builder()
 							.primaryKeyColumnSuffix("_id")
-							.auditInsertUserColumnName("insert_user")
-							.auditInsertTimeColumnName("insert_time")
-							.auditUpdateUserColumnName("update_user")
-							.auditUpdateTimeColumnName("update_time")
 							.build());
 			String donainPackage = "is.codion.petstore.domain";
 			DomainSource domainSource = DomainSource.domainSource(schemaDomain);

@@ -164,16 +164,12 @@ public final class SchemaDomain extends DomainModel {
 		return foreignKey.define().foreignKey().caption(caption(referencedTable.tableName().toLowerCase()));
 	}
 
-	private ColumnDefinition.Builder<?, ?> columnDefinitionBuilder(MetaDataColumn metadataColumn, EntityType entityType) {
+	private static ColumnDefinition.Builder<?, ?> columnDefinitionBuilder(MetaDataColumn metadataColumn, EntityType entityType) {
 		String caption = caption(metadataColumn.columnName());
 		Column<?> column = column(entityType, metadataColumn);
 		ColumnDefinition.Builder<?, ?> builder;
 		if (metadataColumn.primaryKeyColumn()) {
 			builder = column.define().primaryKey(metadataColumn.primaryKeyIndex() - 1);
-		}
-		else if (isAuditColumn(column)) {
-			builder = auditColumnDefinitionBuilder(column)
-							.caption(caption);
 		}
 		else {
 			builder = column.define().column().caption(caption);
@@ -195,46 +191,6 @@ public final class SchemaDomain extends DomainModel {
 		}
 
 		return builder;
-	}
-
-	private boolean isAuditColumn(Column<?> column) {
-		return isAuditInsertUserColumn(column)
-						|| isAuditInsertTimeColumn(column)
-						|| isAuditUpdateUserColumn(column)
-						|| isAuditUpdateTimeColumn(column);
-	}
-
-	private ColumnDefinition.Builder<?, ?> auditColumnDefinitionBuilder(Column<?> column) {
-		if (isAuditInsertUserColumn(column)) {
-			return column.define().auditColumn().insertUser();
-		}
-		if (isAuditInsertTimeColumn(column)) {
-			return column.define().auditColumn().insertTime();
-		}
-		if (isAuditUpdateUserColumn(column)) {
-			return column.define().auditColumn().updateUser();
-		}
-		if (isAuditUpdateTimeColumn(column)) {
-			return column.define().auditColumn().updateTime();
-		}
-
-		throw new IllegalArgumentException("Unknown audit column type: " + column);
-	}
-
-	private boolean isAuditUpdateTimeColumn(Column<?> column) {
-		return column.name().equalsIgnoreCase(settings.auditUpdateTimeColumnName().orElse(null));
-	}
-
-	private boolean isAuditUpdateUserColumn(Column<?> column) {
-		return column.name().equalsIgnoreCase(settings.auditUpdateUserColumnName().orElse(null));
-	}
-
-	private boolean isAuditInsertTimeColumn(Column<?> column) {
-		return column.name().equalsIgnoreCase(settings.auditInsertTimeColumnName().orElse(null));
-	}
-
-	private boolean isAuditInsertUserColumn(Column<?> column) {
-		return column.name().equalsIgnoreCase(settings.auditInsertUserColumnName().orElse(null));
 	}
 
 	private static <T> Column<T> column(EntityType entityType, MetaDataColumn column) {
@@ -287,14 +243,6 @@ public final class SchemaDomain extends DomainModel {
 
 		Optional<String> primaryKeyColumnSuffix();
 
-		Optional<String> auditInsertUserColumnName();
-
-		Optional<String> auditInsertTimeColumnName();
-
-		Optional<String> auditUpdateUserColumnName();
-
-		Optional<String> auditUpdateTimeColumnName();
-
 		/**
 		 * @return a new builder
 		 */
@@ -309,14 +257,6 @@ public final class SchemaDomain extends DomainModel {
 
 			Builder primaryKeyColumnSuffix(String primaryKeyColumnSuffix);
 
-			Builder auditInsertUserColumnName(String auditInsertUserColumnName);
-
-			Builder auditInsertTimeColumnName(String auditInsertTimeColumnName);
-
-			Builder auditUpdateUserColumnName(String auditUpdateUserColumnName);
-
-			Builder auditUpdateTimeColumnName(String auditUpdateTimeColumnName);
-
 			SchemaSettings build();
 		}
 	}
@@ -324,17 +264,9 @@ public final class SchemaDomain extends DomainModel {
 	private static final class DefaultSchemaSettings implements SchemaSettings {
 
 		private final String primaryKeyColumnSuffix;
-		private final String auditInsertUserColumnName;
-		private final String auditInsertTimeColumnName;
-		private final String auditUpdateUserColumnName;
-		private final String auditUpdateTimeColumnName;
 
 		private DefaultSchemaSettings(DefaultBuilder builder) {
 			this.primaryKeyColumnSuffix = builder.primaryKeyColumnSuffix;
-			this.auditInsertUserColumnName = builder.auditInsertUserColumnName;
-			this.auditInsertTimeColumnName = builder.auditInsertTimeColumnName;
-			this.auditUpdateUserColumnName = builder.auditUpdateUserColumnName;
-			this.auditUpdateTimeColumnName = builder.auditUpdateTimeColumnName;
 		}
 
 		@Override
@@ -342,61 +274,13 @@ public final class SchemaDomain extends DomainModel {
 			return Optional.ofNullable(primaryKeyColumnSuffix);
 		}
 
-		@Override
-		public Optional<String> auditInsertUserColumnName() {
-			return Optional.ofNullable(auditInsertUserColumnName);
-		}
-
-		@Override
-		public Optional<String> auditInsertTimeColumnName() {
-			return Optional.ofNullable(auditInsertTimeColumnName);
-		}
-
-		@Override
-		public Optional<String> auditUpdateUserColumnName() {
-			return Optional.ofNullable(auditUpdateUserColumnName);
-		}
-
-		@Override
-		public Optional<String> auditUpdateTimeColumnName() {
-			return Optional.ofNullable(auditUpdateTimeColumnName);
-		}
-
 		private static final class DefaultBuilder implements Builder {
 
 			private String primaryKeyColumnSuffix;
-			private String auditInsertUserColumnName;
-			private String auditInsertTimeColumnName;
-			private String auditUpdateUserColumnName;
-			private String auditUpdateTimeColumnName;
 
 			@Override
 			public Builder primaryKeyColumnSuffix(String primaryKeyColumnSuffix) {
 				this.primaryKeyColumnSuffix = requireNonNull(primaryKeyColumnSuffix);
-				return this;
-			}
-
-			@Override
-			public Builder auditInsertUserColumnName(String auditInsertUserColumnName) {
-				this.auditInsertUserColumnName = requireNonNull(auditInsertUserColumnName);
-				return this;
-			}
-
-			@Override
-			public Builder auditInsertTimeColumnName(String auditInsertTimeColumnName) {
-				this.auditInsertTimeColumnName = requireNonNull(auditInsertTimeColumnName);
-				return this;
-			}
-
-			@Override
-			public Builder auditUpdateUserColumnName(String auditUpdateUserColumnName) {
-				this.auditUpdateUserColumnName = requireNonNull(auditUpdateUserColumnName);
-				return this;
-			}
-
-			@Override
-			public Builder auditUpdateTimeColumnName(String auditUpdateTimeColumnName) {
-				this.auditUpdateTimeColumnName = requireNonNull(auditUpdateTimeColumnName);
 				return this;
 			}
 

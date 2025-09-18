@@ -21,7 +21,6 @@ package is.codion.framework.domain.entity.attribute;
 import is.codion.framework.domain.entity.attribute.Column.Converter;
 import is.codion.framework.domain.entity.attribute.Column.GetValue;
 import is.codion.framework.domain.entity.attribute.Column.SetParameter;
-import is.codion.framework.domain.entity.attribute.DefaultAuditColumnDefinition.DefaultAuditColumnDefinitionBuilder;
 
 import org.jspecify.annotations.Nullable;
 
@@ -45,8 +44,7 @@ import java.util.Map;
 import static is.codion.common.Text.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
-sealed class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implements ColumnDefinition<T>
-				permits DefaultAuditColumnDefinition {
+final class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implements ColumnDefinition<T> {
 
 	@Serial
 	private static final long serialVersionUID = 1;
@@ -71,7 +69,7 @@ sealed class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> i
 	private final transient SetParameter<Object> setParameter;
 	private final transient Converter<T, Object> converter;
 
-	protected DefaultColumnDefinition(DefaultColumnDefinitionBuilder<T, ?> builder) {
+	private DefaultColumnDefinition(DefaultColumnDefinitionBuilder<T, ?> builder) {
 		super(builder);
 		this.type = builder.type;
 		this.keyIndex = builder.keyIndex;
@@ -90,82 +88,82 @@ sealed class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> i
 	}
 
 	@Override
-	public final Column<T> attribute() {
+	public Column<T> attribute() {
 		return (Column<T>) super.attribute();
 	}
 
 	@Override
-	public final String name() {
+	public String name() {
 		return name;
 	}
 
 	@Override
-	public final String expression() {
+	public String expression() {
 		return expression;
 	}
 
 	@Override
-	public final int type() {
+	public int type() {
 		return type;
 	}
 
 	@Override
-	public final <C> Converter<C, T> converter() {
+	public <C> Converter<C, T> converter() {
 		return (Converter<C, T>) converter;
 	}
 
 	@Override
-	public final boolean withDefault() {
+	public boolean withDefault() {
 		return withDefault;
 	}
 
 	@Override
-	public final boolean insertable() {
+	public boolean insertable() {
 		return insertable;
 	}
 
 	@Override
-	public final boolean updatable() {
+	public boolean updatable() {
 		return updatable;
 	}
 
 	@Override
-	public final boolean readOnly() {
+	public boolean readOnly() {
 		return !insertable && !updatable;
 	}
 
 	@Override
-	public final int keyIndex() {
+	public int keyIndex() {
 		return keyIndex;
 	}
 
 	@Override
-	public final boolean groupBy() {
+	public boolean groupBy() {
 		return groupBy;
 	}
 
 	@Override
-	public final boolean aggregate() {
+	public boolean aggregate() {
 		return aggregate;
 	}
 
 	@Override
-	public final boolean selected() {
+	public boolean selected() {
 		return selected;
 	}
 
 	@Override
-	public final boolean primaryKey() {
+	public boolean primaryKey() {
 		return keyIndex >= 0;
 	}
 
 	@Override
-	public final boolean searchable() {
+	public boolean searchable() {
 		return searchable;
 	}
 
 	@Override
-	public final @Nullable T get(ResultSet resultSet, int index) throws SQLException {
+	public @Nullable T get(ResultSet resultSet, int index) throws SQLException {
 		Object columnValue = getValue.get(resultSet, index);
 		if (columnValue != null || converter.handlesNull()) {
 			return converter.fromColumnValue(columnValue);
@@ -175,12 +173,12 @@ sealed class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> i
 	}
 
 	@Override
-	public final @Nullable T get(ResultSet resultSet) throws SQLException {
+	public @Nullable T get(ResultSet resultSet) throws SQLException {
 		return get(resultSet, resultSet.findColumn(name));
 	}
 
 	@Override
-	public final void set(PreparedStatement statement, int index, @Nullable T value) throws SQLException {
+	public void set(PreparedStatement statement, int index, @Nullable T value) throws SQLException {
 		setParameter.set(statement, index, columnValue(statement, value));
 	}
 
@@ -447,7 +445,7 @@ sealed class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> i
 
 	abstract static sealed class AbstractReadOnlyColumnDefinitionBuilder<T, B extends ColumnDefinition.Builder<T, B>>
 					extends DefaultColumnDefinitionBuilder<T, B> implements AttributeDefinition.Builder<T, B>
-					permits DefaultAuditColumnDefinitionBuilder, DefaultSubqueryColumnDefinitionBuilder {
+					permits DefaultSubqueryColumnDefinitionBuilder {
 
 		protected AbstractReadOnlyColumnDefinitionBuilder(Column<T> column) {
 			super(column);
