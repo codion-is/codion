@@ -29,6 +29,7 @@ import is.codion.common.value.ValueSet;
 import org.jspecify.annotations.Nullable;
 
 import java.text.Format;
+import java.time.temporal.Temporal;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -37,6 +38,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import static java.time.temporal.ChronoField.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
@@ -183,6 +185,9 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		if (!caseSensitive.is()) {
 			comparable = stringOrCharacterToLowerCase(comparable);
 		}
+		if (comparable instanceof Temporal) {
+			comparable = (Comparable<T>) adjustTemporal((Temporal) comparable);
+		}
 		switch (operator.getOrThrow()) {
 			case EQUAL:
 				return isEqual(comparable);
@@ -289,6 +294,26 @@ final class DefaultConditionModel<T> implements ConditionModel<T> {
 		}
 
 		return operand;
+	}
+
+	private Temporal adjustTemporal(Temporal value) {
+		if (dateTimePattern == null || dateTimePattern.contains("SSS")) {
+			return value;
+		}
+		else if (dateTimePattern.contains("ss")) {//second
+			return value.with(MILLI_OF_SECOND, 0);
+		}
+		else if (dateTimePattern.contains("mm")) {//minute
+			return value.with(SECOND_OF_MINUTE, 0)
+							.with(MILLI_OF_SECOND, 0);
+		}
+		else if (dateTimePattern.contains("HH")) {//hour
+			return value.with(MINUTE_OF_HOUR, 0)
+							.with(SECOND_OF_MINUTE, 0)
+							.with(MILLI_OF_SECOND, 0);
+		}
+
+		return value;
 	}
 
 	private static boolean isEqualWildcard(String value, String equalOperand) {

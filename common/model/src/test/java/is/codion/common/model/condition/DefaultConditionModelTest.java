@@ -28,6 +28,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.Month;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -1067,6 +1072,77 @@ public class DefaultConditionModelTest {
 				assertFalse(condition.enabled().is());
 			}
 		}
+	}
+
+	@Test
+	void temporalEquality() {
+		LocalTime localTime = LocalTime.of(10, 30, 15, 541_000_000);
+
+		ConditionModel<LocalTime> timeModel = ConditionModel.builder()
+						.valueClass(LocalTime.class)
+						.dateTimePattern("HH:mm:ss.SSS")
+						.build();
+		timeModel.set().equalTo(localTime);
+		assertTrue(timeModel.accepts(localTime));
+
+		timeModel = ConditionModel.builder()
+						.valueClass(LocalTime.class)
+						.dateTimePattern("HH:mm:ss")
+						.build();
+		timeModel.set().equalTo(LocalTime.of(10, 30, 15));
+		assertTrue(timeModel.accepts(localTime));
+
+		timeModel = ConditionModel.builder()
+						.valueClass(LocalTime.class)
+						.dateTimePattern("HH:mm")
+						.build();
+		timeModel.set().equalTo(LocalTime.of(10, 30));
+		assertTrue(timeModel.accepts(localTime));
+
+		timeModel = ConditionModel.builder()
+						.valueClass(LocalTime.class)
+						.dateTimePattern("HH")
+						.build();
+		timeModel.set().equalTo(LocalTime.of(10, 0));
+		assertTrue(timeModel.accepts(localTime));
+
+		OffsetDateTime offsetDateTime = OffsetDateTime.of(
+						LocalDate.of(2025, Month.OCTOBER, 15),
+						LocalTime.of(10, 30, 15, 541_000_000), ZoneOffset.UTC);
+
+		ConditionModel<OffsetDateTime> dateTimeModel = ConditionModel.builder()
+						.valueClass(OffsetDateTime.class)
+						.dateTimePattern("dd-MM-yyyy HH:mm:ss.SSS")
+						.build();
+		dateTimeModel.set().equalTo(offsetDateTime);
+		assertTrue(dateTimeModel.accepts(offsetDateTime));
+
+		dateTimeModel = ConditionModel.builder()
+						.valueClass(OffsetDateTime.class)
+						.dateTimePattern("dd-MM-yyyy HH:mm:ss")
+						.build();
+		dateTimeModel.set().equalTo(OffsetDateTime.of(
+						LocalDate.of(2025, Month.OCTOBER, 15),
+						LocalTime.of(10, 30, 15), ZoneOffset.UTC));
+		assertTrue(dateTimeModel.accepts(offsetDateTime));
+
+		dateTimeModel = ConditionModel.builder()
+						.valueClass(OffsetDateTime.class)
+						.dateTimePattern("dd-MM-yyyy HH:mm")
+						.build();
+		dateTimeModel.set().equalTo(OffsetDateTime.of(
+						LocalDate.of(2025, Month.OCTOBER, 15),
+						LocalTime.of(10, 30), ZoneOffset.UTC));
+		assertTrue(dateTimeModel.accepts(offsetDateTime));
+
+		dateTimeModel = ConditionModel.builder()
+						.valueClass(OffsetDateTime.class)
+						.dateTimePattern("dd-MM-yyyy HH")
+						.build();
+		dateTimeModel.set().equalTo(OffsetDateTime.of(
+						LocalDate.of(2025, Month.OCTOBER, 15),
+						LocalTime.of(10, 0), ZoneOffset.UTC));
+		assertTrue(dateTimeModel.accepts(offsetDateTime));
 	}
 
 	@Test
