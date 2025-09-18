@@ -143,12 +143,6 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditionFactory<T
 	}
 
 	/**
-	 * A convenience interface for defining column templates.
-	 * @param <T> the column type
-	 */
-	interface ColumnTemplate<T> extends Function<Column<T>, ColumnDefinition.Builder<T, ?>> {}
-
-	/**
 	 * Provides {@link ColumnDefinition.Builder} instances.
 	 * @param <T> the column type
 	 */

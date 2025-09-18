@@ -21,6 +21,7 @@ Codion Change Log
 - ColumnDefinition.Builder.hasDatabaseDefault() renamed withDefault().
 - Column.ColumnDefiner.column(Function<Column, ColumnDefinition.Builder) added, for shared column definition policies.
 - Column.ColumnDefiner.auditColumn() and booleanColumn() removed.
+- Column.ColumnTemplate moved up to package level.
 ### is.codion.framework.model
 - DefaultEntityTableConditionModel bug fixed, now handles column and dateTimeFormat precision mismatch, by using ranges when precision is lacking.
 ### is.codion.swing.framework.ui

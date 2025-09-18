@@ -35,8 +35,8 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityFormatter;
 import is.codion.framework.domain.entity.OrderBy;
-import is.codion.framework.domain.entity.attribute.Column.ColumnTemplate;
 import is.codion.framework.domain.entity.attribute.Column.Converter;
+import is.codion.framework.domain.entity.attribute.ColumnTemplate;
 import is.codion.framework.domain.entity.query.EntitySelectQuery;
 
 import java.math.BigDecimal;
