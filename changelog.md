@@ -24,6 +24,7 @@ Codion Change Log
 - Column.ColumnTemplate moved up to package level.
 - AttributeDefinition.Builder.captionResourceKey() and mnemonicResourceKey() renamed to captionResource() and mnemonicResource().
 - AttributeDefinition.Builder.captionResource() and mnemonicResource() overloaded to use a specified resource bundle instead of the entity bundle.
+- Column.ColumnDefiner.column() parameter changed from Function to ColumnTemplate.
 ### is.codion.framework.model
 - DefaultEntityTableConditionModel bug fixed, now handles column and dateTimeFormat precision mismatch, by using ranges when precision is lacking.
 ### is.codion.swing.framework.ui

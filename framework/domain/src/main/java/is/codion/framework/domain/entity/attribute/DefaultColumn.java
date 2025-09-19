@@ -27,7 +27,6 @@ import org.jspecify.annotations.Nullable;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.function.Function;
 
 import static is.codion.framework.domain.entity.condition.ColumnConditionFactory.factory;
 import static java.util.Objects.requireNonNull;
@@ -241,8 +240,8 @@ final class DefaultColumn<T> implements Column<T>, Serializable {
 		}
 
 		@Override
-		public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> column(Function<Column<T>, ColumnDefinition.Builder<T, ?>> definer) {
-			return (ColumnDefinition.Builder<T, B>) requireNonNull(definer).apply(column);
+		public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> column(ColumnTemplate<T> template) {
+			return (ColumnDefinition.Builder<T, B>) requireNonNull(template).apply(column);
 		}
 
 		@Override
