@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.51
+### is.codion.swing.framework.ui
+- EntitySearchFieldPanel.Builder.preferredSearchFieldWidth() added.
 
 ## 0.18.50
 ### is.codion.common.core

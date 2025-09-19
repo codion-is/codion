@@ -74,7 +74,7 @@ public final class EntitySearchFieldPanel extends JPanel {
 	}
 
 	/**
-	 * @return the {@link EntityComboBox}
+	 * @return the {@link EntitySearchField}
 	 */
 	public EntitySearchField searchField() {
 		return searchField;
@@ -160,6 +160,12 @@ public final class EntitySearchFieldPanel extends JPanel {
 		 * @throws IllegalArgumentException in case the value is not one of {@link BorderLayout#WEST} or {@link BorderLayout#EAST}
 		 */
 		Builder<T, B> buttonLocation(String buttonLocation);
+
+		/**
+		 * @param preferredSearchFieldWidth the preferred search field width
+		 * @return this builder instance
+		 */
+		Builder<T, B> preferredSearchFieldWidth(int preferredSearchFieldWidth);
 
 		/**
 		 * @param columns the number of colums in the text field
@@ -431,6 +437,12 @@ public final class EntitySearchFieldPanel extends JPanel {
 		@Override
 		public Builder<T, B> buttonLocation(String buttonLocation) {
 			this.buttonLocation = validateButtonLocation(buttonLocation);
+			return this;
+		}
+
+		@Override
+		public Builder<T, B> preferredSearchFieldWidth(int preferredSearchFieldWidth) {
+			searchFieldBuilder.preferredWidth(preferredSearchFieldWidth);
 			return this;
 		}
 
