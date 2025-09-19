@@ -20,8 +20,16 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.event.Event;
 import is.codion.common.observer.Observer;
+import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
+import is.codion.common.value.ObservableValueList;
+import is.codion.common.value.Value;
+import is.codion.common.value.ValueList;
+import is.codion.swing.common.ui.component.table.FilterTableColumnModel.ColumnSelection.ColumnIndex;
 
+import org.jspecify.annotations.Nullable;
+
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.DefaultTableColumnModel;
@@ -41,6 +49,7 @@ import static java.text.MessageFormat.format;
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C> {
 
@@ -54,12 +63,14 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 	private final State locked = State.state();
 	private final DefaultVisibleColumns visibleColumns = new DefaultVisibleColumns();
 	private final DefaultHiddenColumns hiddenColumns = new DefaultHiddenColumns();
+	private final DefaultColumnSelection columnSelection = new DefaultColumnSelection();
 
 	DefaultFilterTableColumnModel(List<FilterTableColumn<C>> tableColumns) {
 		if (requireNonNull(tableColumns).isEmpty()) {
 			throw new IllegalArgumentException("One or more columns must be specified");
 		}
 		this.columns = initializeColumns(tableColumns);
+		this.tableColumnModel.setSelectionModel(columnSelection);
 	}
 
 	@Override
@@ -85,6 +96,11 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 	@Override
 	public HiddenColumns<C> hidden() {
 		return hiddenColumns;
+	}
+
+	@Override
+	public ColumnSelection<C> selection() {
+		return columnSelection;
 	}
 
 	@Override
@@ -201,12 +217,12 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 
 	@Override
 	public void setSelectionModel(ListSelectionModel listSelectionModel) {
-		tableColumnModel.setSelectionModel(listSelectionModel);
+		throw new UnsupportedOperationException("FilterTableColumnModel selection model can not be changed");
 	}
 
 	@Override
-	public ListSelectionModel getSelectionModel() {
-		return tableColumnModel.getSelectionModel();
+	public ColumnSelection<C> getSelectionModel() {
+		return (ColumnSelection<C>) tableColumnModel.getSelectionModel();
 	}
 
 	@Override
@@ -366,7 +382,7 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 		public List<C> get() {
 			return columns().stream()
 							.map(FilterTableColumn::identifier)
-							.collect(Collectors.toList());
+							.collect(toList());
 		}
 
 		@Override
@@ -413,11 +429,86 @@ final class DefaultFilterTableColumnModel<C> implements FilterTableColumnModel<C
 		public Collection<FilterTableColumn<C>> columns() {
 			return unmodifiableCollection(hiddenColumnMap.values().stream()
 							.map(hiddenColumn -> hiddenColumn.column)
-							.collect(Collectors.toList()));
+							.collect(toList()));
 		}
 
 		private void changed() {
 			event.accept(get());
+		}
+	}
+
+	private final class DefaultColumnSelection extends DefaultListSelectionModel implements ColumnSelection<C> {
+
+		private final ValueList<Integer> indexes = ValueList.valueList();
+		private final ValueList<C> identifiers = ValueList.valueList();
+		private final DefaultColumnIndex anchor = new DefaultColumnIndex();
+		private final DefaultColumnIndex lead = new DefaultColumnIndex();
+		private final ObservableState empty = State.present(indexes).not();
+
+		@Override
+		public ObservableValueList<Integer> indexes() {
+			return indexes.observable();
+		}
+
+		@Override
+		public ObservableValueList<C> identifiers() {
+			return identifiers.observable();
+		}
+
+		@Override
+		public ObservableState empty() {
+			return empty;
+		}
+
+		@Override
+		public ColumnIndex anchor() {
+			return anchor;
+		}
+
+		@Override
+		public ColumnIndex lead() {
+			return lead;
+		}
+
+		@Override
+		protected void fireValueChanged(int firstIndex, int lastIndex, boolean isAdjusting) {
+			super.fireValueChanged(firstIndex, lastIndex, isAdjusting);
+			if (!isAdjusting) {
+				List<Integer> selectedIndexes = IntStream.of(getSelectedIndices())
+								.boxed()
+								.collect(toList());
+				indexes.set(selectedIndexes);
+				identifiers.set(selectedIndexes.stream()
+								.map(DefaultFilterTableColumnModel.this::identifier)
+								.collect(toList()));
+				anchor.set(getAnchorSelectionIndex());
+				lead.set(getLeadSelectionIndex());
+			}
+		}
+	}
+
+	private static final class DefaultColumnIndex implements ColumnIndex {
+
+		private final Value<Integer> index = Value.nullable();
+		private final ObservableState present = State.present(index);
+
+		@Override
+		public ObservableState present() {
+			return present;
+		}
+
+		@Override
+		public @Nullable Integer get() {
+			return index.get();
+		}
+
+		@Override
+		public Observer<Integer> observer() {
+			return index.observer();
+		}
+
+		private void set(int value) {
+			index.set(value == -1 ? null : value);
 		}
 	}
 }

@@ -19,6 +19,7 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.swing.common.ui.component.table.FilterTableColumn.DefaultFilterTableColumnBuilder;
+import is.codion.swing.common.ui.component.table.FilterTableColumnModel.ColumnSelection;
 
 import org.junit.jupiter.api.Test;
 
@@ -198,6 +199,40 @@ public class DefaultFilterTableColumnModelTest {
 
 		columnModel.visible().set(0, 1, 2, 3);
 		assertTrue(hidden.isEmpty());
+	}
+
+	@Test
+	void selection() {
+		FilterTableColumnModel<String> columnModel = new DefaultFilterTableColumnModel<>(asList(
+						new DefaultFilterTableColumnBuilder<>("0", 0).build(),
+						new DefaultFilterTableColumnBuilder<>("1", 1).build(),
+						new DefaultFilterTableColumnBuilder<>("2", 2).build()));
+		ColumnSelection<String> selection = columnModel.selection();
+		assertTrue(selection.empty().is());
+		assertFalse(selection.anchor().present().is());
+		assertFalse(selection.lead().present().is());
+
+		selection.setSelectionInterval(1, 2);
+		assertFalse(selection.empty().is());
+		assertTrue(selection.anchor().present().is());
+		assertTrue(selection.lead().present().is());
+		assertEquals(1, selection.anchor().get());
+		assertEquals(2, selection.lead().get());
+		selection.setSelectionInterval(2, 1);
+		assertEquals(1, selection.lead().get());
+		selection.setSelectionInterval(0, 2);
+		assertEquals(asList(0, 1, 2), selection.indexes().get());
+		assertEquals(asList("0", "1", "2"), selection.identifiers().get());
+		selection.removeSelectionInterval(1, 2);
+		assertEquals(asList(0), selection.indexes().get());
+		assertEquals(asList("0"), selection.identifiers().get());
+		assertEquals(1, selection.anchor().get());
+		assertEquals(2, selection.lead().get());
+		selection.addSelectionInterval(2, 2);
+		assertEquals(asList(0, 2), selection.indexes().get());
+		assertEquals(asList("0", "2"), selection.identifiers().get());
+		selection.clearSelection();
+		assertTrue(selection.empty().is());
 	}
 
 	private static FilterTableColumnModel<Integer> createTestModel() {

@@ -17,6 +17,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - ControlIcon.controlIcon(icon) factory method added, when all you have is a single icon.
 - ListBoxBuilder.string() renamed formatter().
+- FilterTableColumnModel.ColumnSelection added.
 ### is.codion.framework.domain
 - ColumnDefinition.Builder.hasDatabaseDefault() renamed withDefault().
 - Column.ColumnDefiner.column(Function<Column, ColumnDefinition.Builder) added, for shared column definition policies.

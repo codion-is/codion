@@ -20,8 +20,12 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.observer.Observable;
 import is.codion.common.observer.Observer;
+import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
+import is.codion.common.value.ObservableValueList;
 
+import javax.swing.DefaultListSelectionModel;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.util.Collection;
@@ -54,6 +58,15 @@ public interface FilterTableColumnModel<C> extends TableColumnModel {
 	 * @return the hidden columns
 	 */
 	HiddenColumns<C> hidden();
+
+	/**
+	 * @return the {@link ColumnSelection}
+	 * @see #getSelectionModel()
+	 */
+	ColumnSelection<C> selection();
+
+	@Override
+	ColumnSelection<C> getSelectionModel();
 
 	/**
 	 * Returns a {@link State} instance controlling whether this model is locked or not.
@@ -156,5 +169,50 @@ public interface FilterTableColumnModel<C> extends TableColumnModel {
 		 * @return an unmodifiable view of the currently hidden columns
 		 */
 		Collection<FilterTableColumn<C>> columns();
+	}
+
+	/**
+	 * A column selection model
+	 * @param <C> the column identifier type
+	 */
+	interface ColumnSelection<C> extends ListSelectionModel {
+
+		/**
+		 * @return an {@link ObservableState} indicating whether the column selection is empty
+		 */
+		ObservableState empty();
+
+		/**
+		 * @return the selected column indexes
+		 */
+		ObservableValueList<Integer> indexes();
+
+		/**
+		 * @return the selected column identifiers
+		 */
+		ObservableValueList<C> identifiers();
+
+		/**
+		 * @return the anchor selection index
+		 * @see DefaultListSelectionModel#getAnchorSelectionIndex()
+		 */
+		ColumnIndex anchor();
+
+		/**
+		 * @return the lead selection index
+		 * @see DefaultListSelectionModel#getLeadSelectionIndex()
+		 */
+		ColumnIndex lead();
+
+		/**
+		 * Represents an anchor or lead selection index.
+		 */
+		interface ColumnIndex extends Observable<Integer> {
+
+			/**
+			 * @return an {@link ObservableState} indicating whether an index is present
+			 */
+			ObservableState present();
+		}
 	}
 }
