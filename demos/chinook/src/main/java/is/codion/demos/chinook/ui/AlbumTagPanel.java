@@ -136,12 +136,12 @@ final class AlbumTagPanel extends JPanel {
 	}
 
 	private void addTag() {
-		ComponentValue<JTextField, String> componentValue = stringField().buildValue();
+		ComponentValue<JTextField, String> tagValue = stringField().buildValue();
 		tagItems.add(Dialogs.input()
-						.component(componentValue)
+						.component(tagValue)
 						.owner(this)
 						.title(FrameworkMessages.add())
-						.valid(present(componentValue))
+						.valid(present(tagValue))
 						.show());
 	}
 
