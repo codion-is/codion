@@ -594,12 +594,14 @@ public final class FilterTable<R, C> extends JTable {
 
 	/**
 	 * <p>Copies the table data as a TAB delimited string, with header, to the clipboard.
-	 * <p>Only visible columns are included.
 	 * <p>If the selection is empty, all rows are included, otherwise only selected ones.
+	 * <p>If column selection is enabled, only selected columns are included, otherwise all visible columns.
 	 */
 	public void copyToClipboard() {
 		Utilities.setClipboard(tableModel.export()
-						.columns(columnModel().visible().get())
+						.columns(getColumnSelectionAllowed() ?
+										columnModel().visible().get() :
+										columnModel().selection().identifiers().getOrThrow())
 						.delimiter('\t')
 						.selected(!selectionModel.isSelectionEmpty())
 						.get());
@@ -680,7 +682,7 @@ public final class FilterTable<R, C> extends JTable {
 		return Control.builder()
 						.command(this::copySelectedCell)
 						.caption(MESSAGES.getString("copy_cell"))
-						.enabled(tableModel.selection().empty().not())
+						.enabled(State.and(tableModel.selection().empty().not(), columnModel().selection().lead().present()))
 						.build();
 	}
 
