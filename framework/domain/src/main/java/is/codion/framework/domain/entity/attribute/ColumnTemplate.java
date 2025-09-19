@@ -21,7 +21,18 @@ package is.codion.framework.domain.entity.attribute;
 import java.util.function.Function;
 
 /**
- * A convenience interface for defining column templates.
+ * Specifies a column template configuration.
+ * {@snippet :
+ * ColumnTemplate<Integer> REQUIRED_POSITIVE = column ->
+ *             column.define()
+ *                   .colum()
+ *                   .nullable(false)
+ *                   .minimum(0);
+ *
+ * Customer.AGE.define()
+ *            .column(REQUIRED_POSITIVE)
+ *            .caption("Age")
+ *}
  * @param <T> the column type
  */
 public interface ColumnTemplate<T> extends Function<Column<T>, ColumnDefinition.Builder<T, ?>> {}

@@ -349,6 +349,110 @@ include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=ite
 include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=item]
 ----
 
+=== Column templates
+
+Column templates provide a way to define reusable column configurations that can be applied across multiple entities. This eliminates repetition and ensures consistency for common patterns like audit columns, required searchable fields, or domain-specific column types.
+
+Templates are defined using the {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/ColumnTemplate.html[ColumnTemplate] functional interface, which extends `Function<Column<T>, ColumnDefinition.Builder<T, ?>>`.
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/domain/ChinookImpl.java[tags=columnTemplates]
+----
+
+The templates above demonstrate common patterns:
+
+* `REQUIRED_SEARCHABLE` - Combines nullable(false) with searchable(true) for required fields that should be used in search fields.
+* `INSERT_TIME` and `INSERT_USER` - Audit columns that track when and by whom records were created, using shared resource bundle keys for consistent captions across entities
+
+Templates are applied using the `column(ColumnTemplate<T>)` method:
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/domain/ChinookImpl.java[tags=columnTemplateUsage1]
+----
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/demos/chinook/domain/ChinookImpl.java[tags=columnTemplateUsage2]
+----
+
+Templates can be chained with additional configuration methods, allowing you to apply a base configuration and then customize specific aspects as needed.
+
+Templates can be based on constants or static methods for more flexibility.
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/framework/domain/Examples.java[tags=columnTemplates]
+----
+
+This approach provides several benefits:
+
+* **Parameterization** - Templates can accept configuration parameters at usage time
+* **Reusability** - Common patterns can be shared across different domains with variations
+* **Environment awareness** - Templates can adapt based on runtime configuration
+* **Type safety** - The method signature ensures correct types for parameters
+* **Documentation** - Method parameters make the configuration options explicit
+
+==== Real-world example: Geospatial column templates
+
+Column templates are particularly powerful when working with complex data types that require converters and custom formatting. Here's an example from production applications using PostGIS geometries:
+
+[source,java]
+----
+public final class GeospatialTemplates {
+
+    // Template for Point geometries with custom formatting
+    public static final ColumnTemplate<Point> POINT = column ->
+        column.define()
+            .column()
+            .converter(PGgeometry.class, new PGgeometryPointConverter(), new PGgeometryGetter())
+            .format(new PointFormat());
+
+    // Template for LineString geometries
+    public static final ColumnTemplate<LineString> LINE = column ->
+        column.define()
+            .column()
+            .converter(PGgeometry.class, new PGgeometryLineConverter(), new PGgeometryGetter());
+
+    // Template for Polygon geometries
+    public static final ColumnTemplate<Polygon> POLYGON = column ->
+        column.define()
+            .column()
+            .converter(PGgeometry.class, new PGgeometryPolygonConverter(), new PGgeometryGetter());
+
+    // Template for MultiPolygon geometries
+    public static final ColumnTemplate<MultiPolygon> MULTI_POLYGON = column ->
+        column.define()
+            .column()
+            .converter(PGgeometry.class, new PGgeometryMultiPolygonConverter(), new PGgeometryGetter());
+}
+
+// Usage in entity definitions:
+EntityDefinition location() {
+    return Location.TYPE.define(
+        Location.ID.define()
+            .primaryKey(),
+        Location.NAME.define()
+            .column()
+            .nullable(false),
+        Location.COORDINATES.define()
+            .column(GeospatialTemplates.POINT),
+        Location.BOUNDARY.define()
+            .column(GeospatialTemplates.POLYGON),
+        Location.ROUTE.define()
+            .column(GeospatialTemplates.LINE))
+    .build();
+}
+----
+
+These templates demonstrate how column templates can:
+
+* **Encapsulate complexity** - The converter, getter, and formatter classes can remain private implementation details
+* **Ensure consistency** - All geometry columns of the same type use identical configuration
+* **Reduce boilerplate** - Complex type configuration is defined once and reused everywhere
+* **Improve maintainability** - Changes to geometry handling are centralized in the template definitions
+
 [#_foreignkey]
 == Foreign key
 

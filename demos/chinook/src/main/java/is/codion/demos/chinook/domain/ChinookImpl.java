@@ -58,6 +58,7 @@ import static is.codion.plugin.jasperreports.JasperReports.classPathReport;
 
 public final class ChinookImpl extends DomainModel {
 
+	// tag::columnTemplates[]
 	private static final ColumnTemplate<String> REQUIRED_SEARCHABLE =
 					column -> column.define()
 									.column()
@@ -73,6 +74,7 @@ public final class ChinookImpl extends DomainModel {
 									.column()
 									.readOnly(true)
 									.captionResource(Chinook.class.getName(), "insert_user");
+	// end::columnTemplates[]
 
 	public ChinookImpl() {
 		super(DOMAIN);
@@ -123,9 +125,11 @@ public final class ChinookImpl extends DomainModel {
 										Album.ARTIST_FK.define()
 														.foreignKey()
 														.attributes(Artist.NAME),
+										// tag::columnTemplateUsage1[]
 										Album.TITLE.define()
 														.column(REQUIRED_SEARCHABLE)
 														.maximumLength(160),
+										// end::columnTemplateUsage1[]
 										Album.COVER.define()
 														.column()
 														.format(new CoverFormatter()),
@@ -140,10 +144,12 @@ public final class ChinookImpl extends DomainModel {
 														.subquery("""
 																		SELECT AVG(rating) FROM chinook.track
 																		WHERE track.album_id = album.id"""),
+										// tag::columnTemplateUsage2[]
 										Album.INSERT_TIME.define()
 														.column(INSERT_TIME),
 										Album.INSERT_USER.define()
 														.column(INSERT_USER))
+						// end::columnTemplateUsage2[]
 						.keyGenerator(identity())
 						.orderBy(ascending(Album.ARTIST_ID, Album.TITLE))
 						.formatter(Album.TITLE)
