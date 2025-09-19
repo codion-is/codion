@@ -24,6 +24,7 @@ import is.codion.framework.db.EntityConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
 import java.util.concurrent.Executor;
 
 import static java.util.Objects.requireNonNull;
@@ -64,8 +65,8 @@ final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnection
 	}
 
 	@Override
-	public String description() {
-		return hostName;
+	public Optional<String> description() {
+		return Optional.of(hostName);
 	}
 
 	@Override

@@ -33,6 +33,8 @@ import is.codion.framework.domain.DomainType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
+
 import static is.codion.framework.db.local.LocalEntityConnection.TRACES;
 import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
 import static is.codion.framework.db.local.tracer.MethodTracer.methodTracer;
@@ -69,8 +71,8 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
 	}
 
 	@Override
-	public String description() {
-		return database().name().toUpperCase();
+	public Optional<String> description() {
+		return Optional.of(database().name().toUpperCase());
 	}
 
 	@Override

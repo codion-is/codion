@@ -151,9 +151,9 @@ public interface EntityConnectionProvider extends AutoCloseable {
 	String connectionType();
 
 	/**
-	 * @return a short description of the database provider
+	 * @return a description of the database provider or an empty Optional in case no description is provided
 	 */
-	String description();
+	Optional<String> description();
 
 	/**
 	 * @return true if a connection has been establised and the connection is in a valid state

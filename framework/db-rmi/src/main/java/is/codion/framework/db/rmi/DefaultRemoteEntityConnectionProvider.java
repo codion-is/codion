@@ -39,6 +39,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
@@ -77,8 +78,8 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 	 * @return a string describing the server connection
 	 */
 	@Override
-	public String description() {
-		return serverName + "@" + hostName;
+	public Optional<String> description() {
+		return Optional.of(serverName + "@" + hostName);
 	}
 
 	/**

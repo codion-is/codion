@@ -29,6 +29,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("AbstractEntityConnectionProviderTest")
@@ -52,7 +54,7 @@ public final class AbstractEntityConnectionProviderTest {
 			EntityConnectionProvider provider = builder.build();
 
 			// Test initial state
-			assertEquals("description", provider.description());
+			assertEquals("description", provider.description().get());
 			assertEquals(EntityConnectionProvider.CONNECTION_TYPE_LOCAL, provider.connectionType());
 			assertEquals(ENTITIES, provider.entities());
 			assertEquals(UNIT_TEST_USER, provider.user());
@@ -323,8 +325,8 @@ public final class AbstractEntityConnectionProviderTest {
 		}
 
 		@Override
-		public String description() {
-			return "description";
+		public Optional<String> description() {
+			return Optional.of("description");
 		}
 	}
 

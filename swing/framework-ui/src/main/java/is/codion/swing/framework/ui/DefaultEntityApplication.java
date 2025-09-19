@@ -557,10 +557,11 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 	}
 
 	private static String userInfo(EntityConnectionProvider connectionProvider) {
-		String description = connectionProvider.description();
+		String username = connectionProvider.user().username().toUpperCase();
 
-		return connectionProvider.user().username().toUpperCase() +
-						(description != null ? "@" + description.toUpperCase() : "");
+		return connectionProvider.description()
+						.map(connectionDescription -> username + "@" + connectionDescription.toUpperCase())
+						.orElse(username);
 	}
 
 	private static void displayExceptionAndExit(Throwable exception, @Nullable JFrame applicationFrame) {
