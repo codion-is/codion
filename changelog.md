@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.51
+
 ## 0.18.50
 ### is.codion.common.core
 - ValueCollection.optional() now returns an empty Optional if the collection is empty.
