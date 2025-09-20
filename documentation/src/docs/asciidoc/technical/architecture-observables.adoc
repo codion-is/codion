@@ -75,7 +75,7 @@ public interface Observable<T> extends Observer<T> {
         return value;
     }
     
-    Observer<T> observer();  // For read-only access
+    Observer<T> observer();  // For notification access only
 }
 ----
 
@@ -366,12 +366,6 @@ status.set("OK");  // Notifies
 status.set("OK");  // Still notifies with SET
 ----
 
-=== Listener Overhead
-
-* Adding/removing listeners: O(n) due to synchronization
-* Notification: O(n) where n is listener count
-* Value access: O(1) - direct field access
-
 == Best Practices
 
 . **Use appropriate abstraction**:
@@ -380,7 +374,7 @@ status.set("OK");  // Still notifies with SET
    - `Event` for actions
    - `Observable` for read-only exposure
 
-. **Prefer weak references** for UI components to prevent memory leaks
+. **Prefer weak references** for transient UI components to prevent memory leaks
 
 . **Use validators** for domain constraints:
 [source,java]

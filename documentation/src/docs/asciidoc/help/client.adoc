@@ -182,7 +182,7 @@ This clears all values and resets all operators to their defaults *EQUAL* for co
 2+|Date/time field
 
 |kbd:[Insert]|Display calendar
-|kbd:[&#x2191;/&#x2193;]|Increment/decrement based to cursor position
+|kbd:[&#x2191;/&#x2193;]|Increment/decrement based on cursor position
 
 |===
 
