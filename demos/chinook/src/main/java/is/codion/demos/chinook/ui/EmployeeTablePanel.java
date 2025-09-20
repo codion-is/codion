@@ -18,8 +18,6 @@
  */
 package is.codion.demos.chinook.ui;
 
-import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
@@ -50,9 +48,7 @@ public final class EmployeeTablePanel extends EntityTablePanel {
 	}
 
 	private void requestEditFocus(EntityEditPanel editPanel) {
-		FilterTableColumnModel<Attribute<?>> columnModel = table().columnModel();
-		int columnIndex = columnModel.getSelectionModel().getMinSelectionIndex();
-		Attribute<?> attribute = columnModel.getColumn(columnIndex).identifier();
-		editPanel.focus().request(attribute);
+		table().columnModel().selection().lead().optional().ifPresent(index ->
+						editPanel.focus().request(table().columnModel().getColumn(index).identifier()));
 	}
 }
