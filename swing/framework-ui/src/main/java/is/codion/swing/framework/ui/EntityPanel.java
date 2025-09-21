@@ -679,7 +679,11 @@ public class EntityPanel extends JPanel {
 	 * @return the main component to base this entity panel on
 	 */
 	protected final JComponent createMainComponent() {
-		return detailPanels.get().isEmpty() ? mainPanel() : detailLayout().layout().orElse(mainPanel());
+		if (detailPanels.get().isEmpty()) {
+			return mainPanel();
+		}
+
+		return detailLayout.layout().or(() -> Optional.of(mainPanel())).get();
 	}
 
 	/**
