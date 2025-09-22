@@ -62,7 +62,7 @@ public final class DomainGeneratorModel {
 	 * The default domain package.
 	 */
 	public static final PropertyValue<String> DOMAIN_PACKAGE =
-					stringValue("codion.domain.generator.domainPackage", "");
+					stringValue("codion.domain.generator.domainPackage", "no.package");
 
 	/**
 	 * The default source directory.

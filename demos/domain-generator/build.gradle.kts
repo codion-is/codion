@@ -37,7 +37,7 @@ application {
 
     applicationDefaultJvmArgs = listOf(
         "-Xmx256m",
-        "-Dcodion.domain.generator.defaultDomainPackage=is.codion.demo.domain"
+        "-Dcodion.domain.generator.domainPackage=is.codion.demo.domain"
     )
     applicationDefaultJvmArgs += listOf(
         "-Dcodion.db.url=jdbc:h2:mem:h2db",
