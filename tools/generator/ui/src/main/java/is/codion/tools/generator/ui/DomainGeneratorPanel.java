@@ -79,7 +79,7 @@ import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createCompoundBorder;
 import static javax.swing.BorderFactory.createTitledBorder;
-import static javax.swing.JOptionPane.showMessageDialog;
+import static javax.swing.JOptionPane.*;
 
 public final class DomainGeneratorPanel extends JPanel {
 
@@ -369,13 +369,27 @@ public final class DomainGeneratorPanel extends JPanel {
 
 	private void save() throws IOException {
 		if (sourceTabbedPane.getSelectedIndex() == 0) {
-			model.saveApiImpl();
+			saveApiImpl();
 		}
 		else {
-			model.saveCombined();
+			saveCombined();
 		}
+	}
 
-		showMessageDialog(this, "File(s) saved");
+	private void saveApiImpl() throws IOException {
+		if (showConfirmDialog(this, "Save API and Impl files to source directory?",
+						"Confirm save", YES_NO_OPTION) == YES_OPTION) {
+			model.saveApiImpl();
+			showMessageDialog(this, "Files saved");
+		}
+	}
+
+	private void saveCombined() throws IOException {
+		if (showConfirmDialog(this, "Save combined API and Impl file to source directory?",
+						"Confirm save", YES_NO_OPTION) == YES_OPTION) {
+			model.saveCombined();
+			showMessageDialog(this, "File saved");
+		}
 	}
 
 	private static JPanel createScrollablePanel(JComponent component, String title) {

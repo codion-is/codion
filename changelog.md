@@ -8,6 +8,8 @@ Codion Change Log
 - EntityTablePanelPreferences bug fixed, now logs json parsing errors instead of crashing.
 ### is.codion.tools.generator.model
 - DomainGeneratorModel.DOMAIN_PACKAGE now with default 'no.package' instead of empty string.
+### is.codion.tools.generator.ui
+- DomainGeneratorPanel now asks for confirmation before saving files.
 
 ## 0.18.50
 ### is.codion.common.core
