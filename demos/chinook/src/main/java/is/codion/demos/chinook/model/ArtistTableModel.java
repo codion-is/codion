@@ -31,6 +31,7 @@ import java.util.List;
 import static is.codion.framework.db.EntityConnection.Update.where;
 import static is.codion.framework.db.EntityConnection.transaction;
 import static is.codion.framework.domain.entity.Entity.primaryKeys;
+import static java.util.Collections.singleton;
 
 public final class ArtistTableModel extends SwingEntityTableModel {
 
@@ -52,5 +53,6 @@ public final class ArtistTableModel extends SwingEntityTableModel {
 		selection().item().set(artistToKeep);
 		items().remove(artistsToDelete);
 		EntityEditModel.events(Artist.TYPE).deleted().accept(artistsToDelete);
+		refresh(singleton(artistToKeep.primaryKey()));
 	}
 }

@@ -497,9 +497,11 @@ public final class ChinookImpl extends DomainModel {
 														.derived(InvoiceLine.QUANTITY, InvoiceLine.UNITPRICE)
 														.value(new InvoiceLineTotal()),
 										InvoiceLine.INSERT_TIME.define()
-														.column(INSERT_TIME),
+														.column(INSERT_TIME)
+														.hidden(true),
 										InvoiceLine.INSERT_USER.define()
-														.column(INSERT_USER))
+														.column(INSERT_USER)
+														.hidden(true))
 						.keyGenerator(identity())
 						.build();
 	}
