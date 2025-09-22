@@ -22,6 +22,8 @@ import is.codion.common.db.database.Database;
 import is.codion.common.user.User;
 import is.codion.framework.domain.db.SchemaDomain;
 import is.codion.framework.domain.db.SchemaDomain.SchemaSettings;
+import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityType;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -30,8 +32,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
+import java.util.Set;
 
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class DomainSourceTest {
@@ -46,13 +50,20 @@ public final class DomainSourceTest {
 							.primaryKeyColumnSuffix("_id")
 							.build());
 			String donainPackage = "is.codion.petstore.domain";
+			Set<EntityType> dtos = schemaDomain.entities().definitions().stream()
+							.map(EntityDefinition::type)
+							.collect(toSet());
+			dtos.removeIf(entityType ->
+							entityType.name().equalsIgnoreCase("petstore.tag") ||
+											entityType.name().equalsIgnoreCase("petstore.tag_item") ||
+											entityType.name().equalsIgnoreCase("petstore.address"));
 			DomainSource domainSource = DomainSource.domainSource(schemaDomain);
 			String petstoreApi = textFileContents(DomainSourceTest.class, "PetstoreAPI.java");
-			assertEquals(petstoreApi, domainSource.api(donainPackage, true));
+			assertEquals(petstoreApi, domainSource.api(donainPackage, dtos));
 			String petstoreImpl = textFileContents(DomainSourceTest.class, "PetstoreImpl.java");
 			assertEquals(petstoreImpl, domainSource.implementation(donainPackage));
 			String petstoreCombined = textFileContents(DomainSourceTest.class, "Petstore.java");
-			assertEquals(petstoreCombined, domainSource.combined(donainPackage, true));
+			assertEquals(petstoreCombined, domainSource.combined(donainPackage, dtos));
 		}
 	}
 
@@ -63,11 +74,11 @@ public final class DomainSourceTest {
 			String domainPackage = "is.codion.chinook.domain";
 			DomainSource domainSource = DomainSource.domainSource(schemaDomain);
 			String chinookApi = textFileContents(DomainSourceTest.class, "ChinookAPI.java");
-			assertEquals(chinookApi, domainSource.api(domainPackage, true));
+			assertEquals(chinookApi, domainSource.api(domainPackage, entityTypes(schemaDomain)));
 			String chinookImpl = textFileContents(DomainSourceTest.class, "ChinookImpl.java");
 			assertEquals(chinookImpl, domainSource.implementation(domainPackage));
 			String chinookCombined = textFileContents(DomainSourceTest.class, "Chinook.java");
-			assertEquals(chinookCombined, domainSource.combined(domainPackage, true));
+			assertEquals(chinookCombined, domainSource.combined(domainPackage, entityTypes(schemaDomain)));
 		}
 	}
 
@@ -78,11 +89,11 @@ public final class DomainSourceTest {
 			String domainPackage = "is.codion.world.domain";
 			DomainSource domainSource = DomainSource.domainSource(schemaDomain);
 			String worldApi = textFileContents(DomainSourceTest.class, "WorldAPI.java");
-			assertEquals(worldApi, domainSource.api(domainPackage, true));
+			assertEquals(worldApi, domainSource.api(domainPackage, entityTypes(schemaDomain)));
 			String worldImpl = textFileContents(DomainSourceTest.class, "WorldImpl.java");
 			assertEquals(worldImpl, domainSource.implementation(domainPackage));
 			String worldCombined = textFileContents(DomainSourceTest.class, "World.java");
-			assertEquals(worldCombined, domainSource.combined(domainPackage, true));
+			assertEquals(worldCombined, domainSource.combined(domainPackage, entityTypes(schemaDomain)));
 		}
 	}
 
@@ -107,5 +118,11 @@ public final class DomainSourceTest {
 		Assertions.assertEquals("a", DomainSource.underscoreToCamelCase("a__"));
 		Assertions.assertEquals("a", DomainSource.underscoreToCamelCase("__a"));
 		Assertions.assertEquals("a", DomainSource.underscoreToCamelCase("__A"));
+	}
+
+	private static Set<EntityType> entityTypes(SchemaDomain schemaDomain) {
+		return schemaDomain.entities().definitions().stream()
+						.map(EntityDefinition::type)
+						.collect(toSet());
 	}
 }

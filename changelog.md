@@ -12,6 +12,7 @@ Codion Change Log
 - DomainGeneratorModel.DOMAIN_PACKAGE now with default 'no.package' instead of empty string.
 ### is.codion.tools.generator.ui
 - DomainGeneratorPanel now asks for confirmation before saving files.
+- DomainGeneratorPanel, dto entities now configurable.
 
 ## 0.18.50
 ### is.codion.common.core

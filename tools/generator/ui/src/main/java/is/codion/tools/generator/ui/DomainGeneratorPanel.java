@@ -27,6 +27,7 @@ import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.table.FilterTable;
+import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
 import is.codion.swing.common.ui.component.text.SearchHighlighter;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -192,11 +193,20 @@ public final class DomainGeneratorPanel extends JPanel {
 	private FilterTable<EntityRow, String> createEntityTable() {
 		return FilterTable.builder()
 						.model(model.entityModel())
-						.columns(builder -> {
-							if (builder.identifier().equals(EntityColumns.TABLE_TYPE)) {
-								builder.preferredWidth(120);
+						.columns(column -> {
+							switch (column.identifier()) {
+								case EntityColumns.TABLE_TYPE:
+									column.preferredWidth(120);
+									break;
+								case EntityColumns.DTO:
+									column.fixedWidth(80);
+									break;
 							}
 						})
+						.cellEditor(EntityColumns.DTO, FilterTableCellEditor.builder()
+										.component(checkBox()::buildValue)
+										.build())
+						.hiddenColumns(EntityColumns.DTO)
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.popupMenuControl(FilterTable::createToggleAutoResizeModeControls)
 						.build();
@@ -464,6 +474,7 @@ public final class DomainGeneratorPanel extends JPanel {
 		model.implSearchValue().addConsumer(combinedHighlighter.searchString()::set);
 		model.schemaModel().items().refresher().exception().addConsumer(this::displayException);
 		model.entityModel().items().refresher().exception().addConsumer(this::displayException);
+		model.includeDto().addConsumer(entityTable.columnModel().visible(EntityColumns.DTO)::set);
 	}
 
 	private void setupKeyEvents() {

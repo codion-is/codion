@@ -274,38 +274,6 @@ public final class Petstore extends DomainModel {
 		Column<Double> LONGITUDE = TYPE.doubleColumn("longitude");
 		Column<Object> LOCATION = TYPE.column("location", Object.class);
 		Column<byte[]> IMAGE = TYPE.byteArrayColumn("image");
-
-		static Dto dto(Entity address) {
-			return address == null ? null :
-				new Dto(address.get(ADDRESS_ID),
-					address.get(STREET1),
-					address.get(STREET2),
-					address.get(CITY),
-					address.get(STATE),
-					address.get(ZIP),
-					address.get(LATITUDE),
-					address.get(LONGITUDE),
-					address.get(LOCATION),
-					address.get(IMAGE));
-		}
-
-		record Dto(Integer addressId, String street1, String street2, String city, String state,
-				Integer zip, Double latitude, Double longitude, Object location, byte[] image) {
-			public Entity entity(Entities entities) {
-				return entities.entity(TYPE)
-					.with(ADDRESS_ID, addressId)
-					.with(STREET1, street1)
-					.with(STREET2, street2)
-					.with(CITY, city)
-					.with(STATE, state)
-					.with(ZIP, zip)
-					.with(LATITUDE, latitude)
-					.with(LONGITUDE, longitude)
-					.with(LOCATION, location)
-					.with(IMAGE, image)
-					.build();
-			}
-		}
 	}
 
 	public interface Category {
@@ -391,21 +359,6 @@ public final class Petstore extends DomainModel {
 
 		Column<Integer> TAG_ID = TYPE.integerColumn("tag_id");
 		Column<String> TAG = TYPE.stringColumn("tag");
-
-		static Dto dto(Entity tag) {
-			return tag == null ? null :
-				new Dto(tag.get(TAG_ID),
-					tag.get(TAG));
-		}
-
-		record Dto(Integer tagId, String tag) {
-			public Entity entity(Entities entities) {
-				return entities.entity(TYPE)
-					.with(TAG_ID, tagId)
-					.with(TAG, tag)
-					.build();
-			}
-		}
 	}
 
 	public interface Product {
@@ -471,7 +424,6 @@ public final class Petstore extends DomainModel {
 					item.get(IMAGE_URL),
 					item.get(IMAGE_THUMB_URL),
 					item.get(PRICE),
-					Address.dto(item.get(ADDRESS_FK)),
 					ContactInfo.dto(item.get(CONTACT_INFO_FK)),
 					item.get(TOTAL_SCORE),
 					item.get(NUMBER_OF_VOTES),
@@ -479,8 +431,8 @@ public final class Petstore extends DomainModel {
 		}
 
 		record Dto(Integer itemId, Product.Dto product, String name, String description, String imageUrl,
-				String imageThumbUrl, Double price, Address.Dto address, ContactInfo.Dto contactInfo,
-				Integer totalScore, Integer numberOfVotes, Integer disabled) {
+				String imageThumbUrl, Double price, ContactInfo.Dto contactInfo, Integer totalScore,
+				Integer numberOfVotes, Integer disabled) {
 			public Entity entity(Entities entities) {
 				return entities.entity(TYPE)
 					.with(ITEM_ID, itemId)
@@ -490,7 +442,6 @@ public final class Petstore extends DomainModel {
 					.with(IMAGE_URL, imageUrl)
 					.with(IMAGE_THUMB_URL, imageThumbUrl)
 					.with(PRICE, price)
-					.with(ADDRESS_FK, address.entity(entities))
 					.with(CONTACT_INFO_FK, contactInfo.entity(entities))
 					.with(TOTAL_SCORE, totalScore)
 					.with(NUMBER_OF_VOTES, numberOfVotes)
@@ -508,20 +459,5 @@ public final class Petstore extends DomainModel {
 
 		ForeignKey TAG_FK = TYPE.foreignKey("tag_fk", TAG_ID, Tag.TAG_ID);
 		ForeignKey ITEM_FK = TYPE.foreignKey("item_fk", ITEM_ID, Item.ITEM_ID);
-
-		static Dto dto(Entity tagItem) {
-			return tagItem == null ? null :
-				new Dto(Tag.dto(tagItem.get(TAG_FK)),
-					Item.dto(tagItem.get(ITEM_FK)));
-		}
-
-		record Dto(Tag.Dto tag, Item.Dto item) {
-			public Entity entity(Entities entities) {
-				return entities.entity(TYPE)
-					.with(TAG_FK, tag.entity(entities))
-					.with(ITEM_FK, item.entity(entities))
-					.build();
-			}
-		}
 	}
 }

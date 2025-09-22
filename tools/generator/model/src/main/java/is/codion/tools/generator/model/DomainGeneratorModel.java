@@ -19,6 +19,7 @@
 package is.codion.tools.generator.model;
 
 import is.codion.common.db.database.Database;
+import is.codion.common.model.filter.FilterModel.IncludedItems;
 import is.codion.common.observer.Observable;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.ObservableState;
@@ -26,7 +27,9 @@ import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.db.SchemaDomain;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.swing.common.model.component.table.FilterTableModel;
+import is.codion.swing.common.model.component.table.FilterTableModel.Editor;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.tools.generator.domain.DomainSource;
 
@@ -39,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
@@ -48,10 +52,12 @@ import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.common.value.Value.Notify.SET;
 import static is.codion.tools.generator.domain.DomainSource.domainSource;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * For instances use the factory method {@link #domainGeneratorModel(Database, User)}.
@@ -83,6 +89,7 @@ public final class DomainGeneratorModel {
 					FilterTableModel.builder()
 									.columns(new EntityColumns())
 									.items(new EntityItems())
+									.editor(EntityEditor::new)
 									.build();
 	private final Database database;
 	private final User user;
@@ -182,7 +189,7 @@ public final class DomainGeneratorModel {
 				domainSource(domain)
 								.writeApiImpl(domainPackageValue.optional()
 												.filter(DomainGeneratorModel::validPackageName)
-												.orElse(""), includeDto.is(), savePath(Path.of(sourceDirectoryValue.getOrThrow())));
+												.orElse(""), dtoEntities(), savePath(Path.of(sourceDirectoryValue.getOrThrow())));
 			}
 		}
 	}
@@ -194,7 +201,7 @@ public final class DomainGeneratorModel {
 				domainSource(domain)
 								.writeCombined(domainPackageValue.optional()
 												.filter(DomainGeneratorModel::validPackageName)
-												.orElse(""), includeDto.is(), savePath(Path.of(sourceDirectoryValue.getOrThrow())));
+												.orElse(""), dtoEntities(), savePath(Path.of(sourceDirectoryValue.getOrThrow())));
 			}
 		}
 	}
@@ -269,15 +276,23 @@ public final class DomainGeneratorModel {
 			String domainPackage = domainPackageValue.optional()
 							.filter(DomainGeneratorModel::validPackageName)
 							.orElse("");
-			domainApiValue.set(domainSource.api(domainPackage, includeDto.is()));
+			domainApiValue.set(domainSource.api(domainPackage, dtoEntities()));
 			domainImplValue.set(domainSource.implementation(domainPackage));
-			domainCombinedValue.set(domainSource.combined(domainPackage, includeDto.is()));
+			domainCombinedValue.set(domainSource.combined(domainPackage, dtoEntities()));
 		}
 		else {
 			domainApiValue.clear();
 			domainImplValue.clear();
 			domainCombinedValue.clear();
 		}
+	}
+
+	private Set<EntityType> dtoEntities() {
+		return includeDto.is() ? entityTableModel.items().get()
+						.stream()
+						.filter(entityRow -> entityRow.dto)
+						.map(entityRow -> entityRow.definition.type())
+						.collect(toSet()) : emptySet();
 	}
 
 	private SchemaDomain selectedDomain() {
@@ -338,8 +353,28 @@ public final class DomainGeneratorModel {
 							.map(SchemaRow::domain)
 							.flatMap(Optional::stream)
 							.flatMap(domain -> domain.entities().definitions().stream()
-											.map(definition -> new EntityRow(definition, domain.tableType(definition.type()))))
+											.map(definition -> new EntityRow(definition, domain.tableType(definition.type()), true)))
 							.collect(toList());
+		}
+	}
+
+	private final class EntityEditor implements Editor<EntityRow, String> {
+
+		private final IncludedItems<EntityRow> included;
+
+		private EntityEditor(FilterTableModel<EntityRow, String> tableModel) {
+			included = tableModel.items().included();
+		}
+
+		@Override
+		public boolean editable(EntityRow row, String identifier) {
+			return identifier.equals(EntityColumns.DTO);
+		}
+
+		@Override
+		public void set(Object value, int rowIndex, EntityRow row, String identifier) {
+			included.set(rowIndex, new EntityRow(row.definition, row.tableType, (Boolean) value));
+			updateDomainSource();
 		}
 	}
 
@@ -384,8 +419,9 @@ public final class DomainGeneratorModel {
 
 		public static final String ENTITY = "Entity";
 		public static final String TABLE_TYPE = "Type";
+		public static final String DTO = "Dto";
 
-		private static final List<String> IDENTIFIERS = unmodifiableList(asList(ENTITY, TABLE_TYPE));
+		private static final List<String> IDENTIFIERS = unmodifiableList(asList(ENTITY, TABLE_TYPE, DTO));
 
 		@Override
 		public List<String> identifiers() {
@@ -394,6 +430,10 @@ public final class DomainGeneratorModel {
 
 		@Override
 		public Class<?> columnClass(String identifier) {
+			if (identifier.equals(DTO)) {
+				return Boolean.class;
+			}
+
 			return String.class;
 		}
 
@@ -404,6 +444,8 @@ public final class DomainGeneratorModel {
 					return row.definition.type().name();
 				case TABLE_TYPE:
 					return row.tableType;
+				case DTO:
+					return row.dto;
 				default:
 					throw new IllegalArgumentException();
 			}

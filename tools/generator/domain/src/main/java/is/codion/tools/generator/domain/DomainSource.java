@@ -93,10 +93,11 @@ public final class DomainSource {
 
 	/**
 	 * @param domainPackage the domain package.
+	 * @param dtos the entity types for which to define dtos
 	 * @return the api source code.
 	 */
-	public String api(String domainPackage, boolean includeDto) {
-		return toApiString(requireNonNull(domainPackage) + ".api", includeDto);
+	public String api(String domainPackage, Set<EntityType> dtos) {
+		return toApiString(requireNonNull(domainPackage) + ".api", dtos);
 	}
 
 	/**
@@ -109,23 +110,25 @@ public final class DomainSource {
 
 	/**
 	 * @param domainPackage the domain package.
+	 * @param dtos the entity types for which to define dtos
 	 * @return the combined source code of the api and implementation.
 	 */
-	public String combined(String domainPackage, boolean includeDto) {
-		return toCombinedString(requireNonNull(domainPackage), includeDto);
+	public String combined(String domainPackage, Set<EntityType> dtos) {
+		return toCombinedString(requireNonNull(domainPackage), dtos);
 	}
 
 	/**
 	 * Writes the api and implementation source code to the given path.
 	 * @param domainPackage the domain package.
+	 * @param dtos the entity types for which to define dtos
 	 * @param path the path to write the source code to.
 	 * @throws IOException in case of an I/O error.
 	 */
-	public void writeApiImpl(String domainPackage, boolean includeDto, Path path) throws IOException {
+	public void writeApiImpl(String domainPackage, Set<EntityType> dtos, Path path) throws IOException {
 		String interfaceName = interfaceName(domain.type().name(), true);
 		Files.createDirectories(requireNonNull(path));
 		Path filePath = path.resolve(interfaceName + ".java");
-		Files.write(filePath, singleton(api(requireNonNull(domainPackage) + ".api", includeDto)));
+		Files.write(filePath, singleton(api(requireNonNull(domainPackage) + ".api", dtos)));
 		path = path.resolve("impl");
 		Files.createDirectories(path);
 		filePath = path.resolve(interfaceName + "Impl.java");
@@ -135,13 +138,14 @@ public final class DomainSource {
 	/**
 	 * Writes the combined source code to the given path.
 	 * @param domainPackage the domain package.
+	 * @param dtos the entity types for which to define dtos
 	 * @param path the path to write the source code to.
 	 * @throws IOException in case of an I/O error.
 	 */
-	public void writeCombined(String domainPackage, boolean includeDto, Path path) throws IOException {
+	public void writeCombined(String domainPackage, Set<EntityType> dtos, Path path) throws IOException {
 		String interfaceName = interfaceName(domain.type().name(), true);
 		Files.createDirectories(requireNonNull(path));
-		Files.write(path.resolve(interfaceName + ".java"), singleton(combined(requireNonNull(domainPackage), includeDto)));
+		Files.write(path.resolve(interfaceName + ".java"), singleton(combined(requireNonNull(domainPackage), dtos)));
 	}
 
 	/**
@@ -153,7 +157,7 @@ public final class DomainSource {
 		return new DomainSource(domain);
 	}
 
-	private String toApiString(String sourcePackage, boolean includeDto) {
+	private String toApiString(String sourcePackage, Set<EntityType> dtos) {
 		TypeSpec.Builder classBuilder = interfaceBuilder(domainInterfaceName)
 						.addModifiers(PUBLIC)
 						.addField(FieldSpec.builder(DomainType.class, DOMAIN_STRING)
@@ -161,7 +165,7 @@ public final class DomainSource {
 										.initializer("domainType($L)", domainInterfaceName + ".class")
 										.build());
 
-		sortedDefinitions.forEach(definition -> classBuilder.addType(createInterface(definition, includeDto)));
+		sortedDefinitions.forEach(definition -> classBuilder.addType(createInterface(definition, dtos)));
 
 		return removeInterfaceLineBreaks(JavaFile.builder(sourcePackage.isEmpty() ? "" : sourcePackage, classBuilder.build())
 						.addStaticImport(DomainType.class, "domainType")
@@ -200,7 +204,7 @@ public final class DomainSource {
 		return sourceString;
 	}
 
-	private String toCombinedString(String sourcePackage, boolean includeDto) {
+	private String toCombinedString(String sourcePackage, Set<EntityType> dtos) {
 		TypeSpec.Builder classBuilder = classBuilder(domainInterfaceName)
 						.addModifiers(PUBLIC, FINAL)
 						.addField(FieldSpec.builder(DomainType.class, DOMAIN_STRING)
@@ -210,7 +214,7 @@ public final class DomainSource {
 						.superclass(DomainModel.class);
 
 		Map<EntityDefinition, String> definitionMethods = addDefinitionMethods(classBuilder);
-		sortedDefinitions.forEach(definition -> classBuilder.addType(createInterface(definition, includeDto)));
+		sortedDefinitions.forEach(definition -> classBuilder.addType(createInterface(definition, dtos)));
 
 		JavaFile.Builder fileBuilder = JavaFile.builder(sourcePackage,
 										classBuilder.addMethod(createDomainConstructor(definitionMethods))
@@ -266,7 +270,7 @@ public final class DomainSource {
 		onMethod.accept(definition, definitionMethod.name());
 	}
 
-	private TypeSpec createInterface(EntityDefinition definition, boolean includeDto) {
+	private TypeSpec createInterface(EntityDefinition definition, Set<EntityType> dtos) {
 		String interfaceName = interfaceName(definition.table(), true);
 		TypeSpec.Builder interfaceBuilder = interfaceBuilder(interfaceName)
 						.addModifiers(PUBLIC, STATIC)
@@ -281,15 +285,16 @@ public final class DomainSource {
 						.filter(ForeignKey.class::isInstance)
 						.forEach(foreignKey -> appendAttribute(interfaceBuilder, foreignKey));
 
-		if (includeDto) {
-			addDtoRecord(definition, interfaceBuilder);
+		if (dtos.contains(definition.type())) {
+			addDtoRecord(definition, interfaceBuilder, dtos);
 		}
 
 		return interfaceBuilder.build();
 	}
 
-	private void addDtoRecord(EntityDefinition definition, TypeSpec.Builder interfaceBuilder) {
+	private void addDtoRecord(EntityDefinition definition, TypeSpec.Builder interfaceBuilder, Set<EntityType> dtos) {
 		List<Attribute<?>> nonForeignKeyColumnAttributes = definition.attributes().get().stream()
+						.filter(attribute -> excludeNonDtoForeignKeys(attribute, dtos))
 						.filter(attribute -> noneForeignKeyColumn(attribute, definition))
 						.collect(toList());
 
@@ -391,6 +396,16 @@ public final class DomainSource {
 
 	private static TypeName dtoName(EntityDefinition referenced) {
 		return ClassName.get("", interfaceName(referenced.table(), true) + ".Dto");
+	}
+
+	private static boolean excludeNonDtoForeignKeys(Attribute<?> attribute, Set<EntityType> dtos) {
+		if (attribute instanceof ForeignKey) {
+			ForeignKey foreignKey = (ForeignKey) attribute;
+
+			return dtos.contains(foreignKey.referencedType());
+		}
+
+		return true;
 	}
 
 	private static boolean noneForeignKeyColumn(Attribute<?> attribute, EntityDefinition entityDefinition) {
