@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EntitySearchFieldPanel.Builder.preferredSearchFieldWidth() added.
 - EntityPanel.createMainComponent() bug fixed, mainPanel() got called twice if a detail panel was present, messing up the controls panel, now supplier based.
+- EntityTablePanelPreferences bug fixed, now logs json parsing errors instead of crashing.
 
 ## 0.18.50
 ### is.codion.common.core
