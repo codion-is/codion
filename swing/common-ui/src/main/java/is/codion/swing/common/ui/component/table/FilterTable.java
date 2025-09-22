@@ -282,9 +282,7 @@ public final class FilterTable<R, C> extends JTable {
 	private @Nullable JTextField searchField;
 
 	private FilterTable(DefaultBuilder<R, C> builder) {
-		super(builder.tableModel,
-						new DefaultFilterTableColumnModel<>(createColumns(builder.columns, builder.tableModel)),
-						builder.tableModel.selection());
+		super(builder.tableModel, createColumnModel(builder), builder.tableModel.selection());
 		this.tableModel = builder.tableModel;
 		this.searchModel = new DefaultFilterTableSearchModel<>(tableModel, columnModel());
 		this.summaryModel = tableSummaryModel(builder.summaryValuesFactory == null ?
@@ -1036,6 +1034,13 @@ public final class FilterTable<R, C> extends JTable {
 		}
 	}
 
+	private static <R, C> TableColumnModel createColumnModel(DefaultBuilder<R, C> builder) {
+		FilterTableColumnModel<C> model = new DefaultFilterTableColumnModel<>(createColumns(builder.columns, builder.tableModel));
+		builder.hiddenColumns.forEach(identifier -> model.visible(identifier).set(false));
+
+		return model;
+	}
+
 	private static <R, C> List<FilterTableColumn<C>> createColumns(Consumer<FilterTableColumn.Builder<C>> configure,
 																																 FilterTableModel<R, C> tableModel) {
 		TableColumns<R, C> tableColumns = tableModel.columns();
@@ -1179,6 +1184,12 @@ public final class FilterTable<R, C> extends JTable {
 		 * @return this builder instance
 		 */
 		Builder<R, C> columns(Consumer<FilterTableColumn.Builder<C>> columns);
+
+		/**
+		 * @param hiddenColumns the initially hidden columns
+		 * @return this builder instance
+		 */
+		Builder<R, C> hiddenColumns(C... hiddenColumns);
 
 		/**
 		 * @param summaryValuesFactory the column summary values factory
@@ -1427,6 +1438,7 @@ public final class FilterTable<R, C> extends JTable {
 		private final Map<C, FilterTableCellRenderer<?>> cellRenderers = new HashMap<>();
 		private final Map<C, FilterTableCellEditor<?>> cellEditors = new HashMap<>();
 		private final Collection<KeyStroke> startEditKeyStrokes = new ArrayList<>();
+		private final Set<C> hiddenColumns = new HashSet<>();
 
 		private Consumer<FilterTableColumn.Builder<C>> columns = new EmptyConsumer<>();
 		private SummaryValues.@Nullable Factory<C> summaryValuesFactory;
@@ -1467,6 +1479,14 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public Builder<R, C> columns(Consumer<FilterTableColumn.Builder<C>> columns) {
 			this.columns = requireNonNull(columns);
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> hiddenColumns(C... hiddenColumns) {
+			requireNonNull(hiddenColumns);
+			this.hiddenColumns.clear();
+			this.hiddenColumns.addAll(asList(hiddenColumns));
 			return this;
 		}
 
