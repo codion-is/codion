@@ -65,8 +65,8 @@ abstract sealed class AbstractColumnCondition<T> extends AbstractCondition imple
 	}
 
 	@Override
-	public final String toString(EntityDefinition definition) {
-		return toString(requireNonNull(definition).columns().definition(column).expression());
+	public final String string(EntityDefinition definition) {
+		return string(requireNonNull(definition).columns().definition(column).expression());
 	}
 
 	@Override
@@ -94,5 +94,5 @@ abstract sealed class AbstractColumnCondition<T> extends AbstractCondition imple
 	 * @param columnExpression the column expression
 	 * @return a condition string based on this condition
 	 */
-	protected abstract String toString(String columnExpression);
+	protected abstract String string(String columnExpression);
 }

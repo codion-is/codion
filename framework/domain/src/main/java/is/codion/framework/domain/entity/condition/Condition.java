@@ -132,7 +132,7 @@ public sealed interface Condition permits Condition.All, Condition.Combination, 
 	 * @param definition the entity definition
 	 * @return a condition string
 	 */
-	String toString(EntityDefinition definition);
+	String string(EntityDefinition definition);
 
 	/**
 	 * A condition specifying all entities of a given type, a no-condition.

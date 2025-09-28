@@ -162,7 +162,7 @@ final class SelectQueries {
 		}
 
 		Builder where(Condition condition) {
-			String conditionString = condition.toString(definition);
+			String conditionString = condition.string(definition);
 			if (!conditionString.isEmpty()) {
 				where(conditionString);
 			}
@@ -351,7 +351,7 @@ final class SelectQueries {
 		}
 
 		private void havingCondition(Condition condition) {
-			String conditionString = condition.toString(definition);
+			String conditionString = condition.string(definition);
 			if (!conditionString.isEmpty()) {
 				// Combine HAVING conditions with AND - useful when both EntitySelectQuery and Select have HAVING clauses
 				having(having == null ? conditionString : "(" + having + ") AND (" + conditionString + ")");

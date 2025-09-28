@@ -94,12 +94,12 @@ final class SingleValueColumnCondition<T> extends AbstractColumnCondition<T> {
 	}
 
 	@Override
-	protected String toString(String columnExpression) {
+	protected String string(String columnExpression) {
 		switch (operator()) {
 			case EQUAL:
-				return toStringEqual(columnExpression);
+				return equalString(columnExpression);
 			case NOT_EQUAL:
-				return toStringNotEqual(columnExpression);
+				return notEqualString(columnExpression);
 			case LESS_THAN:
 				return columnExpression + LESS_THAN;
 			case LESS_THAN_OR_EQUAL:
@@ -113,7 +113,7 @@ final class SingleValueColumnCondition<T> extends AbstractColumnCondition<T> {
 		}
 	}
 
-	private String toStringEqual(String columnExpression) {
+	private String equalString(String columnExpression) {
 		if (value == null) {
 			return columnExpression + IS_NULL;
 		}
@@ -124,7 +124,7 @@ final class SingleValueColumnCondition<T> extends AbstractColumnCondition<T> {
 		return identifier(columnExpression) + EQUAL + placeholder();
 	}
 
-	private String toStringNotEqual(String columnExpression) {
+	private String notEqualString(String columnExpression) {
 		if (value == null) {
 			return columnExpression + IS_NOT_NULL;
 		}

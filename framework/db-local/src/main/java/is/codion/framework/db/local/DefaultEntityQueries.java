@@ -92,7 +92,7 @@ final class DefaultEntityQueries implements EntityQueries {
 										.filter(columnDefinition -> entity.modified(columnDefinition.attribute()))
 										.collect(toList());
 
-		return populateParameters(updateQuery(entity.definition().table(), columnDefinitions, condition.toString(entity.definition())),
+		return populateParameters(updateQuery(entity.definition().table(), columnDefinitions, condition.string(entity.definition())),
 						parameterValues(entity, columnDefinitions, condition));
 	}
 

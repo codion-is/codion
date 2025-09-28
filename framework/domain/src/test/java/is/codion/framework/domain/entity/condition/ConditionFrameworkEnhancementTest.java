@@ -260,29 +260,29 @@ public final class ConditionFrameworkEnhancementTest {
 
 			// Integer
 			Condition condition = Employee.ID.equalTo(42);
-			assertEquals("id = ?", condition.toString(empDef));
+			assertEquals("id = ?", condition.string(empDef));
 			assertEquals(1, condition.values().size());
 			assertEquals(42, condition.values().get(0));
 
 			// String
 			condition = Employee.NAME.equalTo("John Doe");
-			assertEquals("name = ?", condition.toString(empDef));
+			assertEquals("name = ?", condition.string(empDef));
 			assertEquals("John Doe", condition.values().get(0));
 
 			// BigDecimal
 			condition = Employee.SALARY.equalTo(new BigDecimal("75000"));
-			assertEquals("salary = ?", condition.toString(empDef));
+			assertEquals("salary = ?", condition.string(empDef));
 			assertEquals(new BigDecimal("75000"), condition.values().get(0));
 
 			// LocalDate
 			LocalDate date = LocalDate.of(2020, 1, 1);
 			condition = Employee.HIRE_DATE.equalTo(date);
-			assertEquals("hire_date = ?", condition.toString(empDef));
+			assertEquals("hire_date = ?", condition.string(empDef));
 			assertEquals(date, condition.values().get(0));
 
 			// Boolean
 			condition = Employee.REMOTE.equalTo(true);
-			assertEquals("remote = ?", condition.toString(empDef));
+			assertEquals("remote = ?", condition.string(empDef));
 			assertEquals(true, condition.values().get(0));
 		}
 
@@ -293,19 +293,19 @@ public final class ConditionFrameworkEnhancementTest {
 
 			// Greater than
 			Condition condition = Employee.SALARY.greaterThan(new BigDecimal("50000"));
-			assertEquals("salary > ?", condition.toString(empDef));
+			assertEquals("salary > ?", condition.string(empDef));
 
 			// Greater than or equal
 			condition = Employee.SALARY.greaterThanOrEqualTo(new BigDecimal("50000"));
-			assertEquals("salary >= ?", condition.toString(empDef));
+			assertEquals("salary >= ?", condition.string(empDef));
 
 			// Less than
 			condition = Employee.HIRE_DATE.lessThan(LocalDate.of(2020, 1, 1));
-			assertEquals("hire_date < ?", condition.toString(empDef));
+			assertEquals("hire_date < ?", condition.string(empDef));
 
 			// Less than or equal
 			condition = Employee.HIRE_DATE.lessThanOrEqualTo(LocalDate.of(2020, 1, 1));
-			assertEquals("hire_date <= ?", condition.toString(empDef));
+			assertEquals("hire_date <= ?", condition.string(empDef));
 		}
 
 		@Test
@@ -315,21 +315,21 @@ public final class ConditionFrameworkEnhancementTest {
 
 			// Basic LIKE
 			Condition condition = Employee.NAME.like("John%");
-			assertEquals("name LIKE ?", condition.toString(empDef));
+			assertEquals("name LIKE ?", condition.string(empDef));
 			assertEquals("John%", condition.values().get(0));
 
 			// Case-insensitive LIKE
 			condition = Employee.NAME.likeIgnoreCase("john%");
-			assertEquals("UPPER(name) LIKE UPPER(?)", condition.toString(empDef));
+			assertEquals("UPPER(name) LIKE UPPER(?)", condition.string(empDef));
 			assertEquals("john%", condition.values().get(0));
 
 			// NOT LIKE
 			condition = Employee.EMAIL.notLike("%.temp");
-			assertEquals("email NOT LIKE ?", condition.toString(empDef));
+			assertEquals("email NOT LIKE ?", condition.string(empDef));
 
 			// NOT LIKE case-insensitive
 			condition = Employee.EMAIL.notLikeIgnoreCase("%.TEMP");
-			assertEquals("UPPER(email) NOT LIKE UPPER(?)", condition.toString(empDef));
+			assertEquals("UPPER(email) NOT LIKE UPPER(?)", condition.string(empDef));
 		}
 
 		@Test
@@ -340,23 +340,23 @@ public final class ConditionFrameworkEnhancementTest {
 			// Inclusive between
 			Condition condition = Employee.SALARY.between(
 							new BigDecimal("50000"), new BigDecimal("100000"));
-			assertEquals("(salary >= ? AND salary <= ?)", condition.toString(empDef));
+			assertEquals("(salary >= ? AND salary <= ?)", condition.string(empDef));
 			assertEquals(2, condition.values().size());
 
 			// Exclusive between
 			condition = Employee.HIRE_DATE.betweenExclusive(
 							LocalDate.of(2020, 1, 1), LocalDate.of(2021, 1, 1));
-			assertEquals("(hire_date > ? AND hire_date < ?)", condition.toString(empDef));
+			assertEquals("(hire_date > ? AND hire_date < ?)", condition.string(empDef));
 
 			// NOT between inclusive
 			condition = Employee.SALARY.notBetween(
 							new BigDecimal("30000"), new BigDecimal("40000"));
-			assertEquals("(salary <= ? OR salary >= ?)", condition.toString(empDef));
+			assertEquals("(salary <= ? OR salary >= ?)", condition.string(empDef));
 
 			// NOT between exclusive
 			condition = Employee.SALARY.notBetweenExclusive(
 							new BigDecimal("30000"), new BigDecimal("40000"));
-			assertEquals("(salary < ? OR salary > ?)", condition.toString(empDef));
+			assertEquals("(salary < ? OR salary > ?)", condition.string(empDef));
 		}
 	}
 
@@ -371,21 +371,21 @@ public final class ConditionFrameworkEnhancementTest {
 
 			// Single value
 			Condition condition = Employee.POSITION.in(singletonList("Manager"));
-			assertEquals("position IN (?)", condition.toString(empDef));
+			assertEquals("position IN (?)", condition.string(empDef));
 			assertEquals(1, condition.values().size());
 
 			// Multiple values
 			condition = Employee.POSITION.in(asList("Manager", "Developer", "Analyst"));
-			assertEquals("position IN (?, ?, ?)", condition.toString(empDef));
+			assertEquals("position IN (?, ?, ?)", condition.string(empDef));
 			assertEquals(3, condition.values().size());
 
 			// Array version
 			condition = Employee.POSITION.in("Manager", "Developer", "Analyst");
-			assertEquals("position IN (?, ?, ?)", condition.toString(empDef));
+			assertEquals("position IN (?, ?, ?)", condition.string(empDef));
 
 			// NOT IN
 			condition = Employee.POSITION.notIn("Intern", "Contractor");
-			assertEquals("position NOT IN (?, ?)", condition.toString(empDef));
+			assertEquals("position NOT IN (?, ?)", condition.string(empDef));
 		}
 
 		@Test
@@ -400,7 +400,7 @@ public final class ConditionFrameworkEnhancementTest {
 			Condition condition = Employee.ID.in(largeList);
 			assertEquals(1000, condition.values().size());
 
-			String conditionString = condition.toString(empDef);
+			String conditionString = condition.string(empDef);
 			assertNotNull(conditionString);
 			assertTrue(conditionString.contains("id"));
 			assertTrue(conditionString.contains("?"));
@@ -428,21 +428,21 @@ public final class ConditionFrameworkEnhancementTest {
 
 			// IS NULL
 			Condition condition = Employee.MANAGER_ID.isNull();
-			assertEquals("manager_id IS NULL", condition.toString(empDef));
+			assertEquals("manager_id IS NULL", condition.string(empDef));
 			assertTrue(condition.values().isEmpty());
 
 			// IS NOT NULL
 			condition = Employee.MANAGER_ID.isNotNull();
-			assertEquals("manager_id IS NOT NULL", condition.toString(empDef));
+			assertEquals("manager_id IS NOT NULL", condition.string(empDef));
 			assertTrue(condition.values().isEmpty());
 
 			// equalTo(null) converts to IS NULL
 			condition = Employee.MANAGER_ID.equalTo(null);
-			assertEquals("manager_id IS NULL", condition.toString(empDef));
+			assertEquals("manager_id IS NULL", condition.string(empDef));
 
 			// notEqualTo(null) converts to IS NOT NULL
 			condition = Employee.MANAGER_ID.notEqualTo(null);
-			assertEquals("manager_id IS NOT NULL", condition.toString(empDef));
+			assertEquals("manager_id IS NOT NULL", condition.string(empDef));
 		}
 
 		@Test
@@ -457,7 +457,7 @@ public final class ConditionFrameworkEnhancementTest {
 			try {
 				Condition condition = Employee.MANAGER_ID.in(listWithNull);
 				assertNotNull(condition);
-				String conditionString = condition.toString(empDef);
+				String conditionString = condition.string(empDef);
 				assertNotNull(conditionString);
 				// The exact format depends on implementation
 				assertTrue(conditionString.contains("manager_id"));
@@ -485,7 +485,7 @@ public final class ConditionFrameworkEnhancementTest {
 
 			// Equality with entity
 			Condition condition = Employee.DEPARTMENT_FK.equalTo(department);
-			assertEquals("department_id = ?", condition.toString(empDef));
+			assertEquals("department_id = ?", condition.string(empDef));
 			assertEquals(10, condition.values().get(0));
 
 			// IN with entities
@@ -494,14 +494,14 @@ public final class ConditionFrameworkEnhancementTest {
 							.build();
 
 			condition = Employee.DEPARTMENT_FK.in(asList(department, department2));
-			assertEquals("department_id IN (?, ?)", condition.toString(empDef));
+			assertEquals("department_id IN (?, ?)", condition.string(empDef));
 			assertEquals(2, condition.values().size());
 			assertEquals(10, condition.values().get(0));
 			assertEquals(20, condition.values().get(1));
 
 			// NOT IN
 			condition = Employee.DEPARTMENT_FK.notIn(department, department2);
-			assertEquals("department_id NOT IN (?, ?)", condition.toString(empDef));
+			assertEquals("department_id NOT IN (?, ?)", condition.string(empDef));
 		}
 
 		@Test
@@ -518,7 +518,7 @@ public final class ConditionFrameworkEnhancementTest {
 			EntityDefinition empDef = entities.definition(Employee.TYPE);
 
 			assertNotNull(condition);
-			assertEquals("department_id = ?", condition.toString(empDef));
+			assertEquals("department_id = ?", condition.string(empDef));
 			assertEquals(1, condition.values().size());
 			assertEquals(10, condition.values().get(0));
 		}
@@ -530,11 +530,11 @@ public final class ConditionFrameworkEnhancementTest {
 
 			// Foreign key IS NULL
 			Condition condition = Employee.MANAGER_FK.isNull();
-			assertEquals("manager_id IS NULL", condition.toString(empDef));
+			assertEquals("manager_id IS NULL", condition.string(empDef));
 
 			// Foreign key IS NOT NULL
 			condition = Employee.MANAGER_FK.isNotNull();
-			assertEquals("manager_id IS NOT NULL", condition.toString(empDef));
+			assertEquals("manager_id IS NOT NULL", condition.string(empDef));
 		}
 	}
 
@@ -549,14 +549,14 @@ public final class ConditionFrameworkEnhancementTest {
 
 			// Single parameter custom condition
 			Condition condition = Employee.HIGH_EARNERS.get(Employee.SALARY, new BigDecimal("100000"));
-			assertEquals("salary > ?", condition.toString(empDef));
+			assertEquals("salary > ?", condition.string(empDef));
 			assertEquals(1, condition.values().size());
 			assertEquals(new BigDecimal("100000"), condition.values().get(0));
 
 			// Date-based custom condition
 			LocalDate cutoffDate = LocalDate.of(2022, 1, 1);
 			condition = Employee.RECENT_HIRES.get(Employee.HIRE_DATE, cutoffDate);
-			assertEquals("hire_date >= ?", condition.toString(empDef));
+			assertEquals("hire_date >= ?", condition.string(empDef));
 			assertEquals(cutoffDate, condition.values().get(0));
 		}
 
@@ -569,7 +569,7 @@ public final class ConditionFrameworkEnhancementTest {
 			Condition condition = Employee.BY_DEPARTMENT_AND_POSITION.get(
 							asList(Employee.DEPARTMENT_ID, Employee.POSITION),
 							asList(10, "Developer"));
-			assertEquals("department_id = ? AND position = ?", condition.toString(empDef));
+			assertEquals("department_id = ? AND position = ?", condition.string(empDef));
 			assertEquals(2, condition.values().size());
 			assertEquals(10, condition.values().get(0));
 			assertEquals("Developer", condition.values().get(1));
@@ -584,7 +584,7 @@ public final class ConditionFrameworkEnhancementTest {
 			Condition condition = Employee.BY_DEPARTMENT_AND_POSITION.get(
 							asList(Employee.DEPARTMENT_ID, Employee.POSITION),
 							asList(10, "Developer"));
-			assertEquals("department_id = ? AND position = ?", condition.toString(empDef));
+			assertEquals("department_id = ? AND position = ?", condition.string(empDef));
 			assertEquals(2, condition.values().size());
 			assertEquals(2, condition.columns().size());
 		}
@@ -596,7 +596,7 @@ public final class ConditionFrameworkEnhancementTest {
 
 			// No-parameter custom condition using empty lists
 			Condition condition = Project.ACTIVE_PROJECTS.get(emptyList(), emptyList());
-			assertEquals("status IN ('PLANNING', 'ACTIVE')", condition.toString(projDef));
+			assertEquals("status IN ('PLANNING', 'ACTIVE')", condition.string(projDef));
 			assertTrue(condition.values().isEmpty());
 			assertTrue(condition.columns().isEmpty());
 		}
@@ -617,7 +617,7 @@ public final class ConditionFrameworkEnhancementTest {
 							Employee.POSITION.equalTo("Developer"));
 
 			assertEquals("(salary > ? AND remote = ? AND position = ?)",
-							combination.toString(empDef));
+							combination.string(empDef));
 			assertEquals(3, combination.values().size());
 			assertEquals(Conjunction.AND, combination.conjunction());
 		}
@@ -632,7 +632,7 @@ public final class ConditionFrameworkEnhancementTest {
 							Employee.SALARY.greaterThan(new BigDecimal("100000")));
 
 			assertEquals("(position = ? OR salary > ?)",
-							combination.toString(empDef));
+							combination.string(empDef));
 			assertEquals(2, combination.values().size());
 			assertEquals(Conjunction.OR, combination.conjunction());
 		}
@@ -653,7 +653,7 @@ public final class ConditionFrameworkEnhancementTest {
 			Combination outer = Condition.or(inner1, inner2);
 
 			assertEquals("((position = ? AND salary > ?) OR (position = ? AND salary > ?))",
-							outer.toString(empDef));
+							outer.string(empDef));
 			assertEquals(4, outer.values().size());
 		}
 
@@ -664,11 +664,11 @@ public final class ConditionFrameworkEnhancementTest {
 
 			// Single condition AND
 			Combination combination = Condition.and(Employee.REMOTE.equalTo(true));
-			assertEquals("remote = ?", combination.toString(empDef));
+			assertEquals("remote = ?", combination.string(empDef));
 
 			// Single condition OR
 			combination = Condition.or(Employee.REMOTE.equalTo(true));
-			assertEquals("remote = ?", combination.toString(empDef));
+			assertEquals("remote = ?", combination.string(empDef));
 		}
 
 		@ParameterizedTest
@@ -692,7 +692,7 @@ public final class ConditionFrameworkEnhancementTest {
 			Entity.Key key = entities.primaryKey(Employee.TYPE, 42);
 			Condition condition = Condition.key(key);
 
-			assertEquals("id = ?", condition.toString(empDef));
+			assertEquals("id = ?", condition.string(empDef));
 			assertEquals(1, condition.values().size());
 			assertEquals(42, condition.values().get(0));
 		}
@@ -705,7 +705,7 @@ public final class ConditionFrameworkEnhancementTest {
 			List<Entity.Key> keys = entities.primaryKeys(Employee.TYPE, 1, 2, 3);
 			Condition condition = Condition.keys(keys);
 
-			assertEquals("id IN (?, ?, ?)", condition.toString(empDef));
+			assertEquals("id IN (?, ?, ?)", condition.string(empDef));
 			assertEquals(3, condition.values().size());
 		}
 
@@ -723,7 +723,7 @@ public final class ConditionFrameworkEnhancementTest {
 							.build();
 
 			Condition condition = Condition.key(assignment.primaryKey());
-			assertEquals("id = ?", condition.toString(assignDef));
+			assertEquals("id = ?", condition.string(assignDef));
 		}
 
 		@Test
@@ -755,7 +755,7 @@ public final class ConditionFrameworkEnhancementTest {
 			EntityDefinition empDef = entities.definition(Employee.TYPE);
 			Condition condition = Condition.all(Employee.TYPE);
 
-			String conditionString = condition.toString(empDef);
+			String conditionString = condition.string(empDef);
 			assertNotNull(conditionString);
 			// The exact format may vary, but it should be a valid representation
 		}
@@ -772,15 +772,15 @@ public final class ConditionFrameworkEnhancementTest {
 
 			// Case sensitive equality
 			Condition condition = Employee.NAME.equalTo("John");
-			assertEquals("name = ?", condition.toString(empDef));
+			assertEquals("name = ?", condition.string(empDef));
 
 			// Case sensitive LIKE
 			condition = Employee.NAME.like("John%");
-			assertEquals("name LIKE ?", condition.toString(empDef));
+			assertEquals("name LIKE ?", condition.string(empDef));
 
 			// Case sensitive NOT EQUAL
 			condition = Employee.NAME.notEqualTo("John");
-			assertEquals("name <> ?", condition.toString(empDef));
+			assertEquals("name <> ?", condition.string(empDef));
 		}
 
 		@Test
@@ -790,19 +790,19 @@ public final class ConditionFrameworkEnhancementTest {
 
 			// Case insensitive equality
 			Condition condition = Employee.NAME.equalToIgnoreCase("john");
-			assertEquals("UPPER(name) = UPPER(?)", condition.toString(empDef));
+			assertEquals("UPPER(name) = UPPER(?)", condition.string(empDef));
 
 			// Case insensitive LIKE
 			condition = Employee.NAME.likeIgnoreCase("john%");
-			assertEquals("UPPER(name) LIKE UPPER(?)", condition.toString(empDef));
+			assertEquals("UPPER(name) LIKE UPPER(?)", condition.string(empDef));
 
 			// Case insensitive NOT EQUAL
 			condition = Employee.NAME.notEqualToIgnoreCase("john");
-			assertEquals("UPPER(name) <> UPPER(?)", condition.toString(empDef));
+			assertEquals("UPPER(name) <> UPPER(?)", condition.string(empDef));
 
 			// Case insensitive NOT LIKE
 			condition = Employee.NAME.notLikeIgnoreCase("john%");
-			assertEquals("UPPER(name) NOT LIKE UPPER(?)", condition.toString(empDef));
+			assertEquals("UPPER(name) NOT LIKE UPPER(?)", condition.string(empDef));
 		}
 	}
 
@@ -831,7 +831,7 @@ public final class ConditionFrameworkEnhancementTest {
 
 			String expected = "((position = ? AND salary > ? AND department_id IN (?, ?, ?)) OR " +
 							"(position = ? AND remote = ?))";
-			assertEquals(expected, finalCondition.toString(empDef));
+			assertEquals(expected, finalCondition.string(empDef));
 			assertEquals(7, finalCondition.values().size());
 		}
 
@@ -845,14 +845,14 @@ public final class ConditionFrameworkEnhancementTest {
 			LocalDate oneYearAgo = LocalDate.now().minusYears(1);
 			Condition recentHires = Employee.HIRE_DATE.greaterThanOrEqualTo(oneYearAgo);
 
-			assertEquals("hire_date >= ?", recentHires.toString(empDef));
+			assertEquals("hire_date >= ?", recentHires.string(empDef));
 
 			// Projects starting this month
 			LocalDate monthStart = LocalDate.now().withDayOfMonth(1);
 			LocalDate monthEnd = monthStart.plusMonths(1).minusDays(1);
 			Condition thisMonthProjects = Project.START_DATE.between(monthStart, monthEnd);
 
-			assertEquals("(start_date >= ? AND start_date <= ?)", thisMonthProjects.toString(projDef));
+			assertEquals("(start_date >= ? AND start_date <= ?)", thisMonthProjects.string(projDef));
 		}
 
 		@Test
@@ -872,7 +872,7 @@ public final class ConditionFrameworkEnhancementTest {
 			Combination targetRanges = Condition.or(juniorRange, seniorRange);
 
 			String expected = "((salary >= ? AND salary < ?) OR (salary >= ? AND salary < ?))";
-			assertEquals(expected, targetRanges.toString(empDef));
+			assertEquals(expected, targetRanges.string(empDef));
 			assertEquals(4, targetRanges.values().size());
 		}
 	}
@@ -909,7 +909,7 @@ public final class ConditionFrameworkEnhancementTest {
 			EntityDefinition empDef = entities.definition(Employee.TYPE);
 			Condition condition = finalCondition; // Final reference for lambda
 			assertDoesNotThrow(() -> {
-				String conditionString = condition.toString(empDef);
+				String conditionString = condition.string(empDef);
 				assertNotNull(conditionString);
 				assertTrue(conditionString.contains("position = ?"));
 			});
@@ -927,7 +927,7 @@ public final class ConditionFrameworkEnhancementTest {
 			assertEquals(size, condition.values().size());
 
 			EntityDefinition empDef = entities.definition(Employee.TYPE);
-			String conditionString = condition.toString(empDef);
+			String conditionString = condition.string(empDef);
 			assertNotNull(conditionString);
 			assertTrue(conditionString.contains("position"));
 			assertTrue(conditionString.contains("?"));

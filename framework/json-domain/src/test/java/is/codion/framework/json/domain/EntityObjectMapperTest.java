@@ -348,7 +348,7 @@ public final class EntityObjectMapperTest {
 
 		assertEquals(condition, readCondition);
 		assertEquals("(deptno NOT IN (?, ?) AND UPPER(ename) = UPPER(?) AND (empno >= ? AND empno <= ?) AND comm IS NOT NULL)",
-						condition.toString(entities.definition(Employee.TYPE)));
+						condition.string(entities.definition(Employee.TYPE)));
 	}
 
 	@Test

@@ -38,7 +38,7 @@ final class DefaultAllCondition extends AbstractCondition implements Condition.A
 	}
 
 	@Override
-	public String toString(EntityDefinition definition) {
+	public String string(EntityDefinition definition) {
 		requireNonNull(definition);
 		return "";
 	}

@@ -78,7 +78,7 @@ final class MultiValueColumnCondition<T> extends AbstractColumnCondition<T> {
 	}
 
 	@Override
-	protected String toString(String columnExpression) {
+	protected String string(String columnExpression) {
 		boolean notIn = operator() == Operator.NOT_IN;
 		String identifier = columnExpression;
 		boolean caseInsensitiveString = column().type().isString() && !caseSensitive();
