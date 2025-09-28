@@ -271,7 +271,8 @@ Calculate values dynamically:
 Attribute<Integer> NO_OF_SPEAKERS = TYPE.integerAttribute("noOfSpeakers");
 
 NO_OF_SPEAKERS.define()
-    .derived(CountryLanguage.COUNTRY_FK, CountryLanguage.PERCENTAGE)
+    .derived()
+    .from(CountryLanguage.COUNTRY_FK, CountryLanguage.PERCENTAGE)
     .value(source -> {
         Double percentage = source.get(CountryLanguage.PERCENTAGE);
         Entity country = source.get(CountryLanguage.COUNTRY_FK);

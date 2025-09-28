@@ -66,11 +66,11 @@ import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefi
  *
  *                 // Derived transient attribute (computed from other attributes)
  *                 Customer.FULL_NAME.define()
- *                     .attribute()
- *                     .derived(Customer.FIRST_NAME, Customer.LAST_NAME)
- *                     .provider(values -> {
- *                         String first = values.get(Customer.FIRST_NAME);
- *                         String last = values.get(Customer.LAST_NAME);
+ *                     .derived()
+ *				             .from(Customer.FIRST_NAME, Customer.LAST_NAME)
+ *                     .value(source -> {
+ *                         String first = source.get(Customer.FIRST_NAME);
+ *                         String last = source.get(Customer.LAST_NAME);
  *                         return ((first != null ? first : "") + " " +
  *                                 (last != null ? last : "")).trim();
  *                     })

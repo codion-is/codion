@@ -22,6 +22,7 @@ import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
@@ -61,13 +62,28 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefini
 		return true;
 	}
 
+	static final class DefaultSourceAttributesStep<T, B extends DerivedAttributeDefinition.Builder<T, B>>
+					implements DerivedAttributeDefinition.Builder.SourceAttributesStep<T, B> {
+
+		private final Attribute<T> attribute;
+
+		DefaultSourceAttributesStep(Attribute<T> attribute) {
+			this.attribute = requireNonNull(attribute);
+		}
+
+		@Override
+		public DerivedAttributeDefinition.Builder.DerivedValueStep<T, B> from(Attribute<?>... attributes) {
+			return new DefaultDerivedValueStep<>(attribute, asList(attributes));
+		}
+	}
+
 	static final class DefaultDerivedValueStep<T, B extends DerivedAttributeDefinition.Builder<T, B>>
 					implements DerivedAttributeDefinition.Builder.DerivedValueStep<T, B> {
 
 		private final Attribute<T> attribute;
 		private final List<Attribute<?>> sources;
 
-		DefaultDerivedValueStep(Attribute<T> attribute, List<Attribute<?>> sources) {
+		private DefaultDerivedValueStep(Attribute<T> attribute, List<Attribute<?>> sources) {
 			this.attribute = requireNonNull(attribute);
 			this.sources = requireNonNull(sources);
 		}

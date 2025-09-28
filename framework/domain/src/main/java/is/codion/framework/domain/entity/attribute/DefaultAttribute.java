@@ -21,7 +21,7 @@ package is.codion.framework.domain.entity.attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.DefaultColumn.DefaultColumnDefiner;
-import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDerivedValueStep;
+import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultSourceAttributesStep;
 import is.codion.framework.domain.entity.attribute.DefaultForeignKey.DefaultForeignKeyDefiner;
 import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefinition.DefaultTransientAttributeDefinitionBuilder;
 import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition.Builder;
@@ -39,8 +39,6 @@ import java.time.temporal.Temporal;
 import java.util.Objects;
 
 import static is.codion.common.Text.nullOrEmpty;
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultAttribute<T> implements Attribute<T>, Serializable {
@@ -244,13 +242,14 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 		@Override
 		public final <B extends DerivedAttributeDefinition.Builder<T, B>> DerivedAttributeDefinition.Builder<T, B> denormalized(Attribute<Entity> entityAttribute,
 																																																														Attribute<T> denormalizedAttribute) {
-			return (DerivedAttributeDefinition.Builder<T, B>) new DefaultDerivedValueStep<>(attribute, singletonList(entityAttribute))
+			return (Builder<T, B>) derived()
+							.from(entityAttribute)
 							.value(new DenormalizedValue<>(entityAttribute, denormalizedAttribute));
 		}
 
 		@Override
-		public final <B extends DerivedAttributeDefinition.Builder<T, B>> Builder.DerivedValueStep<T, B> derived(Attribute<?>... from) {
-			return new DefaultDerivedValueStep<>(attribute, asList(from));
+		public final <B extends DerivedAttributeDefinition.Builder<T, B>> Builder.SourceAttributesStep<T, B> derived() {
+			return new DefaultSourceAttributesStep<>(attribute);
 		}
 	}
 }

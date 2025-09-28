@@ -166,7 +166,8 @@ public final class EntityValidationEnhancementTest {
 											.defaultValue(0)
 											.minimum(0),
 							Customer.AGE.define()
-											.derived(Customer.BIRTH_DATE)
+											.derived()
+											.from(Customer.BIRTH_DATE)
 											.value(source -> {
 												LocalDate birthDate = source.get(Customer.BIRTH_DATE);
 												if (birthDate != null) {
@@ -265,7 +266,8 @@ public final class EntityValidationEnhancementTest {
 															.foreignKey()
 															.attributes(Product.STOCK_QUANTITY, Product.ACTIVE),
 											OrderItem.LINE_TOTAL.define()
-															.derived(OrderItem.QUANTITY, OrderItem.UNIT_PRICE, OrderItem.DISCOUNT)
+															.derived()
+															.from(OrderItem.QUANTITY, OrderItem.UNIT_PRICE, OrderItem.DISCOUNT)
 															.value(source -> {
 																Integer quantity = source.get(OrderItem.QUANTITY);
 																BigDecimal unitPrice = source.get(OrderItem.UNIT_PRICE);

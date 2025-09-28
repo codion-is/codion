@@ -20,6 +20,7 @@ package is.codion.framework.domain.entity.attribute;
 
 import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDerivedAttributeDefinitionBuilder;
 import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDerivedValueStep;
+import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultSourceAttributesStep;
 
 import java.util.List;
 
@@ -65,7 +66,8 @@ import java.util.List;
  *
  *                 // Simple derived attribute (cached by default)
  *                 Customer.FULL_NAME.define()
- *                     .derived(Customer.FIRST_NAME, Customer.LAST_NAME)
+ *                     .derived()
+ *                     .from(Customer.FIRST_NAME, Customer.LAST_NAME)
  *                     .value(source -> {
  *                         String first = source.get(Customer.FIRST_NAME);
  *                         String last = source.get(Customer.LAST_NAME);
@@ -79,7 +81,8 @@ import java.util.List;
  *
  *                 // Multi-source derived attribute with caching disabled
  *                 Customer.CONTACT_INFO.define()
- *                     .derived(Customer.FULL_NAME, Customer.EMAIL, Customer.PHONE)
+ *                     .derived()
+ *                     .from(Customer.FULL_NAME, Customer.EMAIL, Customer.PHONE)
  *                     .value(source -> {
  *                         String name = source.get(Customer.FULL_NAME);
  *                         String email = source.get(Customer.EMAIL);
@@ -102,7 +105,8 @@ import java.util.List;
  *
  *                 // Time-dependent derived attribute (not cached)
  *                 Customer.AGE.define()
- *                     .derived(Customer.BIRTH_DATE)
+ *                     .derived()
+ *			               .from(Customer.BIRTH_DATE)
  *                     .value(source -> {
  *                         LocalDate birthDate = source.get(Customer.BIRTH_DATE);
  *                         return birthDate != null ?
@@ -113,7 +117,8 @@ import java.util.List;
  *
  *                 // Formatting derived attribute
  *                 Customer.NAME_UPPER.define()
- *                     .derived(Customer.FULL_NAME)
+ *                     .derived()
+ *		                 .from(Customer.FULL_NAME)
  *                     .value(source -> {
  *                         String fullName = source.get(Customer.FULL_NAME);
  *                         return fullName != null ? fullName.toUpperCase() : null;
@@ -182,6 +187,21 @@ public sealed interface DerivedAttributeDefinition<T> extends AttributeDefinitio
 		/**
 		 * The first step in building a {@link DerivedAttributeDefinition}
 		 * @param <T> the attribute value type
+		 * @param <B> the builder type
+		 */
+		sealed interface SourceAttributesStep<T, B extends Builder<T, B>> permits DefaultSourceAttributesStep {
+
+			/**
+			 * @param attributes the attributes to derive the value from
+			 * @return a {@link DerivedValueStep} instance
+			 */
+			DerivedValueStep<T, B> from(Attribute<?>... attributes);
+		}
+
+		/**
+		 * The second step in building a {@link DerivedAttributeDefinition}
+		 * @param <T> the attribute value type
+		 * @param <B> the builder type
 		 */
 		sealed interface DerivedValueStep<T, B extends Builder<T, B>> permits DefaultDerivedValueStep {
 

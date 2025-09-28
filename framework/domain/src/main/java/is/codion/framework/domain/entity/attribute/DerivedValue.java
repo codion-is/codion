@@ -66,8 +66,8 @@ import static java.util.Objects.requireNonNull;
  *
  *                 // Simple concatenation
  *                 Customer.FULL_NAME.define()
- *                     .attribute()
- *                     .derived(Customer.FIRST_NAME, Customer.LAST_NAME)
+ *                     .derived()
+ *				             .from(Customer.FIRST_NAME, Customer.LAST_NAME)
  *                     .value(source -> {
  *                         String first = source.get(Customer.FIRST_NAME);
  *                         String last = source.get(Customer.LAST_NAME);
@@ -76,8 +76,8 @@ import static java.util.Objects.requireNonNull;
  *
  *                 // Complex formatting with multiple sources
  *                 Customer.DISPLAY_NAME.define()
- *                     .attribute()
- *                     .derived(Customer.FULL_NAME, Customer.EMAIL)
+ *                     .derived()
+ *				             .from(Customer.FULL_NAME, Customer.EMAIL)
  *                     .value(source -> {
  *                         String fullName = source.get(Customer.FULL_NAME);
  *                         String email = source.get(Customer.EMAIL);
@@ -86,8 +86,8 @@ import static java.util.Objects.requireNonNull;
  *
  *                 // Age calculation
  *                 Customer.AGE.define()
- *                     .attribute()
- *                     .derived(Customer.BIRTH_DATE)
+ *                     .derived()
+ *				             .from(Customer.BIRTH_DATE)
  *                     .value(source -> {
  *                         LocalDate birthDate = source.get(Customer.BIRTH_DATE);
  *                         return birthDate != null ?
@@ -96,8 +96,8 @@ import static java.util.Objects.requireNonNull;
  *
  *                 // Initials from names
  *                 Customer.INITIALS.define()
- *                     .attribute()
- *                     .derived(Customer.FIRST_NAME, Customer.LAST_NAME)
+ *                     .derived()
+ *				             .from(Customer.FIRST_NAME, Customer.LAST_NAME)
  *                     .value(source -> {
  *                         String first = source.get(Customer.FIRST_NAME);
  *                         String last = source.get(Customer.LAST_NAME);

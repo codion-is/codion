@@ -585,7 +585,8 @@ Calculate values dynamically from other attributes:
 Attribute<Integer> NO_OF_SPEAKERS = TYPE.integerAttribute("noOfSpeakers");
 
 CountryLanguage.NO_OF_SPEAKERS.define()
-     .derived(CountryLanguage.COUNTRY_FK, CountryLanguage.PERCENTAGE)
+     .derived()
+     .from(CountryLanguage.COUNTRY_FK, CountryLanguage.PERCENTAGE)
      .provider(new NoOfSpeakersProvider())
      .caption("No. of speakers")
      .numberFormatGrouping(true)
@@ -606,6 +607,7 @@ class NoOfSpeakers implements DerivedValue<Integer> {
 //Derived values do not need to have source values
 SomeEntity.RANDOM.define()
      .derived()
+     .from()
      .value(source -> randomNumber())
 ```
 

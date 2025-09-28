@@ -80,12 +80,12 @@ import static java.util.Objects.requireNonNull;
  *                     .column()
  *                     .defaultValue(true),
  *
- *                 // Transient attribute
+ *                 // Derived attribute
  *                 Customer.DISPLAY_NAME.define()
- *                     .attribute()
- *                     .derived(Customer.NAME, Customer.EMAIL)
- *                     .provider(values ->
- *                         values.get(Customer.NAME) + " (" + values.get(Customer.EMAIL) + ")"),
+ *                     .derived()
+ *				             .from(Customer.NAME, Customer.EMAIL)
+ *                     .value(source ->
+ *                         source.get(Customer.NAME) + " (" + source.get(Customer.EMAIL) + ")"),
  *
  *                 // Custom typed attribute
  *                 Customer.STATUS.define()
@@ -297,11 +297,11 @@ public sealed interface Attribute<T> permits Column, DefaultAttribute, ForeignKe
 																																																							 Attribute<T> denormalizedAttribute);
 
 		/**
-		 * Instantiates a {@link DerivedAttributeDefinition.Builder} instance, which value is derived from zero or more source attributes.
-		 * @param from the attributes the value is derived from
+		 * Instantiates a {@link DerivedAttributeDefinition.Builder.SourceAttributesStep} instance, for building an attribute which
+		 * value is derived from zero or more source attributes.
 		 * @param <B> the builder type
-		 * @return a new {@link Builder.DerivedValueStep}
+		 * @return a new {@link Builder.SourceAttributesStep}
 		 */
-		<B extends DerivedAttributeDefinition.Builder<T, B>> Builder.DerivedValueStep<T, B> derived(Attribute<?>... from);
+		<B extends DerivedAttributeDefinition.Builder<T, B>> Builder.SourceAttributesStep<T, B> derived();
 	}
 }

@@ -145,7 +145,8 @@ public final class TestDomain extends DomainModel {
 														.items(ITEMS)
 														.caption(Detail.INT_VALUE_LIST.name()),
 										Detail.INT_DERIVED.define()
-														.derived(Detail.INT)
+														.derived()
+														.from(Detail.INT)
 														.value(source -> {
 															Integer intValue = source.get(Detail.INT);
 															if (intValue == null) {
@@ -309,17 +310,20 @@ public final class TestDomain extends DomainModel {
 										Derived.INT1.define()
 														.column(),
 										Derived.INT2.define()
-														.derived(Derived.INT1)
+														.derived()
+														.from(Derived.INT1)
 														.value(source -> source.optional(Derived.INT1)
 																		.map(value -> value + 1)
 																		.orElse(null)),
 										Derived.INT3.define()
-														.derived(Derived.INT2)
+														.derived()
+														.from(Derived.INT2)
 														.value(source -> source.optional(Derived.INT2)
 																		.map(value -> value + 1)
 																		.orElse(null)),
 										Derived.INT4.define()
-														.derived(Derived.INT3)
+														.derived()
+														.from(Derived.INT3)
 														.value(source -> source.optional(Derived.INT3)
 																		.map(value -> value + 1)
 																		.orElse(null)))

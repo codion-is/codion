@@ -169,7 +169,8 @@ public final class TestDomain extends DomainModel {
 														.items(ITEMS)
 														.caption(Detail.INT_ITEMS.name()),
 										Detail.INT_DERIVED.define()
-														.derived(Detail.INT)
+														.derived()
+														.from(Detail.INT)
 														.value(source -> {
 															Integer intValue = source.get(Detail.INT);
 															if (intValue == null) {
