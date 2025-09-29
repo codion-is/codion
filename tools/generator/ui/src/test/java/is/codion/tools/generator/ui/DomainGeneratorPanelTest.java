@@ -20,6 +20,7 @@ package is.codion.tools.generator.ui;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.user.User;
+import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.tools.generator.model.DomainGeneratorModel;
 
 import org.junit.jupiter.api.Test;
@@ -30,13 +31,18 @@ public class DomainGeneratorPanelTest {
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
 	@Test
-	void test() {
+	void test() throws Exception {
 		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
 		new DomainGeneratorPanel(model);
 		model.schemaModel().items().refresh();
 		model.schemaModel().items().included().sort();
 		model.schemaModel().selection().index().set(1);
-		model.populateSelected(schema -> {});
-		model.entityModel().selection().index().set(0);
+		model.populate().execute(new ProgressReporter<String>() {
+			@Override
+			public void report(int progress) {}
+
+			@Override
+			public void publish(String... chunks) {}
+		});
 	}
 }

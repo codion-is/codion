@@ -20,6 +20,7 @@ package is.codion.tools.generator.model;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.user.User;
+import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.tools.generator.model.DomainGeneratorModel.SchemaColumns;
 
 import org.junit.jupiter.api.Test;
@@ -31,13 +32,21 @@ public final class DomainGeneratorModelTest {
 	private static final User UNIT_TEST_USER =
 					User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
+	private static final ProgressReporter<String> PROGRESS = new ProgressReporter<>() {
+		@Override
+		public void report(int progress) {}
+
+		@Override
+		public void publish(String... chunks) {}
+	};
+
 	@Test
-	void petstore() {
+	void petstore() throws Exception {
 		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
 		model.schemaModel().sort().ascending(SchemaColumns.SCHEMA);
 		model.schemaModel().items().refresh();
 		model.schemaModel().selection().items().set(row -> row.schema().equals("PETSTORE"));
-		model.populateSelected(s -> {});
+		model.populate().execute(PROGRESS);
 		model.domainPackage().set("is.codion.petstore.domain");
 		assertNotNull(model.domainApi().get());
 		assertNotNull(model.domainImpl().get());
@@ -45,12 +54,12 @@ public final class DomainGeneratorModelTest {
 	}
 
 	@Test
-	void chinook() {
+	void chinook() throws Exception {
 		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
 		model.schemaModel().sort().ascending(SchemaColumns.SCHEMA);
 		model.schemaModel().items().refresh();
 		model.schemaModel().selection().items().set(row -> row.schema().equals("CHINOOK"));
-		model.populateSelected(s -> {});
+		model.populate().execute(PROGRESS);
 		model.domainPackage().set("is.codion.chinook.domain");
 		assertNotNull(model.domainApi().get());
 		assertNotNull(model.domainImpl().get());
@@ -58,12 +67,12 @@ public final class DomainGeneratorModelTest {
 	}
 
 	@Test
-	void world() {
+	void world() throws Exception {
 		DomainGeneratorModel model = DomainGeneratorModel.domainGeneratorModel(Database.instance(), UNIT_TEST_USER);
 		model.schemaModel().sort().ascending(SchemaColumns.SCHEMA);
 		model.schemaModel().items().refresh();
 		model.schemaModel().selection().items().set(row -> row.schema().equals("WORLD"));
-		model.populateSelected(s -> {});
+		model.populate().execute(PROGRESS);
 		model.domainPackage().set("is.codion.world.domain");
 		assertNotNull(model.domainApi().get());
 		assertNotNull(model.domainImpl().get());

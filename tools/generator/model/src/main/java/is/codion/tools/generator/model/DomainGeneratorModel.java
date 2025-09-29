@@ -31,6 +31,8 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.Editor;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
+import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
+import is.codion.swing.common.model.worker.ProgressWorker.ProgressTask;
 import is.codion.tools.generator.domain.DomainSource;
 
 import java.io.IOException;
@@ -43,7 +45,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Consumer;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
@@ -52,8 +54,7 @@ import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.common.value.Value.Notify.SET;
 import static is.codion.tools.generator.domain.DomainSource.domainSource;
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptySet;
-import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.*;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -172,14 +173,8 @@ public final class DomainGeneratorModel {
 		return implSearchValue;
 	}
 
-	public void populateSelected(Consumer<String> schemaNotifier) {
-		schemaTableModel.selection().item().optional().ifPresent(schema -> {
-			schemaNotifier.accept(schema.name());
-			schema.setDomain(schemaDomain(schema));
-			int index = schemaTableModel.items().included().indexOf(schema);
-			schemaTableModel.fireTableRowsUpdated(index, index);
-		});
-		schemaSelectionChanged();
+	public PopulateTask populate() {
+		return new PopulateTask();
 	}
 
 	public void saveApiImpl() throws IOException {
@@ -316,6 +311,36 @@ public final class DomainGeneratorModel {
 		return PACKAGE_PATTERN.matcher(packageName).matches();
 	}
 
+	public final class PopulateTask implements ProgressTask<String> {
+
+		private final State cancelled = State.state();
+
+		@Override
+		public void execute(ProgressReporter<String> progress) throws Exception {
+			AtomicInteger counter = new AtomicInteger();
+			schemaTableModel.selection().items().get().forEach(schema -> {
+				if (!cancelled.is()) {
+					progress.publish(schema.name());
+					schema.setDomain(schemaDomain(schema));
+					progress.report(counter.incrementAndGet());
+				}
+			});
+		}
+
+		@Override
+		public int maximum() {
+			return schemaModel().selection().count();
+		}
+
+		public State cancelled() {
+			return cancelled;
+		}
+
+		public void finish() {
+			schemaSelectionChanged();
+		}
+	}
+
 	private final class SchemaItems implements Supplier<Collection<SchemaRow>> {
 
 		@Override
@@ -349,12 +374,14 @@ public final class DomainGeneratorModel {
 
 		@Override
 		public Collection<EntityRow> get() {
-			return schemaTableModel.selection().items().get().stream()
+			return schemaTableModel.selection().item().optional()
 							.map(SchemaRow::domain)
-							.flatMap(Optional::stream)
-							.flatMap(domain -> domain.entities().definitions().stream()
-											.map(definition -> new EntityRow(definition, domain.tableType(definition.type()), true)))
-							.collect(toList());
+							.filter(Optional::isPresent)
+							.map(Optional::get)
+							.map(domain -> domain.entities().definitions().stream()
+											.map(definition -> new EntityRow(definition, domain.tableType(definition.type()), true))
+											.collect(toList()))
+							.orElse(emptyList());
 		}
 	}
 

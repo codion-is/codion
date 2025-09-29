@@ -39,6 +39,7 @@ import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.tools.generator.model.DomainGeneratorModel;
 import is.codion.tools.generator.model.DomainGeneratorModel.EntityColumns;
+import is.codion.tools.generator.model.DomainGeneratorModel.PopulateTask;
 import is.codion.tools.generator.model.EntityRow;
 import is.codion.tools.generator.model.SchemaRow;
 
@@ -54,8 +55,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
@@ -66,7 +65,6 @@ import java.awt.Font;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.util.function.Consumer;
 
 import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.Configuration.stringValue;
@@ -175,7 +173,6 @@ public final class DomainGeneratorPanel extends JPanel {
 						.model(model.schemaModel())
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.doubleClick(populateSchemaControl)
-						.selectionMode(ListSelectionModel.SINGLE_SELECTION)
 						.keyEvent(KeyEvents.builder()
 										.keyCode(VK_ENTER)
 										.modifiers(InputEvent.CTRL_DOWN_MASK)
@@ -432,14 +429,18 @@ public final class DomainGeneratorPanel extends JPanel {
 	}
 
 	private void populateSchema() {
-		JLabel schemaLabel = new JLabel("", SwingConstants.CENTER);
-		Consumer<String> schemaNotifier = schema -> SwingUtilities.invokeLater(() -> schemaLabel.setText(schema));
+		PopulateTask task = model.populate();
 		Dialogs.progressWorker()
-						.task(() -> model.populateSelected(schemaNotifier))
+						.task(task)
 						.owner(this)
 						.title("Populating")
-						.northComponent(schemaLabel)
-						.onResult(() -> model.entityModel().items().refresh())
+						.stringPainted(true)
+						.control(Control.builder()
+										.toggle(task.cancelled())
+										.caption("Cancel")
+										.enabled(task.cancelled().not()))
+						.maximum(task.maximum())
+						.onResult(task::finish)
 						.execute();
 	}
 
