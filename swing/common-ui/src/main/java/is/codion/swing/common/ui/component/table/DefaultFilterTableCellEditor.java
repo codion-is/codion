@@ -76,9 +76,9 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 	private static JComponent configure(JComponent component, JTable table, Object value, boolean isSelected, int row, int column) {
 		TableCellRenderer renderer = table.getCellRenderer(row, column);
 		if (component instanceof JCheckBox) {
-			component.setBackground(renderer
-							.getTableCellRendererComponent(table, value, isSelected, true, row, column)
-							.getBackground());
+			JComponent rendererComponent = (JComponent) renderer.getTableCellRendererComponent(table, value, isSelected, true, row, column);
+			component.setBackground(rendererComponent.getBackground());
+			component.setBorder(rendererComponent.getBorder());
 		}
 		if (component instanceof JTextField && renderer instanceof FilterTableCellRenderer) {
 			((JTextField) component).setHorizontalAlignment(((FilterTableCellRenderer<?>) renderer).horizontalAlignment());
