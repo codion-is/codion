@@ -28,6 +28,7 @@ import is.codion.swing.common.ui.control.ControlsBuilder;
 
 import org.jspecify.annotations.Nullable;
 
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -93,14 +94,14 @@ public final class ProgressDialog extends JDialog {
 		if (builder.border != null) {
 			basePanelBuilder.border(builder.border);
 		}
-		if (builder.northPanel != null) {
-			basePanelBuilder.north(builder.northPanel);
+		if (builder.northComponent != null) {
+			basePanelBuilder.north(builder.northComponent);
 		}
-		if (builder.westPanel != null) {
-			basePanelBuilder.west(builder.westPanel);
+		if (builder.westComponent != null) {
+			basePanelBuilder.west(builder.westComponent);
 		}
-		if (builder.eastPanel != null) {
-			basePanelBuilder.east(builder.eastPanel);
+		if (builder.eastComponent != null) {
+			basePanelBuilder.east(builder.eastComponent);
 		}
 		basePanelBuilder.center(progressBar);
 		Controls controls = builder.controls.build();
@@ -159,22 +160,22 @@ public final class ProgressDialog extends JDialog {
 		Builder stringPainted(boolean stringPainted);
 
 		/**
-		 * @param northPanel if specified this panel is added to the {@link BorderLayout#NORTH} position
+		 * @param northComponent if specified this component is added to the {@link BorderLayout#NORTH} position
 		 * @return this ProgressDialogBuilder instance
 		 */
-		Builder northPanel(@Nullable JPanel northPanel);
+		Builder northComponent(@Nullable JComponent northComponent);
 
 		/**
-		 * @param westPanel if specified this panel is added to the {@link BorderLayout#WEST} position
+		 * @param westComponent if specified this component is added to the {@link BorderLayout#WEST} position
 		 * @return this ProgressDialogBuilder instance
 		 */
-		Builder westPanel(@Nullable JPanel westPanel);
+		Builder westComponent(@Nullable JComponent westComponent);
 
 		/**
-		 * @param eastPanel if specified this panel is added to the {@link BorderLayout#EAST} position
+		 * @param eastComponent if specified this component is added to the {@link BorderLayout#EAST} position
 		 * @return this ProgressDialogBuilder instance
 		 */
-		Builder eastPanel(@Nullable JPanel eastPanel);
+		Builder eastComponent(@Nullable JComponent eastComponent);
 
 		/**
 		 * Adds a button based on the given control to the {@link BorderLayout#SOUTH} position
@@ -215,9 +216,9 @@ public final class ProgressDialog extends JDialog {
 		private int maximum = 100;
 		private boolean indeterminate = true;
 		private boolean stringPainted = false;
-		private @Nullable JPanel northPanel;
-		private @Nullable JPanel westPanel;
-		private @Nullable JPanel eastPanel;
+		private @Nullable JComponent northComponent;
+		private @Nullable JComponent westComponent;
+		private @Nullable JComponent eastComponent;
 		private @Nullable Dimension progressBarSize;
 		private @Nullable Border border;
 
@@ -243,20 +244,20 @@ public final class ProgressDialog extends JDialog {
 		}
 
 		@Override
-		public Builder northPanel(@Nullable JPanel northPanel) {
-			this.northPanel = northPanel;
+		public Builder northComponent(@Nullable JComponent northComponent) {
+			this.northComponent = northComponent;
 			return this;
 		}
 
 		@Override
-		public Builder westPanel(@Nullable JPanel westPanel) {
-			this.westPanel = westPanel;
+		public Builder westComponent(@Nullable JComponent westComponent) {
+			this.westComponent = westComponent;
 			return this;
 		}
 
 		@Override
-		public Builder eastPanel(@Nullable JPanel eastPanel) {
-			this.eastPanel = eastPanel;
+		public Builder eastComponent(@Nullable JComponent eastComponent) {
+			this.eastComponent = eastComponent;
 			return this;
 		}
 

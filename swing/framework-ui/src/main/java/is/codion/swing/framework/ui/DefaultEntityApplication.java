@@ -46,7 +46,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -352,7 +351,7 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 							.title(applicationName())
 							.icon(icon)
 							.border(emptyBorder())
-							.westPanel(createStartupIconPanel())
+							.westComponent(createStartupIconLabel())
 							.onResult(new StartApplication(initializationStarted))
 							.onException(new DisplayExceptionAndExit())
 							.execute();
@@ -518,13 +517,12 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 		return builder.toString();
 	}
 
-	private JPanel createStartupIconPanel() {
-		JPanel panel = new JPanel(new BorderLayout());
+	private @Nullable JLabel createStartupIconLabel() {
 		if (icon != null) {
-			panel.add(new JLabel(icon), BorderLayout.CENTER);
+			return new JLabel(icon);
 		}
 
-		return panel;
+		return null;
 	}
 
 	private EntityConnectionProvider initializeConnectionProvider() {

@@ -66,8 +66,8 @@ public final class DialogsTest {
 						.owner(new JLabel())
 						.title("title")
 						.icon(Logos.logoTransparent())
-						.northPanel(new JPanel())
-						.westPanel(new JPanel())
+						.northComponent(new JPanel())
+						.westComponent(new JPanel())
 						.onException("Fail")
 						.onResult("Success")
 						.stringPainted(true)
@@ -151,8 +151,8 @@ public final class DialogsTest {
 						.title("title")
 						.indeterminate(true)
 						.stringPainted(true)
-						.northPanel(new JPanel())
-						.westPanel(new JPanel())
+						.northComponent(new JPanel())
+						.westComponent(new JPanel())
 						.control(Control.builder().command(() -> {}))
 						.build();
 	}

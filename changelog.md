@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.51
 ### is.codion.swing.common.ui
 - FilterTable.Builder.hiddenColumns() added.
+- ProgressDialog.northPanel(), westPanel() and eastPanel() renamed northComponent(), westComponent() and eastComponent(), now take JComponent instead of JPanel.
 ### is.codion.framework.domain
 - DerivedAttributeDefinition.Builder.SourceAttributesStep added.
 - Condition.toString(entityDefinition) renamed string() in order to not be confused with toString().

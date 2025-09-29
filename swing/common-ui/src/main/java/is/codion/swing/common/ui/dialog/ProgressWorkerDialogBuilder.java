@@ -23,7 +23,7 @@ import is.codion.swing.common.ui.control.Control;
 
 import org.jspecify.annotations.Nullable;
 
-import javax.swing.JPanel;
+import javax.swing.JComponent;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.util.List;
@@ -105,22 +105,22 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
 	ProgressWorkerDialogBuilder<T, V> border(@Nullable Border border);
 
 	/**
-	 * @param northPanel if specified this panel will be added to the BorderLayout.NORTH position of the dialog
+	 * @param northComponent if specified this component will be added to the BorderLayout.NORTH position of the dialog
 	 * @return this Builder instance
 	 */
-	ProgressWorkerDialogBuilder<T, V> northPanel(@Nullable JPanel northPanel);
+	ProgressWorkerDialogBuilder<T, V> northComponent(@Nullable JComponent northComponent);
 
 	/**
-	 * @param westPanel if specified this panel will be added to the BorderLayout.WEST position of the dialog
+	 * @param westComponent if specified this component will be added to the BorderLayout.WEST position of the dialog
 	 * @return this Builder instance
 	 */
-	ProgressWorkerDialogBuilder<T, V> westPanel(@Nullable JPanel westPanel);
+	ProgressWorkerDialogBuilder<T, V> westComponent(@Nullable JComponent westComponent);
 
 	/**
-	 * @param eastPanel if specified this panel will be added to the BorderLayout.EAST position of the dialog
+	 * @param eastComponent if specified this component will be added to the BorderLayout.EAST position of the dialog
 	 * @return this Builder instance
 	 */
-	ProgressWorkerDialogBuilder<T, V> eastPanel(@Nullable JPanel eastPanel);
+	ProgressWorkerDialogBuilder<T, V> eastComponent(@Nullable JComponent eastComponent);
 
 	/**
 	 * @param control the control to be added to the dialog as a button

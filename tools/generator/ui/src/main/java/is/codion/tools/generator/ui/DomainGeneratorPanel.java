@@ -432,16 +432,13 @@ public final class DomainGeneratorPanel extends JPanel {
 	}
 
 	private void populateSchema() {
-		JLabel schemaLabel = new JLabel("Testing", SwingConstants.CENTER);
-		JPanel northPanel = borderLayoutPanel()
-						.center(schemaLabel)
-						.build();
+		JLabel schemaLabel = new JLabel("", SwingConstants.CENTER);
 		Consumer<String> schemaNotifier = schema -> SwingUtilities.invokeLater(() -> schemaLabel.setText(schema));
 		Dialogs.progressWorker()
 						.task(() -> model.populateSelected(schemaNotifier))
 						.owner(this)
 						.title("Populating")
-						.northPanel(northPanel)
+						.northComponent(schemaLabel)
 						.onResult(() -> model.entityModel().items().refresh())
 						.execute();
 	}

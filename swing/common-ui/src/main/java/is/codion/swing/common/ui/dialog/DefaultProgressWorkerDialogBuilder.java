@@ -28,7 +28,7 @@ import is.codion.swing.common.ui.control.Control;
 
 import org.jspecify.annotations.Nullable;
 
-import javax.swing.JPanel;
+import javax.swing.JComponent;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.util.List;
@@ -98,20 +98,20 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 	}
 
 	@Override
-	public ProgressWorkerDialogBuilder<T, V> northPanel(@Nullable JPanel northPanel) {
-		progressDialogBuilder.northPanel(northPanel);
+	public ProgressWorkerDialogBuilder<T, V> northComponent(@Nullable JComponent northComponent) {
+		progressDialogBuilder.northComponent(northComponent);
 		return this;
 	}
 
 	@Override
-	public ProgressWorkerDialogBuilder<T, V> westPanel(@Nullable JPanel westPanel) {
-		progressDialogBuilder.westPanel(westPanel);
+	public ProgressWorkerDialogBuilder<T, V> westComponent(@Nullable JComponent westComponent) {
+		progressDialogBuilder.westComponent(westComponent);
 		return this;
 	}
 
 	@Override
-	public ProgressWorkerDialogBuilder<T, V> eastPanel(@Nullable JPanel eastPanel) {
-		progressDialogBuilder.eastPanel(eastPanel);
+	public ProgressWorkerDialogBuilder<T, V> eastComponent(@Nullable JComponent eastComponent) {
+		progressDialogBuilder.eastComponent(eastComponent);
 		return this;
 	}
 
