@@ -30,18 +30,19 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.attribute.ForeignKey.reference;
+import static java.util.Collections.emptySet;
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 
 /**
  * For instances use the available factory methods.
@@ -105,29 +106,30 @@ public final class SchemaDomain extends DomainModel {
 
 	private void defineEntity(MetaDataTable table) {
 		if (!tableEntityTypes.containsKey(table)) {
-			EntityType entityType = type().entityType(table.schema().none() ?
-							table.tableName() : table.schema().name() + "." + table.tableName());
+			boolean view = table.tableType().toLowerCase().contains("view");
+			String name = view ? removeSuffix(table.tableName(), settings.viewSuffix()) : table.tableName();
+			EntityType entityType = type().entityType(table.schema().none() ? name : table.schema().name() + "." + name);
 			tableEntityTypes.put(table, entityType);
 			table.foreignKeys().stream()
 							.map(MetaDataForeignKeyConstraint::referencedTable)
 							.filter(referencedTable -> !referencedTable.equals(table))
 							.forEach(this::defineEntity);
-			defineEntity(table, entityType);
+			defineEntity(table, entityType, name, view);
 		}
 	}
 
-	private void defineEntity(MetaDataTable table, EntityType entityType) {
+	private void defineEntity(MetaDataTable table, EntityType entityType, String tableName, boolean view) {
 		List<AttributeDefinition.Builder<?, ?>> attributeDefinitionBuilders = defineAttributes(table, entityType, new ArrayList<>(table.foreignKeys()));
 		if (!attributeDefinitionBuilders.isEmpty()) {
 			EntityDefinition.Builder entityDefinitionBuilder = entityType.define(attributeDefinitionBuilders.toArray(new AttributeDefinition.Builder[0]));
-			entityDefinitionBuilder.caption(caption(table.tableName()));
+			entityDefinitionBuilder.caption(caption(tableName));
 			if (tableHasAutoIncrementPrimaryKeyColumn(table)) {
 				entityDefinitionBuilder.keyGenerator(KeyGenerator.identity());
 			}
 			if (!nullOrEmpty(table.comment())) {
 				entityDefinitionBuilder.description(table.comment());
 			}
-			entityDefinitionBuilder.readOnly("view".equalsIgnoreCase(table.tableType()));
+			entityDefinitionBuilder.readOnly(view);
 			add(entityDefinitionBuilder.build());
 		}
 	}
@@ -135,8 +137,19 @@ public final class SchemaDomain extends DomainModel {
 	private List<AttributeDefinition.Builder<?, ?>> defineAttributes(MetaDataTable table, EntityType entityType,
 																																	 Collection<MetaDataForeignKeyConstraint> foreignKeyConstraints) {
 		List<AttributeDefinition.Builder<?, ?>> builders = new ArrayList<>();
+		List<AttributeDefinition.Builder<?, ?>> auditColumnBuilders = new ArrayList<>();
 		table.columns().forEach(column -> {
-			builders.add(columnDefinitionBuilder(column, entityType));
+			ColumnDefinition.Builder<?, ?> columnDefinitionBuilder = columnDefinitionBuilder(column, entityType);
+			if (settings.auditColumnNames().contains(column.columnName().toLowerCase())) {
+				columnDefinitionBuilder.readOnly(true);
+				if (settings.hideAuditColumns()) {
+					columnDefinitionBuilder.hidden(true);
+				}
+				auditColumnBuilders.add(columnDefinitionBuilder);
+			}
+			else {
+				builders.add(columnDefinitionBuilder);
+			}
 			if (column.foreignKeyColumn()) {
 				foreignKeyConstraints.stream()
 								//if this is the last column in the foreign key
@@ -149,6 +162,7 @@ public final class SchemaDomain extends DomainModel {
 								});
 			}
 		});
+		builders.addAll(auditColumnBuilders);
 
 		return builders;
 	}
@@ -219,14 +233,12 @@ public final class SchemaDomain extends DomainModel {
 	}
 
 	private String removePrimaryKeyColumnSuffix(String columnName) {
-		return settings.primaryKeyColumnSuffix()
-						.map(suffix -> removeSuffix(columnName, suffix))
-						.orElse(columnName);
+		return removeSuffix(columnName, settings.primaryKeyColumnSuffix());
 	}
 
-	private static String removeSuffix(String columnName, String suffix) {
-		return columnName.toLowerCase().endsWith(suffix.toLowerCase()) ?
-						columnName.substring(0, columnName.length() - suffix.length()) : columnName;
+	private static String removeSuffix(String name, String suffix) {
+		return name.toLowerCase().endsWith(suffix.toLowerCase()) ?
+						name.substring(0, name.length() - suffix.length()) : name;
 	}
 
 	private static boolean tableHasAutoIncrementPrimaryKeyColumn(MetaDataTable table) {
@@ -241,7 +253,13 @@ public final class SchemaDomain extends DomainModel {
 	 */
 	public interface SchemaSettings {
 
-		Optional<String> primaryKeyColumnSuffix();
+		String primaryKeyColumnSuffix();
+
+		String viewSuffix();
+
+		Collection<String> auditColumnNames();
+
+		boolean hideAuditColumns();
 
 		/**
 		 * @return a new builder
@@ -257,6 +275,12 @@ public final class SchemaDomain extends DomainModel {
 
 			Builder primaryKeyColumnSuffix(String primaryKeyColumnSuffix);
 
+			Builder viewSuffix(String viewSuffix);
+
+			Builder auditColumnNames(String... auditColumnNames);
+
+			Builder hideAuditColumns(boolean hideAuditColumns);
+
 			SchemaSettings build();
 		}
 	}
@@ -264,23 +288,69 @@ public final class SchemaDomain extends DomainModel {
 	private static final class DefaultSchemaSettings implements SchemaSettings {
 
 		private final String primaryKeyColumnSuffix;
+		private final String viewSuffix;
+		private final Collection<String> auditColumnNames;
+		private final boolean hideAuditColumns;
 
 		private DefaultSchemaSettings(DefaultBuilder builder) {
 			this.primaryKeyColumnSuffix = builder.primaryKeyColumnSuffix;
+			this.auditColumnNames = builder.auditColumnNames;
+			this.hideAuditColumns = builder.hideAuditColumns;
+			this.viewSuffix = builder.viewSuffix;
 		}
 
 		@Override
-		public Optional<String> primaryKeyColumnSuffix() {
-			return Optional.ofNullable(primaryKeyColumnSuffix);
+		public String primaryKeyColumnSuffix() {
+			return primaryKeyColumnSuffix;
+		}
+
+		@Override
+		public String viewSuffix() {
+			return viewSuffix;
+		}
+
+		@Override
+		public Collection<String> auditColumnNames() {
+			return auditColumnNames;
+		}
+
+		@Override
+		public boolean hideAuditColumns() {
+			return hideAuditColumns;
 		}
 
 		private static final class DefaultBuilder implements Builder {
 
-			private String primaryKeyColumnSuffix;
+			private String primaryKeyColumnSuffix = "";
+			private String viewSuffix = "";
+			private Collection<String> auditColumnNames = emptySet();
+			private boolean hideAuditColumns = false;
 
 			@Override
 			public Builder primaryKeyColumnSuffix(String primaryKeyColumnSuffix) {
-				this.primaryKeyColumnSuffix = requireNonNull(primaryKeyColumnSuffix);
+				this.primaryKeyColumnSuffix = primaryKeyColumnSuffix == null ? "" : primaryKeyColumnSuffix;
+				return this;
+			}
+
+			@Override
+			public Builder viewSuffix(String viewSuffix) {
+				this.viewSuffix = viewSuffix == null ? "" : viewSuffix;
+				return this;
+			}
+
+			@Override
+			public Builder auditColumnNames(String... auditColumnNames) {
+				requireNonNull(auditColumnNames);
+				this.auditColumnNames = unmodifiableCollection(Arrays.stream(auditColumnNames)
+								.map(String::trim)
+								.map(String::toLowerCase)
+								.collect(toSet()));
+				return this;
+			}
+
+			@Override
+			public Builder hideAuditColumns(boolean hideAuditColumns) {
+				this.hideAuditColumns = hideAuditColumns;
 				return this;
 			}
 

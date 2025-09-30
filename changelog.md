@@ -9,6 +9,8 @@ Codion Change Log
 ### is.codion.framework.domain
 - DerivedAttributeDefinition.Builder.SourceAttributesStep added.
 - Condition.toString(entityDefinition) renamed string() in order to not be confused with toString().
+### is.codion.framework.domain.db
+- SchemaDomain.SchemaSettings.viewSuffix(), auditColumnNames() and hideAuditColumns() added.
 ### is.codion.swing.framework.ui
 - EntitySearchFieldPanel.Builder.preferredSearchFieldWidth() added.
 - EntityPanel.createMainComponent() bug fixed, mainPanel() got called twice if a detail panel was present, messing up the controls panel, now supplier based.
