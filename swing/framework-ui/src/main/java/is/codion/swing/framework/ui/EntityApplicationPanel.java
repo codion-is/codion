@@ -970,7 +970,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 		Collection<EntityPanel> modified = modified(entityPanels);
 		if (modifiedWarning && !modified.isEmpty() && showConfirmDialog(this,
 						createModifiedMessage(modified), FrameworkMessages.modifiedWarningTitle(),
-						JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.NO_OPTION) {
+						JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) != JOptionPane.YES_OPTION) {
 			modified.iterator().next().activate();
 
 			throw new CancelException();
