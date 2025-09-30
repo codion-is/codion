@@ -286,7 +286,7 @@ public final class TestDomain extends DomainModel {
 										EmployeeFk.DEPARTMENT_FK.define()
 														.foreignKey()
 														.caption(EmployeeFk.DEPARTMENT_FK.name())
-														.attributes(DepartmentFk.DNAME),
+														.include(DepartmentFk.DNAME),
 										EmployeeFk.JOB.define()
 														.column()
 														.caption(EmployeeFk.JOB.name()),
@@ -303,7 +303,7 @@ public final class TestDomain extends DomainModel {
 														.foreignKey()
 														.soft(true)
 														.caption(EmployeeFk.MGR_FK.name())
-														.attributes(EmployeeFk.NAME, EmployeeFk.JOB, EmployeeFk.DEPARTMENT_FK),
+														.include(EmployeeFk.NAME, EmployeeFk.JOB, EmployeeFk.DEPARTMENT_FK),
 										EmployeeFk.HIREDATE.define()
 														.column()
 														.caption(EmployeeFk.HIREDATE.name())

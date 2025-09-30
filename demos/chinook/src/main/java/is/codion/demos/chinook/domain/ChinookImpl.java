@@ -124,7 +124,7 @@ public final class ChinookImpl extends DomainModel {
 														.nullable(false),
 										Album.ARTIST_FK.define()
 														.foreignKey()
-														.attributes(Artist.NAME),
+														.include(Artist.NAME),
 										// tag::columnTemplateUsage1[]
 										Album.TITLE.define()
 														.column(REQUIRED_SEARCHABLE)
@@ -173,7 +173,7 @@ public final class ChinookImpl extends DomainModel {
 														.column(),
 										Employee.REPORTSTO_FK.define()
 														.foreignKey()
-														.attributes(Employee.FIRSTNAME, Employee.LASTNAME),
+														.include(Employee.FIRSTNAME, Employee.LASTNAME),
 										Employee.BIRTHDATE.define()
 														.column(),
 										Employee.HIREDATE.define()
@@ -262,7 +262,7 @@ public final class ChinookImpl extends DomainModel {
 														.column(),
 										Customer.SUPPORTREP_FK.define()
 														.foreignKey()
-														.attributes(Employee.FIRSTNAME, Employee.LASTNAME),
+														.include(Employee.FIRSTNAME, Employee.LASTNAME),
 										Customer.INSERT_TIME.define()
 														.column(INSERT_TIME),
 										Customer.INSERT_USER.define()
@@ -283,8 +283,7 @@ public final class ChinookImpl extends DomainModel {
 										Preferences.PREFERRED_GENRE_ID.define()
 														.column(),
 										Preferences.PREFERRED_GENRE_FK.define()
-														.foreignKey()
-														.attributes(Genre.NAME),
+														.foreignKey(),
 										Preferences.NEWSLETTER_SUBSCRIBED.define()
 														.column()
 														.nullable(false)
@@ -333,7 +332,7 @@ public final class ChinookImpl extends DomainModel {
 										Track.ALBUM_FK.define()
 														.foreignKey()
 														.referenceDepth(2)
-														.attributes(Album.ARTIST_FK, Album.TITLE),
+														.include(Album.ARTIST_FK, Album.TITLE),
 										// end::referenceDepth2[]
 										Track.ARTIST_NAME.define()
 														.column()
@@ -417,7 +416,7 @@ public final class ChinookImpl extends DomainModel {
 														.nullable(false),
 										Invoice.CUSTOMER_FK.define()
 														.foreignKey()
-														.attributes(Customer.FIRSTNAME, Customer.LASTNAME, Customer.EMAIL),
+														.include(Customer.FIRSTNAME, Customer.LASTNAME, Customer.EMAIL),
 										Invoice.DATE.define()
 														.column()
 														.nullable(false)
@@ -485,7 +484,7 @@ public final class ChinookImpl extends DomainModel {
 														.nullable(false),
 										InvoiceLine.TRACK_FK.define()
 														.foreignKey()
-														.attributes(Track.NAME, Track.UNITPRICE),
+														.include(Track.NAME, Track.UNITPRICE),
 										InvoiceLine.UNITPRICE.define()
 														.column()
 														.nullable(false),

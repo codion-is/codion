@@ -9,6 +9,7 @@ Codion Change Log
 ### is.codion.framework.domain
 - DerivedAttributeDefinition.Builder.SourceAttributesStep added.
 - Condition.toString(entityDefinition) renamed string() in order to not be confused with toString().
+- ForeignKeyDefinition.Builder.attributes() renamed include().
 ### is.codion.framework.domain.db
 - SchemaDomain.SchemaSettings.viewSuffix(), auditColumnNames() and hideAuditColumns() added.
 ### is.codion.swing.framework.ui

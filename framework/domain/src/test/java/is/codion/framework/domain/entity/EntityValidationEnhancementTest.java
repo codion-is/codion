@@ -264,7 +264,7 @@ public final class EntityValidationEnhancementTest {
 															.foreignKey(),
 											OrderItem.PRODUCT_FK.define()
 															.foreignKey()
-															.attributes(Product.STOCK_QUANTITY, Product.ACTIVE),
+															.include(Product.STOCK_QUANTITY, Product.ACTIVE),
 											OrderItem.LINE_TOTAL.define()
 															.derived()
 															.from(OrderItem.QUANTITY, OrderItem.UNIT_PRICE, OrderItem.DISCOUNT)

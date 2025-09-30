@@ -44,7 +44,6 @@ import java.sql.SQLException;
  *     Column<Integer> ID = TYPE.integerColumn("id");
  *     Column<String> NAME = TYPE.stringColumn("name");
  *     Column<BigDecimal> PRICE = TYPE.bigDecimalColumn("price");
- *     Column<Boolean> ACTIVE = TYPE.booleanColumn("active");
  *     Column<LocalDateTime> CREATED_DATE = TYPE.localDateTimeColumn("created_date");
  * }
  *
@@ -67,11 +66,6 @@ import java.sql.SQLException;
  *             .minimum(BigDecimal.ZERO)
  *             .maximum(new BigDecimal("99999.99"))
  *             .fractionDigits(2),
- *
- *         // Boolean column with database mapping
- *         Product.ACTIVE.define()
- *             .booleanColumn(String.class, "Y", "N") // Maps Y/N to true/false
- *             .defaultValue(true),
  *
  *         // Audit column (database-managed)
  *         Product.CREATED_DATE.define()

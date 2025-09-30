@@ -176,7 +176,7 @@ Foreign keys in Codion are first-class citizens with automatic entity loading:
 // Define foreign key with attributes to fetch from referenced entity
 Artist.RECORD_LABEL_FK.define()
     .foreignKey()
-    .attributes(RecordLabel.NAME, RecordLabel.FOUNDED)  // Fetched with the Artist
+    .include(RecordLabel.NAME, RecordLabel.FOUNDED)  // Fetched with the Artist
     .referenceDepth(2)  // How deep to follow foreign key chains
 
 // Usage - referenced entity is automatically loaded

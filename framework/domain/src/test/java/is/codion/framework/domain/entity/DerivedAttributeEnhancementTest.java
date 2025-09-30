@@ -207,11 +207,11 @@ public final class DerivedAttributeEnhancementTest {
 
 							OrderLine.ORDER_FK.define()
 											.foreignKey()
-											.attributes(Order.STATUS, Order.ORDER_DATE),
+											.include(Order.STATUS, Order.ORDER_DATE),
 
 							OrderLine.PRODUCT_FK.define()
 											.foreignKey()
-											.attributes(Product.NAME),
+											.include(Product.NAME),
 
 							// Derived from foreign key
 							OrderLine.PRODUCT_NAME.define()

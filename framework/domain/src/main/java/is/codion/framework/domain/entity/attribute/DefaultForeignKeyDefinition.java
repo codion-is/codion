@@ -117,7 +117,7 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
 		}
 
 		@Override
-		public ForeignKeyDefinition.Builder attributes(Attribute<?>... attributes) {
+		public ForeignKeyDefinition.Builder include(Attribute<?>... attributes) {
 			Set<Attribute<?>> attributeSet = new HashSet<>();
 			for (Attribute<?> attribute : requireNonNull(attributes)) {
 				if (!attribute.entityType().equals(referencedType)) {

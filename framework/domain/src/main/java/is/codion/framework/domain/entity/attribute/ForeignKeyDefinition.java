@@ -94,7 +94,7 @@ import static is.codion.common.Configuration.integerValue;
  *                     .foreignKey()
  *                     .caption("Order")
  *                     .referenceDepth(2)  // Load order AND its customer
- *                     .attributes(Order.ORDER_DATE, Order.TOTAL)) // Only load specific order attributes
+ *                     .include(Order.ORDER_DATE, Order.TOTAL)) // Only include specific order attributes
  *             .build();
  *     }
  * }
@@ -201,12 +201,14 @@ public sealed interface ForeignKeyDefinition extends AttributeDefinition<Entity>
 		Builder readOnly(Column<?> column);
 
 		/**
-		 * Specifies the attributes from the referenced entity to select. Note that the primary key attributes
-		 * are always selected and do not have to be added via this method.
-		 * @param attributes the attributes to select
+		 * <p>By default, all attributes are included when the referenced entity
+		 * is selected. Use this method to restrict the included attributes.
+		 * <p>Note that the primary key attributes are always included and do
+		 * not have to be specified when using this method.
+		 * @param attributes the attributes to include in the referenced entity
 		 * @return this instance
 		 */
-		Builder attributes(Attribute<?>... attributes);
+		Builder include(Attribute<?>... attributes);
 
 		/**
 		 * Specifies the default query reference depth for this foreign key.

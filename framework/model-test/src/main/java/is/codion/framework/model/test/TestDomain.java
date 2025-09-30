@@ -234,7 +234,7 @@ public final class TestDomain extends DomainModel {
 										Employee.DEPARTMENT_FK.define()
 														.foreignKey()
 														.caption(Employee.DEPARTMENT_FK.name())
-														.attributes(Department.NAME),
+														.include(Department.NAME),
 										Employee.JOB.define()
 														.column()
 														.items(asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))

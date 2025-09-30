@@ -191,9 +191,9 @@ public final class ConditionFrameworkEnhancementTest {
 											Employee.HIRE_DATE.define().column().nullable(false),
 											Employee.REMOTE.define().column().nullable(false).defaultValue(false),
 											Employee.DEPARTMENT_FK.define().foreignKey()
-															.attributes(Department.NAME, Department.LOCATION),
+															.include(Department.NAME, Department.LOCATION),
 											Employee.MANAGER_FK.define().foreignKey()
-															.attributes(Employee.NAME)
+															.include(Employee.NAME)
 							).condition(Employee.HIGH_EARNERS,
 											(columns, values) -> "salary > ?")
 							.condition(Employee.RECENT_HIRES,
@@ -214,7 +214,7 @@ public final class ConditionFrameworkEnhancementTest {
 											Project.BUDGET.define().column(),
 											Project.PRIORITY.define().column().nullable(false).range(1, 5),
 											Project.LEAD_FK.define().foreignKey()
-															.attributes(Employee.NAME, Employee.EMAIL)
+															.include(Employee.NAME, Employee.EMAIL)
 							).condition(Project.ACTIVE_PROJECTS,
 											(columns, values) -> "status IN ('PLANNING', 'ACTIVE')")
 							.condition(Project.OVERDUE_PROJECTS,
@@ -233,9 +233,9 @@ public final class ConditionFrameworkEnhancementTest {
 											Assignment.START_DATE.define().column().nullable(false),
 											Assignment.END_DATE.define().column(),
 											Assignment.EMPLOYEE_FK.define().foreignKey()
-															.attributes(Employee.NAME, Employee.POSITION),
+															.include(Employee.NAME, Employee.POSITION),
 											Assignment.PROJECT_FK.define().foreignKey()
-															.attributes(Project.NAME, Project.STATUS)
+															.include(Project.NAME, Project.STATUS)
 							).condition(Assignment.FULL_TIME_ASSIGNMENTS,
 											(columns, values) -> "allocation_percent = 100")
 							.condition(Assignment.ACTIVE_ASSIGNMENTS,
