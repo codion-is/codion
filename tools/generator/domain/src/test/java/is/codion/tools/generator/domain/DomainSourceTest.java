@@ -48,6 +48,8 @@ public final class DomainSourceTest {
 		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
 			SchemaDomain schemaDomain = SchemaDomain.schemaDomain(connection.getMetaData(), "PETSTORE", SchemaSettings.builder()
 							.primaryKeyColumnSuffix("_id")
+							.auditColumnNames("insert_user", "insert_time")
+							.hideAuditColumns(true)
 							.build());
 			String donainPackage = "is.codion.petstore.domain";
 			Set<EntityType> dtos = schemaDomain.entities().definitions().stream()
@@ -85,7 +87,9 @@ public final class DomainSourceTest {
 	@Test
 	void world() throws Exception {
 		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
-			SchemaDomain schemaDomain = SchemaDomain.schemaDomain(connection.getMetaData(), "WORLD");
+			SchemaDomain schemaDomain = SchemaDomain.schemaDomain(connection.getMetaData(), "WORLD", SchemaSettings.builder()
+							.viewSuffix("_v")
+							.build());
 			String domainPackage = "is.codion.world.domain";
 			DomainSource domainSource = DomainSource.domainSource(schemaDomain);
 			String worldApi = textFileContents(DomainSourceTest.class, "WorldAPI.java");

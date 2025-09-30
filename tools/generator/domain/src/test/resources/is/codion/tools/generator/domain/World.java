@@ -10,7 +10,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.world.domain.World.City;
 import is.codion.world.domain.World.Country;
-import is.codion.world.domain.World.CountryCityV;
+import is.codion.world.domain.World.CountryCity;
 import is.codion.world.domain.World.Countrylanguage;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -22,73 +22,77 @@ public final class World extends DomainModel {
 	public World() {
 		super(DOMAIN);
 		validateForeignKeys(false);
-		add(countryCityV(), city(), country(),
+		add(countryCity(), city(), country(),
 				countrylanguage());
 	}
 
-	static EntityDefinition countryCityV() {
-		return CountryCityV.TYPE.define(
-				CountryCityV.COUNTRYCODE.define()
+	static EntityDefinition countryCity() {
+		return CountryCity.TYPE.define(
+				CountryCity.COUNTRYCODE.define()
 					.column()
 					.caption("Countrycode"),
-				CountryCityV.COUNTRYNAME.define()
+				CountryCity.COUNTRYNAME.define()
 					.column()
 					.caption("Countryname"),
-				CountryCityV.CONTINENT.define()
+				CountryCity.CONTINENT.define()
 					.column()
 					.caption("Continent"),
-				CountryCityV.REGION.define()
+				CountryCity.REGION.define()
 					.column()
 					.caption("Region"),
-				CountryCityV.SURFACEAREA.define()
+				CountryCity.SURFACEAREA.define()
 					.column()
-					.caption("Surfacearea"),
-				CountryCityV.INDEPYEAR.define()
+					.caption("Surfacearea")
+					.fractionDigits(2),
+				CountryCity.INDEPYEAR.define()
 					.column()
 					.caption("Indepyear"),
-				CountryCityV.COUNTRYPOPULATION.define()
+				CountryCity.COUNTRYPOPULATION.define()
 					.column()
 					.caption("Countrypopulation"),
-				CountryCityV.LIFEEXPECTANCY.define()
+				CountryCity.LIFEEXPECTANCY.define()
 					.column()
-					.caption("Lifeexpectancy"),
-				CountryCityV.GNP.define()
+					.caption("Lifeexpectancy")
+					.fractionDigits(1),
+				CountryCity.GNP.define()
 					.column()
-					.caption("Gnp"),
-				CountryCityV.GNPOLD.define()
+					.caption("Gnp")
+					.fractionDigits(2),
+				CountryCity.GNPOLD.define()
 					.column()
-					.caption("Gnpold"),
-				CountryCityV.LOCALNAME.define()
+					.caption("Gnpold")
+					.fractionDigits(2),
+				CountryCity.LOCALNAME.define()
 					.column()
 					.caption("Localname"),
-				CountryCityV.GOVERNMENTFORM.define()
+				CountryCity.GOVERNMENTFORM.define()
 					.column()
 					.caption("Governmentform"),
-				CountryCityV.HEADOFSTATE.define()
+				CountryCity.HEADOFSTATE.define()
 					.column()
 					.caption("Headofstate"),
-				CountryCityV.CAPITAL.define()
+				CountryCity.CAPITAL.define()
 					.column()
 					.caption("Capital"),
-				CountryCityV.CODE2.define()
+				CountryCity.CODE2.define()
 					.column()
 					.caption("Code2"),
-				CountryCityV.FLAG.define()
+				CountryCity.FLAG.define()
 					.column()
 					.caption("Flag"),
-				CountryCityV.CITYID.define()
+				CountryCity.CITYID.define()
 					.column()
 					.caption("Cityid"),
-				CountryCityV.CITYNAME.define()
+				CountryCity.CITYNAME.define()
 					.column()
 					.caption("Cityname"),
-				CountryCityV.DISTRICT.define()
+				CountryCity.DISTRICT.define()
 					.column()
 					.caption("District"),
-				CountryCityV.CITYPOPULATION.define()
+				CountryCity.CITYPOPULATION.define()
 					.column()
 					.caption("Citypopulation"))
-			.caption("Country city v")
+			.caption("Country city")
 			.readOnly(true)
 			.build();
 	}
@@ -225,8 +229,8 @@ public final class World extends DomainModel {
 			.build();
 	}
 
-	public interface CountryCityV {
-		EntityType TYPE = DOMAIN.entityType("world.country_city_v");
+	public interface CountryCity {
+		EntityType TYPE = DOMAIN.entityType("world.country_city");
 
 		Column<String> COUNTRYCODE = TYPE.stringColumn("countrycode");
 		Column<String> COUNTRYNAME = TYPE.stringColumn("countryname");
@@ -249,28 +253,28 @@ public final class World extends DomainModel {
 		Column<String> DISTRICT = TYPE.stringColumn("district");
 		Column<Integer> CITYPOPULATION = TYPE.integerColumn("citypopulation");
 
-		static Dto dto(Entity countryCityV) {
-			return countryCityV == null ? null :
-				new Dto(countryCityV.get(COUNTRYCODE),
-					countryCityV.get(COUNTRYNAME),
-					countryCityV.get(CONTINENT),
-					countryCityV.get(REGION),
-					countryCityV.get(SURFACEAREA),
-					countryCityV.get(INDEPYEAR),
-					countryCityV.get(COUNTRYPOPULATION),
-					countryCityV.get(LIFEEXPECTANCY),
-					countryCityV.get(GNP),
-					countryCityV.get(GNPOLD),
-					countryCityV.get(LOCALNAME),
-					countryCityV.get(GOVERNMENTFORM),
-					countryCityV.get(HEADOFSTATE),
-					countryCityV.get(CAPITAL),
-					countryCityV.get(CODE2),
-					countryCityV.get(FLAG),
-					countryCityV.get(CITYID),
-					countryCityV.get(CITYNAME),
-					countryCityV.get(DISTRICT),
-					countryCityV.get(CITYPOPULATION));
+		static Dto dto(Entity countryCity) {
+			return countryCity == null ? null :
+				new Dto(countryCity.get(COUNTRYCODE),
+					countryCity.get(COUNTRYNAME),
+					countryCity.get(CONTINENT),
+					countryCity.get(REGION),
+					countryCity.get(SURFACEAREA),
+					countryCity.get(INDEPYEAR),
+					countryCity.get(COUNTRYPOPULATION),
+					countryCity.get(LIFEEXPECTANCY),
+					countryCity.get(GNP),
+					countryCity.get(GNPOLD),
+					countryCity.get(LOCALNAME),
+					countryCity.get(GOVERNMENTFORM),
+					countryCity.get(HEADOFSTATE),
+					countryCity.get(CAPITAL),
+					countryCity.get(CODE2),
+					countryCity.get(FLAG),
+					countryCity.get(CITYID),
+					countryCity.get(CITYNAME),
+					countryCity.get(DISTRICT),
+					countryCity.get(CITYPOPULATION));
 		}
 
 		record Dto(String countrycode, String countryname, String continent, String region,

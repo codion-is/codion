@@ -12,8 +12,8 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 public interface World {
 	DomainType DOMAIN = domainType(World.class);
 
-	interface CountryCityV {
-		EntityType TYPE = DOMAIN.entityType("world.country_city_v");
+	interface CountryCity {
+		EntityType TYPE = DOMAIN.entityType("world.country_city");
 
 		Column<String> COUNTRYCODE = TYPE.stringColumn("countrycode");
 		Column<String> COUNTRYNAME = TYPE.stringColumn("countryname");
@@ -36,28 +36,28 @@ public interface World {
 		Column<String> DISTRICT = TYPE.stringColumn("district");
 		Column<Integer> CITYPOPULATION = TYPE.integerColumn("citypopulation");
 
-		static Dto dto(Entity countryCityV) {
-			return countryCityV == null ? null :
-				new Dto(countryCityV.get(COUNTRYCODE),
-					countryCityV.get(COUNTRYNAME),
-					countryCityV.get(CONTINENT),
-					countryCityV.get(REGION),
-					countryCityV.get(SURFACEAREA),
-					countryCityV.get(INDEPYEAR),
-					countryCityV.get(COUNTRYPOPULATION),
-					countryCityV.get(LIFEEXPECTANCY),
-					countryCityV.get(GNP),
-					countryCityV.get(GNPOLD),
-					countryCityV.get(LOCALNAME),
-					countryCityV.get(GOVERNMENTFORM),
-					countryCityV.get(HEADOFSTATE),
-					countryCityV.get(CAPITAL),
-					countryCityV.get(CODE2),
-					countryCityV.get(FLAG),
-					countryCityV.get(CITYID),
-					countryCityV.get(CITYNAME),
-					countryCityV.get(DISTRICT),
-					countryCityV.get(CITYPOPULATION));
+		static Dto dto(Entity countryCity) {
+			return countryCity == null ? null :
+				new Dto(countryCity.get(COUNTRYCODE),
+					countryCity.get(COUNTRYNAME),
+					countryCity.get(CONTINENT),
+					countryCity.get(REGION),
+					countryCity.get(SURFACEAREA),
+					countryCity.get(INDEPYEAR),
+					countryCity.get(COUNTRYPOPULATION),
+					countryCity.get(LIFEEXPECTANCY),
+					countryCity.get(GNP),
+					countryCity.get(GNPOLD),
+					countryCity.get(LOCALNAME),
+					countryCity.get(GOVERNMENTFORM),
+					countryCity.get(HEADOFSTATE),
+					countryCity.get(CAPITAL),
+					countryCity.get(CODE2),
+					countryCity.get(FLAG),
+					countryCity.get(CITYID),
+					countryCity.get(CITYNAME),
+					countryCity.get(DISTRICT),
+					countryCity.get(CITYPOPULATION));
 		}
 
 		record Dto(String countrycode, String countryname, String continent, String region,

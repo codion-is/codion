@@ -168,7 +168,15 @@ public final class PetstoreImpl extends DomainModel {
 				Product.IMAGE_URL.define()
 					.column()
 					.caption("Image url")
-					.maximumLength(55))
+					.maximumLength(55),
+				Product.INSERT_TIME.define()
+					.column()
+					.caption("Insert time")
+					.readOnly(true),
+				Product.INSERT_USER.define()
+					.column()
+					.caption("Insert user")
+					.readOnly(true))
 			.keyGenerator(identity())
 			.caption("Product")
 			.description("The available products")
@@ -230,7 +238,15 @@ public final class PetstoreImpl extends DomainModel {
 					.column()
 					.caption("Disabled")
 					.nullable(false)
-					.withDefault(true))
+					.withDefault(true),
+				Item.INSERT_TIME.define()
+					.column()
+					.caption("Insert time")
+					.readOnly(true),
+				Item.INSERT_USER.define()
+					.column()
+					.caption("Insert user")
+					.readOnly(true))
 			.keyGenerator(identity())
 			.caption("Item")
 			.build();

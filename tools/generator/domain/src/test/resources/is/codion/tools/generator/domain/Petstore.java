@@ -20,6 +20,7 @@ import is.codion.petstore.domain.Petstore.TagItem;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import java.time.LocalDateTime;
 
 public final class Petstore extends DomainModel {
 	public static final DomainType DOMAIN = domainType(Petstore.class);
@@ -177,7 +178,15 @@ public final class Petstore extends DomainModel {
 				Product.IMAGE_URL.define()
 					.column()
 					.caption("Image url")
-					.maximumLength(55))
+					.maximumLength(55),
+				Product.INSERT_TIME.define()
+					.column()
+					.caption("Insert time")
+					.readOnly(true),
+				Product.INSERT_USER.define()
+					.column()
+					.caption("Insert user")
+					.readOnly(true))
 			.keyGenerator(identity())
 			.caption("Product")
 			.description("The available products")
@@ -239,7 +248,15 @@ public final class Petstore extends DomainModel {
 					.column()
 					.caption("Disabled")
 					.nullable(false)
-					.withDefault(true))
+					.withDefault(true),
+				Item.INSERT_TIME.define()
+					.column()
+					.caption("Insert time")
+					.readOnly(true),
+				Item.INSERT_USER.define()
+					.column()
+					.caption("Insert user")
+					.readOnly(true))
 			.keyGenerator(identity())
 			.caption("Item")
 			.build();
@@ -369,6 +386,8 @@ public final class Petstore extends DomainModel {
 		Column<String> NAME = TYPE.stringColumn("name");
 		Column<String> DESCRIPTION = TYPE.stringColumn("description");
 		Column<String> IMAGE_URL = TYPE.stringColumn("image_url");
+		Column<LocalDateTime> INSERT_TIME = TYPE.localDateTimeColumn("insert_time");
+		Column<String> INSERT_USER = TYPE.stringColumn("insert_user");
 
 		ForeignKey CATEGORY_FK = TYPE.foreignKey("category_fk", CATEGORY_ID, Category.CATEGORY_ID);
 
@@ -378,11 +397,13 @@ public final class Petstore extends DomainModel {
 					Category.dto(product.get(CATEGORY_FK)),
 					product.get(NAME),
 					product.get(DESCRIPTION),
-					product.get(IMAGE_URL));
+					product.get(IMAGE_URL),
+					product.get(INSERT_TIME),
+					product.get(INSERT_USER));
 		}
 
 		record Dto(Integer productId, Category.Dto category, String name, String description,
-				String imageUrl) {
+				String imageUrl, LocalDateTime insertTime, String insertUser) {
 			public Entity entity(Entities entities) {
 				return entities.entity(TYPE)
 					.with(PRODUCT_ID, productId)
@@ -390,6 +411,8 @@ public final class Petstore extends DomainModel {
 					.with(NAME, name)
 					.with(DESCRIPTION, description)
 					.with(IMAGE_URL, imageUrl)
+					.with(INSERT_TIME, insertTime)
+					.with(INSERT_USER, insertUser)
 					.build();
 			}
 		}
@@ -410,6 +433,8 @@ public final class Petstore extends DomainModel {
 		Column<Integer> TOTAL_SCORE = TYPE.integerColumn("total_score");
 		Column<Integer> NUMBER_OF_VOTES = TYPE.integerColumn("number_of_votes");
 		Column<Integer> DISABLED = TYPE.integerColumn("disabled");
+		Column<LocalDateTime> INSERT_TIME = TYPE.localDateTimeColumn("insert_time");
+		Column<String> INSERT_USER = TYPE.stringColumn("insert_user");
 
 		ForeignKey PRODUCT_FK = TYPE.foreignKey("product_fk", PRODUCT_ID, Product.PRODUCT_ID);
 		ForeignKey ADDRESS_FK = TYPE.foreignKey("address_fk", ADDRESS_ID, Address.ADDRESS_ID);
@@ -427,12 +452,14 @@ public final class Petstore extends DomainModel {
 					ContactInfo.dto(item.get(CONTACT_INFO_FK)),
 					item.get(TOTAL_SCORE),
 					item.get(NUMBER_OF_VOTES),
-					item.get(DISABLED));
+					item.get(DISABLED),
+					item.get(INSERT_TIME),
+					item.get(INSERT_USER));
 		}
 
 		record Dto(Integer itemId, Product.Dto product, String name, String description, String imageUrl,
 				String imageThumbUrl, Double price, ContactInfo.Dto contactInfo, Integer totalScore,
-				Integer numberOfVotes, Integer disabled) {
+				Integer numberOfVotes, Integer disabled, LocalDateTime insertTime, String insertUser) {
 			public Entity entity(Entities entities) {
 				return entities.entity(TYPE)
 					.with(ITEM_ID, itemId)
@@ -446,6 +473,8 @@ public final class Petstore extends DomainModel {
 					.with(TOTAL_SCORE, totalScore)
 					.with(NUMBER_OF_VOTES, numberOfVotes)
 					.with(DISABLED, disabled)
+					.with(INSERT_TIME, insertTime)
+					.with(INSERT_USER, insertUser)
 					.build();
 			}
 		}

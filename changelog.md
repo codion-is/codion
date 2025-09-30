@@ -15,6 +15,8 @@ Codion Change Log
 - EntitySearchFieldPanel.Builder.preferredSearchFieldWidth() added.
 - EntityPanel.createMainComponent() bug fixed, mainPanel() got called twice if a detail panel was present, messing up the controls panel, now supplier based.
 - EntityTablePanelPreferences bug fixed, now logs json parsing errors instead of crashing.
+### is.codion.tools.generator.domain
+- DomainSource refactored and improved concerning read-only entities and columns, tests improved.
 ### is.codion.tools.generator.model
 - DomainGeneratorModel.DOMAIN_PACKAGE now with default 'no.package' instead of empty string.
 - DomainGeneratorModel.PopulateTask added.

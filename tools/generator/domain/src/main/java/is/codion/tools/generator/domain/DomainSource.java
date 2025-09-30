@@ -539,7 +539,7 @@ public final class DomainSource {
 	}
 
 	private static String columnDefinition(String interfaceName, ColumnDefinition<?> column,
-																				 boolean foreignKeyColumn, boolean compositePrimaryKey, boolean readOnly) {
+																				 boolean foreignKeyColumn, boolean compositePrimaryKey, boolean readOnlyEntity) {
 		StringBuilder builder = new StringBuilder(DOUBLE_INDENT)
 						.append(interfaceName).append(".").append(column.name().toUpperCase()).append(".define()")
 						.append(LINE_SEPARATOR).append(TRIPLE_INDENT)
@@ -547,24 +547,35 @@ public final class DomainSource {
 		if (!foreignKeyColumn && !column.primaryKey()) {
 			builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".caption(").append("\"").append(column.caption()).append("\")");
 		}
-		if (!column.nullable() && !column.primaryKey()) {
-			builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".nullable(false)");
+		if (!readOnlyEntity) {
+			if (column.readOnly()) {
+				builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".readOnly(true)");
+			}
+			else {
+				if (!column.nullable() && !column.primaryKey()) {
+					builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".nullable(false)");
+				}
+				if (!column.insertable()) {
+					builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".insertable(false)");
+				}
+				else if (column.withDefault()) {
+					builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".withDefault(true)");
+				}
+				if (!column.updatable() && !column.primaryKey()) {
+					builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".updatable(false)");
+				}
+				if (column.attribute().type().isString() && column.maximumLength() != -1) {
+					builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".maximumLength(")
+									.append(column.maximumLength()).append(")");
+				}
+			}
 		}
 		if (!column.selected()) {
 			builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".selected(false)");
 		}
-		if (!readOnly) {
-			if (column.withDefault()) {
-				builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".withDefault(true)");
-			}
-			if (column.attribute().type().isString() && column.maximumLength() != -1) {
-				builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".maximumLength(")
-								.append(column.maximumLength()).append(")");
-			}
-			if (column.attribute().type().isDecimal() && column.fractionDigits() >= 1) {
-				builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".fractionDigits(")
-								.append(column.fractionDigits()).append(")");
-			}
+		if (column.attribute().type().isDecimal() && column.fractionDigits() >= 1) {
+			builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".fractionDigits(")
+							.append(column.fractionDigits()).append(")");
 		}
 		column.description()
 						.filter(description -> !description.isEmpty())

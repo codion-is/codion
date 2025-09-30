@@ -14,6 +14,8 @@ create table petstore.product (
  name varchar(25) not null,
  description varchar(255) not null,
  image_url varchar(55),
+ insert_time timestamp not null default now(),
+ insert_user varchar(20) not null default user(),
  primary key (product_id),
  foreign key (category_id) references petstore.category(category_id)
 );
@@ -56,6 +58,8 @@ create table petstore.item (
  total_score integer,
  number_of_votes integer,
  disabled integer not null default 0,
+ insert_time timestamp not null default now(),
+ insert_user varchar(20) not null default user(),
  primary key (item_id),
  foreign key (address_id) references petstore.address(address_id),
  foreign key (product_id) references petstore.product(product_id),
