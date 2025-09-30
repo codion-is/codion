@@ -20,6 +20,7 @@ package is.codion.tools.generator.model;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.model.filter.FilterModel.IncludedItems;
+import is.codion.common.model.preferences.UserPreferences;
 import is.codion.common.observer.Observable;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.ObservableState;
@@ -27,6 +28,7 @@ import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.db.SchemaDomain;
+import is.codion.framework.domain.db.SchemaDomain.SchemaSettings;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.Editor;
@@ -34,6 +36,8 @@ import is.codion.swing.common.model.component.table.FilterTableModel.TableColumn
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressTask;
 import is.codion.tools.generator.domain.DomainSource;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -47,6 +51,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 
 import static is.codion.common.Configuration.stringValue;
@@ -57,8 +63,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.*;
 
 /**
  * For instances use the factory method {@link #domainGeneratorModel(Database, User)}.
@@ -77,8 +82,14 @@ public final class DomainGeneratorModel {
 	public static final PropertyValue<String> SOURCE_DIRECTORY =
 					stringValue("codion.domain.generator.sourceDirectory", System.getProperty("user.dir"));
 
+	private static final Preferences PREFERENCES = UserPreferences.file(DomainGeneratorModel.class.getName());
 	private static final Pattern PACKAGE_PATTERN =
 					Pattern.compile("^[A-Za-z_][A-Za-z0-9_]*(?:\\.[A-Za-z_][A-Za-z0-9_]*)*$");
+	private static final SchemaSettings DEFAULT_SCHEMA_SETTINGS = SchemaSettings.builder().build();
+	private static final String HIDE_AUDIT_COLUMNS = "hideAuditColumns";
+	private static final String AUDIT_COLUMN_NAMES = "auditColumnNames";
+	private static final String PRIMARY_KEY_COLUMN_SUFFIX = "primaryKeyColumnSuffix";
+	private static final String VIEW_SUFFIX = "viewSuffix";
 
 	private final FilterTableModel<SchemaRow, String> schemaTableModel =
 					FilterTableModel.builder()
@@ -177,6 +188,15 @@ public final class DomainGeneratorModel {
 		return new PopulateTask();
 	}
 
+	public void setSchemaSettings(SchemaSettings schemaSettings) {
+		schemaTableModel.selection().item().optional().ifPresent(schema -> {
+			schema.setSchemaSettings(schemaSettings);
+			writeSchemaSettings(schema.name(), schemaSettings);
+			schema.setDomain(schemaDomain(schema));
+			schemaSelectionChanged();
+		});
+	}
+
 	public void saveApiImpl() throws IOException {
 		if (schemaTableModel.selection().empty().not().is()) {
 			SchemaDomain domain = selectedDomain();
@@ -212,7 +232,7 @@ public final class DomainGeneratorModel {
 
 	private SchemaDomain schemaDomain(SchemaRow schema) {
 		try (Connection connection = createConnection()) {
-			return SchemaDomain.schemaDomain(connection.getMetaData(), schema.name());
+			return SchemaDomain.schemaDomain(connection.getMetaData(), schema.name(), schema.schemaSettings());
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
@@ -307,6 +327,33 @@ public final class DomainGeneratorModel {
 		return path;
 	}
 
+	private void writeSchemaSettings(String tableSchem, SchemaSettings schemaSettings) {
+		JSONObject json =  new JSONObject();
+		json.put(HIDE_AUDIT_COLUMNS, schemaSettings.hideAuditColumns());
+		json.put(AUDIT_COLUMN_NAMES, schemaSettings.auditColumnNames().stream().collect(joining(",")));
+		json.put(PRIMARY_KEY_COLUMN_SUFFIX,  schemaSettings.primaryKeyColumnSuffix());
+		json.put(VIEW_SUFFIX, schemaSettings.viewSuffix());
+
+		PREFERENCES.put(database.name() + "." + tableSchem, json.toString());
+		try {
+			PREFERENCES.flush();
+		}
+		catch (BackingStoreException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private SchemaSettings loadSchemaSettings(String tableSchem) {
+		JSONObject json =  new JSONObject(PREFERENCES.get(database.name() + "." + tableSchem, "{}"));
+
+		return SchemaSettings.builder()
+						.hideAuditColumns(json.has(HIDE_AUDIT_COLUMNS) ? json.getBoolean(HIDE_AUDIT_COLUMNS) : false)
+						.auditColumnNames(json.has(AUDIT_COLUMN_NAMES) ? json.getString(AUDIT_COLUMN_NAMES).split(",") : new String[0])
+						.primaryKeyColumnSuffix(json.has(PRIMARY_KEY_COLUMN_SUFFIX) ? json.getString(PRIMARY_KEY_COLUMN_SUFFIX): null)
+						.viewSuffix(json.has(VIEW_SUFFIX) ? json.getString(VIEW_SUFFIX) : null)
+						.build();
+	}
+
 	private static boolean validPackageName(String packageName) {
 		return PACKAGE_PATTERN.matcher(packageName).matches();
 	}
@@ -359,11 +406,11 @@ public final class DomainGeneratorModel {
 			while (resultSet.next()) {
 				String tableSchem = resultSet.getString("TABLE_SCHEM");
 				if (tableSchem != null) {
-					schemaRows.add(new SchemaRow(resultSet.getString("TABLE_CATALOG"), tableSchem));
+					schemaRows.add(new SchemaRow(resultSet.getString("TABLE_CATALOG"), tableSchem, loadSchemaSettings(tableSchem)));
 				}
 			}
 			if (schemaRows.isEmpty()) {
-				schemaRows.add(new SchemaRow());
+				schemaRows.add(new SchemaRow(DEFAULT_SCHEMA_SETTINGS));
 			}
 
 			return schemaRows;

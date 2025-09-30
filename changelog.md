@@ -20,9 +20,11 @@ Codion Change Log
 ### is.codion.tools.generator.model
 - DomainGeneratorModel.DOMAIN_PACKAGE now with default 'no.package' instead of empty string.
 - DomainGeneratorModel.PopulateTask added.
+- DomainGeneratorModel now saves schema settings in user preferences.
 ### is.codion.tools.generator.ui
 - DomainGeneratorPanel now asks for confirmation before saving files.
 - DomainGeneratorPanel, dto entities now configurable.
+- DomainGeneratorPanel now provides schema settings configuration.
 
 ## 0.18.50
 ### is.codion.common.core

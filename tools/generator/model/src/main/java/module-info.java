@@ -25,9 +25,10 @@
 module is.codion.tools.generator.model {
 	requires transitive is.codion.common.db;
 	requires transitive is.codion.swing.common.model;
+	requires transitive is.codion.framework.domain.db;
 
-	requires is.codion.framework.domain.db;
 	requires is.codion.tools.generator.domain;
+	requires org.json;
 
 	exports is.codion.tools.generator.model;
 }

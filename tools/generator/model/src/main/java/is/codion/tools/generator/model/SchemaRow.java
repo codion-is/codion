@@ -19,23 +19,28 @@
 package is.codion.tools.generator.model;
 
 import is.codion.framework.domain.db.SchemaDomain;
+import is.codion.framework.domain.db.SchemaDomain.SchemaSettings;
 
 import java.util.Optional;
+
+import static java.util.Objects.requireNonNull;
 
 public final class SchemaRow {
 
 	private final String catalog;
 	private final String schema;
 
+	private SchemaSettings schemaSettings;
 	private SchemaDomain domainModel;
 
-	SchemaRow() {
-		this(null, "NO_SCHEMA");
+	SchemaRow(SchemaSettings schemaSettings) {
+		this(null, "NO_SCHEMA", schemaSettings);
 	}
 
-	SchemaRow(String catalog, String schema) {
+	SchemaRow(String catalog, String schema, SchemaSettings schemaSettings) {
 		this.catalog = catalog;
 		this.schema = schema;
+		this.schemaSettings = schemaSettings;
 	}
 
 	String catalog() {
@@ -52,6 +57,14 @@ public final class SchemaRow {
 
 	boolean populated() {
 		return domainModel != null;
+	}
+
+	public SchemaSettings schemaSettings() {
+		return schemaSettings;
+	}
+
+	public void setSchemaSettings(SchemaSettings schemaSettings) {
+		this.schemaSettings = requireNonNull(schemaSettings);
 	}
 
 	Optional<SchemaDomain> domain() {

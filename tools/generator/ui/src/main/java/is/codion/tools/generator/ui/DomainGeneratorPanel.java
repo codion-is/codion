@@ -25,10 +25,12 @@ import is.codion.common.model.preferences.UserPreferences;
 import is.codion.common.observer.Observable;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
+import is.codion.framework.domain.db.SchemaDomain.SchemaSettings;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
 import is.codion.swing.common.ui.component.text.SearchHighlighter;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -69,13 +71,16 @@ import java.io.IOException;
 import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.Configuration.stringValue;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
+import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.enableLookAndFeel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 import static is.codion.tools.generator.model.DomainGeneratorModel.domainGeneratorModel;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.joining;
 import static javax.swing.BorderFactory.createCompoundBorder;
 import static javax.swing.BorderFactory.createTitledBorder;
 import static javax.swing.JOptionPane.*;
@@ -168,21 +173,24 @@ public final class DomainGeneratorPanel extends JPanel {
 						.caption("Populate")
 						.enabled(model.schemaModel().selection().empty().not())
 						.build();
+		Control schemaSettingsControl = Control.builder()
+						.command(this::schemaSettings)
+						.caption("Settings...")
+						.enabled(model.schemaModel().selection().empty().not())
+						.build();
 
 		return FilterTable.builder()
 						.model(model.schemaModel())
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.doubleClick(populateSchemaControl)
+						.columnReordering(false)
 						.keyEvent(KeyEvents.builder()
 										.keyCode(VK_ENTER)
 										.modifiers(InputEvent.CTRL_DOWN_MASK)
 										.action(populateSchemaControl))
 						.popupMenuControls(table -> Controls.builder()
 										.control(populateSchemaControl)
-										.control(Controls.builder()
-														.caption("Columns")
-														.control(table.createToggleColumnsControls())
-														.control(table.createToggleAutoResizeModeControls()))
+										.control(schemaSettingsControl)
 										.build())
 						.build();
 	}
@@ -200,6 +208,7 @@ public final class DomainGeneratorPanel extends JPanel {
 									break;
 							}
 						})
+						.columnReordering(false)
 						.cellEditor(EntityColumns.DTO, FilterTableCellEditor.builder()
 										.component(checkBox()::buildValue)
 										.build())
@@ -444,6 +453,18 @@ public final class DomainGeneratorPanel extends JPanel {
 						.execute();
 	}
 
+	private void schemaSettings() {
+		model.schemaModel().selection().item().optional().ifPresent(schema -> {
+			SchemaSettingsPanel settingsPanel = new SchemaSettingsPanel(schema.schemaSettings());
+			Dialogs.okCancel()
+							.component(settingsPanel)
+							.owner(this)
+							.title("Schema Settings")
+							.onOk(() -> model.setSchemaSettings(settingsPanel.settings()))
+							.show();
+		});
+	}
+
 	private Controls createMainMenuControls() {
 		return Controls.builder()
 						.control(Controls.builder()
@@ -544,6 +565,51 @@ public final class DomainGeneratorPanel extends JPanel {
 		}
 		else {
 			new DomainGeneratorPanel(domainGeneratorModel(database)).showFrame();
+		}
+	}
+
+	private static final class SchemaSettingsPanel extends JPanel {
+
+		private final ComponentValue<JTextField, String> primaryKeySuffix;
+		private final ComponentValue<JTextField, String> viewSuffix;
+		private final ComponentValue<JCheckBox, Boolean> hideAuditColumns;
+		private final ComponentValue<JTextField, String> auditColumnNames;
+
+		private SchemaSettingsPanel(SchemaSettings schemaSettings) {
+			super(flexibleGridLayout(0, 2));
+			setBorder(emptyBorder());
+			primaryKeySuffix = stringField()
+							.value(schemaSettings.primaryKeyColumnSuffix())
+							.columns(5)
+							.buildValue();
+			viewSuffix = stringField()
+							.value(schemaSettings.viewSuffix())
+							.columns(5)
+							.buildValue();
+			hideAuditColumns = checkBox()
+							.value(schemaSettings.hideAuditColumns())
+							.buildValue();
+			auditColumnNames = stringField()
+							.value(schemaSettings.auditColumnNames().stream()
+											.collect(joining(", ")))
+							.buildValue();
+			add(label("Primary key suffix").build());
+			add(primaryKeySuffix.component());
+			add(label("View suffix").build());
+			add(viewSuffix.component());
+			add(label("Hide audit columns").build());
+			add(hideAuditColumns.component());
+			add(label("Audit column names").build());
+			add(auditColumnNames.component());
+		}
+
+		private SchemaSettings settings() {
+			return SchemaSettings.builder()
+							.primaryKeyColumnSuffix(primaryKeySuffix.optional().orElse(""))
+							.viewSuffix(viewSuffix.optional().orElse(""))
+							.hideAuditColumns(hideAuditColumns.getOrThrow())
+							.auditColumnNames(auditColumnNames.optional().orElse(""))
+							.build();
 		}
 	}
 }
