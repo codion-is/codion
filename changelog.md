@@ -6,6 +6,7 @@ Codion Change Log
 - FilterTable.Builder.hiddenColumns() added.
 - ProgressDialog.northPanel(), westPanel() and eastPanel() renamed northComponent(), westComponent() and eastComponent(), now take JComponent instead of JPanel.
 - DefaultFilterTableCellEditor bug fixed, now sets the border from the renderer, like DefaultCellEditor, checkboxes no longer jump around.
+- FilterTableCellRenderer.ColorProvider renamed CellColor, color() renamed get().
 ### is.codion.framework.domain
 - DerivedAttributeDefinition.Builder.SourceAttributesStep added.
 - Condition.toString(entityDefinition) renamed string() in order to not be confused with toString().

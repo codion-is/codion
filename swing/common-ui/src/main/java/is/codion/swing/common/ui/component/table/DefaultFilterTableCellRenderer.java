@@ -164,8 +164,8 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private final int rightPadding;
 		private final boolean alternateRowColoring;
 		private final boolean filterIndicator;
-		private final ColorProvider<R, C, T> backgroundColor;
-		private final ColorProvider<R, C, T> foregroundColor;
+		private final CellColor<R, C, T> backgroundColor;
+		private final CellColor<R, C, T> foregroundColor;
 		private final int horizontalAlignment;
 		private final boolean toolTipData;
 		private final Function<T, String> formatter;
@@ -217,7 +217,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		private Color foregroundColor(FilterTable<R, C> filterTable, R row, C identifier, T value, boolean selected) {
-			Color foreground = foregroundColor.color(filterTable, row, identifier, value);
+			Color foreground = foregroundColor.get(filterTable, row, identifier, value);
 			if (foreground != null) {
 				return foreground;
 			}
@@ -234,7 +234,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		private Color backgroundAlternating(FilterTable<R, C> filterTable, R row, C identifier, T value, boolean selected, boolean alternateRow) {
-			Color cellBackgroundColor = backgroundColor.color(filterTable, row, identifier, value);
+			Color cellBackgroundColor = backgroundColor.get(filterTable, row, identifier, value);
 			cellBackgroundColor = backgroundAlternating(cellBackgroundColor, alternateRow, selected);
 			if (filterIndicator) {
 				cellBackgroundColor = uiSettings.background(filterEnabled(filterTable, identifier), alternateRow, cellBackgroundColor);
@@ -247,7 +247,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		private Color backgroundNonAlternating(FilterTable<R, C> filterTable, R row, C identifier, T value, boolean selected, boolean alternateRow) {
-			Color cellBackgroundColor = backgroundColor.color(filterTable, row, identifier, value);
+			Color cellBackgroundColor = backgroundColor.get(filterTable, row, identifier, value);
 			cellBackgroundColor = backgroundNonAlternating(cellBackgroundColor, selected);
 			if (filterIndicator) {
 				cellBackgroundColor = uiSettings.background(filterEnabled(filterTable, identifier), false, cellBackgroundColor);
@@ -318,15 +318,15 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 
 	static final class SettingsBuilder<R, C, T> {
 
-		private static final ColorProvider<?, ?, ?> NULL_COLOR_PROVIDER = (table, row, identifier, value) -> null;
+		private static final CellColor<?, ?, ?> NULL_CELL_COLOR = (table, row, identifier, value) -> null;
 
 		private UISettings uiSettings = new DefaultUISettings();
 		private int leftPadding = TABLE_CELL_LEFT_PADDING.getOrThrow();
 		private int rightPadding = TABLE_CELL_RIGHT_PADDING.getOrThrow();
 		private boolean alternateRowColoring = ALTERNATE_ROW_COLORING.getOrThrow();
 		private boolean filterIndicator = true;
-		private ColorProvider<R, C, T> backgroundColor = (ColorProvider<R, C, T>) NULL_COLOR_PROVIDER;
-		private ColorProvider<R, C, T> foregroundColor = (ColorProvider<R, C, T>) NULL_COLOR_PROVIDER;
+		private CellColor<R, C, T> backgroundColor = (CellColor<R, C, T>) NULL_CELL_COLOR;
+		private CellColor<R, C, T> foregroundColor = (CellColor<R, C, T>) NULL_CELL_COLOR;
 		private boolean toolTipData = false;
 		private Function<T, String> formatter = new DefaultFormatter<>();
 		private int horizontalAlignment;
@@ -360,12 +360,12 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			return this;
 		}
 
-		SettingsBuilder<R, C, T> backgroundColor(ColorProvider<R, C, T> backgroundColor) {
+		SettingsBuilder<R, C, T> backgroundColor(CellColor<R, C, T> backgroundColor) {
 			this.backgroundColor = requireNonNull(backgroundColor);
 			return this;
 		}
 
-		SettingsBuilder<R, C, T> foregroundColor(ColorProvider<R, C, T> foregroundColor) {
+		SettingsBuilder<R, C, T> foregroundColor(CellColor<R, C, T> foregroundColor) {
 			this.foregroundColor = requireNonNull(foregroundColor);
 			return this;
 		}
@@ -468,13 +468,13 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		@Override
-		public Builder<R, C, T> background(ColorProvider<R, C, T> background) {
+		public Builder<R, C, T> background(CellColor<R, C, T> background) {
 			this.settings.backgroundColor(background);
 			return this;
 		}
 
 		@Override
-		public Builder<R, C, T> foreground(ColorProvider<R, C, T> foreground) {
+		public Builder<R, C, T> foreground(CellColor<R, C, T> foreground) {
 			this.settings.foregroundColor(foreground);
 			return this;
 		}

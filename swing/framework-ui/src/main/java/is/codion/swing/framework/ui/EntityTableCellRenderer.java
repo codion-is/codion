@@ -26,7 +26,7 @@ import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
-import is.codion.swing.common.ui.component.table.FilterTableCellRenderer.ColorProvider;
+import is.codion.swing.common.ui.component.table.FilterTableCellRenderer.CellColor;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import org.jspecify.annotations.Nullable;
@@ -80,10 +80,10 @@ public final class EntityTableCellRenderer {
 	/**
 	 * @param <T> the attribute value type
 	 */
-	public interface EntityColorProvider<T> extends ColorProvider<Entity, Attribute<?>, T> {
+	public interface EntityCellColor<T> extends CellColor<Entity, Attribute<?>, T> {
 
 		@Override
-		Color color(FilterTable<Entity, Attribute<?>> table, Entity entity, Attribute<?> attribute, T value);
+		Color get(FilterTable<Entity, Attribute<?>> table, Entity entity, Attribute<?> attribute, T value);
 	}
 
 	/**

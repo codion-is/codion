@@ -145,7 +145,7 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 	 * @param <C> the column identifier type
 	 * @param <T> the cell value type
 	 */
-	interface ColorProvider<R, C, T> {
+	interface CellColor<R, C, T> {
 
 		/**
 		 * @param table the table
@@ -154,7 +154,7 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 		 * @param value the cell value
 		 * @return the Color for the given cell, null for the default color
 		 */
-		@Nullable Color color(FilterTable<R, C> table, R row, C identifier, T value);
+		@Nullable Color get(FilterTable<R, C> table, R row, C identifier, T value);
 	}
 
 	/**
@@ -233,13 +233,13 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 		 * @param background provides the background color
 		 * @return this builder instance
 		 */
-		Builder<R, C, T> background(ColorProvider<R, C, T> background);
+		Builder<R, C, T> background(CellColor<R, C, T> background);
 
 		/**
 		 * @param foreground provides the foreground color
 		 * @return this builder instance
 		 */
-		Builder<R, C, T> foreground(ColorProvider<R, C, T> foreground);
+		Builder<R, C, T> foreground(CellColor<R, C, T> foreground);
 
 		/**
 		 * @return a new {@link FilterTableCellRenderer} instance based on this builder
