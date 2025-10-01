@@ -343,17 +343,6 @@ public final class DomainGeneratorModel {
 		}
 	}
 
-	private SchemaSettings loadSchemaSettings(String tableSchem) {
-		JSONObject json =  new JSONObject(PREFERENCES.get(database.name() + "." + tableSchem, "{}"));
-
-		return SchemaSettings.builder()
-						.hideAuditColumns(json.has(HIDE_AUDIT_COLUMNS) ? json.getBoolean(HIDE_AUDIT_COLUMNS) : false)
-						.auditColumnNames(json.has(AUDIT_COLUMN_NAMES) ? json.getString(AUDIT_COLUMN_NAMES).split(",") : new String[0])
-						.primaryKeyColumnSuffix(json.has(PRIMARY_KEY_COLUMN_SUFFIX) ? json.getString(PRIMARY_KEY_COLUMN_SUFFIX): null)
-						.viewSuffix(json.has(VIEW_SUFFIX) ? json.getString(VIEW_SUFFIX) : null)
-						.build();
-	}
-
 	private static boolean validPackageName(String packageName) {
 		return PACKAGE_PATTERN.matcher(packageName).matches();
 	}
@@ -384,6 +373,8 @@ public final class DomainGeneratorModel {
 		}
 
 		public void finish() {
+			schemaTableModel.selection().indexes().get().forEach(index ->
+							schemaTableModel.fireTableRowsUpdated(index, index));
 			schemaSelectionChanged();
 		}
 	}
@@ -414,6 +405,17 @@ public final class DomainGeneratorModel {
 			}
 
 			return schemaRows;
+		}
+
+		private SchemaSettings loadSchemaSettings(String tableSchem) {
+			JSONObject json = new JSONObject(PREFERENCES.get(database.name() + "." + tableSchem, "{}"));
+
+			return SchemaSettings.builder()
+							.hideAuditColumns(json.has(HIDE_AUDIT_COLUMNS) && json.getBoolean(HIDE_AUDIT_COLUMNS))
+							.auditColumnNames(json.has(AUDIT_COLUMN_NAMES) ? json.getString(AUDIT_COLUMN_NAMES).split(",") : new String[0])
+							.primaryKeyColumnSuffix(json.has(PRIMARY_KEY_COLUMN_SUFFIX) ? json.getString(PRIMARY_KEY_COLUMN_SUFFIX) : null)
+							.viewSuffix(json.has(VIEW_SUFFIX) ? json.getString(VIEW_SUFFIX) : null)
+							.build();
 		}
 	}
 
