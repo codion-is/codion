@@ -11,6 +11,7 @@ Codion Change Log
 - DerivedAttributeDefinition.Builder.SourceAttributesStep added.
 - Condition.toString(entityDefinition) renamed string() in order to not be confused with toString().
 - ForeignKeyDefinition.Builder.attributes() renamed include().
+- EntityDefinition.Attributes.updatable() removed.
 ### is.codion.framework.domain.db
 - SchemaDomain.SchemaSettings.viewSuffix(), auditColumnNames() and hideAuditColumns() added.
 ### is.codion.swing.framework.ui
@@ -18,6 +19,7 @@ Codion Change Log
 - EntityPanel.createMainComponent() bug fixed, mainPanel() got called twice if a detail panel was present, messing up the controls panel, now supplier based.
 - EntityTablePanelPreferences bug fixed, now logs json parsing errors instead of crashing.
 - EntityApplicationPanel.handleUnsavedModifications() bug fixed, no longer exits on ESC in warning dialog.
+- EntityTablePanel.Config.editableAttributes() added.
 ### is.codion.tools.generator.domain
 - DomainSource refactored and improved concerning read-only entities and columns, tests improved.
 ### is.codion.tools.generator.model

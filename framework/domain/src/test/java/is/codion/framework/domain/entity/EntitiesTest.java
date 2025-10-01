@@ -184,18 +184,6 @@ public final class EntitiesTest {
 	class AttributesTest {
 
 		@Test
-		@DisplayName("updatable attributes exclude derived and foreign key attributes")
-		void updatableAttributes_excludesDerivedAndForeignKeyAttributes() {
-			EntityDefinition definition = entities.definition(Detail.TYPE);
-			Collection<AttributeDefinition<?>> attributes = definition.attributes().updatable();
-
-			assertEquals(11, attributes.size());
-			assertFalse(attributes.contains(definition.attributes().definition(Detail.MASTER_NAME)));
-			assertFalse(attributes.contains(definition.attributes().definition(Detail.MASTER_CODE)));
-			assertFalse(attributes.contains(definition.attributes().definition(Detail.INT_DERIVED)));
-		}
-
-		@Test
 		@DisplayName("selected attributes returns requested attribute definitions")
 		void selectedAttributes_returnsRequestedDefinitions() {
 			List<Attribute<?>> attributes = new ArrayList<>();

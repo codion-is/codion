@@ -36,6 +36,9 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
@@ -148,7 +151,6 @@ import static java.util.Collections.emptyMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
@@ -2244,9 +2246,7 @@ public class EntityTablePanel extends JPanel {
 			this.conditionPanelFactory = new DefaultConditionPanelFactory();
 			this.conditionComponentFactories = new HashMap<>();
 			this.controlMap = ControlMap.controlMap(ControlKeys.class);
-			this.editable = valueSet(entityDefinition.attributes().updatable().stream()
-							.map(AttributeDefinition::attribute)
-							.collect(toSet()));
+			this.editable = valueSet(editableAttributes());
 			this.editable.addValidator(new EditMenuAttributeValidator(entityDefinition));
 			this.editComponentFactories = new HashMap<>();
 			this.deleteConfirmer = new DeleteConfirmer(tablePanel.tableModel.selection());
@@ -2654,6 +2654,24 @@ public class EntityTablePanel extends JPanel {
 			tableBuilder = null;
 
 			return filterTable;
+		}
+
+		private Collection<Attribute<?>> editableAttributes() {
+			List<Column<?>> updatableColumns = entityDefinition.columns().definitions().stream()
+							.filter(ColumnDefinition::updatable)
+							.filter(column -> (!column.primaryKey() || !entityDefinition.primaryKey().generated()))
+							.map(ColumnDefinition::attribute)
+							.collect(toList());
+			EntityDefinition.ForeignKeys foreignKeys = entityDefinition.foreignKeys();
+			updatableColumns.removeIf(foreignKeys::foreignKeyColumn);
+			List<Attribute<?>> updatable = new ArrayList<>(updatableColumns);
+			for (ForeignKey foreignKey : entityDefinition.foreignKeys().get()) {
+				if (foreignKeys.updatable(foreignKey)) {
+					updatable.add(foreignKey);
+				}
+			}
+
+			return updatable;
 		}
 
 		private static final class DefaultConditionPanelFactory

@@ -180,6 +180,17 @@ public class EntityTablePanelTest {
 		assertSame(commissionRenderer, tablePanel.table().columnModel().column(Employee.COMMISSION).getCellRenderer());
 	}
 
+	@Test
+	void editableAttributesExcludesDerivedAndDenormalizedAttributes() {
+		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, CONNECTION_PROVIDER);
+		new EntityTablePanel(tableModel, config -> config.editable(attributes -> {
+			assertEquals(14, attributes.size());
+			assertFalse(attributes.contains(Detail.MASTER_NAME));
+			assertFalse(attributes.contains(Detail.MASTER_CODE));
+			assertFalse(attributes.contains(Detail.INT_DERIVED));
+		}));
+	}
+
 	private static List<Entity> initTestEntities(Entities entities) {
 		List<Entity> testEntities = new ArrayList<>(5);
 		String[] stringValues = new String[] {"a", "b", "c", "d", "e"};

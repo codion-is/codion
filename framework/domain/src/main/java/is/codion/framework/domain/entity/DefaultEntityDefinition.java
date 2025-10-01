@@ -357,23 +357,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 			return definition;
 		}
-
-		@Override
-		public Collection<AttributeDefinition<?>> updatable() {
-			List<ColumnDefinition<?>> updatableColumns = entityAttributes.columnDefinitions.stream()
-							.filter(ColumnDefinition::updatable)
-							.filter(column -> (!column.primaryKey() || !primaryKey.generated()))
-							.collect(toList());
-			updatableColumns.removeIf(column -> foreignKeys.foreignKeyColumn(column.attribute()));
-			List<AttributeDefinition<?>> updatable = new ArrayList<>(updatableColumns);
-			for (ForeignKeyDefinition definition : entityAttributes.foreignKeyDefinitions) {
-				if (foreignKeys.updatable(definition.attribute())) {
-					updatable.add(definition);
-				}
-			}
-
-			return updatable;
-		}
 	}
 
 	final class DefaultColumns implements Columns, Serializable {

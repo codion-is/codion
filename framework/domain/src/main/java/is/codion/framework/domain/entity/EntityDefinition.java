@@ -493,11 +493,6 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 		 * @throws NullPointerException in case {@code attribute} is null
 		 */
 		<T> AttributeDefinition<T> definition(Attribute<T> attribute);
-
-		/**
-		 * @return a Collection containing all updatable attributes associated with the given entityType
-		 */
-		Collection<AttributeDefinition<?>> updatable();
 	}
 
 	/**
