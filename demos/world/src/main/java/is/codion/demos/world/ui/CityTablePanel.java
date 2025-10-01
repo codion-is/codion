@@ -72,7 +72,7 @@ final class CityTablePanel extends ChartTablePanel {
 						.title("Populating locations")
 						.stringPainted(true)
 						.control(Control.builder()
-										.command(task::cancel)
+										.toggle(task.cancelled())
 										.caption("Cancel")
 										.enabled(task.cancelled().not()))
 						.onException(this::displayPopulateException)

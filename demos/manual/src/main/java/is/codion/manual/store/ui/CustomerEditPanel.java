@@ -22,7 +22,7 @@ import is.codion.manual.store.domain.Store.Customer;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
-import java.awt.GridLayout;
+import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 // tag::customerEditPanel[]
 public class CustomerEditPanel extends EntityEditPanel {
@@ -36,12 +36,14 @@ public class CustomerEditPanel extends EntityEditPanel {
 		//the firstName field should receive the focus whenever the panel is initialized
 		focus().initial().set(Customer.FIRST_NAME);
 
+		//methods creating an input field also create a label by default,
+		//which is accessible via component(Customer.FIRST_NAME).label()
 		createTextField(Customer.FIRST_NAME);
 		createTextField(Customer.LAST_NAME);
 		createTextField(Customer.EMAIL);
 		createCheckBox(Customer.ACTIVE);
 
-		setLayout(new GridLayout(4, 1));
+		setLayout(gridLayout(4, 1));
 		//the addInputPanel method creates and adds a panel containing the
 		//component associated with the attribute as well as a JLabel with the
 		//property caption as defined in the domain model

@@ -309,7 +309,7 @@ public interface Chinook {
 		}
 	}
 
-	final class CoverFormatter extends Format {
+	final class CoverFormat extends Format {
 
 		private final NumberFormat kbFormat = NumberFormat.getIntegerInstance();
 

@@ -132,7 +132,7 @@ public final class ChinookImpl extends DomainModel {
 										// end::columnTemplateUsage1[]
 										Album.COVER.define()
 														.column()
-														.format(new CoverFormatter()),
+														.format(new CoverFormat()),
 										Album.NUMBER_OF_TRACKS.define()
 														.subquery("""
 																		SELECT COUNT(*) FROM chinook.track
