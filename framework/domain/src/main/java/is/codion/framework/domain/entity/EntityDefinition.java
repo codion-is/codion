@@ -120,8 +120,8 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 	/**
 	 * Returns the {@link ConditionString} associated with the given type
 	 * @param conditionType the condition type
-	 * @return the ConditionString associated with the given condition
-	 * @throws IllegalArgumentException in case no ConditionString is associated with the given conditionType
+	 * @return the {@link ConditionString} associated with the given {@link ConditionType}
+	 * @throws IllegalArgumentException in case no {@link ConditionString} is associated with the given {@link ConditionType}
 	 * @see EntityDefinition.Builder#condition(ConditionType, ConditionString)
 	 */
 	ConditionString condition(ConditionType conditionType);
@@ -345,6 +345,7 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 		 * Use this to disable optimistic locking for this entity type
 		 * @param optimisticLocking true if optimistic locking should be used during updates, false to disable
 		 * @return this {@link Builder} instance
+		 * @see #OPTIMISTIC_LOCKING
 		 */
 		Builder optimisticLocking(boolean optimisticLocking);
 
@@ -372,9 +373,7 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 		Builder selectTable(String selectTable);
 
 		/**
-		 * Sets the select query to use when selecting entities of this type,
-		 * use with care. If the query contains a columns clause, the order
-		 * of the attributes when defining the entity must match the column order in the given query.
+		 * Sets the select query to use when selecting entities of this type, use with care.
 		 * @param selectQuery the select query to use for this entity type
 		 * @return this {@link Builder} instance
 		 */
@@ -403,6 +402,7 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 		Builder formatter(Function<Entity, String> formatter);
 
 		/**
+		 * Default true.
 		 * @param cacheToString true if the result of toString() should be cached
 		 * @return this {@link Builder} instance
 		 */
@@ -480,8 +480,9 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 		/**
 		 * Returns the attributes selected by default for this entity type.
 		 * Contains the selectable columns and foreign keys, excluding lazy loaded columns
-		 * and foreign key values based on lazy loaded columns.
+		 * and foreign keys based on lazy loaded columns.
 		 * @return the default select attributes
+		 * @see ColumnDefinition.Builder#selected(boolean)
 		 */
 		Collection<Attribute<?>> selected();
 

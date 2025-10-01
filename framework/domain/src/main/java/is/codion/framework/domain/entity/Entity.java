@@ -207,7 +207,10 @@ public interface Entity extends Comparable<Entity> {
 
 	/**
 	 * Returns true if a null value is mapped to the given attribute or if no mapping is found.
-	 * In case of foreign keys the value of the underlying reference column(s) is checked.
+	 * <p>In case of foreign keys the value of the underlying reference column(s) is checked.
+	 * If the key is a single column key, true is returned if the associated value is null,
+	 * but in case of composite keys then true is returned if one or more non-nullable key columns
+	 * are associated with a null value.
 	 * @param attribute the attribute
 	 * @return true if the value mapped to the given attribute is null or no value is mapped
 	 */
@@ -238,7 +241,7 @@ public interface Entity extends Comparable<Entity> {
 	 *     Integer customerId = customer.get(Customer.ID);
 	 *
 	 *     // This may return null if customer wasn't loaded
-	 *     // and the foreign key definition doesn't include Customer.NAME
+	 *     // and the foreign key entity doesn't contain Customer.NAME
 	 *     String customerName = customer.get(Customer.NAME);
 	 * }
 	 *}
@@ -433,7 +436,7 @@ public interface Entity extends Comparable<Entity> {
 
 	/**
 	 * Returns an unmodifiable view of the entries in this Entity, note that
-	 * attributes based on derived values are not included.
+	 * derived attributes are included if the value has been cached.
 	 * @return an unmodifiable view of the entries in this Entity
 	 */
 	Set<Map.Entry<Attribute<?>, Object>> entrySet();

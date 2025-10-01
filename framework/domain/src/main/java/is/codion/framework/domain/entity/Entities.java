@@ -60,6 +60,17 @@ import static is.codion.common.Configuration.booleanValue;
  * // Create primary keys
  * Entity.Key customerKey = entities.primaryKey(Customer.TYPE, 42);
  *}
+ * <p>
+ * Or via an EntityConnection or EntityConnectionProvider:
+ * {@snippet :
+ * EntityConnectionProvider connectionProvider = connectionProvider();
+ *
+ * Entities entities = connection.entities();
+ *
+ * EntityConnection connection = connectionProvider.connection();
+ *
+ * entities = connection.entities();
+ *}
  * @see #entity(EntityType)
  * @see #key(EntityType)
  * @see #primaryKey(EntityType, Object)

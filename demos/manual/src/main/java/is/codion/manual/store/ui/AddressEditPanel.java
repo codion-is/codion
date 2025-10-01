@@ -22,7 +22,7 @@ import is.codion.manual.store.domain.Store.Address;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
-import java.awt.GridLayout;
+import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 // tag::addressEditPanel[]
 public class AddressEditPanel extends EntityEditPanel {
@@ -35,11 +35,13 @@ public class AddressEditPanel extends EntityEditPanel {
 	protected void initializeUI() {
 		focus().initial().set(Address.STREET);
 
-		createTextField(Address.STREET).columns(25);
-		createTextField(Address.CITY).columns(25);
+		createTextField(Address.STREET)
+						.columns(25);
+		createTextField(Address.CITY)
+						.columns(25);
 		createCheckBox(Address.VALID);
 
-		setLayout(new GridLayout(3, 1, 5, 5));
+		setLayout(gridLayout(3, 1));
 		addInputPanel(Address.STREET);
 		addInputPanel(Address.CITY);
 		addInputPanel(Address.VALID);

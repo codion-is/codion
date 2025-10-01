@@ -31,7 +31,7 @@ The documentation is a work in progress. If something is unclear, missing, or ne
 
 Feature requests are welcome — with a note of caution:
 
-Codion is mostly feature-complete by design. I may be very selective about new feature inclusion to preserve its simplicity and focus. That said, good ideas are always worth discussing.
+Codion is mostly feature-complete. I may be very selective about new feature inclusion to preserve its simplicity and focus. That said, good ideas are always worth discussing.
 
 ---
 

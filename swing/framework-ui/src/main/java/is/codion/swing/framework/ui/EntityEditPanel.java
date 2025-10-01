@@ -107,8 +107,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	/**
 	 * The controls available for {@link EntityEditPanel}s.
-	 * Note that changing the shortcut keystroke after the panel
-	 * has been initialized has no effect.
+	 * Note that changing the shortcut keystroke after a panel
+	 * has been initialized has no effect on its controls.
 	 */
 	public static final class ControlKeys {
 
@@ -1018,7 +1018,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			/**
 			 * <p>Note that the default insert {@link Confirmer} simply returns true, so in order to implement
 			 * an insert confirmation you must set the {@link Confirmer} via {@link Config#insertConfirmer(Confirmer)}.
-			 * @param confirm specifies whether confirmation should be performed, default true
+			 * @param confirm specifies whether confirmation should be requested, default true
 			 * @return this builder instance
 			 */
 			Builder confirm(boolean confirm);
@@ -1056,7 +1056,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		interface Builder {
 
 			/**
-			 * @param confirm specifies whether confirmation should be performed, default true
+			 * @param confirm specifies whether confirmation should be requested, default true
 			 * @return this builder instance
 			 */
 			Builder confirm(boolean confirm);
@@ -1094,7 +1094,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		interface Builder {
 
 			/**
-			 * @param confirm specifies whether confirmation should be performed, default true
+			 * @param confirm specifies whether confirmation should be requested, default true
 			 * @return this builder instance
 			 */
 			Builder confirm(boolean confirm);

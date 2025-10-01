@@ -45,7 +45,7 @@ public sealed interface DomainType permits DefaultDomainType {
 	 * Instantiates a {@link EntityType} associated with this domain type.
 	 * If this entity type has been defined previously that instance is returned.
 	 * @param name the entity type name
-	 * @param resourceBundleName the name of a resource bundle to use for captions, if any
+	 * @param resourceBundleName the name of a resource bundle to use for captions
 	 * @return a {@link EntityType} with the given name
 	 */
 	EntityType entityType(String name, String resourceBundleName);

@@ -205,6 +205,9 @@ public sealed interface ForeignKeyDefinition extends AttributeDefinition<Entity>
 		 * is selected. Use this method to restrict the included attributes.
 		 * <p>Note that the primary key attributes are always included and do
 		 * not have to be specified when using this method.
+		 * <p>One thing to consider is to include the attributes used by the
+		 * formatter for the referenced entity, to guarantee a correct string
+		 * representation if required (such as in table column display).
 		 * @param attributes the attributes to include in the referenced entity
 		 * @return this instance
 		 */

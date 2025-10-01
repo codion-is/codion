@@ -105,7 +105,9 @@ void randomPlaylist() {
     EntityConnection connection = connection();
     connection.startTransaction();
     try {
-        List<Entity> genres = connection.select(limit(Genre.TYPE, 3));
+        List<Entity> genres = connection.select(Select.all(Genre.TYPE)
+                .limit(3)
+                .build());
         
         Entity playlist = connection.execute(Playlist.RANDOM_PLAYLIST,
                 new RandomPlaylistParameters("Test Playlist", 10, genres));
@@ -127,26 +129,7 @@ Test business logic in your Swing models independently of the UI.
 
 [source,java]
 ----
-public class CountryEditModelTest {
-    
-    @Test
-    void averageCityPopulation() {
-        try (EntityConnectionProvider connectionProvider = createConnectionProvider()) {
-            CountryEditModel countryEditModel = new CountryEditModel(connectionProvider);
-            
-            // Load a country
-            countryEditModel.editor().set(connectionProvider.connection()
-                    .selectSingle(Country.NAME.equalTo("Afghanistan")));
-            
-            // Test computed values
-            assertEquals(583_025, countryEditModel.averageCityPopulation().get());
-            
-            // Test with new entity
-            countryEditModel.editor().defaults();
-            assertNull(countryEditModel.averageCityPopulation().get());
-        }
-    }
-}
+include::{dir-source}/world/src/test/java/is/codion/demos/world/model/CountryEditModelTest.java[lines=19..-1]
 ----
 
 === Table Model Testing
@@ -155,33 +138,7 @@ Test table model behavior and master-detail relationships:
 
 [source,java]
 ----
-@Test
-void albumRefreshedWhenTrackRatingIsUpdated() {
-    try (EntityConnectionProvider connectionProvider = createConnectionProvider()) {
-        EntityConnection connection = connectionProvider.connection();
-        connection.startTransaction();
-        
-        // Setup test data
-        Entity album = connection.selectSingle(Album.TITLE.equalTo("Master Of Puppets"));
-        
-        // Create model and populate
-        AlbumModel albumModel = new AlbumModel(connectionProvider);
-        SwingEntityTableModel albumTableModel = albumModel.tableModel();
-        albumTableModel.queryModel().condition().get(Album.TITLE).set()
-                .equalTo("Master Of Puppets");
-        albumTableModel.items().refresh();
-        
-        // Modify tracks through detail model
-        List<Entity> tracks = connection.select(Track.ALBUM_FK.equalTo(album));
-        tracks.forEach(track -> track.set(Track.RATING, 10));
-        albumModel.detailModels().get(Track.TYPE).editModel().update(tracks);
-        
-        // Verify album rating was updated
-        assertEquals(10, albumTableModel.items().included().get(0).get(Album.RATING));
-        
-        connection.rollbackTransaction();
-    }
-}
+include::{dir-source}/chinook/src/test/java/is/codion/demos/chinook/model/AlbumModelTest.java[lines=19..-1]
 ----
 
 == Integration Testing
@@ -192,23 +149,7 @@ Test complete workflows across multiple entities and models.
 
 [source,java]
 ----
-@Test
-void countryReport() throws JRException {
-    EntityConnectionProvider connectionProvider = createConnectionProvider();
-    EntityConnection connection = connectionProvider.connection();
-    
-    CountryReportDataSource dataSource = 
-            new CountryReportDataSource(connection, "North America");
-    
-    Map<String, Object> parameters = new HashMap<>();
-    parameters.put("CONTINENT", "North America");
-    
-    JasperPrint jasperPrint = JasperFillManager.fillReport(
-            loadReport(), parameters, dataSource);
-    
-    assertNotNull(jasperPrint);
-    assertFalse(jasperPrint.getPages().isEmpty());
-}
+include::{dir-source}/world/src/test/java/is/codion/demos/world/model/CountryReportDataSourceTest.java[lines=19..-1]
 ----
 
 == Test Utilities
