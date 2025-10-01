@@ -683,7 +683,7 @@ public class EntityPanel extends JPanel {
 			return mainPanel();
 		}
 
-		return detailLayout.layout().or(() -> Optional.of(mainPanel())).get();
+		return detailLayout.layout().orElseGet(this::mainPanel);
 	}
 
 	/**
