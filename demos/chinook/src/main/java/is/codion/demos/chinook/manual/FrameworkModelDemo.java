@@ -97,11 +97,11 @@ public final class FrameworkModelDemo {
 		// tag::observableState[]
 		SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
 		EntityEditModel editModel = customerModel.editModel();
-		EntityTableModel tableModel = customerModel.tableModel();
+		SwingEntityTableModel tableModel = customerModel.tableModel();
 
 		// Edit model states
-		State updateEnabled = editModel.updateEnabled();
-		State updateMultipleEnabled = editModel.updateMultipleEnabled();
+		State updateEnabled = editModel.settings().updateEnabled();
+		State updateMultipleEnabled = editModel.settings().updateMultipleEnabled();
 		ObservableState modified = editModel.editor().modified();
 
 		// Table model states

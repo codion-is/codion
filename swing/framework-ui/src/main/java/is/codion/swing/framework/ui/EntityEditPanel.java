@@ -529,14 +529,14 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		};
 		ControlMap controlMap = configuration.controlMap;
 		controlMap.controls().forEach(control -> control.addValidator(controlValueValidator));
-		if (!editModel().readOnly().is()) {
-			if (editModel().insertEnabled().is()) {
+		if (!editModel().settings().readOnly().is()) {
+			if (editModel().settings().insertEnabled().is()) {
 				controlMap.control(INSERT).set(createInsertControl());
 			}
-			if (editModel().updateEnabled().is()) {
+			if (editModel().settings().updateEnabled().is()) {
 				controlMap.control(UPDATE).set(createUpdateControl());
 			}
-			if (editModel().deleteEnabled().is()) {
+			if (editModel().settings().deleteEnabled().is()) {
 				controlMap.control(DELETE).set(createDeleteControl());
 			}
 		}
@@ -555,7 +555,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 						.command(deleteCommand)
 						.caption(FrameworkMessages.delete())
 						.enabled(State.and(active,
-										editModel().deleteEnabled(),
+										editModel().settings().deleteEnabled(),
 										editModel().editor().exists()))
 						.description(FrameworkMessages.deleteCurrentTip() + ALT_PREFIX + FrameworkMessages.deleteMnemonic() + ")")
 						.mnemonic(FrameworkMessages.deleteMnemonic())
@@ -605,7 +605,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 						.command(updateCommand)
 						.caption(FrameworkMessages.update())
 						.enabled(State.and(active,
-										editModel().updateEnabled(),
+										editModel().settings().updateEnabled(),
 										editModel().editor().modified()))
 						.description(FrameworkMessages.updateTip() + ALT_PREFIX + FrameworkMessages.updateMnemonic() + ")")
 						.mnemonic(FrameworkMessages.updateMnemonic())
@@ -621,7 +621,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		return Control.builder()
 						.command(insertCommand)
 						.caption(caption)
-						.enabled(State.and(active, editModel().insertEnabled()))
+						.enabled(State.and(active, editModel().settings().insertEnabled()))
 						.description(FrameworkMessages.insertTip() + ALT_PREFIX + mnemonic + ")")
 						.mnemonic(mnemonic)
 						.icon(ICONS.add())

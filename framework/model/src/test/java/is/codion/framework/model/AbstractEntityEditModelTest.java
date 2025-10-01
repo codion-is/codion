@@ -97,7 +97,7 @@ public final class AbstractEntityEditModelTest {
 		events(Employee.TYPE).updated().addWeakConsumer(updateListener);
 		events(Employee.TYPE).deleted().addWeakConsumer(deleteListener);
 
-		employeeEditModel.editEvents().set(true);
+		employeeEditModel.settings().editEvents().set(true);
 
 		EntityConnection connection = employeeEditModel.connection();
 		connection.startTransaction();
@@ -324,19 +324,19 @@ public final class AbstractEntityEditModelTest {
 
 	@Test
 	void insertReadOnly() throws CancelException {
-		employeeEditModel.readOnly().set(true);
+		employeeEditModel.settings().readOnly().set(true);
 		assertThrows(IllegalStateException.class, () -> employeeEditModel.insert());
 	}
 
 	@Test
 	void updateReadOnly() throws CancelException {
-		employeeEditModel.readOnly().set(true);
+		employeeEditModel.settings().readOnly().set(true);
 		assertThrows(IllegalStateException.class, () -> employeeEditModel.update());
 	}
 
 	@Test
 	void deleteReadOnly() throws CancelException {
-		employeeEditModel.readOnly().set(true);
+		employeeEditModel.settings().readOnly().set(true);
 		assertThrows(IllegalStateException.class, () -> employeeEditModel.delete());
 	}
 
@@ -364,11 +364,11 @@ public final class AbstractEntityEditModelTest {
 
 			employeeEditModel.afterInsert().addConsumer(insertedEntities ->
 							assertEquals(department, insertedEntities.iterator().next().get(Employee.DEPARTMENT_FK)));
-			employeeEditModel.insertEnabled().set(false);
-			assertFalse(employeeEditModel.insertEnabled().is());
+			employeeEditModel.settings().insertEnabled().set(false);
+			assertFalse(employeeEditModel.settings().insertEnabled().is());
 			assertThrows(IllegalStateException.class, () -> employeeEditModel.insert());
-			employeeEditModel.insertEnabled().set(true);
-			assertTrue(employeeEditModel.insertEnabled().is());
+			employeeEditModel.settings().insertEnabled().set(true);
+			assertTrue(employeeEditModel.settings().insertEnabled().is());
 
 			employeeEditModel.insert();
 			assertTrue(editor.exists().is());
@@ -403,17 +403,17 @@ public final class AbstractEntityEditModelTest {
 			Consumer<Map<Entity, Entity>> consumer = updatedEntities ->
 							assertEquals(toUpdate, new ArrayList<>(updatedEntities.values()));
 			employeeEditModel.afterUpdate().addConsumer(consumer);
-			employeeEditModel.updateEnabled().set(false);
-			assertFalse(employeeEditModel.updateEnabled().is());
+			employeeEditModel.settings().updateEnabled().set(false);
+			assertFalse(employeeEditModel.settings().updateEnabled().is());
 			assertThrows(IllegalStateException.class, () -> employeeEditModel.update());
-			employeeEditModel.updateEnabled().set(true);
-			assertTrue(employeeEditModel.updateEnabled().is());
+			employeeEditModel.settings().updateEnabled().set(true);
+			assertTrue(employeeEditModel.settings().updateEnabled().is());
 
 			employeeEditModel.update();
 			assertFalse(editor.modified().is());
 			employeeEditModel.afterUpdate().removeConsumer(consumer);
 
-			employeeEditModel.updateMultipleEnabled().set(false);
+			employeeEditModel.settings().updateMultipleEnabled().set(false);
 
 			Entity emp1 = connection.selectSingle(Employee.NAME.equalTo("BLAKE"));
 			emp1.set(Employee.COMMISSION, 100d);
@@ -451,7 +451,7 @@ public final class AbstractEntityEditModelTest {
 		}
 		finally {
 			connection.rollbackTransaction();
-			employeeEditModel.updateMultipleEnabled().set(true);
+			employeeEditModel.settings().updateMultipleEnabled().set(true);
 		}
 	}
 
@@ -464,11 +464,11 @@ public final class AbstractEntityEditModelTest {
 			editor.set(connection.selectSingle(Employee.NAME.equalTo("MILLER")));
 			List<Entity> toDelete = singletonList(editor.get());
 			employeeEditModel.afterDelete().addConsumer(deletedEntities -> assertTrue(toDelete.containsAll(deletedEntities)));
-			employeeEditModel.deleteEnabled().set(false);
-			assertFalse(employeeEditModel.deleteEnabled().is());
+			employeeEditModel.settings().deleteEnabled().set(false);
+			assertFalse(employeeEditModel.settings().deleteEnabled().is());
 			assertThrows(IllegalStateException.class, () -> employeeEditModel.delete());
-			employeeEditModel.deleteEnabled().set(true);
-			assertTrue(employeeEditModel.deleteEnabled().is());
+			employeeEditModel.settings().deleteEnabled().set(true);
+			assertTrue(employeeEditModel.settings().deleteEnabled().is());
 
 			employeeEditModel.delete();
 		}

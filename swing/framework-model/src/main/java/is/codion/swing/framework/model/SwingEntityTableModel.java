@@ -146,7 +146,7 @@ public class SwingEntityTableModel extends AbstractEntityTableModel<SwingEntityE
 	 */
 	@Override
 	public final boolean isCellEditable(int rowIndex, int modelColumnIndex) {
-		if (!editable().is() || editModel().readOnly().is() || !editModel().updateEnabled().is()) {
+		if (!editable().is() || editModel().settings().readOnly().is() || !editModel().settings().updateEnabled().is()) {
 			return false;
 		}
 

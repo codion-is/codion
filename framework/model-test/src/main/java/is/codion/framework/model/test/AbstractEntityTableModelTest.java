@@ -186,7 +186,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
 	@Test
 	public void deleteNotEnabled() {
-		testModel.editModel().deleteEnabled().set(false);
+		testModel.editModel().settings().deleteEnabled().set(false);
 		testModel.items().refresh();
 		testModel.selection().indexes().set(singletonList(0));
 		assertThrows(IllegalStateException.class, testModel::deleteSelected);
@@ -196,7 +196,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 	public void testTheRest() {
 		assertNotNull(testModel.connectionProvider());
 		assertNotNull(testModel.editModel());
-		assertFalse(testModel.editModel().readOnly().is());
+		assertFalse(testModel.editModel().settings().readOnly().is());
 		testModel.items().refresh();
 	}
 

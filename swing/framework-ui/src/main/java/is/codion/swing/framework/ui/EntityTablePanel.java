@@ -1113,9 +1113,9 @@ public class EntityTablePanel extends JPanel {
 
 	private ObservableState createEditAttributeEnabledState() {
 		ObservableState selectionNotEmpty = tableModel.selection().empty().not();
-		ObservableState updateEnabled = tableModel.editModel().updateEnabled();
+		ObservableState updateEnabled = tableModel.editModel().settings().updateEnabled();
 		ObservableState updateMultipleEnabledOrSingleSelection =
-						State.or(tableModel.editModel().updateMultipleEnabled(),
+						State.or(tableModel.editModel().settings().updateMultipleEnabled(),
 										tableModel.selection().single());
 
 		return State.and(selectionNotEmpty, updateEnabled, updateMultipleEnabledOrSingleSelection);
@@ -1151,7 +1151,7 @@ public class EntityTablePanel extends JPanel {
 						.command(new DeleteCommand())
 						.caption(FrameworkMessages.delete())
 						.enabled(State.and(
-										tableModel.editModel().deleteEnabled(),
+										tableModel.editModel().settings().deleteEnabled(),
 										tableModel.selection().empty().not()))
 						.description(FrameworkMessages.deleteSelectedTip())
 						.icon(ICONS.delete())
@@ -1405,8 +1405,8 @@ public class EntityTablePanel extends JPanel {
 
 	private boolean includeAddControl() {
 		return editPanel != null && configuration.includeAddControl &&
-						!tableModel.editModel().readOnly().is() &&
-						tableModel.editModel().insertEnabled().is();
+						!tableModel.editModel().settings().readOnly().is() &&
+						tableModel.editModel().settings().insertEnabled().is();
 	}
 
 	private boolean includeEditControl() {
@@ -1420,12 +1420,12 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private boolean updatable() {
-		return !tableModel.editModel().readOnly().is() &&
-						tableModel.editModel().updateEnabled().is();
+		return !tableModel.editModel().settings().readOnly().is() &&
+						tableModel.editModel().settings().updateEnabled().is();
 	}
 
 	private boolean includeDeleteControl() {
-		return !tableModel.editModel().readOnly().is() && tableModel.editModel().deleteEnabled().is();
+		return !tableModel.editModel().settings().readOnly().is() && tableModel.editModel().settings().deleteEnabled().is();
 	}
 
 	private boolean includeViewDependenciesControl() {

@@ -21,6 +21,7 @@ package is.codion.framework.model;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
 import is.codion.common.observer.Observer;
+import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -72,7 +73,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	private final Consumer<Collection<Entity>> deleteListener = new DeleteListener();
 
 	private final Events events;
-	private final States states;
+	private final DefaultSettings settings;
 
 	/**
 	 * Instantiates a new {@link AbstractEntityEditModel} based on the given entity type.
@@ -83,8 +84,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		this.entityDefinition = requireNonNull(connectionProvider).entities().definition(requireNonNull(entityType));
 		this.connectionProvider = connectionProvider;
 		this.editor = new DefaultEntityEditor(entityDefinition);
-		this.states = new States(entityDefinition.readOnly());
-		this.events = new Events();
+		this.settings = new DefaultSettings(entityDefinition.readOnly());
+		this.events = new Events(settings.editEvents);
 		addEditListeners();
 	}
 
@@ -104,33 +105,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	}
 
 	@Override
-	public final State editEvents() {
-		return states.editEvents;
-	}
-
-	@Override
-	public final State readOnly() {
-		return states.readOnly;
-	}
-
-	@Override
-	public final State insertEnabled() {
-		return states.insertEnabled;
-	}
-
-	@Override
-	public final State updateEnabled() {
-		return states.updateEnabled;
-	}
-
-	@Override
-	public final State updateMultipleEnabled() {
-		return states.updateMultipleEnabled;
-	}
-
-	@Override
-	public final State deleteEnabled() {
-		return states.deleteEnabled;
+	public final Settings settings() {
+		return settings;
 	}
 
 	@Override
@@ -477,14 +453,14 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private DefaultInsertEntities() {
 			this.entities = entityForInsert();
 			this.activeEntity = true;
-			states.verifyInsertEnabled();
+			settings.verifyInsertEnabled();
 			editor.validate(entities);
 		}
 
 		private DefaultInsertEntities(Collection<Entity> entities) {
 			this.entities = unmodifiableCollection(new ArrayList<>(entities));
 			this.activeEntity = false;
-			states.verifyInsertEnabled();
+			settings.verifyInsertEnabled();
 			editor.validate(entities);
 		}
 
@@ -544,14 +520,14 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 		private DefaultUpdateEntities() {
 			entities = singleton(editor.getOrThrow().copy().mutable());
-			states.verifyUpdateEnabled(entities.size());
+			settings.verifyUpdateEnabled(entities.size());
 			editor.validate(entities);
 			verifyModified();
 		}
 
 		private DefaultUpdateEntities(Collection<Entity> entities) {
 			this.entities = unmodifiableCollection(new ArrayList<>(entities));
-			states.verifyUpdateEnabled(entities.size());
+			settings.verifyUpdateEnabled(entities.size());
 			editor.validate(entities);
 			verifyModified(entities);
 		}
@@ -617,13 +593,13 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private DefaultDeleteEntities() {
 			this.entities = singleton(activeEntity());
 			this.activeEntity = true;
-			states.verifyDeleteEnabled();
+			settings.verifyDeleteEnabled();
 		}
 
 		private DefaultDeleteEntities(Collection<Entity> entities) {
 			this.entities = unmodifiableCollection(new ArrayList<>(entities));
 			this.activeEntity = false;
-			states.verifyDeleteEnabled();
+			settings.verifyDeleteEnabled();
 		}
 
 		@Override
@@ -671,7 +647,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		}
 	}
 
-	private final class Events {
+	private static final class Events {
 
 		private final Event<Collection<Entity>> beforeInsert = Event.event();
 		private final Event<Collection<Entity>> afterInsert = Event.event();
@@ -681,10 +657,16 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private final Event<Collection<Entity>> afterDelete = Event.event();
 		private final Event<Collection<Entity>> afterInsertUpdateOrDelete = Event.event();
 
+		private final ObservableState editEvents;
+
+		private Events(ObservableState editEvents) {
+			this.editEvents = editEvents;
+		}
+
 		private void notifyInserted(Collection<Entity> inserted) {
 			afterInsert.accept(inserted);
 			afterInsertUpdateOrDelete.accept(inserted);
-			if (states.editEvents.is()) {
+			if (editEvents.is()) {
 				DefaultEditEvents.notifyInserted(inserted);
 			}
 		}
@@ -692,7 +674,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private void notifyUpdated(Map<Entity, Entity> updated) {
 			afterUpdate.accept(updated);
 			afterInsertUpdateOrDelete.accept(updated.values());
-			if (states.editEvents.is()) {
+			if (editEvents.is()) {
 				DefaultEditEvents.notifyUpdated(updated);
 			}
 		}
@@ -700,13 +682,13 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private void notifyDeleted(Collection<Entity> deleted) {
 			afterDelete.accept(deleted);
 			afterInsertUpdateOrDelete.accept(deleted);
-			if (states.editEvents.is()) {
+			if (editEvents.is()) {
 				DefaultEditEvents.notifyDeleted(deleted);
 			}
 		}
 	}
 
-	private static final class States {
+	private static final class DefaultSettings implements Settings {
 
 		private final State readOnly;
 		private final State insertEnabled = State.state(true);
@@ -715,8 +697,38 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private final State deleteEnabled = State.state(true);
 		private final State editEvents = State.state(EDIT_EVENTS.getOrThrow());
 
-		private States(boolean readOnly) {
+		private DefaultSettings(boolean readOnly) {
 			this.readOnly = State.state(readOnly);
+		}
+
+		@Override
+		public State editEvents() {
+			return editEvents;
+		}
+
+		@Override
+		public State readOnly() {
+			return readOnly;
+		}
+
+		@Override
+		public State insertEnabled() {
+			return insertEnabled;
+		}
+
+		@Override
+		public State updateEnabled() {
+			return updateEnabled;
+		}
+
+		@Override
+		public State updateMultipleEnabled() {
+			return updateMultipleEnabled;
+		}
+
+		@Override
+		public State deleteEnabled() {
+			return deleteEnabled;
 		}
 
 		private void verifyInsertEnabled() {

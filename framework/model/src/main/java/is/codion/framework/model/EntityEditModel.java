@@ -50,7 +50,7 @@ import static is.codion.common.Configuration.booleanValue;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Specifies a class for editing {@link Entity} instances.
+ * Specifies a class for editing an {@link Entity} instance.
  * The underlying attribute values are available via {@link EntityEditor#value(Attribute)}.
  * @see #editor()
  */
@@ -62,7 +62,7 @@ public interface EntityEditModel {
 	 * <li>Value type: Boolean
 	 * <li>Default value: true
 	 * </ul>
-	 * @see #editEvents()
+	 * @see Settings#editEvents()
 	 */
 	PropertyValue<Boolean> EDIT_EVENTS = booleanValue(EntityEditModel.class.getName() + ".editEvents", true);
 
@@ -104,39 +104,9 @@ public interface EntityEditModel {
 	EntityDefinition entityDefinition();
 
 	/**
-	 * Making this edit model read-only prevents any changes from being
-	 * persisted to the database, trying to insert, update or delete will
-	 * cause an exception being thrown, it does not prevent editing.
-	 * Use {@link #insertEnabled()}, {@link #updateEnabled()} and {@link #deleteEnabled()}
-	 * to configure the enabled state of those specific actions.
-	 * @return the {@link State} controlling whether this model is read only
+	 * @return the edit model settings
 	 */
-	State readOnly();
-
-	/**
-	 * Disabling insert causes an exception being thrown when inserting.
-	 * @return the {@link State} controlling whether inserting is enabled via this edit model
-	 */
-	State insertEnabled();
-
-	/**
-	 * Disabling update causes an exception being thrown when updating.
-	 * @return the {@link State} controlling whether updating is enabled via this edit model
-	 */
-	State updateEnabled();
-
-	/**
-	 * Disabling updating multiple entities causes an exception being thrown when
-	 * trying to update multiple entities at a time.
-	 * @return the {@link State} controlling whether updating multiple entities is enabled
-	 */
-	State updateMultipleEnabled();
-
-	/**
-	 * Disabling delete causes an exception being thrown when deleting.
-	 * @return the {@link State} controlling whether deleting is enabled via this edit model
-	 */
-	State deleteEnabled();
+	Settings settings();
 
 	/**
 	 * <p>Creates a {@link EntitySearchModel} for looking up entities of the type referenced by the given foreign key,
@@ -157,13 +127,6 @@ public interface EntityEditModel {
 	EntitySearchModel searchModel(ForeignKey foreignKey);
 
 	/**
-	 * @return a state controlling whether this edit model posts insert, update and delete events
-	 * on the {@link EditEvents} event bus.
-	 * @see #EDIT_EVENTS
-	 */
-	State editEvents();
-
-	/**
 	 * Refreshes the active Entity from the database, discarding all changes.
 	 * If the active Entity is new then calling this method has no effect.
 	 */
@@ -177,9 +140,9 @@ public interface EntityEditModel {
 	 * @throws DatabaseException in case of a database exception
 	 * @throws ValidationException in case validation fails
 	 * @throws IllegalStateException in case inserting is not enabled
-	 * @see #beforeInsert()
+	 * @see Settings#beforeInsert()
 	 * @see #afterInsert()
-	 * @see #insertEnabled()
+	 * @see Settings#insertEnabled()
 	 * @see EntityEditor#validate(Entity)
 	 */
 	Entity insert();
@@ -194,7 +157,7 @@ public interface EntityEditModel {
 	 * @throws IllegalStateException in case inserting is not enabled
 	 * @see #beforeInsert()
 	 * @see #afterInsert()
-	 * @see #insertEnabled()
+	 * @see Settings#insertEnabled()
 	 * @see EntityEditor#validate(Entity)
 	 */
 	Collection<Entity> insert(Collection<Entity> entities);
@@ -210,7 +173,7 @@ public interface EntityEditModel {
 	 * @throws is.codion.common.db.exception.UpdateException in case the active entity is not modified
 	 * @see #beforeUpdate()
 	 * @see #afterUpdate()
-	 * @see #updateEnabled()
+	 * @see Settings#updateEnabled()
 	 * @see EntityEditor#validate(Entity)
 	 */
 	Entity update();
@@ -227,7 +190,7 @@ public interface EntityEditModel {
 	 * @throws is.codion.common.db.exception.UpdateException in case any of the given entities are not modified
 	 * @see #beforeUpdate()
 	 * @see #afterUpdate()
-	 * @see #updateEnabled()
+	 * @see Settings#updateEnabled()
 	 * @see EntityEditor#validate(Entity)
 	 */
 	Collection<Entity> update(Collection<Entity> entities);
@@ -239,7 +202,7 @@ public interface EntityEditModel {
 	 * @throws IllegalStateException in case deleting is not enabled
 	 * @see #beforeDelete()
 	 * @see #afterDelete()
-	 * @see #deleteEnabled()
+	 * @see Settings#deleteEnabled()
 	 */
 	Entity delete();
 
@@ -251,7 +214,7 @@ public interface EntityEditModel {
 	 * @throws IllegalStateException in case deleting is not enabled
 	 * @see #beforeDelete()
 	 * @see #afterDelete()
-	 * @see #deleteEnabled()
+	 * @see Settings#deleteEnabled()
 	 */
 	Collection<Entity> delete(Collection<Entity> entities);
 
@@ -260,7 +223,7 @@ public interface EntityEditModel {
 	 * @return a new {@link EditTask} instance
 	 * @throws IllegalStateException in inserting is not enabled
 	 * @throws ValidationException in case validation fails
-	 * @see #insertEnabled()
+	 * @see Settings#insertEnabled()
 	 */
 	EditTask insertTask();
 
@@ -270,7 +233,7 @@ public interface EntityEditModel {
 	 * @return a new {@link EditTask} instance
 	 * @throws IllegalStateException in inserting is not enabled
 	 * @throws ValidationException in case validation fails
-	 * @see #insertEnabled()
+	 * @see Settings#insertEnabled()
 	 */
 	EditTask insertTask(Collection<Entity> entities);
 
@@ -279,7 +242,7 @@ public interface EntityEditModel {
 	 * @return a new {@link EditTask} instance
 	 * @throws IllegalStateException in case the active entity is unmodified or if updating is not enabled
 	 * @throws ValidationException in case validation fails
-	 * @see #updateEnabled()
+	 * @see Settings#updateEnabled()
 	 */
 	EditTask updateTask();
 
@@ -289,7 +252,7 @@ public interface EntityEditModel {
 	 * @return a new {@link EditTask} instance
 	 * @throws IllegalStateException in case any of the given entities are unmodified or if updating is not enabled
 	 * @throws ValidationException in case validation fails
-	 * @see #updateEnabled()
+	 * @see Settings#updateEnabled()
 	 */
 	EditTask updateTask(Collection<Entity> entities);
 
@@ -297,7 +260,7 @@ public interface EntityEditModel {
 	 * Creates a new {@link EditTask} instance for deleting the active entity.
 	 * @return a new {@link EditTask} instance
 	 * @throws IllegalStateException in deleting is not enabled
-	 * @see #deleteEnabled()
+	 * @see Settings#deleteEnabled()
 	 */
 	EditTask deleteTask();
 
@@ -306,7 +269,7 @@ public interface EntityEditModel {
 	 * @param entities the entities to delete
 	 * @return a new {@link EditTask} instance
 	 * @throws IllegalStateException in deleting is not enabled
-	 * @see #deleteEnabled()
+	 * @see Settings#deleteEnabled()
 	 */
 	EditTask deleteTask(Collection<Entity> entities);
 
@@ -376,6 +339,54 @@ public interface EntityEditModel {
 	 */
 	static EditEvents events(EntityType entityType) {
 		return AbstractEntityEditModel.EVENTS.computeIfAbsent(requireNonNull(entityType), k -> new DefaultEditEvents());
+	}
+
+	/**
+	 * The edit model settings.
+	 */
+	interface Settings {
+
+		/**
+		 * Making this edit model read-only prevents any changes from being
+		 * persisted to the database, trying to insert, update or delete will
+		 * cause an exception being thrown, it does not prevent editing.
+		 * Use {@link #insertEnabled()}, {@link #updateEnabled()} and {@link #deleteEnabled()}
+		 * to configure the enabled state of those specific actions.
+		 * @return the {@link State} controlling whether this model is read only
+		 */
+		State readOnly();
+
+		/**
+		 * Disabling insert causes an exception being thrown when inserting.
+		 * @return the {@link State} controlling whether inserting is enabled via this edit model
+		 */
+		State insertEnabled();
+
+		/**
+		 * Disabling update causes an exception being thrown when updating.
+		 * @return the {@link State} controlling whether updating is enabled via this edit model
+		 */
+		State updateEnabled();
+
+		/**
+		 * Disabling updating multiple entities causes an exception being thrown when
+		 * trying to update multiple entities at a time.
+		 * @return the {@link State} controlling whether updating multiple entities is enabled
+		 */
+		State updateMultipleEnabled();
+
+		/**
+		 * Disabling delete causes an exception being thrown when deleting.
+		 * @return the {@link State} controlling whether deleting is enabled via this edit model
+		 */
+		State deleteEnabled();
+
+		/**
+		 * @return a state controlling whether this edit model posts insert, update and delete events
+		 * on the {@link EditEvents} event bus.
+		 * @see #EDIT_EVENTS
+		 */
+		State editEvents();
 	}
 
 	/**
@@ -674,7 +685,7 @@ public interface EntityEditModel {
 
 	/**
 	 * @see EntityEditModel#EDIT_EVENTS
-	 * @see EntityEditModel#editEvents()
+	 * @see Settings#editEvents()
 	 * @see #events(EntityType)
 	 */
 	interface EditEvents {
