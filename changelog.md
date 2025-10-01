@@ -14,6 +14,8 @@ Codion Change Log
 - EntityDefinition.Attributes.updatable() removed.
 ### is.codion.framework.domain.db
 - SchemaDomain.SchemaSettings.viewSuffix(), auditColumnNames() and hideAuditColumns() added.
+### is.codion.framework.model
+- EntityEditModel.createInsert(), createUpdate() and createDelete() renamed insertTask(), updateTask() and deleteTask().
 ### is.codion.swing.framework.ui
 - EntitySearchFieldPanel.Builder.preferredSearchFieldWidth() added.
 - EntityPanel.createMainComponent() bug fixed, mainPanel() got called twice if a detail panel was present, messing up the controls panel, now supplier based.

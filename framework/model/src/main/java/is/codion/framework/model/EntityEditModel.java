@@ -262,7 +262,7 @@ public interface EntityEditModel {
 	 * @throws ValidationException in case validation fails
 	 * @see #insertEnabled()
 	 */
-	EditTask createInsert();
+	EditTask insertTask();
 
 	/**
 	 * Creates a new {@link EditTask} instance for inserting the given entities.
@@ -272,7 +272,7 @@ public interface EntityEditModel {
 	 * @throws ValidationException in case validation fails
 	 * @see #insertEnabled()
 	 */
-	EditTask createInsert(Collection<Entity> entities);
+	EditTask insertTask(Collection<Entity> entities);
 
 	/**
 	 * Creates a new {@link EditTask} instance for updating the active entity.
@@ -281,7 +281,7 @@ public interface EntityEditModel {
 	 * @throws ValidationException in case validation fails
 	 * @see #updateEnabled()
 	 */
-	EditTask createUpdate();
+	EditTask updateTask();
 
 	/**
 	 * Creates a new {@link EditTask} instance for updating the given entities.
@@ -291,7 +291,7 @@ public interface EntityEditModel {
 	 * @throws ValidationException in case validation fails
 	 * @see #updateEnabled()
 	 */
-	EditTask createUpdate(Collection<Entity> entities);
+	EditTask updateTask(Collection<Entity> entities);
 
 	/**
 	 * Creates a new {@link EditTask} instance for deleting the active entity.
@@ -299,7 +299,7 @@ public interface EntityEditModel {
 	 * @throws IllegalStateException in deleting is not enabled
 	 * @see #deleteEnabled()
 	 */
-	EditTask createDelete();
+	EditTask deleteTask();
 
 	/**
 	 * Creates a new {@link EditTask} instance for deleting the given entities.
@@ -308,7 +308,7 @@ public interface EntityEditModel {
 	 * @throws IllegalStateException in deleting is not enabled
 	 * @see #deleteEnabled()
 	 */
-	EditTask createDelete(Collection<Entity> entities);
+	EditTask deleteTask(Collection<Entity> entities);
 
 	/**
 	 * @return an observer notified before insert is performed, after validation

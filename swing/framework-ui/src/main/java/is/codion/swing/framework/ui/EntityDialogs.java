@@ -386,7 +386,7 @@ public final class EntityDialogs {
 				editModel.applyEdit(entities, attribute, newValue);
 				try {
 					Dialogs.progressWorker()
-									.task(editModel.createUpdate(entities.stream()
+									.task(editModel.updateTask(entities.stream()
 													.filter(Entity::modified)
 													.collect(toList())).prepare()::perform)
 									.title(EDIT_PANEL_MESSAGES.getString("updating"))

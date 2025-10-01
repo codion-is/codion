@@ -1134,7 +1134,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		public void execute() {
 			if (!confirm || editPanel.confirmInsert()) {
 				Dialogs.progressWorker()
-								.task(editPanel.editModel().createInsert().prepare()::perform)
+								.task(editPanel.editModel().insertTask().prepare()::perform)
 								.title(MESSAGES.getString("inserting"))
 								.owner(editPanel)
 								.onResult(this::handleResult)
@@ -1207,7 +1207,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		public void execute() {
 			if (!confirm || editPanel.confirmUpdate()) {
 				Dialogs.progressWorker()
-								.task(editPanel.editModel().createUpdate().prepare()::perform)
+								.task(editPanel.editModel().updateTask().prepare()::perform)
 								.title(MESSAGES.getString("updating"))
 								.owner(editPanel)
 								.onResult(this::handleResult)
@@ -1274,7 +1274,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		public void execute() {
 			if (!confirm || editPanel.confirmDelete()) {
 				Dialogs.progressWorker()
-								.task(editPanel.editModel().createDelete().prepare()::perform)
+								.task(editPanel.editModel().deleteTask().prepare()::perform)
 								.title(MESSAGES.getString("deleting"))
 								.owner(editPanel)
 								.onResult(this::handleResult)

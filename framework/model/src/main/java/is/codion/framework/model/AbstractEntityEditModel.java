@@ -162,61 +162,61 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 	@Override
 	public final Entity insert() {
-		return createInsert().prepare().perform().handle().iterator().next();
+		return insertTask().prepare().perform().handle().iterator().next();
 	}
 
 	@Override
 	public final Collection<Entity> insert(Collection<Entity> entities) {
-		return createInsert(entities).prepare().perform().handle();
+		return insertTask(entities).prepare().perform().handle();
 	}
 
 	@Override
 	public final Entity update() {
-		return createUpdate().prepare().perform().handle().iterator().next();
+		return updateTask().prepare().perform().handle().iterator().next();
 	}
 
 	@Override
 	public final Collection<Entity> update(Collection<Entity> entities) {
-		return createUpdate(entities).prepare().perform().handle();
+		return updateTask(entities).prepare().perform().handle();
 	}
 
 	@Override
 	public final Entity delete() {
-		return createDelete().prepare().perform().handle().iterator().next();
+		return deleteTask().prepare().perform().handle().iterator().next();
 	}
 
 	@Override
 	public final Collection<Entity> delete(Collection<Entity> entities) {
-		return createDelete(entities).prepare().perform().handle();
+		return deleteTask(entities).prepare().perform().handle();
 	}
 
 	@Override
-	public final EditTask createInsert() {
+	public final EditTask insertTask() {
 		return new DefaultInsertEntities();
 	}
 
 	@Override
-	public final EditTask createInsert(Collection<Entity> entities) {
+	public final EditTask insertTask(Collection<Entity> entities) {
 		return new DefaultInsertEntities(entities);
 	}
 
 	@Override
-	public final EditTask createUpdate() {
+	public final EditTask updateTask() {
 		return new DefaultUpdateEntities();
 	}
 
 	@Override
-	public final EditTask createUpdate(Collection<Entity> entities) {
+	public final EditTask updateTask(Collection<Entity> entities) {
 		return new DefaultUpdateEntities(entities);
 	}
 
 	@Override
-	public final EditTask createDelete() {
+	public final EditTask deleteTask() {
 		return new DefaultDeleteEntities();
 	}
 
 	@Override
-	public final EditTask createDelete(Collection<Entity> entities) {
+	public final EditTask deleteTask(Collection<Entity> entities) {
 		return new DefaultDeleteEntities(entities);
 	}
 
