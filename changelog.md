@@ -23,6 +23,8 @@ Codion Change Log
 - EntityTablePanelPreferences bug fixed, now logs json parsing errors instead of crashing.
 - EntityApplicationPanel.handleUnsavedModifications() bug fixed, no longer exits on ESC in warning dialog.
 - EntityTablePanel.Config.editableAttributes() added.
+### is.codion.plugin.swing.mcp
+- SwingMcpServer keyboard input simplified.
 ### is.codion.tools.generator.domain
 - DomainSource refactored and improved concerning read-only entities and columns, tests improved.
 ### is.codion.tools.generator.model

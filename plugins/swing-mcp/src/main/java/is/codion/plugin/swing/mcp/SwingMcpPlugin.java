@@ -52,7 +52,6 @@ public final class SwingMcpPlugin {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SwingMcpPlugin.class);
 
-
 	/**
 	 * System property to set the HTTP server port (default: 8080).
 	 * <ul>
@@ -66,8 +65,6 @@ public final class SwingMcpPlugin {
 	private static final String WIDTH = "width";
 	private static final String HEIGHT = "height";
 	private static final String IMAGE = "image";
-	private static final String BACKWARD = "backward";
-	private static final String FORWARD = "forward";
 	private static final String CODION_SWING_MCP = "codion-swing-mcp";
 	private static final String SERVER_STARTUP_INFO = "Started MCP HTTP server for Swing application";
 	private static final String SERVER_STOPPED_INFO = "Stopped MCP server";
@@ -171,30 +168,15 @@ public final class SwingMcpPlugin {
 						}
 		));
 
-		// Key combination tool
+		// Key combination tool - handles all keyboard input
 		httpServer.addTool(new HttpTool(
-						KEY_COMBO, "Press a key combination using Swing KeyStroke format",
-						SwingMcpServer.createSchema("combo", STRING, "The key combination in Swing format (e.g., 'control alt UP', 'shift INSERT', 'alt A', 'control DOWN')"),
+						KEY_COMBO, "Press a key combination using AWT KeyStroke format",
+						SwingMcpServer.createSchema("combo", STRING, "Key combination in AWT format. Examples: 'ENTER', 'TAB', 'control S', 'shift TAB', 'alt F4', 'UP', 'DOWN', 'typed a', 'F5'"),
 						arguments -> {
 							String combo = (String) arguments.get("combo");
 							swingMcpServer.keyCombo(combo);
 
-							return "Key combination pressed";
-						}
-		));
-
-		// Tab navigation tool
-		httpServer.addTool(new HttpTool(
-						TAB, "Press Tab to navigate fields",
-						SwingMcpServer.createTwoPropertySchema(COUNT, NUMBER, "Number of times to press Tab (default: 1)",
-										SHIFT, BOOLEAN, "Hold Shift for backward navigation (default: false)"),
-						arguments -> {
-							int count = integerParam(arguments, COUNT, 1);
-							boolean shift = booleanParam(arguments, SHIFT, false);
-							swingMcpServer.tab(count, shift);
-							String direction = shift ? BACKWARD : FORWARD;
-
-							return "Tabbed " + direction + " " + count + " times";
+							return "Key combination '" + combo + "' pressed";
 						}
 		));
 
@@ -239,28 +221,6 @@ public final class SwingMcpPlugin {
 						}
 		));
 
-		// Enter key tool
-		httpServer.addTool(new HttpTool(
-						ENTER, "Press Enter key (transfers focus between fields in Codion apps)",
-						INPUT_SCHEMA,
-						arguments -> {
-							swingMcpServer.enter();
-
-							return "Enter key pressed";
-						}
-		));
-
-		// Escape key tool  
-		httpServer.addTool(new HttpTool(
-						ESCAPE, "Press Escape key",
-						INPUT_SCHEMA,
-						arguments -> {
-							swingMcpServer.escape();
-
-							return "Escape key pressed";
-						}
-		));
-
 		// Clear field tool
 		httpServer.addTool(new HttpTool(
 						CLEAR_FIELD, "Clear the current field by selecting all and deleting",
@@ -269,20 +229,6 @@ public final class SwingMcpPlugin {
 							swingMcpServer.clearField();
 
 							return "Field cleared";
-						}
-		));
-
-		// Arrow key navigation tool
-		httpServer.addTool(new HttpTool(
-						ARROW, "Press arrow keys for navigation",
-						SwingMcpServer.createTwoPropertySchema("direction", STRING, "Direction: 'up', 'down', 'left', or 'right'",
-										COUNT, NUMBER, "Number of times to press (default: 1)"),
-						arguments -> {
-							String direction = (String) arguments.get("direction");
-							int count = integerParam(arguments, COUNT, 1);
-							swingMcpServer.arrow(direction, count);
-
-							return "Arrow " + direction + " pressed " + count + " times";
 						}
 		));
 	}

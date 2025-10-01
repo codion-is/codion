@@ -243,10 +243,11 @@
             <div class="tool-section">
                 <h3>⌨️ Keyboard Actions</h3>
                 <div class="tool-grid">
-                    <button class="tool-button" onclick="callTool('enter')">Enter</button>
-                    <button class="tool-button" onclick="callTool('escape')">Escape</button>
-                    <button class="tool-button" onclick="callTool('tab')">Tab</button>
-                    <button class="tool-button" onclick="callTool('tab', {shift: true})">Shift+Tab</button>
+                    <button class="tool-button" onclick="pressSimpleKey('ENTER')">Enter</button>
+                    <button class="tool-button" onclick="pressSimpleKey('shift ENTER')">Shift+Enter</button>
+                    <button class="tool-button" onclick="pressSimpleKey('ESCAPE')">Escape</button>
+                    <button class="tool-button" onclick="pressSimpleKey('TAB')">Tab</button>
+                    <button class="tool-button" onclick="pressSimpleKey('shift TAB')">Shift+Tab</button>
                     <button class="tool-button danger" onclick="callTool('clear_field')">Clear Field</button>
                 </div>
             </div>
@@ -255,19 +256,18 @@
                 <h3>🖱️ Navigation</h3>
                 <div class="arrow-grid">
                     <div class="empty"></div>
-                    <button class="tool-button" onclick="arrow('up')">↑</button>
+                    <button class="tool-button" onclick="pressSimpleKey('UP')">↑</button>
                     <div class="empty"></div>
-                    <button class="tool-button" onclick="arrow('left')">←</button>
+                    <button class="tool-button" onclick="pressSimpleKey('LEFT')">←</button>
                     <div class="empty"></div>
-                    <button class="tool-button" onclick="arrow('right')">→</button>
+                    <button class="tool-button" onclick="pressSimpleKey('RIGHT')">→</button>
                     <div class="empty"></div>
-                    <button class="tool-button" onclick="arrow('down')">↓</button>
+                    <button class="tool-button" onclick="pressSimpleKey('DOWN')">↓</button>
                     <div class="empty"></div>
                 </div>
-                <div class="input-group">
-                    <label>Count:</label>
-                    <input type="number" id="arrowCount" value="1" min="1" max="10" style="max-width: 60px;">
-                </div>
+                <p style="font-size: 12px; color: #666; margin: 10px 0 0 0;">
+                    Tip: Click multiple times for repeated presses, or use key combos like "shift UP"
+                </p>
             </div>
         </div>
 
@@ -292,16 +292,18 @@
                 <h3>🎹 Key Combinations</h3>
                 <div class="input-group">
                     <label>Combo:</label>
-                    <input type="text" id="keyCombo" placeholder="ctrl a">
+                    <input type="text" id="keyCombo" placeholder="ctrl A">
                     <button class="tool-button" onclick="pressKeyCombo()">Press</button>
                 </div>
                 <div style="margin-top: 10px;">
-                    <button class="tool-button secondary" onclick="pressPresetCombo('ctrl a')">Select All</button>
-                    <button class="tool-button secondary" onclick="pressPresetCombo('ctrl c')">Copy</button>
-                    <button class="tool-button secondary" onclick="pressPresetCombo('ctrl v')">Paste</button>
-                    <button class="tool-button secondary" onclick="pressPresetCombo('ctrl z')">Undo</button>
+                    <button class="tool-button secondary" onclick="pressPresetCombo('control A')">Select All</button>
+                    <button class="tool-button secondary" onclick="pressPresetCombo('control C')">Copy</button>
+                    <button class="tool-button secondary" onclick="pressPresetCombo('control V')">Paste</button>
+                    <button class="tool-button secondary" onclick="pressPresetCombo('control Z')">Undo</button>
                     <button class="tool-button secondary" onclick="pressPresetCombo('alt TAB')">Alt+Tab</button>
                     <button class="tool-button secondary" onclick="pressPresetCombo('F5')">F5</button>
+                    <button class="tool-button secondary" onclick="pressPresetCombo('DELETE')">Delete</button>
+                    <button class="tool-button secondary" onclick="pressPresetCombo('shift INSERT')">Shift+Insert</button>
                 </div>
             </div>
 
@@ -439,14 +441,21 @@
         }
     }
 
+    function pressKeyCombo() {
+        const combo = document.getElementById('keyCombo').value;
+        if (combo) {
+            callTool('key_combo', {combo});
+        }
+    }
+
     function pressPresetCombo(combo) {
         document.getElementById('keyCombo').value = combo;
         callTool('key_combo', {combo});
     }
 
-    function arrow(direction) {
-        const count = parseInt(document.getElementById('arrowCount').value) || 1;
-        callTool('arrow', {direction, count});
+    // Simple function for direct key combo buttons (arrows, enter, etc.)
+    function pressSimpleKey(combo) {
+        callTool('key_combo', {combo});
     }
 
     async function listTools() {
@@ -484,35 +493,51 @@
         await sleep(200);
         await callTool('type_text', {text: 'John Doe'});
         await sleep(200);
-        await callTool('tab');
+        await callTool('key_combo', {combo: 'TAB'});
         await sleep(200);
         await callTool('type_text', {text: 'john.doe@example.com'});
         await sleep(200);
-        await callTool('tab');
+        await callTool('key_combo', {combo: 'TAB'});
         await sleep(200);
         await callTool('type_text', {text: '2024-01-15'});
         displayResult('test_sequence', {message: 'Form fill test completed'});
     }
 
     async function runNavigationTest() {
-        await callTool('arrow', {direction: 'down', count: 3});
-        await sleep(300);
-        await callTool('arrow', {direction: 'up', count: 2});
-        await sleep(300);
-        await callTool('arrow', {direction: 'right', count: 5});
-        await sleep(300);
-        await callTool('arrow', {direction: 'left', count: 3});
+        // Press down arrow 3 times
+        for (let i = 0; i < 3; i++) {
+            await callTool('key_combo', {combo: 'DOWN'});
+            await sleep(100);
+        }
+        await sleep(200);
+        // Press up arrow 2 times
+        for (let i = 0; i < 2; i++) {
+            await callTool('key_combo', {combo: 'UP'});
+            await sleep(100);
+        }
+        await sleep(200);
+        // Press right arrow 5 times
+        for (let i = 0; i < 5; i++) {
+            await callTool('key_combo', {combo: 'RIGHT'});
+            await sleep(60);
+        }
+        await sleep(200);
+        // Press left arrow 3 times
+        for (let i = 0; i < 3; i++) {
+            await callTool('key_combo', {combo: 'LEFT'});
+            await sleep(60);
+        }
         displayResult('test_sequence', {message: 'Navigation test completed'});
     }
 
     async function runCopyPasteTest() {
-        await callTool('key_combo', {combo: 'ctrl a'});
+        await callTool('key_combo', {combo: 'control a'});
         await sleep(200);
-        await callTool('key_combo', {combo: 'ctrl c'});
+        await callTool('key_combo', {combo: 'control c'});
         await sleep(200);
-        await callTool('tab');
+        await callTool('key_combo', {combo: 'TAB'});
         await sleep(200);
-        await callTool('key_combo', {combo: 'ctrl v'});
+        await callTool('key_combo', {combo: 'control v'});
         displayResult('test_sequence', {message: 'Copy/paste test completed'});
     }
 

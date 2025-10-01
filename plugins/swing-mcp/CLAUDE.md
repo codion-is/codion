@@ -41,12 +41,8 @@ The swing-mcp module allows:
 
 ### Keyboard Tools
 - **type_text** - Type text into focused field
-- **key_combo** - Press key combinations (e.g., "control alt S", "shift F10")
-- **tab** - Tab navigation (with shift for reverse)
-- **arrow** - Arrow key navigation
-- **enter** - Press Enter key
-- **escape** - Press Escape key
-- **clear_field** - Select all and delete
+- **key_combo** - Press any key combination using AWT KeyStroke format (replaces tab, arrow, enter, escape)
+- **clear_field** - Select all and delete (convenience function)
 
 ### Screenshot Tools
 - **app_screenshot** - Application window screenshot (works even when obscured!)
@@ -176,10 +172,28 @@ window.paint(graphics);
 This approach works regardless of window visibility or z-order.
 
 ### Key Combination Format
-Uses Swing KeyStroke format directly:
+Uses AWT KeyStroke format directly - supports any key combination:
+
+**Single Keys:**
+- "ENTER", "TAB", "ESCAPE", "DELETE", "INSERT"
+- "F1", "F2", ..., "F12"
+- "UP", "DOWN", "LEFT", "RIGHT"
+
+**With Modifiers:**
 - "control S" - Ctrl+S
 - "alt shift F10" - Alt+Shift+F10
+- "shift TAB" - Shift+Tab for backward navigation
 - "control alt DELETE" - Ctrl+Alt+Delete
+
+**Typed Characters:**
+- "typed a" - Type lowercase 'a'
+- "typed A" - Type uppercase 'A'
+- "typed !" - Type exclamation mark
+
+**Navigation Examples:**
+- "UP", "DOWN", "LEFT", "RIGHT" - Arrow keys
+- "shift UP" - Shift+Up for selection
+- "control HOME" - Ctrl+Home
 
 ### JSON Serialization
 All JSON responses use Jackson ObjectMapper with record classes:
@@ -231,7 +245,18 @@ All JSON responses use Jackson ObjectMapper with record classes:
 ### Key Combinations Not Working
 - Use lowercase for modifier keys: "control", not "CONTROL"
 - Separate with spaces: "control alt S", not "control+alt+S"
-- Check KeyEvent constants for valid key names
+- Use uppercase for key names: "ENTER", "TAB", "UP", "DOWN"
+- For typed characters use: "typed a", not just "a"
+- Check KeyEvent VK_ constants for valid key names (without VK_ prefix)
+
+**Examples:**
+- ✅ "control S" (Save)
+- ✅ "shift TAB" (Backward navigation)
+- ✅ "ENTER" (Confirm)
+- ✅ "typed @" (Type @ symbol)
+- ❌ "ctrl+s" (wrong format)
+- ❌ "CONTROL S" (wrong case)
+- ❌ "enter" (wrong case for key name)
 
 ## Code Style Notes
 

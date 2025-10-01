@@ -76,10 +76,6 @@ final class SwingMcpServer {
 	// Tool names (public for SwingMcpPlugin)
 	static final String TYPE_TEXT = "type_text";
 	static final String KEY_COMBO = "key_combo";
-	static final String TAB = "tab";
-	static final String ARROW = "arrow";
-	static final String ENTER = "enter";
-	static final String ESCAPE = "escape";
 	static final String CLEAR_FIELD = "clear_field";
 	static final String APP_SCREENSHOT = "app_screenshot";
 	static final String ACTIVE_WINDOW_SCREENSHOT = "active_window_screenshot";
@@ -87,12 +83,8 @@ final class SwingMcpServer {
 	static final String FOCUS_WINDOW = "focus_window";
 
 	static final String TEXT = "text";
-	static final String COUNT = "count";
-	static final String SHIFT = "shift";
 	static final String FORMAT = "format";
 	static final String STRING = "string";
-	static final String NUMBER = "number";
-	static final String BOOLEAN = "boolean";
 	static final String PNG = "png";
 	static final String IMAGE_FORMAT = "Image format: 'png' or 'jpg' (default: 'png')";
 
@@ -131,49 +123,14 @@ final class SwingMcpServer {
 	}
 
 	/**
-	 * Press a key combination like Alt+A or Ctrl+S
-	 * @param combo the key combination (e.g., "Alt+A", "Ctrl+Shift+S")
+	 * Press a key combination using AWT KeyStroke format.
+	 * Examples: "ENTER", "TAB", "control S", "shift TAB", "alt F4", "UP", "typed a"
+	 * @param combo the key combination in AWT KeyStroke format
 	 */
 	void keyCombo(String combo) {
 		LOG.debug("Key combo: {}", combo);
 		focusActiveWindow();
 		keyboardController.pressKeyCombo(combo);
-	}
-
-	/**
-	 * Press Tab to navigate fields
-	 * @param count number of times to press Tab
-	 * @param shift whether to hold Shift (for backward navigation)
-	 */
-	void tab(int count, boolean shift) {
-		focusActiveWindow();
-		keyboardController.tab(count, shift);
-	}
-
-	/**
-	 * Press Enter key
-	 */
-	void enter() {
-		focusActiveWindow();
-		keyboardController.enter();
-	}
-
-	/**
-	 * Press Escape key
-	 */
-	void escape() {
-		focusActiveWindow();
-		keyboardController.escape();
-	}
-
-	/**
-	 * Press arrow keys for navigation
-	 * @param direction "up", "down", "left", or "right"
-	 * @param count number of times to press the arrow key
-	 */
-	void arrow(String direction, int count) {
-		focusActiveWindow();
-		keyboardController.arrow(direction, count);
 	}
 
 	/**
@@ -557,67 +514,71 @@ final class SwingMcpServer {
 			}
 		}
 
-		private void pressKeyCombo(String combo) {
-			try {
-				// Use combo directly as Swing KeyStroke format
-				LOG.debug("Using key combo: '{}'", combo);
+		void pressKeyCombo(String combo) {
+			requireNonNull(combo, "Key combination cannot be null");
+			LOG.debug("Processing key combo: '{}'", combo);
 
-				KeyStroke keyStroke = KeyStroke.getKeyStroke(combo);
-				if (keyStroke == null) {
-					throw new IllegalArgumentException("Invalid key combination: " + combo);
-				}
-
-				int keyCode = keyStroke.getKeyCode();
-				int modifiers = keyStroke.getModifiers();
-
-				LOG.debug("KeyStroke - keyCode: {} (char: {}), modifiers: {} (binary: {})",
-								keyCode, KeyEvent.getKeyText(keyCode), modifiers, Integer.toBinaryString(modifiers));
-
-				// Press modifier keys first
-				if ((modifiers & InputEvent.CTRL_DOWN_MASK) != 0) {
-					LOG.debug("Pressing CTRL");
-					robot.keyPress(KeyEvent.VK_CONTROL);
-				}
-				if ((modifiers & InputEvent.ALT_DOWN_MASK) != 0) {
-					LOG.debug("Pressing ALT");
-					robot.keyPress(KeyEvent.VK_ALT);
-				}
-				if ((modifiers & InputEvent.SHIFT_DOWN_MASK) != 0) {
-					LOG.debug("Pressing SHIFT");
-					robot.keyPress(KeyEvent.VK_SHIFT);
-				}
-				if ((modifiers & InputEvent.META_DOWN_MASK) != 0) {
-					LOG.debug("Pressing META");
-					robot.keyPress(KeyEvent.VK_META);
-				}
-
-				// Press the main key (but don't release yet)
-				LOG.debug("Pressing main key: {}", KeyEvent.getKeyText(keyCode));
-				robot.keyPress(keyCode);
-
-				// Small delay to ensure key registration
-				delay();
-
-				// Release the main key first
-				robot.keyRelease(keyCode);
-				LOG.debug("Released main key: {}", KeyEvent.getKeyText(keyCode));
-
-				// Release modifier keys in reverse order
-				if ((modifiers & InputEvent.META_DOWN_MASK) != 0) {
-					robot.keyRelease(KeyEvent.VK_META);
-				}
-				if ((modifiers & InputEvent.SHIFT_DOWN_MASK) != 0) {
-					robot.keyRelease(KeyEvent.VK_SHIFT);
-				}
-				if ((modifiers & InputEvent.ALT_DOWN_MASK) != 0) {
-					robot.keyRelease(KeyEvent.VK_ALT);
-				}
-				if ((modifiers & InputEvent.CTRL_DOWN_MASK) != 0) {
-					robot.keyRelease(KeyEvent.VK_CONTROL);
-				}
+			KeyStroke keyStroke = KeyStroke.getKeyStroke(combo);
+			if (keyStroke == null) {
+				throw new IllegalArgumentException("Invalid key combination: '" + combo +
+						"'. Use format like: 'ENTER', 'control S', 'shift TAB', 'alt F4', 'typed a'");
 			}
-			catch (Exception e) {
-				throw new IllegalArgumentException("Failed to parse key combination '" + combo + "': " + e.getMessage(), e);
+
+			int keyCode = keyStroke.getKeyCode();
+			int modifiers = keyStroke.getModifiers();
+			char keyChar = keyStroke.getKeyChar();
+
+			// Handle "typed" keystrokes (e.g., "typed a", "typed !")
+			if (keyChar != KeyEvent.CHAR_UNDEFINED && keyCode == 0) {
+				LOG.debug("Typing character: '{}'", keyChar);
+				typeChar(keyChar);
+				return;
+			}
+
+			LOG.debug("KeyStroke - keyCode: {} ({}), modifiers: {}",
+					keyCode, KeyEvent.getKeyText(keyCode), modifiers);
+
+			// Press modifier keys using legacy mask constants for better compatibility
+			if ((modifiers & InputEvent.CTRL_DOWN_MASK) != 0) {
+				LOG.debug("Pressing CTRL");
+				robot.keyPress(KeyEvent.VK_CONTROL);
+			}
+			if ((modifiers & InputEvent.ALT_DOWN_MASK) != 0) {
+				LOG.debug("Pressing ALT");
+				robot.keyPress(KeyEvent.VK_ALT);
+			}
+			if ((modifiers & InputEvent.SHIFT_DOWN_MASK) != 0) {
+				LOG.debug("Pressing SHIFT");
+				robot.keyPress(KeyEvent.VK_SHIFT);
+			}
+			if ((modifiers & InputEvent.META_DOWN_MASK) != 0) {
+				LOG.debug("Pressing META");
+				robot.keyPress(KeyEvent.VK_META);
+			}
+
+			// Press and release the main key
+			LOG.debug("Pressing key: {}", KeyEvent.getKeyText(keyCode));
+			robot.keyPress(keyCode);
+			delay();  // Small delay for key registration
+			robot.keyRelease(keyCode);
+			LOG.debug("Released key: {}", KeyEvent.getKeyText(keyCode));
+
+			// Release modifier keys in reverse order
+			if ((modifiers & InputEvent.META_DOWN_MASK) != 0) {
+				robot.keyRelease(KeyEvent.VK_META);
+				LOG.debug("Released META");
+			}
+			if ((modifiers & InputEvent.SHIFT_DOWN_MASK) != 0) {
+				robot.keyRelease(KeyEvent.VK_SHIFT);
+				LOG.debug("Released SHIFT");
+			}
+			if ((modifiers & InputEvent.ALT_DOWN_MASK) != 0) {
+				robot.keyRelease(KeyEvent.VK_ALT);
+				LOG.debug("Released ALT");
+			}
+			if ((modifiers & InputEvent.CTRL_DOWN_MASK) != 0) {
+				robot.keyRelease(KeyEvent.VK_CONTROL);
+				LOG.debug("Released CTRL");
 			}
 		}
 
@@ -630,43 +591,6 @@ final class SwingMcpServer {
 			}
 		}
 
-		private void tab(int count, boolean shift) {
-			for (int i = 0; i < count; i++) {
-				if (shift) {
-					robot.keyPress(KeyEvent.VK_SHIFT);
-				}
-				robot.keyPress(KeyEvent.VK_TAB);
-				robot.keyRelease(KeyEvent.VK_TAB);
-				if (shift) {
-					robot.keyRelease(KeyEvent.VK_SHIFT);
-				}
-			}
-		}
-
-		private void enter() {
-			robot.keyPress(KeyEvent.VK_ENTER);
-			robot.keyRelease(KeyEvent.VK_ENTER);
-		}
-
-		private void escape() {
-			robot.keyPress(KeyEvent.VK_ESCAPE);
-			robot.keyRelease(KeyEvent.VK_ESCAPE);
-		}
-
-		private void arrow(String direction, int count) {
-			int keyCode = switch (direction.toLowerCase()) {
-				case "up" -> KeyEvent.VK_UP;
-				case "down" -> KeyEvent.VK_DOWN;
-				case "left" -> KeyEvent.VK_LEFT;
-				case "right" -> KeyEvent.VK_RIGHT;
-				default -> throw new IllegalArgumentException("Invalid direction: " + direction);
-			};
-
-			for (int i = 0; i < count; i++) {
-				robot.keyPress(keyCode);
-				robot.keyRelease(keyCode);
-			}
-		}
 
 		private void clearField() {
 			// Select all
