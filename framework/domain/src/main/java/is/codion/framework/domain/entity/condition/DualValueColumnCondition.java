@@ -31,7 +31,7 @@ final class DualValueColumnCondition<T> extends AbstractColumnCondition<T> {
 	private static final long serialVersionUID = 1;
 
 	DualValueColumnCondition(Column<T> column, T lower, T upper, Operator operator) {
-		super(column, operator, asList(lower, upper), true);
+		super(column, operator, asList(lower, upper), true, false);
 		if (lower == null || upper == null) {
 			throw new IllegalArgumentException("Operator " + operator + " does not support null bound values");
 		}

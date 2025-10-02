@@ -44,6 +44,7 @@ final class ColumnConditionSerializer implements Serializable {
 		generator.writeStringField("type", "column");
 		generator.writeStringField("column", condition.column().name());
 		generator.writeStringField("operator", condition.operator().name());
+		generator.writeBooleanField("wildcard", condition.wildcard());
 		generator.writeBooleanField("caseSensitive", condition.caseSensitive());
 		generator.writeFieldName("values");
 		generator.writeStartArray();

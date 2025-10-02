@@ -41,7 +41,7 @@ final class MultiValueColumnCondition<T> extends AbstractColumnCondition<T> {
 
 	MultiValueColumnCondition(Column<T> column, Collection<? extends T> values, Operator operator,
 														boolean caseSensitive) {
-		super(column, operator, values, caseSensitive);
+		super(column, operator, values, caseSensitive, false);
 		if (values.isEmpty()) {
 			throw new IllegalArgumentException("IN and NOT_IN conditions require at least one value");
 		}

@@ -49,6 +49,7 @@ final class ColumnConditionDeserializer implements Serializable {
 	<T> ColumnCondition<T> deserialize(EntityDefinition definition, JsonNode conditionNode) throws IOException {
 		String columnName = conditionNode.get("column").asText();
 		ColumnDefinition<T> columnDefinition = definition.columns().definition((Column<T>) definition.attributes().getOrThrow(columnName));
+		boolean wildcard = conditionNode.get("wildcard").asBoolean();
 		boolean caseSensitive = conditionNode.get("caseSensitive").asBoolean();
 		JsonNode valuesNode = conditionNode.get("values");
 		List<T> values = new ArrayList<>();
@@ -58,9 +59,9 @@ final class ColumnConditionDeserializer implements Serializable {
 		Column<T> column = columnDefinition.attribute();
 		switch (Operator.valueOf(conditionNode.get("operator").asText())) {
 			case EQUAL:
-				return equalColumnCondition(values, column, caseSensitive);
+				return equalColumnCondition(values, column, caseSensitive, wildcard);
 			case NOT_EQUAL:
-				return notEqualColumnCondition(values, column, caseSensitive);
+				return notEqualColumnCondition(values, column, caseSensitive, wildcard);
 			case LESS_THAN:
 				return column.lessThan(values.get(0));
 			case LESS_THAN_OR_EQUAL:
@@ -87,56 +88,64 @@ final class ColumnConditionDeserializer implements Serializable {
 	}
 
 	private static <T> ColumnCondition<T> equalColumnCondition(List<T> values, Column<T> column,
-																														 boolean caseSensitive) {
+																														 boolean caseSensitive, boolean wildcard) {
 		if (values.isEmpty()) {
 			return column.isNull();
 		}
 		if (caseSensitive) {
-			return caseSensitiveEqualColumnCondition(values, column);
+			return caseSensitiveEqualColumnCondition(values, column, wildcard);
 		}
 
-		return caseInsitiveEqualColumnCondition(values, column);
+		return caseInsitiveEqualColumnCondition(values, column, wildcard);
 	}
 
 	private static <T> ColumnCondition<T> notEqualColumnCondition(List<T> values, Column<T> column,
-																																boolean caseSensitive) {
+																																boolean caseSensitive, boolean wildcard) {
 		if (values.isEmpty()) {
 			return column.isNotNull();
 		}
 		if (caseSensitive) {
-			return caseSensitiveNotEqualColumnCondition(values, column);
+			return caseSensitiveNotEqualColumnCondition(values, column, wildcard);
 		}
 
-		return caseInsensitiveNotEqualColumnCondition(values, column);
+		return caseInsensitiveNotEqualColumnCondition(values, column, wildcard);
 	}
 
-	private static <T> ColumnCondition<T> caseSensitiveEqualColumnCondition(List<T> values, Column<T> column) {
+	private static <T> ColumnCondition<T> caseSensitiveEqualColumnCondition(List<T> values, Column<T> column, boolean wildcard) {
 		if (values.size() == 1) {
-			return column.equalTo(values.iterator().next());
+			return wildcard ?
+							(ColumnCondition<T>) column.like((String) values.iterator().next()) :
+							column.equalTo(values.iterator().next());
 		}
 
 		return column.in(values);
 	}
 
-	private static <T> ColumnCondition<T> caseSensitiveNotEqualColumnCondition(List<T> values, Column<T> column) {
+	private static <T> ColumnCondition<T> caseSensitiveNotEqualColumnCondition(List<T> values, Column<T> column, boolean wildcard) {
 		if (values.size() == 1) {
-			return column.notEqualTo(values.iterator().next());
+			return wildcard ?
+							(ColumnCondition<T>) column.notLike((String)values.iterator().next()) :
+							column.notEqualTo(values.iterator().next());
 		}
 
 		return column.notIn(values);
 	}
 
-	private static <T> ColumnCondition<T> caseInsitiveEqualColumnCondition(List<T> values, Column<T> column) {
+	private static <T> ColumnCondition<T> caseInsitiveEqualColumnCondition(List<T> values, Column<T> column, boolean wildcard) {
 		if (values.size() == 1) {
-			return (ColumnCondition<T>) column.equalToIgnoreCase((String) values.iterator().next());
+			return wildcard ?
+							(ColumnCondition<T>) column.likeIgnoreCase((String) values.iterator().next()) :
+							(ColumnCondition<T>) column.equalToIgnoreCase((String) values.iterator().next());
 		}
 
 		return (ColumnCondition<T>) column.inIgnoreCase((Collection<String>) values);
 	}
 
-	private static <T> ColumnCondition<T> caseInsensitiveNotEqualColumnCondition(List<T> values, Column<T> column) {
+	private static <T> ColumnCondition<T> caseInsensitiveNotEqualColumnCondition(List<T> values, Column<T> column, boolean wildcard) {
 		if (values.size() == 1) {
-			return (ColumnCondition<T>) column.notEqualToIgnoreCase((String) values.iterator().next());
+			return wildcard ?
+							(ColumnCondition<T>) column.notLikeIgnoreCase((String) values.iterator().next()) :
+							(ColumnCondition<T>) column.notEqualToIgnoreCase((String) values.iterator().next());
 		}
 
 		return (ColumnCondition<T>) column.notInIgnoreCase((Collection<String>) values);

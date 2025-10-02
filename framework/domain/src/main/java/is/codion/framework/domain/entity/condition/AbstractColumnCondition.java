@@ -37,16 +37,21 @@ abstract sealed class AbstractColumnCondition<T> extends AbstractCondition imple
 
 	private final Column<T> column;
 	private final Operator operator;
+	private final boolean wildcard;
 	private final boolean caseSensitive;
 
 	protected AbstractColumnCondition(Column<T> column, Operator operator, Collection<? extends T> values,
-																		boolean caseSensitive) {
+																		boolean caseSensitive, boolean wildcard) {
 		super(requireNonNull(column).entityType(), nCopies(requireNonNull(values).size(), requireNonNull(column)), values);
 		if (!caseSensitive && !(column.type().isString() || column.type().isCharacter())) {
 			throw new IllegalStateException("Case insensitivity only applies to String and Character based columns: " + column);
 		}
+		if (wildcard && !column.type().isString()) {
+			throw new IllegalStateException("Wildcard only applies to String based columns: " + column);
+		}
 		this.column = column;
 		this.operator = requireNonNull(operator);
+		this.wildcard = wildcard;
 		this.caseSensitive = caseSensitive;
 	}
 
@@ -57,6 +62,11 @@ abstract sealed class AbstractColumnCondition<T> extends AbstractCondition imple
 	@Override
 	public final Operator operator() {
 		return operator;
+	}
+
+	@Override
+	public final boolean wildcard() {
+		return wildcard;
 	}
 
 	@Override
@@ -82,12 +92,13 @@ abstract sealed class AbstractColumnCondition<T> extends AbstractCondition imple
 		}
 		AbstractColumnCondition<?> that = (AbstractColumnCondition<?>) object;
 		return Objects.equals(operator, that.operator) &&
+						wildcard == that.wildcard &&
 						caseSensitive == that.caseSensitive;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(super.hashCode(), operator, caseSensitive);
+		return Objects.hash(super.hashCode(), operator, wildcard, caseSensitive);
 	}
 
 	/**

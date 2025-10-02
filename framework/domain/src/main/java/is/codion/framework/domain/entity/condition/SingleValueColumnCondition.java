@@ -48,18 +48,16 @@ final class SingleValueColumnCondition<T> extends AbstractColumnCondition<T> {
 	private static final String PLACEHOLDER_UPPER = "UPPER(?)";
 
 	private final @Nullable T value;
-	private final boolean useLikeOperator;
 
 	SingleValueColumnCondition(Column<T> column, @Nullable T value, Operator operator) {
 		this(column, value, operator, true, false);
 	}
 
 	SingleValueColumnCondition(Column<T> column, @Nullable T value, Operator operator,
-														 boolean caseSensitive, boolean useLikeOperator) {
-		super(column, operator, value == null ? emptyList() : singletonList(value), caseSensitive);
+														 boolean caseSensitive, boolean wildcard) {
+		super(column, operator, value == null ? emptyList() : singletonList(value), caseSensitive, wildcard);
 		validateOperator(operator);
 		this.value = validateOperand(value);
-		this.useLikeOperator = useLikeOperator;
 	}
 
 	@Override
@@ -74,13 +72,12 @@ final class SingleValueColumnCondition<T> extends AbstractColumnCondition<T> {
 			return false;
 		}
 		SingleValueColumnCondition<?> that = (SingleValueColumnCondition<?>) object;
-		return Objects.equals(value, that.value)
-						&& useLikeOperator == that.useLikeOperator;
+		return Objects.equals(value, that.value);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(super.hashCode(), value, useLikeOperator);
+		return Objects.hash(super.hashCode(), value);
 	}
 
 	@Override
@@ -88,9 +85,9 @@ final class SingleValueColumnCondition<T> extends AbstractColumnCondition<T> {
 		return "SingleValueColumnCondition{" +
 						"column=" + column() +
 						", operator=" + operator() +
+						", wildcard=" + wildcard() +
 						", value=" + value +
-						", caseSensitive=" + caseSensitive() +
-						", useLikeOperator=" + useLikeOperator + "}";
+						", caseSensitive=" + caseSensitive() + "}";
 	}
 
 	@Override
@@ -117,7 +114,7 @@ final class SingleValueColumnCondition<T> extends AbstractColumnCondition<T> {
 		if (value == null) {
 			return columnExpression + IS_NULL;
 		}
-		if (useLikeOperator) {
+		if (wildcard()) {
 			return identifier(columnExpression) + LIKE + placeholder();
 		}
 
@@ -128,7 +125,7 @@ final class SingleValueColumnCondition<T> extends AbstractColumnCondition<T> {
 		if (value == null) {
 			return columnExpression + IS_NOT_NULL;
 		}
-		if (useLikeOperator) {
+		if (wildcard()) {
 			return identifier(columnExpression) + NOT_LIKE + placeholder();
 		}
 

@@ -103,6 +103,11 @@ public sealed interface ColumnCondition<T> extends Condition permits AbstractCol
 	Operator operator();
 
 	/**
+	 * @return true in case of wildcard comparison, meaning EQUAL should be treated as LIKE
+	 */
+	boolean wildcard();
+
+	/**
 	 * @return true if this condition is case-sensitive, only applies to String based conditions
 	 */
 	boolean caseSensitive();

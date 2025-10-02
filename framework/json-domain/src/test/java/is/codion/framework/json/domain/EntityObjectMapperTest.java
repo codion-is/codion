@@ -339,7 +339,7 @@ public final class EntityObjectMapperTest {
 
 		Condition condition = and(
 						Employee.DEPARTMENT_FK.notIn(dept1, dept2),
-						Employee.NAME.equalToIgnoreCase("Loc"),
+						Employee.NAME.likeIgnoreCase("Loc%"),
 						Employee.EMPNO.between(10, 40),
 						Employee.COMMISSION.isNotNull());
 
@@ -347,7 +347,7 @@ public final class EntityObjectMapperTest {
 		Condition readCondition = mapper.readValue(jsonString, Condition.class);
 
 		assertEquals(condition, readCondition);
-		assertEquals("(deptno NOT IN (?, ?) AND UPPER(ename) = UPPER(?) AND (empno >= ? AND empno <= ?) AND comm IS NOT NULL)",
+		assertEquals("(deptno NOT IN (?, ?) AND UPPER(ename) LIKE UPPER(?) AND (empno >= ? AND empno <= ?) AND comm IS NOT NULL)",
 						condition.string(entities.definition(Employee.TYPE)));
 	}
 

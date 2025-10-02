@@ -2,6 +2,10 @@ Codion Change Log
 =================
 
 ## 0.18.52
+### is.codion.framework.domain
+- ColumnCondition.wildcard() added.
+### is.codion.framework.json.domain
+- ColumnConditionSerializer and ColumnConditionDeserializer bug fixed, now handle wildcard conditions.
 ### is.codion.framework.lambda
 - LambdaEntityHandler bug fixed, PROCEDURE, DELETE_BY_KEY and SET_QUERY_CACHE_ENABLED added to operations without return value.
 
