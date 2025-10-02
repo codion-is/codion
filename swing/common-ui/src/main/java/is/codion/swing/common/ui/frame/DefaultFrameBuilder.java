@@ -186,7 +186,7 @@ final class DefaultFrameBuilder implements FrameBuilder {
 		}
 		else {
 			frame.pack();
-			Windows.sizeWithinScreenBounds(frame);
+			Windows.resizeToFitScreen(frame);
 		}
 		if (menuBar != null) {
 			frame.setJMenuBar(menuBar);

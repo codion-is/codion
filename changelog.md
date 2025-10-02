@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.52
+### is.codion.swing.common.ui
+- Windows.sizeWithinScreenBounds() renamed resizeToFitScreen(), now uses the window graphicsConfiguration instead of the default one.
 ### is.codion.framework.domain
 - ColumnCondition.wildcard() added.
 ### is.codion.framework.json.domain

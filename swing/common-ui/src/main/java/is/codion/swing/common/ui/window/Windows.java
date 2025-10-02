@@ -21,8 +21,11 @@ package is.codion.swing.common.ui.window;
 import org.jspecify.annotations.Nullable;
 
 import java.awt.Dimension;
+import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
 import java.awt.Window;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A utility class for windows.
@@ -46,18 +49,21 @@ public final class Windows {
 	}
 
 	/**
-	 * Resizes the given window so that if fits within the current screen bounds,
-	 * if the window already fits then calling this method has no effect
+	 * Resizes the given window so that if fits within its screen bounds.
+	 * <p>if the window already fits or has no graphics configuration then
+	 * calling this method has no effect
 	 * @param window the window to resize
 	 */
-	public static void sizeWithinScreenBounds(Window window) {
-		Dimension screenSize = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
-						.getDefaultConfiguration().getBounds().getSize();
-		Dimension frameSize = window.getSize();
-		if (frameSize.getHeight() > screenSize.getHeight() || frameSize.getWidth() > screenSize.getWidth()) {
-			Dimension newFrameSize = new Dimension((int) Math.min(frameSize.getWidth(), screenSize.getWidth()),
-							(int) Math.min(frameSize.getHeight(), screenSize.getHeight()));
-			window.setSize(newFrameSize);
+	public static void resizeToFitScreen(Window window) {
+		GraphicsConfiguration configuration = requireNonNull(window).getGraphicsConfiguration();
+		if (configuration != null) {
+			Dimension screenSize = configuration.getBounds().getSize();
+			Dimension frameSize = window.getSize();
+			if (frameSize.getHeight() > screenSize.getHeight() || frameSize.getWidth() > screenSize.getWidth()) {
+				Dimension newFrameSize = new Dimension((int) Math.min(frameSize.getWidth(), screenSize.getWidth()),
+								(int) Math.min(frameSize.getHeight(), screenSize.getHeight()));
+				window.setSize(newFrameSize);
+			}
 		}
 	}
 
