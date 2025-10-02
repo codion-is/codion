@@ -127,7 +127,8 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 					ROLLBACK_TRANSACTION, IS_TRANSACTION_OPEN, IS_QUERY_CACHE_ENABLED)));
 
 	private static final Set<String> NO_RETURN_DATA_OPERATIONS = unmodifiableSet(new HashSet<>(asList(
-					CLOSE, START_TRANSACTION, COMMIT_TRANSACTION, ROLLBACK_TRANSACTION)));
+					CLOSE, START_TRANSACTION, COMMIT_TRANSACTION, ROLLBACK_TRANSACTION,
+					PROCEDURE, SET_QUERY_CACHE_ENABLED, DELETE_BY_KEY)));
 
 	private final EntityServer entityServer;
 
@@ -230,7 +231,9 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 
 			response.withStatusCode(200)
 							.withHeaders(createCorsHeadersWithContent(context.getAwsRequestId()))
-							.withBody(Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray()))
+							.withBody(NO_RETURN_DATA_OPERATIONS.contains(operation) ?
+											null :
+											Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray()))
 							.withIsBase64Encoded(true);
 		}
 	}
@@ -261,13 +264,7 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 					output.writeObject(connection.updateSelect((Collection<Entity>) input.readObject()));
 					break;
 				case DELETE:
-					Object deleteParam = input.readObject();
-					if (deleteParam instanceof Collection) {
-						connection.delete((Collection<Entity.Key>) deleteParam);
-					}
-					else {
-						output.writeObject(connection.delete((Condition) deleteParam));
-					}
+					output.writeObject(connection.delete((Condition) input.readObject()));
 					break;
 				case DELETE_BY_KEY:
 					connection.delete((Collection<Entity.Key>) input.readObject());

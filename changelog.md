@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.52
+### is.codion.framework.lambda
+- LambdaEntityHandler bug fixed, PROCEDURE, DELETE_BY_KEY and SET_QUERY_CACHE_ENABLED added to operations without return value.
 
 ## 0.18.51
 ### is.codion.swing.common.ui
