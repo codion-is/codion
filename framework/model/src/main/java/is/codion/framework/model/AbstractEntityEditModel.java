@@ -220,7 +220,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 			EntitySearchModel entitySearchModel = searchModels.get(foreignKey);
 			if (entitySearchModel == null) {
 				entitySearchModel = createSearchModel(foreignKey);
-				configureSearchModel(foreignKey, entitySearchModel);
+				configure(foreignKey, entitySearchModel);
 				searchModels.put(foreignKey, entitySearchModel);
 			}
 
@@ -274,7 +274,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 	 * @param foreignKey the foreign key
 	 * @param entitySearchModel the search model
 	 */
-	protected void configureSearchModel(ForeignKey foreignKey, EntitySearchModel entitySearchModel) {}
+	protected void configure(ForeignKey foreignKey, EntitySearchModel entitySearchModel) {}
 
 	/**
 	 * Inserts the given entities into the database using the given connection

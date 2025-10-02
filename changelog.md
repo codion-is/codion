@@ -8,6 +8,8 @@ Codion Change Log
 - ColumnConditionSerializer and ColumnConditionDeserializer bug fixed, now handle wildcard conditions.
 ### is.codion.framework.lambda
 - LambdaEntityHandler bug fixed, PROCEDURE, DELETE_BY_KEY and SET_QUERY_CACHE_ENABLED added to operations without return value.
+### is.codion.framework.model
+- AbstractEntityEditModel.configureSearchModel() renamed configure().
 ### is.codion.swing.framework.model
 - SwingEntityEditModel.configureComboBoxModel() renamed configure().
 
