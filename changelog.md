@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.52
+
 ## 0.18.51
 ### is.codion.swing.common.ui
 - FilterTable.Builder.hiddenColumns() added.
