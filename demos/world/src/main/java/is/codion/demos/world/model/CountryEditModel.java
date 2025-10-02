@@ -42,7 +42,7 @@ public final class CountryEditModel extends SwingEntityEditModel {
 	}
 
 	@Override
-	protected void configureComboBoxModel(ForeignKey foreignKey, EntityComboBoxModel comboBoxModel) {
+	protected void configure(ForeignKey foreignKey, EntityComboBoxModel comboBoxModel) {
 		if (foreignKey.equals(Country.CAPITAL_FK)) {
 			//only show cities for currently selected country
 			editor().addConsumer(country ->

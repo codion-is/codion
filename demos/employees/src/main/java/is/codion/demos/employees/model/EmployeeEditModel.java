@@ -67,7 +67,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
 	// the combo box model in createComboBox(), since that method is also called each
 	// time a combo box is required for editing multiple entities via the table panel
 	@Override
-	protected void configureComboBoxModel(ForeignKey foreignKey, EntityComboBoxModel comboBoxModel) {
+	protected void configure(ForeignKey foreignKey, EntityComboBoxModel comboBoxModel) {
 		if (foreignKey.equals(Employee.MANAGER_FK)) {
 			//Refresh the manager ComboBoxModel when an employee is added, deleted or updated,
 			//in case a new manager got hired, fired or promoted
