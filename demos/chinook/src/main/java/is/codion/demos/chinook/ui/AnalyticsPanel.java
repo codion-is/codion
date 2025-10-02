@@ -20,19 +20,13 @@ package is.codion.demos.chinook.ui;
 
 import is.codion.demos.chinook.domain.api.Chinook.Track;
 import is.codion.demos.chinook.model.AnalyticsModel;
-import is.codion.demos.chinook.model.ChinookAppModel;
-import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.component.EntityComboBox;
-import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.Plot;
 import org.jfree.chart.title.LegendTitle;
-import org.kordamp.ikonli.foundation.Foundation;
 
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
@@ -55,37 +49,18 @@ final class AnalyticsPanel extends JPanel {
 	private static final ResourceBundle BUNDLE = getBundle(AnalyticsPanel.class.getName());
 
 	private final AnalyticsModel analytics;
-	private final EntityApplicationPanel<?> dialogOwner;
 
-	AnalyticsPanel(EntityApplicationPanel<ChinookAppModel> applicationPanel) {
+	AnalyticsPanel(AnalyticsModel analytics) {
 		super(borderLayout());
-		this.analytics = applicationPanel.applicationModel().analytics();
-		this.dialogOwner = applicationPanel;
+		this.analytics = analytics;
 		add(tabbedPane()
 						.tab(BUNDLE.getString("sales_comparison"), createSalesComparisonPanel())
 						.tab(BUNDLE.getString("top_artists"), createTopArtistsPanel())
 						.build(), BorderLayout.CENTER);
 	}
 
-	Control display() {
-		return Control.builder()
-						.command(this::displayDialog)
-						.caption(BUNDLE.getString("analytics"))
-						.icon(FrameworkIcons.instance().get(Foundation.GRAPH_PIE))
-						.build();
-	}
-
-	private void displayDialog() {
-		if (!isShowing()) {
-			analytics.refresh();
-			Dialogs.builder()
-							.component(this)
-							.owner(dialogOwner)
-							.title(BUNDLE.getString("analytics"))
-							.modal(false)
-							.onClosed(e -> analytics.clear())
-							.show();
-		}
+	AnalyticsModel model() {
+		return analytics;
 	}
 
 	private ChartPanel createSalesComparisonPanel() {

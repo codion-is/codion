@@ -33,6 +33,7 @@ import is.codion.demos.chinook.model.PlaylistModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.plugin.flatlaf.intellij.themes.materialtheme.MaterialTheme;
 import is.codion.plugin.swing.mcp.SwingMcpPlugin;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.calendar.CalendarPanel;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.indicator.ValidIndicatorFactory;
@@ -40,6 +41,7 @@ import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplication;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
@@ -82,11 +84,18 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 	/* Non-static so this is not initialized before main(), which sets the locale */
 	private final ResourceBundle bundle = getBundle(ChinookAppPanel.class.getName());
 
-	private final AnalyticsPanel analyticsPanel = new AnalyticsPanel(this);
 	private final State mcpServerController = SwingMcpPlugin.mcpServer(this);
+
+	private AnalyticsPanel analyticsPanel;
 
 	public ChinookAppPanel(ChinookAppModel applicationModel) {
 		super(applicationModel, createPanels(applicationModel), createLookupPanelBuilders());
+	}
+
+	@Override
+	public void updateUI() {
+		super.updateUI();
+		Utilities.updateUI(analyticsPanel);
 	}
 
 	private static List<EntityPanel> createPanels(ChinookAppModel applicationModel) {
@@ -163,7 +172,11 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 	protected Optional<Controls> createToolsMenuControls() {
 		return super.createToolsMenuControls()
 						.map(controls -> controls.copy()
-										.control(analyticsPanel.display())
+										.control(Control.builder()
+														.command(this::displayAnalytics)
+														.caption(bundle.getString("analytics"))
+														.icon(FrameworkIcons.instance().get(Foundation.GRAPH_PIE))
+														.build())
 										.separator()
 										.control(Control.builder()
 														.toggle(mcpServerController)
@@ -180,6 +193,22 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 														.caption(bundle.getString("language"))
 														.build())
 										.build());
+	}
+
+	private void displayAnalytics() {
+		if (analyticsPanel == null) {
+			analyticsPanel = new AnalyticsPanel(applicationModel().analytics());
+		}
+		if (!analyticsPanel.isShowing()) {
+			analyticsPanel.model().refresh();
+			Dialogs.builder()
+							.component(analyticsPanel)
+							.owner(this)
+							.title(bundle.getString("analytics"))
+							.modal(false)
+							.onClosed(e -> analyticsPanel.model().clear())
+							.show();
+		}
 	}
 
 	private void selectLanguage() {
