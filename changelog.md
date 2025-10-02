@@ -14,6 +14,8 @@ Codion Change Log
 - AbstractEntityEditModel.configureSearchModel() renamed configure().
 ### is.codion.swing.framework.model
 - SwingEntityEditModel.configureComboBoxModel() renamed configure().
+### is.codion.swing.framework.ui
+- EntityTablePanel, EntityDialogs, minor i18n message improvements.
 
 ## 0.18.51
 ### is.codion.swing.common.ui

@@ -1051,20 +1051,22 @@ public class EntityTablePanel extends JPanel {
 						.caption(FrameworkMessages.add())
 						.mnemonic(FrameworkMessages.addMnemonic())
 						.icon(ICONS.add())
+						.description(FrameworkMessages.addTip())
 						.build();
 	}
 
 	/**
-	 * Creates a {@link Control} for editing the selected entity via the available edit panel.
+	 * Creates a {@link Control} for editing the selected entity via the edit panel.
 	 * @return the edit control
 	 */
 	private CommandControl createEditControl() {
 		return Control.builder()
 						.command(new EditCommand())
 						.caption(FrameworkMessages.edit())
+						.enabled(tableModel().selection().single())
 						.mnemonic(FrameworkMessages.editMnemonic())
 						.icon(ICONS.edit())
-						.enabled(tableModel().selection().single())
+						.description(FrameworkMessages.editSelectedTip())
 						.build();
 	}
 
@@ -1081,8 +1083,9 @@ public class EntityTablePanel extends JPanel {
 						.command(this::editSelected)
 						.caption(FrameworkMessages.edit())
 						.enabled(createEditAttributeEnabledState())
+						.mnemonic(FrameworkMessages.editMnemonic())
 						.icon(ICONS.edit())
-						.description(FrameworkMessages.editSelectedTip())
+						.description(FrameworkMessages.editValueTip())
 						.build();
 	}
 
@@ -1100,7 +1103,7 @@ public class EntityTablePanel extends JPanel {
 						.caption(FrameworkMessages.edit())
 						.enabled(enabled)
 						.icon(ICONS.edit())
-						.description(FrameworkMessages.editSelectedTip());
+						.description(FrameworkMessages.editValueTip());
 		configuration.editable.get().stream()
 						.map(attribute -> tableModel.entityDefinition().attributes().definition(attribute))
 						.sorted(new AttributeDefinitionComparator())

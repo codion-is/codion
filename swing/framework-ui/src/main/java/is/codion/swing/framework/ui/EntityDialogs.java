@@ -684,8 +684,8 @@ public final class EntityDialogs {
 											.confirm(confirm)
 											.onInsert(onInsert)
 											.build())
-							.caption(FrameworkMessages.add())
-							.mnemonic(FrameworkMessages.addMnemonic())
+							.caption(FrameworkMessages.insert())
+							.mnemonic(FrameworkMessages.insertMnemonic())
 							.onException(new EditPanelExceptionHandler(editPanel))
 							.build();
 		}
