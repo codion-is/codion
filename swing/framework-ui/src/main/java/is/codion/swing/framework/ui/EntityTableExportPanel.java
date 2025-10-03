@@ -33,6 +33,9 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTableExport.AttributeNode;
 import is.codion.swing.framework.ui.EntityTableExport.ExportTask;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -41,6 +44,8 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
 import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
@@ -57,6 +62,9 @@ final class EntityTableExportPanel extends JPanel {
 
 	private static final MessageBundle MESSAGES =
 					messageBundle(EntityTableExportPanel.class, getBundle(EntityTableExportPanel.class.getName()));
+
+	private static final String ATTRIBUTES_KEY = "attributes";
+	private static final String FOREIGN_KEYS_KEY = "foreignKeys";
 
 	private final EntityTableExport export;
 	private final FilterTableColumnModel<Attribute<?>> columnModel;
@@ -77,11 +85,7 @@ final class EntityTableExportPanel extends JPanel {
 					.caption(MESSAGES.getString("columns_none"))
 					.mnemonic(MESSAGES.getString("columns_none_mnemonic").charAt(0))
 					.build();
-	private final ToggleControl allRowsControl = Control.builder()
-					.toggle(State.state())
-					.caption(MESSAGES.getString("rows_all"))
-					.mnemonic(MESSAGES.getString("rows_all_mnemonic").charAt(0))
-					.build();
+	private final ToggleControl allRowsControl;
 	private final ToggleControl selectedRowsControl;
 
 	EntityTableExportPanel(SwingEntityTableModel tableModel, FilterTableColumnModel<Attribute<?>> columnModel) {
@@ -94,6 +98,11 @@ final class EntityTableExportPanel extends JPanel {
 						.caption(MESSAGES.getString("rows_selected"))
 						.mnemonic(MESSAGES.getString("rows_selected_mnemonic").charAt(0))
 						.enabled(tableModel.selection().empty().not())
+						.build();
+		this.allRowsControl = Control.builder()
+						.toggle(State.state(!export.selected().is()))
+						.caption(MESSAGES.getString("rows_all"))
+						.mnemonic(MESSAGES.getString("rows_all_mnemonic").charAt(0))
 						.build();
 		add(borderLayoutPanel()
 						.border(emptyBorder())
@@ -120,13 +129,30 @@ final class EntityTableExportPanel extends JPanel {
 	}
 
 	void exportToClipboard(JComponent dialogOwner) {
-		selectDefaults();
 		Dialogs.okCancel()
 						.component(this)
 						.owner(dialogOwner)
 						.title(MESSAGES.getString("export"))
 						.onOk(() -> export(dialogOwner))
 						.show();
+	}
+
+	EntityTableExport export() {
+		return export;
+	}
+
+	void selectDefaults() {
+		select(false);
+		Enumeration<TreeNode> children = export.entityNode().children();
+		while (children.hasMoreElements()) {
+			TreeNode child = children.nextElement();
+			if (child instanceof AttributeNode) {
+				Attribute<?> attribute = ((AttributeNode) child).definition().attribute();
+				if (columnModel.contains(attribute) && columnModel.visible(attribute).is()) {
+					((AttributeNode) child).selected().set(true);
+				}
+			}
+		}
 	}
 
 	private void export(JComponent dialogOwner) {
@@ -155,20 +181,6 @@ final class EntityTableExportPanel extends JPanel {
 		return tree;
 	}
 
-	private void selectDefaults() {
-		select(false);
-		Enumeration<TreeNode> children = export.entityNode().children();
-		while (children.hasMoreElements()) {
-			TreeNode child = children.nextElement();
-			if (child instanceof AttributeNode) {
-				Attribute<?> attribute = ((AttributeNode) child).definition().attribute();
-				if (columnModel.contains(attribute) && columnModel.visible(attribute).is()) {
-					((AttributeNode) child).selected().set(true);
-				}
-			}
-		}
-	}
-
 	private void select(boolean select) {
 		Enumeration<TreeNode> enumeration = export.entityNode().breadthFirstEnumeration();
 		enumeration.nextElement();// root
@@ -187,6 +199,172 @@ final class EntityTableExportPanel extends JPanel {
 							.map(AttributeNode.class::cast)
 							.forEach(node -> node.selected().toggle());
 			exportTree.repaint();
+		}
+	}
+
+	private JSONObject createPreferences() {
+		return attributesToJson(export.entityNode().children());
+	}
+
+	private void applyPreferences(JSONObject preferences) {
+		if (preferences.isEmpty()) {
+			selectDefaults();
+		}
+		else {
+			applyAttributesAndForeignKeys(preferences, export.entityNode().children());
+			exportTree.repaint();
+		}
+	}
+
+	private static JSONObject attributesToJson(Enumeration<TreeNode> nodes) {
+		JSONArray attributes = new JSONArray();
+		JSONObject foreignKeys = new JSONObject();
+
+		while (nodes.hasMoreElements()) {
+			AttributeNode node = (AttributeNode) nodes.nextElement();
+			String attributeName = node.definition().attribute().name();
+			boolean isForeignKey = node.getChildCount() > 0;
+
+			if (isForeignKey) {
+				JSONObject fkChildren = attributesToJson(node.children());
+				// Skip FK if not selected and has no selected children
+				if (!node.selected().is() && fkChildren.isEmpty()) {
+					continue;
+				}
+				// Add FK to attributes if selected
+				if (node.selected().is()) {
+					attributes.put(attributeName);
+				}
+				// Add FK children if any exist
+				if (!fkChildren.isEmpty()) {
+					foreignKeys.put(attributeName, fkChildren);
+				}
+			}
+			else {
+				// Regular attribute: only include if selected
+				if (node.selected().is()) {
+					attributes.put(attributeName);
+				}
+			}
+		}
+
+		JSONObject result = new JSONObject();
+		if (attributes.length() > 0) {
+			result.put(ATTRIBUTES_KEY, attributes);
+		}
+		if (foreignKeys.length() > 0) {
+			result.put(FOREIGN_KEYS_KEY, foreignKeys);
+		}
+		return result;
+	}
+
+	private static void applyAttributesAndForeignKeys(JSONObject json, Enumeration<TreeNode> nodes) {
+		// Build sets of selected attribute names
+		Set<String> selectedAttributes = new HashSet<>();
+		if (json.has(ATTRIBUTES_KEY)) {
+			JSONArray attributes = json.getJSONArray(ATTRIBUTES_KEY);
+			for (int i = 0; i < attributes.length(); i++) {
+				selectedAttributes.add(attributes.getString(i));
+			}
+		}
+
+		JSONObject foreignKeys = json.has(FOREIGN_KEYS_KEY) ? json.getJSONObject(FOREIGN_KEYS_KEY) : new JSONObject();
+		while (nodes.hasMoreElements()) {
+			AttributeNode node = (AttributeNode) nodes.nextElement();
+			String attributeName = node.definition().attribute().name();
+			boolean isForeignKey = node.getChildCount() > 0;
+
+			// Set selected state based on presence in attributes array
+			node.selected().set(selectedAttributes.contains(attributeName));
+
+			// Apply foreign key children if present
+			if (isForeignKey && foreignKeys.has(attributeName)) {
+				applyAttributesAndForeignKeys(foreignKeys.getJSONObject(attributeName), node.children());
+			}
+			else if (isForeignKey) {
+				// FK not in foreignKeys, deselect all children
+				deselectAll(node.children());
+			}
+		}
+	}
+
+	private static void deselectAll(Enumeration<TreeNode> nodes) {
+		while (nodes.hasMoreElements()) {
+			AttributeNode node = (AttributeNode) nodes.nextElement();
+			node.selected().set(false);
+			if (node.getChildCount() > 0) {
+				deselectAll(node.children());
+			}
+		}
+	}
+
+	private boolean isDefaultConfiguration() {
+		Enumeration<TreeNode> children = export.entityNode().children();
+
+		// Check first-level attributes
+		while (children.hasMoreElements()) {
+			TreeNode child = children.nextElement();
+			if (child instanceof AttributeNode) {
+				AttributeNode node = (AttributeNode) child;
+				Attribute<?> attribute = node.definition().attribute();
+				// Default: first-level visible columns are selected, hidden are not
+				boolean shouldBeSelected = columnModel.contains(attribute) && columnModel.visible(attribute).is();
+				if (node.selected().is() != shouldBeSelected) {
+					return false;
+				}
+				// Check if any children are selected (non-default - defaults have no children selected)
+				if (hasSelectedChildren(node)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	private static boolean hasSelectedChildren(AttributeNode node) {
+		Enumeration<TreeNode> children = node.children();
+		while (children.hasMoreElements()) {
+			TreeNode child = children.nextElement();
+			if (child instanceof AttributeNode) {
+				AttributeNode childNode = (AttributeNode) child;
+				if (childNode.selected().is()) {
+					return true;
+				}
+				if (hasSelectedChildren(childNode)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	static final class ExportPreferences {
+
+		private final JSONObject preferences;
+
+		ExportPreferences(String preferencesString) {
+			this(new JSONObject(preferencesString));
+		}
+
+		private ExportPreferences(JSONObject preferences) {
+			this.preferences = preferences;
+		}
+
+		ExportPreferences(EntityTableExportPanel exportPanel) {
+			if (exportPanel.isDefaultConfiguration()) {
+				this.preferences = new JSONObject("{}");
+			}
+			else {
+				this.preferences = exportPanel.createPreferences();
+			}
+		}
+
+		void apply(EntityTableExportPanel exportPanel) {
+			exportPanel.applyPreferences(preferences);
+		}
+
+		JSONObject preferences() {
+			return preferences;
 		}
 	}
 }

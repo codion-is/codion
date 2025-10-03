@@ -720,7 +720,8 @@ public class EntityTablePanel extends JPanel {
 	 * @see #preferencesKey()
 	 */
 	public void writePreferences(Preferences preferences) {
-		EntityTablePanelPreferences.save(this, requireNonNull(preferences));
+		requireNonNull(preferences);
+		new EntityTablePanelPreferences(this).save(preferences);
 	}
 
 	/**
@@ -729,7 +730,8 @@ public class EntityTablePanel extends JPanel {
 	 * @param preferences the preferences instance containing the preferences to apply
 	 */
 	public void applyPreferences(Preferences preferences) {
-		EntityTablePanelPreferences.apply(this, requireNonNull(preferences));
+		requireNonNull(preferences);
+		new EntityTablePanelPreferences(this, preferences).apply(this);
 	}
 
 	/**
@@ -1033,6 +1035,10 @@ public class EntityTablePanel extends JPanel {
 	 */
 	protected final boolean confirmDelete() {
 		return configuration.deleteConfirmer.confirm(this);
+	}
+
+	EntityTableExportPanel exportPanel() {
+		return exportPanel;
 	}
 
 	final void writeLegacyPreferences() {
