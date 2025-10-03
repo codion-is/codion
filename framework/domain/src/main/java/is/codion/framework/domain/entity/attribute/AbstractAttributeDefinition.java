@@ -651,7 +651,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 			}
 			this.localeDateTimePattern = dateTimePattern;
 			this.dateTimePattern = dateTimePattern.dateTimePattern();
-			this.dateTimeFormatter = dateTimePattern.createFormatter();
+			this.dateTimeFormatter = dateTimePattern.formatter();
 			return self();
 		}
 

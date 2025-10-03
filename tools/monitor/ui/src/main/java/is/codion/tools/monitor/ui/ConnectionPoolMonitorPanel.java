@@ -68,7 +68,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 					.yearFourDigits()
 					.hoursMinutesSeconds()
 					.build()
-					.createFormatter();
+					.formatter();
 	private final JFreeChart inPoolSnapshotChart = ChartFactory.createXYStepChart(null,
 					null, null, null, PlotOrientation.VERTICAL, true, true, false);
 	private final JFreeChart inPoolChart = ChartFactory.createXYStepChart(null,

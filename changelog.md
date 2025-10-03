@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.52
+### is.codion.common.core
+- LocaleDateTimePattern.createFormatter() renamed formatter().
 ### is.codion.swing.common.ui
 - Windows.sizeWithinScreenBounds() renamed resizeToFitScreen(), now uses the window graphicsConfiguration instead of the default one.
 ### is.codion.framework.domain

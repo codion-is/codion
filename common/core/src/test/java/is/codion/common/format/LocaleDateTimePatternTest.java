@@ -68,7 +68,7 @@ public final class LocaleDateTimePatternTest {
 		assertEquals("MM/dd/yyyy HH:mm:ss.SSS", pattern.dateTimePattern(us));
 
 		//a bit of coverage
-		assertNotNull(pattern.createFormatter());
+		assertNotNull(pattern.formatter());
 		pattern.datePattern();
 		pattern.dateTimePattern();
 	}

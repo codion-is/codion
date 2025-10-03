@@ -55,7 +55,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 
 	private static final DateTimeFormatter DATE_TIME_FORMATTER = LocaleDateTimePattern.builder()
 					.delimiterDash().yearFourDigits().hoursMinutesSeconds()
-					.build().createFormatter();
+					.build().formatter();
 	private static final DateTimeFormatter DATE_TIME_FILENAME_FORMATTER = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss");
 	private static final NumberFormat MICROSECOND_FORMAT = NumberFormat.getIntegerInstance();
 

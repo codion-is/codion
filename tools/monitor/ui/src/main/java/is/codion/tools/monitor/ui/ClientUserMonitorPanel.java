@@ -56,7 +56,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 	private static final DateTimeFormatter LAST_SEEN_FORMATTER = LocaleDateTimePattern.builder()
 					.delimiterDash().yearFourDigits().hoursMinutesSeconds()
 					.build()
-					.createFormatter();
+					.formatter();
 
 	private final ClientUserMonitor model;
 

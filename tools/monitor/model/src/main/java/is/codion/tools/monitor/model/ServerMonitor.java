@@ -290,7 +290,7 @@ public final class ServerMonitor {
 		StringBuilder contents = new StringBuilder();
 		String startDate = LocaleDateTimePattern.builder()
 						.delimiterDash().yearFourDigits().hoursMinutesSeconds()
-						.build().createFormatter().format(serverInformation.startTime());
+						.build().formatter().format(serverInformation.startTime());
 		contents.append("Server info:").append("\n");
 		contents.append(serverInformation.name()).append(" (").append(startDate).append(")").append(
 						" port: ").append(serverInformation.port()).append("\n").append("\n");

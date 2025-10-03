@@ -123,7 +123,7 @@ public final class LocaleDateTimePattern implements Serializable {
 	/**
 	 * @return a new {@link DateTimeFormatter} instance based on this pattern
 	 */
-	public DateTimeFormatter createFormatter() {
+	public DateTimeFormatter formatter() {
 		return DateTimeFormatter.ofPattern(dateTimePattern());
 	}
 
