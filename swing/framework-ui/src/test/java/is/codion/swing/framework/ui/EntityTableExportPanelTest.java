@@ -71,7 +71,7 @@ public final class EntityTableExportPanelTest {
 		EntityTableExportPanel exportPanel = tablePanel.exportPanel();
 
 		// Customize: select only ID and DEPARTMENT foreign key with NAME
-		Enumeration<TreeNode> children = exportPanel.export().entityNode().children();
+		Enumeration<TreeNode> children = exportPanel.tableExport().entityNode().children();
 		while (children.hasMoreElements()) {
 			AttributeNode node = (AttributeNode) children.nextElement();
 			node.selected().set(false);
@@ -115,7 +115,7 @@ public final class EntityTableExportPanelTest {
 		EntityTableExportPanel exportPanel = tablePanel.exportPanel();
 
 		// Customize configuration
-		Enumeration<TreeNode> children = exportPanel.export().entityNode().children();
+		Enumeration<TreeNode> children = exportPanel.tableExport().entityNode().children();
 		while (children.hasMoreElements()) {
 			AttributeNode node = (AttributeNode) children.nextElement();
 			node.selected().set(false);
@@ -140,7 +140,7 @@ public final class EntityTableExportPanelTest {
 		loadedPreferences.apply(newTablePanel);
 
 		// Verify only COMMISSION is selected
-		Enumeration<TreeNode> newChildren = newExportPanel.export().entityNode().children();
+		Enumeration<TreeNode> newChildren = newExportPanel.tableExport().entityNode().children();
 		while (newChildren.hasMoreElements()) {
 			AttributeNode node = (AttributeNode) newChildren.nextElement();
 			if (node.definition().attribute().equals(Employee.COMMISSION)) {
@@ -159,7 +159,7 @@ public final class EntityTableExportPanelTest {
 		EntityTableExportPanel exportPanel = tablePanel.exportPanel();
 
 		// Select only the master foreign key and some of its children
-		Enumeration<TreeNode> children = exportPanel.export().entityNode().children();
+		Enumeration<TreeNode> children = exportPanel.tableExport().entityNode().children();
 		while (children.hasMoreElements()) {
 			AttributeNode node = (AttributeNode) children.nextElement();
 			node.selected().set(false);
@@ -197,7 +197,7 @@ public final class EntityTableExportPanelTest {
 
 		// Verify the nested structure
 		EntityTableExportPanel newExportPanel = newTablePanel.exportPanel();
-		Enumeration<TreeNode> newChildren = newExportPanel.export().entityNode().children();
+		Enumeration<TreeNode> newChildren = newExportPanel.tableExport().entityNode().children();
 		while (newChildren.hasMoreElements()) {
 			AttributeNode node = (AttributeNode) newChildren.nextElement();
 			if (node.definition().attribute().equals(Detail.MASTER_FK)) {

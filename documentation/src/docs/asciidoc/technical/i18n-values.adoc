@@ -812,18 +812,20 @@ is/codion/swing/framework/ui/EntityPanel_is_IS.properties
 |toggle_edit|Toggle between edit views|Skipta á milli sýna á innsláttarsvæði
 |===
 
-=== is/codion/swing/framework/ui/EntityTableExport.java
+=== is/codion/swing/framework/ui/EntityTableExportPanel.java
 
 [source]
 ----
-is/codion/swing/framework/ui/EntityTableExport.properties
-is/codion/swing/framework/ui/EntityTableExport_is_IS.properties
+is/codion/swing/framework/ui/EntityTableExportPanel.properties
+is/codion/swing/framework/ui/EntityTableExportPanel_is_IS.properties
 ----
 
 [cols="1,1,1"]
 |===
 |key|default|is_IS
 
+|close|Close|Loka
+|close_mnemonic|C|L
 |columns|Columns|Dálkar
 |columns_all|All|Allir
 |columns_all_mnemonic|L|R
@@ -838,6 +840,10 @@ is/codion/swing/framework/ui/EntityTableExport_is_IS.properties
 |rows_all_mnemonic|A|A
 |rows_selected|Selected|Valdar
 |rows_selected_mnemonic|S|V
+|to_clipboard|To clipboard|Á klippiborð
+|to_clipboard_mnemonic|L|K
+|to_file|To file|Í skrá
+|to_file_mnemonic|F|S
 |===
 
 === is/codion/swing/framework/ui/EntityTablePanel.java

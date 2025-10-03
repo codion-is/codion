@@ -1400,15 +1400,15 @@ public class EntityTablePanel extends JPanel {
 						.build();
 	}
 
-	private CommandControl createCopyRowsExpandedControl() {
+	private CommandControl createExportControl() {
 		return Control.builder()
-						.command(this::copyExpanded)
+						.command(this::export)
 						.caption(MESSAGES.getString("copy_expanded") + "...")
 						.build();
 	}
 
-	private void copyExpanded() {
-		exportPanel.exportToClipboard(this);
+	private void export() {
+		exportPanel.export(this);
 	}
 
 	private boolean includeAddControl() {
@@ -1620,7 +1620,7 @@ public class EntityTablePanel extends JPanel {
 		controlMap.control(INCREMENT_SELECTION).set(createIncrementSelectionControl());
 		controlMap.control(COPY_CELL).set(table.createCopyCellControl());
 		controlMap.control(COPY_ROWS).set(createCopyRowsControl());
-		controlMap.control(COPY_EXPANDED).set(createCopyRowsExpandedControl());
+		controlMap.control(COPY_EXPANDED).set(createExportControl());
 		if (configuration.includeEntityMenu) {
 			controlMap.control(DISPLAY_ENTITY_MENU).set(command(this::showEntityMenu));
 		}

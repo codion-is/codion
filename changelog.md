@@ -22,6 +22,7 @@ Codion Change Log
 - EntityTablePanel, EntityDialogs, minor i18n message improvements.
 - EntityTableExportPanel split from EntityTableExport, related refactoring and minor improvements.
 - EntityTableExportPanel configuration now included in user preferences.
+- EntityTableExportPanel, export to file added.
 
 ## 0.18.51
 ### is.codion.swing.common.ui

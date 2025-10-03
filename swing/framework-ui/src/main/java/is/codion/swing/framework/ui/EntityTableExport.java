@@ -32,9 +32,13 @@ import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTask;
+import is.codion.swing.common.model.worker.ProgressWorker.ProgressTask;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
+import java.io.BufferedWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -70,8 +74,12 @@ final class EntityTableExport {
 		tableModel.selection().empty().addConsumer(empty -> selected.set(!empty));
 	}
 
-	ExportTask task() {
-		return new ExportTask();
+	ExportToStringTask exportToString() {
+		return new ExportToStringTask();
+	}
+
+	ExportToFileTask exportToFile(Path file) {
+		return new ExportToFileTask(file);
 	}
 
 	DefaultMutableTreeNode entityNode() {
@@ -82,13 +90,109 @@ final class EntityTableExport {
 		return selected;
 	}
 
-	final class ExportTask implements ProgressResultTask<String, Void> {
+	private List<Entity> entities(EntityTableModel<?> tableModel) {
+		return selected.is() ?
+						tableModel.selection().items().get() :
+						tableModel.items().included().get();
+	}
+
+	private List<String> createHeader() {
+		return addToHeader(entityNode.children(), new ArrayList<>(), "");
+	}
+
+	private static List<String> addToHeader(Enumeration<TreeNode> nodes, List<String> header, String prefix) {
+		while (nodes.hasMoreElements()) {
+			AttributeNode node = (AttributeNode) nodes.nextElement();
+			String caption = node.definition.caption();
+			String columnHeader = prefix.isEmpty() ? caption : (prefix + SPACE + caption);
+			if (node.selected.is()) {
+				header.add(columnHeader);
+			}
+			if (node.definition.attribute() instanceof ForeignKey) {
+				addToHeader(node.children(), header, columnHeader);
+			}
+		}
+
+		return header;
+	}
+
+	private List<String> createRow(Entity entity) {
+		return addToRow(entityNode.children(), entity.primaryKey(),
+						new ArrayList<>(), new HashMap<>(), connectionProvider.connection());
+	}
+
+	private static List<String> addToRow(Enumeration<TreeNode> attributeNodes, Entity.Key key, List<String> row,
+																			 Map<Entity.Key, Entity> cache, EntityConnection connection) {
+		Entity entity = cache.computeIfAbsent(key, k -> connection.select(key));
+		while (attributeNodes.hasMoreElements()) {
+			AttributeNode node = (AttributeNode) attributeNodes.nextElement();
+			Attribute<?> attribute = node.definition.attribute();
+			if (node.selected.is()) {
+				row.add(replaceNewlinesAndTabs(entity.formatted(attribute)));
+			}
+			if (attribute instanceof ForeignKey) {
+				Entity.Key referencedKey = entity.key((ForeignKey) attribute);
+				if (referencedKey != null) {
+					addToRow(node.children(), referencedKey, row, cache, connection);
+				}
+			}
+		}
+
+		return row;
+	}
+
+	private static String replaceNewlinesAndTabs(String string) {
+		return string.replace("\r\n", SPACE)
+						.replace("\n", SPACE)
+						.replace("\r", SPACE)
+						.replace(TAB, SPACE);
+	}
+
+	final class ExportToFileTask implements ProgressTask<Void> {
+
+		private final List<Entity> entities;
+		private final AtomicInteger counter = new AtomicInteger();
+		private final State cancelled = State.state(false);
+		private final Path file;
+
+		ExportToFileTask(Path file) {
+			this.file = file;
+			this.entities = entities(tableModel);
+		}
+
+		@Override
+		public void execute(ProgressReporter<Void> progress) throws Exception {
+			try (BufferedWriter output = Files.newBufferedWriter(file)) {
+				output.write(createHeader().stream()
+								.collect(joining(TAB, "", lineSeparator())));
+				for (Entity entity : entities) {
+					if (cancelled.is()) {
+						throw new CancelException();
+					}
+					output.write(join(TAB, createRow(entity)));
+					output.write(lineSeparator());
+					progress.report(counter.incrementAndGet());
+				}
+			}
+		}
+
+		@Override
+		public int maximum() {
+			return entities.size();
+		}
+
+		State cancelled() {
+			return cancelled;
+		}
+	}
+
+	final class ExportToStringTask implements ProgressResultTask<String, Void> {
 
 		private final List<Entity> entities;
 		private final AtomicInteger counter = new AtomicInteger();
 		private final State cancelled = State.state(false);
 
-		private ExportTask() {
+		private ExportToStringTask() {
 			this.entities = entities(tableModel);
 		}
 
@@ -123,64 +227,6 @@ final class EntityTableExport {
 			progress.report(counter.incrementAndGet());
 
 			return row;
-		}
-
-		private List<Entity> entities(EntityTableModel<?> tableModel) {
-			return selected.is() ?
-							tableModel.selection().items().get() :
-							tableModel.items().included().get();
-		}
-
-		private List<String> createRow(Entity entity) {
-			return addToRow(entityNode.children(), entity.primaryKey(),
-							new ArrayList<>(), new HashMap<>(), connectionProvider.connection());
-		}
-
-		private List<String> createHeader() {
-			return addToHeader(entityNode.children(), new ArrayList<>(), "");
-		}
-
-		private static List<String> addToHeader(Enumeration<TreeNode> nodes, List<String> header, String prefix) {
-			while (nodes.hasMoreElements()) {
-				AttributeNode node = (AttributeNode) nodes.nextElement();
-				String caption = node.definition.caption();
-				String columnHeader = prefix.isEmpty() ? caption : (prefix + SPACE + caption);
-				if (node.selected.is()) {
-					header.add(columnHeader);
-				}
-				if (node.definition.attribute() instanceof ForeignKey) {
-					addToHeader(node.children(), header, columnHeader);
-				}
-			}
-
-			return header;
-		}
-
-		private static List<String> addToRow(Enumeration<TreeNode> attributeNodes, Entity.Key key, List<String> row,
-																				 Map<Entity.Key, Entity> cache, EntityConnection connection) {
-			Entity entity = cache.computeIfAbsent(key, k -> connection.select(key));
-			while (attributeNodes.hasMoreElements()) {
-				AttributeNode node = (AttributeNode) attributeNodes.nextElement();
-				Attribute<?> attribute = node.definition.attribute();
-				if (node.selected.is()) {
-					row.add(replaceNewlinesAndTabs(entity.formatted(attribute)));
-				}
-				if (attribute instanceof ForeignKey) {
-					Entity.Key referencedKey = entity.key((ForeignKey) attribute);
-					if (referencedKey != null) {
-						addToRow(node.children(), referencedKey, row, cache, connection);
-					}
-				}
-			}
-
-			return row;
-		}
-
-		private static String replaceNewlinesAndTabs(String string) {
-			return string.replace("\r\n", SPACE)
-							.replace("\n", SPACE)
-							.replace("\r", SPACE)
-							.replace(TAB, SPACE);
 		}
 	}
 
