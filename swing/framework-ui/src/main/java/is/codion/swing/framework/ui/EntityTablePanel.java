@@ -475,6 +475,7 @@ public class EntityTablePanel extends JPanel {
 	private final Controls.Layout popupMenuLayout;
 	private final Controls.Layout toolBarLayout;
 	private final SwingEntityTableModel tableModel;
+	private final EntityTableExportPanel exportPanel;
 	private final Control conditionRefreshControl;
 	private final JToolBar refreshButtonToolBar;
 	private final List<Controls> additionalPopupControls = new ArrayList<>();
@@ -488,7 +489,6 @@ public class EntityTablePanel extends JPanel {
 	private @Nullable StatusPanel statusPanel;
 	private @Nullable FilterTableColumnComponentPanel<Attribute<?>> summaryPanel;
 	private @Nullable JScrollPane summaryPanelScrollPane;
-	private @Nullable EntityTableExport export;
 	private @Nullable SelectQueryInspector queryInspector;
 
 	final Config configuration;
@@ -518,6 +518,7 @@ public class EntityTablePanel extends JPanel {
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
 		this.popupMenuLayout = createPopupMenuLayout();
 		this.toolBarLayout = createToolBarLayout();
+		this.exportPanel = new EntityTableExportPanel(tableModel, table.columnModel());
 		initializeConditionsAndFilters();
 		createControls();
 		configureExcludedColumns();
@@ -548,6 +549,7 @@ public class EntityTablePanel extends JPanel {
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
 		this.popupMenuLayout = createPopupMenuLayout();
 		this.toolBarLayout = createToolBarLayout();
+		this.exportPanel = new EntityTableExportPanel(tableModel, table.columnModel());
 		initializeConditionsAndFilters();
 		createControls();
 		configureExcludedColumns();
@@ -556,7 +558,7 @@ public class EntityTablePanel extends JPanel {
 	@Override
 	public void updateUI() {
 		super.updateUI();
-		Utilities.updateUI(conditionPanelScrollPane, filterPanelScrollPane, tableConditionPanel, editPanel, queryInspector);
+		Utilities.updateUI(conditionPanelScrollPane, filterPanelScrollPane, tableConditionPanel, editPanel, queryInspector, exportPanel);
 	}
 
 	/**
@@ -1400,10 +1402,7 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	private void copyExpanded() {
-		if (export == null) {
-			export = new EntityTableExport(this, table.columnModel());
-		}
-		export.exportToClipboard();
+		exportPanel.exportToClipboard(this);
 	}
 
 	private boolean includeAddControl() {

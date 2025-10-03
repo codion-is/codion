@@ -16,6 +16,7 @@ Codion Change Log
 - SwingEntityEditModel.configureComboBoxModel() renamed configure().
 ### is.codion.swing.framework.ui
 - EntityTablePanel, EntityDialogs, minor i18n message improvements.
+- EntityTableExportPanel split from EntityTableExport, related refactoring and minor improvements.
 
 ## 0.18.51
 ### is.codion.swing.common.ui
