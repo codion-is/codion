@@ -70,7 +70,6 @@ final class EntityTableExport {
 		this.connectionProvider = tableModel.connectionProvider();
 		this.entityNode = new EntityNode(tableModel.entityDefinition(), connectionProvider.entities());
 		this.selected = State.state(!tableModel.selection().empty().is());
-		selected.set(!tableModel.selection().empty().is());
 		tableModel.selection().empty().addConsumer(empty -> selected.set(!empty));
 	}
 
@@ -148,16 +147,32 @@ final class EntityTableExport {
 						.replace(TAB, SPACE);
 	}
 
-	final class ExportToFileTask implements ProgressTask<Void> {
+	abstract class ExportTask {
 
-		private final List<Entity> entities;
-		private final AtomicInteger counter = new AtomicInteger();
-		private final State cancelled = State.state(false);
+		protected final AtomicInteger counter = new AtomicInteger();
+		protected final State cancelled = State.state(false);
+		protected final List<Entity> entities;
+
+		protected ExportTask() {
+			this.entities = entities(tableModel);
+		}
+
+		final State cancelled() {
+			return cancelled;
+		}
+	}
+
+	final class ExportToFileTask extends ExportTask implements ProgressTask<Void> {
+
 		private final Path file;
 
 		ExportToFileTask(Path file) {
 			this.file = file;
-			this.entities = entities(tableModel);
+		}
+
+		@Override
+		public int maximum() {
+			return entities.size();
 		}
 
 		@Override
@@ -175,29 +190,17 @@ final class EntityTableExport {
 				}
 			}
 		}
+	}
+
+	final class ExportToStringTask extends ExportTask implements ProgressResultTask<String, Void> {
 
 		@Override
 		public int maximum() {
 			return entities.size();
 		}
 
-		State cancelled() {
-			return cancelled;
-		}
-	}
-
-	final class ExportToStringTask implements ProgressResultTask<String, Void> {
-
-		private final List<Entity> entities;
-		private final AtomicInteger counter = new AtomicInteger();
-		private final State cancelled = State.state(false);
-
-		private ExportToStringTask() {
-			this.entities = entities(tableModel);
-		}
-
 		@Override
-		public String execute(ProgressReporter<Void> progress) throws Exception {
+		public String execute(ProgressReporter<Void> progress) {
 			String result = entities.stream()
 							.map(entity -> createLine(entity, progress))
 							.map(line -> join(TAB, line))
@@ -208,15 +211,6 @@ final class EntityTableExport {
 			}
 
 			return result;
-		}
-
-		@Override
-		public int maximum() {
-			return entities.size();
-		}
-
-		State cancelled() {
-			return cancelled;
 		}
 
 		private List<String> createLine(Entity entity, ProgressReporter<Void> progress) {
@@ -271,7 +265,7 @@ final class EntityTableExport {
 		}
 	}
 
-	public static class AttributeNode extends DefaultMutableTreeNode {
+	static class AttributeNode extends DefaultMutableTreeNode {
 
 		private final AttributeDefinition<?> definition;
 		private final State selected = State.state();

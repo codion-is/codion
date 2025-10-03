@@ -23,6 +23,7 @@ Codion Change Log
 - EntityTableExportPanel split from EntityTableExport, related refactoring and minor improvements.
 - EntityTableExportPanel configuration now included in user preferences.
 - EntityTableExportPanel, export to file added.
+- EntityTableExportPanel, alt-click toggles attribute inclusion, help text added, minor improvements.
 
 ## 0.18.51
 ### is.codion.swing.common.ui

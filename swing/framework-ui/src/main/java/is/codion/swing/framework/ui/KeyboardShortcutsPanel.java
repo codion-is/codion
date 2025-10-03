@@ -67,6 +67,7 @@ final class KeyboardShortcutsPanel extends JPanel {
 						.add(tablePanel())
 						.add(conditionPanel())
 						.add(searchField())
+						.add(tableCopyExpanded())
 						.add(dateTimeField())
 						.add(calendar())
 						.add(entityField())
@@ -163,6 +164,13 @@ final class KeyboardShortcutsPanel extends JPanel {
 						.addAll(new JLabel(MESSAGES.getString("find_and_select_previous")), new JLabel(SHIFT + UP))
 						.addAll(new JLabel(MESSAGES.getString("move_focus_to_table")), new JLabel("Esc"))
 						.border(createTitledBorder(MESSAGES.getString("table_search_field")))
+						.build();
+	}
+
+	private static JPanel tableCopyExpanded() {
+		return gridLayoutPanel(0, 2)
+						.addAll(new JLabel(MESSAGES.getString("toggle_copy_attribute")), new JLabel("Space"))
+						.border(createTitledBorder(MESSAGES.getString("table_copy_expanded")))
 						.build();
 	}
 

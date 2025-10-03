@@ -45,6 +45,8 @@ import javax.swing.JTree;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
@@ -60,6 +62,7 @@ import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.KeyEvent.VK_SPACE;
 import static java.util.ResourceBundle.getBundle;
 import static javax.swing.BorderFactory.createTitledBorder;
+import static javax.swing.SwingConstants.CENTER;
 
 final class EntityTableExportPanel extends JPanel {
 
@@ -114,10 +117,15 @@ final class EntityTableExportPanel extends JPanel {
 										.center(scrollPane()
 														.view(exportTree))
 										.south(borderLayoutPanel()
+														.center(stringField()
+																		.horizontalAlignment(CENTER)
+																		.value(MESSAGES.getString("help"))
+																		.enabled(false))
+														.south(borderLayoutPanel()
 														.east(buttonPanel()
 																		.controls(Controls.builder()
 																						.actions(selectDefaultsControl, selectAllControl, selectNoneControl))
-																		.transferFocusOnEnter(true))))
+																		.transferFocusOnEnter(true)))))
 						.south(borderLayoutPanel()
 										.border(createTitledBorder(MESSAGES.getString("rows")))
 										.center(borderLayoutPanel()
@@ -135,7 +143,7 @@ final class EntityTableExportPanel extends JPanel {
 		Dialogs.action()
 						.component(this)
 						.owner(dialogOwner)
-						.title(MESSAGES.getString("export"))
+						.title(Messages.copy())
 						.escapeAction(Control.builder()
 										.command(() -> parentWindow(this).dispose())
 										.caption(MESSAGES.getString("close"))
@@ -175,12 +183,12 @@ final class EntityTableExportPanel extends JPanel {
 	private void exportToFile(JComponent dialogOwner) {
 		ExportToFileTask task = tableExport.exportToFile(Dialogs.select()
 						.files()
-						.selectFileToSave("export.tsv")
+						.selectFileToSave("data.tsv")
 						.toPath());
 		Dialogs.progressWorker()
 						.task(task)
 						.owner(dialogOwner)
-						.title(MESSAGES.getString("exporting_rows"))
+						.title(MESSAGES.getString("copying_data"))
 						.control(createCancelControl(task.cancelled()))
 						.execute();
 	}
@@ -190,7 +198,7 @@ final class EntityTableExportPanel extends JPanel {
 		Dialogs.progressWorker()
 						.task(task)
 						.owner(dialogOwner)
-						.title(MESSAGES.getString("exporting_rows"))
+						.title(MESSAGES.getString("copying_data"))
 						.control(createCancelControl(task.cancelled()))
 						.onResult(Utilities::setClipboard)
 						.execute();
@@ -209,6 +217,14 @@ final class EntityTableExportPanel extends JPanel {
 		JTree tree = new JTree(tableExport.entityNode());
 		tree.setShowsRootHandles(true);
 		tree.setRootVisible(false);
+		tree.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.isAltDown()) {
+					toggleSelected();
+				}
+			}
+		});
 		KeyEvents.builder()
 						.keyCode(VK_SPACE)
 						.action(command(this::toggleSelected))
