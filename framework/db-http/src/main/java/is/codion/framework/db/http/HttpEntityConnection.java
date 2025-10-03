@@ -76,13 +76,13 @@ public interface HttpEntityConnection extends EntityConnection {
 	PropertyValue<Boolean> SECURE = booleanValue("codion.client.http.secure", true);
 
 	/**
-	 * Specifies whether json serialization should be used
+	 * Specifies whether json serialization should be used instead of standard Java serialization
 	 * Value types: Boolean
 	 * <ul>
-	 * <li>Default value: true
+	 * <li>Default value: false
 	 * </ul>
 	 */
-	PropertyValue<Boolean> JSON = booleanValue("codion.client.http.json", true);
+	PropertyValue<Boolean> JSON = booleanValue("codion.client.http.json", false);
 
 	/**
 	 * The socket timeout in milliseconds
