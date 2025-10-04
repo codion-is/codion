@@ -199,6 +199,10 @@ final class EntityTableExport {
 					progress.report(counter.incrementAndGet());
 				}
 			}
+			catch (CancelException e) {
+				Files.deleteIfExists(file);
+				throw e;
+			}
 		}
 
 		@Override
