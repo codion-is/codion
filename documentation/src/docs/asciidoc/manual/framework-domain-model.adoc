@@ -629,6 +629,59 @@ include::{dir-world-source}/module-info.java[tag=customSerializer]
 
 See <<{dir-tutorials}/world/world.adoc#_domain, World domain model>>
 
+== Domain composition
+
+Domain models can be composed of other domain models, allowing you to build modular, reusable domain definitions. This composition can be complete (including all entity definitions) or selective (cherry-picking specific entities or functionality).
+
+=== Complete composition
+
+The simplest form of composition is to include an entire domain model within another. This is done by passing a domain instance to the `add()` method in the constructor.
+
+[source,java]
+----
+include::{dir-source}/is/codion/manual/framework/domain/Composition.java[tag=composition]
+----
+
+In this example:
+
+* The `Products` domain defines a single `Product` entity
+* The `Orders` domain includes the entire `Products` domain via `add(new Products())` and adds its own `Customer` and `Order` entities
+* The `Store` domain includes the entire `Orders` domain (which transitively includes `Products`) and adds an `Employee` entity
+* The resulting `Store` domain contains all entities from all three domains: `Product`, `Customer`, `Order`, and `Employee`
+* Foreign key references can cross domain boundaries - `Order.PRODUCT_FK` references `Product.ID` from the composed `Products` domain
+
+This hierarchical composition allows you to:
+
+* Build complex domains from smaller, focused components
+* Reuse domain definitions across different applications
+* Maintain clear separation of concerns between different parts of your model
+* Establish cross-domain relationships through foreign keys
+
+=== Selective composition
+
+For more fine-grained control, you can selectively include specific entities or functionality from other domains:
+
+[source,java]
+----
+include::{dir-source}/is/codion/manual/framework/domain/Composition.java[tag=selectiveComposition]
+----
+
+Selective composition provides several specialized methods:
+
+* `add(EntityDefinition)` - Adds a specific entity definition from another domain
+* `addReports(Domain)` - Includes only the reports from another domain
+* `addFunctions(Domain)` - Includes only the functions from another domain
+* `addProcedures(Domain)` - Includes only the procedures from another domain
+
+This approach is useful when:
+
+* Building a subset of functionality for specific clients (e.g., a public website vs. internal admin application)
+* Sharing database functions/procedures across different domain models
+* Creating lightweight domain models that reference only the entities they actually use
+* Avoiding circular dependencies between domain modules
+
+NOTE: When selectively adding entity definitions, ensure that any foreign key references are satisfied - if an entity references another via foreign key, both entities must be included in the domain.
+
 == Entities in action
 
 Using the Entity class is rather straight forward.
