@@ -22,7 +22,6 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
@@ -32,8 +31,7 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTableExport.AttributeNode;
-import is.codion.swing.framework.ui.EntityTableExport.ExportToFileTask;
-import is.codion.swing.framework.ui.EntityTableExport.ExportToStringTask;
+import is.codion.swing.framework.ui.EntityTableExport.ExportTask;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -150,12 +148,12 @@ final class EntityTableExportPanel extends JPanel {
 										.mnemonic(MESSAGES.getString("close_mnemonic").charAt(0))
 										.build())
 						.action(Control.builder()
-										.command(() -> exportToClipboard(dialogOwner))
+										.command(this::exportToClipboard)
 										.caption(MESSAGES.getString("to_clipboard"))
 										.mnemonic(MESSAGES.getString("to_clipboard_mnemonic").charAt(0))
 										.build())
 						.action(Control.builder()
-										.command(() -> exportToFile(dialogOwner))
+										.command(this::exportToFile)
 										.caption(MESSAGES.getString("to_file") + "...")
 										.mnemonic(MESSAGES.getString("to_file_mnemonic").charAt(0))
 										.build())
@@ -180,27 +178,29 @@ final class EntityTableExportPanel extends JPanel {
 		}
 	}
 
-	private void exportToFile(JComponent dialogOwner) {
-		ExportToFileTask task = tableExport.exportToFile(Dialogs.select()
+	private void exportToFile() {
+		ExportTask task = tableExport.exportToFile(Dialogs.select()
 						.files()
-						.selectFileToSave("data.tsv")
+						.owner(this)
+						.selectFileToSave(tableExport.defaultFileName())
 						.toPath());
 		Dialogs.progressWorker()
 						.task(task)
-						.owner(dialogOwner)
+						.owner(this)
 						.title(MESSAGES.getString("copying_data"))
 						.control(createCancelControl(task.cancelled()))
+						.onResult(MESSAGES.getString("data_copied"), task.successMessage())
 						.execute();
 	}
 
-	private void exportToClipboard(JComponent dialogOwner) {
-		ExportToStringTask task = tableExport.exportToString();
+	private void exportToClipboard() {
+		ExportTask task = tableExport.exportToClipboard();
 		Dialogs.progressWorker()
 						.task(task)
-						.owner(dialogOwner)
+						.owner(this)
 						.title(MESSAGES.getString("copying_data"))
 						.control(createCancelControl(task.cancelled()))
-						.onResult(Utilities::setClipboard)
+						.onResult(MESSAGES.getString("data_copied"), task.successMessage())
 						.execute();
 	}
 
@@ -279,21 +279,17 @@ final class EntityTableExportPanel extends JPanel {
 
 			if (isForeignKey) {
 				JSONObject fkChildren = attributesToJson(node.children());
-				// Skip FK if not selected and has no selected children
 				if (!node.selected().is() && fkChildren.isEmpty()) {
 					continue;
 				}
-				// Add FK to attributes if selected
 				if (node.selected().is()) {
 					attributes.put(attributeName);
 				}
-				// Add FK children if any exist
 				if (!fkChildren.isEmpty()) {
 					foreignKeys.put(attributeName, fkChildren);
 				}
 			}
 			else {
-				// Regular attribute: only include if selected
 				if (node.selected().is()) {
 					attributes.put(attributeName);
 				}
@@ -312,7 +308,6 @@ final class EntityTableExportPanel extends JPanel {
 	}
 
 	private static void applyAttributesAndForeignKeys(JSONObject json, Enumeration<TreeNode> nodes) {
-		// Build sets of selected attribute names
 		Set<String> selectedAttributes = new HashSet<>();
 		if (json.has(ATTRIBUTES_KEY)) {
 			JSONArray attributes = json.getJSONArray(ATTRIBUTES_KEY);
@@ -327,15 +322,12 @@ final class EntityTableExportPanel extends JPanel {
 			String attributeName = node.definition().attribute().name();
 			boolean isForeignKey = node.getChildCount() > 0;
 
-			// Set selected state based on presence in attributes array
 			node.selected().set(selectedAttributes.contains(attributeName));
 
-			// Apply foreign key children if present
 			if (isForeignKey && foreignKeys.has(attributeName)) {
 				applyAttributesAndForeignKeys(foreignKeys.getJSONObject(attributeName), node.children());
 			}
 			else if (isForeignKey) {
-				// FK not in foreignKeys, deselect all children
 				deselectAll(node.children());
 			}
 		}
@@ -354,7 +346,6 @@ final class EntityTableExportPanel extends JPanel {
 	private boolean isDefaultConfiguration() {
 		Enumeration<TreeNode> children = tableExport.entityNode().children();
 
-		// Check first-level attributes
 		while (children.hasMoreElements()) {
 			TreeNode child = children.nextElement();
 			if (child instanceof AttributeNode) {
@@ -365,7 +356,6 @@ final class EntityTableExportPanel extends JPanel {
 				if (node.selected().is() != shouldBeSelected) {
 					return false;
 				}
-				// Check if any children are selected (non-default - defaults have no children selected)
 				if (hasSelectedChildren(node)) {
 					return false;
 				}

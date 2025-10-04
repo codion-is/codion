@@ -19,6 +19,7 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.model.CancelException;
+import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -31,8 +32,8 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
-import is.codion.swing.common.model.worker.ProgressWorker.ProgressResultTask;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressTask;
+import is.codion.swing.common.ui.Utilities;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
@@ -50,15 +51,21 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static is.codion.common.resource.MessageBundle.messageBundle;
 import static java.lang.String.join;
 import static java.lang.System.lineSeparator;
+import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 final class EntityTableExport {
 
+	private static final MessageBundle MESSAGES =
+					messageBundle(EntityTableExportPanel.class, getBundle(EntityTableExportPanel.class.getName()));
+
 	private static final String TAB = "\t";
 	private static final String SPACE = " ";
+	private static final String TSV = ".tsv";
 
 	private final EntityTableModel<?> tableModel;
 	private final EntityConnectionProvider connectionProvider;
@@ -73,11 +80,11 @@ final class EntityTableExport {
 		tableModel.selection().empty().addConsumer(empty -> selected.set(!empty));
 	}
 
-	ExportToStringTask exportToString() {
-		return new ExportToStringTask();
+	ExportTask exportToClipboard() {
+		return new ExportToClipboard();
 	}
 
-	ExportToFileTask exportToFile(Path file) {
+	ExportTask exportToFile(Path file) {
 		return new ExportToFileTask(file);
 	}
 
@@ -89,10 +96,8 @@ final class EntityTableExport {
 		return selected;
 	}
 
-	private List<Entity> entities(EntityTableModel<?> tableModel) {
-		return selected.is() ?
-						tableModel.selection().items().get() :
-						tableModel.items().included().get();
+	String defaultFileName() {
+		return tableModel.entityDefinition().caption() + TSV;
 	}
 
 	private List<String> createHeader() {
@@ -147,32 +152,36 @@ final class EntityTableExport {
 						.replace(TAB, SPACE);
 	}
 
-	abstract class ExportTask {
+	abstract class ExportTask implements ProgressTask<Void> {
 
 		protected final AtomicInteger counter = new AtomicInteger();
 		protected final State cancelled = State.state(false);
 		protected final List<Entity> entities;
 
 		protected ExportTask() {
-			this.entities = entities(tableModel);
+			entities = selected.is() ?
+							tableModel.selection().items().get() :
+							tableModel.items().included().get();
+		}
+
+		@Override
+		public final int maximum() {
+			return entities.size();
 		}
 
 		final State cancelled() {
 			return cancelled;
 		}
+
+		abstract String successMessage();
 	}
 
-	final class ExportToFileTask extends ExportTask implements ProgressTask<Void> {
+	private final class ExportToFileTask extends ExportTask {
 
 		private final Path file;
 
-		ExportToFileTask(Path file) {
+		private ExportToFileTask(Path file) {
 			this.file = file;
-		}
-
-		@Override
-		public int maximum() {
-			return entities.size();
 		}
 
 		@Override
@@ -190,17 +199,17 @@ final class EntityTableExport {
 				}
 			}
 		}
+
+		@Override
+		String successMessage() {
+			return MESSAGES.getString("copied_to_file") + ": " + file;
+		}
 	}
 
-	final class ExportToStringTask extends ExportTask implements ProgressResultTask<String, Void> {
+	private final class ExportToClipboard extends ExportTask {
 
 		@Override
-		public int maximum() {
-			return entities.size();
-		}
-
-		@Override
-		public String execute(ProgressReporter<Void> progress) {
+		public void execute(ProgressReporter<Void> progress) {
 			String result = entities.stream()
 							.map(entity -> createLine(entity, progress))
 							.map(line -> join(TAB, line))
@@ -210,7 +219,12 @@ final class EntityTableExport {
 				throw new CancelException();
 			}
 
-			return result;
+			Utilities.setClipboard(result);
+		}
+
+		@Override
+		String successMessage() {
+			return MESSAGES.getString("copied_to_clipboard");
 		}
 
 		private List<String> createLine(Entity entity, ProgressReporter<Void> progress) {
