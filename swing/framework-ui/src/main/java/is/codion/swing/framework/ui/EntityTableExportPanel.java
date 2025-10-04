@@ -35,6 +35,7 @@ import is.codion.swing.framework.ui.EntityTableExport.ExportTask;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.jspecify.annotations.Nullable;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JComponent;
@@ -478,8 +479,8 @@ final class EntityTableExportPanel extends JPanel {
 			this.preferences = preferences;
 		}
 
-		ExportPreferences(EntityTableExportPanel exportPanel) {
-			if (exportPanel.isDefaultConfiguration()) {
+		ExportPreferences(@Nullable EntityTableExportPanel exportPanel) {
+			if (exportPanel == null || exportPanel.isDefaultConfiguration()) {
 				this.preferences = new JSONObject("{}");
 			}
 			else {
@@ -487,8 +488,10 @@ final class EntityTableExportPanel extends JPanel {
 			}
 		}
 
-		void apply(EntityTableExportPanel exportPanel) {
-			exportPanel.applyPreferences(preferences);
+		void apply(@Nullable EntityTableExportPanel exportPanel) {
+			if (exportPanel != null) {
+				exportPanel.applyPreferences(preferences);
+			}
 		}
 
 		JSONObject preferences() {

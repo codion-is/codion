@@ -447,7 +447,7 @@ public class EntityTablePanel extends JPanel {
 	private final Controls.Layout popupMenuLayout;
 	private final Controls.Layout toolBarLayout;
 	private final SwingEntityTableModel tableModel;
-	private final EntityTableExportPanel exportPanel;
+	private final @Nullable EntityTableExportPanel exportPanel;
 	private final Control conditionRefreshControl;
 	private final JToolBar refreshButtonToolBar;
 	private final List<Controls> additionalPopupControls = new ArrayList<>();
@@ -490,7 +490,7 @@ public class EntityTablePanel extends JPanel {
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
 		this.popupMenuLayout = createPopupMenuLayout();
 		this.toolBarLayout = createToolBarLayout();
-		this.exportPanel = new EntityTableExportPanel(tableModel, table.columnModel());
+		this.exportPanel = createExportPanel();
 		initializeConditionsAndFilters();
 		createControls();
 		configureExcludedColumns();
@@ -521,7 +521,7 @@ public class EntityTablePanel extends JPanel {
 		this.refreshButtonToolBar = createRefreshButtonToolBar();
 		this.popupMenuLayout = createPopupMenuLayout();
 		this.toolBarLayout = createToolBarLayout();
-		this.exportPanel = new EntityTableExportPanel(tableModel, table.columnModel());
+		this.exportPanel = createExportPanel();
 		initializeConditionsAndFilters();
 		createControls();
 		configureExcludedColumns();
@@ -1009,7 +1009,7 @@ public class EntityTablePanel extends JPanel {
 		return configuration.deleteConfirmer.confirm(this);
 	}
 
-	EntityTableExportPanel exportPanel() {
+	@Nullable EntityTableExportPanel exportPanel() {
 		return exportPanel;
 	}
 
@@ -1443,6 +1443,14 @@ public class EntityTablePanel extends JPanel {
 						.build();
 	}
 
+	private @Nullable EntityTableExportPanel createExportPanel() {
+		if (!configuration.includeExport) {
+			return null;
+		}
+
+		return new EntityTableExportPanel(tableModel, table.columnModel());
+	}
+
 	private @Nullable TableConditionPanel<Attribute<?>> createTableConditionPanel() {
 		if (!configuration.includeConditions) {
 			return null;
@@ -1592,7 +1600,9 @@ public class EntityTablePanel extends JPanel {
 		controlMap.control(INCREMENT_SELECTION).set(createIncrementSelectionControl());
 		controlMap.control(COPY_CELL).set(table.createCopyCellControl());
 		controlMap.control(COPY_ROWS).set(createCopyRowsControl());
-		controlMap.control(COPY_EXPANDED).set(createExportControl());
+		if (configuration.includeExport) {
+			controlMap.control(COPY_EXPANDED).set(createExportControl());
+		}
 		if (configuration.includeEntityMenu) {
 			controlMap.control(DISPLAY_ENTITY_MENU).set(command(this::showEntityMenu));
 		}
@@ -2036,6 +2046,16 @@ public class EntityTablePanel extends JPanel {
 						booleanValue(EntityTablePanel.class.getName() + ".includeClearControl", false);
 
 		/**
+		 * Specifies whether to include an export panel (Copy -> Copy Expanded...).
+		 * <ul>
+		 * <li>Value type: Boolean
+		 * <li>Default value: false
+		 * </ul>
+		 */
+		public static final PropertyValue<Boolean> INCLUDE_EXPORT =
+						booleanValue(EntityTablePanel.class.getName() + ".includeExport", false);
+
+		/**
 		 * Specifies whether to include a condition panel.
 		 * <ul>
 		 * <li>Value type: Boolean
@@ -2186,6 +2206,7 @@ public class EntityTablePanel extends JPanel {
 		private FilterTable.@Nullable Builder<Entity, Attribute<?>> tableBuilder;
 		private TableConditionPanel.Factory<Attribute<?>> conditionPanelFactory = new DefaultConditionPanelFactory();
 		private boolean includeSouthPanel = true;
+		private boolean includeExport = INCLUDE_EXPORT.getOrThrow();
 		private boolean includeConditions = INCLUDE_CONDITIONS.getOrThrow();
 		private ConditionView conditionView = CONDITION_VIEW.getOrThrow();
 		private boolean includeFilters = INCLUDE_FILTERS.getOrThrow();
@@ -2311,6 +2332,15 @@ public class EntityTablePanel extends JPanel {
 		 */
 		public Config includeSouthPanel(boolean includeSouthPanel) {
 			this.includeSouthPanel = includeSouthPanel;
+			return this;
+		}
+
+		/**
+		 * @param includeExport true if an export panel should be included (Copy -> Copy Expanded...)
+		 * @return this Config instance
+		 */
+		public Config includeExport(boolean includeExport) {
+			this.includeExport = includeExport;
 			return this;
 		}
 
