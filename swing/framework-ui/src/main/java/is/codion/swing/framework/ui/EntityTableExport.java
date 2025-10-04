@@ -26,6 +26,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
@@ -243,11 +244,11 @@ final class EntityTableExport {
 		private static final AttributeDefinitionComparator ATTRIBUTE_COMPARATOR = new AttributeDefinitionComparator();
 
 		private EntityNode(EntityDefinition definition, Entities entities) {
-			populate(this, definition, entities, new HashSet<>());
+			populate(this, definition, entities, new HashSet<>(), definition.type());
 		}
 
 		private static void populate(DefaultMutableTreeNode parent, EntityDefinition definition,
-																 Entities entities, Set<ForeignKey> visited) {
+																 Entities entities, Set<ForeignKey> visited, EntityType rootType) {
 			for (AttributeDefinition<?> attributeDefinition : definition.attributes().definitions()
 							.stream()
 							.sorted(ATTRIBUTE_COMPARATOR)
@@ -255,11 +256,12 @@ final class EntityTableExport {
 				if (attributeDefinition instanceof ForeignKeyDefinition) {
 					ForeignKeyDefinition foreignKeyDefinition = (ForeignKeyDefinition) attributeDefinition;
 					ForeignKey foreignKey = foreignKeyDefinition.attribute();
-					AttributeNode foreignKeyNode = new AttributeNode(foreignKeyDefinition);
+					boolean isCyclical = visited.contains(foreignKey) || foreignKey.referencedType().equals(rootType);
+					AttributeNode foreignKeyNode = new AttributeNode(foreignKeyDefinition, isCyclical, entities, new HashSet<>(visited));
 					parent.add(foreignKeyNode);
-					if (!visited.contains(foreignKey)) {
+					if (!isCyclical) {
 						visited.add(foreignKey);
-						populate(foreignKeyNode, entities.definition(foreignKey.referencedType()), entities, visited);
+						populate(foreignKeyNode, entities.definition(foreignKey.referencedType()), entities, visited, rootType);
 					}
 				}
 				else if (!attributeDefinition.hidden()) {
@@ -283,9 +285,30 @@ final class EntityTableExport {
 
 		private final AttributeDefinition<?> definition;
 		private final State selected = State.state();
+		private final boolean isCyclicalStub;
+		private final Entities entities;
+		private final Set<ForeignKey> visitedPath;
 
 		private AttributeNode(AttributeDefinition<?> definition) {
+			this(definition, false, null, null);
+		}
+
+		private AttributeNode(AttributeDefinition<?> definition, boolean isCyclicalStub,
+													Entities entities, Set<ForeignKey> visitedPath) {
 			this.definition = definition;
+			this.isCyclicalStub = isCyclicalStub;
+			this.entities = entities;
+			this.visitedPath = visitedPath;
+		}
+
+		@Override
+		public boolean isLeaf() {
+			return !isCyclicalStub && super.isLeaf();
+		}
+
+		@Override
+		public String toString() {
+			return selected.is() ? "+" + definition.caption() : definition.caption() + "  ";
 		}
 
 		AttributeDefinition<?> definition() {
@@ -296,9 +319,22 @@ final class EntityTableExport {
 			return selected;
 		}
 
-		@Override
-		public String toString() {
-			return selected.is() ? "+" + definition.caption() : definition.caption() + "  ";
+		boolean isCyclicalStub() {
+			return isCyclicalStub;
+		}
+
+		void expand() {
+			if (!isCyclicalStub || !(definition instanceof ForeignKeyDefinition)) {
+				return;
+			}
+			ForeignKeyDefinition foreignKeyDefinition = (ForeignKeyDefinition) definition;
+			ForeignKey foreignKey = foreignKeyDefinition.attribute();
+
+			Set<ForeignKey> newVisited = new HashSet<>(visitedPath);
+			newVisited.add(foreignKey);
+
+			EntityDefinition referencedDefinition = entities.definition(foreignKey.referencedType());
+			EntityNode.populate(this, referencedDefinition, entities, newVisited, referencedDefinition.type());
 		}
 	}
 }

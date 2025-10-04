@@ -40,6 +40,10 @@ import javax.swing.ButtonGroup;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTree;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeWillExpandListener;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.ExpandVetoException;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
@@ -73,6 +77,7 @@ final class EntityTableExportPanel extends JPanel {
 	private final EntityTableExport tableExport;
 	private final FilterTableColumnModel<Attribute<?>> columnModel;
 	private final JTree exportTree;
+	private final DefaultTreeModel treeModel;
 
 	private final CommandControl selectDefaultsControl = Control.builder()
 					.command(this::selectDefaults)
@@ -96,6 +101,7 @@ final class EntityTableExportPanel extends JPanel {
 		super(borderLayout());
 		this.tableExport = new EntityTableExport(tableModel);
 		this.columnModel = columnModel;
+		this.treeModel = new DefaultTreeModel(tableExport.entityNode());
 		this.exportTree = createTree();
 		this.selectedRowsControl = Control.builder()
 						.toggle(tableExport.selected())
@@ -120,10 +126,10 @@ final class EntityTableExportPanel extends JPanel {
 																		.value(MESSAGES.getString("help"))
 																		.enabled(false))
 														.south(borderLayoutPanel()
-														.east(buttonPanel()
-																		.controls(Controls.builder()
-																						.actions(selectDefaultsControl, selectAllControl, selectNoneControl))
-																		.transferFocusOnEnter(true)))))
+																		.east(buttonPanel()
+																						.controls(Controls.builder()
+																										.actions(selectDefaultsControl, selectAllControl, selectNoneControl))
+																						.transferFocusOnEnter(true)))))
 						.south(borderLayoutPanel()
 										.border(createTitledBorder(MESSAGES.getString("rows")))
 										.center(borderLayoutPanel()
@@ -214,9 +220,10 @@ final class EntityTableExportPanel extends JPanel {
 	}
 
 	private JTree createTree() {
-		JTree tree = new JTree(tableExport.entityNode());
+		JTree tree = new JTree(treeModel);
 		tree.setShowsRootHandles(true);
 		tree.setRootVisible(false);
+		tree.addTreeWillExpandListener(new ExpandListener());
 		tree.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -289,10 +296,8 @@ final class EntityTableExportPanel extends JPanel {
 					foreignKeys.put(attributeName, fkChildren);
 				}
 			}
-			else {
-				if (node.selected().is()) {
-					attributes.put(attributeName);
-				}
+			else if (node.selected().is()) {
+				attributes.put(attributeName);
 			}
 		}
 
@@ -307,7 +312,7 @@ final class EntityTableExportPanel extends JPanel {
 		return result;
 	}
 
-	private static void applyAttributesAndForeignKeys(JSONObject json, Enumeration<TreeNode> nodes) {
+	private void applyAttributesAndForeignKeys(JSONObject json, Enumeration<TreeNode> nodes) {
 		Set<String> selectedAttributes = new HashSet<>();
 		if (json.has(ATTRIBUTES_KEY)) {
 			JSONArray attributes = json.getJSONArray(ATTRIBUTES_KEY);
@@ -320,11 +325,15 @@ final class EntityTableExportPanel extends JPanel {
 		while (nodes.hasMoreElements()) {
 			AttributeNode node = (AttributeNode) nodes.nextElement();
 			String attributeName = node.definition().attribute().name();
-			boolean isForeignKey = node.getChildCount() > 0;
+			boolean isForeignKey = node.getChildCount() > 0 || node.isCyclicalStub();
 
 			node.selected().set(selectedAttributes.contains(attributeName));
 
 			if (isForeignKey && foreignKeys.has(attributeName)) {
+				if (node.isCyclicalStub()) {
+					node.expand();
+					treeModel.nodeStructureChanged(node);
+				}
 				applyAttributesAndForeignKeys(foreignKeys.getJSONObject(attributeName), node.children());
 			}
 			else if (isForeignKey) {
@@ -380,6 +389,23 @@ final class EntityTableExportPanel extends JPanel {
 		}
 
 		return false;
+	}
+
+	private final class ExpandListener implements TreeWillExpandListener {
+		@Override
+		public void treeWillExpand(TreeExpansionEvent event) throws ExpandVetoException {
+			Object node = event.getPath().getLastPathComponent();
+			if (node instanceof AttributeNode) {
+				AttributeNode attributeNode = (AttributeNode) node;
+				if (attributeNode.isCyclicalStub() && attributeNode.getChildCount() == 0) {
+					attributeNode.expand();
+					treeModel.nodeStructureChanged(attributeNode);
+				}
+			}
+		}
+
+		@Override
+		public void treeWillCollapse(TreeExpansionEvent event) {}
 	}
 
 	static final class ExportPreferences {

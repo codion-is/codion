@@ -26,6 +26,7 @@ Codion Change Log
 - EntityTableExportPanel, export to file added.
 - EntityTableExportPanel, alt-click toggles attribute inclusion, help text added, minor improvements.
 - EntityTableExportPanel, success messages added, minor fixes.
+- EntityTableExportPanel now supports cyclical foreign keys.
 
 ## 0.18.51
 ### is.codion.swing.common.ui
