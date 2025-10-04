@@ -261,6 +261,29 @@ final class EntityTableExportPanel extends JPanel {
 		}
 	}
 
+	private void expandToShowSelections() {
+		expandNodeIfHasSelectedChildren(tableExport.entityNode());
+	}
+
+	private boolean expandNodeIfHasSelectedChildren(TreeNode node) {
+		boolean hasSelectedDescendants = false;
+		for (int i = 0; i < node.getChildCount(); i++) {
+			TreeNode child = node.getChildAt(i);
+			if (child instanceof AttributeNode) {
+				AttributeNode attrNode = (AttributeNode) child;
+				if (attrNode.selected().is()) {
+					hasSelectedDescendants = true;
+				}
+				if (expandNodeIfHasSelectedChildren(child)) {
+					hasSelectedDescendants = true;
+					exportTree.expandPath(new TreePath(attrNode.getPath()));
+				}
+			}
+		}
+
+		return hasSelectedDescendants;
+	}
+
 	private JSONObject createPreferences() {
 		return attributesToJson(tableExport.entityNode().children());
 	}
@@ -272,6 +295,7 @@ final class EntityTableExportPanel extends JPanel {
 		else {
 			applyAttributesAndForeignKeys(preferences, tableExport.entityNode().children());
 			exportTree.repaint();
+			expandToShowSelections();
 		}
 	}
 
