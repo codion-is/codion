@@ -45,5 +45,9 @@ public class MessagesTest {
 		Messages.refresh();
 		Messages.refreshMnemonic();
 		Messages.refreshTip();
+		Messages.save();
+		Messages.saveMnemonic();
+		Messages.open();
+		Messages.openMnemonic();
 	}
 }

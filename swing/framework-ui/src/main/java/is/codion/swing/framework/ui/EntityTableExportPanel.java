@@ -42,6 +42,7 @@ import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeWillExpandListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.ExpandVetoException;
 import javax.swing.tree.TreeNode;
@@ -49,6 +50,9 @@ import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
@@ -62,6 +66,7 @@ import static is.codion.swing.common.ui.component.button.ToggleButtonType.RADIO_
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.KeyEvent.VK_SPACE;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.ResourceBundle.getBundle;
 import static javax.swing.BorderFactory.createTitledBorder;
 import static javax.swing.SwingConstants.CENTER;
@@ -73,6 +78,7 @@ final class EntityTableExportPanel extends JPanel {
 
 	private static final String ATTRIBUTES_KEY = "attributes";
 	private static final String FOREIGN_KEYS_KEY = "foreignKeys";
+	private static final String JSON = "json";
 
 	private final EntityTableExport tableExport;
 	private final FilterTableColumnModel<Attribute<?>> columnModel;
@@ -93,6 +99,16 @@ final class EntityTableExportPanel extends JPanel {
 					.command(() -> select(false))
 					.caption(MESSAGES.getString("columns_none"))
 					.mnemonic(MESSAGES.getString("columns_none_mnemonic").charAt(0))
+					.build();
+	private final CommandControl saveConfiguration = Control.builder()
+					.command(this::saveConfiguration)
+					.caption(Messages.save() + "...")
+					.mnemonic(Messages.saveMnemonic())
+					.build();
+	private final CommandControl openConfiguration = Control.builder()
+					.command(this::openConfiguration)
+					.caption(Messages.open())
+					.mnemonic(Messages.openMnemonic())
 					.build();
 	private final ToggleControl allRowsControl;
 	private final ToggleControl selectedRowsControl;
@@ -128,7 +144,8 @@ final class EntityTableExportPanel extends JPanel {
 														.south(borderLayoutPanel()
 																		.east(buttonPanel()
 																						.controls(Controls.builder()
-																										.actions(selectDefaultsControl, selectAllControl, selectNoneControl))
+																										.actions(selectDefaultsControl, selectAllControl, selectNoneControl,
+																														openConfiguration, saveConfiguration))
 																						.transferFocusOnEnter(true)))))
 						.south(borderLayoutPanel()
 										.border(createTitledBorder(MESSAGES.getString("rows")))
@@ -184,11 +201,28 @@ final class EntityTableExportPanel extends JPanel {
 		}
 	}
 
+	private void openConfiguration() throws IOException {
+		File file = Dialogs.select()
+						.files()
+						.filter(new FileNameExtensionFilter(MESSAGES.getString("configuration_file") + " (" + JSON + ")", JSON))
+						.owner(this)
+						.selectFile();
+		applyPreferences(new JSONObject(new String(Files.readAllBytes(file.toPath()), UTF_8)));
+	}
+
+	private void saveConfiguration() throws IOException {
+		File file = Dialogs.select()
+						.files()
+						.owner(this)
+						.selectFileToSave(tableExport.defaultConfigFileName());
+		Files.write(file.toPath(), new ExportPreferences(this).preferences().toString().getBytes(UTF_8));
+	}
+
 	private void exportToFile() {
 		ExportTask task = tableExport.exportToFile(Dialogs.select()
 						.files()
 						.owner(this)
-						.selectFileToSave(tableExport.defaultFileName())
+						.selectFileToSave(tableExport.defaultExportFileName())
 						.toPath());
 		Dialogs.progressWorker()
 						.task(task)

@@ -67,6 +67,7 @@ final class EntityTableExport {
 	private static final String TAB = "\t";
 	private static final String SPACE = " ";
 	private static final String TSV = ".tsv";
+	private static final String JSON = ".json";
 
 	private final EntityTableModel<?> tableModel;
 	private final EntityConnectionProvider connectionProvider;
@@ -97,8 +98,12 @@ final class EntityTableExport {
 		return selected;
 	}
 
-	String defaultFileName() {
+	String defaultExportFileName() {
 		return tableModel.entityDefinition().caption() + TSV;
+	}
+
+	String defaultConfigFileName() {
+		return tableModel.entityDefinition().caption() + JSON;
 	}
 
 	private List<String> createHeader() {

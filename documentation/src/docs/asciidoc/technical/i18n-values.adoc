@@ -56,12 +56,16 @@ is/codion/common/i18n/Messages_is_IS.properties
 |no|No|Nei
 |ok|OK|Í lagi
 |ok_mnemonic|O|L
+|open|Open|Opna
+|open_mnemonic|O|O
 |password|Password|Lykilorð
 |print|Print|Prenta
 |print_mnemonic|P|P
 |refresh|Refresh|Endurhlaða
 |refresh_mnemonic|R|E
 |refresh_tip|Refresh data|Endurhlaða gögnum
+|save|Save|Vista
+|save_mnemonic|S|V
 |search|Search|Leita
 |username|Username|Notendanafn
 |yes|Yes|Já
@@ -828,20 +832,24 @@ is/codion/swing/framework/ui/EntityTableExportPanel_is_IS.properties
 |close_mnemonic|C|L
 |columns|Columns|Dálkar
 |columns_all|All|Allir
-|columns_all_mnemonic|L|R
+|columns_all_mnemonic|L|I
 |columns_none|None|Enginn
 |columns_none_mnemonic|N|E
+|configuration_file|Configuration file|Stilliskrá
+|copied_to_clipboard|Copied to clipboard|Afritað á klippiborð
+|copied_to_file|Copied to file|Afritað í skrá
 |copying_data|Copying data|Afrita gögn
+|data_copied|Data copied|Gögn afrituð
 |default_columns|Default|Sjálfgefnir
-|default_columns_mnemonic|D|S
+|default_columns_mnemonic|D|G
 |help|Use ALT-click or space to toggle attribute inclusion|Notið ALT-smell eða space til að velja/afvelja gildi
 |rows|Rows|Færslur
 |rows_all|All|Allar
 |rows_all_mnemonic|A|A
 |rows_selected|Selected|Valdar
-|rows_selected_mnemonic|S|V
+|rows_selected_mnemonic|E|R
 |to_clipboard|To clipboard|Á klippiborð
-|to_clipboard_mnemonic|L|K
+|to_clipboard_mnemonic|P|K
 |to_file|To file|Í skrá
 |to_file_mnemonic|F|S
 |===

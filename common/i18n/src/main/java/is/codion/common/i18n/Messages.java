@@ -96,6 +96,10 @@ public final class Messages {
 	private static final String REFRESH = "refresh";
 	private static final String REFRESH_MNEMONIC = "refresh_mnemonic";
 	private static final String REFRESH_TIP = "refresh_tip";
+	private static final String SAVE = "save";
+	private static final String SAVE_MNEMONIC = "save_mnemonic";
+	private static final String OPEN = "open";
+	private static final String OPEN_MNEMONIC = "open_mnemonic";
 
 	private Messages() {}
 
@@ -254,6 +258,38 @@ public final class Messages {
 	 */
 	public static String refreshTip() {
 		return get(REFRESH_TIP);
+	}
+
+	/**
+	 * @return save
+	 */
+	public static String save() {
+		return get(SAVE);
+	}
+
+	/**
+	 * @return save mnemonic
+	 */
+	public static char saveMnemonic() {
+		String mnemonic = get(SAVE_MNEMONIC);
+
+		return mnemonic.isEmpty() ? '\0' : mnemonic.charAt(0);
+	}
+
+	/**
+	 * @return open
+	 */
+	public static String open() {
+		return get(OPEN);
+	}
+
+	/**
+	 * @return open mnemonic
+	 */
+	public static char openMnemonic() {
+		String mnemonic = get(OPEN_MNEMONIC);
+
+		return mnemonic.isEmpty() ? '\0' : mnemonic.charAt(0);
 	}
 
 	private static String get(String key) {
