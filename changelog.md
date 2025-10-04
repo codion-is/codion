@@ -6,6 +6,7 @@ Codion Change Log
 - LocaleDateTimePattern.createFormatter() renamed formatter().
 ### is.codion.swing.common.ui
 - Windows.sizeWithinScreenBounds() renamed resizeToFitScreen(), now uses the window graphicsConfiguration instead of the default one.
+- ProgressWorkerDialogBuilder.onResult(message), title parameter added.
 ### is.codion.framework.domain
 - ColumnCondition.wildcard() added.
 ### is.codion.framework.json.domain

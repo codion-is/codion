@@ -69,7 +69,7 @@ public final class DialogsTest {
 						.northComponent(new JPanel())
 						.westComponent(new JPanel())
 						.onException("Fail")
-						.onResult("Success")
+						.onResult("Success", "Success")
 						.stringPainted(true)
 						.indeterminate(false)
 						.build();

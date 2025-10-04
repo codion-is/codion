@@ -228,7 +228,7 @@ final class LookupTablePanel extends EntityTablePanel {
 						.task(() -> export(fileToSave, format))
 						.owner(this)
 						.title("Exporting data")
-						.onResult("Export successful")
+						.onResult("Success", "Data exported to " + fileToSave)
 						.onException("Export failed")
 						.execute();
 	}

@@ -159,10 +159,11 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
 	ProgressWorkerDialogBuilder<T, V> onResult(Consumer<T> onResult);
 
 	/**
-	 * @param resultMessage if specified then this message is displayed after the task has successfully run
+	 * @param title the dialog title
+	 * @param message if specified then this message is displayed after the task has successfully run
 	 * @return this Builder instance
 	 */
-	ProgressWorkerDialogBuilder<T, V> onResult(String resultMessage);
+	ProgressWorkerDialogBuilder<T, V> onResult(String title, String message);
 
 	/**
 	 * @param onException the exception handler

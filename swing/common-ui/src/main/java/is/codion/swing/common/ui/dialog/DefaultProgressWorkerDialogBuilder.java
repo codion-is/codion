@@ -151,10 +151,11 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 	}
 
 	@Override
-	public ProgressWorkerDialogBuilder<T, V> onResult(String resultMessage) {
-		requireNonNull(resultMessage);
+	public ProgressWorkerDialogBuilder<T, V> onResult(String title, String message) {
+		requireNonNull(title);
+		requireNonNull(message);
 
-		return onResult(result -> showMessageDialog(owner, resultMessage, null, INFORMATION_MESSAGE));
+		return onResult(result -> showMessageDialog(owner, message, title, INFORMATION_MESSAGE));
 	}
 
 	@Override
