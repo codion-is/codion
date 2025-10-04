@@ -836,12 +836,13 @@ is/codion/swing/framework/ui/EntityTableExportPanel_is_IS.properties
 |columns_none|None|Enginn
 |columns_none_mnemonic|N|E
 |configuration_file|Configuration file|Stilliskrá
-|copied_to_clipboard|Copied to clipboard|Afritað á klippiborð
-|copied_to_file|Copied to file|Afritað í skrá
-|copying_data|Copying data|Afrita gögn
-|data_copied|Data copied|Gögn afrituð
+|data_exported|Data exported|Gögn afrituð
 |default_columns|Default|Sjálfgefnir
 |default_columns_mnemonic|D|G
+|export|Export|Afrita
+|exported_to_clipboard|Exported to clipboard|Afritað á klippiborð
+|exported_to_file|Exported to file|Afritað í skrá
+|exporting_data|Exporting data|Afrita gögn
 |help|Use ALT-click or space to toggle attribute inclusion|Notið ALT-smell eða space til að velja/afvelja gildi
 |rows|Rows|Færslur
 |rows_all|All|Allar
@@ -870,9 +871,9 @@ is/codion/swing/framework/ui/EntityTablePanel_is_IS.properties
 |columns|Columns|Dálkar
 |condition_required|Condition Required|Krefjast Leitarskilyrðis
 |condition_required_description|One or more active search conditions required for displaying data|Eins eða fleiri virkra leitarskilyrða krafist til að sækja gögn
-|copy_expanded|Copy Expanded|Afrita Útvíkkað
 |decrement_selection_tip|Move selection up|Færa val upp
 |delete_dependent_records|Delete these dependent records first|Eyddu þessum tengdu færslum fyrst
+|export_data|Export Data|Afrita Gögn
 |filtered|filtered|sýjaðar
 |increment_selection_tip|Move selection down|Færa val niður
 |limited_to|Limited to|Takmarkað við

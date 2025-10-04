@@ -368,21 +368,21 @@ public class EntityTablePanel extends JPanel {
 		 */
 		public static final ControlKey<CommandControl> COPY_ROWS = CommandControl.key("copyRows");
 		/**
-		 * A {@link Control} for copying the table rows expanded with header.
+		 * A {@link Control} for exporting the table data.
 		 */
-		public static final ControlKey<CommandControl> COPY_EXPANDED = CommandControl.key("copyExpanded");
+		public static final ControlKey<CommandControl> EXPORT_DATA = CommandControl.key("exportData");
 		/**
 		 * A {@link Controls} instance containing controls for copying either cell or table data.
 		 * <ul>
 		 * <li>{@link ControlKeys#COPY_CELL ControlKeys#COPY_CELL}
 		 * <li>{@link ControlKeys#COPY_ROWS ControlKeys#COPY_ROWS}
-		 * <li>{@link ControlKeys#COPY_EXPANDED ControlKeys#COPY_EXPANDED}
+		 * <li>{@link ControlKeys#EXPORT_DATA ControlKeys#EXPORT_DATA}
 		 * </ul>
 		 * @see #COPY_CELL
 		 * @see #COPY_ROWS
-		 * @see #COPY_EXPANDED
+		 * @see #EXPORT_DATA
 		 */
-		public static final ControlsKey COPY_CONTROLS = Controls.key("copyControls", Controls.layout(asList(COPY_CELL, COPY_ROWS, COPY_EXPANDED)));
+		public static final ControlsKey COPY_CONTROLS = Controls.key("copyControls", Controls.layout(asList(COPY_CELL, COPY_ROWS, EXPORT_DATA)));
 		/**
 		 * A {@link Controls} instance containing controls for configuring columns.
 		 * <ul>
@@ -1358,7 +1358,7 @@ public class EntityTablePanel extends JPanel {
 						.icon(ICONS.copy());
 		control(COPY_CELL).optional().ifPresent(builder::control);
 		control(COPY_ROWS).optional().ifPresent(builder::control);
-		control(COPY_EXPANDED).optional().ifPresent(builder::control);
+		control(EXPORT_DATA).optional().ifPresent(builder::control);
 
 		Controls copyControls = builder.build();
 
@@ -1375,7 +1375,7 @@ public class EntityTablePanel extends JPanel {
 	private CommandControl createExportControl() {
 		return Control.builder()
 						.command(this::export)
-						.caption(MESSAGES.getString("copy_expanded") + "...")
+						.caption(MESSAGES.getString("export_data") + "...")
 						.build();
 	}
 
@@ -1601,7 +1601,7 @@ public class EntityTablePanel extends JPanel {
 		controlMap.control(COPY_CELL).set(table.createCopyCellControl());
 		controlMap.control(COPY_ROWS).set(createCopyRowsControl());
 		if (configuration.includeExport) {
-			controlMap.control(COPY_EXPANDED).set(createExportControl());
+			controlMap.control(EXPORT_DATA).set(createExportControl());
 		}
 		if (configuration.includeEntityMenu) {
 			controlMap.control(DISPLAY_ENTITY_MENU).set(command(this::showEntityMenu));

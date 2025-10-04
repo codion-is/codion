@@ -165,7 +165,7 @@ final class EntityTableExportPanel extends JPanel {
 		Dialogs.action()
 						.component(this)
 						.owner(dialogOwner)
-						.title(Messages.copy())
+						.title(MESSAGES.getString("export"))
 						.escapeAction(Control.builder()
 										.command(() -> parentWindow(this).dispose())
 										.caption(MESSAGES.getString("close"))
@@ -228,9 +228,9 @@ final class EntityTableExportPanel extends JPanel {
 		Dialogs.progressWorker()
 						.task(task)
 						.owner(this)
-						.title(MESSAGES.getString("copying_data"))
+						.title(MESSAGES.getString("exporting_data"))
 						.control(createCancelControl(task.cancelled()))
-						.onResult(MESSAGES.getString("data_copied"), task.successMessage())
+						.onResult(MESSAGES.getString("data_exported"), task.successMessage())
 						.execute();
 	}
 
@@ -239,9 +239,9 @@ final class EntityTableExportPanel extends JPanel {
 		Dialogs.progressWorker()
 						.task(task)
 						.owner(this)
-						.title(MESSAGES.getString("copying_data"))
+						.title(MESSAGES.getString("exporting_data"))
 						.control(createCancelControl(task.cancelled()))
-						.onResult(MESSAGES.getString("data_copied"), task.successMessage())
+						.onResult(MESSAGES.getString("data_exported"), task.successMessage())
 						.execute();
 	}
 
