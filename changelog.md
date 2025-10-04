@@ -30,6 +30,7 @@ Codion Change Log
 - EntityTableExportPanel now automatically expands to show selected attributes when initialized.
 - EntityTableExport now cleans up the file if export is cancelled.
 - EntityTableExportPanel, added save and open configuration.
+- EntityTablePanel.ColumnSelection, AutoResizeModeSelection and EditAttributeSelection enums combined into SelectionMode.
 
 ## 0.18.51
 ### is.codion.swing.common.ui

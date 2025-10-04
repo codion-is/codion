@@ -421,43 +421,15 @@ public class EntityTablePanel extends JPanel {
 	}
 
 	/**
-	 * Specifies how column selection is presented.
+	 * Specifies how a selection is presented.
 	 */
-	public enum ColumnSelection {
+	public enum SelectionMode {
 		/**
 		 * Display a dialog.
 		 */
 		DIALOG,
 		/**
-		 * Display toggle controls directly in the menu.
-		 */
-		MENU
-	}
-
-	/**
-	 * Specifies how auto-resize-mode selection is presented.
-	 */
-	public enum AutoResizeModeSelection {
-		/**
-		 * Display a dialog.
-		 */
-		DIALOG,
-		/**
-		 * Display toggle controls directly in the menu.
-		 */
-		MENU
-	}
-
-	/**
-	 * Specifies how attribute selection is presented for editing the selected records.
-	 */
-	public enum EditAttributeSelection {
-		/**
-		 * Display a dialog.
-		 */
-		DIALOG,
-		/**
-		 * Display an item for each attribute in a submenu.
+		 * Display a menu.
 		 */
 		MENU
 	}
@@ -1361,14 +1333,14 @@ public class EntityTablePanel extends JPanel {
 		ControlsBuilder builder = Controls.builder()
 						.caption(MESSAGES.getString("columns"))
 						.icon(ICONS.columns());
-		if (configuration.columnSelection == ColumnSelection.DIALOG) {
+		if (configuration.columnSelection == SelectionMode.DIALOG) {
 			control(SELECT_COLUMNS).optional().ifPresent(builder::control);
 		}
 		else {
 			control(TOGGLE_COLUMN_CONTROLS).optional().ifPresent(builder::control);
 		}
 		control(RESET_COLUMNS).optional().ifPresent(builder::control);
-		if (configuration.autoResizeModeSelection == AutoResizeModeSelection.DIALOG) {
+		if (configuration.autoResizeModeSelection == SelectionMode.DIALOG) {
 			control(SELECT_AUTO_RESIZE_MODE).optional().ifPresent(builder::control);
 		}
 		else {
@@ -2127,32 +2099,32 @@ public class EntityTablePanel extends JPanel {
 		/**
 		 * Specifies how column selection is presented to the user.
 		 * <ul>
-		 * <li>Value type: {@link ColumnSelection}
-		 * <li>Default value: {@link ColumnSelection#DIALOG}
+		 * <li>Value type: {@link SelectionMode}
+		 * <li>Default value: {@link SelectionMode#DIALOG}
 		 * </ul>
 		 */
-		public static final PropertyValue<ColumnSelection> COLUMN_SELECTION =
-						enumValue(EntityTablePanel.class.getName() + ".columnSelection", ColumnSelection.class, ColumnSelection.DIALOG);
+		public static final PropertyValue<SelectionMode> COLUMN_SELECTION =
+						enumValue(EntityTablePanel.class.getName() + ".columnSelection", SelectionMode.class, SelectionMode.DIALOG);
 
 		/**
 		 * Specifies how column selection is presented to the user.
 		 * <ul>
-		 * <li>Value type: {@link AutoResizeModeSelection}
-		 * <li>Default value: {@link AutoResizeModeSelection#DIALOG}
+		 * <li>Value type: {@link SelectionMode}
+		 * <li>Default value: {@link SelectionMode#DIALOG}
 		 * </ul>
 		 */
-		public static final PropertyValue<AutoResizeModeSelection> AUTO_RESIZE_MODE_SELECTION =
-						enumValue(EntityTablePanel.class.getName() + ".autoResizeModeSelection", AutoResizeModeSelection.class, AutoResizeModeSelection.DIALOG);
+		public static final PropertyValue<SelectionMode> AUTO_RESIZE_MODE_SELECTION =
+						enumValue(EntityTablePanel.class.getName() + ".autoResizeModeSelection", SelectionMode.class, SelectionMode.DIALOG);
 
 		/**
 		 * Specifies how the edit an attribute action is presented to the user.
 		 * <ul>
-		 * <li>Value type: {@link EditAttributeSelection}
-		 * <li>Default value: {@link EditAttributeSelection#MENU}
+		 * <li>Value type: {@link SelectionMode}
+		 * <li>Default value: {@link SelectionMode#MENU}
 		 * </ul>
 		 */
-		public static final PropertyValue<EditAttributeSelection> EDIT_ATTRIBUTE_SELECTION =
-						enumValue(EntityTablePanel.class.getName() + ".editAttributeSelection", EditAttributeSelection.class, EditAttributeSelection.MENU);
+		public static final PropertyValue<SelectionMode> EDIT_ATTRIBUTE_SELECTION =
+						enumValue(EntityTablePanel.class.getName() + ".editAttributeSelection", SelectionMode.class, SelectionMode.MENU);
 
 		/**
 		 * Specifies the default popup menu layout.
@@ -2230,9 +2202,9 @@ public class EntityTablePanel extends JPanel {
 		private boolean includeEditAttributeControl = true;
 		private boolean includeToolBar = true;
 		private boolean excludeHiddenColumns = EXCLUDE_HIDDEN_COLUMNS.getOrThrow();
-		private ColumnSelection columnSelection = COLUMN_SELECTION.getOrThrow();
-		private AutoResizeModeSelection autoResizeModeSelection = AUTO_RESIZE_MODE_SELECTION.getOrThrow();
-		private EditAttributeSelection editAttributeSelection = EDIT_ATTRIBUTE_SELECTION.getOrThrow();
+		private SelectionMode columnSelection = COLUMN_SELECTION.getOrThrow();
+		private SelectionMode autoResizeModeSelection = AUTO_RESIZE_MODE_SELECTION.getOrThrow();
+		private SelectionMode editAttributeSelection = EDIT_ATTRIBUTE_SELECTION.getOrThrow();
 		private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling = REFERENTIAL_INTEGRITY_ERROR_HANDLING.getOrThrow();
 		private RefreshButtonVisible refreshButtonVisible = REFRESH_BUTTON_VISIBLE.getOrThrow();
 		private Function<SwingEntityTableModel, String> statusMessage = DEFAULT_STATUS_MESSAGE;
@@ -2483,7 +2455,7 @@ public class EntityTablePanel extends JPanel {
 		 * @param columnSelection specifies how columns are selected
 		 * @return this Config instance
 		 */
-		public Config columnSelection(ColumnSelection columnSelection) {
+		public Config columnSelection(SelectionMode columnSelection) {
 			this.columnSelection = requireNonNull(columnSelection);
 			return this;
 		}
@@ -2492,7 +2464,7 @@ public class EntityTablePanel extends JPanel {
 		 * @param autoResizeModeSelection specifies how auto-resize-mode is selected
 		 * @return this Config instance
 		 */
-		public Config autoResizeModeSelection(AutoResizeModeSelection autoResizeModeSelection) {
+		public Config autoResizeModeSelection(SelectionMode autoResizeModeSelection) {
 			this.autoResizeModeSelection = requireNonNull(autoResizeModeSelection);
 			return this;
 		}
@@ -2501,7 +2473,7 @@ public class EntityTablePanel extends JPanel {
 		 * @param editAttributeSelection specifies how attribute selection is presented selected when editing the selected records
 		 * @return this Config instance
 		 */
-		public Config editAttributeSelection(EditAttributeSelection editAttributeSelection) {
+		public Config editAttributeSelection(SelectionMode editAttributeSelection) {
 			this.editAttributeSelection = requireNonNull(editAttributeSelection);
 			return this;
 		}
@@ -2652,7 +2624,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		private ControlKey<?> popupMenuEditAttributeControl() {
-			return editAttributeSelection == EditAttributeSelection.MENU ?
+			return editAttributeSelection == SelectionMode.MENU ?
 							EDIT_ATTRIBUTE_CONTROLS :
 							EDIT_SELECTED_ATTRIBUTE;
 		}
