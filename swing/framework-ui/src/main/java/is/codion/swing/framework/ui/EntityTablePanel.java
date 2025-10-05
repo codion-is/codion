@@ -2260,6 +2260,7 @@ public class EntityTablePanel extends JPanel {
 			this.controlMap = config.controlMap.copy();
 			this.editable = valueSet(config.editable.get());
 			this.includeSouthPanel = config.includeSouthPanel;
+			this.includeExport = config.includeExport;
 			this.includeConditions = config.includeConditions;
 			this.conditionView = config.conditionView;
 			this.includeFilters = config.includeFilters;

@@ -48,7 +48,7 @@ public final class EntityTableExportPanelTest {
 	@Test
 	void exportPreferencesDefaults() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER);
-		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
+		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeExport(true));
 		EntityTableExportPanel exportPanel = tablePanel.exportPanel();
 
 		// Set up the default configuration (what selectDefaults() would produce)
@@ -67,7 +67,7 @@ public final class EntityTableExportPanelTest {
 	@Test
 	void exportPreferencesCustom() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER);
-		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
+		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeExport(true));
 		EntityTableExportPanel exportPanel = tablePanel.exportPanel();
 
 		// Customize: select only ID and DEPARTMENT foreign key with NAME
@@ -111,7 +111,7 @@ public final class EntityTableExportPanelTest {
 	@Test
 	void exportPreferencesApply() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER);
-		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
+		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeExport(true));
 		EntityTableExportPanel exportPanel = tablePanel.exportPanel();
 
 		// Customize configuration
@@ -131,7 +131,7 @@ public final class EntityTableExportPanelTest {
 
 		// Create new panel and apply preferences
 		SwingEntityTableModel newTableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER);
-		EntityTablePanel newTablePanel = new EntityTablePanel(newTableModel);
+		EntityTablePanel newTablePanel = new EntityTablePanel(newTableModel, config ->  config.includeExport(true));
 		EntityTableExportPanel newExportPanel = newTablePanel.exportPanel();
 
 		// Before apply, nothing is selected (or defaults are selected)
@@ -155,7 +155,7 @@ public final class EntityTableExportPanelTest {
 	@Test
 	void exportPreferencesForeignKeyChildren() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Detail.TYPE, CONNECTION_PROVIDER);
-		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
+		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeExport(true));
 		EntityTableExportPanel exportPanel = tablePanel.exportPanel();
 
 		// Select only the master foreign key and some of its children
@@ -191,7 +191,7 @@ public final class EntityTableExportPanelTest {
 
 		// Create new panel and apply
 		SwingEntityTableModel newTableModel = new SwingEntityTableModel(Detail.TYPE, CONNECTION_PROVIDER);
-		EntityTablePanel newTablePanel = new EntityTablePanel(newTableModel);
+		EntityTablePanel newTablePanel = new EntityTablePanel(newTableModel, config ->  config.includeExport(true));
 		EntityTablePanelPreferences loadedPreferences = new EntityTablePanelPreferences(newTablePanel, prefs);
 		loadedPreferences.apply(newTablePanel);
 
@@ -232,7 +232,7 @@ public final class EntityTableExportPanelTest {
 	@Test
 	void cyclicalForeignKeyExpansion() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER);
-		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
+		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeExport(true));
 		EntityTableExportPanel exportPanel = tablePanel.exportPanel();
 
 		// Find the MGR_FK node (cyclical self-reference)
@@ -283,7 +283,7 @@ public final class EntityTableExportPanelTest {
 	@Test
 	void cyclicalForeignKeyPreferences() {
 		SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER);
-		EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
+		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeExport(true));
 		EntityTableExportPanel exportPanel = tablePanel.exportPanel();
 
 		// Deselect all
@@ -344,7 +344,7 @@ public final class EntityTableExportPanelTest {
 
 		// Create new panel and apply preferences
 		SwingEntityTableModel newTableModel = new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER);
-		EntityTablePanel newTablePanel = new EntityTablePanel(newTableModel);
+		EntityTablePanel newTablePanel = new EntityTablePanel(newTableModel, config -> config.includeExport(true));
 		EntityTablePanelPreferences loadedPreferences = new EntityTablePanelPreferences(newTablePanel, prefs);
 		loadedPreferences.apply(newTablePanel);
 

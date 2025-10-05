@@ -34,6 +34,7 @@ Codion Change Log
 - EntityTablePanel.Config.includeExport() added along with INCLUDE_EXPORT configuration property, default false.
 - EntityTablePanel, copy expanded rebranded as export.
 - EntityTableExportPanel now uses export instead of copy.
+- EntityTablePanel bug fixed, includeExport not set in Config copy constructor, tests fixed.
 
 ## 0.18.51
 ### is.codion.swing.common.ui
