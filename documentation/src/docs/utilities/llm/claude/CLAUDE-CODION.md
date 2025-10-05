@@ -168,7 +168,7 @@ Foreign keys are first-class citizens with automatic entity loading:
 // Define foreign key with attributes to fetch from referenced entity
 Artist.RECORD_LABEL_FK.define()
     .foreignKey()
-    .attributes(RecordLabel.NAME, RecordLabel.FOUNDED)  // Fetched with the Artist
+    .include(RecordLabel.NAME, RecordLabel.FOUNDED)  // Fetched with the Artist
     .referenceDepth(2)  // How deep to follow foreign key chains
 
 // Usage - referenced entity is automatically loaded
@@ -260,7 +260,7 @@ Column<Location> LOCATION = TYPE.column("location", Location.class);
 // Converter handles database ↔ Java conversion
 LOCATION.define()
     .column()
-    .columnClass(String.class, new LocationConverter());
+    .converter(String.class, new LocationConverter());
 ```
 
 ### Derived Attributes

@@ -117,7 +117,7 @@ public class StoreTest extends DomainTest {
 			}
 			else if (entity.type().equals(Customer.TYPE)) {
 				// It is sufficient to change the value of a
-				// single property, but the more, the merrier
+				// single attribute, but the more, the merrier
 				entity.set(Customer.FIRST_NAME, "Jesse");
 				entity.set(Customer.LAST_NAME, "James");
 				entity.set(Customer.ACTIVE, false);

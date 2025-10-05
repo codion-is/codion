@@ -85,6 +85,7 @@ import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.KeyboardFocusManager;
 import java.awt.Window;
 import java.io.File;
@@ -716,7 +717,7 @@ public class EntityApplicationPanel<M extends SwingEntityApplicationModel> exten
 	 * @return the panel shown when Help -&#62; About is selected
 	 */
 	protected JPanel createAboutPanel() {
-		PanelBuilder versionMemoryPanel = gridLayoutPanel(0, 2)
+		PanelBuilder<GridLayout, ?> versionMemoryPanel = gridLayoutPanel(0, 2)
 						.border(emptyBorder());
 		applicationModel().version().ifPresent(version -> versionMemoryPanel
 						.add(new JLabel(resourceBundle.getString(APPLICATION_VERSION) + ":"))

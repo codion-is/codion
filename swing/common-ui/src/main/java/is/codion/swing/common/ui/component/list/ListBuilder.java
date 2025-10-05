@@ -158,7 +158,7 @@ public interface ListBuilder<V, T, B extends ListBuilder<V, T, B>> extends Compo
 	}
 
 	/**
-	 * @return a new list builder factory
+	 * @return a list builder
 	 */
 	static ModelStep builder() {
 		return DefaultListBuilderFactory.MODEL;

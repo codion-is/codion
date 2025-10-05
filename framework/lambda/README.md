@@ -190,7 +190,6 @@ EntityConnectionProvider provider =
         .hostName("your-function-url.lambda-url.region.on.aws")
         .https(true)
         .securePort(443)
-        .json(false)
         .domain(YourDomain.DOMAIN)
         .user(User.parse("username:password"))
         .build();
@@ -270,7 +269,6 @@ EntityConnectionProvider provider =
         .hostName("your-function-url.lambda-url.region.on.aws")
         .https(true)
         .securePort(443)
-        .json(false)
         .domain(YourDomain.DOMAIN)
         .user(User.parse("username:password"))
         .build();
