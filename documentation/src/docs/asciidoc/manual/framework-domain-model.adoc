@@ -107,7 +107,7 @@ The underlying column name is typically used as the *Column* name, but as with t
 == Domain implementation
 
 The domain model is implemented by extending the {url-javadoc}{framework-domain}/is/codion/framework/domain/DomainModel.html[DomainModel] class and populating it with *EntityDefinitions* based on the domain tables.
-An *EntityDefinition* is comprised of *AttributeDefinitions* based on the *Attributes* associated with the entity.
+An *EntityDefinition* consists of *AttributeDefinitions* based on the *Attributes* associated with the entity and the information required to persist and present the entity.
 
 The *EntityType* and *Attribute* constants provide *define()* methods returning builders which allow for further configuration (such as nullability and maximum length for values and the caption and primary key generator for the entity definition).
 
@@ -452,14 +452,6 @@ These templates demonstrate how column templates can:
 * **Ensure consistency** - All geometry columns of the same type use identical configuration
 * **Reduce boilerplate** - Complex type configuration is defined once and reused everywhere
 * **Improve maintainability** - Changes to geometry handling are centralized in the template definitions
-
-[#_foreignkey]
-== Foreign key
-
-[source,java,indent=0]
-----
-include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=foreignKeyCapital]
-----
 
 == Domain
 
