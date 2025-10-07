@@ -17,6 +17,14 @@ For more complex cases, where multiple print controls are required, custom contr
 include::{dir-source}/is/codion/manual/store/ui/CustomerTablePanel.java[tags=customerTablePanel]
 ----
 
+== Exporting Data
+
+A configurable denormalized data export tool can be included in the EntityTablePanel **Copy** table popup submenu.
+
+It can be enabled globally via the {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityTablePanel.Config.html#INCLUDE_EXPORT[EntityTablePanel.Config.INCLUDE_EXPORT] configuration value or for a single panel via the panel configuration.
+
+The active export configuration is saved in user preferences on application exit.
+
 == Query Inspector
 
 A *Query Inspector* can be enabled globally via the {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityTablePanel.Config.html#INCLUDE_QUERY_INSPECTOR[EntityTablePanel.Config.INCLUDE_QUERY_INSPECTOR] configuration value or for a single panel via the panel configuration.

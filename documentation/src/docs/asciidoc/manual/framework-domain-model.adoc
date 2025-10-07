@@ -701,6 +701,73 @@ include::{dir-world-source}/module-info.java[tag=customSerializer]
 
 See <<{dir-tutorials}/world/world.adoc#_domain, World domain model>>
 
+== Custom select queries
+
+When an entity's data cannot be adequately represented by a single table, you may need to customize the SELECT query used to populate entities. The {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/query/EntitySelectQuery.html[EntitySelectQuery] class provides this capability through its builder API.
+
+IMPORTANT: Custom select queries should be used as an **escape hatch** when other approaches have been considered and rejected. In most cases, creating a database view is the preferred solution - views can be optimized by database administrators, tested independently, and changed without modifying application code. Use `EntitySelectQuery` when views are impractical due to deployment constraints (such as migration risks in production environments) or when the query logic needs to be version-controlled with the application code.
+
+=== When to use custom select queries
+
+Consider using `EntitySelectQuery` when:
+
+* **Database views are impractical** - Deployment environments where schema migrations carry significant risk (offline systems, mission-critical applications)
+* **Application-specific logic** - Query patterns that are tightly coupled to application features and likely to evolve with the code
+* **Rapid iteration** - During development when query logic is still being refined and database schema changes would slow progress
+* **Multi-table joins** - Denormalizing data from related tables without creating a view
+
+Consider using **database views** instead when:
+
+* **Stable, foundational queries** - Well-established query patterns that rarely change
+* **Cross-application usage** - Queries needed by multiple applications or reporting tools
+* **DBA optimization** - Complex queries requiring database-specific hints, indexes, or performance tuning
+* **Production stability** - Mission-critical systems where application code changes are safer than schema migrations
+
+=== Custom FROM clause
+
+The most common use case is customizing the FROM clause to join additional tables, allowing you to include columns from related tables without using foreign key references.
+
+[source,java]
+----
+include::{dir-source}/is/codion/manual/framework/domain/CustomSelectQueries.java[tags=fromClause]
+----
+
+NOTE: Always mark denormalized values as `readOnly(true)`.
+
+In this example, the Track entity includes `album_title` and `artist_name` columns by joining the album and artist tables. The framework automatically generates the SELECT and WHERE clauses based on the column definitions.
+
+NOTE: The {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/query/EntitySelectQuery.Builder.html#columns(java.lang.String)[columns()] method is rarely needed - the framework constructs the SELECT clause from column definitions using their `expression()` values, which typically works correctly. Only specify `columns()` when you need non-standard column expressions or aliases.
+
+=== GROUP BY and aggregation
+
+NOTE: For aggregated data on a single table, use Codion's built-in <<_group_by,grouped entity support>> with `.groupBy(true)` and `.aggregate(true)` at the column level. This provides type-safe aggregate column handling and automatic HAVING clause generation. Use `EntitySelectQuery` with `groupBy()` only when aggregating across complex joins of multiple tables.
+
+The framework includes aggregate expressions from column definitions in the SELECT clause. Entities representing aggregated data should be marked as read-only.
+
+=== Static WHERE clause
+
+Use the `where()` method to apply a static filter that applies to all queries for this entity:
+
+[source,java]
+----
+include::{dir-source}/is/codion/manual/framework/domain/CustomSelectQueries.java[tags=whereClause]
+----
+
+IMPORTANT: The WHERE clause specified in `EntitySelectQuery` is always included and automatically combined (using AND) with any dynamic conditions from the {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/condition/Condition.html[Condition] framework. This allows static filtering (like `active = 1`) to coexist with dynamic user-driven filters.
+
+=== Best practices
+
+When using custom select queries:
+
+* **Mark entities as read-only** - Entities based on joins or aggregations typically cannot be updated: `.readOnly(true)`
+* **Avoid specifying columns** - Let the framework generate the SELECT columns clause from column definitions unless you need special expressions
+* **Watch out for ambiguous column names ** - Use `.expression()` when column names become ambiguous due to joins
+* **Use table aliases carefully** - Ensure column expressions in attribute definitions match the aliases used in your FROM clause
+* **Test thoroughly** - Custom queries bypass some framework validations, so verify behavior with actual data
+* **Document the rationale** - Include comments explaining why a custom query is used instead of a view
+
+This pattern is useful when you frequently need data from related tables and want to avoid the overhead of foreign key lookups, while maintaining the option to use a database view in the future if the query becomes performance-critical.
+
 == Domain composition
 
 Domain models can be composed of other domain models, allowing you to build modular, reusable domain definitions. This composition can be complete (including all entity definitions) or selective (cherry-picking specific entities or functionality).
