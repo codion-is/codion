@@ -144,7 +144,7 @@ final class DefaultSelect implements Select, Serializable {
 						limit == that.limit &&
 						offset == that.offset &&
 						where.equals(that.where) &&
-						Objects.equals(having, that.having) &&
+						having.equals(that.having) &&
 						Objects.equals(foreignKeyReferenceDepths, that.foreignKeyReferenceDepths) &&
 						attributes.equals(that.attributes) &&
 						Objects.equals(orderBy, that.orderBy) &&
@@ -153,7 +153,7 @@ final class DefaultSelect implements Select, Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(forUpdate, limit, offset, where, foreignKeyReferenceDepths, attributes, orderBy, referenceDepth);
+		return Objects.hash(forUpdate, limit, offset, where, having, foreignKeyReferenceDepths, attributes, orderBy, referenceDepth);
 	}
 
 	@Override
