@@ -186,9 +186,9 @@ final class DefaultSelect implements Select, Serializable {
 		private @Nullable Integer offset;
 		private int timeout = 120;
 
-		DefaultBuilder(Condition where) {
+		DefaultBuilder(Condition where, Condition having) {
 			this.where = requireNonNull(where);
-			this.having = Condition.all(where.entityType());
+			this.having = requireNonNull(having);
 		}
 
 		@Override

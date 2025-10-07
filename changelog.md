@@ -4,6 +4,7 @@ Codion Change Log
 ## 0.18.53
 ### is.codion.framework.db
 - DefaultSelect bug fixed, having clause not included in hashCode().
+- Select.having() added, related refactoring.
 ### is.codion.swing.framework.ui
 - EntityTableExportPanel refactored, lots of stuff moved to EntityTableExport, which is now called EntityTableExportModel.
 

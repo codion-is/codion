@@ -1745,8 +1745,7 @@ public class DefaultLocalEntityConnectionTest {
 
 	@Test
 	void having() {
-		List<Entity> jobs = connection.select(Select.where(all(Job.TYPE))
-						.having(and(
+		List<Entity> jobs = connection.select(Select.having(and(
 										Job.MAX_COMMISSION.equalTo(1500d),
 										Job.MIN_COMMISSION.equalTo(1200d)))
 						.build());

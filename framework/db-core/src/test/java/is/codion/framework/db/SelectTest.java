@@ -263,9 +263,7 @@ public final class SelectTest {
 		@DisplayName("having clause configuration")
 		void select_having_configuresCorrectly() {
 			Condition havingCondition = Employee.SALARY.greaterThan(50000d);
-			Select select = Select.all(Employee.TYPE)
-							.having(havingCondition)
-							.build();
+			Select select = Select.having(havingCondition).build();
 
 			assertEquals(havingCondition, select.having());
 		}

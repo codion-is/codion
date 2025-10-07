@@ -25,6 +25,7 @@ import is.codion.common.db.report.Report;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
+import is.codion.framework.db.DefaultSelect.DefaultBuilder;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -975,7 +976,9 @@ public interface EntityConnection extends AutoCloseable {
 		 * @return a new {@link Builder} instance
 		 */
 		static Builder all(EntityType entityType) {
-			return new DefaultSelect.DefaultBuilder(Condition.all(entityType));
+			Condition all = Condition.all(requireNonNull(entityType));
+
+			return new DefaultBuilder(all, all);
 		}
 
 		/**
@@ -983,7 +986,15 @@ public interface EntityConnection extends AutoCloseable {
 		 * @return a new {@link Builder} instance
 		 */
 		static Builder where(Condition condition) {
-			return new DefaultSelect.DefaultBuilder(condition);
+			return new DefaultBuilder(requireNonNull(condition), Condition.all(condition.entityType()));
+		}
+
+		/**
+		 * @param condition the HAVING condition
+		 * @return a new {@link Builder} instance
+		 */
+		static Builder having(Condition condition) {
+			return new DefaultBuilder(Condition.all(requireNonNull(condition).entityType()), condition);
 		}
 	}
 
