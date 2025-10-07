@@ -19,7 +19,7 @@
 package is.codion.common.model.filter;
 
 import is.codion.common.event.Event;
-import is.codion.common.model.filter.FilterModel.ExcludedItems;
+import is.codion.common.model.filter.FilterModel.FilteredItems;
 import is.codion.common.model.filter.FilterModel.IncludedItems;
 import is.codion.common.model.filter.FilterModel.IncludedItems.ItemsListener;
 import is.codion.common.model.filter.FilterModel.IncludedPredicate;
@@ -57,7 +57,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 
 	private final Predicate<R> validator;
 	private final DefaultIncludedItems included;
-	private final DefaultExcludedItems excluded;
+	private final DefaultFilteredItems filtered;
 	private final ItemsListener itemsListener;
 
 	private final MultiSelection<R> selection;
@@ -68,7 +68,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		this.sort = builder.sort;
 		this.validator = builder.validator;
 		this.included = new DefaultIncludedItems(builder.included);
-		this.excluded = new DefaultExcludedItems();
+		this.filtered = new DefaultFilteredItems();
 		this.refresher = builder.refresher.apply(this);
 		this.selection = builder.selection.apply(included);
 		this.itemsListener = builder.itemsListener;
@@ -94,12 +94,12 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	@Override
 	public Collection<R> get() {
 		synchronized (lock) {
-			if (excluded.items.isEmpty()) {
+			if (filtered.items.isEmpty()) {
 				return unmodifiableCollection(new ArrayList<>(included.items));
 			}
-			List<R> entities = new ArrayList<>(included.items.size() + excluded.items.size());
+			List<R> entities = new ArrayList<>(included.items.size() + filtered.items.size());
 			entities.addAll(included.items);
-			entities.addAll(excluded.items);
+			entities.addAll(filtered.items);
 
 			return unmodifiableList(entities);
 		}
@@ -133,7 +133,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	public void remove(R item) {
 		requireNonNull(item);
 		synchronized (lock) {
-			if (!excluded.items.remove(item)) {
+			if (!filtered.items.remove(item)) {
 				int index = included.items.indexOf(item);
 				if (index >= 0) {
 					included.items.remove(index);
@@ -150,7 +150,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		synchronized (lock) {
 			Set<R> toRemove = new HashSet<>(items);
 			for (R itemToRemove : items) {
-				if (excluded.items.remove(itemToRemove)) {
+				if (filtered.items.remove(itemToRemove)) {
 					toRemove.remove(itemToRemove);
 				}
 			}
@@ -177,7 +177,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	public void remove(Predicate<R> predicate) {
 		requireNonNull(predicate);
 		synchronized (lock) {
-			remove(Stream.concat(included.items.stream(), excluded.items.stream())
+			remove(Stream.concat(included.items.stream(), filtered.items.stream())
 							.filter(predicate)
 							.collect(toList()));
 		}
@@ -197,13 +197,13 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		synchronized (lock) {
 			Map<R, R> toReplace = new HashMap<>(items);
 			for (R itemToReplace : items.keySet()) {
-				if (excluded.items.remove(itemToReplace)) {
+				if (filtered.items.remove(itemToReplace)) {
 					R replacement = toReplace.remove(itemToReplace);
 					if (included.predicate.test(replacement)) {
 						included.items.add(replacement);
 					}
 					else {
-						excluded.items.add(replacement);
+						filtered.items.add(replacement);
 					}
 				}
 			}
@@ -217,7 +217,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 					}
 					else {
 						iterator.remove();
-						excluded.items.add(replacement);
+						filtered.items.add(replacement);
 					}
 				}
 			}
@@ -239,18 +239,18 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	}
 
 	@Override
-	public ExcludedItems<R> excluded() {
-		return excluded;
+	public FilteredItems<R> filtered() {
+		return filtered;
 	}
 
 	@Override
 	public boolean contains(R item) {
-		return included.contains(requireNonNull(item)) || excluded.contains(item);
+		return included.contains(requireNonNull(item)) || filtered.contains(item);
 	}
 
 	@Override
 	public int size() {
-		return included.size() + excluded.size();
+		return included.size() + filtered.size();
 	}
 
 	@Override
@@ -270,7 +270,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	@Override
 	public void clear() {
 		synchronized (lock) {
-			excluded.items.clear();
+			filtered.items.clear();
 			int includedSize = included.items.size();
 			included.items.clear();
 			if (includedSize > 0) {
@@ -281,26 +281,26 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 	}
 
 	/**
-	 * Performs incremental filtering by only moving items between included and excluded collections
+	 * Performs incremental filtering by only moving items between included and filtered collections
 	 * instead of rebuilding the entire included list. This optimizes performance for large datasets
 	 * by avoiding unnecessary operations on items that are already in the correct collection.
 	 */
 	private void filterIncremental() {
 		// First pass: move items from excluded to included if they now pass the predicate
-		excluded.items.removeIf(item -> {
+		filtered.items.removeIf(item -> {
 			if (included.predicate.test(item)) {
 				included.items.add(item);
 
-				return true; // Remove from excluded
+				return true; // Remove from filtered
 			}
 
-			return false; // Keep in excluded
+			return false; // Keep in filtered
 		});
 
-		// Second pass: move items from included to excluded if they no longer pass the predicate
+		// Second pass: move items from included to filtered if they no longer pass the predicate
 		included.items.removeIf(item -> {
 			if (!included.predicate.test(item)) {
-				excluded.items.add(item);
+				filtered.items.add(item);
 
 				return true; // Remove from included
 			}
@@ -311,14 +311,14 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 
 	private boolean addInternal(int index, Collection<R> items) {
 		Collection<R> includedItems = new ArrayList<>(items.size());
-		Collection<R> excludedItems = new ArrayList<>(items.size());
+		Collection<R> filteredItems = new ArrayList<>(items.size());
 		for (R item : items) {
 			validate(item);
 			if (included.predicate.test(item)) {
 				includedItems.add(item);
 			}
 			else {
-				excludedItems.add(item);
+				filteredItems.add(item);
 			}
 		}
 		if (!includedItems.isEmpty()) {
@@ -328,8 +328,8 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 			included.sort();
 			included.notifyAdded(includedItems);
 		}
-		if (!excludedItems.isEmpty()) {
-			excluded.items.addAll(excludedItems);
+		if (!filteredItems.isEmpty()) {
+			filtered.items.addAll(filteredItems);
 		}
 
 		return !includedItems.isEmpty();
@@ -491,7 +491,7 @@ final class DefaultFilterModelItems<R> implements Items<R> {
 		}
 	}
 
-	private final class DefaultExcludedItems implements ExcludedItems<R> {
+	private final class DefaultFilteredItems implements FilteredItems<R> {
 
 		private final Set<R> items = new LinkedHashSet<>();
 

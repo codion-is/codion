@@ -336,7 +336,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 
 		private final AbstractRefresher<T> refresher;
 		private final DefaultIncludedItems included;
-		private final DefaultExcludedItems excluded = new DefaultExcludedItems();
+		private final DefaultFilteredItems filtered = new DefaultFilteredItems();
 
 		private final boolean filterSelected;
 		private final boolean includeNull;
@@ -381,12 +381,12 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		public Collection<T> get() {
 			synchronized (lock) {
 				List<T> includedItems = included.get();
-				if (excluded.items.isEmpty()) {
+				if (filtered.items.isEmpty()) {
 					return unmodifiableCollection(new ArrayList<>(includedItems));
 				}
-				List<T> entities = new ArrayList<>(includedItems.size() + excluded.items.size());
+				List<T> entities = new ArrayList<>(includedItems.size() + filtered.items.size());
 				entities.addAll(includedItems);
-				entities.addAll(excluded.items);
+				entities.addAll(filtered.items);
 
 				return unmodifiableList(entities);
 			}
@@ -396,7 +396,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		public void set(Collection<T> items) {
 			requireNonNull(items);
 			synchronized (lock) {
-				excluded.items.clear();
+				filtered.items.clear();
 				included.items.clear();
 				if (includeNull) {
 					included.items.add(0, null);
@@ -424,7 +424,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 					}
 				}
 				else {
-					excluded.items.add(item);
+					filtered.items.add(item);
 				}
 			}
 		}
@@ -442,7 +442,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		public void remove(T item) {
 			requireNonNull(item);
 			synchronized (lock) {
-				if (!excluded.items.remove(item) && included.items.remove(item)) {
+				if (!filtered.items.remove(item) && included.items.remove(item)) {
 					included.notifyChanges();
 					updateSelectedItem(item);
 				}
@@ -462,7 +462,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		public void remove(Predicate<T> predicate) {
 			requireNonNull(predicate);
 			synchronized (lock) {
-				remove(Stream.concat(included.items.stream(), excluded.items.stream())
+				remove(Stream.concat(included.items.stream(), filtered.items.stream())
 								.filter(predicate)
 								.collect(toList()));
 			}
@@ -474,21 +474,21 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		}
 
 		@Override
-		public ExcludedItems<T> excluded() {
-			return excluded;
+		public FilteredItems<T> filtered() {
+			return filtered;
 		}
 
 		@Override
 		public boolean contains(T item) {
 			synchronized (lock) {
-				return included.items.contains(item) || excluded.items.contains(item);
+				return included.items.contains(item) || filtered.items.contains(item);
 			}
 		}
 
 		@Override
 		public int size() {
 			synchronized (lock) {
-				return included.size() + excluded.size();
+				return included.size() + filtered.size();
 			}
 		}
 
@@ -496,8 +496,8 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 		public void filter() {
 			synchronized (lock) {
 				if (size() > 0) {
-					included.items.addAll(excluded.items);
-					excluded.items.clear();
+					included.items.addAll(filtered.items);
+					filtered.items.clear();
 					filterInternal();
 					included.sortInternal();
 					if (filterSelected
@@ -535,13 +535,13 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			synchronized (lock) {
 				Map<T, T> replacements = new HashMap<>(items);
 				for (T itemToReplace : items.keySet()) {
-					if (excluded.items.remove(itemToReplace)) {
+					if (filtered.items.remove(itemToReplace)) {
 						T replacement = replacements.remove(itemToReplace);
 						if (included(replacement)) {
 							included.items.add(replacement);
 						}
 						else {
-							excluded.items.add(replacement);
+							filtered.items.add(replacement);
 						}
 					}
 				}
@@ -555,7 +555,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 						}
 						else {
 							iterator.remove();
-							excluded.items.add(replacement);
+							filtered.items.add(replacement);
 						}
 					}
 				}
@@ -575,7 +575,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 				for (Iterator<T> iterator = included.items.listIterator(); iterator.hasNext(); ) {
 					T item = iterator.next();
 					if (item != null && !predicate.test(item)) {
-						excluded.items.add(item);
+						filtered.items.add(item);
 						iterator.remove();
 					}
 				}
@@ -747,7 +747,7 @@ final class DefaultFilterComboBoxModel<T> implements FilterComboBoxModel<T> {
 			}
 		}
 
-		private final class DefaultExcludedItems implements ExcludedItems<T> {
+		private final class DefaultFilteredItems implements FilteredItems<T> {
 
 			private final Set<T> items = new LinkedHashSet<>();
 

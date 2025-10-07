@@ -2759,8 +2759,8 @@ public class EntityTablePanel extends JPanel {
 		@Override
 		public String apply(SwingEntityTableModel tableModel) {
 			int rowCount = tableModel.items().included().size();
-			int excludedCount = tableModel.items().excluded().size();
-			if (rowCount == 0 && excludedCount == 0) {
+			int filteredCount = tableModel.items().filtered().size();
+			if (rowCount == 0 && filteredCount == 0) {
 				return "";
 			}
 			int selectionCount = tableModel.selection().count();
@@ -2769,16 +2769,16 @@ public class EntityTablePanel extends JPanel {
 				builder.append(MESSAGES.getString("limited_to")).append(" ");
 			}
 			builder.append(STATUS_MESSAGE_NUMBER_FORMAT.format(rowCount));
-			if (selectionCount > 0 || excludedCount > 0) {
+			if (selectionCount > 0 || filteredCount > 0) {
 				builder.append(" (");
 				if (selectionCount > 0) {
 					builder.append(STATUS_MESSAGE_NUMBER_FORMAT.format(selectionCount)).append(" ").append(MESSAGES.getString("selected"));
 				}
-				if (excludedCount > 0) {
+				if (filteredCount > 0) {
 					if (selectionCount > 0) {
 						builder.append(" - ");
 					}
-					builder.append(STATUS_MESSAGE_NUMBER_FORMAT.format(excludedCount)).append(" ").append(MESSAGES.getString("filtered"));
+					builder.append(STATUS_MESSAGE_NUMBER_FORMAT.format(filteredCount)).append(" ").append(MESSAGES.getString("filtered"));
 				}
 				builder.append(")");
 			}

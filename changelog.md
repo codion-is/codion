@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.53
 ### is.codion.common.db
 - ResultIterator removed.
+### is.codion.common.model
+- FilterModel.excluded() renamed filtered().
 ### is.codion.framework.db
 - DefaultSelect bug fixed, having clause not included in hashCode().
 - Select.having() added, related refactoring.

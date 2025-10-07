@@ -78,7 +78,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 	Optional<Entity> find(Entity.Key primaryKey);
 
 	/**
-	 * Selects the entity with the given primary key, whether included or excluded.
+	 * Selects the entity with the given primary key, whether included or filtered.
 	 * If the entity is not available in the model this method returns silently without changing the selection.
 	 * @param primaryKey the primary key of the entity to select
 	 */
@@ -257,7 +257,7 @@ public interface EntityComboBoxModel extends FilterComboBoxModel<Entity> {
 
 		/**
 		 * Filters the combo box model so that only items referencing the given keys are included.
-		 * If {@code keys} is empty and {@link #strict()} filtering is enabled, all entities are excluded.
+		 * If {@code keys} is empty and {@link #strict()} filtering is enabled, all entities are filtered.
 		 * @param keys the keys to filter by
 		 */
 		void set(Collection<Entity.Key> keys);

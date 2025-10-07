@@ -121,7 +121,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 			setSelectedItem(entity.get());
 		}
 		else {
-			excludedEntity(primaryKey).ifPresent(this::setSelectedItem);
+			filteredEntity(primaryKey).ifPresent(this::setSelectedItem);
 		}
 	}
 
@@ -198,8 +198,8 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		comboBoxModel.removeListDataListener(listener);
 	}
 
-	private Optional<Entity> excludedEntity(Entity.Key primaryKey) {
-		return items().excluded().get().stream()
+	private Optional<Entity> filteredEntity(Entity.Key primaryKey) {
+		return items().filtered().get().stream()
 						.filter(entity -> entity.primaryKey().equals(primaryKey))
 						.findFirst();
 	}

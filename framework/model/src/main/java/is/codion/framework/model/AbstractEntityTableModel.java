@@ -202,7 +202,7 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 	 * @param entities the updated entities, mapped to their original primary key
 	 */
 	protected void updated(ForeignKey foreignKey, Map<Entity.Key, Entity> entities) {
-		for (Entity entity : items().excluded().get()) {
+		for (Entity entity : items().filtered().get()) {
 			for (Map.Entry<Entity.Key, Entity> entry : entities.entrySet()) {
 				replace(foreignKey, entity, entry.getKey(), entry.getValue());
 			}
@@ -274,9 +274,9 @@ public abstract class AbstractEntityTableModel<E extends EntityEditModel> implem
 				includedItems.set(i, replacement);
 			}
 		}
-		Iterator<Entity> excluded = items().excluded().get().iterator();
-		while (excluded.hasNext() && !replacements.isEmpty()) {
-			Entity entity = excluded.next();
+		Iterator<Entity> filtered = items().filtered().get().iterator();
+		while (filtered.hasNext() && !replacements.isEmpty()) {
+			Entity entity = filtered.next();
 			Entity replacement = replacements.remove(entity.primaryKey());
 			if (replacement != null) {
 				entity.set(replacement);

@@ -57,7 +57,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DefaultFilterModelItemsTest {
 
 	private static final String ITEM_PREFIX = "item";
-	private static final String EXCLUDED_PREFIX = "excluded";
+	private static final String FILTERED_PREFIX = "filtered";
 	private static final String INCLUDED_PREFIX = "included";
 
 	@Nested
@@ -88,19 +88,19 @@ public class DefaultFilterModelItemsTest {
 
 			assertEquals(1, items.size());
 			assertEquals(1, items.included().size());
-			assertEquals(0, items.excluded().size());
+			assertEquals(0, items.filtered().size());
 			assertTrue(items.contains(ITEM_PREFIX + "1"));
 		}
 
 		@Test
-		@DisplayName("Add single item to excluded")
+		@DisplayName("Add single item to filtered")
 		void add_singleItem_shouldAddToExcluded() {
 			includedPredicate.setPredicate(item -> !item.startsWith(ITEM_PREFIX));
 			items.add(ITEM_PREFIX + "1");
 
 			assertEquals(1, items.size());
 			assertEquals(0, items.included().size());
-			assertEquals(1, items.excluded().size());
+			assertEquals(1, items.filtered().size());
 			assertTrue(items.contains(ITEM_PREFIX + "1"));
 		}
 
@@ -110,20 +110,20 @@ public class DefaultFilterModelItemsTest {
 			includedPredicate.setPredicate(item -> item.startsWith(INCLUDED_PREFIX));
 			List<String> itemsToAdd = asList(
 							INCLUDED_PREFIX + "1",
-							EXCLUDED_PREFIX + "1",
+							FILTERED_PREFIX + "1",
 							INCLUDED_PREFIX + "2",
-							EXCLUDED_PREFIX + "2"
+							FILTERED_PREFIX + "2"
 			);
 
 			items.add(itemsToAdd);
 
 			assertEquals(4, items.size());
 			assertEquals(2, items.included().size());
-			assertEquals(2, items.excluded().size());
+			assertEquals(2, items.filtered().size());
 			assertTrue(items.included().contains(INCLUDED_PREFIX + "1"));
 			assertTrue(items.included().contains(INCLUDED_PREFIX + "2"));
-			assertTrue(items.excluded().contains(EXCLUDED_PREFIX + "1"));
-			assertTrue(items.excluded().contains(EXCLUDED_PREFIX + "2"));
+			assertTrue(items.filtered().contains(FILTERED_PREFIX + "1"));
+			assertTrue(items.filtered().contains(FILTERED_PREFIX + "2"));
 		}
 
 		@Test
@@ -137,7 +137,7 @@ public class DefaultFilterModelItemsTest {
 		}
 
 		@Test
-		@DisplayName("Remove single item from excluded")
+		@DisplayName("Remove single item from filtered")
 		void remove_singleItem_shouldRemoveFromExcluded() {
 			includedPredicate.setPredicate(item -> false);
 			items.add(ITEM_PREFIX + "1");
@@ -155,7 +155,7 @@ public class DefaultFilterModelItemsTest {
 			items.included().predicate().set(item -> !item.startsWith("T"));
 			items.remove(item -> item.length() == 3);
 			assertEquals(3, items.size());
-			assertEquals(1, items.excluded().size());
+			assertEquals(1, items.filtered().size());
 			assertEquals(2, items.included().size());
 		}
 
@@ -172,7 +172,7 @@ public class DefaultFilterModelItemsTest {
 		}
 
 		@Test
-		@DisplayName("Replace item moving from included to excluded")
+		@DisplayName("Replace item moving from included to filtered")
 		void replace_itemMovingToExcluded_shouldMoveCorrectly() {
 			includedPredicate.setPredicate(item -> !item.contains("replaced"));
 			items.add(ITEM_PREFIX + "1");
@@ -181,8 +181,8 @@ public class DefaultFilterModelItemsTest {
 
 			assertEquals(1, items.size());
 			assertEquals(0, items.included().size());
-			assertEquals(1, items.excluded().size());
-			assertTrue(items.excluded().contains(ITEM_PREFIX + "1_replaced"));
+			assertEquals(1, items.filtered().size());
+			assertTrue(items.filtered().contains(ITEM_PREFIX + "1_replaced"));
 		}
 
 		@Test
@@ -190,13 +190,13 @@ public class DefaultFilterModelItemsTest {
 		void clear_shouldRemoveAll() {
 			items.add(asList("a", "b", "c"));
 			includedPredicate.setPredicate(item -> false);
-			items.add(asList("d", "e", "f")); // These go to excluded
+			items.add(asList("d", "e", "f")); // These go to filtered
 
 			items.clear();
 
 			assertEquals(0, items.size());
 			assertEquals(0, items.included().size());
-			assertEquals(0, items.excluded().size());
+			assertEquals(0, items.filtered().size());
 		}
 
 		@Test
@@ -249,7 +249,7 @@ public class DefaultFilterModelItemsTest {
 		}
 
 		@Test
-		@DisplayName("Filter moves items from included to excluded")
+		@DisplayName("Filter moves items from included to filtered")
 		void filter_movesItemsToExcluded() {
 			items.add(asList("keep1", "filter1", "keep2", "filter2"));
 			includePredicate.setPredicate(item -> item.startsWith("keep"));
@@ -258,25 +258,25 @@ public class DefaultFilterModelItemsTest {
 
 			assertEquals(4, items.size());
 			assertEquals(2, items.included().size());
-			assertEquals(2, items.excluded().size());
+			assertEquals(2, items.filtered().size());
 			assertTrue(items.included().contains("keep1"));
 			assertTrue(items.included().contains("keep2"));
-			assertTrue(items.excluded().contains("filter1"));
-			assertTrue(items.excluded().contains("filter2"));
+			assertTrue(items.filtered().contains("filter1"));
+			assertTrue(items.filtered().contains("filter2"));
 		}
 
 		@Test
-		@DisplayName("Filter moves items from excluded to included")
+		@DisplayName("Filter moves items from filtered to included")
 		void filter_movesItemsToVisible() {
 			includePredicate.setPredicate(item -> false);
 			items.add(asList("item1", "item2", "item3"));
-			assertEquals(3, items.excluded().size());
+			assertEquals(3, items.filtered().size());
 
 			includePredicate.setPredicate(item -> true);
 			items.filter();
 
 			assertEquals(3, items.included().size());
-			assertEquals(0, items.excluded().size());
+			assertEquals(0, items.filtered().size());
 		}
 
 		@Test

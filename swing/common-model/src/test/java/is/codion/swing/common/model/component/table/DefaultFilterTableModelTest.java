@@ -364,8 +364,8 @@ public final class DefaultFilterTableModelTest {
 		assertEquals(4, events.get());//no change event when removing filtered items
 		assertFalse(tableModel.items().included().contains(D));
 		assertFalse(tableModel.items().included().contains(E));
-		assertFalse(tableModel.items().excluded().contains(D));
-		assertFalse(tableModel.items().excluded().contains(E));
+		assertFalse(tableModel.items().filtered().contains(D));
+		assertFalse(tableModel.items().filtered().contains(E));
 		tableModel.filters().get(0).operands().equal().set(null);
 		tableModel.items().refresh();//two events, clear and add
 		assertEquals(8, events.get());
@@ -640,7 +640,7 @@ public final class DefaultFilterTableModelTest {
 		tableModel.filters().get(0).operands().equal().set("a");
 		assertTrue(tableModel.items().included().contains(A));
 		assertFalse(tableModel.items().included().contains(B));
-		assertTrue(tableModel.items().excluded().contains(D));
+		assertTrue(tableModel.items().filtered().contains(D));
 
 		tableModel.items().included().predicate().set(strings -> !strings.equals(A));
 		assertFalse(tableModel.items().included().predicate().isNull());
@@ -651,12 +651,12 @@ public final class DefaultFilterTableModelTest {
 		assertFalse(tableModel.items().included().contains(B));
 		assertTrue(tableModel.items().contains(B));
 		assertTrue(tableModel.filters().get(0).enabled().is());
-		assertEquals(4, tableModel.items().excluded().size());
+		assertEquals(4, tableModel.items().filtered().size());
 		assertFalse(tableModelContainsAll(ITEMS, false, tableModel));
 		assertTrue(tableModelContainsAll(ITEMS, true, tableModel));
 
 		assertFalse(tableModel.items().included().get().isEmpty());
-		assertFalse(tableModel.items().excluded().get().isEmpty());
+		assertFalse(tableModel.items().filtered().get().isEmpty());
 		assertFalse(tableModel.items().get().isEmpty());
 
 		tableModel.filters().get(0).enabled().set(false);
@@ -666,7 +666,7 @@ public final class DefaultFilterTableModelTest {
 
 		tableModel.filters().get(0).operands().equal().set("t"); // ekki til
 		assertTrue(tableModel.filters().get(0).enabled().is());
-		assertEquals(5, tableModel.items().excluded().size());
+		assertEquals(5, tableModel.items().filtered().size());
 		assertFalse(tableModelContainsAll(ITEMS, false, tableModel));
 		assertTrue(tableModelContainsAll(ITEMS, true, tableModel));
 		tableModel.filters().get(0).enabled().set(false);
@@ -736,7 +736,7 @@ public final class DefaultFilterTableModelTest {
 		tableModel.items().add(new TestRow("test"));
 		assertThrows(NullPointerException.class, () -> tableModel.items().included().set(0, null));
 
-		assertThrows(NullPointerException.class, () -> tableModel.items().excluded().contains(null));
+		assertThrows(NullPointerException.class, () -> tableModel.items().filtered().contains(null));
 
 		FilterListSelection<TestRow> selection = tableModel.selection();
 		assertThrows(NullPointerException.class, () -> selection.items().remove((TestRow) null));
@@ -766,20 +766,20 @@ public final class DefaultFilterTableModelTest {
 		assertTrue(tableModel.items().included().contains(D));
 		assertEquals(3, tableModel.items().included().indexOf(D));
 		assertFalse(tableModel.items().contains(F));
-		assertFalse(tableModel.items().excluded().contains(F));
+		assertFalse(tableModel.items().filtered().contains(F));
 		//replace d with f
 		tableModel.items().replace(D, F);
 		assertFalse(tableModel.items().contains(D));
 		assertFalse(tableModel.items().included().contains(D));
 		assertTrue(tableModel.items().contains(F));
-		assertTrue(tableModel.items().excluded().contains(F));
+		assertTrue(tableModel.items().filtered().contains(F));
 		//filter both d and f and replace f with d
 		tableModel.items().included().predicate().set(testRow -> testRow != F && testRow != D);
 		tableModel.items().replace(F, D);
 		assertFalse(tableModel.items().contains(F));
-		assertFalse(tableModel.items().excluded().contains(F));
+		assertFalse(tableModel.items().filtered().contains(F));
 		assertTrue(tableModel.items().contains(D));
-		assertTrue(tableModel.items().excluded().contains(D));
+		assertTrue(tableModel.items().filtered().contains(D));
 
 		tableModel.items().refresh();
 		//a, b, c, d, e
@@ -805,7 +805,7 @@ public final class DefaultFilterTableModelTest {
 		assertTrue(tableModel.items().included().contains(D));
 		assertFalse(tableModel.items().contains(F));
 		assertTrue(tableModel.items().contains(B));
-		assertTrue(tableModel.items().excluded().contains(B));
+		assertTrue(tableModel.items().filtered().contains(B));
 		assertFalse(tableModel.items().contains(G));
 	}
 

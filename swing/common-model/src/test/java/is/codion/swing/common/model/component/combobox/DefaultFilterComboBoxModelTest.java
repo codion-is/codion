@@ -164,18 +164,18 @@ public class DefaultFilterComboBoxModelTest {
 		testModel.items().included().predicate().set(item -> !item.equals(ANNA));
 		assertEquals(5, testModel.getSize());
 		assertFalse(testModel.items().included().contains(ANNA));
-		assertTrue(testModel.items().excluded().contains(ANNA));
+		assertTrue(testModel.items().filtered().contains(ANNA));
 		testModel.items().included().predicate().set(item -> item.equals(ANNA));
 		assertEquals(2, testModel.getSize());
 		assertTrue(testModel.items().included().contains(ANNA));
 
 		assertEquals(1, testModel.items().included().size());
-		assertEquals(4, testModel.items().excluded().size());
+		assertEquals(4, testModel.items().filtered().size());
 		assertEquals(1, testModel.items().included().size());
 		assertEquals(5, testModel.items().get().size());
 
 		testModel.items().add(BJORN);//already contained
-		assertEquals(4, testModel.items().excluded().size());
+		assertEquals(4, testModel.items().filtered().size());
 
 		assertFalse(testModel.items().included().contains(BJORN));
 		assertTrue(testModel.items().contains(BJORN));
@@ -204,7 +204,7 @@ public class DefaultFilterComboBoxModelTest {
 		testModel.items().included().predicate().set(item -> !item.startsWith("t"));
 		testModel.items().remove(item -> item != null && item.contains("n"));
 		assertEquals(3, testModel.items().size());
-		assertEquals(1, testModel.items().excluded().size());
+		assertEquals(1, testModel.items().filtered().size());
 		assertEquals(2, testModel.items().included().size());
 	}
 
@@ -271,7 +271,7 @@ public class DefaultFilterComboBoxModelTest {
 		assertTrue(testModel.items().included().contains(KALLI));
 		assertFalse(testModel.items().contains(karl));
 		assertTrue(testModel.items().contains(BJORN));
-		assertTrue(testModel.items().excluded().contains(BJORN));
+		assertTrue(testModel.items().filtered().contains(BJORN));
 		assertFalse(testModel.items().contains(bjorn));
 	}
 
@@ -291,7 +291,7 @@ public class DefaultFilterComboBoxModelTest {
 		model.items().clear();
 		assertEquals(2, includedCounter.get());
 
-		model.items().add(BJORN);//excluded
+		model.items().add(BJORN);//filtered
 		assertEquals(2, includedCounter.get());
 
 		model.items().add(ANNA);//included
@@ -300,10 +300,10 @@ public class DefaultFilterComboBoxModelTest {
 		model.items().add(asList(KALLI, SIGGI));//included
 		assertEquals(5, includedCounter.get());
 
-		model.items().remove(BJORN);//excluded
+		model.items().remove(BJORN);//filtered
 		assertEquals(5, includedCounter.get());
 
-		model.items().add(asList(BJORN, TOMAS));//excluded and included
+		model.items().add(asList(BJORN, TOMAS));//filtered and included
 		assertEquals(6, includedCounter.get());
 
 		model.items().included().predicate().clear();

@@ -124,39 +124,39 @@ public final class DefaultEntityComboBoxModelTest {
 		employeeComboBoxModel.items().refresh();
 		employeeComboBoxModel.filter().get(Employee.DEPARTMENT_FK).strict().set(true);
 		assertEquals(0, employeeComboBoxModel.items().included().size());
-		assertEquals(16, employeeComboBoxModel.items().excluded().size());
+		assertEquals(16, employeeComboBoxModel.items().filtered().size());
 		assertTrue(managerComboBoxModel.items().included().contains(null));
 		assertEquals(0, managerComboBoxModel.items().included().size());
-		assertEquals(4, managerComboBoxModel.items().excluded().size());
+		assertEquals(4, managerComboBoxModel.items().filtered().size());
 		assertFalse(departmentComboBoxModel.items().included().contains(null));
 		assertEquals(4, departmentComboBoxModel.items().included().size());
-		assertEquals(0, departmentComboBoxModel.items().excluded().size());
+		assertEquals(0, departmentComboBoxModel.items().filtered().size());
 
 		departmentComboBoxModel.select(entities.primaryKey(Department.TYPE, 10));
 		//three managers in the accounting department
 		assertEquals(3, managerComboBoxModel.items().included().size());
-		assertEquals(1, managerComboBoxModel.items().excluded().size());
+		assertEquals(1, managerComboBoxModel.items().filtered().size());
 
 		managerComboBoxModel.select(entities.primaryKey(Employee.TYPE, 5));//Blake, Manager, Accounting
 		assertEquals(5, employeeComboBoxModel.items().included().size());
-		assertEquals(11, employeeComboBoxModel.items().excluded().size());
+		assertEquals(11, employeeComboBoxModel.items().filtered().size());
 
 		employeeComboBoxModel.select(entities.primaryKey(Employee.TYPE, 7));//Scott, Analyst, Research
 		assertEquals(3, managerComboBoxModel.selection().item().getOrThrow().get(Employee.ID));//Jones, Manager, Research
 		assertEquals(20, departmentComboBoxModel.selection().item().getOrThrow().get(Department.ID));// Research
 		//one manager in the research department
 		assertEquals(1, managerComboBoxModel.items().included().size());
-		assertEquals(3, managerComboBoxModel.items().excluded().size());
+		assertEquals(3, managerComboBoxModel.items().filtered().size());
 		//six employees under Jones
 		assertEquals(6, employeeComboBoxModel.items().included().size());
-		assertEquals(10, employeeComboBoxModel.items().excluded().size());
+		assertEquals(10, employeeComboBoxModel.items().filtered().size());
 
 		departmentComboBoxModel.select(entities.primaryKey(Department.TYPE, 40));// Operations
 		//no managers or employees in the Operations department
 		assertEquals(0, managerComboBoxModel.items().included().size());
-		assertEquals(4, managerComboBoxModel.items().excluded().size());
+		assertEquals(4, managerComboBoxModel.items().filtered().size());
 		assertEquals(0, employeeComboBoxModel.items().included().size());
-		assertEquals(16, employeeComboBoxModel.items().excluded().size());
+		assertEquals(16, employeeComboBoxModel.items().filtered().size());
 	}
 
 	@Test
