@@ -51,7 +51,7 @@ public interface ComponentValueBuilder<C extends JComponent, T, B extends Compon
 	 *                    .build();
 	 *
 	 *   ComponentValue<JTextField, String > componentValue =
-	 *            (ComponentValue<JTextField, String >)
+	 *            (ComponentValue<JTextField, String>)
 	 *                    textField.getClientProperty(COMPONENT_VALUE);
 	 *}
 	 * @see JComponent#getClientProperty(Object)

@@ -57,6 +57,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import static is.codion.swing.common.ui.key.TransferFocusOnEnter.FORWARD_BACKWARD;
 import static java.util.Objects.requireNonNull;
@@ -93,6 +94,7 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 	private @Nullable String toolTipText;
 	private @Nullable Observable<String> toolTipTextObservable;
 	private @Nullable Font font;
+	private @Nullable UnaryOperator<Font> fontOperator;
 	private @Nullable Color foreground;
 	private @Nullable Color background;
 	private @Nullable ComponentOrientation componentOrientation;
@@ -269,6 +271,14 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 	@Override
 	public final B font(@Nullable Font font) {
 		this.font = font;
+		this.fontOperator = null;
+		return self();
+	}
+
+	@Override
+	public final B font(UnaryOperator<Font> font) {
+		this.fontOperator = requireNonNull(font);
+		this.font = null;
 		return self();
 	}
 
@@ -489,6 +499,9 @@ public abstract class AbstractComponentBuilder<C extends JComponent, B extends C
 		}
 		if (font != null) {
 			component.setFont(font);
+		}
+		else if (fontOperator != null) {
+			component.setFont(fontOperator.apply(component.getFont()));
 		}
 		if (foreground != null) {
 			component.setForeground(foreground);

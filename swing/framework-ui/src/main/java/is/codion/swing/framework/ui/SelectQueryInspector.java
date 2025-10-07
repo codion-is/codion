@@ -49,7 +49,7 @@ final class SelectQueryInspector extends JPanel {
 	private final JTextArea textArea = Components.textArea()
 					.rowsColumns(30, 42)
 					.editable(false)
-					.onBuild(SelectQueryInspector::setMonospaceFont)
+					.font(font -> new Font(Font.MONOSPACED, font.getStyle(), font.getSize()))
 					.build();
 	private final EntityQueries queries;
 	private final EntityQueryModel queryModel;
@@ -98,11 +98,6 @@ final class SelectQueryInspector extends JPanel {
 						.map(condition -> combination(additional.conjunction().getOrThrow(), entityCondition, condition))
 						.map(Condition.class::cast)
 						.orElse(entityCondition);
-	}
-
-	private static void setMonospaceFont(JTextArea textArea) {
-		Font font = textArea.getFont();
-		textArea.setFont(new Font(Font.MONOSPACED, font.getStyle(), font.getSize()));
 	}
 
 	/**

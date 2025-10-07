@@ -50,6 +50,7 @@ import java.beans.PropertyChangeListener;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 /**
  * Builds a component.
@@ -230,11 +231,23 @@ public interface ComponentBuilder<C extends JComponent, B extends ComponentBuild
 	B popupMenu(@Nullable Function<C, JPopupMenu> popupMenu);
 
 	/**
+	 * Overrides {@link #font(UnaryOperator)}.
 	 * @param font the component font
 	 * @return this builder instance
 	 * @see JComponent#setFont(Font)
 	 */
 	B font(@Nullable Font font);
+
+	/**
+	 * Derives the component font from its default font.
+	 * The operator is applied to the component's default font during build.
+	 * <p>Is overridden by a font set via {@link #font(Font)}.
+	 * @param font provides the font to use, given the component's default font
+	 * @return this builder instance
+	 * @see JComponent#setFont(Font)
+	 * @see JComponent#getFont()
+	 */
+	B font(UnaryOperator<Font> font);
 
 	/**
 	 * @param foreground the foreground color

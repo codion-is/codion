@@ -58,7 +58,6 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.text.DefaultCaret;
@@ -260,7 +259,7 @@ public final class DomainGeneratorPanel extends JPanel {
 						.link(observable)
 						.rowsColumns(40, 60)
 						.editable(false)
-						.font(monospaceFont())
+						.font(font -> new Font(Font.MONOSPACED, font.getStyle(), font.getSize()))
 						.caretUpdatePolicy(DefaultCaret.NEVER_UPDATE)
 						.build();
 	}
@@ -276,12 +275,6 @@ public final class DomainGeneratorPanel extends JPanel {
 						.mnemonic('C')
 						.add()
 						.build();
-	}
-
-	private static Font monospaceFont() {
-		Font font = UIManager.getFont("TextArea.font");
-
-		return new Font(Font.MONOSPACED, font.getStyle(), font.getSize());
 	}
 
 	private JPanel createPackageSavePanel() {

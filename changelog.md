@@ -6,6 +6,8 @@ Codion Change Log
 - ResultIterator removed.
 ### is.codion.common.model
 - FilterModel.excluded() renamed filtered().
+### is.codion.swing.common.ui
+- ComponentBuilder.font(UnaryOperator<Font>) added, which derives the font from the default component font.
 ### is.codion.framework.db
 - DefaultSelect bug fixed, having clause not included in hashCode().
 - Select.having() added, related refactoring.
