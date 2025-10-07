@@ -59,7 +59,7 @@ public interface EntityQueries {
 	 * Returns the first {@link Factory} implementation found by the {@link ServiceLoader}.
 	 * @return a {@link Factory} implementation from the {@link ServiceLoader} or an empty {@link Optional} in case none is available.
 	 */
-	static Optional<Factory> instance() {
+	static Optional<Factory> factory() {
 		try {
 			return stream(ServiceLoader.load(Factory.class).spliterator(), false).findFirst();
 		}

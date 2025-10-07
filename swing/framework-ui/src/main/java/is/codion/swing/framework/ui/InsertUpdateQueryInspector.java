@@ -51,8 +51,8 @@ final class InsertUpdateQueryInspector extends JPanel {
 
 	InsertUpdateQueryInspector(EntityEditModel editModel) {
 		requireNonNull(editModel);
-		this.queries = EntityQueries.instance()
-						.orElseThrow(() -> new IllegalStateException("No EntityQueries instance available"))
+		this.queries = EntityQueries.factory()
+						.orElseThrow(() -> new IllegalStateException("No EntityQueries.Factory available"))
 						.create(Database.instance(), editModel.connectionProvider().connection().entities());
 		this.editModel = editModel;
 		this.editModel.editor().valueChanged().addListener(this::refreshQuery);
