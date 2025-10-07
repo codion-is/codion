@@ -10,6 +10,7 @@ Codion Change Log
 - DefaultSelect bug fixed, having clause not included in hashCode().
 - Select.having() added, related refactoring.
 - EntityConnection.iterator() added.
+- EntityResultIterator now extends Iterable.
 ### is.codion.framework.db.local
 - LocalEntityConnection.iterator() removed.
 ### is.codion.framework.db.rmi

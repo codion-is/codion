@@ -34,8 +34,13 @@ import java.util.Iterator;
  * }
  *}
  */
-public interface EntityResultIterator extends Iterator<Entity>, AutoCloseable {
+public interface EntityResultIterator extends Iterator<Entity>, Iterable<Entity>, AutoCloseable {
 
 	@Override
 	void close();
+
+	@Override
+	default Iterator<Entity> iterator() {
+		return this;
+	}
 }
