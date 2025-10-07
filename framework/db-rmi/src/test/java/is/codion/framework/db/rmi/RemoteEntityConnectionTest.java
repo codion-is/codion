@@ -44,7 +44,8 @@ public class RemoteEntityConnectionTest {
 			fail("Method count mismatch");
 		}
 		for (Method entityConnectionMethod : entityConnectionMethods) {
-			if (remoteEntityConnectionMethods.stream().noneMatch(remoteConnectionMethod ->
+			if (!entityConnectionMethod.getName().equals("iterator") && // these don't have the same return type
+							remoteEntityConnectionMethods.stream().noneMatch(remoteConnectionMethod ->
 							remoteConnectionMethod.getReturnType().equals(entityConnectionMethod.getReturnType())
 											&& remoteConnectionMethod.getName().equals(entityConnectionMethod.getName())
 											&& Arrays.equals(remoteConnectionMethod.getParameterTypes(), entityConnectionMethod.getParameterTypes())

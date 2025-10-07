@@ -29,13 +29,13 @@ import is.codion.common.db.exception.RecordNotFoundException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.db.exception.UniqueConstraintException;
 import is.codion.common.db.exception.UpdateException;
-import is.codion.common.db.result.ResultIterator;
 import is.codion.common.user.User;
 import is.codion.dbms.h2.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
+import is.codion.framework.db.EntityResultIterator;
 import is.codion.framework.db.local.ConfigureDb.Configured;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -60,7 +60,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -1033,8 +1032,7 @@ public class DefaultLocalEntityConnectionTest {
 	void iterator() {
 		try (LocalEntityConnection connection = createConnection()) {
 			Condition condition = all(Employee.TYPE);
-			ResultIterator<Entity> resultIterator = connection.iterator(condition);
-			Iterator<Entity> iterator = resultIterator.iterator();
+			EntityResultIterator iterator = connection.iterator(condition);
 			//calling hasNext() should be idempotent and not lose rows
 			assertTrue(iterator.hasNext());
 			assertTrue(iterator.hasNext());
@@ -1048,9 +1046,8 @@ public class DefaultLocalEntityConnectionTest {
 			assertThrows(NoSuchElementException.class, iterator::next);
 			int rowCount = connection.count(Count.where(condition));
 			assertEquals(rowCount, counter);
-			resultIterator.close();
-			resultIterator = connection.iterator(condition);
-			iterator = resultIterator.iterator();
+			iterator.close();
+			iterator = connection.iterator(condition);
 			counter = 0;
 			try {
 				while (true) {
@@ -1065,11 +1062,11 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
-	void dualIterator() throws SQLException {
+	void dualIterator() {
 		try (LocalEntityConnection connection = createConnection();
-				 ResultIterator<Entity> deptIterator = connection.iterator(all(Department.TYPE))) {
+				 EntityResultIterator deptIterator = connection.iterator(all(Department.TYPE))) {
 			while (deptIterator.hasNext()) {
-				try (ResultIterator<Entity> empIterator =
+				try (EntityResultIterator empIterator =
 										 connection.iterator(Employee.DEPARTMENT_FK.equalTo(deptIterator.next()))) {
 					while (empIterator.hasNext()) {
 						empIterator.next();

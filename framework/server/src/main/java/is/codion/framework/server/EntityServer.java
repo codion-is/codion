@@ -232,6 +232,9 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 					LOG.debug("Removing connection {}, connected: {}, timeout: {}", client, connected, timedOut);
 					disconnect(client.remoteClient().clientId());
 				}
+				else {
+					connection.cleanupIterators();
+				}
 			}
 		}
 	}

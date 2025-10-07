@@ -18,8 +18,9 @@
  */
 package is.codion.framework.db.local;
 
-import is.codion.common.db.result.ResultIterator;
+import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.result.ResultPacker;
+import is.codion.framework.db.EntityResultIterator;
 import is.codion.framework.domain.entity.Entity;
 
 import java.sql.ResultSet;
@@ -27,7 +28,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.NoSuchElementException;
 
-final class EntityResultIterator implements ResultIterator<Entity> {
+final class DefaultEntityResultIterator implements EntityResultIterator {
 
 	private final Statement statement;
 	private final ResultSet resultSet;
@@ -36,31 +37,41 @@ final class EntityResultIterator implements ResultIterator<Entity> {
 	private boolean hasNext;
 	private boolean hasNextCalled;
 
-	EntityResultIterator(Statement statement, ResultSet resultSet, ResultPacker<Entity> resultPacker) {
+	DefaultEntityResultIterator(Statement statement, ResultSet resultSet, ResultPacker<Entity> resultPacker) {
 		this.statement = statement;
 		this.resultSet = resultSet;
 		this.resultPacker = resultPacker;
 	}
 
 	@Override
-	public boolean hasNext() throws SQLException {
+	public boolean hasNext() {
 		if (hasNextCalled) {
 			return hasNext;
 		}
-		hasNext = resultSet.next();
-		hasNextCalled = true;
+		try {
+			hasNext = resultSet.next();
+			hasNextCalled = true;
 
-		return hasNext;
+			return hasNext;
+		}
+		catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
 	}
 
 	@Override
-	public Entity next() throws SQLException {
+	public Entity next() {
 		if (!hasNext()) {
 			throw new NoSuchElementException();
 		}
 		hasNextCalled = false;
 
-		return resultPacker.get(resultSet);
+		try {
+			return resultPacker.get(resultSet);
+		}
+		catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
 	}
 
 	@Override

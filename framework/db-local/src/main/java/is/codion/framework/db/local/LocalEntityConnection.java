@@ -21,13 +21,10 @@ package is.codion.framework.db.local;
 import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.db.result.ResultIterator;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
-import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.condition.Condition;
 
 import java.sql.Connection;
 
@@ -91,24 +88,6 @@ public interface LocalEntityConnection extends EntityConnection {
 	 * @return the underlying connection
 	 */
 	DatabaseConnection databaseConnection();
-
-	/**
-	 * Returns a result set iterator based on the given query condition.
-	 * Remember to use try with resources or to call {@link ResultIterator#close()} in order to close underlying resources.
-	 * @param condition the query condition
-	 * @return an iterator for the given query condition
-	 * @throws DatabaseException in case of an exception
-	 */
-	ResultIterator<Entity> iterator(Condition condition);
-
-	/**
-	 * Returns a result set iterator based on the given select.
-	 * Remember to use try with resources or to call {@link ResultIterator#close()} in order to close underlying resources.
-	 * @param select the query select
-	 * @return an iterator for the given query select
-	 * @throws DatabaseException in case of an exception
-	 */
-	ResultIterator<Entity> iterator(Select select);
 
 	/**
 	 * @return true if optimistic locking is enabled

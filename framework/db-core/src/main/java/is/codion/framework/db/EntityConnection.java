@@ -559,6 +559,56 @@ public interface EntityConnection extends AutoCloseable {
 	<T, R, P> R report(ReportType<T, R, P> reportType, @Nullable P reportParameters);
 
 	/**
+	 * Returns a result set iterator based on the given query condition.
+	 * <p><b>Remote Connection Performance:</b> When using remote connections, each call to
+	 * {@link EntityResultIterator#hasNext()} and {@link EntityResultIterator#next()} involves
+	 * a network round-trip. For large result sets, consider using {@link #select(Condition)}
+	 * instead to load entities in a single batch.
+	 * <p><b>Remote Connection Resource Management:</b> Iterators over remote connections that
+	 * remain idle for longer than the configured timeout ({@code codion.db.remote.iteratorTimeout},
+	 * default 5 minutes) are automatically closed server-side.
+	 * <p>Always use try-with-resources to ensure proper cleanup:
+	 * {@snippet :
+	 * try (EntityResultIterator iterator = connection.iterator(condition)) {
+	 *   while (iterator.hasNext()) {
+	 *     Entity entity = iterator.next();
+	 *     // process entity
+	 *   }
+	 * }
+	 *}
+	 * @param condition the query condition
+	 * @return an iterator for the given query condition
+	 * @throws DatabaseException in case of a database exception, or in case of a communication exception with remote connections
+	 * @see #select(Condition)
+	 */
+	EntityResultIterator iterator(Condition condition);
+
+	/**
+	 * Returns a result set iterator based on the given select.
+	 * <p><b>Remote Connection Performance:</b> When using remote connections, each call to
+	 * {@link EntityResultIterator#hasNext()} and {@link EntityResultIterator#next()} involves
+	 * a network round-trip. For large result sets, consider using {@link #select(Select)}
+	 * instead to load entities in a single batch.
+	 * <p><b>Remote Connection Resource Management:</b> Iterators over remote connections that
+	 * remain idle for longer than the configured timeout ({@code codion.db.remote.iteratorTimeout},
+	 * default 5 minutes) are automatically closed server-side.
+	 * <p>Always use try-with-resources to ensure proper cleanup:
+	 * {@snippet :
+	 * try (EntityResultIterator iterator = connection.iterator(select)) {
+	 *   while (iterator.hasNext()) {
+	 *     Entity entity = iterator.next();
+	 *     // process entity
+	 *   }
+	 * }
+	 *}
+	 * @param select the query select
+	 * @return an iterator for the given query select
+	 * @throws DatabaseException in case of a database exception, or in case of a communication exception with remote connections
+	 * @see #select(Select)
+	 */
+	EntityResultIterator iterator(Select select);
+
+	/**
 	 * Executes the given {@link Transactional} instance within a transaction on the given connection, committing on success and rolling back on exception.
 	 * Any {@link DatabaseException}s, {@link RuntimeException}s or {@link Error}s encountered are rethrown, other exceptions are rethrown wrapped in a {@link RuntimeException}.
 	 * Note that nesting transactions will cause an {@link IllegalStateException} to be thrown, causing the outer transaction to be rolled back.

@@ -26,6 +26,7 @@ import is.codion.common.db.report.ReportType;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityResultIterator;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -71,6 +72,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 
 	static final Executor DEFAULT_EXECUTOR = newFixedThreadPool(getRuntime().availableProcessors() + 1, new DaemonThreadFactory());
 
+	private static final String ITERATOR_ERROR_MESSAGE = "EntityConnection.iterator() is not supported on HTTP connections";
 	private static final String AUTHORIZATION = "Authorization";
 	private static final String BASIC = "Basic ";
 	private static final String DOMAIN_TYPE_NAME = "domainTypeName";
@@ -318,6 +320,16 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 		catch (Exception e) {
 			throw logAndWrap(e);
 		}
+	}
+
+	@Override
+	public EntityResultIterator iterator(Condition condition) {
+		throw new UnsupportedOperationException(ITERATOR_ERROR_MESSAGE);
+	}
+
+	@Override
+	public EntityResultIterator iterator(Select select) {
+		throw new UnsupportedOperationException(ITERATOR_ERROR_MESSAGE);
 	}
 
 	private Entities initializeEntities() {

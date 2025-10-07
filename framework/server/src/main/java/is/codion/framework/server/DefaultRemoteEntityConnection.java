@@ -29,6 +29,7 @@ import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
+import is.codion.framework.db.rmi.RemoteEntityResultIterator;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -324,6 +325,20 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 	public Map<EntityType, Collection<Entity>> dependencies(Collection<Entity> entities) {
 		synchronized (connectionProxy) {
 			return connectionProxy.dependencies(entities);
+		}
+	}
+
+	@Override
+	public RemoteEntityResultIterator iterator(Condition condition) throws RemoteException {
+		synchronized (connectionProxy) {
+			return remoteIterator(connectionProxy.iterator(condition));
+		}
+	}
+
+	@Override
+	public RemoteEntityResultIterator iterator(Select select) throws RemoteException {
+		synchronized (connectionProxy) {
+			return remoteIterator(connectionProxy.iterator(select));
 		}
 	}
 }

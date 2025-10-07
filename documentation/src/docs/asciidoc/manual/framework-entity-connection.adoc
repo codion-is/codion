@@ -4,7 +4,6 @@
 :dir-chinook-source: ../../../../../demos/chinook/src/main/java
 :url-javadoc: link:../api
 :url-entity-connection: {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.html
-:url-local-entity-connection: {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html
 
 Codion’s {url-entity-connection}[EntityConnection] is the primary interface for executing database operations — including querying, modifying, transaction control, calling procedures and functions and filling reports. It exposes a small, explicit API for working with Entity instances and makes no assumptions about your database engine or schema design.
 
@@ -130,11 +129,15 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDem
 
 === iterator
 
-*LocalEntityConnection* provides a way to iterate over a result set, instead of loading it into memory.
+For iterating over a result set instead of loading it entirely into memory. This is useful when processing large result sets or when memory is constrained.
 
-{url-local-entity-connection}#iterator{opar}is.codion.framework.domain.entity.condition.Condition{cpar}[iterator(Condition condition)]
+IMPORTANT: When using remote connections, each call to `hasNext()` and `next()` involves a network round-trip. For large result sets, consider using `select()` instead to load entities in a single batch. Iterators over remote connections that remain idle for longer than the configured timeout (`codion.db.remote.iteratorTimeout`, default 5 minutes) are automatically closed server-side.
 
-{url-local-entity-connection}#iterator{opar}is.codion.framework.db.EntityConnection.Select{cpar}[iterator(Select select)]
+NOTE: `iterator()` is not supported on HTTP based connections, and throws `UnsupportedOperationException`.
+
+{url-entity-connection}#iterator{opar}is.codion.framework.domain.entity.condition.Condition{cpar}[iterator(Condition condition)]
+
+{url-entity-connection}#iterator{opar}is.codion.framework.db.EntityConnection.Select{cpar}[iterator(Select select)]
 
 [source,java,indent=0]
 ----

@@ -28,6 +28,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
+import is.codion.framework.db.EntityResultIterator;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -446,4 +447,28 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 	 * @see Report#fill(java.sql.Connection, Object)
 	 */
 	<T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) throws RemoteException;
+
+	/**
+	 * Returns a result set iterator based on the given query condition.
+	 * Note that the returned iterator is wrapped to present the {@link EntityResultIterator}
+	 * interface to client code.
+	 * @param condition the query condition
+	 * @return an iterator for the given query condition
+	 * @throws DatabaseException in case of a database or communication exception
+	 * @throws RemoteException in case of a remote exception
+	 * @see EntityConnection#iterator(Condition)
+	 */
+	RemoteEntityResultIterator iterator(Condition condition) throws RemoteException;
+
+	/**
+	 * Returns a result set iterator based on the given select.
+	 * Note that the returned iterator is wrapped to present the {@link EntityResultIterator}
+	 * interface to client code.
+	 * @param select the query select
+	 * @return an iterator for the given query select
+	 * @throws DatabaseException in case of a database or communication exception
+	 * @throws RemoteException in case of a remote exception
+	 * @see EntityConnection#iterator(Select)
+	 */
+	RemoteEntityResultIterator iterator(Select select) throws RemoteException;
 }

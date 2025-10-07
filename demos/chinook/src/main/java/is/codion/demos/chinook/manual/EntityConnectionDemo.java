@@ -20,7 +20,6 @@ package is.codion.demos.chinook.manual;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.db.result.ResultIterator;
 import is.codion.common.user.User;
 import is.codion.demos.chinook.domain.api.Chinook.Playlist.RandomPlaylistParameters;
 import is.codion.demos.chinook.domain.api.Chinook.Track.RaisePriceParameters;
@@ -31,7 +30,7 @@ import is.codion.framework.db.EntityConnection.Transactional;
 import is.codion.framework.db.EntityConnection.TransactionalResult;
 import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.local.LocalEntityConnection;
+import is.codion.framework.db.EntityResultIterator;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -40,7 +39,6 @@ import is.codion.framework.domain.entity.EntityType;
 import net.sf.jasperreports.engine.JasperPrint;
 
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -338,18 +336,15 @@ public final class EntityConnectionDemo {
 		// end::deleteKey[]
 	}
 
-	static void iterator(LocalEntityConnectionProvider connectionProvider) {
+	static void iterator(EntityConnectionProvider connectionProvider) {
 		// tag::iterator[]
-		LocalEntityConnection connection = connectionProvider.connection();
+		EntityConnection connection = connectionProvider.connection();
 
-		try (ResultIterator<Entity> iterator =
+		try (EntityResultIterator iterator =
 								 connection.iterator(Customer.EMAIL.isNotNull())) {
 			while (iterator.hasNext()) {
 				System.out.println(iterator.next().get(Customer.EMAIL));
 			}
-		}
-		catch (SQLException e) {
-			throw new DatabaseException(e);
 		}
 		// end::iterator[]
 	}

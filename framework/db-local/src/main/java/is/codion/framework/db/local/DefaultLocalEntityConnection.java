@@ -30,10 +30,10 @@ import is.codion.common.db.exception.UpdateException;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.ReportType;
-import is.codion.common.db.result.ResultIterator;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityResultIterator;
 import is.codion.framework.db.local.tracer.MethodTracer;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entities;
@@ -673,12 +673,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	@Override
-	public ResultIterator<Entity> iterator(Condition condition) {
+	public EntityResultIterator iterator(Condition condition) {
 		return iterator(where(condition).build());
 	}
 
 	@Override
-	public ResultIterator<Entity> iterator(Select select) {
+	public EntityResultIterator iterator(Select select) {
 		synchronized (connection) {
 			try {
 				return resultIterator(select);
@@ -925,7 +925,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 
 	private List<Entity> query(Select select, int currentForeignKeyReferenceDepth) throws SQLException {
 		List<Entity> result;
-		try (ResultIterator<Entity> iterator = resultIterator(select)) {
+		try (EntityResultIterator iterator = resultIterator(select)) {
 			result = packResult(iterator);
 		}
 		if (!result.isEmpty()) {
@@ -1034,7 +1034,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		return keyBuilder.build();
 	}
 
-	private ResultIterator<Entity> resultIterator(Select select) throws SQLException {
+	private EntityResultIterator resultIterator(Select select) throws SQLException {
 		requireNonNull(select, SELECT_MAY_NOT_BE_NULL);
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
@@ -1048,7 +1048,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 			statement = prepareStatement(selectQuery, false, select.timeout());
 			resultSet = executeQuery(statement, selectQuery, statementColumns, statementValues);
 
-			return new EntityResultIterator(statement, resultSet,
+			return new DefaultEntityResultIterator(statement, resultSet,
 							new EntityResultPacker(entityDefinition, queryBuilder.selectedColumns()));
 		}
 		catch (SQLException e) {
@@ -1173,8 +1173,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 						.collect(toList());
 	}
 
-	private List<Entity> packResult(ResultIterator<Entity> iterator) throws SQLException {
-		SQLException packingException = null;
+	private List<Entity> packResult(EntityResultIterator iterator) {
+		Exception packingException = null;
 		List<Entity> result = new ArrayList<>();
 		tracer.enter(PACK_RESULT);
 		try {
@@ -1184,7 +1184,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 
 			return result;
 		}
-		catch (SQLException e) {
+		catch (Exception e) {
 			packingException = e;
 			throw e;
 		}

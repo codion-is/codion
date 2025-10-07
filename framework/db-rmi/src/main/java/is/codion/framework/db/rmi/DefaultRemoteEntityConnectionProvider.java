@@ -18,13 +18,16 @@
  */
 package is.codion.framework.db.rmi;
 
+import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerAdmin;
 import is.codion.framework.db.AbstractEntityConnectionProvider;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityResultIterator;
 import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -164,6 +167,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 
 		private static final String CONNECTED = "connected";
 		private static final String ENTITIES = "entities";
+		private static final String ITERATOR = "iterator";
 
 		private final Map<Method, Method> methodCache = new HashMap<>();
 		private final RemoteEntityConnection remoteConnection;
@@ -186,7 +190,12 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 
 			Method remoteMethod = methodCache.computeIfAbsent(method, RemoteEntityConnectionHandler::remoteMethod);
 			try {
-				return remoteMethod.invoke(remoteConnection, args);
+				Object result = remoteMethod.invoke(remoteConnection, args);
+				if (methodName.equals(ITERATOR)) {
+					return new RemoteEntityResultIteratorWrapper((RemoteEntityResultIterator) result);
+				}
+
+				return result;
 			}
 			catch (InvocationTargetException e) {
 				LOG.error(e.getMessage(), e);
@@ -221,6 +230,47 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 			}
 			catch (NoSuchMethodException e) {
 				throw new RuntimeException(e);
+			}
+		}
+	}
+
+	private static final class RemoteEntityResultIteratorWrapper implements EntityResultIterator {
+
+		private final RemoteEntityResultIterator iterator;
+
+		private RemoteEntityResultIteratorWrapper(RemoteEntityResultIterator iterator) {
+			this.iterator = iterator;
+		}
+
+		@Override
+		public boolean hasNext() {
+			try {
+				return iterator.hasNext();
+			}
+			catch (RemoteException e) {
+				LOG.error(e.getMessage(), e);
+				throw new DatabaseException("Remote iterator call failed");
+			}
+		}
+
+		@Override
+		public Entity next() {
+			try {
+				return iterator.next();
+			}
+			catch (RemoteException e) {
+				LOG.error(e.getMessage(), e);
+				throw new DatabaseException("Remote iterator call failed");
+			}
+		}
+
+		@Override
+		public void close() {
+			try {
+				iterator.close();
+			}
+			catch (RemoteException e) {
+				LOG.error(e.getMessage(), e);
 			}
 		}
 	}

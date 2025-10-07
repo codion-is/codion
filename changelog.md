@@ -2,9 +2,18 @@ Codion Change Log
 =================
 
 ## 0.18.53
+### is.codion.common.db
+- ResultIterator removed.
 ### is.codion.framework.db
 - DefaultSelect bug fixed, having clause not included in hashCode().
 - Select.having() added, related refactoring.
+- EntityConnection.iterator() added.
+### is.codion.framework.db.local
+- LocalEntityConnection.iterator() removed.
+### is.codion.framework.db.rmi
+- DefaultRemoteEntityConnectionProvider now handles iterator() with RemoteEntityResultIteratorWrapper.
+### is.codion.framework.server
+- DefaultRemoteEntityConnection, EntityConnection.iterator() implemented with timeouts.
 ### is.codion.swing.framework.ui
 - EntityTableExportPanel refactored, lots of stuff moved to EntityTableExport, which is now called EntityTableExportModel.
 
