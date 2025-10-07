@@ -1448,7 +1448,7 @@ public class EntityTablePanel extends JPanel {
 			return null;
 		}
 
-		return new EntityTableExportPanel(tableModel, table.columnModel());
+		return new EntityTableExportPanel(tableModel, new EntityTableExportModel(tableModel, table.columnModel()));
 	}
 
 	private @Nullable TableConditionPanel<Attribute<?>> createTableConditionPanel() {

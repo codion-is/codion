@@ -35,8 +35,13 @@ import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressTask;
 import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import java.io.BufferedWriter;
 import java.nio.file.Files;
@@ -59,7 +64,7 @@ import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
-final class EntityTableExport {
+final class EntityTableExportModel {
 
 	private static final MessageBundle MESSAGES =
 					messageBundle(EntityTableExportPanel.class, getBundle(EntityTableExportPanel.class.getName()));
@@ -68,16 +73,20 @@ final class EntityTableExport {
 	private static final String SPACE = " ";
 	private static final String TSV = ".tsv";
 	private static final String JSON = ".json";
+	private static final String ATTRIBUTES_KEY = "attributes";
+	private static final String FOREIGN_KEYS_KEY = "foreignKeys";
 
 	private final EntityTableModel<?> tableModel;
 	private final EntityConnectionProvider connectionProvider;
-	private final EntityNode entityNode;
+	private final FilterTableColumnModel<Attribute<?>> columnModel;
+	private final ExportTreeModel treeModel;
 	private final State selected;
 
-	EntityTableExport(EntityTableModel<?> tableModel) {
+	EntityTableExportModel(EntityTableModel<?> tableModel, FilterTableColumnModel<Attribute<?>> columnModel) {
 		this.tableModel = tableModel;
+		this.columnModel = columnModel;
 		this.connectionProvider = tableModel.connectionProvider();
-		this.entityNode = new EntityNode(tableModel.entityDefinition(), connectionProvider.entities());
+		this.treeModel = new ExportTreeModel(tableModel.entityDefinition(), tableModel.connectionProvider().entities());
 		this.selected = State.state(!tableModel.selection().empty().is());
 		tableModel.selection().empty().addConsumer(empty -> selected.set(!empty));
 	}
@@ -90,8 +99,8 @@ final class EntityTableExport {
 		return new ExportToFileTask(file);
 	}
 
-	DefaultMutableTreeNode entityNode() {
-		return entityNode;
+	ExportTreeModel treeModel() {
+		return treeModel;
 	}
 
 	State selected() {
@@ -106,8 +115,170 @@ final class EntityTableExport {
 		return tableModel.entityDefinition().caption() + JSON;
 	}
 
+	void applyPreferences(JSONObject preferences) {
+		if (preferences.isEmpty()) {
+			selectDefaults();
+		}
+		else {
+			applyAttributesAndForeignKeys(preferences, treeModel.getRoot().children());
+		}
+	}
+
+	JSONObject createPreferences() {
+		if (isDefaultConfiguration()) {
+			return new JSONObject("{}");
+		}
+
+		return attributesToJson(treeModel.getRoot().children());
+	}
+
+	void selectAll() {
+		select(true);
+	}
+
+	void selectNone() {
+		select(false);
+	}
+
+	void selectDefaults() {
+		selectNone();
+		Enumeration<TreeNode> children = treeModel.getRoot().children();
+		while (children.hasMoreElements()) {
+			TreeNode child = children.nextElement();
+			if (child instanceof AttributeNode) {
+				Attribute<?> attribute = ((AttributeNode) child).definition().attribute();
+				if (columnModel.contains(attribute) && columnModel.visible(attribute).is()) {
+					((AttributeNode) child).selected().set(true);
+				}
+			}
+		}
+	}
+
+	private boolean isDefaultConfiguration() {
+		Enumeration<TreeNode> children = treeModel.getRoot().children();
+		while (children.hasMoreElements()) {
+			TreeNode child = children.nextElement();
+			if (child instanceof AttributeNode) {
+				AttributeNode node = (AttributeNode) child;
+				Attribute<?> attribute = node.definition().attribute();
+				// Default: first-level visible columns are selected, hidden are not
+				boolean shouldBeSelected = columnModel.contains(attribute) && columnModel.visible(attribute).is();
+				if (node.selected().is() != shouldBeSelected) {
+					return false;
+				}
+				if (hasSelectedChildren(node)) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	private static boolean hasSelectedChildren(AttributeNode node) {
+		Enumeration<TreeNode> children = node.children();
+		while (children.hasMoreElements()) {
+			TreeNode child = children.nextElement();
+			if (child instanceof AttributeNode) {
+				AttributeNode childNode = (AttributeNode) child;
+				if (childNode.selected().is()) {
+					return true;
+				}
+				if (hasSelectedChildren(childNode)) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	private void select(boolean select) {
+		Enumeration<TreeNode> enumeration = treeModel.getRoot().breadthFirstEnumeration();
+		enumeration.nextElement();// root
+		while (enumeration.hasMoreElements()) {
+			((AttributeNode) enumeration.nextElement()).selected().set(select);
+		}
+	}
+
+	private static JSONObject attributesToJson(Enumeration<TreeNode> nodes) {
+		JSONArray attributes = new JSONArray();
+		JSONObject foreignKeys = new JSONObject();
+		while (nodes.hasMoreElements()) {
+			AttributeNode node = (AttributeNode) nodes.nextElement();
+			String attributeName = node.definition().attribute().name();
+			boolean isForeignKey = node.getChildCount() > 0;
+
+			if (isForeignKey) {
+				JSONObject fkChildren = attributesToJson(node.children());
+				if (!node.selected().is() && fkChildren.isEmpty()) {
+					continue;
+				}
+				if (node.selected().is()) {
+					attributes.put(attributeName);
+				}
+				if (!fkChildren.isEmpty()) {
+					foreignKeys.put(attributeName, fkChildren);
+				}
+			}
+			else if (node.selected().is()) {
+				attributes.put(attributeName);
+			}
+		}
+
+		JSONObject result = new JSONObject();
+		if (!attributes.isEmpty()) {
+			result.put(ATTRIBUTES_KEY, attributes);
+		}
+		if (!foreignKeys.isEmpty()) {
+			result.put(FOREIGN_KEYS_KEY, foreignKeys);
+		}
+
+		return result;
+	}
+
+	private void applyAttributesAndForeignKeys(JSONObject json, Enumeration<TreeNode> nodes) {
+		Set<String> selectedAttributes = new HashSet<>();
+		if (json.has(ATTRIBUTES_KEY)) {
+			JSONArray attributes = json.getJSONArray(ATTRIBUTES_KEY);
+			for (int i = 0; i < attributes.length(); i++) {
+				selectedAttributes.add(attributes.getString(i));
+			}
+		}
+
+		JSONObject foreignKeys = json.has(FOREIGN_KEYS_KEY) ? json.getJSONObject(FOREIGN_KEYS_KEY) : new JSONObject();
+		while (nodes.hasMoreElements()) {
+			AttributeNode node = (AttributeNode) nodes.nextElement();
+			String attributeName = node.definition().attribute().name();
+			boolean isForeignKey = node.getChildCount() > 0 || node.isCyclicalStub();
+
+			node.selected().set(selectedAttributes.contains(attributeName));
+
+			if (isForeignKey && foreignKeys.has(attributeName)) {
+				if (node.isCyclicalStub()) {
+					node.expand();
+					treeModel.nodeStructureChanged(node);
+				}
+				applyAttributesAndForeignKeys(foreignKeys.getJSONObject(attributeName), node.children());
+			}
+			else if (isForeignKey) {
+				deselectAll(node.children());
+			}
+		}
+	}
+
+	private static void deselectAll(Enumeration<TreeNode> nodes) {
+		while (nodes.hasMoreElements()) {
+			AttributeNode node = (AttributeNode) nodes.nextElement();
+			node.selected().set(false);
+			if (node.getChildCount() > 0) {
+				deselectAll(node.children());
+			}
+		}
+	}
+
 	private List<String> createHeader() {
-		return addToHeader(entityNode.children(), new ArrayList<>(), "");
+		return addToHeader(treeModel.getRoot().children(), new ArrayList<>(), "");
 	}
 
 	private static List<String> addToHeader(Enumeration<TreeNode> nodes, List<String> header, String prefix) {
@@ -127,7 +298,7 @@ final class EntityTableExport {
 	}
 
 	private List<String> createRow(Entity entity) {
-		return addToRow(entityNode.children(), entity.primaryKey(),
+		return addToRow(treeModel.getRoot().children(), entity.primaryKey(),
 						new ArrayList<>(), new HashMap<>(), connectionProvider.connection());
 	}
 
@@ -248,7 +419,7 @@ final class EntityTableExport {
 		}
 	}
 
-	private static final class EntityNode extends DefaultMutableTreeNode {
+	static final class EntityNode extends DefaultMutableTreeNode {
 
 		private static final AttributeDefinitionComparator ATTRIBUTE_COMPARATOR = new AttributeDefinitionComparator();
 
@@ -287,6 +458,18 @@ final class EntityTableExport {
 			public int compare(AttributeDefinition<?> definition1, AttributeDefinition<?> definition2) {
 				return collator.compare(definition1.caption().toLowerCase(), definition2.caption().toLowerCase());
 			}
+		}
+	}
+
+	static final class ExportTreeModel extends DefaultTreeModel {
+
+		private ExportTreeModel(EntityDefinition definition, Entities entities) {
+			super(new EntityNode(definition, entities));
+		}
+
+		@Override
+		public EntityNode getRoot() {
+			return (EntityNode) super.getRoot();
 		}
 	}
 

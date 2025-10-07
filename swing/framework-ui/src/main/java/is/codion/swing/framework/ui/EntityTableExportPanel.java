@@ -21,8 +21,6 @@ package is.codion.swing.framework.ui;
 import is.codion.common.i18n.Messages;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
-import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.swing.common.ui.component.table.FilterTableColumnModel;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -30,10 +28,9 @@ import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.EntityTableExport.AttributeNode;
-import is.codion.swing.framework.ui.EntityTableExport.ExportTask;
+import is.codion.swing.framework.ui.EntityTableExportModel.AttributeNode;
+import is.codion.swing.framework.ui.EntityTableExportModel.ExportTask;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jspecify.annotations.Nullable;
 
@@ -44,7 +41,6 @@ import javax.swing.JTree;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.ExpandVetoException;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -54,9 +50,6 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
@@ -77,27 +70,23 @@ final class EntityTableExportPanel extends JPanel {
 	private static final MessageBundle MESSAGES =
 					messageBundle(EntityTableExportPanel.class, getBundle(EntityTableExportPanel.class.getName()));
 
-	private static final String ATTRIBUTES_KEY = "attributes";
-	private static final String FOREIGN_KEYS_KEY = "foreignKeys";
 	private static final String JSON = "json";
 
-	private final EntityTableExport tableExport;
-	private final FilterTableColumnModel<Attribute<?>> columnModel;
+	private final EntityTableExportModel model;
 	private final JTree exportTree;
-	private final DefaultTreeModel treeModel;
 
-	private final CommandControl selectDefaultsControl = Control.builder()
+	private final CommandControl selectDefaults = Control.builder()
 					.command(this::selectDefaults)
 					.caption(MESSAGES.getString("default_columns"))
 					.mnemonic(MESSAGES.getString("default_columns_mnemonic").charAt(0))
 					.build();
-	private final CommandControl selectAllControl = Control.builder()
-					.command(() -> select(true))
+	private final CommandControl selectAll = Control.builder()
+					.command(this::selectAll)
 					.caption(MESSAGES.getString("columns_all"))
 					.mnemonic(MESSAGES.getString("columns_all_mnemonic").charAt(0))
 					.build();
-	private final CommandControl selectNoneControl = Control.builder()
-					.command(() -> select(false))
+	private final CommandControl selectNone = Control.builder()
+					.command(this::selectNone)
 					.caption(MESSAGES.getString("columns_none"))
 					.mnemonic(MESSAGES.getString("columns_none_mnemonic").charAt(0))
 					.build();
@@ -111,23 +100,21 @@ final class EntityTableExportPanel extends JPanel {
 					.caption(Messages.open())
 					.mnemonic(Messages.openMnemonic())
 					.build();
-	private final ToggleControl allRowsControl;
-	private final ToggleControl selectedRowsControl;
+	private final ToggleControl allRows;
+	private final ToggleControl selectedRows;
 
-	EntityTableExportPanel(SwingEntityTableModel tableModel, FilterTableColumnModel<Attribute<?>> columnModel) {
+	EntityTableExportPanel(SwingEntityTableModel tableModel, EntityTableExportModel model) {
 		super(borderLayout());
-		this.tableExport = new EntityTableExport(tableModel);
-		this.columnModel = columnModel;
-		this.treeModel = new DefaultTreeModel(tableExport.entityNode());
+		this.model = model;
 		this.exportTree = createTree();
-		this.selectedRowsControl = Control.builder()
-						.toggle(tableExport.selected())
+		this.selectedRows = Control.builder()
+						.toggle(model.selected())
 						.caption(MESSAGES.getString("rows_selected"))
 						.mnemonic(MESSAGES.getString("rows_selected_mnemonic").charAt(0))
 						.enabled(tableModel.selection().empty().not())
 						.build();
-		this.allRowsControl = Control.builder()
-						.toggle(State.state(!tableExport.selected().is()))
+		this.allRows = Control.builder()
+						.toggle(State.state(!model.selected().is()))
 						.caption(MESSAGES.getString("rows_all"))
 						.mnemonic(MESSAGES.getString("rows_all_mnemonic").charAt(0))
 						.build();
@@ -145,7 +132,7 @@ final class EntityTableExportPanel extends JPanel {
 														.south(borderLayoutPanel()
 																		.east(buttonPanel()
 																						.controls(Controls.builder()
-																										.actions(selectDefaultsControl, selectAllControl, selectNoneControl,
+																										.actions(selectDefaults, selectAll, selectNone,
 																														openConfiguration, saveConfiguration))
 																						.transferFocusOnEnter(true)))))
 						.south(borderLayoutPanel()
@@ -153,7 +140,7 @@ final class EntityTableExportPanel extends JPanel {
 										.center(borderLayoutPanel()
 														.east(buttonPanel()
 																		.controls(Controls.builder()
-																						.actions(allRowsControl, selectedRowsControl))
+																						.actions(allRows, selectedRows))
 																		.toggleButtonType(RADIO_BUTTON)
 																		.buttonGroup(new ButtonGroup())
 																		.fixedButtonSize(false)
@@ -184,22 +171,8 @@ final class EntityTableExportPanel extends JPanel {
 						.show();
 	}
 
-	EntityTableExport tableExport() {
-		return tableExport;
-	}
-
-	void selectDefaults() {
-		select(false);
-		Enumeration<TreeNode> children = tableExport.entityNode().children();
-		while (children.hasMoreElements()) {
-			TreeNode child = children.nextElement();
-			if (child instanceof AttributeNode) {
-				Attribute<?> attribute = ((AttributeNode) child).definition().attribute();
-				if (columnModel.contains(attribute) && columnModel.visible(attribute).is()) {
-					((AttributeNode) child).selected().set(true);
-				}
-			}
-		}
+	EntityTableExportModel model() {
+		return model;
 	}
 
 	private void openConfiguration() throws IOException {
@@ -215,15 +188,15 @@ final class EntityTableExportPanel extends JPanel {
 		File file = Dialogs.select()
 						.files()
 						.owner(this)
-						.selectFileToSave(tableExport.defaultConfigFileName());
+						.selectFileToSave(model.defaultConfigFileName());
 		Files.write(file.toPath(), new ExportPreferences(this).preferences().toString().getBytes(UTF_8));
 	}
 
 	private void exportToFile() {
-		ExportTask task = tableExport.exportToFile(Dialogs.select()
+		ExportTask task = model.exportToFile(Dialogs.select()
 						.files()
 						.owner(this)
-						.selectFileToSave(tableExport.defaultExportFileName())
+						.selectFileToSave(model.defaultExportFileName())
 						.toPath());
 		Dialogs.progressWorker()
 						.task(task)
@@ -235,7 +208,7 @@ final class EntityTableExportPanel extends JPanel {
 	}
 
 	private void exportToClipboard() {
-		ExportTask task = tableExport.exportToClipboard();
+		ExportTask task = model.exportToClipboard();
 		Dialogs.progressWorker()
 						.task(task)
 						.owner(this)
@@ -255,7 +228,7 @@ final class EntityTableExportPanel extends JPanel {
 	}
 
 	private JTree createTree() {
-		JTree tree = new JTree(treeModel);
+		JTree tree = new JTree(model.treeModel());
 		tree.setShowsRootHandles(true);
 		tree.setRootVisible(false);
 		tree.addTreeWillExpandListener(new ExpandListener());
@@ -275,12 +248,18 @@ final class EntityTableExportPanel extends JPanel {
 		return tree;
 	}
 
-	private void select(boolean select) {
-		Enumeration<TreeNode> enumeration = tableExport.entityNode().breadthFirstEnumeration();
-		enumeration.nextElement();// root
-		while (enumeration.hasMoreElements()) {
-			((AttributeNode) enumeration.nextElement()).selected().set(select);
-		}
+	private void selectDefaults() {
+		model.selectDefaults();
+		exportTree.repaint();
+	}
+
+	private void selectAll() {
+		model.selectAll();
+		exportTree.repaint();
+	}
+
+	private void selectNone() {
+		model.selectNone();
 		exportTree.repaint();
 	}
 
@@ -297,7 +276,7 @@ final class EntityTableExportPanel extends JPanel {
 	}
 
 	private void expandToShowSelections() {
-		expandNodeIfHasSelectedChildren(tableExport.entityNode());
+		expandNodeIfHasSelectedChildren(model.treeModel().getRoot());
 	}
 
 	private boolean expandNodeIfHasSelectedChildren(TreeNode node) {
@@ -319,135 +298,10 @@ final class EntityTableExportPanel extends JPanel {
 		return hasSelectedDescendants;
 	}
 
-	private JSONObject createPreferences() {
-		return attributesToJson(tableExport.entityNode().children());
-	}
-
 	private void applyPreferences(JSONObject preferences) {
-		if (preferences.isEmpty()) {
-			selectDefaults();
-		}
-		else {
-			applyAttributesAndForeignKeys(preferences, tableExport.entityNode().children());
-			exportTree.repaint();
-			expandToShowSelections();
-		}
-	}
-
-	private static JSONObject attributesToJson(Enumeration<TreeNode> nodes) {
-		JSONArray attributes = new JSONArray();
-		JSONObject foreignKeys = new JSONObject();
-
-		while (nodes.hasMoreElements()) {
-			AttributeNode node = (AttributeNode) nodes.nextElement();
-			String attributeName = node.definition().attribute().name();
-			boolean isForeignKey = node.getChildCount() > 0;
-
-			if (isForeignKey) {
-				JSONObject fkChildren = attributesToJson(node.children());
-				if (!node.selected().is() && fkChildren.isEmpty()) {
-					continue;
-				}
-				if (node.selected().is()) {
-					attributes.put(attributeName);
-				}
-				if (!fkChildren.isEmpty()) {
-					foreignKeys.put(attributeName, fkChildren);
-				}
-			}
-			else if (node.selected().is()) {
-				attributes.put(attributeName);
-			}
-		}
-
-		JSONObject result = new JSONObject();
-		if (!attributes.isEmpty()) {
-			result.put(ATTRIBUTES_KEY, attributes);
-		}
-		if (!foreignKeys.isEmpty()) {
-			result.put(FOREIGN_KEYS_KEY, foreignKeys);
-		}
-
-		return result;
-	}
-
-	private void applyAttributesAndForeignKeys(JSONObject json, Enumeration<TreeNode> nodes) {
-		Set<String> selectedAttributes = new HashSet<>();
-		if (json.has(ATTRIBUTES_KEY)) {
-			JSONArray attributes = json.getJSONArray(ATTRIBUTES_KEY);
-			for (int i = 0; i < attributes.length(); i++) {
-				selectedAttributes.add(attributes.getString(i));
-			}
-		}
-
-		JSONObject foreignKeys = json.has(FOREIGN_KEYS_KEY) ? json.getJSONObject(FOREIGN_KEYS_KEY) : new JSONObject();
-		while (nodes.hasMoreElements()) {
-			AttributeNode node = (AttributeNode) nodes.nextElement();
-			String attributeName = node.definition().attribute().name();
-			boolean isForeignKey = node.getChildCount() > 0 || node.isCyclicalStub();
-
-			node.selected().set(selectedAttributes.contains(attributeName));
-
-			if (isForeignKey && foreignKeys.has(attributeName)) {
-				if (node.isCyclicalStub()) {
-					node.expand();
-					treeModel.nodeStructureChanged(node);
-				}
-				applyAttributesAndForeignKeys(foreignKeys.getJSONObject(attributeName), node.children());
-			}
-			else if (isForeignKey) {
-				deselectAll(node.children());
-			}
-		}
-	}
-
-	private static void deselectAll(Enumeration<TreeNode> nodes) {
-		while (nodes.hasMoreElements()) {
-			AttributeNode node = (AttributeNode) nodes.nextElement();
-			node.selected().set(false);
-			if (node.getChildCount() > 0) {
-				deselectAll(node.children());
-			}
-		}
-	}
-
-	private boolean isDefaultConfiguration() {
-		Enumeration<TreeNode> children = tableExport.entityNode().children();
-
-		while (children.hasMoreElements()) {
-			TreeNode child = children.nextElement();
-			if (child instanceof AttributeNode) {
-				AttributeNode node = (AttributeNode) child;
-				Attribute<?> attribute = node.definition().attribute();
-				// Default: first-level visible columns are selected, hidden are not
-				boolean shouldBeSelected = columnModel.contains(attribute) && columnModel.visible(attribute).is();
-				if (node.selected().is() != shouldBeSelected) {
-					return false;
-				}
-				if (hasSelectedChildren(node)) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
-	private static boolean hasSelectedChildren(AttributeNode node) {
-		Enumeration<TreeNode> children = node.children();
-		while (children.hasMoreElements()) {
-			TreeNode child = children.nextElement();
-			if (child instanceof AttributeNode) {
-				AttributeNode childNode = (AttributeNode) child;
-				if (childNode.selected().is()) {
-					return true;
-				}
-				if (hasSelectedChildren(childNode)) {
-					return true;
-				}
-			}
-		}
-
-		return false;
+		model.applyPreferences(preferences);
+		expandToShowSelections();
+		exportTree.repaint();
 	}
 
 	private final class ExpandListener implements TreeWillExpandListener {
@@ -458,7 +312,7 @@ final class EntityTableExportPanel extends JPanel {
 				AttributeNode attributeNode = (AttributeNode) node;
 				if (attributeNode.isCyclicalStub() && attributeNode.getChildCount() == 0) {
 					attributeNode.expand();
-					treeModel.nodeStructureChanged(attributeNode);
+					model.treeModel().nodeStructureChanged(attributeNode);
 				}
 			}
 		}
@@ -480,11 +334,11 @@ final class EntityTableExportPanel extends JPanel {
 		}
 
 		ExportPreferences(@Nullable EntityTableExportPanel exportPanel) {
-			if (exportPanel == null || exportPanel.isDefaultConfiguration()) {
+			if (exportPanel == null) {
 				this.preferences = new JSONObject("{}");
 			}
 			else {
-				this.preferences = exportPanel.createPreferences();
+				this.preferences = exportPanel.model.createPreferences();
 			}
 		}
 

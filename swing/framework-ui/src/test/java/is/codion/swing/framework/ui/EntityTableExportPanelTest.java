@@ -22,7 +22,7 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.EntityTableExport.AttributeNode;
+import is.codion.swing.framework.ui.EntityTableExportModel.AttributeNode;
 import is.codion.swing.framework.ui.TestDomain.Department;
 import is.codion.swing.framework.ui.TestDomain.Detail;
 import is.codion.swing.framework.ui.TestDomain.Employee;
@@ -51,8 +51,7 @@ public final class EntityTableExportPanelTest {
 		EntityTablePanel tablePanel = new EntityTablePanel(tableModel, config -> config.includeExport(true));
 		EntityTableExportPanel exportPanel = tablePanel.exportPanel();
 
-		// Set up the default configuration (what selectDefaults() would produce)
-		exportPanel.selectDefaults();
+		exportPanel.model().selectDefaults();
 
 		// Save preferences - should be empty JSON since it matches defaults
 		EntityTablePanelPreferences defaultPreferences = new EntityTablePanelPreferences(tablePanel);
@@ -71,7 +70,7 @@ public final class EntityTableExportPanelTest {
 		EntityTableExportPanel exportPanel = tablePanel.exportPanel();
 
 		// Customize: select only ID and DEPARTMENT foreign key with NAME
-		Enumeration<TreeNode> children = exportPanel.tableExport().entityNode().children();
+		Enumeration<TreeNode> children = exportPanel.model().treeModel().getRoot().children();
 		while (children.hasMoreElements()) {
 			AttributeNode node = (AttributeNode) children.nextElement();
 			node.selected().set(false);
@@ -115,7 +114,7 @@ public final class EntityTableExportPanelTest {
 		EntityTableExportPanel exportPanel = tablePanel.exportPanel();
 
 		// Customize configuration
-		Enumeration<TreeNode> children = exportPanel.tableExport().entityNode().children();
+		Enumeration<TreeNode> children = exportPanel.model().treeModel().getRoot().children();
 		while (children.hasMoreElements()) {
 			AttributeNode node = (AttributeNode) children.nextElement();
 			node.selected().set(false);
@@ -140,7 +139,7 @@ public final class EntityTableExportPanelTest {
 		loadedPreferences.apply(newTablePanel);
 
 		// Verify only COMMISSION is selected
-		Enumeration<TreeNode> newChildren = newExportPanel.tableExport().entityNode().children();
+		Enumeration<TreeNode> newChildren = newExportPanel.model().treeModel().getRoot().children();
 		while (newChildren.hasMoreElements()) {
 			AttributeNode node = (AttributeNode) newChildren.nextElement();
 			if (node.definition().attribute().equals(Employee.COMMISSION)) {
@@ -159,7 +158,7 @@ public final class EntityTableExportPanelTest {
 		EntityTableExportPanel exportPanel = tablePanel.exportPanel();
 
 		// Select only the master foreign key and some of its children
-		Enumeration<TreeNode> children = exportPanel.tableExport().entityNode().children();
+		Enumeration<TreeNode> children = exportPanel.model().treeModel().getRoot().children();
 		while (children.hasMoreElements()) {
 			AttributeNode node = (AttributeNode) children.nextElement();
 			node.selected().set(false);
@@ -197,7 +196,7 @@ public final class EntityTableExportPanelTest {
 
 		// Verify the nested structure
 		EntityTableExportPanel newExportPanel = newTablePanel.exportPanel();
-		Enumeration<TreeNode> newChildren = newExportPanel.tableExport().entityNode().children();
+		Enumeration<TreeNode> newChildren = newExportPanel.model().treeModel().getRoot().children();
 		while (newChildren.hasMoreElements()) {
 			AttributeNode node = (AttributeNode) newChildren.nextElement();
 			if (node.definition().attribute().equals(Detail.MASTER_FK)) {
@@ -237,7 +236,7 @@ public final class EntityTableExportPanelTest {
 
 		// Find the MGR_FK node (cyclical self-reference)
 		AttributeNode mgrNode = null;
-		Enumeration<TreeNode> children = exportPanel.tableExport().entityNode().children();
+		Enumeration<TreeNode> children = exportPanel.model().treeModel().getRoot().children();
 		while (children.hasMoreElements()) {
 			AttributeNode node = (AttributeNode) children.nextElement();
 			if (node.definition().attribute().equals(Employee.MGR_FK)) {
@@ -287,14 +286,14 @@ public final class EntityTableExportPanelTest {
 		EntityTableExportPanel exportPanel = tablePanel.exportPanel();
 
 		// Deselect all
-		Enumeration<TreeNode> children = exportPanel.tableExport().entityNode().children();
+		Enumeration<TreeNode> children = exportPanel.model().treeModel().getRoot().children();
 		while (children.hasMoreElements()) {
 			AttributeNode node = (AttributeNode) children.nextElement();
 			node.selected().set(false);
 		}
 
 		// Find and expand MGR_FK, select NAME from both levels
-		children = exportPanel.tableExport().entityNode().children();
+		children = exportPanel.model().treeModel().getRoot().children();
 		while (children.hasMoreElements()) {
 			AttributeNode node = (AttributeNode) children.nextElement();
 			if (node.definition().attribute().equals(Employee.MGR_FK)) {
@@ -350,7 +349,7 @@ public final class EntityTableExportPanelTest {
 
 		// Verify the cyclical FK was expanded and selections applied
 		EntityTableExportPanel newExportPanel = newTablePanel.exportPanel();
-		Enumeration<TreeNode> newChildren = newExportPanel.tableExport().entityNode().children();
+		Enumeration<TreeNode> newChildren = newExportPanel.model().treeModel().getRoot().children();
 		AttributeNode newMgrNode = null;
 		while (newChildren.hasMoreElements()) {
 			AttributeNode node = (AttributeNode) newChildren.nextElement();
