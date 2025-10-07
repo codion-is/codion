@@ -357,6 +357,7 @@ public final class WorldImpl extends DomainModel {
 						.build();
 	}
 
+	// tag::groupBy[]
 	EntityDefinition continent() {
 		return Continent.TYPE.define(
 										Continent.NAME.define()
@@ -407,6 +408,7 @@ public final class WorldImpl extends DomainModel {
 						.caption("Continent")
 						.build();
 	}
+	// end::groupBy[]
 
 	// tag::converter[]
 	private static final class LocationConverter implements Converter<Location, String> {

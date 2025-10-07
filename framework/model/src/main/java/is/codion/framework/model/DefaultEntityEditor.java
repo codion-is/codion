@@ -293,7 +293,7 @@ final class DefaultEntityEditor implements EntityEditor {
 	 * If a {@link ColumnDefinition}s underlying column has a default value the attribute is
 	 * skipped unless the attribute itself has a default value, which then overrides the columns default value.
 	 * @return an entity instance populated with default values
-	 * @see ColumnDefinition.Builder#withDefault()
+	 * @see ColumnDefinition.Builder#withDefault(boolean)
 	 * @see ColumnDefinition.Builder#defaultValue(Object)
 	 */
 	private Entity createEntity(ValueSupplier valueSupplier) {

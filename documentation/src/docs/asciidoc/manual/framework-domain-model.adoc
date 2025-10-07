@@ -349,6 +349,86 @@ include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=ite
 include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=item]
 ----
 
+=== Group by
+
+Codion provides built-in support for grouped entities through column-level `groupBy()` and `aggregate()` configuration. This is the preferred approach for working with aggregated data, offering type-safe aggregate column handling and automatic HAVING clause generation in the model layer.
+
+==== Defining grouped entities
+
+A grouped entity is defined by marking columns as either group-by columns or aggregate columns:
+
+[source,java,indent=0]
+----
+include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=groupBy]
+----
+
+Key points about grouped entities:
+
+* **Group-by columns**: Marked with `.groupBy(true)` - these columns appear in the GROUP BY clause
+* **Aggregate columns**: Marked with `.aggregate(true)` and must specify an `.expression()` containing the aggregate function (e.g., `sum(surfacearea)`, `min(lifeexpectancy)`)
+* **All columns required**: Every column must be either a group-by column or an aggregate column - the framework validates this at entity definition time
+* **Read-only**: Grouped entities are typically marked `.readOnly(true)` since aggregated data cannot be updated
+* **Base table**: Use `.table()` to specify the underlying table (e.g., `.table("world.country")`) in case the `entityType` name is different.
+
+==== Querying grouped entities
+
+When using grouped entities, the framework handles aggregate columns differently than regular columns:
+
+**In the connection layer (Select.Builder):**
+
+Conditions on aggregate columns must be explicitly added to the HAVING clause:
+
+[source,java]
+----
+// Regular column condition - goes in WHERE clause automatically
+connection.select(Select.where(Continent.NAME.equalTo("Europe")).build());
+
+// Aggregate column condition - must use having() explicitly
+connection.select(Select.having(Continent.POPULATION.greaterThan(100_000_000L)).build());
+----
+
+**In the model layer ({url-javadoc}{framework-model}/is/codion/framework/model/EntityTableConditionModel.html[EntityTableConditionModel]):**
+
+The framework model layer automatically handles aggregate columns - conditions on aggregate columns are automatically placed in the HAVING clause without explicit configuration:
+
+[source,java]
+----
+SwingEntityTableModel continentModel = new SwingEntityTableModel(Continent.TYPE, connectionProvider);
+
+// Condition on regular column (NAME) - automatically goes in WHERE
+continentModel.queryModel().condition().get(Continent.NAME).set().equalTo("Asia");
+
+// Condition on aggregate column (POPULATION) - automatically goes in HAVING
+continentModel.queryModel().condition().get(Continent.POPULATION).set().greaterThan(1_000_000_000L);
+
+// Both conditions work together correctly
+continentModel.items().refresh();
+----
+
+This automatic HAVING clause handling makes grouped entities seamless to use in UI components.
+
+==== When to use grouped entities vs. custom queries
+
+**Prefer grouped entities when:**
+
+* Working with straightforward aggregations on a single table
+* Building interactive UIs where users filter aggregated data
+* You want automatic HAVING clause handling in table models
+* Type-safe access to aggregate columns is important
+
+**Use custom queries ({url-javadoc}{framework-domain}/is/codion/framework/domain/entity/query/EntitySelectQuery.html[EntitySelectQuery]) when:**
+
+* Aggregating across complex joins of multiple tables
+* The query requires custom SQL logic beyond standard GROUP BY
+* You need database-specific optimizations or hints
+
+**Prefer database views when:**
+
+* The aggregation is complex and performance-critical
+* Multiple applications need the same aggregated data
+* DBAs need to optimize with indexes or materialized views
+* The aggregation logic is stable and rarely changes
+
 === Column templates
 
 Column templates provide a way to define reusable column configurations that can be applied across multiple entities. This eliminates repetition and ensures consistency for common patterns like audit columns, required searchable fields, or domain-specific column types.
