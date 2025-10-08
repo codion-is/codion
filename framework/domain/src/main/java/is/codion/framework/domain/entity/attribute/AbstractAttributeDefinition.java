@@ -285,6 +285,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 
 	@Override
 	public final void validate(Entity entity) {
+		requireNonNull(entity);
 		if (!(attribute instanceof Column) || !entity.definition().foreignKeys().foreignKeyColumn((Column<?>) attribute)) {
 			validateNull(entity);
 		}

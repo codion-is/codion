@@ -40,6 +40,7 @@ import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static is.codion.common.Text.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
@@ -52,6 +53,7 @@ final class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> im
 	private static final Converter<Object, Object> DEFAULT_CONVERTER = new DefaultConverter();
 	private static final Map<Class<?>, Integer> TYPE_MAP = createTypeMap();
 	private static final Map<Integer, GetValue<?>> GETTERS = createGetters();
+	private static final Map<Integer, SetParameter<?>> SETTERS = new ConcurrentHashMap<>();
 
 	private final int type;
 	private final int keyIndex;
@@ -299,7 +301,7 @@ final class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> im
 			this.searchable = false;
 			this.name = column.name();
 			this.getValue = (GetValue<Object>) getter(this.type, column);
-			this.setParameter = new DefaultSetParameter(this.type);
+			this.setParameter = (SetParameter<Object>) setter(this.type);
 			this.converter = (Converter<T, Object>) DEFAULT_CONVERTER;
 			this.groupBy = false;
 			this.aggregate = false;
@@ -440,6 +442,10 @@ final class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> im
 			}
 
 			return (GetValue<T>) GETTERS.get(columnType);
+		}
+
+		private static SetParameter<?> setter(int columnType) {
+			return SETTERS.computeIfAbsent(columnType, DefaultSetParameter::new);
 		}
 	}
 
