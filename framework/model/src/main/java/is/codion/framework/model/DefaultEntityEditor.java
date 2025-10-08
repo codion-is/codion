@@ -449,6 +449,14 @@ final class DefaultEntityEditor implements EntityEditor {
 		}
 
 		@Override
+		public void validate() {
+			State validState = attributeValid.get(attribute);
+			if (validState != null) {
+				validState.set(isValid(attribute));
+			}
+		}
+
+		@Override
 		public State persist() {
 			return persistValues.computeIfAbsent(attribute, k -> State.state());
 		}

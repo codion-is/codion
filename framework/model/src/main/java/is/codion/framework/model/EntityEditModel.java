@@ -584,6 +584,12 @@ public interface EntityEditModel {
 		void revert();
 
 		/**
+		 * Updates the valid state of this value according to the underlying validator
+		 * @see #valid()
+		 */
+		void validate();
+
+		/**
 		 * <p>Returns a {@link State} controlling whether the last used value for this attribute should persist when defaults are set.
 		 * @return a {@link State} controlling whether the given attribute value should persist when defaults are set
 		 * @see EntityEditor#defaults()
