@@ -2726,7 +2726,7 @@ public class EntityTablePanel extends JPanel {
 		@Override
 		public <T extends Number> Optional<SummaryModel.SummaryValues<T>> createSummaryValues(Attribute<?> identifier, Format format) {
 			AttributeDefinition<?> attributeDefinition = entityDefinition.attributes().definition(identifier);
-			if (identifier.type().isNumerical() && attributeDefinition.items().isEmpty()) {
+			if (identifier.type().isNumeric() && attributeDefinition.items().isEmpty()) {
 				return Optional.of(FilterTable.summaryValues(identifier, tableModel, format));
 			}
 

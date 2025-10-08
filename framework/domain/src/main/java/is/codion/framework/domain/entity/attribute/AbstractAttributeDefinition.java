@@ -293,7 +293,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 			validateItem(value);
 		}
 		if (value != null) {
-			if (attribute.type().isNumerical()) {
+			if (attribute.type().isNumeric()) {
 				validateRange((Number) value);
 			}
 			else if (attribute.type().isString()) {
@@ -668,7 +668,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 
 		@Override
 		public B range(@Nullable Number minimum, @Nullable Number maximum) {
-			if (!attribute.type().isNumerical()) {
+			if (!attribute.type().isNumeric()) {
 				throw new IllegalStateException("range is only applicable to numerical attributes");
 			}
 			if (maximum != null && minimum != null && maximum.doubleValue() < minimum.doubleValue()) {
@@ -681,7 +681,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 
 		@Override
 		public final B numberGrouping(boolean numberGrouping) {
-			if (!attribute.type().isNumerical()) {
+			if (!attribute.type().isNumeric()) {
 				throw new IllegalStateException("numberGrouping is only applicable to numerical attributes: " + attribute);
 			}
 			requireNonNull(format);
@@ -704,7 +704,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		@Override
 		public final B format(Format format) {
 			requireNonNull(format);
-			if (attribute.type().isNumerical() && !(format instanceof NumberFormat)) {
+			if (attribute.type().isNumeric() && !(format instanceof NumberFormat)) {
 				throw new IllegalArgumentException("NumberFormat required for numerical attribute: " + attribute);
 			}
 			if (attribute.type().isTemporal()) {
@@ -802,7 +802,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		}
 
 		private static @Nullable Format defaultFormat(Attribute<?> attribute) {
-			if (attribute.type().isNumerical()) {
+			if (attribute.type().isNumeric()) {
 				NumberFormat numberFormat = defaultNumberFormat(attribute);
 				if (attribute.type().isDecimal()) {
 					((DecimalFormat) numberFormat).setParseBigDecimal(attribute.type().isBigDecimal());
@@ -865,7 +865,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		}
 
 		private @Nullable Number defaultMinimum() {
-			if (attribute.type().isNumerical()) {
+			if (attribute.type().isNumeric()) {
 				if (attribute.type().isShort()) {
 					return Short.MIN_VALUE;
 				}
@@ -884,7 +884,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		}
 
 		private @Nullable Number defaultMaximum() {
-			if (attribute.type().isNumerical()) {
+			if (attribute.type().isNumeric()) {
 				if (attribute.type().isShort()) {
 					return Short.MAX_VALUE;
 				}

@@ -185,7 +185,7 @@ public sealed interface Attribute<T> permits Column, DefaultAttribute, ForeignKe
 		/**
 		 * @return true if this attribute represents a numerical value.
 		 */
-		boolean isNumerical();
+		boolean isNumeric();
 
 		/**
 		 * @return true if this attribute represents a {@link java.time.temporal.Temporal} value.

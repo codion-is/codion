@@ -400,7 +400,7 @@ public final class EntityComponents {
 							.toolTipText(attributeDefinition.description().orElse(null))
 							.calendarIcon(ICONS.calendar().large());
 		}
-		if (attribute.type().isNumerical()) {
+		if (attribute.type().isNumeric()) {
 			return (TextFieldBuilder<C, T, B>) NumberField.builder()
 							.numberClass((Class<Number>) attribute.type().valueClass())
 							.format(attributeDefinition.format().orElse(null))

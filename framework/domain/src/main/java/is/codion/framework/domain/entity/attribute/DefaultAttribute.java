@@ -131,7 +131,7 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 		}
 
 		@Override
-		public boolean isNumerical() {
+		public boolean isNumeric() {
 			return Number.class.isAssignableFrom(valueClass);
 		}
 
