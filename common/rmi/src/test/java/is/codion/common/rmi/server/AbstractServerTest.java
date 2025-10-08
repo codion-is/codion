@@ -215,7 +215,7 @@ public class AbstractServerTest {
 		serverInformation.locale();
 		serverInformation.timeZone();
 		serverInformation.startTime();
-		ServerStatistics serverStatistics = admin.serverStatistics(System.currentTimeMillis());
+		ServerStatistics serverStatistics = admin.statistics(System.currentTimeMillis());
 		serverStatistics.connectionCount();
 		serverStatistics.connectionLimit();
 		serverStatistics.usedMemory();

@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.53
 ### is.codion.common.db
 - ResultIterator removed.
+### is.codion.common.rmi
+- ServerAdmin.serverStatistics() renamed statistics().
 ### is.codion.common.model
 - FilterModel.excluded() renamed filtered().
 ### is.codion.swing.common.ui

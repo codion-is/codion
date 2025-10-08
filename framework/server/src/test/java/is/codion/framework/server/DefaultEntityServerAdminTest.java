@@ -107,7 +107,7 @@ public final class DefaultEntityServerAdminTest {
 			admin.serverInformation();
 			admin.systemProperties();
 			admin.users();
-			admin.serverStatistics(System.currentTimeMillis());
+			admin.statistics(System.currentTimeMillis());
 			admin.disconnectTimedOutClients();
 			admin.disconnectAllClients();
 		}

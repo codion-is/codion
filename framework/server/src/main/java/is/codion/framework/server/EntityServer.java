@@ -227,7 +227,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 			AbstractRemoteEntityConnection connection = client.connection();
 			if (!connection.active()) {
 				boolean connected = connection.connected();
-				boolean timedOut = hasConnectionTimedOut(connection);
+				boolean timedOut = timedOut(connection);
 				if (!connected || timedOut) {
 					LOG.debug("Removing connection {}, connected: {}, timeout: {}", client, connected, timedOut);
 					disconnect(client.remoteClient().clientId());
@@ -333,7 +333,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
 	/**
 	 * @param timedOutOnly if true only connections that have timed out are culled
-	 * @see #hasConnectionTimedOut(AbstractRemoteEntityConnection)
+	 * @see #timedOut(AbstractRemoteEntityConnection)
 	 */
 	final void disconnectClients(boolean timedOutOnly) {
 		List<RemoteClient> clients = new ArrayList<>(connections().keySet());
@@ -341,7 +341,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 			AbstractRemoteEntityConnection connection = connection(client.clientId());
 			if (timedOutOnly) {
 				boolean active = connection.active();
-				if (!active && hasConnectionTimedOut(connection)) {
+				if (!active && timedOut(connection)) {
 					disconnect(client.clientId());
 				}
 			}
@@ -369,13 +369,13 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 		return null;
 	}
 
-	private boolean hasConnectionTimedOut(AbstractRemoteEntityConnection connection) {
+	private boolean timedOut(AbstractRemoteEntityConnection connection) {
 		Integer timeout = clientTypeIdleConnectionTimeouts.get(connection.remoteClient().clientType());
 		if (timeout == null) {
 			timeout = idleConnectionTimeout;
 		}
 
-		return connection.hasBeenInactive(timeout);
+		return connection.timedOut(timeout);
 	}
 
 	private Domain clientDomainModel(RemoteClient remoteClient) {

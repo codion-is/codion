@@ -106,7 +106,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 	}
 
 	@Override
-	public final ServerStatistics serverStatistics(long since) throws RemoteException {
+	public final ServerStatistics statistics(long since) throws RemoteException {
 		return new DefaultServerStatistics(System.currentTimeMillis(), connectionCount(), getConnectionLimit(),
 						usedMemory(), maxMemory(), totalMemory(), requestsPerSecond(), systemCpuLoad(),
 						processCpuLoad(), threadStatistics(), gcEvents(since));

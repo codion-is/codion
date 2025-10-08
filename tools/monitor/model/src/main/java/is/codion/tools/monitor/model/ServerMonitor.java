@@ -492,7 +492,7 @@ public final class ServerMonitor {
 	private void updateStatistics() {
 		try {
 			if (!shutdown) {
-				ServerAdmin.ServerStatistics statistics = server.serverStatistics(lastStatisticsUpdateTime);
+				ServerAdmin.ServerStatistics statistics = server.statistics(lastStatisticsUpdateTime);
 				long timestamp = statistics.timestamp();
 				lastStatisticsUpdateTime = timestamp;
 				connectionLimitValue.set(statistics.connectionLimit());

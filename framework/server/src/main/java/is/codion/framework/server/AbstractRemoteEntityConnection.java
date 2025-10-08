@@ -173,8 +173,8 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 	 * @param timeout the number of milliseconds
 	 * @return true if this connection has been inactive for {@code timeout} milliseconds or longer
 	 */
-	final boolean hasBeenInactive(int timeout) {
-		return System.currentTimeMillis() - connectionHandler.lastAccessTime() > timeout;
+	final boolean timedOut(int timeout) {
+		return currentTimeMillis() - connectionHandler.lastAccessTime() > timeout;
 	}
 
 	final void setTraceToFile(boolean traceToFile) {

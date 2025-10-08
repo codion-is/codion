@@ -92,7 +92,7 @@ public interface ServerAdmin extends Remote {
 	 * @return current statistics for this server
 	 * @throws RemoteException in case of an exception
 	 */
-	ServerStatistics serverStatistics(long since) throws RemoteException;
+	ServerStatistics statistics(long since) throws RemoteException;
 
 	/**
 	 * Basic server performance statistics.
