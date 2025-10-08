@@ -138,13 +138,13 @@ import static is.codion.swing.common.ui.component.table.ConditionPanel.Condition
 import static is.codion.swing.common.ui.component.table.FilterTableColumnComponentPanel.filterTableColumnComponentPanel;
 import static is.codion.swing.common.ui.component.table.FilterTableConditionPanel.filterTableConditionPanel;
 import static is.codion.swing.common.ui.control.Control.command;
+import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.framework.ui.EntityDialogs.*;
 import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.*;
 import static is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
-import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyMap;
@@ -194,6 +194,7 @@ public class EntityTablePanel extends JPanel {
 
 	/**
 	 * The Controls available in a {@link EntityTablePanel}
+	 * <p>Note: CTRL in key stroke descriptions represents the platform menu shortcut key (CTRL on Windows/Linux, ⌘ on macOS).
 	 */
 	public static final class ControlKeys {
 
@@ -210,7 +211,7 @@ public class EntityTablePanel extends JPanel {
 		 * @see EntityTablePanel#EntityTablePanel(SwingEntityTableModel, EntityEditPanel)
 		 * @see EntityTablePanel#EntityTablePanel(SwingEntityTableModel, EntityEditPanel, Consumer)
 		 */
-		public static final ControlKey<CommandControl> EDIT = CommandControl.key("edit", keyStroke(VK_INSERT, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> EDIT = CommandControl.key("edit", keyStroke(VK_INSERT, MENU_SHORTCUT_MASK));
 		/**
 		 * Select and edit a single attribute value for the selected entity instances.<br>
 		 * Default key stroke: SHIFT-INSERT
@@ -221,46 +222,46 @@ public class EntityTablePanel extends JPanel {
 		 * Requests focus for the table.<br>
 		 * Default key stroke: CTRL-T
 		 */
-		public static final ControlKey<CommandControl> REQUEST_TABLE_FOCUS = CommandControl.key("requestTableFocus", keyStroke(VK_T, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> REQUEST_TABLE_FOCUS = CommandControl.key("requestTableFocus", keyStroke(VK_T, MENU_SHORTCUT_MASK));
 		/**
 		 * Toggles the condition panel between the hidden, simple and advanced views.<br>
 		 * Default key stroke: CTRL-ALT-S
 		 * @see TableConditionPanel#view()
 		 */
-		public static final ControlKey<CommandControl> TOGGLE_CONDITION_VIEW = CommandControl.key("toggleConditionView", keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> TOGGLE_CONDITION_VIEW = CommandControl.key("toggleConditionView", keyStroke(VK_S, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
 		/**
 		 * Displays a dialog for selecting a column condition panel.<br>
 		 * Default key stroke: CTRL-S
 		 */
-		public static final ControlKey<CommandControl> SELECT_CONDITION = CommandControl.key("selectCondition", keyStroke(VK_S, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> SELECT_CONDITION = CommandControl.key("selectCondition", keyStroke(VK_S, MENU_SHORTCUT_MASK));
 		/**
 		 * Toggles the filter panel between the hidden, simple and advanced views.<br>
 		 * Default key stroke: CTRL-ALT-F
 		 * @see TableConditionPanel#view()
 		 */
-		public static final ControlKey<CommandControl> TOGGLE_FILTER_VIEW = CommandControl.key("toggleFilterView", keyStroke(VK_F, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> TOGGLE_FILTER_VIEW = CommandControl.key("toggleFilterView", keyStroke(VK_F, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
 		/**
 		 * Displays a dialog for selecting a column filter panel.<br>
 		 * Default key stroke: CTRL-SHIFT-F
 		 */
-		public static final ControlKey<CommandControl> SELECT_FILTER = CommandControl.key("selectFilter", keyStroke(VK_F, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> SELECT_FILTER = CommandControl.key("selectFilter", keyStroke(VK_F, MENU_SHORTCUT_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Decrements the selected indexes, moving the selection up.<br>
 		 * Default key stroke: CTRL-SHIFT-UP
 		 * @see MultiSelection.Indexes#decrement()
 		 */
-		public static final ControlKey<CommandControl> DECREMENT_SELECTION = CommandControl.key("decrementSelection", keyStroke(VK_UP, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> DECREMENT_SELECTION = CommandControl.key("decrementSelection", keyStroke(VK_UP, MENU_SHORTCUT_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Increments the selected indexes, moving the selection down.<br>
 		 * Default key stroke: CTRL-SHIFT-DOWN
 		 * @see MultiSelection.Indexes#increment()
 		 */
-		public static final ControlKey<CommandControl> INCREMENT_SELECTION = CommandControl.key("incrementSelection", keyStroke(VK_DOWN, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> INCREMENT_SELECTION = CommandControl.key("incrementSelection", keyStroke(VK_DOWN, MENU_SHORTCUT_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * The main print action<br>
 		 * Default key stroke: CTRL-P
 		 */
-		public static final ControlKey<CommandControl> PRINT = CommandControl.key("print", keyStroke(VK_P, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> PRINT = CommandControl.key("print", keyStroke(VK_P, MENU_SHORTCUT_MASK));
 		/**
 		 * Triggers the {@link ControlKeys#DELETE} control.<br>
 		 * Default key stroke: DELETE
@@ -270,17 +271,17 @@ public class EntityTablePanel extends JPanel {
 		 * Displays the table popup menu, if one is available.<br>
 		 * Default key stroke: CTRL-G
 		 */
-		public static final ControlKey<CommandControl> DISPLAY_POPUP_MENU = CommandControl.key("displayPopupMenu", keyStroke(VK_G, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> DISPLAY_POPUP_MENU = CommandControl.key("displayPopupMenu", keyStroke(VK_G, MENU_SHORTCUT_MASK));
 		/**
 		 * Displays the query inspector, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-Q
 		 */
-		public static final ControlKey<CommandControl> DISPLAY_QUERY_INSPECTOR = CommandControl.key("displayQueryInspector", keyStroke(VK_Q, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> DISPLAY_QUERY_INSPECTOR = CommandControl.key("displayQueryInspector", keyStroke(VK_Q, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
 		/**
 		 * Displays the entity menu, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-V
 		 */
-		public static final ControlKey<CommandControl> DISPLAY_ENTITY_MENU = CommandControl.key("displayEntityMenu", keyStroke(VK_V, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> DISPLAY_ENTITY_MENU = CommandControl.key("displayEntityMenu", keyStroke(VK_V, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
 		/**
 		 * A {@link Controls} instance containing controls for printing.
 		 */
@@ -362,7 +363,7 @@ public class EntityTablePanel extends JPanel {
 		 * A {@link Control} for copying the selected cell data.<br>
 		 * Default key stroke: CTRL-ALT-C
 		 */
-		public static final ControlKey<CommandControl> COPY_CELL = CommandControl.key("copyCell", keyStroke(VK_C, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> COPY_CELL = CommandControl.key("copyCell", keyStroke(VK_C, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
 		/**
 		 * A {@link Control} for copying the table rows with header.
 		 */
@@ -401,7 +402,7 @@ public class EntityTablePanel extends JPanel {
 		 * Requests focus for the table search field.<br>
 		 * Default key stroke: CTRL-F
 		 */
-		public static final ControlKey<CommandControl> REQUEST_SEARCH_FIELD_FOCUS = CommandControl.key("requestSearchFieldFocus", keyStroke(VK_F, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> REQUEST_SEARCH_FIELD_FOCUS = CommandControl.key("requestSearchFieldFocus", keyStroke(VK_F, MENU_SHORTCUT_MASK));
 
 		private ControlKeys() {}
 	}

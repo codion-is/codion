@@ -105,13 +105,13 @@ import static is.codion.swing.common.ui.color.Colors.darker;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
+import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.component.EntitySearchField.ControlKeys.ADD;
 import static is.codion.swing.framework.ui.component.EntitySearchField.ControlKeys.EDIT;
 import static is.codion.swing.framework.ui.component.EntitySearchField.SearchIndicator.WAIT_CURSOR;
 import static java.awt.event.FocusEvent.Cause.ACTIVATION;
-import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.text.MessageFormat.format;
 import static java.util.Arrays.asList;
@@ -168,6 +168,7 @@ public final class EntitySearchField extends HintTextField {
 
 	/**
 	 * The available controls.
+	 * <p>Note: CTRL in key stroke descriptions represents the platform menu shortcut key (CTRL on Windows/Linux, ⌘ on macOS).
 	 * @see Builder#editPanel(Supplier)
 	 */
 	public static final class ControlKeys {
@@ -181,7 +182,7 @@ public final class EntitySearchField extends HintTextField {
 		 * Displays a dialog for editing the selected record.<br>
 		 * Default key stroke: CTRL-INSERT
 		 */
-		public static final ControlKey<CommandControl> EDIT = CommandControl.key("edit", keyStroke(VK_INSERT, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> EDIT = CommandControl.key("edit", keyStroke(VK_INSERT, MENU_SHORTCUT_MASK));
 
 		private ControlKeys() {}
 	}
@@ -957,7 +958,7 @@ public final class EntitySearchField extends HintTextField {
 											.action(selectControl))
 							.keyEvent(KeyEvents.builder()
 											.keyCode(VK_F)
-											.modifiers(CTRL_DOWN_MASK)
+											.modifiers(MENU_SHORTCUT_MASK)
 											.action(command(this::requestSearchFieldFocus)))
 							.onBuild(t -> KeyEvents.builder()
 											.keyCode(VK_ENTER)

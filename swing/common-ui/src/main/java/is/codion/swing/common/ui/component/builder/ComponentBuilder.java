@@ -165,7 +165,7 @@ public interface ComponentBuilder<C extends JComponent, B extends ComponentBuild
 	B border(@Nullable Border border);
 
 	/**
-	 * <p>Note that in case of {@link JTextArea} the {@link java.awt.event.InputEvent#CTRL_DOWN_MASK}
+	 * <p>Note that in case of {@link JTextArea} the {@link KeyEvents#MENU_SHORTCUT_MASK}
 	 * modifier is added for transferring the focus forward.
 	 * @param transferFocusOnEnter if true then the compnent transfers focus on enter (shift-enter for backwards)
 	 * @return this builder instance
@@ -173,7 +173,7 @@ public interface ComponentBuilder<C extends JComponent, B extends ComponentBuild
 	B transferFocusOnEnter(boolean transferFocusOnEnter);
 
 	/**
-	 * <p>Note that in case of {@link JTextArea} the {@link java.awt.event.InputEvent#CTRL_DOWN_MASK}
+	 * <p>Note that in case of {@link JTextArea} the {@link KeyEvents#MENU_SHORTCUT_MASK}
 	 * modifier is added for transferring the focus forward.
 	 * @param transferFocusOnEnter the transfer focus on enter to enable
 	 * @return this builder instance

@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
+import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static java.awt.event.KeyEvent.VK_BACK_SPACE;
 import static java.awt.event.KeyEvent.VK_DELETE;
 import static java.util.Objects.requireNonNull;
@@ -222,11 +222,11 @@ abstract class AbstractTextComponentBuilder<C extends JTextComponent, T, B exten
 		if (controlDeleteWord) {
 			keyEvent(KeyEvents.builder()
 							.keyCode(VK_DELETE)
-							.modifiers(CTRL_DOWN_MASK)
+							.modifiers(MENU_SHORTCUT_MASK)
 							.action(new DeleteNextWordAction()));
 			keyEvent(KeyEvents.builder()
 							.keyCode(VK_BACK_SPACE)
-							.modifiers(CTRL_DOWN_MASK)
+							.modifiers(MENU_SHORTCUT_MASK)
 							.action(new DeletePreviousWordAction()));
 		}
 		Caret caret = textComponent.getCaret();

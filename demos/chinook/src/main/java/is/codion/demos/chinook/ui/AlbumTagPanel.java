@@ -41,8 +41,8 @@ import java.util.List;
 
 import static is.codion.common.state.State.present;
 import static is.codion.swing.common.ui.component.Components.*;
+import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 
 final class AlbumTagPanel extends JPanel {
@@ -125,12 +125,12 @@ final class AlbumTagPanel extends JPanel {
 						.enable(tagsValue.component());
 		KeyEvents.builder()
 						.keyCode(VK_UP)
-						.modifiers(CTRL_DOWN_MASK)
+						.modifiers(MENU_SHORTCUT_MASK)
 						.action(moveSelectionUpControl)
 						.enable(tagsValue.component());
 		KeyEvents.builder()
 						.keyCode(VK_DOWN)
-						.modifiers(CTRL_DOWN_MASK)
+						.modifiers(MENU_SHORTCUT_MASK)
 						.action(moveSelectionDownControl)
 						.enable(tagsValue.component());
 	}

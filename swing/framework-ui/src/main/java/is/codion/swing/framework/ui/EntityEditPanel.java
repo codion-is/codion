@@ -79,10 +79,10 @@ import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
+import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.*;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
-import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
@@ -109,6 +109,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	 * The controls available for {@link EntityEditPanel}s.
 	 * Note that changing the shortcut keystroke after a panel
 	 * has been initialized has no effect on its controls.
+	 * <p>Note: CTRL in key stroke descriptions represents the platform menu shortcut key (CTRL on Windows/Linux, ⌘ on macOS).
 	 */
 	public static final class ControlKeys {
 
@@ -132,18 +133,18 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		 * Displays a dialog for selecting an input field.<br>
 		 * Default key stroke: CTRL-I
 		 */
-		public static final ControlKey<CommandControl> SELECT_INPUT_FIELD = CommandControl.key("selectInputField", keyStroke(VK_I, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> SELECT_INPUT_FIELD = CommandControl.key("selectInputField", keyStroke(VK_I, MENU_SHORTCUT_MASK));
 		/**
 		 * Displays the entity menu, if available.<br>
 		 * Default key stroke: CTRL-ALT-V
 		 * @see Config#INCLUDE_ENTITY_MENU
 		 */
-		public static final ControlKey<CommandControl> DISPLAY_ENTITY_MENU = CommandControl.key("displayEntityMenu", keyStroke(VK_V, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> DISPLAY_ENTITY_MENU = CommandControl.key("displayEntityMenu", keyStroke(VK_V, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
 		/**
 		 * Displays the query inspector, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-Q
 		 */
-		public static final ControlKey<CommandControl> DISPLAY_QUERY_INSPECTOR = CommandControl.key("displayQueryInspector", keyStroke(VK_Q, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> DISPLAY_QUERY_INSPECTOR = CommandControl.key("displayQueryInspector", keyStroke(VK_Q, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
 
 		private ControlKeys() {}
 	}

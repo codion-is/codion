@@ -21,9 +21,9 @@ package is.codion.swing.common.ui.control;
 import org.junit.jupiter.api.Test;
 
 import static is.codion.swing.common.ui.control.Control.command;
+import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
-import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.awt.event.KeyEvent.VK_S;
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,7 +33,7 @@ public final class DefaultControlMapTest {
 	public static final class ControlKeys {
 		public static final ControlKey<CommandControl> COMMAND_CONTROL = CommandControl.key("commandControl", keyStroke(VK_INSERT));
 		public static final ControlKey<Controls> CONTROLS = Controls.key("controls");
-		public static final ControlKey<ToggleControl> TOGGLE_CONTROL = ToggleControl.key("toggleControl", keyStroke(VK_S, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<ToggleControl> TOGGLE_CONTROL = ToggleControl.key("toggleControl", keyStroke(VK_S, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
 	}
 
 	@Test

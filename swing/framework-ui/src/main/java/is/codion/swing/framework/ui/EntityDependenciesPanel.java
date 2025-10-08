@@ -36,12 +36,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static is.codion.swing.common.ui.control.Control.command;
+import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.ControlKeys.NAVIGATE_LEFT;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.ControlKeys.NAVIGATE_RIGHT;
 import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.*;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
-import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
 import static java.util.Collections.unmodifiableMap;
@@ -53,6 +53,7 @@ final class EntityDependenciesPanel extends JPanel {
 
 	/**
 	 * The dependencies panel controls.
+	 * <p>Note: CTRL in key stroke descriptions represents the platform menu shortcut key (CTRL on Windows/Linux, ⌘ on macOS).
 	 */
 	static final class ControlKeys {
 
@@ -60,12 +61,12 @@ final class EntityDependenciesPanel extends JPanel {
 		 * Navigates to the dependencies panel on the left (with wrap-around).<br>
 		 * Default key stroke: CTRL-ALT-LEFT ARROW
 		 */
-		static final ControlKey<CommandControl> NAVIGATE_LEFT = CommandControl.key("navigateLeft", keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		static final ControlKey<CommandControl> NAVIGATE_LEFT = CommandControl.key("navigateLeft", keyStroke(VK_LEFT, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
 		/**
 		 * Navigates to the dependencies panel on the right (with wrap-around).<br>
 		 * Default key stroke: CTRL-ALT-RIGHT ARROW
 		 */
-		static final ControlKey<CommandControl> NAVIGATE_RIGHT = CommandControl.key("navigateRight", keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		static final ControlKey<CommandControl> NAVIGATE_RIGHT = CommandControl.key("navigateRight", keyStroke(VK_RIGHT, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
 
 		private ControlKeys() {}
 	}

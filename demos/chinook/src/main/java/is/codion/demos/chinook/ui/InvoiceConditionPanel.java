@@ -47,7 +47,6 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerListModel;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.time.LocalDate;
 import java.time.Month;
@@ -254,11 +253,11 @@ final class InvoiceConditionPanel extends TableConditionPanel<Attribute<?>> {
 							.horizontalAlignment(SwingConstants.TRAILING)
 							.keyEvent(KeyEvents.builder()
 											.keyCode(KeyEvent.VK_UP)
-											.modifiers(InputEvent.CTRL_DOWN_MASK)
+											.modifiers(KeyEvents.MENU_SHORTCUT_MASK)
 											.action(command(this::incrementYear)))
 							.keyEvent(KeyEvents.builder()
 											.keyCode(KeyEvent.VK_DOWN)
-											.modifiers(InputEvent.CTRL_DOWN_MASK)
+											.modifiers(KeyEvents.MENU_SHORTCUT_MASK)
 											.action(command(this::decrementYear)))
 							.buildValue();
 

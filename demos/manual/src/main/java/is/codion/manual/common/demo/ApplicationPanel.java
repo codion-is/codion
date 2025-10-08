@@ -56,9 +56,9 @@ import java.util.function.Predicate;
 
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
+import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_SPACE;
 import static javax.swing.BorderFactory.createTitledBorder;
 
@@ -109,7 +109,7 @@ public final class ApplicationPanel extends JPanel {
 						// CTRL-SPACE displays a dialog for selecting a value
 						.keyEvent(KeyEvents.builder()
 										.keyCode(VK_SPACE)
-										.modifiers(CTRL_DOWN_MASK)
+										.modifiers(MENU_SHORTCUT_MASK)
 										.action(Control.action(ApplicationPanel::selectString)))
 						.label(label("Short String (1)")
 										.displayedMnemonic('1')
@@ -140,7 +140,7 @@ public final class ApplicationPanel extends JPanel {
 						.transferHandler(new FilePathTransferHandler())
 						.keyEvent(KeyEvents.builder()
 										.keyCode(VK_SPACE)
-										.modifiers(CTRL_DOWN_MASK)
+										.modifiers(MENU_SHORTCUT_MASK)
 										.action(Control.action(actionEvent ->
 														((JTextArea) actionEvent.getSource()).append("SPACE"))))
 						.label(label("Text (3)")

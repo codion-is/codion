@@ -31,8 +31,8 @@ import java.awt.event.ActionEvent;
 import static is.codion.demos.chinook.domain.api.Chinook.Customer;
 import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
+import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
-import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_SPACE;
 
 public final class CustomerEditPanel extends EntityEditPanel {
@@ -66,7 +66,7 @@ public final class CustomerEditPanel extends EntityEditPanel {
 						// a State from existing column values
 						.keyEvent(KeyEvents.builder()
 										.keyCode(VK_SPACE)
-										.modifiers(CTRL_DOWN_MASK)
+										.modifiers(MENU_SHORTCUT_MASK)
 										.action(Control.action(this::selectState)));
 		createTextField(Customer.COUNTRY)
 						.columns(8);

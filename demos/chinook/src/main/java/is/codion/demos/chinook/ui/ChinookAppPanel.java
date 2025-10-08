@@ -69,8 +69,8 @@ import java.util.ResourceBundle;
 import static is.codion.demos.chinook.domain.api.Chinook.*;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.radioButton;
+import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
-import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.util.ResourceBundle.getBundle;
 import static javax.swing.JOptionPane.showMessageDialog;
 
@@ -247,7 +247,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 		EntityEditPanel.Config.INCLUDE_QUERY_INSPECTOR.set(true);
 		// Add a CTRL modifier to the DELETE key shortcut for table panels
 		EntityTablePanel.ControlKeys.DELETE.defaultKeystroke().map(keyStroke ->
-						keyStroke(keyStroke.getKeyCode(), CTRL_DOWN_MASK));
+						keyStroke(keyStroke.getKeyCode(), MENU_SHORTCUT_MASK));
 		EntityTablePanel.Config.COLUMN_SELECTION.set(SelectionMode.MENU);
 		EntityTablePanel.Config.AUTO_RESIZE_MODE_SELECTION.set(SelectionMode.MENU);
 		EntityTablePanel.Config.INCLUDE_FILTERS.set(true);

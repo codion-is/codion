@@ -27,6 +27,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import java.awt.event.InputEvent;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutPanel;
@@ -46,7 +47,7 @@ final class KeyboardShortcutsPanel extends JPanel {
 	private static final int VERTICAL_UNIT_INCREMENT = 16;
 
 	private static final String ALT = "Alt + ";
-	private static final String CTRL = "Ctrl + ";
+	private static final String CTRL = modifierLabel() + " + ";
 	private static final String SHIFT = "Shift + ";
 	private static final String INSERT = "Insert";
 	private static final String ENTER = "Enter";
@@ -214,6 +215,12 @@ final class KeyboardShortcutsPanel extends JPanel {
 						.addAll(new JLabel(MESSAGES.getString("navigate_left_right")), new JLabel(CTRL + ALT + LEFT_RIGHT))
 						.border(createTitledBorder(FrameworkMessages.dependencies()))
 						.build();
+	}
+
+	private static String modifierLabel() {
+		return KeyEvents.MENU_SHORTCUT_MASK == InputEvent.META_DOWN_MASK
+						? "⌘"      // macOS Command symbol
+						: "Ctrl";  // Windows/Linux
 	}
 
 	private static void addScrollKeyEvents(JScrollPane scrollPane) {

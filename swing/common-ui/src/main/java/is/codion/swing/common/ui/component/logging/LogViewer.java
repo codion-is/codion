@@ -39,7 +39,6 @@ import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Document;
 import java.awt.BorderLayout;
 import java.awt.Font;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -76,7 +75,7 @@ public final class LogViewer extends JPanel {
 						.createSearchField();
 		KeyEvents.builder()
 						.keyCode(KeyEvent.VK_F)
-						.modifiers(InputEvent.CTRL_DOWN_MASK)
+						.modifiers(KeyEvents.MENU_SHORTCUT_MASK)
 						.action(command(searchField::requestFocusInWindow))
 						.enable(logArea);
 		logArea.getDocument().addDocumentListener((DocumentAdapter) e ->

@@ -71,12 +71,14 @@ import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.splitPane;
 import static is.codion.swing.common.ui.component.Components.tabbedPane;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
+import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.common.ui.layout.Layouts.GAP;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
 import static is.codion.swing.framework.ui.EntityPanel.panelStateMapper;
 import static is.codion.swing.framework.ui.TabbedDetailLayout.ControlKeys.*;
-import static java.awt.event.InputEvent.*;
+import static java.awt.event.InputEvent.ALT_DOWN_MASK;
+import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
 import static java.util.Arrays.asList;
@@ -121,6 +123,7 @@ public final class TabbedDetailLayout implements DetailLayout {
 
 	/**
 	 * The controls.
+	 * <p>Note: CTRL in key stroke descriptions represents the platform menu shortcut key (CTRL on Windows/Linux, ⌘ on macOS).
 	 */
 	public static final class ControlKeys {
 
@@ -138,12 +141,12 @@ public final class TabbedDetailLayout implements DetailLayout {
 		 * Collapses the detail panel all the way to the right, hiding it.<br>
 		 * Default keyStroke: SHIFT-CTRL-ALT RIGHT ARROW
 		 */
-		public static final ControlKey<CommandControl> COLLAPSE = CommandControl.key("collapse", keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> COLLAPSE = CommandControl.key("collapse", keyStroke(VK_RIGHT, MENU_SHORTCUT_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Expands the detail panel all the way to the left, hiding the parent.<br>
 		 * Default key stroke: SHIFT-CTRL-ALT LEFT ARROW
 		 */
-		public static final ControlKey<CommandControl> EXPAND = CommandControl.key("expand", keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> EXPAND = CommandControl.key("expand", keyStroke(VK_LEFT, MENU_SHORTCUT_MASK | ALT_DOWN_MASK | SHIFT_DOWN_MASK));
 
 		private ControlKeys() {}
 	}

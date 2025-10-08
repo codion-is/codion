@@ -43,10 +43,10 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
+import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.framework.ui.component.EntityComboBox.ControlKeys.ADD;
 import static is.codion.swing.framework.ui.component.EntityComboBox.ControlKeys.EDIT;
-import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.util.Objects.requireNonNull;
 
@@ -58,6 +58,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
 	/**
 	 * The available controls.
+	 * <p>Note: CTRL in key stroke descriptions represents the platform menu shortcut key (CTRL on Windows/Linux, ⌘ on macOS).
 	 * @see Builder#editPanel(Supplier)
 	 */
 	public static final class ControlKeys {
@@ -71,7 +72,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 		 * Displays a dialog for editing the selected record.<br>
 		 * Default key stroke: CTRL-INSERT
 		 */
-		public static final ControlKey<CommandControl> EDIT = CommandControl.key("edit", keyStroke(VK_INSERT, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> EDIT = CommandControl.key("edit", keyStroke(VK_INSERT, MENU_SHORTCUT_MASK));
 
 		private ControlKeys() {}
 	}

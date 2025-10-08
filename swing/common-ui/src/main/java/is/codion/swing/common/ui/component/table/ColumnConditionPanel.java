@@ -82,6 +82,7 @@ import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.ControlKeys.*;
 import static is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView.SIMPLE;
 import static is.codion.swing.common.ui.control.Control.command;
+import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.KeyEvent.*;
@@ -106,6 +107,7 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 
 	/**
 	 * The condition controls.
+	 * <p>Note: CTRL in key stroke descriptions represents the platform menu shortcut key (CTRL on Windows/Linux, ⌘ on macOS).
 	 */
 	public static final class ControlKeys {
 
@@ -113,22 +115,22 @@ public final class ColumnConditionPanel<T> extends ConditionPanel<T> {
 		 * Toggle the enabled status on/off.<br>
 		 * Default key stroke: CTRL-ENTER
 		 */
-		public static final ControlKey<ToggleControl> TOGGLE_ENABLED = ToggleControl.key("toggleEnabled", keyStroke(VK_ENTER, CTRL_DOWN_MASK));
+		public static final ControlKey<ToggleControl> TOGGLE_ENABLED = ToggleControl.key("toggleEnabled", keyStroke(VK_ENTER, MENU_SHORTCUT_MASK));
 		/**
 		 * Clears the model.<br>
 		 * Default key stroke: CTRL-SHIFT-ENTER
 		 */
-		public static final ControlKey<ToggleControl> CLEAR = ToggleControl.key("clear", keyStroke(VK_ENTER, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<ToggleControl> CLEAR = ToggleControl.key("clear", keyStroke(VK_ENTER, MENU_SHORTCUT_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Select the previous condition operator.<br>
 		 * Default key stroke: CTRL-UP ARROW
 		 */
-		public static final ControlKey<CommandControl> PREVIOUS_OPERATOR = CommandControl.key("previousOperator", keyStroke(VK_UP, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> PREVIOUS_OPERATOR = CommandControl.key("previousOperator", keyStroke(VK_UP, MENU_SHORTCUT_MASK));
 		/**
 		 * Select the next condition operator.<br>
 		 * Default key stroke: CTRL-DOWN ARROW
 		 */
-		public static final ControlKey<CommandControl> NEXT_OPERATOR = CommandControl.key("nextOperator", keyStroke(VK_DOWN, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> NEXT_OPERATOR = CommandControl.key("nextOperator", keyStroke(VK_DOWN, MENU_SHORTCUT_MASK));
 
 		private ControlKeys() {}
 	}

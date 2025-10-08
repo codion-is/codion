@@ -77,6 +77,7 @@ import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
+import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.SELECT_INPUT_FIELD;
@@ -88,7 +89,6 @@ import static is.codion.swing.framework.ui.EntityPanel.WindowType.DIALOG;
 import static is.codion.swing.framework.ui.EntityPanel.WindowType.FRAME;
 import static is.codion.swing.framework.ui.EntityTablePanel.ControlKeys.*;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
-import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableCollection;
@@ -173,6 +173,7 @@ public class EntityPanel extends JPanel {
 
 	/**
 	 * The standard controls available in a entity panel
+	 * <p>Note: CTRL in key stroke descriptions represents the platform menu shortcut key (CTRL on Windows/Linux, ⌘ on macOS).
 	 */
 	public static final class ControlKeys {
 
@@ -180,32 +181,32 @@ public class EntityPanel extends JPanel {
 		 * Requests focus for the edit panel (intial focus component).<br>
 		 * Default key stroke: CTRL-E
 		 */
-		public static final ControlKey<CommandControl> REQUEST_EDIT_PANEL_FOCUS = CommandControl.key("requestEditPanelFocus", keyStroke(VK_E, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> REQUEST_EDIT_PANEL_FOCUS = CommandControl.key("requestEditPanelFocus", keyStroke(VK_E, MENU_SHORTCUT_MASK));
 		/**
 		 * Toggles the edit panel between hidden, embedded and dialog.<br>
 		 * Default key stroke: CTRL-ALT-E
 		 */
-		public static final ControlKey<CommandControl> TOGGLE_EDIT_PANEL = CommandControl.key("toggleEditPanel", keyStroke(VK_E, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> TOGGLE_EDIT_PANEL = CommandControl.key("toggleEditPanel", keyStroke(VK_E, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
 		/**
 		 * Navigates to the parent panel, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-UP ARROW
 		 */
-		public static final ControlKey<CommandControl> NAVIGATE_UP = CommandControl.key("navigateUp", keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NAVIGATE_UP = CommandControl.key("navigateUp", keyStroke(VK_UP, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
 		/**
 		 * Navigates to the selected child panel, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-DOWN ARROW
 		 */
-		public static final ControlKey<CommandControl> NAVIGATE_DOWN = CommandControl.key("navigateDown", keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NAVIGATE_DOWN = CommandControl.key("navigateDown", keyStroke(VK_DOWN, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
 		/**
 		 * Navigates to the sibling panel on the right, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-RIGHT ARROW
 		 */
-		public static final ControlKey<CommandControl> NAVIGATE_RIGHT = CommandControl.key("navigateRight", keyStroke(VK_RIGHT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NAVIGATE_RIGHT = CommandControl.key("navigateRight", keyStroke(VK_RIGHT, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
 		/**
 		 * Navigates to the sibling panel on the left, if one is available.<br>
 		 * Default key stroke: CTRL-ALT-LEFT ARROW
 		 */
-		public static final ControlKey<CommandControl> NAVIGATE_LEFT = CommandControl.key("navigateLeft", keyStroke(VK_LEFT, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NAVIGATE_LEFT = CommandControl.key("navigateLeft", keyStroke(VK_LEFT, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
 		/**
 		 * Refreshes the table.
 		 */

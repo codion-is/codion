@@ -73,6 +73,7 @@ import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
+import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.enableLookAndFeel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
@@ -185,7 +186,7 @@ public final class DomainGeneratorPanel extends JPanel {
 						.columnReordering(false)
 						.keyEvent(KeyEvents.builder()
 										.keyCode(VK_ENTER)
-										.modifiers(InputEvent.CTRL_DOWN_MASK)
+										.modifiers(MENU_SHORTCUT_MASK)
 										.action(populateSchemaControl))
 						.popupMenuControls(table -> Controls.builder()
 										.control(populateSchemaControl)

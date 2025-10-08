@@ -82,10 +82,10 @@ import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.calendar.CalendarPanel.ControlKeys.*;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
+import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
-import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Arrays.asList;
@@ -130,6 +130,7 @@ public final class CalendarPanel extends JPanel {
 
 	/**
 	 * The available controls.
+	 * <p>Note: CTRL in key stroke descriptions represents the platform menu shortcut key (CTRL on Windows/Linux, ⌘ on macOS).
 	 */
 	public static final class ControlKeys {
 
@@ -137,12 +138,12 @@ public final class CalendarPanel extends JPanel {
 		 * Select the previous year.<br>
 		 * Default key stroke: CTRL-DOWN ARROW
 		 */
-		public static final ControlKey<CommandControl> PREVIOUS_YEAR = CommandControl.key("previousYear", keyStroke(VK_DOWN, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> PREVIOUS_YEAR = CommandControl.key("previousYear", keyStroke(VK_DOWN, MENU_SHORTCUT_MASK));
 		/**
 		 * Select the next year.<br>
 		 * Default key stroke: CTRL-UP ARROW
 		 */
-		public static final ControlKey<CommandControl> NEXT_YEAR = CommandControl.key("nextYear", keyStroke(VK_UP, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> NEXT_YEAR = CommandControl.key("nextYear", keyStroke(VK_UP, MENU_SHORTCUT_MASK));
 		/**
 		 * Select the previous month.<br>
 		 * Default key stroke: SHIFT-DOWN ARROW
@@ -187,12 +188,12 @@ public final class CalendarPanel extends JPanel {
 		 * Select the previous minute.<br>
 		 * Default key stroke: CTRL-ALT-DOWN ARROW
 		 */
-		public static final ControlKey<CommandControl> PREVIOUS_MINUTE = CommandControl.key("previousMinute", keyStroke(VK_DOWN, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> PREVIOUS_MINUTE = CommandControl.key("previousMinute", keyStroke(VK_DOWN, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
 		/**
 		 * Select the next minute.<br>
 		 * Default key stroke: CTRL-ALT-UP ARROW
 		 */
-		public static final ControlKey<CommandControl> NEXT_MINUTE = CommandControl.key("nextMinute", keyStroke(VK_UP, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> NEXT_MINUTE = CommandControl.key("nextMinute", keyStroke(VK_UP, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
 
 		private ControlKeys() {}
 	}
@@ -1025,8 +1026,8 @@ public final class CalendarPanel extends JPanel {
 	private static JSpinner removeCtrlLeftRightArrowKeyEvents(JSpinner spinner) {
 		InputMap inputMap = ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField().getInputMap(WHEN_FOCUSED);
 		//so it doesn't interfere with keyboard navigation when it has focus
-		inputMap.put(keyStroke(VK_LEFT, CTRL_DOWN_MASK), "none");
-		inputMap.put(keyStroke(VK_RIGHT, CTRL_DOWN_MASK), "none");
+		inputMap.put(keyStroke(VK_LEFT, MENU_SHORTCUT_MASK), "none");
+		inputMap.put(keyStroke(VK_RIGHT, MENU_SHORTCUT_MASK), "none");
 		inputMap.put(keyStroke(VK_LEFT, SHIFT_DOWN_MASK), "none");
 		inputMap.put(keyStroke(VK_RIGHT, SHIFT_DOWN_MASK), "none");
 

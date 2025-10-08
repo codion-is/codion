@@ -47,7 +47,7 @@ import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.function.Function;
 
-import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
+import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static java.awt.event.KeyEvent.VK_SPACE;
 
 final class FrameworkUIDemo {
@@ -281,7 +281,7 @@ final class FrameworkUIDemo {
 				createTextField(Customer.STATE)
 								.keyEvent(KeyEvents.builder()
 												.keyCode(VK_SPACE)
-												.modifiers(CTRL_DOWN_MASK)
+												.modifiers(MENU_SHORTCUT_MASK)
 												.action(Control.action(this::selectStateFromExistingValues)));
 			}
 

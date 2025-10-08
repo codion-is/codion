@@ -55,7 +55,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.Statement;
@@ -145,7 +144,7 @@ public final class NotesDemo {
 							// deleting, depending on the edit model state
 							.keyEvent(KeyEvents.builder()
 											.keyCode(KeyEvent.VK_ENTER)
-											.modifiers(InputEvent.CTRL_DOWN_MASK)
+											.modifiers(KeyEvents.MENU_SHORTCUT_MASK)
 											.action(Control.command(this::insertDeleteOrUpdate)))
 							.build();
 

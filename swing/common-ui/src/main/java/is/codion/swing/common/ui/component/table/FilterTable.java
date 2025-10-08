@@ -107,9 +107,11 @@ import static is.codion.swing.common.ui.component.Components.itemComboBox;
 import static is.codion.swing.common.ui.component.table.FilterTable.ControlKeys.*;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.control.ControlMap.controlMap;
+import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static java.awt.event.ActionEvent.ACTION_PERFORMED;
-import static java.awt.event.InputEvent.*;
+import static java.awt.event.InputEvent.ALT_DOWN_MASK;
+import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
@@ -173,6 +175,7 @@ public final class FilterTable<R, C> extends JTable {
 
 	/**
 	 * The controls.
+	 * <p>Note: CTRL in key stroke descriptions represents the platform menu shortcut key (CTRL on Windows/Linux, ⌘ on macOS).
 	 */
 	public static final class ControlKeys {
 
@@ -180,27 +183,27 @@ public final class FilterTable<R, C> extends JTable {
 		 * Moves the selected column to the left.<br>
 		 * Default key stroke: CTRL-SHIFT-LEFT
 		 */
-		public static final ControlKey<CommandControl> MOVE_COLUMN_LEFT = CommandControl.key("moveColumnLeft", keyStroke(VK_LEFT, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> MOVE_COLUMN_LEFT = CommandControl.key("moveColumnLeft", keyStroke(VK_LEFT, MENU_SHORTCUT_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Moves the selected column to the right.<br>
 		 * Default key stroke: CTRL-SHIFT-RIGHT
 		 */
-		public static final ControlKey<CommandControl> MOVE_COLUMN_RIGHT = CommandControl.key("moveColumnRight", keyStroke(VK_RIGHT, CTRL_DOWN_MASK | SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> MOVE_COLUMN_RIGHT = CommandControl.key("moveColumnRight", keyStroke(VK_RIGHT, MENU_SHORTCUT_MASK | SHIFT_DOWN_MASK));
 		/**
 		 * Decreases the size of the selected column.<br>
 		 * Default key stroke: CTRL-SUBTRACT
 		 */
-		public static final ControlKey<CommandControl> DECREASE_COLUMN_SIZE = CommandControl.key("decreaseColumnSize", keyStroke(VK_SUBTRACT, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> DECREASE_COLUMN_SIZE = CommandControl.key("decreaseColumnSize", keyStroke(VK_SUBTRACT, MENU_SHORTCUT_MASK));
 		/**
 		 * Increases the size of the selected column.<br>
 		 * Default key stroke: CTRL-ADD
 		 */
-		public static final ControlKey<CommandControl> INCREASE_COLUMN_SIZE = CommandControl.key("increaseColumnSize", keyStroke(VK_ADD, CTRL_DOWN_MASK));
+		public static final ControlKey<CommandControl> INCREASE_COLUMN_SIZE = CommandControl.key("increaseColumnSize", keyStroke(VK_ADD, MENU_SHORTCUT_MASK));
 		/**
 		 * Copy the selected cell contents to the clipboard.<br>
 		 * Default key stroke: CTRL-ALT-C
 		 */
-		public static final ControlKey<CommandControl> COPY_CELL = CommandControl.key("copyCell", keyStroke(VK_C, CTRL_DOWN_MASK | ALT_DOWN_MASK));
+		public static final ControlKey<CommandControl> COPY_CELL = CommandControl.key("copyCell", keyStroke(VK_C, MENU_SHORTCUT_MASK | ALT_DOWN_MASK));
 		/**
 		 * Toggles the sort on the selected column from {@link SortOrder#ASCENDING} to {@link SortOrder#DESCENDING} to {@link SortOrder#UNSORTED}.<br>
 		 * Default key stroke: ALT-DOWN ARROW
@@ -769,7 +772,7 @@ public final class FilterTable<R, C> extends JTable {
 						.onTextChanged(this::onSearchTextChanged)
 						.onBuild(field -> KeyEvents.builder()
 										.keyCode(VK_F)
-										.modifiers(CTRL_DOWN_MASK)
+										.modifiers(MENU_SHORTCUT_MASK)
 										.action(command(field::requestFocusInWindow))
 										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 										.enable(this))

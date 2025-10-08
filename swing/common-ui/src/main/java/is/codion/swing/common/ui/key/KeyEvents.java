@@ -25,6 +25,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JSpinner;
 import javax.swing.KeyStroke;
+import java.awt.Toolkit;
 import java.util.Collection;
 
 import static java.awt.event.KeyEvent.VK_UNDEFINED;
@@ -41,7 +42,7 @@ import static javax.swing.KeyStroke.getKeyStroke;
  * KeyEvents.builder()
  *          .keyCode(VK_DOWN)
  *          .onKeyRelease(false)
- *          .modifiers(CTRL_DOWN_MASK)
+ *          .modifiers(MENU_SHORTCUT_MASK)
  *          .condition(WHEN_FOCUSED)
  *          .action(new FindNextAction())
  *          .enable(textField);
@@ -49,6 +50,20 @@ import static javax.swing.KeyStroke.getKeyStroke;
  * @see #builder()
  */
 public final class KeyEvents {
+
+	/**
+	 * The platform-appropriate modifier mask for menu shortcuts.
+	 * <ul>
+	 * <li>Windows/Linux: {@link java.awt.event.InputEvent#CTRL_DOWN_MASK} (Control key)
+	 * <li>macOS: {@link java.awt.event.InputEvent#META_DOWN_MASK} (Command key)
+	 * </ul>
+	 * Use this constant instead of hardcoding {@link java.awt.event.InputEvent#CTRL_DOWN_MASK} to provide
+	 * native keyboard shortcuts on each platform. For example, shortcuts using this mask will
+	 * appear as Ctrl+F on Windows/Linux and ⌘+F on macOS.
+	 * @see Toolkit#getMenuShortcutKeyMaskEx()
+	 */
+	public static final int MENU_SHORTCUT_MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+
 
 	private KeyEvents() {}
 

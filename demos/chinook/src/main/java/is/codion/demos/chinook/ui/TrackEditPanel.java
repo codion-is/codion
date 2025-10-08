@@ -32,8 +32,8 @@ import static is.codion.demos.chinook.domain.api.Chinook.*;
 import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.control.Control.command;
+import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
-import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_UP;
 
@@ -131,7 +131,7 @@ public final class TrackEditPanel extends EntityEditPanel {
 						// Set the condition
 						.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
 						// and modifiers
-						.modifiers(CTRL_DOWN_MASK)
+						.modifiers(MENU_SHORTCUT_MASK)
 						// set a keycode
 						.keyCode(VK_UP)
 						// and an action

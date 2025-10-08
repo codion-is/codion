@@ -34,6 +34,8 @@ image::search/search_cleared.png[Search,cleared]
 
 By default, column condition operators are set to *EQUAL* and foreign keys to *IN*, to change the operator you can use the kbd:[Ctrl + UP / DOWN] keyboard shortcut (the operator is displayed in a tooltip) or switch to the *advanced* search panel view, see below.
 
+NOTE: On macOS, use kbd:[⌘] (Command) instead of kbd:[Ctrl] for keyboard shortcuts.
+
 In the screenshot below we have added a wildcard condition to the *Name* column, using the *%* character as a wildcard.
 
 NOTE: The condition is automatically enabled when a value has been entered.
@@ -88,6 +90,8 @@ NOTE: To clear all column conditions use the *Search* -> *Clear* action in the t
 This clears all values and resets all operators to their defaults *EQUAL* for columns and *IN* for foreign keys.
 
 == Keyboard shortcuts
+
+NOTE: On macOS, use kbd:[⌘] (Command) instead of kbd:[Ctrl] for all shortcuts listed below. For example, kbd:[Ctrl + F] becomes kbd:[⌘ + F] on macOS.
 
 [cols="1,3"]
 |===

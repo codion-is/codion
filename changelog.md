@@ -8,6 +8,7 @@ Codion Change Log
 - FilterModel.excluded() renamed filtered().
 ### is.codion.swing.common.ui
 - ComponentBuilder.font(UnaryOperator<Font>) added, which derives the font from the default component font.
+- KeyEvents.MENU_SHORTCUT_MASK added (Toolkit.getMenuShortcutKeyMaskEx()), replaces CTRL_DOWN_MASK throughout.
 ### is.codion.framework.domain
 - DefaultEntityValidator removed, validation moved to AbstractAttributeDefinition, EntityValidator now with default method implementations.
 - Attribute.Type.isNumerical() renamed to isNumeric().

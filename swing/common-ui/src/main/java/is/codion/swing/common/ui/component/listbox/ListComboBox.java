@@ -36,7 +36,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static is.codion.swing.common.ui.control.Control.command;
-import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
+import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static java.awt.event.KeyEvent.VK_DELETE;
 import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.util.Collections.emptySet;
@@ -63,7 +63,7 @@ final class ListComboBox<T> extends JComboBox<T> {
 						.enable(itemValue.component());
 		KeyEvents.builder()
 						.keyCode(VK_DELETE)
-						.modifiers(CTRL_DOWN_MASK)
+						.modifiers(MENU_SHORTCUT_MASK)
 						.action(command(this::clear))
 						.enable(itemValue.component());
 	}
