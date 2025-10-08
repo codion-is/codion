@@ -271,11 +271,11 @@ tasks.register("assembleTutorials") {
     doLast {
         val docFolder = project.layout.buildDirectory.dir("tutorials").get()
         val demoProjects = listOf(
-            Triple("petclinic", "asciidoctor", "build/docs/asciidoc"),
-            Triple("llemmy", "asciidoctor", "llemmy/build/docs/asciidoc"),
             Triple("sdkboy", "asciidoctor", "build/docs/asciidoc"),
-            Triple("chinook", "documentation:asciidoctor", "documentation/build/docs/asciidoc"),
-            Triple("world", "documentation:asciidoctor", "documentation/build/docs/asciidoc")
+            Triple("llemmy", "asciidoctor", "llemmy/build/docs/asciidoc"),
+            Triple("petclinic", "asciidoctor", "build/docs/asciidoc"),
+            Triple("world", "documentation:asciidoctor", "documentation/build/docs/asciidoc"),
+            Triple("chinook", "documentation:asciidoctor", "documentation/build/docs/asciidoc")
         )
 
         demoProjects.forEach { (project, task, outputPath) ->
