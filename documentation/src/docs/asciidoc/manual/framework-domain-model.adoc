@@ -637,7 +637,7 @@ include::{dir-source}/is/codion/manual/store/domain/Store.java[tags=customerForm
 
 Custom validation of Entities is performed by implementing a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityValidator.html[EntityValidator].
 
-The *DefaultEntityValidator* implementation provides basic range and null validation and can be extended to provide further validations.
+The *EntityValidator* interface provides range, string length and null validation and can be extended to provide further validations.
 
 WARNING: EntityValidator logic runs frequently — avoid expensive operations like database queries. Use edit model listeners (such as `beforeInsert` or `beforeUpdate`) for validations that require cross-entity or remote checks.
 

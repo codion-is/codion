@@ -8,6 +8,8 @@ Codion Change Log
 - FilterModel.excluded() renamed filtered().
 ### is.codion.swing.common.ui
 - ComponentBuilder.font(UnaryOperator<Font>) added, which derives the font from the default component font.
+### is.codion.framework.domain
+- DefaultEntityValidator removed, validation moved to AbstractAttributeDefinition, EntityValidator now with default method implementations.
 ### is.codion.framework.db
 - DefaultSelect bug fixed, having clause not included in hashCode().
 - Select.having() added, related refactoring.

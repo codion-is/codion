@@ -22,9 +22,9 @@ import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.DefaultEntityValidator;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition.ValueSupplier;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -328,7 +328,7 @@ public interface Chinook {
 		}
 	}
 
-	final class EmailValidator extends DefaultEntityValidator {
+	final class EmailValidator implements EntityValidator {
 
 		private static final Pattern EMAIL_PATTERN = Pattern.compile("^(.+)@(.+)$");
 		private static final ResourceBundle BUNDLE = getBundle(Chinook.class.getName());
@@ -341,7 +341,7 @@ public interface Chinook {
 
 		@Override
 		public <T> void validate(Entity entity, Attribute<T> attribute) {
-			super.validate(entity, attribute);
+			EntityValidator.super.validate(entity, attribute);
 			if (attribute.equals(emailColumn)) {
 				validateEmail(entity.get(emailColumn));
 			}

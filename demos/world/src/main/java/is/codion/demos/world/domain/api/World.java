@@ -21,9 +21,9 @@ package is.codion.demos.world.domain.api;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.DefaultEntityValidator;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.DerivedValue;
@@ -150,14 +150,14 @@ public interface World {
 	// end::customTypeClass[]
 
 	// tag::validator[]
-	final class CityValidator extends DefaultEntityValidator implements Serializable {
+	final class CityValidator implements EntityValidator, Serializable {
 
 		@Serial
 		private static final long serialVersionUID = 1;
 
 		@Override
 		public <T> void validate(Entity city, Attribute<T> attribute) {
-			super.validate(city, attribute);
+			EntityValidator.super.validate(city, attribute);
 			if (attribute.equals(City.POPULATION)) {
 				// population is guaranteed to be non-null after the call to super.validate()
 				Integer cityPopulation = city.get(City.POPULATION);

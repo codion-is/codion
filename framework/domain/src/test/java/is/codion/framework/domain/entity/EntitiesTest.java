@@ -450,7 +450,7 @@ public final class EntitiesTest {
 							.with(Employee.SALARY, 1200.0)
 							.build();
 
-			DefaultEntityValidator validator = new DefaultEntityValidator();
+			EntityValidator validator = new EntityValidator() {};
 
 			// Missing required foreign key
 			ValidationException exception = assertThrows(ValidationException.class,
@@ -480,7 +480,7 @@ public final class EntitiesTest {
 							.with(Employee.SALARY, 1200.0)
 							.build();
 
-			DefaultEntityValidator validator = new DefaultEntityValidator();
+			EntityValidator validator = new EntityValidator() {};
 			assertDoesNotThrow(() -> validator.validate(emp));
 
 			// Exceed max length
@@ -500,7 +500,7 @@ public final class EntitiesTest {
 							.with(Employee.COMMISSION, 300d)
 							.build();
 
-			DefaultEntityValidator validator = new DefaultEntityValidator();
+			EntityValidator validator = new EntityValidator() {};
 			assertDoesNotThrow(() -> validator.validate(emp));
 
 			// Below minimum
@@ -523,7 +523,7 @@ public final class EntitiesTest {
 			values.put(Employee.JOB, "CLREK"); // Invalid job code
 
 			Entity emp = entities.definition(Employee.TYPE).entity(values);
-			DefaultEntityValidator validator = new DefaultEntityValidator();
+			EntityValidator validator = new EntityValidator() {};
 
 			assertThrows(ItemValidationException.class,
 							() -> validator.validate(emp));
@@ -541,7 +541,7 @@ public final class EntitiesTest {
 							.build();
 
 			// Non-strict validation
-			DefaultEntityValidator validator = new DefaultEntityValidator();
+			EntityValidator validator = new EntityValidator() {};
 			assertThrows(LengthValidationException.class, () -> validator.validate(emp));
 
 			emp.set(Employee.NAME, "Name");
@@ -556,7 +556,12 @@ public final class EntitiesTest {
 			assertDoesNotThrow(() -> validator.validate(emp)); // Non-strict passes
 
 			// Strict validation
-			DefaultEntityValidator strictValidator = new DefaultEntityValidator(true);
+			EntityValidator strictValidator = new EntityValidator() {
+				@Override
+				public boolean strict() {
+					return true;
+				}
+			};
 			assertThrows(LengthValidationException.class, () -> strictValidator.validate(emp));
 
 			emp.set(Employee.NAME, "Name");

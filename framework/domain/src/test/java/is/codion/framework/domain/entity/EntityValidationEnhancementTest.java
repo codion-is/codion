@@ -282,10 +282,10 @@ public final class EntityValidationEnhancementTest {
 							.validator(new OrderItemValidator()).build());
 		}
 
-		private static class CustomerValidator extends DefaultEntityValidator {
+		private static class CustomerValidator implements EntityValidator {
 			@Override
 			public <T> void validate(Entity entity, Attribute<T> attribute) throws ValidationException {
-				super.validate(entity, attribute);
+				EntityValidator.super.validate(entity, attribute);
 
 				if (attribute.equals(Customer.EMAIL)) {
 					String email = entity.get(Customer.EMAIL);
@@ -322,10 +322,10 @@ public final class EntityValidationEnhancementTest {
 			}
 		}
 
-		private static class ProductValidator extends DefaultEntityValidator {
+		private static class ProductValidator implements EntityValidator {
 			@Override
 			public <T> void validate(Entity entity, Attribute<T> attribute) throws ValidationException {
-				super.validate(entity, attribute);
+				EntityValidator.super.validate(entity, attribute);
 
 				if (attribute.equals(Product.CODE)) {
 					String code = entity.get(Product.CODE);
@@ -351,10 +351,10 @@ public final class EntityValidationEnhancementTest {
 			}
 		}
 
-		private static class OrderValidator extends DefaultEntityValidator {
+		private static class OrderValidator implements EntityValidator {
 			@Override
 			public <T> void validate(Entity entity, Attribute<T> attribute) throws ValidationException {
-				super.validate(entity, attribute);
+				EntityValidator.super.validate(entity, attribute);
 
 				if (attribute.equals(Order.ORDER_DATE)) {
 					LocalDateTime orderDate = entity.get(Order.ORDER_DATE);
@@ -380,10 +380,10 @@ public final class EntityValidationEnhancementTest {
 			}
 		}
 
-		private static class OrderItemValidator extends DefaultEntityValidator {
+		private static class OrderItemValidator implements EntityValidator {
 			@Override
 			public <T> void validate(Entity entity, Attribute<T> attribute) throws ValidationException {
-				super.validate(entity, attribute);
+				EntityValidator.super.validate(entity, attribute);
 
 				if (attribute.equals(OrderItem.QUANTITY)) {
 					Integer quantity = entity.get(OrderItem.QUANTITY);
@@ -441,7 +441,7 @@ public final class EntityValidationEnhancementTest {
 							.with(Customer.COUNTRY_CODE, "US")
 							.build();
 
-			DefaultEntityValidator validator = new DefaultEntityValidator();
+			EntityValidator validator = new EntityValidator() {};
 			assertDoesNotThrow(() -> validator.validate(customer));
 
 			// Now remove required field and expect validation to fail
@@ -464,7 +464,7 @@ public final class EntityValidationEnhancementTest {
 							.with(Customer.COUNTRY_CODE, "US")
 							.build();
 
-			DefaultEntityValidator validator = new DefaultEntityValidator();
+			EntityValidator validator = new EntityValidator() {};
 			assertDoesNotThrow(() -> validator.validate(customer));
 
 			// Now modify to violate length constraint and test validation
@@ -487,7 +487,7 @@ public final class EntityValidationEnhancementTest {
 							.with(Customer.COUNTRY_CODE, "US")
 							.build();
 
-			DefaultEntityValidator validator = new DefaultEntityValidator();
+			EntityValidator validator = new EntityValidator() {};
 			assertDoesNotThrow(() -> validator.validate(customer));
 
 			// Now modify to violate range constraint and test validation
@@ -510,7 +510,7 @@ public final class EntityValidationEnhancementTest {
 			values.put(Customer.COUNTRY_CODE, "US");
 
 			Entity customer = entities.definition(Customer.TYPE).entity(values);
-			DefaultEntityValidator validator = new DefaultEntityValidator();
+			EntityValidator validator = new EntityValidator() {};
 			ValidationException exception = assertThrows(ItemValidationException.class,
 							() -> validator.validate(customer, Customer.STATUS));
 			assertEquals(Customer.STATUS, exception.attribute());
@@ -887,11 +887,11 @@ public final class EntityValidationEnhancementTest {
 		void validation_unmodifiedEntity_notCalled() {
 			AtomicInteger validationCount = new AtomicInteger(0);
 
-			class CountingValidator extends DefaultEntityValidator {
+			class CountingValidator implements EntityValidator {
 				@Override
 				public <T> void validate(Entity entity, Attribute<T> attribute) throws ValidationException {
 					validationCount.incrementAndGet();
-					super.validate(entity, attribute);
+					EntityValidator.super.validate(entity, attribute);
 				}
 			}
 
@@ -919,15 +919,17 @@ public final class EntityValidationEnhancementTest {
 		void strictValidation_validatesAllValues() {
 			AtomicInteger validationCount = new AtomicInteger(0);
 
-			class CountingValidator extends DefaultEntityValidator {
-				public CountingValidator() {
-					super(true); // Strict mode
-				}
+			class CountingValidator implements EntityValidator {
 
 				@Override
 				public <T> void validate(Entity entity, Attribute<T> attribute) throws ValidationException {
 					validationCount.incrementAndGet();
-					super.validate(entity, attribute);
+					EntityValidator.super.validate(entity, attribute);
+				}
+
+				@Override
+				public boolean strict() {
+					return true;
 				}
 			}
 
@@ -970,7 +972,7 @@ public final class EntityValidationEnhancementTest {
 							.with(Customer.COUNTRY_CODE, "US")
 							.build();
 
-			DefaultEntityValidator validator = new DefaultEntityValidator();
+			EntityValidator validator = new EntityValidator() {};
 			assertDoesNotThrow(() -> validator.validate(customer));
 		}
 
@@ -987,7 +989,7 @@ public final class EntityValidationEnhancementTest {
 							.with(Customer.COUNTRY_CODE, "US")
 							.build();
 
-			DefaultEntityValidator validator = new DefaultEntityValidator();
+			EntityValidator validator = new EntityValidator() {};
 			assertDoesNotThrow(() -> validator.validate(customer));
 
 			// Now modify to violate null constraint and test validation

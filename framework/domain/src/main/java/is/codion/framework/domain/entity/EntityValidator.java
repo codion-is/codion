@@ -20,9 +20,15 @@ package is.codion.framework.domain.entity;
 
 import is.codion.common.property.PropertyValue;
 import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static is.codion.common.Configuration.booleanValue;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Responsible for providing validation for entities.
@@ -37,52 +43,20 @@ import static is.codion.common.Configuration.booleanValue;
  * public class CustomerValidator implements EntityValidator {
  *
  *     @Override
- *     public boolean valid(Entity customer) {
- *         try {
- *             validate(customer);
- *             return true;
- *         } catch (ValidationException e) {
- *             return false;
- *         }
- *     }
- *
- *     @Override
- *     public void validate(Entity customer) throws ValidationException {
+ *     public <T> void validate(Entity customer, Attribute<T> attribute) {
+ *         // Start with super.validate(), which performs null validation
+ *         EntityValidator.super.validate(customer, attribute);
  *         // Validate email format
- *         String email = customer.get(Customer.EMAIL);
- *         if (email != null && !isValidEmail(email)) {
- *             throw new ValidationException("Invalid email format: " + email);
- *         }
- *
- *         // Business rule: Active customers must have email
- *         Boolean active = customer.get(Customer.ACTIVE);
- *         if (Boolean.TRUE.equals(active) &&
- *             (email == null || email.trim().isEmpty())) {
- *             throw new ValidationException("Active customers must have an email address");
- *         }
- *
- *         // Age validation
- *         LocalDate birthDate = customer.get(Customer.BIRTH_DATE);
- *         if (birthDate != null && birthDate.isAfter(LocalDate.now().minusYears(13))) {
- *             throw new ValidationException("Customer must be at least 13 years old");
- *         }
- *     }
- *
- *     @Override
- *     public <T> void validate(Entity customer, Attribute<T> attribute)
- *             throws ValidationException {
- *         T value = customer.get(attribute);
- *
  *         if (attribute.equals(Customer.EMAIL)) {
- *             String email = (String) value;
- *             if (email != null && !isValidEmail(email)) {
- *                 throw new ValidationException("Invalid email format");
+ *             String email = customer.get(Customer.EMAIL);
+ *             // Email is non-null, since super.validate() checks that
+ *             if (!isValidEmail(email)) {
+ *                 throw new ValidationException(Customer.EMAIL, email, "Invalid email format");
  *             }
  *         }
- *         // Additional attribute-specific validation...
  *     }
  *
- *     private boolean isValidEmail(String email) {
+ *     private static boolean isValidEmail(String email) {
  *         return email.contains("@") && email.contains(".");
  *     }
  * }
@@ -107,9 +81,8 @@ public interface EntityValidator {
 	 * Specifies whether the default validator performs strict validation or not.
 	 * By default, all non-read-only attribute values are validated if the entity
 	 * is being inserted (as in, when it does not exist according to {@link Entity#exists()}).
-	 * If the entity exists, only modified values are validated.
-	 * With strict validation enabled all values are validated, regardless
-	 * of whether the entity exists or not
+	 * If the entity exists and is being updated, only modified values are validated by default.
+	 * With strict validation enabled all values are always validated, regardless of whether the entity exists or not
 	 * <ul>
 	 * <li>Value type: Boolean
 	 * <li>Default value: false
@@ -148,15 +121,26 @@ public interface EntityValidator {
 	 * @param attribute the attribute
 	 * @param <T> the value type
 	 * @return true if the attribute accepts a null value
+	 * @see AttributeDefinition#nullable()
 	 */
-	<T> boolean nullable(Entity entity, Attribute<T> attribute);
+	default <T> boolean nullable(Entity entity, Attribute<T> attribute) {
+		return requireNonNull(entity).definition().attributes().definition(attribute).nullable();
+	}
 
 	/**
-	 * Returns true if the given entity contains only valid values.
+	 * Returns true if the given entity contains only valid values according to the validator.
 	 * @param entity the entity
 	 * @return true if the given entity contains only valid values
 	 */
-	boolean valid(Entity entity);
+	default boolean valid(Entity entity) {
+		try {
+			validate(entity);
+			return true;
+		}
+		catch (ValidationException e) {
+			return false;
+		}
+	}
 
 	/**
 	 * Checks if the values in the given entity are valid.
@@ -192,9 +176,17 @@ public interface EntityValidator {
 	 *}
 	 * @param entity the entity
 	 * @throws ValidationException in case of an invalid value
-	 * @see #STRICT_VALIDATION
+	 * @see #strict()
 	 */
-	void validate(Entity entity) throws ValidationException;
+	default void validate(Entity entity) throws ValidationException {
+		List<Attribute<?>> attributes = requireNonNull(entity).definition().attributes().definitions().stream()
+						.filter(definition -> validated(entity, definition))
+						.map(AttributeDefinition::attribute)
+						.collect(Collectors.toList());
+		for (Attribute<?> attribute : attributes) {
+			validate(entity, attribute);
+		}
+	}
 
 	/**
 	 * Checks if the value associated with the give attribute is valid, throws a ValidationException if not
@@ -203,5 +195,45 @@ public interface EntityValidator {
 	 * @param <T> the value type
 	 * @throws ValidationException if the given value is not valid for the given attribute
 	 */
-	<T> void validate(Entity entity, Attribute<T> attribute) throws ValidationException;
+	default <T> void validate(Entity entity, Attribute<T> attribute) throws ValidationException {
+		requireNonNull(entity).definition().attributes().definition(attribute).validate(entity);
+	}
+
+	/**
+	 * Specifies whether the given attribute should be validated
+	 * @param entity the entity
+	 * @param definition the attribute definition
+	 * @return true if the value of the given attribute should be validated
+	 * @see #strict()
+	 */
+	default boolean validated(Entity entity, AttributeDefinition<?> definition) {
+		if (definition.derived()) {
+			return false;
+		}
+		if (definition instanceof ColumnDefinition && ((ColumnDefinition<?>) definition).readOnly()) {
+			return false;
+		}
+		if (!entity.exists() || strict()) {
+			// validate all values when inserting or when strict validation is enabled
+			return true;
+		}
+
+		// only validate modified values when updating
+		return entity.modified(definition.attribute());
+	}
+
+	/**
+	 * <p>Specifies whether this validator performs strict validation or not.
+	 * By default, all non-read-only attribute values are validated if the entity
+	 * is being inserted (as in, when it does not exist according to {@link Entity#exists()}).
+	 * If the entity exists and is being updated, only modified values are validated by default.
+	 * <p>With strict validation enabled all values are always validated, regardless of whether the entity exists or not.
+	 * <p>The default implementation simply returns the value of {@link #STRICT_VALIDATION}, override to specify
+	 * validator specific strictness.
+	 * @return true if strict validation is enabled
+	 * @see #STRICT_VALIDATION
+	 */
+	default boolean strict() {
+		return STRICT_VALIDATION.getOrThrow();
+	}
 }

@@ -881,4 +881,10 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 			return new DefaultEntityBuilder(entity.definition, entity.values, entity.originalValues);
 		}
 	}
+
+	private static final class DefaultEntityValidator implements EntityValidator, Serializable {
+
+		@Serial
+		private static final long serialVersionUID = 1;
+	}
 }

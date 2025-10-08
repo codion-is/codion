@@ -21,10 +21,12 @@ package is.codion.framework.domain.entity.attribute;
 import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.common.property.PropertyValue;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.AbstractAttributeDefinition.AbstractAttributeDefinitionBuilder;
 import is.codion.framework.domain.entity.attribute.DefaultColumnDefinition.AbstractReadOnlyColumnDefinitionBuilder;
 import is.codion.framework.domain.entity.attribute.DefaultColumnDefinition.DefaultSubqueryColumnDefinitionBuilder;
+import is.codion.framework.domain.entity.exception.ValidationException;
 
 import org.jspecify.annotations.Nullable;
 
@@ -393,6 +395,13 @@ public sealed interface AttributeDefinition<T>
 	 * @return an unmodifiable view of the valid items for this attribute
 	 */
 	List<Item<T>> items();
+
+	/**
+	 * Validates the value of this attribute as found in the given entity
+	 * @param entity the {@link Entity} the containing the value to validate
+	 * @throws ValidationException in case of an invalid value
+	 */
+	void validate(Entity entity);
 
 	/**
 	 * Supplies values, for example default ones.

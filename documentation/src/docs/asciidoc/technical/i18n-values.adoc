@@ -242,25 +242,6 @@ is/codion/framework/db/local/LocalEntityConnection_is_IS.properties
 
 == codion-framework-domain
 
-=== is/codion/framework/domain/entity/DefaultEntityValidator.java
-
-[source]
-----
-is/codion/framework/domain/entity/DefaultEntityValidator.properties
-is/codion/framework/domain/entity/DefaultEntityValidator_is_IS.properties
-----
-
-[cols="1,1,1"]
-|===
-|key|default|is_IS
-
-|invalid_item_value|Invalid value|Ógilt gildi
-|value_is_required|Value for ''{0}'' is required|Gildi fyrir ''{0}'' vantar
-|value_too_large|value must be equal to or less than|gildi verður að vera minna eða jafnt og
-|value_too_long|value exceeds allowed length|gildi má ekki vera lengra en
-|value_too_small|value must be equal to or greater than|gildi verður að vera stærra eða jafnt og
-|===
-
 === is/codion/framework/domain/entity/attribute/AbstractAttributeDefinition.java
 
 [source]
@@ -274,6 +255,11 @@ is/codion/framework/domain/entity/attribute/AbstractAttributeDefinition_is_IS.pr
 |key|default|is_IS
 
 |invalid_item_suffix|INVALID|ÓGILT
+|invalid_item_value|Invalid value|Ógilt gildi
+|value_is_required|Value for ''{0}'' is required|Gildi fyrir ''{0}'' vantar
+|value_too_large|value must be equal to or less than|gildi verður að vera minna eða jafnt og
+|value_too_long|value exceeds allowed length|gildi má ekki vera lengra en
+|value_too_small|value must be equal to or greater than|gildi verður að vera stærra eða jafnt og
 |===
 
 == codion-framework-i18n

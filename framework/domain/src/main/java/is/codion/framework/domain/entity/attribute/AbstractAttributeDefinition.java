@@ -21,11 +21,18 @@ package is.codion.framework.domain.entity.attribute;
 import is.codion.common.Text;
 import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.item.Item;
+import is.codion.common.resource.MessageBundle;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.DefaultColumnDefinition.DefaultColumnDefinitionBuilder;
 import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDerivedAttributeDefinitionBuilder;
 import is.codion.framework.domain.entity.attribute.DefaultForeignKeyDefinition.DefaultForeignKeyDefinitionBuilder;
 import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefinition.DefaultTransientAttributeDefinitionBuilder;
+import is.codion.framework.domain.entity.exception.ItemValidationException;
+import is.codion.framework.domain.entity.exception.LengthValidationException;
+import is.codion.framework.domain.entity.exception.NullValidationException;
+import is.codion.framework.domain.entity.exception.RangeValidationException;
 
 import org.jspecify.annotations.Nullable;
 
@@ -35,6 +42,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.Format;
+import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
@@ -61,9 +69,13 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	@Serial
 	private static final long serialVersionUID = 1;
 
+	private static final MessageBundle MESSAGES =
+					messageBundle(AbstractAttributeDefinition.class, getBundle(AbstractAttributeDefinition.class.getName()));
+
+	private static final String VALUE_REQUIRED_KEY = "value_is_required";
+	private static final String INVALID_ITEM_VALUE_KEY = "invalid_item_value";
 	private static final String INVALID_ITEM_SUFFIX_KEY = "invalid_item_suffix";
-	private static final String INVALID_ITEM_SUFFIX =
-					messageBundle(AbstractAttributeDefinition.class, getBundle(AbstractAttributeDefinition.class.getName())).getString(INVALID_ITEM_SUFFIX_KEY);
+	private static final String INVALID_ITEM_SUFFIX = MESSAGES.getString(INVALID_ITEM_SUFFIX_KEY);
 
 	private static final Comparator<String> LEXICAL_COMPARATOR = Text.collator();
 	private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = new DefaultComparator();
@@ -272,6 +284,25 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	}
 
 	@Override
+	public final void validate(Entity entity) {
+		if (!(attribute instanceof Column) || !entity.definition().foreignKeys().foreignKeyColumn((Column<?>) attribute)) {
+			validateNull(entity);
+		}
+		T value = entity.get(attribute);
+		if (!items().isEmpty()) {
+			validateItem(value);
+		}
+		if (value != null) {
+			if (attribute.type().isNumerical()) {
+				validateRange((Number) value);
+			}
+			else if (attribute.type().isString()) {
+				validateLength((String) value);
+			}
+		}
+	}
+
+	@Override
 	public final boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
@@ -354,6 +385,63 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		}
 
 		return null;
+	}
+
+	private void validateNull(Entity entity) throws NullValidationException {
+		if (!entity.definition().validator().nullable(requireNonNull(entity), attribute) && entity.isNull(attribute)) {
+			if ((entity.primaryKey().isNull() || entity.originalPrimaryKey().isNull()) && !(this instanceof ForeignKeyDefinition)) {
+				//a new entity being inserted, allow null for columns with default values and generated primary key values
+				boolean nonKeyColumnWithoutDefaultValue = isNonKeyColumnWithoutDefaultValue();
+				boolean primaryKeyColumnWithoutAutoGenerate = isNonGeneratedPrimaryKeyColumn(entity.definition());
+				if (nonKeyColumnWithoutDefaultValue || primaryKeyColumnWithoutAutoGenerate) {
+					throw new NullValidationException(attribute,
+									MessageFormat.format(MESSAGES.getString(VALUE_REQUIRED_KEY), caption()));
+				}
+			}
+			else {
+				throw new NullValidationException(attribute,
+								MessageFormat.format(MESSAGES.getString(VALUE_REQUIRED_KEY), caption()));
+			}
+		}
+	}
+
+	private boolean isNonGeneratedPrimaryKeyColumn(EntityDefinition entityDefinition) {
+		return (this instanceof ColumnDefinition
+						&& ((ColumnDefinition<?>) this).primaryKey())
+						&& !entityDefinition.primaryKey().generated();
+	}
+
+	private boolean isNonKeyColumnWithoutDefaultValue() {
+		return this instanceof ColumnDefinition
+						&& !((ColumnDefinition<?>) this).primaryKey()
+						&& !((ColumnDefinition<?>) this).withDefault();
+	}
+
+	private void validateItem(@Nullable T value) {
+		if (value == null && nullable()) {
+			return;
+		}
+		if (!validItem(value)) {
+			throw new ItemValidationException(attribute(), value, MESSAGES.getString(INVALID_ITEM_VALUE_KEY) + ": " + value);
+		}
+	}
+
+	private <T extends Number> void validateRange(T value) {
+		if (minimum != null && value.doubleValue() < minimum.doubleValue()) {
+			throw new RangeValidationException(attribute(), value, "'" + caption() + "' " +
+							MESSAGES.getString("value_too_small") + " " + minimum);
+		}
+		if (maximum != null && value.doubleValue() > maximum.doubleValue()) {
+			throw new RangeValidationException(attribute(), value, "'" + caption() + "' " +
+							MESSAGES.getString("value_too_large") + " " + maximum);
+		}
+	}
+
+	private void validateLength(String value) {
+		if (maximumLength != -1 && value.length() > maximumLength) {
+			throw new LengthValidationException(attribute(), value, "'" + caption() + "' " +
+							MESSAGES.getString("value_too_long") + " " + maximumLength + "\n:'" + value + "'");
+		}
 	}
 
 	static class DefaultValueSupplier<T> implements ValueSupplier<T>, Serializable {
