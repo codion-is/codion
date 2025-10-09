@@ -194,6 +194,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		this.configuration = configure(config);
 		this.active = State.state(!configuration.focusActivation);
 		this.controlsLayout = createControlsLayout();
+		validIndicator().set(configuration.validIndicator);
+		modifiedIndicator().set(configuration.modifiedIndicator);
 		createControls();
 		setupFocusActivation();
 		setupKeyboardActions();
@@ -818,6 +820,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		private boolean includeEntityMenu = INCLUDE_ENTITY_MENU.getOrThrow();
 		private boolean includeQueryInspector = INCLUDE_QUERY_INSPECTOR.getOrThrow();
 		private boolean modifiedWarning = MODIFIED_WARNING.getOrThrow();
+		private boolean validIndicator = VALID_INDICATOR.getOrThrow();
+		private boolean modifiedIndicator = MODIFIED_INDICATOR.getOrThrow();
 		private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling =
 						ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.getOrThrow();
 		private Confirmer insertConfirmer = DEFAULT_INSERT_CONFIRMER;
@@ -845,6 +849,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 			this.includeEntityMenu = config.includeEntityMenu;
 			this.includeQueryInspector = config.includeQueryInspector;
 			this.modifiedWarning = config.modifiedWarning;
+			this.validIndicator = config.validIndicator;
+			this.modifiedIndicator = config.modifiedIndicator;
 			this.excludeFromSelection = unmodifiableSet(new HashSet<>(config.excludeFromSelection));
 		}
 
@@ -930,6 +936,26 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 		 */
 		public Config modifiedWarning(boolean modifiedWarning) {
 			this.modifiedWarning = modifiedWarning;
+			return this;
+		}
+
+		/**
+		 * @param validIndicator specifies whether components should indicate validity
+		 * @return this Config instance
+		 * @see EntityEditComponentPanel#VALID_INDICATOR
+		 */
+		public Config validIndicator(boolean validIndicator) {
+			this.validIndicator = validIndicator;
+			return this;
+		}
+
+		/**
+		 * @param modifiedIndicator specifies whether components should indicate modification
+		 * @return this Config instance
+		 * @see EntityEditComponentPanel#MODIFIED_INDICATOR
+		 */
+		public Config modifiedIndicator(boolean modifiedIndicator) {
+			this.modifiedIndicator = modifiedIndicator;
 			return this;
 		}
 

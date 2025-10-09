@@ -33,6 +33,7 @@ Codion Change Log
 - DefaultRemoteEntityConnection, EntityConnection.iterator() implemented with timeouts.
 ### is.codion.swing.framework.ui
 - EntityTableExportPanel refactored, lots of stuff moved to EntityTableExport, which is now called EntityTableExportModel.
+- EntityEditPanel.Config.validIndicator() and modifiedIndicator() added.
 
 ## 0.18.52
 ### is.codion.common.core
