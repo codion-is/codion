@@ -39,7 +39,6 @@ final class DefaultConnectionPoolCounter {
 	private static final int CHECK_OUT_TIMES_MAX_SIZE = 10000;
 
 	private final AbstractConnectionPoolWrapper<?> connectionPool;
-	private final long creationDate = System.currentTimeMillis();
 	private final LinkedList<Integer> checkOutTimes = new LinkedList<>();
 	private final LinkedList<DefaultConnectionPoolState> snapshotStatistics = new LinkedList<>();
 	private volatile boolean collectSnapshotStatistics = false;
@@ -49,8 +48,8 @@ final class DefaultConnectionPoolCounter {
 					.interval(SNAPSHOT_COLLECTION_INTERVAL_MS, TimeUnit.MILLISECONDS)
 					.build();
 
-	private final AtomicLong resetDate = new AtomicLong(creationDate);
-	private final AtomicLong requestsPerSecondTime = new AtomicLong(creationDate);
+	private final AtomicLong resetDate = new AtomicLong(System.currentTimeMillis());
+	private final AtomicLong requestsPerSecondTime = new AtomicLong(resetDate.get());
 	private final AtomicInteger connectionsCreated = new AtomicInteger();
 	private final AtomicInteger connectionsDestroyed = new AtomicInteger();
 	private final AtomicInteger connectionRequests = new AtomicInteger();
@@ -134,22 +133,21 @@ final class DefaultConnectionPoolCounter {
 	}
 
 	ConnectionPoolStatistics collectStatistics(long since) {
-		DefaultConnectionPoolStatistics statistics = new DefaultConnectionPoolStatistics(connectionPool.user().username());
+		DefaultConnectionPoolStatistics statistics = new DefaultConnectionPoolStatistics();
 		long current = System.currentTimeMillis();
 		statistics.timestamp(current);
-		statistics.resetDate(resetDate.get());
-		statistics.availableInPool(connectionPool.available());
-		statistics.connectionsInUse(connectionPool.inUse());
-		statistics.connectionsCreated(connectionsCreated.get());
-		statistics.connectionsDestroyed(connectionsDestroyed.get());
-		statistics.creationDate(creationDate);
-		statistics.connectionRequests(connectionRequests.get());
-		statistics.connectionRequestsFailed(connectionRequestsFailed.get());
+		statistics.resetTime(resetDate.get());
+		statistics.available(connectionPool.available());
+		statistics.inUse(connectionPool.inUse());
+		statistics.created(connectionsCreated.get());
+		statistics.destroyed(connectionsDestroyed.get());
+		statistics.requests(connectionRequests.get());
+		statistics.failedRequests(connectionRequestsFailed.get());
 		double seconds = (current - requestsPerSecondTime.get()) / THOUSAND;
 		requestsPerSecondTime.set(current);
 		statistics.requestsPerSecond((int) (requestsPerSecondCounter.get() / seconds));
 		requestsPerSecondCounter.set(0);
-		statistics.requestsFailedPerSecond((int) (requestsFailedPerSecondCounter.get() / seconds));
+		statistics.failedRequestsPerSecond((int) (requestsFailedPerSecondCounter.get() / seconds));
 		requestsFailedPerSecondCounter.set(0);
 		if (!checkOutTimes.isEmpty()) {
 			populateCheckOutTime(statistics);

@@ -26,11 +26,6 @@ import java.util.List;
 public interface ConnectionPoolStatistics {
 
 	/**
-	 * @return the connection pool username
-	 */
-	String username();
-
-	/**
 	 * Returns a list containing a snapshot of connection pool states.
 	 * @return a snapshot of pool states associated with this statistics object
 	 */
@@ -52,14 +47,9 @@ public interface ConnectionPoolStatistics {
 	int inUse();
 
 	/**
-	 * @return the timestamp
+	 * @return the statistics timestamp
 	 */
 	long timestamp();
-
-	/**
-	 * @return the time at which this statistics object was created
-	 */
-	long creationDate();
 
 	/**
 	 * @return the number of connections created by the pool

@@ -32,36 +32,23 @@ final class DefaultConnectionPoolStatistics implements ConnectionPoolStatistics,
 	@Serial
 	private static final long serialVersionUID = 1;
 
-	private final String username;
 	private long timestamp;
-	private int connectionsInUse;
-	private int availableInPool;
-
-	private int connectionsCreated;
-	private int connectionsDestroyed;
-	private long creationDate;
+	private int inUse;
+	private int available;
+	private int created;
+	private int destroyed;
 
 	private List<ConnectionPoolState> snapshot = emptyList();
-	private long resetDate;
-	private int connectionRequests;
+	private long resetTime;
+	private int requests;
 	private int requestsPerSecond;
-	private int connectionRequestsFailed;
-	private int requestsFailedPerSecond;
+	private int failedRequests;
+	private int failedRequestsPerSecond;
 	private int averageTime = 0;
 	private int minimumTime = 0;
 	private int maximumTime = 0;
 
-	/**
-	 * @param username the database user the pool is based on
-	 */
-	DefaultConnectionPoolStatistics(String username) {
-		this.username = username;
-	}
-
-	@Override
-	public String username() {
-		return username;
-	}
+	DefaultConnectionPoolStatistics() {}
 
 	@Override
 	public List<ConnectionPoolState> snapshot() {
@@ -70,12 +57,12 @@ final class DefaultConnectionPoolStatistics implements ConnectionPoolStatistics,
 
 	@Override
 	public int available() {
-		return availableInPool;
+		return available;
 	}
 
 	@Override
 	public int inUse() {
-		return connectionsInUse;
+		return inUse;
 	}
 
 	@Override
@@ -84,33 +71,28 @@ final class DefaultConnectionPoolStatistics implements ConnectionPoolStatistics,
 	}
 
 	@Override
-	public long creationDate() {
-		return this.creationDate;
-	}
-
-	@Override
 	public int created() {
-		return connectionsCreated;
+		return created;
 	}
 
 	@Override
 	public int destroyed() {
-		return connectionsDestroyed;
+		return destroyed;
 	}
 
 	@Override
 	public int requests() {
-		return connectionRequests;
+		return requests;
 	}
 
 	@Override
 	public int failedRequests() {
-		return connectionRequestsFailed;
+		return failedRequests;
 	}
 
 	@Override
 	public int failedRequestsPerSecond() {
-		return requestsFailedPerSecond;
+		return failedRequestsPerSecond;
 	}
 
 	@Override
@@ -135,44 +117,40 @@ final class DefaultConnectionPoolStatistics implements ConnectionPoolStatistics,
 
 	@Override
 	public int size() {
-		return connectionsInUse + availableInPool;
+		return inUse + available;
 	}
 
 	@Override
 	public long resetTime() {
-		return resetDate;
+		return resetTime;
 	}
 
 	void snapshot(List<ConnectionPoolState> snapshot) {
 		this.snapshot = snapshot;
 	}
 
-	void availableInPool(int availableInPool) {
-		this.availableInPool = availableInPool;
+	void available(int available) {
+		this.available = available;
 	}
 
-	void connectionsInUse(int connectionsInUse) {
-		this.connectionsInUse = connectionsInUse;
+	void inUse(int inUse) {
+		this.inUse = inUse;
 	}
 
 	void timestamp(long timestamp) {
 		this.timestamp = timestamp;
 	}
 
-	void creationDate(long time) {
-		this.creationDate = time;
+	void created(int created) {
+		this.created = created;
 	}
 
-	void connectionsCreated(int connectionsCreated) {
-		this.connectionsCreated = connectionsCreated;
+	void destroyed(int destroyed) {
+		this.destroyed = destroyed;
 	}
 
-	void connectionsDestroyed(int connectionsDestroyed) {
-		this.connectionsDestroyed = connectionsDestroyed;
-	}
-
-	void connectionRequests(int connectionRequests) {
-		this.connectionRequests = connectionRequests;
+	void requests(int requests) {
+		this.requests = requests;
 	}
 
 	void requestsPerSecond(int requestsPerSecond) {
@@ -191,15 +169,15 @@ final class DefaultConnectionPoolStatistics implements ConnectionPoolStatistics,
 		this.maximumTime = maximumTime;
 	}
 
-	void resetDate(long resetDate) {
-		this.resetDate = resetDate;
+	void resetTime(long resetTime) {
+		this.resetTime = resetTime;
 	}
 
-	void connectionRequestsFailed(int connectionRequestsFailed) {
-		this.connectionRequestsFailed = connectionRequestsFailed;
+	void failedRequests(int failedRequests) {
+		this.failedRequests = failedRequests;
 	}
 
-	void requestsFailedPerSecond(int requestsFailedPerSecond) {
-		this.requestsFailedPerSecond = requestsFailedPerSecond;
+	void failedRequestsPerSecond(int failedRequestsPerSecond) {
+		this.failedRequestsPerSecond = failedRequestsPerSecond;
 	}
 }

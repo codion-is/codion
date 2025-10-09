@@ -143,10 +143,7 @@ public final class AbstractConnectionPoolWrapperTest {
 
 			// Verify basic statistics values
 			assertTrue(statistics.requests() >= 10);
-			assertNotNull(statistics.username());
-			assertTrue(testUser.username().equalsIgnoreCase(statistics.username()));
 			assertTrue(statistics.timestamp() >= startTime);
-			assertNotNull(statistics.creationDate());
 		}
 
 		@Test
