@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.54
+
 ## 0.18.53
 ### is.codion.common.db
 - ResultIterator removed.
