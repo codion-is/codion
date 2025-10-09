@@ -85,7 +85,7 @@ final class DefaultEntityEditor implements EntityEditor {
 		this.modified = new DefaultModified();
 		this.validator = Value.builder()
 						.nonNull(entityDefinition.validator())
-						.listener(this::updateValidState)
+						.listener(this::updateValidStates)
 						.build();
 		configurePersistentForeignKeys();
 	}
@@ -245,18 +245,18 @@ final class DefaultEntityEditor implements EntityEditor {
 	private void updateStates() {
 		exists.update();
 		modified.update();
-		updateValidState();
+		updateEntityValidState();
 		updatePrimaryKeyNullState();
 	}
 
-	private <T> void updateAttributeStates(Attribute<T> attribute) {
+	private void updateAttributeStates(Attribute<?> attribute) {
 		State presentState = attributePresent.get(attribute);
 		if (presentState != null) {
 			presentState.set(!entity.isNull(attribute));
 		}
 		State validState = attributeValid.get(attribute);
 		if (validState != null) {
-			validState.set(isValid(attribute));
+			updateAttributeValidState(attribute, validState);
 		}
 		State modifiedState = attributeModified.get(attribute);
 		if (modifiedState != null) {
@@ -278,8 +278,17 @@ final class DefaultEntityEditor implements EntityEditor {
 		modifiedState.set(exists.predicate.getOrThrow().test(entity) && entity.modified(attribute));
 	}
 
-	private void updateValidState() {
+	private void updateEntityValidState() {
 		entityValid.set(validator.getOrThrow().valid(entity));
+	}
+
+	private void updateValidStates() {
+		updateEntityValidState();
+		attributeValid.forEach(this::updateAttributeValidState);
+	}
+
+	private void updateAttributeValidState(Attribute<?> attribute, State state) {
+		state.set(isValid(attribute));
 	}
 
 	private void updatePrimaryKeyNullState() {
@@ -452,7 +461,7 @@ final class DefaultEntityEditor implements EntityEditor {
 		public void validate() {
 			State validState = attributeValid.get(attribute);
 			if (validState != null) {
-				validState.set(isValid(attribute));
+				updateAttributeValidState(attribute, validState);
 			}
 		}
 

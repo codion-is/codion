@@ -30,6 +30,7 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -717,6 +718,27 @@ public final class AbstractEntityEditModelTest {
 		extraModified.set(true);
 		// UpdateException from the EntityConnection since the entity isn't really modified
 		assertThrows(UpdateException.class, () -> employeeEditModel.update());
+	}
+
+	@Test
+	public void validStates() {
+		Entity martin = employeeEditModel.connection().selectSingle(Employee.NAME.equalTo("MARTIN"));
+		martin.remove(Employee.ID);// so it becomes new, in order for all attributes to be validated
+		editor.set(martin);
+		assertTrue(editor.valid().is());
+		assertTrue(editor.value(Employee.NAME).valid().is());
+		assertTrue(editor.value(Employee.SALARY).valid().is());
+		editor.validator().set(new EntityValidator() {
+			@Override
+			public void validate(Entity entity, Attribute<?> attribute) throws ValidationException {
+				if (attribute.equals(Employee.NAME) || attribute.equals(Employee.SALARY)) {
+					throw new ValidationException(attribute, entity.get(attribute), "invalid");
+				}
+			}
+		});
+		assertFalse(editor.valid().is());
+		assertFalse(editor.value(Employee.NAME).valid().is());
+		assertFalse(editor.value(Employee.SALARY).valid().is());
 	}
 
 	private static final class TestEntityEditModel extends AbstractEntityEditModel {

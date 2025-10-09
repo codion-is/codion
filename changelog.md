@@ -32,6 +32,7 @@ Codion Change Log
 - DefaultRemoteEntityConnectionProvider now handles iterator() with RemoteEntityResultIteratorWrapper.
 ### is.codion.framework.model
 - EntityEditModel.EditorValue.validate() added.
+- DefaultEntityEditor now updates all attribute valid states when validator is set.
 ### is.codion.framework.server
 - DefaultRemoteEntityConnection, EntityConnection.iterator() implemented with timeouts.
 ### is.codion.swing.framework.ui
