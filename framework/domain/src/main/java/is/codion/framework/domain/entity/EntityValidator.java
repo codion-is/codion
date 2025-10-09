@@ -98,7 +98,7 @@ public interface EntityValidator {
 	 * public class OrderValidator implements EntityValidator {
 	 *
 	 *     @Override
-	 *     public <T> boolean nullable(Entity order, Attribute<T> attribute) {
+	 *     public boolean nullable(Entity order, Attribute<?> attribute) {
 	 *         // Normally nullable, but not for shipped orders
 	 *         if (attribute.equals(Order.TRACKING_NUMBER)) {
 	 *             String status = order.get(Order.STATUS);
@@ -106,7 +106,7 @@ public interface EntityValidator {
 	 *         }
 	 *
 	 *         // Use default nullable behavior for other attributes
-	 *         return attribute.nullable();
+	 *         return EntityValidator.super.nullable(order, attribute);
 	 *     }
 	 * }
 	 *
@@ -115,20 +115,19 @@ public interface EntityValidator {
 	 *     .with(Order.STATUS, "SHIPPED")
 	 *     .build(); // No tracking number
 	 *
-	 * boolean canBeNull = validator.nullable(order, Order.TRACKING_NUMBER); // false
+	 * boolean nullable = validator.nullable(order, Order.TRACKING_NUMBER); // false
 	 *}
 	 * @param entity the entity being validated
 	 * @param attribute the attribute
-	 * @param <T> the value type
 	 * @return true if the attribute accepts a null value
 	 * @see AttributeDefinition#nullable()
 	 */
-	default <T> boolean nullable(Entity entity, Attribute<T> attribute) {
+	default boolean nullable(Entity entity, Attribute<?> attribute) {
 		return requireNonNull(entity).definition().attributes().definition(attribute).nullable();
 	}
 
 	/**
-	 * Returns true if the given entity contains only valid values according to the validator.
+	 * Returns true if the given entity contains only valid values according to this validator.
 	 * @param entity the entity
 	 * @return true if the given entity contains only valid values
 	 */
@@ -146,7 +145,8 @@ public interface EntityValidator {
 	 * Checks if the values in the given entity are valid.
 	 * Note that by default, if the entity instance does not exist according to
 	 * {@link Entity#exists()} all values are validated, otherwise only modified values are validated.
-	 * Use the {@link #STRICT_VALIDATION} configuration value to change the default behaviour.
+	 * Use the {@link #STRICT_VALIDATION} configuration value to change the default behaviour
+	 * or override {@link #strict()} in order to configure the strictness of a specific instance.
 	 * {@snippet :
 	 * // Validation during entity lifecycle
 	 * Entity customer = entities.entity(Customer.TYPE)
@@ -163,8 +163,7 @@ public interface EntityValidator {
 	 *     connection.insert(customer);
 	 * } catch (ValidationException e) {
 	 *     // Handle validation error
-	 *     System.err.println("Validation failed: " + e.getMessage());
-	 *     // e.getMessage() might be: "Invalid email format: invalid-email"
+	 *     System.err.println("Validation failed for attribute " + e.attribute() + ": " + e.getMessage());
 	 * }
 	 *
 	 * // Check if entity is valid without throwing exception
@@ -213,13 +212,13 @@ public interface EntityValidator {
 		if (definition instanceof ColumnDefinition && ((ColumnDefinition<?>) definition).readOnly()) {
 			return false;
 		}
-		if (!entity.exists() || strict()) {
-			// validate all values when inserting or when strict validation is enabled
+		if (!entity.exists()) {
+			// validate all values when inserting
 			return true;
 		}
 
 		// only validate modified values when updating
-		return entity.modified(definition.attribute());
+		return entity.modified(definition.attribute()) || strict();
 	}
 
 	/**
