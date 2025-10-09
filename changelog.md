@@ -18,6 +18,8 @@ Codion Change Log
 - EntityValidator.nullable() redundant type parameter removed.
 - DenormalizedAttributeDefinition removed, DerivedAttributeBuilder.DenormalizedBuilder added.
 - EntityValidator.validate(entity, attribute) redundant type parameter removed.
+- AttributeDefinition.validate() overloaded with nullable parameter.
+- EntityValidator bug fixed, now calls AttributeDefinition.validate(entity, nullable), so that the result from a potentially overridden nullable() is used.
 ### is.codion.framework.db
 - DefaultSelect bug fixed, having clause not included in hashCode().
 - Select.having() added, related refactoring.

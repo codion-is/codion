@@ -194,7 +194,7 @@ public interface EntityValidator {
 	 * @throws ValidationException if the given value is not valid for the given attribute
 	 */
 	default void validate(Entity entity, Attribute<?> attribute) throws ValidationException {
-		requireNonNull(entity).definition().attributes().definition(attribute).validate(entity);
+		requireNonNull(entity).definition().attributes().definition(attribute).validate(entity, nullable(entity, attribute));
 	}
 
 	/**

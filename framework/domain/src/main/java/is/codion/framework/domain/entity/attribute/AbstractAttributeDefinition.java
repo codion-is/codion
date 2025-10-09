@@ -286,9 +286,14 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 
 	@Override
 	public final void validate(Entity entity) {
+		validate(entity, nullable());
+	}
+
+	@Override
+	public final void validate(Entity entity, boolean nullable) {
 		requireNonNull(entity);
 		if (!(attribute instanceof Column) || !entity.definition().foreignKeys().foreignKeyColumn((Column<?>) attribute)) {
-			validateNull(entity);
+			validateNull(entity, nullable);
 		}
 		T value = entity.get(attribute);
 		if (!items().isEmpty()) {
@@ -389,9 +394,9 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		return null;
 	}
 
-	private void validateNull(Entity entity) throws NullValidationException {
-		if (!entity.definition().validator().nullable(requireNonNull(entity), attribute) && entity.isNull(attribute)) {
-			if ((entity.primaryKey().isNull() || entity.originalPrimaryKey().isNull()) && !(this instanceof ForeignKeyDefinition)) {
+	private void validateNull(Entity entity, boolean nullable) throws NullValidationException {
+		if (!nullable && entity.isNull(attribute)) {
+			if ((entity.primaryKey().isNull() || entity.originalPrimaryKey().isNull()) && !(attribute instanceof ForeignKey)) {
 				//a new entity being inserted, allow null for columns with default values and generated primary key values
 				boolean nonKeyColumnWithoutDefaultValue = isNonKeyColumnWithoutDefaultValue();
 				boolean primaryKeyColumnWithoutAutoGenerate = isNonGeneratedPrimaryKeyColumn(entity.definition());

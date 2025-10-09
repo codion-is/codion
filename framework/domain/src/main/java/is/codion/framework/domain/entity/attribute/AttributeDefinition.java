@@ -26,6 +26,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.AbstractAttributeDefinition.AbstractAttributeDefinitionBuilder;
 import is.codion.framework.domain.entity.attribute.DefaultColumnDefinition.AbstractReadOnlyColumnDefinitionBuilder;
 import is.codion.framework.domain.entity.attribute.DefaultColumnDefinition.DefaultSubqueryColumnDefinitionBuilder;
+import is.codion.framework.domain.entity.exception.NullValidationException;
 import is.codion.framework.domain.entity.exception.ValidationException;
 
 import org.jspecify.annotations.Nullable;
@@ -397,11 +398,32 @@ public sealed interface AttributeDefinition<T>
 	List<Item<T>> items();
 
 	/**
-	 * Validates the value of this attribute as found in the given entity
+	 * Validates the value of this attribute as found in the given entity.
+	 * <p>Note: When validating non-nullable attributes during entity insertion
+	 * (when the entity does not exist), null values are allowed for:
+	 * <ul>
+	 * <li>Columns with default values - the database will provide the default value
+	 * <li>Generated primary key columns - the database will generate the key value
+	 * </ul>
 	 * @param entity the {@link Entity} the containing the value to validate
 	 * @throws ValidationException in case of an invalid value
 	 */
 	void validate(Entity entity);
+
+	/**
+	 * Validates the value of this attribute as found in the given entity.
+	 * <p>Note: When validating non-nullable attributes during entity insertion
+	 * (when the entity does not exist), null values are allowed for:
+	 * <ul>
+	 * <li>Columns with default values - the database will provide the default value
+	 * <li>Generated primary key columns - the database will generate the key value
+	 * </ul>
+	 * @param entity the entity containing the value to validate
+	 * @param nullable true if null values are allowed in this validation context,
+	 * false if null should trigger a {@link NullValidationException}
+	 * @throws ValidationException in case of an invalid value
+	 */
+	void validate(Entity entity, boolean nullable);
 
 	/**
 	 * Supplies values, for example default ones.
