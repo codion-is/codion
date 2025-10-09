@@ -23,7 +23,8 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column.ColumnDefiner;
 import is.codion.framework.domain.entity.attribute.DefaultAttribute.DefaultAttributeDefiner;
 import is.codion.framework.domain.entity.attribute.DefaultAttribute.DefaultType;
-import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition.Builder;
+import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition.DenormalizedBuilder;
+import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition.DerivedBuilder;
 import is.codion.framework.domain.entity.attribute.ForeignKey.ForeignKeyDefiner;
 
 import org.jspecify.annotations.Nullable;
@@ -287,21 +288,18 @@ public sealed interface Attribute<T> permits Column, DefaultAttribute, ForeignKe
 		<B extends TransientAttributeDefinition.Builder<T, B>> TransientAttributeDefinition.Builder<T, B> attribute();
 
 		/**
-		 * Instantiates a {@link DerivedAttributeDefinition.Builder} instance, for displaying a value from a referenced entity attribute.
+		 * Instantiates a {@link DenormalizedBuilder.SourceAttributeStep} instance, for displaying a value from a referenced entity attribute.
 		 * @param <B> the builder type
-		 * @param entityAttribute the entity attribute from which this attribute gets its value
-		 * @param denormalizedAttribute the attribute from the referenced entity, from which this attribute gets its value
-		 * @return a new {@link DerivedAttributeDefinition.Builder}
+		 * @return a new {@link DenormalizedBuilder.SourceAttributeStep}
 		 */
-		<B extends DerivedAttributeDefinition.Builder<T, B>> DerivedAttributeDefinition.Builder<T, B> denormalized(Attribute<Entity> entityAttribute,
-																																																							 Attribute<T> denormalizedAttribute);
+		<B extends DenormalizedBuilder<T, B>> DenormalizedBuilder.SourceAttributeStep<T, B> denormalized();
 
 		/**
-		 * Instantiates a {@link DerivedAttributeDefinition.Builder.SourceAttributesStep} instance, for building an attribute which
+		 * Instantiates a {@link DerivedBuilder.SourceAttributesStep} instance, for building an attribute which
 		 * value is derived from zero or more source attributes.
 		 * @param <B> the builder type
-		 * @return a new {@link Builder.SourceAttributesStep}
+		 * @return a new {@link DerivedBuilder.SourceAttributesStep}
 		 */
-		<B extends DerivedAttributeDefinition.Builder<T, B>> Builder.SourceAttributesStep<T, B> derived();
+		<B extends DerivedBuilder<T, B>> DerivedBuilder.SourceAttributesStep<T, B> derived();
 	}
 }

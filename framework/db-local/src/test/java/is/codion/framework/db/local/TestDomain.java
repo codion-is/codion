@@ -215,7 +215,9 @@ public final class TestDomain extends DomainModel {
 														.column()
 														.caption(Employee.HIRETIME.name()),
 										Employee.DEPARTMENT_LOCATION.define()
-														.denormalized(Employee.DEPARTMENT_FK, Department.LOC)
+														.denormalized()
+														.from(Employee.DEPARTMENT_FK)
+														.attribute(Department.LOC)
 														.caption(Department.LOC.name()),
 										Employee.DATA_LAZY.define()
 														.column()

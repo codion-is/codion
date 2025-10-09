@@ -134,7 +134,9 @@ public final class TestDomain extends DomainModel {
 														.caption(Employee.HIREDATE.name())
 														.nullable(false),
 										Employee.DEPARTMENT_LOCATION.define()
-														.denormalized(Employee.DEPARTMENT_FK, Department.LOCATION)
+														.denormalized()
+														.from(Employee.DEPARTMENT_FK)
+														.attribute(Department.LOCATION)
 														.caption(Department.LOCATION.name()))
 						.table("employees.employee")
 						.orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))

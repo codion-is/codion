@@ -16,6 +16,7 @@ Codion Change Log
 - Attribute.Type.isNumerical() renamed to isNumeric().
 - DefaultColumnDefinition, Column.SetParameter instances now shared.
 - EntityValidator.nullable() redundant type parameter removed.
+- DenormalizedAttributeDefinition removed, DerivedAttributeBuilder.DenormalizedBuilder added.
 ### is.codion.framework.db
 - DefaultSelect bug fixed, having clause not included in hashCode().
 - Select.having() added, related refactoring.

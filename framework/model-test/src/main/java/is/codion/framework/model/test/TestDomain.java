@@ -135,10 +135,14 @@ public final class TestDomain extends DomainModel {
 														.foreignKey()
 														.caption(Detail.MASTER_FK.name()),
 										Detail.MASTER_NAME.define()
-														.denormalized(Detail.MASTER_FK, Master.NAME)
+														.denormalized()
+														.from(Detail.MASTER_FK)
+														.attribute(Master.NAME)
 														.caption(Detail.MASTER_NAME.name()),
 										Detail.MASTER_CODE.define()
-														.denormalized(Detail.MASTER_FK, Master.CODE)
+														.denormalized()
+														.from(Detail.MASTER_FK)
+														.attribute(Master.CODE)
 														.caption(Detail.MASTER_CODE.name()),
 										Detail.INT_VALUE_LIST.define()
 														.column()
@@ -261,7 +265,9 @@ public final class TestDomain extends DomainModel {
 														.caption(Employee.HIREDATE.name())
 														.nullable(false),
 										Employee.DEPARTMENT_LOCATION.define()
-														.denormalized(Employee.DEPARTMENT_FK, Department.LOCATION)
+														.denormalized()
+														.from(Employee.DEPARTMENT_FK)
+														.attribute(Department.LOCATION)
 														.caption(Department.LOCATION.name()),
 										Employee.DATA.define()
 														.column()

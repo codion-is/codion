@@ -316,7 +316,9 @@ LargeEntity.BLOB_DATA.define()
 
 // Denormalized attributes
 Country.CAPITAL_POPULATION.define()
-    .denormalized(Country.CAPITAL_FK, City.POPULATION);
+    .denormalized()
+    .from(Country.CAPITAL_FK)
+    .attribute(City.POPULATION);
 ```
 
 ## Common Code Patterns

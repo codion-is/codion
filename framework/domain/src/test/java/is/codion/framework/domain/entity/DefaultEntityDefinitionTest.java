@@ -260,7 +260,9 @@ public class DefaultEntityDefinitionTest {
 										Employee.DEPARTMENT_FK.define()
 														.foreignKey(),
 										denormalized.define()
-														.denormalized(Employee.DEPARTMENT_FK, Employee.JOB))// <- the problem
+														.denormalized()
+														.from(Employee.DEPARTMENT_FK)
+														.attribute(Employee.JOB))// <- the problem
 						.build());
 	}
 

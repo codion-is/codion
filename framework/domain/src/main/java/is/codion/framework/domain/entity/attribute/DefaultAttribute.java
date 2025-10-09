@@ -21,10 +21,12 @@ package is.codion.framework.domain.entity.attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.DefaultColumn.DefaultColumnDefiner;
+import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultSourceAttributeStep;
 import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultSourceAttributesStep;
 import is.codion.framework.domain.entity.attribute.DefaultForeignKey.DefaultForeignKeyDefiner;
 import is.codion.framework.domain.entity.attribute.DefaultTransientAttributeDefinition.DefaultTransientAttributeDefinitionBuilder;
-import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition.Builder;
+import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition.DenormalizedBuilder;
+import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition.DerivedBuilder;
 
 import org.jspecify.annotations.Nullable;
 
@@ -240,15 +242,12 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 		}
 
 		@Override
-		public final <B extends DerivedAttributeDefinition.Builder<T, B>> DerivedAttributeDefinition.Builder<T, B> denormalized(Attribute<Entity> entityAttribute,
-																																																														Attribute<T> denormalizedAttribute) {
-			return (Builder<T, B>) derived()
-							.from(entityAttribute)
-							.value(new DenormalizedValue<>(entityAttribute, denormalizedAttribute));
+		public final <B extends DenormalizedBuilder<T, B>> DenormalizedBuilder.SourceAttributeStep<T, B> denormalized() {
+			return new DefaultSourceAttributeStep<>(attribute);
 		}
 
 		@Override
-		public final <B extends DerivedAttributeDefinition.Builder<T, B>> Builder.SourceAttributesStep<T, B> derived() {
+		public final <B extends DerivedBuilder<T, B>> DerivedBuilder.SourceAttributesStep<T, B> derived() {
 			return new DefaultSourceAttributesStep<>(attribute);
 		}
 	}

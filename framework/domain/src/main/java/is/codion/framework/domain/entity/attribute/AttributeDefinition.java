@@ -129,7 +129,7 @@ import static is.codion.common.Configuration.*;
  * @see Builder
  */
 public sealed interface AttributeDefinition<T>
-				permits ColumnDefinition, ForeignKeyDefinition, DerivedAttributeDefinition, TransientAttributeDefinition, AbstractAttributeDefinition {
+				permits AbstractAttributeDefinition, ColumnDefinition, DerivedAttributeDefinition, ForeignKeyDefinition, TransientAttributeDefinition {
 
 	/**
 	 * The suffix used for the mnemonic resource key.
@@ -421,8 +421,8 @@ public sealed interface AttributeDefinition<T>
 	 * @param <B> the builder type
 	 */
 	sealed interface Builder<T, B extends Builder<T, B>> permits AbstractAttributeDefinitionBuilder, ColumnDefinition.Builder,
-					AbstractReadOnlyColumnDefinitionBuilder, DefaultSubqueryColumnDefinitionBuilder, DerivedAttributeDefinition.Builder,
-					ForeignKeyDefinition.Builder, TransientAttributeDefinition.Builder {
+					AbstractReadOnlyColumnDefinitionBuilder, DefaultSubqueryColumnDefinitionBuilder, DerivedAttributeDefinition.DerivedBuilder,
+					DerivedAttributeDefinition.DenormalizedBuilder, ForeignKeyDefinition.Builder, TransientAttributeDefinition.Builder {
 
 		/**
 		 * @return the underying attribute

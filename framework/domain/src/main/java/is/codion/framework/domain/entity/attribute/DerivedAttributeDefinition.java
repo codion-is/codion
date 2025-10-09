@@ -18,8 +18,12 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDenormalizedAttributeDefinitionBuilder;
+import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDenormalizedAttributeStep;
 import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDerivedAttributeDefinitionBuilder;
 import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDerivedValueStep;
+import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultSourceAttributeStep;
 import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultSourceAttributesStep;
 
 import java.util.List;
@@ -173,7 +177,8 @@ public sealed interface DerivedAttributeDefinition<T> extends AttributeDefinitio
 	 * Builds a derived AttributeDefinition instance
 	 * @param <T> the attribute value type
 	 */
-	sealed interface Builder<T, B extends Builder<T, B>> extends AttributeDefinition.Builder<T, B> permits DefaultDerivedAttributeDefinitionBuilder {
+	sealed interface DerivedBuilder<T, B extends DerivedBuilder<T, B>> extends AttributeDefinition.Builder<T, B>
+					permits DefaultDerivedAttributeDefinitionBuilder {
 
 		/**
 		 * Default true unless no source attributes are specified or this is a denormalized attribute.
@@ -182,14 +187,14 @@ public sealed interface DerivedAttributeDefinition<T> extends AttributeDefinitio
 		 * @return this builder instance
 		 * @throws IllegalArgumentException in case this is a denormalized attribute
 		 */
-		DerivedAttributeDefinition.Builder<T, B> cached(boolean cached);
+		DerivedBuilder<T, B> cached(boolean cached);
 
 		/**
 		 * The first step in building a {@link DerivedAttributeDefinition}
 		 * @param <T> the attribute value type
 		 * @param <B> the builder type
 		 */
-		sealed interface SourceAttributesStep<T, B extends Builder<T, B>> permits DefaultSourceAttributesStep {
+		sealed interface SourceAttributesStep<T, B extends DerivedBuilder<T, B>> permits DefaultSourceAttributesStep {
 
 			/**
 			 * @param attributes the attributes to derive the value from
@@ -203,13 +208,49 @@ public sealed interface DerivedAttributeDefinition<T> extends AttributeDefinitio
 		 * @param <T> the attribute value type
 		 * @param <B> the builder type
 		 */
-		sealed interface DerivedValueStep<T, B extends Builder<T, B>> permits DefaultDerivedValueStep {
+		sealed interface DerivedValueStep<T, B extends DerivedBuilder<T, B>> permits DefaultDerivedValueStep {
 
 			/**
 			 * @param value a {@link DerivedValue} instance responsible for providing the derived value
-			 * @return a {@link Builder} instance
+			 * @return a {@link DerivedBuilder} instance
 			 */
-			Builder<T, B> value(DerivedValue<T> value);
+			DerivedBuilder<T, B> value(DerivedValue<T> value);
+		}
+	}
+
+	/**
+	 * Builds a derived AttributeDefinition instance
+	 * @param <T> the attribute value type
+	 */
+	sealed interface DenormalizedBuilder<T, B extends DenormalizedBuilder<T, B>> extends AttributeDefinition.Builder<T, B>
+					permits DefaultDenormalizedAttributeDefinitionBuilder {
+
+		/**
+		 * The first step in building a denormalized attribute
+		 * @param <T> the attribute value type
+		 * @param <B> the builder type
+		 */
+		sealed interface SourceAttributeStep<T, B extends DenormalizedBuilder<T, B>> permits DefaultSourceAttributeStep {
+
+			/**
+			 * @param source the source attribute to denormalize from
+			 * @return a {@link DenormalizedAttributeStep} instance
+			 */
+			DenormalizedAttributeStep<T, B> from(Attribute<Entity> source);
+		}
+
+		/**
+		 * The second step in building a denormalized attribute
+		 * @param <T> the attribute value type
+		 * @param <B> the builder type
+		 */
+		sealed interface DenormalizedAttributeStep<T, B extends DenormalizedBuilder<T, B>> permits DefaultDenormalizedAttributeStep {
+
+			/**
+			 * @param denormalized the denormalized attribute
+			 * @return a {@link DenormalizedBuilder} instance
+			 */
+			DenormalizedBuilder<T, B> attribute(Attribute<T> denormalized);
 		}
 	}
 }

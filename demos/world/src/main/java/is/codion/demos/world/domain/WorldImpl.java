@@ -194,7 +194,9 @@ public final class WorldImpl extends DomainModel {
 										// end::foreignKeyCapital[]
 										// tag::denormalizedAttribute[]
 										Country.CAPITAL_POPULATION.define()
-														.denormalized(Country.CAPITAL_FK, City.POPULATION)
+														.denormalized()
+														.from(Country.CAPITAL_FK)
+														.attribute(City.POPULATION)
 														.caption("Capital pop.")
 														.numberGrouping(true),
 										// end::denormalizedAttribute[]

@@ -179,7 +179,9 @@ public final class Employees extends DomainModel {
 																		.yearFourDigits()
 																		.build()),
 										Employee.DEPARTMENT_LOCATION.define()
-														.denormalized(Employee.DEPARTMENT_FK, Department.LOCATION)
+														.denormalized()
+														.from(Employee.DEPARTMENT_FK)
+														.attribute(Department.LOCATION)
 														.caption("Location"))
 						.keyGenerator(sequence("employees.employee_seq"))
 						.orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
