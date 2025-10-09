@@ -191,10 +191,9 @@ public interface EntityValidator {
 	 * Checks if the value associated with the give attribute is valid, throws a ValidationException if not
 	 * @param entity the entity to validate
 	 * @param attribute the attribute the value is associated with
-	 * @param <T> the value type
 	 * @throws ValidationException if the given value is not valid for the given attribute
 	 */
-	default <T> void validate(Entity entity, Attribute<T> attribute) throws ValidationException {
+	default void validate(Entity entity, Attribute<?> attribute) throws ValidationException {
 		requireNonNull(entity).definition().attributes().definition(attribute).validate(entity);
 	}
 

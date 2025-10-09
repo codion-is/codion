@@ -17,6 +17,7 @@ Codion Change Log
 - DefaultColumnDefinition, Column.SetParameter instances now shared.
 - EntityValidator.nullable() redundant type parameter removed.
 - DenormalizedAttributeDefinition removed, DerivedAttributeBuilder.DenormalizedBuilder added.
+- EntityValidator.validate(entity, attribute) redundant type parameter removed.
 ### is.codion.framework.db
 - DefaultSelect bug fixed, having clause not included in hashCode().
 - Select.having() added, related refactoring.

@@ -156,7 +156,7 @@ public interface World {
 		private static final long serialVersionUID = 1;
 
 		@Override
-		public <T> void validate(Entity city, Attribute<T> attribute) {
+		public void validate(Entity city, Attribute<?> attribute) {
 			EntityValidator.super.validate(city, attribute);
 			if (attribute.equals(City.POPULATION)) {
 				// population is guaranteed to be non-null after the call to super.validate()

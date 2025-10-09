@@ -284,7 +284,7 @@ public final class EntityValidationEnhancementTest {
 
 		private static class CustomerValidator implements EntityValidator {
 			@Override
-			public <T> void validate(Entity entity, Attribute<T> attribute) throws ValidationException {
+			public void validate(Entity entity, Attribute<?> attribute) throws ValidationException {
 				EntityValidator.super.validate(entity, attribute);
 
 				if (attribute.equals(Customer.EMAIL)) {
@@ -324,7 +324,7 @@ public final class EntityValidationEnhancementTest {
 
 		private static class ProductValidator implements EntityValidator {
 			@Override
-			public <T> void validate(Entity entity, Attribute<T> attribute) throws ValidationException {
+			public void validate(Entity entity, Attribute<?> attribute) throws ValidationException {
 				EntityValidator.super.validate(entity, attribute);
 
 				if (attribute.equals(Product.CODE)) {
@@ -353,7 +353,7 @@ public final class EntityValidationEnhancementTest {
 
 		private static class OrderValidator implements EntityValidator {
 			@Override
-			public <T> void validate(Entity entity, Attribute<T> attribute) throws ValidationException {
+			public void validate(Entity entity, Attribute<?> attribute) throws ValidationException {
 				EntityValidator.super.validate(entity, attribute);
 
 				if (attribute.equals(Order.ORDER_DATE)) {
@@ -382,7 +382,7 @@ public final class EntityValidationEnhancementTest {
 
 		private static class OrderItemValidator implements EntityValidator {
 			@Override
-			public <T> void validate(Entity entity, Attribute<T> attribute) throws ValidationException {
+			public void validate(Entity entity, Attribute<?> attribute) throws ValidationException {
 				EntityValidator.super.validate(entity, attribute);
 
 				if (attribute.equals(OrderItem.QUANTITY)) {
@@ -889,7 +889,7 @@ public final class EntityValidationEnhancementTest {
 
 			class CountingValidator implements EntityValidator {
 				@Override
-				public <T> void validate(Entity entity, Attribute<T> attribute) throws ValidationException {
+				public void validate(Entity entity, Attribute<?> attribute) throws ValidationException {
 					validationCount.incrementAndGet();
 					EntityValidator.super.validate(entity, attribute);
 				}
@@ -922,7 +922,7 @@ public final class EntityValidationEnhancementTest {
 			class CountingValidator implements EntityValidator {
 
 				@Override
-				public <T> void validate(Entity entity, Attribute<T> attribute) throws ValidationException {
+				public void validate(Entity entity, Attribute<?> attribute) throws ValidationException {
 					validationCount.incrementAndGet();
 					EntityValidator.super.validate(entity, attribute);
 				}

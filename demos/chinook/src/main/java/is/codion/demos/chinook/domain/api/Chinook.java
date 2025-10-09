@@ -340,7 +340,7 @@ public interface Chinook {
 		}
 
 		@Override
-		public <T> void validate(Entity entity, Attribute<T> attribute) {
+		public void validate(Entity entity, Attribute<?> attribute) {
 			EntityValidator.super.validate(entity, attribute);
 			if (attribute.equals(emailColumn)) {
 				validateEmail(entity.get(emailColumn));
