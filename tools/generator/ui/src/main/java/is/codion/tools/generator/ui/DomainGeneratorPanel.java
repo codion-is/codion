@@ -593,6 +593,7 @@ public final class DomainGeneratorPanel extends JPanel {
 		private final ComponentValue<JTextField, String> viewSuffix;
 		private final ComponentValue<JCheckBox, Boolean> hideAuditColumns;
 		private final ComponentValue<JTextField, String> auditColumnNames;
+		private final ComponentValue<JCheckBox, Boolean> lowerCaseIdentifiers;
 
 		private SchemaSettingsPanel(SchemaSettings schemaSettings) {
 			super(flexibleGridLayout(0, 2));
@@ -612,6 +613,9 @@ public final class DomainGeneratorPanel extends JPanel {
 							.value(schemaSettings.auditColumnNames().stream()
 											.collect(joining(", ")))
 							.buildValue();
+			lowerCaseIdentifiers = checkBox()
+							.value(schemaSettings.lowerCaseIdentifiers())
+							.buildValue();
 			add(label("Primary key suffix").build());
 			add(primaryKeySuffix.component());
 			add(label("View suffix").build());
@@ -620,6 +624,8 @@ public final class DomainGeneratorPanel extends JPanel {
 			add(hideAuditColumns.component());
 			add(label("Audit column names").build());
 			add(auditColumnNames.component());
+			add(label("Lower case identifiers").build());
+			add(lowerCaseIdentifiers.component());
 		}
 
 		private SchemaSettings settings() {
@@ -628,6 +634,7 @@ public final class DomainGeneratorPanel extends JPanel {
 							.viewSuffix(viewSuffix.optional().orElse(""))
 							.hideAuditColumns(hideAuditColumns.getOrThrow())
 							.auditColumnNames(auditColumnNames.optional().orElse(""))
+							.lowerCaseIdentifiers(lowerCaseIdentifiers.getOrThrow())
 							.build();
 		}
 	}

@@ -90,6 +90,7 @@ public final class DomainGeneratorModel {
 	private static final String AUDIT_COLUMN_NAMES = "auditColumnNames";
 	private static final String PRIMARY_KEY_COLUMN_SUFFIX = "primaryKeyColumnSuffix";
 	private static final String VIEW_SUFFIX = "viewSuffix";
+	private static final String LOWER_CASE_IDENTIFIERS = "lowerCaseIdentifiers";
 
 	private final FilterTableModel<SchemaRow, String> schemaTableModel =
 					FilterTableModel.builder()
@@ -348,6 +349,7 @@ public final class DomainGeneratorModel {
 		json.put(AUDIT_COLUMN_NAMES, schemaSettings.auditColumnNames().stream().collect(joining(",")));
 		json.put(PRIMARY_KEY_COLUMN_SUFFIX, schemaSettings.primaryKeyColumnSuffix());
 		json.put(VIEW_SUFFIX, schemaSettings.viewSuffix());
+		json.put(LOWER_CASE_IDENTIFIERS, schemaSettings.lowerCaseIdentifiers());
 
 		PREFERENCES.put(database.name() + "." + tableSchem, json.toString());
 		try {
@@ -426,10 +428,11 @@ public final class DomainGeneratorModel {
 			JSONObject json = new JSONObject(PREFERENCES.get(database.name() + "." + tableSchem, "{}"));
 
 			return SchemaSettings.builder()
-							.hideAuditColumns(json.has(HIDE_AUDIT_COLUMNS) && json.getBoolean(HIDE_AUDIT_COLUMNS))
+							.hideAuditColumns(json.optBoolean(HIDE_AUDIT_COLUMNS, false))
 							.auditColumnNames(json.has(AUDIT_COLUMN_NAMES) ? json.getString(AUDIT_COLUMN_NAMES).split(",") : new String[0])
-							.primaryKeyColumnSuffix(json.has(PRIMARY_KEY_COLUMN_SUFFIX) ? json.getString(PRIMARY_KEY_COLUMN_SUFFIX) : null)
-							.viewSuffix(json.has(VIEW_SUFFIX) ? json.getString(VIEW_SUFFIX) : null)
+							.primaryKeyColumnSuffix(json.optString(PRIMARY_KEY_COLUMN_SUFFIX, null))
+							.viewSuffix(json.optString(VIEW_SUFFIX, null))
+							.lowerCaseIdentifiers(json.optBoolean(LOWER_CASE_IDENTIFIERS, true))
 							.build();
 		}
 	}

@@ -93,6 +93,8 @@ public final class DomainSource {
 	private static final String PROPERTIES_SUFFIX = ".properties";
 	private static final String API_PACKAGE_NAME = "api";
 	private static final String IMPL_CLASS_SUFFIX = "Impl";
+	private static final String JAVA = ".java";
+	private static final String RETURN = "return ";
 
 	private final Domain domain;
 	private final String domainInterfaceName;
@@ -157,8 +159,8 @@ public final class DomainSource {
 	public boolean writeApiImpl(Path sourcePath, Path resourcePath, BooleanSupplier overwrite) throws IOException {
 		String interfaceName = interfaceName(domain.type().name(), true);
 		Files.createDirectories(requireNonNull(sourcePath).resolve(API_PACKAGE_NAME));
-		Path apiPath = sourcePath.resolve(API_PACKAGE_NAME).resolve(interfaceName + ".java");
-		Path implPath = sourcePath.resolve(interfaceName + IMPL_CLASS_SUFFIX + ".java");
+		Path apiPath = sourcePath.resolve(API_PACKAGE_NAME).resolve(interfaceName + JAVA);
+		Path implPath = sourcePath.resolve(interfaceName + IMPL_CLASS_SUFFIX + JAVA);
 		if ((!apiPath.toFile().exists() && !implPath.toFile().exists()) || requireNonNull(overwrite).getAsBoolean()) {
 			Files.write(apiPath, singleton(api()));
 			Files.write(implPath, singleton(implementation()));
@@ -183,7 +185,7 @@ public final class DomainSource {
 	public boolean writeCombined(Path sourcePath, Path resourcePath, BooleanSupplier overwrite) throws IOException {
 		String interfaceName = interfaceName(domain.type().name(), true);
 		Files.createDirectories(requireNonNull(sourcePath));
-		Path combinedFile = sourcePath.resolve(interfaceName + ".java");
+		Path combinedFile = sourcePath.resolve(interfaceName + JAVA);
 		if (!combinedFile.toFile().exists() || requireNonNull(overwrite).getAsBoolean()) {
 			Files.write(combinedFile, singleton(combined()));
 			if (i18n) {
@@ -477,7 +479,7 @@ public final class DomainSource {
 	}
 
 	private static String entityFromDtoMethodBody(Collection<Attribute<?>> attributes) {
-		StringBuilder builder = new StringBuilder("return " + ENTITIES_PARAM_NAME + "." + ENTITY_METHOD_NAME + "(" + TYPE_FIELD_NAME + ")\n");
+		StringBuilder builder = new StringBuilder(RETURN + ENTITIES_PARAM_NAME + "." + ENTITY_METHOD_NAME + "(" + TYPE_FIELD_NAME + ")\n");
 		attributes.forEach(attribute -> {
 			if (attribute instanceof Column<?>) {
 				builder.append("\t.with(")
@@ -521,7 +523,7 @@ public final class DomainSource {
 			}
 		});
 
-		return new StringBuilder("return ")
+		return new StringBuilder(RETURN)
 						.append(parameter)
 						.append(" == null ? null :\n")
 						.append("\tnew " + DTO_CLASS_NAME + "(")
@@ -567,7 +569,7 @@ public final class DomainSource {
 		String interfaceName = interfaceName(definition.table(), true);
 		CaptionStrategy captionStrategy = i18n ? new I18nCaptionStrategy() : new LiteralCaptionStrategy();
 		StringBuilder builder = new StringBuilder()
-						.append("return ").append(interfaceName).append(".TYPE.define(").append(LINE_SEPARATOR)
+						.append(RETURN).append(interfaceName).append(".TYPE.define(").append(LINE_SEPARATOR)
 						.append(String.join("," + LINE_SEPARATOR,
 										createAttributes(definition.attributes().definitions(), definition, interfaceName, i18n)))
 						.append(")");

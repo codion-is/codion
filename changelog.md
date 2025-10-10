@@ -16,10 +16,13 @@ Codion Change Log
 - DomainSource.writeApiImpl() and writeCombined() overwrite parameter added.
 - DomainSource, minor improvements, comments and constants.
 - DomainSource, further refactoring and improvements, javapoet api usage replacing StringBuilder.
+### is.codion.tools.generator.model
+- DomainGeneratorModel, now includes lowerCaseIdentifiers setting.
 ### is.codion.tools.generator.panel
 - DomainGeneratorPanel, i18n now configurable.
 - DomainGeneratorPanel.USER configuration property added, for skipping the login dialog.
 - DomainGeneratorPanel now confirms before overwriting.
+- DomainGeneratorPanel.SchemaSettingsPanel, lowerCaseIdentifiers check box added.
 
 ## 0.18.53
 ### is.codion.common.db
