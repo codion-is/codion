@@ -1,22 +1,22 @@
 package is.codion.chinook.domain;
 
+import static is.codion.chinook.domain.api.Chinook.Album;
+import static is.codion.chinook.domain.api.Chinook.Artist;
+import static is.codion.chinook.domain.api.Chinook.Customer;
 import static is.codion.chinook.domain.api.Chinook.DOMAIN;
+import static is.codion.chinook.domain.api.Chinook.Employee;
+import static is.codion.chinook.domain.api.Chinook.Genre;
+import static is.codion.chinook.domain.api.Chinook.Invoice;
+import static is.codion.chinook.domain.api.Chinook.Invoiceline;
+import static is.codion.chinook.domain.api.Chinook.Mediatype;
+import static is.codion.chinook.domain.api.Chinook.Playlist;
+import static is.codion.chinook.domain.api.Chinook.Playlisttrack;
+import static is.codion.chinook.domain.api.Chinook.Track;
+import static is.codion.chinook.domain.api.Chinook.Users;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.chinook.domain.api.Chinook.Album;
-import is.codion.chinook.domain.api.Chinook.Artist;
-import is.codion.chinook.domain.api.Chinook.Customer;
-import is.codion.chinook.domain.api.Chinook.Employee;
-import is.codion.chinook.domain.api.Chinook.Genre;
-import is.codion.chinook.domain.api.Chinook.Invoice;
-import is.codion.chinook.domain.api.Chinook.Invoiceline;
-import is.codion.chinook.domain.api.Chinook.Mediatype;
-import is.codion.chinook.domain.api.Chinook.Playlist;
-import is.codion.chinook.domain.api.Chinook.Playlisttrack;
-import is.codion.chinook.domain.api.Chinook.Track;
-import is.codion.chinook.domain.api.Chinook.Users;
 
 public final class ChinookImpl extends DomainModel {
 	public ChinookImpl() {

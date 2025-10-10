@@ -1,6 +1,10 @@
 package is.codion.world.domain;
 
 import static is.codion.framework.domain.DomainType.domainType;
+import static is.codion.world.domain.World.City;
+import static is.codion.world.domain.World.Country;
+import static is.codion.world.domain.World.CountryCity;
+import static is.codion.world.domain.World.Countrylanguage;
 import static is.codion.world.domain.World.DOMAIN;
 
 import is.codion.framework.domain.DomainModel;
@@ -8,10 +12,6 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.world.domain.World.City;
-import is.codion.world.domain.World.Country;
-import is.codion.world.domain.World.CountryCity;
-import is.codion.world.domain.World.Countrylanguage;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;

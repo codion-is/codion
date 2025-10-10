@@ -15,6 +15,7 @@ Codion Change Log
 - DomainSource.Builder added.
 - DomainSource.writeApiImpl() and writeCombined() overwrite parameter added.
 - DomainSource, minor improvements, comments and constants.
+- DomainSource, further refactoring and improvements, javapoet api usage replacing StringBuilder.
 ### is.codion.tools.generator.panel
 - DomainGeneratorPanel, i18n now configurable.
 - DomainGeneratorPanel.USER configuration property added, for skipping the login dialog.

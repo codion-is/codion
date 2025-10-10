@@ -322,15 +322,14 @@ public final class DomainSource {
 			fileBuilder.addStaticImport(KeyGenerator.class, "identity");
 		}
 		if (!implementationPackage.isEmpty()) {
-			fileBuilder.addStaticImport(ClassName.bestGuess(sourcePackage + "." + API_PACKAGE_NAME + "." + domainInterfaceName), DOMAIN_STRING);
+			ClassName parentInterface = ClassName.get(sourcePackage + "." + API_PACKAGE_NAME, domainInterfaceName);
+			fileBuilder.addStaticImport(parentInterface, DOMAIN_STRING);
+			// Add static import for nested interfaces
+			sortedDefinitions.forEach(definition ->
+							fileBuilder.addStaticImport(parentInterface, interfaceName(definition.table(), true)));
 		}
 
-		String sourceString = fileBuilder.build().toString();
-		if (!sourcePackage.isEmpty()) {
-			sourceString = addInterfaceImports(sourceString, sourcePackage + "." + API_PACKAGE_NAME + "." + domainInterfaceName);
-		}
-
-		return sourceString;
+		return fileBuilder.build().toString().trim();
 	}
 
 	// ========================================
@@ -359,15 +358,14 @@ public final class DomainSource {
 			fileBuilder.addStaticImport(KeyGenerator.class, "identity");
 		}
 		if (!sourcePackage.isEmpty()) {
-			fileBuilder.addStaticImport(ClassName.bestGuess(sourcePackage + "." + domainInterfaceName), DOMAIN_STRING);
+			ClassName parentInterface = ClassName.get(sourcePackage, domainInterfaceName);
+			fileBuilder.addStaticImport(parentInterface, DOMAIN_STRING);
+			// Add static import for nested interfaces
+			sortedDefinitions.forEach(definition ->
+							fileBuilder.addStaticImport(parentInterface, interfaceName(definition.table(), true)));
 		}
 
-		String sourceString = fileBuilder.build().toString();
-		if (!sourcePackage.isEmpty()) {
-			sourceString = addInterfaceImports(sourceString, sourcePackage + "." + domainInterfaceName);
-		}
-
-		return removeInterfaceLineBreaks(sourceString);
+		return removeInterfaceLineBreaks(fileBuilder.build().toString());
 	}
 
 	private static MethodSpec createDomainConstructor(Map<EntityDefinition, String> definitionMethods) {
@@ -703,6 +701,11 @@ public final class DomainSource {
 		return name;
 	}
 
+	/**
+	 * Removes blank lines between field declarations in generated interfaces.
+	 * JavaPoet does not provide control over field spacing, so we use post-processing
+	 * to achieve compact field declarations without empty lines between them.
+	 */
 	private static String removeInterfaceLineBreaks(String sourceString) {
 		String[] lines = sourceString.split("\n");
 		for (int i = 1; i < lines.length - 1; i++) {
@@ -715,23 +718,6 @@ public final class DomainSource {
 		return Arrays.stream(lines)
 						.filter(Objects::nonNull)
 						.collect(joining("\n"));
-	}
-
-	private String addInterfaceImports(String sourceString,
-																		 String parentInterface) {
-		List<String> interfaceNames = sortedDefinitions.stream()
-						.map(definition -> interfaceName(definition.table(), true))
-						.sorted()
-						.collect(toList());
-		List<String> lines = new ArrayList<>();
-		for (String line : sourceString.split("\n")) {
-			lines.add(line);
-			if (line.endsWith("EntityDefinition;")) {
-				interfaceNames.forEach(name -> lines.add("import " + parentInterface + "." + name + ";"));
-			}
-		}
-
-		return String.join("\n", lines);
 	}
 
 	private static boolean betweenColumnsOrForeignKeys(String[] lines, int lineIndex) {

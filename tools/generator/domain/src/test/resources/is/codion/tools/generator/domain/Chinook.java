@@ -1,6 +1,18 @@
 package is.codion.chinook.domain;
 
+import static is.codion.chinook.domain.Chinook.Album;
+import static is.codion.chinook.domain.Chinook.Artist;
+import static is.codion.chinook.domain.Chinook.Customer;
 import static is.codion.chinook.domain.Chinook.DOMAIN;
+import static is.codion.chinook.domain.Chinook.Employee;
+import static is.codion.chinook.domain.Chinook.Genre;
+import static is.codion.chinook.domain.Chinook.Invoice;
+import static is.codion.chinook.domain.Chinook.Invoiceline;
+import static is.codion.chinook.domain.Chinook.Mediatype;
+import static is.codion.chinook.domain.Chinook.Playlist;
+import static is.codion.chinook.domain.Chinook.Playlisttrack;
+import static is.codion.chinook.domain.Chinook.Track;
+import static is.codion.chinook.domain.Chinook.Users;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 
@@ -9,18 +21,6 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.chinook.domain.Chinook.Album;
-import is.codion.chinook.domain.Chinook.Artist;
-import is.codion.chinook.domain.Chinook.Customer;
-import is.codion.chinook.domain.Chinook.Employee;
-import is.codion.chinook.domain.Chinook.Genre;
-import is.codion.chinook.domain.Chinook.Invoice;
-import is.codion.chinook.domain.Chinook.Invoiceline;
-import is.codion.chinook.domain.Chinook.Mediatype;
-import is.codion.chinook.domain.Chinook.Playlist;
-import is.codion.chinook.domain.Chinook.Playlisttrack;
-import is.codion.chinook.domain.Chinook.Track;
-import is.codion.chinook.domain.Chinook.Users;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
