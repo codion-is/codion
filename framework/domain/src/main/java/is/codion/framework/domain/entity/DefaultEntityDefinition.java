@@ -75,6 +75,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 	private final String captionResourceKey;
 	private transient @Nullable String resourceCaption;
 	private final @Nullable String description;
+	private final String descriptionResourceKey;
+	private transient @Nullable String resourceDescription;
 	private final @Nullable OrderBy orderBy;
 	private final boolean readOnly;
 	private final boolean smallDataset;
@@ -102,6 +104,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		this.caption = builder.caption;
 		this.captionResourceKey = builder.captionResourceKey;
 		this.description = builder.description;
+		this.descriptionResourceKey = builder.descriptionResourceKey;
 		this.orderBy = builder.orderBy;
 		this.readOnly = builder.readOnly;
 		this.smallDataset = builder.smallDataset;
@@ -162,6 +165,18 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 	@Override
 	public Optional<String> description() {
+		String resourceBundleName = entityType.resourceBundleName().orElse(null);
+		if (resourceBundleName != null) {
+			if (resourceDescription == null) {
+				ResourceBundle bundle = getBundle(resourceBundleName);
+				resourceDescription = bundle.containsKey(descriptionResourceKey) ? bundle.getString(descriptionResourceKey) : "";
+			}
+
+			if (!resourceDescription.isEmpty()) {
+				return Optional.of(resourceDescription);
+			}
+		}
+
 		return Optional.ofNullable(description);
 	}
 
@@ -767,6 +782,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		private @Nullable String caption;
 		private String captionResourceKey;
 		private @Nullable String description;
+		private String descriptionResourceKey;
 		private boolean smallDataset;
 		private boolean readOnly;
 		private KeyGenerator keyGenerator = DefaultEntity.DEFAULT_KEY_GENERATOR;
@@ -785,6 +801,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 			this.attributes = new EntityAttributes(entityType, attributeDefinitionBuilders);
 			this.table = attributes.entityType.name();
 			this.captionResourceKey = attributes.entityType.name();
+			this.descriptionResourceKey = attributes.entityType.name() + ".description";
 		}
 
 		@Override
@@ -822,6 +839,15 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 				throw new IllegalStateException("Caption has already been set for entity: " + attributes.entityType);
 			}
 			this.captionResourceKey = requireNonNull(captionResourceKey);
+			return this;
+		}
+
+		@Override
+		public Builder descriptionResourceKey(String descriptionResourceKey) {
+			if (this.description != null) {
+				throw new IllegalStateException("Description has already been set for entity: " + attributes.entityType);
+			}
+			this.descriptionResourceKey = requireNonNull(descriptionResourceKey);
 			return this;
 		}
 

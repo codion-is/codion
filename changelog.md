@@ -4,6 +4,8 @@ Codion Change Log
 ## 0.18.54
 ### is.codion.common.db
 - ConnectionPoolStatistics cleanup and refactoring.
+### is.codion.framework.domain
+- EntityDefinition.Builder.descriptionResource() added.
 ### is.codion.framework.domain.db
 - SchemaDomain.SchemaSettings.lowerCaseIdentifiers() added.
 ### is.codion.tools.generator.domain

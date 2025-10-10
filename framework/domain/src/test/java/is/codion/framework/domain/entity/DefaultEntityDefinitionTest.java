@@ -520,6 +520,7 @@ public class DefaultEntityDefinitionTest {
 				super(DOMAIN_TYPE);
 				add(entityType.define(entityType.integerColumn("attribute").define().primaryKey())
 								.captionResourceKey("test")
+								.descriptionResourceKey("test.description")
 								.build());
 			}
 		}
@@ -529,11 +530,13 @@ public class DefaultEntityDefinitionTest {
 
 		Locale.setDefault(new Locale("en", "EN"));
 		assertEquals("Test", definition.caption());
+		assertEquals("Description", definition.description().orElse(null));
 
 		definition = Serializer.deserialize(Serializer.serialize(definition));
 
 		Locale.setDefault(new Locale("is", "IS"));
 		assertEquals("Prufa", definition.caption());
+		assertEquals("Lysing", definition.description().orElse(null));
 	}
 
 	@Test

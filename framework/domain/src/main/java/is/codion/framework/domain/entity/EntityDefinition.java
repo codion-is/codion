@@ -312,11 +312,21 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 
 		/**
 		 * Specifies the resource bundle key associated with the caption.
+		 * Defaults to {@code entityType.name()}
 		 * @param captionResourceKey the name of the resource bundle key associated with the caption for this entity
 		 * @return this {@link Builder} instance
 		 * @see EntityType#resourceBundleName()
 		 */
 		Builder captionResourceKey(String captionResourceKey);
+
+		/**
+		 * Specifies the resource bundle key associated with the description.
+		 * Defaults to {@code entityType.name() + ".description"}
+		 * @param descriptionResourceKey the name of the resource bundle key associated with the description for this entity
+		 * @return this {@link Builder} instance
+		 * @see EntityType#resourceBundleName()
+		 */
+		Builder descriptionResourceKey(String descriptionResourceKey);
 
 		/**
 		 * Specifies a description for this entity.
