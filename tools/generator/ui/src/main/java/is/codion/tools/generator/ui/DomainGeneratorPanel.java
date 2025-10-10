@@ -127,10 +127,12 @@ public final class DomainGeneratorPanel extends JPanel {
 	private final JTextArea apiTextArea;
 	private final JTextArea implementationTextArea;
 	private final JTextArea combinedTextArea;
+	private final JTextArea i18nTextArea;
 	private final JTabbedPane sourceTabbedPane;
 	private final SearchHighlighter apiHighlighter;
 	private final SearchHighlighter implementationHighlighter;
 	private final SearchHighlighter combinedHighlighter;
+	private final SearchHighlighter i18nHighlighter;
 
 	/**
 	 * Instantiates a new DomainGeneratorPanel.
@@ -143,10 +145,12 @@ public final class DomainGeneratorPanel extends JPanel {
 		apiTextArea = createSourceTextArea(model.domainApi());
 		implementationTextArea = createSourceTextArea(model.domainImpl());
 		combinedTextArea = createSourceTextArea(model.domainCombined());
+		i18nTextArea = createSourceTextArea(model.i18nProperties());
 		sourceTabbedPane = createSourceTabbedPane();
 		apiHighlighter = searchHighlighter(apiTextArea);
 		implementationHighlighter = searchHighlighter(implementationTextArea);
 		combinedHighlighter = searchHighlighter(combinedTextArea);
+		i18nHighlighter = searchHighlighter(i18nTextArea);
 		initializeUI();
 		bindEvents();
 		setupKeyEvents();
@@ -501,12 +505,25 @@ public final class DomainGeneratorPanel extends JPanel {
 		model.domainApi().addListener(() -> apiTextArea.setCaretPosition(0));
 		model.domainImpl().addListener(() -> implementationTextArea.setCaretPosition(0));
 		model.domainCombined().addListener(() -> combinedTextArea.setCaretPosition(0));
+		model.i18nProperties().addListener(() -> i18nTextArea.setCaretPosition(0));
 		model.apiSearchValue().addConsumer(apiHighlighter.searchString()::set);
 		model.implSearchValue().addConsumer(implementationHighlighter.searchString()::set);
 		model.implSearchValue().addConsumer(combinedHighlighter.searchString()::set);
+		model.i18nSearchValue().addConsumer(i18nHighlighter.searchString()::set);
 		model.schemaModel().items().refresher().exception().addConsumer(this::displayException);
 		model.entityModel().items().refresher().exception().addConsumer(this::displayException);
 		model.dtos().addConsumer(entityTable.columnModel().visible(EntityColumns.DTO)::set);
+		model.i18n().addConsumer(this::onI18nChanged);
+	}
+
+	private void onI18nChanged(boolean i18n) {
+		if (i18n) {
+			sourceTabbedPane.addTab("i18n", i18nTextArea);
+			sourceTabbedPane.setMnemonicAt(2, 'N');
+		}
+		else if (sourceTabbedPane.getTabCount() > 2) {
+			sourceTabbedPane.removeTabAt(2);
+		}
 	}
 
 	private void setupKeyEvents() {

@@ -134,8 +134,13 @@ public final class DomainGeneratorModel {
 					.<String>nullable()
 					.notify(SET)
 					.build();
+	private final Value<String> i18nPropertiesValue = Value.builder()
+					.<String>nullable()
+					.notify(SET)
+					.build();
 	private final Value<String> apiSearchValue = Value.nullable();
 	private final Value<String> implSearchValue = Value.nullable();
+	private final Value<String> i18nSearchValue = Value.nullable();
 
 	private DomainGeneratorModel(Database database, User user) {
 		this.database = requireNonNull(database);
@@ -168,6 +173,10 @@ public final class DomainGeneratorModel {
 		return domainCombinedValue.observable();
 	}
 
+	public Observable<String> i18nProperties() {
+		return i18nPropertiesValue.observable();
+	}
+
 	public State dtos() {
 		return dtos;
 	}
@@ -190,6 +199,10 @@ public final class DomainGeneratorModel {
 
 	public Value<String> implSearchValue() {
 		return implSearchValue;
+	}
+
+	public Value<String> i18nSearchValue() {
+		return i18nSearchValue;
 	}
 
 	public PopulateTask populate() {
@@ -262,6 +275,7 @@ public final class DomainGeneratorModel {
 	private void search(EntityRow entityRow) {
 		apiSearchValue.set(entityRow == null ? null : DomainSource.apiSearchString(entityRow.definition));
 		implSearchValue.set(entityRow == null ? null : DomainSource.implSearchString(entityRow.definition));
+		i18nSearchValue.set(entityRow == null ? null : DomainSource.i18nSearchString(entityRow.definition));
 	}
 
 	/**
@@ -299,11 +313,13 @@ public final class DomainGeneratorModel {
 			domainApiValue.set(domainSource.api());
 			domainImplValue.set(domainSource.implementation());
 			domainCombinedValue.set(domainSource.combined());
+			i18nPropertiesValue.set(domainSource.i18n());
 		}
 		else {
 			domainApiValue.clear();
 			domainImplValue.clear();
 			domainCombinedValue.clear();
+			i18nPropertiesValue.clear();
 		}
 	}
 

@@ -23,6 +23,7 @@ Codion Change Log
 - DomainGeneratorPanel.USER configuration property added, for skipping the login dialog.
 - DomainGeneratorPanel now confirms before overwriting.
 - DomainGeneratorPanel.SchemaSettingsPanel, lowerCaseIdentifiers check box added.
+- DomainGeneratorPanel, i18n property preview added.
 
 ## 0.18.53
 ### is.codion.common.db

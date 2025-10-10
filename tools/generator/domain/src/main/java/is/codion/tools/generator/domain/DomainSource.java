@@ -74,7 +74,7 @@ import static java.util.stream.Stream.concat;
 import static javax.lang.model.element.Modifier.*;
 
 /**
- * For instances use the builder provded by {@link #builder()}.
+ * For instances use the builder provided by {@link #builder()}.
  */
 public final class DomainSource {
 
@@ -146,6 +146,15 @@ public final class DomainSource {
 	 */
 	public String combined() {
 		return toCombinedString(domainPackage, dtos, i18n);
+	}
+
+	/**
+	 * @return the i18n properties for all entities
+	 */
+	public String i18n() {
+		return domain.entities().definitions().stream()
+						.map(definition -> i18n(definition.type()))
+						.collect(joining(LINE_SEPARATOR + LINE_SEPARATOR));
 	}
 
 	/**
@@ -745,6 +754,10 @@ public final class DomainSource {
 
 	public static String implSearchString(EntityDefinition definition) {
 		return "EntityDefinition " + interfaceName(definition.table(), false) + "()";
+	}
+
+	public static String i18nSearchString(EntityDefinition definition) {
+		return definition.type().name() + "=";
 	}
 
 	// ========================================
