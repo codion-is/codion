@@ -46,7 +46,6 @@ public final class SchemaDomainTest {
 							.primaryKeyColumnSuffix("_id")
 							.auditColumnNames("insert_user", "insert_time", "update_user", "update_time")
 							.hideAuditColumns(true)
-							.lowerCaseIdentifiers(true)
 							.build());
 			List<EntityDefinition> tableEntities = petstore.entities().definitions().stream()
 							.filter(definition -> !definition.readOnly())
@@ -78,18 +77,22 @@ public final class SchemaDomainTest {
 	@Test
 	void chinook() throws Exception {
 		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
-			SchemaDomain.schemaDomain(connection.getMetaData(), "CHINOOK");
+			SchemaDomain chinook = SchemaDomain.schemaDomain(connection.getMetaData(), "CHINOOK", SchemaSettings.builder()
+							.lowerCaseIdentifiers(false)
+							.build());
+			EntityDefinition customer = chinook.entities().definition("CHINOOK.CUSTOMER");
+			assertTrue(customer.attributes().definitions().stream()
+							.anyMatch(definition -> definition.attribute().name().equals("LASTNAME")));
 		}
 	}
 
 	@Test
 	void world() throws Exception {
 		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
-			SchemaDomain schemaDomain = SchemaDomain.schemaDomain(connection.getMetaData(), "WORLD", SchemaSettings.builder()
+			SchemaDomain world = SchemaDomain.schemaDomain(connection.getMetaData(), "WORLD", SchemaSettings.builder()
 							.viewSuffix("_v")
-							.lowerCaseIdentifiers(true)
 							.build());
-			EntityDefinition countryCity = schemaDomain.entities().definition("world.country_city");
+			EntityDefinition countryCity = world.entities().definition("world.country_city");
 			assertEquals("world.country_city", countryCity.type().name());
 			assertEquals("Country city", countryCity.caption());
 		}
