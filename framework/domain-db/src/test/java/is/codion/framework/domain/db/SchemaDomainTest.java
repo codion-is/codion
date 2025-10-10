@@ -46,6 +46,7 @@ public final class SchemaDomainTest {
 							.primaryKeyColumnSuffix("_id")
 							.auditColumnNames("insert_user", "insert_time", "update_user", "update_time")
 							.hideAuditColumns(true)
+							.lowerCaseIdentifiers(true)
 							.build());
 			List<EntityDefinition> tableEntities = petstore.entities().definitions().stream()
 							.filter(definition -> !definition.readOnly())
@@ -55,19 +56,19 @@ public final class SchemaDomainTest {
 				List<AttributeDefinition<?>> attributeDefinitions = new ArrayList<>(entityDefinition.attributes().definitions());
 				List<AttributeDefinition<?>> auditColumns = attributeDefinitions.subList(attributeDefinitions.size() - 4, attributeDefinitions.size());
 				ColumnDefinition<?> insertUser = (ColumnDefinition<?>) auditColumns.get(0);
-				assertEquals("INSERT_USER", insertUser.attribute().name());
+				assertEquals("insert_user", insertUser.attribute().name());
 				assertTrue(insertUser.readOnly());
 				assertTrue(insertUser.hidden());
 				ColumnDefinition<?> insertTime = (ColumnDefinition<?>) auditColumns.get(1);
-				assertEquals("INSERT_TIME", insertTime.attribute().name());
+				assertEquals("insert_time", insertTime.attribute().name());
 				assertTrue(insertTime.readOnly());
 				assertTrue(insertTime.hidden());
 				ColumnDefinition<?> updateUser = (ColumnDefinition<?>) auditColumns.get(2);
-				assertEquals("UPDATE_USER", updateUser.attribute().name());
+				assertEquals("update_user", updateUser.attribute().name());
 				assertTrue(updateUser.readOnly());
 				assertTrue(updateUser.hidden());
 				ColumnDefinition<?> updateTime = (ColumnDefinition<?>) auditColumns.get(3);
-				assertEquals("UPDATE_TIME", updateTime.attribute().name());
+				assertEquals("update_time", updateTime.attribute().name());
 				assertTrue(updateTime.readOnly());
 				assertTrue(updateTime.hidden());
 			}
@@ -86,9 +87,10 @@ public final class SchemaDomainTest {
 		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
 			SchemaDomain schemaDomain = SchemaDomain.schemaDomain(connection.getMetaData(), "WORLD", SchemaSettings.builder()
 							.viewSuffix("_v")
+							.lowerCaseIdentifiers(true)
 							.build());
-			EntityDefinition countryCity = schemaDomain.entities().definition("WORLD.COUNTRY_CITY");
-			assertEquals("WORLD.COUNTRY_CITY", countryCity.type().name());
+			EntityDefinition countryCity = schemaDomain.entities().definition("world.country_city");
+			assertEquals("world.country_city", countryCity.type().name());
 			assertEquals("Country city", countryCity.caption());
 		}
 	}

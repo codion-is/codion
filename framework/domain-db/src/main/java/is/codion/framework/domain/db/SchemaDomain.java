@@ -58,7 +58,7 @@ public final class SchemaDomain extends DomainModel {
 	private final SchemaSettings settings;
 
 	private SchemaDomain(DatabaseMetaData metaData, String schemaName, SchemaSettings settings) throws SQLException {
-		super(domainType(schemaName));
+		super(domainType(settings.lowerCaseIdentifiers() ? schemaName.toLowerCase() : schemaName));
 		this.settings = settings;
 		validateForeignKeys(false);
 		new MetaDataModel(metaData, schemaName)
@@ -108,7 +108,14 @@ public final class SchemaDomain extends DomainModel {
 		if (!tableEntityTypes.containsKey(table)) {
 			boolean view = table.tableType().toLowerCase().contains("view");
 			String name = view ? removeSuffix(table.tableName(), settings.viewSuffix()) : table.tableName();
-			EntityType entityType = type().entityType(table.schema().none() ? name : table.schema().name() + "." + name);
+			if (settings.lowerCaseIdentifiers()) {
+				name = name.toLowerCase();
+			}
+			String schemaName = table.schema().name();
+			if (schemaName != null && settings.lowerCaseIdentifiers()) {
+				schemaName = schemaName.toLowerCase();
+			}
+			EntityType entityType = type().entityType(table.schema().none() ? name : schemaName + "." + name);
 			tableEntityTypes.put(table, entityType);
 			table.foreignKeys().stream()
 							.map(MetaDataForeignKeyConstraint::referencedTable)
@@ -170,7 +177,11 @@ public final class SchemaDomain extends DomainModel {
 	private AttributeDefinition.Builder<?, ?> foreignKeyDefinitionBuilder(MetaDataForeignKeyConstraint foreignKeyConstraint, EntityType entityType) {
 		MetaDataTable referencedTable = foreignKeyConstraint.referencedTable();
 		EntityType referencedEntityType = tableEntityTypes.get(referencedTable);
-		ForeignKey foreignKey = entityType.foreignKey(createForeignKeyName(foreignKeyConstraint) + "_FK",
+		String name = createForeignKeyName(foreignKeyConstraint) + "_FK";
+		if (settings.lowerCaseIdentifiers()) {
+			name = name.toLowerCase();
+		}
+		ForeignKey foreignKey = entityType.foreignKey(name,
 						foreignKeyConstraint.references().entrySet().stream()
 										.map(entry -> reference(column(entityType, entry.getKey()), column(referencedEntityType, entry.getValue())))
 										.collect(toList()));
@@ -178,7 +189,7 @@ public final class SchemaDomain extends DomainModel {
 		return foreignKey.define().foreignKey().caption(caption(referencedTable.tableName().toLowerCase()));
 	}
 
-	private static ColumnDefinition.Builder<?, ?> columnDefinitionBuilder(MetaDataColumn metadataColumn, EntityType entityType) {
+	private ColumnDefinition.Builder<?, ?> columnDefinitionBuilder(MetaDataColumn metadataColumn, EntityType entityType) {
 		String caption = caption(metadataColumn.columnName());
 		Column<?> column = column(entityType, metadataColumn);
 		ColumnDefinition.Builder<?, ?> builder;
@@ -207,8 +218,9 @@ public final class SchemaDomain extends DomainModel {
 		return builder;
 	}
 
-	private static <T> Column<T> column(EntityType entityType, MetaDataColumn column) {
-		return (Column<T>) entityType.column(column.columnName(), column.columnClass());
+	private <T> Column<T> column(EntityType entityType, MetaDataColumn column) {
+		return (Column<T>) entityType.column(settings.lowerCaseIdentifiers() ?
+						column.columnName().toLowerCase() : column.columnName(), column.columnClass());
 	}
 
 	private static String caption(String name) {
@@ -261,6 +273,8 @@ public final class SchemaDomain extends DomainModel {
 
 		boolean hideAuditColumns();
 
+		boolean lowerCaseIdentifiers();
+
 		/**
 		 * @return a new builder
 		 */
@@ -281,6 +295,8 @@ public final class SchemaDomain extends DomainModel {
 
 			Builder hideAuditColumns(boolean hideAuditColumns);
 
+			Builder lowerCaseIdentifiers(boolean lowerCaseIdentifiers);
+
 			SchemaSettings build();
 		}
 	}
@@ -291,12 +307,14 @@ public final class SchemaDomain extends DomainModel {
 		private final String viewSuffix;
 		private final Collection<String> auditColumnNames;
 		private final boolean hideAuditColumns;
+		private final boolean lowerCaseIdentifiers;
 
 		private DefaultSchemaSettings(DefaultBuilder builder) {
 			this.primaryKeyColumnSuffix = builder.primaryKeyColumnSuffix;
 			this.auditColumnNames = builder.auditColumnNames;
 			this.hideAuditColumns = builder.hideAuditColumns;
 			this.viewSuffix = builder.viewSuffix;
+			this.lowerCaseIdentifiers = builder.lowerCaseIdentifiers;
 		}
 
 		@Override
@@ -315,6 +333,11 @@ public final class SchemaDomain extends DomainModel {
 		}
 
 		@Override
+		public boolean lowerCaseIdentifiers() {
+			return lowerCaseIdentifiers;
+		}
+
+		@Override
 		public boolean hideAuditColumns() {
 			return hideAuditColumns;
 		}
@@ -325,6 +348,7 @@ public final class SchemaDomain extends DomainModel {
 			private String viewSuffix = "";
 			private Collection<String> auditColumnNames = emptySet();
 			private boolean hideAuditColumns = false;
+			private boolean lowerCaseIdentifiers = true;
 
 			@Override
 			public Builder primaryKeyColumnSuffix(String primaryKeyColumnSuffix) {
@@ -351,6 +375,12 @@ public final class SchemaDomain extends DomainModel {
 			@Override
 			public Builder hideAuditColumns(boolean hideAuditColumns) {
 				this.hideAuditColumns = hideAuditColumns;
+				return this;
+			}
+
+			@Override
+			public Builder lowerCaseIdentifiers(boolean lowerCaseIdentifiers) {
+				this.lowerCaseIdentifiers = lowerCaseIdentifiers;
 				return this;
 			}
 
