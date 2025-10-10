@@ -87,8 +87,10 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	private final @Nullable String caption;
 	private final @Nullable String captionResourceBundleName;
 	private final @Nullable String mnemonicResourceBundleName;
+	private final @Nullable String descriptionResourceBundleName;
 	private final String captionResourceKey;
 	private final String mnemonicResourceKey;
+	private final String descriptionResourceKey;
 	private final ValueSupplier<T> defaultValueSupplier;
 	private final boolean nullable;
 	private final boolean hidden;
@@ -106,6 +108,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	private final @Nullable Map<T, Item<T>> itemMap;
 	private transient @Nullable String resourceCaption;
 	private transient @Nullable Character resourceMnemonic;
+	private transient @Nullable String resourceDescription;
 	private transient @Nullable String dateTimePattern;
 	private transient @Nullable DateTimeFormatter dateTimeFormatter;
 
@@ -115,8 +118,10 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		this.caption = builder.caption;
 		this.captionResourceBundleName = builder.captionResourceBundleName;
 		this.mnemonicResourceBundleName = builder.mnemonicResourceBundleName;
+		this.descriptionResourceBundleName = builder.descriptionResourceBundleName;
 		this.captionResourceKey = builder.captionResourceKey;
 		this.mnemonicResourceKey = builder.mnemonicResourceKey;
+		this.descriptionResourceKey = builder.descriptionResourceKey;
 		this.defaultValueSupplier = builder.defaultValueSupplier;
 		this.nullable = builder.nullable;
 		this.hidden = builder.hidden;
@@ -199,6 +204,17 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 
 	@Override
 	public final Optional<String> description() {
+		if (descriptionResourceBundleName != null) {
+			if (resourceDescription == null) {
+				ResourceBundle bundle = getBundle(descriptionResourceBundleName);
+				resourceDescription = bundle.containsKey(descriptionResourceKey) ? bundle.getString(descriptionResourceKey) : "";
+			}
+
+			if (!resourceDescription.isEmpty()) {
+				return Optional.of(resourceDescription);
+			}
+		}
+
 		return Optional.ofNullable(description);
 	}
 
@@ -528,8 +544,10 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		private ValueSupplier<T> defaultValueSupplier;
 		private @Nullable String captionResourceBundleName;
 		private @Nullable String mnemonicResourceBundleName;
+		private @Nullable String descriptionResourceBundleName;
 		private String captionResourceKey;
 		private String mnemonicResourceKey;
+		private String descriptionResourceKey;
 		private boolean nullable;
 		private boolean hidden;
 		private int maximumLength;
@@ -552,8 +570,10 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 			comparator = defaultComparator(attribute);
 			captionResourceBundleName = attribute.entityType().resourceBundleName().orElse(null);
 			mnemonicResourceBundleName = captionResourceBundleName;
+			descriptionResourceBundleName = captionResourceBundleName;
 			captionResourceKey = attribute.name();
 			mnemonicResourceKey = captionResourceKey + MNEMONIC_RESOURCE_SUFFIX;
+			descriptionResourceKey = captionResourceKey + DESCRIPTION_RESOURCE_SUFFIX;
 			hidden = resourceNotFound(captionResourceBundleName, captionResourceKey);
 			nullable = true;
 			maximumLength = attribute.type().isCharacter() ? 1 : -1;
@@ -700,6 +720,26 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		@Override
 		public final B description(String description) {
 			this.description = description;
+			return self();
+		}
+
+		@Override
+		public final B descriptionResource(String descriptionResourceKey) {
+			return descriptionResource(attribute.entityType().resourceBundleName().orElseThrow(() ->
+							new IllegalStateException("No resource bundle specified for entity: " + attribute.entityType())), descriptionResourceKey);
+		}
+
+		@Override
+		public final B descriptionResource(String resourceBundleName, String descriptionResourceKey) {
+			if (description != null) {
+				throw new IllegalStateException("Description has already been set for attribute: " + attribute);
+			}
+			requireNonNull(descriptionResourceKey);
+			if (resourceNotFound(requireNonNull(resourceBundleName), requireNonNull(descriptionResourceKey))) {
+				throw new IllegalArgumentException("Resource " + descriptionResourceKey + " not found in bundle: " + resourceBundleName);
+			}
+			this.descriptionResourceBundleName = resourceBundleName;
+			this.descriptionResourceKey = descriptionResourceKey;
 			return self();
 		}
 

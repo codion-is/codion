@@ -256,20 +256,19 @@ public final class AttributeDefinitionTest {
 	@Test
 	void i18n() throws IOException, ClassNotFoundException {
 		AttributeDefinition<Integer> attributeDefinition =
-						ENTITY_TYPE.integerColumn("i18n").define().column()
-										.captionResource("test")
-										.mnemonicResource("test.mnemonic")
-										.build();
+						ENTITY_TYPE.integerColumn("test").define().column().build();
 
 		Locale.setDefault(new Locale("en", "EN"));
 		assertEquals("Test", attributeDefinition.caption());
 		assertEquals('T', attributeDefinition.mnemonic());
+		assertEquals("Description", attributeDefinition.description().orElse(null));
 
 		attributeDefinition = Serializer.deserialize(Serializer.serialize(attributeDefinition));
 
 		Locale.setDefault(new Locale("is", "IS"));
 		assertEquals("Prufa", attributeDefinition.caption());
 		assertEquals('P', attributeDefinition.mnemonic());
+		assertEquals("Lysing", attributeDefinition.description().orElse(null));
 
 		assertThrows(IllegalStateException.class, () -> ENTITY_TYPE2.integerColumn("i18n").define().column()
 						.captionResource("key"));

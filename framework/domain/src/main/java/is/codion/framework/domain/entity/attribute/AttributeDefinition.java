@@ -142,6 +142,15 @@ public sealed interface AttributeDefinition<T>
 	String MNEMONIC_RESOURCE_SUFFIX = ".mnemonic";
 
 	/**
+	 * The suffix used for the description resource key.
+	 * <ul>
+	 * <li>name=Name
+	 * <li>name.description=The customer name
+	 * </ul>
+	 */
+	String DESCRIPTION_RESOURCE_SUFFIX = ".description";
+
+	/**
 	 * The default maximum fraction digits for floating point numbers
 	 */
 	int DEFAULT_FRACTION_DIGITS = 10;
@@ -624,6 +633,29 @@ public sealed interface AttributeDefinition<T>
 		 * @return this builder instance
 		 */
 		B description(String description);
+
+		/**
+		 * Specifies the key to use when retrieving the description for this attribute from the entity resource bundle,
+		 * in case it differs from {@link Attribute#name()} + {@link #DESCRIPTION_RESOURCE_SUFFIX}, which is the default value.
+		 * @param descriptionResourceKey the description resource bundle key
+		 * @return this builder instance
+		 * @throws IllegalStateException in case the description has already been set
+		 * @throws IllegalStateException in case no resource bundle is specified for the entity
+		 * @throws IllegalStateException in case the description resource is not found in the entity resource bundle
+		 * @see EntityType#resourceBundleName()
+		 */
+		B descriptionResource(String descriptionResourceKey);
+
+		/**
+		 * Specifies the key to use when retrieving the description for this attribute from the entity resource bundle,
+		 * in case it differs from {@link Attribute#name()} + {@link #DESCRIPTION_RESOURCE_SUFFIX}, which is the default value.
+		 * @param resourceBundleName the resource bundle name
+		 * @param descriptionResourceKey the description resource bundle key
+		 * @return this builder instance
+		 * @throws IllegalStateException in case the description has already been set
+		 * @throws IllegalStateException in case the description resource is not found in the given resource bundle
+		 */
+		B descriptionResource(String resourceBundleName, String descriptionResourceKey);
 
 		/**
 		 * @param comparator the Comparator to use when comparing values for this attribute
