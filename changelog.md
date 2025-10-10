@@ -12,6 +12,7 @@ Codion Change Log
 ### is.codion.tools.generator.domain
 - DomainSource bug fixed, api package corrected.
 - DomainSource, now writes i18n properties files.
+- DomainSource.Builder added.
 ### is.codion.tools.generator.panel
 - DomainGeneratorPanel, i18n now configurable.
 

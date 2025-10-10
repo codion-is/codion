@@ -58,7 +58,6 @@ import java.util.regex.Pattern;
 import static is.codion.common.Configuration.stringValue;
 import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.common.value.Value.Notify.SET;
-import static is.codion.tools.generator.domain.DomainSource.domainSource;
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.Objects.nonNull;
@@ -208,10 +207,14 @@ public final class DomainGeneratorModel {
 		if (schemaTableModel.selection().empty().not().is()) {
 			SchemaDomain domain = selectedDomain();
 			if (domain != null) {
-				domainSource(domain)
-								.writeApiImpl(domainPackageValue.optional()
-												.filter(DomainGeneratorModel::validPackageName)
-																.orElse(""), dtoEntities(), i18n.is(),
+				DomainSource.builder()
+								.domain(domain)
+								.domainPackage(domainPackageValue.optional()
+												.filter(DomainGeneratorModel::validPackageName).orElse(""))
+								.dtos(dtoEntities())
+								.i18n(i18n.is())
+								.build()
+								.writeApiImpl(
 												sourcePath(Path.of(sourceDirectoryValue.getOrThrow()), "java"),
 												sourcePath(Path.of(sourceDirectoryValue.getOrThrow()), "resources"));
 			}
@@ -222,10 +225,14 @@ public final class DomainGeneratorModel {
 		if (schemaTableModel.selection().empty().not().is()) {
 			SchemaDomain domain = selectedDomain();
 			if (domain != null) {
-				domainSource(domain)
-								.writeCombined(domainPackageValue.optional()
-												.filter(DomainGeneratorModel::validPackageName)
-																.orElse(""), dtoEntities(), i18n.is(),
+				DomainSource.builder()
+								.domain(domain)
+								.domainPackage(domainPackageValue.optional()
+												.filter(DomainGeneratorModel::validPackageName).orElse(""))
+								.dtos(dtoEntities())
+								.i18n(i18n.is())
+								.build()
+								.writeCombined(
 												sourcePath(Path.of(sourceDirectoryValue.getOrThrow()), "java"),
 												sourcePath(Path.of(sourceDirectoryValue.getOrThrow()), "resources"));
 			}
@@ -296,15 +303,18 @@ public final class DomainGeneratorModel {
 	}
 
 	private void updateDomainSource() {
-		SchemaDomain selectedDomain = selectedDomain();
-		if (selectedDomain != null) {
-			DomainSource domainSource = domainSource(selectedDomain);
-			String domainPackage = domainPackageValue.optional()
-							.filter(DomainGeneratorModel::validPackageName)
-							.orElse("");
-			domainApiValue.set(domainSource.api(domainPackage, dtoEntities(), i18n.is()));
-			domainImplValue.set(domainSource.implementation(domainPackage, i18n.is()));
-			domainCombinedValue.set(domainSource.combined(domainPackage, dtoEntities(), i18n.is()));
+		SchemaDomain domain = selectedDomain();
+		if (domain != null) {
+			DomainSource domainSource = DomainSource.builder()
+							.domain(domain)
+							.domainPackage(domainPackageValue.optional()
+											.filter(DomainGeneratorModel::validPackageName).orElse(""))
+							.dtos(dtoEntities())
+							.i18n(i18n.is())
+							.build();
+			domainApiValue.set(domainSource.api());
+			domainImplValue.set(domainSource.implementation());
+			domainCombinedValue.set(domainSource.combined());
 		}
 		else {
 			domainApiValue.clear();

@@ -62,6 +62,7 @@ import static com.palantir.javapoet.MethodSpec.methodBuilder;
 import static com.palantir.javapoet.TypeSpec.classBuilder;
 import static com.palantir.javapoet.TypeSpec.interfaceBuilder;
 import static is.codion.common.Text.nullOrEmpty;
+import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
 import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
@@ -71,7 +72,7 @@ import static java.util.stream.Stream.concat;
 import static javax.lang.model.element.Modifier.*;
 
 /**
- * For instances use the factory method {@link #domainSource(Domain)}.
+ * For instances use the builder provded by {@link #builder()}.
  */
 public final class DomainSource {
 
@@ -85,39 +86,45 @@ public final class DomainSource {
 	private final String domainInterfaceName;
 	private final List<EntityDefinition> sortedDefinitions;
 
-	private DomainSource(Domain domain) {
-		this.domain = requireNonNull(domain);
+	private final String domainPackage;
+	private final Set<EntityType> dtos;
+	private final boolean i18n;
+
+	private DomainSource(DefaultBuilder builder) {
+		this.domain = builder.domain;
 		this.domainInterfaceName = interfaceName(requireNonNull(domain).type().name(), true);
 		this.sortedDefinitions = sortDefinitions(domain);
+		this.domainPackage = builder.domainPackage;
+		this.dtos = builder.dtos;
+		this.i18n = builder.i18n;
 	}
 
 	/**
-	 * @param domainPackage the domain package.
-	 * @param dtos the entity types for which to define dtos
-	 * @param i18n true if i18n resources are being used
+	 * @return a new {@link DomainSource.Builder.DomainStep} instance.
+	 */
+	public static Builder.DomainStep builder() {
+		return new DefaultBuilder.DefaultDomainStep();
+	}
+
+	/**
 	 * @return the api source code.
 	 */
-	public String api(String domainPackage, Set<EntityType> dtos, boolean i18n) {
-		return toApiString(requireNonNull(domainPackage) + ".api", dtos, i18n);
+	public String api() {
+		return toApiString(domainPackage + ".api", dtos, i18n);
 	}
 
 	/**
-	 * @param domainPackage the domain package.
-	 * @param i18n true if i18n resources are being used
 	 * @return the implementation source code.
 	 */
-	public String implementation(String domainPackage, boolean i18n) {
-		return toImplementationString(requireNonNull(domainPackage), i18n);
+	public String implementation() {
+		return toImplementationString(domainPackage, i18n);
 	}
 
 	/**
-	 * @param domainPackage the domain package.
-	 * @param dtos the entity types for which to define dtos
-	 * @param i18n true if i18n resources are being used
 	 * @return the combined source code of the api and implementation.
 	 */
-	public String combined(String domainPackage, Set<EntityType> dtos, boolean i18n) {
-		return toCombinedString(requireNonNull(domainPackage), dtos, i18n);
+	public String combined() {
+		return toCombinedString(domainPackage, dtos, i18n);
 	}
 
 	/**
@@ -147,20 +154,17 @@ public final class DomainSource {
 
 	/**
 	 * Writes the api and implementation source code to the given path.
-	 * @param domainPackage the domain package.
-	 * @param dtos the entity types for which to define dtos
-	 * @param i18n true if i18n resource files should be written
 	 * @param sourcePath the path to write the source files to
 	 * @param resourcePath the path to write the resources to
 	 * @throws IOException in case of an I/O error.
 	 */
-	public void writeApiImpl(String domainPackage, Set<EntityType> dtos, boolean i18n, Path sourcePath, Path resourcePath) throws IOException {
+	public void writeApiImpl(Path sourcePath, Path resourcePath) throws IOException {
 		String interfaceName = interfaceName(domain.type().name(), true);
 		Files.createDirectories(requireNonNull(sourcePath).resolve("api"));
 		Path filePath = sourcePath.resolve("api").resolve(interfaceName + ".java");
-		Files.write(filePath, singleton(api(requireNonNull(domainPackage), dtos, i18n)));
+		Files.write(filePath, singleton(api()));
 		filePath = sourcePath.resolve(interfaceName + "Impl.java");
-		Files.write(filePath, singleton(implementation(domainPackage, i18n)));
+		Files.write(filePath, singleton(implementation()));
 		if (i18n) {
 			writeI18n(resourcePath, true);
 		}
@@ -168,29 +172,58 @@ public final class DomainSource {
 
 	/**
 	 * Writes the combined source code to the given path.
-	 * @param domainPackage the domain package.
-	 * @param dtos the entity types for which to define dtos
-	 * @param i18n true if i18n resource files should be written
 	 * @param sourcePath the path to write the source files to
 	 * @param resourcePath the path to write the resources to
 	 * @throws IOException in case of an I/O error.
 	 */
-	public void writeCombined(String domainPackage, Set<EntityType> dtos, boolean i18n, Path sourcePath, Path resourcePath) throws IOException {
+	public void writeCombined(Path sourcePath, Path resourcePath) throws IOException {
 		String interfaceName = interfaceName(domain.type().name(), true);
 		Files.createDirectories(requireNonNull(sourcePath));
-		Files.write(sourcePath.resolve(interfaceName + ".java"), singleton(combined(requireNonNull(domainPackage), dtos, i18n)));
+		Files.write(sourcePath.resolve(interfaceName + ".java"), singleton(combined()));
 		if (i18n) {
 			writeI18n(resourcePath, false);
 		}
 	}
 
 	/**
-	 * Instantiates a new {@link DomainSource} instance.
-	 * @param domain the domain model for which to generate the source code.
-	 * @return a new {@link DomainSource} instance.
+	 * Builds a {@link DomainSource} instance
 	 */
-	public static DomainSource domainSource(Domain domain) {
-		return new DomainSource(domain);
+	public interface Builder {
+
+		/**
+		 * The first step in building a {@link DomainSource} instance
+		 */
+		interface DomainStep {
+
+			/**
+			 * @param domain the domain model
+			 * @return a new {@link Builder}
+			 */
+			Builder domain(Domain domain);
+		}
+
+		/**
+		 * @param domainPackage the domain package
+		 * @return this builder
+		 */
+		Builder domainPackage(String domainPackage);
+
+		/**
+		 * @param dtos the entity types for which to define dtos
+		 * @return this builder
+		 */
+		Builder dtos(Set<EntityType> dtos);
+
+		/**
+		 * @param i18n true if i18n resources are being used
+		 * @return this builder
+		 */
+		Builder i18n(boolean i18n);
+
+		/**
+		 * @return a new {@link DomainSource} instance
+		 */
+		DomainSource build();
 	}
 
 	private void writeI18n(Path resourcePath, boolean api) throws IOException {
@@ -852,6 +885,50 @@ public final class DomainSource {
 			}
 
 			return 0;
+		}
+	}
+
+	private static final class DefaultBuilder implements Builder {
+
+		private final Domain domain;
+
+		private String domainPackage = "no.package";
+		private Set<EntityType> dtos = emptySet();
+		private boolean i18n = false;
+
+		private DefaultBuilder(Domain domain) {
+			this.domain = domain;
+		}
+
+		private static final class DefaultDomainStep implements DomainStep {
+
+			@Override
+			public Builder domain(Domain domain) {
+				return new DefaultBuilder(requireNonNull(domain));
+			}
+		}
+
+		@Override
+		public Builder domainPackage(String domainPackage) {
+			this.domainPackage = requireNonNull(domainPackage);
+			return this;
+		}
+
+		@Override
+		public Builder dtos(Set<EntityType> dtos) {
+			this.dtos = new HashSet<>(requireNonNull(dtos));
+			return this;
+		}
+
+		@Override
+		public Builder i18n(boolean i18n) {
+			this.i18n = i18n;
+			return this;
+		}
+
+		@Override
+		public DomainSource build() {
+			return new DomainSource(this);
 		}
 	}
 }

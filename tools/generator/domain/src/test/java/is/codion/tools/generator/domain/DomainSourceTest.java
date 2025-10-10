@@ -51,7 +51,7 @@ public final class DomainSourceTest {
 							.auditColumnNames("insert_user", "insert_time")
 							.hideAuditColumns(true)
 							.build());
-			String donainPackage = "is.codion.petstore.domain";
+			String domainPackage = "is.codion.petstore.domain";
 			Set<EntityType> dtos = schemaDomain.entities().definitions().stream()
 							.map(EntityDefinition::type)
 							.collect(toSet());
@@ -59,13 +59,23 @@ public final class DomainSourceTest {
 							entityType.name().equalsIgnoreCase("petstore.tag") ||
 											entityType.name().equalsIgnoreCase("petstore.tag_item") ||
 											entityType.name().equalsIgnoreCase("petstore.address"));
-			DomainSource domainSource = DomainSource.domainSource(schemaDomain);
+			DomainSource domainSource = DomainSource.builder()
+							.domain(schemaDomain)
+							.domainPackage(domainPackage)
+							.dtos(dtos)
+							.i18n(true)
+							.build();
 			String petstoreApi = textFileContents(DomainSourceTest.class, "PetstoreAPI.java");
-			assertEquals(petstoreApi, domainSource.api(donainPackage, dtos, true));
+			assertEquals(petstoreApi, domainSource.api());
 			String petstoreImpl = textFileContents(DomainSourceTest.class, "PetstoreImpl.java");
-			assertEquals(petstoreImpl, domainSource.implementation(donainPackage, true));
+			assertEquals(petstoreImpl, domainSource.implementation());
+			domainSource = DomainSource.builder()
+							.domain(schemaDomain)
+							.domainPackage(domainPackage)
+							.dtos(dtos)
+							.build();
 			String petstoreCombined = textFileContents(DomainSourceTest.class, "Petstore.java");
-			assertEquals(petstoreCombined, domainSource.combined(donainPackage, dtos, false));
+			assertEquals(petstoreCombined, domainSource.combined());
 			String productProperties = textFileContents(DomainSourceTest.class, "petstore_product.properties");
 			assertEquals(productProperties, domainSource.i18n(schemaDomain.entities().definition("petstore.product").type()));
 		}
@@ -76,13 +86,17 @@ public final class DomainSourceTest {
 		try (Connection connection = Database.instance().createConnection(UNIT_TEST_USER)) {
 			SchemaDomain schemaDomain = SchemaDomain.schemaDomain(connection.getMetaData(), "CHINOOK");
 			String domainPackage = "is.codion.chinook.domain";
-			DomainSource domainSource = DomainSource.domainSource(schemaDomain);
+			DomainSource domainSource = DomainSource.builder()
+							.domain(schemaDomain)
+							.domainPackage(domainPackage)
+							.dtos(entityTypes(schemaDomain))
+							.build();
 			String chinookApi = textFileContents(DomainSourceTest.class, "ChinookAPI.java");
-			assertEquals(chinookApi, domainSource.api(domainPackage, entityTypes(schemaDomain), false));
+			assertEquals(chinookApi, domainSource.api());
 			String chinookImpl = textFileContents(DomainSourceTest.class, "ChinookImpl.java");
-			assertEquals(chinookImpl, domainSource.implementation(domainPackage, false));
+			assertEquals(chinookImpl, domainSource.implementation());
 			String chinookCombined = textFileContents(DomainSourceTest.class, "Chinook.java");
-			assertEquals(chinookCombined, domainSource.combined(domainPackage, entityTypes(schemaDomain), false));
+			assertEquals(chinookCombined, domainSource.combined());
 		}
 	}
 
@@ -93,13 +107,17 @@ public final class DomainSourceTest {
 							.viewSuffix("_v")
 							.build());
 			String domainPackage = "is.codion.world.domain";
-			DomainSource domainSource = DomainSource.domainSource(schemaDomain);
+			DomainSource domainSource = DomainSource.builder()
+							.domain(schemaDomain)
+							.domainPackage(domainPackage)
+							.dtos(entityTypes(schemaDomain))
+							.build();
 			String worldApi = textFileContents(DomainSourceTest.class, "WorldAPI.java");
-			assertEquals(worldApi, domainSource.api(domainPackage, entityTypes(schemaDomain), false));
+			assertEquals(worldApi, domainSource.api());
 			String worldImpl = textFileContents(DomainSourceTest.class, "WorldImpl.java");
-			assertEquals(worldImpl, domainSource.implementation(domainPackage, false));
+			assertEquals(worldImpl, domainSource.implementation());
 			String worldCombined = textFileContents(DomainSourceTest.class, "World.java");
-			assertEquals(worldCombined, domainSource.combined(domainPackage, entityTypes(schemaDomain), false));
+			assertEquals(worldCombined, domainSource.combined());
 		}
 	}
 
