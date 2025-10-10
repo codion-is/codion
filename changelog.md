@@ -15,6 +15,7 @@ Codion Change Log
 - DomainSource.Builder added.
 ### is.codion.tools.generator.panel
 - DomainGeneratorPanel, i18n now configurable.
+- DomainGeneratorPanel.USER configuration property added, for skipping the login dialog.
 
 ## 0.18.53
 ### is.codion.common.db

@@ -88,7 +88,18 @@ import static javax.swing.JOptionPane.*;
 public final class DomainGeneratorPanel extends JPanel {
 
 	/**
-	 * The default user on the form username:password or just username.
+	 * The user on the form username:password or just username in case no password is required.
+	 * If a user is specified no login dialog is presented.
+	 * <ul>
+	 * <li>Value type: String
+	 * <li>Default value: null
+	 * </ul>
+	 */
+	public static final PropertyValue<String> USER =
+					stringValue("codion.domain.generator.user");
+
+	/**
+	 * The default user credentials to present in the login dialog, on the form username:password or just username.
 	 * <ul>
 	 * <li>Value type: String
 	 * <li>Default value: null
@@ -553,17 +564,23 @@ public final class DomainGeneratorPanel extends JPanel {
 	private static void start() {
 		Database database = Database.instance();
 		if (USER_REQUIRED.getOrThrow()) {
-			new DomainGeneratorPanel(domainGeneratorModel(database, Dialogs.login()
-							.icon(Logos.logoTransparent())
-							.defaultUser(DEFAULT_USER.optional()
-											.map(User::parse)
-											.orElse(null))
-							.validator(user -> database.createConnection(user).close())
-							.show())).showFrame();
+			new DomainGeneratorPanel(domainGeneratorModel(database, user(database))).showFrame();
 		}
 		else {
 			new DomainGeneratorPanel(domainGeneratorModel(database)).showFrame();
 		}
+	}
+
+	private static User user(Database database) {
+		return USER.optional()
+						.map(User::parse)
+						.orElseGet(Dialogs.login()
+										.icon(Logos.logoTransparent())
+										.defaultUser(DEFAULT_USER.optional()
+														.map(User::parse)
+														.orElse(null))
+										.validator(user -> database.createConnection(user).close())
+										::show);
 	}
 
 	private static final class SchemaSettingsPanel extends JPanel {

@@ -43,7 +43,7 @@ application {
     applicationDefaultJvmArgs += listOf(
         "-Dcodion.db.url=jdbc:h2:mem:h2db",
         "-Dcodion.db.initScripts=$scriptPaths",
-        "-Dcodion.domain.generator.defaultUser=sa",
+        "-Dcodion.domain.generator.user=sa",
     )
 //    applicationDefaultJvmArgs += listOf(
 //        "-Dcodion.db.url=jdbc:postgresql://localhost:5432/postgres"
