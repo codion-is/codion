@@ -622,15 +622,18 @@ public final class DomainSource {
 
 	private static String createAttribute(AttributeDefinition<?> attributeDefinition,
 																				EntityDefinition definition, String interfaceName, boolean i18n) {
+		AttributeDefinitionFormatter formatter = new AttributeDefinitionFormatter(interfaceName, i18n);
 		if (attributeDefinition instanceof ColumnDefinition) {
 			ColumnDefinition<?> columnDefinition = (ColumnDefinition<?>) attributeDefinition;
-
-			return columnDefinition(interfaceName, columnDefinition,
+			ColumnContext context = new ColumnContext(
 							definition.foreignKeys().foreignKeyColumn(columnDefinition.attribute()),
-							definition.primaryKey().columns().size() > 1, definition.readOnly(), i18n);
+							definition.primaryKey().columns().size() > 1,
+							definition.readOnly());
+
+			return formatter.formatColumn(columnDefinition, context);
 		}
 
-		return foreignKeyDefinition(interfaceName, (ForeignKeyDefinition) attributeDefinition, i18n);
+		return formatter.formatForeignKey((ForeignKeyDefinition) attributeDefinition);
 	}
 
 	private static void appendAttribute(TypeSpec.Builder interfaceBuilder, Attribute<?> attribute) {
@@ -680,83 +683,12 @@ public final class DomainSource {
 						.collect(joining(", "));
 	}
 
-	private static String foreignKeyDefinition(String interfaceName, ForeignKeyDefinition definition, boolean i18n) {
-		String foreignKeyName = definition.attribute().name().toUpperCase();
-
-		StringBuilder builder = new StringBuilder().append(DOUBLE_INDENT).append(interfaceName)
-						.append(".").append(foreignKeyName).append(".define()")
-						.append(LINE_SEPARATOR).append(TRIPLE_INDENT)
-						.append(".foreignKey()");
-		if (!i18n) {
-			builder.append(LINE_SEPARATOR)
-							.append(TRIPLE_INDENT).append(".caption(\"").append(definition.caption()).append("\")");
-		}
-
-		return builder.toString();
-	}
-
-	private static String columnDefinition(String interfaceName, ColumnDefinition<?> column,
-																				 boolean foreignKeyColumn, boolean compositePrimaryKey, boolean readOnlyEntity, boolean i18n) {
-		StringBuilder builder = new StringBuilder(DOUBLE_INDENT)
-						.append(interfaceName).append(".").append(column.name().toUpperCase()).append(".define()")
-						.append(LINE_SEPARATOR).append(TRIPLE_INDENT)
-						.append(".").append(definitionType(column, compositePrimaryKey));
-		if (!i18n && !foreignKeyColumn && !column.primaryKey()) {
-			builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".caption(").append("\"").append(column.caption()).append("\")");
-		}
-		if (!readOnlyEntity) {
-			if (column.readOnly()) {
-				builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".readOnly(true)");
-			}
-			else {
-				if (!column.nullable() && !column.primaryKey()) {
-					builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".nullable(false)");
-				}
-				if (!column.insertable()) {
-					builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".insertable(false)");
-				}
-				else if (column.withDefault()) {
-					builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".withDefault(true)");
-				}
-				if (!column.updatable() && !column.primaryKey()) {
-					builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".updatable(false)");
-				}
-				if (column.attribute().type().isString() && column.maximumLength() != -1) {
-					builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".maximumLength(")
-									.append(column.maximumLength()).append(")");
-				}
-			}
-		}
-		if (!column.selected()) {
-			builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".selected(false)");
-		}
-		if (column.attribute().type().isDecimal() && column.fractionDigits() >= 1) {
-			builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".fractionDigits(")
-							.append(column.fractionDigits()).append(")");
-		}
-		if (!i18n) {
-			column.description().ifPresent(description ->
-							builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT)
-											.append(".description(").append("\"").append(description).append("\")"));
-		}
-
-		return builder.toString();
-	}
-
 	private static String attributeTypePrefix(String valueClassName) {
 		if ("byte[]".equals(valueClassName)) {
 			return "byteArray";
 		}
 
 		return valueClassName.substring(0, 1).toLowerCase() + valueClassName.substring(1);
-	}
-
-	private static String definitionType(ColumnDefinition<?> column, boolean compositePrimaryKey) {
-		if (column.primaryKey()) {
-			return compositePrimaryKey ? "primaryKey(" + column.keyIndex() + ")" : "primaryKey()";
-		}
-
-		return "column()";
 	}
 
 	// ========================================
@@ -939,6 +871,104 @@ public final class DomainSource {
 	// ========================================
 	// Inner Classes
 	// ========================================
+
+	/**
+	 * Context information needed for formatting column definitions.
+	 */
+	private static final class ColumnContext {
+
+		private final boolean foreignKeyColumn;
+		private final boolean compositePrimaryKey;
+		private final boolean readOnlyEntity;
+
+		private ColumnContext(boolean foreignKeyColumn, boolean compositePrimaryKey, boolean readOnlyEntity) {
+			this.foreignKeyColumn = foreignKeyColumn;
+			this.compositePrimaryKey = compositePrimaryKey;
+			this.readOnlyEntity = readOnlyEntity;
+		}
+	}
+
+	/**
+	 * Formats attribute definitions as source code strings.
+	 */
+	private static final class AttributeDefinitionFormatter {
+		private final String interfaceName;
+		private final boolean i18n;
+
+		AttributeDefinitionFormatter(String interfaceName, boolean i18n) {
+			this.interfaceName = interfaceName;
+			this.i18n = i18n;
+		}
+
+		String formatColumn(ColumnDefinition<?> column, ColumnContext context) {
+			StringBuilder builder = new StringBuilder(DOUBLE_INDENT)
+							.append(interfaceName).append(".").append(column.name().toUpperCase()).append(".define()")
+							.append(LINE_SEPARATOR).append(TRIPLE_INDENT)
+							.append(".").append(definitionType(column, context.compositePrimaryKey));
+			if (!i18n && !context.foreignKeyColumn && !column.primaryKey()) {
+				builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".caption(").append("\"").append(column.caption()).append("\")");
+			}
+			if (!context.readOnlyEntity) {
+				if (column.readOnly()) {
+					builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".readOnly(true)");
+				}
+				else {
+					if (!column.nullable() && !column.primaryKey()) {
+						builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".nullable(false)");
+					}
+					if (!column.insertable()) {
+						builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".insertable(false)");
+					}
+					else if (column.withDefault()) {
+						builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".withDefault(true)");
+					}
+					if (!column.updatable() && !column.primaryKey()) {
+						builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".updatable(false)");
+					}
+					if (column.attribute().type().isString() && column.maximumLength() != -1) {
+						builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".maximumLength(")
+										.append(column.maximumLength()).append(")");
+					}
+				}
+			}
+			if (!column.selected()) {
+				builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".selected(false)");
+			}
+			if (column.attribute().type().isDecimal() && column.fractionDigits() >= 1) {
+				builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".fractionDigits(")
+								.append(column.fractionDigits()).append(")");
+			}
+			if (!i18n) {
+				column.description().ifPresent(description ->
+								builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT)
+												.append(".description(").append("\"").append(description).append("\")"));
+			}
+
+			return builder.toString();
+		}
+
+		private String formatForeignKey(ForeignKeyDefinition definition) {
+			String foreignKeyName = definition.attribute().name().toUpperCase();
+			StringBuilder builder = new StringBuilder().append(DOUBLE_INDENT).append(interfaceName)
+							.append(".").append(foreignKeyName).append(".define()")
+							.append(LINE_SEPARATOR).append(TRIPLE_INDENT)
+							.append(".foreignKey()");
+			if (!i18n) {
+				builder.append(LINE_SEPARATOR)
+								.append(TRIPLE_INDENT).append(".caption(\"").append(definition.caption()).append("\")");
+			}
+
+			return builder.toString();
+		}
+
+		private static String definitionType(ColumnDefinition<?> column, boolean compositePrimaryKey) {
+			if (column.primaryKey()) {
+				return compositePrimaryKey ? "primaryKey(" + column.keyIndex() + ")" : "primaryKey()";
+			}
+
+			return "column()";
+		}
+	}
 
 	private static final class DependencyOrder implements Comparator<EntityDefinition> {
 
