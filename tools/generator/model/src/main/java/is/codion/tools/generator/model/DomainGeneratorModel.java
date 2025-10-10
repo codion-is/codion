@@ -105,7 +105,10 @@ public final class DomainGeneratorModel {
 									.build();
 	private final Database database;
 	private final User user;
-	private final State includeDto = State.builder()
+	private final State dtos = State.builder()
+					.listener(this::updateDomainSource)
+					.build();
+	private final State i18n = State.builder()
 					.listener(this::updateDomainSource)
 					.build();
 	private final State domainPackageSpecified = State.state();
@@ -164,8 +167,12 @@ public final class DomainGeneratorModel {
 		return domainCombinedValue.observable();
 	}
 
-	public State includeDto() {
-		return includeDto;
+	public State dtos() {
+		return dtos;
+	}
+
+	public State i18n() {
+		return i18n;
 	}
 
 	public Value<String> domainPackage() {
@@ -204,7 +211,9 @@ public final class DomainGeneratorModel {
 				domainSource(domain)
 								.writeApiImpl(domainPackageValue.optional()
 												.filter(DomainGeneratorModel::validPackageName)
-												.orElse(""), dtoEntities(), savePath(Path.of(sourceDirectoryValue.getOrThrow())));
+																.orElse(""), dtoEntities(), i18n.is(),
+												sourcePath(Path.of(sourceDirectoryValue.getOrThrow()), "java"),
+												sourcePath(Path.of(sourceDirectoryValue.getOrThrow()), "resources"));
 			}
 		}
 	}
@@ -216,7 +225,9 @@ public final class DomainGeneratorModel {
 				domainSource(domain)
 								.writeCombined(domainPackageValue.optional()
 												.filter(DomainGeneratorModel::validPackageName)
-												.orElse(""), dtoEntities(), savePath(Path.of(sourceDirectoryValue.getOrThrow())));
+																.orElse(""), dtoEntities(), i18n.is(),
+												sourcePath(Path.of(sourceDirectoryValue.getOrThrow()), "java"),
+												sourcePath(Path.of(sourceDirectoryValue.getOrThrow()), "resources"));
 			}
 		}
 	}
@@ -291,9 +302,9 @@ public final class DomainGeneratorModel {
 			String domainPackage = domainPackageValue.optional()
 							.filter(DomainGeneratorModel::validPackageName)
 							.orElse("");
-			domainApiValue.set(domainSource.api(domainPackage, dtoEntities()));
-			domainImplValue.set(domainSource.implementation(domainPackage));
-			domainCombinedValue.set(domainSource.combined(domainPackage, dtoEntities()));
+			domainApiValue.set(domainSource.api(domainPackage, dtoEntities(), i18n.is()));
+			domainImplValue.set(domainSource.implementation(domainPackage, i18n.is()));
+			domainCombinedValue.set(domainSource.combined(domainPackage, dtoEntities(), i18n.is()));
 		}
 		else {
 			domainApiValue.clear();
@@ -303,7 +314,7 @@ public final class DomainGeneratorModel {
 	}
 
 	private Set<EntityType> dtoEntities() {
-		return includeDto.is() ? entityTableModel.items().get()
+		return dtos.is() ? entityTableModel.items().get()
 						.stream()
 						.filter(entityRow -> entityRow.dto)
 						.map(entityRow -> entityRow.definition.type())
@@ -316,7 +327,8 @@ public final class DomainGeneratorModel {
 						.orElse(null);
 	}
 
-	private Path savePath(Path path) {
+	private Path sourcePath(Path path, String dir) {
+		path = path.resolve("src/main/" + dir);
 		String domainPackage = domainPackageValue.get();
 		if (domainPackage != null) {
 			for (String pkg : domainPackage.split("\\.")) {
@@ -428,7 +440,7 @@ public final class DomainGeneratorModel {
 							.filter(Optional::isPresent)
 							.map(Optional::get)
 							.map(domain -> domain.entities().definitions().stream()
-											.map(definition -> new EntityRow(definition, domain.tableType(definition.type()), true))
+											.map(definition -> new EntityRow(definition, domain.tableType(definition.type()), dtos.is()))
 											.collect(toList()))
 							.orElse(emptyList());
 		}

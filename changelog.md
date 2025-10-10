@@ -11,6 +11,9 @@ Codion Change Log
 - SchemaDomain.SchemaSettings.lowerCaseIdentifiers() added.
 ### is.codion.tools.generator.domain
 - DomainSource bug fixed, api package corrected.
+- DomainSource, now writes i18n properties files.
+### is.codion.tools.generator.panel
+- DomainGeneratorPanel, i18n now configurable.
 
 ## 0.18.53
 ### is.codion.common.db

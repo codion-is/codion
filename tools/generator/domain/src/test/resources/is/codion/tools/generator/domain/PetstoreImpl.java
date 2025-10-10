@@ -28,45 +28,35 @@ public final class PetstoreImpl extends DomainModel {
 					.primaryKey(),
 				Address.STREET1.define()
 					.column()
-					.caption("Street1")
 					.nullable(false)
 					.maximumLength(55),
 				Address.STREET2.define()
 					.column()
-					.caption("Street2")
 					.maximumLength(55),
 				Address.CITY.define()
 					.column()
-					.caption("City")
 					.nullable(false)
 					.maximumLength(55),
 				Address.STATE.define()
 					.column()
-					.caption("State")
 					.nullable(false)
 					.maximumLength(25),
 				Address.ZIP.define()
 					.column()
-					.caption("Zip")
 					.nullable(false),
 				Address.LATITUDE.define()
 					.column()
-					.caption("Latitude")
 					.nullable(false)
 					.fractionDigits(2),
 				Address.LONGITUDE.define()
 					.column()
-					.caption("Longitude")
 					.nullable(false)
 					.fractionDigits(2),
 				Address.LOCATION.define()
-					.column()
-					.caption("Location"),
+					.column(),
 				Address.IMAGE.define()
-					.column()
-					.caption("Image"))
+					.column())
 			.keyGenerator(identity())
-			.caption("Address")
 			.build();
 	}
 
@@ -76,20 +66,16 @@ public final class PetstoreImpl extends DomainModel {
 					.primaryKey(),
 				Category.NAME.define()
 					.column()
-					.caption("Name")
 					.nullable(false)
 					.maximumLength(25),
 				Category.DESCRIPTION.define()
 					.column()
-					.caption("Description")
 					.nullable(false)
 					.maximumLength(255),
 				Category.IMAGE_URL.define()
 					.column()
-					.caption("Image url")
 					.maximumLength(55))
 			.keyGenerator(identity())
-			.caption("Category")
 			.build();
 	}
 
@@ -99,33 +85,26 @@ public final class PetstoreImpl extends DomainModel {
 					.primaryKey(),
 				ContactInfo.LAST_NAME.define()
 					.column()
-					.caption("Last name")
 					.nullable(false)
 					.maximumLength(24),
 				ContactInfo.FIRST_NAME.define()
 					.column()
-					.caption("First name")
 					.nullable(false)
 					.maximumLength(24),
 				ContactInfo.EMAIL.define()
 					.column()
-					.caption("Email")
 					.nullable(false)
 					.maximumLength(24))
 			.keyGenerator(identity())
-			.caption("Contact info")
 			.build();
 	}
 
 	static EntityDefinition itemTags() {
 		return ItemTags.TYPE.define(
 				ItemTags.NAME.define()
-					.column()
-					.caption("Name"),
+					.column(),
 				ItemTags.TAG.define()
-					.column()
-					.caption("Tag"))
-			.caption("Item tags")
+					.column())
 			.readOnly(true)
 			.build();
 	}
@@ -136,11 +115,9 @@ public final class PetstoreImpl extends DomainModel {
 					.primaryKey(),
 				Tag.TAG.define()
 					.column()
-					.caption("Tag")
 					.nullable(false)
 					.maximumLength(30))
 			.keyGenerator(identity())
-			.caption("Tag")
 			.build();
 	}
 
@@ -152,34 +129,25 @@ public final class PetstoreImpl extends DomainModel {
 					.column()
 					.nullable(false),
 				Product.CATEGORY_FK.define()
-					.foreignKey()
-					.caption("Category"),
+					.foreignKey(),
 				Product.NAME.define()
 					.column()
-					.caption("Name")
 					.nullable(false)
-					.maximumLength(25)
-					.description("The product name"),
+					.maximumLength(25),
 				Product.DESCRIPTION.define()
 					.column()
-					.caption("Description")
 					.nullable(false)
 					.maximumLength(255),
 				Product.IMAGE_URL.define()
 					.column()
-					.caption("Image url")
 					.maximumLength(55),
 				Product.INSERT_TIME.define()
 					.column()
-					.caption("Insert time")
 					.readOnly(true),
 				Product.INSERT_USER.define()
 					.column()
-					.caption("Insert user")
 					.readOnly(true))
 			.keyGenerator(identity())
-			.caption("Product")
-			.description("The available products")
 			.build();
 	}
 
@@ -191,64 +159,50 @@ public final class PetstoreImpl extends DomainModel {
 					.column()
 					.nullable(false),
 				Item.PRODUCT_FK.define()
-					.foreignKey()
-					.caption("Product"),
+					.foreignKey(),
 				Item.NAME.define()
 					.column()
-					.caption("Name")
 					.nullable(false)
 					.maximumLength(30),
 				Item.DESCRIPTION.define()
 					.column()
-					.caption("Description")
 					.nullable(false)
 					.maximumLength(500),
 				Item.IMAGE_URL.define()
 					.column()
-					.caption("Image url")
 					.maximumLength(55),
 				Item.IMAGE_THUMB_URL.define()
 					.column()
-					.caption("Image thumb url")
 					.maximumLength(55),
 				Item.PRICE.define()
 					.column()
-					.caption("Price")
 					.nullable(false)
 					.fractionDigits(2),
 				Item.ADDRESS_ID.define()
 					.column()
 					.nullable(false),
 				Item.ADDRESS_FK.define()
-					.foreignKey()
-					.caption("Address"),
+					.foreignKey(),
 				Item.CONTACT_INFO_ID.define()
 					.column()
 					.nullable(false),
 				Item.CONTACT_INFO_FK.define()
-					.foreignKey()
-					.caption("Contact info"),
+					.foreignKey(),
 				Item.TOTAL_SCORE.define()
-					.column()
-					.caption("Total score"),
+					.column(),
 				Item.NUMBER_OF_VOTES.define()
-					.column()
-					.caption("Number of votes"),
+					.column(),
 				Item.DISABLED.define()
 					.column()
-					.caption("Disabled")
 					.nullable(false)
 					.withDefault(true),
 				Item.INSERT_TIME.define()
 					.column()
-					.caption("Insert time")
 					.readOnly(true),
 				Item.INSERT_USER.define()
 					.column()
-					.caption("Insert user")
 					.readOnly(true))
 			.keyGenerator(identity())
-			.caption("Item")
 			.build();
 	}
 
@@ -257,14 +211,11 @@ public final class PetstoreImpl extends DomainModel {
 				TagItem.TAG_ID.define()
 					.primaryKey(0),
 				TagItem.TAG_FK.define()
-					.foreignKey()
-					.caption("Tag"),
+					.foreignKey(),
 				TagItem.ITEM_ID.define()
 					.primaryKey(1),
 				TagItem.ITEM_FK.define()
-					.foreignKey()
-					.caption("Item"))
-			.caption("Tag item")
+					.foreignKey())
 			.build();
 	}
 }

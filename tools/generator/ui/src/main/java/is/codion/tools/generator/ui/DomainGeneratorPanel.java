@@ -285,9 +285,11 @@ public final class DomainGeneratorPanel extends JPanel {
 
 		return borderLayoutPanel()
 						.center(borderLayoutPanel()
-										.west(gridLayoutPanel(2, 1)
+										.west(gridLayoutPanel(2, 2)
 														.add(new JLabel(" "))
-														.add(createDtoCheckBox()))
+														.add(new JLabel(" "))
+														.add(createDtoCheckBox())
+														.add(createI18nCheckBox()))
 										.center(gridLayoutPanel(2, 1)
 														.add(packageLabel)
 														.add(createPackageField(packageLabel))))
@@ -324,15 +326,17 @@ public final class DomainGeneratorPanel extends JPanel {
 
 	private JCheckBox createDtoCheckBox() {
 		return checkBox()
-						.link(model.includeDto())
-						.text("Include DTOs")
-						.mnemonic('D')
-						.onBuild(checkBox -> KeyEvents.builder()
-										.keyCode(KeyEvent.VK_D)
-										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-										.modifiers(InputEvent.ALT_DOWN_MASK)
-										.action(command(() -> checkBox.setSelected(!checkBox.isSelected())))
-										.enable(this))
+						.link(model.dtos())
+						.text("DTOs")
+						.mnemonic('T')
+						.build();
+	}
+
+	private JCheckBox createI18nCheckBox() {
+		return checkBox()
+						.link(model.i18n())
+						.text("i18n")
+						.mnemonic('I')
 						.build();
 	}
 
@@ -487,7 +491,7 @@ public final class DomainGeneratorPanel extends JPanel {
 		model.implSearchValue().addConsumer(combinedHighlighter.searchString()::set);
 		model.schemaModel().items().refresher().exception().addConsumer(this::displayException);
 		model.entityModel().items().refresher().exception().addConsumer(this::displayException);
-		model.includeDto().addConsumer(entityTable.columnModel().visible(EntityColumns.DTO)::set);
+		model.dtos().addConsumer(entityTable.columnModel().visible(EntityColumns.DTO)::set);
 	}
 
 	private void setupKeyEvents() {

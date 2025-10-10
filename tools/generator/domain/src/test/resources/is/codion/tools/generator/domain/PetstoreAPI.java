@@ -14,7 +14,7 @@ public interface Petstore {
 	DomainType DOMAIN = domainType(Petstore.class);
 
 	interface Address {
-		EntityType TYPE = DOMAIN.entityType("petstore.address");
+		EntityType TYPE = DOMAIN.entityType("petstore.address", Address.class.getName());
 
 		Column<Integer> ADDRESS_ID = TYPE.integerColumn("address_id");
 		Column<String> STREET1 = TYPE.stringColumn("street1");
@@ -29,7 +29,7 @@ public interface Petstore {
 	}
 
 	interface Category {
-		EntityType TYPE = DOMAIN.entityType("petstore.category");
+		EntityType TYPE = DOMAIN.entityType("petstore.category", Category.class.getName());
 
 		Column<Integer> CATEGORY_ID = TYPE.integerColumn("category_id");
 		Column<String> NAME = TYPE.stringColumn("name");
@@ -57,7 +57,7 @@ public interface Petstore {
 	}
 
 	interface ContactInfo {
-		EntityType TYPE = DOMAIN.entityType("petstore.contact_info");
+		EntityType TYPE = DOMAIN.entityType("petstore.contact_info", ContactInfo.class.getName());
 
 		Column<Integer> CONTACT_INFO_ID = TYPE.integerColumn("contact_info_id");
 		Column<String> LAST_NAME = TYPE.stringColumn("last_name");
@@ -85,7 +85,7 @@ public interface Petstore {
 	}
 
 	interface ItemTags {
-		EntityType TYPE = DOMAIN.entityType("petstore.item_tags");
+		EntityType TYPE = DOMAIN.entityType("petstore.item_tags", ItemTags.class.getName());
 
 		Column<String> NAME = TYPE.stringColumn("name");
 		Column<String> TAG = TYPE.stringColumn("tag");
@@ -107,14 +107,14 @@ public interface Petstore {
 	}
 
 	interface Tag {
-		EntityType TYPE = DOMAIN.entityType("petstore.tag");
+		EntityType TYPE = DOMAIN.entityType("petstore.tag", Tag.class.getName());
 
 		Column<Integer> TAG_ID = TYPE.integerColumn("tag_id");
 		Column<String> TAG = TYPE.stringColumn("tag");
 	}
 
 	interface Product {
-		EntityType TYPE = DOMAIN.entityType("petstore.product");
+		EntityType TYPE = DOMAIN.entityType("petstore.product", Product.class.getName());
 
 		Column<Integer> PRODUCT_ID = TYPE.integerColumn("product_id");
 		Column<Integer> CATEGORY_ID = TYPE.integerColumn("category_id");
@@ -154,7 +154,7 @@ public interface Petstore {
 	}
 
 	interface Item {
-		EntityType TYPE = DOMAIN.entityType("petstore.item");
+		EntityType TYPE = DOMAIN.entityType("petstore.item", Item.class.getName());
 
 		Column<Integer> ITEM_ID = TYPE.integerColumn("item_id");
 		Column<Integer> PRODUCT_ID = TYPE.integerColumn("product_id");
@@ -216,7 +216,7 @@ public interface Petstore {
 	}
 
 	interface TagItem {
-		EntityType TYPE = DOMAIN.entityType("petstore.tag_item");
+		EntityType TYPE = DOMAIN.entityType("petstore.tag_item", TagItem.class.getName());
 
 		Column<Integer> TAG_ID = TYPE.integerColumn("tag_id");
 		Column<Integer> ITEM_ID = TYPE.integerColumn("item_id");

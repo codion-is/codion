@@ -61,11 +61,13 @@ public final class DomainSourceTest {
 											entityType.name().equalsIgnoreCase("petstore.address"));
 			DomainSource domainSource = DomainSource.domainSource(schemaDomain);
 			String petstoreApi = textFileContents(DomainSourceTest.class, "PetstoreAPI.java");
-			assertEquals(petstoreApi, domainSource.api(donainPackage, dtos));
+			assertEquals(petstoreApi, domainSource.api(donainPackage, dtos, true));
 			String petstoreImpl = textFileContents(DomainSourceTest.class, "PetstoreImpl.java");
-			assertEquals(petstoreImpl, domainSource.implementation(donainPackage));
+			assertEquals(petstoreImpl, domainSource.implementation(donainPackage, true));
 			String petstoreCombined = textFileContents(DomainSourceTest.class, "Petstore.java");
-			assertEquals(petstoreCombined, domainSource.combined(donainPackage, dtos));
+			assertEquals(petstoreCombined, domainSource.combined(donainPackage, dtos, false));
+			String productProperties = textFileContents(DomainSourceTest.class, "petstore_product.properties");
+			assertEquals(productProperties, domainSource.i18n(schemaDomain.entities().definition("petstore.product").type()));
 		}
 	}
 
@@ -76,11 +78,11 @@ public final class DomainSourceTest {
 			String domainPackage = "is.codion.chinook.domain";
 			DomainSource domainSource = DomainSource.domainSource(schemaDomain);
 			String chinookApi = textFileContents(DomainSourceTest.class, "ChinookAPI.java");
-			assertEquals(chinookApi, domainSource.api(domainPackage, entityTypes(schemaDomain)));
+			assertEquals(chinookApi, domainSource.api(domainPackage, entityTypes(schemaDomain), false));
 			String chinookImpl = textFileContents(DomainSourceTest.class, "ChinookImpl.java");
-			assertEquals(chinookImpl, domainSource.implementation(domainPackage));
+			assertEquals(chinookImpl, domainSource.implementation(domainPackage, false));
 			String chinookCombined = textFileContents(DomainSourceTest.class, "Chinook.java");
-			assertEquals(chinookCombined, domainSource.combined(domainPackage, entityTypes(schemaDomain)));
+			assertEquals(chinookCombined, domainSource.combined(domainPackage, entityTypes(schemaDomain), false));
 		}
 	}
 
@@ -93,11 +95,11 @@ public final class DomainSourceTest {
 			String domainPackage = "is.codion.world.domain";
 			DomainSource domainSource = DomainSource.domainSource(schemaDomain);
 			String worldApi = textFileContents(DomainSourceTest.class, "WorldAPI.java");
-			assertEquals(worldApi, domainSource.api(domainPackage, entityTypes(schemaDomain)));
+			assertEquals(worldApi, domainSource.api(domainPackage, entityTypes(schemaDomain), false));
 			String worldImpl = textFileContents(DomainSourceTest.class, "WorldImpl.java");
-			assertEquals(worldImpl, domainSource.implementation(domainPackage));
+			assertEquals(worldImpl, domainSource.implementation(domainPackage, false));
 			String worldCombined = textFileContents(DomainSourceTest.class, "World.java");
-			assertEquals(worldCombined, domainSource.combined(domainPackage, entityTypes(schemaDomain)));
+			assertEquals(worldCombined, domainSource.combined(domainPackage, entityTypes(schemaDomain), false));
 		}
 	}
 

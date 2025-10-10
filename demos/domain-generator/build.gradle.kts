@@ -3,6 +3,7 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":codion-framework-domain"))
     implementation(project(":codion-tools-generator-ui"))
 
     runtimeOnly(project(":codion-dbms-h2"))

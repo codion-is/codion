@@ -94,56 +94,94 @@ public final class DomainSource {
 	/**
 	 * @param domainPackage the domain package.
 	 * @param dtos the entity types for which to define dtos
+	 * @param i18n true if i18n resources are being used
 	 * @return the api source code.
 	 */
-	public String api(String domainPackage, Set<EntityType> dtos) {
-		return toApiString(requireNonNull(domainPackage) + ".api", dtos);
+	public String api(String domainPackage, Set<EntityType> dtos, boolean i18n) {
+		return toApiString(requireNonNull(domainPackage) + ".api", dtos, i18n);
 	}
 
 	/**
 	 * @param domainPackage the domain package.
+	 * @param i18n true if i18n resources are being used
 	 * @return the implementation source code.
 	 */
-	public String implementation(String domainPackage) {
-		return toImplementationString(requireNonNull(domainPackage));
+	public String implementation(String domainPackage, boolean i18n) {
+		return toImplementationString(requireNonNull(domainPackage), i18n);
 	}
 
 	/**
 	 * @param domainPackage the domain package.
 	 * @param dtos the entity types for which to define dtos
+	 * @param i18n true if i18n resources are being used
 	 * @return the combined source code of the api and implementation.
 	 */
-	public String combined(String domainPackage, Set<EntityType> dtos) {
-		return toCombinedString(requireNonNull(domainPackage), dtos);
+	public String combined(String domainPackage, Set<EntityType> dtos, boolean i18n) {
+		return toCombinedString(requireNonNull(domainPackage), dtos, i18n);
+	}
+
+	/**
+	 * @param entityType the entity type
+	 * @return the i18n resource file contents for the given entity type
+	 */
+	public String i18n(EntityType entityType) {
+		EntityDefinition definition = domain.entities().definition(entityType);
+		StringBuilder builder = new StringBuilder();
+		builder.append(definition.type().name()).append("=").append(definition.caption()).append(LINE_SEPARATOR);
+		definition.description().ifPresent(description ->
+						builder.append(definition.type().name()).append(".description=")
+										.append("=").append(description).append(LINE_SEPARATOR));
+		definition.attributes().definitions().stream()
+						.filter(attribute -> !generatedPrimaryKeyColumn(definition, attribute))
+						.filter(attribute -> !foreignKeyColumn(definition, attribute))
+						.forEach(attribute -> {
+							builder.append(attribute.attribute().name())
+											.append("=").append(attribute.caption()).append(LINE_SEPARATOR);
+							attribute.description().ifPresent(description ->
+											builder.append(attribute.attribute().name()).append(".description")
+															.append("=").append(description).append(LINE_SEPARATOR));
+						});
+
+		return builder.toString().trim();
 	}
 
 	/**
 	 * Writes the api and implementation source code to the given path.
 	 * @param domainPackage the domain package.
 	 * @param dtos the entity types for which to define dtos
-	 * @param path the path to write the source code to.
+	 * @param i18n true if i18n resource files should be written
+	 * @param sourcePath the path to write the source files to
+	 * @param resourcePath the path to write the resources to
 	 * @throws IOException in case of an I/O error.
 	 */
-	public void writeApiImpl(String domainPackage, Set<EntityType> dtos, Path path) throws IOException {
+	public void writeApiImpl(String domainPackage, Set<EntityType> dtos, boolean i18n, Path sourcePath, Path resourcePath) throws IOException {
 		String interfaceName = interfaceName(domain.type().name(), true);
-		Files.createDirectories(requireNonNull(path).resolve("api"));
-		Path filePath = path.resolve("api").resolve(interfaceName + ".java");
-		Files.write(filePath, singleton(api(requireNonNull(domainPackage), dtos)));
-		filePath = path.resolve(interfaceName + "Impl.java");
-		Files.write(filePath, singleton(implementation(domainPackage)));
+		Files.createDirectories(requireNonNull(sourcePath).resolve("api"));
+		Path filePath = sourcePath.resolve("api").resolve(interfaceName + ".java");
+		Files.write(filePath, singleton(api(requireNonNull(domainPackage), dtos, i18n)));
+		filePath = sourcePath.resolve(interfaceName + "Impl.java");
+		Files.write(filePath, singleton(implementation(domainPackage, i18n)));
+		if (i18n) {
+			writeI18n(resourcePath, true);
+		}
 	}
 
 	/**
 	 * Writes the combined source code to the given path.
 	 * @param domainPackage the domain package.
 	 * @param dtos the entity types for which to define dtos
-	 * @param path the path to write the source code to.
+	 * @param i18n true if i18n resource files should be written
+	 * @param sourcePath the path to write the source files to
+	 * @param resourcePath the path to write the resources to
 	 * @throws IOException in case of an I/O error.
 	 */
-	public void writeCombined(String domainPackage, Set<EntityType> dtos, Path path) throws IOException {
+	public void writeCombined(String domainPackage, Set<EntityType> dtos, boolean i18n, Path sourcePath, Path resourcePath) throws IOException {
 		String interfaceName = interfaceName(domain.type().name(), true);
-		Files.createDirectories(requireNonNull(path));
-		Files.write(path.resolve(interfaceName + ".java"), singleton(combined(requireNonNull(domainPackage), dtos)));
+		Files.createDirectories(requireNonNull(sourcePath));
+		Files.write(sourcePath.resolve(interfaceName + ".java"), singleton(combined(requireNonNull(domainPackage), dtos, i18n)));
+		if (i18n) {
+			writeI18n(resourcePath, false);
+		}
 	}
 
 	/**
@@ -155,7 +193,19 @@ public final class DomainSource {
 		return new DomainSource(domain);
 	}
 
-	private String toApiString(String sourcePackage, Set<EntityType> dtos) {
+	private void writeI18n(Path resourcePath, boolean api) throws IOException {
+		requireNonNull(resourcePath);
+		if (api) {
+			resourcePath = resourcePath.resolve("api");
+		}
+		Files.createDirectories(resourcePath);
+		for (EntityDefinition definition : domain.entities().definitions()) {
+			Path filePath = resourcePath.resolve(domainInterfaceName + "$" + interfaceName(definition.table(), true) + ".properties");
+			Files.write(filePath, singleton(i18n(definition.type())));
+		}
+	}
+
+	private String toApiString(String sourcePackage, Set<EntityType> dtos, boolean i18n) {
 		TypeSpec.Builder classBuilder = interfaceBuilder(domainInterfaceName)
 						.addModifiers(PUBLIC)
 						.addField(FieldSpec.builder(DomainType.class, DOMAIN_STRING)
@@ -163,7 +213,7 @@ public final class DomainSource {
 										.initializer("domainType($L)", domainInterfaceName + ".class")
 										.build());
 
-		sortedDefinitions.forEach(definition -> classBuilder.addType(createInterface(definition, dtos)));
+		sortedDefinitions.forEach(definition -> classBuilder.addType(createInterface(definition, dtos, i18n)));
 
 		return removeInterfaceLineBreaks(JavaFile.builder(sourcePackage.isEmpty() ? "" : sourcePackage, classBuilder.build())
 						.addStaticImport(DomainType.class, "domainType")
@@ -173,12 +223,12 @@ public final class DomainSource {
 						.toString());
 	}
 
-	private String toImplementationString(String sourcePackage) {
+	private String toImplementationString(String sourcePackage, boolean i18n) {
 		TypeSpec.Builder classBuilder = classBuilder(domainInterfaceName + "Impl")
 						.addModifiers(PUBLIC, FINAL)
 						.superclass(DomainModel.class);
 
-		Map<EntityDefinition, String> definitionMethods = addDefinitionMethods(classBuilder);
+		Map<EntityDefinition, String> definitionMethods = addDefinitionMethods(classBuilder, i18n);
 
 		String implementationPackage = sourcePackage.isEmpty() ? "" : sourcePackage;
 
@@ -202,7 +252,7 @@ public final class DomainSource {
 		return sourceString;
 	}
 
-	private String toCombinedString(String sourcePackage, Set<EntityType> dtos) {
+	private String toCombinedString(String sourcePackage, Set<EntityType> dtos, boolean i18n) {
 		TypeSpec.Builder classBuilder = classBuilder(domainInterfaceName)
 						.addModifiers(PUBLIC, FINAL)
 						.addField(FieldSpec.builder(DomainType.class, DOMAIN_STRING)
@@ -211,8 +261,8 @@ public final class DomainSource {
 										.build())
 						.superclass(DomainModel.class);
 
-		Map<EntityDefinition, String> definitionMethods = addDefinitionMethods(classBuilder);
-		sortedDefinitions.forEach(definition -> classBuilder.addType(createInterface(definition, dtos)));
+		Map<EntityDefinition, String> definitionMethods = addDefinitionMethods(classBuilder, i18n);
+		sortedDefinitions.forEach(definition -> classBuilder.addType(createInterface(definition, dtos, i18n)));
 
 		JavaFile.Builder fileBuilder = JavaFile.builder(sourcePackage,
 										classBuilder.addMethod(createDomainConstructor(definitionMethods))
@@ -252,30 +302,27 @@ public final class DomainSource {
 						.build();
 	}
 
-	private Map<EntityDefinition, String> addDefinitionMethods(TypeSpec.Builder classBuilder) {
+	private Map<EntityDefinition, String> addDefinitionMethods(TypeSpec.Builder classBuilder, boolean i18n) {
 		Map<EntityDefinition, String> definitionMethods = new LinkedHashMap<>();
 		sortedDefinitions.forEach(definition ->
-						addDefinition(definition, classBuilder, definitionMethods::put));
+						addDefinition(definition, classBuilder, definitionMethods::put, i18n));
 
 		return definitionMethods;
 	}
 
 	private static void addDefinition(EntityDefinition definition,
 																		TypeSpec.Builder classBuilder,
-																		BiConsumer<EntityDefinition, String> onMethod) {
-		MethodSpec definitionMethod = createDefinitionMethod(definition);
+																		BiConsumer<EntityDefinition, String> onMethod, boolean i18n) {
+		MethodSpec definitionMethod = createDefinitionMethod(definition, i18n);
 		classBuilder.addMethod(definitionMethod);
 		onMethod.accept(definition, definitionMethod.name());
 	}
 
-	private TypeSpec createInterface(EntityDefinition definition, Set<EntityType> dtos) {
+	private TypeSpec createInterface(EntityDefinition definition, Set<EntityType> dtos, boolean i18n) {
 		String interfaceName = interfaceName(definition.table(), true);
 		TypeSpec.Builder interfaceBuilder = interfaceBuilder(interfaceName)
 						.addModifiers(PUBLIC, STATIC)
-						.addField(FieldSpec.builder(EntityType.class, "TYPE")
-										.addModifiers(PUBLIC, STATIC, FINAL)
-										.initializer("DOMAIN.entityType($S)", definition.table().toLowerCase())
-										.build());
+						.addField(createEntityType(definition, i18n, interfaceName));
 		definition.attributes().get().stream()
 						.filter(Column.class::isInstance)
 						.forEach(column -> appendAttribute(interfaceBuilder, column));
@@ -288,6 +335,19 @@ public final class DomainSource {
 		}
 
 		return interfaceBuilder.build();
+	}
+
+	private static FieldSpec createEntityType(EntityDefinition definition, boolean i18n, String interfaceName) {
+		FieldSpec.Builder builder = FieldSpec.builder(EntityType.class, "TYPE")
+						.addModifiers(PUBLIC, STATIC, FINAL);
+		if (i18n) {
+			builder.initializer("DOMAIN.entityType($S, $L)", definition.table().toLowerCase(), interfaceName + ".class.getName()");
+		}
+		else {
+			builder.initializer("DOMAIN.entityType($S)", definition.table().toLowerCase());
+		}
+
+		return builder.build();
 	}
 
 	private void addDtoRecord(EntityDefinition definition, TypeSpec.Builder interfaceBuilder, Set<EntityType> dtos) {
@@ -414,21 +474,23 @@ public final class DomainSource {
 		return true;
 	}
 
-	private static MethodSpec createDefinitionMethod(EntityDefinition definition) {
+	private static MethodSpec createDefinitionMethod(EntityDefinition definition, boolean i18n) {
 		String interfaceName = interfaceName(definition.table(), true);
 		StringBuilder builder = new StringBuilder()
 						.append("return ").append(interfaceName).append(".TYPE.define(").append(LINE_SEPARATOR)
 						.append(String.join("," + LINE_SEPARATOR,
-										createAttributes(definition.attributes().definitions(), definition, interfaceName)))
+										createAttributes(definition.attributes().definitions(), definition, interfaceName, i18n)))
 						.append(")");
 		if (definition.primaryKey().generated()) {
 			builder.append(LINE_SEPARATOR).append(INDENT).append(".keyGenerator(identity())");
 		}
-		if (!nullOrEmpty(definition.caption())) {
+		if (!i18n && !nullOrEmpty(definition.caption())) {
 			builder.append(LINE_SEPARATOR).append(INDENT).append(".caption(\"").append(definition.caption()).append("\")");
 		}
-		definition.description().ifPresent(description ->
-						builder.append(LINE_SEPARATOR).append(INDENT).append(".description(\"").append(description).append("\")"));
+		if (!i18n) {
+			definition.description().ifPresent(description ->
+							builder.append(LINE_SEPARATOR).append(INDENT).append(".description(\"").append(description).append("\")"));
+		}
 		if (definition.readOnly()) {
 			builder.append(LINE_SEPARATOR).append(INDENT).append(".readOnly(true)");
 		}
@@ -458,23 +520,23 @@ public final class DomainSource {
 	}
 
 	private static List<String> createAttributes(Collection<AttributeDefinition<?>> attributeDefinitions,
-																							 EntityDefinition definition, String interfaceName) {
+																							 EntityDefinition definition, String interfaceName, boolean i18n) {
 		return attributeDefinitions.stream()
-						.map(attributeDefinition -> createAttribute(attributeDefinition, definition, interfaceName))
+						.map(attributeDefinition -> createAttribute(attributeDefinition, definition, interfaceName, i18n))
 						.collect(toList());
 	}
 
 	private static String createAttribute(AttributeDefinition<?> attributeDefinition,
-																				EntityDefinition definition, String interfaceName) {
+																				EntityDefinition definition, String interfaceName, boolean i18n) {
 		if (attributeDefinition instanceof ColumnDefinition) {
 			ColumnDefinition<?> columnDefinition = (ColumnDefinition<?>) attributeDefinition;
 
 			return columnDefinition(interfaceName, columnDefinition,
 							definition.foreignKeys().foreignKeyColumn(columnDefinition.attribute()),
-							definition.primaryKey().columns().size() > 1, definition.readOnly());
+							definition.primaryKey().columns().size() > 1, definition.readOnly(), i18n);
 		}
 
-		return foreignKeyDefinition(interfaceName, (ForeignKeyDefinition) attributeDefinition);
+		return foreignKeyDefinition(interfaceName, (ForeignKeyDefinition) attributeDefinition, i18n);
 	}
 
 	private static void appendAttribute(TypeSpec.Builder interfaceBuilder, Attribute<?> attribute) {
@@ -524,25 +586,28 @@ public final class DomainSource {
 						.collect(joining(", "));
 	}
 
-	private static String foreignKeyDefinition(String interfaceName, ForeignKeyDefinition definition) {
+	private static String foreignKeyDefinition(String interfaceName, ForeignKeyDefinition definition, boolean i18n) {
 		String foreignKeyName = definition.attribute().name().toUpperCase();
 
-		return new StringBuilder().append(DOUBLE_INDENT).append(interfaceName)
+		StringBuilder builder = new StringBuilder().append(DOUBLE_INDENT).append(interfaceName)
 						.append(".").append(foreignKeyName).append(".define()")
 						.append(LINE_SEPARATOR).append(TRIPLE_INDENT)
-						.append(".foreignKey()")
-						.append(LINE_SEPARATOR)
-						.append(TRIPLE_INDENT).append(".caption(\"").append(definition.caption()).append("\")")
-						.toString();
+						.append(".foreignKey()");
+		if (!i18n) {
+			builder.append(LINE_SEPARATOR)
+							.append(TRIPLE_INDENT).append(".caption(\"").append(definition.caption()).append("\")");
+		}
+
+		return builder.toString();
 	}
 
 	private static String columnDefinition(String interfaceName, ColumnDefinition<?> column,
-																				 boolean foreignKeyColumn, boolean compositePrimaryKey, boolean readOnlyEntity) {
+																				 boolean foreignKeyColumn, boolean compositePrimaryKey, boolean readOnlyEntity, boolean i18n) {
 		StringBuilder builder = new StringBuilder(DOUBLE_INDENT)
 						.append(interfaceName).append(".").append(column.name().toUpperCase()).append(".define()")
 						.append(LINE_SEPARATOR).append(TRIPLE_INDENT)
 						.append(".").append(definitionType(column, compositePrimaryKey));
-		if (!foreignKeyColumn && !column.primaryKey()) {
+		if (!i18n && !foreignKeyColumn && !column.primaryKey()) {
 			builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".caption(").append("\"").append(column.caption()).append("\")");
 		}
 		if (!readOnlyEntity) {
@@ -575,11 +640,11 @@ public final class DomainSource {
 			builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".fractionDigits(")
 							.append(column.fractionDigits()).append(")");
 		}
-		column.description()
-						.filter(description -> !description.isEmpty())
-						.ifPresent(description ->
-										builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT)
-														.append(".description(").append("\"").append(description).append("\")"));
+		if (!i18n) {
+			column.description().ifPresent(description ->
+							builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT)
+											.append(".description(").append("\"").append(description).append("\")"));
+		}
 
 		return builder.toString();
 	}
@@ -757,6 +822,16 @@ public final class DomainSource {
 		}
 
 		return builder.toString();
+	}
+
+	private static boolean generatedPrimaryKeyColumn(EntityDefinition definition, AttributeDefinition<?> attribute) {
+		return attribute instanceof ColumnDefinition<?> &&
+						((ColumnDefinition<?>) attribute).primaryKey() && definition.primaryKey().generated();
+	}
+
+	private static boolean foreignKeyColumn(EntityDefinition definition, AttributeDefinition<?> attribute) {
+		return attribute instanceof ColumnDefinition<?> &&
+						definition.foreignKeys().foreignKeyColumn((Column<?>) attribute.attribute());
 	}
 
 	private static final class DependencyOrder implements Comparator<EntityDefinition> {
