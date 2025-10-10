@@ -52,7 +52,7 @@ public final class SchemaDomainTest {
 							.filter(definition -> !definition.readOnly())
 							.collect(toList());
 			for (EntityDefinition entityDefinition : tableEntities) {
-				entityDefinition.foreignKeys().get().forEach(foreignKey -> assertFalse(foreignKey.name().endsWith("_ID_FK")));
+				entityDefinition.foreignKeys().get().forEach(foreignKey -> assertFalse(foreignKey.name().endsWith("_id_fk")));
 				List<AttributeDefinition<?>> attributeDefinitions = new ArrayList<>(entityDefinition.attributes().definitions());
 				List<AttributeDefinition<?>> auditColumns = attributeDefinitions.subList(attributeDefinitions.size() - 4, attributeDefinitions.size());
 				ColumnDefinition<?> insertUser = (ColumnDefinition<?>) auditColumns.get(0);
