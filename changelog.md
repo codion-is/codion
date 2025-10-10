@@ -14,6 +14,7 @@ Codion Change Log
 - DomainSource, now writes i18n properties files.
 - DomainSource.Builder added.
 - DomainSource.writeApiImpl() and writeCombined() overwrite parameter added.
+- DomainSource, minor improvements, comments and constants.
 ### is.codion.tools.generator.panel
 - DomainGeneratorPanel, i18n now configurable.
 - DomainGeneratorPanel.USER configuration property added, for skipping the login dialog.

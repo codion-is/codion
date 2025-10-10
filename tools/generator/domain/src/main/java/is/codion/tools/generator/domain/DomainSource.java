@@ -82,10 +82,21 @@ public final class DomainSource {
 	private static final String TRIPLE_INDENT = DOUBLE_INDENT + INDENT;
 	private static final String DOMAIN_STRING = "DOMAIN";
 	private static final String LINE_SEPARATOR = System.lineSeparator();
+	private static final String TYPE_FIELD_NAME = "TYPE";
+	private static final String DTO_CLASS_NAME = "Dto";
+	private static final String DTO_METHOD_NAME = "dto";
+	private static final String ENTITY_METHOD_NAME = "entity";
+	private static final String ENTITIES_PARAM_NAME = "entities";
+	private static final String FK_SUFFIX = "_fk";
+	private static final String FK_ALTERNATE_SUFFIX = "fk";
+	private static final String PROPERTIES_SUFFIX = ".properties";
+	private static final String API_PACKAGE_NAME = "api";
+	private static final String IMPL_CLASS_SUFFIX = "Impl";
 
 	private final Domain domain;
 	private final String domainInterfaceName;
 	private final List<EntityDefinition> sortedDefinitions;
+	private final Map<EntityType, EntityDefinition> definitionsByType;
 
 	private final String domainPackage;
 	private final Set<EntityType> dtos;
@@ -95,6 +106,8 @@ public final class DomainSource {
 		this.domain = builder.domain;
 		this.domainInterfaceName = interfaceName(requireNonNull(domain).type().name(), true);
 		this.sortedDefinitions = sortDefinitions(domain);
+		this.definitionsByType = sortedDefinitions.stream()
+						.collect(collectingAndThen(toMap(EntityDefinition::type, identity()), Map::copyOf));
 		this.domainPackage = builder.domainPackage;
 		this.dtos = builder.dtos;
 		this.i18n = builder.i18n;
@@ -107,11 +120,15 @@ public final class DomainSource {
 		return new DefaultBuilder.DefaultDomainStep();
 	}
 
+	// ========================================
+	// Public API - Generation Methods
+	// ========================================
+
 	/**
 	 * @return the api source code.
 	 */
 	public String api() {
-		return toApiString(domainPackage + ".api", dtos, i18n);
+		return toApiString(domainPackage + "." + API_PACKAGE_NAME, dtos, i18n);
 	}
 
 	/**
@@ -138,9 +155,9 @@ public final class DomainSource {
 	 */
 	public boolean writeApiImpl(Path sourcePath, Path resourcePath, BooleanSupplier overwrite) throws IOException {
 		String interfaceName = interfaceName(domain.type().name(), true);
-		Files.createDirectories(requireNonNull(sourcePath).resolve("api"));
-		Path apiPath = sourcePath.resolve("api").resolve(interfaceName + ".java");
-		Path implPath = sourcePath.resolve(interfaceName + "Impl.java");
+		Files.createDirectories(requireNonNull(sourcePath).resolve(API_PACKAGE_NAME));
+		Path apiPath = sourcePath.resolve(API_PACKAGE_NAME).resolve(interfaceName + ".java");
+		Path implPath = sourcePath.resolve(interfaceName + IMPL_CLASS_SUFFIX + ".java");
 		if ((!apiPath.toFile().exists() && !implPath.toFile().exists()) || requireNonNull(overwrite).getAsBoolean()) {
 			Files.write(apiPath, singleton(api()));
 			Files.write(implPath, singleton(implementation()));
@@ -177,6 +194,10 @@ public final class DomainSource {
 
 		return false;
 	}
+
+	// ========================================
+	// Builder Interface
+	// ========================================
 
 	/**
 	 * Builds a {@link DomainSource} instance
@@ -219,14 +240,18 @@ public final class DomainSource {
 		DomainSource build();
 	}
 
+	// ========================================
+	// i18n Resource Generation
+	// ========================================
+
 	private void writeI18n(Path resourcePath, boolean api) throws IOException {
 		requireNonNull(resourcePath);
 		if (api) {
-			resourcePath = resourcePath.resolve("api");
+			resourcePath = resourcePath.resolve(API_PACKAGE_NAME);
 		}
 		Files.createDirectories(resourcePath);
 		for (EntityDefinition definition : domain.entities().definitions()) {
-			Path filePath = resourcePath.resolve(domainInterfaceName + "$" + interfaceName(definition.table(), true) + ".properties");
+			Path filePath = resourcePath.resolve(domainInterfaceName + "$" + interfaceName(definition.table(), true) + PROPERTIES_SUFFIX);
 			Files.write(filePath, singleton(i18n(definition.type())));
 		}
 	}
@@ -252,6 +277,10 @@ public final class DomainSource {
 		return builder.toString().trim();
 	}
 
+	// ========================================
+	// API Generation
+	// ========================================
+
 	private String toApiString(String sourcePackage, Set<EntityType> dtos, boolean i18n) {
 		TypeSpec.Builder classBuilder = interfaceBuilder(domainInterfaceName)
 						.addModifiers(PUBLIC)
@@ -270,8 +299,12 @@ public final class DomainSource {
 						.toString());
 	}
 
+	// ========================================
+	// Implementation Generation
+	// ========================================
+
 	private String toImplementationString(String sourcePackage, boolean i18n) {
-		TypeSpec.Builder classBuilder = classBuilder(domainInterfaceName + "Impl")
+		TypeSpec.Builder classBuilder = classBuilder(domainInterfaceName + IMPL_CLASS_SUFFIX)
 						.addModifiers(PUBLIC, FINAL)
 						.superclass(DomainModel.class);
 
@@ -288,16 +321,20 @@ public final class DomainSource {
 			fileBuilder.addStaticImport(KeyGenerator.class, "identity");
 		}
 		if (!implementationPackage.isEmpty()) {
-			fileBuilder.addStaticImport(ClassName.bestGuess(sourcePackage + ".api." + domainInterfaceName), DOMAIN_STRING);
+			fileBuilder.addStaticImport(ClassName.bestGuess(sourcePackage + "." + API_PACKAGE_NAME + "." + domainInterfaceName), DOMAIN_STRING);
 		}
 
 		String sourceString = fileBuilder.build().toString();
 		if (!sourcePackage.isEmpty()) {
-			sourceString = addInterfaceImports(sourceString, sourcePackage + ".api." + domainInterfaceName);
+			sourceString = addInterfaceImports(sourceString, sourcePackage + "." + API_PACKAGE_NAME + "." + domainInterfaceName);
 		}
 
 		return sourceString;
 	}
+
+	// ========================================
+	// Combined Generation (API + Implementation)
+	// ========================================
 
 	private String toCombinedString(String sourcePackage, Set<EntityType> dtos, boolean i18n) {
 		TypeSpec.Builder classBuilder = classBuilder(domainInterfaceName)
@@ -385,7 +422,7 @@ public final class DomainSource {
 	}
 
 	private static FieldSpec createEntityType(EntityDefinition definition, boolean i18n, String interfaceName) {
-		FieldSpec.Builder builder = FieldSpec.builder(EntityType.class, "TYPE")
+		FieldSpec.Builder builder = FieldSpec.builder(EntityType.class, TYPE_FIELD_NAME)
 						.addModifiers(PUBLIC, STATIC, FINAL);
 		if (i18n) {
 			builder.initializer("DOMAIN.entityType($S, $L)", definition.table().toLowerCase(), interfaceName + ".class.getName()");
@@ -396,6 +433,10 @@ public final class DomainSource {
 
 		return builder.build();
 	}
+
+	// ========================================
+	// DTO Generation
+	// ========================================
 
 	private void addDtoRecord(EntityDefinition definition, TypeSpec.Builder interfaceBuilder, Set<EntityType> dtos) {
 		List<Attribute<?>> nonForeignKeyColumnAttributes = definition.attributes().get().stream()
@@ -408,7 +449,7 @@ public final class DomainSource {
 	}
 
 	private TypeSpec dtoRecord(List<Attribute<?>> attributes) {
-		TypeSpec.Builder dtoBuilder = TypeSpec.recordBuilder("Dto")
+		TypeSpec.Builder dtoBuilder = TypeSpec.recordBuilder(DTO_CLASS_NAME)
 						.addModifiers(PUBLIC, STATIC);
 		MethodSpec.Builder constructorBuilder = constructorBuilder();
 
@@ -425,26 +466,23 @@ public final class DomainSource {
 							underscoreToCamelCase(attribute.name().toLowerCase())).build());
 		}
 		else if (attribute instanceof ForeignKey) {
-			EntityDefinition referenced = sortedDefinitions.stream()
-							.filter(definition -> definition.type().equals(((ForeignKey) attribute).referencedType()))
-							.findFirst()
-							.orElseThrow();
+			EntityDefinition referenced = referencedDefinition((ForeignKey) attribute);
 			constructorBuilder.addParameter(ParameterSpec.builder(dtoName(referenced),
-							underscoreToCamelCase(attribute.name().toLowerCase().replace("_fk", "").replace("fk", ""))).build());
+							underscoreToCamelCase(attribute.name().toLowerCase().replace(FK_SUFFIX, "").replace(FK_ALTERNATE_SUFFIX, ""))).build());
 		}
 	}
 
 	private static MethodSpec entityFromDtoMethod(List<Attribute<?>> attributes) {
-		return methodBuilder("entity")
+		return methodBuilder(ENTITY_METHOD_NAME)
 						.addModifiers(PUBLIC)
 						.returns(Entity.class)
-						.addParameter(ParameterSpec.builder(Entities.class, "entities").build())
+						.addParameter(ParameterSpec.builder(Entities.class, ENTITIES_PARAM_NAME).build())
 						.addCode(entityFromDtoMethodBody(attributes))
 						.build();
 	}
 
 	private static String entityFromDtoMethodBody(Collection<Attribute<?>> attributes) {
-		StringBuilder builder = new StringBuilder("return entities.entity(TYPE)\n");
+		StringBuilder builder = new StringBuilder("return " + ENTITIES_PARAM_NAME + "." + ENTITY_METHOD_NAME + "(" + TYPE_FIELD_NAME + ")\n");
 		attributes.forEach(attribute -> {
 			if (attribute instanceof Column<?>) {
 				builder.append("\t.with(")
@@ -457,8 +495,8 @@ public final class DomainSource {
 				builder.append("\t.with(")
 								.append(attribute.name().toUpperCase())
 								.append(", ")
-								.append(underscoreToCamelCase(attribute.name().toLowerCase().replace("_fk", "").replace("fk", "")))
-								.append(".entity(entities)")
+								.append(underscoreToCamelCase(attribute.name().toLowerCase().replace(FK_SUFFIX, "").replace(FK_ALTERNATE_SUFFIX, "")))
+								.append("." + ENTITY_METHOD_NAME + "(" + ENTITIES_PARAM_NAME + ")")
 								.append(")\n");
 			}
 		});
@@ -467,9 +505,9 @@ public final class DomainSource {
 	}
 
 	private MethodSpec dtoFromEntityMethod(List<Attribute<?>> attributes, EntityDefinition definition) {
-		return MethodSpec.methodBuilder("dto")
+		return MethodSpec.methodBuilder(DTO_METHOD_NAME)
 						.addModifiers(PUBLIC, STATIC)
-						.returns(ClassName.get("", "Dto"))
+						.returns(ClassName.get("", DTO_CLASS_NAME))
 						.addParameter(Entity.class, interfaceName(definition.table(), false))
 						.addCode(dtoFromEntityMethodBody(attributes, interfaceName(definition.table(), false)))
 						.build();
@@ -482,25 +520,30 @@ public final class DomainSource {
 				arguments.add(parameter + ".get(" + attribute.name().toUpperCase() + ")");
 			}
 			else if (attribute instanceof ForeignKey) {
-				EntityDefinition referenced = sortedDefinitions.stream()
-								.filter(definition -> definition.type().equals(((ForeignKey) attribute).referencedType()))
-								.findFirst()
-								.orElseThrow();
+				EntityDefinition referenced = referencedDefinition((ForeignKey) attribute);
 				arguments.add(interfaceName(referenced.table(), true)
-								+ ".dto(" + parameter + ".get(" + attribute.name().toUpperCase() + "))");
+								+ "." + DTO_METHOD_NAME + "(" + parameter + ".get(" + attribute.name().toUpperCase() + "))");
 			}
 		});
 
 		return new StringBuilder("return ")
 						.append(parameter)
 						.append(" == null ? null :\n")
-						.append("\tnew Dto(")
+						.append("\tnew " + DTO_CLASS_NAME + "(")
 						.append(String.join(",\n\t\t", arguments))
 						.append(");").toString();
 	}
 
 	private static TypeName dtoName(EntityDefinition referenced) {
-		return ClassName.get("", interfaceName(referenced.table(), true) + ".Dto");
+		return ClassName.get("", interfaceName(referenced.table(), true) + "." + DTO_CLASS_NAME);
+	}
+
+	private EntityDefinition referencedDefinition(ForeignKey foreignKey) {
+		EntityDefinition definition = definitionsByType.get(foreignKey.referencedType());
+		if (definition == null) {
+			throw new IllegalStateException("Referenced entity not found: " + foreignKey.referencedType());
+		}
+		return definition;
 	}
 
 	private static boolean excludeNonDtoForeignKeys(Attribute<?> attribute, Set<EntityType> dtos) {
@@ -520,6 +563,10 @@ public final class DomainSource {
 
 		return true;
 	}
+
+	// ========================================
+	// Entity Definition Generation
+	// ========================================
 
 	private static MethodSpec createDefinitionMethod(EntityDefinition definition, boolean i18n) {
 		String interfaceName = interfaceName(definition.table(), true);
@@ -712,6 +759,10 @@ public final class DomainSource {
 		return "column()";
 	}
 
+	// ========================================
+	// Utility Methods
+	// ========================================
+
 	private static String interfaceName(String tableName, boolean uppercase) {
 		String name = requireNonNull(tableName).toLowerCase();
 		if (name.contains(".")) {
@@ -780,6 +831,10 @@ public final class DomainSource {
 	public static String implSearchString(EntityDefinition definition) {
 		return "EntityDefinition " + interfaceName(definition.table(), false) + "()";
 	}
+
+	// ========================================
+	// Dependency Analysis
+	// ========================================
 
 	private static List<EntityDefinition> sortDefinitions(Domain domain) {
 		Map<EntityType, Set<EntityType>> dependencies = dependencies(domain);
@@ -880,6 +935,10 @@ public final class DomainSource {
 		return attribute instanceof ColumnDefinition<?> &&
 						definition.foreignKeys().foreignKeyColumn((Column<?>) attribute.attribute());
 	}
+
+	// ========================================
+	// Inner Classes
+	// ========================================
 
 	private static final class DependencyOrder implements Comparator<EntityDefinition> {
 
