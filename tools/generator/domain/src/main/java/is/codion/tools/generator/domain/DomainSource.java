@@ -423,16 +423,12 @@ public final class DomainSource {
 	}
 
 	private static FieldSpec createEntityType(EntityDefinition definition, boolean i18n, String interfaceName) {
-		FieldSpec.Builder builder = FieldSpec.builder(EntityType.class, TYPE_FIELD_NAME)
-						.addModifiers(PUBLIC, STATIC, FINAL);
-		if (i18n) {
-			builder.initializer("DOMAIN.entityType($S, $L)", definition.table().toLowerCase(), interfaceName + ".class.getName()");
-		}
-		else {
-			builder.initializer("DOMAIN.entityType($S)", definition.table().toLowerCase());
-		}
+		CaptionStrategy captionStrategy = i18n ? new I18nCaptionStrategy() : new LiteralCaptionStrategy();
 
-		return builder.build();
+		return FieldSpec.builder(EntityType.class, TYPE_FIELD_NAME)
+						.addModifiers(PUBLIC, STATIC, FINAL)
+						.initializer(captionStrategy.entityTypeInitializer(definition, interfaceName))
+						.build();
 	}
 
 	// ========================================
@@ -571,6 +567,7 @@ public final class DomainSource {
 
 	private static MethodSpec createDefinitionMethod(EntityDefinition definition, boolean i18n) {
 		String interfaceName = interfaceName(definition.table(), true);
+		CaptionStrategy captionStrategy = i18n ? new I18nCaptionStrategy() : new LiteralCaptionStrategy();
 		StringBuilder builder = new StringBuilder()
 						.append("return ").append(interfaceName).append(".TYPE.define(").append(LINE_SEPARATOR)
 						.append(String.join("," + LINE_SEPARATOR,
@@ -579,13 +576,8 @@ public final class DomainSource {
 		if (definition.primaryKey().generated()) {
 			builder.append(LINE_SEPARATOR).append(INDENT).append(".keyGenerator(identity())");
 		}
-		if (!i18n && !nullOrEmpty(definition.caption())) {
-			builder.append(LINE_SEPARATOR).append(INDENT).append(".caption(\"").append(definition.caption()).append("\")");
-		}
-		if (!i18n) {
-			definition.description().ifPresent(description ->
-							builder.append(LINE_SEPARATOR).append(INDENT).append(".description(\"").append(description).append("\")"));
-		}
+		builder.append(captionStrategy.entityCaption(definition));
+		builder.append(captionStrategy.entityDescription(definition));
 		if (definition.readOnly()) {
 			builder.append(LINE_SEPARATOR).append(INDENT).append(".readOnly(true)");
 		}
@@ -611,6 +603,7 @@ public final class DomainSource {
 				}
 			}
 		}
+
 		return definitionMethods;
 	}
 
@@ -623,7 +616,8 @@ public final class DomainSource {
 
 	private static String createAttribute(AttributeDefinition<?> attributeDefinition,
 																				EntityDefinition definition, String interfaceName, boolean i18n) {
-		AttributeDefinitionFormatter formatter = new AttributeDefinitionFormatter(interfaceName, i18n);
+		CaptionStrategy captionStrategy = i18n ? new I18nCaptionStrategy() : new LiteralCaptionStrategy();
+		AttributeDefinitionFormatter formatter = new AttributeDefinitionFormatter(interfaceName, captionStrategy);
 		if (attributeDefinition instanceof ColumnDefinition) {
 			ColumnDefinition<?> columnDefinition = (ColumnDefinition<?>) attributeDefinition;
 			ColumnContext context = new ColumnContext(
@@ -874,6 +868,106 @@ public final class DomainSource {
 	// ========================================
 
 	/**
+	 * Strategy for handling captions and descriptions in generated code.
+	 * Used to support both literal (embedded) and i18n (resource-based) approaches.
+	 */
+	private interface CaptionStrategy {
+
+		/**
+		 * @return the EntityType initializer code
+		 */
+		String entityTypeInitializer(EntityDefinition definition, String interfaceName);
+
+		/**
+		 * @return entity caption code, or empty string if not needed
+		 */
+		String entityCaption(EntityDefinition definition);
+
+		/**
+		 * @return entity description code, or empty string if not needed
+		 */
+		String entityDescription(EntityDefinition definition);
+
+		/**
+		 * Adds attribute caption configuration if needed.
+		 */
+		void addAttributeCaption(CodeBlock.Builder builder, String caption);
+
+		/**
+		 * Adds attribute description configuration if needed.
+		 */
+		void addAttributeDescription(CodeBlock.Builder builder, String description);
+	}
+
+	/**
+	 * Strategy that embeds captions and descriptions directly in generated code.
+	 */
+	private static final class LiteralCaptionStrategy implements CaptionStrategy {
+
+		@Override
+		public String entityTypeInitializer(EntityDefinition definition, String interfaceName) {
+			return "DOMAIN.entityType(\"" + definition.table().toLowerCase() + "\")";
+		}
+
+		@Override
+		public String entityCaption(EntityDefinition definition) {
+			if (!nullOrEmpty(definition.caption())) {
+				return LINE_SEPARATOR + INDENT + ".caption(\"" + definition.caption() + "\")";
+			}
+			return "";
+		}
+
+		@Override
+		public String entityDescription(EntityDefinition definition) {
+			return definition.description()
+							.map(description -> LINE_SEPARATOR + INDENT + ".description(\"" + description + "\")")
+							.orElse("");
+		}
+
+		@Override
+		public void addAttributeCaption(CodeBlock.Builder builder, String caption) {
+			builder.add("\n$L.caption($S)", TRIPLE_INDENT, caption);
+		}
+
+		@Override
+		public void addAttributeDescription(CodeBlock.Builder builder, String description) {
+			builder.add("\n$L.description($S)", TRIPLE_INDENT, description);
+		}
+	}
+
+	/**
+	 * Strategy for i18n mode - captions/descriptions come from resource bundles.
+	 */
+	private static final class I18nCaptionStrategy implements CaptionStrategy {
+
+		@Override
+		public String entityTypeInitializer(EntityDefinition definition, String interfaceName) {
+			return "DOMAIN.entityType(\"" + definition.table().toLowerCase() + "\", " +
+							interfaceName + ".class.getName())";
+		}
+
+		@Override
+		public String entityCaption(EntityDefinition definition) {
+			return ""; // i18n mode - caption comes from resource bundle
+		}
+
+		@Override
+		public String entityDescription(EntityDefinition definition) {
+			return ""; // i18n mode - description comes from resource bundle
+		}
+
+		@Override
+		public void addAttributeCaption(CodeBlock.Builder builder, String caption) {
+			// i18n mode - caption comes from resource bundle
+		}
+
+		@Override
+		public void addAttributeDescription(CodeBlock.Builder builder, String description) {
+			// i18n mode - description comes from resource bundle
+		}
+	}
+
+	/**
 	 * Context information needed for formatting column definitions.
 	 */
 	private static final class ColumnContext {
@@ -893,12 +987,13 @@ public final class DomainSource {
 	 * Formats attribute definitions as source code using JavaPoet CodeBlock.
 	 */
 	private static final class AttributeDefinitionFormatter {
-		private final String interfaceName;
-		private final boolean i18n;
 
-		private AttributeDefinitionFormatter(String interfaceName, boolean i18n) {
+		private final String interfaceName;
+		private final CaptionStrategy captionStrategy;
+
+		private AttributeDefinitionFormatter(String interfaceName, CaptionStrategy captionStrategy) {
 			this.interfaceName = interfaceName;
-			this.i18n = i18n;
+			this.captionStrategy = captionStrategy;
 		}
 
 		private String formatColumn(ColumnDefinition<?> column, ColumnContext context) {
@@ -906,8 +1001,8 @@ public final class DomainSource {
 							.add("$L$L.$L.define()\n", DOUBLE_INDENT, interfaceName, column.name().toUpperCase())
 							.add("$L.$L", TRIPLE_INDENT, definitionType(column, context.compositePrimaryKey));
 
-			if (!i18n && !context.foreignKeyColumn && !column.primaryKey()) {
-				builder.add("\n$L.caption($S)", TRIPLE_INDENT, column.caption());
+			if (!context.foreignKeyColumn && !column.primaryKey()) {
+				captionStrategy.addAttributeCaption(builder, column.caption());
 			}
 			if (!context.readOnlyEntity) {
 				if (column.readOnly()) {
@@ -937,10 +1032,8 @@ public final class DomainSource {
 			if (column.attribute().type().isDecimal() && column.fractionDigits() >= 1) {
 				builder.add("\n$L.fractionDigits($L)", TRIPLE_INDENT, column.fractionDigits());
 			}
-			if (!i18n) {
-				column.description().ifPresent(description ->
-								builder.add("\n$L.description($S)", TRIPLE_INDENT, description));
-			}
+			column.description().ifPresent(description ->
+							captionStrategy.addAttributeDescription(builder, description));
 
 			return builder.build().toString();
 		}
@@ -951,9 +1044,7 @@ public final class DomainSource {
 							.add("$L$L.$L.define()\n", DOUBLE_INDENT, interfaceName, foreignKeyName)
 							.add("$L.foreignKey()", TRIPLE_INDENT);
 
-			if (!i18n) {
-				builder.add("\n$L.caption($S)", TRIPLE_INDENT, definition.caption());
-			}
+			captionStrategy.addAttributeCaption(builder, definition.caption());
 
 			return builder.build().toString();
 		}
