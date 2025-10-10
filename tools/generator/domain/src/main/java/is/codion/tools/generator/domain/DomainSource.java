@@ -129,31 +129,6 @@ public final class DomainSource {
 	}
 
 	/**
-	 * @param entityType the entity type
-	 * @return the i18n resource file contents for the given entity type
-	 */
-	public String i18n(EntityType entityType) {
-		EntityDefinition definition = domain.entities().definition(entityType);
-		StringBuilder builder = new StringBuilder();
-		builder.append(definition.type().name()).append("=").append(definition.caption()).append(LINE_SEPARATOR);
-		definition.description().ifPresent(description ->
-						builder.append(definition.type().name()).append(".description=")
-										.append("=").append(description).append(LINE_SEPARATOR));
-		definition.attributes().definitions().stream()
-						.filter(attribute -> !generatedPrimaryKeyColumn(definition, attribute))
-						.filter(attribute -> !foreignKeyColumn(definition, attribute))
-						.forEach(attribute -> {
-							builder.append(attribute.attribute().name())
-											.append("=").append(attribute.caption()).append(LINE_SEPARATOR);
-							attribute.description().ifPresent(description ->
-											builder.append(attribute.attribute().name()).append(".description")
-															.append("=").append(description).append(LINE_SEPARATOR));
-						});
-
-		return builder.toString().trim();
-	}
-
-	/**
 	 * Writes the api and implementation source code to the given path.
 	 * @param sourcePath the path to write the source files to
 	 * @param resourcePath the path to write the resources to
@@ -254,6 +229,27 @@ public final class DomainSource {
 			Path filePath = resourcePath.resolve(domainInterfaceName + "$" + interfaceName(definition.table(), true) + ".properties");
 			Files.write(filePath, singleton(i18n(definition.type())));
 		}
+	}
+
+	String i18n(EntityType entityType) {
+		EntityDefinition definition = domain.entities().definition(entityType);
+		StringBuilder builder = new StringBuilder();
+		builder.append(definition.type().name()).append("=").append(definition.caption()).append(LINE_SEPARATOR);
+		definition.description().ifPresent(description ->
+						builder.append(definition.type().name()).append(".description=")
+										.append("=").append(description).append(LINE_SEPARATOR));
+		definition.attributes().definitions().stream()
+						.filter(attribute -> !generatedPrimaryKeyColumn(definition, attribute))
+						.filter(attribute -> !foreignKeyColumn(definition, attribute))
+						.forEach(attribute -> {
+							builder.append(attribute.attribute().name())
+											.append("=").append(attribute.caption()).append(LINE_SEPARATOR);
+							attribute.description().ifPresent(description ->
+											builder.append(attribute.attribute().name()).append(".description")
+															.append("=").append(description).append(LINE_SEPARATOR));
+						});
+
+		return builder.toString().trim();
 	}
 
 	private String toApiString(String sourcePackage, Set<EntityType> dtos, boolean i18n) {
