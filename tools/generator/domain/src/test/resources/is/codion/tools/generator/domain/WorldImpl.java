@@ -4,10 +4,10 @@ import static is.codion.world.domain.api.World.DOMAIN;
 
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.world.domain.World.City;
-import is.codion.world.domain.World.Country;
-import is.codion.world.domain.World.CountryCity;
-import is.codion.world.domain.World.Countrylanguage;
+import is.codion.world.domain.api.World.City;
+import is.codion.world.domain.api.World.Country;
+import is.codion.world.domain.api.World.CountryCity;
+import is.codion.world.domain.api.World.Countrylanguage;
 
 public final class WorldImpl extends DomainModel {
 	public WorldImpl() {

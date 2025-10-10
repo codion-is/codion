@@ -5,14 +5,14 @@ import static is.codion.petstore.domain.api.Petstore.DOMAIN;
 
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.petstore.domain.Petstore.Address;
-import is.codion.petstore.domain.Petstore.Category;
-import is.codion.petstore.domain.Petstore.ContactInfo;
-import is.codion.petstore.domain.Petstore.Item;
-import is.codion.petstore.domain.Petstore.ItemTags;
-import is.codion.petstore.domain.Petstore.Product;
-import is.codion.petstore.domain.Petstore.Tag;
-import is.codion.petstore.domain.Petstore.TagItem;
+import is.codion.petstore.domain.api.Petstore.Address;
+import is.codion.petstore.domain.api.Petstore.Category;
+import is.codion.petstore.domain.api.Petstore.ContactInfo;
+import is.codion.petstore.domain.api.Petstore.Item;
+import is.codion.petstore.domain.api.Petstore.ItemTags;
+import is.codion.petstore.domain.api.Petstore.Product;
+import is.codion.petstore.domain.api.Petstore.Tag;
+import is.codion.petstore.domain.api.Petstore.TagItem;
 
 public final class PetstoreImpl extends DomainModel {
 	public PetstoreImpl() {

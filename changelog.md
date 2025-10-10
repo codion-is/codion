@@ -6,6 +6,8 @@ Codion Change Log
 - ConnectionPoolStatistics cleanup and refactoring.
 ### is.codion.framework.domain.db
 - SchemaDomain.SchemaSettings.lowerCaseIdentifiers() added.
+### is.codion.tools.generator.domain
+- DomainSource bug fixed, api package corrected.
 
 ## 0.18.53
 ### is.codion.common.db
@@ -104,7 +106,7 @@ Codion Change Log
 - EntityTablePanel.Config.editableAttributes() added.
 ### is.codion.plugin.swing.mcp
 - SwingMcpServer keyboard input simplified.
-### is.codion.tools.generator.domain
+
 - DomainSource refactored and improved concerning read-only entities and columns, tests improved.
 ### is.codion.tools.generator.model
 - DomainGeneratorModel.DOMAIN_PACKAGE now with default 'no.package' instead of empty string.

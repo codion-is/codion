@@ -126,11 +126,9 @@ public final class DomainSource {
 	 */
 	public void writeApiImpl(String domainPackage, Set<EntityType> dtos, Path path) throws IOException {
 		String interfaceName = interfaceName(domain.type().name(), true);
-		Files.createDirectories(requireNonNull(path));
-		Path filePath = path.resolve(interfaceName + ".java");
-		Files.write(filePath, singleton(api(requireNonNull(domainPackage) + ".api", dtos)));
-		path = path.resolve("impl");
-		Files.createDirectories(path);
+		Files.createDirectories(requireNonNull(path).resolve("api"));
+		Path filePath = path.resolve("api").resolve(interfaceName + ".java");
+		Files.write(filePath, singleton(api(requireNonNull(domainPackage), dtos)));
 		filePath = path.resolve(interfaceName + "Impl.java");
 		Files.write(filePath, singleton(implementation(domainPackage)));
 	}
@@ -198,7 +196,7 @@ public final class DomainSource {
 
 		String sourceString = fileBuilder.build().toString();
 		if (!sourcePackage.isEmpty()) {
-			sourceString = addInterfaceImports(sourceString, sourcePackage + "." + domainInterfaceName);
+			sourceString = addInterfaceImports(sourceString, sourcePackage + ".api." + domainInterfaceName);
 		}
 
 		return sourceString;
