@@ -56,6 +56,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.BooleanSupplier;
 
 import static com.palantir.javapoet.MethodSpec.constructorBuilder;
 import static com.palantir.javapoet.MethodSpec.methodBuilder;
@@ -156,33 +157,50 @@ public final class DomainSource {
 	 * Writes the api and implementation source code to the given path.
 	 * @param sourcePath the path to write the source files to
 	 * @param resourcePath the path to write the resources to
+	 * @param overwrite used to confirm overwrite if either of the api or impl files exist
+	 * @return true if the files were written, false if overwriting was not confirmed
 	 * @throws IOException in case of an I/O error.
 	 */
-	public void writeApiImpl(Path sourcePath, Path resourcePath) throws IOException {
+	public boolean writeApiImpl(Path sourcePath, Path resourcePath, BooleanSupplier overwrite) throws IOException {
 		String interfaceName = interfaceName(domain.type().name(), true);
 		Files.createDirectories(requireNonNull(sourcePath).resolve("api"));
-		Path filePath = sourcePath.resolve("api").resolve(interfaceName + ".java");
-		Files.write(filePath, singleton(api()));
-		filePath = sourcePath.resolve(interfaceName + "Impl.java");
-		Files.write(filePath, singleton(implementation()));
-		if (i18n) {
-			writeI18n(resourcePath, true);
+		Path apiPath = sourcePath.resolve("api").resolve(interfaceName + ".java");
+		Path implPath = sourcePath.resolve(interfaceName + "Impl.java");
+		if ((!apiPath.toFile().exists() && !implPath.toFile().exists()) || requireNonNull(overwrite).getAsBoolean()) {
+			Files.write(apiPath, singleton(api()));
+			Files.write(implPath, singleton(implementation()));
+			if (i18n) {
+				writeI18n(resourcePath, true);
+			}
+
+			return true;
 		}
+
+		return false;
 	}
 
 	/**
 	 * Writes the combined source code to the given path.
 	 * @param sourcePath the path to write the source files to
 	 * @param resourcePath the path to write the resources to
+	 * @param overwrite used to confirm overwrite if either of the api or impl files exist
+	 * @return true if the files were written, false if overwriting was not confirmed
 	 * @throws IOException in case of an I/O error.
 	 */
-	public void writeCombined(Path sourcePath, Path resourcePath) throws IOException {
+	public boolean writeCombined(Path sourcePath, Path resourcePath, BooleanSupplier overwrite) throws IOException {
 		String interfaceName = interfaceName(domain.type().name(), true);
 		Files.createDirectories(requireNonNull(sourcePath));
-		Files.write(sourcePath.resolve(interfaceName + ".java"), singleton(combined()));
-		if (i18n) {
-			writeI18n(resourcePath, false);
+		Path combinedFile = sourcePath.resolve(interfaceName + ".java");
+		if (!combinedFile.toFile().exists() || requireNonNull(overwrite).getAsBoolean()) {
+			Files.write(combinedFile, singleton(combined()));
+			if (i18n) {
+				writeI18n(resourcePath, false);
+			}
+
+			return true;
 		}
+
+		return false;
 	}
 
 	/**

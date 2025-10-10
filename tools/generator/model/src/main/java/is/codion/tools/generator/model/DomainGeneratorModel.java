@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -203,40 +204,28 @@ public final class DomainGeneratorModel {
 		});
 	}
 
-	public void saveApiImpl() throws IOException {
-		if (schemaTableModel.selection().empty().not().is()) {
-			SchemaDomain domain = selectedDomain();
-			if (domain != null) {
-				DomainSource.builder()
-								.domain(domain)
-								.domainPackage(domainPackageValue.optional()
-												.filter(DomainGeneratorModel::validPackageName).orElse(""))
-								.dtos(dtoEntities())
-								.i18n(i18n.is())
-								.build()
-								.writeApiImpl(
-												sourcePath(Path.of(sourceDirectoryValue.getOrThrow()), "java"),
-												sourcePath(Path.of(sourceDirectoryValue.getOrThrow()), "resources"));
-			}
+	public boolean saveApiImpl(BooleanSupplier overwrite) throws IOException {
+		SchemaDomain domain = selectedDomain();
+		if (domain != null) {
+			return domainSource(domain)
+							.writeApiImpl(
+											sourcePath(Path.of(sourceDirectoryValue.getOrThrow()), "java"),
+											sourcePath(Path.of(sourceDirectoryValue.getOrThrow()), "resources"), overwrite);
 		}
+
+		return false;
 	}
 
-	public void saveCombined() throws IOException {
-		if (schemaTableModel.selection().empty().not().is()) {
-			SchemaDomain domain = selectedDomain();
-			if (domain != null) {
-				DomainSource.builder()
-								.domain(domain)
-								.domainPackage(domainPackageValue.optional()
-												.filter(DomainGeneratorModel::validPackageName).orElse(""))
-								.dtos(dtoEntities())
-								.i18n(i18n.is())
-								.build()
-								.writeCombined(
-												sourcePath(Path.of(sourceDirectoryValue.getOrThrow()), "java"),
-												sourcePath(Path.of(sourceDirectoryValue.getOrThrow()), "resources"));
-			}
+	public boolean saveCombined(BooleanSupplier overwrite) throws IOException {
+		SchemaDomain domain = selectedDomain();
+		if (domain != null) {
+			domainSource(domain)
+							.writeCombined(
+											sourcePath(Path.of(sourceDirectoryValue.getOrThrow()), "java"),
+											sourcePath(Path.of(sourceDirectoryValue.getOrThrow()), "resources"), overwrite);
 		}
+
+		return false;
 	}
 
 	public ObservableState saveEnabled() {
@@ -305,13 +294,7 @@ public final class DomainGeneratorModel {
 	private void updateDomainSource() {
 		SchemaDomain domain = selectedDomain();
 		if (domain != null) {
-			DomainSource domainSource = DomainSource.builder()
-							.domain(domain)
-							.domainPackage(domainPackageValue.optional()
-											.filter(DomainGeneratorModel::validPackageName).orElse(""))
-							.dtos(dtoEntities())
-							.i18n(i18n.is())
-							.build();
+			DomainSource domainSource = domainSource(domain);
 			domainApiValue.set(domainSource.api());
 			domainImplValue.set(domainSource.implementation());
 			domainCombinedValue.set(domainSource.combined());
@@ -321,6 +304,16 @@ public final class DomainGeneratorModel {
 			domainImplValue.clear();
 			domainCombinedValue.clear();
 		}
+	}
+
+	private DomainSource domainSource(SchemaDomain domain) {
+		return DomainSource.builder()
+						.domain(domain)
+						.domainPackage(domainPackageValue.optional()
+										.filter(DomainGeneratorModel::validPackageName).orElse(""))
+						.dtos(dtoEntities())
+						.i18n(i18n.is())
+						.build();
 	}
 
 	private Set<EntityType> dtoEntities() {
@@ -350,10 +343,10 @@ public final class DomainGeneratorModel {
 	}
 
 	private void writeSchemaSettings(String tableSchem, SchemaSettings schemaSettings) {
-		JSONObject json =  new JSONObject();
+		JSONObject json = new JSONObject();
 		json.put(HIDE_AUDIT_COLUMNS, schemaSettings.hideAuditColumns());
 		json.put(AUDIT_COLUMN_NAMES, schemaSettings.auditColumnNames().stream().collect(joining(",")));
-		json.put(PRIMARY_KEY_COLUMN_SUFFIX,  schemaSettings.primaryKeyColumnSuffix());
+		json.put(PRIMARY_KEY_COLUMN_SUFFIX, schemaSettings.primaryKeyColumnSuffix());
 		json.put(VIEW_SUFFIX, schemaSettings.viewSuffix());
 
 		PREFERENCES.put(database.name() + "." + tableSchem, json.toString());
@@ -450,7 +443,7 @@ public final class DomainGeneratorModel {
 							.filter(Optional::isPresent)
 							.map(Optional::get)
 							.map(domain -> domain.entities().definitions().stream()
-											.map(definition -> new EntityRow(definition, domain.tableType(definition.type()), dtos.is()))
+											.map(definition -> new EntityRow(definition, domain.tableType(definition.type()), false))
 											.collect(toList()))
 							.orElse(emptyList());
 		}

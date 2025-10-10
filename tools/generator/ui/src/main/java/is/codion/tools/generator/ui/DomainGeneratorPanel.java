@@ -296,14 +296,14 @@ public final class DomainGeneratorPanel extends JPanel {
 
 		return borderLayoutPanel()
 						.center(borderLayoutPanel()
-										.west(gridLayoutPanel(2, 2)
-														.add(new JLabel(" "))
-														.add(new JLabel(" "))
-														.add(createDtoCheckBox())
-														.add(createI18nCheckBox()))
 										.center(gridLayoutPanel(2, 1)
 														.add(packageLabel)
-														.add(createPackageField(packageLabel))))
+														.add(createPackageField(packageLabel)))
+										.east(gridLayoutPanel(2, 2)
+														.add(label(" "))
+														.add(label(" "))
+														.add(createDtoCheckBox())
+														.add(createI18nCheckBox())))
 						.east(gridLayoutPanel(2, 1)
 										.add(label(" "))
 										.add(button()
@@ -403,18 +403,22 @@ public final class DomainGeneratorPanel extends JPanel {
 
 	private void saveApiImpl() throws IOException {
 		if (showConfirmDialog(this, "Save API and Impl files to source directory?",
-						"Confirm save", YES_NO_OPTION) == YES_OPTION) {
-			model.saveApiImpl();
+						"Confirm save", YES_NO_OPTION) == YES_OPTION &&
+						model.saveApiImpl(this::confirmOverwrite)) {
 			showMessageDialog(this, "Files saved");
 		}
 	}
 
 	private void saveCombined() throws IOException {
 		if (showConfirmDialog(this, "Save combined API and Impl file to source directory?",
-						"Confirm save", YES_NO_OPTION) == YES_OPTION) {
-			model.saveCombined();
+						"Confirm save", YES_NO_OPTION) == YES_OPTION &&
+						model.saveCombined(this::confirmOverwrite)) {
 			showMessageDialog(this, "File saved");
 		}
+	}
+
+	private boolean confirmOverwrite() {
+		return showConfirmDialog(DomainGeneratorPanel.this, "Overwrite existing file(s)?", "Confirm overwrite", YES_NO_OPTION) == YES_OPTION;
 	}
 
 	private static JPanel createScrollablePanel(JComponent component, String title) {
@@ -467,7 +471,7 @@ public final class DomainGeneratorPanel extends JPanel {
 			SchemaSettingsPanel settingsPanel = new SchemaSettingsPanel(schema.schemaSettings());
 			Dialogs.okCancel()
 							.component(settingsPanel)
-							.owner(this)
+							.owner(schemaTable)
 							.title("Schema Settings")
 							.onOk(() -> model.setSchemaSettings(settingsPanel.settings()))
 							.show();

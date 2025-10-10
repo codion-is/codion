@@ -13,9 +13,11 @@ Codion Change Log
 - DomainSource bug fixed, api package corrected.
 - DomainSource, now writes i18n properties files.
 - DomainSource.Builder added.
+- DomainSource.writeApiImpl() and writeCombined() overwrite parameter added.
 ### is.codion.tools.generator.panel
 - DomainGeneratorPanel, i18n now configurable.
 - DomainGeneratorPanel.USER configuration property added, for skipping the login dialog.
+- DomainGeneratorPanel now confirms before overwriting.
 
 ## 0.18.53
 ### is.codion.common.db
