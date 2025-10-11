@@ -19,12 +19,14 @@
 package is.codion.demos.employees.ui;
 
 import is.codion.common.user.User;
+import is.codion.demos.employees.demos.DemoScript;
 import is.codion.demos.employees.domain.Employees;
 import is.codion.demos.employees.domain.Employees.Department;
 import is.codion.demos.employees.domain.Employees.Employee;
 import is.codion.demos.employees.model.EmployeesAppModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.plugin.flatlaf.intellij.themes.arc.Arc;
+import is.codion.plugin.swing.robot.Automation;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -107,6 +109,11 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 										.control(Control.builder()
 														.command(this::importJSON)
 														.caption("Import JSON"))
+										.control(Control.builder()
+														.command(() -> Automation.builder()
+																		.narrator(parentWindow().orElseThrow())
+																		.run(new DemoScript()))
+														.caption("Run demo"))
 										.build());
 	}
 	// end::createToolsMenuControls[]

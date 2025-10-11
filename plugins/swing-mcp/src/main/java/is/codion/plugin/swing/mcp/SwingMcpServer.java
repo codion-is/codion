@@ -18,6 +18,8 @@
  */
 package is.codion.plugin.swing.mcp;
 
+import is.codion.plugin.swing.robot.Controller;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,22 +34,17 @@ import javax.imageio.stream.ImageOutputStream;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import java.awt.AWTEvent;
-import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.KeyboardFocusManager;
 import java.awt.Rectangle;
-import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.AWTEventListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -93,8 +90,7 @@ final class SwingMcpServer {
 
 	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-	private final Robot robot;
-	private final KeyboardController keyboardController;
+	private final Controller controller;
 	private final JComponent applicationComponent;
 
 	private final WindowEventListener windowEventListener = new WindowEventListener();
@@ -102,14 +98,10 @@ final class SwingMcpServer {
 	private volatile Window lastActiveWindow = null;
 	private volatile long lastActivationTime = 0;
 
-	SwingMcpServer(JComponent applicationComponent) throws AWTException {
+	SwingMcpServer(JComponent applicationComponent) {
 		this.applicationComponent = requireNonNull(applicationComponent);
-		this.robot = new Robot();
-		this.keyboardController = new KeyboardController(robot);
+		this.controller = Controller.controller();
 		Toolkit.getDefaultToolkit().addAWTEventListener(windowEventListener, WINDOW_EVENT_MASK);
-		// Configure robot for smooth operation
-		robot.setAutoDelay(50); // Small delay between events for reliability
-		robot.setAutoWaitForIdle(true); // Wait for events to be processed
 	}
 
 	/**
@@ -119,18 +111,18 @@ final class SwingMcpServer {
 	void typeText(String text) {
 		LOG.debug("Typing text: {}", text);
 		focusActiveWindow();
-		keyboardController.typeText(text);
+		controller.type(text);
 	}
 
 	/**
 	 * Press a key combination using AWT KeyStroke format.
-	 * Examples: "ENTER", "TAB", "control S", "shift TAB", "alt F4", "UP", "typed a"
+	 * Examples: "ENTER", "TAB", "ctrl S", "shift TAB", "alt F4", "UP", "typed a"
 	 * @param combo the key combination in AWT KeyStroke format
 	 */
 	void keyCombo(String combo) {
 		LOG.debug("Key combo: {}", combo);
 		focusActiveWindow();
-		keyboardController.pressKeyCombo(combo);
+		controller.key(combo);
 	}
 
 	/**
@@ -138,7 +130,8 @@ final class SwingMcpServer {
 	 */
 	void clearField() {
 		focusActiveWindow();
-		keyboardController.clearField();
+		controller.key("ctrl A");
+		controller.key("DELETE");
 	}
 
 
@@ -147,9 +140,7 @@ final class SwingMcpServer {
 	 * @return Rectangle with x, y, width, height of the application window
 	 */
 	Rectangle getApplicationWindowBounds() {
-		Window window = getApplicationWindow();
-
-		return window.getBounds();
+		return getApplicationWindow().getBounds();
 	}
 
 	/**
@@ -495,134 +486,6 @@ final class SwingMcpServer {
 		}
 
 		return defaultValue;
-	}
-
-	/**
-	 * Keyboard controller with high-level operations
-	 */
-	private static class KeyboardController {
-
-		private final Robot robot;
-
-		private KeyboardController(Robot robot) {
-			this.robot = robot;
-		}
-
-		void typeText(String text) {
-			for (char c : text.toCharArray()) {
-				typeChar(c);
-			}
-		}
-
-		void pressKeyCombo(String combo) {
-			requireNonNull(combo, "Key combination cannot be null");
-			LOG.debug("Processing key combo: '{}'", combo);
-
-			KeyStroke keyStroke = KeyStroke.getKeyStroke(combo);
-			if (keyStroke == null) {
-				throw new IllegalArgumentException("Invalid key combination: '" + combo +
-						"'. Use format like: 'ENTER', 'control S', 'shift TAB', 'alt F4', 'typed a'");
-			}
-
-			int keyCode = keyStroke.getKeyCode();
-			int modifiers = keyStroke.getModifiers();
-			char keyChar = keyStroke.getKeyChar();
-
-			// Handle "typed" keystrokes (e.g., "typed a", "typed !")
-			if (keyChar != KeyEvent.CHAR_UNDEFINED && keyCode == 0) {
-				LOG.debug("Typing character: '{}'", keyChar);
-				typeChar(keyChar);
-				return;
-			}
-
-			LOG.debug("KeyStroke - keyCode: {} ({}), modifiers: {}",
-					keyCode, KeyEvent.getKeyText(keyCode), modifiers);
-
-			// Press modifier keys using legacy mask constants for better compatibility
-			if ((modifiers & InputEvent.CTRL_DOWN_MASK) != 0) {
-				LOG.debug("Pressing CTRL");
-				robot.keyPress(KeyEvent.VK_CONTROL);
-			}
-			if ((modifiers & InputEvent.ALT_DOWN_MASK) != 0) {
-				LOG.debug("Pressing ALT");
-				robot.keyPress(KeyEvent.VK_ALT);
-			}
-			if ((modifiers & InputEvent.SHIFT_DOWN_MASK) != 0) {
-				LOG.debug("Pressing SHIFT");
-				robot.keyPress(KeyEvent.VK_SHIFT);
-			}
-			if ((modifiers & InputEvent.META_DOWN_MASK) != 0) {
-				LOG.debug("Pressing META");
-				robot.keyPress(KeyEvent.VK_META);
-			}
-
-			// Press and release the main key
-			LOG.debug("Pressing key: {}", KeyEvent.getKeyText(keyCode));
-			robot.keyPress(keyCode);
-			delay();  // Small delay for key registration
-			robot.keyRelease(keyCode);
-			LOG.debug("Released key: {}", KeyEvent.getKeyText(keyCode));
-
-			// Release modifier keys in reverse order
-			if ((modifiers & InputEvent.META_DOWN_MASK) != 0) {
-				robot.keyRelease(KeyEvent.VK_META);
-				LOG.debug("Released META");
-			}
-			if ((modifiers & InputEvent.SHIFT_DOWN_MASK) != 0) {
-				robot.keyRelease(KeyEvent.VK_SHIFT);
-				LOG.debug("Released SHIFT");
-			}
-			if ((modifiers & InputEvent.ALT_DOWN_MASK) != 0) {
-				robot.keyRelease(KeyEvent.VK_ALT);
-				LOG.debug("Released ALT");
-			}
-			if ((modifiers & InputEvent.CTRL_DOWN_MASK) != 0) {
-				robot.keyRelease(KeyEvent.VK_CONTROL);
-				LOG.debug("Released CTRL");
-			}
-		}
-
-		private static void delay() {
-			try {
-				Thread.sleep(50);
-			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-			}
-		}
-
-
-		private void clearField() {
-			// Select all
-			robot.keyPress(KeyEvent.VK_CONTROL);
-			robot.keyPress(KeyEvent.VK_A);
-			robot.keyRelease(KeyEvent.VK_A);
-			robot.keyRelease(KeyEvent.VK_CONTROL);
-
-			// Delete
-			robot.keyPress(KeyEvent.VK_DELETE);
-			robot.keyRelease(KeyEvent.VK_DELETE);
-		}
-
-		private void typeChar(char c) {
-			int keyCode = KeyEvent.getExtendedKeyCodeForChar(c);
-			if (KeyEvent.CHAR_UNDEFINED == keyCode) {
-				throw new RuntimeException("Cannot type character: " + c);
-			}
-
-			boolean needShift = Character.isUpperCase(c) || "!@#$%^&*()_+{}|:\"<>?".indexOf(c) >= 0;
-
-			if (needShift) {
-				robot.keyPress(KeyEvent.VK_SHIFT);
-			}
-
-			robot.keyPress(keyCode);
-			robot.keyRelease(keyCode);
-
-			if (needShift) {
-				robot.keyRelease(KeyEvent.VK_SHIFT);
-			}
-		}
 	}
 
 	// Helper methods for HTTP tool creation

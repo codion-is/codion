@@ -169,6 +169,8 @@ project(":codion-plugin-flatlaf-intellij-themes").projectDir = file("plugins/fla
 include "codion-plugin-swing-mcp"
 project(":codion-plugin-swing-mcp").projectDir = file("plugins/swing-mcp")
 
+include "codion-plugin-swing-robot"
+project(":codion-plugin-swing-robot").projectDir = file("plugins/swing-robot")
 
 include "demo-chinook"
 project(":demo-chinook").projectDir = file("demos/chinook")

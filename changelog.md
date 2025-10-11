@@ -11,6 +11,9 @@ Codion Change Log
 - AttributeDefinition.Builder.descriptionResource() added.
 ### is.codion.framework.domain.db
 - SchemaDomain.SchemaSettings.lowerCaseIdentifiers() added.
+### is.codion.plugin.swing.robot
+- Controller refactored from SwingMcpServer.
+- Narrator and Runner added.
 ### is.codion.tools.generator.domain
 - DomainSource bug fixed, api package corrected.
 - DomainSource, now writes i18n properties files.

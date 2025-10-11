@@ -28,6 +28,7 @@ dependencies.constraints {
     api(project(":codion-plugin-imagepanel"))
     api(project(":codion-plugin-jasperreports"))
     api(project(":codion-plugin-swing-mcp"))
+    api(project(":codion-plugin-swing-robot"))
     api(project(":codion-plugin-jul-proxy"))
     api(project(":codion-plugin-log4j-proxy"))
     api(project(":codion-plugin-logback-proxy"))

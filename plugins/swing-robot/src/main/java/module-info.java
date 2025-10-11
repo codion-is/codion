@@ -17,16 +17,10 @@
  * Copyright (c) 2025, Björn Darri Sigurðsson.
  */
 /**
- * MCP
+ * Swing Robot
  */
-module is.codion.plugin.swing.mcp {
-	requires is.codion.common.core;
+module is.codion.plugin.swing.robot {
 	requires is.codion.swing.common.ui;
-	requires is.codion.plugin.swing.robot;
 	requires org.slf4j;
-	requires jdk.httpserver;
-	requires java.desktop;
-	requires io.modelcontextprotocol.sdk.mcp;
-	requires com.fasterxml.jackson.databind;
-	exports is.codion.plugin.swing.mcp;
+	exports is.codion.plugin.swing.robot;
 }

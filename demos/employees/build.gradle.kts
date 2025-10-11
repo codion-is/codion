@@ -22,6 +22,8 @@ dependencies {
     implementation(project(":codion-plugin-flatlaf"))
     implementation(project(":codion-plugin-flatlaf-intellij-themes"))
 
+    implementation(project(":codion-plugin-swing-robot"))
+
     runtimeOnly(project(":codion-plugin-logback-proxy"))
 
     jasperreportsClasspath(libs.jasperreports.jdt) {

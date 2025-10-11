@@ -589,6 +589,15 @@ image::modules/plugins/imagepanel/build/reports/dependency-graph/dependency-grap
 ====
 
 [discrete]
+==== codion-plugin-swing-robot
+
+.Dependency graph
+[%collapsible]
+====
+image::modules/plugins/swing-robot/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
 ==== codion-plugin-swing-mcp
 
 .Dependency graph

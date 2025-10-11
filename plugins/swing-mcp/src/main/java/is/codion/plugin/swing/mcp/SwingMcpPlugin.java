@@ -27,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.JComponent;
-import java.awt.AWTException;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -124,9 +123,6 @@ public final class SwingMcpPlugin {
 			server = new SwingMcpServer(applicationComponent);
 			// Start HTTP server for MCP client access
 			startHttpServer(server);
-		}
-		catch (AWTException e) {
-			LOG.error("Failed to initialize Robot for UI automation: {}", e.getMessage());
 		}
 		catch (Exception e) {
 			LOG.error("Failed to start MCP server: {}", e.getMessage());
