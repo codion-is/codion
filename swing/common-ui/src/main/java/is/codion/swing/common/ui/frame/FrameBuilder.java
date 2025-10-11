@@ -78,6 +78,20 @@ public interface FrameBuilder {
 	FrameBuilder resizable(boolean resizable);
 
 	/**
+	 * @param alwaysOnTop true if the frame should always be on top
+	 * @return this builder instance
+	 * @see JFrame#setAlwaysOnTop(boolean)
+	 */
+	FrameBuilder alwaysOnTop(boolean alwaysOnTop);
+
+	/**
+	 * @param focusableWindowState the focusable window state
+	 * @return this builder instance
+	 * @see JFrame#setFocusableWindowState(boolean)
+	 */
+	FrameBuilder focusableWindowState(boolean focusableWindowState);
+
+	/**
 	 * Overrides {@link #locationRelativeTo(Component)} and {@link #centerFrame(boolean)}.
 	 * @param location the frame location
 	 * @return this builder instance

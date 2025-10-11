@@ -58,6 +58,8 @@ final class DefaultFrameBuilder implements FrameBuilder {
 	private @Nullable Observable<String> title;
 	private @Nullable Dimension size;
 	private boolean resizable = true;
+	private boolean alwaysOnTop = false;
+	private boolean focusableWindowState = true;
 	private @Nullable Point location;
 	private @Nullable Component locationRelativeTo;
 	private int defaultCloseOperation = WindowConstants.HIDE_ON_CLOSE;
@@ -97,6 +99,18 @@ final class DefaultFrameBuilder implements FrameBuilder {
 	@Override
 	public FrameBuilder resizable(boolean resizable) {
 		this.resizable = resizable;
+		return this;
+	}
+
+	@Override
+	public FrameBuilder alwaysOnTop(boolean alwaysOnTop) {
+		this.alwaysOnTop = alwaysOnTop;
+		return this;
+	}
+
+	@Override
+	public FrameBuilder focusableWindowState(boolean focusableWindowState) {
+		this.focusableWindowState = focusableWindowState;
 		return this;
 	}
 
@@ -192,6 +206,10 @@ final class DefaultFrameBuilder implements FrameBuilder {
 			frame.setJMenuBar(menuBar);
 		}
 		frame.setResizable(resizable);
+		frame.setAlwaysOnTop(alwaysOnTop);
+		if (!focusableWindowState) {
+			frame.setFocusableWindowState(false);
+		}
 		if (location != null) {
 			frame.setLocation(location);
 		}
