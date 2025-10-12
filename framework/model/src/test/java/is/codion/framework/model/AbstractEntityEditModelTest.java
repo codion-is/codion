@@ -41,6 +41,7 @@ import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Derived;
 import is.codion.framework.model.test.TestDomain.Detail;
 import is.codion.framework.model.test.TestDomain.Employee;
+import is.codion.framework.model.test.TestDomain.NonGeneratedPK;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,6 +53,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -739,6 +741,19 @@ public final class AbstractEntityEditModelTest {
 		assertFalse(editor.valid().is());
 		assertFalse(editor.value(Employee.NAME).valid().is());
 		assertFalse(editor.value(Employee.SALARY).valid().is());
+	}
+
+	@Test
+	public void validateWithNonGeneratedPK() {
+		TestEntityEditModel editModel = new TestEntityEditModel(NonGeneratedPK.TYPE, CONNECTION_PROVIDER);
+		editModel.editor().value(NonGeneratedPK.ID).set(UUID.randomUUID());
+		editModel.editor().value(NonGeneratedPK.NAME).set("123456");//length > 5
+		assertThrows(ValidationException.class, editModel::insert);//works, due to the edit model setting the defaults
+
+		Entity manual = editModel.entities().entity(NonGeneratedPK.TYPE).build();
+		manual.set(NonGeneratedPK.ID, UUID.randomUUID());// non generated pk column initialized to null in entity builder, exists = false
+		manual.set(NonGeneratedPK.NAME, "123456");
+		assertThrows(ValidationException.class, () -> editModel.insert(singleton(manual)));
 	}
 
 	private static final class TestEntityEditModel extends AbstractEntityEditModel {

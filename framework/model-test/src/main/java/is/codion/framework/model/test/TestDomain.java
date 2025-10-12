@@ -34,6 +34,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.UUID;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
@@ -45,7 +46,7 @@ public final class TestDomain extends DomainModel {
 
 	public TestDomain() {
 		super(DOMAIN);
-		add(master(), detail(), department(), employee(), enumEntity(), derived(), job(), dateTimeTest());
+		add(master(), detail(), department(), employee(), enumEntity(), derived(), job(), dateTimeTest(), nongen());
 	}
 
 	public interface Master {
@@ -393,6 +394,23 @@ public final class TestDomain extends DomainModel {
 										.column(),
 						DateTimeTest.DATE_TIME.define()
 										.column())
+						.build();
+	}
+
+	public interface NonGeneratedPK {
+		EntityType TYPE = DOMAIN.entityType("nongenerated");
+
+		Column<UUID> ID = TYPE.column("id", UUID.class);
+		Column<String> NAME = TYPE.stringColumn("name");
+	}
+
+	EntityDefinition nongen() {
+		return NonGeneratedPK.TYPE.define(
+										NonGeneratedPK.ID.define()
+														.primaryKey(),
+										NonGeneratedPK.NAME.define()
+														.column()
+														.maximumLength(5))
 						.build();
 	}
 }

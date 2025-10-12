@@ -48,6 +48,9 @@ final class DefaultEntityBuilder implements Entity.Builder {
 		this.definition = definition;
 		this.values = new HashMap<>();
 		this.originalValues = EMPTY_MAP;
+		if (!definition.primaryKey().generated()) {
+			definition.primaryKey().columns().forEach(column -> values.put(column, null));
+		}
 	}
 
 	DefaultEntityBuilder(EntityDefinition definition, Map<Attribute<?>, Object> values,
@@ -63,7 +66,12 @@ final class DefaultEntityBuilder implements Entity.Builder {
 		if (attributeDefinition.derived()) {
 			throw new IllegalArgumentException("Can not set the value of a derived attribute");
 		}
-		builderValues.put(attribute, value);
+		if (nonGeneratedPrimaryKeyColumn(attributeDefinition)) {
+			values.put(attribute, value);// overwrite the default null value
+		}
+		else {
+			builderValues.put(attribute, value);
+		}
 
 		return this;
 	}
@@ -108,5 +116,9 @@ final class DefaultEntityBuilder implements Entity.Builder {
 		if (originalValues.containsKey(column)) {
 			values.put(column, originalValues.get(column));
 		}
+	}
+
+	private <T> boolean nonGeneratedPrimaryKeyColumn(AttributeDefinition<T> attributeDefinition) {
+		return !definition.primaryKey().generated() && definition.primaryKey().columns().contains(attributeDefinition.attribute());
 	}
 }

@@ -103,7 +103,8 @@ public final class DefaultEntityBuilderTest {
 		Entity entity = entities.entity(entityType)
 						.withDefaults()
 						.build();
-		assertFalse(entity.contains(id));
+		assertTrue(entity.contains(id));// null set automatically in builder for non-generated key columns
+		assertNull(entity.get(id));
 		assertEquals("DefName", entity.get(name));
 		assertEquals(42, entity.get(value));
 		assertEquals(43, entity.get(derivedValue));

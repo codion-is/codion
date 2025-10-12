@@ -250,7 +250,9 @@ public final class EntityTest {
 	void setNull() {
 		Entity dept = entities.entity(Department.TYPE).build();
 		for (AttributeDefinition<?> definition : entities.definition(Department.TYPE).attributes().definitions()) {
-			assertFalse(dept.contains(definition.attribute()));
+			if (!definition.attribute().equals(Department.ID)) {
+				assertFalse(dept.contains(definition.attribute()));
+			}
 			assertTrue(dept.isNull(definition.attribute()));
 		}
 		for (AttributeDefinition<?> definition : entities.definition(Department.TYPE).attributes().definitions()) {
