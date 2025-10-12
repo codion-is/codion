@@ -2671,7 +2671,7 @@ public class EntityTablePanel extends JPanel {
 		private Collection<Attribute<?>> editableAttributes() {
 			List<Column<?>> updatableColumns = entityDefinition.columns().definitions().stream()
 							.filter(ColumnDefinition::updatable)
-							.filter(column -> (!column.primaryKey() || !entityDefinition.primaryKey().generated()))
+							.filter(column -> (!column.primaryKey() || !column.generated()))
 							.map(ColumnDefinition::attribute)
 							.collect(toList());
 			EntityDefinition.ForeignKeys foreignKeys = entityDefinition.foreignKeys();

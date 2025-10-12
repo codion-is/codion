@@ -1764,6 +1764,264 @@ public class DefaultLocalEntityConnectionTest {
 		assertTrue(entity.isNull(NullConverter.NAME));
 	}
 
+	@Test
+	void generatorTestWithPk() {
+		Entity entity = ENTITIES.entity(GeneratorTestWithPk.TYPE)
+						.with(GeneratorTestWithPk.DATA, "Hello")
+						.build();
+		assertFalse(entity.exists());
+		entity = connection.insertSelect(entity);
+		assertTrue(entity.exists());
+	}
+
+	@Test
+	void generatorTestWithoutPk() {
+		Entity entity = ENTITIES.entity(GeneratorTestWithoutPk.TYPE)
+						.with(GeneratorTestWithoutPk.DATA, "Hello")
+						.build();
+		assertFalse(entity.exists());
+		entity = connection.insertSelect(entity);
+		assertTrue(entity.exists());
+	}
+
+	@Test
+	void generatorOnNonPkColumn() {
+		// Test that generators work on regular columns, not just PK columns
+		Entity entity = ENTITIES.entity(GeneratorNonPk.TYPE)
+						.with(GeneratorNonPk.ID, 100)
+						.with(GeneratorNonPk.DATA, "Test")
+						.build();
+		// Entity exists because we provided the PK value manually
+		assertTrue(entity.exists());
+		assertNull(entity.get(GeneratorNonPk.GENERATED_COL));
+
+		entity = connection.insertSelect(entity);
+
+		assertTrue(entity.exists());
+		assertNotNull(entity.get(GeneratorNonPk.GENERATED_COL));
+		assertEquals(100, entity.get(GeneratorNonPk.ID));
+		assertEquals("Test", entity.get(GeneratorNonPk.DATA));
+
+		// Clean up
+		connection.delete(entity.primaryKey());
+	}
+
+	@Test
+	void updateWithoutPk() {
+		// Test update behavior on entities without primary keys
+		Entity entity = ENTITIES.entity(NoPkIdentical.TYPE)
+						.with(NoPkIdentical.DATA, "Original")
+						.build();
+
+		entity = connection.insertSelect(entity);
+		assertTrue(entity.exists());
+
+		// Modify and update
+		entity.set(NoPkIdentical.DATA, "Modified");
+		Entity updated = connection.updateSelect(entity);
+
+		assertEquals("Modified", updated.get(NoPkIdentical.DATA));
+
+		// Clean up - delete will match by all column values (pseudo PK)
+		connection.delete(all(NoPkIdentical.TYPE));
+	}
+
+	@Test
+	void deleteWithoutPk() {
+		// Test delete behavior on entities without primary keys
+		Entity entity = ENTITIES.entity(NoPkIdentical.TYPE)
+						.with(NoPkIdentical.DATA, "ToDelete")
+						.build();
+
+		entity = connection.insertSelect(entity);
+
+		// Delete using the pseudo primary key (all columns)
+		connection.delete(entity.primaryKey());
+
+		// Verify deletion
+		assertEquals(0, connection.count(Count.where(NoPkIdentical.DATA.equalTo("ToDelete"))));
+	}
+
+	@Test
+	void identicalRowsWithoutPk() {
+		// Test that identical rows without PK cannot be distinguished
+		Entity entity1 = ENTITIES.entity(NoPkIdentical.TYPE)
+						.with(NoPkIdentical.DATA, "Identical")
+						.build();
+		Entity entity2 = ENTITIES.entity(NoPkIdentical.TYPE)
+						.with(NoPkIdentical.DATA, "Identical")
+						.build();
+
+		entity1 = connection.insertSelect(entity1);
+		entity2 = connection.insertSelect(entity2);
+
+		Entity finalEntity1 = entity1;
+
+		// Both entities have the same pseudo primary key (all column values)
+		assertTrue(entity1.primaryKey().equals(entity2.primaryKey()));
+
+		// Count should show 2 rows
+		assertEquals(2, connection.count(Count.where(NoPkIdentical.DATA.equalTo("Identical"))));
+
+		// Deleting by pseudo PK will throw exception because it matches multiple rows
+		// This demonstrates the limitation of pseudo PKs
+		assertThrows(DeleteException.class, () -> connection.delete(finalEntity1.primaryKey()));
+
+		// Clean up using condition-based delete instead
+		int deleted = connection.delete(NoPkIdentical.DATA.equalTo("Identical"));
+		assertEquals(2, deleted);
+		assertEquals(0, connection.count(Count.where(NoPkIdentical.DATA.equalTo("Identical"))));
+	}
+
+	@Test
+	void mixedGeneratedColumns() {
+		// Test entity with both generated and non-generated columns
+		// where generated columns include both PK and non-PK columns
+		Entity entity = ENTITIES.entity(MixedGenerated.TYPE)
+						.with(MixedGenerated.MANUAL_PK, 500)
+						.with(MixedGenerated.DATA, "Mixed")
+						.build();
+
+		assertNull(entity.get(MixedGenerated.ID)); // Generated PK column
+		assertNull(entity.get(MixedGenerated.GENERATED_COL)); // Generated non-PK column
+		assertFalse(entity.exists());
+
+		entity = connection.insertSelect(entity);
+
+		assertNotNull(entity.get(MixedGenerated.ID));
+		assertNotNull(entity.get(MixedGenerated.GENERATED_COL));
+		assertEquals(500, entity.get(MixedGenerated.MANUAL_PK));
+		assertEquals("Mixed", entity.get(MixedGenerated.DATA));
+		assertTrue(entity.exists());
+
+		// Clean up
+		connection.delete(entity.primaryKey());
+	}
+
+	@Test
+	void originalValuesWithGenerators() {
+		// Test that generated columns have original values after insert
+		Entity entity = ENTITIES.entity(GeneratorTestWithPk.TYPE)
+						.with(GeneratorTestWithPk.DATA, "test")
+						.build();
+
+		entity = connection.insertSelect(entity);
+
+		// After insert, generated columns should have original values
+		assertNotNull(entity.original(GeneratorTestWithPk.ID));
+		assertNotNull(entity.original(GeneratorTestWithPk.SEQ));
+		assertNotNull(entity.original(GeneratorTestWithPk.UUID));
+
+		// Generated columns should not be modified after insert
+		assertFalse(entity.modified(GeneratorTestWithPk.ID));
+		assertFalse(entity.modified(GeneratorTestWithPk.SEQ));
+		assertFalse(entity.modified(GeneratorTestWithPk.UUID));
+
+		// Clean up
+		connection.delete(entity.primaryKey());
+	}
+
+	@Test
+	void partialGeneratedCompositePk() {
+		// Test composite PK where only some columns are generated
+		Entity entity = ENTITIES.entity(PartialGeneratedPk.TYPE)
+						.with(PartialGeneratedPk.MANUAL_ID, 42)
+						.with(PartialGeneratedPk.DATA, "Partial")
+						.build();
+
+		assertNull(entity.get(PartialGeneratedPk.ID)); // Generated part of PK
+		assertEquals(42, entity.get(PartialGeneratedPk.MANUAL_ID)); // Manual part of PK
+		assertFalse(entity.exists());
+
+		entity = connection.insertSelect(entity);
+
+		assertNotNull(entity.get(PartialGeneratedPk.ID));
+		assertEquals(42, entity.get(PartialGeneratedPk.MANUAL_ID));
+		assertEquals("Partial", entity.get(PartialGeneratedPk.DATA));
+		assertTrue(entity.exists());
+
+		// Can select by full composite PK
+		Entity selected = connection.select(entity.primaryKey());
+		assertEquals(entity.get(PartialGeneratedPk.ID), selected.get(PartialGeneratedPk.ID));
+		assertEquals(42, selected.get(PartialGeneratedPk.MANUAL_ID));
+
+		// Clean up
+		connection.delete(entity.primaryKey());
+	}
+
+	@Test
+	void emptyEntityWithGenerators() {
+		// Test entity with only generated columns (minimal user-provided values)
+		// DATA is NOT NULL so we need to provide it
+		Entity entity = ENTITIES.entity(GeneratorTestWithoutPk.TYPE)
+						.with(GeneratorTestWithoutPk.DATA, "test")
+						.build();
+
+		// All PK-like columns are generated, so entity doesn't exist yet
+		assertFalse(entity.exists());
+
+		// Insert should work - generators provide all the key values
+		entity = connection.insertSelect(entity);
+
+		assertTrue(entity.exists());
+		assertNotNull(entity.get(GeneratorTestWithoutPk.ID));
+		assertNotNull(entity.get(GeneratorTestWithoutPk.SEQ));
+		assertNotNull(entity.get(GeneratorTestWithoutPk.UUID));
+		assertEquals("test", entity.get(GeneratorTestWithoutPk.DATA));
+
+		// Clean up
+		connection.delete(entity.primaryKey());
+	}
+
+	@Test
+	void clearPrimaryKeyWithoutPk() {
+		// Test clearPrimaryKey() behavior on entities without defined PKs
+		Entity entity = ENTITIES.entity(NoPkIdentical.TYPE)
+						.with(NoPkIdentical.DATA, "test")
+						.build();
+
+		// For entities without PKs, there are no PK columns to clear
+		// So clearPrimaryKey() has no effect - DATA should remain
+		Entity.Builder builder = entity.copy().builder().clearPrimaryKey();
+		Entity cleared = builder.build();
+
+		// Since NoPkIdentical has no actual PK columns, clearPrimaryKey() does nothing
+		// DATA should still be present
+		assertTrue(cleared.contains(NoPkIdentical.DATA));
+		assertEquals("test", cleared.get(NoPkIdentical.DATA));
+	}
+
+	@Test
+	void multipleInsertsWithGenerators() {
+		// Test multiple inserts to ensure generators produce unique values
+		List<Entity> entities = new ArrayList<>();
+		for (int i = 0; i < 5; i++) {
+			Entity entity = ENTITIES.entity(GeneratorTestWithPk.TYPE)
+							.with(GeneratorTestWithPk.DATA, "Item" + i)
+							.build();
+			entities.add(entity);
+		}
+
+		Collection<Entity.Key> keys = connection.insert(entities);
+		assertEquals(5, keys.size());
+
+		// All entities should have different generated IDs
+		Collection<Entity> selected = connection.select(Entity.primaryKeys(entities));
+		assertEquals(5, selected.size());
+
+		// Verify all have unique generated values
+		List<Integer> ids = new ArrayList<>();
+		for (Entity entity : selected) {
+			Integer id = entity.get(GeneratorTestWithPk.ID);
+			assertNotNull(id);
+			assertFalse(ids.contains(id), "Generated ID should be unique");
+			ids.add(id);
+		}
+
+		// Clean up
+		connection.delete(Entity.primaryKeys(selected));
+	}
+
 	private static LocalEntityConnection createConnection() {
 		return createConnection(false);
 	}

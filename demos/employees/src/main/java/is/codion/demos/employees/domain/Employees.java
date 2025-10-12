@@ -36,8 +36,8 @@ import java.util.List;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.KeyGenerator.sequence;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
+import static is.codion.framework.domain.entity.attribute.Column.Generator.sequence;
 import static is.codion.plugin.jasperreports.JasperReports.classPathReport;
 
 // tag::departmentConstants[]
@@ -136,7 +136,8 @@ public final class Employees extends DomainModel {
 		// Defining the entity Employee.TYPE
 		return Employee.TYPE.define(
 										Employee.ID.define()
-														.primaryKey(),
+														.primaryKey()
+														.generator(sequence("employees.employee_seq")),
 										Employee.NAME.define()
 														.column()
 														.caption("Name")
@@ -183,7 +184,6 @@ public final class Employees extends DomainModel {
 														.from(Employee.DEPARTMENT_FK)
 														.attribute(Department.LOCATION)
 														.caption("Location"))
-						.keyGenerator(sequence("employees.employee_seq"))
 						.orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
 						.formatter(Employee.NAME)
 						.caption("Employee")

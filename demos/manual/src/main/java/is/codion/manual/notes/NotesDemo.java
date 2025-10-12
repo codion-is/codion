@@ -27,10 +27,10 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.Column.Generator;
 import is.codion.framework.model.EntityEditModel.EntityEditor;
 import is.codion.plugin.flatlaf.intellij.themes.material.MaterialDarker;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
@@ -95,7 +95,8 @@ public final class NotesDemo {
 			super(DOMAIN);
 			add(Note.TYPE.define(
 											Note.ID.define()
-															.primaryKey(),
+															.primaryKey()
+															.generator(Generator.identity()),
 											Note.NOTE.define()
 															.column()
 															.caption("Note")
@@ -109,7 +110,6 @@ public final class NotesDemo {
 											Note.UPDATED.define()
 															.column()
 															.caption("Updated"))
-							.keyGenerator(KeyGenerator.identity())
 							.orderBy(OrderBy.descending(Note.CREATED))
 							.caption("Notes")
 							.build());

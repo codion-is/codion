@@ -26,8 +26,8 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityFormatter;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.Column.Generator;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.plugin.jasperreports.JasperReports;
 
@@ -41,7 +41,7 @@ import java.util.UUID;
 import java.util.function.Function;
 
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.KeyGenerator.identity;
+import static is.codion.framework.domain.entity.attribute.Column.Generator.identity;
 
 public final class Store extends DomainModel {
 
@@ -89,7 +89,8 @@ public final class Store extends DomainModel {
 		// tag::customer[]
 		return Customer.TYPE.define(
 										Customer.ID.define()
-														.primaryKey(),
+														.primaryKey()
+														.generator(new UUIDGenerator()),
 										Customer.FIRST_NAME.define()
 														.column()
 														.caption("First name")
@@ -108,7 +109,6 @@ public final class Store extends DomainModel {
 														.caption("Active")
 														.withDefault(true)
 														.defaultValue(true))
-						.keyGenerator(new UUIDKeyGenerator())
 						// tag::customerFormatter[]
 						.formatter(new CustomerFormatter())
 						// end::customerFormatter[]
@@ -121,7 +121,8 @@ public final class Store extends DomainModel {
 		// tag::address[]
 		return Address.TYPE.define(
 										Address.ID.define()
-														.primaryKey(),
+														.primaryKey()
+														.generator(identity()),
 										Address.STREET.define()
 														.column()
 														.caption("Street")
@@ -143,7 +144,6 @@ public final class Store extends DomainModel {
 										.text(", ")
 										.value(Address.CITY)
 										.build())
-						.keyGenerator(identity())
 						.smallDataset(true)
 						.caption("Address")
 						.build();
@@ -154,7 +154,8 @@ public final class Store extends DomainModel {
 		// tag::customerAddress[]
 		return CustomerAddress.TYPE.define(
 										CustomerAddress.ID.define()
-														.primaryKey(),
+														.primaryKey()
+														.generator(identity()),
 										CustomerAddress.CUSTOMER_ID.define()
 														.column()
 														.nullable(false),
@@ -167,7 +168,6 @@ public final class Store extends DomainModel {
 										CustomerAddress.ADDRESS_FK.define()
 														.foreignKey()
 														.caption("Address"))
-						.keyGenerator(identity())
 						.caption("Customer address")
 						.build();
 		// end::customerAddress[]
@@ -193,13 +193,13 @@ public final class Store extends DomainModel {
 	}
 	// end::customerFormatter[]
 
-	// tag::keyGenerator[]
-	private static final class UUIDKeyGenerator implements KeyGenerator {
+	// tag::generator[]
+	private static final class UUIDGenerator implements Generator<String> {
 
 		@Override
-		public void beforeInsert(Entity entity, DatabaseConnection connection) {
-			entity.set(Customer.ID, UUID.randomUUID().toString());
+		public void beforeInsert(Entity entity, Column<String> column, DatabaseConnection connection) {
+			entity.set(column, UUID.randomUUID().toString());
 		}
 	}
-	// end::keyGenerator[]
+	// end::generator[]
 }

@@ -754,7 +754,7 @@ public final class EntitiesTest {
 			// Original has transient fields
 			assertNotNull(definition.table());
 			assertNotNull(definition.selectTable());
-			assertNotNull(definition.primaryKey().generator());
+			assertNotNull(definition.columns().definition(Employee.ID).generator());
 			assertTrue(definition.optimisticLocking());
 			assertTrue(definition.selectQuery().isPresent());
 			assertNotNull(definition.condition(Employee.CONDITION));
@@ -769,7 +769,7 @@ public final class EntitiesTest {
 			// Transient fields are null/default after deserialization
 			assertNull(deserialized.table());
 			assertNull(deserialized.selectTable());
-			assertNull(deserialized.primaryKey().generator());
+			assertThrows(IllegalStateException.class, () -> deserialized.columns().definition(Employee.ID).generator());
 			assertFalse(deserialized.optimisticLocking());
 			assertFalse(deserialized.selectQuery().isPresent());
 			assertThrows(IllegalArgumentException.class,

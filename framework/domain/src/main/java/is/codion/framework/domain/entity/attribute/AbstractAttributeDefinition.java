@@ -23,7 +23,6 @@ import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.common.resource.MessageBundle;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.DefaultColumnDefinition.DefaultColumnDefinitionBuilder;
 import is.codion.framework.domain.entity.attribute.DefaultDerivedAttributeDefinition.DefaultDenormalizedAttributeDefinitionBuilder;
@@ -415,7 +414,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 			if ((entity.primaryKey().isNull() || entity.originalPrimaryKey().isNull()) && !(attribute instanceof ForeignKey)) {
 				//a new entity being inserted, allow null for columns with default values and generated primary key values
 				boolean nonKeyColumnWithoutDefaultValue = isNonKeyColumnWithoutDefaultValue();
-				boolean primaryKeyColumnWithoutAutoGenerate = isNonGeneratedPrimaryKeyColumn(entity.definition());
+				boolean primaryKeyColumnWithoutAutoGenerate = isNonGeneratedPrimaryKeyColumn();
 				if (nonKeyColumnWithoutDefaultValue || primaryKeyColumnWithoutAutoGenerate) {
 					throw new NullValidationException(attribute,
 									MessageFormat.format(MESSAGES.getString(VALUE_REQUIRED_KEY), caption()));
@@ -428,10 +427,10 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		}
 	}
 
-	private boolean isNonGeneratedPrimaryKeyColumn(EntityDefinition entityDefinition) {
+	private boolean isNonGeneratedPrimaryKeyColumn() {
 		return (this instanceof ColumnDefinition
-						&& ((ColumnDefinition<?>) this).primaryKey())
-						&& !entityDefinition.primaryKey().generated();
+						&& ((ColumnDefinition<?>) this).primaryKey()
+						&& !((ColumnDefinition<?>) this).generated());
 	}
 
 	private boolean isNonKeyColumnWithoutDefaultValue() {
@@ -538,6 +537,10 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 					permits DefaultColumnDefinitionBuilder, DefaultDerivedAttributeDefinitionBuilder, DefaultDenormalizedAttributeDefinitionBuilder,
 					DefaultForeignKeyDefinitionBuilder, DefaultTransientAttributeDefinitionBuilder {
 
+		private static final String NO_RESOURCE_BUNDLE_SPECIFIED_FOR_ENTITY = "No resource bundle specified for entity: ";
+		private static final String RESOURCE = "Resource ";
+		private static final String NOT_FOUND_IN_BUNDLE = " not found in bundle: ";
+
 		private final Attribute<T> attribute;
 
 		private @Nullable String caption;
@@ -599,7 +602,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		@Override
 		public final B captionResource(String captionResourceKey) {
 			return captionResource(attribute.entityType().resourceBundleName().orElseThrow(() ->
-							new IllegalStateException("No resource bundle specified for entity: " + attribute.entityType())), captionResourceKey);
+							new IllegalStateException(NO_RESOURCE_BUNDLE_SPECIFIED_FOR_ENTITY + attribute.entityType())), captionResourceKey);
 		}
 
 		@Override
@@ -609,7 +612,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 			}
 			requireNonNull(captionResourceKey);
 			if (resourceNotFound(requireNonNull(resourceBundleName), requireNonNull(captionResourceKey))) {
-				throw new IllegalArgumentException("Resource " + captionResourceKey + " not found in bundle: " + resourceBundleName);
+				throw new IllegalArgumentException(RESOURCE + captionResourceKey + NOT_FOUND_IN_BUNDLE + resourceBundleName);
 			}
 			this.captionResourceBundleName = resourceBundleName;
 			this.captionResourceKey = captionResourceKey;
@@ -620,7 +623,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		@Override
 		public final B mnemonicResource(String mnemonicResourceKey) {
 			return mnemonicResource(attribute.entityType().resourceBundleName().orElseThrow(() ->
-							new IllegalStateException("No resource bundle specified for entity: " + attribute.entityType())), mnemonicResourceKey);
+							new IllegalStateException(NO_RESOURCE_BUNDLE_SPECIFIED_FOR_ENTITY + attribute.entityType())), mnemonicResourceKey);
 		}
 
 		@Override
@@ -630,7 +633,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 			}
 			requireNonNull(captionResourceKey);
 			if (resourceNotFound(requireNonNull(resourceBundleName), requireNonNull(mnemonicResourceKey))) {
-				throw new IllegalArgumentException("Resource " + mnemonicResourceKey + " not found in bundle: " + resourceBundleName);
+				throw new IllegalArgumentException(RESOURCE + mnemonicResourceKey + NOT_FOUND_IN_BUNDLE + resourceBundleName);
 			}
 			this.mnemonicResourceBundleName = resourceBundleName;
 			this.mnemonicResourceKey = mnemonicResourceKey;
@@ -726,7 +729,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		@Override
 		public final B descriptionResource(String descriptionResourceKey) {
 			return descriptionResource(attribute.entityType().resourceBundleName().orElseThrow(() ->
-							new IllegalStateException("No resource bundle specified for entity: " + attribute.entityType())), descriptionResourceKey);
+							new IllegalStateException(NO_RESOURCE_BUNDLE_SPECIFIED_FOR_ENTITY + attribute.entityType())), descriptionResourceKey);
 		}
 
 		@Override
@@ -736,7 +739,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 			}
 			requireNonNull(descriptionResourceKey);
 			if (resourceNotFound(requireNonNull(resourceBundleName), requireNonNull(descriptionResourceKey))) {
-				throw new IllegalArgumentException("Resource " + descriptionResourceKey + " not found in bundle: " + resourceBundleName);
+				throw new IllegalArgumentException(RESOURCE + descriptionResourceKey + NOT_FOUND_IN_BUNDLE + resourceBundleName);
 			}
 			this.descriptionResourceBundleName = resourceBundleName;
 			this.descriptionResourceKey = descriptionResourceKey;

@@ -13,7 +13,7 @@ import static is.codion.chinook.domain.api.Chinook.Playlist;
 import static is.codion.chinook.domain.api.Chinook.Playlisttrack;
 import static is.codion.chinook.domain.api.Chinook.Track;
 import static is.codion.chinook.domain.api.Chinook.Users;
-import static is.codion.framework.domain.entity.KeyGenerator.identity;
+import static is.codion.framework.domain.entity.attribute.Column.Generator.identity;
 
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -30,13 +30,13 @@ public final class ChinookImpl extends DomainModel {
 	static EntityDefinition artist() {
 		return Artist.TYPE.define(
 				Artist.ARTISTID.define()
-					.primaryKey(),
+					.primaryKey()
+					.generator(identity()),
 				Artist.NAME.define()
 					.column()
 					.caption("Name")
 					.nullable(false)
 					.maximumLength(120))
-			.keyGenerator(identity())
 			.caption("Artist")
 			.build();
 	}
@@ -44,7 +44,8 @@ public final class ChinookImpl extends DomainModel {
 	static EntityDefinition employee() {
 		return Employee.TYPE.define(
 				Employee.EMPLOYEEID.define()
-					.primaryKey(),
+					.primaryKey()
+					.generator(identity()),
 				Employee.LASTNAME.define()
 					.column()
 					.caption("Lastname")
@@ -103,7 +104,6 @@ public final class ChinookImpl extends DomainModel {
 					.caption("Email")
 					.nullable(false)
 					.maximumLength(60))
-			.keyGenerator(identity())
 			.caption("Employee")
 			.build();
 	}
@@ -111,13 +111,13 @@ public final class ChinookImpl extends DomainModel {
 	static EntityDefinition genre() {
 		return Genre.TYPE.define(
 				Genre.GENREID.define()
-					.primaryKey(),
+					.primaryKey()
+					.generator(identity()),
 				Genre.NAME.define()
 					.column()
 					.caption("Name")
 					.nullable(false)
 					.maximumLength(120))
-			.keyGenerator(identity())
 			.caption("Genre")
 			.build();
 	}
@@ -125,13 +125,13 @@ public final class ChinookImpl extends DomainModel {
 	static EntityDefinition mediatype() {
 		return Mediatype.TYPE.define(
 				Mediatype.MEDIATYPEID.define()
-					.primaryKey(),
+					.primaryKey()
+					.generator(identity()),
 				Mediatype.NAME.define()
 					.column()
 					.caption("Name")
 					.nullable(false)
 					.maximumLength(120))
-			.keyGenerator(identity())
 			.caption("Mediatype")
 			.build();
 	}
@@ -139,13 +139,13 @@ public final class ChinookImpl extends DomainModel {
 	static EntityDefinition playlist() {
 		return Playlist.TYPE.define(
 				Playlist.PLAYLISTID.define()
-					.primaryKey(),
+					.primaryKey()
+					.generator(identity()),
 				Playlist.NAME.define()
 					.column()
 					.caption("Name")
 					.nullable(false)
 					.maximumLength(120))
-			.keyGenerator(identity())
 			.caption("Playlist")
 			.build();
 	}
@@ -153,7 +153,8 @@ public final class ChinookImpl extends DomainModel {
 	static EntityDefinition users() {
 		return Users.TYPE.define(
 				Users.USERID.define()
-					.primaryKey(),
+					.primaryKey()
+					.generator(identity()),
 				Users.USERNAME.define()
 					.column()
 					.caption("Username")
@@ -163,7 +164,6 @@ public final class ChinookImpl extends DomainModel {
 					.column()
 					.caption("Passwordhash")
 					.nullable(false))
-			.keyGenerator(identity())
 			.caption("Users")
 			.build();
 	}
@@ -171,7 +171,8 @@ public final class ChinookImpl extends DomainModel {
 	static EntityDefinition album() {
 		return Album.TYPE.define(
 				Album.ALBUMID.define()
-					.primaryKey(),
+					.primaryKey()
+					.generator(identity()),
 				Album.TITLE.define()
 					.column()
 					.caption("Title")
@@ -189,7 +190,6 @@ public final class ChinookImpl extends DomainModel {
 				Album.TAGS.define()
 					.column()
 					.caption("Tags"))
-			.keyGenerator(identity())
 			.caption("Album")
 			.build();
 	}
@@ -197,7 +197,8 @@ public final class ChinookImpl extends DomainModel {
 	static EntityDefinition customer() {
 		return Customer.TYPE.define(
 				Customer.CUSTOMERID.define()
-					.primaryKey(),
+					.primaryKey()
+					.generator(identity()),
 				Customer.FIRSTNAME.define()
 					.column()
 					.caption("Firstname")
@@ -250,7 +251,6 @@ public final class ChinookImpl extends DomainModel {
 				Customer.SUPPORTREPID_FK.define()
 					.foreignKey()
 					.caption("Employee"))
-			.keyGenerator(identity())
 			.caption("Customer")
 			.build();
 	}
@@ -258,7 +258,8 @@ public final class ChinookImpl extends DomainModel {
 	static EntityDefinition invoice() {
 		return Invoice.TYPE.define(
 				Invoice.INVOICEID.define()
-					.primaryKey(),
+					.primaryKey()
+					.generator(identity()),
 				Invoice.CUSTOMERID.define()
 					.column()
 					.nullable(false),
@@ -293,7 +294,6 @@ public final class ChinookImpl extends DomainModel {
 					.column()
 					.caption("Total")
 					.fractionDigits(2))
-			.keyGenerator(identity())
 			.caption("Invoice")
 			.build();
 	}
@@ -301,7 +301,8 @@ public final class ChinookImpl extends DomainModel {
 	static EntityDefinition track() {
 		return Track.TYPE.define(
 				Track.TRACKID.define()
-					.primaryKey(),
+					.primaryKey()
+					.generator(identity()),
 				Track.NAME.define()
 					.column()
 					.caption("Name")
@@ -343,7 +344,6 @@ public final class ChinookImpl extends DomainModel {
 					.column()
 					.caption("Unitprice")
 					.nullable(false))
-			.keyGenerator(identity())
 			.caption("Track")
 			.build();
 	}
@@ -351,7 +351,8 @@ public final class ChinookImpl extends DomainModel {
 	static EntityDefinition invoiceline() {
 		return Invoiceline.TYPE.define(
 				Invoiceline.INVOICELINEID.define()
-					.primaryKey(),
+					.primaryKey()
+					.generator(identity()),
 				Invoiceline.INVOICEID.define()
 					.column()
 					.nullable(false),
@@ -372,7 +373,6 @@ public final class ChinookImpl extends DomainModel {
 					.column()
 					.caption("Quantity")
 					.nullable(false))
-			.keyGenerator(identity())
 			.caption("Invoiceline")
 			.build();
 	}
@@ -380,7 +380,8 @@ public final class ChinookImpl extends DomainModel {
 	static EntityDefinition playlisttrack() {
 		return Playlisttrack.TYPE.define(
 				Playlisttrack.PLAYLISTTRACKID.define()
-					.primaryKey(),
+					.primaryKey()
+					.generator(identity()),
 				Playlisttrack.PLAYLISTID.define()
 					.column()
 					.nullable(false),
@@ -393,7 +394,6 @@ public final class ChinookImpl extends DomainModel {
 				Playlisttrack.TRACKID_FK.define()
 					.foreignKey()
 					.caption("Track"))
-			.keyGenerator(identity())
 			.caption("Playlisttrack")
 			.build();
 	}

@@ -22,7 +22,6 @@ import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
@@ -35,6 +34,7 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 
 import static is.codion.common.item.Item.item;
+import static is.codion.framework.domain.entity.attribute.Column.Generator.sequence;
 import static java.util.Arrays.asList;
 
 public final class TestDomain extends DomainModel {
@@ -130,7 +130,8 @@ public final class TestDomain extends DomainModel {
 	void employee() {
 		add(Employee.TYPE.define(
 										Employee.EMPNO.define()
-														.primaryKey(),
+														.primaryKey()
+														.generator(sequence("employees.employee_seq")),
 										Employee.NAME.define()
 														.column()
 														.searchable(true).maximumLength(10).nullable(false),
@@ -164,7 +165,6 @@ public final class TestDomain extends DomainModel {
 														.from(Employee.DEPARTMENT_FK)
 														.attribute(Department.LOCATION))
 						.formatter(Employee.NAME)
-						.keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
 						.caption("Employee")
 						.build());
 	}

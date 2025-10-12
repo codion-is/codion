@@ -360,14 +360,6 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 		Builder optimisticLocking(boolean optimisticLocking);
 
 		/**
-		 * Sets the primary key generator
-		 * @param keyGenerator the primary key generator
-		 * @return this {@link Builder} instance
-		 * @see PrimaryKey#generated()
-		 */
-		Builder keyGenerator(KeyGenerator keyGenerator);
-
-		/**
 		 * Sets the order by clause for this entity type.
 		 * @param orderBy the order by clause
 		 * @return this {@link Builder} instance
@@ -611,18 +603,5 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 		 * @return the primary key column definitions of this entity type, sorted by primary key column index
 		 */
 		List<ColumnDefinition<?>> definitions();
-
-		/**
-		 * @return the object responsible for generating primary key values for entities of this type
-		 * @see Builder#keyGenerator(KeyGenerator)
-		 */
-		KeyGenerator generator();
-
-		/**
-		 * Returns true if the value for the primary key of this entity is generated with a {@link KeyGenerator}.
-		 * @return true if the value for the primary key is generated
-		 * @see Builder#keyGenerator(KeyGenerator)
-		 */
-		boolean generated();
 	}
 }

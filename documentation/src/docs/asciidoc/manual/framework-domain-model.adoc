@@ -175,6 +175,7 @@ include::{dir-source}/is/codion/manual/store/minimal/ManualDomainModel.java[tags
 |byte[]|java.sql.Types.BLOB
 |===
 
+[#_foreign_keys]
 == Foreign keys
 
 === Examples
@@ -550,11 +551,11 @@ include::{dir-world-source}/is/codion/demos/world/domain/WorldImpl.java[tags=def
 * <<{dir-tutorials}/chinook/chinook.adoc#_domain_model, Chinook domain model>>
 * <<{dir-tutorials}/petstore/petstore.adoc#_domain_model, Petstore domain model>>
 
-[#_keygenerator]
-== KeyGenerator
+[#_generator]
+== Generator
 
 The framework provides implementations for most commonly used primary key generation strategies, identity column, sequence (with or without trigger) and auto-increment columns.
-The {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/KeyGenerator.html[KeyGenerator] class serves as a factory for {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/KeyGenerator.html[KeyGenerator] implementations.
+The {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/Column.Generator.html[Generator] class serves as a factory for {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/Column.Generator.html[Generator] implementations.
 Static imports are assumed in the below examples.
 
 === Identity
@@ -568,15 +569,15 @@ include::{dir-chinook-source}/is/codion/demos/chinook/domain/ChinookImpl.java[ta
 
 === Automatic
 
-This assumes the underlying primary key column is either an auto-increment column or is populated from a sequence using a trigger during insert.
+This assumes the underlying column is either an auto-increment column or is populated from a sequence using a trigger during insert.
 
 [source,java]
 ----
 //Auto increment column in the 'store.customer' table
-.keyGenerator(automatic("store.customer"));
+.generator(automatic("store.customer"));
 
 //Trigger and a sequence named 'store.customer_seq'
-.keyGenerator(automatic("store.customer_seq"));
+.generator(automatic("store.customer_seq"));
 ----
 
 === Sequence
@@ -594,7 +595,7 @@ The framework can select new primary key values from a query.
 
 [source,java]
 ----
-.keyGenerator(queried("""
+.generator(queried("""
         select next_id
         from store.id_values
         where table_name = 'store.customer'"""))
@@ -602,11 +603,11 @@ The framework can select new primary key values from a query.
 
 === Custom
 
-You can provide a custom key generator strategy by implementing a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/KeyGenerator.html[KeyGenerator].
+You can provide a custom key generator strategy by implementing a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/Column.Generator.html[Generator].
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/manual/store/domain/Store.java[tags=keyGenerator]
+include::{dir-source}/is/codion/manual/store/domain/Store.java[tags=generator]
 ----
 
 == EntityFormatter

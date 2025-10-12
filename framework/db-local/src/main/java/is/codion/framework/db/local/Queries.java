@@ -91,6 +91,11 @@ final class Queries {
 	private static boolean isWritable(ColumnDefinition<?> column,
 																		boolean includePrimaryKeyColumns,
 																		boolean includeNonUpdatable) {
+		// Don't include generated columns where the value is NOT inserted (e.g., identity columns)
+		if (column.generated() && !column.generator().inserted()) {
+			return false;
+		}
+
 		return column.insertable() && (includeNonUpdatable || column.updatable())
 						&& (includePrimaryKeyColumns || !column.primaryKey());
 	}

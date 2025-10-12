@@ -32,8 +32,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.KeyGenerator.sequence;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
+import static is.codion.framework.domain.entity.attribute.Column.Generator.sequence;
 
 public final class Petstore extends DomainModel {
 
@@ -61,6 +61,7 @@ public final class Petstore extends DomainModel {
 		return Address.TYPE.define(
 										Address.ID.define()
 														.primaryKey()
+														.generator(sequence("petstore.address_seq"))
 														.name("addressid"),
 										Address.STREET_1.define()
 														.column()
@@ -103,7 +104,6 @@ public final class Petstore extends DomainModel {
 														.nullable(false)
 														.fractionDigits(2))
 						.table("petstore.address")
-						.keyGenerator(sequence("petstore.address_seq"))
 						.orderBy(ascending(Address.CITY, Address.STREET_1, Address.STREET_2))
 						.formatter(EntityFormatter.builder()
 										.value(Address.STREET_1).text(" ")
@@ -129,6 +129,7 @@ public final class Petstore extends DomainModel {
 		return Category.TYPE.define(
 										Category.ID.define()
 														.primaryKey()
+														.generator(sequence("petstore.category_seq"))
 														.name("categoryid"),
 										Category.NAME.define()
 														.column()
@@ -148,7 +149,6 @@ public final class Petstore extends DomainModel {
 														.name("imageurl")
 														.hidden(true))
 						.table("petstore.category")
-						.keyGenerator(sequence("petstore.category_seq"))
 						.orderBy(ascending(Category.NAME))
 						.formatter(Category.NAME)
 						.caption("Categories")
@@ -171,6 +171,7 @@ public final class Petstore extends DomainModel {
 		return Product.TYPE.define(
 										Product.ID.define()
 														.primaryKey()
+														.generator(sequence("petstore.product_seq"))
 														.name("productid"),
 										Product.CATEGORY_ID.define()
 														.column()
@@ -198,7 +199,6 @@ public final class Petstore extends DomainModel {
 														.maximumLength(55)
 														.hidden(true))
 						.table("petstore.product")
-						.keyGenerator(sequence("petstore.product_seq"))
 						.orderBy(ascending(Product.NAME))
 						.formatter(EntityFormatter.builder()
 										.value(Product.CATEGORY_FK)
@@ -222,6 +222,7 @@ public final class Petstore extends DomainModel {
 		return SellerContactInfo.TYPE.define(
 										SellerContactInfo.ID.define()
 														.primaryKey()
+														.generator(sequence("petstore.sellercontactinfo_seq"))
 														.name("contactinfoid"),
 										SellerContactInfo.FIRST_NAME.define()
 														.column()
@@ -244,7 +245,6 @@ public final class Petstore extends DomainModel {
 														.maximumLength(24)
 														.nullable(false))
 						.table("petstore.sellercontactinfo")
-						.keyGenerator(sequence("petstore.sellercontactinfo_seq"))
 						.orderBy(ascending(SellerContactInfo.LAST_NAME, SellerContactInfo.FIRST_NAME))
 						.formatter(EntityFormatter.builder()
 										.value(SellerContactInfo.LAST_NAME)
@@ -278,6 +278,7 @@ public final class Petstore extends DomainModel {
 		return Item.TYPE.define(
 										Item.ID.define()
 														.primaryKey()
+														.generator(sequence("petstore.item_seq"))
 														.name("itemid"),
 										Item.PRODUCT_ID.define()
 														.column()
@@ -341,7 +342,6 @@ public final class Petstore extends DomainModel {
 														.nullable(false)
 										// end::booleanColumn[]
 						).table("petstore.item")
-						.keyGenerator(sequence("petstore.item_seq"))
 						.orderBy(ascending(Item.NAME))
 						.formatter(EntityFormatter.builder()
 										.value(Item.PRODUCT_FK)
@@ -364,6 +364,7 @@ public final class Petstore extends DomainModel {
 		return Tag.TYPE.define(
 										Tag.ID.define()
 														.primaryKey()
+														.generator(sequence("petstore.tag_seq"))
 														.name("tagid"),
 										Tag.TAG.define()
 														.column()
@@ -379,7 +380,6 @@ public final class Petstore extends DomainModel {
 														.caption(Tag.REFCOUNT.name())
 														.name("refcount"))
 						.table("petstore.tag")
-						.keyGenerator(sequence("petstore.tag_seq"))
 						.orderBy(ascending(Tag.TAG))
 						.selectTable("petstore.tag tag")
 						.formatter(Tag.TAG)

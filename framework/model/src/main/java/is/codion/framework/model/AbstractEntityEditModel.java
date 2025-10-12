@@ -31,6 +31,7 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import org.jspecify.annotations.Nullable;
@@ -466,9 +467,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 		private Collection<Entity> entityForInsert() {
 			Entity.Builder builder = editor.getOrThrow().copy().builder();
-			if (entityDefinition.primaryKey().generated()) {
-				builder.clearPrimaryKey();
-			}
+			entityDefinition.columns().definitions().stream()
+							.filter(ColumnDefinition::primaryKey)
+							.filter(ColumnDefinition::generated)
+							.forEach(column -> builder.clear(column.attribute()));
 
 			return singleton(builder.build());
 		}

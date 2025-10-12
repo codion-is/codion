@@ -16,20 +16,19 @@
  *
  * Copyright (c) 2021 - 2025, Björn Darri Sigurðsson.
  */
-package is.codion.framework.domain.entity;
+package is.codion.framework.domain.entity.attribute;
 
 import is.codion.common.db.connection.DatabaseConnection;
-import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.attribute.Column.Generator.Identity;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-final class IdentityKeyGenerator implements KeyGenerator {
+final class IdentityGenerator<T> implements Identity<T> {
 
-	static final KeyGenerator INSTANCE = new IdentityKeyGenerator();
-
-	private IdentityKeyGenerator() {}
+	IdentityGenerator() {}
 
 	@Override
 	public boolean inserted() {
@@ -42,15 +41,15 @@ final class IdentityKeyGenerator implements KeyGenerator {
 	}
 
 	@Override
-	public void afterInsert(Entity entity, DatabaseConnection connection, Statement insertStatement) throws SQLException {
+	public void afterInsert(Entity entity, Column<T> column, DatabaseConnection connection, Statement insertStatement) throws SQLException {
 		try (ResultSet generatedKeys = insertStatement.getGeneratedKeys()) {
 			if (!generatedKeys.next()) {
 				throw new SQLException("Identity key generator returned no generated keys", DatabaseConnection.SQL_STATE_NO_DATA);
 			}
-			ColumnDefinition<Object> column = (ColumnDefinition<Object>) entity.definition().primaryKey().definitions().get(0);
-			entity.remove(column.attribute());
+			ColumnDefinition<T> columnDefinition = entity.definition().columns().definition(column);
+			entity.remove(columnDefinition.attribute());
 			// must fetch value by column name, since some databases (PostgreSQL for example), return all columns, not just generated ones
-			entity.set(column.attribute(), generatedKeys.getObject(column.name()));
+			entity.set(columnDefinition.attribute(), columnDefinition.get(generatedKeys));
 		}
 	}
 }

@@ -24,8 +24,8 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.Column.Generator;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -117,7 +117,8 @@ public final class EmployeesMinimalApp {
 			 */
 			add(Employee.TYPE.define(
 											Employee.ID.define()
-															.primaryKey(),
+															.primaryKey()
+															.generator(Generator.sequence("employees.emp_seq")),
 											Employee.NAME.define()
 															.column()
 															.caption("Name")
@@ -154,7 +155,6 @@ public final class EmployeesMinimalApp {
 															.column()
 															.caption("Hiredate")
 															.nullable(false))
-							.keyGenerator(KeyGenerator.sequence("employees.emp_seq"))
 							.caption("Employees")
 							.formatter(Employee.NAME)
 							.build());

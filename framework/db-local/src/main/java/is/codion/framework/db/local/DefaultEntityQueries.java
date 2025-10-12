@@ -23,7 +23,6 @@ import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityQueries;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.condition.Condition;
 
@@ -74,9 +73,8 @@ final class DefaultEntityQueries implements EntityQueries {
 
 	@Override
 	public String insert(Entity entity) {
-		KeyGenerator keyGenerator = requireNonNull(entity).definition().primaryKey().generator();
 		List<ColumnDefinition<?>> columnDefinitions =
-						writableColumnDefinitions(entity.definition(), keyGenerator.inserted(), true).stream()
+						writableColumnDefinitions(entity.definition(), true, true).stream()
 										.filter(columnDefinition -> entity.contains(columnDefinition.attribute()))
 										.collect(toList());
 

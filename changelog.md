@@ -10,6 +10,7 @@ Codion Change Log
 - EntityDefinition.Builder.descriptionResource() added.
 - AttributeDefinition.Builder.descriptionResource() added.
 - DefaultEntityBuilder bug fixed, now initializes primary key column values to null for entities with non-generated primary keys, since the default Entity.exists() predicate relies on the original primary key being null.
+- KeyGenerator moved from entity-level to column-level, moved to Column and renamed Generator, related refactoring.
 ### is.codion.framework.domain.db
 - SchemaDomain.SchemaSettings.lowerCaseIdentifiers() added.
 ### is.codion.plugin.swing.robot

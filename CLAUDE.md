@@ -116,7 +116,8 @@ codion/
    EntityDefinition artist() {
        return Artist.TYPE.define(
            Artist.ID.define()
-               .primaryKey(),
+               .primaryKey()
+               .generator(KeyGenerator.identity()),
            Artist.NAME.define()
                .column()
                .caption("Name")
@@ -125,7 +126,6 @@ codion/
            Artist.RECORD_LABEL_FK.define()
                .foreignKey()
                .caption("Record label"))
-       .keyGenerator(KeyGenerator.identity())
        .caption("Artist")
        .build();
    }

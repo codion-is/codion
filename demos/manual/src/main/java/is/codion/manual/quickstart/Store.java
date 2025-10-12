@@ -27,8 +27,8 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.KeyGenerator.automatic;
-import static is.codion.framework.domain.entity.KeyGenerator.identity;
+import static is.codion.framework.domain.entity.attribute.Column.Generator.automatic;
+import static is.codion.framework.domain.entity.attribute.Column.Generator.identity;
 
 // tag::store[]
 // tag::storeDomain[]
@@ -56,7 +56,8 @@ public class Store extends DomainModel {
 	EntityDefinition customer() {
 		return Customer.TYPE.define(
 										Customer.ID.define()
-														.primaryKey(),
+														.primaryKey()
+														.generator(identity()),
 										Customer.FIRST_NAME.define()
 														.column()
 														.caption("First name")
@@ -67,7 +68,6 @@ public class Store extends DomainModel {
 														.caption("Last name")
 														.nullable(false)
 														.maximumLength(40))
-						.keyGenerator(identity())
 						.formatter(EntityFormatter.builder()
 										.value(Customer.LAST_NAME)
 										.text(", ")
@@ -89,7 +89,8 @@ public class Store extends DomainModel {
 	EntityDefinition address() {
 		return Address.TYPE.define(
 										Address.ID.define()
-														.primaryKey(),
+														.primaryKey()
+														.generator(automatic("store.address")),
 										Address.STREET.define()
 														.column()
 														.caption("Street")
@@ -100,7 +101,6 @@ public class Store extends DomainModel {
 														.caption("City")
 														.nullable(false)
 														.maximumLength(50))
-						.keyGenerator(automatic("store.address"))
 						.formatter(EntityFormatter.builder()
 										.value(Address.STREET)
 										.text(", ")
@@ -125,7 +125,8 @@ public class Store extends DomainModel {
 	EntityDefinition customerAddress() {
 		return CustomerAddress.TYPE.define(
 										CustomerAddress.ID.define()
-														.primaryKey(),
+														.primaryKey()
+														.generator(automatic("store.customer_address")),
 										CustomerAddress.CUSTOMER_ID.define()
 														.column()
 														.nullable(false),
@@ -138,7 +139,6 @@ public class Store extends DomainModel {
 										CustomerAddress.ADDRESS_FK.define()
 														.foreignKey()
 														.caption("Address"))
-						.keyGenerator(automatic("store.customer_address"))
 						.caption("Customer address")
 						.build();
 	}

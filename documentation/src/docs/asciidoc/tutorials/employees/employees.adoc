@@ -66,8 +66,8 @@ include::{dir-source}/is/codion/demos/employees/domain/Employees.java[tags=defin
 ----
 
 Next we define the employee entity.
-Here we set the *keyGenerator* to *KeyGenerator.sequence("employees.employee_seq")* which, as the name suggests, fetches a value from a sequence.
-Here we also introduce the <<{basedir}/manual/manual.adoc#_foreignkey, ForeignKey>>, the *orderBy*, as well as a *CellColor* which is responsible for providing a custom color for an entity instance.
+Here we set the *generator* to *Generator.sequence("employees.employee_seq")* which, as the name suggests, fetches a value from a sequence.
+Here we also introduce the <<{basedir}/manual/manual.adoc#_foreign_keys, ForeignKey>>, the *orderBy*, as well as a *CellColor* which is responsible for providing a custom color for an entity instance.
 
 [source,java]
 ----

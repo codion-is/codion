@@ -419,18 +419,42 @@ public interface Entity extends Comparable<Entity> {
 
 	/**
 	 * Returns the primary key of this entity.
-	 * If the entity has no defined primary key, this key contains
-	 * all column values and {@link Key#primary()} returns false.
-	 * @return the primary key of this entity
+	 * <p>
+	 * <b>Entities Without Defined Primary Keys:</b>
+	 * <p>
+	 * If the entity has no defined primary key, this method returns a <em>pseudo primary key</em>
+	 * containing all column values, and {@link Key#primary()} returns {@code false}.
+	 * This enables working with entities based on views or legacy tables that lack proper primary keys.
+	 * <p>
+	 * <b>Pseudo Primary Key Behavior:</b>
+	 * <ul>
+	 *   <li><b>Update/Delete:</b> Operations work correctly when the pseudo key uniquely identifies a single row</li>
+	 *   <li><b>Identical Rows:</b> If multiple rows have identical column values, delete by key throws
+	 *       {@code DeleteException} since the pseudo key cannot distinguish between them</li>
+	 *   <li><b>Workaround:</b> Use condition-based delete instead of key-based delete
+	 *       for tables with potentially identical rows</li>
+	 * </ul>
+	 * <p>
+	 * <b>Typical Use Cases:</b>
+	 * <ul>
+	 *   <li>Read-only entities based on denormalized views (most common)</li>
+	 *   <li>Legacy tables without proper primary keys (rare)</li>
+	 *   <li>Temporary or staging tables where unique constraints aren't enforced</li>
+	 * </ul>
+	 * @return the primary key of this entity, or a pseudo primary key if no primary key is defined
 	 * @see Key#primary()
+	 * @see #originalPrimaryKey()
 	 */
 	Key primaryKey();
 
 	/**
 	 * Returns the primary key of this entity, in its original state.
-	 * If the entity has no defined primary key, this key contains
-	 * all original column values and {@link Key#primary()} returns false.
-	 * @return the primary key of this entity in its original state
+	 * <p>
+	 * If the entity has no defined primary key, this method returns a <em>pseudo primary key</em>
+	 * containing all original column values, and {@link Key#primary()} returns {@code false}.
+	 * @return the primary key of this entity in its original state, or a pseudo primary key if no primary key is defined
+	 * @see #primaryKey()
+	 * @see Key#primary()
 	 */
 	Key originalPrimaryKey();
 
@@ -503,6 +527,14 @@ public interface Entity extends Comparable<Entity> {
 		 * @see AttributeDefinition#hasDefaultValue()
 		 */
 		Builder withDefaults();
+
+		/**
+		 * Clears the given value from this builder,
+		 * current as well as original value if any
+		 * @param attribute the attribute which value to remove
+		 * @return this builder instance
+		 */
+		Builder clear(Attribute<?> attribute);
 
 		/**
 		 * Clears the primary key values from this builder,
@@ -706,8 +738,12 @@ public interface Entity extends Comparable<Entity> {
 		Collection<Column<?>> columns();
 
 		/**
-		 * Note that this method returns true for empty keys representing entities without a defined primary key
-		 * @return true if this key represents a primary key
+		 * Indicates whether this key represents an actual primary key or a pseudo primary key.
+		 * <p>
+		 * Returns {@code false} for <em>pseudo primary keys</em> created for entities without defined primary keys.
+		 * Pseudo primary keys contain all column values and enable basic CRUD operations on entities without proper PKs.
+		 * @return {@code true} if this is an actual primary key, {@code false} if this is a pseudo primary key
+		 * @see Entity#primaryKey()
 		 */
 		boolean primary();
 

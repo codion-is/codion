@@ -22,6 +22,7 @@ import is.codion.framework.domain.entity.Entity.Key;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 
 import org.jspecify.annotations.Nullable;
 
@@ -48,9 +49,7 @@ final class DefaultEntityBuilder implements Entity.Builder {
 		this.definition = definition;
 		this.values = new HashMap<>();
 		this.originalValues = EMPTY_MAP;
-		if (!definition.primaryKey().generated()) {
-			definition.primaryKey().columns().forEach(column -> values.put(column, null));
-		}
+		initialize();
 	}
 
 	DefaultEntityBuilder(EntityDefinition definition, Map<Attribute<?>, Object> values,
@@ -72,6 +71,13 @@ final class DefaultEntityBuilder implements Entity.Builder {
 		else {
 			builderValues.put(attribute, value);
 		}
+
+		return this;
+	}
+
+	@Override
+	public Entity.Builder clear(Attribute<?> attribute) {
+		remove(requireNonNull(attribute));
 
 		return this;
 	}
@@ -107,7 +113,7 @@ final class DefaultEntityBuilder implements Entity.Builder {
 		return entity;
 	}
 
-	private void remove(Column<?> column) {
+	private void remove(Attribute<?> column) {
 		values.remove(column);
 		originalValues.remove(column);
 	}
@@ -118,7 +124,27 @@ final class DefaultEntityBuilder implements Entity.Builder {
 		}
 	}
 
-	private <T> boolean nonGeneratedPrimaryKeyColumn(AttributeDefinition<T> attributeDefinition) {
-		return !definition.primaryKey().generated() && definition.primaryKey().columns().contains(attributeDefinition.attribute());
+	private void initialize() {
+		// For entities without primary keys, we must initialize all non-generated columns to null
+		if (definition.primaryKey().columns().isEmpty()) {
+			definition.columns().definitions().stream()
+							.filter(columnDefinition -> !columnDefinition.generated())
+							.forEach(columnDefinition -> values.put(columnDefinition.attribute(), null));
+		}// Initialize non-generated PK columns to null
+		else {
+			definition.primaryKey().columns().stream()
+							.map(column -> definition.columns().definition(column))
+							.filter(columnDefinition -> !columnDefinition.generated())
+							.forEach(columnDefinition -> values.put(columnDefinition.attribute(), null));
+		}
+	}
+
+	private static <T> boolean nonGeneratedPrimaryKeyColumn(AttributeDefinition<T> attributeDefinition) {
+		if (!(attributeDefinition instanceof ColumnDefinition<T>)) {
+			return false;
+		}
+		ColumnDefinition<T> columnDefinition = (ColumnDefinition<T>) attributeDefinition;
+
+		return columnDefinition.primaryKey() && !columnDefinition.generated();
 	}
 }

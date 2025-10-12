@@ -16,26 +16,27 @@
  *
  * Copyright (c) 2021 - 2025, Björn Darri Sigurðsson.
  */
-package is.codion.framework.domain.entity;
+package is.codion.framework.domain.entity.attribute;
 
 import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Database;
+import is.codion.framework.domain.entity.Entity;
 
 import java.sql.SQLException;
 
 import static java.util.Objects.requireNonNull;
 
-final class QueryKeyGenerator extends AbstractQueriedKeyGenerator {
+final class QueryGenerator<T> extends AbstractQueriedGenerator<T> {
 
 	private final String query;
 
-	QueryKeyGenerator(String query) {
+	QueryGenerator(String query) {
 		this.query = requireNonNull(query);
 	}
 
 	@Override
-	public void beforeInsert(Entity entity, DatabaseConnection connection) throws SQLException {
-		selectAndPopulate(entity, connection);
+	public void beforeInsert(Entity entity, Column<T> column, DatabaseConnection connection) throws SQLException {
+		selectAndPopulate(entity, column, connection);
 	}
 
 	@Override

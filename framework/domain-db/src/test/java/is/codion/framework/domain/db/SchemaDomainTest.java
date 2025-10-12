@@ -54,6 +54,9 @@ public final class SchemaDomainTest {
 				entityDefinition.foreignKeys().get().forEach(foreignKey -> assertFalse(foreignKey.name().endsWith("_id_fk")));
 				List<AttributeDefinition<?>> attributeDefinitions = new ArrayList<>(entityDefinition.attributes().definitions());
 				List<AttributeDefinition<?>> auditColumns = attributeDefinitions.subList(attributeDefinitions.size() - 4, attributeDefinitions.size());
+				if (!entityDefinition.type().name().equals("petstore.tag_item")) {
+					assertTrue(entityDefinition.primaryKey().definitions().get(0).generated());
+				}
 				ColumnDefinition<?> insertUser = (ColumnDefinition<?>) auditColumns.get(0);
 				assertEquals("insert_user", insertUser.attribute().name());
 				assertTrue(insertUser.readOnly());
@@ -83,6 +86,8 @@ public final class SchemaDomainTest {
 			EntityDefinition customer = chinook.entities().definition("CHINOOK.CUSTOMER");
 			assertTrue(customer.attributes().definitions().stream()
 							.anyMatch(definition -> definition.attribute().name().equals("LASTNAME")));
+			chinook.entities().definitions().forEach(definition ->
+							assertTrue(definition.primaryKey().definitions().get(0).generated()));
 		}
 	}
 

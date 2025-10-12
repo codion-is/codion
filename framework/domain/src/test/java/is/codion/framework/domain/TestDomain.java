@@ -22,7 +22,6 @@ import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.DerivedValue;
@@ -38,8 +37,9 @@ import java.util.Comparator;
 import java.util.List;
 
 import static is.codion.common.item.Item.item;
-import static is.codion.framework.domain.entity.KeyGenerator.queried;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
+import static is.codion.framework.domain.entity.attribute.Column.Generator.queried;
+import static is.codion.framework.domain.entity.attribute.Column.Generator.sequence;
 import static java.util.Arrays.asList;
 
 public final class TestDomain extends DomainModel {
@@ -312,7 +312,8 @@ public final class TestDomain extends DomainModel {
 	void detail() {
 		add(Detail.TYPE.define(
 										Detail.ID.define()
-														.primaryKey(),
+														.primaryKey()
+														.generator(queried("select id from dual")),
 										Detail.SHORT.define()
 														.column()
 														.caption(Detail.SHORT.name()),
@@ -386,7 +387,6 @@ public final class TestDomain extends DomainModel {
 														.column()
 														.updatable(false)
 														.selected(false))
-						.keyGenerator(queried("select id from dual"))
 						.orderBy(ascending(Detail.STRING))
 						.selectTable(DETAIL_SELECT_TABLE_NAME.name())
 						.smallDataset(true)
@@ -470,6 +470,7 @@ public final class TestDomain extends DomainModel {
 		add(Employee.TYPE.define(
 										Employee.ID.define()
 														.primaryKey()
+														.generator(sequence("employees.employee_seq"))
 														.caption(Employee.ID.name())
 														.name("empno"),
 										Employee.NAME.define()
@@ -530,7 +531,6 @@ public final class TestDomain extends DomainModel {
 														.caption("Data"))
 						.table("employees.employee")
 						.selectTable("employees.employee")
-						.keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
 						.orderBy(ascending(Employee.DEPARTMENT_NO, Employee.NAME))
 						.formatter(Employee.NAME)
 						.selectQuery(EntitySelectQuery.builder().build())

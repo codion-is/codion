@@ -40,9 +40,9 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.Column.Generator;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKey.Reference;
@@ -753,19 +753,26 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 			try {
 				for (Entity entity : entities) {
 					EntityDefinition entityDefinition = definition(entity.type());
-					KeyGenerator keyGenerator = entityDefinition.primaryKey().generator();
-					keyGenerator.beforeInsert(entity, connection);
-
-					populateColumnsAndValues(entity, insertableColumns(entityDefinition, keyGenerator.inserted()),
-									statementColumns, statementValues, columnDefinition -> entity.contains(columnDefinition.attribute()));
-					if (keyGenerator.inserted() && statementColumns.isEmpty()) {
+					List<ColumnDefinition<?>> generated = entityDefinition.columns().definitions().stream()
+									.filter(ColumnDefinition::generated)
+									.collect(toList());
+					for (ColumnDefinition<?> column : generated) {
+						Generator<Object> generator = (Generator<Object>) column.generator();
+						generator.beforeInsert(entity, (Column<Object>) column.attribute(), connection);
+					}
+					populateColumnsAndValues(entity, insertableColumns(entityDefinition),
+									statementColumns, statementValues, column -> entity.contains(column.attribute()));
+					if (generated.isEmpty() && statementColumns.isEmpty()) {
 						throw new SQLException("Unable to insert entity " + entity.type() + ", no values to insert");
 					}
-
+					boolean generatedKeys = generated.stream().anyMatch(column -> column.generator().generatedKeys());
 					insertQuery = insertQuery(entityDefinition.table(), statementColumns);
-					try (PreparedStatement statement = prepareStatement(insertQuery, keyGenerator.generatedKeys())) {
+					try (PreparedStatement statement = prepareStatement(insertQuery, generatedKeys)) {
 						executeUpdate(statement, insertQuery, statementColumns, statementValues, INSERT);
-						keyGenerator.afterInsert(entity, connection, statement);
+						for (ColumnDefinition<?> column : generated) {
+							Generator<Object> generator = (Generator<Object>) column.generator();
+							generator.afterInsert(entity, (Column<Object>) column.attribute(), connection, statement);
+						}
 					}
 
 					insertedKeys.add(entity.primaryKey());
@@ -774,7 +781,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 				}
 				if (insertedEntities != null) {
 					for (List<Key> entityTypeKeys : groupByType(insertedKeys).values()) {
-						insertedEntities.addAll(query(where(keys(entityTypeKeys)).build(), 0));//bypass caching
+						insertedEntities.addAll(query(where(keys(entityTypeKeys)).build(), 0));
 					}
 				}
 				commitIfTransactionIsNotOpen();
@@ -789,6 +796,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 			}
 		}
 	}
+
 
 	private void update(Collection<Entity> entities, @Nullable Collection<Entity> updatedEntities) {
 		Map<EntityType, List<Entity>> entitiesByEntityType = groupByType(entities);
@@ -1213,10 +1221,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		}
 	}
 
-	private List<ColumnDefinition<?>> insertableColumns(EntityDefinition entityDefinition,
-																											boolean includePrimaryKeyColumns) {
+	private List<ColumnDefinition<?>> insertableColumns(EntityDefinition entityDefinition) {
 		return insertableColumnsCache.computeIfAbsent(entityDefinition.type(), k ->
-						writableColumnDefinitions(entityDefinition, includePrimaryKeyColumns, true));
+						writableColumnDefinitions(entityDefinition, true, true));
 	}
 
 	private List<ColumnDefinition<?>> updatableColumns(EntityDefinition entityDefinition) {

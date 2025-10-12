@@ -24,8 +24,8 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityFormatter;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.Column.Generator;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
@@ -33,7 +33,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import java.util.function.Function;
 
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.KeyGenerator.identity;
+import static is.codion.framework.domain.entity.attribute.Column.Generator.identity;
 
 // Extend the DomainModel class.
 public class Store extends DomainModel {
@@ -76,7 +76,8 @@ public class Store extends DomainModel {
 		// This entity definition is then added to the domain model.
 		add(Customer.TYPE.define(                   // returns EntityDefinition.Builder
 										Customer.ID.define()
-														.primaryKey(),      // returns ColumnDefinition.Builder
+														.primaryKey()       // returns ColumnDefinition.Builder
+														.generator(identity()),
 										Customer.FIRST_NAME.define()
 														.column()           // returns ColumnDefinition.Builder
 														.caption("First name")
@@ -96,7 +97,6 @@ public class Store extends DomainModel {
 														.caption("Active")
 														.nullable(false)
 														.defaultValue(true))
-						.keyGenerator(identity())
 						.formatter(EntityFormatter.builder()
 										.value(Customer.LAST_NAME)
 										.text(", ")
@@ -110,7 +110,8 @@ public class Store extends DomainModel {
 		// This entity definition is then added to the domain model.
 		add(Address.TYPE.define(
 										Address.ID.define()
-														.primaryKey(),
+														.primaryKey()
+														.generator(identity()),
 										Address.CUSTOMER_ID.define()
 														.column()
 														.nullable(false),
@@ -127,7 +128,6 @@ public class Store extends DomainModel {
 														.caption("City")
 														.nullable(false)
 														.maximumLength(50))
-						.keyGenerator(identity())
 						.formatter(EntityFormatter.builder()
 										.value(Address.STREET)
 										.text(", ")
@@ -138,9 +138,12 @@ public class Store extends DomainModel {
 	}
 
 	void addressExpanded() {
+		Generator<Long> generator = Generator.identity();
+
 		ColumnDefinition.Builder<Long, ?> id =
 						Address.ID.define()
-										.primaryKey();
+										.primaryKey()
+										.generator(generator);
 
 		ColumnDefinition.Builder<Long, ?> customerId =
 						Address.CUSTOMER_ID.define()
@@ -166,8 +169,6 @@ public class Store extends DomainModel {
 										.nullable(false)
 										.maximumLength(50);
 
-		KeyGenerator keyGenerator = KeyGenerator.identity();
-
 		Function<Entity, String> formatter = EntityFormatter.builder()
 						.value(Address.STREET)
 						.text(", ")
@@ -176,7 +177,6 @@ public class Store extends DomainModel {
 
 		EntityDefinition address =
 						Address.TYPE.define(id, customerId, customerFk, street, city)
-										.keyGenerator(keyGenerator)
 										.formatter(formatter)
 										.caption("Address")
 						.build();

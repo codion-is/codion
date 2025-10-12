@@ -25,8 +25,8 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.Column.Generator;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.manual.store.minimal.ManualDomainModel.Store.City;
 import is.codion.manual.store.minimal.ManualDomainModel.Store.Customer;
@@ -70,12 +70,12 @@ class ManualDomainModel {
 		EntityDefinition city() {
 			return City.TYPE.define(
 											City.ID.define()
-															.primaryKey(),
+															.primaryKey()
+															.generator(Generator.identity()),
 											City.NAME.define()
 															.column()
 															.caption("Name")
 															.nullable(false))
-							.keyGenerator(KeyGenerator.identity())
 							.caption("Cities")
 							.build();
 		}
@@ -83,7 +83,8 @@ class ManualDomainModel {
 		EntityDefinition customer() {
 			return Customer.TYPE.define(
 											Customer.ID.define()
-															.primaryKey(),
+															.primaryKey()
+															.generator(Generator.identity()),
 											Customer.NAME.define()
 															.column()
 															.caption("Name")
@@ -93,7 +94,6 @@ class ManualDomainModel {
 											Customer.CITY_FK.define()
 															.foreignKey()
 															.caption("City"))
-							.keyGenerator(KeyGenerator.identity())
 							.caption("Customers")
 							.build();
 		}

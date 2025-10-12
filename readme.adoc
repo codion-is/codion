@@ -190,7 +190,7 @@ NOTE:: The constants defined in the above steps represent the domain API and are
 [source,java]
 ----
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.KeyGenerator.identity;
+import static is.codion.framework.domain.entity.attribute.KeyGenerator.identity;
 
 // Extend the DomainModel class.
 public class Store extends DomainModel {
@@ -233,7 +233,8 @@ public class Store extends DomainModel {
     // This entity definition is then added to the domain model.
     add(Customer.TYPE.define(                   // returns EntityDefinition.Builder
                     Customer.ID.define()
-                            .primaryKey(),      // returns ColumnDefinition.Builder
+                            .primaryKey()       // returns ColumnDefinition.Builder
+                            .generator(identity()),
                     Customer.FIRST_NAME.define()
                             .column()           // returns ColumnDefinition.Builder
                             .caption("First name")
@@ -253,7 +254,6 @@ public class Store extends DomainModel {
                             .caption("Active")
                             .nullable(false)
                             .defaultValue(true))
-            .keyGenerator(identity())
             .formatter(EntityFormatter.builder()
                     .value(Customer.LAST_NAME)
                     .text(", ")
@@ -267,7 +267,8 @@ public class Store extends DomainModel {
     // This entity definition is then added to the domain model.
     add(Address.TYPE.define(
                     Address.ID.define()
-                            .primaryKey(),
+                            .primaryKey()
+                            .generator(identity()),
                     Address.CUSTOMER_ID.define()
                             .column()
                             .nullable(false),
@@ -284,7 +285,6 @@ public class Store extends DomainModel {
                             .caption("City")
                             .nullable(false)
                             .maximumLength(50))
-            .keyGenerator(identity())
             .formatter(EntityFormatter.builder()
                     .value(Address.STREET)
                     .text(", ")
@@ -307,9 +307,12 @@ Here's one entity definition from above, pulled apart, with the ingredients expo
 ====
 [source,java]
 ----
+Generator idGenerator = Generator.identity();
+
 ColumnDefinition.Builder<Long, ?> id =
         Address.ID.define()
-                .primaryKey();
+                .primaryKey()
+                .generator(idGenerator);
 
 ColumnDefinition.Builder<Long, ?> customerId =
         Address.CUSTOMER_ID.define()
@@ -335,8 +338,6 @@ ColumnDefinition.Builder<String, ?> city =
                 .nullable(false)
                 .maximumLength(50);
 
-KeyGenerator keyGenerator = KeyGenerator.identity();
-
 Function<Entity, String> formatter = EntityFormatter.builder()
         .value(Address.STREET)
         .text(", ")
@@ -345,7 +346,6 @@ Function<Entity, String> formatter = EntityFormatter.builder()
 
 EntityDefinition.Builder address =
         Address.TYPE.define(id, customerId, customerFk, street, city)
-                .keyGenerator(keyGenerator)
                 .formatter(formatter)
                 .caption("Address");
 

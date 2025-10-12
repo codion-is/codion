@@ -30,6 +30,7 @@ import is.codion.framework.domain.TestDomain.Detail;
 import is.codion.framework.domain.TestDomain.Employee;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.query.EntitySelectQuery;
 
@@ -42,7 +43,7 @@ import java.util.Locale;
 import java.util.function.Function;
 
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.KeyGenerator.automatic;
+import static is.codion.framework.domain.entity.attribute.Column.Generator.automatic;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultEntityDefinitionTest {
@@ -84,8 +85,8 @@ public class DefaultEntityDefinitionTest {
 		assertEquals(entityType.name(), definition.toString());
 		assertEquals(entityType, definition.type());
 		assertEquals("tableName", definition.table());
-		assertNotNull(definition.primaryKey().generator());
-		assertFalse(definition.primaryKey().generated());
+		assertThrows(IllegalStateException.class, () -> definition.columns().definition(id).generator());
+		assertFalse(definition.columns().definition(id).generated());
 		EntitySelectQuery query = definition.selectQuery().orElseThrow(IllegalStateException::new);
 		assertEquals("*", query.columns());
 		assertEquals("dual", query.from());
@@ -437,30 +438,14 @@ public class DefaultEntityDefinitionTest {
 	}
 
 	@Test
-	void defaultKeyGenerator() {
-		EntityType entityType = DOMAIN_TYPE.entityType("defaultKeyGenerator");
-		class TestDomain extends DomainModel {
-			public TestDomain() {
-				super(DOMAIN_TYPE);
-				add(entityType.define(entityType.integerColumn("attribute").define().primaryKey()).build());
-			}
-		}
-		Domain domain = new TestDomain();
-
-		EntityDefinition definition = domain.entities().definition(entityType);
-		assertNotNull(definition.primaryKey().generator());
-		assertFalse(definition.primaryKey().generated());
-		assertTrue(definition.primaryKey().generator().inserted());
-	}
-
-	@Test
 	void nullKeyGenerator() {
 		EntityType entityType = DOMAIN_TYPE.entityType("nullKeyGenerator");
 		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
-				add(entityType.define(entityType.integerColumn("attribute").define().primaryKey())
-								.keyGenerator(null)
+				add(entityType.define(entityType.integerColumn("attribute").define()
+												.primaryKey()
+												.generator(null))
 								.build());
 			}
 		}
@@ -470,20 +455,22 @@ public class DefaultEntityDefinitionTest {
 	@Test
 	void keyGenerator() {
 		EntityType entityType = DOMAIN_TYPE.entityType("keyGenerator");
+		Column<Integer> idColumn = entityType.integerColumn("attribute");
 		class TestDomain extends DomainModel {
 			public TestDomain() {
 				super(DOMAIN_TYPE);
-				add(entityType.define(entityType.integerColumn("attribute").define().primaryKey())
-								.keyGenerator(automatic("table"))
+				add(entityType.define(idColumn.define()
+								.primaryKey().generator(automatic("table")))
 								.build());
 			}
 		}
 		Domain domain = new TestDomain();
 
 		EntityDefinition definition = domain.entities().definition(entityType);
-		assertNotNull(definition.primaryKey().generator());
-		assertTrue(definition.primaryKey().generated());
-		assertFalse(definition.primaryKey().generator().inserted());
+		ColumnDefinition<Integer> columnDefinition = definition.columns().definition(idColumn);
+		assertNotNull(columnDefinition.generator());
+		assertTrue(columnDefinition.generated());
+		assertFalse(columnDefinition.generator().inserted());
 	}
 
 	@Test
@@ -496,20 +483,6 @@ public class DefaultEntityDefinitionTest {
 	void singleValueConstructorWrongType() {
 		assertThrows(IllegalArgumentException.class, () -> new TestDomain().entities()
 						.definition(Department.TYPE).primaryKey(1L));
-	}
-
-	@Test
-	void keyGeneratorWithoutPrimaryKey() {
-		EntityType entityType = DOMAIN_TYPE.entityType("keyGeneratorWithoutPrimaryKey");
-		class TestDomain extends DomainModel {
-			public TestDomain() {
-				super(DOMAIN_TYPE);
-				add(entityType.define(entityType.integerColumn("attribute").define().column())
-								.keyGenerator(KeyGenerator.queried("select 1"))
-								.build());
-			}
-		}
-		assertThrows(IllegalStateException.class, () -> new TestDomain());
 	}
 
 	@Test

@@ -18,6 +18,8 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
+import is.codion.common.db.connection.DatabaseConnection;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.DefaultColumn.DefaultColumnDefiner;
 import is.codion.framework.domain.entity.condition.ColumnConditionFactory;
@@ -58,7 +60,7 @@ import static java.util.Objects.requireNonNull;
  *         Customer.TYPE.define(
  *                 Customer.ID.define()
  *                     .primaryKey()
- *                     .keyGenerator(KeyGenerator.identity()),
+ *                     .generator(Generator.identity()),
  *                 Customer.NAME.define()
  *                     .column()
  *                     .nullable(false)
@@ -276,5 +278,248 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditionFactory<T
 		 * @throws SQLException in case of an exception
 		 */
 		@Nullable T fromColumnValue(@Nullable C columnValue) throws SQLException;
+	}
+
+	/**
+	 * Generates column values for entities on insert.
+	 * <p>
+	 * Generators fall into two categories:
+	 * <ol>
+	 *   <li><strong>Pre-insert generators</strong> - Fetch or generate the primary key value before the row is inserted
+	 *   <li><strong>Post-insert generators</strong> - The database automatically sets the primary key value on insert (identity columns, triggers)
+	 * </ol>
+	 * <p>
+	 * Implementations should override either {@code beforeInsert()} or {@code afterInsert()}:
+	 * <ul>
+	 *   <li>If {@link #inserted()} returns true, the primary key value is included in the insert statement
+	 *       and {@link #beforeInsert(Entity, Column, DatabaseConnection)} (Entity, Column, DatabaseConnection)} should be used
+	 *   <li>If {@link #inserted()} returns false, the database generates the primary key automatically
+	 *       and {@link #afterInsert(Entity, Column, DatabaseConnection, Statement)} should be used
+	 * </ul>
+	 * <p>
+	 * Common key generator types and usage patterns:
+	 * {@snippet :
+	 * public class Store extends DefaultDomain {
+	 *
+	 *     interface Customer {
+	 *         EntityType TYPE = DOMAIN.entityType("store.customer");
+	 *         Column<Integer> ID = TYPE.integerColumn("id");
+	 *     }
+	 *
+	 *     interface Product {
+	 *         EntityType TYPE = DOMAIN.entityType("store.product");
+	 *         Column<Long> ID = TYPE.longColumn("id");
+	 *     }
+	 *
+	 *     interface Order {
+	 *         EntityType TYPE = DOMAIN.entityType("store.order");
+	 *         Column<String> ID = TYPE.stringColumn("id");
+	 *     }
+	 *
+	 *     void defineEntities() {
+	 *         // Identity column (database auto-increment)
+	 *         Customer.TYPE.define(
+	 *                 Customer.ID.define()
+	 *                     .primaryKey()
+	 *                     .generator(Generator.identity()))
+	 *             .build();
+	 *
+	 *         // Sequence-based key generation (Oracle, PostgreSQL)
+	 *         Product.TYPE.define(
+	 *                 Product.ID.define()
+	 *                     .primaryKey()
+	 *                     .generator(Generator.sequence("product_seq")))
+	 *             .build();
+	 *
+	 *         // Custom query-based key generation
+	 *         Order.TYPE.define(
+	 *                 Order.ID.define()
+	 *                     .primaryKey()
+	 *                     .generator(Generator.queried("SELECT 'ORD-' || NEXT VALUE FOR order_seq")))
+	 *             .build();
+	 *     }
+	 * }
+	 *
+	 * // Custom key generator implementation
+	 * public class UUIDGenerator implements Generator<String> {
+	 *
+	 *     @Override
+	 *     public void beforeInsert(Entity entity, Column<String> column, DatabaseConnection connection) {
+	 *         // Only generate if not already set
+	 *         if (entity.primaryKey().isNull()) {
+	 *             String uuid = UUID.randomUUID().toString();
+	 *             entity.set(column, uuid);
+	 *         }
+	 *     }
+	 *
+	 *     @Override
+	 *     public boolean inserted() {
+	 *         return true; // Include generated key in INSERT
+	 *     }
+	 * }
+	 *}
+	 * @param <T> the generated column type
+	 * @see #sequence(String)
+	 * @see #identity()
+	 * @see #queried(String)
+	 * @see #automatic(String)
+	 */
+	interface Generator<T> {
+
+		/**
+		 * The default implementation returns true.
+		 * @return true if the key value should be included in the
+		 * insert query when entities using this key generator is inserted
+		 */
+		default boolean inserted() {
+			return true;
+		}
+
+		/**
+		 * Prepares the given entity for insert, that is, generates and fetches any required values
+		 * and populates the column value in the entity.
+		 * The default implementation does nothing, override to implement.
+		 * @param entity the entity about to be inserted
+		 * @param connection the connection to use
+		 * @throws SQLException in case of an exception
+		 */
+		default void beforeInsert(Entity entity, Column<T> column, DatabaseConnection connection) throws SQLException {/*for overriding*/}
+
+		/**
+		 * Prepares the given entity after insert, that is, fetches automatically values
+		 * and populates the column value in the entity.
+		 * The default implementation does nothing, override to implement.
+		 * @param entity the inserted entity
+		 * @param connection the connection to use
+		 * @param insertStatement the insert statement
+		 * @throws SQLException in case of an exception
+		 */
+		default void afterInsert(Entity entity, Column<T> column, DatabaseConnection connection, Statement insertStatement) throws SQLException {/*for overriding*/}
+
+		/**
+		 * Specifies whether the insert statement should return the generated column values via the resulting
+		 * {@link Statement#getGeneratedKeys()} resultSet, accessible in {@link #afterInsert(Entity, Column, DatabaseConnection, Statement)}.
+		 * The default implementation returns false.
+		 * @return true if the generated column values should be returned via the insert statement resultSet
+		 * @see Statement#getGeneratedKeys()
+		 * @see Statement#RETURN_GENERATED_KEYS
+		 * @see Statement#NO_GENERATED_KEYS
+		 * @see java.sql.Connection#prepareStatement(String, int)
+		 */
+		default boolean generatedKeys() {
+			return false;
+		}
+
+		/**
+		 * Indicates an identity column based key generator.
+		 * @param <T> the column type
+		 */
+		sealed interface Identity<T> extends Generator<T> permits IdentityGenerator {}
+
+		/**
+		 * Instantiates a primary key generator which fetches primary key values from a sequence prior to insert.
+		 * {@snippet :
+		 * // Oracle or PostgreSQL sequence
+		 * Product.TYPE.define(
+		 *         Product.ID.define()
+		 *             .primaryKey()
+		 *             .generator(Generator.sequence("product_seq")))
+		 *     .build();
+		 *
+		 * // Usage - key is generated automatically
+		 * Entity product = entities.entity(Product.TYPE)
+		 *     .with(Product.NAME, "Laptop")
+		 *     .with(Product.PRICE, new BigDecimal("999.99"))
+		 *     .build();
+		 *
+		 * // Primary key will be fetched from sequence before insert
+		 * connection.insert(product);
+		 * Long generatedId = product.get(Product.ID); // e.g., 123
+		 *}
+		 * @param <T> the generated column type
+		 * @param sequenceName the sequence name
+		 * @return a sequence based primary key generator
+		 */
+		static <T> Generator<T> sequence(String sequenceName) {
+			return new SequenceGenerator<>(sequenceName);
+		}
+
+		/**
+		 * Instantiates a primary key generator which fetches primary key values using the given query prior to insert.
+		 * {@snippet :
+		 * // Custom query-based key generation
+		 * Order.TYPE.define(
+		 *         Order.ID.define()
+		 *             .primaryKey()
+		 *             .generator(Generator.queried("SELECT 'ORD-' || NEXT VALUE FOR order_seq")))
+		 *     .build();
+		 *
+		 * // Another example with date-based keys
+		 * Invoice.TYPE.define(
+		 *         Invoice.ID.define()
+		 *             .primaryKey()
+		 *             .generator(Generator.queried(
+		 *                 "SELECT FORMAT(GETDATE(), 'yyyyMMdd') + '-' + RIGHT('0000' + CAST(NEXT VALUE FOR invoice_seq AS VARCHAR), 4)")))
+		 *     .build();
+		 *
+		 * // Usage
+		 * Entity order = entities.entity(Order.TYPE)
+		 *     .with(Order.CUSTOMER_FK, customer)
+		 *     .with(Order.TOTAL, new BigDecimal("150.00"))
+		 *     .build();
+		 *
+		 * connection.insert(order);
+		 * String generatedId = order.get(Order.ID); // e.g., "ORD-12345"
+		 *}
+		 * @param <T> the generated column type
+		 * @param query a query for retrieving the column value
+		 * @return a query based column generator
+		 */
+		static <T> Generator<T> queried(String query) {
+			return new QueryGenerator<>(query);
+		}
+
+		/**
+		 * Instantiates a primary key generator which fetches automatically incremented column values after insert.
+		 * @param <T> the generated column type
+		 * @param valueSource the value source, whether a sequence or a table name
+		 * @return an auto-increment based column value generator
+		 */
+		static <T> Generator<T> automatic(String valueSource) {
+			return new AutomaticGenerator<>(valueSource);
+		}
+
+		/**
+		 * Returns a column value generator based on an IDENTITY type column.
+		 * {@snippet :
+		 * // SQL Server, MySQL auto-increment, or similar
+		 * Customer.TYPE.define(
+		 *         Customer.ID.define()
+		 *             .primaryKey()
+		 *             .generator(Generator.identity()))
+		 *     .build();
+		 *
+		 * // Usage - database generates the key
+		 * Entity customer = entities.entity(Customer.TYPE)
+		 *     .with(Customer.NAME, "John Doe")
+		 *     .with(Customer.EMAIL, "john@example.com")
+		 *     .build();
+		 *
+		 * // Primary key is null before insert
+		 * Integer idBeforeInsert = customer.get(Customer.ID); // null
+		 *
+		 * // Database auto-generates the key during insert
+		 * connection.insert(customer);
+		 *
+		 * // Primary key is now populated from database
+		 * Integer generatedId = customer.get(Customer.ID); // e.g., 42
+		 *}
+		 * @param <T> the generated column type
+		 * @return an identity based generated column value generator
+		 * @see Statement#getGeneratedKeys()
+		 */
+		static <T> Identity<T> identity() {
+			return new IdentityGenerator<>();
+		}
 	}
 }

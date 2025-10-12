@@ -80,7 +80,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 	private final @Nullable OrderBy orderBy;
 	private final boolean readOnly;
 	private final boolean smallDataset;
-	private final boolean keyGenerated;
 	private final Function<Entity, String> formatter;
 	private final boolean cacheToString;
 	private final Comparator<Entity> comparator;
@@ -88,7 +87,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 	private final Predicate<Entity> exists;
 	private final transient String table;
 	private final transient @Nullable String selectTable;
-	private final transient KeyGenerator keyGenerator;
 	private final transient boolean optimisticLocking;
 	private final transient @Nullable EntitySelectQuery selectQuery;
 	private final transient @Nullable Map<ConditionType, ConditionString> conditionStrings;
@@ -108,8 +106,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		this.orderBy = builder.orderBy;
 		this.readOnly = builder.readOnly;
 		this.smallDataset = builder.smallDataset;
-		this.keyGenerator = builder.keyGenerator;
-		this.keyGenerated = builder.keyGenerated;
 		this.optimisticLocking = builder.optimisticLocking;
 		this.formatter = builder.formatter;
 		this.cacheToString = builder.cacheToString;
@@ -490,16 +486,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		public List<ColumnDefinition<?>> definitions() {
 			return entityAttributes.primaryKeyColumnDefinitions;
 		}
-
-		@Override
-		public KeyGenerator generator() {
-			return keyGenerator;
-		}
-
-		@Override
-		public boolean generated() {
-			return keyGenerated;
-		}
 	}
 
 	private static final class EntityAttributes implements Serializable {
@@ -785,8 +771,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		private String descriptionResourceKey;
 		private boolean smallDataset;
 		private boolean readOnly;
-		private KeyGenerator keyGenerator = DefaultEntity.DEFAULT_KEY_GENERATOR;
-		private boolean keyGenerated;
 		private boolean optimisticLocking = OPTIMISTIC_LOCKING.getOrThrow();
 		private @Nullable OrderBy orderBy;
 		private @Nullable String selectTable;
@@ -872,16 +856,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		@Override
 		public Builder optimisticLocking(boolean optimisticLocking) {
 			this.optimisticLocking = optimisticLocking;
-			return this;
-		}
-
-		@Override
-		public Builder keyGenerator(KeyGenerator keyGenerator) {
-			if (attributes.primaryKeyColumnDefinitions.isEmpty()) {
-				throw new IllegalStateException("KeyGenerator can not be set for an entity without a primary key: " + attributes.entityType);
-			}
-			this.keyGenerator = requireNonNull(keyGenerator);
-			this.keyGenerated = true;
 			return this;
 		}
 

@@ -25,10 +25,11 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.Column.Generator;
+import is.codion.framework.domain.entity.attribute.Column.Generator.Identity;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
@@ -276,7 +277,7 @@ public final class DomainSource {
 						builder.append(definition.type().name()).append(".description=")
 										.append("=").append(description).append(LINE_SEPARATOR));
 		definition.attributes().definitions().stream()
-						.filter(attribute -> !generatedPrimaryKeyColumn(definition, attribute))
+						.filter(attribute -> !generatedPrimaryKeyColumn(attribute))
 						.filter(attribute -> !foreignKeyColumn(definition, attribute))
 						.forEach(attribute -> {
 							builder.append(attribute.attribute().name())
@@ -329,8 +330,8 @@ public final class DomainSource {
 														.build())
 						.skipJavaLangImports(true)
 						.indent(INDENT);
-		if (identityKeyGeneratorUsed()) {
-			fileBuilder.addStaticImport(KeyGenerator.class, "identity");
+		if (identityGeneratorUsed()) {
+			fileBuilder.addStaticImport(Generator.class, "identity");
 		}
 		if (!implementationPackage.isEmpty()) {
 			ClassName parentInterface = ClassName.get(sourcePackage + "." + API_PACKAGE_NAME, domainInterfaceName);
@@ -365,8 +366,8 @@ public final class DomainSource {
 						.addStaticImport(DomainType.class, "domainType")
 						.skipJavaLangImports(true)
 						.indent(INDENT);
-		if (identityKeyGeneratorUsed()) {
-			fileBuilder.addStaticImport(KeyGenerator.class, "identity");
+		if (identityGeneratorUsed()) {
+			fileBuilder.addStaticImport(Generator.class, "identity");
 		}
 		if (!sourcePackage.isEmpty()) {
 			ClassName parentInterface = ClassName.get(sourcePackage, domainInterfaceName);
@@ -582,9 +583,6 @@ public final class DomainSource {
 						.append(String.join("," + LINE_SEPARATOR,
 										createAttributes(definition.attributes().definitions(), definition, interfaceName, i18n)))
 						.append(")");
-		if (definition.primaryKey().generated()) {
-			builder.append(LINE_SEPARATOR).append(INDENT).append(".keyGenerator(identity())");
-		}
 		builder.append(captionStrategy.entityCaption(definition));
 		builder.append(captionStrategy.entityDescription(definition));
 		if (definition.readOnly()) {
@@ -820,10 +818,11 @@ public final class DomainSource {
 		return dependencies;
 	}
 
-	private boolean identityKeyGeneratorUsed() {
+	private boolean identityGeneratorUsed() {
 		return sortedDefinitions.stream()
-						.map(entityDefinition -> entityDefinition.primaryKey().generator())
-						.anyMatch(generator -> generator == KeyGenerator.identity());
+						.flatMap(entityDefinition -> entityDefinition.columns().definitions().stream())
+						.anyMatch(columnDefinition ->
+										columnDefinition.generated() && columnDefinition.generator() instanceof Identity<?>);
 	}
 
 	static String underscoreToCamelCase(String text) {
@@ -854,9 +853,9 @@ public final class DomainSource {
 		return builder.toString();
 	}
 
-	private static boolean generatedPrimaryKeyColumn(EntityDefinition definition, AttributeDefinition<?> attribute) {
+	private static boolean generatedPrimaryKeyColumn(AttributeDefinition<?> attribute) {
 		return attribute instanceof ColumnDefinition<?> &&
-						((ColumnDefinition<?>) attribute).primaryKey() && definition.primaryKey().generated();
+						((ColumnDefinition<?>) attribute).primaryKey() && ((ColumnDefinition<?>) attribute).generated();
 	}
 
 	private static boolean foreignKeyColumn(EntityDefinition definition, AttributeDefinition<?> attribute) {
@@ -1010,6 +1009,9 @@ public final class DomainSource {
 					builder.add("\n$L.readOnly(true)", TRIPLE_INDENT);
 				}
 				else {
+					if (column.generated() && column.generator() instanceof Identity<?>) {
+						builder.add("\n$L.generator(identity())", TRIPLE_INDENT);
+					}
 					if (!column.nullable() && !column.primaryKey()) {
 						builder.add("\n$L.nullable(false)", TRIPLE_INDENT);
 					}

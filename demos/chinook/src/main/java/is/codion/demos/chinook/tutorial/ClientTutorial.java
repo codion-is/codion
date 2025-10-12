@@ -43,7 +43,7 @@ import java.util.List;
 import static is.codion.demos.chinook.tutorial.ClientTutorial.Chinook.Album;
 import static is.codion.demos.chinook.tutorial.ClientTutorial.Chinook.Artist;
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.KeyGenerator.automatic;
+import static is.codion.framework.domain.entity.attribute.Column.Generator.automatic;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static is.codion.swing.framework.ui.EntityEditPanel.ControlKeys.INSERT;
 import static java.util.Collections.emptyList;
@@ -80,7 +80,8 @@ public final class ClientTutorial {
 			super(DOMAIN);
 			add(Artist.TYPE.define(
 											Artist.ID.define()
-															.primaryKey(),
+															.primaryKey()
+															.generator(automatic("chinook.artist")),
 											Artist.NAME.define()
 															.column()
 															.caption("Name")
@@ -93,14 +94,14 @@ public final class ClientTutorial {
 																			FROM chinook.album
 																			WHERE album.artistid = artist.artistid""")
 															.caption("Albums"))
-							.keyGenerator(automatic("chinook.artist"))
 							.formatter(Artist.NAME)
 							.caption("Artists")
 							.build());
 
 			add(Album.TYPE.define(
 											Album.ID.define()
-															.primaryKey(),
+															.primaryKey()
+															.generator(automatic("chinook.artist")),
 											Album.ARTIST_ID.define()
 															.column()
 															.nullable(false),
@@ -112,7 +113,6 @@ public final class ClientTutorial {
 															.caption("Title")
 															.nullable(false)
 															.maximumLength(160))
-							.keyGenerator(automatic("chinook.artist"))
 							.formatter(EntityFormatter.builder()
 											.value(Album.ARTIST_FK)
 											.text(" - ")

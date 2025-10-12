@@ -16,36 +16,31 @@
  *
  * Copyright (c) 2021 - 2025, Björn Darri Sigurðsson.
  */
-package is.codion.framework.domain.entity;
+package is.codion.framework.domain.entity.attribute;
 
 import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Database;
+import is.codion.framework.domain.entity.Entity;
 
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import static java.util.Objects.requireNonNull;
 
-final class AutomaticKeyGenerator extends AbstractQueriedKeyGenerator {
+final class SequenceGenerator<T> extends AbstractQueriedGenerator<T> {
 
-	private final String valueSource;
+	private final String sequenceName;
 
-	AutomaticKeyGenerator(String valueSource) {
-		this.valueSource = requireNonNull(valueSource);
+	SequenceGenerator(String sequenceName) {
+		this.sequenceName = requireNonNull(sequenceName);
 	}
 
 	@Override
-	public boolean inserted() {
-		return false;
-	}
-
-	@Override
-	public void afterInsert(Entity entity, DatabaseConnection connection, Statement insertStatement) throws SQLException {
-		selectAndPopulate(entity, connection);
+	public void beforeInsert(Entity entity, Column<T> column, DatabaseConnection connection) throws SQLException {
+		selectAndPopulate(entity, column, connection);
 	}
 
 	@Override
 	protected String query(Database database) {
-		return database.autoIncrementQuery(valueSource);
+		return database.sequenceQuery(sequenceName);
 	}
 }

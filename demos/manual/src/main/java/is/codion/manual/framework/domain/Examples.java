@@ -25,7 +25,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnTemplate;
 
-import static is.codion.framework.domain.entity.KeyGenerator.identity;
+import static is.codion.framework.domain.entity.attribute.Column.Generator.identity;
 
 public final class Examples {
 	// tag::columnTemplates[]
@@ -65,7 +65,8 @@ public final class Examples {
 		EntityDefinition customer() {
 			return Customer.TYPE.define(
 											Customer.ID.define()
-															.primaryKey(),
+															.primaryKey()
+															.generator(identity()),
 											Customer.FIRST_NAME.define()
 															.column(NAME)
 															.caption("First Name"),
@@ -79,7 +80,6 @@ public final class Examples {
 															.column(positiveNumber(8))
 															.defaultValue(0d)
 															.caption("Discount"))
-							.keyGenerator(identity())
 							.build();
 		}
 	}

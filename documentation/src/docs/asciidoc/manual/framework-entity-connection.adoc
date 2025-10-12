@@ -7,7 +7,7 @@
 
 Codion’s {url-entity-connection}[EntityConnection] is the primary interface for executing database operations — including querying, modifying, transaction control, calling procedures and functions and filling reports. It exposes a small, explicit API for working with Entity instances and makes no assumptions about your database engine or schema design.
 
-Codion’s database layer is intentionally minimal. It does not perform SQL joins, nor does it rely on DB-specific features — except where needed for primary key generation via <<manual.adoc#_keygenerator, KeyGenerator>> strategies.
+Codion’s database layer is intentionally minimal. It does not perform SQL joins, nor does it rely on DB-specific features — except where needed for primary key generation via <<manual.adoc#_generator, Generator>> strategies.
 
 Instead, it gives you predictable, queryable access to individual Entity objects and their associated foreign keys — controlled through a feature called reference depth.
 

@@ -217,7 +217,7 @@ public class DefaultEntityFactory implements EntityFactory {
 
 	private static List<Column<?>> insertableColumns(EntityDefinition entityDefinition) {
 		return entityDefinition.columns().definitions().stream()
-						.filter(column -> column.insertable() && (!entityDefinition.primaryKey().generated() || !column.primaryKey()))
+						.filter(column -> column.insertable() && (!column.generated() || !column.primaryKey()))
 						.map(ColumnDefinition::attribute)
 						.collect(toList());
 	}

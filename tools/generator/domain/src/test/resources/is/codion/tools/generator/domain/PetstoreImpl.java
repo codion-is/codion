@@ -1,6 +1,6 @@
 package is.codion.petstore.domain;
 
-import static is.codion.framework.domain.entity.KeyGenerator.identity;
+import static is.codion.framework.domain.entity.attribute.Column.Generator.identity;
 import static is.codion.petstore.domain.api.Petstore.Address;
 import static is.codion.petstore.domain.api.Petstore.Category;
 import static is.codion.petstore.domain.api.Petstore.ContactInfo;
@@ -25,7 +25,8 @@ public final class PetstoreImpl extends DomainModel {
 	static EntityDefinition address() {
 		return Address.TYPE.define(
 				Address.ADDRESS_ID.define()
-					.primaryKey(),
+					.primaryKey()
+					.generator(identity()),
 				Address.STREET1.define()
 					.column()
 					.nullable(false)
@@ -56,14 +57,14 @@ public final class PetstoreImpl extends DomainModel {
 					.column(),
 				Address.IMAGE.define()
 					.column())
-			.keyGenerator(identity())
 			.build();
 	}
 
 	static EntityDefinition category() {
 		return Category.TYPE.define(
 				Category.CATEGORY_ID.define()
-					.primaryKey(),
+					.primaryKey()
+					.generator(identity()),
 				Category.NAME.define()
 					.column()
 					.nullable(false)
@@ -75,14 +76,14 @@ public final class PetstoreImpl extends DomainModel {
 				Category.IMAGE_URL.define()
 					.column()
 					.maximumLength(55))
-			.keyGenerator(identity())
 			.build();
 	}
 
 	static EntityDefinition contactInfo() {
 		return ContactInfo.TYPE.define(
 				ContactInfo.CONTACT_INFO_ID.define()
-					.primaryKey(),
+					.primaryKey()
+					.generator(identity()),
 				ContactInfo.LAST_NAME.define()
 					.column()
 					.nullable(false)
@@ -95,7 +96,6 @@ public final class PetstoreImpl extends DomainModel {
 					.column()
 					.nullable(false)
 					.maximumLength(24))
-			.keyGenerator(identity())
 			.build();
 	}
 
@@ -112,19 +112,20 @@ public final class PetstoreImpl extends DomainModel {
 	static EntityDefinition tag() {
 		return Tag.TYPE.define(
 				Tag.TAG_ID.define()
-					.primaryKey(),
+					.primaryKey()
+					.generator(identity()),
 				Tag.TAG.define()
 					.column()
 					.nullable(false)
 					.maximumLength(30))
-			.keyGenerator(identity())
 			.build();
 	}
 
 	static EntityDefinition product() {
 		return Product.TYPE.define(
 				Product.PRODUCT_ID.define()
-					.primaryKey(),
+					.primaryKey()
+					.generator(identity()),
 				Product.CATEGORY_ID.define()
 					.column()
 					.nullable(false),
@@ -147,14 +148,14 @@ public final class PetstoreImpl extends DomainModel {
 				Product.INSERT_USER.define()
 					.column()
 					.readOnly(true))
-			.keyGenerator(identity())
 			.build();
 	}
 
 	static EntityDefinition item() {
 		return Item.TYPE.define(
 				Item.ITEM_ID.define()
-					.primaryKey(),
+					.primaryKey()
+					.generator(identity()),
 				Item.PRODUCT_ID.define()
 					.column()
 					.nullable(false),
@@ -202,7 +203,6 @@ public final class PetstoreImpl extends DomainModel {
 				Item.INSERT_USER.define()
 					.column()
 					.readOnly(true))
-			.keyGenerator(identity())
 			.build();
 	}
 

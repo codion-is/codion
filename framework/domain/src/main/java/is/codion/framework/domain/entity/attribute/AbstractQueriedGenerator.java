@@ -16,11 +16,12 @@
  *
  * Copyright (c) 2021 - 2025, Björn Darri Sigurðsson.
  */
-package is.codion.framework.domain.entity;
+package is.codion.framework.domain.entity.attribute;
 
 import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Database;
-import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.attribute.Column.Generator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,11 +33,11 @@ import java.sql.SQLException;
 
 import static is.codion.common.db.connection.DatabaseConnection.SQL_STATE_NO_DATA;
 
-abstract class AbstractQueriedKeyGenerator implements KeyGenerator {
+abstract class AbstractQueriedGenerator<T> implements Generator<T> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(AbstractQueriedKeyGenerator.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractQueriedGenerator.class);
 
-	protected final void selectAndPopulate(Entity entity, DatabaseConnection databaseConnection) throws SQLException {
+	protected final void selectAndPopulate(Entity entity, Column<T> column, DatabaseConnection databaseConnection) throws SQLException {
 		Connection connection = databaseConnection.getConnection();
 		String query = query(databaseConnection.database());
 		if (query == null) {
@@ -47,9 +48,9 @@ abstract class AbstractQueriedKeyGenerator implements KeyGenerator {
 			if (!resultSet.next()) {
 				throw new SQLException("No rows returned when querying for a key value", SQL_STATE_NO_DATA);
 			}
-			ColumnDefinition<Object> column = (ColumnDefinition<Object>) entity.definition().primaryKey().definitions().get(0);
-			entity.remove(column.attribute());
-			entity.set(column.attribute(), column.get(resultSet, 1));
+			ColumnDefinition<T> columnDefinition = entity.definition().columns().definition(column);
+			entity.remove(columnDefinition.attribute());
+			entity.set(columnDefinition.attribute(), columnDefinition.get(resultSet, 1));
 		}
 		catch (SQLException e) {
 			LOG.error("Exception during selectAndPopulate {}", e.getMessage(), e);

@@ -22,7 +22,6 @@ import is.codion.common.item.Item;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
@@ -37,6 +36,7 @@ import java.util.List;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
+import static is.codion.framework.domain.entity.attribute.Column.Generator.sequence;
 import static java.util.Arrays.asList;
 
 public final class TestDomain extends DomainModel {
@@ -246,6 +246,7 @@ public final class TestDomain extends DomainModel {
 		add(Employee.TYPE.define(
 										Employee.ID.define()
 														.primaryKey()
+														.generator(sequence("employees.employee_seq"))
 														.caption(Employee.ID.name()),
 										Employee.NAME.define()
 														.column()
@@ -290,7 +291,6 @@ public final class TestDomain extends DomainModel {
 														.attribute(Department.LOCATION)
 														.caption(Department.LOCATION.name()))
 						.formatter(Employee.NAME)
-						.keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
 						.orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
 						.caption("Employee")
 						.build());

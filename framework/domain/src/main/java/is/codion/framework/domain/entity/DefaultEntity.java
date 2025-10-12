@@ -57,7 +57,6 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 	@Serial
 	private static final long serialVersionUID = 1;
 
-	static final DefaultKeyGenerator DEFAULT_KEY_GENERATOR = new DefaultKeyGenerator();
 	static final DefaultFormatter DEFAULT_FORMATTER = new DefaultFormatter();
 	static final EntityValidator DEFAULT_VALIDATOR = new DefaultEntityValidator();
 	static final Predicate<Entity> DEFAULT_EXISTS = new DefaultEntityExists();

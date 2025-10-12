@@ -19,6 +19,7 @@
 package is.codion.framework.domain.entity.attribute;
 
 import is.codion.framework.domain.entity.attribute.Column.Converter;
+import is.codion.framework.domain.entity.attribute.Column.Generator;
 import is.codion.framework.domain.entity.attribute.Column.GetValue;
 import is.codion.framework.domain.entity.attribute.Column.SetParameter;
 
@@ -64,12 +65,14 @@ final class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> im
 	private final boolean groupBy;
 	private final boolean aggregate;
 	private final boolean selected;
+	private final boolean generated;
 
 	private final transient String name;
 	private final transient String expression;
 	private final transient GetValue<Object> getValue;
 	private final transient SetParameter<Object> setParameter;
 	private final transient Converter<T, Object> converter;
+	private final transient @Nullable Generator<T> generator;
 
 	private DefaultColumnDefinition(DefaultColumnDefinitionBuilder<T, ?> builder) {
 		super(builder);
@@ -84,6 +87,8 @@ final class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> im
 		this.getValue = builder.getValue;
 		this.setParameter = builder.setParameter;
 		this.converter = builder.converter;
+		this.generator = builder.generator;
+		this.generated = builder.generator != null;
 		this.groupBy = builder.groupBy;
 		this.aggregate = builder.aggregate;
 		this.selected = builder.selected;
@@ -107,6 +112,20 @@ final class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> im
 	@Override
 	public int type() {
 		return type;
+	}
+
+	@Override
+	public boolean generated() {
+		return generated;
+	}
+
+	@Override
+	public Generator<T> generator() {
+		if (generator == null) {
+			throw new IllegalStateException("Generator is not available");
+		}
+
+		return generator;
 	}
 
 	@Override
@@ -285,6 +304,7 @@ final class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> im
 		private boolean groupBy;
 		private boolean aggregate;
 		private boolean selected;
+		private @Nullable Generator<T> generator;
 
 		DefaultColumnDefinitionBuilder(Column<T> column) {
 			this(column, -1);
@@ -316,6 +336,12 @@ final class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> im
 		@Override
 		public final B nullable(boolean nullable) {
 			return super.nullable(nullable);
+		}
+
+		@Override
+		public final B generator(Generator<T> generator) {
+			this.generator = requireNonNull(generator);
+			return self();
 		}
 
 		@Override

@@ -34,8 +34,8 @@ import java.util.List;
 import static is.codion.common.item.Item.item;
 import static is.codion.demos.world.domain.api.World.*;
 import static is.codion.framework.db.EntityConnection.Select.where;
-import static is.codion.framework.domain.entity.KeyGenerator.sequence;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
+import static is.codion.framework.domain.entity.attribute.Column.Generator.sequence;
 import static java.lang.Double.parseDouble;
 
 public final class WorldImpl extends DomainModel {
@@ -64,7 +64,10 @@ public final class WorldImpl extends DomainModel {
 	EntityDefinition city() {
 		return City.TYPE.define(
 										City.ID.define()
-														.primaryKey(),
+														.primaryKey()
+														// tag::sequence[]
+														.generator(sequence("world.city_seq")),
+										// end::sequence[]
 										City.NAME.define()
 														.column()
 														.caption("Name")
@@ -94,9 +97,6 @@ public final class WorldImpl extends DomainModel {
 														.converter(String.class, new LocationConverter())
 														.comparator(new LocationComparator()))
 						// end::columnClass[]
-						// tag::sequence[]
-						.keyGenerator(sequence("world.city_seq"))
-						// end::sequence[]
 						// tag::validator[]
 						.validator(new CityValidator())
 						// end::validator[]

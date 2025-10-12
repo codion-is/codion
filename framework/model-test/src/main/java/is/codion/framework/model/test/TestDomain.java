@@ -23,7 +23,6 @@ import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
@@ -38,6 +37,7 @@ import java.util.UUID;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
+import static is.codion.framework.domain.entity.attribute.Column.Generator.sequence;
 import static java.util.Arrays.asList;
 
 public final class TestDomain extends DomainModel {
@@ -226,6 +226,7 @@ public final class TestDomain extends DomainModel {
 		return Employee.TYPE.define(
 										Employee.ID.define()
 														.primaryKey()
+														.generator(sequence("employees.employee_seq"))
 														.caption(Employee.ID.name()),
 										Employee.NAME.define()
 														.column()
@@ -274,7 +275,6 @@ public final class TestDomain extends DomainModel {
 														.column()
 														.selected(false))
 						.formatter(Employee.NAME)
-						.keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
 						.orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
 						.condition(Employee.CONDITION_1_TYPE, (attributes, values) -> "1 = 2")
 						.condition(Employee.CONDITION_2_TYPE, (attributes, values) -> "1 = 1")

@@ -1,7 +1,7 @@
 package is.codion.petstore.domain;
 
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.KeyGenerator.identity;
+import static is.codion.framework.domain.entity.attribute.Column.Generator.identity;
 import static is.codion.petstore.domain.Petstore.Address;
 import static is.codion.petstore.domain.Petstore.Category;
 import static is.codion.petstore.domain.Petstore.ContactInfo;
@@ -35,7 +35,8 @@ public final class Petstore extends DomainModel {
 	static EntityDefinition address() {
 		return Address.TYPE.define(
 				Address.ADDRESS_ID.define()
-					.primaryKey(),
+					.primaryKey()
+					.generator(identity()),
 				Address.STREET1.define()
 					.column()
 					.caption("Street1")
@@ -75,7 +76,6 @@ public final class Petstore extends DomainModel {
 				Address.IMAGE.define()
 					.column()
 					.caption("Image"))
-			.keyGenerator(identity())
 			.caption("Address")
 			.build();
 	}
@@ -83,7 +83,8 @@ public final class Petstore extends DomainModel {
 	static EntityDefinition category() {
 		return Category.TYPE.define(
 				Category.CATEGORY_ID.define()
-					.primaryKey(),
+					.primaryKey()
+					.generator(identity()),
 				Category.NAME.define()
 					.column()
 					.caption("Name")
@@ -98,7 +99,6 @@ public final class Petstore extends DomainModel {
 					.column()
 					.caption("Image url")
 					.maximumLength(55))
-			.keyGenerator(identity())
 			.caption("Category")
 			.build();
 	}
@@ -106,7 +106,8 @@ public final class Petstore extends DomainModel {
 	static EntityDefinition contactInfo() {
 		return ContactInfo.TYPE.define(
 				ContactInfo.CONTACT_INFO_ID.define()
-					.primaryKey(),
+					.primaryKey()
+					.generator(identity()),
 				ContactInfo.LAST_NAME.define()
 					.column()
 					.caption("Last name")
@@ -122,7 +123,6 @@ public final class Petstore extends DomainModel {
 					.caption("Email")
 					.nullable(false)
 					.maximumLength(24))
-			.keyGenerator(identity())
 			.caption("Contact info")
 			.build();
 	}
@@ -143,13 +143,13 @@ public final class Petstore extends DomainModel {
 	static EntityDefinition tag() {
 		return Tag.TYPE.define(
 				Tag.TAG_ID.define()
-					.primaryKey(),
+					.primaryKey()
+					.generator(identity()),
 				Tag.TAG.define()
 					.column()
 					.caption("Tag")
 					.nullable(false)
 					.maximumLength(30))
-			.keyGenerator(identity())
 			.caption("Tag")
 			.build();
 	}
@@ -157,7 +157,8 @@ public final class Petstore extends DomainModel {
 	static EntityDefinition product() {
 		return Product.TYPE.define(
 				Product.PRODUCT_ID.define()
-					.primaryKey(),
+					.primaryKey()
+					.generator(identity()),
 				Product.CATEGORY_ID.define()
 					.column()
 					.nullable(false),
@@ -187,7 +188,6 @@ public final class Petstore extends DomainModel {
 					.column()
 					.caption("Insert user")
 					.readOnly(true))
-			.keyGenerator(identity())
 			.caption("Product")
 			.description("The available products")
 			.build();
@@ -196,7 +196,8 @@ public final class Petstore extends DomainModel {
 	static EntityDefinition item() {
 		return Item.TYPE.define(
 				Item.ITEM_ID.define()
-					.primaryKey(),
+					.primaryKey()
+					.generator(identity()),
 				Item.PRODUCT_ID.define()
 					.column()
 					.nullable(false),
@@ -257,7 +258,6 @@ public final class Petstore extends DomainModel {
 					.column()
 					.caption("Insert user")
 					.readOnly(true))
-			.keyGenerator(identity())
 			.caption("Item")
 			.build();
 	}

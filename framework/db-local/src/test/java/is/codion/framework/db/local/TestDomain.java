@@ -29,10 +29,10 @@ import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.Column.Generator;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.condition.ConditionType;
 import is.codion.framework.domain.entity.query.EntitySelectQuery;
@@ -48,7 +48,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import static is.codion.common.item.Item.item;
-import static is.codion.framework.domain.entity.KeyGenerator.identity;
+import static is.codion.framework.domain.entity.attribute.Column.Generator.identity;
+import static is.codion.framework.domain.entity.attribute.Column.Generator.sequence;
 import static java.util.Arrays.asList;
 
 public final class TestDomain extends DomainModel {
@@ -94,6 +95,12 @@ public final class TestDomain extends DomainModel {
 		detailFk();
 		employeeNonOpt();
 		nullConverter();
+		generatorTestWithPk();
+		generatorTestWithoutPk();
+		generatorNonPk();
+		noPkIdentical();
+		mixedGenerated();
+		partialGeneratedPk();
 	}
 
 	public interface Department {
@@ -173,6 +180,7 @@ public final class TestDomain extends DomainModel {
 		add(Employee.TYPE.define(
 										Employee.ID.define()
 														.primaryKey()
+														.generator(sequence("employees.employee_seq"))
 														.caption(Employee.ID.name()),
 										Employee.NAME.define()
 														.column()
@@ -225,7 +233,6 @@ public final class TestDomain extends DomainModel {
 										Employee.DATA.define()
 														.column())
 						.formatter(Employee.NAME)
-						.keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
 						.condition(Employee.NAME_IS_BLAKE_CONDITION, (attributes, values) -> "ename = 'BLAKE'")
 						.condition(Employee.MGR_GREATER_THAN_CONDITION, (attributes, values) -> "mgr > ?")
 						.caption("Employee")
@@ -277,6 +284,7 @@ public final class TestDomain extends DomainModel {
 		add(EmployeeFk.TYPE.define(
 										EmployeeFk.ID.define()
 														.primaryKey()
+														.generator(sequence("employees.employee_seq"))
 														.caption(EmployeeFk.ID.name()),
 										EmployeeFk.NAME.define()
 														.column()
@@ -315,7 +323,6 @@ public final class TestDomain extends DomainModel {
 														.caption(EmployeeFk.HIRETIME.name()))
 						.table("employees.employee")
 						.formatter(EmployeeFk.NAME)
-						.keyGenerator(KeyGenerator.sequence("employees.employee_seq"))
 						.caption("Employee")
 						.build());
 	}
@@ -328,12 +335,12 @@ public final class TestDomain extends DomainModel {
 	}
 
 	private void uuidTestDefaultValue() {
-		KeyGenerator uuidKeyGenerator = new KeyGenerator() {
+		Generator<UUID> uuidGenerator = new Generator<UUID>() {
 			@Override
-			public void afterInsert(Entity entity, DatabaseConnection connection, Statement insertStatement) throws SQLException {
+			public void afterInsert(Entity entity, Column<UUID> column, DatabaseConnection connection, Statement insertStatement) throws SQLException {
 				try (ResultSet generatedKeys = insertStatement.getGeneratedKeys()) {
 					if (generatedKeys.next()) {
-						entity.set(UUIDTestDefault.ID, (UUID) generatedKeys.getObject(1));
+						entity.set(column, (UUID) generatedKeys.getObject(1));
 					}
 				}
 			}
@@ -346,11 +353,11 @@ public final class TestDomain extends DomainModel {
 		add(UUIDTestDefault.TYPE.define(
 										UUIDTestDefault.ID.define()
 														.primaryKey()
-														.caption("Id"),
+														.caption("Id")
+														.generator(uuidGenerator),
 										UUIDTestDefault.DATA.define()
 														.column()
 														.caption("Data"))
-						.keyGenerator(uuidKeyGenerator)
 						.build());
 	}
 
@@ -362,20 +369,20 @@ public final class TestDomain extends DomainModel {
 	}
 
 	private void uuidTestNoDefaultValue() {
-		KeyGenerator uuidKeyGenerator = new KeyGenerator() {
+		Generator<UUID> uuidGenerator = new Generator<>() {
 			@Override
-			public void beforeInsert(Entity entity, DatabaseConnection connection) {
-				entity.set(UUIDTestNoDefault.ID, UUID.randomUUID());
+			public void beforeInsert(Entity entity, Column<UUID> column, DatabaseConnection connection) {
+				entity.set(column, UUID.randomUUID());
 			}
 		};
 		add(UUIDTestNoDefault.TYPE.define(
 										UUIDTestNoDefault.ID.define()
 														.primaryKey()
+														.generator(uuidGenerator)
 														.caption("Id"),
 										UUIDTestNoDefault.DATA.define()
 														.column()
 														.caption("Data"))
-						.keyGenerator(uuidKeyGenerator)
 						.build());
 	}
 
@@ -574,10 +581,10 @@ public final class TestDomain extends DomainModel {
 	void master() {
 		add(Master.TYPE.define(
 										Master.ID.define()
-														.primaryKey(),
+														.primaryKey()
+														.generator(identity()),
 										Master.DATA.define()
 														.column())
-						.keyGenerator(identity())
 						.build());
 	}
 
@@ -595,7 +602,8 @@ public final class TestDomain extends DomainModel {
 	void detail() {
 		add(Detail.TYPE.define(
 										Detail.ID.define()
-														.primaryKey(),
+														.primaryKey()
+														.generator(identity()),
 										Detail.MASTER_1_ID.define()
 														.column(),
 										Detail.MASTER_1_FK.define()
@@ -604,7 +612,6 @@ public final class TestDomain extends DomainModel {
 														.column(),
 										Detail.MASTER_2_FK.define()
 														.foreignKey())
-						.keyGenerator(identity())
 						.build());
 	}
 
@@ -701,6 +708,150 @@ public final class TestDomain extends DomainModel {
 														.column()
 														.converter(String.class, new NullColumnConverter()))
 						.table("employees.master_fk")
+						.build());
+	}
+
+	public interface GeneratorTestWithPk {
+		EntityType TYPE = DOMAIN.entityType("employees.generator");
+
+		Column<Integer> ID = TYPE.integerColumn("id");
+		Column<Integer> SEQ = TYPE.integerColumn("seq");
+		Column<UUID> UUID = TYPE.column("uuid", UUID.class);
+		Column<String> DATA = TYPE.stringColumn("data");
+	}
+
+	void generatorTestWithPk() {
+		add(GeneratorTestWithPk.TYPE.define(
+										GeneratorTestWithPk.ID.define()
+														.primaryKey(0)
+														.generator(identity()),
+										GeneratorTestWithPk.SEQ.define()
+														.primaryKey(1)
+														.generator(sequence("employees.generator_test_seq")),
+										GeneratorTestWithPk.UUID.define()
+														.primaryKey(2)
+														.generator(new Generator<UUID>() {
+															@Override
+															public void beforeInsert(Entity entity, Column<UUID> column, DatabaseConnection connection) throws SQLException {
+																entity.set(column, UUID.randomUUID());
+															}
+														}),
+										GeneratorTestWithPk.DATA.define()
+														.column()
+														.maximumLength(10))
+						.build());
+	}
+
+	public interface GeneratorTestWithoutPk {
+		EntityType TYPE = DOMAIN.entityType("employees.generator_without_pk");
+
+		Column<Integer> ID = TYPE.integerColumn("id");
+		Column<Integer> SEQ = TYPE.integerColumn("seq");
+		Column<UUID> UUID = TYPE.column("uuid", UUID.class);
+		Column<String> DATA = TYPE.stringColumn("data");
+	}
+
+	void generatorTestWithoutPk() {
+		add(GeneratorTestWithoutPk.TYPE.define(
+										GeneratorTestWithoutPk.ID.define()
+														.column()
+														.generator(identity()),
+										GeneratorTestWithoutPk.SEQ.define()
+														.column()
+														.generator(sequence("employees.generator_test_seq")),
+										GeneratorTestWithoutPk.UUID.define()
+														.column()
+														.generator(new Generator<UUID>() {
+															@Override
+															public void beforeInsert(Entity entity, Column<UUID> column, DatabaseConnection connection) throws SQLException {
+																entity.set(column, UUID.randomUUID());
+															}
+														}),
+										GeneratorTestWithoutPk.DATA.define()
+														.column()
+														.maximumLength(10))
+						.table("employees.generator")
+						.build());
+	}
+
+	public interface GeneratorNonPk {
+		EntityType TYPE = DOMAIN.entityType("employees.generator_non_pk");
+
+		Column<Integer> ID = TYPE.integerColumn("id");
+		Column<Integer> GENERATED_COL = TYPE.integerColumn("generated_col");
+		Column<String> DATA = TYPE.stringColumn("data");
+	}
+
+	void generatorNonPk() {
+		add(GeneratorNonPk.TYPE.define(
+										GeneratorNonPk.ID.define()
+														.primaryKey(),
+										GeneratorNonPk.GENERATED_COL.define()
+														.column()
+														.generator(identity()),
+										GeneratorNonPk.DATA.define()
+														.column()
+														.maximumLength(10))
+						.build());
+	}
+
+	public interface NoPkIdentical {
+		EntityType TYPE = DOMAIN.entityType("employees.no_pk_identical");
+
+		Column<String> DATA = TYPE.stringColumn("data");
+	}
+
+	void noPkIdentical() {
+		add(NoPkIdentical.TYPE.define(
+										NoPkIdentical.DATA.define()
+														.column()
+														.maximumLength(10))
+						.build());
+	}
+
+	public interface MixedGenerated {
+		EntityType TYPE = DOMAIN.entityType("employees.mixed_generated");
+
+		Column<Integer> ID = TYPE.integerColumn("id");
+		Column<Integer> MANUAL_PK = TYPE.integerColumn("manual_pk");
+		Column<Integer> GENERATED_COL = TYPE.integerColumn("generated_col");
+		Column<String> DATA = TYPE.stringColumn("data");
+	}
+
+	void mixedGenerated() {
+		add(MixedGenerated.TYPE.define(
+										MixedGenerated.ID.define()
+														.primaryKey(0)
+														.generator(identity()),
+										MixedGenerated.MANUAL_PK.define()
+														.primaryKey(1),
+										MixedGenerated.GENERATED_COL.define()
+														.column()
+														.generator(sequence("employees.mixed_seq")),
+										MixedGenerated.DATA.define()
+														.column()
+														.maximumLength(10))
+						.build());
+	}
+
+	public interface PartialGeneratedPk {
+		EntityType TYPE = DOMAIN.entityType("employees.partial_generated_pk");
+
+		Column<Integer> ID = TYPE.integerColumn("id");
+		Column<Integer> MANUAL_ID = TYPE.integerColumn("manual_id");
+		Column<String> DATA = TYPE.stringColumn("data");
+	}
+
+	void partialGeneratedPk() {
+		add(PartialGeneratedPk.TYPE.define(
+										PartialGeneratedPk.ID.define()
+														.primaryKey(0)
+														.generator(identity()),
+										PartialGeneratedPk.MANUAL_ID.define()
+														.primaryKey(1),
+										PartialGeneratedPk.DATA.define()
+														.column()
+														.maximumLength(10))
 						.build());
 	}
 }

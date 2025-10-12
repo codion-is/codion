@@ -21,7 +21,6 @@ package is.codion.framework.domain.db;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
@@ -38,6 +37,7 @@ import java.util.Map;
 
 import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.framework.domain.DomainType.domainType;
+import static is.codion.framework.domain.entity.attribute.Column.Generator.identity;
 import static is.codion.framework.domain.entity.attribute.ForeignKey.reference;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableCollection;
@@ -130,9 +130,6 @@ public final class SchemaDomain extends DomainModel {
 		if (!attributeDefinitionBuilders.isEmpty()) {
 			EntityDefinition.Builder entityDefinitionBuilder = entityType.define(attributeDefinitionBuilders.toArray(new AttributeDefinition.Builder[0]));
 			entityDefinitionBuilder.caption(caption(tableName));
-			if (tableHasAutoIncrementPrimaryKeyColumn(table)) {
-				entityDefinitionBuilder.keyGenerator(KeyGenerator.identity());
-			}
 			if (!nullOrEmpty(table.comment())) {
 				entityDefinitionBuilder.description(table.comment());
 			}
@@ -199,6 +196,9 @@ public final class SchemaDomain extends DomainModel {
 		else {
 			builder = column.define().column().caption(caption);
 		}
+		if (metadataColumn.autoIncrement()) {
+			builder.generator(identity());
+		}
 		if (!metadataColumn.primaryKeyColumn() && metadataColumn.nullable() == DatabaseMetaData.columnNoNulls) {
 			builder.nullable(false);
 		}
@@ -251,12 +251,6 @@ public final class SchemaDomain extends DomainModel {
 	private static String removeSuffix(String name, String suffix) {
 		return name.toLowerCase().endsWith(suffix.toLowerCase()) ?
 						name.substring(0, name.length() - suffix.length()) : name;
-	}
-
-	private static boolean tableHasAutoIncrementPrimaryKeyColumn(MetaDataTable table) {
-		return table.columns().stream()
-						.filter(MetaDataColumn::primaryKeyColumn)
-						.anyMatch(MetaDataColumn::autoIncrement);
 	}
 
 	/**

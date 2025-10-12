@@ -42,7 +42,7 @@ import java.util.List;
 import static is.codion.demos.chinook.tutorial.EntitiesTutorial.Chinook.Album;
 import static is.codion.demos.chinook.tutorial.EntitiesTutorial.Chinook.Artist;
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.KeyGenerator.identity;
+import static is.codion.framework.domain.entity.attribute.Column.Generator.identity;
 
 /**
  * When running this make sure the chinook demo module directory is the
@@ -86,7 +86,8 @@ public final class EntitiesTutorial {
 			// create columns for the table 'chinook.artist'
 			ColumnDefinition.Builder<Long, ?> artistId =
 							Artist.ID.define()
-											.primaryKey();
+											.primaryKey()
+											.generator(identity());
 
 			ColumnDefinition.Builder<String, ?> artistName =
 							Artist.NAME.define()
@@ -97,7 +98,6 @@ public final class EntitiesTutorial {
 
 			// define an entity based on the table 'chinook.artist', with the above columns
 			EntityDefinition artist = Artist.TYPE.define(artistId, artistName)
-							.keyGenerator(identity())
 							.formatter(Artist.NAME)
 							.smallDataset(true)
 							.caption("Artist")
@@ -109,7 +109,8 @@ public final class EntitiesTutorial {
 			// create columns and foreign key for the table 'chinook.album'
 			ColumnDefinition.Builder<Long, ?> albumId =
 							Album.ID.define()
-											.primaryKey();
+											.primaryKey()
+											.generator(identity());
 
 			ColumnDefinition.Builder<String, ?> albumTitle =
 							Album.TITLE.define()
@@ -130,7 +131,6 @@ public final class EntitiesTutorial {
 
 			// define an entity based on the table 'chinook.album', with the above columns and foreign key
 			EntityDefinition album = Album.TYPE.define(albumId, albumTitle, albumArtistId, albumArtist)
-							.keyGenerator(identity())
 							.formatter(EntityFormatter.builder()
 											.value(Album.ARTIST_FK)
 											.text(" - ")

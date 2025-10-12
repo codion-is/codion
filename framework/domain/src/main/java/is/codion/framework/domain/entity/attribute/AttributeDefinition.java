@@ -74,7 +74,7 @@ import static is.codion.common.Configuration.*;
  *         Product.TYPE.define(
  *                 Product.ID.define()
  *                     .primaryKey()
- *                     .keyGenerator(KeyGenerator.identity())
+ *                     .generator(Generator.identity())
  *                     .caption("Product ID"),
  *
  *                 Product.NAME.define()
