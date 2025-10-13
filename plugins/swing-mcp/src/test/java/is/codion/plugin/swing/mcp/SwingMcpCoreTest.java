@@ -207,8 +207,8 @@ public class SwingMcpCoreTest {
 		// Only test API surface without actual automation in non-headless environments
 		if (GraphicsEnvironment.isHeadless()) {
 			// Safe to test actual automation in headless mode
-			assertDoesNotThrow(() -> server.keyCombo("control A"));
-			assertDoesNotThrow(() -> server.typeText("test"));
+			assertDoesNotThrow(() -> server.key("control A", 1, null));
+			assertDoesNotThrow(() -> server.type("test"));
 		}
 		else {
 			// In non-headless mode, just verify the server was created successfully
@@ -272,7 +272,7 @@ public class SwingMcpCoreTest {
 
 		// Test invalid key combination - these should throw exceptions without executing
 		// actual automation, so they're safe to test in any environment
-		assertThrows(IllegalArgumentException.class, () -> server.keyCombo("invalid combo"));
+		assertThrows(IllegalArgumentException.class, () -> server.key("invalid combo", 1, null));
 
 		server.stop();
 	}

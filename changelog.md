@@ -16,6 +16,8 @@ Codion Change Log
 ### is.codion.plugin.swing.robot
 - Controller refactored from SwingMcpServer.
 - Narrator and Runner added.
+### is.codion.plugin.swing.mcp
+- Repeat and description parameters added to keystroke tool.
 ### is.codion.tools.generator.domain
 - DomainSource bug fixed, api package corrected.
 - DomainSource, now writes i18n properties files.

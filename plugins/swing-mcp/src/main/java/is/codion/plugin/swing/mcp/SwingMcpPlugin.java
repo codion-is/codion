@@ -151,6 +151,29 @@ public final class SwingMcpPlugin {
 		};
 	}
 
+	private static String createKeySchema() {
+		return """
+						{
+							"type": "object",
+							"properties": {
+								"combo": {
+									"type": "string",
+									"description": "Key combination in AWT keystroke format. Examples: 'ENTER', 'shift ENTER', 'TAB', 'ctrl S', 'ctrl alt LEFT', 'shift TAB', 'alt F4', 'UP', 'DOWN', 'typed a', 'F5'"
+								},
+								"repeat": {
+									"type": "integer",
+									"description": "Number of times to repeat the keystroke (default: 1)"
+								},
+								"description": {
+									"type": "string",
+									"description": "Optional description of the action associated with this keystroke"
+								}
+							},
+							"required": ["combo"]
+						}
+						""";
+	}
+
 	private static void registerHttpTools(SwingMcpHttpServer httpServer, SwingMcpServer swingMcpServer) {
 		// Type text tool
 		httpServer.addTool(new HttpTool(
@@ -158,7 +181,7 @@ public final class SwingMcpPlugin {
 						SwingMcpServer.createSchema(TEXT, STRING, "The text to type"),
 						arguments -> {
 							String text = (String) arguments.get(TEXT);
-							swingMcpServer.typeText(text);
+							swingMcpServer.type(text);
 
 							return "Text typed successfully";
 						}
@@ -167,12 +190,20 @@ public final class SwingMcpPlugin {
 		// Key combination tool - handles all keyboard input
 		httpServer.addTool(new HttpTool(
 						KEY_COMBO, "Press a key combination using AWT KeyStroke format",
-						SwingMcpServer.createSchema("combo", STRING, "Key combination in AWT format. Examples: 'ENTER', 'TAB', 'control S', 'shift TAB', 'alt F4', 'UP', 'DOWN', 'typed a', 'F5'"),
+						createKeySchema(),
 						arguments -> {
 							String combo = (String) arguments.get("combo");
-							swingMcpServer.keyCombo(combo);
+							int repeat = SwingMcpServer.integerParam(arguments, "repeat", 1);
+							String description = (String) arguments.get("description");
+							swingMcpServer.key(combo, repeat, description);
 
-							return "Key combination '" + combo + "' pressed";
+							String message = repeat > 1
+											? String.format("Key combination '%s' pressed %d times", combo, repeat)
+											: String.format("Key combination '%s' pressed", combo);
+							if (description != null) {
+								message += " (" + description + ")";
+							}
+							return message;
 						}
 		));
 

@@ -41,7 +41,11 @@ The swing-mcp module allows:
 
 ### Keyboard Tools
 - **type_text** - Type text into focused field
-- **key_combo** - Press any key combination using AWT KeyStroke format (replaces tab, arrow, enter, escape)
+- **key** - Press any key combination using AWT KeyStroke format (replaces tab, arrow, enter, escape)
+  - Parameters:
+    - `combo` (required) - Key combination in AWT keystroke format
+    - `repeat` (optional) - Number of times to repeat the keystroke (default: 1)
+    - `description` (optional) - Description of the action associated with this keystroke
 - **clear_field** - Select all and delete (convenience function)
 
 ### Screenshot Tools
@@ -138,6 +142,21 @@ curl http://localhost:8080/mcp/status
 curl -X POST http://localhost:8080/mcp/tools/list \
   -H "Content-Type: application/json" \
   -d '{}'
+
+# Press a key combination
+curl -X POST http://localhost:8080/mcp/tools/call \
+  -H "Content-Type: application/json" \
+  -d '{"name": "key", "arguments": {"combo": "ENTER"}}'
+
+# Press a key combination with repeat
+curl -X POST http://localhost:8080/mcp/tools/call \
+  -H "Content-Type: application/json" \
+  -d '{"name": "key", "arguments": {"combo": "DOWN", "repeat": 3}}'
+
+# Press a key combination with description
+curl -X POST http://localhost:8080/mcp/tools/call \
+  -H "Content-Type: application/json" \
+  -d '{"name": "key", "arguments": {"combo": "control S", "description": "Save document"}}'
 
 # Take application screenshot
 curl -X POST http://localhost:8080/mcp/tools/call \

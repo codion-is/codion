@@ -23,6 +23,7 @@ import is.codion.plugin.swing.robot.Controller;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,7 +73,7 @@ final class SwingMcpServer {
 
 	// Tool names (public for SwingMcpPlugin)
 	static final String TYPE_TEXT = "type_text";
-	static final String KEY_COMBO = "key_combo";
+	static final String KEY_COMBO = "key";
 	static final String CLEAR_FIELD = "clear_field";
 	static final String APP_SCREENSHOT = "app_screenshot";
 	static final String ACTIVE_WINDOW_SCREENSHOT = "active_window_screenshot";
@@ -108,7 +109,7 @@ final class SwingMcpServer {
 	 * Type text into the currently focused field
 	 * @param text the text to type
 	 */
-	void typeText(String text) {
+	void type(String text) {
 		LOG.debug("Typing text: {}", text);
 		focusActiveWindow();
 		controller.type(text);
@@ -117,12 +118,14 @@ final class SwingMcpServer {
 	/**
 	 * Press a key combination using AWT KeyStroke format.
 	 * Examples: "ENTER", "TAB", "ctrl S", "shift TAB", "alt F4", "UP", "typed a"
-	 * @param combo the key combination in AWT KeyStroke format
+	 * @param keystroke the key combination in AWT KeyStroke format
+	 * @param repeat the number of times to repeat the keystroke
+	 * @param description a description of the action associated with the keystroke
 	 */
-	void keyCombo(String combo) {
-		LOG.debug("Key combo: {}", combo);
+	void key(String keystroke, int repeat, @Nullable String description) {
+		LOG.debug("Key combo: {}", keystroke);
 		focusActiveWindow();
-		controller.key(combo);
+		controller.key(keystroke, repeat, description);
 	}
 
 	/**
