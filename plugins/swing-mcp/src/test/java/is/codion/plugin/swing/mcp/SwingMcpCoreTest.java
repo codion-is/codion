@@ -146,8 +146,8 @@ public class SwingMcpCoreTest {
 		JPanel testPanel = new JPanel();
 
 		// Test that we can create MCP server states
-		State state1 = SwingMcpPlugin.mcpServer(testPanel);
-		State state2 = SwingMcpPlugin.mcpServer(testPanel);
+		State state1 = SwingMcpPlugin.mcpServer(testPanel, false);
+		State state2 = SwingMcpPlugin.mcpServer(testPanel, false);
 
 		assertNotNull(state1);
 		assertNotNull(state2);
@@ -196,13 +196,13 @@ public class SwingMcpCoreTest {
 	}
 
 	@Test
-	void testServerCreationAndSafeOperations() throws Exception {
+	void testServerCreationAndSafeOperations() {
 		JPanel testPanel = new JPanel();
 
 		// These tests verify that the server can be created and methods don't throw
 		// IMPORTANT: Only test actual Robot operations in headless environments to avoid
 		// affecting the development environment (like clearing editor contents!)
-		SwingMcpServer server = new SwingMcpServer(testPanel);
+		SwingMcpServer server = new SwingMcpServer(testPanel, false);
 
 		// Only test API surface without actual automation in non-headless environments
 		if (GraphicsEnvironment.isHeadless()) {
@@ -266,9 +266,9 @@ public class SwingMcpCoreTest {
 	}
 
 	@Test
-	void testInvalidKeyCombo() throws Exception {
+	void testInvalidKeyCombo() {
 		JPanel testPanel = new JPanel();
-		SwingMcpServer server = new SwingMcpServer(testPanel);
+		SwingMcpServer server = new SwingMcpServer(testPanel, false);
 
 		// Test invalid key combination - these should throw exceptions without executing
 		// actual automation, so they're safe to test in any environment

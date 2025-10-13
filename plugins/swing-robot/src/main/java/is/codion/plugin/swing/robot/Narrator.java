@@ -40,6 +40,7 @@ import java.util.List;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static java.util.Arrays.asList;
+import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createTitledBorder;
 import static javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS;
 
@@ -87,9 +88,8 @@ public final class Narrator {
 	 * @param text the narration text to display
 	 */
 	public void narrate(String text) {
-		narration.setText("");
 		if (text != null) {
-			narration.append(text);
+			narration.insert(text + "\n\n", 0);
 		}
 	}
 
@@ -116,9 +116,19 @@ public final class Narrator {
 	}
 
 	/**
-	 * Closes this narrator along with its frame
+	 * @param controller the controller to narrate
+	 * @param window the window to attach to
+	 * @return a new {@link Narrator}
 	 */
-	void close() {
+	public static Narrator narrator(Controller controller, Window window) {
+		return new Narrator(requireNonNull(controller), requireNonNull(window));
+	}
+
+	/**
+	 * Clears this narrator and closes its frame
+	 */
+	public void close() {
+		clear();
 		frame.dispose();
 	}
 

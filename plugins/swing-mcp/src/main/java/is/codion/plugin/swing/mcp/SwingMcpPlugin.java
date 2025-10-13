@@ -67,24 +67,48 @@ public final class SwingMcpPlugin {
 	private static final String CODION_SWING_MCP = "codion-swing-mcp";
 	private static final String SERVER_STARTUP_INFO = "Started MCP HTTP server for Swing application";
 	private static final String SERVER_STOPPED_INFO = "Stopped MCP server";
+	private static final String NARRATOR_NOT_AVAILABLE = "Narrator not available";
+	private static final String KEY_SCHEMA = """
+					{
+						"type": "object",
+						"properties": {
+							"combo": {
+								"type": "string",
+								"description": "Key combination in AWT keystroke format. Examples: 'ENTER', 'shift ENTER', 'TAB', 'ctrl S', 'ctrl alt LEFT', 'shift TAB', 'alt F4', 'UP', 'DOWN', 'typed a', 'F5'"
+							},
+							"repeat": {
+								"type": "integer",
+								"description": "Number of times to repeat the keystroke (default: 1)"
+							},
+							"description": {
+								"type": "string",
+								"description": "Optional description of the action associated with this keystroke"
+							}
+						},
+						"required": ["combo"]
+					}
+					""";
 
 	private final JComponent applicationComponent;
+	private final boolean includeNarrator;
 
 	private ExecutorService executor;
 	private SwingMcpServer server;
 	private SwingMcpHttpServer httpServer;
 
-	private SwingMcpPlugin(JComponent applicationComponent) {
+	private SwingMcpPlugin(JComponent applicationComponent, boolean includeNarrator) {
 		this.applicationComponent = applicationComponent;
+		this.includeNarrator = includeNarrator;
 	}
 
 	/**
 	 * Create an MCP server for the given application component.
 	 * @param applicationComponent the application component
+	 * @param includeNarrator if true a {@link is.codion.plugin.swing.robot.Narrator} is included
 	 * @return a {@link State} controlling the started state of this mcp server
 	 */
-	public static State mcpServer(JComponent applicationComponent) {
-		SwingMcpPlugin plugin = new SwingMcpPlugin(requireNonNull(applicationComponent));
+	public static State mcpServer(JComponent applicationComponent, boolean includeNarrator) {
+		SwingMcpPlugin plugin = new SwingMcpPlugin(requireNonNull(applicationComponent), includeNarrator);
 
 		return State.builder()
 						.consumer(new ServerController(plugin))
@@ -120,7 +144,7 @@ public final class SwingMcpPlugin {
 	private void runServer() {
 		try {
 			// Initialize the UI automation server
-			server = new SwingMcpServer(applicationComponent);
+			server = new SwingMcpServer(applicationComponent, includeNarrator);
 			// Start HTTP server for MCP client access
 			startHttpServer(server);
 		}
@@ -151,29 +175,6 @@ public final class SwingMcpPlugin {
 		};
 	}
 
-	private static String createKeySchema() {
-		return """
-						{
-							"type": "object",
-							"properties": {
-								"combo": {
-									"type": "string",
-									"description": "Key combination in AWT keystroke format. Examples: 'ENTER', 'shift ENTER', 'TAB', 'ctrl S', 'ctrl alt LEFT', 'shift TAB', 'alt F4', 'UP', 'DOWN', 'typed a', 'F5'"
-								},
-								"repeat": {
-									"type": "integer",
-									"description": "Number of times to repeat the keystroke (default: 1)"
-								},
-								"description": {
-									"type": "string",
-									"description": "Optional description of the action associated with this keystroke"
-								}
-							},
-							"required": ["combo"]
-						}
-						""";
-	}
-
 	private static void registerHttpTools(SwingMcpHttpServer httpServer, SwingMcpServer swingMcpServer) {
 		// Type text tool
 		httpServer.addTool(new HttpTool(
@@ -190,7 +191,7 @@ public final class SwingMcpPlugin {
 		// Key combination tool - handles all keyboard input
 		httpServer.addTool(new HttpTool(
 						KEY_COMBO, "Press a key combination using AWT KeyStroke format",
-						createKeySchema(),
+						KEY_SCHEMA,
 						arguments -> {
 							String combo = (String) arguments.get("combo");
 							int repeat = SwingMcpServer.integerParam(arguments, "repeat", 1);
@@ -258,6 +259,49 @@ public final class SwingMcpPlugin {
 							return "Field cleared";
 						}
 		));
+
+		// Narrator tools (only added if narrator is available)
+		if (swingMcpServer.narratorAvailable()) {
+			// Narrate tool
+			httpServer.addTool(new HttpTool(
+							"narrate", "Add narration text to the narrator window",
+							SwingMcpServer.createSchema(TEXT, STRING, "The narration text to display"),
+							arguments -> {
+								String text = (String) arguments.get(TEXT);
+								if (swingMcpServer.narrate(text)) {
+									return "Narration added successfully";
+								}
+
+								return NARRATOR_NOT_AVAILABLE;
+							}
+			));
+
+			// Clear narration tool
+			httpServer.addTool(new HttpTool(
+							"clear_narration", "Clear all narration text from the narrator window",
+							INPUT_SCHEMA,
+							arguments -> {
+								if (swingMcpServer.clearNarration()) {
+									return "Narration cleared successfully";
+								}
+
+								return NARRATOR_NOT_AVAILABLE;
+							}
+			));
+
+			// Clear keystrokes tool
+			httpServer.addTool(new HttpTool(
+							"clear_keystrokes", "Clear the keystroke history from the narrator window",
+							INPUT_SCHEMA,
+							arguments -> {
+								if (swingMcpServer.clearKeyStrokes()) {
+									return "Keystrokes cleared successfully";
+								}
+
+								return NARRATOR_NOT_AVAILABLE;
+							}
+			));
+		}
 	}
 
 	private static Map<String, Object> screenshotToBase64(Map<String, Object> arguments, BufferedImage screenshot) {

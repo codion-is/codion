@@ -19,6 +19,7 @@
 package is.codion.plugin.swing.mcp;
 
 import is.codion.plugin.swing.robot.Controller;
+import is.codion.plugin.swing.robot.Narrator;
 import is.codion.swing.common.ui.Utilities;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -93,6 +94,7 @@ final class SwingMcpServer {
 	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
 	private final Controller controller;
+	private final Narrator narrator;
 	private final JComponent applicationComponent;
 
 	private final WindowEventListener windowEventListener = new WindowEventListener();
@@ -100,10 +102,11 @@ final class SwingMcpServer {
 	private volatile Window lastActiveWindow = null;
 	private volatile long lastActivationTime = 0;
 
-	SwingMcpServer(JComponent applicationComponent) {
+	SwingMcpServer(JComponent applicationComponent, boolean includeNarrator) {
 		this.applicationComponent = requireNonNull(applicationComponent);
 		Window window = Utilities.parentWindow(applicationComponent);
 		this.controller = window == null ? Controller.controller() : Controller.controller(window.getGraphicsConfiguration().getDevice());
+		this.narrator = window == null || !includeNarrator ? null : Narrator.narrator(controller, window);
 		Toolkit.getDefaultToolkit().addAWTEventListener(windowEventListener, WINDOW_EVENT_MASK);
 	}
 
@@ -139,6 +142,52 @@ final class SwingMcpServer {
 		controller.key("DELETE");
 	}
 
+	/**
+	 * @return true if a narrator is available
+	 */
+	boolean narratorAvailable() {
+		return narrator != null;
+	}
+
+	/**
+	 * @param text the text to narrate
+	 * @return true if a narrator was available
+	 */
+	boolean narrate(String text) {
+		if (narrator != null) {
+			narrator.narrate(text);
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * @return true if a narrator was available
+	 */
+	boolean clearNarration() {
+		if (narrator != null) {
+			narrator.clearNarration();
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * @return true if a narrator was available
+	 */
+	boolean clearKeyStrokes() {
+		if (narrator != null) {
+			narrator.clearKeyStrokes();
+
+			return true;
+		}
+
+		return false;
+	}
 
 	/**
 	 * Get the bounds of the application window
@@ -373,6 +422,9 @@ final class SwingMcpServer {
 	}
 
 	void stop() {
+		if (narrator != null) {
+			narrator.close();
+		}
 		Toolkit.getDefaultToolkit().removeAWTEventListener(windowEventListener);
 	}
 
