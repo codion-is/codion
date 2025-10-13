@@ -19,6 +19,7 @@
 package is.codion.plugin.swing.mcp;
 
 import is.codion.plugin.swing.robot.Controller;
+import is.codion.swing.common.ui.Utilities;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -101,7 +102,8 @@ final class SwingMcpServer {
 
 	SwingMcpServer(JComponent applicationComponent) {
 		this.applicationComponent = requireNonNull(applicationComponent);
-		this.controller = Controller.controller();
+		Window window = Utilities.parentWindow(applicationComponent);
+		this.controller = window == null ? Controller.controller() : Controller.controller(window.getGraphicsConfiguration().getDevice());
 		Toolkit.getDefaultToolkit().addAWTEventListener(windowEventListener, WINDOW_EVENT_MASK);
 	}
 

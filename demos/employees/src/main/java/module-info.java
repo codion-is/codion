@@ -30,6 +30,7 @@ module is.codion.demos.employees {
 	requires is.codion.plugin.jasperreports;
 	requires is.codion.plugin.flatlaf.intellij.themes;
 	requires is.codion.plugin.swing.robot;
+	requires is.codion.plugin.swing.mcp;
 
 	exports is.codion.demos.employees.domain
 					to is.codion.framework.domain, is.codion.framework.db.local;

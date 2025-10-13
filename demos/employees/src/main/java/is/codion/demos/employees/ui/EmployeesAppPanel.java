@@ -18,6 +18,7 @@
  */
 package is.codion.demos.employees.ui;
 
+import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.demos.employees.demos.DemoScript;
 import is.codion.demos.employees.domain.Employees;
@@ -26,6 +27,7 @@ import is.codion.demos.employees.domain.Employees.Employee;
 import is.codion.demos.employees.model.EmployeesAppModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.plugin.flatlaf.intellij.themes.arc.Arc;
+import is.codion.plugin.swing.mcp.SwingMcpPlugin;
 import is.codion.plugin.swing.robot.Automation;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -50,6 +52,8 @@ import static java.util.Collections.emptyList;
 
 // tag::createEntityPanels[]
 public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel> {
+
+	private final State mcpServerController = SwingMcpPlugin.mcpServer(this);
 
 	public EmployeesAppPanel(EmployeesAppModel applicationModel) {
 		super(applicationModel, createPanels(applicationModel), emptyList());
@@ -114,6 +118,9 @@ public class EmployeesAppPanel extends EntityApplicationPanel<EmployeesAppModel>
 																		.narrator(parentWindow().orElseThrow())
 																		.run(new DemoScript()))
 														.caption("Run demo"))
+										.control(Control.builder()
+														.toggle(mcpServerController)
+														.caption("MCP Server"))
 										.build());
 	}
 	// end::createToolsMenuControls[]
