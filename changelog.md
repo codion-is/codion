@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.55
+
 ## 0.18.54
 ### is.codion.common.db
 - ConnectionPoolStatistics cleanup and refactoring.
