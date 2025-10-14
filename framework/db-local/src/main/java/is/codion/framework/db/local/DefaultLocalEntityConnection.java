@@ -42,7 +42,6 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
-import is.codion.framework.domain.entity.attribute.Column.Generator;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKey.Reference;
@@ -111,6 +110,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	private final DatabaseConnection connection;
 	private final Database database;
 	private final SelectQueries selectQueries;
+	private final Map<EntityType, Boolean> generatedKeysCache = new HashMap<>();
+	private final Map<EntityType, List<ColumnDefinition<?>>> generatedColumnsCache = new HashMap<>();
 	private final Map<EntityType, List<ColumnDefinition<?>>> insertableColumnsCache = new HashMap<>();
 	private final Map<EntityType, List<ColumnDefinition<?>>> updatableColumnsCache = new HashMap<>();
 	private final Map<EntityType, List<ForeignKeyDefinition>> hardForeignKeyReferenceCache = new HashMap<>();
@@ -753,25 +754,20 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 			try {
 				for (Entity entity : entities) {
 					EntityDefinition entityDefinition = definition(entity.type());
-					List<ColumnDefinition<?>> generated = entityDefinition.columns().definitions().stream()
-									.filter(ColumnDefinition::generated)
-									.collect(toList());
-					for (ColumnDefinition<?> column : generated) {
-						Generator<Object> generator = (Generator<Object>) column.generator();
-						generator.beforeInsert(entity, (Column<Object>) column.attribute(), connection);
+					List<ColumnDefinition<?>> generatedColumns = generatedColumns(entityDefinition);
+					for (ColumnDefinition<?> column : generatedColumns) {
+						generateBeforeInsert(entity, column);
 					}
 					populateColumnsAndValues(entity, insertableColumns(entityDefinition),
 									statementColumns, statementValues, column -> entity.contains(column.attribute()));
-					if (generated.isEmpty() && statementColumns.isEmpty()) {
+					if (generatedColumns.isEmpty() && statementColumns.isEmpty()) {
 						throw new SQLException("Unable to insert entity " + entity.type() + ", no values to insert");
 					}
-					boolean generatedKeys = generated.stream().anyMatch(column -> column.generator().generatedKeys());
 					insertQuery = insertQuery(entityDefinition.table(), statementColumns);
-					try (PreparedStatement statement = prepareStatement(insertQuery, generatedKeys)) {
+					try (PreparedStatement statement = prepareStatement(insertQuery, generatedKeys(entityDefinition, generatedColumns))) {
 						executeUpdate(statement, insertQuery, statementColumns, statementValues, INSERT);
-						for (ColumnDefinition<?> column : generated) {
-							Generator<Object> generator = (Generator<Object>) column.generator();
-							generator.afterInsert(entity, (Column<Object>) column.attribute(), connection, statement);
+						for (ColumnDefinition<?> column : generatedColumns) {
+							generateAfterInsert(entity, column, statement);
 						}
 					}
 
@@ -797,6 +793,18 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		}
 	}
 
+	private <T> void generateBeforeInsert(Entity entity, ColumnDefinition<T> column) throws SQLException {
+		column.generator().beforeInsert(entity, column.attribute(), connection);
+	}
+
+	private <T> void generateAfterInsert(Entity entity, ColumnDefinition<T> column, PreparedStatement statement) throws SQLException {
+		column.generator().afterInsert(entity, column.attribute(), connection, statement);
+	}
+
+	private boolean generatedKeys(EntityDefinition entityDefinition, List<ColumnDefinition<?>> generated) {
+		return generatedKeysCache.computeIfAbsent(entityDefinition.type(), k ->
+						generated.stream().anyMatch(column -> column.generator().generatedKeys()));
+	}
 
 	private void update(Collection<Entity> entities, @Nullable Collection<Entity> updatedEntities) {
 		Map<EntityType, List<Entity>> entitiesByEntityType = groupByType(entities);
@@ -1219,6 +1227,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		finally {
 			tracer.exit(PACK_RESULT, packingException, "row count: " + result.size());
 		}
+	}
+
+	private List<ColumnDefinition<?>> generatedColumns(EntityDefinition entityDefinition) {
+		return generatedColumnsCache.computeIfAbsent(entityDefinition.type(), k ->
+						entityDefinition.columns().definitions().stream()
+										.filter(ColumnDefinition::generated)
+										.collect(toList()));
 	}
 
 	private List<ColumnDefinition<?>> insertableColumns(EntityDefinition entityDefinition) {

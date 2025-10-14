@@ -397,7 +397,7 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditionFactory<T
 		default void afterInsert(Entity entity, Column<T> column, DatabaseConnection connection, Statement insertStatement) throws SQLException {/*for overriding*/}
 
 		/**
-		 * Specifies whether the insert statement should return the generated column values via the resulting
+		 * Specifies whether this {@link Generator} relies on the insert statement to return the generated column values via the resulting
 		 * {@link Statement#getGeneratedKeys()} resultSet, accessible in {@link #afterInsert(Entity, Column, DatabaseConnection, Statement)}.
 		 * The default implementation returns false.
 		 * @return true if the generated column values should be returned via the insert statement resultSet
