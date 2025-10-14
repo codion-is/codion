@@ -107,7 +107,7 @@ import static java.util.stream.Collectors.*;
  * @see #builder(Key)
  * @see #copy()
  */
-public interface Entity extends Comparable<Entity> {
+public sealed interface Entity extends Comparable<Entity> permits DefaultEntity {
 
 	/**
 	 * @return the entity type

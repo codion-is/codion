@@ -20,7 +20,6 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.Text;
 import is.codion.common.db.exception.RecordNotFoundException;
-import is.codion.common.proxy.ProxyBuilder;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -191,18 +190,12 @@ final class EntityPopupMenu extends JPopupMenu {
 							.build());
 		}
 		catch (RecordNotFoundException e) {
-			return ProxyBuilder.of(Entity.class)
-							.delegate(Entity.entity(primaryKey))
-							.method("toString", parameters -> primaryKey + " <RECORD NOT FOUND>")
-							.build();
+			return primaryKey.definition().placeholder(primaryKey + " <RECORD NOT FOUND>");
 		}
 	}
 
 	private static Entity duplicate(Entity entity) {
-		return ProxyBuilder.of(Entity.class)
-						.delegate(entity)
-						.method("toString", parameters -> entity + " <DUPLICATE>")
-						.build();
+		return entity.definition().placeholder(entity + " <DUPLICATE>");
 	}
 
 	private static Control clipboardControl(Entity entity, Attribute<?> attribute) {

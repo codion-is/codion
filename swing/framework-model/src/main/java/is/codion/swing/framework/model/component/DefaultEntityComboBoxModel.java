@@ -19,8 +19,6 @@
 package is.codion.swing.framework.model.component;
 
 import is.codion.common.model.selection.SingleSelection;
-import is.codion.common.proxy.ProxyBuilder;
-import is.codion.common.proxy.ProxyBuilder.ProxyMethod;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -547,24 +545,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 
 		private static @Nullable Entity createNullItem(@Nullable String nullCaption, EntityDefinition entityDefinition) {
-			return nullCaption == null ? null : ProxyBuilder.of(Entity.class)
-							.delegate(entityDefinition.entity())
-							.method("toString", new NullItemToString(nullCaption))
-							.build();
-		}
-
-		private static class NullItemToString implements ProxyMethod<Entity> {
-
-			private final String nullCaption;
-
-			private NullItemToString(String nullCaption) {
-				this.nullCaption = nullCaption;
-			}
-
-			@Override
-			public Object invoke(Parameters<Entity> parameters) throws Throwable {
-				return nullCaption;
-			}
+			return nullCaption == null ? null : entityDefinition.placeholder(nullCaption);
 		}
 	}
 }

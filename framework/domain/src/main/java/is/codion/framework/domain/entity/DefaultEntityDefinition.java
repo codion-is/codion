@@ -272,6 +272,11 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 	}
 
 	@Override
+	public Entity placeholder(String caption) {
+		return new EmptyEntity(this, caption);
+	}
+
+	@Override
 	public <T> Entity.Key primaryKey(T value) {
 		if (primaryKey.columns().isEmpty()) {
 			throw new IllegalArgumentException("Entity '" + entityType + "' has no primary key");

@@ -2,6 +2,9 @@ Codion Change Log
 =================
 
 ## 0.18.55
+### is.codion.framework.domain
+- Entity now sealed.
+- EntityDefinition.placeholder(caption) factory method added, for empty placeholder entities.
 
 ## 0.18.54
 ### is.codion.common.db

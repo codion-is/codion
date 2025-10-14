@@ -32,7 +32,7 @@ import java.util.Map;
 
 import static is.codion.framework.domain.entity.EntitySerializer.serializerForDomain;
 
-final class ImmutableEntity extends DefaultEntity implements Serializable {
+sealed class ImmutableEntity extends DefaultEntity implements Serializable permits EmptyEntity {
 
 	@Serial
 	private static final long serialVersionUID = 1;

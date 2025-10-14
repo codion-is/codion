@@ -322,7 +322,7 @@ sealed class DefaultEntity implements Entity, Serializable permits ImmutableEnti
 	 * @see EntityDefinition#cacheToString()
 	 */
 	@Override
-	public final String toString() {
+	public String toString() {
 		if (definition.cacheToString()) {
 			if (toStringCache == null) {
 				toStringCache = createToString();
