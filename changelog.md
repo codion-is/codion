@@ -6,6 +6,8 @@ Codion Change Log
 - Entity now sealed.
 - EntityDefinition.placeholder(caption) factory method added, for empty placeholder entities.
 - Entities.Configurable added along with entities() factory method. DefaultEntities now package private and Entities sealed.
+### is.codion.swing.framework.ui
+- KeyboardShortcutsPanel, copy expanded change to table export, related changes.
 
 ## 0.18.54
 ### is.codion.common.db

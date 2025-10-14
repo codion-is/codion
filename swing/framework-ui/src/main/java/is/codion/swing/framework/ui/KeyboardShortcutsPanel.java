@@ -68,7 +68,7 @@ final class KeyboardShortcutsPanel extends JPanel {
 						.add(tablePanel())
 						.add(conditionPanel())
 						.add(searchField())
-						.add(tableCopyExpanded())
+						.add(tableExport())
 						.add(dateTimeField())
 						.add(calendar())
 						.add(entityField())
@@ -168,10 +168,10 @@ final class KeyboardShortcutsPanel extends JPanel {
 						.build();
 	}
 
-	private static JPanel tableCopyExpanded() {
+	private static JPanel tableExport() {
 		return gridLayoutPanel(0, 2)
-						.addAll(new JLabel(MESSAGES.getString("toggle_copy_attribute")), new JLabel("Space"))
-						.border(createTitledBorder(MESSAGES.getString("table_copy_expanded")))
+						.addAll(new JLabel(MESSAGES.getString("toggle_include_attribute")), new JLabel("Space"))
+						.border(createTitledBorder(MESSAGES.getString("table_export")))
 						.build();
 	}
 

@@ -930,16 +930,16 @@ is/codion/swing/framework/ui/KeyboardShortcutsPanel_is_IS.properties
 |select_condition_panel|Select a condition panel|Velja leitarflöt
 |select_filter_panel|Select a filter panel|Velja sýjunarflöt
 |show_popup_menu|Show popup menu|Birta valmynd
-|table_copy_expanded|Table copy expanded|Töfluafritun
+|table_export|Table export|Töfluafritun
 |table_panel|Table panel|Tafla
 |table_search_field|Table search field|Töfluleitarreitur
 |text_field_panel|Text field panel|Textainnsláttarflötur
 |toggle_column_sort|Toggle sorting by selected column|Raða út frá völdum dálk
 |toggle_column_sort_add|Toggle and add sorting by selected column|Bæta við röðun út frá völdum dálk
 |toggle_condition_panel|Toggle condition panel view, between hidden, visible and advanced|Skipta á milli sýna á leitarfleti, falinn, sjáanlegur og nákvæmur
-|toggle_copy_attribute|Toggle attribute inclusion|Velja/afvelja gildi
 |toggle_edit_panel|Toggle edit panel|Fela/birta innsláttarflöt
 |toggle_filter_panel|Toggle filter panel view, between hidden, visible and advanced|Skipta á milli sýna á sýjunarfleti, falinn, sjáanlegur og nákvæmur
+|toggle_include_attribute|Toggle attribute inclusion|Velja/afvelja gildi
 |transfer_focus|Transfer focus|Færa fókus
 |transfer_focus_edit_panel|Edit panel|Innsláttarflötur
 |transfer_focus_find_in_table|Find in table field|Leita í töflu

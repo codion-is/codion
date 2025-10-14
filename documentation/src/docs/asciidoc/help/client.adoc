@@ -183,7 +183,7 @@ NOTE: On macOS, use kbd:[⌘] (Command) instead of kbd:[Ctrl] for all shortcuts 
 
 [cols="1,3"]
 |===
-2+|Table copy expanded
+2+|Table export
 
 |kbd:[Space]|Toggle attribute inclusion
 |===
