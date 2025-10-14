@@ -24,12 +24,11 @@ import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.Report;
 import is.codion.common.db.report.ReportType;
-import is.codion.framework.domain.entity.DefaultEntities;
 import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entities.Configurable;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 
-import java.io.Serial;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +46,8 @@ import static java.util.Objects.requireNonNull;
 public abstract class DomainModel implements Domain {
 
 	private final DomainType domainType;
-	private final DomainEntities entities;
+	private final Entities entities;
+	private final Configurable configurable;
 	private final DomainReports reports = new DomainReports();
 	private final DomainProcedures procedures = new DomainProcedures();
 	private final DomainFunctions functions = new DomainFunctions();
@@ -58,7 +58,8 @@ public abstract class DomainModel implements Domain {
 	 */
 	protected DomainModel(DomainType domainType) {
 		this.domainType = requireNonNull(domainType);
-		this.entities = new DomainEntities(domainType);
+		this.configurable = Entities.configurable(domainType);
+		this.entities = configurable.entities();
 	}
 
 	@Override
@@ -116,7 +117,7 @@ public abstract class DomainModel implements Domain {
 	protected final void add(EntityDefinition... definitions) {
 		Arrays.stream(requireNonNull(definitions))
 						.map(this::validate)
-						.forEach(entities::addEntityDefinition);
+						.forEach(configurable::add);
 	}
 
 	/**
@@ -164,7 +165,7 @@ public abstract class DomainModel implements Domain {
 	 * @param validateForeignKeys true to enable foreign key validation, false to disable
 	 */
 	protected final void validateForeignKeys(boolean validateForeignKeys) {
-		entities.validateForeignKeysInternal(validateForeignKeys);
+		configurable.validateForeignKeys(validateForeignKeys);
 	}
 
 	/**
@@ -192,7 +193,7 @@ public abstract class DomainModel implements Domain {
 	protected final void addEntities(Domain domain) {
 		requireNonNull(domain).entities().definitions().forEach(definition -> {
 			if (!entities.contains(definition.type())) {
-				entities.addEntityDefinition(definition);
+				configurable.add(definition);
 			}
 		});
 	}
@@ -240,24 +241,6 @@ public abstract class DomainModel implements Domain {
 		}
 
 		return definition;
-	}
-
-	private static final class DomainEntities extends DefaultEntities {
-
-		@Serial
-		private static final long serialVersionUID = 1;
-
-		private DomainEntities(DomainType domainType) {
-			super(domainType);
-		}
-
-		private void addEntityDefinition(EntityDefinition definition) {
-			super.add(definition);
-		}
-
-		private void validateForeignKeysInternal(boolean validateForeignKeys) {
-			super.validateForeignKeys(validateForeignKeys);
-		}
 	}
 
 	private static final class DomainProcedures {

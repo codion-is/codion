@@ -75,8 +75,9 @@ import static is.codion.common.Configuration.booleanValue;
  * @see #key(EntityType)
  * @see #primaryKey(EntityType, Object)
  * @see #primaryKeys(EntityType, Object[])
+ * @see #configurable(DomainType)
  */
-public interface Entities {
+public sealed interface Entities permits DefaultEntities {
 
 	/**
 	 * Specifies whether foreign keys are validated when defined by asserting that the referenced entity has been defined.
@@ -238,4 +239,38 @@ public interface Entities {
 	 * @throws NullPointerException in case entityType or values is null
 	 */
 	<T> List<Entity.Key> primaryKeys(EntityType entityType, Collection<T> values);
+
+	/**
+	 * Creates a new {@link Entities.Configurable} instance for the given domain type.
+	 * @param domainType the domain type
+	 * @return a new {@link Configurable} {@link Entities} instance
+	 */
+	static Entities.Configurable configurable(DomainType domainType) {
+		return new ConfigurableEntities(new DefaultEntities(domainType));
+	}
+
+	/**
+	 * Provides a {@link Configurable} {@link Entities} instance
+	 */
+	interface Configurable {
+
+		/**
+		 * @return the {@link Entities} instance being configured
+		 */
+		Entities entities();
+
+		/**
+		 * Adds an entity definition.
+		 * @param definition the entity definition to add
+		 * @throws IllegalArgumentException in case the entities instance already contains the given definition
+		 */
+		void add(EntityDefinition definition);
+
+		/**
+		 * Specifies whether to validate foreign keys when created, asserting that
+		 * the referenced entity has been defined. Disable in case of cyclical dependencies.
+		 * @param validateForeignKeys true if foreign keys should be validated
+		 */
+		void validateForeignKeys(boolean validateForeignKeys);
+	}
 }

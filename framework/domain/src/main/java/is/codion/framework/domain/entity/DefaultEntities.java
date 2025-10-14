@@ -39,7 +39,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * A default {@link Entities} implementation.
  */
-public abstract class DefaultEntities implements Entities, Serializable {
+final class DefaultEntities implements Entities, Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1;
@@ -53,58 +53,58 @@ public abstract class DefaultEntities implements Entities, Serializable {
 	 * Instantiates a new DefaultEntities for the given domainType
 	 * @param domainType the domainType
 	 */
-	protected DefaultEntities(DomainType domainType) {
+	DefaultEntities(DomainType domainType) {
 		this.domainType = requireNonNull(domainType);
 		EntitySerializer.setSerializer(domainType.name(), createSerializer(this));
 	}
 
 	@Override
-	public final DomainType domainType() {
+	public DomainType domainType() {
 		return domainType;
 	}
 
 	@Override
-	public final EntityDefinition definition(EntityType entityType) {
+	public EntityDefinition definition(EntityType entityType) {
 		return definitionInternal(requireNonNull(entityType).name());
 	}
 
 	@Override
-	public final EntityDefinition definition(String entityTypeName) {
+	public EntityDefinition definition(String entityTypeName) {
 		return definitionInternal(requireNonNull(entityTypeName));
 	}
 
 	@Override
-	public final boolean contains(EntityType entityType) {
+	public boolean contains(EntityType entityType) {
 		return entityDefinitions.containsKey(requireNonNull(entityType).name());
 	}
 
 	@Override
-	public final Collection<EntityDefinition> definitions() {
+	public Collection<EntityDefinition> definitions() {
 		return unmodifiableCollection(entityDefinitions.values());
 	}
 
 	@Override
-	public final Entity.Builder entity(EntityType entityType) {
+	public Entity.Builder entity(EntityType entityType) {
 		return new DefaultEntityBuilder(definition(entityType));
 	}
 
 	@Override
-	public final Entity.Key.Builder key(EntityType entityType) {
+	public Entity.Key.Builder key(EntityType entityType) {
 		return new DefaultKeyBuilder(definition(entityType));
 	}
 
 	@Override
-	public final <T> Entity.Key primaryKey(EntityType entityType, T value) {
+	public <T> Entity.Key primaryKey(EntityType entityType, T value) {
 		return definition(entityType).primaryKey(value);
 	}
 
 	@Override
-	public final <T> List<Entity.Key> primaryKeys(EntityType entityType, T... values) {
+	public <T> List<Entity.Key> primaryKeys(EntityType entityType, T... values) {
 		return primaryKeys(entityType, asList(values));
 	}
 
 	@Override
-	public final <T> List<Entity.Key> primaryKeys(EntityType entityType, Collection<T> values) {
+	public <T> List<Entity.Key> primaryKeys(EntityType entityType, Collection<T> values) {
 		EntityDefinition definition = definition(entityType);
 
 		return requireNonNull(values).stream()
@@ -113,24 +113,15 @@ public abstract class DefaultEntities implements Entities, Serializable {
 	}
 
 	@Override
-	public final String toString() {
+	public String toString() {
 		return getClass().getSimpleName() + ": " + domainType;
 	}
 
-	/**
-	 * Specifies whether to validate foreign keys when created, asserting that
-	 * the referenced entity has been defined. Disable in case of cyclical dependencies.
-	 * @param validateForeignKeys true if foreign keys should be validated
-	 */
-	protected final void validateForeignKeys(boolean validateForeignKeys) {
+	void validateForeignKeys(boolean validateForeignKeys) {
 		this.validateForeignKeys = validateForeignKeys;
 	}
 
-	/**
-	 * @param definition the entity definition to add
-	 * @throws IllegalArgumentException in case this {@link DefaultEntities} instance already contains the given definition
-	 */
-	protected final void add(EntityDefinition definition) {
+	void add(EntityDefinition definition) {
 		requireNonNull(definition);
 		if (entityDefinitions.containsKey(definition.type().name())) {
 			throw new IllegalArgumentException("Entity has already been defined: " +

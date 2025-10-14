@@ -5,6 +5,7 @@ Codion Change Log
 ### is.codion.framework.domain
 - Entity now sealed.
 - EntityDefinition.placeholder(caption) factory method added, for empty placeholder entities.
+- Entities.Configurable added along with entities() factory method. DefaultEntities now package private and Entities sealed.
 
 ## 0.18.54
 ### is.codion.common.db
