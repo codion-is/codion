@@ -265,6 +265,14 @@ public interface Chinook {
 		ForeignKey TRACK_FK = TYPE.foreignKey("track_fk", TRACK_ID, Track.ID);
 	}
 
+	interface ArtistRevenue {
+		EntityType TYPE = DOMAIN.entityType("chinook.artist_revenue");
+
+		Column<Long> ARTIST_ID = TYPE.longColumn("artist_id");
+		Column<String> NAME = TYPE.stringColumn("name");
+		Column<BigDecimal> TOTAL_REVENUE = TYPE.bigDecimalColumn("total_revenue");
+	}
+
 	final class InvoiceLineTotal
 					implements DerivedValue<BigDecimal> {
 

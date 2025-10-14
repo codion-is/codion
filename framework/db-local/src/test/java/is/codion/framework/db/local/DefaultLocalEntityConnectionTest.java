@@ -1238,6 +1238,199 @@ public class DefaultLocalEntityConnectionTest {
 	}
 
 	@Test
+	void selectWithCte() {
+		// Test simple CTE that filters employees with salary > 2000
+		List<Entity> highEarners = connection.select(all(QueryWithCte.TYPE));
+
+		// Verify we got results
+		assertFalse(highEarners.isEmpty());
+
+		// Verify all returned employees have salary > 2000
+		for (Entity emp : highEarners) {
+			assertNotNull(emp.get(QueryWithCte.EMPNO));
+			assertNotNull(emp.get(QueryWithCte.ENAME));
+			assertNotNull(emp.get(QueryWithCte.DEPTNO));
+		}
+
+		// Count should match employees with salary > 2000
+		int highEarnerCount = connection.count(Count.where(Employee.SALARY.greaterThan(2000d)));
+		assertEquals(highEarnerCount, highEarners.size());
+	}
+
+	@Test
+	void selectWithRecursiveCte() {
+		// Test recursive CTE that builds employee hierarchy
+		List<Entity> hierarchy = connection.select(all(QueryWithRecursiveCte.TYPE));
+
+		// Verify we got results
+		assertFalse(hierarchy.isEmpty());
+
+		// Should return all employees
+		assertEquals(connection.count(Count.all(Employee.TYPE)), hierarchy.size());
+
+		// Verify hierarchy levels are present and valid
+		for (Entity emp : hierarchy) {
+			assertNotNull(emp.get(QueryWithRecursiveCte.EMPNO));
+			assertNotNull(emp.get(QueryWithRecursiveCte.ENAME));
+			Integer level = emp.get(QueryWithRecursiveCte.LEVEL);
+			assertNotNull(level);
+			assertTrue(level > 0, "Level should be at least 1");
+		}
+
+		// Find KING (no manager, should be level 1)
+		Entity king = hierarchy.stream()
+						.filter(e -> "KING".equals(e.get(QueryWithRecursiveCte.ENAME)))
+						.findFirst()
+						.orElseThrow();
+		assertEquals(1, king.get(QueryWithRecursiveCte.LEVEL));
+
+		// Find employees with managers (should have level > 1)
+		long managedEmployees = hierarchy.stream()
+						.filter(e -> e.get(QueryWithRecursiveCte.MGR) != null)
+						.count();
+		assertTrue(managedEmployees > 0);
+	}
+
+	@Test
+	void selectWithMultipleCtes() {
+		// Test multiple CTEs with joins (high_earners + selected_depts)
+		List<Entity> result = connection.select(all(QueryWithMultipleCtes.TYPE));
+
+		// Verify we got results (employees earning > 2000 in departments 10 and 20)
+		assertFalse(result.isEmpty());
+
+		// Verify structure
+		for (Entity entity : result) {
+			assertNotNull(entity.get(QueryWithMultipleCtes.EMPNO));
+			assertNotNull(entity.get(QueryWithMultipleCtes.ENAME));
+			assertNotNull(entity.get(QueryWithMultipleCtes.DNAME));
+		}
+
+		// All should be from ACCOUNTING or RESEARCH departments (10 or 20)
+		for (Entity entity : result) {
+			String dname = entity.get(QueryWithMultipleCtes.DNAME);
+			assertTrue(dname.equals("ACCOUNTING") || dname.equals("RESEARCH"),
+							"All results should be from ACCOUNTING or RESEARCH departments");
+		}
+
+		// Should have both KING (ACCOUNTING, sal=5000) and JONES (RESEARCH, sal=2975)
+		List<String> names = result.stream()
+						.map(e -> e.get(QueryWithMultipleCtes.ENAME))
+						.toList();
+		assertTrue(names.contains("KING"), "Should include KING");
+		assertTrue(names.contains("JONES"), "Should include JONES");
+	}
+
+	@Test
+	void selectWithCteAndConditions() {
+		// Test that WHERE conditions work with CTEs
+		List<Entity> accountingHighEarners = connection.select(
+						QueryWithCte.DEPTNO.equalTo(10));
+
+		assertFalse(accountingHighEarners.isEmpty());
+
+		// All should be from department 10
+		for (Entity emp : accountingHighEarners) {
+			assertEquals(10, emp.get(QueryWithCte.DEPTNO));
+		}
+	}
+
+	@Test
+	void selectWithCteOrderBy() {
+		// Test that ORDER BY works with CTEs
+		List<Entity> orderedHierarchy = connection.select(Select.all(QueryWithRecursiveCte.TYPE)
+						.orderBy(OrderBy.builder()
+										.ascending(QueryWithRecursiveCte.LEVEL)
+										.ascending(QueryWithRecursiveCte.ENAME)
+										.build())
+						.build());
+
+		assertFalse(orderedHierarchy.isEmpty());
+
+		// First employee should be KING at level 1
+		assertEquals(1, orderedHierarchy.get(0).get(QueryWithRecursiveCte.LEVEL));
+		assertEquals("KING", orderedHierarchy.get(0).get(QueryWithRecursiveCte.ENAME));
+
+		// Verify levels are ascending
+		Integer previousLevel = 0;
+		for (Entity emp : orderedHierarchy) {
+			Integer level = emp.get(QueryWithRecursiveCte.LEVEL);
+			assertTrue(level >= previousLevel, "Levels should be in ascending order");
+			previousLevel = level;
+		}
+	}
+
+	@Test
+	void selectWithCteLimitOffset() {
+		// Test LIMIT and OFFSET with CTEs
+		Select select = Select.all(QueryWithCte.TYPE)
+						.orderBy(OrderBy.ascending(QueryWithCte.ENAME))
+						.limit(3)
+						.build();
+
+		List<Entity> limited = connection.select(select);
+		assertEquals(3, limited.size());
+
+		// Test with offset
+		select = Select.all(QueryWithCte.TYPE)
+						.orderBy(OrderBy.ascending(QueryWithCte.ENAME))
+						.limit(2)
+						.offset(2)
+						.build();
+
+		List<Entity> offsetResult = connection.select(select);
+		assertEquals(2, offsetResult.size());
+	}
+
+	@Test
+	void countWithCte() {
+		// Test COUNT with CTE entities
+		int highEarnerCount = connection.count(Count.all(QueryWithCte.TYPE));
+		assertTrue(highEarnerCount > 0);
+
+		// Should match the count of employees with salary > 2000
+		int directCount = connection.count(Count.where(Employee.SALARY.greaterThan(2000d)));
+		assertEquals(directCount, highEarnerCount);
+
+		// Test COUNT with WHERE condition on CTE
+		int accountingCount = connection.count(Count.where(QueryWithCte.DEPTNO.equalTo(10)));
+		assertTrue(accountingCount > 0);
+		assertTrue(accountingCount < highEarnerCount);
+	}
+
+	@Test
+	void selectSingleWithCte() {
+		// Test selectSingle with CTE
+		Entity king = connection.selectSingle(QueryWithRecursiveCte.ENAME.equalTo("KING"));
+		assertNotNull(king);
+		assertEquals("KING", king.get(QueryWithRecursiveCte.ENAME));
+		assertEquals(1, king.get(QueryWithRecursiveCte.LEVEL));
+		assertNull(king.get(QueryWithRecursiveCte.MGR));
+	}
+
+	@Test
+	void selectValuesWithCte() {
+		// Test selecting single column values from CTE
+		List<String> names = connection.select(QueryWithCte.ENAME);
+		assertFalse(names.isEmpty());
+
+		// All names should be non-null
+		for (String name : names) {
+			assertNotNull(name);
+		}
+
+		// Test with condition
+		List<Integer> levels = connection.select(QueryWithRecursiveCte.LEVEL,
+						QueryWithRecursiveCte.LEVEL.equalTo(1));
+		assertFalse(levels.isEmpty());
+
+		// All levels should be 1
+		for (Integer level : levels) {
+			assertEquals(1, level);
+		}
+	}
+
+	@Test
 	void queryCache() {
 		connection.queryCache(true);
 		assertTrue(connection.queryCache());

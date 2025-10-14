@@ -50,6 +50,7 @@ final class SelectQueries {
 	private final Map<EntityType, List<ColumnDefinition<?>>> defaultSelectColumnsCache = new ConcurrentHashMap<>();
 	private final Map<EntityType, String> defaultColumnsClauseCache = new ConcurrentHashMap<>();
 	private final Map<EntityType, String> groupByClauseCache = new ConcurrentHashMap<>();
+	private final Map<EntityType, String> withClauseCache = new ConcurrentHashMap<>();
 
 	SelectQueries(Database database) {
 		this.database = database;
@@ -62,6 +63,8 @@ final class SelectQueries {
 	final class Builder {
 
 		private static final String SELECT = "SELECT ";
+		private static final String WITH = "WITH ";
+		private static final String WITH_RECURSIVE = "WITH RECURSIVE ";
 		private static final String FROM = "FROM ";
 		private static final String WHERE = "WHERE ";
 		private static final String AND = "AND ";
@@ -79,6 +82,7 @@ final class SelectQueries {
 
 		private List<ColumnDefinition<?>> selectedColums = Collections.emptyList();
 
+		private String with;
 		private String columns;
 		private String from;
 		private String orderBy;
@@ -207,8 +211,13 @@ final class SelectQueries {
 		}
 
 		String build() {
-			StringBuilder builder = new StringBuilder()
-							.append(SELECT).append(columns).append(NEWLINE)
+			StringBuilder builder = new StringBuilder();
+			// Prepend WITH clause for Common Table Expressions (CTEs) if present
+			if (with != null) {
+				builder.append(with);
+			}
+			// Build the main SELECT statement
+			builder.append(SELECT).append(columns).append(NEWLINE)
 							.append(FROM).append(from());
 			if (!where.isEmpty()) {
 				builder.append(NEWLINE).append(WHERE).append(where.get(0));
@@ -256,6 +265,10 @@ final class SelectQueries {
 		}
 
 		private void fromSelectQuery(EntitySelectQuery selectQuery) {
+			if (!selectQuery.with().isEmpty()) {
+				// Extract WITH clauses (CTEs) from EntitySelectQuery
+				with = withClause(selectQuery);
+			}
 			if (selectQuery.columns() != null) {
 				// EntitySelectQuery has custom column clause (e.g., "e.empno, e.ename") - use it directly
 				columns(selectQuery.columns());
@@ -273,6 +286,17 @@ final class SelectQueries {
 			orderBy(selectQuery.orderBy());
 			groupBy(selectQuery.groupBy());
 			having(selectQuery.having());
+		}
+
+		private String withClause(EntitySelectQuery selectQuery) {
+			//cached since EntitySelectQuery is immutable and per entityType
+			return withClauseCache.computeIfAbsent(definition.type(), k -> createWithClause(selectQuery));
+		}
+
+		private static String createWithClause(EntitySelectQuery selectQuery) {
+			return selectQuery.with().entrySet().stream()
+							.map(entry -> entry.getKey() + " AS (" + entry.getValue() + ")")
+							.collect(joining(", " + NEWLINE + "     ", selectQuery.withRecursive() ? WITH_RECURSIVE : WITH, NEWLINE));
 		}
 
 		private String from() {

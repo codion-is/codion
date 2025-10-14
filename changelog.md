@@ -6,6 +6,7 @@ Codion Change Log
 - Entity now sealed.
 - EntityDefinition.placeholder(caption) factory method added, for empty placeholder entities.
 - Entities.Configurable added along with entities() factory method. DefaultEntities now package private and Entities sealed.
+- EntitySelectQuery.Builder.with() and withRecursive() added for CTEs.
 ### is.codion.swing.framework.ui
 - KeyboardShortcutsPanel, copy expanded change to table export, related changes.
 

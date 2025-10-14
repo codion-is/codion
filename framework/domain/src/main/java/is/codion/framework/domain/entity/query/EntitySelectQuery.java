@@ -22,11 +22,24 @@ import is.codion.framework.domain.entity.query.DefaultEntitySelectQuery.DefaultB
 
 import org.jspecify.annotations.Nullable;
 
+import java.util.Map;
+
 /**
  * Defines a select query or parts of a select query, that is, from, columns, where, groupBy, having and orderBy clauses.
+ * Supports Common Table Expressions (CTEs) via the {@link Builder#with(String, String)} method.
  * {@link Builder} provided by {@link #builder()}.
  */
 public sealed interface EntitySelectQuery permits DefaultEntitySelectQuery {
+
+	/**
+	 * @return the map of CTE names to their queries, empty if no CTEs defined
+	 */
+	Map<String, String> with();
+
+	/**
+	 * @return true if the WITH clause should be marked as RECURSIVE
+	 */
+	boolean withRecursive();
 
 	/**
 	 * @return the COLUMNS clause
@@ -70,6 +83,55 @@ public sealed interface EntitySelectQuery permits DefaultEntitySelectQuery {
 	 * Builds a {@link EntitySelectQuery}.
 	 */
 	sealed interface Builder permits DefaultBuilder {
+
+		/**
+		 * Adds a common table expression (CTE) to the query.
+		 * CTEs are prepended to the query using the WITH clause.
+		 * <p>
+		 * Example:
+		 * <pre>{@code
+		 * EntitySelectQuery.builder()
+		 *     .with("active_customers", "SELECT * FROM customer WHERE active = true")
+		 *     .from("active_customers")
+		 *     .columns("id, name")
+		 *     .build()
+		 * }</pre>
+		 * Generates:
+		 * <pre>{@code
+		 * WITH active_customers AS (SELECT * FROM customer WHERE active = true)
+		 * SELECT id, name
+		 * FROM active_customers
+		 * }</pre>
+		 * @param name the CTE name, must be unique within this query
+		 * @param query the CTE query, without the WITH keyword
+		 * @return this Builder instance
+		 * @throws IllegalArgumentException if query contains the WITH keyword
+		 */
+		Builder with(String name, String query);
+
+		/**
+		 * Adds a recursive common table expression and marks the WITH block as RECURSIVE.
+		 * Note: In SQL, WITH RECURSIVE applies to the entire block, not individual CTEs.
+		 * <p>
+		 * Example:
+		 * <pre>{@code
+		 * EntitySelectQuery.builder()
+		 *     .withRecursive("employee_hierarchy", """
+		 *         SELECT id, name, manager_id, 1 as level
+		 *         FROM employee WHERE manager_id IS NULL
+		 *         UNION ALL
+		 *         SELECT e.id, e.name, e.manager_id, eh.level + 1
+		 *         FROM employee e
+		 *         JOIN employee_hierarchy eh ON e.manager_id = eh.id
+		 *         """)
+		 *     .from("employee_hierarchy")
+		 *     .build()
+		 * }</pre>
+		 * @param name the CTE name
+		 * @param query the CTE query
+		 * @return this Builder instance
+		 */
+		Builder withRecursive(String name, String query);
 
 		/**
 		 * Specifies the columns clause to use, without the SELECT keyword.

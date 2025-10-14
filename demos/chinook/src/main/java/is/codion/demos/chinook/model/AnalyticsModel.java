@@ -19,8 +19,10 @@
 package is.codion.demos.chinook.model;
 
 import is.codion.demos.chinook.domain.api.Chinook;
+import is.codion.demos.chinook.domain.api.Chinook.ArtistRevenue;
 import is.codion.demos.chinook.domain.api.Chinook.Invoice;
 import is.codion.demos.chinook.domain.api.Chinook.Track;
+import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.condition.Condition;
@@ -48,11 +50,13 @@ public final class AnalyticsModel {
 	private final EntityConnectionProvider connectionProvider;
 	private final SalesComparison salesComparison;
 	private final TopArtists topArtists;
+	private final TopArtistRevenue topArtistRevenue;
 
 	public AnalyticsModel(EntityConnectionProvider connectionProvider) {
 		this.connectionProvider = connectionProvider;
 		this.salesComparison = new SalesComparison();
 		this.topArtists = new TopArtists();
+		this.topArtistRevenue = new TopArtistRevenue();
 	}
 
 	public EntityConnectionProvider connectionProvider() {
@@ -62,11 +66,13 @@ public final class AnalyticsModel {
 	public void clear() {
 		salesComparison.dataset.clear();
 		topArtists.dataset.clear();
+		topArtistRevenue.dataset.clear();
 	}
 
 	public void refresh() {
 		salesComparison.refresh();
 		topArtists.refresh();
+		topArtistRevenue.refresh();
 	}
 
 	public SalesComparison salesComparison() {
@@ -75,6 +81,10 @@ public final class AnalyticsModel {
 
 	public TopArtists topArtists() {
 		return topArtists;
+	}
+
+	public TopArtistRevenue topArtistRevenue() {
+		return topArtistRevenue;
 	}
 
 	public final class SalesComparison {
@@ -150,6 +160,29 @@ public final class AnalyticsModel {
 							.limit(15)
 							.forEach(entry ->
 											dataset.addValue(entry.getValue(), BUNDLE.getString("rating"), entry.getKey()));
+		}
+	}
+
+	public final class TopArtistRevenue {
+
+		private final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+		private TopArtistRevenue() {}
+
+		public CategoryDataset dataset() {
+			return dataset;
+		}
+
+		private void refresh() {
+			List<Entity> artistRevenues = connectionProvider.connection().select(Select.all(ArtistRevenue.TYPE)
+							.limit(15)
+							.build());
+
+			dataset.clear();
+
+			artistRevenues.forEach(artistRevenue ->
+							dataset.addValue(artistRevenue.get(ArtistRevenue.TOTAL_REVENUE),
+											BUNDLE.getString("revenue"), artistRevenue.get(ArtistRevenue.NAME)));
 		}
 	}
 }

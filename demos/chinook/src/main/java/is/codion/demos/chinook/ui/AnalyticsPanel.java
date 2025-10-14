@@ -56,6 +56,7 @@ final class AnalyticsPanel extends JPanel {
 		add(tabbedPane()
 						.tab(BUNDLE.getString("sales_comparison"), createSalesComparisonPanel())
 						.tab(BUNDLE.getString("top_artists"), createTopArtistsPanel())
+						.tab(BUNDLE.getString("artist_revenue"), createTopArtistRevenuePanel())
 						.build(), BorderLayout.CENTER);
 	}
 
@@ -93,6 +94,14 @@ final class AnalyticsPanel extends JPanel {
 																		.caption()))))
 						.center(new LookAndFeelChartPanel(chart))
 						.build();
+	}
+
+	private ChartPanel createTopArtistRevenuePanel() {
+		return new LookAndFeelChartPanel(createBarChart(
+						BUNDLE.getString("artist_revenue"),
+						BUNDLE.getString("artist"),
+						BUNDLE.getString("total_revenue"),
+						analytics.topArtistRevenue().dataset()));
 	}
 
 	private static final class LookAndFeelChartPanel extends ChartPanel {

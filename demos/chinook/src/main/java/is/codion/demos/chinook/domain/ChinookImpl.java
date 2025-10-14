@@ -79,7 +79,7 @@ public final class ChinookImpl extends DomainModel {
 	public ChinookImpl() {
 		super(DOMAIN);
 		add(artist(), album(), employee(), customer(), genre(), preferences(), mediaType(),
-						track(), invoice(), invoiceLine(), playlist(), playlistTrack());
+						track(), invoice(), invoiceLine(), playlist(), playlistTrack(), artistRevenue());
 		add(Customer.REPORT, classPathReport(ChinookImpl.class, "customer_report.jasper"));
 		add(Track.RAISE_PRICE, new RaisePrice());
 		add(Invoice.UPDATE_TOTALS, new UpdateTotals());
@@ -548,6 +548,34 @@ public final class ChinookImpl extends DomainModel {
 										.text(" - ")
 										.value(PlaylistTrack.TRACK_FK)
 										.build())
+						.build();
+	}
+
+	EntityDefinition artistRevenue() {
+		return ArtistRevenue.TYPE.define(
+										ArtistRevenue.ARTIST_ID.define()
+														.primaryKey(),
+										ArtistRevenue.NAME.define()
+														.column()
+														.expression("artist.name"),
+										ArtistRevenue.TOTAL_REVENUE.define()
+														.column()
+														.expression("SUM(tr.revenue)")
+														.fractionDigits(2))
+						.selectQuery(EntitySelectQuery.builder()
+										.with("track_revenue", """
+														SELECT il.track_id, SUM(il.unitprice * il.quantity) as revenue
+														FROM chinook.invoiceline il
+														GROUP BY il.track_id""")
+										.from("""
+														track_revenue tr
+														JOIN chinook.track ON tr.track_id = track.id
+														JOIN chinook.album ON track.album_id = album.id
+														JOIN chinook.artist ON album.artist_id = artist.id""")
+										.groupBy("artist.id, artist.name")
+										.orderBy("total_revenue DESC")
+										.build())
+						.readOnly(true)
 						.build();
 	}
 

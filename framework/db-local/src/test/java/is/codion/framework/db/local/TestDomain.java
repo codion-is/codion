@@ -101,6 +101,9 @@ public final class TestDomain extends DomainModel {
 		noPkIdentical();
 		mixedGenerated();
 		partialGeneratedPk();
+		queryWithCte();
+		queryWithRecursiveCte();
+		queryWithMultipleCtes();
 	}
 
 	public interface Department {
@@ -852,6 +855,89 @@ public final class TestDomain extends DomainModel {
 										PartialGeneratedPk.DATA.define()
 														.column()
 														.maximumLength(10))
+						.build());
+	}
+
+	public interface QueryWithCte {
+		EntityType TYPE = DOMAIN.entityType("query_with_cte");
+
+		Column<Integer> EMPNO = TYPE.integerColumn("empno");
+		Column<String> ENAME = TYPE.stringColumn("ename");
+		Column<Integer> DEPTNO = TYPE.integerColumn("deptno");
+	}
+
+	private void queryWithCte() {
+		add(QueryWithCte.TYPE.define(
+										QueryWithCte.EMPNO.define()
+														.column(),
+										QueryWithCte.ENAME.define()
+														.column(),
+										QueryWithCte.DEPTNO.define()
+														.column())
+						.table("employees.employee")
+						.selectQuery(EntitySelectQuery.builder()
+										.with("high_earners", "SELECT empno, ename, deptno FROM employees.employee WHERE sal > 2000")
+										.from("high_earners")
+										.build())
+						.build());
+	}
+
+	public interface QueryWithRecursiveCte {
+		EntityType TYPE = DOMAIN.entityType("query_with_recursive_cte");
+
+		Column<Integer> EMPNO = TYPE.integerColumn("empno");
+		Column<String> ENAME = TYPE.stringColumn("ename");
+		Column<Integer> MGR = TYPE.integerColumn("mgr");
+		Column<Integer> LEVEL = TYPE.integerColumn("level");
+	}
+
+	private void queryWithRecursiveCte() {
+		add(QueryWithRecursiveCte.TYPE.define(
+										QueryWithRecursiveCte.EMPNO.define()
+														.column(),
+										QueryWithRecursiveCte.ENAME.define()
+														.column(),
+										QueryWithRecursiveCte.MGR.define()
+														.column(),
+										QueryWithRecursiveCte.LEVEL.define()
+														.column())
+						.table("employees.employee")
+						.selectQuery(EntitySelectQuery.builder()
+										.withRecursive("emp_hierarchy (empno, ename, mgr, level)", """
+														SELECT empno, ename, mgr, 1 as level
+														FROM employees.employee
+														WHERE mgr IS NULL
+														UNION ALL
+														SELECT e.empno, e.ename, e.mgr, eh.level + 1
+														FROM employees.employee e
+														JOIN emp_hierarchy eh ON e.mgr = eh.empno""")
+										.from("emp_hierarchy")
+										.build())
+						.build());
+	}
+
+	public interface QueryWithMultipleCtes {
+		EntityType TYPE = DOMAIN.entityType("query_with_multiple_ctes");
+
+		Column<Integer> EMPNO = TYPE.integerColumn("empno");
+		Column<String> ENAME = TYPE.stringColumn("ename");
+		Column<String> DNAME = TYPE.stringColumn("dname");
+	}
+
+	private void queryWithMultipleCtes() {
+		add(QueryWithMultipleCtes.TYPE.define(
+										QueryWithMultipleCtes.EMPNO.define()
+														.column(),
+										QueryWithMultipleCtes.ENAME.define()
+														.column(),
+										QueryWithMultipleCtes.DNAME.define()
+														.column())
+						.table("employees.employee")
+						.selectQuery(EntitySelectQuery.builder()
+										.with("high_earners", "SELECT empno, ename, deptno FROM employees.employee WHERE sal > 2000")
+										.with("selected_depts", "SELECT deptno, dname FROM employees.department WHERE deptno IN (10, 20)")
+										.from("high_earners he JOIN selected_depts sd ON he.deptno = sd.deptno")
+										.build())
 						.build());
 	}
 }

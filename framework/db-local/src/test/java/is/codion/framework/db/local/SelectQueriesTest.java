@@ -29,6 +29,9 @@ import is.codion.framework.db.local.TestDomain.NoPrimaryKey;
 import is.codion.framework.db.local.TestDomain.Query;
 import is.codion.framework.db.local.TestDomain.QueryColumnsWhereClause;
 import is.codion.framework.db.local.TestDomain.QueryFromClause;
+import is.codion.framework.db.local.TestDomain.QueryWithCte;
+import is.codion.framework.db.local.TestDomain.QueryWithMultipleCtes;
+import is.codion.framework.db.local.TestDomain.QueryWithRecursiveCte;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
@@ -455,5 +458,93 @@ public final class SelectQueriesTest {
 		assertTrue(query.contains("sal > ?"));
 		// Should be combined with AND
 		assertEquals(2, query.split("AND").length - 1); // 2 ANDs for 3 conditions
+	}
+
+	@Test
+	void testSimpleWithClause() {
+		EntityDefinition queryWithCte = testDomain.entities().definition(QueryWithCte.TYPE);
+		SelectQueries.Builder builder = queries.builder(queryWithCte);
+		builder.entitySelectQuery();
+
+		String query = builder.build();
+		assertTrue(query.contains("WITH high_earners AS (SELECT empno, ename, deptno FROM employees.employee WHERE sal > 2000)"));
+		assertTrue(query.contains("SELECT"));
+		assertTrue(query.contains("FROM high_earners"));
+		// WITH clause should come before SELECT
+		assertTrue(query.indexOf("WITH") < query.indexOf("SELECT"));
+	}
+
+	@Test
+	void testRecursiveWithClause() {
+		EntityDefinition queryWithRecursiveCte = testDomain.entities().definition(QueryWithRecursiveCte.TYPE);
+		SelectQueries.Builder builder = queries.builder(queryWithRecursiveCte);
+		builder.entitySelectQuery();
+
+		String query = builder.build();
+		assertTrue(query.contains("WITH RECURSIVE"));
+		// H2 requires explicit column names for recursive CTEs
+		assertTrue(query.contains("emp_hierarchy (empno, ename, mgr, level) AS ("));
+		assertTrue(query.contains("UNION ALL"));
+		assertTrue(query.contains("FROM emp_hierarchy"));
+		// WITH RECURSIVE should come before SELECT
+		assertTrue(query.indexOf("WITH RECURSIVE") < query.indexOf("SELECT"));
+	}
+
+	@Test
+	void testMultipleWithClauses() {
+		EntityDefinition queryWithMultipleCtes = testDomain.entities().definition(QueryWithMultipleCtes.TYPE);
+		SelectQueries.Builder builder = queries.builder(queryWithMultipleCtes);
+		builder.entitySelectQuery();
+
+		String query = builder.build();
+		assertTrue(query.contains("WITH high_earners AS"));
+		assertTrue(query.contains("selected_depts AS"));
+		// CTEs should be comma-separated
+		assertTrue(query.contains(","));
+		assertTrue(query.contains("FROM high_earners he JOIN selected_depts sd"));
+		// Multiple CTEs should maintain order
+		assertTrue(query.indexOf("high_earners") < query.indexOf("selected_depts"));
+	}
+
+	@Test
+	void testWithClauseAndSelectConditions() {
+		EntityDefinition queryWithCte = testDomain.entities().definition(QueryWithCte.TYPE);
+		SelectQueries.Builder builder = queries.builder(queryWithCte);
+		Select select = Select.where(QueryWithCte.DEPTNO.equalTo(10))
+						.orderBy(OrderBy.ascending(QueryWithCte.ENAME))
+						.limit(5)
+						.build();
+		builder.select(select);
+
+		String query = builder.build();
+		// Should have both WITH clause and WHERE clause from Select
+		assertTrue(query.contains("WITH high_earners AS"));
+		assertTrue(query.contains("WHERE deptno = ?"));
+		assertTrue(query.contains("ORDER BY ename"));
+		assertTrue(query.contains("5")); // LIMIT
+		// WITH should come first, then SELECT with WHERE
+		int withIndex = query.indexOf("WITH");
+		int selectIndex = query.indexOf("SELECT");
+		int whereIndex = query.indexOf("WHERE");
+		assertTrue(withIndex < selectIndex);
+		assertTrue(selectIndex < whereIndex);
+	}
+
+	@Test
+	void testWithClauseCaching() {
+		// Test that WITH clauses are cached per entity type
+		EntityDefinition queryWithCte = testDomain.entities().definition(QueryWithCte.TYPE);
+		SelectQueries.Builder builder1 = queries.builder(queryWithCte);
+		builder1.entitySelectQuery();
+		String query1 = builder1.build();
+
+		// Build again - should use cached WITH clause
+		SelectQueries.Builder builder2 = queries.builder(queryWithCte);
+		builder2.entitySelectQuery();
+		String query2 = builder2.build();
+
+		// Both queries should be identical
+		assertEquals(query1, query2);
+		assertTrue(query1.contains("WITH high_earners AS"));
 	}
 }

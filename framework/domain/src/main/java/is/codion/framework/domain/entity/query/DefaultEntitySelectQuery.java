@@ -20,10 +20,17 @@ package is.codion.framework.domain.entity.query;
 
 import org.jspecify.annotations.Nullable;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultEntitySelectQuery implements EntitySelectQuery {
 
+	private final Map<String, String> with;
+	private final boolean withRecursive;
 	private final @Nullable String columns;
 	private final @Nullable String from;
 	private final @Nullable String where;
@@ -32,12 +39,24 @@ final class DefaultEntitySelectQuery implements EntitySelectQuery {
 	private final @Nullable String orderBy;
 
 	DefaultEntitySelectQuery(DefaultBuilder builder) {
+		this.with = builder.with.isEmpty() ? emptyMap() : unmodifiableMap(new LinkedHashMap<>(builder.with));
+		this.withRecursive = builder.withRecursive;
 		this.columns = builder.columns;
 		this.from = builder.from;
 		this.where = builder.where;
 		this.groupBy = builder.groupBy;
 		this.having = builder.having;
 		this.orderBy = builder.orderBy;
+	}
+
+	@Override
+	public Map<String, String> with() {
+		return with;
+	}
+
+	@Override
+	public boolean withRecursive() {
+		return withRecursive;
 	}
 
 	@Override
@@ -72,12 +91,31 @@ final class DefaultEntitySelectQuery implements EntitySelectQuery {
 
 	static final class DefaultBuilder implements Builder {
 
+		private final Map<String, String> with = new LinkedHashMap<>();
+
+		private boolean withRecursive;
 		private @Nullable String from;
 		private @Nullable String columns;
 		private @Nullable String where;
 		private @Nullable String groupBy;
 		private @Nullable String having;
 		private @Nullable String orderBy;
+
+		@Override
+		public Builder with(String name, String query) {
+			if (requireNonNull(query).trim().toLowerCase().startsWith("with")) {
+				throw new IllegalArgumentException("with clause should not include the 'WITH' keyword");
+			}
+			with.put(requireNonNull(name), query);
+			return this;
+		}
+
+		@Override
+		public Builder withRecursive(String name, String query) {
+			with(name, query);
+			this.withRecursive = true;
+			return this;
+		}
 
 		@Override
 		public Builder columns(String columns) {
