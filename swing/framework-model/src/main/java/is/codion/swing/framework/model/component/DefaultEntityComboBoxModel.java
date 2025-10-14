@@ -545,7 +545,7 @@ final class DefaultEntityComboBoxModel implements EntityComboBoxModel {
 		}
 
 		private static @Nullable Entity createNullItem(@Nullable String nullCaption, EntityDefinition entityDefinition) {
-			return nullCaption == null ? null : entityDefinition.placeholder(nullCaption);
+			return nullCaption == null ? null : entityDefinition.entity(nullCaption);
 		}
 	}
 }

@@ -276,13 +276,12 @@ public sealed interface EntityDefinition permits DefaultEntityDefinition {
 
 	/**
 	 * Creates an empty, immutable entity with a custom string representation.
-	 * This is useful for placeholder entities such as null items in combo boxes,
-	 * "RECORD NOT FOUND" markers, or "DUPLICATE" indicators.
+	 * This is useful for placeholder entities such as null items in combo boxes.
 	 * <p>The returned entity has no attribute values set and cannot be modified.
 	 * @param caption the string to return when {@code toString()} is called
 	 * @return an empty entity with the specified caption
 	 */
-	Entity placeholder(String caption);
+	Entity entity(String caption);
 
 	/**
 	 * Builds a EntityDefinition

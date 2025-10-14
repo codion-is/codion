@@ -272,7 +272,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 	}
 
 	@Override
-	public Entity placeholder(String caption) {
+	public Entity entity(String caption) {
 		return new EmptyEntity(this, caption);
 	}
 

@@ -190,12 +190,12 @@ final class EntityPopupMenu extends JPopupMenu {
 							.build());
 		}
 		catch (RecordNotFoundException e) {
-			return primaryKey.definition().placeholder(primaryKey + " <RECORD NOT FOUND>");
+			return primaryKey.definition().entity(primaryKey + " <RECORD NOT FOUND>");
 		}
 	}
 
 	private static Entity duplicate(Entity entity) {
-		return entity.definition().placeholder(entity + " <DUPLICATE>");
+		return entity.definition().entity(entity + " <DUPLICATE>");
 	}
 
 	private static Control clipboardControl(Entity entity, Attribute<?> attribute) {
