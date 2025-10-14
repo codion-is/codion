@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.55
+### is.codion.plugin.swing.robot
+- Narrator, frame now sticks to application window, i18n added.
 ### is.codion.framework.domain
 - Entity now sealed.
 - EntityDefinition.placeholder(caption) factory method added, for empty placeholder entities.

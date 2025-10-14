@@ -18,6 +18,8 @@
  */
 package is.codion.plugin.swing.robot;
 
+import is.codion.common.property.PropertyValue;
+import is.codion.common.resource.MessageBundle;
 import is.codion.plugin.swing.robot.Controller.KeyStrokeDescription;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
@@ -33,21 +35,40 @@ import javax.swing.JTextArea;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Window;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 
+import static is.codion.common.Configuration.integerValue;
+import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 import static javax.swing.BorderFactory.createTitledBorder;
 import static javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS;
+import static javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE;
 
 /**
  * An automation narrator to use alongside {@link Controller}.
  */
 public final class Narrator {
+
+	private static final MessageBundle MESSAGES =
+					messageBundle(Narrator.class, getBundle(Narrator.class.getName()));
+
+	/**
+	 * Species the narrator frame width.
+	 * <ul>
+	 * <li>Value type: Integer
+	 * <li>Default value: 400
+	 * </ul>
+	 */
+	public static final PropertyValue<Integer> FRAME_WIDTH =
+					integerValue(Narrator.class.getName() + ".frameWidth", 400);
 
 	private final JTextArea narration = textArea()
 					.rowsColumns(5, 20)
@@ -69,11 +90,13 @@ public final class Narrator {
 
 	Narrator(Controller controller, Window window) {
 		frame = Frames.builder()
-						.title("Narrator")
+						.title(MESSAGES.getString("narrator"))
 						.component(createMainPanel())
-						.size(new Dimension(400, window.getHeight()))
+						.size(new Dimension(FRAME_WIDTH.getOrThrow(), window.getHeight()))
 						.location(new Point(window.getX() + window.getWidth(), window.getY()))
 						.focusableWindowState(false)
+						.defaultCloseOperation(DO_NOTHING_ON_CLOSE)
+						.resizable(false)
 						.show();
 		controller.key().addConsumer(this::onKeyStroke);
 		window.addWindowListener(new WindowAdapter() {
@@ -82,6 +105,7 @@ public final class Narrator {
 				close();
 			}
 		});
+		window.addComponentListener(new ApplicationWindowListener(window));
 	}
 
 	/**
@@ -136,10 +160,9 @@ public final class Narrator {
 		return borderLayoutPanel()
 						.border(emptyBorder())
 						.north(borderLayoutPanel()
-										.border(createTitledBorder("Narration"))
+										.border(createTitledBorder(MESSAGES.getString("narration")))
 										.center(narration))
 						.center(borderLayoutPanel()
-										.border(createTitledBorder("Keystrokes"))
 										.center(scrollPane()
 														.view(keyStrokeTable)))
 						.build();
@@ -156,6 +179,29 @@ public final class Narrator {
 		}
 	}
 
+	private final class ApplicationWindowListener extends ComponentAdapter {
+
+		private final Window window;
+
+		private ApplicationWindowListener(Window window) {
+			this.window = window;
+		}
+
+		@Override
+		public void componentMoved(ComponentEvent e) {
+			updateFrameBounds();
+		}
+
+		@Override
+		public void componentResized(ComponentEvent e) {
+			updateFrameBounds();
+		}
+
+		private void updateFrameBounds() {
+			frame.setBounds(window.getX() + window.getWidth(), window.getY(), FRAME_WIDTH.getOrThrow(), window.getHeight());
+		}
+	}
+
 	private static final class KeyStrokeColumns implements TableColumns<KeyStrokeDescription, Integer> {
 
 		private static final List<Integer> IDENTIFIERS = asList(0, 1);
@@ -168,10 +214,10 @@ public final class Narrator {
 		@Override
 		public String caption(Integer identifier) {
 			if (identifier == 0) {
-				return "Keystroke";
+				return MESSAGES.getString("keystrokes");
 			}
 			else if (identifier == 1) {
-				return "Description";
+				return MESSAGES.getString("description");
 			}
 
 			throw new IllegalArgumentException();
