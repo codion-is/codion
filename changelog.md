@@ -10,6 +10,7 @@ Codion Change Log
 - Entities.Configurable added along with entities() factory method. DefaultEntities now package private and Entities sealed.
 - EntitySelectQuery.Builder.with() and withRecursive() added for CTEs.
 - EntityDefinition.placeholder() renamed entity().
+- EntitySelectQuery CTE builder fluency improved.
 ### is.codion.framework.db.local
 - DefaultLocalEntityConnection.insert() refactored, now caches information on generated columns.
 ### is.codion.swing.framework.ui

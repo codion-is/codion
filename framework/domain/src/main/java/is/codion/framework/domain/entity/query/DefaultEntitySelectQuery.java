@@ -89,7 +89,7 @@ final class DefaultEntitySelectQuery implements EntitySelectQuery {
 		return orderBy;
 	}
 
-	static final class DefaultBuilder implements Builder {
+	static final class DefaultBuilder implements EntitySelectQuery.Builder {
 
 		private final Map<String, String> with = new LinkedHashMap<>();
 
@@ -102,19 +102,8 @@ final class DefaultEntitySelectQuery implements EntitySelectQuery {
 		private @Nullable String orderBy;
 
 		@Override
-		public Builder with(String name, String query) {
-			if (requireNonNull(query).trim().toLowerCase().startsWith("with")) {
-				throw new IllegalArgumentException("with clause should not include the 'WITH' keyword");
-			}
-			with.put(requireNonNull(name), query);
-			return this;
-		}
-
-		@Override
-		public Builder withRecursive(String name, String query) {
-			with(name, query);
-			this.withRecursive = true;
-			return this;
+		public WithAsStep with(String name) {
+			return new DefaultWithAsStep(name);
 		}
 
 		@Override
@@ -173,6 +162,78 @@ final class DefaultEntitySelectQuery implements EntitySelectQuery {
 			this.orderBy = orderBy;
 
 			return this;
+		}
+
+		final class DefaultWithAsStep implements WithAsStep {
+
+			private final String name;
+
+			private DefaultWithAsStep(String name) {
+				this.name = requireNonNull(name);
+			}
+
+			@Override
+			public WithRecursiveStep as(String query) {
+				if (requireNonNull(query).trim().toLowerCase().startsWith("with")) {
+					throw new IllegalArgumentException("with clause should not include the 'WITH' keyword");
+				}
+
+				return new DefaultWithRecursiveStep(name, query);
+			}
+		}
+
+		final class DefaultWithRecursiveStep implements WithRecursiveStep {
+
+			private DefaultWithRecursiveStep(String name, String query) {
+				with.put(name, query);
+			}
+
+			@Override
+			public Builder recursive() {
+				withRecursive = true;
+
+				return DefaultBuilder.this;
+			}
+
+			@Override
+			public WithAsStep with(String name) {
+				return DefaultBuilder.this.with(name);
+			}
+
+			@Override
+			public Builder columns(String columns) {
+				return DefaultBuilder.this.columns(columns);
+			}
+
+			@Override
+			public Builder from(String from) {
+				return DefaultBuilder.this.from(from);
+			}
+
+			@Override
+			public Builder where(String where) {
+				return DefaultBuilder.this.where(where);
+			}
+
+			@Override
+			public Builder groupBy(String groupBy) {
+				return DefaultBuilder.this.groupBy(groupBy);
+			}
+
+			@Override
+			public Builder having(String having) {
+				return DefaultBuilder.this.having(having);
+			}
+
+			@Override
+			public Builder orderBy(String orderBy) {
+				return DefaultBuilder.this.orderBy(orderBy);
+			}
+
+			@Override
+			public EntitySelectQuery build() {
+				return DefaultBuilder.this.build();
+			}
 		}
 
 		@Override

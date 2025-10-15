@@ -19,6 +19,8 @@
 package is.codion.framework.domain.entity.query;
 
 import is.codion.framework.domain.entity.query.DefaultEntitySelectQuery.DefaultBuilder;
+import is.codion.framework.domain.entity.query.DefaultEntitySelectQuery.DefaultBuilder.DefaultWithAsStep;
+import is.codion.framework.domain.entity.query.DefaultEntitySelectQuery.DefaultBuilder.DefaultWithRecursiveStep;
 
 import org.jspecify.annotations.Nullable;
 
@@ -82,7 +84,7 @@ public sealed interface EntitySelectQuery permits DefaultEntitySelectQuery {
 	/**
 	 * Builds a {@link EntitySelectQuery}.
 	 */
-	sealed interface Builder permits DefaultBuilder {
+	sealed interface Builder permits DefaultBuilder, Builder.WithRecursiveStep {
 
 		/**
 		 * Adds a common table expression (CTE) to the query.
@@ -91,7 +93,8 @@ public sealed interface EntitySelectQuery permits DefaultEntitySelectQuery {
 		 * Example:
 		 * <pre>{@code
 		 * EntitySelectQuery.builder()
-		 *     .with("active_customers", "SELECT * FROM customer WHERE active = true")
+		 *     .with("active_customers")
+		 *     .as("SELECT * FROM customer WHERE active = true")
 		 *     .from("active_customers")
 		 *     .columns("id, name")
 		 *     .build()
@@ -102,36 +105,35 @@ public sealed interface EntitySelectQuery permits DefaultEntitySelectQuery {
 		 * SELECT id, name
 		 * FROM active_customers
 		 * }</pre>
+		 */
+		sealed interface WithAsStep permits DefaultWithAsStep {
+
+			/**
+			 * @param query the CTE query, without the WITH keyword
+			 * @return this Builder instance
+			 * @throws IllegalArgumentException if query contains the WITH keyword
+			 */
+			WithRecursiveStep as(String query);
+		}
+
+		/**
+		 * Specifies whether this CTE requires the WITH clause to be marked as RECURSIVE.
+		 */
+		sealed interface WithRecursiveStep extends Builder permits DefaultWithRecursiveStep {
+
+			/**
+			 * Specifies that this CTE requires the WITH clause to be marked as RECURSIVE
+			 * @return the Builder instance
+			 */
+			Builder recursive();
+		}
+
+		/**
 		 * @param name the CTE name, must be unique within this query
-		 * @param query the CTE query, without the WITH keyword
 		 * @return this Builder instance
 		 * @throws IllegalArgumentException if query contains the WITH keyword
 		 */
-		Builder with(String name, String query);
-
-		/**
-		 * Adds a recursive common table expression and marks the WITH block as RECURSIVE.
-		 * Note: In SQL, WITH RECURSIVE applies to the entire block, not individual CTEs.
-		 * <p>
-		 * Example:
-		 * <pre>{@code
-		 * EntitySelectQuery.builder()
-		 *     .withRecursive("employee_hierarchy", """
-		 *         SELECT id, name, manager_id, 1 as level
-		 *         FROM employee WHERE manager_id IS NULL
-		 *         UNION ALL
-		 *         SELECT e.id, e.name, e.manager_id, eh.level + 1
-		 *         FROM employee e
-		 *         JOIN employee_hierarchy eh ON e.manager_id = eh.id
-		 *         """)
-		 *     .from("employee_hierarchy")
-		 *     .build()
-		 * }</pre>
-		 * @param name the CTE name
-		 * @param query the CTE query
-		 * @return this Builder instance
-		 */
-		Builder withRecursive(String name, String query);
+		WithAsStep with(String name);
 
 		/**
 		 * Specifies the columns clause to use, without the SELECT keyword.

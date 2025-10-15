@@ -876,7 +876,8 @@ public final class TestDomain extends DomainModel {
 														.column())
 						.table("employees.employee")
 						.selectQuery(EntitySelectQuery.builder()
-										.with("high_earners", "SELECT empno, ename, deptno FROM employees.employee WHERE sal > 2000")
+										.with("high_earners")
+										.as("SELECT empno, ename, deptno FROM employees.employee WHERE sal > 2000")
 										.from("high_earners")
 										.build())
 						.build());
@@ -903,7 +904,8 @@ public final class TestDomain extends DomainModel {
 														.column())
 						.table("employees.employee")
 						.selectQuery(EntitySelectQuery.builder()
-										.withRecursive("emp_hierarchy (empno, ename, mgr, level)", """
+										.with("emp_hierarchy (empno, ename, mgr, level)")
+										.as("""
 														SELECT empno, ename, mgr, 1 as level
 														FROM employees.employee
 														WHERE mgr IS NULL
@@ -911,6 +913,7 @@ public final class TestDomain extends DomainModel {
 														SELECT e.empno, e.ename, e.mgr, eh.level + 1
 														FROM employees.employee e
 														JOIN emp_hierarchy eh ON e.mgr = eh.empno""")
+										.recursive()
 										.from("emp_hierarchy")
 										.build())
 						.build());
@@ -934,8 +937,10 @@ public final class TestDomain extends DomainModel {
 														.column())
 						.table("employees.employee")
 						.selectQuery(EntitySelectQuery.builder()
-										.with("high_earners", "SELECT empno, ename, deptno FROM employees.employee WHERE sal > 2000")
-										.with("selected_depts", "SELECT deptno, dname FROM employees.department WHERE deptno IN (10, 20)")
+										.with("high_earners")
+										.as("SELECT empno, ename, deptno FROM employees.employee WHERE sal > 2000")
+										.with("selected_depts")
+										.as("SELECT deptno, dname FROM employees.department WHERE deptno IN (10, 20)")
 										.from("high_earners he JOIN selected_depts sd ON he.deptno = sd.deptno")
 										.build())
 						.build());

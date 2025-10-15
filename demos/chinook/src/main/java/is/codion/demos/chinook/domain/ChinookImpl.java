@@ -563,7 +563,8 @@ public final class ChinookImpl extends DomainModel {
 														.expression("SUM(tr.revenue)")
 														.fractionDigits(2))
 						.selectQuery(EntitySelectQuery.builder()
-										.with("track_revenue", """
+										.with("track_revenue")
+										.as("""
 														SELECT il.track_id, SUM(il.unitprice * il.quantity) as revenue
 														FROM chinook.invoiceline il
 														GROUP BY il.track_id""")
