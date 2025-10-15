@@ -18,6 +18,8 @@
  */
 package is.codion.common.model.preferences;
 
+import is.codion.common.property.PropertyValue;
+
 import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
@@ -26,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import static is.codion.common.Configuration.stringValue;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -34,6 +37,16 @@ import static java.util.Objects.requireNonNull;
 public final class UserPreferences {
 
 	private static final Map<String, FilePreferences> FILE_PREFERENCES = new ConcurrentHashMap<>();
+
+	/**
+	 * Provides a way to override the default (OS dependent) directory used to store the user preferences file.
+	 * <ul>
+	 * <li>Value type: String
+	 * <li>Default value: null
+	 * </ul>
+	 * @see #file(String)
+	 */
+	public static final PropertyValue<String> PREFERENCES_LOCATION = stringValue("codion.preferences.location");
 
 	private static @Nullable Preferences preferences;
 

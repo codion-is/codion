@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.55
+### is.codion.common.model
+- UserPreferences.PREFERENCES_LOCATION configuration value added, for overriding the default preferences file location.
 ### is.codion.plugin.swing.robot
 - Narrator, frame now sticks to application window, i18n added.
 ### is.codion.framework.domain
