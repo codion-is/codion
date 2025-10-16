@@ -34,13 +34,15 @@ final class DefaultUser implements User, Serializable {
 	@Serial
 	private static final long serialVersionUID = 1;
 
+	private static final int MAX_USERNAME_LENGTH = MAXIMUM_USERNAME_LENGTH.getOrThrow();
+	private static final int MAX_PASSWORD_LENGTH = MAXIMUM_PASSWORD_LENGTH.getOrThrow();
+
 	private String username;
 	private char[] password;
 
 	DefaultUser(String username, char @Nullable [] password) {
-		if (requireNonNull(username).isEmpty()) {
-			throw new IllegalArgumentException("Username must be non-empty");
-		}
+		requireNonNull(username);
+		validateUsernameAndPassword(username, password);
 		this.username = username;
 		this.password = createPassword(password);
 	}
@@ -93,8 +95,26 @@ final class DefaultUser implements User, Serializable {
 
 	@Serial
 	private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
-		this.username = (String) stream.readObject();
-		this.password = createPassword((char[]) stream.readObject());
+		String deserializedUsername = (String) stream.readObject();
+		char[] deserializedPassword = (char[]) stream.readObject();
+
+		validateUsernameAndPassword(deserializedUsername, deserializedPassword);
+		this.username = deserializedUsername;
+		this.password = createPassword(deserializedPassword);
+	}
+
+	private static void validateUsernameAndPassword(String username, char @Nullable [] password) {
+		if (username.isEmpty()) {
+			throw new IllegalArgumentException("Username must be non-empty");
+		}
+		if (username.length() > MAX_USERNAME_LENGTH) {
+			throw new IllegalArgumentException("Username length (" + username.length() +
+							") exceeds maximum allowed length (" + MAX_USERNAME_LENGTH + ")");
+		}
+		if (password != null && password.length > MAX_PASSWORD_LENGTH) {
+			throw new IllegalArgumentException("Password length (" + password.length +
+							") exceeds maximum allowed length (" + MAX_PASSWORD_LENGTH + ")");
+		}
 	}
 
 	private static char[] createPassword(char @Nullable [] password) {

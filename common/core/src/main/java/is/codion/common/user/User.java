@@ -18,8 +18,11 @@
  */
 package is.codion.common.user;
 
+import is.codion.common.property.PropertyValue;
+
 import org.jspecify.annotations.Nullable;
 
+import static is.codion.common.Configuration.integerValue;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -31,6 +34,24 @@ import static java.util.Objects.requireNonNull;
  * @see #parse(String)
  */
 public interface User {
+
+	/**
+	 * Specifies the maximum username length to prevent resource exhaustion attacks.
+	 * <ul>
+	 * <li>Value type: Integer
+	 * <li>Default value: 256
+	 * </ul>
+	 */
+	PropertyValue<Integer> MAXIMUM_USERNAME_LENGTH = integerValue(User.class.getName() + ".maximumUsernameLength", 256);
+
+	/**
+	 * Specifies the maximum password length to prevent resource exhaustion attacks.
+	 * <ul>
+	 * <li>Value type: Integer
+	 * <li>Default value: 1024
+	 * </ul>
+	 */
+	PropertyValue<Integer> MAXIMUM_PASSWORD_LENGTH = integerValue(User.class.getName() + ".maximumPasswordLength", 1024);
 
 	/**
 	 * @return the username
@@ -57,7 +78,7 @@ public interface User {
 	 * Creates a new User with an empty password.
 	 * @param username the username
 	 * @return a new User
-	 * @throws IllegalArgumentException in case username is an empty string
+	 * @throws IllegalArgumentException in case username is an empty string or exceeds {@link #MAXIMUM_USERNAME_LENGTH}
 	 */
 	static User user(String username) {
 		return user(username, null);
@@ -68,7 +89,8 @@ public interface User {
 	 * @param username the username
 	 * @param password the password
 	 * @return a new User
-	 * @throws IllegalArgumentException in case username is an empty string
+	 * @throws IllegalArgumentException in case username is an empty string, username exceeds {@link #MAXIMUM_USERNAME_LENGTH},
+	 * or password exceeds {@link #MAXIMUM_PASSWORD_LENGTH}
 	 */
 	static User user(String username, char @Nullable [] password) {
 		return new DefaultUser(username, password);
@@ -81,7 +103,8 @@ public interface User {
 	 * to be part of the password.
 	 * @param userPassword the username and password string
 	 * @return a User with the given username and password
-	 * @throws IllegalArgumentException in case the username portion is empty
+	 * @throws IllegalArgumentException in case the username portion is empty, username exceeds {@link #MAXIMUM_USERNAME_LENGTH},
+	 * or password exceeds {@link #MAXIMUM_PASSWORD_LENGTH}
 	 */
 	static User parse(String userPassword) {
 		String[] split = requireNonNull(userPassword).split(":", 2);

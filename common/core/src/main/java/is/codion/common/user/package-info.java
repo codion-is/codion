@@ -18,6 +18,11 @@
  */
 /**
  * <p>See {@link is.codion.common.user.User}.
+ * <p>Package configuration values:
+ * <ul>
+ * <li>{@link is.codion.common.user.User#MAXIMUM_USERNAME_LENGTH}
+ * <li>{@link is.codion.common.user.User#MAXIMUM_PASSWORD_LENGTH}
+ * </ul>
  */
 @org.jspecify.annotations.NullMarked
 package is.codion.common.user;

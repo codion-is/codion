@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.55
+### is.codion.common.core
+- User.MAXIMUM_USERNAME_LENGTH and MAXIMUM_PASSWORD_LENGTH configuration values added.
 ### is.codion.common.model
 - UserPreferences.PREFERENCES_LOCATION configuration value added, for overriding the default preferences file location.
 ### is.codion.plugin.swing.robot

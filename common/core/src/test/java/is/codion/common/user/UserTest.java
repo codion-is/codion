@@ -23,6 +23,7 @@ import is.codion.common.Serializer;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -85,5 +86,45 @@ public class UserTest {
 	@Test
 	void parseNoUserInfo() {
 		assertThrows(IllegalArgumentException.class, () -> User.parse(""));
+	}
+
+	@Test
+	void resourceExhaustion_OversizedUsername() {
+		// Verify length limit prevents DoS
+		String hugeUsername = "a".repeat(10_000_000); // 10MB username
+		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+						() -> User.user(hugeUsername));
+		assertTrue(exception.getMessage().contains("Username length"));
+		assertTrue(exception.getMessage().contains("exceeds maximum allowed length"));
+	}
+
+	@Test
+	void resourceExhaustion_OversizedPassword() {
+		// Verify length limit prevents DoS
+		char[] hugePassword = new char[10_000_000]; // 10MB password
+		Arrays.fill(hugePassword, 'x');
+		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> User.user("scott", hugePassword));
+		assertTrue(exception.getMessage().contains("Password length"));
+		assertTrue(exception.getMessage().contains("exceeds maximum allowed length"));
+	}
+
+	@Test
+	void maxLengthConfiguration() {
+		// Verify default limits (fixed at class load time)
+		assertEquals(256, User.MAXIMUM_USERNAME_LENGTH.get());
+		assertEquals(1024, User.MAXIMUM_PASSWORD_LENGTH.get());
+
+		// Verify we can create users up to the limit
+		String maxUsername = "a".repeat(256);
+		char[] maxPassword = new char[1024];
+		Arrays.fill(maxPassword, 'x');
+		User user = User.user(maxUsername, maxPassword);
+		assertEquals(maxUsername, user.username());
+		assertEquals(1024, user.password().length);
+
+		// Verify one character over fails
+		assertThrows(IllegalArgumentException.class, () -> User.user(maxUsername + "a"));
+		char[] tooLongPassword = new char[1025];
+		assertThrows(IllegalArgumentException.class, () -> User.user("scott", tooLongPassword));
 	}
 }
