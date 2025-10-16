@@ -6,6 +6,8 @@ Codion Change Log
 - User.MAXIMUM_USERNAME_LENGTH and MAXIMUM_PASSWORD_LENGTH configuration values added.
 ### is.codion.common.model
 - UserPreferences.PREFERENCES_LOCATION configuration value added, for overriding the default preferences file location.
+### is.codion.common.rmi
+- SerializationFilterFactory, configuration properties added for JEP 290s maxBytes, maxArray, maxDepth and maxRefs parameters, values automatically prepended to filter config.
 ### is.codion.plugin.swing.robot
 - Narrator, frame now sticks to application window, i18n added.
 ### is.codion.framework.domain

@@ -122,6 +122,33 @@ include::{dir-source}/src/main/config/serialization-whitelist.txt[]
 ----
 ====
 
+==== Resource exhaustion limits
+
+The pattern-based serialization filter supports https://openjdk.org/jeps/290[JEP 290]  resource limits to prevent resource exhaustion attacks during deserialization.
+These limits are enforced **during** deserialization, before objects are fully materialized in memory.
+
+The following system properties configure the resource limits (with their default values):
+
+[source]
+----
+codion.server.serialization.filter.maxBytes=10485760    # Maximum stream size: 10 MB
+codion.server.serialization.filter.maxArray=100000      # Maximum array length: 100,000 elements
+codion.server.serialization.filter.maxDepth=100         # Maximum object graph depth: 100 levels
+codion.server.serialization.filter.maxRefs=10000        # Maximum internal references: 10,000 refs
+----
+
+These limits are automatically prepended to the serialization filter patterns.
+For example, with a pattern file containing class names, the effective filter becomes:
+
+[source]
+----
+maxbytes=10485760;maxarray=100000;maxdepth=100;maxrefs=10000;java.lang.String;is.codion.**;!*
+----
+
+**Important**: These limits provide the primary defense against resource exhaustion attacks.
+Application-level validation (such as User credential length limits) cannot prevent memory allocation during deserialization,
+making these https://openjdk.org/jeps/290[JEP 290] limits essential for security.
+
 [#_server_configuration]
 == Configuration
 

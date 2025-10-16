@@ -22,7 +22,7 @@ import is.codion.common.property.PropertyValue;
 
 import java.io.ObjectInputFilter;
 
-import static is.codion.common.Configuration.stringValue;
+import static is.codion.common.Configuration.*;
 
 /**
  * A {@link ObjectInputFilterFactory} implementation based on patterns, specified as a string via {@link #SERIALIZATION_FILTER_PATTERNS}
@@ -49,18 +49,63 @@ public final class SerializationFilterFactory implements ObjectInputFilterFactor
 	 */
 	public static final PropertyValue<String> SERIALIZATION_FILTER_DRYRUN_FILE = stringValue("codion.server.serialization.filter.dryRunFile");
 
+	/**
+	 * The maximum number of bytes in the input stream to prevent resource exhaustion attacks.
+	 * <ul>
+	 * <li>Value type: Long
+	 * <li>Default value: 10.485.760 (10 MB)
+	 * </ul>
+	 */
+	public static final PropertyValue<Long> SERIALIZATION_FILTER_MAX_BYTES = longValue("codion.server.serialization.filter.maxBytes", 10_485_760L);
+
+	/**
+	 * The maximum array size allowed to prevent resource exhaustion attacks.
+	 * <ul>
+	 * <li>Value type: Integer
+	 * <li>Default value: 100.000
+	 * </ul>
+	 */
+	public static final PropertyValue<Integer> SERIALIZATION_FILTER_MAX_ARRAY = integerValue("codion.server.serialization.filter.maxArray", 100_000);
+
+	/**
+	 * The maximum depth of the object graph to prevent resource exhaustion attacks.
+	 * <ul>
+	 * <li>Value type: Integer
+	 * <li>Default value: 100
+	 * </ul>
+	 */
+	public static final PropertyValue<Integer> SERIALIZATION_FILTER_MAX_DEPTH = integerValue("codion.server.serialization.filter.maxDepth", 100);
+
+	/**
+	 * The maximum number of internal references to prevent resource exhaustion attacks.
+	 * <ul>
+	 * <li>Value type: Integer
+	 * <li>Default value: 10000
+	 * </ul>
+	 */
+	public static final PropertyValue<Integer> SERIALIZATION_FILTER_MAX_REFS = integerValue("codion.server.serialization.filter.maxRefs", 10_000);
+
 	@Override
 	public ObjectInputFilter createObjectInputFilter() {
 		if (!SERIALIZATION_FILTER_PATTERN_FILE.isNull()) {
-			return SerializationFilter.fromFile(SERIALIZATION_FILTER_PATTERN_FILE.getOrThrow());
+			return SerializationFilter.fromFile(SERIALIZATION_FILTER_PATTERN_FILE.getOrThrow(), buildLimitsPrefix());
 		}
 		if (!SERIALIZATION_FILTER_PATTERNS.isNull()) {
-			return SerializationFilter.fromPatterns(SERIALIZATION_FILTER_PATTERNS.getOrThrow());
+			return SerializationFilter.fromPatterns(SERIALIZATION_FILTER_PATTERNS.getOrThrow(), buildLimitsPrefix());
 		}
 		if (!SERIALIZATION_FILTER_DRYRUN_FILE.isNull()) {
 			return SerializationFilter.whitelistDryRun(SERIALIZATION_FILTER_DRYRUN_FILE.getOrThrow());
 		}
 
 		throw new IllegalStateException("No serialization filter pattern configuration available");
+	}
+
+	private static String buildLimitsPrefix() {
+		return new StringBuilder()
+						.append("maxbytes=").append(SERIALIZATION_FILTER_MAX_BYTES.getOrThrow()).append(";")
+						.append("maxarray=").append(SERIALIZATION_FILTER_MAX_ARRAY.getOrThrow()).append(";")
+						.append("maxdepth=").append(SERIALIZATION_FILTER_MAX_DEPTH.getOrThrow()).append(";")
+						.append("maxrefs=").append(SERIALIZATION_FILTER_MAX_REFS.getOrThrow()).append(";")
+						.toString();
 	}
 }

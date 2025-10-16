@@ -52,11 +52,13 @@ final class SerializationFilter {
 
 	/**
 	 * Creates a serialization filter based on a pattern.
-	 * @param pattern the serialization filter patterns
+	 * @param patterns the serialization filter patterns
+	 * @param limitsPrefix the resource limits prefix (maxbytes, maxarray, maxdepth, maxrefs)
 	 */
-	static ObjectInputFilter fromPatterns(String patterns) {
-		ObjectInputFilter filter = ObjectInputFilter.Config.createFilter(patterns);
-		LOG.info("Serialization filter created from patterns: {}", patterns);
+	static ObjectInputFilter fromPatterns(String patterns, String limitsPrefix) {
+		String fullPattern = limitsPrefix + patterns;
+		ObjectInputFilter filter = ObjectInputFilter.Config.createFilter(fullPattern);
+		LOG.info("Serialization filter created from patterns: {}", fullPattern);
 
 		return filter;
 	}
@@ -64,10 +66,12 @@ final class SerializationFilter {
 	/**
 	 * Creates a serialization filter based on a file containing patterns.
 	 * @param patternFile the path to the file containing the serialization filter patterns
+	 * @param limitsPrefix the resource limits prefix (maxbytes, maxarray, maxdepth, maxrefs)
 	 */
-	static ObjectInputFilter fromFile(String patternFile) {
-		ObjectInputFilter filter = ObjectInputFilter.Config.createFilter(readPattern(patternFile));
-		LOG.info("Serialization filter created from pattern file: {}", patternFile);
+	static ObjectInputFilter fromFile(String patternFile, String limitsPrefix) {
+		String fullPattern = limitsPrefix + readPattern(patternFile);
+		ObjectInputFilter filter = ObjectInputFilter.Config.createFilter(fullPattern);
+		LOG.info("Serialization filter created from pattern file: {} with limits: {}", patternFile, limitsPrefix);
 
 		return filter;
 	}
