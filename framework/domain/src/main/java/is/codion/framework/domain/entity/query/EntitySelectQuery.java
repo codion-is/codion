@@ -28,7 +28,7 @@ import java.util.Map;
 
 /**
  * Defines a select query or parts of a select query, that is, from, columns, where, groupBy, having and orderBy clauses.
- * Supports Common Table Expressions (CTEs) via the {@link Builder#with(String, String)} method.
+ * Supports Common Table Expressions (CTEs) via the {@link Builder#with(String)} method.
  * {@link Builder} provided by {@link #builder()}.
  */
 public sealed interface EntitySelectQuery permits DefaultEntitySelectQuery {
