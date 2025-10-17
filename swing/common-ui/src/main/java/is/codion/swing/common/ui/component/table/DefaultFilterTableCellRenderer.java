@@ -202,7 +202,15 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			Color foreground = foregroundColor(filterTable, row, identifier, value, isSelected);
 			Color background = backgroundColor(filterTable, row, identifier, value, isSelected, alternateRow);
 			Border border = border(filterTable, hasFocus, rowIndex, columnIndex);
-			if (cellRenderer instanceof DefaultTableCellRenderer) {
+			if (cellRenderer instanceof DefaultFilterTableCellRenderer.BooleanRenderer<?, ?>) {
+				BooleanRenderer<?, ?> renderer = (BooleanRenderer<?, ?>) cellRenderer;
+				// Don't set the foreground color for NullableCheckBox,
+				// since that is used as icon foreground when painted which
+				// renders it invisible in case the background is the same
+				renderer.setBackground(background);
+				renderer.setBorder(border);
+			}
+			else if (cellRenderer instanceof DefaultTableCellRenderer) {
 				DefaultTableCellRenderer renderer = (DefaultTableCellRenderer) cellRenderer;
 				renderer.setForeground(foreground);
 				renderer.setBackground(background);

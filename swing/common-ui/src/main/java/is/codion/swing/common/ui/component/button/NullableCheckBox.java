@@ -36,7 +36,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.geom.Rectangle2D;
 
 import static is.codion.swing.common.model.component.button.NullableToggleButtonModel.nullableToggleButtonModel;
 import static java.awt.event.KeyEvent.VK_SPACE;
@@ -159,26 +158,20 @@ public class NullableCheckBox extends JCheckBox {
 		@Override
 		public void paintIcon(Component component, Graphics graphics, int x, int y) {
 			icon.paintIcon(component, graphics, x, y);
-			if (model().get() != null) {
-				return;
+			if (model().get() == null) {
+				int width = getIconWidth();
+				int height = getIconHeight();
+
+				int dashWidth = width - 4;
+				int dashHeight = Math.max(2, height / 6);
+				int dashX = x + 2;
+				int dashY = y + (height - dashHeight) / 2;
+
+				Graphics2D graphics2D = (Graphics2D) graphics;
+				graphics2D.setColor(isEnabled() ? getForeground() : UIManager.getColor("CheckBoxMenuItem.disabledForeground"));
+				graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				graphics2D.fillRect(dashX, dashY, dashWidth, dashHeight);
 			}
-
-			int width = getIconWidth();
-			int height = getIconHeight();
-
-			double nullBoxWidth = width / 3.0;
-			double nullBoxHeight = height / 3.0;
-
-			// Center the null marker rectangle within the icon bounds
-			double xCorner = x + (width - nullBoxWidth) / 2.0;
-			double yCorner = y + (height - nullBoxHeight) / 2.0;
-
-			Rectangle2D rectangle = new Rectangle2D.Double(xCorner, yCorner, nullBoxWidth, nullBoxHeight);
-
-			Graphics2D graphics2D = (Graphics2D) graphics;
-			graphics2D.setColor(isEnabled() ? getForeground() : UIManager.getColor("CheckBoxMenuItem.disabledForeground"));
-			graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			graphics2D.fill(rectangle);
 		}
 
 		@Override
