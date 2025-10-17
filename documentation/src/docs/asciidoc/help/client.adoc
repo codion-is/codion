@@ -2,9 +2,512 @@
 = Client
 :toc: left
 :docinfo: shared-head
-:imagesdir: ../images/help
+:imagesdir: ../images
 :basedir: ..
 
+== Getting Started
+
+Codion applications follow a consistent design pattern that makes it easy to work with data once you understand the basic layout and concepts.
+
+=== Application Layout
+
+The application window is organized into panels that work together to display and edit your data:
+
+* **Table Panel** - Displays data in rows and columns, located in the upper part of the window
+* **Edit Panel** - Shows detailed fields for a single record, typically above the table
+* **Search Panel** - Filters table data, can be shown/hidden above the table
+* **Filter Panel** - Dynamically filters currently visible table data, can be shown/hidden below the table if included
+* **Detail Panels** - Show related data in tabs to the right
+
+=== Understanding Master-Detail Relationships
+
+Data in Codion applications is usally organized in master-detail relationships. For example:
+
+* When viewing customers (master), you might see their invoices (detail) in a tab to the right
+* Selecting a different customer automatically updates the invoices shown
+* You can work with detail data without leaving the master record
+
+This hierarchical structure can go several levels deep, with each level showing related information.
+
+=== Basic Navigation
+
+You can navigate the application using either keyboard or mouse:
+
+* **Between panels** - Click into a panel or use kbd:[Ctrl + T] for table, kbd:[Ctrl + E] for edit panel
+* **Between fields** - Press kbd:[Enter] or kbd:[Tab] to move forward, kbd:[Shift + Enter] or kbd:[Shift + Tab] to move backward
+* **Between tabs** - Click a tab or use kbd:[Ctrl + Alt + &#x2190;/&#x2192;] to navigate left/right
+* **Within tables** - Use arrow keys to move between rows and columns
+
+TIP: Codion applications are designed for keyboard-first navigation. Once you learn a few <<Keyboard shortcuts>>, you can work much faster without reaching for the mouse.
+
+NOTE: On macOS, use kbd:[⌘] (Command) instead of kbd:[Ctrl] for keyboard shortcuts.
+
+== Working with Data
+
+=== Viewing Data
+
+[#_table_basics]
+==== Table Basics
+
+Data is displayed in tables with rows and columns.Each row represents a single record, and columns show different attributes of that data.
+
+* **Selecting rows** - Click a row or use arrow keys to navigate
+* **Viewing details** - Select a row to see its full details in the edit panel above
+* **Multiple selection**:
+** *Ctrl + Click* to add or remove individual rows from the selection
+** *Shift + Click* to select a contiguous range of rows
+** *Ctrl + &#x2191;/&#x2193;* to navigate without changing selection, then *Space* to toggle the selection of individual rows
+
+==== Sorting Data
+
+You can sort table data by clicking column headers or using <<Keyboard shortcuts>>:
+
+* **Sort by single column (keyboard)** - Use kbd:[Alt + &#x2191;/&#x2193;] with focus on that column
+** kbd:[Alt + &#x2193;] cycles through: unsorted → ascending → descending → unsorted
+** kbd:[Alt + &#x2191;] cycles through: unsorted → descending → ascending → unsorted
+* **Sort by single column (mouse)** - Click the column header
+** *Click* cycles through: unsorted → ascending → descending → unsorted
+** *Shift + Click* reverses iteration: unsorted → descending → ascending → unsorted
+* **Multi-column sort** - Use kbd:[Shift + Alt + &#x2191;/&#x2193;] (keyboard) or *Alt + Click* (mouse) to add another column to the existing sort order
+* **Clear all sorting** - Sort by a single column (this clears any multi-column sort) then cycle that column back to unsorted
+
+TIP: Sorted columns show a small arrow indicator in the header (↑ for ascending, ↓ for descending).
+
+==== Finding Text in Tables
+
+To quickly locate specific text within the current table data:
+
+1. Press kbd:[Ctrl + F] to focus the search field at the bottom of the table
+2. Type the text you're looking for
+3. Press kbd:[Enter] or kbd:[&#x2193;] to find the next match
+4. Press kbd:[&#x2191;] to find the previous match
+5. Add kbd:[Shift] to the navigation keys to select matches as you find them
+
+NOTE: This searches only the data currently loaded in the table. Use the column condition panel (see <<Searching>>) to filter the full dataset.
+
+==== Master-Detail Relationships
+
+When working with related data:
+
+* Selecting a record in the master table automatically loads its related detail records in the tabs to the right
+* You can add, edit, or delete detail records without leaving the master record
+* Changes in detail panels are independent - you can work with invoices for one customer, then switch to another customer
+
+TIP: If you're working with a large dataset in the master table and notice that selecting records is slow due to detail data being loaded, you can hide the detail panel to temporarily unlink it from the master. This prevents the detail panel from responding to selection changes, allowing you to navigate quickly through the master data. See <<_detaching_panels>> for how to show and hide panels.
+
+=== Adding Records
+
+==== Starting a New Record
+
+To add a new record:
+
+1. Click the *Clear* button or press kbd:[Alt + C] in the edit panel if required
+2. Fill in the fields (watch for validation indicators showing invalid values)
+3. Click *Add* or press kbd:[Alt + A] to save
+
+NOTE: By default, foreign key fields (relationships to other tables, e.g. drop-down or <<_search_fields>>) keep their values when you clear the form. This makes it easy to add multiple related records. However, this behavior can be configured differently by the application developer.
+
+==== Filling in Fields
+
+* **Validation indicators** - Fields with invalid values are highlighted with validation styling (dark background with standard Look and Feels, border highlighting with FlatLaf)
+* **Drop-down lists** - Click to open, or start typing to use auto-complete
+* **Date and time fields** - Type the value or press kbd:[Insert] to use the calendar picker.Use kbd:[&#x2191;/&#x2193;] to increment/decrement the value at the cursor position (year, month, day, hour, minute, etc.)
+
+TIP: Press kbd:[Enter] to move to the next field quickly.The form is designed for rapid data entry using only the keyboard.
+
+[#_search_fields]
+==== Search Fields
+
+Search fields allow you to search for and select related records.They are particularly useful when dealing with large datasets where a drop-down list would be impractical.
+
+===== Basic Usage
+
+1. Type your search text in the field
+2. Press kbd:[Enter] to search
+3. If exactly one record matches, it is selected automatically
+4. If multiple records match, a selection dialog appears
+5. If no records match, an informational message is displayed
+
+NOTE: The field background color changes when the search text differs from the current selection, indicating that a search is needed.
+
+===== Search Behavior
+
+* **Single selection fields** - Enter a single search term
+* **Multiple selection fields** - Enter multiple search terms separated by commas
+* **Automatic search** - By default, a search is performed when the field loses focus (only auto-selects on single result to avoid interrupting focus traversal)
+* **Cancel search** - Press kbd:[Esc] to cancel your edits and restore the current selection
+
+TIP: If you clear the search field and press kbd:[Enter] or move focus away, the selection will be cleared.
+
+===== Search Settings
+
+Right-click on a search field to access search settings:
+
+* **Case sensitive** - Enable to make searches case-sensitive
+* **Prefix wildcard** - Automatically add a wildcard before your search text
+* **Postfix wildcard** - Automatically add a wildcard after your search text
+* **Space as wildcard** - Treat spaces in your search text as wildcards
+* **Result limit** - Limit the maximum number of search results
+
+NOTE: Search settings are configured per search column and are saved in your user preferences.
+
+===== Adding and Editing Related Records
+
+Some search fields have Add and Edit buttons that allow you to create or modify related records without leaving your current form:
+
+* **Add** - Press kbd:[Insert] to open a dialog for adding a new related record
+* **Edit** - Press kbd:[Ctrl + Insert] to edit the currently selected related record
+
+After adding or editing a related record, it is automatically selected in the search field.
+
+===== Multiple Selection
+
+When a search field supports multiple selections:
+
+* Selected items are displayed separated by commas (or a custom separator)
+* Hover over the field to see all selected items in a tooltip
+
+==== Saving New Records
+
+After filling in the fields:
+
+* Click the *Add* button or press kbd:[Alt + A]
+* If successful, the new record appears in the table and the form is cleared (ready for another entry)
+* If there are validation errors, you'll see an error message indicating what needs to be corrected
+
+=== Editing Records
+
+==== Selecting Records to Edit
+
+* Click a row in the table to load it into the edit panel
+* Or use arrow keys to navigate to the desired record
+* The edit panel will display all fields for the selected record
+
+==== Making Changes
+
+1. Modify any fields in the edit panel
+2. Click *Update* or press kbd:[Alt + U] to save your changes
+3. Confirm the update in the dialog that appears
+4. Or click *Clear* (kbd:[Alt + C]) to discard changes and reload the original values
+
+NOTE: If the application is configured to warn about modified records, you'll see a confirmation dialog if you try to select a different record or exit with unsaved changes. This feature is off by default but can be enabled globally or per form.
+
+==== Editing Multiple Records
+
+To edit the same attribute for multiple records at once:
+
+1. Select multiple rows in the table, see <<_table_basics>>
+2. To select which attribute you want to modify use the *Edit* popup menu or kbd:[Shift + Insert]
+3. Enter the new value (if all selected records share the same current value, it will be pre-populated)
+4. Confirm to apply the change to all selected records
+
+==== Field Validation
+
+As you edit fields, validation occurs continuously. Validity indicators highlight fields with invalid values:
+
+* **Format validation** - Ensures dates are valid, numbers are within valid ranges, etc.
+* **Nullability validation** - Prevents null values in fields that require a value
+* **Business rule validation** - Custom validations defined by the application (e.g., end date must be after start date)
+
+Invalid fields are highlighted with validation styling. Error messages appear in a dialog when you attempt to save a record with validation errors.
+
+=== Deleting Records
+
+==== Deleting Single or Multiple Records
+
+To delete a single record:
+
+* Click the *Delete* button or press kbd:[Alt + D] in the edit panel to delete the currently selected record
+* Or select a row in the table and press kbd:[Del] or use the *Delete* action in the popup menu
+
+To delete multiple records:
+
+1. Select multiple rows in the table, see <<_table_basics>>
+2. Press kbd:[Del] or use the *Delete* action in the popup menu
+3. Confirm the deletion in the dialog that appears
+
+WARNING: Deletions are permanent and cannot be undone.
+
+==== Handling Dependencies
+
+If you try to delete a record that has dependent records (e.g., deleting a customer that has invoices), two things can happen:
+
+* **Default behavior** - An error dialog appears explaining that the record cannot be deleted due to existing dependencies
+* **Dependencies dialog** - If configured by the developer, a dialog shows all dependent records organized in tabs. You can review and optionally delete the dependent records first, then retry deleting the original record.
+
+NOTE: Codion does not support cascading deletes. All deletions must be explicit. This prevents accidentally deleting important data.
+
+== Tables and Selection
+
+=== Column Operations
+
+==== Resizing Columns
+
+You can adjust column widths to better view your data:
+
+* **Resize with mouse** - Drag the column border in the header
+* **Resize with keyboard** - Select a column and use kbd:[Ctrl + &#x002B;] to increase width or kbd:[Ctrl + &#x2212;] to decrease width
+* **Auto-resize mode** - Access the table popup menu (right-click or kbd:[Ctrl + G]), navigate to *Columns* → *Auto-resize* and select a resize mode:
+** *Off* - Columns stay at their manually set widths
+** *Next column* - Adjusting one column affects the next column
+** *Subsequent columns* - Adjusting one column affects all columns to the right
+** *Last column* - Only the last column automatically adjusts to fill available space
+** *All columns* - All columns automatically adjust proportionally
+
+==== Moving Columns
+
+Rearrange columns to suit your workflow:
+
+* **Move with mouse** - Drag the column header to a new position
+* **Move with keyboard** - Select a column and use kbd:[Ctrl + Shift + &#x2190;/&#x2192;] to move it left or right
+
+NOTE: Column positions are saved in user preferences and will be restored when you reopen the application.
+
+==== Showing and Hiding Columns
+
+Control which columns are visible:
+
+* Open the table popup menu (right-click or kbd:[Ctrl + G])
+* Navigate to *Columns*
+* Depending on the application configuration:
+** Select individual columns from a submenu to toggle their visibility
+** Or choose *Select...* to open a column selection dialog
+
+TIP: Hiding columns you don't use frequently can make tables easier to read and navigate.
+
+=== Copying Data
+
+==== Copying Individual Cells
+
+To copy a single cell value:
+
+1. Select the cell by clicking or navigating with arrow keys
+2. Press kbd:[Ctrl + Alt + C] or use the *Copy* → *Copy cell* action in the popup menu
+3. Paste the value wherever needed
+
+==== Copying Rows
+
+To copy entire rows to the clipboard:
+
+1. Select one or more rows (see <<_table_basics>>)
+2. Press kbd:[Ctrl + C] or use the *Copy* → *Copy table* action in the popup menu
+3. Paste into a spreadsheet or text editor
+
+To copy rows with column headers:
+
+1. Optionally select one or more rows (if no rows are selected, all rows will be copied)
+2. Open the table popup menu (right-click or kbd:[Ctrl + G])
+3. Navigate to *Copy* → *Copy table with header*
+4. Paste into a spreadsheet or text editor
+
+The data is copied in tab-delimited format, making it easy to paste into Excel or other applications.
+
+=== Exporting Data
+
+If the application has enabled data export:
+
+1. Open the table popup menu (right-click or kbd:[Ctrl + G])
+2. Navigate to *Copy* → *Export data...*
+3. In the export dialog:
+** Choose which columns to include (use kbd:[Space] to toggle column inclusion)
+** Select the export format (CSV, Excel, etc., if multiple formats are available)
+** Choose the destination file
+4. Click *Export* to save the data
+
+TIP: The export function respects the current search/filter conditions, so you can filter your data first and then export only what you need.
+
+=== Query Limit
+
+Some applications allow you to configure a query limit to restrict the number of records retrieved from the database. This is particularly useful when working with large datasets.
+
+==== Accessing the Limit Menu
+
+To configure the query limit:
+
+* **Double-click** the status bar below the table
+* Or **right-click** the status bar and select *Limit* from the popup menu
+
+==== Configuring the Limit
+
+In the limit dialog:
+
+1. Enter the maximum number of records to retrieve (or clear the field to remove the limit)
+2. Click *OK* to apply the limit
+3. Refresh the table to apply the new limit setting
+
+NOTE: The limit configuration will be reset to its default when you reopen the application.
+
+==== Understanding Limit Status
+
+The status bar below the table shows different information based on the limit setting:
+
+* **No limit** - Shows the total number of records (e.g., "1523")
+* **Limit reached** - Shows "Limited to 1000" instead of the actual count when the query result reaches the configured limit
+* **Limit not reached** - Shows the actual count (e.g., "523") when fewer records are found than the limit allows
+
+TIP: If you see "Limited to X" in the status bar, there may be more records available in the database. Consider refining your search conditions or increasing the limit if you need to see more data.
+
+[#_detaching_panels]
+== Detaching Panels
+
+Codion applications allow you to reorganize your workspace by detaching panels into separate windows or hiding them when not needed. This is especially useful when working with multiple monitors or when you need more space to focus on specific data.
+
+=== Edit Panel States
+
+The edit panel can be in one of three states:
+
+* **Embedded** - The edit panel appears in its normal position within the main window
+* **Window** - The edit panel appears in a separate, detachable window
+* **Hidden** - The edit panel is not visible
+
+To toggle the edit panel state:
+
+* Click the edit panel state button in the south panel toolbar (the toolbar at the bottom of the main panel)
+* The button cycles through: embedded → window → hidden → embedded
+
+TIP: When the edit panel is in a separate window, you can move it to a different monitor to view both the table and edit form side-by-side.
+
+=== Detail Panel States
+
+The detail panel area (containing all detail panel tabs showing related data) can be in three states:
+
+* **Embedded** - The detail panel area appears as a tabbed pane to the right of the main table
+* **Window** - The entire detail panel area appears in a separate, detachable window
+* **Hidden** - The detail panel area is not visible
+
+To toggle the detail panel area state:
+
+* Click the detail panel state button in the south panel toolbar
+* Or double-click any detail panel tab:
+** If embedded, the entire tabbed pane becomes a window
+** If already a window, it re-embeds into the main window
+
+NOTE: When detaching or hiding, all detail panels move together as a single tabbed pane - you cannot detach individual detail panel tabs.
+
+TIP: Hiding the detail panel area improves performance when working with large datasets, as it prevents detail panels from loading data when you change the selection in the master table. See <<Master-Detail Relationships>> for more details.
+
+== Common Tasks
+
+=== Refreshing Data
+
+To ensure you're viewing the most current data from the database, you can refresh tables at any time:
+
+* **From the table** - Press kbd:[Alt + R] or use the *Refresh* action in the popup menu (right-click or kbd:[Ctrl + G])
+* **From the edit panel** - Click the *Refresh* button or press kbd:[Alt + R]
+* **From the condition panel** - Press kbd:[Enter] with focus on any condition field, or press kbd:[F5] when the refresh button is enabled
+
+NOTE: When the search condition changes, the refresh button in the lower left corner of the table becomes enabled, indicating that a refresh is needed. After refreshing, the button becomes disabled.
+
+TIP: Refreshing only reloads data for the current panel. If you have detail panels open, refresh them separately if needed.
+
+=== Printing
+
+If printing has been enabled for a table or report:
+
+1. Ensure the table or panel you want to print is in focus
+2. Press kbd:[Ctrl + P] or use the *Print* action in the popup menu or on the toolbar
+3. Configure print settings in the print dialog
+4. Click *Print*
+
+NOTE: Tables do not support printing by default. Check the popup menu or toolbar to see if the Print action is available.
+
+=== Using the Popup Menu
+
+The popup menu provides quick access to common actions and is context-sensitive based on what you're working with:
+
+To open the popup menu:
+
+* **Mouse** - Right-click on a table, edit panel, or field
+* **Keyboard** - Press kbd:[Ctrl + G]
+
+Common actions available in the popup menu:
+
+* **Table menus** - Refresh, Copy (table/cell), Export, Delete, Edit, Column operations, Search operations
+* **Edit panel menus** - Add, Update, Delete, Clear, Refresh
+* **Field menus** - Copy, Paste, Clear, Field-specific operations
+
+TIP: The popup menu is the quickest way to discover available actions for any component. When in doubt, right-click!
+
+=== Working with Dependencies
+
+When viewing records that have relationships to other data:
+
+==== Viewing Dependencies
+
+Some applications provide a dependencies dialog that shows all records related to the currently selected record(s):
+
+1. Select one or more records in the table
+2. Use the *Dependencies* action in the popup menu
+3. The dependencies dialog displays related records organized in tabs
+4. Use kbd:[Ctrl + Alt + &#x2190;/&#x2192;] to navigate between dependency tabs
+
+==== Understanding Foreign Keys
+
+Foreign key fields (drop-down lists and <<_search_fields, search fields>>) link records to other tables:
+
+* **Drop-down lists** - Show a predefined list of related records
+* **<<_search_fields, search fields>>** - Allow you to search for and select related records from potentially large datasets
+* Some foreign key fields have *Add* and *Edit* buttons:
+** Press kbd:[Insert] to add a new related record
+** Press kbd:[Ctrl + Insert] to edit the selected related record
+
+TIP: When editing a foreign key field with Add/Edit buttons, you can quickly create or modify related records without leaving your current form.
+
+== Tips and Best Practices
+
+=== Keyboard-First Design
+
+Codion applications are designed with keyboard navigation as the primary interaction method:
+
+* **Learn the basics** - Master kbd:[Enter] for field navigation, kbd:[Ctrl + T] for table focus, and kbd:[Ctrl + E] for edit panel focus
+* **Discover shortcuts** - Right-click (kbd:[Ctrl + G]) to access popup menus and discover available actions for any component
+* **Stay on the keyboard** - Once you learn the shortcuts, you can perform most operations without reaching for the mouse
+* **Use Tab wisely** - While kbd:[Tab] works for field navigation, kbd:[Enter] is often faster and more natural in data entry scenarios
+
+=== Working Efficiently
+
+==== Data Entry
+
+* **Use Clear strategically** - The Clear button (kbd:[Alt + C]) is your friend for rapid data entry when adding multiple similar records
+* **Leverage foreign key persistence** - By default, foreign key fields keep their values when you clear the form, making it easy to add multiple related records
+* **Watch validation indicators** - Invalid fields are highlighted immediately, so you can correct errors as you go rather than waiting until save time
+* **Use search fields effectively** - Configure search settings (wildcards, case sensitivity) once via right-click, and they'll be remembered for future use
+
+==== Navigation and Selection
+
+* **Filter before selecting** - When working with large datasets, use the search/condition panel to narrow down results before making selections
+* **Hide unnecessary detail panels** - If detail panels are slowing you down, hide them temporarily to improve selection performance
+* **Use multi-selection wisely** - Remember kbd:[Ctrl + Click] for individual rows and kbd:[Shift + Click] for ranges
+* **Copy smart** - Use "Copy table with header" when you need column headers for pasting into spreadsheets
+
+==== Organization
+
+* **Customize column layout** - Rearrange, resize, and hide columns to match your workflow - your preferences are saved automatically
+* **Use detached windows** - On multi-monitor setups, detach edit or detail panels to view more information simultaneously
+* **Master the popup menu** - Right-click is your gateway to discovering available actions and accessing rarely-used features
+
+=== Performance Tips
+
+* **Limit search results** - Configure reasonable result limits in <<_search_fields, search field>> to avoid loading excessive data
+* **Refresh deliberately** - You don't need to refresh constantly - the refresh button indicator shows when data may be stale
+* **Hide detail panels when not needed** - This prevents automatic loading of related data when you're just browsing the master table
+* **Use search conditions** - The search panel is more efficient than scrolling through large datasets
+
+=== Common Pitfalls
+
+* **Don't forget to confirm** - Updates and deletes require confirmation - pressing kbd:[Alt + U] or kbd:[Alt + D] is just the first step
+* **Watch the background color** - <<_search_fields, search fields>> change color when search text differs from selection, reminding you to press kbd:[Enter]
+* **Empty search clears selection** - Clearing a <<_search_fields, search field>> and pressing kbd:[Enter] will clear the selection, which is sometimes desired but can be surprising
+* **Selection in detail panels** - If selection in a master table seems slow, check if you have detail panels open that are loading large amounts of related data
+
+=== Getting Help
+
+* **Explore with right-click** - When in doubt, right-click to see what actions are available
+* **Check the keyboard shortcuts** - Refer to the <<Keyboard shortcuts>> section for a complete reference
+* **Experiment safely** - Most operations require confirmation before making changes to data
+* **Use Esc** - Press kbd:[Esc] in search fields to cancel edits and restore the current selection
+
+[#_searching]
 == Searching
 
 .Operators
@@ -30,7 +533,7 @@ This button toggles through the available search panel views; *hidden*, *simple*
 
 NOTE: Text based condition fields are by default *Case-Insensitive* and the *EQUAL* and *NOT EQUAL* fields have *automatic wildcard prefix and postfixes*. The automatic wildcards have been disabled for the demonstration below. These can be configured via the condition field popup dialog. The application remembers the field configuration in user preferences.
 
-image::search/search_cleared.png[Search,cleared]
+image::help/search/search_cleared.png[Search,cleared]
 
 By default, column condition operators are set to *EQUAL* and foreign keys to *IN*, to change the operator you can use the kbd:[Ctrl + UP / DOWN] keyboard shortcut (the operator is displayed in a tooltip) or switch to the *advanced* search panel view, see below.
 
@@ -43,7 +546,7 @@ NOTE: The condition is automatically enabled when a value has been entered.
 When the search condition has changed, as in, when it does not represent the data currently in the table, the refresh button in the lower left corner becomes enabled, indicating that a refresh is in order.
 Further conditions can be added before a refresh is performed.
 
-image::search/search_string_wildcard_no_refresh.png[Search,string wildcard,no refresh]
+image::help/search/search_string_wildcard_no_refresh.png[Search,string wildcard,no refresh]
 
 There are multiple ways of refreshing the table data:
 
@@ -56,39 +559,93 @@ After the table has been refreshed, the refresh button becomes disabled, indicat
 
 NOTE: You can tell a condition is enabled by its BOLD header and shaded column.
 
-image::search/search_string_wildcard.png[Search,string wildcard]
+image::help/search/search_string_wildcard.png[Search,string wildcard]
 
 Adding a condition to the *Genre* column.
 
 With multiple conditions enabled, all of them are included next time the table is refreshed.
 
-image::search/search_string_wildcard_and_selection.png[Search,string wildcard and selection]
+image::help/search/search_string_wildcard_and_selection.png[Search,string wildcard and selection]
 
 Enabling the *advanced* condition panel view, in order to change the *Name* condition to *NOT EQUAL*.
 
-image::search/search_string_wildcard_negated_and_selection.png[Search,string wildcard negated and selection]
+image::help/search/search_string_wildcard_negated_and_selection.png[Search,string wildcard negated and selection]
 
 Adding a *LESS THAN* condition to the *Price* column.
 
-image::search/search_string_wildcard_negated_number_less_and_selection.png[Search,string wildcard negated,number less and selection]
+image::help/search/search_string_wildcard_negated_number_less_and_selection.png[Search,string wildcard negated,number less and selection]
 
 Changing the *Price* condition to *GREATER THAN OR EQUAL*.
 
-image::search/search_string_wildcard_negated_number_greater_or_equal_than_and_selection.png[Search,string wildcard negated,number greater or equal and selection]
+image::help/search/search_string_wildcard_negated_number_greater_or_equal_than_and_selection.png[Search,string wildcard negated,number greater or equal and selection]
 
 Changing the *Price* condition to *BETWEEN* and the *Genre* condition to *NOT EQUAL*.
 
-image::search/search_string_wildcard_negated_number_between_and_selection_negated.png[Search,string wildcard negated,number between and selection]
+image::help/search/search_string_wildcard_negated_number_between_and_selection_negated.png[Search,string wildcard negated,number between and selection]
 
 Adding a *NOT EQUAL* condition to the *Composer* column with an empty value.
 
-image::search/search_string_wildcard_negated_number_between_selection_negated_and_not_null.png[Search,string wildcard negated,number between,selection and not null]
+image::help/search/search_string_wildcard_negated_number_between_selection_negated_and_not_null.png[Search,string wildcard negated,number between,selection and not null]
 
 NOTE: When searching for empty values, the condition must be manually enabled, since it's only enabled automatically when a non-empty value is entered.
 
 NOTE: To clear all column conditions use the *Search* -> *Clear* action in the table popup menu.
 This clears all values and resets all operators to their defaults *EQUAL* for columns and *IN* for foreign keys.
 
+== Filtering
+
+While the search panel (<<Searching>>) queries the database to retrieve specific records, some applications also provide a *filter panel* that dynamically filters the records currently loaded in the table - without requiring a database refresh.
+
+=== Availability
+
+The filter panel is an optional feature that developers can choose to include. To check if filtering is available:
+
+* Look for the *Funnel* icon in the toolbar (located next to the magnifying glass search icon)
+* If the funnel icon is present, the filter panel is available
+* If the funnel icon is not present, the application does not include filtering capability
+
+=== Accessing the Filter Panel
+
+To show or hide the filter panel:
+
+* Click the *Funnel* icon in the toolbar
+* Or use the kbd:[Ctrl + Alt + F] keyboard shortcut
+* Or press kbd:[Ctrl + Shift + F] to display a dialog for selection a specific filter panel
+
+The filter panel toggles through three states: *hidden*, *simple*, and *advanced*, just like the search panel.
+
+=== Using Filters
+
+The filter panel works exactly like the search panel described in <<Searching>>. You can:
+
+* Configure filter conditions using the same operators (*EQUAL*, *NOT EQUAL*, *BETWEEN*, etc.)
+* Use the same keyboard shortcuts (kbd:[Ctrl + &#x2191;/&#x2193;] to change operators)
+* Configure the same field settings (case sensitivity, wildcards) via right-click
+* Enable and disable individual column filters
+
+The key difference is that filters apply *instantly* to the currently visible table data - no refresh is needed. As you type or modify filter conditions, the table updates automatically to show only matching records.
+
+=== Understanding Filter Status
+
+When filters are active, the status bar below the table displays both the total number of records and the number of filtered records:
+
+* **No filters active** - Shows only the total count (e.g., "400")
+* **Filters active** - Shows total and filtered count (e.g., "400 (200 filtered)")
+
+This makes it easy to see at a glance how many records are being hidden by your current filter conditions.
+
+=== Search vs. Filter
+
+Understanding when to use search versus filter:
+
+* **Search panel** - Queries the database to retrieve specific records. Use when you want to limit what data is loaded from the database.
+* **Filter panel** - Filters already-loaded records in the table. Use when you want to quickly narrow down what you're currently viewing without hitting the database.
+
+You can use both together: search to retrieve a subset of data from the database, then filter to dynamically narrow that subset further.
+
+NOTE: To clear all column filters use the *Filter* -> *Clear* action in the table popup menu. This clears all filter values and resets all operators to their defaults.
+
+[#_keyboard_shortcuts]
 == Keyboard shortcuts
 
 NOTE: On macOS, use kbd:[⌘] (Command) instead of kbd:[Ctrl] for all shortcuts listed below. For example, kbd:[Ctrl + F] becomes kbd:[⌘ + F] on macOS.
