@@ -25,6 +25,7 @@ import is.codion.swing.common.ui.component.button.NullableCheckBox;
 
 import org.jspecify.annotations.Nullable;
 
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.border.Border;
@@ -45,10 +46,12 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 
 	private final Settings<R, C, T> settings;
 	private final Class<T> columnClass;
+	private final @Nullable TableCellRenderer renderer;
 
-	DefaultFilterTableCellRenderer(Settings<R, C, T> settings, Class<T> columnClass) {
-		this.settings = requireNonNull(settings);
+	DefaultFilterTableCellRenderer(Settings<R, C, T> settings, Class<T> columnClass, @Nullable TableCellRenderer renderer) {
+		this.settings = settings;
 		this.columnClass = columnClass;
+		this.renderer = renderer;
 		this.settings.update();
 		setHorizontalAlignment(settings.horizontalAlignment);
 	}
@@ -83,13 +86,13 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-		super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-		settings.configure((FilterTable<R, C>) table, this, (T) value, isSelected, hasFocus, row, column);
+		JComponent component = (JComponent) component(table, value, isSelected, hasFocus, row, column);
+		settings.configure((FilterTable<R, C>) table, component, (T) value, isSelected, hasFocus, row, column);
 		if (settings.toolTipData) {
 			setToolTipText(settings.formatter.apply((T) value));
 		}
 
-		return this;
+		return component;
 	}
 
 	@Override
@@ -99,6 +102,12 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 
 	UISettings settings() {
 		return settings.uiSettings;
+	}
+
+	private Component component(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+		return renderer == null ?
+						super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column) :
+						renderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 	}
 
 	/**
@@ -114,7 +123,6 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			this.settings = requireNonNull(settings);
 			this.settings.update();
 			setHorizontalAlignment(settings.horizontalAlignment);
-			setBorderPainted(true);
 		}
 
 		@Override
@@ -192,36 +200,25 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			uiSettings.update(leftPadding, rightPadding);
 		}
 
-		private void configure(FilterTable<R, C> filterTable, FilterTableCellRenderer<?> cellRenderer, T value,
+		private void configure(FilterTable<R, C> filterTable, JComponent component, T value,
 													 boolean isSelected, boolean hasFocus, int rowIndex, int columnIndex) {
-			requireNonNull(cellRenderer);
-			requireNonNull(filterTable);
 			R row = filterTable.model().items().included().get(rowIndex);
 			C identifier = filterTable.columnModel().getColumn(columnIndex).identifier();
 			boolean alternateRow = alternateRow(rowIndex);
 			Color foreground = foregroundColor(filterTable, row, identifier, value, isSelected);
 			Color background = backgroundColor(filterTable, row, identifier, value, isSelected, alternateRow);
 			Border border = border(filterTable, hasFocus, rowIndex, columnIndex);
-			if (cellRenderer instanceof DefaultFilterTableCellRenderer.BooleanRenderer<?, ?>) {
-				BooleanRenderer<?, ?> renderer = (BooleanRenderer<?, ?>) cellRenderer;
+			if (component instanceof JCheckBox) {
+				((JCheckBox) component).setBorderPainted(true);
+			}
+			if (!(component instanceof NullableCheckBox)) {
 				// Don't set the foreground color for NullableCheckBox,
 				// since that is used as icon foreground when painted which
 				// renders it invisible in case the background is the same
-				renderer.setBackground(background);
-				renderer.setBorder(border);
-			}
-			else if (cellRenderer instanceof DefaultTableCellRenderer) {
-				DefaultTableCellRenderer renderer = (DefaultTableCellRenderer) cellRenderer;
-				renderer.setForeground(foreground);
-				renderer.setBackground(background);
-				renderer.setBorder(border);
-			}
-			else if (cellRenderer instanceof JComponent) {
-				JComponent component = (JComponent) cellRenderer;
 				component.setForeground(foreground);
-				component.setBackground(background);
-				component.setBorder(border);
 			}
+			component.setBackground(background);
+			component.setBorder(border);
 		}
 
 		private Color foregroundColor(FilterTable<R, C> filterTable, R row, C identifier, T value, boolean selected) {
@@ -419,7 +416,9 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 
 		private final SettingsBuilder<R, C, T> settings;
 		private final Class<T> columnClass;
-		private final boolean useBooleanRenderer;
+
+		private boolean useBooleanRenderer;
+		private @Nullable TableCellRenderer renderer;
 
 		private DefaultBuilder(Class<T> columnClass) {
 			this.columnClass = requireNonNull(columnClass);
@@ -488,10 +487,19 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		}
 
 		@Override
+		public Builder<R, C, T> renderer(TableCellRenderer renderer) {
+			this.renderer = requireNonNull(renderer);
+			this.useBooleanRenderer = false;
+			return this;
+		}
+
+		@Override
 		public FilterTableCellRenderer<T> build() {
-			return useBooleanRenderer ?
-							(FilterTableCellRenderer<T>) new BooleanRenderer<>((Settings<R, C, Boolean>) settings.build()) :
-							new DefaultFilterTableCellRenderer<>(settings.build(), columnClass);
+			if (useBooleanRenderer) {
+				return (FilterTableCellRenderer<T>) new BooleanRenderer<>((Settings<R, C, Boolean>) settings.build());
+			}
+
+			return new DefaultFilterTableCellRenderer<>(settings.build(), columnClass, renderer);
 		}
 
 		private int defaultHorizontalAlignment(Class<T> columnClass) {

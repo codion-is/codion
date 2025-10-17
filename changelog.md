@@ -16,6 +16,8 @@ Codion Change Log
 - DefaultFilterTableCellRenderer bug fixed, no longer sets the foreground of boolean renderer, messed up null icon rendering for some look and feels.
 - NumberField.Builder and TemporalField.Builder.maximumLength() now throw UnsupportedOperationException.
 - FilterTable.Builder.cellEditable() added.
+- FilterTableCellRenderer.Builder.renderer(TableCellRenderer) added, for the ability to wrap standard cell renderers.
+- DefaultFilterTableCellRenderer refactored and simplified.
 ### is.codion.plugin.swing.robot
 - Narrator, frame now sticks to application window, i18n added.
 ### is.codion.framework.domain

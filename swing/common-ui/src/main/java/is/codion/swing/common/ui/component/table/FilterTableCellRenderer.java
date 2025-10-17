@@ -242,6 +242,14 @@ public interface FilterTableCellRenderer<T> extends TableCellRenderer {
 		Builder<R, C, T> foreground(CellColor<R, C, T> foreground);
 
 		/**
+		 * Wraps the given renderer, using it as the base renderer before
+		 * applying the rendering settings of this renderer.
+		 * @param renderer the renderer to wrap
+		 * @return this builder instance
+		 */
+		Builder<R, C, T> renderer(TableCellRenderer renderer);
+
+		/**
 		 * @return a new {@link FilterTableCellRenderer} instance based on this builder
 		 */
 		FilterTableCellRenderer<T> build();
