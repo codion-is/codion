@@ -40,7 +40,6 @@ final class DurationComponentValue extends AbstractComponentValue<DurationCompon
 
 	DurationComponentValue(EditorValue<Integer> millisecondsValue) {
 		this(new DurationPanel(false, millisecondsValue.valid(), millisecondsValue.modified()));
-		link(millisecondsValue);
 	}
 
 	DurationComponentValue(boolean cellEditor) {

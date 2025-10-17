@@ -73,8 +73,7 @@ public final class TrackEditPanel extends EntityEditPanel {
 		createTextFieldPanel(Track.COMPOSER)
 						.columns(12);
 
-		DurationPanel durationPanel = createDurationPanel();
-		component(Track.MILLISECONDS).set(durationPanel);
+		component(Track.MILLISECONDS).set(createDurationPanel());
 
 		createIntegerField(Track.BYTES)
 						.columns(6);
@@ -92,7 +91,7 @@ public final class TrackEditPanel extends EntityEditPanel {
 
 		JPanel durationInputPanel = gridLayoutPanel(1, 2)
 						.add(createInputPanel(Track.BYTES))
-						.add(durationPanel)
+						.add(component(Track.MILLISECONDS).get())
 						.build();
 
 		JPanel unitPricePanel = flexibleGridLayoutPanel(1, 3)

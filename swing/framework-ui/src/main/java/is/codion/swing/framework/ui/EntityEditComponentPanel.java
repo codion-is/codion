@@ -53,6 +53,7 @@ import is.codion.swing.common.ui.component.text.TemporalFieldPanel;
 import is.codion.swing.common.ui.component.text.TextAreaBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldPanel;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
@@ -141,7 +142,7 @@ public class EntityEditComponentPanel extends JPanel {
 
 	private final SwingEntityEditModel editModel;
 	private final EntityComponents entityComponents;
-	private final Map<Attribute<?>, EditorComponent> components = new HashMap<>();
+	private final Map<Attribute<?>, EditorComponent<?>> components = new HashMap<>();
 	private final Map<Attribute<?>, ComponentValueBuilder<?, ?, ?>> componentBuilders = new HashMap<>();
 	private final InputFocus inputFocus;
 
@@ -207,16 +208,17 @@ public class EntityEditComponentPanel extends JPanel {
 	}
 
 	/**
+	 * @param <T> the value type
 	 * @param attribute the attribute
-	 * @return the {@link Value} containing the component associated with the given attribute
+	 * @return the {@link EditorComponent} containing the component associated with the given attribute
 	 */
-	protected final EditorComponent component(Attribute<?> attribute) {
+	protected final <T> EditorComponent<T> component(Attribute<T> attribute) {
 		ComponentValueBuilder<?, ?, ?> componentBuilder = componentBuilders.get(requireNonNull(attribute));
 		if (componentBuilder != null) {
 			componentBuilder.build();
 		}
 
-		return components.computeIfAbsent(attribute, k -> new DefaultEditorComponent(attribute));
+		return (EditorComponent<T>) components.computeIfAbsent(attribute, k -> new DefaultEditorComponent<>(attribute));
 	}
 
 	/**
@@ -601,14 +603,15 @@ public class EntityEditComponentPanel extends JPanel {
 		return new ListBuilderFactory<>(listModel);
 	}
 
-	protected final Map<Attribute<?>, EditorComponent> components() {
+	protected final Map<Attribute<?>, EditorComponent<?>> components() {
 		return unmodifiableMap(components);
 	}
 
 	/**
 	 * Species the component used to edit an attribute
+	 * @param <T> the value type
 	 */
-	protected interface EditorComponent {
+	protected interface EditorComponent<T> {
 
 		/**
 		 * @return the component
@@ -622,15 +625,25 @@ public class EntityEditComponentPanel extends JPanel {
 		Optional<JComponent> optional();
 
 		/**
+		 * Note that when setting the component directly using this method, no value linking is performed.
 		 * @param component the component
 		 * @throws IllegalStateException in case the component has already been set
+		 * @see is.codion.framework.model.EntityEditModel.EntityEditor#value(Attribute)
 		 */
 		void set(JComponent component);
 
 		/**
-		 * Replaces an already set component
+		 * Sets the component and links the value with the underlying editor value
+		 * @param componentValue the component value
+		 */
+		void set(ComponentValue<? extends JComponent, T> componentValue);
+
+		/**
+		 * Replaces an already set component.
+		 * Note that when replacing the component using this method, no value linking is performed.
 		 * @param component the component
 		 * @throws IllegalStateException in case no component has been previously set
+		 * @see is.codion.framework.model.EntityEditModel.EntityEditor#value(Attribute)
 		 */
 		void replace(JComponent component);
 
@@ -942,12 +955,12 @@ public class EntityEditComponentPanel extends JPanel {
 		}
 	}
 
-	private static final class DefaultEditorComponent implements EditorComponent {
+	private final class DefaultEditorComponent<T> implements EditorComponent<T> {
 
-		private final Attribute<?> attribute;
+		private final Attribute<T> attribute;
 		private final Value<JComponent> component;
 
-		private DefaultEditorComponent(Attribute<?> attribute) {
+		private DefaultEditorComponent(Attribute<T> attribute) {
 			this.component = Value.builder()
 							.<JComponent>nullable()
 							.notify(Notify.CHANGED)
@@ -971,6 +984,12 @@ public class EntityEditComponentPanel extends JPanel {
 				throw new IllegalStateException("Component has already been set for: " + attribute);
 			}
 			this.component.set(component);
+		}
+
+		@Override
+		public void set(ComponentValue<? extends JComponent, T> componentValue) {
+			set(requireNonNull(componentValue).component());
+			componentValue.link(editModel.editor().value(attribute));
 		}
 
 		@Override

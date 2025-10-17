@@ -26,6 +26,7 @@ Codion Change Log
 - DefaultLocalEntityConnection.insert() refactored, now caches information on generated columns.
 ### is.codion.swing.framework.ui
 - KeyboardShortcutsPanel, copy expanded changed to table export, related changes.
+- EntityEditComponentPanel.EditorComponent.set(ComponentValue) added, automatically links it to the underlying editor value.
 
 ## 0.18.54
 ### is.codion.common.db

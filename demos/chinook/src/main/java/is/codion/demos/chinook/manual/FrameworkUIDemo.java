@@ -252,18 +252,9 @@ final class FrameworkUIDemo {
 
 			@Override
 			protected void initializeUI() {
-				// Create a custom component
-				DurationComponentValue durationValue = createDurationComponent();
-
-				// Link it to the attribute value
-				editModel().editor().value(Track.MILLISECONDS).link(durationValue);
-				// And set the component it as the attribute component
-				component(Track.MILLISECONDS).set(durationValue.component());
-			}
-
-			private DurationComponentValue createDurationComponent() {
-				// Custom implementation
-				return new DurationComponentValue();
+				// Create a custom component and set it as the attribute
+				// component, it is automatically linked to the editor value
+				component(Track.MILLISECONDS).set(new DurationComponentValue());
 			}
 		}
 		// end::editPanelCustomComponent[]

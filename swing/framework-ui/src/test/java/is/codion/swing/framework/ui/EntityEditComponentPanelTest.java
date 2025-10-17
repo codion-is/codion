@@ -21,6 +21,9 @@ package is.codion.swing.framework.ui;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.text.NumberField;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.TestDomain.Employee;
 
@@ -52,5 +55,10 @@ public final class EntityEditComponentPanelTest {
 		assertThrows(IllegalStateException.class, () -> componentPanel.createTextField(Employee.NAME));
 		assertFalse(componentPanel.component(Employee.JOB).optional().isPresent());
 		assertThrows(IllegalStateException.class, () -> componentPanel.component(Employee.NAME).set(new JLabel()));
+
+		ComponentValue<NumberField<Double>, Double> salary = Components.doubleField().buildValue();
+		componentPanel.component(Employee.SALARY).set(salary);
+		salary.set(2000d);
+		assertEquals(salary.get(), editModel.editor().value(Employee.SALARY).get());
 	}
 }
