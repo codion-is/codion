@@ -31,6 +31,7 @@ import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
+import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -121,6 +122,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -2243,6 +2245,7 @@ public class EntityTablePanel extends JPanel {
 							.summaryValuesFactory(new EntitySummaryValuesFactory(entityDefinition, tablePanel.tableModel))
 							.cellRendererFactory(EntityTableCellRenderer.factory())
 							.cellEditorFactory(new EntityTableCellEditorFactory(tablePanel.tableModel.editModel()))
+							.cellEditable(new EntityCellEditable(tablePanel.tableModel.entities()))
 							.scrollToAddedItem(true)
 							.onBuild(filterTable -> filterTable.setRowHeight(filterTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT));
 			this.conditionPanelFactory = new DefaultConditionPanelFactory();
@@ -2732,6 +2735,28 @@ public class EntityTablePanel extends JPanel {
 			}
 
 			return Optional.empty();
+		}
+	}
+
+	private static final class EntityCellEditable implements BiPredicate<Entity, Attribute<?>> {
+
+		private final Entities entities;
+
+		private EntityCellEditable(Entities entities) {
+			this.entities = entities;
+		}
+
+		@Override
+		public boolean test(Entity entity, Attribute<?> attribute) {
+			if (attribute instanceof ForeignKey) {
+				EntityDefinition entityDefinition = entities.definition(((ForeignKey) attribute).referencedType());
+				if (entityDefinition.columns().searchable().isEmpty() && !entityDefinition.smallDataset()) {
+					// Neither EntitySearchField nor EntityComboBox can be created for editing
+					return false;
+				}
+			}
+
+			return true;
 		}
 	}
 

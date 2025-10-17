@@ -93,6 +93,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -274,6 +275,7 @@ public final class FilterTable<R, C> extends JTable {
 	private final ComponentFactory filterComponentFactory;
 	private final Event<MouseEvent> doubleClicked = Event.event();
 	private final Value<Action> doubleClick;
+	private final BiPredicate<R, C> cellEditable;
 	private final State sortable;
 	private final State scrollToSelectedItem;
 	private final Value<CenterOnScroll> centerOnScroll;
@@ -297,6 +299,7 @@ public final class FilterTable<R, C> extends JTable {
 						.value(builder.centerOnScroll)
 						.build();
 		this.doubleClick = Value.nullable(builder.doubleClick);
+		this.cellEditable = builder.cellEditable;
 		this.scrollToSelectedItem = State.state(builder.scrollToSelectedItem);
 		this.scrollToAddedItem = builder.scrollToAddedItem;
 		this.sortable = State.state(builder.sortable);
@@ -408,6 +411,13 @@ public final class FilterTable<R, C> extends JTable {
 		if (!selection.isEmpty()) {
 			((FilterTableModel<R, C>) dataModel).selection().items().set(selection);
 		}
+	}
+
+	@Override
+	public boolean isCellEditable(int row, int column) {
+		return super.isCellEditable(row, column) &&
+						cellEditable.test(model().items().included().get(row),
+										columnModel().getColumn(column).identifier());
 	}
 
 	@Override
@@ -1248,6 +1258,14 @@ public final class FilterTable<R, C> extends JTable {
 		Builder<R, C> cellEditorFactory(FilterTableCellEditor.Factory<C> cellEditorFactory);
 
 		/**
+		 * @param cellEditable called to see if the given cell in the given row is editable,
+		 * after the model has been queried
+		 * @return this builder instance
+		 * @see JTable#isCellEditable(int, int)
+		 */
+		Builder<R, C> cellEditable(BiPredicate<R, C> cellEditable);
+
+		/**
 		 * Associates the given keyStroke with the action associated with the 'startEditing' key in the table action map.
 		 * @param keyStroke a keyStroke for triggering the 'startEditing' action
 		 * @return this builder instance
@@ -1435,6 +1453,7 @@ public final class FilterTable<R, C> extends JTable {
 					implements Builder<R, C> {
 
 		private static final Builder.ModelStep MODEL = new DefaultModelStep();
+		private static final BiPredicate<?, ?> CELL_EDITABLE = new DefaultCellEditable<>();
 
 		private final FilterTableModel<R, C> tableModel;
 		private final ControlMap controlMap = controlMap(ControlKeys.class);
@@ -1449,6 +1468,7 @@ public final class FilterTable<R, C> extends JTable {
 		private ComponentFactory filterComponentFactory = new FilterComponentFactory();
 		private FilterTableCellRenderer.Factory<R, C> cellRendererFactory;
 		private FilterTableCellEditor.@Nullable Factory<C> cellEditorFactory;
+		private BiPredicate<R, C> cellEditable = (BiPredicate<R, C>) CELL_EDITABLE;
 		private @Nullable Boolean autoStartsEdit;
 		private @Nullable Boolean surrendersFocusOnKeystroke;
 		private CenterOnScroll centerOnScroll = CenterOnScroll.NEITHER;
@@ -1532,6 +1552,12 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public Builder<R, C> cellEditorFactory(FilterTableCellEditor.Factory<C> cellEditorFactory) {
 			this.cellEditorFactory = requireNonNull(cellEditorFactory);
+			return this;
+		}
+
+		@Override
+		public Builder<R, C> cellEditable(BiPredicate<R, C> cellEditable) {
+			this.cellEditable = requireNonNull(cellEditable);
 			return this;
 		}
 
@@ -1859,6 +1885,14 @@ public final class FilterTable<R, C> extends JTable {
 		@Override
 		public int compare(TableColumn col1, TableColumn col2) {
 			return collator.compare(String.valueOf(col1.getHeaderValue()), String.valueOf(col2.getHeaderValue()));
+		}
+	}
+
+	private static final class DefaultCellEditable<R, C> implements BiPredicate<R, C> {
+
+		@Override
+		public boolean test(R row, C column) {
+			return true;
 		}
 	}
 

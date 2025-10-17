@@ -15,6 +15,7 @@ Codion Change Log
 - NullableCheckBox, null icon improved, now uses a dash instead of square.
 - DefaultFilterTableCellRenderer bug fixed, no longer sets the foreground of boolean renderer, messed up null icon rendering for some look and feels.
 - NumberField.Builder and TemporalField.Builder.maximumLength() now throw UnsupportedOperationException.
+- FilterTable.Builder.cellEditable() added.
 ### is.codion.plugin.swing.robot
 - Narrator, frame now sticks to application window, i18n added.
 ### is.codion.framework.domain
@@ -29,6 +30,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - KeyboardShortcutsPanel, copy expanded changed to table export, related changes.
 - EntityEditComponentPanel.EditorComponent.set(ComponentValue) added, automatically links it to the underlying editor value.
+- EntityTablePanel bug fixed, now disables editing for cells based on entities that are neither searchable nor based on small datasets, since a search field can not be automatically instantiated.
 
 ## 0.18.54
 ### is.codion.common.db
