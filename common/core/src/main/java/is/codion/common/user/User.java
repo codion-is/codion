@@ -36,7 +36,7 @@ import static java.util.Objects.requireNonNull;
 public interface User {
 
 	/**
-	 * Specifies the maximum username length to prevent resource exhaustion attacks.
+	 * Specifies the maximum allowed username length.
 	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 256
@@ -45,7 +45,7 @@ public interface User {
 	PropertyValue<Integer> MAXIMUM_USERNAME_LENGTH = integerValue(User.class.getName() + ".maximumUsernameLength", 256);
 
 	/**
-	 * Specifies the maximum password length to prevent resource exhaustion attacks.
+	 * Specifies the maximum allowed password length.
 	 * <ul>
 	 * <li>Value type: Integer
 	 * <li>Default value: 1024

@@ -22,7 +22,6 @@ import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -37,11 +36,12 @@ final class DefaultUser implements User, Serializable {
 	private static final int MAX_USERNAME_LENGTH = MAXIMUM_USERNAME_LENGTH.getOrThrow();
 	private static final int MAX_PASSWORD_LENGTH = MAXIMUM_PASSWORD_LENGTH.getOrThrow();
 
-	private String username;
+	private static final char[] EMPTY_PASSWORD = new char[0];
+
+	private final String username;
 	private char[] password;
 
 	DefaultUser(String username, char @Nullable [] password) {
-		requireNonNull(username);
 		validateUsernameAndPassword(username, password);
 		this.username = username;
 		this.password = createPassword(password);
@@ -88,23 +88,13 @@ final class DefaultUser implements User, Serializable {
 	}
 
 	@Serial
-	private void writeObject(ObjectOutputStream stream) throws IOException {
-		stream.writeObject(username);
-		stream.writeObject(password);
-	}
-
-	@Serial
 	private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
-		String deserializedUsername = (String) stream.readObject();
-		char[] deserializedPassword = (char[]) stream.readObject();
-
-		validateUsernameAndPassword(deserializedUsername, deserializedPassword);
-		this.username = deserializedUsername;
-		this.password = createPassword(deserializedPassword);
+		stream.defaultReadObject();
+		validateUsernameAndPassword(username, password);
 	}
 
 	private static void validateUsernameAndPassword(String username, char @Nullable [] password) {
-		if (username.isEmpty()) {
+		if (requireNonNull(username).isEmpty()) {
 			throw new IllegalArgumentException("Username must be non-empty");
 		}
 		if (username.length() > MAX_USERNAME_LENGTH) {
@@ -118,6 +108,6 @@ final class DefaultUser implements User, Serializable {
 	}
 
 	private static char[] createPassword(char @Nullable [] password) {
-		return password == null ? new char[0] : Arrays.copyOf(password, password.length);
+		return password == null ? EMPTY_PASSWORD : Arrays.copyOf(password, password.length);
 	}
 }
