@@ -9,6 +9,8 @@ Codion Change Log
 - UserPreferences.PREFERENCES_LOCATION configuration value added, for overriding the default preferences file location.
 ### is.codion.common.rmi
 - SerializationFilterFactory, configuration properties added for JEP 290s maxBytes, maxArray, maxDepth and maxRefs parameters, values automatically prepended to filter config.
+### is.codion.swing.common.model
+- NullableToggleButtonModel, iteration order changed to false -> null -> true.
 ### is.codion.swing.common.ui
 - NullableCheckBox, null icon improved, now uses a dash instead of square.
 - DefaultFilterTableCellRenderer bug fixed, no longer sets the foreground of boolean renderer, messed up null icon rendering for some look and feels.

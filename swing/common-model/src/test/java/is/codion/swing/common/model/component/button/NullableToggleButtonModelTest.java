@@ -31,13 +31,14 @@ public class NullableToggleButtonModelTest {
 		assertNull(model.get());
 		assertFalse(model.isSelected());
 		model.next();
-		assertFalse(model.get());
-		assertFalse(model.isSelected());
-		model.next();
 		assertTrue(model.get());
 		assertTrue(model.isSelected());
 		model.next();
+		assertFalse(model.get());
+		assertFalse(model.isSelected());
+		model.next();
 		assertNull(model.get());
+		assertFalse(model.isSelected());
 	}
 
 	@Test
