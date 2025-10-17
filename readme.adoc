@@ -629,7 +629,7 @@ See http://www.gnu.org/licenses/gpl-faq.html#GPLRequireSourcePostedPublic[GPL FA
 
 *For copyright and managament overhead reasons, code contributions will not be accepted at this time*.
 
-Help with https://codion.is/doc/{version}/technical/technical.html#_values[translations] is very much appreciated though.
+See link:contributing.md[contributing.md] for details.
 
 === Bug reports
 
