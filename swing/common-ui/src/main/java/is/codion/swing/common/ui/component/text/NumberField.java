@@ -312,6 +312,11 @@ public final class NumberField<T extends Number> extends HintTextField {
 		}
 
 		@Override
+		public final Builder<T> maximumLength(int maximumLength) {
+			throw new UnsupportedOperationException("NumberField uses numerical ranges, not text length to restrict its input");
+		}
+
+		@Override
 		public final Builder<T> nullable(boolean nullable) {
 			this.nullable = nullable;
 			return this;

@@ -75,8 +75,11 @@ public interface TextComponentBuilder<C extends JTextComponent, T, B extends Tex
 	B lowerCase(boolean lowerCase);
 
 	/**
+	 * Note that length restriction is only supported for String based text components.
+	 * Builders for fields based on other data types may throw {@link UnsupportedOperationException}
 	 * @param maximumLength the maximum text length
 	 * @return this builder instance
+	 * @throws UnsupportedOperationException in case the field does not support text length restriction
 	 */
 	B maximumLength(int maximumLength);
 

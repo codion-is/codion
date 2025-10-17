@@ -99,7 +99,7 @@ abstract class AbstractTextComponentBuilder<C extends JTextComponent, T, B exten
 	}
 
 	@Override
-	public final B maximumLength(int maximumLength) {
+	public B maximumLength(int maximumLength) {
 		this.maximumLength = maximumLength;
 		return self();
 	}

@@ -12,6 +12,7 @@ Codion Change Log
 ### is.codion.swing.common.ui
 - NullableCheckBox, null icon improved, now uses a dash instead of square.
 - DefaultFilterTableCellRenderer bug fixed, no longer sets the foreground of boolean renderer, messed up null icon rendering for some look and feels.
+- NumberField.Builder and TemporalField.Builder.maximumLength() now throw UnsupportedOperationException.
 ### is.codion.plugin.swing.robot
 - Narrator, frame now sticks to application window, i18n added.
 ### is.codion.framework.domain

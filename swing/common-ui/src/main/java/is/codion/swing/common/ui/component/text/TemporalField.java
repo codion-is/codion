@@ -418,6 +418,11 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 		}
 
 		@Override
+		public Builder<T> maximumLength(int maximumLength) {
+			throw new UnsupportedOperationException("TemporalField uses a date time pattern, not text length, to restrict its input");
+		}
+
+		@Override
 		public Builder<T> dateTimePattern(String dateTimePattern) {
 			this.dateTimePattern = requireNonNull(dateTimePattern);
 			this.dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimePattern)
