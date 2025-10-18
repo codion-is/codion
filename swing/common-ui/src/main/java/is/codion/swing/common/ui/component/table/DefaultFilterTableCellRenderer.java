@@ -59,6 +59,9 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 	@Override
 	public void updateUI() {
 		super.updateUI();
+		if (renderer instanceof JComponent) {
+			((JComponent) renderer).updateUI();
+		}
 		if (settings != null) {
 			settings.update();
 		}

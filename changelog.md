@@ -18,6 +18,7 @@ Codion Change Log
 - FilterTable.Builder.cellEditable() added.
 - FilterTableCellRenderer.Builder.renderer(TableCellRenderer) added, for the ability to wrap standard cell renderers.
 - DefaultFilterTableCellRenderer refactored and simplified.
+- DefaultFilterTableCellRenderer.updateUI() bug fixed, now updates the wrapped renderer UI as well.
 ### is.codion.plugin.swing.robot
 - Narrator, frame now sticks to application window, i18n added.
 ### is.codion.framework.domain
