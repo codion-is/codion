@@ -486,7 +486,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 			@Override
 			public Result perform() {
-				LOG.debug("{} - insert {}", this, entities);
+				LOG.debug("{} - insert {}", AbstractEntityEditModel.this, entities);
 				Collection<Entity> inserted = unmodifiableCollection(insert(entities, connection()));
 				if (!entities.isEmpty() && inserted.isEmpty()) {
 					throw new DatabaseException("Insert did not return an entity, usually caused by a misconfigured key generator");
@@ -543,7 +543,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 		private void verifyModified() {
 			if (!editor.modified().is()) {
-				throw new IllegalStateException("Entity is not modified: " + editor.modified());
+				throw new IllegalStateException("Entity is not modified: " + editor.get());
 			}
 		}
 
@@ -559,7 +559,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 			@Override
 			public Result perform() {
-				LOG.debug("{} - update {}", this, entities);
+				LOG.debug("{} - update {}", AbstractEntityEditModel.this, entities);
 
 				return new UpdateResult(update(entities, connection()));
 			}
@@ -622,7 +622,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 			@Override
 			public Result perform() {
-				LOG.debug("{} - delete {}", this, entities);
+				LOG.debug("{} - delete {}", AbstractEntityEditModel.this, entities);
 				delete(entities, connection());
 
 				return new DeleteResult(entities);

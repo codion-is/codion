@@ -29,6 +29,8 @@ Codion Change Log
 - EntitySelectQuery CTE builder fluency improved.
 ### is.codion.framework.db.local
 - DefaultLocalEntityConnection.insert() refactored, now caches information on generated columns.
+### is.codion.framework.model
+- AbstractEntityEditModel log and error messages fixed.
 ### is.codion.swing.framework.ui
 - KeyboardShortcutsPanel, copy expanded changed to table export, related changes.
 - EntityEditComponentPanel.EditorComponent.set(ComponentValue) added, automatically links it to the underlying editor value.
