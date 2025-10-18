@@ -132,6 +132,17 @@ public interface EntityConnectionProvider extends AutoCloseable {
 	PropertyValue<String> CLIENT_CONNECTION_TYPE = stringValue("codion.client.connectionType", CONNECTION_TYPE_LOCAL);
 
 	/**
+	 * Specifies a connection provider description, overriding the default one
+	 * which usually provides a hostname or other connection based information.
+	 * <ul>
+	 * <li>Value type: String
+	 * <li>Default value: null
+	 * </ul>
+	 * @see #description()
+	 */
+	PropertyValue<String> DESCRIPTION = stringValue(EntityConnectionProvider.class.getName() + ".description");
+
+	/**
 	 * Returns the domain entities this connection is based on
 	 * @return the underlying domain entities
 	 */
@@ -152,6 +163,7 @@ public interface EntityConnectionProvider extends AutoCloseable {
 
 	/**
 	 * @return a description of the database provider or an empty Optional in case no description is provided
+	 * @see #DESCRIPTION
 	 */
 	Optional<String> description();
 

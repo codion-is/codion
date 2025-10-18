@@ -46,3 +46,48 @@ Provides a connection based on a remote HTTP connection.
 ----
 include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionProviderDemo.java[tags=http]
 ----
+
+== Customizing the Description
+
+The connection provider description is displayed in the application frame title (e.g., "Chinook - SCOTT@SERVER@HOST") and can be retrieved via `EntityConnectionProvider.description()`.
+
+=== Default Descriptions
+
+Each connection provider type has its own default description:
+
+* *LocalEntityConnectionProvider* - Database name in uppercase (e.g., "H2DB")
+* *RemoteEntityConnectionProvider* - Server name and hostname (e.g., "SERVER@HOST")
+* *HttpEntityConnectionProvider* - Hostname or URL (e.g., "example.com")
+
+=== Overriding the Description
+
+You can override the default description using the configuration property:
+
+[source,properties]
+----
+-Dis.codion.framework.db.EntityConnectionProvider.description=MyDescription
+----
+
+This is particularly useful when:
+
+* Using HTTP connections with long URLs (e.g., AWS Lambda URLs)
+* Hiding production server details from the frame title
+* Providing a more user-friendly connection identifier
+
+.Example: Lambda client with custom description
+[source,bash]
+----
+java -Dis.codion.framework.db.EntityConnectionProvider.description=lambda \
+     -jar myapp-client-lambda.jar
+----
+
+Result: `MyApp - SCOTT@LAMBDA` instead of `MyApp - SCOTT@VF54WI7PTCI5S32DW34RT5BOVM0VBMSU.LAMBDA-URL.EU-NORTH-1.ON.AWS`
+
+.Example: Production client with generic description
+[source,bash]
+----
+java -Dis.codion.framework.db.EntityConnectionProvider.description=production \
+     -jar myapp-client.jar
+----
+
+Result: `MyApp - SCOTT@PRODUCTION` instead of `MyApp - SCOTT@SERVER@PROD-DB-01.COMPANY.COM`

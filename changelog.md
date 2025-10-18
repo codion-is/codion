@@ -28,6 +28,8 @@ Codion Change Log
 - EntitySelectQuery.Builder.with() and withRecursive() added for CTEs.
 - EntityDefinition.placeholder() renamed entity().
 - EntitySelectQuery CTE builder fluency improved.
+### is.codion.framework.db
+- EntityConnectionProvider.DESCRIPTION configuration property added, for overriding the default description.
 ### is.codion.framework.db.local
 - DefaultLocalEntityConnection.insert() refactored, now caches information on generated columns.
 ### is.codion.framework.model

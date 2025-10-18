@@ -82,7 +82,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 	 */
 	@Override
 	public Optional<String> description() {
-		return Optional.of(serverName + "@" + hostName);
+		return Optional.of(DESCRIPTION.optional().orElse(serverName + "@" + hostName));
 	}
 
 	/**

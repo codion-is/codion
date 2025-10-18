@@ -72,7 +72,7 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
 
 	@Override
 	public Optional<String> description() {
-		return Optional.of(database().name().toUpperCase());
+		return Optional.of(DESCRIPTION.optional().orElse(database().name().toUpperCase()));
 	}
 
 	@Override

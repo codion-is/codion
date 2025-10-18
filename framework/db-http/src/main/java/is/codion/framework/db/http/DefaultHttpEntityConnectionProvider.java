@@ -66,7 +66,7 @@ final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnection
 
 	@Override
 	public Optional<String> description() {
-		return Optional.of(hostName);
+		return Optional.of(DESCRIPTION.optional().orElse(hostName));
 	}
 
 	@Override
