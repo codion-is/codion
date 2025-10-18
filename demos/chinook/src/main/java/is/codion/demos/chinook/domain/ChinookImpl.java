@@ -285,9 +285,7 @@ public final class ChinookImpl extends DomainModel {
 										Preferences.PREFERRED_GENRE_FK.define()
 														.foreignKey(),
 										Preferences.NEWSLETTER_SUBSCRIBED.define()
-														.column()
-														.nullable(false)
-														.defaultValue(false))
+														.column())
 						.caption("Preferences")
 						.build();
 	}
@@ -565,9 +563,9 @@ public final class ChinookImpl extends DomainModel {
 						.selectQuery(EntitySelectQuery.builder()
 										.with("track_revenue")
 										.as("""
-														SELECT il.track_id, SUM(il.unitprice * il.quantity) as revenue
-														FROM chinook.invoiceline il
-														GROUP BY il.track_id""")
+														SELECT line.track_id, SUM(line.unitprice * line.quantity) as revenue
+														FROM chinook.invoiceline line
+														GROUP BY line.track_id""")
 										.from("""
 														track_revenue tr
 														JOIN chinook.track ON tr.track_id = track.id

@@ -20,6 +20,7 @@ dependencies {
 
     implementation(project(":codion-plugin-flatlaf"))
     implementation(project(":codion-plugin-flatlaf-intellij-themes"))
+    implementation("com.formdev:flatlaf-extras:3.6.2")
     implementation(libs.ikonli.foundation.pack)
 
     implementation(project(":codion-plugin-swing-mcp"))
