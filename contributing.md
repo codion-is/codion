@@ -6,7 +6,7 @@ Thank you for your interest in contributing — it means a lot. Here's what you 
 
 **Codion is "open-source, not open-contribution."** Code contributions (pull requests) are not currently accepted.
 
-This policy allows me to maintain tight control over the codebase architecture, design decisions, and quality standards while the framework is being finalized.
+This policy allows for tight control over the codebase architecture, design decisions, and quality standards while the framework is being finalized.
 
 **Pull requests will be closed without detailed code review** to avoid copyright complications. Trivial changes (typos in documentation, obvious syntax errors) may be incorporated at the maintainer's discretion with acknowledgment.
 
@@ -25,7 +25,7 @@ Bug reports are very welcome and appreciated.
 - Be as detailed as possible in describing the issue.
 - If feasible, include a [SSCCE](http://sscce.org) — a Short, Self-Contained, Correct Example.
 
-**Please do not submit bug fixes as pull requests.** Instead, open an issue describing the problem with reproduction steps. I'll handle the implementation.
+**Please do not submit bug fixes as pull requests.** Instead, open an issue describing the problem with reproduction steps. Maintainers will handle the implementation.
 
 ## Suggesting Solutions
 
@@ -53,7 +53,7 @@ The documentation is a work in progress. If something is unclear, missing, or ne
 
 Feature requests are welcome — with a note of caution:
 
-Codion is mostly feature-complete. I may be very selective about new feature inclusion to preserve its simplicity and focus. That said, good ideas are always worth discussing.
+Codion is mostly feature-complete. Maintainers may be very selective about new feature inclusion to preserve its simplicity and focus. That said, good ideas are always worth discussing.
 
 ---
 

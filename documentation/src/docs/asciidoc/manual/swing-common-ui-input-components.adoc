@@ -1,3 +1,4 @@
+[#_input_components]
 = Input Components
 :dir-source: ../../../../../demos/manual/src/main/java
 :url-javadoc: link:../api

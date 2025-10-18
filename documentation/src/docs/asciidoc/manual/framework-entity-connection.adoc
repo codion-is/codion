@@ -13,6 +13,7 @@ Instead, it gives you predictable, queryable access to individual Entity objects
 
 The <<{dir-tutorials}/chinook/chinook.adoc#_domain, Chinook domain model>> is used in the examples below.
 
+[#_entity_connection_selecting]
 == Selecting
 
 By default, when you select a row using {url-entity-connection}[EntityConnection] you receive an Entity instance along with a single level of foreign key references, that is a so-called reference depth of one.
@@ -72,7 +73,7 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDem
 include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=referenceDepthConditionForeignKey]
 ----
 
-=== Reference Depth Values:
+=== Reference Depth Values
 
 * 0 – Do not fetch foreign key references
 * 1 (default) – Fetch directly referenced foreign key entities
@@ -204,6 +205,7 @@ IMPORTANT: These methods throw an exception if any of the entities is unmodified
 include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionDemo.java[tags=updateEntity]
 ----
 
+[#_optimistic_locking]
 ==== Optimistic locking
 
 The framework performs optimistic locking during updates using the methods above.

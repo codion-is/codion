@@ -23,13 +23,18 @@ import is.codion.common.observer.Observer;
 import is.codion.common.state.ObservableState;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueList;
+import is.codion.common.value.ValueSet;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JButton;
 import java.awt.event.ActionEvent;
+import java.util.List;
+import java.util.Set;
 
 public final class EventStateValue {
 
@@ -86,6 +91,24 @@ public final class EventStateValue {
 		// directly without referring to the ObservableState
 		state.addListener(() -> System.out.println("State changed"));
 		// end::state[]
+	}
+
+	private static void stateComposition() {
+		// tag::stateComposition[]
+		State updateEnabled = State.state();
+		State insertEnabled = State.state();
+
+		State recordNew = State.state();
+		State recordModified = State.state();
+
+		ObservableState saveButtonEnabled = State.and(
+						State.or(insertEnabled, updateEnabled),
+						State.or(recordNew, recordModified));
+
+		JButton saveButton = new JButton("Save");
+
+		Utilities.enabled(saveButtonEnabled, saveButton);
+		// end::stateComposition[]
 	}
 
 	private static void action() {
@@ -183,6 +206,40 @@ public final class EventStateValue {
 		// end::nullValue[]
 	}
 
+	private static void valueCollection() {
+		// tag::valueCollection[]
+		ValueSet<Integer> valueSet =
+						ValueSet.<Integer>builder()
+										.value(Set.of(1, 2, 3))
+										.build();
+
+		valueSet.addListener(() -> System.out.println("Values changed"));
+
+		valueSet.add(4); //output: Values changed
+		valueSet.add(1); //no change, no output
+
+		valueSet.remove(1); //output: Values changed
+		System.out.println(valueSet.contains(1)); //output: false
+
+		valueSet.clear();
+
+		ValueList<Integer> valueList =
+						ValueList.<Integer>builder()
+										.value(List.of(1, 2, 3))
+										.build();
+
+		valueList.addListener(() -> System.out.println("Values changed"));
+
+		valueList.add(4); //output: Values changed
+		valueList.add(1); //output: Values changed
+
+		valueList.remove(1); //output: Values changed
+		System.out.println(valueList.contains(1)); //output: true
+
+		valueList.clear();
+		// end::valueCollection[]
+	}
+
 	// tag::observers[]
 	private static final class IntegerValue {
 
@@ -225,9 +282,11 @@ public final class EventStateValue {
 	public static void main(String[] args) {
 		event();
 		state();
+		stateComposition();
 		action();
 		control();
 		value();
 		nullValue();
+		valueCollection();
 	}
 }

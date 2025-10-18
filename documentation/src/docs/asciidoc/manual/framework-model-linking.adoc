@@ -1,3 +1,4 @@
+[#_model_linking]
 = Model Linking
 :dir-chinook-source: ../../../../../demos/chinook/src/main/java
 :url-javadoc: link:../api

@@ -1,3 +1,4 @@
+[#_entitytablepanel]
 = EntityTablePanel
 :dir-source: ../../../../../demos/manual/src/main/java
 :url-javadoc: link:../api
@@ -25,6 +26,7 @@ It can be enabled globally via the {url-javadoc}{swing-framework-ui}/is/codion/s
 
 The active export configuration is saved in user preferences on application exit.
 
+[#_table_query_inspector]
 == Query Inspector
 
 A *Query Inspector* can be enabled globally via the {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityTablePanel.Config.html#INCLUDE_QUERY_INSPECTOR[EntityTablePanel.Config.INCLUDE_QUERY_INSPECTOR] configuration value or for a single panel via the panel configuration.

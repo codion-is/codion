@@ -11,6 +11,7 @@ Each call to *connection()* returns the current active connection. If the existi
 
 IMPORTANT: Do NOT cache the *EntityConnection* instance. The instance returned by *connection()* should only be kept for a short time, such as a local variable or method parameter since it can become invalid and thereby unusable. Always use *connection()* to make sure you have a healthy *EntityConnection*.
 
+[#_localentityconnectionprovider]
 == LocalEntityConnectionProvider
 
 {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnectionProvider.html[LocalEntityConnectionProvider]
@@ -22,6 +23,7 @@ Provides a connection based on a local JDBC connection.
 include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionProviderDemo.java[tags=local]
 ----
 
+[#_remoteentityconnectionprovider]
 == RemoteEntityConnectionProvider
 
 {url-javadoc}{framework-db-rmi}/is/codion/framework/db/rmi/RemoteEntityConnectionProvider.html[RemoteEntityConnectionProvider]
@@ -33,6 +35,7 @@ Provides a connection based on a remote RMI connection.
 include::{dir-chinook-source}/is/codion/demos/chinook/manual/EntityConnectionProviderDemo.java[tags=remote]
 ----
 
+[#_httpentityconnectionprovider]
 == HttpEntityConnectionProvider
 
 {url-javadoc}{framework-db-http}/is/codion/framework/db/http/HttpEntityConnectionProvider.html[HttpEntityConnectionProvider]

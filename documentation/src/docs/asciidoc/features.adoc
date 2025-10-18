@@ -1,0 +1,55 @@
+[#_codion_features]
+= Codion Features
+:docinfo: shared-head
+:toc: left
+:url-javadoc: link:api
+
+== I. The Common Foundation
+
+* <<technical/technical.adoc#_observable_pattern, Reactive State Management>> Core with <<manual/manual.adoc#_value, Value>>, <<manual/manual.adoc#_state, State>> and <<manual/manual.adoc#_event, Event>>
+* <<manual/manual.adoc#_state_composition, Composable Boolean Logic>> for UI State
+* Observable and Thread-Safe <<manual/manual.adoc#_valuecollection, Value Collections>>
+* Declarative Asynchronous Task Execution with <<manual/manual.adoc#_progressworker, ProgressWorker>>
+* Fluent, Declarative Swing UI <<manual/manual.adoc#_input_components, Component Builders>>
+* Reactive Action & Control Management with <<manual/manual.adoc#_control, Control>> and <<manual/manual.adoc#_controls, Controls>>
+* Pluggable Look and Feel Engine with https://github.com/JFormDesigner/FlatLaf/[Flat Look and Feel] Integration
+
+== II. The Framework Domain & Data Layer
+
+* Type-Safe Static <<manual/manual.adoc#_domain_modelling, Domain Metamodel>>
+* <<manual/manual.adoc#_foreign_keys, Foreign Key Relationships>> as First Class Citizens
+* Fluent, Type-Safe <<manual/manual.adoc#_conditions, Query DSL>>
+* High-Performance Local ORM Engine (DefaultLocalEntityConnection)
+* Built-in <<manual/manual.adoc#_optimistic_locking, Optimistic Locking>>
+* Automatic N+1 Query Prevention with <<manual/manual.adoc#_entity_connection_selecting, Recursive Foreign Key Population>>
+
+== III. The Swing CRUD Framework
+* Complete CRUD Application Components with <<manual/manual.adoc#_entitypanel, EntityPanel>>
+* All-in-One Data Grid with <<manual/manual.adoc#_entitytablepanel, EntityTablePanel>>
+** Integrated, Type-Safe <<help/client.adoc#_searching, Filtering and Searching UI>>
+** Model-Driven, Multi-Column Sorting
+** Automatic <<manual/manual.adoc#_model_linking, Master-Detail Coordination>>
+** Denormalized data export UI
+* Automated Data Entry Forms with <<manual/manual.adoc#_entityeditpanel, EntityEditPanel>>
+* Full Keyboard Control and Navigation see <<help/client.adoc#_keyboard_shortcuts, Keyboard Shortcuts>>
+* Dynamic <<manual/manual.adoc#_table_query_inspector, Table>> and <<manual/manual.adoc#_edit_query_inspector, Edit>> Query Debugging UI
+* <<manual/manual.adoc#_reporting_with_jasperreports, JasperReports>> integration
+
+== IV. The Application Server & Deployment
+
+* Lightweight, Pluggable Application Server with <<technical/server.adoc#_entity_server, EntityServer>>
+* Multi-Protocol Support (RMI & HTTP out of the box)
+* Serverless Deployment with <<technical/modules.adoc#_codion_framework_lambda, AWS Lambda Wrapper>>
+* Pluggable <<technical/technical.adoc#_authentication, Authentication Management>>
+* Server monitoring UI with <<technical/server-monitor.adoc#_server_monitor, Server Monitor>>.
+* Flexible Client Deployment Models
+** <<manual/manual.adoc#_localentityconnectionprovider, Local JDBC Connection>>
+** <<manual/manual.adoc#_remoteentityconnectionprovider, Client-Server (RMI)>>
+** <<manual/manual.adoc#_httpentityconnectionprovider, HTTP Client-Server>>
+
+== V. The Developer Ecosystem & Tooling
+* Domain Model Code Generation from Database Schema (including GUI Tool)
+* Zero-Effort Domain Integration Testing with <<manual/manual.adoc#_domain_unit_testing, DomainTest>>
+* Integrated Load Testing Framework (including GUI Tool)
+* Automated Demo & UI Scripting Engine, https://www.youtube.com/watch?v=2dDKjeqJJeQ[example] (swing-robot)
+* AI Agent Enablement via Model Context Protocol (swing-mcp)

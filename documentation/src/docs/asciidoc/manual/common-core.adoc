@@ -7,6 +7,9 @@
 
 Three common classes used throughout the framework are {url-javadoc}{common-core}/is/codion/common/event/Event.html[Event], {url-javadoc}{common-core}/is/codion/common/state/State.html[State] and {url-javadoc}{common-core}/is/codion/common/value/Value.html[Value] and their respective observers {url-javadoc}{common-core}/is/codion/common/observer/Observer.html[Observer] and {url-javadoc}{common-core}/is/codion/common/state/ObservableState.html[ObservableState].
 
+NOTE: Not all available methods are included in the diagrams below, see javadocs for details.
+
+[#_event]
 === Event
 
 [plantuml,event-diagram,svg,align=center]
@@ -52,6 +55,7 @@ Events are instantiated via factory methods in the {url-javadoc}{common-core}/is
 include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=event]
 ----
 
+[#_value]
 === Value
 
 [plantuml,value-diagram,svg,align=center]
@@ -100,6 +104,15 @@ Null is then translated to the _nullValue_ when set.
 include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=nullValue]
 ----
 
+[#_valuecollection]
+==== ValueCollection
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=valueCollection]
+----
+
+[#_state]
 === State
 
 [plantuml,state-diagram,svg,align=center]
@@ -108,6 +121,7 @@ skinparam genericDisplay old
 
 interface State {
     +void set(Boolean value)
+    +void toggle()
     +ObservableState observable()
     +Value<Boolean> value()
 }
@@ -136,6 +150,13 @@ include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=observer
 ----
 
 Any *Action* or *JComponent* enabled status can be linked to a *State* instance via the *Utilities.enabled()* method.
+
+[#_state_composition]
+==== State composition
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/common/EventStateValue.java[tags=stateComposition]
+----
 
 [source,java,indent=0]
 ----

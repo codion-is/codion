@@ -7,6 +7,8 @@ image::codion-logo.png[Codion Logo,400]
 
 == <<quickstart.adoc#, Quickstart>>
 
+== <<features.adoc#, Features>>
+
 == <<technical/technical.adoc#, Technical>>
 
 == <<manual/manual.adoc#, Manual>>

@@ -2,6 +2,7 @@
 :dir-source: ../../../../../demos/manual/src/main/java
 :url-javadoc: link:../api
 
+[#_control]
 == Control
 
 [plantuml,control-diagram,svg,align=center]
@@ -26,6 +27,7 @@ include::{dir-source}/is/codion/manual/common/InputControls.java[tags=control]
 include::{dir-source}/is/codion/manual/common/InputControls.java[tags=toggleControl]
 ----
 
+[#_controls]
 == Controls
 
 [source,java,indent=0]

@@ -1,3 +1,4 @@
+[#_observable_pattern]
 = Architecture Deep Dive: Observable Pattern
 :url-javadoc: link:../api
 :basedir: ..

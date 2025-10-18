@@ -1,3 +1,4 @@
+[#_entity_server]
 = Server
 :dir-tutorials: ../tutorials
 :dir-source: ../../../../../demos/server
@@ -20,6 +21,7 @@ Here's a great overview of RMI security risks and mitigations.
 
 https://blog.tneitzel.eu/posts/01-attacking-java-rmi-via-ssrf[Attacking Java RMI via SSRF]
 
+[#_authentication]
 === Authentication
 
 The Codion server does not perform any user authentication by default, it leaves that up the underlying database.

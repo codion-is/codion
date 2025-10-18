@@ -381,6 +381,7 @@ To toggle the detail panel area state:
 * Or double-click any detail panel tab:
 ** If embedded, the entire tabbed pane becomes a window
 ** If already a window, it re-embeds into the main window
+* Clicking a detail panel tab with the middle mouse button hides it.
 
 NOTE: When detaching or hiding, all detail panels move together as a single tabbed pane - you cannot detach individual detail panel tabs.
 
@@ -629,8 +630,8 @@ The key difference is that filters apply *instantly* to the currently visible ta
 
 When filters are active, the status bar below the table displays both the total number of records and the number of filtered records:
 
-* **No filters active** - Shows only the total count (e.g., "400")
-* **Filters active** - Shows total and filtered count (e.g., "400 (200 filtered)")
+* **No filters active** - Shows only the visible record count (e.g., "400")
+* **Filters active** - Shows visible and filtered record counts (e.g., "400 (200 filtered)")
 
 This makes it easy to see at a glance how many records are being hidden by your current filter conditions.
 

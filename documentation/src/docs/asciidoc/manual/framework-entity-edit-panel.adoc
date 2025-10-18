@@ -1,3 +1,4 @@
+[#_entityeditpanel]
 = EntityEditPanel
 :dir-chinook-source: ../../../../../demos/chinook/src/main/java
 :dir-source: ../../../../../demos/manual/src/main/java
@@ -189,6 +190,7 @@ include::{dir-chinook-source}/is/codion/demos/chinook/manual/FrameworkUIDemo.jav
 
 The action mechanism used throughout the Codion framework is based on the {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/control/Control.html[Control] class and its subclasses and the {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/control/Controls.html[Controls] class which represents a collection of controls.
 
+[#_edit_query_inspector]
 == Query Inspector
 
 A *Query Inspector* can be enabled globally via the {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditPanel.Config.html#INCLUDE_QUERY_INSPECTOR[EntityEditPanel.Config.INCLUDE_QUERY_INSPECTOR] configuration value or for a single panel via the panel configuration.
