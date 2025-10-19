@@ -312,6 +312,7 @@ public interface EntityEditModel {
 	 * <p>Applies the given value to the given entities. This method can be used by components
 	 * providing edit functionality, such as editable tables, in order to apply the edited value,
 	 * ensuring that any associated values are updated as well.
+	 * <p>Note that that {@code value} may be null.
 	 * <p>By default, this sets the given attribute value in the entities via {@link Entity#set(Attribute, Object)}.
 	 * <p>Override to customize, f.ex. when associated values must be changed accordingly.
 	 * {@snippet :
@@ -322,7 +323,7 @@ public interface EntityEditModel {
 	 * 	    Entity customer = (Entity) value;
 	 * 	    // Set the billing address when the customer is changed
 	 * 	    entities.forEach(entity ->
-	 *            entity.set(Invoice.BILLINGADDRESS, customer.get(Customer.ADDRESS)));
+	 *            entity.set(Invoice.BILLINGADDRESS, customer == null ? null : customer.get(Customer.ADDRESS)));
 	 * 	  }
 	 * 	}
 	 *}
