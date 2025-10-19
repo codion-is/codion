@@ -37,7 +37,6 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.model.AbstractEntityEditModel.DefaultEditEvents;
 
 import org.jspecify.annotations.Nullable;
 
@@ -47,7 +46,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static is.codion.common.Configuration.booleanValue;
-import static java.util.Objects.requireNonNull;
 
 /**
  * Specifies a class for editing an {@link Entity} instance.
@@ -339,7 +337,7 @@ public interface EntityEditModel {
 	 * @return the central {@link EditEvents} instance for the given entity type
 	 */
 	static EditEvents events(EntityType entityType) {
-		return AbstractEntityEditModel.EVENTS.computeIfAbsent(requireNonNull(entityType), k -> new DefaultEditEvents());
+		return AbstractEntityEditModel.editEvents(entityType);
 	}
 
 	/**

@@ -305,7 +305,7 @@ public abstract class AbstractValue<T> implements Value<T> {
 		}
 
 		@Override
-		public Observer<T> observer() {
+		public final Observer<T> observer() {
 			return value.observer();
 		}
 

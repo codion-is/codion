@@ -190,7 +190,7 @@ final class DefaultEntityEditor implements EntityEditor {
 
 	@Override
 	public <T> EditorValue<T> value(Attribute<T> attribute) {
-		return (EditorValue<T>) editorValues.computeIfAbsent(attribute, this::createEditorValue);
+		return (EditorValue<T>) editorValues.computeIfAbsent(attribute, DefaultEditorValue::new);
 	}
 
 	void setOrDefaults(@Nullable Entity entity) {
@@ -351,12 +351,6 @@ final class DefaultEntityEditor implements EntityEditor {
 						.map(entityDefinition.columns()::definition)
 						.map(ColumnDefinition.class::cast)
 						.anyMatch(columnDefinition -> !columnDefinition.readOnly());
-	}
-
-	private <T> DefaultEditorValue<?> createEditorValue(Attribute<T> attribute) {
-		entityDefinition.attributes().definition(attribute);
-
-		return new DefaultEditorValue<>(attribute);
 	}
 
 	private interface ValueSupplier {

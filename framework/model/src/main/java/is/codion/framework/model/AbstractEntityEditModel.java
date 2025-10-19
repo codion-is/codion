@@ -61,7 +61,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityEditModel.class);
 
-	static final Map<EntityType, EditEvents> EVENTS = new ConcurrentHashMap<>();
+	private static final Map<EntityType, EditEvents> EVENTS = new ConcurrentHashMap<>();
 
 	private final EntityDefinition entityDefinition;
 	private final EntityConnectionProvider connectionProvider;
@@ -405,6 +405,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		events.notifyDeleted(requireNonNull(deletedEntities));
 	}
 
+	static EditEvents editEvents(EntityType entityType) {
+		return EVENTS.computeIfAbsent(requireNonNull(entityType), k -> new DefaultEditEvents());
+	}
+
 	/**
 	 * Maps the given entities and their updated counterparts, assumes a single copy of each entity in the given lists.
 	 * @param entitiesBeforeUpdate the entities before update
@@ -440,9 +444,9 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 						.map(ForeignKey::referencedType)
 						.distinct()
 						.forEach(entityType -> {
-							EntityEditModel.events(entityType).inserted().addWeakConsumer(insertListener);
-							EntityEditModel.events(entityType).updated().addWeakConsumer(updateListener);
-							EntityEditModel.events(entityType).deleted().addWeakConsumer(deleteListener);
+							editEvents(entityType).inserted().addWeakConsumer(insertListener);
+							editEvents(entityType).updated().addWeakConsumer(updateListener);
+							editEvents(entityType).deleted().addWeakConsumer(deleteListener);
 						});
 	}
 
@@ -807,7 +811,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 		private final Event<Map<Entity, Entity>> updated = Event.event();
 		private final Event<Collection<Entity>> deleted = Event.event();
 
-		DefaultEditEvents() {}
+		private DefaultEditEvents() {}
 
 		@Override
 		public Event<Collection<Entity>> inserted() {
@@ -826,7 +830,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
 		private static void notifyInserted(Collection<Entity> inserted) {
 				groupByType(inserted).forEach((entityType, entities) ->
-								EntityEditModel.events(entityType).inserted().accept(entities));
+								editEvents(entityType).inserted().accept(entities));
 		}
 
 		private static void notifyUpdated(Map<Entity, Entity> updated) {
@@ -835,12 +839,12 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 								.collect(groupingBy(entry -> entry.getKey().type(), LinkedHashMap::new,
 												toMap(Map.Entry::getKey, Map.Entry::getValue)))
 								.forEach((entityType, entities) ->
-												EntityEditModel.events(entityType).updated().accept(entities));
+												editEvents(entityType).updated().accept(entities));
 		}
 
 		private static void notifyDeleted(Collection<Entity> deleted) {
 			groupByType(deleted).forEach((entityType, entities) ->
-								EntityEditModel.events(entityType).deleted().accept(entities));
+								editEvents(entityType).deleted().accept(entities));
 		}
 	}
 }

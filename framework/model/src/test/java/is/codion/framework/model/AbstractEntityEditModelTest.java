@@ -58,7 +58,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-import static is.codion.framework.model.EntityEditModel.events;
 import static java.util.Collections.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -96,9 +95,9 @@ public final class AbstractEntityEditModelTest {
 		Consumer<Map<Entity, Entity>> updateListener = updated -> updateEvents.incrementAndGet();
 		Consumer<Collection<Entity>> deleteListener = deleted -> deleteEvents.incrementAndGet();
 
-		events(Employee.TYPE).inserted().addWeakConsumer(insertListener);
-		events(Employee.TYPE).updated().addWeakConsumer(updateListener);
-		events(Employee.TYPE).deleted().addWeakConsumer(deleteListener);
+		AbstractEntityEditModel.editEvents(Employee.TYPE).inserted().addWeakConsumer(insertListener);
+		AbstractEntityEditModel.editEvents(Employee.TYPE).updated().addWeakConsumer(updateListener);
+		AbstractEntityEditModel.editEvents(Employee.TYPE).deleted().addWeakConsumer(deleteListener);
 
 		employeeEditModel.settings().editEvents().set(true);
 
@@ -120,9 +119,9 @@ public final class AbstractEntityEditModelTest {
 			connection.rollbackTransaction();
 		}
 
-		events(Employee.TYPE).inserted().removeWeakConsumer(insertListener);
-		events(Employee.TYPE).updated().removeWeakConsumer(updateListener);
-		events(Employee.TYPE).deleted().removeWeakConsumer(deleteListener);
+		AbstractEntityEditModel.editEvents(Employee.TYPE).inserted().removeWeakConsumer(insertListener);
+		AbstractEntityEditModel.editEvents(Employee.TYPE).updated().removeWeakConsumer(updateListener);
+		AbstractEntityEditModel.editEvents(Employee.TYPE).deleted().removeWeakConsumer(deleteListener);
 	}
 
 	@Test

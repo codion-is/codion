@@ -23,7 +23,6 @@ import org.jspecify.annotations.Nullable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
@@ -35,7 +34,7 @@ import static java.util.Objects.requireNonNull;
 class DefaultValueCollection<T, C extends Collection<T>> extends DefaultValue<C> implements ValueCollection<T, C> {
 
 	private final Supplier<? extends C> create;
-	private final Function<C, C> unmodifiable;
+	private final UnaryOperator<C> unmodifiable;
 
 	private @Nullable Value<T> singleValue;
 
@@ -51,7 +50,7 @@ class DefaultValueCollection<T, C extends Collection<T>> extends DefaultValue<C>
 	}
 
 	@Override
-	public Optional<C> optional() {
+	public final Optional<C> optional() {
 		synchronized (lock) {
 			C values = getOrThrow();
 			if (values.isEmpty()) {

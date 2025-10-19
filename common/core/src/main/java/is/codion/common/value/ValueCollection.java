@@ -101,7 +101,7 @@ public interface ValueCollection<T, C extends Collection<T>> extends Value<C>, O
 	 * Setting this value to null clears the values.
 	 * This value consistently returns the first value from the
 	 * underlying {@link ValueCollection} in case it is sequenced and contains multiple items.
-	 * @return a single item value based on this values instance
+	 * @return a single item value based on this {@link ValueCollection} instance
 	 */
 	Value<T> value();
 

@@ -332,8 +332,7 @@ To configure the query limit:
 In the limit dialog:
 
 1. Enter the maximum number of records to retrieve (or clear the field to remove the limit)
-2. Click *OK* to apply the limit
-3. Refresh the table to apply the new limit setting
+2. Click *OK* to apply the limit, which automatically refreshes the table data
 
 NOTE: The limit configuration will be reset to its default when you reopen the application.
 
@@ -423,19 +422,14 @@ To open the popup menu:
 
 Common actions available in the popup menu:
 
-* **Table menus** - Refresh, Copy (table/cell), Export, Delete, Edit, Column operations, Search operations
-* **Edit panel menus** - Add, Update, Delete, Clear, Refresh
-* **Field menus** - Copy, Paste, Clear, Field-specific operations
+* **Table menus** - Refresh, Copy (table/cell), Export, Delete, Edit, Column operations, Search/Filter visibility
+* **Field menus** - Field-specific configuration
 
 TIP: The popup menu is the quickest way to discover available actions for any component. When in doubt, right-click!
 
-=== Working with Dependencies
+=== Viewing Dependencies
 
-When viewing records that have relationships to other data:
-
-==== Viewing Dependencies
-
-Some applications provide a dependencies dialog that shows all records related to the currently selected record(s):
+Applications provide a dependencies dialog that shows all records related to the currently selected record(s):
 
 1. Select one or more records in the table
 2. Use the *Dependencies* action in the popup menu
