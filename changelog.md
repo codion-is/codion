@@ -38,6 +38,7 @@ Codion Change Log
 - KeyboardShortcutsPanel, copy expanded changed to table export, related changes.
 - EntityEditComponentPanel.EditorComponent.set(ComponentValue) added, automatically links it to the underlying editor value.
 - EntityTablePanel bug fixed, now disables editing for cells based on entities that are neither searchable nor based on small datasets, since a search field can not be automatically instantiated.
+- EntityDialogs.DefaultEditAttributeDialogBuilder refactored, EditAttributePanel added, now handles async properly, validation improved.
 
 ## 0.18.54
 ### is.codion.common.db

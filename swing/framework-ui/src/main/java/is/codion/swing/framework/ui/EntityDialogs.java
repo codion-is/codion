@@ -21,14 +21,10 @@ package is.codion.swing.framework.ui;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.common.observer.Observable;
-import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.Entity.Copy;
-import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -43,15 +39,11 @@ import is.codion.swing.framework.ui.component.DefaultEditComponentFactory;
 import is.codion.swing.framework.ui.component.EditComponentFactory;
 
 import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import java.awt.Component;
-import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Window;
 import java.util.ArrayList;
@@ -59,13 +51,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.Utilities.disposeParentWindow;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.border.Borders.emptyBorder;
@@ -73,8 +62,6 @@ import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
-import static java.util.ResourceBundle.getBundle;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -86,8 +73,6 @@ import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
  */
 public final class EntityDialogs {
 
-	private static final MessageBundle EDIT_PANEL_MESSAGES =
-					messageBundle(EntityEditPanel.class, getBundle(EntityEditPanel.class.getName()));
 	private static final Consumer<?> EMPTY_CONSUMER = value -> {};
 
 	private EntityDialogs() {}
@@ -142,18 +127,6 @@ public final class EntityDialogs {
 		 * @return this builder
 		 */
 		EditAttributeDialogBuilder<T> editComponentFactory(EditComponentFactory<?, T> editComponentFactory);
-
-		/**
-		 * @param onValidationException called on validation exception
-		 * @return this builder
-		 */
-		EditAttributeDialogBuilder<T> onValidationException(Consumer<ValidationException> onValidationException);
-
-		/**
-		 * @param onException called on exception
-		 * @return this builder
-		 */
-		EditAttributeDialogBuilder<T> onException(Consumer<Exception> onException);
 
 		/**
 		 * <p>Provides the default value presented in the edit component.
@@ -288,14 +261,10 @@ public final class EntityDialogs {
 	private static final class DefaultEditAttributeDialogBuilder<T> extends AbstractDialogBuilder<EditAttributeDialogBuilder<T>>
 					implements EditAttributeDialogBuilder<T> {
 
-		private static final Logger LOG = LoggerFactory.getLogger(DefaultEditAttributeDialogBuilder.class);
-
 		private final SwingEntityEditModel editModel;
 		private final Attribute<T> attribute;
 
 		private EditComponentFactory<?, T> editComponentFactory;
-		private Consumer<ValidationException> onValidationException = new DefaultValidationExceptionHandler();
-		private Consumer<Exception> onException = new DefaultExceptionHandler();
 		private Function<Collection<Entity>, T> defaultValue = new DefaultValue();
 
 		private DefaultEditAttributeDialogBuilder(SwingEntityEditModel editModel, Attribute<T> attribute) {
@@ -307,18 +276,6 @@ public final class EntityDialogs {
 		@Override
 		public EditAttributeDialogBuilder<T> editComponentFactory(EditComponentFactory<?, T> editComponentFactory) {
 			this.editComponentFactory = requireNonNull(editComponentFactory);
-			return this;
-		}
-
-		@Override
-		public EditAttributeDialogBuilder<T> onValidationException(Consumer<ValidationException> onValidationException) {
-			this.onValidationException = requireNonNull(onValidationException);
-			return this;
-		}
-
-		@Override
-		public EditAttributeDialogBuilder<T> onException(Consumer<Exception> onException) {
-			this.onException = requireNonNull(onException);
 			return this;
 		}
 
@@ -347,15 +304,19 @@ public final class EntityDialogs {
 
 			ComponentValue<?, T> componentValue = editComponentFactory.component(editModel);
 			componentValue.set(defaultValue.apply(entities));
-			Dialogs.input()
-							.component(componentValue)
+			EditAttributePanel<T> editPanel =
+							new EditAttributePanel<>(editModel, entities, attribute, componentValue,
+											editComponentFactory.caption(editModel.entityDefinition()
+															.attributes().definition(attribute)).orElse(null));
+			Dialogs.okCancel()
+							.component(editPanel)
 							.owner(owner)
 							.location(location)
 							.locationRelativeTo(locationRelativeTo)
 							.title(FrameworkMessages.edit())
-							.caption(editComponentFactory.caption(editModel.entityDefinition().attributes().definition(attribute)).orElse(null))
-							.validator(new InputValidator(componentValue))
-							.show(new PerformUpdate(entities));
+							.okAction(editPanel.update())
+							.cancelAction(editPanel.cancel())
+							.show();
 		}
 
 		private final class DefaultValue implements Function<Collection<Entity>, T> {
@@ -367,108 +328,6 @@ public final class EntityDialogs {
 								.collect(toSet());
 
 				return values.size() == 1 ? values.iterator().next() : null;
-			}
-		}
-
-		private final class PerformUpdate implements Predicate<T> {
-
-			private final Collection<Entity> entities;
-
-			private PerformUpdate(Collection<Entity> entities) {
-				this.entities = entities.stream()
-								.map(Entity::copy)
-								.map(Copy::mutable)
-								.collect(toList());
-			}
-
-			@Override
-			public boolean test(T newValue) {
-				editModel.applyEdit(entities, attribute, newValue);
-				try {
-					Dialogs.progressWorker()
-									.task(editModel.updateTask(entities.stream()
-													.filter(Entity::modified)
-													.collect(toList())).prepare()::perform)
-									.title(EDIT_PANEL_MESSAGES.getString("updating"))
-									.owner(owner)
-									.location(location)
-									.locationRelativeTo(locationRelativeTo)
-									.onException(e -> {})
-									.execute()
-									.get()
-									.handle();
-
-					return true;
-				}
-				catch (ValidationException e) {
-					LOG.debug(e.getMessage(), e);
-					onValidationException.accept(e);
-				}
-				catch (ExecutionException e) {
-					Throwable cause = e.getCause();
-					LOG.error(e.getMessage(), e);
-					if (cause instanceof Exception) {
-						onException.accept((Exception) cause);
-					}
-					else {
-						onException.accept(new RuntimeException(cause));
-					}
-				}
-				catch (InterruptedException e) {
-					Thread.currentThread().interrupt();
-					throw new RuntimeException(e);
-				}
-
-				return false;
-			}
-		}
-
-		private final class DefaultExceptionHandler implements Consumer<Exception> {
-
-			@Override
-			public void accept(Exception exception) {
-				Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
-				if (focusOwner == null) {
-					focusOwner = owner;
-				}
-				Dialogs.displayException(exception, parentWindow(focusOwner));
-			}
-		}
-
-		private final class DefaultValidationExceptionHandler implements Consumer<ValidationException> {
-
-			@Override
-			public void accept(ValidationException exception) {
-				requireNonNull(exception);
-				String title = editModel.entityDefinition().attributes()
-								.definition(exception.attribute())
-								.caption();
-				showMessageDialog(locationRelativeTo == null ? owner : locationRelativeTo, exception.getMessage(), title, JOptionPane.ERROR_MESSAGE);
-			}
-		}
-
-		private final class InputValidator implements Predicate<T> {
-
-			private final ComponentValue<?, T> componentValue;
-
-			private InputValidator(ComponentValue<?, T> componentValue) {
-				this.componentValue = componentValue;
-			}
-
-			@Override
-			public boolean test(T value) {
-				EntityDefinition entityDefinition = editModel.entityDefinition();
-				Entity entity = entityDefinition.entity();
-				entity.set(attribute, value);
-				try {
-					entityDefinition.validator().validate(entity, attribute);
-					componentValue.validate(value);
-
-					return true;
-				}
-				catch (IllegalArgumentException e) {
-					return false;
-				}
 			}
 		}
 	}

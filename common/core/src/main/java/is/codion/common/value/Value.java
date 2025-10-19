@@ -171,7 +171,7 @@ public interface Value<T> extends Observable<T> {
 	 * @param value the value to validate
 	 * @throws IllegalArgumentException in case the given value is invalid according to a validator
 	 */
-	void validate(T value);
+	void validate(@Nullable T value);
 
 	/**
 	 * Creates a new nullable {@link Value} instance, wrapping a null initial value, using {@link Notify#CHANGED}.
