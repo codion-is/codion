@@ -29,6 +29,7 @@ import is.codion.swing.common.ui.control.Control;
 import org.jspecify.annotations.Nullable;
 
 import javax.swing.JComponent;
+import javax.swing.Timer;
 import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.util.List;
@@ -36,6 +37,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static java.lang.System.currentTimeMillis;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -53,6 +55,10 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 	private Consumer<T> onResult = (Consumer<T>) EMPTY_CONSUMER;
 	private @Nullable Consumer<List<V>> onPublish;
 	private Consumer<Exception> onException = new DisplayExceptionInDialog();
+	private int showDelay = SHOW_DELAY.getOrThrow();
+	private int hideDelay = HIDE_DELAY.getOrThrow();
+	private @Nullable Timer showTimer;
+	private long startTime;
 
 	DefaultProgressWorkerDialogBuilder(Task task) {
 		this.progressWorkerBuilder = (ProgressWorker.Builder<T, V>) ProgressWorker.builder().task(task);
@@ -134,6 +140,19 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 	}
 
 	@Override
+	public ProgressWorkerDialogBuilder<T, V> delay(int show, int hide) {
+		if (show < 0) {
+			throw new IllegalArgumentException("show delay must be non-negative");
+		}
+		if (hide < 0) {
+			throw new IllegalArgumentException("hide delay must be non-negative");
+		}
+		this.showDelay = show;
+		this.hideDelay = hide;
+		return this;
+	}
+
+	@Override
 	public ProgressWorkerDialogBuilder<T, V> onPublish(Consumer<List<V>> onPublish) {
 		this.onPublish = requireNonNull(onPublish);
 		return this;
@@ -189,7 +208,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 						.build();
 
 		return progressWorkerBuilder
-						.onStarted(() -> progressDialog.setVisible(true))
+						.onStarted(() -> showDialog(progressDialog))
 						.onProgress(progressDialog::setProgress)
 						.onPublish(chunks -> publish(chunks, progressDialog))
 						.onDone(() -> closeDialog(progressDialog))
@@ -232,9 +251,30 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 		return chunks.isEmpty() ? null : Objects.toString(chunks.get(chunks.size() - 1));
 	}
 
-	private static void closeDialog(ProgressDialog progressDialog) {
-		progressDialog.setVisible(false);
-		progressDialog.dispose();
+	private void showDialog(ProgressDialog progressDialog) {
+		startTime = currentTimeMillis();
+		showTimer = new Timer(showDelay, e -> progressDialog.setVisible(true));
+		showTimer.setRepeats(false);
+		showTimer.start();
+	}
+
+	private void closeDialog(ProgressDialog progressDialog) {
+		stopShowTimer();
+		long elapsed = currentTimeMillis() - startTime;
+		long remainingDelay = hideDelay - elapsed;
+		Timer hideTimer = new Timer((int) Math.max(0, remainingDelay), e -> {
+			progressDialog.setVisible(false);
+			progressDialog.dispose();
+		});
+		hideTimer.setRepeats(false);
+		hideTimer.start();
+	}
+
+	private void stopShowTimer() {
+		if (showTimer != null) {
+			showTimer.stop();
+			showTimer = null;
+		}
 	}
 
 	private class DisplayExceptionInDialog implements Consumer<Exception> {

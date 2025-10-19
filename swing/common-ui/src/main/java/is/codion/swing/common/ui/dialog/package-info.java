@@ -20,6 +20,8 @@
  * Package configuration values:
  * <ul>
  * <li>{@link is.codion.swing.common.ui.dialog.ExceptionDialogBuilder#SYSTEM_PROPERTIES}
+ * <li>{@link is.codion.swing.common.ui.dialog.ProgressWorkerDialogBuilder#SHOW_DELAY}
+ * <li>{@link is.codion.swing.common.ui.dialog.ProgressWorkerDialogBuilder#HIDE_DELAY}
  * <li>{@link is.codion.swing.common.ui.laf.LookAndFeelComboBox#INCLUDE_INSTALLED_LOOK_AND_FEELS}
  * </ul>
  */

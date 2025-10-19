@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.ui.dialog;
 
+import is.codion.common.property.PropertyValue;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.control.Control;
 
@@ -30,15 +31,52 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static is.codion.common.Configuration.integerValue;
+
 /**
  * A builder for a {@link ProgressWorker} implementation which displays a progress bar in a modal dialog
  * while background work is being performed.
  * The progress bar can be of type 'indeterminate' or with the progress ranging from 0 to 100.
+ * <p>
+ * By default, the progress dialog uses a delayed show/hide mechanism to prevent flickering
+ * for fast operations:
+ * <ul>
+ * <li>The dialog is only shown if the operation takes longer than {@link ProgressWorkerDialogBuilder#SHOW_DELAY} milliseconds (default: 500ms)
+ * <li>If shown, the dialog remains visible for at least {@link ProgressWorkerDialogBuilder#HIDE_DELAY} milliseconds (default: 1000ms)
+ * </ul>
+ * These delays can be customized via {@link #delay(int, int)} or the system properties.
  * @param <T> the type of result this {@link ProgressWorker} produces.
  * @param <V> the type of intermediate result this {@link ProgressWorker} produces.
  * @see ProgressWorker.ProgressResultTask#execute(ProgressWorker.ProgressReporter) to indicate work progress
+ * @see #delay(int, int)
  */
 public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<ProgressWorkerDialogBuilder<T, V>> {
+
+	/**
+	 * Specifies the delay in milliseconds before showing a progress dialog.
+	 * Progress dialogs are only shown if the operation takes longer than this delay,
+	 * preventing dialog flicker for fast operations.
+	 * <ul>
+	 * <li>Value type: Integer
+	 * <li>Default value: 500
+	 * </ul>
+	 * @see #HIDE_DELAY
+	 */
+	PropertyValue<Integer> SHOW_DELAY =
+					integerValue(ProgressWorkerDialogBuilder.class.getName() + ".showDelay", 500);
+
+	/**
+	 * Specifies the minimum duration in milliseconds that a progress dialog should remain visible.
+	 * If a progress dialog is shown, it will remain visible for at least this duration
+	 * even if the operation completes faster, preventing dialog flicker.
+	 * <ul>
+	 * <li>Value type: Integer
+	 * <li>Default value: 1000
+	 * </ul>
+	 * @see #SHOW_DELAY
+	 */
+	PropertyValue<Integer> HIDE_DELAY =
+					integerValue(ProgressWorkerDialogBuilder.class.getName() + ".hideDelay", 1000);
 
 	/**
 	 * Provides builders for a given task type.
@@ -139,6 +177,19 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
 	 * @return this Builder instance
 	 */
 	ProgressWorkerDialogBuilder<T, V> progressBarSize(@Nullable Dimension progressBarSize);
+
+	/**
+	 * Configures dialog delay settings to prevent flicker for fast operations.
+	 * The dialog will only be shown if the operation takes longer than {@code show} milliseconds.
+	 * If the dialog is shown, it will remain visible for at least {@code close} milliseconds
+	 * even if the operation completes faster.
+	 * @param show the delay in milliseconds before showing the dialog
+	 * @param hide the minimum duration in milliseconds to keep the dialog visible once shown
+	 * @return this Builder instance
+	 * @see ProgressWorkerDialogBuilder#SHOW_DELAY
+	 * @see ProgressWorkerDialogBuilder#HIDE_DELAY
+	 */
+	ProgressWorkerDialogBuilder<T, V> delay(int show, int hide);
 
 	/**
 	 * @param onPublish called on the Event Dispatch Thread when chunks are available for publishing
