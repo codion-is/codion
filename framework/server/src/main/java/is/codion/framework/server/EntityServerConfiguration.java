@@ -86,7 +86,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
 	 * Specifies a comma separated list of domain model class names, these classes must be
 	 * available on the server classpath
 	 */
-	PropertyValue<String> DOMAIN_MODEL_CLASSES = stringValue("codion.server.domain.classes");
+	PropertyValue<String> DOMAIN_CLASSES = stringValue("codion.server.domain.classes");
 
 	/**
 	 * @return the Database implementation
@@ -116,7 +116,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
 	/**
 	 * @return the domain model classes to load on startup
 	 */
-	Collection<String> domainClassNames();
+	Collection<String> domainClasses();
 
 	/**
 	 * @return the users for which to initialize connection pools on startup
@@ -164,10 +164,10 @@ public interface EntityServerConfiguration extends ServerConfiguration {
 		Builder connectionPoolFactory(String connectionPoolFactory);
 
 		/**
-		 * @param domainClassNames the domain model classes to load on startup
+		 * @param domainClasses the domain model classes to load on startup
 		 * @return this builder instance
 		 */
-		Builder domainClassNames(Collection<String> domainClassNames);
+		Builder domainClasses(Collection<String> domainClasses);
 
 		/**
 		 * @param connectionPoolUsers the users for which to initialize connection pools on startup

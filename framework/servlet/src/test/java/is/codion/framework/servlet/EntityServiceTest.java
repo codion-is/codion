@@ -498,7 +498,7 @@ public class EntityServiceTest {
 		return EntityServerConfiguration.builder(3223, 3221)
 						.adminPort(3223)
 						.adminUser(User.parse("scott:tiger"))
-						.domainClassNames(singletonList(TestDomain.class.getName()))
+						.domainClasses(singletonList(TestDomain.class.getName()))
 						.database(Database.instance())
 						.sslEnabled(false)
 						.auxiliaryServerFactory(singletonList(EntityServiceFactory.class.getName()))

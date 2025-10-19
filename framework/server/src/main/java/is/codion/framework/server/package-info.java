@@ -24,7 +24,7 @@
  * <li>{@link is.codion.framework.server.EntityServerConfiguration#CLIENT_CONNECTION_TIMEOUT}
  * <li>{@link is.codion.framework.server.EntityServerConfiguration#METHOD_TRACING}
  * <li>{@link is.codion.framework.server.EntityServerConfiguration#CONNECTION_POOL_USERS}
- * <li>{@link is.codion.framework.server.EntityServerConfiguration#DOMAIN_MODEL_CLASSES}
+ * <li>{@link is.codion.framework.server.EntityServerConfiguration#DOMAIN_CLASSES}
  * </ul>
  */
 package is.codion.framework.server;

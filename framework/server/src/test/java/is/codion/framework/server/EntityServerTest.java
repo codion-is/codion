@@ -327,7 +327,7 @@ public class EntityServerTest {
 						.database(Database.instance())
 						.connectionPoolUsers(singletonList(UNIT_TEST_USER))
 						.clientTypeIdleConnectionTimeouts(singletonMap("ClientType", 10000))
-						.domainClassNames(asList("is.codion.framework.server.TestDomain", "is.codion.framework.server.ConfigureDb"))
+						.domainClasses(asList("is.codion.framework.server.TestDomain", "is.codion.framework.server.ConfigureDb"))
 						.methodTracing(true)
 						.sslEnabled(true)
 						.objectInputFilterFactory(SerializationFilterFactory.class.getName())

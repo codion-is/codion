@@ -99,7 +99,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 		try {
 			this.database = requireNonNull(configuration.database());
 			this.methodTracing = configuration.methodTracing();
-			this.domainModels = loadDomainModels(configuration.domainClassNames());
+			this.domainModels = loadDomainModels(configuration.domainClasses());
 			configureDatabase(domainModels.values(), database);
 			EntityServerAdmin serverAdmin = createServerAdmin(configuration);
 			if (serverAdmin != null) {
@@ -393,14 +393,14 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 		}
 	}
 
-	private static Map<DomainType, Domain> loadDomainModels(Collection<String> domainModelClassNames) throws Throwable {
+	private static Map<DomainType, Domain> loadDomainModels(Collection<String> domainModelClasses) throws Throwable {
 		Map<DomainType, Domain> domains = new HashMap<>();
 		try {
 			for (Domain domain : Domain.domains()) {
 				LOG.info("Server loading domain model '{}' as a service", domain.type());
 				domains.put(domain.type(), domain);
 			}
-			for (String className : domainModelClassNames) {
+			for (String className : domainModelClasses) {
 				LOG.info("Server loading domain model '{}' from classpath", className);
 				Domain domain = (Domain) Class.forName(className).getDeclaredConstructor().newInstance();
 				domains.put(domain.type(), domain);

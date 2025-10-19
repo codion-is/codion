@@ -51,7 +51,7 @@ public final class ClientServer {
 
 		EntityServerConfiguration configuration =
 						EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)
-										.domainClassNames(List.of(Store.class.getName()))
+										.domainClasses(List.of(Store.class.getName()))
 										.database(database)
 										.sslEnabled(false)
 										.build();
@@ -87,7 +87,7 @@ public final class ClientServer {
 
 		EntityServerConfiguration configuration =
 						EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)
-										.domainClassNames(List.of(Store.class.getName()))
+										.domainClasses(List.of(Store.class.getName()))
 										.database(database)
 										.sslEnabled(false)
 										.auxiliaryServerFactory(List.of(EntityServiceFactory.class.getName()))

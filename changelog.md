@@ -38,6 +38,8 @@ Codion Change Log
 - DefaultLocalEntityConnection.insert() refactored, now caches information on generated columns.
 ### is.codion.framework.model
 - AbstractEntityEditModel log and error messages fixed.
+### is.codion.framework.server
+- EntityServerConfiguration.DOMAIN_CLASS_NAMES renamed DOMAIN_CLASSES, related renaming.
 ### is.codion.swing.framework.ui
 - KeyboardShortcutsPanel, copy expanded changed to table export, related changes.
 - EntityEditComponentPanel.EditorComponent.set(ComponentValue) added, automatically links it to the underlying editor value.

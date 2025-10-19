@@ -56,7 +56,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 	private final boolean methodTracing;
 	private final int idleConnectionTimeout;
 	private final String connectionPoolFactory;
-	private final Collection<String> domainClassNames;
+	private final Collection<String> domainClasses;
 	private final Collection<User> connectionPoolUsers;
 	private final Map<String, Integer> clientTypeIdleConnectionTimeouts;
 
@@ -67,7 +67,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 		this.methodTracing = builder.methodTracing;
 		this.idleConnectionTimeout = builder.idleConnectionTimeout;
 		this.connectionPoolFactory = builder.connectionPoolFactory;
-		this.domainClassNames = unmodifiableCollection(builder.domainClassNames);
+		this.domainClasses = unmodifiableCollection(builder.domainClasses);
 		this.connectionPoolUsers = unmodifiableCollection(builder.connectionPoolUsers);
 		this.clientTypeIdleConnectionTimeouts = unmodifiableMap(builder.clientTypeIdleConnectionTimeouts);
 	}
@@ -153,8 +153,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 	}
 
 	@Override
-	public Collection<String> domainClassNames() {
-		return domainClassNames;
+	public Collection<String> domainClasses() {
+		return domainClasses;
 	}
 
 	@Override
@@ -174,7 +174,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 						.adminPort(ADMIN_PORT.getOrThrow())
 						.connectionLimit(CONNECTION_LIMIT.getOrThrow())
 						.database(Database.instance())
-						.domainClassNames(Text.parseCSV(DOMAIN_MODEL_CLASSES.get()))
+						.domainClasses(Text.parseCSV(DOMAIN_CLASSES.get()))
 						.connectionPoolUsers(Text.parseCSV(CONNECTION_POOL_USERS.get()).stream()
 										.map(User::parse)
 										.collect(toList()));
@@ -209,7 +209,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 		private boolean methodTracing = METHOD_TRACING.getOrThrow();
 		private int idleConnectionTimeout = IDLE_CONNECTION_TIMEOUT.getOrThrow();
 		private String connectionPoolFactory;
-		private final Collection<String> domainClassNames = new HashSet<>();
+		private final Collection<String> domainClasses = new HashSet<>();
 		private final Collection<User> connectionPoolUsers = new HashSet<>();
 		private final Map<String, Integer> clientTypeIdleConnectionTimeouts = new HashMap<>();
 
@@ -309,8 +309,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 		}
 
 		@Override
-		public Builder domainClassNames(Collection<String> domainClassNames) {
-			this.domainClassNames.addAll(requireNonNull(domainClassNames));
+		public Builder domainClasses(Collection<String> domainClasses) {
+			this.domainClasses.addAll(requireNonNull(domainClasses));
 			return this;
 		}
 
