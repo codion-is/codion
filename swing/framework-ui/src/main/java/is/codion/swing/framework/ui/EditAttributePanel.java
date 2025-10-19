@@ -21,6 +21,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.i18n.Messages;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.state.State;
+import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.attribute.Attribute;
@@ -70,6 +71,7 @@ final class EditAttributePanel<T> extends JPanel {
 	private final Collection<Entity> entities;
 	private final Attribute<T> attribute;
 	private final State valid = State.state(true);
+	private final Value<String> message = Value.nonNull("");
 	private final State updating = State.state();
 	private final JPanel componentPanel;
 	private final JProgressBar progress;
@@ -85,6 +87,7 @@ final class EditAttributePanel<T> extends JPanel {
 		this.componentPanel = createComponentPanel(caption);
 		this.progress = createProgress();
 		componentValue.addListener(this::validateValue);
+		message.addConsumer(componentValue.component()::setToolTipText);
 		validateValue();
 		add(componentPanel, CENTER);
 	}
@@ -141,13 +144,11 @@ final class EditAttributePanel<T> extends JPanel {
 				validator.validate(entity, attribute);
 				componentValue.validate(value);
 				valid.set(true);
-			}
-			catch (ValidationException e) {
-				valid.set(false);
-				return;
+				message.clear();
 			}
 			catch (IllegalArgumentException e) {
 				valid.set(false);
+				message.set(e.getMessage());
 				return;
 			}
 		}
