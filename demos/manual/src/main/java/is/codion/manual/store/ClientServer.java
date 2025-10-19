@@ -90,7 +90,7 @@ public final class ClientServer {
 										.domainClassNames(List.of(Store.class.getName()))
 										.database(database)
 										.sslEnabled(false)
-										.auxiliaryServerFactoryClassNames(List.of(EntityServiceFactory.class.getName()))
+										.auxiliaryServerFactory(List.of(EntityServiceFactory.class.getName()))
 										.build();
 
 		EntityServer server = EntityServer.startServer(configuration);

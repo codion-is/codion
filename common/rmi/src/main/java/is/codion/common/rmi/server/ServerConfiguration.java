@@ -178,7 +178,7 @@ public interface ServerConfiguration {
 	 * </ul>
 	 * @see AuxiliaryServer
 	 */
-	PropertyValue<String> AUXILIARY_SERVER_FACTORY_CLASS_NAMES = stringValue("codion.server.auxiliaryServerFactoryClassNames");
+	PropertyValue<String> AUXILIARY_SERVER_FACTORIES = stringValue("codion.server.auxiliaryServerFactories");
 
 	/**
 	 * Specifies the {@link ObjectInputFilterFactory} class to use
@@ -188,7 +188,7 @@ public interface ServerConfiguration {
 	 * </ul>
 	 * @see ObjectInputFilterFactory
 	 */
-	PropertyValue<String> OBJECT_INPUT_FILTER_FACTORY_CLASS_NAME = stringValue("codion.server.objectInputFilterFactoryClassName");
+	PropertyValue<String> OBJECT_INPUT_FILTER_FACTORY = stringValue("codion.server.objectInputFilterFactory");
 
 	/**
 	 * Specifies the interval between server connection maintenance runs, in milliseconds
@@ -224,7 +224,7 @@ public interface ServerConfiguration {
 	/**
 	 * @return the class names of auxiliary server factories, providing the servers to run alongside this server
 	 */
-	Collection<String> auxiliaryServerFactoryClassNames();
+	Collection<String> auxiliaryServerFactory();
 
 	/**
 	 * @return true if ssl is enabled
@@ -244,7 +244,7 @@ public interface ServerConfiguration {
 	/**
 	 * @return the object input filter factory class name, or an empty Optional if none is specified
 	 */
-	Optional<String> objectInputFilterFactoryClassName();
+	Optional<String> objectInputFilterFactory();
 
 	/**
 	 * @return the interval between server connection maintenance runs, in milliseconds.
@@ -282,11 +282,11 @@ public interface ServerConfiguration {
 		B serverName(String serverName);
 
 		/**
-		 * @param auxiliaryServerFactoryClassNames the class names of auxiliary server factories,
+		 * @param auxiliaryServerFactory the class names of auxiliary server factories,
 		 * providing the servers to run alongside this server
 		 * @return this builder instance
 		 */
-		B auxiliaryServerFactoryClassNames(Collection<String> auxiliaryServerFactoryClassNames);
+		B auxiliaryServerFactory(Collection<String> auxiliaryServerFactory);
 
 		/**
 		 * When set to true this also sets the rmi client/server socket factories.
@@ -296,10 +296,10 @@ public interface ServerConfiguration {
 		B sslEnabled(boolean sslEnabled);
 
 		/**
-		 * @param objectInputFilterFactoryClassName the object input filter factory class name
+		 * @param objectInputFilterFactory the object input filter factory class name
 		 * @return this builder instance
 		 */
-		B objectInputFilterFactoryClassName(@Nullable String objectInputFilterFactoryClassName);
+		B objectInputFilterFactory(@Nullable String objectInputFilterFactory);
 
 		/**
 		 * @param connectionMaintenanceInterval the interval between server connection maintenance runs, in milliseconds.
@@ -345,7 +345,7 @@ public interface ServerConfiguration {
 	 */
 	static <B extends Builder<B>> Builder<B> builderFromSystemProperties() {
 		return (Builder<B>) builder(SERVER_PORT.getOrThrow(), REGISTRY_PORT.getOrThrow())
-						.auxiliaryServerFactoryClassNames(Text.parseCSV(AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()))
+						.auxiliaryServerFactory(Text.parseCSV(AUXILIARY_SERVER_FACTORIES.get()))
 						.adminPort(ADMIN_PORT.getOrThrow())
 						.sslEnabled(SSL_ENABLED.getOrThrow())
 						.connectionMaintenanceInterval(CONNECTION_MAINTENANCE_INTERVAL.getOrThrow());

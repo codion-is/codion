@@ -51,26 +51,26 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 
 	private final int port;
 	private final int registryPort;
-	private final Collection<String> auxiliaryServerFactoryClassNames;
+	private final Collection<String> auxiliaryServerFactories;
 	private final int adminPort;
 	private final boolean sslEnabled;
 	private final Supplier<String> serverNameSupplier;
 	private final @Nullable RMIClientSocketFactory rmiClientSocketFactory;
 	private final @Nullable RMIServerSocketFactory rmiServerSocketFactory;
-	private final @Nullable String objectInputFilterFactoryClassName;
+	private final @Nullable String objectInputFilterFactory;
 	private final int connectionMaintenanceInterval;
 	private final int connectionLimit;
 
 	DefaultServerConfiguration(DefaultServerConfiguration.DefaultBuilder builder) {
 		this.port = builder.serverPort;
 		this.registryPort = builder.registryPort;
-		this.auxiliaryServerFactoryClassNames = unmodifiableCollection(builder.auxiliaryServerFactoryClassNames);
+		this.auxiliaryServerFactories = unmodifiableCollection(builder.auxiliaryServerFactories);
 		this.adminPort = builder.serverAdminPort;
 		this.sslEnabled = builder.sslEnabled;
 		this.serverNameSupplier = builder.serverName;
 		this.rmiClientSocketFactory = builder.rmiClientSocketFactory;
 		this.rmiServerSocketFactory = builder.rmiServerSocketFactory;
-		this.objectInputFilterFactoryClassName = builder.objectInputFilterFactoryClassName;
+		this.objectInputFilterFactory = builder.objectInputFilterFactory;
 		this.connectionMaintenanceInterval = builder.connectionMaintenanceInterval;
 		this.connectionLimit = builder.connectionLimit;
 	}
@@ -101,8 +101,8 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 	}
 
 	@Override
-	public Collection<String> auxiliaryServerFactoryClassNames() {
-		return auxiliaryServerFactoryClassNames;
+	public Collection<String> auxiliaryServerFactory() {
+		return auxiliaryServerFactories;
 	}
 
 	@Override
@@ -121,8 +121,8 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 	}
 
 	@Override
-	public Optional<String> objectInputFilterFactoryClassName() {
-		return Optional.ofNullable(objectInputFilterFactoryClassName);
+	public Optional<String> objectInputFilterFactory() {
+		return Optional.ofNullable(objectInputFilterFactory);
 	}
 
 	@Override
@@ -143,13 +143,13 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 
 		private final int serverPort;
 		private final int registryPort;
-		private final Collection<String> auxiliaryServerFactoryClassNames = new HashSet<>();
+		private final Collection<String> auxiliaryServerFactories = new HashSet<>();
 		private int serverAdminPort;
 		private boolean sslEnabled = true;
 		private Supplier<String> serverName = new DefaultServerName();
 		private @Nullable RMIClientSocketFactory rmiClientSocketFactory = new SslRMIClientSocketFactory();
 		private @Nullable RMIServerSocketFactory rmiServerSocketFactory = new SslRMIServerSocketFactory();
-		private @Nullable String objectInputFilterFactoryClassName = OBJECT_INPUT_FILTER_FACTORY_CLASS_NAME.get();
+		private @Nullable String objectInputFilterFactory = OBJECT_INPUT_FILTER_FACTORY.get();
 		private Integer connectionMaintenanceInterval = DEFAULT_CONNECTION_MAINTENANCE_INTERVAL;
 		private int connectionLimit = -1;
 
@@ -180,8 +180,8 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		}
 
 		@Override
-		public DefaultBuilder auxiliaryServerFactoryClassNames(Collection<String> auxiliaryServerFactoryClassNames) {
-			this.auxiliaryServerFactoryClassNames.addAll(requireNonNull(auxiliaryServerFactoryClassNames));
+		public DefaultBuilder auxiliaryServerFactory(Collection<String> auxiliaryServerFactory) {
+			this.auxiliaryServerFactories.addAll(requireNonNull(auxiliaryServerFactory));
 			return this;
 		}
 
@@ -200,8 +200,8 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		}
 
 		@Override
-		public DefaultBuilder objectInputFilterFactoryClassName(@Nullable String objectInputFilterFactoryClassName) {
-			this.objectInputFilterFactoryClassName = objectInputFilterFactoryClassName;
+		public DefaultBuilder objectInputFilterFactory(@Nullable String objectInputFilterFactory) {
+			this.objectInputFilterFactory = objectInputFilterFactory;
 			return this;
 		}
 

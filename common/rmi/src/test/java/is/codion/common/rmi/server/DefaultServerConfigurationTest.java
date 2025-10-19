@@ -78,9 +78,9 @@ public class DefaultServerConfigurationTest {
 			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT)
 							.adminPort(TEST_ADMIN_PORT)
 							.serverName(TEST_SERVER_NAME)
-							.auxiliaryServerFactoryClassNames(auxiliaryClasses)
+							.auxiliaryServerFactory(auxiliaryClasses)
 							.sslEnabled(false)
-							.objectInputFilterFactoryClassName(TEST_FILTER_CLASS)
+							.objectInputFilterFactory(TEST_FILTER_CLASS)
 							.connectionMaintenanceInterval(TEST_MAINTENANCE_INTERVAL)
 							.connectionLimit(TEST_CONNECTION_LIMIT)
 							.build();
@@ -88,10 +88,10 @@ public class DefaultServerConfigurationTest {
 			assertEquals(TEST_PORT, config.port());
 			assertEquals(TEST_ADMIN_PORT, config.adminPort());
 			assertEquals(TEST_SERVER_NAME, config.serverName());
-			assertTrue(config.auxiliaryServerFactoryClassNames().containsAll(auxiliaryClasses));
-			assertEquals(auxiliaryClasses.size(), config.auxiliaryServerFactoryClassNames().size());
+			assertTrue(config.auxiliaryServerFactory().containsAll(auxiliaryClasses));
+			assertEquals(auxiliaryClasses.size(), config.auxiliaryServerFactory().size());
 			assertFalse(config.sslEnabled());
-			assertEquals(Optional.of(TEST_FILTER_CLASS), config.objectInputFilterFactoryClassName());
+			assertEquals(Optional.of(TEST_FILTER_CLASS), config.objectInputFilterFactory());
 			assertEquals(TEST_MAINTENANCE_INTERVAL, config.connectionMaintenanceInterval());
 			assertEquals(TEST_CONNECTION_LIMIT, config.connectionLimit());
 		}
@@ -214,7 +214,7 @@ public class DefaultServerConfigurationTest {
 		void auxiliaryServers_emptyByDefault() {
 			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT).build();
 
-			assertTrue(config.auxiliaryServerFactoryClassNames().isEmpty());
+			assertTrue(config.auxiliaryServerFactory().isEmpty());
 		}
 
 		@Test
@@ -223,29 +223,29 @@ public class DefaultServerConfigurationTest {
 			Collection<String> classNames = Arrays.asList("com.example.Server1", "com.example.Server2");
 
 			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT)
-							.auxiliaryServerFactoryClassNames(classNames)
+							.auxiliaryServerFactory(classNames)
 							.build();
 
-			assertTrue(config.auxiliaryServerFactoryClassNames().containsAll(classNames));
-			assertEquals(classNames.size(), config.auxiliaryServerFactoryClassNames().size());
+			assertTrue(config.auxiliaryServerFactory().containsAll(classNames));
+			assertEquals(classNames.size(), config.auxiliaryServerFactory().size());
 		}
 
 		@Test
 		@DisplayName("Auxiliary server collection is immutable")
 		void auxiliaryServers_collectionIsImmutable() {
 			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT)
-							.auxiliaryServerFactoryClassNames(Arrays.asList(TEST_AUXILIARY_CLASS))
+							.auxiliaryServerFactory(Arrays.asList(TEST_AUXILIARY_CLASS))
 							.build();
 
 			assertThrows(UnsupportedOperationException.class, () ->
-							config.auxiliaryServerFactoryClassNames().add("new.class"));
+							config.auxiliaryServerFactory().add("new.class"));
 		}
 
 		@Test
 		@DisplayName("Null auxiliary server collection throws NPE")
 		void auxiliaryServers_nullCollection_throwsNPE() {
 			assertThrows(NullPointerException.class, () ->
-							ServerConfiguration.builder(TEST_PORT).auxiliaryServerFactoryClassNames(null));
+							ServerConfiguration.builder(TEST_PORT).auxiliaryServerFactory(null));
 		}
 	}
 
@@ -306,27 +306,27 @@ public class DefaultServerConfigurationTest {
 			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT).build();
 
 			// May be present due to system property, but test that it's at least accessible
-			assertNotNull(config.objectInputFilterFactoryClassName());
+			assertNotNull(config.objectInputFilterFactory());
 		}
 
 		@Test
 		@DisplayName("Custom object input filter factory class name is stored")
 		void filter_customObjectInputFilterStored() {
 			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT)
-							.objectInputFilterFactoryClassName(TEST_FILTER_CLASS)
+							.objectInputFilterFactory(TEST_FILTER_CLASS)
 							.build();
 
-			assertEquals(Optional.of(TEST_FILTER_CLASS), config.objectInputFilterFactoryClassName());
+			assertEquals(Optional.of(TEST_FILTER_CLASS), config.objectInputFilterFactory());
 		}
 
 		@Test
 		@DisplayName("Null object input filter factory class name clears value")
 		void filter_nullObjectInputFilterClears() {
 			ServerConfiguration config = ServerConfiguration.builder(TEST_PORT)
-							.objectInputFilterFactoryClassName(null)
+							.objectInputFilterFactory(null)
 							.build();
 
-			assertEquals(Optional.empty(), config.objectInputFilterFactoryClassName());
+			assertEquals(Optional.empty(), config.objectInputFilterFactory());
 		}
 
 		@Test

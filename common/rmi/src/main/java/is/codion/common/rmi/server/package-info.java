@@ -30,8 +30,8 @@
  * <li>{@link is.codion.common.rmi.server.ServerConfiguration#ADMIN_USER}
  * <li>{@link is.codion.common.rmi.server.ServerConfiguration#SSL_ENABLED}
  * <li>{@link is.codion.common.rmi.server.ServerConfiguration#IDLE_CONNECTION_TIMEOUT}
- * <li>{@link is.codion.common.rmi.server.ServerConfiguration#AUXILIARY_SERVER_FACTORY_CLASS_NAMES}
- * <li>{@link is.codion.common.rmi.server.ServerConfiguration#OBJECT_INPUT_FILTER_FACTORY_CLASS_NAME}
+ * <li>{@link is.codion.common.rmi.server.ServerConfiguration#AUXILIARY_SERVER_FACTORIES}
+ * <li>{@link is.codion.common.rmi.server.ServerConfiguration#OBJECT_INPUT_FILTER_FACTORY}
  * <li>{@link is.codion.common.rmi.server.SerializationFilterFactory#SERIALIZATION_FILTER_PATTERNS}
  * <li>{@link is.codion.common.rmi.server.SerializationFilterFactory#SERIALIZATION_FILTER_PATTERN_FILE}
  * <li>{@link is.codion.common.rmi.server.SerializationFilterFactory#SERIALIZATION_FILTER_DRYRUN_FILE}

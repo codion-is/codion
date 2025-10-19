@@ -102,7 +102,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		getRuntime().addShutdownHook(new Thread(this::shutdown));
 		try {
 			configureObjectInputFilter(configuration);
-			startAuxiliaryServers(configuration.auxiliaryServerFactoryClassNames());
+			startAuxiliaryServers(configuration.auxiliaryServerFactory());
 			loadAuthenticators();
 		}
 		catch (Throwable exception) {
@@ -412,11 +412,11 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 		return clientConnection;
 	}
 
-	private void startAuxiliaryServers(Collection<String> auxiliaryServerFactoryClassNames) {
+	private void startAuxiliaryServers(Collection<String> auxiliaryServerFactories) {
 		try {
-			for (String auxiliaryServerFactoryClassName : auxiliaryServerFactoryClassNames) {
-				AuxiliaryServerFactory<T, A, ?> auxiliaryServerFactory = AuxiliaryServerFactory.instance(auxiliaryServerFactoryClassName);
-				AuxiliaryServer auxiliaryServer = auxiliaryServerFactory.createServer(this);
+			for (String auxiliaryServerFactory : auxiliaryServerFactories) {
+				AuxiliaryServerFactory<T, A, ?> auxiliaryServerFactoryInstance = AuxiliaryServerFactory.instance(auxiliaryServerFactory);
+				AuxiliaryServer auxiliaryServer = auxiliaryServerFactoryInstance.createServer(this);
 				auxiliaryServers.add(auxiliaryServer);
 				Callable<?> starter = () -> {
 					startAuxiliaryServer(auxiliaryServer);
@@ -443,9 +443,9 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 	}
 
 	private static void configureObjectInputFilter(ServerConfiguration configuration) {
-		if (configuration.objectInputFilterFactoryClassName().isPresent()) {
-			String objectInputFilterFactoryClassName = configuration.objectInputFilterFactoryClassName().get();
-			ObjectInputFilterFactory inputFilterFactory = ObjectInputFilterFactory.instance(objectInputFilterFactoryClassName);
+		if (configuration.objectInputFilterFactory().isPresent()) {
+			String objectInputFilterFactory = configuration.objectInputFilterFactory().get();
+			ObjectInputFilterFactory inputFilterFactory = ObjectInputFilterFactory.instance(objectInputFilterFactory);
 			ObjectInputFilter objectInputFilter = inputFilterFactory.createObjectInputFilter();
 			ObjectInputFilter.Config.setSerialFilter(objectInputFilter);
 			LOG.info("ObjectInputFilter {} enabled", objectInputFilter.getClass().getName());

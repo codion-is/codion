@@ -501,14 +501,14 @@ public class EntityServiceTest {
 						.domainClassNames(singletonList(TestDomain.class.getName()))
 						.database(Database.instance())
 						.sslEnabled(false)
-						.auxiliaryServerFactoryClassNames(singletonList(EntityServiceFactory.class.getName()))
+						.auxiliaryServerFactory(singletonList(EntityServiceFactory.class.getName()))
 						.build();
 	}
 
 	private static void deconfigure() {
 		System.setProperty("jdk.internal.httpclient.disableHostnameVerification", Boolean.FALSE.toString());
 		Clients.SERVER_HOSTNAME.set(null);
-		ServerConfiguration.AUXILIARY_SERVER_FACTORY_CLASS_NAMES.set(null);
+		ServerConfiguration.AUXILIARY_SERVER_FACTORIES.set(null);
 		EntityService.HTTP_SERVER_SECURE.set(true);
 	}
 }

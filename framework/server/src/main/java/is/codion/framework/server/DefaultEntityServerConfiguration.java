@@ -83,8 +83,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 	}
 
 	@Override
-	public Collection<String> auxiliaryServerFactoryClassNames() {
-		return serverConfiguration.auxiliaryServerFactoryClassNames();
+	public Collection<String> auxiliaryServerFactory() {
+		return serverConfiguration.auxiliaryServerFactory();
 	}
 
 	@Override
@@ -103,8 +103,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 	}
 
 	@Override
-	public Optional<String> objectInputFilterFactoryClassName() {
-		return serverConfiguration.objectInputFilterFactoryClassName();
+	public Optional<String> objectInputFilterFactory() {
+		return serverConfiguration.objectInputFilterFactory();
 	}
 
 	@Override
@@ -169,7 +169,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 
 	static EntityServerConfiguration.Builder builderFromSystemProperties() {
 		Builder builder = new DefaultBuilder(SERVER_PORT.getOrThrow(), REGISTRY_PORT.getOrThrow())
-						.auxiliaryServerFactoryClassNames(Text.parseCSV(AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()))
+						.auxiliaryServerFactory(Text.parseCSV(AUXILIARY_SERVER_FACTORIES.get()))
 						.sslEnabled(SSL_ENABLED.getOrThrow())
 						.adminPort(ADMIN_PORT.getOrThrow())
 						.connectionLimit(CONNECTION_LIMIT.getOrThrow())
@@ -243,8 +243,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 		}
 
 		@Override
-		public Builder auxiliaryServerFactoryClassNames(Collection<String> auxiliaryServerFactoryClassNames) {
-			serverConfigurationBuilder.auxiliaryServerFactoryClassNames(auxiliaryServerFactoryClassNames);
+		public Builder auxiliaryServerFactory(Collection<String> auxiliaryServerFactory) {
+			serverConfigurationBuilder.auxiliaryServerFactory(auxiliaryServerFactory);
 			return this;
 		}
 
@@ -255,8 +255,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 		}
 
 		@Override
-		public Builder objectInputFilterFactoryClassName(String objectInputFilterFactoryClassName) {
-			serverConfigurationBuilder.objectInputFilterFactoryClassName(objectInputFilterFactoryClassName);
+		public Builder objectInputFilterFactory(String objectInputFilterFactory) {
+			serverConfigurationBuilder.objectInputFilterFactory(objectInputFilterFactory);
 			return this;
 		}
 

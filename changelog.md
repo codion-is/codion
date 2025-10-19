@@ -10,6 +10,7 @@ Codion Change Log
 ### is.codion.common.rmi
 - SerializationFilterFactory, configuration properties added for JEP 290s maxBytes, maxArray, maxDepth and maxRefs parameters, values automatically prepended to filter config.
 - SerializationFilterFactory.SERIALIZATION_FILTER_MAX_REFS default increased to 1.000.000.
+- ServerConfiguration.AUXILIARY_SERVER_FACTORY_CLASS_NAMES and OBJECT_INPUT_FILTER_FACTORY_CLASS_NAME renamed AUXILIARY_SERVER_FACTORIES and OBJECT_INPUT_FILTER_FACTORY, related renaming.
 ### is.codion.swing.common.model
 - NullableToggleButtonModel, iteration order changed to false -> null -> true.
 ### is.codion.swing.common.ui

@@ -330,7 +330,7 @@ public class EntityServerTest {
 						.domainClassNames(asList("is.codion.framework.server.TestDomain", "is.codion.framework.server.ConfigureDb"))
 						.methodTracing(true)
 						.sslEnabled(true)
-						.objectInputFilterFactoryClassName(SerializationFilterFactory.class.getName())
+						.objectInputFilterFactory(SerializationFilterFactory.class.getName())
 						.build();
 	}
 

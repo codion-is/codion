@@ -66,7 +66,7 @@ The framework provides a way to configure a https://docs.oracle.com/en/java/java
 
 [source]
 ----
-codion.server.objectInputFilterFactoryClassName=\
+codion.server.objectInputFilterFactory=\
     my.serialization.filter.MyObjectInputFilterFactory
 ----
 
@@ -76,7 +76,7 @@ To use the built-in pattern based serialization filter, set the following system
 
 [source]
 ----
-codion.server.objectInputFilterFactoryClassName=\
+codion.server.objectInputFilterFactory=\
     is.codion.common.rmi.server.SerializationFilterFactory
 ----
 
