@@ -193,10 +193,8 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 						.onProgress(progressDialog::setProgress)
 						.onPublish(chunks -> publish(chunks, progressDialog))
 						.onDone(() -> closeDialog(progressDialog))
-						.onResult(result -> onResult(result, progressDialog))
-						.onInterrupted(() -> closeDialog(progressDialog))
-						.onException(exception -> onException(exception, progressDialog))
-						.onCancelled(() -> closeDialog(progressDialog))
+						.onResult(onResult)
+						.onException(onException)
 						.build();
 	}
 
@@ -232,16 +230,6 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 
 	private @Nullable String message(List<V> chunks) {
 		return chunks.isEmpty() ? null : Objects.toString(chunks.get(chunks.size() - 1));
-	}
-
-	private void onResult(T result, ProgressDialog progressDialog) {
-		closeDialog(progressDialog);
-		onResult.accept(result);
-	}
-
-	private void onException(Exception exception, ProgressDialog progressDialog) {
-		closeDialog(progressDialog);
-		onException.accept(exception);
 	}
 
 	private static void closeDialog(ProgressDialog progressDialog) {
