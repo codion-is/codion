@@ -50,6 +50,6 @@
 == V. The Developer Ecosystem & Tooling
 * Domain Model Code Generation from Database Schema (including GUI Tool)
 * Zero-Effort Domain Integration Testing with <<manual/manual.adoc#_domain_unit_testing, DomainTest>>
-* Integrated Load Testing Framework (including GUI Tool)
+* Integrated <<tutorials/chinook/chinook.adoc#_load_test, Load Testing Framework>> (including GUI Tool)
 * Automated Demo & UI Scripting Engine, https://www.youtube.com/watch?v=2dDKjeqJJeQ[example] (swing-robot)
 * AI Agent Enablement via Model Context Protocol (swing-mcp)

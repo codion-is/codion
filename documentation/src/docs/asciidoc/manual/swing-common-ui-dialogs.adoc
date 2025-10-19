@@ -1,0 +1,106 @@
+[#_dialogs]
+= Dialogs
+:dir-source: ../../../../../demos/manual/src/main/java
+:url-javadoc: link:../api
+
+== Component
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=dialog]
+----
+
+== Selection
+
+=== Items
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=listSingle]
+----
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=listMultiple]
+----
+
+=== Files
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=file]
+----
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=files]
+----
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=fileToSave]
+----
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=directory]
+----
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=directories]
+----
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=fileOrDirectory]
+----
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=filesOrDirectories]
+----
+
+== Action Dialogs
+
+=== Ok Cancel
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=okCancel]
+----
+
+=== Action
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=action]
+----
+
+== Input
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=input]
+----
+
+== Exception
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=exception]
+----
+
+== Calendar
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=calendar]
+----
+
+== Progress
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=progress]
+----

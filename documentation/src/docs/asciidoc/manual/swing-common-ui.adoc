@@ -7,4 +7,6 @@ include::{basedir}/manual/swing-common-ui-action-controls.adoc[leveloffset=+1]
 
 include::{basedir}/manual/swing-common-ui-input-components.adoc[leveloffset=+1]
 
+include::{basedir}/manual/swing-common-ui-dialogs.adoc[leveloffset=+1]
+
 include::{basedir}/manual/swing-common-ui-progress-worker.adoc[leveloffset=+1]
