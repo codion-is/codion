@@ -53,7 +53,7 @@ application {
         "-Dcodion.server.admin.port=2223",
         "-Dcodion.server.admin.user=scott:tiger",
         "-Dcodion.server.http.secure=false",
-        "-Dcodion.server.pooling.poolFactoryClass=is.codion.plugin.hikari.pool.HikariConnectionPoolProvider",
+        "-Dcodion.server.pooling.poolFactory=is.codion.plugin.hikari.pool.HikariConnectionPoolFactory",
         "-Dcodion.server.auxiliaryServerFactories=is.codion.framework.servlet.EntityServiceFactory",
         "-Dcodion.server.objectInputFilterFactory=is.codion.common.rmi.server.SerializationFilterFactory",
         "-Dcodion.server.serialization.filter.patternFile=src/main/config/serialization-whitelist.txt",

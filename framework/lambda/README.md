@@ -118,7 +118,7 @@ Common configuration properties:
 - `codion.server.domain.classes` - Comma-separated domain class names
 - `codion.server.idleConnectionTimeout` - Connection idle timeout in minutes (default: 10)
 - `codion.server.connectionLimit` - Max connections per client (default: 10)
-- `codion.server.pooling.poolFactoryClass` - Connection pool implementation (e.g., `is.codion.plugin.hikari.pool.HikariConnectionPoolProvider`)
+- `codion.server.pooling.poolFactory` - Connection pool implementation (e.g., `is.codion.plugin.hikari.pool.HikariConnectionPoolFactory`)
 - `codion.server.serialization.filter.patterns` - Serialization filter patterns (required)
 - `codion.server.serialization.filter.patternFile` - Path to filter pattern file
 

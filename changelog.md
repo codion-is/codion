@@ -40,6 +40,7 @@ Codion Change Log
 - AbstractEntityEditModel log and error messages fixed.
 ### is.codion.framework.server
 - EntityServerConfiguration.DOMAIN_CLASS_NAMES renamed DOMAIN_CLASSES, related renaming.
+- EntityServerConfiguration.CONNECTION_POOL_FACTORY_CLASS renamed CONNECTION_POOL_FACTORY, related renaming.
 ### is.codion.swing.framework.ui
 - KeyboardShortcutsPanel, copy expanded changed to table export, related changes.
 - EntityEditComponentPanel.EditorComponent.set(ComponentValue) added, automatically links it to the underlying editor value.

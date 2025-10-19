@@ -19,7 +19,7 @@
 /**
  * Package configuration values:
  * <ul>
- * <li>{@link is.codion.framework.server.EntityServerConfiguration#CONNECTION_POOL_FACTORY_CLASS}
+ * <li>{@link is.codion.framework.server.EntityServerConfiguration#CONNECTION_POOL_FACTORY}
  * <li>{@link is.codion.framework.server.EntityServerConfiguration#CONNECTION_LIMIT}
  * <li>{@link is.codion.framework.server.EntityServerConfiguration#CLIENT_CONNECTION_TIMEOUT}
  * <li>{@link is.codion.framework.server.EntityServerConfiguration#METHOD_TRACING}

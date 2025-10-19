@@ -55,7 +55,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
 	 * </ul>
 	 * @see ConnectionPoolFactory
 	 */
-	PropertyValue<String> CONNECTION_POOL_FACTORY_CLASS = stringValue("codion.server.pooling.poolFactoryClass");
+	PropertyValue<String> CONNECTION_POOL_FACTORY = stringValue("codion.server.pooling.poolFactory");
 
 	/**
 	 * Specifies the default client connection timeout (ms) in a comma separated list.

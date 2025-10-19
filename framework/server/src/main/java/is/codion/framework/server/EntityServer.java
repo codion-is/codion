@@ -414,15 +414,15 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 		}
 	}
 
-	private static void createConnectionPools(Database database, String connectionPoolFactoryClassName,
+	private static void createConnectionPools(Database database, String connectionPoolFactory,
 																						Collection<User> connectionPoolUsers) {
 		if (!connectionPoolUsers.isEmpty()) {
 			ConnectionPoolFactory poolFactory;
-			if (nullOrEmpty(connectionPoolFactoryClassName)) {
+			if (nullOrEmpty(connectionPoolFactory)) {
 				poolFactory = ConnectionPoolFactory.instance();
 			}
 			else {
-				poolFactory = ConnectionPoolFactory.instance(connectionPoolFactoryClassName);
+				poolFactory = ConnectionPoolFactory.instance(connectionPoolFactory);
 			}
 			for (User user : connectionPoolUsers) {
 				database.createConnectionPool(poolFactory, user);

@@ -208,7 +208,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 		private User adminUser;
 		private boolean methodTracing = METHOD_TRACING.getOrThrow();
 		private int idleConnectionTimeout = IDLE_CONNECTION_TIMEOUT.getOrThrow();
-		private String connectionPoolFactory;
+		private String connectionPoolFactory = CONNECTION_POOL_FACTORY.get();
 		private final Collection<String> domainClasses = new HashSet<>();
 		private final Collection<User> connectionPoolUsers = new HashSet<>();
 		private final Map<String, Integer> clientTypeIdleConnectionTimeouts = new HashMap<>();
