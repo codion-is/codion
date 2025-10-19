@@ -77,13 +77,13 @@ public final class SerializationFilterFactory implements ObjectInputFilterFactor
 	public static final PropertyValue<Integer> SERIALIZATION_FILTER_MAX_DEPTH = integerValue("codion.server.serialization.filter.maxDepth", 100);
 
 	/**
-	 * The maximum number of internal references to prevent resource exhaustion attacks.
+	 * The maximum number of object references to prevent resource exhaustion attacks.
 	 * <ul>
 	 * <li>Value type: Integer
-	 * <li>Default value: 10000
+	 * <li>Default value: 1.000.000
 	 * </ul>
 	 */
-	public static final PropertyValue<Integer> SERIALIZATION_FILTER_MAX_REFS = integerValue("codion.server.serialization.filter.maxRefs", 10_000);
+	public static final PropertyValue<Integer> SERIALIZATION_FILTER_MAX_REFS = integerValue("codion.server.serialization.filter.maxRefs", 1_000_000);
 
 	@Override
 	public ObjectInputFilter createObjectInputFilter() {

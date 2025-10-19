@@ -9,6 +9,7 @@ Codion Change Log
 - UserPreferences.PREFERENCES_LOCATION configuration value added, for overriding the default preferences file location.
 ### is.codion.common.rmi
 - SerializationFilterFactory, configuration properties added for JEP 290s maxBytes, maxArray, maxDepth and maxRefs parameters, values automatically prepended to filter config.
+- SerializationFilterFactory.SERIALIZATION_FILTER_MAX_REFS default increased to 1.000.000.
 ### is.codion.swing.common.model
 - NullableToggleButtonModel, iteration order changed to false -> null -> true.
 ### is.codion.swing.common.ui
