@@ -102,7 +102,6 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	private final @Nullable Format format;
 	private final @Nullable LocaleDateTimePattern localeDateTimePattern;
 	private final RoundingMode roundingMode;
-	private final Comparator<T> comparator;
 	private final @Nullable List<Item<T>> items;
 	private final @Nullable Map<T, Item<T>> itemMap;
 	private transient @Nullable String resourceCaption;
@@ -110,6 +109,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 	private transient @Nullable String resourceDescription;
 	private transient @Nullable String dateTimePattern;
 	private transient @Nullable DateTimeFormatter dateTimeFormatter;
+	private @Nullable Comparator<T> comparator;
 
 	protected AbstractAttributeDefinition(AbstractAttributeDefinitionBuilder<T, ?> builder) {
 		requireNonNull(builder);
@@ -234,6 +234,10 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 
 	@Override
 	public final Comparator<T> comparator() {
+		if (comparator == null) {
+			comparator = defaultComparator(attribute);
+		}
+
 		return comparator;
 	}
 
@@ -466,6 +470,20 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		}
 	}
 
+	private Comparator<T> defaultComparator(Attribute<T> attribute) {
+		if (items != null && !items.isEmpty()) {
+			return new ItemComparator<>(items);
+		}
+		if (attribute.type().isString() && USE_LEXICAL_STRING_COMPARATOR.getOrThrow()) {
+			return (Comparator<T>) LEXICAL_COMPARATOR;
+		}
+		if (Comparable.class.isAssignableFrom(attribute.type().valueClass())) {
+			return (Comparator<T>) COMPARABLE_COMPARATOR;
+		}
+
+		return (Comparator<T>) TO_STRING_COMPARATOR;
+	}
+
 	static class DefaultValueSupplier<T> implements ValueSupplier<T>, Serializable {
 
 		@Serial
@@ -562,7 +580,7 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		private @Nullable Format format;
 		private @Nullable LocaleDateTimePattern localeDateTimePattern;
 		private RoundingMode roundingMode;
-		private Comparator<T> comparator;
+		private @Nullable Comparator<T> comparator;
 		private @Nullable String dateTimePattern;
 		private @Nullable DateTimeFormatter dateTimeFormatter;
 		private @Nullable List<Item<T>> items;
@@ -570,7 +588,6 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		AbstractAttributeDefinitionBuilder(Attribute<T> attribute) {
 			this.attribute = requireNonNull(attribute);
 			format = defaultFormat(attribute);
-			comparator = defaultComparator(attribute);
 			captionResourceBundleName = attribute.entityType().resourceBundleName().orElse(null);
 			mnemonicResourceBundleName = captionResourceBundleName;
 			descriptionResourceBundleName = captionResourceBundleName;
@@ -822,7 +839,6 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 		@Override
 		public final B items(List<Item<T>> items) {
 			this.items = validateItems(items);
-			this.comparator = new ItemComparator<>(this.items);
 			return self();
 		}
 
@@ -902,17 +918,6 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 			}
 
 			return numberFormat;
-		}
-
-		private static <T> Comparator<T> defaultComparator(Attribute<T> attribute) {
-			if (attribute.type().isString() && USE_LEXICAL_STRING_COMPARATOR.getOrThrow()) {
-				return (Comparator<T>) LEXICAL_COMPARATOR;
-			}
-			if (Comparable.class.isAssignableFrom(attribute.type().valueClass())) {
-				return (Comparator<T>) COMPARABLE_COMPARATOR;
-			}
-
-			return (Comparator<T>) TO_STRING_COMPARATOR;
 		}
 
 		private @Nullable Number defaultMinimum() {

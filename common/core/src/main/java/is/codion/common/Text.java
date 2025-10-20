@@ -53,6 +53,10 @@ public final class Text {
 	public static final PropertyValue<String> COLLATOR_LANGUAGE =
 					stringValue("codion.collatorLanguage", Locale.getDefault().getLanguage());
 
+	private static final class SpaceAwareComparatorHolder {
+		private static final Comparator<String> INSTANCE = new SpaceAwareComparator<>(new Locale(COLLATOR_LANGUAGE.getOrThrow()));
+	}
+
 	private Text() {}
 
 	/**
@@ -69,14 +73,14 @@ public final class Text {
 	}
 
 	/**
-	 * Creates a Comparator which compares the string representations of the objects
+	 * Returns a Comparator which compares the string representations of the objects
 	 * using the default Collator, taking spaces into account.
 	 * @param <T> the type of the objects to compare
 	 * @return a space aware collator
 	 * @see #COLLATOR_LANGUAGE
 	 */
 	public static <T> Comparator<T> collator() {
-		return collator(new Locale(COLLATOR_LANGUAGE.getOrThrow()));
+		return (Comparator<T>) SpaceAwareComparatorHolder.INSTANCE;
 	}
 
 	/**
@@ -196,7 +200,6 @@ public final class Text {
 			String s1 = o1 == null ? "" : o1.toString();
 			String s2 = o2 == null ? "" : o2.toString();
 
-			// Optimize string replacement for frequently called comparisons
 			return collator().compare(replaceSpacesWithUnderscore(s1), replaceSpacesWithUnderscore(s2));
 		}
 

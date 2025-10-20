@@ -82,7 +82,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 	private final boolean smallDataset;
 	private final Function<Entity, String> formatter;
 	private final boolean cacheToString;
-	private final Comparator<Entity> comparator;
 	private final EntityValidator validator;
 	private final Predicate<Entity> exists;
 	private final transient String table;
@@ -96,6 +95,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 	private final Attributes attributes = new DefaultAttributes();
 	private final Columns columns = new DefaultColumns();
 	private final ForeignKeys foreignKeys = new DefaultForeignKeys();
+	private @Nullable Comparator<Entity> comparator;
 
 	private DefaultEntityDefinition(DefaultBuilder builder) {
 		this.entityType = builder.attributes.entityType;
@@ -218,6 +218,10 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
 	@Override
 	public Comparator<Entity> comparator() {
+		if (comparator == null) {
+			comparator = Text.collator();
+		}
+
 		return comparator;
 	}
 
@@ -782,7 +786,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		private @Nullable EntitySelectQuery selectQuery;
 		private Function<Entity, String> formatter = DefaultEntity.DEFAULT_FORMATTER;
 		private boolean cacheToString = true;
-		private Comparator<Entity> comparator = Text.collator();
+		private @Nullable Comparator<Entity> comparator;
 		private EntityValidator validator = DefaultEntity.DEFAULT_VALIDATOR;
 		private Predicate<Entity> exists = DefaultEntity.DEFAULT_EXISTS;
 

@@ -33,6 +33,7 @@ Codion Change Log
 - EntitySelectQuery.Builder.with() and withRecursive() added for CTEs.
 - EntityDefinition.placeholder() renamed entity().
 - EntitySelectQuery CTE builder fluency improved.
+- DefaultEntityDefinition, AbstractAttributionDefinition, comparator now initialized lazily, instead of relying on default values, which could be initialized in a different locale.
 ### is.codion.framework.domain.db
 - SchemaDomain.SchemaSettings.viewPrefix() added.
 - SchemaDomain bug fixed, no longer mess up view identifiers, tests improved.
