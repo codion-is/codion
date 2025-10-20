@@ -48,7 +48,7 @@
 ** <<manual/manual.adoc#_httpentityconnectionprovider, HTTP Client-Server>>
 
 == V. The Developer Ecosystem & Tooling
-* Domain Model Code Generation from Database Schema (including GUI Tool)
+* Domain Model <<manual/manual.adoc#_domain_model_generator, Code Generation from Database Schema>> (including GUI Tool)
 * Zero-Effort Domain Integration Testing with <<manual/manual.adoc#_domain_unit_testing, DomainTest>>
 * Integrated <<tutorials/chinook/chinook.adoc#_load_test, Load Testing Framework>> (including GUI Tool)
 * Automated Demo & UI Scripting Engine, https://www.youtube.com/watch?v=2dDKjeqJJeQ[example] (swing-robot)

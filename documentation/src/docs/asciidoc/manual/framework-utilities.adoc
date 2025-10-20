@@ -1,0 +1,4 @@
+= Framework Utilities
+:basedir: ..
+
+include::{basedir}/manual/framework-domain-generator.adoc[leveloffset=+1]

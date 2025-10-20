@@ -6,3 +6,5 @@ include::{basedir}/manual/framework-domain-db.adoc[leveloffset=+1]
 include::{basedir}/manual/framework-model.adoc[leveloffset=+1]
 
 include::{basedir}/manual/framework-ui.adoc[leveloffset=+1]
+
+include::{basedir}/manual/framework-utilities.adoc[leveloffset=+1]

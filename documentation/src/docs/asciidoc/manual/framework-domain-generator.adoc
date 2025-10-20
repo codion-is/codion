@@ -1,0 +1,704 @@
+[#_domain_model_generator]
+= Domain Model Generator
+:dir-generator-demo: ../../../../../demos/domain-generator
+:dir-tutorials: ../tutorials
+:dir-source: ../../../../../demos/manual/src/main/java
+:url-javadoc: link:../api
+
+The Domain Model Generator is a desktop application that automatically generates Codion domain model source code from existing database schemas. Instead of manually writing entity definitions, columns, foreign keys, and attribute configurations, you connect to a database, select a schema, and generate fully-formed Codion domain code. This tool accelerates development, ensures consistency across entities, and serves as a starting point for new projects or when integrating with legacy databases.
+
+== Overview
+
+The generator transforms database metadata into type-safe Codion domain models, supporting:
+
+* **API/Implementation separation** - Generates separate interface and implementation files for cleaner client dependencies
+* **Combined mode** - Single-file output for simpler project structures
+* **DTO generation** - Optional Java records for data transfer without Entity framework overhead
+* **Internationalization** - Optional resource bundle generation for captions and descriptions
+* **Schema customization** - Configurable naming conventions, audit columns, and identifier casing
+
+The generated code uses the same patterns as hand-written Codion domain models, including proper primary key generators, foreign key relationships, nullability constraints, and column metadata.
+
+== Architecture
+
+The generator consists of three layered modules:
+
+<<{basedir}/technical/technical.adoc#_codion_tools_generator_domain, codion-tools-generator-domain>>::
+Code generation engine that uses https://github.com/palantir/javapoet[Palantir JavaPoet] to produce syntactically correct Java source code, coordinates generation of API interfaces, implementation classes, DTO records, and i18n properties. Uses <<{basedir}/technical/technical.adoc#_codion_framework_domain_db, codion-framework-domain-db>> for schema instrospection
+
+<<{basedir}/technical/technical.adoc#_codion_tools_generator_model, codion-tools-generator-model>>::
+MVC model layer providing which coordinates schema discovery, entity selection, and real-time code preview. Contains FilterTableModels for schema and entity selection with observable state management.
+
+<<{basedir}/technical/technical.adoc#_codion_tools_generator_ui, codion-tools-generator-ui>>::
+Swing desktop interface providing schema browser, entity selection, configuration dialogs, and code preview with search.
+
+== Project Setup
+
+To use the generator in your project, create a Gradle (or the Maven equivalent) build configuration similar to the included demo:
+
+._build.gradle.kts_
+[source,kotlin]
+----
+plugins {
+    application
+}
+
+dependencies {
+    runtimeOnly("is.codion:codion-tools-generator-ui:{codion-version}")
+
+    // Add your database JDBC driver
+    runtimeOnly("is.codion:codion-dbms-h2:{codion-version}")
+    runtimeOnly("com.h2database:h2:{h2-version}")
+
+    // Or PostgreSQL:
+    //runtimeOnly("is.codion:codion-dbms-postgresql:{codion-version}")
+    // runtimeOnly("org.postgresql:postgresql:{postgresql-driver-version")
+
+    // Or Oracle:
+    //runtimeOnly("is.codion:codion-dbms-oracle:{codion-version}")
+    // runtimeOnly("com.oracle.database.jdbc:ojdbc:{oracle-driver-version}") { isTransitive = false }
+}
+
+application {
+    mainModule = "is.codion.tools.generator.ui"
+    mainClass = "is.codion.tools.generator.ui.DomainGeneratorPanel"
+
+    applicationDefaultJvmArgs = listOf(
+        "-Xmx256m",
+        "-Dcodion.db.url=jdbc:h2:mem:h2db",
+        "-Dcodion.domain.generator.domainPackage=com.example.domain",
+        // Output directories (relative or absolute paths)
+        "-Dcodion.domain.generator.combinedSourceDirectory=combined",
+        "-Dcodion.domain.generator.apiSourceDirectory=api",
+        "-Dcodion.domain.generator.implSourceDirectory=impl"
+    )
+}
+----
+
+Run with: `./gradlew :your-generator-module:run`
+
+NOTE: See <<{dir-tutorials}/chinook/chinook.adoc#_chinook_tutorial, Chinook demo>> for a complete example.
+
+== Configuration
+
+The generator is configured through system properties set via JVM arguments:
+
+=== Runtime Configuration
+
+[cols="2,3,2"]
+|===
+|Property|Description|Default
+
+|`codion.db.url`
+|JDBC connection URL
+|Required
+
+|`codion.domain.generator.domainPackage`
+|Base package for generated code
+|`no.package`
+
+|`codion.domain.generator.combinedSourceDirectory`
+|Output directory for combined mode (relative or absolute path)
+|Current directory
+
+|`codion.domain.generator.apiSourceDirectory`
+|Output directory for API sources when using API/Impl mode (relative or absolute path)
+|Current directory
+
+|`codion.domain.generator.implSourceDirectory`
+|Output directory for implementation sources when using API/Impl mode (relative or absolute path)
+|Current directory
+
+|`codion.domain.generator.userRequired`
+|Specifies whether the database requires a login
+|true
+
+|`codion.domain.generator.user`
+|Database user including password `user:pass` for direct login without login dialog
+|None
+
+|`codion.domain.generator.defaultUser`
+|Default database credentials to display in the login dialog
+|None
+
+|`codion.db.initScripts`
+|Comma-separated paths to SQL initialization scripts (H2 only)
+|None
+|===
+
+.Example: PostgreSQL configuration
+[source,bash]
+----
+-Dcodion.db.url=jdbc:postgresql://localhost:5432/mydb
+-Dcodion.domain.generator.domainPackage=com.example.domain
+-Dcodion.domain.generator.combinedSourceDirectory=generated
+-Dcodion.domain.generator.apiSourceDirectory=api
+-Dcodion.domain.generator.implSourceDirectory=impl
+----
+
+TIP: Use relative paths like `"api"`, `"impl"`, or `"../domain-api"` for convenience. When using the directory selector in the UI, paths are automatically converted to relative paths from the current working directory.
+
+IMPORTANT: H2 database does not allow path traversal in init scripts. Use absolute paths as shown the <<{dir-tutorials}/chinook/chinook.adoc#_chinook_tutorial, Chinook demo>>.
+
+=== Schema Settings
+
+Schema settings control how database metadata is interpreted and transformed into domain model code. Access via right-click → *Settings...* on a schema row.
+
+[cols="2,3,2"]
+|===
+|Setting|Description|Default
+
+|Primary Key Column Suffix
+|Suffix removed from foreign key column names when creating FK identifiers
+|`""` (empty)
+
+|View Suffix
+|Suffix removed from view names when creating entity type names
+|`""` (empty)
+
+|Audit Column Names
+|Comma-separated list of audit column names to mark as read-only
+|`""` (empty)
+
+|Hide Audit Columns
+|Hide audit columns from UI components
+|`false`
+
+|Lowercase Identifiers
+|Use lowercase for entity type and attribute names
+|`true`
+|===
+
+==== Primary Key Column Suffix
+
+When database foreign key columns follow a naming convention like `CUSTOMER_ID` (referencing `CUSTOMER.ID`), the generator creates a foreign key constant like `CUSTOMER_ID_FK`. Setting a suffix of `"ID"` or `"_ID"` strips this from the FK name, resulting in the cleaner `CUSTOMER_FK`.
+
+.Example without suffix:
+[source,java]
+----
+Column<Integer> CUSTOMER_ID = TYPE.integerColumn("customer_id");
+
+ForeignKey CUSTOMER_ID_FK = TYPE.foreignKey("customer_id_fk", CUSTOMER_ID, Customer.ID);
+----
+
+.Example with suffix "ID":
+[source,java]
+----
+Column<Integer> CUSTOMER_ID = TYPE.integerColumn("customer_id");
+
+ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
+----
+
+==== View Suffix
+
+Databases often suffix view names with `_VW`, `_VIEW`, or similar. Setting this suffix removes it from generated entity type names.
+
+.Example: View suffix "_VW"
+[source,sql]
+----
+CREATE VIEW ORDERS_VW AS SELECT ...
+----
+
+Without suffix:: `EntityType TYPE = DOMAIN.entityType("orders_vw");`
+With suffix "_VW":: `EntityType TYPE = DOMAIN.entityType("orders");`
+
+==== Audit Columns
+
+Many schemas include audit columns like `INSERT_USER`, `INSERT_TIME`, `UPDATE_USER`, `UPDATE_TIME`. Specifying these column names (comma-separated, case-insensitive) marks them as read-only in generated definitions.
+
+.Example: Audit columns "insert_user,insert_time,update_user,update_time"
+[source,java]
+----
+Customer.INSERT_USER.define()
+    .column()
+    .readOnly(true)
+    .hidden(true)  // If "Hide Audit Columns" enabled
+----
+
+== User Workflow
+
+[arabic]
+. **Launch the application**
++
+[source,bash]
+----
+./gradlew :your-generator-module:run
+----
+
+. **Authenticate** (if required)
++
+Enter database credentials in the login dialog. Set `codion.domain.generator.user` to pre-fill the username field.
+
+. **Select a schema**
++
+The schema table lists all available database schemas with their catalog names. Click to select.
+
+. **Populate the schema**
++
+Double-click the schema row or press kbd:[Cmd+Enter] (macOS) / kbd:[Ctrl+Enter] (other) to load entity definitions. This introspects database metadata and populates the entity table.
+
+. **Configure schema settings** (optional)
++
+Right-click the schema row and select *Settings...* to customize naming conventions and audit column handling. Settings are persisted in user preferences.
+
+. **Review entities**
++
+The entity table shows all tables and views discovered in the schema, including their type (TABLE/VIEW) and metadata.
+
+. **Select entities for DTO generation** (optional)
++
+Check the *DTO* column for entities that should generate DTO record classes. Foreign key attributes are only included in the DTO if the referenced entity also has a DTO.
+
+. **Enable generation options**
++
+* *DTOs* checkbox - Generate DTO records for selected entities
+* *i18n* checkbox - Generate resource bundle properties files
+
+. **Preview generated code**
++
+Select a tab to view generated code:
+
+* *API / Impl* - Split view showing separate API interface and implementation files
+** *API Source Directory* - Where to write the API interface (default: current directory)
+** *Implementation Source Directory* - Where to write the implementation class (default: current directory)
+* *Combined* - Single-file domain model
+** *Combined Source Directory* - Where to write the combined file (default: current directory)
+* *i18n* - Resource bundle properties (if enabled)
++
+Use the search field to highlight occurrences of text in the code view. Click the *...* button next to any directory field to select a different output directory.
+
+. **Configure output directories** (optional)
++
+Each tab has directory fields showing where files will be written. Click *...* to select a directory. The generator automatically converts absolute paths to relative paths from your working directory for portability.
+
+. **Save to filesystem**
++
+Click *Save* on the appropriate tab to write files. Existing files trigger an overwrite confirmation dialog. Generated files can be copied to actual module directories as needed.
+
+TIP: Use keyboard shortcuts kbd:[Alt+1] through kbd:[Alt+5] to navigate between major UI sections (schema table, entity table, tabs, etc.).
+
+== Generated Output
+
+=== File Structure
+
+The generator writes files to the configured output directories. By default, files are written to simple directories in your working directory (e.g., `api/`, `impl/`, `combined/`), which can later be copied to actual module source directories as needed.
+
+==== API/Implementation Mode
+
+Generates separate API and implementation files. When configured with directories `"api"` and `"impl"`:
+
+[source]
+----
+api/src/main/java/<domain-package>/api/
+└── <DomainName>.java                      # Public API interface
+
+api/src/main/resources/<domain-package>/api/
+└── <DomainName>$<EntityName>.properties   # i18n resources (if enabled)
+
+impl/src/main/java/<domain-package>/
+└── <DomainName>Impl.java                  # Implementation class
+----
+
+NOTE: These files can be copied to separate Gradle/Maven modules (e.g., `domain-api` and `domain-impl`) for applications using RMI or HTTP connections where clients only need the API on their classpath.
+
+.API interface (simplified)
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/generator/apiimpl/api/Store.java[lines=19..-1]
+----
+
+.Implementation class (simplified)
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/generator/apiimpl/StoreImpl.java[lines=19..-1]
+----
+
+==== Combined Mode
+
+Generates a single class containing both API and implementation. When configured with directory `"combined"`:
+
+[source]
+----
+combined/src/main/java/<domain-package>/
+└── <DomainName>.java                      # Combined API + implementation
+
+combined/src/main/resources/<domain-package>/
+└── <DomainName>$<EntityName>.properties   # i18n resources (if enabled)
+----
+
+NOTE: This mode is suitable for simpler projects using only local JDBC connections. The generated directory can be copied directly to your application's source tree.
+
+.Combined class (simplified)
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/generator/Store.java[lines=19..-1]
+----
+
+== Schema Introspection
+
+The <<{basedir}/technical/technical.adoc#_codion_framework_domain_db, codion-framework-domain-db>> module deals with introspecting database metadata using JDBC `DatabaseMetaData` and applies schema settings to generate appropriate domain model configurations.
+
+=== Column Mapping
+
+Database column metadata is transformed into Codion column definitions:
+
+[cols="2,3"]
+|===
+|Database Metadata|Generated Configuration
+
+|Primary key column
+|`.primaryKey()` with optional `.primaryKey(index)` for composite keys
+
+|Auto-increment column
+|`.generator(identity())`
+
+|NOT NULL constraint
+|`.nullable(false)` (except for primary keys)
+
+|VARCHAR(n) size
+|`.maximumLength(n)`
+
+|DECIMAL(p,s) scale
+|`.fractionDigits(s)`
+
+|Column default value
+|`.withDefault(true)`
+
+|Column comment
+|`.description("comment")`
+|===
+
+=== Foreign Key Detection
+
+Foreign key constraints in the database schema are automatically detected and transformed into ForeignKey constants and definitions:
+
+[source,sql]
+----
+CREATE TABLE orders (
+    id INTEGER PRIMARY KEY,
+    customer_id INTEGER REFERENCES customers(id)
+);
+----
+
+[source,java]
+----
+interface Order {
+    EntityType TYPE = DOMAIN.entityType("orders");
+
+    Column<Integer> ID = TYPE.integerColumn("id");
+    Column<Integer> CUSTOMER_ID = TYPE.integerColumn("customer_id");
+    ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
+}
+
+Order.CUSTOMER_FK.define()
+    .foreignKey()
+    .caption("Customer")
+----
+
+Composite foreign keys are supported - the generator detects multi-column foreign key constraints and generates appropriate multi-reference ForeignKey definitions.
+
+=== View Handling
+
+Database views are automatically marked as read-only entities:
+
+[source,java]
+----
+EntityDefinition customerSummary() {
+    return CustomerSummary.TYPE.define(/* ... */)
+        .caption("Customer summary")
+        .readOnly(true)  // Automatically added for views
+        .build();
+}
+----
+
+=== Naming Conventions
+
+The generator applies consistent naming transformations:
+
+[cols="2,3"]
+|===
+|Database Name|Generated Name
+
+|Table: `CUSTOMER_ORDER`
+|EntityType: `customer_order` (or `CUSTOMER_ORDER` if `lowerCaseIdentifiers=false`)
+
+|Column: `order_date`
+|Column constant: `ORDER_DATE`
+
+|Column: `customer_id` (FK)
+|ForeignKey constant: `CUSTOMER_FK` (with `primaryKeyColumnSuffix="ID"`)
+
+|View: `ACTIVE_ORDERS_VW`
+|EntityType: `active_orders` (with `viewSuffix="VW"`)
+|===
+
+== DTO Generation
+
+Data Transfer Object (DTO) generation creates Java record classes for entities, providing a lightweight alternative to the full Entity framework for data transfer scenarios.
+
+=== When to Generate DTOs
+
+Enable DTO generation for entities that:
+
+* Need to be serialized for REST APIs or messaging systems
+* Represent simple data structures without complex Entity behaviors
+* Are frequently transferred between application layers
+
+See <<{dir-tutorials}/chinook/chinook.adoc#_chinook_tutorial, Chinook demo>>
+
+=== DTO Structure
+
+For each entity with DTO generation enabled, the generator creates a nested `Dto` record within the entity interface:
+
+[source,java]
+----
+interface Customer {
+    EntityType TYPE = DOMAIN.entityType("customer");
+
+    Column<Integer> ID = TYPE.integerColumn("id");
+    Column<String> NAME = TYPE.stringColumn("name");
+    Column<String> EMAIL = TYPE.stringColumn("email");
+
+    // Generated DTO record
+    public static record Dto(
+            Integer id,
+            String name,
+            String email) {
+
+        public Entity entity(Entities entities) {
+            return entities.entity(TYPE)
+                .with(ID, id)
+                .with(NAME, name)
+                .with(EMAIL, email)
+                .build();
+        }
+    }
+
+    // Conversion method
+    public static Dto dto(Customer customer) {
+        return customer == null ? null :
+            new Dto(
+                customer.get(ID),
+                customer.get(NAME),
+                customer.get(EMAIL));
+    }
+}
+----
+
+=== Foreign Key DTOs
+
+When an entity with a DTO references another entity via foreign key, the foreign key attribute is included in the DTO only if the referenced entity also has DTO generation enabled. The generator creates nested DTOs for included foreign keys:
+
+[source,java]
+----
+interface Order {
+    Column<Integer> CUSTOMER_ID = TYPE.integerColumn("customer_id");
+    ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk",
+        CUSTOMER_ID, Customer.ID);
+
+    public static record Dto(
+            Integer id,
+            Customer.Dto customer) {  // Nested DTO reference (only if Customer has DTO)
+
+        public Entity entity(Entities entities) {
+            return entities.entity(TYPE)
+                .with(ID, id)
+                .with(CUSTOMER_FK, customer.entity(entities))
+                .build();
+        }
+    }
+}
+----
+
+NOTE: Foreign keys are selectively included - if Order references Customer and Customer is marked for DTO generation, Order's DTO will include `Customer.Dto`. If Customer is not marked for DTOs, the `CUSTOMER_FK` attribute is simply excluded from Order's DTO.
+
+=== Usage Example
+
+[source,java]
+----
+// Entity to DTO
+Entity customer = connection.selectSingle(Customer.ID.equalTo(42));
+Customer.Dto dto = Customer.dto(customer);
+
+// DTO to Entity
+Entities entities = connection.entities();
+Entity newCustomer = dto.entity(entities);
+connection.insert(newCustomer);
+----
+
+== Internationalization
+
+When i18n generation is enabled, the generator creates resource bundle property files for entity and attribute captions and descriptions.
+
+=== Generated Properties Format
+
+._Store$Customer.properties_
+[source,properties]
+----
+customer=Customer
+customer.description=Customer master data
+id=Id
+name=Name
+email=Email
+email.description=Customer email address
+----
+
+The generator creates one properties file per entity, using the naming convention `<DomainName>$<EntityName>.properties`.
+
+=== i18n Mode vs Literal Mode
+
+The generator supports two caption strategies:
+
+*Literal Mode* (i18n disabled)::
+Captions and descriptions are embedded directly in the generated code:
++
+[source,java]
+----
+Customer.NAME.define()
+    .column()
+    .caption("Name")
+    .description("Customer full name")
+----
+
+*i18n Mode* (i18n enabled)::
+Captions and descriptions are loaded from resource bundles:
++
+[source,java]
+----
+// EntityType with resource bundle reference
+EntityType TYPE = DOMAIN.entityType("customer", Customer.class.getName());
+
+// No caption() or description() calls - loaded from properties
+Customer.NAME.define()
+    .column()
+    .nullable(false)
+----
+
+The framework automatically loads captions and descriptions from the properties file matching the fully qualified class name of the entity interface.
+
+NOTE: When using i18n mode, create additional properties files with locale suffixes (e.g., `Store$Customer_de.properties`, `Store$Customer_fr.properties`) for internationalization support.
+
+== Best Practices
+
+=== Choosing Output Mode
+
+*Use API/Implementation separation when:*
+
+* Building applications with RMI or HTTP connections
+* Multiple client applications share the same domain API
+* You want lighter client classpaths (API only, no implementation)
+* Following strict architectural separation
+
+*Use Combined mode when:*
+
+* Building simple local-JDBC applications
+* The domain model is small (<20 entities)
+* You prefer fewer files to maintain
+* Deployment simplicity outweighs architectural purity
+
+=== Output Directory Strategy
+
+The generator can write to any directory (relative or absolute paths). A simple workflow:
+
+1. **Generate to local directories** - Use simple relative paths like `"api"`, `"impl"`, or `"combined"` in your working directory
+2. **Review and customize** - Examine the generated code, make any immediate adjustments
+3. **Copy to modules** - If using separate modules, copy the generated directories to your module source trees:
++
+[source,bash]
+----
+# Example: Copy generated API to domain-api module
+cp -r api/src/main/java/* domain-api/src/main/java/
+cp -r api/src/main/resources/* domain-api/src/main/resources/
+
+# Example: Copy generated impl to domain-impl module
+cp -r impl/src/main/java/* domain-impl/src/main/java/
+----
+
+This approach keeps the generator configuration simple while supporting any project structure. There's no need to configure the generator to write directly into complex module hierarchies.
+
+TIP: Domain generation is typically a one-shot operation. Generating to simple local directories and copying files manually provides more control and flexibility than trying to configure direct module paths.
+
+=== DTO Selection Strategy
+
+* Enable DTOs for entities that cross architectural boundaries (e.g., REST APIs, messaging systems)
+* If you want nested foreign key references in DTOs, enable DTOs for those referenced entities as well
+* Foreign keys to entities without DTOs are simply excluded from the DTO
+* Not every entity needs a DTO - be selective based on your application's needs
+
+=== Schema Settings Workflow
+
+. Connect to database
+. Select schema but **don't populate yet**
+. Right-click → Settings to configure naming conventions
+. Now populate schema with kbd:[Cmd+Enter] or double-click
+. Settings are saved in user preferences and reused next time
+
+=== Version Control
+
+* **Commit generated code** - It's source code, not build artifacts
+* **Customize after generation** - The generator output is a starting point
+* **Don't regenerate blindly** - Manual customizations will be lost
+* **Use version control to track changes** - Diff generated vs customized code
+
+=== Customization Pattern
+
+The generator produces standard Codion domain models. After generation, customize as needed:
+
+* Add {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityValidator.html[EntityValidator] implementations for business rules
+* Define {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/DerivedValue.html[derived attributes] for calculated values
+* Add denormalized attributes for performance optimization
+* Configure foreign key fetch depth with `referenceDepth()`
+* Implement custom {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityFormatter.html[toString()] formatters
+* Add {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/condition/ConditionType.html[custom condition types] for complex queries
+
+TIP: Generate once, customize as needed, and use version control to preserve your customizations. Don't treat the generator as a round-trip tool.
+
+=== Database Support
+
+The generator works with any JDBC-compliant database. Tested databases include:
+
+* H2 Database (in-memory and file-based)
+* PostgreSQL 12+
+* Oracle Database 11g+
+* MariaDB 10.3+
+* MySQL 8.0+ (via MariaDB driver)
+
+Each database requires its appropriate JDBC driver on the runtime classpath. See <<{dir-tutorials}/chinook/chinook.adoc#_chinook_tutorial, Chinook demo>>.
+
+IMPORTANT: When using H2 with init scripts, H2 does not allow path traversal. Use absolute paths for `codion.db.initScripts`.
+
+== Keyboard Navigation
+
+The generator UI supports keyboard-driven workflows:
+
+[cols="1,3"]
+|===
+|Shortcut|Action
+
+|kbd:[Alt+1] - kbd:[Alt+5]
+|Navigate between UI sections (schema table, entity table, tabs, etc.)
+
+|kbd:[Cmd+Enter] / kbd:[Ctrl+Enter]
+|Populate selected schema
+
+|kbd:[Ctrl+F]
+|Focus search field in code view
+
+|kbd:[Cmd+C] / kbd:[Ctrl+C]
+|Copy code to clipboard (when code view focused)
+|===
+
+TIP: The search field in code tabs highlights all occurrences of the search term, making it easy to locate specific entities or attributes in generated code.
+
+== Examples
+
+For complete working examples:
+
+* *Configuration*: <<{dir-tutorials}/chinook/chinook.adoc#_chinook_tutorial, Chinook demo>>
+* *Generated Code*: `tools/generator/domain/src/test/resources/` (Chinook, World, Petstore)
+* *Hand-crafted Domains*: See domain model sections in demo tutorials:
+** <<../tutorials/chinook/chinook.adoc#_domain, Chinook domain model>>
+** <<../tutorials/world/world.adoc#_domain, World domain model>>
+** <<../tutorials/petstore/petstore.adoc#_domain, Petstore domain model>>
+
+The generator produces code that follows the same patterns as these hand-crafted examples, although the structure may differ, making it easy to compare generated vs manually-written domain models.

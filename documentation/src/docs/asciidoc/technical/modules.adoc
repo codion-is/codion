@@ -188,6 +188,7 @@ Domain model related classes.
 image::modules/framework/domain/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
+[#_codion_framework_domain_db]
 [discrete]
 === codion-framework-domain-db
 
@@ -443,6 +444,7 @@ image::modules/tools/monitor/ui/build/reports/dependency-graph/dependency-graph.
 
 === Generator
 
+[#_codion_tools_generator_domain]
 [discrete]
 === codion-tools-generator-domain
 
@@ -452,6 +454,7 @@ image::modules/tools/monitor/ui/build/reports/dependency-graph/dependency-graph.
 image::modules/tools/generator/domain/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
+[#_codion_tools_generator_model]
 [discrete]
 === codion-tools-generator-model
 
@@ -461,6 +464,7 @@ image::modules/tools/generator/domain/build/reports/dependency-graph/dependency-
 image::modules/tools/generator/model/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
+[#_codion_tools_generator_ui]
 [discrete]
 === codion-tools-generator-ui
 
