@@ -44,6 +44,7 @@ import com.palantir.javapoet.ParameterizedTypeName;
 import com.palantir.javapoet.TypeName;
 import com.palantir.javapoet.TypeSpec;
 
+import javax.lang.model.SourceVersion;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -65,8 +66,7 @@ import static com.palantir.javapoet.MethodSpec.methodBuilder;
 import static com.palantir.javapoet.TypeSpec.classBuilder;
 import static com.palantir.javapoet.TypeSpec.interfaceBuilder;
 import static is.codion.common.Text.nullOrEmpty;
-import static java.util.Collections.emptySet;
-import static java.util.Collections.singleton;
+import static java.util.Collections.*;
 import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Function.identity;
@@ -101,6 +101,7 @@ public final class DomainSource {
 	private final String domainInterfaceName;
 	private final List<EntityDefinition> sortedDefinitions;
 	private final Map<EntityType, EntityDefinition> definitionsByType;
+	private final Collection<Attribute<?>> invalidNames;
 
 	private final String domainPackage;
 	private final Set<EntityType> dtos;
@@ -117,6 +118,10 @@ public final class DomainSource {
 		this.dtos = builder.dtos;
 		this.i18n = builder.i18n;
 		this.test = builder.test;
+		this.invalidNames = collectInvalidNames(sortedDefinitions);
+		if (!invalidNames.isEmpty()) {
+			System.err.println("Invalid domain attribute names: " + invalidNames);
+		}
 	}
 
 	/**
@@ -454,9 +459,11 @@ public final class DomainSource {
 						.addField(createEntityType(definition, i18n, interfaceName));
 		definition.attributes().get().stream()
 						.filter(Column.class::isInstance)
+						.filter(column -> !invalidNames.contains(column))
 						.forEach(column -> appendAttribute(interfaceBuilder, column));
 		definition.attributes().get().stream()
 						.filter(ForeignKey.class::isInstance)
+						.filter(foreignKey -> !invalidNames.contains(foreignKey))
 						.forEach(foreignKey -> appendAttribute(interfaceBuilder, foreignKey));
 
 		if (dtos.contains(definition.type())) {
@@ -784,7 +791,7 @@ public final class DomainSource {
 		if (definition.readOnly()) {
 			// Convert "Country city" to "CountryCity" by capitalizing each word
 			// Append "View" to distinguish from tables with the same name
-			String name = Arrays.stream(definition.caption().split(" "))
+			String name = Arrays.stream(definition.caption().trim().split(" "))
 							.map(part -> part.substring(0, 1).toUpperCase() + part.substring(1).toLowerCase())
 							.collect(joining("", "", "View"));
 			if (!uppercase) {
@@ -962,6 +969,17 @@ public final class DomainSource {
 	private static boolean foreignKeyColumn(EntityDefinition definition, AttributeDefinition<?> attribute) {
 		return attribute instanceof ColumnDefinition<?> &&
 						definition.foreignKeys().foreignKeyColumn((Column<?>) attribute.attribute());
+	}
+
+	private static Collection<Attribute<?>> collectInvalidNames(List<EntityDefinition> definitions) {
+		return unmodifiableSet(definitions.stream().flatMap(definition -> definition.attributes().get().stream()
+										.filter(DomainSource::columnOrForeignKey)
+										.filter(attribute -> !SourceVersion.isName(attribute.name())))
+						.collect(toSet()));
+	}
+
+	private static boolean columnOrForeignKey(Attribute<?> attribute) {
+		return attribute instanceof Column || attribute instanceof ForeignKey;
 	}
 
 	// ========================================

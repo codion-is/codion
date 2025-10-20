@@ -54,6 +54,7 @@ Codion Change Log
 - EditAttributePanel now sets the validation message as component tooltip.
 ### is.codion.tools.generator.domain
 - DomainSource now writes a domain unit test.
+- DomainSource now excludes and logs attributes based on columns with names which are invalid java identifiers.
 ### is.codion.tools.generator.model
 - DomainGeneratorModel.DOMAIN_PACKAGE now with default 'none' instead of 'no.package' since package is a reserved word.
 ### is.codion.tools.generator.panel
