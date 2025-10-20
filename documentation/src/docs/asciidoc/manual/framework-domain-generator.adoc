@@ -95,7 +95,7 @@ The generator is configured through system properties set via JVM arguments:
 
 |`codion.domain.generator.domainPackage`
 |Base package for generated code
-|`no.package`
+|`none`
 
 |`codion.domain.generator.combinedSourceDirectory`
 |Output directory for combined mode (relative or absolute path)

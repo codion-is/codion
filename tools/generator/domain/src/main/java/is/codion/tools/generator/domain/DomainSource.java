@@ -1107,7 +1107,7 @@ public final class DomainSource {
 
 		private final Domain domain;
 
-		private String domainPackage = "no.package";
+		private String domainPackage = "none";
 		private Set<EntityType> dtos = emptySet();
 		private boolean i18n = false;
 
