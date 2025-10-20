@@ -32,6 +32,8 @@ Codion Change Log
 - EntitySelectQuery.Builder.with() and withRecursive() added for CTEs.
 - EntityDefinition.placeholder() renamed entity().
 - EntitySelectQuery CTE builder fluency improved.
+### is.codion.framework.domain.db
+- SchemaDomain.SchemaSettings.viewPrefix() added.
 ### is.codion.framework.db
 - EntityConnectionProvider.DESCRIPTION configuration property added, for overriding the default description.
 ### is.codion.framework.db.local
@@ -49,6 +51,7 @@ Codion Change Log
 - EditAttributePanel now sets the validation message as component tooltip.
 ### is.codion.tools.generator.panel
 - DomainGeneratorModel, DomainGeneratorPanel, now support separate source paths for api/impl and combined.
+- DomainGeneratorModel, DomainGeneratorPanel, view prefix handling added.
 
 ## 0.18.54
 ### is.codion.common.db

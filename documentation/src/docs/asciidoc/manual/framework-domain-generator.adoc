@@ -156,6 +156,10 @@ Schema settings control how database metadata is interpreted and transformed int
 |Suffix removed from view names when creating entity type names
 |`""` (empty)
 
+|View Prefix
+|Prefix removed from view names when creating entity type names
+|`""` (empty)
+
 |Audit Column Names
 |Comma-separated list of audit column names to mark as read-only
 |`""` (empty)
@@ -201,6 +205,21 @@ CREATE VIEW ORDERS_VW AS SELECT ...
 
 Without suffix:: `EntityType TYPE = DOMAIN.entityType("orders_vw");`
 With suffix "_VW":: `EntityType TYPE = DOMAIN.entityType("orders");`
+
+==== View Prefix
+
+Databases sometimes prefix view names with `VW_`, `V_`, or similar. Setting this prefix removes it from generated entity type names.
+
+.Example: View prefix "VW_"
+[source,sql]
+----
+CREATE VIEW VW_ORDERS AS SELECT ...
+----
+
+Without prefix:: `EntityType TYPE = DOMAIN.entityType("vw_orders");`
+With prefix "VW_":: `EntityType TYPE = DOMAIN.entityType("orders");`
+
+NOTE: Both view prefix and view suffix can be used simultaneously. The prefix is removed first, then the suffix.
 
 ==== Audit Columns
 

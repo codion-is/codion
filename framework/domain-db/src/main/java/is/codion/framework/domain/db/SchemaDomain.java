@@ -107,7 +107,11 @@ public final class SchemaDomain extends DomainModel {
 	private void defineEntity(MetaDataTable table) {
 		if (!tableEntityTypes.containsKey(table)) {
 			boolean view = table.tableType().toLowerCase().contains("view");
-			String name = view ? removeSuffix(table.tableName(), settings.viewSuffix()) : table.tableName();
+			String name = table.tableName();
+			if (view) {
+				name = removePrefix(name, settings.viewPrefix());
+				name = removeSuffix(name, settings.viewSuffix());
+			}
 			if (settings.lowerCaseIdentifiers()) {
 				name = name.toLowerCase();
 			}
@@ -253,6 +257,11 @@ public final class SchemaDomain extends DomainModel {
 						name.substring(0, name.length() - suffix.length()) : name;
 	}
 
+	private static String removePrefix(String name, String prefix) {
+		return name.toLowerCase().startsWith(prefix.toLowerCase()) ?
+						name.substring(prefix.length()) : name;
+	}
+
 	/**
 	 * Specifies the settings used when deriving a domain model from a database schema.
 	 * @see #builder()
@@ -262,6 +271,8 @@ public final class SchemaDomain extends DomainModel {
 		String primaryKeyColumnSuffix();
 
 		String viewSuffix();
+
+		String viewPrefix();
 
 		Collection<String> auditColumnNames();
 
@@ -285,6 +296,8 @@ public final class SchemaDomain extends DomainModel {
 
 			Builder viewSuffix(String viewSuffix);
 
+			Builder viewPrefix(String viewPrefix);
+
 			Builder auditColumnNames(String... auditColumnNames);
 
 			Builder hideAuditColumns(boolean hideAuditColumns);
@@ -299,6 +312,7 @@ public final class SchemaDomain extends DomainModel {
 
 		private final String primaryKeyColumnSuffix;
 		private final String viewSuffix;
+		private final String viewPrefix;
 		private final Collection<String> auditColumnNames;
 		private final boolean hideAuditColumns;
 		private final boolean lowerCaseIdentifiers;
@@ -308,6 +322,7 @@ public final class SchemaDomain extends DomainModel {
 			this.auditColumnNames = builder.auditColumnNames;
 			this.hideAuditColumns = builder.hideAuditColumns;
 			this.viewSuffix = builder.viewSuffix;
+			this.viewPrefix = builder.viewPrefix;
 			this.lowerCaseIdentifiers = builder.lowerCaseIdentifiers;
 		}
 
@@ -319,6 +334,11 @@ public final class SchemaDomain extends DomainModel {
 		@Override
 		public String viewSuffix() {
 			return viewSuffix;
+		}
+
+		@Override
+		public String viewPrefix() {
+			return viewPrefix;
 		}
 
 		@Override
@@ -340,6 +360,7 @@ public final class SchemaDomain extends DomainModel {
 
 			private String primaryKeyColumnSuffix = "";
 			private String viewSuffix = "";
+			private String viewPrefix = "";
 			private Collection<String> auditColumnNames = emptySet();
 			private boolean hideAuditColumns = false;
 			private boolean lowerCaseIdentifiers = true;
@@ -353,6 +374,12 @@ public final class SchemaDomain extends DomainModel {
 			@Override
 			public Builder viewSuffix(String viewSuffix) {
 				this.viewSuffix = viewSuffix == null ? "" : viewSuffix;
+				return this;
+			}
+
+			@Override
+			public Builder viewPrefix(String viewPrefix) {
+				this.viewPrefix = viewPrefix == null ? "" : viewPrefix;
 				return this;
 			}
 

@@ -685,6 +685,7 @@ public final class DomainGeneratorPanel extends JPanel {
 
 		private final ComponentValue<JTextField, String> primaryKeySuffix;
 		private final ComponentValue<JTextField, String> viewSuffix;
+		private final ComponentValue<JTextField, String> viewPrefix;
 		private final ComponentValue<JCheckBox, Boolean> hideAuditColumns;
 		private final ComponentValue<TextFieldPanel, String> auditColumnNames;
 		private final ComponentValue<JCheckBox, Boolean> lowerCaseIdentifiers;
@@ -698,6 +699,10 @@ public final class DomainGeneratorPanel extends JPanel {
 							.buildValue();
 			viewSuffix = stringField()
 							.value(schemaSettings.viewSuffix())
+							.columns(5)
+							.buildValue();
+			viewPrefix = stringField()
+							.value(schemaSettings.viewPrefix())
 							.columns(5)
 							.buildValue();
 			hideAuditColumns = checkBox()
@@ -714,6 +719,8 @@ public final class DomainGeneratorPanel extends JPanel {
 			add(primaryKeySuffix.component());
 			add(label("View suffix").build());
 			add(viewSuffix.component());
+			add(label("View prefix").build());
+			add(viewPrefix.component());
 			add(label("Hide audit columns").build());
 			add(hideAuditColumns.component());
 			add(label("Audit column names").build());
@@ -726,6 +733,7 @@ public final class DomainGeneratorPanel extends JPanel {
 			return SchemaSettings.builder()
 							.primaryKeyColumnSuffix(primaryKeySuffix.optional().orElse(""))
 							.viewSuffix(viewSuffix.optional().orElse(""))
+							.viewPrefix(viewPrefix.optional().orElse(""))
 							.hideAuditColumns(hideAuditColumns.getOrThrow())
 							.auditColumnNames(auditColumnNames.optional().orElse(""))
 							.lowerCaseIdentifiers(lowerCaseIdentifiers.getOrThrow())
