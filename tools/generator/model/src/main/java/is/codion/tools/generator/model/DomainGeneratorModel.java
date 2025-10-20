@@ -61,7 +61,6 @@ import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.common.value.Value.Notify.SET;
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
-import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.*;
 
@@ -70,6 +69,8 @@ import static java.util.stream.Collectors.*;
  */
 public final class DomainGeneratorModel {
 
+	private static final String USER_DIR = "user.dir";
+
 	/**
 	 * The default domain package.
 	 */
@@ -77,10 +78,25 @@ public final class DomainGeneratorModel {
 					stringValue("codion.domain.generator.domainPackage", "no.package");
 
 	/**
-	 * The default source directory.
+	 * The combined source directory, relative to the user directory.
+	 * <p>Default "combined".
 	 */
-	public static final PropertyValue<String> SOURCE_DIRECTORY =
-					stringValue("codion.domain.generator.sourceDirectory", System.getProperty("user.dir"));
+	public static final PropertyValue<String> COMBINED_SOURCE_DIRECTORY =
+					stringValue("codion.domain.generator.combinedSourceDirectory", "combined");
+
+	/**
+	 * The api source directory, relative to the user directory, used when saving the domain files when split into api/impl
+	 * <p>Default "api".
+	 */
+	public static final PropertyValue<String> API_SOURCE_DIRECTORY =
+					stringValue("codion.domain.generator.apiSourceDirectory", "api");
+
+	/**
+	 * The implementation source directory, relative to the user directory, used when saving the domain files when split into api/impl
+	 * <p>Default "impl".
+	 */
+	public static final PropertyValue<String> IMPL_SOURCE_DIRECTORY =
+					stringValue("codion.domain.generator.implSourceDirectory", "impl");
 
 	private static final Preferences PREFERENCES = UserPreferences.file(DomainGeneratorModel.class.getName());
 	private static final Pattern PACKAGE_PATTERN =
@@ -117,11 +133,18 @@ public final class DomainGeneratorModel {
 					.nonNull(DOMAIN_PACKAGE.getOrThrow())
 					.listener(this::domainPackageChanged)
 					.build();
-	private final State sourceDirectorySpecified = State.state();
-	private final Value<String> sourceDirectoryValue = Value.builder()
-					.nonNull(SOURCE_DIRECTORY.getOrThrow())
-					.listener(this::sourceDirectoryChanged)
+	private final Value<String> combinedSourceDirectoryValue = Value.builder()
+					.nonNull(COMBINED_SOURCE_DIRECTORY.getOrThrow())
 					.build();
+	private final ObservableState combinedSourceDirectorySpecified = State.present(combinedSourceDirectoryValue);
+	private final Value<String> apiSourceDirectoryValue = Value.builder()
+					.nonNull(API_SOURCE_DIRECTORY.getOrThrow())
+					.build();
+	private final ObservableState apiSourceDirectorySpecified = State.present(apiSourceDirectoryValue);
+	private final Value<String> implSourceDirectoryValue = Value.builder()
+					.nonNull(IMPL_SOURCE_DIRECTORY.getOrThrow())
+					.build();
+	private final ObservableState implSourceDirectorySpecified = State.present(implSourceDirectoryValue);
 	private final Value<String> domainImplValue = Value.builder()
 					.<String>nullable()
 					.notify(SET)
@@ -145,7 +168,6 @@ public final class DomainGeneratorModel {
 	private DomainGeneratorModel(Database database, User user) {
 		this.database = requireNonNull(database);
 		this.user = user;
-		sourceDirectoryChanged();
 		domainPackageChanged();
 		schemaTableModel.sort().ascending(SchemaColumns.SCHEMA);
 		entityTableModel.sort().ascending(EntityColumns.ENTITY);
@@ -189,8 +211,16 @@ public final class DomainGeneratorModel {
 		return domainPackageValue;
 	}
 
-	public Value<String> sourceDirectory() {
-		return sourceDirectoryValue;
+	public Value<String> combinedSourceDirectory() {
+		return combinedSourceDirectoryValue;
+	}
+
+	public Value<String> apiSourceDirectory() {
+		return apiSourceDirectoryValue;
+	}
+
+	public Value<String> implSourceDirectory() {
+		return implSourceDirectoryValue;
 	}
 
 	public Value<String> apiSearchValue() {
@@ -223,8 +253,9 @@ public final class DomainGeneratorModel {
 		if (domain != null) {
 			return domainSource(domain)
 							.writeApiImpl(
-											sourcePath(Path.of(sourceDirectoryValue.getOrThrow()), "java"),
-											sourcePath(Path.of(sourceDirectoryValue.getOrThrow()), "resources"), overwrite);
+											sourcePath(Path.of(apiSourceDirectoryValue.getOrThrow()), "java"),
+											sourcePath(Path.of(implSourceDirectoryValue.getOrThrow()), "java"),
+											sourcePath(Path.of(apiSourceDirectoryValue.getOrThrow()), "resources"), overwrite);
 		}
 
 		return false;
@@ -233,17 +264,21 @@ public final class DomainGeneratorModel {
 	public boolean saveCombined(BooleanSupplier overwrite) throws IOException {
 		SchemaDomain domain = selectedDomain();
 		if (domain != null) {
-			domainSource(domain)
+			return domainSource(domain)
 							.writeCombined(
-											sourcePath(Path.of(sourceDirectoryValue.getOrThrow()), "java"),
-											sourcePath(Path.of(sourceDirectoryValue.getOrThrow()), "resources"), overwrite);
+											sourcePath(Path.of(combinedSourceDirectoryValue.getOrThrow()), "java"),
+											sourcePath(Path.of(combinedSourceDirectoryValue.getOrThrow()), "resources"), overwrite);
 		}
 
 		return false;
 	}
 
-	public ObservableState saveEnabled() {
-		return State.and(domainPackageSpecified, sourceDirectorySpecified, populatedSchemaSelected);
+	public ObservableState combinedSaveEnabled() {
+		return State.and(domainPackageSpecified, combinedSourceDirectorySpecified, populatedSchemaSelected);
+	}
+
+	public ObservableState apiImplSaveEnabled() {
+		return State.and(domainPackageSpecified, apiSourceDirectorySpecified, implSourceDirectorySpecified, populatedSchemaSelected);
 	}
 
 	private void bindEvents() {
@@ -295,10 +330,6 @@ public final class DomainGeneratorModel {
 	 */
 	public static DomainGeneratorModel domainGeneratorModel(Database database, User user) {
 		return new DomainGeneratorModel(database, requireNonNull(user));
-	}
-
-	private void sourceDirectoryChanged() {
-		sourceDirectorySpecified.set(nonNull(sourceDirectoryValue.get()));
 	}
 
 	private void domainPackageChanged() {

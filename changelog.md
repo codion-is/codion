@@ -47,6 +47,8 @@ Codion Change Log
 - EntityTablePanel bug fixed, now disables editing for cells based on entities that are neither searchable nor based on small datasets, since a search field can not be automatically instantiated.
 - EntityDialogs.DefaultEditAttributeDialogBuilder refactored, EditAttributePanel added, now handles async properly, validation improved.
 - EditAttributePanel now sets the validation message as component tooltip.
+### is.codion.tools.generator.panel
+- DomainGeneratorModel, DomainGeneratorPanel, now support separate source paths for api/impl and combined.
 
 ## 0.18.54
 ### is.codion.common.db

@@ -160,22 +160,24 @@ public final class DomainSource {
 
 	/**
 	 * Writes the api and implementation source code to the given path.
-	 * @param sourcePath the path to write the source files to
-	 * @param resourcePath the path to write the resources to
+	 * @param apiSourcePath the path to write the api source files to
+	 * @param implSourcePath the path to write the implementation source files to
+	 * @param apiResourcePath the path to write the api resources to
 	 * @param overwrite used to confirm overwrite if either of the api or impl files exist
 	 * @return true if the files were written, false if overwriting was not confirmed
 	 * @throws IOException in case of an I/O error.
 	 */
-	public boolean writeApiImpl(Path sourcePath, Path resourcePath, BooleanSupplier overwrite) throws IOException {
+	public boolean writeApiImpl(Path apiSourcePath, Path implSourcePath, Path apiResourcePath, BooleanSupplier overwrite) throws IOException {
 		String interfaceName = interfaceName(domain.type().name(), true);
-		Files.createDirectories(requireNonNull(sourcePath).resolve(API_PACKAGE_NAME));
-		Path apiPath = sourcePath.resolve(API_PACKAGE_NAME).resolve(interfaceName + JAVA);
-		Path implPath = sourcePath.resolve(interfaceName + IMPL_CLASS_SUFFIX + JAVA);
+		Files.createDirectories(requireNonNull(apiSourcePath).resolve(API_PACKAGE_NAME));
+		Path apiPath = apiSourcePath.resolve(API_PACKAGE_NAME).resolve(interfaceName + JAVA);
+		Files.createDirectories(requireNonNull(implSourcePath));
+		Path implPath = implSourcePath.resolve(interfaceName + IMPL_CLASS_SUFFIX + JAVA);
 		if ((!apiPath.toFile().exists() && !implPath.toFile().exists()) || requireNonNull(overwrite).getAsBoolean()) {
 			Files.write(apiPath, singleton(api()));
 			Files.write(implPath, singleton(implementation()));
 			if (i18n) {
-				writeI18n(resourcePath, true);
+				writeI18n(apiResourcePath, true);
 			}
 
 			return true;

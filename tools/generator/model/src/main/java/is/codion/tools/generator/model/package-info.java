@@ -20,7 +20,9 @@
  * Package configuration values:
  * <ul>
  * <li>{@link is.codion.tools.generator.model.DomainGeneratorModel#DOMAIN_PACKAGE}
- * <li>{@link is.codion.tools.generator.model.DomainGeneratorModel#SOURCE_DIRECTORY}
+ * <li>{@link is.codion.tools.generator.model.DomainGeneratorModel#COMBINED_SOURCE_DIRECTORY}
+ * <li>{@link is.codion.tools.generator.model.DomainGeneratorModel#API_SOURCE_DIRECTORY}
+ * <li>{@link is.codion.tools.generator.model.DomainGeneratorModel#IMPL_SOURCE_DIRECTORY}
  * </ul>
  */
 package is.codion.tools.generator.model;

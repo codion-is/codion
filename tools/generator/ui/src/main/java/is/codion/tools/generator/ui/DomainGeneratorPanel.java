@@ -25,11 +25,14 @@ import is.codion.common.model.preferences.UserPreferences;
 import is.codion.common.observer.Observable;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
+import is.codion.common.value.Value;
 import is.codion.framework.domain.db.SchemaDomain.SchemaSettings;
 import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
 import is.codion.swing.common.ui.component.text.SearchHighlighter;
+import is.codion.swing.common.ui.component.text.TextFieldPanel;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -65,7 +68,9 @@ import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 import static is.codion.common.Configuration.booleanValue;
 import static is.codion.common.Configuration.stringValue;
@@ -158,7 +163,6 @@ public final class DomainGeneratorPanel extends JPanel {
 
 	private void initializeUI() {
 		JPanel schemaSourceDirPanel = borderLayoutPanel()
-						.north(createSourceDirectoryPanel())
 						.center(borderLayoutPanel()
 										.center(splitPane()
 														.orientation(JSplitPane.VERTICAL_SPLIT)
@@ -233,32 +237,57 @@ public final class DomainGeneratorPanel extends JPanel {
 						.build();
 	}
 
-	private JSplitPane createApiImplPanel() {
-		return splitPane()
+	private JPanel createApiImplPanel() {
+		return borderLayoutPanel()
+						.north(createApiImplSourceDirectoryPanel())
+						.center(splitPane()
 						.orientation(JSplitPane.VERTICAL_SPLIT)
 						.resizeWeight(0.5)
 						.topComponent(borderLayoutPanel()
 										.center(createScrollablePanel(apiTextArea, "API (Alt-3)"))
-										.south(createSearchCopyPanel(apiTextArea)))
+										.south(createCopyPanel(apiTextArea)))
 						.bottomComponent(borderLayoutPanel()
 										.center(createScrollablePanel(implementationTextArea, "Implementation (Alt-4)"))
-										.south(createSearchCopyPanel(implementationTextArea)))
+										.south(createCopyPanel(implementationTextArea)))
 						.continuousLayout(true)
-						.oneTouchExpandable(true)
+										.oneTouchExpandable(true))
 						.build();
 	}
 
 	private JPanel createCombinedPanel() {
 		return borderLayoutPanel()
-						.center(createScrollablePanel(combinedTextArea, "Combined (Alt-5)"))
-						.south(createSearchCopyPanel(combinedTextArea))
+						.north(createCombinedSourceDirectoryPanel())
+						.center(borderLayoutPanel()
+										.center(createScrollablePanel(combinedTextArea, "Combined (Alt-5)"))
+										.south(createCopyPanel(combinedTextArea))
+										.build())
 						.build();
 	}
 
-	private static JPanel createSearchCopyPanel(JTextArea textArea) {
+	private Control createSaveApiImplControl() {
+		return Control.builder()
+						.command(this::saveApiImpl)
+						.caption("Save")
+						.mnemonic('S')
+						.enabled(model.apiImplSaveEnabled())
+						.build();
+	}
+
+	private Control createSaveCombinedControl() {
+		return Control.builder()
+						.command(this::saveCombined)
+						.caption("Save")
+						.mnemonic('S')
+						.enabled(model.combinedSaveEnabled())
+						.build();
+	}
+
+	private static JPanel createCopyPanel(JTextArea textArea) {
 		return borderLayoutPanel()
-						.east(button()
+						.east(gridLayoutPanel(1, 0)
+										.add(button()
 										.control(createCopyControl(textArea)))
+										.build())
 						.build();
 	}
 
@@ -308,34 +337,72 @@ public final class DomainGeneratorPanel extends JPanel {
 														.add(label(" "))
 														.add(createDtoCheckBox())
 														.add(createI18nCheckBox())))
-						.east(gridLayoutPanel(2, 1)
-										.add(label(" "))
-										.add(button()
-														.control(Control.builder()
-																		.command(this::save)
-																		.caption("Save")
-																		.mnemonic('S')
-																		.enabled(model.saveEnabled()))))
 						.build();
 	}
 
-	private JPanel createSourceDirectoryPanel() {
-		JLabel sourceDirectoryLabel = label("Source directory")
-						.displayedMnemonic('D')
+	private JPanel createApiImplSourceDirectoryPanel() {
+		JLabel apiSourceDirectoryLabel = label("API Source Directory")
+						.displayedMnemonic('I')
 						.build();
-		Control selectSourceDirectoryControl = Control.builder()
-						.command(this::selectSourceDirectory)
-						.caption("...")
+		JLabel implSourceDirectoryLabel = label("Implementation Source Directory")
+						.displayedMnemonic('M')
 						.build();
 
 		return borderLayoutPanel()
-						.center(gridLayoutPanel(2, 1)
-										.add(sourceDirectoryLabel)
-										.add(createSourceDirectoryField(sourceDirectoryLabel, selectSourceDirectoryControl)))
+						.center(gridLayoutPanel(1, 2)
+										.add(borderLayoutPanel()
+														.center(gridLayoutPanel(2, 1)
+																		.add(apiSourceDirectoryLabel)
+																		.add(createSourceDirectoryField(apiSourceDirectoryLabel, model.apiSourceDirectory())))
+														.east(gridLayoutPanel(2, 1)
+																		.add(label(" "))
+																		.add(button()
+																						.control(Control.builder()
+																										.command(this::selectApiSourceDirectory)
+																										.caption("...")
+																										.build())
+																						.label(apiSourceDirectoryLabel))))
+										.add(borderLayoutPanel()
+														.center(gridLayoutPanel(2, 1)
+																		.add(implSourceDirectoryLabel)
+																		.add(createSourceDirectoryField(implSourceDirectoryLabel, model.implSourceDirectory())))
+														.east(gridLayoutPanel(2, 1)
+																		.add(label(" "))
+																		.add(button()
+																						.control(Control.builder()
+																										.command(this::selectImplSourceDirectory)
+																										.caption("...")
+																										.build())
+																						.label(implSourceDirectoryLabel)))))
 						.east(gridLayoutPanel(2, 1)
 										.add(label(" "))
 										.add(button()
-														.control(selectSourceDirectoryControl)))
+														.control(createSaveApiImplControl())))
+						.build();
+	}
+
+	private JPanel createCombinedSourceDirectoryPanel() {
+		JLabel combinedSourceDirectoryLabel = label("Combined Source directory")
+						.displayedMnemonic('D')
+						.build();
+
+		return borderLayoutPanel()
+						.center(borderLayoutPanel()
+										.center(gridLayoutPanel(2, 1)
+														.add(combinedSourceDirectoryLabel)
+														.add(createSourceDirectoryField(combinedSourceDirectoryLabel, model.combinedSourceDirectory())))
+										.east(gridLayoutPanel(2, 1)
+														.add(label(" "))
+														.add(button()
+																		.control(Control.builder()
+																						.command(this::selectCombinedSourceDirectory)
+																						.caption("...")
+																						.build())
+																		.label(combinedSourceDirectoryLabel))))
+						.east(gridLayoutPanel(2, 1)
+										.add(label(" "))
+										.add(button()
+														.control(createSaveCombinedControl())))
 						.build();
 	}
 
@@ -369,44 +436,41 @@ public final class DomainGeneratorPanel extends JPanel {
 						.build();
 	}
 
-	private JTextField createSourceDirectoryField(JLabel sourceDirectoryLabel,
-																								Control selectSourceDirectoryControl) {
+	private static JTextField createSourceDirectoryField(JLabel sourceDirectoryLabel, Value<String> sourceDirectoryValue) {
 		return stringField()
-						.link(model.sourceDirectory())
-						.hint("(Alt-D / INSERT)")
+						.link(sourceDirectoryValue)
 						.editable(false)
-						.keyEvent(KeyEvents.builder()
-										.keyCode(KeyEvent.VK_INSERT)
-										.action(selectSourceDirectoryControl))
-						.onBuild(field -> KeyEvents.builder()
-										.keyCode(KeyEvent.VK_D)
-										.condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-										.modifiers(InputEvent.ALT_DOWN_MASK)
-										.action(command(field::requestFocusInWindow))
-										.enable(this))
+						.focusable(false)
 						.onBuild(sourceDirectoryLabel::setLabelFor)
 						.build();
 	}
 
-	private void selectSourceDirectory() {
-		model.sourceDirectory().set(Dialogs.select()
+	private void selectCombinedSourceDirectory() {
+		File selected = Dialogs.select()
 						.files()
-						.startDirectory(DomainGeneratorModel.SOURCE_DIRECTORY.get())
-						.selectDirectory()
-						.getAbsolutePath());
+						.startDirectory(DomainGeneratorModel.COMBINED_SOURCE_DIRECTORY.get())
+						.selectDirectory();
+		model.combinedSourceDirectory().set(toRelativePath(selected));
 	}
 
-	private void save() throws IOException {
-		if (sourceTabbedPane.getSelectedIndex() == 0) {
-			saveApiImpl();
-		}
-		else {
-			saveCombined();
-		}
+	private void selectApiSourceDirectory() {
+		File selected = Dialogs.select()
+						.files()
+						.startDirectory(DomainGeneratorModel.API_SOURCE_DIRECTORY.get())
+						.selectDirectory();
+		model.apiSourceDirectory().set(toRelativePath(selected));
+	}
+
+	private void selectImplSourceDirectory() {
+		File selected = Dialogs.select()
+						.files()
+						.startDirectory(DomainGeneratorModel.IMPL_SOURCE_DIRECTORY.get())
+						.selectDirectory();
+		model.implSourceDirectory().set(toRelativePath(selected));
 	}
 
 	private void saveApiImpl() throws IOException {
-		if (showConfirmDialog(this, "Save API and Impl files to source directory?",
+		if (showConfirmDialog(this, "Save API and Impl files?",
 						"Confirm save", YES_NO_OPTION) == YES_OPTION &&
 						model.saveApiImpl(this::confirmOverwrite)) {
 			showMessageDialog(this, "Files saved");
@@ -414,7 +478,7 @@ public final class DomainGeneratorPanel extends JPanel {
 	}
 
 	private void saveCombined() throws IOException {
-		if (showConfirmDialog(this, "Save combined API and Impl file to source directory?",
+		if (showConfirmDialog(this, "Save combined API and Impl file?",
 						"Confirm save", YES_NO_OPTION) == YES_OPTION &&
 						model.saveCombined(this::confirmOverwrite)) {
 			showMessageDialog(this, "File saved");
@@ -604,12 +668,25 @@ public final class DomainGeneratorPanel extends JPanel {
 										::show);
 	}
 
+	private static String toRelativePath(File selectedDirectory) {
+		try {
+			Path currentDir = Path.of(System.getProperty("user.dir"));
+			Path selectedPath = selectedDirectory.toPath().normalize();
+
+			return currentDir.relativize(selectedPath).toString();
+		}
+		catch (IllegalArgumentException e) {
+			// Cannot relativize (e.g., different drives on Windows)
+			return selectedDirectory.getAbsolutePath();
+		}
+	}
+
 	private static final class SchemaSettingsPanel extends JPanel {
 
 		private final ComponentValue<JTextField, String> primaryKeySuffix;
 		private final ComponentValue<JTextField, String> viewSuffix;
 		private final ComponentValue<JCheckBox, Boolean> hideAuditColumns;
-		private final ComponentValue<JTextField, String> auditColumnNames;
+		private final ComponentValue<TextFieldPanel, String> auditColumnNames;
 		private final ComponentValue<JCheckBox, Boolean> lowerCaseIdentifiers;
 
 		private SchemaSettingsPanel(SchemaSettings schemaSettings) {
@@ -626,7 +703,7 @@ public final class DomainGeneratorPanel extends JPanel {
 			hideAuditColumns = checkBox()
 							.value(schemaSettings.hideAuditColumns())
 							.buildValue();
-			auditColumnNames = stringField()
+			auditColumnNames = Components.textFieldPanel()
 							.value(schemaSettings.auditColumnNames().stream()
 											.collect(joining(", ")))
 							.buildValue();
