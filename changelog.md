@@ -34,6 +34,8 @@ Codion Change Log
 - EntitySelectQuery CTE builder fluency improved.
 ### is.codion.framework.domain.db
 - SchemaDomain.SchemaSettings.viewPrefix() added.
+- SchemaDomain bug fixed, no longer mess up view identifiers, tests improved.
+- SchemaDomain now appends 'View' to domain interface names representing views.
 ### is.codion.framework.db
 - EntityConnectionProvider.DESCRIPTION configuration property added, for overriding the default description.
 ### is.codion.framework.db.local

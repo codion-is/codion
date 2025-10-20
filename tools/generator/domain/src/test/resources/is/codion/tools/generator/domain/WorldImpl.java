@@ -2,7 +2,7 @@ package is.codion.world.domain;
 
 import static is.codion.world.domain.api.World.City;
 import static is.codion.world.domain.api.World.Country;
-import static is.codion.world.domain.api.World.CountryCity;
+import static is.codion.world.domain.api.World.CountryCityView;
 import static is.codion.world.domain.api.World.Countrylanguage;
 import static is.codion.world.domain.api.World.DOMAIN;
 
@@ -13,74 +13,74 @@ public final class WorldImpl extends DomainModel {
 	public WorldImpl() {
 		super(DOMAIN);
 		validateForeignKeys(false);
-		add(countryCity(), city(), country(),
+		add(countryCityView(), city(), country(),
 				countrylanguage());
 	}
 
-	static EntityDefinition countryCity() {
-		return CountryCity.TYPE.define(
-				CountryCity.COUNTRYCODE.define()
+	static EntityDefinition countryCityView() {
+		return CountryCityView.TYPE.define(
+				CountryCityView.COUNTRYCODE.define()
 					.column()
 					.caption("Countrycode"),
-				CountryCity.COUNTRYNAME.define()
+				CountryCityView.COUNTRYNAME.define()
 					.column()
 					.caption("Countryname"),
-				CountryCity.CONTINENT.define()
+				CountryCityView.CONTINENT.define()
 					.column()
 					.caption("Continent"),
-				CountryCity.REGION.define()
+				CountryCityView.REGION.define()
 					.column()
 					.caption("Region"),
-				CountryCity.SURFACEAREA.define()
+				CountryCityView.SURFACEAREA.define()
 					.column()
 					.caption("Surfacearea")
 					.fractionDigits(2),
-				CountryCity.INDEPYEAR.define()
+				CountryCityView.INDEPYEAR.define()
 					.column()
 					.caption("Indepyear"),
-				CountryCity.COUNTRYPOPULATION.define()
+				CountryCityView.COUNTRYPOPULATION.define()
 					.column()
 					.caption("Countrypopulation"),
-				CountryCity.LIFEEXPECTANCY.define()
+				CountryCityView.LIFEEXPECTANCY.define()
 					.column()
 					.caption("Lifeexpectancy")
 					.fractionDigits(1),
-				CountryCity.GNP.define()
+				CountryCityView.GNP.define()
 					.column()
 					.caption("Gnp")
 					.fractionDigits(2),
-				CountryCity.GNPOLD.define()
+				CountryCityView.GNPOLD.define()
 					.column()
 					.caption("Gnpold")
 					.fractionDigits(2),
-				CountryCity.LOCALNAME.define()
+				CountryCityView.LOCALNAME.define()
 					.column()
 					.caption("Localname"),
-				CountryCity.GOVERNMENTFORM.define()
+				CountryCityView.GOVERNMENTFORM.define()
 					.column()
 					.caption("Governmentform"),
-				CountryCity.HEADOFSTATE.define()
+				CountryCityView.HEADOFSTATE.define()
 					.column()
 					.caption("Headofstate"),
-				CountryCity.CAPITAL.define()
+				CountryCityView.CAPITAL.define()
 					.column()
 					.caption("Capital"),
-				CountryCity.CODE2.define()
+				CountryCityView.CODE2.define()
 					.column()
 					.caption("Code2"),
-				CountryCity.FLAG.define()
+				CountryCityView.FLAG.define()
 					.column()
 					.caption("Flag"),
-				CountryCity.CITYID.define()
+				CountryCityView.CITYID.define()
 					.column()
 					.caption("Cityid"),
-				CountryCity.CITYNAME.define()
+				CountryCityView.CITYNAME.define()
 					.column()
 					.caption("Cityname"),
-				CountryCity.DISTRICT.define()
+				CountryCityView.DISTRICT.define()
 					.column()
 					.caption("District"),
-				CountryCity.CITYPOPULATION.define()
+				CountryCityView.CITYPOPULATION.define()
 					.column()
 					.caption("Citypopulation"))
 			.caption("Country city")

@@ -6,7 +6,7 @@ import static is.codion.petstore.domain.api.Petstore.Category;
 import static is.codion.petstore.domain.api.Petstore.ContactInfo;
 import static is.codion.petstore.domain.api.Petstore.DOMAIN;
 import static is.codion.petstore.domain.api.Petstore.Item;
-import static is.codion.petstore.domain.api.Petstore.ItemTags;
+import static is.codion.petstore.domain.api.Petstore.ItemTagsView;
 import static is.codion.petstore.domain.api.Petstore.Product;
 import static is.codion.petstore.domain.api.Petstore.Tag;
 import static is.codion.petstore.domain.api.Petstore.TagItem;
@@ -18,7 +18,7 @@ public final class PetstoreImpl extends DomainModel {
 	public PetstoreImpl() {
 		super(DOMAIN);
 		add(address(), category(), contactInfo(),
-				itemTags(), tag(), product(),
+				itemTagsView(), tag(), product(),
 				item(), tagItem());
 	}
 
@@ -99,11 +99,11 @@ public final class PetstoreImpl extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition itemTags() {
-		return ItemTags.TYPE.define(
-				ItemTags.NAME.define()
+	static EntityDefinition itemTagsView() {
+		return ItemTagsView.TYPE.define(
+				ItemTagsView.NAME.define()
 					.column(),
-				ItemTags.TAG.define()
+				ItemTagsView.TAG.define()
 					.column())
 			.readOnly(true)
 			.build();

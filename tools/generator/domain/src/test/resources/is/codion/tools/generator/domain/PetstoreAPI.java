@@ -84,16 +84,16 @@ public interface Petstore {
 		}
 	}
 
-	interface ItemTags {
-		EntityType TYPE = DOMAIN.entityType("petstore.item_tags", ItemTags.class.getName());
+	interface ItemTagsView {
+		EntityType TYPE = DOMAIN.entityType("petstore.item_tags", ItemTagsView.class.getName());
 
 		Column<String> NAME = TYPE.stringColumn("name");
 		Column<String> TAG = TYPE.stringColumn("tag");
 
-		static Dto dto(Entity itemTags) {
-			return itemTags == null ? null :
-				new Dto(itemTags.get(NAME),
-					itemTags.get(TAG));
+		static Dto dto(Entity itemTagsView) {
+			return itemTagsView == null ? null :
+				new Dto(itemTagsView.get(NAME),
+					itemTagsView.get(TAG));
 		}
 
 		record Dto(String name, String tag) {

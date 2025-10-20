@@ -69,8 +69,6 @@ import static java.util.stream.Collectors.*;
  */
 public final class DomainGeneratorModel {
 
-	private static final String USER_DIR = "user.dir";
-
 	/**
 	 * The default domain package.
 	 */

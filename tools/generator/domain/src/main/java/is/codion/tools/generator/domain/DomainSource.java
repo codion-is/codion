@@ -266,7 +266,7 @@ public final class DomainSource {
 		}
 		Files.createDirectories(resourcePath);
 		for (EntityDefinition definition : domain.entities().definitions()) {
-			Path filePath = resourcePath.resolve(domainInterfaceName + "$" + interfaceName(definition.table(), true) + PROPERTIES_SUFFIX);
+			Path filePath = resourcePath.resolve(domainInterfaceName + "$" + interfaceName(definition, true) + PROPERTIES_SUFFIX);
 			Files.write(filePath, singleton(i18n(definition.type())));
 		}
 	}
@@ -340,7 +340,7 @@ public final class DomainSource {
 			fileBuilder.addStaticImport(parentInterface, DOMAIN_STRING);
 			// Add static import for nested interfaces
 			sortedDefinitions.forEach(definition ->
-							fileBuilder.addStaticImport(parentInterface, interfaceName(definition.table(), true)));
+							fileBuilder.addStaticImport(parentInterface, interfaceName(definition, true)));
 		}
 
 		return fileBuilder.build().toString().trim();
@@ -376,7 +376,7 @@ public final class DomainSource {
 			fileBuilder.addStaticImport(parentInterface, DOMAIN_STRING);
 			// Add static import for nested interfaces
 			sortedDefinitions.forEach(definition ->
-							fileBuilder.addStaticImport(parentInterface, interfaceName(definition.table(), true)));
+							fileBuilder.addStaticImport(parentInterface, interfaceName(definition, true)));
 		}
 
 		return removeInterfaceLineBreaks(fileBuilder.build().toString());
@@ -416,7 +416,7 @@ public final class DomainSource {
 	}
 
 	private TypeSpec createInterface(EntityDefinition definition, Set<EntityType> dtos, boolean i18n) {
-		String interfaceName = interfaceName(definition.table(), true);
+		String interfaceName = interfaceName(definition, true);
 		TypeSpec.Builder interfaceBuilder = interfaceBuilder(interfaceName)
 						.addModifiers(PUBLIC, STATIC)
 						.addField(createEntityType(definition, i18n, interfaceName));
@@ -517,8 +517,8 @@ public final class DomainSource {
 		return MethodSpec.methodBuilder(DTO_METHOD_NAME)
 						.addModifiers(PUBLIC, STATIC)
 						.returns(ClassName.get("", DTO_CLASS_NAME))
-						.addParameter(Entity.class, interfaceName(definition.table(), false))
-						.addCode(dtoFromEntityMethodBody(attributes, interfaceName(definition.table(), false)))
+						.addParameter(Entity.class, interfaceName(definition, false))
+						.addCode(dtoFromEntityMethodBody(attributes, interfaceName(definition, false)))
 						.build();
 	}
 
@@ -530,7 +530,7 @@ public final class DomainSource {
 			}
 			else if (attribute instanceof ForeignKey) {
 				EntityDefinition referenced = referencedDefinition((ForeignKey) attribute);
-				arguments.add(interfaceName(referenced.table(), true)
+				arguments.add(interfaceName(referenced, true)
 								+ "." + DTO_METHOD_NAME + "(" + parameter + ".get(" + attribute.name().toUpperCase() + "))");
 			}
 		});
@@ -544,7 +544,7 @@ public final class DomainSource {
 	}
 
 	private static TypeName dtoName(EntityDefinition referenced) {
-		return ClassName.get("", interfaceName(referenced.table(), true) + "." + DTO_CLASS_NAME);
+		return ClassName.get("", interfaceName(referenced, true) + "." + DTO_CLASS_NAME);
 	}
 
 	private EntityDefinition referencedDefinition(ForeignKey foreignKey) {
@@ -578,7 +578,7 @@ public final class DomainSource {
 	// ========================================
 
 	private static MethodSpec createDefinitionMethod(EntityDefinition definition, boolean i18n) {
-		String interfaceName = interfaceName(definition.table(), true);
+		String interfaceName = interfaceName(definition, true);
 		CaptionStrategy captionStrategy = i18n ? new I18nCaptionStrategy() : new LiteralCaptionStrategy();
 		StringBuilder builder = new StringBuilder()
 						.append(RETURN).append(interfaceName).append(".TYPE.define(").append(LINE_SEPARATOR)
@@ -592,7 +592,7 @@ public final class DomainSource {
 		}
 		builder.append(LINE_SEPARATOR).append(INDENT).append(".build();");
 
-		return methodBuilder(interfaceName(definition.table(), false))
+		return methodBuilder(interfaceName(definition, false))
 						.addModifiers(STATIC)
 						.returns(EntityDefinition.class)
 						.addCode(builder.toString())
@@ -699,6 +699,25 @@ public final class DomainSource {
 	// Utility Methods
 	// ========================================
 
+	private static String interfaceName(EntityDefinition definition, boolean uppercase) {
+		// For views, derive interface name from caption and append "View" to avoid collisions
+		if (definition.readOnly()) {
+			// Convert "Country city" to "CountryCity" by capitalizing each word
+			// Append "View" to distinguish from tables with the same name
+			String name = Arrays.stream(definition.caption().split(" "))
+							.map(part -> part.substring(0, 1).toUpperCase() + part.substring(1).toLowerCase())
+							.collect(joining("", "", "View"));
+			if (!uppercase) {
+				name = name.substring(0, 1).toLowerCase() + name.substring(1);
+			}
+
+			return name;
+		}
+
+		// For tables, use the table name as before
+		return interfaceName(definition.table(), uppercase);
+	}
+
 	private static String interfaceName(String tableName, boolean uppercase) {
 		String name = requireNonNull(tableName).toLowerCase();
 		if (name.contains(".")) {
@@ -749,11 +768,11 @@ public final class DomainSource {
 	}
 
 	public static String apiSearchString(EntityDefinition definition) {
-		return "interface " + interfaceName(definition.table(), true) + " ";
+		return "interface " + interfaceName(definition, true) + " ";
 	}
 
 	public static String implSearchString(EntityDefinition definition) {
-		return "EntityDefinition " + interfaceName(definition.table(), false) + "()";
+		return "EntityDefinition " + interfaceName(definition, false) + "()";
 	}
 
 	public static String i18nSearchString(EntityDefinition definition) {

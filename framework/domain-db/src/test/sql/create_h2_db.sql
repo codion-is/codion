@@ -315,6 +315,11 @@ select country.code countrycode, country.name countryname, country.continent, co
   city.id cityid, city.name cityname, city.district, city.population citypopulation
 from world.country join world.city on city.countrycode = country.code;
 
+insert into world.country values ('ISL','Iceland','Europe','Nordic Countries',103000.00,1944,279000,79.4,8255.00,7474.00,'Ísland','Republic','Ólafur Ragnar Grímsson',1449,'IS',null);
+insert into world.city values (1449,'Reykjavík','ISL','Höfuðborgarsvæði',109184,null);
+
+commit;
+
 alter table world.city
 add constraint city_country_fk
 foreign key (countrycode)

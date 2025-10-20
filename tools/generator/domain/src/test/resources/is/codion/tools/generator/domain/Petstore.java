@@ -7,7 +7,7 @@ import static is.codion.petstore.domain.Petstore.Category;
 import static is.codion.petstore.domain.Petstore.ContactInfo;
 import static is.codion.petstore.domain.Petstore.DOMAIN;
 import static is.codion.petstore.domain.Petstore.Item;
-import static is.codion.petstore.domain.Petstore.ItemTags;
+import static is.codion.petstore.domain.Petstore.ItemTagsView;
 import static is.codion.petstore.domain.Petstore.Product;
 import static is.codion.petstore.domain.Petstore.Tag;
 import static is.codion.petstore.domain.Petstore.TagItem;
@@ -28,7 +28,7 @@ public final class Petstore extends DomainModel {
 	public Petstore() {
 		super(DOMAIN);
 		add(address(), category(), contactInfo(),
-				itemTags(), tag(), product(),
+				itemTagsView(), tag(), product(),
 				item(), tagItem());
 	}
 
@@ -127,12 +127,12 @@ public final class Petstore extends DomainModel {
 			.build();
 	}
 
-	static EntityDefinition itemTags() {
-		return ItemTags.TYPE.define(
-				ItemTags.NAME.define()
+	static EntityDefinition itemTagsView() {
+		return ItemTagsView.TYPE.define(
+				ItemTagsView.NAME.define()
 					.column()
 					.caption("Name"),
-				ItemTags.TAG.define()
+				ItemTagsView.TAG.define()
 					.column()
 					.caption("Tag"))
 			.caption("Item tags")
@@ -349,16 +349,16 @@ public final class Petstore extends DomainModel {
 		}
 	}
 
-	public interface ItemTags {
+	public interface ItemTagsView {
 		EntityType TYPE = DOMAIN.entityType("petstore.item_tags");
 
 		Column<String> NAME = TYPE.stringColumn("name");
 		Column<String> TAG = TYPE.stringColumn("tag");
 
-		static Dto dto(Entity itemTags) {
-			return itemTags == null ? null :
-				new Dto(itemTags.get(NAME),
-					itemTags.get(TAG));
+		static Dto dto(Entity itemTagsView) {
+			return itemTagsView == null ? null :
+				new Dto(itemTagsView.get(NAME),
+					itemTagsView.get(TAG));
 		}
 
 		record Dto(String name, String tag) {

@@ -195,31 +195,49 @@ ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID
 
 ==== View Suffix
 
-Databases often suffix view names with `_VW`, `_VIEW`, or similar. Setting this suffix removes it from generated entity type names.
+Databases often suffix view names with `_VW`, `_VIEW`, or similar. Setting this suffix removes it from the caption before "View" is appended to the interface name.
 
-.Example: View suffix "_VW"
+IMPORTANT: The EntityType identifier always matches the actual database view name. "View" is ALWAYS appended to view interface names to avoid collisions with table names. The suffix configuration only affects whether the suffix is removed from the caption first.
+
+.Example: View suffix "_v"
 [source,sql]
 ----
-CREATE VIEW ORDERS_VW AS SELECT ...
+CREATE VIEW ORDERS_V AS SELECT ...
 ----
 
-Without suffix:: `EntityType TYPE = DOMAIN.entityType("orders_vw");`
-With suffix "_VW":: `EntityType TYPE = DOMAIN.entityType("orders");`
+Without suffix configured::
+* EntityType: `DOMAIN.entityType("orders_v")`
+* Interface: `interface OrdersVView` ("Orders v" → PascalCase + "View")
+* Caption: `"Orders v"`
+
+With suffix "_v" configured::
+* EntityType: `DOMAIN.entityType("orders_v")` (unchanged - always matches database)
+* Interface: `interface OrdersView` (suffix removed → "Orders" → PascalCase + "View")
+* Caption: `"Orders"` (clean caption without suffix)
 
 ==== View Prefix
 
-Databases sometimes prefix view names with `VW_`, `V_`, or similar. Setting this prefix removes it from generated entity type names.
+Databases sometimes prefix view names with `VW_`, `V_`, or similar. Setting this prefix removes it from the caption before "View" is appended to the interface name.
 
-.Example: View prefix "VW_"
+IMPORTANT: The EntityType identifier always matches the actual database view name. "View" is ALWAYS appended to view interface names to avoid collisions with table names. The prefix configuration only affects whether the prefix is removed from the caption first.
+
+.Example: View prefix "vw_"
 [source,sql]
 ----
 CREATE VIEW VW_ORDERS AS SELECT ...
 ----
 
-Without prefix:: `EntityType TYPE = DOMAIN.entityType("vw_orders");`
-With prefix "VW_":: `EntityType TYPE = DOMAIN.entityType("orders");`
+Without prefix configured::
+* EntityType: `DOMAIN.entityType("vw_orders")`
+* Interface: `interface VwOrdersView` ("Vw orders" → PascalCase + "View")
+* Caption: `"Vw orders"`
 
-NOTE: Both view prefix and view suffix can be used simultaneously. The prefix is removed first, then the suffix.
+With prefix "vw_" configured::
+* EntityType: `DOMAIN.entityType("vw_orders")` (unchanged - always matches database)
+* Interface: `interface OrdersView` (prefix removed → "Orders" → PascalCase + "View")
+* Caption: `"Orders"` (clean caption without prefix)
+
+NOTE: Both view prefix and view suffix can be used simultaneously. The prefix is removed first, then the suffix. This prevents collisions when both a table and view exist with similar names (e.g., `orders` table and `orders_v` view).
 
 ==== Audit Columns
 
@@ -621,17 +639,7 @@ The generator can write to any directory (relative or absolute paths). A simple 
 
 1. **Generate to local directories** - Use simple relative paths like `"api"`, `"impl"`, or `"combined"` in your working directory
 2. **Review and customize** - Examine the generated code, make any immediate adjustments
-3. **Copy to modules** - If using separate modules, copy the generated directories to your module source trees:
-+
-[source,bash]
-----
-# Example: Copy generated API to domain-api module
-cp -r api/src/main/java/* domain-api/src/main/java/
-cp -r api/src/main/resources/* domain-api/src/main/resources/
-
-# Example: Copy generated impl to domain-impl module
-cp -r impl/src/main/java/* domain-impl/src/main/java/
-----
+3. **Copy to modules** - If using separate modules, copy the generated directories to your module source trees
 
 This approach keeps the generator configuration simple while supporting any project structure. There's no need to configure the generator to write directly into complex module hierarchies.
 

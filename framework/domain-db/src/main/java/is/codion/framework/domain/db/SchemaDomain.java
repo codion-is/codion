@@ -107,33 +107,37 @@ public final class SchemaDomain extends DomainModel {
 	private void defineEntity(MetaDataTable table) {
 		if (!tableEntityTypes.containsKey(table)) {
 			boolean view = table.tableType().toLowerCase().contains("view");
-			String name = table.tableName();
+			String tableName = table.tableName();
+			// For views, create a clean name for caption by removing prefix/suffix
+			String captionName = tableName;
 			if (view) {
-				name = removePrefix(name, settings.viewPrefix());
-				name = removeSuffix(name, settings.viewSuffix());
+				captionName = removePrefix(captionName, settings.viewPrefix());
+				captionName = removeSuffix(captionName, settings.viewSuffix());
 			}
+			// Apply lowercase to actual table name if configured
+			String entityTypeName = tableName;
 			if (settings.lowerCaseIdentifiers()) {
-				name = name.toLowerCase();
+				entityTypeName = entityTypeName.toLowerCase();
 			}
 			String schemaName = table.schema().name();
 			if (schemaName != null && settings.lowerCaseIdentifiers()) {
 				schemaName = schemaName.toLowerCase();
 			}
-			EntityType entityType = type().entityType(table.schema().none() ? name : schemaName + "." + name);
+			EntityType entityType = type().entityType(table.schema().none() ? entityTypeName : schemaName + "." + entityTypeName);
 			tableEntityTypes.put(table, entityType);
 			table.foreignKeys().stream()
 							.map(MetaDataForeignKeyConstraint::referencedTable)
 							.filter(referencedTable -> !referencedTable.equals(table))
 							.forEach(this::defineEntity);
-			defineEntity(table, entityType, name, view);
+			defineEntity(table, entityType, captionName, view);
 		}
 	}
 
-	private void defineEntity(MetaDataTable table, EntityType entityType, String tableName, boolean view) {
+	private void defineEntity(MetaDataTable table, EntityType entityType, String captionName, boolean view) {
 		List<AttributeDefinition.Builder<?, ?>> attributeDefinitionBuilders = defineAttributes(table, entityType, new ArrayList<>(table.foreignKeys()));
 		if (!attributeDefinitionBuilders.isEmpty()) {
 			EntityDefinition.Builder entityDefinitionBuilder = entityType.define(attributeDefinitionBuilders.toArray(new AttributeDefinition.Builder[0]));
-			entityDefinitionBuilder.caption(caption(tableName));
+			entityDefinitionBuilder.caption(caption(captionName));
 			if (!nullOrEmpty(table.comment())) {
 				entityDefinitionBuilder.description(table.comment());
 			}
