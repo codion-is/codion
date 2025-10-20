@@ -23,6 +23,7 @@ Codion Change Log
 - DefaultFilterTableCellRenderer.updateUI() bug fixed, now updates the wrapped renderer UI as well.
 - DefaultProgressWorkerDialogBuilder refactored to simplify dialog closing, ProgressWorker onDone() is guaranteed to be called.
 - ProgressWorkerDialogBuilder.delay() added along with configuration properties.
+- ProgressWorkerDialogBuilder, show and hide delay defaults reduced to 350ms and 800ms.
 ### is.codion.plugin.swing.robot
 - Narrator, frame now sticks to application window, i18n added.
 ### is.codion.framework.domain

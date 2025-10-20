@@ -100,6 +100,18 @@ include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=cal
 
 == Progress
 
+Progress dialogs provide feedback during long-running operations. To prevent unnecessary visual noise, progress dialogs support configurable delays for both showing and hiding the dialog.
+
+The `.delay()` method accepts two parameters: the delay before showing the dialog (in milliseconds) and the delay before hiding it. These delays are based on human-computer interaction research:
+
+* **Show delay (350ms default)**: Operations completing in under ~300ms feel instantaneous to users, so showing a progress indicator would be distracting. A delay of 350ms ensures the dialog only appears for operations that users actually perceive as taking time.
++
+{url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/dialog/ProgressWorkerDialogBuilder.html#SHOW_DELAY[ProgressWorkerDialogBuilder.SHOW_DELAY]
+
+* **Hide delay (800ms default)**: When an operation completes just after the dialog appears, hiding it immediately would create a jarring flash. The hide delay smooths this transition and reduces the perceived duration of short operations by avoiding the visual disruption of rapidly appearing and disappearing dialogs.
++
+{url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/dialog/ProgressWorkerDialogBuilder.html#HIDE_DELAY[ProgressWorkerDialogBuilder.HIDE_DELAY]
+
 [source,java,indent=0]
 ----
 include::{dir-source}/is/codion/manual/swing/common/ui/DialogsDemo.java[tags=progress]

@@ -218,6 +218,7 @@ final class DialogsDemo {
 						.task(this::performTask)
 						.owner(window)
 						.title("Performing task")
+						.delay(500, 1000)
 						.onResult(this::handleResult)
 						.onException(this::handleException)
 						.execute();

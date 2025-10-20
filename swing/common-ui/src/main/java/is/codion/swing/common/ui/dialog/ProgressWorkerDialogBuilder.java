@@ -41,8 +41,8 @@ import static is.codion.common.Configuration.integerValue;
  * By default, the progress dialog uses a delayed show/hide mechanism to prevent flickering
  * for fast operations:
  * <ul>
- * <li>The dialog is only shown if the operation takes longer than {@link ProgressWorkerDialogBuilder#SHOW_DELAY} milliseconds (default: 500ms)
- * <li>If shown, the dialog remains visible for at least {@link ProgressWorkerDialogBuilder#HIDE_DELAY} milliseconds (default: 1000ms)
+ * <li>The dialog is only shown if the operation takes longer than {@link ProgressWorkerDialogBuilder#SHOW_DELAY} milliseconds (default: 350ms)
+ * <li>If shown, the dialog remains visible for at least {@link ProgressWorkerDialogBuilder#HIDE_DELAY} milliseconds (default: 800ms)
  * </ul>
  * These delays can be customized via {@link #delay(int, int)} or the system properties.
  * @param <T> the type of result this {@link ProgressWorker} produces.
@@ -58,12 +58,12 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
 	 * preventing dialog flicker for fast operations.
 	 * <ul>
 	 * <li>Value type: Integer
-	 * <li>Default value: 500
+	 * <li>Default value: 350
 	 * </ul>
 	 * @see #HIDE_DELAY
 	 */
 	PropertyValue<Integer> SHOW_DELAY =
-					integerValue(ProgressWorkerDialogBuilder.class.getName() + ".showDelay", 500);
+					integerValue(ProgressWorkerDialogBuilder.class.getName() + ".showDelay", 350);
 
 	/**
 	 * Specifies the minimum duration in milliseconds that a progress dialog should remain visible.
@@ -71,12 +71,12 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
 	 * even if the operation completes faster, preventing dialog flicker.
 	 * <ul>
 	 * <li>Value type: Integer
-	 * <li>Default value: 1000
+	 * <li>Default value: 800
 	 * </ul>
 	 * @see #SHOW_DELAY
 	 */
 	PropertyValue<Integer> HIDE_DELAY =
-					integerValue(ProgressWorkerDialogBuilder.class.getName() + ".hideDelay", 1000);
+					integerValue(ProgressWorkerDialogBuilder.class.getName() + ".hideDelay", 800);
 
 	/**
 	 * Provides builders for a given task type.
