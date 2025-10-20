@@ -582,7 +582,8 @@ public final class DomainGeneratorPanel extends JPanel {
 
 	private void onI18nChanged(boolean i18n) {
 		if (i18n) {
-			sourceTabbedPane.addTab("i18n", i18nTextArea);
+			sourceTabbedPane.addTab("i18n", scrollPane()
+							.view(i18nTextArea).build());
 			sourceTabbedPane.setMnemonicAt(2, 'N');
 		}
 		else if (sourceTabbedPane.getTabCount() > 2) {
