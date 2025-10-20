@@ -1,7 +1,8 @@
 dependencies {
-    api(project(":codion-common-db"))
-    api(project(":codion-swing-common-model"))
     api(project(":codion-framework-domain-db"))
+    api(project(":codion-framework-domain-test"))
+
+    implementation(project(":codion-swing-common-model"))
 
     implementation(project(":codion-tools-generator-domain"))
     implementation(libs.json)

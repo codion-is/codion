@@ -15,6 +15,7 @@ The generator transforms database metadata into type-safe Codion domain models, 
 * **Combined mode** - Single-file output for simpler project structures
 * **DTO generation** - Optional Java records for data transfer without Entity framework overhead
 * **Internationalization** - Optional resource bundle generation for captions and descriptions
+* **Test generation** - Optional JUnit test class for domain model validation
 * **Schema customization** - Configurable naming conventions, audit columns, and identifier casing
 
 The generated code uses the same patterns as hand-written Codion domain models, including proper primary key generators, foreign key relationships, nullability constraints, and column metadata.
@@ -290,6 +291,7 @@ Check the *DTO* column for entities that should generate DTO record classes. For
 +
 * *DTOs* checkbox - Generate DTO records for selected entities
 * *i18n* checkbox - Generate resource bundle properties files
+* *Test* checkbox - Generate a JUnit test class for domain validation
 
 . **Preview generated code**
 +
@@ -334,6 +336,9 @@ api/src/main/resources/<domain-package>/api/
 
 impl/src/main/java/<domain-package>/
 └── <DomainName>Impl.java                  # Implementation class
+
+impl/src/test/java/<domain-package>/
+└── <DomainName>Test.java                  # JUnit test (if enabled)
 ----
 
 NOTE: These files can be copied to separate Gradle/Maven modules (e.g., `domain-api` and `domain-impl`) for applications using RMI or HTTP connections where clients only need the API on their classpath.
@@ -361,6 +366,9 @@ combined/src/main/java/<domain-package>/
 
 combined/src/main/resources/<domain-package>/
 └── <DomainName>$<EntityName>.properties   # i18n resources (if enabled)
+
+combined/src/test/java/<domain-package>/
+└── <DomainName>Test.java                  # JUnit test (if enabled)
 ----
 
 NOTE: This mode is suitable for simpler projects using only local JDBC connections. The generated directory can be copied directly to your application's source tree.
@@ -614,6 +622,12 @@ Customer.NAME.define()
 The framework automatically loads captions and descriptions from the properties file matching the fully qualified class name of the entity interface.
 
 NOTE: When using i18n mode, create additional properties files with locale suffixes (e.g., `Store$Customer_de.properties`, `Store$Customer_fr.properties`) for internationalization support.
+
+== Test Generation
+
+When test generation is enabled, the generator creates a JUnit test class that extends {url-javadoc}{framework-domain-test}/is/codion/framework/domain/test/DomainTest.html[DomainTest] to verify domain model integrity. The test class includes a test method per entity that exercises full CRUD operations and validates constraints. The test may need further configuration to run successfully.
+
+For further information see <<../manual/manual.adoc#_domain_unit_testing, Domain model testing>>.
 
 == Best Practices
 

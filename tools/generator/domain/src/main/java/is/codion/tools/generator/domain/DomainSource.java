@@ -105,6 +105,7 @@ public final class DomainSource {
 	private final String domainPackage;
 	private final Set<EntityType> dtos;
 	private final boolean i18n;
+	private final boolean test;
 
 	private DomainSource(DefaultBuilder builder) {
 		this.domain = builder.domain;
@@ -115,6 +116,7 @@ public final class DomainSource {
 		this.domainPackage = builder.domainPackage;
 		this.dtos = builder.dtos;
 		this.i18n = builder.i18n;
+		this.test = builder.test;
 	}
 
 	/**
@@ -159,25 +161,44 @@ public final class DomainSource {
 	}
 
 	/**
+	 * @return the domain model test implementation for api/impl
+	 */
+	public String testApiImpl() {
+		return toTestString(domainPackage, true);
+	}
+
+	/**
+	 * @return the domain model test implementation for combined
+	 */
+	public String testCombined() {
+		return toTestString(domainPackage, false);
+	}
+
+	/**
 	 * Writes the api and implementation source code to the given path.
 	 * @param apiSourcePath the path to write the api source files to
 	 * @param implSourcePath the path to write the implementation source files to
 	 * @param apiResourcePath the path to write the api resources to
+	 * @param testPath the path to write the unit test to
 	 * @param overwrite used to confirm overwrite if either of the api or impl files exist
 	 * @return true if the files were written, false if overwriting was not confirmed
 	 * @throws IOException in case of an I/O error.
 	 */
-	public boolean writeApiImpl(Path apiSourcePath, Path implSourcePath, Path apiResourcePath, BooleanSupplier overwrite) throws IOException {
+	public boolean writeApiImpl(Path apiSourcePath, Path implSourcePath, Path apiResourcePath, Path testPath, BooleanSupplier overwrite) throws IOException {
 		String interfaceName = interfaceName(domain.type().name(), true);
 		Files.createDirectories(requireNonNull(apiSourcePath).resolve(API_PACKAGE_NAME));
 		Path apiPath = apiSourcePath.resolve(API_PACKAGE_NAME).resolve(interfaceName + JAVA);
 		Files.createDirectories(requireNonNull(implSourcePath));
+		Files.createDirectories(requireNonNull(testPath));
 		Path implPath = implSourcePath.resolve(interfaceName + IMPL_CLASS_SUFFIX + JAVA);
 		if ((!apiPath.toFile().exists() && !implPath.toFile().exists()) || requireNonNull(overwrite).getAsBoolean()) {
 			Files.write(apiPath, singleton(api()));
 			Files.write(implPath, singleton(implementation()));
 			if (i18n) {
 				writeI18n(apiResourcePath, true);
+			}
+			if (test) {
+				Files.write(testPath.resolve(interfaceName + "Test" + JAVA), singleton(testApiImpl()));
 			}
 
 			return true;
@@ -190,18 +211,23 @@ public final class DomainSource {
 	 * Writes the combined source code to the given path.
 	 * @param sourcePath the path to write the source files to
 	 * @param resourcePath the path to write the resources to
+	 * @param testPath the path to write the unit test to
 	 * @param overwrite used to confirm overwrite if either of the api or impl files exist
 	 * @return true if the files were written, false if overwriting was not confirmed
 	 * @throws IOException in case of an I/O error.
 	 */
-	public boolean writeCombined(Path sourcePath, Path resourcePath, BooleanSupplier overwrite) throws IOException {
+	public boolean writeCombined(Path sourcePath, Path resourcePath, Path testPath, BooleanSupplier overwrite) throws IOException {
 		String interfaceName = interfaceName(domain.type().name(), true);
 		Files.createDirectories(requireNonNull(sourcePath));
+		Files.createDirectories(requireNonNull(testPath));
 		Path combinedFile = sourcePath.resolve(interfaceName + JAVA);
 		if (!combinedFile.toFile().exists() || requireNonNull(overwrite).getAsBoolean()) {
 			Files.write(combinedFile, singleton(combined()));
 			if (i18n) {
 				writeI18n(resourcePath, false);
+			}
+			if (test) {
+				Files.write(testPath.resolve(interfaceName + "Test" + JAVA), singleton(testCombined()));
 			}
 
 			return true;
@@ -248,6 +274,12 @@ public final class DomainSource {
 		 * @return this builder
 		 */
 		Builder i18n(boolean i18n);
+
+		/**
+		 * @param test true if domain unit test should be generated
+		 * @return this builder
+		 */
+		Builder test(boolean test);
 
 		/**
 		 * @return a new {@link DomainSource} instance
@@ -440,6 +472,54 @@ public final class DomainSource {
 		return FieldSpec.builder(EntityType.class, TYPE_FIELD_NAME)
 						.addModifiers(PUBLIC, STATIC, FINAL)
 						.initializer(captionStrategy.entityTypeInitializer(definition, interfaceName))
+						.build();
+	}
+
+	// ========================================
+	// Domain Test Generation
+	// ========================================
+
+	private String toTestString(String domainPackage, boolean apiImpl) {
+		String testClassName = domainInterfaceName + "Test";
+		// For api/impl separation, use DomainImpl; for combined, just use Domain
+		String domainClassName = domainInterfaceName + (apiImpl ? IMPL_CLASS_SUFFIX : "");
+
+		TypeSpec.Builder testClassBuilder = classBuilder(testClassName)
+						.addModifiers(PUBLIC, FINAL)
+						.superclass(ClassName.get("is.codion.framework.domain.test", "DomainTest"))
+						.addMethod(createTestConstructor(domainClassName));
+
+		sortedDefinitions.forEach(definition ->
+						testClassBuilder.addMethod(createTestMethod(definition)));
+
+		ClassName domainClass = domainPackage.isEmpty() ?
+						ClassName.get("", domainInterfaceName) :
+						ClassName.get(domainPackage, domainInterfaceName);
+
+		JavaFile.Builder fileBuilder = JavaFile.builder(domainPackage, testClassBuilder.build())
+						.addStaticImport(domainClass, "*")
+						.skipJavaLangImports(true)
+						.indent(INDENT);
+
+		return fileBuilder.build().toString().trim();
+	}
+
+	private static MethodSpec createTestConstructor(String domainClassName) {
+		return constructorBuilder()
+						.addModifiers(PUBLIC)
+						.addStatement("super(new $L())", domainClassName)
+						.build();
+	}
+
+	private static MethodSpec createTestMethod(EntityDefinition definition) {
+		String interfaceName = interfaceName(definition, true);
+		String methodName = interfaceName(definition, false);
+
+		return methodBuilder(methodName)
+						.addAnnotation(ClassName.get("org.junit.jupiter.api", "Test"))
+						.addModifiers(PUBLIC)
+						.returns(void.class)
+						.addStatement("test($L.TYPE)", interfaceName)
 						.build();
 	}
 
@@ -1110,6 +1190,7 @@ public final class DomainSource {
 		private String domainPackage = "none";
 		private Set<EntityType> dtos = emptySet();
 		private boolean i18n = false;
+		private boolean test = false;
 
 		private DefaultBuilder(Domain domain) {
 			this.domain = domain;
@@ -1138,6 +1219,12 @@ public final class DomainSource {
 		@Override
 		public Builder i18n(boolean i18n) {
 			this.i18n = i18n;
+			return this;
+		}
+
+		@Override
+		public Builder test(boolean test) {
+			this.test = test;
 			return this;
 		}
 

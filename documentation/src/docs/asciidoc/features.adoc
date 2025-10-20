@@ -31,7 +31,7 @@
 ** Automatic <<manual/manual.adoc#_model_linking, Master-Detail Coordination>>
 ** Denormalized data export UI
 * Automated Data Entry Forms with <<manual/manual.adoc#_entityeditpanel, EntityEditPanel>>
-* Full Keyboard Control and Navigation see <<help/client.adoc#_keyboard_shortcuts, Keyboard Shortcuts>>
+* Full https://www.youtube.com/watch?v=2dDKjeqJJeQ[Keyboard Control and Navigation] see <<help/client.adoc#_keyboard_shortcuts, Keyboard Shortcuts>>
 * Dynamic <<manual/manual.adoc#_table_query_inspector, Table>> and <<manual/manual.adoc#_edit_query_inspector, Edit>> Query Debugging UI
 * <<manual/manual.adoc#_reporting_with_jasperreports, JasperReports>> integration
 

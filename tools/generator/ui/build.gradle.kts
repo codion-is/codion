@@ -1,6 +1,7 @@
 dependencies {
+    api(project(":codion-tools-generator-model"))
+
     implementation(project(":codion-swing-common-ui"))
-    implementation(project(":codion-tools-generator-model"))
     implementation(project(":codion-plugin-flatlaf"))
 
     testRuntimeOnly(project(":codion-framework-db-local"))

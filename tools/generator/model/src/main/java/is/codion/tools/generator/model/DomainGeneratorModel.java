@@ -127,6 +127,9 @@ public final class DomainGeneratorModel {
 	private final State i18n = State.builder()
 					.listener(this::updateDomainSource)
 					.build();
+	private final State test = State.builder()
+					.listener(this::updateDomainSource)
+					.build();
 	private final State domainPackageSpecified = State.state();
 	private final Value<String> domainPackageValue = Value.builder()
 					.nonNull(DOMAIN_PACKAGE.getOrThrow())
@@ -157,6 +160,14 @@ public final class DomainGeneratorModel {
 					.notify(SET)
 					.build();
 	private final Value<String> i18nPropertiesValue = Value.builder()
+					.<String>nullable()
+					.notify(SET)
+					.build();
+	private final Value<String> testApiImplSourceValue = Value.builder()
+					.<String>nullable()
+					.notify(SET)
+					.build();
+	private final Value<String> testCombinedSourceValue = Value.builder()
 					.<String>nullable()
 					.notify(SET)
 					.build();
@@ -198,12 +209,24 @@ public final class DomainGeneratorModel {
 		return i18nPropertiesValue.observable();
 	}
 
+	public Observable<String> testApiImplSource() {
+		return testApiImplSourceValue.observable();
+	}
+
+	public Observable<String> testCombinedSource() {
+		return testCombinedSourceValue.observable();
+	}
+
 	public State dtos() {
 		return dtos;
 	}
 
 	public State i18n() {
 		return i18n;
+	}
+
+	public State test() {
+		return test;
 	}
 
 	public Value<String> domainPackage() {
@@ -252,9 +275,10 @@ public final class DomainGeneratorModel {
 		if (domain != null) {
 			return domainSource(domain)
 							.writeApiImpl(
-											sourcePath(Path.of(apiSourceDirectoryValue.getOrThrow()), "java"),
-											sourcePath(Path.of(implSourceDirectoryValue.getOrThrow()), "java"),
-											sourcePath(Path.of(apiSourceDirectoryValue.getOrThrow()), "resources"), overwrite);
+											sourcePath(Path.of(apiSourceDirectoryValue.getOrThrow()), "java", false),
+											sourcePath(Path.of(implSourceDirectoryValue.getOrThrow()), "java", false),
+											sourcePath(Path.of(apiSourceDirectoryValue.getOrThrow()), "resources", false),
+											sourcePath(Path.of(implSourceDirectoryValue.getOrThrow()), "java", true), overwrite);
 		}
 
 		return false;
@@ -265,8 +289,9 @@ public final class DomainGeneratorModel {
 		if (domain != null) {
 			return domainSource(domain)
 							.writeCombined(
-											sourcePath(Path.of(combinedSourceDirectoryValue.getOrThrow()), "java"),
-											sourcePath(Path.of(combinedSourceDirectoryValue.getOrThrow()), "resources"), overwrite);
+											sourcePath(Path.of(combinedSourceDirectoryValue.getOrThrow()), "java", false),
+											sourcePath(Path.of(combinedSourceDirectoryValue.getOrThrow()), "resources", false),
+											sourcePath(Path.of(combinedSourceDirectoryValue.getOrThrow()), "java", true), overwrite);
 		}
 
 		return false;
@@ -344,12 +369,16 @@ public final class DomainGeneratorModel {
 			domainImplValue.set(domainSource.implementation());
 			domainCombinedValue.set(domainSource.combined());
 			i18nPropertiesValue.set(domainSource.i18n());
+			testApiImplSourceValue.set(test.is() ? domainSource.testApiImpl() : null);
+			testCombinedSourceValue.set(test.is() ? domainSource.testCombined() : null);
 		}
 		else {
 			domainApiValue.clear();
 			domainImplValue.clear();
 			domainCombinedValue.clear();
 			i18nPropertiesValue.clear();
+			testApiImplSourceValue.clear();
+			testCombinedSourceValue.clear();
 		}
 	}
 
@@ -360,6 +389,7 @@ public final class DomainGeneratorModel {
 										.filter(DomainGeneratorModel::validPackageName).orElse(""))
 						.dtos(dtoEntities())
 						.i18n(i18n.is())
+						.test(test.is())
 						.build();
 	}
 
@@ -377,8 +407,8 @@ public final class DomainGeneratorModel {
 						.orElse(null);
 	}
 
-	private Path sourcePath(Path path, String dir) {
-		path = path.resolve("src/main/" + dir);
+	private Path sourcePath(Path path, String dir, boolean test) {
+		path = path.resolve("src/" + (test ? "test/" : "main/") + dir);
 		String domainPackage = domainPackageValue.get();
 		if (domainPackage != null) {
 			for (String pkg : domainPackage.split("\\.")) {

@@ -133,6 +133,8 @@ public final class DomainGeneratorPanel extends JPanel {
 	private final JTextArea implementationTextArea;
 	private final JTextArea combinedTextArea;
 	private final JTextArea i18nTextArea;
+	private final JTextArea testApiImplTextArea;
+	private final JTextArea testCombinedTextArea;
 	private final JTabbedPane sourceTabbedPane;
 	private final SearchHighlighter apiHighlighter;
 	private final SearchHighlighter implementationHighlighter;
@@ -151,6 +153,8 @@ public final class DomainGeneratorPanel extends JPanel {
 		implementationTextArea = createSourceTextArea(model.domainImpl());
 		combinedTextArea = createSourceTextArea(model.domainCombined());
 		i18nTextArea = createSourceTextArea(model.i18nProperties());
+		testApiImplTextArea = createSourceTextArea(model.testApiImplSource());
+		testCombinedTextArea = createSourceTextArea(model.testCombinedSource());
 		sourceTabbedPane = createSourceTabbedPane();
 		apiHighlighter = searchHighlighter(apiTextArea);
 		implementationHighlighter = searchHighlighter(implementationTextArea);
@@ -247,7 +251,9 @@ public final class DomainGeneratorPanel extends JPanel {
 										.center(createScrollablePanel(apiTextArea, "API (Alt-3)"))
 										.south(createCopyPanel(apiTextArea)))
 						.bottomComponent(borderLayoutPanel()
-										.center(createScrollablePanel(implementationTextArea, "Implementation (Alt-4)"))
+										.center(tabbedPane()
+														.tab("Implementation", createScrollablePanel(implementationTextArea, "Implementation (Alt-4)"))
+														.tab("Test", createScrollablePanel(testApiImplTextArea, "Test")))
 										.south(createCopyPanel(implementationTextArea)))
 						.continuousLayout(true)
 										.oneTouchExpandable(true))
@@ -258,7 +264,9 @@ public final class DomainGeneratorPanel extends JPanel {
 		return borderLayoutPanel()
 						.north(createCombinedSourceDirectoryPanel())
 						.center(borderLayoutPanel()
-										.center(createScrollablePanel(combinedTextArea, "Combined (Alt-5)"))
+										.center(tabbedPane()
+														.tab("Domain", createScrollablePanel(combinedTextArea, "Combined (Alt-4)"))
+														.tab("Test", createScrollablePanel(testCombinedTextArea, "Test")))
 										.south(createCopyPanel(combinedTextArea))
 										.build())
 						.build();
@@ -332,11 +340,13 @@ public final class DomainGeneratorPanel extends JPanel {
 										.center(gridLayoutPanel(2, 1)
 														.add(packageLabel)
 														.add(createPackageField(packageLabel)))
-										.east(gridLayoutPanel(2, 2)
+										.east(gridLayoutPanel(2, 3)
+														.add(label(" "))
 														.add(label(" "))
 														.add(label(" "))
 														.add(createDtoCheckBox())
-														.add(createI18nCheckBox())))
+														.add(createI18nCheckBox())
+														.add(createTestCheckBox())))
 						.build();
 	}
 
@@ -419,6 +429,14 @@ public final class DomainGeneratorPanel extends JPanel {
 						.link(model.i18n())
 						.text("i18n")
 						.mnemonic('I')
+						.build();
+	}
+
+	private JCheckBox createTestCheckBox() {
+		return checkBox()
+						.link(model.test())
+						.text("Test")
+						.mnemonic('E')
 						.build();
 	}
 

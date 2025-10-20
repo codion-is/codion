@@ -78,6 +78,8 @@ public final class DomainSourceTest {
 			assertEquals(petstoreCombined, domainSource.combined());
 			String productProperties = textFileContents(DomainSourceTest.class, "petstore_product.properties");
 			assertEquals(productProperties, domainSource.i18n(schemaDomain.entities().definition("petstore.product").type()));
+			String petstoreTest = textFileContents(DomainSourceTest.class, "PetstoreTest.java");
+			assertEquals(petstoreTest, domainSource.testCombined());
 		}
 	}
 
