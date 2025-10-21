@@ -501,7 +501,7 @@ public final class DomainSource {
 
 		ClassName domainClass = domainPackage.isEmpty() ?
 						ClassName.get("", domainInterfaceName) :
-						ClassName.get(domainPackage, domainInterfaceName);
+						ClassName.get(domainPackage + (apiImpl ? "." + API_PACKAGE_NAME : ""), domainInterfaceName);
 
 		JavaFile.Builder fileBuilder = JavaFile.builder(domainPackage, testClassBuilder.build())
 						.addStaticImport(domainClass, "*")

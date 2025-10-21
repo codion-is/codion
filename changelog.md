@@ -6,6 +6,8 @@ Codion Change Log
 - FilterTable bug fixed, now sets initial filter view after columns have been initialized, for the horizontalAlignment.
 ### is.codion.framework.domain
 - EntityType bug fixed, define(List) parameter type changed to List<? extends AttributeDefinition.Builder<?, ?>>.
+### is.codion.tools.generator.domain
+- DomainSource bug fixed, domain test imports fixed for api/impl.
 
 ## 0.18.55
 ### is.codion.common.core
