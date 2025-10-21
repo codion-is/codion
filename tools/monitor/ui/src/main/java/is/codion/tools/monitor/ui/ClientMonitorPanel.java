@@ -18,11 +18,13 @@
  */
 package is.codion.tools.monitor.ui;
 
+import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.state.State;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.FilterTable;
+import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.tools.monitor.model.ClientInstanceMonitor;
@@ -37,11 +39,14 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import java.awt.BorderLayout;
 import java.rmi.RemoteException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static is.codion.swing.common.ui.Utilities.link;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.tools.monitor.model.ClientMonitor.RemoteClientColumns.CREATION_TIME;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
 
@@ -49,6 +54,13 @@ import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
  * A ClientMonitorPanel
  */
 public final class ClientMonitorPanel extends JPanel {
+
+	private static final DateTimeFormatter CREATED_FORMATTER = LocaleDateTimePattern.builder()
+					.delimiterDash()
+					.yearFourDigits()
+					.hoursMinutesSecondsMilliseconds()
+					.build()
+					.formatter();
 
 	private final ClientMonitor model;
 	private final FilterTable<RemoteClient, String> clientInstanceTable;
@@ -66,6 +78,10 @@ public final class ClientMonitorPanel extends JPanel {
 		this.model = model;
 		clientInstanceTable = FilterTable.builder()
 						.model(model.clientInstanceTableModel())
+						.cellRenderer(CREATION_TIME, FilterTableCellRenderer.builder()
+										.columnClass(LocalDateTime.class)
+										.formatter(CREATED_FORMATTER::format)
+										.build())
 						.popupMenu(this::createPopupMenu)
 						.autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
 						.filterView(ConditionView.SIMPLE)

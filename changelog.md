@@ -24,6 +24,7 @@ Codion Change Log
 - DefaultProgressWorkerDialogBuilder refactored to simplify dialog closing, ProgressWorker onDone() is guaranteed to be called.
 - ProgressWorkerDialogBuilder.delay() added along with configuration properties.
 - ProgressWorkerDialogBuilder, show and hide delay defaults reduced to 350ms and 800ms.
+- FilterComponentFactory, now follows the default FilterTableCellRenderer horizontal alignment.
 ### is.codion.plugin.swing.robot
 - Narrator, frame now sticks to application window, i18n added.
 ### is.codion.framework.domain
@@ -63,6 +64,8 @@ Codion Change Log
 - DomainGeneratorModel, DomainGeneratorPanel, now support separate source paths for api/impl and combined.
 - DomainGeneratorModel, DomainGeneratorPanel, view prefix handling added.
 - DomainGeneratorModel, DomainGeneratorPanel, domain unit test handling added.
+### is.codion.tools.monitor.ui
+- ClientMonitorPanel, created time column format added.
 
 ## 0.18.54
 ### is.codion.common.db

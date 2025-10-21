@@ -32,8 +32,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static is.codion.swing.common.ui.component.Components.*;
+import static is.codion.swing.common.ui.component.table.FilterTableCellRenderer.*;
 import static java.util.Objects.requireNonNull;
-import static javax.swing.SwingConstants.CENTER;
 
 final class FilterComponentFactory implements ComponentFactory {
 
@@ -80,43 +80,52 @@ final class FilterComponentFactory implements ComponentFactory {
 		Class<T> columnClass = conditionModel.valueClass();
 		if (columnClass.equals(Boolean.class)) {
 			return (ComponentValueBuilder<? extends JComponent, T, ?>) nullableCheckBox()
-							.horizontalAlignment(CENTER);
+							.horizontalAlignment(BOOLEAN_HORIZONTAL_ALIGNMENT.getOrThrow());
 		}
 		if (columnClass.equals(Short.class)) {
 			return (ComponentValueBuilder<? extends JComponent, T, ?>) shortField()
-							.format(conditionModel.format().orElse(null));
+							.format(conditionModel.format().orElse(null))
+							.horizontalAlignment(NUMERICAL_HORIZONTAL_ALIGNMENT.getOrThrow());
 		}
 		if (columnClass.equals(Integer.class)) {
 			return (ComponentValueBuilder<? extends JComponent, T, ?>) integerField()
-							.format(conditionModel.format().orElse(null));
+							.format(conditionModel.format().orElse(null))
+							.horizontalAlignment(NUMERICAL_HORIZONTAL_ALIGNMENT.getOrThrow());
 		}
 		else if (columnClass.equals(Double.class)) {
 			return (ComponentValueBuilder<? extends JComponent, T, ?>) doubleField()
-							.format(conditionModel.format().orElse(null));
+							.format(conditionModel.format().orElse(null))
+							.horizontalAlignment(NUMERICAL_HORIZONTAL_ALIGNMENT.getOrThrow());
 		}
 		else if (columnClass.equals(BigDecimal.class)) {
 			return (ComponentValueBuilder<? extends JComponent, T, ?>) bigDecimalField()
-							.format(conditionModel.format().orElse(null));
+							.format(conditionModel.format().orElse(null))
+							.horizontalAlignment(NUMERICAL_HORIZONTAL_ALIGNMENT.getOrThrow());
 		}
 		else if (columnClass.equals(Long.class)) {
 			return (ComponentValueBuilder<? extends JComponent, T, ?>) longField()
-							.format(conditionModel.format().orElse(null));
+							.format(conditionModel.format().orElse(null))
+							.horizontalAlignment(NUMERICAL_HORIZONTAL_ALIGNMENT.getOrThrow());
 		}
 		else if (columnClass.equals(LocalTime.class)) {
 			return (ComponentValueBuilder<? extends JComponent, T, ?>) localTimeField()
-							.dateTimePattern(conditionModel.dateTimePattern().orElseThrow());
+							.dateTimePattern(conditionModel.dateTimePattern().orElseThrow())
+							.horizontalAlignment(TEMPORAL_HORIZONTAL_ALIGNMENT.getOrThrow());
 		}
 		else if (columnClass.equals(LocalDate.class)) {
 			return (ComponentValueBuilder<? extends JComponent, T, ?>) localDateField()
-							.dateTimePattern(conditionModel.dateTimePattern().orElseThrow());
+							.dateTimePattern(conditionModel.dateTimePattern().orElseThrow())
+							.horizontalAlignment(TEMPORAL_HORIZONTAL_ALIGNMENT.getOrThrow());
 		}
 		else if (columnClass.equals(LocalDateTime.class)) {
 			return (ComponentValueBuilder<? extends JComponent, T, ?>) localDateTimeField()
-							.dateTimePattern(conditionModel.dateTimePattern().orElseThrow());
+							.dateTimePattern(conditionModel.dateTimePattern().orElseThrow())
+							.horizontalAlignment(TEMPORAL_HORIZONTAL_ALIGNMENT.getOrThrow());
 		}
 		else if (columnClass.equals(OffsetDateTime.class)) {
 			return (ComponentValueBuilder<? extends JComponent, T, ?>) offsetDateTimeField()
-							.dateTimePattern(conditionModel.dateTimePattern().orElseThrow());
+							.dateTimePattern(conditionModel.dateTimePattern().orElseThrow())
+							.horizontalAlignment(TEMPORAL_HORIZONTAL_ALIGNMENT.getOrThrow());
 		}
 		else if (columnClass.equals(String.class)) {
 			return (ComponentValueBuilder<? extends JComponent, T, ?>) stringField();
