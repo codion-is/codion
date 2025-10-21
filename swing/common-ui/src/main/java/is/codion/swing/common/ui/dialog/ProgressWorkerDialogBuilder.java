@@ -181,8 +181,9 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
 	/**
 	 * Configures dialog delay settings to prevent flicker for fast operations.
 	 * The dialog will only be shown if the operation takes longer than {@code show} milliseconds.
-	 * If the dialog is shown, it will remain visible for at least {@code close} milliseconds
+	 * If the dialog is shown, it will remain visible for at least {@code hide} milliseconds
 	 * even if the operation completes faster.
+	 * <p>Setting the {@code show} delay to 0 guarantees that the dialog is shown for at least {@code hide} milliseconds.
 	 * @param show the delay in milliseconds before showing the dialog
 	 * @param hide the minimum duration in milliseconds to keep the dialog visible once shown
 	 * @return this Builder instance

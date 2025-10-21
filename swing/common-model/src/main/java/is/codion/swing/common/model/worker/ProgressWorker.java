@@ -23,10 +23,9 @@ import is.codion.common.model.CancelException;
 import org.jspecify.annotations.Nullable;
 
 import javax.swing.SwingWorker;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.concurrent.CancellationException;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
@@ -38,8 +37,8 @@ import static javax.swing.SwingUtilities.invokeLater;
  * <p>A {@link SwingWorker} implementation. Instances of this class are not reusable.</p>
  * <p>Note that this implementation does <b>NOT</b> coalesce progress reports or intermediate result publishing, but simply pushes
  * those directly to the {@code onProgress} and {@code onPublish} handlers on the Event Dispatch Thread.</p>
- * <p>Note that the {@code onStarted} handler is NOT called in case the background task finishes
- * before the {@link javax.swing.SwingWorker.StateValue#STARTED} change event is fired.
+ * <p>The {@code onStarted} handler is guaranteed to be called on the Event Dispatch Thread before the background task executes,
+ * and the {@code onDone} handler is guaranteed to be called after the background task completes.
  * {@snippet :
  * ProgressWorker.builder(this::performTask)
  *   .onStarted(this::displayDialog)
@@ -59,13 +58,11 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 	public static final int DEFAULT_MAXIMUM = 100;
 
-	private static final String STATE_PROPERTY = "state";
-
 	private static final BuilderFactory BUILDER_FACTORY = new DefaultBuilderFactory();
 
 	private final Object task;
 	private final int maximum;
-	private final Runnable onStarted;
+	private final @Nullable Runnable onStarted;
 	private final Runnable onDone;
 	private final Consumer<T> onResult;
 	private final Consumer<Integer> onProgress;
@@ -73,8 +70,6 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 	private final Consumer<Exception> onException;
 	private final Runnable onCancelled;
 	private final Runnable onInterrupted;
-
-	private boolean onDoneRun = false;
 
 	private ProgressWorker(DefaultBuilder<T, V> builder) {
 		this.task = builder.task;
@@ -87,7 +82,6 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		this.onException = builder.onException;
 		this.onCancelled = builder.onCancelled;
 		this.onInterrupted = builder.onInterrupted;
-		getPropertyChangeSupport().addPropertyChangeListener(STATE_PROPERTY, new StateListener());
 	}
 
 	/**
@@ -99,6 +93,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 	@Override
 	protected @Nullable T doInBackground() throws Exception {
+		runOnStarted();
 		if (task instanceof Task) {
 			((Task) task).execute();
 			return null;
@@ -119,7 +114,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
 	@Override
 	protected void done() {
-		runOnDone();
+		onDone.run();
 		try {
 			onResult.accept(get());
 		}
@@ -143,24 +138,19 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		}
 	}
 
-	private void runOnDone() {
-		if (!onDoneRun) {
-			onDone.run();
-			onDoneRun = true;
-		}
-	}
-
-	private final class StateListener implements PropertyChangeListener {
-
-		@Override
-		public void propertyChange(PropertyChangeEvent changeEvent) {
-			if (changeEvent.getNewValue() == StateValue.STARTED) {
-				if (isDone()) {
-					runOnDone();
-				}
-				else {
-					onStarted.run();
-				}
+	private void runOnStarted() throws InterruptedException {
+		if (onStarted != null) {
+			CountDownLatch startedLatch = new CountDownLatch(1);
+			invokeLater(() -> {
+				onStarted.run();
+				startedLatch.countDown();
+			});
+			try {
+				startedLatch.await();
+			}
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw e;
 			}
 		}
 	}
@@ -305,8 +295,6 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		Builder<T, V> maximum(int maximum);
 
 		/**
-		 * Note that this handler does not get called in case the background task finishes
-		 * before the {@link javax.swing.SwingWorker.StateValue#STARTED} change event is fired.
 		 * @param onStarted called on the EDT before background processing is started
 		 * @return this builder instance
 		 */
@@ -426,7 +414,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 		private final Object task;
 
 		private int maximum = DEFAULT_MAXIMUM;
-		private Runnable onStarted = EMPTY_RUNNABLE;
+		private @Nullable Runnable onStarted;
 		private Runnable onDone = EMPTY_RUNNABLE;
 		private Consumer<T> onResult = (Consumer<T>) EMPTY_CONSUMER;
 		private Consumer<Integer> onProgress = (Consumer<Integer>) EMPTY_CONSUMER;

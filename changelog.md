@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.56
+### is.codion.swing.common.model
+- ProgressWorker refactored, onStarted listener now guaranteed to run.
 ### is.codion.swing.common.ui
 - FilterTable bug fixed, now sets initial filter view after columns have been initialized, for the horizontalAlignment.
 ### is.codion.framework.domain
