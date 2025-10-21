@@ -72,7 +72,11 @@ final class InsertUpdateQueryInspector extends JPanel {
 	}
 
 	private String createUpdateQuery() {
-		return BasicFormatterImpl.format(queries.update(editModel.editor().getOrThrow()));
+		if (editModel.editor().modified().is()) {
+			return BasicFormatterImpl.format(queries.update(editModel.editor().getOrThrow()));
+		}
+
+		return "<unmodified>";
 	}
 
 	private void initializeUI() {
