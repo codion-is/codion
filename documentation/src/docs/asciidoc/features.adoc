@@ -19,7 +19,7 @@
 * Type-Safe Static <<manual/manual.adoc#_domain_modelling, Domain Metamodel>>
 * <<manual/manual.adoc#_foreign_keys, Foreign Key Relationships>> as First Class Citizens
 * Fluent, Type-Safe <<manual/manual.adoc#_conditions, Query DSL>>
-* High-Performance Local ORM Engine (DefaultLocalEntityConnection)
+* Type-Safe Database Access Layer (<<manual/manual.adoc#_entityconnection, EntityConnection>>)
 * Built-in <<manual/manual.adoc#_optimistic_locking, Optimistic Locking>>
 * Automatic N+1 Query Prevention with <<manual/manual.adoc#_entity_connection_selecting, Recursive Foreign Key Population>>
 
