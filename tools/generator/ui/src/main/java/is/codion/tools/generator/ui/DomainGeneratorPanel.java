@@ -84,6 +84,7 @@ import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 import static is.codion.tools.generator.model.DomainGeneratorModel.domainGeneratorModel;
 import static java.awt.event.KeyEvent.VK_ENTER;
+import static java.lang.System.getProperty;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static javax.swing.BorderFactory.createCompoundBorder;
@@ -125,6 +126,7 @@ public final class DomainGeneratorPanel extends JPanel {
 
 	private static final double RESIZE_WEIGHT = 0.2;
 	private static final String LOOK_AND_FEEL_PROPERTY = ".lookAndFeel";
+	private static final String USER_DIR = "user.dir";
 
 	private final DomainGeneratorModel model;
 	private final FilterTable<SchemaRow, String> schemaTable;
@@ -466,7 +468,8 @@ public final class DomainGeneratorPanel extends JPanel {
 	private void selectCombinedSourceDirectory() {
 		File selected = Dialogs.select()
 						.files()
-						.startDirectory(DomainGeneratorModel.COMBINED_SOURCE_DIRECTORY.get())
+						.startDirectory(getProperty(USER_DIR))
+						.selectStartDirectory(true)
 						.selectDirectory();
 		model.combinedSourceDirectory().set(toRelativePath(selected));
 	}
@@ -474,7 +477,8 @@ public final class DomainGeneratorPanel extends JPanel {
 	private void selectApiSourceDirectory() {
 		File selected = Dialogs.select()
 						.files()
-						.startDirectory(DomainGeneratorModel.API_SOURCE_DIRECTORY.get())
+						.startDirectory(getProperty(USER_DIR))
+						.selectStartDirectory(true)
 						.selectDirectory();
 		model.apiSourceDirectory().set(toRelativePath(selected));
 	}
@@ -482,7 +486,8 @@ public final class DomainGeneratorPanel extends JPanel {
 	private void selectImplSourceDirectory() {
 		File selected = Dialogs.select()
 						.files()
-						.startDirectory(DomainGeneratorModel.IMPL_SOURCE_DIRECTORY.get())
+						.startDirectory(getProperty(USER_DIR))
+						.selectStartDirectory(true)
 						.selectDirectory();
 		model.implSourceDirectory().set(toRelativePath(selected));
 	}
@@ -689,7 +694,7 @@ public final class DomainGeneratorPanel extends JPanel {
 
 	private static String toRelativePath(File selectedDirectory) {
 		try {
-			Path currentDir = Path.of(System.getProperty("user.dir"));
+			Path currentDir = Path.of(getProperty(USER_DIR));
 			Path selectedPath = selectedDirectory.toPath().normalize();
 
 			return currentDir.relativize(selectedPath).toString();

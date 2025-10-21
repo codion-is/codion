@@ -8,6 +8,8 @@ Codion Change Log
 - EntityType bug fixed, define(List) parameter type changed to List<? extends AttributeDefinition.Builder<?, ?>>.
 ### is.codion.tools.generator.domain
 - DomainSource bug fixed, domain test imports fixed for api/impl.
+### is.codion.tools.generator.panel
+- DomainGeneratorPanel, source directory selection now starts in working dir.
 
 ## 0.18.55
 ### is.codion.common.core
