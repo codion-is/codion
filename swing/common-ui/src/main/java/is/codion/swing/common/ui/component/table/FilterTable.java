@@ -314,7 +314,6 @@ public final class FilterTable<R, C> extends JTable {
 						.keyStroke(keyStroke)
 						.action(startEditing)
 						.enable(this));
-		filters().view().set(builder.filterView);
 		if (builder.autoStartsEdit != null) {
 			autoStartsEdit(builder.autoStartsEdit);
 		}
@@ -325,6 +324,7 @@ public final class FilterTable<R, C> extends JTable {
 		setAutoResizeMode(builder.autoResizeMode);
 		configureColumns(builder);
 		configureTableHeader(builder.columnReordering, builder.columnResizing);
+		filters().view().set(builder.filterView);
 		bindEvents(builder.columnReordering, builder.columnResizing);
 		if (builder.resizeRowToFitEditor) {
 			addPropertyChangeListener(TABLE_CELL_EDITOR, new ResizeRowToFitEditor());

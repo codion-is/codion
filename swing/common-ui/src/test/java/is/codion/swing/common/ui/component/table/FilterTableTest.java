@@ -21,8 +21,10 @@ package is.codion.swing.common.ui.component.table;
 import is.codion.swing.common.model.component.list.FilterListSelection;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableSort;
+import is.codion.swing.common.ui.component.table.ConditionPanel.ConditionView;
 import is.codion.swing.common.ui.component.table.DefaultFilterTableSearchModel.DefaultRowColumn;
 import is.codion.swing.common.ui.component.table.FilterTableSearchModel.RowColumn;
+import is.codion.swing.common.ui.component.text.NumberField;
 
 import org.junit.jupiter.api.Test;
 
@@ -30,6 +32,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.SortOrder;
+import javax.swing.SwingConstants;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -432,7 +435,9 @@ public class FilterTableTest {
 
 	@Test
 	void cellRenderers() {
-		FilterTableModel.TableColumns<Object, Integer> columns = new FilterTableModel.TableColumns<>() {
+		final class Row {}
+
+		FilterTableModel.TableColumns<Row, Integer> columns = new FilterTableModel.TableColumns<>() {
 			@Override
 			public List<Integer> identifiers() {
 				return List.of(0, 1);
@@ -440,31 +445,35 @@ public class FilterTableTest {
 
 			@Override
 			public Class<?> columnClass(Integer identifier) {
-				return Object.class;
+				return Integer.class;
 			}
 
 			@Override
-			public Object value(Object row, Integer identifier) {
+			public Object value(Row row, Integer identifier) {
 				return 1;
 			}
 		};
 
-		FilterTableModel<Object, Integer> model = FilterTableModel.builder()
+		FilterTableModel<Row, Integer> model = FilterTableModel.builder()
 						.columns(columns)
 						.build();
-		model.items().add(1);
+		model.items().add(new Row());
 
-		FilterTableCellRenderer<Object> zeroRenderer = FilterTableCellRenderer.builder()
-						.columnClass(Object.class)
+		FilterTableCellRenderer<Integer> zeroRenderer = FilterTableCellRenderer.builder()
+						.columnClass(Integer.class)
+						.horizontalAlignment(SwingConstants.CENTER)
 						.build();
-		FilterTableCellRenderer<Object> oneRenderer = FilterTableCellRenderer.builder()
-						.columnClass(Object.class)
+		FilterTableCellRenderer<Integer> oneRenderer = FilterTableCellRenderer.builder()
+						.columnClass(Integer.class)
+						.horizontalAlignment(SwingConstants.LEFT)
 						.build();
 
-		FilterTable<Object, Integer> table = FilterTable.builder()
+		FilterTable<Row, Integer> table = FilterTable.builder()
 						.model(model)
 						.cellRenderer(0, zeroRenderer)
 						.cellRendererFactory((identifier, tableModel) -> oneRenderer)
+						// Trigger the condition panel to be built right away
+						.filterView(ConditionView.SIMPLE)
 						.build();
 
 		assertSame(zeroRenderer, table.columnModel().column(0).getCellRenderer());
@@ -472,6 +481,12 @@ public class FilterTableTest {
 
 		assertSame(oneRenderer, table.columnModel().column(1).getCellRenderer());
 		assertSame(oneRenderer, table.getCellRenderer(0, 1));
+
+		// Should follow cell renderer alignment
+		NumberField<Integer> equalComponent = (NumberField<Integer>) ((ColumnConditionPanel<Integer>) table.filters().panel(0)).operands().equal().get();
+		assertEquals(SwingConstants.CENTER, equalComponent.getHorizontalAlignment());
+		equalComponent = (NumberField<Integer>) ((ColumnConditionPanel<Integer>) table.filters().panel(1)).operands().equal().get();
+		assertEquals(SwingConstants.LEFT, equalComponent.getHorizontalAlignment());
 	}
 
 	@Test
