@@ -1,6 +1,8 @@
 Codion Change Log
 =================
 
+## 0.18.56
+
 ## 0.18.55
 ### is.codion.common.core
 - User.MAXIMUM_USERNAME_LENGTH and MAXIMUM_PASSWORD_LENGTH configuration values added.
