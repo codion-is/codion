@@ -517,7 +517,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		private final Map<Attribute<?>, Set<Attribute<?>>> derivedAttributes;
 		private final List<Attribute<?>> defaultSelectAttributes;
 
-		private EntityAttributes(EntityType entityType, List<AttributeDefinition.Builder<?, ?>> attributeDefinitionBuilders) {
+		private EntityAttributes(EntityType entityType, List<? extends AttributeDefinition.Builder<?, ?>> attributeDefinitionBuilders) {
 			this.entityType = requireNonNull(entityType);
 			if (requireNonNull(attributeDefinitionBuilders).isEmpty()) {
 				throw new IllegalArgumentException("One or more attribute definition builder must be specified when defining an entity");
@@ -548,7 +548,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 			this.defaultSelectAttributes = unmodifiableList(defaultSelectAttributes());
 		}
 
-		private Map<Attribute<?>, AttributeDefinition<?>> attributeMap(List<AttributeDefinition.Builder<?, ?>> builders) {
+		private Map<Attribute<?>, AttributeDefinition<?>> attributeMap(List<? extends AttributeDefinition.Builder<?, ?>> builders) {
 			preventDuplicateAttributeNames(builders);
 			Map<Attribute<?>, AttributeDefinition<?>> attributes = new HashMap<>(builders.size());
 			for (AttributeDefinition.Builder<?, ?> builder : builders) {
@@ -673,7 +673,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 			});
 		}
 
-		private static void preventDuplicateAttributeNames(List<AttributeDefinition.Builder<?, ?>> builders) {
+		private static void preventDuplicateAttributeNames(List<? extends AttributeDefinition.Builder<?, ?>> builders) {
 			Set<String> attributeNames = new HashSet<>();
 			for (AttributeDefinition.Builder<?, ?> builder : builders) {
 				if (attributeNames.contains(builder.attribute().name())) {
@@ -790,7 +790,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 		private EntityValidator validator = DefaultEntity.DEFAULT_VALIDATOR;
 		private Predicate<Entity> exists = DefaultEntity.DEFAULT_EXISTS;
 
-		DefaultBuilder(EntityType entityType, List<AttributeDefinition.Builder<?, ?>> attributeDefinitionBuilders) {
+		DefaultBuilder(EntityType entityType, List<? extends AttributeDefinition.Builder<?, ?>> attributeDefinitionBuilders) {
 			this.attributes = new EntityAttributes(entityType, attributeDefinitionBuilders);
 			this.table = attributes.entityType.name();
 			this.captionResourceKey = attributes.entityType.name();

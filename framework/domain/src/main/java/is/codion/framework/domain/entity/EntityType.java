@@ -110,7 +110,7 @@ public sealed interface EntityType permits DefaultEntityType {
 	 * @throws IllegalArgumentException in case {@code definitionBuilders} is empty
 	 * @throws IllegalArgumentException in case of a entityType mismatch
 	 */
-	EntityDefinition.Builder define(List<AttributeDefinition.Builder<?, ?>> definitionBuilders);
+	EntityDefinition.Builder define(List<? extends AttributeDefinition.Builder<?, ?>> definitionBuilders);
 
 	/**
 	 * Creates a {@link EntityDefinition.Builder} instance based on the given attribute definition builders.

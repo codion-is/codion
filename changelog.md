@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.56
+### is.codion.framework.domain
+- EntityType bug fixed, define(List) parameter type changed to List<? extends AttributeDefinition.Builder<?, ?>>.
 
 ## 0.18.55
 ### is.codion.common.core
