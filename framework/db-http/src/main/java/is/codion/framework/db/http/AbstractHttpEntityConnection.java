@@ -56,12 +56,11 @@ import static is.codion.common.Serializer.serialize;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.entity.condition.Condition.key;
-import static java.lang.Runtime.getRuntime;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
-import static java.util.concurrent.Executors.newFixedThreadPool;
+import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
 abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 
@@ -69,8 +68,6 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 
 	private static final MessageBundle MESSAGES =
 					messageBundle(HttpEntityConnection.class, getBundle(HttpEntityConnection.class.getName()));
-
-	static final Executor DEFAULT_EXECUTOR = newFixedThreadPool(getRuntime().availableProcessors() + 1, new DaemonThreadFactory());
 
 	private static final String ITERATOR_ERROR_MESSAGE = "EntityConnection.iterator() is not supported on HTTP connections";
 	private static final String AUTHORIZATION = "Authorization";
@@ -100,7 +97,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 		this.user = requireNonNull(builder.user, "user must be specified");
 		this.baseurl = createBaseUrl(builder, path);
 		this.socketTimeout = Duration.ofMillis(builder.socketTimeout);
-		this.httpClient = createHttpClient(builder.connectTimeout, builder.executor);
+		this.httpClient = createHttpClient(builder.connectTimeout, newSingleThreadExecutor());
 		this.headers = new String[] {
 						DOMAIN_TYPE_NAME, requireNonNull(builder.domainType, "domainType must be specified").name(),
 						CLIENT_TYPE, requireNonNull(builder.clientType, "clientType must be specified"),
@@ -428,7 +425,6 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 		private User user;
 		private String clientType;
 		private UUID clientId;
-		private Executor executor = DEFAULT_EXECUTOR;
 
 		@Override
 		public Builder domainType(DomainType domainType) {
@@ -493,12 +489,6 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 		@Override
 		public Builder clientId(UUID clientId) {
 			this.clientId = requireNonNull(clientId);
-			return this;
-		}
-
-		@Override
-		public Builder executor(Executor executor) {
-			this.executor = requireNonNull(executor);
 			return this;
 		}
 

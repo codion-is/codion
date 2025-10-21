@@ -21,8 +21,6 @@ package is.codion.framework.db.http;
 import is.codion.framework.db.AbstractEntityConnectionProvider.AbstractBuilder;
 import is.codion.framework.db.EntityConnectionProvider;
 
-import java.util.concurrent.Executor;
-
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -40,7 +38,6 @@ public final class DefaultHttpEntityConnectionProviderBuilder
 	boolean json = HttpEntityConnection.JSON.getOrThrow();
 	int socketTimeout = HttpEntityConnection.SOCKET_TIMEOUT.getOrThrow();
 	int connectTimeout = HttpEntityConnection.CONNECT_TIMEOUT.getOrThrow();
-	Executor executor = AbstractHttpEntityConnection.DEFAULT_EXECUTOR;
 
 	/**
 	 * Instantiates a new {@link DefaultHttpEntityConnectionProviderBuilder}
@@ -88,12 +85,6 @@ public final class DefaultHttpEntityConnectionProviderBuilder
 	@Override
 	public HttpEntityConnectionProvider.Builder connectTimeout(int connectTimeout) {
 		this.connectTimeout = connectTimeout;
-		return this;
-	}
-
-	@Override
-	public HttpEntityConnectionProvider.Builder executor(Executor executor) {
-		this.executor = requireNonNull(executor);
 		return this;
 	}
 

@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
-import java.util.concurrent.Executor;
 
 import static java.util.Objects.requireNonNull;
 
@@ -45,7 +44,6 @@ final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnection
 	private final boolean json;
 	private final int socketTimeout;
 	private final int connectTimeout;
-	private final Executor executor;
 
 	DefaultHttpEntityConnectionProvider(DefaultHttpEntityConnectionProviderBuilder builder) {
 		super(builder);
@@ -56,7 +54,6 @@ final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnection
 		this.json = builder.json;
 		this.socketTimeout = builder.socketTimeout;
 		this.connectTimeout = builder.connectTimeout;
-		this.executor = builder.executor;
 	}
 
 	@Override
@@ -86,7 +83,6 @@ final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnection
 							.https(https)
 							.socketTimeout(socketTimeout)
 							.connectTimeout(connectTimeout)
-							.executor(executor)
 							.build();
 		}
 		catch (Exception e) {

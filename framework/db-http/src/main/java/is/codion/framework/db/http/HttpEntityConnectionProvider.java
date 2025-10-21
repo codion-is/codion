@@ -20,8 +20,6 @@ package is.codion.framework.db.http;
 
 import is.codion.framework.db.EntityConnectionProvider;
 
-import java.util.concurrent.Executor;
-
 /**
  * A class responsible for managing a HttpEntityConnection.
  * @see HttpEntityConnectionProvider#builder()
@@ -88,12 +86,5 @@ public interface HttpEntityConnectionProvider extends EntityConnectionProvider {
 		 * @return this builder instance
 		 */
 		Builder connectTimeout(int connectTimeout);
-
-		/**
-		 * By default, the http client uses a shared thread pool executor.
-		 * @param executor the http client executor to use
-		 * @return this builder instance
-		 */
-		Builder executor(Executor executor);
 	}
 }
