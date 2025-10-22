@@ -77,7 +77,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 
 	private MethodTracer tracer = MethodTracer.NO_OP;
 	private boolean traceToFile = false;
-	private long lastAccessTime = creationTime;
+	private volatile long lastAccessTime = creationTime;
 	private volatile boolean closed = false;
 
 	LocalConnectionHandler(Domain domain, RemoteClient remoteClient, Database database) {
