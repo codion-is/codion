@@ -112,7 +112,7 @@ public class RemoteEntityConnectionProviderTest {
 		}
 	}
 
-	private static EntityServerConfiguration configure() {
+	static EntityServerConfiguration configure() {
 		Clients.SERVER_HOSTNAME.set("localhost");
 		Clients.TRUSTSTORE.set("../server/src/main/config/truststore.jks");
 		Clients.resolveTrustStore();

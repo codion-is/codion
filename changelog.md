@@ -8,6 +8,8 @@ Codion Change Log
 - FilterTable bug fixed, now sets initial filter view after columns have been initialized, for the horizontalAlignment.
 ### is.codion.framework.domain
 - EntityType bug fixed, define(List) parameter type changed to List<? extends AttributeDefinition.Builder<?, ?>>.
+### is.codion.framework.db.rmi
+- Test coverage improved.
 ### is.codion.framework.db.http
 - AbstractHttpEntityConnection bug fixed, now uses a single threaded executor.
 - AbstractHttpEntityConnection no longer uses a threaded executor, runs everything synchronously. Synchronization now surrounds exception handling, DefaultHttpEntityConnection and JsonHttpEntityConnection refactored accordingly. Test coverage improved.

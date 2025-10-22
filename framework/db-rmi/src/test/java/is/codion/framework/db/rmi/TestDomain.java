@@ -18,32 +18,55 @@
  */
 package is.codion.framework.db.rmi;
 
+import is.codion.common.db.operation.FunctionType;
+import is.codion.common.db.operation.ProcedureType;
+import is.codion.common.db.report.AbstractReport;
+import is.codion.common.db.report.ReportType;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
+import java.sql.Connection;
 import java.time.LocalDate;
+import java.util.List;
 
 import static is.codion.common.item.Item.item;
+import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.entity.attribute.Column.Generator.sequence;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 
 public final class TestDomain extends DomainModel {
 
 	static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);
 
+	public static final ReportType<Object, String, String> REPORT = ReportType.reportType("report");
+
 	public TestDomain() {
 		super(DOMAIN);
 		department();
 		employee();
+		operations();
+		add(REPORT, new AbstractReport<Object, String, String>("report.path", false) {
+			@Override
+			public String fill(Connection connection, String parameters) {
+				return "result";
+			}
+
+			@Override
+			public Object load() {
+				return null;
+			}
+		});
 	}
 
 	public interface Department {
 		EntityType TYPE = DOMAIN.entityType("employees.department");
 
-		Column<Integer> ID = TYPE.integerColumn("deptno");
+		Column<Long> ID = TYPE.longColumn("deptno");
 		Column<String> NAME = TYPE.stringColumn("dname");
 		Column<String> LOCATION = TYPE.stringColumn("loc");
 	}
@@ -53,7 +76,8 @@ public final class TestDomain extends DomainModel {
 										Department.ID.define()
 														.primaryKey()
 														.caption(Department.ID.name())
-														.updatable(true).nullable(false),
+														.updatable(true)
+														.nullable(false),
 										Department.NAME.define()
 														.column()
 														.caption(Department.NAME.name())
@@ -65,6 +89,7 @@ public final class TestDomain extends DomainModel {
 														.caption(Department.LOCATION.name())
 														.maximumLength(13))
 						.smallDataset(true)
+						.orderBy(ascending(Department.NAME))
 						.formatter(Department.NAME)
 						.caption("Department")
 						.build());
@@ -80,10 +105,12 @@ public final class TestDomain extends DomainModel {
 		Column<LocalDate> HIREDATE = TYPE.localDateColumn("hiredate");
 		Column<Double> SALARY = TYPE.doubleColumn("sal");
 		Column<Double> COMMISSION = TYPE.doubleColumn("comm");
-		Column<Integer> DEPARTMENT = TYPE.integerColumn("deptno");
+		Column<Long> DEPARTMENT = TYPE.longColumn("deptno");
+		Column<String> DEPARTMENT_LOCATION = TYPE.stringColumn("location");
+		Column<byte[]> DATA = TYPE.byteArrayColumn("data");
+
 		ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.ID);
 		ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, ID);
-		Column<String> DEPARTMENT_LOCATION = TYPE.stringColumn("location");
 	}
 
 	void employee() {
@@ -133,9 +160,21 @@ public final class TestDomain extends DomainModel {
 														.denormalized()
 														.from(Employee.DEPARTMENT_FK)
 														.attribute(Department.LOCATION)
-														.caption(Department.LOCATION.name()))
+														.caption(Department.LOCATION.name()),
+										Employee.DATA.define()
+														.column()
+														.caption("Data"))
 						.formatter(Employee.NAME)
+						.orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
 						.caption("Employee")
 						.build());
+	}
+
+	public static final FunctionType<EntityConnection, Object, List<Object>> FUNCTION_ID = FunctionType.functionType("functionId");
+	public static final ProcedureType<EntityConnection, Object> PROCEDURE_ID = ProcedureType.procedureType("procedureId");
+
+	void operations() {
+		add(PROCEDURE_ID, (connection, objects) -> {});
+		add(FUNCTION_ID, (connection, objects) -> emptyList());
 	}
 }

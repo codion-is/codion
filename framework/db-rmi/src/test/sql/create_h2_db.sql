@@ -16,6 +16,7 @@ CREATE TABLE employees.employee (
   sal DECIMAL(7, 2) NOT NULL,
   comm DECIMAL(7, 2),
   deptno INT NOT NULL,
+  data blob,
   constraint emp_pk primary key (empno),
   constraint emp_dept_fk foreign key (deptno) references employees.department(deptno),
   constraint emp_mgr_fk foreign key (mgr) references employees.employee(empno)
