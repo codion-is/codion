@@ -31,12 +31,10 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -62,178 +60,178 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 
 	@Override
 	public boolean transactionOpen() {
-		try {
-			synchronized (httpClient) {
-				return handleJsonResponse(executeJson(createJsonRequest("isTransactionOpen")),
+		synchronized (httpClient) {
+			try {
+				return handleJsonResponse(execute(createJsonRequest("isTransactionOpen")),
 								objectMapper, Boolean.class);
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public void queryCache(boolean queryCache) {
-		try {
-			synchronized (httpClient) {
+		synchronized (httpClient) {
+			try {
 				handleResponse(execute(createJsonRequest("setQueryCacheEnabled",
 								objectMapper.writeValueAsString(queryCache))));
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public boolean queryCache() {
-		try {
-			synchronized (httpClient) {
-				return handleJsonResponse(executeJson(createJsonRequest("isQueryCacheEnabled")),
+		synchronized (httpClient) {
+			try {
+				return handleJsonResponse(execute(createJsonRequest("isQueryCacheEnabled")),
 								objectMapper, Boolean.class);
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public Collection<Entity.Key> insert(Collection<Entity> entities) {
 		requireNonNull(entities);
-		try {
-			synchronized (httpClient) {
-				return handleJsonResponse(executeJson(createJsonRequest("insert",
+		synchronized (httpClient) {
+			try {
+				return handleJsonResponse(execute(createJsonRequest("insert",
 								objectMapper.writeValueAsString(entities))), objectMapper, KEY_LIST_REFERENCE);
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public Collection<Entity> insertSelect(Collection<Entity> entities) {
 		requireNonNull(entities);
-		try {
-			synchronized (httpClient) {
-				return handleJsonResponse(executeJson(createJsonRequest("insertSelect",
+		synchronized (httpClient) {
+			try {
+				return handleJsonResponse(execute(createJsonRequest("insertSelect",
 								objectMapper.writeValueAsString(entities))), objectMapper, ENTITY_LIST_REFERENCE);
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public void update(Collection<Entity> entities) {
 		requireNonNull(entities);
-		try {
-			synchronized (httpClient) {
-				throwIfError(executeJson(createJsonRequest("update",
+		synchronized (httpClient) {
+			try {
+				throwIfError(execute(createJsonRequest("update",
 								objectMapper.writeValueAsString(entities))));
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public Collection<Entity> updateSelect(Collection<Entity> entities) {
 		requireNonNull(entities);
-		try {
-			synchronized (httpClient) {
-				return handleJsonResponse(executeJson(createJsonRequest("updateSelect",
+		synchronized (httpClient) {
+			try {
+				return handleJsonResponse(execute(createJsonRequest("updateSelect",
 								objectMapper.writeValueAsString(entities))), objectMapper, ENTITY_LIST_REFERENCE);
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public int update(Update update) {
 		requireNonNull(update);
-		try {
-			synchronized (httpClient) {
-				return handleJsonResponse(executeJson(createJsonRequest("updateByCondition",
+		synchronized (httpClient) {
+			try {
+				return handleJsonResponse(execute(createJsonRequest("updateByCondition",
 								objectMapper.writeValueAsString(update))), objectMapper, Integer.class);
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public void delete(Collection<Entity.Key> keys) {
 		requireNonNull(keys);
-		try {
-			synchronized (httpClient) {
-				throwIfError(executeJson(createJsonRequest("deleteByKey",
+		synchronized (httpClient) {
+			try {
+				throwIfError(execute(createJsonRequest("deleteByKey",
 								objectMapper.writeValueAsString(keys))));
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public int delete(Condition condition) {
 		requireNonNull(condition);
-		try {
-			synchronized (httpClient) {
-				return handleJsonResponse(executeJson(createJsonRequest("delete",
+		synchronized (httpClient) {
+			try {
+				return handleJsonResponse(execute(createJsonRequest("delete",
 								objectMapper.writeValueAsString(condition))), objectMapper, Integer.class);
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
@@ -241,106 +239,100 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 	public <T> List<T> select(Column<T> column, Select select) {
 		requireNonNull(column);
 		requireNonNull(select);
-		try {
-			ObjectNode node = objectMapper.createObjectNode();
-			node.set("column", objectMapper.valueToTree(column.name()));
-			node.set("entityType", objectMapper.valueToTree(column.entityType().name()));
-			node.set("condition", objectMapper.valueToTree(select));
-			synchronized (httpClient) {
-				return handleJsonResponse(executeJson(createJsonRequest("values", node.toString())),
+		ObjectNode node = objectMapper.createObjectNode();
+		node.set("column", objectMapper.valueToTree(column.name()));
+		node.set("entityType", objectMapper.valueToTree(column.entityType().name()));
+		node.set("condition", objectMapper.valueToTree(select));
+		synchronized (httpClient) {
+			try {
+				return handleJsonResponse(execute(createJsonRequest("values", node.toString())),
 								objectMapper, objectMapper.getTypeFactory().constructCollectionType(List.class, column.type().valueClass()));
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public List<Entity> select(Collection<Entity.Key> keys) {
 		requireNonNull(keys);
-		try {
-			synchronized (httpClient) {
-				return handleJsonResponse(executeJson(createJsonRequest("selectByKey",
+		synchronized (httpClient) {
+			try {
+				return handleJsonResponse(execute(createJsonRequest("selectByKey",
 								objectMapper.writeValueAsString(keys))), objectMapper, ENTITY_LIST_REFERENCE);
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public List<Entity> select(Select select) {
 		requireNonNull(select);
-		try {
-			synchronized (httpClient) {
-				return handleJsonResponse(executeJson(createJsonRequest("select",
+		synchronized (httpClient) {
+			try {
+				return handleJsonResponse(execute(createJsonRequest("select",
 								objectMapper.writeValueAsString(select))), objectMapper, ENTITY_LIST_REFERENCE);
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public Map<EntityType, Collection<Entity>> dependencies(Collection<Entity> entities) {
 		requireNonNull(entities);
-		try {
-			Map<EntityType, Collection<Entity>> dependencies = new HashMap<>();
-			DomainType domainType = entities().domainType();
-			synchronized (httpClient) {
-				Map<String, Collection<Entity>> dependencyMap = handleJsonResponse(executeJson(createJsonRequest("dependencies",
+		synchronized (httpClient) {
+			try {
+				Map<EntityType, Collection<Entity>> dependencies = new HashMap<>();
+				DomainType domainType = entities().domainType();
+				Map<String, Collection<Entity>> dependencyMap = handleJsonResponse(execute(createJsonRequest("dependencies",
 								objectMapper.writeValueAsString(entities))), objectMapper, new TypeReference<Map<String, Collection<Entity>>>() {});
 				dependencyMap.forEach((entityTypeName, deps) ->
 								dependencies.put(domainType.entityType(entityTypeName), deps));
 
 				return dependencies;
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public int count(Count count) {
 		requireNonNull(count);
-		try {
-			synchronized (httpClient) {
-				return handleJsonResponse(executeJson(createJsonRequest("count",
+		synchronized (httpClient) {
+			try {
+				return handleJsonResponse(execute(createJsonRequest("count",
 								objectMapper.writeValueAsString(count))), objectMapper, Integer.class);
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
-		}
-	}
-
-	private <T> HttpResponse<T> executeJson(HttpRequest operation) throws IOException, InterruptedException {
-		synchronized (httpClient) {
-			return (HttpResponse<T>) httpClient.send(operation, BodyHandlers.ofByteArray());
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 

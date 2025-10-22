@@ -10,6 +10,7 @@ Codion Change Log
 - EntityType bug fixed, define(List) parameter type changed to List<? extends AttributeDefinition.Builder<?, ?>>.
 ### is.codion.framework.db.http
 - AbstractHttpEntityConnection bug fixed, now uses a single threaded executor.
+- AbstractHttpEntityConnection no longer uses a threaded executor, runs everything synchronously. Synchronization now surrounds exception handling, DefaultHttpEntityConnection and JsonHttpEntityConnection refactored accordingly. Test coverage improved.
 ### is.codion.framework.server
 - EntityService bug fixed, class cast exception on deserialize fixed.
 ### is.codion.tools.generator.domain

@@ -101,6 +101,40 @@ abstract class AbstractHttpEntityConnectionTest {
 	}
 
 	@Test
+	void insertMultiple() {
+		Entity dept1 = connection.entities().entity(Department.TYPE)
+						.with(Department.ID, 77L)
+						.with(Department.NAME, "dept1")
+						.with(Department.LOCATION, "loc1")
+						.build();
+		Entity dept2 = connection.entities().entity(Department.TYPE)
+						.with(Department.ID, 78L)
+						.with(Department.NAME, "dept2")
+						.with(Department.LOCATION, "loc2")
+						.build();
+		Collection<Entity.Key> keys = connection.insert(asList(dept1, dept2));
+		assertEquals(2, keys.size());
+		connection.delete(keys);
+	}
+
+	@Test
+	void insertSelectMultiple() {
+		Entity dept1 = connection.entities().entity(Department.TYPE)
+						.with(Department.ID, 79L)
+						.with(Department.NAME, "dept3")
+						.with(Department.LOCATION, "loc3")
+						.build();
+		Entity dept2 = connection.entities().entity(Department.TYPE)
+						.with(Department.ID, 80L)
+						.with(Department.NAME, "dept4")
+						.with(Department.LOCATION, "loc4")
+						.build();
+		Collection<Entity> inserted = connection.insertSelect(asList(dept1, dept2));
+		assertEquals(2, inserted.size());
+		connection.delete(Entity.primaryKeys(inserted));
+	}
+
+	@Test
 	void selectByKey() {
 		Entity.Key key = connection.entities().primaryKey(Department.TYPE, 10L);
 		Collection<Entity> depts = connection.select(singletonList(key));
@@ -136,6 +170,44 @@ abstract class AbstractHttpEntityConnectionTest {
 		assertEquals("TEstING", department.get(Department.NAME));
 		department.set(Department.NAME, "ACCOUNTING");
 		department = connection.updateSelect(department);
+	}
+
+	@Test
+	void updateMultiple() {
+		Entity dept1 = connection.selectSingle(Department.NAME.equalTo("ACCOUNTING"));
+		Entity dept2 = connection.selectSingle(Department.NAME.equalTo("SALES"));
+		dept1.set(Department.NAME, "ACC_TEST");
+		dept2.set(Department.NAME, "SALES_TEST");
+		connection.startTransaction();
+		try {
+			connection.update(asList(dept1, dept2));
+			Entity updated1 = connection.selectSingle(Department.ID.equalTo(dept1.get(Department.ID)));
+			Entity updated2 = connection.selectSingle(Department.ID.equalTo(dept2.get(Department.ID)));
+			assertEquals("ACC_TEST", updated1.get(Department.NAME));
+			assertEquals("SALES_TEST", updated2.get(Department.NAME));
+		}
+		finally {
+			connection.rollbackTransaction();
+		}
+	}
+
+	@Test
+	void updateSelectMultiple() {
+		Entity dept1 = connection.selectSingle(Department.NAME.equalTo("ACCOUNTING"));
+		Entity dept2 = connection.selectSingle(Department.NAME.equalTo("SALES"));
+		dept1.set(Department.NAME, "ACC_TEST2");
+		dept2.set(Department.NAME, "SALES_TEST2");
+		connection.startTransaction();
+		try {
+			Collection<Entity> updated = connection.updateSelect(asList(dept1, dept2));
+			assertEquals(2, updated.size());
+			for (Entity entity : updated) {
+				assertTrue(entity.get(Department.NAME).endsWith("_TEST2"));
+			}
+		}
+		finally {
+			connection.rollbackTransaction();
+		}
 	}
 
 	@Test
@@ -211,6 +283,26 @@ abstract class AbstractHttpEntityConnectionTest {
 		assertEquals(4, values.size());
 		List<Long> ids = connection.select(Department.ID);
 		assertInstanceOf(Long.class, ids.get(0));
+	}
+
+	@Test
+	void selectColumnWithSelect() {
+		List<String> names = connection.select(Department.NAME,
+						EntityConnection.Select.where(Department.LOCATION.equalTo("NEW YORK")).build());
+		assertEquals(1, names.size());
+		assertEquals("ACCOUNTING", names.get(0));
+	}
+
+	@Test
+	void iteratorNotSupported() {
+		assertThrows(UnsupportedOperationException.class,
+						() -> connection.iterator(Condition.all(Department.TYPE)));
+	}
+
+	@Test
+	void iteratorWithSelectNotSupported() {
+		assertThrows(UnsupportedOperationException.class,
+						() -> connection.iterator(EntityConnection.Select.all(Department.TYPE).build()));
 	}
 
 	@Test

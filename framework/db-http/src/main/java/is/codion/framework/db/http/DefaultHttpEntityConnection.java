@@ -43,168 +43,168 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 
 	@Override
 	public boolean transactionOpen() {
-		try {
-			synchronized (httpClient) {
+		synchronized (httpClient) {
+			try {
 				return handleResponse(execute(createRequest("isTransactionOpen")));
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public void queryCache(boolean queryCache) {
-		try {
-			synchronized (httpClient) {
+		synchronized (httpClient) {
+			try {
 				handleResponse(execute(createRequest("setQueryCacheEnabled", serialize(queryCache))));
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public boolean queryCache() {
-		try {
-			synchronized (httpClient) {
+		synchronized (httpClient) {
+			try {
 				return handleResponse(execute(createRequest("isQueryCacheEnabled")));
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public Collection<Entity.Key> insert(Collection<Entity> entities) {
 		requireNonNull(entities);
-		try {
-			synchronized (httpClient) {
+		synchronized (httpClient) {
+			try {
 				return handleResponse(execute(createRequest("insert", serialize(entities))));
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public Collection<Entity> insertSelect(Collection<Entity> entities) {
 		requireNonNull(entities);
-		try {
-			synchronized (httpClient) {
+		synchronized (httpClient) {
+			try {
 				return handleResponse(execute(createRequest("insertSelect", serialize(entities))));
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public void update(Collection<Entity> entities) {
 		requireNonNull(entities);
-		try {
-			synchronized (httpClient) {
+		synchronized (httpClient) {
+			try {
 				handleResponse(execute(createRequest("update", serialize(entities))));
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public Collection<Entity> updateSelect(Collection<Entity> entities) {
 		requireNonNull(entities);
-		try {
-			synchronized (httpClient) {
+		synchronized (httpClient) {
+			try {
 				return handleResponse(execute(createRequest("updateSelect", serialize(entities))));
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public int update(Update update) {
 		requireNonNull(update);
-		try {
-			synchronized (httpClient) {
+		synchronized (httpClient) {
+			try {
 				return handleResponse(execute(createRequest("updateByCondition", serialize(update))));
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public void delete(Collection<Entity.Key> keys) {
 		requireNonNull(keys);
-		try {
-			synchronized (httpClient) {
+		synchronized (httpClient) {
+			try {
 				throwIfError(execute(createRequest("deleteByKey", serialize(keys))));
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public int delete(Condition condition) {
 		requireNonNull(condition);
-		try {
-			synchronized (httpClient) {
+		synchronized (httpClient) {
+			try {
 				return handleResponse(execute(createRequest("delete", serialize(condition))));
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
@@ -212,85 +212,85 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 	public <T> List<T> select(Column<T> column, Select select) {
 		requireNonNull(column);
 		requireNonNull(select);
-		try {
-			synchronized (httpClient) {
+		synchronized (httpClient) {
+			try {
 				return handleResponse(execute(createRequest("values", serialize(asList(column, select)))));
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public List<Entity> select(Collection<Entity.Key> keys) {
 		requireNonNull(keys);
-		try {
-			synchronized (httpClient) {
+		synchronized (httpClient) {
+			try {
 				return handleResponse(execute(createRequest("selectByKey", serialize(keys))));
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public List<Entity> select(Select select) {
 		requireNonNull(select);
-		try {
-			synchronized (httpClient) {
+		synchronized (httpClient) {
+			try {
 				return handleResponse(execute(createRequest("select", serialize(select))));
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public Map<EntityType, Collection<Entity>> dependencies(Collection<Entity> entities) {
 		requireNonNull(entities);
-		try {
-			synchronized (httpClient) {
+		synchronized (httpClient) {
+			try {
 				return handleResponse(execute(createRequest("dependencies", serialize(entities))));
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public int count(Count count) {
 		requireNonNull(count);
-		try {
-			synchronized (httpClient) {
+		synchronized (httpClient) {
+			try {
 				return handleResponse(execute(createRequest("count", serialize(count))));
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 }

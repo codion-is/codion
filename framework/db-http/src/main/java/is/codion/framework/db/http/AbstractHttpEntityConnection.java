@@ -49,7 +49,6 @@ import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ThreadFactory;
 
 import static is.codion.common.Serializer.deserialize;
 import static is.codion.common.Serializer.serialize;
@@ -60,7 +59,6 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
-import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
 abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 
@@ -97,7 +95,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 		this.user = requireNonNull(builder.user, "user must be specified");
 		this.baseurl = createBaseUrl(builder, path);
 		this.socketTimeout = Duration.ofMillis(builder.socketTimeout);
-		this.httpClient = createHttpClient(builder.connectTimeout, newSingleThreadExecutor());
+		this.httpClient = createHttpClient(builder.connectTimeout);
 		this.headers = new String[] {
 						DOMAIN_TYPE_NAME, requireNonNull(builder.domainType, "domainType must be specified").name(),
 						CLIENT_TYPE, requireNonNull(builder.clientType, "clientType must be specified"),
@@ -126,68 +124,68 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 
 	@Override
 	public final void close() {
-		try {
-			synchronized (httpClient) {
+		synchronized (httpClient) {
+			try {
 				if (DISCONNECT_ON_CLOSE.getOrThrow()) {
 					handleResponse(execute(createRequest("close")));
 				}
 				closed = true;
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public final void startTransaction() {
-		try {
-			synchronized (httpClient) {
+		synchronized (httpClient) {
+			try {
 				handleResponse(execute(createRequest("startTransaction")));
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public final void rollbackTransaction() {
-		try {
-			synchronized (httpClient) {
+		synchronized (httpClient) {
+			try {
 				handleResponse(execute(createRequest("rollbackTransaction")));
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public final void commitTransaction() {
-		try {
-			synchronized (httpClient) {
+		synchronized (httpClient) {
+			try {
 				handleResponse(execute(createRequest("commitTransaction")));
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
@@ -266,17 +264,17 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	@Override
 	public final <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T argument) {
 		requireNonNull(functionType);
-		try {
-			synchronized (httpClient) {
+		synchronized (httpClient) {
+			try {
 				return handleResponse(execute(createRequest("function", serialize(asList(functionType, argument)))));
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
@@ -288,34 +286,34 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	@Override
 	public final <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T argument) {
 		requireNonNull(procedureType);
-		try {
-			synchronized (httpClient) {
+		synchronized (httpClient) {
+			try {
 				handleResponse(execute(createRequest("procedure", serialize(asList(procedureType, argument)))));
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	@Override
 	public final <T, R, P> R report(ReportType<T, R, P> reportType, P reportParameters) {
 		requireNonNull(reportType);
-		try {
-			synchronized (httpClient) {
+		synchronized (httpClient) {
+			try {
 				return handleResponse(execute(createRequest("report", serialize(asList(reportType, reportParameters)))));
 			}
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
@@ -330,22 +328,22 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	}
 
 	private Entities initializeEntities() {
-		try {
-			return handleResponse(execute(createRequest("entities")));
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw logAndWrap(e);
-		}
-		catch (Exception e) {
-			throw logAndWrap(e);
+		synchronized (httpClient) {
+			try {
+				return handleResponse(execute(createRequest("entities")));
+			}
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw logAndWrap(e);
+			}
+			catch (Exception e) {
+				throw logAndWrap(e);
+			}
 		}
 	}
 
 	protected final <T> HttpResponse<T> execute(HttpRequest operation) throws IOException, InterruptedException {
-		synchronized (httpClient) {
-			return (HttpResponse<T>) httpClient.send(operation, BodyHandlers.ofByteArray());
-		}
+		return (HttpResponse<T>) httpClient.send(operation, BodyHandlers.ofByteArray());
 	}
 
 	protected final HttpRequest createRequest(String path) {
@@ -364,9 +362,9 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 						.build();
 	}
 
-	private static HttpClient createHttpClient(int connectTimeout, Executor executor) {
+	private static HttpClient createHttpClient(int connectTimeout) {
 		return HttpClient.newBuilder()
-						.executor(executor)
+						.executor(new SynchronousExecutor())
 						.cookieHandler(new CookieManager())
 						.connectTimeout(Duration.ofMillis(connectTimeout))
 						.build();
@@ -401,14 +399,11 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 		return BASIC + Base64.getEncoder().encodeToString((user.username() + ":" + String.valueOf(user.password())).getBytes());
 	}
 
-	private static class DaemonThreadFactory implements ThreadFactory {
+	private static final class SynchronousExecutor implements Executor {
 
 		@Override
-		public Thread newThread(Runnable runnable) {
-			Thread thread = new Thread(runnable);
-			thread.setDaemon(true);
-
-			return thread;
+		public void execute(Runnable command) {
+			command.run();
 		}
 	}
 
