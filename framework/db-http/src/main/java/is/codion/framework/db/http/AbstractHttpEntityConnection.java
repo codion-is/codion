@@ -131,12 +131,8 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 				}
 				closed = true;
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -147,12 +143,8 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 			try {
 				handleResponse(execute(createRequest("startTransaction")));
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -163,12 +155,8 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 			try {
 				handleResponse(execute(createRequest("rollbackTransaction")));
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -179,12 +167,8 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 			try {
 				handleResponse(execute(createRequest("commitTransaction")));
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -268,12 +252,8 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 			try {
 				return handleResponse(execute(createRequest("function", serialize(asList(functionType, argument)))));
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -290,12 +270,8 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 			try {
 				handleResponse(execute(createRequest("procedure", serialize(asList(procedureType, argument)))));
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -307,12 +283,8 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 			try {
 				return handleResponse(execute(createRequest("report", serialize(asList(reportType, reportParameters)))));
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -332,12 +304,8 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 			try {
 				return handleResponse(execute(createRequest("entities")));
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -382,7 +350,18 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 		}
 	}
 
-	protected static RuntimeException logAndWrap(Exception e) {
+	protected static RuntimeException handleException(Exception exception) {
+		if (exception instanceof InterruptedException) {
+			Thread.currentThread().interrupt();
+		}
+
+		return logAndWrap(exception);
+	}
+
+	private static RuntimeException logAndWrap(Exception e) {
+		if (e instanceof InterruptedException) {
+			throw new RuntimeException(e);
+		}
 		LOG.error(e.getMessage(), e);
 		if (e instanceof RuntimeException) {
 			throw (RuntimeException) e;

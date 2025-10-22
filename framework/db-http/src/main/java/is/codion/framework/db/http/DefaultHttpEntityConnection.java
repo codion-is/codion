@@ -47,12 +47,8 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 			try {
 				return handleResponse(execute(createRequest("isTransactionOpen")));
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -63,12 +59,8 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 			try {
 				handleResponse(execute(createRequest("setQueryCacheEnabled", serialize(queryCache))));
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -79,12 +71,8 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 			try {
 				return handleResponse(execute(createRequest("isQueryCacheEnabled")));
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -96,12 +84,8 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 			try {
 				return handleResponse(execute(createRequest("insert", serialize(entities))));
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -113,12 +97,8 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 			try {
 				return handleResponse(execute(createRequest("insertSelect", serialize(entities))));
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -130,12 +110,8 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 			try {
 				handleResponse(execute(createRequest("update", serialize(entities))));
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -147,12 +123,8 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 			try {
 				return handleResponse(execute(createRequest("updateSelect", serialize(entities))));
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -164,12 +136,8 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 			try {
 				return handleResponse(execute(createRequest("updateByCondition", serialize(update))));
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -181,12 +149,8 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 			try {
 				throwIfError(execute(createRequest("deleteByKey", serialize(keys))));
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -198,12 +162,8 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 			try {
 				return handleResponse(execute(createRequest("delete", serialize(condition))));
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -216,12 +176,8 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 			try {
 				return handleResponse(execute(createRequest("values", serialize(asList(column, select)))));
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -233,12 +189,8 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 			try {
 				return handleResponse(execute(createRequest("selectByKey", serialize(keys))));
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -250,12 +202,8 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 			try {
 				return handleResponse(execute(createRequest("select", serialize(select))));
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -267,12 +215,8 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 			try {
 				return handleResponse(execute(createRequest("dependencies", serialize(entities))));
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -284,12 +228,8 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 			try {
 				return handleResponse(execute(createRequest("count", serialize(count))));
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}

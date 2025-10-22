@@ -65,12 +65,8 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 				return handleJsonResponse(execute(createJsonRequest("isTransactionOpen")),
 								objectMapper, Boolean.class);
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -82,12 +78,8 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 				handleResponse(execute(createJsonRequest("setQueryCacheEnabled",
 								objectMapper.writeValueAsString(queryCache))));
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -99,12 +91,8 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 				return handleJsonResponse(execute(createJsonRequest("isQueryCacheEnabled")),
 								objectMapper, Boolean.class);
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -117,12 +105,8 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 				return handleJsonResponse(execute(createJsonRequest("insert",
 								objectMapper.writeValueAsString(entities))), objectMapper, KEY_LIST_REFERENCE);
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -135,12 +119,8 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 				return handleJsonResponse(execute(createJsonRequest("insertSelect",
 								objectMapper.writeValueAsString(entities))), objectMapper, ENTITY_LIST_REFERENCE);
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -153,12 +133,8 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 				throwIfError(execute(createJsonRequest("update",
 								objectMapper.writeValueAsString(entities))));
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -171,12 +147,8 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 				return handleJsonResponse(execute(createJsonRequest("updateSelect",
 								objectMapper.writeValueAsString(entities))), objectMapper, ENTITY_LIST_REFERENCE);
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -189,12 +161,8 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 				return handleJsonResponse(execute(createJsonRequest("updateByCondition",
 								objectMapper.writeValueAsString(update))), objectMapper, Integer.class);
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -207,12 +175,8 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 				throwIfError(execute(createJsonRequest("deleteByKey",
 								objectMapper.writeValueAsString(keys))));
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -225,12 +189,8 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 				return handleJsonResponse(execute(createJsonRequest("delete",
 								objectMapper.writeValueAsString(condition))), objectMapper, Integer.class);
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -248,12 +208,8 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 				return handleJsonResponse(execute(createJsonRequest("values", node.toString())),
 								objectMapper, objectMapper.getTypeFactory().constructCollectionType(List.class, column.type().valueClass()));
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -266,12 +222,8 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 				return handleJsonResponse(execute(createJsonRequest("selectByKey",
 								objectMapper.writeValueAsString(keys))), objectMapper, ENTITY_LIST_REFERENCE);
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -284,12 +236,8 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 				return handleJsonResponse(execute(createJsonRequest("select",
 								objectMapper.writeValueAsString(select))), objectMapper, ENTITY_LIST_REFERENCE);
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -308,12 +256,8 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 
 				return dependencies;
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}
@@ -326,12 +270,8 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 				return handleJsonResponse(execute(createJsonRequest("count",
 								objectMapper.writeValueAsString(count))), objectMapper, Integer.class);
 			}
-			catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				throw logAndWrap(e);
-			}
-			catch (Exception e) {
-				throw logAndWrap(e);
+			catch (Exception exception) {
+				throw handleException(exception);
 			}
 		}
 	}

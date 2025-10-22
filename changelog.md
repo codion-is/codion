@@ -13,6 +13,7 @@ Codion Change Log
 ### is.codion.framework.db.http
 - AbstractHttpEntityConnection bug fixed, now uses a single threaded executor.
 - AbstractHttpEntityConnection no longer uses a threaded executor, runs everything synchronously. Synchronization now surrounds exception handling, DefaultHttpEntityConnection and JsonHttpEntityConnection refactored accordingly. Test coverage improved.
+- AbstractHttpEntityConnection no longer logs InterruptedException, which happens when queries are cancelled.
 ### is.codion.framework.server
 - EntityService bug fixed, class cast exception on deserialize fixed.
 ### is.codion.swing.framework.ui
