@@ -748,7 +748,7 @@ public final class EntityService implements AuxiliaryServer {
 		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
-				Collection<Entity> updated = connection.updateSelect((List<Entity>) deserialize(context.req()));
+				Collection<Entity> updated = connection.updateSelect((Collection<Entity>) deserialize(context.req()));
 				context.status(HttpStatus.OK_200)
 								.contentType(ContentType.APPLICATION_OCTET_STREAM)
 								.result(serialize(updated));
@@ -842,7 +842,7 @@ public final class EntityService implements AuxiliaryServer {
 		private void serial(Context context) {
 			try {
 				RemoteEntityConnection connection = authenticate(context);
-				List<Entity.Key> keys = deserialize(context.req());
+				Collection<Entity.Key> keys = deserialize(context.req());
 				connection.delete(keys);
 				context.status(HttpStatus.OK_200);
 			}
