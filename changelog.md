@@ -15,6 +15,8 @@ Codion Change Log
 - AbstractHttpEntityConnection no longer uses a threaded executor, runs everything synchronously. Synchronization now surrounds exception handling, DefaultHttpEntityConnection and JsonHttpEntityConnection refactored accordingly. Test coverage improved.
 ### is.codion.framework.server
 - EntityService bug fixed, class cast exception on deserialize fixed.
+### is.codion.swing.framework.ui
+- EditAttributePanel bug fixed, update no longer enabled if no entity is modified.
 ### is.codion.tools.generator.domain
 - DomainSource bug fixed, domain test imports fixed for api/impl.
 ### is.codion.tools.generator.panel

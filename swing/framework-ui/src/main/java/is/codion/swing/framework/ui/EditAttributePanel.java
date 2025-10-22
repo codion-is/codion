@@ -42,6 +42,7 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JTextField;
 import java.util.Collection;
 import java.util.concurrent.ExecutionException;
 
@@ -71,10 +72,11 @@ final class EditAttributePanel<T> extends JPanel {
 	private final Collection<Entity> entities;
 	private final Attribute<T> attribute;
 	private final State valid = State.state(true);
+	private final State modified = State.state();
 	private final Value<String> message = Value.nonNull("");
 	private final State updating = State.state();
 	private final JPanel componentPanel;
-	private final JProgressBar progress;
+	private final JProgressBar progressBar;
 
 	EditAttributePanel(SwingEntityEditModel editModel, Collection<Entity> entities, Attribute<T> attribute,
 										 ComponentValue<?, T> componentValue, @Nullable String caption) {
@@ -85,10 +87,9 @@ final class EditAttributePanel<T> extends JPanel {
 		this.entities = entities;
 		this.componentValue = componentValue;
 		this.componentPanel = createComponentPanel(caption);
-		this.progress = createProgress();
-		componentValue.addListener(this::validateValue);
-		message.addConsumer(componentValue.component()::setToolTipText);
-		validateValue();
+		this.progressBar = createProgressBar();
+		configureComponent(componentValue);
+		updateStates();
 		add(componentPanel, CENTER);
 	}
 
@@ -96,7 +97,7 @@ final class EditAttributePanel<T> extends JPanel {
 		return Control.builder()
 						.command(this::performUpdate)
 						.caption(Messages.ok())
-						.enabled(State.and(valid, updating.not()))
+						.enabled(State.and(modified, valid, updating.not()))
 						.build();
 	}
 
@@ -131,7 +132,7 @@ final class EditAttributePanel<T> extends JPanel {
 		closeDialog();
 	}
 
-	private void validateValue() {
+	private void updateStates() {
 		EntityValidator validator = editModel.editor().validator().getOrThrow();
 		T value = componentValue.get();
 		Collection<Entity> toUpdate = entities.stream()
@@ -139,6 +140,7 @@ final class EditAttributePanel<T> extends JPanel {
 						.map(Entity.Copy::mutable)
 						.collect(toList());
 		editModel.applyEdit(toUpdate, attribute, value);
+		modified.set(toUpdate.stream().anyMatch(Entity::modified));
 		for (Entity entity : toUpdate) {
 			try {
 				validator.validate(entity, attribute);
@@ -197,7 +199,7 @@ final class EditAttributePanel<T> extends JPanel {
 						.build();
 	}
 
-	private static JProgressBar createProgress() {
+	private static JProgressBar createProgressBar() {
 		JProgressBar progressBar = new JProgressBar();
 		progressBar.setIndeterminate(true);
 		progressBar.setStringPainted(true);
@@ -206,19 +208,27 @@ final class EditAttributePanel<T> extends JPanel {
 		return progressBar;
 	}
 
+	private void configureComponent(ComponentValue<?, T> componentValue) {
+		componentValue.addListener(this::updateStates);
+		if (componentValue.component() instanceof JTextField) {
+			((JTextField) componentValue.component()).selectAll();
+		}
+		message.addConsumer(componentValue.component()::setToolTipText);
+	}
+
 	private void closeDialog() {
 		disposeParentWindow(this);
 	}
 
 	private void showProgress() {
 		remove(componentPanel);
-		add(progress, CENTER);
+		add(progressBar, CENTER);
 		revalidate();
 		repaint();
 	}
 
 	private void hideProgress() {
-		remove(progress);
+		remove(progressBar);
 		add(componentPanel, CENTER);
 		revalidate();
 		repaint();
