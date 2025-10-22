@@ -16,6 +16,8 @@ Codion Change Log
 - AbstractHttpEntityConnection no longer logs InterruptedException, which happens when queries are cancelled.
 ### is.codion.framework.server
 - EntityService bug fixed, class cast exception on deserialize fixed.
+### is.codion.framework.lambda
+- LambdaEntityHandler bug fixed, UPDATE added to operations without return value.
 ### is.codion.swing.framework.ui
 - EditAttributePanel bug fixed, update no longer enabled if no entity is modified.
 ### is.codion.tools.generator.domain

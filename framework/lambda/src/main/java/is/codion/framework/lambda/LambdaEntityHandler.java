@@ -128,7 +128,7 @@ public class LambdaEntityHandler implements RequestHandler<APIGatewayV2HTTPEvent
 
 	private static final Set<String> NO_RETURN_DATA_OPERATIONS = unmodifiableSet(new HashSet<>(asList(
 					CLOSE, START_TRANSACTION, COMMIT_TRANSACTION, ROLLBACK_TRANSACTION,
-					PROCEDURE, SET_QUERY_CACHE_ENABLED, DELETE_BY_KEY)));
+					PROCEDURE, SET_QUERY_CACHE_ENABLED, DELETE_BY_KEY, UPDATE)));
 
 	private final EntityServer entityServer;
 
