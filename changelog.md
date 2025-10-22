@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.56
+### is.codion.common.db
+- DefaultDatabaseConnection bug fixed, rollbackTransaction() and commitTransaction() no longer set the flag if exceptions occur.
 ### is.codion.swing.common.model
 - ProgressWorker refactored, onStarted listener now guaranteed to run.
 ### is.codion.swing.common.ui

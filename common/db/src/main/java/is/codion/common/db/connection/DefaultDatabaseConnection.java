@@ -145,12 +145,8 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 			throw new IllegalStateException("Transaction is not open");
 		}
 		connection = verifyOpenConnection();
-		try {
-			connection.rollback();
-		}
-		finally {
-			transactionOpen = false;
-		}
+		connection.rollback();
+		transactionOpen = false;
 	}
 
 	@Override
@@ -159,12 +155,8 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 			throw new IllegalStateException("Transaction is not open");
 		}
 		connection = verifyOpenConnection();
-		try {
-			connection.commit();
-		}
-		finally {
-			transactionOpen = false;
-		}
+		connection.commit();
+		transactionOpen = false;
 	}
 
 	@Override
