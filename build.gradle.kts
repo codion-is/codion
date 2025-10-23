@@ -10,12 +10,14 @@ plugins {
     id("io.github.f-cramer.jasperreports") version "0.0.4"
 }
 
-nexusPublishing {
-    packageGroup = "is.codion"
-    repositories {
-        sonatype {
-            nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
-            snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
+if (hasPublicationProperties()) {
+    nexusPublishing {
+        packageGroup = "is.codion"
+        repositories {
+            sonatype {
+                nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
+                snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
+            }
         }
     }
 }
@@ -60,34 +62,32 @@ configure(frameworkModules()) {
         }
     }
 
-    if (hasPublicationProperties()) {
-        configure<PublishingExtension> {
-            publications {
-                create<MavenPublication>("mavenJava") {
-                    groupId = "is.codion"
-                    from(components["java"])
-                    pom {
-                        name = "is.codion:" + project.name
-                        description = "Codion Application Framework"
-                        url = "https://codion.is"
-                        licenses {
-                            license {
-                                name = "GPL-3.0"
-                                url = "https://www.gnu.org/licenses/gpl-3.0.en.html"
-                            }
+    configure<PublishingExtension> {
+        publications {
+            create<MavenPublication>("mavenJava") {
+                groupId = "is.codion"
+                from(components["java"])
+                pom {
+                    name = "is.codion:" + project.name
+                    description = "Codion Application Framework"
+                    url = "https://codion.is"
+                    licenses {
+                        license {
+                            name = "GPL-3.0"
+                            url = "https://www.gnu.org/licenses/gpl-3.0.en.html"
                         }
-                        developers {
-                            developer {
-                                id = "bjorndarri"
-                                name = "Björn Darri Sigurðsson"
-                                email = "bjorndarri@gmail.com"
-                            }
+                    }
+                    developers {
+                        developer {
+                            id = "bjorndarri"
+                            name = "Björn Darri Sigurðsson"
+                            email = "bjorndarri@gmail.com"
                         }
-                        scm {
-                            connection = "scm:git:git://github.com/codion-is/codion.git"
-                            developerConnection = "scm:git:git://github.com/codion-is/codion.git"
-                            url = "https://github.com/codion-is/codion"
-                        }
+                    }
+                    scm {
+                        connection = "scm:git:git://github.com/codion-is/codion.git"
+                        developerConnection = "scm:git:git://github.com/codion-is/codion.git"
+                        url = "https://github.com/codion-is/codion"
                     }
                 }
             }
@@ -124,34 +124,32 @@ configure(bomModules()) {
     apply(plugin = "maven-publish")
     apply(plugin = "signing")
 
-    if (hasPublicationProperties()) {
-        configure<PublishingExtension> {
-            publications {
-                create<MavenPublication>("bom") {
-                    groupId = "is.codion"
-                    from(components["javaPlatform"])
-                    pom {
-                        name = "is.codion:" + project.name
-                        description = "Codion Application Framework BOM"
-                        url = "https://codion.is"
-                        licenses {
-                            license {
-                                name = "GPL-3.0"
-                                url = "https://www.gnu.org/licenses/gpl-3.0.en.html"
-                            }
+    configure<PublishingExtension> {
+        publications {
+            create<MavenPublication>("bom") {
+                groupId = "is.codion"
+                from(components["javaPlatform"])
+                pom {
+                    name = "is.codion:" + project.name
+                    description = "Codion Application Framework BOM"
+                    url = "https://codion.is"
+                    licenses {
+                        license {
+                            name = "GPL-3.0"
+                            url = "https://www.gnu.org/licenses/gpl-3.0.en.html"
                         }
-                        developers {
-                            developer {
-                                id = "bjorndarri"
-                                name = "Björn Darri Sigurðsson"
-                                email = "bjorndarri@gmail.com"
-                            }
+                    }
+                    developers {
+                        developer {
+                            id = "bjorndarri"
+                            name = "Björn Darri Sigurðsson"
+                            email = "bjorndarri@gmail.com"
                         }
-                        scm {
-                            connection = "scm:git:git://github.com/codion-is/codion.git"
-                            developerConnection = "scm:git:git://github.com/codion-is/codion.git"
-                            url = "https://github.com/codion-is/codion"
-                        }
+                    }
+                    scm {
+                        connection = "scm:git:git://github.com/codion-is/codion.git"
+                        developerConnection = "scm:git:git://github.com/codion-is/codion.git"
+                        url = "https://github.com/codion-is/codion"
                     }
                 }
             }
