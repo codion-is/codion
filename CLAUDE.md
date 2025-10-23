@@ -131,7 +131,7 @@ codion/
    }
    ```
 
-4. **Connection Abstraction**: `EntityConnection` provides a unified interface for database operations, supporting local JDBC, RMI, and HTTP connections.
+4. **Connection Abstraction**: `EntityConnection` provides a unified interface for database operations, supporting local JDBC, RMI, and HTTP connections (via servlet).
 
 5. **MVC in Swing Layer**:
    - `SwingEntityModel`: Coordinates edit and table models
@@ -285,9 +285,9 @@ The SDKBOY demo showcases Codion's UI capabilities without the Entity framework.
 The table model provides sophisticated data management without entities:
 
 ```java
-FilterTableModel<RowType, ColumnEnum> tableModel = 
+FilterTableModel<RowType, ColumnEnum> tableModel =
     FilterTableModel.builder(new TableColumns())
-        .items(new ItemSupplier())       // Provides that data when refreshed
+        .items(new ItemSupplier())       // Provides the data when refreshed
         .visible(new VisibilityPredicate()) // Row filtering
         .build();
 ```
@@ -559,10 +559,10 @@ TAGS.define()
 Validate data across entity relationships:
 
 ```java
-class CityValidator extends DefaultEntityValidator {
+class CityValidator implements EntityValidator {
     @Override
     public <T> void validate(Entity city, Attribute<T> attribute) {
-        super.validate(city, attribute);
+        EntityValidator.super.validate(city, attribute);
         if (attribute.equals(City.POPULATION)) {
             Integer cityPopulation = city.get(City.POPULATION);
             Entity country = city.get(City.COUNTRY_FK);
@@ -624,9 +624,40 @@ FunctionType<EntityConnection, BigDecimal, Integer> RAISE_PRICE =
 FunctionType<EntityConnection, RandomPlaylistParameters, Entity> RANDOM_PLAYLIST = 
     functionType("chinook.random_playlist");
 
-record RandomPlaylistParameters(String playlistName, Integer noOfTracks, 
+record RandomPlaylistParameters(String playlistName, Integer noOfTracks,
     Collection<Entity> genres) implements Serializable {}
 ```
+
+### Custom Key Generators
+
+Implement custom primary key generation strategies:
+
+```java
+// Custom UUID generator
+public class UUIDGenerator implements Column.Generator<String> {
+
+    @Override
+    public void beforeInsert(Entity entity, Column<String> column,
+                           Database database, Connection connection) throws SQLException {
+        // Only generate if not already set
+        if (entity.isNull(column)) {
+            entity.put(column, UUID.randomUUID().toString());
+        }
+    }
+
+    @Override
+    public boolean inserted() {
+        return true; // Value is inserted in the INSERT statement
+    }
+}
+
+// Usage in domain definition
+Artist.ID.define()
+    .primaryKey()
+    .generator(new UUIDGenerator())
+```
+
+Note: Generators now receive `Database` and `Connection` directly, providing explicit access to database dialect information and JDBC operations without wrapper abstractions.
 
 ### Performance Optimizations
 
@@ -792,7 +823,7 @@ Dialogs.componentDialog(new JRViewer(employeeReport)).show();
 ### Documentation and Learning Resources
 
 **Start Here:**
-0. **The Readme** - `readme.adoc`- Contains screenshots of all five demos (three of the demos can be found in this repo)
+0. **The Readme** - `readme.adoc` - Contains screenshots of all five official demos (three of which are included in this repo in simplified form: Petclinic, World, and Chinook)
 1. **The Manual** - `documentation/src/docs/asciidoc/manual/` - Comprehensive guide organized by topic
    - `framework-conditions.adoc` - Deep dive into the condition framework
    - `framework-domain-model.adoc` - Understanding entity modeling
@@ -947,6 +978,8 @@ If you spot any of these while working with Codion, **please speak up immediatel
 
 - `Notify.WHEN_SET` → `Notify.SET` (removed redundant prefix)
 - `TransientAttributeDefinition.modifiesEntity()` → `modifies()` (removed redundant context)
+- `DatabaseConnection` abstraction removed - Transaction state now directly managed by `LocalEntityConnection`, eliminating unnecessary wrapper layer
+- Generator API simplified - Takes `Database` and `Connection` parameters directly instead of `DatabaseConnection` wrapper, making dependencies explicit
 - 360+ renames and 237+ removals over the past 3 years (see `changelog.md`)
 
 Remember: Once the API freezes, these names are forever. Help make Codion something we'll all be happy using and maintaining for the next 20 years!
