@@ -23,6 +23,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.logging.MethodTrace;
 import is.codion.common.rmi.server.RemoteClient;
+import is.codion.common.scheduler.TaskScheduler;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.tracer.MethodTracer;
 import is.codion.framework.db.local.tracer.MethodTracer.Traceable;
@@ -39,9 +40,6 @@ import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -338,15 +336,16 @@ final class LocalConnectionHandler implements InvocationHandler {
 
 		private static final double THOUSAND = 1000d;
 
-		private final ScheduledExecutorService executorService =
-						Executors.newSingleThreadScheduledExecutor(new DaemonThreadFactory());
 		private final AtomicLong requestsPerSecondTime = new AtomicLong(currentTimeMillis());
 		private final AtomicInteger requestsPerSecond = new AtomicInteger();
 		private final AtomicInteger requestsPerSecondCounter = new AtomicInteger();
 
 		private RequestCounter() {
-			executorService.scheduleWithFixedDelay(this::updateRequestsPerSecond, DEFAULT_REQUEST_COUNTER_UPDATE_INTERVAL,
-							DEFAULT_REQUEST_COUNTER_UPDATE_INTERVAL, TimeUnit.MILLISECONDS);
+			TaskScheduler.builder()
+							.task(this::updateRequestsPerSecond)
+							.interval(DEFAULT_REQUEST_COUNTER_UPDATE_INTERVAL, TimeUnit.MILLISECONDS)
+							.name("Request counter")
+							.start();
 		}
 
 		int requestsPerSecond() {
@@ -363,17 +362,6 @@ final class LocalConnectionHandler implements InvocationHandler {
 
 		private void incrementRequestsPerSecondCounter() {
 			requestsPerSecondCounter.incrementAndGet();
-		}
-	}
-
-	private static final class DaemonThreadFactory implements ThreadFactory {
-
-		@Override
-		public Thread newThread(Runnable runnable) {
-			Thread thread = new Thread(runnable);
-			thread.setDaemon(true);
-
-			return thread;
 		}
 	}
 }

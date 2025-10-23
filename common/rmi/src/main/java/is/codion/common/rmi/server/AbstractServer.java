@@ -97,6 +97,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 						.task(new MaintenanceTask())
 						.interval(configuration.connectionMaintenanceInterval(), TimeUnit.MILLISECONDS)
 						.initialDelay(configuration.connectionMaintenanceInterval())
+						.name("Connection maintenance")
 						.start();
 		setConnectionLimit(configuration.connectionLimit());
 		getRuntime().addShutdownHook(new Thread(this::shutdown));
@@ -422,7 +423,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 					startAuxiliaryServer(auxiliaryServer);
 					return null;
 				};
-				newSingleThreadExecutor(new DaemonThreadFactory()).submit(starter).get();
+				newSingleThreadExecutor(new DaemonThreadFactory(auxiliaryServer.getClass().getSimpleName())).submit(starter).get();
 			}
 		}
 		catch (InterruptedException e) {
@@ -572,10 +573,17 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
 	private static final class DaemonThreadFactory implements ThreadFactory {
 
+		private final String name;
+
+		private DaemonThreadFactory(String name) {
+			this.name = name;
+		}
+
 		@Override
 		public Thread newThread(Runnable runnable) {
 			Thread thread = new Thread(runnable);
 			thread.setDaemon(true);
+			thread.setName(name);
 
 			return thread;
 		}

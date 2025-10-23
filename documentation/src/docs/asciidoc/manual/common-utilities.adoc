@@ -4,11 +4,68 @@
 
 Codion provides a few classes with miscellanous utility functions.
 
-== Model
+== Core
 
-{url-javadoc}{common-core}/is/codion/common/Serializer.html[Serializer]
+== TaskScheduler
 
-{url-javadoc}{common-core}/is/codion/common/Text.html[Text]
+{url-javadoc}{common-core}/is/codion/common/scheduler/TaskScheduler.html[TaskScheduler] provides a simple, lightweight way to execute tasks periodically on a background thread.
+
+=== Basic Usage
+
+Create a scheduler that runs a task at fixed intervals:
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/common/Scheduler.java[tags=taskScheduler]
+----
+
+=== Auto-Start
+
+Use the `start()` method to build and start the scheduler in one step:
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/common/Scheduler.java[tags=taskSchedulerAutoStart]
+----
+
+=== Thread Naming
+
+The `name()` method sets the thread name, which is useful for debugging and thread dumps:
+
+[source,java,indent=0]
+----
+TaskScheduler scheduler =
+    TaskScheduler.builder()
+        .task(maintenanceTask)
+        .interval(30, TimeUnit.SECONDS)
+        .name("Connection Maintenance") // Appears in thread dumps
+        .start();
+----
+
+TIP: Always name your scheduler threads descriptively to make debugging easier.
+
+=== Custom ThreadFactory
+
+For advanced control over thread creation, provide a custom ThreadFactory:
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/manual/common/Scheduler.java[tags=taskSchedulerCustomThreadFactory]
+----
+
+NOTE: When using a custom `threadFactory()`, the `name()` setting is ignored since the ThreadFactory has full control over thread creation.
+
+=== Common Use Cases
+
+TaskScheduler is ideal for:
+
+* **Connection maintenance** - Periodically cleaning up idle connections
+* **Cache cleanup** - Removing stale cache entries
+* **Statistics collection** - Gathering metrics at regular intervals
+* **Health checks** - Monitoring system health
+* **Periodic saves** - Auto-saving user preferences or state
+
+All scheduler threads are daemon threads by default, so they won't prevent JVM shutdown.
 
 == UI
 

@@ -46,6 +46,7 @@ final class DefaultConnectionPoolCounter {
 	private final TaskScheduler snapshotStatisticsCollector = TaskScheduler.builder()
 					.task(new StatisticsCollector())
 					.interval(SNAPSHOT_COLLECTION_INTERVAL_MS, TimeUnit.MILLISECONDS)
+					.name("Connection pool counter")
 					.build();
 
 	private final AtomicLong resetDate = new AtomicLong(System.currentTimeMillis());

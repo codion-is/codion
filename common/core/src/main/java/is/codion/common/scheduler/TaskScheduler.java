@@ -70,7 +70,7 @@ public final class TaskScheduler {
 						.build();
 		this.initialDelay = builder.initialDelay;
 		this.timeUnit = builder.timeUnit;
-		this.threadFactory = builder.threadFactory;
+		this.threadFactory = builder.threadFactory();
 	}
 
 	/**
@@ -168,10 +168,18 @@ public final class TaskScheduler {
 		Builder initialDelay(int initialDelay);
 
 		/**
+		 * Note that this overrides {@link #name(String)}
 		 * @param threadFactory the thread factory to use
 		 * @return this builder instance
 		 */
 		Builder threadFactory(ThreadFactory threadFactory);
+
+		/**
+		 * Note that this is overridden by {@link #threadFactory(ThreadFactory)}
+		 * @param name the name to use for the scheduler thread
+		 * @return this builder instance
+		 */
+		Builder name(String name);
 
 		/**
 		 * Builds and starts a new {@link TaskScheduler}.
@@ -224,7 +232,8 @@ public final class TaskScheduler {
 		private final TimeUnit timeUnit;
 
 		private int initialDelay;
-		private ThreadFactory threadFactory = new DaemonThreadFactory();
+		private @Nullable ThreadFactory threadFactory;
+		private @Nullable String name;
 
 		private DefaultBuilder(Runnable task, int interval, TimeUnit timeUnit) {
 			if (interval <= 0) {
@@ -251,6 +260,12 @@ public final class TaskScheduler {
 		}
 
 		@Override
+		public Builder name(String name) {
+			this.name = requireNonNull(name);
+			return this;
+		}
+
+		@Override
 		public TaskScheduler start() {
 			TaskScheduler taskScheduler = build();
 			taskScheduler.start();
@@ -262,14 +277,27 @@ public final class TaskScheduler {
 		public TaskScheduler build() {
 			return new TaskScheduler(this);
 		}
+
+		private ThreadFactory threadFactory() {
+			return threadFactory == null ? new DaemonThreadFactory(name) : threadFactory;
+		}
 	}
 
 	private static final class DaemonThreadFactory implements ThreadFactory {
+
+		private final @Nullable String name;
+
+		private DaemonThreadFactory(@Nullable String name) {
+			this.name = name;
+		}
 
 		@Override
 		public Thread newThread(Runnable runnable) {
 			Thread thread = new Thread(runnable);
 			thread.setDaemon(true);
+			if (name != null) {
+				thread.setName(name);
+			}
 
 			return thread;
 		}

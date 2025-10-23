@@ -2,6 +2,8 @@ Codion Change Log
 =================
 
 ## 0.18.56
+### is.codion.common.core
+- TaskScheduler.Builder.name() added, documentation section added.
 ### is.codion.common.db
 - DefaultDatabaseConnection bug fixed, rollbackTransaction() and commitTransaction() no longer set the flag if exceptions occur.
 - DatabaseConnection removed, related refactoring.
@@ -25,6 +27,7 @@ Codion Change Log
 ### is.codion.framework.server
 - EntityService bug fixed, class cast exception on deserialize fixed.
 - LocalConnectionHandler.lastAccessTime now volatile.
+- LocalConnectionHandler now uses TaskScheduler instead of executor.
 ### is.codion.framework.lambda
 - LambdaEntityHandler bug fixed, UPDATE added to operations without return value.
 - Lambda module removed, worked fine for read operations, but didn't really make sense with writing and transactions.
