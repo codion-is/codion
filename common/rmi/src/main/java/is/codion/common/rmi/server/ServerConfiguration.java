@@ -191,6 +191,17 @@ public interface ServerConfiguration {
 	PropertyValue<String> OBJECT_INPUT_FILTER_FACTORY = stringValue("codion.server.objectInputFilterFactory");
 
 	/**
+	 * Specifies whether an {@link ObjectInputFilterFactory} is required for the server to run.
+	 * <p>If this is true and no {@link Builder#objectInputFilterFactory(String)} is specified, an exception is thrown on startup.
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 * @see ObjectInputFilterFactory
+	 */
+	PropertyValue<Boolean> OBJECT_INPUT_FILTER_FACTORY_REQUIRED = booleanValue("codion.server.objectInputFilterFactoryRequired", true);
+
+	/**
 	 * Specifies the interval between server connection maintenance runs, in milliseconds
 	 * <ul>
 	 * <li>Value type: Integer
@@ -247,6 +258,11 @@ public interface ServerConfiguration {
 	Optional<String> objectInputFilterFactory();
 
 	/**
+	 * @return true if an {@link ObjectInputFilterFactory} is required for the server to run
+	 */
+	boolean objectInputFilterFactoryRequired();
+
+	/**
 	 * @return the interval between server connection maintenance runs, in milliseconds.
 	 */
 	int connectionMaintenanceInterval();
@@ -300,6 +316,13 @@ public interface ServerConfiguration {
 		 * @return this builder instance
 		 */
 		B objectInputFilterFactory(@Nullable String objectInputFilterFactory);
+
+		/**
+		 * Specifies whether an {@link ObjectInputFilterFactory} is required for the server to run.
+		 * @param objectInputFilterFactoryRequired true if an {@link ObjectInputFilterFactory} is required for the server to run
+		 * @return this builder instance
+		 */
+		B objectInputFilterFactoryRequired(boolean objectInputFilterFactoryRequired);
 
 		/**
 		 * @param connectionMaintenanceInterval the interval between server connection maintenance runs, in milliseconds.

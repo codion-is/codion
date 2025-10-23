@@ -125,6 +125,7 @@ public class RemoteEntityConnectionProviderTest {
 						.adminUser(User.parse("scott:tiger"))
 						.database(Database.instance())
 						.domainClasses(singletonList("is.codion.framework.db.rmi.TestDomain"))
+						.objectInputFilterFactoryRequired(false)
 						.sslEnabled(true)
 						.build();
 	}

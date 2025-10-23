@@ -44,6 +44,7 @@ public class DefaultServerLocatorTest {
 	private final ServerConfiguration configuration = ServerConfiguration.builder(12345)
 					.serverName(SERVER_NAME)
 					.sslEnabled(false)
+					.objectInputFilterFactoryRequired(false)
 					.build();
 	private final AbstractServer<Remote, ServerAdmin> server;
 

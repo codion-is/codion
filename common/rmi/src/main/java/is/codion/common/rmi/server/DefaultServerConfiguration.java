@@ -58,6 +58,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 	private final @Nullable RMIClientSocketFactory rmiClientSocketFactory;
 	private final @Nullable RMIServerSocketFactory rmiServerSocketFactory;
 	private final @Nullable String objectInputFilterFactory;
+	private final boolean objectInputFilterFactoryRequired;
 	private final int connectionMaintenanceInterval;
 	private final int connectionLimit;
 
@@ -71,6 +72,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		this.rmiClientSocketFactory = builder.rmiClientSocketFactory;
 		this.rmiServerSocketFactory = builder.rmiServerSocketFactory;
 		this.objectInputFilterFactory = builder.objectInputFilterFactory;
+		this.objectInputFilterFactoryRequired = builder.objectInputFilterFactoryRequired;
 		this.connectionMaintenanceInterval = builder.connectionMaintenanceInterval;
 		this.connectionLimit = builder.connectionLimit;
 	}
@@ -126,6 +128,11 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 	}
 
 	@Override
+	public boolean objectInputFilterFactoryRequired() {
+		return objectInputFilterFactoryRequired;
+	}
+
+	@Override
 	public int connectionMaintenanceInterval() {
 		return connectionMaintenanceInterval;
 	}
@@ -150,6 +157,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		private @Nullable RMIClientSocketFactory rmiClientSocketFactory = new SslRMIClientSocketFactory();
 		private @Nullable RMIServerSocketFactory rmiServerSocketFactory = new SslRMIServerSocketFactory();
 		private @Nullable String objectInputFilterFactory = OBJECT_INPUT_FILTER_FACTORY.get();
+		private boolean objectInputFilterFactoryRequired = OBJECT_INPUT_FILTER_FACTORY_REQUIRED.getOrThrow();
 		private Integer connectionMaintenanceInterval = DEFAULT_CONNECTION_MAINTENANCE_INTERVAL;
 		private int connectionLimit = -1;
 
@@ -202,6 +210,12 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 		@Override
 		public DefaultBuilder objectInputFilterFactory(@Nullable String objectInputFilterFactory) {
 			this.objectInputFilterFactory = objectInputFilterFactory;
+			return this;
+		}
+
+		@Override
+		public DefaultBuilder objectInputFilterFactoryRequired(boolean objectInputFilterFactoryRequired) {
+			this.objectInputFilterFactoryRequired = objectInputFilterFactoryRequired;
 			return this;
 		}
 

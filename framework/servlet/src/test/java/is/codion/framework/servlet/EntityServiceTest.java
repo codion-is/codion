@@ -504,6 +504,7 @@ public class EntityServiceTest {
 						.database(Database.instance())
 						.sslEnabled(false)
 						.auxiliaryServerFactory(singletonList(EntityServiceFactory.class.getName()))
+						.objectInputFilterFactoryRequired(false)
 						.build();
 	}
 

@@ -70,6 +70,15 @@ codion.server.objectInputFilterFactory=\
     my.serialization.filter.MyObjectInputFilterFactory
 ----
 
+IMPORTANT: By default, an `ObjectInputFilterFactory` is **required** for the server to start. If no filter factory is configured, the server will throw an exception on startup. This is a security measure to prevent accidental deployment without deserialization filtering.
+
+To explicitly disable this requirement (not recommended for production), set:
+
+[source]
+----
+codion.server.objectInputFilterFactoryRequired=false
+----
+
 ==== Pattern filter
 
 To use the built-in pattern based serialization filter, set the following system property.

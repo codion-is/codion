@@ -108,6 +108,11 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 	}
 
 	@Override
+	public boolean objectInputFilterFactoryRequired() {
+		return serverConfiguration.objectInputFilterFactoryRequired();
+	}
+
+	@Override
 	public int connectionMaintenanceInterval() {
 		return serverConfiguration.connectionMaintenanceInterval();
 	}
@@ -257,6 +262,12 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 		@Override
 		public Builder objectInputFilterFactory(String objectInputFilterFactory) {
 			serverConfigurationBuilder.objectInputFilterFactory(objectInputFilterFactory);
+			return this;
+		}
+
+		@Override
+		public Builder objectInputFilterFactoryRequired(boolean objectInputFilterFactoryRequired) {
+			serverConfigurationBuilder.objectInputFilterFactoryRequired(objectInputFilterFactoryRequired);
 			return this;
 		}
 

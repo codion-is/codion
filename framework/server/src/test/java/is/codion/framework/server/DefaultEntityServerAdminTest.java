@@ -56,6 +56,7 @@ public final class DefaultEntityServerAdminTest {
 						.database(Database.instance())
 						.domainClasses(singletonList("is.codion.framework.server.TestDomain"))
 						.connectionPoolUsers(singletonList(ADMIN_USER))
+						.objectInputFilterFactoryRequired(false)
 						.build();
 		EntityServer server = EntityServer.startServer(configuration);
 		try {

@@ -450,6 +450,11 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 			ObjectInputFilter.Config.setSerialFilter(objectInputFilter);
 			LOG.info("ObjectInputFilter {} enabled", objectInputFilter.getClass().getName());
 		}
+		else if (configuration.objectInputFilterFactoryRequired()) {
+			throw new IllegalStateException("An ObjectInputFilterFactory is required, but none is specified. " +
+							"Either configure codion.server.objectInputFilterFactory or set " +
+							"codion.server.objectInputFilterFactoryRequired=false to disable this check");
+		}
 		else {
 			LOG.warn("No ObjectInputFilterFactoryClassName specified");
 		}

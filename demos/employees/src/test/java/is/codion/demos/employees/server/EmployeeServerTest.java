@@ -54,6 +54,7 @@ public final class EmployeeServerTest {
 						.idleConnectionTimeout(60_000)
 						.adminUser(User.parse("scott:tiger"))
 						.sslEnabled(false)
+						.objectInputFilterFactoryRequired(false)
 						.serverName("Employee Server")
 						.build();
 

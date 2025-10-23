@@ -5,6 +5,9 @@ Codion Change Log
 ### is.codion.common.db
 - DefaultDatabaseConnection bug fixed, rollbackTransaction() and commitTransaction() no longer set the flag if exceptions occur.
 - DatabaseConnection removed, related refactoring.
+### is.codion.common.server
+- ServerConfiguration.objectInputFilterFactoryRequired() added along with OBJECT_INPUT_FILTER_FACTORY_REQUIRED configuration value, default true.
+- AbstractServer now throws exception on startup if a required object input filter factory is missing.
 ### is.codion.swing.common.model
 - ProgressWorker refactored, onStarted listener now guaranteed to run.
 - JsonPreferencesStore bug fixed, proper atomic move implemented for windows.

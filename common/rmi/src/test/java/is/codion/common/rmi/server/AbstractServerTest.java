@@ -265,7 +265,10 @@ public class AbstractServerTest {
 	}
 
 	private static ServerConfiguration configuration() {
-		return ServerConfiguration.builder(PORT).serverName("remoteServerTestServer").build();
+		return ServerConfiguration.builder(PORT)
+						.serverName("remoteServerTestServer")
+						.objectInputFilterFactoryRequired(false)
+						.build();
 	}
 
 	private static final class TestServer extends AbstractServer<ServerTest, ServerAdmin> {

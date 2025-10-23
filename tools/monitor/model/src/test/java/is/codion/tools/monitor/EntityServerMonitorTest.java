@@ -114,6 +114,7 @@ public class EntityServerMonitorTest {
 						.adminUser(User.parse("scott:tiger"))
 						.connectionPoolUsers(Collections.singletonList(UNIT_TEST_USER))
 						.domainClasses(Collections.singletonList(TestDomain.class.getName()))
+						.objectInputFilterFactoryRequired(false)
 						.database(Database.instance())
 						.sslEnabled(false)
 						.build();
