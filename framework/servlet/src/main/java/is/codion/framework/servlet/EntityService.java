@@ -158,6 +158,7 @@ public final class EntityService implements AuxiliaryServer {
 	static final String DOMAIN_TYPE_NAME = "domainTypeName";
 	static final String CLIENT_TYPE = "clientType";
 	static final String CLIENT_ID = "clientId";
+	static final String CLIENT_VERSION = "clientVersion";
 
 	private static final String AUTHORIZATION = "Authorization";
 	private static final String BASIC_PREFIX = "basic ";
@@ -874,11 +875,13 @@ public final class EntityService implements AuxiliaryServer {
 		String clientType = clientType(context);
 		UUID clientId = clientId(context);
 		User user = user(context);
+		Version version = clientVersion(context);
 
 		return server.connect(ConnectionRequest.builder()
 						.user(user)
 						.clientId(clientId)
 						.clientType(clientType)
+						.version(version)
 						.parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, domainTypeName)
 						.parameter(Server.CLIENT_HOST, remoteHost(context.req()))
 						.build());
@@ -944,6 +947,12 @@ public final class EntityService implements AuxiliaryServer {
 		}
 
 		return headerClientId;
+	}
+
+	private static Version clientVersion(Context context) {
+		String clientVersion = context.header(CLIENT_VERSION);
+
+		return clientVersion == null ? null : Version.parse(clientVersion);
 	}
 
 	private static User user(Context context) throws ServerAuthenticationException {

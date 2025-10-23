@@ -20,6 +20,7 @@ package is.codion.framework.db.http;
 
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
+import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DomainType;
 
@@ -178,6 +179,12 @@ public interface HttpEntityConnection extends EntityConnection {
 		 * @return this builder instance
 		 */
 		Builder clientId(UUID clientId);
+
+		/**
+		 * @param clientVersion the client version
+		 * @return this Builder instance
+		 */
+		Builder clientVersion(Version clientVersion);
 
 		/**
 		 * @return a http based EntityConnection

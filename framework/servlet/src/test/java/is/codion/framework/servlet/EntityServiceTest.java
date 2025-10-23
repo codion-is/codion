@@ -23,6 +23,7 @@ import is.codion.common.db.database.Database;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.user.User;
+import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnection.Count;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
@@ -474,6 +475,7 @@ public class EntityServiceTest {
 										EntityService.DOMAIN_TYPE_NAME, TestDomain.DOMAIN.name(),
 										EntityService.CLIENT_TYPE, "EntityJavalinTest",
 										EntityService.CLIENT_ID, CLIENT_ID_STRING,
+										EntityService.CLIENT_VERSION, Version.version().toString(),
 										"Authorization", createAuthorizationHeader()
 						})
 						.build();

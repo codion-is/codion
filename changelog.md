@@ -18,6 +18,7 @@ Codion Change Log
 - AbstractHttpEntityConnection bug fixed, now uses a single threaded executor.
 - AbstractHttpEntityConnection no longer uses a threaded executor, runs everything synchronously. Synchronization now surrounds exception handling, DefaultHttpEntityConnection and JsonHttpEntityConnection refactored accordingly. Test coverage improved.
 - AbstractHttpEntityConnection no longer logs InterruptedException, which happens when queries are cancelled.
+- HttpEntityConnection.Builder.clientVersion() added.
 ### is.codion.framework.server
 - EntityService bug fixed, class cast exception on deserialize fixed.
 - LocalConnectionHandler.lastAccessTime now volatile.
@@ -34,6 +35,8 @@ Codion Change Log
 - LoadTest.pauseOnException() added.
 ### is.codion.tools.loadtest.ui
 - LoadTestPanel, check box for pause on exception added.
+### is.codion.framework.servlet
+- EntityService handles clientVersion header parameter.
 
 ## 0.18.55
 ### is.codion.common.core

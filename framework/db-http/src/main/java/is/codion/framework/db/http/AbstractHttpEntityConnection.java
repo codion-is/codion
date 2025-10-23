@@ -25,6 +25,7 @@ import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.resource.MessageBundle;
 import is.codion.common.user.User;
+import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityResultIterator;
 import is.codion.framework.domain.DomainType;
@@ -33,6 +34,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.condition.Condition;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +47,7 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
@@ -73,6 +76,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	private static final String DOMAIN_TYPE_NAME = "domainTypeName";
 	private static final String CLIENT_TYPE = "clientType";
 	private static final String CLIENT_ID = "clientId";
+	private static final String CLIENT_VERSION = "clientVersion";
 	private static final String HTTP = "http://";
 	private static final String HTTPS = "https://";
 	private static final int HTTP_STATUS_OK = 200;
@@ -96,12 +100,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 		this.baseurl = createBaseUrl(builder, path);
 		this.socketTimeout = Duration.ofMillis(builder.socketTimeout);
 		this.httpClient = createHttpClient(builder.connectTimeout);
-		this.headers = new String[] {
-						DOMAIN_TYPE_NAME, requireNonNull(builder.domainType, "domainType must be specified").name(),
-						CLIENT_TYPE, requireNonNull(builder.clientType, "clientType must be specified"),
-						CLIENT_ID, requireNonNull(builder.clientId, "clientId must be specified").toString(),
-						AUTHORIZATION, createAuthorizationHeader(user)
-		};
+		this.headers = initializeHeaders(builder, user);
 		this.entities = initializeEntities();
 	}
 
@@ -372,6 +371,21 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 		return (builder.https ? HTTPS : HTTP) + requireNonNull(builder.hostName, "hostName must be specified") + ":" + (builder.https ? builder.securePort : builder.port) + path;
 	}
 
+	private static String[] initializeHeaders(DefaultBuilder builder, User user) {
+		List<String> headerList = new ArrayList<>(asList(
+						DOMAIN_TYPE_NAME, requireNonNull(builder.domainType, "domainType must be specified").name(),
+						CLIENT_TYPE, requireNonNull(builder.clientType, "clientType must be specified"),
+						CLIENT_ID, requireNonNull(builder.clientId, "clientId must be specified").toString(),
+						AUTHORIZATION, createAuthorizationHeader(user)
+		));
+		if (builder.clientVersion != null) {
+			headerList.add(CLIENT_VERSION);
+			headerList.add(builder.clientVersion.toString());
+		}
+
+		return headerList.toArray(new String[0]);
+	}
+
 	private static String createAuthorizationHeader(User user) {
 		return BASIC + Base64.getEncoder().encodeToString((user.username() + ":" + String.valueOf(user.password())).getBytes());
 	}
@@ -397,6 +411,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 		private User user;
 		private String clientType;
 		private UUID clientId;
+		private @Nullable Version clientVersion;
 
 		@Override
 		public Builder domainType(DomainType domainType) {
@@ -461,6 +476,12 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 		@Override
 		public Builder clientId(UUID clientId) {
 			this.clientId = requireNonNull(clientId);
+			return this;
+		}
+
+		@Override
+		public Builder clientVersion(@Nullable Version clientVersion) {
+			this.clientVersion = clientVersion;
 			return this;
 		}
 
