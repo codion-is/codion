@@ -18,7 +18,7 @@
  */
 package is.codion.common.db.pool;
 
-import is.codion.common.db.connection.ConnectionFactory;
+import is.codion.common.db.database.ConnectionFactory;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 

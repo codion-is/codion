@@ -18,13 +18,14 @@
  */
 package is.codion.framework.db.local;
 
-import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
+
+import org.jspecify.annotations.Nullable;
 
 import java.sql.Connection;
 
@@ -86,8 +87,9 @@ public interface LocalEntityConnection extends EntityConnection {
 
 	/**
 	 * @return the underlying connection
+	 * @throws DatabaseException in case this connection is closed
 	 */
-	DatabaseConnection databaseConnection();
+	Connection connection();
 
 	/**
 	 * @return true if optimistic locking is enabled
@@ -121,11 +123,27 @@ public interface LocalEntityConnection extends EntityConnection {
 	void queryTimeout(int queryTimeout);
 
 	/**
-	 * Constructs a new LocalEntityConnection instance
+	 * Sets the internal connection to use, note that no validation or transaction checking is performed
+	 * on the connection and auto-commit is assumed to be disabled. The connection is simply used 'as is'.
+	 * Note that setting the connection to null causes all methods requiring it to throw a {@link DatabaseException}
+	 * until a non-null connection is set.
+	 * @param connection the connection
+	 */
+	void setConnection(@Nullable Connection connection);
+
+	/**
+	 * Returns the underlying connection object.
+	 * Use {@link #connected()} to verify that the connection is available and valid.
+	 * @return the underlying connection object
+	 */
+	@Nullable Connection getConnection();
+
+	/**
+	 * Constructs a new {@link LocalEntityConnection} instance
 	 * @param database the Database instance
 	 * @param domain the domain model
 	 * @param user the user used for connecting to the database
-	 * @return a new LocalEntityConnection instance
+	 * @return a new {@link LocalEntityConnection} instance
 	 * @throws DatabaseException in case there is a problem connecting to the database
 	 * @throws is.codion.common.db.exception.AuthenticationException in case of an authentication error
 	 */
@@ -134,11 +152,12 @@ public interface LocalEntityConnection extends EntityConnection {
 	}
 
 	/**
-	 * Constructs a new LocalEntityConnection instance
+	 * Constructs a new {@link LocalEntityConnection} instance.
+	 * Note that auto-commit is disabled on the given connection.
 	 * @param database the Database instance
 	 * @param domain the domain model
 	 * @param connection the connection object to base the entity connection on, it is assumed to be in a valid state
-	 * @return a new LocalEntityConnection instance, wrapping the given connection
+	 * @return a new {@link LocalEntityConnection} instance, wrapping the given connection
 	 * @throws DatabaseException in case there is a problem with the supplied connection
 	 */
 	static LocalEntityConnection localEntityConnection(Database database, Domain domain, Connection connection) {

@@ -18,7 +18,6 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
-import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Database;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Column.Generator;
@@ -31,15 +30,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static is.codion.common.db.connection.DatabaseConnection.SQL_STATE_NO_DATA;
+import static is.codion.common.db.exception.DatabaseException.SQL_STATE_NO_DATA;
 
 abstract class AbstractQueriedGenerator<T> implements Generator<T> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractQueriedGenerator.class);
 
-	protected final void selectAndPopulate(Entity entity, Column<T> column, DatabaseConnection databaseConnection) throws SQLException {
-		Connection connection = databaseConnection.getConnection();
-		String query = query(databaseConnection.database());
+	protected final void selectAndPopulate(Entity entity, Column<T> column, Database database, Connection connection) throws SQLException {
+		String query = query(database);
 		if (query == null) {
 			throw new IllegalStateException("Queried key generator returned no query");
 		}
@@ -57,7 +55,7 @@ abstract class AbstractQueriedGenerator<T> implements Generator<T> {
 			throw e;
 		}
 		finally {
-			databaseConnection.database().queryCounter().select();
+			database.queryCounter().select();
 		}
 	}
 

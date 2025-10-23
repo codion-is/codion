@@ -29,6 +29,11 @@ import java.util.Optional;
  */
 public class DatabaseException extends RuntimeException {
 
+	/**
+	 * SQLException state indicating that a query did not return a result
+	 */
+	public static final String SQL_STATE_NO_DATA = "02000";
+
 	@Serial
 	private static final long serialVersionUID = 1L;
 

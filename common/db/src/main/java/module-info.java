@@ -21,7 +21,6 @@
  * <ul>
  * <li>{@link is.codion.common.db.database.Database}
  * <li>{@link is.codion.common.db.database.DatabaseFactory}
- * <li>{@link is.codion.common.db.connection.DatabaseConnection}
  * <li>{@link is.codion.common.db.exception.DatabaseException}
  * <li>{@link is.codion.common.db.operation.DatabaseFunction}
  * <li>{@link is.codion.common.db.operation.DatabaseProcedure}
@@ -36,7 +35,6 @@ module is.codion.common.db {
 	requires org.slf4j;
 	requires transitive is.codion.common.core;
 
-	exports is.codion.common.db.connection;
 	exports is.codion.common.db.database;
 	exports is.codion.common.db.exception;
 	exports is.codion.common.db.operation;

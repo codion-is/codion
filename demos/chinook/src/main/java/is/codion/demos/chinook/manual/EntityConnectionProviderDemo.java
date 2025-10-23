@@ -18,7 +18,6 @@
  */
 package is.codion.demos.chinook.manual;
 
-import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Database;
 import is.codion.common.user.User;
 import is.codion.demos.chinook.domain.ChinookImpl;
@@ -53,11 +52,8 @@ public final class EntityConnectionProviderDemo {
 		LocalEntityConnection entityConnection =
 						connectionProvider.connection();
 
-		DatabaseConnection databaseConnection =
-						entityConnection.databaseConnection();
-
 		// the underlying JDBC connection is available in a local connection
-		Connection connection = databaseConnection.getConnection();
+		Connection connection = entityConnection.connection();
 
 		connectionProvider.close();
 		// end::local[]

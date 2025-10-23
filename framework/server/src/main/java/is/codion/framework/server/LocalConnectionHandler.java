@@ -18,7 +18,6 @@
  */
 package is.codion.framework.server;
 
-import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
@@ -37,6 +36,7 @@ import org.slf4j.MDC;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -173,7 +173,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 		closed = true;
 		rollbackIfRequired(entityConnection);
 		if (connectionPool != null) {
-			returnToPool(entityConnection.databaseConnection());
+			returnToPool(entityConnection);
 		}
 		else {
 			entityConnection.close();
@@ -218,7 +218,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 		DatabaseException exception = null;
 		try {
 			tracer.enter(FETCH_CONNECTION, userDescription);
-			entityConnection.databaseConnection().setConnection(connectionPool.connection(remoteClient.databaseUser()));
+			entityConnection.setConnection(connectionPool.connection(remoteClient.databaseUser()));
 		}
 		catch (DatabaseException ex) {
 			exception = ex;
@@ -235,7 +235,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 			DatabaseException exception = null;
 			try {
 				tracer.enter(CREATE_CONNECTION, userDescription);
-				entityConnection.databaseConnection().setConnection(database.createConnection(remoteClient.databaseUser()));
+				entityConnection.setConnection(database.createConnection(remoteClient.databaseUser()));
 			}
 			catch (DatabaseException ex) {
 				exception = ex;
@@ -257,7 +257,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 		Exception exception = null;
 		try {
 			tracer.enter(RETURN_CONNECTION, userDescription);
-			returnToPool(entityConnection.databaseConnection());
+			returnToPool(entityConnection);
 		}
 		catch (Exception e) {
 			exception = e;
@@ -268,8 +268,8 @@ final class LocalConnectionHandler implements InvocationHandler {
 		}
 	}
 
-	private static void returnToPool(DatabaseConnection connection) {
-		if (connection.connected()) {
+	private static void returnToPool(LocalEntityConnection connection) {
+		if (connection.getConnection() != null) {
 			closeSilently(connection.getConnection());
 			connection.setConnection(null);
 		}
@@ -293,17 +293,17 @@ final class LocalConnectionHandler implements InvocationHandler {
 						connectionPool.connection(remoteClient.databaseUser()));
 		((Traceable) connection).tracer(tracer);
 		if (connectionPool != null) {
-			rollbackSilently(connection.databaseConnection());
-			returnToPool(connection.databaseConnection());
+			rollbackSilently(connection.getConnection());
+			returnToPool(connection);
 		}
 
 		return connection;
 	}
 
-	private static void rollbackSilently(DatabaseConnection databaseConnection) {
+	private static void rollbackSilently(Connection connection) {
 		try {
 			//otherwise the connection's commit state is dirty, so it gets discarded by the connection pool when we try to return it
-			databaseConnection.rollback();
+			connection.rollback();
 		}
 		catch (SQLException e) {/*Silently*/}
 	}

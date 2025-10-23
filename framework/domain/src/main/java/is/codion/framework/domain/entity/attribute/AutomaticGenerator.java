@@ -18,7 +18,6 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
-import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Database;
 import is.codion.framework.domain.entity.Entity;
 
@@ -41,8 +40,8 @@ final class AutomaticGenerator<T> extends AbstractQueriedGenerator<T> {
 	}
 
 	@Override
-	public void afterInsert(Entity entity, Column<T> column, DatabaseConnection connection, Statement insertStatement) throws SQLException {
-		selectAndPopulate(entity, column, connection);
+	public void afterInsert(Entity entity, Column<T> column, Database database, Statement statement) throws SQLException {
+		selectAndPopulate(entity, column, database, statement.getConnection());
 	}
 
 	@Override

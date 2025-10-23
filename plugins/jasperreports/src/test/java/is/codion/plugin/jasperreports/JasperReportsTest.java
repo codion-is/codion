@@ -70,7 +70,7 @@ public class JasperReportsTest {
 		HashMap<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("DEPTNO", asList(10, 20));
 		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
-		JasperPrint print = Employee.CLASS_PATH_REPORT.fill(connection.databaseConnection().getConnection(), reportParameters);
+		JasperPrint print = Employee.CLASS_PATH_REPORT.fill(connection.connection(), reportParameters);
 		assertNotNull(print);
 	}
 
@@ -122,7 +122,7 @@ public class JasperReportsTest {
 			Map<String, Object> reportParameters = new HashMap<>();
 			reportParameters.put("DEPTNO", asList(10, 20));
 			LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
-			Employee.FILE_REPORT.fill(connection.databaseConnection().getConnection(), reportParameters);
+			Employee.FILE_REPORT.fill(connection.connection(), reportParameters);
 		}
 		finally {
 			server.stop();
@@ -134,7 +134,7 @@ public class JasperReportsTest {
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("DEPTNO", asList(10, 20));
 		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
-		Employee.CLASS_PATH_REPORT.fill(connection.databaseConnection().getConnection(), reportParameters);
+		Employee.CLASS_PATH_REPORT.fill(connection.connection(), reportParameters);
 
 		assertThrows(ReportException.class, () -> new ClassPathJRReport(JasperReportsTest.class, "non-existing.jasper").load());
 	}
@@ -144,7 +144,7 @@ public class JasperReportsTest {
 		Map<String, Object> reportParameters = new HashMap<>();
 		reportParameters.put("DEPTNO", asList(10, 20));
 		LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
-		Employee.FILE_REPORT.fill(connection.databaseConnection().getConnection(), reportParameters);
+		Employee.FILE_REPORT.fill(connection.connection(), reportParameters);
 		assertTrue(Employee.FILE_REPORT.cached());
 		Employee.FILE_REPORT.clearCache();
 		assertFalse(Employee.FILE_REPORT.cached());

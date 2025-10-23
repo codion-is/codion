@@ -18,7 +18,7 @@
  */
 package is.codion.framework.db.local;
 
-import is.codion.common.db.connection.DatabaseConnection;
+import is.codion.common.db.database.Database;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.AbstractReport;
@@ -340,8 +340,8 @@ public final class TestDomain extends DomainModel {
 	private void uuidTestDefaultValue() {
 		Generator<UUID> uuidGenerator = new Generator<UUID>() {
 			@Override
-			public void afterInsert(Entity entity, Column<UUID> column, DatabaseConnection connection, Statement insertStatement) throws SQLException {
-				try (ResultSet generatedKeys = insertStatement.getGeneratedKeys()) {
+			public void afterInsert(Entity entity, Column<UUID> column, Database database, Statement statement) throws SQLException {
+				try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
 					if (generatedKeys.next()) {
 						entity.set(column, (UUID) generatedKeys.getObject(1));
 					}
@@ -374,7 +374,7 @@ public final class TestDomain extends DomainModel {
 	private void uuidTestNoDefaultValue() {
 		Generator<UUID> uuidGenerator = new Generator<>() {
 			@Override
-			public void beforeInsert(Entity entity, Column<UUID> column, DatabaseConnection connection) {
+			public void beforeInsert(Entity entity, Column<UUID> column, Database database, Connection connection) {
 				entity.set(column, UUID.randomUUID());
 			}
 		};
@@ -735,7 +735,7 @@ public final class TestDomain extends DomainModel {
 														.primaryKey(2)
 														.generator(new Generator<UUID>() {
 															@Override
-															public void beforeInsert(Entity entity, Column<UUID> column, DatabaseConnection connection) throws SQLException {
+															public void beforeInsert(Entity entity, Column<UUID> column, Database database, Connection connection) throws SQLException {
 																entity.set(column, UUID.randomUUID());
 															}
 														}),
@@ -766,7 +766,7 @@ public final class TestDomain extends DomainModel {
 														.column()
 														.generator(new Generator<UUID>() {
 															@Override
-															public void beforeInsert(Entity entity, Column<UUID> column, DatabaseConnection connection) throws SQLException {
+															public void beforeInsert(Entity entity, Column<UUID> column, Database database, Connection connection) throws SQLException {
 																entity.set(column, UUID.randomUUID());
 															}
 														}),

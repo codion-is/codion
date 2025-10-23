@@ -18,7 +18,6 @@
  */
 package is.codion.framework.db.local;
 
-import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.database.Database.Operation;
 import is.codion.common.db.exception.DatabaseException;
@@ -67,12 +66,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static is.codion.common.db.connection.DatabaseConnection.SQL_STATE_NO_DATA;
 import static is.codion.common.db.database.Database.Operation.*;
+import static is.codion.common.db.exception.DatabaseException.SQL_STATE_NO_DATA;
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.db.local.Queries.*;
@@ -95,6 +95,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 
 	private static final MessageBundle MESSAGES =
 					messageBundle(LocalEntityConnection.class, getBundle(LocalEntityConnection.class.getName()));
+	private static final Map<String, User> META_DATA_USERS = new ConcurrentHashMap<>();
 	private static final String EXECUTE_UPDATE = "executeUpdate";
 	private static final String EXECUTE_QUERY = "executeQuery";
 	private static final String RECORD_MODIFIED = "record_modified";
@@ -107,7 +108,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	private static final Function<Entity, Entity> IMMUTABLE = Entity::immutable;
 
 	private final Domain domain;
-	private final DatabaseConnection connection;
+	private final User user;
 	private final Database database;
 	private final SelectQueries selectQueries;
 	private final Map<EntityType, Boolean> generatedKeysCache = new HashMap<>();
@@ -125,6 +126,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	private int queryTimeout = QUERY_TIMEOUT.getOrThrow();
 	private boolean queryCacheEnabled = false;
 
+	private @Nullable Connection connection;
+	private boolean transactionOpen = false;
+
 	/**
 	 * Constructs a new LocalEntityConnection instance
 	 * @param database the Database instance
@@ -134,7 +138,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	 * @throws is.codion.common.db.exception.AuthenticationException in case of an authentication error
 	 */
 	DefaultLocalEntityConnection(Database database, Domain domain, User user) {
-		this(domain, DatabaseConnection.databaseConnection(configureDatabase(database, domain), user));
+		this(requireNonNull(domain), configureDatabase(requireNonNull(database), domain), database.createConnection(requireNonNull(user)), user);
 	}
 
 	/**
@@ -144,15 +148,16 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	 * @param connection the Connection object to base this EntityConnection on, it is assumed to be in a valid state
 	 */
 	DefaultLocalEntityConnection(Database database, Domain domain, Connection connection) {
-		this(domain, DatabaseConnection.databaseConnection(configureDatabase(database, domain), connection));
+		this(requireNonNull(domain), configureDatabase(requireNonNull(database), domain), requireNonNull(connection), user(connection));
 	}
 
-	private DefaultLocalEntityConnection(Domain domain, DatabaseConnection connection) {
+	private DefaultLocalEntityConnection(Domain domain, Database database, Connection connection, User user) {
 		this.domain = domain;
-		this.connection = connection;
-		this.database = connection.database();
+		this.database = database;
+		this.connection = disableAutoCommit(connection);
+		this.user = user;
 		this.domain.configure(connection);
-		this.selectQueries = new SelectQueries(connection.database());
+		this.selectQueries = new SelectQueries(database);
 	}
 
 	@Override
@@ -162,50 +167,64 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 
 	@Override
 	public User user() {
-		return connection.user();
+		return user;
 	}
 
 	@Override
 	public boolean connected() {
-		synchronized (connection) {
-			return connection.valid();
+		synchronized (database) {
+			return connectionValid();
 		}
 	}
 
 	@Override
 	public void close() {
-		synchronized (connection) {
-			connection.close();
+		synchronized (database) {
+			closeConnection();
 		}
 	}
 
 	@Override
 	public void startTransaction() {
-		synchronized (connection) {
+		synchronized (database) {
 			tracer.enter("startTransaction");
+			SQLException exception = null;
 			try {
-				connection.startTransaction();
+				if (transactionOpen) {
+					throw new IllegalStateException("Transaction already open");
+				}
+				connection = verifyOpenConnection();
+				transactionOpen = true;
+			}
+			catch (SQLException e) {
+				exception = e;
+				LOG.error("Exception when starting transaction", e);
+				throw new DatabaseException(e);
 			}
 			finally {
-				tracer.exit("startTransaction");
+				tracer.exit("startTransaction", exception);
 			}
 		}
 	}
 
 	@Override
 	public boolean transactionOpen() {
-		synchronized (connection) {
-			return connection.transactionOpen();
+		synchronized (database) {
+			return transactionOpen;
 		}
 	}
 
 	@Override
 	public void rollbackTransaction() {
-		synchronized (connection) {
+		synchronized (database) {
 			tracer.enter("rollbackTransaction");
 			SQLException exception = null;
 			try {
-				connection.rollbackTransaction();
+				if (!transactionOpen) {
+					throw new IllegalStateException("Transaction is not open");
+				}
+				verifyOpenConnection().rollback();
+				transactionOpen = false;
 			}
 			catch (SQLException e) {
 				exception = e;
@@ -220,11 +239,15 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 
 	@Override
 	public void commitTransaction() {
-		synchronized (connection) {
+		synchronized (database) {
 			tracer.enter("commitTransaction");
 			SQLException exception = null;
 			try {
-				connection.commitTransaction();
+				if (!transactionOpen) {
+					throw new IllegalStateException("Transaction is not open");
+				}
+				verifyOpenConnection().commit();
+				transactionOpen = false;
 			}
 			catch (SQLException e) {
 				exception = e;
@@ -239,7 +262,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 
 	@Override
 	public void queryCache(boolean queryCache) {
-		synchronized (connection) {
+		synchronized (database) {
 			this.queryCacheEnabled = queryCache;
 			if (!queryCache) {
 				this.queryCache.clear();
@@ -249,7 +272,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 
 	@Override
 	public boolean queryCache() {
-		synchronized (connection) {
+		synchronized (database) {
 			return queryCacheEnabled;
 		}
 	}
@@ -320,7 +343,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		List<Object> statementValues = new ArrayList<>();
 		List<ColumnDefinition<?>> statementColumns = new ArrayList<>();
 		String updateQuery = createUpdateQuery(update, statementColumns, statementValues);
-		synchronized (connection) {
+		synchronized (database) {
 			try (PreparedStatement statement = prepareStatement(updateQuery)) {
 				int updatedRows = executeUpdate(statement, updateQuery, statementColumns, statementValues, UPDATE);
 				commitIfTransactionIsNotOpen();
@@ -343,7 +366,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		List<?> statementValues = condition.values();
 		List<ColumnDefinition<?>> statementColumns = definitions(condition.columns());
 		String deleteQuery = deleteQuery(entityDefinition.table(), condition.string(entityDefinition));
-		synchronized (connection) {
+		synchronized (database) {
 			try (PreparedStatement statement = prepareStatement(deleteQuery)) {
 				int deleteCount = executeUpdate(statement, deleteQuery, statementColumns, statementValues, DELETE);
 				commitIfTransactionIsNotOpen();
@@ -375,7 +398,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		List<ColumnDefinition<?>> statementColumns = emptyList();
 		Condition condition = null;
 		String deleteQuery = null;
-		synchronized (connection) {
+		synchronized (database) {
 			try {
 				int deleteCount = 0;
 				for (Map.Entry<EntityType, List<Key>> entityTypeKeys : keysByEntityType.entrySet()) {
@@ -435,7 +458,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 			return emptyList();
 		}
 
-		synchronized (connection) {
+		synchronized (database) {
 			try {
 				List<Entity> result = new ArrayList<>();
 				for (List<Key> entityTypeKeys : groupByType(keys).values()) {
@@ -461,7 +484,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	@Override
 	public List<Entity> select(Select select) {
 		requireNonNull(select, SELECT_MAY_NOT_BE_NULL);
-		synchronized (connection) {
+		synchronized (database) {
 			try {
 				List<Entity> result = query(select);
 				if (!select.forUpdate()) {
@@ -512,7 +535,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 						.build();
 		List<Object> statementValues = statementValues(combinedCondition, select.having());
 		List<ColumnDefinition<?>> statementColumns = statementColumns(combinedCondition, select.having());
-		synchronized (connection) {
+		synchronized (database) {
 			try (PreparedStatement statement = prepareStatement(selectQuery);
 					 ResultSet resultSet = executeQuery(statement, selectQuery, statementColumns, statementValues)) {
 				List<T> result = packResult(columnDefinition, resultSet);
@@ -537,7 +560,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 						.build();
 		List<Object> statementValues = statementValues(count.where(), count.having());
 		List<ColumnDefinition<?>> statementColumns = statementColumns(count.where(), count.having());
-		synchronized (connection) {
+		synchronized (database) {
 			try (PreparedStatement statement = prepareStatement(selectQuery);
 					 ResultSet resultSet = executeQuery(statement, selectQuery, statementColumns, statementValues)) {
 				if (!resultSet.next()) {
@@ -570,7 +593,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		}
 
 		Map<EntityType, Collection<Entity>> dependencyMap = new HashMap<>();
-		synchronized (connection) {
+		synchronized (database) {
 			try {
 				for (ForeignKeyDefinition foreignKeyReference : hardForeignKeyReferences(entityTypes.iterator().next())) {
 					List<Entity> dependencies = query(where(foreignKeyReference.attribute().in(entities)).build(), 0);//bypass caching
@@ -601,7 +624,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		Exception exception = null;
 		tracer.enter(EXECUTE, functionType, argument);
 		try {
-			synchronized (connection) {
+			synchronized (database) {
 				return domain.function(functionType).execute((C) this, argument);
 			}
 		}
@@ -627,7 +650,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		Exception exception = null;
 		tracer.enter(EXECUTE, procedureType, argument);
 		try {
-			synchronized (connection) {
+			synchronized (database) {
 				domain.procedure(procedureType).execute((C) this, argument);
 			}
 		}
@@ -648,9 +671,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		requireNonNull(reportType, "reportType may not be null");
 		Exception exception = null;
 		tracer.enter(REPORT, reportType, reportParameters);
-		synchronized (connection) {
+		synchronized (database) {
 			try {
-				R result = domain.report(reportType).fill(connection.getConnection(), reportParameters);
+				R result = domain.report(reportType).fill(verifyOpenConnection(), reportParameters);
 				commitIfTransactionIsNotOpen();
 
 				return result;
@@ -669,18 +692,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	@Override
-	public DatabaseConnection databaseConnection() {
-		return connection;
-	}
-
-	@Override
 	public EntityResultIterator iterator(Condition condition) {
 		return iterator(where(condition).build());
 	}
 
 	@Override
 	public EntityResultIterator iterator(Select select) {
-		synchronized (connection) {
+		synchronized (database) {
 			try {
 				return resultIterator(select);
 			}
@@ -691,36 +709,46 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	@Override
+	public Connection connection() {
+		try {
+			return verifyOpenConnection();
+		}
+		catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+	}
+
+	@Override
 	public boolean optimisticLocking() {
-		synchronized (connection) {
+		synchronized (database) {
 			return optimisticLocking;
 		}
 	}
 
 	@Override
 	public void optimisticLocking(boolean optimisticLocking) {
-		synchronized (connection) {
+		synchronized (database) {
 			this.optimisticLocking = optimisticLocking;
 		}
 	}
 
 	@Override
 	public boolean limitForeignKeyReferenceDepth() {
-		synchronized (connection) {
+		synchronized (database) {
 			return limitForeignKeyReferenceDepth;
 		}
 	}
 
 	@Override
 	public void limitForeignKeyReferenceDepth(boolean limitForeignKeyReferenceDepth) {
-		synchronized (connection) {
+		synchronized (database) {
 			this.limitForeignKeyReferenceDepth = limitForeignKeyReferenceDepth;
 		}
 	}
 
 	@Override
 	public int queryTimeout() {
-		synchronized (connection) {
+		synchronized (database) {
 			return queryTimeout;
 		}
 	}
@@ -730,7 +758,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		if (queryTimeout < 0) {
 			throw new IllegalArgumentException("queryTimeout must be >= 0");
 		}
-		synchronized (connection) {
+		synchronized (database) {
 			this.queryTimeout = queryTimeout;
 		}
 	}
@@ -738,8 +766,22 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	@Override
 	public void tracer(MethodTracer tracer) {
 		requireNonNull(tracer);
-		synchronized (connection) {
+		synchronized (database) {
 			this.tracer = tracer;
+		}
+	}
+
+	@Override
+	public void setConnection(@Nullable Connection connection) {
+		synchronized (database) {
+			this.connection = connection;
+		}
+	}
+
+	@Override
+	public @Nullable Connection getConnection() {
+		synchronized (database) {
+			return connection;
 		}
 	}
 
@@ -750,7 +792,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		List<Object> statementValues = new ArrayList<>();
 		List<ColumnDefinition<?>> statementColumns = new ArrayList<>();
 		String insertQuery = null;
-		synchronized (connection) {
+		synchronized (database) {
 			try {
 				for (Entity entity : entities) {
 					EntityDefinition entityDefinition = definition(entity.type());
@@ -794,11 +836,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	private <T> void generateBeforeInsert(Entity entity, ColumnDefinition<T> column) throws SQLException {
-		column.generator().beforeInsert(entity, column.attribute(), connection);
+		column.generator().beforeInsert(entity, column.attribute(), database, connection);
 	}
 
 	private <T> void generateAfterInsert(Entity entity, ColumnDefinition<T> column, PreparedStatement statement) throws SQLException {
-		column.generator().afterInsert(entity, column.attribute(), connection, statement);
+		column.generator().afterInsert(entity, column.attribute(), database, statement);
 	}
 
 	private boolean generatedKeys(EntityDefinition entityDefinition, List<ColumnDefinition<?>> generated) {
@@ -813,7 +855,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		List<Object> statementValues = new ArrayList<>();
 		List<ColumnDefinition<?>> statementColumns = new ArrayList<>();
 		String updateQuery = null;
-		synchronized (connection) {
+		synchronized (database) {
 			try {
 				if (optimisticLocking) {
 					performOptimisticLocking(entitiesByEntityType);
@@ -1162,8 +1204,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 		tracer.enter("prepareStatement", query);
 		try {
 			PreparedStatement statement = generatedKeys ?
-							connection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS) :
-							connection.getConnection().prepareStatement(query);
+							verifyOpenConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS) :
+							verifyOpenConnection().prepareStatement(query);
 			statement.setQueryTimeout(queryTimeout);
 
 			return statement;
@@ -1282,7 +1324,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	private void commitIfTransactionIsNotOpen() throws SQLException {
-		if (!connection.transactionOpen()) {
+		if (!transactionOpen()) {
 			tracer.enter("commit");
 			SQLException exception = null;
 			try {
@@ -1299,7 +1341,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	private void rollbackQuietlyIfTransactionIsNotOpen() {
-		if (!connection.transactionOpen()) {
+		if (connection != null && !transactionOpen()) {
 			rollbackQuietly();
 		}
 	}
@@ -1331,6 +1373,84 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 				break;
 			default:
 				break;
+		}
+	}
+
+	private Connection verifyOpenConnection() throws SQLException {
+		if (connection == null || connection.isClosed()) {
+			throw new SQLException("Connection is closed");
+		}
+
+		return connection;
+	}
+
+	private boolean connectionValid() {
+		return connection != null && database.connectionValid(connection);
+	}
+
+	private void closeConnection() {
+		try {
+			if (connection != null && !connection.isClosed()) {
+				connection.rollback();
+			}
+		}
+		catch (SQLException ex) {
+			LOG.warn("Failed to rollback during connection close, connection may be invalid: {}", ex.getMessage());
+		}
+		try {
+			if (connection != null) {
+				connection.close();
+				connection = null;
+			}
+		}
+		catch (Exception ignored) {/*ignored*/}
+		transactionOpen = false;
+	}
+
+	/**
+	 * Returns a User with the username from the meta-data retrieved from the given connection
+	 * @param connection the connection
+	 * @return a user based on the information gleamed from the given connection
+	 * @throws DatabaseException in case of an exception while retrieving the username from the connection meta-data
+	 * @see java.sql.DatabaseMetaData#getUserName()
+	 */
+	private static User user(Connection connection) {
+		validate(connection);
+		try {
+			return META_DATA_USERS.computeIfAbsent(connection.getMetaData().getUserName(), User::user);
+		}
+		catch (SQLException e) {
+			throw new DatabaseException(e, "Failed to retrieve database username from connection metadata. Connection may be invalid or database may not support getUserName()");
+		}
+	}
+
+	private static void validate(Connection connection) {
+		try {
+			if (connection.isClosed()) {
+				throw new DatabaseException("Connection is closed");
+			}
+		}
+		catch (SQLException exception) {
+			throw new DatabaseException(exception, "Connection invalid");
+		}
+	}
+
+	/**
+	 * Disables auto-commit on the given connection and returns it.
+	 * @param connection the connection
+	 * @return the connection with auto-commit disabled
+	 * @throws DatabaseException in case disabling auto-commit fails
+	 */
+	private static Connection disableAutoCommit(Connection connection) {
+		requireNonNull(connection);
+		try {
+			connection.setAutoCommit(false);
+
+			return connection;
+		}
+		catch (SQLException e) {
+			LOG.error("Unable to disable auto commit on connection, assuming invalid state", e);
+			throw new DatabaseException(e, "Failed to configure database connection: Unable to disable auto-commit");
 		}
 	}
 
@@ -1580,7 +1700,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection, Metho
 	}
 
 	static Database configureDatabase(Database database, Domain domain) {
-		new DatabaseConfiguration(requireNonNull(domain, "domain may not be null"), requireNonNull(database, "database may not be null")).configure();
+		new DatabaseConfiguration(domain, database).configure();
 
 		return database;
 	}

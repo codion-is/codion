@@ -2,13 +2,9 @@
 :dir-source: ../../../../../demos/manual/src/main/java
 :url-javadoc: link:../api
 
-The core JDBC related classes.
+Core JDBC related classes.
 
-== Common classes
-
-Two common classes used throughout the framework are the {url-javadoc}{common-db}/is/codion/common/db/database/Database.html[Database] and {url-javadoc}{common-db}/is/codion/common/db/connection/DatabaseConnection.html[DatabaseConnection] classes.
-
-=== Database
+== Database
 
 The {url-javadoc}{common-db}/is/codion/common/db/database/Database.html[Database] class represents a DBMS instance and provides connections to that instance.
 
@@ -47,15 +43,4 @@ A Database instance provides *java.sql.Connection* instances via the *createConn
 [source,java,indent=0]
 ----
 include::{dir-source}/is/codion/manual/common/db/Demo.java[tags=connection]
-----
-
-=== DatabaseConnection
-
-The {url-javadoc}{common-db}/is/codion/common/db/connection/DatabaseConnection.html[DatabaseConnection] class represents a connection to a database instance and is a wrapper around a *java.sql.Connection* instance and provides transaction control.
-
-A *DatabaseConnection* instance is created via the *databaseConnection* factory methods.
-
-[source,java,indent=0]
-----
-include::{dir-source}/is/codion/manual/common/db/Demo.java[tags=databaseConnection]
 ----

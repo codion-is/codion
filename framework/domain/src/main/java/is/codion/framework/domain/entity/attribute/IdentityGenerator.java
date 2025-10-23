@@ -18,7 +18,8 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
-import is.codion.common.db.connection.DatabaseConnection;
+import is.codion.common.db.database.Database;
+import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.Column.Generator.Identity;
 
@@ -41,10 +42,10 @@ final class IdentityGenerator<T> implements Identity<T> {
 	}
 
 	@Override
-	public void afterInsert(Entity entity, Column<T> column, DatabaseConnection connection, Statement insertStatement) throws SQLException {
-		try (ResultSet generatedKeys = insertStatement.getGeneratedKeys()) {
+	public void afterInsert(Entity entity, Column<T> column, Database database, Statement statement) throws SQLException {
+		try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
 			if (!generatedKeys.next()) {
-				throw new SQLException("Identity key generator returned no generated keys", DatabaseConnection.SQL_STATE_NO_DATA);
+				throw new SQLException("Identity key generator returned no generated keys", DatabaseException.SQL_STATE_NO_DATA);
 			}
 			ColumnDefinition<T> columnDefinition = entity.definition().columns().definition(column);
 			entity.remove(columnDefinition.attribute());

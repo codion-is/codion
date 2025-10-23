@@ -18,10 +18,10 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
-import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Database;
 import is.codion.framework.domain.entity.Entity;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import static java.util.Objects.requireNonNull;
@@ -35,8 +35,8 @@ final class SequenceGenerator<T> extends AbstractQueriedGenerator<T> {
 	}
 
 	@Override
-	public void beforeInsert(Entity entity, Column<T> column, DatabaseConnection connection) throws SQLException {
-		selectAndPopulate(entity, column, connection);
+	public void beforeInsert(Entity entity, Column<T> column, Database database, Connection connection) throws SQLException {
+		selectAndPopulate(entity, column, database, connection);
 	}
 
 	@Override

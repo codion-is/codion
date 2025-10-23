@@ -901,7 +901,7 @@ public class DefaultLocalEntityConnectionTest {
 				fail("Should not be able to update row selected for update by another connection");
 			}
 			catch (DatabaseException ignored) {
-				connection2.databaseConnection().rollback();
+				connection2.connection().rollback();
 			}
 
 			connection.select(all(Department.TYPE));//any query will do
@@ -1127,27 +1127,27 @@ public class DefaultLocalEntityConnectionTest {
 						.with(Department.DEPTNO, 999)
 						.with(Department.DNAME, "TEST")
 						.build();
-		assertThrows(IllegalStateException.class, () -> closedConnection.insert(testEntity),
+		assertThrows(DatabaseException.class, () -> closedConnection.insert(testEntity),
 						"Insert should fail on closed connection");
-		assertThrows(IllegalStateException.class, () -> closedConnection.insertSelect(testEntity),
+		assertThrows(DatabaseException.class, () -> closedConnection.insertSelect(testEntity),
 						"InsertSelect should fail on closed connection");
-		assertThrows(IllegalStateException.class, () -> closedConnection.update(testEntity),
+		assertThrows(DatabaseException.class, () -> closedConnection.update(testEntity),
 						"Update should fail on closed connection");
-		assertThrows(IllegalStateException.class, () -> closedConnection.updateSelect(testEntity),
+		assertThrows(DatabaseException.class, () -> closedConnection.updateSelect(testEntity),
 						"UpdateSelect should fail on closed connection");
-		assertThrows(IllegalStateException.class, () -> closedConnection.delete(testEntity.primaryKey()),
+		assertThrows(DatabaseException.class, () -> closedConnection.delete(testEntity.primaryKey()),
 						"Delete should fail on closed connection");
-		assertThrows(IllegalStateException.class, () -> closedConnection.delete(all(Department.TYPE)),
+		assertThrows(DatabaseException.class, () -> closedConnection.delete(all(Department.TYPE)),
 						"Delete with condition should fail on closed connection");
-		assertThrows(IllegalStateException.class, () -> closedConnection.select(all(Department.TYPE)),
+		assertThrows(DatabaseException.class, () -> closedConnection.select(all(Department.TYPE)),
 						"Select should fail on closed connection");
-		assertThrows(IllegalStateException.class, () -> closedConnection.select(Department.DNAME, all(Department.TYPE)),
+		assertThrows(DatabaseException.class, () -> closedConnection.select(Department.DNAME, all(Department.TYPE)),
 						"Select should fail on closed connection");
-		assertThrows(IllegalStateException.class, () -> closedConnection.selectSingle(Department.DEPTNO.equalTo(10)),
+		assertThrows(DatabaseException.class, () -> closedConnection.selectSingle(Department.DEPTNO.equalTo(10)),
 						"SelectSingle should fail on closed connection");
-		assertThrows(IllegalStateException.class, () -> closedConnection.count(Count.all(Department.TYPE)),
+		assertThrows(DatabaseException.class, () -> closedConnection.count(Count.all(Department.TYPE)),
 						"Count should fail on closed connection");
-		assertThrows(IllegalStateException.class, () -> closedConnection.startTransaction(),
+		assertThrows(DatabaseException.class, () -> closedConnection.startTransaction(),
 						"StartTransaction should fail on closed connection");
 
 		assertFalse(closedConnection.connected());
@@ -1584,7 +1584,7 @@ public class DefaultLocalEntityConnectionTest {
 		// Test read-only transaction behavior
 		try (LocalEntityConnection testConnection = createConnection()) {
 			// Get the underlying JDBC connection to set read-only mode
-			Connection jdbcConnection = testConnection.databaseConnection().getConnection();
+			Connection jdbcConnection = testConnection.connection();
 			// Start with a regular transaction to insert test data
 			testConnection.startTransaction();
 			Entity testDept = ENTITIES.entity(Department.TYPE)
@@ -1653,8 +1653,8 @@ public class DefaultLocalEntityConnectionTest {
 
 			// First, test READ_COMMITTED isolation (default for most databases)
 			// This should prevent dirty reads but allow non-repeatable reads
-			Connection jdbc1 = connection1.databaseConnection().getConnection();
-			Connection jdbc2 = connection2.databaseConnection().getConnection();
+			Connection jdbc1 = connection1.connection();
+			Connection jdbc2 = connection2.connection();
 
 			jdbc1.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			jdbc2.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
@@ -2242,7 +2242,7 @@ public class DefaultLocalEntityConnectionTest {
 		try {
 			Database destinationDatabase = H2DatabaseFactory.createDatabase("jdbc:h2:mem:TempDB", "src/test/sql/create_h2_db.sql");
 			LocalEntityConnection destinationConnection = localEntityConnection(destinationDatabase, DOMAIN, User.user("sa"));
-			destinationConnection.databaseConnection().getConnection().createStatement()
+			destinationConnection.connection().createStatement()
 							.execute("alter table employees.employee drop constraint emp_mgr_fk if exists");
 			destinationConnection.delete(all(Employee.TYPE));
 			destinationConnection.delete(all(Department.TYPE));

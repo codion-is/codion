@@ -18,7 +18,6 @@
  */
 package is.codion.framework.domain;
 
-import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.operation.DatabaseFunction;
 import is.codion.common.db.operation.DatabaseProcedure;
 import is.codion.common.db.operation.FunctionType;
@@ -31,6 +30,7 @@ import is.codion.framework.domain.entity.condition.ConditionType;
 
 import org.junit.jupiter.api.Test;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -131,16 +131,16 @@ public class DomainTest {
 
 	@Test
 	void defineProcedureExisting() {
-		ProcedureType<DatabaseConnection, Object> procedureType = ProcedureType.procedureType("operationId");
-		DatabaseProcedure<DatabaseConnection, Object> operation = (databaseConnection, arguments) -> {};
+		ProcedureType<Connection, Object> procedureType = ProcedureType.procedureType("operationId");
+		DatabaseProcedure<Connection, Object> operation = (connection, arguments) -> {};
 		domain.add(procedureType, operation);
 		assertThrows(IllegalArgumentException.class, () -> domain.add(procedureType, operation));
 	}
 
 	@Test
 	void defineFunctionExisting() {
-		FunctionType<DatabaseConnection, Object, Object> functionType = FunctionType.functionType("operationId");
-		DatabaseFunction<DatabaseConnection, Object, Object> function = (databaseConnection, arguments) -> null;
+		FunctionType<Connection, Object, Object> functionType = FunctionType.functionType("operationId");
+		DatabaseFunction<Connection, Object, Object> function = (connection, arguments) -> null;
 		domain.add(functionType, function);
 		assertThrows(IllegalArgumentException.class, () -> domain.add(functionType, function));
 	}

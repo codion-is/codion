@@ -18,7 +18,7 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
-import is.codion.common.db.connection.DatabaseConnection;
+import is.codion.common.db.database.Database;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.DefaultColumn.DefaultColumnDefiner;
@@ -26,6 +26,7 @@ import is.codion.framework.domain.entity.condition.ColumnConditionFactory;
 
 import org.jspecify.annotations.Nullable;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -292,9 +293,9 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditionFactory<T
 	 * Implementations should override either {@code beforeInsert()} or {@code afterInsert()}:
 	 * <ul>
 	 *   <li>If {@link #inserted()} returns true, the primary key value is included in the insert statement
-	 *       and {@link #beforeInsert(Entity, Column, DatabaseConnection)} (Entity, Column, DatabaseConnection)} should be used
+	 *       and {@link #beforeInsert(Entity, Column, Database, Connection)} should be used
 	 *   <li>If {@link #inserted()} returns false, the database generates the primary key automatically
-	 *       and {@link #afterInsert(Entity, Column, DatabaseConnection, Statement)} should be used
+	 *       and {@link #afterInsert(Entity, Column, Database, Statement)} should be used
 	 * </ul>
 	 * <p>
 	 * Common key generator types and usage patterns:
@@ -344,7 +345,7 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditionFactory<T
 	 * public class UUIDGenerator implements Generator<String> {
 	 *
 	 *     @Override
-	 *     public void beforeInsert(Entity entity, Column<String> column, DatabaseConnection connection) {
+	 *     public void beforeInsert(Entity entity, Column<String> column, Database database, Connection connection) {
 	 *         // Only generate if not already set
 	 *         if (entity.primaryKey().isNull()) {
 	 *             String uuid = UUID.randomUUID().toString();
@@ -380,25 +381,28 @@ public sealed interface Column<T> extends Attribute<T>, ColumnConditionFactory<T
 		 * and populates the column value in the entity.
 		 * The default implementation does nothing, override to implement.
 		 * @param entity the entity about to be inserted
+		 * @param column the column which value is being generated
+		 * @param database the database
 		 * @param connection the connection to use
 		 * @throws SQLException in case of an exception
 		 */
-		default void beforeInsert(Entity entity, Column<T> column, DatabaseConnection connection) throws SQLException {/*for overriding*/}
+		default void beforeInsert(Entity entity, Column<T> column, Database database, Connection connection) throws SQLException {/*for overriding*/}
 
 		/**
 		 * Prepares the given entity after insert, that is, fetches automatically values
 		 * and populates the column value in the entity.
 		 * The default implementation does nothing, override to implement.
 		 * @param entity the inserted entity
-		 * @param connection the connection to use
-		 * @param insertStatement the insert statement
+		 * @param column the column which value is being generated
+		 * @param database the database
+		 * @param statement the insert statement
 		 * @throws SQLException in case of an exception
 		 */
-		default void afterInsert(Entity entity, Column<T> column, DatabaseConnection connection, Statement insertStatement) throws SQLException {/*for overriding*/}
+		default void afterInsert(Entity entity, Column<T> column, Database database, Statement statement) throws SQLException {/*for overriding*/}
 
 		/**
 		 * Specifies whether this {@link Generator} relies on the insert statement to return the generated column values via the resulting
-		 * {@link Statement#getGeneratedKeys()} resultSet, accessible in {@link #afterInsert(Entity, Column, DatabaseConnection, Statement)}.
+		 * {@link Statement#getGeneratedKeys()} resultSet, accessible in {@link #afterInsert(Entity, Column, Database, Statement)}.
 		 * The default implementation returns false.
 		 * @return true if the generated column values should be returned via the insert statement resultSet
 		 * @see Statement#getGeneratedKeys()

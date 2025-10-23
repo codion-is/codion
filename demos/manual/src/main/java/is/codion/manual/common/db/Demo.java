@@ -18,10 +18,8 @@
  */
 package is.codion.manual.common.db;
 
-import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.database.DatabaseFactory;
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.dbms.h2.H2DatabaseFactory;
 
@@ -75,35 +73,5 @@ public final class Demo {
 
 		java.sql.Connection connection = database.createConnection(user);
 		// end::connection[]
-	}
-
-	private void databaseConnection() throws SQLException {
-		// tag::databaseConnection[]
-		Database.URL.set("jdbc:h2:mem:h2db");
-
-		Database database = Database.instance();
-
-		User user = User.parse("scott:tiger");
-
-		DatabaseConnection databaseConnection =
-						DatabaseConnection.databaseConnection(database, user);
-
-		databaseConnection.startTransaction();
-		try {
-			java.sql.Connection connection = databaseConnection.getConnection();
-			connection.createStatement().execute("select 1");
-			databaseConnection.commitTransaction();
-		}
-		catch (SQLException e) {
-			databaseConnection.rollbackTransaction();
-			throw new DatabaseException(e);
-		}
-		catch (Exception e) {
-			databaseConnection.rollbackTransaction();
-			throw new RuntimeException(e);
-		}
-
-		databaseConnection.close();
-		// end::databaseConnection[]
 	}
 }

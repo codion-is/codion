@@ -16,7 +16,7 @@
  *
  * Copyright (c) 2020 - 2025, Björn Darri Sigurðsson.
  */
-package is.codion.common.db.connection;
+package is.codion.common.db.database;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;

@@ -18,7 +18,7 @@
  */
 package is.codion.plugin.hikari.pool;
 
-import is.codion.common.db.connection.ConnectionFactory;
+import is.codion.common.db.database.ConnectionFactory;
 import is.codion.common.db.pool.AbstractConnectionPoolWrapper;
 import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.db.pool.ConnectionPoolWrapper;

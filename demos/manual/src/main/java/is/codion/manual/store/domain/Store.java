@@ -18,7 +18,7 @@
  */
 package is.codion.manual.store.domain;
 
-import is.codion.common.db.connection.DatabaseConnection;
+import is.codion.common.db.database.Database;
 import is.codion.common.db.report.ReportType;
 import is.codion.framework.domain.DomainModel;
 import is.codion.framework.domain.DomainType;
@@ -36,6 +36,7 @@ import net.sf.jasperreports.engine.JasperReport;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.sql.Connection;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
@@ -197,7 +198,7 @@ public final class Store extends DomainModel {
 	private static final class UUIDGenerator implements Generator<String> {
 
 		@Override
-		public void beforeInsert(Entity entity, Column<String> column, DatabaseConnection connection) {
+		public void beforeInsert(Entity entity, Column<String> column, Database database, Connection connection) {
 			entity.set(column, UUID.randomUUID().toString());
 		}
 	}

@@ -18,7 +18,6 @@
  */
 package is.codion.framework.domain;
 
-import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.operation.DatabaseFunction;
@@ -29,6 +28,7 @@ import is.codion.common.db.report.Report;
 import is.codion.common.db.report.ReportType;
 import is.codion.framework.domain.entity.Entities;
 
+import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceConfigurationError;
@@ -106,7 +106,7 @@ public interface Domain {
 	 * @param connection the connection to configure
 	 * @throws DatabaseException in case of an exception
 	 */
-	default void configure(DatabaseConnection connection) {}
+	default void configure(Connection connection) {}
 
 	/**
 	 * Configures a database, for example run migration scripts. Only called once per database instance.
