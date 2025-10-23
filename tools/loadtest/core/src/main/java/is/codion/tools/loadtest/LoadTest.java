@@ -117,6 +117,11 @@ public interface LoadTest<T> {
 	State paused();
 
 	/**
+	 * @return the {@link State} controlling if the load test is automatically paused when an exception occures in a scenario run
+	 */
+	State pauseOnException();
+
+	/**
 	 * @return the {@link Value} controlling the maximum number of milliseconds that should pass between work requests
 	 */
 	Value<Integer> maximumThinkTime();

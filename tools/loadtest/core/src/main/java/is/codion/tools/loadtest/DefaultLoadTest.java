@@ -63,6 +63,7 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 	private final Function<User, T> createApplication;
 	private final Consumer<T> closeApplication;
 	private final State paused = State.state();
+	private final State pauseOnException = State.state();
 
 	private final Value<Integer> loginDelayFactor;
 	private final Value<Integer> applicationBatchSize;
@@ -193,6 +194,11 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 	@Override
 	public State paused() {
 		return paused;
+	}
+
+	@Override
+	public State pauseOnException() {
+		return pauseOnException;
 	}
 
 	@Override
@@ -370,6 +376,9 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 				results.add(result);
 				if (results.size() > MAX_RESULTS) {
 					results.remove(0);
+				}
+				if (!result.successful() && pauseOnException.is()) {
+					paused.set(true);
 				}
 			}
 		}

@@ -28,6 +28,10 @@ Codion Change Log
 - DomainSource bug fixed, domain test imports fixed for api/impl.
 ### is.codion.tools.generator.panel
 - DomainGeneratorPanel, source directory selection now starts in working dir.
+### is.codion.tools.loadtest.core
+- LoadTest.pauseOnException() added.
+### is.codion.tools.loadtest.ui
+- LoadTestPanel, check box for pause on exception added.
 
 ## 0.18.55
 ### is.codion.common.core

@@ -107,7 +107,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 						.items(new ApplicationItems())
 						.build();
 		chartUpdateSchedulerEnabled = State.and(loadTest.paused().not(), collectChartData);
-		applicationsRefreshSchedulerEnabled = State.and(loadTest.paused().not(), autoRefreshApplications);
+		applicationsRefreshSchedulerEnabled = State.and(autoRefreshApplications);
 		initializeChartModels();
 		chartUpdateScheduler = TaskScheduler.builder()
 						.task(new ChartUpdateTask())
