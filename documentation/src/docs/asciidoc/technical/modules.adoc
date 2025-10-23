@@ -265,16 +265,6 @@ HTTP connection related classes.
 image::modules/framework/db-http/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
-[#_codion_framework_lambda]
-[discrete]
-=== codion-framework-lambda
-
-.Dependency graph
-[%collapsible]
-====
-image::modules/framework/lambda/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
-====
-
 [discrete]
 === codion-framework-i18n
 

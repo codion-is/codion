@@ -39,7 +39,6 @@
 
 * Lightweight, Pluggable Application Server with <<technical/server.adoc#_entity_server, EntityServer>>
 * Multi-Protocol Support (RMI & HTTP out of the box)
-* Serverless Deployment with <<technical/modules.adoc#_codion_framework_lambda, AWS Lambda Wrapper>>
 * Pluggable <<technical/technical.adoc#_authentication, Authentication Management>>
 * Server monitoring UI with <<technical/server-monitor.adoc#_server_monitor, Server Monitor>>.
 * Flexible Client Deployment Models

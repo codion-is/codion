@@ -70,18 +70,9 @@ You can override the default description using the configuration property:
 
 This is particularly useful when:
 
-* Using HTTP connections with long URLs (e.g., AWS Lambda URLs)
+* Using HTTP connections with long URLs
 * Hiding production server details from the frame title
 * Providing a more user-friendly connection identifier
-
-.Example: Lambda client with custom description
-[source,bash]
-----
-java -Dis.codion.framework.db.EntityConnectionProvider.description=lambda \
-     -jar myapp-client-lambda.jar
-----
-
-Result: `MyApp - SCOTT@LAMBDA` instead of `MyApp - SCOTT@VF54WI7PTCI5S32DW34RT5BOVM0VBMSU.LAMBDA-URL.EU-NORTH-1.ON.AWS`
 
 .Example: Production client with generic description
 [source,bash]

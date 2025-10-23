@@ -22,6 +22,7 @@ Codion Change Log
 - LocalConnectionHandler.lastAccessTime now volatile.
 ### is.codion.framework.lambda
 - LambdaEntityHandler bug fixed, UPDATE added to operations without return value.
+- Lambda module removed, worked fine for read operations, but didn't really make sense with writing and transactions.
 ### is.codion.swing.framework.ui
 - EditAttributePanel bug fixed, update no longer enabled if no entity is modified.
 ### is.codion.tools.generator.domain
