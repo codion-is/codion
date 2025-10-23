@@ -33,6 +33,7 @@ import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
 import java.nio.charset.MalformedInputException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -216,7 +217,7 @@ final class JsonPreferencesStore {
 				Files.write(tempFile.toAbsolutePath(), data.toString(2).getBytes()); // Pretty print
 				// Atomic move with lock
 				try (FileLock lock = acquireExclusiveLock()) {
-					Files.move(tempFile, filePath, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+					atomicMove(tempFile, filePath);
 					lastModified = Files.getLastModifiedTime(filePath).toMillis();
 					LOG.trace("Preferences saved successfully in {} ms", currentTimeMillis() - startTime);
 				}
@@ -378,6 +379,48 @@ final class JsonPreferencesStore {
 					lockFile.close();
 				}
 				catch (IOException ignored) {/**/}
+			}
+		}
+	}
+
+	/**
+	 * Performs an atomic move from source to target with retry logic for Windows compatibility.
+	 * On Windows, AccessDeniedException can occur if the target file has lingering handles
+	 * from recent read operations. This method retries with exponential backoff to handle
+	 * this platform-specific behavior.
+	 * @param source the source file
+	 * @param target the target file
+	 * @throws IOException if the move fails after all retries
+	 */
+	private static void atomicMove(Path source, Path target) throws IOException {
+		int maxRetries = 10;
+		long initialDelayMs = 10;
+		for (int attempt = 0; attempt <= maxRetries; attempt++) {
+			try {
+				Files.move(source, target, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+				return;
+			}
+			catch (AccessDeniedException e) {
+				if (attempt == maxRetries) {
+					LOG.warn("Failed to move {} to {} after {} attempts", source, target, maxRetries + 1);
+					throw e;
+				}
+
+				// Windows-specific issue: file may still be in use by lingering handles
+				// Retry with exponential backoff: 10ms, 20ms, 40ms, 80ms, 160ms, 320ms...
+				long delayMs = initialDelayMs * (1L << attempt);
+				LOG.trace("Access denied when moving {} to {}, retrying in {}ms (attempt {}/{})",
+								source, target, delayMs, attempt + 1, maxRetries);
+				try {
+					TimeUnit.MILLISECONDS.sleep(delayMs);
+				}
+				catch (InterruptedException exception) {
+					Thread.currentThread().interrupt();
+					InterruptedIOException ioException = new InterruptedIOException("Interrupted while retrying file move");
+					ioException.initCause(exception);
+
+					throw ioException;
+				}
 			}
 		}
 	}

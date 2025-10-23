@@ -7,6 +7,7 @@ Codion Change Log
 - DatabaseConnection removed, related refactoring.
 ### is.codion.swing.common.model
 - ProgressWorker refactored, onStarted listener now guaranteed to run.
+- JsonPreferencesStore bug fixed, proper atomic move implemented for windows.
 ### is.codion.swing.common.ui
 - FilterTable bug fixed, now sets initial filter view after columns have been initialized, for the horizontalAlignment.
 ### is.codion.framework.domain
