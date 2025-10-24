@@ -25,8 +25,8 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.tools.loadtest.LoadTest;
-import is.codion.tools.loadtest.LoadTest.Scenario;
-import is.codion.tools.loadtest.LoadTest.Scenario.Performer;
+import is.codion.tools.loadtest.Scenario;
+import is.codion.tools.loadtest.Scenario.Performer;
 
 import java.util.List;
 import java.util.Random;
@@ -90,7 +90,8 @@ public final class PetstoreLoadTest {
 										.createApplication(new PetstoreAppModelFactory())
 										.closeApplication(application -> application.connectionProvider().close())
 										.user(UNIT_TEST_USER)
-										.scenarios(List.of(Scenario.builder(new PetstoreUsageScenario())
+										.scenarios(List.of(Scenario.builder()
+														.performer(new PetstoreUsageScenario())
 														.name("selectRecords")
 														.build()))
 										.name("Petstore LoadTest - " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get())

@@ -35,7 +35,7 @@ import is.codion.tools.loadtest.LoadTest;
 import java.util.List;
 import java.util.function.Function;
 
-import static is.codion.tools.loadtest.LoadTest.Scenario.scenario;
+import static is.codion.tools.loadtest.Scenario.scenario;
 import static is.codion.tools.loadtest.model.LoadTestModel.loadTestModel;
 import static is.codion.tools.loadtest.ui.LoadTestPanel.loadTestPanel;
 

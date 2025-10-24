@@ -24,7 +24,7 @@ import is.codion.demos.chinook.domain.api.Chinook.InvoiceLine;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.tools.loadtest.LoadTest.Scenario.Performer;
+import is.codion.tools.loadtest.Scenario.Performer;
 
 import java.util.Collection;
 import java.util.List;

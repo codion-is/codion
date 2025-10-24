@@ -27,13 +27,13 @@ import is.codion.manual.store.domain.Store.Customer;
 import is.codion.manual.store.model.StoreApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.tools.loadtest.LoadTest;
-import is.codion.tools.loadtest.LoadTest.Scenario.Performer;
+import is.codion.tools.loadtest.Scenario.Performer;
 
 import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 
-import static is.codion.tools.loadtest.LoadTest.Scenario.scenario;
+import static is.codion.tools.loadtest.Scenario.scenario;
 import static is.codion.tools.loadtest.model.LoadTestModel.loadTestModel;
 import static is.codion.tools.loadtest.ui.LoadTestPanel.loadTestPanel;
 

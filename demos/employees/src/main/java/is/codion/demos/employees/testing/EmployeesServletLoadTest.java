@@ -27,7 +27,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.http.HttpEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.tools.loadtest.LoadTest;
-import is.codion.tools.loadtest.LoadTest.Scenario;
+import is.codion.tools.loadtest.Scenario;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Random;
 
 import static is.codion.framework.domain.entity.condition.Condition.all;
-import static is.codion.tools.loadtest.LoadTest.Scenario.scenario;
+import static is.codion.tools.loadtest.Scenario.scenario;
 import static is.codion.tools.loadtest.model.LoadTestModel.loadTestModel;
 import static is.codion.tools.loadtest.ui.LoadTestPanel.loadTestPanel;
 

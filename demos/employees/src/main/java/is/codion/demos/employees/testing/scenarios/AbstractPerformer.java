@@ -20,7 +20,7 @@ package is.codion.demos.employees.testing.scenarios;
 
 import is.codion.demos.employees.model.EmployeesAppModel;
 import is.codion.framework.model.EntityTableModel;
-import is.codion.tools.loadtest.LoadTest.Scenario.Performer;
+import is.codion.tools.loadtest.Scenario.Performer;
 
 import java.util.Random;
 

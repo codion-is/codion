@@ -35,7 +35,7 @@ import is.codion.swing.common.ui.frame.Frames;
 import is.codion.swing.common.ui.laf.LookAndFeelEnabler;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.tools.loadtest.LoadTest;
-import is.codion.tools.loadtest.LoadTest.Scenario;
+import is.codion.tools.loadtest.Scenario;
 import is.codion.tools.loadtest.model.LoadTestModel;
 import is.codion.tools.loadtest.model.LoadTestModel.ApplicationRow;
 import is.codion.tools.loadtest.randomizer.ItemRandomizer.RandomItem;

@@ -21,7 +21,7 @@ package is.codion.tools.loadtest.model;
 import is.codion.common.state.State;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.tools.loadtest.LoadTest;
-import is.codion.tools.loadtest.LoadTest.Scenario.Result;
+import is.codion.tools.loadtest.Scenario.Result;
 
 import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataset;

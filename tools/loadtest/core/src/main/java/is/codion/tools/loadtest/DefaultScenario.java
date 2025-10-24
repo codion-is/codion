@@ -18,8 +18,6 @@
  */
 package is.codion.tools.loadtest;
 
-import is.codion.tools.loadtest.LoadTest.Scenario;
-
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -96,7 +94,15 @@ final class DefaultScenario<T> implements Scenario<T> {
 		return obj instanceof Scenario && ((Scenario<T>) obj).name().equals(name);
 	}
 
-	static final class DefaultBuilder<T> implements Scenario.Builder<T> {
+	static final class DefaultPerformerStep implements Builder.PerformerStep {
+
+		@Override
+		public <T> Builder<T> performer(Performer<T> performer) {
+			return new DefaultBuilder<>(requireNonNull(performer));
+		}
+	}
+
+	private static final class DefaultBuilder<T> implements Scenario.Builder<T> {
 
 		private final Performer<T> performer;
 
@@ -106,8 +112,8 @@ final class DefaultScenario<T> implements Scenario<T> {
 		private Consumer<T> afterRun = (Consumer<T>) EMPTY_CONSUMER;
 		private Predicate<Exception> pause = PAUSE_ON_ALL_EXCPTIONS;
 
-		DefaultBuilder(Performer<T> performer) {
-			this.performer = requireNonNull(performer);
+		private DefaultBuilder(Performer<T> performer) {
+			this.performer = performer;
 			this.name = performer.getClass().getSimpleName();
 		}
 

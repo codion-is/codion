@@ -19,8 +19,7 @@
 package is.codion.tools.loadtest;
 
 import is.codion.common.user.User;
-import is.codion.tools.loadtest.LoadTest.Scenario;
-import is.codion.tools.loadtest.LoadTest.Scenario.Performer;
+import is.codion.tools.loadtest.Scenario.Performer;
 
 import org.junit.jupiter.api.Test;
 

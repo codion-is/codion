@@ -25,8 +25,8 @@ import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.tools.loadtest.LoadTest;
 import is.codion.tools.loadtest.LoadTest.ApplicationRunner;
-import is.codion.tools.loadtest.LoadTest.Scenario;
-import is.codion.tools.loadtest.LoadTest.Scenario.Result;
+import is.codion.tools.loadtest.Scenario;
+import is.codion.tools.loadtest.Scenario.Result;
 
 import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataset;

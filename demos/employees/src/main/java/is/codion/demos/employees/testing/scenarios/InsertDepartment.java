@@ -22,7 +22,7 @@ import is.codion.demos.employees.domain.Employees.Department;
 import is.codion.demos.employees.model.EmployeesAppModel;
 import is.codion.framework.domain.test.DefaultEntityFactory;
 import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.tools.loadtest.LoadTest.Scenario.Performer;
+import is.codion.tools.loadtest.Scenario.Performer;
 
 // tag::loadTest[]
 public final class InsertDepartment implements Performer<EmployeesAppModel> {

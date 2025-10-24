@@ -19,7 +19,7 @@
 package is.codion.demos.chinook.testing.scenarios;
 
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.tools.loadtest.LoadTest.Scenario.Performer;
+import is.codion.tools.loadtest.Scenario.Performer;
 
 import static is.codion.demos.chinook.testing.scenarios.LoadTestUtil.RANDOM;
 
