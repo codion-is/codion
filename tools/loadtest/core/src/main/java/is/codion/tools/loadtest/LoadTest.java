@@ -29,7 +29,6 @@ import is.codion.tools.loadtest.randomizer.ItemRandomizer;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -52,38 +51,9 @@ public interface LoadTest<T> {
 	void shutdown();
 
 	/**
-	 * @param applicationRunner the application runner to stop
-	 */
-	void stop(ApplicationRunner applicationRunner);
-
-	/**
-	 * @return the user to use when initializing new application instances
-	 */
-	Value<User> user();
-
-	/**
 	 * @return the load test name, or an empty Optional if none is available
 	 */
 	Optional<String> name();
-
-	/**
-	 * Sets the random chooser weight for the given scenario
-	 * @param scenarioName the name of the scenario
-	 * @param weight the new weight to assign to the scenario
-	 */
-	void setWeight(String scenarioName, int weight);
-
-	/**
-	 * @param scenarioName the scenario name
-	 * @return true if the scenario is enabled
-	 */
-	boolean isScenarioEnabled(String scenarioName);
-
-	/**
-	 * @param scenarioName the scenario name
-	 * @param enabled true if the scenario should be enabled
-	 */
-	void setScenarioEnabled(String scenarioName, boolean enabled);
 
 	/**
 	 * @return the usage scenarios used by this load test.
@@ -91,25 +61,14 @@ public interface LoadTest<T> {
 	Collection<Scenario<T>> scenarios();
 
 	/**
-	 * @param scenarioName the scenario name
-	 * @return the usage scenario
-	 */
-	Scenario<T> scenario(String scenarioName);
-
-	/**
 	 * @return an observer notified each time a run result is produced
 	 */
 	Observer<Result> result();
 
 	/**
-	 * @param listener a listener notified when this load test model has been shutdown.
+	 * @return an observer notified when this load test model has been shutdown.
 	 */
-	void addShutdownListener(Runnable listener);
-
-	/**
-	 * @return the {@link Value} controlling the number of applications to initialize per batch
-	 */
-	Value<Integer> applicationBatchSize();
+	Observer<?> shuttingDown();
 
 	/**
 	 * @return the {@link State} controlling the paused state of this load test
@@ -124,54 +83,92 @@ public interface LoadTest<T> {
 	State pauseOnException();
 
 	/**
-	 * @return the {@link Value} controlling the maximum number of milliseconds that should pass between work requests
+	 * @return the {@link Applications}
 	 */
-	Value<Integer> maximumThinkTime();
+	Applications applications();
 
 	/**
-	 * @return the {@link Value} controlling the minimum number of milliseconds that should pass between work requests
+	 * @return the think time
 	 */
-	Value<Integer> minimumThinkTime();
-
-	/**
-	 * This value controls the factor with which to multiply the think time when logging in, this helps
-	 * spread the application logins when creating a batch of application.
-	 * @return the {@link Value} controlling the factor with which to multiply the think time when logging in
-	 */
-	Value<Integer> loginDelayFactor();
-
-	/**
-	 * @return the applications
-	 */
-	Map<ApplicationRunner, T> applications();
-
-	/**
-	 * @return an observable notified each time the application count changes
-	 */
-	Observable<Integer> applicationCount();
-
-	/**
-	 * Adds a batch of applications.
-	 * @see #applicationBatchSize()
-	 */
-	void addApplicationBatch();
-
-	/**
-	 * Removes one batch of applications.
-	 * @see #applicationBatchSize()
-	 */
-	void removeApplicationBatch();
+	ThinkTime thinkTime();
 
 	/**
 	 * @return the randomizer used to select scenarios
 	 */
-	ItemRandomizer<Scenario<T>> scenarioChooser();
+	ItemRandomizer<Scenario<T>> randomizer();
 
 	/**
 	 * @return a {@link Builder.CreateApplicationStep} instance
 	 */
 	static Builder.CreateApplicationStep builder() {
 		return DefaultLoadTest.DefaultBuilder.CREATE_APPLICATION;
+	}
+
+	/**
+	 * Controls the load test applications
+	 */
+	interface Applications {
+
+		/**
+		 * @return the user to use when initializing a new application batch
+		 */
+		Value<User> user();
+
+		/**
+		 * @return the application runners
+		 */
+		Collection<ApplicationRunner> runners();
+
+		/**
+		 * @return an observable notified each time the application count changes
+		 */
+		Observable<Integer> count();
+
+		/**
+		 * @return the {@link Value} controlling the number of applications to initialize per batch
+		 */
+		Value<Integer> batchSize();
+
+		/**
+		 * This value controls the factor with which to multiply the think time when logging in, this helps
+		 * spread the application logins when creating a batch of application.
+		 * @return the {@link Value} controlling the factor with which to multiply the think time when logging in
+		 */
+		Value<Integer> loginDelayFactor();
+
+		/**
+		 * @param applicationRunner the application runner to stop
+		 */
+		void stop(ApplicationRunner applicationRunner);
+
+		/**
+		 * Adds a batch of applications.
+		 * @see #batchSize()
+		 * @see #user()
+		 */
+		void addBatch();
+
+		/**
+		 * Removes a random batch of applications.
+		 * @see #batchSize()
+		 */
+		void removeBatch();
+	}
+
+	/**
+	 * Controls the load test think time
+	 */
+	interface ThinkTime {
+
+		/**
+		 * @return the {@link Value} controlling the minimum number of milliseconds that should pass between work requests
+		 */
+		Value<Integer> minimum();
+
+		/**
+		 * @return the {@link Value} controlling the maximum number of milliseconds that should pass between work requests
+		 */
+		Value<Integer> maximum();
 	}
 
 	/**

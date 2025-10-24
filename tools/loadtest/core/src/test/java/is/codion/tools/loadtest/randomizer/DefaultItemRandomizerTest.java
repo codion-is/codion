@@ -37,62 +37,49 @@ public class DefaultItemRandomizerTest {
 						ItemRandomizer.RandomItem.randomItem(two, 0),
 						ItemRandomizer.RandomItem.randomItem(three, 0)
 		));
-		assertEquals(3, model.itemCount());
 		assertEquals(3, model.items().size());
 
-		model.incrementWeight(three);
-		assertEquals(three, model.randomItem());
+		model.weight(three).map(value -> value + 1);
+		assertEquals(three, model.get().orElse(null));
 
-		model.decrementWeight(three);
+		model.weight(three).map(value -> value - 1);
 
-		model.incrementWeight(one);
-		assertEquals(1, model.weight(one));
-		model.incrementWeight(two);
-		assertEquals(1, model.weight(two));
-		model.incrementWeight(three);
-		assertEquals(1, model.weight(three));
+		model.weight(one).map(value -> value + 1);
+		assertTrue(model.weight(one).is(1));
+		model.weight(two).map(value -> value + 1);
+		assertTrue(model.weight(two).is(1));
+		model.weight(three).map(value -> value + 1);
+		assertTrue(model.weight(three).is(1));
 
-		assertEquals(Double.valueOf(1 / 3d), Double.valueOf(model.weightRatio(one)));
+		model.weight(three).map(value -> value + 1);
+		assertTrue(model.weight(three).is(2));
+		model.weight(three).map(value -> value + 1);
+		assertTrue(model.weight(three).is(3));
+		model.weight(three).map(value -> value + 1);
+		assertTrue(model.weight(three).is(4));
 
-		model.incrementWeight(three);
-		assertEquals(2, model.weight(three));
-		model.incrementWeight(three);
-		assertEquals(3, model.weight(three));
-		model.incrementWeight(three);
-		assertEquals(4, model.weight(three));
+		model.weight(one).map(value -> value + 1);
+		assertTrue(model.weight(one).is(2));
 
-		assertEquals(Double.valueOf(4 / 6d), Double.valueOf(model.weightRatio(three)));
+		model.weight(two).map(value -> value + 1);
+		assertTrue(model.weight(two).is(2));
 
-		model.incrementWeight(one);
-		assertEquals(2, model.weight(one));
+		model.weight(one).map(value -> value - 1);
+		assertTrue(model.weight(one).is(1));
+		model.weight(two).map(value -> value - 1);
+		assertTrue(model.weight(two).is(1));
 
-		assertEquals(Double.valueOf(2 / 7d), Double.valueOf(model.weightRatio(one)));
+		model.weight(one).map(value -> value - 1);
+		assertTrue(model.weight(one).is(0));
+		model.weight(two).map(value -> value - 1);
+		assertTrue(model.weight(two).is(0));
 
-		model.incrementWeight(two);
-		assertEquals(2, model.weight(two));
+		model.enabled(one).set(false);
 
-		assertEquals(Double.valueOf(2 / 8d), Double.valueOf(model.weightRatio(one)));
-		assertEquals(Double.valueOf(2 / 8d), Double.valueOf(model.weightRatio(two)));
-		assertEquals(Double.valueOf(4 / 8d), Double.valueOf(model.weightRatio(three)));
-
-		model.decrementWeight(one);
-		assertEquals(1, model.weight(one));
-		model.decrementWeight(two);
-		assertEquals(1, model.weight(two));
-
-		model.decrementWeight(one);
-		assertEquals(0, model.weight(one));
-		model.decrementWeight(two);
-		assertEquals(0, model.weight(two));
-
-		model.setItemEnabled(one, false);
-		assertFalse(model.isItemEnabled(one));
-
-		model.setItemEnabled(one, true);
-		assertTrue(model.isItemEnabled(one));
+		model.enabled(one).set(true);
 
 		try {
-			model.decrementWeight(one);
+			model.weight(one).map(value -> value - 1);
 			fail();
 		}
 		catch (IllegalStateException ignored) {/*ignored*/}

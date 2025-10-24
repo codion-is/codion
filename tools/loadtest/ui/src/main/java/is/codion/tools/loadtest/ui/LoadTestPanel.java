@@ -136,7 +136,7 @@ public final class LoadTestPanel<T> extends JPanel {
 		this.loadTestModel = requireNonNull(loadTestModel);
 		this.loadTest = loadTestModel.loadTest();
 		this.loadTestModel.applicationTableModel().items().refresher().exception().addConsumer(this::displayException);
-		loadTest.user().optional().ifPresent(user -> {
+		loadTest.applications().user().optional().ifPresent(user -> {
 			Item<User> item = item(user, user.username());
 			userComboBoxModel.items().add(item);
 			userComboBoxModel.selection().item().set(item);
@@ -170,10 +170,6 @@ public final class LoadTestPanel<T> extends JPanel {
 		return new LoadTestPanel<>(loadTestModel);
 	}
 
-	/**
-	 * Shows a frame containing this load test panel
-	 * @return the frame
-	 */
 	private JFrame showFrame() {
 		return Frames.builder()
 						.component(this)
@@ -222,8 +218,8 @@ public final class LoadTestPanel<T> extends JPanel {
 		add(createSouthPanel(), BorderLayout.SOUTH);
 	}
 
-	private ScenarioRandomizerPanel<T> createScenarioPanel() {
-		ScenarioRandomizerPanel<T> panel = new ScenarioRandomizerPanel<>(loadTest.scenarioChooser());
+	private ScenarioPanel<T> createScenarioPanel() {
+		ScenarioPanel<T> panel = new ScenarioPanel<>(loadTest.randomizer());
 		panel.setBorder(createTitledBorder("Usage scenarios"));
 		panel.selectedScenarios().addConsumer(this::onScenarioSelectionChanged);
 
@@ -238,17 +234,17 @@ public final class LoadTestPanel<T> extends JPanel {
 										.focusable(false)
 										.horizontalAlignment(SwingConstants.CENTER)
 										.columns(5)
-										.link(loadTest.applicationCount()))
+										.link(loadTest.applications().count()))
 						.east(gridLayoutPanel(1, 2)
 										.layout(new GridLayout(1, 2, 0, 0))
 										.add(button()
 														.control(Control.builder()
-																		.command(loadTest::removeApplicationBatch)
+																		.command(loadTest.applications()::removeBatch)
 																		.caption("-")
 																		.description("Remove application batch")))
 										.add(button()
 														.control(Control.builder()
-																		.command(loadTest::addApplicationBatch)
+																		.command(loadTest.applications()::addBatch)
 																		.caption("+")
 																		.enabled(userComboBoxModel.selection().empty().not())
 																		.description("Add application batch"))))
@@ -290,7 +286,7 @@ public final class LoadTestPanel<T> extends JPanel {
 										.center(flowLayoutPanel(FlowLayout.LEADING)
 														.add(new JLabel("Batch size"))
 														.add(integerSpinner()
-																		.link(loadTest.applicationBatchSize())
+																		.link(loadTest.applications().batchSize())
 																		.minimum(1)
 																		.editable(false)
 																		.columns(SMALL_TEXT_FIELD_COLUMNS)
@@ -299,12 +295,12 @@ public final class LoadTestPanel<T> extends JPanel {
 														.add(createUserPanel())
 														.add(new JLabel("Min. think time", SwingConstants.CENTER))
 														.add(integerSpinner()
-																		.link(loadTest.minimumThinkTime())
+																		.link(loadTest.thinkTime().minimum())
 																		.stepSize(SPINNER_STEP_SIZE)
 																		.columns(SMALL_TEXT_FIELD_COLUMNS))
 														.add(new JLabel("Max. think time", SwingConstants.CENTER))
 														.add(integerSpinner()
-																		.link(loadTest.maximumThinkTime())
+																		.link(loadTest.thinkTime().maximum())
 																		.stepSize(SPINNER_STEP_SIZE)
 																		.columns(SMALL_TEXT_FIELD_COLUMNS))
 														.add(checkBox()
@@ -361,7 +357,7 @@ public final class LoadTestPanel<T> extends JPanel {
 	}
 
 	private void setUser(Item<User> item) {
-		loadTest.user().set(item == null ? null : item.get());
+		loadTest.applications().user().set(item == null ? null : item.get());
 	}
 
 	private JTabbedPane createScenarioOverviewChartPanel() {

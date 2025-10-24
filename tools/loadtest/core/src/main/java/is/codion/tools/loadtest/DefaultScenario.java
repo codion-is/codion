@@ -85,16 +85,6 @@ final class DefaultScenario<T> implements Scenario<T> {
 		return name;
 	}
 
-	@Override
-	public int hashCode() {
-		return name.hashCode();
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		return obj instanceof Scenario && ((Scenario<T>) obj).name().equals(name);
-	}
-
 	static final class DefaultPerformerStep implements Builder.PerformerStep {
 
 		@Override
@@ -194,6 +184,16 @@ final class DefaultScenario<T> implements Scenario<T> {
 		@Override
 		public Optional<Exception> exception() {
 			return Optional.ofNullable(exception);
+		}
+
+		@Override
+		public String toString() {
+			return "DefaultRunResult{" +
+							"scenario='" + scenario + '\'' +
+							", started=" + started +
+							", duration=" + duration +
+							", exception=" + exception +
+							'}';
 		}
 	}
 }

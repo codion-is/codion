@@ -18,6 +18,10 @@
  */
 package is.codion.tools.loadtest.randomizer;
 
+import is.codion.common.state.State;
+import is.codion.common.value.AbstractValue;
+import is.codion.common.value.Value;
+
 /**
  * A class encapsulating an Object item and an integer weight value.
  */
@@ -26,8 +30,8 @@ final class DefaultRandomItem<T> implements ItemRandomizer.RandomItem<T> {
 	private static final String WEIGHT_CAN_NOT_BE_NEGATIVE = "Weight can not be negative";
 
 	private final T item;
-	private int weight;
-	private boolean enabled = true;
+	private final Value<Integer> weight;
+	private final State enabled = State.state(true);
 
 	/**
 	 * Instantiates a new RandomItem
@@ -39,22 +43,17 @@ final class DefaultRandomItem<T> implements ItemRandomizer.RandomItem<T> {
 			throw new IllegalArgumentException(WEIGHT_CAN_NOT_BE_NEGATIVE);
 		}
 		this.item = item;
-		this.weight = weight;
+		this.weight = new DefaultWeight(weight);
 	}
 
 	@Override
-	public int weight() {
-		return enabled ? weight : 0;
+	public Value<Integer> weight() {
+		return weight;
 	}
 
 	@Override
-	public boolean isEnabled() {
+	public State enabled() {
 		return enabled;
-	}
-
-	@Override
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
 	}
 
 	@Override
@@ -77,26 +76,30 @@ final class DefaultRandomItem<T> implements ItemRandomizer.RandomItem<T> {
 		return item.hashCode();
 	}
 
-	@Override
-	public void incrementWeight() {
-		weight++;
-	}
+	private static final class DefaultWeight extends AbstractValue<Integer> {
 
-	@Override
-	public void decrementWeight() {
-		if (weight == 0) {
-			throw new IllegalStateException(WEIGHT_CAN_NOT_BE_NEGATIVE);
+		private static final Validator<? super Integer> VALIDATOR = value -> {
+			if (value < 0) {
+				throw new IllegalStateException(WEIGHT_CAN_NOT_BE_NEGATIVE);
+			}
+		};
+
+		private int weight;
+
+		private DefaultWeight(int weight) {
+			super(0);
+			addValidator(VALIDATOR);
+			this.weight = weight;
 		}
 
-		weight--;
-	}
-
-	@Override
-	public void setWeight(int weight) {
-		if (weight < 0) {
-			throw new IllegalArgumentException(WEIGHT_CAN_NOT_BE_NEGATIVE);
+		@Override
+		protected Integer getValue() {
+			return weight;
 		}
 
-		this.weight = weight;
+		@Override
+		protected void setValue(Integer value) {
+			weight = value;
+		}
 	}
 }

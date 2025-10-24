@@ -33,11 +33,12 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -47,9 +48,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static is.codion.tools.loadtest.randomizer.ItemRandomizer.RandomItem.randomItem;
-import static is.codion.tools.loadtest.randomizer.ItemRandomizer.itemRandomizer;
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
+import static java.lang.Runtime.getRuntime;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.Executors.newScheduledThreadPool;
 import static java.util.stream.Collectors.toList;
@@ -61,53 +61,25 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 	private static final Random RANDOM = new Random();
 	private static final int MINIMUM_NUMBER_OF_THREADS = 12;
 
-	private final Function<User, T> createApplication;
-	private final Consumer<T> closeApplication;
+	private final String name;
 	private final State paused = State.state();
 	private final State pauseOnException = State.state();
-
-	private final Value<Integer> loginDelayFactor;
-	private final Value<Integer> applicationBatchSize;
-	private final Value<Integer> maximumThinkTime;
-	private final Value<Integer> minimumThinkTime;
-	private final Value<Integer> applicationCount = Value.nullable(0);
-	private final Event<?> shutdownEvent = Event.event();
-	private final Event<Result> resultEvent = Event.event();
-
-	private final String name;
-	private final Value<User> user;
-
-	private final Map<ApplicationRunner, T> applications = new HashMap<>();
+	private final DefaultApplications applications;
+	private final ThinkTime thinkTime;
+	private final Event<?> shuttingDown = Event.event();
+	private final Event<Result> result = Event.event();
 	private final Map<String, Scenario<T>> scenarios;
-	private final ItemRandomizer<Scenario<T>> scenarioChooser;
+	private final ItemRandomizer<Scenario<T>> randomizer;
 	private final ScheduledExecutorService scheduledExecutor =
-					newScheduledThreadPool(Math.max(MINIMUM_NUMBER_OF_THREADS, Runtime.getRuntime().availableProcessors() * 2));
+					newScheduledThreadPool(Math.max(MINIMUM_NUMBER_OF_THREADS, getRuntime().availableProcessors() * 2));
 
 	DefaultLoadTest(DefaultBuilder<T> builder) {
-		this.createApplication = builder.createApplication;
-		this.closeApplication = builder.closeApplication;
 		this.name = builder.name;
-		this.user = Value.nullable(builder.user);
-		this.loginDelayFactor = Value.builder()
-						.nonNull(builder.loginDelayFactor)
-						.validator(new MinimumValidator(1))
-						.build();
-		this.applicationBatchSize = Value.builder()
-						.nonNull(builder.applicationBatchSize)
-						.validator(new MinimumValidator(1))
-						.build();
-		this.minimumThinkTime = Value.nonNull(builder.minimumThinkTime);
-		this.maximumThinkTime = Value.nonNull(builder.maximumThinkTime);
-		this.minimumThinkTime.addValidator(new MinimumThinkTimeValidator());
-		this.maximumThinkTime.addValidator(new MaximumThinkTimeValidator());
+		this.applications = new DefaultApplications(builder);
+		this.thinkTime = new DefaultThinkTime(builder);
 		this.scenarios = unmodifiableMap(builder.scenarios.stream()
 						.collect(Collectors.toMap(Scenario::name, Function.identity())));
-		this.scenarioChooser = createScenarioChooser();
-	}
-
-	@Override
-	public Value<User> user() {
-		return user;
+		this.randomizer = createRandomizer();
 	}
 
 	@Override
@@ -116,80 +88,23 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 	}
 
 	@Override
-	public Scenario<T> scenario(String scenarioName) {
-		Scenario<T> scenario = scenarios.get(requireNonNull(scenarioName));
-		if (scenario == null) {
-			throw new IllegalArgumentException("Scenario not found: " + scenarioName);
-		}
-
-		return scenario;
-	}
-
-	@Override
 	public Collection<Scenario<T>> scenarios() {
 		return scenarios.values();
 	}
 
 	@Override
-	public void setWeight(String scenarioName, int weight) {
-		scenarioChooser.setWeight(scenario(scenarioName), weight);
+	public Applications applications() {
+		return applications;
 	}
 
 	@Override
-	public boolean isScenarioEnabled(String scenarioName) {
-		return scenarioChooser.isItemEnabled(scenario(scenarioName));
+	public ThinkTime thinkTime() {
+		return thinkTime;
 	}
 
 	@Override
-	public void setScenarioEnabled(String scenarioName, boolean enabled) {
-		scenarioChooser.setItemEnabled(scenario(scenarioName), enabled);
-	}
-
-	@Override
-	public ItemRandomizer<Scenario<T>> scenarioChooser() {
-		return scenarioChooser;
-	}
-
-	@Override
-	public Map<ApplicationRunner, T> applications() {
-		synchronized (applications) {
-			return new HashMap<>(applications);
-		}
-	}
-
-	@Override
-	public Value<Integer> applicationBatchSize() {
-		return applicationBatchSize;
-	}
-
-	@Override
-	public void addApplicationBatch() {
-		if (user.isNull()) {
-			throw new IllegalStateException("User must be specified to add an application batch");
-		}
-		synchronized (applications) {
-			int batchSize = applicationBatchSize.getOrThrow();
-			for (int i = 0; i < batchSize; i++) {
-				DefaultApplicationRunner applicationRunner = new DefaultApplicationRunner(user.get(), createApplication);
-				applications.put(applicationRunner, applicationRunner.application);
-				applicationCount.set(applications.size());
-				scheduledExecutor.schedule(applicationRunner, initialDelay(), TimeUnit.MILLISECONDS);
-			}
-		}
-	}
-
-	@Override
-	public void removeApplicationBatch() {
-		synchronized (applications) {
-			if (!applications.isEmpty()) {
-				applications.keySet().stream()
-								.filter(applicationRunner -> !applicationRunner.stopped())
-								.filter(applicationRunner -> user.isNull() || applicationRunner.user().equals(user.get()))
-								.limit(applicationBatchSize.getOrThrow())
-								.collect(toList())
-								.forEach(this::stop);
-			}
-		}
+	public ItemRandomizer<Scenario<T>> randomizer() {
+		return randomizer;
 	}
 
 	@Override
@@ -204,9 +119,7 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 
 	@Override
 	public void shutdown() {
-		synchronized (applications) {
-			new ArrayList<>(applications.keySet()).forEach(this::stop);
-		}
+		applications.stop();
 		scheduledExecutor.shutdown();
 		try {
 			scheduledExecutor.awaitTermination(1, TimeUnit.MINUTES);
@@ -214,56 +127,184 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 		catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 		}
-		shutdownEvent.run();
+		shuttingDown.run();
 	}
 
 	@Override
-	public Value<Integer> maximumThinkTime() {
-		return maximumThinkTime;
-	}
-
-	@Override
-	public Value<Integer> minimumThinkTime() {
-		return minimumThinkTime;
-	}
-
-	@Override
-	public Value<Integer> loginDelayFactor() {
-		return loginDelayFactor;
-	}
-
-	@Override
-	public Observable<Integer> applicationCount() {
-		return applicationCount.observable();
-	}
-
-	@Override
-	public void addShutdownListener(Runnable listener) {
-		shutdownEvent.addListener(listener);
+	public Observer<?> shuttingDown() {
+		return shuttingDown.observer();
 	}
 
 	@Override
 	public Observer<Result> result() {
-		return resultEvent.observer();
+		return result.observer();
 	}
 
-	private int initialDelay() {
-		int time = maximumThinkTime.getOrThrow() - minimumThinkTime.getOrThrow();
-		return time > 0 ? RANDOM.nextInt(time * loginDelayFactor.getOrThrow()) + minimumThinkTime.getOrThrow() : minimumThinkTime.getOrThrow();
-	}
-
-	private ItemRandomizer<Scenario<T>> createScenarioChooser() {
-		return itemRandomizer(scenarios.values().stream()
+	private ItemRandomizer<Scenario<T>> createRandomizer() {
+		return ItemRandomizer.randomizer(scenarios.values().stream()
 						.map(scenario -> randomItem(scenario, scenario.defaultWeight()))
 						.collect(toList()));
 	}
 
-	@Override
-	public void stop(ApplicationRunner applicationRunner) {
-		requireNonNull(applicationRunner).stop();
-		synchronized (applications) {
-			applications.remove(applicationRunner);
-			applicationCount.set(applications.size());
+	private final class DefaultApplications implements Applications {
+
+		private final Value<User> user;
+		private final Function<User, T> createApplication;
+		private final Consumer<T> closeApplication;
+		private final Set<ApplicationRunner> runners = new HashSet<>();
+		private final Value<Integer> applicationCount = Value.nonNull(0);
+		private final Value<Integer> applicationBatchSize;
+		private final Value<Integer> loginDelayFactor;
+
+		private DefaultApplications(DefaultBuilder<T> builder) {
+			this.user = Value.nullable(builder.user);
+			this.createApplication = builder.createApplication;
+			this.closeApplication = builder.closeApplication;
+			this.applicationBatchSize = Value.builder()
+							.nonNull(builder.applicationBatchSize)
+							.validator(new MinimumValidator(1))
+							.build();
+			this.loginDelayFactor = Value.builder()
+							.nonNull(builder.loginDelayFactor)
+							.validator(new MinimumValidator(1))
+							.build();
+		}
+
+		@Override
+		public Value<User> user() {
+			return user;
+		}
+
+		@Override
+		public Collection<ApplicationRunner> runners() {
+			synchronized (runners) {
+				return unmodifiableSet(new HashSet<>(runners));
+			}
+		}
+
+		@Override
+		public Observable<Integer> count() {
+			return applicationCount.observable();
+		}
+
+		@Override
+		public Value<Integer> batchSize() {
+			return applicationBatchSize;
+		}
+
+		@Override
+		public Value<Integer> loginDelayFactor() {
+			return loginDelayFactor;
+		}
+
+		@Override
+		public void stop(ApplicationRunner applicationRunner) {
+			requireNonNull(applicationRunner).stop();
+			synchronized (runners) {
+				runners.remove(applicationRunner);
+				applicationCount.set(runners.size());
+			}
+		}
+
+		@Override
+		public void addBatch() {
+			if (user.isNull()) {
+				throw new IllegalStateException("User must be specified to add an application batch");
+			}
+			synchronized (runners) {
+				int batchSize = applicationBatchSize.getOrThrow();
+				for (int i = 0; i < batchSize; i++) {
+					DefaultApplicationRunner applicationRunner = new DefaultApplicationRunner(user.get(), createApplication);
+					runners.add(applicationRunner);
+					applicationCount.set(runners.size());
+					scheduledExecutor.schedule(applicationRunner, initialDelay(), TimeUnit.MILLISECONDS);
+				}
+			}
+		}
+
+		@Override
+		public void removeBatch() {
+			synchronized (runners) {
+				if (!runners.isEmpty()) {
+					runners.stream()
+									.filter(applicationRunner -> !applicationRunner.stopped())
+									.filter(applicationRunner -> user.isNull() || applicationRunner.user().equals(user.get()))
+									.limit(applicationBatchSize.getOrThrow())
+									.collect(toList())
+									.forEach(this::stop);
+				}
+			}
+		}
+
+		private int initialDelay() {
+			int time = thinkTime.maximum().getOrThrow() - thinkTime.minimum().getOrThrow();
+
+			return time > 0 ? RANDOM.nextInt(time * loginDelayFactor.getOrThrow()) + thinkTime.minimum().getOrThrow() : thinkTime.minimum().getOrThrow();
+		}
+
+		private void stop() {
+			synchronized (runners) {
+				new ArrayList<>(runners).forEach(this::stop);
+			}
+		}
+	}
+
+	private static final class DefaultThinkTime implements ThinkTime {
+
+		private final Value<Integer> maximum;
+		private final Value<Integer> minimum;
+
+		private DefaultThinkTime(DefaultBuilder<?> builder) {
+			this.minimum = Value.builder()
+							.nonNull(0)
+							.value(builder.minimumThinkTime)
+							.build();
+			this.maximum = Value.builder()
+							.nonNull(0)
+							.value(builder.maximumThinkTime)
+							.build();
+			this.minimum.addValidator(new MinimumThinkTimeValidator());
+			this.maximum.addValidator(new MaximumThinkTimeValidator());
+		}
+
+		@Override
+		public Value<Integer> minimum() {
+			return minimum;
+		}
+
+		@Override
+		public Value<Integer> maximum() {
+			return maximum;
+		}
+
+		private final class MinimumThinkTimeValidator extends MinimumValidator {
+
+			private MinimumThinkTimeValidator() {
+				super(0);
+			}
+
+			@Override
+			public void validate(Integer value) {
+				super.validate(value);
+				if (value > maximum.getOrThrow()) {
+					throw new IllegalArgumentException("Minimum think time must be equal to or below maximum think time");
+				}
+			}
+		}
+
+		private final class MaximumThinkTimeValidator extends MinimumValidator {
+
+			private MaximumThinkTimeValidator() {
+				super(0);
+			}
+
+			@Override
+			public void validate(Integer value) {
+				super.validate(value);
+				if (value < minimum.getOrThrow()) {
+					throw new IllegalArgumentException("Maximum think time must be equal to or exceed minimum think time");
+				}
+			}
 		}
 	}
 
@@ -323,29 +364,24 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 				cleanupOnStop();
 				return;
 			}
-			try {
-				if (!paused.is()) {
-					if (application == null && !stopped.get()) {
-						application = initializeApplication();
-					}
-					else if (!stopped.get()) {
-						runScenario(application, scenarioChooser.randomItem());
-					}
+			if (!paused.is()) {
+				if (application == null && !stopped.get()) {
+					application = initializeApplication();
 				}
-				if (stopped.get()) {
-					cleanupOnStop();
-					return;
+				else if (!stopped.get()) {
+					randomizer.get().ifPresent(scenario -> runScenario(application, scenario));
 				}
-				scheduledExecutor.schedule(this, thinkTime(), TimeUnit.MILLISECONDS);
 			}
-			catch (Exception e) {
-				LOG.debug("Exception during run {}", application, e);
+			if (stopped.get()) {
+				cleanupOnStop();
+				return;
 			}
+			scheduledExecutor.schedule(this, thinkTime(), TimeUnit.MILLISECONDS);
 		}
 
 		private void cleanupOnStop() {
 			if (application != null) {
-				closeApplication.accept(application);
+				applications.closeApplication.accept(application);
 				LOG.debug("LoadTestModel disconnected application: {}", application);
 				application = null;
 			}
@@ -371,7 +407,7 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 		private void runScenario(T application, Scenario<T> scenario) {
 			Result result = scenario.run(application);
 			addResult(result, scenario::pause);
-			resultEvent.accept(result);
+			DefaultLoadTest.this.result.accept(result);
 		}
 
 		private void addResult(Result result, Predicate<Exception> pause) {
@@ -389,8 +425,9 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 		}
 
 		private int thinkTime() {
-			int time = maximumThinkTime.getOrThrow() - minimumThinkTime.getOrThrow();
-			return time > 0 ? RANDOM.nextInt(time) + minimumThinkTime.getOrThrow() : minimumThinkTime.getOrThrow();
+			int time = thinkTime.maximum().getOrThrow() - thinkTime.minimum().getOrThrow();
+
+			return time > 0 ? RANDOM.nextInt(time) + thinkTime.minimum().getOrThrow() : thinkTime.minimum().getOrThrow();
 		}
 	}
 
@@ -402,7 +439,7 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 		}
 	}
 
-	private static final class DefaultCloseApplicationStep<T>  implements Builder.CloseApplicationStep<T> {
+	private static final class DefaultCloseApplicationStep<T> implements Builder.CloseApplicationStep<T> {
 
 		private final Function<User, T> createApplication;
 
@@ -420,8 +457,8 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 
 		static final CreateApplicationStep CREATE_APPLICATION = new DefaultCreateApplicationStep();
 
-		private final Function<User, T> createApplication;
 		private final List<Scenario<T>> scenarios = new ArrayList<>();
+		private final Function<User, T> createApplication;
 		private final Consumer<T> closeApplication;
 
 		private String name;
@@ -514,36 +551,6 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 		public void validate(Integer value) {
 			if (value == null || value < minimumValue) {
 				throw new IllegalArgumentException("Value must be larger than: " + minimumValue);
-			}
-		}
-	}
-
-	private final class MinimumThinkTimeValidator extends MinimumValidator {
-
-		private MinimumThinkTimeValidator() {
-			super(0);
-		}
-
-		@Override
-		public void validate(Integer value) {
-			super.validate(value);
-			if (value > maximumThinkTime.getOrThrow()) {
-				throw new IllegalArgumentException("Minimum think time must be equal to or below maximum think time");
-			}
-		}
-	}
-
-	private final class MaximumThinkTimeValidator extends MinimumValidator {
-
-		private MaximumThinkTimeValidator() {
-			super(0);
-		}
-
-		@Override
-		public void validate(Integer value) {
-			super.validate(value);
-			if (value < minimumThinkTime.getOrThrow()) {
-				throw new IllegalArgumentException("Maximum think time must be equal to or exceed minimum think time");
 			}
 		}
 	}

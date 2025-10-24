@@ -51,21 +51,6 @@ public final class DefaultLoadTestTest {
 	private static final Scenario<Object> SCENARIO_II = Scenario.scenario(application -> {});
 
 	@Test
-	void unknownScenario() {
-		LoadTest<Object> model = LoadTest.builder()
-						.createApplication(user -> new Object())
-						.closeApplication(object -> {})
-						.user(User.user("test"))
-						.scenarios(asList(SCENARIO, SCENARIO_II))
-						.minimumThinkTime(25)
-						.maximumThinkTime(50)
-						.loginDelayFactor(2)
-						.applicationBatchSize(2)
-						.build();
-		assertThrows(IllegalArgumentException.class, () -> model.scenario("bla"));
-	}
-
-	@Test
 	void test() throws Exception {
 		LoadTest<Object> model = LoadTest.builder()
 						.createApplication(user -> new Object())
@@ -79,43 +64,43 @@ public final class DefaultLoadTestTest {
 						.build();
 		Map<String, List<Scenario.Result>> results = new HashMap<>();
 		model.result().addConsumer(result -> results.computeIfAbsent(result.scenario(), scenarioName -> new ArrayList<>()).add(result));
-		assertEquals(2, model.applicationBatchSize().get());
+		assertEquals(2, model.applications().batchSize().get());
 
-		assertEquals(2, model.loginDelayFactor().get());
-		model.loginDelayFactor().set(3);
-		assertEquals(3, model.loginDelayFactor().get());
-		assertEquals(2, model.applicationBatchSize().get());
+		assertEquals(2, model.applications().loginDelayFactor().get());
+		model.applications().loginDelayFactor().set(3);
+		assertEquals(3, model.applications().loginDelayFactor().get());
+		assertEquals(2, model.applications().batchSize().get());
 
-		assertEquals(25, model.minimumThinkTime().get());
-		assertEquals(50, model.maximumThinkTime().get());
-		model.maximumThinkTime().set(40);
-		model.minimumThinkTime().set(20);
-		assertEquals(20, model.minimumThinkTime().get());
-		assertEquals(40, model.maximumThinkTime().get());
+		assertEquals(25, model.thinkTime().minimum().get());
+		assertEquals(50, model.thinkTime().maximum().get());
+		model.thinkTime().maximum().set(40);
+		model.thinkTime().minimum().set(20);
+		assertEquals(20, model.thinkTime().minimum().get());
+		assertEquals(40, model.thinkTime().maximum().get());
 
-		model.applicationBatchSize().set(5);
+		model.applications().batchSize().set(5);
 		assertTrue(model.scenarios().contains(SCENARIO));
-		model.user().set(UNIT_TEST_USER);
-		assertEquals(UNIT_TEST_USER, model.user().get());
-		assertNotNull(model.scenarioChooser());
-		model.setWeight(SCENARIO.name(), 2);
-		model.setScenarioEnabled(SCENARIO_II.name(), false);
-		model.addApplicationBatch();
+		model.applications().user().set(UNIT_TEST_USER);
+		assertEquals(UNIT_TEST_USER, model.applications().user().get());
+		assertNotNull(model.randomizer());
+		model.randomizer().weight(SCENARIO).set(2);
+		model.randomizer().enabled(SCENARIO_II).set(false);
+		model.applications().addBatch();
 		Thread.sleep(500);
 		model.paused().set(true);
 		Thread.sleep(200);
 		model.paused().set(false);
-		assertEquals(5, model.applicationCount().get());
+		assertEquals(5, model.applications().count().get());
 		assertNull(results.get(SCENARIO_II.name()));
 		assertFalse(results.get(SCENARIO.name()).isEmpty());
 
-		model.removeApplicationBatch();
-		assertEquals(0, model.applicationCount().get());
+		model.applications().removeBatch();
+		assertEquals(0, model.applications().count().get());
 
 		results.values().forEach(result -> assertFalse(result.isEmpty()));
 
 		AtomicInteger exitCounter = new AtomicInteger();
-		model.addShutdownListener(exitCounter::incrementAndGet);
+		model.shuttingDown().addListener(exitCounter::incrementAndGet);
 		model.shutdown();
 		assertEquals(1, exitCounter.get());
 	}
@@ -127,6 +112,6 @@ public final class DefaultLoadTestTest {
 						.closeApplication(object -> {})
 						.user(User.user("test"))
 						.build();
-		assertThrows(IllegalArgumentException.class, () -> model.loginDelayFactor().set(-1));
+		assertThrows(IllegalArgumentException.class, () -> model.applications().loginDelayFactor().set(-1));
 	}
 }

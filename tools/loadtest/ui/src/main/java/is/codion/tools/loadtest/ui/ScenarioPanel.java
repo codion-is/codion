@@ -18,10 +18,11 @@
  */
 package is.codion.tools.loadtest.ui;
 
-import is.codion.common.value.AbstractValue;
 import is.codion.common.value.ObservableValueList;
 import is.codion.common.value.ValueList;
 import is.codion.swing.common.model.component.table.FilterTableModel;
+import is.codion.swing.common.model.component.table.FilterTableModel.Editor;
+import is.codion.swing.common.model.component.table.FilterTableModel.TableColumns;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableCellEditor;
 import is.codion.swing.common.ui.component.table.FilterTableColumn;
@@ -45,31 +46,32 @@ import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-final class ScenarioRandomizerPanel<T> extends JPanel {
+final class ScenarioPanel<T> extends JPanel {
 
 	private final ItemRandomizer<Scenario<T>> itemRandomizer;
-	private final Collection<ScenarioRow> scenarioRows;
-	private final FilterTableModel<ScenarioRow, String> tableModel;
+	private final Collection<RandomItem<Scenario<T>>> scenarioRows;
+	private final FilterTableModel<RandomItem<Scenario<T>>, String> tableModel;
 	private final ValueList<Scenario<T>> selected = ValueList.<Scenario<T>>builder().build();
 
-	ScenarioRandomizerPanel(ItemRandomizer<Scenario<T>> itemRandomizer) {
-		this.itemRandomizer = requireNonNull(itemRandomizer);
+	ScenarioPanel(ItemRandomizer<Scenario<T>> randomizer) {
+		this.itemRandomizer = requireNonNull(randomizer);
 		this.scenarioRows = createRows();
 		this.tableModel = FilterTableModel.builder()
 						.columns(new ScenarioColumns())
 						.editor(t -> new ScenarioEditor())
 						.items(() -> scenarioRows)
 						.build();
-		FilterTable<ScenarioRow, String> table = FilterTable.builder()
+		FilterTable<RandomItem<Scenario<T>>, String> table = FilterTable.builder()
 						.model(tableModel)
 						.columns(this::configureColumn)
 						.surrendersFocusOnKeystroke(true)
-						.cellEditor(ScenarioRow.ENABLED, FilterTableCellEditor.builder()
+						.cellEditor(ScenarioColumns.ENABLED, FilterTableCellEditor.builder()
 										.component(checkBox()::buildValue)
 										.clickCountToStart(1)
 										.build())
-						.cellEditor(ScenarioRow.WEIGHT, FilterTableCellEditor.builder()
+						.cellEditor(ScenarioColumns.WEIGHT, FilterTableCellEditor.builder()
 										.component(integerSpinner().minimum(0)::buildValue)
+										.clickCountToStart(1)
 										.build())
 						.columnReordering(false)
 						.columnResizing(false)
@@ -81,17 +83,14 @@ final class ScenarioRandomizerPanel<T> extends JPanel {
 		add(new JScrollPane(table), BorderLayout.CENTER);
 	}
 
-	/**
-	 * @return the selected items
-	 */
-	public ObservableValueList<Scenario<T>> selectedScenarios() {
+	ObservableValueList<Scenario<T>> selectedScenarios() {
 		return selected.observable();
 	}
 
 	private void configureColumn(FilterTableColumn.Builder<String> column) {
 		switch (column.identifier()) {
-			case ScenarioRow.ENABLED:
-			case ScenarioRow.WEIGHT:
+			case ScenarioColumns.ENABLED:
+			case ScenarioColumns.WEIGHT:
 				column.fixedWidth(80);
 				break;
 			default:
@@ -99,43 +98,25 @@ final class ScenarioRandomizerPanel<T> extends JPanel {
 		}
 	}
 
-	private Collection<ScenarioRow> createRows() {
+	private Collection<RandomItem<Scenario<T>>> createRows() {
 		return itemRandomizer.items().stream()
 						.sorted(comparing(item -> item.item().name()))
-						.map(this::createRow)
 						.collect(toList());
 	}
 
-	private ScenarioRow createRow(RandomItem<Scenario<T>> item) {
-		return new ScenarioRow(item.item(), new EnabledValue(item.item()), new WeightValue(item.item()));
-	}
-
-	private void onSelectionChanged(List<ScenarioRow> scenarioRows) {
+	private void onSelectionChanged(List<RandomItem<Scenario<T>>> scenarioRows) {
 		selected.set(scenarioRows.stream()
-						.map(scenarioRow -> scenarioRow.scenario)
+						.map(RandomItem::item)
 						.collect(toList()));
 	}
 
-	private final class ScenarioRow {
+	private final class ScenarioColumns implements TableColumns<RandomItem<Scenario<T>>, String> {
 
 		private static final String SCENARIO = "Scenario";
-		private static final String ENABLED = "Enabled";
 		private static final String WEIGHT = "Weight";
+		private static final String ENABLED = "Enabled";
 
-		private final Scenario<T> scenario;
-		private final EnabledValue enabled;
-		private final WeightValue weight;
-
-		private ScenarioRow(Scenario<T> scenario, EnabledValue enabled, WeightValue weight) {
-			this.scenario = scenario;
-			this.enabled = enabled;
-			this.weight = weight;
-		}
-	}
-
-	private final class ScenarioColumns implements FilterTableModel.TableColumns<ScenarioRow, String> {
-
-		private final List<String> identifiers = unmodifiableList(asList(ScenarioRow.SCENARIO, ScenarioRow.ENABLED, ScenarioRow.WEIGHT));
+		private final List<String> identifiers = unmodifiableList(asList(SCENARIO, ENABLED, WEIGHT));
 
 		@Override
 		public List<String> identifiers() {
@@ -145,11 +126,11 @@ final class ScenarioRandomizerPanel<T> extends JPanel {
 		@Override
 		public Class<?> columnClass(String identifier) {
 			switch (identifier) {
-				case ScenarioRow.SCENARIO:
+				case SCENARIO:
 					return String.class;
-				case ScenarioRow.ENABLED:
+				case ENABLED:
 					return Boolean.class;
-				case ScenarioRow.WEIGHT:
+				case WEIGHT:
 					return Integer.class;
 				default:
 					throw new IllegalArgumentException();
@@ -157,75 +138,35 @@ final class ScenarioRandomizerPanel<T> extends JPanel {
 		}
 
 		@Override
-		public Object value(ScenarioRow row, String identifier) {
+		public Object value(RandomItem<Scenario<T>> row, String identifier) {
 			switch (identifier) {
-				case ScenarioRow.SCENARIO:
-					return row.scenario.name();
-				case ScenarioRow.ENABLED:
-					return row.enabled.get();
-				case ScenarioRow.WEIGHT:
-					return row.weight.get();
+				case SCENARIO:
+					return row.item().name();
+				case ENABLED:
+					return row.enabled().is();
+				case WEIGHT:
+					return row.weight().get();
 				default:
 					throw new IllegalArgumentException();
 			}
 		}
 	}
 
-	private final class ScenarioEditor implements FilterTableModel.Editor<ScenarioRow, String> {
+	private final class ScenarioEditor implements Editor<RandomItem<Scenario<T>>, String> {
 
 		@Override
-		public boolean editable(ScenarioRow row, String identifier) {
-			return ScenarioRow.ENABLED.equals(identifier) || ScenarioRow.WEIGHT.equals(identifier);
+		public boolean editable(RandomItem<Scenario<T>> row, String identifier) {
+			return ScenarioColumns.ENABLED.equals(identifier) || ScenarioColumns.WEIGHT.equals(identifier);
 		}
 
 		@Override
-		public void set(Object value, int rowIndex, ScenarioRow row, String identifier) {
-			if (ScenarioRow.ENABLED.equals(identifier)) {
-				row.enabled.set((Boolean) value);
+		public void set(Object value, int rowIndex, RandomItem<Scenario<T>> row, String identifier) {
+			if (ScenarioColumns.ENABLED.equals(identifier)) {
+				row.enabled().set((Boolean) value);
 			}
-			else if (ScenarioRow.WEIGHT.equals(identifier)) {
-				row.weight.set((Integer) value);
+			else if (ScenarioColumns.WEIGHT.equals(identifier)) {
+				row.weight().set((Integer) value);
 			}
-		}
-	}
-
-	private final class EnabledValue extends AbstractValue<Boolean> {
-
-		private final Scenario<T> item;
-
-		private EnabledValue(Scenario<T> item) {
-			super(false);
-			this.item = item;
-		}
-
-		@Override
-		protected Boolean getValue() {
-			return itemRandomizer.isItemEnabled(item);
-		}
-
-		@Override
-		protected void setValue(Boolean value) {
-			itemRandomizer.setItemEnabled(item, value);
-		}
-	}
-
-	private final class WeightValue extends AbstractValue<Integer> {
-
-		private final Scenario<T> item;
-
-		private WeightValue(Scenario<T> item) {
-			super(0);
-			this.item = item;
-		}
-
-		@Override
-		protected Integer getValue() {
-			return itemRandomizer.weight(item);
-		}
-
-		@Override
-		protected void setValue(Integer value) {
-			itemRandomizer.setWeight(item, value);
 		}
 	}
 }

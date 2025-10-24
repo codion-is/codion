@@ -129,7 +129,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 	public void removeSelectedApplications() {
 		applicationTableModel.selection().items().get().stream()
 						.map(DefaultApplicationRow.class::cast)
-						.forEach(application -> loadTest.stop(application.applicationRunner));
+						.forEach(application -> loadTest.applications().stop(application.applicationRunner));
 	}
 
 	@Override
@@ -288,7 +288,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
 	private void bindEvents() {
 		loadTest.result().addConsumer(counter::addScenarioResults);
-		loadTest.addShutdownListener(() -> {
+		loadTest.shuttingDown().addListener(() -> {
 			applicationsRefreshScheduler.stop();
 			chartUpdateScheduler.stop();
 		});
@@ -314,9 +314,9 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
 		private void updateChartData() {
 			long time = System.currentTimeMillis();
-			minimumThinkTimeSeries.add(time, loadTest.minimumThinkTime().get());
-			maximumThinkTimeSeries.add(time, loadTest.maximumThinkTime().get());
-			numberOfApplicationsSeries.add(time, loadTest.applicationCount().get());
+			minimumThinkTimeSeries.add(time, loadTest.thinkTime().minimum().get());
+			maximumThinkTimeSeries.add(time, loadTest.thinkTime().maximum().get());
+			numberOfApplicationsSeries.add(time, loadTest.applications().count().get());
 			totalMemoryCollection.add(time, RUNTIME.totalMemory() / K / K);
 			usedMemoryCollection.add(time, (RUNTIME.totalMemory() - RUNTIME.freeMemory()) / K / K);
 			maxMemoryCollection.add(time, RUNTIME.maxMemory() / K / K);
@@ -400,15 +400,14 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 		}
 
 		private synchronized void addScenarioResults(Result result) {
-			Scenario<T> scenario = loadTest.scenario(result.scenario());
-			scenarioDurations.computeIfAbsent(scenario.name(), scenarioName -> new ArrayList<>()).add(result.duration());
+			scenarioDurations.computeIfAbsent(result.scenario(), k -> new ArrayList<>()).add(result.duration());
 			if (result.successful()) {
-				scenarioRunCounts.computeIfAbsent(scenario.name(), scenarioName -> new AtomicInteger()).incrementAndGet();
+				scenarioRunCounts.computeIfAbsent(result.scenario(), k -> new AtomicInteger()).incrementAndGet();
 			}
 			else {
-				scenarioFailureCounts.computeIfAbsent(scenario.name(), scenarioName -> new AtomicInteger()).incrementAndGet();
+				scenarioFailureCounts.computeIfAbsent(result.scenario(), k -> new AtomicInteger()).incrementAndGet();
 				result.exception().ifPresent(exception -> {
-					List<ExceptionTimestamp> exceptions = scenarioExceptions.computeIfAbsent(scenario.name(), scenarioName -> new ArrayList<>());
+					List<ExceptionTimestamp> exceptions = scenarioExceptions.computeIfAbsent(result.scenario(), k -> new ArrayList<>());
 					exceptions.add(new DefaultExceptionTimestamp(result.started(), exception));
 					if (exceptions.size() > MAXIMUM_EXCEPTIONS) {
 						exceptions.remove(0);
@@ -472,7 +471,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 
 		@Override
 		public Collection<ApplicationRow> get() {
-			return loadTest.applications().keySet().stream()
+			return loadTest.applications().runners().stream()
 							.map(DefaultApplicationRow::new)
 							.collect(toList());
 		}
