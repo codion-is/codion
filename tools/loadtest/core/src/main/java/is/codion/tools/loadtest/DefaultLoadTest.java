@@ -43,6 +43,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static is.codion.tools.loadtest.randomizer.ItemRandomizer.RandomItem.randomItem;
@@ -269,6 +270,7 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 	private final class DefaultApplicationRunner implements ApplicationRunner {
 
 		private static final int MAX_RESULTS = 20;
+		private static final Predicate<Exception> PAUSE_ON_INIT_EXCEPTION = exception -> true;
 
 		private final User user;
 		private final Function<User, T> applicationFactory;
@@ -354,32 +356,34 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 				long startTime = System.nanoTime();
 				T app = applicationFactory.apply(user);
 				int duration = (int) TimeUnit.NANOSECONDS.toMicros(System.nanoTime() - startTime);
-				addResult(Result.success("Initialization", duration));
+				addResult(Result.success("Initialization", duration), PAUSE_ON_INIT_EXCEPTION);
 				LOG.debug("LoadTestModel initialized application: {}", app);
 
 				return app;
 			}
 			catch (Exception e) {
-				addResult(Result.failure("Initialization", e));
+				addResult(Result.failure("Initialization", e), PAUSE_ON_INIT_EXCEPTION);
 				return null;
 			}
 		}
 
 		private void runScenario(T application, Scenario<T> scenario) {
 			Result result = scenario.run(application);
-			addResult(result);
+			addResult(result, scenario::pause);
 			resultEvent.accept(result);
 		}
 
-		private void addResult(Result result) {
+		private void addResult(Result result, Predicate<Exception> pause) {
 			synchronized (results) {
 				results.add(result);
 				if (results.size() > MAX_RESULTS) {
 					results.remove(0);
 				}
-				if (!result.successful() && pauseOnException.is()) {
-					paused.set(true);
-				}
+				result.exception().ifPresent(exception -> {
+					if (pauseOnException.is() && pause.test(exception)) {
+						paused.set(true);
+					}
+				});
 			}
 		}
 

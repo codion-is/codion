@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * Specifies a class for running multiple application instances for load testing purposes.
@@ -118,6 +119,8 @@ public interface LoadTest<T> {
 
 	/**
 	 * @return the {@link State} controlling if the load test is automatically paused when an exception occures in a scenario run
+	 * @see Scenario#pause(Exception)
+	 * @see Scenario.Builder#pause(Predicate)
 	 */
 	State pauseOnException();
 
@@ -307,6 +310,12 @@ public interface LoadTest<T> {
 		int defaultWeight();
 
 		/**
+		 * @param exception the exception
+		 * @return true if the load test should be paused when the given exception occurs in this scenario
+		 */
+		boolean pause(Exception exception);
+
+		/**
 		 * Runs this scenario with the given application
 		 * @param application the application to use
 		 * @return the run result
@@ -356,6 +365,14 @@ public interface LoadTest<T> {
 			 * @return this builder
 			 */
 			Builder<T> afterRun(Consumer<T> afterRun);
+
+			/**
+			 * By default, all exceptions cause a test to be paused.
+			 * @param pause the {@link Predicate} controlling whether the load test should be paused when a given exception occurs in this scenario
+			 * @return this builder
+			 * @see #pauseOnException()
+			 */
+			Builder<T> pause(Predicate<Exception> pause);
 
 			/**
 			 * @return a new {@link Scenario} instance

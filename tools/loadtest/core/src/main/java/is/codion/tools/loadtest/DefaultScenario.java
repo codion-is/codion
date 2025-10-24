@@ -23,18 +23,21 @@ import is.codion.tools.loadtest.LoadTest.Scenario;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
 
 final class DefaultScenario<T> implements Scenario<T> {
 
 	private static final Consumer<?> EMPTY_CONSUMER = (Consumer<Object>) object -> {};
+	private static final Predicate<Exception> PAUSE_ON_ALL_EXCPTIONS = exception -> true;
 
 	private final String name;
 	private final int defaultWeight;
 	private final Performer<T> performer;
 	private final Consumer<T> beforeRun;
 	private final Consumer<T> afterRun;
+	private final Predicate<Exception> pause;
 
 	private DefaultScenario(DefaultBuilder<T> builder) {
 		this.performer = builder.performer;
@@ -42,6 +45,7 @@ final class DefaultScenario<T> implements Scenario<T> {
 		this.defaultWeight = builder.defaultWeight;
 		this.beforeRun = builder.beforeRun;
 		this.afterRun = builder.afterRun;
+		this.pause = builder.pause;
 	}
 
 	@Override
@@ -73,6 +77,11 @@ final class DefaultScenario<T> implements Scenario<T> {
 	}
 
 	@Override
+	public boolean pause(Exception exception) {
+		return pause.test(exception);
+	}
+
+	@Override
 	public String toString() {
 		return name;
 	}
@@ -95,6 +104,7 @@ final class DefaultScenario<T> implements Scenario<T> {
 		private int defaultWeight = 1;
 		private Consumer<T> beforeRun = (Consumer<T>) EMPTY_CONSUMER;
 		private Consumer<T> afterRun = (Consumer<T>) EMPTY_CONSUMER;
+		private Predicate<Exception> pause = PAUSE_ON_ALL_EXCPTIONS;
 
 		DefaultBuilder(Performer<T> performer) {
 			this.performer = requireNonNull(performer);
@@ -125,6 +135,12 @@ final class DefaultScenario<T> implements Scenario<T> {
 		@Override
 		public Builder<T> afterRun(Consumer<T> afterRun) {
 			this.afterRun = requireNonNull(afterRun);
+			return this;
+		}
+
+		@Override
+		public Builder<T> pause(Predicate<Exception> pause) {
+			this.pause = requireNonNull(pause);
 			return this;
 		}
 

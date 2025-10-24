@@ -39,6 +39,7 @@ Codion Change Log
 - DomainGeneratorPanel, source directory selection now starts in working dir.
 ### is.codion.tools.loadtest.core
 - LoadTest.pauseOnException() added.
+- Scenario.Builder.pause(Predicate) added along with Scenario.pause(Exception).
 ### is.codion.tools.loadtest.ui
 - LoadTestPanel, check box for pause on exception added.
 ### is.codion.framework.servlet
