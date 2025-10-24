@@ -53,7 +53,7 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 
 	DefaultFilterTableCellEditor(DefaultBuilder<T> builder) {
 		this.inputComponent = builder.component;
-		this.cellEditable = builder.cellEditable;
+		this.cellEditable = builder.cellEditable();
 	}
 
 	@Override
@@ -132,7 +132,8 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 
 		private final Supplier<ComponentValue<? extends JComponent, T>> component;
 
-		private Function<EventObject, Boolean> cellEditable = new DefaultCellEditable();
+		private @Nullable Function<EventObject, Boolean> cellEditable;
+		private int clickCountToStart = 2;
 
 		private DefaultBuilder(Supplier<ComponentValue<? extends JComponent, T>> component) {
 			this.component = component;
@@ -145,8 +146,18 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 		}
 
 		@Override
+		public Builder<T> clickCountToStart(int clickCountToStart) {
+			this.clickCountToStart = clickCountToStart;
+			return this;
+		}
+
+		@Override
 		public FilterTableCellEditor<T> build() {
 			return new DefaultFilterTableCellEditor<>(this);
+		}
+
+		private Function<EventObject, Boolean> cellEditable() {
+			return cellEditable == null ? new DefaultCellEditable(clickCountToStart) : cellEditable;
 		}
 	}
 
@@ -178,10 +189,16 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 
 	private static final class DefaultCellEditable implements Function<EventObject, Boolean> {
 
+		private final int clickCountToStart;
+
+		private DefaultCellEditable(int clickCountToStart) {
+			this.clickCountToStart = clickCountToStart;
+		}
+
 		@Override
 		public Boolean apply(EventObject event) {
 			if (event instanceof MouseEvent) {
-				return ((MouseEvent) event).getClickCount() == 2;
+				return ((MouseEvent) event).getClickCount() >= clickCountToStart;
 			}
 
 			return true;

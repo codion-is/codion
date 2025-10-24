@@ -79,11 +79,20 @@ public interface FilterTableCellEditor<T> extends TableCellEditor {
 		}
 
 		/**
+		 * Overrides {@link #clickCountToStart(int)}
 		 * @param cellEditable a function specifying if a cell is editable
 		 * @return this builder
 		 * @see TableCellEditor#isCellEditable(EventObject)
 		 */
 		Builder<T> cellEditable(Function<EventObject, Boolean> cellEditable);
+
+		/**
+		 * Default 2, note that when using {@link javax.swing.JCheckBox} based editors
+		 * setting this to 1 is usually preferred.
+		 * @param clickCountToStart specifies the number of clicks needed to start editing
+		 * @return this builder
+		 */
+		Builder<T> clickCountToStart(int clickCountToStart);
 
 		/**
 		 * @return a new {@link FilterTableCellEditor} based on this builder
