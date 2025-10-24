@@ -227,9 +227,9 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 	}
 
 	@Override
-	public List<Exception> exceptions(String scenarioName) {
+	public List<ScenarioException> exceptions(String scenarioName) {
 		synchronized (counter) {
-			Collection<Exception> exceptions = counter.scenarioExceptions.get(scenarioName);
+			List<ScenarioException> exceptions = counter.scenarioExceptions.get(scenarioName);
 			return exceptions == null ? emptyList() : new ArrayList<>(exceptions);
 		}
 	}
@@ -237,7 +237,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 	@Override
 	public void clearExceptions(String scenarioName) {
 		synchronized (counter) {
-			Collection<Exception> exceptions = counter.scenarioExceptions.get(scenarioName);
+			List<ScenarioException> exceptions = counter.scenarioExceptions.get(scenarioName);
 			if (exceptions != null) {
 				exceptions.clear();
 			}
@@ -342,14 +342,14 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 		private static final int UPDATE_INTERVAL = 5;
 
 		private final Map<String, Integer> scenarioRates = new HashMap<>();
-		private final Map<String, Integer> scenarioAvgDurations = new HashMap<>();
-		private final Map<String, Integer> scenarioMaxDurations = new HashMap<>();
-		private final Map<String, Integer> scenarioMinDurations = new HashMap<>();
+		private final Map<String, Long> scenarioAvgDurations = new HashMap<>();
+		private final Map<String, Long> scenarioMaxDurations = new HashMap<>();
+		private final Map<String, Long> scenarioMinDurations = new HashMap<>();
 		private final Map<String, Integer> scenarioFailures = new HashMap<>();
-		private final Map<String, List<Integer>> scenarioDurations = new HashMap<>();
+		private final Map<String, List<Long>> scenarioDurations = new HashMap<>();
 		private final Map<String, AtomicInteger> scenarioRunCounts = new HashMap<>();
 		private final Map<String, AtomicInteger> scenarioFailureCounts = new HashMap<>();
-		private final Map<String, List<Exception>> scenarioExceptions = new HashMap<>();
+		private final Map<String, List<ScenarioException>> scenarioExceptions = new HashMap<>();
 		private final AtomicInteger workRequestCounter = new AtomicInteger();
 
 		private double workRequestsPerSecond = 0;
@@ -359,7 +359,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 			return workRequestsPerSecond;
 		}
 
-		private int minimumScenarioDuration(String scenarioName) {
+		private long minimumScenarioDuration(String scenarioName) {
 			if (!scenarioMinDurations.containsKey(scenarioName)) {
 				return 0;
 			}
@@ -367,7 +367,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 			return scenarioMinDurations.get(scenarioName);
 		}
 
-		private int maximumScenarioDuration(String scenarioName) {
+		private long maximumScenarioDuration(String scenarioName) {
 			if (!scenarioMaxDurations.containsKey(scenarioName)) {
 				return 0;
 			}
@@ -375,7 +375,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 			return scenarioMaxDurations.get(scenarioName);
 		}
 
-		private int averageScenarioDuration(String scenarioName) {
+		private long averageScenarioDuration(String scenarioName) {
 			if (!scenarioAvgDurations.containsKey(scenarioName)) {
 				return 0;
 			}
@@ -408,8 +408,8 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 			else {
 				scenarioFailureCounts.computeIfAbsent(scenario.name(), scenarioName -> new AtomicInteger()).incrementAndGet();
 				result.exception().ifPresent(exception -> {
-					List<Exception> exceptions = scenarioExceptions.computeIfAbsent(scenario.name(), scenarioName -> new ArrayList<>());
-					exceptions.add(exception);
+					List<ScenarioException> exceptions = scenarioExceptions.computeIfAbsent(scenario.name(), scenarioName -> new ArrayList<>());
+					exceptions.add(new DefaultScenarioException(result.started(), exception));
 					if (exceptions.size() > MAXIMUM_EXCEPTIONS) {
 						exceptions.remove(0);
 					}
@@ -437,12 +437,12 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 		}
 
 		private void calculateScenarioDuration(Scenario<T> scenario) {
-			Collection<Integer> durations = scenarioDurations.getOrDefault(scenario.name(), emptyList());
+			Collection<Long> durations = scenarioDurations.getOrDefault(scenario.name(), emptyList());
 			if (!durations.isEmpty()) {
-				int totalDuration = 0;
-				int minDuration = -1;
-				int maxDuration = -1;
-				for (Integer duration : durations) {
+				long totalDuration = 0;
+				long minDuration = -1;
+				long maxDuration = -1;
+				for (Long duration : durations) {
 					totalDuration += duration;
 					if (minDuration == -1) {
 						minDuration = duration;
@@ -475,6 +475,27 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 			return loadTest.applications().keySet().stream()
 							.map(DefaultApplicationRow::new)
 							.collect(toList());
+		}
+	}
+
+	private static final class DefaultScenarioException implements ScenarioException {
+
+		private final long timestamp;
+		private final Exception exception;
+
+		private DefaultScenarioException(long timestamp, Exception exception) {
+			this.timestamp = timestamp;
+			this.exception = exception;
+		}
+
+		@Override
+		public long timestamp() {
+			return timestamp;
+		}
+
+		@Override
+		public Exception exception() {
+			return exception;
 		}
 	}
 
@@ -575,7 +596,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 				case ApplicationRow.SUCCESSFUL:
 					return Boolean.class;
 				case ApplicationRow.DURATION:
-					return Integer.class;
+					return Long.class;
 				case ApplicationRow.EXCEPTION:
 					return String.class;
 				case ApplicationRow.MESSAGE:
@@ -602,7 +623,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 				case ApplicationRow.SUCCESSFUL:
 					return result == null ? null : result.successful();
 				case ApplicationRow.DURATION:
-					return result == null ? null : result.duration();
+					return result == null || result.duration() == -1 ? null : result.duration();
 				case ApplicationRow.EXCEPTION:
 					return exception;
 				case ApplicationRow.MESSAGE:

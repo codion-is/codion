@@ -43,6 +43,7 @@ Codion Change Log
 - LoadTest.Scenario moved up to package level, Builder.PerformerStep added.
 ### is.codion.tools.loadtest.ui
 - LoadTestPanel, check box for pause on exception added.
+- LoadTestPanel UI overhaul, exception view improved.
 ### is.codion.framework.servlet
 - EntityService handles clientVersion header parameter.
 

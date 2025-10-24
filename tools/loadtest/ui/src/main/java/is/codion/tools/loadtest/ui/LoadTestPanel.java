@@ -38,6 +38,7 @@ import is.codion.tools.loadtest.LoadTest;
 import is.codion.tools.loadtest.Scenario;
 import is.codion.tools.loadtest.model.LoadTestModel;
 import is.codion.tools.loadtest.model.LoadTestModel.ApplicationRow;
+import is.codion.tools.loadtest.model.LoadTestModel.ScenarioException;
 import is.codion.tools.loadtest.randomizer.ItemRandomizer.RandomItem;
 
 import com.formdev.flatlaf.FlatDarculaLaf;
@@ -61,7 +62,12 @@ import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.NumberFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -74,6 +80,9 @@ import static is.codion.swing.common.ui.icon.Logos.logoTransparent;
 import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.enableLookAndFeel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.window.Windows.screenSizeRatio;
+import static java.lang.System.lineSeparator;
+import static java.time.ZoneId.systemDefault;
+import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.*;
 import static org.jfree.chart.ChartFactory.createXYStepChart;
@@ -228,15 +237,15 @@ public final class LoadTestPanel<T> extends JPanel {
 										.layout(new GridLayout(1, 2, 0, 0))
 										.add(button()
 														.control(Control.builder()
+																		.command(loadTest::removeApplicationBatch)
+																		.caption("-")
+																		.description("Remove application batch")))
+										.add(button()
+														.control(Control.builder()
 																		.command(loadTest::addApplicationBatch)
 																		.caption("+")
 																		.enabled(userComboBoxModel.selection().empty().not())
-																		.description("Add application batch")))
-										.add(button()
-														.control(Control.builder()
-																		.command(loadTest::removeApplicationBatch)
-																		.caption("-")
-																		.description("Remove application batch"))))
+																		.description("Add application batch"))))
 						.build();
 	}
 
@@ -291,7 +300,8 @@ public final class LoadTestPanel<T> extends JPanel {
 																		.toolTipText("Automatically pause on error")))
 										.east(checkBox()
 														.link(loadTestModel.autoRefreshApplications())
-														.text("Automatic refresh")))
+														.text("Automatic refresh")
+														.mnemonic('A')))
 						.center(scrollPane()
 										.view(createApplicationsTable()))
 						.build();
@@ -306,15 +316,15 @@ public final class LoadTestPanel<T> extends JPanel {
 										.layout(new GridLayout(1, 2, 0, 0))
 										.add(button()
 														.control(Control.builder()
-																		.command(this::addUser)
-																		.caption("+")
-																		.description("Add an application user")))
-										.add(button()
-														.control(Control.builder()
 																		.command(this::removeUser)
 																		.caption("-")
 																		.description("Remove the selected application user")
-																		.enabled(userComboBoxModel.selection().empty().not()))))
+																		.enabled(userComboBoxModel.selection().empty().not())))
+										.add(button()
+														.control(Control.builder()
+																		.command(this::addUser)
+																		.caption("+")
+																		.description("Add an application user"))))
 						.build();
 	}
 
@@ -422,7 +432,7 @@ public final class LoadTestPanel<T> extends JPanel {
 						.doubleClick(command(this::viewException))
 						.scrollToSelectedItem(false)
 						.cellRenderer(ApplicationRow.DURATION, FilterTableCellRenderer.builder()
-										.columnClass(Integer.class)
+										.columnClass(Long.class)
 										.formatter(duration -> duration == null ? "" : DURATION_FORMAT.format(duration))
 										.build())
 						.popupMenuControls(table -> Controls.builder()
@@ -433,7 +443,8 @@ public final class LoadTestPanel<T> extends JPanel {
 										.separator()
 										.control(Control.builder()
 														.command(model()::removeSelectedApplications)
-														.caption("Remove selected"))
+														.enabled(tableModel.selection().empty().not())
+														.caption("Remove"))
 										.separator()
 										.control(Controls.builder()
 														.caption("Columns")
@@ -460,8 +471,8 @@ public final class LoadTestPanel<T> extends JPanel {
 	private JPanel createScenarioPanel(Scenario<T> item) {
 		return borderLayoutPanel()
 						.center(tabbedPane()
-										.tab("Duration", createScenarioDurationChartPanel(item))
-										.tab("Exceptions", createScenarioExceptionsPanel(item)))
+										.tab("Exceptions", createScenarioExceptionsPanel(item))
+										.tab("Duration", createScenarioDurationChartPanel(item)))
 						.build();
 	}
 
@@ -486,14 +497,16 @@ public final class LoadTestPanel<T> extends JPanel {
 		JButton refreshButton = button()
 						.control(Control.builder()
 										.command(new RefreshExceptionsCommand(exceptionsArea, scenario))
-										.caption("Refresh"))
+										.caption("Refresh")
+										.mnemonic('R'))
 						.build();
 		refreshButton.doClick();
 
 		JButton clearButton = button()
 						.control(Control.builder()
 										.command(new ClearExceptionsCommand(exceptionsArea, scenario))
-										.caption("Clear"))
+										.caption("Clear")
+										.mnemonic('C'))
 						.build();
 
 		return borderLayoutPanel()
@@ -573,6 +586,8 @@ public final class LoadTestPanel<T> extends JPanel {
 
 	private final class RefreshExceptionsCommand implements Control.Command {
 
+		private static final DateTimeFormatter TIMESTAMP_FORMATTER = ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+
 		private final JTextArea exceptionsTextArea;
 		private final Scenario<?> scenario;
 
@@ -584,11 +599,14 @@ public final class LoadTestPanel<T> extends JPanel {
 		@Override
 		public void execute() {
 			exceptionsTextArea.replaceRange("", 0, exceptionsTextArea.getDocument().getLength());
-			for (Exception exception : loadTestModel.exceptions(scenario.name())) {
-				exceptionsTextArea.append(exception.getMessage());
-				exceptionsTextArea.append(System.lineSeparator());
-				exceptionsTextArea.append(System.lineSeparator());
+			for (ScenarioException scenarioException : loadTestModel.exceptions(scenario.name())) {
+				StringWriter stringWriter = new StringWriter();
+				PrintWriter printWriter = new PrintWriter(stringWriter);
+				scenarioException.exception().printStackTrace(printWriter);
+				LocalDateTime timestamp = LocalDateTime.ofInstant(Instant.ofEpochMilli(scenarioException.timestamp()), systemDefault());
+				exceptionsTextArea.insert("@" + timestamp.format(TIMESTAMP_FORMATTER) + lineSeparator() + stringWriter + lineSeparator(), 0);
 			}
+			exceptionsTextArea.setCaretPosition(0);
 		}
 	}
 }

@@ -352,17 +352,18 @@ final class DefaultLoadTest<T> implements LoadTest<T> {
 		}
 
 		private T initializeApplication() {
+			long startTimeMillis = System.currentTimeMillis();
 			try {
-				long startTime = System.nanoTime();
+				long startTimeNano = System.nanoTime();
 				T app = applicationFactory.apply(user);
-				int duration = (int) TimeUnit.NANOSECONDS.toMicros(System.nanoTime() - startTime);
-				addResult(Result.success("Initialization", duration), PAUSE_ON_INIT_EXCEPTION);
+				int duration = (int) TimeUnit.NANOSECONDS.toMicros(System.nanoTime() - startTimeNano);
+				addResult(Result.success("Initialization", startTimeMillis, duration), PAUSE_ON_INIT_EXCEPTION);
 				LOG.debug("LoadTestModel initialized application: {}", app);
 
 				return app;
 			}
 			catch (Exception e) {
-				addResult(Result.failure("Initialization", e), PAUSE_ON_INIT_EXCEPTION);
+				addResult(Result.failure("Initialization", startTimeMillis, e), PAUSE_ON_INIT_EXCEPTION);
 				return null;
 			}
 		}

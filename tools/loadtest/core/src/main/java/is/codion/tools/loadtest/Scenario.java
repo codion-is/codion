@@ -171,9 +171,14 @@ public interface Scenario<T> {
 		String scenario();
 
 		/**
+		 * @return the time the scenario run started
+		 */
+		long started();
+
+		/**
 		 * @return the duration in microseconds, -1 in case of failure
 		 */
-		int duration();
+		long duration();
 
 		/**
 		 * @return true if the run was successful
@@ -187,20 +192,22 @@ public interface Scenario<T> {
 
 		/**
 		 * @param scenarioName the name of the usage scenario
+		 * @param started the start time
 		 * @param duration the duriation in microseconds
 		 * @return a new {@link Result} instance
 		 */
-		static Result success(String scenarioName, int duration) {
-			return new DefaultRunResult(scenarioName, duration, null);
+		static Result success(String scenarioName, long started, long duration) {
+			return new DefaultRunResult(scenarioName, started, duration, null);
 		}
 
 		/**
 		 * @param scenarioName the name of the usage scenario
+		 * @param started the start time
 		 * @param exception the exception
 		 * @return a new {@link Result} instance
 		 */
-		static Result failure(String scenarioName, Exception exception) {
-			return new DefaultRunResult(scenarioName, -1, exception);
+		static Result failure(String scenarioName, long started, Exception exception) {
+			return new DefaultRunResult(scenarioName, started, -1, exception);
 		}
 	}
 }

@@ -59,15 +59,16 @@ final class DefaultScenario<T> implements Scenario<T> {
 	@Override
 	public Result run(T application) {
 		requireNonNull(application, "application may not be null");
+		beforeRun.accept(application);
+		long startTimeMillis = System.currentTimeMillis();
 		try {
-			beforeRun.accept(application);
 			long startTime = System.nanoTime();
 			performer.perform(application);
 
-			return Result.success(name, (int) TimeUnit.NANOSECONDS.toMicros(System.nanoTime() - startTime));
+			return Result.success(name, startTimeMillis, TimeUnit.NANOSECONDS.toMicros(System.nanoTime() - startTime));
 		}
 		catch (Exception e) {
-			return Result.failure(name, e);
+			return Result.failure(name, startTimeMillis, e);
 		}
 		finally {
 			afterRun.accept(application);
@@ -159,17 +160,24 @@ final class DefaultScenario<T> implements Scenario<T> {
 	static final class DefaultRunResult implements Result {
 
 		private final String scenario;
-		private final int duration;
+		private final long started;
+		private final long duration;
 		private final Exception exception;
 
-		DefaultRunResult(String scenario, int duration, Exception exception) {
+		DefaultRunResult(String scenario, long started, long duration, Exception exception) {
 			this.scenario = requireNonNull(scenario);
+			this.started = started;
 			this.duration = duration;
 			this.exception = exception;
 		}
 
 		@Override
-		public int duration() {
+		public long started() {
+			return started;
+		}
+
+		@Override
+		public long duration() {
 			return duration;
 		}
 

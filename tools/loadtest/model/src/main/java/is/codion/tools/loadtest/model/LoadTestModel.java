@@ -103,7 +103,7 @@ public interface LoadTestModel<T> {
 	 * @param scenarioName the scenario name
 	 * @return the exceptions collected from running the scenario
 	 */
-	List<Exception> exceptions(String scenarioName);
+	List<ScenarioException> exceptions(String scenarioName);
 
 	/**
 	 * Clears the exceptions collected from running the given scenario
@@ -157,6 +157,22 @@ public interface LoadTestModel<T> {
 	}
 
 	/**
+	 * A scenario exception
+	 */
+	interface ScenarioException {
+
+		/**
+		 * @return the timestamp
+		 */
+		long timestamp();
+
+		/**
+		 * @return the exception
+		 */
+		Exception exception();
+	}
+
+	/**
 	 * Table model row describing a load test application.
 	 */
 	interface ApplicationRow {
@@ -167,7 +183,7 @@ public interface LoadTestModel<T> {
 		String NAME = "Name";
 		String USERNAME = "User";
 		String SCENARIO = "Scenario";
-		String SUCCESSFUL = "Succes";
+		String SUCCESSFUL = "Success";
 		String DURATION = "Duration (μs)";
 		String EXCEPTION = "Exception";
 		String MESSAGE = "Message";
