@@ -227,9 +227,9 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 	}
 
 	@Override
-	public List<ScenarioException> exceptions(String scenarioName) {
+	public List<ExceptionTimestamp> exceptions(String scenarioName) {
 		synchronized (counter) {
-			List<ScenarioException> exceptions = counter.scenarioExceptions.get(scenarioName);
+			List<ExceptionTimestamp> exceptions = counter.scenarioExceptions.get(scenarioName);
 			return exceptions == null ? emptyList() : new ArrayList<>(exceptions);
 		}
 	}
@@ -237,7 +237,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 	@Override
 	public void clearExceptions(String scenarioName) {
 		synchronized (counter) {
-			List<ScenarioException> exceptions = counter.scenarioExceptions.get(scenarioName);
+			List<ExceptionTimestamp> exceptions = counter.scenarioExceptions.get(scenarioName);
 			if (exceptions != null) {
 				exceptions.clear();
 			}
@@ -349,7 +349,7 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 		private final Map<String, List<Long>> scenarioDurations = new HashMap<>();
 		private final Map<String, AtomicInteger> scenarioRunCounts = new HashMap<>();
 		private final Map<String, AtomicInteger> scenarioFailureCounts = new HashMap<>();
-		private final Map<String, List<ScenarioException>> scenarioExceptions = new HashMap<>();
+		private final Map<String, List<ExceptionTimestamp>> scenarioExceptions = new HashMap<>();
 		private final AtomicInteger workRequestCounter = new AtomicInteger();
 
 		private double workRequestsPerSecond = 0;
@@ -408,8 +408,8 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 			else {
 				scenarioFailureCounts.computeIfAbsent(scenario.name(), scenarioName -> new AtomicInteger()).incrementAndGet();
 				result.exception().ifPresent(exception -> {
-					List<ScenarioException> exceptions = scenarioExceptions.computeIfAbsent(scenario.name(), scenarioName -> new ArrayList<>());
-					exceptions.add(new DefaultScenarioException(result.started(), exception));
+					List<ExceptionTimestamp> exceptions = scenarioExceptions.computeIfAbsent(scenario.name(), scenarioName -> new ArrayList<>());
+					exceptions.add(new DefaultExceptionTimestamp(result.started(), exception));
 					if (exceptions.size() > MAXIMUM_EXCEPTIONS) {
 						exceptions.remove(0);
 					}
@@ -478,12 +478,12 @@ final class DefaultLoadTestModel<T> implements LoadTestModel<T> {
 		}
 	}
 
-	private static final class DefaultScenarioException implements ScenarioException {
+	private static final class DefaultExceptionTimestamp implements ExceptionTimestamp {
 
 		private final long timestamp;
 		private final Exception exception;
 
-		private DefaultScenarioException(long timestamp, Exception exception) {
+		private DefaultExceptionTimestamp(long timestamp, Exception exception) {
 			this.timestamp = timestamp;
 			this.exception = exception;
 		}

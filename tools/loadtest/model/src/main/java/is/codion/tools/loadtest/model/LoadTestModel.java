@@ -103,7 +103,7 @@ public interface LoadTestModel<T> {
 	 * @param scenarioName the scenario name
 	 * @return the exceptions collected from running the scenario
 	 */
-	List<ScenarioException> exceptions(String scenarioName);
+	List<ExceptionTimestamp> exceptions(String scenarioName);
 
 	/**
 	 * Clears the exceptions collected from running the given scenario
@@ -159,7 +159,7 @@ public interface LoadTestModel<T> {
 	/**
 	 * A scenario exception
 	 */
-	interface ScenarioException {
+	interface ExceptionTimestamp {
 
 		/**
 		 * @return the timestamp

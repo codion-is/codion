@@ -79,7 +79,6 @@ public interface Scenario<T> {
 
 		/**
 		 * Specifies the scenario performer
-		 * @param <T> the load test application type
 		 */
 		interface PerformerStep {
 
@@ -119,7 +118,7 @@ public interface Scenario<T> {
 		 * By default, all exceptions cause a test to be paused.
 		 * @param pause the {@link Predicate} controlling whether the load test should be paused when a given exception occurs in this scenario
 		 * @return this builder
-		 * @see #pauseOnException()
+		 * @see LoadTest#pauseOnException()
 		 */
 		Builder<T> pause(Predicate<Exception> pause);
 

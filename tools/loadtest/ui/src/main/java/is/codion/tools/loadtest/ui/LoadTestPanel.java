@@ -26,6 +26,7 @@ import is.codion.swing.common.model.component.combobox.FilterComboBoxModel;
 import is.codion.swing.common.model.component.table.FilterTableModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
 import is.codion.swing.common.ui.component.table.FilterTable;
 import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.control.Control;
@@ -38,8 +39,7 @@ import is.codion.tools.loadtest.LoadTest;
 import is.codion.tools.loadtest.Scenario;
 import is.codion.tools.loadtest.model.LoadTestModel;
 import is.codion.tools.loadtest.model.LoadTestModel.ApplicationRow;
-import is.codion.tools.loadtest.model.LoadTestModel.ScenarioException;
-import is.codion.tools.loadtest.randomizer.ItemRandomizer.RandomItem;
+import is.codion.tools.loadtest.model.LoadTestModel.ExceptionTimestamp;
 
 import com.formdev.flatlaf.FlatDarculaLaf;
 import org.jfree.chart.ChartPanel;
@@ -62,6 +62,7 @@ import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.KeyEvent;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.NumberFormat;
@@ -69,7 +70,9 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static is.codion.common.item.Item.item;
@@ -117,7 +120,10 @@ public final class LoadTestPanel<T> extends JPanel {
 					.preferredWidth(120)
 					.build();
 	private final LoadTest<T> loadTest;
-	private final JPanel scenarioBase = gridLayoutPanel(0, 1).build();
+	private final Map<Scenario<T>, JPanel> exceptionPanels = new HashMap<>();
+	private final Map<Scenario<T>, JPanel> durationPanelsPanels = new HashMap<>();
+	private final JPanel exceptionPanel = borderLayoutPanel().build();
+	private final JPanel durationPanel = gridLayoutPanel(0, 1).build();
 
 	static {
 		FilterTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
@@ -216,10 +222,10 @@ public final class LoadTestPanel<T> extends JPanel {
 		add(createSouthPanel(), BorderLayout.SOUTH);
 	}
 
-	private ItemRandomizerPanel<Scenario<T>> createScenarioPanel() {
-		ItemRandomizerPanel<Scenario<T>> panel = new ItemRandomizerPanel<>(loadTest.scenarioChooser());
+	private ScenarioRandomizerPanel<T> createScenarioPanel() {
+		ScenarioRandomizerPanel<T> panel = new ScenarioRandomizerPanel<>(loadTest.scenarioChooser());
 		panel.setBorder(createTitledBorder("Usage scenarios"));
-		panel.selectedItems().addConsumer(this::onScenarioSelectionChanged);
+		panel.selectedScenarios().addConsumer(this::onScenarioSelectionChanged);
 
 		return panel;
 	}
@@ -252,17 +258,29 @@ public final class LoadTestPanel<T> extends JPanel {
 	private JPanel createCenterPanel() {
 		return borderLayoutPanel()
 						.center(tabbedPane()
-										.tab("Applications", createApplicationsPanel())
-										.tab("Scenarios", borderLayoutPanel()
+										.tab("Applications")
+										.component(createApplicationsPanel())
+										.mnemonic(KeyEvent.VK_1)
+										.add()
+										.tab("Scenarios")
+										.component(borderLayoutPanel()
 														.west(createScenarioPanel())
-														.center(scenarioBase))
-										.tab("Overview", borderLayoutPanel()
+														.center(tabbedPane()
+																		.tab("Exceptions", exceptionPanel)
+																		.tab("Duration", durationPanel)
+																		.build()))
+										.mnemonic(KeyEvent.VK_2)
+										.add()
+										.tab("Overview")
+										.component(borderLayoutPanel()
 														.center(splitPane()
 																		.orientation(JSplitPane.VERTICAL_SPLIT)
 																		.oneTouchExpandable(true)
 																		.topComponent(createScenarioOverviewChartPanel())
 																		.bottomComponent(createSouthChartPanel())
-																		.resizeWeight(RESIZE_WEIGHT))))
+																		.resizeWeight(RESIZE_WEIGHT)))
+										.mnemonic(KeyEvent.VK_3)
+										.add())
 						.build();
 	}
 
@@ -461,19 +479,18 @@ public final class LoadTestPanel<T> extends JPanel {
 						.ifPresent(this::displayException);
 	}
 
-	private void onScenarioSelectionChanged(List<RandomItem<Scenario<T>>> selectedScenarios) {
-		scenarioBase.removeAll();
-		selectedScenarios.forEach(scenario -> scenarioBase.add(createScenarioPanel(scenario.item())));
+	private void onScenarioSelectionChanged(List<Scenario<T>> scenarios) {
+		exceptionPanel.removeAll();
+		if (!scenarios.isEmpty()) {
+			TabbedPaneBuilder builder = tabbedPane();
+			scenarios.forEach(scenario -> builder.tab(scenario.name(),
+							exceptionPanels.computeIfAbsent(scenario, k -> createScenarioExceptionsPanel(scenario))));
+			exceptionPanel.add(builder.build(), BorderLayout.CENTER);
+		}
+		durationPanel.removeAll();
+		scenarios.forEach(scenario -> durationPanel.add(durationPanelsPanels.computeIfAbsent(scenario, k -> createScenarioDurationChartPanel(scenario))));
 		validate();
 		repaint();
-	}
-
-	private JPanel createScenarioPanel(Scenario<T> item) {
-		return borderLayoutPanel()
-						.center(tabbedPane()
-										.tab("Exceptions", createScenarioExceptionsPanel(item))
-										.tab("Duration", createScenarioDurationChartPanel(item)))
-						.build();
 	}
 
 	private ChartPanel createScenarioDurationChartPanel(Scenario<T> scenario) {
@@ -599,11 +616,11 @@ public final class LoadTestPanel<T> extends JPanel {
 		@Override
 		public void execute() {
 			exceptionsTextArea.replaceRange("", 0, exceptionsTextArea.getDocument().getLength());
-			for (ScenarioException scenarioException : loadTestModel.exceptions(scenario.name())) {
+			for (ExceptionTimestamp exceptionTimestamp : loadTestModel.exceptions(scenario.name())) {
 				StringWriter stringWriter = new StringWriter();
 				PrintWriter printWriter = new PrintWriter(stringWriter);
-				scenarioException.exception().printStackTrace(printWriter);
-				LocalDateTime timestamp = LocalDateTime.ofInstant(Instant.ofEpochMilli(scenarioException.timestamp()), systemDefault());
+				exceptionTimestamp.exception().printStackTrace(printWriter);
+				LocalDateTime timestamp = LocalDateTime.ofInstant(Instant.ofEpochMilli(exceptionTimestamp.timestamp()), systemDefault());
 				exceptionsTextArea.insert("@" + timestamp.format(TIMESTAMP_FORMATTER) + lineSeparator() + stringWriter + lineSeparator(), 0);
 			}
 			exceptionsTextArea.setCaretPosition(0);
