@@ -89,6 +89,8 @@ public final class EntitySearchFieldPanel extends JPanel {
 
 	/**
 	 * A builder for a {@link EntitySearchFieldPanel}
+	 * @param <T> the type of the value the component represents
+	 * @param <B> the builder type
 	 */
 	public interface Builder<T, B extends Builder<T, B>> extends ComponentValueBuilder<EntitySearchFieldPanel, T, B> {
 

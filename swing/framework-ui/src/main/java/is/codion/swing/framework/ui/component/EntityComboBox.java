@@ -29,7 +29,6 @@ import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.control.ControlMap;
-import is.codion.swing.common.ui.cursor.Cursors;
 import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
@@ -38,6 +37,7 @@ import org.jspecify.annotations.Nullable;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import java.awt.Cursor;
 import java.awt.event.FocusListener;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -47,6 +47,8 @@ import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
 import static is.codion.swing.framework.ui.component.EntityComboBox.ControlKeys.ADD;
 import static is.codion.swing.framework.ui.component.EntityComboBox.ControlKeys.EDIT;
+import static java.awt.Cursor.getDefaultCursor;
+import static java.awt.Cursor.getPredefinedCursor;
 import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.util.Objects.requireNonNull;
 
@@ -76,6 +78,9 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
 		private ControlKeys() {}
 	}
+
+	private static final Cursor WAIT_CURSOR = getPredefinedCursor(Cursor.WAIT_CURSOR);
+	private static final Cursor DEFAULT_CURSOR = getDefaultCursor();
 
 	private final ControlMap controlMap;
 
@@ -271,7 +276,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 	}
 
 	private void refresherActive(boolean refresherActive) {
-		setCursor(refresherActive ? Cursors.WAIT : Cursors.DEFAULT);
+		setCursor(refresherActive ? WAIT_CURSOR : DEFAULT_CURSOR);
 	}
 
 	private static final class DefaultModelStep implements Builder.ModelStep {

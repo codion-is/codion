@@ -20,7 +20,6 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.resource.MessageBundle;
-import is.codion.swing.common.ui.cursor.Cursors;
 
 import org.jspecify.annotations.Nullable;
 
@@ -28,6 +27,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
+import java.awt.Cursor;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -37,6 +37,8 @@ import java.util.List;
 
 import static is.codion.common.Text.nullOrEmpty;
 import static is.codion.common.resource.MessageBundle.messageBundle;
+import static java.awt.Cursor.getDefaultCursor;
+import static java.awt.Cursor.getPredefinedCursor;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
@@ -52,6 +54,9 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 	 */
 	private static @Nullable JFileChooser fileChooserOpen;
 	private static @Nullable JFileChooser fileChooserSave;
+
+	private static final Cursor WAIT_CURSOR = getPredefinedCursor(Cursor.WAIT_CURSOR);
+	private static final Cursor DEFAULT_CURSOR = getDefaultCursor();
 
 	private final List<FileFilter> fileFilters = new ArrayList<>();
 
@@ -127,14 +132,14 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 		synchronized (DefaultFileSelectionDialogBuilder.class) {
 			if (fileChooserSave == null) {
 				if (owner != null) {
-					owner.setCursor(Cursors.WAIT);
+					owner.setCursor(WAIT_CURSOR);
 				}
 				try {
 					fileChooserSave = new JFileChooser();
 				}
 				finally {
 					if (owner != null) {
-						owner.setCursor(Cursors.DEFAULT);
+						owner.setCursor(DEFAULT_CURSOR);
 					}
 				}
 			}
@@ -218,14 +223,14 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 		synchronized (DefaultFileSelectionDialogBuilder.class) {
 			if (fileChooserOpen == null) {
 				if (owner != null) {
-					owner.setCursor(Cursors.WAIT);
+					owner.setCursor(WAIT_CURSOR);
 				}
 				try {
 					fileChooserOpen = new JFileChooser(new File(startDirectory == null ? System.getProperty("user.home") : startDirectory));
 				}
 				finally {
 					if (owner != null) {
-						owner.setCursor(Cursors.DEFAULT);
+						owner.setCursor(DEFAULT_CURSOR);
 					}
 				}
 			}

@@ -66,7 +66,6 @@ module is.codion.swing.common.ui {
 	exports is.codion.swing.common.ui.border;
 	exports is.codion.swing.common.ui.color;
 	exports is.codion.swing.common.ui.control;
-	exports is.codion.swing.common.ui.cursor;
 	exports is.codion.swing.common.ui.dialog;
 	exports is.codion.swing.common.ui.frame;
 	exports is.codion.swing.common.ui.icon;

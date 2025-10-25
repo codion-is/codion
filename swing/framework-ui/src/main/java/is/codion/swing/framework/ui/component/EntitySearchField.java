@@ -51,7 +51,6 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.control.ControlMap;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.cursor.Cursors;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -111,6 +110,7 @@ import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.component.EntitySearchField.ControlKeys.ADD;
 import static is.codion.swing.framework.ui.component.EntitySearchField.ControlKeys.EDIT;
 import static is.codion.swing.framework.ui.component.EntitySearchField.SearchIndicator.WAIT_CURSOR;
+import static java.awt.Cursor.getPredefinedCursor;
 import static java.awt.event.FocusEvent.Cause.ACTIVATION;
 import static java.awt.event.KeyEvent.*;
 import static java.text.MessageFormat.format;
@@ -187,6 +187,7 @@ public final class EntitySearchField extends HintTextField {
 		private ControlKeys() {}
 	}
 
+	private static final Cursor WAIT = getPredefinedCursor(Cursor.WAIT_CURSOR);
 	private static final Function<Entity, String> DEFAULT_FORMATTER = Object::toString;
 	private static final String DEFAULT_SEPARATOR = ", ";
 
@@ -318,6 +319,8 @@ public final class EntitySearchField extends HintTextField {
 
 	/**
 	 * Builds an entity search field.
+	 * @param <T> the type of the value the component represents
+	 * @param <B> the builder type
 	 */
 	public interface Builder<T, B extends Builder<T, B>> extends ComponentValueBuilder<EntitySearchField, T, B> {
 
@@ -1081,7 +1084,7 @@ public final class EntitySearchField extends HintTextField {
 		@Override
 		public void accept(Boolean isSearching) {
 			if (isSearching) {
-				setCursor(Cursors.WAIT);
+				setCursor(WAIT);
 			}
 			else {
 				setCursor(defaultCursor);

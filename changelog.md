@@ -18,6 +18,7 @@ Codion Change Log
 - FilterTableCellEditor.Builder.clickCountToStart() added.
 - DefaultFilterTableCellEditor bug fixed, JCheckBox based editor did not paint selection background, added some DefaultTableCellEditor behaviour.
 - DefaultFilterTableCellEditor, stop edit action listeners added.
+- Cursors removed.
 ### is.codion.framework.domain
 - EntityType bug fixed, define(List) parameter type changed to List<? extends AttributeDefinition.Builder<?, ?>>.
 ### is.codion.framework.db.local
