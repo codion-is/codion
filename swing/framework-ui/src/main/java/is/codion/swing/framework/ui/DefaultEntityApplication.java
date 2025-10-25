@@ -105,6 +105,7 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 	private Function<EntityConnectionProvider, M> model = new DefaultApplicationModelFactory();
 	private Function<M, P> panel = new DefaultApplicationPanelFactory();
 	private @Nullable Observable<String> frameTitle;
+	private boolean connectionInfoUpperCase = CONNECTION_INFO_UPPER_CASE.getOrThrow();
 
 	private @Nullable DomainType domain = EntityConnectionProvider.CLIENT_DOMAIN_TYPE.get();
 	private Supplier<User> userSupplier = new DefaultUserSupplier();
@@ -242,6 +243,12 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 	@Override
 	public EntityApplication<M, P> frameTitle(Observable<String> frameTitle) {
 		this.frameTitle = requireNonNull(frameTitle);
+		return this;
+	}
+
+	@Override
+	public EntityApplication<M, P> connectionInfoUpperCase(boolean connectionInfoUpperCase) {
+		this.connectionInfoUpperCase = connectionInfoUpperCase;
 		return this;
 	}
 
@@ -512,7 +519,7 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 		if (builder.length() > 0) {
 			builder.append(DASH);
 		}
-		builder.append(userInfo(applicationModel.connectionProvider()));
+		builder.append(connectionInfo(applicationModel.connectionProvider()));
 
 		return builder.toString();
 	}
@@ -554,12 +561,16 @@ final class DefaultEntityApplication<M extends SwingEntityApplicationModel, P ex
 						.build();
 	}
 
-	private static String userInfo(EntityConnectionProvider connectionProvider) {
-		String username = connectionProvider.user().username().toUpperCase();
-
-		return connectionProvider.description()
-						.map(connectionDescription -> username + "@" + connectionDescription.toUpperCase())
+	private String connectionInfo(EntityConnectionProvider connectionProvider) {
+		String username = connectionProvider.user().username();
+		String connectionInfo = connectionProvider.description()
+						.map(connectionDescription -> username + (connectionDescription.isEmpty() ? "" : "@" + connectionDescription))
 						.orElse(username);
+		if (connectionInfoUpperCase) {
+			connectionInfo = connectionInfo.toUpperCase();
+		}
+
+		return connectionInfo;
 	}
 
 	private static void displayExceptionAndExit(Throwable exception, @Nullable JFrame applicationFrame) {

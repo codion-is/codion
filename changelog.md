@@ -20,6 +20,8 @@ Codion Change Log
 - DefaultFilterTableCellEditor, stop edit action listeners added.
 ### is.codion.framework.domain
 - EntityType bug fixed, define(List) parameter type changed to List<? extends AttributeDefinition.Builder<?, ?>>.
+### is.codion.framework.db.local
+- DefaultLocalEntityConnectionProvider.description() no longer automatically converts database name to upper case. 
 ### is.codion.framework.db.rmi
 - Test coverage improved.
 ### is.codion.framework.db.http
@@ -38,6 +40,7 @@ Codion Change Log
 - EditAttributePanel bug fixed, update no longer enabled if no entity is modified.
 - EntityTablePanel.Config.surrendersFocusOnKeystroke() added.
 - EntityTablePanel.ControlKeys.EDIT_SELECTED_ATTRIBUTE renamed EDIT_ATTRIBUTE.
+- EntityApplication.connectionInfoUpperCase() added along with CONNECTION_INFO_UPPER_CASE configuration value added.
 ### is.codion.tools.generator.domain
 - DomainSource bug fixed, domain test imports fixed for api/impl.
 ### is.codion.tools.generator.panel

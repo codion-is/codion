@@ -88,6 +88,18 @@ public interface EntityApplication<M extends SwingEntityApplicationModel, P exte
 	PropertyValue<Boolean> STARTUP_DIALOG = booleanValue("codion.client.startupDialog", true);
 
 	/**
+	 * <p>Specifies whether the connection information displayed in the frame title is automatically converted to upper case.
+	 * <p>If not, the username as input via the login dialog is used along with the connection description as provided
+	 * by the underlying {@link EntityConnectionProvider}. This may result in "Scott@DevDb" or "scott@DEVSERVER@hostname"
+	 * instead of the default "SCOTT@DEVDB" or "SCOTT@DEVSERVER@HOSTNAME".
+	 * <ul>
+	 * <li>Value type: Boolean
+	 * <li>Default value: true
+	 * </ul>
+	 */
+	PropertyValue<Boolean> CONNECTION_INFO_UPPER_CASE = booleanValue("codion.client.connectionInfoUpperCase", true);
+
+	/**
 	 * @param domain the domain type
 	 * @return this Builder instance
 	 */
@@ -241,6 +253,13 @@ public interface EntityApplication<M extends SwingEntityApplicationModel, P exte
 	 * @return this Builder instance
 	 */
 	EntityApplication<M, P> frameTitle(Observable<String> frameTitle);
+
+	/**
+	 * @param connectionInfoUpperCase specifies whether the connection information displayed in the frame title is automatically converted to upper case
+	 * @return this Builder instance
+	 * @see #CONNECTION_INFO_UPPER_CASE
+	 */
+	EntityApplication<M, P> connectionInfoUpperCase(boolean connectionInfoUpperCase);
 
 	/**
 	 * @param mainMenu if true then a main menu is included

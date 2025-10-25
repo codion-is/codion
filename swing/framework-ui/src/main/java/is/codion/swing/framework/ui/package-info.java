@@ -22,6 +22,7 @@
  * <li>{@link is.codion.swing.framework.ui.EntityApplication#USER}
  * <li>{@link is.codion.swing.framework.ui.EntityApplication#SAVE_DEFAULT_USERNAME}
  * <li>{@link is.codion.swing.framework.ui.EntityApplication#STARTUP_DIALOG}
+ * <li>{@link is.codion.swing.framework.ui.EntityApplication#CONNECTION_INFO_UPPER_CASE}
  * <li>{@link is.codion.swing.framework.ui.EntityApplicationPanel#HELP_URL}
  * <li>{@link is.codion.swing.framework.ui.EntityApplicationPanel#CONFIRM_EXIT}
  * <li>{@link is.codion.swing.framework.ui.EntityApplicationPanel#CACHE_ENTITY_PANELS}
