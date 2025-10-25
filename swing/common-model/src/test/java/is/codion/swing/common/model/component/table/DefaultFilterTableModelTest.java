@@ -38,7 +38,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-import static java.lang.System.lineSeparator;
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -50,7 +49,6 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public final class DefaultFilterTableModelTest {
 
-	private static final String LINE_SEPARATOR = lineSeparator();
 	private static final TestRow A = new TestRow("a");
 	private static final TestRow B = new TestRow("b");
 	private static final TestRow C = new TestRow("c");
@@ -814,11 +812,11 @@ public final class DefaultFilterTableModelTest {
 		FilterTableModel<TestRow, Integer> table = createTestModel();
 		table.items().refresh();
 
-		String expected = "0" + LINE_SEPARATOR +
-						"a" + LINE_SEPARATOR +
-						"b" + LINE_SEPARATOR +
-						"c" + LINE_SEPARATOR +
-						"d" + LINE_SEPARATOR +
+		String expected = "0\n" +
+						"a\n" +
+						"b\n" +
+						"c\n" +
+						"d\n" +
 						"e";
 		assertEquals(expected, table.export()
 						.delimiter('\t')
@@ -826,8 +824,8 @@ public final class DefaultFilterTableModelTest {
 
 		table.selection().indexes().set(asList(0, 1, 3));
 
-		String selected = "a" + LINE_SEPARATOR +
-						"b" + LINE_SEPARATOR +
+		String selected = "a\n" +
+						"b\n" +
 						"d";
 		assertEquals(selected, table.export()
 						.delimiter('\t')
@@ -842,16 +840,16 @@ public final class DefaultFilterTableModelTest {
 						new TestRow("g\r\nh\n"),
 						new TestRow("\ni\rj k")));
 
-		String result = "f g" + LINE_SEPARATOR +
-						"g h" + LINE_SEPARATOR +
+		String result = "f g\n" +
+						"g h\n" +
 						"i j k";
 
 		assertEquals(result, table.export()
 						.header(false)
 						.get());
 
-		result = "f\ng" + LINE_SEPARATOR +
-						"g\r\nh" + LINE_SEPARATOR +
+		result = "f\ng\n" +
+						"g\r\nh\n" +
 						"i\rj k";
 		assertEquals(result, table.export()
 						.header(false)

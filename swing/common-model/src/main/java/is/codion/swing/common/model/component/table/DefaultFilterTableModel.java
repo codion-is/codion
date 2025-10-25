@@ -514,7 +514,7 @@ final class DefaultFilterTableModel<R, C> extends AbstractTableModel implements 
 
 			return lines.stream()
 							.map(line -> join(String.valueOf(delimiter), line))
-							.collect(joining(System.lineSeparator()));
+							.collect(joining("\n"));
 		}
 
 		private List<String> stringValues(int row, List<C> columns) {

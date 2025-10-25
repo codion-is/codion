@@ -83,7 +83,6 @@ import static is.codion.swing.common.ui.icon.Logos.logoTransparent;
 import static is.codion.swing.common.ui.laf.LookAndFeelEnabler.enableLookAndFeel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.window.Windows.screenSizeRatio;
-import static java.lang.System.lineSeparator;
 import static java.time.ZoneId.systemDefault;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Objects.requireNonNull;
@@ -617,7 +616,7 @@ public final class LoadTestPanel<T> extends JPanel {
 				PrintWriter printWriter = new PrintWriter(stringWriter);
 				exceptionTimestamp.exception().printStackTrace(printWriter);
 				LocalDateTime timestamp = LocalDateTime.ofInstant(Instant.ofEpochMilli(exceptionTimestamp.timestamp()), systemDefault());
-				exceptionsTextArea.insert("@" + timestamp.format(TIMESTAMP_FORMATTER) + lineSeparator() + stringWriter + lineSeparator(), 0);
+				exceptionsTextArea.insert("@" + timestamp.format(TIMESTAMP_FORMATTER) + "\n" + stringWriter + "\n", 0);
 			}
 			exceptionsTextArea.setCaretPosition(0);
 		}

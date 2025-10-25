@@ -45,8 +45,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class PropertyStoreTest {
 
-	private static final String LINE_SEPARATOR = System.lineSeparator();
-
 	// Test constants
 	private static final String VALUE_1 = "value1";
 	private static final String VALUE_2 = "value2";
@@ -63,11 +61,11 @@ public final class PropertyStoreTest {
 	void propertyStore_withFileBackingAndOperations_shouldPersistChanges(@TempDir Path tempDir) throws IOException {
 		Path configFile = tempDir.resolve("PropertyStoreTest.test.properties");
 		StringBuilder configBuilder = new StringBuilder()
-						.append("stringlist.property=").append(VALUE_1).append(";").append(VALUE_2).append(";").append(VALUE_3).append(LINE_SEPARATOR)
-						.append("intlist.property=1;2;3").append(LINE_SEPARATOR)
-						.append("int.property1=").append(INT_VALUE_1).append(LINE_SEPARATOR)
-						.append("int.property3=").append(INT_VALUE_2).append(LINE_SEPARATOR)
-						.append("double.property=").append(DOUBLE_VALUE).append(LINE_SEPARATOR)
+						.append("stringlist.property=").append(VALUE_1).append(";").append(VALUE_2).append(";").append(VALUE_3).append("\n")
+						.append("intlist.property=1;2;3").append("\n")
+						.append("int.property1=").append(INT_VALUE_1).append("\n")
+						.append("int.property3=").append(INT_VALUE_2).append("\n")
+						.append("double.property=").append(DOUBLE_VALUE).append("\n")
 						.append("boolean.property=true");
 		Files.write(configFile, singletonList(configBuilder.toString()));
 		PropertyStore store = propertyStore(configFile);

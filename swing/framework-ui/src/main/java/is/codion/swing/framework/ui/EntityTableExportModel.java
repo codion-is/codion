@@ -59,7 +59,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static is.codion.common.resource.MessageBundle.messageBundle;
 import static java.lang.String.join;
-import static java.lang.System.lineSeparator;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -365,13 +364,13 @@ final class EntityTableExportModel {
 		public void execute(ProgressReporter<Void> progress) throws Exception {
 			try (BufferedWriter output = Files.newBufferedWriter(file)) {
 				output.write(createHeader().stream()
-								.collect(joining(TAB, "", lineSeparator())));
+								.collect(joining(TAB, "", "\n")));
 				for (Entity entity : entities) {
 					if (cancelled.is()) {
 						throw new CancelException();
 					}
 					output.write(join(TAB, createRow(entity)));
-					output.write(lineSeparator());
+					output.write("\n");
 					progress.report(counter.incrementAndGet());
 				}
 			}
@@ -394,8 +393,8 @@ final class EntityTableExportModel {
 			String result = entities.stream()
 							.map(entity -> createLine(entity, progress))
 							.map(line -> join(TAB, line))
-							.collect(joining(lineSeparator(), createHeader().stream()
-											.collect(joining(TAB, "", lineSeparator())), ""));
+							.collect(joining("\n", createHeader().stream()
+											.collect(joining(TAB, "", "\n")), ""));
 			if (cancelled.is()) {
 				throw new CancelException();
 			}

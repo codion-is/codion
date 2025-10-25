@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Objects;
 
 import static is.codion.framework.db.EntityConnection.Count.where;
-import static java.lang.System.lineSeparator;
 import static java.util.stream.Collectors.joining;
 import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -88,13 +87,13 @@ public final class ArtistTablePanel extends EntityTablePanel {
 	private boolean confirmCombination(List<Entity> artistsToDelete, Entity artistToKeep, int albumCount) {
 		StringBuilder message = new StringBuilder();
 		if (albumCount > 0) {
-			message.append("Associate ").append(albumCount).append(" albums(s) ").append(lineSeparator())
-							.append("with ").append(artistToKeep).append("?").append(lineSeparator());
+			message.append("Associate ").append(albumCount).append(" albums(s) ").append("\n")
+							.append("with ").append(artistToKeep).append("?").append("\n");
 		}
-		message.append("Delete the following:").append(lineSeparator())
+		message.append("Delete the following:").append("\n")
 						.append(artistsToDelete.stream()
 										.map(Objects::toString)
-										.collect(joining(lineSeparator()))).append(lineSeparator())
+										.collect(joining("\n"))).append("\n")
 						.append("while keeping: ").append(artistToKeep).append("?");
 
 		return showConfirmDialog(ArtistTablePanel.this, message,
