@@ -18,6 +18,12 @@
  */
 /**
  * <p>Formatting related classes.
+ * Package configuration values:
+ * <ul>
+ * <li>{@link is.codion.common.format.LocaleDateTimePattern#TIME_PATTERN}
+ * <li>{@link is.codion.common.format.LocaleDateTimePattern#DATE_PATTERN}
+ * <li>{@link is.codion.common.format.LocaleDateTimePattern#DATE_TIME_PATTERN}
+ * </ul>
  */
 @org.jspecify.annotations.NullMarked
 package is.codion.common.format;

@@ -177,46 +177,6 @@ public sealed interface AttributeDefinition<T>
 	PropertyValue<RoundingMode> ROUNDING_MODE = enumValue("codion.domain.roundingMode", RoundingMode.class, RoundingMode.HALF_EVEN);
 
 	/**
-	 * The default date format pattern to use when showing time values in tables and when creating default time input fields
-	 * <ul>
-	 * <li>Value type: String
-	 * <li>Default value: HH:mm
-	 * </ul>
-	 */
-	PropertyValue<String> TIME_FORMAT = stringValue("codion.domain.timeFormat", LocaleDateTimePattern.builder()
-					.hoursMinutes()
-					.build()
-					.timePattern()
-					.orElseThrow(IllegalStateException::new));
-
-	/**
-	 * The default date/time format pattern to use when showing date/time values in tables and when creating default date/time input fields
-	 * <ul>
-	 * <li>Value type: String
-	 * <li>Default value: dd-MM-yyyy HH:mm [month/day order is locale specific]
-	 * </ul>
-	 */
-	PropertyValue<String> DATE_TIME_FORMAT = stringValue("codion.domain.dateTimeFormat", LocaleDateTimePattern.builder()
-					.delimiterDash()
-					.yearFourDigits()
-					.hoursMinutes()
-					.build()
-					.dateTimePattern());
-
-	/**
-	 * The default date format pattern to use when showing date values in tables and when creating default date input fields
-	 * <ul>
-	 * <li>Value type: String
-	 * <li>Default value: dd-MM-yyyy [month/day order is locale specific]
-	 * </ul>
-	 */
-	PropertyValue<String> DATE_FORMAT = stringValue("codion.domain.dateFormat", LocaleDateTimePattern.builder()
-					.delimiterDash()
-					.yearFourDigits()
-					.build()
-					.datePattern());
-
-	/**
 	 * Specifies whether number grouping is used by default
 	 * <ul>
 	 * <li>Value type: Boolean

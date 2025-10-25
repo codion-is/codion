@@ -483,18 +483,13 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 
 		private String defaultDateTimePattern() {
 			if (temporalClass.equals(LocalTime.class)) {
-				return "HH:mm";
+				return LocaleDateTimePattern.TIME_PATTERN.getOrThrow();
 			}
 			else if (temporalClass.equals(LocalDate.class)) {
-				return LocaleDateTimePattern.builder()
-								.build()
-								.dateTimePattern();
+				return LocaleDateTimePattern.DATE_PATTERN.getOrThrow();
 			}
 
-			return LocaleDateTimePattern.builder()
-							.hoursMinutes()
-							.build()
-							.dateTimePattern();
+			return LocaleDateTimePattern.DATE_TIME_PATTERN.getOrThrow();
 		}
 
 		private static <T extends Temporal> DateTimeParser<T> createDateTimeParser(Class<T> valueClass) {

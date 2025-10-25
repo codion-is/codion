@@ -398,16 +398,16 @@ abstract sealed class AbstractAttributeDefinition<T> implements AttributeDefinit
 
 	private @Nullable String defaultDateTimePattern() {
 		if (attribute.type().isLocalDate()) {
-			return DATE_FORMAT.getOrThrow();
+			return LocaleDateTimePattern.DATE_PATTERN.getOrThrow();
 		}
 		else if (attribute.type().isLocalTime()) {
-			return TIME_FORMAT.getOrThrow();
+			return LocaleDateTimePattern.TIME_PATTERN.getOrThrow();
 		}
 		else if (attribute.type().isLocalDateTime()) {
-			return DATE_TIME_FORMAT.getOrThrow();
+			return LocaleDateTimePattern.DATE_TIME_PATTERN.getOrThrow();
 		}
 		else if (attribute.type().isOffsetDateTime()) {
-			return DATE_TIME_FORMAT.getOrThrow();
+			return LocaleDateTimePattern.DATE_TIME_PATTERN.getOrThrow();
 		}
 
 		return null;

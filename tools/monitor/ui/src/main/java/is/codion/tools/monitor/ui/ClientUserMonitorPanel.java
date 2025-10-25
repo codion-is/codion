@@ -18,13 +18,10 @@
  */
 package is.codion.tools.monitor.ui;
 
-import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.swing.common.ui.component.table.FilterTable;
-import is.codion.swing.common.ui.component.table.FilterTableCellRenderer;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.tools.monitor.model.ClientUserMonitor;
-import is.codion.tools.monitor.model.ClientUserMonitor.UserHistoryColumns;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
@@ -37,8 +34,6 @@ import javax.swing.SpinnerNumberModel;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.rmi.RemoteException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.command;
@@ -53,10 +48,6 @@ public final class ClientUserMonitorPanel extends JPanel {
 
 	private static final int SPINNER_COLUMNS = 3;
 	private static final Integer[] MAINTENANCE_INTERVAL_VALUES = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 120, 180, 340, 6000, 10000};
-	private static final DateTimeFormatter LAST_SEEN_FORMATTER = LocaleDateTimePattern.builder()
-					.delimiterDash().yearFourDigits().hoursMinutesSeconds()
-					.build()
-					.formatter();
 
 	private final ClientUserMonitor model;
 
@@ -133,10 +124,6 @@ public final class ClientUserMonitorPanel extends JPanel {
 
 		FilterTable<?, ?> userHistoryTable = FilterTable.builder()
 						.model(model.userHistoryTableModel())
-						.cellRenderer(UserHistoryColumns.LAST_SEEN, FilterTableCellRenderer.builder()
-										.columnClass(LocalDateTime.class)
-										.formatter(lastSeen -> lastSeen == null ? null : LAST_SEEN_FORMATTER.format(lastSeen))
-										.build())
 						.popupMenuControls(table -> Controls.builder()
 										.control(Controls.builder()
 														.caption("Columns")

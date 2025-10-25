@@ -18,6 +18,8 @@
  */
 package is.codion.common.format;
 
+import is.codion.common.property.PropertyValue;
+
 import org.jspecify.annotations.Nullable;
 
 import java.io.Serial;
@@ -31,10 +33,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static is.codion.common.Configuration.stringValue;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Specifies a locale sensitive numerical date format pattern.
@@ -61,6 +64,49 @@ import static java.util.Objects.requireNonNull;
  * @see #builder()
  */
 public final class LocaleDateTimePattern implements Serializable {
+
+	/**
+	 * The default date format pattern
+	 * <ul>
+	 * <li>Value type: String
+	 * <li>Default value: HH:mm
+	 * </ul>
+	 */
+	public static final PropertyValue<String> TIME_PATTERN = stringValue(LocaleDateTimePattern.class.getName() + ".timePattern",
+					LocaleDateTimePattern.builder()
+									.hoursMinutes()
+									.build()
+									.timePattern()
+									.orElseThrow(IllegalStateException::new));
+
+	/**
+	 * The default date format pattern
+	 * <ul>
+	 * <li>Value type: String
+	 * <li>Default value: dd-MM-yyyy [month/day order is locale specific]
+	 * </ul>
+	 */
+	public static final PropertyValue<String> DATE_PATTERN = stringValue(LocaleDateTimePattern.class.getName() + ".datePattern",
+					LocaleDateTimePattern.builder()
+									.delimiterDash()
+									.yearFourDigits()
+									.build()
+									.datePattern());
+
+	/**
+	 * The default date/time format pattern
+	 * <ul>
+	 * <li>Value type: String
+	 * <li>Default value: dd-MM-yyyy HH:mm [month/day order is locale specific]
+	 * </ul>
+	 */
+	public static final PropertyValue<String> DATE_TIME_PATTERN = stringValue(LocaleDateTimePattern.class.getName() + ".dateTimePattern",
+					LocaleDateTimePattern.builder()
+									.delimiterDash()
+									.yearFourDigits()
+									.hoursMinutes()
+									.build()
+									.dateTimePattern());
 
 	@Serial
 	private static final long serialVersionUID = 1;
@@ -248,7 +294,7 @@ public final class LocaleDateTimePattern implements Serializable {
 	private static int indexOf(String pattern, Element element) {
 		return Stream.of(pattern.indexOf('y'), pattern.indexOf('m'), pattern.indexOf('d'))
 						.sorted()
-						.collect(Collectors.toList())
+						.collect(toList())
 						.indexOf(pattern.indexOf(element.character()));
 	}
 

@@ -18,6 +18,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
+import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.model.condition.ConditionModel;
 import is.codion.common.state.ObservableState;
 import is.codion.swing.common.model.component.table.FilterTableModel;
@@ -33,6 +34,11 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Color;
 import java.awt.Component;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 import java.util.function.Function;
 
@@ -40,6 +46,7 @@ import static is.codion.swing.common.model.component.button.NullableToggleButton
 import static is.codion.swing.common.ui.color.Colors.darker;
 import static is.codion.swing.common.ui.component.table.FilterTableCellRenderer.DefaultUISettings.DOUBLE_DARKENING_FACTOR;
 import static is.codion.swing.common.ui.component.table.FilterTableCellRenderer.DefaultUISettings.blendColors;
+import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRenderer implements FilterTableCellRenderer<T> {
@@ -328,6 +335,12 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 
 		private static final CellColor<?, ?, ?> NULL_CELL_COLOR = (table, row, identifier, value) -> null;
 
+		private static final LocalTimeFormatter TIME_FORMATTER = new LocalTimeFormatter();
+		private static final LocalDateFormatter DATE_FORMATTER = new LocalDateFormatter();
+		private static final LocalDateTimeFormatter DATE_TIME_FORMATTER = new LocalDateTimeFormatter();
+		private static final OffsetDateTimeFormatter OFFSET_DATE_TIME_FORMATTER = new OffsetDateTimeFormatter();
+		private static final DefaultFormatter<Object> FORMATTER = new DefaultFormatter<>();
+
 		private UISettings uiSettings = new DefaultUISettings();
 		private int leftPadding = TABLE_CELL_LEFT_PADDING.getOrThrow();
 		private int rightPadding = TABLE_CELL_RIGHT_PADDING.getOrThrow();
@@ -336,11 +349,12 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private CellColor<R, C, T> backgroundColor = (CellColor<R, C, T>) NULL_CELL_COLOR;
 		private CellColor<R, C, T> foregroundColor = (CellColor<R, C, T>) NULL_CELL_COLOR;
 		private boolean toolTipData = false;
-		private Function<T, String> formatter = new DefaultFormatter<>();
+		private Function<T, String> formatter;
 		private int horizontalAlignment;
 
-		private SettingsBuilder(int defaultHorizontalAlignment) {
-			this.horizontalAlignment = defaultHorizontalAlignment;
+		private SettingsBuilder(Class<T> columnClass) {
+			this.horizontalAlignment = defaultHorizontalAlignment(columnClass);
+			this.formatter = createDefaultFormatter(columnClass);
 		}
 
 		SettingsBuilder<R, C, T> uiSettings(UISettings uiSettings) {
@@ -396,6 +410,93 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		Settings<R, C, T> build() {
 			return new Settings<>(this);
 		}
+
+		private int defaultHorizontalAlignment(Class<T> columnClass) {
+			if (Boolean.class.equals(columnClass)) {
+				return BOOLEAN_HORIZONTAL_ALIGNMENT.getOrThrow();
+			}
+			if (Number.class.isAssignableFrom(columnClass)) {
+				return NUMERICAL_HORIZONTAL_ALIGNMENT.getOrThrow();
+			}
+			if (Temporal.class.isAssignableFrom(columnClass)) {
+				return TEMPORAL_HORIZONTAL_ALIGNMENT.getOrThrow();
+			}
+
+			return HORIZONTAL_ALIGNMENT.getOrThrow();
+		}
+
+		private Function<T, String> createDefaultFormatter(Class<T> columnClass) {
+			if (columnClass.equals(LocalTime.class)) {
+				return (Function<T, String>) TIME_FORMATTER;
+			}
+			else if (columnClass.equals(LocalDate.class)) {
+				return (Function<T, String>) DATE_FORMATTER;
+			}
+			else if (columnClass.equals(LocalDateTime.class)) {
+				return (Function<T, String>) DATE_TIME_FORMATTER;
+			}
+			else if (columnClass.equals(OffsetDateTime.class)) {
+				return (Function<T, String>) OFFSET_DATE_TIME_FORMATTER;
+			}
+
+			return (Function<T, String>) FORMATTER;
+		}
+	}
+
+	private static final class LocalTimeFormatter implements Function<LocalTime, String> {
+
+		private final DateTimeFormatter formatter;
+
+		private LocalTimeFormatter() {
+			this.formatter = ofPattern(LocaleDateTimePattern.TIME_PATTERN.getOrThrow());
+		}
+
+		@Override
+		public String apply(LocalTime localDate) {
+			return localDate == null ? "" : formatter.format(localDate);
+		}
+	}
+
+	private static final class LocalDateFormatter implements Function<LocalDate, String> {
+
+		private final DateTimeFormatter formatter;
+
+		private LocalDateFormatter() {
+			this.formatter = ofPattern(LocaleDateTimePattern.DATE_PATTERN.getOrThrow());
+		}
+
+		@Override
+		public String apply(LocalDate localDate) {
+			return localDate == null ? "" : formatter.format(localDate);
+		}
+	}
+
+	private static final class LocalDateTimeFormatter implements Function<LocalDateTime, String> {
+
+		private final DateTimeFormatter formatter;
+
+		private LocalDateTimeFormatter() {
+			this.formatter = ofPattern(LocaleDateTimePattern.DATE_TIME_PATTERN.getOrThrow());
+		}
+
+		@Override
+		public String apply(LocalDateTime localDate) {
+			return localDate == null ? "" : formatter.format(localDate);
+		}
+	}
+
+	private static final class OffsetDateTimeFormatter implements Function<OffsetDateTime, String> {
+
+		private final DateTimeFormatter formatter;
+
+		private OffsetDateTimeFormatter() {
+			this.formatter = ofPattern(LocaleDateTimePattern.DATE_TIME_PATTERN.getOrThrow());
+		}
+
+		@Override
+		public String apply(OffsetDateTime localDate) {
+			return localDate == null ? "" : formatter.format(localDate);
+		}
 	}
 
 	private static final class DefaultFormatter<T> implements Function<T, String> {
@@ -426,7 +527,7 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 		private DefaultBuilder(Class<T> columnClass) {
 			this.columnClass = requireNonNull(columnClass);
 			this.useBooleanRenderer = Boolean.class.equals(columnClass);
-			this.settings = new SettingsBuilder<>(defaultHorizontalAlignment(columnClass));
+			this.settings = new SettingsBuilder<>(columnClass);
 		}
 
 		@Override
@@ -503,20 +604,6 @@ final class DefaultFilterTableCellRenderer<R, C, T> extends DefaultTableCellRend
 			}
 
 			return new DefaultFilterTableCellRenderer<>(settings.build(), columnClass, renderer);
-		}
-
-		private int defaultHorizontalAlignment(Class<T> columnClass) {
-			if (useBooleanRenderer) {
-				return BOOLEAN_HORIZONTAL_ALIGNMENT.getOrThrow();
-			}
-			if (Number.class.isAssignableFrom(columnClass)) {
-				return NUMERICAL_HORIZONTAL_ALIGNMENT.getOrThrow();
-			}
-			if (Temporal.class.isAssignableFrom(columnClass)) {
-				return TEMPORAL_HORIZONTAL_ALIGNMENT.getOrThrow();
-			}
-
-			return HORIZONTAL_ALIGNMENT.getOrThrow();
 		}
 	}
 
