@@ -46,6 +46,7 @@ Codion Change Log
 - EntityTablePanel no longer sets the wait cursor while refreshing, sometimes persisted on table header after refresh.
 ### is.codion.tools.generator.domain
 - DomainSource bug fixed, domain test imports fixed for api/impl.
+- DomainSource newline usage now consistent.
 ### is.codion.tools.generator.panel
 - DomainGeneratorPanel, source directory selection now starts in working dir.
 ### is.codion.tools.loadtest.core

@@ -83,7 +83,6 @@ public final class DomainSource {
 	private static final String DOUBLE_INDENT = INDENT + INDENT;
 	private static final String TRIPLE_INDENT = DOUBLE_INDENT + INDENT;
 	private static final String DOMAIN_STRING = "DOMAIN";
-	private static final String LINE_SEPARATOR = System.lineSeparator();
 	private static final String TYPE_FIELD_NAME = "TYPE";
 	private static final String DTO_CLASS_NAME = "Dto";
 	private static final String DTO_METHOD_NAME = "dto";
@@ -162,7 +161,7 @@ public final class DomainSource {
 	public String i18n() {
 		return domain.entities().definitions().stream()
 						.map(definition -> i18n(definition.type()))
-						.collect(joining(LINE_SEPARATOR + LINE_SEPARATOR));
+						.collect(joining("\n\n"));
 	}
 
 	/**
@@ -311,19 +310,19 @@ public final class DomainSource {
 	String i18n(EntityType entityType) {
 		EntityDefinition definition = domain.entities().definition(entityType);
 		StringBuilder builder = new StringBuilder();
-		builder.append(definition.type().name()).append("=").append(definition.caption()).append(LINE_SEPARATOR);
+		builder.append(definition.type().name()).append("=").append(definition.caption()).append("\n");
 		definition.description().ifPresent(description ->
 						builder.append(definition.type().name()).append(".description=")
-										.append("=").append(description).append(LINE_SEPARATOR));
+										.append("=").append(description).append("\n"));
 		definition.attributes().definitions().stream()
 						.filter(attribute -> !generatedPrimaryKeyColumn(attribute))
 						.filter(attribute -> !foreignKeyColumn(definition, attribute))
 						.forEach(attribute -> {
 							builder.append(attribute.attribute().name())
-											.append("=").append(attribute.caption()).append(LINE_SEPARATOR);
+											.append("=").append(attribute.caption()).append("\n");
 							attribute.description().ifPresent(description ->
 											builder.append(attribute.attribute().name()).append(".description")
-															.append("=").append(description).append(LINE_SEPARATOR));
+															.append("=").append(description).append("\n"));
 						});
 
 		return builder.toString().trim();
@@ -668,16 +667,16 @@ public final class DomainSource {
 		String interfaceName = interfaceName(definition, true);
 		CaptionStrategy captionStrategy = i18n ? new I18nCaptionStrategy() : new LiteralCaptionStrategy();
 		StringBuilder builder = new StringBuilder()
-						.append(RETURN).append(interfaceName).append(".TYPE.define(").append(LINE_SEPARATOR)
-						.append(String.join("," + LINE_SEPARATOR,
+						.append(RETURN).append(interfaceName).append(".TYPE.define(").append("\n")
+						.append(String.join("," + "\n",
 										createAttributes(definition.attributes().definitions(), definition, interfaceName, i18n)))
 						.append(")");
 		builder.append(captionStrategy.entityCaption(definition));
 		builder.append(captionStrategy.entityDescription(definition));
 		if (definition.readOnly()) {
-			builder.append(LINE_SEPARATOR).append(INDENT).append(".readOnly(true)");
+			builder.append("\n").append(INDENT).append(".readOnly(true)");
 		}
-		builder.append(LINE_SEPARATOR).append(INDENT).append(".build();");
+		builder.append("\n").append(INDENT).append(".build();");
 
 		return methodBuilder(interfaceName(definition, false))
 						.addModifiers(STATIC)
@@ -1031,7 +1030,7 @@ public final class DomainSource {
 		@Override
 		public String entityCaption(EntityDefinition definition) {
 			if (!nullOrEmpty(definition.caption())) {
-				return LINE_SEPARATOR + INDENT + ".caption(\"" + definition.caption() + "\")";
+				return "\n" + INDENT + ".caption(\"" + definition.caption() + "\")";
 			}
 			return "";
 		}
@@ -1039,7 +1038,7 @@ public final class DomainSource {
 		@Override
 		public String entityDescription(EntityDefinition definition) {
 			return definition.description()
-							.map(description -> LINE_SEPARATOR + INDENT + ".description(\"" + description + "\")")
+							.map(description -> "\n" + INDENT + ".description(\"" + description + "\")")
 							.orElse("");
 		}
 
