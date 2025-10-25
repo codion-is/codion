@@ -63,6 +63,8 @@ Codion Change Log
 - LoadTestPanel UI overhaul continued, scenario configuration panel improved.
 ### is.codion.framework.servlet
 - EntityService handles clientVersion header parameter.
+### is.codion.tools.monitor.ui
+- ClientInstanceMonitorPanel, log tree removed.
 
 ## 0.18.55
 ### is.codion.common.core

@@ -58,7 +58,7 @@ public final class ClientMonitorPanel extends JPanel {
 	private static final DateTimeFormatter CREATED_FORMATTER = LocaleDateTimePattern.builder()
 					.delimiterDash()
 					.yearFourDigits()
-					.hoursMinutesSecondsMilliseconds()
+					.hoursMinutesSeconds()
 					.build()
 					.formatter();
 

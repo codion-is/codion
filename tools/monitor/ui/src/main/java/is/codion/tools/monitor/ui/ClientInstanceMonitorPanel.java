@@ -24,14 +24,9 @@ import is.codion.common.user.User;
 import is.codion.swing.common.ui.component.logging.LogViewer;
 import is.codion.tools.monitor.model.ClientInstanceMonitor;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
-import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.text.NumberFormat;
@@ -61,8 +56,6 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 
 	private final ClientInstanceMonitor model;
 	private final LogViewer logViewer;
-	private final DefaultMutableTreeNode logRootNode = new DefaultMutableTreeNode();
-	private final DefaultTreeModel logTreeModel = new DefaultTreeModel(logRootNode);
 
 	private final JTextField creationDateField = stringField()
 					.editable(false)
@@ -85,11 +78,6 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 	}
 
 	private void initializeUI() {
-		JPanel creationDatePanel = flowLayoutPanel(FlowLayout.LEFT)
-						.add(new JLabel("Creation time"))
-						.add(creationDateField)
-						.build();
-
 		JPanel settingsPanel = flowLayoutPanel(FlowLayout.LEFT)
 						.add(checkBox()
 										.link(model.tracingEnabled())
@@ -102,27 +90,15 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 										.text("Refresh"))
 						.build();
 
-		JPanel northPanel = borderLayoutPanel()
-						.border(createTitledBorder("Connection info"))
-						.center(creationDatePanel)
-						.east(settingsPanel)
-						.build();
-
-		JTabbedPane centerPane = tabbedPane()
-						.tab("Text", logViewer)
-						.tab("Tree", new JScrollPane(createLogTree()))
+		JPanel centerPane = borderLayoutPanel()
+						.border(createTitledBorder("Trace log"))
+						.north(borderLayoutPanel()
+										.east(settingsPanel))
+						.center(logViewer)
 						.build();
 
 		setLayout(borderLayout());
-		add(northPanel, BorderLayout.NORTH);
 		add(centerPane, BorderLayout.CENTER);
-	}
-
-	private JTree createLogTree() {
-		JTree treeLog = new JTree(logTreeModel);
-		treeLog.setRootVisible(false);
-
-		return treeLog;
 	}
 
 	private void refreshLog() {
@@ -132,12 +108,9 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 			trace.appendTo(logBuilder);
 			DefaultMutableTreeNode traceNode = new DefaultMutableTreeNode(traceString(trace));
 			addChildTraces(traceNode, trace.children());
-			logRootNode.add(traceNode);
 		}
 		logViewer.clear();
 		logViewer.append(logBuilder.toString());
-		logRootNode.removeAllChildren();
-		logTreeModel.setRoot(logRootNode);
 	}
 
 	private static void addChildTraces(DefaultMutableTreeNode traceNode, List<MethodTrace> childTraces) {
