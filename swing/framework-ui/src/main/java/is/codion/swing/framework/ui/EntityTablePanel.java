@@ -68,7 +68,6 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.Controls.ControlsKey;
 import is.codion.swing.common.ui.control.ControlsBuilder;
 import is.codion.swing.common.ui.control.ToggleControl;
-import is.codion.swing.common.ui.cursor.Cursors;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -1513,7 +1512,6 @@ public class EntityTablePanel extends JPanel {
 	private void bindEvents() {
 		summaryPanelVisibleState.addConsumer(this::setSummaryPanelVisible);
 		tableModel.queryModel().condition().changed().addListener(this::onConditionChanged);
-		tableModel.items().refresher().active().addConsumer(this::refresherActive);
 		tableModel.items().refresher().exception().addConsumer(this::onException);
 		tableModel.editModel().afterInsertUpdateOrDelete().addListener(table::repaint);
 	}
@@ -1686,10 +1684,6 @@ public class EntityTablePanel extends JPanel {
 			table.getTableHeader().repaint();
 			table.repaint();
 		}
-	}
-
-	private void refresherActive(boolean refresherActive) {
-		setCursor(refresherActive ? Cursors.WAIT : Cursors.DEFAULT);
 	}
 
 	private void setConditionViewHidden(JScrollPane scrollPane, Value<ConditionView> conditionView) {
