@@ -18,23 +18,33 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.common.resource.MessageBundle;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.i18n.FrameworkMessages;
+import is.codion.swing.common.model.worker.ProgressWorker.ResultTask;
 import is.codion.swing.common.ui.control.CommandControl;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlKey;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
+import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+import static is.codion.common.resource.MessageBundle.messageBundle;
 import static is.codion.swing.common.ui.control.Control.command;
 import static is.codion.swing.common.ui.key.KeyEvents.MENU_SHORTCUT_MASK;
 import static is.codion.swing.common.ui.key.KeyEvents.keyStroke;
@@ -45,11 +55,18 @@ import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
 import static java.util.Collections.unmodifiableMap;
+import static java.util.ResourceBundle.getBundle;
+import static javax.swing.BorderFactory.createEmptyBorder;
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
 
 /**
  * Displays the given dependencies in a tabbed pane.
  */
 final class EntityDependenciesPanel extends JPanel {
+
+	private static final MessageBundle MESSAGES =
+					messageBundle(EntityDependenciesPanel.class, getBundle(EntityDependenciesPanel.class.getName()));
 
 	/**
 	 * The dependencies panel controls.
@@ -115,6 +132,56 @@ final class EntityDependenciesPanel extends JPanel {
 
 	void requestSelectedTableFocus() {
 		((EntityTablePanel) tabPane.getSelectedComponent()).table().requestFocusInWindow();
+	}
+
+	static void displayDependencies(Collection<Entity> entities, EntityConnectionProvider connectionProvider,
+																	JComponent dialogOwner, AtomicReference<Dimension> dialogSize,
+																	Map<EntityType, EntityTablePanelPreferences> preferences,
+																	boolean dependenciesExpected) {
+		ResultTask<Map<EntityType, Collection<Entity>>> dependenciesTask = () -> connectionProvider.connection().dependencies(entities);
+		Dialogs.progressWorker()
+						.task(dependenciesTask)
+						.owner(dialogOwner)
+						.title(MESSAGES.getString("fetching_dependencies"))
+						.onResult(dependencies ->
+										displayDependencies(dependencies, connectionProvider, dialogOwner,
+														dialogSize, preferences, dependenciesExpected))
+						.execute();
+	}
+
+	private static void displayDependencies(Map<EntityType, Collection<Entity>> dependencies, EntityConnectionProvider connectionProvider,
+																					JComponent dialogOwner, AtomicReference<Dimension> dialogSize,
+																					Map<EntityType, EntityTablePanelPreferences> preferences,
+																					boolean dependenciesExpected) {
+		if (dependencies.isEmpty()) {
+			showMessageDialog(dialogOwner, dependenciesExpected ? MESSAGES.getString("unknown_dependent_records") : MESSAGES.getString("no_dependencies"),
+							MESSAGES.getString("no_dependencies_title"), INFORMATION_MESSAGE);
+		}
+		else {
+			EntityDependenciesPanel dependenciesPanel = new EntityDependenciesPanel(dependencies, connectionProvider);
+			dependenciesPanel.tablePanels().forEach((entityType, dependencyTablePanel) -> {
+				EntityTablePanelPreferences panelPreferences = preferences.get(entityType);
+				if (panelPreferences != null) {
+					panelPreferences.apply(dependencyTablePanel);
+				}
+			});
+			int gap = Layouts.GAP.getOrThrow();
+			dependenciesPanel.setBorder(createEmptyBorder(0, gap, 0, gap));
+			Dialogs.builder()
+							.component(dependenciesPanel)
+							.owner(dialogOwner)
+							.modal(false)
+							.size(dialogSize.get())
+							.title(FrameworkMessages.dependencies())
+							.icon(FrameworkIcons.instance().dependencies().small())
+							.onShown(dialog -> dependenciesPanel.requestSelectedTableFocus())
+							.onClosed(event -> {
+								dialogSize.set(event.getWindow().getSize());
+								dependenciesPanel.tablePanels().forEach((entityType, dependencyTablePanel) ->
+												preferences.put(entityType, new EntityTablePanelPreferences(dependencyTablePanel)));
+							})
+							.show();
+		}
 	}
 
 	private final class NavigateRightCommand implements Control.Command {

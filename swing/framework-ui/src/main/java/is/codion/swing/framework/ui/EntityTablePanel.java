@@ -18,7 +18,6 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.condition.ConditionModel;
@@ -72,7 +71,6 @@ import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.cursor.Cursors;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.key.KeyEvents;
-import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityEditComponentPanel.AttributeDefinitionComparator;
 import is.codion.swing.framework.ui.EntityEditPanel.Confirmer;
@@ -149,11 +147,9 @@ import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.toList;
-import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
 
@@ -648,7 +644,7 @@ public class EntityTablePanel extends JPanel {
 	 */
 	public final void viewDependencies() {
 		if (!tableModel.selection().empty().is()) {
-			displayDependencies(EDIT_PANEL_MESSAGES.getString("no_dependencies"));
+			displayDependencies(false);
 		}
 	}
 
@@ -945,7 +941,7 @@ public class EntityTablePanel extends JPanel {
 	protected void onReferentialIntegrityException(ReferentialIntegrityException exception) {
 		requireNonNull(exception);
 		if (configuration.referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
-			displayDependencies(EDIT_PANEL_MESSAGES.getString("unknown_dependent_records"));
+			displayDependencies(true);
 		}
 		else {
 			displayException(exception);
@@ -1717,52 +1713,9 @@ public class EntityTablePanel extends JPanel {
 		return editPanel;
 	}
 
-	private void displayDependencies(String noDependenciesMessage) {
-		Map<EntityType, Collection<Entity>> dependencies = selectionDependencies();
-		if (dependencies.isEmpty()) {
-			JOptionPane.showMessageDialog(this, noDependenciesMessage,
-							EDIT_PANEL_MESSAGES.getString("no_dependencies_title"), JOptionPane.INFORMATION_MESSAGE);
-		}
-		else {
-			EntityDependenciesPanel dependenciesPanel = new EntityDependenciesPanel(dependencies, tableModel.connectionProvider());
-			dependenciesPanel.tablePanels().forEach((entityType, dependencyTablePanel) -> {
-				EntityTablePanelPreferences preferences = dependencyPanelPreferences.get(entityType);
-				if (preferences != null) {
-					preferences.apply(dependencyTablePanel);
-				}
-			});
-			int gap = Layouts.GAP.getOrThrow();
-			dependenciesPanel.setBorder(createEmptyBorder(0, gap, 0, gap));
-			Dialogs.builder()
-							.component(dependenciesPanel)
-							.owner(this)
-							.modal(false)
-							.size(dependenciesDialogSize.get())
-							.title(FrameworkMessages.dependencies())
-							.icon(ICONS.dependencies().small())
-							.onShown(dialog -> dependenciesPanel.requestSelectedTableFocus())
-							.onClosed(event -> {
-								dependenciesDialogSize.set(event.getWindow().getSize());
-								dependenciesPanel.tablePanels().forEach((entityType, dependencyTablePanel) ->
-												dependencyPanelPreferences.put(entityType, new EntityTablePanelPreferences(dependencyTablePanel)));
-							})
-							.show();
-		}
-	}
-
-	private Map<EntityType, Collection<Entity>> selectionDependencies() {
-		setCursor(Cursors.WAIT);
-		try {
-			return tableModel.connectionProvider().connection().dependencies(tableModel.selection().items().get());
-		}
-		catch (DatabaseException e) {
-			displayException(e);
-
-			return emptyMap();
-		}
-		finally {
-			setCursor(Cursors.DEFAULT);
-		}
+	private void displayDependencies(boolean dependenciesExpected) {
+		EntityDependenciesPanel.displayDependencies(tableModel.selection().items().get(), tableModel.connectionProvider(),
+						this, dependenciesDialogSize, dependencyPanelPreferences, dependenciesExpected);
 	}
 
 	private void throwIfInitialized() {

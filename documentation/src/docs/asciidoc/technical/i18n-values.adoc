@@ -787,6 +787,24 @@ is/codion/swing/framework/ui/EntityApplicationPanel_is_IS.properties
 |view_sql_trace|View|Skoða
 |===
 
+=== is/codion/swing/framework/ui/EntityDependenciesPanel.java
+
+[source]
+----
+is/codion/swing/framework/ui/EntityDependenciesPanel.properties
+is/codion/swing/framework/ui/EntityDependenciesPanel_is_IS.properties
+----
+
+[cols="1,1,1"]
+|===
+|key|default|is_IS
+
+|fetching_dependencies|Fetching dependencies|Sæki tengdar færslur
+|no_dependencies|This record has no dependent records|Færslan á sér engar tengdar færslur
+|no_dependencies_title|No dependencies|Engar tengdar færslur
+|unknown_dependent_records|This record has unknown dependencies|Færslan á sér óþekktar tengdar færslur
+|===
+
 === is/codion/swing/framework/ui/EntityEditPanel.java
 
 [source]
@@ -801,9 +819,6 @@ is/codion/swing/framework/ui/EntityEditPanel_is_IS.properties
 
 |deleting|Deleting|Eyði
 |inserting|Inserting|Vista
-|no_dependencies|This record has no dependent records|Færslan á sér engar tengdar færslur
-|no_dependencies_title|No dependencies|Engar tengdar færslur
-|unknown_dependent_records|This record has unknown dependencies|Færslan á sér óþekktar tengdar færslur
 |updating|Updating|Uppfæri
 |===
 

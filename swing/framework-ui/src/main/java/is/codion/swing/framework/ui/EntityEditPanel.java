@@ -19,7 +19,6 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.db.database.Database.Operation;
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
@@ -43,9 +42,7 @@ import is.codion.swing.common.ui.control.Control.Command;
 import is.codion.swing.common.ui.control.ControlKey;
 import is.codion.swing.common.ui.control.ControlMap;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.cursor.Cursors;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
@@ -59,17 +56,20 @@ import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.KeyboardFocusManager;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.prefs.Preferences;
 
@@ -90,7 +90,6 @@ import static java.util.Objects.requireNonNull;
 import static java.util.ResourceBundle.getBundle;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
-import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.JOptionPane.showConfirmDialog;
 
 /**
@@ -167,6 +166,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	private final UpdateCommand updateCommand = updateCommand().build();
 	private final DeleteCommand deleteCommand = deleteCommand().build();
 
+	private final Map<EntityType, EntityTablePanelPreferences> dependencyPanelPreferences = new HashMap<>();
+	private final AtomicReference<Dimension> dependenciesDialogSize = new AtomicReference<>();
 	private final Controls.Layout controlsLayout;
 	private final State active;
 
@@ -413,7 +414,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 	protected void onReferentialIntegrityException(ReferentialIntegrityException exception) {
 		requireNonNull(exception);
 		if (exception.operation() == Operation.DELETE && configuration.referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
-			displayDependencies();
+			EntityDependenciesPanel.displayDependencies(singletonList(editModel().editor().get()), editModel().connectionProvider(),
+							this, dependenciesDialogSize, dependencyPanelPreferences, true);
 		}
 		else {
 			super.onException(exception);
@@ -674,41 +676,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
 	private void showEntityMenu() {
 		new EntityPopupMenu(editModel().editor().get(), editModel().connection()).show(this, 0, 0);
-	}
-
-	private void displayDependencies() {
-		Map<EntityType, Collection<Entity>> dependencies = entityDependencies();
-		if (dependencies.isEmpty()) {
-			JOptionPane.showMessageDialog(this, MESSAGES.getString("unknown_dependent_records"),
-							MESSAGES.getString("no_dependencies_title"), JOptionPane.INFORMATION_MESSAGE);
-		}
-		else {
-			EntityDependenciesPanel dependenciesPanel = new EntityDependenciesPanel(dependencies, editModel().connectionProvider());
-			int gap = Layouts.GAP.getOrThrow();
-			dependenciesPanel.setBorder(createEmptyBorder(0, gap, 0, gap));
-			Dialogs.builder()
-							.component(dependenciesPanel)
-							.owner(this)
-							.modal(false)
-							.title(FrameworkMessages.dependencies())
-							.onShown(dialog -> dependenciesPanel.requestSelectedTableFocus())
-							.show();
-		}
-	}
-
-	private Map<EntityType, Collection<Entity>> entityDependencies() {
-		setCursor(Cursors.WAIT);
-		try {
-			return editModel().connectionProvider().connection().dependencies(singletonList(editModel().editor().get()));
-		}
-		catch (DatabaseException e) {
-			displayException(e);
-
-			return emptyMap();
-		}
-		finally {
-			setCursor(Cursors.DEFAULT);
-		}
 	}
 
 	private Config configure(Consumer<Config> configuration) {

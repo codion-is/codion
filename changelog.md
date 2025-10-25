@@ -41,6 +41,7 @@ Codion Change Log
 - EntityTablePanel.Config.surrendersFocusOnKeystroke() added.
 - EntityTablePanel.ControlKeys.EDIT_SELECTED_ATTRIBUTE renamed EDIT_ATTRIBUTE.
 - EntityApplication.connectionInfoUpperCase() added along with CONNECTION_INFO_UPPER_CASE configuration value added.
+- EntityEditPanel, EntityTablePanel, dependency view handling unified and moved to EntityDependenciesPanel, now ProgressWorker based.
 ### is.codion.tools.generator.domain
 - DomainSource bug fixed, domain test imports fixed for api/impl.
 ### is.codion.tools.generator.panel
