@@ -129,10 +129,10 @@ public interface Server<C extends Remote, A extends ServerAdmin> extends Remote 
 		interface Builder {
 
 			/**
-			 * @param hostName the name of the host
+			 * @param hostname the name of the host
 			 * @return this builder instance
 			 */
-			Builder hostName(String hostName);
+			Builder hostname(String hostname);
 
 			/**
 			 * @param namePrefix the server name prefix to use when looking up, an empty string results in all servers being returned

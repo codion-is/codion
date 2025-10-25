@@ -36,13 +36,13 @@ final class DefaultServerLocator implements Server.Locator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultServerLocator.class);
 
-	private final String hostName;
+	private final String hostname;
 	private final String namePrefix;
 	private final int registryPort;
 	private final int port;
 
 	private DefaultServerLocator(DefaultBuilder builder) {
-		this.hostName = requireNonNull(builder.hostName, "hostName must be specified");
+		this.hostname = requireNonNull(builder.hostname, "hostname must be specified");
 		this.namePrefix = requireNonNull(builder.namePrefix, "namePrefix must be specified");
 		this.registryPort = builder.registryPort;
 		this.port = builder.port;
@@ -51,13 +51,13 @@ final class DefaultServerLocator implements Server.Locator {
 	@Override
 	public <T extends Remote, A extends ServerAdmin> Server<T, A> locateServer()
 					throws RemoteException, NotBoundException {
-		List<Server<T, A>> servers = findServersOnHost(hostName, registryPort, namePrefix, port);
+		List<Server<T, A>> servers = findServersOnHost(hostname, registryPort, namePrefix, port);
 		if (!servers.isEmpty()) {
 			return servers.get(0);
 		}
 
 		throw new NotBoundException("'" + namePrefix + "' is not available, see LOG for details. Host: "
-						+ hostName + (port != -1 ? ", port: " + port : "") + ", registryPort: " + registryPort);
+						+ hostname + (port != -1 ? ", port: " + port : "") + ", registryPort: " + registryPort);
 	}
 
 	static Registry initializeRegistry(int registryPort) throws RemoteException {
@@ -76,15 +76,15 @@ final class DefaultServerLocator implements Server.Locator {
 		}
 	}
 
-	private static <T extends Remote, A extends ServerAdmin> List<Server<T, A>> findServersOnHost(String hostName,
+	private static <T extends Remote, A extends ServerAdmin> List<Server<T, A>> findServersOnHost(String hostname,
 																																																int registryPort,
 																																																String serverNamePrefix,
 																																																int requestedServerPort)
 					throws RemoteException {
 		LOG.info("Searching for servers,  host: \"{}\", server name prefix: \"{}\", requested server port: {}, registry port {}",
-						hostName, serverNamePrefix, requestedServerPort, registryPort);
+						hostname, serverNamePrefix, requestedServerPort, registryPort);
 		List<Server<T, A>> servers = new ArrayList<>();
-		Registry registry = LocateRegistry.getRegistry(hostName, registryPort);
+		Registry registry = LocateRegistry.getRegistry(hostname, registryPort);
 		for (String serverName : registry.list()) {
 			if (serverName.startsWith(serverNamePrefix)) {
 				addIfReachable(serverName, requestedServerPort, registry, servers);
@@ -127,14 +127,14 @@ final class DefaultServerLocator implements Server.Locator {
 
 	static final class DefaultBuilder implements Server.Locator.Builder {
 
-		private String hostName = ServerConfiguration.RMI_SERVER_HOSTNAME.getOrThrow();
+		private String hostname = ServerConfiguration.RMI_SERVER_HOSTNAME.getOrThrow();
 		private String namePrefix = ServerConfiguration.SERVER_NAME_PREFIX.getOrThrow();
 		private int registryPort = ServerConfiguration.REGISTRY_PORT.getOrThrow();
 		private int port = ServerConfiguration.SERVER_PORT.getOrThrow();
 
 		@Override
-		public Builder hostName(String hostName) {
-			this.hostName = requireNonNull(hostName);
+		public Builder hostname(String hostname) {
+			this.hostname = requireNonNull(hostname);
 			return this;
 		}
 

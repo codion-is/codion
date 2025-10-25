@@ -75,7 +75,7 @@ public final class ServerMonitor {
 	private final Value<Object> logLevelValue;
 	private final Value<Integer> connectionLimitValue;
 
-	private final String hostName;
+	private final String hostname;
 	private final ServerInformation serverInformation;
 	private final int registryPort;
 	private final EntityServerAdmin server;
@@ -135,7 +135,7 @@ public final class ServerMonitor {
 
 	/**
 	 * Instantiates a new {@link ServerMonitor}
-	 * @param hostName the host name
+	 * @param hostname the hostname
 	 * @param serverInformation the server information
 	 * @param registryPort the registry port
 	 * @param serverAdminUser the admin user
@@ -143,10 +143,10 @@ public final class ServerMonitor {
 	 * @throws RemoteException in case of an exception
 	 * @throws ServerAuthenticationException in case the admin user credentials are incorrect
 	 */
-	public ServerMonitor(String hostName, ServerInformation serverInformation, int registryPort,
+	public ServerMonitor(String hostname, ServerInformation serverInformation, int registryPort,
 											 User serverAdminUser, int updateRate)
 					throws RemoteException, ServerAuthenticationException {
-		this.hostName = requireNonNull(hostName);
+		this.hostname = requireNonNull(hostname);
 		this.serverInformation = requireNonNull(serverInformation);
 		this.registryPort = registryPort;
 		this.serverAdminUser = requireNonNull(serverAdminUser);
@@ -469,7 +469,7 @@ public final class ServerMonitor {
 		long time = System.currentTimeMillis();
 		try {
 			Server<?, EntityServerAdmin> theServer =
-							(Server<?, EntityServerAdmin>) LocateRegistry.getRegistry(hostName, registryPort).lookup(serverName);
+							(Server<?, EntityServerAdmin>) LocateRegistry.getRegistry(hostname, registryPort).lookup(serverName);
 			EntityServerAdmin serverAdmin = theServer.admin(serverAdminUser);
 			//just some simple call to validate the remote connection
 			serverAdmin.connectionCount();
@@ -477,12 +477,12 @@ public final class ServerMonitor {
 			return serverAdmin;
 		}
 		catch (RemoteException e) {
-			LOG.error("Server \"{}\" is unreachable, host: {}, registry port: {}", serverName, hostName, registryPort, e);
+			LOG.error("Server \"{}\" is unreachable, host: {}, registry port: {}", serverName, hostname, registryPort, e);
 			throw e;
 		}
 		catch (NotBoundException e) {
 			LOG.error(e.getMessage(), e);
-			throw new RemoteException("Server " + serverName + " is not bound to registry on host: " + hostName + ", port: " + registryPort, e);
+			throw new RemoteException("Server " + serverName + " is not bound to registry on host: " + hostname + ", port: " + registryPort, e);
 		}
 		finally {
 			LOG.debug("Registry.lookup(\"{}\"): {}", serverName, System.currentTimeMillis() - time);

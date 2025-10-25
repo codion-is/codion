@@ -52,7 +52,7 @@ public final class HostMonitor {
 	private final Event<ServerMonitor> serverAdded = Event.event();
 	private final Event<ServerMonitor> serverRemoved = Event.event();
 
-	private final String hostName;
+	private final String hostname;
 	private final int registryPort;
 	private final User adminUser;
 	private final int updateRate;
@@ -60,14 +60,14 @@ public final class HostMonitor {
 
 	/**
 	 * Instantiates a new {@link HostMonitor}
-	 * @param hostName the name of the host to monitor
+	 * @param hostname the name of the host to monitor
 	 * @param registryPort the registry port
 	 * @param adminUser the admin user
 	 * @param updateRate the initial statistics update rate in seconds
 	 * @throws RemoteException in case of an exception
 	 */
-	public HostMonitor(String hostName, int registryPort, User adminUser, int updateRate) throws RemoteException {
-		this.hostName = requireNonNull(hostName);
+	public HostMonitor(String hostname, int registryPort, User adminUser, int updateRate) throws RemoteException {
+		this.hostname = requireNonNull(hostname);
 		this.registryPort = registryPort;
 		this.adminUser = requireNonNull(adminUser);
 		this.updateRate = updateRate;
@@ -75,10 +75,10 @@ public final class HostMonitor {
 	}
 
 	/**
-	 * @return the host name
+	 * @return the hostname
 	 */
-	public String hostName() {
-		return hostName;
+	public String hostname() {
+		return hostname;
 	}
 
 	/**
@@ -95,9 +95,9 @@ public final class HostMonitor {
 	public void refresh() throws RemoteException {
 		removeUnreachableServers();
 		try {
-			for (ServerInformation serverInformation : findEntityServers(hostName, registryPort)) {
+			for (ServerInformation serverInformation : findEntityServers(hostname, registryPort)) {
 				if (!containsServerMonitor(serverInformation.id())) {
-					ServerMonitor serverMonitor = new ServerMonitor(hostName, serverInformation, registryPort, adminUser, updateRate);
+					ServerMonitor serverMonitor = new ServerMonitor(hostname, serverInformation, registryPort, adminUser, updateRate);
 					serverMonitor.addServerShutDownListener(() -> removeServer(serverMonitor));
 					addServer(serverMonitor);
 				}

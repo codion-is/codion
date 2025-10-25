@@ -121,10 +121,10 @@ public interface HttpEntityConnection extends EntityConnection {
 		Builder domainType(DomainType domainType);
 
 		/**
-		 * @param hostName the http server host name
+		 * @param hostname the http server hostname
 		 * @return this builder instance
 		 */
-		Builder hostName(String hostName);
+		Builder hostname(String hostname);
 
 		/**
 		 * @param port the http server port

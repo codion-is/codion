@@ -74,7 +74,7 @@ public class EntityServerMonitorTest {
 		String clientType = EntityServerMonitorTest.class.getName();
 		RemoteEntityConnectionProvider connectionProvider =
 						RemoteEntityConnectionProvider.builder()
-										.hostName("localhost")
+										.hostname("localhost")
 										.port(CONFIGURATION.port())
 										.registryPort(CONFIGURATION.registryPort())
 										.domain(TestDomain.DOMAIN)
@@ -85,7 +85,7 @@ public class EntityServerMonitorTest {
 		EntityServerMonitor model = new EntityServerMonitor("localhost", CONFIGURATION.registryPort(), CONFIGURATION.adminUser());
 		model.refresh();
 		HostMonitor hostMonitor = model.hostMonitors().iterator().next();
-		assertEquals("localhost", hostMonitor.hostName());
+		assertEquals("localhost", hostMonitor.hostname());
 		hostMonitor.refresh();
 		ServerMonitor serverMonitor = hostMonitor.serverMonitors().iterator().next();
 		assertNotNull(serverMonitor);

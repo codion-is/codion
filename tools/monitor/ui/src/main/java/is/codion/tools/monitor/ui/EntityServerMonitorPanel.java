@@ -156,7 +156,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 	private void initializeUI() throws RemoteException {
 		TabbedPaneBuilder tabbedPaneBuilder = tabbedPane();
 		for (HostMonitor hostMonitor : model.hostMonitors()) {
-			tabbedPaneBuilder.tab(hostMonitor.hostName() + ":" + hostMonitor.registryPort(), new HostMonitorPanel(hostMonitor));
+			tabbedPaneBuilder.tab(hostMonitor.hostname() + ":" + hostMonitor.registryPort(), new HostMonitorPanel(hostMonitor));
 		}
 		setLayout(new BorderLayout());
 		int gap = Layouts.GAP.getOrThrow();

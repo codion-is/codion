@@ -53,17 +53,17 @@ public final class EntityServerMonitor {
 
 	/**
 	 * Instantiates a new {@link EntityServerMonitor}
-	 * @param hostNames a comma separated list of hostnames to monitor
+	 * @param hostnames a comma separated list of hostnames to monitor
 	 * @param registryPort the registry port
 	 * @param adminUser the admin user
 	 * @throws RemoteException in case of an exception
 	 */
-	public EntityServerMonitor(String hostNames, int registryPort, User adminUser) throws RemoteException {
-		if (nullOrEmpty(hostNames)) {
-			throw new IllegalArgumentException("No server host names specified for server monitor");
+	public EntityServerMonitor(String hostnames, int registryPort, User adminUser) throws RemoteException {
+		if (nullOrEmpty(hostnames)) {
+			throw new IllegalArgumentException("No server hostnames specified for server monitor");
 		}
 		requireNonNull(adminUser);
-		for (String hostname : hostNames.split(",")) {
+		for (String hostname : hostnames.split(",")) {
 			addHost(hostname, registryPort, adminUser);
 		}
 	}

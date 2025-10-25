@@ -31,7 +31,7 @@ public final class DefaultHttpEntityConnectionProviderBuilder
 				extends AbstractBuilder<HttpEntityConnectionProvider, HttpEntityConnectionProvider.Builder>
 				implements HttpEntityConnectionProvider.Builder {
 
-	String hostName = HttpEntityConnection.HOSTNAME.get();
+	String hostname = HttpEntityConnection.HOSTNAME.get();
 	int port = HttpEntityConnection.PORT.getOrThrow();
 	int securePort = HttpEntityConnection.SECURE_PORT.getOrThrow();
 	boolean https = HttpEntityConnection.SECURE.getOrThrow();
@@ -47,8 +47,8 @@ public final class DefaultHttpEntityConnectionProviderBuilder
 	}
 
 	@Override
-	public HttpEntityConnectionProvider.Builder hostName(String hostName) {
-		this.hostName = requireNonNull(hostName);
+	public HttpEntityConnectionProvider.Builder hostname(String hostname) {
+		this.hostname = requireNonNull(hostname);
 		return this;
 	}
 

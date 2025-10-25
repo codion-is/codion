@@ -65,7 +65,7 @@ public final class EntityConnectionProviderDemo {
 						RemoteEntityConnectionProvider.builder()
 										.domain(Chinook.DOMAIN)
 										.user(User.parse("scott:tiger"))
-										.hostName("localhost")
+										.hostname("localhost")
 										.registryPort(1099)
 										.build();
 
@@ -86,7 +86,7 @@ public final class EntityConnectionProviderDemo {
 						HttpEntityConnectionProvider.builder()
 										.domain(Chinook.DOMAIN)
 										.user(User.parse("scott:tiger"))
-										.hostName("localhost")
+										.hostname("localhost")
 										.port(8080)
 										.https(false)
 										.build();

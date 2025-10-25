@@ -34,7 +34,7 @@ public interface RemoteEntityConnectionProvider extends EntityConnectionProvider
 	/**
 	 * @return the name of the host of the server providing the connection
 	 */
-	String hostName();
+	String hostname();
 
 	/**
 	 * Instantiates a new builder instance.
@@ -50,10 +50,10 @@ public interface RemoteEntityConnectionProvider extends EntityConnectionProvider
 	interface Builder extends EntityConnectionProvider.Builder<RemoteEntityConnectionProvider, Builder> {
 
 		/**
-		 * @param hostName the server host name
+		 * @param hostname the server hostname
 		 * @return this builder instance
 		 */
-		Builder hostName(String hostName);
+		Builder hostname(String hostname);
 
 		/**
 		 * @param port the server port

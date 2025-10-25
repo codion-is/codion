@@ -267,7 +267,7 @@ public class EntityServerTest {
 	void remoteEntityConnectionProvider() throws Exception {
 		RemoteEntityConnectionProvider provider =
 						RemoteEntityConnectionProvider.builder()
-										.hostName("localhost")
+										.hostname("localhost")
 										.port(CONFIGURATION.port())
 										.registryPort(CONFIGURATION.registryPort())
 										.domain(TestDomain.DOMAIN)
@@ -283,7 +283,7 @@ public class EntityServerTest {
 		provider.close();
 
 		//not available until a connection has been requested
-		assertEquals(Clients.SERVER_HOSTNAME.get(), provider.hostName());
+		assertEquals(Clients.SERVER_HOSTNAME.get(), provider.hostname());
 
 		EntityConnection db2 = provider.connection();
 		assertNotNull(db2);

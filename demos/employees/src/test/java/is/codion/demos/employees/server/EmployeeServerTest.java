@@ -61,7 +61,7 @@ public final class EmployeeServerTest {
 		EmployeeServer employeeServer = new EmployeeServer(configuration);
 
 		Server<EmployeeService, ?> remoteServer = Server.Locator.builder()
-						.hostName("localhost")
+						.hostname("localhost")
 						.namePrefix("Employee Server")
 						.registryPort(REGISTRY_PORT)
 						.port(SERVER_PORT)

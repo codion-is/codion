@@ -368,7 +368,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	}
 
 	private static String createBaseUrl(DefaultBuilder builder, String path) {
-		return (builder.https ? HTTPS : HTTP) + requireNonNull(builder.hostName, "hostName must be specified") + ":" + (builder.https ? builder.securePort : builder.port) + path;
+		return (builder.https ? HTTPS : HTTP) + requireNonNull(builder.hostname, "hostname must be specified") + ":" + (builder.https ? builder.securePort : builder.port) + path;
 	}
 
 	private static String[] initializeHeaders(DefaultBuilder builder, User user) {
@@ -401,7 +401,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 	static final class DefaultBuilder implements Builder {
 
 		private DomainType domainType;
-		private String hostName = HOSTNAME.get();
+		private String hostname = HOSTNAME.get();
 		private int port = PORT.getOrThrow();
 		private int securePort = SECURE_PORT.getOrThrow();
 		private boolean https = SECURE.getOrThrow();
@@ -420,8 +420,8 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 		}
 
 		@Override
-		public Builder hostName(String hostName) {
-			this.hostName = requireNonNull(hostName);
+		public Builder hostname(String hostname) {
+			this.hostname = requireNonNull(hostname);
 			return this;
 		}
 

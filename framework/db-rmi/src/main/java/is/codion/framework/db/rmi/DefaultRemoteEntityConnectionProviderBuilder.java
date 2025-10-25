@@ -33,7 +33,7 @@ public final class DefaultRemoteEntityConnectionProviderBuilder
 				extends AbstractBuilder<RemoteEntityConnectionProvider, RemoteEntityConnectionProvider.Builder>
 				implements RemoteEntityConnectionProvider.Builder {
 
-	String hostName = Clients.SERVER_HOSTNAME.get();
+	String hostname = Clients.SERVER_HOSTNAME.get();
 	int port = ServerConfiguration.SERVER_PORT.getOrThrow();
 	int registryPort = ServerConfiguration.REGISTRY_PORT.getOrThrow();
 	String namePrefix = ServerConfiguration.SERVER_NAME_PREFIX.get();
@@ -46,8 +46,8 @@ public final class DefaultRemoteEntityConnectionProviderBuilder
 	}
 
 	@Override
-	public RemoteEntityConnectionProvider.Builder hostName(String hostName) {
-		this.hostName = requireNonNull(hostName);
+	public RemoteEntityConnectionProvider.Builder hostname(String hostname) {
+		this.hostname = requireNonNull(hostname);
 		return this;
 	}
 

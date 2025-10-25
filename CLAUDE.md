@@ -981,5 +981,6 @@ If you spot any of these while working with Codion, **please speak up immediatel
 - `DatabaseConnection` abstraction removed - Transaction state now directly managed by `LocalEntityConnection`, eliminating unnecessary wrapper layer
 - Generator API simplified - Takes `Database` and `Connection` parameters directly instead of `DatabaseConnection` wrapper, making dependencies explicit
 - 360+ renames and 237+ removals over the past 3 years (see `changelog.md`)
+- "hostName" replaced with "hostname" throughout
 
 Remember: Once the API freezes, these names are forever. Help make Codion something we'll all be happy using and maintaining for the next 20 years!

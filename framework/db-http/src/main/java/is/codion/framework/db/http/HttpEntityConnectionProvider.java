@@ -46,10 +46,10 @@ public interface HttpEntityConnectionProvider extends EntityConnectionProvider {
 	interface Builder extends EntityConnectionProvider.Builder<HttpEntityConnectionProvider, Builder> {
 
 		/**
-		 * @param hostName the server host name
+		 * @param hostname the server hostname
 		 * @return this builder instance
 		 */
-		Builder hostName(String hostName);
+		Builder hostname(String hostname);
 
 		/**
 		 * @param port the server port

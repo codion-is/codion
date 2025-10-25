@@ -59,14 +59,14 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 	private String serverName;
 	private boolean truststoreResolved = false;
 
-	private final String hostName;
+	private final String hostname;
 	private final int port;
 	private final int registryPort;
 	private final String namePrefix;
 
 	DefaultRemoteEntityConnectionProvider(DefaultRemoteEntityConnectionProviderBuilder builder) {
 		super(builder);
-		this.hostName = requireNonNull(builder.hostName, "hostName must be specified");
+		this.hostname = requireNonNull(builder.hostname, "hostname must be specified");
 		this.port = builder.port;
 		this.registryPort = builder.registryPort;
 		this.namePrefix = builder.namePrefix;
@@ -82,15 +82,15 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 	 */
 	@Override
 	public Optional<String> description() {
-		return Optional.of(DESCRIPTION.optional().orElse(serverName + "@" + hostName));
+		return Optional.of(DESCRIPTION.optional().orElse(serverName + "@" + hostname));
 	}
 
 	/**
 	 * @return the name of the host of the server providing the connection
 	 */
 	@Override
-	public String hostName() {
-		return hostName;
+	public String hostname() {
+		return hostname;
 	}
 
 	@Override
@@ -154,7 +154,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
 
 	private void connectToServer() throws RemoteException, NotBoundException {
 		server = Server.Locator.builder()
-						.hostName(hostName)
+						.hostname(hostname)
 						.namePrefix(namePrefix)
 						.registryPort(registryPort)
 						.port(port)

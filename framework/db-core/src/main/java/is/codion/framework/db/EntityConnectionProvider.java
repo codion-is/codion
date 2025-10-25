@@ -62,7 +62,7 @@ import static java.util.stream.StreamSupport.stream;
  * // Remote connection
  * EntityConnectionProvider provider = RemoteEntityConnectionProvider.builder()
  *     .domainType(DOMAIN)
- *     .hostName("localhost")
+ *     .hostname("localhost")
  *     .port(2223)
  *     .registryPort(1099)
  *     .user(User.parse("scott:tiger"))
@@ -263,7 +263,7 @@ public interface EntityConnectionProvider extends AutoCloseable {
 	 * // Remote connection
 	 * EntityConnectionProvider remote = RemoteEntityConnectionProvider.builder()
 	 *     .domain(MyDomain.DOMAIN)
-	 *     .hostName("server.example.com")
+	 *     .hostname("server.example.com")
 	 *     .port(2223)
 	 *     .user(User.parse("scott:tiger"))
 	 *     .clientType("MyApplication")

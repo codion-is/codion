@@ -75,7 +75,7 @@ public class RemoteEntityConnectionTest {
 						LocateRegistry.getRegistry(Clients.SERVER_HOSTNAME.get(), configuration.registryPort()).lookup(configuration.serverName());
 		admin = server.admin(User.parse("scott:tiger"));
 		connectionProvider = RemoteEntityConnectionProvider.builder()
-						.hostName(Clients.SERVER_HOSTNAME.get())
+						.hostname(Clients.SERVER_HOSTNAME.get())
 						.port(configuration.port())
 						.registryPort(configuration.registryPort())
 						.clientType("RemoteEntityConnectionTest")

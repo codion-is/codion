@@ -37,7 +37,7 @@ final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnection
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultHttpEntityConnectionProvider.class);
 
-	private final String hostName;
+	private final String hostname;
 	private final int port;
 	private final int securePort;
 	private final boolean https;
@@ -47,7 +47,7 @@ final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnection
 
 	DefaultHttpEntityConnectionProvider(DefaultHttpEntityConnectionProviderBuilder builder) {
 		super(builder);
-		this.hostName = requireNonNull(builder.hostName, "hostName must be specified");
+		this.hostname = requireNonNull(builder.hostname, "hostname must be specified");
 		this.port = builder.port;
 		this.securePort = builder.securePort;
 		this.https = builder.https;
@@ -63,7 +63,7 @@ final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnection
 
 	@Override
 	public Optional<String> description() {
-		return Optional.of(DESCRIPTION.optional().orElse(hostName));
+		return Optional.of(DESCRIPTION.optional().orElse(hostname));
 	}
 
 	@Override
@@ -72,7 +72,7 @@ final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnection
 			LOG.debug("Initializing connection for {}", user());
 			return HttpEntityConnection.builder()
 							.domainType(domainType())
-							.hostName(hostName)
+							.hostname(hostname)
 							.port(port)
 							.securePort(securePort)
 							.user(user())

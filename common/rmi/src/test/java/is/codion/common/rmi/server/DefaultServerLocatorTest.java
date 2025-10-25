@@ -57,7 +57,7 @@ public class DefaultServerLocatorTest {
 	void findServer() throws RemoteException, NotBoundException {
 		// Improved approach: explicit setup and cleanup with better error handling
 		Server.Locator serverLocator = Server.Locator.builder()
-						.hostName("localhost")
+						.hostname("localhost")
 						.namePrefix(SERVER_NAME)
 						.registryPort(Registry.REGISTRY_PORT)
 						.port(42)
@@ -76,7 +76,7 @@ public class DefaultServerLocatorTest {
 
 			// Should find server with any port (-1)
 			serverLocator = Server.Locator.builder()
-							.hostName("localhost")
+							.hostname("localhost")
 							.namePrefix(SERVER_NAME)
 							.registryPort(Registry.REGISTRY_PORT)
 							.port(-1)
