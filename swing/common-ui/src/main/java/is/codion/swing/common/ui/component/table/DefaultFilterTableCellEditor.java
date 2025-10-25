@@ -70,7 +70,10 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 		this.editedRow = row;
 		componentValue().set((T) value);
 
-		return configure(componentValue().component(), table, value, isSelected, row, column);
+		// The editor is prepared before the selection is actually changed, see table.editCellAt in BasicTableUI.adjustSelection()
+		// so isSelected may be false here, but the row is about to be selected (we are editing it, after all), so we set it
+		// to true for the editor configuration, in order for JCheckBox to display the selection background correctly.
+		return configure(componentValue().component(), table, value, true, row, column);
 	}
 
 	private static JComponent configure(JComponent component, JTable table, Object value, boolean isSelected, int row, int column) {
@@ -79,6 +82,8 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 			JComponent rendererComponent = (JComponent) renderer.getTableCellRendererComponent(table, value, isSelected, true, row, column);
 			component.setBackground(rendererComponent.getBackground());
 			component.setBorder(rendererComponent.getBorder());
+			component.setOpaque(true);
+			component.setRequestFocusEnabled(false);
 		}
 		if (component instanceof JTextField && renderer instanceof FilterTableCellRenderer) {
 			((JTextField) component).setHorizontalAlignment(((FilterTableCellRenderer<?>) renderer).horizontalAlignment());
@@ -95,6 +100,17 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 	@Override
 	public boolean isCellEditable(EventObject event) {
 		return cellEditable.apply(event);
+	}
+
+	@Override
+	public boolean shouldSelectCell(EventObject event) {
+		if (event instanceof MouseEvent) {
+			MouseEvent e = (MouseEvent) event;
+
+			return e.getID() != MouseEvent.MOUSE_DRAGGED;
+		}
+
+		return true;
 	}
 
 	void updateUI() {
