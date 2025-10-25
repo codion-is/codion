@@ -36,12 +36,14 @@ public final class PreferencesTablePanel extends EntityTablePanel {
 		super(tableModel, config -> config
 						.editComponentFactory(Preferences.NEWSLETTER_SUBSCRIBED,
 										e -> new TriStateCheckBoxValue())
+						.surrendersFocusOnKeystroke(true)
 						.cellRenderer(Preferences.NEWSLETTER_SUBSCRIBED, FilterTableCellRenderer.builder()
 										.columnClass(Boolean.class)
 										.renderer(new FlatTriStateRenderer())
 										.build())
 						.cellEditor(Preferences.NEWSLETTER_SUBSCRIBED, FilterTableCellEditor.builder()
 										.component(TriStateCheckBoxValue::new)
+										.clickCountToStart(1)
 										.build()));
 	}
 

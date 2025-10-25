@@ -2544,6 +2544,16 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
+		 * @param surrendersFocusOnKeystroke true if the table should surrenders focus on keystroke
+		 * @return this builder instance
+		 * @see JTable#setSurrendersFocusOnKeystroke(boolean)
+		 */
+		public Config surrendersFocusOnKeystroke(boolean surrendersFocusOnKeystroke) {
+			tableBuilder.surrendersFocusOnKeystroke(surrendersFocusOnKeystroke);
+			return this;
+		}
+
+		/**
 		 * Sets the component factory for the given attribute, used when editing entities via {@link EntityTablePanel#editSelected(Attribute)}.
 		 * @param attribute the attribute
 		 * @param editComponentFactory the edit component factory
