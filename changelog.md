@@ -37,6 +37,7 @@ Codion Change Log
 ### is.codion.swing.framework.ui
 - EditAttributePanel bug fixed, update no longer enabled if no entity is modified.
 - EntityTablePanel.Config.surrendersFocusOnKeystroke() added.
+- EntityTablePanel.ControlKeys.EDIT_SELECTED_ATTRIBUTE renamed EDIT_ATTRIBUTE.
 ### is.codion.tools.generator.domain
 - DomainSource bug fixed, domain test imports fixed for api/impl.
 ### is.codion.tools.generator.panel

@@ -217,9 +217,9 @@ public class EntityTablePanel extends JPanel {
 		/**
 		 * Select and edit a single attribute value for the selected entity instances.<br>
 		 * Default key stroke: SHIFT-INSERT
-		 * @see Config#editAttributeSelection(EditAttributeSelection)
+		 * @see Config#editAttributeSelection(SelectionMode)
 		 */
-		public static final ControlKey<CommandControl> EDIT_SELECTED_ATTRIBUTE = CommandControl.key("editSelectedAttribute", keyStroke(VK_INSERT, SHIFT_DOWN_MASK));
+		public static final ControlKey<CommandControl> EDIT_ATTRIBUTE = CommandControl.key("editAttribute", keyStroke(VK_INSERT, SHIFT_DOWN_MASK));
 		/**
 		 * Requests focus for the table.<br>
 		 * Default key stroke: CTRL-T
@@ -764,7 +764,7 @@ public class EntityTablePanel extends JPanel {
 	 * @see ControlKeys#PRINT
 	 * @see ControlKeys#ADD
 	 * @see ControlKeys#EDIT
-	 * @see ControlKeys#EDIT_SELECTED_ATTRIBUTE
+	 * @see ControlKeys#EDIT_ATTRIBUTE
 	 * @see ControlKeys#DELETE
 	 * @see ControlKeys#DECREMENT_SELECTION
 	 * @see ControlKeys#INCREMENT_SELECTION
@@ -795,7 +795,7 @@ public class EntityTablePanel extends JPanel {
 										.enable(this));
 		configuration.controlMap.keyEvent(ADD).ifPresent(keyEvent -> keyEvent.enable(table));
 		configuration.controlMap.keyEvent(EDIT).ifPresent(keyEvent -> keyEvent.enable(table));
-		configuration.controlMap.keyEvent(EDIT_SELECTED_ATTRIBUTE).ifPresent(keyEvent -> keyEvent.enable(table));
+		configuration.controlMap.keyEvent(EDIT_ATTRIBUTE).ifPresent(keyEvent -> keyEvent.enable(table));
 		configuration.controlMap.keyEvent(DELETE).ifPresent(keyEvent -> keyEvent.enable(table));
 		configuration.controlMap.keyEvent(DECREMENT_SELECTION).ifPresent(keyEvent -> keyEvent.enable(table));
 		configuration.controlMap.keyEvent(INCREMENT_SELECTION).ifPresent(keyEvent -> keyEvent.enable(table));
@@ -826,7 +826,7 @@ public class EntityTablePanel extends JPanel {
 	 * 	 <li>{@link ControlKeys#EDIT ControlKeys#EDIT} (If an EditPanel is available)
 	 * 	 <li>{@link ControlKeys#DELETE ControlKeys#DELETE}
 	 * 	 <li>Separator
-	 * 	 <li>{@link ControlKeys#EDIT_SELECTED_ATTRIBUTE ControlKeys#EDIT_SELECTED_ATTRIBUTE}
+	 * 	 <li>{@link ControlKeys#EDIT_ATTRIBUTE ControlKeys#EDIT_ATTRIBUTE}
 	 * 	 <li>Separator
 	 * 	 <li>{@link ControlKeys#PRINT ControlKeys#PRINT}
 	 * 	 <li>Separator
@@ -861,7 +861,7 @@ public class EntityTablePanel extends JPanel {
 	 *   <li>{@link ControlKeys#EDIT ControlKeys#EDIT} (If an EditPanel is available)
 	 *   <li>{@link ControlKeys#DELETE ControlKeys#DELETE}
 	 *   <li>Separator
-	 *   <li>{@link ControlKeys#EDIT_SELECTED_ATTRIBUTE ControlKeys#EDIT_SELECTED_ATTRIBUTE} or {@link ControlKeys#EDIT_ATTRIBUTE_CONTROLS ControlKeys#EDIT_ATTRIBUTE_CONTROLS}
+	 *   <li>{@link ControlKeys#EDIT_ATTRIBUTE ControlKeys#EDIT_ATTRIBUTE} or {@link ControlKeys#EDIT_ATTRIBUTE_CONTROLS ControlKeys#EDIT_ATTRIBUTE_CONTROLS}
 	 *   <li>Separator
 	 *   <li>{@link ControlKeys#VIEW_DEPENDENCIES ControlKeys#VIEW_DEPENDENCIES}
 	 *   <li>Separator
@@ -1061,7 +1061,7 @@ public class EntityTablePanel extends JPanel {
 	 * @see Config#editable(Consumer)
 	 * @see EntityEditModel#updateEnabled()
 	 */
-	private CommandControl createEditSelectedAttributeControl() {
+	private CommandControl createEditAttributeControl() {
 		return Control.builder()
 						.command(this::editSelected)
 						.caption(FrameworkMessages.edit())
@@ -1573,7 +1573,7 @@ public class EntityTablePanel extends JPanel {
 		}
 		if (includeEditAttributeControls()) {
 			controlMap.control(EDIT_ATTRIBUTE_CONTROLS).set(createEditAttributeControls());
-			controlMap.control(EDIT_SELECTED_ATTRIBUTE).set(createEditSelectedAttributeControl());
+			controlMap.control(EDIT_ATTRIBUTE).set(createEditAttributeControl());
 		}
 		if (configuration.includeClearControl) {
 			controlMap.control(CLEAR).set(createClearControl());
@@ -1817,7 +1817,7 @@ public class EntityTablePanel extends JPanel {
 						EDIT,
 						DELETE,
 						null,
-						editPanel == null ? EDIT_SELECTED_ATTRIBUTE : null,
+						editPanel == null ? EDIT_ATTRIBUTE : null,
 						null,
 						PRINT,
 						null,
@@ -2524,7 +2524,7 @@ public class EntityTablePanel extends JPanel {
 		}
 
 		/**
-		 * By default, all attributes are editable via the table popup menu or the {@link ControlKeys#EDIT_SELECTED_ATTRIBUTE} control,
+		 * By default, all attributes are editable via the table popup menu or the {@link ControlKeys#EDIT_ATTRIBUTE} control,
 		 * use this method to exclude one or more attributes from being editable.
 		 * @param attributes provides this tables editable attribute value set
 		 * @return this Config instance
@@ -2671,7 +2671,7 @@ public class EntityTablePanel extends JPanel {
 		private ControlKey<?> popupMenuEditAttributeControl() {
 			return editAttributeSelection == SelectionMode.MENU ?
 							EDIT_ATTRIBUTE_CONTROLS :
-							EDIT_SELECTED_ATTRIBUTE;
+							EDIT_ATTRIBUTE;
 		}
 
 		private FilterTable<Entity, Attribute<?>> buildTable() {
