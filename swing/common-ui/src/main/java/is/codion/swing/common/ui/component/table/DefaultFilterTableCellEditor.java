@@ -34,12 +34,12 @@ import javax.swing.SwingConstants;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.util.EventObject;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static is.codion.swing.common.ui.control.Control.command;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implements FilterTableCellEditor<T> {
@@ -122,13 +122,17 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 	private ComponentValue<? extends JComponent, T> initializeComponentValue() {
 		ComponentValue<? extends JComponent, T> value = inputComponent.get();
 		JComponent editorComponent = value.component();
-		if (editorComponent instanceof JCheckBox) {
-			((JCheckBox) editorComponent).setHorizontalAlignment(SwingConstants.CENTER);
+		if (editorComponent instanceof JTextField) {
+			((JTextField) editorComponent).addActionListener(new StopEditingActionListener());
 		}
-		if (editorComponent instanceof JComboBox) {
+		else if (editorComponent instanceof JCheckBox) {
+			((JCheckBox) editorComponent).setHorizontalAlignment(SwingConstants.CENTER);
+			((JCheckBox) editorComponent).addActionListener(new StopEditingActionListener());
+		}
+		else if (editorComponent instanceof JComboBox) {
 			JComboBox<?> comboBox = (JComboBox<?>) editorComponent;
 			comboBox.putClientProperty("JComboBox.isTableCellEditor", true);
-			new ComboBoxEnterPressedAction(comboBox, command(this::stopCellEditing));
+			new ComboBoxEnterPressedAction(comboBox, new StopEditingActionListener());
 		}
 
 		return value;
@@ -177,17 +181,25 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 		}
 	}
 
+	private final class StopEditingActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			stopCellEditing();
+		}
+	}
+
 	private static final class ComboBoxEnterPressedAction extends AbstractAction {
 
 		private static final String ENTER_PRESSED = "enterPressed";
 
 		private final JComboBox<?> comboBox;
-		private final Action action;
+		private final ActionListener actionListener;
 		private final Action enterPressedAction;
 
-		private ComboBoxEnterPressedAction(JComboBox<?> comboBox, Action action) {
+		private ComboBoxEnterPressedAction(JComboBox<?> comboBox, ActionListener actionListener) {
 			this.comboBox = comboBox;
-			this.action = action;
+			this.actionListener = actionListener;
 			this.enterPressedAction = comboBox.getActionMap().get(ENTER_PRESSED);
 			this.comboBox.getActionMap().put(ENTER_PRESSED, this);
 		}
@@ -197,9 +209,7 @@ final class DefaultFilterTableCellEditor<T> extends AbstractCellEditor implement
 			if (comboBox.isPopupVisible()) {
 				enterPressedAction.actionPerformed(e);
 			}
-			else if (action.isEnabled()) {
-				action.actionPerformed(e);
-			}
+			actionListener.actionPerformed(e);
 		}
 	}
 
