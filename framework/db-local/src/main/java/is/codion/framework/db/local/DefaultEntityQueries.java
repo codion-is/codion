@@ -38,7 +38,7 @@ import java.util.ListIterator;
 import java.util.stream.Collectors;
 
 import static is.codion.framework.db.local.Queries.*;
-import static is.codion.framework.domain.entity.condition.Condition.key;
+import static is.codion.framework.db.local.QueryFormatter.format;
 import static java.lang.String.valueOf;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -65,10 +65,10 @@ final class DefaultEntityQueries implements EntityQueries {
 
 	@Override
 	public String select(Select select) {
-		return populateParameters(selectQueries.builder(entities.definition(requireNonNull(select).where().entityType()))
+		return format(populateParameters(selectQueries.builder(entities.definition(requireNonNull(select).where().entityType()))
 										.select(select)
 										.build(),
-						parameterValues(select));
+						parameterValues(select)));
 	}
 
 	@Override
@@ -78,20 +78,24 @@ final class DefaultEntityQueries implements EntityQueries {
 										.filter(columnDefinition -> entity.contains(columnDefinition.attribute()))
 										.collect(toList());
 
-		return populateParameters(insertQuery(entity.definition().table(), columnDefinitions),
-						parameterValues(entity, columnDefinitions));
+		return format(populateParameters(insertQuery(entity.definition().table(), columnDefinitions),
+						parameterValues(entity, columnDefinitions)));
 	}
 
 	@Override
 	public String update(Entity entity) {
-		Condition condition = key(requireNonNull(entity).originalPrimaryKey());
+		requireNonNull(entity);
+		if (!entity.exists() || entity.modified()) {
+			throw new IllegalArgumentException("Entity is unmodified");
+		}
+		Condition condition = Condition.key(entity.originalPrimaryKey());
 		List<ColumnDefinition<?>> columnDefinitions =
 						writableColumnDefinitions(entity.definition(), true, false).stream()
 										.filter(columnDefinition -> entity.modified(columnDefinition.attribute()))
 										.collect(toList());
 
-		return populateParameters(updateQuery(entity.definition().table(), columnDefinitions, condition.string(entity.definition())),
-						parameterValues(entity, columnDefinitions, condition));
+		return format(populateParameters(updateQuery(entity.definition().table(), columnDefinitions, condition.string(entity.definition())),
+						parameterValues(entity, columnDefinitions, condition)));
 	}
 
 	private static String populateParameters(String query, List<?> parameters) {

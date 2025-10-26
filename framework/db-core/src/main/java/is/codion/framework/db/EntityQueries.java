@@ -47,11 +47,10 @@ public interface EntityQueries {
 	String insert(Entity entity);
 
 	/**
-	 * Note that the query returned by this method is only guaranteed
-	 * to be valid if the given entity is modified.
-	 * @param entity the entity
+	 * @param entity an existing and modified entity
 	 * @return a String representation of the update query for the given entity, for debugging
 	 * @see Entity#modified()
+	 * @throws IllegalArgumentException in case the entity is unmodified
 	 */
 	String update(Entity entity);
 

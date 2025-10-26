@@ -22,7 +22,6 @@ import is.codion.common.db.database.Database;
 import is.codion.framework.db.EntityQueries;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.framework.ui.SelectQueryInspector.BasicFormatterImpl;
 
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -37,14 +36,14 @@ import static javax.swing.SwingUtilities.invokeLater;
 final class InsertUpdateQueryInspector extends JPanel {
 
 	private final JTextArea insertTextArea = Components.textArea()
-					.rowsColumns(15, 42)
+					.rowsColumns(15, 80)
 					.editable(false)
-					.onBuild(InsertUpdateQueryInspector::setMonospaceFont)
+					.font(InsertUpdateQueryInspector::monospaced)
 					.build();
 	private final JTextArea updateTextArea = Components.textArea()
-					.rowsColumns(15, 42)
+					.rowsColumns(15, 80)
 					.editable(false)
-					.onBuild(InsertUpdateQueryInspector::setMonospaceFont)
+					.font(InsertUpdateQueryInspector::monospaced)
 					.build();
 	private final EntityQueries queries;
 	private final EntityEditModel editModel;
@@ -63,17 +62,19 @@ final class InsertUpdateQueryInspector extends JPanel {
 	private void refreshQuery() {
 		invokeLater(() -> {
 			insertTextArea.setText(createInsertQuery());
+			insertTextArea.setCaretPosition(0);
 			updateTextArea.setText(createUpdateQuery());
+			updateTextArea.setCaretPosition(0);
 		});
 	}
 
 	private String createInsertQuery() {
-		return BasicFormatterImpl.format(queries.insert(editModel.editor().getOrThrow()));
+		return queries.insert(editModel.editor().getOrThrow());
 	}
 
 	private String createUpdateQuery() {
 		if (editModel.editor().modified().is()) {
-			return BasicFormatterImpl.format(queries.update(editModel.editor().getOrThrow()));
+			return queries.update(editModel.editor().getOrThrow());
 		}
 
 		return "<unmodified>";
@@ -89,8 +90,7 @@ final class InsertUpdateQueryInspector extends JPanel {
 						.build());
 	}
 
-	private static void setMonospaceFont(JTextArea textArea) {
-		Font font = textArea.getFont();
-		textArea.setFont(new Font(Font.MONOSPACED, font.getStyle(), font.getSize()));
+	private static Font monospaced(Font font) {
+		return new Font(Font.MONOSPACED, font.getStyle(), font.getSize());
 	}
 }
